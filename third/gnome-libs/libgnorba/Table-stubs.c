@@ -12,6 +12,7 @@ _ORBIT_GNOME_Table_OutOfRange_demarshal(GIOPRecvBuffer * _ORBIT_recv_buffer,
    CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
 		       TC_GNOME_Table_OutOfRange_struct.repo_id, NULL);
 }
+
 GNOME_Table_Value *
 GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 		CORBA_Environment * ev)
@@ -95,27 +96,26 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 _ORBIT_curptr += 2;
 	 switch ((*_ORBIT_retval)._d) {
 	   case 2:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-	    
-	       (*((guint64 *) & ((*_ORBIT_retval)._u.v_float))) =
-	       GUINT64_SWAP_LE_BE(*((guint64 *) _ORBIT_curptr));
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+	      iiop_byteswap((guchar *) & ((*_ORBIT_retval)._u.v_float),
+			    _ORBIT_curptr, 8);
+	      break;
 	   case 0:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    (*_ORBIT_retval)._u.str = CORBA_string_alloc(_ORBIT_tmpvar_3);
-	    memcpy((*_ORBIT_retval)._u.str, _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
-		   _ORBIT_tmpvar_3);
-	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
-	       _ORBIT_tmpvar_3;
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.str = CORBA_string_alloc(_ORBIT_tmpvar_3);
+	      memcpy((*_ORBIT_retval)._u.str, _ORBIT_curptr,
+		     sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
+		     _ORBIT_tmpvar_3);
+	      _ORBIT_curptr +=
+		 sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
+		 _ORBIT_tmpvar_3;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
@@ -123,23 +123,23 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 _ORBIT_curptr += 2;
 	 switch ((*_ORBIT_retval)._d) {
 	   case 2:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-	    (*_ORBIT_retval)._u.v_float = *((CORBA_double *) _ORBIT_curptr);
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+	      (*_ORBIT_retval)._u.v_float = *((CORBA_double *) _ORBIT_curptr);
+	      break;
 	   case 0:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    (*_ORBIT_retval)._u.str = CORBA_string_alloc(_ORBIT_tmpvar_3);
-	    memcpy((*_ORBIT_retval)._u.str, _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
-		   _ORBIT_tmpvar_3);
-	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
-	       _ORBIT_tmpvar_3;
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.str = CORBA_string_alloc(_ORBIT_tmpvar_3);
+	      memcpy((*_ORBIT_retval)._u.str, _ORBIT_curptr,
+		     sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
+		     _ORBIT_tmpvar_3);
+	      _ORBIT_curptr +=
+		 sizeof((*_ORBIT_retval)._u.str[_ORBIT_tmpvar_2]) *
+		 _ORBIT_tmpvar_3;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
       giop_recv_buffer_unuse(_ORBIT_recv_buffer);
@@ -230,34 +230,35 @@ GNOME_Table_set(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 				     &((*val)._d), sizeof((*val)._d));
       switch ((*val)._d) {
 	case 2:
-	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					  (_ORBIT_send_buffer), 8);
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer),
-					&((*val)._u.v_float),
-					sizeof((*val)._u.v_float));
-	 break;
+	   giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					    (_ORBIT_send_buffer), 8);
+	   giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer),
+					  &((*val)._u.v_float),
+					  sizeof((*val)._u.v_float));
+	   break;
 	case 0:
-	 _ORBIT_tmpvar_1 = strlen((*val)._u.str) + 1;
-	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					  (_ORBIT_send_buffer), 4);
-	 {
-	    guchar *_ORBIT_t;
+	   _ORBIT_tmpvar_1 = strlen((*val)._u.str) + 1;
+	   giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					    (_ORBIT_send_buffer), 4);
+	   {
+	      guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_1));
-	 }
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), ((*val)._u.str),
-					sizeof((*val)._u.
-					       str[_ORBIT_tmpvar_0]) *
-					_ORBIT_tmpvar_1);
-	 break;
+	      _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	      memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), (_ORBIT_t),
+					     sizeof(_ORBIT_tmpvar_1));
+	   }
+	   giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer),
+					  ((*val)._u.str),
+					  sizeof((*val)._u.
+						 str[_ORBIT_tmpvar_0]) *
+					  _ORBIT_tmpvar_1);
+	   break;
 	default:
-	 break;
+	   break;
       }
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;

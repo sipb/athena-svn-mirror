@@ -848,7 +848,7 @@ fi
 
 PACKAGE=gnome-libs
 
-VERSION=1.2.5
+VERSION=1.2.8
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -3687,7 +3687,7 @@ EOF
 
 fi
 
-ALL_LINGUAS="ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sp sr sv tr wa zh_TW.Big5"
+ALL_LINGUAS="ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv tr wa zh_CN.GB2312 zh_TW.Big5"
 	
 echo $ac_n "checking for working const""... $ac_c" 1>&6
 echo "configure:3694: checking for working const" >&5

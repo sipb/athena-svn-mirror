@@ -163,10 +163,10 @@ INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_buil
 
 EXTRA_HEADERS = 
 
-libgnomeui_la_SOURCES =  	gnome-about.c				gnome-animator.c			gnome-app.c				gnome-appbar.c				gnome-app-helper.c			gnome-app-util.c			gnome-calculator.c              	gnome-canvas.c				gnome-canvas-image.c			gnome-canvas-load.c			gnome-canvas-line.c			gnome-canvas-rect-ellipse.c		gnome-canvas-polygon.c			gnome-canvas-text.c			gnome-canvas-util.c			gnome-canvas-widget.c			gnome-client.c				gnome-color-picker.c			gnome-dateedit.c			gnome-dentry-edit.c			gnome-dialog.c                  	gnome-dialog-util.c			gnome-dns.c				gnome-dock.c				gnome-dock-band.c			gnome-dock-item.c			gnome-dock-layout.c			gnome-druid.c				gnome-druid-page.c			gnome-druid-page-start.c		gnome-druid-page-standard.c		gnome-druid-page-finish.c		gnome-geometry.c			gnome-guru.c				gnome-entry.c				gnome-file-entry.c		        gnome-font-picker.c			gnome-font-selector.c 			gnome-href.c				gnome-ice.c				gnome-icon-list.c			gnome-icon-item.c			gnome-icon-sel.c			gnome-icon-text.c			gnome-icon-entry.c			gnome-init.c				gnome-less.c				gnome-mdi.c				gnome-mdi-child.c			gnome-mdi-generic-child.c       	gnome-mdi-session.c			gnome-messagebox.c			gnome-number-entry.c			gnome-pixmap.c				gnome-pixmap-entry.c			gnome-popup-menu.c			gnome-popup-help.c			gnome-preferences.c			gnome-propertybox.c			gnome-properties.c			gnome-property-entries.c		gnome-scores.c				gnome-spell.c				gnome-startup.c				gnome-stock.c			        gnome-winhints.c		        gnome-paper-selector.c			gnome-procbar.c				gnome-window-icon.c			gnometypes.c				gtkcauldron.c				gtk-clock.c				gtk-ted.c				gtkdial.c				gtkpixmapmenuitem.c
+libgnomeui_la_SOURCES =  	gnome-about.c				gnome-animator.c			gnome-app.c				gnome-appbar.c				gnome-app-helper.c			gnome-app-util.c			gnome-calculator.c              	gnome-canvas.c				gnome-canvas-image.c			gnome-canvas-load.c			gnome-canvas-line.c			gnome-canvas-rect-ellipse.c		gnome-canvas-polygon.c			gnome-canvas-text.c			gnome-canvas-util.c			gnome-canvas-widget.c			gnome-client.c				gnome-color-picker.c			gnome-dateedit.c			gnome-dentry-edit.c			gnome-dialog.c                  	gnome-dialog-util.c			gnome-dns.c				gnome-dock.c				gnome-dock-band.c			gnome-dock-item.c			gnome-dock-layout.c			gnome-druid.c				gnome-druid-page.c			gnome-druid-page-start.c		gnome-druid-page-standard.c		gnome-druid-page-finish.c		gnome-geometry.c			gnome-guru.c				gnome-entry.c				gnome-file-entry.c		        gnome-font-picker.c			gnome-font-selector.c 			gnome-href.c				gnome-ice.c				gnome-icon-list.c			gnome-icon-item.c			gnome-icon-sel.c			gnome-icon-text.c			gnome-icon-entry.c			gnome-init.c				gnome-less.c				gnome-mdi.c				gnome-mdi-child.c			gnome-mdi-generic-child.c       	gnome-mdi-session.c			gnome-messagebox.c			gnome-number-entry.c			gnome-pixmap.c				gnome-pixmap-entry.c			gnome-popup-menu.c			gnome-popup-help.c			gnome-preferences.c			gnome-propertybox.c			gnome-properties.c			gnome-property-entries.c		gnome-scores.c				gnome-spell.c				gnome-startup.c				gnome-stock.c			        gnome-winhints.c		        gnome-paper-selector.c			gnome-procbar.c				gnome-window.c				gnome-window-icon.c			gnometypes.c				gtkcauldron.c				gtk-clock.c				gtk-ted.c				gtkdial.c				gtkpixmapmenuitem.c
 
 
-gnome_headers =  	gnome-about.h			        gnome-animator.h			gnome-app.h				gnome-appbar.h				gnome-app-helper.h			gnome-app-util.h			gnome-calculator.h              	gnome-canvas.h				gnome-canvas-image.h			gnome-canvas-line.h			gnome-canvas-load.h			gnome-canvas-rect-ellipse.h		gnome-canvas-polygon.h			gnome-canvas-text.h			gnome-canvas-util.h			gnome-canvas-widget.h			gnome-client.h				gnome-color-picker.h			gnome-compat.h				gnome-dateedit.h			gnome-dentry-edit.h			gnome-dialog.h                  	gnome-dialog-util.h			gnome-dns.h				gnome-dock.h				gnome-dock-band.h			gnome-dock-item.h			gnome-dock-layout.h			gnome-druid.h				gnome-druid-page.h			gnome-druid-page-start.h		gnome-druid-page-standard.h		gnome-druid-page-finish.h		gnome-entry.h				gnome-file-entry.h		        gnome-font-picker.h			gnome-font-selector.h 			gnome-geometry.h			gnome-guru.h				gnome-href.h				gnome-ice.h				gnome-icon-list.h			gnome-icon-item.h			gnome-icon-sel.h			gnome-icon-text.h			gnome-icon-entry.h			gnome-init.h				gnome-less.h				gnome-messagebox.h			gnome-mdi.h				gnome-mdi-child.h			gnome-mdi-generic-child.h		gnome-mdi-session.h			gnome-number-entry.h			gnome-popup-menu.h			gnome-popup-help.h			gnome-preferences.h			gnome-propertybox.h			gnome-properties.h     			gnome-property-entries.h		gnome-pixmap.h				gnome-pixmap-entry.h			gnome-scores.h				gnome-spell.h				gnome-startup.h				gnome-stock.h				gnome-types.h				gnome-uidefs.h			        gnome-winhints.h		        gnome-paper-selector.h			gnome-procbar.h				gnome-window-icon.h			gtkcauldron.h				gtkdial.h				gtk-clock.h				gtk-ted.h				gtkpixmapmenuitem.h			libgnomeui.h
+gnome_headers =  	gnome-about.h			        gnome-animator.h			gnome-app.h				gnome-appbar.h				gnome-app-helper.h			gnome-app-util.h			gnome-calculator.h              	gnome-canvas.h				gnome-canvas-image.h			gnome-canvas-line.h			gnome-canvas-load.h			gnome-canvas-rect-ellipse.h		gnome-canvas-polygon.h			gnome-canvas-text.h			gnome-canvas-util.h			gnome-canvas-widget.h			gnome-client.h				gnome-color-picker.h			gnome-compat.h				gnome-dateedit.h			gnome-dentry-edit.h			gnome-dialog.h                  	gnome-dialog-util.h			gnome-dns.h				gnome-dock.h				gnome-dock-band.h			gnome-dock-item.h			gnome-dock-layout.h			gnome-druid.h				gnome-druid-page.h			gnome-druid-page-start.h		gnome-druid-page-standard.h		gnome-druid-page-finish.h		gnome-entry.h				gnome-file-entry.h		        gnome-font-picker.h			gnome-font-selector.h 			gnome-geometry.h			gnome-guru.h				gnome-href.h				gnome-ice.h				gnome-icon-list.h			gnome-icon-item.h			gnome-icon-sel.h			gnome-icon-text.h			gnome-icon-entry.h			gnome-init.h				gnome-less.h				gnome-messagebox.h			gnome-mdi.h				gnome-mdi-child.h			gnome-mdi-generic-child.h		gnome-mdi-session.h			gnome-number-entry.h			gnome-popup-menu.h			gnome-popup-help.h			gnome-preferences.h			gnome-propertybox.h			gnome-properties.h     			gnome-property-entries.h		gnome-pixmap.h				gnome-pixmap-entry.h			gnome-scores.h				gnome-spell.h				gnome-startup.h				gnome-stock.h				gnome-types.h				gnome-uidefs.h			        gnome-winhints.h		        gnome-paper-selector.h			gnome-procbar.h				gnome-window.h				gnome-window-icon.h			gtkcauldron.h				gtkdial.h				gtk-clock.h				gtk-ted.h				gtkpixmapmenuitem.h			libgnomeui.h
 
 
 libgnomeuiinclude_HEADERS =  	$(gnome_headers)		gnometypebuiltins.h
@@ -199,7 +199,7 @@ gtkrc_DATA = gtkrc gtkrc.el gtkrc.eo gtkrc.he gtkrc.hy gtkrc.ja 	gtkrc.ko gtkrc.
 EXTRA_DIST =  	$(SGML)						$(gtkrc_DATA)					AUTHORS						gnome.defs 					maketypes.awk					makeenums.pl					gnome-boxed.defs				gnometypebuiltins_vars.c			gnometypebuiltins_ids.c				gnometypebuiltins_evals.c
 
 
-libgnomeui_la_LDFLAGS = -version-info 43:4:11 -rpath $(libdir)
+libgnomeui_la_LDFLAGS = -version-info 44:1:12 -rpath $(libdir)
 libgnomeui_la_LIBADD = $(LIBGNOMEUI_LIBS)
 
 gnome_segv_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
@@ -255,9 +255,9 @@ gnome-pixmap.lo gnome-pixmap-entry.lo gnome-popup-menu.lo \
 gnome-popup-help.lo gnome-preferences.lo gnome-propertybox.lo \
 gnome-properties.lo gnome-property-entries.lo gnome-scores.lo \
 gnome-spell.lo gnome-startup.lo gnome-stock.lo gnome-winhints.lo \
-gnome-paper-selector.lo gnome-procbar.lo gnome-window-icon.lo \
-gnometypes.lo gtkcauldron.lo gtk-clock.lo gtk-ted.lo gtkdial.lo \
-gtkpixmapmenuitem.lo
+gnome-paper-selector.lo gnome-procbar.lo gnome-window.lo \
+gnome-window-icon.lo gnometypes.lo gtkcauldron.lo gtk-clock.lo \
+gtk-ted.lo gtkdial.lo gtkpixmapmenuitem.lo
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 gnome_segv_OBJECTS =  gnome_segv.o
@@ -1429,6 +1429,8 @@ gnometypes.lo gnometypes.o : gnometypes.c ../config.h libgnomeui.h \
 gnome-window-icon.lo gnome-window-icon.o : gnome-window-icon.c \
 	../config.h gnome-client.h ../support/getopt.h \
 	../libgnome/gnome-defs.h gnome-dialog.h gnome-window-icon.h
+gnome-window.lo gnome-window.o : gnome-window.c ../config.h \
+	../libgnome/gnome-defs.h gnome-window.h
 gnome-winhints.lo gnome-winhints.o : gnome-winhints.c ../config.h \
 	gnome-winhints.h ../libgnome/gnome-defs.h
 gtkcauldron.lo gtkcauldron.o : gtkcauldron.c gtkcauldron.h \

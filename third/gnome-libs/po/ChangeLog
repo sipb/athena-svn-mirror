@@ -1,3 +1,59 @@
+2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2000-10-18  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Two anothers minors French translations updates.
+	Suggestion from Christian Marillat <christian.marillat@wanadoo.fr>
+
+2000-10-18  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: One another minor French translation update.
+
+2000-10-17  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Anothers minors French translations updates.
+
+2000-10-16  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* zh_CN.GB2312.po: Initial Chinese(GB2312) translation
+                           from Wu Yulun.
+
+2000-10-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nn.po: Added Norwegian (nynorsk) translation.
+	
+2000-10-14  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Small Cleanup.
+
+2000-10-13  Fatih Demir  <kabalak@gmx.net> 
+
+	* tr.po: Updated the Turkish translation.
+
+2000-10-13  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* lt.po: Updated Lithuanian translation
+
+2000-10-10  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Minors French translations updates.
+	* nl.po: Updated Dutch translation from Dennis Smit
+	<synap@area101.penguin.nl> 
+
+2000-10-06  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Minors French translations updates.
+
+2000-10-02  Szabolcs BAN <shooby@gnome.hu>
+
+	* hu.po: Updated Hungarian translations
+
+2000-09-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
 2000-09-26  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.

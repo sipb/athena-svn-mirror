@@ -83,15 +83,16 @@ GNOME_Table_Value__free(gpointer mem, gpointer dat,
 
    switch (val->_d) {
      case 2:
-      break;
+	break;
      case 0:
-      CORBA_string__free(&(val->_u.str), NULL, free_strings);
-      break;
+	CORBA_string__free(&(val->_u.str), NULL, free_strings);
+	break;
      default:
-      break;
+	break;
    }
    return (gpointer) (val + 1);
 }
+
 GNOME_Table_Value *
 GNOME_Table_Value__alloc(void)
 {
@@ -104,6 +105,7 @@ GNOME_Table_Value__alloc(void)
    memset(retval, '\0', sizeof(GNOME_Table_Value));
    return retval;
 }
+
 gpointer
 GNOME_Table_OutOfRange__free(gpointer mem, gpointer dat,
 			     CORBA_boolean free_strings)

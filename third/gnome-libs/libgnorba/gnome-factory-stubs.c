@@ -14,6 +14,7 @@ _ORBIT_GNOME_GenericFactory_CannotActivate_demarshal(GIOPRecvBuffer *
 		       TC_GNOME_GenericFactory_CannotActivate_struct.repo_id,
 		       NULL);
 }
+
 CORBA_boolean
 GNOME_GenericFactory_supports(GNOME_GenericFactory _obj,
 			      const CORBA_char * obj_goad_id,

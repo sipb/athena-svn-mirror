@@ -705,7 +705,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "Session-kezelõi azonosító megadása"
+msgstr "Munkafolyamat-kezelõi azonosító megadása"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -726,7 +726,7 @@ msgstr "A feladatvezérlõvel való kapcsolódás tiltása"
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
 msgid "Session management options"
-msgstr "Feladatvezérlõ opciók"
+msgstr "Munkafolyamat kezelõ opciók"
 
 #: libgnomeui/gnome-client.c:2348
 msgid "Cancel Logout"
@@ -1242,7 +1242,7 @@ msgid ""
 "will exit.\n"
 "Please save all your files before closing this dialog."
 msgstr ""
-"A GNOME session-kezelõ (PID: %d)\n"
+"A GNOME munkafolyamat-kezelõ (PID: %d)\n"
 "helyrehozhatatlan hiba miatt leállt. (%s)\n"
 "Ennek az ablaknak a bezárásával mindegyik alkalmazás leáll és a session "
 "befejezõdik.\n"
@@ -1269,7 +1269,7 @@ msgstr "Hibajelentés feladása"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "Nyomkövetés"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1504,9 +1504,8 @@ msgid "(Internal use only) GOAD server ID to activate"
 msgstr "Aktiválandó GOAD szerver azonosítója (csak belsõ használatra)"
 
 #: libgnorba/goad.c:1363
-#, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "Aktiválandó GOAD szerver azonosítója (csak belsõ használatra)"
+msgstr "(Csak belsõ használatra) GOAD fájl azonosító"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

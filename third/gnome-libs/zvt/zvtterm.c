@@ -1795,7 +1795,7 @@ zvt_term_motion_notify (GtkWidget      *widget,
   gdk_window_get_pointer (event->window, &x, &y, &mask);
 
   x = ( x - ( widget->style->klass->xthickness + PADDING ) ) / term->charwidth;
-  y = ( y - widget->style->klass->ythickness ) / term->charheight + vx->vt.scrollbackoffset;
+  y = ( y - widget->style->klass->ythickness ) / term->charheight;
 
   if (vx->selectiontype != VT_SELTYPE_NONE){
     

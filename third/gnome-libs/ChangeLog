@@ -1,3 +1,21 @@
+2000-10-23  Darin Adler  <darin@eazel.com>
+
+	* configure.in: Miguel forgot to check in the "bump the version"
+	part into cvs when he made version 1.2.7.
+
+2000-10-16  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* configure.in: Added zh_CN.GB2312 to ALL_LINGUAS.
+
+2000-10-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "nn" to ALL_LINGUAS.
+	
+2000-09-27  Jody Goldberg <jgoldberg@home.com>
+
+	* gnome-config.in (moddatadir) : Add a way to get the module specific
+	  datadir.
+
 2000-08-24  Not Zed  <NotZed@HelixCode.com>
 
 	* gnome-config.in (modversion): Undid sopwith's change (oh,

@@ -4,7 +4,7 @@
 >GnomeColorPicker</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Gnome User Interface Library Reference Manual"
 HREF="book1.html"><LINK
@@ -18,6 +18,7 @@ REL="NEXT"
 TITLE="GnomeDateEdit"
 HREF="gnomedateedit.html"></HEAD
 ><BODY
+CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -404,7 +405,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a)
+>void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a, gpointer data)
 {
 	g_print("User selected color (rgba): <TT
 CLASS="LITERAL"
@@ -544,6 +545,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -559,6 +561,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >Pointer to new GNOME color picker widget.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -621,6 +624,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -706,6 +710,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Alpha component, values are in [0.0, 1.0]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -768,6 +773,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -853,6 +859,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Output location of alpha color component, values are in [0.0, 1.0]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -915,6 +922,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1000,6 +1008,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Alpha component, values are in [0, 255]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1062,6 +1071,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1147,6 +1157,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Output location of alpha color component, values are in [0, 255]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1209,6 +1220,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1294,6 +1306,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Alpha component, values are in [0, 65535]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1356,6 +1369,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1441,6 +1455,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > Output location of alpha color component, values are in [0, 65535]</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1492,6 +1507,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1532,6 +1548,7 @@ CLASS="LITERAL"
 >FALSE</TT
 > if not.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1583,6 +1600,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1623,6 +1641,7 @@ CLASS="LITERAL"
 >FALSE</TT
 > if not.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1673,6 +1692,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1707,6 +1727,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > String containing new window title.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P

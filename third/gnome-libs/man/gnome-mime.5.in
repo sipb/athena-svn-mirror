@@ -7,7 +7,8 @@
 .\"
 .TH GNOME 1 "GNOME 1.0" 
 .SH NAME
-GNOME MIME configuration files
+gnome-mime \- configuration files
+.SH DESCRIPTION
 .PP
 The GNOME system uses MIME types to classify content.  Each MIME type
 on the GNOME system has a number of attributes attached to it.  Some
