@@ -2,7 +2,7 @@
 #
 # athena-bind:	Start the Athena named service.
 #
-# chkconfig: 345 15 85
+# chkconfig: 345 11 85
 # description: named startup
 # processname: named
 # pidfile: /var/athena/named.pid
