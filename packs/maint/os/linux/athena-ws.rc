@@ -64,6 +64,15 @@ case "$1" in
 			|| failure "removing stale files"
 	echo
 
+	# Handle an interrupted update.
+	if [ -f /var/athena/update.running ]; then
+		echo -n "Cleaning up after an interrupted update"
+		rm -rf /var/athena/update.running \
+			&& logger -p user.notice "Update did not complete" \
+			&& success "interrupted update clean-up" \
+				|| failure "interrupted update clean-up"
+	fi
+
 	if [ -e /dev/cdrom ]; then
 		echo -n "Fixing permissions on CDROM device"
 		chmod 666 /dev/cdrom \
