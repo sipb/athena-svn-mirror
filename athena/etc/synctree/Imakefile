@@ -9,7 +9,7 @@ OBJS= synctree.o rules.o glob_match.o bool_exp.o vtable.o err.o \
 CCDEF= -ma
 #endif
 #if defined(mips) && defined(ultrix)
-CCDEF= -ma -Wf,-XNh1200
+CCDEF= -Wf,-XNh1200
 #endif
 #if defined(_AUX_SOURCE)
 #define CcCmd gcc -traditional
