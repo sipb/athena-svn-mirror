@@ -1,5 +1,5 @@
 ;; iconify.jl -- handling window state
-;; $Id: iconify.jl,v 1.1.1.4 2003-01-05 00:32:23 ghudson Exp $
+;; $Id: iconify.jl,v 1.2 2003-05-29 16:35:17 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -168,8 +168,8 @@
 
   (define (make-window-sticky/workspace w #!key no-hooks)
     (unless (window-sticky-p/workspace w)
-      (ws-remove-window w t)
       (window-put w 'sticky t)
+      (ws-remove-window w t)
       (unless no-hooks
 	(emit-sticky-hook w))))
 
