@@ -19,11 +19,11 @@
     ---------------------------------------------------------------------- */
 
 
+#include <config.h>
+#include <gnome.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
-#include <config.h>
-#include "gtk/gtk.h"
 #include "logview.h"
 #include "gnome.h"
 
@@ -129,6 +129,7 @@ repaint_zoom (GtkWidget * widget, GdkEventExpose * event)
    int win_height;
    GdkRectangle *area;
    LogLine *line;
+   struct tm date = {0};
 
    canvas = zoom_canvas->window;
    win_width = zoom_canvas->allocation.width;
@@ -149,9 +150,11 @@ repaint_zoom (GtkWidget * widget, GdkEventExpose * event)
    gdk_draw_rectangle (canvas, gc, TRUE, 3, 3, win_width - 6, h+6);
    gdk_gc_set_foreground (gc, &cfg->white);
    if (curlog != NULL)
-     sprintf (buffer, _("Log line detail for %s"), curlog->name);
+     g_snprintf (buffer, sizeof (buffer),
+		 _("Log line detail for %s"), curlog->name);
    else
-     sprintf (buffer, _("Log line detail for <No log loaded>"));
+     g_snprintf (buffer, sizeof (buffer),
+		 _("Log line detail for <No log loaded>"));
    gdk_draw_string (canvas, cfg->headingb, gc, x, y, buffer);
    y += 9 + cfg->headingb->descent + cfg->fixedb->ascent;
 
@@ -197,11 +200,28 @@ repaint_zoom (GtkWidget * widget, GdkEventExpose * event)
 
    line = &(curlog->pointerpg->line[curlog->pointerln]);
 
-   sprintf (buffer, "%s %d %02d:%02d:%02d", _(month[(int)line->month]), 
-	    (int) line->date, line->hour, line->min, line->sec);
+   date.tm_mon = line->month;
+   date.tm_year = 70 /* bogus */;
+   date.tm_mday = line->date;
+   date.tm_hour = line->hour;
+   date.tm_min = line->min;
+   date.tm_sec = line->sec;
+   date.tm_isdst = 0;
+
+   /* Translators: do not include year, it would be bogus */
+   if (strftime (buffer, sizeof (buffer), _("%B %e %X"), &date) <= 0) {
+	   /* as a backup print in US style */
+	   g_snprintf (buffer, sizeof (buffer),
+		       "%s %d %02d:%02d:%02d",
+		       _(month[(int)line->month]), 
+		       (int) line->date,
+		       (int) line->hour,
+		       (int) line->min,
+		       (int) line->sec);
+   }
    gdk_draw_string (canvas, cfg->fixed, gc, x, y, buffer);
    y += h;
-   sprintf (buffer, "%s ", line->process);
+   g_snprintf (buffer, sizeof (buffer), "%s ", line->process);
    gdk_draw_string (canvas, cfg->fixed, gc, x, y, buffer);
    y += h;
    draw_parbox (canvas, cfg->fixed, gc, x, y, 380, line->message, 4);

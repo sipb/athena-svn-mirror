@@ -4,7 +4,7 @@
 >Using Gw</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Gw Manual"
 HREF="index.html"><LINK
@@ -66,25 +66,30 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="USAGE"
+NAME="usage"
 >Using Gw</A
 ></H1
-><P
+>  
+  <P
 >   <TT
 CLASS="APPLICATION"
 >Gw</TT
 > can be
    used to monitor users on your system, and to communicate with them.
   </P
-><DIV
+>
+
+  
+  <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MAINWIN"
+NAME="mainwin"
 >Basic usage</A
 ></H2
-><P
+>   
+   <P
 >    Starting <TT
 CLASS="APPLICATION"
 >Gw</TT
@@ -92,21 +97,22 @@ CLASS="APPLICATION"
     the <SPAN
 CLASS="INTERFACE"
 >Main window</SPAN
->, shown in <A
-HREF="usage.html#MAINWINDOW-FIG"
->Figure 1</A
->.
+>, shown in .
 
     
     <DIV
 CLASS="FIGURE"
 ><A
-NAME="MAINWINDOW-FIG"
+NAME="mainwindow-fig"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/gw-main.png"></P
-><P
+>
+     
+    <P
 ><B
 >Figure 1. Gw Main Window</B
 ></P
@@ -114,92 +120,114 @@ SRC="figures/gw-main.png"></P
 >
     
    </P
-><P
+>
+
+      <P
 >On launch, <TT
 CLASS="APPLICATION"
 >Gw</TT
 > displays a
       listing of all users.</P
-><P
+>
+
+      <P
 >To update the data, click on the <B
 CLASS="GUIBUTTON"
 >Update
       Information</B
 > button.</P
-><P
+>
+
+      <P
 >The data displayed includes:
         <P
 ></P
 ><UL
-><LI
-><P
+>&#13;	  <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >USER</B
 ></TT
-> &#8212; user's login
+>  user's login
 	    name.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >TTY</B
 ></TT
-> &#8212; the terminal the
+>  the terminal the
 	    user is connected through.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >FROM</B
 ></TT
-> &#8212; The remote host
+>  The remote host
 	    from which the user logged in, or the X display terminal
 	    if the user is local.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >LOGIN@</B
 ></TT
-> &#8212; The time the
+>  The time the
 	    user logged in.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >IDLE</B
 ></TT
-> &#8212; The amount of idle
+>  The amount of idle
 	    CPU time associated with that login.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >JCPU</B
 ></TT
-> &#8212; The CPU time used by
+>  The CPU time used by
 	    all processes associated with the login.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+          <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >PCPU</B
 ></TT
-> &#8212; The CPU time
+>  The CPU time
 	    associated with the process listed in the
 	    <TT
 CLASS="GUILABEL"
@@ -207,20 +235,30 @@ CLASS="GUILABEL"
 >WHAT</B
 ></TT
 > field.</P
-></LI
-><LI
-><P
+>
+	  </LI
+>
+
+           <LI
+>	    <P
 ><TT
 CLASS="GUILABEL"
 ><B
 >WHAT</B
 ></TT
-> &#8212; The command
+>  The command
 	    currently being executed by the user.</P
-></LI
-></UL
+>
+	  </LI
+>
+
+	</UL
 >&#13;</P
-><DIV
+>
+
+  
+ 
+   <DIV
 CLASS="TIP"
 ><P
 ></P
@@ -250,7 +288,8 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>    
+    <P
 >     <TT
 CLASS="APPLICATION"
 >Gw</TT
@@ -262,27 +301,39 @@ CLASS="GUIBUTTON"
 > to have the program display the latest
      information.
     </P
-></TD
+>
+   </TD
 ></TR
 ></TABLE
 ></DIV
-></DIV
-><DIV
+>
+
+  </DIV
+>
+
+
+  
+
+  
+  <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENUBAR"
+NAME="menubar"
 >Menus</A
 ></H2
-><P
+>   
+   <P
 >    The menu bar, located at the top of the <SPAN
 CLASS="INTERFACE"
 >Main
     Window</SPAN
 >, contains the following menus:
    </P
-><P
+>
+
+   <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
@@ -293,54 +344,47 @@ CLASS="GUIMENU"
 >File</B
 ></DT
 ><DD
-><P
+>      <P
 >       This menu contains:
-       <B
-CLASS="GUIMENUITEM"
->Save</B
-> (<B
-CLASS="SHORTCUT"
-><SPAN
-CLASS="KEYSYM"
->Alt-S</SPAN
-></B
->), which currently does nothing, 
-       and
-       <B
+        + + + + + + + +
++ + + + + + + + -&gt;<B
 CLASS="GUIMENUITEM"
 >Quit</B
-> (<B
+>+
++ + + + + + +  (<B
 CLASS="SHORTCUT"
-><SPAN
+>         <SPAN
 CLASS="KEYSYM"
 >Ctrl-Q</SPAN
-></B
+>
+        </B
 >)
        which exits the program.
       </P
-></DD
+>
+     </DD
 ><DT
 ><B
 CLASS="GUIMENU"
 >Settings</B
 ></DT
 ><DD
-><P
+>      <P
 >       This menu contains:
      
-<A
-HREF="prefs.html"
->       <B
+        + + + + + + + +
++ + + + + + + + + + -&gt;<B
 CLASS="GUIMENUITEM"
 >Preferences</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
-><SPAN
+>         <SPAN
 CLASS="KEYSYM"
 >Ctrl-P</SPAN
-></B
->)</A
 >
+        </B
+>)
            which opens a dialog box allowing you to set
            up a menu executing other commands, such as
            <TT
@@ -361,33 +405,37 @@ TARGET="_top"
 >talk man page</A
 >.
          </P
-></DD
+>
+        </DD
 ><DT
 ><B
 CLASS="GUIMENU"
 >Help</B
 ></DT
 ><DD
-><P
+>      <P
 >       This menu contains:
        <P
 ></P
 ><UL
-><LI
-><P
+>        <LI
+>         <P
 >          <B
 CLASS="GUIMENUITEM"
 >Help</B
-> &#8212;
+> 
           shows this manual.
          </P
-></LI
-><LI
-><P
+>
+        </LI
+>
+
+        <LI
+>         <P
 >          <B
 CLASS="GUIMENUITEM"
 >About</B
-> &#8212; shows
+>  shows
           basic information about
           <TT
 CLASS="APPLICATION"
@@ -395,16 +443,21 @@ CLASS="APPLICATION"
 >, such as
           the author's name and the application version number.
          </P
-></LI
-></UL
+>
+        </LI
+>
+       </UL
 >
 
       </P
-></DD
+>
+     </DD
 ></DL
 ></DIV
-></DIV
-></DIV
+>
+  </DIV
+>
+ </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

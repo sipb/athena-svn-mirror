@@ -1,3 +1,22 @@
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+Sun Jun 24 19:39:04 2001  George Lebl <jirka@5z.com>
+
+	* gw.c: fix crashes on removing last action
+
+2001-06-01 John Fleck <jfleck@inkstain.net>
+
+	* gw.c - removing "save" from the menu, since it doesn't do
+	anything, updating doc/C/gw.sgml to match - fixes bug #16631
+
+Tue Apr 24 19:17:55 2001  George Lebl <jirka@5z.com>
+
+	from ximian-gnome
+
+	* gw.c: add help
+
 2001-02-20 John Fleck <jfleck@inkstain.net>
 
 	* updating gw.sgml

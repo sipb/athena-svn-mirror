@@ -1,7 +1,7 @@
 #ifndef __GDICT_APPLET_H_
 #define __GDICT_APPLET_H_
 
-/* $Id: gdict-applet.h,v 1.1.1.1 2001-05-02 20:43:59 ghudson Exp $ */
+/* $Id: gdict-applet.h,v 1.1.1.2 2002-03-25 21:55:55 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim@cs.cmu.edu>
@@ -22,6 +22,7 @@ typedef struct _GDictApplet {
 	GtkWidget *vbox_widget;
 	GtkWidget *entry_widget;
 	GtkWidget *handlebox_widget;
+	gboolean handle;
 } GDictApplet;
 
 extern gboolean gdict_applet_toggle;

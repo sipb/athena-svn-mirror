@@ -10,8 +10,9 @@ figs = \
 	figures/nodisk.png \
 	figures/qferror.png \
 	figures/writeprotected.png
-app = gfloppy
+docname = gfloppy
 lang = C
-omffiles=gfloppy-C.omf
-include $(top_srcdir)/app-docs.make
+omffile = gfloppy-C.omf
+sgml_ents =
+include $(top_srcdir)/sgmldocs.make
 dist-hook: app-dist-hook

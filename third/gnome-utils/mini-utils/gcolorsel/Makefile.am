@@ -6,12 +6,13 @@ gladedir = $(datadir)/gcolorsel/glade
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
 
 CFLAGS += -DGCOLORSEL_GLADEDIR=\""$(gladedir)/"\" -g
+CFLAGS += -DXLIBDIR=\""$(XLIBDIR)/"\"
 
 INCLUDES = 						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
 	-I$(includedir)					\
-	$(GNOME_INCLUDEDIR)
+	$(GNOME_INCLUDEDIR) $(GLADE_CFLAGS)
 
 bin_PROGRAMS = gcolorsel
 
@@ -63,8 +64,17 @@ gcolorsel_LDADD = \
 	@GLADE_LIBS@					\
 	$(GNOME_XML_LIB)
 
-EXTRA_DIST = gcolorsel.desktop $(top_srcdir)/app-docs.make
+man_MANS = gcolorsel.1
 
-Utilities_DATA = gcolorsel.desktop
+Utilities_in_files = gcolorsel.desktop.in
+Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
+
+EXTRA_DIST = \
+	$(man_MANS) \
+	$(Utilities_in_files) \
+	$(Utilities_DATA) \
+	$(top_srcdir)/sgmldocs.make
+
 
 CLEANFILES=*~

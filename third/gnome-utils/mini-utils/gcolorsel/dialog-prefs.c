@@ -5,8 +5,8 @@
 #include "mdi-color-generic.h"
 #include "mdi-color-virtual-rgb.h"
 
-#include "gnome.h"
-#include "glade/glade.h"
+#include <gnome.h>
+#include <glade/glade.h>
 
 static GtkWidget *property = NULL;
 
@@ -76,6 +76,8 @@ apply_cb (GtkWidget *widget, int page, gpointer data)
 
   case 1:
     prefs.mdi_mode = option_menu_get_active (GTK_OPTION_MENU (menu_mdi_mode));
+    if (prefs.mdi_mode == 3)
+	    prefs.mdi_mode = GNOME_MDI_DEFAULT_MODE;
     prefs.tab_pos = option_menu_get_active (GTK_OPTION_MENU (menu_tab_pos)); 
     gnome_mdi_set_mode (mdi, prefs.mdi_mode);
     mdi_set_tab_pos (mdi, prefs.tab_pos);
@@ -232,7 +234,10 @@ void
 dialog_prefs (void)
 {  
   GladeXML *gui;
+  int menupos;
 
+  static GnomeHelpMenuEntry help_entry = { "gcolorsel", "index.html" };
+  
   if (! property) {
     
     gui = glade_xml_new (GCOLORSEL_GLADEDIR "dialog-prefs.glade", NULL);
@@ -245,7 +250,9 @@ dialog_prefs (void)
 			GTK_SIGNAL_FUNC (apply_cb), NULL); 
     gtk_signal_connect (GTK_OBJECT (property), "destroy",
 			GTK_SIGNAL_FUNC (destroy_cb), NULL);
-
+    gtk_signal_connect (GTK_OBJECT (property), "help",
+			GTK_SIGNAL_FUNC (gnome_help_display), &help_entry);
+			
     /* Session */
 
     check_save_session = glade_xml_get_widget (gui, "check-save-session");
@@ -258,6 +265,10 @@ dialog_prefs (void)
 
     menu_mdi_mode = glade_xml_get_widget (gui, "menu-mdi-mode");
     menu_tab_pos  = glade_xml_get_widget (gui, "menu-tab-pos");
+
+    menupos = prefs.mdi_mode;
+    if (menupos == GNOME_MDI_DEFAULT_MODE)
+	    menupos = 3;
 
     gtk_option_menu_set_history (GTK_OPTION_MENU (menu_mdi_mode),
 				 prefs.mdi_mode);

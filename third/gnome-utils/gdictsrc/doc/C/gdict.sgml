@@ -131,7 +131,7 @@
       <para>
 	To get a definition of a word, type the word in the text bar
 	immediately below the toolbar, and click on the
-	<guibutton>Lookup</guibutton> button on the toolbar or the
+	<guibutton>Look up</guibutton> button on the toolbar or the
 	<keycode>Enter</keycode> or <keycode>Return</keycode> key.
       </para>
 
@@ -200,7 +200,7 @@
       <para>
 	In the <interface>spell checker window</interface>, you can also look up
 	a word once you've found a correct spelling. To do so, click on the
-	word, then click on <guibutton>Lookup Word</guibutton>. The
+	word, then click on <guibutton>Look up Word</guibutton>. The
 	definition will appear in the program's main window.
       </para>
 
@@ -229,7 +229,7 @@
 	      This menu contains:
 	      <menuchoice>
         
-		<guimenuitem>Lookup</guimenuitem>
+		<guimenuitem>Look up</guimenuitem>
 	      </menuchoice> which looks up a word,
 	      <menuchoice>
 		

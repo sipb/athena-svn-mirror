@@ -1,4 +1,4 @@
-/* $Id: dict.c,v 1.1.1.1 2001-05-02 20:45:08 ghudson Exp $ */
+/* $Id: dict.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*
@@ -16,6 +16,8 @@
 #  include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -244,7 +246,7 @@ static void data_notify_match (dict_context_t *context, char *line)
         break;
         
     case S_DATA:
-        if (!strcmp (line, ".\n")) {
+        if (line != NULL && strcmp (line, ".\n") == 0) {
             command->state = S_STATUS;
         }
         else {
@@ -732,7 +734,7 @@ int dict_connect (dict_context_t *context)
     if (fcntl (sock_fd, F_SETFL, old_flags | O_NONBLOCK) == -1)
 	return -1;
     
-    if (connect(sock_fd, &context->sockaddr, sizeof(context->sockaddr)) != 0
+    if (connect(sock_fd, (struct sockaddr*)&context->sockaddr, sizeof(context->sockaddr)) != 0
 	&& errno != EINPROGRESS)
 	return -1;
     

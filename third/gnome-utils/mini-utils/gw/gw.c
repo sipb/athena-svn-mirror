@@ -65,7 +65,6 @@ static void popup_about(void);
 
 static gint delete_event_cb(GtkWidget * w, gpointer data);
 static void about_cb(GtkWidget * w, gpointer data);
-static void save_cb(GtkWidget * w, gpointer data);
 
 static void preferences_cb(GtkWidget *w, gpointer data);
 
@@ -86,6 +85,7 @@ static void clist_unselected_cb(GtkCList * clist, gint row,
 static void name_changed_cb(GtkEntry * entry, GtkCList * clist);
 static void command_changed_cb(GtkEntry * entry, GtkCList * clist);
 static void apply_prefs_cb(GnomePropertyBox * pb, gint page, GtkCList * data);
+static void help_prefs_cb(GnomePropertyBox * pb, gint page);
 static void add_defaults_cb(GtkButton * button, GtkCList * clist);
 
 static void load_actions(void); 
@@ -172,12 +172,6 @@ static GnomeUIInfo help_menu[] = {
 };
 
 static GnomeUIInfo file_menu[] = {
-	{GNOME_APP_UI_ITEM, 
-		N_("_Save..."), N_("Write information to disk"), 
-		save_cb, NULL, NULL,
-		GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE, GNOME_KEY_NAME_SAVE_AS, 
-		GNOME_KEY_MOD_SAVE_AS, NULL },
-	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_MENU_EXIT_ITEM(delete_event_cb,NULL),
 	GNOMEUIINFO_END
 };
@@ -468,11 +462,6 @@ static void about_cb(GtkWidget * w, gpointer data)
   popup_about();
 }
 
-static void save_cb(GtkWidget * w, gpointer data)
-{
-  g_warning(_("Save not implemented yet\n"));
-}
-
 static void preferences_cb(GtkWidget *w, gpointer data)
 {
   static GtkWidget *pb = NULL;
@@ -626,6 +615,9 @@ static void preferences_cb(GtkWidget *w, gpointer data)
   gtk_signal_connect(GTK_OBJECT(pb), "destroy",
 		     GTK_SIGNAL_FUNC(gtk_widget_destroyed), &pb);
 
+  gtk_signal_connect(GTK_OBJECT(pb), "help",
+		     GTK_SIGNAL_FUNC(help_prefs_cb), &pb);
+
   gtk_signal_connect_object(GTK_OBJECT(name_entry), "changed",
                             GTK_SIGNAL_FUNC(gnome_property_box_changed),
                             GTK_OBJECT(pb));
@@ -716,6 +708,10 @@ static void clist_selected_cb(GtkCList * clist, gint row,
   GtkEntry * name_entry, * command_entry;
   gchar * name, * command;
 
+  /* clist is evil */
+  if (row >= clist->rows)
+	  return;
+
   name_entry = gtk_object_get_data(GTK_OBJECT(clist), 
                                    NAME_ENTRY_KEY);
   command_entry = gtk_object_get_data(GTK_OBJECT(clist), 
@@ -749,6 +745,10 @@ static void name_changed_cb(GtkEntry * entry, GtkCList * clist)
   gchar * name;
   gint row;
 
+  /* no selection */
+  if (clist->selection == NULL)
+	  return;
+
   name = gtk_entry_get_text(entry);
 
   row = GPOINTER_TO_INT(clist->selection->data);
@@ -760,6 +760,10 @@ static void command_changed_cb(GtkEntry * entry, GtkCList * clist)
 {
   gchar * command;
   gint row;
+
+  /* no selection */
+  if (clist->selection == NULL)
+	  return;
 
   command = gtk_entry_get_text(entry);
   
@@ -806,6 +810,13 @@ static void apply_prefs_cb(GnomePropertyBox * pb, gint page, GtkCList * clist)
   save_actions();
   make_actions_popup();
 }
+
+void
+help_prefs_cb (GnomePropertyBox *property_box, gint page_num)
+{
+  GnomeHelpMenuEntry help_entry_prefs = { "gw", "prefs.html" };
+  gnome_help_display ( NULL, &help_entry_prefs);
+}      
 
 /*********************************************
   Non-GUI

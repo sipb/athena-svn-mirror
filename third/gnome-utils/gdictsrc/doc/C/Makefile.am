@@ -3,8 +3,9 @@ figs = \
 	figures/gdict-spell.png \
 	figures/gdictmain.png
 
-app = gdict
+docname = gdict
 lang = C
-omffiles=gdict-C.omf
-include $(top_srcdir)/app-docs.make
+omffile = gdict-C.omf
+sgml_ents =
+include $(top_srcdir)/sgmldocs.make
 dist-hook: app-dist-hook

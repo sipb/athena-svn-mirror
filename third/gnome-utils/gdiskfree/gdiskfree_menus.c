@@ -1,5 +1,5 @@
 /* -*- Mode: C -*-
- * $Id: gdiskfree_menus.c,v 1.1.1.1 2001-05-02 20:43:48 ghudson Exp $
+ * $Id: gdiskfree_menus.c,v 1.1.1.2 2002-03-25 21:57:30 ghudson Exp $
  *
  * GDiskFree -- A disk free space toy (df on steriods).
  * Copyright 1998,1999 Gregory McLean
@@ -104,7 +104,7 @@ about_cb (GtkWidget *widget, gpointer data)
 	"And others I'm sure I forgot.",
 	NULL
       };
-      gchar *logo = gnome_unconditional_pixmap_file ("gnome-diskfree.png");
+      gchar *logo = gnome_unconditional_pixmap_file ("gdiskfree-splash.png");
       dialog = gnome_about_new (_("GDiskFree"), VERSION, 
 				"Copyright 1998, 1999, 2000 Gregory McLean",
 				(const gchar **)authors,

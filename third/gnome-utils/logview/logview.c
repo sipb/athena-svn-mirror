@@ -23,12 +23,11 @@
 
 
 #include <config.h>
+#include <gnome.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
-#include "gtk/gtk.h"
 #include "logview.h"
-#include <gnome.h>
 #include <libgnomeui/gnome-window-icon.h>
 
 /*
@@ -39,10 +38,10 @@
 
 void repaint (GtkWidget * canvas, GdkRectangle * area);
 void CreateMainWin (void);
-void log_repaint (GtkWidget * canvas, GdkRectangle * area);
-void PointerMoved (GtkWidget * canvas, GdkEventMotion * event);
-void HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key);
-void handle_log_mouse_button (GtkWidget * win, GdkEventButton *event);
+gboolean log_repaint (GtkWidget * canvas, GdkRectangle * area);
+gboolean PointerMoved (GtkWidget * canvas, GdkEventMotion * event);
+gboolean HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key);
+gboolean handle_log_mouse_button (GtkWidget * win, GdkEventButton *event);
 void ExitProg (GtkWidget * widget, gpointer user_data);
 void LoadLogMenu (GtkWidget * widget, gpointer user_data);
 void CloseLogMenu (GtkWidget * widget, gpointer user_data);
@@ -58,7 +57,7 @@ void FileSelectCancel (GtkWidget * w, GtkFileSelection * fs);
 void FileSelectOk (GtkWidget * w, GtkFileSelection * fs);
 void MainWinScrolled (GtkAdjustment *adjustment, GtkRange *);
 void CanvasResized (GtkWidget *widget, GtkAllocation *allocation);
-void ScrollWin (GtkRange *range, gpointer event);
+gboolean ScrollWin (GtkRange *range, gpointer event);
 void LogInfo (GtkWidget * widget, gpointer user_data);
 void UpdateStatusArea (void);
 void set_scrollbar_size (int);
@@ -83,38 +82,38 @@ GtkWidget *create_menu (char *item[], int n);
 
 
 GnomeUIInfo file_menu[] = {
-        {GNOME_APP_UI_ITEM, N_("Open log...            "), 
+        {GNOME_APP_UI_ITEM, N_("Open log..."), 
 	 N_("Open log"), LoadLogMenu, NULL, NULL,
          GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_OPEN, 0, 0, NULL},
-        {GNOME_APP_UI_ITEM, N_("Export log...          "), 
+        {GNOME_APP_UI_ITEM, N_("Export log..."), 
 	 N_("Export log"), StubCall, NULL, NULL,
          GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE_AS, 0, 0, NULL},
-        {GNOME_APP_UI_ITEM, N_("Close log              "), 
+        {GNOME_APP_UI_ITEM, N_("Close log"), 
 	 N_("Close log"), CloseLogMenu, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 0, 0, NULL},
-        {GNOME_APP_UI_ITEM, N_("Switch log             "), 
+        {GNOME_APP_UI_ITEM, N_("Switch log"), 
 	 N_("Switch log"), change_log_menu, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 0, 0, NULL},
-        {GNOME_APP_UI_ITEM, N_("Monitor..              "), 
+        {GNOME_APP_UI_ITEM, N_("Monitor..."), 
 	 N_("Monitor log"), MonitorMenu, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 0, 0, NULL},
-        {GNOME_APP_UI_ITEM, N_("Exit                   "), 
+        {GNOME_APP_UI_ITEM, N_("Exit"), 
 	 N_("Exit program"), ExitProg, NULL, NULL,
          GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT, 'E', GDK_CONTROL_MASK, NULL},
         {GNOME_APP_UI_ENDOFINFO, NULL, NULL, NULL}
 };
 
 GnomeUIInfo view_menu[] = {
-        {GNOME_APP_UI_ITEM, N_("Calendar                "), 
+        {GNOME_APP_UI_ITEM, N_("Calendar"), 
 	 N_("Show calendar log"), CalendarMenu, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 'C', GDK_CONTROL_MASK, NULL},
-        {GNOME_APP_UI_ITEM, N_("Log stats               "), 
+        {GNOME_APP_UI_ITEM, N_("Log stats"), 
 	 N_("Show log stats"), LogInfo, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 'I', GDK_CONTROL_MASK, NULL},
-        {GNOME_APP_UI_ITEM, N_("Zoom                    "), 
+        {GNOME_APP_UI_ITEM, N_("Zoom"), 
 	 N_("Show line info"), create_zoom_view, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 'Z', GDK_CONTROL_MASK, NULL},
-        {GNOME_APP_UI_ITEM, N_("Preferences...          "), 
+        {GNOME_APP_UI_ITEM, N_("Preferences..."), 
 	 N_("Show user preferences"), UserPrefsDialog, NULL, NULL,
          GNOME_APP_PIXMAP_NONE, NULL, 'P', GDK_CONTROL_MASK, NULL},
         {GNOME_APP_UI_ENDOFINFO, NULL, NULL, NULL}
@@ -133,7 +132,8 @@ GnomeUIInfo filter_menu[] = {
 #endif
 
 GnomeUIInfo help_menu[] = {
-        {GNOME_APP_UI_ITEM, N_("About..                "), 
+	GNOMEUIINFO_HELP("logview"),
+        {GNOME_APP_UI_ITEM, N_("About..."), 
 	 N_("Info about logview"), AboutShowWindow,
          NULL, NULL,
          GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT, 0, 0, NULL},
@@ -158,13 +158,13 @@ GnomeUIInfo main_menu[] = {
 
 
 GtkWidget *app = NULL;
-GtkWidget *main_win_scrollbar;
-GtkLabel *filename_label, *date_label;
+GtkWidget *main_win_scrollbar = NULL;
+GtkLabel *filename_label = NULL, *date_label = NULL;
 
-GList *regexp_db, *descript_db, *actions_db;
-UserPrefsStruct *user_prefs;
-UserPrefsStruct user_prefs_struct;
-ConfigData *cfg;
+GList *regexp_db = NULL, *descript_db = NULL, *actions_db = NULL;
+UserPrefsStruct *user_prefs = NULL;
+UserPrefsStruct user_prefs_struct = {0};
+ConfigData *cfg = NULL;
 GtkWidget *open_file_dialog = NULL;
 
 extern GdkGC *gc;
@@ -253,8 +253,8 @@ void
 CreateMainWin ()
 {
    GtkWidget *canvas;
-   GtkWidget *w, *box, *hbox, *hbox2;
-   GtkWidget *frame, *padding;
+   GtkWidget *w, *box, *table, *hbox2;
+   GtkWidget *padding;
    GtkLabel *label;
    GtkObject *adj;
    GtkAllocation req_size;
@@ -289,40 +289,44 @@ CreateMainWin ()
    gtk_widget_set_state (filter_menu[1].widget, GTK_STATE_INSENSITIVE);
 #endif
 
-   /* Create main canvas and scroll bar */
-   frame = gtk_frame_new (NULL);
-   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
-   gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
-   gtk_box_pack_start (GTK_BOX (box), frame, TRUE, TRUE, 0);
-   gtk_widget_set_style (frame, cfg->main_style);
-   gtk_widget_show (frame);
+   /* Create main canvas and scroll bars */
+   table = gtk_table_new (2, 2, FALSE);
+   gtk_widget_show (table);
 
-
-   hbox = gtk_hbox_new (FALSE, 0);
-
-   w = gtk_scrolled_window_new (NULL, NULL);
-   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (w),
-				   GTK_POLICY_AUTOMATIC, 
-				   GTK_POLICY_AUTOMATIC);
+   w = gtk_viewport_new (NULL, NULL);
+   gtk_widget_set_usize (w, LOG_CANVAS_W, 0); 
    gtk_widget_show (w);
                
    canvas = gtk_drawing_area_new ();
    /*gtk_drawing_area_size (GTK_DRAWING_AREA (canvas), 2*LOG_CANVAS_W, LOG_CANVAS_H); */
-   gtk_drawing_area_size (GTK_DRAWING_AREA (canvas), 2*LOG_CANVAS_W, 10); 
+   gtk_drawing_area_size (GTK_DRAWING_AREA (canvas), 2*LOG_CANVAS_W,
+			  LOG_CANVAS_H); 
    /*gtk_widget_set_usize ( GTK_WIDGET (canvas), LOG_CANVAS_W, LOG_CANVAS_H);*/
-   gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (w), canvas);
-   gtk_box_pack_start (GTK_BOX(hbox), w, TRUE, TRUE, 0);
+   gtk_container_add (GTK_CONTAINER (w), canvas);
+   gtk_table_attach (GTK_TABLE (table), w, 0, 1, 0, 1,
+		     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+   adj = (GtkObject *)gtk_viewport_get_hadjustment (GTK_VIEWPORT (w));
+   w = gtk_hscrollbar_new (GTK_ADJUSTMENT (adj));
+   gtk_widget_show (w);
+   gtk_table_attach (GTK_TABLE (table), w, 0, 1, 1, 2,
+		     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		     (GtkAttachOptions) (0), 0, 0);
 
    if (curlog != NULL)
-     adj = gtk_adjustment_new ( curlog->ln, 0.0, curlog->lstats.numlines+LINES_P_PAGE, 
-				1.0, 10.0, (float) 1);
+     adj = gtk_adjustment_new ( curlog->ln, 0.0,
+				curlog->lstats.numlines,
+				1.0, 10.0, (float) LINES_P_PAGE);
    else
-     adj = gtk_adjustment_new (100.0, 0.0, 101.0, 1, 10, LINES_P_PAGE);
+     adj = gtk_adjustment_new (100.0, 0.0, 101.0, 1, 10, 101.0);
 
    main_win_scrollbar = (GtkWidget *)gtk_vscrollbar_new (GTK_ADJUSTMENT(adj));
    gtk_range_set_update_policy (GTK_RANGE (main_win_scrollbar), GTK_UPDATE_CONTINUOUS);
 
-   gtk_box_pack_start (GTK_BOX(hbox), main_win_scrollbar, FALSE, FALSE, 0);
+   gtk_table_attach (GTK_TABLE (table), main_win_scrollbar, 1, 2, 0, 1,
+		     (GtkAttachOptions) (0),
+		     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
    gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
 		       (GtkSignalFunc) MainWinScrolled,
 		       (gpointer) main_win_scrollbar);       
@@ -332,9 +336,7 @@ CreateMainWin ()
    gtk_widget_show (main_win_scrollbar);  
 
 
-   gtk_container_add (GTK_CONTAINER (frame), hbox);
-
-
+   gtk_box_pack_start (GTK_BOX (box), table, TRUE, TRUE, 0);
    
    /*  Install event handlers */
    gtk_signal_connect (GTK_OBJECT (canvas), "expose_event",
@@ -395,7 +397,6 @@ CreateMainWin ()
    gtk_box_pack_start (GTK_BOX (box), hbox2, FALSE, FALSE, 0);
 
    gtk_widget_show (box);
-   gtk_widget_show (hbox);
    gtk_widget_show (app);
 
 }
@@ -408,12 +409,13 @@ CreateMainWin ()
 void
 CanvasResized (GtkWidget *widget, GtkAllocation *allocation)
 {
-  if (allocation)
-    printf ("Main screen resized!\n New size = (%d,%d)\n", 
-	    allocation->width, allocation->height);
-  else
-    printf ("Main screen resized!\nNo allocation :(\n");
-
+  DB (
+      if (allocation)
+      	printf ("Main screen resized!\n New size = (%d,%d)\n", 
+		allocation->width, allocation->height);
+      else
+        printf ("Main screen resized!\nNo allocation :(\n");
+	);
 }
 
 /* ----------------------------------------------------------------------
@@ -421,14 +423,20 @@ CanvasResized (GtkWidget *widget, GtkAllocation *allocation)
    DESCRIPTION:   When the mouse button is released we scroll the window.
    ---------------------------------------------------------------------- */
 
-void
+gboolean
 ScrollWin (GtkRange *range, gpointer event)
 {
   int newln;
   
   newln = (int) range->adjustment->value;
-  if (newln >= curlog->lstats.numlines || newln == 0)
-    return;
+  if (curlog == NULL ||
+      newln >= curlog->lstats.numlines ||
+      newln < 0)
+    return FALSE;
+
+  /* evil, yes */
+  if (newln == 0)
+	  newln = 1;
   
   /* Goto mark */
   MoveToMark (curlog);
@@ -438,8 +446,8 @@ ScrollWin (GtkRange *range, gpointer event)
   
   /* Repaint screen */
   log_repaint(NULL, NULL);
-     
-  return;
+
+  return FALSE;
 }
 
 /* ----------------------------------------------------------------------
@@ -455,8 +463,13 @@ MainWinScrolled (GtkAdjustment *adjustment, GtkRange *range)
 
   newln = (int) range->adjustment->value;
 
- if (newln == 0)
+ if (newln < 0 ||
+     curlog == NULL)
    return;
+
+ /* evil, yes */
+ if (newln == 0)
+	 newln = 1;
 
  if (newln >= curlog->lstats.numlines)
    newln = curlog->lstats.numlines - 1;
@@ -508,8 +521,6 @@ MainWinScrolled (GtkAdjustment *adjustment, GtkRange *range)
 
   if (howmuch != 0)
     log_repaint(NULL, NULL);
-  
-  return;
 }
 
 
@@ -522,15 +533,18 @@ void set_scrollbar_size (int num_lines)
 {
   GtkObject *adj;
 
-
   /*adj = gtk_adjustment_new ( curlog->ln, 0.0, num_lines+LINES_P_PAGE, 1.0, 10.0, (float) LINES_P_PAGE);*/
-  adj = gtk_adjustment_new ( curlog->ln, 0.0, num_lines+LINES_P_PAGE, 1.0, 10.0, (float) 1);
-  gtk_range_set_adjustment ( GTK_RANGE (main_win_scrollbar), GTK_ADJUSTMENT (adj) );
+  adj = gtk_adjustment_new (-1, 0.0, num_lines,
+			    1.0, 10.0, (float) LINES_P_PAGE);
+  gtk_range_set_adjustment (GTK_RANGE (main_win_scrollbar),
+			    GTK_ADJUSTMENT (adj));
   gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
 		      (GtkSignalFunc) MainWinScrolled,
 		      (gpointer) main_win_scrollbar);       
   gtk_adjustment_set_value (GTK_ADJUSTMENT(adj), curlog->ln);
   gtk_widget_realize (main_win_scrollbar);
+
+  gtk_widget_queue_resize (main_win_scrollbar);
 }
 
 /* ----------------------------------------------------------------------
@@ -616,8 +630,6 @@ FileSelectOk (GtkWidget * w, GtkFileSelection * fs)
 	 loglist[numlogs] = tl;
 	 numlogs++;
 	 curlognum = numlogs - 1;
-	 /* Set main scrollbar */
-	 set_scrollbar_size (curlog->lstats.numlines);
 
 	 /* Clear window */
 	 log_repaint (NULL, NULL);
@@ -626,7 +638,10 @@ FileSelectOk (GtkWidget * w, GtkFileSelection * fs)
 	 if (calendarvisible)
 	   init_calendar_data();
 	 UpdateStatusArea();
+
+	 /* Set main scrollbar */
 	 set_scrollbar_size (curlog->lstats.numlines);
+
 	 if (numlogs >= 2)
 	   gtk_widget_set_sensitive (file_menu[3].widget, TRUE);
       }
@@ -676,7 +691,7 @@ LoadLogMenu (GtkWidget * widget, gpointer user_data)
 			      GTK_OBJECT (filesel));
 
    gtk_signal_connect (GTK_OBJECT (filesel),
-		       "destroy", (GtkSignalFunc) gtk_widget_destroy,
+		       "destroy", (GtkSignalFunc) gtk_widget_destroyed,
 		       &open_file_dialog);
 
    gtk_widget_show (filesel);
@@ -724,79 +739,91 @@ CloseApp (void)
 void
 open_databases (void)
 {
-  char full_name[255];
-  int found;
+	char full_name[1024];
+	gboolean found;
 
-  /* Find regexp DB -----------------------------------------------------  */
-  found = FALSE;
-  if (cfg->regexp_db_path != NULL)
-    {
-      sprintf (full_name, "%s/logview-regexp.db", cfg->regexp_db_path);
-      fprintf (stderr, "Looking for database in [%s]\n", cfg->regexp_db_path);
-      if (access (full_name, R_OK) == 0) 
-	found = TRUE;
-    }
+	/* Find regexp DB -----------------------------------------------------  */
+	found = FALSE;
+	if (cfg->regexp_db_path != NULL) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/logview-regexp.db", cfg->regexp_db_path);
+		DB (fprintf (stderr, "Looking for database in [%s]\n", cfg->regexp_db_path));
+		if (access (full_name, R_OK) == 0)  {
+			found = TRUE;
+			read_regexp_db (full_name, &regexp_db);
+		}
+	}
 
-  strncpy (full_name, LOGVIEWINSTALLPREFIX, 200);
-  strncat (full_name, "share/logview/logview-regexp.db", 40);
-  if (access (full_name, R_OK) == 0)
-     {
-         found = TRUE;
-	 cfg->regexp_db_path = g_strdup (full_name);
-         read_regexp_db (full_name, &regexp_db);
-     }
-  else
-    regexp_db = NULL;
+	if ( ! found) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/share/logview/logview-regexp.db", LOGVIEWINSTALLPREFIX);
+		if (access (full_name, R_OK) == 0) {
+			found = TRUE;
+			g_free (cfg->regexp_db_path);
+			cfg->regexp_db_path = g_strdup (full_name);
+			read_regexp_db (full_name, &regexp_db);
+		}
+	}
 
-  /* Find description DB ------------------------------------------------  */
-  found = FALSE;
-  if (cfg->descript_db_path != NULL)
-    {
-      sprintf (full_name, "%s/logview-descript.db", cfg->descript_db_path);
-      fprintf (stderr, "Looking for database in [%s]\n", cfg->descript_db_path);
-      if (access (full_name, R_OK) == 0) 
-	found = TRUE;
-    }
+	/* Find description DB ------------------------------------------------  */
+	found = FALSE;
+	if (cfg->descript_db_path != NULL) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/logview-descript.db", cfg->descript_db_path);
+		DB (fprintf (stderr, "Looking for database in [%s]\n", cfg->descript_db_path));
+		if (access (full_name, R_OK) == 0) {
+			read_descript_db (full_name, &descript_db);
+			found = TRUE;
+		}
+	}
 
-  strncpy (full_name, LOGVIEWINSTALLPREFIX, 200);
-  strncat (full_name, "share/logview/logview-descript.db", 40);
-  if (access (full_name, R_OK) == 0)
-     {
-         found = TRUE;
-	 cfg->descript_db_path = g_strdup (full_name);
-         read_descript_db (full_name, &descript_db);
-     }
-  else
-    descript_db = NULL;
-
-
-  /* Find action DB ------------------------------------------------  */
-  found = FALSE;
-  if (cfg->action_db_path != NULL)
-    {
-      sprintf (full_name, "%s/logview-actions.db", cfg->action_db_path);
-      fprintf (stderr, "Looking for database in [%s]\n", cfg->action_db_path);
-      if (access (full_name, R_OK) == 0) 
-	found = TRUE;
-    }
+	if ( ! found) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/share/logview/logview-descript.db", LOGVIEWINSTALLPREFIX);
+		if (access (full_name, R_OK) == 0) {
+			found = TRUE;
+			g_free (cfg->descript_db_path);
+			cfg->descript_db_path = g_strdup (full_name);
+			read_descript_db (full_name, &descript_db);
+		}
+	}
 
 
-  strncpy (full_name, LOGVIEWINSTALLPREFIX, 200);
-  strncat (full_name, "share/logview/logview-actions.db", 40);
-  if (access (full_name, R_OK) == 0)
-     {
-         found = TRUE;
-	 cfg->action_db_path = g_strdup (full_name);
-         read_actions_db (full_name, &actions_db);
-     }
-  else
-    actions_db = NULL;
+	/* Find action DB ------------------------------------------------  */
+	found = FALSE;
+	g_snprintf (full_name, sizeof (full_name),
+		    "%s/.gnome/logview-actions.db", g_get_home_dir ());
+	DB (fprintf (stderr, "Looking for database in [%s/.gnome]\n",
+		     g_get_home_dir ()));
+	if (access (full_name, R_OK) == 0) {
+		found = TRUE;
+		read_actions_db (full_name, &actions_db);
+	}
+
+	if ( ! found && cfg->action_db_path != NULL) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/logview-actions.db", cfg->action_db_path);
+		DB (fprintf (stderr, "Looking for database in [%s]\n", cfg->action_db_path));
+		if (access (full_name, R_OK) == 0) {
+			found = TRUE;
+			read_actions_db (full_name, &actions_db);
+		}
+	}
 
 
-  /* If debugging then print DB */
-  print_db (regexp_db);
+	if ( ! found) {
+		g_snprintf (full_name, sizeof (full_name),
+			    "%s/share/logview/logview-actions.db", LOGVIEWINSTALLPREFIX);
+		if (access (full_name, R_OK) == 0) {
+			found = TRUE;
+			g_free (cfg->action_db_path);
+			cfg->action_db_path = g_strdup (full_name);
+			read_actions_db (full_name, &actions_db);
+		}
+	}
 
-  return;
+	/* If debugging then print DB */
+	DB (print_db (regexp_db));
 }
 
 /* ----------------------------------------------------------------------

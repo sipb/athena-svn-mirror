@@ -4,7 +4,7 @@
 >Criterios de búsqueda</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Herramienta de búsqueda de Gnome"
 HREF="index.html"><LINK
@@ -66,10 +66,12 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="CRITERIA"
+NAME="criteria"
 >Criterios de búsqueda</A
 ></H1
-><P
+>     
+
+    <P
 >Además de las búsquedas simples de búsqueda descritas anteriormente, la <TT
 CLASS="APPLICATION"
 >herramienta de búsqueda de Gnome</TT
@@ -90,30 +92,35 @@ CLASS="APPLICATION"
 CLASS="EMPHASIS"
 >todos</I
 > los criterios especificados.
-Por ejemplo, <A
-HREF="criteria.html#SAMPLE"
->Figura 3</A
->  muestra una búsqueda de todos los ficheros con extensión
+Por ejemplo,   muestra una búsqueda de todos los ficheros con extensión
 <TT
 CLASS="FILENAME"
 >txt</TT
 > que fueron modificados durante los últimos 7 días y que
 contengan la palabra GNOME.
     </P
-><DIV
+>
+ 
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="SAMPLE"
+NAME="sample"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/gsearch.png"></P
-><P
+>
+    
+   <P
 ><B
 >Figura 3. Sección simple de búsqueda Gnome</B
 ></P
 ></DIV
-><P
+>
+
+    <P
 >Puede eliminar cualquier criterio de búsqueda previamente añadido pulsando
 el botón <B
 CLASS="GUIBUTTON"
@@ -125,72 +132,85 @@ CLASS="GUIBUTTON"
 >Activar</B
 > situada a su lado.
     </P
-><P
+>
+
+
+    <P
 > 
 A continuación se muestra una lista de todos los posibles criterios:
       <P
 ></P
 ><UL
-><LI
+>	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Nombre de fichero</I
->  &#8212; 
+>   
 Búsqueda por nombre de fichero. Como de costumbre, puede usar los comodines * y ? en la búsqueda.
 Recuerde también que los nombres en Unix dependen de las mayúsculas y minúsculas. 
 	</P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>          <P
 > <I
 CLASS="EMPHASIS"
 >No buscar en los subdirectorios</I
-> &#8212; 
+>  
 si esta opción esta activada, <TT
 CLASS="APPLICATION"
 >herramienta de búsqueda de Gnome</TT
 > no buscara ficheros en los subdirectorios del directorio de inicio.
            </P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Propietario del fichero</I
->  &#8212; 
+>   
 busca usando el nombre del usuario al que pertenecen los ficheros.
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Grupo propietario del fichero</I
->  &#8212; 
+>   
 busca usando el grupo al que pertenece el fichero.
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Tiempo de la ultima modificación</I
->  &#8212; 
+>   
 busca fichero modificados en los últimos N días (para se mas precisos, durante las
 N*24 horas).
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > <I
 CLASS="EMPHASIS"
 >No buscar en sistemas de ficheros montados</I
-> &#8212; 
+>  
 si esta opción esta activada, <TT
 CLASS="APPLICATION"
 >herramienta de búsqueda de Gnome</TT
@@ -217,35 +237,41 @@ CLASS="FILENAME"
 para excluir ficheros en disco removibles (Cd-Rom, disquetes) de la búsqueda.
 	  </P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > <I
 CLASS="EMPHASIS"
 >Ficheros vacíos</I
-> &#8212; 
+>  
 Este criterio lo cumplen los ficheros vacíos. Usados a menudo por los administradores
 de sistemas para el mantenimiento del sistema.
 	  </P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	  <I
 CLASS="EMPHASIS"
 >Dueños o grupos no validos</I
-> &#8212; 
+>  
 lo cumplen ficheros que pertenecen a usuarios o grupos desconocidos para el sistema. Esta opción es
 útil para buscar ficheros pertenecientes a usurarios eliminados del sistema. Usado a menudo por
 los administradores de sistemas para el mantenimiento del sistema.
 	</P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Excepciones en el nombre de los ficheros</I
-> &#8212;
+> 
 lo cumplen todos los ficheros a excepción de los indicados. Como anteriormente, puede
 usar comodines. Por ejemplo, si especifica en el campo <TT
 CLASS="FILENAME"
@@ -256,15 +282,18 @@ CLASS="APPLICATION"
 >
 excluirá de la búsqueda todos los ficheros que terminen con una tilde (~). 
 	  </P
-></LI
-><LI
+>
+	</LI
+>
+
+	<LI
 ><P
 > 
             <I
 CLASS="EMPHASIS"
 >Correspondencia de texto simple</I
 >
-	    &#8212; 
+	     
 lo cumplen todos los ficheros que <I
 CLASS="EMPHASIS"
 >contienen</I
@@ -274,12 +303,14 @@ ralentizar significativamente la búsqueda. Nota: no puede usar comodines en esta
 opción.
 	  </P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > <I
 CLASS="EMPHASIS"
 >Búsqueda por expresiones regulares</I
-> &#8212; 
+>  
 lo cumplen todos los ficheros que <I
 CLASS="EMPHASIS"
 >contienen</I
@@ -289,13 +320,15 @@ puede
 ralentizar significativamente la búsqueda.
 	  </P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Búsqueda por expresiones regulares extendidas</I
-> &#8212; 
+>  
 lo cumplen todos los ficheros que <I
 CLASS="EMPHASIS"
 >contienen</I
@@ -304,8 +337,11 @@ dado que esta opción requiere la lectura del contenido de cada fichero,
 puede 
 ralentizar significativamente la búsqueda.
           </P
-></LI
-></UL
+>
+	</LI
+>
+
+      </UL
 >
 
 
@@ -322,7 +358,8 @@ CLASS="APPLICATION"
 Los usuarios noveles encontraran probablemente muy complicado su uso, pero para los
 mas experimentados, las expresiones regulares resultan muy útiles.   
     </P
-></DIV
+>
+  </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

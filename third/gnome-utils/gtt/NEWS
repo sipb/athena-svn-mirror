@@ -1,4 +1,69 @@
 
+August 2001
+===========
+
+* Lots of Big, Brand-New Features:
+  -- Basic 'todo' list management has been added.  Projects can be 
+     ranked by urgency, importance, status.  Planned start, end and 
+     due dates can be specified, as well as an estimated sizing,
+     and a % complete value.
+  -- Sub-project support has been added.  New projects can be listed 
+     as sub-projects of other projects.  The time totals will show 
+     the total including sub-projects.  The Hierarchical tree can be 
+     expanded / collapsed to simplify viewing.  The tree can be 
+     re-arranged by dragging-n-dropping projects.
+  -- The 'focus row' now works.  The focus row is the one with a box
+     drawn around it... when editing the project properties, or viewing
+     the journal, its the 'focus row' that is the one that's used.
+     (In the past, all menu activities applied to the currently
+     running project.  Now, all menu actions apply to the 'focus row')
+  -- Arrow keys and carriage return now work in the main window.
+     Up/down keys can be used to move the "focus row" up & down.  
+     (The keyboard j & k also work).  The left/right arrow
+     keys expand/collapse a sub-project list.  Hitting return selects
+     the project.  
+  -- A journal showing explicit start and stop times is now maintained. 
+     Blocks of time can be annotated with memos.  The journal can be 
+     exported as an html page, or printed (OK, printer support not
+     yet finished).
+  -- Infrastructure for storing price & billing information has been
+     put into place.  This allows billing invoices to be generated.
+     Tasks can be marked as billable, non-billable, on-hold, or 
+     free-of-charge. Billing rates for regular, overtime, 
+     double-overtime or flat-fee can be set per task.
+     (Fancier-looking invoices still needed).
+  -- Auto-merge/cleanup of short intervals supported. Extremely short
+     intervals (the length is configurable) are automatically removed
+     from the log files.  Slightly longer but still short intervals
+     are automerged into nearby neighbors. Short gaps between intervals
+     are coalesced as well.  You can specify a time period of 0 seconds
+     to turn these features off.
+  -- The journal GUI is based on extended html pages.  If you know
+     html, then you can create customized report pages.
+     User-defined reports (contained in ghtml files) can be added to the
+     menus by typing in the filename into the 'new report' GUI dialog.
+     Typically, a 'user-defined report' is one with customized layout,
+     maybe a logo added, all-spiffed up & such.
+  -- An inactivity timeout has been implemented. If the keyboard
+     or mouse have been idle for more than some period of time, then 
+     the clock is stopped.
+  -- Scheme (guile) is used as an extension language, although scheme
+     support is currently limited to report generation.
+  -- The above features required an expanded way of storing data: and so
+     there is now a new XML file format that stores both project and 
+     journal data.
+  -- Export to GnuCash coming soon, I hope ...
+
+A very simple website for gtt is now up at 
+http://www.linas.org/linux/gtt/gtt.html
+
+  (This blast of new features by Linas Vepstas <linas@linas.org>)
+
+Cost of new features: 
+Before new features were added gtt was 4.0 KLOC of *.c and 0.4 KLOC *.h
+As of now (1.4.0.99) the size is       9.2 KLOC of *.c and 1.2 KLOC *.h
+
+
 Mon Aug 31 00:38:34 CEST 1998
 =============================
 

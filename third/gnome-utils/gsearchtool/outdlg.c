@@ -48,13 +48,13 @@ save_ok(GtkWidget *widget, GtkFileSelection *fsel)
 	if(!fname ||
 	   !save_file(fname)) {
 		GtkWidget *dlg;
-		dlg = gnome_error_dialog_parented("Cannot save file",
+		dlg = gnome_error_dialog_parented(_("Cannot save file"),
 						  GTK_WINDOW(fsel));
 		gtk_window_set_modal(GTK_WINDOW(dlg), TRUE);
 	} else {
-		gtk_widget_destroy(GTK_WIDGET(fsel));
 		g_free(filename);
 		filename = g_strdup(fname);
+		gtk_widget_destroy(GTK_WIDGET(fsel));
 	}
 }
 

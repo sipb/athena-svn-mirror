@@ -22,9 +22,15 @@
 #ifndef _ASCII_SELECT_C_
 #define _ASCII_SELECT_C_
 
-#include <asciiselect.h>
-#include <interface.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "asciiselect.h"
+
 #include <gnome.h>
+#include "interface.h"
+
 
 static gboolean updating = FALSE;
 
@@ -43,16 +49,8 @@ cb_ascii_select_clicked (GnomeDialog *dialog, gint arg1, gpointer user_data)
               strlen (text), &GTK_EDITABLE(mainapp->entry)->current_pos);
         else
             gtk_entry_append_text (GTK_ENTRY (mainapp->entry), text);
-        gtk_widget_destroy (GTK_WIDGET (dialog));
         break;
     case 1:
-        if (mainapp->insert_at_end == FALSE)
-            gtk_editable_insert_text (GTK_EDITABLE (mainapp->entry), text,
-              strlen (text), &GTK_EDITABLE(mainapp->entry)->current_pos);
-        else
-            gtk_entry_append_text (GTK_ENTRY (mainapp->entry), text);
-        break;
-    case 2:
         gtk_widget_destroy (GTK_WIDGET (dialog));
         break;
     }
@@ -74,25 +72,6 @@ cb_ascii_select_entry_changed (GtkEditable *edit, gpointer user_data)
     updating = FALSE;
 }
 
-
-static void
-cb_ascii_select_entry_on_key_press (GtkWidget *widget, GdkEventKey *event,
-  gpointer user_data)
-{
-    if (event->keyval == GDK_Return)
-    {
-        gchar *text;
-
-        text = gtk_entry_get_text (GTK_ENTRY (user_data));
-        if (mainapp->insert_at_end == FALSE)
-            gtk_editable_insert_text (GTK_EDITABLE (mainapp->entry), text,
-              strlen (text), &GTK_EDITABLE(mainapp->entry)->current_pos);
-        else
-            gtk_entry_append_text (GTK_ENTRY (mainapp->entry), text);
-    }
-}
-
-
 static void
 cb_ascii_select_spin_changed (GtkEditable *edit, gpointer user_data)
 {
@@ -105,7 +84,6 @@ cb_ascii_select_spin_changed (GtkEditable *edit, gpointer user_data)
     updating = FALSE;
 }
 
-
 static void
 ascii_select_init (AsciiSelect *obj)
 {
@@ -113,15 +91,18 @@ ascii_select_init (AsciiSelect *obj)
     GtkWidget *entry;
     GtkStyle *style;
     GtkObject *adj;
+    GdkFont *font;
 
-    obj->window = gnome_dialog_new (_("Select ASCII Character"),
-      GNOME_STOCK_BUTTON_OK, _("Insert"), GNOME_STOCK_BUTTON_CLOSE, NULL);
-    gnome_dialog_set_default (GNOME_DIALOG (obj->window), 1);
+    obj->window = gnome_dialog_new (_("Select Character"),
+				    _("Insert"),
+				    GNOME_STOCK_BUTTON_CLOSE,
+				    NULL);
+    gnome_dialog_set_default (GNOME_DIALOG (obj->window), 0);
     gtk_signal_connect_object (GTK_OBJECT (obj->window), "destroy",
       GTK_SIGNAL_FUNC (ascii_select_destroy), GTK_OBJECT (obj));
 
     gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (obj->window)->vbox),
-      gtk_label_new (_("ASCII code:")), FALSE, FALSE, 0);
+      gtk_label_new (_("Character code:")), FALSE, FALSE, 0);
 
     adj = gtk_adjustment_new (65, 0, 255, 1, 10, 10);
     spin = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
@@ -137,9 +118,12 @@ ascii_select_init (AsciiSelect *obj)
     gtk_entry_set_text (GTK_ENTRY (entry), "A");
     gtk_entry_set_max_length (GTK_ENTRY (entry), 1);
     style = gtk_style_copy (gtk_widget_get_style (entry));
-    style->font = gdk_fontset_load (
-      "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+
+    font = gdk_fontset_load (
+      _("-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*")
     );
+    if (font != NULL)
+	    style->font = font;
     gtk_widget_set_style (entry, style);
     gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (obj->window)->vbox),
       entry, TRUE, TRUE, 0);
@@ -147,12 +131,16 @@ ascii_select_init (AsciiSelect *obj)
       GTK_SIGNAL_FUNC (cb_ascii_select_spin_changed), entry);
     gtk_signal_connect (GTK_OBJECT (entry), "changed",
       GTK_SIGNAL_FUNC (cb_ascii_select_entry_changed), spin);
+    gtk_signal_connect_object (GTK_OBJECT (obj->window), "clicked",
+			       GTK_SIGNAL_FUNC (gtk_spin_button_update),
+			       GTK_OBJECT (spin));
     gtk_signal_connect (GTK_OBJECT (obj->window), "clicked",
       GTK_SIGNAL_FUNC (cb_ascii_select_clicked), entry);
-    gtk_signal_connect (GTK_OBJECT (entry), "key_press_event",
-      GTK_SIGNAL_FUNC (cb_ascii_select_entry_on_key_press), entry);
-    gtk_signal_connect (GTK_OBJECT (spin), "key_press_event",
-      GTK_SIGNAL_FUNC (cb_ascii_select_entry_on_key_press), entry);
+
+    gnome_dialog_editable_enters (GNOME_DIALOG (obj->window),
+				  GTK_EDITABLE (entry));
+    gnome_dialog_editable_enters (GNOME_DIALOG (obj->window),
+				  GTK_EDITABLE (spin));
 
     gtk_widget_push_style (style);
     gtk_widget_pop_style ();
@@ -201,5 +189,5 @@ ascii_select_destroy (AsciiSelect *obj)
 }
 
 
-#endif _ASCII_SELECT_C_
+#endif /* _ASCII_SELECT_C_ */
 

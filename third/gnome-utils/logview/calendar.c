@@ -19,14 +19,11 @@
     ---------------------------------------------------------------------- */
 
 
-#include <time.h>
 #include <config.h>
+#include <time.h>
 #include <gnome.h>
 #include "gtk/gtk.h"
 #include "logview.h"
-#include "close.xpm"
-#include "right.xpm"
-#include "left.xpm"
 
 #define CALENDAR_WIDTH           180
 #define CALENDAR_HEIGHT          150

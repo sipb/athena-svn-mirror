@@ -18,53 +18,71 @@
 
 #include <config.h>
 #include <gnome.h>
-
-#include "gtt.h"
-
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "cur-proj.h"
+#include "log.h"
+#include "prefs.h"
+#include "proj.h"
+
+#define CAN_LOG ((config_logfile_name!=NULL)&&(config_logfile_use))
 
 
-static int log_write(time_t t, char *s)
+static gboolean 
+log_write(time_t t, const char *s)
 {
 	FILE *f;
-	char date[20];
+	char date[256];
 	char *filename;
 
-	if (!config_logfile_name) return 1;
-	g_return_val_if_fail(s != NULL, 0);
+	g_return_val_if_fail (s != NULL, FALSE);
+
+	if ( ! CAN_LOG)
+		return TRUE;
+
 	if ((config_logfile_name[0] == '~') &&
 	    (config_logfile_name[1] == '/') &&
 	    (config_logfile_name[2] != 0)) {
 		filename = gnome_util_prepend_user_home(&config_logfile_name[2]);
 		f = fopen(filename, "at");
-		g_free(filename);
+		g_free (filename);
 	} else {
-		f = fopen(config_logfile_name, "at");
+		f = fopen (config_logfile_name, "at");
 	}
-	g_return_val_if_fail(f != NULL, 0);
-	if (t == -1) t = time(NULL);
-	strftime(date, 20, "%b %d %H:%M:%S", localtime(&t));
-	fprintf(f, "%s %s\n", date, s);
-	fclose(f);
-	return 1;
+
+	if (f == NULL) {
+		g_warning (_("Cannot open logfile %s for append"),
+			   config_logfile_name);
+		return FALSE;
+	}
+
+	if (t < 0)
+		t = time(NULL);
+
+	/* Translators: Format to use in the gtt logfile */
+	if (strftime (date, sizeof (date), _("%b %d %H:%M:%S"),
+		      localtime(&t)) <= 0)
+		strcpy (date, "???");
+	fprintf (f, "%s %s\n", date, s);
+	fclose (f);
+	return TRUE;
 }
 
 
-static char *
-build_log_entry(char *format, project *proj)
+char *
+printf_project(const char *format, GttProject *proj)
 {
 	GString *str;
 	char tmp[256];
-	char *p;
+	const char *p;
+	char *ret;
+	int sss;
 
-	if (!format)
-		format = config_logfile_str;
-	if (!proj)
-		return g_strdup(_("program started"));
-	if ((!format) || (!format[0]))
-		return g_strdup(proj->title);
-	str = g_string_new(NULL);
+	if (!format) return NULL;
+	if (!proj) return g_strdup (format);
+
+	str = g_string_new (NULL);
 	for (p = format; *p; p++) {
 		if (*p != '%') {
 			g_string_append_c(str, *p);
@@ -72,44 +90,60 @@ build_log_entry(char *format, project *proj)
 			p++;
 			switch (*p) {
 			case 't':
-				g_string_append(str, proj->title);
+				g_string_append(str, gtt_project_get_title(proj));
 				break;
-			case 'd':
-				if (proj->desc)
-					g_string_append(str, proj->desc);
+			case 'd': 
+			{
+				const char * desc = gtt_project_get_desc(proj);
+				if (desc && desc[0])
+					g_string_append(str, desc);
 				else
 					g_string_append(str,
 							_("no description"));
 				break;
-			case 'T':
-				sprintf(tmp, "%d:%02d:%02d", proj->secs / 3600,
-					(proj->secs / 60) % 60,
-					proj->secs % 60);
+			}
+			case 'T': 
+				sss = gtt_project_total_secs_ever(proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%d:%02d:%02d", sss / 3600,
+					   (sss / 60) % 60,
+					   sss % 60);
 				g_string_append(str, tmp);
 				break;
 			case 'm':
-				sprintf(tmp, "%d", proj->day_secs / 60);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%d", sss / 60);
 				g_string_append(str, tmp);
 				break;
 			case 'M':
-				sprintf(tmp, "%02d",
-					(proj->day_secs / 60) % 60);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp), "%02d",
+					   (sss / 60) % 60);
 				g_string_append(str, tmp);
 				break;
 			case 's':
-				sprintf(tmp, "%d", proj->day_secs);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%d", sss);
 				g_string_append(str, tmp);
 				break;
 			case 'S':
-				sprintf(tmp, "%02d", proj->day_secs % 60);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%02d", sss % 60);
 				g_string_append(str, tmp);
 				break;
 			case 'h':
-				sprintf(tmp, "%d", proj->day_secs / 3600);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%d", sss / 3600);
 				g_string_append(str, tmp);
 				break;
 			case 'H':
-				sprintf(tmp, "%02d", proj->day_secs / 3600);
+				sss = gtt_project_total_secs_day (proj);
+				g_snprintf(tmp, sizeof (tmp),
+					   "%02d", sss / 3600);
 				g_string_append(str, tmp);
 				break;
 			default:
@@ -118,111 +152,118 @@ build_log_entry(char *format, project *proj)
 			}
 		}
 	}
-	p = str->str;
-	g_string_free(str, 0);
-	return p;
+	ret = str->str;
+	g_string_free (str, FALSE);
+	return ret;
 }
 
 
+static char *
+build_log_entry(const char *format, GttProject *proj)
+{
+	if (!format || !format[0])
+		format = config_logfile_start;
+	if (!proj)
+		return g_strdup(_("program started"));
 
-static char *last_msg = NULL;
-static char *last_logged_msg = NULL;
-static time_t last_time = -1;
+	return printf_project (format, proj);
+}
 
-static void log_last(time_t t, project *proj)
+static void
+do_log_proj (time_t t, GttProject *proj, gboolean start)
 {
 	char *s;
-	static project *last_proj = NULL;
 
-	if (last_msg) {
-		s = last_msg;
-	} else {
-		/* s = g_strdup(_("stopped project")); */
-		s = build_log_entry(config_logfile_stop, last_proj);
+	if (start) {
+		s = build_log_entry (config_logfile_start, proj);
+	} else /*stop*/ {
+		s = build_log_entry (config_logfile_stop, proj);
 	}
-	if (proj)
-		last_proj = proj;
-	if ((!last_logged_msg) || (0 != strcmp(s, last_logged_msg))) {
-		if (!log_write(last_time, s)) {
-			g_warning("couldn't write to logfile `%s'.\n",
-				  config_logfile_name?config_logfile_name:"");
-		}
-	}
-	if (last_logged_msg) g_free(last_logged_msg);
-	last_logged_msg = s;
-	if (proj) last_msg = build_log_entry(NULL, proj);
-	else last_msg = NULL;
-	last_time = t;
+
+	log_write (t, s);
 }
 
-static void log_proj_intern(project *proj, int log_if_equal)
+static void
+log_proj_intern (GttProject *proj, gboolean log_if_equal)
 {
+	static GttProject *last_proj = NULL;
+	static gboolean logged_last = FALSE;
+	static time_t logged_last_time = 0;
 	time_t t;
-	char *new_msg;
 
-	if ((log_if_equal) && (last_logged_msg)) {
-		g_free(last_logged_msg);
-		last_logged_msg = NULL;
-	}
-	if ((!config_logfile_name) || (!config_logfile_use)) {
-		log_last(-1, NULL);
+	if ( ! CAN_LOG)
+		return;
+
+	/* used for flushing, forcing a start entry, used at end of day */
+	if (log_if_equal &&
+	    last_proj == proj &&
+	    logged_last) {
+		do_log_proj (-1, proj, TRUE /*start*/);
 		return;
 	}
-	if (config_logfile_min_secs == 0) {
-		log_last(-1, proj);
-		log_last(-1, proj);
-	}
-	t = time(NULL);
-	if ((last_time != -1) &&
-	    ((long int)(t - last_time) < config_logfile_min_secs)) {
-		new_msg = build_log_entry(NULL, proj);
-		if (proj == NULL) {
-			if (last_msg) last_time = t;
-		} else {
-			if ((!last_msg) ||
-			    (0 != strcmp(last_msg, new_msg)))
-				last_time = t;
-		}
-		if (last_msg) g_free(last_msg);
-		last_msg = (proj) ? g_strdup(new_msg) : NULL;
-		g_free(new_msg);
+
+	if (proj == NULL) {
+		if (last_proj == NULL)
+			return;
+		if (logged_last)
+			do_log_proj (-1, last_proj, FALSE /*start*/);
+		last_proj = NULL;
 		return;
 	}
-	log_last(t, proj);
+
+	if (last_proj == NULL) {
+		last_proj = proj;
+		logged_last_time = time (NULL);
+		logged_last = FALSE;
+	} else if (last_proj != proj) {
+		if (logged_last)
+			do_log_proj (-1, last_proj, FALSE /*start*/);
+		last_proj = proj;
+		logged_last_time = time (NULL);
+		logged_last = FALSE;
+	}
+
+	t = time (NULL);
+
+	if ( ! logged_last &&
+	    (long)(t - logged_last_time) >= config_logfile_min_secs) {
+		do_log_proj (logged_last_time, proj, TRUE /*start*/);
+		logged_last = TRUE;
+	}
 }
-
-
-
-void log_proj(project *proj)
-{
-	log_proj_intern(proj, 0);
-}
-
-
-
-void log_exit(void)
-{
-	if ((!config_logfile_name) || (!config_logfile_use))
-		return;
-	log_proj_intern(NULL, 0);
-	log_write(-1, _("program exited"));
-}
-
-
 
 void
-log_start(void)
+log_proj (GttProject *proj)
 {
-	last_msg = g_strdup(_("program started"));
+	if ( ! CAN_LOG)
+		return;
+
+	log_proj_intern (proj, FALSE /*log_if_equal*/);
 }
 
-
-
-void log_endofday(void)
+void
+log_exit (void)
 {
-	if ((!config_logfile_name) || (!config_logfile_use))
+	if ( ! CAN_LOG)
+		return;
+	log_proj_intern (NULL, FALSE /*log_if_equal*/);
+	log_write (-1, _("program exited"));
+}
+
+void
+log_start (void)
+{
+	if ( ! CAN_LOG)
+		return;
+	log_write (-1, _("program started"));
+}
+
+void
+log_endofday (void)
+{
+	if ( ! CAN_LOG)
 		return;
 	/* force a flush of the logfile */
-	log_proj_intern(NULL, 1);
+	if (cur_proj != NULL)
+		log_proj_intern (cur_proj, TRUE /*log_if_equal*/);
 }
-

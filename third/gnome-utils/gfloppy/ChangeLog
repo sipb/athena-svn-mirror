@@ -1,3 +1,83 @@
+Sun Oct 14 21:04:04 2001 Abel Cheung <maddog@linux.org.hk>
+
+	* src/Makefile.am: GLADE_CFLAGS needed because libglade header
+	  is moved to another location.
+
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+Thu Jul 19 01:17:27 2001  Jonathan Blandford  <jrb@webwynk.net>
+
+	* src/main.c (init_devices): deal with options correctly.
+
+Wed Jul 18 23:21:29 2001  Jonathan Blandford  <jrb@webwynk.net>
+
+	* src/gfloppy.glade: fix option
+
+Wed Jul 18 03:48:18 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/gfloppy.c (test_floppy_device): Clean up to be more specific
+	in checking.  Thanks to Bill Notting in helping write this.  It's
+	very untested though.  Need to do some testing tomorrow with an
+	actual floppy drive.
+
+Tue Jul 17 20:36:51 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/main.c (main): tested output.  Should close #57660.
+
+Tue Jul 17 20:23:17 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/main.c (main): add option to change device.  Tackling bug
+	#57660.
+
+2001-07-02  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	* doc/es/*	Spanish translation
+	* doc/Makefile.am added es and az
+	
+2001-06-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/main.c: Mark some strings for translation.
+	
+Wed Jun 06 17:13:19 2001  George Lebl <jirka@5z.com>
+
+	* src/main.c: it's && not || in checking that it's one of the
+	  recognized devices, also make the error a dialog box and not
+	  a g_print
+
+	* src/gfloppy.c, src/main.c: remove check_for_write_perm function
+	  since "access" already does all we need and better, and use this
+	  function.
+
+2001-05-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gfloppy.keys, gfloppy.desktop: Translation updates.
+	
+2001-04-28  Jason Leach  <jasonleach@usa.net>
+
+	* src/main.c (init_devices): Call the new check_for_write_perm(),
+	if we don't have write permissions we should abort now rather than
+	let the user try to actually click "Format" and have it tell them
+	it can't do it.
+
+	* src/gfloppy.c (check_for_write_perm): New function, checks the
+	floppy device for writability.
+
+	* src/main.c (set_floppy_extended_device): Fix a typo here.
+
+	* src/main.c (init_devices): Fix a mistake here (currently doesn't
+	matter though).
+
+	* src/main.c (init_commands): Changed 12 lines to 4 lines that are
+	more powerful (checks all $PATHs for programs).  Plus there was a
+	cut and paste error in the initial 12 lines.
+
+Tue Apr 24 19:24:59 2001  George Lebl <jirka@5z.com>
+
+	* src/main.c:  use g_error if we can't find gfloppy.glade.  Try
+	  current directory though so that we can debug without installing.
+
 2001-03-01 John Fleck <jfleck@inkstain.net>
 
 	doc/C/gfloppy.sgml - minor doc updates

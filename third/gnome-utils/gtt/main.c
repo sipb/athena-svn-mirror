@@ -1,5 +1,6 @@
 /*   GTimeTracker - a time tracker
  *   Copyright (C) 1997,98 Eckehard Berns
+ *   Copyright (C) 2001 Linas Vepstas <linas@linas.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,79 +17,113 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <config.h>
+#include "config.h"
+
+#include <gconf/gconf.h>
+#include <glade/glade.h>
 #include <gnome.h>
+#include <guile/gh.h>
 #include <libgnomeui/gnome-window-icon.h>
-#include <string.h>
 #include <signal.h>
-#include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
+#include "app.h"
+#include "ctree.h"
+#include "cur-proj.h"
+#include "dialog.h"
+#include "err-throw.h"
+#include "file-io.h"
 #include "gtt.h"
-
+#include "log.h"
+#include "menus.h"
+#include "menucmd.h"
+#include "prefs.h"
 #include "shorts.h"		/* SMH 2000-03-22: connect_short_cuts() */
+#include "timer.h"
+#include "xml-gtt.h"
 
 
+char *first_proj_title = NULL;  /* command line over-ride */
+
+/* SM == session management */
 #define USE_SM
 
 
-
-char *
-gtt_gettext(char *s)
+const char *
+gtt_gettext(const char *s)
 {
-        g_return_val_if_fail(s != NULL, NULL);
-        if (0 == strncmp(s, "[GTT]", 5))
-                return &s[5];
-        return s;
+	g_return_val_if_fail(s != NULL, NULL);
+	if (0 == strncmp(s, "[GTT]", 5))
+		return &s[5];
+	return s;
 }
 
 
 
 
-static char *build_lock_fname()
+static char *build_lock_fname(void)
 {
-	static char fname[1024] = "";
+	GString *str;
+	static char *fname = NULL;
 	
-	if (fname[0]) return fname;
-	if (getenv("HOME")) {
-		strcpy(fname, getenv("HOME"));
-	} else {
-		fname[0] = 0;
-	}
-	strcat(fname, "/.gtimetracker");
+	if (fname != NULL) return fname;
+
+	/* note it will handle unset "HOME" fairly gracefully */
+	str = g_string_new (g_getenv ("HOME"));
+	g_string_append (str, "/.gtimetracker");
 #ifdef DEBUG
-	strcat(fname, "-" VERSION);
+	g_string_append (str, "-" VERSION);
 #endif
-	strcat(fname, ".pid");
+	g_string_append (str, ".pid");
+
+	fname = str->str;
+	g_string_free (str, FALSE);
 	return fname;
 }
 
 
 
-static void lock_gtt()
+static void lock_gtt(void)
 {
 	FILE *f;
 	char *fname;
+	gboolean warn = FALSE;
 	
-	fname = build_lock_fname();
+	fname = build_lock_fname ();
+
+	/* if the pid file exists and such a process exists
+	 * and this process is owned by the current user,
+	 * else this pid file is very very stale and can be
+	 * ignored */
 	if (NULL != (f = fopen(fname, "rt"))) {
-		GtkWidget *warning;
+		int pid;
+
+		if (fscanf (f, "%d", &pid) == 1 &&
+		    pid > 0 &&
+		    kill (pid, 0) == 0) {
+			warn = TRUE;
+		}
 		fclose(f);
+	}
 		
-#ifdef DEBUG
-                g_warning("GTT PID file exists");
-#else /* not DEBUG */
-		warning = gnome_message_box_new(_("There seems to be another GTimeTracker running.\n"
-						  "Press OK to start GTimeTracker anyway, or press Cancel to quit."),
-						GNOME_MESSAGE_BOX_WARNING,
-						GNOME_STOCK_BUTTON_OK,
-						GNOME_STOCK_BUTTON_CANCEL,
-						NULL);
+	if (warn) 
+	{
+		GtkWidget *warning;
+		warning = gnome_message_box_new(
+			_("There seems to be another GTimeTracker running.\n"
+			  "Press OK to start GTimeTracker anyway, or press Cancel to quit."),
+			GNOME_MESSAGE_BOX_WARNING,
+			GNOME_STOCK_BUTTON_OK,
+			GNOME_STOCK_BUTTON_CANCEL,
+			NULL);
 		if(gnome_dialog_run_and_close(GNOME_DIALOG(warning))!=0)
+		{
 			exit(0);
-#endif /* not DEBUG */
+		}
 	}
 	if (NULL == (f = fopen(fname, "wt"))) {
-		g_error("Cannot create pid-file!");
+		g_warning(_("Cannot create pid-file!"));
 	}
 	fprintf(f, "%d\n", getpid());
 	fclose(f);
@@ -96,43 +131,215 @@ static void lock_gtt()
 
 
 
-void unlock_gtt(void)
+void 
+unlock_gtt(void)
 {
-	int unlink(const char *);
-
 	log_exit();
 	unlink(build_lock_fname());
 }
 
-
-
-static void init_list_2(GtkWidget *w, gint butnum)
+static void
+post_read_data(void)
 {
-	if (butnum == 1) { unlock_gtt(); gtk_main_quit(); }
-	else
-                setup_clist();
+	gtt_post_data_config();
+
+	err_init();
+	ctree_setup(global_ptw);
+	init_timer();
+
+	/* plugins need to be added to the main menus dynamically,
+	 * after the config file has been read */
+	menus_add_plugins (GNOME_APP(window));
+	log_start();
+	app_show();
 }
 
-static void init_list(void)
+static void 
+read_data_err_run_or_abort (GtkWidget *w, gint butnum)
 {
-	if (!project_list_load(NULL)) {
-                if (errno == ENOENT) {
-                        errno = 0;
-                        setup_clist();
-                        return;
-                }
-		msgbox_ok_cancel(_("Error"),
-				 _("An error occured while reading the "
-                                   "configuration file.\n"
-				   "Shall I setup a new configuration?"),
-				 GNOME_STOCK_BUTTON_YES, 
-				 GNOME_STOCK_BUTTON_NO,
-				 GTK_SIGNAL_FUNC(init_list_2));
-	} else {
-                setup_clist();
+	if (butnum == 1)
+	{
+		gtk_main_quit();
+	}
+	else
+	{
+		post_read_data();
 	}
 }
 
+static const char *
+resolve_path (const char * pathfrag)
+{
+	const char * fullpath;
+
+	if (('~' != pathfrag[0]) &&
+	    ('/' != pathfrag[0]))
+	{
+		/* if not an absolute filepath ..*/
+		fullpath = gnome_config_get_real_path (pathfrag);
+	}
+	else
+	{
+		/* I suppose we should look up $HOME if ~ */
+		fullpath = pathfrag;
+	}
+
+	return fullpath;
+}
+
+
+static void 
+read_data(void)
+{
+	GttErrCode xml_errcode;
+	const char * xml_filepath;
+
+	xml_filepath = resolve_path (config_data_url);
+
+	/* Try ... */
+	gtt_err_set_code (GTT_NO_ERR);
+	gtt_xml_read_file (xml_filepath);
+
+	/* Catch ... */
+	xml_errcode = gtt_err_get_code();
+
+	/* If the xml file read bombed because the file doesn't exist,
+	 * and yet the project list isn't null, that's because we read
+	 * and old-format config file that had the proejcts in it.
+	 * This is not an error. This is OK.
+	 */
+	if (!((GTT_NO_ERR == xml_errcode) ||
+	      ((GTT_CANT_OPEN_FILE == xml_errcode) &&
+		gtt_get_project_list())
+	    ))
+	{
+		const char *errmsg, *qmsg;
+		errmsg = gtt_err_to_string (xml_errcode, xml_filepath);
+		qmsg = g_strconcat (errmsg, 
+			_("Do you want to continue?"),
+			NULL);
+
+		msgbox_ok_cancel(_("Error"),
+			 qmsg,
+			 GNOME_STOCK_BUTTON_YES, 
+			 GNOME_STOCK_BUTTON_NO,
+			 GTK_SIGNAL_FUNC(read_data_err_run_or_abort));
+		g_free ((gchar *) qmsg); 
+		g_free ((gchar *) errmsg);
+	}
+	else
+	{
+		post_read_data ();
+	}
+}
+
+static void
+post_read_config(void)
+{
+	read_data();
+}
+
+static void 
+read_config_err_run_or_abort (GtkWidget *w, gint butnum)
+{
+	if (butnum == 1)
+	{
+		gtk_main_quit();
+	}
+	else
+	{
+		post_read_config();
+	}
+}
+
+static void 
+read_config(void)
+{
+	GttErrCode conf_errcode;
+
+	/* Try ... */
+	gtt_err_set_code (GTT_NO_ERR);
+	gtt_load_config (NULL);
+
+	/* Catch ... */
+	conf_errcode = gtt_err_get_code();
+	if (GTT_NO_ERR != conf_errcode) 
+	{
+		const char *fp, *errmsg, *qmsg;
+		fp = gtt_get_config_filepath();
+		errmsg = gtt_err_to_string (conf_errcode, fp);
+		qmsg = g_strconcat (errmsg, 
+			_("Shall I setup a new configuration?"),
+			NULL);
+
+		msgbox_ok_cancel(_("Error"),
+			 qmsg,
+			 GNOME_STOCK_BUTTON_YES, 
+			 GNOME_STOCK_BUTTON_NO,
+			 GTK_SIGNAL_FUNC(read_config_err_run_or_abort));
+		g_free ((gchar *) qmsg); 
+		g_free ((gchar *) errmsg);
+	}
+	else 
+	{
+		post_read_config();
+	}
+}
+
+#if 0
+/* used only to display development version warning messsage */
+static void 
+beta_run_or_abort(GtkWidget *w, gint butnum)
+{
+	if (butnum == 1)
+	{
+		gtk_main_quit();
+	}
+	else
+	{
+		read_config();
+	}
+}
+#endif
+
+/* save_all() is a bit sloppy, in that if we get two errors in a row,
+ * we'll miss the second one ... but what the hey, who cares.
+ */
+
+const char *
+save_all (void)
+{
+	GttErrCode errcode;
+	const char *errmsg = NULL;
+	const char * xml_filepath;
+
+	xml_filepath = resolve_path (config_data_url);
+	/* Try ... */
+	gtt_err_set_code (GTT_NO_ERR);
+	gtt_xml_write_file (xml_filepath);
+
+	/* Catch */
+	errcode = gtt_err_get_code();
+	if (GTT_NO_ERR != errcode)
+	{
+		errmsg = gtt_err_to_string (errcode, xml_filepath);
+	}
+
+	/* Try ... */
+	gtt_err_set_code (GTT_NO_ERR);
+	gtt_save_config (NULL);
+
+	/* Catch */
+	errcode = gtt_err_get_code();
+	if (GTT_NO_ERR != errcode)
+	{
+		const char *fp;
+		fp = gtt_get_config_filepath();
+		errmsg = gtt_err_to_string (errcode, fp);
+	}
+
+	return errmsg;
+}
 
 
 
@@ -153,10 +360,12 @@ save_state(GnomeClient *client, gint phase, GnomeRestartStyle save_style,
 	   gint shutdown, GnomeInteractStyle interact_styyle, gint fast,
 	   gpointer data)
 {
+	const char *errmsg;
 	char *sess_id;
 	char *argv[5];
 	int argc;
 	int x, y, w, h;
+	int rc;
 
 	sess_id  = gnome_client_get_id(client);
 	if (!window)
@@ -166,12 +375,11 @@ save_state(GnomeClient *client, gint phase, GnomeRestartStyle save_style,
 	gdk_window_get_size(window->window, &w, &h);
 	argv[0] = (char *)data;
 	argv[1] = "--geometry";
-	argv[2] = g_malloc(32);
-	sprintf(argv[2], "%dx%d+%d+%d", w, h, x, y);
-	if ((cur_proj) && (cur_proj->title)) {
+	argv[2] = g_strdup_printf("%dx%d+%d+%d", w, h, x, y);
+	if ((cur_proj) && (gtt_project_get_title(cur_proj))) {
 		argc = 5;
 		argv[3] = "--select-project";
-		argv[4] = cur_proj->title;
+		argv[4] = (char *) gtt_project_get_title(cur_proj);
 	} else {
 		argc = 3;
 	}
@@ -179,7 +387,13 @@ save_state(GnomeClient *client, gint phase, GnomeRestartStyle save_style,
 	gnome_client_set_restart_command(client, argc, argv);
 	g_free(argv[2]);
 
-	return project_list_save(NULL);
+	/* save both the user preferences/config and the project lists */
+	errmsg = save_all();
+	rc = 0;
+	if (NULL == errmsg) rc = 1;
+	g_free ((gchar *) errmsg);
+
+	return rc;
 }
 
 
@@ -192,6 +406,24 @@ session_die(GnomeClient *client)
 #endif /* USE_SM */
 
 
+static void
+got_signal (int sig)
+{
+	unlock_gtt ();
+	
+	/* whack thyself */
+	signal (sig, SIG_DFL);
+	kill (getpid (), sig);
+}
+
+
+static void 
+guile_inner_main(int argc, char **argv)
+{
+	gtk_main();
+
+	unlock_gtt();
+}
 
 
 int 
@@ -214,6 +446,9 @@ main(int argc, char *argv[])
 				   geo_options, 0, NULL);
 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-cromagnon.png");
 
+	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
+	textdomain(PACKAGE);
+
 #ifdef USE_SM
 	client = gnome_master_client();
 	gtk_signal_connect(GTK_OBJECT(client), "save_yourself",
@@ -222,12 +457,17 @@ main(int argc, char *argv[])
 			   GTK_SIGNAL_FUNC(session_die), NULL);
 #endif /* USE_SM */
 
-	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
-	textdomain(PACKAGE);
+	glade_gnome_init();
 
-	signal(SIGCHLD, SIG_IGN);
+	/* gconf init is needed by gtkhtml */
+	gconf_init (argc, argv, NULL);
+
+	signal (SIGCHLD, SIG_IGN);
+	signal (SIGINT, got_signal);
+	signal (SIGTERM, got_signal);
 	lock_gtt();
 	app_new(argc, argv, geometry_string);
+
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(quit_app), NULL);
 
@@ -237,14 +477,27 @@ main(int argc, char *argv[])
 	 */
 	connect_short_cuts();
 
-	/* start timer before the state of the menu items is set */
-	start_timer();
-	init_list();
-	log_start();
+#if 0
+	msgbox_ok_cancel(_("Warning"),
+		"WARNING !!! Achtung !!! Avertisment !!!\n"
+		"\n"
+		"This is a development version of GTT.  It uses a new\n"
+		"file format that may leave your old data damaged and\n"
+		"unrecoverable.  There may be incompatible file format\n"
+		"changes in the near future. Use at own risk!\n"
+		"\n"
+		"The last stable, working version can be obtained from\n"
+		"version 1.4.0.2 of gnome-utils or from cvs with\n"
+		"cvs checkout -D \"Aug 27 2001\" gnome-utils/gtt\n",
+	     "Continue", "Exit", 
+		GTK_SIGNAL_FUNC(beta_run_or_abort));
+#else
+		read_config();
+#endif
 
-	gtk_main();
 
-	unlock_gtt();
-	return 0;
+	gh_enter(argc, argv, guile_inner_main);
+	return 0; /* not reached !? */
 }
+
 

@@ -24,7 +24,7 @@
 
 #include <config.h>
 #include <gnome.h>
-#include <interface.h>
+#include "interface.h"
 
 int
 main (int argc, char *argv[])
@@ -32,11 +32,11 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    gnome_init (PACKAGE, VERSION, argc, argv);
+    gnome_init ("gcharmap", VERSION, argc, argv);
 
     gtk_widget_show (GTK_WIDGET (main_app_new ()->window));
     gtk_main ();
     return 0;
 }
 
-#endif _MAIN_C_
+#endif /* _MAIN_C_ */

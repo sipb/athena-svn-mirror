@@ -1,5 +1,5 @@
 /* -*- Mode: C -*-
- * $Id: gdiskfree.c,v 1.1.1.1 2001-05-02 20:43:34 ghudson Exp $
+ * $Id: gdiskfree.c,v 1.1.1.2 2002-03-25 21:57:30 ghudson Exp $
  *
  * GDiskFree -- A disk free space toy (df on steriods).
  * Copyright 1998,1999 Gregory McLean
@@ -32,7 +32,6 @@
  * Global config ICKY!!
  **/
 GDiskFreeOptions     *current_options = NULL;
-GList                *excluded = NULL;
 guint                timeout_id;
 
 /****************************************************************************
@@ -66,9 +65,9 @@ excluded_fstype (const char *fstype)
 {
   GList   *gl;
   gchar   *type;
-  if (excluded == NULL)
+  if (current_options->excluded == NULL)
     return 0;
-  gl = excluded;
+  gl = current_options->excluded;
   while (gl)
     {
       type = (gchar *)gl->data;
@@ -98,9 +97,7 @@ gdiskfree_convert_size ( unsigned long size)
      if (size_f < 1000)
 	  return g_strdup_printf ("%.1f Gb", size_f);
      size_f = size_f / 1000;
-     if (size_f < 1000)
-	  return g_strdup_printf ("%.1f Tb", size_f);
-     size_f = size_f / 1000;
+     return g_strdup_printf ("%.1f Tb", size_f);
 }
 
 /**
@@ -118,7 +115,7 @@ main (int argc, gchar *argv[])
   bindtextdomain (PACKAGE, GNOMELOCALEDIR);
   textdomain (PACKAGE);
   
-  gnome_init_with_popt_table (PACKAGE, VERSION, argc, argv, options, 0, &pctx);
+  gnome_init_with_popt_table ("gdiskfree", VERSION, argc, argv, options, 0, &pctx);
   gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-diskfree.png");
   poptFreeContext (pctx);
   /** Get the configuration (or default) **/
@@ -132,10 +129,6 @@ main (int argc, gchar *argv[])
 
   app = gdiskfree_app_new (geometry);
   mount_list = glibtop_get_mountlist (&mountlist, 0);
-  excluded = g_list_append (excluded, "proc");
-  excluded = g_list_append (excluded, "devpts");
-  excluded = g_list_append (excluded, "shm");
-  excluded = g_list_append (excluded, "usbfs");
   for (i = 0; i < mountlist.number; i++)
     {
       glibtop_fsusage    fsusage;

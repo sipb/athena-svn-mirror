@@ -19,10 +19,11 @@
 
     ---------------------------------------------------------------------- */
 
-#include "config.h"
+#include <config.h>
+#include <gnome.h>
+#include <locale.h>
 #include "logview.h"
 #include "logrtns.h"
-#include <gnome.h>
 
 /*
  * -----------------
@@ -56,8 +57,10 @@
 
 int IsLeapYear (int);
 int match_line_in_db (LogLine *line, GList *db);
+void UpdateLastPage (Log *log);
 
 extern GList *regexp_db;
+extern GList *actions_db;
 
 /*
  * -------------------
@@ -65,11 +68,111 @@ extern GList *regexp_db;
  * -------------------
  */
 
-char *
-monthname[12] =
-{"January", "February", "March", "April", "May",
- "June", "July", "August", "September", "October",
- "November", "December"};
+const char *
+C_monthname[12] =
+{ "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December" };
+
+/* space separated list of locales to check, must be space separated, no
+ * newlines */
+/* FIXME: This should be checked for at configure time or something to
+ * that effect */
+char *all_locales = "af_ZA ar_SA bg_BG ca_ES cs_CZ da_DK de_AT de_BE de_CH de_DE de_LU el_GR en_AU en_CA en_DK en_GB en_IE en_US es_ES et_EE eu_ES fi_FI fo_FO fr_BE fr_CA fr_CH fr_FR fr_LU ga_IE gl_ES gv_GB hr_HR hu_HU in_ID is_IS it_CH it_IT iw_IL kl_GL kw_GB lt_LT lv_LV mk_MK nl_BE nl_NL no_NO pl_PL pt_BR pt_PT ro_RO ru_RU.KOI8-R ru_RU ru_UA sk_SK sl_SI sr_YU sv_FI sv_SE th_TH tr_TR uk_UA";
+
+static int
+get_month (const char *str)
+{
+	int i, j;
+	static char *monthname[12] = { 0 };
+	static GHashTable *locales_monthnames = NULL;
+	static char **locales = NULL;
+
+	for (i = 0; i < 12; i++) {
+		if (g_strncasecmp (str, C_monthname[i], 3) == 0) {
+			return i;
+		}
+	}
+
+	for (i = 0; i < 12; i++) {
+		if (monthname[i] == NULL) {
+			GDate *date;
+			char buf[256];
+
+			date = g_date_new_dmy (1, i+1, 2000 /* bogus */);
+
+			if (g_date_strftime (buf, sizeof (buf), "%b", date) <= 0) {
+				/* eek, just use C locale cuz we're screwed */
+				monthname[i] = g_strndup (C_monthname[i], 3);
+			} else {
+				monthname[i] = g_strdup (buf);
+			}
+
+			g_date_free (date);
+		}
+
+		if (g_strcasecmp (str, monthname[i]) == 0) {
+			return i;
+		}
+	}
+
+	if (locales == NULL)
+		locales = g_strsplit (all_locales, " ", 0);
+
+	if (locales_monthnames == NULL)
+		locales_monthnames = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* Try all known locales */
+	for (j = 0; locales != NULL && locales[j] != NULL; j++) {
+		for (i = 0; i < 12; i++) {
+			char *key = g_strdup_printf ("%s %d", locales[j], i);
+			char *name = g_hash_table_lookup (locales_monthnames, key);
+			if (name == NULL) {
+				char buf[256];
+				char *old_locale = g_strdup (setlocale (LC_TIME, NULL));
+				
+				if (setlocale (LC_TIME, locales[j]) == NULL) {
+					strcpy (buf, "");
+				} else {
+					GDate *date;
+
+					date = g_date_new_dmy (1, i+1, 2000 /* bogus */);
+
+					if (g_date_strftime (buf, sizeof (buf), "%b", date) <= 0) {
+						strcpy (buf, "");
+					}
+
+					if (old_locale != NULL) {
+						setlocale (LC_TIME, old_locale);
+						g_free (old_locale);
+					}
+				}
+
+				name = g_strdup (buf);
+				g_hash_table_insert (locales_monthnames, g_strdup (key), name);
+			}
+			g_free (key);
+
+			if (name != NULL &&
+			    name[0] != '\0' &&
+			    g_strcasecmp (str, name) == 0) {
+				return i;
+			}
+		}
+	}
+
+	return 12;
+}
+
 
 
 /* ----------------------------------------------------------------------
@@ -122,7 +225,8 @@ OpenLogFile (char *filename)
    first->prev = cur;
 
    /* Open log files ------------------------------------- */
-   strcpy (tlog->name, filename);
+   strncpy (tlog->name, filename, sizeof (tlog->name)-1);
+   tlog->name[sizeof (tlog->name) - 1] = '\0';
    tlog->fp = fopen (filename, "r");
    if (tlog->fp == NULL)
    {
@@ -170,7 +274,7 @@ int
 isLogFile (char *filename)
 {
    struct stat fstatus;
-   char buff[256];
+   char buff[1024];
    char *token;
    int i;
    FILE *fp;
@@ -180,15 +284,17 @@ isLogFile (char *filename)
    /* Check that its a regular file       */
    if (!S_ISREG (fstatus.st_mode))
    {
-      sprintf (buff, _("%s is not a regular file."), filename);
+      g_snprintf (buff, sizeof (buff),
+		  _("%s is not a regular file."), filename);
       ShowErrMessage (buff);
       return FALSE;
    }
    /* File unreadable                     */
    if ((fstatus.st_mode & S_IRUSR) == 0)
    {
-      sprintf (buff, _("%s is not user readable. Probably has read-only "
-      "permission. Either run the program as root or ask the sysadmin to "
+      g_snprintf (buff, sizeof (buff),
+		  _("%s is not user readable. "
+      "Either run the program as root or ask the sysadmin to "
       "change the permissions on the file."), filename);
       ShowErrMessage (buff);
       return FALSE;
@@ -199,26 +305,31 @@ isLogFile (char *filename)
    fp = fopen (filename, "r");
    if (fp == NULL)
    {
-      sprintf (buff, _("%s could not be opened."), filename);
+      g_snprintf (buff, sizeof (buff),
+		  _("%s could not be opened."), filename);
       ShowErrMessage (buff);
       return FALSE;
    }
-   fgets (buff, 255, fp);
+   fgets (buff, sizeof (buff), fp);
    fclose (fp);
    token = strtok (buff, " ");
+   /* This is not a good assumption I don't think, especially
+    * if log is internationalized
+    * -George
    if (strlen (buff) != 3)
    {
-      sprintf (buff, _("%s not a log file."), filename);
+      g_snprintf (buff, sizeof (buff),
+		  _("%s not a log file."), filename);
       ShowErrMessage (buff);
       return FALSE;
    }
-   for (i = 0; i < 12; i++)
-      if (strncasecmp (token, monthname[i], 3) == 0)
-	 break;
+   */
+
+   i = get_month (token);
 
    if (i == 12)
    {
-      sprintf (buff, _("%s not a log file."), filename);
+      g_snprintf (buff, sizeof (buff), _("%s not a log file."), filename);
       ShowErrMessage (buff);
       return FALSE;
    }
@@ -273,7 +384,7 @@ ReadNPagesDown (Log * lg, Page * pg, int n)
    /* Read n pages down.   */
    for (i = 0; i < n; i++)
    {
-      ReadPageDown (lg, cp);
+      ReadPageDown (lg, cp, FALSE /* exec_actions */);
       lg->lastpg = cp;
       lg->firstpg = lg->firstpg->next;
       if (cp->islastpage == TRUE)
@@ -361,7 +472,7 @@ ReadPageUp (Log * lg, Page * pg)
    ---------------------------------------------------------------------- */
 
 int
-ReadPageDown (Log * lg, Page * pg)
+ReadPageDown (Log * lg, Page * pg, gboolean exec_actions)
 {
    FILE *fp;
    LogLine *line;
@@ -420,6 +531,10 @@ ReadPageDown (Log * lg, Page * pg)
 
       line = &pg->line[ln];
       ParseLine (buffer, line);
+
+      if (exec_actions)
+	      exec_action_in_db (lg, line, actions_db);
+
       ln++;
    }
    pg->ll = ln-1;
@@ -444,6 +559,9 @@ ParseLine (char *buff, LogLine * line)
 
    token = strtok (buff, " ");
    if (token == NULL) return;
+   /* This is not a good assumption I don't think, especially
+    * if log is internationalized
+    * -George
    if (strlen (token) != 3)
    {
       strncpy (line->message, buff, MAX_WIDTH);
@@ -456,13 +574,13 @@ ParseLine (char *buff, LogLine * line)
       strcpy (line->process, "");
       return;
    }
-   for (i = 0; i < 12; i++)
-      if (strncasecmp (token, monthname[i], 3) == 0)
-	 break;
+   */
+   i = get_month (token);
 
    if (i == 12)
    {
       strncpy (line->message, buff, MAX_WIDTH);
+      line->message[MAX_WIDTH-1] = '\0';
       line->month = -1;
       line->date = -1;
       line->hour = -1;
@@ -529,10 +647,10 @@ ParseLine (char *buff, LogLine * line)
    }
 
    token = strtok (NULL, " ");
-   if (token != NULL)
+   if (token != NULL) {
       strncpy (line->hostname, token, MAX_HOSTNAME_WIDTH);
-   else
-   {
+      line->hostname[MAX_HOSTNAME_WIDTH-1] = '\0';
+   } else {
       line->sec = -1;
       strcpy (line->hostname, "");
       strcpy (line->process, "-");
@@ -545,6 +663,7 @@ ParseLine (char *buff, LogLine * line)
       strncpy (scratch, token, 254);
    else
       strncpy (scratch, " ", 254);
+   scratch[254] = '\0';
    token = strtok (NULL, "\n");
 
    if (token == NULL)
@@ -554,12 +673,15 @@ ParseLine (char *buff, LogLine * line)
       while (scratch[i] == ' ')
 	 i++;
       strncpy (line->message, &scratch[i], MAX_WIDTH);
+      line->message [MAX_WIDTH-1] = '\0';
    } else
    {
       strncpy (line->process, scratch, MAX_PROC_WIDTH);
+      line->process [MAX_PROC_WIDTH-1] = '\0';
       while (*token == ' ')
 	 token++;
       strncpy (line->message, token, MAX_WIDTH);
+      line->message [MAX_WIDTH-1] = '\0';
    }
 
    /* Search current data base for string and attach descritpion */
@@ -699,7 +821,7 @@ ReadLogStats (Log * log)
       if (IsLeapYear (curmark->year - lastyear + thisyear))
 	 curmark->time += 24 * 60 * 60;		/*  Add one day */
 
-#ifdef __NetBSD__
+#if defined(__NetBSD__) || defined(__FreeBSD__)
       curmark->time += correction - tmptm->tm_gmtoff;
 #else
       curmark->time += correction - timezone;
@@ -725,7 +847,7 @@ ReadLogStats (Log * log)
    if (IsLeapYear (thisyear))
       log->lstats.enddate += 24 * 60 * 60;	/*  Add one day */
 
-#ifdef __NetBSD__
+#if defined(__NetBSD__) || defined(__FreeBSD__)
    log->lstats.enddate += correction - tmptm->tm_gmtoff;
 #else
    log->lstats.enddate += correction - timezone;
@@ -736,7 +858,7 @@ ReadLogStats (Log * log)
    if (IsLeapYear (thisyear - lastyear))
       log->lstats.startdate += 24 * 60 * 60;	/*  Add one day */
 
-#ifdef __NetBSD__
+#if defined(__NetBSD__) || defined(__FreeBSD__)
    log->lstats.startdate += correction - tmptm->tm_gmtoff;
 #else
    log->lstats.startdate += correction - timezone;
@@ -850,7 +972,7 @@ MoveToMark (Log *log)
     fseek(fp, mark->offset-1, SEEK_SET);
   else
     fseek(fp, mark->offset, SEEK_SET);
-  ReadPageDown(log, middlepg);
+  ReadPageDown(log, middlepg, FALSE /* exec_actions */);
   if (middlepg->islastpage)
     {
       middlepg = log->lastpg;
@@ -858,7 +980,7 @@ MoveToMark (Log *log)
 	fseek(fp, mark->offset-1, SEEK_SET);
       else
 	fseek(fp, mark->offset, SEEK_SET);
-      ReadPageDown(log, middlepg);
+      ReadPageDown(log, middlepg, FALSE /* exec_actions */);
       ReadNPagesUp(log, middlepg, NUM_PAGES-1);
       log->currentpg = middlepg;
       return;
@@ -868,7 +990,7 @@ MoveToMark (Log *log)
     {
       middlepg = log->firstpg;
       fseek(fp, mark->offset, SEEK_SET);
-      ReadPageDown(log, middlepg);
+      ReadPageDown(log, middlepg, FALSE /* exec_actions */);
       ReadNPagesDown(log, middlepg, NUM_PAGES-1);
       log->currentpg = middlepg;
       return;
@@ -943,9 +1065,7 @@ GetDate (char *line)
    if (!token)
        return -1;
    
-   for (i = 0; i < 12; i++)
-      if (strncasecmp (token, monthname[i], 3) == 0)
-	 break;
+   i = get_month (token);
 
    if (i == 12)
       return -1;

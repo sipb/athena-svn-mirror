@@ -1,19 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Atributos de la fuentes en el sistema de ventanas X y XFLD</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="selector de fuentes Gnome"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Ventana de filtros"
-HREF="filter.html"><LINK
-REL="NEXT"
-TITLE="Autores"
-HREF="authors.html"></HEAD
+HREF="filter.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +51,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="authors.html"
->Siguiente</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,10 +62,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="XLFD"
+NAME="xlfd"
 >Atributos de la fuentes en el sistema de ventanas X y XFLD</A
 ></H1
-><P
+>      
+      <P
 >Como dijimos anteriormente, cada fuente en el sistema de ventanas X tiene un numero de atributos
 y un nombre completo, también conocido como descripción de fuente lógica X (XFLD), que recoge
 todos los estos atributos y es por tanto algo largo. Los nombres de fuentes son típicamente algo
@@ -89,11 +86,13 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 >
       </P
-><P
+>
+      <P
 >Este nombre consiste en 14 campos, que muestran los valores de 14 parámetros de la fuente,
 separados por guiones.
       </P
-><P
+>
+      <P
 >A pesar de que este tipo de nombres dan una información completa acerca de la
 fuente, es algo exagerado, especialmente si tenemos encuentra que no todos los parámetros
 son útiles en la actualidad. Para facilitar un poco la vida, se puede usar comodines
@@ -124,7 +123,8 @@ fuentes que se correspondan con el nombre dado, el sistema tomara la primera que
 se corresponda. En este ejemplo concreto, lo mas probable es que solo una fuente
 corresponda con este nombre, así que el nombre no es ambiguo.
       </P
-><P
+>
+      <P
 > 
 A continuación se muestra una lista de los 14 atributos actualmente útiles:
 	<P
@@ -139,7 +139,7 @@ CLASS="GUILABEL"
 ><B
 >Creador</B
 ></TT
-> &#8212; 
+>  
 creador de la fuente, la compañía o persona que diseño la fuente (en nuestro ejemplo,
 <TT
 CLASS="LITERAL"
@@ -155,7 +155,7 @@ CLASS="GUILABEL"
 ><B
 >familia</B
 ></TT
-> &#8212; 
+>  
 familia de la fuente, el alias popular de la fuente (en nuestro ejemplo,
 <TT
 CLASS="LITERAL"
@@ -172,7 +172,7 @@ CLASS="GUILABEL"
 ><B
 >peso</B
 ></TT
-> &#8212; 
+>  
 peso de la fuente (en nuestro ejemplo, <TT
 CLASS="LITERAL"
 >medium</TT
@@ -188,7 +188,7 @@ CLASS="GUILABEL"
 ><B
 >Inclinación</B
 ></TT
-> &#8212; 
+>  
 Inclinación de la fuente (en nuestro ejemplo, <TT
 CLASS="LITERAL"
 >(r)oman</TT
@@ -205,7 +205,7 @@ CLASS="GUILABEL"
 ><B
 >Tamaño en puntos ("pixel")</B
 ></TT
-> &#8212; 
+>  
 el tamaño en puntos ("pixels") verticales de un carácter (en nuestro ejemplo, 12) </P
 ></LI
 ><LI
@@ -216,7 +216,7 @@ CLASS="GUILABEL"
 ><B
 >Tamaño en puntos</B
 ></TT
-> &#8212;
+> 
 Tamaño aproximado en puntos de la fuente, medido en décimas de puntos. En el ejemplo
 anterior, el tamaño en punto es 120, esto es, 12 puntos. Un punto es igual a
 1/72 pulgadas, que es la convencionhabitual en la fuente Inglesa y Americana.
@@ -231,9 +231,10 @@ CLASS="GUILABEL"
 >resolución</B
 ></TT
 > vertical y horizontal en puntos por
-pulgada &#8212; en el ejemplo anterior, ambas valen 75 dpi.
+pulgada  en el ejemplo anterior, ambas valen 75 dpi.
 	    </P
-><P
+>
+	    <P
 >Observe que el tamaño de punto, el tamaño de "pixel", y la resolución vertical están
 relacionadas: para la fuentes con resolución de 75 dpi, el tamaño de puntos es aproximadamente
 igual a (tamaño de "pixel")*10; para las fuentes con resoucion de 100 dpi, el tamaño de punto
@@ -248,7 +249,7 @@ CLASS="GUILABEL"
 ><B
 >espaciado</B
 ></TT
-> &#8212;
+> 
 describe la variación del tamaño de los caracteres en la fuente. Los valores
 posibles son espacio fijo, tamaño constante ( en ambos tipos de espaciado, todos
 los caracteres tienen el mismo ancho) y proporcional (los caracteres tienen tamaños
@@ -268,7 +269,7 @@ CLASS="GUILABEL"
 ><B
 >registro</B
 ></TT
-> del juego de caracteres &#8212;
+> del juego de caracteres 
 Estos dos parámetros, habitualmente conocidos como <TT
 CLASS="GUILABEL"
 ><B
@@ -287,12 +288,12 @@ Hay un buen numero de juegos posibles. Algunos de los mas populares incluyen:
 ><UL
 ><LI
 STYLE="list-style-type: bull"
-><P
+>		  <P
 >		    <I
 CLASS="EMPHASIS"
 >iso8859-1</I
 >, 
-también conocida como Latin 1 &#8212; este juego de caracteres incluye todos los símbolos del
+también conocida como Latin 1  este juego de caracteres incluye todos los símbolos del
 teclado, esto es, letras latinas, símbolos de puntuación, números, símbolos como
 @ o $. Incluye tambienalgunos símbolos especiales, como el signo de derechos de autor y ciertas
 letras acentuadas, las que cubren la mayoría de los idiomas europeos del oeste (para se
@@ -300,110 +301,21 @@ mas precisos, Africano, Vasco, Catalán, Danés, Dutch, Ingles, Faeroese, Finlandé
 Gallego, Alemán, Islandés, Irlandés, Italiano, Noruego, Portugués, Escoces, Español, y
 Sueco).
 		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
->		    <I
-CLASS="EMPHASIS"
->iso8859-7</I
-> &#8212; 
-Incluye los alfabetos  Latín y  Griego
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
->		    <I
-CLASS="EMPHASIS"
->iso8859-8</I
-> &#8212; 
-Incluye los alfabetos Latín y Hebreo
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
->		    <I
-CLASS="EMPHASIS"
->koi8-r</I
-> &#8212; 
-incluye los alfabetos latín y Cirílico
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
->		    <I
-CLASS="EMPHASIS"
->big5.eten.3.10-1</I
-> &#8212; 
-Chino (codificación Big5)
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
-> <I
-CLASS="EMPHASIS"
->gb2312.1980-0</I
 >
-		    &#8212; 
-Chino (codificación GB)
-		</P
-></LI
+		</LI
 ><LI
 STYLE="list-style-type: bull"
 ><P
-> 
-                    <I
+>		    <I
 CLASS="EMPHASIS"
->jisx0208.1983-0</I
-> &#8212; 
-Japones
-		</P
+></I
+></P
 ></LI
 ></UL
->
-
-
-	    </P
+></P
 ></LI
 ></UL
->
-      </P
-><P
->El resto de los atributos de las fuentes (<TT
-CLASS="GUILABEL"
-><B
->Fijar el ancho</B
-></TT
->,
-	<TT
-CLASS="GUILABEL"
-><B
->Estilos adicionales</B
-></TT
->, and <TT
-CLASS="GUILABEL"
-><B
->Ancho medio</B
-></TT
->) 
-se usan en raras ocasiones y por este motivo 
-obvio su descripción.
-      </P
-><P
->La especificación completa de XFLD esta incluida en la documentación técnica del sistema
-de ventanas X y se puede encontrar en linea en 
-<A
-HREF="ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/XLFD"
-TARGET="_top"
->    
-	  ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/XLFD</A
->; 
-lo mas probable, es que nunca la necesite.
-    </P
+></P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -435,10 +347,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="authors.html"
->Siguiente</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -455,7 +364,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Autores</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

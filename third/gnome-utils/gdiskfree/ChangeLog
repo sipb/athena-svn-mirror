@@ -1,3 +1,79 @@
+Sun Aug 12 22:36:59 2001  George Lebl <jirka@5z.com>
+
+	* gdiskfree_options.c: minor cleanup
+
+Sun Aug 12 13:27:02 2001  George Lebl <jirka@5z.com>
+
+	* gdiskfree_options.c:  Fix initialization of the excludes list to
+	  NULL to avoid segv
+
+2001-08-12  Gregory McLean <gregm@gxsnmp.org>
+	* gdiskfree_options.c/h : Move the excluded filesystems list 
+	to the application's option structure for the upcomming user
+	configurable exclude fs stuff.
+	* gdiskfree.c : switch to use the app config structure for the 
+	excluded filesystems.
+        Need to figure out how to write a list using the gnome_config<blah>
+ 	stuff..
+
+2001-08-10  Matthias Warkus  <mawarkus@gnome.org>
+
+	* *.png: Icon and splash logo by Timothy Musson
+	<trmusson@ihug.co.nz> added, with permission of the maintainer.
+	
+	* Makefile.am: Install pixmaps.
+
+	* gdiskfree.desktop: Use new icon.
+	
+	* gdiskfree_menus.c: Use splash pixmap.
+	
+
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+Wed Jun 06 16:22:15 2001  George Lebl <jirka@5z.com>
+
+	* gdiskfree_app.c: When percentage is over 100% just trim to 100%.
+	  You can't show more then 100% with gtk-dial anyhow.  Use current
+	  options rather then always reading from config since that's the
+	  only way the defaults will work.  When the stored location is off
+	  screen make sure at least 50 pixels are showing on screen.  Also
+	  allow saving at 0,0 location, this should really be done by the
+	  session manager.
+
+	* gdiskfree.c: don't crash on VERY large disks (currently over
+	  1000Tb) and it fixes a warning as well.
+
+	* gdiskfree_options.c: make show_mount and show_size default to on,
+	  since most users will have NO clue about the mount point and size
+	  and that's the important information we care about.  Also sanitize
+	  things.  Make the lowest update time 300, since that's basically
+	  about the lowest useful time where the CPU isn't hogged.
+
+2001-06-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gdiskfree.c (main): Use "gdiskfree" instead of PACKAGE in
+	gnome_init_with_popt_table(). Also exclude "usbdevfs".
+	
+2001-06-05  Christian Rose  <menthos@menthos.com>
+
+	* gdiskfree.desktop: Modified sv translation.
+
+2001-06-03 Gregory McLean <gregm@gxsnmp.org>
+
+	* gdiskfree_app.c - gdiskfree_app_change_orient, added some code
+	to fix one of my personal annoyances, now when we change orientation
+	of the app we re-size the window like it should have all along.
+        Plus the user can still re-size the window as he/she sees fit. The
+	magical resize is only triggered on oreintation change (and probably
+	on drive add/remove but thats later)
+
+2001-06-01 John Fleck <jfleck@inkstain.net>
+
+	* gdiskfree_options.c - link help into help button on preferences
+	dialog - fixes bugzilla #16631 
+
 2001-03-04 John Fleck <jfleck@inkstain.net>
 
 	* gdiskfree/doc/es/gdiskfree-es.omf - omf file category needs to

@@ -20,72 +20,137 @@
 #include <gnome.h>
 #include <string.h>
 
-#include "gtt.h"
+#include "app.h"
+#include "ctree.h"
+#include "cur-proj.h"
+#include "dialog.h"
+#include "idle-timer.h"
+#include "log.h"
+#include "prefs.h"
+#include "proj.h"
+#include "timer.h"
 
 
-gint main_timer = 0;
-time_t last_timer = -1;
-static int timer_stopped = 1;
+static gint main_timer = 0;
+static IdleTimeout *idt = NULL;
 
+int config_idle_timeout = -1;
 
+/* =========================================================== */
+/* zero out day counts if rolled past midnight */
 
-static gint timer_func(gpointer data)
+static int day_last_reset = -1;
+static int year_last_reset = -1;
+
+void
+set_last_reset (time_t last)
 {
-	time_t t, diff_time;
-	struct tm t1, t0;
+	struct tm *t0;
+	t0 = localtime (&last);
+	day_last_reset = t0->tm_yday;
+	year_last_reset = t0->tm_year;
+}
 
-	log_proj(cur_proj);
-	t = time(NULL);
-	if (last_timer != -1) {
-		memcpy(&t0, localtime(&last_timer), sizeof(struct tm));
-		memcpy(&t1, localtime(&t), sizeof(struct tm));
-		if ((t0.tm_year != t1.tm_year) ||
-		    (t0.tm_yday != t1.tm_yday)) {
-			log_endofday();
-			project_list_time_reset();
-		}
-                if (!timer_stopped)
-                        diff_time = t - last_timer;
-                else
-                        diff_time = 1;
-	} else {
-                diff_time = 1;
-        }
-        timer_stopped = 0;
-	last_timer = t;
+
+void
+zero_on_rollover (time_t when)
+{
+	struct tm *t1;
+
+	/* zero out day counts */
+	t1 = localtime(&when);
+	if ((year_last_reset != t1->tm_year) ||
+	    (day_last_reset != t1->tm_yday)) 
+	{
+		gtt_project_list_compute_secs ();
+		log_endofday();
+		year_last_reset = t1->tm_year;
+	    	day_last_reset = t1->tm_yday;
+	}
+}
+
+/* =========================================================== */
+
+static void
+restart_proj (GtkWidget *w, gpointer data)
+{
+	GttProject *prj = data;
+	cur_proj_set (prj);
+}
+
+static gint 
+timer_func(gpointer data)
+{
+	time_t now = time(0);
+
+	/* Even if there is no active project,
+	 * we still have to zero out the counters periodically. */
+	if (0 == now%60) zero_on_rollover (now);
+
 	if (!cur_proj) return 1;
-	cur_proj->secs += diff_time;
-	cur_proj->day_secs += diff_time;
-	if (config_show_secs) {
-		if (cur_proj->row != -1) clist_update_label(cur_proj);
-	} else if (cur_proj->day_secs % 60 == 0) {
-		if (cur_proj->row != -1) clist_update_label(cur_proj);
+
+	gtt_project_timer_update (cur_proj);
+
+	if (config_show_secs) 
+	{
+		ctree_update_label(global_ptw, cur_proj);
+	} 
+	else if (1 == gtt_project_get_secs_day(cur_proj) % 5) 
+	{
+		ctree_update_label(global_ptw, cur_proj);
+	}
+
+	if (0 < config_idle_timeout) 
+	{
+		int idle_time;
+		idle_time = now - poll_last_activity (idt);
+		if (idle_time > config_idle_timeout) 
+		{
+			char *msg;
+			GttProject *prj = cur_proj;
+
+			/* stop the timer on teh current project */
+			cur_proj_set (NULL);
+
+			/* warn the user */
+			msg = g_strdup_printf (
+				_("The keyboard and mouse have been idle\n"
+				  "for %d minutes.  The currently running\n"
+				  "project (%s - %s)\n"
+				  "has been stopped.\n"
+				  "Do you want to restart it?"),
+				(config_idle_timeout+30)/60,
+				gtt_project_get_title(prj),
+				gtt_project_get_desc(prj));
+			qbox_ok_cancel (_("System Idle"), msg,
+				GNOME_STOCK_BUTTON_YES, restart_proj, prj, 
+				GNOME_STOCK_BUTTON_NO, NULL, NULL);
+			return 1;
+		}
 	}
 	return 1;
 }
 
 
+static int timer_inited = 0;
 
-
-void menu_timer_state(int);
-
-void start_timer(void)
+void 
+init_timer(void)
 {
-	if (main_timer) return;
-	log_proj(cur_proj);
+	if (timer_inited) return;
+	timer_inited = 1;
+
+	idt = idle_timeout_new();
+
+	/* the timer is measured in milliseconds, so 1000
+	 * means it pops once a second. */
 	main_timer = gtk_timeout_add(1000, timer_func, NULL);
-	update_status_bar();
 }
 
-
-
-void stop_timer(void)
+gboolean 
+timer_is_running (void)
 {
-	if (!main_timer) return;
-	log_proj(NULL);
-	gtk_timeout_remove(main_timer);
-	main_timer = 0;
-        timer_stopped = 1;
-	update_status_bar();
+	return (NULL != cur_proj);
 }
 
+/* ================================= END OF FILE ============================== */

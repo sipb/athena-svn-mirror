@@ -21,12 +21,7 @@ gdict_SOURCES = \
 
 gdict_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(GNOME_APPLETS_LIBS) $(GNOME_PRINT_LIBS) $(INTLLIBS)
 
-EXTRA_DIST = \
-	GDict.desktop \
-	gdict.desktop \
-	gdict.gnorba \
-	gdict.png \
-	$(top_srcdir)/app-docs.make
+man_MANS = gdict.1
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = gdict.png
@@ -35,7 +30,21 @@ gdictgnorbadir  = $(sysconfdir)/CORBA/servers
 gdictgnorba_DATA = gdict.gnorba
 
 gdictappletdir  = $(datadir)/applets/Utility
-gdictapplet_DATA = gdict.desktop
+gdictapplet_in_files = gdict.desktop.in
+gdictapplet_DATA = $(gdictapplet_in_files:.desktop.in=.desktop)
 
 gdictappdir  = $(datadir)/gnome/apps/Utilities
-gdictapp_DATA = GDict.desktop
+gdictapp_in_files = GDict.desktop.in
+gdictapp_DATA = $(gdictapp_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
+
+EXTRA_DIST = \
+	$(gdictapp_in_files) \
+	$(gdictapp_DATA) \
+	$(gdictapplet_in_files) \
+	$(gdictapplet_DATA) \
+	$(gdictgnorba_DATA) \
+	$(pixmaps_DATA) \
+	$(man_MANS) \
+	$(top_srcdir)/sgmldocs.make
+

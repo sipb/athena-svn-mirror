@@ -4,7 +4,7 @@
 >Viewing IDE Device Information</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="IDE Tool Manual"
 HREF="index.html"><LINK
@@ -66,10 +66,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="VIEWING"
+NAME="viewing"
 >Viewing IDE Device Information</A
 ></H1
-><P
+>  
+  <P
 >   <TT
 CLASS="APPLICATION"
 >IDE Tool</TT
@@ -78,21 +79,22 @@ CLASS="APPLICATION"
 CLASS="INTERFACE"
 >tab</SPAN
 > for each IDE device on your system, as
-   seen in <A
-HREF="viewing.html#MAINWINDOW-FIG"
->Figure 1</A
->.
+   seen in .
 
     
     <DIV
 CLASS="FIGURE"
 ><A
-NAME="MAINWINDOW-FIG"
+NAME="mainwindow-fig"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/idetool.png"></P
-><P
+>
+     
+    <P
 ><B
 >Figure 1. IDE Tool Main Window</B
 ></P
@@ -100,14 +102,18 @@ SRC="figures/idetool.png"></P
 >
     
    </P
-><P
+>
+
+   <P
 >    To view the settings for a particular IDE device, select the
     corresponding <SPAN
 CLASS="INTERFACE"
 >tab</SPAN
 >. 
    </P
-><DIV
+>
+
+   <DIV
 CLASS="NOTE"
 ><P
 ></P
@@ -137,7 +143,8 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>    
+    <P
 >     IDE devices are generally identified as
      <TT
 CLASS="GUILABEL"
@@ -167,21 +174,24 @@ CLASS="GUILABEL"
      convention, on computers with more than two IDE controllers,
      although this is uncommon.)
     </P
-></TD
+>
+   </TD
 ></TR
 ></TABLE
 ></DIV
-><P
+>
+
+   <P
 >    For each device, the following information is displayed:
     <P
 ></P
 ><UL
-><LI
-><P
+>&#13;     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Model</B
-> &#8212;
+> 
        This is the device model.  It typically reveals the
        manufacturer and model number of the device. Devices other than
        hard drives are typically labelled as such (eg. <SPAN
@@ -193,53 +203,70 @@ CLASS="QUOTE"
 >"HP CD-Writer+ 7100"</SPAN
 >).
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Firmware</B
-> &#8212;
+> 
        This is the version number of the firmware on the device.  Most
        people will not need to know which firmware version they are
        running. 
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Serial No.</B
-> &#8212;
+> 
        This is the serial number of the device.  This may be useful
        for warranty purposes or for technical support.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Geometry</B
-> &#8212;
+> 
        (Only for hard drives.) This displays the number of cylinders,
        heads, and sectors on the device.      
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+    
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Cache</B
-> &#8212;
+> 
        This is the amount of cache on the device.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Status</B
-> &#8212;
+> 
        This shows the power mode status, which can be
        <TT
 CLASS="GUILABEL"
@@ -264,13 +291,16 @@ CLASS="GUILABEL"
 ></TT
 >.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >DMA Mode</B
-> &#8212;
+> 
        This shows whether DMA is <TT
 CLASS="GUILABEL"
 ><B
@@ -284,13 +314,16 @@ CLASS="GUILABEL"
 ></TT
 >.    
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >IO Mode</B
-> &#8212;
+> 
        This shows whether your I/O mode is set to
        <TT
 CLASS="GUILABEL"
@@ -304,33 +337,42 @@ CLASS="GUILABEL"
 ></TT
 >.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >IRQ Unmask</B
-> &#8212;
+> 
        This shows whether the drive is allowed to unmask other
        interrupts.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >Multisector</B
-> &#8212;
+> 
        This shows whether the drive is allowed to send data from
        multiple sectors per interrupt.
       </P
-></LI
-><LI
-><P
+>
+     </LI
+>
+
+     <LI
+>      <P
 >       <B
 CLASS="GUIMENUITEM"
 >On Reset</B
-> &#8212;
+> 
        This shows whether the drive preserves some settings
        (<TT
 CLASS="GUILABEL"
@@ -351,11 +393,16 @@ CLASS="GUILABEL"
 ></TT
 >) when the drive is soft-reset.
       </P
-></LI
-></UL
+>
+     </LI
+>
+
+    </UL
 >
    </P
-></DIV
+>
+
+ </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

@@ -1,4 +1,4 @@
-/* $Id: gdict-applet.c,v 1.1.1.1 2001-05-02 20:45:09 ghudson Exp $ */
+/* $Id: gdict-applet.c,v 1.1.1.2 2002-03-25 21:49:46 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -79,28 +79,28 @@ gdict_applet_render (GDictApplet * applet)
 	applet_height = gdict_applet_determine_height(applet);
 	applet_width = gdict_applet_determine_width(applet);
 
-    if (applet_height == TALL_APPLET_HEIGHT) {
-	    gtk_widget_show(applet->button_widget);
-    }
+	if (applet_height == TALL_APPLET_HEIGHT) {
+		gtk_widget_show(applet->button_widget);
+	}
 	else {
 		gtk_widget_hide(applet->button_widget);
 	}
 
-    gtk_container_set_border_width (GTK_CONTAINER(applet->vbox_widget), 2);
-    gtk_widget_show(applet->vbox_widget);
-    gtk_widget_show(applet->entry_widget);
-	if (gdict_pref.applet_handle) {
+	gtk_container_set_border_width (GTK_CONTAINER(applet->vbox_widget), 2);
+	gtk_widget_show(applet->vbox_widget);
+	gtk_widget_show(applet->entry_widget);
+	if (applet->handle) {
 		g_return_if_fail(applet->handlebox_widget);
 		gtk_handle_box_set_shadow_type(
 			GTK_HANDLE_BOX(applet->handlebox_widget), GTK_SHADOW_IN);
-        gtk_widget_set_usize(applet->handlebox_widget, applet_width, 
+		gtk_widget_set_usize(applet->handlebox_widget, applet_width, 
 							 applet_height);
-        gtk_widget_show(applet->handlebox_widget);
+		gtk_widget_show(applet->handlebox_widget);
 	}
 	else {
-        gtk_widget_set_usize(applet->vbox_widget, applet_width, applet_height);
+		gtk_widget_set_usize(applet->vbox_widget, applet_width, applet_height);
 	}
-    gtk_widget_show (applet->applet_widget);
+	gtk_widget_show (applet->applet_widget);
 }
 
 /* Signal handler that gets called when the user re-attaches the
@@ -259,7 +259,7 @@ gdict_applet_connect_signals (GDictApplet * applet)
 	gtk_signal_connect (GTK_OBJECT(applet->applet_widget), "change_pixel_size",
 						GTK_SIGNAL_FUNC(applet_change_pixel_size_cb),
 						(gpointer) applet);
-	if (gdict_pref.applet_handle) {
+	if (applet->handle) {
         gtk_signal_connect (GTK_OBJECT(applet->handlebox_widget), 
 							"child_detached",
                             GTK_SIGNAL_FUNC(applet_detach_cb), 
@@ -310,9 +310,14 @@ gdict_applet_new ()
 
     applet->vbox_widget = gtk_vbox_new(FALSE, 2);
     applet->entry_widget = gtk_entry_new();
-    applet->button_widget = gtk_button_new_with_label(_("Lookup"));
+    applet->button_widget = gtk_button_new_with_label(_("Look up"));
 
-    if (gdict_pref.applet_handle) {
+    applet->handle = gdict_pref.applet_handle;
+
+    if (gdict_applet_determine_height (applet) != TALL_APPLET_HEIGHT)
+	    applet->handle = TRUE;
+
+    if (applet->handle) {
         applet->handlebox_widget = gtk_handle_box_new();
     } else {
 		applet->handlebox_widget = NULL;
@@ -338,7 +343,7 @@ gdict_applet_pack_widgets (GDictApplet * applet)
     gtk_box_pack_end(GTK_BOX(applet->vbox_widget), applet->button_widget, 
 					 TRUE, TRUE, 0);
 
-    if (gdict_pref.applet_handle) {
+    if (applet->handle) {
         gtk_container_add(GTK_CONTAINER(applet->handlebox_widget), 
 						  applet->vbox_widget);
         applet_widget_add(APPLET_WIDGET(applet->applet_widget), 

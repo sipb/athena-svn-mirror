@@ -31,12 +31,17 @@
 #include <sys/types.h>
 #include <errno.h>
 #include "progress.h"
+#define NUM_DEVICES_TO_CHECK 4
 
 extern int errno;
 
 static GFloppy floppy;
 static GladeXML *xml;
 static GtkWidget *toplevel = NULL;
+
+/* Only needed if more then one device exists */
+static GList *valid_devices = NULL;
+
 static gint
 option_menu_get_history (GtkOptionMenu *option_menu)
 {
@@ -54,7 +59,22 @@ option_menu_get_history (GtkOptionMenu *option_menu)
 }
 
 static void
-start_format ()
+devices_option_activated (GtkWidget *menu_item, gchar *device)
+{
+	g_free (floppy.device);
+	g_free (floppy.mdevice);
+
+	floppy.device = g_strdup (device);
+
+	/* FIXME: what the heck is /dev/fd2 and /dev/fd3 ?? */
+	if (strncmp (floppy.device, "/dev/fd1", strlen ("/dev/fd1")) == 0)
+		floppy.mdevice = g_strdup ("b:");
+	else
+		floppy.mdevice = g_strdup ("a:");
+}
+
+static void
+start_format (void)
 {
 	pipe (floppy.message);
 
@@ -77,26 +97,19 @@ start_format ()
 	setup_progress_and_run (&floppy, toplevel);
 }
 
+#include <stdlib.h>
+
 static void
-init_commands ()
+init_commands (void)
 {
 	floppy.mke2fs_cmd = NULL;
-	if (g_file_test ("/sbin/mke2fs", G_FILE_TEST_ISFILE))
-		floppy.mke2fs_cmd = g_strdup ("/sbin/mke2fs");
-	else if (g_file_test ("/usr/sbin/mke2fs", G_FILE_TEST_ISFILE))
-		floppy.mke2fs_cmd = g_strdup ("/sbin/mke2fs");
-
 	floppy.mformat_cmd = NULL;
-	if (g_file_test ("/usr/bin/mformat", G_FILE_TEST_ISFILE))
-		floppy.mformat_cmd = g_strdup ("/usr/bin/mformat");
-	else if (g_file_test ("/bin/mformat", G_FILE_TEST_ISFILE))
-		floppy.mformat_cmd = g_strdup ("/bin/mformat");
-
 	floppy.badblocks_cmd = NULL;
-	if (g_file_test ("/usr/bin/mbadblocks", G_FILE_TEST_ISFILE))
-		floppy.badblocks_cmd = g_strdup ("/usr/bin/mbadblocks");
-	else if (g_file_test ("/bin/mbadblocks", G_FILE_TEST_ISFILE))
-		floppy.badblocks_cmd = g_strdup ("/bin/mbadblocks");
+
+	putenv ("PATH=$PATH:/sbin:/usr/sbin:/usr:/usr/bin");
+	floppy.mke2fs_cmd    = gnome_is_program_in_path ("mke2fs");
+	floppy.mformat_cmd   = gnome_is_program_in_path ("mformat");
+	floppy.badblocks_cmd = gnome_is_program_in_path ("mbadblocks");
 
 	if (floppy.mke2fs_cmd == NULL) {
 		g_print ("Warning:  Unable to locate mke2fs.  Please confirm it is installed and try again\n");
@@ -106,33 +119,127 @@ init_commands ()
 }
 
 static void
-init_devices ()
+init_devices (void)
 {
-	if (floppy.device == NULL || *(floppy.device) == '\000') {
-		floppy.device = g_strdup ("/dev/fd0");
+	GtkWidget *device_option;
+	GtkWidget *device_entry;
+	gchar *msg = NULL;
+	gint ok_devices_present = 0;
+
+	/* First check --device arg */
+	if (floppy.device != NULL) {
+		GFloppyStatus status;
+		status = test_floppy_device (floppy.device);
+		switch (status) {
+		case GFLOPPY_NO_DEVICE:
+			msg = g_strdup_printf (_("Unable to open the device %s, formatting cannot continue."), floppy.device);
+			break;
+		case GFLOPPY_DEVICE_DISCONNECTED:
+			msg = g_strdup_printf (_("The device %s is disconnected.\nPlease attach device to continue."), floppy.device);
+			break;
+		case GFLOPPY_INVALID_PERMISSIONS:
+			msg = g_strdup_printf (_("You do not have the proper permissions to write to %s, formatting will not be possible.\nContact your system administrator about getting write permissions."), floppy.device);
+			break;
+		default:
+			break;
+		}
+		if (msg) {
+			GtkWidget *toplevel = glade_xml_get_widget (xml, "toplevel");
+			gtk_widget_set_sensitive (toplevel, FALSE);
+			gnome_dialog_run_and_close (GNOME_DIALOG (gnome_error_dialog (msg)));
+			exit (1);
+		}
+		/* Device is okay */
+		ok_devices_present = 1;
+	} else {
+		GFloppyStatus status[NUM_DEVICES_TO_CHECK];
+		gint i;
+		char device[32];
+
+		for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
+			sprintf(device,"/dev/fd%d", i);
+			status[i] = test_floppy_device (device);
+			if (status[i] == GFLOPPY_DEVICE_OK)
+				ok_devices_present++;
+		}
+		if (ok_devices_present == 0) {
+			GtkWidget *toplevel;
+
+			/* Lets assume that there's only a problem with /dev/fd0 */
+			switch (status[0]) {
+			case GFLOPPY_NO_DEVICE:
+				msg = g_strdup_printf (_("Unable to open the device %s, formatting cannot continue."), "/dev/fd0");
+				break;
+			case GFLOPPY_DEVICE_DISCONNECTED:
+				msg = g_strdup_printf (_("The device %s is disconnected.\nPlease attach device to continue."), "/dev/fd0");
+				break;
+			case GFLOPPY_INVALID_PERMISSIONS:
+				msg = g_strdup_printf (_("You do not have the proper permissions to write to %s, formatting will not be possible.\nContact your system administrator about getting write permissions."), "/dev/fd0");
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+			toplevel = glade_xml_get_widget (xml, "toplevel");
+			gtk_widget_set_sensitive (toplevel, FALSE);
+			gnome_dialog_run_and_close (GNOME_DIALOG (gnome_error_dialog (msg)));
+			exit (1);
+		} else if (ok_devices_present == 1) {
+			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
+				if (status[i] == GFLOPPY_DEVICE_OK) {
+					floppy.device = g_strdup_printf ("/dev/fd%d", i);
+					break;
+				}
+			}
+		} else {
+			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
+				if (status[i] == GFLOPPY_DEVICE_OK) {
+					valid_devices = g_list_append (valid_devices, g_strdup_printf ("/dev/fd%d", i));
+					if (floppy.device == NULL)
+						floppy.device = g_strdup_printf ("/dev/fd%d", i);
+				}
+			}
+		}
 	}
 
-	if (test_floppy_device (floppy.device) != 0) {
-		exit (1);
-	}
-
-	if (strcmp (floppy.device, "/dev/fd0") == 0 &&
-	    strcmp (floppy.device, "/dev/fd1") == 0 &&
-	    strcmp (floppy.device, "/dev/floppy") == 0) {
-		g_print ("Warning:  The device,  %s, is not recognized\n", floppy.device);
-		exit (1);
-	}
-
+	/* FIXME: what the heck is /dev/fd2 and /dev/fd3 ?? */
 	if (strncmp (floppy.device, "/dev/fd1", strlen ("/dev/fd1")) == 0)
 		floppy.mdevice = g_strdup ("b:");
 	else
 		floppy.mdevice = g_strdup ("a:");
+
+	/* set up the UI */
+	device_option = glade_xml_get_widget (xml, "device_option");
+	device_entry = glade_xml_get_widget (xml, "device_entry");
+
+	if (ok_devices_present == 1) {
+		gtk_widget_hide (device_option);
+		gtk_widget_show (device_entry);
+		gtk_entry_set_text (GTK_ENTRY (device_entry), floppy.device);
+	} else {
+		GtkWidget *menu;
+		GList *list;
+
+		gtk_widget_show (device_option);
+		gtk_widget_hide (device_entry);
+		gtk_option_menu_remove_menu (GTK_OPTION_MENU (device_option));
+		menu = gtk_menu_new ();
+		for (list = valid_devices; list; list = list->next) {
+			GtkWidget *menu_item;
+			menu_item = gtk_menu_item_new_with_label ((gchar *)list->data);
+			gtk_signal_connect (GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC (devices_option_activated), list->data);
+			gtk_widget_show (menu_item);
+			gtk_menu_append (GTK_MENU (menu), menu_item);
+		}
+		gtk_widget_show_all (menu);
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (device_option), menu);
+		gtk_option_menu_set_history (GTK_OPTION_MENU (device_option), 0);
+	}
 }
 
 static void
-set_floppy_extended_device ()
+set_floppy_extended_device (void)
 {
-	switch (floppy.type) {
+	switch (floppy.size) {
 	case 0:
 		floppy.extended_device = g_strdup_printf ("%sH1440", floppy.device);
 		break;
@@ -164,11 +271,10 @@ main (int argc, char *argv[])
 	GtkWidget *type_option;
 	GtkWidget *icon_frame;
 	GtkWidget *icon;
-	GtkWidget *device_label;
 	GtkWidget *quick_format_button;
-	gchar *device_string;
+	GtkWidget *device_combo;
 	gint button;
-	
+
 	struct poptOption gfloppy_opts[] = {
 		{"device", '\0', POPT_ARG_STRING, NULL, 0, NULL, NULL},
 		{NULL, '\0', 0, NULL, 0, NULL, NULL}
@@ -186,17 +292,21 @@ main (int argc, char *argv[])
 				    gfloppy_opts, 0, NULL);
 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/mc/i-floppy.png");
 	init_commands ();
-	init_devices ();
-
 
 	/* Now we can set up glade */
 	glade_gnome_init();
         xml = glade_xml_new (GLADEDIR "/gfloppy.glade", NULL);
+	if (xml == NULL)
+		xml = glade_xml_new ("gfloppy.glade", NULL);
+	if (xml == NULL)
+		g_error ("Cannot load/find floppy.glade");
+	init_devices ();
 	toplevel = glade_xml_get_widget (xml, "toplevel");
 	quick_format_button = glade_xml_get_widget (xml, "quick_format_button");
 	icon_frame = glade_xml_get_widget (xml, "icon_frame");
 	type_option = glade_xml_get_widget (xml, "type_option");
 	toplevel = glade_xml_get_widget (xml, "toplevel");
+	device_combo = glade_xml_get_widget (xml, "device_combo");
 	glade_xml_signal_autoconnect (xml);
 	
 	icon = gnome_pixmap_new_from_file (GNOME_ICONDIR"/mc/i-floppy.png");
@@ -208,11 +318,6 @@ main (int argc, char *argv[])
 	gnome_dialog_append_button (GNOME_DIALOG (toplevel), GNOME_STOCK_BUTTON_CLOSE);
 	gnome_dialog_append_button (GNOME_DIALOG (toplevel), GNOME_STOCK_BUTTON_HELP);
 
-	/* initialize our widgets */
-	device_string = g_strdup_printf (_("Formatting %s"), floppy.device);
-	device_label = glade_xml_get_widget (xml, "device_label");
-	gtk_label_set_text (GTK_LABEL (device_label), device_string);
-	g_free (device_string);
 
 	if (floppy.mformat_cmd == NULL) {
 		/* We don't have mtools.  Allow ext2 only. */
@@ -237,6 +342,7 @@ main (int argc, char *argv[])
 		g_assert (quick_format_button != NULL);
 
 		gtk_widget_set_sensitive (toplevel, FALSE);
+
 		if (floppy.mformat_cmd) {
 			/* Check to see which one is selected. */
 			floppy.type = option_menu_get_history (GTK_OPTION_MENU (type_option));
@@ -258,7 +364,3 @@ main (int argc, char *argv[])
 	}
 	return 0;
 }
-
-
-
-

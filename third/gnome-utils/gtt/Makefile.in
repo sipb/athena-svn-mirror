@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -64,18 +64,28 @@ host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
 BUILD_GUILE = @BUILD_GUILE@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
+CONSOLE_HELPER = @CONSOLE_HELPER@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CURSES_INCLUDEDIR = @CURSES_INCLUDEDIR@
 CURSES_LIBS = @CURSES_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+EXPANDED_GSHUTDOWNDIR = @EXPANDED_GSHUTDOWNDIR@
+EXPANDED_LOGVIEWDIR = @EXPANDED_LOGVIEWDIR@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GLADE_FGLAGS = @GLADE_FGLAGS@
+GLADE_CFLAGS = @GLADE_CFLAGS@
 GLADE_LIBS = @GLADE_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -94,6 +104,8 @@ GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
+GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
+GTKHTML_LIBS = @GTKHTML_LIBS@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
@@ -102,12 +114,15 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 GUILE_INCS = @GUILE_INCS@
 GUILE_LIBS = @GUILE_LIBS@
+HAVE_JW = @HAVE_JW@
 HAVE_LIBXML = @HAVE_LIBXML@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
@@ -132,6 +147,10 @@ LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+OAF_CFLAGS = @OAF_CFLAGS@
+OAF_CONFIG = @OAF_CONFIG@
+OAF_LIBS = @OAF_LIBS@
+OAF_REQUIRED = @OAF_REQUIRED@
 OBGNOME_INCLUDEDIR = @OBGNOME_INCLUDEDIR@
 OBGNOME_LIBS = @OBGNOME_LIBS@
 OBGTK_LIBS = @OBGTK_LIBS@
@@ -143,6 +162,9 @@ ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PAM_LIBS = @PAM_LIBS@
+PAM_PREFIX = @PAM_PREFIX@
+PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
+PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -153,6 +175,19 @@ TERMCAP_LIB = @TERMCAP_LIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XLIBDIR = @XLIBDIR@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -160,24 +195,31 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-SUBDIRS = doc
-
-INCLUDES =  	-I$(includedir)			-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	$(GNOME_INCLUDEDIR)
-
+SUBDIRS = doc glade ghtml
 
 bin_PROGRAMS = gtt
 
-gtt_SOURCES =  	dialog.c		dialog.h		main.c			menus.c			menus.h			proj.c			timer.c			err.c			menucmd.c		options.c		prop.c			toolbar.c		toolbar.h		gtt.h			menucmd.h		app.c			log.c			clist.c			shorts.c		shorts.h
+gtt_SOURCES =  	app.c			ctree.c			dialog.c		err.c			err-throw.c		file-io.c		ghtml.c			idle-timer.c		journal.c		log.c			main.c			menucmd.c		menus.c			myoaf.c			plug-in.c		prefs.c			proj.c			props-invl.c		props-proj.c		props-task.c		shorts.c		timer.c			toolbar.c		util.c			xml-read.c		xml-write.c
 
 
-gtt_LDADD =  	$(GNOME_LIBDIR)         	$(GTKXMHTML_LIBS)		$(GNOMEUI_LIBS) 		$(INTLLIBS)
+noinst_HEADERS =  	app.h			ctree.h			cur-proj.h		dialog.h		err-throw.h		file-io.h		ghtml.h			gtt.h			idle-timer.h		journal.h		log.h			menucmd.h		menus.h			myoaf.h			plug-in.h		prefs.h			proj.h			proj_p.h		props-invl.h		props-proj.h		props-task.h		shorts.h		timer.h			toolbar.h		util.h			xml-gtt.h
 
 
-EXTRA_DIST =  	gtt.desktop 	$(top_srcdir)/app-docs.make
+CFLAGS = @CFLAGS@ 			${GCONF_CFLAGS} 		${GTKHTML_CFLAGS} 		${GLADE_CFLAGS}			${PIXBUF_CFLAGS} 
+
+
+INCLUDES =  	-I$(includedir)			-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGTTGLADEDIR=\""$(datadir)/gtt"\" 	-DGTTDATADIR=\""$(datadir)/gtt"\" 	${GNOME_INCLUDEDIR}		${GUILE_INCS}
+
+
+gtt_LDADD =  	$(GLADE_LIBS)           	$(GNOME_LIBDIR)         	$(GNOME_XML_LIB)        	$(GTKHTML_LIBS)			$(GNOMEUI_LIBS) 		$(GCONF_LIBS)	 		${GUILE_LIBS}			$(INTLLIBS)
 
 
 Productivitydir = $(datadir)/gnome/apps/Applications
-Productivity_DATA = gtt.desktop
+Productivity_in_files = gtt.desktop.in
+Productivity_DATA = $(Productivity_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST =  	AUTHORS				COPYING				ChangeLog			NEWS				README				TODO				down.xpm			left.xpm			design.txt			$(Productivity_in_files) 	$(Productivity_DATA) 		$(top_srcdir)/sgmldocs.make
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -186,14 +228,18 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-gtt_OBJECTS =  dialog.o main.o menus.o proj.o timer.o err.o menucmd.o \
-options.o prop.o toolbar.o app.o log.o clist.o shorts.o
+gtt_OBJECTS =  app.o ctree.o dialog.o err.o err-throw.o file-io.o \
+ghtml.o idle-timer.o journal.o log.o main.o menucmd.o menus.o myoaf.o \
+plug-in.o prefs.o proj.o props-invl.o props-proj.o props-task.o \
+shorts.o timer.o toolbar.o util.o xml-read.o xml-write.o
 gtt_DEPENDENCIES = 
 gtt_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(Productivity_DATA)
+
+HEADERS =  $(noinst_HEADERS)
 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog Makefile.am Makefile.in \
 NEWS TODO
@@ -320,7 +366,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -399,6 +445,46 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+app.o: app.c ../config.h app.h ctree.h proj.h cur-proj.h gtt.h log.h \
+	menucmd.h menus.h prefs.h props-proj.h timer.h toolbar.h util.h
+ctree.o: ctree.c ../config.h app.h ctree.h proj.h cur-proj.h gtt.h \
+	menucmd.h menus.h prefs.h props-proj.h timer.h util.h down.xpm \
+	left.xpm
+dialog.o: dialog.c ../config.h dialog.h gtt.h
+err-throw.o: err-throw.c ../config.h err-throw.h
+err.o: err.c ../config.h gtt.h
+file-io.o: file-io.c ../config.h app.h ctree.h proj.h cur-proj.h \
+	err-throw.h file-io.h gtt.h plug-in.h prefs.h timer.h toolbar.h
+ghtml.o: ghtml.c ../config.h gtt.h ghtml.h proj.h util.h
+idle-timer.o: idle-timer.c ../config.h idle-timer.h
+journal.o: journal.c ../config.h app.h ctree.h proj.h journal.h ghtml.h \
+	props-invl.h props-task.h util.h
+log.o: log.c ../config.h cur-proj.h proj.h log.h prefs.h
+main.o: main.c ../config.h app.h ctree.h proj.h cur-proj.h dialog.h \
+	err-throw.h file-io.h gtt.h log.h menus.h menucmd.h prefs.h \
+	shorts.h timer.h xml-gtt.h
+menucmd.o: menucmd.c ../config.h app.h ctree.h proj.h cur-proj.h \
+	dialog.h err-throw.h file-io.h gtt.h menucmd.h menus.h prefs.h \
+	props-proj.h timer.h xml-gtt.h
+menus.o: menus.c ../config.h gtt.h journal.h menucmd.h proj.h menus.h \
+	plug-in.h timer.h toolbar.h
+myoaf.o: myoaf.c myoaf.h
+plug-in.o: plug-in.c ../config.h journal.h plug-in.h util.h
+prefs.o: prefs.c ../config.h app.h ctree.h proj.h cur-proj.h gtt.h \
+	prefs.h timer.h toolbar.h util.h
+proj.o: proj.c ../config.h err-throw.h log.h proj.h proj_p.h timer.h
+props-invl.o: props-invl.c ../config.h proj.h props-invl.h util.h
+props-proj.o: props-proj.c ../config.h proj.h props-proj.h util.h
+props-task.o: props-task.c ../config.h proj.h props-task.h util.h
+shorts.o: shorts.c ../config.h app.h ctree.h proj.h gtt.h menucmd.h \
+	shorts.h
+timer.o: timer.c ../config.h app.h ctree.h proj.h cur-proj.h dialog.h \
+	idle-timer.h log.h prefs.h timer.h
+toolbar.o: toolbar.c ../config.h app.h ctree.h proj.h gtt.h journal.h \
+	menucmd.h myoaf.h prefs.h timer.h toolbar.h
+util.o: util.c ../config.h util.h
+xml-read.o: xml-read.c err-throw.h gtt.h proj.h xml-gtt.h
+xml-write.o: xml-write.c err-throw.h gtt.h proj.h xml-gtt.h
 
 info-am:
 info: info-recursive
@@ -419,7 +505,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-ProductivityDATA
 uninstall: uninstall-recursive
-all-am: Makefile $(PROGRAMS) $(DATA)
+all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -477,6 +563,7 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

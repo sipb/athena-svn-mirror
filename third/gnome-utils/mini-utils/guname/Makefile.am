@@ -39,18 +39,25 @@ guname_LDADD = \
 	$(LIBGTOP_EXTRA_LIBS)	\
 	$(GUNAME_CAPPLET_LIBS)
 
+man_MANS = guname.1
+
 Systemdir = $(datadir)/gnome/apps/System
-System_DATA = guname.desktop
+System_in_files = guname.desktop.in
+System_DATA = $(System_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 if GUNAME_CAPPLET
-install-data-local:
+install-data-local: guname-capplet.desktop
 	$(INSTALL_DATA) $(srcdir)/guname-capplet.desktop $(DESTDIR)$(datadir)/control-center/guname-capplet.desktop
 endif
 
 EXTRA_DIST = 		\
-	guname.desktop	\
+	$(man_MANS)	\
+	$(System_in_files) \
+	$(System_DATA) \
 	moreinfo.c	\
 	moreinfo.h	\
+	guname-capplet.desktop.in \
 	guname-capplet.desktop \
-	$(top_srcdir)/app-docs.make
+	$(top_srcdir)/sgmldocs.make
 

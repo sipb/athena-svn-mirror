@@ -82,7 +82,7 @@ GnomeUIInfo file_menu[] = {
   GNOMEUIINFO_ITEM_STOCK        (N_("Save palette _As..."),
                                  N_("Save the current palette with a different name"),
                                  save_as_cb, GNOME_STOCK_MENU_SAVE_AS),
-  GNOMEUIINFO_MENU_REVERT_ITEM  (revert_cb,  NULL),
+/*  GNOMEUIINFO_MENU_REVERT_ITEM  (revert_cb,  NULL), */
   
   GNOMEUIINFO_SEPARATOR,
 
@@ -982,7 +982,7 @@ grab_mouse_clicked_release (GtkWidget *widget, GdkEventButton *event,
   GdkImage *image;
   guint32 pixel;
   GdkVisual *visual;
-  GdkColormap *colormap = gdk_colormap_get_system ();
+  GdkColormap *colormap = gtk_widget_get_colormap (widget);
   XColor xcolor;
   double r = 0, g = 0, b = 0;
 

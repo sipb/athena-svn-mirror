@@ -6,9 +6,17 @@ Mimedir = $(datadir)/mime-info
 
 SUBDIRS = doc src
 
-EXTRA_DIST = gfloppy.desktop gfloppy.mime gfloppy.keys
+EXTRA_DIST = \
+	gfloppy.desktop \
+	gfloppy.desktop.in \
+	gfloppy.keys \
+	gfloppy.keys.in \
+	gfloppy.mime
 
-install-data-local:
+@XML_I18N_MERGE_DESKTOP_RULE@
+@XML_I18N_MERGE_KEYS_RULE@
+
+install-data-local: gfloppy.desktop gfloppy.keys
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
 	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \

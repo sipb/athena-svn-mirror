@@ -1,3 +1,49 @@
+Sun Oct 14 21:04:04 2001 Abel Cheung <maddog@linux.org.hk>
+
+	* Makefile.am: GLADE_CFLAGS needed because libglade header
+	  is moved to another location.
+
+Mon Sep 03 06:18:59 2001  George Lebl <jirka@5z.com>
+
+	* glade/*.h: remove the .h files.  glade files are handled directly
+	  now
+
+2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* dialog-prefs.c: Hook up the help button to show some help.
+	* menus.c: s/gdk_colormap_get_system()/gtk_widget_get_colormap()
+	
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+Wed Jun 06 16:30:49 2001  George Lebl <jirka@5z.com>
+
+	* view-color-list.c: fix float range view bug, there are 255 not 256
+	  divisions
+
+Wed Jun 06 15:30:13 2001  George Lebl <jirka@5z.com>
+
+	* dialog-prefs.c, gcolorsel.c, mdi-color-generic.c, mdi-color.c,
+	  session.c: Fix some pref loading races, general cleanup, fix the
+	  mdi mode load/save foo
+
+Wed Jun 06 14:33:58 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am: fix the XLIBDIR define
+
+2001-06-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* dialog-prefs.c: Fix headers.
+	
+2001-06-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* glade/Makefile.am: Remove .glade.h files now that we use xml-i18n-tools.
+	
+2001-06-04  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gcolorsel.c (main): Remove unused var "goad_id".
+	
 2001-02-13 John Fleck <jfleck@inkstain.net>
 
 	* added doc/C/gcolorsel-C.omf, the omf file for scrollkeeper

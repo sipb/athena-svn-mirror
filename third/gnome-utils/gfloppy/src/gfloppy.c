@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
+
 #include "config.h"
 
 #include <gnome.h>
@@ -34,7 +35,6 @@
 #include <linux/fd.h>
 #include <linux/fs.h>
 #endif
-
 
 #include "gfloppy.h"
 #include "fdformat.h"
@@ -64,8 +64,7 @@ floppy_block_size (GFloppySize size)
 		break;
 	case 2:
 		/* 720k */
-		rc = 1440;
-		break;
+		rc = 1440;		break;
 	case 3:
 		/* 360k */
 		rc = 720;
@@ -143,7 +142,6 @@ make_mke2fs_cmd (GFloppy *floppy)
 	}
 	return retval;
 #endif
-
 }
 
 static int
@@ -237,27 +235,43 @@ format_floppy (GFloppy *floppy)
 	_exit (rc);
 }
 
-/* 0 if device is a valid floppy device, non-zero otherwise */
-gint
+GFloppyStatus
 test_floppy_device (gchar *device)
 {
 	struct stat s;
+        struct floppy_drive_struct ds;
+        char name[32];
+	gint fd;
+	GFloppyStatus retval;
 
 	/* sanity check */
-	if (device == NULL || *device == '\000') {
-		return -1;
-	}
-	if (stat (device, &s) < 0) {
-		g_print ("Warning:  could not stat %s\n", device);
-		return -1;
-	}
-	if (!S_ISBLK(s.st_mode) || MAJOR(s.st_rdev) != FLOPPY_MAJOR) {
-		g_print ("Warning:  %s is not a proper block device\n", device);
-		return -1;
-	}
+	if (device == NULL || *device == '\000')
+		return GFLOPPY_NO_DEVICE;
 
-	/* all ok */
-	return 0;
+	if (stat (device, &s) < 0)
+		return GFLOPPY_NO_DEVICE;
+	if (!S_ISBLK(s.st_mode) || MAJOR(s.st_rdev) != FLOPPY_MAJOR)
+		return GFLOPPY_NO_DEVICE;
+
+	if (access (device, R_OK|W_OK) != 0)
+		return GFLOPPY_INVALID_PERMISSIONS;
+
+	fd = open (device, O_RDONLY|O_NONBLOCK);
+	if (fd < 0)
+		return GFLOPPY_NO_DEVICE;
+
+	ioctl (fd, FDRESET, NULL);
+	if (ioctl (fd, FDGETDRVTYP, name) == 0) {
+		if (name && strcmp(name,"(null)")) {
+			if (ioctl(fd, FDPOLLDRVSTAT, &ds) == 0 && ds.track >= 0)
+				retval = GFLOPPY_DEVICE_OK;
+			else
+				retval = GFLOPPY_DEVICE_DISCONNECTED;
+		} else {
+			retval = GFLOPPY_NO_DEVICE;
+		}
+	}
+	close(fd);
+
+	return retval;
 }
-
-

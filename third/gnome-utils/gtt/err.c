@@ -1,4 +1,5 @@
-/*   GTimeTracker - a time tracker
+/*   Catch/block signals, x11 errors, clean up gracefully.
+ *   A part of GTimeTracker - a time tracker
  *   Copyright (C) 1997,98 Eckehard Berns
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -28,10 +29,13 @@
 #undef DIE_ON_NORMAL_ERROR
 
 
+/* =================================================== */
+/* error handlers for 'unavoidable' system errors */
+
 static void die(void)
 {
 	fprintf(stderr, " - saving and dying\n");
-	project_list_save(NULL);
+	save_all();
 	unlock_gtt();
 	exit(1);
 }
@@ -77,3 +81,4 @@ void err_init(void)
 	XSetIOErrorHandler(x11_io_error_handler);
 }
 
+/* =========================== END OF FILE ======================== */

@@ -19,18 +19,16 @@
 
     ---------------------------------------------------------------------- */
 
+#include <config.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
-#include <config.h>
 #include <string.h>
 #include <gnome.h>
 #include "logview.h"
 #include "logrtns.h"
-#include "gtk/gtk.h"
-#include "gdk/gdkkeysyms.h"
 
 /*
  * -----------------
@@ -96,26 +94,29 @@ extern GtkWidget *main_win_scrollbar;
  * -------------------
  */
 
-int InitPages ();
-int HandleLogEvents ();
+int InitPages (void);
+int HandleLogEvents (void);
 int GetLineAtCursor (int y);
+int NumTextLines (int l);
 int RepaintCalendar (GtkWidget * widget, GdkEventExpose * event);
 int RepaintLogInfo (GtkWidget *, GdkEventExpose *);
 int rapaint_zoom (GtkWidget * widget, GdkEventExpose * event);
-void log_repaint (GtkWidget * cv, GdkEventExpose * event);
+gboolean HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key);
+gboolean PointerMoved (GtkWidget * cv, GdkEventMotion * event);
+gboolean log_repaint (GtkWidget * cv, GdkEventExpose * event);
 void log_redrawcursor (int ol, int nl, Page * np);
-void log_redrawdetail ();
+void log_redrawdetail (void);
 void DrawMonthHeader (LogLine * line, int y);
 void DrawLogLine (LogLine *line, int y);
 void DrawLogCursor (int y);
 void EraseLogCursor (int y);
 void Draw3DBox (GdkDrawable *win, GdkGC *gc, int x, int y, int w, int h, GdkColor color[3]);
-void CloseApp ();
-void UpdateStatusArea ();
+void CloseApp (void);
+void UpdateStatusArea (void);
 void change_log (int direction);
 void create_zoom_view (GtkWidget * widget, gpointer user_data);
 void close_zoom_view (GtkWidget * widget, GtkWindow ** window);
-void handle_log_mouse_button (GtkWidget * win, GdkEventButton * event_key);
+gboolean handle_log_mouse_button (GtkWidget * win, GdkEventButton * event_key);
 Page *GetPageAtCursor (int y);
 
 /* ----------------------------------------------------------------------
@@ -123,7 +124,7 @@ Page *GetPageAtCursor (int y);
    DESCRIPTION: The pointer moved inside the window.
    ---------------------------------------------------------------------- */
 
-void
+gboolean
 PointerMoved (GtkWidget * cv, GdkEventMotion * event)
 {
    int cursory, nl;
@@ -131,7 +132,7 @@ PointerMoved (GtkWidget * cv, GdkEventMotion * event)
 
    /* Check that there is at least one log */
    if (curlog == NULL)
-      return;
+      return FALSE;
 
    cursory = event->y;
    cursor_visible = TRUE;
@@ -143,6 +144,8 @@ PointerMoved (GtkWidget * cv, GdkEventMotion * event)
       curlog->pointerpg = np;
       log_redrawdetail ();
    }
+
+   return FALSE;
 }
 
 
@@ -186,7 +189,7 @@ NumTextLines (int l)
    DESCRIPTION: User clicked on main window: open zoom view. 
    ---------------------------------------------------------------------- */
 
-void
+gboolean
 handle_log_mouse_button (GtkWidget * win, GdkEventButton *event)
 {
   static guint32 lasttime;
@@ -196,18 +199,19 @@ handle_log_mouse_button (GtkWidget * win, GdkEventButton *event)
     {
       lasttime = event->time;
       clicked_before = TRUE;
-      return;
+      return FALSE;
     }
   
   clicked_before = FALSE;
   if (event->time - lasttime < 100 ||
       event->time - lasttime > 200)
-    return;
+    return FALSE;
 
   /* If zoom is already visible ignore */
   if (!zoom_visible)
     create_zoom_view (NULL, NULL);
-  return;
+
+  return FALSE;
 }
 
 /* ----------------------------------------------------------------------
@@ -215,7 +219,7 @@ handle_log_mouse_button (GtkWidget * win, GdkEventButton *event)
    DESCRIPTION: Handle all posible keyboard actions.
    ---------------------------------------------------------------------- */
 
-void
+gboolean
 HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key)
 {
   GtkAdjustment *adj;
@@ -223,7 +227,7 @@ HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key)
 
   /* Check that there is at least one log */
   if (curlog == NULL)
-    return;
+    return FALSE;
   
   adj = GTK_ADJUSTMENT (GTK_RANGE (main_win_scrollbar)->adjustment);
   key = event_key->keyval;
@@ -267,10 +271,11 @@ HandleLogKeyboard (GtkWidget * win, GdkEventKey * event_key)
       break;
       
     default:
+      return FALSE;
       break;
     };
   
-   return;
+   return TRUE;
 }
 
 /* ----------------------------------------------------------------------
@@ -384,7 +389,7 @@ ScrollUp (int howmuch)
    DESCRIPTION: Redraw screen.
    ---------------------------------------------------------------------- */
 
-void
+gboolean
 log_repaint (GtkWidget * win, GdkEventExpose * event)
 {
    static int firsttime = TRUE;
@@ -396,7 +401,7 @@ log_repaint (GtkWidget * win, GdkEventExpose * event)
    if (firsttime)
    {
       if (win == NULL)
-	 return;
+	 return FALSE;
       firsttime = FALSE;
       canvas = win->window;
       gc = gdk_gc_new (canvas);
@@ -417,7 +422,7 @@ log_repaint (GtkWidget * win, GdkEventExpose * event)
 
    /* Check that there is at least one log */
    if (curlog == NULL)
-      return;
+      return FALSE;
 
    pg = curlog->currentpg;
    ln = curlog->firstline;
@@ -458,6 +463,8 @@ log_repaint (GtkWidget * win, GdkEventExpose * event)
 
   /* Repaint status bar */
    UpdateStatusArea ();
+
+   return TRUE;
 }
 
 void
@@ -466,6 +473,8 @@ UpdateStatusArea ()
   struct tm *tdm;
   char status_text[255];
   char *buffer;
+  /* Translators: Date only format, %x should well do really */
+  const char *time_fmt = _("%x"); /* an evil way to avoid warning */
 
   if (curlog == NULL)
     return;
@@ -479,13 +488,15 @@ UpdateStatusArea ()
     }
 
   tdm = &curlog->curmark->fulldate;
-  g_snprintf (status_text, sizeof (status_text), "%02d/%02d/%02d", 
-	      tdm->tm_mday, tdm->tm_mon, tdm->tm_year % 100);
+
+  if (strftime (status_text, sizeof (status_text), time_fmt, tdm) <= 0) {
+	  /* as a backup print in US style */
+	  g_snprintf (status_text, sizeof (status_text), "%02d/%02d/%02d", 
+		      tdm->tm_mday, tdm->tm_mon, tdm->tm_year % 100);
+  }
   gtk_label_get ( date_label, (char **)&buffer);
   if (strcmp (status_text, buffer) != 0)
     gtk_label_set_text (date_label, status_text);
-
-  return;
 }
 
 /* ----------------------------------------------------------------------
@@ -561,11 +572,26 @@ DrawLogLine (LogLine *line, int y)
   
   /*gdk_gc_set_foreground (gc, &cfg->white); */
   gdk_gc_set_foreground (gc, &cfg->black);
-  
-  if (line->hour >= 0 && line->min >= 0 && line->sec >= 0)
-    g_snprintf (tmp, sizeof (tmp), "%02d:%02d:%02d", line->hour, line->min, line->sec);
-  else
-    strcpy (tmp, " ");
+
+  if (line->hour >= 0 && line->min >= 0 && line->sec >= 0) {
+	  struct tm date = {0};
+	  date.tm_mon = line->month;
+	  date.tm_year = 70 /* bogus */;
+	  date.tm_mday = line->date;
+	  date.tm_hour = line->hour;
+	  date.tm_min = line->min;
+	  date.tm_sec = line->sec;
+	  date.tm_isdst = 0;
+
+	  /* Translators: should be only the time, date could be bogus */
+	  if (strftime (tmp, sizeof (tmp), _("%X"), &date) <= 0) {
+		  /* as a backup print in 24 hours style */
+		  g_snprintf (tmp, sizeof (tmp), "%02d:%02d:%02d", line->hour, line->min, line->sec);
+	  }
+
+  } else {
+	  strcpy (tmp, " ");
+  }
   gdk_draw_string (canvas, cfg->fixedb, gc, LOG_COL1, y, tmp);
 
   /* Print four spaces */
@@ -638,10 +664,18 @@ DrawMonthHeader (LogLine * line, int y)
    Draw3DBox (canvas, gc, 5, y - log_line_sep + skip , canvas_width - 10, 2*log_line_sep-skip, color);
 
    gdk_gc_set_foreground (gc, &cfg->black);
-   if (line->month >= 0 && line->month < 12)
-	   g_snprintf (buf, sizeof (buf), "%s %d", _(month[(int) line->month]), line->date);
-   else
+   if (line->month >= 0 && line->month < 12) {
+	   GDate *date = g_date_new_dmy (line->date, line->month+1, 2000 /* bogus */);
+	   /* Translators: Make sure this is only Month and Day format, year
+	    * will be bogus here */
+	   if (g_date_strftime (buf, sizeof (buf), _("%B %e"), date) <= 0) {
+		   /* If we fail just use the US format */
+		   g_snprintf (buf, sizeof (buf), "%s %d", _(month[(int) line->month]), line->date);
+	   }
+	   g_date_free (date);
+   } else {
 	   g_snprintf (buf, sizeof (buf), "?%d? %d", (int) line->month, line->date);
+   }
    gdk_draw_string (canvas, cfg->headingb, gc, LOG_COL1 - 1, centery + 1, buf);
    gdk_gc_set_foreground (gc, &cfg->white);
    gdk_draw_string (canvas, cfg->headingb, gc, LOG_COL1, centery, buf);

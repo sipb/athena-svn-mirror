@@ -1,5 +1,5 @@
 /* -*- Mode: C -*-
- * $Id: gdiskfree_options.c,v 1.1.1.1 2001-05-02 20:43:23 ghudson Exp $
+ * $Id: gdiskfree_options.c,v 1.1.1.2 2002-03-25 21:57:30 ghudson Exp $
  *
  * GDiskFree -- A disk free space toy (df on steriods).
  * Copyright 1998,1999 Gregory McLean
@@ -149,26 +149,41 @@ gdiskfree_show_size_changed (GtkWidget *widget, GnomePropertyBox *box)
  * gdiskfree_option_init:
  **/
 void
-gdiskfree_option_init ()
+gdiskfree_option_init (void)
 {
   if (!current_options)
-    current_options = g_malloc (sizeof (GDiskFreeOptions));
-  current_options->sync_required = gnome_config_get_bool_with_default
-    ("/GDiskFree/properties/sync_required=FALSE", NULL);
-  current_options->update_interval = gnome_config_get_int_with_default
-    ("/GDiskFree/properties/update_interval=10000", NULL);
-  current_options->orientation = gnome_config_get_int_with_default 
-    ("/GDiskFree/properties/orientation=GTK_ORIENTATION_VERTICAL", NULL);
-  current_options->show_mount = gnome_config_get_bool_with_default
-    ("/GDiskFree/properties/show_mount=FALSE", NULL);
-  current_options->show_size = gnome_config_get_bool_with_default
-    ("/GDiskFree/properties/show_size=FALSE", NULL);
+    current_options = g_new0 (GDiskFreeOptions, 1);
+  current_options->sync_required = gnome_config_get_bool
+    ("/GDiskFree/properties/sync_required=FALSE");
+  current_options->update_interval = gnome_config_get_int
+    ("/GDiskFree/properties/update_interval=10000");
+  if (current_options->update_interval < 300)
+	  current_options->update_interval = 300;
+  current_options->orientation = gnome_config_get_int
+    ("/GDiskFree/properties/orientation=0");
+  if (current_options->orientation < 0 ||
+      current_options->orientation < GTK_ORIENTATION_VERTICAL)
+	  current_options->orientation = GTK_ORIENTATION_HORIZONTAL;
+  current_options->show_mount = gnome_config_get_bool
+    ("/GDiskFree/properties/show_mount=TRUE");
+  current_options->show_size = gnome_config_get_bool
+    ("/GDiskFree/properties/show_size=TRUE");
+  /*
+   * How to store a list of things with the gnome_config_XXXX stuff?
+   */
+  current_options->excluded = NULL;
+  current_options->excluded = g_list_append (current_options->excluded, "proc");
+  current_options->excluded = g_list_append (current_options->excluded, "devpts");
+  current_options->excluded = g_list_append (current_options->excluded, "shm");
+  current_options->excluded = g_list_append (current_options->excluded, "usbfs");
+  current_options->excluded = g_list_append (current_options->excluded, "usbdevfs");
+  
 }
 /**
  * gdiskfree_option_save:
  **/
 void
-gdiskfree_option_save ()
+gdiskfree_option_save (void)
 {
   gnome_config_set_bool ("/GDiskFree/properties/sync_required",
 			 current_options->sync_required);
@@ -194,7 +209,8 @@ gdiskfree_option_dialog (GDiskFreeApp *app)
   GtkWidget    *checkbox;
   GtkObject    *udp_adjust;
   GSList       *orientation_group = NULL;
-  
+
+  static GnomeHelpMenuEntry help_entry = { "gdiskfree", "prefs.html" };
   working = g_malloc (sizeof (GDiskFreeOptions));
   propbox = gnome_property_box_new ();
   gtk_object_set_data (GTK_OBJECT (propbox), "app", app);
@@ -274,7 +290,7 @@ gdiskfree_option_dialog (GDiskFreeApp *app)
   working->orientation = current_options->orientation;
   working->update_interval = current_options->update_interval;
   udp_adjust = gtk_adjustment_new ((gfloat)working->update_interval, 
-				   1, 20000, 1, 10, 0);
+				   300, 20000, 1, 10, 0);
   gtk_signal_connect (GTK_OBJECT (udp_adjust), "value_changed",
 		      (GtkSignalFunc) gdiskfree_update_interval_changed,
 		      propbox);
@@ -298,5 +314,7 @@ gdiskfree_option_dialog (GDiskFreeApp *app)
   gtk_signal_connect (GTK_OBJECT (propbox), "apply",
 		      (GtkSignalFunc) gdiskfree_option_dialog_apply,
 		      working);
+  gtk_signal_connect (GTK_OBJECT (propbox), "help",
+		      GTK_SIGNAL_FUNC (gnome_help_pbox_goto), &help_entry); 
   return propbox;
 }

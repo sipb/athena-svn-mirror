@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -64,18 +64,29 @@ host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
 BUILD_GUILE = @BUILD_GUILE@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
+CONSOLE_HELPER = @CONSOLE_HELPER@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CURSES_INCLUDEDIR = @CURSES_INCLUDEDIR@
 CURSES_LIBS = @CURSES_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+EXPANDED_GSHUTDOWNDIR = @EXPANDED_GSHUTDOWNDIR@
+EXPANDED_LOGVIEWDIR = @EXPANDED_LOGVIEWDIR@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GLADE_FGLAGS = @GLADE_FGLAGS@
+GLADE_CFLAGS = @GLADE_CFLAGS@
 GLADE_LIBS = @GLADE_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -94,6 +105,8 @@ GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
+GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
+GTKHTML_LIBS = @GTKHTML_LIBS@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
@@ -102,12 +115,15 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 GUILE_INCS = @GUILE_INCS@
 GUILE_LIBS = @GUILE_LIBS@
+HAVE_JW = @HAVE_JW@
 HAVE_LIBXML = @HAVE_LIBXML@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
@@ -132,6 +148,10 @@ LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+OAF_CFLAGS = @OAF_CFLAGS@
+OAF_CONFIG = @OAF_CONFIG@
+OAF_LIBS = @OAF_LIBS@
+OAF_REQUIRED = @OAF_REQUIRED@
 OBGNOME_INCLUDEDIR = @OBGNOME_INCLUDEDIR@
 OBGNOME_LIBS = @OBGNOME_LIBS@
 OBGTK_LIBS = @OBGTK_LIBS@
@@ -143,6 +163,9 @@ ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PAM_LIBS = @PAM_LIBS@
+PAM_PREFIX = @PAM_PREFIX@
+PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
+PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -153,6 +176,19 @@ TERMCAP_LIB = @TERMCAP_LIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XLIBDIR = @XLIBDIR@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -173,16 +209,20 @@ idetool_SOURCES =  	idetool.c
 idetool_LDADD =  	$(GNOME_LIBDIR)         	$(GTKXMHTML_LIBS)		$(GNOMEUI_LIBS) 		$(INTLLIBS)
 
 
+man_MANS = idetool.8
+
 pixmapdir = $(datadir)/pixmaps
 
 BITMAPS = ide-disk-drive.png
 
 pixmap_DATA = $(BITMAPS)
 
-EXTRA_DIST = $(BITMAPS) idetool.desktop $(top_srcdir)/app-docs.make
-
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_DATA = idetool.desktop
+Utilities_in_files = idetool.desktop.in
+Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST =  	$(BITMAPS) 	$(Utilities_in_files) 	$(Utilities_DATA) 	$(man_MANS) 	$(top_srcdir)/sgmldocs.make
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -197,6 +237,10 @@ idetool_LDFLAGS =
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+man8dir = $(mandir)/man8
+MANS = $(man_MANS)
+
+NROFF = nroff
 DATA =  $(Utilities_DATA) $(pixmap_DATA)
 
 DIST_COMMON =  README ChangeLog Makefile.am Makefile.in TODO
@@ -267,6 +311,45 @@ maintainer-clean-compile:
 idetool: $(idetool_OBJECTS) $(idetool_DEPENDENCIES)
 	@rm -f idetool
 	$(LINK) $(idetool_LDFLAGS) $(idetool_OBJECTS) $(idetool_LDADD) $(LIBS)
+
+install-man8:
+	$(mkinstalldirs) $(DESTDIR)$(man8dir)
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst; \
+	done
+
+uninstall-man8:
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man8dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man8dir)/$$inst; \
+	done
+install-man: $(MANS)
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-man8
+uninstall-man:
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-man8
 
 install-UtilitiesDATA: $(Utilities_DATA)
 	@$(NORMAL_INSTALL)
@@ -342,7 +425,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -421,6 +504,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+idetool.o: idetool.c ../../config.h
 
 info-am:
 info: info-recursive
@@ -433,23 +517,23 @@ installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-UtilitiesDATA install-pixmapDATA
+install-data-am: install-man install-UtilitiesDATA install-pixmapDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binPROGRAMS uninstall-UtilitiesDATA \
-		uninstall-pixmapDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-man \
+		uninstall-UtilitiesDATA uninstall-pixmapDATA
 uninstall: uninstall-recursive
-all-am: Makefile $(PROGRAMS) $(DATA)
+all-am: Makefile $(PROGRAMS) $(MANS) $(DATA)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Utilitiesdir) \
-		$(DESTDIR)$(pixmapdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man8 \
+		$(DESTDIR)$(Utilitiesdir) $(DESTDIR)$(pixmapdir)
 
 
 mostlyclean-generic:
@@ -487,7 +571,8 @@ maintainer-clean: maintainer-clean-recursive
 .PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile uninstall-UtilitiesDATA install-UtilitiesDATA \
+maintainer-clean-compile install-man8 uninstall-man8 install-man \
+uninstall-man uninstall-UtilitiesDATA install-UtilitiesDATA \
 uninstall-pixmapDATA install-pixmapDATA install-data-recursive \
 uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
@@ -501,6 +586,7 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

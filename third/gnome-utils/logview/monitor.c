@@ -19,17 +19,11 @@
     ---------------------------------------------------------------------- */
 
 
-#include <time.h>
 #include <config.h>
 #include <gnome.h>
-#include "gtk/gtk.h"
+#include <time.h>
 #include "logview.h"
 #include "logrtns.h"
-#include "ok.xpm"
-#include "cancel.xpm"
-#include "remove.xpm"
-#include "add.xpm"
-#include "actions.xpm"
 
 #define MON_WINDOW_WIDTH           180
 #define MON_WINDOW_HEIGHT          150
@@ -53,7 +47,7 @@ void mon_remove_log (GtkWidget *widget, GtkWidget *foo);
 void mon_add_log (GtkWidget *widget, GtkWidget *foo);
 void mon_read_last_page (Log *log);
 void mon_read_new_lines (Log *log);
-void mon_format_line (char *buffer, LogLine *line);
+void mon_format_line (char *buffer, int bufsize, LogLine *line);
 void mon_hide_app_checkbox (GtkWidget *widget, gpointer data);
 void mon_actions_checkbox (GtkWidget *widget, gpointer data);
 void mon_edit_actions (GtkWidget *widget, gpointer data);
@@ -67,17 +61,19 @@ void InitMonitorData (void);
  *       ----------------
  */
 
+extern GtkWidget *app;
 extern ConfigData *cfg;
 extern Log *curlog, *loglist[];
 extern int numlogs, curlognum;
 
-GtkWidget *monoptions = NULL;
-GtkWidget *monwindow = NULL;
-GtkWidget *srclist, *destlist;
+static GtkWidget *monoptions = NULL;
+static GtkWidget *monwindow = NULL;
+static GtkWidget *srclist, *destlist;
 
-int monitorcount;
-int mon_opts_visible, mon_win_visible;
-int mon_exec_actions, mon_hide_while_monitor;
+static int monitorcount = 0;
+static gboolean mon_opts_visible = FALSE, mon_win_visible = FALSE;
+static gboolean mon_exec_actions = FALSE, mon_hide_while_monitor = FALSE;
+static gboolean main_app_hidden = FALSE;
 
 /* ----------------------------------------------------------------------
    NAME:         MonitorMenu
@@ -115,9 +111,6 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_widget_set_style (monoptions, cfg->main_style);
       gtk_signal_connect (GTK_OBJECT (monoptions), "destroy",
 			  GTK_SIGNAL_FUNC (close_monitor_options),
-			  &monoptions);
-      gtk_signal_connect (GTK_OBJECT (monoptions), "delete_event",
-			  GTK_SIGNAL_FUNC (close_monitor_options),
 			  NULL);
 
       vbox = (GtkBox *)gtk_vbox_new (FALSE, 2);
@@ -150,7 +143,8 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
 
       srclist = gtk_list_new ();
       gtk_list_set_selection_mode (GTK_LIST (srclist), GTK_SELECTION_SINGLE);
-      gtk_container_add (GTK_CONTAINER (scrolled_win), srclist);
+      gtk_scrolled_window_add_with_viewport
+	      (GTK_SCROLLED_WINDOW (scrolled_win), srclist);
       gtk_widget_set_style (srclist, cfg->main_style);
       gtk_widget_show (srclist);
 
@@ -158,7 +152,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
         {
           list_item = gtk_list_item_new_with_label (loglist[i]->name);
           gtk_container_add (GTK_CONTAINER (srclist), list_item);
-	  sprintf (buffer, "%d", i);
+	  g_snprintf (buffer, sizeof (buffer), "%d", i);
 	  gtk_widget_set_name (list_item, buffer);
 	  
 	  gtk_widget_set_style (list_item, cfg->main_style);
@@ -171,14 +165,16 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_widget_show (vbox2);
 
       /* Arrowed buttons */
-      button = ButtonWithPixmap (addxpm, 62,18);
+      button = gtk_button_new_with_label (_("Add >>"));
+      gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           (GtkSignalFunc) mon_add_log,
                           NULL);
 
       /* Remove button */ 
-      button = ButtonWithPixmap (removexpm, 62,18);
+      button = gtk_button_new_with_label (_("Remove <<"));
+      gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           (GtkSignalFunc) mon_remove_log,
@@ -197,7 +193,8 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
 
       destlist = gtk_list_new ();
       gtk_list_set_selection_mode (GTK_LIST (srclist), GTK_SELECTION_SINGLE);
-      gtk_container_add (GTK_CONTAINER (scrolled_win), destlist);
+      gtk_scrolled_window_add_with_viewport
+	      (GTK_SCROLLED_WINDOW (scrolled_win), destlist);
       gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
       gtk_widget_show (destlist);
 
@@ -227,25 +224,28 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       mon_exec_actions = TRUE;
 
       /* Actions button */
-      button = ButtonWithPixmap (actionsxpm, 62,15);
+      button = gtk_button_new_with_label (_("Actions..."));
+      gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (mon_edit_actions),
                           srclist);
 
       /* OK button */
-      button = ButtonWithPixmap (okxpm, 62,15);
+      button = gnome_stock_button (GNOME_STOCK_BUTTON_OK);
+      gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (go_monitor_log),
-                          srclist);
+                          NULL);
 
       /* Cancel button */
-      button = ButtonWithPixmap (cancelxpm, 62,15);
+      button = gnome_stock_button (GNOME_STOCK_BUTTON_CANCEL);
+      gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (close_monitor_options),
-                          srclist);
+                          NULL);
 
    }
    mon_opts_visible = TRUE;
@@ -279,7 +279,7 @@ mon_add_log (GtkWidget *widget,
   tmp_list = GTK_LIST (srclist)->selection;
   if (tmp_list == NULL)
     {
-    printf (_("tmp_list is NULL\n"));
+    DB (printf (_("tmp_list is NULL\n")));
     return;
     }
   name = gtk_widget_get_name (tmp_list->data);
@@ -326,7 +326,7 @@ mon_remove_log (GtkWidget *widget,
   tmp_list = GTK_LIST (destlist)->selection;
   if (tmp_list == NULL)
     {
-      printf (_("tmp_list is NULL\n"));
+      DB (printf (_("tmp_list is NULL\n")));
       return;
     }
   name = gtk_widget_get_name (tmp_list->data);
@@ -387,6 +387,10 @@ close_monitor_options (GtkWidget * widget, gpointer client_data)
       gtk_widget_hide (monoptions);
    monoptions = NULL;
    mon_opts_visible = FALSE;
+   if (mon_hide_while_monitor && main_app_hidden) {
+	   gtk_widget_show (app);
+	   main_app_hidden = FALSE;
+   }
 }
 
 /* ----------------------------------------------------------------------
@@ -404,7 +408,7 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    GtkWidget *vbox;
    GtkCList *clist;
    GList *tmplist;
-   char logfile[256];
+   char logfile[1024];
    int i,lnum,x,y,w,h;
 
    /* Set flag in log structures to indicate that they should be
@@ -440,10 +444,6 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    /* Setup timer to check log */
    gtk_timeout_add (1000, mon_check_logs, NULL);
 
-   /* If hide_while_monitor is set don't display this window */
-   if (mon_hide_while_monitor)
-     return;
-
    /* Create monitor window */
    /* setup size */
    w = 600; h = 100;
@@ -453,17 +453,17 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    /* monwindow = gtk_window_new (GTK_WINDOW_POPUP);  */ /*  Window without borders! */
    monwindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_container_set_border_width (GTK_CONTAINER (monwindow), 0);
-   gtk_window_set_title (GTK_WINDOW (monwindow), _("Monitoring logs.."));
+   gtk_window_set_title (GTK_WINDOW (monwindow), _("Monitoring logs..."));
    gtk_widget_set_style (monwindow, cfg->main_style);
 
    gtk_widget_set_usize(monwindow, w, h);
    gtk_widget_set_uposition(monwindow, x, y);
    gtk_signal_connect (GTK_OBJECT (monwindow), "destroy",
 		       GTK_SIGNAL_FUNC (close_monitor_options),
-		       &monwindow);
-   gtk_signal_connect (GTK_OBJECT (monwindow), "delete_event",
-		       GTK_SIGNAL_FUNC (close_monitor_options),
 		       NULL);
+   gtk_signal_connect (GTK_OBJECT (monwindow), "destroy",
+		       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+		       &monwindow);
    
    vbox = gtk_vbox_new (FALSE, 10);
    gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
@@ -479,7 +479,7 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
      {
        if (loglist[i]->mon_on != TRUE)
 	 continue;
-       sprintf (logfile, "%s", loglist[i]->name );
+       g_snprintf (logfile, sizeof (logfile), "%s", loglist[i]->name );
        
        frame = gtk_frame_new (NULL);
        gtk_container_set_border_width (GTK_CONTAINER (frame), 1);
@@ -511,6 +511,10 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
 
    gtk_widget_show (monwindow);
 
+   if (mon_hide_while_monitor) {
+	   gtk_widget_hide (app);
+	   main_app_hidden = TRUE;
+   }
 }
 
 /* ----------------------------------------------------------------------
@@ -522,7 +526,7 @@ void
 mon_read_last_page (Log *log)
 {
   Page pg;
-  char buffer[500];
+  char buffer[1024];
   const gchar *texts[2];
   int i, j;
 
@@ -539,7 +543,7 @@ mon_read_last_page (Log *log)
     {
       if (i<0)
 	continue;
-      mon_format_line (buffer, &pg.line[i]);
+      mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
       gtk_clist_append (log->mon_lines, (char **)texts);
       log->mon_numlines++;
       if (log->mon_numlines > MON_MAX_NUM_LINES)
@@ -564,14 +568,14 @@ void
 mon_read_new_lines (Log *log)
 {
   Page pg;
-  char buffer[500];
+  char buffer[1024];
   const gchar *texts[2];
   int i,j;
 
   fseek (log->fp, log->offset_end, SEEK_SET);
   
   /* Read pages into buffers --------------------------- */
-  ReadPageDown (log, &pg);
+  ReadPageDown (log, &pg, mon_exec_actions);
   texts[0] = buffer;
   texts[1] = NULL;
 
@@ -579,7 +583,7 @@ mon_read_new_lines (Log *log)
     {
       for (i=pg.fl;i<pg.ll;i++)
 	{
-	  mon_format_line (buffer, &pg.line[i]);
+	  mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
 	  gtk_clist_append (log->mon_lines, (char **)texts);
 	  log->mon_numlines++;
 	} 
@@ -594,7 +598,7 @@ mon_read_new_lines (Log *log)
       gtk_clist_moveto (log->mon_lines, log->mon_numlines, -1,0,0);
       if (pg.islastpage)
 	break;
-      ReadPageDown (log, &pg);
+      ReadPageDown (log, &pg, mon_exec_actions);
     }
 }
 
@@ -604,13 +608,13 @@ mon_read_new_lines (Log *log)
    ---------------------------------------------------------------------- */
 
 void
-mon_format_line (char *buffer, LogLine *line)
+mon_format_line (char *buffer, int bufsize, LogLine *line)
 {
-  sprintf(buffer, "%2d/%2d  %2d:%02d:%02d %s %s", 
-	  (int)line->date, (int)line->month+1,
-	  (int)line->hour, (int)line->min, (int)line->sec,
-	  line->process, line->message);
-  return;
+	/* FIXME: this should be translated I think */
+	g_snprintf (buffer, bufsize, "%2d/%2d  %2d:%02d:%02d %s %s", 
+		    (int)line->date, (int)line->month+1,
+		    (int)line->hour, (int)line->min, (int)line->sec,
+		    line->process, line->message);
 }
 
 /* ----------------------------------------------------------------------
@@ -631,7 +635,7 @@ mon_check_logs (gpointer data)
       continue;
     mon_read_new_lines (loglist[i]);
 
-fprintf(stderr, _("TOUCHED!!\n"));
+    DB (fprintf (stderr, _("TOUCHED!!\n")));
 
     }
     return TRUE;
@@ -646,8 +650,8 @@ fprintf(stderr, _("TOUCHED!!\n"));
 void
 mon_hide_app_checkbox (GtkWidget *widget, gpointer data)
 {
-  mon_hide_while_monitor = (mon_hide_while_monitor) ? FALSE : TRUE;
-  return;
+	mon_hide_while_monitor =
+		GTK_TOGGLE_BUTTON (widget)->active ? TRUE : FALSE;
 }
 
 
@@ -659,6 +663,5 @@ mon_hide_app_checkbox (GtkWidget *widget, gpointer data)
 void
 mon_actions_checkbox (GtkWidget *widget, gpointer data)
 {
-  mon_exec_actions = (mon_exec_actions) ? FALSE : TRUE;
-  return;
+	mon_exec_actions = GTK_TOGGLE_BUTTON (widget)->active ? TRUE : FALSE;
 }

@@ -1,4 +1,4 @@
-/* $Id: gdict-pref-dialog.c,v 1.1.1.1 2001-05-02 20:43:59 ghudson Exp $ */
+/* $Id: gdict-pref-dialog.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -36,12 +36,12 @@ enum {
 
 static gchar *typeface_sel_names[NUM_TYPEFACES] = {
     N_("Headword:"),
+    N_("Sub-number:"),
     N_("Pronunciation:"),
     N_("Etymology:"),
+    N_("Part of speech:"),
     N_("Example:"),
     N_("Main body:"),
-    N_("Sub-number:"),
-    N_("Part of speech:"),
     N_("Cross-reference:")
 };
 
@@ -238,6 +238,7 @@ gdict_pref_dialog_init (GDictPrefDialog *pref_dialog) {
 	 gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1), 
 	 label);
     
+#if 0
     if (gdict_applet_toggle) {
         vbox = gtk_vbox_new (FALSE, 2);
         gtk_container_add (GTK_CONTAINER (notebook), vbox);
@@ -265,6 +266,7 @@ gdict_pref_dialog_init (GDictPrefDialog *pref_dialog) {
 	     gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), 
 	     label);
     }
+#endif
 
     gnome_dialog_append_button (GNOME_DIALOG (pref_dialog),
 				GNOME_STOCK_BUTTON_OK);
@@ -293,11 +295,13 @@ gdict_pref_dialog_init (GDictPrefDialog *pref_dialog) {
     gtk_toggle_button_set_active
 	(GTK_TOGGLE_BUTTON (pref_dialog->smart_lookup_btn), gdict_pref.smart);
 
+#if 0
     if (gdict_applet_toggle)
         gtk_toggle_button_set_active
 	    (GTK_TOGGLE_BUTTON(pref_dialog->applet_handle_btn),
 	     gdict_pref.applet_handle);
-    
+#endif
+
     for (i = 0; i < NUM_TYPEFACES; i++) {
         gnome_font_picker_set_font_name (pref_dialog->font_pickers[i], 
                                          gdict_pref.typefaces[i].font_name);
@@ -487,7 +491,7 @@ pref_dialog_reset_db (GDictPrefDialog *pref_dialog) {
     pref_dialog->get_db_cmd->user_data = pref_dialog;
     pref_dialog->database_idx = 0;
     
-    pref_dialog_add_db (pref_dialog, "!", "Search all databases");
+    pref_dialog_add_db (pref_dialog, "!", _("Search all databases"));
     
     if (dict_command_invoke (pref_dialog->get_db_cmd,
 			     pref_dialog->context) == -1)
@@ -597,11 +601,9 @@ pref_dialog_update_pref (GDictPrefDialog *pref_dialog, gboolean save_prefs) {
     
     for (i = 0; i < NUM_TYPEFACES; i++) {
         g_free(gdict_pref.typefaces[i].font_name);
-        font_name = 
-            gnome_font_picker_get_font_name(pref_dialog->font_pickers[i]);
+        font_name = gnome_font_picker_get_font_name(pref_dialog->font_pickers[i]);
         gdict_pref.typefaces[i].font_name = g_strdup(font_name);
-        gdict_pref.typefaces[i].font = 
-            gnome_font_picker_get_font(pref_dialog->font_pickers[i]);
+        gdict_pref.typefaces[i].font = gnome_font_picker_get_font(pref_dialog->font_pickers[i]);
         
         gnome_color_picker_get_i16(pref_dialog->color_pickers[i], 
                                    &gdict_pref.typefaces[i].color->red, 

@@ -4,7 +4,7 @@
 >Criteri di ricerca</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Manuale del Cerca File di GNOME"
 HREF="index.html"><LINK
@@ -66,10 +66,12 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="CRITERIA"
+NAME="criteria"
 >Criteri di ricerca</A
 ></H1
-><P
+>     
+
+    <P
 > Oltre alla semplice ricerca per nome di file descritta in
       precedenza, il <TT
 CLASS="APPLICATION"
@@ -95,30 +97,35 @@ CLASS="APPLICATION"
 CLASS="EMPHASIS"
 >tutti</I
 > i criteri specificati. Per esempio, la
-      <A
-HREF="criteria.html#SAMPLE"
->Figura 3</A
-> mostra la ricerca di tutti i file con
+       mostra la ricerca di tutti i file con
       estensione <TT
 CLASS="FILENAME"
 >txt</TT
 > modificati negli ultimi 7
       giorni e che contengono al loro interno la parola GNOME.
     </P
-><DIV
+>
+ 
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="SAMPLE"
+NAME="sample"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/gsearch.png"></P
-><P
+>
+    
+   <P
 ><B
 >Figura 3. Sessione d'esempio del Cerca File</B
 ></P
 ></DIV
-><P
+>
+
+    <P
 >      È possibile rimuovere uno qualsiasi dei criteri aggiunti in
       precedenza premendo sul pulsante <B
 CLASS="GUIBUTTON"
@@ -131,76 +138,89 @@ CLASS="GUIBUTTON"
 >Abilita</B
 > al suo fianco.
     </P
-><P
+>
+
+    <P
 > 
       Di seguito un elenco di tutti i possibili tipi di criterio:
       <P
 ></P
 ><UL
-><LI
+>	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Nome file</I
->  &#8212; cerca per nome di
+>   cerca per nome di
 	    file. Come al solito, è possibile usare nella ricerca i
 	    caratteri jolly * e ?. Si ricordi inoltre che i nomi dei file
 	    in UNIX sono sensibili alle maiuscole/minuscole.
 	</P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>          <P
 > <I
 CLASS="EMPHASIS"
 >Non cercare nelle sottodirectory</I
 >
-           &#8212; se è selezionata questa opzione, il
+            se è selezionata questa opzione, il
            <TT
 CLASS="APPLICATION"
 >Cerca File di GNOME</TT
 > non cercherà
            i file nelle sottodirectory della directory di partenza.
 	  </P
-></LI
-><LI
+>
+	</LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Proprietario del file</I
->  &#8212; cerca
+>   cerca
 	    secondo il nome dell'utente che possiede il file.
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Gruppo del file</I
->  &#8212; cerca secondo il
+>   cerca secondo il
 	    nome del gruppo proprietario del file.
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Data/ora dell'ultima modifica</I
->  &#8212;
+>  
 	    cerca i file che sono stati modificati durante gli ultimi N
 	    giorni (per essere più precisi, durante le ultime N*24 ore). 
 	</P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > <I
 CLASS="EMPHASIS"
 >Non cercare nei filesystem
 	  montati</I
-> &#8212; se è selezionata questa opzione il 
+>  se è selezionata questa opzione il 
 	  <TT
 CLASS="APPLICATION"
 >Cerca File di GNOME</TT
@@ -232,24 +252,28 @@ CLASS="FILENAME"
 	  floppy). 
 	  </P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > <I
 CLASS="EMPHASIS"
 >File vuoto</I
-> &#8212; questo criterio
+>  questo criterio
 	    è verificato solo se il file è vuoto. Usato principalmente
 	    dagli amministratori di sistema per la manutenzione del
 	    sistema. 
 	  </P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > 
 	  <I
 CLASS="EMPHASIS"
 >Utente o gruppo non valido</I
-> &#8212; cerca i
+>  cerca i
 	  file il cui proprietario o gruppo non è valido nel
 	  sistema. Questa opzione può essere utile quando si cercano file
 	  appartenenti ad utenti che sono stati rimossi dal sistema. Usata
@@ -257,13 +281,15 @@ CLASS="EMPHASIS"
 	    sistema.
 	</P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > 
 	    <I
 CLASS="EMPHASIS"
 >Nomi dei file eccetto</I
-> &#8212;
+> 
 	    corrisponde a tutti i file eccetto quelli il cui nome è qui
 	    specificato. Come prima, si possono usare i caratteri
 	    jolly. Per esempio, se in questo campo si specifica
@@ -277,14 +303,17 @@ CLASS="APPLICATION"
 > escluderà dalla ricerca tutti i file il
 	    cui nome finisce con tilde (~).
 	  </P
-></LI
-><LI
-><P
+>
+	</LI
+>
+
+	<LI
+>      <P
 > <I
 CLASS="EMPHASIS"
 >Ricerca semplice di sottostringa</I
 >
-        &#8212; corrisponde a tutti i file che
+         corrisponde a tutti i file che
         <I
 CLASS="EMPHASIS"
 >contengono</I
@@ -294,13 +323,15 @@ CLASS="EMPHASIS"
         ricerca. Nota: in questa opzione non si possono usare
         caratteri jolly.  </P
 ></LI
-><LI
+>
+
+	<LI
 ><P
 > <I
 CLASS="EMPHASIS"
 >Ricerca espressione regolare</I
 >
-	  &#8212; corrisponde a tutti i file che
+	   corrisponde a tutti i file che
 	  <I
 CLASS="EMPHASIS"
 >contengono</I
@@ -309,13 +340,15 @@ CLASS="EMPHASIS"
 	  contenuto di ogni file, può rallentare notevolmente la ricerca.
 	  </P
 ></LI
-><LI
-><P
+>
+
+	<LI
+>	  <P
 > <I
 CLASS="EMPHASIS"
 >Ricerca espressione regolare estesa</I
 >
-	    &#8212; corrisponde a tutti i file che
+	     corrisponde a tutti i file che
 	    <I
 CLASS="EMPHASIS"
 >contengono</I
@@ -324,8 +357,11 @@ CLASS="EMPHASIS"
 	    contenuto di ogni file, può rallentare notevolmente la
 	    ricerca.
           </P
-></LI
-></UL
+>
+	</LI
+>
+
+      </UL
 >
 
       Per quanti non hanno familiarità con la nozione di espressione
@@ -350,7 +386,8 @@ CLASS="APPLICATION"
       più esperienza, le espressioni regolari possono essere molto
       utili.
     </P
-></DIV
+>
+  </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

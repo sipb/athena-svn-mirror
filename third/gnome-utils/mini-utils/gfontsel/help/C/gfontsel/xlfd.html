@@ -4,16 +4,13 @@
 > Font attributes in X Window System and XLFD</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="GNOME Font Selector Manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Filter window"
-HREF="filter.html"><LINK
-REL="NEXT"
-TITLE="Authors"
-HREF="authors.html"></HEAD
+HREF="filter.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +49,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="authors.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,10 +60,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="XLFD"
+NAME="xlfd"
 >Font attributes in X Window System and XLFD</A
 ></H1
-><P
+>      
+      <P
 >	As was said earlier, each font in X Window system has a number
 	of attributes and a full name, also known as X Logical Font
 	Description (XLFD), which lists all of these attributes and therefore
@@ -89,11 +84,13 @@ CLASS="PROGRAMLISTING"
 ></TABLE
 >
       </P
-><P
+>
+      <P
 >	This name consists of 14 fields, showing the values of 14 parameters
 	of the font, separated by dashes. 
       </P
-><P
+>
+      <P
 >	While such a name gives a complete information about the font,
 	it is somewhat overwhelming, especially since not all of this
 	parameters are actually useful. To make life a little bit
@@ -126,14 +123,15 @@ CLASS="KEYSYM"
 	probably there is only one font matching this name, so this
 	name is unambiguous.
       </P
-><P
+>
+      <P
 > 
 	Below we list those of the  font's 14 attributes which are actually
 	useful:
 	<P
 ></P
 ><UL
-><LI
+>	  <LI
 STYLE="list-style-type: bull"
 ><P
 > 
@@ -142,7 +140,7 @@ CLASS="GUILABEL"
 ><B
 >foundry</B
 ></TT
-> &#8212; font
+>  font
 	      foundry, the company or individual which made the font
 	      (in our example, <TT
 CLASS="LITERAL"
@@ -150,7 +148,9 @@ CLASS="LITERAL"
 >) 
           </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > <TT
@@ -158,7 +158,7 @@ CLASS="GUILABEL"
 ><B
 >family</B
 ></TT
-> &#8212; font
+>  font
 	      family, the popular nickname of the font (in our
 	      example, <TT
 CLASS="LITERAL"
@@ -166,7 +166,9 @@ CLASS="LITERAL"
 >) 
           </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > 
@@ -175,7 +177,7 @@ CLASS="GUILABEL"
 ><B
 >weight</B
 ></TT
-> &#8212; font weight (in our
+>  font weight (in our
 	      example, <TT
 CLASS="LITERAL"
 >medium</TT
@@ -183,7 +185,9 @@ CLASS="LITERAL"
               bold, medium, etc. 
 	  </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > <TT
@@ -191,7 +195,7 @@ CLASS="GUILABEL"
 ><B
 >slant</B
 ></TT
-> &#8212; font
+>  font
               slant (in our example, <TT
 CLASS="LITERAL"
 >(r)oman</TT
@@ -200,7 +204,9 @@ CLASS="LITERAL"
               (o)blique, (r)roman, etc.  
           </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > <TT
@@ -208,11 +214,13 @@ CLASS="GUILABEL"
 ><B
 >pixelsize</B
 ></TT
-> &#8212; the
+>  the
               number of pixels vertically in a character (in our
               example, 12) </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > <TT
@@ -220,14 +228,16 @@ CLASS="GUILABEL"
 ><B
 >pointsize</B
 ></TT
-> &#8212;
+> 
               approximate point size of the font, measured in tenths
               of a point. In the example above, point size is 120,
               that is, 12 points. One point is equal to 1/72 of an
               inch, which is the common convention in English and
               American typesetting.  </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > horizontal and vertical
@@ -237,16 +247,19 @@ CLASS="GUILABEL"
 >resolutions</B
 ></TT
 > in dots per inch
-               &#8212; in the example above, both are 75 dpi.
+                in the example above, both are 75 dpi.
 	    </P
-><P
+>
+	    <P
 >	      Note that point size, pixel size, and vertical resolution are
 	      related: for fonts with resolution 75dpi, point size is
 	      approximately equal to (pixel size)*10; for fonts with resolution
 	      100dpi, point size is approximately equal to (pixel size)*7.
 	    </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > <TT
@@ -254,7 +267,7 @@ CLASS="GUILABEL"
 ><B
 >spacing</B
 ></TT
-> &#8212;
+> 
               describes variance of character sizes in the
               font. Allowed values are (m)onospaced, (c)haracter cell
               (in both of these spacings, all characters have the same
@@ -262,7 +275,9 @@ CLASS="GUILABEL"
               sizes). Proportional fonts usually look nicer. 
               </P
 ></LI
-><LI
+>
+
+	  <LI
 STYLE="list-style-type: bull"
 ><P
 > character set <TT
@@ -276,7 +291,7 @@ CLASS="GUILABEL"
 ><B
 >encoding</B
 ></TT
-> &#8212; these two
+>  these two
               parameters, commonly referred to as <TT
 CLASS="GUILABEL"
 ><B
@@ -295,14 +310,14 @@ CLASS="GUILABEL"
 	      <P
 ></P
 ><UL
-><LI
+>		<LI
 STYLE="list-style-type: bull"
-><P
+>		  <P
 >		    <I
 CLASS="EMPHASIS"
 >iso8859-1</I
 >, also known as
-		    Latin 1 &#8212; this character set includes all
+		    Latin 1  this character set includes all
 		    the symbols found on the keyboard, i.e. Latin
 		    letters, punctuation marks, numbers, symbols such
 		    as @ or $. It also includes some special symbols,
@@ -314,107 +329,44 @@ CLASS="EMPHASIS"
 		    German, Icelandic, Irish, Italian, Norwegian,
 		    Portuguese, Scottish, Spanish, and Swedish).
 		  </P
-></LI
-><LI
+>
+		</LI
+>
+		<LI
 STYLE="list-style-type: bull"
 ><P
 >		    <I
 CLASS="EMPHASIS"
 >iso8859-7</I
-> &#8212; includes Latin and
+>  includes Latin and
 		    Greek alphabets 
 		  </P
 ></LI
-><LI
+> 
+		<LI
 STYLE="list-style-type: bull"
 ><P
 >		    <I
 CLASS="EMPHASIS"
 >iso8859-8</I
-> &#8212; includes Latin and
+>  includes Latin and
 		    Hebrew alphabets 
 		  </P
 ></LI
-><LI
+>
+		<LI
 STYLE="list-style-type: bull"
 ><P
 >		    <I
 CLASS="EMPHASIS"
->koi8-r</I
-> &#8212; includes Latin and
-		    Cyrillic alphabets 
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
->		    <I
-CLASS="EMPHASIS"
->big5.eten.3.10-1</I
-> &#8212; Chinese
-		    (Big5 encoding) 
-		  </P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
-> <I
-CLASS="EMPHASIS"
->gb2312.1980-0</I
->
-		    &#8212; Chinese (GB encoding) 
-		</P
-></LI
-><LI
-STYLE="list-style-type: bull"
-><P
-> 
-                    <I
-CLASS="EMPHASIS"
->jisx0208.1983-0</I
-> &#8212; Japanese
-		</P
+></I
+></P
 ></LI
 ></UL
->
-
-
-	    </P
+></P
 ></LI
 ></UL
->
-      </P
-><P
->	The remaining font attributes (<TT
-CLASS="GUILABEL"
-><B
->Set Width</B
-></TT
->,
-	<TT
-CLASS="GUILABEL"
-><B
->Additional Style</B
-></TT
->, and <TT
-CLASS="GUILABEL"
-><B
->Average
-	Width</B
-></TT
->) are rarely used and therefore we skip their
-	description.
-      </P
-><P
->	Full XLFD specifications are included in technical documentation for
-	the X Window system and can be found online at <A
-HREF="ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/XLFD"
-TARGET="_top"
->    
-	  ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/XLFD</A
->; most probably,
-	you will never need it.
-    </P
+></P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -446,10 +398,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="authors.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -466,7 +415,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Authors</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

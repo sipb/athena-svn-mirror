@@ -27,13 +27,24 @@
 #ifndef __LOGVIEW_H__
 #define __LOGVIEW_H__
 
+/* #define DEBUG 1 */
+
+#ifdef DEBUG
+#define DB(x) x
+#else
+#define DB(x) while (0) { ; }
+#endif
+
 #define LOG_LINESEP              15
 
-#define LINES_P_PAGE             140
+/* FIXME: this is wrong, this needs to be recalculated all the time
+ * based on the current page, all the math is utterly wrong here
+ * it just sucks.  This is bug #58435 */
+#define LINES_P_PAGE             10
 #define NUM_PAGES                5 
 #define MAX_WIDTH                240
 #define MAX_HOSTNAME_WIDTH       257	/* Need authoritative answer on this value. */
-#define MAX_PROC_WIDTH           20
+#define MAX_PROC_WIDTH           60
 #define NUM_LOGS                 2
 #define R_BUF_SIZE               1024	/* Size of read buffer */
 #define MAX_NUM_LOGS             10
@@ -46,8 +57,6 @@
 
 #define LOG_WINDOW_W             LOG_CANVAS_W+15
 #define LOG_WINDOW_H             LOG_CANVAS_H+LOG_BOTTOM_MARGIN
-
-#define LOGVIEW_VERSION		 "0.1"
 
 
 /*
@@ -183,7 +192,7 @@ typedef struct
   Page *currentpg;
   Page *firstpg, *lastpg;
   DateMark *curmark;
-  char name[30];
+  char name[255];
   int firstline;	/* Line at top of screen relative to current page. */
   long ln;		/* Line at top of screen relative to start of log. */
   int pointerln;	/* Line number where the pointer is.               */
@@ -213,17 +222,20 @@ void ShowErrMessage (const char *msg);
 void QueueErrMessages (gboolean do_queue);
 void ShowQueuedErrMessages (void);
 GtkWidget *AddMenu (MenuItem * items);
-GtkWidget *ButtonWithPixmap (char **xpmdata, int w, int h);
-ConfigData *CreateConfig();
+ConfigData *CreateConfig(void);
 void set_scrollbar_size (int);
 int repaint_zoom (GtkWidget * widget, GdkEventExpose * event);
 void MoveToMark (Log *log);
 void ScrollUp (int howmuch);
 void ScrollDown (int howmuch);
-CalendarData* init_calendar_data ();
+CalendarData* init_calendar_data (void);
 int RepaintCalendar (GtkWidget * widget, GdkEventExpose * event);
 int read_descript_db (char *filename, GList **db);
 int find_tag_in_db (LogLine *line, GList *db);
 int IsLeapYear (int year);
 void SetDefaultUserPrefs(UserPrefsStruct *prefs);
+int exec_action_in_db (Log *log, LogLine *line, GList *db);
+
+#define sure_string ((x)?(x):"")
+
 #endif /* __LOGVIEW_H__ */

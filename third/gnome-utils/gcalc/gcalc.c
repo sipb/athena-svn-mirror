@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Simple Double precision calculator using the GnomeCalculator widget
    Copyright (C) 1998 Free Software Foundation
 
@@ -7,6 +8,9 @@
 #include <config.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-window-icon.h>
+
+#include "gnome-calc.h"
+#include "sr.h"
 
 /* values for selection info */
 enum {
@@ -24,7 +28,7 @@ about_cb (GtkWidget *widget, gpointer data)
 {
 	static GtkWidget *about = NULL;
 	gchar *authors[] = {
-		"George Lebl",
+		"George Lebl <jirka@5z.com>",
 		NULL
 	};
 
@@ -55,7 +59,7 @@ quit_cb (GtkWidget *widget, gpointer data)
 static void
 copy_contents (GtkWidget *widget, gpointer data)
 {
-	strcpy(copied_string,GNOME_CALCULATOR(calc)->result_string);
+	strcpy(copied_string, gnome_calc_get_result_string(GNOME_CALC (calc)));
 	g_strstrip(copied_string);
 	gtk_selection_owner_set (app,
 				 GDK_SELECTION_PRIMARY,
@@ -113,6 +117,15 @@ static GnomeUIInfo gcalc_menu[] = {
         GNOMEUIINFO_END
 };
 
+static gboolean analog = FALSE;
+
+struct poptOption options [] = {
+  { "analog", '\0', POPT_ARG_NONE|POPT_ARGFLAG_ONEDASH, &analog, 0,
+    N_("Run in analog (slide rule) mode"), NULL },
+  POPT_AUTOHELP
+  { NULL, 0, 0, NULL, 0}
+};
+
 
 int
 main(int argc, char *argv[])
@@ -128,20 +141,26 @@ main(int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 
-	gnome_init ("gcalc", VERSION, argc, argv);
+	gnome_init_with_popt_table ("gcalc", VERSION, argc, argv, options, 0, NULL);
 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-calc2.png");
-        app=gnome_app_new("gcalc", _("Gnome Calculator"));
+
+	if (analog) {
+		run_slide_rule ();
+		return 0;
+	}
+
+        app = gnome_app_new("gcalc", _("Gnome Calculator"));
 	gtk_window_set_wmclass (GTK_WINDOW (app), "gcalc", "gcalc");
-	gtk_window_set_policy (GTK_WINDOW (app), TRUE, FALSE, TRUE);
+	gtk_window_set_policy (GTK_WINDOW (app), FALSE, TRUE, FALSE);
 
         gtk_signal_connect(GTK_OBJECT(app), "delete_event",
-		GTK_SIGNAL_FUNC(quit_cb), NULL);
-        gtk_window_set_policy(GTK_WINDOW(app),1,1,0);
+			GTK_SIGNAL_FUNC(quit_cb), NULL);
 
 	/*set up the menu*/
         gnome_app_create_menus(GNOME_APP(app), gcalc_menu);
 
-	calc = gnome_calculator_new();
+	calc = gnome_calc_new();
+	gnome_calc_bind_extra_keys (GNOME_CALC (calc), GTK_WIDGET (app));
 	gtk_widget_show(calc);
 
 	gtk_selection_add_targets (GTK_WIDGET (app), GDK_SELECTION_PRIMARY,
@@ -154,7 +173,7 @@ main(int argc, char *argv[])
 
 	/* add calculator accel table to our window*/
 	gtk_window_add_accel_group(GTK_WINDOW(app),
-				   GNOME_CALCULATOR(calc)->accel);
+				   gnome_calc_get_accel_group(GNOME_CALC(calc)));
 
 	gtk_widget_show(app);
 

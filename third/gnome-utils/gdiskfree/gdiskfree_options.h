@@ -1,5 +1,5 @@
 /* -*- Mode: C -*-
- * $Id: gdiskfree_options.h,v 1.1.1.1 2001-05-02 20:43:23 ghudson Exp $
+ * $Id: gdiskfree_options.h,v 1.1.1.2 2002-03-25 21:57:30 ghudson Exp $
  *
  * GDiskFree -- A disk free space toy (df on steriods).
  * Copyright 1998,1999 Gregory McLean
@@ -29,12 +29,17 @@
 typedef struct _GDiskFreeOptions          GDiskFreeOptions;
 typedef struct _Disk                      Disk;
 struct _GDiskFreeOptions {
-  gint             update_interval;
-  gboolean         sync_required;
-  gboolean         show_mount;
-  gboolean         show_size;
-  GtkOrientation   orientation;
-
+  gint             update_interval;    /* How often to poll */
+  /* FIXME:
+   * These should be collaped down to a bitfield, for easier addtions and
+   * cleaner code to parse around em.
+   */
+  gboolean         sync_required;      /* Invoke sync before gathering stats */
+  gboolean         show_mount;         /* Show mountpoints */
+  gboolean         show_size;          /* Show total size of device*/
+  gboolean         show_remain;        /* Show remainging space on device */
+  GtkOrientation   orientation;        /* Horizontal/Vertical */
+  GList            *excluded;          /* Exclude these devices */
 };
 /****************************************************************************
  * Functions

@@ -1,4 +1,4 @@
-/* $Id: gdict-defbox.c,v 1.1.1.1 2001-05-02 20:43:18 ghudson Exp $ */
+/* $Id: gdict-defbox.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -198,7 +198,8 @@ gdict_defbox_lookup (GDictDefbox *defbox, gchar *text) {
     
     gdict_defbox_clear (defbox);
     
-    if (defbox->database) g_free (defbox->database);
+    if (defbox->database)
+	    g_free (defbox->database);
     
     defbox->database = g_strdup (gdict_pref.database);
     
@@ -250,9 +251,8 @@ gdict_defbox_find (GDictDefbox *defbox, gchar *text, gboolean start) {
     
     if (!lastp || start) {
         g_free (deftext);
-        deftext = 
-            gtk_editable_get_chars (GTK_EDITABLE (defbox), 0, 
-                                    gtk_text_get_length (GTK_TEXT (defbox)));
+        deftext = gtk_editable_get_chars (GTK_EDITABLE (defbox), 0, 
+                                	  gtk_text_get_length (GTK_TEXT (defbox)));
         lastp = deftext;
     }
 
@@ -266,8 +266,7 @@ gdict_defbox_find (GDictDefbox *defbox, gchar *text, gboolean start) {
 				    (findp - deftext),
 				    (findp - deftext) + strlen(text));
         lastp = findp + 1;
-    } 
-    else {
+    } else {
         gtk_signal_emit (GTK_OBJECT (defbox), 
                          gdict_defbox_signals[SUBSTR_NOT_FOUND_SIGNAL]);
     }
@@ -522,7 +521,7 @@ def_error_cb (dict_command_t *command, DictStatusCode code,
     defbox = GTK_OBJECT (data);
     
     if (code != DICT_SOCKET_ERROR) {
-        string = g_strdup_printf ("Error invoking query: %s", message);
+        string = g_strdup_printf (_("Error invoking query: %s"), message);
         gnome_error_dialog (string);
         sec_cmd = dict_disconnect_command_new ();
         dict_command_invoke (sec_cmd, command->context);

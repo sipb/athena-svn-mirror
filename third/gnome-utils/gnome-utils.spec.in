@@ -16,6 +16,7 @@ Requires: 	gnome-libs >= 1.0.59
 BuildRequires:  gnome-libs-devel >= 1.0.59, ORBit, gnome-core-devel
 BuildRequires:  gtk+-devel >= 1.2.0, guile, e2fsprogs, e2fsprogs-devel
 BuildRequires:  libgtop >= 1.0.0, libxml, libglade >= 0.11
+Epoch:		1
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
@@ -36,7 +37,8 @@ MYARCH_FLAGS=--host=alpha-redhat-linux
 
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} \
     --sysconfdir=%{_sysconfdir} --datadir=%{_datadir} \
-    --bindir=%{_bindir} $MYARCH_FLAGS 
+    --bindir=%{_bindir} $MYARCH_FLAGS --enable-console-helper \
+    --with-pam-prefix=/etc
 
 if [ "$SMP" != "" ]; then
   make MAKE="make -j$SMP"
@@ -50,34 +52,54 @@ fi
 make prefix=$RPM_BUILD_ROOT%{_prefix} \
     sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} \
     bindir=$RPM_BUILD_ROOT%{_bindir} \
-    datadir=$RPM_BUILD_ROOT%{_datadir} install
+    sbindir=$RPM_BUILD_ROOT%{_sbindir} \
+    datadir=$RPM_BUILD_ROOT%{_datadir} \
+    PAM_PREFIX=$RPM_BUILD_ROOT/etc \
+    install
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
 
 %files
-%{_prefix}/*
-%{_sysconfdir}/CORBA/servers/*
+%config /etc/pam.d/*
+%config /etc/security/console.apps/*
 %{_bindir}/*
+%{_sbindir}/*
+%{_sysconfdir}/CORBA/servers/*
 %{_datadir}/applets/*/*
-%{_datadir}/gcolorsel/*/*
+%{_datadir}/application-registry/*
+%{_datadir}/gcolorsel
+%{_datadir}/gnome-utils
 %{_datadir}/gnome/apps/*/*
-%{_datadir}/gnome/help/*/*/*
-%{_datadir}/gnome/help/*/*/*/*
-%{_datadir}/gnome-utils/glade/*
-%{_datadir}/idl/*
 %{_datadir}/locale/*/*/*
-%{_datadir}/logview/*
+%{_datadir}/gnome/help/*
+%{_datadir}/gtt
+%{_datadir}/idl/*
+%{_datadir}/logview
 %{_datadir}/mime-info/*
-%{_datadir}/omf/gnome-utils/*
+%{_datadir}/omf/*
 %{_datadir}/pixmaps/*
-%{_datadir}/pixmaps/*/*
-%{_datadir}/stripchart/*
+%{_datadir}/stripchart
 
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS
 
+%post
+if which scrollkeeper-update>/dev/null 2>&1; then scrollkeeper-update; fi
+
+%postun
+if which scrollkeeper-update>/dev/null 2>&1; then scrollkeeper-update; fi
+
 
 %changelog
+* Sat Oct 20 2001 <jirka@5z.com>
+- Fixes to the damn %files thing
+
+* Thu Mar 29 2001 <dan@eazel.com>
+- scrollkeeper stuff
+
+* Wed Mar 14 2001 <jirka@5z.com>
+- Fixes to the damn %files thing
+
 * Mon Mar 12 2001 <gleblanc@peecee.linuxweasel.com> 
 - macro fixes, removal of hard-coded paths.  removed automatic %files
   generation as we don't understand how that works.  some other

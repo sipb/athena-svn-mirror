@@ -4,16 +4,13 @@
 >Using GNOME Calculator</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="GNOME Calculator Manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="GNOME Calculator Manual"
-HREF="index.html"><LINK
-REL="NEXT"
-TITLE="Known Bugs and Limitations"
-HREF="bugs.html"></HEAD
+HREF="index.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +49,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="bugs.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,13 +60,14 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="USAGE"
+NAME="usage"
 >Using <TT
 CLASS="APPLICATION"
 >GNOME Calculator</TT
 ></A
 ></H1
-><P
+>  
+  <P
 >   <TT
 CLASS="APPLICATION"
 >GNOME Calculator</TT
@@ -86,15 +81,19 @@ CLASS="APPLICATION"
 >xcalc</TT
 >. 
   </P
-><DIV
+>
+
+
+  <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MAINWIN"
+NAME="mainwin"
 >Basic usage</A
 ></H2
-><P
+>   
+   <P
 >    Starting <TT
 CLASS="APPLICATION"
 >GNOME Calculator</TT
@@ -102,20 +101,21 @@ CLASS="APPLICATION"
     the <SPAN
 CLASS="INTERFACE"
 >Main window</SPAN
->, shown in <A
-HREF="usage.html#MAINWINDOW-FIG"
->Figure 1</A
->.
+>, shown in .
 
     <DIV
 CLASS="FIGURE"
 ><A
-NAME="MAINWINDOW-FIG"
+NAME="mainwindow-fig"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/gcalc-main.png"></P
-><P
+>
+     
+    <P
 ><B
 >Figure 1. <TT
 CLASS="APPLICATION"
@@ -125,7 +125,9 @@ CLASS="APPLICATION"
 ></DIV
 >
    </P
-><P
+>
+
+   <P
 >    To perform calculations, type in the numbers using the number keys
     on your keyboard, or use the <B
 CLASS="GUIBUTTON"
@@ -137,23 +139,31 @@ CLASS="GUIBUTTON"
 > buttons on the main window, and the
     operator buttons surrounding them. 
    </P
-></DIV
-><DIV
+>
+
+  </DIV
+>
+
+
+  <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENUBAR"
+NAME="menubar"
 >Menus</A
 ></H2
-><P
+>   
+   <P
 >    The menu bar, located at the top of the <SPAN
 CLASS="INTERFACE"
 >Main
     Window</SPAN
 >, contains the following menus:
    </P
-><P
+>
+
+   <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
@@ -164,54 +174,62 @@ CLASS="GUIMENU"
 >File</B
 ></DT
 ><DD
-><P
->       <B
+>      <P
+>        + + + + + + + +
++ + + + + + + + -&gt;<B
 CLASS="GUIMENUITEM"
 >Quit</B
-> (<B
+>+
++ + + + + + +  (<B
 CLASS="SHORTCUT"
-><SPAN
+>         <SPAN
 CLASS="KEYSYM"
 >Ctl-Q</SPAN
-></B
+>
+        </B
 >)
        which exits from <TT
 CLASS="APPLICATION"
 >GNOME Calculator</TT
 >.
       </P
-></DD
+>
+     </DD
 ><DT
 ><B
 CLASS="GUIMENU"
 >Edit</B
 ></DT
 ><DD
-><P
->        <B
+>      <P
+>         + + + + + + + + +
++ + + + + + + + + -&gt;<B
 CLASS="GUIMENUITEM"
 >Edit</B
-> (<B
+>+
++ + + + + + + +  (<B
 CLASS="SHORTCUT"
-><SPAN
+>          <SPAN
 CLASS="KEYSYM"
 >Ctl-C</SPAN
-></B
+>
+         </B
 >)
         which copies the current display.
       </P
-></DD
+>
+     </DD
 ><DT
 ><B
 CLASS="GUIMENU"
 >Help</B
 ></DT
 ><DD
-><P
+>         <P
 >          <B
 CLASS="GUIMENUITEM"
 >About</B
-> &#8212; shows
+>  shows
           basic information about
           <TT
 CLASS="APPLICATION"
@@ -219,26 +237,34 @@ CLASS="APPLICATION"
 >, such as
           the author's name and the application version number.
          </P
-></DD
+>
+        </DD
 ></DL
 ></DIV
-></DIV
-><DIV
+>
+  </DIV
+>
+
+
+  <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="BUTTONS"
+NAME="buttons"
 >Buttons</A
 ></H2
-><P
+>   
+   <P
 >    The buttons, located on the <SPAN
 CLASS="INTERFACE"
 >Main
     Window</SPAN
 >, are as follows:
    </P
-><P
+>
+
+   <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
@@ -246,7 +272,7 @@ CLASS="VARIABLELIST"
 ><DT
 >1/x</DT
 ><DD
-><P
+>      <P
 >       Inverts the current display.  
        <DIV
 CLASS="EXAMPLE"
@@ -254,7 +280,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 1. 1/x</B
 ></P
-><P
+>        
+        <P
 >When <B
 CLASS="COMMAND"
 ><TT
@@ -278,17 +305,19 @@ CLASS="REPLACEABLE"
 ></TT
 ></B
 >.</P
-></DIV
+>
+       </DIV
 >
       </P
-></DD
+>
+     </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >x^2</B
 ></DT
 ><DD
-><P
+>       <P
 >        Raises the current display to the second power.
         <DIV
 CLASS="EXAMPLE"
@@ -296,7 +325,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 2. x^2</B
 ></P
-><P
+>         
+         <P
 >When <B
 CLASS="COMMAND"
 ><TT
@@ -320,17 +350,19 @@ CLASS="REPLACEABLE"
 ></TT
 ></B
 >.</P
-></DIV
+>
+        </DIV
 >
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >SQRT</B
 ></DT
 ><DD
-><P
+>       <P
 >        Calculates the square root.
         <DIV
 CLASS="EXAMPLE"
@@ -338,7 +370,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 3. SQRT</B
 ></P
-><P
+>         
+         <P
 >When <B
 CLASS="COMMAND"
 ><TT
@@ -362,41 +395,45 @@ CLASS="REPLACEABLE"
 ></TT
 ></B
 >.</P
-></DIV
+>
+        </DIV
 >
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >CE/C</B
 ></DT
 ><DD
-><P
+>       <P
 >        This button clears the display.
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >AC</B
 ></DT
 ><DD
-><P
+>       <P
 >        This button clears the display and all queued commands.
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >INV</B
 ></DT
 ><DD
-><P
+>       <P
 >        The <B
 CLASS="GUIBUTTON"
 >INV</B
-> is used to "invert" some operations in <TT
+> is used to invert some operations in <TT
 CLASS="APPLICATION"
 >GNOME Calculator</TT
 >.
@@ -406,7 +443,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 4. INV</B
 ></P
-><P
+>	 
+	 <P
 >The <B
 CLASS="GUIBUTTON"
 >INV</B
@@ -442,17 +480,19 @@ CLASS="REPLACEABLE"
 ></B
 >.
          </P
-></DIV
+>
+	</DIV
 >
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >sin</B
 ></DT
 ><DD
-><P
+>       <P
 >        Computes the trigonometric sine.  The units used are displayed on the second button down on the right column of buttons.
         <DIV
 CLASS="EXAMPLE"
@@ -460,7 +500,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 5. sin</B
 ></P
-><P
+>         
+         <P
 >When the display shows <B
 CLASS="COMMAND"
 ><TT
@@ -492,17 +533,19 @@ CLASS="REPLACEABLE"
 ></TT
 ></B
 >.</P
-></DIV
+>
+        </DIV
 >
        </P
-></DD
+>
+      </DD
 ><DT
 ><B
 CLASS="GUIBUTTON"
 >cos</B
 ></DT
 ><DD
-><P
+>       <P
 >        Computes the trigonometric cosine, or compliment's sine.  The units used are displayed on the second button down on the right column of buttons.
         <DIV
 CLASS="EXAMPLE"
@@ -510,7 +553,8 @@ CLASS="EXAMPLE"
 ><B
 >Example 6. cos</B
 ></P
-><P
+>         
+         <P
 >When the display shows <B
 CLASS="COMMAND"
 ><TT
@@ -529,573 +573,10 @@ CLASS="REPLACEABLE"
 ></B
 >, pressing <B
 CLASS="GUIBUTTON"
->cos</B
-> will cause <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> to display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->.5</I
-></TT
 ></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->tan</B
-></DT
-><DD
-><P
->        Computes the trigonometric tangent.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 7. tan</B
 ></P
-><P
->When the display shows <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->45</I
-></TT
-></B
-> and the units display shows <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->DEG</I
-></TT
-></B
->, pressing <B
-CLASS="GUIBUTTON"
->tan</B
-> will cause <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> to display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->1</I
-></TT
-></B
->.</P
 ></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->DEG/RAD/GRAD</B
-></DT
-><DD
-><P
->        Displays and changes the units of angle measure
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->e</B
-></DT
-><DD
-><P
->        Uses the irrational number e for the next argument.  The number displayed is not necessarily the same as used for calculations.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->EE</B
-></DT
-><DD
-><P
->        Multiplies the current display by 10 to the power of the next number entered.  
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 8. EE</B
 ></P
-><P
->Clicking <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->8</I
-></TT
-></B
-> and then <B
-CLASS="GUIBUTTON"
->EE</B
-> and then <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->3</I
-></TT
-></B
-> and then <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->=</I
-></TT
-></B
-> would display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->8000</I
-></TT
-></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->log</B
-></DT
-><DD
-><P
->        Calculates the logarithm base 10 of the display.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 9. log</B
-></P
-><P
->Entering <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->1000</I
-></TT
-></B
-> and pressing <B
-CLASS="GUIBUTTON"
->log</B
-> yields a result of <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->3</I
-></TT
-></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->ln</B
-></DT
-><DD
-><P
->        Calculates the natual logarithm (base e) of the display.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 10. ln</B
-></P
-><P
->Entering <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->403.4287935</I
-></TT
-></B
-> and pressing <B
-CLASS="GUIBUTTON"
->ln</B
-> causes <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> to display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->6</I
-></TT
-></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->x^y</B
-></DT
-><DD
-><P
->        Raises the number in the display to the power of the next number entered.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 11. x^y</B
-></P
-><P
->With <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->5</I
-></TT
-></B
-> in the display, pressing <B
-CLASS="GUIBUTTON"
->x^y</B
-> and then entering <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->3</I
-></TT
-></B
-> will yield a result of <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->125</I
-></TT
-></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->PI</B
-></DT
-><DD
-><P
->        Enters the irrational number Pi into the display.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->x!</B
-></DT
-><DD
-><P
->        Calculates the factorial of the number in the display.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 12. x!</B
-></P
-><P
->Entering <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->7</I
-></TT
-></B
-> in the display and pressing <B
-CLASS="GUIBUTTON"
->x!</B
-> will cause <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> to display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->5040</I
-></TT
-></B
->.</P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->(</B
-><B
-CLASS="GUIBUTTON"
->)</B
-></DT
-><DD
-><P
->        Parenthesis can be used to group operations, overriding the default order of operations for mathematics.  
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->/</B
-><B
-CLASS="GUIBUTTON"
->*</B
-><B
-CLASS="GUIBUTTON"
->+</B
-><B
-CLASS="GUIBUTTON"
->-</B
-></DT
-><DD
-><P
->        These buttons let you perform the basic arethemetic operations of division <B
-CLASS="GUIBUTTON"
->/</B
->, multiplication <B
-CLASS="GUIBUTTON"
->*</B
->, addition <B
-CLASS="GUIBUTTON"
->+</B
->, and subtraction <B
-CLASS="GUIBUTTON"
->-</B
->.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->STO</B
-><B
-CLASS="GUIBUTTON"
->RCL</B
-></DT
-><DD
-><P
->        The <B
-CLASS="GUIBUTTON"
->STO</B
-> is used to store the display into the calculators memory.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->RCL</B
-></DT
-><DD
-><P
->        The <B
-CLASS="GUIBUTTON"
->RCL</B
-> is used to recall the stored value from memory.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->0</B
-><B
-CLASS="GUIBUTTON"
->1</B
-><B
-CLASS="GUIBUTTON"
->2</B
-><B
-CLASS="GUIBUTTON"
->3</B
-><B
-CLASS="GUIBUTTON"
->4</B
-><B
-CLASS="GUIBUTTON"
->5</B
-><B
-CLASS="GUIBUTTON"
->6</B
-><B
-CLASS="GUIBUTTON"
->7</B
-><B
-CLASS="GUIBUTTON"
->8</B
-><B
-CLASS="GUIBUTTON"
->9</B
-></DT
-><DD
-><P
->        These buttons are used to input the numeric characters 0 through 9, for use in calculations.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->SUM</B
-></DT
-><DD
-><P
->        Adds the displayed number to the number stored in <TT
-CLASS="APPLICATION"
->GNOME Calculator's</TT
-> memory.  This will act the same as the <B
-CLASS="GUIBUTTON"
->STO</B
-> when the calculator's memory is empty, or zero.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->EXC</B
-></DT
-><DD
-><P
->        Swaps the values in the display an memory.
-        <DIV
-CLASS="EXAMPLE"
-><P
-><B
->Example 13. EXC</B
-></P
-><P
->          First, store <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->12</I
-></TT
-></B
-> into memory.  Then, enter <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->56</I
-></TT
-></B
->, and press <B
-CLASS="GUIBUTTON"
->EXC</B
->.  You should now see <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->12</I
-></TT
-></B
-> in the display.  Press <B
-CLASS="GUIBUTTON"
->CE/C</B
-> followed by <B
-CLASS="GUIBUTTON"
->RCL</B
->, and <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> will display <B
-CLASS="COMMAND"
-><TT
-CLASS="REPLACEABLE"
-><I
->12</I
-></TT
-></B
->.
-         </P
-></DIV
->
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->.</B
-></DT
-><DD
-><P
->        The <B
-CLASS="GUIBUTTON"
->.</B
-> is used to delimit between whole numbers, and fractional, or decimal, numbers while using <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
->.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->+/-</B
-></DT
-><DD
-><P
->        The <B
-CLASS="GUIBUTTON"
->+/-</B
-> is used to change the sign of the number displayed from positive to negative, or vice versa.
-       </P
-></DD
-><DT
-><B
-CLASS="GUIBUTTON"
->=</B
-></DT
-><DD
-><P
->        The <B
-CLASS="GUIBUTTON"
->=</B
-> is used to tell
-        <TT
-CLASS="APPLICATION"
->GNOME Calculator</TT
-> to perform the
-        currently pending operations.  This command can also be
-        invoked using the <B
-CLASS="KEYCAP"
->Enter</B
-> or
-        <B
-CLASS="KEYCAP"
->Return</B
-> key on the keyboard.
-       </P
 ></DD
 ></DL
 ></DIV
@@ -1131,10 +612,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="bugs.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -1151,7 +629,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Known Bugs and Limitations</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

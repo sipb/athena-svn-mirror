@@ -1,3 +1,313 @@
+Mon Dec 17 22:18:17 CST 2001 Linas Vepstas <linas@linas.org>
+
+	* timer.c: failed to redraw main window when clock ticks!
+	* prefs.c: core dump when changing preferences
+	* help/*: remove this documentation directory entirely
+
+Mon Dec 10 10:48:28 CST 2001 Linas Vepstas <linas@linas.org>
+
+	* proj.c: fix core dump
+
+Fri Nov 30 12:26:23 CST 2001 Linas Vepstas <linas@linas.org>
+
+	* proj.h, proj.c, props-invl.c: bug fix for coredump
+	* props-task.c: fix redraw bug
+	* journal.c, task_opup.glade, interval_popup.glade:
+	  add new popup menu entries.
+	* gtt.sgml: add list of new features
+
+Wed Nov 28 12:12:44 CST 2001 Linas Vepstas <linas@linas.org>
+
+	* Makefile.am, journal.c: patch from Derek Atkins
+	  to search 'unusual' install paths for data directories.
+
+	* proj.c: remove conflicting libintl.h; bugfix for 
+	  clear_daily_counter
+
+Fri Nov 23 17:18:14 CST 2001 Linas Vepstas <linas@linas.org>
+
+        * doc/C/gtt.sgml: update maintainer list, add warning
+          about out-of-date documentation.
+
+	* *.c, glade/*.glade: rename "Task" to the more 
+          correct "Diary Entry"
+
+Mon Nov  5 13:23:02 CST 2001 Linas Vepstas <linas@linas.org>
+
+	* ghtml.c: replace obsolete guile macro with supported
+	  function. (needed for guile-1.5 comaptibility).
+
+Thu Oct 18 16:31:35 CDT 2001  Linas Vepstas <linas@linas.org>
+
+        * main.c, file-io.c patch from Jeff Putsch
+          <putsch@fiber.mxim.com> to fix coredump on initial
+          startup.
+
+Fri Oct 12 14:01:25 CDT 2001  Linas Vepstas <linas@linas.org>
+
+        * ctree.c, ctree.h, prefs.c: bugfix: redraw columns when
+          changing column visibility.
+
+        * ctree.c: bugfix: set rational default column widths.
+                   bugfix: print start, end, due dates correctly.
+                   bugfix: fix column titles, add tooltips.
+
+        * props-proj.c: bugfix: fix property box sensitivity.
+          What's up with that anthrax shit?  That's some bad shit
+          comin down.
+
+        * help/C/gtt.1: update the man page.
+
+Fri Oct 05 11:20:18 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, journal.c, plug-in.c, prefs.c, props-invl.c,
+	  props-proj.c, props-task.c, util.[ch]:  Add a function for 
+	  getting the GladeXML from the right directory.
+
+	* glade/Makefile.am: dist all glade files
+
+Thu Oct 04 21:37:11 2001  George Lebl <jirka@5z.com>
+
+	* ghtml.c: more 64bit fixes.  Guile uses int and not size_t for the
+	  sizes of strings apparently.  It's kind of evil.
+
+Thu Oct 04 21:23:01 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am: fix make dist
+
+	* journal.c: fix 64bit issue with saving, and hide the print button
+	  for now since it doesn't work yet
+
+	* main.c: remove the initial warning, this is a stable gnome-utils
+	  release
+
+Wed Sep 26 18:45:32 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* proj.[ch], proj-props.c, xml-read.c xml-write.c:
+	  add support for a to-do list.
+
+	* proj.[ch], file-io.c, prefs.[ch], ctree.c: add weekly, 
+          monthly time totals
+
+	* proj.[ch], xml-read.c, xml-write.c, ghtml.c: : add 
+          billing status field
+
+Sun Sep 23 15:17:30 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* menucmd.c, toolbar.c: use the focus row, not the 
+	  current project, as the target of menu operations.
+
+	* err-throw.c: add canonical error messages 
+
+	* main.c: modify order of intialization, in prep for 
+	  SQL and other data sources.
+
+	* file-io.c: add support for alternate data sources 
+	  (e.g. sql work being done by Thomas Lang?s)
+
+	* ctree.c, menus.c: add support for showing & editing 
+	  the task memo from the main window
+
+Wed Sep 19 10:17:58 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* xml-read.c: changes to minimize likelyhood of loss
+	  of data if some weird i/o error occurs.
+
+Thu Sep 13 13:11:19 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* prefs.[ch], options.c: transition user preferences
+	  dialog to glade dialog
+	* *.[ch]: misc multiple bug fixes
+
+Mon Sep 10 14:29:50 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* idle-timer.[ch], timers.c: detect system idleness, 
+	  stop current project after an inactivity timeout.
+	* ctree.c: make the arrow keys, the enter key work.
+	* journal.c, proj.c: implement cut & paste of memos 
+	  in the journal report.
+
+Sat Sep  8 13:05:24 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* phtml.[ch], ghtml.[ch], journal.c: reimplement reports 
+	  with guile interpreter.
+	* ghtml.c: provide configurable column titles.
+	* journal.c: i18n'ize the paths to the reports
+
+Fri Sep  7 10:51:53 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* proj.c: misc bug fxes
+
+Tue Sep  4 23:43:02 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* phtml.c: provide support for configurable report layout,
+	  add invoice creation.
+
+	* plug-in.[ch], plugin.glade: define a simple GUI to allow
+	  users to add new, user-defined reports.
+
+Tue Sep 04 01:15:32 2001  George Lebl <jirka@5z.com>
+
+	* main.c: Have the "unstable" warning mention release 1.4.0.2 since
+	  I'm making 1.4.0.99 so it'd be good to tell users about a version
+	  number rather then just a cvs date
+
+
+Mon Sep  3 22:01:48 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* proj.c: important little bug fix.
+
+	* proj.c: implement auto-merge of intervals
+
+	* proj.c, journal.c: add ability to insert new 
+	  memos into journal.
+
+	* journal.c: add ability to save html to file.
+
+Mon Sep 03 06:15:08 2001  George Lebl <jirka@5z.com>
+
+	* glade/*.c, glade/Makefile.am: the translatable string stuff is now
+	  handled by xml-i18n-tools so the string files are not needed
+
+
+Sun Sep  2 13:27:18 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* proj.c: fix killer bug that was destroying timer data!
+	  Ouch!! (this bug introduced only a few days ago).
+
+	* props-invl.c: add interval edit dialog
+
+	* ctree.*, journal.*, proj.*: add event notification, so that
+	  any/all relevent windows are redrawn when data changes.
+
+	* cur-proj.h: start isolating cur-proj, since this global
+	  prevents us from having multiple cur projects.
+
+Sat Sep  1 15:51:53 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* props-task.c: add task properties GUI dialog
+	* props-proj.c: convert the project properties dialog to
+	  glade, add all the missing bits of the project properties.
+
+	* util.[ch]: clairify date utilities
+	* phtml.c: Beautify table layout slightly, add crude 
+	  ability to edit intervals.
+
+Fri Aug 31 20:16:55 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am: add proper gconf CFLAGS and link with GCONF, though
+	  not really needed by gtt itself.
+
+Fri Aug 31 09:33:13 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* proj.[ch], xml-read, write: add more billing rates/types, 
+	  add min intervals
+
+	* *.[ch] fix miscellaneous bugs
+	
+Thu Aug 30 17:00:24 CDT 2001  Linas Vepstas <linas@linas.org>
+	
+	* design.txt: begin a rudimentary overview of the 
+	  internals of GTT
+	
+	* journal.[ch]: add ability to view & edit journal of 
+	  annotated timestamps (via gtkhtml window)
+	  
+	* phtml.[ch]: add ability to parse gtt-style html markup,
+	  and output to aribtrary stream.
+
+2001-08-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* menucmd.c: Fix a typo.
+
+Tue Aug 28 20:11:34 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* main.c: add warning noting file format change.
+
+	* ctree.[ch]: convert old clist display to ctree display for
+	  heirarchical projects (sub-projects).  One can drag-n-drop
+	  projects to reparent/reorder them.
+
+	* *.[ch] rewire so that project timing data is stored in xml file
+	  while true GUI config data is stored in config file
+
+	* proj.[ch] add routines to subtotal time spent in sub-projects.
+
+Fri Aug 24 23:05:16 CDT 2001  Linas Vepstas <linas@linas.org>
+	* app.c clist.c gtt.h main.c menucmd.c menus.c proj.c timer.c
+	  toolbar.c: add routine gboolean timer_is_running()
+
+	* app.c main.c proj.c: bug fix, sometimes timer doesn't start right.
+
+	* file-io.c, proj.c: split out i/o routines to its own file
+	
+	* app.c, file-io.c: save and restore the window size and placement
+
+	* file-io.c: save and restore the current project
+
+	* fix bug introduced last week regarding zeroing of day timers.
+
+Fri Aug 17 10:56:14 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* xml-read.c, xml-write.c: add routines to read, write XML to file.
+
+	* *.[ch] misc cleanup, additions to support above.
+
+Tue Aug 14 19:46:21 CDT 2001  Linas Vepstas <linas@linas.org>
+
+	* *.[ch]: add C structs for storing/maniuplating log data
+	  in memory. This includes heirarchical project trees, 
+	  and memo strings attached to time intervals.
+
+	* proj.c, clist.c: get rid of home-grown linked list, use glib routines.
+
+	* *.[ch]: add some data hiding in classic oo-style
+
+	* xml-write.[ch]: fill in a bit of the xml-output routine
+
+Sat Aug 11 13:56:44 2001  George Lebl <jirka@5z.com>
+
+	* app.c, log.c: rewrite most of the internals of the project logging
+	  stuff to work sanely, fixes bug #58792.  Also log program start
+	  correctly
+
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+2001-07-24 John Fleck <jfleck@inkstain.net>
+
+	* options.c - the preferences help button was pointing
+	at the wrong file
+	
+Sat Jun 30 00:19:21 2001  George Lebl <jirka@5z.com>
+
+	* proj.c, menus.c, menucmd.[ch], gtt.h:  Add export current state
+	  feature.  Exports to a tab delimited file for use in spreadsheets,
+	  at some point I suppose it should support multiple formats, such as
+	  csv, gnumeric, html or whatever.
+
+Sun Jun 24 17:10:31 2001  George Lebl <jirka@5z.com>
+
+	* *.[ch]: Further constization in search of the gettext corruption
+	  bug
+
+Wed Jun 13 21:49:51 2001  George Lebl <jirka@5z.com>
+
+	* app.c, dialog.c, gtt.h, log.c, main.c, options.c, proj.c, prop.c,
+	  toolbar.c: Whack all uses of sprintf, fix fork to use double fork,
+	  try to use dynamic rather then static buffers to avoid overruns,
+	  when there is a pid file try seeing if the process exists first
+	  before warning to figure out if the pid file might be stale, whack
+	  the pid file on SIGINT and SIGTERM
+
+	* menucmd.c: make focus be on the name entry and enter makes focus
+	  move to the next entry rather then close the dialog
+
+2001-06-03 Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	* gtt.sgml Spanish Translation
+
 2001-02-21 John Fleck <jfleck@inkstain.net>
 
 	* updated doc/C/gtt.sgml for 1.4 release: bumped up version
@@ -92,7 +402,7 @@ Sat Apr 01 10:39:46 2000  George Lebl <jirka@5z.com>
 1999-03-18  Eckehard Berns  <eb@berns.i-s-o.net>
 
 	* proj.c: applied patch from robbe@orcus.priv.at that fixes the
-	segfault when using --select-prpject at the command line.
+	segfault when using --select-project at the command line.
 
 1999-03-16  Eckehard Berns  <eb@berns.i-s-o.net>
 

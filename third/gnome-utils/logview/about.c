@@ -18,15 +18,12 @@
 
     ---------------------------------------------------------------------- */
 
+#include <config.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <gtk/gtk.h>
-#include <config.h>
 #include <gnome.h>
 #include "logview.h"
-#include "log.xpm"
-#include "logview.xpm"
-
 
 extern ConfigData *cfg;
 extern GtkWidget *app;
@@ -42,8 +39,8 @@ void
 AboutShowWindow (GtkWidget *widget, gpointer user_data)
 {
   const char *author[] = {N_("Cesar Miquel (miquel@df.uba.ar)"), NULL};
-  char *comments = N_("This  program  is  part of  the  GNOME  project " 
-"for Linux. Logview comes with ABSOLUTELY NO WARRANTY. This is free " 
+  char *comments = N_("This  program  is  part of  the  GNOME  project. " 
+"Logview comes with ABSOLUTELY NO WARRANTY. This is free " 
 "software, and you are welcome to redistribute it under the conditions "
 "of the GNU General Public Licence. The log icon is a courtesy of "
 "Tuomas Kuosmanen (a.k.a tigert).");
@@ -55,7 +52,7 @@ AboutShowWindow (GtkWidget *widget, gpointer user_data)
   }
 
   /* go get logview.xpm in $(prefix)/share/pixmaps/logview */
-  about_window = gnome_about_new (_("Logview"), LOGVIEW_VERSION,
+  about_window = gnome_about_new (_("Logview"), VERSION,
            			  N_("Copyright (C) 1998"),
 				  author, _(comments),
 				  "logview/logview.xpm");
