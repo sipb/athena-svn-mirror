@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.43 1992-08-14 12:15:04 lwvanels Exp $
+ *	$Id: bdump.c,v 1.44 1992-08-17 19:57:06 lwvanels Exp $
  *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -16,7 +16,7 @@
  
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.43 1992-08-14 12:15:04 lwvanels Exp $";
+static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.44 1992-08-17 19:57:06 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
  
@@ -28,7 +28,6 @@ static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.43 1992-08-14 12:15:04 lwvanels 
 /* inconsistent header files... */
 #ifdef SignalIgnore
 #undef SIG_IGN
-fubar
 #define SIG_IGN SignalIgnore
 #undef SIG_DFL
 #define SIG_DFL SignalDefault
