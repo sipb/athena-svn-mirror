@@ -1,4 +1,0 @@
-@node Index
-@unnumbered Index
-
-@printindex cp
