@@ -1,0 +1,30 @@
+# $Id: Makefile.athena,v 1.1 2000-11-08 19:50:53 ghudson Exp $
+
+dist:
+
+prepare:
+	case "$$HOSTTYPE" in \
+	sun4) \
+		mfsuffix=solaris; \
+		;; \
+	sgi) \
+		mfsuffix=sgi; \
+		;; \
+	esac; \
+	sed -e "/^ZLIBLIB=/s%=.*%=/usr/athena/lib%" \
+	    -e "/^ZLIBINC=/s%=.*%=/usr/athena/include%" \
+	    -e "/^INCPATH=/s%=.*%=/usr/athena/include%" \
+	    -e "/^LIBPATH=/s%=.*%=/usr/athena/lib%" \
+	    -e "/^prefix=/s%=.*%=/usr/athena%" \
+	    -e "/^CC=/s%=.*%=$$CC%" scripts/makefile.$$mfsuffix > Makefile
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"
