@@ -7,7 +7,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.7 1990-12-12 13:03:00 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.8 1990-12-12 14:20:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -216,7 +216,8 @@ main(argc,argv)
 			  /* we can output to a temp file, which we will */
 			  /* then process to look "nice */
     strcpy(templ,"/tmp/oreplayXXXXXX");
-    if ((output_fd = mkstemp(templ)) < 0) {
+    mktemp(templ);
+    if ((output_fd = open(templ,O_RDWR|O_EXCL|O_CREAT,0644)) < 0) {
       perror("olist: opening temp file");
       punt(temp_fd,filename);
     }
