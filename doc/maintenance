@@ -205,11 +205,51 @@ following guidelines should help the release go smoothly:
 
 	* Crash and burn
 
-	  This phase is for rel-eng internal testing.  The crash and
-	  burn machines should be identified and used to test the
-	  install and update.  System packs may be generated at will
-	  by taking snapshots from the wash machine.  The system packs
-	  volume does not need any replication.
+	  This phase is for rel-eng internal testing.  The release
+	  engineer needs to make sure that the current source base
+	  works well enough for testers to use it and find bugs.  For
+	  crash and burn to begin, the operating system support person
+	  for each platform must provide a way to install or update a
+	  machine to the new version of the operating system for that
+	  platform.
+
+	  Each platform needs a build tree and system packs volume.
+	  The build tree should be mounted in
+	  /afs/dev.mit.edu/project/release/<version>/build/<sysname>.
+	  The system packs volume should be mounted in
+	  /afs/dev.mit.edu/system/<sysname>/srvd-<version>.
+
+	  Each platform needs a new-release build machine to generate
+	  system packs to test.  For an existing platform, this is
+	  generally the wash machine.  The wash machine needs to be
+	  updated to the new operating system (a reinstall is
+	  sometimes the simplest way).  Release build machines are set
+	  up as follows:
+
+		- builder has remote access
+		- ssh is enabled
+		- RVDCLIENT is false and all syspacks detached
+		- /build is a symlink to the build tree
+		- /os is a symlink to the rw of the os volume
+		- /srvd is a symlink to the ro of the packs
+		- /.srvd is a symlink to the rw of the packs
+		- The source locker is attached and locked.
+
+	  Doing a full build for release testing is then simple:
+
+		# Get tickets as builder and ssh to the wash machine
+		rm -rf /.srvd/* /.srvd/.??* /build/* /build/.??*
+		synctree -s /mit/source -d /build
+		sh /build/packs/build/build.sh &
+
+	  (It can be useful to run the ssh to the build machine inside
+	  a screen session so you don't have to log out of the build
+	  machine until the build is finished.)
+
+	  The crash and burn machines should be identified and used to
+	  test the update (and install, if possible).  System packs
+	  may be regenerated at will.  The system packs volume does
+	  not need any replication.
 
 	  System release notes should be prepared during this phase.
 
@@ -227,20 +267,25 @@ following guidelines should help the release go smoothly:
 	  the most restrictive sizes on Solaris clients are 27713K and
 	  51903K of useable space for the root and /usr partitions.
 
+	  A note on the wash: it is not especially important that the
+	  wash be running during the release cycle, but currently the
+	  wash can run on the new release build machine without
+	  interfering with the build functions of the machine.
+	  So after updating the wash machine to the new OS for new
+	  release builds, the release engineer can set up the wash
+	  right away.
+
 	* Alpha
 
 	  The alpha phase is for internal testing by the release team.
-	  System packs may still be regenerated at will by taking
-	  snapshots, but the system packs volume (and os volume)
-	  should be read-only so it can be updated by a vos release.
-	  Changes to the packs do not need to be propagated in patch
-	  releases; testers are expected to be able to ensure
-	  consistency by forcing repeat updates or reinstalling their
-	  machines.
+	  System packs may still be regenerated at will, but the
+	  system packs volume (and os volume) should be read-only so
+	  it can be updated by a vos release.  Changes to the packs do
+	  not need to be propagated in patch releases; testers are
+	  expected to be able to ensure consistency by forcing repeat
+	  updates or reinstalling their machines.
 
-	  A draft of the system release notes should be ready by the
-	  beginning of this phase.  User release notes should be
-	  prepared during this phase.
+	  User release notes should be prepared during this phase.
 
 	  Before the transition from alpha to beta, doc/third-party
 	  should be checked to see if miscellaneous third-party files
@@ -271,29 +316,15 @@ following guidelines should help the release go smoothly:
 		  on the branch there.  Set the permissions by doing
 		  an fs copyacl from an older source tree before the
 		  checkout, and run CVSROOT/afs-permissions.sh after
-		  the checkout.  Have a filsys entry of the form
-		  source-8.1 created for the new tree.
+		  the checkout.  Copy over the .rconf file from the
+		  src-current directory.  Have a filsys entry of the
+		  form source-8.1 created for the new tree.
 
-		- Create a volume for the builds for each platform
-		  under /afs/dev.mit.edu/project/release at
-		  <version>/build/<platform>.  Copy the acl from a
-		  previous build tree.
+		- attach and lock the branch source tree on each build
+		  machine.
 
-		- For each platform, turn off the wash and set up the
-		  washing machine as the new release build machine.
-		  You'll need to update the machine to the new
-		  operating system if necessary, which is more of an
-		  art then a science.  When you're done, make sure
-		  that:
-			builder has access
-			RVDCLIENT is false and all syspacks detached
-			/build is a symlink to the build tree
-			/os is a symlink to the rw of the os volume
-			/srvd is a symlink to the ro of the packs
-			/.srvd is a symlink to the rw of the packs
-
-		  Now do a final full build of the release on the new
-		  build machine, as "builder".
+		- Do a final full build of the release from the branch
+		  source tree.
 
 	* Early
 
@@ -308,6 +339,13 @@ following guidelines should help the release go smoothly:
 
 	  The release branch should be tagged with a name of the form
 	  athena-8_1-release.
+
+	  Once the release has gone public, the current-release
+	  machines should be updated to the release and set up as the
+	  build machines for the now-current release.  Remove the
+	  /build and /.srvd symlinks on the new-release build
+	  machines, and make sure the wash is running on them if you
+	  didn't do so back in the crash and burn phase.
 
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
