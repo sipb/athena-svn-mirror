@@ -1,13 +1,3 @@
-/*
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v $
- *      $Author: ens $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.2 1987-07-23 09:42:31 ens Exp $
- */
-
-#ifndef lint
-static char rcsid_test2_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/getcluster.c,v 1.2 1987-07-23 09:42:31 ens Exp $";
-#endif
-
 #include <stdio.h>
 #include <ctype.h>
 #include <hesiod.h>
@@ -30,37 +20,47 @@ char *argv[];
 	int bourneshell = 0;
 	char myself[80];
 
-	if (argc == 2 && strcmp(argv[1], "-b") == 0)
+	if (argc < 3 || argc > 4) {
+		fprintf(stderr, "usage: getcluster [-b] hostname version\n");
+		exit(-1);
+	}
+	if (argc == 4 && strcmp(argv[1], "-b") == 0) {
 		bourneshell++;
-	if (gethostname(myself, 80) < 0) {
-		perror("Can't get my own hostname");
-		exit(-1);
+		argv++;
 	}
-	hp = hes_resolve(myself, "cluster");
+	
+	hp = hes_resolve(argv[1], "cluster");
 	if (hp == NULL) {
-		fprintf(stderr, "No Hesiod information available\n");
+		fprintf(stderr, "No Hesiod information available for %s\n", argv[1]);
 		exit(-1);
 	}
-	shellenv(hp, bourneshell);
+	shellenv(hp, bourneshell, argv[2]);
 }
 
-shellenv(hp, bourneshell)
+shellenv(hp, bourneshell, version)
 char **hp;
 int bourneshell;
+char *version;
 {
-	char var[80], val[80];
+	char var[80], val[80], vers[80];
 
 	if (bourneshell) {
 		while(*hp) {
-			sscanf(*hp++, "%s %s", var, val);
+			vers[0] = '\0';
+			sscanf(*hp++, "%s %s %s", var, val, vers);
+			if (vers[0] != '\0' && strcmp(vers, version))
+				continue;
 			upper(var);
 			printf("%s=%s ; export %s\n", var, val, var);
 		}
 	} else
 		while(*hp) {
-			sscanf(*hp++, "%s %s", var, val);
+			vers[0] = '\0';
+			sscanf(*hp++, "%s %s %s", var, val, vers);
+			if (vers[0] != '\0' && strcmp(vers, version))
+				continue;
 			upper(var);
-			printf("setenv %s %s;\n", var, val);
+			printf("setenv %s %s\n", var, val);
 		}
 	if (ferror(stdout)) {
 		ftruncate(fileno(stdout), 0L);
