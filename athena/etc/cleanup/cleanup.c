@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.6 1990-11-26 10:06:49 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.7 1990-11-28 12:44:04 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -40,7 +40,7 @@ extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
 #endif
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.6 1990-11-26 10:06:49 mar Exp $";
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.7 1990-11-28 12:44:04 mar Exp $";
 
 #ifdef ultrix
 extern char *sys_errlist[];
@@ -99,13 +99,13 @@ char *argv[];
   if(fd < 0) {
     if (errno == EEXIST) {
 	if (getuid())
-	  fprintf(stderr, "%s exists.  Failing.\n", nologin_fn);
+	  fprintf(stderr, "cleanup: %s exists.  Failing.\n", nologin_fn);
 	else
-	  fprintf(stderr, "%s already exists, not performing cleanup.\n",
+	  fprintf(stderr, "cleanup: %s already exists, not performing cleanup.\n",
 		  nologin_fn);
 	exit(2);
     } else {
-	fprintf(stderr, "Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
+	fprintf(stderr, "cleanup: Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
 	exit(3);
     }
   }
@@ -132,7 +132,7 @@ char *argv[];
       fd = open("/etc/utmp", O_RDONLY);
       if(fd < 0)
 	{
-	    fprintf(stderr, "Couldn't open /etc/utmp, %s.\n",
+	    fprintf(stderr, "cleanup: Couldn't open /etc/utmp, %s.\n",
 		    sys_errlist[errno]);
 	    status = 4;
 	    goto done;
@@ -154,7 +154,7 @@ char *argv[];
 	    p = getpwnam(buf);
 	    if(p == 0)
 	      {
-		  fprintf(stderr, "Warning...could not get uid for user \"%s\".\n", buf);
+		  fprintf(stderr, "cleanup: Warning, could not get uid for user \"%s\".\n", buf);
 		  i--;
 	      } else {
 		  int j;
@@ -177,7 +177,7 @@ char *argv[];
       while ((pwd = getpwent()) != NULL)
 	uids[nuid++] = pwd->pw_uid;
       if (nuid > MAXUSERS) {
-	  fprintf(stderr, "Too many users in /etc/passwd for cleanup\n");
+	  fprintf(stderr, "cleanup: Too many users in /etc/passwd for cleanup\n");
 	  status = 2;
 	  goto done;
       }
@@ -206,11 +206,11 @@ char *argv[];
   
  done:
   if(unlink(nologin_fn) < 0)
-    fprintf(stderr, "Warning: unable to unlink /etc/nologin.\n");
+    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/nologin.\n");
   if(unlink("/etc/ptmp") < 0)
-    fprintf(stderr, "Warning: unable to unlink /etc/ptmp.\n");
+    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/ptmp.\n");
   if(unlink("/etc/gtmp") < 0)
-    fprintf(stderr, "Warning: unable to unlink /etc/gtmp.\n");
+    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/gtmp.\n");
 
   return (status);
 }
@@ -240,14 +240,13 @@ int sig;
 #endif
   if(n_done == 0 && nlist(kernel, nl) != 0)
     {
-      fprintf(stderr, "Error: can't get kernel name list.\n");
+      fprintf(stderr, "Cleanup: can't get kernel name list.\n");
       return(5);
-      exit(5);
     }
   n_done = 1;
   if((kmem = open("/dev/kmem", O_RDONLY)) < 0)
     {
-      fprintf(stderr, "Error: can't open kmem (%s).\n", sys_errlist[errno]);
+      fprintf(stderr, "Cleanup: can't open kmem (%s).\n", sys_errlist[errno]);
       return(6);
     }
   lseek(kmem, nl[NPROC].n_value, L_SET);
@@ -258,7 +257,7 @@ int sig;
   lseek(kmem, procp, L_SET);
   for(i=0; i<nproc; i+=NPROCS)
     {
-      read(kmem, &p, sizeof(p));
+      read(kmem, p, sizeof(p));
       for(j=i; j < (i+NPROCS); j++)
 	{
 	  if(j >= nproc)
@@ -299,18 +298,21 @@ uid_t *uids;
 char (*plist)[];
 #endif
 {
-  int fd = open("/etc/passwd.new",O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  int fd;
   int proto,r,i;
   char buf[BUFSIZ],**ret;
+
+  if(access("/etc/passwd.local", R_OK) < 0) return;
+  fd = open("/etc/passwd.new",O_WRONLY | O_CREAT | O_TRUNC, 0644);
   if(fd == -1)
     {
-      fprintf(stderr,"Couldn't open \"/etc/passwd.new\", %s.\n",
+      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.new\", %s.\n",
 	      sys_errlist[errno]);
       return;
     }
   if((proto = open("/etc/passwd.local", O_RDONLY)) == -1)
     {
-      fprintf(stderr,"Couldn't open \"/etc/passwd.local\", %s.\n",
+      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.local\", %s.\n",
 	      sys_errlist[errno]);
       close(fd);
       return;
@@ -318,7 +320,7 @@ char (*plist)[];
   while((r = read(proto,buf,BUFSIZ)) > 0)
     if(write(fd,buf,r) != r)
       {
-	fprintf(stderr, "Error copying /etc/passwd.local...aborting.\n");
+	fprintf(stderr, "cleanup: Error copying /etc/passwd.local...aborting.\n");
 	(void) close(fd);
 	(void) close(proto);
 	(void) unlink("/etc/passwd.new");
@@ -326,7 +328,7 @@ char (*plist)[];
       }
   if(r < 0)
     {
-      fprintf(stderr,"Couldn't open \"/etc/passwd.local\", %s.\n",
+      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.local\", %s.\n",
 	      sys_errlist[errno]);
       close(fd);
       close(proto);
@@ -342,18 +344,18 @@ char (*plist)[];
       ret = hes_resolve(uname,"uid");
       if(ret == NULL || *ret == NULL)
 	{
-	  fprintf(stderr, "Couldn't get hesinfo for uid %d, error %d.\n",
+	  fprintf(stderr, "cleanup: Couldn't get hesinfo for uid %d, error %d.\n",
 		  uids[i],hes_error());
 	} else if((c1ptr = index(*ret, ':')) == 0 || 
 		  (c2ptr = index(++c1ptr, ':')) == 0) {
-	  fprintf(stderr, "Corrupt password entry for uid %d: \"%s\".\n",
+	  fprintf(stderr, "cleanup: Corrupt password entry for uid %d: \"%s\".\n",
 		  uids[i], *ret);
 	} else {
 	  *c1ptr = '\0';
 	  if(write(fd, *ret,strlen(*ret)) < 0 ||
 	     write(fd, plist[i], strlen(plist[i])) < 0 ||
 	     write(fd, c2ptr, strlen(c2ptr)) < 0)
-	    fprintf(stderr,"Error writing \"/etc/passwd.new\": %s.\n",
+	    fprintf(stderr,"cleanup: Error writing \"/etc/passwd.new\": %s.\n",
 		    sys_errlist[errno]);
 #ifdef DEBUG
 	  else
@@ -391,10 +393,10 @@ uid_t *uids;
 	sprintf(buf, "%d", uids[i]);
 	ret = hes_resolve(buf, "uid");
 	if (ret == NULL || *ret == NULL) {
-	    fprintf(stderr, "Couldn't get hesinfo for uid %d, error %d.\n",
+	    fprintf(stderr, "cleanup: Couldn't get hesinfo for uid %d, error %d.\n",
 		    uids[i],hes_error());
 	} else if ((p = index(*ret, ':')) == NULL) {
-	    fprintf(stderr, "Corrupt password entry for uid %d: \"%s\".\n",
+	    fprintf(stderr, "cleanup: Corrupt password entry for uid %d: \"%s\".\n",
 		    uids[i], *ret);
 	} else {
 	    *p = 0;
@@ -403,17 +405,17 @@ uid_t *uids;
     }
 
     if ((new = fopen("/etc/group.new", "w")) == NULL) {
-	fprintf(stderr,"Couldn't open \"/etc/group.new\", %s.\n",
+	fprintf(stderr,"cleanup: Couldn't open \"/etc/group.new\", %s.\n",
 		sys_errlist[errno]);
 	return;
     }
     if (chmod("/etc/group.new", 0644)) {
-	fprintf(stderr, "Couldn't change mode of \"/etc/group.new\", %s\n",
+	fprintf(stderr, "cleanup: Couldn't change mode of \"/etc/group.new\", %s\n",
 		sys_errlist[errno]);
 	return;
     }
     if ((old = fopen("/etc/group", "r")) == NULL) {
-	fprintf(stderr,"Couldn't open \"/etc/group\", %s.\n",
+	fprintf(stderr,"cleanup: Couldn't open \"/etc/group\", %s.\n",
 		sys_errlist[errno]);
 	fclose(new);
 	return;
@@ -427,7 +429,7 @@ uid_t *uids;
 	if ((p = index(buf, ':')) == 0 ||
 	    (p = index(p+1, ':')) == 0 ||
 	    (p = index(p+1, ':')) == 0) {
-	    fprintf(stderr, "Corrupt group entry \"%s\".\n", buf);
+	    fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
 	    continue;
 	}
 	match = 0;
@@ -462,7 +464,7 @@ uid_t *uids;
 #endif
     }
     if (fclose(new) || fclose(old)) {
-	fprintf(stderr, "Error closing group file: sys_errlist[errno]\n");
+	fprintf(stderr, "cleannup: Error closing group file: sys_errlist[errno]\n");
 	return;
     }
     if (unlink("/etc/group") == -1)
