@@ -95,6 +95,14 @@ echo "==== build package objects from source"
 rm -rf $destdir/INSTALL/$source_name
 mkdir $destdir/INSTALL/$source_name
 
+# Hack: create /bin and /usr/vice symlinks in the target, so that
+# package files that are installed under those directories end up
+# living in the right place.
+mkdir -p $destdir/INSTALL/$source_name/usr/bin
+ln -s ./usr/bin $destdir/INSTALL/$source_name/bin
+mkdir -p $destdir/INSTALL/$source_name/var/usr/vice
+ln -s ../var/usr/vice $destdir/INSTALL/$source_name/usr/vice
+
 for op in dist prepare all install ; do
   (cd $source_name && \
       $sourcedir/packs/build/do.sh -s $sourcedir \
@@ -109,6 +117,13 @@ if [ -f $sourcedir/packs/build/sunpkg/extra/$package_name ]; then
        $sourcedir $destdir/INSTALL/$source_name) || exit 1
 fi
 
+# Hack: clean up the symlinks created above in the target, and the
+# directories they link to (if empty).
+rmdir -p $destdir/INSTALL/$source_name/usr/bin > /dev/null 2>&1
+rm $destdir/INSTALL/$source_name/bin
+rmdir -p $destdir/INSTALL/$source_name/var/usr/vice > /dev/null 2>&1
+rm $destdir/INSTALL/$source_name/usr/vice
+
 # Copy the built package into athtools now.
 echo "==== save tools"
 (cd $destdir/INSTALL/$source_name; tar cf - .) | \
@@ -116,21 +131,22 @@ echo "==== save tools"
 
 echo "==== create the package prototype"
 
-# Generate the prototype file.  We remove most directory entries from
-# the output, to avoid conflicting with OS directories.  Such conflicts
-# can lead to our blowing away symlinked directories, such as /bin.
-# However, we need to have entries for directories in which we will
-# create symbolic links, as pkgadd creates those from the pkgmap.
-# So, the awk hack below tries to remove all entries for directories
-# that belong to the OS, but keep directories that we own.  Note that
-# usr/vice is not included, because it is a symlink to /var/usr/vice.
+# Generate the prototype file.  The awk hack changes the mode, owner,
+# and group fields for all directories which properly belong to the
+# OS, to indicate that they should be left unchanged when the package
+# is installed (implying that those directories will already exist).
+# Otherwise, those values will get reset to whatever gets generated
+# here.
 prototype=/tmp/prototype$$
 rm -f $prototype
 (cd $destdir/INSTALL/$source_name && pkgproto . | nawk '{
-    if ($1 != "d" || ($3 ~ "/athena(/|$)" ||
-                      $3 ~ "^usr/afsws(/|$)" ||
-                      $3 ~ "^usr/gcc(/|$)" ||
-                      $3 ~ "^usr/prototype_user(/|$)"))
+    if ($1 == "d" && ($3 !~ "/athena(/|$)" &&
+                      $3 !~ "^usr/afsws(/|$)" &&
+                      $3 !~ "^usr/gcc(/|$)" &&
+                      $3 !~ "^usr/prototype_user(/|$)" &&
+                      $3 !~ "^var/usr/vice(/|$)"))
+      print $1, $2, $3, "?", "?", "?";
+    else
       print $0;
   }' > $prototype) || exit 1
 
