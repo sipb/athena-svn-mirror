@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.11 1990-02-08 22:49:38 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.12 1990-03-01 21:46:48 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -110,7 +110,6 @@ write_knuckle_info(fd, knuckle)
 #endif
 {
   int size;
-  QUESTION q;
 
   if(write(fd,KNUCKLE_SEP,sizeof(char) * STRING_SIZE) != 
      sizeof(char) * STRING_SIZE)
@@ -318,7 +317,7 @@ ensure_consistent_state()
 
 		/* delete_knuckle(k->connected); */
 		continue;
-
+#if 0
 		if (k->question != (QUESTION *) NULL)
 		{
 		    if(k->status & QUESTION_STATUS)
@@ -338,14 +337,6 @@ ensure_consistent_state()
 			}
 			k->question->owner->connected = (KNUCKLE *) NULL;
 		    }
-		}
-#ifdef TEST
-		if (!fork())
-		    abort();
-		else 
-		{
-		    printf("Inconsistencies found; creating core file");
-		    wait(0);
 		}
 #endif
 	    }
@@ -400,7 +391,6 @@ void
 backup_data()
 {
   KNUCKLE **k_ptr, **k_again; /* Current user. */
-  int no_knuckles=0;
   int fd;			   /* Backup file descriptor. */
   int i;
 
@@ -460,8 +450,7 @@ backup_data()
 void
 load_data()
 {
-  int no_knuckles=0;
-  int fd, i,j,nk;		
+  int fd, nk = -1;
   int status;
   int successful = 0;
   KNUCKLE *kptr;
@@ -469,10 +458,9 @@ load_data()
   char type[STRING_SIZE];
   char buf[BUF_SIZE];
 
-  i = j = 0;
   skip = FALSE;
 
-  log_status("Loading....(wish me luck)\n");
+  log_status("Loading....\n");
 
   if ((fd = open(BACKUP_FILE, O_RDONLY, 0)) < 0) 
     {
@@ -507,13 +495,11 @@ load_data()
 	  log_status("load_data: reading user data\n");
 #endif TEST
 
-	  if(uptr != (USER *) NULL)
-	    if(nk != uptr->no_knuckles)
-	      {
-		sprintf(buf,"No. knuck. mismatch: %d vs. %d",
-			nk, uptr->no_knuckles);
-		log_error(buf);
-	      }
+	  if (uptr && nk != -1 && nk != uptr->no_knuckles) {
+	      sprintf(buf,"No. knuck. mismatch: %d vs. %d",
+		      nk, uptr->no_knuckles);
+	      log_error(buf);
+	  }
 
 	  uptr = (USER *) malloc(sizeof(USER));
 	  if(uptr == (USER *) NULL)
@@ -642,16 +628,15 @@ dump_data(file)
 #endif
 {
   FILE *fp;
+  int no_knuckles;
   KNUCKLE **k_ptr, **k_again;	/* Current user. */
-  int no_knuckles=0;
   int i;
 
   ensure_consistent_state();
   fp = fopen(file,"w");
-  
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-     no_knuckles++;
 
+  for (k_ptr = Knuckle_List, no_knuckles = 0; *k_ptr; k_ptr++)
+      no_knuckles++;
   fprintf(fp,"\nNumber of knuckles:: %d\n",no_knuckles);
 	
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
