@@ -20,7 +20,7 @@ AC_PROG_INSTALL
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h sys/time.h syslog.h unistd.h)
+AC_CHECK_HEADERS(fcntl.h sys/time.h syslog.h unistd.h alloca.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
