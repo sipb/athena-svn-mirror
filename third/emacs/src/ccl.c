@@ -627,16 +627,15 @@ static tr_stack *mapping_stack_pointer;
 #define CCL_GE		0x14	/* X = (X >= Y) */
 #define CCL_NE		0x15	/* X = (X != Y) */
 
-#define CCL_ENCODE_SJIS 0x16	/* X = HIGHER_BYTE (SJIS (Y, Z))
-				   r[7] = LOWER_BYTE (SJIS (Y, Z) */
-#define CCL_DECODE_SJIS 0x17	/* X = HIGHER_BYTE (DE-SJIS (Y, Z))
+#define CCL_DECODE_SJIS 0x16	/* X = HIGHER_BYTE (DE-SJIS (Y, Z))
 				   r[7] = LOWER_BYTE (DE-SJIS (Y, Z)) */
+#define CCL_ENCODE_SJIS 0x17	/* X = HIGHER_BYTE (SJIS (Y, Z))
+				   r[7] = LOWER_BYTE (SJIS (Y, Z) */
 
 /* Terminate CCL program successfully.  */
 #define CCL_SUCCESS		   	\
   do {				   	\
     ccl->status = CCL_STAT_SUCCESS;	\
-    ccl->ic = CCL_HEADER_MAIN;		\
     goto ccl_finish;		   	\
   } while (0)
 
@@ -670,8 +669,7 @@ static tr_stack *mapping_stack_pointer;
 	int len = CHAR_STRING (ch, work, str);		\
 	if (dst + len <= (dst_bytes ? dst_end : src))	\
 	  {						\
-	    bcopy (str, dst, len);			\
-	    dst += len;					\
+	    while (len--) *dst++ = *str++;		\
 	  }						\
 	else						\
 	  CCL_SUSPEND (CCL_STAT_SUSPEND_BY_DST);	\
@@ -709,6 +707,31 @@ static tr_stack *mapping_stack_pointer;
   } while (0)
 
 
+/* Set C to the character code made from CHARSET and CODE.  This is
+   like MAKE_CHAR but check the validity of CHARSET and CODE.  If they
+   are not valid, set C to (CODE & 0xFF) because that is usually the
+   case that CCL_ReadMultibyteChar2 read an invalid code and it set
+   CODE to that invalid byte.  */
+
+#define CCL_MAKE_CHAR(charset, code, c)				\
+  do {								\
+    if (charset == CHARSET_ASCII)				\
+      c = code & 0xFF;						\
+    else if (CHARSET_DEFINED_P (charset)			\
+	     && (code & 0x7F) >= 32				\
+	     && (code < 256 || ((code >> 7) & 0x7F) >= 32))	\
+      {								\
+	int c1 = code & 0x7F, c2 = 0;				\
+								\
+	if (code >= 256)					\
+	  c2 = c1, c1 = (code >> 7) & 0x7F;			\
+	c = MAKE_NON_ASCII_CHAR (charset, c1, c2);		\
+      }								\
+    else							\
+      c = code & 0xFF;					\
+  } while (0)
+
+
 /* Execute CCL code on SRC_BYTES length text at SOURCE.  The resulting
    text goes to a place pointed by DESTINATION, the length of which
    should not exceed DST_BYTES.  The bytes actually processed is
@@ -729,6 +752,9 @@ struct ccl_prog_stack
     int ic;			/* Instruction Counter.  */
   };
 
+/* For the moment, we only support depth 256 of stack.  */ 
+static struct ccl_prog_stack ccl_prog_stack_struct[256];
+
 int
 ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
      struct ccl_program *ccl;
@@ -744,12 +770,15 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
   unsigned char *dst = destination, *dst_end = dst + dst_bytes;
   int jump_address;
   int i, j, op;
-  int stack_idx = 0;
-  /* For the moment, we only support depth 256 of stack.  */ 
-  struct ccl_prog_stack ccl_prog_stack_struct[256];
+  int stack_idx = ccl->stack_idx;
+  /* Instruction counter of the current CCL code. */
+  int this_ic;
 
   if (ic >= ccl->eof_ic)
     ic = CCL_HEADER_MAIN;
+
+  if (ccl->buf_magnification ==0) /* We can't produce any bytes.  */
+    dst = NULL;
 
 #ifdef CCL_DEBUG
   ccl_backtrace_idx = 0;
@@ -776,6 +805,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	  break;
 	}
 
+      this_ic = ic;
       code = XINT (ccl_prog[ic]); ic++;
       field1 = code >> 8;
       field2 = (code & 0xFF) >> 5;
@@ -897,7 +927,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	  i = reg[RRR];
 	  j = XINT (ccl_prog[ic]);
 	  op = field1 >> 6;
-	  ic++;
+	  jump_address = ic + 1;
 	  goto ccl_set_expr;
 
 	case CCL_WriteRegister:	/* CCCCCCCCCCCCCCCCCCCrrrXXXXX */
@@ -917,6 +947,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	  i = reg[RRR];
 	  j = reg[Rrr];
 	  op = field1 >> 6;
+	  jump_address = ic;
 	  goto ccl_set_expr;
 
 	case CCL_Call:		/* CCCCCCCCCCCCCCCCCCCC000XXXXX */
@@ -973,6 +1004,11 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	      ic = ccl_prog_stack_struct[stack_idx].ic;
 	      break;
 	    }
+	  if (src)
+	    src = src_end;
+	  /* ccl->ic should points to this command code again to
+             suppress further processing.  */
+	  ic--;
 	  CCL_SUCCESS;
 
 	case CCL_ExprSelfConst: /* 00000OPERATION000000rrrXXXXX */
@@ -1068,8 +1104,8 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	    case CCL_LE: reg[rrr] = i <= j; break;
 	    case CCL_GE: reg[rrr] = i >= j; break;
 	    case CCL_NE: reg[rrr] = i != j; break;
-	    case CCL_ENCODE_SJIS: ENCODE_SJIS (i, j, reg[rrr], reg[7]); break;
 	    case CCL_DECODE_SJIS: DECODE_SJIS (i, j, reg[rrr], reg[7]); break;
+	    case CCL_ENCODE_SJIS: ENCODE_SJIS (i, j, reg[rrr], reg[7]); break;
 	    default: CCL_INVALID_CMD;
 	    }
 	  code &= 0x1F;
@@ -1077,6 +1113,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	    {
 	      i = reg[rrr];
 	      CCL_WRITE_CHAR (i);
+	      ic = jump_address;
 	    }
 	  else if (!reg[rrr])
 	    ic = jump_address;
@@ -1088,6 +1125,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	    case CCL_ReadMultibyteChar2:
 	      if (!src)
 		CCL_INVALID_CMD;
+
 	      do {
 		if (src >= src_end)
 		  {
@@ -1107,14 +1145,24 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 		      }
 		    else
 		      ccl->private_state = COMPOSING_NO_RULE_HEAD;
+
+		    continue;
 		  }
-		if (ccl->private_state != 0)
+		if (ccl->private_state != COMPOSING_NO)
 		  {
 		    /* composite character */
-		    if (*src < 0xA0)
-		      ccl->private_state = 0;
+		    if (i < 0xA0)
+		      ccl->private_state = COMPOSING_NO;
 		    else
 		      {
+			if (COMPOSING_WITH_RULE_RULE == ccl->private_state)
+			  {
+			    ccl->private_state = COMPOSING_WITH_RULE_HEAD;
+			    continue;
+			  }
+			else if (COMPOSING_WITH_RULE_HEAD == ccl->private_state)
+			  ccl->private_state = COMPOSING_WITH_RULE_RULE;
+
 			if (i == 0xA0)
 			  {
 			    if (src >= src_end)
@@ -1123,16 +1171,9 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 			  }
 			else
 			  i -= 0x20;
-
-			if (COMPOSING_WITH_RULE_RULE == ccl->private_state)
-			  {
-			    ccl->private_state = COMPOSING_WITH_RULE_HEAD;
-			    continue;
-			  }
-			else if (COMPOSING_WITH_RULE_HEAD == ccl->private_state)
-			  ccl->private_state = COMPOSING_WITH_RULE_RULE;
 		      }
 		  }
+
 		if (i < 0x80)
 		  {
 		    /* ASCII */
@@ -1175,11 +1216,12 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 		  }
 		else
 		  {
-		    /* INVALID CODE
-		       Returned charset is -1.  */
-		    reg[RRR] = -1;
+		    /* INVALID CODE.  Return a single byte character.  */
+		    reg[RRR] = CHARSET_ASCII;
+		    reg[rrr] = i;
 		  }
-	      } while (0);
+		break;
+	      } while (1);
 	      break;
 
 	    ccl_read_multibyte_character_suspend:
@@ -1197,7 +1239,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	    case CCL_WriteMultibyteChar2:
 	      i = reg[RRR]; /* charset */
 	      if (i == CHARSET_ASCII)
-		i = reg[rrr] & 0x7F;
+		i = reg[rrr] & 0xFF;
 	      else if (i == CHARSET_COMPOSITION)
 		i = MAKE_COMPOSITE_CHAR (reg[rrr]);
 	      else if (CHARSET_DIMENSION (i) == 1)
@@ -1213,20 +1255,12 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 
 	    case CCL_TranslateCharacter:
 	      i = reg[RRR]; /* charset */
-	      if (i == CHARSET_ASCII)
-		i = reg[rrr] & 0x7F;
-	      else if (i == CHARSET_COMPOSITION)
+	      if (i == CHARSET_COMPOSITION)
 		{
 		  reg[RRR] = -1;
 		  break;
 		}
-	      else if (CHARSET_DIMENSION (i) == 1)
-		i = ((i - 0x70) << 7) | (reg[rrr] & 0x7F);
-	      else if (i < MIN_CHARSET_PRIVATE_DIMENSION2)
-		i = ((i - 0x8F) << 14) | (reg[rrr] & 0x3FFF);
-	      else
-		i = ((i - 0xE0) << 14) | (reg[rrr] & 0x3FFF);
-
+	      CCL_MAKE_CHAR (i, reg[rrr], i);
 	      op = translate_char (GET_TRANSLATION_TABLE (reg[Rrr]),
 				   i, -1, 0, 0);
 	      SPLIT_CHAR (op, reg[RRR], i, j);
@@ -1240,20 +1274,12 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	      op = XINT (ccl_prog[ic]); /* table */
 	      ic++;
 	      i = reg[RRR]; /* charset */
-	      if (i == CHARSET_ASCII)
-		i = reg[rrr] & 0x7F;
-	      else if (i == CHARSET_COMPOSITION)
+	      if (i == CHARSET_COMPOSITION)
 		{
 		  reg[RRR] = -1;
 		  break;
 		}
-	      else if (CHARSET_DIMENSION (i) == 1)
-		i = ((i - 0x70) << 7) | (reg[rrr] & 0x7F);
-	      else if (i < MIN_CHARSET_PRIVATE_DIMENSION2)
-		i = ((i - 0x8F) << 14) | (reg[rrr] & 0x3FFF);
-	      else
-		i = ((i - 0xE0) << 14) | (reg[rrr] & 0x3FFF);
-
+	      CCL_MAKE_CHAR (i, reg[rrr], i);
 	      op = translate_char (GET_TRANSLATION_TABLE (op), i, -1, 0, 0);
 	      SPLIT_CHAR (op, reg[RRR], i, j);
 	      if (j != -1)
@@ -1460,6 +1486,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 		      }
 		    else if (EQ (content, Qlambda))
 		      {
+			reg[RRR] = i;
 			break;
 		      }
 		    else
@@ -1502,13 +1529,13 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 		  reg[RRR] = -1;
 		else
 		  {
+		    reg[RRR] = 0;
 		    content = XVECTOR (map)->contents[point];
 		    if (NILP (content))
 		      reg[RRR] = -1;
 		    else if (NUMBERP (content))
 		      reg[rrr] = XINT (content);
-		    else if (EQ (content, Qt))
-		      reg[RRR] = i;
+		    else if (EQ (content, Qt));
 		    else if (CONSP (content))
 		      {
 			attrib = XCONS (content)->car;
@@ -1543,18 +1570,21 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
       char msg[256];
       int msglen;
 
+      if (!dst)
+	dst = destination;
+
       switch (ccl->status)
 	{
 	case CCL_STAT_INVALID_CMD:
 	  sprintf(msg, "\nCCL: Invalid command %x (ccl_code = %x) at %d.",
-		  code & 0x1F, code, ic);
+		  code & 0x1F, code, this_ic);
 #ifdef CCL_DEBUG
 	  {
 	    int i = ccl_backtrace_idx - 1;
 	    int j;
 
 	    msglen = strlen (msg);
-	    if (dst + msglen <= dst_end)
+	    if (dst + msglen <= (dst_bytes ? dst_end : src))
 	      {
 		bcopy (msg, dst, msglen);
 		dst += msglen;
@@ -1567,14 +1597,15 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 		  break;
 		sprintf(msg, " %d", ccl_backtrace_table[i]);
 		msglen = strlen (msg);
-		if (dst + msglen > dst_end)
+		if (dst + msglen > (dst_bytes ? dst_end : src))
 		  break;
 		bcopy (msg, dst, msglen);
 		dst += msglen;
 	      }
+	    goto ccl_finish;
 	  }
 #endif
-	  goto ccl_finish;
+	  break;
 
 	case CCL_STAT_QUIT:
 	  sprintf(msg, "\nCCL: Quited.");
@@ -1585,7 +1616,7 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 	}
 
       msglen = strlen (msg);
-      if (dst + msglen <= dst_end)
+      if (dst + msglen <= (dst_bytes ? dst_end : src))
 	{
 	  bcopy (msg, dst, msglen);
 	  dst += msglen;
@@ -1594,12 +1625,15 @@ ccl_driver (ccl, source, destination, src_bytes, dst_bytes, consumed)
 
  ccl_finish:
   ccl->ic = ic;
+  ccl->stack_idx = stack_idx;
+  ccl->prog = ccl_prog;
   if (consumed) *consumed = src - source;
-  return dst - destination;
+  return (dst ? dst - destination : 0);
 }
 
 /* Setup fields of the structure pointed by CCL appropriately for the
-   execution of compiled CCL code in VEC (vector of integer).  */
+   execution of compiled CCL code in VEC (vector of integer).
+   If VEC is nil, we skip setting ups based on VEC.  */
 void
 setup_ccl_program (ccl, vec)
      struct ccl_program *ccl;
@@ -1607,16 +1641,22 @@ setup_ccl_program (ccl, vec)
 {
   int i;
 
-  ccl->size = XVECTOR (vec)->size;
-  ccl->prog = XVECTOR (vec)->contents;
+  if (VECTORP (vec))
+    {
+      struct Lisp_Vector *vp = XVECTOR (vec);
+
+      ccl->size = vp->size;
+      ccl->prog = vp->contents;
+      ccl->eof_ic = XINT (vp->contents[CCL_HEADER_EOF]);
+      ccl->buf_magnification = XINT (vp->contents[CCL_HEADER_BUF_MAG]);
+    }
   ccl->ic = CCL_HEADER_MAIN;
-  ccl->eof_ic = XINT (XVECTOR (vec)->contents[CCL_HEADER_EOF]);
-  ccl->buf_magnification = XINT (XVECTOR (vec)->contents[CCL_HEADER_BUF_MAG]);
   for (i = 0; i < 8; i++)
     ccl->reg[i] = 0;
   ccl->last_block = 0;
   ccl->private_state = 0;
   ccl->status = 0;
+  ccl->stack_idx = 0;
 }
 
 /* Resolve symbols in the specified CCL code (Lisp vector).  This

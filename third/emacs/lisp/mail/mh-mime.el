@@ -28,7 +28,7 @@
 
 ;;; Change Log:
 
-;; $Id: mh-mime.el,v 1.1.1.1 1998-12-16 20:00:40 ghudson Exp $
+;; $Id: mh-mime.el,v 1.1.1.2 2001-01-01 15:54:11 ghudson Exp $
 
 ;;; Code:
 
@@ -79,8 +79,9 @@ Content-description header.  See also \\[mh-edit-mhn]."
 				 mh-mime-content-types nil nil nil)
 		  (read-string "Content-description: ")
 		  (read-string "Content-Attributes: " 
-			       (concat "name=" 
-				       (file-name-nondirectory filename))))))
+			       (concat "name=\""
+				       (file-name-nondirectory filename)
+				       "\"")))))
   (mh-mhn-compose-type filename type description attributes ))
 
 (defun mh-mhn-compose-type (filename type

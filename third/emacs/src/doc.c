@@ -275,8 +275,15 @@ get_doc_string (filepos, unibyte, definition)
     return make_unibyte_string (get_doc_string_buffer + offset,
 				to - (get_doc_string_buffer + offset));
   else
-    return make_string (get_doc_string_buffer + offset,
-			to - (get_doc_string_buffer + offset));
+    {
+      /* Let the data determine whether the string is multibyte,
+	 even if Emacs is running in --unibyte mode.  */
+      int nchars = multibyte_chars_in_text (get_doc_string_buffer + offset,
+					    to - (get_doc_string_buffer + offset));
+      return make_string_from_bytes (get_doc_string_buffer + offset,
+				     nchars,
+				     to - (get_doc_string_buffer + offset));
+    }
 }
 
 /* Get a string from position FILEPOS and pass it through the Lisp reader.
@@ -334,8 +341,7 @@ string is passed through `substitute-command-keys'.")
       if (!SYMBOLP (funcar))
 	return Fsignal (Qinvalid_function, Fcons (fun, Qnil));
       else if (EQ (funcar, Qkeymap))
-	return build_string ("Prefix command (definition is a keymap associating keystrokes with\n\
-subcommands.)");
+	return build_string ("Prefix command (definition is a keymap associating keystrokes with commands).");
       else if (EQ (funcar, Qlambda)
 	       || EQ (funcar, Qautoload))
 	{
@@ -366,13 +372,7 @@ subcommands.)");
     }
 
   if (NILP (raw))
-    {
-      struct gcpro gcpro1;
-
-      GCPRO1 (doc);
-      doc = Fsubstitute_command_keys (doc);
-      UNGCPRO;
-    }
+    doc = Fsubstitute_command_keys (doc);
   return doc;
 }
 
@@ -385,7 +385,7 @@ translation.")
   (symbol, prop, raw)
      Lisp_Object symbol, prop, raw;
 {
-  register Lisp_Object tem;
+  Lisp_Object tem;
 
   tem = Fget (symbol, prop);
   if (INTEGERP (tem))
@@ -393,7 +393,8 @@ translation.")
   else if (CONSP (tem))
     tem = get_doc_string (tem, 0, 0);
   if (NILP (raw) && STRINGP (tem))
-    return Fsubstitute_command_keys (tem);
+    tem = Fsubstitute_command_keys (tem);
+
   return tem;
 }
 

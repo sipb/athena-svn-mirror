@@ -40,6 +40,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'skkdic-cnv))
+
 ;; Setting okuri-ari entries.
 (skkdic-set-okuri-ari
 "をs 惜"

@@ -3,9 +3,9 @@
 ;; Copyright (C) 1992, 93, 94, 95, 96, 97, 1998 Free Software Foundation, Inc.
 
 ;; Author:     Eric S. Raymond <esr@snark.thyrsus.com>
-;; Maintainer: Andre Spiegel <spiegel@inf.fu-berlin.de>
+;; Maintainer: Andre Spiegel <spiegel@gnu.org>
 
-;; $Id: vc.el,v 1.236 1998/08/04 13:14:41 spiegel Exp $
+;; Id: vc.el,v 1.256 1999/10/02 10:53:18 *** with changes
 
 ;; This file is part of GNU Emacs.
 
@@ -104,6 +104,14 @@ If FORM3 is `RCS', use FORM2 for CVS as well as RCS.
 
 (defcustom vc-suppress-confirm nil
   "*If non-nil, treat user as expert; suppress yes-no prompts on some things."
+  :type 'boolean
+  :group 'vc)
+
+(defcustom vc-delete-logbuf-window t
+  "*If non-nil, delete the *VC-log* buffer and window after each logical action.
+If nil, bury that buffer instead.
+This is most useful if you have multiple windows on a frame and would like to
+preserve the setting."
   :type 'boolean
   :group 'vc)
 
@@ -291,21 +299,24 @@ and that its contents match what the master file says."
   "*The release number of your RCS installation, as a string.
 If nil, VC itself computes this value when it is first needed."
   :type '(choice (const :tag "Auto" nil)
-		 string)
+		 string 
+		 (const :tag "Unknown" unknown))
   :group 'vc)
 
 (defcustom vc-sccs-release nil
   "*The release number of your SCCS installation, as a string.
 If nil, VC itself computes this value when it is first needed."
   :type '(choice (const :tag "Auto" nil)
-		 string)
+		 string 
+		 (const :tag "Unknown" unknown))
   :group 'vc)
 
 (defcustom vc-cvs-release nil
   "*The release number of your CVS installation, as a string.
 If nil, VC itself computes this value when it is first needed."
   :type '(choice (const :tag "Auto" nil)
-		 string)
+		 string 
+		 (const :tag "Unknown" unknown))
   :group 'vc)
 
 ;; Variables the user doesn't need to know about.
@@ -493,6 +504,39 @@ If nil, VC itself computes this value when it is first needed."
 	   (string= tip-version workfile-version))))
      ;; CVS
      t))
+
+;;; Two macros for elisp programming
+;;;###autoload
+(defmacro with-vc-file (file comment &rest body)
+  "Execute BODY, checking out a writable copy of FILE first if necessary.
+After BODY has been executed, check-in FILE with COMMENT (a string).  
+FILE is passed through `expand-file-name'; BODY executed within 
+`save-excursion'.  If FILE is not under version control, or locked by 
+somebody else, signal error."
+  `(let ((file (expand-file-name ,file)))
+     (or (vc-registered file)
+	 (error (format "File not under version control: `%s'" file)))
+     (let ((locking-user (vc-locking-user file)))
+       (cond ((and (not locking-user)
+                   (eq (vc-checkout-model file) 'manual))
+              (vc-checkout file t))
+             ((and (stringp locking-user)
+                   (not (string= locking-user (vc-user-login-name))))
+              (error (format "`%s' is locking `%s'" locking-user file)))))
+     (save-excursion
+       ,@body)
+     (vc-checkin file nil ,comment)))
+
+;;;###autoload
+(defmacro edit-vc-file (file comment &rest body)
+  "Edit FILE under version control, executing BODY.  Checkin with COMMENT.
+This macro uses `with-vc-file', passing args to it.
+However, before executing BODY, find FILE, and after BODY, save buffer."
+  `(with-vc-file
+    ,file ,comment
+    (find-file ,file)
+    ,@body
+    (save-buffer)))
 
 (defun vc-ensure-vc-buffer ()
   ;; Make sure that the current buffer visits a version-controlled file.
@@ -895,6 +939,8 @@ before the filename."
 	    (vc-checkin file version comment)
 	    )))))
 
+(defvar vc-dired-window-configuration)
+
 (defun vc-next-action-dired (file rev comment)
   ;; Do a vc-next-action-on-file on all the marked files, possibly 
   ;; passing on the log comment we've just entered.
@@ -1204,7 +1250,6 @@ May be useful as a `vc-checkin-hook' to update change logs automatically."
     (or (eobp) (looking-at "\n\n")
 	(insert "\n"))))
 
-
 (defun vc-finish-logentry (&optional nocomment)
   "Complete the operation implied by the current log entry."
   (interactive)
@@ -1228,7 +1273,8 @@ May be useful as a `vc-checkin-hook' to update change logs automatically."
 	(log-file vc-log-file)
 	(log-version vc-log-version)
 	(log-entry (buffer-string))
-	(after-hook vc-log-after-operation-hook))
+	(after-hook vc-log-after-operation-hook)
+	(tmp-vc-parent-buffer vc-parent-buffer))
     (pop-to-buffer vc-parent-buffer)
     ;; OK, do it to it
     (save-excursion
@@ -1239,10 +1285,13 @@ May be useful as a `vc-checkin-hook' to update change logs automatically."
     ;; Remove checkin window (after the checkin so that if that fails
     ;; we don't zap the *VC-log* buffer and the typing therein).
     (let ((logbuf (get-buffer "*VC-log*")))
-      (cond (logbuf
-             (delete-windows-on logbuf (selected-frame))
+      (cond ((and logbuf vc-delete-logbuf-window)
+	     (delete-windows-on logbuf (selected-frame))
 	     ;; Kill buffer and delete any other dedicated windows/frames.
-             (kill-buffer logbuf))))
+	     (kill-buffer logbuf))
+	    (t (pop-to-buffer "*VC-log*")
+	       (bury-buffer)
+	       (pop-to-buffer tmp-vc-parent-buffer))))
     ;; Now make sure we see the expanded headers
     (if buffer-file-name
 	(vc-resynch-window buffer-file-name vc-keep-workfiles t))
@@ -1355,10 +1404,11 @@ and two version designators specifying which versions to compare."
 If FILE is a directory, generate diffs between versions for all registered
 files in or below it."
   (interactive 
-   (let ((file (read-file-name (if buffer-file-name
-				   "File or dir to diff: (default visited file) "
-				 "File or dir to diff: ")
-                                default-directory buffer-file-name t))
+   (let ((file (expand-file-name
+                (read-file-name (if buffer-file-name
+                                    "File or dir to diff: (default visited file) "
+                                  "File or dir to diff: ")
+                                default-directory buffer-file-name t)))
          (rel1-default nil) (rel2-default nil))
      ;; compute default versions based on the file state
      (cond
@@ -1439,7 +1489,7 @@ If `F.~REV~' already exists, it is used instead of being re-created."
 ;;;###autoload
 (defun vc-insert-headers ()
   "Insert headers in a file for use with your version-control system.
-Headers desired are inserted at the start of the buffer, and are pulled from
+Headers desired are inserted at point, and are pulled from
 the variable `vc-header-alist'."
   (interactive)
   (vc-ensure-vc-buffer)
@@ -1525,6 +1575,9 @@ the variable `vc-header-alist'."
 		(vc-resolve-conflicts "WORKFILE" "MERGE SOURCE")
 	      (message "File contains conflict markers"))
 	  (message "Merge successful"))))))
+
+(defvar vc-ediff-windows)
+(defvar vc-ediff-result)
 
 ;;;###autoload
 (defun vc-resolve-conflicts (&optional name-A name-B)
@@ -1613,6 +1666,9 @@ The conflicts must be marked with rcsmerge conflict markers."
 ;; The VC directory major mode.  Coopt Dired for this.
 ;; All VC commands get mapped into logical equivalents.
 
+(defvar vc-dired-switches)
+(defvar vc-dired-terse-mode)
+
 (define-derived-mode vc-dired-mode dired-mode "Dired under VC"
   "The major mode used in VC directory buffers.  It works like Dired,
 but lists only files under version control, with the current VC state of 
@@ -1645,7 +1701,7 @@ There is a special command, `*l', to mark all files currently locked."
            (dd "[ 0-3][0-9]")
            (HH:MM "[ 0-2][0-9]:[0-5][0-9]")
            (western (concat "\\(" month s dd "\\|" dd s month "\\)"
-                            s "\\(" HH:MM "\\|" s yyyy "\\)"))
+                            s "\\(" HH:MM "\\|" s yyyy"\\|" yyyy s "\\)"))
            (japanese (concat mm k s dd k s "\\(" s HH:MM "\\|" yyyy k "\\)")))
          (concat s "\\(" western "\\|" japanese "\\)" s)))
   (and (boundp 'vc-dired-switches)
@@ -1685,7 +1741,7 @@ There is a special command, `*l', to mark all files currently locked."
   (let ((default-directory dir))
     ;; Don't specify DIR in this command, the default-directory is
     ;; enough.  Otherwise it might fail with remote repositories.
-    (vc-do-command "*vc-info*" 0 "cvs" nil nil "status")
+    (vc-do-command "*vc-info*" 0 "cvs" nil nil "status" "-l")
     (save-excursion
       (set-buffer (get-buffer "*vc-info*"))
       (goto-char (point-min))
@@ -2207,7 +2263,8 @@ default directory."
 	(changelog (find-change-log))
 	;; Presumably not portable to non-Unixy systems, along with rcs2log:
 	(tempfile (make-temp-name
-		   (expand-file-name "vc" temporary-file-directory)))
+		   (expand-file-name "vc"
+				     temporary-file-directory)))
 	(full-name (or add-log-full-name
 		       (user-full-name)
 		       (user-login-name)
@@ -2225,21 +2282,23 @@ default directory."
 	     (unwind-protect
 		 (progn
 		   (cd odefault)
-		   (if (eq 0 (apply 'call-process "rcs2log" nil
-				       (list t tempfile) nil
-				       "-c" changelog
-				       "-u" (concat (vc-user-login-name)
-						    "\t" full-name
-						    "\t" mailing-address)
-				       (mapcar
-					(function
-					 (lambda (f)
-					   (file-relative-name
-					    (if (file-name-absolute-p f)
-						f
-					      (concat odefault f)))))
-					args)))
-			  "done"
+		   (if (eq 0 (apply 'call-process
+				    (expand-file-name "rcs2log" exec-directory)
+				    nil
+				    (list t tempfile) nil
+				    "-c" changelog
+				    "-u" (concat (vc-user-login-name)
+						 "\t" full-name
+						 "\t" mailing-address)
+				    (mapcar
+				     (function
+				      (lambda (f)
+					(file-relative-name
+					 (if (file-name-absolute-p f)
+					     f
+					   (concat odefault f)))))
+				     args)))
+		       "done"
 		     (pop-to-buffer
 		      (set-buffer (get-buffer-create "*vc*")))
 		     (erase-buffer)
@@ -2249,9 +2308,6 @@ default directory."
 	       (delete-file tempfile)))))
 
 ;; vc-annotate functionality (CVS only).
-(defvar vc-annotate-mode nil
-  "Variable indicating if VC-Annotate mode is active.")
-
 (defvar vc-annotate-mode-map nil
   "Local keymap used for VC-Annotate mode.")
 
@@ -2400,8 +2456,14 @@ THRESHOLD, nil otherwise"
 	    ("Sep" . 9) ("Oct" . 10) ("Nov" . 11) ("Dec" . 12))))
     (set-buffer buffer)
     (display-buffer buffer)
-    (if (not vc-annotate-mode)		; Turn on vc-annotate-mode if not done
+    (or (eq major-mode 'vc-annotate-mode) ; Turn on vc-annotate-mode if not done
 	(vc-annotate-mode))
+    ;; Delete old overlays
+    (mapcar
+     (lambda (overlay)
+       (if (overlay-get overlay 'vc-annotation)
+	   (delete-overlay overlay)))
+     (overlays-in (point-min) (point-max)))
     (goto-char (point-min))		; Position at the top of the buffer.
     (while (re-search-forward
 	    "^\\S-+\\s-+\\S-+\\s-+\\([0-9]+\\)-\\(\\sw+\\)-\\([0-9]+\\)): "
@@ -2414,7 +2476,12 @@ THRESHOLD, nil otherwise"
 	     (day (string-to-number (match-string 1)))
              (month (cdr (assoc (match-string 2) local-month-numbers)))
 	     (year-tmp (string-to-number (match-string 3)))
-	     (year (+ (if (> 100 year-tmp) 1900 0) year-tmp)) ; Possible millenium problem
+	     ;; Years 0..68 are 2000..2068.
+	     ;; Years 69..99 are 1969..1999.
+	     (year (+ (cond ((> 69 year-tmp) 2000)
+			    ((> 100 year-tmp) 1900)
+			    (t 0))
+		      year-tmp))
 	     (high (- (car (current-time))
 		      (car (encode-time 0 0 0 day month year))))
 	     (color (cond ((vc-annotate-compcar high (cond (color-map)
@@ -2429,10 +2496,13 @@ THRESHOLD, nil otherwise"
 			    (if vc-annotate-background
 				(set-face-background tmp-face vc-annotate-background))
 			    tmp-face)))) ; Return the face
-	     (point (point)))
+	     (point (point))
+	     overlay)
 
 	(forward-line 1)
-	(overlay-put (make-overlay point (point) nil) 'face face)))))
+	(setq overlay (make-overlay point (point)))
+	(overlay-put overlay 'face face)
+	(overlay-put overlay 'vc-annotation t)))))
 
 
 ;; Collect back-end-dependent stuff here
@@ -2527,25 +2597,22 @@ THRESHOLD, nil otherwise"
 			(failed t))
 		    (unwind-protect
 			(progn
-			  (apply 'vc-do-command
-				 nil 0 "/bin/sh" file 'MASTER "-c"
-				 ;; Some shells make the "" dummy argument into $0
-				 ;; while others use the shell's name as $0 and
-				 ;; use the "" as $1.  The if-statement
-				 ;; converts the latter case to the former.
-				 (format "if [ x\"$1\" = x ]; then shift; fi; \
-			       umask %o; exec >\"$1\" || exit; \
-			       shift; umask %o; exec get \"$@\""
-				       (logand 511 (lognot vc-modes))
-				       (logand 511 (lognot (default-file-modes))))
-				 ""		; dummy argument for shell's $0
-				 filename 
-				 (if writable "-e")
-				 "-p" 
-				 (and rev
-				      (concat "-r" (vc-lookup-triple file rev)))
-				 switches)
-			  (setq failed nil))
+                          (let ((coding-system-for-read 'no-conversion)
+                                (coding-system-for-write 'no-conversion))
+                            (with-temp-file filename
+                              (apply 'vc-do-command
+                                     (current-buffer) 0 "get" file 'MASTER
+                                     "-s" ;; suppress diagnostic output
+                                     (if writable "-e")
+                                     "-p" 
+                                     (and rev
+                                          (concat "-r" 
+                                                  (vc-lookup-triple file rev)))
+                                     switches)))
+                          (set-file-modes filename
+                                          (logior (file-modes (vc-name file))
+                                                  (if writable 128 0)))
+                          (setq failed nil))
 		      (and failed (file-exists-p filename) 
 			   (delete-file filename))))
 		(apply 'vc-do-command nil 0 "get" file 'MASTER   ;; SCCS
@@ -2561,21 +2628,19 @@ THRESHOLD, nil otherwise"
 		      (failed t))
 		  (unwind-protect
 		      (progn
-			(apply 'vc-do-command
-			       nil 0 "/bin/sh" file 'MASTER "-c"
-			       ;; See the SCCS case, above, regarding the
-			       ;; if-statement.
-			       (format "if [ x\"$1\" = x ]; then shift; fi; \
-			       umask %o; exec >\"$1\" || exit; \
-			       shift; umask %o; exec co \"$@\""
-				       (logand 511 (lognot vc-modes))
-				       (logand 511 (lognot (default-file-modes))))
-			       ""		; dummy argument for shell's $0
-			       filename
-			       (if writable "-l")
-			       (concat "-p" rev)
-			       switches)
-			(setq failed nil))
+                        (let ((coding-system-for-read 'no-conversion)
+                              (coding-system-for-write 'no-conversion))
+                          (with-temp-file filename
+                            (apply 'vc-do-command
+                                   (current-buffer) 0 "co" file 'MASTER
+                                   "-q" ;; suppress diagnostic output
+                                   (if writable "-l")
+                                   (concat "-p" rev)
+                                   switches)))
+                        (set-file-modes filename 
+                                        (logior (file-modes (vc-name file))
+                                                (if writable 128 0)))
+                        (setq failed nil))
 		    (and failed (file-exists-p filename) (delete-file filename))))
 	      (let (new-version)
 		;; if we should go to the head of the trunk, 
@@ -2616,14 +2681,16 @@ THRESHOLD, nil otherwise"
 		(let ((failed t))
 		  (unwind-protect
 		      (progn
-			(apply 'vc-do-command
-			       nil 0 "/bin/sh" file 'WORKFILE "-c"
-			       "exec >\"$1\" || exit; shift; exec cvs update \"$@\""
-			       ""		; dummy argument for shell's $0
-			       workfile
-			       (concat "-r" rev)
-			       "-p"
-			       switches)
+                        (let ((coding-system-for-read 'no-conversion)
+                              (coding-system-for-write 'no-conversion))
+                          (with-temp-file filename
+                            (apply 'vc-do-command
+                                   (current-buffer) 0 "cvs" file 'WORKFILE 
+                                   "-Q" ;; suppress diagnostic output
+                                   "update"
+                                   (concat "-r" rev)
+                                   "-p"
+                                   switches)))
 			(setq failed nil))
 		    (and failed (file-exists-p filename) (delete-file filename))))
 	      ;; default for verbose checkout: clear the sticky tag
@@ -2795,9 +2862,14 @@ THRESHOLD, nil otherwise"
    (vc-do-command nil 0 "co" file 'MASTER
 		  "-f" (concat "-u" (vc-workfile-version file)))
    ;; CVS
-   ;; Check out via standard output (caused by the final argument 
-   ;; FILE below), so that no sticky tag is set.
-   (vc-backend-checkout file nil (vc-workfile-version file) file))
+   (progn
+     ;; Check out via standard output (caused by the final argument 
+     ;; FILE below), so that no sticky tag is set.      
+     (vc-backend-checkout file nil (vc-workfile-version file) file)
+     ;; If "cvs edit" was used to make the file writeable,
+     ;; call "cvs unedit" now to undo that.
+     (if (eq (vc-checkout-model file) 'manual)
+         (vc-do-command nil 0 "cvs" file 'WORKFILE "unedit"))))
   (vc-file-setprop file 'vc-locking-user 'none)
   (vc-file-setprop file 'vc-checkout-time (nth 5 (file-attributes file)))
   (message "Reverting %s...done" file)
@@ -2895,17 +2967,13 @@ THRESHOLD, nil otherwise"
 	      ;; diff it against /dev/null.
 	      (apply 'vc-do-command
 		     "*vc-diff*" 1 "diff" file 'WORKFILE
-		     (append (if (listp diff-switches) 
-				 diff-switches
-			       (list diff-switches)) '("/dev/null")))))
+                     (append diff-switches-list '("/dev/null")))))
 	;; cmp is not yet implemented -- we always do a full diff.
 	(apply 'vc-do-command
 	       "*vc-diff*" 1 "cvs" file 'WORKFILE "diff"
 	       (and oldvers (concat "-r" oldvers))
 	       (and newvers (concat "-r" newvers))
-	       (if (listp diff-switches)
-		   diff-switches
-		 (list diff-switches))))))))
+               diff-switches-list))))))
 
 (defun vc-backend-merge-news (file)
   ;; Merge in any new changes made to FILE.
@@ -2933,13 +3001,14 @@ THRESHOLD, nil otherwise"
              (vc-file-setprop file 'vc-workfile-version (match-string 1)))
          ;; get file status
 	 (if (re-search-forward 
-              (concat "^\\(\\([CMU]\\) \\)?" 
+              (concat "^\\(\\([CMUP]\\) \\)?" 
                       (regexp-quote (file-name-nondirectory file))
 		      "\\( already contains the differences between \\)?")
               nil t)
              (cond 
               ;; Merge successful, we are in sync with repository now
               ((or (string= (match-string 2) "U")
+		   (string= (match-string 2) "P")
 		   ;; Special case: file contents in sync with
 		   ;; repository anyhow:
 		   (match-string 3))

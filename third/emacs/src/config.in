@@ -142,6 +142,7 @@ Boston, MA 02111-1307, USA.  */
 #undef HAVE_LIBXMU
 #undef HAVE_LIBNCURSES
 #undef HAVE_LIBINTL
+#undef HAVE_LIBXP
 
 /* movemail Kerberos support */
 /* libraries */
@@ -233,6 +234,8 @@ Boston, MA 02111-1307, USA.  */
 #undef HAVE_GETCWD
 #undef HAVE_SHUTDOWN
 #undef HAVE_STRFTIME
+#undef HAVE_GRANTPT
+#undef HAVE_GETPT
 
 #undef LOCALTIME_CACHE
 #undef HAVE_INET_SOCKETS

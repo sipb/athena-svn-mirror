@@ -40,11 +40,13 @@
 ;; This is the overlay used to highlight the closeparen right before point.
 (defvar show-paren-overlay-1 nil)
 
+;;;###autoload
 (defcustom show-paren-mode nil
   "Toggle Show Paren mode.
 When Show Paren mode is enabled, any matching parenthesis is highlighted
 after `show-paren-delay' seconds of Emacs idle time.
-You must modify via \\[customize] for this variable to have an effect."
+Setting this variable directly does not take effect;
+use either \\[customize] or the function `show-paren-mode'."
   :set (lambda (symbol value)
 	 (show-paren-mode (or value 0)))
   :initialize 'custom-initialize-default

@@ -149,6 +149,10 @@ extern char *strerror ();
 #define O_RDONLY 0
 #endif
 
+#ifndef S_ISLNK
+#  define lstat stat
+#endif
+
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
@@ -819,18 +823,30 @@ static char make_temp_name_tbl[64] =
   'w','x','y','z','0','1','2','3',
   '4','5','6','7','8','9','-','_'
 };
+
 static unsigned make_temp_name_count, make_temp_name_count_initialized_p;
 
-DEFUN ("make-temp-name", Fmake_temp_name, Smake_temp_name, 1, 1, 0,
-  "Generate temporary file name (string) starting with PREFIX (a string).\n\
-The Emacs process number forms part of the result,\n\
-so there is no danger of generating a name being used by another process.\n\
-\n\
-In addition, this function makes an attempt to choose a name\n\
-which has no existing file.  To make this work,\n\
-PREFIX should be an absolute file name.")
-  (prefix)
+
+/* Value is a temporary file name starting with PREFIX, a string.
+   
+   The Emacs process number forms part of the result, so there is
+   no danger of generating a name being used by another process.
+   In addition, this function makes an attempt to choose a name
+   which has no existing file.  To make this work, PREFIX should be
+   an absolute file name.
+   
+   BASE64_P non-zero means add the pid as 3 characters in base64
+   encoding.  In this case, 6 characters will be added to PREFIX to
+   form the file name.  Otherwise, if Emacs is running on a system
+   with long file names, add the pid as a decimal number.
+
+   This function signals an error if no unique file name could be
+   generated.  */
+
+Lisp_Object
+make_temp_name (prefix, base64_p)
      Lisp_Object prefix;
+     int base64_p;
 {
   Lisp_Object val;
   int len;
@@ -838,7 +854,7 @@ PREFIX should be an absolute file name.")
   unsigned char *p, *data;
   char pidbuf[20];
   int pidlen;
-
+     
   CHECK_STRING (prefix, 0);
 
   /* VAL is created by adding 6 characters to PREFIX.  The first
@@ -848,16 +864,26 @@ PREFIX should be an absolute file name.")
 
   pid = (int) getpid ();
 
+  if (base64_p)
+    {
+      pidbuf[0] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidbuf[1] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidbuf[2] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidlen = 3;
+    }
+  else
+    {
 #ifdef HAVE_LONG_FILE_NAMES
-  sprintf (pidbuf, "%d", pid);
-  pidlen = strlen (pidbuf);
+      sprintf (pidbuf, "%d", pid);
+      pidlen = strlen (pidbuf);
 #else
-  pidbuf[0] = make_temp_name_tbl[pid & 63], pid >>= 6;
-  pidbuf[1] = make_temp_name_tbl[pid & 63], pid >>= 6;
-  pidbuf[2] = make_temp_name_tbl[pid & 63], pid >>= 6;
-  pidlen = 3;
+      pidbuf[0] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidbuf[1] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidbuf[2] = make_temp_name_tbl[pid & 63], pid >>= 6;
+      pidlen = 3;
 #endif
-
+    }
+  
   len = XSTRING (prefix)->size;
   val = make_uninit_string (len + 3 + pidlen);
   data = XSTRING (val)->data;
@@ -919,6 +945,22 @@ PREFIX should be an absolute file name.")
 	 XSTRING (prefix)->data);
   return Qnil;
 }
+
+
+DEFUN ("make-temp-name", Fmake_temp_name, Smake_temp_name, 1, 1, 0,
+  "Generate temporary file name (string) starting with PREFIX (a string).\n\
+The Emacs process number forms part of the result,\n\
+so there is no danger of generating a name being used by another process.\n\
+\n\
+In addition, this function makes an attempt to choose a name\n\
+which has no existing file.  To make this work,\n\
+PREFIX should be an absolute file name.")
+  (prefix)
+     Lisp_Object prefix;
+{
+  return make_temp_name (prefix, 0);
+}
+
 
 
 DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
@@ -2111,7 +2153,7 @@ duplicates what `expand-file-name' does.")
       xnm = p;
 #ifdef DOS_NT
     else if (IS_DRIVE (p[0]) && p[1] == ':'
-	     && p > nm && IS_DIRECTORY_SEP (p[-1]))
+	     && p > xnm && IS_DIRECTORY_SEP (p[-1]))
       xnm = p;
 #endif
 
@@ -2925,6 +2967,12 @@ DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
     return (check_writable (XSTRING (encoded)->data)
 	    ? Qt : Qnil);
 
+#ifdef WINDOWSNT
+  /* The read-only attribute of the parent directory doesn't affect
+     whether a file or directory can be created within it.  Some day we
+     should check ACLs though, which do affect this.  */
+  return Qt;
+#else
   dir = Ffile_name_directory (absname);
 #ifdef VMS
   if (!NILP (dir))
@@ -2938,6 +2986,7 @@ DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
   dir = ENCODE_FILE (dir);
   return (check_writable (!NILP (dir) ? (char *) XSTRING (dir)->data : "")
 	  ? Qt : Qnil);
+#endif
 }
 
 DEFUN ("access-file", Faccess_file, Saccess_file, 2, 2, 0,
@@ -3020,7 +3069,9 @@ Otherwise returns nil.")
 }
 
 DEFUN ("file-directory-p", Ffile_directory_p, Sfile_directory_p, 1, 1, 0,
-  "Return t if FILENAME names an existing directory.")
+  "Return t if FILENAME names an existing directory.\n\
+Symbolic links to directories count as directories.\n\
+See `file-symlink-p' to distinguish symlinks.")
   (filename)
      Lisp_Object filename;
 {
@@ -3267,22 +3318,44 @@ Lisp_Object Qfind_buffer_file_type;
 #define READ_BUF_SIZE (64 << 10)
 #endif
 
-/* This function is called when a function bound to
-   Vset_auto_coding_function causes some error.  At that time, a text
-   of a file has already been inserted in the current buffer, but,
-   markers has not yet been adjusted.  Thus we must adjust markers
-   here.  We are sure that the buffer was empty before the text of the
-   file was inserted.  */
+extern void adjust_markers_for_delete P_ ((int, int, int, int));
+
+/* This function is called after Lisp functions to decide a coding
+   system are called, or when they cause an error.  Before they are
+   called, the current buffer is set unibyte and it contains only a
+   newly inserted text (thus the buffer was empty before the
+   insertion).
+
+   The functions may set markers, overlays, text properties, or even
+   alter the buffer contents, change the current buffer.
+
+   Here, we reset all those changes by:
+	o set back the current buffer.
+	o move all markers and overlays to BEG.
+	o remove all text properties.
+	o set back the buffer multibyteness.  */
 
 static Lisp_Object
-set_auto_coding_unwind (multibyte)
-     Lisp_Object multibyte;
+decide_coding_unwind (unwind_data)
+     Lisp_Object unwind_data;
 {
-  int inserted = Z_BYTE - BEG_BYTE;
+  Lisp_Object multibyte, undo_list, buffer;
 
-  if (!NILP (multibyte))
-    inserted = multibyte_chars_in_text (GPT_ADDR - inserted, inserted);
-  adjust_after_insert (PT, PT_BYTE, Z, Z_BYTE, inserted);
+  multibyte = XCAR (unwind_data);
+  unwind_data = XCDR (unwind_data);
+  undo_list = XCAR (unwind_data);
+  buffer = XCDR (unwind_data);
+
+  if (current_buffer != XBUFFER (buffer))
+    set_buffer_internal (XBUFFER (buffer));
+  adjust_markers_for_delete (BEG, BEG_BYTE, Z, Z_BYTE);
+  adjust_overlays_for_delete (BEG, Z - BEG);
+  BUF_INTERVALS (current_buffer) = 0;
+  TEMP_SET_PT_BOTH (BEG, BEG_BYTE);
+
+  /* Now we are safe to change the buffer's multibyteness directly.  */
+  current_buffer->enable_multibyte_characters = multibyte;
+  current_buffer->undo_list = undo_list;
 
   return Qnil;
 }
@@ -3391,7 +3464,7 @@ actually used.")
       st.st_mtime = -1;
       how_much = 0;
       if (!NILP (Vcoding_system_for_read))
-	current_buffer->buffer_file_coding_system = Vcoding_system_for_read;
+	Fset (Qbuffer_file_coding_system, Vcoding_system_for_read);
       goto notfound;
     }
 
@@ -3471,7 +3544,7 @@ actually used.")
 	      /* Find a coding system specified in the heading two
 		 lines or in the tailing several lines of the file.
 		 We assume that the 1K-byte and 3K-byte for heading
-		 and tailing respectively are sufficient fot this
+		 and tailing respectively are sufficient for this
 		 purpose.  */
 	      int how_many, nread;
 
@@ -3533,10 +3606,10 @@ actually used.")
 
       setup_coding_system (Fcheck_coding_system (val), &coding);
 
-      if (NILP (Vcoding_system_for_read)
-	  && NILP (current_buffer->enable_multibyte_characters))
-	/* We must suppress all text conversion except for end-of-line
-	   conversion.  */
+      if (NILP (current_buffer->enable_multibyte_characters)
+	  && ! NILP (val))
+	/* We must suppress all character code conversion except for
+	   end-of-line conversion.  */
 	setup_raw_text_coding_system (&coding);
 
       coding_system_decided = 1;
@@ -3762,7 +3835,7 @@ actually used.")
 
       if (lseek (fd, XINT (beg), 0) < 0)
 	{
-	  free (conversion_buffer);
+	  xfree (conversion_buffer);
 	  report_file_error ("Setting file position",
 			     Fcons (orig_filename, Qnil));
 	}
@@ -3857,7 +3930,8 @@ actually used.")
 	  close (fd);
 	  specpdl_ptr--;
 	  /* Truncate the buffer to the size of the file.  */
-	  del_range_1 (same_at_start, same_at_end, 0);
+	  del_range_byte (same_at_start, same_at_end, 0);
+	  inserted = 0;
 	  goto handled;
 	}
 
@@ -3899,18 +3973,23 @@ actually used.")
 	 and update INSERTED to equal the number of bytes
 	 we are taking from the file.  */
       inserted -= (Z_BYTE - same_at_end) + (same_at_start - BEG_BYTE);
-      del_range_byte (same_at_start, same_at_end, 0);
+
       if (same_at_end != same_at_start)
-	SET_PT_BOTH (GPT, GPT_BYTE);
+	{
+	  del_range_byte (same_at_start, same_at_end, 0);
+	  temp = GPT;
+	  same_at_start = GPT_BYTE;
+	}
       else
 	{
-	  /* Insert from the file at the proper position.  */
 	  temp = BYTE_TO_CHAR (same_at_start);
-	  SET_PT_BOTH (temp, same_at_start);
 	}
-
+      /* Insert from the file at the proper position.  */
+      SET_PT_BOTH (temp, same_at_start);
       insert_1 (conversion_buffer + same_at_start - BEG_BYTE, inserted,
 		0, 0, 0);
+      /* Set `inserted' to the number of inserted characters.  */
+      inserted = PT - temp;
 
       free (conversion_buffer);
       close (fd);
@@ -4021,27 +4100,26 @@ actually used.")
 	val = Vcoding_system_for_read;
       else
 	{
-	  if (inserted > 0 && ! NILP (Vset_auto_coding_function))
-	    {
-	      /* Since we are sure that the current buffer was
-		 empty before the insertion, we can toggle
-		 enable-multibyte-characters directly here without
-		 taking care of marker adjustment and byte
-		 combining problem.  */
-	      Lisp_Object prev_multibyte;
+	  /* Since we are sure that the current buffer was empty
+	     before the insertion, we can toggle
+	     enable-multibyte-characters directly here without taking
+	     care of marker adjustment and byte combining problem.  By
+	     this way, we can run Lisp program safely before decoding
+	     the inserted text.  */
+	  Lisp_Object unwind_data;
 	      int count = specpdl_ptr - specpdl;
 
-	      prev_multibyte = current_buffer->enable_multibyte_characters;
+	  unwind_data = Fcons (current_buffer->enable_multibyte_characters,
+			       Fcons (current_buffer->undo_list,
+				      Fcurrent_buffer ()));
 	      current_buffer->enable_multibyte_characters = Qnil;
-	      record_unwind_protect (set_auto_coding_unwind,
-				     prev_multibyte);
+	  current_buffer->undo_list = Qt;
+	  record_unwind_protect (decide_coding_unwind, unwind_data);
+
+	  if (inserted > 0 && ! NILP (Vset_auto_coding_function))
+	    {
 	      val = call2 (Vset_auto_coding_function,
 			   filename, make_number (inserted));
-	      /* Discard the unwind protect for recovering the
-		 error of Vset_auto_coding_function.  */
-	      specpdl_ptr--;
-	      current_buffer->enable_multibyte_characters = prev_multibyte;
-	      TEMP_SET_PT_BOTH (BEG, BEG_BYTE);
 	    }
 
 	  if (NILP (val))
@@ -4056,6 +4134,9 @@ actually used.")
 	      if (CONSP (coding_systems))
 		val = XCONS (coding_systems)->car;
 	    }
+
+	  unbind_to (count, Qnil);
+	  inserted = Z_BYTE - BEG_BYTE;
 	}
 
       /* The following kludgy code is to avoid some compiler bug.
@@ -4068,14 +4149,14 @@ actually used.")
 	bcopy (&temp_coding, &coding, sizeof coding);
       }
 
-      if (NILP (Vcoding_system_for_read)
-	  && NILP (current_buffer->enable_multibyte_characters))
-	/* We must suppress all text conversion except for
+      if (NILP (current_buffer->enable_multibyte_characters)
+	  && ! NILP (val))
+	/* We must suppress all character code conversion except for
 	   end-of-line conversion.  */
 	setup_raw_text_coding_system (&coding);
     }
 
-  if (inserted > 0)
+  if (inserted > 0 || coding.type == coding_type_ccl)
     {
       if (CODING_MAY_REQUIRE_DECODING (&coding))
 	{
@@ -4337,7 +4418,7 @@ This does code conversion according to the value of\n\
 	    using_default_coding = 1;
 	  }
 	    
-	if (!force_raw_text
+	if (!force_raw_text && !noninteractive
 	    && !NILP (Ffboundp (Vselect_safe_coding_system_function)))
 	  /* Confirm that VAL can surely encode the current region.  */
 	  val = call3 (Vselect_safe_coding_system_function, start, end, val);
@@ -5395,7 +5476,7 @@ DIR defaults to current buffer's directory default.")
   (prompt, dir, default_filename, mustmatch, initial)
      Lisp_Object prompt, dir, default_filename, mustmatch, initial;
 {
-  Lisp_Object val, insdef, insdef1, tem;
+  Lisp_Object val, insdef, tem;
   struct gcpro gcpro1, gcpro2;
   register char *homedir;
   int replace_in_history = 0;
@@ -5427,6 +5508,22 @@ DIR defaults to current buffer's directory default.")
 			 STRING_BYTES (XSTRING (dir)) - strlen (homedir) + 1);
       XSTRING (dir)->data[0] = '~';
     }
+  /* Likewise for default_filename.  */
+  if (homedir != 0
+      && STRINGP (default_filename)
+      && !strncmp (homedir, XSTRING (default_filename)->data, strlen (homedir))
+      && IS_DIRECTORY_SEP (XSTRING (default_filename)->data[strlen (homedir)]))
+    {
+      default_filename
+	= make_string (XSTRING (default_filename)->data + strlen (homedir) - 1,
+		       STRING_BYTES (XSTRING (default_filename)) - strlen (homedir) + 1);
+      XSTRING (default_filename)->data[0] = '~';
+    }
+  if (!NILP (default_filename))
+    {
+      CHECK_STRING (default_filename, 3);
+      default_filename = double_dollars (default_filename);
+    }
 
   if (insert_default_directory && STRINGP (dir))
     {
@@ -5439,18 +5536,15 @@ DIR defaults to current buffer's directory default.")
 	  args[1] = initial;
 	  insdef = Fconcat (2, args);
 	  pos = make_number (XSTRING (double_dollars (dir))->size);
-	  insdef1 = Fcons (double_dollars (insdef), pos);
+	  insdef = Fcons (double_dollars (insdef), pos);
 	}
       else
-	insdef1 = double_dollars (insdef);
+	insdef = double_dollars (insdef);
     }
   else if (STRINGP (initial))
-    {
-      insdef = initial;
-      insdef1 = Fcons (double_dollars (insdef), make_number (0));
-    }
+    insdef = Fcons (double_dollars (initial), make_number (0));
   else
-    insdef = Qnil, insdef1 = Qnil;
+    insdef = Qnil;
 
   count = specpdl_ptr - specpdl;
 #ifdef VMS
@@ -5461,7 +5555,7 @@ DIR defaults to current buffer's directory default.")
 
   GCPRO2 (insdef, default_filename);
   val = Fcompleting_read (prompt, intern ("read-file-name-internal"),
-			  dir, mustmatch, insdef1,
+			  dir, mustmatch, insdef,
 			  Qfile_name_history, default_filename, Qnil);
 
   tem = Fsymbol_value (Qfile_name_history);
@@ -5488,7 +5582,7 @@ DIR defaults to current buffer's directory default.")
   if (NILP (val))
     error ("No file name specified");
 
-  tem = Fstring_equal (val, insdef);
+  tem = Fstring_equal (val, CONSP (insdef) ? XCAR (insdef) : insdef);
 
   if (!NILP (tem) && !NILP (default_filename))
     val = default_filename;
@@ -5504,19 +5598,27 @@ DIR defaults to current buffer's directory default.")
   if (replace_in_history)
     /* Replace what Fcompleting_read added to the history
        with what we will actually return.  */
-    XCONS (Fsymbol_value (Qfile_name_history))->car = val;
+    XCONS (Fsymbol_value (Qfile_name_history))->car = double_dollars (val);
   else if (add_to_history)
     {
       /* Add the value to the history--but not if it matches
 	 the last value already there.  */
+      Lisp_Object val1 = double_dollars (val);
       tem = Fsymbol_value (Qfile_name_history);
-      if (! CONSP (tem) || NILP (Fequal (XCONS (tem)->car, val)))
+      if (! CONSP (tem) || NILP (Fequal (XCONS (tem)->car, val1)))
 	Fset (Qfile_name_history,
-	      Fcons (val, tem));
+	      Fcons (val1, tem));
     }
   return val;
 }
 
+void
+init_fileio_once ()
+{
+  /* Must be set before any path manipulation is performed.  */
+  XSETFASTINT (Vdirectory_sep_char, '/');
+}
+
 void
 syms_of_fileio ()
 {
@@ -5661,7 +5763,6 @@ The value should be either ?/ or ?\\ (any other value is treated as ?\\).\n\
 This variable affects the built-in functions only on Windows,\n\
 on other platforms, it is initialized so that Lisp code can find out\n\
 what the normal separator is.");
-  XSETFASTINT (Vdirectory_sep_char, '/');
 
   DEFVAR_LISP ("file-name-handler-alist", &Vfile_name_handler_alist,
     "*Alist of elements (REGEXP . HANDLER) for file names handled specially.\n\

@@ -3,7 +3,7 @@
 ;; Copyright (C) 1993, 1996  Free Software Foundation, Inc.
 
 ;; Author: Masanobu UMEDA <umerin@mse.kyutech.ac.jp>
-;; Version: $Id: metamail.el,v 1.1.1.1 1998-12-16 20:00:39 ghudson Exp $
+;; Version: $Id: metamail.el,v 1.1.1.2 2001-01-01 15:56:04 ghudson Exp $
 ;; Keywords: mail, news, mime, multimedia
 
 ;; This file is part of GNU Emacs.
@@ -27,6 +27,8 @@
 
 ;; The latest version will be at:
 ;;	ftp://ftp.kyutech.ac.jp/pub/MultiMedia/mime/emacs-mime-tools.shar
+;;  [This is probably _not_ the latest version; as of Jan 1999, it
+;;  is dated 1995.]
 
 ;; Note: Metamail does not have all options which is compatible with
 ;; the environment variables.  For that reason, matamail.el have to

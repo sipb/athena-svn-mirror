@@ -314,12 +314,11 @@ modify_lower_category_set (table, category, set_value)
   Lisp_Object val;
   int i;
 
-  if (NILP (XCHAR_TABLE (table)->defalt))
-    {
-      val = MAKE_CATEGORY_SET;
-      SET_CATEGORY_SET (val, category, set_value);
-      XCHAR_TABLE (table)->defalt = val;
-    }
+  val = XCHAR_TABLE (table)->defalt;
+  if (!CATEGORY_SET_P (val))
+    val = MAKE_CATEGORY_SET;
+  SET_CATEGORY_SET (val, category, set_value);
+  XCHAR_TABLE (table)->defalt = val;
 
   for (i = 32; i < SUB_CHAR_TABLE_ORDINARY_SLOTS; i++)
     {
@@ -568,6 +567,11 @@ word_boundary_p (c1, c2)
   Lisp_Object tail;
   int default_result;
 
+  if (COMPOSITE_CHAR_P (c1))
+    c1 = cmpchar_component (c1, 0, 1);
+  if (COMPOSITE_CHAR_P (c2))
+    c2 = cmpchar_component (c2, 0, 1);
+
   if (CHAR_CHARSET (c1) == CHAR_CHARSET (c2))
     {
       tail = Vword_separating_categories;
@@ -641,7 +645,7 @@ Emacs treats a sequence of word constituent characters as a single\n\
 word (i.e. finds no word boundary between them) iff they belongs to\n\
 the same charset.  But, exceptions are allowed in the following cases.\n\
 \n\
-(1) The case that characters are in different charsets is controlled\n\
+\(1) The case that characters are in different charsets is controlled\n\
 by the variable `word-combining-categories'.\n\
 \n\
 Emacs finds no word boundary between characters of different charsets\n\
@@ -655,7 +659,7 @@ For instance, to tell that ASCII characters and Latin-1 characters can\n\
 form a single word, the element `(?l . ?l)' should be in this list\n\
 because both characters have the category `l' (Latin characters).\n\
 \n\
-(2) The case that character are in the same charset is controlled by\n\
+\(2) The case that character are in the same charset is controlled by\n\
 the variable `word-separating-categories'.\n\
 \n\
 Emacs find a word boundary between characters of the same charset\n\
