@@ -18,7 +18,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_uloc_c[] =
-"$Id: uloc.c,v 1.56 1998-10-13 17:10:07 ghudson Exp $";
+"$Id: uloc.c,v 1.57 1998-10-26 18:55:27 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -620,6 +620,7 @@ ulogin_find(user, host, port)
 	    free_string(str);
 	    return loc;
 	}
+	loc++;
     }
 
     free_string(str);
