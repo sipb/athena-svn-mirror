@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.19 1993-05-14 18:23:12 vanharen Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.20 1993-05-16 19:37:20 vanharen Exp $";
 #endif
 #endif
 
@@ -45,6 +45,7 @@ handle_request(fd, from)
   char *buf;
   int result;
   char *from_addr;
+  int censored=0;
 
   int ltr;
   KTEXT_ST their_auth;
@@ -188,17 +189,21 @@ handle_request(fd, from)
 
   sprintf(principal_buffer,"%s.%s@%s",their_info.pname, their_info.pinst,
 	  their_info.prealm);
-  if ((strcmp(their_info.pname,username) != 0) &&
-      !acl_check(MONITOR_ACL,principal_buffer)) {
-    /* Twit! */
-    syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
-	   from_addr,
-	   principal_buffer);
-    output_len = htonl(ERR_NO_ACL);
-    write(fd,&output_len,sizeof(long));
-    punt_connection(fd,from);
-    return;
-  }
+  if (!acl_check(MONITOR_ACL,principal_buffer))	/* if not on the acl... */
+    if (!strcmp(their_info.pname,username))	/* user's own question */
+      censored = 1;				/* so let him see the */
+						/* censored version... */
+    else
+      {				/* not on the acl or owner of the question */
+	/* Twit! */
+	syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
+	       from_addr,
+	       principal_buffer);
+	output_len = htonl(ERR_NO_ACL);
+	write(fd,&output_len,sizeof(long));
+	punt_connection(fd,from);
+	return;
+      }
 
   syslog(LOG_DEBUG, "(%s) %s replays %s [%d]", from_addr,
 	 principal_buffer, username, instance);
@@ -224,13 +229,13 @@ handle_request(fd, from)
     buf = get_nm(username,instance,&result,0);
     break;
   case LIST_REQ:
-    buf = get_log(username,instance,&result);
+    buf = get_log(username,instance,&result,censored);
     break;
   case REPLAY_KILL_REQ:
     buf = get_nm(tusername,tinstance,&result,1);
     if ((buf == NULL) && (result != 0))
       break;
-    buf = get_log(username,instance,&result);
+    buf = get_log(username,instance,&result,censored);
     break;
   default:
     /* Sorry, not here- */
