@@ -1,4 +1,4 @@
-# $Id: packages,v 1.219 2003-03-25 04:26:10 ghudson Exp $
+# $Id: packages,v 1.220 2003-03-25 22:21:41 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -239,7 +239,7 @@ third/metacity			requires gettext,intltool,gtk2,GConf2,startup-notification
 third/mingetty			on linux
 third/motif/clients/mwm		on solaris
 third/mozilla			requires gtk,ORBit
-third/nautilus			requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
+third/nautilus			except linux requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
 third/nautilus-media		requires gstreamer,libgnome,libgnomeui,eel,nautilus
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
