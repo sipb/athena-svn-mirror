@@ -1,7 +1,7 @@
 AC_INIT
 
 PACKAGE=nautilus-media
-VERSION=0.2.0
+VERSION=0.2.1
 dnl RELEASE=0.`date +%Y%m%d_%H%M%S`
 RELEASE=1
 
@@ -92,7 +92,7 @@ dnl AM_WITH_NLS
 GETTEXT_PACKAGE=nautilus-media
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
-ALL_LINGUAS="am bg ca cs da de el es fi fr he hu it ko lv mk mn ms nl no pl pt_BR ru sq sl sv uk vi zh_CN zh_TW"
+ALL_LINGUAS="am bg ca cs da de el es et fi fr he hu it ko lv mk mn ms nl no pl pt pt_BR ro ru sq sk sl sv tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl get a good @LIBEXECDIR@ translation

@@ -4,12 +4,12 @@
 # package.
 # Christian Rose <menthos@menthos.com>, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-29 22:00:38 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-02-12 07:19:26 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-01-22 19:11+0100\n"
+"POT-Creation-Date: 2003-02-04 13:03+0100\n"
 "PO-Revision-Date: 2003-01-16 13:32+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"

@@ -1,5 +1,5 @@
 Name: 		nautilus-media
-Version: 	0.2.0
+Version: 	0.2.1
 Release: 	1
 Summary: 	A Nautilus media package with views and thumbnailers.
 
