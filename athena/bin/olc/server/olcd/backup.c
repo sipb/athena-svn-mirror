@@ -14,11 +14,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.4 1989-11-17 13:56:36 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.5 1990-01-03 23:26:03 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -29,6 +29,9 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <sys/time.h>           /* System time definitions. */
 #include <sys/file.h>           /* System file defs. */
 #include <setjmp.h>             /* For string validation kludge */
+
+static void type_error (int, const char *);
+
 
 /* 
  * Strings used to separate data chunks in the backup file.
@@ -297,58 +300,56 @@ ensure_consistent_state()
       if (k->connected != (KNUCKLE *) NULL) 
 	{
 	  /* check if connected person exists */
-		  
-	  if (((status = get_knuckle(k->connected->user->username, 
-			        k->connected->instance, &foo)) != SUCCESS) ||
-				k != k->connected->connected)
-	    {
-	      (void)sprintf(msgbuf,
-			    "Inconsistency: user connected to %s (%d)\n",
-			    k->user->username, k->instance);
-	      log_error(msgbuf);
+	    status = get_knuckle (k->connected->user->username,
+				  k->connected->instance, &foo, /* ??? */0);
+	    if (status != SUCCESS || k != k->connected->connected) {
+		(void)sprintf(msgbuf,
+			      "Inconsistency: user connected to %s (%d)\n",
+			      k->user->username, k->instance);
+		log_error(msgbuf);
 /* problem: the question data is probably screwed due to earlier bugs.
  * don't try to salvage because addresses to question->owner is in
  * space. Take the loss on the question data, delete both knuckles,
  * and continue. This should be looked into.
  */
-	      k->question = (QUESTION *) NULL;
-	      delete_knuckle(k);
-	      k->connected->question = (QUESTION *) NULL;
-	      k->connected->connected = (KNUCKLE *) NULL;
+		k->question = (QUESTION *) NULL;
+		delete_knuckle(k);
+		k->connected->question = (QUESTION *) NULL;
+		k->connected->connected = (KNUCKLE *) NULL;
 /* eat this too- chances are that if the connected person is invalid, 
  * it is total garbage.
  */
 
-	     /* delete_knuckle(k->connected); */
-	      continue;
+		/* delete_knuckle(k->connected); */
+		continue;
 
-	     if(k->question != (QUESTION *) NULL)
-	       {
-		 if(k->status & QUESTION_STATUS)
-		   k->question->owner = k;
-		 else
-		   k->question->owner = (KNUCKLE *) NULL;
-
-		 if(k->question->owner != (KNUCKLE *) NULL)
-		   {
-		     if(k->question->owner->connected != (KNUCKLE *) NULL)
-		       {
-			 k->question->owner->connected->connected = 
-			   (KNUCKLE *) NULL;  
-			 write_message_to_user(k->question->owner->connected,
-					   "Daemon error -- please reconnect.",
-					       NO_RESPOND);
-		       }
-		     k->question->owner->connected = (KNUCKLE *) NULL;
-		   }
-	       }
-#ifdef TEST
-	      if (!fork())
-		abort();
-	      else 
+		if (k->question != (QUESTION *) NULL)
 		{
-		  printf("Inconsistencies found; creating core file");
-		  wait(0);
+		    if(k->status & QUESTION_STATUS)
+			k->question->owner = k;
+		    else
+			k->question->owner = (KNUCKLE *) NULL;
+
+		    if(k->question->owner != (KNUCKLE *) NULL)
+		    {
+			if(k->question->owner->connected != (KNUCKLE *) NULL)
+			{
+			    k->question->owner->connected->connected = 
+				(KNUCKLE *) NULL;  
+			    write_message_to_user(k->question->owner->connected,
+						  "Daemon error -- please reconnect.",
+						  NO_RESPOND);
+			}
+			k->question->owner->connected = (KNUCKLE *) NULL;
+		    }
+		}
+#ifdef TEST
+		if (!fork())
+		    abort();
+		else 
+		{
+		    printf("Inconsistencies found; creating core file");
+		    wait(0);
 		}
 #endif	TEST  
 	    }
@@ -376,7 +377,7 @@ reconnect_knuckles()
   for (k_ptr = Knuckle_List; (*k_ptr) != (KNUCKLE *) NULL; k_ptr++)
     if((*k_ptr)->connected != (KNUCKLE *) NULL)
       {
-	status = get_knuckle((*k_ptr)->cusername,(*k_ptr)->cinstance, &k);
+	status = get_knuckle((*k_ptr)->cusername,(*k_ptr)->cinstance, &k, /*???*/0);
 	if(status == SUCCESS)
 	  {
 	    (*k_ptr)->connected = k;
@@ -466,11 +467,11 @@ backup_data()
  * Function:	load_data() loads an OLC backup data file.  It is called
  *			when the daemon starts up.
  * Argments:	None.
- * Returns:	SUCCESS or ERROR.
+ * Returns:	Nothing.
  * Notes:
  */
 
-load_data()
+void load_data()
 {
   int no_knuckles=0;
   int fd, i,j,nk;		
@@ -547,7 +548,7 @@ load_data()
 	{
 #ifdef TEST
 	  log_status("load_data: reading user data\n");
-#endif TEST
+#endif
 	  kptr = (KNUCKLE *) malloc(sizeof(KNUCKLE));
 	  status = read_knuckle_info(fd,kptr);
 	  if(skip)
@@ -604,9 +605,9 @@ load_data()
 
 /* code like this can only be written the day after an all nighter */
 
-type_error(fd,string)
-  int fd;
-  char *string;
+static void type_error(fd,string)
+    int fd;
+    const char *string;
 {
   char buf[BUF_SIZE];
   char buf2[BUF_SIZE];
@@ -642,7 +643,7 @@ type_error(fd,string)
 
 void
 dump_data(file)
-     char *file;
+    const char *file;
 {
   FILE *fp;
   KNUCKLE **k_ptr, **k_again;	           /* Current user. */
