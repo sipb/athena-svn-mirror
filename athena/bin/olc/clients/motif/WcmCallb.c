@@ -517,7 +517,6 @@ void WcSetValueCB ( w, name_res_resVal, unused )
     static char    res_val[MAX_XRMSTRING];
 
     Widget	target;
-    Widget	res_widget;
     char*	res_type;	/* must be XtFree'd */
 
     ParseNameResResVal( name_res_resVal, target_name, resource, res_val );
