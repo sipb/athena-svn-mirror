@@ -203,7 +203,7 @@ EOF
 fi
 
 if grep -q %post $sourcedir/packs/build/rpm/specs/$package_name; then true; else
-cat >> $destdir/SPECS/$source_name <<EOF
+cat >> $destdir/SPECS/$source_name <<'EOF'
 %post
 for file in `find /usr/athena/info -type f ! -name dir`; do
     install-info --info-dir=/usr/athena/info $file 2>/dev/null
