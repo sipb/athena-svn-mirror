@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 1997-03-15 21:39:42 ghudson Exp $
+# $Id: Makefile,v 1.8 1997-10-18 05:01:19 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -20,7 +20,6 @@ install:
 	install -c -m 0755 axdm ${DESTDIR}${INITD}
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
-	install -c -m 0755 network ${DESTDIR}${INITD}
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	rm -f ${DESTDIR}${RC0}/K02xdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
