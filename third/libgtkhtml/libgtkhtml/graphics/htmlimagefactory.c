@@ -93,6 +93,9 @@ write_pixbuf (HtmlStream *stream, const gchar *data, guint size, HtmlImage *imag
 {
 	GError *error = NULL;
 
+	if (!image)
+		return;
+
 	gdk_pixbuf_loader_write (image->loader, data, size, &error);
 
 	if (error) {
@@ -152,6 +155,7 @@ html_image_factory_get_image (HtmlImageFactory *image_factory, const gchar *uri)
 					  image);
 
 		image->stream = stream;
+		g_object_add_weak_pointer (image, (gpointer *) &(stream->user_data));
 
 		g_signal_emit (G_OBJECT (image_factory), image_factory_signals [REQUEST_IMAGE], 0, uri, stream);
 		

@@ -24,17 +24,22 @@
 #include <stdlib.h>
 #include "layout/html/htmlboxembeddedselect.h"
 #include "dom/html/dom-htmlselectelement.h"
+#include "dom/html/dom-htmloptionelement.h"
 
 static HtmlBoxClass *parent_class = NULL;
+
+static gint combo_selected = 0;
 
 static gboolean 
 create_list_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
 	GList **list = (GList **)data;
+	DomHTMLOptionElement *element;
 	GValue value = { 0, };
 	gchar *str;
 
 	gtk_tree_model_get_value (model, iter, 0, &value);
+	gtk_tree_model_get (model, iter, 2, &element, -1);
 
 	g_assert (G_VALUE_HOLDS_STRING(&value));
 	str = g_strdup (g_value_get_string (&value));
@@ -42,6 +47,9 @@ create_list_foreach (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, 
 
 	*list = g_list_append (*list, str);
 
+	if (dom_HTMLOptionElement__get_defaultSelected (element)) {
+		combo_selected = g_list_length (*list) - 1;
+	}
 	g_value_unset (&value);
 
 	return FALSE;
@@ -55,6 +63,15 @@ update_combo_list (GtkTreeModel *model, GtkWidget *widget)
 	gtk_tree_model_foreach (model, create_list_foreach, &list);
 	if (list)
 		gtk_combo_set_popdown_strings (GTK_COMBO (widget), list);
+#ifdef GTK_DISABLE_DEPRECATED
+#undef GTK_DISABLE_DEPRECATED
+	gtk_list_select_item (GTK_LIST (GTK_COMBO (widget)->list),
+			      combo_selected);
+#define GTK_DISABLE_DEPRECATED
+#else
+	gtk_list_select_item (GTK_LIST (GTK_COMBO (widget)->list),
+			      combo_selected);
+#endif
 	g_list_foreach (list, (GFunc)g_free, NULL);
 	g_list_free (list);
 
@@ -94,6 +111,39 @@ html_box_embedded_select_relayout (HtmlBox *box, HtmlRelayout *relayout)
 	}
 }
 
+static gboolean 
+treeview_select_default (GtkTreeModel *model, GtkTreePath *path,
+			 GtkTreeIter *iter, gpointer data)
+{
+	DomHTMLOptionElement *element;
+	GtkTreeView *treeview = GTK_TREE_VIEW (data);
+
+	gtk_tree_model_get (model, iter, 2, &element, -1);
+
+	if (dom_HTMLOptionElement__get_defaultSelected (element)) {
+		gtk_tree_selection_select_iter (gtk_tree_view_get_selection (treeview), iter);
+		gtk_tree_view_scroll_to_cell (treeview, path, NULL, TRUE,
+					      0.5, 0.0);
+	}
+
+	return FALSE;
+}
+
+static void
+update_treeview_selection (GtkWidget *widget, GtkRequisition *req,
+			   gpointer data)
+{
+	DomHTMLSelectElement *select_node;
+	GtkTreeModel *model;
+	GtkTreeView *treeview;
+
+	select_node  = DOM_HTML_SELECT_ELEMENT (data);
+	treeview = GTK_TREE_VIEW (widget);
+	model = dom_html_select_element_get_tree_model (select_node);
+
+	gtk_tree_model_foreach (model, treeview_select_default, treeview);
+}
+
 static void
 create_treeview_widget (HtmlBoxEmbedded *embedded, DomHTMLSelectElement *select_node)
 {
@@ -105,6 +155,8 @@ create_treeview_widget (HtmlBoxEmbedded *embedded, DomHTMLSelectElement *select_
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (embedded->widget),
 					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (embedded->widget),
+					     GTK_SHADOW_IN);
 
 	treeview = gtk_tree_view_new_with_model (dom_html_select_element_get_tree_model (select_node));
 
@@ -121,6 +173,9 @@ create_treeview_widget (HtmlBoxEmbedded *embedded, DomHTMLSelectElement *select_
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
 
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), GTK_TREE_VIEW_COLUMN (column));
+
+	g_signal_connect (G_OBJECT (treeview), "size_request",
+			  G_CALLBACK (update_treeview_selection), select_node);
 }
 
 static void

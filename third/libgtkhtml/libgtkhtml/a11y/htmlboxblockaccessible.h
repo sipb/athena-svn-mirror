@@ -17,8 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __HTML_BOX_BLOCK_H__
-#define __HTML_BOX_BLOCK_H__
+#ifndef __HTML_BOX_BLOCK_ACCESSIBLE_H__
+#define __HTML_BOX_BLOCK_ACCESSIBLE_H__
 
 #include <libgtkhtml/gtkhtml.h>
 #include <atk/atk.h>
@@ -57,4 +57,4 @@ AtkObject* html_box_block_accessible_new (GObject *obj);
 #endif /* __cplusplus */
 
 
-#endif /* __GAIL_HTML_BOX_BLOCK_H__ */
+#endif /* __HTML_BOX_BLOCK_ACCESSIBLE_H__ */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,14 +17,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <strings.h>
+
 #include <gtk/gtk.h>
 #include "htmlboxaccessible.h"
+#include "htmlboxtextaccessible.h"
 #include "a11y/htmlviewaccessible.h"
 #include <libgtkhtml/layout/htmlbox.h>
 #include <libgtkhtml/layout/htmlboxtable.h>
 #include <libgtkhtml/layout/htmlboxtablecell.h>
 #include <libgtkhtml/layout/htmlboxtablerowgroup.h>
+#include <libgtkhtml/layout/htmlboxtext.h>
 #include <libgtkhtml/layout/htmlboxinline.h>
+#include <libgtkhtml/layout/htmlboxtable.h>
+#include <libgtkhtml/layout/htmlboxtablecell.h>
 #include <libgtkhtml/dom/core/dom-element.h>
 
 static void         html_box_accessible_class_init               (HtmlBoxAccessibleClass  *klass);
@@ -51,6 +57,7 @@ static void         html_box_accessible_remove_focus_handler     (AtkComponent  
                                                                   guint             handler_id);
 static gboolean     is_box_showing                               (HtmlBox           *box);
 
+static char* view_str = "view";
 static AtkGObjectAccessibleClass *parent_class = NULL;
 
 GType
@@ -107,10 +114,32 @@ html_box_accessible_new (GObject *obj)
 	AtkObject *atk_object;
 
 	g_return_val_if_fail (HTML_IS_BOX (obj), NULL);
+	if (HTML_IS_BOX_TEXT (obj)) {
+		HtmlBoxText *text;
+		HtmlBox *box;
+
+		text = HTML_BOX_TEXT (obj);
+		if (html_box_text_get_len (text) > 0) {
+			box = HTML_BOX (obj);
+
+			while (!HTML_IS_BOX_BLOCK (box)) {
+				box = box->parent;
+			}
+			if (!(HTML_IS_BOX_BLOCK (box) &&
+			      box->dom_node &&
+			      strcmp ((char*)box->dom_node->xmlnode->name, "p") == 0)) { 
+				atk_object = html_box_text_accessible_new (obj);
+			} else {
+				atk_object = atk_gobject_accessible_for_object (G_OBJECT (box));
+			}
+			return atk_object;
+		}
+	}
+
 	object = g_object_new (HTML_TYPE_BOX_ACCESSIBLE, NULL);
 	atk_object = ATK_OBJECT (object);
 	atk_object_initialize (atk_object, obj);
-	atk_object->role = ATK_ROLE_UNKNOWN;
+	atk_object->role = ATK_ROLE_PANEL;
 	return atk_object;
 }
 
@@ -122,6 +151,7 @@ html_box_accessible_initialize (AtkObject *obj, gpointer data)
 
 	ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
+	HTML_BOX_ACCESSIBLE (obj)->index = -1;
 	box = HTML_BOX (data);
 
 	if (box->parent) { 
@@ -155,16 +185,16 @@ html_box_accessible_initialize (AtkObject *obj, gpointer data)
 			
 		 } else
 			parent = box->parent;
-		data = g_object_get_data (G_OBJECT (parent), "view");
+		data = g_object_get_data (G_OBJECT (parent), view_str);
 		if (data)
-			g_object_set_data (G_OBJECT (box), "view", data);
+			g_object_set_data (G_OBJECT (box), view_str, data);
 		else {
-			data = g_object_get_data (G_OBJECT (box), "view");
-			g_assert (data);
-			g_object_set_data (G_OBJECT (parent), "view", data);
+			data = g_object_get_data (G_OBJECT (box), view_str);
+			if (data)
+				g_object_set_data (G_OBJECT (parent), view_str, data);
 		}
 		parent_obj = atk_gobject_accessible_for_object (G_OBJECT (parent));
-		atk_object_set_parent (obj, parent_obj);
+		obj->accessible_parent = g_object_ref (parent_obj);
 	}
 }
 
@@ -252,6 +282,8 @@ html_box_accessible_get_index_in_parent (AtkObject *obj)
 	GObject *g_obj;
 
 	g_return_val_if_fail (HTML_IS_BOX_ACCESSIBLE (obj), -1);
+	if (HTML_BOX_ACCESSIBLE (obj)->index != -1)
+		return HTML_BOX_ACCESSIBLE (obj)->index;
 
 	atk_gobj = ATK_GOBJECT_ACCESSIBLE (obj);
 	g_obj = atk_gobject_accessible_get_object (atk_gobj);
@@ -325,12 +357,12 @@ html_box_accessible_get_parent (AtkObject *obj)
 
 		g_obj = atk_gobject_accessible_get_object (atk_gobj);
 		if (g_obj != NULL) {
-			widget = g_object_get_data (g_obj, "view");
+			widget = g_object_get_data (g_obj, view_str);
 			box = HTML_BOX (g_obj);
 			g_return_val_if_fail (!box->parent, NULL); 
 			g_return_val_if_fail (widget, NULL); 
 			parent = gtk_widget_get_accessible (widget);
-			atk_object_set_parent (obj, parent);
+			obj->accessible_parent = g_object_ref (parent);
 		}
 	}
 	return parent;
@@ -462,8 +494,20 @@ GtkWidget*
 html_box_accessible_get_view_widget (HtmlBox *box)
 {
 	GtkWidget *widget;
+	HtmlBox *temp_box;
 	
-	widget = g_object_get_data (G_OBJECT (box), "view");
+	temp_box = box;
+	widget = g_object_get_data (G_OBJECT (temp_box), view_str);
+	/*
+	 * If box has not have an accessible object created then the data
+	 * will not have been set so try the box's parent. This will work
+	 * as some box must have had an accessible created for this function
+	 * to be called.
+	 */
+	while (!widget) {
+		temp_box = temp_box->parent;
+		widget = g_object_get_data (G_OBJECT (temp_box), view_str);
+	}
 	return widget;
 }
 

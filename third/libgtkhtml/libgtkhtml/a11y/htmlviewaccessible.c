@@ -1,5 +1,5 @@
 /*
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,9 @@
 #include "htmlviewaccessible.h"
 #include "htmlviewaccessiblefactory.h"
 #include <libgtkhtml/layout/htmlboxinline.h>
+#include <libgtkhtml/layout/htmlboxtext.h>
+
+#undef DUMP_BOXES
 
 static void       html_view_accessible_class_init          (HtmlViewAccessibleClass *klass);
 static void       html_view_accessible_finalize            (GObject            *obj);
@@ -33,13 +36,78 @@ static AtkObject* html_view_accessible_ref_child           (AtkObject          *
 static AtkStateSet* html_view_accessible_ref_state_set     (AtkObject          *obj);
 
 static void       html_view_accessible_grab_focus_cb       (GtkWidget          *widget);
-static AtkObject* html_view_accessible_get_focus_object    (GtkWidget          *widget);
+static AtkObject* html_view_accessible_get_focus_object    (GtkWidget          *widget,
+                                                            gint               *link_index);
 
 static void       focus_object_destroyed                   (gpointer           data);       
+static void       root_object_destroyed                    (gpointer           data);
 static void       set_focus_object                         (GObject            *obj,
                                                             AtkObject          *focus_obj);       
+static void       set_root_object                          (GObject            *obj,
+                                                            HtmlBox            *root);
 
 static gpointer parent_class = NULL;
+
+static const gchar* gail_focus_object = "gail-focus-object";
+static const gchar* html_root = "html_root";
+
+#ifdef DUMP_BOXES
+static void
+debug_dump_boxes (HtmlBox *root, gint indent, gboolean has_node, xmlNode *n)
+{
+	HtmlBox *box;
+        gint i;
+
+	if (!root)
+		return;
+
+	if (has_node) {
+		if (root->dom_node != NULL && root->dom_node->xmlnode != n)
+			return;
+        }
+
+	 box = root->children;
+
+
+	 for (i = 0; i < indent; i++)
+		g_print (" ");
+
+	g_print ("Type %d: %s %s (%p, %p, %p) (%d %d %d %d)",
+                 indent,
+		 G_OBJECT_TYPE_NAME (root), G_OBJECT_TYPE_NAME (root->dom_node), root, root->dom_node, HTML_BOX_GET_STYLE (root), root->x, root->y, root->width, root->height);
+	if (root->dom_node)
+		g_print ("%s ", root->dom_node->xmlnode->name);
+	g_print ("\n");
+	if (HTML_IS_BOX_TEXT (root)) {
+		HtmlBoxText *box_text;
+		gint len;
+		gchar *text;
+
+		box_text = HTML_BOX_TEXT (root);
+		text = html_box_text_get_text (box_text, &len);
+		g_print ("Master: %p forced_newline: %d\n", box_text->master, box_text->forced_newline);
+  		if (len) {
+                        gchar *buffer;
+
+			for (i = 0; i < indent; i++)
+				g_print (" ");
+			buffer = g_malloc (len + 4);
+			buffer[0] = '|';
+			strncpy (buffer + 1, text, len);
+			buffer[len + 1] = '|';
+			buffer[len + 2] = '\n';
+			buffer[len + 3] = 0;
+			g_print (buffer);
+			g_free (buffer);
+		}
+	}
+
+        while (box) {
+	  debug_dump_boxes (box, indent + 1, has_node, n);
+	  box = box->next;
+	}
+}
+#endif
 
 GType
 html_view_accessible_get_type (void)
@@ -118,14 +186,17 @@ html_view_accessible_initialize (AtkObject *obj,
 {
 	GtkWidget *widget;
 	AtkObject *focus_object;
+	HtmlView *view;
 
 	ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
 	widget = GTK_WIDGET (data);
+ 	view = HTML_VIEW (data);
+	set_root_object (G_OBJECT (obj), view->root);
 	g_signal_connect (widget, "grab_focus",
 			  G_CALLBACK (html_view_accessible_grab_focus_cb),
                           NULL);
-	focus_object = html_view_accessible_get_focus_object (widget);
+	focus_object = html_view_accessible_get_focus_object (widget, NULL);
 	if (focus_object)
 		set_focus_object (G_OBJECT (obj), focus_object);
 }
@@ -135,7 +206,7 @@ html_view_accessible_finalize (GObject *obj)
 {
 	gpointer focus_obj;
 
-	focus_obj = g_object_get_data (obj, "gail-focus-object");
+	focus_obj = g_object_get_data (obj, gail_focus_object);
 	if (focus_obj) {
 		g_object_weak_unref (focus_obj, 
 				     (GWeakNotify) focus_object_destroyed,
@@ -195,9 +266,17 @@ html_view_accessible_ref_child (AtkObject *obj, gint i)
 	html_box = html_view->root;
 
 	if (html_box) {
+		gpointer old_root;
+
 		atk_child = atk_gobject_accessible_for_object (G_OBJECT (html_box));
 		g_object_set_data (G_OBJECT (html_box), "view", widget);
 		g_object_ref (atk_child);
+		/* We check whether the root node has changed */	
+		old_root = g_object_get_data (G_OBJECT (obj), html_root);
+		if (!old_root) {
+			set_root_object (G_OBJECT (obj), html_box);
+			g_signal_emit_by_name (obj, "children_changed::add", 0, NULL, NULL);
+		}
 	}
 	return atk_child;
 }
@@ -207,32 +286,82 @@ html_view_accessible_grab_focus_cb (GtkWidget *widget)
 {
 	AtkObject *focus_object;
 	AtkObject *obj;
+	gint link_index;
 
-	focus_object = html_view_accessible_get_focus_object (widget);
+	focus_object = html_view_accessible_get_focus_object (widget, &link_index);
 
 	obj = gtk_widget_get_accessible (widget);
 	set_focus_object (G_OBJECT (obj), focus_object);
-	if (GTK_WIDGET_HAS_FOCUS (widget) && focus_object)
+	if (GTK_WIDGET_HAS_FOCUS (widget) && focus_object) {
 		atk_focus_tracker_notify (focus_object);
+		g_signal_emit_by_name (focus_object, "link-selected", link_index);
+	}
+}
+
+static gboolean
+get_link_index (HtmlBox *root, HtmlBox *link_box, gint *link_index)
+{
+	HtmlBox *box;
+	gboolean ret;
+
+	if (!root)
+		return FALSE;
+
+	if (HTML_IS_BOX_INLINE (root)) {
+		if (root == link_box)
+			return TRUE;
+		*link_index++;
+	}
+	
+	box = root->children;
+	while (box) {
+		ret = get_link_index (box, link_box, link_index);
+		if (ret)
+			return TRUE;
+		box = box->next;
+	}
+	return FALSE;
 }
 
 static AtkObject*
-html_view_accessible_get_focus_object (GtkWidget *widget)
+html_view_accessible_get_focus_object (GtkWidget *widget, gint *link_index)
 {
 	HtmlView *view;
 	HtmlBox *box;
+	HtmlBox *focus_box;
+	HtmlBox *parent;
 	DomElement *focus_element;
 	AtkObject *atk_obj;
+	gint index;
 
 	view = HTML_VIEW (widget);
 
 	focus_element = view->document->focus_element;
 
 	if (focus_element) {
-		box = html_view_find_layout_box (view, DOM_NODE (focus_element), FALSE);	
-		if (HTML_IS_BOX_INLINE (box))
-			box = box->children;
-
+		focus_box = box = html_view_find_layout_box (view, DOM_NODE (focus_element), FALSE);	
+		parent = box->parent;
+		while (parent) {
+			if (!HTML_IS_BOX_BLOCK (parent)) {
+				parent = parent->parent;
+			} else {
+				box = parent;
+				break;
+			}
+		}
+		g_assert (HTML_IS_BOX_BLOCK (box));
+		if (box->dom_node && strcmp ((char *)box->dom_node->xmlnode->name, "p") == 0) {
+			if (link_index) {
+				index = 0;
+				if (get_link_index (box, focus_box, &index))
+					*link_index = index;
+			}
+		} else {
+			box = focus_box->children;
+			if (link_index) {
+				*link_index = 0;
+			}
+		}
 		g_object_set_data (G_OBJECT (box), "view", widget);
 		atk_obj = atk_gobject_accessible_for_object (G_OBJECT (box));
 	} else {
@@ -255,15 +384,27 @@ html_view_accessible_ref_state_set (AtkObject *obj)
 
 	view = HTML_VIEW (widget);
 
+#ifdef DUMP_BOXES 
+	debug_dump_boxes (view->root, 0, FALSE, NULL);
+#endif
+
 	if (view->document->focus_element && GTK_WIDGET_HAS_FOCUS (widget))
 		atk_state_set_remove_state (state_set, ATK_STATE_FOCUSED);
 
 	return state_set;	
 }
 
-static void focus_object_destroyed (gpointer data)
+static void
+focus_object_destroyed (gpointer data)
 {
-	g_object_set_data (G_OBJECT (data), "gail-focus-object", NULL);
+	g_object_set_data (G_OBJECT (data), gail_focus_object, NULL);
+}       
+
+static void
+root_object_destroyed (gpointer data)
+{
+	set_root_object (G_OBJECT (data), NULL);
+	g_signal_emit_by_name (data, "children_changed::remove", 0, NULL, NULL);
 }
 
 static void
@@ -272,7 +413,7 @@ set_focus_object (GObject *obj,
 {
 	gpointer old_focus_obj;
 
-	old_focus_obj = g_object_get_data (obj, "gail-focus-object");
+	old_focus_obj = g_object_get_data (obj, gail_focus_object);
 	if (old_focus_obj) {
 		g_object_weak_unref (old_focus_obj, 
 				     (GWeakNotify) focus_object_destroyed,
@@ -282,5 +423,26 @@ set_focus_object (GObject *obj,
 		g_object_weak_ref (G_OBJECT (focus_obj), 
 				   (GWeakNotify) focus_object_destroyed,
 				   obj);
-	g_object_set_data (obj, "gail-focus-object", focus_obj);
+	g_object_set_data (obj, gail_focus_object, focus_obj);
 }
+
+static void
+set_root_object (GObject *obj,
+                 HtmlBox *root) 
+{
+	gpointer old_root;
+
+	old_root = g_object_get_data (obj, html_root);
+	if (old_root && root) {
+		g_object_weak_unref (old_root, 
+				     (GWeakNotify) root_object_destroyed,
+				     obj);
+	}
+	if (root) {
+		g_object_weak_ref (G_OBJECT (root), 
+				   (GWeakNotify) root_object_destroyed,
+				   obj);
+	}
+	g_object_set_data (obj, html_root, root);
+}
+

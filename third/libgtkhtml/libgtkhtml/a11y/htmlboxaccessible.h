@@ -41,6 +41,8 @@ typedef struct _HtmlBoxAccessibleClass HtmlBoxAccessibleClass;
 struct _HtmlBoxAccessible
 {
 	AtkGObjectAccessible parent;
+
+	gint index;
 };
 
 struct _HtmlBoxAccessibleClass

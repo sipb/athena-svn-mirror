@@ -20,12 +20,13 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <strings.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "document/htmlfocusiterator.h"
-#include "document/htmlparser.h"
+#include "document/htmldocument.h"
 #include "dom/core/dom-node.h"
 #include "dom/core/dom-element.h"
 #include "dom/views/dom-abstractview.h"
@@ -40,6 +41,7 @@
 #include "graphics/htmlgdkpainter.h"
 #include "util/htmlmarshal.h"
 #include "htmlevent.h"
+#include "htmlselection.h"
 #include "htmlview.h"
 #include "config.h"
 
@@ -51,7 +53,6 @@
 #include "a11y/htmlboxembeddedaccessible.h"
 #include "a11y/htmlboxaccessible.h"
 #include "a11y/htmlboxtableaccessible.h"
-#include "a11y/htmlboxtextaccessible.h"
 #endif
 
 enum {
@@ -60,6 +61,7 @@ enum {
 	ON_URL,
 	ACTIVATE,
 	MOVE_FOCUS_OUT,
+	TOGGLE_CURSOR,
 	LAST_SIGNAL
 };
 
@@ -82,9 +84,1149 @@ HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_BLOCK_ACCESSIBLE, html_box_block_accessib
 HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_EMBEDDED_ACCESSIBLE, html_box_embedded_accessible)
 HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_ACCESSIBLE, html_box_accessible)
 HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_TABLE_ACCESSIBLE, html_box_table_accessible)
-HTML_ACCESSIBLE_FACTORY (HTML_TYPE_BOX_TEXT_ACCESSIBLE, html_box_text_accessible)
 #endif
 
+static GQuark quark_moving_focus_out = 0;
+static GQuark quark_cursor_position = 0;
+static GQuark quark_cursor_end_of_line = 0;
+static GQuark quark_selection_bound = 0;
+static GQuark quark_layout = 0;
+static GQuark quark_cursor_visible = 0;
+static GQuark quark_blink_timeout = 0;
+static GQuark quark_button = 0;
+static GQuark quark_virtual_cursor_x = 0;
+static GQuark quark_virtual_cursor_y = 0;
+static gboolean cursor_showing = FALSE;
+
+HtmlBoxText* _html_view_get_cursor_box_text (HtmlView *view, gint *offset);
+
+static HtmlBox*
+find_last_child (HtmlBox *box)
+{
+	HtmlBox *child;
+
+	child = box->children;
+	while (child) {
+		while (child->next) {
+			child = child->next;
+		}
+		if (child->children) {
+			child = child->children;
+		} else {
+			break;
+		}
+	}
+	return child;
+}
+
+static HtmlBox*
+find_previous_box (HtmlBox *box)
+{
+	HtmlBox *prev;
+	HtmlBox *tmp;
+
+	prev = box;
+
+	if (prev->prev) {
+		tmp = find_last_child (prev->prev);
+		if (tmp) {
+			prev = tmp;
+		} else {
+			prev = prev->prev;
+		}
+	} else {
+		prev = prev->parent;
+		while (prev)  {
+			if (prev->prev) {
+				tmp = find_last_child (prev->prev);
+				if (tmp) {
+					prev = tmp;
+				} else {
+					prev = prev->prev;
+				}
+				break;
+			} else {
+				prev = prev->parent;
+			}
+		}
+	}
+	return prev;
+}
+
+static HtmlBoxText*
+find_previous_box_text (HtmlBox *box)
+{
+	HtmlBox *prev;
+	HtmlBoxText *text;
+
+	prev = box;
+
+	while (prev) {
+		prev = find_previous_box (prev);
+		if (HTML_IS_BOX_TEXT (prev)) {
+			text = HTML_BOX_TEXT (prev);
+			if (html_box_text_get_len (text)) {
+				return text;
+			}
+		}
+	}
+	return NULL;
+}
+
+static HtmlBox*
+find_next_box (HtmlBox *box)
+{
+	HtmlBox *next;
+
+	next = box;
+
+	if (next->children) {
+		next = next->children;
+	} else  if (next->next) {
+		next = next->next;
+	} else {
+		next = next->parent;
+		while (next)  {
+			if (next->next) {
+				next = next->next;
+				break;
+			} else {
+				next = next->parent;
+			}
+		}
+	}
+	return next;
+}
+
+static HtmlBoxText*
+find_next_box_text (HtmlBox *box)
+{
+	HtmlBox *next;
+	HtmlBoxText *text;
+
+	next = box;
+
+	while (next) {
+		next = find_next_box (next);
+		if (HTML_IS_BOX_TEXT (next)) {
+			text = HTML_BOX_TEXT (next);
+			if (html_box_text_get_len (text)) {
+				return text;
+			}
+		}
+	}
+	return NULL;
+}
+
+static HtmlBoxText*
+html_view_get_box_text_for_offset (HtmlView *view, gint *offset, gboolean end_of_line)
+{
+	HtmlBox *box;
+	HtmlBoxText *last_text;
+	HtmlBoxText *text;
+	gchar *char_text;
+	gint len;
+
+	box = view->root;
+
+	last_text = NULL;
+	while (box) {
+		text = find_next_box_text (box);
+		if (text) {
+			char_text = html_box_text_get_text (text, &len);
+			len = g_utf8_strlen (char_text, len);
+			if (len > 0) {
+				if (len > *offset) {
+					return text;
+				} else if (end_of_line && *offset == len) {
+					return text;	
+				}
+				*offset -= len;
+				if (*offset == 0) {
+					last_text = text;
+				}
+				box = HTML_BOX (text);
+			}
+		} else {
+			if (last_text) {
+				*offset = len + 1;
+			}
+			return last_text;
+		}
+	}
+}
+
+static gboolean
+find_offset (HtmlBox *box, HtmlBoxText *box_text, gint *offset)
+{
+	HtmlBox *child;
+	HtmlBoxText *text;
+	gchar *char_text;
+	gint len;
+	gboolean ret;
+
+	if (HTML_IS_BOX_TEXT (box)) {
+		text = HTML_BOX_TEXT (box);
+		if (box_text == text)
+			return TRUE;
+		char_text = html_box_text_get_text (text, &len);
+		len = g_utf8_strlen (char_text, len);
+		*offset += len;
+	}
+	child = box->children;	
+	while (child) {
+		ret = find_offset (child, box_text, offset);
+		if (ret)
+			return ret;
+		child = child->next;
+	}
+	return FALSE;
+}
+
+static gboolean
+html_view_get_offset_for_box_text (HtmlView *view, HtmlBoxText *text, gint *offset)
+{
+	HtmlBox *root;
+	gint temp_offset = 0;
+	gboolean ret = FALSE;
+
+	root = view->root;
+
+	if (root) {
+		ret = find_offset (root, text, &temp_offset);
+		if (ret && offset)
+			*offset = temp_offset;
+	}
+	return ret;
+	
+}
+
+static gint
+html_view_get_virtual_cursor_x (HtmlView *view)
+{
+	gint val;
+
+	if (quark_virtual_cursor_x == 0)
+		return -1;
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_virtual_cursor_x));
+	return val;
+}
+
+static void
+html_view_set_virtual_cursor_x (HtmlView *view, gint x)
+{
+	if (quark_virtual_cursor_x == 0)
+		quark_virtual_cursor_x = g_quark_from_static_string ("html-view-virtual-cursor-x");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_virtual_cursor_x,
+			    GINT_TO_POINTER (x));
+}
+
+static gint
+html_view_get_virtual_cursor_y (HtmlView *view)
+{
+	gint val;
+
+	if (quark_virtual_cursor_y == 0)
+		return -1;
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_virtual_cursor_y));
+	return val;
+}
+
+static void
+html_view_set_virtual_cursor_y (HtmlView *view, gint y)
+{
+	if (quark_virtual_cursor_y == 0)
+		quark_virtual_cursor_y = g_quark_from_static_string ("html-view-virtual-cursor-y");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_virtual_cursor_y,
+			    GINT_TO_POINTER (y));
+}
+
+static gint
+html_view_get_cursor_end_of_line (HtmlView *view)
+{
+	gint val;
+
+	if (quark_cursor_end_of_line == 0)
+		return 0;
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_cursor_end_of_line));
+	return val;
+}
+
+static void
+html_view_set_cursor_end_of_line (HtmlView *view, gint val)
+{
+	if (quark_cursor_end_of_line == 0)
+		quark_cursor_end_of_line = g_quark_from_static_string ("html-view-cursor-end-of-line");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_cursor_end_of_line,
+			    GINT_TO_POINTER (val));
+}
+
+static gint
+html_view_get_cursor_position (HtmlView *view)
+{
+	gint val;
+	gint val1;
+	HtmlBoxText *text;
+
+	if (view->sel_list) {
+		if (view->sel_backwards) {
+			if (HTML_IS_BOX_TEXT (view->sel_start))
+				text = HTML_BOX_TEXT (view->sel_start);
+			else
+				text = HTML_BOX_TEXT (view->sel_list->data);
+
+			val1 = view->sel_start_index;
+		} else {
+			if (HTML_IS_BOX_TEXT (view->sel_end))
+				text = HTML_BOX_TEXT (view->sel_end);
+			else
+				text = HTML_BOX_TEXT (g_slist_last (view->sel_list)->data);
+
+			val1 = view->sel_end_index;
+		}
+		if (html_view_get_offset_for_box_text (view, text, &val)) {
+			gchar *str;
+
+			str = html_box_text_get_text (text, NULL);
+			val += g_utf8_pointer_to_offset (str, str + val1);
+			return val;
+		} else {
+			g_warning ("No offset for cursor position");
+		}
+	}
+	if (quark_cursor_position == 0)
+		return 0;
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_cursor_position));
+	return val;
+}
+
+static void
+html_view_set_cursor_position (HtmlView *view, gint cursor_position)
+{
+	if (quark_cursor_position == 0)
+		quark_cursor_position = g_quark_from_static_string ("html-view-cursor-position");
+
+	html_view_set_virtual_cursor_x (view, -1);
+	html_view_set_virtual_cursor_y (view, -1);
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_cursor_position,
+			    GINT_TO_POINTER (cursor_position));
+#ifdef ENABLE_ACCESSIBILITY
+	{
+	AtkObject *obj;
+	HtmlBoxText *box_text;
+	gint offset;
+
+	box_text = _html_view_get_cursor_box_text (view, NULL);	
+	if (box_text) {
+		obj = atk_gobject_accessible_for_object (G_OBJECT (box_text));
+		if (!ATK_IS_NO_OP_OBJECT (obj)) {
+			/* Accessibility is enabled */
+			g_return_if_fail (ATK_IS_TEXT (obj));
+			offset = atk_text_get_caret_offset (ATK_TEXT (obj));
+			g_signal_emit_by_name (obj, "text-caret-moved", offset);
+		}
+	}
+	}
+#endif /* ENABLE_ACCESSIBILITY */
+}
+
+static gint
+html_view_get_selection_bound (HtmlView *view)
+{
+	gint val;
+	gint val1;
+	HtmlBoxText *text;
+
+	if (view->sel_list) {
+		if (view->sel_backwards) {
+			if (HTML_IS_BOX_TEXT (view->sel_end))
+				text = HTML_BOX_TEXT (view->sel_end);
+			else
+				text = HTML_BOX_TEXT (g_slist_last (view->sel_list)->data);
+
+			val1 = view->sel_end_index;
+		} else {
+			if (HTML_IS_BOX_TEXT (view->sel_start))
+				text = HTML_BOX_TEXT (view->sel_start);
+			else
+				text = HTML_BOX_TEXT (view->sel_list->data);
+
+			val1 = view->sel_start_index;
+		}
+		if (html_view_get_offset_for_box_text (view, text, &val)) {
+			gchar *str;
+
+			str = html_box_text_get_text (text, NULL);
+			val += g_utf8_pointer_to_offset (str, str + val1);
+			return val;
+		} else {
+			g_warning ("No offset for selection bound");
+		}
+	}
+	if (quark_selection_bound == 0)
+		return 0;
+
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_selection_bound));
+	return val;
+}
+
+static void
+html_view_set_selection_bound (HtmlView *view, gint selection_bound)
+{
+	if (quark_selection_bound == 0)
+		quark_selection_bound = g_quark_from_static_string ("html-view-selection-bound");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_selection_bound,
+			    GINT_TO_POINTER (selection_bound));
+}
+
+static gint
+html_view_get_cursor_visible (HtmlView *view)
+{
+	gint val;
+
+	if (quark_cursor_visible == 0)
+		return 0;
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_cursor_visible));
+	return val;
+}
+
+static void
+html_view_set_cursor_visible (HtmlView *view, gint cursor_visible)
+{
+	if (quark_cursor_visible == 0)
+		quark_cursor_visible = g_quark_from_static_string ("html-view-cursor-visible");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_cursor_visible,
+			    GINT_TO_POINTER (cursor_visible));
+}
+
+static guint
+html_view_get_blink_timeout (HtmlView *view)
+{
+	guint val;
+
+	if (quark_blink_timeout == 0)
+		return 0;
+	val = GPOINTER_TO_UINT (g_object_get_qdata (G_OBJECT (view),
+						    quark_blink_timeout));
+	return val;
+}
+
+static void
+html_view_set_blink_timeout (HtmlView *view, guint blink_timeout)
+{
+	if (quark_blink_timeout == 0)
+		quark_blink_timeout = g_quark_from_static_string ("html-view-blink-timeout");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_blink_timeout,
+			    GUINT_TO_POINTER (blink_timeout));
+}
+
+static guint
+html_view_get_button (HtmlView *view)
+{
+	guint val;
+
+	if (quark_button == 0)
+		return 0;
+	val = GPOINTER_TO_UINT (g_object_get_qdata (G_OBJECT (view),
+						    quark_button));
+	return val;
+}
+
+static void
+html_view_set_button (HtmlView *view, guint button)
+{
+	if (quark_button == 0)
+		quark_button = g_quark_from_static_string ("html-view-buttont");
+
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_button,
+			    GUINT_TO_POINTER (button));
+}
+
+static PangoLayout*
+html_view_get_layout (HtmlView *view)
+{
+	gpointer val;
+
+	val = g_object_get_qdata (G_OBJECT (view),
+			          quark_layout);
+	return (PangoLayout*)val;
+}
+
+static const char*
+html_view_get_layout_text (HtmlView *view)
+{
+	PangoLayout *layout;
+	const char *ret;
+
+	layout = html_view_get_layout (view);
+	if (layout)
+		ret = pango_layout_get_text (layout);
+	else
+		ret = NULL;
+	return ret;
+}
+
+static void
+html_view_set_layout (HtmlView *view, const gchar *text)
+{
+	PangoLayout *layout;
+
+	if (quark_layout == 0)
+		quark_layout = g_quark_from_static_string ("html-view-layout");
+
+	layout = html_view_get_layout (view);
+	if (!layout) {
+		layout = gtk_widget_create_pango_layout (GTK_WIDGET (view), NULL);
+
+		g_object_set_qdata (G_OBJECT (view), 
+				    quark_layout,
+				    layout);
+	}
+	if (text)
+		pango_layout_set_text (layout, text, -1);
+}
+
+void
+add_text (HtmlBox *box, GString *str)
+{
+	HtmlBox *child;
+	HtmlBoxText *text;
+	int text_len;
+	gchar *text_chars;
+
+	if (HTML_IS_BOX_TEXT (box)) {
+		text = HTML_BOX_TEXT (box);
+		text_chars = html_box_text_get_text (text, &text_len);
+		if (text_chars) {
+			g_string_append_len (str, text_chars, text_len);
+		}
+	}
+	child = box->children;
+	while (child) {
+		add_text (child, str);
+		child = child->next;
+	}
+	return;
+}
+
+static void
+html_view_setup_layout (HtmlView *view)
+{
+	HtmlBox *root;
+	GString *str;
+	int len;
+
+	if (html_view_get_layout_text (view))
+		return;
+
+	str = g_string_new ("");
+	root = view->root;
+
+	if (root)
+		add_text (root, str);
+	len = str->len;
+	if (len > 0)
+		str->str[len] = '\0';
+
+	html_view_set_layout (view, str->str);
+	g_string_free (str, TRUE);
+}
+
+static void
+html_view_toggle_cursor (HtmlView *view)
+{
+	cursor_showing = !cursor_showing;
+	gtk_widget_queue_draw (GTK_WIDGET (view));
+}
+
+/*
+ * This is a copy of the function _gtk_draw_insertion_cursor
+ * from gtkstyle.c
+ */
+static void
+html_view_draw_insertion_cursor (GtkWidget        *widget,
+                                 GdkDrawable      *drawable,
+                                 GdkGC            *gc,
+                                 GdkRectangle     *location,
+                                 GtkTextDirection  direction,
+                                 gboolean          draw_arrow)
+{
+	gint stem_width;
+	gint arrow_width;
+	gint x, y;
+	gint i;
+	gfloat cursor_aspect_ratio;
+	gint offset;
+
+	g_return_if_fail (direction != GTK_TEXT_DIR_NONE);
+
+	gtk_widget_style_get (widget, "cursor-aspect-ratio", &cursor_aspect_ratio, NULL);
+	stem_width = location->height * cursor_aspect_ratio + 1;
+	arrow_width = stem_width + 1;
+
+	/* put (stem_width % 2) on the proper side of the cursor */
+	if (direction == GTK_TEXT_DIR_LTR)
+		offset = stem_width / 2;
+	else
+		offset = stem_width - stem_width / 2;
+
+	/* Reset line style */
+	gdk_gc_set_line_attributes (gc, 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
+	for (i = 0; i < stem_width; i++)
+		gdk_draw_line (drawable, gc,
+                               location->x + i - offset,
+                               location->y,
+                               location->x + i - offset,
+                               location->y + location->height - 1);
+
+	if (draw_arrow) {
+		if (direction == GTK_TEXT_DIR_RTL) {
+			x = location->x - offset - 1;
+			y = location->y + location->height - arrow_width * 2 - arrow_width + 1;
+
+			for (i = 0; i < arrow_width; i++) {
+				gdk_draw_line (drawable, gc,
+					       x, y + i + 1,
+					       x, y + 2 * arrow_width - i - 1);
+				x --;
+			}
+		} else if (direction == GTK_TEXT_DIR_LTR) {
+			x = location->x + stem_width - offset;
+			y = location->y + location->height - arrow_width * 2 - arrow_width + 1;
+
+			for (i = 0; i < arrow_width; i++) {
+				gdk_draw_line (drawable, gc,
+					       x, y + i + 1,
+					       x, y + 2 * arrow_width - i - 1);
+				x++;
+			}
+		}
+	}
+}
+
+
+static void
+html_view_get_box_text_location (HtmlView *view, HtmlBoxText *text, gint *offset,  GdkRectangle *pos)
+{
+	gint x, y;
+	gchar *str;
+	gchar *new_str;
+	HtmlBox *box;
+
+	str = html_box_text_get_text (text, NULL);
+	new_str = g_utf8_offset_to_pointer (str, *offset);
+	html_box_text_get_character_extents (text, (gint) (new_str - str), pos);
+	box = HTML_BOX (text);
+	x = html_box_get_absolute_x (box);
+	y = html_box_get_absolute_y (box);
+	pos->x += x - box->x;
+	pos->y += y - box->y;
+	pos->width = 0;
+
+	return;
+}
+
+HtmlBoxText*
+_html_view_get_cursor_box_text (HtmlView *view, gint *offset)
+{
+	HtmlBoxText *text;
+	gint cursor_position;
+	gint end_of_line;
+
+        cursor_position = html_view_get_cursor_position (view);
+
+	end_of_line = html_view_get_cursor_end_of_line (view);
+	text = html_view_get_box_text_for_offset (view, &cursor_position, end_of_line);
+	if (offset) {
+		*offset = cursor_position;
+	}
+		
+	if (text == NULL) {
+		g_assert (cursor_position <= 0);
+		return NULL;
+	}
+
+	return text;
+}
+
+static HtmlBox*
+html_view_get_cursor_location (HtmlView *view, GdkRectangle *pos)
+{
+	gint cursor_position;
+	HtmlBoxText *box_text;
+
+        box_text = _html_view_get_cursor_box_text (view, &cursor_position);
+	if (box_text) {
+		html_view_get_box_text_location (view, box_text, &cursor_position, pos);
+		return HTML_BOX (box_text);
+	} else {
+		return NULL;
+	}
+}
+
+static void 
+html_view_draw_cursor (HtmlView *view)
+{
+	GdkRectangle rect;
+	HtmlGdkPainter *gdk_painter;
+	gint direction;
+	GtkTextDirection text_direction;
+	HtmlBox *box;
+
+	if (!cursor_showing)
+		return;
+
+	box = html_view_get_cursor_location (view, &rect);
+	if (box == NULL)
+		return;
+
+	direction = html_box_get_bidi_level (box);
+	text_direction = (direction == HTML_DIRECTION_RTL) ? GTK_TEXT_DIR_RTL
+							   : GTK_TEXT_DIR_LTR;
+	gdk_painter = HTML_GDK_PAINTER (view->painter); 
+	html_view_draw_insertion_cursor (GTK_WIDGET (view),
+					 gdk_painter->window,
+					 gdk_painter->gc,
+					 &rect,
+					 text_direction,
+					 FALSE);
+}
+
+/* We display the cursor when
+ *
+ *  - the selection is empty, AND
+ *  - the widget has focus
+ */
+
+#define CURSOR_ON_MULTIPLIER 0.66
+#define CURSOR_OFF_MULTIPLIER 0.34
+#define CURSOR_PEND_MULTIPLIER 1.0
+
+static gboolean
+cursor_blinks (HtmlView *view)
+{
+	GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (view));
+	gboolean blink;
+
+	if (GTK_WIDGET_HAS_FOCUS (view) &&
+	    cursor_showing &&
+	    html_view_get_selection_bound (view) == html_view_get_cursor_position (view)) {
+		g_object_get (settings, "gtk-cursor-blink", &blink, NULL);
+		return blink;
+	} else
+		return FALSE;
+}
+
+static gint
+get_cursor_time (HtmlView *view)
+{
+	GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (view));
+	gint time;
+
+	g_object_get (settings, "gtk-cursor-blink-time", &time, NULL);
+
+	return time;
+}
+
+static void
+show_cursor (HtmlView *view)
+{
+	if (!html_view_get_cursor_visible (view)) {
+		html_view_set_cursor_visible (view, 1);
+
+		if (GTK_WIDGET_HAS_FOCUS (view) && 
+		    (html_view_get_selection_bound (view) == html_view_get_cursor_position (view)))
+			gtk_widget_queue_draw (GTK_WIDGET (view));
+	}
+}
+
+static void
+hide_cursor (HtmlView *view)
+{
+	if (html_view_get_cursor_visible (view)) {
+		html_view_set_cursor_visible (view, 0);
+
+		if (GTK_WIDGET_HAS_FOCUS (view) && 
+		    html_view_get_selection_bound (view) == html_view_get_cursor_position (view))
+			gtk_widget_queue_draw (GTK_WIDGET (view));
+	}
+}
+
+/*
+ * Blink!
+ */
+static gint
+blink_cb (gpointer data)
+{
+	HtmlView *view;
+	guint blink_timeout;
+
+	GDK_THREADS_ENTER ();
+
+	view = HTML_VIEW (data);
+
+	if (!GTK_WIDGET_HAS_FOCUS (view)) {
+		g_warning ("HtmlView - did not receive focus-out-event. If you\n"
+			   "connect a handler to this signal, it must return\n"
+			   "FALSE so the entry gets the event as well");
+	}
+
+	g_assert (GTK_WIDGET_HAS_FOCUS (view));
+	g_assert (html_view_get_selection_bound (view) == html_view_get_cursor_position (view));
+
+	if (html_view_get_cursor_visible (view)) {
+		hide_cursor (view);
+		blink_timeout = g_timeout_add (get_cursor_time (view) * CURSOR_OFF_MULTIPLIER,
+					       blink_cb,
+					       view);
+	} else {
+		show_cursor (view);
+		blink_timeout = g_timeout_add (get_cursor_time (view) * CURSOR_ON_MULTIPLIER,
+					       blink_cb,
+					       view);
+	}
+	html_view_set_blink_timeout (view, blink_timeout);
+
+	GDK_THREADS_LEAVE ();
+
+	/* Remove ourselves */
+	return FALSE;
+}
+
+static void
+html_view_check_cursor_blink (HtmlView *view)
+{
+	guint blink_timeout;
+
+	if (cursor_blinks (view)) {
+		if (!html_view_get_blink_timeout (view)) {
+			blink_timeout = g_timeout_add (get_cursor_time (view) * CURSOR_ON_MULTIPLIER,
+               	                                blink_cb,
+               	                                view);
+			html_view_set_blink_timeout (view, blink_timeout);
+			show_cursor (view);
+		}
+	} else {
+		blink_timeout = html_view_get_blink_timeout (view);
+		if (blink_timeout) {
+			g_source_remove (blink_timeout);
+			html_view_set_blink_timeout (view, 0);
+		}
+		html_view_set_cursor_visible (view, 0);
+	}
+}
+
+static void
+html_view_pend_cursor_blink (HtmlView *view)
+{
+	guint blink_timeout;
+
+	if (cursor_blinks (view)) {
+		blink_timeout = html_view_get_blink_timeout (view);
+		if (blink_timeout)
+			g_source_remove (blink_timeout);
+
+		blink_timeout = g_timeout_add (get_cursor_time (view) * CURSOR_PEND_MULTIPLIER,
+					       blink_cb,
+					       view);
+		html_view_set_blink_timeout (view, blink_timeout);
+		html_view_set_cursor_visible (view, 0);
+		show_cursor (view);
+ 	}
+}
+
+static gboolean
+is_box_in_paragraph (HtmlBox *box)
+{
+	while (box && !HTML_IS_BOX_BLOCK (box)) {
+		box = box->parent;
+	}
+	if (!box) {
+		return FALSE;
+	}
+	if (box->dom_node && strcmp ((char*)box->dom_node->xmlnode->name, "p") == 0) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
+is_offset_in_paragraph (HtmlView *view, gint offset)
+{
+	HtmlBoxText *text;
+	HtmlBox *box;
+	gint tmp_offset;
+
+	tmp_offset = offset;
+	text = html_view_get_box_text_for_offset (view, &tmp_offset, TRUE);
+	if (!text)
+		return FALSE;
+	box = HTML_BOX (text);
+	return is_box_in_paragraph (box);
+}
+
+static gboolean
+is_at_line_boundary (HtmlView *view, gint offset)
+{
+	HtmlBoxText *next;
+	HtmlBoxText *prev;
+	HtmlBox *next_box;
+	HtmlBox *prev_box;
+	gint tmp_offset;
+
+	tmp_offset = offset;
+	next = html_view_get_box_text_for_offset (view, &tmp_offset, FALSE);
+	if (!next || tmp_offset > 0)
+		return FALSE;
+	next_box = HTML_BOX (next);
+	prev = find_previous_box_text (next_box);
+	if (!prev)
+		return FALSE;
+
+	prev_box = HTML_BOX (prev);
+	if (html_box_get_absolute_y (next_box) == html_box_get_absolute_y (prev_box))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+static gint
+html_view_move_visually (HtmlView *view, gint start, gint count)
+{
+	PangoLayout *layout;
+	const gchar* text;
+	gint index;
+	gint offset;
+	gboolean forward;
+	gint end_of_line;
+
+	html_view_setup_layout (view);
+	layout = html_view_get_layout (view);
+
+	text = pango_layout_get_text (layout);
+ 
+	index = g_utf8_offset_to_pointer (text, start) - text;
+
+	forward = count >= 0;
+	end_of_line = html_view_get_cursor_end_of_line (view);
+	if (forward) {
+		if (end_of_line == 1 &&
+		    is_at_line_boundary (view, start)) {
+			count--;
+			offset = start;
+		}
+	} else {
+		if (end_of_line == 0 &&
+		    is_at_line_boundary (view, start) &&
+		    !is_offset_in_paragraph (view, start)) {
+			count++;
+			offset = start;
+		}
+	}
+
+	if (count != 0) {
+		while (count != 0) {
+			int new_index, new_trailing;
+			gboolean strong;
+
+			strong = TRUE;
+
+			if (count > 0) {
+				pango_layout_move_cursor_visually (layout, strong, index, 0, 1, &new_index, &new_trailing);
+				count--;
+			} else {
+				pango_layout_move_cursor_visually (layout, strong, index, 0, -1, &new_index, &new_trailing);
+				count++;
+			}
+
+			if (new_index < 0 || new_index == G_MAXINT)
+				break;
+
+			index = new_index;
+
+			while (new_trailing--)
+				index = g_utf8_next_char (text + new_index) - text;
+		}
+		offset = g_utf8_pointer_to_offset (text, text + index);
+	}
+	if (offset == start) {
+		if (forward)
+			html_view_set_cursor_end_of_line (view, 0);
+		else {
+			html_view_set_cursor_end_of_line (view, 1);
+		}
+	} else {
+		if (forward) {
+			if (is_at_line_boundary (view, offset) &&
+			    is_offset_in_paragraph (view, offset)) {
+				html_view_set_cursor_end_of_line (view, 0);
+			} else {
+				html_view_set_cursor_end_of_line (view, 1);
+			}
+		} else {
+			html_view_set_cursor_end_of_line (view, 0);
+		}
+	}
+ 
+	return offset;
+}
+
+static gint
+html_view_move_backward_word (HtmlView *view, gint start)
+{
+	PangoLayout *layout;
+	gint new_pos = start;
+	PangoLogAttr *log_attrs;
+	gint n_attrs;
+	HtmlBoxText *text;
+	gint box_offset;
+	const char *char_text;
+
+	html_view_setup_layout (view);
+	layout = html_view_get_layout (view);
+
+	pango_layout_get_log_attrs (layout, &log_attrs, &n_attrs);
+
+	new_pos--;
+	box_offset = new_pos;
+	text = html_view_get_box_text_for_offset (view, &box_offset, FALSE);
+	box_offset = new_pos - box_offset;
+	/* Find the previous word beginning or start of current box*/
+	while (new_pos > 0 && (!log_attrs[new_pos].is_word_start &&
+				new_pos	> box_offset))
+		new_pos--;
+
+	g_free (log_attrs);
+	html_view_set_cursor_end_of_line (view, 0);
+	return new_pos;
+}
+
+static gint
+html_view_move_forward_word (HtmlView *view, gint start)
+{
+	PangoLayout *layout;
+	gint new_pos = start;
+	PangoLogAttr *log_attrs;
+	gint n_attrs;
+	HtmlBoxText *text;
+	gint box_offset;
+	const char *char_text;
+	gint len;
+	
+	html_view_setup_layout (view);
+	layout = html_view_get_layout (view);
+	len = g_utf8_strlen (pango_layout_get_text (layout), -1);
+	if (new_pos >= len)
+		return new_pos;
+
+	pango_layout_get_log_attrs (layout, &log_attrs, &n_attrs);
+
+	/* Find the next word end or end of current box*/
+	new_pos++;
+	box_offset = new_pos;
+	text = html_view_get_box_text_for_offset (view, &box_offset, FALSE);
+	char_text = html_box_text_get_text (text, &len);
+	len = g_utf8_strlen (char_text, len);
+	len += new_pos - box_offset;
+	while (new_pos < n_attrs && (!log_attrs[new_pos].is_word_end &&
+				     new_pos < len))
+		new_pos++;
+
+	g_free (log_attrs);
+	html_view_set_cursor_end_of_line (view, 1);
+	return new_pos;
+}
+
+static void
+html_view_get_virtual_cursor_pos (HtmlView *view, gint *x, gint *y)
+{
+	gint virtual_x, virtual_y;
+	gint cursor_x, cursor_y;
+	GdkRectangle pos;
+
+	virtual_x = html_view_get_virtual_cursor_x (view);
+	virtual_y = html_view_get_virtual_cursor_y (view);
+
+	if ((virtual_x == -1) ||
+	    (virtual_y == -1)) {
+        	html_view_get_cursor_location (view, &pos);
+	}
+
+	if (x) {   
+		if (virtual_x != -1) {
+			*x = virtual_x;
+		} else {
+			*x = pos.x;
+		}
+	}
+			
+	if (y) {   
+		if (virtual_y != -1) {
+			*y = virtual_y;
+		} else {
+			*y = pos.y + pos.height/2;
+		}
+	}
+}
+
+static void
+html_view_set_virtual_cursor_pos (HtmlView *view, gint x, gint y)
+{
+	GdkRectangle pos;
+
+	if (x == -1 || y == -1) {
+		html_view_get_cursor_location (view, &pos);
+	}
+
+	html_view_set_virtual_cursor_x (view, (x == -1) ? pos.x : x);
+	html_view_set_virtual_cursor_y (view, (y == -1) ? pos.y  + pos.height / 2 : y);
+}
+
+static gboolean
+is_moving_focus_out (HtmlView *view)
+{
+	gint val; 
+
+	if (quark_moving_focus_out == 0)
+		return FALSE;
+
+	val = GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (view),
+						   quark_moving_focus_out));
+	return (val != 0); 
+}
+
+static void
+set_moving_focus_out (HtmlView *view, gboolean ret)
+{
+	gint val;
+
+	if (quark_moving_focus_out == 0)
+		quark_moving_focus_out = g_quark_from_static_string ("html-view-moving-focus-out");
+	val = ret ? 1 : 0;
+	g_object_set_qdata (G_OBJECT (view), 
+			    quark_moving_focus_out,
+			    GINT_TO_POINTER (val));
+}
 
 static gboolean
 set_adjustment_clamped (GtkAdjustment *adj, gdouble val)
@@ -105,6 +1247,378 @@ set_adjustment_clamped (GtkAdjustment *adj, gdouble val)
     }
   else
     return FALSE;
+}
+
+static HtmlBoxText*
+find_box_text_for_x_pos (HtmlView *view, HtmlBoxText* text, gboolean forward, gint x_pos)
+{
+	HtmlBoxText *new_text;
+	HtmlBox *new_box;
+	HtmlBoxText *prev_text;
+	HtmlBox *prev_box;
+	gint y;
+	gint x;
+	gint new_x;
+	gint new_y;
+
+	prev_box = HTML_BOX (text);
+	x = html_box_get_absolute_x (prev_box);
+	if (forward) {
+		if (x + prev_box->width > x_pos) {
+			return text;
+		}
+	} else {
+		if (x <= x_pos) {
+			return text;
+		}
+	}
+	y = html_box_get_absolute_y (prev_box);
+	prev_text = text;
+	while (TRUE) {
+		if (forward) {
+			new_text = find_next_box_text (prev_box);
+			if (!new_text)
+				return prev_text;
+			new_box = HTML_BOX (new_text);
+			new_y = html_box_get_absolute_y (new_box);
+			if (new_y > y) {
+				return prev_text;
+			}
+			new_x = html_box_get_absolute_x (new_box);
+			if (new_x + new_box->width > x_pos)
+				return new_text;
+			prev_text = new_text;
+			prev_box = new_box;
+		} else {
+			new_text = find_previous_box_text (prev_box);
+			if (!new_text)
+				return prev_text;
+			new_box = HTML_BOX (new_text);
+			new_y = html_box_get_absolute_y (new_box);
+			if (new_y < y) {
+				return prev_text;
+			}
+			new_x = html_box_get_absolute_x (new_box);
+			if (new_x <= x_pos)
+				return new_text;
+			prev_text = new_text;
+			prev_box = new_box;
+		}
+	}
+}
+
+static gint 
+set_offset_for_box_text (HtmlView *view, HtmlBoxText *text, gint x_pos)
+{
+	gint x;
+	HtmlBox *box;
+	gint tmp_offset;
+	gint offset;
+	char *char_text;
+
+	box = HTML_BOX (text);
+	x = html_box_get_absolute_x (box);
+
+	if (x + box->width <= x_pos) {
+		gint len;
+
+		char_text = html_box_text_get_text (text, &len);
+		tmp_offset = g_utf8_strlen (char_text, len);
+		if (is_box_in_paragraph (box)) {
+			tmp_offset--;
+			html_view_set_cursor_end_of_line (view, 0);
+		} else {
+			html_view_set_cursor_end_of_line (view, 1);
+		}
+	} else {
+		if (x_pos > x)
+			x = x_pos - x;
+		else 
+			x = 0;
+		tmp_offset = html_box_text_get_index (text, x);
+		char_text = html_box_text_get_text (text, NULL);
+		tmp_offset = g_utf8_pointer_to_offset (char_text, char_text + tmp_offset);
+		html_view_set_cursor_end_of_line (view, 0);
+	}
+	html_view_get_offset_for_box_text (view, text, &offset);
+	offset += tmp_offset;
+	return offset;
+} 
+
+static void
+move_cursor (HtmlView *view, HtmlBox *new_cursor_box, gint offset, gboolean extend_selection)
+{
+	gint selection_bound;
+	gint cursor_position;
+
+	cursor_position = html_view_get_cursor_position (view);
+	selection_bound = html_view_get_selection_bound (view);
+	if (extend_selection && cursor_position != offset) {
+		HtmlBoxText *start_text;
+		HtmlBoxText *end_text;
+		HtmlBox *start_box;
+		HtmlBox *end_box;
+		gchar *start_str;
+		gchar *end_str;
+		gint start_offset;
+		gint end_offset;
+		gint extent;
+		gboolean forward;
+
+		extent = offset - selection_bound;
+		forward = extent >= 0;
+		if (forward) {
+			start_offset = selection_bound;
+			end_offset = offset;
+		} else {
+			start_offset = offset;
+			end_offset = selection_bound;
+			extent = -extent;
+		}
+		start_text = html_view_get_box_text_for_offset (view, &start_offset, FALSE);
+		end_text = html_view_get_box_text_for_offset (view, &end_offset, TRUE);
+		html_view_set_cursor_position (view, offset);
+		start_box = HTML_BOX (start_text);
+		end_box = HTML_BOX (end_text);
+		html_selection_extend (view, start_box, start_offset, extent);
+
+		view->sel_start = start_box;
+		start_str = html_box_text_get_text (start_text, NULL);
+		view->sel_start_index = 
+			g_utf8_offset_to_pointer (start_str, start_offset) 
+				- start_str;
+		view->sel_end = end_box;
+		end_str = html_box_text_get_text (end_text, NULL);
+		view->sel_end_index = 
+			g_utf8_offset_to_pointer (end_str, end_offset) 
+				- end_str;
+		view->sel_backwards = !forward;	
+	} else {
+		HtmlBoxText *text;
+
+		html_view_set_cursor_position (view, offset);
+		html_view_set_selection_bound (view, offset);
+
+		if (new_cursor_box == NULL) {
+			text = html_view_get_box_text_for_offset (view, &offset, html_view_get_cursor_end_of_line (view) != 0);
+			new_cursor_box = HTML_BOX (text);
+		}
+		if (DOM_IS_ELEMENT (new_cursor_box->parent->dom_node)) {
+			DomElement *element;
+
+			element = DOM_ELEMENT (new_cursor_box->parent->dom_node);
+			if (dom_element_is_focusable (element)) {
+			
+				if (element != view->document->focus_element) {
+                			html_document_update_focus_element (view->document, element);
+                			html_view_focus_element (view);
+				}
+			} else if (view->document->focus_element) {
+				html_document_update_focus_element (view->document, NULL);
+				html_view_focus_element (view);
+			}
+		}
+	}
+
+}
+
+/*
+ * Move cursor to x_pos in current or previous line.
+ */
+static HtmlBox*
+html_view_move_cursor_by_line (HtmlView *view, gint count, gint x_pos, gint *offset)
+{
+	HtmlBoxText *text;
+	HtmlBox *box;
+	HtmlBox *last_box;
+	gint tmp_offset;
+	gint y, height;
+	gint old_y, old_height;
+	GtkAdjustment *adj;
+	gint end_of_line;
+
+	tmp_offset = *offset;
+	end_of_line = html_view_get_cursor_end_of_line (view);
+	text = html_view_get_box_text_for_offset (view, &tmp_offset, end_of_line != 0);
+	box = HTML_BOX (text);
+	old_y = html_box_get_absolute_y (box);
+	old_height = box->height;
+	adj = GTK_LAYOUT (view)->vadjustment;
+	if (count > 0) {
+		while (count > 0) {
+			text = find_next_box_text (box);
+			if (!text) {
+				return NULL;
+			}
+			box = HTML_BOX (text);
+			y = html_box_get_absolute_y (box);
+			if (old_y + old_height <= y) {
+				text = find_box_text_for_x_pos (view, text, TRUE, x_pos);
+				break;
+			}
+		}
+		if (!(adj->value + adj->page_size > y))
+			set_adjustment_clamped (adj, y - adj->page_size + box->height);
+	} else if (count < 0) {
+		while (count < 0) {
+			text = find_previous_box_text (box);
+			if (!text) {
+				return NULL;
+			}
+			box = HTML_BOX (text);
+			y = html_box_get_absolute_y (box);
+			height = box->height;
+			if (y + height <= old_y ) {
+				text = find_box_text_for_x_pos (view, text, FALSE, x_pos);
+				break;
+			}
+		}
+		if (!(adj->value <= y))
+			set_adjustment_clamped (adj, y);
+	}
+	*offset = set_offset_for_box_text (view, text, x_pos);
+	box = HTML_BOX (text);
+	return box;
+}
+
+static HtmlBox*
+get_end_text_offset (HtmlView *view, gint *pos)
+{
+	HtmlBox *box;
+	HtmlBoxText *text;
+	HtmlBoxText *temp;
+	gint offset;
+	gint temp_offset;
+	gchar *char_text;
+	gint len;
+
+	box = find_last_child (view->root);
+	if (box) {
+		text = NULL;
+		if (HTML_IS_BOX_TEXT (box)) {
+			text = HTML_BOX_TEXT (box);
+			if (html_box_text_get_len (text) == 0) {
+				text = NULL;
+			}
+		} 
+		if (text == NULL) {
+			text = find_previous_box_text (box);
+		}
+		if (text) {
+			char_text = html_box_text_get_text (text, &len);
+			len = g_utf8_strlen (char_text, len);
+			html_view_get_offset_for_box_text (view, text, &offset);
+			temp_offset = offset;
+			temp = html_view_get_box_text_for_offset (view, &temp_offset, FALSE);
+			offset += len;
+			*pos = offset;
+			return HTML_BOX (text);
+		}
+	}
+	return NULL;
+}
+
+static HtmlBox*
+html_view_move_cursor_to_end (HtmlView *view, gint *pos)
+{
+	HtmlBox *box;
+	GtkAdjustment *adj;
+
+	box = get_end_text_offset (view, pos);
+	adj = GTK_LAYOUT (view)->vadjustment;
+	if (adj->value < adj->upper - adj->page_size) {
+		set_adjustment_clamped (adj, adj->upper - adj->page_size);
+	}
+	return box;
+}
+
+static HtmlBox*
+html_view_move_cursor_to_start (HtmlView *view, gint *pos)
+{
+	HtmlBoxText *text;
+	GtkAdjustment *adj;
+
+	*pos = 0;
+	text = html_view_get_box_text_for_offset (view, pos, FALSE);
+	adj = GTK_LAYOUT (view)->vadjustment;
+	if (adj->value) {
+		set_adjustment_clamped (adj, 0);
+	}
+	return HTML_BOX (text);
+}
+
+static void
+html_view_scroll_pages (HtmlView *view, gint count, gboolean extend_selection)
+{
+	HtmlBox *box;
+	HtmlBoxText *text;
+	GtkAdjustment *adj;
+	gint x, y, height;
+	gdouble new_value;
+	gdouble old_value;
+	gint cursor_x_pos;
+	gint cursor_y_pos;
+	gint offset;
+
+	offset = html_view_get_cursor_position (view);
+
+	adj = GTK_LAYOUT (view)->vadjustment;
+	if (count > 0 && adj->value >= (adj->upper - adj->page_size - 1e-12)) {
+		/* already at bottom, make sure we are at the end */
+		box = get_end_text_offset (view, &offset);
+		move_cursor (view, NULL, offset, extend_selection);
+		return; 
+	} else if (count < 0 && adj->value <= (adj->lower + 1e-12)) {
+		/* already at top, make sure we are at ofset 0 */
+		offset = 0;
+		move_cursor (view, NULL, offset, extend_selection);
+		return;
+	}
+	html_view_get_virtual_cursor_pos (view, &cursor_x_pos, &cursor_y_pos);
+	new_value = adj->value;
+	old_value = adj->value;
+
+	new_value += count * adj->page_increment;
+	set_adjustment_clamped (adj, new_value);
+	cursor_y_pos += adj->value - old_value;
+	
+	text = html_view_get_box_text_for_offset (view, &offset, FALSE);
+	box = HTML_BOX (text);
+	y = html_box_get_absolute_y (box);
+	while (count > 0) {
+		text = find_next_box_text (box);
+		if (!text) {
+			return;
+		}
+		box = HTML_BOX (text);
+		y = html_box_get_absolute_y (box);
+		if (y >= adj->value) {
+			count = 0;
+		}
+	}
+	while (count < 0) {
+		HtmlBoxText *previous_text;
+
+		previous_text = text;
+		text = find_previous_box_text (box);
+		if (!text) {
+			count = 0;
+			text = previous_text;
+			box = HTML_BOX (text);
+		}
+		box = HTML_BOX (text);
+		y = html_box_get_absolute_y (box);
+		if (y < adj->value) {
+			count = 0;
+			text = previous_text;
+			box = HTML_BOX (text);
+		}
+	}
+	text = find_box_text_for_x_pos (view, text, TRUE, cursor_x_pos);
+	offset = set_offset_for_box_text (view, text, cursor_x_pos);
+	move_cursor (view, HTML_BOX (text), offset, extend_selection);
+	html_view_set_virtual_cursor_pos (view, cursor_x_pos, cursor_y_pos);
+	return;
 }
 
 void
@@ -213,18 +1727,37 @@ html_view_relayout (HtmlView *view)
 
 		if (view->jump_to_anchor)
 			html_view_try_jump (view);
+#ifdef ENABLE_ACCESSIBILITY
+		{
+		AtkObject *child;
+		/*
+		 * If a new HTML page has been displayed and accessibility 
+		 * is enabled we wish to notify that relayout has been called.
+		 * The accessibility code will be able to figure out if a new 
+		 * root has been added to the HtmlView.
+		 *
+		 * The following code achieves that purpose. It would be
+		 * better to define a new signal on HtmlView but that would
+		 * break binary compatibility.
+		 */ 
+		child  = atk_object_ref_accessible_child (gtk_widget_get_accessible (GTK_WIDGET (view)), 0); 
+		if (child)
+			g_object_unref (child);
+		}
+#endif
 	}
 	if (view->relayout_timeout_id != 0) {
-		gtk_timeout_remove (view->relayout_timeout_id);
+		g_source_remove (view->relayout_timeout_id);
 		view->relayout_timeout_id = 0;
 	}
 	if (view->relayout_idle_id != 0) {
-		gtk_idle_remove (view->relayout_idle_id);
+		g_source_remove (view->relayout_idle_id);
 		view->relayout_idle_id = 0;
 	}
 
 	if (GTK_WIDGET_HAS_FOCUS (view)) {
-		if (view->document->focus_element == NULL) {
+		if (view->document->focus_element == NULL &&
+		    view->document->dom_document) {
 			html_document_update_focus_element (view->document, html_focus_iterator_next_element (view->document->dom_document, NULL));
 			html_view_focus_element (view);
 		}
@@ -241,7 +1774,7 @@ relayout_timeout_callback (gpointer data)
 	view->relayout_timeout_id = 0;
 
 	if (view->relayout_idle_id != 0) {
-		gtk_idle_remove (view->relayout_idle_id);
+		g_source_remove (view->relayout_idle_id);
 		view->relayout_idle_id = 0;
 	}
         return FALSE;
@@ -258,7 +1791,7 @@ relayout_idle_callback (gpointer data)
 	view->relayout_idle_id = 0;
 
 	if (view->relayout_timeout_id != 0) {
-		gtk_timeout_remove (view->relayout_timeout_id);
+		g_source_remove (view->relayout_timeout_id);
 		view->relayout_timeout_id = 0;
 	}
         return FALSE;
@@ -268,14 +1801,14 @@ static void
 html_view_relayout_when_idle (HtmlView *view)
 {
 	if (view->relayout_idle_id == 0)
-		view->relayout_idle_id = gtk_idle_add (relayout_idle_callback, view);
+		view->relayout_idle_id = g_idle_add (relayout_idle_callback, view);
 }
 
 static void
 html_view_relayout_after_timeout (HtmlView *view)
 {
 	if (view->relayout_timeout_id == 0)
-		view->relayout_timeout_id = gtk_timeout_add (RELAYOUT_TIMEOUT_INTERVAL, relayout_timeout_callback, view);
+		view->relayout_timeout_id = g_timeout_add (RELAYOUT_TIMEOUT_INTERVAL, relayout_timeout_callback, view);
 }
 
 static void
@@ -319,6 +1852,10 @@ html_view_paint (HtmlView *view, GdkRectangle *area)
 		/* Check that the document has not been deleted */
 		if (view->root->dom_node) {
 			html_box_paint (view->root, view->painter, area, 0, 0);
+			if (GTK_WIDGET_HAS_FOCUS (view) &&
+			    (html_view_get_selection_bound (view) == html_view_get_cursor_position (view)) &&
+			    html_view_get_cursor_visible (view))
+				html_view_draw_cursor (view);
 		}
 	}
 }
@@ -369,10 +1906,24 @@ html_view_insert_node (HtmlView *view, DomNode *node)
 				parent_box = view->root;
 		}
 		if (parent_box == NULL) {
+			PangoLayout *layout;
+
 			html_view_layout_tree_free (view, view->root);
-			if (view->document && view->document->focus_element)
-				html_document_update_focus_element (view->document, NULL);
+			if (view->document && view->document->focus_element) {
+				g_warning ("Focus element set when inserting toplevel node");
+				view->document->focus_element = NULL;
+			}
 			view->root = new_box;
+
+			layout = html_view_get_layout (view);
+			if (layout) {
+				g_object_unref (layout);	
+				g_object_set_qdata (G_OBJECT (view), 
+						    quark_layout,
+						    NULL);
+			}
+			html_view_set_cursor_position (view, 0);
+			html_view_set_selection_bound (view, 0);
 		 } else {
 			html_box_append_child (parent_box, new_box);
 
@@ -447,7 +1998,7 @@ html_view_text_updated (HtmlDocument *document, DomNode *node, HtmlView *view)
 
 	if (box) {
 		/* FIXME: perhaps use g_object_set here? */
-		html_box_text_set_text (HTML_BOX_TEXT (box), node->xmlnode->content);
+		html_box_text_set_text (HTML_BOX_TEXT (box), (char *)node->xmlnode->content);
 		html_box_set_unrelayouted_up (box);
 	}
 	else {
@@ -534,15 +2085,30 @@ html_view_repaint_callback (HtmlDocument *document, DomNode *node, HtmlView *vie
 static void
 html_view_style_updated (HtmlDocument *document, DomNode *node, HtmlStyleChange style_change, HtmlView *view)
 {
-	HtmlBox *box = html_view_find_layout_box (view, node, FALSE);
+	HtmlBox *box;
 	DomNode *child_node;
+	HtmlStyle *style;
 
+	if (node == NULL)
+		return;
+
+	box = html_view_find_layout_box (view, node, FALSE);
 	for (child_node = dom_Node__get_firstChild (node); child_node; child_node = dom_Node__get_nextSibling (child_node)) {
 		html_view_style_updated (document, child_node, style_change, view);
 	}
-
 	if (!box)
 		return;
+
+	style = HTML_BOX_GET_STYLE (box);
+	if (DOM_IS_ELEMENT (node) && 
+		dom_element_is_focusable (DOM_ELEMENT (node))) {
+		gint focus_width;
+
+		gtk_widget_style_get (GTK_WIDGET (view),
+				      "focus-line-width", &focus_width,
+				      NULL);
+		html_style_set_outline_width (style, focus_width);			
+	}	
 
 	switch (style_change) {
 	case HTML_STYLE_CHANGE_REPAINT:
@@ -599,36 +2165,36 @@ static void
 html_view_disconnect_document (HtmlView *view, HtmlDocument *document)
 {
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_inserted, NULL);
+					      (gpointer)html_view_inserted, view);
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_removed, NULL);
+					      (gpointer)html_view_removed, view);
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_text_updated, NULL);
+					      (gpointer)html_view_text_updated, view);
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_style_updated, NULL);
+					      (gpointer)html_view_style_updated, view);
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_relayout_callback, 
-					      NULL);
+					      (gpointer)html_view_relayout_callback, 
+					      view);
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (view->document),
-					      G_SIGNAL_MATCH_FUNC,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL,
-					      html_view_repaint_callback, 
-					      NULL);
+					      (gpointer)html_view_repaint_callback, 
+					      view);
 }
 
 static void
@@ -728,13 +2294,20 @@ html_view_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 {
 	gint x, y;
 	GdkModifierType mask;
+	HtmlView *view;
 	
 	if (event->window != GTK_LAYOUT (widget)->bin_window)
 		return FALSE;
 
 	gdk_window_get_pointer (widget->window, &x, &y, &mask);
 
-	html_event_mouse_move (HTML_VIEW (widget), event);
+	view = HTML_VIEW (widget);
+	if (html_view_get_button (view) != 1)
+		return FALSE;
+
+	html_event_mouse_move (view, event);
+
+	html_view_check_cursor_blink (view);
 
 	return FALSE;
 }
@@ -742,13 +2315,23 @@ html_view_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 static gboolean
 html_view_button_press (GtkWidget *widget, GdkEventButton *event)
 {
-	if (!GTK_WIDGET_HAS_FOCUS (widget))
-		gtk_widget_grab_focus (widget);
-	
+	HtmlView *view;
+	guint button;
+
 	if (event->window != GTK_LAYOUT (widget)->bin_window)
 		return FALSE;
 
-	html_event_button_press (HTML_VIEW (widget), event);
+	view = HTML_VIEW (widget);
+
+	button = html_view_get_button (view);
+	if (button && event->button != button)
+		return FALSE;
+	html_view_set_button (view, event->button);
+
+	if (!GTK_WIDGET_HAS_FOCUS (widget))
+		gtk_widget_grab_focus (widget);
+	
+	html_event_button_press (view, event);
 	
 	return FALSE;
 }
@@ -756,10 +2339,18 @@ html_view_button_press (GtkWidget *widget, GdkEventButton *event)
 static gboolean
 html_view_button_release (GtkWidget *widget, GdkEventButton *event)
 {
+	HtmlView *view;
+
 	if (event->window != GTK_LAYOUT (widget)->bin_window)
 		return FALSE;
 
-	html_event_button_release (HTML_VIEW (widget), event);
+	view = HTML_VIEW (widget);
+	if (html_view_get_button (view) != event->button)
+		return FALSE;
+
+	html_view_set_button (view, 0);
+
+	html_event_button_release (view, event);
 	
 	return FALSE;
 }
@@ -776,6 +2367,8 @@ html_view_focus_in (GtkWidget *widget, GdkEventFocus *event)
 	if (element) {
 		html_document_update_focus_element (view->document, element);
 	}
+	html_view_check_cursor_blink (view);
+
 	return GTK_WIDGET_CLASS (parent_class)->focus_in_event (widget, event);
 }
 
@@ -791,17 +2384,22 @@ html_view_focus_out (GtkWidget *widget, GdkEventFocus *event)
 		if (GTK_CONTAINER (widget)->focus_child == NULL)
 			html_document_update_focus_element (view->document, NULL);
 	}
+	html_view_check_cursor_blink (view);
 	return GTK_WIDGET_CLASS (parent_class)->focus_out_event (widget, event);
 }
 
-#if 0
+
 static gboolean
 html_view_key_press (GtkWidget *widget, GdkEventKey *event)
 {
+	gboolean ret ;
+	HtmlView *view = HTML_VIEW (widget);
 
-	return html_event_key_press (HTML_VIEW (widget), event);
+	ret = GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
+	html_view_pend_cursor_blink (view);
+	return ret;
 }
-#endif
+
 
 static void
 focus_element_destroyed (gpointer data)
@@ -819,12 +2417,12 @@ html_view_destroy (GtkObject *object)
 	gpointer saved_focus;
 
 	if (view->relayout_timeout_id != 0) {
-		gtk_timeout_remove (view->relayout_timeout_id);
+		g_source_remove (view->relayout_timeout_id);
 		view->relayout_timeout_id = 0;
 	}
 
 	if (view->relayout_idle_id != 0) {
-		gtk_idle_remove (view->relayout_idle_id);
+		g_source_remove (view->relayout_idle_id);
 		view->relayout_idle_id = 0;
 	}
 
@@ -837,18 +2435,31 @@ html_view_destroy (GtkObject *object)
 	}
 
 	if (view->document) {
+		html_view_disconnect_document (view, view->document);
 		g_object_unref (view->document);
 		view->document = NULL;
 	}
 
+	if (view->node_table) {
+		g_hash_table_destroy (view->node_table);
+		view->node_table = NULL;
+	}
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
 html_view_finalize (GObject *object)
 {
-	/*HtmlView *view = HTML_VIEW (object);*/
+	HtmlView *view = HTML_VIEW (object);
+	PangoLayout *layout;
 
+	layout = html_view_get_layout (view);
+	if (layout)
+		g_object_unref (layout);	
+
+	if (view->jump_to_anchor)
+		g_free (view->jump_to_anchor);
+		
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
@@ -863,6 +2474,14 @@ html_view_focus (GtkWidget *widget, GtkDirectionType direction)
         if (view->document == NULL || view->document->dom_document == NULL) {
 		return FALSE;
 	}
+        if (is_moving_focus_out (view)) {
+                /*
+                 * Widget will retain focus if there is nothing else
+                 * to get focus
+                 */
+                set_moving_focus_out (view, FALSE);
+                return FALSE;
+        }
 
 	if (direction == GTK_DIR_TAB_FORWARD) {
 		new_focus_element = html_focus_iterator_next_element (view->document->dom_document, view->document->focus_element);
@@ -913,35 +2532,165 @@ html_view_set_focus_child (GtkContainer *container, GtkWidget *child)
 	GTK_CONTAINER_CLASS (parent_class)->set_focus_child (container, child);
 }
 
+/* Compute the X position for an offset that corresponds to the "more important
+ * cursor position for that offset. We use this when trying to guess to which
+ * end of the selection we should go to when the user hits the left or
+ * right arrow key.
+ */
+static gint
+get_better_cursor_x (HtmlView *view,
+                     gint      offset)
+{
+  	GdkKeymap *keymap;
+  	GtkTextDirection keymap_direction;
+  	GtkTextDirection widget_direction;
+  	gboolean split_cursor;
+	GtkWidget *widget;
+  	PangoLayout *layout;
+  	const gchar *text;
+  	gint index;
+  	PangoRectangle strong_pos, weak_pos;
+
+	widget = GTK_WIDGET (view);
+
+  	keymap = gdk_keymap_get_for_display (gtk_widget_get_display (widget));
+  	keymap_direction =
+		(gdk_keymap_get_direction (keymap) == PANGO_DIRECTION_LTR) ?
+		GTK_TEXT_DIR_LTR : GTK_TEXT_DIR_RTL;
+  	widget_direction = gtk_widget_get_direction (widget);
+
+	html_view_setup_layout (view);
+	layout = html_view_get_layout (view);
+
+	text = pango_layout_get_text (layout);
+  	index = g_utf8_offset_to_pointer (text, offset) - text;
+	g_object_get (gtk_widget_get_settings (widget),
+			"gtk-split-cursor", &split_cursor,
+			NULL);
+
+	pango_layout_get_cursor_pos (layout, index, &strong_pos, &weak_pos);
+	if (split_cursor)
+		return strong_pos.x / PANGO_SCALE;
+	else
+	return (keymap_direction == widget_direction) ? 
+		strong_pos.x / PANGO_SCALE : weak_pos.x / PANGO_SCALE;
+}
+
 static void
 html_view_real_move_cursor (HtmlView *html_view, GtkMovementStep step, gint count, gboolean extend_selection)
 {
 	GtkAdjustment *vertical, *horizontal;
+	HtmlBox *new_cursor_box;
+	gint new_offset;
+	gint selection_bound;
+	gint cursor_position;
+	gint cursor_x_pos = 0;
 
 	vertical = GTK_LAYOUT (html_view)->vadjustment;
 	horizontal = GTK_LAYOUT (html_view)->hadjustment;
 	
-	switch (step) {
-	case GTK_MOVEMENT_VISUAL_POSITIONS:
-		set_adjustment_clamped (horizontal, horizontal->value + horizontal->step_increment * count);
-		break;
-	case GTK_MOVEMENT_DISPLAY_LINES:
-		set_adjustment_clamped (vertical, vertical->value + vertical->step_increment * count);
-		break;
-	case GTK_MOVEMENT_PAGES:
-		set_adjustment_clamped (vertical, vertical->value + vertical->page_increment * count);
-		break;
-	case GTK_MOVEMENT_BUFFER_ENDS:
-		if (count == -1) {
-			set_adjustment_clamped (vertical, vertical->lower);
+	if (!cursor_showing) {
+		switch (step) {
+		case GTK_MOVEMENT_VISUAL_POSITIONS:
+			set_adjustment_clamped (horizontal, horizontal->value + horizontal->step_increment * count);
+			break;
+        	case GTK_MOVEMENT_WORDS:
+			break;
+		case GTK_MOVEMENT_DISPLAY_LINES:
+			set_adjustment_clamped (vertical, vertical->value + vertical->step_increment * count);
+			break;
+		case GTK_MOVEMENT_PAGES:
+			set_adjustment_clamped (vertical, vertical->value + vertical->page_increment * count);
+			break;
+		case GTK_MOVEMENT_BUFFER_ENDS:
+			if (count == -1) {
+				set_adjustment_clamped (vertical, vertical->lower);
+			} else {
+				set_adjustment_clamped (vertical, vertical->upper);
+			}
+			break;
+		default:
+			g_warning ("unknown step!\n");
 		}
-		else {
-			set_adjustment_clamped (vertical, vertical->upper);
-		}
-		break;
-	default:
-		g_warning ("unknown step!\n");
+		return;
 	}
+
+	if (step == GTK_MOVEMENT_PAGES) {
+		html_view_scroll_pages (html_view, count, extend_selection);
+		html_view_check_cursor_blink (html_view);
+		html_view_pend_cursor_blink (html_view);
+		return;
+	}
+
+	cursor_position = html_view_get_cursor_position (html_view);
+	selection_bound = html_view_get_selection_bound (html_view);
+	new_offset = cursor_position;
+	new_cursor_box = NULL;
+	if (cursor_position != selection_bound && !extend_selection) {
+	/*
+	 * If we have a current selection and are not extending it move to the
+	 * start or end of the selection as appropriate.
+	 */
+		switch (step) {
+		case GTK_MOVEMENT_VISUAL_POSITIONS:
+			{
+			gint current_x = get_better_cursor_x (html_view, cursor_position);
+			gint bound_x = get_better_cursor_x (html_view, selection_bound);
+
+			if (count < 0)
+				new_offset = current_x < bound_x ? cursor_position : selection_bound;
+			else
+				new_offset = current_x > bound_x ? cursor_position : selection_bound;
+
+			break;
+          		}
+        	case GTK_MOVEMENT_WORDS:
+			if (count < 0)
+				new_offset = MIN (cursor_position, selection_bound);
+			else
+				new_offset = MAX (cursor_position, selection_bound);
+			break;
+		default:
+			break;
+          	}
+		html_selection_clear (html_view);
+	} else {
+		switch (step) {
+		case GTK_MOVEMENT_VISUAL_POSITIONS:
+			new_offset = html_view_move_visually (html_view, new_offset, count);
+			break;
+        	case GTK_MOVEMENT_WORDS:
+			while (count > 0) {
+				new_offset = html_view_move_forward_word (html_view, new_offset);
+				count--;
+			}
+			while (count < 0) {
+				new_offset = html_view_move_backward_word (html_view, new_offset);
+				count++;
+			}
+			break;
+		case GTK_MOVEMENT_DISPLAY_LINES:
+			html_view_get_virtual_cursor_pos (html_view, &cursor_x_pos, NULL);
+			new_cursor_box = html_view_move_cursor_by_line (html_view, count, cursor_x_pos, &new_offset);	
+			break;
+		case GTK_MOVEMENT_BUFFER_ENDS:
+			if (count < 0) {
+				new_cursor_box = html_view_move_cursor_to_start (html_view, &new_offset);
+			} else if (count > 0) {
+				new_cursor_box = html_view_move_cursor_to_end (html_view, &new_offset);
+			}
+			break;
+		default:
+			g_warning ("unknown step!\n");
+		}
+	}
+
+	move_cursor (html_view, new_cursor_box, new_offset, extend_selection);
+	if (step == GTK_MOVEMENT_DISPLAY_LINES) {
+		html_view_set_virtual_cursor_pos (html_view, cursor_x_pos, -1);
+	}
+	html_view_check_cursor_blink (html_view);
+	html_view_pend_cursor_blink (html_view);
 }
 
 static void
@@ -953,11 +2702,16 @@ html_view_real_activate (HtmlView *view)
 static void html_view_real_move_focus_out (HtmlView *view, GtkDirectionType direction_type)
 {
 	GtkWidget *widget = GTK_WIDGET (view);
+	GtkWidget *toplevel;
 
 	html_document_update_focus_element (view->document, NULL);
-	if (!GTK_WIDGET_HAS_FOCUS (widget))
-		gtk_widget_grab_focus (widget);
-	gtk_widget_queue_draw (widget);
+
+	set_moving_focus_out (view, TRUE);
+	toplevel = gtk_widget_get_toplevel (widget);
+	g_return_if_fail (toplevel);
+
+	gtk_widget_child_focus (toplevel, direction_type);
+	set_moving_focus_out (view, FALSE);
 }
 
 static void
@@ -968,6 +2722,13 @@ html_view_add_move_binding (GtkBindingSet *binding_set, guint keyval, guint modm
 				      GTK_TYPE_ENUM, step,
 				      GTK_TYPE_INT, count,
 				      GTK_TYPE_BOOL, FALSE);
+
+	/* Selection-extending version */
+	gtk_binding_entry_add_signal (binding_set, keyval, modmask | GDK_SHIFT_MASK,
+				      "move_cursor", 3,
+				      GTK_TYPE_ENUM, step,
+				      GTK_TYPE_INT, count,
+				      GTK_TYPE_BOOL, TRUE);
 }
 
 static void
@@ -1134,6 +2895,7 @@ html_view_class_init (HtmlViewClass *klass)
 	widget_class->motion_notify_event = html_view_motion_notify;
 	widget_class->button_press_event = html_view_button_press;
 	widget_class->button_release_event = html_view_button_release;
+	widget_class->key_press_event = html_view_key_press;
 
 	widget_class->focus_in_event = html_view_focus_in;
 	widget_class->focus_out_event = html_view_focus_out;
@@ -1203,6 +2965,15 @@ html_view_class_init (HtmlViewClass *klass)
 			      G_TYPE_NONE, 1,
 			      GTK_TYPE_DIRECTION_TYPE);
 
+	view_signals [TOGGLE_CURSOR] =
+		g_signal_new ("toggle_cursor",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      0, /* No default signal handler */
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
 	widget_class->activate_signal = view_signals[ACTIVATE];
 
 	html_view_add_move_binding (binding_set, GDK_Page_Down, 0,
@@ -1216,17 +2987,34 @@ html_view_class_init (HtmlViewClass *klass)
 
 	html_view_add_move_binding (binding_set, GDK_Down, 0,
 				    GTK_MOVEMENT_DISPLAY_LINES, 1);
+	html_view_add_move_binding (binding_set, GDK_KP_Down, 0,
+				    GTK_MOVEMENT_DISPLAY_LINES, 1);
 	html_view_add_move_binding (binding_set, GDK_Up, 0,
+				    GTK_MOVEMENT_DISPLAY_LINES, -1);
+	html_view_add_move_binding (binding_set, GDK_KP_Up, 0,
 				    GTK_MOVEMENT_DISPLAY_LINES, -1);
 
 	html_view_add_move_binding (binding_set, GDK_Right, 0,
 				    GTK_MOVEMENT_VISUAL_POSITIONS, 1);
+	html_view_add_move_binding (binding_set, GDK_KP_Right, 0,
+				    GTK_MOVEMENT_VISUAL_POSITIONS, 1);
 	html_view_add_move_binding (binding_set, GDK_Left, 0,
 				    GTK_MOVEMENT_VISUAL_POSITIONS, -1);
+	html_view_add_move_binding (binding_set, GDK_KP_Left, 0,
+				    GTK_MOVEMENT_VISUAL_POSITIONS, -1);
+	html_view_add_move_binding (binding_set, GDK_Right, GDK_CONTROL_MASK,
+				    GTK_MOVEMENT_WORDS, 1);
+	html_view_add_move_binding (binding_set, GDK_KP_Right, GDK_CONTROL_MASK,
+				    GTK_MOVEMENT_WORDS, 1);
+	html_view_add_move_binding (binding_set, GDK_Left, GDK_CONTROL_MASK,
+				    GTK_MOVEMENT_WORDS, -1);
+	html_view_add_move_binding (binding_set, GDK_KP_Left, GDK_CONTROL_MASK,
+				    GTK_MOVEMENT_WORDS, -1);
 	
 	html_view_add_tab_binding (binding_set, GDK_CONTROL_MASK, GTK_DIR_TAB_FORWARD);
 	html_view_add_tab_binding (binding_set, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_DIR_TAB_BACKWARD);
-	
+	gtk_binding_entry_add_signal (binding_set, GDK_F7, 0,
+				      "toggle_cursor", 0);
 }
 
 static void
@@ -1246,6 +3034,8 @@ html_view_init (HtmlView *view)
 	view->relayout_idle_id = 0;
 	view->relayout_timeout_id = 0;
 	view->magnification = 1.0;
+	g_signal_connect (view, "toggle-cursor", G_CALLBACK (html_view_toggle_cursor), NULL);
+	html_view_set_layout (view, NULL);
 }
 
 GType
@@ -1282,7 +3072,7 @@ html_view_get_type (void)
 }
 
 static void 
-html_view_update_box_style_size (HtmlBox *root, gfloat adjust, GPtrArray *done)
+html_view_update_box_style_size (HtmlBox *root, gfloat adjust, gint focus_width, GPtrArray *done)
 {
 	HtmlBox *box;
 
@@ -1309,9 +3099,14 @@ html_view_update_box_style_size (HtmlBox *root, gfloat adjust, GPtrArray *done)
 					font_spec->size = font_spec->size * adjust;
 				}
 			}
+			if (DOM_IS_ELEMENT (root->dom_node) && 
+			    dom_element_is_focusable (DOM_ELEMENT (root->dom_node))) {
+				html_style_set_outline_width (style, focus_width);			
+			}	
 		}
+		html_box_set_unrelayouted_up (box);		
 		if (box->children) {
-			html_view_update_box_style_size (box->children, adjust, done);
+			html_view_update_box_style_size (box->children, adjust, focus_width, done);
 		}
 	}
 }
@@ -1323,6 +3118,12 @@ html_view_style_set (GtkWidget *widget, GtkStyle *previous_style)
 		gfloat fsize;
 		gint new_isize;
 		gint old_isize;
+		gint focus_width;
+
+		gtk_widget_style_get (widget,
+				      "focus-line-width", &focus_width,
+				      NULL);
+
 
  		widget->style->bg[GTK_STATE_NORMAL] =
  			widget->style->base[GTK_STATE_NORMAL];
@@ -1360,7 +3161,7 @@ html_view_style_set (GtkWidget *widget, GtkStyle *previous_style)
 					old_size = old_isize;
 					new_size = new_isize;
 				}
-				html_view_update_box_style_size (view->root, (gfloat) new_isize / (gfloat) old_isize, done);
+				html_view_update_box_style_size (view->root, (gfloat) new_isize / (gfloat) old_isize, focus_width, done);
 			}
 		}
 	}
@@ -1420,20 +3221,36 @@ static void
 html_view_focus_element (HtmlView *view)
 {
 	HtmlBox *box;
+	gint offset;
 
 	if (view->document->focus_element) {
 		html_view_scroll_to_node (view, DOM_NODE (view->document->focus_element), HTML_VIEW_SCROLL_TO_BOTTOM);
 
 		box = html_view_find_layout_box (view, DOM_NODE (view->document->focus_element), FALSE);
-		if (box && HTML_IS_BOX_EMBEDDED (box)) 
+		if (box && HTML_IS_BOX_EMBEDDED (box)) { 
 			gtk_widget_child_focus (HTML_BOX_EMBEDDED (box)->widget, GTK_DIR_TAB_FORWARD);
-		else
+		}
+		else {
 			gtk_widget_grab_focus (GTK_WIDGET (view));
+			if (cursor_showing && 
+			    HTML_IS_BOX_TEXT (box->children)) {
+				HtmlBoxText *text;
+
+				text = HTML_BOX_TEXT (box->children);
+				if (html_view_get_offset_for_box_text (view, text, &offset)) {
+					move_cursor (view, HTML_BOX (text), offset, FALSE);
+					html_view_pend_cursor_blink (view);
+					html_view_check_cursor_blink (view);
+				}
+			}
+		}
 	} else {
 		/* No element focused to scroll to top */
 		GtkAdjustment *adj = GTK_LAYOUT (view)->vadjustment;
 
-		set_adjustment_clamped (adj, 0);
+		if (!html_view_get_cursor_visible (view)) {
+			set_adjustment_clamped (adj, 0);
+		}
 		gtk_widget_grab_focus (GTK_WIDGET (view));
 	}
 	gtk_widget_queue_draw (GTK_WIDGET (view));
@@ -1473,7 +3290,6 @@ html_view_get_accessible (GtkWidget *widget)
 			HTML_ACCESSIBLE_SET_FACTORY (HTML_TYPE_BOX_EMBEDDED, html_box_embedded_accessible);
 			HTML_ACCESSIBLE_SET_FACTORY (HTML_TYPE_BOX, html_box_accessible);
 			HTML_ACCESSIBLE_SET_FACTORY (HTML_TYPE_BOX_TABLE, html_box_table_accessible);
-			HTML_ACCESSIBLE_SET_FACTORY (HTML_TYPE_BOX_TEXT, html_box_text_accessible);
 		}
 		first_time = FALSE;
 	}

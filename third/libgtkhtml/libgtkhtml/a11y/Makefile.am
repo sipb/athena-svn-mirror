@@ -19,11 +19,17 @@ libhtmla11y_la_SOURCES = \
 	htmlboxaccessible.h	\
 	htmlboxblockaccessible.c	\
 	htmlboxblockaccessible.h	\
+	htmlboxblocklinkaccessible.c	\
+	htmlboxblocklinkaccessible.h	\
+	htmlboxblocktextaccessible.c	\
+	htmlboxblocktextaccessible.h	\
 	htmlboxembeddedaccessible.c	\
 	htmlboxembeddedaccessible.h	\
 	htmlboxtableaccessible.c	\
 	htmlboxtableaccessible.h	\
 	htmlboxtextaccessible.c	\
 	htmlboxtextaccessible.h	\
+	htmlboxtextlinkaccessible.c	\
+	htmlboxtextlinkaccessible.h	\
 	htmllinkaccessible.c	\
 	htmllinkaccessible.h

@@ -96,7 +96,7 @@ css_declaration_destroy (CssDeclaration *decl)
 	g_free (decl);
 }
 
-static void
+void
 css_ruleset_destroy (CssRuleset *ruleset)
 {
 	gint i;

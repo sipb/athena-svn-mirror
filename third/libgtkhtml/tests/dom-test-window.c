@@ -26,8 +26,6 @@
 #include "dom-test-node-menu.h"
 
 
-//static const gchar simple_doc[] = "<html><body bgcolor=\"white\"><div style=\"font-size:200%\">Foo <b style=\"color:blue\">bar</b></div><p>And here's some more text to see if line-wrapping works correctly.</p></body></html>";
-
 static const gchar simple_doc[] = "<html><body bgcolor=\"white\"><div>Foo bar</div><p style=\"background: green\">And here's some more text to see if line-wrapping works correctly. And here's some more text to see if line-wrapping works correctly.";
 
 
@@ -254,11 +252,16 @@ dom_test_window_construct (DomTestWindow *window)
 
 	window->tree_model = dom_test_tree_model_new (DOM_NODE (document->dom_document), DOM_TEST_TREE_MODEL_TREE);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (tree_view), GTK_TREE_MODEL (window->tree_model));
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, "DOM Tree");
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_add_attribute (column, renderer, "text", 0);
 	renderer = gtk_cell_renderer_pixbuf_new ();
-	column = gtk_tree_view_column_new_with_attributes ("DOM Tree", renderer,
-  							   "text", 0,
-							   "pixbuf", 1,
-  							   NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (column, renderer, "pixbuf", 1);
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column);
 	gtk_signal_connect (GTK_OBJECT (tree_view), "button_press_event",
 			    GTK_SIGNAL_FUNC (dom_test_tree_view_button_press), window);
@@ -268,11 +271,15 @@ dom_test_window_construct (DomTestWindow *window)
 	window->orphan_nodes = dom_test_tree_model_new (window->orphan_root_node, DOM_TEST_TREE_MODEL_TREE);
 	
 	tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (window->orphan_nodes));
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, "DOM Tree");
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_add_attribute (column, renderer, "text", 0);
 	renderer = gtk_cell_renderer_pixbuf_new ();
-	column = gtk_tree_view_column_new_with_attributes ("Orphan nodes", renderer,
-							   "text", 0,
-							   "pixbuf", 1,
-  							   NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (column, renderer, "pixbuf", 1);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column);
 
 	gtk_paned_set_position (GTK_PANED (vpaned), 250);

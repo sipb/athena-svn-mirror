@@ -54,7 +54,7 @@ typedef enum {
 	HTML_BOX_TEXT_SELECTION_START,
 	HTML_BOX_TEXT_SELECTION_END,
 	HTML_BOX_TEXT_SELECTION_FULL,
-	HTML_BOX_TEXT_SELECTION_BOTH,
+	HTML_BOX_TEXT_SELECTION_BOTH
 } HtmlBoxTextSelection;
 
 gint html_box_text_get_index (HtmlBoxText *text, gint x_pos);
@@ -71,7 +71,7 @@ struct _HtmlBoxText {
 	
 	gboolean generated_content: 1;
 	gboolean forced_newline: 1;
-        HtmlBoxTextSelection selection: 3;
+        guint selection: 3;
 	gint16 sel_start_index;
 	gint16 sel_end_index;
 

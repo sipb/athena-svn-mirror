@@ -183,6 +183,12 @@ static HtmlColorStandard standard_colors [] = {
 	{ "yellowgreen",   154, 205,  50}
 };
 
+static HtmlColorStandard other_colors [] = {
+	{ "linkblue",   0, 0,  254}
+};
+
+static HtmlColor *linkblue = NULL;
+
 HtmlColor *
 html_color_ref (HtmlColor *color)
 {
@@ -220,8 +226,16 @@ html_color_transparent_new (void)
 HtmlColor *
 html_color_dup (HtmlColor *color)
 {
-	HtmlColor *result = g_new (HtmlColor, 1);
+	HtmlColor *result;
 
+	if (linkblue == NULL) {
+		linkblue = html_color_new_from_name ("linkblue");
+	}
+	if (html_color_equal (color, linkblue)) {
+		return html_color_ref (linkblue);
+	}
+
+	result = g_new (HtmlColor, 1);
 	result->refcount = 1;
 	result->red = color->red;
 	result->green = color->green;
@@ -341,11 +355,23 @@ html_color_new_from_name (const gchar *color_name)
 		}
 	}
 
+	if (red == -1 || green == -1 || blue == -1) {
+		for (i = 0; i < sizeof (other_colors) / sizeof (other_colors [0]); i++) {
+			if (g_strcasecmp (color_name, other_colors [i].name) == 0) {
+				red = other_colors [i].red;
+				green = other_colors [i].green;
+				blue = other_colors [i].blue;
+				break;
+			}
+		}
+	}
+
 	if (red == -1 || green == -1 || blue == -1)
 		return NULL;
 	
 	result = g_new (HtmlColor, 1);
 
+	result->refcount = 1;
 	result->red = red;
 	result->green = green;
 	result->blue = blue;
@@ -425,4 +451,22 @@ html_color_transform (HtmlColor *color, gfloat ratio)
 	result = html_color_new_from_rgb (red, green, blue);
 
 	return result;
+}
+
+void
+html_color_set_linkblue (gushort red, gushort green)
+{
+  	gint i;
+	for (i = 0; i < sizeof (other_colors) / sizeof (other_colors [0]); i++) {
+		if (g_strcasecmp ("linkblue", other_colors [i].name) == 0) {
+			other_colors [i].red = red;
+			other_colors [i].green = green;
+			if (linkblue) {
+				linkblue->red = red;
+				linkblue->green = green;
+				linkblue->blue = other_colors [i].blue;
+			}
+			break;
+		}
+	}
 }

@@ -68,10 +68,11 @@ html_atom_list_get_atom (HtmlAtomList *al, const gchar *str)
 	HtmlAtom atom;
 	gchar *ptr;
 	gboolean found;
+	gpointer old_atom;
 
 	ptr = g_strdown (g_strdup (str));
 
-	found = g_hash_table_lookup_extended (al->table, ptr, NULL, (gpointer) &atom);
+	found = g_hash_table_lookup_extended (al->table, ptr, NULL, &old_atom);
 	
 	if (!found) {
 		if (al->len % 512 == 0)
@@ -81,6 +82,9 @@ html_atom_list_get_atom (HtmlAtomList *al, const gchar *str)
 		atom = al->len;
 		g_hash_table_insert (al->table, al->data[al->len], GUINT_TO_POINTER (atom));
 		al->len++;
+	}
+	else {
+		atom = GPOINTER_TO_UINT (old_atom);
 	}
 
 	g_free (ptr);

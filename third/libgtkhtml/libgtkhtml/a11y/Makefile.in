@@ -60,14 +60,21 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 A11Y = @A11Y@
+AR = @AR@
 AS = @AS@
 CC = @CC@
 CFLAGS = @CFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
 GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
 GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GTKHTML2_CFLAGS = @GTKHTML2_CFLAGS@
@@ -82,6 +89,7 @@ OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -90,7 +98,7 @@ INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	$(GTKHTML2_CFLAGS) 	$(
 
 @ENABLE_ACCESSIBILITY_TRUE@noinst_LTLIBRARIES = libhtmla11y.la
 
-libhtmla11y_la_SOURCES =  	htmlaccessiblefactory.h 	htmlviewaccessible.c 	htmlviewaccessible.h 	htmlviewaccessiblefactory.c 	htmlviewaccessiblefactory.h 	htmlboxaccessible.c		htmlboxaccessible.h		htmlboxblockaccessible.c		htmlboxblockaccessible.h		htmlboxembeddedaccessible.c		htmlboxembeddedaccessible.h		htmlboxtableaccessible.c		htmlboxtableaccessible.h		htmlboxtextaccessible.c		htmlboxtextaccessible.h		htmllinkaccessible.c		htmllinkaccessible.h
+libhtmla11y_la_SOURCES =  	htmlaccessiblefactory.h 	htmlviewaccessible.c 	htmlviewaccessible.h 	htmlviewaccessiblefactory.c 	htmlviewaccessiblefactory.h 	htmlboxaccessible.c		htmlboxaccessible.h		htmlboxblockaccessible.c		htmlboxblockaccessible.h		htmlboxblocklinkaccessible.c		htmlboxblocklinkaccessible.h		htmlboxblocktextaccessible.c		htmlboxblocktextaccessible.h		htmlboxembeddedaccessible.c		htmlboxembeddedaccessible.h		htmlboxtableaccessible.c		htmlboxtableaccessible.h		htmlboxtextaccessible.c		htmlboxtextaccessible.h		htmlboxtextlinkaccessible.c		htmlboxtextlinkaccessible.h		htmllinkaccessible.c		htmllinkaccessible.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -105,9 +113,10 @@ libhtmla11y_la_LDFLAGS =
 libhtmla11y_la_LIBADD = 
 libhtmla11y_la_OBJECTS =  htmlviewaccessible.lo \
 htmlviewaccessiblefactory.lo htmlboxaccessible.lo \
-htmlboxblockaccessible.lo htmlboxembeddedaccessible.lo \
+htmlboxblockaccessible.lo htmlboxblocklinkaccessible.lo \
+htmlboxblocktextaccessible.lo htmlboxembeddedaccessible.lo \
 htmlboxtableaccessible.lo htmlboxtextaccessible.lo \
-htmllinkaccessible.lo
+htmlboxtextlinkaccessible.lo htmllinkaccessible.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -233,6 +242,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
 
 
 

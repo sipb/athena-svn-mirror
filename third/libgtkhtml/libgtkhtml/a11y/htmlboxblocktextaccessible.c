@@ -1,5 +1,5 @@
-/* 
- * Copyright 2004 Sun Microsystems Inc.
+/*
+ * Copyright 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,56 +17,58 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <strings.h>
-
 #include <libgtkhtml/gtkhtml.h>
 #include "layout/htmlboxtext.h"
 #include "layout/htmlboxtable.h"
 #include "layout/htmlboxinline.h"
-#include "htmlboxtextaccessible.h"
-#include "htmlboxtextlinkaccessible.h"
+#include "htmlboxblocktextaccessible.h"
 #include <libgail-util/gail-util.h>
 
-static void     html_box_text_accessible_class_init      (HtmlBoxAccessibleClass *klass);
-static void     html_box_text_accessible_finalize        (GObject   *object);
-static void     html_box_text_accessible_real_initialize (AtkObject *object,
-                                                          gpointer  data);
-static gint     html_box_text_accessible_get_n_children  (AtkObject *obj);
-static AtkObject*   html_box_text_accessible_ref_child   (AtkObject *obj,
-                                                          gint      i);
-static AtkRelationSet* html_box_text_accessible_ref_relation_set
-                                                         (AtkObject *obj);
+static void     html_box_block_text_accessible_class_init      (HtmlBoxBlockAccessibleClass *klass);
+static void     html_box_block_text_accessible_finalize        (GObject   *object);
+static void     html_box_block_text_accessible_real_initialize (AtkObject *object,
+                                                                gpointer  data);
+static gint     html_box_block_text_accessible_get_n_children  (AtkObject *obj);
+static AtkObject*   html_box_block_text_accessible_ref_child   (AtkObject *obj,
+                                                                gint      i);
+static AtkRelationSet* html_box_block_text_accessible_ref_relation_set
+                                                               (AtkObject *obj)
+;
 
-static void     html_box_text_accessible_text_interface_init (AtkTextIface	*iface);
-static gchar*   html_box_text_accessible_get_text                  (AtkText             *text,
+static void     html_box_block_text_accessible_text_interface_init (AtkTextIface	*iface);
+static gchar*   html_box_block_text_accessible_get_text            (AtkText             *text,
                                                                     gint                start_offset,
                                                                     gint                end_offset);
-static gchar*   html_box_text_accessible_get_text_after_offset     (AtkText             *text,
+static gchar*   html_box_block_text_accessible_get_text_after_offset 
+                                                                   (AtkText             *text,
                                                                     gint                offset,
                                                                     AtkTextBoundary     boundary_type,
                                                                     gint                *start_offset,
                                                                     gint                *end_offset);
-static gchar*   html_box_text_accessible_get_text_at_offset        (AtkText             *text,
+static gchar*   html_box_block_text_accessible_get_text_at_offset  (AtkText             *text,
                                                                     gint                offset,
                                                                     AtkTextBoundary     boundary_type,
                                                                     gint                *start_offset,
                                                                     gint                *end_offset);
-static gchar*    html_box_text_accessible_get_text_before_offset   (AtkText             *text,
+static gchar*    html_box_block_text_accessible_get_text_before_offset 
+                                                                   (AtkText             *text,
                                                                     gint                offset,
                                                                     AtkTextBoundary     boundary_type,
                                                                     gint                *start_offset,
                                                                     gint                *end_offset);
-static gunichar  html_box_text_accessible_get_character_at_offset  (AtkText            *text,
+static gunichar  html_box_block_text_accessible_get_character_at_offset 
+                                                                   (AtkText            *text,
                                                                     gint               offset);
-static gint     html_box_text_accessible_get_character_count       (AtkText             *text);
-static gint     html_box_text_accessible_get_caret_offset          (AtkText            *text);
-static gboolean html_box_text_accessible_set_caret_offset          (AtkText            *text,
+static gint     html_box_block_text_accessible_get_character_count (AtkText             *text);
+static gint     html_box_block_text_accessible_get_caret_offset    (AtkText            *text);
+static gboolean html_box_block_text_accessible_set_caret_offset    (AtkText            *text,
                                                                     gint               offset);
-static gint     html_box_text_accessible_get_offset_at_point       (AtkText            *text,
+static gint     html_box_block_text_accessible_get_offset_at_point (AtkText            *text,
                                                                     gint               x,
                                                                     gint               y,
                                                                     AtkCoordType       coords);
-static void     html_box_text_accessible_get_character_extents     (AtkText           *text,
+static void     html_box_block_text_accessible_get_character_extents 
+                                                                   (AtkText           *text,
                                                                     gint              offset,
                                                                     gint              *x,
                                                                     gint              *y,
@@ -74,23 +76,24 @@ static void     html_box_text_accessible_get_character_extents     (AtkText     
                                                                     gint              *height,
                                                                     AtkCoordType      coords);
 static AtkAttributeSet* 
-                html_box_text_accessible_get_run_attributes        (AtkText           *text,
+                html_box_block_text_accessible_get_run_attributes  (AtkText           *text,
                                                                     gint              offset,
                                                                     gint              *start_offset,
                                                                     gint              *end_offset);
 static AtkAttributeSet* 
-                html_box_text_accessible_get_default_attributes    (AtkText          *text);
-static gint     html_box_text_accessible_get_n_selections          (AtkText           *text);
-static gchar*   html_box_text_accessible_get_selection             (AtkText           *text,
+                html_box_block_text_accessible_get_default_attributes 
+                                                                   (AtkText          *text);
+static gint     html_box_block_text_accessible_get_n_selections    (AtkText           *text);
+static gchar*   html_box_block_text_accessible_get_selection       (AtkText           *text,
                                                                     gint              selection_num,
                                                                     gint              *start_pos,
                                                                     gint              *end_pos);
-static gboolean html_box_text_accessible_add_selection             (AtkText           *text,
+static gboolean html_box_block_text_accessible_add_selection       (AtkText           *text,
                                                                     gint              start_pos,
                                                                     gint              end_pos);
-static gboolean html_box_text_accessible_remove_selection          (AtkText           *text,
+static gboolean html_box_block_text_accessible_remove_selection    (AtkText           *text,
                                                                     gint              selection_num);
-static gboolean html_box_text_accessible_set_selection             (AtkText           *text,
+static gboolean html_box_block_text_accessible_set_selection       (AtkText           *text,
                                                                     gint              selection_num,
                                                                     gint              start_pos,
                                                                     gint              end_pos);
@@ -105,102 +108,79 @@ extern HtmlBoxText* _html_view_get_cursor_box_text (HtmlView *view, gint *offset
 
 static gpointer parent_class = NULL;
 
-struct _HtmlBoxTextAccessiblePrivate
+struct _HtmlBoxBlockTextAccessiblePrivate
 {
 	GailTextUtil *textutil;
 	gint          caret_offset;
 };
 
 GType
-html_box_text_accessible_get_type (void)
+html_box_block_text_accessible_get_type (void)
 {
 	static GType type = 0;
 
 	if (!type) {
 		 static const GTypeInfo tinfo = {
-			sizeof (HtmlBoxTextAccessibleClass),
+			sizeof (HtmlBoxBlockTextAccessibleClass),
 			(GBaseInitFunc) NULL, /* base init */
 			(GBaseFinalizeFunc) NULL, /* base finalize */
-			(GClassInitFunc) html_box_text_accessible_class_init,
+			(GClassInitFunc) html_box_block_text_accessible_class_init,
 			(GClassFinalizeFunc) NULL, /* class finalize */
 			NULL, /* class data */
-			sizeof (HtmlBoxTextAccessible),
+			sizeof (HtmlBoxBlockTextAccessible),
 			0, /* nb preallocs */
 			(GInstanceInitFunc) NULL, /* instance init */
 			NULL /* value table */
 		};
 
 		static const GInterfaceInfo atk_text_info = {
-			(GInterfaceInitFunc) html_box_text_accessible_text_interface_init,
+			(GInterfaceInitFunc) html_box_block_text_accessible_text_interface_init,
           		(GInterfaceFinalizeFunc) NULL,
 			NULL
 		};
 
-		type = g_type_register_static (HTML_TYPE_BOX_ACCESSIBLE, "HtmlBoxTextAccessible", &tinfo, 0);
+		type = g_type_register_static (HTML_TYPE_BOX_BLOCK_ACCESSIBLE, "HtmlBoxBlockTextAccessible", &tinfo, 0);
   		g_type_add_interface_static (type, ATK_TYPE_TEXT, &atk_text_info);
 	}
 
 	return type;
 }
 
-static gboolean
-is_link (HtmlBox *box)
-{
-	DomNode *node;
-	gboolean ret;
-
-	ret = FALSE;
-	if HTML_IS_BOX_INLINE (box->parent) {
-		node = box->parent->dom_node;
-		if (strcasecmp ((char *)node->xmlnode->name, "a") == 0 &&
-		    xmlHasProp (node->xmlnode, (const unsigned char *)"href") != NULL) {
-			ret = TRUE;
-		}
-	}
-	return ret;
-}
-
 AtkObject*
-html_box_text_accessible_new (GObject *obj)
+html_box_block_text_accessible_new (GObject *obj)
 {
 	GObject *object;
 	AtkObject *atk_object;
-	HtmlBox *box;
 
-	box = HTML_BOX (obj);
-	if (is_link (box)) {
-		atk_object = html_box_text_link_accessible_new (obj);
-	} else {
-		object = g_object_new (HTML_TYPE_BOX_TEXT_ACCESSIBLE, NULL);
-		atk_object = ATK_OBJECT (object);
-		atk_object_initialize (atk_object, obj);
-		atk_object->role = ATK_ROLE_TEXT;
-	}
+	object = g_object_new (HTML_TYPE_BOX_BLOCK_TEXT_ACCESSIBLE, NULL);
+	atk_object = ATK_OBJECT (object);
+	atk_object_initialize (atk_object, obj);
+	atk_object->role = ATK_ROLE_TEXT;
 	return atk_object;
 }
 
 static void
-html_box_text_accessible_class_init (HtmlBoxAccessibleClass *klass)
+html_box_block_text_accessible_class_init (HtmlBoxBlockAccessibleClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
 
-	gobject_class->finalize = html_box_text_accessible_finalize;
-	class->initialize = html_box_text_accessible_real_initialize;
-	class->get_n_children = html_box_text_accessible_get_n_children;
-	class->ref_child = html_box_text_accessible_ref_child;
-	class->ref_relation_set = html_box_text_accessible_ref_relation_set;
+	gobject_class->finalize = html_box_block_text_accessible_finalize;
+	class->initialize = html_box_block_text_accessible_real_initialize;
+	class->get_n_children = html_box_block_text_accessible_get_n_children;
+	class->ref_child = html_box_block_text_accessible_ref_child;
+	class->ref_relation_set = html_box_block_text_accessible_ref_relation_set;
 }
 
 static void
-html_box_text_accessible_finalize (GObject *object)
+html_box_block_text_accessible_finalize (GObject *object)
 {
-	HtmlBoxTextAccessible *box_text = HTML_BOX_TEXT_ACCESSIBLE (object);
+	HtmlBoxBlockTextAccessible *block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (object);
 
-	g_object_unref (box_text->priv->textutil);
-	g_free (box_text->priv);
+	g_object_unref (block->priv->textutil);
+	g_free (block->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -212,27 +192,34 @@ append_text (HtmlBox *root,
 	HtmlBox *box;
 	gchar *text;
 
+	if (!root)
+		return;
+
 	if (HTML_IS_BOX_TEXT (root)) {
 		text = html_box_text_get_text (HTML_BOX_TEXT (root), &len);
-		if (text) {
+		if (text)
 			g_string_append_len (content, text, len);
-		}
+	}
+	box = root->children;
+	while (box) {
+		append_text (box, content);
+		box = box->next;
 	}
 }
 
 static void
-html_box_text_accessible_real_initialize (AtkObject *object,
-                                          gpointer  data)
+html_box_block_text_accessible_real_initialize (AtkObject *object,
+                                                gpointer  data)
 {
-	HtmlBoxTextAccessible *box_text;
+	HtmlBoxBlockTextAccessible *block;
 	HtmlBox *box;
 	GtkTextBuffer *text_buffer;
 	GString *content;
 
 	ATK_OBJECT_CLASS (parent_class)->initialize (object, data);
 
-	box_text = HTML_BOX_TEXT_ACCESSIBLE (object);
-	box_text->priv = g_new0 (HtmlBoxTextAccessiblePrivate, 1); 
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (object);
+	block->priv = g_new0 (HtmlBoxBlockTextAccessiblePrivate, 1); 
 	text_buffer = gtk_text_buffer_new (NULL);
 	content = g_string_new (NULL);
 	box = HTML_BOX (data);
@@ -242,24 +229,25 @@ html_box_text_accessible_real_initialize (AtkObject *object,
                                           content->str, content->len);
 	}
 	g_string_free (content, TRUE);
-	box_text->priv->textutil = gail_text_util_new ();
-	gail_text_util_buffer_setup (box_text->priv->textutil, text_buffer);
+	block->priv->textutil = gail_text_util_new ();
+	gail_text_util_buffer_setup (block->priv->textutil, text_buffer);
 	g_object_unref (text_buffer);
+
 }
 
 static gint
-html_box_text_accessible_get_n_children (AtkObject *obj)
+html_box_block_text_accessible_get_n_children (AtkObject *obj)
 {
         g_return_val_if_fail (HTML_IS_BOX_ACCESSIBLE (obj), 0);
-        return 0;
+	return 0;
 }
 
 static AtkObject*
-html_box_text_accessible_ref_child (AtkObject *obj,
-                                    gint      i)
+html_box_block_text_accessible_ref_child (AtkObject *obj,
+                                          gint      i)
 {
         g_return_val_if_fail (HTML_IS_BOX_ACCESSIBLE (obj), NULL);
-        return NULL;
+	return NULL;
 }
 
 static AtkObject *
@@ -330,7 +318,7 @@ ref_previous_object (AtkObject *obj)
 				prev = parent;
 			}
 		}
-	}	
+	}
 	return prev;
 }
 
@@ -348,7 +336,7 @@ ref_next_object (AtkObject *obj)
 	}
 	parent = atk_object_get_parent (obj);
 	if (!HTML_IS_BOX_ACCESSIBLE (parent))
-		return NULL;
+	        return NULL;
 
 	index = atk_object_get_index_in_parent (obj);
 	n_children = atk_object_get_n_accessible_children (parent);
@@ -370,11 +358,11 @@ ref_next_object (AtkObject *obj)
 			}
 		}
 		return NULL;
-	}	
+	}
 }
 
 static AtkRelationSet*
-html_box_text_accessible_ref_relation_set (AtkObject *obj)
+html_box_block_text_accessible_ref_relation_set (AtkObject *obj)
 {
 	AtkRelationSet *relation_set;
 	AtkObject *atk_obj;
@@ -419,53 +407,53 @@ html_box_text_accessible_ref_relation_set (AtkObject *obj)
 }
 
 static void
-html_box_text_accessible_text_interface_init (AtkTextIface *iface)
+html_box_block_text_accessible_text_interface_init (AtkTextIface *iface)
 {
  	g_return_if_fail (iface != NULL);
 
-	iface->get_text                = html_box_text_accessible_get_text;
-	iface->get_text_after_offset   = html_box_text_accessible_get_text_after_offset;
-	iface->get_text_at_offset      = html_box_text_accessible_get_text_at_offset;
-	iface->get_text_before_offset  = html_box_text_accessible_get_text_before_offset;
-	iface->get_character_at_offset = html_box_text_accessible_get_character_at_offset;
-	iface->get_character_count     = html_box_text_accessible_get_character_count;
-	iface->get_caret_offset        = html_box_text_accessible_get_caret_offset;
-	iface->set_caret_offset        = html_box_text_accessible_set_caret_offset;
-	iface->get_offset_at_point     = html_box_text_accessible_get_offset_at_point;
-	iface->get_character_extents   = html_box_text_accessible_get_character_extents;
-	iface->get_n_selections        = html_box_text_accessible_get_n_selections;
-	iface->get_selection           = html_box_text_accessible_get_selection;
-	iface->add_selection           = html_box_text_accessible_add_selection;
-	iface->remove_selection        = html_box_text_accessible_remove_selection;
-	iface->set_selection           = html_box_text_accessible_set_selection;
-	iface->get_run_attributes      = html_box_text_accessible_get_run_attributes;
-	iface->get_default_attributes  = html_box_text_accessible_get_default_attributes;
+	iface->get_text = html_box_block_text_accessible_get_text;
+	iface->get_text_after_offset = html_box_block_text_accessible_get_text_after_offset;
+	iface->get_text_at_offset = html_box_block_text_accessible_get_text_at_offset;
+	iface->get_text_before_offset = html_box_block_text_accessible_get_text_before_offset;
+	iface->get_character_at_offset = html_box_block_text_accessible_get_character_at_offset;
+	iface->get_character_count = html_box_block_text_accessible_get_character_count;
+	iface->get_caret_offset = html_box_block_text_accessible_get_caret_offset;
+	iface->set_caret_offset = html_box_block_text_accessible_set_caret_offset;
+	iface->get_offset_at_point = html_box_block_text_accessible_get_offset_at_point;
+	iface->get_character_extents = html_box_block_text_accessible_get_character_extents;
+	iface->get_n_selections = html_box_block_text_accessible_get_n_selections;
+	iface->get_selection = html_box_block_text_accessible_get_selection;
+	iface->add_selection = html_box_block_text_accessible_add_selection;
+	iface->remove_selection = html_box_block_text_accessible_remove_selection;
+	iface->set_selection = html_box_block_text_accessible_set_selection;
+	iface->get_run_attributes = html_box_block_text_accessible_get_run_attributes;
+	iface->get_default_attributes = html_box_block_text_accessible_get_default_attributes;
 }
 
 static gchar*
-html_box_text_accessible_get_text (AtkText *text,
-                                   gint    start_offset,
-                                   gint    end_offset)
+html_box_block_text_accessible_get_text (AtkText *text,
+                                         gint    start_offset,
+                                         gint    end_offset)
 {
-	HtmlBoxTextAccessible *box_text;
+	HtmlBoxBlockTextAccessible *block;
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;	
 
-	g_return_val_if_fail (HTML_BOX_TEXT_ACCESSIBLE (text), NULL);
-	box_text = HTML_BOX_TEXT_ACCESSIBLE (text);
-	g_return_val_if_fail (box_text->priv->textutil, NULL);
-	buffer = box_text->priv->textutil->buffer;
+	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), NULL);
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
+	g_return_val_if_fail (block->priv->textutil, NULL);
+	buffer = block->priv->textutil->buffer;
 	gtk_text_buffer_get_iter_at_offset (buffer, &start, start_offset);
 	gtk_text_buffer_get_iter_at_offset (buffer, &end, end_offset);
 	return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
 }
 
 static gchar*
-html_box_text_accessible_get_text_after_offset (AtkText         *text,
-                                                gint            offset,
-                                                AtkTextBoundary boundary_type,
-                                                gint            *start_offset,
-                                                gint            *end_offset)
+html_box_block_text_accessible_get_text_after_offset (AtkText         *text,
+                                                      gint            offset,
+                                                      AtkTextBoundary boundary_type,
+                                                      gint            *start_offset,
+                                                      gint            *end_offset)
 {
 	return get_text_near_offset (text, GAIL_AFTER_OFFSET,
 				     boundary_type, offset, 
@@ -473,11 +461,11 @@ html_box_text_accessible_get_text_after_offset (AtkText         *text,
 }
 
 static gchar*
-html_box_text_accessible_get_text_at_offset (AtkText         *text,
-                                             gint            offset,
-                                             AtkTextBoundary boundary_type,
-                                             gint            *start_offset,
-                                             gint            *end_offset)
+html_box_block_text_accessible_get_text_at_offset (AtkText         *text,
+                                                   gint            offset,
+                                                   AtkTextBoundary boundary_type,
+                                                   gint            *start_offset,
+                                                   gint            *end_offset)
 {
 	return get_text_near_offset (text, GAIL_AT_OFFSET,
 				     boundary_type, offset, 
@@ -485,11 +473,11 @@ html_box_text_accessible_get_text_at_offset (AtkText         *text,
 }
 
 static gchar*
-html_box_text_accessible_get_text_before_offset (AtkText         *text,
-                                                 gint            offset,
-                                                 AtkTextBoundary boundary_type,
-                                                 gint            *start_offset,
-                                                 gint            *end_offset)
+html_box_block_text_accessible_get_text_before_offset (AtkText         *text,
+                                                       gint            offset,
+                                                       AtkTextBoundary boundary_type,
+                                                       gint            *start_offset,
+                                                       gint            *end_offset)
 {
 	return get_text_near_offset (text, GAIL_BEFORE_OFFSET,
 				     boundary_type, offset, 
@@ -497,20 +485,20 @@ html_box_text_accessible_get_text_before_offset (AtkText         *text,
 }
 
 static gunichar
-html_box_text_accessible_get_character_at_offset (AtkText *text,
-                                                  gint    offset)
+html_box_block_text_accessible_get_character_at_offset (AtkText *text,
+                                                        gint    offset)
 {
-	HtmlBoxTextAccessible *box_text;
+	HtmlBoxBlockTextAccessible *block;
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer;
 	gchar *string;
 	gchar *index;
 	gunichar unichar;
 
-	g_return_val_if_fail (HTML_BOX_TEXT_ACCESSIBLE (text), '\0');
-	box_text = HTML_BOX_TEXT_ACCESSIBLE (text);
-	g_return_val_if_fail (box_text->priv->textutil, '\0');
-	buffer = box_text->priv->textutil->buffer;
+	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), NULL);
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
+	g_return_val_if_fail (block->priv->textutil, NULL);
+	buffer = block->priv->textutil->buffer;
 	if (offset >= gtk_text_buffer_get_char_count (buffer))
 		return '\0';
 
@@ -525,52 +513,96 @@ html_box_text_accessible_get_character_at_offset (AtkText *text,
 }
 
 static gint
-html_box_text_accessible_get_character_count (AtkText *text)
+html_box_block_text_accessible_get_character_count (AtkText *text)
 {
-	HtmlBoxTextAccessible *box_text;
+	HtmlBoxBlockTextAccessible *block;
 	GtkTextBuffer *buffer;
 
-	g_return_val_if_fail (HTML_BOX_TEXT_ACCESSIBLE (text), 0);
-	box_text = HTML_BOX_TEXT_ACCESSIBLE (text);
-	g_return_val_if_fail (box_text->priv->textutil, 0);
-	buffer = box_text->priv->textutil->buffer;
+	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), 0);
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
+	g_return_val_if_fail (block->priv->textutil, 0);
+	buffer = block->priv->textutil->buffer;
 	return gtk_text_buffer_get_char_count (buffer);
 }
 
-static gint
-html_box_text_accessible_get_caret_offset (AtkText *text)
+static gboolean
+find_offset (HtmlBox *box, HtmlBoxText *box_text, gint *offset)
 {
-	HtmlBoxTextAccessible *box_text_a11y;
-	HtmlBoxText *box_text;
-	HtmlBoxText *cursor_box_text;
-	GtkWidget *widget;
-	HtmlView *view;
-        GObject *g_obj;
-	gint offset;
+	HtmlBox *child;
+	HtmlBoxText *text;
+	gchar *char_text;
+	gint len;
+	gboolean ret;
 
-	g_return_val_if_fail (HTML_BOX_TEXT_ACCESSIBLE (text), 0);
-	box_text_a11y = HTML_BOX_TEXT_ACCESSIBLE (text);
-        g_obj = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
+	if (HTML_IS_BOX_TEXT (box)) {
+		text = HTML_BOX_TEXT (box);
+		if (box_text == text)
+			return TRUE;
+	
+		char_text = html_box_text_get_text (text, &len);
+		len = g_utf8_strlen (char_text, len);
+		*offset += len;
+	}
+	child = box->children;
+	while (child) {
+		ret = find_offset (child, box_text, offset);
+		if (ret)
+			return ret;
+		child = child->next;
+	}		
+	return FALSE;
+}
+
+static gint
+html_box_block_text_accessible_get_caret_offset (AtkText *text)
+{
+	HtmlBoxBlockTextAccessible *block;
+        HtmlBox *box;
+        HtmlBoxText *cursor_box_text;
+        HtmlBox *cursor_box;
+        GtkWidget *widget;
+        HtmlView *view;
+        GObject *g_obj;
+        gint offset;
+
+	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), 0);
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
+        g_obj = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text
+));
         if (g_obj == NULL)
                 return 0;
 
-	box_text = HTML_BOX_TEXT (g_obj);
-	widget = html_box_accessible_get_view_widget (HTML_BOX (box_text));
-	view = HTML_VIEW (widget);
-	cursor_box_text = _html_view_get_cursor_box_text (view, &offset);
-	if (cursor_box_text == box_text) {
-		box_text_a11y->priv->caret_offset = offset;
+        box = HTML_BOX (g_obj);
+        widget = html_box_accessible_get_view_widget (box);
+        view = HTML_VIEW (widget);
+        cursor_box_text = _html_view_get_cursor_box_text (view, &offset);
+	if (HTML_IS_BOX (cursor_box_text)) {
+		cursor_box = HTML_BOX (cursor_box_text);
+		while (cursor_box && !HTML_IS_BOX_BLOCK (cursor_box)) {
+			cursor_box = cursor_box->parent;
+		}
+		if (cursor_box == box) {
+			if (find_offset (box, cursor_box_text, &offset)) {
+                		block->priv->caret_offset = offset;
+			} else {
+				g_assert_not_reached ();
+			}
+		}
 	}
-	return box_text_a11y->priv->caret_offset;
+        return block->priv->caret_offset;
 }
 
 static gboolean
-html_box_text_accessible_set_caret_offset (AtkText *text,
-                                           gint    offset)
+html_box_block_text_accessible_set_caret_offset (AtkText *text,
+                                                 gint    offset)
 {
-	HtmlBoxTextAccessible *box_text;
+	HtmlBoxBlockTextAccessible *block;
+	GtkTextBuffer *buffer;
+	GtkTextIter pos_itr;
 
-	g_return_val_if_fail (HTML_BOX_TEXT_ACCESSIBLE (text), FALSE);
+	g_return_val_if_fail (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text), FALSE);
+	block = HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text);
+	g_return_val_if_fail (block->priv->textutil, FALSE);
 	g_warning ("set_caret_offset not implemented");
 	return FALSE;
 }
@@ -618,6 +650,10 @@ find_box_text_for_position (HtmlBox     *root,
 	while (box) {
 		real_x = *x;
 		real_y = *y;
+		if (HTML_IS_BOX_BLOCK (box)) {
+			real_x -= box->x;
+			real_y -= box->y;
+		}
 		if (find_box_text_for_position (box, &real_x, &real_y, text, offset)) {
 			*x = real_x;
 			*y = real_y;
@@ -628,10 +664,10 @@ find_box_text_for_position (HtmlBox     *root,
 	return FALSE;
 }
 static gint
-html_box_text_accessible_get_offset_at_point (AtkText      *text,
-                                              gint         x,
-                                              gint         y,
-                                              AtkCoordType coords)
+html_box_block_text_accessible_get_offset_at_point (AtkText      *text,
+                                                    gint         x,
+                                                    gint         y,
+                                                    AtkCoordType coords)
 {
 	gint real_x, real_y, real_width, real_height;
 	AtkGObjectAccessible *atk_gobj;
@@ -717,13 +753,13 @@ find_box_text_for_offset (HtmlBox *root,
 }
 
 static void
-html_box_text_accessible_get_character_extents (AtkText      *text,
-                                                gint         offset,
-                                                gint         *x,
-                                                gint         *y,
-                                                gint         *width,
-                                                gint         *height,
-                                                AtkCoordType coords)
+html_box_block_text_accessible_get_character_extents (AtkText      *text,
+                                                      gint         offset,
+                                                      gint         *x,
+                                                      gint         *y,
+                                                      gint         *width,
+                                                      gint         *height,
+                                                      AtkCoordType coords)
 {
 	gint real_x, real_y;
 	AtkGObjectAccessible *atk_gobj;
@@ -757,21 +793,34 @@ html_box_text_accessible_get_character_extents (AtkText      *text,
 	
         *x = real_x + rect.x;
         *y = real_y + rect.y;
+	if (box->prev == NULL) {
+		while (HTML_IS_BOX_INLINE (box->parent)) {
+			*x += html_box_left_border_width (box->parent);
+			box = box->parent;
+		}
+	}
+	
+	box = box->parent;
+	while (box != top_box) {
+		*x += box->x;
+		*y += box->y;
+		box = box->parent;
+	}
         *width = rect.width;
 	*height = rect.height;
 }
 
 static AtkAttributeSet*
-html_box_text_accessible_get_run_attributes (AtkText *text,
-                                             gint    offset,
-                                             gint    *start_offset,
-                                             gint    *end_offset)
+html_box_block_text_accessible_get_run_attributes (AtkText *text,
+                                                   gint    offset,
+                                                   gint    *start_offset,
+                                                   gint    *end_offset)
 {
 	return NULL;
 }
 
 static AtkAttributeSet*
-html_box_text_accessible_get_default_attributes (AtkText *text)
+html_box_block_text_accessible_get_default_attributes (AtkText *text)
 {
 	AtkGObjectAccessible *atk_gobj;
 	AtkAttributeSet *attrib_set = NULL;
@@ -1011,7 +1060,7 @@ find_selection (HtmlBox *root, HtmlBoxText **text, gint *offset)
 }
 
 static gint
-html_box_text_accessible_get_n_selections (AtkText *text)
+html_box_block_text_accessible_get_n_selections (AtkText *text)
 {
 	AtkGObjectAccessible *atk_gobj;
 	GObject *g_obj;
@@ -1062,7 +1111,7 @@ find_next_text (HtmlBox *root, HtmlBox *last)
 }
 
 static gchar*
-html_box_text_accessible_get_selection (AtkText *text,
+html_box_block_text_accessible_get_selection (AtkText *text,
                                               gint    selection_num,
                                               gint    *start_pos,
                                               gint    *end_pos)
@@ -1112,9 +1161,9 @@ html_box_text_accessible_get_selection (AtkText *text,
 }
 
 static gboolean
-html_box_text_accessible_add_selection (AtkText *text,
-                                        gint    start_pos,
-                                        gint    end_pos)
+html_box_block_text_accessible_add_selection (AtkText *text,
+                                              gint    start_pos,
+                                              gint    end_pos)
 {
 	AtkGObjectAccessible *atk_gobj;
 	GObject *g_obj;
@@ -1180,8 +1229,8 @@ html_box_text_accessible_add_selection (AtkText *text,
 }
 
 static gboolean
-html_box_text_accessible_remove_selection (AtkText *text,
-                                           gint    selection_num)
+html_box_block_text_accessible_remove_selection (AtkText *text,
+                                                 gint    selection_num)
 {
 	AtkGObjectAccessible *atk_gobj;
 	GObject *g_obj;
@@ -1213,17 +1262,113 @@ html_box_text_accessible_remove_selection (AtkText *text,
 }
 
 static gboolean
-html_box_text_accessible_set_selection (AtkText *text,
-                                        gint    selection_num,
-                                        gint    start_pos,
-                                        gint    end_pos)
+html_box_block_text_accessible_set_selection (AtkText *text,
+                                              gint    selection_num,
+                                              gint    start_pos,
+                                              gint    end_pos)
 {
 	if (selection_num)
 		return FALSE;
 
-	return html_box_text_accessible_add_selection (text, start_pos, end_pos);
+	return html_box_block_text_accessible_add_selection (text, start_pos, end_pos);
 }
 
+static gboolean is_text_in_line (HtmlBox       *root,
+                                 HtmlBox       *anchor,
+                                 GailOffsetType function)
+{
+	gboolean is_in_line;
+	gint anchor_y;
+	gint root_y;
+	gint delta = 1;
+
+	anchor_y = html_box_get_absolute_y (anchor);
+	root_y = html_box_get_absolute_y (root);
+	if (function == GAIL_AT_OFFSET) {
+		is_in_line = (root_y <= anchor_y + delta && 
+			      root_y >= anchor_y - delta);
+	} else if (function == GAIL_BEFORE_OFFSET) { 
+		is_in_line = (root_y + root->height <= anchor_y + delta && 
+			      root_y + root->height >= anchor_y - delta);
+	} else if (function == GAIL_AFTER_OFFSET) { 
+		is_in_line = (anchor_y + anchor->height <= root_y + delta && 
+			      anchor_y + anchor->height >= root_y - delta);
+	}
+        return is_in_line;             
+}
+
+static void
+append_text_for_line (HtmlBox       *root,
+                      HtmlBox       *anchor,
+                      GString       *content,
+                      GailOffsetType function,
+                      gint          *start,
+                      gint          *end)
+{
+	gint len;
+	HtmlBox *box;
+	gchar *text;
+
+	if (!root)
+		return;
+
+	if (HTML_IS_BOX_TEXT (root)) {
+		text = html_box_text_get_text (HTML_BOX_TEXT (root), &len);
+		if (text) {
+			if (is_text_in_line (root, anchor, function)) {
+				g_string_append_len (content, text, len);
+				if (*start == -1) {
+					*start = *end;
+				}
+			} else if (*start == -1) {
+				*end += g_utf8_strlen (text, len);
+			} else {
+				return;
+			}
+		}
+	}
+	box = root->children;
+	while (box) {
+		append_text_for_line (box, anchor, content, function, start, end);
+		box = box->next;
+	}
+}
+
+static gchar*
+get_line_near_offset (HtmlBox       *root,
+                      GailOffsetType function,
+                      gint           offset,
+                      gint          *start,
+                      gint          *end)
+{
+	HtmlBoxText *box_text;
+	GString *content;
+	gchar *line;
+	gint real_offset;
+
+	if (!root)
+		return NULL;
+
+	real_offset = offset;
+	box_text = find_box_text_for_offset (root, &real_offset);
+	if (!box_text)
+		return NULL;
+
+	*start = -1;
+	*end = 0;
+	content = g_string_new (NULL);
+	append_text_for_line (root, HTML_BOX (box_text), content, function, start, end);
+	line = g_strndup (content->str, content->len);
+	if (content->len) {
+		*end = *start + g_utf8_strlen (line, content->len);
+	} else {
+		*start = 0;
+		*end = 0;
+	}
+	g_string_free (content, TRUE);
+	return line;
+}
+ 
 static gchar*
 get_text_near_offset (AtkText          *text,
                       GailOffsetType   function,
@@ -1232,7 +1377,23 @@ get_text_near_offset (AtkText          *text,
                       gint             *start_offset,
                       gint             *end_offset)
 {
-	return gail_text_util_get_text (HTML_BOX_TEXT_ACCESSIBLE (text)->priv->textutil, NULL,
-					function, boundary_type, offset, 
-					start_offset, end_offset);
+	if (boundary_type == ATK_TEXT_BOUNDARY_LINE_START ||
+	    boundary_type == ATK_TEXT_BOUNDARY_LINE_END) {
+		AtkGObjectAccessible *atk_gobj;
+		GObject *g_obj;
+		HtmlBox *top_box;
+		gchar 	*text_chars;
+
+		atk_gobj = ATK_GOBJECT_ACCESSIBLE (text);
+		g_obj = atk_gobject_accessible_get_object (atk_gobj);
+		if (g_obj == NULL)
+			return NULL;
+
+		top_box = HTML_BOX (g_obj);
+      		return get_line_near_offset (top_box, function, offset, start_offset, end_offset); 
+	} else {
+		return gail_text_util_get_text (HTML_BOX_BLOCK_TEXT_ACCESSIBLE (text)->priv->textutil, NULL,
+						function, boundary_type, offset, 
+						start_offset, end_offset);
+	}
 }

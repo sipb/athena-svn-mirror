@@ -493,6 +493,7 @@ css_parse_color (CssValue *val, HtmlColor *color)
 		return FALSE;
 	
 	if (color) {
+		color->refcount = tmp_color->refcount;
 		color->red = tmp_color->red;
 		color->green = tmp_color->green;
 		color->blue = tmp_color->blue;
@@ -1308,6 +1309,9 @@ css_matcher_apply_rule (HtmlDocument *document, HtmlStyle *style, HtmlStyle *par
 			break;
 		case HTML_ATOM_JUSTIFY:
 			type = HTML_TEXT_ALIGN_JUSTIFY;
+			break;
+		case HTML_ATOM_BOTTOM:
+			g_warning ("text-align:bottom not supported");
 			break;
 		default:
 			g_assert_not_reached ();
@@ -2444,7 +2448,10 @@ css_matcher_apply_stylesheet (HtmlDocument *doc, CssStylesheet *ss, xmlNode *nod
 					
 					entry->spec = sel->a * 1000000 + sel->b * 1000 + sel->c;
 					entry->type = type;
-					entry->decl = decl;
+					entry->decl = g_new (CssDeclaration, 1);
+					entry->decl->property = decl->property;
+					entry->decl->expr = css_value_ref (decl->expr);
+					entry->decl->important = decl->important;
 					*declaration_list = g_list_insert_sorted (*declaration_list, entry, css_declaration_list_sorter);
 				}
 			}
@@ -2471,6 +2478,7 @@ css_matcher_validate_style (HtmlStyle *style)
 static void
 free_decl_entry (CssDeclarationListEntry *entry, gpointer user_data)
 {
+	css_value_unref (entry->decl->expr);
 	g_free (entry->decl);
 	g_free (entry);
 }
@@ -2751,6 +2759,7 @@ css_matcher_get_style (HtmlDocument *doc, HtmlStyle *parent_style, xmlNode *node
 	HtmlFontSpecification *font_spec = parent_style ? parent_style->inherited->font_spec : NULL;
 	xmlChar *prop;
 	GList *declaration_list = NULL;
+	GList *temp;
 	GSList *ss;
 	HtmlStyle *style;
 
@@ -2790,17 +2799,20 @@ css_matcher_get_style (HtmlDocument *doc, HtmlStyle *parent_style, xmlNode *node
 				CssDeclaration *decl = rs->decl[i];
 
 				entry->type = CSS_STYLESHEET_STYLEDECL;
-				entry->decl = decl;
+				entry->decl = g_new (CssDeclaration, 1);
+				entry->decl->property = decl->property;
+				entry->decl->expr = css_value_ref (decl->expr);
+				entry->decl->important = decl->important;
 				entry->spec = 0;
 
 				declaration_list = g_list_insert_sorted (declaration_list, entry, css_declaration_list_sorter);
 			}
-			g_free (rs->decl);
-			g_free (rs);
+			css_ruleset_destroy (rs);
 		}
 		xmlFree (prop);
 	}
 
+	temp = declaration_list;
 	while (declaration_list) {
 		CssDeclarationListEntry *entry = declaration_list->data;
 
@@ -2808,6 +2820,7 @@ css_matcher_get_style (HtmlDocument *doc, HtmlStyle *parent_style, xmlNode *node
 
 		declaration_list = declaration_list->next;
 	}
+	declaration_list = temp;
 	g_list_foreach (declaration_list, (GFunc) free_decl_entry, NULL);
 	g_list_free (declaration_list);
 

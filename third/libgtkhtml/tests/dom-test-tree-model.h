@@ -36,12 +36,12 @@ typedef struct _DomTestTreeModelClass DomTestTreeModelClass;
 #define DOM_IS_TEST_TREE_MODEL_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), DOM_TYPE_TEST_TREE_MODEL))
 #define DOM_TEST_TREE_MODEL_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), DOM_TYPE_TEST_TREE_MODEL, DomTestTreeModelClass))
 
-typedef enum _DomTestTreeModelType DomTestTreeModelType;
-
 enum _DomTestTreeModelType {
 	DOM_TEST_TREE_MODEL_TREE,
-	DOM_TEST_TREE_MODEL_LIST,
+	DOM_TEST_TREE_MODEL_LIST
 };
+
+typedef enum _DomTestTreeModelType DomTestTreeModelType;
 
 struct _DomTestTreeModel {
 	GObject parent;

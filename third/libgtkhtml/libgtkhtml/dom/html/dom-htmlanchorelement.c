@@ -31,7 +31,7 @@ static GObjectClass *parent_class = NULL;
 static void
 dom_html_anchor_element_finalize (GObject *object)
 {
-  //	DomHTMLAnchorElement *anchor = DOM_HTML_ANCHOR_ELEMENT (object);
+  /*	DomHTMLAnchorElement *anchor = DOM_HTML_ANCHOR_ELEMENT (object); */
 
 	parent_class->finalize (object);
 }
@@ -39,7 +39,7 @@ dom_html_anchor_element_finalize (GObject *object)
 static void 
 parse_html_properties (DomHTMLElement *htmlelement, HtmlDocument *document)
 {
-  //	DomHTMLAnchorElement *anchorelement = DOM_HTML_ANCHOR_ELEMENT (htmlelement);
+  /*	DomHTMLAnchorElement *anchorelement = DOM_HTML_ANCHOR_ELEMENT (htmlelement); */
 	DomElement *element = DOM_ELEMENT (htmlelement);
 	gchar *str;
 	gint tabindex;

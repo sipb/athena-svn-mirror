@@ -207,3 +207,13 @@ css_value_unref (CssValue *val)
 		g_free (val);
 	}
 }
+
+CssValue*
+css_value_ref (CssValue *val)
+{
+	g_return_val_if_fail (val != NULL, NULL);
+	g_return_val_if_fail (val->ref_count > 0, NULL);
+
+	val->ref_count +=1;
+	return val;
+}

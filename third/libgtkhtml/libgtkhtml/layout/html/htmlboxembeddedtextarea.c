@@ -32,16 +32,21 @@ html_box_embedded_textarea_handle_html_properties (HtmlBox *self, xmlNode *n)
 {
 	HtmlBoxEmbedded *embedded = HTML_BOX_EMBEDDED (self);
 	HtmlStyle *style = HTML_BOX_GET_STYLE (self);
+	GtkTextView *textview;
 	gchar *str;
 	gint rows = -1, cols = -1;
+
+	textview = gtk_text_view_new ();
+	gtk_container_add (GTK_CONTAINER (embedded->widget), textview);
+	gtk_widget_show (textview);
 
 	if (parent_class->handle_html_properties)
 		parent_class->handle_html_properties (self, n);
 
 
-	gtk_text_view_set_buffer (GTK_TEXT_VIEW (embedded->widget), dom_html_text_area_element_get_text_buffer (DOM_HTML_TEXT_AREA_ELEMENT (HTML_BOX (embedded)->dom_node)));
+	gtk_text_view_set_buffer (textview, dom_html_text_area_element_get_text_buffer (DOM_HTML_TEXT_AREA_ELEMENT (HTML_BOX (embedded)->dom_node)));
 
-	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (embedded->widget), GTK_WRAP_WORD);
+	gtk_text_view_set_wrap_mode (textview, GTK_WRAP_WORD);
 
 
 	if ((str = xmlGetProp (n, "rows"))) {
@@ -64,7 +69,7 @@ html_box_embedded_textarea_handle_html_properties (HtmlBox *self, xmlNode *n)
 
 	if ((str = xmlGetProp (n, "readonly"))) {
 		
-		gtk_text_view_set_editable (GTK_TEXT_VIEW (embedded->widget), FALSE);
+		gtk_text_view_set_editable (textview, FALSE);
 		xmlFree (str);
 	}
 }
@@ -109,14 +114,22 @@ html_box_embedded_textarea_new (HtmlView *view, DomNode *node)
 {
 	HtmlBoxEmbeddedTextarea *result;
 	HtmlBoxEmbedded *embedded;
+	GtkWidget *window;
 
 	result = g_object_new (HTML_TYPE_BOX_EMBEDDED_TEXTAREA, NULL);
 	embedded = HTML_BOX_EMBEDDED (result);
 
+	window = gtk_scrolled_window_new (NULL, NULL);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (window),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (window),
+					     GTK_SHADOW_IN);
+
 	html_box_embedded_set_view (embedded, view);
-	html_box_embedded_set_widget (embedded, gtk_text_view_new ());
+	html_box_embedded_set_widget (embedded, window);
 
 	return HTML_BOX (result);
 }
-
 

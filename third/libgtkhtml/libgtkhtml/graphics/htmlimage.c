@@ -37,27 +37,6 @@ static guint image_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *image_parent_class = NULL;
 
 static void
-html_image_finalize (GObject *object)
-{
-	HtmlImage *image = HTML_IMAGE (object);
-
-	g_free (image->uri);
-	
-	if (image->pixbuf)
-		gdk_pixbuf_unref (image->pixbuf);
-
-	if (image->loader) {
-		gdk_pixbuf_loader_close (image->loader, NULL);
-		g_object_unref (G_OBJECT (image->loader));
-	}
-	
-	if (image->stream)
-		html_stream_cancel (image->stream);
-
-	G_OBJECT_CLASS (image_parent_class)->finalize (object);
-}
-
-static void
 html_image_dispose (GObject *image)
 {
 	g_signal_emit (G_OBJECT (image), image_signals [LAST_UNREF], FALSE);
@@ -88,6 +67,31 @@ html_image_area_prepared (GdkPixbufLoader *loader, HtmlImage *image)
 	}
 
 	g_signal_emit (G_OBJECT (image), image_signals [RESIZE_IMAGE], 0);
+}
+
+static void
+html_image_finalize (GObject *object)
+{
+	HtmlImage *image = HTML_IMAGE (object);
+
+	g_free (image->uri);
+	
+	if (image->pixbuf)
+		gdk_pixbuf_unref (image->pixbuf);
+
+	if (image->loader) {
+		g_signal_handlers_disconnect_by_func (image->loader, 
+			   (void *) html_image_area_prepared, image);
+		g_signal_handlers_disconnect_by_func (image->loader, 
+			   (void *) html_image_area_updated, image);
+		gdk_pixbuf_loader_close (image->loader, NULL);
+		g_object_unref (G_OBJECT (image->loader));
+	}
+	
+	if (image->stream)
+		html_stream_cancel (image->stream);
+
+	G_OBJECT_CLASS (image_parent_class)->finalize (object);
 }
 
 static void

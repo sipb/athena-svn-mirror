@@ -1,5 +1,5 @@
 /*
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,7 @@
 #define __HTML_LINK_ACCESSIBLE_H__
 
 #include <atk/atk.h>
+#include "layout/htmlbox.h"
 
 
 #ifdef __cplusplus
@@ -43,6 +44,8 @@ struct _HtmlLinkAccessible
 
 	AtkObject *obj;
 
+	HtmlBox *box;
+	gint index;  
 	gchar *click_description;
 	guint  action_idle_handler;
 };

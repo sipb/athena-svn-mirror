@@ -32,12 +32,12 @@ typedef struct _HtmlFontSpecification HtmlFontSpecification;
 typedef enum {
 	HTML_FONT_STYLE_NORMAL = 0,
 	HTML_FONT_STYLE_ITALIC,
-	HTML_FONT_STYLE_OBLIQUE,
+	HTML_FONT_STYLE_OBLIQUE
 } HtmlFontStyleType;
 
 typedef enum {
 	HTML_FONT_VARIANT_NORMAL = 0,
-	HTML_FONT_VARIANT_SMALL_CAPS,
+	HTML_FONT_VARIANT_SMALL_CAPS
 } HtmlFontVariantType;
 
 #define HTML_FONT_WEIGHT_NORMAL HTML_FONT_WEIGHT_400
@@ -52,7 +52,7 @@ typedef enum {
 	HTML_FONT_WEIGHT_600,
 	HTML_FONT_WEIGHT_700,
 	HTML_FONT_WEIGHT_800,
-	HTML_FONT_WEIGHT_900,
+	HTML_FONT_WEIGHT_900
 } HtmlFontWeightType;
 
 typedef enum {
@@ -64,7 +64,7 @@ typedef enum {
 	HTML_FONT_STRETCH_SEMI_EXPANDED,
 	HTML_FONT_STRETCH_EXPANDED,
 	HTML_FONT_STRETCH_EXTRA_EXPANDED,
-	HTML_FONT_STRETCH_ULTRA_EXPANDED,
+	HTML_FONT_STRETCH_ULTRA_EXPANDED
 } HtmlFontStretchType;
 
 typedef enum {
@@ -77,11 +77,11 @@ typedef enum {
 struct _HtmlFontSpecification {
 	gchar *family; /* Comma separated list of family names */
 	gfloat size;
-	HtmlFontWeightType weight : 4;
-	HtmlFontStyleType style : 2;
-	HtmlFontVariantType variant : 2;
-	HtmlFontStretchType stretch : 4;
-	HtmlFontDecorationType decoration : 3;
+	guint weight : 4;
+	guint style : 2;
+	guint variant : 2;
+	guint stretch : 4;
+	guint decoration : 3;
 };
 
 HtmlFontSpecification *html_font_specification_new (gchar *family,

@@ -21,7 +21,6 @@
 */
 #include <libxml/parser.h>
 #include <libxml/SAX.h>
-#include "document/htmlparser.h"
 #include "document/htmldocument.h"
 #include <string.h>
 
@@ -96,6 +95,9 @@ html_startDocument (void *ctx)
 	
 	startDocument (parser->xmlctxt);
 
+	if (parser->document->dom_document) {
+		g_warning ("DomDocument leaked in html_startDocument");
+	}
 	parser->document->dom_document = DOM_DOCUMENT (dom_Node_mkref ((xmlNode *)parser->xmlctxt->myDoc));
 
 	/* Emit document node parsed signal */
@@ -147,7 +149,12 @@ static void
 html_parser_stream_write (HtmlStream *stream, const gchar *buffer,
 			  guint size, gpointer user_data)
 {
-	HtmlParser *parser = HTML_PARSER (user_data);
+	HtmlParser *parser;
+
+	if (!user_data)
+		return;
+
+	parser = HTML_PARSER (user_data);
 
 	if (parser->parser_type == HTML_PARSER_TYPE_HTML) {
 		htmlParseChunk (parser->xmlctxt, buffer, size, 0);
@@ -160,7 +167,12 @@ html_parser_stream_write (HtmlStream *stream, const gchar *buffer,
 static void
 html_parser_stream_close (HtmlStream *stream, gpointer user_data)
 {
-	HtmlParser *parser = HTML_PARSER (user_data);
+	HtmlParser *parser;
+
+	if (!user_data)
+		return;
+
+	parser = HTML_PARSER (user_data);
 
 	if (parser->parser_type == HTML_PARSER_TYPE_HTML) {
 		htmlParseChunk (parser->xmlctxt, NULL, 0, 1);

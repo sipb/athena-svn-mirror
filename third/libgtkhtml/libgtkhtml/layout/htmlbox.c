@@ -37,16 +37,12 @@ html_box_get_containing_block (HtmlBox *box)
 
 	while (box) {
 		/* This is three times less expensive then HTML_IS_BOX_BLOCK  */
-#if 1
 		HtmlStyle *style = HTML_BOX_GET_STYLE(box);
 		if (style->display == HTML_DISPLAY_BLOCK ||
 		    style->display == HTML_DISPLAY_LIST_ITEM ||
 		    style->display == HTML_DISPLAY_TABLE_CELL)
 			return box;
-else
-		if (HTML_IS_BOX_BLOCK (box))
-			return box;
-#endif
+
 		box = box->parent;
 	}
 
@@ -455,6 +451,9 @@ html_box_finalize (GObject *object)
 
 	if (box->style)
 		html_style_unref (box->style);
+
+	if (box->dom_node)
+		g_object_remove_weak_pointer (G_OBJECT (box->dom_node), (gpointer *) &(box->dom_node));
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 	

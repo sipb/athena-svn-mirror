@@ -71,6 +71,7 @@ html_box_block_handle_float (HtmlBox *self, HtmlRelayout *relayout, HtmlBox *box
 
 	switch (HTML_BOX_GET_STYLE (box)->Float) {
 	case HTML_FLOAT_LEFT:
+	case HTML_FLOAT_CENTER:
 		box->x = html_relayout_get_left_margin_ignore (relayout, self, *boxwidth, box->height, y, box);
 		html_relayout_make_fit_left (self, relayout, box, *boxwidth, y);
 		break;

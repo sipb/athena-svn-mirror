@@ -43,7 +43,7 @@ G_BEGIN_DECLS
 
 typedef enum {
 	HTML_VIEW_SCROLL_TO_TOP,
-	HTML_VIEW_SCROLL_TO_BOTTOM,
+	HTML_VIEW_SCROLL_TO_BOTTOM
 } HtmlViewScrollToType;
 
 struct _HtmlView {

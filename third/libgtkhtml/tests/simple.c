@@ -137,7 +137,7 @@ url_requested_timeout (FetchContext *context)
 static gboolean
 dom_mouse_down (HtmlDocument *doc, DomMouseEvent *event, gpointer data)
 {
-  //	g_print ("mouse down!\n");
+  /*	g_print ("mouse down!\n"); */
 
 	return FALSE;
 }
@@ -145,7 +145,7 @@ dom_mouse_down (HtmlDocument *doc, DomMouseEvent *event, gpointer data)
 static gboolean
 dom_mouse_up (HtmlDocument *doc, DomMouseEvent *event, gpointer data)
 {
-  //	g_print ("mouse up!\n");
+  /*	g_print ("mouse up!\n"); */
 
 	return FALSE;
 }
@@ -191,7 +191,7 @@ url_requested (HtmlDocument *doc, const gchar *url, HtmlStream *stream)
 	g_print ("URL IS REQUESTED!!!!!!!\n");
 	g_print ("context is: %s\n", url);
 	
-	gtk_timeout_add (200, (GtkFunction)url_requested_timeout, context);
+	g_timeout_add (200, (GtkFunction)url_requested_timeout, context);
 	
 	return TRUE;
 }
@@ -442,7 +442,7 @@ main (gint argc, gchar **argv)
 	g_signal_connect (G_OBJECT (view), "request_object",
 			  G_CALLBACK (request_object), NULL);
 
-	//	gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE);
+	/*	gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE); */
 	
 	sw = gtk_scrolled_window_new (gtk_layout_get_hadjustment (GTK_LAYOUT (view)),
 				       gtk_layout_get_vadjustment (GTK_LAYOUT (view)));
@@ -500,8 +500,8 @@ main (gint argc, gchar **argv)
 	html_view_set_document (HTML_VIEW (view), document);
 	gtk_widget_show_all (window);
 
-	//	xmlDebugDumpDocument (stdout, _dom_Node__get_xmlNode (document->doc));
-	//debug_dump_boxes (HTML_VIEW (view)->root, 0, FALSE, NULL);
+	/*	xmlDebugDumpDocument (stdout, _dom_Node__get_xmlNode (document->doc)); */
+	/*debug_dump_boxes (HTML_VIEW (view)->root, 0, FALSE, NULL);*/
 	
 	gtk_main ();
 

@@ -36,8 +36,8 @@
 
 struct _DomHTMLInputElement {
 	DomHTMLElement parent;
-	gint8 checked:2;
-	guint8 active:1;
+	gint checked:2;
+	guint active:1;
 	gchar *str_value;
 	/* FIXME: Not implemented:
 	  attribute DOMString        accept;

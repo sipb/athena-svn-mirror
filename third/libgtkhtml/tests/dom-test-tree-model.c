@@ -24,6 +24,19 @@
 #include "dom-test-tree-model.h"
 #include "dom-test-pixmaps.h"
 
+static GType
+dom_test_tree_model_get_column_type (GtkTreeModel *tree_model, gint index)
+{
+	switch (index) {
+	case 0:
+		return G_TYPE_STRING;
+	case 1:
+		return GDK_TYPE_PIXBUF;
+	default:
+		return G_TYPE_INVALID;	
+	}
+}
+
 static void
 dom_test_tree_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter,
 			       gint column, GValue *value)
@@ -38,7 +51,8 @@ dom_test_tree_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter,
 	switch (column) {
 	case 0:
 		g_value_init (value, G_TYPE_STRING);
-
+		if (iter->user_data == NULL)
+			break;
 		switch (dom_Node__get_nodeType (DOM_NODE (iter->user_data))) {
 		case DOM_TEXT_NODE:
 			g_value_set_string (value, dom_Node__get_nodeValue (DOM_NODE (iter->user_data), NULL));
@@ -51,6 +65,8 @@ dom_test_tree_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter,
 		break;
 	case 1:
 		g_value_init (value, GDK_TYPE_PIXBUF);
+		if (iter->user_data == NULL)
+			break;
 		switch (dom_Node__get_nodeType (DOM_NODE (iter->user_data))) {
 		case DOM_TEXT_NODE:
 			g_value_set_instance (value, text_pixbuf);
@@ -121,7 +137,7 @@ dom_test_tree_model_iter_nth_child (GtkTreeModel *tree_model,
 	DomTestTreeModel *dom_tree_model = DOM_TEST_TREE_MODEL (tree_model);
 
 	if (dom_tree_model->type == DOM_TEST_TREE_MODEL_TREE) {
-		if (parent == NULL) {
+		if (parent == NULL || parent->user_data == NULL) {
 			iter->user_data = DOM_NODE (dom_tree_model->root);
 			
 			return TRUE;
@@ -199,6 +215,8 @@ static gboolean
 dom_test_tree_model_iter_next (GtkTreeModel  *tree_model,
 			       GtkTreeIter   *iter)
 {
+	if (iter->user_data == NULL)
+		return FALSE;
 	if (dom_Node__get_nextSibling (DOM_NODE (iter->user_data)) == NULL)
 		return FALSE;
 	
@@ -258,6 +276,7 @@ static void
 dom_test_tree_model_tree_model_init (GtkTreeModelIface *iface)
 {
 	iface->get_n_columns = dom_test_tree_model_get_n_columns;
+	iface->get_column_type = dom_test_tree_model_get_column_type;
 	iface->iter_next = dom_test_tree_model_iter_next;
 	iface->iter_children = dom_test_tree_model_iter_children;
 	iface->iter_has_child = dom_test_tree_model_iter_has_child;

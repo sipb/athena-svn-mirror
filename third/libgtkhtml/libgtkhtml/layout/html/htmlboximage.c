@@ -271,8 +271,8 @@ html_box_image_repaint_image (HtmlImage *image, gint x, gint y, gint width, gint
 		real_width = (width * gdk_pixbuf_get_width (box->scaled_pixbuf)) / (gdouble)gdk_pixbuf_get_width (image->pixbuf);
 		
 		gtk_widget_queue_draw_area (GTK_WIDGET (box->view),
-					    html_box_get_absolute_x (HTML_BOX (box)), // + floor (real_x + 0.5),
-					    html_box_get_absolute_y (HTML_BOX (box)),// + floor (real_y + 0.5),
+					    html_box_get_absolute_x (HTML_BOX (box)), /* + floor (real_x + 0.5),*/
+					    html_box_get_absolute_y (HTML_BOX (box)),/* + floor (real_y + 0.5),*/
 					    floor (real_width + real_x + 0.5),
 					    floor (real_height + real_y + 0.5));
 	}

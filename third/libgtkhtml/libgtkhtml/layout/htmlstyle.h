@@ -33,7 +33,6 @@ typedef struct _HtmlStyleOutline HtmlStyleOutline;
 typedef struct _HtmlStyleBackground HtmlStyleBackground;
 typedef struct _HtmlLengthBox HtmlLengthBox;
 typedef struct _HtmlStyleInherited HtmlStyleInherited;
-typedef enum _HtmlBackgroundRepeatType HtmlBackgroundRepeatType;
 
 enum  _HtmlBackgroundRepeatType {
 	HTML_BACKGROUND_REPEAT_REPEAT = 0,
@@ -42,6 +41,8 @@ enum  _HtmlBackgroundRepeatType {
 	HTML_BACKGROUND_REPEAT_NO_REPEAT,
 	HTML_BACKGROUND_REPEAT_SCALE
 };
+
+typedef enum _HtmlBackgroundRepeatType HtmlBackgroundRepeatType;
 
 #include <glib.h>
 #include <pango/pango.h>
@@ -61,17 +62,17 @@ typedef enum {
 	HTML_STYLE_CHANGE_NONE = 0,
 	HTML_STYLE_CHANGE_REPAINT,
 	HTML_STYLE_CHANGE_RELAYOUT,
-	HTML_STYLE_CHANGE_RECREATE,
+	HTML_STYLE_CHANGE_RECREATE
 } HtmlStyleChange;
 
 typedef enum {
 	HTML_LENGTH_AUTO = 0,
 	HTML_LENGTH_FIXED,
-	HTML_LENGTH_PERCENT,
+	HTML_LENGTH_PERCENT
 } HtmlLengthType;
 
 typedef struct {
-	HtmlLengthType type:2;
+	guint type:2;
 	gint value;
 } HtmlLength;
 
@@ -268,7 +269,7 @@ struct _HtmlStyleBackground {
 	HtmlColor color;
 	HtmlImage *image;
 
-	HtmlBackgroundRepeatType repeat:3;
+	guint repeat:3;
 };
 
 struct _HtmlStyleVisual {
@@ -315,38 +316,38 @@ struct _HtmlStyleInherited {
 
 	gint word_spacing:8;
 	gint letter_spacing:8;
-	HtmlCursorType cursor:4;
+	guint cursor:4;
 	
   	gushort border_spacing_horiz;
 	gushort border_spacing_vert;
   
-	HtmlDirectionType direction:1;
+	guint direction:1;
 	gint8 bidi_level;
 
 	HtmlColor *color;
 	HtmlFontSpecification *font_spec;
-	HtmlTextAlignType text_align:3;
+	guint text_align:3;
 
-	HtmlCaptionSideType caption_side:2;
-  	HtmlWhiteSpaceType white_space:2;
-  	HtmlListStyleTypeType list_style_type:5;
+	guint caption_side:2;
+  	guint white_space:2;
+  	guint list_style_type:5;
 };
 
 struct _HtmlStyle {
 	gint refcount;
 
-	HtmlDisplayType display:6;
-	HtmlVisibilityType visibility:2;
+	guint display:6;
+	guint visibility:2;
 
-	HtmlVerticalAlignType vertical_align:5;
-	HtmlPositionType position:3;
+	guint vertical_align:5;
+	guint position:3;
 
-	HtmlFloatType Float:2;
-	HtmlOverflowType overflow:2;
-	HtmlTextTransformType text_transform:2;
-	HtmlClearType clear:3;
-	HtmlUnicodeBidiType unicode_bidi:3;
-	HtmlTableLayoutType table_layout:1;
+	guint Float:2;
+	guint overflow:2;
+	guint text_transform:2;
+	guint clear:3;
+	guint unicode_bidi:3;
+	guint table_layout:1;
 	guint blink:1;
 	guint has_hover_style:1;
 	guint has_active_style:1;
