@@ -1,4 +1,4 @@
-.TH ATHDIR 1 "1 January 1995"
+.TH ATHDIR 1 "7 March 1998"
 .ds ]W MIT Athena
 .SH NAME
 athdir \- find machine specific directories using Athena conventions
@@ -18,8 +18,10 @@ makefiles) and not necessarily as reliable, as it contains no
 intelligence. Similarly, while the environment variable
 \fIATHENA_SYS\fR is widely available, attempting to use it in
 makefiles or resource files may fail on older lockers that have not
-yet been upgraded to use the new conventions. (See \fIlockers\fR(7)
-for more information on locker directory conventions.)
+yet been upgraded to use the new conventions, or in lockers that have
+not been updated to support the latest operating system releases. (See
+\fIlockers\fR(7) for more information on locker directory
+conventions.)
 
 In the first invocation shown above, \fIathdir\fR does not accept
 command line options other than the two listed, and they must be in
@@ -75,8 +77,10 @@ include files as well as libraries.
 
 In general, \fItype\fRs are treated as random strings by
 \fIathdir\fR. \fIathdir\fR checks the locker first for
-arch/$ATHENA_SYS/\fItype\fR, then for `machtype`\fItype\fR, then
-finally for simply \fItype\fR. Exceptions to this rule are cases where
+arch/$ATHENA_SYS/\fItype\fR. Next it checks for arch/COMPAT/\fitype\fR,
+where COMPAT iterates over the values in $ATHENA_SYS_COMPAT.
+Then it checks for `machtype`\fItype\fR. Finally it looks for \fItype\fR
+alone. Exceptions to this rule are cases where
 a convention is never expected to be used, or where a convention is
 explicitly discouraged and has never been supported. Note that if any
 future conventions arise, \fIathdir\fR will know about them and act
@@ -132,7 +136,9 @@ substitutions:
         %s   sysname
         %m   machtype value
 
-For example, the arch convention uses the string %p/arch/%s/%t.
+For example, the arch convention uses the string %p/arch/%s/%t. When
+making the substitution for %s, \fIATHENA_SYS_COMPAT\fR values will be
+substituted after the \fIATHENA_SYS\fR value as necessary.
 .TP 8
 .B \-r \fIrecsep\fR
 Specify the record separator when multiple paths are output. By default this
@@ -146,6 +152,17 @@ value used in generating new style machine directories.
 .B \-m \fImachtype\fR
 This option allows a command line override for the \fImachtype\fR
 value used in generating old style machine directories.
+.SH VARIABLES
+The environment variable \fIATHENA_SYS\fR is used to determine the
+sysname value when determining path names for new style paths, unless
+overridden by the \-s option.
+
+The environment variable \fIATHENA_SYS_COMPAT\fR is a colon-separated
+list of fallback sysname values which are known to be generally
+compatible with the current system. Thus, on a Solaris 2.6 machine,
+\fIATHENA_SYS\fR may be set to sun4x_56, with \fIATHENA_SYS_COMPAT\fR
+set to sun4x_55:sun4m_54. Then if there is no arch/sun4x_56 directory
+available, arch/sun4x_55 will be checked, etc.
 .SH SEE ALSO
 machtype(1), lockers(7), mkdir(1)
 .SH AUTHOR
