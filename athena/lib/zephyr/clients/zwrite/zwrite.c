@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.9 1988-02-07 20:35:55 rfrench Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.10 1988-02-07 21:00:29 rfrench Exp $";
 #endif lint
 
 #define FUDGEFACTOR 10
@@ -41,7 +41,8 @@ main(argc,argv)
 	int retval, len, arg, nocheck, nchars, maxlen;
 	long ourtime;
 	char bfr[BUFSIZ], message[Z_MAXPKTLEN], *ptr, *signature;
-
+	char classbfr[BUFSIZ], instbfr[BUFSIZ], sigbfr[BUFSIZ];
+	
 	whoami = argv[0];
 
 	if ((retval = ZInitialize()) != ZERR_NONE) {
@@ -58,13 +59,24 @@ main(argc,argv)
 	auth = ZAUTH;
 	verbose = quiet = msgarg = nrecips = nocheck = 0;
 
-	if (!(class = ZGetVariable("zwrite-class")))
+	if (class = ZGetVariable("zwrite-class")) {
+		strcpy(classbfr, class);
+		class = classbfr;
+	}
+	else
 		class = DEFAULT_CLASS;
-	if (!(inst = ZGetVariable("zwrite-inst")))
+	if (inst = ZGetVariable("zwrite-inst")) {
+		strcpy(instbfr, inst);
+		inst = instbfr;
+	}
+	else
 		inst = DEFAULT_INSTANCE;
 	signature = ZGetVariable("zwrite-signature");
-	if (signature)
+	if (signature) {
+		strcpy(sigbfr, signature);
+		signature = sigbfr;
 		maxlen -= strlen(signature)+1;
+	} 
 	
 	arg = 1;
 	
