@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.18 1991-02-28 18:42:58 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.19 1991-03-11 18:43:51 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -56,7 +56,7 @@ int  interactive,	/* query before each expunge */
      f_links,		/* follow symbolic links */
      f_mounts;		/* follow mount points */
 
-int bytes_removed = 0;
+int space_removed = 0;
 
 
 
@@ -270,9 +270,9 @@ int num;
      if (yield) {
 	  if (noop)
 	       printf("Total that would be expunged: %dk\n",
-		      size_to_k(bytes_removed));
+		      space_to_k(space_removed));
 	  else
-	       printf("Total expunged: %dk\n", size_to_k(bytes_removed));
+	       printf("Total expunged: %dk\n", space_to_k(space_removed));
      }
      return status;
 }
@@ -377,7 +377,7 @@ filerec *file_ent;
 
      if (interactive) {
 	  printf ("%s: Expunge %s (%dk)? ", whoami, user,
-		  size_to_k(file_ent->specs.st_size));
+		  specs_to_k(file_ent->specs));
 	  if (! yes()) {
 	       set_status(EXPUNGE_NOT_EXPUNGED);
 	       return error_code;
@@ -385,10 +385,10 @@ filerec *file_ent;
      }
 
      if (noop) {
-	  bytes_removed += file_ent->specs.st_size;
+	  space_removed += specs_to_space(file_ent->specs);
 	  printf("%s: %s (%dk) would be expunged (%dk total)\n", whoami, user,
-		 size_to_k(file_ent->specs.st_size),
-		 size_to_k(bytes_removed));
+		 specs_to_k(file_ent->specs),
+		 space_to_k(space_removed));
 	  return 0;
      }
 
@@ -397,11 +397,11 @@ filerec *file_ent;
      else
 	  status = unlink(real);
      if (! status) {
-	  bytes_removed += file_ent->specs.st_size;
+	  space_removed += specs_to_space(file_ent->specs);
 	  if (verbose)
 	       printf("%s: %s (%dk) expunged (%dk total)\n", whoami, user,
-		      size_to_k(file_ent->specs.st_size),
-		      size_to_k(bytes_removed));
+		      specs_to_k(file_ent->specs),
+		      space_to_k(space_removed));
 	  return 0;
      }
      else {
