@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_class_c[] =
-    "$Id: class.c,v 1.16 1990-11-17 01:25:19 raeburn Exp $";
+    "$Id: class.c,v 1.17 1990-12-12 00:56:30 raeburn Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -121,11 +121,9 @@ int operator== (const ZDestination& d1, const ZDestination& d2) {
 	    && d1.recip == d2.recip);
 }
 
-#ifndef __GNUG__
 ZDestination::~ZDestination () {
     /* implicit destruction of ZString objects... */
 }
-#endif
 
 /* register the client as interested in class */
 
