@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1996-12-27 21:35:00 ghudson Exp $
+# $Id: Makefile,v 1.4 1996-12-28 18:51:33 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
@@ -16,6 +16,9 @@ install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${MODULES}
+	mkdir -p ${DESTDIR}${INITD}
+	mkdir -p ${DESTDIR}${RC0}
+	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${WS}/include
 	mkdir -p ${DESTDIR}${WS}/include/afs
 	mkdir -p ${DESTDIR}${WS}/include/rx
