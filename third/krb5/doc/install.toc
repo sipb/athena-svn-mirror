@@ -27,12 +27,13 @@
 \subsecentry {AIX}{3}{8}{1}{13}
 \subsecentry {Alpha OSF/1 V1.3}{3}{8}{2}{14}
 \subsecentry {Alpha OSF/1 V2.0{\tt\char43}{\tt\char43}}{3}{8}{3}{14}
-\subsecentry {BSDI}{3}{8}{4}{14}
-\subsecentry {HPUX}{3}{8}{5}{14}
-\subsecentry {Solaris versions 2.0 through 2.3}{3}{8}{6}{14}
-\subsecentry {Solaris 2.X}{3}{8}{7}{15}
-\subsecentry {SGI Irix 5.X}{3}{8}{8}{15}
-\subsecentry {Ultrix 4.2/3}{3}{8}{9}{15}
+\subsecentry {Alpha Tru64 4.0}{3}{8}{4}{14}
+\subsecentry {BSDI}{3}{8}{5}{14}
+\subsecentry {HPUX}{3}{8}{6}{14}
+\subsecentry {Solaris versions 2.0 through 2.3}{3}{8}{7}{15}
+\subsecentry {Solaris 2.X}{3}{8}{8}{15}
+\subsecentry {SGI Irix 5.X}{3}{8}{9}{15}
+\subsecentry {Ultrix 4.2/3}{3}{8}{10}{15}
 \secentry {Using \samp {Autoconf}}{3}{9}{16}
 \chapentry {Installing Kerberos V5}{4}{17}
 \secentry {Installing KDCs}{4}{1}{17}

@@ -2111,13 +2111,69 @@ EOF
 SIZEOF_LONG=$ac_cv_sizeof_long
 
 
+for ac_func in strerror
+do
+echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
+echo "configure:2118: checking for $ac_func" >&5
+if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2123 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char $ac_func(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char $ac_func();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+choke me
+#else
+$ac_func();
+#endif
+
+; return 0; }
+EOF
+if { (eval echo configure:2146: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_func_$ac_func=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_func_$ac_func=no"
+fi
+rm -f conftest*
+fi
+
+if eval "test \"`echo '$ac_cv_func_'$ac_func`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+    ac_tr_func=HAVE_`echo $ac_func | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_func 1
+EOF
+ 
+else
+  echo "$ac_t""no" 1>&6
+fi
+done
+
+
 echo $ac_n "checking return type of setrpcent""... $ac_c" 1>&6
-echo "configure:2116: checking return type of setrpcent" >&5
+echo "configure:2172: checking return type of setrpcent" >&5
 if eval "test \"`echo '$''{'k5_cv_type_setrpcent'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2121 "configure"
+#line 2177 "configure"
 #include "confdefs.h"
 #include <netdb.h>
 #ifdef __cplusplus
@@ -2128,7 +2184,7 @@ int main() {
 int i;
 ; return 0; }
 EOF
-if { (eval echo configure:2132: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2188: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   k5_cv_type_setrpcent=void
 else
@@ -2145,12 +2201,12 @@ cat >> confdefs.h <<EOF
 EOF
 
 echo $ac_n "checking return type of endrpcent""... $ac_c" 1>&6
-echo "configure:2149: checking return type of endrpcent" >&5
+echo "configure:2205: checking return type of endrpcent" >&5
 if eval "test \"`echo '$''{'k5_cv_type_endrpcent'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2154 "configure"
+#line 2210 "configure"
 #include "confdefs.h"
 #include <netdb.h>
 #ifdef __cplusplus
@@ -2161,7 +2217,7 @@ int main() {
 int i;
 ; return 0; }
 EOF
-if { (eval echo configure:2165: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2221: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   k5_cv_type_endrpcent=void
 else
@@ -2178,12 +2234,12 @@ cat >> confdefs.h <<EOF
 EOF
 
 echo $ac_n "checking for sys_errlist declaration""... $ac_c" 1>&6
-echo "configure:2182: checking for sys_errlist declaration" >&5
+echo "configure:2238: checking for sys_errlist declaration" >&5
 if eval "test \"`echo '$''{'krb5_cv_decl_sys_errlist'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2187 "configure"
+#line 2243 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 #include <errno.h>
@@ -2191,7 +2247,7 @@ int main() {
 1+sys_nerr;
 ; return 0; }
 EOF
-if { (eval echo configure:2195: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2251: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_decl_sys_errlist=yes
 else
@@ -2218,19 +2274,19 @@ else
   # This means that sys_errlist is not declared in errno.h, but may still
   # be in libc.
   echo $ac_n "checking for sys_errlist in libc""... $ac_c" 1>&6
-echo "configure:2222: checking for sys_errlist in libc" >&5
+echo "configure:2278: checking for sys_errlist in libc" >&5
 if eval "test \"`echo '$''{'krb5_cv_var_sys_errlist'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2227 "configure"
+#line 2283 "configure"
 #include "confdefs.h"
 extern int sys_nerr;
 int main() {
 1+sys_nerr;
 ; return 0; }
 EOF
-if { (eval echo configure:2234: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2290: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   krb5_cv_var_sys_errlist=yes
 else
@@ -2258,7 +2314,7 @@ EOF
   fi
 fi
 echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:2262: checking host system type" >&5
+echo "configure:2318: checking host system type" >&5
 if eval "test \"`echo '$''{'krb5_cv_host'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2269,7 +2325,7 @@ else { echo "configure: error: can not run $ac_config_sub" 1>&2; exit 1; }
 fi
 
 echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:2273: checking host system type" >&5
+echo "configure:2329: checking host system type" >&5
 
 host_alias=$host
 case "$host_alias" in
@@ -2345,13 +2401,22 @@ alpha*-dec-osf*)
 # (compiled-in or SHLIB_PATH) will be searched first.
 #
 *-*-hpux*)
-	PICFLAGS=+z
+	if test "$krb5_cv_prog_gcc" = yes; then
+		PICFLAGS=-fPIC
+	else
+		PICFLAGS=+z
+	fi
 	INSTALL_SHLIB='$(INSTALL)'
 	SHLIBEXT=.sl
 	SHLIBVEXT='.$(LIBMAJOR).$(LIBMINOR)'
 	SHLIBSEXT='.$(LIBMAJOR)'
-	SHLIB_EXPFLAGS='+s +b $(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
-	LDCOMBINE='ld -b +h lib$(LIB)$(SHLIBSEXT)'
+	if test "$krb5_cv_prog_gcc" = yes; then
+		SHLIB_EXPFLAGS='-Wl,+s -Wl,+b,$(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
+		LDCOMBINE='gcc -fPIC -shared -Wl,+h,lib$(LIB)$(SHLIBSEXT)'
+	else
+		SHLIB_EXPFLAGS='+s +b $(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
+		LDCOMBINE='ld -b +h lib$(LIB)$(SHLIBSEXT)'
+	fi
 	CC_LINK_SHARED='$(CC) $(PROG_LIBPATH) -Wl,+s -Wl,+b,$(PROG_RPATH)'
 	CC_LINK_STATIC='$(CC) $(PROG_LIBPATH)'
 	RUN_ENV='SHLIB_PATH=`echo $(PROG_LIBPATH) | sed -e "s/-L//g" -e "s/ /:/g"`; export SHLIB_PATH;'
@@ -2689,7 +2754,7 @@ krb5_append_frags=$ac_config_fragdir/libobj.in:$krb5_append_frags
 
 
 echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
-echo "configure:2693: checking whether ln -s works" >&5
+echo "configure:2758: checking whether ln -s works" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2715,7 +2780,7 @@ fi
 # Extract the first word of "ar", so it can be a program name with args.
 set dummy ar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2719: checking for $ac_word" >&5
+echo "configure:2784: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_AR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else

@@ -1,5 +1,5 @@
 
-		  Kerberos Version 5, Release 1.2.3
+		  Kerberos Version 5, Release 1.2.4
 
 			    Release Notes
 
@@ -9,7 +9,7 @@ Unpacking the Source Distribution
 ---------------------------------
 
 The source distribution of Kerberos 5 comes in a gzipped tarfile,
-krb5-1.2.3.tar.gz.  Instruction on how to extract the entire
+krb5-1.2.4.tar.gz.  Instruction on how to extract the entire
 distribution follow.  These directions assume that you want to extract
 into a directory called DIST.
 
@@ -17,17 +17,17 @@ If you have the GNU tar program and gzip installed, you can simply do:
 
 	mkdir DIST
 	cd DIST
-	gtar zxpf krb5-1.2.3.tar.gz
+	gtar zxpf krb5-1.2.4.tar.gz
 
 If you don't have GNU tar, you will need to get the FSF gzip
 distribution and use gzcat:
 
 	mkdir DIST
 	cd DIST
-	gzcat krb5-1.2.3.tar.gz | tar xpf -
+	gzcat krb5-1.2.4.tar.gz | tar xpf -
 
-Both of these methods will extract the sources into DIST/krb5-1.2.3/src
-and the documentation into DIST/krb5-1.2.3/doc.
+Both of these methods will extract the sources into DIST/krb5-1.2.4/src
+and the documentation into DIST/krb5-1.2.4/doc.
 
 Building and Installing Kerberos 5
 ----------------------------------
@@ -60,6 +60,80 @@ If you are not able to use krb5-send-pr because you haven't been able
 compile and install Kerberos V5 on any platform, you may send mail to
 krb5-bugs@mit.edu.
 
+Notes, Major Changes, and Known Bugs for 1.2.4
+----------------------------------------------
+
+Notes:
+
+* Like the 1.2.3 release, this is a patch release.  One critical login
+  problem is fixed, and a problem with interoperability with
+  Microsoft software is worked around.
+
+Major Changes:
+
+* The one-character bug introduced into the login.krb5 program that
+  caused 8-character usernames to be rejected in some circumstances
+  has been fixed.
+
+* The handling of key version numbers has been modified in places.
+  The current formats of the keytab and srvtab files, as well as parts
+  of the remote kadmin protocol, handle key version numbers as 8-bit
+  quantities, when in fact they are 32-bit quantities.
+
+  * In the keytab and srvtab support for krb5, searching for the
+    "highest numbered" key version now has some heuristics to deal
+    with the 8-bit kvno wrapping from 255 to 0 to 1....  If a kvno
+    greater than 240 is found, the kvno values are assumed to range
+    from 128 to 383 (127+256).  This should handle cases like storing
+    kvno values 255 and 256 in the file.
+
+  * In the keytab and srvtab support for krb5, when looking for a key
+    with a specific version number, the low 8 bits of the requested
+    kvno are compared against the value stored in the file.
+
+  * The "ktutil" program also has a new heuristic for choosing the
+    "highest numbered" key in a keytab to be written out into a krb4
+    srvtab file.
+
+  These heuristics all assume that key version numbers will be
+  assigned sequentially, and that there will not be a large set of key
+  version numbers in use at one time for any given principal in a
+  keytab file.
+
+  These changes were prompted by the discovery by Microsoft (while
+  trying to write tools to generate MIT-style keytab files) that we
+  could not store arbitrary 32-bit version numbers for keys.
+
+* Some issues with multiple enctype support in GSSAPI credential
+  forwarding have been fixed.
+
+Minor Changes:
+
+* A few compilation problems have been fixed.
+
+* New test cases have been added to the test suite to exercise some of
+  the new changes.
+
+Known Bugs:
+
+* Non-sequential key version numbering will confuse the new kvno
+  handling heuristics.
+
+* Long-standing but newly recognized:
+
+  * The remote kadmin protocol will produce incorrect results when key
+    version numbers greater than 255 are being retrieved or stored.
+    The kadmin.local program does not suffer from this problem.
+
+  * We do not support storing multiple key versions for a principal in
+    a srvtab file.
+
+  * We do not support acquiring krb4 tickets using a srvtab or keytab
+    file without acquiring krb5 tickets at the same time (i.e., the
+    old krb4 "ksrvtgt" program).
+
+* most of the other known bugs from 1.2.3
+
 Notes, Major Changes, and Known Bugs for 1.2.3
 ----------------------------------------------
 
@@ -69,15 +143,22 @@ Notes:
   requests have not been incorporated.  We have focussed mainly on
   important security fixes and usability fixes.
 
-* The lists following are known to be INCOMPLETE; they will be updated
-  prior to final release.
-
 Major Changes:
+
+* Certain problems with shared library builds have been eliminated or
+  reduced on Linux and HP-UX.
 
 * Various bugs in single-DES enctype similarity have been fixed; the
   1.0.x behavior of treating all single-DES enctype as equivalent has
   been restored for now.  This may go away in a future release.  Note
   that SUPPORT_DESMD5 will be treated as always false for now.
+
+* The KDC will now log a number of enctype parameters associated with
+  KDC requests, in order to allow easier debugging of enctype-related
+  problems.
+
+* A client will no longer attempt obtain a forwarded TGT with a
+  session key enctype that the target server won't understand.
 
 * Triple-DES should work on Windows now.  The SHA-1 implementation had
   a Windows-specific bug preventing it from working in most cases.
@@ -85,11 +166,13 @@ Major Changes:
 * Various bugs in pty handling have been fixed.
 
 * Bogus utmp files with garbage characters in their names should not
-  get created on Solaris.
+  get created on Solaris.  Also, utmp/wtmp handling code has been
+  mostly rewritten, eliminating numerous bugs.
 
 * Potential buffer-overrun problems and null-pointer dereferences have
-  been fixed in ftpd, telnetd, and SHA-1.  The first two are probably
-  exploitable; the SHA-1 bug probably isn't, as far as we know.
+  been fixed in ftpd, telnetd, login.krb5, and SHA-1.  The first three
+  may be exploitable under certain conditions; the SHA-1 bug probably
+  isn't, as far as we know.
 
 * For multiple-hop interrealm authentication, the realm transit path
   checking has been rewritten.  The old code had a serious bug where
@@ -108,7 +191,8 @@ Major Changes:
   can still prevent such tickets from being issued.  This checking is
   controlled by a per-realm flag, and is enabled by default.
 
-* The rlogin server should no longer hang on AIX systems.
+* On AIX systems, the rlogin server should no longer hang when
+  control-C is pressed.
 
 * New databases will be created in btree format by default.  We
   believe the btree code to be less buggy than the hash format code we
@@ -118,6 +202,13 @@ Major Changes:
 
 Known Bugs:
 
+* There may be problems with running a KDC on 64-bit platforms
+  (environments where size_t and long are wider than 32 bits, such as
+  alpha/Tru64, or Solaris/SPARC in SPARCv9 mode, for example), as
+  indicated by the util/db2 tests not passing.  These problems may
+  also extend to the rpc library, which may prevent the kadmin
+  protocol from functioning.  These are being investigated.
+
 * ETYPE_INFO preauthentication data returned from the KDC are not
   sorted in the order requested by the client.  This may result in
   preauthentication failure when encrypted timestamp preauthentication
@@ -126,12 +217,20 @@ Known Bugs:
 
 * The gssftp daemon and client, when running in krb4 mode, are
   inconsistent with respect to port numbers passed to the
-  {mk,rd}_{priv,safe} functinos.  As a result, there is a small but
+  {mk,rd}_{priv,safe} functions.  As a result, there is a small but
   nonzero probability that krb4 ftp with client and server on the same
   IP address will fail with a "Time is out of bounds" error.  This
   includes the tests/dejagnu test suite, which tests the krb4 ftp
   functionality.  The probability of this occuring seems to be less
   than 50%.
+
+* The gss-sample test application suite is known to not communicate
+  with the gss-sample suite in 1.1.x and earlier releases.  This is
+  the result of changes to increase functionality; fixes to allow for
+  backwards compatibility will occur in a later release.
+
+* BSD/OS 4.x may have some problems compiling.  These are being
+  investigated.
 
 Notes, Major Changes, and Known Bugs for 1.2.2
 ----------------------------------------------
@@ -489,10 +588,10 @@ Thanks to Christopher Thompson and Marcus Watts for discovering the
 ftpd security bug.
 
 Thanks to the members of the Kerberos V5 development team at MIT, both
-past and present: Danilo Almeida, Jay Berkenbilt, Richard Basch, John
-Carr, Don Davis, Alexandra Ellwood, Nancy Gilman, Matt Hancher, Sam
-Hartman, Paul Hill, Marc Horowitz, Eva Jacobus, Miroslav Jurisic,
-Barry Jaspan, Geoffrey King, John Kohl, Peter Litwack, Scott McGuire,
-Kevin Mitchell, Cliff Neuman, Paul Park, Ezra Peisach, Chris
-Provenzano, Ken Raeburn, Jon Rochlis, Jeff Schiller, Brad Thompson,
-Harry Tsai, Ted Ts'o, Marshall Vale, Tom Yu.
+past and present: Danilo Almeida, Jay Berkenbilt, Richard Basch, Mitch
+Berger, John Carr, Don Davis, Alexandra Ellwood, Nancy Gilman, Matt
+Hancher, Sam Hartman, Paul Hill, Marc Horowitz, Eva Jacobus, Miroslav
+Jurisic, Barry Jaspan, Geoffrey King, John Kohl, Peter Litwack, Scott
+McGuire, Kevin Mitchell, Cliff Neuman, Paul Park, Ezra Peisach, Chris
+Provenzano, Ken Raeburn, Jon Rochlis, Jeff Schiller, Jen Selby, Brad
+Thompson, Harry Tsai, Ted Ts'o, Marshall Vale, Tom Yu.
