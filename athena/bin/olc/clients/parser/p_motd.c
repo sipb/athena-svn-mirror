@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v $
- *	$Id: p_motd.c,v 1.12 1990-07-16 08:21:33 lwvanels Exp $
+ *	$Id: p_motd.c,v 1.13 1990-11-14 12:26:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.12 1990-07-16 08:21:33 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.13 1990-11-14 12:26:11 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>

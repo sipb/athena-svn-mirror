@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.8 1990-10-18 06:14:36 lwvanels Exp $
+ *	$Id: p_local.c,v 1.9 1990-11-14 12:25:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.8 1990-10-18 06:14:36 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.9 1990-11-14 12:25:37 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -47,9 +50,8 @@ do_quit(arguments)
   REQUEST Request;
   LIST *list;
   int status;
-#ifdef lint
+
   *arguments = (char *) NULL;
-#endif lint
   
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
