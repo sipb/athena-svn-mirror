@@ -139,6 +139,7 @@ cp -p etc/shadow.local etc/shadow
 chmod 600 etc/shadow
 cp -p /srvd/etc/group etc/group
 cp -p /srvd/etc/athena/athinfo.access etc/athena/athinfo.access
+cp -p /srvd/etc/athena/local-lockers.conf etc/athena/local-lockers.conf
 cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
