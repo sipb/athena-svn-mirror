@@ -197,7 +197,7 @@ displayq(format)
 	    else putchar('\n');
 #endif KERBEROS
 #if defined(PQUOTA) && defined(KERBEROS)
-	    if (pagecost) printf("Page cost: %d cents\n", pagecost);
+	    if (pagecost > 0) printf("Page cost: %d cents\n", pagecost);
 #endif
 #endif
 	}
