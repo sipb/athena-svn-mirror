@@ -20,15 +20,16 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.4 1989-08-07 13:49:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.5 1989-08-07 15:02:03 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
 ERRCODE
-t_personal_status(Request)
+t_personal_status(Request,chart)
      REQUEST *Request;
+     int chart;
 {
   int status;
   LIST *list;
@@ -37,7 +38,7 @@ t_personal_status(Request)
   switch (status)
     {
     case SUCCESS:
-      t_display_personal_status(Request,list);
+      t_display_personal_status(Request,list,chart);
       free(list);
       break;
 
@@ -59,9 +60,10 @@ t_personal_status(Request)
 
 
 ERRCODE
-t_display_personal_status(Request,list)
+t_display_personal_status(Request,list,chart)
      REQUEST *Request;
      LIST *list;
+     int chart;
 {
   LIST *l;
   char uinstbuf[10];
@@ -86,7 +88,7 @@ t_display_personal_status(Request,list)
   printf("count: %d\n", count);
 #endif TEST
 
-  if((count == 1) && (list->user.instance == 0))
+  if((count == 1) && (list->user.instance == 0) && !chart)
     {
       if(list->nseen >= 0)
 	{
