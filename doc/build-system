@@ -109,23 +109,15 @@ to it) which does the following:
 	  AC_WITH_MOTIF, which should be used as follows if you want
 	  to use the Motif library:
 
-		# Near the beginning.
+		# Near the beginning
 		AC_ARG_WITH(motif,
 			    [  --with-motif=PREFIX     Compile with Motif],
 			    [motif="$withval"], [motif=no])
 
-		# Where you do checks for header files.
+		# Where you do checks for header files
 		AC_PATH_XTRA
 
-		# Where you do checks for libraries, if you must have Motif.
-		if test "$motif" != no -a "$motif" != yes; then
-			CPPFLAGS="${CPPFLAGS} -I$motif/include"
-			LDFLAGS="$LDFLAGS -L$motif/lib"
-		fi
-		AC_CHECK_LIB(Xm, XmString, :,
-			     [AC_MSG_ERROR(Motif library not found)])
-
-		# Where you do checks for libraries, if you don't need Motif.
+		# Where you do checks for libraries
 		if test "$motif" != no; then
 			if test "$motif" != yes; then
 				CPPFLAGS="${CPPFLAGS} -I$motif/include"
@@ -133,7 +125,11 @@ to it) which does the following:
 			fi
 			AC_CHECK_LIB(Xm, XmString, :,
 				     [AC_MSG_ERROR(Motif library not found)])
+			# Omit the next line if you must have Motif.
 			AC_DEFINE(WITH_MOTIF)
+		# Omit the next two lines if you do not require Motif.
+		else
+			AC_MSG_ERROR(This package requires Motif.)
 		fi
 
 	  You still need to link with -lXm in your Makefile.in.
@@ -142,7 +138,7 @@ to it) which does the following:
 	  libraries.  You should use this as follows if you need to
 	  link with AFS:
 
-		# Near the beginning.
+		# Near the beginning
 		AC_ARG_WITH(afs,
 			    [  --with-afs=PREFIX       Compile with AFS],
 			    [afs="$withval"], [afs=no])
@@ -154,16 +150,6 @@ to it) which does the following:
 			      AC_CHECK_LIB(nsl, gethostbyname))
 		AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 
-		# Where you do checks for libraries, if you must have AFS.
-		if test "$afs" != no -a "$afs" != yes; then
-			CPPFLAGS="${CPPFLAGS} -I$afs/include"
-			LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
-		fi
-		AC_CHECK_LIB(sys, pioctl,,
-			    [AC_MSG_ERROR(AFS libraries not found)],
-			    -lrx -llwp -lsys)
-
-		# Where you do checks for libraries, if you don't need AFS.
 		if test "$afs" != no; then
 			if test "$afs" != yes; then
 				CPPFLAGS="${CPPFLAGS} -I$afs/include"
@@ -172,7 +158,11 @@ to it) which does the following:
 			AC_CHECK_LIB(sys, pioctl,,
 				    [AC_MSG_ERROR(AFS libraries not found)],
 				    -lrx -llwp -lsys)
+			# Omit the next line if you must have AFS.
 			AC_DEFINE(WITH_AFS)
+		# Omit the next two lines if you do not require AFS.
+		else
+			AC_MSG_ERROR(This package requires AFS.)
 		fi
 
 	  You still need to link with any appropriate AFS libraries in
