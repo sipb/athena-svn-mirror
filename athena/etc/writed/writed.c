@@ -15,7 +15,7 @@
 
 /* This is the server side of the networked write system. */
 
-static const char rcsid[] = "$Id: writed.c,v 1.1 1999-10-16 20:07:25 danw Exp $";
+static const char rcsid[] = "$Id: writed.c,v 1.2 1999-10-19 17:14:54 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,5 +39,5 @@ int main(int argc, char **argv)
   dup2(0, 1);
   dup2(0, 2);
   execv(WRITE_PROG, av);
-  _exit(1);
+  exit(1);
 }
