@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.52 2000-09-13 05:53:42 jweiss Exp $
+# $Id: reactivate.sh,v 1.53 2000-09-18 19:29:05 jweiss Exp $
 
 trap "" 1 15
 
@@ -23,6 +23,17 @@ nuke()
 
 umask 22
 . /etc/athena/rc.conf
+if [ -f /var/athena/clusterinfo.bsh ] ; then
+	. /var/athena/clusterinfo.bsh
+fi
+
+# Determine where the congfig files live
+THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
+if [ -n "$SYSPREFIX" ]; then
+	config=$SYSPREFIX/config/$THISVERS
+else
+	config=/srvd
+fi
 
 # Set various flags (based on environment and command-line)
 if [ "$1" = -detach ]; then
@@ -80,16 +91,16 @@ fi
 
 # Copy in latest password file
 if [ "$PUBLIC" = true ]; then
-	if [ -r /srvd/etc/passwd ]; then
-		syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
+	if [ -r $config/etc/passwd ]; then
+		syncupdate -c /etc/passwd.local.new $config/etc/passwd \
 			/etc/passwd.local
 	fi
-	if [ -r /srvd/etc/shadow ]; then
-		syncupdate -c /etc/shadow.local.new /srvd/etc/shadow \
+	if [ -r $config/etc/shadow ]; then
+		syncupdate -c /etc/shadow.local.new $config/etc/shadow \
 			/etc/shadow.local
 	fi
-	if [ -r /srvd/etc/group ]; then
-		cp -p /srvd/etc/group /etc/group.local
+	if [ -r $config/etc/group ]; then
+		cp -p $config/etc/group /etc/group.local
 		chmod 644 /etc/group.local
 		chown root /etc/group.local
 	fi
@@ -149,7 +160,6 @@ if [ "$full" = true ]; then
 
 	if [ "$PUBLIC" = true -a -f /srvd/.rvdinfo ]; then
 		NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
-		THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 		if [ "$NEWVERS" = "$THISVERS" ]; then
 			/usr/athena/etc/track
 			cf=`cat /srvd/usr/athena/lib/update/configfiles`
