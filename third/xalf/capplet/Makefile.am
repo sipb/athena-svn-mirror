@@ -20,13 +20,14 @@ ccenterdir = $(datadir)/control-center
 Xalfdir = $(ccenterdir)/Xalf
 
 install-data-local:
-	$(INSTALL_DATA) $(srcdir)/hourglass-big.png $(datadir)/pixmaps/hourglass-big.png
-	$(INSTALL_DATA) $(srcdir)/hourglass-small.png $(datadir)/pixmaps/hourglass-small.png	
-	$(mkinstalldirs) $(Xalfdir)
-	$(INSTALL_DATA) $(srcdir)/Xalf.directory $(Xalfdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/settings.desktop $(Xalfdir)/settings.desktop 
-	$(mkinstalldirs) $(datadir)/gnome/apps/Settings/Xalf
-	$(INSTALL_DATA) $(srcdir)/settings.desktop $(datadir)/gnome/apps/Settings/Xalf/settings.desktop 
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps
+	$(INSTALL_DATA) $(srcdir)/hourglass-big.png $(DESTDIR)$(datadir)/pixmaps/hourglass-big.png
+	$(INSTALL_DATA) $(srcdir)/hourglass-small.png $(DESTDIR)$(datadir)/pixmaps/hourglass-small.png	
+	$(mkinstalldirs) $(DESTDIR)$(Xalfdir)
+	$(INSTALL_DATA) $(srcdir)/Xalf.directory $(DESTDIR)$(Xalfdir)/.directory
+	$(INSTALL_DATA) $(srcdir)/settings.desktop $(DESTDIR)$(Xalfdir)/settings.desktop 
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/gnome/apps/Settings/Xalf
+	$(INSTALL_DATA) $(srcdir)/settings.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Xalf/settings.desktop 
 
 
 
