@@ -1,9 +1,10 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v $
- *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * $Id: afs.c,v 1.8 1992-04-21 08:20:42 probe Exp $
+ *
+ * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.7 1992-01-06 15:50:10 probe Exp $";
+static char *rcsid = "$Id: afs.c,v 1.8 1992-04-21 08:20:42 probe Exp $";
 
 #include "attach.h"
 
@@ -15,6 +16,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/att
 #include <sys/errno.h>
 
 #include <krb.h>
+
 extern char *krb_realmofhost();	/* <krb.h> doesn't declare this */
 
 /* Flags to afs_auth_internal() */
@@ -273,7 +275,7 @@ static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 #else
 	error_ret = waitb.w_retcode;
 #endif
-	if (error_ret) {
+	if (error_ret && (flags & AFSAUTH_DOAUTH)) {
 		error_status = ERR_AUTHFAIL;
 		return (FAILURE);
 	}
