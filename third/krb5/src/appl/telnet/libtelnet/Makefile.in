@@ -1,3 +1,7 @@
+thisconfigdir=.
+myfulldir=appl/telnet/libtelnet
+mydir=.
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 # derived from the original Makefile.generic
 #
 # Copyright (c) 1991 The Regents of the University of California.
@@ -38,7 +42,7 @@ SRCS=   $(srcdir)/auth.c \
 	$(srcdir)/enc_des.c \
 	$(srcdir)/setenv.c \
 	$(srcdir)/getent.c \
-	$(scrdir)/parsetos.c \
+	$(srcdir)/parsetos.c \
 	$(srcdir)/strdup.c \
 	$(srcdir)/strcasecmp.c \
 	$(srcdir)/strchr.c \
