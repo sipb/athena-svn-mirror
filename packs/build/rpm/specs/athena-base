@@ -2,7 +2,6 @@ Name: athena-base
 Summary: A few base files needed by any Athena package
 Copyright: MIT
 Group: System Environment/Base
-Requires: sh-utils
 
 %description
 A few base files needed by any Athena package
