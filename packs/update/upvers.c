@@ -17,7 +17,7 @@
  * appropriate scripts during the update process.
  */
 
-static char rcsid[] = "$Id: upvers.c,v 1.15 1998-04-13 19:28:10 ghudson Exp $";
+static char rcsid[] = "$Id: upvers.c,v 1.16 1998-04-15 19:54:56 ghudson Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -105,6 +105,7 @@ int main(int argc, char **argv)
       sprintf(command, "%s/%d.%d.%d %s", argv[2], vf[i].major, vf[i].minor,
 	      vf[i].patch, args);
       printf("Running %s\n", command);
+      fflush(stdout);
       system(command);
     }
 
