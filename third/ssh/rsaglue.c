@@ -18,8 +18,11 @@ using the --with-rsaref configure option.
 */
 
 /*
- * $Id: rsaglue.c,v 1.2 2001-02-09 00:05:56 ghudson Exp $
+ * $Id: rsaglue.c,v 1.3 2001-02-10 00:02:03 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2001/02/09 00:05:56  ghudson
+ * Fix a vulnerability which could allow an attacker to get a server's session key.
+ *
  * Revision 1.1.1.2  1999/03/08 17:43:18  danw
  * Import of ssh 1.2.26
  *
@@ -254,7 +257,7 @@ void rsa_private_decrypt(MP_INT *output, MP_INT *input, RSAPrivateKey *key)
       if (time(NULL) - last_kill_time > 60 && getppid() != 1)
        {
          last_kill_time = time(NULL);
-         kill(SIGALRM, getppid());
+         kill(getppid(), SIGALRM);
        }
       fatal("Bad result from rsa_private_decrypt");
     }
