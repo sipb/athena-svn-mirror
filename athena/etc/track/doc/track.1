@@ -1,0 +1,245 @@
+.ll 6i
+.TH TRACK 1 "4 November 1986"
+.UC 4
+.SH NAME
+.B track
+-- maintain files between machines
+.SH SYNOPSIS
+.B track
+[
+.B \- dfinmrpqvwxDFT
+]
+subscriptionlist
+.SH DESCRIPTION
+.I subscriptionlist
+contains a list of files to be maintained across machines. 
+.B track
+supports a
+.I librarian/subscriber
+model of file update.
+If
+.B track
+is invoked with the
+.B \-w
+option (i.e. as the
+.I librarian
+machine), then the
+.I subscriptionlist
+is used to create a 
+.I statfile
+containing status information about the files that are available to
+other machines.
+If
+.B track
+is invoked without
+.B \-w
+(i.e. as the
+.I subscriber
+machine), then the
+.I subscriptionlist
+is used to decide what files are to be considered for possible updating, and
+what machine is to be used as the source of updated files.
+.PP
+The options are:
+.TP
+.B \-n
+Do nothing, just produce a list of files that need updating (disabled by \-w)
+.TP
+.B \-p
+Parse only and produce a verbose description of the fields in the
+.I subscriptionlist
+.TP
+.B \-d<dirname>
+change the local working directory (i.e. the directory on the local machine) to
+.I dirname.
+A working directory is the place where
+.B track
+will look for
+.I statfiles
+and
+.I subscriptionlists,
+as well as the place where track will attempt to create scratch files.
+.B Track
+must have permission to write in its local working directory.
+The default is /usr/track.
+.TP
+.B \-r<dirname>
+change the remote working directory (i.e. the directory on the librarian
+machine) to
+.I dirname.
+The remote working directory will be the same as the
+local working directory unless the
+.B \-r
+flag is used.
+.TP
+.B \-u
+Unconditionally copy files (i.e. older files will overwrite newer files)
+.TP
+.B \-f
+Force the update.  Don't be gentle about what is destroyed.  Normally
+track is very cautious about files being destroyed by an update.
+.TP
+.B \-m[recipient]
+Mail stdout and stderr to the recipient. The default recipient is root.
+.TP
+.B \-q
+Be quiet, i.e. don't complain about non-fatal errors.  The most common non-fatal
+error occurs when the
+.I librarian
+and/or network are unreachable.
+.TP
+.B \-w
+write out a
+.I statfile.
+This is flag is always used by the
+.I librarian
+machine and never used by the
+.I subscriber
+machine(s).
+.TP
+.B \-D
+create directories if necessary, similar to the d key argument to
+.B cpio.
+.TP
+.B \-F
+specify the source root directory
+.TP
+.B \-T
+specify the destination root directory
+.TP
+.B \-i
+include devices and special files in update. 
+.TP
+.B \-x
+display debugging information
+.TP
+.B \-v
+produces a very verbose description of what is happening during the update.
+.SH EXAMPLES
+.in 8
+.ti -8
+track \-p daily
+.ti -4
+Parse the
+.I subscriptionlist
+named "daily" and print a verbose
+listing of the contents. This command is very helpful when trying to debug
+freshly modified
+.I subscriptionlists. 
+.ti -8
+track \-w hourly 
+.ti -4
+Act as the
+.I librarian
+and output a
+.I statfile
+for the
+.I subscriptionlist
+named "hourly".
+The
+.I statfile's
+name is a combination of the machine name and the
+.I subscriptionlist
+name.  Thus, if the machine on which this command is executed is named "blob"
+the
+.I statfile
+will be named "hourly.blob".
+.sp 1
+.ti -8
+track \-w \-q hourly 
+.ti -4
+Same as above, but non-fatal errors will be ignored.
+.sp 1
+.ti -8
+track \-w \-q \-m hourly
+.ti -4
+Same as above, except that error message will be mailed
+to root rather than sent to stderr. These are the arguments most often given when
+.B track
+is executed by
+.B cron(8)
+on the
+.I librarian
+machine.
+.sp 1
+.ti -8
+track \-w \-q \-mfoo!bar
+.ti -4
+Same as above, except that error messages will
+be mailed to "foo!bar" rather than "root"
+.sp 1
+.ti -8
+track daily
+.ti -4
+Act as a
+.I subscriber
+machine and get the updates from whatever
+.I librarian
+machine is specified in the
+.I subscriptionlist
+named "daily".
+.sp 1
+.ti -8
+track \-n daily
+.ti -4
+Act as a
+.I subscriber,
+but do not perform any updates.
+Instead, print a listing of the updates that should be made.  This is analogous
+to "make \-n".  Invoking 
+.B track
+with the
+.B \-n
+flag is a safe way to preview what will happen before
+.B track
+is turned loose on a new machine.
+.sp 1
+.ti -8
+track \-u daily
+.ti -4
+Act as a
+.I subscriber,
+except update files from the
+.I librarian
+even if the versions on this machine are newer than the versions
+on the
+.I librarian.
+ Without the
+.B \-u
+flag,
+.B track
+will not copy an older file on top of a newer one.
+.sp 1
+.ti -8
+track \-u \-m daily
+.ti -4
+Same as the above, except mail error messages to "root" rather
+than sending them to stderr.
+.sp 1
+.ti -8
+track \-u \-m \-q daily
+.ti -4
+Same as the above, except ignore non-fatal errors.
+These are the arguments most often given when
+.B track
+is executed by
+.B cron(8)
+on a
+.I subscriber
+machine.
+.in -8
+.SH FILES
+ .../track/*
+.br
+ .../track/slists
+.I subscriptionlist_name 
+.br
+ .../track/stats
+.I subscriptionlist_name . librarian_machine_name
+.SH SEE ALSO
+subscriptionlist(5), statfile(5), permissions(5), cron(8)
+.PP
+When Network File Systems Aren't Enough: Automatic File Distribution Revisited
+.br
+.ti 5
+by Daniel Nachbar
