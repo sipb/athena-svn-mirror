@@ -6,7 +6,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *      $Zephyr: /mit/zephyr/src.rw/zhm/RCS/zhm.h,v 1.13 90/10/19 07:11:48 raeburn Exp $
  *
  *      Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
@@ -37,14 +37,12 @@
 #define ever (;;)
 
 #define SERV_TIMEOUT 20
-#define NOTICE_TIMEOUT 25
 #define BOOTING 1
 #define NOTICES 2
 
-#define MAXRETRIES 2
-
 extern Code_t send_outgoing();
 extern void init_queue(), retransmit_queue();
+extern int rexmit_times[];
 
 #ifdef vax
 #define MACHINE "vax"

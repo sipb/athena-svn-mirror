@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v $
- *      $Author: lwvanels $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.7 1991-12-05 15:27:10 lwvanels Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.8 1997-03-22 00:06:35 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -79,7 +79,7 @@ transmission_tower(notice, packet, pak_len)
 	      (void)alarm(tleft);
 	    else {
 		  timeout_type = NOTICES;
-		  (void)alarm(NOTICE_TIMEOUT);
+		  (void)alarm(rexmit_times[0]);
 	    }
       }
       (void)add_notice_to_queue(notice, packet, &gsin, pak_len);
