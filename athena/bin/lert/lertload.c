@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/file.h>
+#include <ctype.h>
 
 #include "lert.h"     
 
@@ -23,8 +24,9 @@ char ** argv;
   datum key;
   datum old;
   datum data;
-  register char *cp;
-  register char *nd_p;
+  char *cp;
+  char *bp;
+  char *nd_p;
   int nd_c;
   int count;
   int new_char;
@@ -44,11 +46,15 @@ char ** argv;
     exit (1);
   }
   while(fgets(buffer, 512, stdin) != NULL) {
-    cp = buffer;
-    while (*cp != '\n' && *cp != '\0') cp++;
+    bp = buffer;
+    while (isspace(*bp))
+      bp++; /* skip leading spaces */
+    cp = bp;
+    while (!isspace(*cp) && *cp != '\0')
+      cp++;
     *cp = '\0';
-    key.dptr = buffer;
-    key.dsize = strlen(buffer) + 1;
+    key.dptr = bp;
+    key.dsize = strlen(bp) + 1;
 
 
     old = dbm_fetch(db, key);
