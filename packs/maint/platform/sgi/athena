@@ -1,4 +1,4 @@
-# $Id: athena,v 1.44 1998-05-08 15:57:28 ghudson Exp $
+# $Id: athena,v 1.45 1998-10-26 18:57:33 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -50,6 +50,7 @@ fi
 
 # Remove old cruft and login session records.
 rm -rf /.deleted /var/athena/sessions/*
+rm -f /var/tmp/!!!SuperLock!!!
 
 # afsd is started by init.d/afs.  We just do our little additions here.
 if [ "$AFSCLIENT" != false ]; then

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.39 1998-09-28 15:17:14 rbasch Exp $
+# $Id: reactivate.sh,v 1.40 1998-10-26 18:57:29 ghudson Exp $
 
 trap "" 1 15
 
@@ -61,6 +61,9 @@ fi
 # of destruction, before we clear /tmp. We must cd there since saferm
 # will not follow symbolic links.
 (cd /tmp; saferm -z tkt* krb5cc*) > /dev/null 2>&1
+
+# For some reason, emacs leaves behind a lock file sometimes.  Nuke it.
+rm -f /var/tmp/!!!SuperLock!!!
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
