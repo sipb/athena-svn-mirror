@@ -1,5 +1,5 @@
 ;; configure.jl -- default configure-request handler
-;; $Id: configure.jl,v 1.1.1.3 2002-03-20 05:00:20 ghudson Exp $
+;; $Id: configure.jl,v 1.1.1.4 2003-01-05 00:33:09 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,17 +37,11 @@
 	  sawfish.wm.util.stacking
 	  sawfish.wm.viewport)
 
-  (defcustom configure-auto-gravity t
-    "Automatically select window gravity from position on screen."
-    :type boolean
-    :user-level expert
-    :group move)
+  (defvar configure-auto-gravity t
+    "Automatically select window gravity from position on screen.")
 
-  (defcustom configure-ignore-stacking-requests nil
-    "Ignore requests from applications to change window stacking."
-    :type boolean
-    :group misc
-    :user-level expert)
+  (defvar configure-ignore-stacking-requests nil
+    "Ignore requests from applications to change window stacking.")
 
   ;; Returns true if window window1 and window2 intersect, false otherwise.
   (defun windows-intersect-p (window1 window2)
@@ -140,16 +134,18 @@
 		;; [y] placed relative to the center
 		(rplacd coords (- (cdr coords) (quotient (- (cdr tem)
 							    (cdr dims)) 2)))))))
-	(setq dims tem))
+	(unless (window-locked-horizontally-p w)
+	  (rplaca dims (car tem)))
+	(unless (window-locked-vertically-p w)
+	  (rplacd dims (cdr tem))))
 
       (when (setq tem (cdr (assq 'position alist)))
+	(let ((grav (window-gravity w hints)))
+	  (when (and (car tem) (not (window-locked-horizontally-p w)))
+	    (rplaca coords (adjust-position-for-gravity/x w grav (car tem))))
+	  (when (and (cdr tem) (not (window-locked-vertically-p w)))
+	    (rplacd coords (adjust-position-for-gravity/y w grav (cdr tem)))))
 	;; if the program is setting its position, best not to interfere..
-	(let ((new (adjust-position-for-gravity
-		    w (window-gravity w hints) tem)))
-	  (unless (window-locked-horizontally-p w)
-	    (rplaca coords (car new)))
-	  (unless (window-locked-vertically-p w)
-	    (rplacd coords (cdr new))))
 	(window-put w 'client-set-position t))
 
       (move-resize-window-to w (car coords) (cdr coords) (car dims) (cdr dims))

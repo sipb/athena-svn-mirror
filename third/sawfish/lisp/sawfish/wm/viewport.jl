@@ -1,5 +1,5 @@
 ;; viewport.jl -- virtual desktops
-;; $Id: viewport.jl,v 1.1.1.3 2002-03-20 04:59:40 ghudson Exp $
+;; $Id: viewport.jl,v 1.1.1.4 2003-01-05 00:32:29 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -33,7 +33,8 @@
 	    set-window-viewport
 	    move-window-viewport
 	    window-viewport
-	    window-absolute-position)
+	    window-absolute-position
+	    set-number-of-viewports)
 
     (open rep
 	  rep.system
@@ -52,10 +53,8 @@
   (defvar viewport-dimensions '(1 . 1)
     "Size of each virtual workspace.")
 
-  (defcustom uniconify-to-current-viewport t
-    "Windows uniconify to the current viewport."
-    :type boolean
-    :group (min-max iconify))
+  (defvar uniconify-to-current-viewport t
+    "Windows uniconify to the current viewport.")
 
 
 ;;; raw viewport handling
@@ -76,12 +75,13 @@
 		 (inside '())
 		 (outside '()))
 	(cond ((null rest)
-	       ;; First move all windows not on the old viewport, and
-	       ;; move in top-to-bottom order..
-	       (mapc move-window (nreverse outside))
-	       ;; ..then move away the windows on the old viewport,
-	       ;; in bottom-to-top order
-	       (mapc move-window inside))
+	       (with-server-grabbed
+		;; First move all windows not on the old viewport, and
+		;; move in top-to-bottom order..
+		(mapc move-window (nreverse outside))
+		;; ..then move away the windows on the old viewport,
+		;; in bottom-to-top order
+		(mapc move-window inside)))
 
 	      ((window-outside-viewport-p (car rest))
 	       (loop (cdr rest) inside (cons (car rest) outside)))
@@ -198,6 +198,10 @@
 		       (move-window-to-current-viewport w))))
       (call-hook 'viewport-resized-hook)))
 
+  (define (set-number-of-viewports width height)
+    (setq viewport-dimensions (cons width height))
+    (viewport-size-changed))
+
 
 ;; commands
 
@@ -208,7 +212,8 @@
   (define-command 'activate-viewport activate-viewport
     #:spec "NX:\nNY:"
     #:type `(and (labelled ,(_ "Column:") (number 1))
-		 (labelled ,(_ "Row:") (number 1))))
+		 (labelled ,(_ "Row:") (number 1)))
+    #:class 'viewport)
 
   (define (activate-viewport-column x)
     "Select the specified viewport column."
@@ -216,7 +221,8 @@
 
   (define-command 'activate-viewport-column activate-viewport-column
     #:spec "NX:"
-    #:type `(and (labelled ,(_ "Column:") (number 1))))
+    #:type `(and (labelled ,(_ "Column:") (number 1)))
+    #:class 'viewport)
 
   (define (activate-viewport-row y)
     "Select the specified viewport row."
@@ -224,7 +230,8 @@
 
   (define-command 'activate-viewport-row activate-viewport-row
     #:spec "NY:"
-    #:type `(and (labelled ,(_ "Row:") (number 1))))
+    #:type `(and (labelled ,(_ "Row:") (number 1)))
+    #:class 'viewport)
 
   (define (move-window-to-viewport x y)
     "Move the current window to the specified viewport."
@@ -232,7 +239,8 @@
 
   (define-command 'move-window-to-viewport move-window-to-viewport
     #:spec "NX:\nNY:"
-    #:type '(and (labelled "X:" (number 1)) (labelled "Y:" (number 1))))
+    #:type '(and (labelled "X:" (number 1)) (labelled "Y:" (number 1)))
+    #:class 'viewport)
 
   (define (move-viewport-right)
     "Move the viewport one screen to the right."
@@ -250,34 +258,42 @@
     "Move the viewport one screen up."
     (move-viewport 0 -1))
 
+  ;; Moves the window by the specified offsets and then flips to the
+  ;; viewport that is relative those offsets to the current viewport.
+  (define (move-window-to-viewport-and-move-viewport window col row)
+    (require 'sawfish.wm.util.stacking)
+    (let ((sticky-viewport (window-get window 'sticky-viewport)))
+      (window-put window 'sticky-viewport t)
+      (with-server-grabbed
+       (raise-window* window)
+       (move-viewport col row))
+      (unless sticky-viewport
+	(window-put window 'sticky-viewport nil))))
+
   (define (move-window-left w)
-    "Move the window to the viewport on the left."
-    (move-window-viewport w -1 0)
-    (move-viewport-left))
+    "Move the window to the viewport on the left, and switch to that viewport."
+    (move-window-to-viewport-and-move-viewport w -1 0))
 
   (define (move-window-right w)
-    "Move the window to the viewport on the right."
-    (move-window-viewport w 1 0)
-    (move-viewport-right))
+    "Move the window to the viewport on the right, and switch to that viewport."
+    (move-window-to-viewport-and-move-viewport w 1 0))
 
   (define (move-window-down w)
-    "Move the window to the viewport below."
-    (move-window-viewport w 0 1)
-    (move-viewport-down))
+    "Move the window to the viewport below, and switch to that viewport."
+    (move-window-to-viewport-and-move-viewport w 0 1))
 
   (define (move-window-up w)
-    "Move the window to the viewport above."
-    (move-window-viewport w 0 -1)
-    (move-viewport-up))
+    "Move the window to the viewport above, and switch to that viewport."
+    (move-window-to-viewport-and-move-viewport w 0 -1))
 
-  (define-command 'move-viewport-right move-viewport-right)
-  (define-command 'move-viewport-left move-viewport-left)
-  (define-command 'move-viewport-up move-viewport-up)
-  (define-command 'move-viewport-down move-viewport-down)
-  (define-command 'move-window-right move-window-right #:spec "%W")
-  (define-command 'move-window-left move-window-left #:spec "%W")
-  (define-command 'move-window-up move-window-up #:spec "%W")
-  (define-command 'move-window-down move-window-down #:spec "%W")
+  (define-command 'move-viewport-right move-viewport-right #:class 'viewport)
+  (define-command 'move-viewport-left move-viewport-left #:class 'viewport)
+  (define-command 'move-viewport-up move-viewport-up #:class 'viewport)
+  (define-command 'move-viewport-down move-viewport-down #:class 'viewport)
+  (define-command 'move-window-right move-window-right #:spec "%W" #:class 'viewport)
+  (define-command 'move-window-left move-window-left #:spec "%W" #:class 'viewport)
+  (define-command 'move-window-up move-window-up #:spec "%W" #:class 'viewport)
+  (define-command 'move-window-down move-window-down #:spec "%W" #:class 'viewport)
 
 
 ;;; session management, config
@@ -297,9 +313,11 @@
 	(if (or (not viewport) (window-get w 'sticky-viewport))
 	    (move-window-to w (car position) (cdr position))
 	  (move-window-to w (+ (* (car viewport) (screen-width))
-			       (car position))
+			       (car position)
+			       (- viewport-x-offset))
 			  (+ (* (cdr viewport) (screen-height))
-			     (cdr position)))
+			     (cdr position)
+			     (- viewport-y-offset)))
 	  (when (window-outside-workspace-p w)
 	    (move-window-to-current-viewport w)))
 	(window-put w 'placed t))))
@@ -311,10 +329,5 @@
   (define (viewport-window-uniconified w)
     (when uniconify-to-current-viewport
       (move-window-to-current-viewport w)))
-
-  (add-hook 'workspace-geometry-changed
-	    (lambda ()
-	      (setq viewport-dimensions (cdr workspace-geometry))
-	      (viewport-size-changed)))
 
   (add-hook 'uniconify-window-hook viewport-window-uniconified))

@@ -1,5 +1,5 @@
 ;; workspace.jl -- similar to virtual desktops
-;; $Id: workspace.jl,v 1.1.1.3 2002-03-20 04:56:21 ghudson Exp $
+;; $Id: workspace.jl,v 1.1.1.4 2003-01-05 00:33:28 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -50,7 +50,7 @@
 
 ;; Private functions are prefixed by ws-
 
-(eval-when-compile '(require 'sawfish.wm.menus))
+(eval-when-compile (require 'sawfish.wm.menus))
 
 (define-structure sawfish.wm.workspace
 
@@ -97,6 +97,7 @@
 	    delete-window-instance
 	    add-swapped-properties
 	    workspace-local-properties
+	    set-number-of-workspaces
 
 	    ;; XXX rename these..?
 	    ws-remove-window
@@ -115,53 +116,23 @@
 
 ;;; Options and variables
 
-  (defcustom workspace-geometry '(1 . (1 . 1))
-    "Virtual desktop configuration."
-    :type workspace-geometry
-    :user-level novice
-    :group workspace
-    :after-set (lambda () (call-hook 'workspace-geometry-changed)))
+  (defvar workspace-boundary-mode 'stop
+    "How to act when passing the first or last workspace, one of `stop',
+`wrap-around' or `keep-going'")
 
-  (defcustom workspace-boundary-mode 'stop
-    "When passing the first or last workspace: \\w"
-    :type symbol
-    :options (stop wrap-around keep-going)
-    :user-level expert
-    :group workspace)
-
-  (defcustom workspace-send-boundary-mode 'keep-going
-    "When passing the first or last workspace, while moving a window: \\w"
-    :type symbol
-    :options (stop wrap-around keep-going)
-    :user-level expert
-    :group workspace)
-
-  (defcustom delete-workspaces-when-empty nil
-    "Workspaces are deleted when their last window closes."
-    :type boolean
-    :user-level expert
-    :group workspace)
-
-  (defvar preallocated-workspaces 1
-    "Minimum number of workspaces.")
-
-  (defcustom lock-first-workspace t
-    "Preserve empty workspaces in pager."
-    :type boolean
-    :group workspace
-    :user-level expert
-    :after-set (lambda () (call-hook 'workspace-state-change-hook)))
-
-  (defcustom transients-on-parents-workspace nil
-    "Dialogs appear on the same workspace as their application."
-    :type boolean
-    :group workspace)
+  (defvar workspace-send-boundary-mode 'stop
+    "How to act when passing the first or last workspace, while moving a
+window, one of `stop', `keep-going', `wrap-around'")
 
   (defcustom workspace-names nil
     nil
     :type* `(list string ,(_ "Workspace names"))
+    :group workspace
     :widget-flags (expand-vertically)
-    :group workspace)
+    :after-set (lambda () (workspace-names-changed)))
+
+  (defvar lock-first-workspace t
+    "Preserve outermost empty workspaces in the pager.")
 
   ;; Currently active workspace, an integer
   (define current-workspace 0)
@@ -170,13 +141,13 @@
   (define last-interesting-workspace nil)
 
   (defvar static-workspace-menus
-    `((,(_ "Insert workspace") insert-workspace-after)
-      (,(_ "Select next workspace") next-workspace)
-      (,(_ "Select previous workspace") previous-workspace)
+    `((,(_ "_Insert workspace") insert-workspace-after)
+      (,(_ "Select _next workspace") next-workspace)
+      (,(_ "Select _previous workspace") previous-workspace)
       (,(_ "Merge with next") merge-next-workspace)
       (,(_ "Merge with previous") merge-previous-workspace)
-      (,(_ "Move workspace right") move-workspace-forwards)
-      (,(_ "Move workspace left") move-workspace-backwards)))
+      (,(_ "Move workspace _right") move-workspace-forwards)
+      (,(_ "Move workspace _left") move-workspace-backwards)))
 
   ;; X constants
   (defconst NormalState 1)
@@ -348,10 +319,10 @@
   ;; continuum that is `interesting' to the user
   (define (workspace-limits)
     (let* ((all-spaces (all-workspaces))
-	   (max-w (if (and lock-first-workspace last-interesting-workspace)
+	   (max-w (if last-interesting-workspace
 		      (max last-interesting-workspace current-workspace)
 		    current-workspace))
-	   (min-w (if (and lock-first-workspace first-interesting-workspace)
+	   (min-w (if first-interesting-workspace
 		      (min first-interesting-workspace current-workspace)
 		    current-workspace)))
       (cond ((cdr all-spaces)
@@ -360,10 +331,25 @@
 	    (all-spaces
 	     (setq max-w (max max-w (car all-spaces)))
 	     (setq min-w (min min-w (car all-spaces)))))
-      (setq max-w (max max-w (1- (+ preallocated-workspaces min-w))))
-      (setq first-interesting-workspace min-w)
-      (setq last-interesting-workspace max-w)
+      (setq max-w (max max-w (1- (+ (length workspace-names) min-w))))
+      (when lock-first-workspace
+	(setq first-interesting-workspace min-w)
+	(setq last-interesting-workspace max-w))
       (cons min-w max-w)))
+
+  (define (set-number-of-workspaces wanted)
+    (or (> wanted 0) (error "Too few workspaces: %s" wanted))
+    (let* ((limits (workspace-limits))
+	   (total (1+ (- (cdr limits) (car limits)))))
+      (cond ((> total wanted)
+	     ;; too many workspaces
+	     (do ((i wanted (1+ i)))
+		 ((>= i total))
+	       (remove-workspace (car limits))))
+	    ((< total wanted)
+	     (setq first-interesting-workspace (car limits))
+	     (setq last-interesting-workspace (1- (+ (car limits) wanted)))
+	     (call-hook 'workspace-state-change-hook)))))
 
   (define (workspace-id-to-logical space #!optional limits)
     (unless limits
@@ -460,26 +446,11 @@
 		  (setq current-workspace (1+ current-workspace))))))
     (call-hook 'workspace-state-change-hook))
 
-  ;; called when workspace with id SPACE may contain no windows
-  (define (ws-workspace-may-be-empty space)
-    (when (and delete-workspaces-when-empty (workspace-empty-p space))
-      ;; workspace is now empty
-      (let* ((limits (workspace-limits))
-	     (need-to-move (and (= space current-workspace)
-				(/= space (car limits))
-				(= space (cdr limits)))))
-	(remove-workspace space)
-	(normalize-indices)
-	(when need-to-move
-	  (select-workspace (1- current-workspace))))))
-
   ;; called when window W is destroyed
   (define (ws-remove-window w #!optional dont-hide)
     (let ((spaces (window-workspaces w)))
       (mapc (lambda (space)
 	      (window-remove-from-workspace w space)) spaces)
-      (mapc (lambda (space)
-	      (ws-workspace-may-be-empty space)) (sort spaces >))
       (when (and (not dont-hide) (windowp w))
 	(hide-window w))
       (mapc (lambda (space)
@@ -507,7 +478,6 @@
 	     (hide-window w))
 	    ((and (= new current-workspace) (not (window-get w 'iconified)))
 	     (show-window w)))
-      (ws-workspace-may-be-empty old)
       ;; the window may lose the focus when switching spaces
       (when (and was-focused (window-visible-p w))
 	(set-input-focus w))
@@ -585,7 +555,8 @@
 	(call-hook 'workspace-state-change-hook))))
 
   ;; return a list of all windows on workspace index SPACE
-  (define (workspace-windows space #!optional include-iconified)
+  (define (workspace-windows
+	   #!optional (space current-workspace) include-iconified)
     (filter-windows
      (lambda (w)
        (and (window-in-workspace-p w space)
@@ -622,17 +593,8 @@
 	    (mapc (lambda (space)
 		    (ws-add-window-to-space
 		     w (workspace-id-from-logical space limits))) spaces))
-	(let (parent)
-	  (if (and transients-on-parents-workspace
-		   (window-transient-p w)
-		   (setq parent (get-window-by-id (window-transient-p w)))
-		   (not (window-get parent 'sticky)))
-	      ;; put the window on its parents workspaces
-	      (mapc (lambda (space)
-		      (ws-add-window-to-space w space))
-		    (window-workspaces parent))
-	    ;; add it to the current workspace
-	    (ws-add-window-to-space w current-workspace))))))
+	;; add it to the current workspace
+	(ws-add-window-to-space w current-workspace))))
 
   ;; called from the unmap-notify hook
   (define (ws-window-unmapped w)
@@ -775,9 +737,9 @@
 	   w orig-space (1- (car limits)) was-focused)))))
 
   (define-command 'append-workspace-and-send append-workspace-and-send
-    #:spec "%W\nt" #:user-level 'expert)
+    #:spec "%W\nt" #:class 'advanced)
   (define-command 'prepend-workspace-and-send prepend-workspace-and-send
-    #:spec "%W\nt" #:user-level 'expert)
+    #:spec "%W\nt" #:class 'advanced)
 
   (define (merge-next-workspace)
     "Delete the current workspace. Its member windows are relocated to the next
@@ -790,9 +752,9 @@ previous workspace."
     (remove-workspace (1- current-workspace)))
 
   (define-command 'merge-next-workspace merge-next-workspace
-    #:user-level 'expert)
+    #:class 'advanced)
   (define-command 'merge-previous-workspace merge-previous-workspace
-    #:user-level 'expert)
+    #:class 'advanced)
 
   (define (insert-workspace-after)
     "Create a new workspace following the current workspace."
@@ -805,9 +767,9 @@ previous workspace."
     (select-workspace (- current-workspace 2)))
 
   (define-command 'insert-workspace-after insert-workspace-after
-    #:user-level 'expert)
+    #:class 'advanced)
   (define-command 'insert-workspace-before insert-workspace-before
-    #:user-level 'expert)
+    #:class 'advanced)
 
   (define (move-workspace-forwards #!optional count)
     "Move the current workspace one place to the right."
@@ -818,14 +780,14 @@ previous workspace."
     (move-workspace current-workspace (- (or count 1))))
 
   (define-command 'move-workspace-forwards move-workspace-forwards
-    #:user-level 'expert)
+    #:class 'advanced)
   (define-command 'move-workspace-backwards move-workspace-backwards
-    #:user-level 'expert)
+    #:class 'advanced)
 
   (define (select-workspace-from-first count)
     (select-workspace (workspace-id-from-logical count)))
 
-  (define (send-window-to-workspace-from-first w count #!optional copy)
+  (define (send-window-to-workspace-from-first w count #!optional copy select)
     (let* ((was-focused (eq (input-focus) w))
 	   (orig-space (if (window-in-workspace-p w current-workspace)
 			   current-workspace
@@ -833,7 +795,8 @@ previous workspace."
 	   (new-space (workspace-id-from-logical count)))
       (when (and orig-space (/= orig-space new-space))
 	(copy-window-to-workspace w orig-space new-space was-focused)
-	(select-workspace new-space was-focused)
+	(when select
+	  (select-workspace new-space was-focused))
 	(unless copy
 	  (move-window-to-workspace w orig-space new-space was-focused)))))
 
@@ -855,11 +818,12 @@ previous workspace."
 		   (remove-workspace space)
 		   (setq limits (workspace-limits))))
 	  (setq space (1+ space))))
-      (when (> first-interesting-workspace last-interesting-workspace)
+      (when (and first-interesting-workspace
+		 (> first-interesting-workspace last-interesting-workspace))
 	(setq first-interesting-workspace last-interesting-workspace))))
 
   (define-command 'delete-empty-workspaces delete-empty-workspaces
-    #:user-level 'expert)
+    #:class 'advanced)
 
   (define (delete-window-instance w)
     "Remove the copy of the window on the current workspace. If this is the
@@ -873,7 +837,6 @@ last instance remaining, then delete the actual window."
 	    (window-remove-from-workspace w space)
 	    (when (= space current-workspace)
 	      (hide-window w))
-	    (ws-workspace-may-be-empty space)
 	    (call-window-hook 'remove-from-workspace-hook w (list space))
 	    (call-hook 'workspace-state-change-hook))
 	(delete-window w))))
@@ -915,7 +878,7 @@ last instance remaining, then delete the actual window."
 	(select-workspace-from-first ws))))
 
   (define-command 'select-workspace-interactively
-    select-workspace-interactively #:spec "%S")
+    select-workspace-interactively)
 
 
 ;;; session management
@@ -948,15 +911,13 @@ last instance remaining, then delete the actual window."
 
 ;;; configuration
 
-  (add-hook 'workspace-geometry-changed
-	    (lambda ()
-	      (setq preallocated-workspaces (car workspace-geometry))
-	      ;; XXX this isn't ideal, but it's better than getting
-	      ;; XXX workspaces that aren't deleted as the total
-	      ;; XXX number of workspaces is decreased...
-	      (setq first-interesting-workspace nil)
-	      (setq last-interesting-workspace nil)
-	      (call-hook 'workspace-state-change-hook)))
+  (define (workspace-names-changed)
+    ;; XXX this isn't ideal, but it's better than getting
+    ;; XXX workspaces that aren't deleted as the total
+    ;; XXX number of workspaces is decreased...
+    (setq first-interesting-workspace nil)
+    (setq last-interesting-workspace nil)
+    (call-hook 'workspace-state-change-hook))
 
 
 ;;; Initialisation
@@ -964,7 +925,7 @@ last instance remaining, then delete the actual window."
   (sm-add-saved-properties 'sticky 'iconified 'fixed-position)
 
   ;; some of these should really be added by other files
-  (add-swapped-properties 'frame-style 'type 'iconified)
+  (add-swapped-properties 'frame-style 'type)
 
   (add-hook 'add-window-hook ws-add-window)
   (add-hook 'map-notify-hook ws-window-mapped)

@@ -1,5 +1,5 @@
 ;; shade-hover.jl -- temporarily unshade windows while hovered over
-;; $Id: shade-hover.jl,v 1.1.1.1 2000-11-12 06:27:56 ghudson Exp $
+;; $Id: shade-hover.jl,v 1.1.1.2 2003-01-05 00:32:21 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -31,8 +31,6 @@
 
   (define-structure-alias shade-hover sawfish.wm.ext.shade-hover)
 
-;;;###autoload (defgroup shade-hover "Shade Hover" :group focus :require sawfish.wm.ext.shade-hover)
-
   (defgroup shade-hover "Shade Hover"
     :group focus
     :require sawfish.wm.ext.shade-hover)
@@ -42,7 +40,6 @@
     :tooltip "(Temporarily unshades windows while the mouse pointer is over them.)"
     :group (focus shade-hover)
     :type boolean
-    :user-level novice
     :require sawfish.wm.ext.shade-hover)
 
   (defcustom shade-hover-delay 250

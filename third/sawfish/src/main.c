@@ -1,5 +1,5 @@
 /* main.c -- Entry point for sawmill
-   $Id: main.c,v 1.1.1.4 2002-03-20 05:00:04 ghudson Exp $
+   $Id: main.c,v 1.1.1.5 2003-01-05 00:32:26 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -42,6 +42,9 @@
 #include <string.h>
 #include <limits.h>
 #include <X11/Xlocale.h>		/* for setlocale () */
+#ifdef HAVE_GDK_PIXBUF
+#include <glib-object.h>
+#endif
 
 /* one of the ec_ values */
 int exit_code = ec_no_exit;
@@ -98,7 +101,7 @@ on_idle (int since_last)
 	/* XXX There have been reports of sawmill locking the display,
 	   XXX I've never seen it, but this may help, and shouldn't hurt.. */
 	last_event_time = get_server_timestamp ();
-	XUngrabPointer (dpy, last_event_time);
+	ungrab_pointer ();
 	XUngrabKeyboard (dpy, last_event_time);
 	XFlush (dpy);
     }
@@ -339,6 +342,10 @@ main(int argc, char **argv)
     old_argv = argv;
     old_argc = argc;
 
+#ifdef HAVE_GDK_PIXBUF
+    g_type_init();
+#endif
+
     prog_name = *argv++; argc--;
     lang = setlocale(LC_ALL, "");
     rep_init (prog_name, &argc, &argv, 0, 0);
@@ -380,6 +387,10 @@ where OPTIONS are any of:\n\
     --quit, -q		terminate the interpreter process\n", prog_name);
 	return 0;
    }
+
+#if defined (DEBUG) && DEBUG == 1
+   setvbuf (stdout, NULL, _IOLBF, BUFSIZ);
+#endif
 
     rep_push_structure ("sawfish.wm");
 

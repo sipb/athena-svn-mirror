@@ -1,6 +1,6 @@
 # Makefile.in for nokogiri subdirectory
 
-# $Id: Makefile.in,v 1.1.1.2 2001-01-13 14:58:10 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.3 2003-01-05 00:32:17 ghudson Exp $
 
 # Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -44,7 +44,6 @@ SRCS :=	apply.jl		\
 	main.jl			\
 	shell.jl		\
 	slot.jl			\
-	user-level.jl		\
 	wm.jl
 
 W_SRCS := widgets/command.jl	\

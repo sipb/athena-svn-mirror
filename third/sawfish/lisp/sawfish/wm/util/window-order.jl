@@ -1,5 +1,5 @@
 ;; window-order.jl -- keep track of recently accessed windows
-;; $Id: window-order.jl,v 1.1.1.3 2001-03-09 19:35:10 ghudson Exp $
+;; $Id: window-order.jl,v 1.1.1.4 2003-01-05 00:32:33 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -107,7 +107,7 @@ function will restrict its search to the elements of this list."
       (mapc (lambda (w)
 	      (when (window-get w 'sticky-viewport)
 		(window-put w 'order nil))) order))
-    (when (eq focus-mode 'click)
+    (unless (eq focus-mode 'enter-exit)
       (window-order-focus-most-recent)))
 
   (sm-add-saved-properties 'order)

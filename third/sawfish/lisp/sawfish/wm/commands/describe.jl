@@ -1,5 +1,5 @@
 ;; describe.jl -- 
-;; $Id: describe.jl,v 1.1.1.1 2000-11-12 06:28:09 ghudson Exp $
+;; $Id: describe.jl,v 1.1.1.2 2003-01-05 00:32:20 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,9 +39,9 @@
 
   ;;###autoload
   (define-command 'describe-symbol describe-symbol
-    #:spec "SSymbol:" #:user-level 'expert)
+    #:spec "SSymbol:" #:class 'advanced)
   (define-command-to-screen 'describe-symbol-to-screen describe-symbol
-   #:spec "SSymbol:" #:user-level 'expert)
+   #:spec "SSymbol:" #:class 'advanced)
 
   (define (apropos-output symbols)
     (let ((separator (make-string 72 ?-)))
@@ -61,9 +61,9 @@
 
   ;;###autoload
   (define-command 'apropos-function apropos-function
-    #:spec "sApropos functions:\nP" #:user-level 'expert)
+    #:spec "sApropos functions:\nP" #:class 'advanced)
   (define-command-to-screen 'apropos-function-to-screen apropos-function
-    #:spec "sApropos functions:\nP" #:user-level 'expert)
+    #:spec "sApropos functions:\nP" #:class 'advanced)
   
   (define (apropos-variable regexp)
     (format standard-output "Apropos variable `%s':\n" regexp)
@@ -71,6 +71,6 @@
 
   ;;###autoload
   (define-command 'apropos-variable apropos-variable
-    #:spec "sApropos variables:" #:user-level 'expert)
+    #:spec "sApropos variables:" #:class 'advanced)
   (define-command-to-screen 'apropos-variable-to-screen apropos-variable
-    #:spec "sApropos variables:" #:user-level 'expert))
+    #:spec "sApropos variables:" #:class 'advanced))

@@ -1,5 +1,5 @@
 ;; sm-load.jl -- session manager code to reload a saved session
-;; $Id: load.jl,v 1.1.1.2 2001-03-09 19:34:59 ghudson Exp $
+;; $Id: load.jl,v 1.1.1.3 2003-01-05 00:33:30 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -73,7 +73,9 @@
 	  (class (sm-get-window-prop w 'WM_CLASS))
 	  (command (sm-get-window-prop w 'WM_COMMAND)))
       (catch 'out
-	(when (not (eq (not (cdr (assq 'client-id alist))) (not client-id)))
+	(when (and (not sm-sloppy-id-matching)
+		   (not (eq (not (cdr (assq 'client-id alist)))
+			    (not client-id))))
 	  ;; one has a client-id, the other doesn't -- no match
 	  (throw 'out nil))
 
@@ -108,9 +110,11 @@
     (let (tem)
       (when (setq tem (cdr (assq 'dimensions alist)))
 	(resize-window-to w (car tem) (cdr tem)))
-      (mapc (lambda (sym)
-	      (when (setq tem (cdr (assq sym alist)))
-		(window-put w sym tem))) sm-saved-window-properties)
+      (mapc (lambda (lst)
+	      (mapc (lambda (sym)
+		      (when (setq tem (cdr (assq sym alist)))
+			(window-put w sym tem))) lst))
+	    (list sm-saved-window-properties sm-restored-window-properties))
       (call-window-hook 'sm-restore-window-hook w (list alist))))
 
   (add-hook 'before-add-window-hook match-window))

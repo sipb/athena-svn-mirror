@@ -1,5 +1,5 @@
 ;; 3d-hack.jl -- too much spare time..
-;; $Id: 3d-hack.jl,v 1.1.1.1 2000-11-12 06:28:09 ghudson Exp $
+;; $Id: 3d-hack.jl,v 1.1.1.2 2003-01-05 00:32:21 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -292,4 +292,4 @@
 	    (3d-destroy))))))
 
   ;;###autoload
-  (define-command '3d-hack 3d-hack #:user-level 'expert))
+  (define-command '3d-hack 3d-hack #:class 'advanced))

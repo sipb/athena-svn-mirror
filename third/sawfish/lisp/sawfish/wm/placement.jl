@@ -1,5 +1,5 @@
 ;; place-window.jl -- decide where to initially place a window
-;; $Id: placement.jl,v 1.1.1.4 2002-03-20 05:00:19 ghudson Exp $
+;; $Id: placement.jl,v 1.1.1.5 2003-01-05 00:32:29 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -30,15 +30,12 @@
     (open rep
 	  rep.system
 	  rep.util.autoloader
-	  sawfish.wm.state.maximize
 	  sawfish.wm.misc
 	  sawfish.wm.events
 	  sawfish.wm.windows
 	  sawfish.wm.util.groups
+	  sawfish.wm.util.workarea
 	  sawfish.wm.custom)
-
-  (defvar placement-modes nil
-    "List containing all symbols naming window placement modes.")
 
   (defcustom place-window-mode 'top-left
     "Method of placing windows: \\w"
@@ -50,31 +47,44 @@
     :type symbol
     :group placement)
 
-  (defcustom ignore-program-positions nil
-    "Ignore program-specified window placements."
-    :type boolean
-    :group placement)
+  (defvar ignore-program-positions t
+    "Ignore program-specified window placements.")
+
+  (defvar placement-modes '()
+    "List of names of all placement modes.")
 
 
 ;;; utility functions
 
-  (define (define-placement-mode name fun)
+  ;; autoload handling
+  (define (getter symbol) (get symbol 'placement-mode))
+  (define (setter symbol value)
+    (unless (memq symbol placement-modes)
+      (setq placement-modes (nconc placement-modes (list symbol))))
+    (put symbol 'placement-mode value))
+  (define autoloader (make-autoloader getter setter))
+  (define placement-mode (autoloader-ref getter))
+
+  (define (apply-keys name #!key for-normal for-dialogs)
+    (define (add-to sym name)
+      (let ((current (custom-get-property sym ':options)))
+	(custom-set-property sym ':options
+			     (nconc (delq name current) (list name)))))
+    (when for-normal
+      (add-to 'place-window-mode name))
+    (when for-dialogs
+      (add-to 'place-transient-mode name)))
+
+  (define (define-placement-mode name fun . keys)
     "Define a new window placement mode called NAME (a symbol). The function
 FUN will be called with a single argument when a window should be placed using
 this mode. The single argument is the window to be placed."
-    (unless (memq name placement-modes)
-      (setq placement-modes (nconc placement-modes (list name)))
-      (custom-set-property 'place-window-mode ':options placement-modes)
-      (custom-set-property 'place-transient-mode ':options placement-modes))
-    (put name 'placement-mode fun))
+    (setter name fun)
+    (apply apply-keys name keys))
 
-  ;; autoload handling
-  (define (getter symbol) (get symbol 'placement-mode))
-
-  (define autoload-placement-mode
-    (make-autoloader getter define-placement-mode))
-
-  (define placement-mode (autoloader-ref getter))
+  (define (autoload-placement-mode name module . keys)
+    (autoloader name module)
+    (apply apply-keys name keys))
 
   (define (adjust-window-for-gravity w grav #!optional unadjust)
     (let ((coords (adjust-position-for-gravity
@@ -123,22 +133,18 @@ this mode. The single argument is the window to be placed."
 
   (define (place-window-randomly w)
     (let* ((dims (window-frame-dimensions w))
-	   (max-rect (maximize-find-workarea w))
-	   (rect-dims (if max-rect
-			  (cons (- (nth 2 max-rect) (nth 0 max-rect))
-				(- (nth 3 max-rect) (nth 1 max-rect)))
-			(current-head-dimensions)))
-	   (rect-pos (if max-rect
-			 (cons (nth 0 max-rect) (nth 1 max-rect))
-		       (current-head-offset)))
-	   (x (+ (if (< (car dims) (car rect-dims))
-		     (+ (car rect-pos) (random (- (car rect-dims) (car dims))))
-		   0)
-		 (car (current-head-offset))))
-	   (y (+ (if (< (cdr dims) (cdr rect-dims))
-		     (+ (cdr rect-pos) (random (- (cdr rect-dims) (cdr dims))))
-		   0)
-		 (cdr (current-head-offset)))))
+	   (max-rect (calculate-workarea #:window w))
+	   (rect-dims (cons (- (nth 2 max-rect) (nth 0 max-rect))
+			    (- (nth 3 max-rect) (nth 1 max-rect))))
+	   (rect-pos (cons (nth 0 max-rect) (nth 1 max-rect)))
+	   (x (+ (car rect-pos)
+		 (if (< (car dims) (car rect-dims))
+		     (random (- (car rect-dims) (car dims)))
+		   0)))
+	   (y (+ (cdr rect-pos)
+		 (if (< (cdr dims) (cdr rect-dims))
+		     (random (- (cdr rect-dims) (cdr dims)))
+		   0))))
       (move-window-to w x y)))
 
   (define (place-window-interactively w)
@@ -160,7 +166,7 @@ this mode. The single argument is the window to be placed."
     (let ((dims (window-frame-dimensions w))
 	  (h-dims (current-head-dimensions))
 	  (h-off (current-head-offset))
-	  (screen (maximize-find-workarea w)))
+	  (screen (calculate-workarea #:window w)))
       (move-window-to w
 		      (clamp* (+ (car h-off)
 				 (quotient (- (car h-dims) (car dims)) 2))
@@ -182,7 +188,7 @@ this mode. The single argument is the window to be placed."
 	(let ((dims (window-frame-dimensions w))
 	      (pdims (window-frame-dimensions parent))
 	      (coords (window-position parent))
-	      (screen (maximize-find-workarea w)))
+	      (screen (calculate-workarea #:window w)))
 	  (rplaca coords (clamp* (+ (car coords)
 				    (quotient (- (car pdims) (car dims)) 2))
 				 (car dims) (nth 0 screen) (nth 2 screen)))
@@ -194,16 +200,16 @@ this mode. The single argument is the window to be placed."
   (define (place-window-under-pointer w)
     (let ((dims (window-frame-dimensions w))
 	  (coords (query-pointer))
-	  (screen (maximize-find-workarea w #:head (pointer-head))))
+	  (screen (calculate-workarea #:window w #:head (pointer-head))))
       (rplaca coords (clamp* (- (car coords) (quotient (car dims) 2))
 			     (car dims) (nth 0 screen) (nth 2 screen)))
       (rplacd coords (clamp* (- (cdr coords) (quotient (cdr dims) 2))
 			     (cdr dims) (nth 1 screen) (nth 3 screen)))
       (move-window-to w (car coords) (cdr coords))))
 
-  (define-placement-mode 'randomly place-window-randomly)
-  (define-placement-mode 'interactively place-window-interactively)
-  (define-placement-mode 'centered place-window-centered)
-  (define-placement-mode 'centered-on-parent place-window-centered-on-parent)
-  (define-placement-mode 'under-pointer place-window-under-pointer)
-  (define-placement-mode 'none nop))
+  (define-placement-mode 'randomly place-window-randomly #:for-normal t #:for-dialogs t)
+  (define-placement-mode 'interactively place-window-interactively #:for-normal t)
+  (define-placement-mode 'centered place-window-centered #:for-normal t #:for-dialogs t)
+  (define-placement-mode 'centered-on-parent place-window-centered-on-parent #:for-dialogs t)
+  (define-placement-mode 'under-pointer place-window-under-pointer #:for-dialogs t)
+  (define-placement-mode 'none nop #:for-normal t #:for-dialogs t))

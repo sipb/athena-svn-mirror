@@ -1,6 +1,6 @@
 #| hide-dialogs.jl -- only show dialog windows for the focused group
 
-   $Id: hide-dialogs.jl,v 1.1.1.1 2001-03-09 19:34:46 ghudson Exp $
+   $Id: hide-dialogs.jl,v 1.1.1.2 2003-01-05 00:32:21 ghudson Exp $
 
    Copyright (C) 2001 Eazel, Inc.
 
@@ -44,7 +44,8 @@
     (filter window-transient-p (windows-in-group w)))
 
   (define (hide-dialogs w)
-    (mapc iconify-window (dialogs-in-group w)))
+    (let ((iconify-group-mode nil))
+      (mapc iconify-window (dialogs-in-group w))))
 
   (define (show-dialogs w)
     (let ((focus-windows-on-uniconify nil)

@@ -1,5 +1,5 @@
 ;; frames.jl -- handle window framing
-;; $Id: frames.jl,v 1.1.1.4 2002-03-20 04:59:36 ghudson Exp $
+;; $Id: frames.jl,v 1.1.1.5 2003-01-05 00:33:13 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -38,6 +38,8 @@
 	     frame-style-editable-p
 	     window-type
 	     set-window-type
+	     push-window-type
+	     pop-window-type
 	     window-type-remove-title
 	     window-type-remove-border
 	     window-type-add-title
@@ -58,15 +60,14 @@
 	  rep.io.files
 	  rep.io.timers
 	  sawfish.wm.frames.subrs
-	  sawfish.wm.windows.subrs
+	  sawfish.wm.windows
 	  sawfish.wm.misc
 	  sawfish.wm.custom
 	  sawfish.wm.commands
 	  sawfish.wm.events
 	  sawfish.wm.gaol
 	  sawfish.wm.session.init
-	  sawfish.wm.workspace
-	  sawfish.wm.state.maximize)
+	  sawfish.wm.workspace)
 
   ;; Commentary:
 
@@ -86,6 +87,9 @@
   ;;	unframed		no frame at all
   ;;	icon
   ;;	dock
+  ;;	menu, toolbar
+  ;;	utility
+  ;;	splash
 
   ;; There is also a similar concept of frame types. The window type
   ;; never changes (unless the user explicitly does so). But the frame
@@ -134,35 +138,27 @@ that overrides settings set elsewhere.")
     "Default frame style:"
     :type frame-style
     :widget-flags (expand-vertically)
-    :user-level novice
     :group appearance
     :after-set (lambda () (after-setting-default-frame)))
 
   (defcustom reload-themes-when-changed t
     "Automatically reload themes when they are updated."
     :type boolean
-    :user-level expert
     :group misc)
 
-  (defcustom frame-type-fallback-alist
+  (defvar frame-type-fallback-alist
     '((transient . default)
       (shaped . default)
       (shaped-transient . shaped)
       (shaded . shaped)
       (shaded-transient . shaped-transient)
       (icon . shaped-transient)
-      (dock . icon))
-    "Frame type fallbacks:"
-    :tooltip "Associate frame types with type to try if the theme doesn't \
-implement the requested type."
-    :type (alist ((symbol default shaped transient
-			  shaped-transient icon doc) "From")
-		 ((symbol default shaped transient
-			  shaped-transient icon doc) "To"))
-    :widget-flags (expand-vertically framed)
-    :group appearance
-    :user-level expert
-    :after-set (lambda () (after-setting-frame-option)))
+      (dock . icon)
+      (utility . transient)
+      (toolbar . utility)
+      (menu . utility)
+      (splash . unframed))
+    "Frame type fallbacks.")
 
   (defvar theme-update-interval 60
     "Number of seconds between checking if theme files have been modified.")
@@ -216,15 +212,10 @@ deciding which frame type to ask a theme to generate.")
     :group appearance
     :type font
     :widget-flags (expand-horizontally)
-    :user-level novice
     :after-set (lambda () (after-setting-frame-option)))
 
-  (defcustom default-bevel-percent nil
-    "Bevel intensity: \\wpercent."
-    :group appearance
-    :type (number 0 100)
-    :user-level expert
-    :after-set (lambda () (after-setting-frame-option)))
+  (defvar default-bevel-percent nil
+    "Bevel intensity as a percentage.")
 
 
 ;;; managing frame types
@@ -392,10 +383,33 @@ deciding which frame type to ask a theme to generate.")
 	    'default))))
 
   (define (set-window-type w type)
-    (unless (eq (window-get w 'type) type)
+    (if (window-get w 'type/saved)
+	(window-put w 'type/saved type)
+      (unless (eq (window-get w 'type) type)
+	(window-put w 'type type)
+	(call-window-hook 'window-state-change-hook w (list '(type)))
+	(reframe-window w))))
+
+  ;; XXX do something with KEY. (It's a unique symbol used to mark
+  ;; XXX the different users of these functions)
+
+  (define (push-window-type w type key)
+    (window-put w 'type/key key)
+    (unless (eq (window-get w 'type type))
+      (unless (window-get w 'type/saved)
+	(window-put w 'type/saved (window-get w 'type)))
       (window-put w 'type type)
       (call-window-hook 'window-state-change-hook w (list '(type)))
       (reframe-window w)))
+
+  (define (pop-window-type w key)
+    (when (and (window-get w 'type/saved)
+	       (eq (window-get w 'type/key) key))
+      (window-put w 'type (window-get w 'type/saved))
+      (window-put w 'type/saved nil)
+      (window-put w 'type/key nil))
+    (call-window-hook 'window-state-change-hook w (list '(type)))
+    (reframe-window w))
 
   (define (window-type-remove-title type)
     (case type
@@ -595,6 +609,7 @@ deciding which frame type to ask a theme to generate.")
       ok-to-bind))
 
   (define ((cursor-for-frame-part part) w)
+    (require 'sawfish.wm.state.maximize)
     (if (frame-part-movable-p w part)
 	(case part
 	  ((top-border) 'top_side)
@@ -640,5 +655,13 @@ deciding which frame type to ask a theme to generate.")
 
   (make-timer frames-on-idle theme-update-interval)
 
-  (sm-add-saved-properties 'type 'ignored 'frame-style)
+  (add-hook 'sm-window-save-functions
+	    (lambda (w)
+	      (cond ((window-get w 'type/saved)
+		     (list (cons 'type (window-get w 'type/saved))))
+		    ((window-get w 'type)
+		     (list (cons 'type (window-get w 'type)))))))
+
+  (sm-add-saved-properties 'ignored 'frame-style)
+  (sm-add-restored-properties 'type)
   (add-swapped-properties 'frame-active-color 'frame-inactive-color))

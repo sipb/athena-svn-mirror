@@ -1,5 +1,5 @@
 ;; menus.jl -- popup menus
-;; $Id: menus.jl,v 1.1.1.3 2002-03-20 05:00:22 ghudson Exp $
+;; $Id: menus.jl,v 1.1.1.4 2003-01-05 00:33:28 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -51,11 +51,8 @@
   ;; Suppress annoying compiler warnings
   (eval-when-compile (require 'rep.io.timers))
 
-  (defcustom menus-include-shortcuts nil
-    "Display key-binding information in menu items."
-    :type boolean
-    :group misc
-    :user-level expert)
+  (defvar menus-include-shortcuts nil
+    "Display key-binding information in menu items.")
 
   (defvar menu-program (expand-file-name "sawfish-menu" sawfish-exec-directory)
     "Location of the program implementing sawfish's menu interface.")
@@ -104,12 +101,7 @@ before killing it.")
        (,(_ "_Previous workspace") send-to-previous-workspace)
        (,(_ "_Next workspace") send-to-next-workspace)
        (,(_ "Copy to previous") copy-to-previous-workspace)
-       (,(_ "Copy to next") copy-to-next-workspace)
-       ()
-       (,(_ "_Left") move-window-left)
-       (,(_ "_Right") move-window-right)
-       (,(_ "_Up") move-window-up)
-       (,(_ "_Down") move-window-down))
+       (,(_ "Copy to next") copy-to-next-workspace))
       (,(_ "Stacking")
        (,(_ "Raise") raise-window)
        (,(_ "Lower") lower-window)
@@ -134,8 +126,8 @@ before killing it.")
        (,(_ "_Manual...") help:show-programmer-manual)
        (,(_ "_About Sawfish...") help:about))
       ()
-      (,(_ "Restart") restart)
-      (,(_ "Quit") quit)))
+      (,(_ "_Restart") restart)
+      (,(_ "_Quit") quit)))
 
   (defvar apps-menu
     `(("xterm" (system "xterm &"))
@@ -357,7 +349,7 @@ before killing it.")
 
   (define (custom-menu)
     `(,@(and custom-menu-includes-all-settings
-	     (list (list (_ "All settings") 'customize) nil))
+	     (list (list (_ "_All settings") 'customize) nil))
       ,@(mapcar (lambda (sub)
 		  (list (_ (cadr sub))
 			(intern (concat "customize:"

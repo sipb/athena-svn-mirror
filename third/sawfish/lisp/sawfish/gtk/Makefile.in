@@ -1,6 +1,6 @@
 # Makefile.in for sawfish.gtk subdirectory
 
-# $Id: Makefile.in,v 1.1.1.1 2000-11-12 06:26:55 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2003-01-05 00:32:15 ghudson Exp $
 
 # Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -42,7 +42,8 @@ W_SRCS := widgets/alist.jl	\
 	widgets/font.jl		\
 	widgets/list.jl		\
 	widgets/pair.jl		\
-	widgets/program.jl
+	widgets/program.jl	\
+	widgets/scheme-boolean.jl
 
 OBJS := $(SRCS:.jl=.jlc)
 W_OBJS := $(W_SRCS:.jl=.jlc)

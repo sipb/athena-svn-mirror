@@ -1,6 +1,6 @@
 #| nokogiri-widget-dialog.jl -- simple dialogs from widgets
 
-   $Id: widget-dialog.jl,v 1.1.1.1 2000-11-12 06:26:47 ghudson Exp $
+   $Id: widget-dialog.jl,v 1.1.1.2 2003-01-05 00:31:55 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,7 +26,7 @@
     (export widget-dialog)
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  sawfish.gtk.stock
 	  sawfish.gtk.widget)
 

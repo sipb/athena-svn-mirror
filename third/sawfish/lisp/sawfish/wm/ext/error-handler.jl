@@ -1,5 +1,5 @@
 ;; error-handler.jl -- replace the standard rep error handler
-;; $Id: error-handler.jl,v 1.1.1.2 2001-01-13 14:57:38 ghudson Exp $
+;; $Id: error-handler.jl,v 1.1.1.3 2003-01-05 00:32:21 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,14 +37,13 @@
     :group misc)
 
   (defcustom error-handler-beep t
-    "Emit a beeping sound when errors occur."
+    "Beep when errors occur."
     :type boolean
     :group (misc error-handling))
 
   (defcustom error-destination 'standard-error
-    "Where to display error messages: \\w"
+    "Display error messages to: \\w"
     :type (choice nowhere screen standard-error)
-    :user-level expert
     :group (misc error-handling))
 
   ;; ring buffer for containing error messages

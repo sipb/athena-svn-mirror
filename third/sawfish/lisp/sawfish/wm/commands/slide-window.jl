@@ -1,5 +1,5 @@
 ;; slide-window.jl -- simple code to move a window via the keyboard
-;; $Id: slide-window.jl,v 1.1.1.1 2000-11-12 06:26:42 ghudson Exp $
+;; $Id: slide-window.jl,v 1.1.1.2 2003-01-05 00:32:20 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,11 +37,8 @@
 	  sawfish.wm.commands
 	  sawfish.wm.util.groups)
 
-  (defcustom slide-window-increment 16
-    "Number of pixels to move window in `slide-' commands."
-    :group misc
-    :type (number 1)
-    :user-level expert)
+  (defvar slide-window-increment 16
+    "Number of pixels to move window in `slide-' commands.")
 
   (define (slide-window w right down)
     (unless (window-get w 'fixed-position)

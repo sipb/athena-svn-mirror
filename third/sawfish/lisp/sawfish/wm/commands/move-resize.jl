@@ -1,5 +1,5 @@
 ;; move-resize.jl -- interactive moving and resizing of windows
-;; $Id: move-resize.jl,v 1.1.1.3 2002-03-20 05:00:01 ghudson Exp $
+;; $Id: move-resize.jl,v 1.1.1.4 2003-01-05 00:32:41 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -48,24 +48,14 @@
   ;; todo:
   ;;  * obey the aspect ratio size hints
 
-  (defcustom move-outline-mode 'opaque
-    "How windows being moved are animated: \\w"
-    :type symbol
-    :options (opaque box)
-    :user-level novice
-    :group move)
+  (defvar move-outline-mode 'opaque
+    "How windows being moved are animated, either `opaque' or `box'")
   
-  (defcustom resize-outline-mode 'opaque
-    "How windows being resized are animated: \\w"
-    :type symbol
-    :options (opaque box)
-    :user-level novice
-    :group move)
+  (defvar resize-outline-mode 'opaque
+    "How windows being resized are animated, either `opaque' or `box'")
   
-  (defcustom move-resize-raise-window nil
-    "Raise windows when they are moved or resized."
-    :group move
-    :type boolean)
+  (defvar move-resize-raise-window nil
+    "Raise windows when they are moved or resized.")
   
   (defcustom move-show-position nil
     "Show current position of windows while moving."
@@ -77,46 +67,30 @@
     :group move
     :type boolean)
   
-  (defcustom resize-edge-mode 'border
-    "How to choose window edges when resizing: \\w"
-    :type (choice region border grab border-grab)
-    :user-level expert
-    :group move)
+  (defvar resize-edge-mode 'border-grab
+    "How to choose window edges when resizing. One of `region', `border',
+`grab', `border-grab'")
   
-  (defcustom move-snap-edges t
-    "Snap window position to edges of other windows while moving."
+  (defcustom move-snap-epsilon 12
+    "Distance in pixels before window edges align with each other."
     :group move
-    :type boolean)
-  
-  (defcustom move-snap-epsilon 8
-    "Proximity in pixels before snapping to a window edge."
-    :group move
-    :depends move-snap-edges
     :type (number 0 64)
-    :user-level expert)
+    :tooltip "When moving a window, this option lets you align one of its edges with an edge of another window.")
   
-  (defcustom move-snap-mode 'resistance
-    "How to snap together window edges: \\w"
-    :group move
-    :depends move-snap-edges
-    :type (choice magnetism resistance attraction)
-    :user-level expert)
+  (defvar move-snap-mode 'resistance
+    "How to snap together window edges, one of `magnetism', `resistance', or
+`attraction'.")
   
-  (defcustom move-snap-ignored-windows nil
-    "Snap to otherwise-ignored windows."
-    :group move
-    :depends move-snap-edges
-    :user-level expert
-    :type boolean)
+  (defvar move-snap-ignored-windows nil
+    "Snap to otherwise-ignored windows.")
   
-  (defcustom move-resize-inhibit-configure nil
-    "Only update window contents after it has stopped moving."
-    :type boolean
-    :group move
-    :user-level expert)
+  (defvar move-resize-inhibit-configure nil
+    "Only update window contents after it has stopped moving.")
 
   (defvar move-resize-map (bind-keys (make-keymap)
-			    "Any-Off" (lambda () (finished))
+			    "Any-Off1" (lambda () (finished))
+			    "Any-Off2" (lambda () (finished))
+			    "Any-Off3" (lambda () (finished))
 			    "Any-Move" (lambda () (motion))
 			    "Any-ESC" (lambda () (cancel))
 			    "Any-RET" (lambda () (finished))
@@ -296,7 +270,7 @@
 
   (define (update-edges)
     (setq move-resize-edges
-	  (and move-snap-edges
+	  (and (> move-snap-epsilon 0)
 	       (progn
 		 (get-visible-window-edges
 		  #:with-ignored-windows move-snap-ignored-windows
@@ -318,7 +292,7 @@
 	     (when (memq 'vertical move-resize-directions)
 	       (setq move-resize-y (+ move-resize-old-y
 				      (- ptr-y move-resize-old-ptr-y))))
-	     (when move-snap-edges
+	     (when (> move-snap-epsilon 0)
 	       (let
 		   ((coords (snap-window-position-to-edges
 			     move-resize-window (cons move-resize-x
@@ -331,11 +305,9 @@
 		 (setq move-resize-y (cdr coords)))))
 	    ((eq move-resize-function 'resize)
 	     (let
-		 ((x-base (or (cdr (or (assq 'base-width move-resize-hints)
-				       (assq 'min-width move-resize-hints))) 1))
+		 ((x-base (or (cdr (assq 'base-width move-resize-hints)) 0))
 		  (x-inc (or (cdr (assq 'width-inc move-resize-hints)) 1))
-		  (y-base (or (cdr (or (assq 'base-height move-resize-hints)
-				       (assq 'min-height move-resize-hints))) 1))
+		  (y-base (or (cdr (assq 'base-height move-resize-hints)) 0))
 		  (y-inc (or (cdr (assq 'height-inc move-resize-hints)) 1)))
 	       (when (memq resize-edge-mode '(grab border-grab))
 		 (add-edges ptr-x ptr-y))

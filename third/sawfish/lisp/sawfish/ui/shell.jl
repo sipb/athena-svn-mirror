@@ -1,6 +1,6 @@
 #| nokogiri-shell.jl -- shell displaying custom groups
 
-   $Id: shell.jl,v 1.1.1.4 2002-03-20 05:00:34 ghudson Exp $
+   $Id: shell.jl,v 1.1.1.5 2003-01-05 00:33:27 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -28,7 +28,7 @@
 	    run-shell)
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  rep.system
 	  rep.regexp
 	  rep.io.files
@@ -39,10 +39,7 @@
 	  sawfish.ui.slot
 	  sawfish.ui.apply
 	  sawfish.ui.layout
-	  sawfish.ui.user-level
 	  sawfish.ui.config)
-
-  (defvar *nokogiri-buttons* nil)
 
   (defvar *nokogiri-flatten-groups* nil)
   (defvar *nokogiri-single-level* nil)
@@ -54,9 +51,7 @@
   (define active-slots '())
 
   (define ok-widget)
-  (define apply-widget)
   (define revert-widget)
-  (define cancel-widget)
 
   (define (initialize-shell #!optional socket-id)
     (let ((vbox (gtk-vbox-new nil box-spacing))
@@ -71,7 +66,7 @@
 	  (progn
 	    (gtk-window-set-default-size main-window 400 300)
 	    (setq root-container main-window))
-	(gtk-window-set-policy main-window nil t nil)
+	(gtk-window-set-resizable main-window t)
 	(gtk-window-set-default-size main-window 550 400)
 	(setq root-container (gtk-frame-new))
 	(gtk-frame-set-shadow-type root-container 'out)
@@ -79,8 +74,8 @@
 
       (setq slot-box-widget (gtk-vbox-new nil box-spacing))
 
-      (gtk-container-border-width vbox box-border)
-      (gtk-container-border-width slot-box-widget box-border)
+      (gtk-container-set-border-width vbox box-border)
+      (gtk-container-set-border-width slot-box-widget box-border)
       (when s-scroller
 	(gtk-scrolled-window-set-policy s-scroller 'automatic 'automatic)
 	(gtk-scrolled-window-add-with-viewport s-scroller slot-box-widget))
@@ -93,7 +88,7 @@
 	    (let ((paned (gtk-hpaned-new))
 		  (g-scroller (gtk-scrolled-window-new)))
 	      (setq group-tree-widget (make-group-tree (get-group top-group)))
-	      (gtk-container-border-width group-tree-widget box-border)
+	      (gtk-container-set-border-width group-tree-widget box-border)
 	      (gtk-scrolled-window-set-policy g-scroller 'automatic 'automatic)
 	      (gtk-container-add vbox paned)
 	      (gtk-paned-add1 paned g-scroller)
@@ -104,28 +99,23 @@
 	  (gtk-container-add vbox (or s-scroller slot-box-widget))))
 
       (unless socket-id
-	(setq ok-widget (stock-button 'ok))
-	(setq apply-widget (stock-button 'apply))
+	(setq ok-widget (stock-button 'close))
 	(setq revert-widget (stock-button 'revert))
-	(setq cancel-widget (stock-button 'cancel))
-	(gtk-window-set-title main-window (_ "Sawfish configurator"))
-	(gtk-widget-set-name main-window (_ "Sawfish configurator"))
+	(gtk-window-set-title main-window (_ "Sawfish Configurator"))
+	(gtk-widget-set-name main-window (_ "Sawfish Configurator"))
 	(gtk-window-set-wmclass main-window "main" "Nokogiri"))
 
-      (gtk-signal-connect main-window "delete_event"
+      (g-signal-connect main-window "delete_event"
 			  (if (not socket-id) on-quit capplet-delete-event))
 
       (unless socket-id
+	(gtk-box-set-spacing hbox button-box-spacing)
 	(gtk-button-box-set-layout hbox 'end)
 	(gtk-box-pack-end vbox hbox)
-	(gtk-signal-connect ok-widget "clicked" on-ok)
-	(gtk-signal-connect apply-widget "clicked" on-apply)
-	(gtk-signal-connect cancel-widget "clicked" on-cancel)
-	(gtk-signal-connect revert-widget "clicked" on-revert)
-	(gtk-container-add hbox apply-widget)
+	(g-signal-connect ok-widget "clicked" on-ok)
+	(g-signal-connect revert-widget "clicked" on-revert)
 	(gtk-container-add hbox revert-widget)
-	(gtk-container-add hbox ok-widget)
-	(gtk-container-add hbox cancel-widget))
+	(gtk-container-add hbox ok-widget))
 
       (gtk-container-add root-container vbox)
       (gtk-widget-show-all main-window)
@@ -140,7 +130,7 @@
 	  (progn
 	    (gtk-tree-select-item group-tree-widget 0)
 	    (mapc gtk-tree-item-expand
-		  (gtk-container-children group-tree-widget)))
+		  (gtk-container-get-children group-tree-widget)))
 	(select-group (get-group top-group)))))
 
   (define (destroy-shell)
@@ -150,9 +140,7 @@
       (setq group-tree-widget nil)
       (setq slot-box-widget nil)
       (setq ok-widget nil)
-      (setq apply-widget nil)
-      (setq revert-widget nil)
-      (setq cancel-widget nil)))
+      (setq revert-widget nil)))
 
   (define (on-quit)
     (destroy-shell)
@@ -175,30 +163,48 @@
     (set-button-states))
 
   (define (set-button-states)
-    (define (show-hide w state)
-      ((if state gtk-widget-show gtk-widget-hide) w))
-    (when apply-widget
-      (show-hide apply-widget (eq *nokogiri-buttons* 'apply/revert/cancel/ok))
-      (gtk-widget-set-sensitive apply-widget (changes-to-apply-p)))
     (when revert-widget
-      (show-hide revert-widget (memq *nokogiri-buttons*
-				     '(revert/cancel/ok
-				       apply/revert/cancel/ok)))
       (gtk-widget-set-sensitive revert-widget (changes-to-revert-p)))
     (when ok-widget
-      (gtk-widget-set-sensitive ok-widget (or (eq *nokogiri-buttons* 'ok)
-					      (changes-to-apply-p)
-					      (changes-to-revert-p))))
-    (when cancel-widget
-      (show-hide cancel-widget (memq *nokogiri-buttons*
-				     '(revert/cancel/ok
-				       apply/revert/cancel/ok)))))
+      (gtk-widget-set-sensitive ok-widget t)))
 
 ;;; displaying custom groups
 
   (define (get-slots group)
     (fetch-group group)
-    (filter slot-is-appropriate-p (group-slots group)))
+    (group-slots group))
+
+  (define (display-book-tree group)
+
+    (define (iter group slots)
+      (let ((group-page (and slots (layout-slots (group-layout group) slots))))
+	(setq active-slots (nconc active-slots slots))
+	(when (and group-page (gtk-container-p group-page))
+	  (gtk-container-set-border-width group-page box-border))
+	(if (group-sub-groups group)
+	    (let ((book (gtk-notebook-new)))
+	      (gtk-notebook-set-scrollable book t)
+	      (gtk-notebook-popup-enable book t)
+	      (when group-page
+		(gtk-notebook-append-page
+		 book group-page (gtk-label-new (_ (group-real-name group)))))
+	      (mapc (lambda (sub)
+		      (fetch-group sub)
+		      (let ((slots (get-slots sub)))
+			(when (or slots (group-sub-groups sub))
+			  (let ((page (iter sub slots)))
+			    (when page
+			      (gtk-notebook-append-page
+			       book page (gtk-label-new
+					  (_ (group-real-name sub)))))))))
+		    (get-sub-groups group))
+	      (gtk-widget-show book)
+	      book)
+	  group-page)))
+
+    (let ((page (iter group (get-slots group))))
+      (when page
+	(gtk-container-add slot-box-widget page))))
 
   (define (display-flattened group)
 
@@ -211,7 +217,7 @@
 	       book layout (gtk-label-new (_ (group-real-name group))))
 	    (gtk-box-pack-start book layout))
 	  (when (gtk-container-p layout)
-	    (gtk-container-border-width layout box-border))))
+	    (gtk-container-set-border-width layout box-border))))
       (mapc (lambda (sub)
 	      (fetch-group sub)
 	      (let ((slots (get-slots sub)))
@@ -237,11 +243,13 @@
 
   (define (add-group-widgets group)
     (if (and *nokogiri-flatten-groups* (group-sub-groups group))
-	(display-flattened group)
+	;;(display-flattened group)
+	(display-book-tree group)
       (display-unflattened group))
     (update-all-dependences))
 
   (define (remove-group-widgets group)
+    (declare (unused group))
     (mapc (lambda (s)
 	    (let ((w (slot-gtk-widget s)))
 	      (when (gtk-widget-parent w)
@@ -250,7 +258,7 @@
     (setq active-slots '())
     (mapc (lambda (w)
 	    (gtk-container-remove slot-box-widget w))
-	  (gtk-container-children slot-box-widget)))
+	  (gtk-container-get-children slot-box-widget)))
 
   (define (run-shell #!optional socket-id)
     (initialize-configs)
@@ -261,14 +269,6 @@
   (add-hook '*nokogiri-slot-changed-hook* set-button-states t)
   (add-hook '*nokogiri-group-selected-hook* add-group-widgets)
   (add-hook '*nokogiri-group-deselected-hook* remove-group-widgets)
-
-  (define-config-item 'nokogiri-buttons
-		      '*nokogiri-buttons*
-		      (lambda ()
-			(set-button-states)
-			(setq *nokogiri-apply-immediately*
-			      (memq *nokogiri-buttons*
-				    '(ok revert/cancel/ok)))))
 
 ;;; capplet interfacing
 

@@ -1,5 +1,5 @@
 /* server.c -- client/server backend
-   $Id: server.c,v 1.1.1.1 2000-11-12 06:26:23 ghudson Exp $
+   $Id: server.c,v 1.1.1.2 2003-01-05 00:33:04 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -141,7 +141,15 @@ server_handle_request(int fd)
 static void
 server_accept_connection(int unused_fd)
 {
-    int confd = accept(socket_fd, NULL, NULL);
+    int confd;
+    struct sockaddr_un addr;
+    int addr_len = sizeof (addr);
+
+    /* Linux manpage states that we can pass NULL for addr parameters,
+       but that has been reported to crash on some systems.. */
+
+    confd = accept(socket_fd, (struct sockaddr *) &addr, &addr_len);
+
     if(confd >= 0)
     {
 	/* Once upon a time, I started reading commands here. I think

@@ -1,6 +1,6 @@
 ;; beos-window-menu.jl -- hack to change window-menu to approximate BeOS
 
-;; $Id: beos-window-menu.jl,v 1.1.1.3 2002-03-20 04:59:37 ghudson Exp $
+;; $Id: beos-window-menu.jl,v 1.1.1.4 2003-01-05 00:32:21 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -35,12 +35,6 @@
 	  sawfish.wm.menus)
 
   (define-structure-alias beos-window-menu sawfish.wm.ext.beos-window-menu)
-
-  (defcustom beos-window-menu-simplifies t
-    "The hierarchical window menu raises singleton submenus."
-    :type boolean
-    :group misc
-    :user-level expert)
 
   (define (abbreviate name #!optional len)
     (unless len (setq len 20))
@@ -145,9 +139,6 @@
 	    (rplaca rest (cadar rest)))
 	  (loop next rest)))))
 
-  (define (beos-window-menu)
-    (if beos-window-menu-simplifies
-	(simplify (make-menu))
-      (nreverse (make-menu))))
+  (define (beos-window-menu) (simplify (make-menu)))
 
   (setq window-menu beos-window-menu))

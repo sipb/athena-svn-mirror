@@ -1,5 +1,5 @@
 ;; gnome-commands.jl -- more GNOME stuff
-;; $Id: gnome.jl,v 1.1.1.1 2000-11-12 06:27:37 ghudson Exp $
+;; $Id: gnome.jl,v 1.1.1.2 2003-01-05 00:32:11 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -21,10 +21,7 @@
 
 (define-structure sawfish.wm.commands.gnome
 
-    (export gnome-set-hint
-	    gnome-clear-hint
-	    gnome-toggle-hint
-	    gnome-toggle-skip-winlist
+    (export gnome-toggle-skip-winlist
 	    gnome-set-skip-winlist
 	    gnome-clear-skip-winlist
 	    gnome-toggle-skip-tasklist
@@ -43,30 +40,6 @@
 	  sawfish.wm.commands)
 
   (define-structure-alias gnome-commands sawfish.wm.commands.gnome)
-
-  (define (gnome-set-hint w bit)
-    (let ((hints (get-x-property w '_WIN_HINTS)))
-      (if hints
-	  (setq hints (aref (nth 2 hints) 0))
-	(setq hints 0))
-      (setq hints (logior bit hints))
-      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
-
-  (define (gnome-clear-hint w bit)
-    (let ((hints (get-x-property w '_WIN_HINTS)))
-      (if hints
-	  (setq hints (aref (nth 2 hints) 0))
-	(setq hints 0))
-      (setq hints (logand (lognot bit) hints))
-      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
-
-  (define (gnome-toggle-hint w bit)
-    (let ((hints (get-x-property w '_WIN_HINTS)))
-      (if hints
-	  (setq hints (aref (nth 2 hints) 0))
-	(setq hints 0))
-      (setq hints (logxor bit hints))
-      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
 
 
 ;;; commands
@@ -127,7 +100,7 @@
 
   (define (gnome-help-browser)
     "Launch the GNOME help browser."
-    (system "gnome-help-browser >/dev/null 2>&1 </dev/null &"))
+    (system "gnome-help >/dev/null 2>&1 </dev/null &"))
 
   (define (gnome-about)
     "Launch the GNOME about dialog."

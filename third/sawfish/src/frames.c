@@ -1,5 +1,5 @@
 /* frames.c -- window frame manipulation
-   $Id: frames.c,v 1.1.1.2 2001-03-09 19:35:31 ghudson Exp $
+   $Id: frames.c,v 1.1.1.3 2003-01-05 00:33:31 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -53,8 +53,8 @@ DEFSYM(tiled, "tiled");
 DEFSYM(center, "center");
 DEFSYM(right, "right");
 DEFSYM(left, "left");
-DEFSYM(top, "right");
-DEFSYM(bottom, "left");
+DEFSYM(top, "top");
+DEFSYM(bottom, "bottom");
 DEFSYM(text, "text");
 DEFSYM(x_justify, "x-justify");
 DEFSYM(y_justify, "y-justify");
@@ -301,14 +301,21 @@ apply_mask (Drawable dest, int x_off, int y_off,
     }
     else
     {
-	Pixmap tem = XCreatePixmap (dpy, src, dest_width - x_off,
-				    dest_height - y_off, 1);
+	Pixmap tem;
 	XGCValues gcv;
-	GC gc = XCreateGC (dpy, tem, 0, &gcv);
+	GC gc;
+
+	tem = XCreatePixmap (dpy, src, dest_width - x_off,
+			     dest_height - y_off, 1);
+
+	gcv.graphics_exposures = False;
+	gc = XCreateGC (dpy, tem, GCGraphicsExposures, &gcv);
+
 	XCopyArea (dpy, src, tem, gc, 0, 0,
 		   dest_width - x_off, dest_height - y_off, 0, 0);
 	XShapeCombineMask (dpy, dest, ShapeBounding,
 			   x_off, y_off, tem, ShapeUnion);
+
 	XFreeGC (dpy, gc);
 	XFreePixmap (dpy, tem);
     }
@@ -629,7 +636,11 @@ set_frame_part_bg (struct frame_part *fp)
 	fp->drawn.bg = bg;
 	fp->drawn.fg = rep_NULL;
 
+#if 0
+	/* FIXME: this was added to let different frame states have
+	   different shapes, but it's pretty costly.. */
 	queue_reshape_frame (fp->win);
+#endif
     }
     else if (Ffunctionp (bg) != Qnil)
     {
@@ -647,8 +658,6 @@ set_frame_part_fg (struct frame_part *fp)
 {
     int state = current_state (fp);
     repv font = fp->font[state], fg = fp->fg[state];
-    XGCValues gcv;
-    u_long gcv_mask = 0;
     repv string = rep_NULL;
     int length = 0, width, height, x, y;
     Lisp_Window *win = fp->win;
@@ -732,6 +741,8 @@ set_frame_part_fg (struct frame_part *fp)
 
 	if (IMAGEP(fg))
 	{
+	    XGCValues gcv;
+	    u_long gcv_mask = 0;
 	    Pixmap fg_pixmap, fg_mask;
 
 	    if (fp->drawn.fg == fg
@@ -805,14 +816,8 @@ set_frame_part_fg (struct frame_part *fp)
 		set_frame_part_bg (fp);
 	    }
 
-	    if (COLORP(fg))
-	    {
-		gcv.foreground = VCOLOR(fg)->pixel;
-		gcv_mask |= GCForeground;
-	    }
-
-	    XChangeGC (dpy, fp->gc, gcv_mask, &gcv);
-	    x_draw_string (fp->id, font, fp->gc, x, y + VFONT(font)->ascent,
+	    x_draw_string (fp->id, font, fp->gc, VCOLOR(fg),
+			   x, y + VFONT(font)->ascent,
 			   rep_STR(string), length);
 
 	    fp->drawn.text = string;
@@ -881,7 +886,7 @@ frame_part_destroyer (Lisp_Window *w)
 	    bool old_mutex = frame_draw_mutex;
 	    frame_draw_mutex = TRUE;
 	    unclick_current_fp ();
-	    XUngrabPointer (dpy, last_event_time);
+	    ungrab_pointer ();
 	    frame_draw_mutex = old_mutex;
 	}
 
@@ -1104,6 +1109,12 @@ get_pattern_prop (struct frame_part *fp, repv *data, repv (*conv)(repv data),
     return TRUE;
 }
 
+static repv
+get_color (repv name)
+{
+    return Fget_color (name, Qnil);
+}
+
 static bool
 build_frame_part (struct frame_part *fp)
 {
@@ -1221,14 +1232,14 @@ build_frame_part (struct frame_part *fp)
 	fp->renderer = Qnil;
 
     /* get background images or colors */
-    if (!get_pattern_prop (fp, fp->bg, Fget_color,
+    if (!get_pattern_prop (fp, fp->bg, get_color,
 			   Qbackground, class_elt, ov_class_elt))
     {
 	goto next_part;
     }
 
     /* get foreground colors or images */
-    if (!get_pattern_prop (fp, fp->fg, Fget_color,
+    if (!get_pattern_prop (fp, fp->fg, get_color,
 			   Qforeground, class_elt, ov_class_elt))
     {
 	goto next_part;
@@ -1366,7 +1377,8 @@ configure_frame_part (struct frame_part *fp)
 				    fp->width, fp->height,
 				    0, image_depth, InputOutput,
 				    image_visual, wamask, &wa);
-	    fp->gc = XCreateGC (dpy, fp->id, 0, &gcv);
+	    gcv.graphics_exposures = False;
+	    fp->gc = XCreateGC (dpy, fp->id, GCGraphicsExposures, &gcv);
 	    XSelectInput (dpy, fp->id, FP_EVENTS);
 
 	    if (!fp->below_client)

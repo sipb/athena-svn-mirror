@@ -1,5 +1,5 @@
 /* events.c -- Event handling
-   $Id: events.c,v 1.1.1.4 2002-03-20 05:00:21 ghudson Exp $
+   $Id: events.c,v 1.1.1.5 2003-01-05 00:33:15 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -55,6 +55,9 @@ static repv saved_current_context_map;
 
 /* We need a ButtonRelease on this fp. */
 struct frame_part *clicked_frame_part;
+
+/* Set to true when the pointer is actively grabbed */
+static bool pointer_is_grabbed;
 
 static XID event_handler_context;
 
@@ -228,6 +231,12 @@ record_mouse_position (int x, int y, int event_type, Window w)
     }
 }
 
+void
+invalidate_cached_mouse_position (void)
+{
+    current_event_updated_mouse = FALSE;
+}
+
 static void
 install_colormaps (Lisp_Window *w)
 {
@@ -382,28 +391,34 @@ button_press (XEvent *ev)
     record_mouse_position (ev->xbutton.x_root, ev->xbutton.y_root,
 			   ev->type, ev->xany.window);
 
-    fp = find_frame_part_by_window (ev->xbutton.window);
-    if (fp != 0)
+    /* Only let through events we're expecting */
+    if (pointer_is_grabbed
+	|| ev->xbutton.window != root_window
+	|| ev->xbutton.subwindow == None)
     {
-	w = fp->win;
+	fp = find_frame_part_by_window (ev->xbutton.window);
+	if (fp != 0)
+	{
+	    w = fp->win;
 
-	if (ev->type == ButtonPress)
+	    if (ev->type == ButtonPress)
+		handle_fp_click (fp, ev);
+	}
+
+	eval_input_event (current_context_map ());
+
+	if (fp != 0 && !WINDOW_IS_GONE_P (w) && ev->type == ButtonRelease)
+	{
+	    /* In case the event binding threw a non-local-exit, fake
+	       an unwind-protect thing */
+	    repv old_throw = rep_throw_value;
+	    rep_GC_root gc_old_throw;
+	    rep_throw_value = rep_NULL;
+	    rep_PUSHGC(gc_old_throw, old_throw);
 	    handle_fp_click (fp, ev);
-    }
-
-    eval_input_event (current_context_map ());
-
-    if (fp != 0 && !WINDOW_IS_GONE_P (w) && ev->type == ButtonRelease)
-    {
-	/* In case the event binding threw a non-local-exit, fake
-	   an unwind-protect thing */
-	repv old_throw = rep_throw_value;
-	rep_GC_root gc_old_throw;
-	rep_throw_value = rep_NULL;
-	rep_PUSHGC(gc_old_throw, old_throw);
-	handle_fp_click (fp, ev);
-	rep_POPGC;
-	rep_throw_value = old_throw;
+	    rep_POPGC;
+	    rep_throw_value = old_throw;
+	}
     }
 
     if (ev->type == ButtonRelease)
@@ -411,7 +426,7 @@ button_press (XEvent *ev)
 	button_press_mouse_x = button_press_mouse_y = -1;
 	button_press_window = 0;
 	/* The pointer is _always_ ungrabbed after a button-release */
-	XUngrabPointer (dpy, last_event_time);
+	ungrab_pointer ();
     }
 
     XAllowEvents (dpy, SyncPointer, last_event_time);
@@ -437,8 +452,14 @@ motion_notify (XEvent *ev)
 	record_mouse_position (x, y, ev->type, ev->xmotion.window);
     }
 
-    if (pointer_in_motion)
-	eval_input_event (current_context_map ());
+    /* Only let through events we're expecting */
+    if (pointer_is_grabbed
+	|| ev->xbutton.window != root_window
+	|| ev->xbutton.subwindow == None)
+    {
+	if (pointer_in_motion)
+	    eval_input_event (current_context_map ());
+    }
 
     XAllowEvents (dpy, SyncPointer, last_event_time);
 
@@ -456,7 +477,7 @@ property_notify (XEvent *ev)
     if (w != 0 && ev->xproperty.window == w->id)
     {
 	bool need_refresh = FALSE, changed = TRUE;
-	repv changed_states = Qnil;
+	repv changed_states = Qnil, prop;
 	rep_GC_root gc_w, gc_changed_states;
 
 	switch (ev->xproperty.atom)
@@ -547,11 +568,6 @@ property_notify (XEvent *ev)
 	    XGetWMNormalHints (dpy, w->id, &w->hints, &supplied);
 	    break;
 
-	case XA_WM_TRANSIENT_FOR:
-	    if (!XGetTransientForHint (dpy, w->id, &w->transient_for_hint))
-		w->transient_for_hint = 0;
-	    break;
-
 	default:
 	    if (ev->xproperty.atom == xa_wm_colormap_windows)
 	    {
@@ -565,10 +581,17 @@ property_notify (XEvent *ev)
 		if (w == focus_window)
 		    install_colormaps (w);
 	    }
+	    else if (ev->xproperty.atom == xa_wm_protocols)
+	    {
+		get_window_protocols (w);
+	    }
 	}
 
 	rep_PUSHGC (gc_w, w_);
 	rep_PUSHGC (gc_changed_states, changed_states);
+
+	prop = x_atom_symbol (ev->xproperty.atom);
+	property_cache_invalidate (w_, prop);
 
 	if (need_refresh && w->reparented
 	    && w->property_change != 0 && !WINDOW_IS_GONE_P (w))
@@ -579,8 +602,7 @@ property_notify (XEvent *ev)
 	if (changed)
 	{
 	    Fcall_window_hook (Qproperty_notify_hook, rep_VAL(w),
-			       rep_list_2 (x_atom_symbol (ev->xproperty.atom),
-					   ev->xproperty.state
+			       rep_list_2 (prop, ev->xproperty.state
 					   == PropertyNewValue
 					   ? Qnew_value : Qdeleted), Qnil);
 	}
@@ -651,6 +673,7 @@ destroy_notify (XEvent *ev)
     if (w == 0 || ev->xdestroywindow.window != w->saved_id)
 	return;
     remove_window (w, Qt, Qnil);
+    property_cache_invalidate_window (rep_VAL (w));
     emit_pending_destroys ();
 }
 
@@ -771,7 +794,6 @@ unmap_notify (XEvent *ev)
 	}
 	Fcall_window_hook (Qunmap_notify_hook, rep_VAL(w), Qnil, Qnil);
 
-	focus_off_window (w);
 	XDeleteProperty (dpy, w->id, xa_wm_state);
 
 	/* Changed the window-handling model, don't let windows exist
@@ -881,6 +903,19 @@ leave_notify (XEvent *ev)
 static Lisp_Window *last_focused;
 
 static void
+report_focus_change (Lisp_Window *w)
+{
+    if (w != 0
+	&& w->focus_change != 0
+	&& !WINDOW_IS_GONE_P (w))
+    {
+	DB (("  calling focus change %p on %s\n",
+	     w->focus_change, rep_STR(w->name)));
+	w->focus_change (w);
+    }
+}
+
+static void
 focus_in (XEvent *ev)
 {
     Lisp_Window *w = find_window_by_id (ev->xfocus.window);
@@ -888,20 +923,16 @@ focus_in (XEvent *ev)
 	return;
     if (w != 0 && w->visible)
     {
+	Lisp_Window *old = focus_window;
 	focus_window = w;
-	if (pending_focus_window == w)
-	    pending_focus_window = 0;
 
 	if (last_focused != w)
 	{
 	    last_focused = w;
+	    if (old != 0)
+		report_focus_change (old);
 	    install_colormaps (w);
-	    if (w->focus_change != 0)
-	    {
-		DB (("  calling focus change %p on %s\n",
-		     w->focus_change, rep_STR(w->name)));
-		w->focus_change (w);
-	    }
+	    report_focus_change (w);
 	    if (!WINDOW_IS_GONE_P (w))
 	    {
 		Fcall_window_hook (Qfocus_in_hook, rep_VAL(w),
@@ -923,16 +954,14 @@ focus_out (XEvent *ev)
     if (w != 0 && ev->xfocus.detail != NotifyInferior)
     {
 	if (focus_window == w)
+	{
 	    focus_window = 0;
+	    report_focus_change (w);
+	}
+
 	if (last_focused == w)
 	{
 	    last_focused = 0;
-	    if (w->focus_change != 0)
-	    {
-		DB (("  calling focus change %p on %s\n",
-		     w->focus_change, rep_STR(w->name)));
-		w->focus_change (w);
-	    }
 	    if (!WINDOW_IS_GONE_P (w))
 	    {
 		Fcall_window_hook (Qfocus_out_hook, rep_VAL(w),
@@ -1021,13 +1050,14 @@ configure_request (XEvent *ev)
 		alist = Fcons (Fcons (Qstack, stack_data), alist);
 	    }
 	}
-	if ((mask & CWX) && (mask & CWY))
+	if ((mask & CWX) || (mask & CWY))
 	{
 	    int x = ev->xconfigurerequest.x;
 	    int y = ev->xconfigurerequest.y;
 	    alist = Fcons (Fcons (Qposition,
-				  Fcons (rep_MAKE_INT (x),
-					 rep_MAKE_INT (y))), alist);
+				  Fcons ((mask & CWX) ? rep_MAKE_INT (x) : Qnil,
+					 (mask & CWY) ? rep_MAKE_INT (y) : Qnil)),
+			   alist);
 	}
 	if ((mask & CWWidth) || (mask & CWHeight))
 	{
@@ -1184,6 +1214,19 @@ get_server_timestamp (void)
     return ev.xproperty.time;
 }
 
+void
+mark_pointer_grabbed (void)
+{
+    pointer_is_grabbed = TRUE;
+}
+
+void
+ungrab_pointer (void)
+{
+    pointer_is_grabbed = FALSE;
+    XUngrabPointer (dpy, last_event_time);
+}
+
 
 /* Window-local event handlers */
 
@@ -1272,13 +1315,18 @@ handle_input_mask(long mask)
 	if (xev.type == NoExpose || xev.type == GraphicsExpose)
 	    continue;
 
-	DB(("** Event: %s (win %lx)\n",
-	    xev.type < LASTEvent ? event_names[xev.type] : "unknown",
-	    (long)xev.xany.window));
+#ifdef DEBUG
+	do {
+	    Lisp_Window *w = x_find_window_by_id (xev.xany.window);
+	    DB(("** Event: %s (win %lx: %s)\n",
+		xev.type < LASTEvent ? event_names[xev.type] : "unknown",
+		(long)xev.xany.window, w ? (char *) rep_STR (w->name) : "unknown"));
+	} while (0);
+#endif
 
 	record_event_time (&xev);
 	current_x_event = &xev;
-	current_event_updated_mouse = FALSE;
+	invalidate_cached_mouse_position ();
 	current_event_window = rep_NULL;
 
 	rep_PUSHGC(gc_old_current_window, old_current_window);
@@ -1292,6 +1340,7 @@ handle_input_mask(long mask)
     }
 
     emit_pending_destroys ();
+    commit_queued_focus_change ();
 }
 
 /* Handle all available X events on file descriptor FD. */
@@ -1449,9 +1498,9 @@ Return the window that received the current event, or the symbol
 }
 
 DEFUN("x-server-timestamp", Fx_server_timestamp, Sx_server_timestamp,
-      (repv from_server), rep_Subr1) /*
+      (repv from_server, repv store), rep_Subr2) /*
 ::doc:sawfish.wm.events#x-server-timestamp::
-x-server-timestamp [FROM-SERVER]
+x-server-timestamp [FROM-SERVER] [STORE]
 
 Return a recent X server timestamp, as an integer.
 
@@ -1462,6 +1511,8 @@ server, otherwise the most recent timestamp seen by the window manager
 {
     Time time = ((from_server == Qnil)
 		 ? last_event_time : get_server_timestamp ());
+    if (store != Qnil)
+	save_timestamp (time);
     return rep_make_long_uint (time);
 }
 
@@ -1613,7 +1664,6 @@ events_init (void)
     rep_INTERN_SPECIAL(window_state_change_hook);
 
     rep_INTERN_SPECIAL(pointer_motion_threshold);
-    Fset (Qpointer_motion_threshold, rep_MAKE_INT (0));
 
     rep_INTERN(iconify_window);
     rep_INTERN(uniconify_window);

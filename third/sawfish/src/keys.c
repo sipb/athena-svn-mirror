@@ -1,5 +1,5 @@
 /* keys.c -- Key binding and evaluating (this should be called events.c)
-   $Id: keys.c,v 1.1.1.4 2002-03-20 04:59:58 ghudson Exp $
+   $Id: keys.c,v 1.1.1.5 2003-01-05 00:33:16 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -1103,7 +1103,7 @@ grab will be released first.
 	long e_mask = (rep_INTP(mask) ? rep_INT(mask)
 		       : get_event_mask (current_x_event->type));
 	if (current_x_event->type == ButtonPress)
-	    XUngrabPointer (dpy, last_event_time);
+	    ungrab_pointer ();
 	XSendEvent (dpy, w, prop == Qnil ? False : True,
 		    e_mask, current_x_event);
 	return Qt;
@@ -1459,6 +1459,17 @@ DEFSTRING(super_l, "Super_L");
 DEFSTRING(super_r, "Super_R");
 
 static void
+nconc (repv x, repv y)
+{
+    repv *ptr = &x;
+
+    while (rep_CONSP (*ptr))
+	ptr = rep_CDRLOC (*ptr);
+
+    *ptr = y;
+}
+
+static void
 find_meta(void)
 {
     int min_code, max_code;
@@ -1556,17 +1567,17 @@ find_meta(void)
 
     if (meta_mod == alt_mod)
     {
-	meta_syms = Fnconc (rep_list_2 (meta_syms, alt_syms));
+	nconc (meta_syms, alt_syms);
 	alt_syms = meta_syms;
     }
     if (meta_mod == hyper_mod)
     {
-	meta_syms = Fnconc (rep_list_2 (meta_syms, hyper_syms));
+	nconc (meta_syms, hyper_syms);
 	hyper_syms = meta_syms;
     }
     if (meta_mod == super_mod)
     {
-	meta_syms = Fnconc (rep_list_2 (meta_syms, super_syms));
+	nconc (meta_syms, super_syms);
 	super_syms = meta_syms;
     }
 

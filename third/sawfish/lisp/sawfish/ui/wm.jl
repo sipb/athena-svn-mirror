@@ -1,6 +1,6 @@
 #| nokogiri-wm.jl -- WM communication
 
-   $Id: wm.jl,v 1.1.1.2 2001-01-13 14:57:40 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.3 2003-01-05 00:32:17 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -52,7 +52,7 @@
 ;;; stub functions
 
   ;; returns a list of keyworded items. Keywords include:
-  ;; #:name, #:depends, #:user-level, #:value, #:type, #:doc
+  ;; #:name, #:depends, #:value, #:type, #:doc
   (define (wm-load-slots names)
     (init-server)
     (wm-eval `(nokogiri-report-slots ',names) t))

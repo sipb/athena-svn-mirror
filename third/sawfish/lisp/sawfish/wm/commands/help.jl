@@ -1,5 +1,5 @@
 ;; help.jl -- commands for the help menu
-;; $Id: help.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: help.jl,v 1.1.1.2 2003-01-05 00:32:11 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -41,7 +41,7 @@
     (while (string-match " " node)
       (setq node (concat (substring node 0 (match-start)) ?_
 			 (substring node (match-end)))))
-    (system (format nil "gnome-help-browser 'info:%s#%s' >/dev/null 2>&1 </dev/null &"
+    (system (format nil "gnome-help 'info:%s#%s' >/dev/null 2>&1 </dev/null &"
 		    document node)))
 
   (defvar help-display-info-function help-call-info)

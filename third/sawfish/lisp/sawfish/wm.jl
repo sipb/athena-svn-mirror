@@ -1,6 +1,6 @@
 #| sawfish.wm bootstrap
 
-   $Id: wm.jl,v 1.1.1.4 2002-03-20 04:56:17 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.5 2003-01-05 00:32:36 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -46,6 +46,8 @@
     (when (and lang (not disable-nls) (not (string= lang "C")))
       (require 'rep.i18n.gettext)
       (bindtextdomain "sawfish" sawfish-locale-directory)
+      (when (boundp 'bindtextdomaincodeset)
+	(bindtextdomaincodeset "sawfish" "UTF-8"))
       (textdomain "sawfish"))))
 
 ;; ignore file errors on stdio streams
