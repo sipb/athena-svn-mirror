@@ -1,10 +1,9 @@
-# $Id: Makefile,v 1.8 2001-11-28 22:43:51 amb Exp $
+# $Id: Makefile,v 1.9 2002-12-30 15:57:45 rbasch Exp $
 
 SHELL=/bin/sh
 
 SYSCONFDIR=/etc/sysconfig
 RCINITDIR=/etc/rc.d/init.d
-ATHRETCDIR=/etc/athena
 ATHRETCDIR=/etc/athena
 ATHLOGINDIR=${ATHRETCDIR}/login
 
