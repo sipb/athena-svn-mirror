@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #include <sys/time.h>		/* System time definitions. */
@@ -25,20 +25,29 @@
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
 
-#if __STDC__
+#if __STDC__ && __GNUC__
 #include <stdarg.h>
 #else
 #include <varargs.h>
 #endif
 
 #include <olc/olc.h>
+/*
+ * this ugliness is due to a (supposedly) standard-C compiler that
+ * doesn't provide stdarg.h.
+ */
+#if __STDC__ && !__GNUC__
+extern const char *fmt ();
+#define fmt __fmt
+#endif
 #include <olcd.h>
+#undef fmt
 
 extern int errno;
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.19 1990-02-09 18:05:46 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.20 1990-02-20 00:19:03 raeburn Exp $";
 #endif
 
 #if __STDC__
@@ -168,7 +177,7 @@ vfmt (format, pvar) char *format; va_list pvar;
     return buf;
 }
 
-#if __STDC__
+#if __STDC__ && __GNUC__
 char * fmt (const char * format, ...)
 #else
 char * fmt (va_alist) va_dcl
@@ -177,7 +186,7 @@ char * fmt (va_alist) va_dcl
     va_list pvar;
     char *result;
 
-#if __STDC__
+#if __STDC__ && __GNUC__
     va_start (pvar, format);
 #else
     char *format;
