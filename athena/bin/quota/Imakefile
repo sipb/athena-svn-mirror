@@ -18,6 +18,6 @@ MACHOBJS=rcquotaxdr.o
 #endif
 
 build_program(quota,$(OBJS),,$(LIBS))
-install_program(quota,-o root -m 4755,/usr/ucb/program)
+install_program(quota,-o root -m 4755,/usr/ucb/quota)
 install_man(quota.1,quota.1)
 
