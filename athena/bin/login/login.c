@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.34 1991-02-27 12:03:52 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.35 1991-03-07 13:48:25 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.34 1991-02-27 12:03:52 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.35 1991-03-07 13:48:25 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -31,6 +31,11 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
  * login -K hostname (for Kerberos rlogind with restricted access)
  * login -h hostname (for telnetd, etc.)
  */
+
+#ifdef _BSD
+/* causes header files to be screwed up */
+#undef _BSD
+#endif
 
 #include <sys/param.h>
 #if !defined(VFS) || defined(_I386)
