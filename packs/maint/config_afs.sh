@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.3 1991-07-20 14:33:13 epeisach Exp $
+# $Id: config_afs.sh,v 1.4 1991-07-26 15:48:45 probe Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -24,31 +24,30 @@ mv -f ${VICEDIR}/Ctmp ${CELLDB}
 	  END {printf("\n")}' ${CELLDB} | \
 	/bin/sh
 
-if [ ! -f ${SUIDFILE} ]; then
-    echo "${SUIDFILE} does not exist; allowing setuid programs from all cells:"
-    STATUS="-suid"
-else
-    echo "Disallowing setuid/setgid programs from the following cells:"
-    STATUS="-nosuid"
-fi
+echo "Disallowing setuid/setgid programs from the following cells:"
 
 tmp="`awk '/^>/ {print substr($1,2,length($1)-1)}' ${CELLDB}`"
 
-if [ ! -f ${SUIDFILE} -o ! -s ${SUIDFILE} ]; then
-    echo "$tmp"
-    fs setcell $tmp $STATUS
+if [ ! -f ${SUIDFILE} ]; then
+    suid_cells="`cat ${VICEDIR}/ThisCell`"
 else
     suid_cells="`cat ${SUIDFILE}`"
-    cells_sed="`echo $suid_cells | \
-	awk '{for (i=1;i<=NF;i++) {printf(\"-e /^%s$/d \",$i)}}'`"
-    cells="`echo "$tmp"|sed -n $cells_sed -e p`"
-    if [ "$cells" != "" ]; then
-        echo "$cells"
-        fs setcell $cells $STATUS
-    fi
+fi
+
+cells_sed="`echo \"$suid_cells\" | \
+    awk '{for (i=1;i<=NF;i++) {printf(\"-e /^%s$/d \",$i)}}'`"
+cells="`echo "$tmp"|sed -n $cells_sed -e p`"
+if [ "$cells" != "" ]; then
+    echo "$cells"
+    fs setcell $cells -nosuid
+fi
+
+if [ "$suid_cells" != "" ]; then
     echo "
 Allowing setuid/setgid programs from only the following cells:
 $suid_cells"
+
     fs setcell $suid_cells -suid
 fi
+
 exit 0
