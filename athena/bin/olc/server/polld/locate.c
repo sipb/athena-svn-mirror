@@ -44,6 +44,10 @@ locate_person(person)
   new_status = find_finger(person);
 #endif
 
+/* temporary fudge for now- */
+  if (new_status == MACHINE_DOWN)
+    return(LOC_NO_CHANGE);
+
   if (new_status == LOC_ERROR)
     return(new_status);
   else if (new_status == person->status)
