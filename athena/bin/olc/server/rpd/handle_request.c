@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.11 1991-03-28 13:30:48 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.12 1991-04-08 21:20:16 lwvanels Exp $";
 #endif
 #endif
 
@@ -114,7 +114,6 @@ handle_request(fd, from)
     tinstance = ntohl(tinstance);
   }
 
-#ifdef KERBEROS
   
   if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
       sizeof(their_auth.length)) {
@@ -127,17 +126,22 @@ handle_request(fd, from)
   }
 
   their_auth.length = ntohl(their_auth.length);
-  bzero(their_auth.dat,sizeof(their_auth.dat));
-  ltr =MIN(sizeof(unsigned char)*their_auth.length,
-	   sizeof(their_auth.dat));
-  if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
-    if (len == -1)
-      syslog(LOG_ERR,"reading kticket: %m");
-    else
-      syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
-    punt_connection(fd,from);
-    return;
+
+  if (their_auth.length != 0) {
+    bzero(their_auth.dat,sizeof(their_auth.dat));
+    ltr =MIN(sizeof(unsigned char)*their_auth.length,
+	     sizeof(their_auth.dat));
+    if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
+      if (len == -1)
+	syslog(LOG_ERR,"reading kticket: %m");
+      else
+	syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
+      punt_connection(fd,from);
+      return;
+    }
   }
+
+#ifdef KERBEROS
   auth = krb_rd_req(&their_auth,K_SERVICE,instance_buffer,
 		    (unsigned long) from.sin_addr.s_addr,&their_info,"");
   if (auth != RD_AP_OK) {
@@ -152,7 +156,8 @@ handle_request(fd, from)
 
   sprintf(principal_buffer,"%s.%s@%s",their_info.pname, their_info.pinst,
 	  their_info.prealm);
-  if (!acl_check(MONITOR_ACL,principal_buffer)) {
+  if ((strcmp(their_info.pname,username) != 0) &&
+      !acl_check(MONITOR_ACL,principal_buffer)) {
     /* Twit! */
     syslog(LOG_WARNING,"Request from %s@%s who is not on the acl\n",
 	    principal_buffer, inet_ntoa(from.sin_addr));
