@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.15 1991-09-10 11:18:32 lwvanels Exp $
+ *	$Id: init.c,v 1.16 1991-10-30 16:16:16 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.15 1991-09-10 11:18:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.16 1991-10-30 16:16:16 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,22 +45,27 @@ OInitialize()
 {
   int uid;
   struct passwd *pwent;
-  char hostname[LINE_SIZE];  /* Name of local machine. */
+  char hostname[MAXHOSTNAMELEN];  /* Name of local machine. */
   char *h;
+  char *inst;
   struct hostent *host;
 
   h = (char *) getenv ("OLCD_HOST");
+  inst = (char *) getenv("OLCD_INST");
+  if (!inst) {
+    inst = OLC_SERV_NAME;
+  }
 
 #ifdef HESIOD
   if (!h) {
       char **hp;
 
-      if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL) {	
+      if ((hp = hes_resolve(inst,OLC_SERV_NAME)) == NULL) {	
 
 	  fprintf(stderr,
-		  "Unable to get name of OLC server host from the Hesiod nameserver.\n");
+		  "Unable to get name of %s server host from the Hesiod nameserver.\n",inst);
 	  fprintf(stderr, 
-		  "This means that you cannot use OLC at this time. Any problems \n");
+		  "This means that you cannot use %s at this time.  Any problems \n",inst);
 	  fprintf(stderr,
 		  "you may be experiencing with your workstation may be the result of this\n");
 	  fprintf(stderr,
@@ -73,7 +78,7 @@ OInitialize()
     }
 #else
   if (!h) {
-    fprintf (stderr, "Can't find OLC server host!\n");
+    fprintf (stderr, "Can't find %s server host!\n",inst);
     exit (ERROR);
   }
 #endif /* HESIOD */
@@ -84,26 +89,34 @@ OInitialize()
   pwent = getpwuid(uid);
   if(pwent == (struct passwd *) NULL)
     {
-       fprintf(stderr, "Warning: unable to get passwd information.\n");
-       fprintf(stderr, "Try logging out and in again.\n");
-       strcpy(User.username, "nobody");
-       strcpy(User.realname, "No passwd info"); 
-     }
+      fprintf(stderr, "Warning: unable to get passwd information.\n");
+      fprintf(stderr, "Try logging out and in again.\n");
+      strcpy(User.username, "nobody");
+      strcpy(User.realname, "No passwd info"); 
+    }
   else
-     {
-       (void) strcpy(User.username, pwent->pw_name);
-       (void) strcpy(User.realname, pwent->pw_gecos);
-     }
-
+    {
+      (void) strcpy(User.username, pwent->pw_name);
+      (void) strcpy(User.realname, pwent->pw_gecos);
+    }
+      
   {
     char *cp;
     if ((cp = index(User.realname, ',')) != 0)
       *cp = '\0';
   }
-  
-  gethostname(hostname, LINE_SIZE);
-  host = gethostbyname(hostname);
-  (void) strcpy(User.machine, (host ? host->h_name : hostname));     
+      
+  if (gethostname(hostname, sizeof(hostname)) != 0) {
+    fprintf(stderr,"Unable to get host name of this machine; this may be the cause\n");
+    fprintf(stderr,"of the problems you may currently be having.\n");
+    strcpy(hostname,"unknown-host");
+  } else {
+    if ((host = gethostbyname(hostname)) == (struct hostent *)NULL) {
+      fprintf(stderr,"Unable to get host by name for this host, `%s'\n",
+	      hostname);
+    }
+    (void) strcpy(User.machine, (host ? host->h_name : hostname));
+  }
   User.uid = uid;
  
 #ifdef KERBEROS
