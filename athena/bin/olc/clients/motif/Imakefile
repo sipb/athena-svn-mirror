@@ -1,0 +1,34 @@
+#
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.1 1991-03-06 15:44:47 lwvanels Exp $
+# $Author: lwvanels $
+#
+#
+
+/*#define Profiling*/
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+SRCS=		main.c procs.c visual.c \
+		x_ask.c x_instance.c x_motd.c x_resolve.c \
+		x_send.c x_topic.c x_utils.c Cursor.c
+OBJS=		main.o procs.o visual.o \
+		x_ask.o x_instance.o x_motd.o x_resolve.o \
+		x_send.o x_topic.o x_utils.o Cursor.o
+
+LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
+SYS_LIBRARIES  =  $(HesiodLib) $(ComErrLib) $(KerberosLib) \
+		  $(MotifUtilLib) $(MotifResLib) $(MotifLib) $(XtoolLib) \
+		  $(XLib) 
+DEPLIBS= $(LOCAL_LIBRARIES)
+INCLUDES = -I/mit/motif/include
+
+NormalProgramTarget(xolc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+SaberProgramTarget(xolc,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+DependTarget()
+LintTarget()
+
+AllTarget(xolc)
