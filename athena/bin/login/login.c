@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.10 1987-08-18 13:28:16 kubitron Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.11 1987-08-21 14:29:43 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.10 1987-08-18 13:28:16 kubitron Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.11 1987-08-21 14:29:43 rfrench Exp $";
 #endif	lint
 
 /*
@@ -55,9 +55,13 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <krb.h>	
 #include <netdb.h>
 #include <sys/types.h>
-/*#include <netinet/in.h>*/
+#ifndef ZEPHYR
+#include <netinet/in.h>
+#endif ZEPHYR
 #include <grp.h>
+#ifdef ZEPHYR
 #include <zephyr/zephyr.h>
+#endif ZEPHYR
 typedef struct in_addr inaddr_t;
 #include <attach.h>
 
@@ -421,13 +425,14 @@ main(argc, argv)
 			tmpdirflag = FALSE;
 			if (!goodhomedir()) {
 				if (attach_homedir()) {
+					puts("\nWarning: Unable to attach home directory.");
 					if (make_homedir() >= 0) {
-						puts("\nWARNING -- Your home directory is temporary.");
+						puts("\nNOTE -- Your home directory is temporary.");
 						puts("It will be deleted when this workstation deactivates.\n");
 						tmpdirflag = TRUE;
 					}
 					else if (chdir("/") < 0) {
-						printf("No directory!\n");
+						printf("No directory '/'!\n");
 						invalid = TRUE;
 					} else {
 						puts("Can't find or build home directory! Logging in with home=/");
@@ -439,16 +444,21 @@ main(argc, argv)
 					attachedflag = TRUE;
 				} 
 			}
+			else
+				puts("\nWarning: Using local home directory.");
 			break;
 		    
 		  case KDC_NULL_KEY:
 			/* tell the luser to go register with kerberos */
 
+			if (found)
+				goto good_anyway;
+			
 			alarm(0);	/* If we are changing password,
 					   he won't be logging in in this
 					   process anyway, so we can reset */
-			if (!found)
-				(void) insert_pwent(pwd);
+
+			(void) insert_pwent(pwd);
 			
 			if (forkval = fork()) { /* parent */
 			    if (forkval < 0) {
@@ -457,8 +467,7 @@ main(argc, argv)
 				exit(1);
 			    }
 			    while(wait(0) != forkval);
-			    if (!found)
-				    remove_pwent(pwd);
+			    remove_pwent(pwd);
 			    exit(0);
 			}
 			/* run the passwd program as the user */
@@ -470,8 +479,10 @@ main(argc, argv)
 			exit(1);
 			/* These errors should be printed and are fatal */
 		case KDC_PR_UNKNOWN:
-		case INTK_BADPW:
 		case KDC_PR_N_UNIQUE:
+			if (found)
+				goto good_anyway;
+		case INTK_BADPW:
 			invalid = TRUE;
 			errorprtflag = TRUE;
 			fprintf(stderr, "%s\n",
@@ -497,11 +508,11 @@ main(argc, argv)
 		invalid = TRUE;
 	} 
 	    /* if password is good, user is good */
+    good_anyway:
 	    invalid = invalid && strcmp(namep, pwd->pw_passwd);
     } 
 
 leavethis:
-	
 	/*
 	 * If our uid < 0, we must be a bogus user.
 	 */
@@ -536,7 +547,7 @@ leavethis:
 	if (invalid) {
 		if (!errorprtflag)
 			printf("Login incorrect\n");
-	    if (++t >= 5) {
+		if (++t >= 5) {
 		if (utmp.ut_host[0])
 		    syslog(LOG_CRIT,
 			   "REPEATED LOGIN FAILURES ON %s FROM %.*s, %.*s",
@@ -996,13 +1007,18 @@ setenv(var, value, clobber)
  */
 dofork()
 {
-    int child,retval,zephyrable,i,wgcpid;
+    int child,retval,i;
+#ifdef ZEPHYR
+    int zephyrable,wgpid;
+#endif ZEPHYR
 
-    if((child=fork()) == 0) return; /* Child process */
+    if(!(child=fork()))
+	    return; /* Child process */
 
     /* Setup stuff?  This would be things we could do in parallel with login */
     chdir("/");	/* Let's not keep the fs busy... */
     
+#ifdef ZEPHYR
     zephyrable = 1;
     if ((retval = ZInitialize()) != ZERR_NONE) {
 	    com_err("login",retval,"initializing");
@@ -1033,6 +1049,7 @@ dofork()
 	    execl("/usr/athena/zinit","zinit",0);
 	    exit (1);
     }
+#endif ZEPHYR
     
     /* If we're the parent, watch the child until it dies */
     while(wait(0) != child)
@@ -1043,20 +1060,24 @@ dofork()
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
 
+#ifdef ZEPHYR
     if (wgcpid > 0)
 	    kill(wgcpid, SIGTERM);
+#endif ZEPHYR
     
     /* Detach home directory if previously attached */
     if (attachedflag)
 	    (void) detach_homedir();
 
+#ifdef ZEPHYR
     if (zephyrable && krbflag)
 	    if (!fork()) {
 		    setuid(pwd->pw_uid);
 		    (void) ZUnsetLocation();
 		    exit(0);
 	    } 
-
+#endif ZEPHYR
+    
     if (tmppwflag)
 	    if (remove_pwent(pwd))
 		    puts("Couldn't remove password entry");
@@ -1069,16 +1090,16 @@ dofork()
 tty_gid(default_gid)
 int default_gid;
 {
-    struct group *getgrnam(), *gr;
-    int gid = default_gid;
+	struct group *getgrnam(), *gr;
+	int gid = default_gid;
+	
+	gr = getgrnam(TTYGRPNAME);
+	if (gr != (struct group *) 0)
+		gid = gr->gr_gid;
     
-    gr = getgrnam(TTYGRPNAME);
-    if (gr != (struct group *) 0)
-      gid = gr->gr_gid;
+	endgrent();
     
-    endgrent();
-    
-    return (gid);
+	return (gid);
 }
 
 char *
