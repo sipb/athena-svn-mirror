@@ -1,0 +1,23 @@
+#
+# Internet server configuration database
+# MIT Project Athena
+#
+#	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.1 1995-10-08 21:48:16 cfields Exp $
+#
+
+# Services moved from SGI's inetd.conf to be switched.
+
+ftp	stream	tcp	nowait	switched	root	/usr/etc/ftpd	ftpd -l
+shell	stream	tcp	nowait	switched	root	/usr/etc/rshd	rshd
+login	stream	tcp	nowait	switched	root	/usr/etc/rlogind	rlogind
+telnet	stream	tcp	nowait	switched	root	/usr/etc/telnetd	telnetd
+
+# Athena services.
+
+kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd
+klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind
+eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	eklogind
+rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
+gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
+write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
