@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.7 1992-05-15 00:13:20 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.8 1992-06-26 17:01:23 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -120,6 +120,7 @@ unsigned char *signature;
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
+#include <hesiod.h>
 
 static struct timeval timeout = { CLIENT_KRB_TIMEOUT, 0 };
 GDSS_Sign(Data, DataLen, Signature)
@@ -142,6 +143,7 @@ unsigned char *Signature;
   struct hostent *hp;
   struct sockaddr_in sin, lsin;
   fd_set readfds;
+  char **hostname;
   int trys;
 
   bzero(packet, sizeof(packet)); /* Zeroize Memory */
@@ -161,7 +163,10 @@ unsigned char *Signature;
 
   /* Use Hesiod to find service location of GDSS Server Here */
 
-  hp = gethostbyname("big-screw");	/* Should use Hesiod  */
+  hostname = hes_resolve("gdss", "sloc");
+  if (hostname == NULL) return(-1); /* No hesiod available */
+
+  hp = gethostbyname(*hostname);
 
   if(hp == NULL) return (-1);	/* Could not find host, you lose */
 
