@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.5 1998-02-18 21:57:41 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.6 1998-07-25 21:03:40 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.5  1998/02/18 21:57:41  ghudson
+ *	Add the ability to make an entire entry a forced symlink.
+ *
  *	Revision 4.4  1998/02/08 22:26:56  ghudson
  *	Remove the unsupported and incomplete followlinks features.
  *
@@ -63,7 +66,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.5 1998-02-18 21:57:41 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.6 1998-07-25 21:03:40 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -78,8 +81,6 @@ printmsg( filep) FILE *filep;
 {
 	int i;
 	char *s;
-	extern int sys_nerr;
-	extern char *sys_errlist[];
 
 	if ( filep);
 	else if ( nopullflag) return;
@@ -98,10 +99,7 @@ printmsg( filep) FILE *filep;
 	if ( '\n' != errmsg[ strlen( errmsg) - 1])
 		putc('\n', filep);
 
-	if ( errno < sys_nerr) 
-	     fprintf( filep, "   system error is '%s'.\n", sys_errlist[ errno]);
-	else fprintf( filep, "   system errno is %d ( not in sys_errlist).\n",
-		      errno);
+	fprintf( filep, "   system error is '%s'.\n", strerror( errno));
 
 	if	( entnum >= 0)	i = entnum;	/* passed parser */
 	else if ( entrycnt >= 0)i = entrycnt;	/* in parser */
