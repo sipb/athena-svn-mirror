@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.27 1999-08-16 22:24:22 danw Exp $
+# $Id: build.sh,v 1.28 1999-08-19 10:56:48 danw Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -47,9 +47,18 @@ end="${2-$1}"
 
 # Determine the operating system.
 case `uname -s` in
-	SunOS)		os=solaris ;;
-	IRIX)		os=irix ;;
-	Linux)		os=linux ;;
+SunOS)
+	os=solaris
+	awk=nawk
+	;;
+IRIX)
+	os=irix
+	awk=awk
+	;;
+Linux) 
+	os=linux
+	awk=awk
+	;;
 esac
 
 # Send all output from this point on to the build log file.
@@ -63,15 +72,15 @@ if [ true = "$log" ]; then
 fi
 
 # Read in the list of packages, filtering for operating system.
-packages=`nawk -f $source/packs/build/getpackages.awk \
+packages=`$awk -f $source/packs/build/getpackages.awk \
 	os="$os" start="$start" end="$end" $source/packs/build/packages` \
 	|| exit 1
 
 case $nobuild in
-	true)
-		echo $packages
-		exit
-		;;
+true)
+	echo $packages
+	exit
+	;;
 esac
 
 echo ========
