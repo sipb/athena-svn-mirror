@@ -1,0 +1,1144 @@
+# Slovenian translation file for Bug-buddy.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Andraz Tori <andraz.tori1@guest.arnes.si> 2000
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bug-buddy\n"
+"POT-Creation-Date: 2002-06-19 15:19-0400\n"
+"PO-Revision-Date: 2002-06-07 21:46+0200\n"
+"Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bug-buddy.c:55
+msgid "Submit bug report"
+msgstr "Pošlji poročilo o hrošču"
+
+#: src/bug-buddy.c:56
+msgid "Only send report to yourself"
+msgstr "Pošlji poročilo le sebi"
+
+#: src/bug-buddy.c:57
+msgid "Save report to file"
+msgstr "Shrani poročilo v datoteko"
+
+#: src/bug-buddy.c:62
+msgid "crashed application"
+msgstr "sesut program"
+
+#: src/bug-buddy.c:63
+msgid "core file"
+msgstr "datoteka z izpisom pomnilnika (core)"
+
+#: src/bug-buddy.c:64
+msgid "nothing"
+msgstr "nič"
+
+#: src/bug-buddy.c:69
+msgid "Create a new bug report"
+msgstr "Ustvari novo poročilo o hrošču"
+
+#: src/bug-buddy.c:70
+msgid "Add more information to existing report"
+msgstr "Dodaj podatke k obstoječem poročilu"
+
+#: src/bug-buddy.c:79
+msgid "Name of contact"
+msgstr "Ime stika"
+
+#: src/bug-buddy.c:79
+msgid "NAME"
+msgstr "IME"
+
+#: src/bug-buddy.c:80
+msgid "Email address of contact"
+msgstr "E-poštni naslov stika"
+
+#: src/bug-buddy.c:80
+msgid "EMAIL"
+msgstr "E-POŠTA"
+
+#: src/bug-buddy.c:81
+msgid "Package containing the program"
+msgstr "Paket, ki vsebuje program"
+
+#: src/bug-buddy.c:81
+msgid "PACKAGE"
+msgstr "PAKET"
+
+#: src/bug-buddy.c:82
+msgid "Version of the package"
+msgstr "Različica paketa"
+
+#: src/bug-buddy.c:82
+msgid "VERSION"
+msgstr "RAZLIČICA"
+
+#: src/bug-buddy.c:83
+msgid "File name of crashed program"
+msgstr "Ime datoteke sesutega programa"
+
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+msgid "FILE"
+msgstr "DATOTEKA"
+
+#: src/bug-buddy.c:84
+msgid "PID of crashed program"
+msgstr "PID sesutega programa"
+
+#: src/bug-buddy.c:84
+msgid "PID"
+msgstr "PID"
+
+#: src/bug-buddy.c:85
+msgid "Core file from program"
+msgstr "Core datoteka programa"
+
+#: src/bug-buddy.c:86
+msgid "Text file to include in the report"
+msgstr "Datoteka z besedilom, ki naj bo vključena v poročilo"
+
+#: src/bug-buddy.c:96
+#, c-format
+msgid "Could not find widget named %s at %s"
+msgstr "Nisem našel gradnika imenovanega %s na %s"
+
+#: src/bug-buddy.c:208
+msgid ""
+"gdb has not finished getting the debugging information.\n"
+"Kill the gdb process (the stack trace will be incomplete)?"
+msgstr ""
+"gdb ni končal z zbiranjem razhroščevalnih podatkov.\n"
+"Ubijem gdb proces (sled sklada bo nepopolna)?"
+
+#: src/bug-buddy.c:219 src/gdb-buddy.c:125
+msgid "gdb has already exited"
+msgstr "gdb je že končal z izvajanjem"
+
+#: src/bug-buddy.c:286
+msgid "Save Backtrace"
+msgstr "Shrani zgodovino klicev"
+
+#: src/bug-buddy.c:305
+#, c-format
+msgid ""
+"There was an error trying to save %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please choose another file and try again."
+msgstr ""
+"Ob shranjevanju %s se je zgodila napaka:\n"
+"\n"
+"%s\n"
+"\n"
+"Prosim, izberite drugo datoteko in poskusite znova."
+
+#: src/bug-buddy.c:402
+msgid "_Start Mailer"
+msgstr "_Poženi poštni program"
+
+#: src/bug-buddy.c:406
+msgid "_Send Report"
+msgstr "_Pošlji poročilo"
+
+#: src/bug-buddy.c:443
+#, c-format
+msgid ""
+"There was an error showing the proxy settings:\n"
+"\n"
+"%s.\n"
+"\n"
+"Please make sure the GNOME Control Center is properly installed."
+msgstr ""
+"Ob prikazovanju nastavitev posrednika se je zgodila napaka:\n"
+"\n"
+"%s\n"
+"\n"
+"Prosim, prepričajte se ali je Nadzorni center GNOME pravilno nameščen."
+
+#: src/bug-buddy.c:491
+msgid "Hide Debugging Options"
+msgstr "Skrij razhroščevalne možnosti"
+
+#: src/bug-buddy.c:492
+msgid "Show Debugging Options"
+msgstr "Kaži razhroščevalne možnosti"
+
+#: src/bug-buddy.c:556
+msgid ""
+"$GNOME_CRASHED_APPNAME is deprecated.\n"
+"Please use the --appname command lineargument instead."
+msgstr ""
+"$GNOME_CRASHED_APPNAME je zastarel.\n"
+"Prosim raje uporabite --appname argument ukazne vrstice."
+
+#: src/bug-buddy.c:566
+msgid ""
+"$GNOME_CRASHED_PID is deprecated.\n"
+"Please use the --pid command lineargument instead."
+msgstr ""
+"$GNOME_CRASHED_PID je zastarel.\n"
+"Prosim raje uporabite --pid argument ukazne vrstice."
+
+#: src/bug-buddy.c:582
+msgid ""
+"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
+"It will step you through the process of submitting a bug report."
+msgstr ""
+"Dobrodošli v Bug Buddyu, programu za poročanje bugov v GNOME.\n"
+"Z njim boste po korakih šli skozi proces pošiljanja poročila o hrošču."
+
+#: src/bug-buddy.c:585
+msgid ""
+"\n"
+"\n"
+"You are seeing this because another application has crashed."
+msgstr ""
+"\n"
+"\n"
+"To vidite, ker se je sesul drug program."
+
+#: src/bug-buddy.c:588
+msgid ""
+"\n"
+"\n"
+"Please wait a few moments while Bug Buddy obtains debugging information from "
+"the applications.  This allows Bug Buddy to provide a more useful bug report."
+msgstr ""
+"\n"
+"\n"
+"Prosim, počakajte nekaj trenutkov medtem, ko Bug Buddy pridobiva "
+"razhroščevalne podatke od programov. To bo omogočilo Bug Buddyu narediti "
+"bolj uporabno poročilo o hrošču."
+
+#: src/bug-buddy.c:727
+#, c-format
+msgid "Could not find pixmap: %s (%d)\n"
+msgstr "Nisem mogel najti slile: %s (%d)\n"
+
+#: src/bug-buddy.c:794
+#, c-format
+msgid ""
+"Bug Buddy could not load its user interface file (%s).\n"
+"Please make sure Bug Buddy was installed correctly."
+msgstr ""
+"Nisem mogel odpreti datoteke z uporabiškim vmesnikom (%s).\n"
+"Preverite, ali je bil Bug Buddy pravilno nameščen."
+
+#: src/bug-buddy.desktop.in.h:1
+msgid "Bug Report Tool"
+msgstr "Orodje za poročanje o hroščih"
+
+#: src/bug-buddy.desktop.in.h:2
+msgid "Report a bug in GNOME"
+msgstr "Poročaj o hrošču v GNOME"
+
+#: src/bug-buddy.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: src/bug-buddy.glade.h:2
+msgid "<span size=\"xx-large\">Bug Buddy</span>"
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
+
+#: src/bug-buddy.glade.h:3
+msgid "Advanced"
+msgstr "Napredno"
+
+#: src/bug-buddy.glade.h:4
+msgid "Assbarn Phenomenon"
+msgstr "Čuden fenomen"
+
+#: src/bug-buddy.glade.h:5
+msgid "Binary file:"
+msgstr "Binarna datoteka:"
+
+#: src/bug-buddy.glade.h:6 src/united-states-of-bug-buddy.c:95
+msgid "Bug Buddy"
+msgstr "Bug Buddy"
+
+#: src/bug-buddy.glade.h:7
+msgid ""
+"Bug Buddy can send debugging information with your bug report.\n"
+"The correct options should have been selected for you automatically.\n"
+"For more information, please click the Help button below."
+msgstr ""
+"Bug Buddy lahko pošlje razhroščevalne podatke skupaj z vašim poročilom o "
+"hrošču\n"
+"Pravilne možnosti bi se morale za vas izbrati samodejno.\n"
+"Za več podatkov kliknite na gumb \"Pomoč\"."
+
+#: src/bug-buddy.glade.h:10
+msgid ""
+"Bug Buddy uses email to submit the bug reports.\n"
+"Please choose how you would like Bug Buddy to send email.\n"
+"If you choose to use the default GNOME mailer, this setting\n"
+"will be shared with some other GNOME applications."
+msgstr ""
+"Bug Buddy uporablja e-pošto za oddajo poročil o hroščih.\n"
+"Prosim, izberite kako želite, da Bug Buddy pošlje e-pošto.\n"
+"Če boste uporabili privzet poštni program GNOME, bo ta nastavitev enaka kot "
+"v drugih programih GNOME."
+
+#: src/bug-buddy.glade.h:14
+msgid "Bug tracking system"
+msgstr "Sistem sledenja hroščem"
+
+#: src/bug-buddy.glade.h:15
+msgid "Cc"
+msgstr "Cc"
+
+#: src/bug-buddy.glade.h:16
+msgid "Command"
+msgstr "Ukaz"
+
+#: src/bug-buddy.glade.h:17
+msgid "Core file"
+msgstr "Datoteka z izpisom pomnilnika (core)"
+
+#: src/bug-buddy.glade.h:18
+msgid "Custom mailer"
+msgstr "Poljuben poštni program"
+
+#: src/bug-buddy.glade.h:19
+msgid "Debug"
+msgstr "Razhroščevanje"
+
+#: src/bug-buddy.glade.h:20 src/bugzilla.c:642 src/bugzilla.c:683
+#: src/bugzilla.c:711
+msgid "Description"
+msgstr "Opis"
+
+#: src/bug-buddy.glade.h:21
+msgid "Download Progress"
+msgstr "Napredek prenosa"
+
+#: src/bug-buddy.glade.h:22
+msgid "Email"
+msgstr "E-pošta"
+
+#: src/bug-buddy.glade.h:23
+msgid "GNOME Mailer Settings"
+msgstr "Nastavitve poštnega programa GNOME"
+
+#: src/bug-buddy.glade.h:24
+msgid "Include a text file"
+msgstr "Vključi datoteko z besedilom"
+
+#: src/bug-buddy.glade.h:25
+msgid "Just save to a file so I can submit a bug report manually"
+msgstr "Shrani v datoteko, da bom lahko poslal poročilo o hrošču ročno"
+
+#: src/bug-buddy.glade.h:26
+msgid "Name"
+msgstr "Ime"
+
+#: src/bug-buddy.glade.h:27
+msgid "Path of sendmail"
+msgstr "Pot do programa sendmail"
+
+#: src/bug-buddy.glade.h:28
+msgid "Please choose a component, version, and severity level."
+msgstr "Prosim izberite komponento, različico in stopnjo resnosti hrošča."
+
+#: src/bug-buddy.glade.h:29
+msgid "Please make any final corrections to the bug report."
+msgstr "Prosimo, naredite še zadnje popravke poročila o hrošču."
+
+#: src/bug-buddy.glade.h:30
+msgid "Please make your bug report in English, if possible."
+msgstr "Prosimo, če je mogoče, poročilo napišite v Angleščini."
+
+#: src/bug-buddy.glade.h:31
+msgid "Please select the product for the bug you wish to report."
+msgstr "Prosimo izberite produkt v katerem želite prijaviti hrošča."
+
+#: src/bug-buddy.glade.h:32
+msgid ""
+"Please take a minute to see if your bug is one of the most frequently "
+"reported bugs.\n"
+"If the bug is already reported, please do not report it again."
+msgstr ""
+"Prosimo, vzemite si minuto časa, da pogledate, če je vaš hrošč eden izmed "
+"najpogosteje sporočenih.\n"
+"Če je hrošč že sporočen, potem ne počnite tega še enkrat."
+
+#: src/bug-buddy.glade.h:34
+msgid ""
+"Please wait while Bug Buddy updates its list\n"
+"of products for the bug tracking systems."
+msgstr ""
+"Prosimo počakajte, da Bug Buddy posodobi \n"
+"seznam produktov v sistemih sledenja hroščem."
+
+#: src/bug-buddy.glade.h:36
+msgid "Process ID:"
+msgstr "ID procesa:"
+
+#: src/bug-buddy.glade.h:37
+msgid "Proxy Settings..."
+msgstr "Nastavitve posrednika..."
+
+#: src/bug-buddy.glade.h:38
+msgid "Save in"
+msgstr "Shrani v"
+
+#: src/bug-buddy.glade.h:39
+msgid "Save the report to..."
+msgstr "Shrani poročilo v..."
+
+#: src/bug-buddy.glade.h:40
+msgid "Saving:"
+msgstr "Shranjevanje:"
+
+#: src/bug-buddy.glade.h:41
+msgid "Select a mailer"
+msgstr "Izberi poštni program"
+
+#: src/bug-buddy.glade.h:42
+msgid "Sendmail Settings"
+msgstr "Nastavitve programa sendmail"
+
+#: src/bug-buddy.glade.h:43
+msgid "Severity"
+msgstr "Resnost"
+
+#: src/bug-buddy.glade.h:44
+msgid "Show _Debugging Details"
+msgstr "Kaži _podrobnosti razhroščevanja"
+
+#: src/bug-buddy.glade.h:45
+msgid "Show most frequent bugs in:"
+msgstr "Kaži najpogostejše hrošče v:"
+
+#: src/bug-buddy.glade.h:46
+msgid "Simple"
+msgstr "Enostavno"
+
+#: src/bug-buddy.glade.h:47
+msgid "Start"
+msgstr "Začni"
+
+#: src/bug-buddy.glade.h:48
+msgid "Start in terminal"
+msgstr "Poženi v terminalu"
+
+#: src/bug-buddy.glade.h:49
+msgid "Stop"
+msgstr "Ustavi"
+
+#: src/bug-buddy.glade.h:50
+msgid "Submit another bug"
+msgstr "Pošlji še en hrošč"
+
+#: src/bug-buddy.glade.h:51
+msgid "Summary"
+msgstr "Povzetek"
+
+#: src/bug-buddy.glade.h:52
+msgid "The product is not listed above."
+msgstr "Produkta ni na zgornjem seznamu"
+
+#: src/bug-buddy.glade.h:53
+msgid "To"
+msgstr "Za"
+
+#: src/bug-buddy.glade.h:54
+msgid "To:"
+msgstr "Za:"
+
+#: src/bug-buddy.glade.h:55
+msgid "Understands Netscape remote control"
+msgstr "Razumi Netscapeovo oddaljeno upravljanje"
+
+#: src/bug-buddy.glade.h:56
+msgid "Updating products list:"
+msgstr "Osvežujem seznam produktov:"
+
+#: src/bug-buddy.glade.h:57
+msgid "Use sendmail directly"
+msgstr "Uporabni neposredno sendmail"
+
+#: src/bug-buddy.glade.h:58
+msgid "Use the default GNOME mailer"
+msgstr "Uporabi privzet poštni program GNOMe"
+
+#: src/bug-buddy.glade.h:59
+msgid "Version"
+msgstr "Različica"
+
+#: src/bug-buddy.glade.h:60
+msgid "component"
+msgstr "komponenta"
+
+#: src/bug-buddy.glade.h:61
+msgid "desc"
+msgstr "desc"
+
+#: src/bug-buddy.glade.h:62
+msgid "email info"
+msgstr "podatki o e-pošti"
+
+#: src/bug-buddy.glade.h:63
+msgid "finished"
+msgstr "končano"
+
+#: src/bug-buddy.glade.h:64
+msgid "gdb"
+msgstr "gdb"
+
+#: src/bug-buddy.glade.h:65
+msgid "gnome"
+msgstr "gnome"
+
+#: src/bug-buddy.glade.h:66
+msgid "mail config"
+msgstr "pošlji nastavitve"
+
+#: src/bug-buddy.glade.h:67
+msgid "mostfreq"
+msgstr "najpogostejše"
+
+#: src/bug-buddy.glade.h:68
+msgid "product"
+msgstr "produkt"
+
+#: src/bug-buddy.glade.h:69
+msgid "sendmail"
+msgstr "sendmail"
+
+#: src/bugzilla.c:616
+msgid "ID"
+msgstr "ID"
+
+#: src/bugzilla.c:630 src/bugzilla.c:665
+msgid "Product"
+msgstr "Produkt"
+
+#: src/bugzilla.c:636 src/bugzilla.c:705
+msgid "Component"
+msgstr "Komponenta"
+
+#: src/bugzilla.c:774
+#, c-format
+msgid ""
+"Bug Buddy could not open '%s'.\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"Bug Buddy ni mogel odpreti '%s'.\n"
+"Preverite, ali je bil Bug Buddy pravilno nameščen.\n"
+"Bug Buddy se bo sedaj zaprl."
+
+#: src/bugzilla.c:793
+msgid "All"
+msgstr "Vse"
+
+#: src/bugzilla.c:822
+msgid ""
+"Bug Buddy could not find any information on where to submit bugs.\n"
+"\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"Bug buddy ni našel podatkov o tem kam poslati poročila o hroščih.\n"
+"\n"
+"Preverite, ali je bil Bug Buddy pravilno nameščen.\n"
+"\n"
+"Bug Buddy se bo zdaj zaprl."
+
+#: src/cell-renderer-uri.c:145
+msgid "URI"
+msgstr "URI"
+
+#: src/cell-renderer-uri.c:146
+msgid "URI to show when clicked."
+msgstr "URI, ki naj se pokaže, ko je kliknjen."
+
+#: src/cell-renderer-uri.c:153
+msgid "Visited"
+msgstr "Obiskan"
+
+#: src/cell-renderer-uri.c:154
+msgid "If the URI has been visited before."
+msgstr "Če je bil URI že obiskan."
+
+#: src/config.c:75
+msgid "Evolution"
+msgstr "Evolucija"
+
+#: src/gdb-buddy.c:82
+#, c-format
+msgid "Obtaining stack trace... (%d)"
+msgstr "Pridobivam sled sklada... (%d)"
+
+#: src/gdb-buddy.c:165
+#, c-format
+msgid ""
+"Unable to process core file with gdb:\n"
+"'%s'"
+msgstr ""
+"Ne morem obdelati core datoteke z gdb:\n"
+"'%s'"
+
+#: src/gdb-buddy.c:196
+#, c-format
+msgid ""
+"GDB was unable to determine which binary created\n"
+"'%s'"
+msgstr ""
+"GDM ni mogel ugotoviti kater program je ustvaril\n"
+"'%s'"
+
+#: src/gdb-buddy.c:228
+msgid "Error on read... aborting"
+msgstr "Napaka pri branju... razveljavljam"
+
+#: src/gdb-buddy.c:274
+msgid ""
+"GDB could not be found on your system.\n"
+"Debugging information will not be obtained."
+msgstr ""
+"GDBja ni mogoče najti na sistemu.\n"
+"Podatkov o razhroščevanju ni mogoče pridobiti."
+
+#: src/gdb-buddy.c:308
+msgid ""
+"Could not find the gdb-cmd file.\n"
+"Please try reinstalling Bug Buddy."
+msgstr ""
+"Nisem našel datoteke gdb-cmd.\n"
+"Poskusite znova namestiti Bug Buddy-a."
+
+#: src/gdb-buddy.c:328
+msgid "There was an error running gdb."
+msgstr "Ob poganjanju programa gdb se je zgodila napaka."
+
+#: src/united-states-of-bug-buddy.c:49
+msgid "Welcome to Bug Buddy"
+msgstr "Dobrodošli v Bug Buddy-a"
+
+#: src/united-states-of-bug-buddy.c:50
+msgid "Select a Product"
+msgstr "Izberi produkt"
+
+#: src/united-states-of-bug-buddy.c:51
+msgid "Select a Component"
+msgstr "Izberi komponento"
+
+#: src/united-states-of-bug-buddy.c:52
+msgid "Frequently Reported Bugs"
+msgstr "Pogosto sporočeni hrošči"
+
+#: src/united-states-of-bug-buddy.c:53
+msgid "Bug Description"
+msgstr "Opis hrošča"
+
+#: src/united-states-of-bug-buddy.c:54
+msgid "Mail Configuration"
+msgstr "Pošlji nastavitve po e-pošti"
+
+#: src/united-states-of-bug-buddy.c:55
+msgid "Confirmation"
+msgstr "Potrditev"
+
+#: src/united-states-of-bug-buddy.c:56
+msgid "Finished!"
+msgstr "Končano!"
+
+#: src/united-states-of-bug-buddy.c:98
+msgid "The graphical bug reporting tool for GNOME."
+msgstr "Grafično orodje za poročanje o hroščih v GNOME-u."
+
+#: src/united-states-of-bug-buddy.c:109
+msgid "The lame Bug Buddy web page"
+msgstr "Leva spletna stran Bug Buddy-a"
+
+#: src/united-states-of-bug-buddy.c:293
+msgid "Please enter your name."
+msgstr "Prosim vpišite vaše ime."
+
+#: src/united-states-of-bug-buddy.c:309
+msgid "Please enter a valid email address."
+msgstr "Prosim vpišite veljaven e-poštni naslov."
+
+#: src/united-states-of-bug-buddy.c:325
+#, c-format
+msgid ""
+"'%s' doesn't seem to exist.\n"
+"\n"
+"Please check the path to sendmail again."
+msgstr ""
+"Zdi se, da '%s' ne obstaja.\n"
+"\n"
+"Prosimo, znova preverite pod do programa sendmail."
+
+#: src/united-states-of-bug-buddy.c:357
+msgid "Please enter a valid email command."
+msgstr "Prosim vpišite veljaven ukaz za e-pošto."
+
+#: src/united-states-of-bug-buddy.c:421
+msgid "The specified file does not exist."
+msgstr "Navedena datoteka ne obstaja."
+
+#: src/united-states-of-bug-buddy.c:431
+#, c-format
+msgid "File is of type: %s"
+msgstr "Datoteka je tipa: %s"
+
+#: src/united-states-of-bug-buddy.c:438
+#, c-format
+msgid ""
+"'%s' is a %s file.\n"
+"\n"
+"Bug Buddy can only submit plaintext (text/*) files."
+msgstr ""
+"'%s' je datoteka %s.\n"
+"\n"
+"Bug Buddy lahko pošlje le datoteke z besedilom (text/*)."
+
+#: src/united-states-of-bug-buddy.c:458
+msgid "You must include a comprehensible subject line in your bug report."
+msgstr "V poročilu o hrošču mora biti nujno naveden predmet."
+
+#: src/united-states-of-bug-buddy.c:474
+msgid "You must include a comprehensible description in your bug report."
+msgstr "V poročilu o hrošču mora biti nujno naveden opis."
+
+#: src/united-states-of-bug-buddy.c:502
+msgid "Submit this bug report now?"
+msgstr "Takoj pošlji to poročilo o hrošču?"
+
+#: src/united-states-of-bug-buddy.c:505
+msgid "_Submit"
+msgstr "_Pošlji"
+
+#: src/united-states-of-bug-buddy.c:526
+#, c-format
+msgid ""
+"Unable to open file '%s':\n"
+"%s"
+msgstr ""
+"Ne morem odpreti datoteke '%s':\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:540
+#, c-format
+msgid "about to run '%s'"
+msgstr "pognal bom '%s'"
+
+#: src/united-states-of-bug-buddy.c:548
+#, c-format
+msgid ""
+"Unable to start mail program '%s':\n"
+"%s"
+msgstr ""
+"Ne morem pognati programa za pošto '%s':\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:586
+#, c-format
+msgid "Your bug report was saved in '%s'"
+msgstr "Vaše poročilo o hrošču je bilo shranjeno v '%s'"
+
+#: src/united-states-of-bug-buddy.c:589
+#, c-format
+msgid ""
+"Your bug report has been submitted to:\n"
+"\n"
+"        <%s>\n"
+"\n"
+"Thanks!"
+msgstr ""
+"Vaše poročilo o hrošču je bilo poslano na:\n"
+"\n"
+"        <%s>\n"
+"\n"
+"Hvala!"
+
+#: src/united-states-of-bug-buddy.c:644
+msgid ""
+"Since Bug Buddy doesn't know about the product you wish to submit a bug "
+"report in, you will have to manually address the bug report."
+msgstr ""
+"Ker Bug Buddy ne ve za kater produkt želite poslati poročilo o hrošču, boste "
+"morali tega hrošča opisati ročno."
+
+#: src/united-states-of-bug-buddy.c:665
+msgid "You must specify a product for your bug report."
+msgstr "V poročilu o hrošču mora biti nujno naveden produkt."
+
+#: src/united-states-of-bug-buddy.c:688
+msgid "You must specify a component for your bug report."
+msgstr "V poročilu o hrošču mora biti nujno navedena komponenta."
+
+#: src/united-states-of-bug-buddy.c:702
+msgid "You must specify a version for your bug report."
+msgstr "V poročilu o hrošču mora biti nujno navedena različica."
+
+#: src/united-states-of-bug-buddy.c:785
+msgid ""
+"Your email program has been launched.  Please look it over and send it.\n"
+"\n"
+"Thank you for submitting this bug report."
+msgstr ""
+"Vaš program za e-pošto je bil pognan.  Prosimo, preglejte vsebino in jo "
+"pošljite.\n"
+"\n"
+"Hvala vam za poročanje o hrošču."
+
+#: src/united-states-of-bug-buddy.c:812
+msgid ""
+"Are you sure you want to cancel\n"
+"this bug report?"
+msgstr ""
+"Ste prepričani, da želite \n"
+"preklicati poročilo o hrošču?"
+
+#~ msgid "Go"
+#~ msgstr "Pojdi"
+
+#~ msgid "HTTP Proxy Settings"
+#~ msgstr "Nastavitve posrednika HTTP"
+
+#~ msgid "Location"
+#~ msgstr "Kraj"
+
+#~ msgid "Password"
+#~ msgstr "Geslo"
+
+#~ msgid "Port"
+#~ msgstr "Vrata"
+
+#~ msgid "Proxy requires a username and password"
+#~ msgstr "Posrednik zahteva uporabniško ime in geslo"
+
+#~ msgid "Use HTTP Proxy"
+#~ msgstr "Uporabi posrednika HTTP"
+
+#~ msgid "Username"
+#~ msgstr "Uporabniško ime"
+
+#~ msgid "%P %%"
+#~ msgstr "%P %%"
+
+#~ msgid "About"
+#~ msgstr "O programu"
+
+#~ msgid ""
+#~ "Bug Buddy has determined that some of its information about\n"
+#~ "the various bug tracking systems may need to be updated.\n"
+#~ "\n"
+#~ "Should Bug Buddy try to update these files now?"
+#~ msgstr ""
+#~ "Bug Buddy je ugotovil, da se mora del njegovih podatkov\n"
+#~ "o različnih sistemih sledenja hroščev morda posodobiti.\n"
+#~ "\n"
+#~ "Naj Bug Buddy poskusi posodobiti te datoteke?"
+
+#~ msgid "Automatically continue to next step when debugging is complete"
+#~ msgstr "Ko je razhroščevanje opravljeno, samodejno pojdi na naslednji korak"
+
+#~ msgid "Automatically go to next page when complete"
+#~ msgstr "Ko je opravljeno, samodejno pojdi na naslednjo stran"
+
+#~ msgid "Content"
+#~ msgstr "Vsebina"
+
+#~ msgid ""
+#~ "Description of Problem:\n"
+#~ "\n"
+#~ "\n"
+#~ "Steps to reproduce the problem:\n"
+#~ "1. \n"
+#~ "2. \n"
+#~ "3. \n"
+#~ "\n"
+#~ "Actual Results:\n"
+#~ "\n"
+#~ "\n"
+#~ "Expected Results:\n"
+#~ "\n"
+#~ "\n"
+#~ "How often does this happen? \n"
+#~ "\n"
+#~ "\n"
+#~ "Additional Information:"
+#~ msgstr ""
+#~ "Opis problema:\n"
+#~ "\n"
+#~ "\n"
+#~ "Koraki, ki povzročijo problem:\n"
+#~ "1. \n"
+#~ "2. \n"
+#~ "3. \n"
+#~ "\n"
+#~ "Dejanski rezltati:\n"
+#~ "\n"
+#~ "\n"
+#~ "Pričakovani rezultati:\n"
+#~ "\n"
+#~ "\n"
+#~ "Kako pogosto se to zgodi? \n"
+#~ "\n"
+#~ "\n"
+#~ "Dodatni podatki:"
+
+#~ msgid "Package"
+#~ msgstr "Paket"
+
+#~ msgid ""
+#~ "Please wait while Bug Buddy determines some information about your system."
+#~ msgstr ""
+#~ "Prosim počakajte, medtem, ko se Bug Buddy zbira podatke o vašem sistemu."
+
+#~ msgid "Send copy to yourself"
+#~ msgstr "Pošlji kopijo sebi"
+
+#~ msgid "Skip this step in the future"
+#~ msgstr "V prihodnje preskoči ta korak"
+
+#~ msgid ""
+#~ "This program will walk you through the steps for \n"
+#~ "submitting a bug report for projects such as GNOME.\n"
+#~ "\n"
+#~ "These bug reports are submitted via email, so\n"
+#~ "please specify your email address so you can be\n"
+#~ "contacted if further information is required, or\n"
+#~ "when a fixed version is available."
+#~ msgstr ""
+#~ "Program vas bo vodil skozi korake pošiljanja \n"
+#~ "poročil o hroščih v projektih kot je GNOME.\n"
+#~ "\n"
+#~ "Poročila o hroščih so poslana preko e-pošte,\n"
+#~ "zato prosimo navedite vaš e-poštni naslov, da vas bo\n"
+#~ "mogoče kontaktirati v kolikor bodo potrebni nadaljni \n"
+#~ "podatki oziroma, da boste vedeli, kdaj je na voljo \n"
+#~ "popravljena različica."
+
+#~ msgid "Version installed"
+#~ msgstr "Nameščena različica"
+
+#~ msgid "download"
+#~ msgstr "prenos"
+
+#~ msgid "intro"
+#~ msgstr "uvod"
+
+#~ msgid "system"
+#~ msgstr "sistem"
+
+#~ msgid "Submitting the Report"
+#~ msgstr "Oddajam Poročilo"
+
+#~ msgid ""
+#~ "'%s' doesn't seem to exist.\n"
+#~ "\n"
+#~ "You won't be able to actually submit a bug report, but you will\n"
+#~ "be able to save it to a file.\n"
+#~ "\n"
+#~ "Specify a new location for sendmail?"
+#~ msgstr ""
+#~ "Izgleda, da '%s' ne obstaja.\n"
+#~ "\n"
+#~ "Ne boste mogli oddati poročila o hrošču, lahko pa ga boste shranili v "
+#~ "datoteko.\n"
+#~ "\n"
+#~ "Boste navedli novo mesto, kjer se nahaja program sendmail?"
+
+#~ msgid "Are you sure you want to cancel this update?"
+#~ msgstr "Ste prepričani, da želite zavrniti to posodobljenje?"
+
+#~ msgid "Error on fork()."
+#~ msgstr "Napaka pri vejanju (fork())."
+
+#~ msgid "Full description of the bug, including how to reproduce it"
+#~ msgstr "Celosten opis hrošča, vključujoč podatke o tem kako se pojav ponovi"
+
+#~ msgid "Short subject for the bug report"
+#~ msgstr "Kratek naslov poročila o hrošču"
+
+#~ msgid "'%s' does not look like a text file."
+#~ msgstr "'%s' ne izgleda kot datoteka z besedilom."
+
+#~ msgid "Unable to open pipe"
+#~ msgstr "Ne morem odpreti cevi"
+
+#~ msgid "Could not run '%s'."
+#~ msgstr "Ne morem pognati '%s'."
+
+#~ msgid "Error on read..."
+#~ msgstr "Napaka pri branju..."
+
+#~ msgid ""
+#~ "Could not open '%s'.\n"
+#~ "Please make sure bug-buddy was installed correctly."
+#~ msgstr ""
+#~ "Nisem mogel odpreti '%s'.\n"
+#~ "Prosim preverite, da je bil bug-buddy pravilno nameščen."
+
+#~ msgid "critical"
+#~ msgstr "kritična"
+
+#~ msgid "grave"
+#~ msgstr "ubijalska"
+
+#~ msgid "normal"
+#~ msgstr "običajna"
+
+#~ msgid "wishlist"
+#~ msgstr "želja"
+
+#~ msgid "software bug"
+#~ msgstr "programski hrošč"
+
+#~ msgid "documentation bug"
+#~ msgstr "napaka v dokumentaciji"
+
+#~ msgid "change request"
+#~ msgstr "zahtevek po spremembi"
+
+#~ msgid "support"
+#~ msgstr "podpora"
+
+#~ msgid ""
+#~ "It is much more helpful if you specify\n"
+#~ "a more specific package than 'general'.\n"
+#~ "\n"
+#~ "Please specify a package."
+#~ msgstr ""
+#~ "Zelo pomaga, če določite paket\n"
+#~ "bolj natančno kot 'splošno'.\n"
+#~ "\n"
+#~ "Prosim določite paket"
+
+#~ msgid ""
+#~ "You must include a subject and a description\n"
+#~ "in your bug report."
+#~ msgstr ""
+#~ "Poročilo o hrošču mora nujno vsebovati\n"
+#~ "naslov in opis."
+
+#~ msgid ""
+#~ "'%s' doesn't seem to exist.  You won't be able to actually\n"
+#~ "submit a bug report, but you will be able to save it to a file.\n"
+#~ "\n"
+#~ "Specify a new location for sendmail?"
+#~ msgstr ""
+#~ "Izgleda, da '%s' ne obstaja.  Ne boste mogli oddati \n"
+#~ "poročila o hrošču, lahko pa ga boste shranili v datoteko.\n"
+#~ "\n"
+#~ "Boste navedli novo mesto, kjer se program sendmail nahaja?"
+
+#~ msgid "You must specify a recipient email address"
+#~ msgstr "Navesti morate e-poštni naslov prejemnika"
+
+#~ msgid "Please choose a file to save to."
+#~ msgstr "Prosim izberite datoteko, kamor naj se shrani."
+
+#~ msgid ""
+#~ "The file '%s' already exists.\n"
+#~ "Overwrite this file?"
+#~ msgstr ""
+#~ "Datoteka '%s' že obstaja.\n"
+#~ "Prepiši datoteko?"
+
+#~ msgid "Help"
+#~ msgstr "Pomoč"
+
+#~ msgid "Refresh"
+#~ msgstr "Osveži"
+
+#~ msgid "Distribution"
+#~ msgstr "Distribucija"
+
+#~ msgid "System"
+#~ msgstr "Sistem"
+
+#~ msgid "Finish"
+#~ msgstr "Končaj"
+
+#~ msgid "Collect debugging information from a crashed application"
+#~ msgstr "Zberi razhroščevalne podatke iz sesutega programa"
+
+#~ msgid "Collect debugging information from a core file"
+#~ msgstr "Zberi razhroščevalne podatke iz datoteke core"
+
+#~ msgid ""
+#~ "Could not find '%s'.\n"
+#~ "Please make sure bug-buddy was installed correctly."
+#~ msgstr ""
+#~ "Nisem mogel najti '%s'.\n"
+#~ "Prosim preverite, da je bil bug-buddy pravilno nameščen."
+
+#~ msgid "Welcome to the Wonderful World of bug-buddy"
+#~ msgstr "Dobrodošči v Čudoviti Svet bug-buddy-a"
+
+#~ msgid ""
+#~ "bug-buddy will walk you through the process\n"
+#~ "of submitting a bug report.  If this is your first time \n"
+#~ "using bug-buddy, you will be prompted for your\n"
+#~ "email address so that the bug report can be\n"
+#~ "submitted."
+#~ msgstr ""
+#~ "bug-buddy vas bo vodil po postopku\n"
+#~ "oddaje poročila o hrošču.  Če prvič uporabljate \n"
+#~ "bug-buddy-a boste vprašani za vaš e-poštni naslov\n"
+#~ "tako, da bo poročilo lahko\n"
+#~ "oddano."
+
+#~ msgid "Choose which sendmail to use"
+#~ msgstr "Izberite kateri sendmail naj se uporabi"
+
+#~ msgid "Email Address"
+#~ msgstr "E-Poštni Naslov"
+
+#~ msgid ""
+#~ "bug-buddy will walk you through the process of\n"
+#~ "submitting a bug report.  You can click the help\n"
+#~ "button for a more in-depth explanation of the process."
+#~ msgstr ""
+#~ "bug-buddy vas bo vodil po postopku\n"
+#~ "oddaje poročila o hrošču.  Lahko kliknete gumb \n"
+#~ "\"Pomoč\" za podrobnejšo razlago postopka."
+
+#~ msgid "Report Information"
+#~ msgstr "Poročaj Podatke"
+
+#~ msgid ""
+#~ "Select a bug tracking system to use, and then fill out\n"
+#~ "the remaining information."
+#~ msgstr ""
+#~ "Izberite kateri sistem za sledenje hroščem naj se uporabi\n"
+#~ "in nato izpolnite preostale podatke"
+
+#~ msgid "Class"
+#~ msgstr "Razred"
+
+#~ msgid ""
+#~ "Please check to see if your bug has already been submitted,\n"
+#~ "and if so, use \"Add information to existing report\" above."
+#~ msgstr ""
+#~ "Prosim preverite ali je bil vaš hrošč že sporočen,\n"
+#~ "in če je bil uporabite \"Dodaj podatke k obstoječem poročilu\"."
+
+#~ msgid "Bug Number"
+#~ msgstr "Številka Hrošča"
+
+#~ msgid "Collecting Debugging Information"
+#~ msgstr "Zbiram Razhroščevalne Podatke"
+
+#~ msgid "Please verify that this information is correct"
+#~ msgstr "Prosim preverite, da so ti podatki pravilni"
+
+#~ msgid "The GEGL is watching."
+#~ msgstr "GEGL gleda."
+
+#~ msgid "Copyright (C) 1999 Jacob Berkman"
+#~ msgstr "Avtorske pravice pridržane (C) 1999 Jacob Berkman"
