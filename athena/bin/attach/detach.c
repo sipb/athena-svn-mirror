@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.15 1999-03-14 17:16:25 ghudson Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.16 1999-03-23 18:24:39 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -23,16 +23,17 @@ static const char rcsid[] = "$Id: detach.c,v 1.15 1999-03-14 17:16:25 ghudson Ex
 #include <string.h>
 #include <unistd.h>
 
-#include "locker.h"
+#include <locker.h>
+#include "attach.h"
 #include "agetopt.h"
 
-void usage(void);
-void detach_all(locker_context context, int options);
-void detach_by_host(locker_context context, char *host, int options);
-int detach_attachent(locker_context context, locker_attachent *at,
-		     void *optionsp);
+static void usage(void);
+static void detach_all(locker_context context, int options);
+static void detach_by_host(locker_context context, char *host, int options);
+static int detach_attachent(locker_context context, locker_attachent *at,
+			    void *optionsp);
 
-struct agetopt_option detach_options[] = {
+static struct agetopt_option detach_options[] = {
   { "all", 'a', 0 },
   { "clean", 'C', 0 },
   { "debug", 'd', 0 },
@@ -54,12 +55,11 @@ struct agetopt_option detach_options[] = {
   { 0, 0, 0 }
 };
 
-char *whoami;
-int verbose = 1;
+static int verbose = 1;
 
 enum { DETACH_FILESYSTEM, DETACH_EXPLICIT, DETACH_BY_HOST };
 
-int main(int argc, char **argv)
+int detach_main(int argc, char **argv)
 {
   locker_context context;
   locker_attachent *at;
@@ -67,12 +67,6 @@ int main(int argc, char **argv)
   char *type = NULL;
   int mode = DETACH_FILESYSTEM, opt, gotname = 0;
   int status, estatus = 0;
-
-  whoami = strrchr(argv[0], '/');
-  if (whoami)
-    whoami++;
-  else
-    whoami = argv[0];
 
   if (locker_init(&context, getuid(), NULL, NULL))
     exit(1);
@@ -211,7 +205,7 @@ int main(int argc, char **argv)
   exit(0);
 }
 
-void detach_by_host(locker_context context, char *host, int options)
+static void detach_by_host(locker_context context, char *host, int options)
 {
   struct hostent *h;
 
@@ -226,7 +220,7 @@ void detach_by_host(locker_context context, char *host, int options)
 			   detach_attachent, &options);
 }
 
-int detach_attachent(locker_context context, locker_attachent *at,
+static int detach_attachent(locker_context context, locker_attachent *at,
                      void *optionsp)
 {
   int status, options = *(int *)optionsp;
@@ -237,13 +231,13 @@ int detach_attachent(locker_context context, locker_attachent *at,
   return 0;
 }
 
-void detach_all(locker_context context, int options)
+static void detach_all(locker_context context, int options)
 {
   locker_iterate_attachtab(context, NULL, NULL, detach_attachent, &options);
 }
 
 
-void usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: detach [options] filesystem ... [options] filesystem ...\n");
   fprintf(stderr, "       detach [options] -m mountpoint ...\n");

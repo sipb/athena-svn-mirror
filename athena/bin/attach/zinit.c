@@ -16,19 +16,21 @@
 /* This is zinit, which is run by zwgc to get subs for lockers that
    were attached before zwgc started. */
 
-static const char rcsid[] = "$Id: zinit.c,v 1.2 1999-03-14 17:16:36 ghudson Exp $";
+static const char rcsid[] = "$Id: zinit.c,v 1.3 1999-03-23 18:24:40 danw Exp $";
 
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include <locker.h>
+#include "attach.h"
 #include "agetopt.h"
 
-void usage(void);
-int zinit_attachent(locker_context context, locker_attachent *at, void *opp);
+static void usage(void);
+static int zinit_attachent(locker_context context, locker_attachent *at,
+			   void *opp);
 
-struct agetopt_option zinit_options[] = {
+static struct agetopt_option zinit_options[] = {
   { "all", 'a', 0 },
   { "debug", 'd', 0 },
   { "me", 'm', 0 },
@@ -37,19 +39,11 @@ struct agetopt_option zinit_options[] = {
   { 0, 0, 0 }
 };
 
-char *whoami;
-
-int main(int argc, char **argv)
+int zinit_main(int argc, char **argv)
 {
   locker_context context;
   int opt, all = 0, op = LOCKER_ZEPHYR_SUBSCRIBE;
   uid_t uid = getuid();
-
-  whoami = strrchr(argv[0], '/');
-  if (whoami)
-    whoami++;
-  else
-    whoami = argv[0];
 
   if (locker_init(&context, uid, NULL, NULL))
     exit(1);
@@ -91,12 +85,13 @@ int main(int argc, char **argv)
   return 0;
 }
 
-int zinit_attachent(locker_context context, locker_attachent *at, void *opp)
+static int zinit_attachent(locker_context context, locker_attachent *at,
+			   void *opp)
 {
   return at->fs->zsubs(context, at, *(int *)opp);
 }
 
-void usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: zinit [-a | -m]\n");
   exit(1);

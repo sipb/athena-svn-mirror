@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.10 1999-03-18 22:58:44 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.11 1999-03-23 18:24:37 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -28,13 +28,15 @@ static const char rcsid[] = "$Id: add.c,v 1.10 1999-03-18 22:58:44 danw Exp $";
 #include <locker.h>
 
 #include "agetopt.h"
+#include "attach.h"
 
-void add_usage(void);
-void modify_path(char **path, char *elt);
-void print_readable_path(char *path);
-int add_callback(locker_context context, locker_attachent *at, void *arg);
+static void usage(void);
+static void modify_path(char **path, char *elt);
+static void print_readable_path(char *path);
+static int add_callback(locker_context context, locker_attachent *at,
+			void *arg);
 
-struct agetopt_option add_options[] = {
+static struct agetopt_option add_options[] = {
   { "verbose", 'v', 0 },
   { "quiet", 'q', 0 },
   { "debug", 'd', 0 },
@@ -47,7 +49,7 @@ struct agetopt_option add_options[] = {
   { "attachopts", 'a', 0 }
 };
 
-char *shell_templates[2][2] =
+static char *shell_templates[2][2] =
 {
   {
     "setenv PATH %s; setenv MANPATH %s; setenv INFOPATH %s\n",
@@ -59,10 +61,7 @@ char *shell_templates[2][2] =
   }
 };
 
-extern char *whoami;
 extern locker_callback attach_callback;
-extern int main(int argc, char **argv);
-int add_main(int argc, char **argv);
 
 static int quiet = 0, give_warnings = 0, remove_from_path = 0;
 static int add_to_front = 0, bourne_shell = 0, use_athena_path = 0;
@@ -112,7 +111,7 @@ int add_main(int argc, char **argv)
 	  if (remove_from_path || print_path)
 	    {
 	      fprintf(stderr, "%s: can't use -a with -r or -p.\n", whoami);
-	      add_usage();
+	      usage();
 	    }
 	  end_args = 1;
 	  break;
@@ -124,7 +123,7 @@ int add_main(int argc, char **argv)
 	  break;
 
 	case '?':
-	  add_usage();
+	  usage();
 	}
     }
 
@@ -183,7 +182,7 @@ int add_main(int argc, char **argv)
 	    {
 	      fprintf(stderr, "%s: only pathnames may be specified when "
 		      "pathnames are being added\n", whoami);
-	      add_usage();
+	      usage();
 	    }
 
 	  /* Make sure the directory exists, if we're adding it to the
@@ -234,7 +233,7 @@ int add_main(int argc, char **argv)
        * let attach deal (using our callback), and return to us when
        * it's done.
        */
-      main(argc, argv);
+      attach_main(argc, argv);
     }
 
   if (use_athena_path && !bourne_shell)
@@ -255,7 +254,8 @@ int add_main(int argc, char **argv)
   exit(0);
 }
 
-int add_callback(locker_context context, locker_attachent *at, void *arg)
+static int add_callback(locker_context context, locker_attachent *at,
+			void *arg)
 {
   char **found, **ptr;
 
@@ -304,7 +304,7 @@ int add_callback(locker_context context, locker_attachent *at, void *arg)
   return 0;
 }
 
-void modify_path(char **pathp, char *elt)
+static void modify_path(char **pathp, char *elt)
 {
   char *p;
   int len = strlen(elt);
@@ -376,7 +376,7 @@ void modify_path(char **pathp, char *elt)
  * XXX We could do a less hacky version of this using
  * locker_iterate_attachtab to get all of the mountpoints. It's not clear
  * that there's a lot of benefit to this though.  */
-void print_readable_path(char *path)
+static void print_readable_path(char *path)
 {
   char *p, *name, *name_end;
 
@@ -407,7 +407,7 @@ void print_readable_path(char *path)
 }
 
 
-void add_usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: add [-vfrpwbq] [-P $athena_path] [-a attachflags] [lockername ...]\n");
   fprintf(stderr, "       add [-dfrb] [-P $athena_path] pathname ...\n");

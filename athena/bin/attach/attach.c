@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.24 1999-03-14 17:16:19 ghudson Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.25 1999-03-23 18:24:37 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -24,21 +24,22 @@ static const char rcsid[] = "$Id: attach.c,v 1.24 1999-03-14 17:16:19 ghudson Ex
 #include <string.h>
 #include <unistd.h>
 
-#include "locker.h"
+#include <locker.h>
+#include "attach.h"
 #include "agetopt.h"
 
-void usage(void);
-void attach_list(locker_context context, char *host);
-int print_callback(locker_context context, locker_attachent *at, void *val);
-int attach_check_host(locker_context context, locker_attachent *at,
-		      int addr);
-void attach_print_entry(char *fs, char *mp, char *user, char *mode);
-int attach_print(locker_context context, locker_attachent *at, void *data);
-void attach_lookup(locker_context context, char *filesystem);
+static void usage(void);
+static void attach_list(locker_context context, char *host);
+static int print_callback(locker_context context, locker_attachent *at,
+			  void *val);
+static int attach_check_host(locker_context context, locker_attachent *at,
+			     int addr);
+static void attach_print_entry(char *fs, char *mp, char *user, char *mode);
+static int attach_print(locker_context context, locker_attachent *at,
+			void *data);
+static void attach_lookup(locker_context context, char *filesystem);
 
-extern int add_main(int argc, char **argv);
-
-struct agetopt_option attach_options[] = {
+static struct agetopt_option attach_options[] = {
   { "noremap", 'a', 0 },
   { "debug", 'd', 0 },
   { "explicit", 'e', 0 },
@@ -71,13 +72,12 @@ struct agetopt_option attach_options[] = {
   { 0, 0, 0 }
 };
 
-char *whoami;
 locker_callback attach_callback = print_callback;
 
 enum { ATTACH_FILESYSTEM, ATTACH_EXPLICIT, ATTACH_LOOKUP, ATTACH_LIST_HOST };
 enum { ATTACH_QUIET, ATTACH_VERBOSE, ATTACH_PRINTPATH };
 
-int main(int argc, char **argv)
+int attach_main(int argc, char **argv)
 {
   locker_context context;
   locker_attachent *at;
@@ -86,22 +86,6 @@ int main(int argc, char **argv)
   int mode = ATTACH_FILESYSTEM, auth = LOCKER_AUTH_DEFAULT;
   int output = ATTACH_VERBOSE, opt, gotname = 0;
   int status, estatus = 0;
-
-  whoami = strrchr(argv[0], '/');
-  if (whoami)
-    whoami++;
-  else
-    whoami = argv[0];
-
-  /* If we're invoked with -Padd, let add process its arguments. If
-   * the user is attaching lockers, add_main will reinvoke main after
-   * changing attach_callback.
-   */
-  if (argc > 1 && optind == 1 && !strcmp(argv[1], "-Padd"))
-    {
-      optind++;
-      exit(add_main(argc, argv));
-    }
 
   if (locker_init(&context, getuid(), NULL, NULL))
     exit(1);
@@ -282,7 +266,7 @@ int main(int argc, char **argv)
 }
 
 
-void attach_list(locker_context context, char *host)
+static void attach_list(locker_context context, char *host)
 {
   struct hostent *h;
 
@@ -304,7 +288,8 @@ void attach_list(locker_context context, char *host)
 			   attach_print, NULL);
 }
 
-int print_callback(locker_context context, locker_attachent *at, void *val)
+static int print_callback(locker_context context, locker_attachent *at,
+			  void *val)
 {
   int *output = val;
 
@@ -327,12 +312,13 @@ int print_callback(locker_context context, locker_attachent *at, void *val)
   return LOCKER_SUCCESS;
 }
 
-void attach_print_entry(char *fs, char *mp, char *user, char *mode)
+static void attach_print_entry(char *fs, char *mp, char *user, char *mode)
 {
   printf("%-22.22s %-22.22s  %-18.18s%s\n", fs, mp, user, mode);
 }
 
-int attach_print(locker_context context, locker_attachent *at, void *data)
+static int attach_print(locker_context context, locker_attachent *at,
+			void *data)
 {
   char *ownerlist, *p, optstr[32], name[32];
   struct passwd *pw;
@@ -379,7 +365,7 @@ int attach_print(locker_context context, locker_attachent *at, void *data)
   return LOCKER_SUCCESS;
 }
 
-void attach_lookup(locker_context context, char *filesystem)
+static void attach_lookup(locker_context context, char *filesystem)
 {
   int status, i;
   char **fs;
@@ -396,7 +382,7 @@ void attach_lookup(locker_context context, char *filesystem)
     }
 }
 
-void usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: attach [options] filesystem ... [options] filesystem ...\n");
   fprintf(stderr, "       attach -l filesystem\n");

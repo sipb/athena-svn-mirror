@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 1999-03-21 21:01:07 ghudson Exp $
+# $Id: Makefile.in,v 1.5 1999-03-23 18:24:36 danw Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -29,22 +29,13 @@ ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
 ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
 
-all: attach attachandrun detach fsid zinit atconvert
+ATTACH_OBJS=suite.o agetopt.o add.o attach.o attachandrun.o detach.o \
+	fsid.o zinit.o
 
-attach: add.o attach.o agetopt.o
-	${CC} ${LDFLAGS} -o attach add.o attach.o agetopt.o -lathdir ${ALL_LIBS}
+all: attach atconvert
 
-attachandrun: attachandrun.o
-	${CC} ${LDFLAGS} -o attachandrun attachandrun.o -lathdir ${ALL_LIBS}
-
-detach: detach.o agetopt.o
-	${CC} ${LDFLAGS} -o detach detach.o agetopt.o ${ALL_LIBS}
-
-fsid: fsid.o agetopt.o
-	${CC} ${LDFLAGS} -o fsid fsid.o agetopt.o ${ALL_LIBS}
-
-zinit: zinit.o agetopt.o
-	${CC} ${LDFLAGS} -o zinit zinit.o agetopt.o ${ALL_LIBS}
+attach: ${ATTACH_OBJS}
+	${CC} ${LDFLAGS} -o attach ${ATTACH_OBJS} -lathdir ${ALL_LIBS}
 
 atconvert: atconvert.o
 	${CC} ${LDFLAGS} -o atconvert atconvert.o ${ALL_LIBS}
@@ -61,14 +52,18 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 4755 -o root attach ${DESTDIR}${lbindir}
-	${INSTALL} -m 4755 -o root attachandrun ${DESTDIR}${lbindir}
-	${INSTALL} -m 4755 -o root detach ${DESTDIR}${lbindir}
-	${INSTALL} -m 4755 -o root fsid ${DESTDIR}${lbindir}
+	rm -f ${DESTDIR}${lbindir}/attachandrun
+	ln -s attach ${DESTDIR}${lbindir}/attachandrun
+	rm -f ${DESTDIR}${lbindir}/detach
+	ln -s attach ${DESTDIR}${lbindir}/detach
+	rm -f ${DESTDIR}${lbindir}/fsid
+	ln -s attach ${DESTDIR}${lbindir}/fsid
 	rm -f ${DESTDIR}${lbindir}/nfsid
-	ln -s fsid ${DESTDIR}${lbindir}/nfsid
-	${INSTALL} -m 4755 -o root zinit ${DESTDIR}${lbindir}
+	ln -s attach ${DESTDIR}${lbindir}/nfsid
+	rm -f ${DESTDIR}${lbindir}/zinit
+	ln -s attach ${DESTDIR}${lbindir}/zinit
 	rm -f ${DESTDIR}${lsbindir}/zinit
-	ln -s ${lbindir}/zinit ${DESTDIR}${lsbindir}/zinit
+	ln -s ${lbindir}/attach ${DESTDIR}${lsbindir}/zinit
 	${INSTALL} -m 755 atconvert ${DESTDIR}${sbindir}
 	${INSTALL} -m 644 add.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 attach.1 ${DESTDIR}${mandir}/man1
@@ -80,8 +75,7 @@ install:
 	${INSTALL} -m 644 zinit.8 ${DESTDIR}${mandir}/man8
 
 clean:
-	rm -f add.o attach.o attachandrun.o detach.o fsid.o zinit.o
-	rm -f agetopt.o attach attachandrun detach fsid zinit
+	rm -f ${ATTACH_OBJS} attach
 	rm -f atconvert.o atconvert
 
 distclean: clean

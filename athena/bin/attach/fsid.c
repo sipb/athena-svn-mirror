@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.2 1999-03-14 17:16:31 ghudson Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.3 1999-03-23 18:24:39 danw Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -25,13 +25,15 @@ static const char rcsid[] = "$Id: fsid.c,v 1.2 1999-03-14 17:16:31 ghudson Exp $
 #include <unistd.h>
 
 #include <locker.h>
+#include "attach.h"
 #include "agetopt.h"
 
-void usage(void);
-int fsid_attachent(locker_context context, locker_attachent *at, void *opp);
-char *opped(int op);
+static void usage(void);
+static int fsid_attachent(locker_context context, locker_attachent *at,
+			  void *opp);
+static char *opped(int op);
 
-struct agetopt_option fsid_options[] = {
+static struct agetopt_option fsid_options[] = {
   { "all", 'a', 0 },
   { "cell", 'c', 0 },
   { "debug", 'd', 0 },
@@ -47,23 +49,16 @@ struct agetopt_option fsid_options[] = {
   { 0, 0, 0 }
 };
 
-char *whoami;
-int verbose = 1;
+static int verbose = 1;
 
 enum { FSID_WHATEVER, FSID_FILESYSTEM, FSID_HOST, FSID_CELL };
 
-int main(int argc, char **argv)
+int fsid_main(int argc, char **argv)
 {
   locker_context context;
   int mode = FSID_WHATEVER, op = LOCKER_AUTH_AUTHENTICATE;
   struct hostent *h;
   int status, estatus = 0, opt, gotname = 0;
-
-  whoami = strrchr(argv[0], '/');
-  if (whoami)
-    whoami++;
-  else
-    whoami = argv[0];
 
   if (locker_init(&context, getuid(), NULL, NULL))
     exit(1);
@@ -168,7 +163,8 @@ int main(int argc, char **argv)
   exit(estatus);
 }
 
-int fsid_attachent(locker_context context, locker_attachent *at, void *opp)
+static int fsid_attachent(locker_context context, locker_attachent *at,
+			  void *opp)
 {
   int status;
 
@@ -178,7 +174,7 @@ int fsid_attachent(locker_context context, locker_attachent *at, void *opp)
   return 0;
 }
 
-char *opped(int op)
+static char *opped(int op)
 {
   switch (op)
     {
@@ -195,7 +191,7 @@ char *opped(int op)
     }
 }
 
-void usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: fsid [-q | -v] [-m | -p | -r | -u] [ filesystem | host ] ...\n");
   fprintf(stderr, "       fsid [-q | -v] [-m | -p | -r | -u] -f filesystem ...\n");

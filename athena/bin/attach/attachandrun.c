@@ -15,7 +15,7 @@
 
 /* This is attachandrun, used to attach a locker and run a program in it. */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.1 1999-02-26 23:13:01 danw Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.2 1999-03-23 18:24:38 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -27,24 +27,17 @@ static const char rcsid[] = "$Id: attachandrun.c,v 1.1 1999-02-26 23:13:01 danw 
 
 #include <athdir.h>
 #include <locker.h>
+#include "attach.h"
 
-void usage(void);
-void try_shell_exec(char *path, int argc, char **argv);
+static void usage(void);
+static void try_shell_exec(char *path, int argc, char **argv);
 
-char *whoami;
-
-int main(int argc, char **argv)
+int attachandrun_main(int argc, char **argv)
 {
   locker_context context;
   locker_attachent *at;
   uid_t uid = getuid();
   char **found, *path, *mountpoint;
-
-  whoami = strrchr(argv[0], '/');
-  if (whoami)
-    whoami++;
-  else
-    whoami = argv[0];
 
   if (argc < 4)
     usage();
@@ -107,7 +100,7 @@ int main(int argc, char **argv)
  * the file looks binary, or ENOMEM if we couldn't allocate memory for
  * an argument list.
  */
-void try_shell_exec(char *path, int argc, char **argv)
+static void try_shell_exec(char *path, int argc, char **argv)
 {
   int i, count, fd, err;
   unsigned char sample[128];
@@ -160,7 +153,7 @@ void try_shell_exec(char *path, int argc, char **argv)
   return;
 }
 
-void usage(void)
+static void usage(void)
 {
   fprintf(stderr, "Usage: attachandrun locker program argv0 [argv1...]\n");
   exit(1);
