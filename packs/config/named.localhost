@@ -21,7 +21,9 @@
 ; if the root name servers are down, and to allow people to write
 ; arbitrary authoritative records into /etc/named.local.  Newer
 ; versions of named will ignore the following records and anything the
-; user is likely to put in named.local.
+; user is likely to put in named.local.  (See the comments in named.boot
+; to find out what to do for local records in that case.  As of release
+; 8.1, named.local will work on SGIs but not on Suns.)
 mit.edu.		IN	NS	bitsy.mit.edu.
 mit.edu.		IN	NS	w20ns.mit.edu.
 mit.edu.		IN	NS	strawb.mit.edu.
