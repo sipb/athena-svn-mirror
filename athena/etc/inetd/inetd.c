@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.3 1995-09-03 04:56:08 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.4 1995-11-28 23:14:46 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.3 1995-09-03 04:56:08 cfields Exp $";
-#endif lint
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.4 1995-11-28 23:14:46 cfields Exp $";
+#endif /* lint */
 
 /*
  * Copyright (c) 1983 Regents of the University of California.
@@ -17,11 +17,11 @@ static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena
 char copyright[] =
 "@(#) Copyright (c) 1983 Regents of the University of California.\n\
  All rights reserved.\n";
-#endif not lint
+#endif /* not lint */
 
 #ifndef lint
 static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
-#endif not lint
+#endif /* not lint */
 
 /*
  * Inetd - Internet super-server
@@ -55,7 +55,7 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
  *	switched/unswitched		will turn off/won't turn off
  *	user				user to run daemon as
  *	server program			full path name
- *	server program arguments	maximum of MAXARGS (5)
+ *	server program arguments	maximum of MAXARGV (20)
  *
  * Comment lines are indicated by a `#' in column 1.
  */
@@ -74,6 +74,7 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 
 #include <errno.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <signal.h>
 #include <netdb.h>
 #ifdef ultrix
@@ -87,7 +88,9 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #define	TOOMANY		40		/* don't start more than TOOMANY */
 #define	CNT_INTVL	60		/* servers in CNT_INTVL sec. */
 #define	RETRYTIME	(60*3)		/* retry after bind or server fail */
+#ifndef MIN
 #define       MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 #ifdef POSIX
 static sigset_t sig_zero;
@@ -132,7 +135,7 @@ struct	servtab {
 	char	*se_user;		/* user name to run as */
 	struct	biltin *se_bi;		/* if built-in, description */
 	char	*se_server;		/* server program */
-#define MAXARGV 5
+#define MAXARGV 20
 	char	*se_argv[MAXARGV+1];	/* program arguments */
 	int	se_fd;			/* open descriptor */
 	struct	sockaddr_in se_ctrladdr;/* bound address */
@@ -728,7 +731,7 @@ getconfigent()
 	int argc;
 
 more:
-	while ((cp = nextline(fconfig)) && *cp == '#')
+	while ((cp = nextline(fconfig)) && (*cp == '#' || *cp == '\0'))
 		;
 	if (cp == NULL)
 		return ((struct servtab *)0);
