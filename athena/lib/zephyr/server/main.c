@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: raeburn $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,13 +14,13 @@
 #include <zephyr/mit-copyright.h>
 
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 3.7";
+char version[] = "Zephyr Server (DEBUG) 3.8";
 #else
-char version[] = "Zephyr Server 3.7";
+char version[] = "Zephyr Server 3.8";
 #endif DEBUG
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.34 1988-10-25 00:44:11 raeburn Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.35 1988-11-14 11:18:47 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987,1988 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
@@ -152,6 +152,7 @@ char **argv;
 		}
 	}
 
+#ifdef KERBEROS
 	/* if there is no readable srvtab and we are not standalone, there
 	   is no possible way we can succeed, so we exit */
 
@@ -160,9 +161,11 @@ char **argv;
 	    && !zalone
 #endif DEBUG
 	    ) {
-		fprintf(stderr, "NO ZEPHYR SRVTAB available; exiting\n");
+		fprintf(stderr, "NO ZEPHYR SRVTAB (%s) available; exiting\n",
+			ZEPHYR_SRVTAB);
 		exit(1);
 	}
+#endif KERBEROS
 
 #ifndef DEBUG
 	detach();
