@@ -5,7 +5,7 @@
 ;; Author:     Eric S. Raymond <esr@snark.thyrsus.com>
 ;; Maintainer: Andre Spiegel <spiegel@inf.fu-berlin.de>
 
-;; $Id: vc-hooks.el,v 1.1.1.2 1998/12/16 19:56:33 ghudson Exp $
+;; $Id: vc-hooks.el,v 1.4 1998/12/16 21:53:04 ghudson Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -889,14 +889,6 @@ For CVS, the full name of CVS/Entries is returned."
 	      (vc-insert-file (concat dirname "CVS/Entries"))
 	      (goto-char (point-min))
 	      (cond
-<<<<<<< vc-hooks.el
-	       ;; entry for a "locally added" file (not yet committed)
-	       ((re-search-forward
-		 (concat "^/" (regexp-quote basename) "/0/") nil t)
-		(vc-file-setprop file 'vc-checkout-time 0)
-		(vc-file-setprop file 'vc-workfile-version "0")
-		(throw 'found (cons (concat dirname "CVS/Entries") 'CVS)))
-=======
 	       ;; entry for a "locally added" file (not yet committed)
 	       ((re-search-forward
 		 (concat "^/" (regexp-quote basename) "/0/") nil t)
@@ -904,7 +896,6 @@ For CVS, the full name of CVS/Entries is returned."
 		(vc-file-setprop file 'vc-workfile-version "0")
 		(throw 'found (cons (concat dirname "CVS/Entries") 'CVS)))
 	       ;; normal entry
->>>>>>> 1.1.1.2
 	       ((re-search-forward
 		 (concat "^/" (regexp-quote basename) 
                          ;; revision
@@ -1018,13 +1009,8 @@ control system name."
     ;; cannot modify a file that someone else has locked.
     (and vc-type 
 	 (equal file (buffer-file-name))
-<<<<<<< vc-hooks.el
 	 (stringp (vc-locking-user file))
-	 (not (string= (user-login-name) (vc-locking-user file)))
-=======
-	 (vc-locking-user file)
 	 (not (string= (vc-user-login-name) (vc-locking-user file)))
->>>>>>> 1.1.1.2
 	 (setq buffer-read-only t))
     ;; If the user is root, and the file is not owner-writable,
     ;; then pretend that we can't write it
