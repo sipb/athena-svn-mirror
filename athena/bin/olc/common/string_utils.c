@@ -9,19 +9,22 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *      $Author: vanharen $
- *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
+ *	$Id: string_utils.c,v 1.10 1990-05-25 11:01:12 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.9 1990-04-25 17:04:41 vanharen Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.10 1990-05-25 11:01:12 vanharen Exp $";
 #endif
 
+#include <mit-copyright.h>
 #include <olc/olc.h>
 
 #include <ctype.h>              /* Character type macros. */

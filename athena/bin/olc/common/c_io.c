@@ -12,25 +12,29 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *      $Author: vanharen $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
+ *	$Id: c_io.c,v 1.6 1990-05-25 10:58:43 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.5 1990-02-07 02:59:08 vanharen Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.6 1990-05-25 10:58:43 vanharen Exp $";
 #endif
 
-#include <sys/types.h>             /* System type declarations. */
-#include <sys/socket.h>            /* Network socket defs. */
-#include <sys/file.h>              /* File handling defs. */
+#include <mit-copyright.h>
+#include <sys/types.h>		/* System type declarations. */
+#include <sys/socket.h>		/* Network socket defs. */
+#include <sys/file.h>		/* File handling defs. */
 #include <sys/stat.h>
-#include <sys/time.h>              /* System time definitions. */
+#include <sys/time.h>		/* System time definitions. */
 #include <netinet/in.h>
-#include <errno.h>                 /* System error numbers. */
+#include <errno.h>		/* System error numbers. */
 #include <netdb.h>
 #include <signal.h>
 #include <sgtty.h>              /* Terminal param. definitions. */
