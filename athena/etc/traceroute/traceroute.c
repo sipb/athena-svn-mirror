@@ -1,6 +1,6 @@
 #ifndef lint
 static char *rcsid =
-	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.1 1993-10-12 04:55:28 probe Exp $ (LBL)";
+	"@(#)$Header: /afs/dev.mit.edu/source/repository/athena/etc/traceroute/traceroute.c,v 1.2 1994-03-30 10:52:42 vrt Exp $ (LBL)";
 #endif
 
 /*
@@ -394,7 +394,12 @@ main(argc, argv)
 		Printf(usage);
 		exit(1);
 	}
+#ifndef SYSV
 	setlinebuf (stdout);
+#else
+        setvbuf(stdout, NULL, _IOFBF, BUFSIZ);
+#endif
+
 
 	(void) bzero((char *)&whereto, sizeof(struct sockaddr));
 	to->sin_family = AF_INET;
