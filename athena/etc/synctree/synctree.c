@@ -287,7 +287,7 @@ int dodir(src,dst,part)
     struct src srclist,*sp,*spp,*sppp;
     struct targ targlist,*tp,*tpp,*tppp;
     int i,j;
-    unsigned long getmemt;
+    void *getmemt;
     bool sorted;
     DIR *dirp;
 #ifdef POSIX
@@ -304,7 +304,7 @@ int dodir(src,dst,part)
     srclist.next = 0;
     targlist.next = 0;
 
-#define getmem(amt) (((getmemt = alloca(amt)) < 1)? panic("dodir: bad return from alloca") : getmemt)
+#define getmem(amt) (((getmemt = alloca(amt)) < 1)? panic("dodir: bad return from alloca"), NULL : getmemt)
 #define newsrc(ptr)  (ptr = (struct src *)  getmem(sizeof(struct src)),  ptr->next=srclist.next,  srclist.next=ptr)
 #define newtarg(ptr) (ptr = (struct targ *) getmem(sizeof(struct targ)), ptr->next=targlist.next, targlist.next=ptr)
 #define allsrcs(ptr)  for (ptr=srclist.next; ptr!=NULL; ptr=ptr->next)

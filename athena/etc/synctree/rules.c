@@ -1,7 +1,7 @@
 /* Copyright (C) 1988  Tim Shepard   All rights reserved. */
 
 #include "synctree.h"
-#include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #ifdef SOLARIS
 #include <sys/exechdr.h>
@@ -17,8 +17,8 @@ extern unsigned int rflag;
 extern bool nosrcrules;
 extern bool nodstrules;
 
-extern src_rule_file;
-extern dst_rule_file;
+extern char *src_rule_file;
+extern char *dst_rule_file;
 
 extern int verbosef;
 
@@ -45,7 +45,7 @@ int findrule(pathname,rtype,ftype,srcpath)
      * (by using rule 0).
      */
 
-    if (p = rindex(pathname,'/'))
+    if (p = strrchr(pathname,'/'))
 	p++;
     else
 	p = pathname;

@@ -1,7 +1,7 @@
 /* Copyright (C) 1988  Tim Shepard   All rights reserved. */
 
 #include "synctree.h"
-#include <strings.h>
+#include <string.h>
 #define NBUCKETSL2 8
 #define NBUCKETS (1 << (NBUCKETSL2 -1))
 #define HASHMASK (NBUCKETS - 1)

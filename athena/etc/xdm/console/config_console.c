@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.4 1991-08-09 10:39:29 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.5 1996-09-20 04:15:50 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#include <strings.h>
+#include <string.h>
 
 char *pidfile = "/etc/athena/console.pid";
 
@@ -28,7 +28,7 @@ char **argv;
     int pid, i = 0;
     int sig = SIGHUP;
 
-    name = rindex(argv[0], '/');
+    name = strrchr(argv[0], '/');
     if (name == NULL)
       name = argv[0];
     else

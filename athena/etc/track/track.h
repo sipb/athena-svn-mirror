@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.10 1995-11-28 23:12:19 cfields Exp $
+ * $Id: track.h,v 4.11 1996-09-20 04:12:35 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -20,7 +20,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <limits.h>
 
 /* Default working directory - under to- or from- root */

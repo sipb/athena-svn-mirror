@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.15 1996-05-01 18:53:31 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.16 1996-09-20 04:12:35 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.15  1996/05/01 18:53:31  ghudson
+ *	getwd -> getcwd
+ *
  *	Revision 4.14  1995/07/21 00:29:59  cfields
  *	Use sigset under SYSV.
  *	Remove the crufty unmount call.
@@ -157,7 +160,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.15 1996-05-01 18:53:31 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.16 1996-09-20 04:12:35 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -480,7 +483,7 @@ readstat( types) char *types; {
 		/* XXX : needs data-hiding work, but will do:
 		 *	 only update what main tells us to in this pass.
 		 */
-		if ( ! index( types, *statline)) continue;
+		if ( ! strchr( types, *statline)) continue;
 
 		/* extract the currency data from the statline:
 		 */
@@ -786,7 +789,7 @@ char *cmds,*local;
 	fprintf(shell,"%sROOT=%s\n",DEF_SETCMD,toroot);
 
 	for (;;) {
-		nptr = index(ptr,'\n');
+		nptr = strchr(ptr,'\n');
 		if (nptr)
 			*nptr = '\0';
 		fprintf(shell,"%s\n",ptr);

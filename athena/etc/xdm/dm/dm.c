@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.45 1994-07-27 23:52:04 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.46 1996-09-20 04:15:59 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -24,7 +24,7 @@
 #include <sys/time.h>
 #include <utmp.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <errno.h>
 #ifdef SOLARIS
 #include <sys/strredir.h>
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.45 1994-07-27 23:52:04 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.46 1996-09-20 04:15:59 ghudson Exp $";
 #endif
 
 #ifndef NULL
@@ -1340,7 +1340,7 @@ char *tty;
       utmpx.ut_pid = getpid();
       if (utx_tmp)
               strcpy(new_id, utx_tmp->ut_id);
-      p = index(new_id, '/');
+      p = strchr(new_id, '/');
       if (p)
               strcpy(p, "\0");
       strcpy(utmpx.ut_id , new_id);
@@ -1619,7 +1619,7 @@ char *login;
     /* process each line of file */
     cc = read(oldfile, buf, BUFSIZ);
     while (1) {
-	start = index(buf, '\n');
+	start = strchr(buf, '\n');
 	if (start == NULL || start > &buf[cc]) break;
 	start++; /* pointing at start of next line */
 	if (strncmp(buf, login, strlen(login)) ||
@@ -1627,9 +1627,7 @@ char *login;
 	    write(newfile, buf, start - buf);
 	}
 	cc -= start - buf;
-	/* don't use lib routine to make sure it works with overlapping copy */
-	/* bcopy(buf, start, cc); */
-	for (p = buf; p != &buf[cc]; p++) *p = p[start - buf];
+	memmove(start, buf, cc);
 	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
     }
     close(newfile);
@@ -1671,7 +1669,7 @@ char *login;
     /* process each line of file */
     cc = read(oldfile, buf, BUFSIZ);
     while (1) {
-	start = index(buf, '\n');
+	start = strchr(buf, '\n');
 	if (start == NULL || start > &buf[cc]) break;
 	start++; /* pointing at start of next line */
 	if (strncmp(buf, login, strlen(login)) ||
@@ -1679,9 +1677,7 @@ char *login;
 	    write(newfile, buf, start - buf);
 	}
 	cc -= start - buf;
-	/* don't use lib routine to make sure it works with overlapping copy */
-	/* bcopy(buf, start, cc); */
-	for (p = buf; p != &buf[cc]; p++) *p = p[start - buf];
+	memmove(start, buf, cc);
 	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
     }
     close(newfile);
@@ -1798,7 +1794,7 @@ char *name;
 	inited = 1;
     }
 
-    for (p = &buf[0]; p && *p; p = index(p, '\n')) {
+    for (p = &buf[0]; p && *p; p = strchr(p, '\n')) {
 	if (*p == '\n') p++;
 	if (p == NULL || *p == 0) return(NULL);
 	if (*p == '#') continue;
@@ -1807,13 +1803,13 @@ char *name;
 	if (*p && !isspace(*p)) continue;
 	while (*p && isspace(*p)) p++;
 	if (*p == 0) return(NULL);
-	ret = index(p, '\n');
+	ret = strchr(p, '\n');
 	if (ret)
 	  i = ret - p;
 	else
 	  i = strlen(p);
 	ret = malloc(i+1);
-	bcopy(p, ret, i+1);
+	memcpy(ret, p, i+1);
 	ret[i] = 0;
 	return(ret);
     }
