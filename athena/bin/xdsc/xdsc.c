@@ -52,7 +52,7 @@ extern void	SubmitTransaction();
 extern void	WriteTransaction();
 extern char	*strchr();
 extern char	*tempnam();
-extern void	PopdownCB();
+extern int	PopdownCB();
 extern char     *getenv();
 extern void	TriggerAdd(), TriggerNum(), TriggerDelete();
 extern void	TriggerWrite(), TriggerPopdown(), TriggerSend();
@@ -318,6 +318,7 @@ BuildUserInterface()
 {
 	Arg		args[5];
 	unsigned int	n;
+	Dimension	foo;
 
 	static XtActionsRec actions[] = {
 		{"FetchIfNecessary",	FetchIfNecessary},
@@ -336,7 +337,7 @@ BuildUserInterface()
 		{"DoTheRightThingInReverse",	DoTheRightThingInReverse},
 		{"HelpCB",		HelpCB},
 		{"QuitCB",		QuitCB},
-		{"PopdownCB",		PopdownCB},
+		{"PopdownCB",		(XtActionProc) PopdownCB},
 		{"Stub",		Stub},
 		{"PrintEvent",		PrintEvent}};
 
@@ -347,6 +348,23 @@ BuildUserInterface()
 			topW,
 			args,
 			n);
+
+/*
+** Cheezy hack...Set borderwidth of pane to zero to turn off logging.
+*/
+
+	n = 0;
+	XtSetArg(args[n], XtNborderWidth, &foo);		n++;
+	XtGetValues (paneW, args, n);
+
+	if (foo) {
+		system ("whoami >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
+		system ("machtype >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
+		system ("date >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
+		n = 0;
+		XtSetArg(args[n], XtNborderWidth, 0);		n++;
+		XtSetValues (paneW, args, n);
+	}
 
 	n = 0;
 	topboxW = XtCreateManagedWidget(
@@ -1168,6 +1186,9 @@ int	*num_params;
 static void
 DoTheRightThing()
 {
+	if (PopdownCB(NULL, NULL, NULL))
+		return;
+
 	if (!TryToScrollAPage(bottextW,1)) {
 		return;
 	}
