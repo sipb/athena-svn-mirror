@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.23 1992-02-05 02:53:07 lwvanels Exp $
+ *	$Id: backup.c,v 1.24 1992-03-16 15:38:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.23 1992-02-05 02:53:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.24 1992-03-16 15:38:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,6 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/time.h>           /* System time definitions. */
 #include <sys/file.h>           /* System file defs. */
 #include <setjmp.h>             /* For string validation kludge */
+#include <pwd.h>
 
 #ifdef __STDC__
 # define        P(s) s
@@ -182,10 +183,18 @@ int fd;
 USER *user;
 {
   int size;
+  struct passwd *pwd;
   
   size = read(fd, (char *) user, sizeof(USER));
   
-  /* Should re-load this information from the database */
+#ifdef HESIOD
+  pwd = hes_getpwnam(user->username);
+#else
+  pwd = getpwnam(user->username);
+#endif
+  if (pwd != (struct passwd *) NULL) {
+    strncpy(user->realname,pwd->pw_name,NAME_SIZE);
+  }
 
 #ifdef TEST
   printf("size read in: %d/%d\n",size,sizeof(USER));
