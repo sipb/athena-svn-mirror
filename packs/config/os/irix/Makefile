@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1999-07-21 04:43:04 rbasch Exp $
+# $Id: Makefile,v 1.12 1999-07-22 03:18:09 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -73,6 +73,7 @@ install:
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 pcnfsd ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 pmcd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
