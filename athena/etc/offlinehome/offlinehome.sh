@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: offlinehome.sh,v 1.1 2003-10-23 03:16:38 ghudson Exp $
+# $Id: offlinehome.sh,v 1.1.2.1 2003-10-23 03:47:45 ghudson Exp $
 
 # offlinehome - Set up an offline homedir.  This differs from a truly
 # local account (which you would create with useradd and mark in

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncclock.sh,v 1.1 2003-10-09 19:04:15 rbasch Exp $
+# $Id: syncclock.sh,v 1.1.2.1 2003-10-23 03:47:14 ghudson Exp $
 
 # Sync the hardware clock to the current system time.
 
