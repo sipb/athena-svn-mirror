@@ -1,7 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.9 1990-12-04 15:23:13 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.10 1991-03-04 17:00:59 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <utmp.h>
@@ -32,12 +33,13 @@
  * Function declarations.
  */
 extern void AriRegisterAthena ();
+extern unsigned long random();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
-static void blinkOwl(), initOwl(), catch_child();
+static void blinkOwl(), initOwl(), catch_child(), setFontPath();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT();
-char *malloc();
+char *malloc(), *strdup();
 
 
 /*
@@ -51,10 +53,13 @@ typedef struct _XLoginResources {
   int reactivate_timeout;
   int activate_timeout;
   int restart_timeout;
+  int randomize;
+  int detach_interval;
   String activate_prog;
   String reactivate_prog;
   String tty;
   String session;
+  String fontpath;
 } XLoginResources;
 
 /*
@@ -67,11 +72,14 @@ static XrmOptionDescRec options[] = {
   {"-move",	"*moveTimeout",		XrmoptionSepArg,	NULL},
   {"-blink",	"*blinkTimeout",	XrmoptionSepArg,	NULL},
   {"-reactivate","*reactivateProg",	XrmoptionSepArg,	NULL},
+  {"-randomize","*randomize",		XrmoptionSepArg,	NULL},
+  {"-detach",	"*detachInterval",	XrmoptionSepArg,	NULL},
   {"-idle",	"*reactivateTimeout",	XrmoptionSepArg,	NULL},
   {"-wait",	"*activateTimeout",	XrmoptionSepArg,	NULL},
   {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
   {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
   {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
+  {"-fp",	"*fontPath",		XrmoptionSepArg,	NULL},
 };
 
 /*
@@ -90,6 +98,10 @@ static XtResource my_resources[] = {
      Offset(blink_timeout), XtRImmediate, (caddr_t) 40},
   {"reactivateProg", XtCFile, XtRString, sizeof(String),
      Offset(reactivate_prog), XtRImmediate, "/etc/athena/reactivate"},
+  {"randomize", XtCInterval, XtRInt, sizeof(int),
+     Offset(randomize), XtRImmediate, (caddr_t) 60},
+  {"detachInterval", XtCInterval, XtRInt, sizeof(int),
+     Offset(detach_interval), XtRImmediate, (caddr_t) 12},
   {"activateTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(activate_timeout), XtRImmediate, (caddr_t) 30},
   {"restartTimeout", XtCInterval, XtRInt, sizeof(int),
@@ -100,6 +112,8 @@ static XtResource my_resources[] = {
      Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
   {"sessionScript", XtCFile, XtRString, sizeof(String),
      Offset(session), XtRImmediate, (caddr_t) "/etc/athena/xdm/Xsession"},
+  {"fontPath", XtCString, XtRString, sizeof(String),
+     Offset(fontpath), XtRImmediate, "/usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/" },
 };
 
 #undef Offset
@@ -137,7 +151,7 @@ unsigned int owlWidth, owlHeight;
 int owlState, owlDelta, owlTimeout;
 Pixmap owlBitmaps[20];
 struct timeval starttime;
-int activation_state, activation_pid;
+int activation_state, activation_pid, activate_count = 0;
 int attach_state, attach_pid;
 int attachhelp_state, attachhelp_pid, quota_pid;
 int exiting = FALSE;
@@ -155,11 +169,10 @@ main(argc, argv)
   XtAppContext app;
   Widget hitanykey, namew;
   Display *dpy1;
-  char hname[64];
+  char hname[64], *c;
   Arg args[1];
   int i;
-
-  srandom(time(0) + getpid());
+  unsigned acc = 0;
 
   signal(SIGCHLD, catch_child);
 
@@ -230,6 +243,12 @@ main(argc, argv)
   XtSetArg(args[0], XtNlabel, hname);
   namew = WcFullNameToWidget(appShell, "*instructions*host");
   XtSetValues(namew, args, 1);
+  /* Also seed random number generator with hostname */
+  c = hname;
+  while (*c)
+    acc = (acc << 1) ^ *c++;
+  srandom(acc);
+  resources.reactivate_timeout += random() % resources.randomize;
 
   saver = WcFullNameToWidget(appShell, "*savershell");
   ins = WcFullNameToWidget(appShell, "*instructions");
@@ -274,7 +293,6 @@ move_instructions(data, timerid)
   static Dimension x_max = 0, y_max = 0;
   Position x, y;
   Window wins[3];
-  unsigned long random();
 
   if (!x_max)			/* get sizes, if we haven't done so already */
     {
@@ -342,7 +360,11 @@ start_reactivate(data, timerid)
     activation_pid = fork();
     switch (activation_pid) {
     case 0:
-	execl(resources.reactivate_prog, resources.reactivate_prog, 0);
+ 	if (activate_count % resources.detach_interval == 0)
+ 	  execl(resources.reactivate_prog, resources.reactivate_prog,
+ 		"-detach", 0);
+ 	else
+ 	  execl(resources.reactivate_prog, resources.reactivate_prog, 0);
 	fprintf(stderr, "XLogin: unable to exec reactivate program \"%s\"\n",
 		resources.reactivate_prog);
 	_exit(1);
@@ -354,6 +376,7 @@ start_reactivate(data, timerid)
 	break;
     }
 
+    activate_count++;
     react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
 				 start_reactivate, NULL);
 }
@@ -522,9 +545,12 @@ Cardinal *n;
 
     if (access("/srvd/.rvdinfo", F_OK) != 0)
       tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
-    else
-      tb.ptr = dologin(login, passwd, mode, script, resources.tty,
-		       resources.session, DisplayString(dpy));
+    else {
+ 	setFontPath();
+ 	XFlush(dpy);
+	tb.ptr = dologin(login, passwd, mode, script, resources.tty,
+			 resources.session, DisplayString(dpy));
+    }
 
     XtMapWidget(appShell);
     XtPopup(WcFullNameToWidget(appShell, "*warningShell"), XtGrabExclusive);
@@ -621,8 +647,6 @@ Cardinal *n;
     int i;
 
     unfocusACT(w, event, p, n);
-    XtCloseDisplay(dpy);
-    setreuid(DAEMON, DAEMON);
     argv = (char **)malloc(sizeof(char *) * (*n + 3));
     argv[0] = "sh";
     argv[1] = "-c";
@@ -640,7 +664,11 @@ Cardinal *n;
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
+    setFontPath();
+    XFlush(dpy);
+    XtCloseDisplay(dpy);
 
+    setreuid(DAEMON, DAEMON);
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
     _exit(3);
@@ -968,3 +996,45 @@ static void catch_child()
 	      pid, status.w_retcode);
 }
 
+
+char *strdup(string)
+char *string;
+{
+    register char *cp;
+
+    if (!(cp = malloc(strlen(string) + 1)))
+      return(NULL);
+    return(strcpy(cp,string));
+}
+
+
+static void setFontPath()
+{
+    static int ndirs = 0;
+    static char **dirlist;
+    register char *cp;
+    register int i=0;
+    char *dirs;
+
+    if (!ndirs) {
+ 	dirs = cp = strdup(resources.fontpath);
+ 	if (cp == NULL)
+	  localErrorHandler("Out of memory");
+
+ 	ndirs = 1;
+ 	while (cp = index(cp, ',')) { ndirs++; cp++; }
+
+ 	cp = dirs;
+ 	dirlist = (char **)malloc(ndirs*sizeof(char *));
+ 	if (dirlist == NULL)
+	  localErrorHandler("Out of memory");
+
+ 	dirlist[i++] = cp;
+ 	while (cp = index(cp, ',')) {
+ 	    *cp++ = '\0';
+ 	    dirlist[i++] = cp;
+ 	}
+    }
+
+    XSetFontPath(dpy, dirlist, ndirs);
+}
