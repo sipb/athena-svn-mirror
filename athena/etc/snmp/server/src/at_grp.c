@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.1 1990-04-26 15:30:36 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.2 1990-05-26 13:35:00 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  15:30:36  tom
+ * Initial revision
+ * 
  * Revision 1.2  89/12/08  15:16:11  snmpdev
  * added chris tengi's patch to prevent the return of incomplete arp cache
  * entries -- kolb
@@ -28,7 +31,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.1 1990-04-26 15:30:36 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.2 1990-05-26 13:35:00 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved

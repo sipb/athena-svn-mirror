@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.1 1990-04-26 15:33:45 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.2 1990-05-26 13:35:06 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  15:33:45  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:42:29  snmpdev
  * Initial revision
  * 
@@ -24,7 +27,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.1 1990-04-26 15:33:45 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.2 1990-05-26 13:35:06 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.

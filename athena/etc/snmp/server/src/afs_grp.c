@@ -15,11 +15,14 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/04/26  15:24:09  tom
+ * *** empty log message ***
+ * 
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.3 1990-04-26 15:24:09 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.4 1990-05-26 13:34:28 tom Exp $";
 #endif
 
 #include "include.h"
@@ -27,6 +30,8 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 
 #ifdef MIT
 #ifdef AFS
+char lbuf[BUFSIZ];
+
 
 /*
  * This file contains the cache size and directory.
@@ -50,9 +55,6 @@ lu_afs(varnode, repl, instptr, reqflg)
      objident *instptr;
      int reqflg;
 {
-  char buf[BUFSIZ];
-
-  bzero(buf, BUFSIZ);
 
   if (varnode->flags & NOT_AVAIL ||
       varnode->offset <= 0 ||     /* not expecting offset here */
@@ -65,7 +67,7 @@ lu_afs(varnode, repl, instptr, reqflg)
 
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
-  
+
   switch(varnode->offset)
     {
     case N_AFSCCACHESIZE:
@@ -93,7 +95,6 @@ static int
 crock_cachesize()
 {
   FILE *fp;
-  char buf[BUFSIZ];
   char *cp;
 
   fp = fopen(cache_file, "r");
@@ -103,7 +104,7 @@ crock_cachesize()
       return(BUILD_ERR);
     }
 
-  if(fgets(buf, BUFSIZ, fp) == (char *) NULL)
+  if(fgets(lbuf, sizeof(lbuf), fp) == (char *) NULL)
     {
       fclose(fp);
       return(0);
@@ -111,7 +112,7 @@ crock_cachesize()
 
   fclose(fp);
 
-  cp = rindex(buf, ':');
+  cp = rindex(lbuf, ':');
   if(cp++ == (char) NULL)
     return(0);
     
