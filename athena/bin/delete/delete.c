@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.14 1989-01-27 08:15:43 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.15 1989-01-29 21:16:26 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -263,6 +263,8 @@ char *filename;
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
+	  if (is_deleted(dp->d_name))
+	       continue;
 	  else {
 	       closedir(dirp);
 	       return(0);
@@ -310,7 +312,7 @@ int recursed;
 	  }
      }
      closedir(dirp);
-     status = status | do_move(filename, stat_buf, status & NO_DELETE_MASK);
+     status = status | do_move(filename, stat_buf, status);
      return(status);
 }
 
@@ -319,10 +321,10 @@ int recursed;
 
 
 
-do_move(filename, stat_buf, no_delete_mask)
+do_move(filename, stat_buf, err_mask)
 char *filename;
 struct stat stat_buf;
-int no_delete_mask;
+int err_mask;
 {
      char *last;
      char buf[MAXPATHLEN];
@@ -347,6 +349,11 @@ int no_delete_mask;
      *last = '\0';
      strcat(buf, ".#");
      strcat(buf, name);
+     if (err_mask) {
+	  if (! force)
+	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
+	  return(err_mask);
+     }
      if (interactive) {
 	  printf("%s: remove %s? ", whoami, filename);
 	  if (! yes())
@@ -358,11 +365,6 @@ int no_delete_mask;
 		 stat_buf.st_mode & 0777, filename);
 	  if (! yes())
 	       return(NO_DELETE_MASK);
-     }
-     if (no_delete_mask) {
-	  if (! force)
-	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
-	  return(ERROR_MASK);
      }
      if (noop) {
 	  fprintf(stderr, "%s: %s would be removed\n", whoami, filename);
@@ -400,9 +402,8 @@ char *filename;
 	  dirp = opendir(filename);
 	  if (! dirp)
 	       return(1);
+	  readdir(dirp); readdir(dirp); /* get rid of . and .. */
 	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	       if (is_dotfile(dp->d_name))
-		    continue;
 	       strcpy(buf, append(filename, dp->d_name, 0));
 	       if (! buf) {
 		    status = 1;
@@ -411,9 +412,10 @@ char *filename;
 	       status = status | unlink_completely(buf);
 	  }
 	  closedir(dirp);
+	  status = status | rmdir(filename);
+	  return(status);
      }
      else
 	  return(unlink(filename) == -1);
-     return(0);
 }
 
