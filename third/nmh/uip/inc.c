@@ -2,7 +2,7 @@
 /*
  * inc.c -- incorporate messages from a maildrop into a folder
  *
- * $Id: inc.c,v 1.4 1999-11-10 17:54:41 ghudson Exp $
+ * $Id: inc.c,v 1.5 2000-01-07 04:43:58 rbasch Exp $
  */
 
 #ifdef MAILGROUP
@@ -672,7 +672,8 @@ go_to_it:
 	if (pop_quit () == NOTOK)
 	    adios (NULL, "%s", response);
 	if (packfile) {
-	    mbx_close (packfile, pd);
+	    if (mbx_close (packfile, pd) == NOTOK)
+		adios (packfile, "error writing to file");
 	    pd = NOTOK;
 	}
 

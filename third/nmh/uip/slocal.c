@@ -2,7 +2,7 @@
 /*
  * slocal.c -- asynchronously filter and deliver new mail
  *
- * $Id: slocal.c,v 1.2 1999-11-08 20:26:48 tb Exp $
+ * $Id: slocal.c,v 1.3 2000-01-07 04:43:58 rbasch Exp $
  */
 
 /*
@@ -1002,7 +1002,11 @@ usr_file (int fd, char *mailbox, int mbx_style)
     }
 
     /* close and unlock file */
-    mbx_close (mailbox, md);
+    if (mbx_close (mailbox, md) == NOTOK) {
+	if (verbose)
+	    adorn ("", "error writing to:");
+	return -1;
+    }
 
     if (verbose)
 	verbose_printf (", success.\n");
