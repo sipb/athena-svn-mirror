@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: jtkohl $
+ *	$Author: root $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.23 1988-08-15 09:50:28 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.24 1988-09-09 14:08:47 root Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.23 1988-08-15 09:50:28 jtkohl Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.24 1988-09-09 14:08:47 root Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -66,7 +66,6 @@ Z_SendLocation(class, opcode, auth, format)
     struct hostent *hent;
     short wg_port = ZGetWGPort();
     int gotone = 0;
-    fd_set t1, t2, t3;
     register int i;
     struct timeval tv;
 
@@ -126,7 +125,7 @@ Z_SendLocation(class, opcode, auth, format)
     for (i=0;i<HM_TIMEOUT*2;i++) {
 	tv.tv_sec = 0;
 	tv.tv_usec = 500000;
-	if (select(0, &t1, &t2, &t3, &tv) < 0)
+	if (select(0, (fd_set *) 0, (fd_set *) 0, (fd_set *) 0, &tv) < 0)
 	    return (errno);
 	retval = ZCheckIfNotice(&retnotice, (struct sockaddr_in *)0,
 				ZCompareUIDPred, (char *)&notice.z_uid);

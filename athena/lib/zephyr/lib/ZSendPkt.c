@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v $
- *	$Author: jtkohl $
+ *	$Author: root $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.24 1988-06-23 10:34:12 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.25 1988-09-09 14:08:27 root Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.24 1988-06-23 10:34:12 jtkohl Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.25 1988-09-09 14:08:27 root Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -31,7 +31,6 @@ Code_t ZSendPacket(packet, len, waitforack)
     struct sockaddr_in dest;
     struct timeval tv;
     int i;
-    fd_set t1, t2, t3;
     ZNotice_t notice, acknotice;
 	
     if (!packet || len < 0)
@@ -60,7 +59,7 @@ Code_t ZSendPacket(packet, len, waitforack)
     tv.tv_usec = 500000;
 
     for (i=0;i<HM_TIMEOUT*2;i++) {
-	if (select(0, &t1, &t2, &t3, &tv) < 0)
+	if (select(0, (fd_set *) 0, (fd_set *) 0, (fd_set *) 0, &tv) < 0)
 	    return (errno);
 	retval = ZCheckIfNotice(&acknotice, (struct sockaddr_in *)0,
 				wait_for_hmack, (char *)&notice.z_uid);
