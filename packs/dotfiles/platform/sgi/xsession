@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.5 1995-10-11 22:37:53 cfields Exp $
+# $Id: xsession,v 1.6 1996-05-28 00:29:53 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -84,7 +84,7 @@ if (! $?skip_sgi) then
   if ($?NOCALLS) then
     setenv XUSERFILESEARCHPATH "/usr/athena/lib/X11/app-defaults/%N:`/usr/bin/X11/appdefpath`"
   else
-    setenv XUSERFILESEARCHPATH "$HOME/.dotdesktop-$host/%N:$HOME/%N:/usr/athena/lib/X11/app-defaults/%N:`/usr/bin/X11/appdefpath`"
+    setenv XUSERFILESEARCHPATH "$HOME/.desktop-$host/%N:$HOME/%N:/usr/athena/lib/X11/app-defaults/%N:`/usr/bin/X11/appdefpath`"
   endif
 
 else
