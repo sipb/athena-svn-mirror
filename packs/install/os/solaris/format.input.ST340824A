@@ -1,8 +1,8 @@
 # Disk geometry: <ST340824A cyl 19156 alt 2 hd 16 sec 255>
 #
 # Part      Tag    Flag     Cylinders        Size            Blocks
-#  0       root    wm       0 - 18383       35.77GB    (18384/0/0) 75006720
-#  1       swap    wu   18384 - 18898        1.00GB    (515/0/0)    2101200
+#  0       root    wm       0 - 17872       34.77GB    (17873/0/0) 72921840
+#  1       swap    wu   17873 - 18898        2.00GB    (1026/0/0)   4186080
 #  2     backup    wu       0 - 19155       37.27GB    (19156/0/0) 78156480
 #  3 unassigned    wu   18899 - 19155      511.99MB    (257/0/0)    1048560
 #  4 unassigned    wu       0                0         (0/0/0)            0
@@ -17,19 +17,19 @@ partition
 root
 wm
 0
-18384c
+17873c
 
 1
 swap
 wu
-18384
-515c
+17873
+1026c
 
 2
 backup
 wu
 0
-19155c
+19156c
 
 3
 unassigned
