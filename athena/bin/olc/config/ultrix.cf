@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ultrix.cf,v 1.7 1991-06-29 16:09:07 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ultrix.cf,v 1.8 1994-08-14 16:30:59 cfields Exp $ */
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
 #undef ProfiledLibraryObjectRule
@@ -12,4 +12,5 @@
 #ifdef MipsArchitecture
 #define ArCmd	ar r
 #define HaveDefErrno 0
+#define MachSpecDef -DVOID_SIGRET
 #endif
