@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# athena-verify: Public workstation integrity verification.
+#
+# chkconfig: 2345 80 30
+# description: Public workstation integrity verification.
+
+# Source function library
+. /etc/rc.d/init.d/functions
+. /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+# See how we were called
+
+case "$1" in
+  start)
+	if [ "$PUBLIC" = true ]; then
+		echo -n Public workstation integrity check
+		/etc/athena/verify && success "RPM verification and repair" \
+				   || failure "RPM verification and repair"
+	fi
+	;;
+  stop)
+	;;
+  status)
+	;;
+  restart)
+	$0 start
+	;;
+  reload)
+	;;
+  *)
+	echo "Usage: athena-verify {start|stop|status|restart|reload}"
+	exit 1
+	;;
+esac
+
+exit 0
+
