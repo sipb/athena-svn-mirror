@@ -5,7 +5,7 @@ This file is part of GNU Bash, the Bourne Again SHell.
 
 Bash is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 1, or (at your option) any later
+Software Foundation; either version 2, or (at your option) any later
 version.
 
 Bash is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -15,7 +15,7 @@ for more details.
 
 You should have received a copy of the GNU General Public License along
 with Bash; see the file COPYING.  If not, write to the Free Software
-Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include "config.h"
 
@@ -84,6 +84,9 @@ static void print_arith_command ();
 static void print_cond_node ();
 static void print_cond_command ();
 #endif
+#if defined (ARITH_FOR_COMMAND)
+static void print_arith_for_command ();
+#endif
 
 #define PRINTED_COMMAND_INITIAL_SIZE 64
 #define PRINTED_COMMAND_GROW_SIZE 128
@@ -137,9 +140,6 @@ make_command_string_internal (command)
       else
 	indent (indentation);
 
-      if (command->flags & CMD_WANT_SUBSHELL)
-	cprintf ("( ");
-
       if (command->flags & CMD_TIME_PIPELINE)
 	{
 	  cprintf ("time ");
@@ -155,6 +155,12 @@ make_command_string_internal (command)
 	case cm_for:
 	  print_for_command (command->value.For);
 	  break;
+
+#if defined (ARITH_FOR_COMMAND)
+	case cm_arith_for:
+	  print_arith_for_command (command->value.ArithFor);
+	  break;
+#endif
 
 #if defined (SELECT_COMMAND)
 	case cm_select:
@@ -259,13 +265,18 @@ make_command_string_internal (command)
 	  print_group_command (command->value.Group);
 	  break;
 
+	case cm_subshell:
+	  cprintf ("( ");
+	  skip_this_indent++;
+	  make_command_string_internal (command->value.Subshell->command);
+	  cprintf (" )");
+	  break;
+
 	default:
 	  command_error ("print_command", CMDERR_BADTYPE, command->type, 0);
 	  break;
 	}
 
-      if (command->flags & CMD_WANT_SUBSHELL)
-	cprintf (" )");
 
       if (command->redirects)
 	{
@@ -309,9 +320,9 @@ xtrace_print_word_list (list)
       t = w->word->word;
       if (t == 0 || *t == '\0')
 	fprintf (stderr, "''%s", w->next ? " " : "");
-      else if (contains_shell_metas (t))
+      else if (sh_contains_shell_metas (t))
 	{
-	  x = single_quote (t);
+	  x = sh_single_quote (t);
 	  fprintf (stderr, "%s%s", x, w->next ? " " : "");
 	  free (x);
 	}
@@ -343,6 +354,27 @@ print_for_command (for_command)
   indentation -= indentation_amount;
   newline ("done");
 }
+
+#if defined (ARITH_FOR_COMMAND)
+static void
+print_arith_for_command (arith_for_command)
+     ARITH_FOR_COM *arith_for_command;
+{
+  cprintf ("for (( ");
+  command_print_word_list (arith_for_command->init, " ");
+  cprintf (" ; ");
+  command_print_word_list (arith_for_command->test, " ");
+  cprintf (" ; ");
+  command_print_word_list (arith_for_command->step, " ");
+  cprintf (" ))");
+  newline ("do\n");
+  indentation += indentation_amount;
+  make_command_string_internal (arith_for_command->action);
+  semicolon ();
+  indentation -= indentation_amount;
+  newline ("done");
+}
+#endif /* ARITH_FOR_COMMAND */
 
 #if defined (SELECT_COMMAND)
 static void
@@ -492,6 +524,7 @@ print_arith_command (arith_command)
   command_print_word_list (arith_command->exp, " ");
   cprintf (" ))");
 }
+#endif
 
 #if defined (COND_COMMAND)
 static void
@@ -548,6 +581,7 @@ print_cond_command (cond)
   cprintf (" ]]");
 }
 
+#ifdef DEBUG
 void
 debug_print_cond_command (cond)
      COND_COM *cond;
@@ -557,6 +591,7 @@ debug_print_cond_command (cond)
   print_cond_command (cond);
   fprintf (stderr, "%s\n", the_printed_command);
 }
+#endif
 
 void
 xtrace_print_cond_term (type, invert, op, arg1, arg2)
@@ -586,6 +621,7 @@ xtrace_print_cond_term (type, invert, op, arg1, arg2)
 }	  
 #endif /* COND_COMMAND */
 
+#if defined (DPAREN_ARITHMETIC) || defined (ARITH_FOR_COMMAND)
 /* A function to print the words of an arithmetic command when set -x is on. */
 void
 xtrace_print_arith_cmd (list)
@@ -654,10 +690,10 @@ print_redirection_list (redirects)
     {
       cprintf (" "); 
       for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
-        {
+	{
 	  print_redirection (hdtail);
 	  cprintf ("\n");
-        }
+	}
       dispose_redirects (heredocs);
       was_heredoc = 1;
     }
@@ -707,12 +743,12 @@ print_redirection (redirect)
 	cprintf ("%d", redirector);
       /* If the here document delimiter is quoted, single-quote it. */
       if (redirect->redirectee.filename->flags & W_QUOTED)
-        {
-          char *x;
-          x = single_quote (redirect->here_doc_eof);
+	{
+	  char *x;
+	  x = sh_single_quote (redirect->here_doc_eof);
 	  cprintf ("<<%s%s\n", kill_leading? "-" : "", x);
-          free (x);
-        }
+	  free (x);
+	}
       else
 	cprintf ("<<%s%s\n", kill_leading? "-" : "", redirect->here_doc_eof);
       cprintf ("%s%s",
@@ -768,6 +804,9 @@ static void
 print_function_def (func)
      FUNCTION_DEF *func;
 {
+  COMMAND *cmdcopy;
+  REDIRECT *func_redirects;
+
   cprintf ("function %s () \n", func->name->word);
   add_unwind_protect (reset_locals, 0);
 
@@ -777,15 +816,30 @@ print_function_def (func)
   inside_function_def++;
   indentation += indentation_amount;
 
-  make_command_string_internal (func->command->type == cm_group
-					? func->command->value.Group->command
-					: func->command);
+  cmdcopy = copy_command (func->command);
+  if (cmdcopy->type == cm_group)
+    {
+      func_redirects = cmdcopy->redirects;
+      cmdcopy->redirects = (REDIRECT *)NULL;
+    }
+  make_command_string_internal (cmdcopy->type == cm_group
+					? cmdcopy->value.Group->command
+					: cmdcopy);
 
   remove_unwind_protect ();
   indentation -= indentation_amount;
   inside_function_def--;
 
-  newline ("}");
+  if (func_redirects)
+    { /* { */
+      newline ("} ");
+      print_redirection_list (func_redirects);
+      cmdcopy->redirects = func_redirects;
+    }
+  else
+    newline ("}");
+
+  dispose_command (cmdcopy);
 }
 
 /* Return the string representation of the named function.
@@ -801,6 +855,8 @@ named_function_string (name, command, multi_line)
 {
   char *result;
   int old_indent, old_amount;
+  COMMAND *cmdcopy;
+  REDIRECT *func_redirects;
 
   old_indent = indentation;
   old_amount = indentation_amount;
@@ -826,15 +882,31 @@ named_function_string (name, command, multi_line)
 
   cprintf (multi_line ? "{ \n" : "{ ");
 
-  make_command_string_internal (command->type == cm_group
-					? command->value.Group->command
-					: command);
+  cmdcopy = copy_command (command);
+  /* Take any redirections specified in the function definition (which should
+     apply to the function as a whole) and save them for printing later. */
+  func_redirects = (REDIRECT *)NULL;
+  if (cmdcopy->type == cm_group)
+    {
+      func_redirects = cmdcopy->redirects;
+      cmdcopy->redirects = (REDIRECT *)NULL;
+    }
+  make_command_string_internal (cmdcopy->type == cm_group
+					? cmdcopy->value.Group->command
+					: cmdcopy);
 
   indentation = old_indent;
   indentation_amount = old_amount;
   inside_function_def--;
 
-  newline ("}");
+  if (func_redirects)
+    { /* { */
+      newline ("} ");
+      print_redirection_list (func_redirects);
+      cmdcopy->redirects = func_redirects;
+    }
+  else
+    newline ("}");
 
   result = the_printed_command;
 
@@ -850,9 +922,11 @@ named_function_string (name, command, multi_line)
 	  }
 #else
       if (result[2] == '\n')	/* XXX -- experimental */
-        strcpy (result + 2, result + 3);
+	strcpy (result + 2, result + 3);
 #endif
     }
+
+  dispose_command (cmdcopy);
 
   return (result);
 }
@@ -1068,14 +1142,11 @@ the_printed_command_resize (length)
     {
       int new;
       new = command_string_index + length + 1;
-#if 1
+
       /* Round up to the next multiple of PRINTED_COMMAND_GROW_SIZE. */
       new = (new + PRINTED_COMMAND_GROW_SIZE - 1) & ~(PRINTED_COMMAND_GROW_SIZE - 1);
-#else
-      new = new + 2 * PRINTED_COMMAND_GROW_SIZE - 1;
-      new -= new % PRINTED_COMMAND_GROW_SIZE;
-#endif
       the_printed_command_size = new;
+
       the_printed_command = xrealloc (the_printed_command, the_printed_command_size);
     }
 }

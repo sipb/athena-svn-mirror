@@ -4,7 +4,7 @@
 
    Bash is free software; you can redistribute it and/or modify it under
    the terms of the GNU General Public License as published by the Free
-   Software Foundation; either version 1, or (at your option) any later
+   Software Foundation; either version 2, or (at your option) any later
    version.
 
    Bash is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -14,7 +14,7 @@
    
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include <config.h>
 
@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include "../bashtypes.h"
-#include "../posixstat.h"
+#include "posixstat.h"
 #include <signal.h>
 
 #include <errno.h>
@@ -43,7 +43,7 @@
 #include "../bashansi.h"
 
 #include "../shell.h"
-#include "../maxpath.h"
+#include "maxpath.h"
 #include "../flags.h"
 #include "../jobs.h"
 #include "../builtins.h"
@@ -62,6 +62,12 @@
 #if !defined (errno)
 extern int errno;   
 #endif /* !errno */
+
+#ifdef __STDC__
+typedef int QSFUNC (const void *, const void *);
+#else
+typedef int QSFUNC ();
+#endif 
 
 extern int no_symbolic_links, interactive, interactive_shell;
 extern int indirection_level, startup_state, subshell_environment;
@@ -321,7 +327,7 @@ set_dollar_vars_changed ()
 
 /* **************************************************************** */
 /*								    */
-/*	        Validating numeric input and arguments		    */
+/*		Validating numeric input and arguments		    */
 /*								    */
 /* **************************************************************** */
 
@@ -365,10 +371,10 @@ read_octal (string)
   int result, digits;
 
   result = digits = 0;
-  while (*string && *string >= '0' && *string < '8')
+  while (*string && ISOCTAL (*string))
     {
       digits++;
-      result = (result * 8) + *string++ - '0';
+      result = (result * 8) + (*string++ - '0');
     }
 
   if (!digits || result > 0777 || *string)
@@ -410,10 +416,7 @@ get_working_directory (for_whom)
 	{
 	  fprintf (stderr, "%s: could not get current directory: %s: %s\n",
 		   (for_whom && *for_whom) ? for_whom : get_name_for_error (),
-		   the_current_working_directory[0]
-			? the_current_working_directory
-			: bash_getcwd_errstr,
-		   strerror (errno));
+		   bash_getcwd_errstr, strerror (errno));
 
 	  free (the_current_working_directory);
 	  the_current_working_directory = (char *)NULL;
@@ -462,7 +465,7 @@ get_job_spec (list)
   if (digit (*word) && all_digits (word))
     {
       job = atoi (word);
-      return (job - 1);
+      return (job >= job_slots ? NO_JOB : job - 1);
     }
 
   substring = 0;
@@ -701,162 +704,6 @@ shell_builtin_compare (sbp1, sbp2)
 void
 initialize_shell_builtins ()
 {
-#ifdef _MINIX
   qsort (shell_builtins, num_shell_builtins, sizeof (struct builtin),
-    (int (*)(const void *, const void *))shell_builtin_compare);
-#else
-  qsort (shell_builtins, num_shell_builtins, sizeof (struct builtin),
-    shell_builtin_compare);
-#endif
-}
-
-/* **************************************************************** */
-/*								    */
-/*	 Functions for quoting strings to be re-read as input	    */
-/*								    */
-/* **************************************************************** */
-
-/* Return a new string which is the single-quoted version of STRING.
-   Used by alias and trap, among others. */
-char *
-single_quote (string)
-     char *string;
-{
-  register int c;
-  char *result, *r, *s;
-
-  result = (char *)xmalloc (3 + (4 * strlen (string)));
-  r = result;
-  *r++ = '\'';
-
-  for (s = string; s && (c = *s); s++)
-    {
-      *r++ = c;
-
-      if (c == '\'')
-	{
-	  *r++ = '\\';	/* insert escaped single quote */
-	  *r++ = '\'';
-	  *r++ = '\'';	/* start new quoted string */
-	}
-    }
-
-  *r++ = '\'';
-  *r = '\0';
-
-  return (result);
-}
-
-/* Quote STRING using double quotes.  Return a new string. */
-char *
-double_quote (string)
-     char *string;
-{
-  register int c;
-  char *result, *r, *s;
-
-  result = (char *)xmalloc (3 + (2 * strlen (string)));
-  r = result;
-  *r++ = '"';
-
-  for (s = string; s && (c = *s); s++)
-    {
-      switch (c)
-        {
-	case '"':
-	case '$':
-	case '`':
-	case '\\':
-	  *r++ = '\\';
-	default:
-	  *r++ = c;
-	  break;
-        }
-    }
-
-  *r++ = '"';
-  *r = '\0';
-
-  return (result);
-}
-
-/* Quote special characters in STRING using backslashes.  Return a new
-   string. */
-char *
-backslash_quote (string)
-     char *string;
-{
-  int c;
-  char *result, *r, *s;
-
-  result = xmalloc (2 * strlen (string) + 1);
-
-  for (r = result, s = string; s && (c = *s); s++)
-    {
-      switch (c)
-	{
-	case ' ': case '\t': case '\n':		/* IFS white space */
-	case '\'': case '"': case '\\':		/* quoting chars */
-	case '|': case '&': case ';':		/* shell metacharacters */
-	case '(': case ')': case '<': case '>':
-	case '!': case '{': case '}':		/* reserved words */
-	case '*': case '[': case '?': case ']':	/* globbing chars */
-	case '^':
-	case '$': case '`':			/* expansion chars */
-	  *r++ = '\\';
-	  *r++ = c;
-	  break;
-#if 0
-	case '~':				/* tilde expansion */
-	  if (s == string || s[-1] == '=' || s[-1] == ':')
-	    *r++ = '\\';
-	  *r++ = c;
-	  break;
-#endif
-	case '#':				/* comment char */
-	  if (s == string)
-	    *r++ = '\\';
-	  /* FALLTHROUGH */
-	default:
-	  *r++ = c;
-	  break;
-	}
-    }
-
-  *r = '\0';
-  return (result);
-}
-
-int
-contains_shell_metas (string)
-     char *string;
-{
-  char *s;
-
-  for (s = string; s && *s; s++)
-    {
-      switch (*s)
-	{
-	case ' ': case '\t': case '\n':		/* IFS white space */
-	case '\'': case '"': case '\\':		/* quoting chars */
-	case '|': case '&': case ';':		/* shell metacharacters */
-	case '(': case ')': case '<': case '>':
-	case '!': case '{': case '}':		/* reserved words */
-	case '*': case '[': case '?': case ']':	/* globbing chars */
-	case '^':
-	case '$': case '`':			/* expansion chars */
-	  return (1);
-	case '~':				/* tilde expansion */
-	  if (s == string || s[-1] == '=' || s[-1] == ':')
-	    return (1);
-	case '#':
-	  if (s == string)			/* comment char */
-	    return (1);
-	  /* FALLTHROUGH */
-	default:
-	  break;
-	}
-    }
-
-  return (0);
+    (QSFUNC *)shell_builtin_compare);
 }

@@ -1,7 +1,6 @@
 /* general.c -- Stuff that is used by all files. */
 
-/* Copyright (C) 1987, 1988, 1989, 1990, 1991, 1992
-   Free Software Foundation, Inc.
+/* Copyright (C) 1987-1999 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -17,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include "config.h"
 
@@ -40,18 +39,6 @@
 #include "shell.h"
 #include <tilde/tilde.h>
 
-#if defined (TIME_WITH_SYS_TIME)
-#  include <sys/time.h>
-#  include <time.h>
-#else
-#  if defined (HAVE_SYS_TIME_H)
-#    include <sys/time.h>
-#  else
-#    include <time.h>
-#  endif
-#endif
-
-#include <sys/times.h>
 #include "maxpath.h"
 
 #if !defined (errno)
@@ -63,8 +50,12 @@ extern int errno;
 #  define to_lower(c) (isupper(c) ? tolower(c) : (c))
 #endif
 
+extern int interactive_shell, expand_aliases;
 extern int interrupt_immediately;
 extern int interactive_comments;
+extern int check_hashed_filenames;
+extern int source_uses_path;
+extern int source_searches_cwd;
 
 /* A standard error message to use when getcwd() returns NULL. */
 char *bash_getcwd_errstr = "getcwd: cannot access parent directories";
@@ -74,7 +65,18 @@ void
 posix_initialize (on)
      int on;
 {
-  interactive_comments = on != 0;
+  /* Things that should be turned on when posix mode is enabled. */
+  if (on != 0)
+    {
+      interactive_comments = source_uses_path = expand_aliases = 1;
+    }
+
+  /* Things that should be turned on when posix mode is disabled. */
+  if (on == 0)
+    {
+      source_searches_cwd = 1;
+      expand_aliases = interactive_shell;
+    }
 }
 
 /* **************************************************************** */
@@ -133,98 +135,6 @@ print_rlimtype (n, addnl)
 }
 #endif /* RLIMTYPE */
 
-#if defined (HAVE_TIMEVAL)
-/* Convert a pointer to a struct timeval to seconds and thousandths of a
-   second, returning the values in *SP and *SFP, respectively.  This does
-   rounding on the fractional part, not just truncation to three places. */
-void
-timeval_to_secs (tvp, sp, sfp)
-     struct timeval *tvp;
-     long *sp;
-     int *sfp;
-{
-  int rest;
-
-  *sp = tvp->tv_sec;
-
-  *sfp = tvp->tv_usec % 1000000;	/* pretty much a no-op */
-  rest = *sfp % 1000;
-  *sfp = (*sfp * 1000) / 1000000;
-  if (rest >= 500)
-    *sfp += 1;
-
-  /* Sanity check */
-  if (*sfp >= 1000)
-    {
-      *sp += 1;
-      *sfp -= 1000;
-    }
-}
-  
-/* Print the contents of a struct timeval * in a standard way to stdio
-   stream FP.  */
-void
-print_timeval (fp, tvp)
-     FILE *fp;
-     struct timeval *tvp;
-{
-  int minutes, seconds_fraction;
-  long seconds;
-
-  timeval_to_secs (tvp, &seconds, &seconds_fraction);
-
-  minutes = seconds / 60;
-  seconds %= 60;
-
-  fprintf (fp, "%0dm%0ld.%03ds",  minutes, seconds, seconds_fraction);
-}
-#endif /* HAVE_TIMEVAL */
-
-#if defined (HAVE_TIMES)
-void
-clock_t_to_secs (t, sp, sfp)
-     clock_t t;
-     long *sp;
-     int *sfp;
-{
-  static long clk_tck = 0;
-
-  if (clk_tck == 0)
-    clk_tck = get_clk_tck ();
-
-  *sfp = t % clk_tck;
-  *sfp = (*sfp * 1000) / clk_tck;
-
-  *sp = t / clk_tck;
-
-  /* Sanity check */
-  if (*sfp >= 1000)
-    {
-      *sp += 1;
-      *sfp -= 1000;
-    }
-}
-
-/* Print the time defined by a time_t (returned by the `times' and `time'
-   system calls) in a standard way to stdion stream FP.  This is scaled in
-   terms of HZ, which is what is returned by the `times' call. */
-void
-print_time_in_hz (fp, t)
-     FILE *fp;
-     clock_t t;
-{
-  int minutes, seconds_fraction;
-  long seconds;
-
-  clock_t_to_secs (t, &seconds, &seconds_fraction);
-
-  minutes = seconds / 60;
-  seconds %= 60;
-
-  fprintf (fp, "%0dm%0ld.%03ds",  minutes, seconds, seconds_fraction);
-}
-#endif /* HAVE_TIMES */
-
 /* **************************************************************** */
 /*								    */
 /*		       Input Validation Functions		    */
@@ -236,13 +146,12 @@ int
 all_digits (string)
      char *string;
 {
-  while (*string)
-    {
-      if (!digit (*string))
-	return (0);
-      else
-	string++;
-    }
+  register char *s;
+
+  for (s = string; *s; s++)
+    if (isdigit (*s) == 0)
+      return (0);
+
   return (1);
 }
 
@@ -261,6 +170,10 @@ legal_number (string, result)
     *result = 0;
 
   value = strtol (string, &ep, 10);
+
+  /* Skip any trailing whitespace, since strtol does not. */
+  while (whitespace (*ep))
+    ep++;
 
   /* If *string is not '\0' but *ep is '\0' on return, the entire string
      is valid. */
@@ -292,7 +205,7 @@ legal_identifier (name)
   for (s = name + 1; *s; s++)
     {
       if (legal_variable_char (*s) == 0)
-        return (0);
+	return (0);
     }
   return (1);
 }
@@ -338,27 +251,34 @@ check_identifier (word, check_word)
 #endif /* O_NDELAY */
 
 /* Make sure no-delay mode is not set on file descriptor FD. */
-void
-unset_nodelay_mode (fd)
+int
+sh_unset_nodelay_mode (fd)
      int fd;
 {
-  int flags, set;
+  int flags, bflags;
 
   if ((flags = fcntl (fd, F_GETFL, 0)) < 0)
-    return;
+    return -1;
 
-  set = 0;
+  bflags = 0;
 
   /* This is defined to O_NDELAY in filecntl.h if O_NONBLOCK is not present
      and O_NDELAY is defined. */
-  if (flags & O_NONBLOCK)
+#ifdef O_NONBLOCK
+  bflags |= O_NONBLOCK;
+#endif
+
+#ifdef O_NDELAY
+  bflags |= O_NDELAY;
+#endif
+
+  if (flags & bflags)
     {
-      flags &= ~O_NONBLOCK;
-      set++;
+      flags &= ~bflags;
+      return (fcntl (fd, F_SETFL, flags));
     }
 
-  if (set)
-    fcntl (fd, F_SETFL, flags);
+  return 0;
 }
 
 /* There is a bug in the NeXT 2.1 rlogind that causes opens
@@ -492,175 +412,6 @@ check_binary_file (sample, sample_len)
 /*								    */
 /* **************************************************************** */
 
-/* Return 1 if PATH corresponds to a directory. */
-static int
-canon_stat (path)
-     char *path;
-{
-  int l;
-  char *s;
-  struct stat sb;
-
-  l = strlen (path);
-  s = xmalloc (l + 3);
-  strcpy (s, path);
-  s[l] = '/';
-  s[l+1] = '.';
-  s[l+2] = '\0';
-  l = stat (s, &sb) == 0 && S_ISDIR (sb.st_mode);
-  free (s);
-  return l;
-}
-
-/* Canonicalize PATH, and return a new path.  The new path differs from PATH
-   in that:
-	Multple `/'s are collapsed to a single `/'.
-	Leading `./'s and trailing `/.'s are removed.
-	Trailing `/'s are removed.
-	Non-leading `../'s and trailing `..'s are handled by removing
-	portions of the path. */
-char *
-canonicalize_pathname (path)
-     char *path;
-{
-  register int i, start;
-  char stub_char;
-  char *result;
-
-  /* The result cannot be larger than the input PATH. */
-  result = savestring (path);
-
-  stub_char = (*path == '/') ? '/' : '.';
-
-  /* Walk along RESULT looking for things to compact. */
-  i = 0;
-  while (1)
-    {
-      if (!result[i])
-	break;
-
-      while (result[i] && result[i] != '/')
-	i++;
-
-      start = i++;
-
-      /* If we didn't find any slashes, then there is nothing left to do. */
-      if (!result[start])
-	break;
-
-      /* Handle multiple `/'s in a row. */
-      while (result[i] == '/')
-	i++;
-
-#if 0
-      if ((start + 1) != i)
-#else
-      /* Leave a leading `//' alone, as POSIX requires. */
-      if ((start + 1) != i && (start != 0 || i != 2))
-#endif
-	{
-	  strcpy (result + start + 1, result + i);
-	  i = start + 1;
-	  /* Make sure that what we have so far corresponds to a directory.
-	     If it does not, just punt. */
-	  if (*result)
-	    {
-	      char c;
-	      c = result[start];
-	      result[start] = '\0';
-	      if (canon_stat (result) == 0)
-		{
-		  free (result);
-		  return ((char *)NULL);
-		}
-	      result[start] = c;
-	    }
-	}
-#if 0
-      /* Handle backslash-quoted `/'. */
-      if (start > 0 && result[start - 1] == '\\')
-	continue;
-#endif
-
-      /* Check for trailing `/'. */
-      if (start && !result[i])
-	{
-	zero_last:
-	  result[--i] = '\0';
-	  break;
-	}
-
-      /* Check for `../', `./' or trailing `.' by itself. */
-      if (result[i] == '.')
-	{
-	  /* Handle trailing `.' by itself. */
-	  if (!result[i + 1])
-	    goto zero_last;
-
-	  /* Handle `./'. */
-	  if (result[i + 1] == '/')
-	    {
-	      strcpy (result + i, result + i + 1);
-	      i = (start < 0) ? 0 : start;
-	      continue;
-	    }
-
-	  /* Handle `../' or trailing `..' by itself. */
-	  if (result[i + 1] == '.' &&
-	      (result[i + 2] == '/' || !result[i + 2]))
-	    {
-	      /* Make sure that the last component corresponds to a directory
-		 before blindly chopping it off. */
-	      if (i)
-		{
-		  result[i] = '\0';
-		  if (canon_stat (result) == 0)
-		    {
-		      free (result);
-		      return ((char *)NULL);
-		    }
-		  result[i] = '.';
-		}
-	      while (--start > -1 && result[start] != '/');
-	      strcpy (result + start + 1, result + i + 2);
-#if 0	/* Unnecessary */
-	      if (*result && canon_stat (result) == 0)
-		{
-		  free (result);
-		  return ((char *)NULL);
-		}
-#endif
-	      i = (start < 0) ? 0 : start;
-	      continue;
-	    }
-	}
-    }
-
-  if (!*result)
-    {
-      *result = stub_char;
-      result[1] = '\0';
-    }
-
-  /* If the result starts with `//', but the original path does not, we
-     can turn the // into /. */
-  if ((result[0] == '/' && result[1] == '/' && result[2] != '/') &&
-      (path[0] != '/' || path[1] != '/' || path[2] == '/'))
-    {
-      char *r2;
-      if (result[2] == '\0')	/* short-circuit for bare `//' */
-	result[1] = '\0';
-      else
-	{
-	  r2 = savestring (result + 1);
-	  free (result);
-	  result = r2;
-	}
-    }
-
-  return (result);
-}
-
 /* Turn STRING (a pathname) into an absolute pathname, assuming that
    DOT_PATH contains the symbolic location of `.'.  This always
    returns a new string, even if STRING was an absolute pathname to
@@ -670,53 +421,33 @@ make_absolute (string, dot_path)
      char *string, *dot_path;
 {
   char *result;
-  int result_len;
 
-  if (dot_path == 0 || *string == '/')
+  if (dot_path == 0 || ABSPATH(string))
     result = savestring (string);
   else
-    {
-      if (dot_path[0])
-	{
-	  result_len = strlen (dot_path);
-	  result = xmalloc (2 + result_len + strlen (string));
-	  strcpy (result, dot_path);
-	  if (result[result_len - 1] != '/')
-	    {
-	      result[result_len++] = '/';
-	      result[result_len] = '\0';
-	    }
-	}
-      else
-	{
-	  result = xmalloc (3 + strlen (string));
-	  result[0] = '.'; result[1] = '/'; result[2] = '\0';
-	  result_len = 2;
-	}
-
-      strcpy (result + result_len, string);
-    }
+    result = sh_makepath (dot_path, string, 0);
 
   return (result);
 }
 
-/* Return 1 if STRING contains an absolute pathname, else 0. */
+/* Return 1 if STRING contains an absolute pathname, else 0.  Used by `cd'
+   to decide whether or not to look up a directory name in $CDPATH. */
 int
 absolute_pathname (string)
      char *string;
 {
-  if (!string || !*string)
+  if (string == 0 || *string == '\0')
     return (0);
 
-  if (*string == '/')
+  if (ABSPATH(string))
     return (1);
 
-  if (*string++ == '.')
-    {
-      if (!*string || *string == '/' ||
-	   (*string == '.' && (string[1] == '\0' || string[1] == '/')))
-	return (1);
-    }
+  if (string[0] == '.' && PATHSEP(string[1]))	/* . and ./ */
+    return (1);
+
+  if (string[0] == '.' && string[1] == '.' && PATHSEP(string[2]))	/* .. and ../ */
+    return (1);
+
   return (0);
 }
 
@@ -738,7 +469,7 @@ base_pathname (string)
 {
   char *p;
 
-  if (!absolute_pathname (string))
+  if (absolute_pathname (string) == 0)
     return (string);
 
   p = (char *)strrchr (string, '/');
@@ -753,37 +484,17 @@ char *
 full_pathname (file)
      char *file;
 {
-  char *disposer;
-  char *current_dir;
-  int dlen;
+  char *ret;
 
   file = (*file == '~') ? bash_tilde_expand (file) : savestring (file);
 
-  if ((*file == '/') && absolute_pathname (file))
+  if (ABSPATH(file))
     return (file);
 
-  disposer = file;
+  ret = sh_makepath ((char *)NULL, file, (MP_DOCWD|MP_RMDOT));
+  free (file);
 
-  /* XXX - this should probably be just PATH_MAX or PATH_MAX + 1 */
-  current_dir = xmalloc (2 + PATH_MAX + strlen (file));
-  if (getcwd (current_dir, PATH_MAX) == 0)
-    {
-      sys_error (bash_getcwd_errstr);
-      free (disposer);
-      free (current_dir);
-      return ((char *)NULL);
-    }
-  dlen = strlen (current_dir);
-  if (current_dir[0] == '/' && dlen > 1)
-    current_dir[dlen++] = '/';
-
-  /* Turn /foo/./bar into /foo/bar. */
-  if (file[0] == '.' && file[1] == '/')
-    file += 2;
-
-  strcpy (current_dir + dlen, file);
-  free (disposer);
-  return (current_dir);
+  return (ret);
 }
 
 /* A slightly related function.  Get the prettiest name of this
@@ -854,12 +565,7 @@ extract_colon_unit (string, p_index)
       value[0] = '\0';
     }
   else
-    {
-      len = i - start;
-      value = xmalloc (1 + len);
-      strncpy (value, string + start, len);
-      value [len] = '\0';
-    }
+    value = substring (string, start, i);
 
   return (value);
 }
@@ -915,12 +621,12 @@ tilde_initialize ()
      tilde_initialize () is called from within bashline_reinitialize (). */
   if (times_called++ == 0)
     {
-      tilde_additional_prefixes = (char **)xmalloc (3 * sizeof (char *));
+      tilde_additional_prefixes = alloc_array (3);
       tilde_additional_prefixes[0] = "=~";
       tilde_additional_prefixes[1] = ":~";
       tilde_additional_prefixes[2] = (char *)NULL;
 
-      tilde_additional_suffixes = (char **)xmalloc (3 * sizeof (char *));
+      tilde_additional_suffixes = alloc_array (3);
       tilde_additional_suffixes[0] = ":";
       tilde_additional_suffixes[1] = "=~";
       tilde_additional_suffixes[2] = (char *)NULL;
@@ -1001,7 +707,7 @@ initialize_group_array ()
   if (i == ngroups && ngroups < maxgroups)
     {
       for (i = ngroups; i > 0; i--)
-        group_array[i] = group_array[i - 1];
+	group_array[i] = group_array[i - 1];
       group_array[0] = current_user.gid;
       ngroups++;
     }
@@ -1012,8 +718,8 @@ initialize_group_array ()
   if (group_array[0] != current_user.gid)
     {
       for (i = 0; i < ngroups; i++)
-        if (group_array[i] == current_user.gid)
-          break;
+	if (group_array[i] == current_user.gid)
+	  break;
       if (i < ngroups)
 	{
 	  group_array[i] = group_array[0];
@@ -1081,7 +787,7 @@ get_group_list (ngp)
       return (char **)NULL;
     }
 
-  group_vector = (char **)xmalloc (ngroups * sizeof (char *));
+  group_vector = alloc_array (ngroups);
   for (i = 0; i < ngroups; i++)
     {
       nbuf = itos ((int)group_array[i]);

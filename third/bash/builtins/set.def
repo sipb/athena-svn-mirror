@@ -7,7 +7,7 @@ This file is part of GNU Bash, the Bourne Again SHell.
 
 Bash is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 1, or (at your option) any later
+Software Foundation; either version 2, or (at your option) any later
 version.
 
 Bash is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -17,7 +17,7 @@ for more details.
 
 You should have received a copy of the GNU General Public License along
 with Bash; see the file COPYING.  If not, write to the Free Software
-Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 $PRODUCES set.c
 
@@ -52,7 +52,7 @@ $PRODUCES set.c
 extern int interactive;
 extern int noclobber, posixly_correct, ignoreeof, eof_encountered_limit;
 #if defined (READLINE)
-extern int rl_editing_mode, no_line_editing;
+extern int no_line_editing;
 #endif /* READLINE */
 
 $BUILTIN set
@@ -224,9 +224,9 @@ minus_o_option_value (name)
   for (i = 0; binary_o_options[i].name; i++)
     {
       if (STREQ (name, binary_o_options[i].name))
-        return (GET_BINARY_O_OPTION_VALUE (i, name));
+	return (GET_BINARY_O_OPTION_VALUE (i, name));
     }
-        
+
   return (-1);
 }
 
@@ -256,14 +256,31 @@ list_minus_o_opts (mode, reusable)
       if (on_or_off == FLAG_UNKNOWN)
 	on_or_off = &value;
       if (mode == -1 || mode == *on_or_off)
-        print_minus_o_option (o_options[i].name, *on_or_off, reusable);
+	print_minus_o_option (o_options[i].name, *on_or_off, reusable);
     }
   for (i = 0; binary_o_options[i].name; i++)
     {
       value = GET_BINARY_O_OPTION_VALUE (i, binary_o_options[i].name);
       if (mode == -1 || mode == value)
-        print_minus_o_option (binary_o_options[i].name, value, reusable);
+	print_minus_o_option (binary_o_options[i].name, value, reusable);
     }
+}
+
+char **
+get_minus_o_opts ()
+{
+  char **ret;
+  int n, i, ind;
+
+  n = (sizeof (o_options) / sizeof (o_options[0])) +
+      (sizeof (binary_o_options) / sizeof (binary_o_options[0]));
+  ret = alloc_array (n + 1);
+  for (i = ind = 0; o_options[i].name; i++)
+    ret[ind++] = o_options[i].name;
+  for (i = 0; binary_o_options[i].name; i++)
+    ret[ind++] = binary_o_options[i].name;
+  ret[ind] = (char *)NULL;
+  return ret;
 }
 
 static int
@@ -373,10 +390,10 @@ set_minus_o_option (on_or_off, option_name)
   for (i = 0, option_char = -1, set_func = 0; o_options[i].name; i++)
     {
       if (STREQ (option_name, o_options[i].name))
-        {
-          option_char = o_options[i].letter;
-          break;
-        }
+	{
+	  option_char = o_options[i].letter;
+	  break;
+	}
     }
   if (option_char == -1)
     {
@@ -403,11 +420,16 @@ print_all_shell_variables ()
       free (vars);
     }
 
-  vars = all_shell_functions ();
-  if (vars)
+  /* POSIX.2 does not allow function names and definitions to be output when
+     `set' is invoked without options (PASC Interp #202). */
+  if (posixly_correct == 0)
     {
-      print_var_list (vars);
-      free (vars);
+      vars = all_shell_functions ();
+      if (vars)
+	{
+	  print_func_list (vars);
+	  free (vars);
+	}
     }
 }
 
@@ -457,7 +479,7 @@ set_shellopts ()
      note whether or not the variable was exported. */
   if (v)
     {
-      v->attributes &= ~att_readonly;
+      VUNSETATTR (v, att_readonly);
       exported = exported_p (v);
     }
   else
@@ -468,9 +490,9 @@ set_shellopts ()
   /* Turn the read-only attribute back on, and turn off the export attribute
      if it was set implicitly by mark_modified_vars and SHELLOPTS was not
      exported before we bound the new value. */
-  v->attributes |= att_readonly;
+  VSETATTR (v, att_readonly);
   if (mark_modified_vars && exported == 0 && exported_p (v))
-    v->attributes &= ~att_exported;
+    VUNSETATTR (v, att_exported);
 
   free (value);
 }
@@ -516,14 +538,16 @@ initialize_shell_options (no_shellopts)
   set_shellopts ();
 }
 
-/* Reset the values of the -o options that are not also shell flags. */
+/* Reset the values of the -o options that are not also shell flags.  This is
+   called from execute_cmd.c:initialize_subshell() when setting up a subshell
+   to run an executable shell script without a leading `#!'. */
 void
 reset_shell_options ()
 {
 #if defined (HISTORY)
   remember_on_history = 1;
 #endif
-  ignoreeof = posixly_correct = 0;
+  ignoreeof = 0;
 }
 
 /* Set some flags from the word values in the input list.  If LIST is empty,
@@ -678,8 +702,7 @@ For each NAME, remove the corresponding variable or function.  Given
 the `-v', unset will only act on variables.  Given the `-f' flag,
 unset will only act on functions.  With neither flag, unset first
 tries to unset a variable, and if that fails, then tries to unset a
-function.  Some variables (such as PATH and IFS) cannot be unset; also
-see readonly.
+function.  Some variables cannot be unset; also see readonly.
 $END
 
 #define NEXT_VARIABLE()	any_failed++; list = list->next; continue;
@@ -741,10 +764,10 @@ unset_builtin (list)
 	 to be created when not in posix mode, so check only when in posix
 	 mode when unsetting a function. */
       if (((unset_function && posixly_correct) || !unset_function) && legal_identifier (name) == 0)
-        {
-          builtin_error ("`%s': not a valid identifier", name);
-          NEXT_VARIABLE ();
-        }
+	{
+	  builtin_error ("`%s': not a valid identifier", name);
+	  NEXT_VARIABLE ();
+	}
 
       var = unset_function ? find_function (name) : find_variable (name);
 

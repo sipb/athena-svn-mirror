@@ -16,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_FINDCMD_H_)
 #define _FINDCMD_H_
@@ -26,6 +26,7 @@
 extern int file_status __P((char *));
 extern int executable_file __P((char *));
 extern int is_directory __P((char *));
+extern int executable_or_directory __P((char *));
 extern char *find_user_command __P((char *));
 extern char *find_path_file __P((char *));
 extern char *search_for_command __P((char *));

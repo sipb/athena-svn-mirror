@@ -15,7 +15,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_INPUT_H_)
 #define _INPUT_H_
@@ -40,9 +40,10 @@ enum stream_type {st_none, st_stdin, st_stream, st_string, st_bstream};
 #undef B_ERROR		/* There are some systems with this define */
 #undef B_UNBUFF
 
-#define B_EOF		0x1
-#define B_ERROR		0x2
-#define B_UNBUFF	0x4
+#define B_EOF		0x01
+#define B_ERROR		0x02
+#define B_UNBUFF	0x04
+#define B_WASBASHINPUT	0x08
 
 /* A buffered stream.  Like a FILE *, but with our own buffering and
    synchronization.  Look in input.c for the implementation. */
@@ -97,12 +98,18 @@ extern char *decode_prompt_string __P((char *));
 extern void gather_here_documents __P((void));
 extern void execute_prompt_command __P((char *));
 
+extern int *save_token_state __P((void));
+extern void restore_token_state __P((int *));
+
 /* Functions from input.c */
 extern int getc_with_restart ();
 extern int ungetc_with_restart ();
 
 #if defined (BUFFERED_INPUT)
 /* Functions from input.c. */
+extern int fd_is_bash_input __P((int));
+extern int set_bash_input_fd __P((int));
+extern int save_bash_input __P((int, int));
 extern int check_bash_input __P((int));
 extern int duplicate_buffered_stream __P((int, int));
 extern BUFFERED_STREAM *fd_to_buffered_stream __P((int));

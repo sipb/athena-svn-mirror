@@ -16,8 +16,8 @@ Library General Public License for more details.
 
 You should have received a copy of the GNU Library General Public
 License along with this library; see the file COPYING.LIB.  If
-ot, write to the Free Software Foundation, Inc., 59 Temple Place -
-Suite 330, Boston, MA 02111-1307, USA.
+ot, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
    The author may be reached (Email) at the address mike@ai.mit.edu,
    or (US mail) as Mike Haertel c/o Free Software Foundation.  */
@@ -141,7 +141,7 @@ struct mstats
 struct hdr
   {
     size_t size;		/* Exact size requested by user.  */
-    u_int32_t magic;		/* Magic number to check header integrity.  */
+    u_bits32_t magic;		/* Magic number to check header integrity.  */
   };
 #endif /* RCHECK */
 
@@ -651,7 +651,7 @@ imalloc (size)
 		 final free block; if so we don't need to get as much.  */
 	      if (_heaplimit != 0 && block + lastblocks == _heaplimit &&
 		  /* We can't do this if we will have to make the heap info
-                     table bigger to accomodate the new space.  */
+		     table bigger to accomodate the new space.  */
 		  block + wantblocks <= heapsize &&
 		  get_contiguous_space ((wantblocks - lastblocks) * BLOCKSIZE,
 					ADDRESS (block + lastblocks)))
@@ -1165,7 +1165,7 @@ irealloc (ptr, size)
 		 the thing we just freed.  Unfortunately it might
 		 have been coalesced with its neighbors.  */
 	      if (_heapindex == block)
-	        (void) imalloc (blocks * BLOCKSIZE);
+		(void) imalloc (blocks * BLOCKSIZE);
 	      else
 		{
 		  genptr_t previous;

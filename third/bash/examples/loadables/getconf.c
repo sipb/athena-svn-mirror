@@ -55,7 +55,7 @@
 struct conf_variable
 {
   const char *name;
-  enum { SYSCONF, CONFSTR, PATHCONF, CONSTANT } type;
+  enum { SYSCONF, CONFSTR, PATHCONF, CONSTANT, G_UNDEF } type;
   long value;
 };
 
@@ -105,19 +105,55 @@ static const struct conf_variable conf_table[] =
 #endif /* _CS_XBS5_ILP32_OFF32_CFLAGS */
 
   /* POSIX.2 Utility Limit Minimum Values */
+#ifdef _POSIX2_BC_BASE_MAX
   { "POSIX2_BC_BASE_MAX",	CONSTANT,	_POSIX2_BC_BASE_MAX	},
+#else
+  { "POSIX2_BC_BASE_MAX",	G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_BC_DIM_MAX
   { "POSIX2_BC_DIM_MAX",	CONSTANT,	_POSIX2_BC_DIM_MAX	},
+#else
+  { "POSIX2_BC_DIM_MAX",	G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_BC_SCALE_MAX
   { "POSIX2_BC_SCALE_MAX",	CONSTANT,	_POSIX2_BC_SCALE_MAX	},
+#else
+  { "POSIX2_BC_SCALE_MAX",	G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_BC_STRING_MAX
   { "POSIX2_BC_STRING_MAX",	CONSTANT,	_POSIX2_BC_STRING_MAX	},
+#else
+  { "POSIX2_BC_STRING_MAX",	G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_COLL_WEIGHTS_MAX
   { "POSIX2_COLL_WEIGHTS_MAX",	CONSTANT,	_POSIX2_COLL_WEIGHTS_MAX },
+#else
+  { "POSIX2_COLL_WEIGHTS_MAX",	G_UNDEF,	-1			 },
+#endif
 #if defined (_POSIX2_EQUIV_CLASS_MAX)
   { "POSIX2_EQUIV_CLASS_MAX",	CONSTANT,	_POSIX2_EQUIV_CLASS_MAX	},
 #endif
+#ifdef _POSIX2_EXPR_NEST_MAX
   { "POSIX2_EXPR_NEST_MAX",	CONSTANT,	_POSIX2_EXPR_NEST_MAX	},
+#else
+  { "POSIX2_EXPR_NEST_MAX",	G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_LINE_MAX
   { "POSIX2_LINE_MAX",		CONSTANT,	_POSIX2_LINE_MAX	},
+#else
+  { "POSIX2_LINE_MAX",		G_UNDEF,	-1			},
+#endif
+#ifdef _POSIX2_RE_DUP_MAX
   { "POSIX2_RE_DUP_MAX",	CONSTANT,	_POSIX2_RE_DUP_MAX	},
+#else
+  { "POSIX2_RE_DUP_MAX",	G_UNDEF,	-1			},
+#endif
 #if defined (_POSIX2_VERSION)
   { "POSIX2_VERSION",		CONSTANT,	_POSIX2_VERSION		},
+#else
+#  if !defined (_SC_2_VERSION)
+  { "POSIX2_VERSION",		G_UNDEF,	-1			},
+#  endif
 #endif
 
   /* POSIX.1 Minimum Values */
@@ -146,20 +182,50 @@ static const struct conf_variable conf_table[] =
   { "RE_DUP_MAX",		SYSCONF,	_SC_RE_DUP_MAX		},
 
   /* POSIX.2 Optional Facility Configuration Values */
+#ifdef _SC_2_C_BIND
   { "POSIX2_C_BIND",		SYSCONF,	_SC_2_C_BIND		},
+#else
+  { "POSIX2_C_BIND",		G_UNDEF,	-1			},
+#endif
+#ifdef _SC_2_C_DEV
   { "POSIX2_C_DEV",		SYSCONF,	_SC_2_C_DEV		},
+#else
+  { "POSIX2_C_DEV",		G_UNDEF,	-1			},
+#endif
 #if defined (_SC_2_C_VERSION)
   { "POSIX2_C_VERSION",		SYSCONF,	_SC_2_C_VERSION		},
+#else
+  { "POSIX2_C_VERSION",		G_UNDEF,	-1			},
 #endif
 #if defined (_SC_2_CHAR_TERM)
   { "POSIX2_CHAR_TERM",		SYSCONF,	_SC_2_CHAR_TERM		},
+#else
+  { "POSIX2_CHAR_TERM",		G_UNDEF,	-1			},
 #endif
+#ifdef _SC_2_FORT_DEV
   { "POSIX2_FORT_DEV",		SYSCONF,	_SC_2_FORT_DEV		},
+#else
+  { "POSIX2_FORT_DEV",		G_UNDEF,	-1			},
+#endif
+#ifdef _SC_2_FORT_RUN
   { "POSIX2_FORT_RUN",		SYSCONF,	_SC_2_FORT_RUN		},
+#else
+  { "POSIX2_FORT_RUN",		G_UNDEF,	-1			},
+#endif
+#ifdef _SC_2_LOCALEDEF
   { "POSIX2_LOCALEDEF",		SYSCONF,	_SC_2_LOCALEDEF		},
+#else
+  { "POSIX2_LOCALEDEF",		G_UNDEF,	-1			},
+#endif
+#ifdef _SC_2_SW_DEV
   { "POSIX2_SW_DEV",		SYSCONF,	_SC_2_SW_DEV		},
+#else
+  { "POSIX2_SW_DEV",		G_UNDEF,	-1			},
+#endif
 #if defined (_SC2_UPE)
   { "POSIX2_UPE",		SYSCONF,	_SC_2_UPE		},
+#else
+  { "POSIX2_UPE",		G_UNDEF,	-1			},
 #endif
 #if !defined (_POSIX2_VERSION) && defined (_SC_2_VERSION)
   { "POSIX2_VERSION"		SYSCONF,	_SC_2_VERSION		},
@@ -222,16 +288,28 @@ static const struct conf_variable conf_table[] =
 #endif
 #if defined (_SC_THREADS)
   { "_POSIX_THREADS",		SYSCONF,	_SC_THREADS		},
+#endif
+#if defined (_SC_THREADS)
   { "_POSIX_THREAD_ATTR_STACKADDR", SYSCONF,	_SC_THREAD_ATTR_STACKADDR },
+#endif
+#if defined (_SC_THREAD_ATTR_STACKSIZE)
   { "_POSIX_THREAD_ATTR_STACKSIZE", SYSCONF,	_SC_THREAD_ATTR_STACKSIZE },
+#endif
+#if defined (_SC_THREAD_PRIORITY_SCHEDULING)
   { "_POSIX_THREAD_PRIORITY_SCHEDULING", SYSCONF, _SC_THREAD_PRIORITY_SCHEDULING },
+#endif
+#if defined (_SC_THREAD_PRIO_INHERIT)
   { "_POSIX_THREAD_PRIO_INHERIT", SYSCONF,	_SC_THREAD_PRIO_INHERIT	},
+#endif
+#if defined (_SC_THREAD_PRIO_PROTECT)
   { "_POSIX_THREAD_PRIO_PROTECT", SYSCONF,	_SC_THREAD_PRIO_PROTECT	},
+#endif
+#if defined (_SC_THREAD_PROCESS_SHARED)
   { "_POSIX_THREAD_PROCESS_SHARED", SYSCONF,	_SC_THREAD_PROCESS_SHARED },
-#  if defined (_SC_THREAD_SAFE_FUNCTIONS)
+#endif
+#if defined (_SC_THREAD_SAFE_FUNCTIONS)
   { "_POSIX_THREAD_SAFE_FUNCTIONS", SYSCONF,	_SC_THREAD_SAFE_FUNCTIONS },
-#  endif
-#endif /* _SC_THREADS */
+#endif
 
   /* XPG 4.2 Configurable System Variables. */
 #if defined (_SC_ATEXIT_MAX)
@@ -249,23 +327,44 @@ static const struct conf_variable conf_table[] =
 
 #if defined (_SC_AIO_LISTIO_MAX)
   { "AIO_LISTIO_MAX",		SYSCONF,	_SC_AIO_LISTIO_MAX	},
+#endif
+#if defined (_SC_AIO_MAX)
   { "AIO_MAX",			SYSCONF,	_SC_AIO_MAX		},
+#endif
+#if defined (_SC_AIO_PRIO_DELTA_MAX)
   { "AIO_PRIO_DELTA_MAX",	SYSCONF,	_SC_AIO_PRIO_DELTA_MAX	},
+#endif
+#if defined (_SC_DELAYTIMER_MAX)
   { "DELAYTIMER_MAX",		SYSCONF,	_SC_DELAYTIMER_MAX	},
+#endif
 #if defined (_SC_GETGR_R_SIZE_MAX)
   { "GETGR_R_SIZE_MAX",		SYSCONF,	_SC_GETGR_R_SIZE_MAX	},
 #endif
 #if defined (_SC_GETPW_R_SIZE_MAX)
   { "GETPW_R_SIZE_MAX",		SYSCONF,	_SC_GETPW_R_SIZE_MAX	},
 #endif
+#if defined (_SC_MQ_OPEN_MAX)
   { "MQ_OPEN_MAX",		SYSCONF,	_SC_MQ_OPEN_MAX		},
+#endif
+#if defined (_SC_MQ_PRIO_MAX)
   { "MQ_PRIO_MAX",		SYSCONF,	_SC_MQ_PRIO_MAX		},
+#endif
+#if defined (_SC_RTSIG_MAX)
   { "RTSIG_MAX",		SYSCONF,	_SC_RTSIG_MAX		},
+#endif
+#if defined (_SC_SEM_NSEMS_MAX)
   { "SEM_NSEMS_MAX",		SYSCONF,	_SC_SEM_NSEMS_MAX	},
+#endif
+#if defined (_SC_SEM_VALUE_MAX)
   { "SEM_VALUE_MAX",		SYSCONF,	_SC_SEM_VALUE_MAX	},
+#endif
+#if defined (_SC_SIGQUEUE_MAX)
   { "SIGQUEUE_MAX",		SYSCONF,	_SC_SIGQUEUE_MAX	},
+#endif
+#if defined (_SC_TIMER_MAX)
   { "TIMER_MAX",		SYSCONF,	_SC_TIMER_MAX		},
-#endif /* _SC_AIO_LISTIO_MAX */
+#endif
+
 #if defined (_SC_LOGIN_NAME_MAX)
   { "LOGIN_NAME_MAX",		SYSCONF,	_SC_LOGIN_NAME_MAX	},
 #endif
@@ -276,12 +375,18 @@ static const struct conf_variable conf_table[] =
   { "TTY_NAME_MAX",		SYSCONF,	_SC_TTY_NAME_MAX	},
 #endif
 
-#if defined (_SC_PTHREAD_DESTRUCTOR_ITERATIONS)
+#if defined (_SC_THREAD_DESTRUCTOR_ITERATIONS)
   { "PTHREAD_DESTRUCTOR_ITERATIONS", SYSCONF,	_SC_THREAD_DESTRUCTOR_ITERATIONS },
+#endif
+#if defined (_SC_THREAD_KEYS_MAX)
   { "PTHREAD_KEYS_MAX",		SYSCONF,	_SC_THREAD_KEYS_MAX },
+#endif
+#if defined (_SC_THREAD_STACK_MIN)
   { "PTHREAD_STACK_MIN",	SYSCONF,	_SC_THREAD_STACK_MIN },
+#endif
+#if defined (_SC_THREAD_THREADS_MAX)
   { "PTHREAD_THREADS_MAX",	SYSCONF,	_SC_THREAD_THREADS_MAX },
-#endif /* _SC_PTHREAD_DESTRUCTOR_ITERATIONS */
+#endif
 
   /* XPG 4.2 Optional Facility Configuration Values */
 #if defined (_SC_XOPEN_UNIX)
@@ -410,6 +515,10 @@ int all;
 	size_t slen;
 
 	switch (cp->type) {
+	case G_UNDEF:
+		printf("undefined\n");
+		break;
+
 	case CONSTANT:
 		printf("%ld\n", cp->value);
 		break;
@@ -469,7 +578,8 @@ int all;
 		break;
 	}
 
-	return (ferror(stdout) ? EXECUTION_FAILURE : EXECUTION_SUCCESS);
+	return ((ferror(stdout) || cp->type == G_UNDEF) ? EXECUTION_FAILURE
+							: EXECUTION_SUCCESS);
 }
 
 static int

@@ -16,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #if !defined (_PATHEXP_H_)
 #define _PATHEXP_H_
@@ -56,12 +56,12 @@ extern int unquoted_glob_pattern_p __P((char *));
    pattern while executing a case statement), flags should include
    QGLOB_CVTNULL.  If flags includes QGLOB_FILENAME, appropriate quoting
    to match a filename should be performed. */
-extern char *quote_string_for_globbing __P((char *, int));
+extern char *quote_string_for_globbing __P((const char *, int));
 
 extern char *quote_globbing_chars __P((char *));
 
 /* Call the glob library to do globbing on PATHNAME. */
-extern char **shell_glob_filename __P((char *));
+extern char **shell_glob_filename __P((const char *));
 
 /* Filename completion ignore.  Used to the "fignore" facility of
    tcsh and GLOBIGNORE (like ksh-93 FIGNORE).

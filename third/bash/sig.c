@@ -16,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include "config.h"
 
@@ -172,8 +172,10 @@ static struct termsig terminating_signals[] = {
   SIGVTALRM, NULL_HANDLER,
 #endif
 
+#if 0
 #ifdef SIGPROF
   SIGPROF, NULL_HANDLER,
+#endif
 #endif
 
 #ifdef SIGLOST
@@ -228,13 +230,13 @@ initialize_terminating_signals ()
       /* Don't do anything with signals that are ignored at shell entry
 	 if the shell is not interactive. */
       if (!interactive_shell && XHANDLER (i) == SIG_IGN)
-        {
+	{
 	  sigaction (XSIG (i), &oact, &act);
 	  set_signal_ignored (XSIG (i));
-        }
+	}
 #if defined (SIGPROF) && !defined (_MINIX)
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
-        sigaction (XSIG (i), &oact, (struct sigaction *)NULL);
+	sigaction (XSIG (i), &oact, (struct sigaction *)NULL);
 #endif /* SIGPROF && !_MINIX */
     }
 
@@ -247,12 +249,12 @@ initialize_terminating_signals ()
 	 if the shell is not interactive. */
       if (!interactive_shell && XHANDLER (i) == SIG_IGN)
 	{
-          signal (XSIG (i), SIG_IGN);
-          set_signal_ignored (XSIG (i));
+	  signal (XSIG (i), SIG_IGN);
+	  set_signal_ignored (XSIG (i));
 	}
 #ifdef SIGPROF
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
-        signal (XSIG (i), XHANDLER (i));
+	signal (XSIG (i), XHANDLER (i));
 #endif
     }
 
@@ -272,7 +274,9 @@ initialize_shell_signals ()
      to child processes.  Children will never block SIGCHLD, though. */
   sigemptyset (&top_level_mask);
   sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &top_level_mask);
+#  if defined (SIGCHLD)
   sigdelset (&top_level_mask, SIGCHLD);
+#  endif
 #endif /* JOB_CONTROL || HAVE_POSIX_SIGNALS */
 
   /* And, some signals that are specifically ignored by the shell. */
@@ -347,7 +351,7 @@ throw_to_top_level ()
     parse_and_execute_cleanup ();
 
 #if defined (JOB_CONTROL)
-  give_terminal_to (shell_pgrp);
+  give_terminal_to (shell_pgrp, 0);
 #endif /* JOB_CONTROL */
 
 #if defined (JOB_CONTROL) || defined (HAVE_POSIX_SIGNALS)

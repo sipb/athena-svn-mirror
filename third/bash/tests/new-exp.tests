@@ -118,6 +118,32 @@ recho "${@:3:4}"
 expect '<ab cd> <ef> <gh ij> <kl mn> <op>'
 recho "${@:1:$#}"
 
+# code to ad-hoc parse arithmetic expressions in substring expansions was
+# broken until post-2.04
+base=/home/chet/foo//bar
+string1=$base/abcabcabc
+x=1 j=4
+
+expect '</home/chet/foo//bar/abcabcabc>'
+recho ${string1:0}
+
+expect '<home/chet/foo//bar/abcabcabc>'
+recho ${string1:1}
+
+expect '<home>'
+recho ${string1:(j?1:0):j}
+
+expect '<home>'
+recho ${string1:j?1:0:j}
+
+expect '<home>'
+recho ${string1:(j?(x?1:0):0):j}
+
+expect '<home>'
+recho ${string1:j?(x?1:0):0:j}
+
+unset base string1 x j
+
 # indirect variable references
 expect '<abcdefghijklmnop>'
 recho ${!9:-$z}
@@ -226,6 +252,15 @@ recho ${@//%x*/yyy}
 
 expect a newline
 echo $abmcde
+
+# sneaky way to replace a newline in a variable value with something else
+AVAR=$'This\nstring\nhas\nmultiple\nlines.'
+echo "${AVAR}"
+
+eval BVAR=\"\${AVAR//$'\n'/-}\"
+echo "$BVAR"
+
+unset AVAR BVAR
 
 # run process substitution tests in a subshell so that syntax errors
 # caused by a shell not implementing process substitution (e.g., one
@@ -402,6 +437,11 @@ recho ${xxx//$yyy/*}
 recho ${xxx/$zzz/*}
 recho ${xxx//$zzz/*}
 
+recho ${xxx//%${zzz}/}
+recho ${xxx//%${zzz}}
+recho ${xxx//#${zzz}/}
+recho ${xxx//#${zzz}}
+
 # another case that caused a core dump in bash-2.0
 XPATH=/usr/bin:/bin:/usr/local/bin:/usr/gnu/bin::/usr/bin/X11:/sbin:/usr/sbin
 
@@ -454,6 +494,32 @@ RECEIVED="#"
 recho "${RECEIVED:$((${#RECEIVED}-1)):1}"
 RECEIVED=""
 recho "${RECEIVED:$((${#RECEIVED}-1)):1}"
+
+# tests of new prefix expansion ${!prefix*}
+${THIS_SH} ./new-exp3.sub
+
+# these caused errors and core dumps in versions before bash-2.04
+c=""
+echo ${c//${$(($#-1))}/x/}
+
+set a b c d e f g
+recho "$@"
+
+set -- ${@:1:$(($# - 2))}
+recho "$@"
+
+set a b
+recho ${@:1:$(($# - 2))}
+
+recho ${@:1:0}
+recho ${@:1:1}
+recho ${@:1:2}
+
+recho "${*:1:0}"
+
+# this is an error -- negative expression
+set a
+recho ${@:1:$(($# - 2))}
 
 # this must be last!
 expect $0: 'ABXD: parameter unset'

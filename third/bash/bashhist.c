@@ -16,7 +16,7 @@
 
    You should have received a copy of the GNU General Public License along
    with Bash; see the file COPYING.  If not, write to the Free Software
-   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
+   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include "config.h"
 
@@ -408,7 +408,7 @@ pre_process_line (line, print_changes, addit)
 	      if (expanded < 0)
 		internal_error ("%s", history_value);
 #if defined (READLINE)
-	      else if (hist_verify == 0)
+	      else if (hist_verify == 0 || expanded == 2)
 #else
 	      else
 #endif
@@ -457,15 +457,43 @@ pre_process_line (line, print_changes, addit)
   return (return_value);
 }
 
+/* Return 1 if the first non-whitespace character in LINE is a `#', indicating
+ * that the line is a shell comment. */
+static int
+shell_comment (line)
+     char *line;
+{
+  char *p;
+
+  for (p = line; p && *p && whitespace (*p); p++)
+    ;
+  return (p && *p == '#');
+}
+
+/* Remove shell comments from LINE.  A `#' and anything after it is a comment.
+   This isn't really useful yet, since it doesn't handle quoting. */
+static char *
+filter_comments (line)
+     char *line;
+{
+  char *p;
+
+  for (p = line; p && *p && *p != '#'; p++)
+    ;
+  if (p && *p == '#')
+    *p = '\0';
+  return (line);
+}
+
 /* Add LINE to the history list depending on the value of HISTORY_CONTROL. */
 void
 maybe_add_history (line)
      char *line;
 {
-  int should_add;
+  static int first_line_saved = 0;
   HIST_ENTRY *temp;
 
-  should_add = hist_last_line_added = 0;
+  hist_last_line_added = 0;
 
   /* Don't use the value of history_control to affect the second
      and subsequent lines of a multi-line command (old code did
@@ -476,18 +504,24 @@ maybe_add_history (line)
   if (current_command_line_count > 1)
 #endif
     {
-      bash_add_history (line);
+      if (first_line_saved &&
+	  (literal_history || dstack.delimiter_depth != 0 || shell_comment (line) == 0))
+	bash_add_history (line);
       return;
     }
+
+  /* This is the first line of a (possible multi-line) command.  Note whether
+     or not we should save the first line and remember it. */
+  first_line_saved = 0;
 
   switch (history_control)
     {
     case 0:
-      should_add = 1;
+      first_line_saved = 1;
       break;
     case 1:
       if (*line != ' ')
-	should_add = 1;
+	first_line_saved = 1;
       break;
     case 3:
       if (*line == ' ')
@@ -498,14 +532,16 @@ maybe_add_history (line)
       temp = previous_history ();
 
       if (temp == 0 || STREQ (temp->line, line) == 0)
-	should_add = 1;
+	first_line_saved = 1;
 
       using_history ();
       break;
     }
 
-  if (should_add && history_should_ignore (line) == 0)
+  if (first_line_saved && history_should_ignore (line) == 0)
     bash_add_history (line);
+  else
+    first_line_saved = 0;
 }
 
 /* Add a line to the history list.
@@ -637,51 +673,15 @@ expand_histignore_pattern (pat)
      char *pat;
 {
   HIST_ENTRY *phe;
-  char *ret, *p, *r, *t;
-  int len, rlen, ind, tlen;
+  char *ret;
 
   phe = last_history_entry ();
 
   if (phe == (HIST_ENTRY *)0)
     return (savestring (pat));
 
-  len = strlen (phe->line);
-  rlen = len + strlen (pat) + 2;
-  ret = xmalloc (rlen);
+  ret = strcreplace (pat, '&', phe->line, 1);
 
-  for (p = pat, r = ret; p && *p; )
-    {
-      if (*p == '&')
-	{
-	  ind = r - ret;
-	  if (glob_pattern_p (phe->line) || strchr (phe->line, '\\'))
-	    {
-	      t = quote_globbing_chars (phe->line);
-	      tlen = strlen (t);
-	      RESIZE_MALLOCED_BUFFER (ret, ind, tlen, rlen, rlen);
-	      r = ret + ind;	/* in case reallocated */
-	      strcpy (r, t);
-	      r += tlen;
-	      free (t);
-	    }
-	  else
-	    {
-	      tlen = strlen (phe->line);
-	      RESIZE_MALLOCED_BUFFER (ret, ind, tlen, rlen, rlen);
-	      r = ret + ind;	/* in case reallocated */
-	      strcpy (r, phe->line);
-	      r += len;
-	    }
-	  p++;
-	  continue;
-	}
-
-      if (*p == '\\' && p[1] == '&')
-	p++;
-
-      *r++ = *p++;
-    }
-  *r = '\0';
   return ret;
 }
 
