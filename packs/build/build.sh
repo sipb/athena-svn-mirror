@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.31 2001-03-04 21:09:07 ghudson Exp $
+# $Id: build.sh,v 1.32 2001-03-05 18:01:00 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -94,8 +94,14 @@ esac
 echo ========
 echo Starting at `date` on $os
 
+# Create the build directory if necessary.  Make this conditional
+# because the Solaris 8 mkdir -p errors out if $build is a symlink to
+# another directory.
+if [ ! -d $build ]; then
+	mkdir -p $build || exit 1
+fi
+
 # Build the packages.
-mkdir -p $build || exit 1
 for package in $packages; do
 	cd $build || exit 1
 	rm -rf $package
