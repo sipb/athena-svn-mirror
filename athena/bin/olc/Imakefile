@@ -1,6 +1,9 @@
 #
-# $Id: Imakefile,v 1.17 1991-04-17 10:57:04 lwvanels Exp $
+# $Id: Imakefile,v 1.18 1991-04-18 21:35:02 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
+#
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
 #
 # Imakefile for top level directory.
 #

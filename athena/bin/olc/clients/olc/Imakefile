@@ -1,8 +1,10 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.8 1991-04-08 20:53:29 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.9 1991-04-18 21:38:03 lwvanels Exp $
 #
-# $Author: lwvanels $ 
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
 #
+
 /*#define Profiling*/
 
 #ifdef Profiling
