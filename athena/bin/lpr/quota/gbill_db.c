@@ -212,8 +212,7 @@ char semester;
 	bzero(&qrec, sizeof(qrec));
 	if (gquota_db_get_group(temp.account, temp.service, &qrec,
 				(unsigned int)1, &more) == 1) {
-	  billing_amount = qrec.quotaAmount - qrec.quotaLimit
-	    - qrec.yearToDateCharge;
+	  billing_amount = qrec.quotaAmount - qrec.quotaLimit;
 	  if (billing_amount < 500) {  /* restore and continue */
 	    qrec.pendingCharge = billing_amount;
 	    if (gquota_db_put_group(&qrec, (unsigned int)1) <= 0)
@@ -248,10 +247,10 @@ char semester;
       continue;
 
     /* else the temp.account was not found */
-    if (temp.quotaAmount - temp.quotaLimit - temp.yearToDateCharge > 500) {
+    if (temp.quotaAmount - temp.quotaLimit > 500) {
       fprintf(stderr, "Group %d was not found in list and ", temp.account);
       fprintf(stderr, "needs to be billed for %d.\n",
-	      temp.quotaAmount - temp.quotaLimit - temp.yearToDateCharge);
+	      temp.quotaAmount - temp.quotaLimit);
     }
   }
   return(0);
