@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.46 2000-02-07 22:31:35 ghudson Exp $
+# $Id: reactivate.sh,v 1.47 2000-04-11 22:42:53 ghudson Exp $
 
 trap "" 1 15
 
@@ -90,6 +90,11 @@ if [ "$PUBLIC" = true ]; then
 	if [ -r /srvd/etc/shadow ]; then
 		syncupdate -c /etc/shadow.local.new /srvd/etc/shadow \
 			/etc/shadow.local
+	fi
+	if [ -r /srvd/etc/group ]; then
+		cp -p /srvd/etc/group /etc/group.local
+		chmod 644 /etc/group.local
+		chown root /etc/group.local
 	fi
 	rm -rf /etc/athena/access >/dev/null 2>&1
 fi
