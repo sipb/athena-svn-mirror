@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.6 1988-08-31 23:50:23 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.7 1988-09-06 04:57:31 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
  * $Author: probe $
  */
@@ -15,7 +15,7 @@ struct	verfile {
 } vf[20];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.6 1988-08-31 23:50:23 probe Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.7 1988-09-06 04:57:31 probe Exp $";
 #endif
 
 main(argc, argv)
@@ -59,18 +59,19 @@ char	*argv[];
 		}
 	}
 	qsort(vf, n, sizeof(struct verfile), vcmp);
-	start = end = n-1;
+	start = n+1;			/* Default: assume no files */
+	end = n-1;			/* Default = last one */
 	for (i = 0; i < n; i++) {
 	    if (vf[i].mjr > oldmjr ||
 		(vf[i].mjr == oldmjr && vf[i].mnr > oldmnr) ||
 		(vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg > olddeg))
-		if (start == n-1) start = i;
+		if (start > n) start = i;
 	    if (vf[i].mjr > newmjr ||
 		(vf[i].mjr == newmjr && vf[i].mnr > newmnr) ||
 		(vf[i].mjr == newmjr && vf[i].mnr == newmnr && vf[i].deg > newdeg))
 		if (end == n-1) end = i-1;
 	}
-	if (n == 0 || end < 0) {
+	if (n == 0 || end < 0 || start > n) {
 	    printf("No files need to be run.\n");
 	    exit(0);
 	}
