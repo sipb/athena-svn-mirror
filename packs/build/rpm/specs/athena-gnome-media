@@ -12,3 +12,12 @@ GNOME (GNU Network Object Model Environment) is a user-friendly set of
 GUI applications and desktop tools to be used in conjunction with a
 window manager for the X Window System.  The gnome-media package will
 install media features like the GNOME CD player.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="CDDB-Slave2.schemas gnome-cd.schemas gnome-sound-recorder.schemas gnome-volume-control.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

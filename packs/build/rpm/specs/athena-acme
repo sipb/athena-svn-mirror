@@ -10,3 +10,12 @@ ACME is a small GNOME tool to make use of the multimedia buttons
 present on most laptops and internet keyboards: Volume, Brightness,
 Power, Eject, My Home, Search, E-Mail, Sleep, Screensaver, Finance and
 Help buttons.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="acme.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

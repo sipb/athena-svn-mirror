@@ -15,3 +15,12 @@ ships with several modules that implement support for file systems,
 http, ftp and others.  It provides a URI-based API, a backend
 supporting asynchronous file operations, a MIME type manipulation
 library and other features.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="system_http_proxy.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

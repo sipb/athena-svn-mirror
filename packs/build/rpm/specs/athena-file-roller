@@ -10,3 +10,12 @@ Requires: athena-libbonobo athena-libbonoboui
 %description
 File Roller is an application for creating and viewing archives files,
 such as tar files.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="file-roller.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

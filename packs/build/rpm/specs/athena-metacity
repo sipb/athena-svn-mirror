@@ -9,3 +9,12 @@ Requires: athena-gtk2 athena-GConf2 athena-startup-notification
 %description
 Metacity is a simple window manager that integrates nicely with
 GNOME 2.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="metacity.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

@@ -13,3 +13,12 @@ Requires: athena-libxml2 athena-pango athena-ORBit2
 %description
 Nautilus integrates access to files, applications, media, Internet-
 based resources and the Web.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="apps_nautilus_preferences.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

@@ -8,3 +8,12 @@ Requires: athena-nautilus
 
 %description
 This package contains a Nautilus view for audio using GStreamer.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="gst-thumbnail.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

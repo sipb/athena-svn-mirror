@@ -16,3 +16,12 @@ provides the GNOME Control Center utilities that allow you to setup
 and configure your system's GNOME environment (things like the desktop
 background and theme, the screensaver, the window manager, system
 sounds, and mouse behavior).
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="apps_gnome_settings_daemon_screensaver.schemas apps_gnome_settings_daemon_default_editor.schemas desktop_gnome_font_rendering.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

@@ -11,3 +11,12 @@ Requires: athena-gnome-vfs2 athena-libwnck athena-libbonoboui athena-pango
 %description
 The GNOME panel provides the window list, workspace switcher, menus,
 and other features for the GNOME desktop.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="clock.schemas fish.schemas gnome-panel-screenshot.schemas mailcheck.schemas pager.schemas panel-global-config.schemas panel-per-panel-config.schemas tasklist.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0

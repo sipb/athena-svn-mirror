@@ -9,3 +9,12 @@ Requires: athena-libgtop athena-gtk2
 
 %description
 gnome-system-monitor is a simple process and system monitor.
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+SCHEMAS="gnome-system-monitor.schemas"
+for S in $SCHEMAS; do
+  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
+done
+
+exit 0
