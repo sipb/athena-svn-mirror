@@ -2,12 +2,17 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.8 1992-01-28 10:57:36 probe Exp $
- *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.9 1993-05-20 12:52:48 miki Exp $
+ *	$Author: miki $
  */
 
 #include <signal.h>
+#ifndef SOLARIS
 #include <strings.h>
+#else
+#include <strings.h>
+#include <sys/fcntl.h>
+#endif
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>

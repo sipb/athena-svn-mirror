@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.12 1991-03-11 18:41:30 jik Exp $
+ * $Author: miki $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.13 1993-05-20 12:55:20 miki Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -39,7 +39,11 @@ typedef struct mystat {
      ino_t st_ino;
      unsigned short st_mode;
      off_t st_size;
+#ifndef SOLARIS
      time_t st_ctime;
+#else
+     time_t st_time;
+#endif
 #ifdef USE_BLOCKS
      long st_blocks;
 #endif
