@@ -1172,6 +1172,7 @@ int main(argc, argv)
 	char *ttyname(), *stypeof(), *crypt(), *getpass();
 	time_t login_time;
 	int retval;
+	int local_acct;
 int rewrite_ccache = 1; /*try to write out ccache*/
 #ifdef KRB5_GET_TICKETS
 	krb5_principal me;
@@ -1380,7 +1381,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	for (cnt = 0;; username = NULL) {
 #ifdef KRB5_GET_TICKETS
 		int kpass_ok,lpass_ok;
-		char user_pwstring[MAXPWSIZE],*filetext;
+		char user_pwstring[MAXPWSIZE],*altext;
 		/* variables from v5 kinit */
 #endif /* KRB5_GET_TICKETS */
 
@@ -1391,25 +1392,27 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 
 		retval = al_login_allowed(username,
 					  (hflag || rflag || kflag || Kflag),
-					  &filetext);
+					  &local_acct, &altext);
 		if (retval != AL_SUCCESS) {
 			/* Paranoia says to call getpass() if fflag is false,
 			 * but we're not paranoid. */
 			printf("You are not allowed to log in here: %s\n",
 			       al_strerror(retval, &errmem));
 			al_free_errmem(errmem);
-			if (filetext) {
-				fputs(filetext, stdout);
-				free(filetext);
+			if (altext) {
+				fputs(altext, stdout);
+				free(altext);
 			}
 			goto bad_login;
 		}
 
 		/* Tentatively create the account prior to authentication. */
-		retval = al_acct_create(username, NULL, getpid(), 0, 0,
-					&warnings);
-		if (warnings)
-		    free(warnings);
+		if (!local_acct) {
+		    retval = al_acct_create(username, NULL, getpid(), 0, 0,
+					    &warnings);
+		    if (warnings)
+			free(warnings);
+		}
 
 		lookup_user (username);	/* sets pwd */
 
@@ -1465,7 +1468,8 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 
 		lpass_ok = unix_passwd_okay (user_pwstring);
 
-		if (pwd->pw_uid != 0) { /* Don't get tickets for root */
+		/* Don't get tickets for local accounts. */
+		if (!local_acct) {
 			try_krb5 (&me, user_pwstring);
 
 #ifdef KRB4_GET_TICKETS
@@ -1583,7 +1587,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	if ( login_krb4_convert && !got_v4_tickets) {
 
 
-	    if (got_v5_tickets)
+	    if (got_v5_tickets && !local_acct)
 		try_convert524 (kcontext, me);
 
 	}
@@ -1593,25 +1597,27 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	try_setpag();
 #endif
 
-	retval = al_acct_create(username, namep, getpid(), got_v4_tickets, 1,
-				&warnings);
-	if (retval != AL_SUCCESS && retval != AL_WARNINGS) {
-		printf("%s!\n", al_strerror(retval, &errmem));
-		al_free_errmem(errmem);
-		sleepexit(0);
-	}
-	if (retval == AL_WARNINGS) {
-		for (cnt = 0; warnings[cnt] != AL_SUCCESS; cnt++) {
-			printf("Warning: %s\n",
-			       al_strerror(warnings[cnt], &errmem));
+	if (!local_acct) {
+		retval = al_acct_create(username, namep, getpid(),
+					got_v4_tickets, 1, &warnings);
+		if (retval != AL_SUCCESS && retval != AL_WARNINGS) {
+			printf("%s!\n", al_strerror(retval, &errmem));
 			al_free_errmem(errmem);
+			sleepexit(0);
 		}
-		free(warnings);
-	}
-	lookup_user(username);
-	if (!pwd) {
-		printf("Couldn't reread user passwd information!\n");
-		sleepexit(0);
+		if (retval == AL_WARNINGS) {
+			for (cnt = 0; warnings[cnt] != AL_SUCCESS; cnt++) {
+				printf("Warning: %s\n",
+				       al_strerror(warnings[cnt], &errmem));
+				al_free_errmem(errmem);
+			}
+			free(warnings);
+		}
+		lookup_user(username);
+		if (!pwd) {
+			printf("Couldn't reread user passwd information!\n");
+			sleepexit(0);
+		}
 	}
 
 #if defined(KRB5_GET_TICKETS) || defined(KRB4_GET_TICKETS)
