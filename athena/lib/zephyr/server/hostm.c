@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.13 1987-08-04 15:47:08 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.14 1987-08-09 18:03:03 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -31,8 +31,9 @@ static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/ath
  *	struct sockaddr_in *who;
  *	ZServerDesc_t *server;
  *
- * void hostm_flush(host)
+ * void hostm_flush(host, server)
  *	ZHostList_t *host;
+ *	ZServerDesc_t *server;
  *
  * void hostm_transfer(host, server)
  *	ZHostList_t *host;
