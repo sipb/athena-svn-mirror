@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.8 1990-09-06 15:35:44 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.9 1990-11-08 10:03:23 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.8 1990-09-06 15:35:44 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.9 1990-11-08 10:03:23 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -30,6 +30,7 @@ static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include <time.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <lp.local.h>
 
 extern uid_t getuid();
 extern uuid_$t uuid_$nil;
@@ -242,6 +243,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		break;
 
 	    case 'g':
+	    case 'a':
 		if(arg[2]) 
 		    account = atol(&arg[2]);
 		else if (argc > 1) {
@@ -283,7 +285,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		set_flag=1;
 		break;
 
-	    case 'a':
+	    case 'k':
 		if(arg[2]) 
 		    amount= atoi(&arg[2]);
 		else if (argc > 1) {
@@ -375,11 +377,9 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
        print_flag + query_flag + l_flag + add_admin_flag +
        del_admin_flag + add_user_flag + del_user_flag == 0) query_flag++; 
 
+    /* The following determines the default printer with fallback al lpr */
     if (printer == NULL && host== NULL && 
-	(printer = getenv("PRINTER")) == NULL) {
-	fprintf(stderr, "Must select one of -P or -Q\n");
-	exit(1);
-    }
+	(printer = getenv("PRINTER")) == NULL) printer = DEFLP;
 
     if(printer) {
 #ifdef HESIOD
