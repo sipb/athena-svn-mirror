@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 1997-04-01 19:05:27 ghudson Exp $
+# $Id: Makefile,v 1.14 1997-04-04 17:49:26 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -92,6 +92,7 @@ install:
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
