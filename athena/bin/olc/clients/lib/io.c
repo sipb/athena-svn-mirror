@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.13 1991-03-28 13:17:39 lwvanels Exp $
+ *	$Id: io.c,v 1.14 1991-03-29 00:12:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.13 1991-03-28 13:17:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.14 1991-03-29 00:12:02 lwvanels Exp $";
 #endif
 #endif
 
@@ -284,21 +284,22 @@ open_connection_to_daemon(request, fd)
 	  return(ERROR_NAME_RESOLVE);
 	}
       
-      service = getservbyname(OLC_SERVICE, OLC_PROTOCOL);
-      if (service == (struct servent *)NULL)
-	{
-	 close(*fd);
-	 return(ERROR_SLOC);
-	}
-  
       bzero(&sin, sizeof (sin));
       bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
 
       sin.sin_family = AF_INET;
-      sin.sin_port = service->s_port;
+
       port_env = getenv ("OLCD_PORT");
       if (port_env != NULL)
 	  sin.sin_port = htons (atoi (port_env));
+      else {
+          service = getservbyname(OLC_SERVICE, OLC_PROTOCOL);
+          if (service == (struct servent *)NULL) {
+	     close(*fd);
+	     return(ERROR_SLOC);
+	  }
+          sin.sin_port = service->s_port;
+      }
       sptr = &sin;
     }
 
