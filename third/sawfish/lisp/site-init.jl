@@ -1,5 +1,8 @@
-;; $Id: site-init.jl,v 1.2 2001-01-10 20:01:47 ghudson Exp $
+;; $Id: site-init.jl,v 1.3 2001-01-12 18:23:58 ghudson Exp $
 ;; Site initialization for Athena
+
+;; Set the default theme.
+(setq default-frame-style 'Eazel)
 
 ;; Load gnome stuff even if we start before any gnome properties are set.
 (require 'sawfish.wm.state.gnome)
