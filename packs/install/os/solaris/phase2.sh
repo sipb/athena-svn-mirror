@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.5 1999-04-05 17:50:40 miki Exp $
+### $Id: phase2.sh,v 1.5.2.1 2000-08-22 03:46:52 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -280,9 +280,9 @@ chmod 0700 cache
 for i in cacheinfo CellServDB SuidCells ThisCell
         do cp -p /afsin/$i etc/ ; done
 cd etc
-mv CellServDB CellServDB.public
-ln -s CellServDB.public CellServDB
+cp -p CellServDB CellServDB.public
 cp -p SuidCells SuidCells.public
+chown root:root CellServDB CellServDB.public SuidCells Suidcells.public ThisCell
 
 echo "Making an /afs repository"
 mkdir /tmp/afs
