@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.7 1991-03-29 00:00:37 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.8 1991-04-08 20:53:29 lwvanels Exp $
 #
 # $Author: lwvanels $ 
 #
@@ -10,8 +10,8 @@ LIBSUFFIX=_p
 EXTRA_LOAD_FLAGS=-pg
 #endif
 
-SRCS=		olc.c olc_data.c olc_stock.c
-OBJS=		olc.o olc_data.o olc_stock.o
+SRCS=		olc.c olc_stock.c
+OBJS=		olc.o olc_stock.o
 LOCAL_LIBRARIES= $(PARSER) $(TTY) $(CLIENTLIB) $(COMMONLIB)
 SYS_LIBRARIES=	$(HesiodLib) $(KerberosLib)
 DEPLIBS= $(LOCAL_LIBRARIES)
