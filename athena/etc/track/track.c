@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.14 1995-07-21 00:29:59 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.15 1996-05-01 18:53:31 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.14  1995/07/21 00:29:59  cfields
+ *	Use sigset under SYSV.
+ *	Remove the crufty unmount call.
+ *
  * Revision 4.11  93/04/29  16:12:58  vrt
  * solaris
  * 
@@ -153,7 +157,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.14 1995-07-21 00:29:59 cfields Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.15 1996-05-01 18:53:31 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -252,7 +256,7 @@ char **argv;
 		case 'F':
 			get_arg(scratch,argv,&i);
 			if (*scratch != '/') {
-				getwd(  fromroot);
+				getcwd( fromroot, sizeof(fromroot));
 				strcat( strcat( fromroot, "/"), scratch);
 			}
 			else if (! scratch[1]) *fromroot = '\0';
@@ -281,7 +285,7 @@ char **argv;
 		case 'T':
 			get_arg(scratch,argv,&i);
 			if (*scratch != '/') {
-				getwd(  toroot);
+				getcwd( toroot, sizeof(toroot));
 				strcat( strcat( toroot, "/"), scratch);
 			}
 			else if (! scratch[1]) *toroot = '\0';

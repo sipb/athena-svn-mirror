@@ -1,8 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.7 1995-05-14 00:57:26 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.8 1996-05-01 18:54:36 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.7  1995/05/14 00:57:26  cfields
+ *	Never checked in.
+ *	Reversion to 4.5, probably by Miki.
+ *	May 26  1994
+ *
  * Revision 4.5  91/07/16  15:08:26  probe
  * Removed assumption that . and .. are first
  * Missing closedir()
@@ -56,7 +61,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.7 1995-05-14 00:57:26 cfields Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.8 1996-05-01 18:54:36 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -118,7 +123,7 @@ char *root, *name;
 	/* return the shortest pathname for the inode returned by stat().
 	 * only called during parsing, to trace links provided in entries,
 	 * and then only if the entry starts with '!'.
-	 * this routine is pretty slow, because it uses getwd().
+	 * this routine is pretty slow, because it uses getcwd().
 	 */
 	static char path[ LINELEN];
 	static char home[ LINELEN] = "";
@@ -132,7 +137,7 @@ char *root, *name;
 		do_gripe();
 		return("");
 	}
-	if ( ! *home) getwd( home);
+	if ( ! *home) getcwd( home, sizeof(home));
 
 	while ( 1) {
 		if ( lstat( path, &sbuf)) {
@@ -162,14 +167,14 @@ char *root, *name;
 	}
 	/* reduce  linkval to its optimal absolute pathname:
 	 * we do this by chdir'ing to linkval's parent-dir,
-	 * so that getwd() will optimize for us. note: getwd() is SLOW.
+	 * so that getcwd() will optimize for us. note: getcwd() is SLOW.
 	 */
 	if ( *linkval == '/');
 	else if ( end = rindex( linkval, '/')) {
 		/* make relative path to parent
 		 */
 		*end = '\0';
-		getwd(  path);
+		getcwd(  path, sizeof(path));
 		strcat( path, "/");
 		strcat( path, linkval);
 		if ( chdir( path)) {
@@ -179,13 +184,13 @@ char *root, *name;
 			chdir( home);
 			return("");
 		}
-		getwd( path);
+		getcwd( path, sizeof(path));
 		*end = '/';
 		strcat( path, end);
 		linkval = path;
 	}
 	else {			/* path is linkval's parent */
-		getwd(  path);
+		getcwd( path, sizeof(path));
 		strcat( path, "/");
 		strcat( path, linkval);
 		linkval = path;
