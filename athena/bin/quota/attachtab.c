@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.5 1992-06-19 18:22:49 lwvanels Exp $
+ * $Id: attachtab.c,v 1.6 1992-07-15 18:32:43 mar Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.5 1992-06-19 18:22:49 lwvanels Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.6 1992-07-15 18:32:43 mar Exp $";
 #endif lint
 
 #include "attach.h"
@@ -131,7 +131,10 @@ void get_attachtab()
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
 	}
-	parse_attach(attach_buf, at, 0);
+	if (parse_attach(attach_buf, at, 0) != SUCCESS) {
+	    free(at);
+	    continue;
+	}
 	at->prev = atprev;
 	if (atprev)
 	    atprev->next = at;
@@ -292,6 +295,9 @@ static int parse_attach(bfr, at, lintflag)
     if (at->status != STATUS_ATTACHED && at->status != STATUS_ATTACHING &&
 	at->status != STATUS_DETACHING)
 	goto bad_line;
+    /* Quota doesn't care about this entry */
+    if (at->status != STATUS_ATTACHED)
+	return FAILURE;
 
     at->fs = get_fs(cp);
     if (at->fs == NULL)
