@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendmail-relay-select,v 1.2 2003-10-22 06:47:09 jweiss Exp $
+# $Id: sendmail-relay-select,v 1.2.2.1 2003-10-23 03:47:38 ghudson Exp $
 
 if [ -n "$DIRECT_DELIVERY" ]; then
   exit 0

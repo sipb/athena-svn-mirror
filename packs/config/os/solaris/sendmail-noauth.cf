@@ -1,4 +1,4 @@
-# $Id: sendmail-noauth.cf,v 1.2 2003-10-22 22:26:05 jweiss Exp $
+# $Id: sendmail-noauth.cf,v 1.2.2.1 2003-10-23 03:47:10 ghudson Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
