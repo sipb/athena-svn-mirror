@@ -1,4 +1,4 @@
-# $Id: packages,v 1.104 2000-03-31 15:54:04 ghudson Exp $
+# $Id: packages,v 1.105 2000-04-07 22:28:26 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -152,8 +152,7 @@ third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
-third/tetex/texmf		package tetex-texmf
-third/tetex/src			package tetex-progs requires texmf
+third/tetex
 third/top			except irix,linux
 third/traceroute		on solaris
 third/transcript		requires perl
