@@ -7,97 +7,74 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.2 1990-05-25 15:58:58 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: os.h,v 1.3 1990-11-15 09:10:25 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
-
-#ifndef __olc_os_h
-#define __olc_os_h
-
-#if is_cplusplus
-#include <std.h>
-#else
-/* Not C++ */
-
-#if __STDC__
-
-#ifdef S_IFMT
-int fstat (int, struct stat *);
-#endif
-
-extern int errno;
-int open (const char *, int, ...);
-int unlink (const char *);
-void perror (const char *);
-int rename (const char *, const char *);
-int close (int);
-void free (void *);
-/* etc */
-
-#ifdef FILE
-int fclose (FILE *);
-int fflush (FILE *);
-int fputs (const char *, FILE *);
-/* _flsbuf */
-#endif
-
-#else  /* __STDC__ */
-
-void perror();
-
-#endif /* __STDC__ */
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #ifndef DIRSIZ
 #include <sys/dir.h>
 #endif
-/***  This is causing problems at compile time...
-      We need to either dump it from here, or re-arrange a large
-      number of source files so that it won't clash...
-  #ifndef S_IFMT
-  #include <sys/stat.h>
-  #endif
-***/
 #include <sys/resource.h>
-/*#include "/mit/gnu/vaxlib/syscalls.c.P"*/
 
-#endif /* not C++ */
+#ifndef __olc_os_h
+#define __olc_os_h
 
-#if is_cplusplus || __STDC__
-#if is_cplusplus
-extern "C" {
+#ifdef __STDC__
+# define	P(s) s
+#else
+# define P(s) ()
 #endif
-    /* C library stuff */
-    extern void *malloc (unsigned int), *realloc (void *, unsigned int);
-    extern int	socket (int, int, int);
+
+#ifdef S_IFMT
+int fstat P((int, struct stat *));
+#endif
+
+extern int errno;
+int open P((const char *, int, ...));
+int unlink P((const char *));
+int rename P((const char *, const char *));
+int close P((int));
+void free P((void *));
+
+#ifdef FILE
+int fclose P((FILE *));
+int fflush P((FILE *));
+int fputs P((const char *, FILE *));
+#endif
+
+char *ttyname P((int filedes ));
+char *getenv P((char *name ));
+void *malloc P((unsigned int));
+void *realloc P((void *, unsigned int));
+int socket P((int, int, int));
+
 #ifdef SOCK_STREAM
-    extern int	connect (int, struct sockaddr *, int);
-    extern int	bind (int, /* struct sockaddr * */ void *, int);
-    extern int	accept (int, struct sockaddr *, int *);
-#endif
-#ifdef UIO_USERSPACE
-    extern int	writev (int, struct iovec *, int);
-#endif
-#ifndef mips
-    extern void	setlinebuf (FILE *);
-#else /* sigh */
-    extern int setlinebuf (FILE *);
-#endif
-    extern int	setsockopt (int, int, int, void *, int);
-    extern int	setenv (const char *, const char *, int);
-    extern int	listen (int, int);
-    extern /*int*/ gettimeofday (struct timeval *, struct timezone *);
+int connect P((int, struct sockaddr *, int));
+int bind P((int, /* struct sockaddr * */ void *, int));
+int accept P((int, struct sockaddr *, int *));
+#endif /* SOCK_STREAM */
 
-    /* man page uses varargs.h, but ... */
-    /*#include <stdarg.h>*/
-    extern int	_doprnt (const char *, /*va_list*/void *, FILE *);
-#if is_cplusplus
-};
-#endif
-#endif
+#ifdef UIO_USERSPACE
+int writev P((int, struct iovec *, int));
+#endif /* UIO_USERSPACE */
+
+#ifndef mips
+void setlinebuf P((FILE *));
+#else /* sigh */
+int setlinebuf P((FILE *));
+#endif /* mips */
+
+int setsockopt P((int, int, int, void *, int));
+int setenv P((const char *, const char *, int));
+int listen P((int, int));
+int gettimeofday P((struct timeval *, struct timezone *));
+
+/* man page uses varargs.h, but ... */
+/*#include <stdarg.h>*/
+int _doprnt P((const char *, /*va_list*/void *, FILE *));
 
 #endif /* __olc_os_h */
