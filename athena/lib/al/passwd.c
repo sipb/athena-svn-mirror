@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.15 1999-09-22 22:10:27 danw Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.16 2000-01-10 15:54:13 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -29,6 +29,7 @@ static const char rcsid[] = "$Id: passwd.c,v 1.15 1999-09-22 22:10:27 danw Exp $
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <hesiod.h>
 #ifdef HAVE_SHADOW
 #include <shadow.h>
@@ -52,6 +53,9 @@ static const char rcsid[] = "$Id: passwd.c,v 1.15 1999-09-22 22:10:27 danw Exp $
 
 static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
 				 const char *cryptpw);
+#ifdef HAVE_LCKPWDF
+static int safe_lckpwdf(void);
+#endif
 
 /* This is an internal function.  Its contract is to lock the passwd
  * database in a manner consistent with the operating system and return
@@ -65,7 +69,7 @@ static FILE *lock_passwd(void)
 #ifdef HAVE_LCKPWDF
   FILE *fp;
 
-  if (lckpwdf() == -1)
+  if (safe_lckpwdf() == -1)
     return NULL;
   fp = fopen(PATH_PASSWD_TMP, "w");
   if (fp)
@@ -538,6 +542,7 @@ int al__update_cryptpw(const char *username, struct al_record *record,
 
   fclose(in);
 #ifdef HAVE_SHADOW
+  fsync(fileno(out));
   status = ferror(out) || status;
   if (fclose(out) || status)
     unlink(PATH_SHADOW_TMP);
@@ -594,3 +599,23 @@ static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
   free(line);
   return (status == -1) ? -1 : found;
 }
+
+#ifdef HAVE_LCKPWDF
+/* lckpwdf() is "for internal use only" and does not play nice with
+ * alarms and the SIGALRM handler.  So we need to wrap it in a
+ * function which restores the SIGALRM handler and alarm timer.
+ */
+static int safe_lckpwdf(void)
+{
+  struct sigaction act;
+  unsigned int sec;
+  int result;
+
+  sec = alarm(0);
+  sigaction(SIGALRM, NULL, &act);
+  result = lckpwdf();
+  sigaction(SIGALRM, &act, NULL);
+  alarm(sec);
+  return result;
+}
+#endif
