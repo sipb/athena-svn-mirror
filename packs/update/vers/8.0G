@@ -1,0 +1,16 @@
+#!/bin/sh -
+# Version-specific update script for 8.0G
+
+case ${MACH} in
+SUN*)
+	# Up until this version, do_update bolluxed AUXDEVS by copying
+	# in /etc/name_to_major after running the AUXDEVS scripts.
+	# We need to re-run D20appletalk now that this is fixed.  (Just
+	# overwrite the AUXDEVS file to avoid running it twice for
+	# machines taking the update directly from 7.7 to 8.0G.)
+	echo "D20appletalk"			> ${AUXDEVS}
+	;;
+
+INDY)
+	;;
+esac
