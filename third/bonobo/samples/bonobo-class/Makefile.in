@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -78,6 +78,7 @@ BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_REVISION = @BONOBO_REVISION@
 BONOBO_TEST_CFLAGS = @BONOBO_TEST_CFLAGS@
 BONOBO_TEST_LIBS = @BONOBO_TEST_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -85,6 +86,8 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -117,6 +120,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -125,6 +129,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -136,6 +141,7 @@ PROF_CFLAGS = @PROF_CFLAGS@
 PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -143,12 +149,21 @@ VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+bonobolocaledir = @bonobolocaledir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -183,6 +198,9 @@ INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DG_LOG_DOM
 
 
 MYHACKAROUNDAUTOMAKE = $(shell echo $(ECHO_CORBA_GENERATED))
+
+BUILT_SOURCES = $(ECHO_CORBA_GENERATED)
+CLEANFILES =  $(ECHO_CORBA_GENERATED)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -192,17 +210,18 @@ LIBRARIES =  $(noinst_LIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LIBS = @LIBS@
 libEcho_a_LIBADD = 
-libEcho_a_OBJECTS =  Bonobo_Sample_Echo-common.o \
-Bonobo_Sample_Echo-skels.o Bonobo_Sample_Echo-stubs.o
+libEcho_a_OBJECTS =  Bonobo_Sample_Echo-common.$(OBJEXT) \
+Bonobo_Sample_Echo-skels.$(OBJEXT) Bonobo_Sample_Echo-stubs.$(OBJEXT)
 AR = ar
+bin_PROGRAMS =  bonobo-echo$(EXEEXT) echo-client$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
-bonobo_echo_OBJECTS =  main.o echo.o
+bonobo_echo_OBJECTS =  main.$(OBJEXT) echo.$(OBJEXT)
 bonobo_echo_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la libEcho.a
 bonobo_echo_LDFLAGS = 
 echo_client_SOURCES = echo-client.c
-echo_client_OBJECTS =  echo-client.o
+echo_client_OBJECTS =  echo-client.$(OBJEXT)
 echo_client_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 libEcho.a
 echo_client_LDFLAGS = 
@@ -220,11 +239,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libEcho_a_SOURCES) $(bonobo_echo_SOURCES) echo-client.c
-OBJECTS = $(libEcho_a_OBJECTS) $(bonobo_echo_OBJECTS) echo-client.o
+OBJECTS = $(libEcho_a_OBJECTS) $(bonobo_echo_OBJECTS) echo-client.$(OBJEXT)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps samples/bonobo-class/Makefile
 
@@ -245,6 +264,11 @@ maintainer-clean-noinstLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -253,6 +277,7 @@ maintainer-clean-noinstLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -310,12 +335,12 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
-bonobo-echo: $(bonobo_echo_OBJECTS) $(bonobo_echo_DEPENDENCIES)
-	@rm -f bonobo-echo
+bonobo-echo$(EXEEXT): $(bonobo_echo_OBJECTS) $(bonobo_echo_DEPENDENCIES)
+	@rm -f bonobo-echo$(EXEEXT)
 	$(LINK) $(bonobo_echo_LDFLAGS) $(bonobo_echo_OBJECTS) $(bonobo_echo_LDADD) $(LIBS)
 
-echo-client: $(echo_client_OBJECTS) $(echo_client_DEPENDENCIES)
-	@rm -f echo-client
+echo-client$(EXEEXT): $(echo_client_OBJECTS) $(echo_client_DEPENDENCIES)
+	@rm -f echo-client$(EXEEXT)
 	$(LINK) $(echo_client_LDFLAGS) $(echo_client_OBJECTS) $(echo_client_LDADD) $(LIBS)
 
 install-idlDATA: $(idl_DATA)
@@ -400,13 +425,14 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 Bonobo_Sample_Echo-common.o: Bonobo_Sample_Echo-common.c \
 	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
 Bonobo_Sample_Echo-skels.o: Bonobo_Sample_Echo-skels.c \
 	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
 Bonobo_Sample_Echo-stubs.o: Bonobo_Sample_Echo-stubs.c \
 	Bonobo_Sample_Echo.h ../../bonobo/Bonobo.h
-echo-client.o: echo-client.c ../../config.h ../../bonobo/bonobo.h \
+echo-client.o: echo-client.c ../../config.h ../../bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
 	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
@@ -446,7 +472,7 @@ echo-client.o: echo-client.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-selector-widget.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
 	../../bonobo/bonobo-print-client.h Bonobo_Sample_Echo.h
-echo.o: echo.c ../../config.h ../../bonobo/bonobo.h \
+echo.o: echo.c ../../config.h ../../bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
 	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
@@ -486,7 +512,7 @@ echo.o: echo.c ../../config.h ../../bonobo/bonobo.h \
 	../../bonobo/bonobo-selector-widget.h \
 	../../bonobo/bonobo-widget.h ../../bonobo/bonobo-print.h \
 	../../bonobo/bonobo-print-client.h Bonobo_Sample_Echo.h echo.h
-main.o: main.c ../../config.h ../../bonobo/bonobo.h \
+main.o: main.c ../../config.h ../../bonobo.h \
 	../../bonobo/bonobo-object.h ../../bonobo/Bonobo.h \
 	../../bonobo/bonobo-moniker.h ../../bonobo/bonobo-xobject.h \
 	../../bonobo/bonobo-moniker-simple.h \
@@ -558,12 +584,14 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-binPROGRAMS \
 		mostlyclean-tags mostlyclean-generic
@@ -613,6 +641,9 @@ $(ECHO_CORBA_GENERATED): Bonobo_Sample_Echo.idl
 	touch my_echo_idl
 
 @XML_I18N_MERGE_OAF_RULE@
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,4 +1,4 @@
-/**
+/*
  * bonobo-moniker-util.c
  *
  * Copyright (C) 2000  Helix Code, Inc.
@@ -7,9 +7,13 @@
  *	Michael Meeks    (michael@helixcode.com)
  *	Ettore Perazzoli (ettore@helixcode.com)
  */
-#include "bonobo.h"
+/* #include <syslog.h> */
+
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
 #include <liboaf/liboaf.h>
 #include <liboaf/oaf-async.h>
+#include <ORBitservices/CosNaming.h>
 
 struct {
 	char *prefix;
@@ -117,7 +121,7 @@ query_from_name (const char *name)
  *  This routine is used to continue building up the chain
  * that forms a multi-part moniker. The parent is referenced
  * as the parent and passed onto the next stage of parsing
- * the 'name'. We eventualy return a moniker handle which
+ * the 'name'. We eventually return a moniker handle which
  * represents the end of a linked list of monikers each
  * pointing to their parent:
  *
@@ -402,8 +406,11 @@ bonobo_moniker_util_unescape (const char *string, int num_chars)
 	for (i = 0; i < num_chars; i++) {
 		if (string [i] == '\0')
 			break;
-		else if (string [i] == '\\')
+		else if (string [i] == '\\') {
+			if (string [i + 1] == '\\')
+				i++;
 			backslashes ++;
+		}
 	}
 
 	if (!backslashes)
@@ -561,21 +568,27 @@ bonobo_get_object (const CORBA_char *name,
 		   CORBA_Environment *ev)
 {
 	Bonobo_Moniker moniker;
-	Bonobo_Unknown retval;
+	Bonobo_Unknown retval = CORBA_OBJECT_NIL;
 
 	moniker = bonobo_moniker_client_new_from_name (name, ev);
 
-	if (BONOBO_EX (ev))
-		return CORBA_OBJECT_NIL;
+	if (BONOBO_EX (ev)) 
+		retval = CORBA_OBJECT_NIL;
+	else {
+		retval = bonobo_moniker_client_resolve_default (
+			moniker, interface_name, ev);
 
-	retval = bonobo_moniker_client_resolve_default (
-		moniker, interface_name, ev);
+		bonobo_object_release_unref (moniker, ev);
+		
+		if (BONOBO_EX (ev))
+			retval = CORBA_OBJECT_NIL;
+	}
 
-	bonobo_object_release_unref (moniker, ev);
+/*	syslog (LOG_WARNING, "Bonobo: get_object '%s' '%s' returns %p ex '%s'",
+		name ? name : "<null>", interface_name ? interface_name : "<null>",
+		retval, ev->_major == CORBA_NO_EXCEPTION ? "<no exception>" : 
+		bonobo_exception_get_text (ev)); */
 
-	if (BONOBO_EX (ev))
-		return CORBA_OBJECT_NIL;
-	
 	return retval;
 }
 
@@ -977,3 +990,184 @@ bonobo_moniker_client_equal (Bonobo_Moniker     moniker,
 
 	return l != 0;
 }
+
+static CosNaming_NamingContext
+lookup_naming_context (GList *path,
+		       CORBA_Environment *ev)
+{
+	CosNaming_NamingContext ns, ctx, new_ctx;
+	CosNaming_Name *cn;
+	GList          *l;
+
+	g_return_val_if_fail (path != NULL, CORBA_OBJECT_NIL);
+	g_return_val_if_fail (path->data != NULL, CORBA_OBJECT_NIL);
+	g_return_val_if_fail (ev != NULL, CORBA_OBJECT_NIL);
+
+	ns =  oaf_name_service_get (ev);
+	if (BONOBO_EX (ev) || ns == CORBA_OBJECT_NIL)
+		return CORBA_OBJECT_NIL;
+
+	ctx = ns;
+
+	for (l = path; l != NULL; l = l->next) {
+
+		cn =  ORBit_string_to_CosNaming_Name (l->data, ev);
+		if (BONOBO_EX (ev) || !cn)
+			break;
+
+		new_ctx = CosNaming_NamingContext_resolve (ctx, cn, ev);
+		if (BONOBO_USER_EX (ev, ex_CosNaming_NamingContext_NotFound)) {
+			CORBA_exception_init (ev);
+			new_ctx = CosNaming_NamingContext_bind_new_context (
+				ctx, cn, ev);
+			if (BONOBO_EX (ev) || new_ctx == CORBA_OBJECT_NIL) {
+				CORBA_free (cn);
+				break;
+			}
+		}
+
+		CORBA_free (cn);
+
+		if (BONOBO_EX (ev))
+			new_ctx = CORBA_OBJECT_NIL;
+		
+		CORBA_Object_release (ctx, ev);
+
+		ctx = new_ctx;
+
+		if (!ctx)
+			break;
+	}
+
+	return ctx;
+}
+
+static CosNaming_Name *
+url_to_name (char *url, char *opt_kind)
+{
+	LName ln;
+	LNameComponent lnc;
+	CosNaming_Name *retval;
+	CORBA_Environment ev;
+
+	g_return_val_if_fail (url != NULL, NULL);
+
+	CORBA_exception_init (&ev);
+
+	lnc = create_lname_component ();
+	LNameComponent_set_id (lnc, url, &ev);
+	
+	if (opt_kind)
+		LNameComponent_set_kind (lnc, opt_kind, &ev);
+
+	ln = create_lname ();
+	LName_insert_component (ln, 1, lnc, &ev);
+
+	retval = LName_to_idl_form (ln, &ev);
+
+	LName_destroy (ln, &ev);
+
+	CORBA_exception_free (&ev);
+
+	return retval;
+}
+
+static CosNaming_NamingContext
+get_url_context (char *oafiid,
+		 CORBA_Environment *ev)
+{
+	CosNaming_NamingContext  ctx = NULL;
+	GList                   *path = NULL;
+
+	path = g_list_append (path, "GNOME");
+	path = g_list_append (path, "URL");
+	path = g_list_append (path, oafiid);
+
+	ctx = lookup_naming_context (path, ev);
+
+	g_list_free (path);
+		
+	return ctx;
+}
+
+void
+bonobo_url_register (char              *oafiid, 
+		     char              *url, 
+		     char              *mime_type,
+		     Bonobo_Unknown     object,
+		     CORBA_Environment *ev)
+{
+	CosNaming_NamingContext  ctx = NULL;
+	CosNaming_Name          *cn;
+
+	bonobo_return_if_fail (oafiid != NULL, ev);
+	bonobo_return_if_fail (url != NULL, ev);
+	bonobo_return_if_fail (object != CORBA_OBJECT_NIL, ev);
+	
+	ctx = get_url_context (oafiid, ev);
+		
+	if (BONOBO_EX (ev) || ctx == CORBA_OBJECT_NIL)
+		return;
+	
+	cn = url_to_name (url, mime_type);
+
+	CosNaming_NamingContext_bind (ctx, cn, object, ev);
+
+	CORBA_free (cn);
+
+	CORBA_Object_release (ctx, NULL);
+}
+
+void
+bonobo_url_unregister (char              *oafiid, 
+		       char              *url,
+		       CORBA_Environment *ev)
+{
+	CosNaming_NamingContext  ctx = NULL;
+	CosNaming_Name          *cn;
+
+	bonobo_return_if_fail (oafiid != NULL, ev);
+	bonobo_return_if_fail (url != NULL, ev);
+
+	ctx = get_url_context (oafiid, ev);
+		
+	if (BONOBO_EX (ev) || ctx == CORBA_OBJECT_NIL)
+		return;
+	
+	cn = url_to_name (url, NULL);
+
+	CosNaming_NamingContext_unbind (ctx, cn, ev);
+
+	CORBA_free (cn);
+
+	CORBA_Object_release (ctx, NULL);
+}
+
+Bonobo_Unknown
+bonobo_url_lookup (char              *oafiid, 
+		   char              *url,
+		   CORBA_Environment *ev)
+{
+	CosNaming_NamingContext  ctx = NULL;
+	CosNaming_Name          *cn;
+	Bonobo_Unknown           retval;
+
+	bonobo_return_val_if_fail (oafiid != NULL, CORBA_OBJECT_NIL, ev);
+	bonobo_return_val_if_fail (url != NULL, CORBA_OBJECT_NIL, ev);
+
+	ctx = get_url_context (oafiid, ev);
+		
+	if (BONOBO_EX (ev) || ctx == CORBA_OBJECT_NIL)
+		return CORBA_OBJECT_NIL;
+	
+	cn = url_to_name (url, NULL);
+
+	retval = CosNaming_NamingContext_resolve (ctx, cn, ev);
+
+	CORBA_free (cn);
+
+	CORBA_Object_release (ctx, NULL);
+
+	return retval;
+}
+

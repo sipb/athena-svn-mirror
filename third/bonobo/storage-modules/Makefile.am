@@ -6,6 +6,8 @@ INCLUDES =                                              \
 	-I$(top_builddir)				\
 	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
 	-I$(top_srcdir)/libefs/src			\
+        -I$(includedir)                                 \
+	$(BONOBO_INCLUDEDIR)				\
 	$(VFS_CFLAGS)					\
         $(GNOME_INCLUDEDIR)
 
@@ -25,7 +27,7 @@ libstorage_efs_la_SOURCES = 	\
 
 libstorage_efs_la_LDFLAGS = 			\
 	$(common_ldflags) 			\
-	-L$(shell pwd)/$(top_builddir)/libefs/src/.libs\
+	-L$(top_builddir)/libefs/src		\
 	-lefs
 
 #

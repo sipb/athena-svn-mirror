@@ -122,14 +122,17 @@ ib1_read_head (IB1EFS *efs, IB1Header *head)
 	if (read (efs->fd, head, 512) != 512) return FALSE;
 
 
-	head->head.protected = GINT32_FROM_LE (head->head.protected);
 	((EFS *)efs)->type = GINT32_FROM_LE(head->head.type);
 
-	if (head->head.protected && (((EFS*)efs)->driver->encrypted)) {
+	if (GINT32_FROM_LE(head->head.protected) && 
+	    (((EFS*)efs)->driver->encrypted)) {
 		ib1_decrypt (efs, &head->cb, (512 - sizeof(EFSHeader))/4);
 	}
 
 	if (ib1_calc_crc (head) != GUINT32_FROM_LE(head->crc)) return FALSE;
+
+	head->head.protected = GINT32_FROM_LE (head->head.protected);
+	head->head.type = GINT32_FROM_LE (head->head.protected);
 
 	head->crc  = 0;
 	head->cb  = GUINT32_FROM_LE(head->cb);
@@ -265,7 +268,7 @@ ib1_open (EFSDir **dir, EFSDriver *driver, const char *path, gint flags,
 
 	ib1_create_typefd (efs);
 
-	*(IB1Dir **)dir = g_new0 (IB1Dir, 1);
+	(*dir) = (EFSDir *)g_new0 (IB1Dir, 1);
 	(*dir)->efs = (EFS *)efs;
 	(*dir)->pos = 0;
 	((IB1Dir *)(*dir))->inode = IB1_ROOT_INODE;
@@ -319,7 +322,7 @@ ib1_create (EFSDir **dir, EFSDriver *driver, const char *path, gint flags,
 
 	ib1_create_typefd (efs);
 
-	*(IB1Dir **)dir = g_new0 (IB1Dir, 1);
+	(*dir) = (EFSDir *)g_new0 (IB1Dir, 1);
 	(*dir)->efs = (EFS *)efs;
 	(*dir)->pos = 0;
 	((IB1Dir *)(*dir))->inode = IB1_ROOT_INODE;

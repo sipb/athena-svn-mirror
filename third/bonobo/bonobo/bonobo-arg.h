@@ -53,21 +53,23 @@ typedef CORBA_TypeCode BonoboArgType;
 #define BONOBO_ARG_GET_DOUBLE(a)    (BONOBO_ARG_GET_GENERAL (a, TC_double, CORBA_double, NULL))
 #define BONOBO_ARG_SET_DOUBLE(a,v)  (BONOBO_ARG_SET_GENERAL (a, v, TC_double, CORBA_double, NULL))
 
+
 #ifdef __GNUC__
-#define BONOBO_ARG_GET_STRING(a)    (g_assert ((a)->_type->kind == CORBA_tk_string),	\
+#define BONOBO_ARG_GET_STRING(a)    (g_assert ((a)->_type->kind == CORBA_tk_string),\
 				     *((CORBA_char **)(a->_value)))
-#define BONOBO_ARG_SET_STRING(a,v)  (g_assert ((a)->_type->kind == CORBA_tk_string),	\
+#define BONOBO_ARG_SET_STRING(a,v)  (g_assert ((a)->_type->kind == CORBA_tk_string), CORBA_free (*(char **)a->_value),\
 				     *((CORBA_char **)(a->_value)) = CORBA_string_dup ((v)?(v):""))
 #else
 #define BONOBO_ARG_GET_STRING(a)    (*((CORBA_char **)(a->_value)))
-#define BONOBO_ARG_SET_STRING(a,v)  (*((CORBA_char **)(a->_value)) = CORBA_string_dup ((v)?(v):""))
+#define BONOBO_ARG_SET_STRING(a,v)  (CORBA_free (*(char **)a->_value),\
+				     *((CORBA_char **)(a->_value)) = CORBA_string_dup ((v)?(v):""))
 #endif
 
 BonoboArg    *bonobo_arg_new           (BonoboArgType  t);
 
 void          bonobo_arg_release       (BonoboArg     *arg);
 
-BonoboArg    *bonobo_arg_copy          (BonoboArg     *arg);
+BonoboArg    *bonobo_arg_copy          (const BonoboArg *arg);
 
 void          bonobo_arg_from_gtk      (BonoboArg    *a, 
 					const GtkArg *arg);

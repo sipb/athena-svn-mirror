@@ -5,7 +5,7 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 #include <orb/orbit.h>
-#include <bonobo/bonobo.h>
+#include <bonobo.h>
 #include <bonobo/bonobo-property-bag-xml.h>
 
 #ifdef DynamicAny_DynArray_rewind
