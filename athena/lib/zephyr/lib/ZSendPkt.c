@@ -10,13 +10,12 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.5 1987-06-13 01:01:07 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.6 1987-06-13 01:03:45 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 #include <sys/socket.h>
-#include <sys/time.h>
 
 Code_t ZSendPacket(packet,len)
 	ZPacket_t	packet;
@@ -26,7 +25,8 @@ Code_t ZSendPacket(packet,len)
 	
 	Code_t retval;
 	struct sockaddr_in sin;
-	int auth,t1,t2,t3;
+	struct timeval tv;
+	int auth,t1,t2,t3,i;
 	ZPacket_t ackpack;
 	ZNotice_t notice;
 	
@@ -54,7 +54,7 @@ Code_t ZSendPacket(packet,len)
 	
 	for (i=0;i<4;i++) {
 		select(0,&t1,&t2,&t3,&tv);
-		retval = ZCheckIfNotice(ackpack,sizeof ackpack,&acknotice,
+		retval = ZCheckIfNotice(ackpack,sizeof ackpack,&notice,
 					&auth,findack,&notice.z_uid);
 		if (retval == ZERR_NONE)
 			return (ZERR_NONE);
