@@ -277,7 +277,7 @@ MAXSCANCODE 125
 118	NN	XK_Help
 
 119	NP	XK_Caps_Lock
-19	NN	XK_Alt_L
+19	NN	XK_Meta_L
 120	NN	XK_Meta_L
 121	RN	XK_space
 122	NN	XK_Meta_R
