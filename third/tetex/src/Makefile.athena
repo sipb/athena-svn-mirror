@@ -1,0 +1,15 @@
+# $Id: Makefile.athena,v 1.1 2000-03-17 21:36:37 ghudson Exp $
+
+prepare:
+	./configure --without-odvipsk --without-oxdvik --disable-multiplatform
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"
