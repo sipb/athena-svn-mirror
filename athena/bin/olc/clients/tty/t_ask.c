@@ -1,5 +1,4 @@
-
-f/*
+/*
  * This file is part of the OLC On-Line Consulting System.
  * It contains procedures for exectuting olc commands.
  *
@@ -19,12 +18,12 @@ f/*
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.11 1990-07-16 08:08:17 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_ask.c,v 1.12 1990-07-16 08:44:51 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.11 1990-07-16 08:08:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.12 1990-07-16 08:44:51 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
