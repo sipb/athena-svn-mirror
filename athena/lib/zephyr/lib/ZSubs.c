@@ -5,19 +5,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.14 1989-05-04 17:18:26 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.15 1991-06-20 09:01:28 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.14 1989-05-04 17:18:26 jtkohl Exp $";
-#endif lint
-
-#include <zephyr/mit-copyright.h>
+static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.15 1991-06-20 09:01:28 jfc Exp $";
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
@@ -62,7 +60,7 @@ static Code_t subscr_sendoff();
  */
 
 Z_Subscriptions(sublist, nitems, port, opcode, authit)
-    ZSubscription_t *sublist;
+    register ZSubscription_t *sublist;
     int nitems;
     u_short port;
     char *opcode;
@@ -77,6 +75,9 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
     int size_avail = Z_MAXPKTLEN-Z_FRAGFUDGE; /* space avail for data,
 						 adjusted below */
     int size, start, numok;
+
+    if (!nitems)
+	return ZERR_NONE;
 
     list = (char **)malloc((unsigned)nitems*3*sizeof(char *));
     if (!list)
@@ -109,10 +110,10 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
 
     /* assemble subs into an array of pointers */
     for (i=0;i<nitems;i++) {
-	list[i*3] = sublist[i].class;
-	list[i*3+1] = sublist[i].classinst;
-	if (sublist[i].recipient && *sublist[i].recipient &&
-	    *sublist[i].recipient != '*')
+	list[i*3] = sublist[i].zsub_class;
+	list[i*3+1] = sublist[i].zsub_classinst;
+	if (sublist[i].zsub_recipient && *sublist[i].zsub_recipient &&
+	    *sublist[i].zsub_recipient != '*')
 	    list[i*3+2] = ZGetSender();
 	else
 	    list[i*3+2] = "";
