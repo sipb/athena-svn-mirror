@@ -1,0 +1,386 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupSocket</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupSoapMessage.html" title="SoupSoapMessage"><link rel="next" href="libsoup-soup-ssl.html" title="soup-ssl"><link rel="chapter" href="ch01.html" title="libsoup"><link rel="refentry" href="libsoup-soup-dns.html" title="soup-dns"><link rel="refentry" href="libsoup-SoupAddress.html" title="SoupAddress"><link rel="refentry" href="SoupAuth.html" title="SoupAuth"><link rel="refentry" href="SoupAuthBasic.html" title="SoupAuthBasic"><link rel="refentry" href="SoupAuthDigest.html" title="SoupAuthDigest"><link rel="refentry" href="SoupConnection.html" title="SoupConnection"><link rel="refentry" href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><link rel="refentry" href="libsoup-soup-headers.html" title="soup-headers"><link rel="refentry" href="libsoup-soup-md5-utils.html" title="soup-md5-utils"><link rel="refentry" href="libsoup-soup-message-private.html" title="soup-message-private"><link rel="refentry" href="libsoup-soup-message-queue.html" title="soup-message-queue"><link rel="refentry" href="SoupMessage.html" title="SoupMessage"><link rel="refentry" href="libsoup-soup-method.html" title="soup-method"><link rel="refentry" href="libsoup-soup-misc.html" title="soup-misc"><link rel="refentry" href="libsoup-soup-server-auth.html" title="soup-server-auth"><link rel="refentry" href="libsoup-SoupServerMessage.html" title="SoupServerMessage"><link rel="refentry" href="libsoup-SoupServer.html" title="SoupServer"><link rel="refentry" href="libsoup-SoupSession.html" title="SoupSession"><link rel="refentry" href="SoupSoapMessage.html" title="SoupSoapMessage"><link rel="refentry" href="libsoup-SoupSocket.html" title="SoupSocket"><link rel="refentry" href="libsoup-soup-ssl.html" title="soup-ssl"><link rel="refentry" href="libsoup-soup-status.html" title="soup-status"><link rel="refentry" href="libsoup-soup-uri.html" title="soup-uri"><link rel="section" href="libsoup-SoupSocket.html#id2588892" title="Description"><link rel="section" href="libsoup-SoupSocket.html#id2588901" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupSoapMessage.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="libsoup-soup-ssl.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-SoupSocket"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupSocket</span></h2><p>SoupSocket &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-NONBLOCKING-CAPS">SOUP_SOCKET_FLAG_NONBLOCKING</a>
+#define     <a href="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-NODELAY-CAPS">SOUP_SOCKET_FLAG_NODELAY</a>
+#define     <a href="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-REUSEADDR-CAPS">SOUP_SOCKET_FLAG_REUSEADDR</a>
+#define     <a href="libsoup-SoupSocket.html#SOUP-SOCKET-IS-SERVER-CAPS">SOUP_SOCKET_IS_SERVER</a>
+#define     <a href="libsoup-SoupSocket.html#SOUP-SOCKET-SSL-CREDENTIALS-CAPS">SOUP_SOCKET_SSL_CREDENTIALS</a>
+<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* <a href="libsoup-SoupSocket.html#soup-socket-new">soup_socket_new</a>                 (const char *optname1,
+                                             ...);
+guint       <a href="libsoup-SoupSocket.html#soup-socket-connect">soup_socket_connect</a>             (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             <a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *remote_addr);
+gboolean    <a href="libsoup-SoupSocket.html#soup-socket-listen">soup_socket_listen</a>              (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             <a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *local_addr);
+gboolean    <a href="libsoup-SoupSocket.html#soup-socket-start-ssl">soup_socket_start_ssl</a>           (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);
+void        <a href="libsoup-SoupSocket.html#soup-socket-disconnect">soup_socket_disconnect</a>          (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);
+gboolean    <a href="libsoup-SoupSocket.html#soup-socket-is-connected">soup_socket_is_connected</a>        (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);
+void        (<a href="libsoup-SoupSocket.html#SoupSocketCallback">*SoupSocketCallback</a>)           (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             guint status,
+                                             gpointer user_data);
+void        (<a href="libsoup-SoupSocket.html#SoupSocketListenerCallback">*SoupSocketListenerCallback</a>)   (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *listener,
+                                             <a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer user_data);
+<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* <a href="libsoup-SoupSocket.html#soup-socket-client-new-async">soup_socket_client_new_async</a>    (const char *hostname,
+                                             guint port,
+                                             gpointer ssl_creds,
+                                             <a href="libsoup-SoupSocket.html#SoupSocketCallback">SoupSocketCallback</a> callback,
+                                             gpointer user_data);
+<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* <a href="libsoup-SoupSocket.html#soup-socket-client-new-sync">soup_socket_client_new_sync</a>     (const char *hostname,
+                                             guint port,
+                                             gpointer ssl_creds,
+                                             guint *status_ret);
+<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* <a href="libsoup-SoupSocket.html#soup-socket-server-new">soup_socket_server_new</a>          (<a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *local_addr,
+                                             gpointer ssl_creds,
+                                             <a href="libsoup-SoupSocket.html#SoupSocketListenerCallback">SoupSocketListenerCallback</a> callback,
+                                             gpointer user_data);
+<a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a>* <a href="libsoup-SoupSocket.html#soup-socket-get-local-address">soup_socket_get_local_address</a>  (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);
+<a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a>* <a href="libsoup-SoupSocket.html#soup-socket-get-remote-address">soup_socket_get_remote_address</a> (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);
+enum        <a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a>;
+<a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> <a href="libsoup-SoupSocket.html#soup-socket-read">soup_socket_read</a>         (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer buffer,
+                                             gsize len,
+                                             gsize *nread);
+<a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> <a href="libsoup-SoupSocket.html#soup-socket-read-until">soup_socket_read_until</a>   (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer buffer,
+                                             gsize len,
+                                             gconstpointer boundary,
+                                             gsize boundary_len,
+                                             gsize *nread,
+                                             gboolean *got_boundary);
+<a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> <a href="libsoup-SoupSocket.html#soup-socket-write">soup_socket_write</a>        (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gconstpointer buffer,
+                                             gsize len,
+                                             gsize *nwrote);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2588892"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2588901"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2588906"></a><h3><a name="SOUP-SOCKET-FLAG-NONBLOCKING-CAPS"></a>SOUP_SOCKET_FLAG_NONBLOCKING</h3><a class="indexterm" name="id2588918"></a><pre class="programlisting">#define SOUP_SOCKET_FLAG_NONBLOCKING "non-blocking"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588929"></a><h3><a name="SOUP-SOCKET-FLAG-NODELAY-CAPS"></a>SOUP_SOCKET_FLAG_NODELAY</h3><a class="indexterm" name="id2588940"></a><pre class="programlisting">#define SOUP_SOCKET_FLAG_NODELAY     "nodelay"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588950"></a><h3><a name="SOUP-SOCKET-FLAG-REUSEADDR-CAPS"></a>SOUP_SOCKET_FLAG_REUSEADDR</h3><a class="indexterm" name="id2588961"></a><pre class="programlisting">#define SOUP_SOCKET_FLAG_REUSEADDR   "reuseaddr"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588971"></a><h3><a name="SOUP-SOCKET-IS-SERVER-CAPS"></a>SOUP_SOCKET_IS_SERVER</h3><a class="indexterm" name="id2588980"></a><pre class="programlisting">#define SOUP_SOCKET_IS_SERVER        "is-server"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2589391"></a><h3><a name="SOUP-SOCKET-SSL-CREDENTIALS-CAPS"></a>SOUP_SOCKET_SSL_CREDENTIALS</h3><a class="indexterm" name="id2589402"></a><pre class="programlisting">#define SOUP_SOCKET_SSL_CREDENTIALS  "ssl-creds"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2589412"></a><h3><a name="soup-socket-new"></a>soup_socket_new ()</h3><a class="indexterm" name="id2589421"></a><pre class="programlisting"><a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* soup_socket_new                 (const char *optname1,
+                                             ...);</pre><p>
+Creates a new (disconnected) socket</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>optname1</tt></i> :</span></td><td> name of first property to set (or <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> value of <i class="parameter"><tt>optname1</tt></i>, followed by additional property/value pairs
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new socket
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589486"></a><h3><a name="soup-socket-connect"></a>soup_socket_connect ()</h3><a class="indexterm" name="id2589495"></a><pre class="programlisting">guint       soup_socket_connect             (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             <a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *remote_addr);</pre><p>
+If <tt class="literal">SOUP_SOCKET_FLAG_NONBLOCKING</tt> has been set on the socket, this
+begins asynchronously connecting to the given address. The socket
+will emit <tt class="literal">connect_result</tt> when it succeeds or fails (but not before
+returning from this function).
+</p><p>
+If <tt class="literal">SOUP_SOCKET_FLAG_NONBLOCKING</tt> has not been set, this will
+attempt to synchronously connect.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a client <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a> (which must not already be connected)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>remote_addr</tt></i> :</span></td><td> address to connect to
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">SOUP_STATUS_CONTINUE</tt> if connecting asynchronously,
+otherwise a success or failure code.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589588"></a><h3><a name="soup-socket-listen"></a>soup_socket_listen ()</h3><a class="indexterm" name="id2589596"></a><pre class="programlisting">gboolean    soup_socket_listen              (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             <a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *local_addr);</pre><p>
+Makes <i class="parameter"><tt>sock</tt></i> start listening on the given interface and port. When
+connections come in, <i class="parameter"><tt>sock</tt></i> will emit <tt class="literal">new_connection</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a server <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a> (which must not already be connected or
+listening)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>local_addr</tt></i> :</span></td><td> Local address to bind to.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether or not <i class="parameter"><tt>sock</tt></i> is now listening.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598320"></a><h3><a name="soup-socket-start-ssl"></a>soup_socket_start_ssl ()</h3><a class="indexterm" name="id2598328"></a><pre class="programlisting">gboolean    soup_socket_start_ssl           (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);</pre><p>
+Starts using SSL on <i class="parameter"><tt>socket</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> the socket
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> success or failure
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598378"></a><h3><a name="soup-socket-disconnect"></a>soup_socket_disconnect ()</h3><a class="indexterm" name="id2598386"></a><pre class="programlisting">void        soup_socket_disconnect          (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);</pre><p>
+Disconnects <i class="parameter"><tt>sock</tt></i>. Any further read or write attempts on it will
+fail.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598434"></a><h3><a name="soup-socket-is-connected"></a>soup_socket_is_connected ()</h3><a class="indexterm" name="id2598443"></a><pre class="programlisting">gboolean    soup_socket_is_connected        (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);</pre><p>
+Tests if <i class="parameter"><tt>sock</tt></i> is connected to another host</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> or <tt class="literal">FALSE</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598507"></a><h3><a name="SoupSocketCallback"></a>SoupSocketCallback ()</h3><a class="indexterm" name="id2598515"></a><pre class="programlisting">void        (*SoupSocketCallback)           (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             guint status,
+                                             gpointer user_data);</pre><p>
+The callback function passed to <a href="libsoup-SoupSocket.html#soup-socket-client-new-async"><tt class="function">soup_socket_client_new_async()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td>the <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code indicating success or failure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598599"></a><h3><a name="SoupSocketListenerCallback"></a>SoupSocketListenerCallback ()</h3><a class="indexterm" name="id2598608"></a><pre class="programlisting">void        (*SoupSocketListenerCallback)   (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *listener,
+                                             <a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer user_data);</pre><p>
+The callback function passed to <a href="libsoup-SoupSocket.html#soup-socket-server-new"><tt class="function">soup_socket_server_new()</tt></a>, which
+receives new connections.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>listener</tt></i> :</span></td><td>the listening <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td>the newly-received <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>the data passed to <a href="libsoup-SoupSocket.html#soup-socket-server-new"><tt class="function">soup_socket_server_new()</tt></a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598703"></a><h3><a name="soup-socket-client-new-async"></a>soup_socket_client_new_async ()</h3><a class="indexterm" name="id2598714"></a><pre class="programlisting"><a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* soup_socket_client_new_async    (const char *hostname,
+                                             guint port,
+                                             gpointer ssl_creds,
+                                             <a href="libsoup-SoupSocket.html#SoupSocketCallback">SoupSocketCallback</a> callback,
+                                             gpointer user_data);</pre><p>
+Creates a connection to <i class="parameter"><tt>hostname</tt></i> and <i class="parameter"><tt>port</tt></i>. <i class="parameter"><tt>callback</tt></i> will be
+called when the connection completes (or fails).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>hostname</tt></i> :</span></td><td> remote machine to connect to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>port</tt></i> :</span></td><td> remote port to connect to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ssl_creds</tt></i> :</span></td><td> SSL credentials structure, or <tt class="literal">NULL</tt> if not SSL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> callback to call when the socket is connected
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data for <i class="parameter"><tt>callback</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new socket (not yet ready for use).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598850"></a><h3><a name="soup-socket-client-new-sync"></a>soup_socket_client_new_sync ()</h3><a class="indexterm" name="id2598859"></a><pre class="programlisting"><a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* soup_socket_client_new_sync     (const char *hostname,
+                                             guint port,
+                                             gpointer ssl_creds,
+                                             guint *status_ret);</pre><p>
+Creates a connection to <i class="parameter"><tt>hostname</tt></i> and <i class="parameter"><tt>port</tt></i>. If <i class="parameter"><tt>status_ret</tt></i> is not
+<tt class="literal">NULL</tt>, it will contain a status code on return.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>hostname</tt></i> :</span></td><td> remote machine to connect to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>port</tt></i> :</span></td><td> remote port to connect to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ssl_creds</tt></i> :</span></td><td> SSL credentials structure, or <tt class="literal">NULL</tt> if not SSL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>status_ret</tt></i> :</span></td><td> pointer to return the soup status in
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new socket, or <tt class="literal">NULL</tt> if it could not connect.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598979"></a><h3><a name="soup-socket-server-new"></a>soup_socket_server_new ()</h3><a class="indexterm" name="id2598988"></a><pre class="programlisting"><a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a>* soup_socket_server_new          (<a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a> *local_addr,
+                                             gpointer ssl_creds,
+                                             <a href="libsoup-SoupSocket.html#SoupSocketListenerCallback">SoupSocketListenerCallback</a> callback,
+                                             gpointer user_data);</pre><p>
+Create and open a new <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a> listening on the specified
+address. <i class="parameter"><tt>callback</tt></i> will be called each time a client connects,
+with a new <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>local_addr</tt></i> :</span></td><td> Local address to bind to. (Use <tt class="function">soup_address_any_new()</tt> to
+accept connections on any local address)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ssl_creds</tt></i> :</span></td><td> SSL credentials, or <tt class="literal">NULL</tt> if this is not an SSL server
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> Callback to call when a client connects
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data to pass to <i class="parameter"><tt>callback</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>, or NULL if there was a failure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599126"></a><h3><a name="soup-socket-get-local-address"></a>soup_socket_get_local_address ()</h3><a class="indexterm" name="id2599137"></a><pre class="programlisting"><a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a>* soup_socket_get_local_address  (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);</pre><p>
+Returns the <a
+href="../libsoup/SoupAddress.html"
+><span class="type">SoupAddress</span></a> corresponding to the local end of <i class="parameter"><tt>sock</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a
+href="../libsoup/SoupAddress.html"
+><span class="type">SoupAddress</span></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599207"></a><h3><a name="soup-socket-get-remote-address"></a>soup_socket_get_remote_address ()</h3><a class="indexterm" name="id2599218"></a><pre class="programlisting"><a
+href="../libsoup/SoupAddress.html"
+>SoupAddress</a>* soup_socket_get_remote_address (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock);</pre><p>
+Returns the <a
+href="../libsoup/SoupAddress.html"
+><span class="type">SoupAddress</span></a> corresponding to the remote end of <i class="parameter"><tt>sock</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a
+href="../libsoup/SoupAddress.html"
+><span class="type">SoupAddress</span></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599289"></a><h3><a name="SoupSocketIOStatus"></a>enum SoupSocketIOStatus</h3><a class="indexterm" name="id2599298"></a><pre class="programlisting">typedef enum {
+	SOUP_SOCKET_OK,
+	SOUP_SOCKET_WOULD_BLOCK,
+	SOUP_SOCKET_EOF,
+	SOUP_SOCKET_ERROR
+} SoupSocketIOStatus;
+</pre><p>
+Return value from the <a
+href="../libsoup/SoupSocket.html"
+><span class="type">SoupSocket</span></a> IO methods.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SOUP_SOCKET_OK</tt></span></td><td>Success
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_SOCKET_WOULD_BLOCK</tt></span></td><td>Cannot read/write any more at this time
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_SOCKET_EOF</tt></span></td><td>End of file
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_SOCKET_ERROR</tt></span></td><td>Other error
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599367"></a><h3><a name="soup-socket-read"></a>soup_socket_read ()</h3><a class="indexterm" name="id2599376"></a><pre class="programlisting"><a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> soup_socket_read         (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer buffer,
+                                             gsize len,
+                                             gsize *nread);</pre><p>
+Attempts to read up to <i class="parameter"><tt>len</tt></i> bytes from <i class="parameter"><tt>sock</tt></i> into <i class="parameter"><tt>buffer</tt></i>. If some
+data is successfully read, <a href="libsoup-SoupSocket.html#soup-socket-read"><tt class="function">soup_socket_read()</tt></a> will return
+<tt class="literal">SOUP_SOCKET_OK</tt>, and *<i class="parameter"><tt>nread</tt></i> will contain the number of bytes
+actually read.
+</p><p>
+If <i class="parameter"><tt>sock</tt></i> is non-blocking, and no data is available, the return
+value will be <tt class="literal">SOUP_SOCKET_WOULD_BLOCK</tt>. In this case, the caller
+can connect to the <tt class="literal">readable</tt> signal to know when there is more data
+to read. (NB: You MUST read all available data off the socket
+first. The <tt class="literal">readable</tt> signal will only be emitted after
+<a href="libsoup-SoupSocket.html#soup-socket-read"><tt class="function">soup_socket_read()</tt></a> has returned <tt class="literal">SOUP_SOCKET_WOULD_BLOCK</tt>.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> the socket
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> buffer to read into
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> size of <i class="parameter"><tt>buffer</tt></i> in bytes
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>nread</tt></i> :</span></td><td> on return, the number of bytes read into <i class="parameter"><tt>buffer</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <a href="libsoup-SoupSocket.html#SoupSocketIOStatus"><span class="type">SoupSocketIOStatus</span></a>, as described above (or
+<tt class="literal">SOUP_SOCKET_EOF</tt> if the socket is no longer connected, or
+<tt class="literal">SOUP_SOCKET_ERROR</tt> on any other error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599523"></a><h3><a name="soup-socket-read-until"></a>soup_socket_read_until ()</h3><a class="indexterm" name="id2599531"></a><pre class="programlisting"><a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> soup_socket_read_until   (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gpointer buffer,
+                                             gsize len,
+                                             gconstpointer boundary,
+                                             gsize boundary_len,
+                                             gsize *nread,
+                                             gboolean *got_boundary);</pre><p>
+Like <a href="libsoup-SoupSocket.html#soup-socket-read"><tt class="function">soup_socket_read()</tt></a>, but reads no further than the first
+occurrence of <i class="parameter"><tt>boundary</tt></i>. (If the boundary is found, it will be
+included in the returned data, and *<i class="parameter"><tt>got_boundary</tt></i> will be set to
+<tt class="literal">TRUE</tt>.) Any data after the boundary will returned in future reads.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> the socket
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> buffer to read into
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> size of <i class="parameter"><tt>buffer</tt></i> in bytes
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>boundary</tt></i> :</span></td><td> boundary to read until
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>boundary_len</tt></i> :</span></td><td> length of <i class="parameter"><tt>boundary</tt></i> in bytes
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>nread</tt></i> :</span></td><td> on return, the number of bytes read into <i class="parameter"><tt>buffer</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>got_boundary</tt></i> :</span></td><td> on return, whether or not the data in <i class="parameter"><tt>buffer</tt></i>
+ends with the boundary string
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> as for <a href="libsoup-SoupSocket.html#soup-socket-read"><tt class="function">soup_socket_read()</tt></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599706"></a><h3><a name="soup-socket-write"></a>soup_socket_write ()</h3><a class="indexterm" name="id2599715"></a><pre class="programlisting"><a href="libsoup-SoupSocket.html#SoupSocketIOStatus">SoupSocketIOStatus</a> soup_socket_write        (<a
+href="../libsoup/SoupSocket.html"
+>SoupSocket</a> *sock,
+                                             gconstpointer buffer,
+                                             gsize len,
+                                             gsize *nwrote);</pre><p>
+Attempts to write <i class="parameter"><tt>len</tt></i> bytes from <i class="parameter"><tt>buffer</tt></i> to <i class="parameter"><tt>sock</tt></i>. If some data is
+successfully written, the resturn status will be
+<tt class="literal">SOUP_SOCKET_SUCCESS</tt>, and *<i class="parameter"><tt>nwrote</tt></i> will contain the number of bytes
+actually written.
+</p><p>
+If <i class="parameter"><tt>sock</tt></i> is non-blocking, and no data could be written right away,
+the return value will be <tt class="literal">SOUP_SOCKET_WOULD_BLOCK</tt>. In this case,
+the caller can connect to the <tt class="literal">writable</tt> signal to know when more
+data can be written. (NB: <tt class="literal">writable</tt> is only emitted after a
+<tt class="literal">SOUP_SOCKET_WOULD_BLOCK</tt>.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> the socket
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> data to write
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> size of <i class="parameter"><tt>buffer</tt></i>, in bytes
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>nwrote</tt></i> :</span></td><td> on return, number of bytes written
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <a href="libsoup-SoupSocket.html#SoupSocketIOStatus"><span class="type">SoupSocketIOStatus</span></a>, as described above (or
+<tt class="literal">SOUP_SOCKET_EOF</tt> or <tt class="literal">SOUP_SOCKET_ERROR</tt>).
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupSoapMessage.html"><b>&lt;&lt; SoupSoapMessage</b></a></td><td align="right"><a accesskey="n" href="libsoup-soup-ssl.html"><b>soup-ssl &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,3 +1,74 @@
+2005-01-24  Dan Winship  <danw@novell.com>
+
+	* configure.in: bump version to 2.2.2
+
+	* NEWS: update
+
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	** See ximian bug #70323.
+
+	* libsoup/soup-connection-ntlm.c: replace all unsigned long/long
+	types with guint32, as the code needs 32 bit longs.
+
+2004-10-20  Dan Winship  <danw@novell.com>
+
+	* libsoup/soup-gnutls.c: Commit the alleged changes from the 10-06
+	commit, which somehow did not actually get committed then.
+
+	* libsoup/soup-connection.c (SoupConnectionPrivate): add a flag
+	indicating whether or not the connection is connected.
+	(tunnel_connect_finished): If successful, set connected. If the
+	server returns a 3xx response, translate it to 407 (under the
+	assumption that it's trying to redirect us to an HTML login page,
+	as in bug 68531). Use soup_socket_start_proxy_ssl() rather than
+	soup_socket_start_ssl().
+	(socket_connect_result, soup_connection_connect_sync): If
+	successful, set connected
+	(soup_connection_disconnect): Don't emit "disconnected" if we
+	aren't yet connected, or the message that was waiting for this
+	connection may get stranded in the queue. (also part of 68531)
+
+	* libsoup/soup-socket.c (soup_socket_start_proxy_ssl): New, starts
+	SSL and lets the caller pass the expected hostname. Fixes a
+	problem where SSL certification validation would always fail if
+	you used a proxy, because it was comparing the cert against the
+	proxy's hostname. (68583)
+
+2004-10-06  Dan Winship  <danw@novell.com>
+
+	* configure.in: Bump version to 2.2.1
+
+	* NEWS: update
+
+2004-10-06  Dan Winship  <danw@novell.com>
+
+	* libsoup/soup-ssl.h (SoupSocketError): add
+	SOUP_SSL_ERROR_CERTIFICATE.
+
+	* libsoup/soup-gnutls.c (do_handshake): Pass the GError to
+	verify_certificate.
+	(verify_certificate): Set the GError appropriately rather than
+	spewing g_warnings.
+
+	* libsoup/soup-socket.c (read_from_network, soup_socket_write): If
+	the GIOChannel operation returns an error, store it as GOBject
+	data on the socket (as a hack so soup-message-io.c can access it
+	without us needing to change SoupSocket's API).
+
+	* libsoup/soup-message-io.c (io_error): peek at the socket's
+	"last_error" datum and set the message's status to SSL_FAILED
+	(with the GError's message string) rather than IO_ERROR, if
+	appropriate. For 64414.
+
+2004-09-30  Dan Winship  <danw@novell.com>
+
+	* libsoup/soup-gnutls.c (soup_gnutls_init): Add this, with some
+	extra initialization needed for libgcrypt 1.2 or higher. Fixes
+	66342.
+	(soup_ssl_get_client_credentials,
+	soup_ssl_get_server_credentials): Call soup_gnutls_init().
+
 2004-08-26  Dan Winship  <danw@novell.com>
 
 	* configure.in: Bump version to 2.2.0.

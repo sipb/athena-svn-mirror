@@ -1,34 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupConnection</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupAuthDigest.html" title="SoupAuthDigest"><link rel="next" href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
-        .synopsis, .classsynopsis {
-            background: #eeeeee;
-            border: solid 1px #aaaaaa;
-            padding: 0.5em;
-        }
-        .programlisting {
-            background: #eeeeff;
-            border: solid 1px #aaaaff;
-            padding: 0.5em;
-        }
-        .variablelist {
-            padding: 4px;
-            margin-left: 3em;
-        }
-        .navigation {
-            background: #ffeeee;
-            border: solid 1px #ffaaaa;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        .navigation a {
-            color: #770000;
-        }
-        .navigation a:visited {
-            color: #550000;
-        }
-        .navigation .title {
-            font-size: 200%;
-        }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupAuthDigest.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupConnectionNTLM.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupConnection"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupConnection</span></h2><p>SoupConnection &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupConnection</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupAuthDigest.html" title="SoupAuthDigest"><link rel="next" href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><link rel="chapter" href="ch01.html" title="libsoup"><link rel="refentry" href="libsoup-soup-dns.html" title="soup-dns"><link rel="refentry" href="libsoup-SoupAddress.html" title="SoupAddress"><link rel="refentry" href="SoupAuth.html" title="SoupAuth"><link rel="refentry" href="SoupAuthBasic.html" title="SoupAuthBasic"><link rel="refentry" href="SoupAuthDigest.html" title="SoupAuthDigest"><link rel="refentry" href="SoupConnection.html" title="SoupConnection"><link rel="refentry" href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><link rel="refentry" href="libsoup-soup-headers.html" title="soup-headers"><link rel="refentry" href="libsoup-soup-md5-utils.html" title="soup-md5-utils"><link rel="refentry" href="libsoup-soup-message-private.html" title="soup-message-private"><link rel="refentry" href="libsoup-soup-message-queue.html" title="soup-message-queue"><link rel="refentry" href="SoupMessage.html" title="SoupMessage"><link rel="refentry" href="libsoup-soup-method.html" title="soup-method"><link rel="refentry" href="libsoup-soup-misc.html" title="soup-misc"><link rel="refentry" href="libsoup-soup-server-auth.html" title="soup-server-auth"><link rel="refentry" href="libsoup-SoupServerMessage.html" title="SoupServerMessage"><link rel="refentry" href="libsoup-SoupServer.html" title="SoupServer"><link rel="refentry" href="libsoup-SoupSession.html" title="SoupSession"><link rel="refentry" href="SoupSoapMessage.html" title="SoupSoapMessage"><link rel="refentry" href="libsoup-SoupSocket.html" title="SoupSocket"><link rel="refentry" href="libsoup-soup-ssl.html" title="soup-ssl"><link rel="refentry" href="libsoup-soup-status.html" title="soup-status"><link rel="refentry" href="libsoup-soup-uri.html" title="soup-uri"><link rel="section" href="SoupConnection.html#id2537113" title="Description"><link rel="section" href="SoupConnection.html#id2537123" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupAuthDigest.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupConnectionNTLM.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupConnection"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupConnection</span></h2><p>SoupConnection &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
@@ -62,18 +32,18 @@ void        <a href="SoupConnection.html#soup-connection-reauthenticate">soup_co
                                              char **username,
                                              char **password);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2525728"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2537113"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2525737"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2525742"></a><h3><a name="SOUP-CONNECTION-ORIGIN-URI-CAPS"></a>SOUP_CONNECTION_ORIGIN_URI</h3><a class="indexterm" name="id2525754"></a><pre class="programlisting">#define SOUP_CONNECTION_ORIGIN_URI      "origin-uri"
+</p></div><div class="refsect1" lang="en"><a name="id2537123"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2537128"></a><h3><a name="SOUP-CONNECTION-ORIGIN-URI-CAPS"></a>SOUP_CONNECTION_ORIGIN_URI</h3><a class="indexterm" name="id2571205"></a><pre class="programlisting">#define SOUP_CONNECTION_ORIGIN_URI      "origin-uri"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2570436"></a><h3><a name="SOUP-CONNECTION-PROXY-URI-CAPS"></a>SOUP_CONNECTION_PROXY_URI</h3><a class="indexterm" name="id2570446"></a><pre class="programlisting">#define SOUP_CONNECTION_PROXY_URI       "proxy-uri"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2571215"></a><h3><a name="SOUP-CONNECTION-PROXY-URI-CAPS"></a>SOUP_CONNECTION_PROXY_URI</h3><a class="indexterm" name="id2571226"></a><pre class="programlisting">#define SOUP_CONNECTION_PROXY_URI       "proxy-uri"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2570456"></a><h3><a name="SOUP-CONNECTION-SSL-CREDENTIALS-CAPS"></a>SOUP_CONNECTION_SSL_CREDENTIALS</h3><a class="indexterm" name="id2570466"></a><pre class="programlisting">#define SOUP_CONNECTION_SSL_CREDENTIALS "ssl-creds"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2571236"></a><h3><a name="SOUP-CONNECTION-SSL-CREDENTIALS-CAPS"></a>SOUP_CONNECTION_SSL_CREDENTIALS</h3><a class="indexterm" name="id2571245"></a><pre class="programlisting">#define SOUP_CONNECTION_SSL_CREDENTIALS "ssl-creds"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2570477"></a><h3><a name="soup-connection-new"></a>soup_connection_new ()</h3><a class="indexterm" name="id2570485"></a><pre class="programlisting"><a href="SoupConnection.html" title="SoupConnection">SoupConnection</a>* soup_connection_new         (const char *propname1,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2571256"></a><h3><a name="soup-connection-new"></a>soup_connection_new ()</h3><a class="indexterm" name="id2571264"></a><pre class="programlisting"><a href="SoupConnection.html" title="SoupConnection">SoupConnection</a>* soup_connection_new         (const char *propname1,
                                              ...);</pre><p>
 Creates an HTTP connection. You must set at least one of
 <tt class="literal">SOUP_CONNECTION_ORIGIN_URI</tt> or <tt class="literal">SOUP_CONNECTION_PROXY_URI</tt>. If you
@@ -88,7 +58,7 @@ You must call <a href="SoupConnection.html#soup-connection-connect-async"><tt cl
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>propname1</tt></i> :</span></td><td> name of first property to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new connection (not yet ready for use).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2570575"></a><h3><a name="SoupConnectionCallback"></a>SoupConnectionCallback ()</h3><a class="indexterm" name="id2570584"></a><pre class="programlisting">void        (*SoupConnectionCallback)       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571355"></a><h3><a name="SoupConnectionCallback"></a>SoupConnectionCallback ()</h3><a class="indexterm" name="id2571363"></a><pre class="programlisting">void        (*SoupConnectionCallback)       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
                                              guint status,
                                              gpointer data);</pre><p>
 The callback function passed to <a href="SoupConnection.html#soup-connection-connect-async"><tt class="function">soup_connection_connect_async()</tt></a>.
@@ -97,7 +67,7 @@ The callback function passed to <a href="SoupConnection.html#soup-connection-con
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>the data passed to <a href="SoupConnection.html#soup-connection-connect-async"><tt class="function">soup_connection_connect_async()</tt></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2570675"></a><h3><a name="soup-connection-connect-async"></a>soup_connection_connect_async ()</h3><a class="indexterm" name="id2562403"></a><pre class="programlisting">void        soup_connection_connect_async   (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571454"></a><h3><a name="soup-connection-connect-async"></a>soup_connection_connect_async ()</h3><a class="indexterm" name="id2537793"></a><pre class="programlisting">void        soup_connection_connect_async   (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
                                              <a href="SoupConnection.html#SoupConnectionCallback">SoupConnectionCallback</a> callback,
                                              gpointer user_data);</pre><p>
 Asynchronously connects <i class="parameter"><tt>conn</tt></i>.</p><p>
@@ -105,36 +75,38 @@ Asynchronously connects <i class="parameter"><tt>conn</tt></i>.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> the connection
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> callback to call when the connection succeeds or fails
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data for <i class="parameter"><tt>callback</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562483"></a><h3><a name="soup-connection-connect-sync"></a>soup_connection_connect_sync ()</h3><a class="indexterm" name="id2562494"></a><pre class="programlisting">guint       soup_connection_connect_sync    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537872"></a><h3><a name="soup-connection-connect-sync"></a>soup_connection_connect_sync ()</h3><a class="indexterm" name="id2537884"></a><pre class="programlisting">guint       soup_connection_connect_sync    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
 Synchronously connects <i class="parameter"><tt>conn</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> the connection
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the soup status
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562545"></a><h3><a name="soup-connection-disconnect"></a>soup_connection_disconnect ()</h3><a class="indexterm" name="id2562554"></a><pre class="programlisting">void        soup_connection_disconnect      (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537935"></a><h3><a name="soup-connection-disconnect"></a>soup_connection_disconnect ()</h3><a class="indexterm" name="id2537944"></a><pre class="programlisting">void        soup_connection_disconnect      (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
 Disconnects <i class="parameter"><tt>conn</tt></i>'s socket and emits a <tt class="literal">disconnected</tt> signal.
 After calling this, <i class="parameter"><tt>conn</tt></i> will be essentially useless.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> a connection
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562603"></a><h3><a name="soup-connection-is-in-use"></a>soup_connection_is_in_use ()</h3><a class="indexterm" name="id2562612"></a><pre class="programlisting">gboolean    soup_connection_is_in_use       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537992"></a><h3><a name="soup-connection-is-in-use"></a>soup_connection_is_in_use ()</h3><a class="indexterm" name="id2538002"></a><pre class="programlisting">gboolean    soup_connection_is_in_use       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
 Tests whether or not <i class="parameter"><tt>conn</tt></i> is in use.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> a connection
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if there is currently a request being processed
 on <i class="parameter"><tt>conn</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562670"></a><h3><a name="soup-connection-last-used"></a>soup_connection_last_used ()</h3><a class="indexterm" name="id2572810"></a><pre class="programlisting">time_t      soup_connection_last_used       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538060"></a><h3><a name="soup-connection-last-used"></a>soup_connection_last_used ()</h3><a class="indexterm" name="id2573601"></a><pre class="programlisting">time_t      soup_connection_last_used       (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn);</pre><p>
 Returns the last time a response was received on <i class="parameter"><tt>conn</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> a <a href="SoupConnection.html" title="SoupConnection"><span class="type">SoupConnection</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the last time a response was received on <i class="parameter"><tt>conn</tt></i>, or 0
 if <i class="parameter"><tt>conn</tt></i> has not been used yet.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2572875"></a><h3><a name="soup-connection-send-request"></a>soup_connection_send_request ()</h3><a class="indexterm" name="id2572886"></a><pre class="programlisting">void        soup_connection_send_request    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2573666"></a><h3><a name="soup-connection-send-request"></a>soup_connection_send_request ()</h3><a class="indexterm" name="id2573677"></a><pre class="programlisting">void        soup_connection_send_request    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
                                              <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *req);</pre><p>
 Sends <i class="parameter"><tt>req</tt></i> on <i class="parameter"><tt>conn</tt></i>. This is a low-level function, intended for use
-by <a href="SoupSession.html" title="SoupSession"><span class="type">SoupSession</span></a>.</p><p>
+by <a
+href="../libsoup/SoupSession.html"
+><span class="type">SoupSession</span></a>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conn</tt></i> :</span></td><td> a <a href="SoupConnection.html" title="SoupConnection"><span class="type">SoupConnection</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>req</tt></i> :</span></td><td> a <a href="SoupMessage.html" title="SoupMessage"><span class="type">SoupMessage</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2572967"></a><h3><a name="soup-connection-authenticate"></a>soup_connection_authenticate ()</h3><a class="indexterm" name="id2572978"></a><pre class="programlisting">void        soup_connection_authenticate    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2573759"></a><h3><a name="soup-connection-authenticate"></a>soup_connection_authenticate ()</h3><a class="indexterm" name="id2573770"></a><pre class="programlisting">void        soup_connection_authenticate    (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
                                              <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg,
                                              const char *auth_type,
                                              const char *auth_realm,
@@ -151,7 +123,7 @@ subclasses.</p><p>
 authenticate with
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>password</tt></i> :</span></td><td> on successful return, will contain the password to
 authenticate with
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2573125"></a><h3><a name="soup-connection-reauthenticate"></a>soup_connection_reauthenticate ()</h3><a class="indexterm" name="id2573136"></a><pre class="programlisting">void        soup_connection_reauthenticate  (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2573916"></a><h3><a name="soup-connection-reauthenticate"></a>soup_connection_reauthenticate ()</h3><a class="indexterm" name="id2573927"></a><pre class="programlisting">void        soup_connection_reauthenticate  (<a href="SoupConnection.html" title="SoupConnection">SoupConnection</a> *conn,
                                              <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg,
                                              const char *auth_type,
                                              const char *auth_realm,

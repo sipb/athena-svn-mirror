@@ -14,11 +14,14 @@
 
 #ifdef HAVE_SSL
 
+#include <errno.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <glib.h>
 
+#include <gcrypt.h>
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 
@@ -46,14 +49,16 @@ typedef struct {
 } SoupGNUTLSChannel;
 
 static gboolean
-verify_certificate (gnutls_session session, const char *hostname)
+verify_certificate (gnutls_session session, const char *hostname, GError **err)
 {
 	int status;
 
 	status = gnutls_certificate_verify_peers (session);
 
 	if (status == GNUTLS_E_NO_CERTIFICATE_FOUND) {
-		g_warning ("No certificate was sent.");
+		g_set_error (err, SOUP_SSL_ERROR,
+			     SOUP_SSL_ERROR_CERTIFICATE,
+			     "No SSL certificate was sent.");
 		return FALSE;
 	}
 
@@ -61,17 +66,23 @@ verify_certificate (gnutls_session session, const char *hostname)
 	    status & GNUTLS_CERT_NOT_TRUSTED ||
 	    status & GNUTLS_CERT_REVOKED)
 	{
-		g_warning ("The certificate is not trusted.");
+		g_set_error (err, SOUP_SSL_ERROR,
+			     SOUP_SSL_ERROR_CERTIFICATE,
+			     "The SSL certificate is not trusted.");
 		return FALSE;
 	}
 
 	if (gnutls_certificate_expiration_time_peers (session) < time (0)) {
-		g_warning ("The certificate has expired.");
+		g_set_error (err, SOUP_SSL_ERROR,
+			     SOUP_SSL_ERROR_CERTIFICATE,
+			     "The SSL certificate has expired.");
 		return FALSE;
 	}
 
 	if (gnutls_certificate_activation_time_peers (session) > time (0)) {
-		g_warning ("The certificate is not yet activated.");
+		g_set_error (err, SOUP_SSL_ERROR,
+			     SOUP_SSL_ERROR_CERTIFICATE,
+			     "The SSL certificate is not yet activated.");
 		return FALSE;
 	}
 
@@ -81,7 +92,9 @@ verify_certificate (gnutls_session session, const char *hostname)
 		gnutls_x509_crt cert;
 
 		if (gnutls_x509_crt_init (&cert) < 0) {
-			g_warning ("Error initializing certificate.");
+			g_set_error (err, SOUP_SSL_ERROR,
+				     SOUP_SSL_ERROR_CERTIFICATE,
+				     "Error initializing SSL certificate.");
 			return FALSE;
 		}
       
@@ -89,22 +102,28 @@ verify_certificate (gnutls_session session, const char *hostname)
 			session, &cert_list_size);
 
 		if (cert_list == NULL) {
-			g_warning ("No certificate was found.");
+			g_set_error (err, SOUP_SSL_ERROR,
+				     SOUP_SSL_ERROR_CERTIFICATE,
+				     "No SSL certificate was found.");
 			return FALSE;
 		}
 
 		if (gnutls_x509_crt_import (cert, &cert_list[0],
 					    GNUTLS_X509_FMT_DER) < 0) {
-			g_warning ("The certificate could not be parsed.");
+			g_set_error (err, SOUP_SSL_ERROR,
+				     SOUP_SSL_ERROR_CERTIFICATE,
+				     "The SSL certificate could not be parsed.");
 			return FALSE;
 		}
 
 		if (!gnutls_x509_crt_check_hostname (cert, hostname)) {
-			g_warning ("The certificate does not match hostname.");
+			g_set_error (err, SOUP_SSL_ERROR,
+				     SOUP_SSL_ERROR_CERTIFICATE,
+				     "The SSL certificate does not match the hostname.");
 			return FALSE;
 		}
 	}
-   
+
 	return TRUE;
 }
 
@@ -132,15 +151,9 @@ do_handshake (SoupGNUTLSChannel *chan, GError **err)
 		return G_IO_STATUS_ERROR;
 	}
 
-	if (chan->type == SOUP_SSL_TYPE_CLIENT &&
-	    chan->cred->have_ca_file) {
-		if (!verify_certificate (chan->session, chan->hostname)) {
-			g_set_error (err, G_IO_CHANNEL_ERROR,
-				     G_IO_CHANNEL_ERROR_FAILED,
-				     "Unable to verify certificate");
-			return G_IO_STATUS_ERROR;
-		}
-	}
+	if (chan->type == SOUP_SSL_TYPE_CLIENT && chan->cred->have_ca_file &&
+	    !verify_certificate (chan->session, chan->hostname, err))
+		return G_IO_STATUS_ERROR;
 
 	return G_IO_STATUS_NORMAL;
 }
@@ -406,6 +419,22 @@ soup_ssl_wrap_iochannel (GIOChannel *sock, SoupSSLType type,
 	return NULL;
 }
 
+static gboolean soup_gnutls_inited = FALSE;
+
+#ifdef GCRY_THREAD_OPTION_PTHREAD_IMPL
+GCRY_THREAD_OPTION_PTHREAD_IMPL;
+#endif
+
+static void
+soup_gnutls_init (void)
+{
+#ifdef GCRY_THREAD_OPTION_PTHREAD_IMPL
+	gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
+#endif
+	gnutls_global_init ();
+	soup_gnutls_inited = TRUE;
+}
+
 /**
  * soup_ssl_get_client_credentials:
  * @ca_file: path to a file containing X509-encoded Certificate
@@ -427,7 +456,8 @@ soup_ssl_get_client_credentials (const char *ca_file)
 	SoupGNUTLSCred *cred;
 	int status;
 
-	gnutls_global_init ();
+	if (!soup_gnutls_inited)
+		soup_gnutls_init ();
 
 	cred = g_new0 (SoupGNUTLSCred, 1);
 	gnutls_certificate_allocate_credentials (&cred->cred);
@@ -484,7 +514,8 @@ soup_ssl_get_server_credentials (const char *cert_file, const char *key_file)
 {
 	SoupGNUTLSCred *cred;
 
-	gnutls_global_init ();
+	if (!soup_gnutls_inited)
+		soup_gnutls_init ();
 	if (!dh_params) {
 		if (!init_dh_params ())
 			return NULL;

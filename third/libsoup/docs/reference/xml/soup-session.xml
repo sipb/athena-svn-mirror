@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
                "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<refentry id="SoupSession">
+<refentry id="libsoup-SoupSession">
 <refmeta>
 <refentrytitle>SoupSession</refentrytitle>
 <manvolnum>3</manvolnum>
