@@ -19,11 +19,11 @@
 #include <string.h>
 #include <sys/file.h>
 #include <sys/param.h>
-#ifdef SOLARIS
+#ifdef POSIX
 #include <sys/utsname.h>
 #endif
 #ifndef lint
-static char *rcsid_zctl_c = "$Id: zctl.c,v 1.22 1993-11-19 15:35:30 probe Exp $";
+static char *rcsid_zctl_c = "$Id: zctl.c,v 1.23 1994-04-12 15:06:17 probe Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -62,7 +62,7 @@ main(argc,argv)
 	struct hostent *hent;
 	char ssline[BUFSIZ],oldsubsname[BUFSIZ],*envptr;
 	int retval,code,i;
-#ifdef SOLARIS
+#ifdef POSIX
 	struct utsname name;
 #endif
 
@@ -92,7 +92,7 @@ main(argc,argv)
 			com_err(argv[0], errno, "renaming .subscriptions");
 	}
 
-#ifdef SOLARIS
+#ifdef POSIX
 	uname(&name);
 	strcpy(ourhost, name.nodename);
 #else
@@ -128,7 +128,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.22 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.23 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
