@@ -1,5 +1,5 @@
 .\" 
-.\" $Id: from.1,v 1.4 1991-08-13 16:33:36 lwvanels Exp $
+.\" $Id: from.1,v 1.5 1991-08-18 10:07:24 lwvanels Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.1,v $
 .\" $Author: lwvanels $
 .\"
@@ -90,6 +90,17 @@ occurs.
 specifies that mail for 
 .I user
 should be checked, rather than the current user.
+.SH "FILES"
+.TP
+/afs/athena.mit.edu/system/config/from/ok
+An "off switch" for the from command, to allow the postmasters to disable
+this command if it presents too much load to the post office servers.  If
+this file is not present, ``from'' will not attempt to contact the servers
+.TP
+/afs/athena.mit.edu/system/config/from/message
+If the ``ok'' file is not present (disabling the from command) the contents
+of this file will be printed; hopefully, this will contain a message
+informing the user as to why the command was disabled.
 .SH "AUTHORS"
 Theodore Ts'o, Jerry Larivee, and John Carr
 .SH "SEE ALSO"
