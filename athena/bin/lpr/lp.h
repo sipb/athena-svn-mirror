@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.1 1990-04-16 12:02:33 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.2 1990-04-16 12:03:00 epeisach Exp $
  */
 
 /*
@@ -35,6 +35,11 @@
 #include <errno.h>
 #include <strings.h>
 #include "lp.local.h"
+
+#ifdef KERBEROS
+#include <krb.h>
+#define KLPR_SERVICE "rcmd"
+#endif KERBEROS
 
 extern int	DU;		/* daeomon user-id */
 extern int	MX;		/* maximum number of blocks to copy */
@@ -75,6 +80,11 @@ extern int	FS;		/* flags to set if lp is a tty */
 extern int	XC;		/* flags to clear for local mode */
 extern int	XS;		/* flags to set for local mode */
 extern short	RS;		/* restricted to those with local accounts */
+#ifdef PQUOTA
+extern char     *RQ;            /* Name of remote quota server */
+extern int      CP;	        /* Cost per page */
+extern char 	*QS;		/* Quota service for printer */
+#endif PQUOTA
 
 extern char	line[BUFSIZ];
 extern char	pbuf[];		/* buffer for printcap entry */
@@ -87,6 +97,14 @@ extern int	errno;
 #ifdef HESIOD
 extern char	alibuf[BUFSIZ/2]; /* buffer for printer alias */
 #endif
+
+#ifdef KERBEROS
+extern int      use_kerberos;
+extern int      kerberos_cf;
+extern char     kprincipal[];
+extern char     kinstance[];
+extern char     krealm[];
+#endif KERBEROS
 
 /*
  * Structure used for building a sorted list of control files.
