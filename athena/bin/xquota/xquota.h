@@ -27,7 +27,7 @@
 #define AUTHOR    ("Chris D. Peterson")
 
 #ifndef DEFAULTS_FILE
-#define DEFAULTS_FILE ("./XQuota.ad")
+#define DEFAULTS_FILE ("./Xquota.ad")
 #endif /* DEFAULTS_FILE */
 
 #ifndef TOP_HELP_FILE
