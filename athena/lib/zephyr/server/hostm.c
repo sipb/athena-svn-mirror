@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_c[] = "$Id: hostm.c,v 1.38 1992-01-17 07:47:00 lwvanels Exp $";
+static char rcsid_hostm_c[] = "$Id: hostm.c,v 1.39 1992-01-17 09:40:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -467,7 +467,7 @@ host_not_losing(who)
 #if 1
 			if (zdebug || 1)
 			    syslog (LOG_DEBUG,"lost client %s/%d",
-				    inet_ntoa(lhp->lh_client->zct_sin),
+				    inet_ntoa(lhp->lh_client->zct_sin.sin_addr),
 				    ntohs(lhp->lh_client->zct_sin.sin_port));
 #endif
 			/* deregister all subscriptions, and flush locations
