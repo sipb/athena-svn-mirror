@@ -1,10 +1,14 @@
-# $Id: Imakefile,v 1.21 1993-02-25 15:14:09 probe Exp $
+# $Id: Imakefile,v 1.22 1993-04-29 18:03:15 miki Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
 #endif
 
+#ifdef SOLARIS
+AFSLIBS = $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+#else
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
+#endif
 DEFINES = $(MACHDEFS)
 
 SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
