@@ -1,0 +1,30 @@
+Name: athena-xlogin
+Summary: The Athena graphical login interface
+Copyright: MIT
+Group: User Interface/X
+
+Requires: athena-krb5 athena-libal athena-wcl athena-larv athena-libMu
+
+%description
+xlogin displays a login window and performs an Athena login session.
+It is normally run by dm from the athena-dm package.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
+
+%files
+/etc/athena
+/usr/athena
+%dir /var/athena/sessions
