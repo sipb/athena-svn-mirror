@@ -1112,7 +1112,7 @@ proc_owner (pid_t pid)
 }
 
 int
-setpriority (int dummy, int who, int niceval)
+setpriority (int dummy, id_t who, int niceval)
 {
   int scale;
   int prio;
