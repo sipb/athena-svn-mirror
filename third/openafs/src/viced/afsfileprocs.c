@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.4 2003-09-09 02:44:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.5 2003-11-12 12:48:22 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -318,7 +318,7 @@ retry:
       ViceLog(3,("Discarded a packet for deleted host %08x\n",thost->host));
       code = VBUSY; /* raced, so retry */
     }
-    else if (thost->hostFlags & VENUSDOWN) {
+    else if ((thost->hostFlags & VENUSDOWN) || (thost->hostFlags & HFE_LATER)){
       if (BreakDelayedCallBacks_r(thost)) {
 	ViceLog(0,("BreakDelayedCallbacks FAILED for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
 	if ( MultiProbeAlternateAddress_r (thost) ) {
@@ -4272,6 +4272,7 @@ SRXAFS_FlushCPS(tcon, vids, addrs, spare1, spare2, spare3)
       if ((client->ViceId != ANONYMOUSID) && client->CPS.prlist_val) {
 	free(client->CPS.prlist_val);
 	client->CPS.prlist_val = (afs_int32 *)0;
+	client->CPS.prlist_len = 0;
       }
       ReleaseWriteLock(&client->lock);
     }

@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.6 2003-09-09 02:44:56 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.7 2003-11-12 12:48:23 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -799,7 +799,7 @@ h_TossStuff_r(host)
 	    free(host->hcps.prlist_val);
 	host->hcps.prlist_val = (afs_int32 *)0;
 	host->hcps.prlist_len = 0;
-	DeleteAllCallBacks_r(host);
+	DeleteAllCallBacks_r(host, 1);
 	host->hostFlags &= ~RESETDONE;	/* just to be safe */
 
 	/* if alternate addresses do not exist */
