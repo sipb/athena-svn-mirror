@@ -4,7 +4,7 @@
 #
 #
 ftp	stream	tcp	nowait	switched	root	/usr/sbin/in.ftpd	in.ftpd
-telnet	stream	tcp	nowait	switched	root	/usr/sbin/in.telnetd	in.telnetd
+telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd
 shell	stream	tcp	nowait	switched	root	/usr/sbin/in.rshd	in.rshd
 login	stream	tcp	nowait	switched	root	/usr/sbin/in.rlogind	in.rlogind
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd
