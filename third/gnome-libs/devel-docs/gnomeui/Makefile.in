@@ -165,7 +165,7 @@ tmpl_sources =  	tmpl/gnome-about.sgml				tmpl/gnome-animator.sgml			tmpl/gnome-
 
 
 gnomeui_docdir = $(HTML_DIR)
-gnomeui_doc_DATA =  	gnomeui.html					gnomeui.hierarchy				gnomeui.types					gnomeui-scan.c					gnomeui-decl.txt				gnomeui-sections.txt
+gnomeui_doc_DATA =  	gnomeui.html					gnomeui.hierarchy				gnomeui.types					gnomeui-decl.txt				gnomeui-sections.txt
 
 
 EXTRA_DIST = $(gnomeui_doc_DATA)

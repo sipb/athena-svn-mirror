@@ -156,7 +156,7 @@ INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS)			-I$(top_srcdir)/intl -I$(top_bui
 libzvt_la_SOURCES =  	gnome-login-support.h		gnome-login-support.c		lists.c				subshell.h			subshell.c			subshell-includes.h		update.c			vt.c				zvtterm.c
 
 
-libzvt_la_LDFLAGS = -version-info 4:9:2 -rpath $(libdir)
+libzvt_la_LDFLAGS = -version-info 4:10:2 -rpath $(libdir)
 
 libzvtinclude_HEADERS =  	lists.h				vt.h				vtx.h				zvtterm.h
 
@@ -400,6 +400,24 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gnome-login-support.o: gnome-login-support.c ../config.h \
+	../support/getopt.h gnome-login-support.h
+gnome-pty-helper.o: gnome-pty-helper.c ../config.h ../support/getopt.h \
+	gnome-pty.h gnome-login-support.h
+gnome-utmp.o: gnome-utmp.c ../config.h ../support/getopt.h gnome-pty.h \
+	gnome-login-support.h
+lists.lo lists.o : lists.c lists.h
+subshell.lo subshell.o : subshell.c ../config.h subshell-includes.h \
+	../support/getopt.h gnome-login-support.h vt.h lists.h \
+	subshell.h gnome-pty.h
+test-utmp.o: test-utmp.c ../support/getopt.h gnome-pty.h
+update.lo update.o : update.c ../config.h ../support/getopt.h lists.h \
+	vt.h vtx.h lists.h vt.h
+vt.lo vt.o : vt.c ../support/getopt.h lists.h vt.h subshell.h
+zterm.o: zterm.c ../support/getopt.h zvtterm.h vtx.h lists.h vt.h
+zvtterm.lo zvtterm.o : zvtterm.c ../config.h zvtterm.h vtx.h lists.h \
+	vt.h
+
 info-am:
 info: info-am
 dvi-am:

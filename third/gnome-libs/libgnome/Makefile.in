@@ -168,7 +168,7 @@ noinst_HEADERS =  	gnome-i18nP.h					gnome-triggersP.h				libgnomeP.h
 
 EXTRA_DIST = parse-path.cP 
 
-libgnome_la_LDFLAGS = -version-info 36:1:4 #-rpath $(libdir)
+libgnome_la_LDFLAGS = -version-info 36:3:4 #-rpath $(libdir)
 libgnome_la_LIBADD = $(GLIB_LIBS) -lm $(DL_LIB)
 
 bin_PROGRAMS = dns-helper gnome-dump-metadata gnome-moz-remote 	gconfigger gnome-gen-mimedb
@@ -428,6 +428,143 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+dns-helper.o: dns-helper.c ../support/getopt.h
+gconfigger.o: gconfigger.c libgnome.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18n.h \
+	gnome-metadata.h gnome-mime.h gnome-mime-info.h gnome-paper.h \
+	gnome-popt.h ../support/popt-gnome.h gnome-remote.h \
+	gnome-score.h gnome-sound.h gnome-triggers.h gnome-util.h \
+	gnome-url.h
+gnome-config.lo gnome-config.o : gnome-config.c ../config.h \
+	../support/getopt.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h parse-path.cP
+gnome-dentry.lo gnome-dentry.o : gnome-dentry.c ../config.h gnome-defs.h \
+	gnome-util.h gnome-url.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h
+gnome-dump.o: gnome-dump.c ../config.h ../support/getopt.h libgnome.h \
+	gnome-defs.h gnome-config.h gnome-dentry.h gnome-exec.h \
+	gnome-help.h gnome-i18n.h gnome-metadata.h gnome-mime.h \
+	gnome-mime-info.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-util.h gnome-url.h
+gnome-exec.lo gnome-exec.o : gnome-exec.c ../config.h gnome-defs.h \
+	gnome-exec.h gnome-util.h ../support/getopt.h
+gnome-fileconvert.lo gnome-fileconvert.o : gnome-fileconvert.c \
+	../support/getopt.h gnome-defs.h gnome-fileconvert.h \
+	gnome-util.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h
+gnome-gen-mimedb.o: gnome-gen-mimedb.c libgnome.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18n.h gnome-metadata.h gnome-mime.h gnome-mime-info.h \
+	gnome-paper.h gnome-popt.h ../support/popt-gnome.h \
+	gnome-remote.h gnome-score.h gnome-sound.h gnome-triggers.h \
+	gnome-util.h gnome-url.h ../support/getopt.h gnome-magic.h
+gnome-help.lo gnome-help.o : gnome-help.c ../config.h \
+	../support/getopt.h gnome-defs.h gnome-help.h gnome-i18nP.h \
+	gnome-util.h gnome-url.h gnome-defs.h
+gnome-history.lo gnome-history.o : gnome-history.c gnome-defs.h \
+	gnome-util.h gnome-history.h
+gnome-i18n.lo gnome-i18n.o : gnome-i18n.c ../config.h libgnomeP.h \
+	gnome-defs.h gnome-config.h gnome-dentry.h gnome-exec.h \
+	gnome-help.h gnome-i18nP.h gnome-metadata.h gnome-mime.h \
+	gnome-paper.h gnome-popt.h ../support/popt-gnome.h \
+	gnome-remote.h gnome-score.h gnome-sound.h gnome-triggers.h \
+	gnome-triggersP.h gnome-util.h gnome-url.h
+gnomelib-init.lo gnomelib-init.o : gnomelib-init.c ../config.h \
+	../support/getopt.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h
+gnome-magic.lo gnome-magic.o : gnome-magic.c libgnome.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18n.h gnome-metadata.h gnome-mime.h gnome-mime-info.h \
+	gnome-paper.h gnome-popt.h ../support/popt-gnome.h \
+	gnome-remote.h gnome-score.h gnome-sound.h gnome-triggers.h \
+	gnome-util.h gnome-url.h ../support/getopt.h gnome-mime.h \
+	gnome-magic.h
+gnome-metadata.lo gnome-metadata.o : gnome-metadata.c ../config.h \
+	../support/getopt.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h gnome-mime.h gnome-regex.h \
+	../support/gnomesupport.h
+gnome-mime-info.lo gnome-mime-info.o : gnome-mime-info.c ../config.h \
+	../support/getopt.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h gnome-mime.h gnome-regex.h \
+	../support/gnomesupport.h gnome-mime-info.h
+gnome-mime.lo gnome-mime.o : gnome-mime.c ../config.h \
+	../support/getopt.h libgnomeP.h gnome-defs.h gnome-config.h \
+	gnome-dentry.h gnome-exec.h gnome-help.h gnome-i18nP.h \
+	gnome-metadata.h gnome-mime.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-triggersP.h gnome-util.h \
+	gnome-url.h gnome-mime.h
+gnome-moz-remote.o: gnome-moz-remote.c ../config.h ../support/getopt.h \
+	../support/gnomesupport.h libgnome.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18n.h gnome-metadata.h gnome-mime.h gnome-mime-info.h \
+	gnome-paper.h gnome-popt.h ../support/popt-gnome.h \
+	gnome-remote.h gnome-score.h gnome-sound.h gnome-triggers.h \
+	gnome-util.h gnome-url.h vroot.h
+gnome-paper.lo gnome-paper.o : gnome-paper.c libgnomeP.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18nP.h gnome-metadata.h gnome-mime.h gnome-paper.h \
+	gnome-popt.h ../support/popt-gnome.h gnome-remote.h \
+	gnome-score.h gnome-sound.h gnome-triggers.h gnome-triggersP.h \
+	gnome-util.h gnome-url.h
+gnome-popt.lo gnome-popt.o : gnome-popt.c ../config.h \
+	../support/getopt.h gnome-defs.h libgnomeP.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18nP.h gnome-metadata.h gnome-mime.h gnome-paper.h \
+	gnome-popt.h ../support/popt-gnome.h gnome-remote.h \
+	gnome-score.h gnome-sound.h gnome-triggers.h gnome-triggersP.h \
+	gnome-util.h gnome-url.h
+gnome-regex.lo gnome-regex.o : gnome-regex.c ../config.h libgnomeP.h \
+	gnome-defs.h gnome-config.h gnome-dentry.h gnome-exec.h \
+	gnome-help.h gnome-i18nP.h gnome-metadata.h gnome-mime.h \
+	gnome-paper.h gnome-popt.h ../support/popt-gnome.h \
+	gnome-remote.h gnome-score.h gnome-sound.h gnome-triggers.h \
+	gnome-triggersP.h gnome-util.h gnome-url.h gnome-regex.h
+gnome-remote.lo gnome-remote.o : gnome-remote.c libgnomeP.h gnome-defs.h \
+	gnome-config.h gnome-dentry.h gnome-exec.h gnome-help.h \
+	gnome-i18nP.h gnome-metadata.h gnome-mime.h gnome-paper.h \
+	gnome-popt.h ../support/popt-gnome.h gnome-remote.h \
+	gnome-score.h gnome-sound.h gnome-triggers.h gnome-triggersP.h \
+	gnome-util.h gnome-url.h
+gnome-score.lo gnome-score.o : gnome-score.c ../config.h \
+	../support/getopt.h gnome-defs.h gnome-score.h gnome-util.h
+gnome-sound.lo gnome-sound.o : gnome-sound.c ../config.h libgnome.h \
+	gnome-defs.h gnome-config.h gnome-dentry.h gnome-exec.h \
+	gnome-help.h gnome-i18n.h gnome-metadata.h gnome-mime.h \
+	gnome-mime-info.h gnome-paper.h gnome-popt.h \
+	../support/popt-gnome.h gnome-remote.h gnome-score.h \
+	gnome-sound.h gnome-triggers.h gnome-util.h gnome-url.h \
+	gnome-sound.h ../support/getopt.h
+gnome-triggers.lo gnome-triggers.o : gnome-triggers.c ../config.h \
+	gnome-triggers.h gnome-defs.h gnome-triggersP.h gnome-config.h \
+	gnome-util.h gnome-sound.h ../support/getopt.h
+gnome-url.lo gnome-url.o : gnome-url.c ../config.h gnome-defs.h \
+	gnome-config.h gnome-exec.h gnome-util.h gnome-popt.h \
+	gnome-defs.h ../support/popt-gnome.h gnome-url.h
+gnome-util.lo gnome-util.o : gnome-util.c ../config.h \
+	../support/getopt.h gnome-defs.h gnome-util.h
+
 info-am:
 info: info-am
 dvi-am:
