@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.9 1990-02-15 18:12:43 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.10 1990-02-28 11:36:41 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -123,11 +123,10 @@ t_forward(Request)
   switch (status) 
     {
     case SUCCESS:
-      printf("Question forwarded.  ");
-      if(is_option(Request->options, OFF_OPT))
-	printf("You have signed off OLC.\n");
-      else
-	printf("You are signed off OLC.\n");
+      printf("Question forwarded.  %s\n",
+	     (is_option (Request->options, OFF_OPT)
+	      ? "You have signed off OLC..."
+	      : ""));
 
       t_set_default_instance(Request);
       status = SUCCESS;
@@ -143,7 +142,7 @@ t_forward(Request)
       if(is_option(Request->options, OFF_OPT))
 	printf("You have signed off OLC.\n");
       else
-	printf("You are signed off of OLC.\n");
+	printf("(You are not signed on to OLC.)\n");
 
       t_set_default_instance(Request);
       status = SUCCESS;
