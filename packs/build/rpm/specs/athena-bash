@@ -21,6 +21,10 @@ if [ ! -f /etc/shells ] || ! grep -q '^/bin/athena/bash$' /etc/shells; then
   echo "/bin/athena/bash" >> /etc/shells
 fi
 
+for file in `find /usr/athena/info -type f ! -name dir`; do
+    install-info --info-dir=/usr/athena/info $file 2>/dev/null
+done
+
 %postun
 [ $1 = 0 ] || exit 0
 grep -v '^/bin/athena/bash$' < /etc/shells > /etc/shells.rpm
