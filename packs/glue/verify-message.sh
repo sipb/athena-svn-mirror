@@ -6,8 +6,6 @@
 # Location of public key ring: pubring.pgp
 PGPPATH=/afs/athena/system/config/keys/early-warn; export PGPPATH
 
-attach -quiet -nomap pgp
-
 # Nothing below this line needs to be modified to use a different keyring.
 
 if [ $# -eq 0 ]; then
@@ -41,7 +39,7 @@ page=${PAGER-more}
 echo "Please make sure the following says the signature is good and that"
 echo "the message is addressed to you."
 
-@PATH@ $msgfile -o $outfile +verbose=0
+/bin/athena/attachandrun pgp pgp $msgfile -o $outfile +verbose=0
 if [ $? = 0 ]; then
 	echo ""
 	echo $N "The message follows. Press ENTER to continue... $C"
