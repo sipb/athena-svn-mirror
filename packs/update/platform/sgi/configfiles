@@ -4,11 +4,11 @@
 /.xsession
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
-/etc/ftpusers
-/etc/syslog.conf
 /etc/athena/newsyslog.conf
-/etc/shells
-/etc/resolv.conf
-/etc/syslog.conf
+/etc/ftpusers
 /etc/inetd.conf
-/var/spool/cron/crontabs/root"
+/etc/resolv.conf
+/etc/services
+/etc/shells
+/etc/syslog.conf
+/var/spool/cron/crontabs/root
