@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: opus $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.4 1987-10-06 20:36:04 opus Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.5 1988-02-25 19:16:48 opus Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -34,7 +34,7 @@
 #define ever (;;)
 
 #define SERV_TIMEOUT 20
-#define NOTICE_TIMEOUT 10
+#define NOTICE_TIMEOUT 25
 #define BOOTING 1
 #define NOTICES 2
 
