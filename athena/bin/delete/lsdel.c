@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.17 1991-06-04 18:57:58 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.18 1991-06-04 19:05:47 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -282,6 +282,11 @@ int num;
 
 
 
+static int alphacmp(str1, str2)
+char **str1, **str2;
+{
+     return(strcmp(*str1, *str2));
+}
 
 list_files()
 {
@@ -317,7 +322,9 @@ list_files()
 	  error("unique");
 	  return retval;
      }
-     
+
+     qsort((char *) strings, num, sizeof(char *), alphacmp);
+
      if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, singlecolumn,
 			       2, 1, 0, 1, stdout)) {
 	  error("column_array");
