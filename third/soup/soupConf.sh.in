@@ -1,7 +1,0 @@
-#
-# Configuration file for using the SOUP library
-#
-SOUP_LIBDIR="@SOUP_LIBDIR@"
-SOUP_LIBS="@SOUP_LIBS@"
-SOUP_INCLUDEDIR="@SOUP_INCLUDEDIR@"
-MODULE_VERSION="soup-@VERSION@"
