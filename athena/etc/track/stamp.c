@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.1 1988-05-04 18:14:26 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.2 1988-05-24 17:41:08 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/05/04  18:14:26  shanzer
+ * fixed a bug in sort_entries(); its augmentation of a parent-entry's
+ * exception-list didn't always work.	-don
+ * 
  * Revision 4.0  88/04/14  16:43:00  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -57,7 +61,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.1 1988-05-04 18:14:26 shanzer Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.2 1988-05-24 17:41:08 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -319,7 +323,8 @@ char *line; struct currentness *c;
 	name = line;
 	line = index( line, ' ');
 	if ( ! line) {
-		sprintf(errmsg, "garbled statfile\n");
+		sprintf( errmsg, "garbled statfile: bad line =\n%s\n", line);
+		sprintf( errmsg, "line has only one field\n");
 		do_panic();
 	}
 	*line++ = '\0';
@@ -347,7 +352,8 @@ char *line; struct currentness *c;
 	case '~': *c->name = '\0';
 		  break;
 	default:
-		sprintf(errmsg,"garbled statfile: bad flag = %c\n",same_name);
+		sprintf( errmsg, "garbled statfile: bad line =\n%s\n", line);
+		sprintf( errmsg, "bad equality flag = %c\n", same_name);
 		do_panic();
 	}
 	*c->link = '\0';
@@ -371,7 +377,9 @@ char *line; struct currentness *c;
 		if ( end = index( line, '\n'))
 			*end = '\0';
 		else {
-			sprintf(errmsg, "garbled statfile\n");
+			sprintf( errmsg, "garbled statfile: bad line =\n%s\n",
+				line);
+			sprintf( errmsg, "line doesn't end with a newline\n");
 			do_panic();
 		}
 		if ( !*line) fake_link( fromroot, c->name, c);
@@ -390,7 +398,8 @@ char *line; struct currentness *c;
 		curr1 = &d;
 		break;
 	default:
-		sprintf( errmsg, "garbled statfile: bad line = %s\n", line);
+		sprintf( errmsg, "garbled statfile: bad line =\n%s\n", line);
+		sprintf( errmsg, "first char isn't a file-type [fldbc]\n");
 		do_panic();
 	}
 	/* if we've already parsed the line,
