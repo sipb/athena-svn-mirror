@@ -20,14 +20,14 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.2 1989-11-17 14:49:36 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.3 1989-11-17 14:52:06 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 
 int OCompareListByTopic();
 int OCompareListByNseen();
-int OCompareListByTime();
+int OCompareListByUTime();
 int OCompareListByUUsername();
 int OCompareListByCUsername();
 int OCompareListByUInstance();
@@ -81,8 +81,8 @@ OSortListByRule(list,rule)
       if(string_eq(*rule,"ckstatus"))
 	OSortListByCKStatus(list);
 	
-      if(string_eq(*rule,"time"))
-        OSortListByTime(list);
+      if(string_eq(*rule,"utime"))
+        OSortListByUTime(list);
       ++rule;
       if(rule == (char **) NULL)
 	return(ERROR);
@@ -106,10 +106,10 @@ OSortListByNseen(list)
 }
 
 ERRCODE
-OSortListByTime(list)
+OSortListByUTime(list)
      LIST *list;
 {
-  return(OSortList(list,OCompareListByTime));
+  return(OSortList(list,OCompareListByUTime));
 }
 
 ERRCODE
@@ -202,10 +202,10 @@ OCompareListByNseen(a,b)
 }
 
 int
-OCompareListByTime(a,b)
+OCompareListByUTime(a,b)
      LIST *a, *b;
 {
-  return(OCompareInts(a->time, b->time));
+  return(OCompareInts(a->utime, b->utime));
 }
 
 int 
