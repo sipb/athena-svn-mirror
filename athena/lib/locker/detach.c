@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements detaching lockers. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.1 1999-02-26 19:04:49 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.2 1999-03-29 17:33:21 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -188,9 +188,9 @@ static int detach_attachent(locker_context context,
   if (options & LOCKER_DETACH_OPT_UNAUTH)
     at->fs->auth(context, at, LOCKER_AUTH_DEFAULT, LOCKER_AUTH_UNAUTHENTICATE);
 
-  /* Do zephyr unsubscriptions. */
+  /* Record zephyr unsubscriptions. */
   if (options & LOCKER_DETACH_OPT_UNZEPHYR)
-    at->fs->zsubs(context, at, LOCKER_ZEPHYR_UNSUBSCRIBE);
+    at->fs->zsubs(context, at);
 
   return dstatus;
 }

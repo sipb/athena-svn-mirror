@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.1 1999-02-26 19:04:48 danw Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.2 1999-03-29 17:33:20 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -136,6 +136,7 @@ int locker_init(locker_context *contextp, uid_t user,
   context->user = user;
   if (context->user == 0)
     context->trusted = 1;
+  context->zsubs = NULL;
 
   context->setuid.tab = NULL;
   context->setuid.defflag = 1;
@@ -249,17 +250,6 @@ int locker_init(locker_context *contextp, uid_t user,
       return LOCKER_EHESIOD;
     }
 
-  /* Initialize Zephyr. (This can fail.) */
-  status = ZInitialize();
-  if (status)
-    {
-      locker__error(context, "Could not initialize Zephyr library: %s.\n",
-		    error_message(status));
-      context->zephyr_wgport = -1;
-    }
-  else
-    context->zephyr_wgport = ZGetWGPort();
-
   return LOCKER_SUCCESS;
 }
 
@@ -279,8 +269,7 @@ void locker_end(locker_context context)
 
   if (context->hes_context)
     hesiod_end(context->hes_context);
-  if (context->zephyr_wgport != -1)
-    ZClosePort();
+  locker__free_zsubs(context);
 
   free(context);
 }

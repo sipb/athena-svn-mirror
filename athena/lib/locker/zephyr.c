@@ -17,7 +17,7 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.1 1999-02-26 19:04:54 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.2 1999-03-29 17:33:25 danw Exp $";
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,15 +37,26 @@ static const char rcsid[] = "$Id: zephyr.c,v 1.1 1999-02-26 19:04:54 danw Exp $"
 /* Magic number taken from zctl sources. */
 #define ZEPHYR_MAXONEPACKET 7
 
-int locker__zsubs(locker_context context, locker_attachent *at,
-		  int op, char **subs)
+int locker_do_zsubs(locker_context context, int op)
 {
+  int wgport;
   ZSubscription_t zsubs[ZEPHYR_MAXONEPACKET];
-  int i = 0, j, status, retval;
+  int i, j, status, retval;
   uid_t uid = geteuid();
 
-  if (context->zephyr_wgport == -1)
-    return LOCKER_EZEPHYR;
+  if (!context->zsubs)
+    return LOCKER_SUCCESS;
+
+  /* Initialize Zephyr. (This can fail.) */
+  status = ZInitialize();
+  if (status)
+    {
+      locker__error(context, "Could not initialize Zephyr library: %s.\n",
+		    error_message(status));
+      return LOCKER_EZEPHYR;
+    }
+  else
+    wgport = ZGetWGPort();
 
   for (j = 0; j < ZEPHYR_MAXONEPACKET; j++)
     {
@@ -58,29 +69,68 @@ int locker__zsubs(locker_context context, locker_attachent *at,
     seteuid(context->user);
 
   retval = LOCKER_SUCCESS;
-  while (subs[i])
+  for (i = 0; i < context->nzsubs; i += j)
     {
-      for (j = 0; j < ZEPHYR_MAXONEPACKET && subs[i + j]; j++)
-	zsubs[j].zsub_classinst = subs[i + j];
+      for (j = 0; j < ZEPHYR_MAXONEPACKET && i + j < context->nzsubs; j++)
+	zsubs[j].zsub_classinst = context->zsubs[i + j];
 
       if (op == LOCKER_ZEPHYR_SUBSCRIBE)
-	status = ZSubscribeTo(zsubs, j, context->zephyr_wgport);
+	status = ZSubscribeTo(zsubs, j, wgport);
       else
-	status = ZUnsubscribeTo(zsubs, j, context->zephyr_wgport);
+	status = ZUnsubscribeTo(zsubs, j, wgport);
       if (status)
 	{
-	  locker__error(context, "%s: Error while %ssubscribing:\n%s.\n",
-			at->name, op == LOCKER_ZEPHYR_SUBSCRIBE ? "" : "un",
+	  locker__error(context, "Error while %ssubscribing:\n%s.\n",
+			op == LOCKER_ZEPHYR_SUBSCRIBE ? "" : "un",
 			error_message(status));
 	  retval = LOCKER_EZEPHYR;
 	  break;
 	}
-
-      i += j;
     }
 
   if (uid != context->user)
     seteuid(uid);
 
+  locker__free_zsubs(context);
+  ZClosePort();
   return retval;
+}
+
+int locker__add_zsubs(locker_context context, char **subs, int nsubs)
+{
+  int newnzsubs = context->nzsubs + nsubs, i;
+  char **newzsubs;
+
+  newzsubs = realloc(context->zsubs, newnzsubs * sizeof(char *));
+  if (!newzsubs)
+    {
+      locker__error(context, "Out of memory recording Zephyr subscriptions.\n");
+      return LOCKER_ENOMEM;
+    }
+
+  context->zsubs = newzsubs;
+  for (i = 0; i < nsubs; i++)
+    {
+      context->zsubs[context->nzsubs + i] = strdup(subs[i]);
+      if (!context->zsubs[context->nzsubs + i])
+	{
+	  locker__error(context, "Out of memory recording Zephyr "
+			"subscriptions.\n");
+	  while (i--)
+	    free(context->zsubs[context->nzsubs + i]);
+	  return LOCKER_ENOMEM;
+	}
+    }
+  context->nzsubs += nsubs;
+
+  return LOCKER_SUCCESS;
+}
+
+void locker__free_zsubs(locker_context context)
+{
+  int i;
+
+  for (i = 0; i < context->nzsubs; i++)
+    free(context->zsubs[i]);
+  free(context->zsubs);
 }

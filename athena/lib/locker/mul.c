@@ -18,7 +18,7 @@
  * into attachtab.c, attach.c, and detach.c.)
  */
 
-static const char rcsid[] = "$Id: mul.c,v 1.1 1999-02-26 19:04:53 danw Exp $";
+static const char rcsid[] = "$Id: mul.c,v 1.2 1999-03-29 17:33:24 danw Exp $";
 
 #include <sys/stat.h>
 #include <ctype.h>
@@ -37,8 +37,7 @@ static int mul_attach(locker_context context, locker_attachent *at,
 static int mul_detach(locker_context context, locker_attachent *at);
 static int mul_auth(locker_context context, locker_attachent *at,
 		    int mode, int op);
-static int mul_zsubs(locker_context context, locker_attachent *at,
-		     int op);
+static int mul_zsubs(locker_context context, locker_attachent *at);
 
 struct locker_ops locker__mul_ops = {
   "MUL",
@@ -152,8 +151,7 @@ static int mul_auth(locker_context context, locker_attachent *at,
   return LOCKER_SUCCESS;
 }
 
-static int mul_zsubs(locker_context context, locker_attachent *at,
-		     int op)
+static int mul_zsubs(locker_context context, locker_attachent *at)
 {
   return LOCKER_SUCCESS;
 }

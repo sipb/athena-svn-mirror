@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements NFS lockers. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.1 1999-02-26 19:04:53 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.2 1999-03-29 17:33:24 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -47,8 +47,7 @@ static int nfs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **at);
 static int nfs_auth(locker_context context, locker_attachent *at,
 		    int mode, int op);
-static int nfs_zsubs(locker_context context, locker_attachent *at,
-		     int op);
+static int nfs_zsubs(locker_context context, locker_attachent *at);
 
 struct locker_ops locker__nfs_ops = {
   "NFS",
@@ -387,10 +386,10 @@ static bool_t xdr_krbtkt(XDR *xdrs, KTEXT authp)
   return xdr_opaque(xdrs, (caddr_t)&auth, sizeof(KTEXT_ST));
 }
 
-static int nfs_zsubs(locker_context context, locker_attachent *at, int op)
+static int nfs_zsubs(locker_context context, locker_attachent *at)
 {
   int len, status;
-  char *subs[3];
+  char *subs[2];
 
   subs[0] = at->hostdir;
 
@@ -406,9 +405,7 @@ static int nfs_zsubs(locker_context context, locker_attachent *at, int op)
   memcpy(subs[1], at->hostdir, len);
   subs[1][len] = '\0';
 
-  subs[2] = NULL;
-
-  status = locker__zsubs(context, at, op, subs);
+  status = locker__add_zsubs(context, subs, 2);
   free(subs[1]);
   return status;
 }

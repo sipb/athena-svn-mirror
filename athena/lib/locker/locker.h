@@ -1,4 +1,4 @@
-/* $Id: locker.h,v 1.3 1999-03-22 21:05:05 danw Exp $ */
+/* $Id: locker.h,v 1.4 1999-03-29 17:33:22 danw Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -99,7 +99,7 @@ struct locker_ops {
   int (*detach)(locker_context context, locker_attachent *at);
   int (*auth)(locker_context context, locker_attachent *at,
 	      int mode, int op);
-  int (*zsubs)(locker_context context, locker_attachent *at, int op);
+  int (*zsubs)(locker_context context, locker_attachent *at);
 
   /* Set by locker_init. */
   long id;
@@ -200,9 +200,12 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell,
 int locker_auth_to_host(locker_context context, char *name, char *host,
 			int op);
 
-int locker_zsubs(locker_context context, char *filesystem, int op);
+int locker_zsubs(locker_context context, char *filesystem);
 
 /* Lookup */
 int locker_lookup_filsys(locker_context context, char *name, char ***descs,
 			  void **cleanup);
 void locker_free_filesys(locker_context context, char **descs, void *cleanup);
+
+/* Zephyr */
+int locker_do_zsubs(locker_context context, int op);

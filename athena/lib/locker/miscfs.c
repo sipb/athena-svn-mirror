@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements UFS and ERR lockers. */
 
-static const char rcsid[] = "$Id: miscfs.c,v 1.1 1999-02-26 19:04:51 danw Exp $";
+static const char rcsid[] = "$Id: miscfs.c,v 1.2 1999-03-29 17:33:23 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -30,8 +30,7 @@ static int ufs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp);
 static int ufs_auth(locker_context context, locker_attachent *at,
 		    int mode, int op);
-static int ufs_zsubs(locker_context context, locker_attachent *at,
-		     int op);
+static int ufs_zsubs(locker_context context, locker_attachent *at);
 
 struct locker_ops locker__ufs_ops = {
   "UFS",
@@ -174,8 +173,7 @@ static int ufs_auth(locker_context context, locker_attachent *at,
   return LOCKER_SUCCESS;
 }
 
-static int ufs_zsubs(locker_context context, locker_attachent *at,
-		     int op)
+static int ufs_zsubs(locker_context context, locker_attachent *at)
 {
   return LOCKER_SUCCESS;
 }

@@ -17,7 +17,7 @@
  * public locker operations besides attaching and detaching.
  */
 
-static const char rcsid[] = "$Id: misc.c,v 1.1 1999-02-26 19:04:51 danw Exp $";
+static const char rcsid[] = "$Id: misc.c,v 1.2 1999-03-29 17:33:23 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -43,7 +43,7 @@ int locker_auth(locker_context context, char *filesystem, int op)
   return status;
 }
 
-int locker_zsubs(locker_context context, char *filesystem, int op)
+int locker_zsubs(locker_context context, char *filesystem)
 {
   int status;
   locker_attachent *at;
@@ -52,7 +52,7 @@ int locker_zsubs(locker_context context, char *filesystem, int op)
   if (status)
     return status;
 
-  status = at->fs->zsubs(context, at, op);
+  status = at->fs->zsubs(context, at);
 
   locker_free_attachent(context, at);
   return status;

@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.1 1999-02-26 19:04:47 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.2 1999-03-29 17:33:20 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -244,9 +244,9 @@ static int attach_attachent(locker_context context, locker_attachent *at,
     at->flags |= LOCKER_FLAG_NOSUID;
   locker__update_attachent(context, at);
 
-  /* Do zephyr subscriptions. */
+  /* Record zephyr subscriptions. */
   if (options & LOCKER_ATTACH_OPT_ZEPHYR)
-    at->fs->zsubs(context, at, LOCKER_ZEPHYR_SUBSCRIBE);
+    at->fs->zsubs(context, at);
 
   return status;
 }

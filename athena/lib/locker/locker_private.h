@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.2 1999-03-22 21:05:06 danw Exp $ */
+/* $Id: locker_private.h,v 1.3 1999-03-29 17:33:22 danw Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -75,8 +75,9 @@ struct locker_context {
   /* Hesiod context */
   void *hes_context;
 
-  /* Zephyr client port */
-  int zephyr_wgport;
+  /* Queued zephyr subs */
+  char **zsubs;
+  int nzsubs;
 
   /* Number of locks held on attachtab */
   int locks;
@@ -126,6 +127,5 @@ int locker__remove_mountpoint(locker_context context, locker_attachent *at);
 int locker__read_line(FILE *fp, char **buf, int *bufsize);
 
 /* Prototypes from zephyr.c */
-int locker__init_zephyr(locker_context context);
-int locker__zsubs(locker_context context, locker_attachent *at,
-		  int op, char **subs);
+int locker__add_zsubs(locker_context context, char **subs, int nsubs);
+void locker__free_zsubs(locker_context context);

@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.2 1999-03-11 04:08:42 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.3 1999-03-29 17:33:17 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -53,8 +53,7 @@ static int afs_attach(locker_context context, locker_attachent *at,
 static int afs_detach(locker_context context, locker_attachent *at);
 static int afs_auth(locker_context context, locker_attachent *at,
 		    int mode, int op);
-static int afs_zsubs(locker_context context, locker_attachent *at,
-		     int op);
+static int afs_zsubs(locker_context context, locker_attachent *at);
 
 struct locker_ops locker__afs_ops = {
   "AFS",
@@ -495,20 +494,18 @@ static int afs_get_cred(char *name, char *inst, char *realm, CREDENTIALS *cred)
   return status;
 }
 
-static int afs_zsubs(locker_context context, locker_attachent *at,
-		     int op)
+static int afs_zsubs(locker_context context, locker_attachent *at)
 {
   struct ViceIoctl vio;
-  char *path, *last_component, *p, *subs[4];
+  char *path, *last_component, *p, *subs[3];
   char cell[MAXCELLCHARS + 1], vol[VNAMESIZE + 1];
   char cellvol[MAXCELLCHARS + VNAMESIZE + 2];
   int32 hosts[8];
-  int status, pstatus;
+  int status = 0, pstatus;
   struct hostent *h;
 
   subs[0] = cell;
   subs[1] = cellvol;
-  subs[3] = NULL;
 
   path = strdup(at->hostdir);
   if (!path)
@@ -575,11 +572,10 @@ static int afs_zsubs(locker_context context, locker_attachent *at,
 	  if (!h)
 	    continue;
 	  subs[2] = h->h_name;
+	  status = locker__add_zsubs(context, subs, 3);
 	}
       else
-	subs[2] = NULL;
-
-      status = locker__zsubs(context, at, op, subs);
+	status = locker__add_zsubs(context, subs, 2);
     }
   while (status == LOCKER_SUCCESS && strlen(path) != strlen(at->hostdir));
 
