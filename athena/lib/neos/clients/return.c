@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.1 1992-01-22 13:26:21 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.2 1992-01-22 13:28:51 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_return_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.1 1992-01-22 13:26:21 probe Exp $";
+static char rcsid_return_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/return.c,v 1.2 1992-01-22 13:28:51 probe Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -48,10 +48,11 @@ compar(p1, p2)
  */
 
 long
-do_return(fxp, criterion, flags)
+do_return(fxp, criterion, flags, arg)
      FX *fxp;
      Paper *criterion;
      int flags;
+     char *arg;
 {
   extern int errno;
   long code;
