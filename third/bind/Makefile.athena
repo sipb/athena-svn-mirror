@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1998-05-07 21:49:04 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1998-06-24 01:54:37 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -9,7 +9,6 @@ clean:
 
 all:
 	cd src && ${MAKE} "CC=$$COMPILER" CDEBUG=-g \
-		INSTALL=/usr/athena/bin/install \
 		DESTBIN=/usr/athena/bin \
 		DESTSBIN=/etc/athena \
 		DESTEXEC=/etc/athena \
