@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.8 1997-04-01 01:13:44 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.9 1997-06-27 23:10:17 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.8 1997-04-01 01:13:44 ghudson Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.9 1997-06-27 23:10:17 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -100,7 +100,7 @@ char *strdup();
 char	*malloc();
 
 int	debug = 0;
-int	facist = 1;		/* By default, start in facist mode */
+int	fascist = 1;		/* By default, start in fascist mode */
 int	nsock, maxsock;
 fd_set	allsock;
 int	options;
@@ -195,7 +195,7 @@ main(argc, argv, envp)
 			break;
 
 		case 'n':
-			facist = 0;
+			fascist = 0;
 			break;
 
 		default:
@@ -237,6 +237,8 @@ nextopt:
 	(void) sigaddset(&sig_block, SIGCHLD);
 	(void) sigaddset(&sig_block, SIGHUP);
 	(void) sigaddset(&sig_block, SIGALRM);
+	(void) sigaddset(&sig_block, SIGUSR1);
+	(void) sigaddset(&sig_block, SIGUSR2);
 
 	sa.sa_mask = sig_block;
 	sa.sa_handler = (void (*)()) retry;
@@ -459,7 +461,7 @@ config()
 				SWAP(sep->se_server, cp->se_server);
 			for (i = 0; i < MAXARGV; i++)
 				SWAP(sep->se_argv[i], cp->se_argv[i]);
-			(void) sigprocmask(SIG_BLOCK, &omask, NULL);
+			(void) sigprocmask(SIG_SETMASK, &omask, NULL);
 			freeconfig(cp);
 			if (debug)
 				print_service("REDO", sep);
@@ -507,7 +509,7 @@ config()
 		freeconfig(sep);
 		free((char *)sep);
 	}
-	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
+	(void) sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
 void
@@ -576,7 +578,7 @@ enter(cp)
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
 	sep->se_next = servtab;
 	servtab = sep;
-	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
+	(void) sigprocmask(SIG_SETMASK, &omask, NULL);
 	return (sep);
 }
 
@@ -1037,7 +1039,7 @@ switchoff()
 		freeconfig(sep);
 		free((char *)sep);
 	}
-	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
+	(void) sigprocmask(SIG_SETMASK, &omask, NULL);
 
 }
 
@@ -1048,9 +1050,9 @@ restartme()
 
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
 	(void) config();
-	if (facist)
+	if (fascist)
 		(void) switchoff();
-	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
+	(void) sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
 void
