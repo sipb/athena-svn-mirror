@@ -10,7 +10,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.12 1992-04-23 21:38:54 lwvanels Exp $
+ *      $Id: xolc.h,v 1.12.1.1 1992-08-18 19:33:43 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
@@ -99,6 +99,7 @@ typedef struct tTOPIC {
 extern TOPIC TopicTable[256];
 
 extern int has_question,
+  num_question,
   init_screen,
   ask_screen,
   replay_screen
@@ -135,6 +136,7 @@ void olc_status P_((void));
 void olc_replay P_((void));
 void olc_done P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
 void olc_cancel P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_next P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
 void olc_savelog P_((Widget w, caddr_t *tag, XmAnyCallbackStruct
 		     *callback_data));
 void save_cbk P_((Widget w, caddr_t *tag, XmSelectionBoxCallbackStruct *callback_data));
@@ -168,6 +170,7 @@ ERRCODE x_get_motd P_((REQUEST *Request, int type, char *file, int dialog));
 /* x_resolve.c */
 void x_done P_((REQUEST *Request));
 ERRCODE x_cancel P_((REQUEST *Request));
+void x_next P_((REQUEST *Request));
 
 /* x_send.c */
 ERRCODE x_reply P_((REQUEST *Request, char *message));
