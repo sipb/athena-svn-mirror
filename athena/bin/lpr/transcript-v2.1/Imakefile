@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.14 1996-05-24 21:34:17 ghudson Exp $
+ * $Id: Imakefile,v 1.15 1996-09-20 02:08:18 ghudson Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -45,7 +45,7 @@ install::
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		ln -s psif $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
-	-for i in bogusmsg.ps pstext.pro banner.pro; do \
+	-for i in pstext.pro banner.pro; do \
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		$(INSTALL) -c -m 0444 $$i $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
