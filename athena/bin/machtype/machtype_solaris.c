@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_solaris.c,v 1.3 2001-02-28 20:39:54 ghudson Exp $
+ *    $Id: machtype_solaris.c,v 1.4 2001-03-26 20:26:51 ghudson Exp $
  */
 
 #define volatile 
@@ -36,8 +36,6 @@ void do_machtype(void)
 
 void do_cpu(int verbose)
 {
-  unsigned long   ptop;
-  struct dev_info top;
   char            buf[BUFSIZ];
 
   char*           cpustr;
@@ -169,7 +167,6 @@ void do_disk(int verbose)
 
 void do_memory(int verbose)
 {
-   kvm_t *kernel;
    int mem, nbpp;
 
    nbpp = getpagesize() / 1024;
