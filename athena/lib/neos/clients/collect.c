@@ -3,13 +3,18 @@
  *
  * $Author: brlewis $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.1 1990-08-14 15:01:29 brlewis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.2 1990-09-25 15:18:40 brlewis Exp $
  *
- * Copyright (c) 1989, Massachusetts Institute of Technology
+ * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
  **********************************************************************/
 
+#include <mit-copyright.h>
+
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.1 1990-08-14 15:01:29 brlewis Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.2 1990-09-25 15:18:40 brlewis Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -19,7 +24,9 @@ static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/ath
 #include <ctype.h>
 #include <strings.h>
 #include <sys/errno.h>
-/* #include "full_name.c"		/* because I am confused */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/file.h>
 
 /*** Global variables ***/
 Paper **paperv;
@@ -86,10 +93,11 @@ do_dump(fxp, criterion, verbose, listonly, preserve)
   Paper taken;
   int count, i, warned_t = 0, warned_m = 0;
   char *s, *old_student = "";
-  char filename[256];
+  char filename[256], newfilename[256];
   int kbytes = 0;               /* disk space used */
-  int tilde = 0;		/* number for backup ("file~n~") */
+  int tilde = 0;		/* number for backup ("file.~n~") */
   struct timeval tvp[2];	/* for changing mod time */
+  struct stat buf;
 
   /******** get list of papers from server ********/
   code = fx_list(fxp, criterion, &plist);
@@ -125,6 +133,18 @@ do_dump(fxp, criterion, verbose, listonly, preserve)
 	    sprintf(dump_err_context, "while creating directory \"%s\"",
 		    paperv[i]->author);
 	    return ((long) errno);
+	  } else {
+	    stat(paperv[i]->author, &buf);
+	    if (buf.st_mode & S_IFDIR) {
+	      if (verbose)
+		printf("Using existing directory \"%s\".\n",
+		       paperv[i]->author);
+	    } else {
+	      sprintf(dump_err_context,
+		      "(\"%s\"); Could not create directory.",
+		      paperv[i]->author);
+	      return((long) errno);
+	    }
 	  }
       old_student = paperv[i]->author;
     }
@@ -136,11 +156,31 @@ do_dump(fxp, criterion, verbose, listonly, preserve)
     for (s=filename; *s != '\0'; s++)
       if (*s == ' ') *s = '_';
 
-    /******** rename old copies of the same file ********/
+    /******** rename local file of same name ********/
+    if (access(filename, F_OK) == 0) {
+      do {
+	sprintf(newfilename, "%s.~%d~", filename, ++tilde);
+      } while (access(newfilename, F_OK) == 0);
+      if (listonly) printf("Would rename");
+      else printf("Renaming");
+      if (verbose) printf(" %s to %s\n", filename, newfilename);
+      if (!listonly) {
+	if (rename(filename, newfilename)) {
+	  sprintf(dump_err_context, "renaming %s to %s",
+		  filename, newfilename);
+	  return((long) errno);
+	}
+      }
+    }
+      
+    /******** rename old server copies of the same file ********/
     if (count - i > 1) {
       if (strcmp(paperv[i]->filename, paperv[i+1]->filename) == 0
 	  && strcmp(paperv[i]->author, paperv[i+1]->author) == 0) {
-	sprintf(filename, "%s.~%d~", filename, ++tilde);
+	do {
+	  sprintf(newfilename, "%s.~%d~", filename, ++tilde);
+	} while (access(newfilename, F_OK) == 0);
+	strcpy(filename, newfilename);
       } else tilde = 0;
     }
 
