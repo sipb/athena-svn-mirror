@@ -2,7 +2,6 @@ Name: athena-openssl
 Summary: Secure Sockets Layer and cryptography libraries and tools, for Athena
 Copyright: Freely distributable
 Group: System Environment/Libraries
-Provides: openssl = 0.9.6
 
 %description
 The OpenSSL Project is a collaborative effort to develop a robust,
