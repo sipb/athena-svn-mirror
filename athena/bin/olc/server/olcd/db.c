@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.18 1992-03-16 15:38:35 lwvanels Exp $
+ *	$Id: db.c,v 1.19 1992-03-31 15:39:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.18 1992-03-16 15:38:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.19 1992-03-31 15:39:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -182,6 +182,7 @@ get_user_info(user)
   char *db, buf[BUFSIZ];            
   char canon[BUFSIZ];
   struct passwd *pwd;
+  char *p;
 
 #ifdef KERBEROS
   sprintf(canon,"%s@%s",user->username,user->realm);
@@ -195,7 +196,10 @@ get_user_info(user)
   pwd = getpwnam(user->username);
 #endif
   if (pwd != (struct passwd *) NULL) {
-    strncpy(user->realname,pwd->pw_name,NAME_SIZE);
+    strncpy(user->realname,pwd->pw_gecos,NAME_SIZE);
+    p = index(user->realname,',');
+    if (p != NULL)
+      *p = '\0';
   }
 
   if((fp = fopen(DATABASE_FILE,"r")) == (FILE *) NULL)
