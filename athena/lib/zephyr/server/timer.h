@@ -6,7 +6,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.2 1987-06-12 10:13:54 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.3 1987-07-01 04:30:33 jtkohl Exp $
  *
  */
 
@@ -35,18 +35,16 @@ without express or implied warranty.
 
  */
 
-typedef struct _timer *timer;
-
-struct _timer {
-	timer 	next;		/*  Next one to go off.. */
-	timer   prev;		/*  Previous one to go off.. */
+typedef struct _timer {
+	struct _timer 	*next;		/*  Next one to go off.. */
+	struct _timer   *prev;		/*  Previous one to go off.. */
 	/* time for timer to go off, absolute time */
 	long 	alarm_time;
 	/* procedure to call when timer goes off */
 	void 	(*func)();
 	/* argument for that procedure */
 	caddr_t	arg;
-};
+} *timer;
 
 #define ALARM_TIME(x) ((x)->alarm_time)
 #define ALARM_FUNC(x) ((x)->func)
@@ -55,9 +53,9 @@ struct _timer {
 #define ALARM_ARG(x)  ((x)->arg)
 #define TIMER_SIZE sizeof(struct _timer)
 
+long time();
 #define NOW (time((time_t *)NULL))
-timer timer_set_rel(), timer_set_abs();
-int reset_timer(), add_timer();
-int suspend_timers(), restart_timers();
+extern timer timer_set_rel(), timer_set_abs();
+extern void timer_reset(), timer_process();
 
 extern long nexttimo;			/* Unix time of next timout */
