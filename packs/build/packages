@@ -1,4 +1,4 @@
-# $Id: packages,v 1.173 2002-06-03 02:40:36 ghudson Exp $
+# $Id: packages,v 1.174 2002-06-24 22:25:19 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -69,6 +69,7 @@ athena/bin/gathrun
 athena/bin/get_message		requires gms,hesiod
 athena/bin/getcluster		requires hesiod
 athena/bin/grenew		requires krb5,gtk
+athena/bin/gurlview		requires gnome-libs
 athena/bin/hesinfo		requires hesiod
 athena/bin/hostinfo		requires bind,perl
 athena/bin/just
