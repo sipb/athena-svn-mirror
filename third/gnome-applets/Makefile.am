@@ -1,0 +1,90 @@
+## Again, remove the comments on an applet you want to work on
+
+gtop_applets = multiload
+if BUILD_GTOP_APPLETS
+gtop_SUBDIRS = $(gtop_applets)
+endif
+
+vfs_applets = \
+	gtik	\
+	gweather 
+if BUILD_GNOME_VFS_APPLETS
+vfs_SUBDIRS = $(vfs_applets)
+endif
+
+cdplayer_applets = \
+	cdplayer
+if APPLET_CDPLAYER
+cdplayer_SUBDIRS = $(cdplayer_applets)
+endif
+
+mixer_applets = \
+	mixer
+if APPLET_MIXER
+mixer_SUBDIRS = $(mixer_applets)
+endif
+
+modemlights_applets = \
+	modemlights
+if APPLET_MODEMLIGHTS
+modemlights_SUBDIRS = $(modemlights_applets)
+endif
+
+if BUILD_BATTSTAT_APPLET
+battstat_SUBDIR = battstat
+endif
+
+if BUILD_PANEL_MENU
+panel_menu_SUBDIR = panel-menu
+endif
+
+always_built_SUBDIRS = \
+	drivemount	\
+	charpick	\
+	geyes		\
+	mini-commander	\
+	gkb-new	
+
+SUBDIRS = \
+	po			\
+	$(mixer_SUBDIRS)	\
+	$(modemlights_SUBDIRS)	\
+	$(cdplayer_SUBDIRS)	\
+	$(always_built_SUBDIRS)	\
+	$(gtop_SUBDIRS)		\
+	$(vfs_SUBDIRS)		\
+	$(battstat_SUBDIR)	\
+	$(panel_menu_SUBDIR)	\
+	omf-install	
+
+DIST_SUBDIRS = \
+	po		\
+	mixer		\
+	modemlights	\
+	cdplayer	\
+	drivemount	\
+	panel-menu	\
+	charpick	\
+	geyes		\
+	mini-commander	\
+	gkb-new		\
+	battstat	\
+	multiload	\
+	gtik		\
+	gweather 	\
+	mini-commander	\
+	man		\
+	omf-install
+
+EXTRA_DIST = \
+	COPYING-DOCS		\
+	gnome-applets.spec.in	\
+	gnome-applets.spec	\
+	applet-docs.make	\
+	sgmldocs.make		\
+	intltool-update.in	\
+	intltool-extract.in	\
+	intltool-merge.in	\
+	message-of-doom		\
+	xmldocs.make
+
