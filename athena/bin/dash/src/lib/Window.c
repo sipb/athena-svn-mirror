@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.4 1995-05-26 04:13:52 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.5 1995-08-18 03:45:08 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -25,8 +25,9 @@ static Boolean event_handler();
 static void initialize(), prerealize(), realize(),
   querysize(), move(), resize(), destroy();
 
-static Boolean got_wm_delete = 0;
+static Boolean got_atoms = 0;
 static Atom wm_delete_window;
+static Atom desks_hints, desks_always_global;
 
 extern int DEBUG;
 
@@ -67,6 +68,8 @@ static XjResource resources[] = {
      offset(window.overrideRedirect), XjRBoolean, (caddr_t)False },
   { XjNshowCommand, XjCShowCommand, XjRBoolean, sizeof(Boolean),
      offset(window.showCommand), XjRBoolean, (caddr_t)True },
+  { XjNglobal, XjCGlobal, XjRBoolean, sizeof(Boolean),
+     offset(window.global), XjRBoolean, (caddr_t)False },
   { XjNrootTransient, XjCRootTransient, XjRBoolean, sizeof(Boolean),
      offset(window.rootTransient), XjRBoolean, (caddr_t)False },
   { XjNcursorCode, XjCCursorCode, XjRInt, sizeof(int),
@@ -160,12 +163,20 @@ static void resize(me, size)
 static void initialize(me)
      WindowJet me;
 {
-  if (!got_wm_delete)
+  if (!got_atoms)
     {
-      got_wm_delete = True;
+      got_atoms = True;
       wm_delete_window = XInternAtom(me->core.display,
 				     "WM_DELETE_WINDOW",
 				     False);
+
+      desks_hints = XInternAtom(me->core.display,
+				"_SGI_DESKS_HINTS",
+				False);
+
+      desks_always_global = XInternAtom(me->core.display,
+					"_SGI_DESKS_ALWAYS_GLOBAL",
+					False);
     }
 }
 
@@ -431,6 +442,11 @@ static void realize(me)
 			me->core.window,
 			&wm_delete_window,
 			1);
+
+  if (me->window.global)
+    (void)XChangeProperty(me->core.display, me->core.window,
+			  desks_hints, XA_ATOM, 32, PropModeAppend,
+			  (char *)&desks_always_global, 1);
 
   XjRegisterWindow(me->core.window, (Jet) me);
   XjSelectInput(me->core.display, me->core.window,
