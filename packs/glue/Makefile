@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.42 2000-06-14 20:25:38 ghudson Exp $
+# $Id: Makefile,v 1.43 2000-09-02 14:29:49 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -80,6 +80,7 @@ install:
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
