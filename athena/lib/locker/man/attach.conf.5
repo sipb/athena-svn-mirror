@@ -1,4 +1,4 @@
-.\" $Id: attach.conf.5,v 1.2 1999-05-26 19:16:56 danw Exp $
+.\" $Id: attach.conf.5,v 1.3 2000-06-06 05:59:53 jweiss Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -222,7 +222,7 @@ noallow {-}:r$ {^afs} games
 .fi
 .PP
 The first line specifies that all NFS lockers must be mounted with the
-'nodev' mount option. The second line states that untrusted users will
+`nodev' mount option. The second line states that untrusted users will
 not be allowed to attach Hesiod or attach.conf-defined lockers whose
 names end with the letter `r', or any non-AFS lockers, or the games
 locker.
