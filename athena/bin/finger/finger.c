@@ -3,58 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
- *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.14 1991-07-10 11:17:39 lwvanels Exp $
- *	$Log: not supported by cvs2svn $
- * Revision 1.13  91/07/01  10:17:51  probe
- * AUX integration
- * 
- * Revision 1.12  91/05/27  13:17:16  probe
- * RIOS integration
- * 
- * Revision 1.1  91/03/27  14:44:33  probe
- * Initial revision
- * 
- * Revision 1.11  91/03/01  17:29:36  epeisach
- * PS/2 fixes. Does not have the _pw_stayopen hack.
- * Also, AIX does not use /usr/adm/lastlog. Don't print message complaining.
- * 
- * Revision 1.10  90/07/12  15:46:18  epeisach
- * Ultrix fixes.
- * 
- * Revision 1.9  89/02/09  19:30:32  epeisach
- * Fixed bug where zephyr would return not locatable if user on more than once
- * 
- * Revision 1.8  89/01/23  21:14:45  shanzer
- * Jtkohl's fixes to finger for Zephyr stuff.
- * 
- * Revision 1.8  89/01/17  09:46:34  jtkohl
- * Fix zephyr stuff.
- * 
- * Revision 1.7  87/11/17  14:28:36  ambar
- * buggy call to strncmp caused "last login" info to occasionally match
- * other users.
- * 
- * Revision 1.6  87/08/27  16:57:12  ambar
- * zephyrisation now works.
- * 
- * Revision 1.5  87/08/25  18:31:49  ambar
- * fixed core-dumping bug (core-dumped on unknown user).
- * 
- * Revision 1.4  87/08/21  18:22:05  ambar
- * hesiodization works; but zephyrisation doesn't.  Still accomplishes
- * the point (access to finger information when the user is not logged
- * in).
- * 
- * Revision 1.3  87/08/20  16:03:29  ambar
- * hesiodization doesn't work yet.  Needs to be gone over carefully...
- * 
+ * $Id: finger.c,v 1.15 1991-08-11 22:02:58 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.14 1991-07-10 11:17:39 lwvanels Exp $";
-
+static char *rcsid_finger_c = "$Id: finger.c,v 1.15 1991-08-11 22:02:58 probe Exp $";
 #endif lint
 
 /*
@@ -324,6 +277,10 @@ doall()
 	while (read(uf, (char *) &user, sizeof user) == sizeof user) {
 		if (user.ut_name[0] == 0)
 			continue;
+#if defined(USER_PROCESS)
+		if (user.ut_type != USER_PROCESS)
+			continue;
+#endif
 		if (person1 == 0)
 			p = person1 = (struct person *) malloc(sizeof *p);
 		else {
