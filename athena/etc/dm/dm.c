@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.7 1999-10-28 14:16:16 kcr Exp $
+/* $Id: dm.c,v 1.8 1999-10-28 14:29:15 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,12 +36,15 @@
 #endif
 #include <termios.h>
 #include <syslog.h>
+#ifdef HAVE_UTIL_H
+#include <util.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.7 1999-10-28 14:16:16 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.8 1999-10-28 14:29:15 kcr Exp $";
 #endif
 
 /* Process states */
@@ -106,6 +109,10 @@ static void writepid(char *file, pid_t pid);
 #ifndef HAVE_LOGOUT
 void logout(const char *line);
 #endif
+#ifndef HAVE_LOGIN_TTY
+int login_tty(int fd);
+#endif
+
 /* the console process will run as daemon */
 #define DAEMON 1
 
@@ -194,6 +201,15 @@ int main(int argc, char **argv)
   putenv("OPENWINHOME=/usr/openwin");
 #endif
 
+  if (argc < 2)
+    {
+      fprintf(stderr, "dm: first argument must be configuration file\n");
+      sleep(60);
+      exit(1);
+    }
+
+  conf = argv[1];
+
   if (argc != 4 && (argc != 5 || strcmp(argv[3], "-noconsole")))
     {
       fprintf(stderr,
@@ -205,7 +221,6 @@ int main(int argc, char **argv)
     redir = FALSE;
 
   /* parse argument lists */
-  conf = argv[1];
   logintty = argv[2];
   consoletty = argv[argc - 1];
 
@@ -879,7 +894,6 @@ static char **parseargs(char *line, char *extra, char *extra1, char *extra2)
   int i = 0;
   char *p = line;
   char **ret;
-  char *malloc();
 
   while (*p)
     {
@@ -927,7 +941,7 @@ static char *getconf(char *file, char *name)
 {
   static char buf[8192];
   static int inited = 0;
-  char *p, *ret, *malloc();
+  char *p, *ret;
   int i;
 
   if (!inited)
@@ -1091,5 +1105,7 @@ int login_tty(int fd)
 
   if (ttyfd > STDERR_FILENO)
     close(ttyfd);
+
+  return(0);
 }
 #endif
