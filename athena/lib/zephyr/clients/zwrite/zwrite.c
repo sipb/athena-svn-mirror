@@ -4,9 +4,9 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: jtkohl $
+ *	$Author: probe $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.23 1988-07-20 10:28:39 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.24 1988-09-09 12:26:03 probe Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -336,8 +336,10 @@ send_off(notice, real)
 usage(s)
     char *s;
 {
-    printf("Usage: %s [-a] [-d] [-v] [-q] [-u] [-o] [-c class] [-i inst] [-f fsname]\n\t[user ...] [-m message]\n", s);
-    printf("\t-f and -c are mutually exclusive\n\t-f and -i are mutually exclusive\n");
+    printf("Usage: %s [-a] [-o] [-d] [-v] [-q] [-n] [-t] [-u]\n\
+\t[-c class] [-i inst] [-f fsname] [user ...] [-m message]\n", s);
+    printf("\t-f and -c are mutually exclusive\n\
+\t-f and -i are mutually exclusive\n");
     exit(1);
 } 
 
