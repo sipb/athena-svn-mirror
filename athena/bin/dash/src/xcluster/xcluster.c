@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v $
- * $Author: lwvanels $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.5 1992-05-07 14:53:39 lwvanels Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.6 1994-05-08 23:27:39 cfields Exp $";
 #endif	/* lint */
 
 #include "mit-copyright.h"
@@ -47,6 +47,7 @@ extern int DEBUG;
 
 Jet root, text, map;
 GC map_gc = NULL;
+int lx = 32767, ly = 32767, hx = 0, hy = 0;
 XPoint *points2 = NULL;
 char *progname;
 char form[BUFSIZ];
@@ -90,12 +91,25 @@ static XrmOptionDescRec opTable[] = {
 {"-userdefs",	".userDefs",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-inactive",	".inactive",	XrmoptionSepArg,	(caddr_t) 60},
 {"-auto",	".auto",	XrmoptionSepArg,	(caddr_t) 60},
+{"-circlecolor",".circlecolor", XrmoptionSepArg,	(caddr_t) NULL},
+{"-zoom",       ".zoom",        XrmoptionNoArg,         (caddr_t) "on"},
+{"-color0",	".color0",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-color1",	".color1",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-color2",	".color2",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-changetime",	".changetime",	XrmoptionSepArg,	(caddr_t) NULL}, /* s*/
+{"-steps",	".steps",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-steptime",	".steptime",	XrmoptionSepArg,	(caddr_t) NULL}, /*ms*/
 };
 
 typedef struct _MyResources
 {
   int inactive;
   int automatic;
+  int ccolor;
+  Boolean zoom;
+  char *colors[3];
+  int changetime;
+  int steps, steptime;
 } MyResources;
 
 typedef struct _MyResources *MyResourcesPtr;
@@ -110,11 +124,25 @@ static XjResource appResources[] =
       offset(inactive), XjRInt, (caddr_t) 0 },
   { "auto", "Auto", XjRInt, sizeof(int),
       offset(automatic), XjRInt, (caddr_t) 0 },
+  { "circlecolor", XjCForeground, XjRColor, sizeof(int),
+      offset(ccolor), XjRString, XjDefaultForeground },
+  { "zoom", "Zoom", XjRBoolean, sizeof(Boolean),
+      offset(zoom), XjRBoolean, (caddr_t) 0 },
+  { "color0", "Color", XjRString, sizeof(char *),
+      offset(colors[0]), XjRString, (caddr_t) "red green blue" },
+  { "color1", "Color", XjRString, sizeof(char *),
+      offset(colors[1]), XjRString, (caddr_t) "green blue red" },
+  { "color2", "Color", XjRString, sizeof(char *),
+      offset(colors[2]), XjRString, (caddr_t) "blue red green" },
+  { "changetime", "Changetime", XjRInt, sizeof(int),
+      offset(changetime), XjRInt, (caddr_t) 3600 },
+  { "steps", "Steps", XjRInt, sizeof(int),
+      offset(steps), XjRInt, (caddr_t) 256 },
+  { "steptime", "Steptime", XjRInt, sizeof(int),
+      offset(steptime), XjRInt, (caddr_t) 50 },
 };
 
 #undef offset
-
-
 
 int div;
 int xleft = 0, yleft = 0;
@@ -128,14 +156,42 @@ int resize(draw, foo, data)
 {
   int div_x, div_y;
   int i;
+  int width, height;
 
-  div_x = (max_x / draw->core.width) + 1;
-  div_y = (max_y / draw->core.height) + 1;
+  if (parms.zoom)
+    {
+      width = hx - lx + 5000;
+      height = hy - ly + 5000;
+    }
+  else
+    {
+      width = max_x;
+      height = max_y;
+    }
+
+  div_x = (width / draw->core.width) + 1;
+  div_y = (height / draw->core.height) + 1;
 
   div = (div_x > div_y) ? div_x : div_y;
 
-  yleft = (draw->core.height - (max_y/div)) / 2;
-  xleft = (draw->core.width - (max_x/div)) / 2;
+  if (parms.zoom)
+    {
+      if (div == div_y)
+	{
+	  yleft = (2500-ly)/div;
+	  xleft = -lx/div + ((draw->core.width - (hx - lx)/div) / 2);
+	}
+      else
+	{
+	  xleft = (2500-lx)/div;
+	  yleft = -ly/div + ((draw->core.height - (hy - ly)/div) / 2);
+	}
+    }
+  else
+    {
+      yleft = (draw->core.height - (max_y/div)) / 2;
+      xleft = (draw->core.width - (max_x/div)) / 2;
+    }
 
   if (points2 == NULL)
     points2 = (XPoint *) malloc(num_points * sizeof(XPoint));
@@ -243,11 +299,12 @@ int expos(draw, foo, data)
 
       values.line_width = 2;
       values.cap_style = CapProjecting;
-      valuemask = GCLineWidth | GCCapStyle;
+      values.foreground = parms.ccolor;
+      valuemask = GCForeground | GCLineWidth | GCCapStyle;
 
       map_gc = XCreateGC(XjDisplay(draw), XjWindow(draw), valuemask, &values);
 
-      valuemask = GCForeground | GCBackground | GCFunction | GCFont;
+      valuemask = GCBackground | GCFunction | GCFont;
       XCopyGC(XjDisplay(draw), draw->drawing.foreground_gc,
 	      valuemask, map_gc);
     }
@@ -591,6 +648,139 @@ void make_btns(Form)
     }
 }
 
+compute_zoom()
+{
+  struct cluster *c;
+
+  for(c=cluster_list; c != NULL; c=c->next)
+    {
+      lx = MIN(c->x_coord, lx);
+      ly = MIN(c->y_coord, ly);
+      hx = MAX(c->x_coord, hx);
+      hy = MAX(c->y_coord, hy);
+    }
+}
+
+#define MAXCOLORS 3
+#define MAXCYCLES 15
+XColor cycles[MAXCOLORS][MAXCYCLES];
+int cycle, subcycle, numCycles;
+
+void nextcycle()
+{
+  int i;
+  XColor col;
+
+  subcycle++;
+  if (subcycle >= parms.steps)
+    {
+      subcycle = 0;
+      cycle++;
+      if (cycle == numCycles)
+	cycle = 0;
+    }
+
+  if (parms.changetime != 0 && subcycle == 0)
+    (void)XjAddWakeup(nextcycle, 0, parms.changetime * 1000);
+  else
+    (void)XjAddWakeup(nextcycle, 0, parms.steptime);
+
+  for (i = 0; i < MAXCOLORS; i++)
+    if (cycles[i][0].pixel != XjNoColor)
+      {
+	col.pixel = cycles[i][0].pixel;
+	col.red = cycles[i][cycle].red +
+	  (subcycle * (int)( cycles[i][(cycle + 1)%numCycles].red -
+		       cycles[i][cycle].red ) / parms.steps);
+	col.green = cycles[i][cycle].green +
+	  (subcycle * (int)( cycles[i][(cycle + 1)%numCycles].green -
+		       cycles[i][cycle].green ) / parms.steps);
+	col.blue = cycles[i][cycle].blue +
+	  (subcycle * (int)( cycles[i][(cycle + 1)%numCycles].blue -
+		       cycles[i][cycle].blue ) / parms.steps);
+	col.flags = DoRed | DoGreen | DoBlue;
+
+	XStoreColors(XjDisplay(root), XjColormap(root), &col, 1);
+      }
+}
+
+void init_color_cycle()
+{
+  int i, j, docycles;
+  char name[50], *dest, *src;
+  char errtext[100];
+
+  docycles = 0;
+  numCycles = 0;
+
+  for (i = 0; i < MAXCOLORS; i++)
+    for (j = 0; j < MAXCYCLES; j++)
+      cycles[i][j].pixel = XjNoColor;
+
+  for (i = 0; i < MAXCOLORS; i++)
+    if (XjGetColor(i) != XjNoColor) /* a used color */
+      {
+	docycles = 1;
+	src = parms.colors[i];
+
+	for (j = 0; j < MAXCYCLES; j++)
+	  {
+	    while (isspace(*src))
+	      src++;
+
+	    if (*src == '\0')
+	      {
+		if (j == 0)
+		  {
+		    sprintf(errtext, "bad specification for color%d", i);
+		    XjWarning(errtext);
+		    src = "red";
+		  }
+		else
+		  break;
+	      }
+
+	    dest = name;
+	    while (!isspace(*src) && *src != '\0')
+	      *dest++ = *src++; /* XXX no error checking for > 50 */
+	    *dest = '\0';
+
+	    if (!XParseColor(XjDisplay(root), XjColormap(root),
+			     name, &cycles[i][j]))
+	      {
+		sprintf(errtext, "could not look up color \"%s\"", name);
+		XjWarning(errtext);
+		cycles[i][j].red = 256*255;
+		cycles[i][j].green = 0;
+		cycles[i][j].blue = 0;
+		cycles[i][j].flags = DoRed | DoGreen | DoBlue;
+	      }
+	    cycles[i][j].pixel = XjGetColor(i);
+	  }
+
+	numCycles = MAX(numCycles, j);
+      }
+
+  if (docycles == 0) /* we're not using this feature */
+    return;
+
+  for (i = 0; i < MAXCOLORS; i++)
+    for (j = 1; j < numCycles; j++)
+      if (cycles[i][j].pixel == XjNoColor)
+	cycles[i][j] = cycles[i][j-1];
+
+  cycle = 0;
+  subcycle = 0;
+
+  for (i = 0; i < MAXCOLORS; i++)
+    if (cycles[i][0].pixel != XjNoColor)
+      XStoreColors(XjDisplay(root), XjColormap(root), &cycles[i][cycle], 1);
+
+  if (parms.changetime != 0)
+    (void)XjAddWakeup(nextcycle, 0, parms.changetime * 1000);
+  else
+    (void)XjAddWakeup(nextcycle, 0, parms.steptime);
+}
 
 main(argc, argv)
 int argc;
@@ -608,8 +798,8 @@ char **argv;
   root = XjCreateRoot(&argc, argv, "Xcluster", NULL,
 		      opTable, XjNumber(opTable));
 
-  XjLoadFromResources(NULL,
-		      NULL,
+  XjLoadFromResources(XjDisplay(root),
+		      XjWindow(root),
 		      programName,
 		      programClass,
 		      appResources,
@@ -645,6 +835,9 @@ char **argv;
 
   read_clusters();
 
+  if (parms.zoom == 1)
+    compute_zoom();
+
   make_btns(xclusterForm);
 
   setForm(xclusterForm, form);
@@ -655,6 +848,8 @@ char **argv;
 
   if (parms.automatic != 0)
     set_auto(0, -1);
+
+  init_color_cycle();
 
   XjEventLoop(root);
 }
