@@ -1,0 +1,312 @@
+2003-01-22  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * released 0.2.0
+
+2003-01-22  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: fix GStreamer requirements (new release)
+          thumbnail/Makefile.am:
+          thumbnail/gst-thumbnail.schemas: add thumbnailer gconf keys
+	* nautilus-media.spec.in: add GConf stuff
+
+2003-01-22  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * Tweak Dave's patch slightly
+	* audio-view/audio-view.c: make "Playing" field human-readable
+				   remove ugly //-style comments
+	* audio-view/audio-play.h: fix NM_DEBUG when DEBUG is defined
+
+2003-01-22  Dave Camp  <dave@ximian.com>
+ 
+ 	* audio-view/audio-play.c: (audio_play_class_init),
+ 	(audio_play_dispose), (audio_play_finalize),
+ 	(audio_play_set_state_playing):
+ 	* audio-view/audio-play.h:
+ 	* audio-view/audio-view.c: (audio_view_dispose), (free_iter_list),
+ 	(audio_view_finalize):
+ 	* audio-view/nautilus-audio-view.c:
+ 	(nautilus_audio_view_class_init), (nautilus_audio_view_dispose),
+ 	(nautilus_audio_view_finalize): Update some dispose and
+ 	finalizers.
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-22  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-properties-view/: fixed obvious miscasts and compile warnings
+
+2003-01-22  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-view.c: dispose media info handler on dispose
+	* configure.in: check who da man
+2003-01-21  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.ac: put in check for gstreamer-0.6
+        * audio-view/*.[ch]:
+	* audio-properties-view/*.[ch]:
+	* audio-play/*.[ch]:
+	* media-info/*.[ch]: put debug messages in DEBUG defines
+
+2003-01-20  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * autogen.sh:
+	  gst-autogen.sh: better autogen stuff
+
+2003-01-20  Yuriy Syrota  <rastaman@renome.rovno.ua>
+
+	* configure.in (ALL_LINGUAS): Added uk (Ukrainian) to ALL_LINGUAS.
+
+2003-01-18  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in (ALL_LINGUAS): Added it (Italian). 
+
+2003-01-18  Yanko Kaneti  <yaneti@declera.com>
+
+	* configure.in (ALL_LINGUAS): Added bg (Bulgarian).
+
+2003-01-14  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-view.c: fix a crasher bug when no audio is
+          in the dir
+
+2003-01-13  He Qiangqiang  <carton@linux.net.cn>
+
+	* configure.in: Added zh_CN to ALL_LINGUAS.
+
+2003-01-10  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: update gst requirement
+	  thumbnail/gst-thumbnail.c: fix pngenc case some more
+
+2003-01-10  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Russian to ALL_LINGUAS.
+
+2003-01-09  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in: Cleaned up Alex's patch a little, thanks Alex
+
+2003-01-07  Alex Duggan <aldug@gnome.org>
+	
+	* configure.in:
+	* Makefile.am:
+	Disable building the test view by default, use --enable-test-view
+	to build it.
+		
+2003-01-07  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-properties-view/audio-properties-view.c: don't crash
+	  when no info could be read
+
+2003-01-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW" to ALL_LINGUAS.
+
+2003-01-06  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-play.c:	added mod types, thanks to apoc
+          audio-view/audio-view.c:
+          audio-view/Nautilus_View_Audio.server.in.in:
+	  media-info/media-info-priv.c:
+
+2003-01-06  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * thumbnail/gst-thumbnail.c: use gnomevfssrc, don't use pngenc yet
+
+2003-01-05  Gustavo Noronha Silva  <kov@debian.org>
+
+	* configure.in (ALL_LINGUAS): Added pt_BR (Brazilian
+	  Portuguese)
+
+2003-01-05  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Macedonian (mk) to ALL_LINGUAS
+
+2003-01-05  Pauli Virtanen <pauli.virtanen@hut.fi>
+
+	* configure.in (ALL_LINGUAS): Added "fi" (Finnish).
+
+2003-01-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl (Polish).
+
+2002-12-31  Christian Neumair  <chris@gnome-de.org>
+
+	* audio-view/audio-view.c: Fixed typo.
+
+2002-12-31  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/media-info.c: GStreamer API change
+	* audio-view/audio-play.c:
+
+2002-12-30  Thomas Vander Stichele <thomas@apestaart.org>
+
+	* audio-view/
+ 	  audio-properties-view/: marking strings for i18n
+
+2002-12-27  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-view.c: make types human-readable instead of mime
+
+2002-12-26  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* media-info/Makefile.am: reverted Christian Neumair's highly unwanted
+				  and non-discussed patch
+        * audio-view/audio-view.c: fix scan button to be a toggle button,
+					#101979
+	* audio-properties-view/audio-properties-view.c:
+	* audio-properties-view/audio-properties-view.glade:
+				fix entry->label (#102002)
+	* audio-view/nautilus-audio-view.c: remove code from sample
+
+2002-12-22  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): Added Catalan (ca).
+
+2002-12-22  Artis Trops  <hornet@navigator.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-12-16  Christian Neumair  <chris@gnome-de.org>
+
+	* media-info/Makefile.am: Made media-info compile.
+	* .cvsignore, audio-properties-view/.cvsignore, audio-view/.cvsignore,
+	media-info/.cvsignore, pixmaps/.cvsignore, test-view/.cvsignore,
+	thumbnail/.cvsignore: Added.
+	* configure.in (ALL_LINGUAS): Added German (de).
+
+2002-12-16  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-play.c: handle typefind in handler instead of
+				   callback
+
+2002-12-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS,
+	added also (were in po/ but missing in ALL_LINGUAS)
+	Amharic (am), Hebrew (he), Malay (ms) and Norwegian (no)
+
+2002-12-13  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-properties-view/Makefile.am: fix expansion of BONOBODIR
+        * audio-properties-view/audio-properties-view.c: don't crash when
+          not finding info
+	* audio-properties-view/Makefile.am: fix automake complaint
+
+2002-12-11  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2002-12-11  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* configure.in: Added "fr" to ALL_LINGUAS.
+
+2002-12-10  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/: add mime types to ease transition
+		       add maximum number of metadata iterations
+	* configure.in: depend on GStreamer 0.5.x
+        * released 0.1.0
+
+2002-12-09  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in/: pull in new gstreamer pc files
+
+2002-12-07  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added "hu" to the list in ALL_LINGUAS
+
+2002-12-06  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added "cs" to the list in ALL_LINGUAS
+
+2002-12-03  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/: a first good stab at implementing error dialogs
+                       that work in all cases
+
+2002-12-02  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+	* configure.in: Added "es" to the list in ALL_LINGUAS.
+
+2002-12-02  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-properties-view/: properties of audio items
+				  wrapped gnomey bits into bonobo view component
+
+2002-12-01  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/audio-view.c: use new idler in media-info
+				   use idler in audio_view
+
+2002-11-30  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/media-info-priv.*: factor out private stuff
+					rewrite with state machine and expose
+					an idler worker function
+
+2002-11-26  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added "da" to the list in ALL_LINGUAS.
+
+2002-11-13  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * audio-view/audio-view.c: show artist and title fields 
+                                   using media-info
+
+2002-11-12  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * media-info/: fold in media-info library
+        * audio-view/: use media-info library to get length
+                       remove audio-info*
+
+2002-11-11  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added ko to ALL_LINGUAS.
+
+2002-11-03  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * 0.0.3 released
+	  audio-view/: unselect last track on eos
+
+2002-11-02  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sv" to ALL_LINGUAS.
+
+2002-11-02  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * fixed seeking
+        * fixed silly g_strdup_printf bug
+
+2002-11-02  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * 0.0.2 released
+        * audio-view/audio-play.*:
+	  - use new AudioPlay object to abstract GStreamer
+	* audio-view/audio-view.c:
+          - skip to next track on eos
+        * configure.in:
+	  - get GNOME flags for test apps
+
+2002-10-31  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* 0.0.1 released
+
+        * audio-view/: 
+          - code refactoring
+          - separate out meat of the code and make gnome app
+	  - two-stage loading to improve UI
+
+2002-10-30  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * thumbnail/:
+          configure.in:
+          Makefile.am:
+          adapted and expanded gst-thumbnail.c from Keith Conger
+
+2002-10-26  Thomas Vander Stichele <thomas at apestaart dot org>
+
+  	* initial creation on a day of wild abandonment
+

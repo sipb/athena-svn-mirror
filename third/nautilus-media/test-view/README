@@ -1,0 +1,38 @@
+This test view Nautilus component is based on the sample component included
+in the nautilus tarball.  The difference is this one is extracted with surgical
+precision from the nautilus tarball and thus makes a good base to start your 
+own view from.
+
+To avoid name space collision, it has also been renamed to Test everywhere.
+
+Furthermore, the test application shows how to instantiate the view outside
+of nautilus for slightly easier debugging.
+
+Maybe it would be good to go even one step further and extract the relevant
+code to a second test app that is pure gnome.
+
+Make sure to read libbonobo/doc/debugging.txt if you have problems.
+
+Here are some rookie mistakes you might want to not make and some tips
+you might want to consider :
+
+* MAKE SURE that the location you specify for the view binary in your server
+  file actually points to a binary.  Nautilus will only tell you the view
+  failed to start up
+* You need to install the server file to the bonobo servers dir.  It will
+  automatically get picked up.  Remember that the test app invokes the
+  view through bonobo and thus always executes the installed version.
+* A handy thing to do here is to just symlink the "installed version" to
+  your development version while working on it.
+* Make sure you test the separate test app with nautilus deactivated.
+  At one point I had deleted the view binary, and nautilus was still able
+  to start it even though the view itself wasn't currently running anymore.
+  You will scratch your head wondering why the UI hasn't changed when
+  you just added "hey this is a test" output everywhere.
+
+And here is some basic info on how you can get stuff going to stdout to show
+up:
+export BONOBO_ACTIVATION_DEBUG_OUTPUT=1
+killall -9 bonobo-activation-server
+(odd things may happen)
+and rerun
