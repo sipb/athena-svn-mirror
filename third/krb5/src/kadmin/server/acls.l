@@ -2,7 +2,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: acls.l,v 1.1.1.1 1996-09-12 04:43:15 ghudson Exp $
+ * $Id: acls.l,v 1.1.1.2 1997-01-21 09:22:56 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/acls.l,v $
  * 
  * $Log: not supported by cvs2svn $
@@ -28,7 +28,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/acls.l,v 1.1.1.1 1996-09-12 04:43:15 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/acls.l,v 1.1.1.2 1997-01-21 09:22:56 ghudson Exp $";
 #endif
 
 enum tokens {

@@ -4,7 +4,6 @@
 #define USE_KADM5_API_VERSION 2
 #include <kadm5/admin.h>
 #include <com_err.h>
-#include <malloc.h>
 #include <k5-int.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -345,6 +344,11 @@ static Tcl_DString *unparse_err(kadm5_ret_t code)
      case KADM5_AUTH_CHANGEPW:
 	  code_string = "KADM5_AUTH_CHANGEPW"; break;
      case KADM5_GSS_ERROR: code_string = "KADM5_GSS_ERROR"; break;
+     case KADM5_BAD_TL_TYPE: code_string = "KADM5_BAD_TL_TYPE"; break; 
+     case KADM5_MISSING_CONF_PARAMS:
+	  code_string = "KADM5_MISSING_CONF_PARAMS"; break;
+     case KADM5_BAD_SERVER_NAME:
+	  code_string = "KADM5_BAD_SERVER_NAME"; break;
      case OSA_ADB_DUP: code_string = "OSA_ADB_DUP"; break;
      case OSA_ADB_NOENT: code_string = "ENOENT"; break;
      case OSA_ADB_DBINIT: code_string = "OSA_ADB_DBINIT"; break;
@@ -467,6 +471,7 @@ static Tcl_DString *unparse_key_data(krb5_key_data *key_data, int n_key_data)
 static Tcl_DString *unparse_tl_data(krb5_tl_data *tl_data, int n_tl_data)
 {
      Tcl_DString *str;
+     char buf[2048];
 
      if (! (str = malloc(sizeof(*str)))) {
 	  fprintf(stderr, "Out of memory!\n");
@@ -474,10 +479,19 @@ static Tcl_DString *unparse_tl_data(krb5_tl_data *tl_data, int n_tl_data)
      }
 
      Tcl_DStringInit(str);
-     if (n_tl_data > 0 && tl_data->tl_data_contents)
-	  Tcl_DStringAppendElement(str, "[cannot unparse tl data yet]");
-     else
-	  Tcl_DStringAppendElement(str, "");
+     Tcl_DStringStartSublist(str);
+     for (; tl_data; tl_data = tl_data->tl_data_next) {
+	  Tcl_DStringStartSublist(str);
+	  sprintf(buf, "%d", tl_data->tl_data_type);
+	  Tcl_DStringAppendElement(str, buf);
+	  sprintf(buf, "%d", tl_data->tl_data_length);
+	  Tcl_DStringAppendElement(str, buf);
+	  Tcl_DStringAppend(str, " ", 1);
+	  Tcl_DStringAppend(str, tl_data->tl_data_contents,
+			    tl_data->tl_data_length);
+	  Tcl_DStringEndSublist(str);
+     }
+     Tcl_DStringEndSublist(str);
      
      return str;
 }
@@ -631,7 +645,8 @@ static int parse_policy_mask(Tcl_Interp *interp, char *str, krb5_int32 *flags)
 }
 
 
-static Tcl_DString *unparse_principal_ent(kadm5_principal_ent_t princ)
+static Tcl_DString *unparse_principal_ent(kadm5_principal_ent_t princ,
+					  krb5_int32 mask)
 {
      Tcl_DString *str, *tmp_dstring;
      char *tmp;
@@ -649,14 +664,17 @@ static Tcl_DString *unparse_principal_ent(kadm5_principal_ent_t princ)
 	      /* code for krb5_parse_name that the pointer passed into */
 	      /* it should be initialized to 0 if I want it do be */
 	      /* allocated automatically. */
-     if (krb5_ret = krb5_unparse_name(context, princ->principal, &tmp)) {
-	  /* XXX Do we want to return an error?  Not sure. */
-	  Tcl_DStringAppendElement(str, "[unparseable principal]");
-     }
-     else {
-	  Tcl_DStringAppendElement(str, tmp);
-	  free(tmp);
-     }
+     if (mask & KADM5_PRINCIPAL) {
+	  if ( krb5_ret = krb5_unparse_name(context, princ->principal, &tmp)) {
+	       /* XXX Do we want to return an error?  Not sure. */
+	       Tcl_DStringAppendElement(str, "[unparseable principal]");
+	  }
+	  else {
+	       Tcl_DStringAppendElement(str, tmp);
+	       free(tmp);
+	  }
+     } else
+	  Tcl_DStringAppendElement(str, "null");
 
      sprintf(buf, "%d", princ->princ_expire_time);
      Tcl_DStringAppendElement(str, buf);
@@ -671,22 +689,28 @@ static Tcl_DString *unparse_principal_ent(kadm5_principal_ent_t princ)
      Tcl_DStringAppendElement(str, buf);
 
      tmp = 0;
-     if (krb5_ret = krb5_unparse_name(context, princ->mod_name, &tmp)) {
-	  /* XXX */
-	  Tcl_DStringAppendElement(str, "[unparseable principal]");
-     }
-     else {
-	  Tcl_DStringAppendElement(str, tmp);
-	  free(tmp);
-     }
+     if (mask & KADM5_MOD_NAME) {
+	  if (krb5_ret = krb5_unparse_name(context, princ->mod_name, &tmp)) {
+	       /* XXX */
+	       Tcl_DStringAppendElement(str, "[unparseable principal]");
+	  }
+	  else {
+	       Tcl_DStringAppendElement(str, tmp);
+	       free(tmp);
+	  }
+     } else
+	  Tcl_DStringAppendElement(str, "null");
 
      sprintf(buf, "%d", princ->mod_date);
      Tcl_DStringAppendElement(str, buf);
 
-     tmp_dstring = unparse_krb5_flags(princ->attributes);
-     Tcl_DStringAppendElement(str, tmp_dstring->string);
-     Tcl_DStringFree(tmp_dstring);
-     free(tmp_dstring);
+     if (mask & KADM5_ATTRIBUTES) {
+	  tmp_dstring = unparse_krb5_flags(princ->attributes);
+	  Tcl_DStringAppendElement(str, tmp_dstring->string);
+	  Tcl_DStringFree(tmp_dstring);
+	  free(tmp_dstring);
+     } else
+	  Tcl_DStringAppendElement(str, "null");
 
      sprintf(buf, "%d", princ->kvno);
      Tcl_DStringAppendElement(str, buf);
@@ -774,7 +798,8 @@ static int parse_keysalts(Tcl_Interp *interp, char *list,
 	       retcode = TCL_ERROR;
 	       goto finished;
 	  }
-	  if ((retcode = Tcl_GetInt(interp, argv1[1], &tmp))
+	  /* XXX this used to be argv1[1] too! */
+	  if ((retcode = Tcl_GetInt(interp, argv1[0], &tmp))
 	      != TCL_OK) {
 	       Tcl_AppendElement(interp, "while parsing ks_enctype");
 	       retcode = TCL_ERROR;
@@ -789,13 +814,142 @@ static int parse_keysalts(Tcl_Interp *interp, char *list,
 	  (*keysalts)[i].ks_salttype = tmp;
 
 	  free(argv1);
+	  argv1 = NULL;
      }
 
 finished:
      if (argv1)
 	  free(argv1);
-     if (*keysalts)
-	  free(*keysalts);
+     free(argv);
+     return retcode;
+}
+
+static int parse_key_data(Tcl_Interp *interp, char *list,
+			  krb5_key_data **key_data,
+			  int n_key_data)
+{
+     char **argv, **argv1 = NULL;
+     int i, tmp, argc, argc1, retcode;
+
+     *key_data == NULL;
+     if (list == NULL) {
+	  if (n_key_data != 0) {
+	       sprintf(interp->result, "0 key_datas specified, "
+		       "but n_key_data is %d", n_key_data);
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  } else
+	       return TCL_OK;
+     }
+     
+     if ((retcode = Tcl_SplitList(interp, list, &argc, &argv)) != TCL_OK) {
+	  return retcode;
+     }
+     if (argc != n_key_data) {
+	  sprintf(interp->result, "%d key_datas specified, "
+		  "but n_key_data is %d", argc, n_key_data);
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+
+     if (argc != 0) {
+	  sprintf(interp->result, "cannot parse key_data yet");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+
+finished:
+     free(argv);
+     return retcode;
+}
+
+static int parse_tl_data(Tcl_Interp *interp, char *list,
+			 krb5_tl_data **tlp,
+			 int n_tl_data)
+{
+     krb5_tl_data *tl, *tl2;
+     char **argv, **argv1 = NULL;
+     int i, tmp, argc, argc1, retcode;
+
+     *tlp == NULL;
+     if (list == NULL) {
+	  if (n_tl_data != 0) {
+	       sprintf(interp->result, "0 tl_datas specified, "
+		       "but n_tl_data is %d", n_tl_data);
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  } else
+	       return TCL_OK;
+     }
+     
+     if ((retcode = Tcl_SplitList(interp, list, &argc, &argv)) != TCL_OK) {
+	  return retcode;
+     }
+     if (argc != n_tl_data) {
+	  sprintf(interp->result, "%d tl_datas specified, "
+		  "but n_tl_data is %d", argc, n_tl_data);
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+
+     tl = tl2 = NULL;
+     for (i = 0; i < n_tl_data; i++) {
+	  tl2 = (krb5_tl_data *) malloc(sizeof(krb5_tl_data));
+	  memset(tl2, 0, sizeof(krb5_tl_data));
+	  tl2->tl_data_next = tl;
+	  tl = tl2;
+     }
+     tl2 = tl;
+	  
+     for (i = 0; i < n_tl_data; i++) {
+	  if ((retcode = Tcl_SplitList(interp, argv[i], &argc1, &argv1)) !=
+	      TCL_OK) { 
+	       goto finished;
+	  }
+	  if (argc1 != 3) {
+	       sprintf(interp->result, "wrong # fields in tl_data "
+		       "(%d should be 3)", argc1);
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  }
+	  if ((retcode = Tcl_GetInt(interp, argv1[0], &tmp))
+	      != TCL_OK) {
+	       Tcl_AppendElement(interp, "while parsing tl_data_type");
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  }
+	  tl->tl_data_type = tmp;
+	  if ((retcode = Tcl_GetInt(interp, argv1[1], &tmp))
+	      != TCL_OK) {
+	       Tcl_AppendElement(interp, "while parsing tl_data_length");
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  }
+	  tl->tl_data_length = tmp;
+	  if (tl->tl_data_length != strlen(argv1[2])) {
+	       sprintf(interp->result, "specified length %d does not "
+		       "match length %d of string \"%s\"", tmp,
+		       strlen(argv1[2]), argv1[2]);
+	       retcode = TCL_ERROR;
+	       goto finished;
+	  }
+	  tl->tl_data_contents = (char *) malloc(tmp+1);
+	  strcpy(tl->tl_data_contents, argv1[2]);
+
+	  free(argv1);
+	  argv1 = NULL;
+	  tl = tl->tl_data_next;
+     }
+     if (tl != NULL) {
+	  sprintf(interp->result, "tl is not NULL!");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     *tlp = tl2;
+
+finished:
+     if (argv1)
+	  free(argv1);
      free(argv);
      return retcode;
 }
@@ -969,8 +1123,9 @@ static int parse_principal_ent(Tcl_Interp *interp, char *list,
 	  return tcl_ret;
      }
 
-     if (argc != 12) {
-	  sprintf(interp->result, "wrong # args in principal structure (%d should be 12)",
+     if (argc != 12 && argc != 20) {
+	  sprintf(interp->result,
+             "wrong # args in principal structure (%d should be 12 or 20)",
 		  argc);
 	  retcode = TCL_ERROR;
 	  goto finished;
@@ -980,7 +1135,8 @@ static int parse_principal_ent(Tcl_Interp *interp, char *list,
 	  fprintf(stderr, "Out of memory!\n");
 	  exit(1); /* XXX */
      }
-  
+     memset(princ, 0, sizeof(*princ));
+     
      if ((krb5_ret = krb5_parse_name(context, argv[0], &princ->principal)) != 0) {
 	  stash_error(interp, krb5_ret);
 	  Tcl_AppendElement(interp, "while parsing principal");
@@ -1080,6 +1236,72 @@ static int parse_principal_ent(Tcl_Interp *interp, char *list,
      if ((tcl_ret = parse_aux_attributes(interp, argv[11],
 					 &princ->aux_attributes)) != TCL_OK) {
 	  Tcl_AppendElement(interp, "while parsing aux_attributes");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+
+     if (argc == 12) goto finished;
+     
+     if ((tcl_ret = Tcl_GetInt(interp, argv[12], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing max_renewable_life");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->max_renewable_life = tmp;
+
+     if ((tcl_ret = Tcl_GetInt(interp, argv[13], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing last_success");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->last_success = tmp;
+
+     if ((tcl_ret = Tcl_GetInt(interp, argv[14], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing last_failed");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->last_failed = tmp;
+
+     if ((tcl_ret = Tcl_GetInt(interp, argv[15], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing fail_auth_count");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->fail_auth_count = tmp;
+
+     if ((tcl_ret = Tcl_GetInt(interp, argv[16], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing n_key_data");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->n_key_data = tmp;
+
+     if ((tcl_ret = Tcl_GetInt(interp, argv[17], &tmp))
+	 != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing n_tl_data");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+     princ->n_tl_data = tmp;
+
+     if ((tcl_ret = parse_key_data(interp, argv[18],
+				   &princ->key_data,
+				   princ->n_key_data)) != TCL_OK) { 
+	  Tcl_AppendElement(interp, "while parsing key_data");
+	  retcode = TCL_ERROR;
+	  goto finished;
+     }
+
+     if ((tcl_ret = parse_tl_data(interp, argv[19],
+				  &princ->tl_data,
+				  princ->n_tl_data)) != TCL_OK) {
+	  Tcl_AppendElement(interp, "while parsing tl_data");
 	  retcode = TCL_ERROR;
 	  goto finished;
      }
@@ -1887,7 +2109,7 @@ int tcl_kadm5_get_principal(ClientData clientData, Tcl_Interp *interp,
 
      if (ret == KADM5_OK) {
 	  if (ent_var) {
-	       ent_dstring = unparse_principal_ent(&ent);
+	       ent_dstring = unparse_principal_ent(&ent, mask);
 	       if (! Tcl_SetVar(interp, ent_var, ent_dstring->string,
 				TCL_LEAVE_ERR_MSG)) {
 		    Tcl_AppendElement(interp,

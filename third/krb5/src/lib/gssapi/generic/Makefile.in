@@ -1,4 +1,4 @@
-CFLAGS = $(CCOPTS) $(DEFS) -I. -I$(srcdir) -DUSE_AUTOCONF_H
+CFLAGS = $(CCOPTS) $(DEFS) -I. -I$(srcdir)
 
 ##DOSBUILDTOP = ..\..\..
 ##DOSLIBNAME=..\gssapi.$(LIBEXT)
@@ -6,10 +6,6 @@ CFLAGS = $(CCOPTS) $(DEFS) -I. -I$(srcdir) -DUSE_AUTOCONF_H
 .c.o:
 	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
 @SHARED_RULE@
-
-all-unix:: shared $(OBJS)
-
-all-mac:: shared $(OBJS)
 
 all-windows:: $(OBJS)
 
@@ -20,6 +16,11 @@ ETSRCS= gssapi_err_generic.c
 ETOBJS= gssapi_err_generic.$(OBJEXT)
 ETHDRS= gssapi_err_generic.h
 
+EHDRDIR= $(BUILDTOP)$(S)include$(S)gssapi
+
+HDRS=	$(EHDRDIR)/gssapi.h \
+	$(EHDRDIR)/gssapi_generic.h
+
 gssapi_err_generic.$(OBJEXT): gssapi_err_generic.c
 	$(CC) $(CFLAGS) -c $*.c
 @SHARED_RULE_LOCAL@
@@ -29,6 +30,16 @@ gssapi_err_generic.$(OBJEXT): gssapi_err_generic.c
 gssapi_err_generic.h: gssapi_err_generic.et
 
 gssapi_err_generic.c: gssapi_err_generic.et
+
+gssapi.h: gssapi.hin
+	$(RM) $@
+	echo "/* This is the gssapi.h prologue. */" >> $@
+	echo "/* It contains some choice pieces of autoconf.h */" >> $@
+	grep SIZEOF $(BUILDTOP)/include/krb5/autoconf.h >> $@
+	grep 'HAVE_.*_H' $(BUILDTOP)/include/krb5/autoconf.h >> $@
+	grep 'USE_.*_H' $(BUILDTOP)/include/krb5/autoconf.h >> $@
+	echo "/* End of gssapi.h prologue. */"
+	cat $(srcdir)/gssapi.hin >> $@
 
 #if HasHashLibrary
 # UTIL_VALIDATE_SRC= $(srcdir)/util_validate.c
@@ -72,29 +83,30 @@ OBJS = \
 	util_validate.$(OBJEXT) \
 	gssapi_err_generic.$(OBJEXT)
 
-EHDRDIR= $(BUILDTOP)$(S)include$(S)gssapi
-EXPORTED_HEADERS= gssapi.h gssapi_generic.h
+$(OBJS): $(HDRS) $(ETHDRS)
 
-HDRS= $(ETHDRS)
+EXPORTED_HEADERS= gssapi_generic.h
+EXPORTED_BUILT_HEADERS= gssapi.h
 
-all-unix:: $(SRCS) $(HDRS) includes $(OBJS)
+all-unix:: shared $(SRCS) $(ETHDRS) $(OBJS)
 
-all-mac:: $(SRCS) $(HDRS) includes $(OBJS)
+all-mac:: $(SRCS) $(HDRS) $(ETHDRS) $(OBJS)
 
-all-windows:: win-include $(SRCS) $(HDRS) $(OBJS)
+all-windows:: $(SRCS) $(ETHDRS) win-include
+all-windows:: $(OBJS)
 
 win-include::
 	if not exist $(EHDRDIR)\nul mkdir $(EHDRDIR)
 	copy gssapi.h $(EHDRDIR)
 	copy gssapi_generic.h $(EHDRDIR)
 
-unixmac: $(SRCS) $(HDRS) includes
+unixmac: $(SRCS) $(ETHDRS)
 
 clean-unix::
-	$(RM) $(ETHDRS) $(ETSRCS) shared/*
+	$(RM) $(ETHDRS) $(ETSRCS) $(HDRS) shared/*
 
 clean-mac::
-	$(RM) $(ETHDRS) $(ETSRCS) shared/*
+	$(RM) $(ETHDRS) $(ETSRCS) $(HDRS) shared/*
 
 clean-windows::
 	$(RM) $(EHDRDIR)\gssapi.h $(EHDRDIR)\gssapi_generic.h
@@ -106,7 +118,9 @@ install::
 	do $(INSTALL_DATA) $(srcdir)/$$f	\
 		$(DESTDIR)$(KRB5_INCDIR)/gssapi/$$f ; \
 	done
+	@set -x; for f in $(EXPORTED_BUILT_HEADERS) ; \
+	do $(INSTALL_DATA) $$f	\
+		$(DESTDIR)$(KRB5_INCDIR)/gssapi/$$f ; \
+	done
 
 depend:: $(ETSRCS)
-
-includes::

@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_internal.h,v 1.1.1.1 1996-09-12 04:43:55 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_internal.h,v 1.1.1.2 1997-01-21 09:26:24 ghudson Exp $
  * 
  * $Log: not supported by cvs2svn $
  * Revision 1.1  1996/07/24 22:22:43  tlyu

@@ -95,8 +95,11 @@ main(argc, argv)
     krb5_auth_context 	  auth_context = NULL;
     krb5_replay_data 	  replaydata;
 
-    krb5_init_context(&context);
-    krb5_init_ets(context);
+    retval = krb5_init_context(&context);
+    if (retval) {
+	    com_err(argv[0], retval, "while initializing krb5");
+	    exit(1);
+    }
 
     progname = argv[0];
 
@@ -160,7 +163,7 @@ main(argc, argv)
     /* Set server's address */
     (void) memset((char *)&s_sock, 0, sizeof(s_sock));
 
-    memcpy((char *)&s_sock.sin_addr, host->h_addr, host->h_length);
+    memcpy((char *)&s_sock.sin_addr, host->h_addr, sizeof(s_sock.sin_addr));
 #ifdef DEBUG
     printf("s_sock.sin_addr is %s\n", inet_ntoa(s_sock.sin_addr));
 #endif
@@ -195,7 +198,7 @@ main(argc, argv)
 	fprintf(stderr, "%s: unknown host\n", hostname);
 	exit(1);
     }
-    memcpy((char *)&c_sock.sin_addr, host->h_addr, host->h_length);
+    memcpy((char *)&c_sock.sin_addr, host->h_addr, sizeof(c_sock.sin_addr));
 #endif
     
 

@@ -28,7 +28,7 @@
 #endif
 
 /*
- * $Id: acquire_cred.c,v 1.1.1.1 1996-09-12 04:44:09 ghudson Exp $
+ * $Id: acquire_cred.c,v 1.1.1.2 1997-01-21 09:24:53 ghudson Exp $
  */
 
 /* get credentials corresponding to a key in the krb5 keytab.
@@ -421,7 +421,7 @@ krb5_gss_acquire_cred(minor_status, desired_name, time_req,
       }
 
       if (time_rec)
-	 *time_rec = cred->tgt_expire - now;
+	 *time_rec = (cred->tgt_expire > now) ? (cred->tgt_expire - now) : 0;
    }
 
    /* create mechs */

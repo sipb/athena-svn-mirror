@@ -799,8 +799,6 @@ if test $withval = no; then
 	DEPKRB4_LIB=
 	KRB4_CRYPTO_LIB=
 	DEPKRB4_CRYPTO_LIB=
-	KDB4_LIB=
-	DEPKDB4_LIB=
 	KRB4_INCLUDES=
 	LDARGS=
 	krb5_cv_build_krb4_libs=no
@@ -816,8 +814,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB='$(TOPLIBD)/libkrb4.a'
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB='-lkdb4'
-	DEPKDB4_LIB='$(TOPLIBD)/libkdb4.a'
 	KRB4_INCLUDES='-I$(SRCTOP)/include/kerberosIV'
 	LDARGS=
 	krb5_cv_build_krb4_libs=yes
@@ -829,8 +825,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB="$withval/lib/libkrb.a"
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB="-lkdb"
-	DEPKDB4_LIB="$withval/lib/libkdb.a"
 	KRB4_INCLUDES="-I$withval/include"
 	LDARGS="-L$withval/lib"
 	krb5_cv_build_krb4_libs=no
@@ -847,7 +841,7 @@ if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 851 "configure"
+#line 845 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -897,7 +891,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:901: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:895: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -936,7 +930,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsocket  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 940 "configure"
+#line 934 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -944,7 +938,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:948: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:942: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -977,7 +971,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lnsl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 981 "configure"
+#line 975 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -985,7 +979,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:989: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:983: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1033,12 +1027,17 @@ test "$program_suffix" != NONE &&
 # sed with no file args requires a program.
 test "$program_transform_name" = "" && program_transform_name="s,x,x,"
  
+
+
+
+
+
 echo $ac_n "checking for working const""... $ac_c" 1>&6
 if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1042 "configure"
+#line 1041 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -1088,7 +1087,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:1092: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1091: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -1172,7 +1171,7 @@ if eval "test \"`echo '$''{'krb5_cv_has_posix_signals'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1176 "configure"
+#line 1175 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <signal.h>
@@ -1185,7 +1184,7 @@ int t() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:1189: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1188: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_has_posix_signals=yes
 else
@@ -1221,7 +1220,7 @@ fi
 
 
 db_deplib="\$(TOPLIBD)/libdb.a"
-db_lib=-ldb
+db_lib="\$(TOPLIBD)/libdb.a"
 
 
 
@@ -1230,7 +1229,7 @@ if eval "test \"`echo '$''{'krb5_cv_func_sigprocmask_use'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1234 "configure"
+#line 1233 "configure"
 #include "confdefs.h"
 #include <signal.h>
 int main() { return 0; }
@@ -1238,13 +1237,13 @@ int t() {
 sigmask(1);
 ; return 0; }
 EOF
-if { (eval echo configure:1242: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1241: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_func_sigprocmask_use=no
 else
   rm -rf conftest*
   cat > conftest.$ac_ext <<EOF
-#line 1248 "configure"
+#line 1247 "configure"
 #include "confdefs.h"
 #include <signal.h>
 int main() { return 0; }
@@ -1252,7 +1251,7 @@ int t() {
 sigprocmask(SIG_SETMASK,0,0);
 ; return 0; }
 EOF
-if { (eval echo configure:1256: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1255: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_func_sigprocmask_use=yes
 else
@@ -1280,7 +1279,7 @@ if eval "test \"`echo '$''{'krb5_cv_struct_wait'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1284 "configure"
+#line 1283 "configure"
 #include "confdefs.h"
 #include <sys/wait.h>
 int main() { return 0; }
@@ -1292,7 +1291,7 @@ union wait i;
 
 ; return 0; }
 EOF
-if { (eval echo configure:1296: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1295: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_struct_wait=yes
 else
@@ -1316,7 +1315,7 @@ if eval "test \"`echo '$''{'krb5_cv_decl_sys_errlist'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1320 "configure"
+#line 1319 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 #include <errno.h>
@@ -1325,7 +1324,7 @@ int t() {
 1+sys_nerr;
 ; return 0; }
 EOF
-if { (eval echo configure:1329: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1328: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_decl_sys_errlist=yes
 else
@@ -1355,7 +1354,7 @@ if eval "test \"`echo '$''{'krb5_cv_var_sys_errlist'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1359 "configure"
+#line 1358 "configure"
 #include "confdefs.h"
 extern int sys_nerr;
 int main() { return 0; }
@@ -1363,7 +1362,7 @@ int t() {
 1+sys_nerr;
 ; return 0; }
 EOF
-if { (eval echo configure:1367: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1366: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_var_sys_errlist=yes
 else
@@ -1398,11 +1397,11 @@ else
   ac_cv_c_cross=yes
 else
 cat > conftest.$ac_ext <<EOF
-#line 1402 "configure"
+#line 1401 "configure"
 #include "confdefs.h"
 main(){return(0);}
 EOF
-{ (eval echo configure:1406: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1405: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_c_cross=no
 else
@@ -1423,7 +1422,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1427 "configure"
+#line 1426 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1434,7 +1433,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1438: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1437: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_short=`cat conftestval`
 else
@@ -1457,7 +1456,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1461 "configure"
+#line 1460 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1468,7 +1467,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1472: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1471: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_int=`cat conftestval`
 else
@@ -1491,7 +1490,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1495 "configure"
+#line 1494 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1502,7 +1501,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1506: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1505: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_long=`cat conftestval`
 else
@@ -1532,13 +1531,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 1536 "configure"
+#line 1535 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1542: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1541: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1547,13 +1546,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 1551 "configure"
+#line 1550 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1557: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1556: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1578,7 +1577,7 @@ if eval "test \"`echo '$''{'ac_cv_header_stdc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1582 "configure"
+#line 1581 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -1586,7 +1585,7 @@ else
 #include <float.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1590: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1589: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1601,7 +1600,7 @@ rm -f conftest*
 if test $ac_cv_header_stdc = yes; then
   # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1605 "configure"
+#line 1604 "configure"
 #include "confdefs.h"
 #include <string.h>
 EOF
@@ -1619,7 +1618,7 @@ fi
 if test $ac_cv_header_stdc = yes; then
   # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1623 "configure"
+#line 1622 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 EOF
@@ -1640,7 +1639,7 @@ if test "$cross_compiling" = yes; then
   :
 else
 cat > conftest.$ac_ext <<EOF
-#line 1644 "configure"
+#line 1643 "configure"
 #include "confdefs.h"
 #include <ctype.h>
 #define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
@@ -1651,7 +1650,7 @@ if (XOR (islower (i), ISLOWER (i)) || toupper (i) != TOUPPER (i)) exit(2);
 exit (0); }
 
 EOF
-{ (eval echo configure:1655: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1654: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   :
 else
@@ -1675,7 +1674,7 @@ if eval "test \"`echo '$''{'ac_cv_type_pid_t'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1679 "configure"
+#line 1678 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #if STDC_HEADERS
@@ -1707,12 +1706,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1711 "configure"
+#line 1710 "configure"
 #include "confdefs.h"
 #include <vfork.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1716: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1715: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1744,7 +1743,7 @@ if eval "test \"`echo '$''{'ac_cv_func_vfork'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1748 "configure"
+#line 1747 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char vfork(); below.  */
@@ -1768,7 +1767,7 @@ vfork();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1772: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1771: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_vfork=yes"
 else
@@ -1787,7 +1786,7 @@ fi
 
 else
 cat > conftest.$ac_ext <<EOF
-#line 1791 "configure"
+#line 1790 "configure"
 #include "confdefs.h"
 /* Thanks to Paul Eggert for this test.  */
 #include <stdio.h>
@@ -1880,7 +1879,7 @@ main() {
   }
 }
 EOF
-{ (eval echo configure:1884: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1883: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_func_vfork=yes
 else
@@ -1905,7 +1904,7 @@ if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1909 "configure"
+#line 1908 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1929,7 +1928,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1933: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1932: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -1958,7 +1957,7 @@ if eval "test \"`echo '$''{'ac_cv_header_stdarg_h'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1962 "configure"
+#line 1961 "configure"
 #include "confdefs.h"
 #include <stdarg.h>
 int main() { return 0; }
@@ -1974,7 +1973,7 @@ int t() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:1978: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1977: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_header_stdarg_h=yes
 else
@@ -1997,7 +1996,7 @@ if eval "test \"`echo '$''{'ac_cv_header_varargs_h'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2001 "configure"
+#line 2000 "configure"
 #include "confdefs.h"
 #include <varargs.h>
 int main() { return 0; }
@@ -2013,7 +2012,7 @@ int t() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:2017: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2016: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_header_varargs_h=yes
 else
@@ -2043,12 +2042,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2047 "configure"
+#line 2046 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2052: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2051: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2078,12 +2077,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2082 "configure"
+#line 2081 "configure"
 #include "confdefs.h"
 #include <termios.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2087: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2086: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2102,7 +2101,7 @@ if eval "test \"`echo '$''{'ac_cv_func_cfsetispeed'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2106 "configure"
+#line 2105 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char cfsetispeed(); below.  */
@@ -2126,7 +2125,7 @@ cfsetispeed();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2130: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2129: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_cfsetispeed=yes"
 else
@@ -2158,12 +2157,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2162 "configure"
+#line 2161 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2167: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2166: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2197,7 +2196,7 @@ if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2201 "configure"
+#line 2200 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -2221,7 +2220,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2225: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2224: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -2248,12 +2247,12 @@ if test "$ac_cv_func_compile" = yes ; then
 else
 	LIBS="$save_LIBS"
 fi
-SRVDEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
-SRVLIBS="\$(LOCAL_LIBRARIES) $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
-CLNTDEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmclnt_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
-CLNTLIBS="\$(LOCAL_LIBRARIES) $kadmclnt_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
-DEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmclnt_deplib $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
-LIBS="\$(LOCAL_LIBRARIES) $kadmclnt_lib $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+SRVDEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
+SRVLIBS="\$(LOCAL_LIBRARIES) $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+CLNTDEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmclnt_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
+CLNTLIBS="\$(LOCAL_LIBRARIES) $kadmclnt_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+DEPLIBS="\$(DEPLOCAL_LIBRARIES) $kadmclnt_deplib $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \$(TOPLIBD)/libkrb5.a $krb4_deplib \$(TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \$(TOPLIBD)/libcom_err.a"
+LIBS="\$(LOCAL_LIBRARIES) $kadmclnt_lib $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
 LDFLAGS="$LDFLAGS -L\$(TOPLIBD)"
 
 
@@ -2432,6 +2431,11 @@ s%@KRB4_LIB@%$KRB4_LIB%g
 s%@KRB4_CRYPTO_LIB@%$KRB4_CRYPTO_LIB%g
 s%@DEPKRB4_LIB@%$DEPKRB4_LIB%g
 s%@DEPKRB4_CRYPTO_LIB@%$DEPKRB4_CRYPTO_LIB%g
+s%@ALL_RECURSE@%$ALL_RECURSE%g
+s%@CLEAN_RECURSE@%$CLEAN_RECURSE%g
+s%@INSTALL_RECURSE@%$INSTALL_RECURSE%g
+s%@CHECK_RECURSE@%$CHECK_RECURSE%g
+s%@MAKEFILES_RECURSE@%$MAKEFILES_RECURSE%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@CPP@%$CPP%g

@@ -1,3 +1,30 @@
+Thu Nov  7 15:29:09 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kerberos5.c (kerberos5_init): Check the error return from
+ 		krb5_init_context(), and print an error message if
+ 		necessary.
+
+Fri Nov  1 20:32:12 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* parsetos.c (proto;): Add parsetos support on all platforms which
+ 	support TOS[57]
+
+Thu Oct 31 18:29:08 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* auth.h: Move constants for ticket forwarding here.
+
+	* kerberos5.c : Clarify what errors come from what programs
+ 	(telnetd|telnet); patch by John Hawkinson <jhawk@bbnplanet.com>
+ 	[77]
+
+Mon Oct 14 00:21:08 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* Makefile.in (OBJS): Remove rsaencpwd aned krb4encpwd stuff as
+ 	well as associated read_password [50]
+
+	* auth.c krb4encpwd.c Makefile.in: Remove krb4encpwd [50]
+	While we're at it, remove rsaencpwd as well.
+
 Tue Jul  9 14:59:19 1996  Marc Horowitz  <marc@mit.edu>
 
 	* Makefile.in (LOCALINCLUDES): use @KRB4_INCLUDES@ instead of an

@@ -1,3 +1,22 @@
+Fri Nov 22 07:54:57 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.tmpl: Use '%' in Makefiles where you really want a '/'
+ 		character in the mpw Makefile.  (Translation in
+ 		src/Makefile.in)
+
+	* version.r: Fix typos, and set version resource for 1.0 release.
+
+Fri Nov  8 17:44:10 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.tmpl: Add in version resource
+	
+	* version.r: New file, containing the version resource.
+
+Tue Oct 29 22:48:23 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.tmpl (SRCS-SAP): Added support for building 68K CFM
+		shared libraries.
+
 Fri Jun 21 11:29:40 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* macfiles.sh: Call macfiles.sh explicitly using /bin/sh, so that

@@ -796,8 +796,6 @@ if test $withval = no; then
 	DEPKRB4_LIB=
 	KRB4_CRYPTO_LIB=
 	DEPKRB4_CRYPTO_LIB=
-	KDB4_LIB=
-	DEPKDB4_LIB=
 	KRB4_INCLUDES=
 	LDARGS=
 	krb5_cv_build_krb4_libs=no
@@ -813,8 +811,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB='$(TOPLIBD)/libkrb4.a'
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB='-lkdb4'
-	DEPKDB4_LIB='$(TOPLIBD)/libkdb4.a'
 	KRB4_INCLUDES='-I$(SRCTOP)/include/kerberosIV'
 	LDARGS=
 	krb5_cv_build_krb4_libs=yes
@@ -826,8 +822,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB="$withval/lib/libkrb.a"
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB="-lkdb"
-	DEPKDB4_LIB="$withval/lib/libkdb.a"
 	KRB4_INCLUDES="-I$withval/include"
 	LDARGS="-L$withval/lib"
 	krb5_cv_build_krb4_libs=no
@@ -844,7 +838,7 @@ if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 848 "configure"
+#line 842 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -894,7 +888,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:898: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:892: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -933,7 +927,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsocket  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 937 "configure"
+#line 931 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -941,7 +935,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:945: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:939: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -974,7 +968,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lnsl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 978 "configure"
+#line 972 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -982,7 +976,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:986: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:980: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1030,10 +1024,18 @@ test "$program_suffix" != NONE &&
 # sed with no file args requires a program.
 test "$program_transform_name" = "" && program_transform_name="s,x,x,"
  
-subdirs="clnt srv"
 
-RECURSE_TARGETS="all-unix clean-unix install-unix check-unix Makefiles"
 
+
+
+
+subdirs="clnt srv unit-test"
+
+ALL_RECURSE="all-recurse"
+CLEAN_RECURSE="clean-recurse"
+INSTALL_RECURSE="install-recurse"
+CHECK_RECURSE="check-recurse"
+MAKEFILES_RECURSE="Makefiles-recurse"
 # Extract the first word of "ar", so it can be a program name with args.
 set dummy ar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
@@ -1215,7 +1217,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lfl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1219 "configure"
+#line 1221 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -1223,7 +1225,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:1227: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1229: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1249,7 +1251,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-ll  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1253 "configure"
+#line 1255 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -1257,7 +1259,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:1261: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1263: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1326,13 +1328,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 1330 "configure"
+#line 1332 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1336: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1338: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1341,13 +1343,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 1345 "configure"
+#line 1347 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1351: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1353: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1375,12 +1377,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1379 "configure"
+#line 1381 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1384: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1386: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1411,7 +1413,7 @@ if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1415 "configure"
+#line 1417 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1435,7 +1437,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1439: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1441: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -1489,7 +1491,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: adb.h
+includes:: $(BUILDTOP)/include/kadm5/adb.h
+$(BUILDTOP)/include/kadm5/adb.h: $(srcdir)/adb.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/adb.h $(BUILDTOP)/include/kadm5/adb.h >/dev/null 2>&1; then :; \
 	else \
@@ -1504,7 +1507,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: admin.h
+includes:: $(BUILDTOP)/include/kadm5/admin.h
+$(BUILDTOP)/include/kadm5/admin.h: $(srcdir)/admin.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/admin.h $(BUILDTOP)/include/kadm5/admin.h >/dev/null 2>&1; then :; \
 	else \
@@ -1519,7 +1523,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: admin_internal.h
+includes:: $(BUILDTOP)/include/kadm5/admin_internal.h
+$(BUILDTOP)/include/kadm5/admin_internal.h: $(srcdir)/admin_internal.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/admin_internal.h $(BUILDTOP)/include/kadm5/admin_internal.h >/dev/null 2>&1; then :; \
 	else \
@@ -1534,7 +1539,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: admin_xdr.h
+includes:: $(BUILDTOP)/include/kadm5/admin_xdr.h
+$(BUILDTOP)/include/kadm5/admin_xdr.h: $(srcdir)/admin_xdr.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/admin_xdr.h $(BUILDTOP)/include/kadm5/admin_xdr.h >/dev/null 2>&1; then :; \
 	else \
@@ -1549,7 +1555,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: kadm_rpc.h
+includes:: $(BUILDTOP)/include/kadm5/kadm_rpc.h
+$(BUILDTOP)/include/kadm5/kadm_rpc.h: $(srcdir)/kadm_rpc.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/kadm_rpc.h $(BUILDTOP)/include/kadm5/kadm_rpc.h >/dev/null 2>&1; then :; \
 	else \
@@ -1564,7 +1571,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: server_internal.h
+includes:: $(BUILDTOP)/include/kadm5/server_internal.h
+$(BUILDTOP)/include/kadm5/server_internal.h: $(srcdir)/server_internal.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp $(srcdir)/server_internal.h $(BUILDTOP)/include/kadm5/server_internal.h >/dev/null 2>&1; then :; \
 	else \
@@ -1579,7 +1587,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: adb_err.h
+includes:: $(BUILDTOP)/include/kadm5/adb_err.h
+$(BUILDTOP)/include/kadm5/adb_err.h: adb_err.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp adb_err.h $(BUILDTOP)/include/kadm5/adb_err.h >/dev/null 2>&1; then :; \
 	else \
@@ -1594,7 +1603,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: chpass_util_strings.h
+includes:: $(BUILDTOP)/include/kadm5/chpass_util_strings.h
+$(BUILDTOP)/include/kadm5/chpass_util_strings.h: chpass_util_strings.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp chpass_util_strings.h $(BUILDTOP)/include/kadm5/chpass_util_strings.h >/dev/null 2>&1; then :; \
 	else \
@@ -1609,7 +1619,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: kadm_err.h
+includes:: $(BUILDTOP)/include/kadm5/kadm_err.h
+$(BUILDTOP)/include/kadm5/kadm_err.h: kadm_err.h
 	@if test -d $(BUILDTOP)/include/kadm5; then :; else (set -x; mkdir $(BUILDTOP)/include/kadm5) fi
 	@if cmp kadm_err.h $(BUILDTOP)/include/kadm5/kadm_err.h >/dev/null 2>&1; then :; \
 	else \
@@ -1628,6 +1639,7 @@ all:: all-$(WHAT)
 
 PUSHEOF
 
+ALL_RECURSE=
 ac_v5_makefile_dirs=.
 filelist=""
 for x in $ac_v5_makefile_dirs; do
@@ -1771,8 +1783,12 @@ s%@KRB4_LIB@%$KRB4_LIB%g
 s%@KRB4_CRYPTO_LIB@%$KRB4_CRYPTO_LIB%g
 s%@DEPKRB4_LIB@%$DEPKRB4_LIB%g
 s%@DEPKRB4_CRYPTO_LIB@%$DEPKRB4_CRYPTO_LIB%g
+s%@ALL_RECURSE@%$ALL_RECURSE%g
+s%@CLEAN_RECURSE@%$CLEAN_RECURSE%g
+s%@INSTALL_RECURSE@%$INSTALL_RECURSE%g
+s%@CHECK_RECURSE@%$CHECK_RECURSE%g
+s%@MAKEFILES_RECURSE@%$MAKEFILES_RECURSE%g
 s%@subdirs@%$subdirs%g
-s%@RECURSE_TARGETS@%$RECURSE_TARGETS%g
 s%@ARCHIVE@%$ARCHIVE%g
 s%@ARADD@%$ARADD%g
 s%@RANLIB@%$RANLIB%g
@@ -1953,7 +1969,7 @@ if test "$no_recursion" != yes; then
     esac
   done
 
-  for ac_config_dir in clnt srv; do
+  for ac_config_dir in clnt srv unit-test; do
 
     # Do not complain, so a configure script can configure whichever
     # parts of a large source tree are present.

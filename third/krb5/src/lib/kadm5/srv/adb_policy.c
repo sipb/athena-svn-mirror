@@ -1,18 +1,17 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.1 1996-09-12 04:43:56 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.2 1997-01-21 09:26:06 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.1 1996-09-12 04:43:56 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_policy.c,v 1.1.1.2 1997-01-21 09:26:06 ghudson Exp $";
 #endif
 
 #include	<sys/file.h>
 #include	<fcntl.h>
 #include	"adb.h"
 #include	<stdlib.h>
-#include	<malloc.h>
 #include	<string.h>
 
 extern	int errno;
@@ -39,6 +38,16 @@ osa_adb_ret_t osa_adb_create_policy_db(kadm5_config_params *params)
 {
      return osa_adb_create_db(params->admin_dbname,
 			      params->admin_lockfile,
+			      OSA_ADB_POLICY_DB_MAGIC);
+}
+
+osa_adb_ret_t osa_adb_rename_policy_db(kadm5_config_params *fromparams,
+				       kadm5_config_params *toparams)
+{
+     return osa_adb_rename_db(fromparams->admin_dbname,
+			      fromparams->admin_lockfile,
+			      toparams->admin_dbname,
+			      toparams->admin_lockfile,
 			      OSA_ADB_POLICY_DB_MAGIC);
 }
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 1993-1994 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/kpasswd.c,v 1.1.1.1 1996-09-12 04:43:14 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/kpasswd.c,v 1.1.1.2 1997-01-21 09:22:38 ghudson Exp $
  *
  *
  */
 
-static char rcsid[] = "$Id: kpasswd.c,v 1.1.1.1 1996-09-12 04:43:14 ghudson Exp $";
+static char rcsid[] = "$Id: kpasswd.c,v 1.1.1.2 1997-01-21 09:22:38 ghudson Exp $";
 
 #include <kadm5/admin.h>
 #include <krb5.h>
@@ -137,7 +137,7 @@ kpasswd(context, argc, argv)
 
     /* if either krb5_cc failed check the passwd file */
     if (code != 0) {
-      pw = getpwuid((int) getuid());
+      pw = getpwuid( getuid());
       if (pw == NULL) {
 	com_err(whoami, 0, string_text(KPW_STR_NOT_IN_PASSWD_FILE));
 	return(MISC_EXIT_STATUS);

@@ -13,6 +13,7 @@
 
 set timeout 100
 set stty_init {erase \^h kill \^u}
+set env(TERM) dumb
 
 # We do everything in a temporary directory.
 if ![file isdirectory tmpdir] {catch "exec mkdir tmpdir" status}
@@ -101,6 +102,10 @@ if ![info exists KINIT] {
     set KINIT [findfile $objdir/../../clients/kinit/kinit]
 }
 
+if ![info exists KTUTIL] {
+    set KTUTIL [findfile $objdir/../../kadmin/ktutil/ktutil]
+}
+
 if ![info exists RESOLVE] {
     set RESOLVE [findfile $objdir/../resolve/resolve]
 }
@@ -129,6 +134,7 @@ if ![info exists SHELL_PROMPT] {
 
 proc check_k5login { testname } {
     global env
+    global REALMNAME
 
     if ![file exists ~/.k5login] {
 	return 1
@@ -136,7 +142,7 @@ proc check_k5login { testname } {
 
     set file [open ~/.k5login r]
     while { [gets $file principal] != -1 } {
-	if { $principal == $env(USER) } {
+	if { $principal == "$env(USER)@$REALMNAME" } {
 	    close $file
 	    return 1
 	}
@@ -309,6 +315,7 @@ proc setup_kerberos_files { } {
     puts $conffile "	$REALMNAME = \{"
     puts $conffile "		kdc = $hostname:3088"
     puts $conffile "		admin_server = $hostname:3750"
+    puts $conffile "		default_domain = $domain"
     puts $conffile "	\}"
     puts $conffile ""
     puts $conffile "\[domain_realm\]"
@@ -754,6 +761,7 @@ proc start_kerberos_daemons { standalone } {
     global kadmind_pid
     global kadmind_spawn_id
     global tmppwd
+    global env
 
     if ![setup_kerberos_db 0] {
 	return 0
@@ -812,6 +820,17 @@ proc start_kerberos_daemons { standalone } {
     # Give the kerberos daemon a few seconds to get set up.
     sleep 2
 
+
+    #
+    # Save setting of KRB5_KTNAME. We do not want to override kdc.conf
+    # file during kadmind startup. (this is in case user has KRB5_KTNAME
+    # set before starting make check)
+    #
+    if [info exists env(KRB5_KTNAME)] {
+	set start_save_ktname $env(KRB5_KTNAME)
+    }
+    catch "unset env(KRB5_KTNAME)"
+
     if ![file exists $kadmind_lfile] then {
 	catch [touch $kadmind_lfile]
 	sleep 1
@@ -835,8 +854,18 @@ proc start_kerberos_daemons { standalone } {
 
     if {$count >= $retry} {
 	fail "kadmin5 (starting)"
+	if [info exists start_save_ktname] {
+	   set env(KRB5_KTNAME) $start_save_ktname
+	   unset start_save_ktname
+	}
 	stop_kerberos_daemons
 	return 0
+    }
+
+    # Restore KRB5_KTNAME
+    if [info exists start_save_ktname] {
+        set env(KRB5_KTNAME) $start_save_ktname
+        unset start_save_ktname
     }
 
     switch -regexp [tail1 $kadmind_lfile] {
@@ -1333,6 +1362,8 @@ proc setup_wrapper { file command } {
 
     set f [open $file "w" 0777]
     puts $f "#!$BINSH"
+    puts $f "KRB5_CONFIG=$env(KRB5_CONFIG)"
+    puts $f "export KRB5_CONFIG"
     foreach i $krb5_init_vars {
 	regexp "^(\[^=\]*)=(.*)" $i foo evar evalue
 	puts $f "$evar=$env($evar)"

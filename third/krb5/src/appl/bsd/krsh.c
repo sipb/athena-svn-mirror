@@ -333,8 +333,11 @@ main(argc, argv0)
     }
 
 #ifdef KERBEROS
-    krb5_init_context(&bsd_context);
-    krb5_init_ets(bsd_context);
+    status = krb5_init_context(&bsd_context);
+    if (status) {
+	    com_err(argv[0], status, "while initializing krb5");
+	    exit(1);
+    }
     authopts = AP_OPTS_MUTUAL_REQUIRED;
 
     /* Piggy-back forwarding flags on top of authopts; */
@@ -357,10 +360,11 @@ main(argc, argv0)
 		  1);	/* Always set anyport, there is no need not to. --proven */
     if (status) {
         /* check NO_TKT_FILE or equivalent... */
-	fprintf(stderr,
-		"%s: kcmd to host %s failed - %s\n",argv0[0], host,
-		error_message(status));
-	try_normal(argv0);
+	 if (status != -1) 
+	      fprintf(stderr,
+		      "%s: kcmd to host %s failed - %s\n",argv0[0], host,
+		      error_message(status));
+	 try_normal(argv0);
     }
 
     /* Setup for des_read and write */

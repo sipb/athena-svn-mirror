@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.1 1996-09-12 04:43:55 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.2 1997-01-21 09:26:25 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.1 1996-09-12 04:43:55 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.2 1997-01-21 09:26:25 ghudson Exp $";
 #endif
 
 #include    <rpc/rpc.h>
@@ -25,13 +25,19 @@ kadm5_create_principal(void *server_handle,
 
     CHECK_HANDLE(server_handle);
 
+    memset(&arg, 0, sizeof(arg));
     arg.mask = mask;
     arg.passwd = pw;
     arg.api_version = handle->api_version;
 
     if(princ == NULL)
 	return EINVAL;
-    memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec));
+
+    if (handle->api_version == KADM5_API_VERSION_1) {
+       memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec_v1));
+    } else {
+       memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec));
+    }
     if (handle->api_version == KADM5_API_VERSION_1) {
 	 /*
 	  * hack hack cough cough.
@@ -94,6 +100,7 @@ kadm5_modify_principal(void *server_handle,
 
     CHECK_HANDLE(server_handle);
 
+    memset(&arg, 0, sizeof(arg));
     arg.mask = mask;
     arg.api_version = handle->api_version;
     /*
@@ -102,7 +109,11 @@ kadm5_modify_principal(void *server_handle,
      */
     if(princ == NULL)
 	return EINVAL;
-    memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec));
+    if (handle->api_version == KADM5_API_VERSION_1) {
+        memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec_v1));
+    } else {
+        memcpy(&arg.rec, princ, sizeof(kadm5_principal_ent_rec));
+    }
     if(!(mask & KADM5_POLICY))
 	arg.rec.policy = NULL;
     if (! (mask & KADM5_KEY_DATA)) {
@@ -278,21 +289,24 @@ kadm5_randkey_principal(void *server_handle,
 	 if (n_keys)
 	      *n_keys = r->n_keys;
 	 if (key) {
-	      *key = (krb5_keyblock *) malloc(r->n_keys*sizeof(krb5_keyblock));
-	      if (*key == NULL)
-		   return ENOMEM;
-	      for (i = 0; i < r->n_keys; i++) {
-		   ret = krb5_copy_keyblock_contents(handle->context,
-						     &r->keys[i],
-						     &(*key)[i]);
-		   if (ret) {
-			free(*key);
-			return ENOMEM;
-		   }
-	      }
-	 }
+	      if(r->n_keys) {
+		      *key = (krb5_keyblock *) 
+			      malloc(r->n_keys*sizeof(krb5_keyblock));
+		      if (*key == NULL)
+			      return ENOMEM;
+		      for (i = 0; i < r->n_keys; i++) {
+			      ret = krb5_copy_keyblock_contents(handle->context,
+								&r->keys[i],
+								&(*key)[i]);
+			      if (ret) {
+				      free(*key);
+				      return ENOMEM;
+			      }
+		      }
+	      } else *key = NULL;
+         }
     }
-	 
+
     return r->code;
 }
 

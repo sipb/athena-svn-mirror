@@ -2,7 +2,7 @@
  * Data Types for policys, and principal information that
  * exist in the respective databases.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.1 1996-09-12 04:43:53 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.2 1997-01-21 09:25:44 ghudson Exp $
  *
  * This file was originally created with rpcgen.
  * It has been hacked up since then.

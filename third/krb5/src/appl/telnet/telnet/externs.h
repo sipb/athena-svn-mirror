@@ -157,6 +157,8 @@ extern int
     termdata,		/* Print out terminal data flow */
     debug;			/* Debug level */
 
+extern int intr_happened, intr_waiting;	/* for interrupt handling */
+
 extern cc_t escape;	/* Escape to command mode */
 extern cc_t rlogin;	/* Rlogin mode escape character */
 #ifdef	KLUDGELINEMODE
@@ -312,6 +314,9 @@ extern void
 extern unsigned char
     *env_default P((int, int)),
     *env_getvalue P((unsigned char *));
+
+extern int
+    env_is_exported P((unsigned char *));
 
 extern int
     get_status P((void)),

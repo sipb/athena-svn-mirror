@@ -144,7 +144,7 @@ error_code KADMPLACEHOLD_126,	"KADM error code 126"
 error_code KADMPLACEHOLD_127,	"KADM error code 127"
 #^^ 127
 
-ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/krb5/error_tables/adm_err.et,v 1.1.1.1 1996-09-12 04:44:51 ghudson Exp $"
+ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/krb5/error_tables/adm_err.et,v 1.1.1.2 1997-01-21 09:30:19 ghudson Exp $"
 # /* Building and unbuilding the packet errors */
 ec KADM_NO_REALM,	"Cannot fetch local realm"
 ec KADM_NO_CRED,	"Unable to fetch credentials"

@@ -151,7 +151,13 @@ Specifying "ago" in a duration may result in unexpected behavior.
 \fBadd_principal\fP [\fIoptions\fP] \fInewprinc\fP
 creates the principal
 .IR newprinc ,
-prompting twice for a password.  This command requires the
+prompting twice for a password.  If no policy is specified with the
+-policy option, and the policy named "default" exists, then that
+policy is assigned to the principal; note that the assignment of the
+policy "default" only occurs automatically when a principal is first
+created, so the policy "default" must already exist for the assignment
+to occur.  This assignment of "default" can be suppressed with the
+-clearpolicy option.  This command requires the 
 .I add
 privilege.  This command has the aliases
 .B addprinc
@@ -176,8 +182,17 @@ maximum renewable life of tickets for the principal
 explicity set the key version number.
 .TP
 \fB\-policy\fP \fIpolicy\fP
-policy used by this principal.  If no policy is supplied, the principal
-will default to having no policy, and a warning message will be printed.
+policy used by this principal.  If no policy is supplied, then if the
+policy "default" exists and the -clearpolicy is not also specified,
+then the policy "default" is used; otherwise, the principal 
+will have no policy, and a warning message will be printed.
+.TP
+\fB\-clearpolicy\fP 
+.B -clearpolicy
+prevents the policy "default" from being assigned when 
+.B -policy
+is not specified.  This option has no effect if the policy "default"
+does not exist.
 .TP
 {\fB\-\fP|\fB+\fP}\fBallow_postdated\fP
 .B -allow_postdated
@@ -652,14 +667,16 @@ kadmin:
 \fBktadd\fP [\fB\-k\fP \fIkeytab\fP] [\fB\-q\fP] [\fIprincipal\fP | \fB\-glob\fP \fIprinc-exp\fP] [\fI...\fP]
 Adds a principal or all principals matching
 .I princ-exp
-to a keytab.  Requires the
+to a keytab, randomizing each principal's key in the process.  Requires the
 .I inquire
-privilege.  An entry for each of the principal's unique encryption types
+and 
+.I changepw
+privileges.  An entry for each of the principal's unique encryption types
 is added, ignoring multiple keys with the same encryption type but
 different salt types.  If the
 .B \-k
 argument is not specified, the default keytab
-.I /etc/v5srvtab
+.I /etc/krb5.keytab
 is used.  If the
 .B \-q
 option is specified, less verbose status information is displayed.
@@ -678,13 +695,10 @@ command.
 .RS
 .TP
 EXAMPLE:
-kadmin: ktadd -k /krb5/kadmind.keytab kadmin/admin kadmin/changepw
-Entry for principal kadmin/admin@ATHENA.MIT.EDU with
+kadmin: ktadd -k /tmp/foo-new-keytab host/foo.mit.edu
+Entry for principal host/foo.mit.edu@ATHENA.MIT.EDU with
 	kvno 3, encryption type DES-CBC-CRC added to keytab
-	WRFILE:/krb5/kadmind.keytab.
-Entry for principal kadmin/changepw@ATHENA.MIT.EDU
-	with kvno 3, encryption type DES-CBC-CRC added to keytab
-	WRFILE:/krb5/kadmind.keytab.
+	WRFILE:/tmp/foo-new-keytab
 kadmin:
 .RE
 .fi
@@ -699,7 +713,7 @@ parsed as an integer, and all entries whose kvno match that integer are
 removed.  If the
 .B \-k
 argument is not specifeid, the default keytab
-.I /etc/v5srvtab
+.I /etc/krb5.keytab
 is used.  If the
 .B \-q
 option is specified, less verbose status information is displayed.
@@ -708,9 +722,9 @@ option is specified, less verbose status information is displayed.
 .RS
 .TP
 EXAMPLE:
-kadmin: ktremove -k /krb5/kadmind.keytab kadmin/admin
+kadmin: ktremove -k /usr/local/var/krb5kdc/kadmind.keytab kadmin/admin
 Entry for principal kadmin/admin with kvno 3 removed
-	from keytab WRFILE:/krb5/kadmind.keytab.
+	from keytab WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
 kadmin:
 .RE
 .fi

@@ -1,3 +1,18 @@
+Thu Nov  7 15:32:06 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* telnetd.c (main): Check the error return from
+ 		krb5_init_context(), and print an error message if
+ 		necessary.
+
+Mon Oct 14 01:55:41 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* utility.c (printsub): Patch from jhawk@bbnplannet.com to deal
+ 	with bug printing out authentication name. [71]
+Sat Sep 21 03:38:31 1996  Sam Hartman  <hartmans@mit.edu>
+(printsub): Fix encrypt promise bit option parsing [74]
+
+	* utility.c (ttloop): Continue on eintr.
+
 Tue Sep 10 14:10:41 1996  Tom Yu  <tlyu@mit.edu>
 
 	* telnetd.8: remove ".so man1/header.doc"

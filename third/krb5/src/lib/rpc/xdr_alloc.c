@@ -34,7 +34,7 @@ static char sccsid[] = "@(#)xdr_mem.c 1.19 87/08/11 Copyr 1984 Sun Micro";
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/xdr_alloc.c,v 1.1.1.1 1996-09-12 04:44:38 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/xdr_alloc.c,v 1.1.1.2 1997-01-21 09:28:21 ghudson Exp $
  * 
  * $Log: not supported by cvs2svn $
  * Revision 1.6  1996/07/22 20:41:21  marc
@@ -71,7 +71,7 @@ static char sccsid[] = "@(#)xdr_mem.c 1.19 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/xdr_alloc.c,v 1.1.1.1 1996-09-12 04:44:38 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/xdr_alloc.c,v 1.1.1.2 1997-01-21 09:28:21 ghudson Exp $";
 #endif
 
 #include <rpc/types.h>

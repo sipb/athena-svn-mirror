@@ -1,9 +1,13 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.1 1996-09-12 04:43:56 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.2 1997-01-21 09:26:04 ghudson Exp $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1996/10/18 19:45:49  bjaspan
+ * 	* svr_misc_free.c, server_dict.c, adb_policy.c, adb_free.c:
+ *  	include stdlib.h instead of malloc.h [krb5-admin/35]
+ *
  * Revision 1.1  1996/07/24 22:23:09  tlyu
  * 	* Makefile.in, configure.in: break out server lib into a
  * 		subdirectory
@@ -44,12 +48,12 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.1 1996-09-12 04:43:56 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.2 1997-01-21 09:26:04 ghudson Exp $";
 #endif
 
 #include	"adb.h"
 #include	<memory.h>
-#include	<malloc.h>
+#include	<stdlib.h>
 
 void
 osa_free_princ_ent(osa_princ_ent_t val)

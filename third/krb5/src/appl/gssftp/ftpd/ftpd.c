@@ -1983,8 +1983,8 @@ char *data;
 							    NULL, 	/* ignore time_rec */
 							    NULL   /* ignore del_cred_handle */
 							    );
-			if (accept_maj!=GSS_S_COMPLETE && accept_maj!=GSS_S_CONTINUE_NEEDED)
-				continue;
+			if (accept_maj==GSS_S_COMPLETE||accept_maj==GSS_S_CONTINUE_NEEDED)
+				break;
 		}
 
 		if (found) {
@@ -2078,16 +2078,34 @@ static char *onefile[] = {
  *	-1 on error
  *	-2 on security error
  */
+#ifdef STDARG
+secure_fprintf(FILE *stream, char *fmt, ...)
+#else
 secure_fprintf(stream, fmt, p1, p2, p3, p4, p5)
 FILE *stream;
 char *fmt;
+#endif
 {
-	char s[FTP_BUFSIZ];
+        char s[FTP_BUFSIZ];
+        int rval;
+#ifdef STDARG
+        va_list ap;
 
-	if (level == PROT_C)
-		return(fprintf(stream, fmt, p1, p2, p3, p4, p5));
-	sprintf(s, fmt, p1, p2, p3, p4, p5);
-	return(secure_write(fileno(stream), s, strlen(s)));
+        va_start(ap, fmt);
+        if (level == PROT_C) rval = vfprintf(stream, fmt, ap);
+        else {
+                vsprintf(s, fmt, ap);
+                rval = secure_write(fileno(stream), s, strlen(s));
+        }
+        va_end(ap);
+
+        return(rval);
+#else
+        if (level == PROT_C)
+                return(fprintf(stream, fmt, p1, p2, p3, p4, p5));
+        sprintf(s, fmt, p1, p2, p3, p4, p5);
+        return(secure_write(fileno(stream), s, strlen(s)));
+#endif
 }
 
 send_file_list(whichfiles)
@@ -2313,7 +2331,10 @@ ftpd_userok(client_name, name)
 	krb5_context kc;
 	krb5_principal p;
 	krb5_error_code kerr;
-	krb5_init_context(&kc);
+	
+	kerr = krb5_init_context(&kc);
+	if (kerr)
+		return -1;
 
 	kerr = krb5_parse_name(kc, client_name->value, &p);
 	if (kerr) { retval = -1; goto fail; }

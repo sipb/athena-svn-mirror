@@ -1,3 +1,28 @@
+Fri Nov 22 15:48:02 1996  unknown  <bjaspan@mit.edu>
+
+	* gss-client.c (connect_to_server): use sizeof instead of h_length
+ 	to determine number of bytes of addr to copy from DNS response
+ 	[krb5-misc/211]
+
+Sun Oct 27 22:04:59 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add USE_GSSAPI_LIBRARY
+
+	* Makefile.in (LOCAL_LIBRARIES): Remove as -lgssapi_rpc should
+		come from configure.  
+
+Mon Oct 21 20:03:53 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* gss-server.c: Re-added code to test import and export security
+ 		context.  Yes, yes, I know this isn't the best place to
+ 		have this test, but DO NOT REMOVE THIS TEST UNTIL WE HAVE
+ 		IT CODED ELSEWHERE.  Better slightly ugly sample server
+ 		code than untested (and broken) library code....  Add code
+ 		to print out the mechanism OID used by accept_sec_context.
+
+	* gss-client.c: Add code to allow user to specify the mechanism
+		OID that gss-client should use.
+
 Wed Jun  5 00:08:32 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* gss-client.c (call_server): When reading in the test value from

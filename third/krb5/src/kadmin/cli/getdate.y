@@ -120,7 +120,7 @@ static int yyerror ();
 
 #if	!defined(lint) && !defined(SABER)
 static char RCS[] =
-	"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/getdate.y,v 1.1.1.1 1996-09-12 04:43:07 ghudson Exp $";
+	"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/getdate.y,v 1.1.1.2 1997-01-21 09:21:53 ghudson Exp $";
 #endif	/* !defined(lint) && !defined(SABER) */
 
 
@@ -224,7 +224,6 @@ item	: time {
 	| rel {
 	    yyHaveRel++;
 	}
-	| number
 	;
 
 time	: tUNUMBER tMERIDIAN {
@@ -365,33 +364,6 @@ relunit	: tUNUMBER tMINUTE_UNIT {
 	}
 	| tMONTH_UNIT {
 	    yyRelMonth += $1;
-	}
-	;
-
-number	: tUNUMBER {
-	    if (yyHaveTime && yyHaveDate && !yyHaveRel)
-		yyYear = $1;
-	    else {
-		if($1>10000) {
-		    yyHaveDate++;
-		    yyDay= ($1)%100;
-		    yyMonth= ($1/100)%100;
-		    yyYear = $1/10000;
-		}
-		else {
-		    yyHaveTime++;
-		    if ($1 < 100) {
-			yyHour = $1;
-			yyMinutes = 0;
-		    }
-		    else {
-		    	yyHour = $1 / 100;
-		    	yyMinutes = $1 % 100;
-		    }
-		    yySeconds = 0;
-		    yyMeridian = MER24;
-	        }
-	    }
 	}
 	;
 
@@ -562,39 +534,6 @@ static TABLE const TimezoneTable[] = {
     {  NULL  }
 };
 
-/* Military timezone table. */
-static TABLE const MilitaryTable[] = {
-    { "a",	tZONE,	HOUR(  1) },
-    { "b",	tZONE,	HOUR(  2) },
-    { "c",	tZONE,	HOUR(  3) },
-    { "d",	tZONE,	HOUR(  4) },
-    { "e",	tZONE,	HOUR(  5) },
-    { "f",	tZONE,	HOUR(  6) },
-    { "g",	tZONE,	HOUR(  7) },
-    { "h",	tZONE,	HOUR(  8) },
-    { "i",	tZONE,	HOUR(  9) },
-    { "k",	tZONE,	HOUR( 10) },
-    { "l",	tZONE,	HOUR( 11) },
-    { "m",	tZONE,	HOUR( 12) },
-    { "n",	tZONE,	HOUR(- 1) },
-    { "o",	tZONE,	HOUR(- 2) },
-    { "p",	tZONE,	HOUR(- 3) },
-    { "q",	tZONE,	HOUR(- 4) },
-    { "r",	tZONE,	HOUR(- 5) },
-    { "s",	tZONE,	HOUR(- 6) },
-    { "t",	tZONE,	HOUR(- 7) },
-    { "u",	tZONE,	HOUR(- 8) },
-    { "v",	tZONE,	HOUR(- 9) },
-    { "w",	tZONE,	HOUR(-10) },
-    { "x",	tZONE,	HOUR(-11) },
-    { "y",	tZONE,	HOUR(-12) },
-    { "z",	tZONE,	HOUR(  0) },
-    { NULL }
-};
-
-
-
-
 /* ARGSUSED */
 static int
 yyerror(s)
@@ -632,7 +571,10 @@ ToSeconds(Hours, Minutes, Seconds, Meridian)
     /* NOTREACHED */
 }
 
-
+/*
+ * From hh:mm:ss [am|pm] mm/dd/yy [tz], compute and return the number
+ * of seconds since 00:00:00 1/1/70 GMT.
+ */
 static time_t
 Convert(Month, Day, Year, Hours, Minutes, Seconds, Meridian, DSTmode)
     time_t	Month;
@@ -813,15 +755,6 @@ LookupWord(buff)
 	    return tp->type;
 	}
 
-    /* Military timezones. */
-    if (buff[1] == '\0' && isalpha(*buff)) {
-	for (tp = MilitaryTable; tp->name; tp++)
-	    if (strcmp(buff, tp->name) == 0) {
-		yylval.Number = tp->value;
-		return tp->type;
-	    }
-    }
-
     /* Drop out any periods and try the timezone table again. */
     for (i = 0, p = q = buff; *q; q++)
 	if (*q != '.')
@@ -959,10 +892,60 @@ get_date(p, now)
     yyHaveTime = 0;
     yyHaveZone = 0;
 
+    /*
+     * When yyparse returns, zero or more of yyHave{Time,Zone,Date,Day,Rel} 
+     * will have been incremented.  The value is number of items of
+     * that type that were found; for all but Rel, more than one is
+     * illegal.
+     *
+     * For each yyHave indicator, the following values are set:
+     *
+     * yyHaveTime:
+     *	yyHour, yyMinutes, yySeconds: hh:mm:ss specified, initialized
+     *				      to zeros above
+     *	yyMeridian: MERam, MERpm, or MER24
+     *	yyTimeZone: time zone specified in minutes
+     *  yyDSTmode: DSToff if yyTimeZone is set, otherwise unchanged
+     *		   (initialized above to DSTmaybe)
+     *
+     * yyHaveZone:
+     *  yyTimezone: as above
+     *  yyDSTmode: DSToff if a non-DST zone is specified, otherwise DSTon
+     *	XXX don't understand interaction with yyHaveTime zone info
+     *
+     * yyHaveDay:
+     *	yyDayNumber: 0-6 for Sunday-Saturday
+     *  yyDayOrdinal: val specified with day ("second monday",
+     *		      Ordinal=2), otherwise 1
+     *
+     * yyHaveDate:
+     *	yyMonth, yyDay, yyYear: mm/dd/yy specified, initialized to
+     *				today above
+     *
+     * yyHaveRel:
+     *	yyRelSeconds: seconds specified with MINUTE_UNITs ("3 hours") or
+     *		      SEC_UNITs ("30 seconds")
+     *  yyRelMonth: months specified with MONTH_UNITs ("3 months", "1
+     *		     year")
+     *
+     * The code following yyparse turns these values into a single
+     * date stamp.
+     */
     if (yyparse()
      || yyHaveTime > 1 || yyHaveZone > 1 || yyHaveDate > 1 || yyHaveDay > 1)
 	return -1;
 
+    /*
+     * If an absolute time specified, set Start to the equivalent Unix
+     * timestamp.  Otherwise, set Start to now, and if we do not have
+     * a relatime time (ie: only yyHaveZone), decrement Start to the
+     * beginning of today.
+     *
+     * By having yyHaveDay in the "absolute" list, "next Monday" means
+     * midnight next Monday.  Otherwise, "next Monday" would mean the
+     * time right now, next Monday.  It's not clear to me why the
+     * current behavior is preferred.
+     */
     if (yyHaveDate || yyHaveTime || yyHaveDay) {
 	Start = Convert(yyMonth, yyDay, yyYear, yyHour, yyMinutes, yySeconds,
 		    yyMeridian, yyDSTmode);
@@ -975,9 +958,30 @@ get_date(p, now)
 	    Start -= ((tm->tm_hour * 60L + tm->tm_min) * 60L) + tm->tm_sec;
     }
 
+    /*
+     * Add in the relative time specified.  RelativeMonth adds in the
+     * months, accounting for the fact that the actual length of "3
+     * months" depends on where you start counting.
+     *
+     * XXX By having this separate from the previous block, we are
+     * allowing dates like "10:00am 3 months", which means 3 months
+     * from 10:00am today, or even "1/1/99 two days" which means two
+     * days after 1/1/99.
+     *
+     * XXX Shouldn't this only be done if yyHaveRel, just for
+     * thoroughness?
+     */
     Start += yyRelSeconds;
     Start += RelativeMonth(Start, yyRelMonth);
 
+    /*
+     * Now, if you specified a day of week and counter, add it in.  By
+     * disallowing Date but allowing Time, you can say "5pm next
+     * monday".
+     *
+     * XXX The yyHaveDay && !yyHaveDate restriction should be enforced
+     * above and be able to cause failure.
+     */
     if (yyHaveDay && !yyHaveDate) {
 	tod = RelativeDate(Start, yyDayOrdinal, yyDayNumber);
 	Start += tod;

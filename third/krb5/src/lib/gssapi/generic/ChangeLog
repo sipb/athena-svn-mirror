@@ -1,3 +1,67 @@
+Wed Nov 20 13:59:58 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (install): Install gssapi.h from the build tree.
+
+Tue Nov 19 16:43:16 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (gssapi.h): grep USE_.*_H out from autoconf.h as
+	well (some stuff was depending on USE_STRING_H).
+
+Mon Nov 18 12:38:34 1996  Tom Yu  <tlyu@mit.edu>
+
+	*gssapi.h: Renamed to gssapi.hin.
+
+	* gssapi.hin: Remove #ifdef USE_AUTOCONF_H; we're grepping symbols
+	directly from autoconf.h now.
+
+	* configure.in: Change CopySrcHeader to CopyHeader, as gssapi.h is
+	now generated in the build tree.
+
+	* Makefile.in: Add rules to generate gssapi.h from gssapi.hin,
+	similar to how krb5.h is generated from krb5.hin.  Remove
+	-DUSE_AUTOCONF_H from $(CFLAGS)
+
+Tue Nov  5 18:47:44 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (HDRS): Changes so that $(OBJS) will not get
+	recompiled gratuitously if someone touches the include directory.
+
+	* configure.in: Revert previous change re: CopySrcHeader.
+
+Tue Oct 29 10:20:58 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Use $(S) instead of / for productions which could
+		be used on both DOS and Unix systems.
+
+Mon Oct 21 16:16:26 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* util_ordering.c (g_queue_internalize, g_queue_externalize):
+ 		Fixed typo so that the remaining length field is set
+ 		correctly.
+
+Sat Oct 19 00:39:25 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* util_ordering.c (g_queue_externalize, g_queue_internalize,
+	 	g_queue_size):  New routines which allow the serailizing
+	 	routines to access the seqstate structure.
+
+Thu Oct 10 15:03:38 1996  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Remove calls to CopySrcHeader.
+
+	* Makefile.in: More fixups; punt usage of CopySrcHeader and use
+ 	explicit dependencies instead, thus avoiding abuse of double-colon
+ 	rules.
+
+Wed Oct  9 14:12:27 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (all-unix): Fix up last change; depending on a phony
+	target causes everything all of $(OBJS) to get remade always.
+
+	* Makefile.in (all-unix): Fix up various rules that have
+	"includes" as dependencies in order to allow for makes that don't
+	do left-to-right ordering of dependencies.
+
 Wed Aug 28 17:44:06 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* utl_nohash_validate.c: 

@@ -145,12 +145,12 @@
 #define PROVIDE_DES_CBC_CRC
 #define PROVIDE_DES_CBC_RAW
 #define PROVIDE_DES_CBC_CKSUM
-#define PROVIDE_DES3_CBC_SHA
-#define PROVIDE_DES3_CBC_RAW
+/* #define PROVIDE_DES3_CBC_SHA */
+/* #define PROVIDE_DES3_CBC_RAW */
 #define PROVIDE_CRC32
 #define PROVIDE_RSA_MD4
 #define PROVIDE_RSA_MD5
-#define PROVIDE_NIST_SHA
+/* #define PROVIDE_NIST_SHA */
 
 #ifndef _SIZE_T_DEFINED
 typedef unsigned int size_t;
@@ -887,12 +887,6 @@ krb5_error_code krb5_process_padata
 		krb5_keyblock **, 	
 		krb5_creds *, 
 		krb5_int32 *));		
-
-krb5_error_code krb5_verify_padata
-    	KRB5_PROTOTYPE((krb5_context,
-		   krb5_pa_data * data, krb5_principal client,
-	       krb5_address **src_addr, krb5_keyblock *decrypt_key,
-	       int *req_id, int *flags));
 
 void krb5_free_etype_info
     KRB5_PROTOTYPE((krb5_context, krb5_etype_info));

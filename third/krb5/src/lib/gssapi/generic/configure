@@ -796,8 +796,6 @@ if test $withval = no; then
 	DEPKRB4_LIB=
 	KRB4_CRYPTO_LIB=
 	DEPKRB4_CRYPTO_LIB=
-	KDB4_LIB=
-	DEPKDB4_LIB=
 	KRB4_INCLUDES=
 	LDARGS=
 	krb5_cv_build_krb4_libs=no
@@ -813,8 +811,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB='$(TOPLIBD)/libkrb4.a'
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB='-lkdb4'
-	DEPKDB4_LIB='$(TOPLIBD)/libkdb4.a'
 	KRB4_INCLUDES='-I$(SRCTOP)/include/kerberosIV'
 	LDARGS=
 	krb5_cv_build_krb4_libs=yes
@@ -826,8 +822,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB="$withval/lib/libkrb.a"
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB="-lkdb"
-	DEPKDB4_LIB="$withval/lib/libkdb.a"
 	KRB4_INCLUDES="-I$withval/include"
 	LDARGS="-L$withval/lib"
 	krb5_cv_build_krb4_libs=no
@@ -844,7 +838,7 @@ if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 848 "configure"
+#line 842 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -894,7 +888,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:898: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:892: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -933,7 +927,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsocket  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 937 "configure"
+#line 931 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -941,7 +935,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:945: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:939: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -974,7 +968,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lnsl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 978 "configure"
+#line 972 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -982,7 +976,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:986: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:980: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1030,6 +1024,11 @@ test "$program_suffix" != NONE &&
 # sed with no file args requires a program.
 test "$program_transform_name" = "" && program_transform_name="s,x,x,"
  
+
+
+
+
+
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
 # incompatible versions:
@@ -1162,13 +1161,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 1166 "configure"
+#line 1165 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1172: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1171: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1177,13 +1176,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 1181 "configure"
+#line 1180 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1187: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1186: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   :
@@ -1211,12 +1210,12 @@ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1215 "configure"
+#line 1214 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1220: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1219: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1249,11 +1248,11 @@ else
   ac_cv_c_cross=yes
 else
 cat > conftest.$ac_ext <<EOF
-#line 1253 "configure"
+#line 1252 "configure"
 #include "confdefs.h"
 main(){return(0);}
 EOF
-{ (eval echo configure:1257: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1256: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_c_cross=no
 else
@@ -1271,7 +1270,7 @@ if eval "test \"`echo '$''{'ac_cv_header_stdc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1275 "configure"
+#line 1274 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -1279,7 +1278,7 @@ else
 #include <float.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1283: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1282: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1294,7 +1293,7 @@ rm -f conftest*
 if test $ac_cv_header_stdc = yes; then
   # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1298 "configure"
+#line 1297 "configure"
 #include "confdefs.h"
 #include <string.h>
 EOF
@@ -1312,7 +1311,7 @@ fi
 if test $ac_cv_header_stdc = yes; then
   # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
 cat > conftest.$ac_ext <<EOF
-#line 1316 "configure"
+#line 1315 "configure"
 #include "confdefs.h"
 #include <stdlib.h>
 EOF
@@ -1333,7 +1332,7 @@ if test "$cross_compiling" = yes; then
   :
 else
 cat > conftest.$ac_ext <<EOF
-#line 1337 "configure"
+#line 1336 "configure"
 #include "confdefs.h"
 #include <ctype.h>
 #define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
@@ -1344,7 +1343,7 @@ if (XOR (islower (i), ISLOWER (i)) || toupper (i) != TOUPPER (i)) exit(2);
 exit (0); }
 
 EOF
-{ (eval echo configure:1348: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1347: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   :
 else
@@ -1368,7 +1367,7 @@ if eval "test \"`echo '$''{'ac_cv_type_size_t'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1372 "configure"
+#line 1371 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #if STDC_HEADERS
@@ -1402,7 +1401,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1406 "configure"
+#line 1405 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1413,7 +1412,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1417: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1416: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_short=`cat conftestval`
 else
@@ -1436,7 +1435,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1440 "configure"
+#line 1439 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1447,7 +1446,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1451: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1450: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_int=`cat conftestval`
 else
@@ -1470,7 +1469,7 @@ else
     { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
 else
 cat > conftest.$ac_ext <<EOF
-#line 1474 "configure"
+#line 1473 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 main()
@@ -1481,7 +1480,7 @@ main()
   exit(0);
 }
 EOF
-{ (eval echo configure:1485: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
+{ (eval echo configure:1484: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }
 if test -s conftest && (./conftest; exit) 2>/dev/null; then
   ac_cv_sizeof_long=`cat conftestval`
 else
@@ -1499,11 +1498,12 @@ EOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: gssapi.h
+includes:: $(EHDRDIR)/gssapi.h
+$(EHDRDIR)/gssapi.h: gssapi.h
 	@if test -d $(EHDRDIR); then :; else (set -x; mkdir $(EHDRDIR)) fi
-	@if cmp $(srcdir)/gssapi.h $(EHDRDIR)/gssapi.h >/dev/null 2>&1; then :; \
+	@if cmp gssapi.h $(EHDRDIR)/gssapi.h >/dev/null 2>&1; then :; \
 	else \
-		(set -x; $(RM) $(EHDRDIR)/gssapi.h;	$(CP) $(srcdir)/gssapi.h $(EHDRDIR)/gssapi.h) \
+		(set -x; $(RM) $(EHDRDIR)/gssapi.h;	$(CP) gssapi.h $(EHDRDIR)/gssapi.h) \
 	fi
 
 clean-unix::
@@ -1514,7 +1514,8 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-includes:: gssapi_generic.h
+includes:: $(EHDRDIR)/gssapi_generic.h
+$(EHDRDIR)/gssapi_generic.h: $(srcdir)/gssapi_generic.h
 	@if test -d $(EHDRDIR); then :; else (set -x; mkdir $(EHDRDIR)) fi
 	@if cmp $(srcdir)/gssapi_generic.h $(EHDRDIR)/gssapi_generic.h >/dev/null 2>&1; then :; \
 	else \
@@ -1669,6 +1670,11 @@ s%@KRB4_LIB@%$KRB4_LIB%g
 s%@KRB4_CRYPTO_LIB@%$KRB4_CRYPTO_LIB%g
 s%@DEPKRB4_LIB@%$DEPKRB4_LIB%g
 s%@DEPKRB4_CRYPTO_LIB@%$DEPKRB4_CRYPTO_LIB%g
+s%@ALL_RECURSE@%$ALL_RECURSE%g
+s%@CLEAN_RECURSE@%$CLEAN_RECURSE%g
+s%@INSTALL_RECURSE@%$INSTALL_RECURSE%g
+s%@CHECK_RECURSE@%$CHECK_RECURSE%g
+s%@MAKEFILES_RECURSE@%$MAKEFILES_RECURSE%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@AWK@%$AWK%g

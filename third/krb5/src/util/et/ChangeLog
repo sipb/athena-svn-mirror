@@ -1,3 +1,16 @@
+Mon Nov 18 20:37:19 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Set shared library version to 1.0. [krb5-libs/201]
+
+Wed Nov 13 19:19:08 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (clean-unix): Remove shared/*.
+
+Thu Oct 17 18:24:50 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* error_message.c (error_message): Work around a compiler bug on
+		the Alpha.
+
 Thu Sep  5 21:31:07 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* et_c.awk: Change continuation processing so that it doesn't

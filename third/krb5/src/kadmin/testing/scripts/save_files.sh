@@ -9,18 +9,13 @@ while [ $# -gt 0 ] ; do
 	shift
 done
 
-# If it's set, set it to true
-VERBOSE=${VERBOSE_TEST:+true}
-# Otherwise, set it to false
-DUMMY=${VERBOSE:=false}
-
 # files="/etc/inetd.conf /etc/syslog.conf /etc/krb.conf \
 # 	/etc/krb.realms /etc/passwd /etc/services /etc/v5srvtab \
 # 	/etc/rc.local /etc/shadow /etc/security/passwd /.k5login \
 # 	/.secure/etc/passwd /etc/athena/inetd.conf"
 
 files="/etc/krb.conf /etc/krb.realms /etc/athena/krb.conf \
-	/etc/athena/krb.realms /etc/v5srvtab"
+	/etc/athena/krb.realms /etc/v5srvtab /etc/krb5.keytab"
 
 name=`basename $0`
 

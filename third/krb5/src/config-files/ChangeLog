@@ -1,3 +1,22 @@
+Tue Nov 26 19:24:34 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kdc.conf: Fixed paths to use the GNU standard conventions.  
+		[PR#246]
+
+Thu Nov 14 23:08:37 1996  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.conf.M: Note change in default_keytab_name.
+
+Wed Nov 13 15:15:07 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* kdc.conf: remove profile, admin database_name, and admin
+ 	lockfile relations [PR 124]
+
+Wed Oct 16 15:39:59 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* kdc.conf: remove the (wrong) kadmind_port relation
+	[krb5-admin/61]
+
 Tue Sep 10 14:35:53 1996  Tom Yu  <tlyu@mit.edu>
 
 	* kdc.conf.M, krb5.conf.M: remove extra args from .TH

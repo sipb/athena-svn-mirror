@@ -23,7 +23,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: get_tkt_flags.c,v 1.1.1.1 1996-09-12 04:44:10 ghudson Exp $
+ * $Id: get_tkt_flags.c,v 1.1.1.2 1997-01-21 09:24:57 ghudson Exp $
  */
 
 OM_uint32
@@ -48,7 +48,7 @@ gss_krb5_get_tkt_flags(minor_status, context_handle, ticket_flags)
    }
 
    if (ticket_flags)
-      *ticket_flags = ctx->flags;
+      *ticket_flags = ctx->krb_flags;
 
    *minor_status = 0;
    return(GSS_S_COMPLETE);

@@ -61,8 +61,11 @@ char *argv[];
       return 1;
     }
 
-  krb5_init_context(&context);
-  krb5_init_ets(context);
+  retval = krb5_init_context(&context);
+  if (retval) {
+	  com_err(argv[0], retval, "while initializing krb5");
+	  exit(1);
+  }
 
   if (argc == 4)
     {
@@ -125,7 +128,8 @@ char *argv[];
 	  fprintf (stderr, "uu-client: unable to connect to \"%s\"\n", hname);
 	  return 5;
 	}
-      memcpy ((char *)&serv_net_addr.sin_addr, host->h_addr_list[i++], host->h_length);
+      memcpy ((char *)&serv_net_addr.sin_addr, host->h_addr_list[i++], 
+	      sizeof(serv_net_addr.sin_addr));
       if (connect(s, (struct sockaddr *)&serv_net_addr, sizeof (serv_net_addr)) == 0)
 	break;
       com_err ("uu-client", errno, "connecting to \"%s\" (%s).",

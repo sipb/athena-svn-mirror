@@ -95,13 +95,17 @@ char *argv[];
     char *lrealm;
     extern char *optarg;
     extern int fascist_cpw;
-
+    krb5_error_code retval;
+    
 #ifdef OVSEC_KADM
     memset(&params, 0, sizeof(params));
 #endif
 
-    krb5_init_context(&kadm_context);
-    krb5_init_ets(kadm_context);
+    retval = krb5_init_context(&kadm_context);
+    if (retval) {
+        com_err(argv[0], retval, "while initializing krb5");
+	exit(1);
+    }
     initialize_kadm_error_table();
     prog[sizeof(prog)-1]='\0';		/* Terminate... */
     (void) strncpy(prog, argv[0], sizeof(prog)-1);
@@ -113,7 +117,7 @@ char *argv[];
     memset(krbrlm, 0, sizeof(krbrlm));
 
     fascist_cpw = 1;		/* by default, enable fascist mode */
-    while ((c = getopt(argc, argv, "Df:hnd:a:r:FN")) != EOF)
+    while ((c = getopt(argc, argv, "Df:hnd:a:r:FNk:")) != EOF)
 	switch(c) {
 	case 'D':
 	    debug++;
@@ -147,7 +151,13 @@ char *argv[];
 	case 'r':
 	    (void) strncpy(krbrlm, optarg, sizeof(krbrlm) - 1);
 	    break;
-	case 'h':			/* get help on using admin_server */
+        case 'k':
+#ifdef OVSEC_KADM
+	    params.admin_keytab = optarg;
+	    params.mask |= KADM5_CONFIG_ADMIN_KEYTAB;
+#endif
+	    break;
+        case 'h':			/* get help on using admin_server */
 	default:
 	    printf("Usage: admin_server [-h] [-n] [-F] [-N] [-r realm] [-d dbname] [-f filename] [-a acldir]\n");
 	    exit(-1);			/* failure */
@@ -302,8 +312,10 @@ kadm_listen()
 	 }
     }
     if (bind(admin_fd, (struct sockaddr *)&server_parm.admin_addr,
-	     sizeof(struct sockaddr_in)) < 0)
-	return KADM_NO_BIND;
+	     sizeof(struct sockaddr_in)) < 0) {
+	 syslog(LOG_ERR, "bind: %m");
+	 return KADM_NO_BIND;
+    }
     (void) listen(admin_fd, 1);
     FD_ZERO(&mask);
     FD_SET(admin_fd, &mask);
@@ -383,7 +395,6 @@ void process_client(fd, who)
     int status;
 
 #ifdef OVSEC_KADM
-#define OVSEC_KADM_SRVTAB 		"FILE:/krb5/ovsec_adm.srvtab"
     char *service_name;
 
     service_name = (char *) malloc(strlen(server_parm.sname) +
@@ -397,7 +408,7 @@ void process_client(fd, who)
 	    server_parm.sinst, server_parm.krbrlm);
 
     retval = ovsec_kadm_init_with_skey(service_name,
-				       OVSEC_KADM_SRVTAB,
+				       params.admin_keytab,
 				       OVSEC_KADM_ADMIN_SERVICE, krbrlm,
 				       OVSEC_KADM_STRUCT_VERSION,
 				       OVSEC_KADM_API_VERSION_1,

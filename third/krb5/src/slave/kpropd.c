@@ -73,7 +73,7 @@ char	*realm = NULL;		/* Our realm */
 char	*file = KPROPD_DEFAULT_FILE;
 char	*temp_file_name;
 char	*kdb5_util = KPROPD_DEFAULT_KDB5_UTIL;
-char	*kerb_database = KPROPD_DEFAULT_KRB_DB;
+char	*kerb_database = NULL;
 char	*acl_file_name = KPROPD_ACL_FILE;
 
 int		database_fd;
@@ -365,8 +365,11 @@ void PRS(argv)
 	krb5_error_code	retval;
 	static const char	tmp[] = ".temp";
 	
-	krb5_init_context(&kpropd_context);
-	krb5_init_ets(kpropd_context);
+	retval = krb5_init_context(&kpropd_context);
+	if (retval) {
+		com_err(argv[0], retval, "while initializing krb5");
+		exit(1);
+	}
 
 	progname = *argv++;
 	while (word = *argv++) {
@@ -469,6 +472,11 @@ void PRS(argv)
 		com_err(progname, retval,
 			"While trying to construct my service name");
 		exit(1);
+	}
+	if (realm) {
+	    (void) krb5_xfree(krb5_princ_realm(context, server)->data);
+	    krb5_princ_set_realm_length(context, server, strlen(realm));
+	    krb5_princ_set_realm_data(context, server, strdup(realm));
 	}
 	/*
 	 * Construct the name of the temporary file.
@@ -835,8 +843,10 @@ load_database(context, kdb5_util, database_file_name)
 		edit_av[count++] = realm;	
 	}
 	edit_av[count++] = "load";
-	edit_av[count++] = "-d";
-	edit_av[count++] = kerb_database;
+	if (kerb_database) {
+		edit_av[count++] = "-d";
+		edit_av[count++] = kerb_database;
+	}
 	edit_av[count++] = database_file_name;
 	edit_av[count++] = NULL;
 

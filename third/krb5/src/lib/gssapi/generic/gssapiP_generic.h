@@ -24,7 +24,7 @@
 #define _GSSAPIP_GENERIC_H_
 
 /*
- * $Id: gssapiP_generic.h,v 1.1.1.1 1996-09-12 04:44:08 ghudson Exp $
+ * $Id: gssapiP_generic.h,v 1.1.1.2 1997-01-21 09:24:40 ghudson Exp $
  */
 
 #if (defined(_MSDOS) || defined(_WIN32) || defined(_MACINTOSH))
@@ -144,6 +144,12 @@ gss_int32 g_order_init PROTOTYPE((void **queue, OM_uint32 seqnum,
 gss_int32 g_order_check PROTOTYPE((void **queue, OM_uint32 seqnum));
 
 void g_order_free PROTOTYPE((void **queue));
+
+gss_uint32 g_queue_size(void *vqueue, size_t *sizep);
+gss_uint32 g_queue_externalize(void *vqueue, unsigned char **buf,
+			       size_t *lenremain);
+gss_uint32 g_queue_internalize(void **vqueue, unsigned char **buf,
+			       size_t *lenremain);
 
 char *g_canonicalize_host PROTOTYPE((char *hostname));
 char *g_local_host_name PROTOTYPE((void));

@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.1 1996-09-12 04:42:09 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.2 1997-01-21 09:18:21 ghudson Exp $";
 #endif
 
 #include <stdio.h>

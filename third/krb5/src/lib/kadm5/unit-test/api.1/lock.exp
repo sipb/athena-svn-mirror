@@ -3,7 +3,7 @@
 # (whichs runs through all api tests) will still have it locked, and
 # these tests will fail.
 
-source lib.t
+load_lib lib.t
 
 api_exit
 
@@ -12,7 +12,7 @@ if { $RPC } {
 }
 
 set locktest $LOCKTEST
-set lockfile "/krb5/ovsec_adm.lock"
+set lockfile $env(K5ROOT)/kdb5.kadm5.lock
 
 # The lock tests use the program lock-test in the unit test
 # directory.  The basic idea is that lock-test can be told to acquire

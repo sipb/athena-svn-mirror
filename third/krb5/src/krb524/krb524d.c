@@ -91,9 +91,13 @@ int main(argc, argv)
      int ret, s;
      fd_set rfds;
      krb5_context context;
+     krb5_error_code retval;
 
-     krb5_init_context(&context);
-     krb524_init_ets(context);
+     retval = krb5_init_context(&context);
+     if (retval) {
+	     com_err(argv[0], retval, "while initializing krb5");
+	     exit(1);
+     }
 
      whoami = ((whoami = strrchr(argv[0], '/')) ? whoami + 1 : argv[0]);
 
@@ -115,7 +119,7 @@ int main(argc, argv)
      }
      
      signal(SIGINT, request_exit);
-     signal(SIGHUP, request_exit);
+     signal(SIGHUP, SIG_IGN);
      signal(SIGTERM, request_exit);
 
      if (use_keytab)
@@ -216,9 +220,9 @@ void init_master(context, params)
      int ret;
 
      use_master = 0;
-     if (ret = kadm5_init(whoami, NULL, KADM5_ADMIN_SERVICE, params,
-			  KADM5_STRUCT_VERSION, KADM5_API_VERSION_2,
-			  &handle)) {
+     if ((ret = kadm5_init(whoami, NULL, KADM5_ADMIN_SERVICE, params,
+			   KADM5_STRUCT_VERSION, KADM5_API_VERSION_2,
+			   &handle))) {
 	  com_err(whoami, ret, "initializing kadm5 library");
 	  cleanup_and_exit(1, context);
      }
@@ -291,9 +295,7 @@ krb5_error_code do_connection(s, context)
 				   &v4_service_key);
      if (ret)
 	  goto error;
-     krb5_free_keyblock_contents(context, &v5_service_key);
-     krb5_free_keyblock_contents(context, &v4_service_key);
-     krb5_free_ticket(context, v5tkt);
+
      if (debug)
 	  printf("credentials converted\n");
 
@@ -377,8 +379,8 @@ krb5_error_code kdc_get_server_key(context, service, key, kvno, ktype)
     krb5_error_code ret;
     kadm5_principal_ent_rec server;
     
-    if (ret = kadm5_get_principal(handle, service, &server,
-				  KADM5_KEY_DATA))
+    if ((ret = kadm5_get_principal(handle, service, &server,
+				   KADM5_KEY_DATA)))
 	 return ret;
 
     /*

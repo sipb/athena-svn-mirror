@@ -87,8 +87,11 @@ char *argv[];
     krb5_address addr;
     krb5_ticket *ticket = NULL;
 
-    krb5_init_context(&context);
-    krb5_init_ets(context);
+    retval = krb5_init_context(&context);
+    if (retval) {
+	    com_err(argv[0], retval, "while initializing krb5");
+	    exit(1);
+    }
 
     /*
      * Parse command line arguments
@@ -148,7 +151,7 @@ char *argv[];
 	fprintf(stderr, "%s: host unknown\n", full_hname);
 	exit(1);
     }
-    memcpy((char *)&s_sock.sin_addr, host->h_addr, host->h_length);
+    memcpy((char *)&s_sock.sin_addr, host->h_addr, sizeof(s_sock.sin_addr));
 
     /* Open socket */
     if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {

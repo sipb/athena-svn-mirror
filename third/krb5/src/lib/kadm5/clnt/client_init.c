@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.1 1996-09-12 04:43:55 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.2 1997-01-21 09:26:23 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.1 1996-09-12 04:43:55 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.2 1997-01-21 09:26:23 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -238,7 +238,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      if ((handle->params.mask & REQUIRED_PARAMS) != REQUIRED_PARAMS) {
 	  krb5_free_context(handle->context);
 	  free(handle);
-	  return KRB5_CONFIG_BADFORMAT;
+	  return KADM5_MISSING_CONF_PARAMS;
      }
      
      /*
@@ -375,7 +375,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 
      hp = gethostbyname(handle->params.admin_server);
      if (hp == (struct hostent *) NULL) {
-	  code = KRB5_CONFIG_BADFORMAT;
+	  code = KADM5_BAD_SERVER_NAME;
 	  goto cleanup;
      }
 

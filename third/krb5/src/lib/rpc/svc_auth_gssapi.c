@@ -1,10 +1,16 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: svc_auth_gssapi.c,v 1.1.1.1 1996-09-12 04:44:39 ghudson Exp $
+ * $Id: svc_auth_gssapi.c,v 1.1.1.2 1997-01-21 09:28:16 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  1996/10/16 20:16:10  bjaspan
+ * * svc_auth_gssapi.c (_svcauth_gssapi): accept add call_arg version 4
+ *
+ * Revision 1.40  1996/10/15 21:05:10  bjaspan
+ * 	* configure.in: add DO_SUBDIRS so make will descend into unit-test
+ *
  * Revision 1.39  1996/08/14 00:01:48  tlyu
  * 	* getrpcent.c: Add PROTOTYPE and conditionalize function
  * 		prototypes.
@@ -177,7 +183,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v 1.1.1.1 1996-09-12 04:44:39 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/svc_auth_gssapi.c,v 1.1.1.2 1997-01-21 09:28:16 ghudson Exp $";
 #endif
 
 /*
@@ -198,9 +204,11 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <gssapi/gssapi_krb5.h>
 #endif
 
+#ifdef GSSAPI_KRB5
 /* This is here for the krb5_error_code typedef and the
    KRB5KRB_AP_WRONG_PRINC #define.*/
 #include <krb5.h>
+#endif
 
 #include <sys/file.h>
 #include <fcntl.h>
@@ -464,6 +472,8 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 	       call_res.version = 1;
 	       break;
 	  case 3:
+	  case 4:
+	       /* 3 and 4 are essentially the same, don't bother warning */
 	       call_res.version = call_arg.version;
 	       break;
 	  default:
@@ -477,7 +487,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 	  krb5_gss_set_backward_mode(&minor_stat, call_arg.version == 1);
 #endif
 
-	  if (call_arg.version == 3) {
+	  if (call_arg.version >= 3) {
 	       int len;
 
 	       memset(&bindings, 0, sizeof(bindings));
@@ -556,17 +566,20 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 		    client_data->server_creds = server_creds;
 		    client_data->server_name = server_name_list[i];
 		    break;
-	       } else if (call_res.gss_major != GSS_S_FAILURE ||
+	       } else if (call_res.gss_major != GSS_S_FAILURE
+#ifdef GSSAPI_KRB5
 			  /*
-			   * XXX hard-coded because there is no other
-			   * way to prevent all GSS_S_FAILURES from
+			   * hard-coded because there is no other way
+			   * to prevent all GSS_S_FAILURES from
 			   * returning a "wrong principal in request"
 			   * error
 			   */
-			  ((krb5_error_code) call_res.gss_minor !=
-			   (krb5_error_code) KRB5KRB_AP_WRONG_PRINC)) {
-		   break;
-		 }
+			  || ((krb5_error_code) call_res.gss_minor !=
+			      (krb5_error_code) KRB5KRB_AP_WRONG_PRINC)
+#endif
+			  ) {
+		    break;
+	       }
 	  }
 	  
 	  gssstat = call_res.gss_major;

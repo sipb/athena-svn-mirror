@@ -11,7 +11,7 @@
 
 # KADM_SUCCESS, as all success codes should be, is zero
 
-ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/v4server/kadm_err.et,v 1.1.1.1 1996-09-12 04:43:41 ghudson Exp $"
+ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/v4server/kadm_err.et,v 1.1.1.2 1997-01-21 09:23:27 ghudson Exp $"
 # /* Building and unbuilding the packet errors */
 ec KADM_NO_REALM,	"Cannot fetch local realm"
 ec KADM_NO_CRED,	"Unable to fetch credentials"

@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.c,v 1.1.1.1 1996-09-12 04:44:35 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.c,v 1.1.1.2 1997-01-21 09:27:53 ghudson Exp $
  *
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.c,v 1.1.1.1 1996-09-12 04:44:35 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.c,v 1.1.1.2 1997-01-21 09:27:53 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -15,6 +15,9 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
+#ifdef GSSAPI_KRB5
+#include <gssapi/gssapi_krb5.h>
+#endif
 
 #include <rpc/rpc.h>
 #include <rpc/auth_gssapi.h>
@@ -155,7 +158,7 @@ AUTH *auth_gssapi_create(clnt, gssstat, minor_stat,
      struct sockaddr_in laddr, raddr;
      enum clnt_stat callstat;
      struct timeval timeout;
-     int init_func;
+     int init_func, bindings_failed;
      
      auth_gssapi_init_arg call_arg;
      auth_gssapi_init_res call_res;
@@ -203,7 +206,8 @@ AUTH *auth_gssapi_create(clnt, gssstat, minor_stat,
      clnt->cl_auth = auth;
 
      /* start by trying latest version */
-     call_arg.version = 3;
+     call_arg.version = 4;
+     bindings_failed = 0;
 
 try_new_version:
      /* set state for initial call to init_sec_context */
@@ -211,7 +215,22 @@ try_new_version:
      AUTH_PRIVATE(auth)->context = GSS_C_NO_CONTEXT;
      init_func = AUTH_GSSAPI_INIT;
 
-     if (call_arg.version == 3) {
+#ifdef GSSAPI_KRB5
+     /*
+      * OV servers up to version 3 used the old mech id.  Beta 7
+      * servers used version 3 with the new mech id; however, the beta
+      * 7 gss-api accept_sec_context accepts either mech id.  Thus, if
+      * any server rejects version 4, we fall back to version 3 with
+      * the old mech id; for the OV server it will be right, and for
+      * the beta 7 server it will be accepted.  Not ideal, but it
+      * works.
+      */
+     if (call_arg.version < 4 && (mech_type == gss_mech_krb5 ||
+				  mech_type == GSS_C_NULL_OID))
+	  mech_type = gss_mech_krb5_old;
+#endif
+
+     if (!bindings_failed && call_arg.version >= 3) {
 	  if (clnt_control(clnt, CLGET_LOCAL_ADDR, &laddr) == FALSE) {
 	       PRINTF(("gssapi_create: CLGET_LOCAL_ADDR failed"));
 	       goto cleanup;
@@ -319,6 +338,11 @@ next_token:
 	       AUTH_GSSAPI_DISPLAY_STATUS(("in response from server",
 					   call_res.gss_major,
 					   call_res.gss_minor));
+	       if (GSS_ERROR(call_res.gss_major) == GSS_S_BAD_BINDINGS
+		   && call_arg.version > 2) {
+		    call_arg.version = 2;
+		    goto try_new_version;
+	       }
 	       goto cleanup;
 	  }
 	  

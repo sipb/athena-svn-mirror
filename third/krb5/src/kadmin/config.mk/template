@@ -1,4 +1,4 @@
-# $Id: template,v 1.1.1.1 1996-09-12 04:43:08 ghudson Exp $
+# $Id: template,v 1.1.1.2 1997-01-21 09:22:05 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/config.mk/template,v $
 
 export TOP

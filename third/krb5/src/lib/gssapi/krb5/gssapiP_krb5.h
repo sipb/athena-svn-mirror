@@ -24,7 +24,7 @@
 #define _GSSAPIP_KRB5_H_
 
 /*
- * $Id: gssapiP_krb5.h,v 1.1.1.1 1996-09-12 04:44:10 ghudson Exp $
+ * $Id: gssapiP_krb5.h,v 1.1.1.2 1997-01-21 09:24:58 ghudson Exp $
  */
 
 #if (defined(_MSDOS) || defined(_WIN32) || defined(_MACINTOSH))
@@ -113,14 +113,14 @@ typedef struct _krb5_gss_ctx_id_rec {
    krb5_gss_enc_desc enc;
    krb5_gss_enc_desc seq;
    krb5_timestamp endtime;
-   krb5_flags flags;
+   krb5_flags krb_flags;
    krb5_int32 seq_send;
    krb5_int32 seq_recv;
    void *seqstate;
    int established;
    int big_endian;
    krb5_auth_context auth_context;
-   const gss_OID_desc *mech_used;
+   gss_OID_desc *mech_used;
 } krb5_gss_ctx_id_rec, *krb5_gss_ctx_id_t;
 
 extern void *kg_vdb;

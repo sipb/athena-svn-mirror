@@ -800,8 +800,6 @@ if test $withval = no; then
 	DEPKRB4_LIB=
 	KRB4_CRYPTO_LIB=
 	DEPKRB4_CRYPTO_LIB=
-	KDB4_LIB=
-	DEPKDB4_LIB=
 	KRB4_INCLUDES=
 	LDARGS=
 	krb5_cv_build_krb4_libs=no
@@ -817,8 +815,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB='$(TOPLIBD)/libkrb4.a'
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB='-lkdb4'
-	DEPKDB4_LIB='$(TOPLIBD)/libkdb4.a'
 	KRB4_INCLUDES='-I$(SRCTOP)/include/kerberosIV'
 	LDARGS=
 	krb5_cv_build_krb4_libs=yes
@@ -830,8 +826,6 @@ CPPFLAGS="$CPPFLAGS "'-DKRB5_KRB4_COMPAT'
 	DEPKRB4_LIB="$withval/lib/libkrb.a"
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB="-lkdb"
-	DEPKDB4_LIB="$withval/lib/libkdb.a"
 	KRB4_INCLUDES="-I$withval/include"
 	LDARGS="-L$withval/lib"
 	krb5_cv_build_krb4_libs=no
@@ -848,7 +842,7 @@ if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 852 "configure"
+#line 846 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -898,7 +892,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:902: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:896: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -937,7 +931,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsocket  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 941 "configure"
+#line 935 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -945,7 +939,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:949: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:943: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -978,7 +972,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lnsl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 982 "configure"
+#line 976 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -986,7 +980,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:990: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:984: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1034,6 +1028,11 @@ test "$program_suffix" != NONE &&
 # sed with no file args requires a program.
 test "$program_transform_name" = "" && program_transform_name="s,x,x,"
  
+
+
+
+
+
 subdirs="error_tables asn.1 ccache keytab krb rcache free os posix"
 
 # Extract the first word of "ar", so it can be a program name with args.
@@ -1179,16 +1178,59 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
-RECURSE_TARGETS="all-unix clean-unix install-unix check-unix Makefiles"
-
+ALL_RECURSE="all-recurse"
+CLEAN_RECURSE="clean-recurse"
+INSTALL_RECURSE="install-recurse"
+CHECK_RECURSE="check-recurse"
+MAKEFILES_RECURSE="Makefiles-recurse"
 
 
 db_deplib="\$(TOPLIBD)/libdb.a"
-db_lib=-ldb
+db_lib="\$(TOPLIBD)/libdb.a"
 
 
 ANAME_DBDEP="$kaname_dbdep"
 ANAME_DBLIB="$kaname_libs"
+
+
+echo $ac_n "checking for -lgen""... $ac_c" 1>&6
+ac_lib_var=`echo gen'_'compile | tr './+\055' '__p_'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lgen  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 1205 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char compile();
+
+int main() { return 0; }
+int t() {
+compile()
+; return 0; }
+EOF
+if { (eval echo configure:1217: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  SHLIB_GEN=-lgen
+else
+  echo "$ac_t""no" 1>&6
+SHLIB_GEN=''
+fi
 
 
 
@@ -1198,6 +1240,26 @@ if test "$krb5_cv_staticlibs_enabled" = yes
 	else
 	SHLIB_STATIC_TARGET=
 	fi
+echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
+if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  rm -f conftestdata
+if ln -s X conftestdata 2>/dev/null
+then
+  rm -f conftestdata
+  ac_cv_prog_LN_S="ln -s"
+else
+  ac_cv_prog_LN_S=ln
+fi
+fi
+LN_S="$ac_cv_prog_LN_S"
+if test "$ac_cv_prog_LN_S" = "ln -s"; then
+  echo "$ac_t""yes" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
 # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -1233,18 +1295,18 @@ SHEXT=$krb5_cv_shlibs_ext
 STEXT=$krb5_cv_noshlibs_ext
 
 if test "$krb5_cv_shlibs_versioned_filenames" = "yes" ; then
-VEXT=".0.1" # Version of library goes in archive name
+VEXT=".1.0" # Version of library goes in archive name
 if test "$krb5_cv_shlibs_need_nover" = yes; then
-	DO_MAKE_SHLIB="libkrb5.\$""(SHEXT).0.1 libkrb5.\$""(SHEXT)"
+	DO_MAKE_SHLIB="libkrb5.\$""(SHEXT).1.0 libkrb5.\$""(SHEXT)"
 else
-	DO_MAKE_SHLIB="libkrb5.\$""(SHEXT).0.1"
+	DO_MAKE_SHLIB="libkrb5.\$""(SHEXT).1.0"
 fi
 else # $krb5_cv_shlibs_versioned_filenames
 VEXT=
 	DO_MAKE_SHLIB="libkrb5.\$""(SHEXT)"
 fi
 
-krb5_cv_shlib_version_libkrb5=0.1
+krb5_cv_shlib_version_libkrb5=1.0
 
 cat>>append.out<<\PUSHEOF
 
@@ -1256,33 +1318,14 @@ clean-unix::
 libkrb5.$(SHEXT)$(VEXT): $(LIBDONE) $(DEPLIBS)
 	$(BUILDTOP)/util/makeshlib $@	\
 		"$(SHLIB_LIBDIRS)" \
-		"$(SHLIB_LIBS)" "$(SHLIB_LDFLAGS)" "0.1" $(LIB_SUBDIRS) 
+		"$(SHLIB_LIBS)" "$(SHLIB_LDFLAGS)" "1.0" $(LIB_SUBDIRS) 
 PUSHEOF
 if test "$krb5_cv_shlibs_versioned_filenames" = "yes" ; then
 
-echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
-if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  rm -f conftestdata
-if ln -s X conftestdata 2>/dev/null
-then
-  rm -f conftestdata
-  ac_cv_prog_LN_S="ln -s"
-else
-  ac_cv_prog_LN_S=ln
-fi
-fi
-LN_S="$ac_cv_prog_LN_S"
-if test "$ac_cv_prog_LN_S" = "ln -s"; then
-  echo "$ac_t""yes" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
 
 cat>>append.out<<\PUSHEOF
 
-libkrb5.$(SHEXT):: libkrb5.$(SHEXT).0.1
+libkrb5.$(SHEXT):: libkrb5.$(SHEXT).1.0
 	$(RM) $@
 	$(LN) $? $@
 
@@ -1317,31 +1360,12 @@ if test "${enable_shared+set}" = set; then
 # Version identifiers in the file name, we still need to make the links
 # in ${BUILDTOP}/lib for dependencies.
 # The following makes sure that the path of symlinks traces back to the real library; it is
-# not an error that 0.1 is used in some places and $VEXT in others.
+# not an error that 1.0 is used in some places and $VEXT in others.
 
-echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
-if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  rm -f conftestdata
-if ln -s X conftestdata 2>/dev/null
-then
-  rm -f conftestdata
-  ac_cv_prog_LN_S="ln -s"
-else
-  ac_cv_prog_LN_S=ln
-fi
-fi
-LN_S="$ac_cv_prog_LN_S"
-if test "$ac_cv_prog_LN_S" = "ln -s"; then
-  echo "$ac_t""yes" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
 
 cat>>append.out<<\PUSHEOF
 
-../libkrb5.$(SHEXT).0.1:: libkrb5.$(SHEXT)$(VEXT)
+../libkrb5.$(SHEXT).1.0:: libkrb5.$(SHEXT)$(VEXT)
 	$(RM) $@
 	$(LN) ./krb5$(S)$? $@
 
@@ -1351,9 +1375,9 @@ PUSHEOF
 
 cat>>append.out<<\PUSHEOF
 
-../libkrb5.$(SHEXT): ../libkrb5.$(SHEXT).0.1
+../libkrb5.$(SHEXT): ../libkrb5.$(SHEXT).1.0
 	$(RM) ../libkrb5.$(SHEXT)
-	$(LN) libkrb5.$(SHEXT).0.1 ../libkrb5.$(SHEXT)
+	$(LN) libkrb5.$(SHEXT).1.0 ../libkrb5.$(SHEXT)
 
 
 PUSHEOF
@@ -1362,7 +1386,7 @@ PUSHEOF
 cat>>append.out<<\PUSHEOF
 
 clean::
-	$(RM) ../libkrb5.$(SHEXT).0.1 ../libkrb5.$(SHEXT)
+	$(RM) ../libkrb5.$(SHEXT).1.0 ../libkrb5.$(SHEXT)
 
 
 PUSHEOF
@@ -1371,7 +1395,7 @@ if test "$krb5_cv_shlibs_need_nover" = "yes" ; then
 
 cat>>append.out<<\PUSHEOF
 
-all-unix:: ../libkrb5.$(SHEXT).0.1 ../libkrb5.$(SHEXT)
+all-unix:: ../libkrb5.$(SHEXT).1.0 ../libkrb5.$(SHEXT)
 
 PUSHEOF
 
@@ -1399,9 +1423,9 @@ if test "$krb5_cv_shlibs_need_nover" = "yes" ; then
 
 cat>>append.out<<\PUSHEOF
 
-install::	libkrb5.$(SHEXT).0.1
+install::	libkrb5.$(SHEXT).1.0
 	$(RM) $(DESTDIR)$(KRB5_SHLIBDIR)$(S)libkrb5.$(SHEXT)
-	$(LN) libkrb5.$(SHEXT).0.1 \
+	$(LN) libkrb5.$(SHEXT).1.0 \
 		$(DESTDIR)$(KRB5_SHLIBDIR)$(S)libkrb5.$(SHEXT)
 
 PUSHEOF
@@ -1421,25 +1445,6 @@ install:: libkrb5.$(STEXT)
 PUSHEOF
 
         
-echo $ac_n "checking whether ln -s works""... $ac_c" 1>&6
-if eval "test \"`echo '$''{'ac_cv_prog_LN_S'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  rm -f conftestdata
-if ln -s X conftestdata 2>/dev/null
-then
-  rm -f conftestdata
-  ac_cv_prog_LN_S="ln -s"
-else
-  ac_cv_prog_LN_S=ln
-fi
-fi
-LN_S="$ac_cv_prog_LN_S"
-if test "$ac_cv_prog_LN_S" = "ln -s"; then
-  echo "$ac_t""yes" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
 
 cat>>append.out<<\PUSHEOF
 
@@ -1613,15 +1618,20 @@ s%@KRB4_LIB@%$KRB4_LIB%g
 s%@KRB4_CRYPTO_LIB@%$KRB4_CRYPTO_LIB%g
 s%@DEPKRB4_LIB@%$DEPKRB4_LIB%g
 s%@DEPKRB4_CRYPTO_LIB@%$DEPKRB4_CRYPTO_LIB%g
+s%@ALL_RECURSE@%$ALL_RECURSE%g
+s%@CLEAN_RECURSE@%$CLEAN_RECURSE%g
+s%@INSTALL_RECURSE@%$INSTALL_RECURSE%g
+s%@CHECK_RECURSE@%$CHECK_RECURSE%g
+s%@MAKEFILES_RECURSE@%$MAKEFILES_RECURSE%g
 s%@subdirs@%$subdirs%g
 s%@ARCHIVE@%$ARCHIVE%g
 s%@ARADD@%$ARADD%g
 s%@RANLIB@%$RANLIB%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
-s%@RECURSE_TARGETS@%$RECURSE_TARGETS%g
 s%@ANAME_DBDEP@%$ANAME_DBDEP%g
 s%@ANAME_DBLIB@%$ANAME_DBLIB%g
+s%@SHLIB_GEN@%$SHLIB_GEN%g
 s%@SHLIB_TAIL_COMP@%$SHLIB_TAIL_COMP%g
 s%@LD_UNRESOLVED_PREFIX@%$LD_UNRESOLVED_PREFIX%g
 s%@LD_SHLIBDIR_PREFIX@%$LD_SHLIBDIR_PREFIX%g

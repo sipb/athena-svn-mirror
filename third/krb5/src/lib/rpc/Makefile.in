@@ -1,4 +1,4 @@
-CFLAGS = $(CCOPTS) $(DEFS) -DDEBUG_GSSAPI=0
+CFLAGS = $(CCOPTS) $(DEFS) -DGSSAPI_KRB5 -DDEBUG_GSSAPI=0
 
 ##DOSBUILDTOP = ..\..
 ##DOSLIBNAME=libgssrpc.lib
@@ -97,6 +97,25 @@ OBJS = auth_none.$(OBJEXT) \
 	xdr_stdio.$(OBJEXT) \
 	xdr_alloc.$(OBJEXT)
 
+HDRDIR=$(BUILDTOP)/include/rpc
+
+HDRS=	$(HDRDIR)/auth.h \
+	$(HDRDIR)/auth_gssapi.h \
+	$(HDRDIR)/auth_unix.h \
+	$(HDRDIR)/clnt.h \
+	$(HDRDIR)/netdb.h \
+	$(HDRDIR)/pmap_clnt.h \
+	$(HDRDIR)/pmap_prot.h \
+	$(HDRDIR)/pmap_rmt.h \
+	$(HDRDIR)/rpc.h \
+	$(HDRDIR)/rpc_msg.h \
+	$(HDRDIR)/svc.h \
+	$(HDRDIR)/svc_auth.h \
+	$(HDRDIR)/types.h \
+	$(HDRDIR)/xdr.h
+
+$(OBJS): $(HDRS)
+
 LIB_SUBDIRS= .
 LIBDONE= DONE
 #
@@ -115,7 +134,8 @@ SHLIB_LIBS=-lgssapi_krb5 -lkrb5 -lcrypto -lcom_err -ldyn
 SHLIB_LDFLAGS= $(LDFLAGS) @SHLIB_RPATH_DIRS@
 SHLIB_LIBDIRS= @SHLIB_LIBDIRS@
 
-all-unix:: shared includes $(OBJS)
+all-unix:: shared
+all-unix:: $(OBJS)
 all-mac:: $(OBJS)
 all-windows:: $(OBJS)
 
@@ -125,7 +145,7 @@ shared:
 check-windows::
 
 clean-unix::
-	$(RM) shared/*
+	$(RM) shared/* $(HDRS)
 
 clean-mac::
 clean-windows::
@@ -146,3 +166,5 @@ install:: libgssrpc.a
 clean::
 	$(RM) libgssrpc.$(LIBEXT) libgssrpc.bak DONE
 
+# hack to force libs to get built before recursing into subdirs
+all-recurse: libgssrpc.$(STEXT)

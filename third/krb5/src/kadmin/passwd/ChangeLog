@@ -1,3 +1,43 @@
+Wed Nov 27 13:50:03 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* configure.in: Link against kdb5 explicitly on all systems except
+ 		BSD systems, due to hairy shared library issues.  [PR#257]
+ 		n.b., this is only a short-term fix for the 1.0 release.
+  		The correct long-term fix is to not require kadm5 clients
+ 		to need to link against libkdb5 at all.
+	
+Fri Nov 22 18:42:02 1996  Sam Hartman  <hartmans@planet-zorp.MIT.EDU>
+
+	* configure.in: Do not link against kdb5 because this causes
+ 	NetBSD getpwuid to fail. [228]
+
+	* kpasswd.c (kpasswd): Remove cast from uid_t to int. [228]
+
+Wed Nov 20 16:00:49 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* unit-test/Makefile.in (unit-test-): warn more loudly about unrun
+ 	tests
+
+Wed Nov 13 19:23:15 1996  Tom Yu  <tlyu@mit.edu>
+
+	* unit-test/Makefile.in (clean): Remove logfiles.
+
+Sun Nov 10 09:40:48 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in, configure.in: Check for Perl, tcl, and runtest and
+	 	only run tests if present.
+	
+Thu Sep 26 17:50:23 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* unit-test/Makefile.in, unit-test/kpasswd.0/principal.exp: use
+ 	whoami instead of user (USER princ now created by init_db)
+
+Fri Sep 20 17:32:19 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* configure.in: add unit-test subdirectory
+
+	* unit-test/: create configure.in and Makefile.in
+	
 Tue Sep 10 14:17:45 1996  Tom Yu  <tlyu@mit.edu>
 
 	* kpasswd.M: remove ".so man1/header.doc"

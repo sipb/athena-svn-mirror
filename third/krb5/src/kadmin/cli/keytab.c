@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: keytab.c,v 1.1.1.1 1996-09-12 04:43:06 ghudson Exp $
+ * $Id: keytab.c,v 1.1.1.2 1997-01-21 09:21:56 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v 1.1.1.1 1996-09-12 04:43:06 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v 1.1.1.2 1997-01-21 09:21:56 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -45,6 +45,8 @@ int process_keytab(krb5_context context, char **keytab_str,
      int code;
      
      if (*keytab_str == NULL) {
+	  /* XXX krb5_defkeyname is an internal library global and
+             should go away */
 	  if (! (*keytab_str = strdup(krb5_defkeyname))) {
 	       com_err(whoami, ENOMEM, "while creating keytab name");
 	       return 1;

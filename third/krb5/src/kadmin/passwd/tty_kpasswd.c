@@ -1,12 +1,12 @@
 /*
  * Copyright 1993-1994 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/tty_kpasswd.c,v 1.1.1.1 1996-09-12 04:43:14 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/tty_kpasswd.c,v 1.1.1.2 1997-01-21 09:22:41 ghudson Exp $
  *
  *
  */
 
-static char rcsid[] = "$Id: tty_kpasswd.c,v 1.1.1.1 1996-09-12 04:43:14 ghudson Exp $";
+static char rcsid[] = "$Id: tty_kpasswd.c,v 1.1.1.2 1997-01-21 09:22:41 ghudson Exp $";
 
 #include <kadm5/admin.h>
 #include <krb5.h>

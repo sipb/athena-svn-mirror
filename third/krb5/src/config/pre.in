@@ -12,10 +12,19 @@ install:: install-$(WHAT)
 
 check:: check-$(WHAT)
 
-all-unix::
-clean-unix::
-install-unix::
-check-unix::
+#
+# set up some variables for use in recursion
+#
+ALL_RECURSE=@ALL_RECURSE@
+CLEAN_RECURSE=@CLEAN_RECURSE@
+INSTALL_RECURSE=@INSTALL_RECURSE@
+CHECK_RECURSE=@CHECK_RECURSE@
+MAKEFILES_RECURSE=@MAKEFILES_RECURSE@
+
+all-unix:: $(ALL_RECURSE)
+clean-unix:: $(CLEAN_RECURSE)
+install-unix:: $(INSTALL_RECURSE)
+check-unix:: $(CHECK_RECURSE)
 
 # Directory syntax:
 R=/
@@ -52,22 +61,58 @@ INSTALL_SETUID=$(INSTALL) -s -m 4755
 prefix=@prefix@
 INSTALL_PREFIX=$(prefix)
 INSTALL_EXEC_PREFIX=@exec_prefix@
+exec_prefix=@exec_prefix@
 SHLIB_TAIL_COMP=@SHLIB_TAIL_COMP@
 
-KRB5MANROOT = $(INSTALL_PREFIX)/man
-ADMIN_BINDIR = $(INSTALL_EXEC_PREFIX)/sbin
-SERVER_BINDIR = $(INSTALL_EXEC_PREFIX)/sbin
-CLIENT_BINDIR = $(INSTALL_EXEC_PREFIX)/bin
+KRB5MANROOT = @mandir@
+ADMIN_BINDIR = @sbindir@
+SERVER_BINDIR = @sbindir@
+CLIENT_BINDIR =@bindir@
 ADMIN_MANDIR = $(KRB5MANROOT)/man8
 SERVER_MANDIR = $(KRB5MANROOT)/man8
 CLIENT_MANDIR = $(KRB5MANROOT)/man1
 FILE_MANDIR = $(KRB5MANROOT)/man5
-KRB5_LIBDIR = $(INSTALL_EXEC_PREFIX)/lib
-KRB5_SHLIBDIR = $(INSTALL_EXEC_PREFIX)/lib$(SHLIB_TAIL_COMP)
+KRB5_LIBDIR = @libdir@
+KRB5_SHLIBDIR = @libdir@$(SHLIB_TAIL_COMP)
 KRB5_INCDIR = $(INSTALL_EXEC_PREFIX)/include
 KRB5_INCSUBDIRS = \
 	$(KRB5_INCDIR)/asn.1 \
-	$(KRB5_INCDIR)/gssapi
+	$(KRB5_INCDIR)/gssapi \
+	$(KRB5_INCDIR)/kerberosIV
+
+#
+# Macros used by the KADM5 (OV-based) unit test system.
+# XXX check which of these are actually used!
+#
+TESTDIR		= $(BUILDTOP)/kadmin/testing
+STESTDIR	= $(SRCTOP)/kadmin/testing
+COMPARE_DUMP	= $(TESTDIR)/scripts/compare_dump.pl
+FIX_CONF_FILES	= $(TESTDIR)/scripts/fixup-conf-files.pl
+INITDB		= $(STESTDIR)/scripts/init_db
+MAKE_KEYTAB	= $(TESTDIR)/scripts/make-host-keytab.pl
+LOCAL_MAKE_KEYTAB= $(TESTDIR)/scripts/make-host-keytab.pl
+RESTORE_FILES	= $(STESTDIR)/scripts/restore_files.sh
+SAVE_FILES	= $(STESTDIR)/scripts/save_files.sh
+ENV_SETUP	= $(TESTDIR)/scripts/env-setup.sh
+CLNTTCL		= $(TESTDIR)/util/ovsec_kadm_clnt_tcl
+SRVTCL		= $(TESTDIR)/util/ovsec_kadm_srv_tcl
+# Dejagnu variables.
+# We have to set the host with --host so that setup_xfail will work.
+# If we don't set it, then the host type used is "native", which
+# doesn't match "*-*-*".
+host=@host@
+DEJAFLAGS	= $(DEJALFLAGS) $(CLFLAGS) --debug --srcdir $(srcdir) --host \
+		   $(host)
+RUNTEST		= runtest $(DEJAFLAGS)
+
+START_SERVERS	= $(STESTDIR)/scripts/start_servers $(TEST_SERVER) $(TEST_PATH)
+START_SERVERS_LOCAL = $(STESTDIR)/scripts/start_servers_local
+
+STOP_SERVERS	= $(STESTDIR)/scripts/stop_servers $(TEST_SERVER) $(TEST_PATH)
+STOP_SERVERS_LOCAL = $(STESTDIR)/scripts/stop_servers_local
+#
+# End of macros for the KADM5 unit test system.
+#
 
 transform = @program_transform_name@
 
@@ -126,3 +171,6 @@ all::
 clean::
 install::
 check::
+
+#
+# end of pre.in

@@ -1,3 +1,19 @@
+Sun Nov 10 20:10:53 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* krb_auth_su.c (path_passwd;): If you don't have a srvtab, always
+ 	fail.
+
+Thu Nov  7 15:41:19 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* main.c (main): Check the error return from
+ 		krb5_init_context(), and print an error message if
+ 		necessary.
+
+Wed Sep 18 15:54:41 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb_auth_su.c (krb5_get_tkt_via_passwd): Remove call to
+		krb5_os_localaddr(), since get_in_tkt will default correctly.
+
 Tue Sep 10 14:15:02 1996  Tom Yu  <tlyu@mit.edu>
 
 	* ksu.M: remove ".so man1/header.doc"

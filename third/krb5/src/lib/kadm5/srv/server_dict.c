@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_dict.c,v 1.1.1.1 1996-09-12 04:43:58 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_dict.c,v 1.1.1.2 1997-01-21 09:26:10 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_dict.c,v 1.1.1.1 1996-09-12 04:43:58 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_dict.c,v 1.1.1.2 1997-01-21 09:26:10 ghudson Exp $";
 #endif
 
 #include    <sys/types.h>
@@ -17,7 +17,6 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include    <stdlib.h>
 #include    <stdio.h>
 #include    <string.h>
-#include    <malloc.h>
 #include    <memory.h>
 #include    <syslog.h>
 #include    "server_internal.h"

@@ -50,11 +50,11 @@ char copyright[] =
 int login_krb5_get_tickets = 1;
 #ifdef KRB5_KRB4_COMPAT
 #define KRB4_GET_TICKETS
-int login_krb4_get_tickets = 1;
+int login_krb4_get_tickets = 0;
 #define KRB4_CONVERT
 int login_krb4_convert = 0;
 #define KRB_RUN_AKLOG
-int login_krb_run_aklog = 1;
+int login_krb_run_aklog = 0;
 #endif /* KRB5_KRB4_COMPAT */
 int login_accept_passwd = 0;
 
@@ -63,7 +63,7 @@ int login_accept_passwd = 0;
  * login -r hostname	(for rlogind)
  * login -h hostname	(for telnetd, etc.)
  * login -f name	(for pre-authenticated login: datakit, xterm, etc.,
- *			 does not allow preauthenticated login as root)
+ *			 does allow preauthenticated login as root)
  * login -F name	(for pre-authenticated login: datakit, xterm, etc.,
  *			 allows preauthenticated login as root)
  * login -e name	(for pre-authenticated encrypted, must do term
@@ -156,6 +156,7 @@ typedef sigtype (*handler)();
 /* #include "krb5.h" */
 /* need k5-int.h to get ->profile from krb5_context */
 #include "k5-int.h"
+#include "com_err.h"
 #include "osconf.h"
 #endif /* KRB5_GET_TICKETS */
 
@@ -164,7 +165,7 @@ typedef sigtype (*handler)();
 #define KRB4
 #endif
 
-#ifdef KRB4_GET_TICKETS
+#if (defined(KRB4_GET_TICKETS) || defined(KRB4_CONVERT))
 /* support for prompting for v4 initial tickets */
 #define KRB4
 #endif
@@ -270,7 +271,7 @@ char term[64], *hostname, *username;
 
 extern int errno;
 
-#ifdef KRB4_GET_TICKETS
+#ifdef KRB4
 #define KRB_ENVIRON	"KRBTKFILE"	/* Ticket file environment variable */
 #define KRB_TK_DIR	"/tmp/tkt_"	/* Where to put the ticket */
 #endif /* KRB4_GET_TICKETS */
@@ -469,9 +470,14 @@ char realm[REALM_SZ];
 void k_init (ttyn)
     char *ttyn;
 {
-    krb5_init_context(&kcontext);
-    krb5_init_ets(kcontext);
-krb5_secure_config_files (kcontext);
+    krb5_error_code retval;
+    
+    retval = krb5_init_context(&kcontext);
+    if (retval) {
+	com_err("login", retval, "while initializing krb5");
+	exit(1);
+    }
+    krb5_secure_config_files (kcontext);
     login_get_kconf(kcontext);
 
     /* Set up the credential cache environment variable */
@@ -488,7 +494,7 @@ krb5_secure_config_files (kcontext);
     if (krb_get_lrealm(realm, 1) != KSUCCESS) {
 	strncpy(realm, KRB_REALM, sizeof(realm));
     }
-    if (login_krb4_get_tickets) {
+    if (login_krb4_get_tickets || login_krb4_convert) {
 	/* Set up the ticket file environment variable */
 	strncpy(tkfile, KRB_TK_DIR, sizeof(tkfile));
 	strncat(tkfile, strrchr(ttyn, '/')+1,
@@ -545,7 +551,7 @@ int try_krb5 (me_p, pass)
     /* set up credential cache -- obeying KRB5_ENV_CCNAME 
        set earlier */
     /* (KRB5_ENV_CCNAME == "KRB5CCNAME" via osconf.h) */
-    if (code = krb5_cc_default(kcontext, &ccache)) {
+    if ((code = krb5_cc_default(kcontext, &ccache))) {
 	com_err("login", code, "while getting default ccache");
 	return 0;
     }
@@ -989,15 +995,16 @@ destroy_tickets()
 {
 	krb5_context c;
 	krb5_ccache cache;
+	krb5_error_code retval;
 
+#ifdef KRB5_GET_TICKETS
 	if (login_krb5_get_tickets) {
-	krb5_init_context(&c);
-	krb5_secure_config_files (c);
-	if(!krb5_cc_default(c, &cache))
-		krb5_cc_destroy (c, cache);
+	    if(!krb5_cc_default(kcontext, &cache))
+		krb5_cc_destroy (kcontext, cache);
 	}
+#endif
 #ifdef KRB4_GET_TICKETS
-	if (login_krb4_get_tickets)
+	if (login_krb4_get_tickets||login_krb4_convert)
 	dest_tkt();
 #endif /* KRB4_GET_TICKETS */
 }
@@ -1016,7 +1023,8 @@ static sigtype sigsys ()
     siglongjmp(setpag_buf, 1);
 }
 
-static int try_afscall ()
+static int try_afscall (scall)
+	int (*scall)();
 {
     handler sa, osa;
     volatile int retval = 0;
@@ -1025,7 +1033,7 @@ static int try_afscall ()
     handler_init (sa, sigsys);
     handler_swap (SIGSYS, sa, osa);
     if (sigsetjmp(setpag_buf, 1) == 0) {
-	setpag ();
+	(*scall)();
 	retval = 1;
     }
     handler_set (SIGSYS, osa);
@@ -1078,7 +1086,7 @@ afs_cleanup ()
 }
 
 /* Main routines */
-#define EXCL_AUTH_TEST if (rflag || kflag || Kflag || eflag || fflag || Fflag ) { \
+#define EXCL_AUTH_TEST if (rflag || kflag || Kflag || eflag || fflag ) { \
 				fprintf(stderr, \
 				    "login: only one of -r, -k, -K, -e, -F, and -f allowed.\n"); \
 				exit(1);\
@@ -1148,7 +1156,7 @@ int main(argc, argv)
 	struct group *gr;
 	int ch;
 	char *p;
-	int fflag, hflag, pflag, rflag, Fflag, cnt;
+	int fflag, hflag, pflag, rflag, cnt;
 	int kflag, Kflag, eflag;
 	int quietlog, passwd_req, ioctlval;
 	sigtype timedout();
@@ -1157,6 +1165,7 @@ int main(argc, argv)
 	char *ttyname(), *stypeof(), *crypt(), *getpass();
 	time_t login_time;
 	int retval;
+int rewrite_ccache = 1; /*try to write out ccache*/
 #ifdef KRB5_GET_TICKETS
 	krb5_principal me;
 	krb5_creds save_v5creds;
@@ -1198,7 +1207,7 @@ int main(argc, argv)
 	(void)gethostname(tbuf, sizeof(tbuf));
 	domain = strchr(tbuf, '.');
 
-	Fflag = fflag = hflag = pflag = rflag = kflag = Kflag = eflag = 0;
+	 fflag = hflag = pflag = rflag = kflag = Kflag = eflag = 0;
 	passwd_req = 1;
 	while ((ch = getopt(argc, argv, "Ffeh:pr:k:K:")) != EOF)
 		switch (ch) {
@@ -1208,7 +1217,7 @@ int main(argc, argv)
 			break;
 		case 'F':
 			EXCL_AUTH_TEST;
-			Fflag = 1;
+			fflag = 1;
 			break;
 		case 'h':
 			EXCL_HOST_TEST;
@@ -1363,7 +1372,7 @@ int main(argc, argv)
 #endif /* KRB5_GET_TICKETS */
 
 		if (username == NULL) {
-			fflag = Fflag = 0;
+			fflag = 0;
 			getloginname();
 		}
 
@@ -1373,23 +1382,13 @@ int main(argc, argv)
 		if (pwd == NULL || pwd->pw_uid)
 			checknologin();
 
-		/*
-		 * Disallow automatic login to root.
-		 * If not invoked by root, disallow if the uid's differ.
-		 */
-		if (fflag && pwd) {
-			int uid = (int) getuid();
-
-			passwd_req =
-			    (pwd->pw_uid == 0 || (uid && uid != pwd->pw_uid));
-		}
 
 		/*
 		 * Allows automatic login by root.
 		 * If not invoked by root, disallow if the uid's differ.
 		 */
 
-		if (Fflag && pwd) {
+		if (fflag && pwd) {
 			int uid = (int) getuid();
 			passwd_req = (uid && uid != pwd->pw_uid);
 		}
@@ -1567,13 +1566,15 @@ int main(argc, argv)
 	    (gr = getgrnam(TTYGRPNAME)) ? gr->gr_gid : pwd->pw_gid);
 
 	(void)chmod(ttyn, 0620);
+#ifdef KRB5_GET_TICKETS
+		    /* Maybe telnetd got tickets for us?  */
+	if (!got_v5_tickets && have_v5_tickets (&me))
+	  got_v5_tickets = 1;
+#endif /* GET_KRB_TICKETS */
 
 #ifdef KRB4_GET_TICKETS
-	if (login_krb4_get_tickets && login_krb4_convert && !got_v4_tickets) {
+	if ( login_krb4_convert && !got_v4_tickets) {
 
-	    /* Maybe telnetd got tickets for us?  */
-	    if (!got_v5_tickets && have_v5_tickets (&me))
-		got_v5_tickets = 1;
 
 	    if (got_v5_tickets)
 		try_convert524 (kcontext, me);
@@ -1677,17 +1678,19 @@ int main(argc, argv)
 		  syslog(LOG_ERR,
 			 "%s while creating V5 krbtgt principal",
 			 error_message(retval));
-		  sleepexit(1);
+		  goto skip_ccache_rewrite;
 	     }
-	     mcreds.ticket_flags = TKT_FLG_INITIAL;
+
+	       mcreds.ticket_flags =0;
 	     
 	     if (retval = krb5_cc_retrieve_cred(kcontext, ccache,
-					   KRB5_TC_MATCH_FLAGS,
+						0,
 					   &mcreds, &save_v5creds)) {
 		  syslog(LOG_ERR,
 			 "%s while retrieiving V5 initial ticket for copy",
 			 error_message(retval));
-		  sleepexit(1);
+	     skip_ccache_rewrite: rewrite_ccache = 0;
+
 	     }
 	     krb5_free_principal(kcontext, mcreds.server);
 	}
@@ -1701,12 +1704,14 @@ int main(argc, argv)
 		  syslog(LOG_ERR,
 			 "%s while retrieving V4 initial ticket for copy",
 			 error_message(retval));
-		  sleepexit(1);
+	      rewrite_ccache = 0;
+	     
 	     }
 	}
 #endif /* KRB4_GET_TICKETS */
 #if defined(KRB5_GET_TICKETS) || defined(KRB4_GET_TICKETS)
-	destroy_tickets();
+	if (got_v5_tickets || got_v4_tickets)
+	  destroy_tickets();
 #endif
 
 #ifdef OQUOTA
@@ -1727,10 +1732,11 @@ int main(argc, argv)
 	    setluid((uid_t) pwd->pw_uid);
 	}
 #endif	/* HAVE_SETLUID */
-	/* This call MUST succeed */
 #ifdef _IBMR2
 	setuidx(ID_LOGIN, pwd->pw_uid);
 #endif
+
+	/* This call MUST succeed */
 	if(setuid((uid_t) pwd->pw_uid) < 0) {
 	     perror("setuid");
 	     sleepexit(1);
@@ -1741,31 +1747,31 @@ int main(argc, argv)
 	 * ticket file.
 	 */
 #ifdef KRB5_GET_TICKETS
-	if (got_v5_tickets) {
+	if (got_v5_tickets && rewrite_ccache) {
 	     retval = krb5_cc_initialize (kcontext, ccache, me);
 	     if (retval) {
 		  syslog(LOG_ERR,
 			 "%s while re-initializing V5 ccache as user",
 			 error_message(retval));
-		  sleepexit(1);
+		  goto skip_ccache_output;
 	     }
 	     if (retval = krb5_cc_store_cred(kcontext, ccache, &save_v5creds)) {
 		  syslog(LOG_ERR,
 			 "%s while re-storing V5 credentials as user",
 			 error_message(retval));
-		  sleepexit(1);
+
 	     }
-	     krb5_free_cred_contents(kcontext, &save_v5creds);
+	     skip_ccache_output: krb5_free_cred_contents(kcontext, &save_v5creds);
 	}
 #endif /* KRB5_GET_TICKETS */
 #ifdef KRB4_GET_TICKETS
-	if (got_v4_tickets) {
+	if (got_v4_tickets&&rewrite_ccache) {
 	     retval = in_tkt(save_v4creds.pname, save_v4creds.pinst);
 	     if (retval != KSUCCESS) {
 		  syslog(LOG_ERR,
 			 "%s while re-initializing V4 ticket cache as user",
-			 error_message(retval));
-		  sleepexit(1);
+			 error_message((retval == -1)?errno:retval));
+		  goto skip_output_tkfile;
 	     }
 	     retval = krb_save_credentials(save_v4creds.service,
 					   save_v4creds.instance,
@@ -1779,10 +1785,12 @@ int main(argc, argv)
 		  syslog(LOG_ERR,
 			 "%s while re-storing V4 tickets as user",
 			 error_message(retval));
-		  sleepexit(1);
+
 	     }
 	}
 #endif /* KRB4_GET_TICKETS */
+	skip_output_tkfile: /*null*/;
+
 
 	if (*pwd->pw_shell == '\0')
 		pwd->pw_shell = BSHELL;
@@ -1897,7 +1905,7 @@ int main(argc, argv)
 
 	if (!quietlog) {
 #ifdef KRB4_KLOGIN
-		if (!krbflag && !fflag && !Fflag && !eflag )
+		if (!krbflag && !fflag && !eflag )
 		    printf("\nWarning: No Kerberos tickets obtained.\n\n");
 #endif /* KRB4_KLOGIN */
 		motd ();
@@ -2214,14 +2222,19 @@ void dolastlog(quiet, tty)
 
 char *
 stypeof(ttyid)
-	char *ttyid;
+  char *ttyid;
 {
+char *cp = getenv("term");
+
 #ifndef HAVE_TTYENT_H
-	return(UNKNOWN);
+if (cp)
+  return cp;
+else return(UNKNOWN);
 #else
 	struct ttyent *t;
-
-	return(ttyid && (t = getttynam(ttyid)) ? t->ty_type : UNKNOWN);
+	if (cp)
+	  return cp;
+ else return(ttyid && (t = getttynam(ttyid)) ? t->ty_type : UNKNOWN);
 #endif
 }
 

@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: gssapi_krb5.c,v 1.1.1.1 1996-09-12 04:44:10 ghudson Exp $
+ * $Id: gssapi_krb5.c,v 1.1.1.2 1997-01-21 09:24:59 ghudson Exp $
  */
 
 #include "gssapiP_krb5.h"
@@ -64,7 +64,7 @@ static const gss_OID_desc oids[] = {
 
 const gss_OID_desc * const gss_mech_krb5_old = oids+0;
 const gss_OID_desc * const gss_mech_krb5 = oids+1;
-const gss_OID_desc * const gss_nt_krb5_name = oids+1;
+const gss_OID_desc * const gss_nt_krb5_name = oids+2;
 const gss_OID_desc * const gss_nt_krb5_principal = oids+3;
 
 static const gss_OID_set_desc oidsets[] = {
@@ -130,13 +130,27 @@ kg_get_context(minor_status, context)
    static krb5_context kg_context = NULL;
    krb5_error_code code;
 
-   if ((! kg_context) &&
-       (code = krb5_init_context(&kg_context))) {
-      *minor_status = (OM_uint32) code;
-      return GSS_S_FAILURE;
+   if (!kg_context) {
+	   if ((code = krb5_init_context(&kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_context_init(kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_auth_context_init(kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_ccache_init(kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_rcache_init(kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_keytab_init(kg_context)))
+		   goto fail;
+	   if ((code = krb5_ser_auth_context_init(kg_context)))
+	       goto fail;
    }
-
    *context = kg_context;
    *minor_status = 0;
    return GSS_S_COMPLETE;
+   
+fail:
+   *minor_status = (OM_uint32) code;
+   return GSS_S_FAILURE;
 }
