@@ -189,6 +189,11 @@ fi
 $ECHO ""
 $ECHO "Starting Athena daemons: \c"
 
+if [ "${TIMECLIENT}" = "true" ]; then
+	$ECHO "xntpd... \c"
+	/etc/athena/xntpd &
+fi
+
 # Start Athena's inetd.  Make sure the time zone is set in its environment.
 . /etc/TIMEZONE
 $ECHO "inetd... \c"
