@@ -22,12 +22,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.18 1990-07-16 08:21:05 lwvanels Exp $
+ *	$Id: olc.c,v 1.19 1990-09-10 01:11:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.18 1990-07-16 08:21:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.19 1990-09-10 01:11:33 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -97,7 +97,9 @@ extern int krb_ap_req_debug;
 COMMAND OLC_Command_Table[] = {
   "?",		do_olc_list_cmds,	"List available commands",
   "help",	do_olc_help,		"Describe the various commands.",
+#ifndef LAVIN
   "answers",	do_olc_stock,		"Read answers to common questions",
+#endif
   "ask",	do_olc_ask,		"Ask a question",
   "cancel",	do_olc_cancel,		"Cancel your question",
   "done",	do_olc_done,		"Mark your question resolved",
@@ -116,7 +118,9 @@ COMMAND OLC_Command_Table[] = {
 COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,	"List available commands",
   "help",	do_olc_help,		"Describe the various commands",
+#ifndef LAVIN
   "answers",	do_olc_stock,		"Read answers to common questions",
+#endif
   "ask",	do_olc_ask,		"Ask a question",
   "cancel",	do_olc_cancel,		"Cancel a question",
   "comment",	do_olc_comment, 	"Make a comment",
@@ -138,7 +142,9 @@ COMMAND OLCR_Command_Table[] = {
   "send",	do_olc_send,		"Send a message",		       
   "show",	do_olc_show,		"Show any new messages",
   "status",	do_olc_status,		"Find your status",
+#ifndef LAVIN
   "stock",	do_olc_stock,		"Browse thru stock answers",
+#endif
   "topic",	do_olc_topic,		"Show/Change question topic",
   "who",	do_olc_who,		"Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
@@ -296,7 +302,7 @@ do_olc_init()
   int status;
 
 #ifdef LAVIN
-  printf("Welcome to OLC, ");
+  printf("Welcome to OLTA, ");
   printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	 VERSION_STRING);
   printf("Copyright (c) 1989 by ");
@@ -370,11 +376,17 @@ do_olc_init()
 
   if(OLC)
     {
+#ifndef LAVIN
       printf("\nTo see answers to common questions, type:      answers\n");
+#endif
       if (first)
 	{
 	  topic[0]='\0';
+#ifdef LAVIN
+	  printf("To ask a TA a question, type:        ask\n");
+#else
 	  printf("To ask a consultant a question, type:          ask\n");
+#endif
 #if 0
 	  if(t_input_topic(&Request,topic,TRUE) != SUCCESS)
 	    exit(1);
