@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
-#	$Author: raeburn $
+#	$Author: probe $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.6 1989-11-15 11:29:19 raeburn Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.7 1989-11-16 06:29:08 probe Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -129,7 +129,14 @@ cmds.o: lp.h lp.local.h
 FILTERS:
 	cd filters; make ${MFLAGS}
 
-install: all
+install:
+	for i in lpr lpq lprm; do \
+		install -c -s -o root -g ${SPGRP} -m 6755 $$i \
+			${DESTDIR}/${BINDIR}/$$i.ucb; \
+	done
+	install -c print.sh ${DESTDIR}/usr/ucb/print
+
+install_old:
 #	install -c -m 444 printcap ${DESTDIR}/etc/printcap
 	install -c -s -o root -g ${SPGRP} -m 6755 lpd ${DESTDIR}/${LIBDIR}/
 	install -c -s -o root -g ${SPGRP} -m 6755 lpr ${DESTDIR}/${BINDIR}/
