@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.82 1996-11-26 21:52:58 ghudson Exp $
+ * $Id: login.c,v 1.83 1997-02-04 10:01:25 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.82 1996-11-26 21:52:58 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.83 1997-02-04 10:01:25 ghudson Exp $";
 #endif
 
 /*
@@ -2600,9 +2600,11 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 		*ret_cache_name = 0;
 	memset((char *)&my_creds, 0, sizeof(my_creds));
 
-	krb5_init_context(&context);
-	cache_name = krb5_cc_default_name(context);
+	retval = krb5_init_context(&context);
+	if (retval)
+		return retval;
 
+	cache_name = krb5_cc_default_name(context);
 	krb5_init_ets(context);
 	
 	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
@@ -2695,7 +2697,9 @@ krb5_error_code do_v5_kdestroy(cachename)
 	krb5_error_code retval;
 	krb5_ccache cache;
 
-	krb5_init_context(&context);
+	retval = krb5_init_context(&context);
+	if (retval)
+		return retval;
 
 	if (!cachename)
 		cachename = krb5_cc_default_name(context);

@@ -62,6 +62,4 @@ install::
 	$(INSTALLPROG) -o root -m 4555 rcp ${DESTDIR}$(PROGDIR)/rcp
 	$(INSTALLPROG) rlogin ${DESTDIR}$(PROGDIR)/rlogin
 	$(INSTALLPROG) cygin ${DESTDIR}$(PROGDIR)/cygin
-	$(INSTALLPROG) kshd ${DESTDIR}$(DAEMDIR)/kshd
-	$(INSTALLPROG) klogind ${DESTDIR}$(DAEMDIR)/klogind
 	$(INSTALLPROG) login.krb ${DESTDIR}$(DAEMDIR)/login.krb

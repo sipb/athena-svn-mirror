@@ -36,7 +36,9 @@ krb5_error_code do_v5_kdestroy(cachename)
 	krb5_error_code retval;
 	krb5_ccache cache;
 
-	krb5_init_context(&context);
+	retval = krb5_init_context(&context);
+	if (retval)
+		return retval;
 
 	if (!cachename)
 		cachename = krb5_cc_default_name(context);
