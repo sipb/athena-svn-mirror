@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.19 1991-07-21 10:53:11 epeisach Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.20 1991-07-22 09:13:58 epeisach Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -440,7 +440,7 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry2.label:		Athena On-Line Help (olh)
 *omenuEntry2.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 olh -tty)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
-*omenuEntry3.callback:		runCB(xcluster -i -display :0.0)
+*omenuEntry3.callback:		runCB(xcluster -i 60 -display :0.0)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
 *omenuEntry4.callback:		attachAndRunCB(techinfo,xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/techinfo/techinfo.prelogin)
 *omenuEntry5.label:		Library Access
