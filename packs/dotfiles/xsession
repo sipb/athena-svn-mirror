@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.8 2003-04-23 17:46:04 ghudson Exp $
+# $Id: xsession,v 1.9 2003-05-14 00:58:53 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -98,7 +98,7 @@ if ($?ATHENA_DASH_INTERFACE) then
   set terminal='xterm -geometry 80x48+0+38'
 else
   set default_windowmanager=sawfish
-  set terminal='gnome-terminal --geometry=80x48+0+30'
+  set terminal='gnome-terminal --geometry=80x43+0+30'
 endif
 
 
