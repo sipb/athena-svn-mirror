@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.9 1991-06-29 16:01:20 epeisach Exp $
+ *	$Id: Imakefile,v 1.8 1991-06-28 13:30:00 epeisach Exp $
  *	$Author: epeisach $
  *	$Locker:  $
  *
@@ -11,9 +11,9 @@
 
 /* Define LOCAL_NCS if you are using an ncs tree routed at ./ncs */
 #define LOCAL_NCS
-
-/*#define V1COMP */
-
+#ifndef ultrix
+#define V1COMP
+#endif
 
 DEFINES= -DHESIOD -DKERBEROS -DZEPHYR $(V1COMPAT) ${OCFLAGS} $(NCSINC)
 LIBS=${OPTLIBFLAGS} $(NCSLIB)  -lhesiod \
@@ -133,8 +133,6 @@ SimpleProgram(s_chkaf,${SOBJS},${LIBS},$(ATHETCDIR)/s_chkaf)
 SimpleProgram(lpqd,${OBJS},${LIBS},$(ATHETCDIR)/lpqd)
 SimpleProgram(lpquota,${COBJS},${LIBS},$(ATHBINDIR)/lpquota)
 
-#ifdef UseInstalled
-/* These are only compiled in the developer tree */
 /* generic */
 build_program(qdb_create,${LOBJS},,$(LIBS))
 #if 0
@@ -156,7 +154,7 @@ build_program(grestore_db,gquota_dba.o grestore_db.o,,$(DBLIBS))
 /* billing programs */
 build_program(bill_db,quota_dba.o bill_db.o,,$(DBLIBS))
 build_program(gbill_db,gquota_dba.o gbill_db.o,,$(DBLIBS))
-#endif /* UseInstalled */
+
 
 clean::
 	rm -f quota_ncs_sstub.c quota_ncs_cswtch.c quota_ncs_cstub.c \
