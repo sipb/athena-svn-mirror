@@ -19,13 +19,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.17 1996-07-05 02:31:40 ghudson Exp $
+ *	$Id: olc_tty.h,v 1.18 1997-04-30 18:17:17 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
-
-extern int OLC, OLCR, OLCA;
 
 #define DEFAULT_EDITOR "/usr/athena/bin/emacs"
 #define NO_EDITOR	"NO_EDITOR"
@@ -135,7 +133,7 @@ ERRCODE get_prompted_input P((char *prompt , char *buf, int buflen,
 			      int add_to_history)); 
 int get_yn P((char *prompt ));
 ERRCODE what_now P((char *file , int edit_first , char *editor ));
-int edit_message P((char *file , char *editor ));
+ERRCODE edit_message P((char *file , char *editor ));
 ERRCODE mail_message P((char *user , char *consultant , char *msgfile , char **args ));
 char *happy_message P((void ));
 char *article P((char *word ));
