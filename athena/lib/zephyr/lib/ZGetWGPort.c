@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.5 1988-06-23 11:14:42 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.6 1988-06-24 10:28:10 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.5 1988-06-23 11:14:42 jtkohl Exp $";
+static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.6 1988-06-24 10:28:10 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -38,7 +38,7 @@ short ZGetWGPort()
 	return (-1);
 
     /* if fscanf fails, return -1 via wgport */
-    if (fscanf(fp, "%d", &wgport) != 1)
+    if (fscanf(fp, "%hd", &wgport) != 1)
 	    wgport = -1;
 
     (void) fclose(fp);
