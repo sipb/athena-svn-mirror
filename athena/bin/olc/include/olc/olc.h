@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *      $Author: raeburn $
- *      $Id: olc.h,v 1.9 1990-01-05 06:12:50 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Id: olc.h,v 1.10 1990-01-17 05:15:18 vanharen Exp $
  */
 
 #ifndef __olc_olc_h
@@ -49,6 +49,8 @@ extern "C" {
 #if is_cplusplus
 };
 #endif
+
+struct tREQUEST;
 
 #include <olc/os.h>
 #include <olc/macros.h>
