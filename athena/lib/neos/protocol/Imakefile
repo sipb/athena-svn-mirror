@@ -1,8 +1,8 @@
 /* 
  * Makefile for the FX (file exchange) protocol
  *
- * $Author: probe $
- * $Id: Imakefile,v 1.2 1991-06-30 15:32:10 probe Exp $
+ * $Author: epeisach $
+ * $Id: Imakefile,v 1.3 1992-04-27 13:16:19 epeisach Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -11,6 +11,8 @@
  * <mit-copyright.h>.
  *
  */
+
+AnsiCC()
 
 #if defined(_IBMR2)
 RPCGEN=rpcgen
@@ -39,6 +41,7 @@ DEFDEBUG = -DMALLOC_LEAK
 
 DEFINES = ${INCLUDES} ${DEFKRB} ${DEFHES} ${DEFMULTI} ${DEFDEBUG}
 
+build_program(ansify,ansify.o,,)
 all:: local_prot_clnt.o fx_prot_svc.o fx_prot_clnt.o fx_prot_xdr.o
 
 local_prot_clnt.o: local_prot_clnt.c
@@ -51,7 +54,7 @@ local_prot_clnt.c fx_prot_svc.c fx_prot_clnt.c fx_prot_xdr.c: fx_prot.x
 	cat xdr_extras.c >> fx_prot_xdr.c
 	${RPCGEN} -m fx_prot.x -o fx_prot_svc.c
 	rm -f local_prot_clnt.c fxtemp.c ../include/fx_prot.h
-	mv fx_prot.h ../include
+	./ansify < fx_prot.h > ../include/fx_prot.h && rm -f fx_prot.h
 	grep -v "include <sys/time" < fx_prot_clnt.c > fxtemp.c
 	rm -f fx_prot_clnt.c
 	mv fxtemp.c fx_prot_clnt.c
