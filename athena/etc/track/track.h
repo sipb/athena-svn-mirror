@@ -1,10 +1,11 @@
 /*
- * $Id: track.h,v 4.15 1998-02-25 22:25:09 ghudson Exp $
+ * $Id: track.h,v 4.16 1998-12-18 13:34:55 rbasch Exp $
  */
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/time.h>

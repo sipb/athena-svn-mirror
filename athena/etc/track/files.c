@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.10 1998-02-08 22:26:53 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.10  1998/02/08 22:26:53  ghudson
+ *	Remove the unsupported and incomplete followlinks features.
+ *
  *	Revision 4.9  1997/11/11 19:33:07  ghudson
  *	Nuke bogus i386-conditionalized code.
  *
@@ -67,7 +70,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.10 1998-02-08 22:26:53 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -142,7 +145,7 @@ char *path;
 	if (! strcmp( path,"/"))
 		return(-1);
 
-	if (!( tmp = rindex( path,'/'))) {
+	if (!( tmp = strrchr( path,'/'))) {
 		sprintf(errmsg,"checkroot can't find / in %s", path);
 		do_gripe();
 		return(-1);

@@ -1,9 +1,9 @@
 /*
- * $Id: except.c,v 4.9 1997-11-19 03:05:16 ghudson Exp $
+ * $Id: except.c,v 4.10 1998-12-18 13:34:53 rbasch Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.9 1997-11-19 03:05:16 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.10 1998-12-18 13:34:53 rbasch Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -233,10 +233,10 @@ next_def_except() {
 file_pat( ptr)
 char *ptr;
 {
-	return( (index(ptr,'*') ||
-		 index(ptr,'[') ||
-		 index(ptr,']') ||
-		 index(ptr,'?')));
+	return( (strchr(ptr,'*') ||
+		 strchr(ptr,'[') ||
+		 strchr(ptr,']') ||
+		 strchr(ptr,'?')));
 }
 
 #define FASTEQ( a, b) (*(a) == *(b) && a[1] == b[1])

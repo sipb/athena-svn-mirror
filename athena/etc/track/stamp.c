@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.10 1998-02-08 22:26:57 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.10  1998/02/08 22:26:57  ghudson
+ *	Remove the unsupported and incomplete followlinks features.
+ *
  *	Revision 4.9  1991/02/28 11:32:57  epeisach
  *	Changes by jfc to support on systems that do not inherently know the order
  *	of the file status bits. (right shifting 13 garbage removed)
@@ -92,7 +95,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.10 1998-02-08 22:26:57 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.11 1998-12-18 13:34:54 rbasch Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -327,7 +330,7 @@ char *line; struct currentness *c;
 	 */
 	type = *line++;
 	name = line;
-	line = index( line, ' ');
+	line = strchr( line, ' ');
 	if ( ! line) {
 		sprintf( errmsg, "garbled statfile: bad line =\n%s\n", line);
 		sprintf( errmsg, "line has only one field\n");
@@ -380,7 +383,7 @@ char *line; struct currentness *c;
 		break;
 	case 'l':	/* more common than dir's */
 		s->st_mode = S_IFLNK;
-		if ( end = index( line, '\n'))
+		if ( end = strchr( line, '\n'))
 			*end = '\0';
 		else {
 			sprintf( errmsg, "garbled statfile: bad line =\n%s\n",
