@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.2 1990-04-25 11:48:44 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.3 1990-07-11 10:45:32 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.2 1990-04-25 11:48:44 epeisach Exp $";
+static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.3 1990-07-11 10:45:32 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -20,6 +20,7 @@ static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_ncs.h"
 #include "quota_err.h"
 #include "quota_db.h"
+#include "gquota_db.h"
 #include "mit-copyright.h"
 
 char *set_service();
@@ -104,6 +105,79 @@ quota_value		qamount;
     UNPROTECT();
 }
 
+
+void Quota_modify_group_log(qaccount, qid, ad, qtype, qamount)
+quota_account	        qaccount;
+quota_identifier	*qid;
+AUTH_DAT		*ad;
+modify_account_type	qtype;
+quota_value		qamount;
+{
+    char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
+    char *service;
+
+    service = set_service(qid->service);
+    parse_username(qid->username, qprincipal, qinstance, qrealm);
+
+    open_acct();
+    PROTECT();
+    fprintf(fout, "t=%ld g=%d",time((long *)0), qaccount);
+
+#define ADDSTR(ch, str) if(str != NULL && str[0]!= '\0') \
+    fprintf(fout, " %c=%s", ch, str);
+
+    ADDSTR('s', service);
+    ADDSTR('n', qprincipal);
+    ADDSTR('i', qinstance);
+    ADDSTR('r', qrealm);
+    ADDSTR('N', ad->pname);
+    ADDSTR('I', ad->pinst);
+    ADDSTR('R', ad->prealm);
+ 
+    fprintf(fout, " a=%d", qamount);
+
+    switch ((int) qtype) {
+    case A_SET:
+	ADDSTR('f', "SET");
+	break;
+    case A_ADD:
+	ADDSTR('f', "ADD");
+	break;
+    case A_SUBTRACT:
+	ADDSTR('f', "SUBTRACT");
+	break;
+    case A_ALLOW_PRINT:
+	ADDSTR('f', "ALLOW");
+	break;
+    case A_DISALLOW_PRINT:
+	ADDSTR('f', "DISALLOW");
+	break;
+    case A_DELETE:
+	ADDSTR('f', "DELETE");
+	break;
+    case A_ADJUST:
+	ADDSTR('f', "ADJUST");
+	break;
+    case A_ADD_ADMIN:
+	ADDSTR('f', "ADD_ADMIN");
+	break;
+    case A_DELETE_ADMIN:
+	ADDSTR('f', "DELETE_ADMIN");
+	break;
+    case A_ADD_USER:
+	ADDSTR('f', "ADD_USER");
+	break;
+    case A_DELETE_USER:
+	ADDSTR('f', "DELETE_USER");
+	break;
+	
+#undef ADDSTR
+    }
+    fputc('\n', fout);
+    close_acct();
+    UNPROTECT();
+}
+
 void Quota_report_log(qid, qreport)
 quota_identifier	*qid;
 quota_report	  	*qreport;
@@ -132,7 +206,49 @@ PROTECT();
     ADDNUM('q', qreport->ptime);
     ADDNUM('c', qreport->pcost);
     ADDSTR('w', qreport->pname);
+    ADDSTR('N', qprincipal);
+    ADDSTR('I', qinstance);
+    ADDSTR('R', qrealm);
     
+    fputc('\n', fout);
+    close_acct();
+    UNPROTECT();
+}
+
+void Quota_report_group_log(qid, qreport, ad)
+quota_identifier	*qid;
+quota_report	  	*qreport;
+AUTH_DAT		*ad;
+{
+
+    char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
+    char *service;
+
+    service = set_service(qid->service);
+
+    parse_username(qid->username, qprincipal, qinstance, qrealm);
+
+    open_acct();
+PROTECT();
+    fprintf(fout, "t=%ld n=%s",time((long *) 0), qprincipal);
+
+#define ADDSTR(ch, str) if(str != NULL && str[0]!= '\0') \
+    fprintf(fout, " %c=%s", ch, str);
+#define ADDNUM(ch, num) if(num != 0) fprintf(fout, " %c=%d", ch, num);
+
+    ADDNUM('g', qid->account);
+    ADDSTR('i', qinstance);
+    ADDSTR('r', qrealm);
+    ADDSTR('s', service);
+    ADDSTR('f', "CHARGE");
+    ADDNUM('p', qreport->pages);
+    ADDNUM('q', qreport->ptime);
+    ADDNUM('c', qreport->pcost);
+    ADDSTR('w', qreport->pname);
+    ADDSTR('N', qprincipal);
+    ADDSTR('I', qinstance);
+    ADDSTR('R', qrealm);
+
     fputc('\n', fout);
     close_acct();
     UNPROTECT();
