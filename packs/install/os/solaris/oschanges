@@ -14,6 +14,10 @@ rm $UPDATE_ROOT/etc/rc2.d/S85power
 rm $UPDATE_ROOT/etc/rc2.d/S88sendmail
 rm $UPDATE_ROOT/etc/rc2.d/S89bdconfig
 rm $UPDATE_ROOT/etc/rc2.d/S99audit
+rm $UPDATE_ROOT/etc/rc2.d/S80lp
+rm $UPDATE_ROOT/etc/rc3.d/S76snmpdx
+rm $UPDATE_ROOT/etc/rc3.d/S77dmi
+rm $UPDATE_ROOT/etc/rc3.d/S76ncsd
 
 
 rm $UPDATE_ROOT/usr/openwin/lib/X11/fonts/75dpi/*
