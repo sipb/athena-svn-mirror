@@ -9,6 +9,9 @@
  * wish to change the features that are compiled into nmh.
  */
 
+/* Athena note: changes to the "user configuration" section will
+   require changes to configure.athena. */
+
 /*
  *  Solaris 2.x
  *  Irix
