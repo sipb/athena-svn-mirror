@@ -1,0 +1,688 @@
+GLOBAL : *.CKP *.local *.pid :
+## Major subscription list for workstations
+##
+##	MIT Project Athena
+##
+##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.1 1993-05-25 14:18:44 root Exp $
+	.:::
+		boot
+		etc
+		dev
+		install
+		miniroot
+		mit
+		mnt
+		patch
+		srvd
+		tmp
+		tmp_mnt
+		u1
+		u2
+		u3
+		usr
+		var
+		vmunix
+		-> kadb
+		-> update_ws
+		:
+	/etc:::			# These are specific to each machine.
+		clusterinfo
+		clusterinfo.bsh
+		crontab
+		crontabs.root
+		defaultdomain
+		dumpdates
+		exports
+		fstab
+		ftpusers
+		galatea.conf
+		group
+		hosts
+		hostname.le0
+		inetd.conf
+		mount_rfs
+		motd
+		mtab
+		net.conf
+		passwd
+#		rc.conf
+		srvtab
+		syslog.conf
+		ttys
+		utmp
+		uucpname
+#		version
+		writed
+#		xterm
+		X0.hosts
+			# The following are symbolic links; no update is
+			# needed
+		-> clri
+		-> dcheck
+		-> diskpart
+		-> disktab
+		-> dump
+		-> fdformat	# should be RT only
+		-> fingerd
+		-> flcopy
+		-> fsirand
+		-> ftpd
+#		-> gateways
+		-> icheck
+		-> landump	# should be RT only
+		-> makespools
+		-> mkfs
+		-> mklost+found
+		-> mount_tfs
+		-> mount_tmp
+		-> mount_pcfs
+		-> ncheck
+		-> networks
+		-> newfs
+		-> nfsd
+		-> ntalkd
+		-> pstat
+		-> rdump
+		-> remote
+		-> renice
+		-> restore
+		-> rmt
+		-> rpc
+		-> rrestore
+		-> servers
+		-> shells
+		-> term
+		-> termcap
+		-> vipw
+		:
+	/etc/athena:::
+		attach.conf
+		clusterinfo
+		clusterinfo.bsh
+		galatea.conf
+		messaged
+		newsyslog.conf
+		rc.conf
+		rkinitd
+		srvtab
+		version
+		-> ftpd
+		-> initquotas
+		-> named-xfer
+		-> nullmail
+		-> o_kill
+		-> o_renice
+		-> olcd
+		-> rti_users
+		-> shutdown_notify
+		-> timedc
+		-> xdm			# Not enough space on root
+		-> zephyr.desc
+		-> zephyr.vars
+		-> zshutdown_notify
+		:
+	/etc/athena/login:::
+		config
+		:
+	/etc/install:::
+		-> *
+		:
+	/etc/uucp:::
+		-> *
+		:
+	/sbin::::
+	/dev::::
+	/usr::: ->*
+		adm
+		local
+		spool
+		tmp
+		vice
+		:
+	/usr/include:::
+		-> *
+		:
+	/usr/bin:::
+		-> cflow
+		-> csplit
+		-> ctrace
+		-> cut
+		-> cxref
+		-> dirname
+		-> getopt
+		-> id
+		-> nl
+		-> pack
+		-> paste
+		-> pcat
+		-> sdiff
+		-> unpack 
+		-> xargs
+		-> acctcom
+		-> adb
+		-> addbib
+		-> aedplot
+		-> atoplot
+		-> ar
+		-> as
+		-> as
+		-> at
+		-> atq
+		-> atrm
+		-> bar
+		-> basename
+		-> batch
+		-> bc
+		-> bgplot
+		-> cal
+		-> calendar
+		-> cancel
+		-> cb
+		-> cc
+		-> chsh
+		-> checkeq
+		-> chfn
+		-> chgrp
+		-> chkey
+		-> clear_colormap
+		-> clear_functions
+		-> click
+		-> cmp
+		-> col
+		-> comm
+		-> cpio
+		-> crontab
+		-> cu
+		-> dc
+		-> defaults_from_input
+		-> defaults_to_indentpro
+		-> defaults_to_mailrc
+		-> defaultsedit
+		-> deroff
+		-> diff*
+		-> dos2unix
+		-> dumbplot
+		-> dumpkeys
+		-> egrep
+		-> eject
+		-> enroll
+		-> eqn
+		-> fdformat
+		-> file
+		-> find
+		-> fgrep
+		-> fmt_mail
+		-> fs
+		-> getoptcvt
+		-> gigiplot
+		-> graph
+		-> hostid
+		-> hpplot
+		-> hp7221plot
+		-> i386
+		-> iAPX286
+		-> ideal
+		-> implot
+		-> indent
+		-> indxbib
+		-> indentpro_to_defaulats
+		-> input_from_defaults
+		-> install
+		-> iostat
+		-> ipcrm
+		-> ipcs
+		-> join
+		-> keylogin
+		-> keylogout
+		-> lex
+		-> line
+		-> lint
+		-> logname
+		-> look
+		-> lookbib
+		-> lorder
+		-> lpstat
+		-> lsw
+		-> lswa
+		-> m4
+		-> m68k
+		-> mail
+		-> mailrc_to_defaults
+		-> make
+		-> mc68010
+		-> mc68020
+		-> mesg
+		-> mt
+		-> nawk
+		-> neqn
+		-> newgrp
+		-> nice
+		-> nm
+		-> nroff
+		-> on
+		-> od
+		-> pagesize
+		-> passwd.real
+		-> pdp11
+		-> pic
+		-> plottoa
+		-> crtplot
+		->  plot
+		-> vplot
+		-> hostrfs
+		-> desktop
+		-> pr
+		-> prof
+		-> ptx
+		-> pwd
+		-> rasfilter8to1
+		-> rasfilter_rgbtobgr
+		-> rastrepl
+		-> rcp
+		-> red
+		-> refer
+		-> rev
+		-> rmail
+		-> roffbib
+		-> rpcgen
+		-> screenblank
+		-> screendump
+		-> screenload
+		-> scrolldefaults
+		-> shelltool
+		-> size
+		-> sort
+		-> sortbib
+		-> spell
+		-> spline
+		-> split
+		-> stty_from_defaults
+		-> su
+		-> sum
+		-> suntools
+		-> switcher
+		-> tar
+		-> tek
+		-> t4013
+		-> t300
+		-> t300s
+		-> t450
+		-> tbl
+		-> tcov
+		-> tee
+		-> time
+		-> tip
+		-> tr
+		-> trace
+		-> traffic
+		-> troff
+		-> tp
+		-> tsort
+		-> uname
+#		-> uniq
+		-> units
+		-> unix2dos
+		-> unlog
+		-> unwhiteout
+		-> uudecode
+		-> uuencode
+		-> uucp
+		-> uulog
+		-> uuname
+		-> uupick
+		-> uusend
+		-> uustat
+		-> uuto
+		-> uux
+		-> vax
+		-> write
+		-> xget
+		-> xsend
+		-> yacc
+		-> ypcat
+		-> ypchfn
+		-> ypchsh
+		-> ypmatch
+		-> yppasswd
+		-> ypwhich
+		-> wall
+		-> who
+		:
+	/usr/bin/athena:::
+		aklog
+		-> tokens
+		:
+	/usr/bin/sunview1:::
+		-> *
+		:
+	/usr/hosts:::
+		*
+		:
+	/usr/etc:::
+		-> evnm
+		-> grpck
+		-> link
+		-> pwck
+		-> unlink
+		-> ac
+		-> admin
+		-> audit*
+		-> catman
+		-> chill
+		-> chrtbl
+		-> clri
+		-> colldef
+		-> config
+		-> credentials
+		-> credentilas.dir
+		-> credentilas.pag
+		-> dbconfig
+		-> dcheck
+		-> discussd
+		-> diserve
+		-> dkctl
+		-> dump
+		-> dumpfs
+		-> edquota
+		-> eeprom
+		-> etherfind
+		-> exportfs
+		-> extract_patch
+		-> extract_unbundled
+		-> foption
+		-> fpuversion4
+		-> gencat
+		-> gettable
+		-> gpconfig
+		-> gt_lpconfig
+		-> gtconfig
+		-> htable
+		-> in.*
+		-> installtxt
+		-> hostconfig
+		-> k*
+		-> lpc
+		-> lpqd
+		-> mailstats
+		-> mconnect
+		-> mkfile
+		-> mkfs
+		-> mknod
+		-> mkproto
+		-> modsts
+		-> mrtest
+		-> ncheck
+		-> ndbootd
+		-> newfs
+		-> newkey
+		-> nfsd
+		-> nfsstat
+		-> nslookup
+		-> nstest
+		-> o_lpc
+		-> o_lprm
+		-> pac
+		-> pstat
+		-> quot*
+		-> rarpd
+		-> rdump
+		-> renice
+		-> repquota
+		-> restore
+		-> rmt
+		-> route
+		-> rpc.*
+		-> rpcinfo
+		-> rrestore
+		-> rusage
+		-> rwall
+		-> s_chkaf
+		-> sa
+		-> savecore
+		-> setsid
+		-> show*
+		-> spray
+		-> sunlink*
+		-> tfsd
+		-> trpt
+		-> ttysoftcar
+		-> tunefs
+		-> tvconfig
+		-> update*
+		-> vipw
+		-> yp*
+		-> zdump
+		-> zic
+		-> zpopnotify
+		:
+	/usr/etc/install:::
+		-> *
+		:
+	/usr/etc/yp:::
+		-> *
+		:
+	/usr/lib:::
+		libc.so.1.7
+		libc.sa.1.7
+		-> C*
+		-> E*
+		-> L*
+		-> Mail*
+		-> NIS*
+		-> X*
+		-> acct
+		-> adb
+		-> aliases*
+		-> bb_link*		
+		-> calendar
+		-> ccom
+		-> cg
+		-> compile
+		-> crt0.o
+		-> ctrace
+		-> dag
+		-> defaults
+		-> diff*
+		-> e*
+		-> f*
+		-> g*
+		-> i*
+		-> lang_info
+		-> lex
+		-> lib.b
+		-> libMrm.a
+		-> libMu.a
+		-> libUil.a
+		-> libWc.a
+		-> libX11.a
+		-> libX11_p.a
+		-> libXMenu.a
+		-> libXMenu11.a
+		-> libXMenu11_p.a
+		-> libXMenu_p.a
+		-> libXau_p.a
+		-> libXaw.a
+		-> libXaw_p.a
+		-> libXdmcp.a
+		-> libXdmcp_p.a
+		-> libXext.a
+		-> libXext_p.a
+		-> libXinput.a
+		-> libXm.a
+		-> libXmu.a
+		-> libXmu_p.a
+		-> libXrm.a
+		-> libXrm_p.a
+		-> libXt.a
+		-> libXt_p.a
+		-> libXtm.a
+		-> libbsdmalloc.a
+		-> libc.a	
+		-> libcurses.a
+		-> libdbm.a
+		-> libg.a
+		-> libkvm_p.a
+		-> libl.a
+		-> libln.a
+		-> liblwp.a
+		-> libm.a
+		-> libm.il
+		-> libmp.a
+		-> libnbio.a
+		-> libpixrect.a
+		-> libposix.a
+		-> libresolv.a
+		-> librpcsvc.a
+		-> libtermcap.a
+		-> libtermlib.a
+		-> liby.a
+		-> lint
+		-> livXau.a
+		-> libf77plot.a
+		-> libplot.a
+		-> lib300.a
+		-> lib300s.a
+		-> lib4013.a
+		-> lib4014.a
+		-> lib450.a
+		-> libvt0.a
+		-> libplotaed.a
+		-> libplotbg.a
+		-> libplotdumb.a
+		-> libplotgigi.a
+		-> libplot2648.a
+		-> libplot7221.a
+		-> libplotimagen.a
+		-> lib*_p.a
+		-> libsuntool*
+		-> libsunwindow*
+		-> lpd
+		-> lpf
+		-> lpfx
+		-> makekey
+		-> makewhatis
+		-> mcrt0.o
+		-> me
+		-> misalign
+		-> misalign.il
+		-> more.help
+		-> ms
+		-> necf
+		-> newsyslog
+		-> nmf
+		-> nslookup.help
+		-> prxf
+		-> rasfilters
+		-> refer
+		-> .root*
+		-> .sun*
+		-> rootmenu
+		-> rootmenu.old
+		-> rotate
+		-> rotprt
+		-> rsh
+		-> sendmail
+		-> sendmail.hf
+		-> sendmail.main.cf
+		-> sendmail.mx
+		-> sendmail.subsidiary.cf
+		-> shlib.etc
+		-> spell
+		-> suntools
+		-> tabset
+		-> term
+		-> terminfo
+		-> text_extras_menu
+		-> .text*
+		-> textswrc
+		-> tmac
+		-> units
+		-> uucp
+		-> xglfonts
+		-> xpass
+		-> yaccpar
+		:
+	/usr/lib/debug::: -> * :
+	/usr/lib/lpdfilters::: -> * :
+        /usr/kvm:::
+		-> boot
+		-> config
+		-> eeprom
+		-> fuser
+		-> i*
+		-> libkvm.a
+		-> libkvm_p.a
+		-> machine
+		-> mc*
+		-> m68k
+		-> pdp11
+		-> pstat
+		-> s*
+		-> trace
+		-> u3*
+		-> vfontedpr
+		-> vgrindefs
+		-> vax
+		-> w
+		:
+         /usr/kvm/mdec::::
+        /usr/share:::
+		-> man
+		-> src
+		:
+	/usr/share/lib:::
+		-> lex
+		-> locale
+		-> me
+		-> ms
+		-> pub
+		-> tabset
+		-> termcap
+		-> terminfo
+		-> tmac
+		:
+	/usr/share/lib/keytables:::
+		-> b*
+		-> c*
+		-> d*
+		-> f*
+		-> g*
+		-> i*
+		-> j*
+		-> k*
+		-> n*
+		-> p*
+		-> s*
+		-> t*
+		-> uk*
+		:
+	/usr/share/lib/zoneinfo:::
+		-> A*
+		-> B*
+		-> C*
+		-> E*
+		-> F*
+		-> GB*
+		-> H*
+		-> I*
+		-> J*
+		-> L*
+		-> M*
+		-> N*
+		-> P*
+		-> S*
+		-> T*
+		-> UCT
+		-> UTC
+		-> Un*
+		-> W*
+		-> Z*
+		-> a*
+		-> e*
+		-> f*
+		-> p*
+		-> s*
+		:
+
+
