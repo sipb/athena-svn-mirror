@@ -1,4 +1,4 @@
-Name: athena-xntp
+Name: athena-ntp
 Summary: The Network Time Protocol, to keep Athena workstations in sync
 Copyright: David L. Mills
 Group: System Environment/Base
@@ -23,8 +23,8 @@ mkdir $RPM_BUILD_ROOT
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
-cp athena-xntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
-chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
+cp athena-ntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
 
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
@@ -48,5 +48,5 @@ grep -q ^TIMEHUB /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
 EOF
 
-chkconfig --add athena-xntp
+chkconfig --add athena-ntp
 
