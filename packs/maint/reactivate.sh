@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.75 2003-08-13 17:28:13 rbasch Exp $
+# $Id: reactivate.sh,v 1.76 2003-10-23 23:16:02 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -89,6 +89,11 @@ if [ "$full" = true ]; then
 			fi
 		fi
 	done
+
+	# Also quit if there are screen processes running.
+	if [ false = "$PUBLIC" ] && pgrep '^screen' > /dev/null; then
+		exit 0
+	fi
 
 	# Check for valid Athena session records; these get created for
 	# remote shells, etc., which may not have an associated utmp entry.
