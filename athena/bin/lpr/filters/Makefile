@@ -17,11 +17,11 @@ SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c vpltdmp.c \
 	vplotf.c vfontinfo.c vwidth.c vfw.c fcvt.c rotate.c rotprt.c \
 	ln01filter.l ln03filter.c
-PRINTER=lpf necf ln01filter ln03filter
+PRINTER=lpf necf ln01filter ln03filter ln01raw
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
 
-all:	printer varian
+all:	printer
 
 printer: ${PRINTER}
 
@@ -86,6 +86,9 @@ ln01filter: ln01filter.o
 ln03filter: ln03filter.o
 	${CC} -o ln03filter ${CFLAGS} ln03filter.o
 
+ln01raw: ln01raw.o
+	${CC} ${CFLAGS} -o ln01raw ln01raw.o
+	
 install: printer
 	-mkdir ${DESTDIR}/${LIBDIR}
 	install -s lpf ${DESTDIR}/${LIBDIR}/lpf
@@ -96,6 +99,7 @@ install: printer
 #		ln ${DESTDIR}/${LIBDIR}/ln01filter ${DESTDIR}/${LIBDIR}/$$i; \
 #	done
 	install -s ln03filter ${DESTDIR}/${LIBDIR}/ln03filter
+	install -s ln01raw ${DESTDIR}/${LIBDIR}/ln01raw
 installv: varian
 	-mkdir ${DESTDIR}/${LIBDIR}
 	install -s vfontinfo ${DESTDIR}/${LIBDIR}/vfontinfo
