@@ -1,3 +1,4 @@
 PKG=MIT-osinstall
 NAME=Athena install software
 DESC=This package contains software to be installed in /srvd to help perform the installation of an Athena workstation.  Do not install this package on an Athena machine.
+CATEGORY=system,MITsrvd
