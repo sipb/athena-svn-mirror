@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.20 1994-08-24 04:17:37 cfields Exp $
+# $Id: reactivate.sh,v 1.21 1994-08-24 04:25:34 cfields Exp $
 
 trap "" 1 15
 
@@ -51,7 +51,7 @@ if [ "${MACHINE}" = "SUN4" ]; then
 fi
 
 # Tell the Zephyr hostmanager to reset state
-if [ -f /etc/athena/zhm.pid ] ; then 
+if [ -f /etc/athena/zhm.pid -a "${ZCLIENT}" = "true" ] ; then 
 	/bin/kill -HUP `/bin/cat /etc/athena/zhm.pid`
 fi
 
