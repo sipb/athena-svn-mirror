@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.60 1998-02-27 02:00:33 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.61 1998-03-01 20:04:48 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -37,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.60 1998-02-27 02:00:33 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.61 1998-03-01 20:04:48 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -900,9 +900,9 @@ static void cleanup(char *tty)
 #ifdef TRACE
       trace("Just closed wtmp\n");
 #endif
-       if ((f = open("/usr/adm/wtmpx",O_WRONLY|O_APPEND)) >= 0) {
-               write(f, (char *)&utmpx, sizeof(utmpx));
-              close(f);
+       if ((file = open("/usr/adm/wtmpx",O_WRONLY|O_APPEND)) >= 0) {
+               write(file, (char *)&utmpx, sizeof(utmpx));
+              close(file);
       }
 #ifdef TRACE
       trace("Just closed wtmpx\n");
