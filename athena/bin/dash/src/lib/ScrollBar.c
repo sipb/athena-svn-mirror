@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/ScrollBar.c,v 1.2 1991-09-04 10:13:41 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/ScrollBar.c,v 1.3 1993-07-02 00:24:06 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -77,19 +77,21 @@ static void realize(), resize(), querySize(),
 
 ScrollBarClassRec scrollBarClassRec = {
   {
-    /* class name */	"ScrollBar",
-    /* jet size   */	sizeof(ScrollBarRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	NULL,
-    /* querySize */     querySize,
-    /* move */		move,
-    /* resize */        resize,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"ScrollBar",
+    /* jet size   */		sizeof(ScrollBarRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		NULL,
+    /* querySize */     	querySize,
+    /* move */			move,
+    /* resize */        	resize,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
@@ -182,6 +184,7 @@ static int calcCurrent(me, button, thumbX, thumbY)
       break;
 
     case Button2:
+    default:
       current = me->scrollBar.minimum;
       if (pixrange - pixvisible != 0)
 	{
@@ -276,10 +279,10 @@ static void realize(me)
       valuemask = ( GCForeground | GCLineWidth | GCFunction
 		   | GCGraphicsExposures );
 
-      me->scrollBar.line_gc = XCreateGC(me->core.display,
-					me->core.window,
-					valuemask,
-					&values);
+      me->scrollBar.line_gc = XjCreateGC(me->core.display,
+					 me->core.window,
+					 valuemask,
+					 &values);
     }
 
   values.foreground = (me->scrollBar.borderColor == -1) ?
@@ -289,32 +292,32 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCLineWidth
 	       | GCFunction | GCGraphicsExposures );
 
-  me->scrollBar.bg_gc = XCreateGC(me->core.display,
-				  me->core.window,
-				  valuemask,
-				  &values);
+  me->scrollBar.bg_gc = XjCreateGC(me->core.display,
+				   me->core.window,
+				   valuemask,
+				   &values);
 
   values.foreground = me->scrollBar.background;
 
-  me->scrollBar.fg_gc = XCreateGC(me->core.display,
-				  me->core.window,
-				  valuemask,
-				  &values);
+  me->scrollBar.fg_gc = XjCreateGC(me->core.display,
+				   me->core.window,
+				   valuemask,
+				   &values);
 
   valuemask = ( GCForeground | GCBackground | GCFunction
 	       | GCGraphicsExposures );
 
-  me->scrollBar.thumb_gc = XCreateGC(me->core.display,
-				     me->core.window,
-				     valuemask,
-				     &values);
+  me->scrollBar.thumb_gc = XjCreateGC(me->core.display,
+				      me->core.window,
+				      valuemask,
+				      &values);
 
   if (me->scrollBar.thumb != NULL)
     { /* this is a mighty annoying pain in the rear */
       /* destroy p... check also Window.c */
       Pixmap p;
 
-      p = XCreatePixmap(me->core.display,
+      p = XjCreatePixmap(me->core.display,
 			me->core.window,
 			me->scrollBar.thumb->width,
 			me->scrollBar.thumb->height,
@@ -341,40 +344,40 @@ static void realize(me)
     }
 
   if (me->scrollBar.upCursorCode != -1)
-    me->scrollBar.upCursor = XCreateFontCursor(me->core.display,
-					       me->scrollBar.upCursorCode);
+    me->scrollBar.upCursor = XjCreateFontCursor(me->core.display,
+						me->scrollBar.upCursorCode);
   else
-    me->scrollBar.upCursor = NULL;
+    me->scrollBar.upCursor = (Cursor) NULL;
 
   if (me->scrollBar.downCursorCode != -1)
-    me->scrollBar.downCursor = XCreateFontCursor(me->core.display,
+    me->scrollBar.downCursor = XjCreateFontCursor(me->core.display,
 						 me->scrollBar.downCursorCode);
   else
-    me->scrollBar.downCursor = NULL;
+    me->scrollBar.downCursor = (Cursor) NULL;
 
   if (me->scrollBar.leftCursorCode != -1)
-    me->scrollBar.leftCursor = XCreateFontCursor(me->core.display,
+    me->scrollBar.leftCursor = XjCreateFontCursor(me->core.display,
 						 me->scrollBar.leftCursorCode);
   else
-    me->scrollBar.leftCursor = NULL;
+    me->scrollBar.leftCursor = (Cursor) NULL;
 
   if (me->scrollBar.rightCursorCode != -1)
-    me->scrollBar.rightCursor = XCreateFontCursor(me->core.display,
-						 me->scrollBar.rightCursorCode);
+    me->scrollBar.rightCursor = XjCreateFontCursor(me->core.display,
+					        me->scrollBar.rightCursorCode);
   else
-    me->scrollBar.rightCursor = NULL;
+    me->scrollBar.rightCursor = (Cursor) NULL;
 
   if (me->scrollBar.vertCursorCode != -1)
-    me->scrollBar.vertCursor = XCreateFontCursor(me->core.display,
+    me->scrollBar.vertCursor = XjCreateFontCursor(me->core.display,
 						 me->scrollBar.vertCursorCode);
   else
-    me->scrollBar.vertCursor = NULL;
+    me->scrollBar.vertCursor = (Cursor) NULL;
 
   if (me->scrollBar.horizCursorCode != -1)
-    me->scrollBar.horizCursor = XCreateFontCursor(me->core.display,
+    me->scrollBar.horizCursor = XjCreateFontCursor(me->core.display,
 						me->scrollBar.horizCursorCode);
   else
-    me->scrollBar.horizCursor = NULL;
+    me->scrollBar.horizCursor = (Cursor) NULL;
 
 
   XDefineCursor(me->core.display, me->core.window,
@@ -385,7 +388,7 @@ static void realize(me)
   /*
    * Usurp events for this window
    */
-  XjRegisterWindow(me->core.window, me);
+  XjRegisterWindow(me->core.window, (Jet) me);
   XjSelectInput(me->core.display, me->core.window,
 		ExposureMask | StructureNotifyMask |
 		ButtonPressMask | ButtonReleaseMask | Button2MotionMask);
@@ -399,23 +402,23 @@ static void realize(me)
 static void destroy(me)
      ScrollBarJet me;
 {
-  XFreeGC(me->core.display, me->scrollBar.thumb_gc);
+  XjFreeGC(me->core.display, me->scrollBar.thumb_gc);
   if (me->scrollBar.borderThickness != 0)
-    XFreeGC(me->core.display, me->scrollBar.line_gc);
-  if (me->scrollBar.vertCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.vertCursor);
-  if (me->scrollBar.horizCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.horizCursor);
-  if (me->scrollBar.upCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.upCursor);
-  if (me->scrollBar.downCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.downCursor);
-  if (me->scrollBar.rightCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.rightCursor);
-  if (me->scrollBar.leftCursor != NULL)
-    XFreeCursor(me->core.display, me->scrollBar.leftCursor);
+    XjFreeGC(me->core.display, me->scrollBar.line_gc);
+  if (me->scrollBar.vertCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.vertCursor);
+  if (me->scrollBar.horizCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.horizCursor);
+  if (me->scrollBar.upCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.upCursor);
+  if (me->scrollBar.downCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.downCursor);
+  if (me->scrollBar.rightCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.rightCursor);
+  if (me->scrollBar.leftCursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->scrollBar.leftCursor);
 
-  XjUnregisterWindow(me->core.window, me);
+  XjUnregisterWindow(me->core.window, (Jet) me);
 }
 
 static void querySize(me, size)
@@ -520,63 +523,18 @@ static void drawThumb(me)
 }
 
 
-static void drawArrows(me)
-     ScrollBarJet me;
-{
-  int w, h, x1, y1, x2, y2;
-  int lx1, lx2, ly1, ly2;
-
-  if (me->scrollBar.orientation == Vertical)
-    {
-      lx2 = w = me->core.width;
-      ly1 = ly2 = h = me->scrollBar.arrowSize;
-      lx1 = x1 = y1 = 0;
-    }
-  else
-    {
-      w = me->core.width;
-      h = me->scrollBar.arrowSize;
-      x1 = y1 = 0;
-    }
-
-  XFillRectangle(me->core.display, me->core.window, me->scrollBar.fg_gc,
-		 x1, y1, w, h);
-
-  XDrawLine(me->core.display, me->core.window, me->scrollBar.bg_gc,
-	    lx1, ly1, lx2, ly2);
-
-  XFillRectangle(me->core.display, me->core.window, me->scrollBar.fg_gc,
-		 0, me->core.height - me->core.width,
-		 me->core.width, me->core.width);
-
-  XDrawLine(me->core.display,
-	    me->core.window,
-	    me->scrollBar.bg_gc,
-	    0, me->core.height - me->core.width,
-	    me->core.width, me->core.height - me->core.width);
-}
-
-
-static void drawScrollbar(me)
-     ScrollBarJet me;
-{
-  drawThumb(me);
-  if (me->scrollBar.showArrows && me->scrollBar.arrowSize != 0)
-    drawArrows(me);
-}
-
-
 static void clear(me)
      ScrollBarJet me;
 {
   XClearWindow(me->core.display, me->core.window);
 }
 
-static void moveThumb(me, current) /* needs orientation! */
+
+static void moveThumb(me, current)
      ScrollBarJet me;
      int current;
 {
-  int oldPos, newPos;
+  int oldPos;
   int range, visible;
 
   range = me->scrollBar.maximum - me->scrollBar.minimum + 1;
@@ -597,7 +555,7 @@ static void moveThumb(me, current) /* needs orientation! */
 
   me->scrollBar.current = current;
   calcPos(me);
-  drawScrollbar(me);
+  drawThumb(me);
 
   if (me->scrollBar.orientation == Vertical)
     {
@@ -638,7 +596,7 @@ static void moveThumb(me, current) /* needs orientation! */
 		   False);
     }
 
-  XjCallCallbacks(me, me->scrollBar.changeProc, NULL);
+  XjCallCallbacks((caddr_t) me, me->scrollBar.changeProc, NULL);
 }
 /*==========*/
 static Boolean event_handler(me, event)
@@ -646,7 +604,6 @@ static Boolean event_handler(me, event)
      XEvent *event;
 {
   XEvent tmp;
-  int range, pixrange, visible;
   int current;
 
   switch(event->type)
@@ -656,7 +613,7 @@ static Boolean event_handler(me, event)
       if (event->xexpose.count != 0)
 	break;
 
-      drawScrollbar(me);
+      drawThumb(me);
       break;
 
     case ConfigureNotify:
@@ -667,9 +624,9 @@ static Boolean event_handler(me, event)
 
 	  size.width = event->xconfigure.width;
 	  size.height = event->xconfigure.height;
-	  XjResize(me, &size);
+	  XjResize((Jet) me, &size);
 	  clear(me);
-	  drawScrollbar(me);
+	  drawThumb(me);
 	}
       break;
 
@@ -735,17 +692,21 @@ void SetScrollBar(me, min, max, visible, value)
      ScrollBarJet me;
      int min, max, visible, value;
 {
-  me->scrollBar.minimum = min;
-  me->scrollBar.maximum = max;
-  me->scrollBar.visible = visible;
-  me->scrollBar.current = value;
+  if (min != -1)
+    me->scrollBar.minimum = min;
+  if (max != -1)
+    me->scrollBar.maximum = max;
+  if (visible != -1)
+    me->scrollBar.visible = visible;
+  if (value != -1)
+    me->scrollBar.current = value;
 
   if (me->scrollBar.realized)
     {
       initSizes(me);
       calcPos(me);
       clearAround(me);
-      drawScrollbar(me);
+      drawThumb(me);
     }
 }
 
