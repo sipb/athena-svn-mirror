@@ -607,9 +607,7 @@ int try_krb5 (me_p, pass)
 
     if (code) {
 	if (code == KRB5KRB_AP_ERR_BAD_INTEGRITY)
-	    fprintf (stderr,
-		     "%s: Kerberos password incorrect\n", 
-		     username);
+	    ;
 	else
 	    com_err ("login", code,
 		     "while getting initial credentials");
@@ -737,7 +735,6 @@ try_krb4 (me, user_pwstring)
 	/* So the Kerberos database can't be probed */
     case KDC_NULL_KEY:
     case KDC_PR_UNKNOWN:
-    case INTK_BADPW:
     case KDC_PR_N_UNIQUE:
     case -1:
 	break;
@@ -1467,14 +1464,13 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 
 		/* Don't get tickets for local accounts. */
 		if (!local_acct) {
-			try_krb5 (&me, user_pwstring);
-
 #ifdef KRB4_GET_TICKETS
-			if (login_krb4_get_tickets
-			    && (!got_v5_tickets
-				|| !login_krb4_convert))
+			if (login_krb4_get_tickets)
 			    try_krb4 (me, user_pwstring);
+			if (got_v4_tickets)
 #endif
+			    try_krb5 (&me, user_pwstring);
+
 			krbflag = got_v5_tickets || got_v4_tickets;
 			memset (user_pwstring, 0, sizeof(user_pwstring));
 			/* password wiped, so we can relax */
