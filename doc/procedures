@@ -165,6 +165,23 @@ source tree before importing it (check with a release engineer before
 deciding that you have to), make a note in the doc/third-party file so
 that people doing future imports will know about it.
 
+Before doing an import, run timestamps.pl from the repository CVSROOT
+directory.  This script helps work around the problem that CVS does
+not version metadata such as timestamps, by crunching all of the
+timestamps up near the current time while preserving their relative
+order.  Use the "-d" flag to cvs import to use the resulting
+timestamps as the time of import.
+
+Here is an example of how one might import a hypothetical new version
+of emacs (assuming the CVSROOT environment variable is set to point at
+the Athena repository):
+
+	gtar xzf emacs-22.3.tar.gz
+	cd emacs-22.3
+	perl $CVSROOT/CVSROOT/timestamps.pl
+	cvs import -d -m "Import of emacs version 22.3" third/emacs \
+		fsf emacs-22_3
+
 If you add a new piece of third-party software or import a new
 version, you should look over doc/third-party and see if any notes
 should be added or modified.  This file is instrumental in locating
