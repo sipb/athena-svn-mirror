@@ -1,7 +1,7 @@
 #include <zephyr/mit-copyright.h>
 
 /* $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $ */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.1 1987-03-18 17:18:27 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.2 1987-03-18 19:01:16 jtkohl Exp $ */
 
 #include <errno.h>
 #include <sys/types.h>
@@ -78,3 +78,6 @@ extern int errno;
 #define ZERR_BADPKT		1005	/* Bad incoming packet */
 #define ZERR_VERS		1006	/* Bad version # in packet */
 #define ZERR_NOPORT		1007	/* No port opened */
+
+#define	ZERR_S_FIRST		2000	/* internal server error codes */
+#define	ZERR_S_LAST		3000
