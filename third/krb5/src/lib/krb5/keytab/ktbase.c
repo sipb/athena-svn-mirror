@@ -71,7 +71,7 @@ krb5int_kt_finalize(void)
 {
     struct krb5_kt_typelist *t, *t_next;
     k5_mutex_destroy(&kt_typehead_lock);
-    for (t = kt_typehead; t != &krb5_kt_typelist_srvtab; t = t_next) {
+    for (t = kt_typehead; t != &krb5_kt_typelist_any; t = t_next) {
 	t_next = t->next;
 	free(t);
     }
