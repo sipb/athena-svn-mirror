@@ -88,6 +88,11 @@ for i in 1 2 3 4 5 6; do
   fi
 done
 
+if grep -q /sbin/update /etc/inittab; then
+  sed -e '/\/sbin\/update/d' /etc/inittab > /etc/inittab.new
+  mv /etc/inittab.new /etc/inittab
+fi
+
 %triggerin -- dev
 # Make sure the permissions on the sound devices are appropriate
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
@@ -357,6 +362,14 @@ done
 
 grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
 [ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf || true
+
+# Remove old files left around by syncconf that the rc scripts don't
+# know to ignore.
+rm -f /etc/sysconfig/network-scripts/*.saved
+
+# Mozilla is now in the release.  Remove the locally cached copy from
+# earlier releases.
+rm -rf /var/athena/infoagents /var/athena/rconf.infoagents
 
 %preun
 if [ $1 = 0 ]; then
