@@ -78,8 +78,10 @@ done
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 
 %triggerin -- finger-server
-sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
-mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
+if [ -f /etc/xinetd.d/finger ]; then
+  sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
+  mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
+fi
 
 %triggerin -- setup
 sed -e '/^COLOR/s/tty/none/' /etc/DIR_COLORS > /etc/DIR_COLORS.new
