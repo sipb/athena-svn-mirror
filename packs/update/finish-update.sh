@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.3 1997-04-04 18:03:53 ghudson Exp $
+# $Id: finish-update.sh,v 1.4 1997-05-04 04:57:59 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -60,5 +60,5 @@ fi
 
 if [ -d "$SERVERDIR" ]; then
 	echo "Running mkserv."
-	/srvd/usr/athena/bin/mkserv -v update
+	/srvd/usr/athena/bin/mkserv -v update < /dev/null
 fi
