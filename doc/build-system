@@ -101,6 +101,7 @@ to it) which does the following:
 	  into account in configure.in; just put in your Makefile.in:
 
 		prefix=@prefix@
+		exec_prefix=@exec_prefix@
 		datadir=@datadir@
 		sbindir=@sbindir@
 
@@ -118,6 +119,9 @@ to it) which does the following:
 	  And then in your Makefile.in:
 
 		prefix=@prefix@
+		exec_prefix=@exec_prefix@
+		bindir=@bindir@
+		sbindir=@sbindir@
 		lbindir=@lbindir@
 		lsbindir=@lsbindir@
 
