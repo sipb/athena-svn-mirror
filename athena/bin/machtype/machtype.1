@@ -1,13 +1,13 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: lwvanels $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.11 1992-04-22 14:41:41 lwvanels Exp $
-.TH MACHTYPE 1 "April 1 1991"
+.\"     $Author: cfields $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.12 1995-05-26 20:47:45 cfields Exp $
+.TH MACHTYPE 1 "December 17 1994"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-N] [-E] [-k kernel] [-m memory] 
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-N] [-E] [-S] [-k kernel] [-m memory] 
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "vax" when run on a
@@ -74,19 +74,22 @@ the name of the base OS are "BSD", "Ultrix", and "AIX".
 .TP
 .B -E
 Print out the version number of the base operating system.
+.TP
+.B -S
+Print out the "Athena System" name for the current architecture. This
+value is normally stored in the environment variable ATHENA_SYS, and
+ideally corresponds to the AFS system name for the same machine
+assuming the machine were running AFS. This value is used in the Athena
+environment as part of a scheme for laying out filesystems containing
+binaries for multiple architectures. See \fIlockers\fR(7) for more
+information.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an
 environment that contains filesystems shared across several different
 architectures.
-.PP
-.SH EXAMPLE
-To set your search path for commands in your .login file to include a
-machine-specific directory in your home directory.
-.PP
-set path=(~/`machtype`bin $path)
 .SH SEE ALSO
-csh(1)
+csh(1), lockers(7)
 .SH BUGS
 Disk types can not be read for rd disk drives (i.e. on the VAXstation
 2000), or for SCSI drives on the IBM RT/PC.  The disk size on the RISC/6000 is
