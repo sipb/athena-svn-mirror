@@ -9,5 +9,25 @@ sun4)
   ;;
 
 sgi)
+  # Install patch 3992 locally, on Indy only.
+  if [ IP22 = "`uname -m`" ]; then
+    echo "i A patchSG0003992.eoe_sw.base"	>> "$LOCALPACKAGES.patches"
+  fi
+  # Make sure the patch does not get installed in symlink mode.
+  echo "k patchSG0003992.eoe_sw.base"		>> "$LINKPACKAGES.patches"
+
+  # Undo the kernel hack which disabled the R5000 CVT workaround.
+  kconfig=/var/sysgen/system/irix.sm
+  if grep R5000_CVT_WAR=0 "$kconfig" > /dev/null ; then
+    sed -e "s/-D_R5000_CVT_WAR=0/-D_R5000_CVT_WAR=1/g" "$kconfig" \
+	  > "$kconfig.new" &&
+    mv -f "$kconfig.new" "$kconfig" &&
+    chmod 444 "$kconfig"
+  fi
+
+  # Build a new kernel.
+  echo "NEWUNIX=true"				>> "$CONFVARS"
+  # We have updated the OS.
+  echo "OSCHANGES=true"				>> "$CONFVARS"
   ;;
 esac
