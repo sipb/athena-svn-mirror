@@ -62,14 +62,19 @@ char copyright[] =
 #endif
 
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
 #include "defines.h"
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
 #endif
 #endif /* KERBEROS */
-     
+
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+Key_schedule v4_schedule;
+#endif
+
 /*
  * rsh - remote shell
  */
@@ -88,7 +93,7 @@ krb5_sigtype  sendsig();
 #define UCB_RSH "/usr/ucb/rsh"
 #endif
 
-#define RSH_BUFSIZ 8192
+
 
 krb5_context bsd_context;
 krb5_creds *cred;
@@ -124,7 +129,7 @@ main(argc, argv0)
      char **argv0;
 {
     int rem, pid;
-    char *host=0, *cp, **ap, buf[RSH_BUFSIZ], *args, **argv = argv0, *user = 0;
+    char *host=0, *cp, **ap, buf[8192], *args, **argv = argv0, *user = 0;
     register int cc;
     struct passwd *pwd;
     fd_set readfrom, ready;
@@ -132,6 +137,7 @@ main(argc, argv0)
     struct servent *sp;
     struct servent defaultservent;
     struct sockaddr_in local, foreign;
+    int suppress;
 
 #ifdef POSIX_SIGNALS
     sigset_t omask, igmask;
@@ -350,7 +356,9 @@ main(argc, argv0)
       authopts |= OPTS_FORWARD_CREDS;
     if (Fflag)
       authopts |= OPTS_FORWARDABLE_CREDS;    
-
+#ifdef HAVE_ISATTY
+    suppress = !isatty(fileno(stderr));
+#endif
     status = kcmd(&rem, &host, debug_port,
 		  pwd->pw_name,
 		  user ? user : pwd->pw_name,
@@ -360,13 +368,17 @@ main(argc, argv0)
 		  0,           /* No need for server seq # */
 		  &local, &foreign,
 		  authopts,
-		  1);	/* Always set anyport, there is no need not to. --proven */
+		  1,	/* Always set anyport, there is no need not to. --proven */
+		  suppress);
     if (status) {
 #ifdef KRB5_KRB4_COMPAT
 	/* No encrypted Kerberos 4 rsh. */
 	if (encrypt_flag)
 	    exit(1);
-	fprintf(stderr, "Trying krb4 rsh...\n");
+#ifdef HAVE_ISATTY
+	if (isatty(fileno(stderr)))
+	    fprintf(stderr, "Trying krb4 rsh...\n");
+#endif
 	status = k4cmd(&rem, &host, debug_port,
 		       pwd->pw_name,
 		       user ? user : pwd->pw_name, args,

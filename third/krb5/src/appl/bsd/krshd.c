@@ -73,7 +73,9 @@ char copyright[] =
 #define SERVE_NON_KRB     
 #define LOG_REMOTE_REALM
 #define LOG_CMD
-     
+#include "defines.h"
+   
+  
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -87,7 +89,10 @@ char copyright[] =
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/param.h>
+#if !defined(KERBEROS) || !defined(KRB5_KRB4_COMPAT)
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <sys/socket.h>
+#endif
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -115,8 +120,11 @@ char copyright[] =
 #endif
      
 #include <signal.h>
+#if !defined(KERBEROS) || !defined(KRB5_KRB4_COMPAT)
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <netdb.h>
-     
+#endif
+
 #ifdef CRAY
 #ifndef NO_UDB
 #include <udb.h>
@@ -146,8 +154,8 @@ char copyright[] =
 #endif
 
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
 #include "loginpaths.h"
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
@@ -166,7 +174,8 @@ Key_schedule v4_schedule;
 
 #define ARGSTR	"ek54ciD:S:M:AP:?L:w:"
 
-#define RSHD_BUFSIZ 5120
+
+
 
 #define MAXRETRIES 4
 
@@ -287,7 +296,7 @@ int main(argc, argv)
     
     /* Analyze parameters. */
     opterr = 0;
-    while ((ch = getopt(argc, argv, ARGSTR)) != EOF)
+    while ((ch = getopt(argc, argv, ARGSTR)) != -1)
       switch (ch) {
 #ifdef KERBEROS
 	case 'k':
@@ -523,9 +532,10 @@ char *kremuser;
 krb5_principal client;
 krb5_authenticator *kdata;
 
-#include <kerberosIV/krb.h>
+#ifdef KRB5_KRB4_COMPAT
 AUTH_DAT	*v4_kdata;
 KTEXT		v4_ticket;
+#endif
 
 int auth_sys = 0;	/* Which version of Kerberos used to authenticate */
 
@@ -611,7 +621,7 @@ void doit(f, fromp)
     short port;
     int pv[2], pw[2], px[2], cc;
     fd_set ready, readfrom;
-    char buf[RSHD_BUFSIZ], sig;
+    char buf[RCMD_BUFSIZ], sig;
     struct sockaddr_in fromaddr;
     struct sockaddr_in localaddr;
     int non_privileged = 0;
@@ -636,7 +646,7 @@ void doit(f, fromp)
     
     { 
       int sin_len = sizeof (struct sockaddr_in);
-      if (getsockname(f, &localaddr, &sin_len) < 0) {
+      if (getsockname(f, (struct sockaddr*)&localaddr, &sin_len) < 0) {
 	perror("getsockname");
 	exit(1);
       }
@@ -731,12 +741,10 @@ void doit(f, fromp)
     }
     (void) alarm(0);
     if (port != 0) {
-	int lport;
 	if (anyport) {
-	    lport = 5120; /* arbitrary */
-	    s = getport(&lport);
+	    s = getport(0);
 	} else {
-	    lport = IPPORT_RESERVED - 1;
+	    int lport = IPPORT_RESERVED - 1;
 	    s = rresvport(&lport);
 	}
 	if (s < 0) {
@@ -746,7 +754,7 @@ void doit(f, fromp)
 	}
 #ifdef KERBEROS
 	if ( port >= IPPORT_RESERVED)
-	  non_privileged = 1;
+	    non_privileged = 1;
 #else
 	if (port >= IPPORT_RESERVED) {
 	    syslog(LOG_ERR , "2nd port not reserved\n");
@@ -1085,6 +1093,7 @@ void doit(f, fromp)
 		    ((auth_sys == KRB5_RECVAUTH_V4) ? AUTH_KRB4 : AUTH_KRB5);
 	}
 
+	
 #else
     if (pwd->pw_passwd != 0 && *pwd->pw_passwd != '\0' &&
 	ruserok(hostname[0] ? hostname : hostaddra,
@@ -1514,7 +1523,7 @@ void error(fmt, a1, a2, a3)
      char *fmt;
      char *a1, *a2, *a3;
 {
-    char buf[RSHD_BUFSIZ];
+    char buf[RCMD_BUFSIZ];
     
     buf[0] = 1;
     (void) sprintf(buf+1, "%s: ", progname);
@@ -1775,8 +1784,10 @@ recvauth(netf, peersin, valid_checksum)
     char krb_vers[KRB_SENDAUTH_VLEN + 1];
     int len, local_acct;
     krb5_data inbuf;
+#ifdef KRB5_KRB4_COMPAT
     char v4_instance[INST_SZ];	/* V4 Instance */
     char v4_version[9];
+#endif
     krb5_authenticator *authenticator;
     krb5_ticket        *ticket;
     krb5_rcache		rcache;
@@ -1796,7 +1807,9 @@ recvauth(netf, peersin, valid_checksum)
 #define SIZEOF_INADDR sizeof(struct in_addr)
 #endif
 
+#ifdef KRB5_KRB4_COMPAT
     strcpy(v4_instance, "*");
+#endif
 
     if (status = krb5_auth_con_init(bsd_context, &auth_context))
 	return status;
@@ -1825,6 +1838,7 @@ recvauth(netf, peersin, valid_checksum)
 	if (status) return status;
     }
 
+#ifdef KRB5_KRB4_COMPAT
     status = krb5_compat_recvauth(bsd_context, &auth_context, &netf,
 				  "KCMDV0.1",
 				  NULL,		/* Specify daemon principal */
@@ -1840,6 +1854,15 @@ recvauth(netf, peersin, valid_checksum)
 				  &ticket, 	/* return ticket */
 				  &auth_sys, 	/* which authentication system*/
 				  &v4_kdata, 0, v4_version);
+#else
+    status = krb5_recvauth(bsd_context, &auth_context, &netf,
+                           "KCMDV0.1",
+                           NULL,        /* daemon principal */
+                           0,           /* no flags */
+		           keytab,      /* normally NULL to use v5srvtab */
+		           &ticket);    /* return ticket */
+    auth_sys = KRB5_RECVAUTH_V5;
+#endif
 
     if (status) {
 	if (auth_sys == KRB5_RECVAUTH_V5) {
@@ -1856,6 +1879,7 @@ recvauth(netf, peersin, valid_checksum)
     getstr(netf, locuser, sizeof(locuser), "locuser");
     getstr(netf, cmdbuf, sizeof(cmdbuf), "command");
 
+#ifdef KRB5_KRB4_COMPAT
     if (auth_sys == KRB5_RECVAUTH_V4) {
 	rcmd_stream_init_normal();
 	
@@ -1874,6 +1898,7 @@ recvauth(netf, peersin, valid_checksum)
 	
 	return status;
     }
+#endif /* KRB5_KRB4_COMPAT */
 
     /* Must be V5  */
 	
@@ -1913,7 +1938,7 @@ recvauth(netf, peersin, valid_checksum)
 
     error_cleanup:
 	if (chksumbuf)
-	    krb5_xfree(chksumbuf);
+	    free(chksumbuf);
 	if (status) {
 	    krb5_free_authenticator(bsd_context, authenticator);
 	    return status;

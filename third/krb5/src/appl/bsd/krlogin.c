@@ -19,6 +19,32 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #ifndef lint
 char copyright[] =
   "@(#) Copyright (c) 1983 The Regents of the University of California.\n\
@@ -61,6 +87,11 @@ char copyright[] =
 #include <setjmp.h>
 #include <netdb.h>
      
+#ifdef HAVE_SYS_FILIO_H
+/* Solaris needs <sys/filio.h> for FIONREAD */
+#include <sys/filio.h>
+#endif
+
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -130,8 +161,8 @@ char copyright[] =
 
 
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
 #include "defines.h"
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
@@ -175,6 +206,7 @@ char	*getenv();
 
 char	*name;
 int 	rem = -1;		/* Remote socket fd */
+int	do_inband = 0;
 char	cmdchar = '~';
 int	eight = 1;		/* Default to 8 bit transmission */
 int	no_local_escape = 0;
@@ -223,6 +255,7 @@ char	*host=0;			/* external, so it can be
 					   reached from confirm_death() */
 
 krb5_sigtype	sigwinch KRB5_PROTOTYPE((int));
+int server_message KRB5_PROTOTYPE((int));
 void oob KRB5_PROTOTYPE((void));
 krb5_sigtype	lostpeer KRB5_PROTOTYPE((int));
 #if __STDC__
@@ -354,11 +387,15 @@ main(argc, argv)
 
     if (argc > 0 && !strcmp(*argv, "-D")) {
 	argv++; argc--;
+	if (*argv == NULL) {
+	    fprintf (stderr,
+		     "rlogin: -D flag must be followed by the debug port.\n");
+	    exit (1);
+	}
 	debug_port = htons(atoi(*argv));
 	argv++; argc--;
 	goto another;
     }
-
     if (argc > 0 && !strcmp(*argv, "-d")) {
 	argv++, argc--;
 	options |= SO_DEBUG;
@@ -504,8 +541,10 @@ main(argc, argv)
 
 
     if (cp == (char *) NULL) cp = getenv("TERM");
-    if (cp)
-      (void) strcpy(term, cp);
+    if (cp) {
+      (void) strncpy(term, cp, sizeof (term));
+      term[sizeof (term) - 1] = '\0';
+    }
 #ifdef POSIX_TERMIOS
 	if (tcgetattr(0, &ttyb) == 0) {
 		int i;
@@ -578,12 +617,13 @@ main(argc, argv)
 		  0,		/* No need for server seq # */
 		  &local, &foreign,
 		  authopts,
-		  0);		/* Not any port # */
+		  0,		/* Not any port # */
+		  0);
     if (status) {
 #ifdef KRB5_KRB4_COMPAT
 	fprintf(stderr, "Trying krb4 rlogin...\n");
 	status = k4cmd(&sock, &host, debug_port,
-		       null_local_username ? NULL : pwd->pw_name,
+		       null_local_username ? "" : pwd->pw_name,
 		       name ? name : pwd->pw_name, term,
 		       0, &v4_ticket, "rcmd", krb_realm,
 		       &v4_cred, v4_schedule, &v4_msg_data, &local, &foreign,
@@ -594,9 +634,24 @@ main(argc, argv)
 #else
 	try_normal(orig_argv);
 #endif
-    } else
+    } else {
+	krb5_boolean similar;
+
 	rcmd_stream_init_krb5(&cred->keyblock, encrypt_flag, 1);
+
+	if (status = krb5_c_enctype_compare(bsd_context, ENCTYPE_DES_CBC_CRC,
+					    cred->keyblock.enctype, &similar))
+	    try_normal(orig_argv); /* doesn't return */
+
+	if (!similar) {
+	    do_inband = 1;
+	    if (debug_port)
+		fprintf(stderr, "DEBUG: setting do_inband\n");
+	}
+    }
+	
     rem = sock;
+    
 #else
     rem = rcmd(&host, debug_port,
 	       null_local_username ? "" : pwd->pw_name,
@@ -966,7 +1021,7 @@ int signo;
  */
 writer()
 {
-    char c;
+    unsigned char c;
     register n;
     register bol = 1;               /* beginning of line */
     register local = 0;
@@ -1186,15 +1241,16 @@ int	rcvcnt;
 int	rcvstate;
 int	ppid;
 
+/* returns 1 if flush, 0 otherwise */
 
-void oob()
+int server_message(mark)
+     int mark;
 {
 #ifndef POSIX_TERMIOS
     int out = FWRITE;
 #endif
-    int atmark, n;
+    int n;
     int rcvd = 0;
-    char waste[RLOGIN_BUFSIZ], mark;
 #ifdef POSIX_TERMIOS
     struct termios tty;
 #else
@@ -1204,9 +1260,7 @@ void oob()
     struct sgttyb sb;
 #endif
 #endif
-    mark = 0;
-    
-     recv(rem, &mark, 1, MSG_OOB);
+
     if (mark & TIOCPKT_WINDOW) {
 	/*
 	 * Let server know about window size changes
@@ -1264,27 +1318,62 @@ void oob()
 	(void) ioctl(1, TCFLSH, 1);
 #endif
 #endif
-	for (;;) {
-	    if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
-		perror("ioctl");
-		break;
-	    }
-	    if (atmark)
-	      break;
-	    n = read(rem, waste, sizeof (waste));
-	    if (n <= 0)
-	      break;
-return;
-	}
+	return(1);
     }
-    
-    
+
+    return(0);
 }
 
+void oob()
+{
+    char mark;
+    char waste[RLOGIN_BUFSIZ];
+    int atmark;
 
+    mark = 0;
+    
+    recv(rem, &mark, 1, MSG_OOB);
+
+    if (server_message(mark)) {
+	if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
+	    perror("ioctl");
+	    return;
+	}
+	if (!atmark)
+	    read(rem, waste, sizeof (waste));
+    }
+}
+
+/* two control messages are defined:
+
+   a double flag byte of 'o' indicates a one-byte message which is
+   identical to what was once carried out of band.  
+
+   a double flag byte of 'q' indicates a zero-byte message.  This
+   message is interpreted as two \377 data bytes.  This is just a
+   quote rule so that binary data from the server does not confuse the
+   client.  */
+
+int control(cp, n)
+     unsigned char *cp;
+     int n;
+{
+    if ((n >= 5) && (cp[2] == 'o') && (cp[3] == 'o')) {
+	if (server_message(cp[4]))
+	    return(-5);
+	return(5);
+    } else if ((n >= 4) && (cp[2] == 'q') && (cp[3] == 'q')) {
+	/* this is somewhat of a hack */
+	cp[2] = '\377';
+	cp[3] = '\377';
+	return(2);
+    }
+
+    return(0);
+}
 
 /*
- * reader: read from remote: line -> 1
+ * reader: read from remote: line -> 1 
  */
 reader(oldmask)
 #ifdef POSIX_SIGNALS
@@ -1299,8 +1388,9 @@ reader(oldmask)
     int pid = -getpid();
 #endif
 fd_set readset, excset, writeset;
-    int n, remaining;
+    int n, remaining, left;
     char *bufp = rcvbuf;
+    char *cp;
 
 #ifdef POSIX_SIGNALS
     struct sigaction sa;
@@ -1315,7 +1405,7 @@ fd_set readset, excset, writeset;
 #endif
     
     ppid = getppid();
-FD_ZERO(&readset);
+    FD_ZERO(&readset);
     FD_ZERO(&excset);
     FD_ZERO(&writeset);
 #ifdef POSIX_SIGNALS
@@ -1327,42 +1417,66 @@ FD_ZERO(&readset);
 #endif /* POSIX_SIGNALS */
 
     for (;;) {
-	if ((remaining = rcvcnt - (bufp - rcvbuf)) > 0)
-	{
+	if ((remaining = rcvcnt - (bufp - rcvbuf)) > 0) {
 	    FD_SET(1,&writeset);
 	    rcvstate = WRITING;
 	    FD_CLR(rem, &readset);
+	} else {
+	    bufp = rcvbuf;
+	    rcvcnt = 0;
+	    rcvstate = READING;
+	    FD_SET(rem,&readset);
+	    FD_CLR(1,&writeset);
 	}
-	else {
-	    
-	bufp = rcvbuf;
-	rcvcnt = 0;
-	 rcvstate = READING;
-FD_SET(rem,&readset);
-	FD_CLR(1,&writeset);
-	}
-	FD_SET(rem,&excset);
+	if (!do_inband)
+	    FD_SET(rem,&excset);
 	if (select(rem+1, &readset, &writeset, &excset, 0) > 0 ) {
-	    if (FD_ISSET(rem, &excset))
-  oob();
+	    if (!do_inband)
+		if (FD_ISSET(rem, &excset))
+		    oob();
 	    if (FD_ISSET(1,&writeset)) {
-    	    n = write(1, bufp, remaining);
-	    if (n < 0) {
-		if (errno != EINTR)
-		  return (-1);
-		continue;
+		n = write(1, bufp, remaining);
+		if (n < 0) {
+		    if (errno != EINTR)
+			return (-1);
+		    continue;
+		}
+		bufp += n;
 	    }
-	    bufp += n;
-}
-if (FD_ISSET(rem, &readset)) {
+	    if (FD_ISSET(rem, &readset)) {
 	  	rcvcnt = rcmd_stream_read(rem, rcvbuf, sizeof (rcvbuf));
-	if (rcvcnt == 0)
-	  return (0);
-	if (rcvcnt < 0)
-	  goto error;
-}
+		if (rcvcnt == 0)
+		    return (0);
+		if (rcvcnt < 0)
+		    goto error;
+
+		if (do_inband) {
+		    for (cp = rcvbuf; cp < rcvbuf+rcvcnt-1; cp++) {
+			if (cp[0] == '\377' &&
+			    cp[1] == '\377') {
+			    left = (rcvbuf+rcvcnt) - cp;
+			    n = control(cp, left);
+			    if (n < 0) {
+				left -= (-n);
+				rcvcnt = 0;
+				/* flush before, and (-n) bytes */
+				if (left > 0)
+				    memmove(rcvbuf, cp+(-n), left);
+				cp = rcvbuf-1;
+			    } else if (n) {
+				left -= n;
+				rcvcnt -= n;
+				if (left > 0)
+				    memmove(cp, cp+n, left);
+				cp--;
+			    }
+			}
+		    }
+		}
+	    }
 	} else
-		  error: {
+error:
+	{
 	    if (errno == EINTR)
 	      continue;
 	    perror("read");
@@ -1376,67 +1490,70 @@ if (FD_ISSET(rem, &readset)) {
 mode(f)
 {
 #ifdef POSIX_TERMIOS
-	struct termios newtty;
+    struct termios newtty;
+#ifndef IEXTEN
+#define IEXTEN 0 /* No effect*/
+#endif
+#ifndef _POSIX_VDISABLE
+#define _POSIX_VDISABLE 0 /*A good guess at the disable-this-character character*/
+#endif
 
-	switch(f) {
-	case 0:
+    switch(f) {
+    case 0:
 #ifdef TIOCGLTC
-#ifndef solaris20
-		(void) ioctl(0, TIOCSLTC, (char *)&defltc);
+#if !defined(sun)
+	(void) ioctl(0, TIOCSLTC, (char *)&defltc);
 #endif
 #endif
-		(void) tcsetattr(0, TCSADRAIN, &deftty);
-		break;
-	case 1:
-		(void) tcgetattr(0, &newtty);
-/* was __svr4__ */
+	(void) tcsetattr(0, TCSADRAIN, &deftty);
+	break;
+    case 1:
+	(void) tcgetattr(0, &newtty);
+	/* was __svr4__ */
 #ifdef VLNEXT
 	/* there's a POSIX way of doing this, but do we need it general? */
-		newtty.c_cc[VLNEXT] = 0;
+	newtty.c_cc[VLNEXT] = _POSIX_VDISABLE;
 #endif
 		
-		newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-		if (!flow)
-		{
-			newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-			newtty.c_iflag &= ~(BRKINT|INLCR|ICRNL|ISTRIP);
-			/* newtty.c_iflag |=  (IXON|IXANY); */
-			newtty.c_iflag &= ~(IXON|IXANY);
-			newtty.c_oflag &= ~(OPOST);
-		} else {
-			newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-			newtty.c_iflag &= ~(INLCR|ICRNL);
-			/* newtty.c_iflag |=  (BRKINT|ISTRIP|IXON|IXANY); */
-			newtty.c_iflag &= ~(IXON|IXANY);
-			newtty.c_iflag |=  (BRKINT|ISTRIP);
-			newtty.c_oflag &= ~(ONLCR|ONOCR);
-			newtty.c_oflag |=  (OPOST);
-		}
-#ifdef TABDLY
-		/* preserve tab delays, but turn off XTABS */
-		if ((newtty.c_oflag & TABDLY) == TAB3)
-			newtty.c_oflag &= ~TABDLY;
-#endif
+	newtty.c_lflag &= ~(ICANON|ISIG|ECHO|IEXTEN);
+	newtty.c_iflag &= ~(ISTRIP|INLCR|ICRNL);
 
-		if (litout)
-			newtty.c_oflag &= ~OPOST;
-
-		newtty.c_cc[VMIN] = 1;
-		newtty.c_cc[VTIME] = 0;
-		(void) tcsetattr(0, TCSADRAIN, &newtty);
-#ifdef TIOCGLTC
-		/* Do this after the tcsetattr() in case this version
-		 * of termio supports the VSUSP or VDSUSP characters */
-#ifndef solaris20
-		/* this forces ICRNL under Solaris... */
-		(void) ioctl(0, TIOCSLTC, (char *)&noltc);
-#endif
-#endif
-		break;
-	default:
-		return;
-		/* NOTREACHED */
+	if (!flow) {
+	    newtty.c_iflag &= ~(BRKINT|IXON|IXANY);
+	    newtty.c_oflag &= ~(OPOST);
+	} else {
+	    /* XXX - should we set ixon ? */
+	    newtty.c_iflag &= ~(IXON|IXANY);
+	    newtty.c_iflag |=  (BRKINT);
+	    newtty.c_oflag &= ~(ONLCR|ONOCR);
+	    newtty.c_oflag |=  (OPOST);
 	}
+#ifdef TABDLY
+	/* preserve tab delays, but turn off XTABS */
+	if ((newtty.c_oflag & TABDLY) == TAB3)
+	    newtty.c_oflag &= ~TABDLY;
+#endif
+	if (!eight)
+	    newtty.c_iflag |= ISTRIP;
+	if (litout)
+	    newtty.c_oflag &= ~OPOST;
+
+	newtty.c_cc[VMIN] = 1;
+	newtty.c_cc[VTIME] = 0;
+	(void) tcsetattr(0, TCSADRAIN, &newtty);
+#ifdef TIOCGLTC
+	/* Do this after the tcsetattr() in case this version
+	 * of termio supports the VSUSP or VDSUSP characters */
+#if !defined(sun)
+	/* this forces ICRNL under Solaris... */
+	(void) ioctl(0, TIOCSLTC, (char *)&noltc);
+#endif
+#endif
+	break;
+    default:
+	return;
+	/* NOTREACHED */
+    }
 #else
     struct ltchars *ltc;
 #ifdef USE_TERMIO
@@ -1451,17 +1568,17 @@ mode(f)
     (void) ioctl(0, TIOCGETP, (char *)&sb);
     switch (f) {
 	
-      case 0:
+    case 0:
 #ifdef USE_TERMIO
 	/*
-	 **      remember whether IXON was set, so it can be restored
-	 **      when mode(1) is next done
-	 */
+	**      remember whether IXON was set, so it can be restored
+	**      when mode(1) is next done
+	*/
 	(void) ioctl(fileno(stdin), TIOCGETP, &ixon_state);
 	/*
-	 **      copy the initial modes we saved into sb; this is
-	 **      for restoring to the initial state
-	 */
+	**      copy the initial modes we saved into sb; this is
+	**      for restoring to the initial state
+	*/
 	(void)memcpy(&sb, &defmodes, sizeof(defmodes));
 	
 #else
@@ -1475,30 +1592,30 @@ mode(f)
 	ltc = &defltc;
 	break;
 	
-      case 1:
+    case 1:
 #ifdef USE_TERMIO
 	/*
-	 **      turn off output mappings
-	 */
+	**      turn off output mappings
+	*/
 	sb.c_oflag &= ~(ONLCR|OCRNL);
 	/*
-	 **      turn off canonical processing and character echo;
-	 **      also turn off signal checking -- ICANON might be
-	 **      enough to do this, but we're being careful
-	 */
+	**      turn off canonical processing and character echo;
+	**      also turn off signal checking -- ICANON might be
+	**      enough to do this, but we're being careful
+	*/
 	sb.c_lflag &= ~(ECHO|ICANON|ISIG);
 	sb.c_cc[VTIME] = 1;
 	sb.c_cc[VMIN] = 1;
 	if (eight)
-	  sb.c_iflag &= ~(ISTRIP);
+	    sb.c_iflag &= ~(ISTRIP);
 #ifdef TABDLY
 	/* preserve tab delays, but turn off tab-to-space expansion */
 	if ((sb.c_oflag & TABDLY) == TAB3)
-	  sb.c_oflag &= ~TAB3;
+	    sb.c_oflag &= ~TAB3;
 #endif
 	/*
-	 **  restore current flow control state
-	 */
+	**  restore current flow control state
+	*/
 	if ((ixon_state.c_iflag & IXON) && flow ) {
 	    sb.c_iflag |= IXON;
 	} else {
@@ -1509,15 +1626,15 @@ mode(f)
 	sb.sg_flags |= (!flow ? RAW : CBREAK);
 	/* preserve tab delays, but turn off XTABS */
 	if ((sb.sg_flags & TBDELAY) == XTABS)
-	  sb.sg_flags &= ~TBDELAY;
+	    sb.sg_flags &= ~TBDELAY;
 	sb.sg_kill = sb.sg_erase = -1;
 #ifdef LLITOUT
 	if (litout)
-	  lflags |= LLITOUT;
+	    lflags |= LLITOUT;
 #endif
 #ifdef LPASS8
 	if (eight)
-	  lflags |= LPASS8;
+	    lflags |= LPASS8;
 #endif /* LPASS8 */
 	tc = &notc;
 	sb.sg_flags &= ~defflags;
@@ -1526,7 +1643,7 @@ mode(f)
 	ltc = &noltc;
 	break;
 	
-      default:
+    default:
 	return;
     }
     (void) ioctl(0, TIOCSLTC, (char *)ltc);
@@ -1556,6 +1673,10 @@ void try_normal(argv)
      char **argv;
 {
     register char *host;
+#ifdef POSIX_SIGNALS
+    struct sigaction sa;
+    sigset_t mask;
+#endif
     
 #ifndef KRB5_ATHENA_COMPAT
     if (encrypt_flag)
@@ -1573,6 +1694,11 @@ void try_normal(argv)
     if (!strcmp(host, "rlogin"))
       argv++;
     
+#ifdef POSIX_SIGNALS
+    sigemptyset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
+#endif
+
     execv(UCB_RLOGIN, argv);
     perror("exec");
     exit(1);

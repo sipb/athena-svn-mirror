@@ -19,6 +19,32 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #ifndef lint
 char copyright[] =
   "@(#) Copyright (c) 1983 The Regents of the University of California.\n\
@@ -105,7 +131,10 @@ char copyright[] =
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef KERBEROS
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <sys/socket.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <sys/file.h>
@@ -146,8 +175,11 @@ char copyright[] =
 #else
 #include <sgtty.h>
 #endif
-     
+
+#ifndef KERBEROS
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <netdb.h>
+#endif
 #include <syslog.h>
 #include <string.h>
 #include <sys/param.h>
@@ -199,7 +231,7 @@ struct winsize {
 
 #ifdef KERBEROS
      
-#include "krb5.h"
+#include <krb5.h>
 #include <kerberosIV/krb.h>
 #include <libpty.h>
 #ifdef HAVE_UTMP_H
@@ -230,9 +262,9 @@ krb5_ccache ccache = NULL;
 
 krb5_keytab keytab = NULL;
 
-#define ARGSTR	"k54ciepPD:S:M:L:w:?"
+#define ARGSTR	"k54ciepPD:S:M:L:fw:?"
 #else /* !KERBEROS */
-#define ARGSTR	"rpPD:?"
+#define ARGSTR	"rpPD:f?"
 #endif /* KERBEROS */
 
 #ifndef LOGIN_PROGRAM
@@ -271,6 +303,7 @@ char		term[64];
 char            rhost_name[MAXDNAME];
 char		rhost_addra[16];
 krb5_principal  client;
+int		do_inband = 0;
 
 int	reapchild();
 char 	*progname;
@@ -320,6 +353,7 @@ int main(argc, argv)
     char *options;
     int debug_port = 0;
     int fd;
+    int do_fork = 0;
 #ifdef KERBEROS
     krb5_error_code status;
 #endif
@@ -349,7 +383,7 @@ int main(argc, argv)
     
     /* Analyse parameters. */
     opterr = 0;
-    while ((ch = getopt(argc, argv, ARGSTR)) != EOF)
+    while ((ch = getopt(argc, argv, ARGSTR)) != -1)
       switch (ch) {
 #ifdef KERBEROS
 	case 'k':
@@ -406,11 +440,8 @@ int main(argc, argv)
 	case 'L':
 	  login_program = optarg;
 	  break;
-        case 'u':
-	  maxhostlen = atoi(optarg);
-	  break;
-        case 'I':
-	  always_ip = 1;
+        case 'f':
+	  do_fork = 1;
 	  break;
 	case 'w':
 	  if (!strcmp(optarg, "ip"))
@@ -445,65 +476,97 @@ int main(argc, argv)
     
     fromlen = sizeof (from);
 
-     if (debug_port) {
-	 int s;
-	 struct sockaddr_in sin;
-	 
-	 if ((s = socket(AF_INET, SOCK_STREAM, PF_UNSPEC)) < 0) {
-	     fprintf(stderr, "Error in socket: %s\n", strerror(errno));
-	     exit(2);
-	 }
-	 
-	 memset((char *) &sin, 0,sizeof(sin));
-	 sin.sin_family = AF_INET;
-	 sin.sin_port = htons(debug_port);
-	 sin.sin_addr.s_addr = INADDR_ANY;
-	 
-	 (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
-			   (char *)&on, sizeof(on));
+    if (debug_port || do_fork) {
+	int s;
+	struct servent *ent;
+	struct sockaddr_in sin;
 
-	 if ((bind(s, (struct sockaddr *) &sin, sizeof(sin))) < 0) {
-	     fprintf(stderr, "Error in bind: %s\n", strerror(errno));
-	     exit(2);
-	 }
-	 
-	 if ((listen(s, 5)) < 0) {
-	     fprintf(stderr, "Error in listen: %s\n", strerror(errno));
-	     exit(2);
-	 }
-	 
-	 if ((fd = accept(s, (struct sockaddr *) &from, &fromlen)) < 0) {
-	     fprintf(stderr, "Error in accept: %s\n", strerror(errno));
-	     exit(2);
-	 }
-	 
-	 close(s);
-     } 
-     else {
-	 if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
-	     syslog(LOG_ERR,"Can't get peer name of remote host: %m");
+	if (!debug_port) {
+	    if (do_encrypt) {
+		ent = getservbyname("eklogin", "tcp");
+		if (ent == NULL)
+		    debug_port = 2105;
+		else
+		    debug_port = ent->s_port;
+	    } else {
+		ent = getservbyname("klogin", "tcp");
+		if (ent == NULL)
+		    debug_port = 543;
+		else
+		    debug_port = ent->s_port;
+	    }
+	}
+	if ((s = socket(AF_INET, SOCK_STREAM, PF_UNSPEC)) < 0) {
+	    fprintf(stderr, "Error in socket: %s\n", strerror(errno));
+	    exit(2);
+	}
+	memset((char *) &sin, 0,sizeof(sin));
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(debug_port);
+	sin.sin_addr.s_addr = INADDR_ANY;
+
+	if (!do_fork)
+	    (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
+			      (char *)&on, sizeof(on));
+
+	if ((bind(s, (struct sockaddr *) &sin, sizeof(sin))) < 0) {
+	    fprintf(stderr, "Error in bind: %s\n", strerror(errno));
+	    exit(2);
+	}
+
+	if ((listen(s, 5)) < 0) {
+	    fprintf(stderr, "Error in listen: %s\n", strerror(errno));
+	    exit(2);
+	}
+
+	if (do_fork) {
+	    if (daemon(0, 0)) {
+		fprintf(stderr, "daemon() failed\n");
+		exit(2);
+	    }
+	    while (1) {
+		int child_pid;
+
+		fd = accept(s, (struct sockaddr *) &from, &fromlen);
+		if (s < 0) {
+		    if (errno != EINTR)
+			syslog(LOG_ERR, "accept: %s", error_message(errno));
+		    continue;
+		}
+		child_pid = fork();
+		switch (child_pid) {
+		case -1:
+		    syslog(LOG_ERR, "fork: %s", error_message(errno));
+		case 0:
+		    (void) close(s);
+		    doit(fd, &from);
+		    close(fd);
+		    exit(0);
+		default:
+		    wait(0);
+		    close(fd);
+		}
+	    }
+	}
+
+	if ((fd = accept(s, (struct sockaddr *) &from, &fromlen)) < 0) {
+	    fprintf(stderr, "Error in accept: %s\n", strerror(errno));
+	    exit(2);
+	}
+
+	close(s);
+    } else {			/* !do_fork && !debug_port */
+	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
+	    syslog(LOG_ERR,"Can't get peer name of remote host: %m");
 #ifdef STDERR_FILENO
-	     fatal(STDERR_FILENO, "Can't get peer name of remote host", 1);
+	    fatal(STDERR_FILENO, "Can't get peer name of remote host", 1);
 #else
-	     fatal(2, "Can't get peer name of remote host", 1);
+	    fatal(2, "Can't get peer name of remote host", 1);
 #endif
-	 }
-	 fd = 0;
-     }
-
-    if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE,
-		   (const char *) &on, sizeof (on)) < 0)
-      syslog(LOG_WARNING, "setsockopt (SO_KEEPALIVE): %m");
-    if (auth_ok == 0) {
-      syslog(LOG_CRIT, "No authentication systems were enabled; all connections will be refused.");
-      fatal(fd, "All authentication systems disabled; connection refused.");
+	}
+	fd = 0;
     }
 
-    if (checksum_required&&checksum_ignored) {
-      syslog( LOG_CRIT, "Checksums are required and ignored; these options are mutually exclusive--check the documentation.");
-      fatal(fd, "Configuration error: mutually exclusive options specified");
-    }
-    
     doit(fd, &from);
     return 0;
 }
@@ -542,6 +605,19 @@ void doit(f, fromp)
     int syncpipe[2];
 
     netf = -1;
+    if (setsockopt(f, SOL_SOCKET, SO_KEEPALIVE,
+		   (const char *) &on, sizeof (on)) < 0)
+	syslog(LOG_WARNING, "setsockopt (SO_KEEPALIVE): %m");
+    if (auth_ok == 0) {
+	syslog(LOG_CRIT, "No authentication systems were enabled; all connections will be refused.");
+	fatal(f, "All authentication systems disabled; connection refused.");
+    }
+
+    if (checksum_required&&checksum_ignored) {
+	syslog( LOG_CRIT, "Checksums are required and ignored; these options are mutually exclusive--check the documentation.");
+	fatal(f, "Configuration error: mutually exclusive options specified");
+    }
+    
     alarm(60);
     read(f, &c, 1);
     
@@ -633,12 +709,12 @@ void doit(f, fromp)
 #if defined(POSIX_TERMIOS) && !defined(ultrix)
 	tcgetattr(t,&new_termio);
 #if !defined(USE_LOGIN_F)
-	new_termio.c_lflag &=  ~(ICANON|ECHO|ISIG|IEXTEN);
+	new_termio.c_lflag &= ~(ICANON|ECHO|ISIG|IEXTEN);
 	new_termio.c_iflag &= ~(IXON|IXANY|BRKINT|INLCR|ICRNL);
 #else
 	new_termio.c_lflag |= (ICANON|ECHO|ISIG|IEXTEN);
 	new_termio.c_oflag |= (ONLCR|OPOST);
-	new_termio.c_iflag|= (IXON|IXANY|BRKINT|INLCR|ICRNL);
+	new_termio.c_iflag |= (IXON|IXANY|BRKINT|INLCR|ICRNL);
 #endif /*Do we need binary stream?*/
 	new_termio.c_iflag &= ~(ISTRIP);
 	/* new_termio.c_iflag = 0; */
@@ -801,7 +877,7 @@ void doit(f, fromp)
 #endif
 
     
-#if!defined(USE_LOGIN_F)
+#if !defined(USE_LOGIN_F)
     /* Pass down rusername and lusername to login. */
     (void) write(p, rusername, strlen(rusername) +1);
     (void) write(p, lusername, strlen(lusername) +1);
@@ -829,6 +905,31 @@ unsigned char	oobdata[] = {TIOCPKT_WINDOW};
 #else
 char    oobdata[] = {0};
 #endif
+
+int sendoob(fd, byte)
+     int fd;
+     char *byte;
+{
+    char message[5];
+    int cc;
+
+    if (do_inband) {
+	message[0] = '\377';
+	message[1] = '\377';
+	message[2] = 'o';
+	message[3] = 'o';
+	message[4] = *byte;
+
+	cc = rcmd_stream_write(fd, message, sizeof(message));
+	while (cc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN))) {
+	    /* also shouldn't happen */
+	    sleep(5);
+	    cc = rcmd_stream_write(fd, message, sizeof(message));
+	}
+    } else {
+	send(fd, byte, 1, MSG_OOB);
+    }
+}
 
 /*
  * Handle a "control" request (signaled by magic being present)
@@ -873,7 +974,7 @@ int control(pty, cp, n)
 void protocol(f, p)
      int f, p;
 {
-    unsigned char pibuf[BUFSIZ], fibuf[BUFSIZ], *pbp, *fbp;
+    unsigned char pibuf[BUFSIZ], qpibuf[BUFSIZ*2], fibuf[BUFSIZ], *pbp, *fbp;
     register pcc = 0, fcc = 0;
     int cc;
     char cntl;
@@ -908,7 +1009,7 @@ void protocol(f, p)
     signal(SIGTTOU, SIG_IGN);
 #endif
 #ifdef TIOCSWINSZ
-    send(f, oobdata, 1, MSG_OOB);	/* indicate new rlogin */
+    sendoob(f, oobdata);
 #endif
     for (;;) {
 	fd_set ibits, obits, ebits;
@@ -926,7 +1027,6 @@ void protocol(f, p)
 		FD_SET(f, &obits);
 	    else
 		FD_SET(p, &ibits);
-	FD_SET(p, &ebits);
 	
 	if (select(8*sizeof(ibits), &ibits, &obits, &ebits, 0) < 0) {
 	    if (errno == EINTR)
@@ -934,43 +1034,32 @@ void protocol(f, p)
 	    fatalperror(f, "select");
 	}
 #define	pkcontrol(c)	((c)&(TIOCPKT_FLUSHWRITE|TIOCPKT_NOSTOP|TIOCPKT_DOSTOP))
-	if (FD_ISSET(p, &ebits)) {
-	    cc = read(p, &cntl, 1);
-	    if (cc == 1 && pkcontrol(cntl)) {
-		cntl |= oobdata[0];
-		send(f, &cntl, 1, MSG_OOB);
-		if (cntl & TIOCPKT_FLUSHWRITE) {
-		    pcc = 0;
-		    FD_CLR(p, &ibits);
-		}
-	    }
-	}
 	if (FD_ISSET(f, &ibits)) {
 	    fcc = rcmd_stream_read(f, fibuf, sizeof (fibuf));
-	    if (fcc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN)))
-	      fcc = 0;
-	    else {
+	    if (fcc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN))) {
+		fcc = 0;
+	    } else {
 		register unsigned char *cp;
 		int left, n;
 		
 		if (fcc <= 0)
-		  break;
+		    break;
 		fbp = fibuf;
 		
-	      top:
-		for (cp = fibuf; cp < fibuf+fcc-1; cp++)
-		  if (cp[0] == magic[0] &&
-		      cp[1] == magic[1]) {
-		      left = fcc - (cp-fibuf);
-		      n = control(p, cp, left);
-		      if (n) {
-			  left -= n;
-			  if (left > 0)
-			    memmove(cp, cp+n, left);
-			  fcc -= n;
-			  goto top; /* n^2 */
-		      }
-		  }
+		for (cp = fibuf; cp < fibuf+fcc-1; cp++) {
+		    if (cp[0] == magic[0] &&
+			cp[1] == magic[1]) {
+			left = (fibuf+fcc) - cp;
+			n = control(p, cp, left);
+			if (n) {
+			    left -= n;
+			    fcc -= n;
+			    if (left > 0)
+				memmove(cp, cp+n, left);
+			    cp--;
+			}
+		    }
+		}
 	    }
 	}
 	
@@ -985,24 +1074,54 @@ void protocol(f, p)
 	if (FD_ISSET(p, &ibits)) {
 	    pcc = read(p, pibuf, sizeof (pibuf));
 	    pbp = pibuf;
-	    if (pcc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN)))
-	      pcc = 0;
-	    else if (pcc <= 0)
-	      break;
+	    if (pcc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN))) {
+		pcc = 0;
+	    } else if (pcc <= 0) {
+		break;
+	    }
 #ifdef TIOCPKT
 	    else if (tiocpkt_on) {
-	      if (pibuf[0] == 0)
-	        pbp++, pcc--;
-	      else {
-		  if (pkcontrol(pibuf[0])) {
-		      pibuf[0] |= oobdata[0];
-		      send(f, &pibuf[0], 1, MSG_OOB);
-		  }
-		  pcc = 0;
-	      }
+		if (pibuf[0] == 0) {
+		    pbp++, pcc--;
+		} else {
+		    if (pkcontrol(pibuf[0])) {
+			pibuf[0] |= oobdata[0];
+			sendoob(f, pibuf);
+		    }
+		    pcc = 0;
+		}
 	    }
 #endif
+
+	    /* quote any double-\377's if necessary */
+
+	    if (do_inband) {
+		unsigned char *qpbp;
+		int qpcc, i;
+
+		qpbp = qpibuf;
+		qpcc = 0;
+
+		for (i=0; i<pcc;) {
+		    if (pbp[i] == 0377u && (i+1)<pcc && pbp[i+1] == 0377u) {
+			qpbp[qpcc] = '\377';
+			qpbp[qpcc+1] = '\377';
+			qpbp[qpcc+2] = 'q';
+			qpbp[qpcc+3] = 'q';
+			i += 2;
+			qpcc += 4;
+		    } else {
+			qpbp[qpcc] = pbp[i];
+			i++;
+			qpcc++;
+		    }
+		}
+
+		pbp = qpbp;
+		pcc = qpcc;
+	    }
 	}
+
 	if (FD_ISSET(f, &obits) && pcc > 0) {
 	    cc = rcmd_stream_write(f, pbp, pcc);
 	    if (cc < 0 && ((errno == EWOULDBLOCK) || (errno == EAGAIN))) {
@@ -1203,10 +1322,10 @@ void usage()
 {
 #ifdef KERBEROS
     syslog(LOG_ERR, 
-	   "usage: klogind [-ke45pP] [-D port] [-w[ip|maxhostlen[,[no]striplocal]]] or [r/R][k/K][x/e][p/P]logind");
+	   "usage: klogind [-ke45pPf] [-D port] [-w[ip|maxhostlen[,[no]striplocal]]] or [r/R][k/K][x/e][p/P]logind");
 #else
     syslog(LOG_ERR, 
-	   "usage: rlogind [-rpP] [-D port] or [r/R][p/P]logind");
+	   "usage: rlogind [-rpPf] [-D port] or [r/R][p/P]logind");
 #endif
 }
 
@@ -1369,7 +1488,7 @@ recvauth(valid_checksum)
 				      ticket->enc_part2->session->length);
     error_cleanup:
 	if (chksumbuf)
-	    krb5_xfree(chksumbuf);
+	    free(chksumbuf);
 	if (status) {
 	  krb5_free_authenticator(bsd_context, authenticator);
 	  return status;
@@ -1409,6 +1528,21 @@ recvauth(valid_checksum)
 	return status;
 
     rcmd_stream_init_krb5(ticket->enc_part2->session, do_encrypt, 1);
+
+    {
+       krb5_boolean similar;
+
+       if (status = krb5_c_enctype_compare(bsd_context, ENCTYPE_DES_CBC_CRC,
+					   ticket->enc_part2->session->enctype,
+					   &similar))
+	  return(status);
+
+       if (!similar) {
+	  do_inband = 1;
+	  syslog(LOG_DEBUG, "setting do_inband");
+       }
+    }
+
 
     getstr(netf, rusername, sizeof(rusername), "remuser");
 
