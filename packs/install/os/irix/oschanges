@@ -24,9 +24,14 @@ localize()
 # both by the installation software and the update software.
 
 # SGI's getty runs scheme instead of /usr/bin/login, if it exists.
-# We don't want this, so we move it out of the way.
-if [ -f ${AIS_ROOT}/usr/lib/iaf/scheme ]; then
-    mv ${AIS_ROOT}/usr/lib/iaf/scheme ${AIS_ROOT}/usr/lib/iaf/scheme.old
+# We don't want this, so we move it out of the way if we have just
+# installed the SGI version.  (The showfiles command used here will
+# only output something if the scheme file matches what is in the
+# inst database).
+scheme=/usr/lib/iaf/scheme
+if [ -f ${AIS_ROOT}$scheme \
+     -a -n "`showfiles -r ${AIS_ROOT} -u -- $scheme`" ]; then
+    mv ${AIS_ROOT}$scheme ${AIS_ROOT}$scheme.old
 fi
 
 # Midi startup doesn't have an /etc/config option. Sigh.
