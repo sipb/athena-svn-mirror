@@ -17,11 +17,6 @@ CCDEF= -Wf,-XNh1200 -DYYDEBUG -DLEXDEBUG
 #if defined(_AUX_SOURCE)
 #define CcCmd gcc -traditional
 #endif
-#if defined(SOLARIS)
-CC = /mit/sunsoft/sun4bin/cc 
-CCDEF= 
-LDLIBS=  -lsocket -lnsl  -lelf -lw -ldl
-#endif
 
 DEFINES= $(CCDEF)
 
