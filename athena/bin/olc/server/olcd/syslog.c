@@ -7,13 +7,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.12 1990-12-17 08:35:01 lwvanels Exp $
+ *	$Id: syslog.c,v 1.13 1991-01-06 02:40:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.12 1990-12-17 08:35:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.13 1991-01-06 02:40:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,7 +34,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>
 #include <com_err.h>
 
-#include "olcd.h"
+#include <olcd.h>
 
 #ifdef __STDC__
 # define        P(s) s

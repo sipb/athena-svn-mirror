@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.8 1990-12-12 17:00:43 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.9 1991-01-06 02:40:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.8 1990-12-12 17:00:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.9 1991-01-06 02:40:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -25,7 +25,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <olcd.h>
 
-#include "lumberjack.h"		/* contains the name of the dir we want */
+#include <lumberjack.h>		/* contains the name of the dir we want */
 
 main (argc, argv)
      int argc;

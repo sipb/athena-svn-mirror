@@ -19,20 +19,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.18 1991-01-03 15:53:03 lwvanels Exp $
+ *	$Id: data.c,v 1.19 1991-01-06 02:41:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.18 1991-01-03 15:53:03 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.19 1991-01-06 02:41:02 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olcd.h>
 
-#include "lumberjack.h"
+#include <lumberjack.h>
 
 /* declaraction of procedure table */
 
