@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_access_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.9 1988-06-23 16:57:23 jtkohl Exp $";
+static char rcsid_access_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.10 1988-07-19 10:35:56 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -29,6 +29,8 @@ static char rcsid_access_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
  *	ZAccess_t accesstype;
  *
  * void access_init();
+ *
+ * void access_reinit();
  */
 
 /*
@@ -82,7 +84,7 @@ ZAccess_t accesstype;
 	return(acl_check(buf, notice->z_sender));
 }
 
-int
+void
 access_init()
 {
 	char buf[MAXPATHLEN];
@@ -91,6 +93,7 @@ access_init()
 	ZAcl_t *acl;
 	register int len;
 	register char *colon_idx;
+	Code_t retval;
 
 	(void) sprintf(buf, "%s%s", ZEPHYR_ACL_DIR, ZEPHYR_CLASS_REGISTRY);
 	
@@ -109,11 +112,23 @@ access_init()
 			abort();
 		}
 		acl->acl_filename = strsave(class);
-		(void) class_setup_restricted(class, acl);
-		zdbug((LOG_DEBUG, "restricted %s by %s",
-		       class, acl->acl_filename));
+		retval = class_setup_restricted(class, acl);
+		if (retval) {
+		    syslog(LOG_ERR, "can't restrict %s: %s",
+			   class, error_message(retval));
+		    continue;
+		} else if (zdebug)
+		    syslog(LOG_DEBUG, "restricted %s",
+			   class, acl->acl_filename);
 	}
 	(void) fclose(registry);
 
 	return;
 }
+
+void
+access_reinit()
+{
+    /* re-initialize the restricted classes */
+}
+
