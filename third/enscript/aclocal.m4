@@ -294,7 +294,8 @@ AC_DEFUN(AM_WITH_NLS,
 	    [AC_TRY_LINK([#include <libintl.h>], [return (int) gettext ("")],
 	       gt_cv_func_gettext_libc=yes, gt_cv_func_gettext_libc=no)])
 
-	   if test "$gt_cv_func_gettext_libc" != "yes"; then
+	   if :; then
+	     AC_CHECK_LIB(intl, bindtextdomain)
 	     AC_CHECK_LIB(intl, bindtextdomain,
 	       [AC_CACHE_CHECK([for gettext in libintl],
 		 gt_cv_func_gettext_libintl,
