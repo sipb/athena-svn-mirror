@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.1 1996-09-25 17:51:36 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-10-04 05:38:25 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
+LIBX11=/usr/openwin/lib/X11
 
 all: cc f77
 
@@ -19,9 +20,14 @@ check:
 
 install:
 	mkdir -p ${DESTDIR}${ATHBINDIR}
+	mkdir -p ${DESTDIR}${LIBX11}
 	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
+	rm -f ${DESTDIR}${ATHBINDIR}/mwm
+	ln -s /opt/SUNWmfwm/bin/mwm ${DESTDIR}${ATHBINDIR}/mwm
+	rm -f ${DESTDIR}${LIBX11}/system.mwmrc
+	ln -s /opt/SUNWmfwm/lib/system.mwmrc ${DESTDIR}${LIBX11}/system.mwmrc
 
 clean:
 	rm -f cc f77
