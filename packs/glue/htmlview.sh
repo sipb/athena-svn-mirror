@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.3 2001-03-26 20:02:40 ghudson Exp $
+# $Id: htmlview.sh,v 1.4 2002-08-23 03:04:16 rbasch Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -71,37 +71,9 @@ case "$DISPLAY" in
     ;;
 esac
 
-# Method of checking if a process exists
-if kill -0 $$ > /dev/null 2>&1; then
-    # Modern OS; easy
-    process_exists="kill -0"
-else
-    # Old OS, e.g. Ultrix 4.2.  For this script, kill -CONT is ok.
-    process_exists="kill -CONT"
-fi
-
-# Check for existing netscape
-netscape_pid=`ls -l $HOME/.netscape/lock 2>/dev/null | /usr/bin/awk -F: '{ print $NF }'`
-case "$netscape_pid" in
-  "") ;;
-  *)
-    if $process_exists $netscape_pid > /dev/null 2>&1; then
-        # Try to have it open the given URL; exit if successful
-        /usr/athena/bin/netscape -remote "OpenUrl($url)" && exit 0
-        echo "$0: Could not use netscape already running..." >&2
-    else
-        echo "$0: Could not find netscape process" >&2
-	echo "with id $netscape_pid on this workstation." >&2
-	echo "Perhaps you are running netscape on another workstation." >&2
-    fi
-  ;;
-esac
-
-# We are running under X, and could not use an browser already running.
-
-# Try to run netscape; exit if successful
-/usr/athena/bin/netscape "$url" && exit 0
-echo "$0: Could not run Netscape.  Will try Lynx." >&2
+# Try to display the URL with the user's preferred viewer.
+/usr/athena/bin/gurlview "$url" && exit 0
+echo "$0: Could not run gurlview.  Will try Lynx." >&2
 
 # Start Lynx
 /bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url"
