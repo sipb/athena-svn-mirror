@@ -105,6 +105,24 @@ clean::									@@\
 #define AfsDir /usr/transarc
 #endif
 
+#if defined(mips) && defined(sgi)
+#define NOLINT
+#define LintFlags  -DSYSV -DPOSIX -DPOSIX_FLOCK
+#define ProfCcFlags -p1
+#define CDebugFlags -O2
+#define CcFlags LintFlags -I/usr/include
+#define LdPath  -L/usr/X11/lib -L$(ATHLIBDIR)
+#define LdLibs  
+#define CcCmd cc
+#define LdCmd cc
+#define AnsiCcCmd cc
+#define AnsiLdCmd cc
+#define RanLibCmd \:
+#define AfsDir /usr/transarc
+#define AthXIncDir /usr/include
+#define AthXLibDir /usr/lib
+#endif
+
 
 /*
  * AFS configuration
@@ -116,3 +134,5 @@ clean::									@@\
 #define AfsDir /usr/transarc
 #endif
 #endif
+
+#define Krb5Dir /build/third/supported/kerberos5/src
