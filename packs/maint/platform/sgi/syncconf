@@ -25,15 +25,15 @@ configopt()
 syncvar()
 {
     case "$2" {
-	true|on)
-	    configbool "$1" on
-	    ;;
-	false|off)
-	    configbool "$1" off
-	    ;;
-	*)
-	    configopt "$1" "$2"
-	    ;;
+  true|on)
+      configbool "$1" on
+      ;;
+  false|off)
+      configbool "$1" off
+      ;;
+  *)
+      configopt "$1" "$2"
+      ;;
     }
 }
 
@@ -73,122 +73,125 @@ append()
   fi
 }
 
+usage()
+{
+  echo "Usage: syncconf\c"
+  for k in $ALL; do
+    echo " [$k]\c"
+  done
+  echo ""
+}
+
+ALL="TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
+
 . /etc/athena/rc.conf
 
-#
-# timesrv; gettime and AFS time synchronization
-#
-syncvar timed $TIMESRV
+j="$*"
 
-#
-# AFS
-#
-if [ "${AFSCLIENT}" != "false" ]; then
-
-	syncvar afsml true
-	syncvar afsclient true
-
-	if [ "${AFSCLIENT}" = "true" ]; then
-		AFSCLIENT=4
-	fi
-
-	if [ "${TIMECLIENT}" = "false" ]; then
-		AFSTIME = "-nosettime"
-	fi
-
-	syncvar afsd.options "$AFSTIME -stat 2000 -dcache 800 -daemons $AFSCLIENT -volumes 70"
-
-else
-	syncvar afsml false
-	syncvar afsclient false
+if test "$j" = ""; then
+  j=$ALL
 fi
 
-#
-# NFS
-#
-if [ "${NFSSRV}" != "false" -o "${NFSCLIENT}" != "false" ]; then
+for i in $j; do
+  case "$i" in
+  TIMESRV)
+    # gettime and AFS time synchronization
+    syncvar timed $TIMESRV
+    ;;
 
-	syncvar nfs true
+  AFSCLIENT)
+    if [ "${AFSCLIENT}" != "false" ]; then
 
-	case "${NFSCLIENT}" {
-	    true|false)
-		remove $CONFIG/biod.options
-		;;
-	    *)
-		syncvar biod.options "${NFSCLIENT}"
-		;;
-	}
+      syncvar afsml true
+      syncvar afsclient true
 
-	case "${NFSSRV}" {
-	    true)
-		remove $CONFIG/nfsd.options
-		;;
-	    false)
-		syncvar nfsd.options 0
-		;;
-	    *)
-		syncvar nfsd.options "${NFSSRV}"
-		;;
-	}
-fi
+      if [ "${AFSCLIENT}" = "true" ]; then
+        AFSCLIENT=4
+      fi
 
-#
-# sendmail
-#
-if [ "${SENDMAIL}" = "false" ]; then
-	move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
-else
-	move /etc/rc2.d/s50mail /etc/rc2.d/S50mail
-fi
+      if [ "${TIMECLIENT}" = "false" ]; then
+        AFSTIME = "-nosettime"
+      fi
 
-#
-# snmpd
-#
-syncvar snmpd $SNMP
+      syncvar afsd.options "$AFSTIME -stat 2000 -dcache 800 -daemons $AFSCLIENT -volumes 70"
+    else
+      syncvar afsml false
+      syncvar afsclient false
+    fi
+    ;;
 
-#
-# savecore
-#
-if [ "${SAVECORE}" != "false" ]; then
-  if [ "${SAVECORE}" = "true" ]; then
-    minfree=30000000
-  else
-    minfree = ${SAVECORE}
-  fi
-else
-    minfree=2000000000
-fi
-put /var/adm/crash/minfree $minfree
+  NFSSRV|NFSCLIENT)
+    if [ "${NFSSRV}" != "false" -o "${NFSCLIENT}" != "false" ]; then
+      syncvar nfs true
 
-#
-# accounting
-#
-syncvar acct ${ACCOUNT}
+      case "${NFSCLIENT}" {
+        true|false)  remove $CONFIG/biod.options ;;
+                 *)  syncvar biod.options "${NFSCLIENT}" ;;
+      }
 
-#
-# quotas
-#
-syncvar quotacheck ${QUOTAS}
-syncvar quotas ${QUOTAS}
+      case "${NFSSRV}" {
+              true)  remove $CONFIG/nfsd.options ;;
+             false)  syncvar nfsd.options 0 ;;
+                 *)  syncvar nfsd.options "${NFSSRV}" ;;
+      }
+    else
+      syncvar nfs false
+    fi
+    ;;
 
-#
-# hostname and ip address
-#
-move /etc/sys_id /etc/sys_id.saved
-move /etc/hosts /etc/hosts.saved
-move $CONFIG/staticroute.options $CONFIG/staticroute.options.saved
-move $CONFIG/ifconfig-1.options $CONFIG/ifconfig-1.options.saved
+  SENDMAIL)
+    if [ "${SENDMAIL}" = "false" ]; then
+      move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
+    else
+      move /etc/rc2.d/s50mail /etc/rc2.d/S50mail
+    fi
+    ;;
 
-NET=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
-GATEWAY=$NET.0.1
-BROADCAST=$NET.255.255
+  SNMP)
+    syncvar snmpd $SNMP
+    ;;
 
-put /etc/sys_id $HOST
-put $CONFIG/staticroute.options $GATEWAY
-put    $CONFIG/ifconfig-1.options "netmask 0xffff0000"
-append $CONFIG/ifconfig-1.options "broadcast $BROADCAST"
-put    /etc/hosts "#"
-append /etc/hosts "# Internet host table"
-append /etc/hosts "#"
-append /etc/hosts "127.0.0.1	localhost"
-append /etc/hosts "$ADDR	$HOST.MIT.EDU $HOST"
+  SAVECORE)
+    case "${SAVECORE}" {
+       true)  minfree=30000000 ;;
+      false)  minfree=2000000000 ;;
+          *)  minfree=${SAVECORE} ;;
+    }
+    put /var/adm/crash/minfree $minfree
+    ;;
+
+  ACCOUNT)
+    syncvar acct ${ACCOUNT}
+    ;;
+
+  QUOTAS)
+    syncvar quotacheck ${QUOTAS}
+    syncvar quotas ${QUOTAS}
+    ;;
+
+  HOST|ADDR)
+    move /etc/sys_id /etc/sys_id.saved
+    move /etc/hosts /etc/hosts.saved
+    move $CONFIG/staticroute.options $CONFIG/staticroute.options.saved
+    move $CONFIG/ifconfig-1.options $CONFIG/ifconfig-1.options.saved
+
+    NET=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
+    GATEWAY=$NET.0.1
+    BROADCAST=$NET.255.255
+
+    put /etc/sys_id $HOST
+    put $CONFIG/staticroute.options $GATEWAY
+    put    $CONFIG/ifconfig-1.options "netmask 0xffff0000"
+    append $CONFIG/ifconfig-1.options "broadcast $BROADCAST"
+    put    /etc/hosts "#"
+    append /etc/hosts "# Internet host table"
+    append /etc/hosts "#"
+    append /etc/hosts "127.0.0.1  localhost"
+    append /etc/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+    ;;
+
+  *)
+    usage
+    exit
+  esac
+done
