@@ -1,8 +1,0 @@
-$ $Id: set27,v 1.1.1.1 1998-10-03 21:10:25 danw Exp $
-$ tw.comp.c
-$set 27 
-1 command
-2 separator
-3 pattern
-4 range
-5 completion
