@@ -1,0 +1,23 @@
+# gnome-mag Hungarian translation.
+# Copyright (C) 2003. THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Andras Timar <timar@gnome.hu>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mag\n"
+"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"PO-Revision-Date: 2003-07-06 23:13+0200\n"
+"Last-Translator: Andras Timar <timar@gnome.hu>\n"
+"Language-Team: Hungarian <hu@gnome.hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:1
+msgid "Magnifier"
+msgstr "Nagyító"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:2
+msgid "Simple Screen Magnification Service"
+msgstr "Egyszerű képernyőnagyító szolgáltatás"

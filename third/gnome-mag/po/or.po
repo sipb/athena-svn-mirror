@@ -1,0 +1,25 @@
+# Oriya translation of gnome-mag.HEAD.pot.
+# Copyright (C) 2004, Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-mag package.
+# Gora Mohanty <gora_mohanty@yahoo.co.in>, 2004.
+# $Id: or.po,v 1.1.1.1 2004-10-06 19:30:54 ghudson Exp $
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mag.HEAD.or\n"
+"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"PO-Revision-Date: 2004-08-11 22:48+0530\n"
+"Last-Translator: Gora Mohanty <gora_mohanty@yahoo.co.in>\n"
+"Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:1
+msgid "Magnifier"
+msgstr "ବୃଦ୍ଧକ"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:2
+msgid "Simple Screen Magnification Service"
+msgstr "ସରଳ ପରଦା ବୃଦ୍ଧି କରିବା ସେବା"
