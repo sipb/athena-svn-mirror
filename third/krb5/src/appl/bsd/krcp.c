@@ -65,22 +65,12 @@ char copyright[] =
 #else
 #include <varargs.h>
 #endif
-     
-#ifdef HAVE_SETRESUID
-#ifndef HAVE_SETREUID
-#define HAVE_SETREUID
-#define setreuid(r,e) setresuid(r,e,-1)
-#endif
-#endif
 
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
-#ifdef KRB5_KRB4_COMPAT
-#include <kerberosIV/krb.h>
-#include <kerberosIV/krb4-proto.h>
-#endif
-     
+#include <krb5.h>
+#include <k5-util.h>
+#include <com_err.h>
+
 #define RCP_BUFSIZ 4096
      
 int sock;
@@ -92,6 +82,7 @@ krb5_encrypt_block eblock;         /* eblock for encrypt/decrypt */
 krb5_context bsd_context;
 
 #ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
 Key_schedule v4_schedule;
 CREDENTIALS v4_cred;
 KTEXT_ST v4_ticket;
@@ -428,7 +419,8 @@ krb5_creds *cred;
 				  &local,
 				  &foreign,
 				  authopts,
-				  0); /* Not any port # */
+				  0, /* Not any port # */
+				  0);
 		    if (status) {
 #ifdef KRB5_KRB4_COMPAT
 			fprintf(stderr, "Trying krb4 rcp...\n");
@@ -530,7 +522,8 @@ krb5_creds *cred;
 			      (struct sockaddr_in *) 0,
 			      &foreign,
 			      authopts,
-			      0); /* Not any port # */
+			      0, /* Not any port # */
+			      0);
 		if (status) {
 #ifdef KRB5_KRB4_COMPAT
 			fprintf(stderr, "Trying krb4 rcp...\n");
@@ -555,26 +548,18 @@ krb5_creds *cred;
 		rem = sock; 
 				   
 		euid = geteuid();
-#ifdef HAVE_SETREUID
-		if (euid == 0)
-		    (void) setreuid(0, userid);
-		sink(1, argv+argc-1);
-		if (euid == 0)
-		    (void) setreuid(userid, 0);
-#else
 		if (euid == 0) {
 		    (void) setuid(0);
-		    if(seteuid(userid)) {
+		    if(krb5_seteuid(userid)) {
 			perror("rcp seteuid user"); errs++; exit(errs);
 		    }
 		}
 		sink(1, argv+argc-1);
 		if (euid == 0) {
-		    if(seteuid(0)) {
+		    if(krb5_seteuid(0)) {
 			perror("rcp seteuid 0"); errs++; exit(errs);
 		    }
 		}
-#endif
 #else
 		rem = rcmd(&host, port, pwd->pw_name, suser,
 			   buf, 0);
@@ -898,7 +883,7 @@ krb5_sigtype
 }
 
 
-#if !defined(HAS_UTIMES)
+#if !defined(HAVE_UTIMES)
 #include <utime.h>
 #include <sys/time.h>
 
@@ -1207,7 +1192,8 @@ int hosteq(h1, h2)
     
     if ((h_ptr = gethostbyname(h1)) == NULL)
       return(0);
-    strcpy(hname1, h_ptr->h_name);
+    strncpy(hname1, h_ptr->h_name, sizeof (hname1));
+    hname1[sizeof (hname1) - 1] = '\0';
     if ((h_ptr = gethostbyname(h2)) == NULL)
       return(0);
     
@@ -1312,7 +1298,8 @@ void
 				  &creds.server)) )
 	exit(1);
 
-    krb5_xfree(pname_data.data);
+    krb5_free_data_contents(bsd_context, &pname_data);
+
     if ((status = krb5_get_credentials(bsd_context, KRB5_GC_USER_USER, cc, 
 				       &creds, &new_creds)))
 	exit(1);
@@ -1324,7 +1311,7 @@ void
     
     if ((status = krb5_write_message(bsd_context, (krb5_pointer) &rem,
 				     &msg))) {
-    	krb5_xfree(msg.data);
+    	krb5_free_data_contents(bsd_context, &msg);
 	exit(1);
     }
     
@@ -1333,12 +1320,16 @@ void
     /* cleanup */
     krb5_free_cred_contents(bsd_context, &creds);
     krb5_free_creds(bsd_context, new_creds);
-    krb5_xfree(msg.data);
+    krb5_free_data_contents(bsd_context, &msg);
 
     return;
 }
 
 
+
+char storage[2*RCP_BUFSIZ];		/* storage for the decryption */
+int nstored = 0;
+char *store_ptr = storage;
 
 #ifdef KRB5_KRB4_COMPAT
 void
