@@ -162,6 +162,22 @@ xXx_50b_= &LogEnts_[0];
 for(xXx_ff3_=(numtrans_-0+1); xXx_ff3_; xXx_ff3_--){
 bound += strlen((ndr_$char *) (*xXx_50b_).name);
 bound += strlen((ndr_$char *) (*xXx_50b_).service);
+switch ((*xXx_50b_).func_union.func) {
+case LO_ADD_V1:
+case LO_SET_V1:
+case LO_SUBTRACT_V1:
+case LO_DELETEUSER_V1:
+case LO_ALLOW_V1:
+case LO_DISALLOW_V1:
+case LO_ADJUST_V1:
+bound += 5;
+bound += strlen((ndr_$char *) (*xXx_50b_).func_union.tagged_union.offset.wname);
+break;
+case LO_CHARGE_V1:
+bound += 13;
+bound += strlen((ndr_$char *) (*xXx_50b_).func_union.tagged_union.charge.where);
+break;
+} /* switch */
 xXx_50b_++;
 }
 bound += 29 * ((numtrans_-0+1));
