@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.6 2002-05-06 14:46:18 ghudson Exp $
+# $Id: bash_login,v 1.7 2002-07-17 16:46:31 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -68,7 +68,7 @@ fi
 
 # Set device type if interactive session (e.g., dialup)
 
-case $term in
+case $TERM in
 switch|network|dialup|unknown)
 	# The standard terminal emulation is vt100.  To use a different
 	# emulation, set the environmental variable DEF_TERM in your
@@ -84,7 +84,7 @@ esac
 # been set, ask the user what the DISPLAY should be (e.g., rlogin)
 
 if [ "${DISPLAY+set}" != set ]; then
-	case $term in
+	case $TERM in
 	xterm*)
 		echo -n "What DISPLAY are you using [default: none]? "
 		read response
