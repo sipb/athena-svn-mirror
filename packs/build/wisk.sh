@@ -1,6 +1,8 @@
-#!/bin/athena/tcsh -x
+#!/bin/athena/tcsh
 
-# $Revision: 1.33 $
+# tcsh -x is the useful option.
+
+# $Revision: 1.34 $
 
 umask 2
 
@@ -18,6 +20,8 @@ else if ($machine == "rsaix" ) then
 #	setenv  GCC_EXEC_PREFIX /mit/cygnus-930630/rsaix/lib/gcc-lib/
 	set AFS = "rs_aix32"
 #	attach -n compiler-80
+else if ($machine == "sgi") then
+	set AFS="sgi_52"
 endif
 if ($machine == "sun4") then
 setenv LD_LIBRARY_PATH /usr/openwin/lib
@@ -59,7 +63,7 @@ endsw
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/moira.dev athena/lib/neos"
 
-set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
+set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd athena/etc/desync"
 
 set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
 
@@ -177,6 +181,9 @@ if ($done == 0 && $2 != "") then
     set done=1
   endif
 endif
+
+echo "**********************" >>& $outfile
+echo "***** In $package" >>& $outfile
 
 switch ($package)
 	case setup
@@ -496,13 +503,21 @@ endif # installonly
 	case third/supported/tcsh6
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
-	( cd /build/$package ; /usr/athena/bin/xmkmf >>& $outfile )
-	( cd /build/$package ; make clean  >>& $outfile )
-	( cd /build/$package ; make config.h >>& $outfile)
-	( cd /build/$package ; make >>& $outfile)
+	(( cd /build/$package ; /usr/athena/bin/xmkmf >>& $outfile ) && \
+	( cd /build/$package ; make clean  >>& $outfile ) && \
+	( cd /build/$package ; make config.h >>& $outfile) && \
+	( cd /build/$package ; make >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
 endif # installonly
 	if ($machine != "decmips" ) then
 		 ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
 	endif
 	breaksw
 
@@ -590,7 +605,14 @@ if ( $installonly == "0" ) then
 	(cd /build/$package ; imake -DTOPDIR=. -I./config/ >>& $outfile)
 	(cd /build/$package ; make -k World >>& $outfile)
 endif # installonly
-	(cd /build/$package ; make -k install DESTDIR=$SRVD >>& $outfile)
+	((cd /build/$package ; make -k install DESTDIR=$SRVD >>& $outfile) && \
+	(cp -p /build/motif/`machtype`bin/mwm $SRVD/usr/athena/bin >>& $outfile) && \
+	(cp -p /build/motif/`machtype`lib/X11/system.mwmrc $SRVD/usr/athena/lib/X11 >>& $outfile ) && \
+	(cp -p /build/motif/`machtype`lib/X11/app-defaults/Mwm $SRVD/usr/athena/lib/X11/app-defaults >>& $outfile ))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
 	breaksw
 
 	case third/supported/afs
@@ -598,8 +620,8 @@ endif # installonly
 if ( $installonly == "0" ) then
 	(cd /build/$package ; xmkmf . >>& $outfile)
 	(cd /build/$package ; make >>& $outfile)
-	cp -rp /build/$package/$AFS/dest/lib /usr/transarc
-	cp -rp /build/$package/$AFS/dest/include /usr/transarc
+	cp -rp /build/$package/$AFS/dest/lib /build/transarc
+	cp -rp /build/$package/$AFS/dest/include /build/transarc
 endif # installonly
 	(cd /build/$package; make install DESTDIR=$SRVD >>& $outfile)
 	breaksw	
