@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	echo "/etc/named.boot"			>> "$DEADFILES"
+	;;
+esac
