@@ -3,8 +3,6 @@
    
    MIPS Foreign Function Interface 
 
-   $Id: n32.S,v 1.1.1.1 2002-01-31 15:40:01 ghudson Exp $
-
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
    ``Software''), to deal in the Software without restriction, including

@@ -23,8 +23,3 @@ protected:
 public:
         A::g;
 };
-
-
-
-
-

@@ -1,4 +1,4 @@
-/* Copyright (C) 1999  Free Software Foundation
+/* Copyright (C) 1999, 2001  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.StringTokenizer;
 import java.net.URL;
 
-final class VMClassLoader extends java.net.URLClassLoader
+public final class VMClassLoader extends java.net.URLClassLoader
 {
   private VMClassLoader ()
   {	
@@ -55,6 +55,16 @@ final class VMClassLoader extends java.net.URLClassLoader
 	  {
 	    /* Ignore this path element */
 	  }
+      }
+    // Add core:/ to the end of the java.class.path so any resources
+    // compiled into this executable may be found.
+    try
+      {
+	p.addElement (new URL("core", "", -1, "/"));
+      }
+    catch (java.net.MalformedURLException x)
+      {
+	// This should never happen.
       }
 
     URL[] urls = new URL[p.size()];

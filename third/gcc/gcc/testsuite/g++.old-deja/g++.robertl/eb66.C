@@ -17,6 +17,10 @@ int main ()
     {
     }
 
-//  cout << "i = " << i << endl;
+//  std::cout << "i = " << i << std::endl;
   assert (i == 0) ; 
 }
+
+
+
+

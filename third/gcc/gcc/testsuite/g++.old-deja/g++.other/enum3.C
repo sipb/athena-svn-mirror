@@ -1,13 +1,14 @@
-// Origin: Mark Mitchell <mark@codesourcery.com>
-// Special g++ Options: -fshort-enums
+// Build don't link:
 
-enum E { 
-  a = -312
-};
+// Copyright (C) 2001 Free Software Foundation, Inc.
+// Contributed by Nathan Sidwell 28 Feb 2001 <nathan@codesourcery.com>
 
-E e = a;
+// Bug 338 and DR 128. Allow static cast to convert between enums.
 
-int main () {
-  if ((int) e != -312)
-    return 1;
+enum E1 {e1};
+enum E2 {e2};
+
+E2 Foo (E1 e)
+{
+  return static_cast <E2> (e);
 }

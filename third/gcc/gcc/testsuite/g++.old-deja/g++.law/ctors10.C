@@ -22,7 +22,3 @@ public:
 private:
         char x;
 };
-
-
-
-
