@@ -6,11 +6,15 @@
  *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1991 by the Massachusetts Institute of Technology
+ * Copyright (c) 1991 by the Massachusetts Institute of Technology
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/buttons.h,v $
+	$Id: buttons.h,v 1.3 1991-03-24 14:28:29 lwvanels Exp $
  *      $Author: lwvanels $
  */
+
+#include <mit-copyright.h>
 
 #define	NEWQ_BTN	1
 #define	CONTQ_BTN	2

@@ -18,18 +18,21 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v $
+ *      $Id: x_resolve.c,v 1.3 1991-03-24 14:30:00 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.2 1991-03-06 15:39:35 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.3 1991-03-24 14:30:00 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include "xolc.h"
 #include "data.h"
 
-ERRCODE
+void
 x_done(Request)
      REQUEST *Request;
 {
@@ -51,29 +54,29 @@ x_done(Request)
     case SEND_INFO:
       if (! MuGetString("Please enter a title for this conversation:\n",
 			title, TITLE_SIZE, NULL))
-	return(NO_ACTION);
+	return;
       break;
 
     case OK:
       if (! MuGetBoolean(DONE_MESSAGE, "Yes", "No", NULL, FALSE))
-	return(NO_ACTION);
+	return;
       break;
 
     case PERMISSION_DENIED:
       sprintf(error, "You are not allowed to resolve %s's question.",
 	      Request->target.username);
       MuError(error);
-      return(ERROR);
+      return;
 
     case NO_QUESTION:
     case NOT_CONNECTED:
       MuError("You do not have a question to resolve.");
-      return(ERROR);
+      return;
       
     default:
       status = handle_response(status, Request);
       if(status != SUCCESS)
-	return(status);
+	return;
       break;
     }
 
@@ -83,7 +86,6 @@ x_done(Request)
     {
     case SIGNED_OFF:
       MuHelp("Question resolved.");
-/*      t_set_default_instance(Request); */
       status = SUCCESS;
       break;
 
@@ -99,30 +101,17 @@ x_done(Request)
 	 exit(0);
        }
       
-/*    t_set_default_instance(Request); */
       break;
 
     case SUCCESS:
-      if(isme(Request))
-        MuHelp("Your question is resolved. Thank you for using OLC.");
-      else
-        {
-          sprintf(error,
-		  "%s's (%d) question is resolved. Thank him for using OLC.\nThat Tom and his sexist messages!",
-		  Request->target.username, Request->target.instance);
-	  MuHelp(error);
-        }
-      if(OLC)
-        exit(0);
-
-/*    t_set_default_instance(Request); */
+      exit(0);
       break;
 
     case PERMISSION_DENIED:
       sprintf(error, "You are not allowed to resolve %s's question.",
               Request->target.username);
       MuError(error);
-      return(ERROR);
+      return;
 
     case ERROR:
       sprintf(error, "An error has occurred.  The question\nhas not been marked resolved.");
@@ -140,15 +129,12 @@ x_done(Request)
       sprintf(error, "%s (%d) has been deactivated.  You are %s (%d).",
 	      Request->requester.username, instance,
 	      Request->requester.username, Request->requester.instance);
-      MuError(error);
+      MuHelp(error);
     }
 
-  return(status);
+  return;
 }
   
-
-
-
 
 ERRCODE
 x_cancel(Request)
@@ -172,23 +158,21 @@ x_cancel(Request)
 	status = OCancel(Request,"Cancelled Question");
     }
   else
-      if (! MuGetBoolean("Are you sure you want to cancel this question?",
-			 "Yes", "No", NULL, FALSE))
-	return(NO_ACTION);
-      else
-	status = OCancel(Request,"Cancelled Question");
+    if (! MuGetBoolean("Are you sure you want to cancel this question?",
+		       "Yes", "No", NULL, FALSE))
+      return(NO_ACTION);
+    else
+      status = OCancel(Request,"Cancelled Question");
 
   switch(status)
     {
     case SUCCESS:
       if (OLC)
 	{
-	  MuHelp("Your question has been cancelled.\n\nThank you for using OLC!");
 	  exit(0);
 	}
 	  
       MuHelp("Question cancelled.");
-/*    t_set_default_instance(Request); */
       
       status = SUCCESS;
       break;
@@ -198,13 +182,11 @@ x_cancel(Request)
       if(OLC)
          exit(0);
 
-/*    t_set_default_instance(Request); */
       break;
 
     case SIGNED_OFF:
       MuHelp("Question cancelled.");
 
-/*    t_set_default_instance(Request);  */
       status = SUCCESS;
       break;
 
