@@ -11,20 +11,21 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v $
- *      $Author: cfields $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.13 1996-08-10 21:28:40 cfields Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.14 1997-04-30 17:31:44 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include <Mrm/MrmAppl.h>
 #include <Mu.h>
-#include "cref.h"
+#include <browser/cref.h>
 #include <Xm/Text.h>
 #include <Xm/SelectioB.h>
+#include <Xm/MessageB.h>
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>
@@ -35,7 +36,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <sys/stat.h>
 
 extern int errno;
-extern char* program;			/* name of program */
+extern char *program;			/* name of program */
 extern Widget toplevel;
 
 #define  ERROR		-1
@@ -110,7 +111,8 @@ ParseContents(dir)
 
   sprintf(contents_name, "%s/%s", dir, CONTENTS);
 
-  if ((fd = open(dir, O_RDONLY, 0)) < 0)	 /* does directory exist? */
+  fd = open(dir, O_RDONLY, 0);	 /* does directory exist? */
+  if (fd < 0)
     if (errno == ENOENT) {
       sprintf(error, "Directory `%s' does not exist.", dir);
       MuError(error);
@@ -118,8 +120,10 @@ ParseContents(dir)
     }
   close(fd);
 
-  if ((infile = fopen(contents_name, "r")) == NULL) {
-    if ((fd = open(contents_name, O_RDONLY, 0)) < 0) {
+  infile = fopen(contents_name, "r");
+  if (infile == NULL) {
+    fd = open(contents_name, O_RDONLY, 0);
+    if (fd < 0) {
       if (errno == EACCES) {
 	MuError("You are not allowed to read this file.\nPlease select a different entry.");
 	close(fd);
@@ -147,7 +151,8 @@ ParseContents(dir)
       continue;
     if (*ptr == (char) NULL)
       continue;
-    if ( (delim_ptr = strchr(ptr, CONTENTS_DELIM)) == NULL) {
+    delim_ptr = strchr(ptr, CONTENTS_DELIM);
+    if (delim_ptr == NULL) {
       sprintf(error, "Broken index file: %s\nPlease select another entry.",
 	      dir);
       MuError(error);
@@ -155,11 +160,12 @@ ParseContents(dir)
     }
     *delim_ptr = '\0';
     title_ptr = delim_ptr + 1;
-    if ( !strcmp(inbuf, B_ENTRY) )
+    if ( !strcmp(inbuf, CREF_ENTRY) )
       new_entry_table[i].type = PLAINFILE;
     else
       new_entry_table[i].type = SUBDIR;
-    if ( (delim_ptr = strchr(title_ptr, CONTENTS_DELIM)) == NULL) {
+    delim_ptr = strchr(title_ptr, CONTENTS_DELIM);
+    if (delim_ptr == NULL) {
       sprintf(error, "Broken index file: %s.\nInvalid title field (field 2) in line %d", contents_name, i+1);
       MuError(error);
       return(ERROR);
@@ -167,7 +173,8 @@ ParseContents(dir)
     *delim_ptr = '\0';
     strcpy(new_entry_table[i].title, title_ptr);
     filename_ptr = delim_ptr + 1;
-    if ((delim_ptr = strchr(filename_ptr, CONTENTS_DELIM)) == NULL){
+    delim_ptr = strchr(filename_ptr, CONTENTS_DELIM);
+    if (delim_ptr == NULL){
       sprintf(error, "Broken index file: %s\nInvalid filename field (field 3) in line %d", contents_name, i+1);
       MuError(error);
       return(ERROR);
@@ -175,7 +182,8 @@ ParseContents(dir)
     *delim_ptr = '\0';
     strcpy(new_entry_table[i].filename, filename_ptr);
     format_ptr = delim_ptr + 1;
-    if ((delim_ptr = strchr(format_ptr, CONTENTS_DELIM)) == NULL) {
+    delim_ptr = strchr(format_ptr, CONTENTS_DELIM);
+    if (delim_ptr == NULL) {
       sprintf(error, "Broken index file: %s\nInvalid formatter field (field 4) in line %d.", contents_name, i+1);
       MuError(error);
       return(ERROR);
@@ -216,8 +224,8 @@ int show_file(text_widget, file)
     return(ERROR);
   }
 
-  if ((text = (char *) malloc((1 + buf.st_size) * sizeof(char)))
-      == (char *) NULL)
+  text = malloc(1 + buf.st_size);
+  if (text == NULL)
     {
       sprintf(error, "Not enough memory to read in file\n\"%s\".",
 	      file);
@@ -225,7 +233,8 @@ int show_file(text_widget, file)
       return(ERROR);
     }
 
-  if ((fd = open(file, O_RDONLY, 0)) < 0)
+  fd = open(file, O_RDONLY, 0);
+  if (fd < 0)
     {
       sprintf(error, "Unable to open text file\n\"%s\"\nfor reading.",
 	      file);
@@ -282,7 +291,8 @@ void saveCB (w, tag, callback_data)
   TextBox = XmSelectionBoxGetChild(w_dlg_save, XmDIALOG_TEXT);
   new_buf = XmTextGetString(TextBox);
 
-  if ((fd = open(new_buf, O_CREAT | O_WRONLY | O_TRUNC, 0644)) < 0)
+  fd = open(new_buf, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+  if (fd < 0)
     {
       sprintf(error, "Unable to open file\n\"%s\"\nfor writing.",
 	      buffer);
@@ -451,8 +461,8 @@ void createCB (w, string, callback_data)
       struct stat buf;
 
       w_list = w;
-      strcpy(CurrentDir, BASE_DIR);
-      sprintf(file, "%s/%s", CurrentDir, "stock_answers");
+      strcpy(CurrentDir, STOCK_ROOT);
+      strcpy(file, CurrentDir);
       strcpy(Indexes[0], file);
 
 #ifdef ATHENA
