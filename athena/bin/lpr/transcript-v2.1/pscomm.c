@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.18.2.1 1998-10-28 21:29:55 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.18.2.2 1999-01-04 19:06:25 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,14 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.18.2.1  1998/10/28 21:29:55  ghudson
+ * Pull up 1.19 and 1.20 to Athena 8.2 branch.
+ *
+ * Revision 1.21  1998/12/28 19:27:06  danw
+ * some JetDirect PROM revisions will crash if there is a ^T in certain
+ * places in the document. The Windows PS driver inserts ^Ts. Strip them
+ * out so the printers don't crash.
+ *
  * Revision 1.20  1998/10/02 16:22:50  danw
  * Add junk comments to the postscript "get pagecount" program to make it
  * longer: HP printers in PS/PCL autodetect mode don't seem to notice
@@ -496,7 +504,7 @@ private ChStat  NextCh();
 #define LIS_ERROR  5        /* Unrecoverable error */
 #define LIS_TIMEOUT 6       /* Printer timed out */
 
-
+size_t t_write(int fd, char *buf, size_t nbytes);
 
 main(argc,argv)            /* MAIN ROUTINE */
 	int argc;
@@ -1042,7 +1050,7 @@ printit:;
 	if ((!format) && (!reversing)) {
 	    mbp = magic;
 	    cnt = magiccnt;
-	    while ((cnt > 0) && ((wc = write(fdsend, mbp, cnt)) != cnt)) {
+	    while ((cnt > 0) && ((wc = t_write(fdsend, mbp, cnt)) != cnt)) {
 		if (wc < 0) {
 		    fprintf(stderr,"%s: error writing to printer",prog);
 		    perror("");
@@ -1069,7 +1077,7 @@ printit:;
 		progress++;
 	    }
 	    mbp = mybuf;
-	    while ((cnt > 0) && ((wc = write(fdsend, mbp, cnt)) != cnt)) {
+	    while ((cnt > 0) && ((wc = t_write(fdsend, mbp, cnt)) != cnt)) {
 		if (wc < 0) {
 		    fprintf(stderr,"%s: error writing to printer",prog);
 		    perror("");
@@ -2115,3 +2123,19 @@ NotifyUser(user, message)
 }
 #endif ZEPHYR
 
+/* More HP lossage workaround: The Windows driver inserts a ^T somewhere
+ * in the document, but if it occurs in certain places it will crash the
+ * JetDirect card. So strip out ^Ts.
+ */
+size_t t_write(int fd, char *buf, size_t nbytes)
+{
+    int i;
+
+    for (i = 0; i < nbytes; i++) {
+	if (buf[i] == '\024') {
+	    nbytes = write(fd, buf, i);
+	    return (nbytes == i) ? i + 1 : nbytes;
+	}
+    }
+    return write(fd, buf, nbytes);
+}
