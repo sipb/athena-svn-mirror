@@ -7,6 +7,51 @@ sun4)
 	;;
 
 sgi)
+	case `uname -m` in
+	IP22)
+		# On Indy, reinstall some of the symlink packages
+		# to correct problems with machine-dependent files.
+		echo "i compiler_dev.sw.lib"		>> "$LINKPACKAGES"
+		echo "i compiler_eoe.sw32.lib"		>> "$LINKPACKAGES"
+		echo "i complib.sw.sgimath"		>> "$LINKPACKAGES"
+		echo "i complib.sw.sgimath_n32"		>> "$LINKPACKAGES"
+		echo "i demos.sw.demos"			>> "$LINKPACKAGES"
+		echo "i demos.sw.games"			>> "$LINKPACKAGES"
+		echo "i demos.sw.tools"			>> "$LINKPACKAGES"
+		echo "i demos.sw.visualization"		>> "$LINKPACKAGES"
+		echo "i dev.sw.irix_speclibs"		>> "$LINKPACKAGES"
+		echo "i dev.sw.lib"			>> "$LINKPACKAGES"
+		echo "i dev.sw32.nonshared_lib"		>> "$LINKPACKAGES"
+		echo "i eoe.sw32.gfx"			>> "$LINKPACKAGES"
+		echo "i ftn_eoe.sw.lib"			>> "$LINKPACKAGES"
+		echo "i gl_dev.sw.gldebug"		>> "$LINKPACKAGES"
+		echo "i gl_dev.sw.gldev"		>> "$LINKPACKAGES"
+		echo "i gl_dev.sw32.gldebug"		>> "$LINKPACKAGES"
+		echo "i patchSG0001535.eoe_sw32.gfx"	>> "$LINKPACKAGES"
+		echo "i patchSG0002009.eoe_sw32.gfx"	>> "$LINKPACKAGES"
+		echo "i patchSG0002009.gl_dev_sw.gldebug" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002009.gl_dev_sw.gldev"	>> "$LINKPACKAGES"
+		echo "i patchSG0002009.gl_dev_sw32.gldebug" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002262.dev_sw.irix_speclibs" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002262.dev_sw32.nonshared_lib" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002360.ftn_dev_sw.lib"	>> "$LINKPACKAGES"
+		echo "i patchSG0002422.compiler_dev_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002752.c++_dev_sw.lib"	>> "$LINKPACKAGES"
+		echo "i patchSG0002752.c++_dev_sw.libns" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002752.c++_dev_sw.librw" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002752.compiler_dev_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "i patchSG0002752.ftn_dev_sw.lib"	>> "$LINKPACKAGES"
+		echo "i patchSG0002752.ftn_eoe_sw.lib"	>> "$LINKPACKAGES"
+		;;
+	esac
 	echo "/.profile"			>> "$CONFCHG"
 	echo "/.login"				>> "$CONFCHG"
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
