@@ -7,21 +7,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gal 1.99.6.99\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"POT-Creation-Date: 2005-02-14 08:46-0500\n"
 "PO-Revision-Date: 2003-05-31 00:18+0800\n"
-"Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
+"Last-Translator: Craig Jeffares <cjeffares@novell.com>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Novell Translation
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr ""
+msgstr "識別指標大小"
 
+# Novell Translation
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr ""
+msgstr "配量"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -51,77 +53,88 @@ msgstr "%m月%d日%p %l:%M"
 msgid "%b %d %Y"
 msgstr "%Y-%m-%d"
 
+# Novell Translation
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr ""
+msgstr "選擇的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr ""
+msgstr "重點的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr ""
+msgstr "未選擇的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
-msgstr ""
+msgstr "加上刪除線的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
-msgstr ""
+msgstr "加上底線的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
-msgstr ""
+msgstr "加上粗體的欄位"
 
+# Novell Translation
 #: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
-msgstr ""
+msgstr "加上色彩的欄位"
 
-#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
-#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3597
+#: gal/e-text/e-text.c:3598 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "可編輯"
 
+# Novell Translation
 #: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
-msgstr ""
+msgstr "加上 BG 色彩的欄位"
 
+# Novell Translation
 #: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
 #: gal/e-table/e-table-header-item.c:1816
-#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
-#: gal/widgets/e-categories.c:123
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:123
+#: gal/widgets/e-categories.c:124
 msgid "Header"
-msgstr ""
+msgstr "標題"
 
+# Novell Translation
 #: gal/e-table/e-table-click-to-add.c:469
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
-#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
-#: gal/e-text/e-text.c:3432
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3461
+#: gal/e-text/e-text.c:3462
 msgid "Model"
-msgstr ""
+msgstr "型號"
 
+# Novell Translation
 #: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
-msgstr ""
+msgstr "訊息"
 
 #: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
-#: gal/e-text/e-text.c:3610
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3640
 msgid "Width"
 msgstr "寬度"
 
 #: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
-#: gal/e-text/e-text.c:3618
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3647
+#: gal/e-text/e-text.c:3648
 msgid "Height"
 msgstr "高度"
 
@@ -248,24 +261,26 @@ msgstr "沒有分組"
 msgid "_Group By..."
 msgstr "分組(_G)..."
 
+# Novell Translation
 #: gal/e-table/e-table-config.glade.h:19
-#, fuzzy
 msgid "_Show these fields in order:"
-msgstr "欄位顯示次序(_O)："
+msgstr "依序顯示這些欄位(_S)："
 
+# Novell Translation
 #: gal/e-table/e-table-field-chooser-dialog.c:74
 #: gal/e-table/e-table-field-chooser-item.c:646
 #: gal/e-table/e-table-field-chooser.c:77
 #: gal/e-table/e-table-header-item.c:1795
 msgid "DnD code"
-msgstr ""
+msgstr "DnD 代碼"
 
+# Novell Translation
 #: gal/e-table/e-table-field-chooser-dialog.c:81
 #: gal/e-table/e-table-field-chooser-item.c:653
 #: gal/e-table/e-table-field-chooser.c:84
 #: gal/e-table/e-table-header-item.c:1809
 msgid "Full Header"
-msgstr ""
+msgstr "完整的標題"
 
 #: gal/e-table/e-table-field-chooser-dialog.c:123
 msgid "Add a column..."
@@ -275,11 +290,14 @@ msgstr "新增整列..."
 msgid "Field Chooser"
 msgstr "欄位選擇器"
 
+# Novell Translation
 #: gal/e-table/e-table-field-chooser.glade.h:2
 msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
+"若要新增欄位至表格，請將欄位拖曳至\n"
+"要顯示的位置。"
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -301,55 +319,63 @@ msgstr "%s (%d 個項目)"
 msgid "%s (%d items)"
 msgstr "%s (%d 個項目)"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr ""
+msgstr "替換列的色彩"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:913
 #: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
 #: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
-msgstr ""
+msgstr "水平繪製格線"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:920
 #: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
 #: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
-msgstr ""
+msgstr "垂直繪製格線"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:927
 #: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
 #: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
-msgstr ""
+msgstr "繪製重點"
 
 #: gal/e-table/e-table-group-container.c:934
 #: gal/e-table/e-table-group-container.c:935
 msgid "Cursor mode"
 msgstr "游標模式"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:941
 #: gal/e-table/e-table-group-container.c:942
 msgid "Selection model"
-msgstr ""
+msgstr "選取型號"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:948
 #: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
 #: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
-msgstr ""
+msgstr "長度限定值"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:955
 #: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
 #: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
-msgstr ""
+msgstr "統一列高度"
 
+# Novell Translation
 #: gal/e-table/e-table-group-container.c:962
 #: gal/e-table/e-table-group-container.c:963
 msgid "Frozen"
-msgstr ""
+msgstr "已凍結"
 
 #: gal/e-table/e-table-group-container.c:983
 msgid "Minimum width"
@@ -379,9 +405,10 @@ msgstr "不排序"
 msgid "Group By This Field"
 msgstr "根據本欄位分組"
 
+# Novell Translation
 #: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
-msgstr ""
+msgstr "根據方塊分組"
 
 #: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
@@ -407,9 +434,10 @@ msgstr "格式化整列..."
 msgid "Customize Current View..."
 msgstr "自訂目前的顯示模式..."
 
+# Novell Translation
 #: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
-msgstr ""
+msgstr "字型設定"
 
 #: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
@@ -420,181 +448,207 @@ msgstr "排序資訊"
 msgid "Table"
 msgstr "表格"
 
+# Novell Translation
 #: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
-msgstr ""
+msgstr "網路樹"
 
+# Novell Translation
 #: gal/e-table/e-table.c:3313
 msgid "Always Search"
-msgstr ""
+msgstr "一定搜尋"
 
+# Novell Translation
 #: gal/e-table/e-table.c:3320
 msgid "Use click to add"
-msgstr ""
+msgstr "使用點選來新增"
 
+# Novell Translation
 #: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
-msgstr ""
+msgstr "游標列"
 
+# Novell Translation
 #: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
 msgid "Cursor Column"
-msgstr ""
+msgstr "游標欄"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
 msgid "ETree table adapter"
-msgstr ""
+msgstr "ETree 表格界面卡"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
 msgid "Always search"
-msgstr ""
+msgstr "一定搜尋"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3307
 msgid "Retro Look"
-msgstr ""
+msgstr "向後看"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3308
 msgid "Draw lines and +/- expanders."
-msgstr ""
+msgstr "畫線及 +/- 展開器。"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3314
 msgid "Expander Size"
-msgstr ""
+msgstr "展開器大小"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3315
 msgid "Size of the expander arrow"
-msgstr ""
+msgstr "展開器箭號的大小"
 
-#: gal/e-text/e-text.c:2667
+#: gal/e-text/e-text.c:2697
 msgid "Select All"
 msgstr "全部選取"
 
-#: gal/e-text/e-text.c:2679
+#: gal/e-text/e-text.c:2709
 msgid "Input Methods"
 msgstr "輸入法"
 
-#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+# Novell Translation
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Event Processor"
-msgstr ""
+msgstr "事件處理器"
 
-#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Text"
 msgstr "文字"
 
-#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Bold"
 msgstr "粗體"
 
-#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+#: gal/e-text/e-text.c:3489 gal/e-text/e-text.c:3490
 msgid "Strikeout"
 msgstr "刪除線"
 
-#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+# Novell Translation
+#: gal/e-text/e-text.c:3496 gal/e-text/e-text.c:3497
 msgid "Anchor"
-msgstr ""
+msgstr "錨點"
 
-#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
 msgid "Justification"
 msgstr "靠齊方式"
 
-#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+# Novell Translation
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Clip Width"
-msgstr ""
+msgstr "剪輯寬度"
 
-#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+# Novell Translation
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Clip Height"
-msgstr ""
+msgstr "剪輯高度"
 
-#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+# Novell Translation
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Clip"
-msgstr ""
+msgstr "剪輯"
 
-#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+# Novell Translation
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
 msgid "Fill clip rectangle"
-msgstr ""
+msgstr "填滿剪輯長方形"
 
-#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "X Offset"
 msgstr "水平位置"
 
-#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Y Offset"
 msgstr "垂直位置"
 
-#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+# Novell Translation
+#: gal/e-text/e-text.c:3553 gal/e-text/e-text.c:3554
 msgid "Fill color"
-msgstr ""
+msgstr "填滿色彩"
 
-#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
-#: gal/e-text/e-text.c:3539
+# Novell Translation
+#: gal/e-text/e-text.c:3560 gal/e-text/e-text.c:3561 gal/e-text/e-text.c:3568
+#: gal/e-text/e-text.c:3569
 msgid "GDK fill color"
-msgstr ""
+msgstr "GDK 填滿色彩"
 
-#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+# Novell Translation
+#: gal/e-text/e-text.c:3575 gal/e-text/e-text.c:3576
 msgid "Fill stipple"
-msgstr ""
+msgstr "填滿圓點"
 
-#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+#: gal/e-text/e-text.c:3582 gal/e-text/e-text.c:3583
 msgid "Text width"
 msgstr "文字寬度"
 
-#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+#: gal/e-text/e-text.c:3589 gal/e-text/e-text.c:3590
 msgid "Text height"
 msgstr "文字高度"
 
-#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+#: gal/e-text/e-text.c:3604 gal/e-text/e-text.c:3605
 msgid "Use ellipsis"
 msgstr "使用省略號"
 
-#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+#: gal/e-text/e-text.c:3611 gal/e-text/e-text.c:3612
 msgid "Ellipsis"
 msgstr "省略號"
 
-#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+#: gal/e-text/e-text.c:3618 gal/e-text/e-text.c:3619
 msgid "Line wrap"
 msgstr "換行"
 
-#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+# Novell Translation
+#: gal/e-text/e-text.c:3625 gal/e-text/e-text.c:3626
 msgid "Break characters"
-msgstr ""
+msgstr "中斷字元"
 
-#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+# Novell Translation
+#: gal/e-text/e-text.c:3632 gal/e-text/e-text.c:3633
 msgid "Max lines"
-msgstr ""
+msgstr "最大行數"
 
-#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#: gal/e-text/e-text.c:3654 gal/e-text/e-text.c:3655
 msgid "Draw borders"
 msgstr "繪畫框線"
 
-#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+# Novell Translation
+#: gal/e-text/e-text.c:3661 gal/e-text/e-text.c:3662
 msgid "Allow newlines"
-msgstr ""
+msgstr "允許新線"
 
-#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3668 gal/e-text/e-text.c:3669
 msgid "Draw background"
 msgstr "繪畫背景"
 
-#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+#: gal/e-text/e-text.c:3675 gal/e-text/e-text.c:3676
 msgid "Draw button"
 msgstr "繪畫按鈕"
 
-#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#: gal/e-text/e-text.c:3682 gal/e-text/e-text.c:3683
 msgid "Cursor position"
 msgstr "游標位置"
 
-#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+# Novell Translation
+#: gal/e-text/e-text.c:3689 gal/e-text/e-text.c:3690
 msgid "IM Context"
-msgstr ""
+msgstr "IM 網路位置"
 
-#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+# Novell Translation
+#: gal/e-text/e-text.c:3696 gal/e-text/e-text.c:3697
 msgid "Handle Popup"
-msgstr ""
+msgstr "識別指標快顯"
 
+# Novell Translation
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
 msgid "Collection"
-msgstr ""
+msgstr "集合"
 
 #: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
@@ -616,18 +670,20 @@ msgstr "定義“%s”的顯示模式"
 msgid "_Edit..."
 msgstr "編輯(_E)..."
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
-msgstr ""
+msgstr "例證"
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.c:229
-#, fuzzy
 msgid "Save Current View"
-msgstr "儲存自選的顯示模式"
+msgstr "儲存目前檢視"
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
 #: gal/menus/gal-view-new-dialog.glade.h:1
@@ -636,20 +692,20 @@ msgstr ""
 msgid "*"
 msgstr "*"
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-#, fuzzy
 msgid "_Create new view"
-msgstr "新的顯示模式的名稱："
+msgstr "建立新檢視(_C)"
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
-#, fuzzy
 msgid "_Name:"
-msgstr "名稱"
+msgstr "名稱(_N)："
 
+# Novell Translation
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-#, fuzzy
 msgid "_Replace existing view"
-msgstr "取代目前的顯示模式"
+msgstr "取代現有檢視(_R)"
 
 #: gal/menus/gal-view-instance.c:574
 msgid "Custom View"
@@ -671,10 +727,10 @@ msgstr "名稱"
 msgid "Factory"
 msgstr "工廠"
 
+# Novell Translation
 #: gal/menus/gal-view-new-dialog.c:108
-#, fuzzy
 msgid "Define New View"
-msgstr "定義顯示模式"
+msgstr "定義新檢視"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Name of new view:"
@@ -1003,33 +1059,34 @@ msgstr "新增分類(_N)："
 msgid "All Categories"
 msgstr "所有分類"
 
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#: gal/widgets/e-categories.c:116 gal/widgets/e-categories.c:117
 msgid "Categories"
 msgstr "分類"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:394
 msgid "Add to global category list"
 msgstr "新增至共用的分類清單"
 
-#: gal/widgets/e-categories.c:394
+#: gal/widgets/e-categories.c:395
 msgid "Add all to global category list"
 msgstr "全部新增至共用的分類清單"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Remove from global category list"
 msgstr "從共用的分類清單中移除"
 
-#: gal/widgets/e-categories.c:396
+#: gal/widgets/e-categories.c:397
 msgid "Remove all from global category list"
 msgstr "全部從共用的分類清單中移除"
 
-#: gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories.c:542
 msgid "Edit Categories"
 msgstr "修改分類"
 
+# Novell Translation
 #: gal/widgets/e-selection-model.c:210
 msgid "Sorter"
-msgstr ""
+msgstr "排序程式"
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"

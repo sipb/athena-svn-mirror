@@ -1,15 +1,16 @@
 # Italian translation for the Gnome Application Library
 # Copyright (C) 2000-2002 Free Software Foundation, Inc.
-# Christopher R. Gabriel , <cgabriel@softwarelibero.org>
+# Christopher R. Gabriel <cgabriel@softwarelibero.org>, 2002
 # Luca Ferretti <elle.uca@infinito.it>, 2003-2004.
+# Craig Jeffares <cjeffares@novell.com>, 2004
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 09:50-0400\n"
-"PO-Revision-Date: 2004-09-02 20:20+0200\n"
-"Last-Translator: Luca Ferreti <elle.uca@infinito.it>\n"
-"Language-Team: Italian <tp@lists.linux.it>>\n"
+"POT-Creation-Date: 2005-02-14 08:46-0500\n"
+"PO-Revision-Date: 2005-01-12 23:21+0100\n"
+"Last-Translator: Luca Ferretti\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,23 +29,27 @@ msgstr "?"
 
 #: gal/e-table/e-cell-date.c:58
 msgid "%l:%M %p"
-msgstr "%-I.%M %p"
+msgstr "%k.%M"
 
+# minuscolo per coerenza con i giorni della settimana, minuscoli,
+# restituiti da %a
 #: gal/e-table/e-cell-date.c:66
 msgid "Today %l:%M %p"
-msgstr "Oggi %-I.%M %p"
+msgstr "oggi alle %k.%M"
 
+# minuscolo per coerenza con i giorni della settimana, minuscoli,
+# restituiti da %a
 #: gal/e-table/e-cell-date.c:76
 msgid "Yesterday %l:%M %p"
-msgstr "Ieri %-I.%M %p"
+msgstr "ieri alle %k.%M"
 
 #: gal/e-table/e-cell-date.c:88
 msgid "%a %l:%M %p"
-msgstr "%a %-I.%M %p"
+msgstr "%a alle %k.%M"
 
 #: gal/e-table/e-cell-date.c:96
 msgid "%b %d %l:%M %p"
-msgstr "%-d %b %-I.%M %p"
+msgstr "%-d %b %k.%M"
 
 #: gal/e-table/e-cell-date.c:98
 msgid "%b %d %Y"
@@ -78,8 +83,8 @@ msgstr "Colonna in grassetto"
 msgid "Color Column"
 msgstr "Colonna colorata"
 
-#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
-#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3597
+#: gal/e-text/e-text.c:3598 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "Modificabile"
 
@@ -92,15 +97,15 @@ msgstr "Colore di sfondo colonna"
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
 #: gal/e-table/e-table-header-item.c:1816
-#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
-#: gal/widgets/e-categories.c:123
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:123
+#: gal/widgets/e-categories.c:124
 msgid "Header"
 msgstr "Intestazione"
 
 #: gal/e-table/e-table-click-to-add.c:469
 #: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
-#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
-#: gal/e-text/e-text.c:3432
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3461
+#: gal/e-text/e-text.c:3462
 msgid "Model"
 msgstr "Modello"
 
@@ -111,16 +116,16 @@ msgstr "Messaggio"
 #: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
-#: gal/e-text/e-text.c:3610
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3640
 msgid "Width"
 msgstr "Larghezza"
 
 #: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
-#: gal/e-text/e-text.c:3618
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3647
+#: gal/e-text/e-text.c:3648
 msgid "Height"
 msgstr "Altezza"
 
@@ -442,18 +447,19 @@ msgstr "Riga cursore"
 msgid "Cursor Column"
 msgstr "Colonna cursore"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
 msgid "ETree table adapter"
-msgstr ""
+msgstr "Adattatore tabella ETree"
 
 #: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
 msgid "Always search"
 msgstr "Ricerca sempre"
 
+# Novell Translation
 #: gal/e-table/e-tree.c:3307
-#, fuzzy
 msgid "Retro Look"
-msgstr "Aspetto "
+msgstr "Retro Look"
 
 #: gal/e-table/e-tree.c:3308
 msgid "Draw lines and +/- expanders."
@@ -461,134 +467,142 @@ msgstr "Disegna linee ed espansori +/-."
 
 #: gal/e-table/e-tree.c:3314
 msgid "Expander Size"
-msgstr "Dimesione espansore"
+msgstr "Dimensione espansore"
 
 #: gal/e-table/e-tree.c:3315
 msgid "Size of the expander arrow"
 msgstr "Dimensione della freccia espansore"
 
-#: gal/e-text/e-text.c:2667
+#: gal/e-text/e-text.c:2697
 msgid "Select All"
 msgstr "Seleziona tutto"
 
-#: gal/e-text/e-text.c:2679
+#: gal/e-text/e-text.c:2709
 msgid "Input Methods"
 msgstr "Metodi di input"
 
-#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
 msgid "Event Processor"
 msgstr "Processamento eventi"
 
-#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
 msgid "Text"
 msgstr "Testo"
 
-#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
 msgid "Bold"
 msgstr "Grassetto"
 
-#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+#: gal/e-text/e-text.c:3489 gal/e-text/e-text.c:3490
 msgid "Strikeout"
 msgstr "Barrato"
 
-#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+#: gal/e-text/e-text.c:3496 gal/e-text/e-text.c:3497
 msgid "Anchor"
 msgstr "Ancora"
 
-#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
 msgid "Justification"
 msgstr "Giustificazione"
 
-#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+# Novell Translation
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
 msgid "Clip Width"
-msgstr ""
+msgstr "Larghezza clip"
 
-#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+# Novell Translation
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
 msgid "Clip Height"
-msgstr ""
+msgstr "Altezza clip"
 
-#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+# Novell Translation
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
 msgid "Clip"
-msgstr ""
+msgstr "Clip"
 
-#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+# Novell Translation
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
 msgid "Fill clip rectangle"
-msgstr ""
+msgstr "Riempimento rettangolo clip"
 
-#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+# Novell Translation
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
 msgid "X Offset"
-msgstr ""
+msgstr "Offset X"
 
-#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+# Novell Translation
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Y Offset"
-msgstr ""
+msgstr "Offset Y"
 
-#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+#: gal/e-text/e-text.c:3553 gal/e-text/e-text.c:3554
 msgid "Fill color"
 msgstr "Colore riempimento"
 
-#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
-#: gal/e-text/e-text.c:3539
+#: gal/e-text/e-text.c:3560 gal/e-text/e-text.c:3561 gal/e-text/e-text.c:3568
+#: gal/e-text/e-text.c:3569
 msgid "GDK fill color"
 msgstr "Colore riempimento GDK"
 
-#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#: gal/e-text/e-text.c:3575 gal/e-text/e-text.c:3576
 msgid "Fill stipple"
 msgstr "Riempimento retinato"
 
-#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+#: gal/e-text/e-text.c:3582 gal/e-text/e-text.c:3583
 msgid "Text width"
 msgstr "Larghezza testo"
 
-#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+#: gal/e-text/e-text.c:3589 gal/e-text/e-text.c:3590
 msgid "Text height"
 msgstr "Altezza testo"
 
-#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+#: gal/e-text/e-text.c:3604 gal/e-text/e-text.c:3605
 msgid "Use ellipsis"
 msgstr "Usa puntini di sospensione"
 
-#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+#: gal/e-text/e-text.c:3611 gal/e-text/e-text.c:3612
 msgid "Ellipsis"
 msgstr "Puntini di sospensione"
 
-#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+# Novell Translation
+#: gal/e-text/e-text.c:3618 gal/e-text/e-text.c:3619
 msgid "Line wrap"
-msgstr ""
+msgstr "Linea a capo"
 
-#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+#: gal/e-text/e-text.c:3625 gal/e-text/e-text.c:3626
 msgid "Break characters"
 msgstr "Interrompi caratteri"
 
-#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+#: gal/e-text/e-text.c:3632 gal/e-text/e-text.c:3633
 msgid "Max lines"
 msgstr "Linee massime"
 
-#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#: gal/e-text/e-text.c:3654 gal/e-text/e-text.c:3655
 msgid "Draw borders"
 msgstr "Disegna bordi"
 
-#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+#: gal/e-text/e-text.c:3661 gal/e-text/e-text.c:3662
 msgid "Allow newlines"
 msgstr "Consenti a capo"
 
-#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+#: gal/e-text/e-text.c:3668 gal/e-text/e-text.c:3669
 msgid "Draw background"
 msgstr "Disegna sfondo"
 
-#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+#: gal/e-text/e-text.c:3675 gal/e-text/e-text.c:3676
 msgid "Draw button"
 msgstr "Disegna pulsanti"
 
-#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#: gal/e-text/e-text.c:3682 gal/e-text/e-text.c:3683
 msgid "Cursor position"
 msgstr "Posizione cursore"
 
-#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+# Novell Translation
+#: gal/e-text/e-text.c:3689 gal/e-text/e-text.c:3690
 msgid "IM Context"
-msgstr ""
+msgstr "Contesto IM"
 
-#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+#: gal/e-text/e-text.c:3696 gal/e-text/e-text.c:3697
 msgid "Handle Popup"
 msgstr "Gestisci popup"
 
@@ -963,11 +977,12 @@ msgstr "In attesa"
 msgid "ECML"
 msgstr "ECML"
 
+# Novell Translation
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
 #: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
-msgstr ""
+msgstr "ECategoriesMasterListCombo"
 
 #: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
@@ -1001,27 +1016,27 @@ msgstr "_Nuova categoria:"
 msgid "All Categories"
 msgstr "Tutte le categorie"
 
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#: gal/widgets/e-categories.c:116 gal/widgets/e-categories.c:117
 msgid "Categories"
 msgstr "Categorie"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:394
 msgid "Add to global category list"
 msgstr "Aggiungi alla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:394
+#: gal/widgets/e-categories.c:395
 msgid "Add all to global category list"
 msgstr "Aggiungi tutti alla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Remove from global category list"
 msgstr "Rimuovi dalla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:396
+#: gal/widgets/e-categories.c:397
 msgid "Remove all from global category list"
 msgstr "Rimuovi tutti dalla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories.c:542
 msgid "Edit Categories"
 msgstr "Modifica categorie"
 

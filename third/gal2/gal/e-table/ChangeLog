@@ -1,3 +1,8 @@
+2004-10-19  JP Rosevear  <jpr@novell.com>
+
+	* e-table.c (table_canvas_focus_event_cb): return FALSE so we
+	don't kill the focus event chain
+
 2004-08-09  Not Zed  <NotZed@Ximian.com>
 
 	* e-cell-combo.c (e_cell_combo_get_popup_pos): include scrollbar

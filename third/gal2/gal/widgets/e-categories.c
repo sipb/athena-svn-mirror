@@ -78,6 +78,7 @@ static gboolean e_categories_value_is_empty (ETableModel *etc, int col, const vo
 static char * e_categories_value_to_string (ETableModel *etc, int col, const void *value, gpointer data);
 static void e_categories_toggle (ECategories *categories, int row);
 static void e_categories_rebuild (ECategories *categories);
+static void focus_current_etable_item (ETableGroup *group, int row);
 
 #define PARENT_TYPE GTK_TYPE_DIALOG
 static GtkDialogClass *parent_class = NULL;
@@ -462,6 +463,7 @@ table_click (ETable *table, int row, int col, GdkEvent *event, ECategories *cate
 	if (col == 1) {
 		categories->priv->selected_list[row] = !categories->priv->selected_list[row];
 		e_categories_rebuild (categories);
+		focus_current_etable_item (E_TABLE_GROUP(categories->priv->table->group), row);
 	}
 	return TRUE;
 }
@@ -731,6 +733,29 @@ e_categories_value_at (ETableModel *etc, int col, int row, gpointer data)
 		return categories->priv->category_list[row];
 }
 
+/* Finds the current descendant of the group that is an ETableItem and focuses it */
+static void
+focus_current_etable_item (ETableGroup *group, int row)
+{
+	GnomeCanvasGroup *cgroup;
+	GList *l;
+
+	cgroup = GNOME_CANVAS_GROUP (group);
+
+	for (l = cgroup->item_list; l; l = l->next) {
+		GnomeCanvasItem *i;
+
+		i = GNOME_CANVAS_ITEM (l->data);
+
+		if (E_IS_TABLE_GROUP (i))
+			focus_current_etable_item (E_TABLE_GROUP (i), row);
+		else if (E_IS_TABLE_ITEM (i)) {
+			e_table_item_set_cursor (E_TABLE_ITEM (i), 0, row);
+			gnome_canvas_item_grab_focus (i);
+		}
+	}
+}
+
 static void
 e_categories_rebuild (ECategories *categories)
 {
@@ -755,6 +780,7 @@ e_categories_toggle (ECategories *categories, int row)
 {
 	categories->priv->selected_list[row] = !categories->priv->selected_list[row];
 	e_categories_rebuild (categories);
+	focus_current_etable_item (E_TABLE_GROUP(categories->priv->table->group), row);
 }
 
 /* This function sets the value at a particular point in our ETableModel. */
@@ -766,6 +792,7 @@ e_categories_set_value_at (ETableModel *etc, int col, int row, const void *val, 
 		categories->priv->selected_list[row] =
 			GPOINTER_TO_INT (val);
 		e_categories_rebuild (categories);
+		focus_current_etable_item (E_TABLE_GROUP(categories->priv->table->group), row);
 	}
 	if ( col == 1 )
 		return;
@@ -781,7 +808,7 @@ e_categories_is_cell_editable (ETableModel *etc, int col, int row, gpointer data
 static gboolean
 e_categories_has_save_id (ETableModel *etc, gpointer data)
 {
-	return TRUE;
+	return FALSE;
 }
 
 static char *
