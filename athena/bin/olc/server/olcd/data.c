@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.13 1990-12-05 21:15:10 lwvanels Exp $
+ *	$Id: data.c,v 1.14 1990-12-09 16:47:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.13 1990-12-05 21:15:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.14 1990-12-09 16:47:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -48,6 +48,7 @@ char *ADMIN_LOG          = "/usr/adm/olc/admin";
 char *STDERR_LOG         = "/usr/adm/olc/errors";
 char *TOPIC_FILE         = "/usr/lib/olc/topics";
 char *MOTD_FILE          = "/usr/lib/olc/motd";
+char *MOTD_TIMEOUT_FILE  = "/usr/lib/olc/motd_timeout";
 
 #ifdef KERBEROS
 char *TICKET_FILE        = "/usr/spool/olc/tkt.olc";
