@@ -4,8 +4,9 @@
 case ${MACH} in
 SUN*)
 	# Delete /sun4 symlink in case anyone still has it around (people
-	# who took the 8.0A update before it was fixed there).
-	rm -f /sun4
+	# who took the 8.0A update before it was fixed there).  Also
+	# remove /usr/bin/csh.1, created by accident.
+	rm -f /sun4 /usr/bin/csh.1
 
 	# inetd.conf now enables admind so "showrev" works.
 	echo "/etc/inet/inetd.conf"		>> ${CONFCHG}
