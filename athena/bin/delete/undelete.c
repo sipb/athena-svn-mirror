@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.11 1989-01-26 12:31:00 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.12 1989-01-27 02:58:46 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -31,6 +31,10 @@
 char *malloc(), *realloc();
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
+int del_recursive = 0; /* this tells the pattern matcher that we do */
+		       /* *not* want it to recurse deleted directories */
+		       /* when recursive is set to false. */
+
 char *whoami, *error_buf;
 
 
@@ -94,7 +98,7 @@ char *argv[];
 	  status = status | undelete(argv[optind]);
 	  optind++;
      }
-     exit(status | ERROR_MASK);
+     exit(status & ERROR_MASK);
 }
 
 
@@ -114,15 +118,16 @@ interactive_mode()
 	  ptr = fgets(buf, MAXPATHLEN, stdin);
 	  if (! ptr) {
 	       printf("\n");
-	       return(status | ERROR_MASK);
+	       return(status);
 	  }
 	  ptr = index(buf, '\n');  /* fgets breakage */
 	  if (ptr)
 	       *ptr = '\0';
 	  if (! *buf)
-	       return(status | ERROR_MASK);
+	       return(status);
 	  status = status | undelete(buf);
      } while (*ptr);
+     return(status);
 }
 
 
@@ -162,7 +167,7 @@ char *file_exp;
      }
      if (! file_re)
 	  return(ERROR_MASK);
-     found_files = match_pattern(startdir, FtDirectory, file_re, &num_found);
+     found_files = get_the_files(startdir, file_re, &num_found);
      free(file_re);
      if (num_found) {
 	  process_files(found_files, num_found);
@@ -208,7 +213,7 @@ int num;
      free(files);
      
      new_files = sort_files(filelist, num);
-     new_files = unique(new_files, num);
+     new_files = unique(new_files, &num);
      if (initialize_tree()) {
 	  exit(1);
      }
@@ -463,3 +468,62 @@ char *filename;
 
 
 
+char **get_the_files(base, reg_exp, num_found)
+char *base, *reg_exp;
+int *num_found;
+{
+     char **matches;
+     int num_matches;
+     char **found;
+     int num;
+     int i;
+     
+     found = (char **) malloc(0);
+     num = 0;
+     
+     matches = find_matches(base, reg_exp, &num_matches);
+     if (recursive) {
+	  char **recurs_found;
+	  int recurs_num;
+	  
+	  for (i = 0; i < num_matches; free(matches[i]), i++) {
+	       if (is_deleted(lastpart(matches[i]))) {
+		    found = add_str(found, num, matches[i]);
+		    num++;
+	       }
+	       recurs_found = find_deleted_recurses(matches[i], &recurs_num);
+	       add_arrays(&found, &num, &recurs_found, &recurs_num);
+	  }
+     }
+     else {
+	  struct stat stat_buf;
+	  char **contents_found;
+	  int num_contents;
+	  
+	  for (i = 0; i < num_matches; free(matches[i]), i++) {
+	       if (is_deleted(lastpart(matches[i]))) {
+		    found = add_str(found, num, matches[i]);
+		    num++;
+	       }
+	       else if (! directoriesonly) {
+		    if (lstat(matches[i], &stat_buf))
+			 continue;
+		    if (stat_buf.st_mode & S_IFDIR) {
+			 contents_found = find_deleted_contents(matches[i],
+								&num_contents);
+			 add_arrays(&found, &num, &contents_found,
+				    &num_contents);
+		    }
+	       }
+	  }
+	  
+     }
+     free(matches);
+     *num_found = num;
+     return(found);
+}
+
+			 
+		    
+	  
+	  

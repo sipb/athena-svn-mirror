@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.3 1989-01-26 14:16:15 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.4 1989-01-27 02:59:03 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -186,6 +186,20 @@ char *rest; /* RETURN */
      *part = '\0';
      return(buf);
 }
+
+
+
+
+char *reg_firstpart(filename, rest)
+char *filename;
+char *rest; /* RETURN */
+{
+     static char first[MAXNAMLEN];
+     
+     sprintf(first, "^%s$", firstpart(filename, rest));
+     return(first);
+}
+
 
 
 

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.3 1989-01-26 12:26:38 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.4 1989-01-27 02:58:15 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -26,13 +26,10 @@
 #include "undelete.h"
 
 static char *add_char();
-static char **find_all_children();
-static char **find_dir_contents();
 
 extern char *malloc(), *realloc();
 
 extern char *whoami, *error_buf;
-extern int recursive, directoriesonly;
 
 /*
  * parse_pattern returns an area of memory allocated by malloc when it
@@ -152,213 +149,331 @@ int *num1, *num2;
 
 
 
-char **match_pattern(base, ftype, file_pattern, num_found)
-char *base;
-filetype ftype;
-char *file_pattern;
+
+
+
+char **add_str(strs, num, str)
+char **strs;
+int num;
+char *str;
+{
+     strs = (char **) realloc(strs, sizeof(char *) * (num + 1));
+     if (! strs) {
+	  perror(sprintf(error_buf, "%s: add_str", whoami));
+	  exit(1);
+     }
+     strs[num] = malloc(strlen(str) + 1);
+     if (! strs[num]) {
+	  perror(sprintf(error_buf, "%s: add_str", whoami));
+	  exit(1);
+     }
+     strcpy(strs[num], str);
+     return(strs);
+}
+
+
+
+
+
+
+
+char **find_deleted_matches(base, expression, num_found)
+char *base, *expression;
 int *num_found;
 {
+     struct direct *dp;
+     DIR *dirp;
      char **found;
+     int num;
+     char **next;
+     int num_next;
+     char first[MAXNAMLEN], rest[MAXPATHLEN];
+     char new[MAXPATHLEN];
      
      found = (char **) malloc(0);
-     *num_found = 0;
-     
-     if (! *file_pattern) { /* The file pattern is empty, so we've */
-			    /* reached the end of the line.  If we are */
-			    /* not looking for recursive stuff, or if */
-			    /* the base involved is a file, then */
-			    /* we return only the base; otherwise, we */
-			    /* recursively descend and return all of */
-			    /* the descendents of this */
-			    /* directory. */
-	  if (is_deleted(lastpart(base))) {
-	       *num_found = 1;
-	       found = (char **) realloc(found, sizeof(char *));
-	       if (! found) {
-		    perror(sprintf(error_buf, "%s: match_pattern", whoami));
-		    exit(1);
-	       }
-	       *found = malloc(strlen(base) + 1);
-	       if (! *found) {
-		    perror(sprintf(error_buf, "%s: match_pattern", whoami));
-		    exit(1);
-	       }
-	       strcpy(*found, base);
-	  }
-	  if ((ftype == FtDirectory) && (! recursive) &&
-	      (! directoriesonly)) {
-	       int num_dir_found;
-	       char **dir_found;
-	       dir_found = find_dir_contents(base, &num_dir_found);
-	       add_arrays(&found, num_found, &dir_found, &num_dir_found);
-	  }
-	  else if ((! recursive) || (ftype != FtDirectory) ||
-		   directoriesonly) {
-	       return(found);
-	  }
-	  else {
-	       int num_recurs_found;
-	       char **recurs_found;
-	       recurs_found = find_all_children(base, &num_recurs_found);
-	       add_arrays(&found, num_found, &recurs_found,
-			  &num_recurs_found);
-	       return(found);
-	  }
-     }
-     else if (ftype != FtDirectory) { /* A non-directory has been */
-				      /* passed in even though the */
-				      /* file pattern has not reached */
-				      /* its end yet.  This is bad, so */
-				      /* we return nothing. */
+     *num_found = num = 0;
+
+     dirp = opendir(base);
+     if (! dirp)
 	  return(found);
-     }
-     else { /* we have a file pattern to work with, so we take the */
-	    /* first part of it and match it against all the files in */
-	    /* the directory.  For each one found, call match_pattern */
-	    /* on it and concatenate the result onto what we've */
-	    /* already got. */
-	  DIR *dirp;
-	  struct direct *dp;
-	  struct stat stat_buf;
-	  char pattern[MAXNAMLEN], del_pattern[MAXNAMLEN];
-	  char rest_of_pattern[MAXPATHLEN];
-	  char newname[MAXPATHLEN];
-	  filetype newtype;
-	  char **new_found;
-	  int num_new_found;
-	  Boolean match;
-	  
-	  strcpy(pattern, firstpart(file_pattern, rest_of_pattern));
-	  strcpy(del_pattern, DELETEREPREFIX);
-	  strcat(del_pattern, pattern);
 
-	  dirp = opendir(base);
-	  if (! dirp) {
-	       return(found);
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+     
+     strcpy(first, reg_firstpart(expression, rest));
+     re_comp(first);
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (re_exec(dp->d_name) && *rest) {
+	       strcpy(new, append(base, dp->d_name));
+	       next = find_deleted_matches(new, rest, &num_next);
+	       add_arrays(&found, &num, &next, &num_next);
 	  }
-
-	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	       if (is_dotfile(dp->d_name))
-		    continue;
-	       strcpy(newname, append(base, dp->d_name));
-	       if (*rest_of_pattern || recursive) {
-		    if (stat(newname, &stat_buf))
-			 continue;
+	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_deleted_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
 	       }
 	       else {
-		    if (lstat(newname, &stat_buf))
-			 continue;
-	       }
-	       re_comp(pattern);
-	       match = re_exec(dp->d_name);
-	       if (! match) {
-		    re_comp(del_pattern);
-		    match = re_exec(dp->d_name);
-	       }
-	       if (match) {
-		    newtype = ((stat_buf.st_mode & S_IFDIR) ? FtDirectory :
-			       FtFile);
-		    new_found = match_pattern(newname, newtype,
-					      rest_of_pattern, &num_new_found);
-		    add_arrays(&found, num_found, &new_found, &num_new_found);
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
 	       }
 	  }
-	  closedir(dirp);
      }
+     closedir(dirp);
+     *num_found = num;
      return(found);
 }
 
-		    
-	  
-static char **find_all_children(base, num)
-char *base;
-int *num;
+
+
+
+
+char **find_matches(base, expression, num_found)
+char *base, *expression;
+int *num_found;
 {
-     int new_num;
-     char **found, **new_found;
-     struct stat stat_buf;
+     struct direct *dp;
+     DIR *dirp;
+     char **found;
+     int num;
+     char **next;
+     int num_next;
+     char first[MAXNAMLEN], rest[MAXPATHLEN];
+     char new[MAXPATHLEN];
+     
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+     
+     strcpy(first, reg_firstpart(expression, rest));
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  re_comp(first);
+	  if (re_exec(dp->d_name)) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
+	       }
+	       else {
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
+	       }
+	  }
+	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
+	       if (*rest) {
+		    strcpy(new, append(base, dp->d_name));
+		    next = find_matches(new, rest, &num_next);
+		    add_arrays(&found, &num, &next, &num_next);
+	       }
+	       else {
+		    found = add_str(found, num, append(base, dp->d_name));
+		    num++;
+	       }
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+
+
+
+
+
+
+
+char **find_recurses(base, num_found)
+char *base;
+int *num_found;
+{
      DIR *dirp;
      struct direct *dp;
      char newname[MAXPATHLEN];
+     char **found, **new_found;
+     int found_num, new_found_num;
+     struct stat stat_buf;
      
-     *num = 0;
      found = (char **) malloc(0);
+     *num_found = found_num = 0;
      
      dirp = opendir(base);
      if (! dirp)
 	  return(found);
 
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	  if (is_dotfile(dp->d_name))
-	       continue;
 	  strcpy(newname, append(base, dp->d_name));
-	  if (is_deleted(dp->d_name)) {
-	       *num += 1;
-	       found = (char **) realloc(found, sizeof(char *) * (*num));
-	       if (! found) {
-		    perror(sprintf(error_buf, "%s: find_all_children",
-				   whoami));
-		    exit(1);
-	       }
-	       found[*num - 1] = (char *) malloc(strlen(newname) + 1);
-	       if (! found[*num - 1]) {
-		    perror(sprintf(error_buf, "%s: find_all_children",
-				   whoami));
-		    exit(1);
-	       }
-	       strcpy(found[*num - 1], newname);
-	  }
+	  found = add_str(found, found_num, newname);
+	  found_num++;
 	  if (lstat(newname, &stat_buf))
 	       continue;
 	  if (stat_buf.st_mode & S_IFDIR) {
-	       new_found = find_all_children(newname, &new_num);
-	       add_arrays(&found, num, &new_found, &new_num);
+	       new_found = find_recurses(newname, &new_found_num);
+	       add_arrays(&found, &found_num, &new_found, &new_found_num);
 	  }
      }
      closedir(dirp);
+     *num_found = found_num;
      return(found);
 }
 
-	       
 
 
-static char **find_dir_contents(base, num)
+
+
+
+char **find_deleted_recurses(base, num_found)
 char *base;
-int *num;
+int *num_found;
 {
-     char **found;
      DIR *dirp;
      struct direct *dp;
      char newname[MAXPATHLEN];
+     char **found, **new_found;
+     int found_num, new_found_num;
+     struct stat stat_buf;
      
-     *num = 0;
      found = (char **) malloc(0);
+     *num_found = found_num = 0;
      
      dirp = opendir(base);
      if (! dirp)
 	  return(found);
 
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	  if (is_dotfile(dp->d_name))
-	       continue;
-	  if (! is_deleted(dp->d_name))
-	       continue;
 	  strcpy(newname, append(base, dp->d_name));
-	  *num += 1;
-	  found = (char **) realloc(found, sizeof(char *) * (*num));
-	  if (! found) {
-	       perror(sprintf(error_buf, "%s: find_dir_contents",
-			      whoami));
-	       exit(1);	
+	  
+	  if (is_deleted(dp->d_name)) {
+	       found = add_str(found, found_num, newname);
+	       found_num++;
 	  }
-	  found[*num - 1] = (char *) malloc(strlen(newname) + 1);
-	  if (! found[*num - 1]) {
-	       perror(sprintf(error_buf, "%s: find_dir_contents",
-			      whoami));
-	       exit(1);
+	  if (lstat(newname, &stat_buf)) {
+	       perror("foobar");
+	       continue;
 	  }
-	  strcpy(found[*num - 1], newname);
+	  if (stat_buf.st_mode & S_IFDIR) {
+	       new_found = find_deleted_recurses(newname, &new_found_num);
+	       add_arrays(&found, &found_num, &new_found, &new_found_num);
+	  }
      }
      closedir(dirp);
+     *num_found = found_num;
      return(found);
 }
+
+
+
+
+
+
+char **find_contents(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  found = add_str(found, num, append(base, dp->d_name));
+	  num += 1;
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+
+
+     
+char **find_deleted_contents(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_deleted(dp->d_name)) {
+	       found = add_str(found, num, append(base, dp->d_name));
+	       num += 1;
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+
+
+
+
+char **find_deleted_contents_recurs(base, num_found)
+char *base;
+int *num_found;
+{
+     DIR *dirp;
+     struct direct *dp;
+     char **found;
+     int num;
+     struct stat stat_buf;
+     char newname[MAXPATHLEN];
+     char **new_found;
+     int new_found_num;
+     
+     found = (char **) malloc(0);
+     *num_found = num = 0;
+   
+     dirp = opendir(base);
+     if (! dirp)
+	  return(found);
+
+     readdir(dirp); readdir(dirp); /* get rid of . and .. */
+
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_deleted(dp->d_name)) {
+	       strcpy(newname, append(base, dp->d_name));
+	       found = add_str(found, num, newname);
+	       num += 1;
+	       if (lstat(newname, &stat_buf))
+		    continue;
+	       if (stat_buf.st_mode & S_IFDIR) {
+		    new_found = find_recurses(newname, &new_found_num);
+		    add_arrays(&found, &num, &new_found, &new_found_num);
+	       }
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+     return(found);
+}
+     
