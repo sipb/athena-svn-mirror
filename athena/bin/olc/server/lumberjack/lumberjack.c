@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.10 1991-01-15 18:07:34 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.11 1991-01-16 10:40:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.10 1991-01-15 18:07:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.11 1991-01-16 10:40:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -205,10 +205,11 @@ main (argc, argv)
 	      perror("lumberjack: open");
 	      return -errno;
 	    }
-	    if (dup2(fd, 2) == -1) {
-	      perror("lumberjack: dup2");
-	      return -errno;
-	    }
+	    if (fd != 0)
+	      if (dup2(fd, 0) == -1) {
+		perror("lumberjack: dup2");
+		return -errno;
+	      }
 	    sprintf (av1, "%s%s", prefix, topic);
 	    sprintf (av3, "%s: %s", username, title);
 	    retval = execl(DSPIPE, DSPAV0, av1, "-t", av3, NULL);
