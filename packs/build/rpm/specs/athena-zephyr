@@ -32,10 +32,6 @@ chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 
 %post
-chkconfig --add zhm
-chkconfig --add zephyrd
-
-%triggerin -- athena-base
 grep -q ZCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZCLIENT=true;		export ZCLIENT		#  Zephyr client
 EOF
@@ -43,6 +39,9 @@ EOF
 grep -q ZSERVER /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZSERVER=false;		export ZSERVER		#  Zephyr server
 EOF
+
+chkconfig --add zhm
+chkconfig --add zephyrd
 
 %files
 /etc/rc.d

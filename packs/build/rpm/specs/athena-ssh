@@ -28,16 +28,15 @@ cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 
 %post
+grep -q SSHD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+SSHD=false;		export SSHD		#  Secure shell daemon
+EOF
+
 if [ ! -f /etc/ssh_host_key ]; then
 	echo "Generating ssh host key."
 	/usr/athena/bin/ssh-keygen -b 1024 -f /etc/ssh_host_key -N ''
 fi
 chkconfig --add athena-sshd
-
-%triggerin -- athena-base
-grep -q SSHD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-SSHD=false;		export SSHD		#  Secure shell daemon
-EOF
 
 %files
 /etc/rc.d

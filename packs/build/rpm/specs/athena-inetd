@@ -33,12 +33,11 @@ mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
 	$RPM_BUILD_ROOT/usr/athena/man/man8/athena-inetd.8
 
 %post
-chkconfig --add athena-inetd
-
-%triggerin -- athena-base
 grep -q ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ACCESSON=false;		export ACCESSON		#  Access on by default
 EOF
+
+chkconfig --add athena-inetd
 
 %triggerin -- netkit-base
 cp /etc/inetd.conf.minimal /etc/inetd.conf

@@ -32,13 +32,12 @@ mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 
 %post
-chkconfig --add athena-sendmail
-/usr/sbin/sendmail -bi
-
-%triggerin -- athena-base
 grep -q SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
 EOF
+
+chkconfig --add athena-sendmail
+/usr/sbin/sendmail -bi
 
 %files
 %config /etc/sendmail.st

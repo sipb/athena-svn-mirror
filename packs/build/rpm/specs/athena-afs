@@ -27,6 +27,18 @@ cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
 
 %post
+grep -q AFSSRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AFSSRV=false;		export AFSSRV;		#  AFS server
+EOF
+
+grep -q AFSCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf 
+AFSCLIENT=true;		export AFSCLIENT;	#  AFS client
+EOF
+
+grep -q AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
+EOF
+
 chkconfig --add afs
 [ -d /afs ] || mkdir -p /afs
 

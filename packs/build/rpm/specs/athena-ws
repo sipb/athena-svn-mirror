@@ -85,6 +85,66 @@ EOF
   fi
 fi
 
+if grep -q HOST /etc/athena/rc.conf ; then true ; else
+  HOST=`hostname`  
+  cat << EOF >> /etc/athena/rc.conf
+HOST=$HOST;		export HOST		#* Hostname
+EOF
+fi
+
+if grep -q ADDR /etc/athena/rc.conf ; then true ; else
+  ADDR=`ifconfig eth0 | grep inet\ addr | sed -e s/^.*addr:// | awk  '{ print $1 ; }'`
+  cat << EOF >> /etc/athena/rc.conf
+ADDR=$ADDR;		export ADDR		#* Internet address
+EOF
+fi
+
+grep -q NETDEV /dev/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NETDEV=eth0;		export NETDEV		# Network interface
+EOF
+
+if grep -q MACHINE /etc/athena/rc.conf ; then true ; else
+  MACHINE=`uname -m`
+  cat << EOF >> /etc/athena/rc.conf
+MACHINE=$MACHINE;	export MACHINE		# Type of machine
+EOF
+fi
+
+if grep -q SYSTEM /etc/athena/rc.conf ; then true ; else
+  SYSTEM=`uname -s`
+  cat << EOF >> /etc/athena/rc.conf
+SYSTEM=$SYSTEM; 	export SYSTEM		# Type of operating system
+EOF
+fi
+
+grep -q PUBLIC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+PUBLIC=false;		export PUBLIC		# Public workstation?
+EOF
+
+grep -q NOCREATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOCREATE=false;		export NOCREATE		# Disallow the public to login?
+EOF
+
+grep -q NOATTACH /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
+EOF
+
+grep -q NOREMOTE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+NOREMOTE=false;		export NOREMOTE		# Deny access to remote users not in /etc/passwd
+EOF
+
+grep -q AUTOUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AUTOUPDATE=true;	export AUTOUPDATE	# Automatically update?
+EOF
+
+grep -q SYNCCONFIG /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+SYNCCONFIG=true;	export SYNCUPDATE	# Syncronize configurations?
+EOF
+
+grep -q MAILRELAY /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
+
+
 %files
 /etc/athena/clean_tmp_areas
 /etc/athena/masks
