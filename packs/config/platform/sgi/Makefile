@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1997-06-09 20:45:50 cfields Exp $
+# $Id: Makefile,v 1.10 1997-07-08 18:46:00 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -46,7 +46,6 @@ install:
 	install -c -m 0644 inetd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0644 nodelock ${DESTDIR}${NETLS}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
@@ -61,6 +60,8 @@ install:
 	install -c -m 0644 webtools.chestrc ${DESTDIR}${X11LIB}
 	rm -f ${DESTDIR}${FLEXLM}/license.dat
 	ln -s ${CONFIG}/license/sgi/license.dat ${DESTDIR}${FLEXLM}/license.dat
+	rm -f ${DESTDIR}${NETLS}/nodelock
+	ln -s ${CONFIG}/license/sgi/nodelock ${DESTDIR}${NETLS}/nodelock
 	rm -f ${DESTDIR}${NCS}/glb_site.txt
 	ln -s ${CONFIG}/license/sgi/glb_site.txt ${DESTDIR}${NCS}/glb_site.txt
 
