@@ -1,8 +1,0 @@
-case $OS in
-solaris)
-	cc=/afs/athena.mit.edu/software/sunsoft/SUNWspro/bin/cc
-	;;
-*)
-	cc=cc
-	;;
-esac

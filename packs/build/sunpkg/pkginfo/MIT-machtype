@@ -1,4 +1,0 @@
-PKG=MIT-machtype
-NAME=Print Athena machine type to standard output
-DESC=Print CPU type and hardware configuration information.
-CATEGORY=system,MITcore
