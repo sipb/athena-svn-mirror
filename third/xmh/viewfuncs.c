@@ -200,7 +200,7 @@ void DoSaveView(w, client_data, call_data)
     Arg		args[2];
 
     if (scrn->msg == NULL) return;
-    if (MsgSaveChanges(scrn->msg)) {
+    if (MsgSaveChanges(scrn->msg, 1)) {
 	XtSetArg(args[0], XtNtranslations, scrn->read_translations);
 	XtSetValues(scrn->viewwidget, args, (Cardinal) 1);
 	MsgClearEditable(scrn->msg);

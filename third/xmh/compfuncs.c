@@ -104,7 +104,7 @@ void XmhSave(w, event, params, num_params)
     DEBUG("XmhSave\n")
     if (scrn->msg == NULL) return;
     MsgSetPermanent(scrn->msg);
-    if (MsgSaveChanges(scrn->msg))
+    if (MsgSaveChanges(scrn->msg, 1))
 	MsgClearReapable(scrn->msg);
 }
 
