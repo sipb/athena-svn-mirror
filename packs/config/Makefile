@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 1998-01-09 03:06:30 ghudson Exp $
+# $Id: Makefile,v 1.15 1998-01-14 17:27:05 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -34,6 +34,7 @@ install:
 	install -c -m 0644 ntp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
+	install -c -m 0644 sshd_config ${DESTDIR}${ETCDIR}
 	install -c -m 0644 zephyr.vars ${DESTDIR}${ATHRETCDIR}
 	rm -f ${DESTDIR}${ETCDIR}/krb.conf
 	ln -s athena/krb.conf ${DESTDIR}${ETCDIR}/krb.conf

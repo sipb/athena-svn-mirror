@@ -1,0 +1,10 @@
+# $Id: sshd_config,v 1.1 1998-01-14 17:27:06 ghudson Exp $
+
+# Athena sshd configuration file
+
+PidFile /var/athena/sshd.pid
+RhostsAuthentication no
+RhostsRSAAuthentication no
+RSAAuthentication no
+StrictModes no
+KerberosOrLocalPasswd yes
