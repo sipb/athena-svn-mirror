@@ -27,9 +27,6 @@
 # include <X11/StringDefs.h>
 # include <X11/Shell.h>
 
-# include <X11/Xaw/Command.h>
-# include <X11/Xaw/Logo.h>
-
 # include "Login.h"
 # include "dm.h"
 
