@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.6 1990-07-16 08:29:41 lwvanels Exp $
+ *	$Id: acl_files.c,v 1.7 1990-08-24 03:38:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.6 1990-07-16 08:29:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.7 1990-08-24 03:38:10 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -30,10 +30,20 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
+#ifdef KERBEROS
 #include <krb.h>
+#endif
 
+#ifdef KERBEROS
 #ifndef KRB_REALM
 #define KRB_REALM	"ATHENA.MIT.EDU"
+#endif
+#else
+#include <sys/param.h> /* for MAXHOSTNAMELEN */
+#define	      REALM_SZ        MAXHOSTNAMELEN
+#define       INST_SZ         0               /* no instances w/o Kerberos */
+#define       ANAME_SZ        9               /* size of a username + null */
+#define       KRB_REALM       "ATHENA.MIT.EDU" /* your local "realm" */
 #endif
 
 /* "aname.inst@realm" */
@@ -46,7 +56,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #define NEW_FILE "%s.~NEWACL~"	/* Format for name of altered acl file */
 #define WAIT_TIME 3		/* Maximum time allowed write acl file */
 
-#define CACHED_ACLS 15 /* How many acls to cache */
+#define CACHED_ACLS  35 /* How many acls to cache */
 				/* Each acl costs 1 open file descriptor */
 #define ACL_LEN 32		/* Twice a reasonable acl length */
 
@@ -119,9 +129,14 @@ char *canon;
 	strncpy(canon, atsign, len);
 	canon += len;
 	*canon++ = '\0';
-    } else if (krb_get_lrealm (canon, 1) != KSUCCESS) {
+    }
+#ifdef KERBEROS
+    else if (krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }
+#else
+    else strcpy(canon, KRB_REALM);
+#endif
 }
 	    
 /* Get a lock to modify acl_file */
@@ -379,11 +394,14 @@ char *name;
     char canon[MAX_PRINCIPAL_SIZE];
 
     /* See if it's there already */
-    for(i = 0; i < acl_cache_count; i++) {
-	if(!strcmp(acl_cache[i].filename, name)
-	   && acl_cache[i].fd >= 0) goto got_it;
-    }
-
+    for(i = 0; i < acl_cache_count; i++)
+      if(!strcmp(acl_cache[i].filename, name)) {
+	if (acl_cache[i].fd >= 0) 
+	  goto got_it;
+	else  /* Exists in cache, but wasn't able to be opened last time */
+	  goto in_cache;
+      }
+	 
     /* It isn't, load it in */
     /* maybe there's still room */
     if(acl_cache_count < CACHED_ACLS) {
@@ -401,6 +419,7 @@ char *name;
 
     /* Set up the acl */
     strcpy(acl_cache[i].filename, name);
+ in_cache:
     if((acl_cache[i].fd = open(name, O_RDONLY, 0)) < 0) return(-1);
     /* Force reload */
     acl_cache[i].acl = (struct hashtbl *) 0;
