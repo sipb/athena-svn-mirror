@@ -9,6 +9,7 @@ EXTRA_DIST=ORBit.spec.in ORBit.m4 ORBit.pc.in
 dist-hook: ORBit.spec
 	mkdir $(distdir)/docs
 	cp -pr $(srcdir)/docs/* $(distdir)/docs
+	rm -rf $(distdir)/docs/CVS $(distdir)/docs/idl/CVS
 	cp ORBit.spec $(distdir)
 
 rpms: distcheck

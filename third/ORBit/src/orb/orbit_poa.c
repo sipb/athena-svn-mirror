@@ -450,6 +450,12 @@ ORBit_POA_handle_request(GIOPRecvBuffer *recv_buffer,
 
 	if(!servant) {
 		switch(poa->request_processing) {
+		case PortableServer_USE_ACTIVE_OBJECT_MAP_ONLY:
+                  if(oid)
+		    obj_impl = g_hash_table_lookup(poa->active_object_map, oid);
+		  if(obj_impl)
+		    servant = obj_impl->servant;
+		  break;
 		case PortableServer_USE_SERVANT_MANAGER:
 			servant = ORBit_POA_ServantManager_use_servant(poa,
 								       recv_buffer,

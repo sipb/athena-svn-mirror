@@ -179,8 +179,6 @@ static void tc_enc(CORBA_TypeCode tc,
 	CDR_Codec encaps_d;
 	CDR_Codec* encaps = &encaps_d;
 
-	g_assert(CLAMP(0, tc->kind, CORBA_tk_last) == tc->kind);
-
 	for(l=ctx->prior_tcs;l;l=l->next){
 		TCRecursionNode* node=l->data;
 		/* CORBA_CORBA_TypeCode_equal might save space, but is slow.. */
@@ -230,7 +228,7 @@ static void tc_enc(CORBA_TypeCode tc,
 }
 
 static void
-ORBit_TypeCode_release(gpointer obj, CORBA_Environment *ev)
+ORBit_TypeCode_release (gpointer obj, CORBA_Environment *ev)
 {
   /* we will initialize the TC_ constants with a negative refcount */
   if(ORBIT_ROOT_OBJECT(obj)->refs >= 0) {
@@ -261,6 +259,8 @@ ORBit_TypeCode_release(gpointer obj, CORBA_Environment *ev)
       if(tc->discriminator)
 	CORBA_Object_release((CORBA_Object)tc->discriminator, ev);
 
+      memset (obj, 0xa, sizeof (struct CORBA_TypeCode_struct));
+
       g_free(obj);
     }
 
@@ -282,8 +282,6 @@ static void tc_dec(CORBA_TypeCode* t, CDR_Codec* c, TCDecodeContext* ctx)
 
 	CDR_get_ulong(c, &kind);
 
-	g_assert(CLAMP(0, kind, CORBA_tk_last) == kind);
-
 	if(kind==CORBA_tk_recursive){
 		CORBA_long offset;
 		GSList* l;
@@ -292,6 +290,7 @@ static void tc_dec(CORBA_TypeCode* t, CDR_Codec* c, TCDecodeContext* ctx)
 			node=l->data;
 			/* NOTE: below, -4 is b/c we already read offset */
 			if(node->index==ctx->current_idx+c->rptr+offset-4){
+				CORBA_Object_duplicate((CORBA_Object)node->tc, NULL);
 				*t=node->tc;
 				return;
 			}
@@ -318,9 +317,8 @@ static void tc_dec(CORBA_TypeCode* t, CDR_Codec* c, TCDecodeContext* ctx)
 	ORBit_RootObject_set_interface((ORBit_RootObject)tc,
 				       (ORBit_RootObject_Interface *)&ORBit_TypeCode_epv,
 				       NULL);
-
+	CORBA_Object_duplicate((CORBA_Object)tc, NULL);
 	tc->kind=kind;
-	((ORBit_RootObject)tc)->refs=-1;   /* negative so that it doesn't get freed by CORBA_Object_release() */
 	switch(info->type){
 		guint tmp_index;
 		CORBA_octet o;
@@ -375,7 +373,6 @@ static void tc_dec_tk_sequence(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* 
 	t->subtypes=g_new(CORBA_TypeCode, 1);
 	tc_dec(&t->subtypes[0], c, ctx);
 	t->sub_parts=1;
-	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 	CDR_get_ulong(c, &t->length);
 }
 
@@ -412,7 +409,6 @@ static void tc_dec_tk_struct(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ct
 	for(i=0;i<t->sub_parts;i++){
 		CDR_get_string(c, (char **)&t->subnames[i]);
 		tc_dec(&t->subtypes[i], c, ctx);
-		CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL);
 	}
 }	
 
@@ -465,7 +461,6 @@ static void tc_dec_tk_union(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 	CDR_get_string(c, (char **)&t->repo_id);
 	CDR_get_string(c, (char **)&t->name);
 	tc_dec(&t->discriminator, c, ctx);
-	CORBA_Object_duplicate((CORBA_Object)t->discriminator, NULL);
 	CDR_get_ulong(c, &t->default_index);
 	CDR_get_ulong(c, &t->sub_parts);
 
@@ -476,14 +471,13 @@ static void tc_dec_tk_union(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 #define MEMBER_LOOPER_DEC(getname, typename, tkname) \
     case CORBA_tk_##tkname: \
 	for(i=0;i<t->sub_parts;i++){ 	\
-	    t->sublabels[i]._type = 	\
+	    t->sublabels[i]._type = (CORBA_TypeCode) \
 	      CORBA_Object_duplicate((CORBA_Object)t->discriminator, NULL); \
-	    t->sublabels[i]._value = g_new(CORBA_##typename,1); \
+	    t->sublabels[i]._value = ORBit_alloc(sizeof(CORBA_##typename), NULL, NULL); \
 	    t->sublabels[i]._release = CORBA_TRUE; \
 	    CDR_get_##getname(c, t->sublabels[i]._value); \
 	    CDR_get_string(c, (char **)&t->subnames[i]); \
 	    tc_dec(&t->subtypes[i], c, ctx); \
-	    CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL); \
 	} \
 	break
 
@@ -530,7 +524,6 @@ static void tc_dec_tk_alias(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 	t->subtypes=g_new(CORBA_TypeCode, 1);
 	t->sub_parts=1;
 	tc_dec(t->subtypes, c, ctx);
-	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 }
 
 
@@ -557,7 +550,6 @@ static void tc_dec_tk_except(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ct
 	for(i=0;i<t->sub_parts;i++){
 		CDR_get_string(c, (char **)&t->subnames[i]);
 		tc_dec(&t->subtypes[i], c, ctx);
-		CORBA_Object_duplicate((CORBA_Object)t->subtypes[i], NULL);
 	}
 }
 
@@ -571,7 +563,6 @@ static void tc_dec_tk_array(CORBA_TypeCode t, CDR_Codec* c, TCDecodeContext* ctx
 {
 	t->subtypes=g_new(CORBA_TypeCode, 1);
 	tc_dec(t->subtypes, c, ctx);
-	CORBA_Object_duplicate((CORBA_Object)t->subtypes[0], NULL);
 	CDR_get_ulong(c, &t->length);
 	t->sub_parts=1;
 }

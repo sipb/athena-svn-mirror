@@ -827,6 +827,9 @@ PortableServer_POA_deactivate_object(PortableServer_POA obj,
 				CORBA_FALSE,
 				CORBA_FALSE,
 				ev);
+	} else {
+	  PortableServer_ServantBase *serv = oldobj->servant;
+	  serv->_private = NULL;
 	}
 
 	CORBA_free(oldobj->object_id);
@@ -878,6 +881,9 @@ PortableServer_POA_servant_to_reference(PortableServer_POA obj, PortableServer_S
 		orig_id = obj_key->object->object_id;
 	}
 	retval = PortableServer_POA_id_to_reference(obj,orig_id,ev);
+
+	if( implicit && activate_able)
+		CORBA_free (orig_id);
 
 	return retval;
 }

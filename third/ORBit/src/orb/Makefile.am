@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-libORBitincludedir = $(includedir)/ORBit
-
 INCLUDES =-I.. -I$(top_srcdir)/src @GLIB_CFLAGS@ \
 	-DORBit_SYSRC=\"$(sysconfdir)/orbitrc\" \
 	-I$(top_builddir)/src/ORBitutil \
@@ -13,7 +11,7 @@ INCLUDES =-I.. -I$(top_srcdir)/src @GLIB_CFLAGS@ \
 
 lib_LTLIBRARIES = libORBit.la
 
-libORBitincludedir = $(includedir)/orb
+libORBitincludedir = $(includedir)/orbit-1.0/orb
 
 EXTRA_DIST=orbit.h.in
 
@@ -119,5 +117,3 @@ CLEANFILES=my_ir_stuff
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
-
-CFLAGS=-g -O0

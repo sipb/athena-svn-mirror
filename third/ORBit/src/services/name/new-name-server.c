@@ -197,11 +197,17 @@ Name__copy ( CosNaming_Name* dest, CosNaming_Name* src, int from_pos )
 {
   int i;
   dest->_length = MAX(src->_length - from_pos, 0);
-  dest->_buffer = dest->_length?CORBA_sequence_CosNaming_NameComponent_allocbuf (dest->_length):NULL;
-  for (i = 0; i < dest->_length; i++)
+  if (dest->_length > 0)
     {
-      NameComponent__copy (dest->_buffer + i, src->_buffer + i + from_pos);
+      dest->_buffer = CORBA_sequence_CosNaming_NameComponent_allocbuf (dest->_length);
+      CORBA_sequence_set_release(dest, CORBA_TRUE);
+      for (i = 0; i < dest->_length; i++)
+	{
+	  NameComponent__copy (dest->_buffer + i, src->_buffer + i + from_pos);
+	}
     }
+  else
+    dest->_buffer = NULL;
 }
 
 static guint
@@ -662,18 +668,23 @@ n_names_into_bindinglist(GList **itemlist, int n)
   int i;
   RegisteredName *curnom;
 
-  bl->_length = n;
-  bl->_buffer = n?CORBA_sequence_CosNaming_Binding_allocbuf(bl->_length):NULL;
-  for(i = 0; i < n; i++) {
-    curnom = (*itemlist)->data; *itemlist = g_list_remove_link(*itemlist, *itemlist);
-
-    bl->_buffer[i].binding_name._length = 1;
-    bl->_buffer[i].binding_name._buffer = CORBA_sequence_CosNaming_NameComponent_allocbuf(1);
-    NameComponent__copy(&bl->_buffer[i].binding_name._buffer[0], &curnom->nc);
-    bl->_buffer[i].binding_type = curnom->is_subctx?CosNaming_ncontext:CosNaming_nobject;
-
-    rn_unref(curnom);
-  }
+  if (n > 0)
+    {
+      bl->_length = n; 
+      bl->_buffer = CORBA_sequence_CosNaming_Binding_allocbuf(n);
+      CORBA_sequence_set_release(bl, CORBA_TRUE);
+      for(i = 0; i < n; i++) {
+	curnom = (*itemlist)->data; *itemlist = g_list_remove_link(*itemlist, *itemlist);
+	
+	bl->_buffer[i].binding_name._length = 1;
+	bl->_buffer[i].binding_name._buffer = CORBA_sequence_CosNaming_NameComponent_allocbuf(1);
+	CORBA_sequence_set_release(&(bl->_buffer[i].binding_name), CORBA_TRUE);
+	NameComponent__copy(&bl->_buffer[i].binding_name._buffer[0], &curnom->nc);
+	bl->_buffer[i].binding_type = curnom->is_subctx?CosNaming_ncontext:CosNaming_nobject;
+	
+	rn_unref(curnom);
+      }
+    }
 
   return bl;
 }
@@ -761,6 +772,7 @@ impl_CosNaming_BindingIterator_next_one(impl_POA_CosNaming_BindingIterator * ser
 
     (*b)->binding_name._length = 1;
     (*b)->binding_name._buffer = CORBA_sequence_CosNaming_NameComponent_allocbuf(1);
+    CORBA_sequence_set_release(&((*b)->binding_name), CORBA_TRUE);
     NameComponent__copy(&(*b)->binding_name._buffer[0], &curnom->nc);
     (*b)->binding_type = curnom->is_subctx?CosNaming_ncontext:CosNaming_nobject;
 

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -63,6 +63,8 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -81,6 +83,7 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -89,6 +92,7 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
@@ -203,6 +207,13 @@ TESTS = test-dynany
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  ior-decode$(EXEEXT)
+noinst_PROGRAMS =  test$(EXEEXT) test-dynamic$(EXEEXT) \
+echo-client$(EXEEXT) echo-server$(EXEEXT) test-object$(EXEEXT) \
+echo-local$(EXEEXT) test-any-client$(EXEEXT) test-any-server$(EXEEXT) \
+test-tc-client$(EXEEXT) test-tc-server$(EXEEXT) test-ir-client$(EXEEXT) \
+test-ir-server$(EXEEXT) empty-server$(EXEEXT) empty-client$(EXEEXT) \
+test-dynany$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 
@@ -210,30 +221,34 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-ior_decode_OBJECTS =  ior-decode.o
-test_OBJECTS =  test.o
-test_dynamic_OBJECTS =  test.o
+ior_decode_OBJECTS =  ior-decode.$(OBJEXT)
+test_OBJECTS =  test.$(OBJEXT)
+test_dynamic_OBJECTS =  test.$(OBJEXT)
 test_dynamic_LDFLAGS = 
-echo_client_OBJECTS =  echo-client.o echo-common.o echo-stubs.o
-echo_server_OBJECTS =  echo-server.o echo-common.o echo-skels.o
-test_object_OBJECTS =  test-object.o
-echo_local_OBJECTS =  echo-local.o echo-common.o echo-stubs.o \
-echo-skels.o
-test_any_client_OBJECTS =  test-any-client.o test-any-common.o \
-test-any-stubs.o
-test_any_server_OBJECTS =  test-any-server.o test-any-common.o \
-test-any-skels.o
-test_tc_client_OBJECTS =  test-tc-client.o test-tc-common.o \
-test-tc-stubs.o
-test_tc_server_OBJECTS =  test-tc-server.o test-tc-common.o \
-test-tc-skels.o
-test_ir_client_OBJECTS =  test-ir-client.o test-ir-common.o \
-test-ir-stubs.o
-test_ir_server_OBJECTS =  test-ir-server.o test-ir-common.o \
-test-ir-skels.o
-empty_server_OBJECTS =  empty-server.o empty-common.o empty-skels.o
-empty_client_OBJECTS =  empty-client.o empty-common.o empty-stubs.o
-test_dynany_OBJECTS =  test-dynany.o
+echo_client_OBJECTS =  echo-client.$(OBJEXT) echo-common.$(OBJEXT) \
+echo-stubs.$(OBJEXT)
+echo_server_OBJECTS =  echo-server.$(OBJEXT) echo-common.$(OBJEXT) \
+echo-skels.$(OBJEXT)
+test_object_OBJECTS =  test-object.$(OBJEXT)
+echo_local_OBJECTS =  echo-local.$(OBJEXT) echo-common.$(OBJEXT) \
+echo-stubs.$(OBJEXT) echo-skels.$(OBJEXT)
+test_any_client_OBJECTS =  test-any-client.$(OBJEXT) \
+test-any-common.$(OBJEXT) test-any-stubs.$(OBJEXT)
+test_any_server_OBJECTS =  test-any-server.$(OBJEXT) \
+test-any-common.$(OBJEXT) test-any-skels.$(OBJEXT)
+test_tc_client_OBJECTS =  test-tc-client.$(OBJEXT) \
+test-tc-common.$(OBJEXT) test-tc-stubs.$(OBJEXT)
+test_tc_server_OBJECTS =  test-tc-server.$(OBJEXT) \
+test-tc-common.$(OBJEXT) test-tc-skels.$(OBJEXT)
+test_ir_client_OBJECTS =  test-ir-client.$(OBJEXT) \
+test-ir-common.$(OBJEXT) test-ir-stubs.$(OBJEXT)
+test_ir_server_OBJECTS =  test-ir-server.$(OBJEXT) \
+test-ir-common.$(OBJEXT) test-ir-skels.$(OBJEXT)
+empty_server_OBJECTS =  empty-server.$(OBJEXT) empty-common.$(OBJEXT) \
+empty-skels.$(OBJEXT)
+empty_client_OBJECTS =  empty-client.$(OBJEXT) empty-common.$(OBJEXT) \
+empty-stubs.$(OBJEXT)
+test_dynany_OBJECTS =  test-dynany.$(OBJEXT)
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -251,7 +266,7 @@ OBJECTS = $(ior_decode_OBJECTS) $(test_OBJECTS) $(test_dynamic_OBJECTS) $(echo_c
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps test/Makefile
 
@@ -297,6 +312,11 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -305,6 +325,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -332,68 +353,68 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-ior-decode: $(ior_decode_OBJECTS) $(ior_decode_DEPENDENCIES)
-	@rm -f ior-decode
+ior-decode$(EXEEXT): $(ior_decode_OBJECTS) $(ior_decode_DEPENDENCIES)
+	@rm -f ior-decode$(EXEEXT)
 	$(LINK) $(ior_decode_LDFLAGS) $(ior_decode_OBJECTS) $(ior_decode_LDADD) $(LIBS)
 
-test: $(test_OBJECTS) $(test_DEPENDENCIES)
-	@rm -f test
+test$(EXEEXT): $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test$(EXEEXT)
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
-test-dynamic: $(test_dynamic_OBJECTS) $(test_dynamic_DEPENDENCIES)
-	@rm -f test-dynamic
+test-dynamic$(EXEEXT): $(test_dynamic_OBJECTS) $(test_dynamic_DEPENDENCIES)
+	@rm -f test-dynamic$(EXEEXT)
 	$(LINK) $(test_dynamic_LDFLAGS) $(test_dynamic_OBJECTS) $(test_dynamic_LDADD) $(LIBS)
 
-echo-client: $(echo_client_OBJECTS) $(echo_client_DEPENDENCIES)
-	@rm -f echo-client
+echo-client$(EXEEXT): $(echo_client_OBJECTS) $(echo_client_DEPENDENCIES)
+	@rm -f echo-client$(EXEEXT)
 	$(LINK) $(echo_client_LDFLAGS) $(echo_client_OBJECTS) $(echo_client_LDADD) $(LIBS)
 
-echo-server: $(echo_server_OBJECTS) $(echo_server_DEPENDENCIES)
-	@rm -f echo-server
+echo-server$(EXEEXT): $(echo_server_OBJECTS) $(echo_server_DEPENDENCIES)
+	@rm -f echo-server$(EXEEXT)
 	$(LINK) $(echo_server_LDFLAGS) $(echo_server_OBJECTS) $(echo_server_LDADD) $(LIBS)
 
-test-object: $(test_object_OBJECTS) $(test_object_DEPENDENCIES)
-	@rm -f test-object
+test-object$(EXEEXT): $(test_object_OBJECTS) $(test_object_DEPENDENCIES)
+	@rm -f test-object$(EXEEXT)
 	$(LINK) $(test_object_LDFLAGS) $(test_object_OBJECTS) $(test_object_LDADD) $(LIBS)
 
-echo-local: $(echo_local_OBJECTS) $(echo_local_DEPENDENCIES)
-	@rm -f echo-local
+echo-local$(EXEEXT): $(echo_local_OBJECTS) $(echo_local_DEPENDENCIES)
+	@rm -f echo-local$(EXEEXT)
 	$(LINK) $(echo_local_LDFLAGS) $(echo_local_OBJECTS) $(echo_local_LDADD) $(LIBS)
 
-test-any-client: $(test_any_client_OBJECTS) $(test_any_client_DEPENDENCIES)
-	@rm -f test-any-client
+test-any-client$(EXEEXT): $(test_any_client_OBJECTS) $(test_any_client_DEPENDENCIES)
+	@rm -f test-any-client$(EXEEXT)
 	$(LINK) $(test_any_client_LDFLAGS) $(test_any_client_OBJECTS) $(test_any_client_LDADD) $(LIBS)
 
-test-any-server: $(test_any_server_OBJECTS) $(test_any_server_DEPENDENCIES)
-	@rm -f test-any-server
+test-any-server$(EXEEXT): $(test_any_server_OBJECTS) $(test_any_server_DEPENDENCIES)
+	@rm -f test-any-server$(EXEEXT)
 	$(LINK) $(test_any_server_LDFLAGS) $(test_any_server_OBJECTS) $(test_any_server_LDADD) $(LIBS)
 
-test-tc-client: $(test_tc_client_OBJECTS) $(test_tc_client_DEPENDENCIES)
-	@rm -f test-tc-client
+test-tc-client$(EXEEXT): $(test_tc_client_OBJECTS) $(test_tc_client_DEPENDENCIES)
+	@rm -f test-tc-client$(EXEEXT)
 	$(LINK) $(test_tc_client_LDFLAGS) $(test_tc_client_OBJECTS) $(test_tc_client_LDADD) $(LIBS)
 
-test-tc-server: $(test_tc_server_OBJECTS) $(test_tc_server_DEPENDENCIES)
-	@rm -f test-tc-server
+test-tc-server$(EXEEXT): $(test_tc_server_OBJECTS) $(test_tc_server_DEPENDENCIES)
+	@rm -f test-tc-server$(EXEEXT)
 	$(LINK) $(test_tc_server_LDFLAGS) $(test_tc_server_OBJECTS) $(test_tc_server_LDADD) $(LIBS)
 
-test-ir-client: $(test_ir_client_OBJECTS) $(test_ir_client_DEPENDENCIES)
-	@rm -f test-ir-client
+test-ir-client$(EXEEXT): $(test_ir_client_OBJECTS) $(test_ir_client_DEPENDENCIES)
+	@rm -f test-ir-client$(EXEEXT)
 	$(LINK) $(test_ir_client_LDFLAGS) $(test_ir_client_OBJECTS) $(test_ir_client_LDADD) $(LIBS)
 
-test-ir-server: $(test_ir_server_OBJECTS) $(test_ir_server_DEPENDENCIES)
-	@rm -f test-ir-server
+test-ir-server$(EXEEXT): $(test_ir_server_OBJECTS) $(test_ir_server_DEPENDENCIES)
+	@rm -f test-ir-server$(EXEEXT)
 	$(LINK) $(test_ir_server_LDFLAGS) $(test_ir_server_OBJECTS) $(test_ir_server_LDADD) $(LIBS)
 
-empty-server: $(empty_server_OBJECTS) $(empty_server_DEPENDENCIES)
-	@rm -f empty-server
+empty-server$(EXEEXT): $(empty_server_OBJECTS) $(empty_server_DEPENDENCIES)
+	@rm -f empty-server$(EXEEXT)
 	$(LINK) $(empty_server_LDFLAGS) $(empty_server_OBJECTS) $(empty_server_LDADD) $(LIBS)
 
-empty-client: $(empty_client_OBJECTS) $(empty_client_DEPENDENCIES)
-	@rm -f empty-client
+empty-client$(EXEEXT): $(empty_client_OBJECTS) $(empty_client_DEPENDENCIES)
+	@rm -f empty-client$(EXEEXT)
 	$(LINK) $(empty_client_LDFLAGS) $(empty_client_OBJECTS) $(empty_client_LDADD) $(LIBS)
 
-test-dynany: $(test_dynany_OBJECTS) $(test_dynany_DEPENDENCIES)
-	@rm -f test-dynany
+test-dynany$(EXEEXT): $(test_dynany_OBJECTS) $(test_dynany_DEPENDENCIES)
+	@rm -f test-dynany$(EXEEXT)
 	$(LINK) $(test_dynany_LDFLAGS) $(test_dynany_OBJECTS) $(test_dynany_LDADD) $(LIBS)
 
 # This directory's subdirectories are mostly independent; you can cd

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -66,38 +66,42 @@ host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
+INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+LIBICONV = @LIBICONV@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 TARGET = @TARGET@
 U = @U@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-l = @l@
 
 AUTOMAKE_OPTIONS = 1.4 foreign
 
@@ -140,11 +144,12 @@ libpopt_la_LDFLAGS =
 libpopt_la_LIBADD = 
 libpopt_la_OBJECTS =  popt.lo findme.lo poptparse.lo poptconfig.lo \
 popthelp.lo
+noinst_PROGRAMS =  test1$(EXEEXT) test2$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
-test1_OBJECTS =  test1.o
+test1_OBJECTS =  test1.$(OBJEXT)
 test1_DEPENDENCIES =  libpopt.la
-test2_OBJECTS =  test2.o
+test2_OBJECTS =  test2.$(OBJEXT)
 test2_DEPENDENCIES =  libpopt.la
 SCRIPTS =  $(noinst_SCRIPTS)
 
@@ -157,7 +162,7 @@ HEADERS =  $(noinst_HEADERS)
 
 DIST_COMMON =  README ./stamp-h.in COPYING Makefile.am Makefile.in \
 acconfig.h aclocal.m4 config.guess config.h.in config.sub configure \
-configure.in install-sh ltconfig ltmain.sh missing mkinstalldirs
+configure.in install-sh ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -169,7 +174,7 @@ OBJECTS = $(libpopt_la_OBJECTS) $(test1_OBJECTS) $(test2_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps Makefile
 
@@ -225,6 +230,11 @@ maintainer-clean-noinstLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -233,6 +243,7 @@ maintainer-clean-noinstLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -272,12 +283,12 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-test1: $(test1_OBJECTS) $(test1_DEPENDENCIES)
-	@rm -f test1
+test1$(EXEEXT): $(test1_OBJECTS) $(test1_DEPENDENCIES)
+	@rm -f test1$(EXEEXT)
 	$(LINK) $(test1_LDFLAGS) $(test1_OBJECTS) $(test1_LDADD) $(LIBS)
 
-test2: $(test2_OBJECTS) $(test2_DEPENDENCIES)
-	@rm -f test2
+test2$(EXEEXT): $(test2_OBJECTS) $(test2_DEPENDENCIES)
+	@rm -f test2$(EXEEXT)
 	$(LINK) $(test2_LDFLAGS) $(test2_OBJECTS) $(test2_LDADD) $(LIBS)
 
 # This directory's subdirectories are mostly independent; you can cd

@@ -40,9 +40,11 @@ SequenceServer_opStrSeq(PortableServer_Servant _servant,
 	g_assert(strcmp(inoutArg->_buffer[i],constants_SEQ_STRING_INOUT_IN[i]) == 0);
   }
 
-  CORBA_free(inoutArg->_buffer);
+  if (CORBA_sequence_get_release (inoutArg))
+    CORBA_free(inoutArg->_buffer);
   inoutArg->_buffer = CORBA_sequence_CORBA_string_allocbuf(2);
   inoutArg->_length = 2;
+  CORBA_sequence_set_release(inoutArg, CORBA_TRUE);
   
   for (i=0;i<inoutArg->_length;i++)
 	inoutArg->_buffer[i] = CORBA_string_dup(constants_SEQ_STRING_INOUT_OUT[i]);
@@ -50,6 +52,7 @@ SequenceServer_opStrSeq(PortableServer_Servant _servant,
   *outArg = CORBA_sequence_CORBA_string__alloc();
   (*outArg)->_buffer = CORBA_sequence_CORBA_string_allocbuf(2);
   (*outArg)->_length = 2;
+  CORBA_sequence_set_release(*outArg, CORBA_TRUE);
 
   for (i=0;i<(*outArg)->_length;i++)
 	(*outArg)->_buffer[i] = CORBA_string_dup(constants_SEQ_STRING_OUT[i]);
@@ -58,6 +61,7 @@ SequenceServer_opStrSeq(PortableServer_Servant _servant,
   retn = CORBA_sequence_CORBA_string__alloc();
   retn->_buffer = CORBA_sequence_CORBA_string_allocbuf(2);
   retn->_length = 2;
+  CORBA_sequence_set_release(retn, CORBA_TRUE);
 
   for (i=0;i<retn->_length;i++)
 	retn->_buffer[i] = CORBA_string_dup(constants_SEQ_STRING_RETN[i]);
@@ -82,9 +86,11 @@ SequenceServer_opBoundedStructSeq(PortableServer_Servant _servant,
 	g_assert(strcmp(inoutArg->_buffer[i].a.a,constants_SEQ_STRING_INOUT_IN[i]) == 0);
   }
 
-  CORBA_free(inoutArg->_buffer);
+  if (CORBA_sequence_get_release (inoutArg))
+    CORBA_free(inoutArg->_buffer);
   inoutArg->_buffer = CORBA_sequence_test_CompoundStruct_allocbuf(2);
   inoutArg->_length = 2;
+  CORBA_sequence_set_release(inoutArg, CORBA_TRUE);
   
   for (i=0;i<inoutArg->_length;i++)
 	inoutArg->_buffer[i].a.a = CORBA_string_dup(constants_SEQ_STRING_INOUT_OUT[i]);
@@ -92,6 +98,7 @@ SequenceServer_opBoundedStructSeq(PortableServer_Servant _servant,
   *outArg = CORBA_sequence_test_CompoundStruct__alloc();
   (*outArg)->_buffer = CORBA_sequence_test_CompoundStruct_allocbuf(2);
   (*outArg)->_length = 2;
+  CORBA_sequence_set_release(*outArg, CORBA_TRUE);
 
   for (i=0;i<(*outArg)->_length;i++)
 	(*outArg)->_buffer[i].a.a = CORBA_string_dup(constants_SEQ_STRING_OUT[i]);
@@ -100,6 +107,7 @@ SequenceServer_opBoundedStructSeq(PortableServer_Servant _servant,
   retn = CORBA_sequence_test_CompoundStruct__alloc();
   retn->_buffer = CORBA_sequence_test_CompoundStruct_allocbuf(2);
   retn->_length = 2;
+  CORBA_sequence_set_release(retn, CORBA_TRUE);
 
   for (i=0;i<retn->_length;i++)
 	retn->_buffer[i].a.a = CORBA_string_dup(constants_SEQ_STRING_RETN[i]);

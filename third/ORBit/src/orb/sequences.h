@@ -32,4 +32,11 @@
 CORBA_octet *CORBA_octet_allocbuf(CORBA_unsigned_long len);
 CORBA_sequence_octet *CORBA_sequence_octet__alloc(void);
 
+
+extern CORBA_sequence_CORBA_any *CORBA_sequence_CORBA_any__alloc(void);
+extern gpointer CORBA_sequence_CORBA_any__free(gpointer mem, gpointer dat,
+						  CORBA_boolean free_strings);	/* ORBit internal use */
+CORBA_any *CORBA_sequence_CORBA_any_allocbuf(CORBA_unsigned_long len);
+
+
 #endif /* !_ORBIT_SEQUENCES_H_ */

@@ -8,7 +8,7 @@ Echo echo_client = CORBA_OBJECT_NIL;
 
 static CORBA_Object
 do_echoString(PortableServer_Servant servant,
-	      CORBA_char *astring,
+	      const CORBA_char *astring,
 	      CORBA_double *outnum,
 	      CORBA_Environment *ev);
 
@@ -93,7 +93,7 @@ main (int argc, char *argv[])
 
 static CORBA_Object
 do_echoString(PortableServer_Servant servant,
-	      CORBA_char *astring,
+	      const CORBA_char *astring,
 	      CORBA_double *outnum,
 	      CORBA_Environment *ev)
 {

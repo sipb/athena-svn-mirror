@@ -31,17 +31,33 @@ void ORBit_chunk_free(GMemChunk *chunk,
 
 typedef gpointer (*ORBit_free_childvals)(gpointer mem,
 					 gpointer func_data,
-					 CORBA_boolean free_strings);
+					 CORBA_boolean ignore);
 
-/* Please make sure this structure's size is divisible by 8, at least. */
 typedef struct {
 	gulong magic;
-	gulong unused;
 
 	/* If this routine returns FALSE, it indicates that it already free'd
 	   the memory block itself */
 	ORBit_free_childvals free; /* function pointer to free function */
 	gpointer func_data;
+	/* This free_marker is used to distinguish between memory,
+	 * which has to be freed (in that case free_marker is
+	 * FREE_MARKER_IS_ALLOCATED [0xfefefefe]) or memory, which
+	 * must not be freed as it is a string residing in the receive
+	 * buffer of a request (in that case free_marker per GIOP is
+	 * the length of the following string, thus some number
+	 * guaranteed to be smaller than 0xfffffefe, I don't think, we
+	 * ever support transferring strings with a length of 4GB ;-)
+	 *
+	 * The marker is not 0xffffffff, because that is also -1.
+	 * Remember that the length in the receive buffer can have
+	 * swapped endianess, so using 0xffff0000 is a plan to
+	 * disaster.  
+	 */
+	union {
+		CORBA_unsigned_long free_marker;
+	        double align_me_properly;
+	} u;
 } ORBit_mem_info;
 
 gpointer ORBit_alloc(size_t block_size,
@@ -52,11 +68,11 @@ gpointer ORBit_alloc_2(size_t block_size,
 		       gpointer func_data,
 		       size_t before_size);
 
-void ORBit_free(gpointer mem, CORBA_boolean free_strings);
+void ORBit_free(gpointer mem, CORBA_boolean ignore);
 
 /* internal stuff */
 gpointer ORBit_free_via_TypeCode(gpointer mem,
 				 gpointer tcp,
-				 gboolean free_strings);
+				 gboolean ignore);
 
 #endif /* ALLOCATORS_H */

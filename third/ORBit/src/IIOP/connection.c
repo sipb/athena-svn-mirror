@@ -1,5 +1,5 @@
 #include "config.h"
-#ifndef _XOPEN_SOURCE_EXTENDED
+#if defined (__hpux) && ! defined (_XOPEN_SOURCE_EXTENDED)
 #   define _XOPEN_SOURCE_EXTENDED 1
 #   define WE_DEFINED_XOPEN_SOURCE_EXTENDED 1
 #endif
@@ -17,7 +17,7 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#ifndef _XOPEN_SOURCE_EXTENDED
+#if defined (__hpux) && ! defined (_XOPEN_SOURCE_EXTENDED)
 #   define _XOPEN_SOURCE_EXTENDED 1
 #endif
 #include <arpa/inet.h>
@@ -449,7 +449,7 @@ iiop_connection_from_fd(int fd, IIOPConnection *parent)
 	  }
 	else
 	  {
-	    fd_cnx->u.ipv4.hostname = inet_ntoa(*((struct in_addr *)&fd_cnx->u.ipv4.location.sin_addr));
+	    fd_cnx->u.ipv4.hostname = g_strdup(inet_ntoa(*((struct in_addr *)&fd_cnx->u.ipv4.location.sin_addr)));
 	  }
       }
     break;
@@ -1063,6 +1063,9 @@ iiop_connection_server_accept(GIOPConnection *connection)
   if(newfd >= 0) {
     newcnx = GIOP_CONNECTION(iiop_connection_from_fd(newfd,
 						     IIOP_CONNECTION(connection)));
+#ifdef GIOP_INTERNAL_DEBUG
+    g_warning ("New connection '%p'", newcnx);
+#endif
     GIOP_CONNECTION(newcnx)->orb_data = connection->orb_data;
     switch(IIOP_CONNECTION(connection)->icnxtype) {
     case IIOP_USOCK: newcnx->is_auth = TRUE; break;

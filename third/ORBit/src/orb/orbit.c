@@ -117,12 +117,12 @@ CORBA_boolean CORBA_sequence_get_release(void *seq)
  * fashion.
  */
 gpointer
-CORBA_any__free(gpointer mem, gpointer func_data, CORBA_boolean free_strings)
+CORBA_any__free(gpointer mem, gpointer func_data, CORBA_boolean ignore)
 {
 	CORBA_any *aval = mem;
 
 	if(aval->_release)
-		ORBit_free(aval->_value, free_strings);
+		ORBit_free(aval->_value, CORBA_TRUE);
 	CORBA_Object_release((CORBA_Object)aval->_type, NULL);
 
 	return aval + 1;
@@ -339,7 +339,7 @@ ORBit_any_equivalent(CORBA_any *obj, CORBA_any *any, CORBA_Environment *ev)
 /* This is needed by skels, that generate a __free function when they see
    the TypeCode interface */
 gpointer
-CORBA_TypeCode__free(gpointer mem, gpointer func_data, CORBA_boolean free_strings)
+CORBA_TypeCode__free(gpointer mem, gpointer func_data, CORBA_boolean ignore)
 {
 	CORBA_Object_release(*(CORBA_Object *)mem, NULL);
 	return ((guchar *)mem) + sizeof(CORBA_TypeCode);
@@ -364,14 +364,13 @@ CORBA_wchar *CORBA_wstring_alloc(CORBA_unsigned_long len)
 }
 
 gpointer
-CORBA_string__free(gpointer str, gpointer dat, CORBA_boolean free_strings)
+CORBA_string__free(gpointer str, gpointer dat, CORBA_boolean ignore)
 {
-	if(free_strings)
 		CORBA_free(*((gpointer *)str));
 	return (gpointer)((guchar *)str + sizeof(CORBA_char *));
 }
 
-gpointer CORBA_Object__free(gpointer str, gpointer dat, CORBA_boolean free_strings)
+gpointer CORBA_Object__free(gpointer str, gpointer dat, CORBA_boolean ignore)
 {
 	CORBA_Environment ev;
 	CORBA_exception_init(&ev);

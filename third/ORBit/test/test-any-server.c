@@ -8,7 +8,7 @@ TestAny client;
 
 static CORBA_any *
 do_print(PortableServer_Servant servant,
-	 CORBA_any *any,
+	 const CORBA_any *any,
 	 CORBA_Environment *ev);
 
 PortableServer_ServantBase__epv base_epv = {
@@ -63,7 +63,7 @@ main (int argc, char *argv[])
 
 static CORBA_any*
 do_print(PortableServer_Servant servant,
-	 CORBA_any *any,
+	 const CORBA_any *any,
 	 CORBA_Environment *ev)
 {
   TestAnyStruct* any_struct = any->_value; 

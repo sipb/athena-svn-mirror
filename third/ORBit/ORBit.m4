@@ -192,7 +192,11 @@ main ()
      ifelse([$3], , :, [$3])
   fi
 
-  AC_PATH_PROG(ORBIT_IDL, orbit-idl, ifelse([$3], , :, [$3]))
+  AC_PATH_PROG(ORBIT_IDL, orbit-idl, notfound)
+  if test "$ac_cv_path_ORBIT_IDL" = "notfound"; then
+     echo "*** The idl compiler 'orbit-idl' was not found in \$PATH."
+     ifelse([$3], , :, [$3])
+  fi
   AC_SUBST(ORBIT_CFLAGS)
   AC_SUBST(ORBIT_LIBS)
   AC_SUBST(ORBIT_IDL)

@@ -2,7 +2,7 @@ INCLUDES=-I$(top_builddir)/src -I$(top_srcdir)/src @GLIB_CFLAGS@
 
 lib_LTLIBRARIES=libORBitutil.la
 
-libORBitutilincludedir = $(includedir)/ORBitutil
+libORBitutilincludedir = $(includedir)/orbit-1.0/ORBitutil
 
 libORBitutil_la_SOURCES = \
 	trace.c \

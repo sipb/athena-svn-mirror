@@ -8,13 +8,11 @@ libwrap_files=
 libwrap_deps=$(LIB_WRAP)
 endif
 
-libIIOPincludedir = $(includedir)/ORBit/IIOP
-
 INCLUDES=-I.. -I$(top_srcdir)/src @GLIB_CFLAGS@ -I$(top_builddir)/src/ORBitutil
 
 lib_LTLIBRARIES=libIIOP.la
 
-libIIOPincludedir = $(includedir)/IIOP
+libIIOPincludedir = $(includedir)/orbit-1.0/IIOP
 
 libIIOP_la_SOURCES= \
 	connection.c \
