@@ -444,7 +444,6 @@ lock_initialization (saver_info *si)
   si->locking_disabled_p = True;
   si->nolock_reason = "not compiled with locking support";
 #else /* !NO_LOCKING */
-  si->locking_disabled_p = False;
   if (! lock_init (&si->prefs))
     {
       si->locking_disabled_p = True;
