@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.8 1989-11-06 19:53:16 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.9 1989-11-22 21:31:08 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -32,7 +32,7 @@
 #include "delete_errs.h"
 #include "errors.h"
 
-char *malloc(), *realloc();
+char *realloc();
 extern time_t current_time;
 extern int errno;
 
@@ -255,11 +255,11 @@ list_files()
      int num;
      int retval;
      
-     strings = (char **) malloc((unsigned) sizeof(char *));
+     strings = (char **) Malloc((unsigned) sizeof(char *));
      num = 0;
      if (! strings) {
 	  set_error(errno);
-	  error("malloc");
+	  error("Malloc");
 	  return error_code;
      }
      current = get_root_tree();
