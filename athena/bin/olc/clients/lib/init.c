@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.19 1992-03-16 15:36:57 lwvanels Exp $
+ *	$Id: init.c,v 1.20 1992-08-31 12:11:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.19 1992-03-16 15:36:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.20 1992-08-31 12:11:25 lwvanels Exp $";
 #endif
 #endif
 
@@ -50,6 +50,9 @@ OInitialize()
   char *h;
   char *inst;
   struct hostent *host;
+#ifdef HESIOD
+  int need_to_free;
+#endif
 
   h = (char *) getenv ("OLCD_HOST");
   inst = (char *) getenv("OLCD_INST");
@@ -70,9 +73,11 @@ OInitialize()
 	  fprintf(stderr,
 		  "the result of this problem.\n");
       
+	  need_to_free = 0;
 	  h = OLC_SERVER;
       }
       else
+	  need_to_free = 1;
 	  h = *hp;
     }
 #else
@@ -82,6 +87,11 @@ OInitialize()
 #endif /* HESIOD */
 
   strcpy (DaemonHost, h);
+#ifdef HESIOD
+  if (need_to_free)
+    free(h);
+#endif
+
 
   uid = getuid();
   pwent = getpwuid(uid);
