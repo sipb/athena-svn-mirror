@@ -1,18 +1,26 @@
-# $Id: Makefile,v 1.16 2004-03-12 20:35:09 zacheiss Exp $
+# $Id: Makefile,v 1.17 2004-05-25 17:06:05 rbasch Exp $
 
 INSTALL=/install
-INSTALL_DEV=/install/devices
+INSTALL_DEV=${INSTALL}/devices
 
-all:
+all:	fastfs to
+
+fastfs:	fastfs.c
+	${CC} ${LDFLAGS} -o $@ fastfs.c
+
+to:	to.c
+	${CC} ${LDFLAGS} -o $@ to.c
 
 check:
 
 install:
 	mkdir -p ${DESTDIR}${INSTALL}
 	mkdir -p ${DESTDIR}${INSTALL_DEV}
-	install -c -m 0555 athchanges ${DESTDIR}${INSTALL}
+	install -c -m 0555 fastfs ${DESTDIR}${INSTALL}
 	install -c -m 0555 finish-install.sh \
 	  ${DESTDIR}${INSTALL}/finish-install
+	install -c -m 0555 finish-install-wrapper.sh \
+	  ${DESTDIR}${INSTALL}/finish-install-wrapper
 	install -c -m 0444 format.input.SEAGATE-ST39173WC-6244 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST315320A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST320011A ${DESTDIR}${INSTALL}
@@ -39,7 +47,8 @@ install:
 	install -c -m 0444 install2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0555 oschanges ${DESTDIR}${INSTALL}
 	install -c -m 0444 os-link-2.6 ${DESTDIR}${INSTALL}
-	install -c -m 0444 startup ${DESTDIR}${INSTALL}
+	install -c -m 0555 startup ${DESTDIR}${INSTALL}
+	install -c -m 0555 to ${DESTDIR}${INSTALL}
 	install -c -m 0444 athenainstall ${DESTDIR}${INSTALL}
 	install -c -m 0444 dev.pseudo.tar ${DESTDIR}${INSTALL_DEV}
 	install -c -m 0444 devices.pseudo.tar ${DESTDIR}${INSTALL_DEV}
