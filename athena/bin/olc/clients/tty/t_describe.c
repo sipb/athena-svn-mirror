@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v $
- *	$Id: t_describe.c,v 1.8 1990-11-14 14:45:08 lwvanels Exp $
+ *	$Id: t_describe.c,v 1.9 1990-12-17 08:40:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.8 1990-11-14 14:45:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.9 1990-12-17 08:40:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,7 +49,10 @@ t_describe(Request,file,note,dochnote,dochcomment)
 
   if(dochnote)  {
     if (note == (char *) NULL)  {
-      status = ODescribe(Request, &list, "/dev/null", "");
+      status = handle_response(ODescribe(Request, &list, "/dev/null", ""),
+			       Request);
+      if (status != SUCCESS)
+	return(status);
       buf[0] = '\0';
       printf("Enter your note (%d chars max), default is:\n%15s[%-63.63s]\n",
 	     NOTE_SIZE-1, " ", list.note);
