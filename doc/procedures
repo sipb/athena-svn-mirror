@@ -181,6 +181,6 @@ piece of third-party software:
 		do -d /var/tmp/inst install
 
 	  (Replace "do" with "sh /mit/source/packs/build/do.sh" or use
-	  a shell alias).  If the package relies on libraries, you can
+	  a shell alias.)  If the package relies on libraries, you can
 	  use "-c -d /afs/dev.mit.edu/system/<sysname>/srvd-current"
 	  in the non-install steps to point at them.
