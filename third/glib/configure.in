@@ -33,9 +33,9 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #
 GLIB_MAJOR_VERSION=1
 GLIB_MINOR_VERSION=2
-GLIB_MICRO_VERSION=7
-GLIB_INTERFACE_AGE=7
-GLIB_BINARY_AGE=7
+GLIB_MICRO_VERSION=8
+GLIB_INTERFACE_AGE=8
+GLIB_BINARY_AGE=8
 GLIB_VERSION=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION.$GLIB_MICRO_VERSION
 dnl
 AC_DIVERT_POP()dnl
@@ -291,7 +291,7 @@ fi
 AC_MSG_CHECKING(for sys_siglist)
 AC_TRY_LINK(, [
 extern char *sys_siglist[];
-strlen (sys_siglist[0]);
+exit (sys_siglist[0]);
 ], glib_ok=yes, glib_ok=no)
 AC_MSG_RESULT($glib_ok)
 if test $glib_ok = no; then
@@ -671,6 +671,10 @@ case $have_threads in
 			     	G_THREAD_LIBS="-lpthreads")
 		fi
 		if test "x$G_THREAD_LIBS" = xerror; then
+                	AC_CHECK_LIB(thread, pthread_attr_init,
+			     	G_THREAD_LIBS="-lthread")
+		fi
+		if test "x$G_THREAD_LIBS" = xerror; then
                 	AC_CHECK_LIB(c_r, pthread_attr_init,
 			     	G_THREAD_LIBS="-lc_r")
 		fi
@@ -818,8 +822,8 @@ if test x"$have_threads" != xnone; then
 		AC_MSG_CHECKING(whether pthread_mutex_trylock is posix like)
 		# DCE Threads return 1 as success, posix 0. what a mess.
 		AC_TRY_RUN([#include <pthread.h>
-			int main () { 
 			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+			int main () { 
 			return !pthread_mutex_trylock (&mutex); }],
 			[AC_MSG_RESULT(no)],
 			[AC_MSG_RESULT(yes)
@@ -1174,7 +1178,7 @@ $ac_cv_sizeof_long_long)
   gint64='long long'
   glib_extension='G_GNUC_EXTENSION '
   glib_warning_guard="
-#if defined (__GNUC__) && __GNUC__ >= 2 && __GNUC_MINOR__ >= 8
+#if defined (__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8))
 #  define G_GNUC_EXTENSION __extension__
 #else
 #  define G_GNUC_EXTENSION

@@ -1758,6 +1758,7 @@ gchar*	  g_quark_to_string		(GQuark		 quark);
 
 
 /* Keyed Data List
+ * NOTE: these functions are scheduled for a rename in GLib 1.3
  */
 void	  g_datalist_init		 (GData		 **datalist);
 void	  g_datalist_clear		 (GData		 **datalist);
@@ -1789,6 +1790,7 @@ void	  g_datalist_foreach		 (GData		 **datalist,
 
 
 /* Location Associated Keyed Data
+ * NOTE: these functions are scheduled for a rename in GLib 1.3
  */
 void	  g_dataset_destroy		(gconstpointer	  dataset_location);
 gpointer  g_dataset_id_get_data		(gconstpointer	  dataset_location,
@@ -2688,7 +2690,7 @@ GUTILS_C_VAR gboolean		g_threads_got_initialized;
  * only be called once, and must not be called directly or indirectly
  * from another glib-function, e.g. as a callback.
  */
-void	g_thread_init	(GThreadFunctions	*vtable);
+void   g_thread_init   (GThreadFunctions       *vtable);
 
 /* internal function for fallback static mutex implementation */
 GMutex*	g_static_mutex_get_mutex_impl	(GMutex	**mutex);
