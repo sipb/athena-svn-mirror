@@ -2,7 +2,7 @@
 /*
  * slocal.c -- asynchronously filter and deliver new mail
  *
- * $Id: slocal.c,v 1.1.1.1 1999-02-07 18:14:17 danw Exp $
+ * $Id: slocal.c,v 1.1.1.1.4.1 1999-11-08 20:28:14 tb Exp $
  */
 
 /*
@@ -27,8 +27,16 @@
 #include <pwd.h>
 #include <signal.h>
 #include <sys/ioctl.h>
-#include <ndbm.h>
 #include <fcntl.h>
+
+#if defined (HAVE_DB_H) && !defined (HAVE_NDBM_H)
+#define DB_DBM_HSEARCH 1
+#include <db.h>
+#elif defined (HAVE_NDBM_H)
+#include <ndbm.h>
+#else
+#error Cannot find a suitable database header
+#endif
 
 #include <utmp.h>
 
