@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.29 1991-01-18 10:43:32 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.30 1991-01-21 01:22:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.29 1991-01-18 10:43:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.30 1991-01-21 01:22:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -1108,15 +1108,19 @@ void
 disconnect_knuckles(a, b)
      KNUCKLE *a, *b;
 {
-  b->connected = (KNUCKLE *) NULL;
-  b->cusername[0] = (char) NULL;
-  if (owns_question(a))
-    b->question = (QUESTION *) NULL;
+  if (b != NULL) {
+    b->connected = (KNUCKLE *) NULL;
+    b->cusername[0] = (char) NULL;
+    if (owns_question(a))
+      b->question = (QUESTION *) NULL;
+  }
 
-  a->connected = (KNUCKLE *) NULL;
-  a->cusername[0] = (char) NULL;
-  if (owns_question(b))
-    a->question = (QUESTION *) NULL;
+  if (a != NULL) {
+    a->connected = (KNUCKLE *) NULL;
+    a->cusername[0] = (char) NULL;
+    if (owns_question(b))
+      a->question = (QUESTION *) NULL;
+  }
 }
 
 
