@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.23 1998-01-11 00:22:56 ghudson Exp $
+# $Id: Makefile,v 1.24 1998-04-08 22:11:21 cfields Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -56,8 +56,7 @@ all: ${ATTACHRUN} verify-message sis
 
 ${ATTACHRUN}: specs template.sh
 	set `grep '^$@[ 	]' specs`; locker=$$2; program=$${3-$$1}; \
-		bindir=`athdir -c -p /mit/$$2 -t bin`; \
-		sed -e "s|@LOCKER@|$$2|g" -e "s|@BINDIR@|$$bindir|g" \
+		sed -e "s|@LOCKER@|$$2|g" \
 			-e "s|@PROGRAM@|$$program|g" template.sh > $@
 
 sis: sis.in
