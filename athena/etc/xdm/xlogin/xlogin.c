@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.79 1999-01-22 23:16:27 ghudson Exp $ */
+/* $Id: xlogin.c,v 1.80 1999-01-29 18:03:15 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -232,7 +232,7 @@ pid_t activation_pid, attach_pid, attachhelp_pid, quota_pid;
 int activation_state, activate_count = 0, attach_state, attachhelp_state;
 int exiting = FALSE;
 extern char *defaultpath;
-char login[128], passwd[128];
+char loginname[128], passwd[128];
 sigset_t sig_zero;
 
 #ifdef SOLARIS_MAE
@@ -440,7 +440,7 @@ void main(argc, argv)
   XtSetValues(namew, args, 1);
   namew = WcFullNameToWidget(appShell, "*instructions*host");
   XtSetValues(namew, args, 1);
-  XtSetArg(args[0], XtNstring, login);
+  XtSetArg(args[0], XtNstring, loginname);
   XtSetValues(WcFullNameToWidget(appShell, "*name_input"), args, 1);
   XtSetArg(args[0], XtNstring, passwd);
   XtSetValues(WcFullNameToWidget(appShell, "*pword_input"), args, 1);
@@ -946,7 +946,7 @@ void loginACT(w, event, p, n)
 		   0, 0, 0, 0, 300, 300);
       XFlush(dpy);
       larv_set_busy(1);
-      tb.ptr = dologin(login, passwd, mode, script, resources.tty,
+      tb.ptr = dologin(loginname, passwd, mode, script, resources.tty,
 		       resources.session, DisplayString(dpy));
       larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
