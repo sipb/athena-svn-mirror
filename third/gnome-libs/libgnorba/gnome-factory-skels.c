@@ -11,6 +11,7 @@ _ORBIT_GNOME_GenericFactory_CannotActivate_marshal(GIOPSendBuffer *
 						   CORBA_Environment * ev)
 {
 }
+
 void
 _ORBIT_skel_GNOME_GenericFactory_supports(POA_GNOME_GenericFactory *
 					  _ORBIT_servant,
@@ -57,20 +58,23 @@ _ORBIT_skel_GNOME_GenericFactory_supports(POA_GNOME_GenericFactory *
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-	 {
-	    guchar *_ORBIT_t;
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    {
+	       guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_retval));
-	    memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
-	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_retval));
-	 }
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
    }
 }
 void
@@ -165,21 +169,24 @@ _ORBIT_skel_GNOME_GenericFactory_create_object(POA_GNOME_GenericFactory *
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-	 ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-      } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	 static const ORBit_exception_marshal_info _ORBIT_user_exceptions[] =
-	    { {(const CORBA_TypeCode)
-	       &TC_GNOME_GenericFactory_CannotActivate_struct,
-	       (gpointer) _ORBIT_GNOME_GenericFactory_CannotActivate_marshal},
-	    {CORBA_OBJECT_NIL, NULL} };
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       = { {(const CORBA_TypeCode)
+		    &TC_GNOME_GenericFactory_CannotActivate_struct,
+		    (gpointer)
+		    _ORBIT_GNOME_GenericFactory_CannotActivate_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
 
-	 ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				   _ORBIT_user_exceptions);
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
    }
@@ -193,20 +200,20 @@ get_skel_GNOME_GenericFactory(POA_GNOME_GenericFactory * servant,
 
    switch (opname[0]) {
      case 'c':
-      if (strcmp((opname + 1), "reate_object"))
-	 break;
-      *impl =
-	 (gpointer) servant->vepv->GNOME_GenericFactory_epv->create_object;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_GenericFactory_create_object;
-      break;
+	if (strcmp((opname + 1), "reate_object"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_GenericFactory_epv->create_object;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_GenericFactory_create_object;
+	break;
      case 's':
-      if (strcmp((opname + 1), "upports"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_GenericFactory_epv->supports;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_GenericFactory_supports;
-      break;
+	if (strcmp((opname + 1), "upports"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_GenericFactory_epv->supports;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_GenericFactory_supports;
+	break;
      default:
-      break;
+	break;
    }
    return NULL;
 }
@@ -218,6 +225,7 @@ init_local_objref_GNOME_GenericFactory(CORBA_Object obj,
    obj->vepv[GNOME_GenericFactory__classid] =
       servant->vepv->GNOME_GenericFactory_epv;
 }
+
 void
 POA_GNOME_GenericFactory__init(PortableServer_Servant servant,
 			       CORBA_Environment * env)

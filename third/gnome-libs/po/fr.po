@@ -7,13 +7,13 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.5\n"
+"Project-Id-Version: gnome-libs 1.2.6\n"
 "POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-09-26 11:59+0200\n"
+"PO-Revision-Date: 2000-10-18 11:48+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <christophe@merlet.net>\n"
 "Language-Team: Gnome French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: libgnome/gconfigger.c:32
@@ -294,7 +294,7 @@ msgstr "Co_uper"
 
 #: libgnomeui/gnome-app-helper.c:168
 msgid "Cut the selection"
-msgstr "Coupe la sélection"
+msgstr "Coupe la sélection vers le presse-papiers"
 
 #. 10
 #. Copy
@@ -304,7 +304,7 @@ msgstr "_Copier"
 
 #: libgnomeui/gnome-app-helper.c:174
 msgid "Copy the selection"
-msgstr "Copie la sélection"
+msgstr "Copie la sélection vers le presse-papiers"
 
 #. Paste
 #: libgnomeui/gnome-app-helper.c:179 libgnomeui/gnome-popup-help.c:62
@@ -313,16 +313,16 @@ msgstr "C_oller"
 
 #: libgnomeui/gnome-app-helper.c:179
 msgid "Paste the clipboard"
-msgstr "Colle le contenu du presse-papier"
+msgstr "Colle le contenu du presse-papiers"
 
 #. Clear
 #: libgnomeui/gnome-app-helper.c:184
 msgid "C_lear"
-msgstr "_Vider"
+msgstr "_Effacer"
 
 #: libgnomeui/gnome-app-helper.c:184
 msgid "Clear the selection"
-msgstr "Vide la sélection"
+msgstr "Efface la sélection"
 
 #. Undo
 #: libgnomeui/gnome-app-helper.c:189
@@ -336,7 +336,7 @@ msgstr "Annule la dernière action"
 #. Redo
 #: libgnomeui/gnome-app-helper.c:194
 msgid "_Redo"
-msgstr "_Recommencer"
+msgstr "_Refaire"
 
 #: libgnomeui/gnome-app-helper.c:194
 msgid "Redo the undone action"
@@ -354,7 +354,7 @@ msgstr "Recherche une chaîne"
 #. Find Again
 #: libgnomeui/gnome-app-helper.c:204
 msgid "Find _Again"
-msgstr "Chercher à nouve_au"
+msgstr "Rechercher à nouve_au"
 
 #: libgnomeui/gnome-app-helper.c:205
 msgid "Search again for the same string"
@@ -420,7 +420,7 @@ msgstr "Créer une nouvelle _fenêtre"
 
 #: libgnomeui/gnome-app-helper.c:248
 msgid "Create a new window"
-msgstr "Créé une nouvelle fenêtre"
+msgstr "Crée une nouvelle fenêtre"
 
 #: libgnomeui/gnome-app-helper.c:252
 msgid "_Close This Window"
@@ -767,7 +767,7 @@ msgstr "Icone :"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Choisissez une icone"
+msgstr "Choisissez un icone"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -841,7 +841,9 @@ msgstr "Police"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr "Pas d'icones"
+msgstr ""
+"Pas\n"
+"d'icone"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -902,7 +904,7 @@ msgstr "CLASSE"
 
 #: libgnomeui/gnome-init.c:175
 msgid "HOST"
-msgstr "HOTE"
+msgstr "HÔTE"
 
 #: libgnomeui/gnome-init.c:177
 msgid "PORT"
@@ -1245,8 +1247,8 @@ msgid ""
 "will exit.\n"
 "Please save all your files before closing this dialog."
 msgstr ""
-"Le Gestionnaire de Session GNOME (processus %d) a\n"
-"planté à la suite d'une erreur fatale (%s).\n"
+"Le Gestionnaire de Session GNOME (processus %d) s'est\n"
+"terminé à la suite d'une erreur fatale (%s).\n"
 "Lorsque vous fermerez cette boîte de dialogue, toutes les applications "
 "seront fermées et votre session sera terminée.\n"
 "Enregistrez tous vos fichiers en cours avant de fermer cette\n"
@@ -1259,8 +1261,8 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"L'application \"%s\" (processus %d) a\n"
-"plantée à cause d'une erreur fatale.\n"
+"L'application \"%s\" (processus %d) s'est\n"
+"terminée à la suite d'une erreur fatale.\n"
 "(%s)"
 
 #: libgnomeui/gnome_segv.c:80
@@ -1269,7 +1271,7 @@ msgstr "Usage : gnome_segv nom-appli num-signal\n"
 
 #: libgnomeui/gnome_segv.c:94
 msgid "Submit a bug report"
-msgstr "Soumettre un rapport d'anomalies"
+msgstr "Transmettre un rapport d'anomalies"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
@@ -1277,7 +1279,7 @@ msgstr "Débogage"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
-msgstr "http://www.gnome.org/application_crashed.shtml.fr"
+msgstr "http://www.gnome.org/application_crashed.shtml"
 
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
@@ -1361,7 +1363,7 @@ msgstr "Calque :"
 
 #: libgnomeui/winhints_demo.c:94
 msgid "Above Dock"
-msgstr "Au dessus du dock"
+msgstr "Au-dessus du dock"
 
 #: libgnomeui/winhints_demo.c:98
 msgid "Dock"
@@ -1377,7 +1379,7 @@ msgstr "Normal"
 
 #: libgnomeui/winhints_demo.c:110
 msgid "Below"
-msgstr "En dessous"
+msgstr "En-dessous"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"

@@ -22,11 +22,13 @@ _ORBIT_skel_GNOME_Unknown_ref(POA_GNOME_Unknown * _ORBIT_servant,
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
    }
 }
 void
@@ -46,11 +48,13 @@ _ORBIT_skel_GNOME_Unknown_unref(POA_GNOME_Unknown * _ORBIT_servant,
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
    }
 }
 void
@@ -96,12 +100,14 @@ _ORBIT_skel_GNOME_Unknown_query_interface(POA_GNOME_Unknown * _ORBIT_servant,
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-	 ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
    }
@@ -114,25 +120,25 @@ get_skel_GNOME_Unknown(POA_GNOME_Unknown * servant,
 
    switch (opname[0]) {
      case 'q':
-      if (strcmp((opname + 1), "uery_interface"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_Unknown_epv->query_interface;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_query_interface;
-      break;
+	if (strcmp((opname + 1), "uery_interface"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Unknown_epv->query_interface;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_query_interface;
+	break;
      case 'r':
-      if (strcmp((opname + 1), "ef"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_Unknown_epv->ref;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_ref;
-      break;
+	if (strcmp((opname + 1), "ef"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Unknown_epv->ref;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_ref;
+	break;
      case 'u':
-      if (strcmp((opname + 1), "nref"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_Unknown_epv->unref;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_unref;
-      break;
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Unknown_epv->unref;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Unknown_unref;
+	break;
      default:
-      break;
+	break;
    }
    return NULL;
 }
@@ -142,6 +148,7 @@ init_local_objref_GNOME_Unknown(CORBA_Object obj, POA_GNOME_Unknown * servant)
 {
    obj->vepv[GNOME_Unknown__classid] = servant->vepv->GNOME_Unknown_epv;
 }
+
 void
 POA_GNOME_Unknown__init(PortableServer_Servant servant,
 			CORBA_Environment * env)

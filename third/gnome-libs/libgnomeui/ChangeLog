@@ -1,3 +1,39 @@
+2000-10-23  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* gnome-dialog.c: revert previous patch, as it wasn't meant to be
+	shipped
+
+2000-10-15  Chema Celorio  <chema@celorio.com>
+
+	* gnome-window.c (gnome_window_toplevel_set_title): new file &
+	function. app should use it to set the tile, so that we can
+	have a uniform way of setting the window properties (only the
+	title for now)
+	* gnome-window.h: new file
+
+2000-10-12  Ettore Perazzoli  <ettore@helixcode.com>
+
+	* gnome-dock-item.c: New args "preferred_width" and
+	"preferred_height".
+	(gnome_dock_item_class_init): Set them up.
+	(gnome_dock_item_get_arg): Handle them.
+	(check_guint_arg): New helper function.
+	(get_preferred_width): New helper function.
+	(get_preferred_height): New helper function.
+
+	* gnome-dock-band.c (check_guint_arg): New helper function to get
+	a guint arg only if it exists.
+	(gnome_dock_band_size_request): Calculate the max_preferred_width
+	by checking the "preferred_width" or "preferred_height" arg
+	through `check_guint_arg'.
+	(size_allocate_small): Changed the policy a bit so that we
+	allocate the max_preferred_width if possible.
+
+2000-10-04  Iain Holmes  <iain@helixcode.com>
+
+	* gnome-propertybox.c (dialog_clicked_cb): Check each page for the dirty
+	flag instead of the current one.
+
 2000-09-24  Jody Goldberg <jgoldberg@home.com>
 
 	* gnome-dock-item.c (gnome_dock_item_set_floating) : New function.

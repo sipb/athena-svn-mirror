@@ -1,13 +1,12 @@
+# dutch gnome-libs translation
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# First author didn't subscribe something here. DOES SOMEONE HAS
-# SUGGESTIONS?
-# Dennis Smit <synap@area101.penguin.nl> *i am not first author =]*
+# There was no first author here so yeah..  whatever :)
+# Dennis Smit <synap@area101.penguin.nl>, 2000.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.* (cvs)\n"
 "POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 1999-07-14 16:22+0200\n"
+"PO-Revision-Date: 2000-10-10 17:35+0200\n"
 "Last-Translator: Dennis Smit <synap@area101.penguin.nl>\n"
 "Language-Team: nl <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -130,11 +129,11 @@ msgstr "Bestanden/"
 
 #: libgnomeui/gnome-app-helper.c:90
 msgid "_Windows"
-msgstr "_Vensters"
+msgstr "Vensters"
 
 #: libgnomeui/gnome-app-helper.c:91
 msgid "_Game"
-msgstr "_Spel"
+msgstr "Spel"
 
 #: libgnomeui/gnome-app-helper.c:92
 msgid "_Help"
@@ -142,75 +141,63 @@ msgstr "_Help"
 
 #: libgnomeui/gnome-app-helper.c:93
 msgid "_Windows/"
-msgstr "_Vensters/"
+msgstr "Vensters/"
 
 #: libgnomeui/gnome-app-helper.c:95 libgnomeui/stock_demo.c:184
 msgid "File"
 msgstr "Bestand"
 
 #: libgnomeui/gnome-app-helper.c:96
-#, fuzzy
 msgid "File/"
-msgstr "_Bestand/"
+msgstr "Bestand/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
 msgstr "Bewerken"
 
 #: libgnomeui/gnome-app-helper.c:98
-#, fuzzy
 msgid "Edit/"
-msgstr "B_ewerken/"
+msgstr "Bewerken/"
 
 #: libgnomeui/gnome-app-helper.c:99
-#, fuzzy
 msgid "View"
 msgstr "Beeld"
 
 #: libgnomeui/gnome-app-helper.c:100
-#, fuzzy
 msgid "View/"
 msgstr "Beeld/"
 
 #: libgnomeui/gnome-app-helper.c:101
-#, fuzzy
 msgid "Settings"
-msgstr "_Instellingen"
+msgstr "Instellingen"
 
 #: libgnomeui/gnome-app-helper.c:102
-#, fuzzy
 msgid "Settings/"
-msgstr "_Instellingen/"
+msgstr "Instellingen/"
 
 #: libgnomeui/gnome-app-helper.c:103
-#, fuzzy
 msgid "New"
-msgstr "_Nieuw"
+msgstr "Nieuw"
 
 #: libgnomeui/gnome-app-helper.c:104
-#, fuzzy
 msgid "New/"
-msgstr "_Nieuw/"
+msgstr "Nieuw/"
 
 #: libgnomeui/gnome-app-helper.c:105
-#, fuzzy
 msgid "Files"
 msgstr "Bestanden"
 
 #: libgnomeui/gnome-app-helper.c:106
-#, fuzzy
 msgid "Files/"
 msgstr "Bestanden/"
 
 #: libgnomeui/gnome-app-helper.c:107
-#, fuzzy
 msgid "Windows"
-msgstr "_Vensters"
+msgstr "Vensters"
 
 #: libgnomeui/gnome-app-helper.c:108
-#, fuzzy
 msgid "Game"
-msgstr "_Spel"
+msgstr "Spel"
 
 #: libgnomeui/gnome-app-helper.c:109 libgnomeui/gnome-stock.c:843
 #: libgnomeui/stock_demo.c:290
@@ -218,9 +205,8 @@ msgid "Help"
 msgstr "Help"
 
 #: libgnomeui/gnome-app-helper.c:110
-#, fuzzy
 msgid "Windows/"
-msgstr "_Vensters/"
+msgstr "Vensters/"
 
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
@@ -739,9 +725,8 @@ msgstr "Desactiveer de connectie naar de sessiebeheerder"
 
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
-#, fuzzy
 msgid "Session management options"
-msgstr "Sessiebeheer"
+msgstr "Sessie beheer opties"
 
 #: libgnomeui/gnome-client.c:2348
 msgid "Cancel Logout"
@@ -1518,9 +1503,8 @@ msgid "(Internal use only) GOAD server ID to activate"
 msgstr "(Intern gebruik) te activeren GOAD server ID"
 
 #: libgnorba/goad.c:1363
-#, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(Intern gebruik) te activeren GOAD server ID"
+msgstr "(Alleen voor intern gebruik) GOAD bestands beschrijver"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

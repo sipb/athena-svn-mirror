@@ -1,9 +1,10 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs\n"
 "POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-04-30 18:18+0200\n"
-"Last-Translator: GNOME PL Team <gnomepl@pandora.info.bielsko.pl>\n"
+"PO-Revision-Date: 2000-10-09 23:33+0200\n"
+"Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
@@ -40,15 +41,15 @@ msgstr ""
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Nie wykorzystuj serwera d¼wiêku"
+msgstr "Bez wykorzystywania serwera d¼wiêku"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Wykorzystuj serwer d¼wiêku"
+msgstr "Z wykorzystaniem serwera d¼wiêku"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Host:port na którym uruchomiony jest serwer d¼wiêku"
+msgstr "Komputer:port na którym uruchomiony jest serwer d¼wiêku"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
@@ -261,7 +262,7 @@ msgstr "Modyfikuje ustawienia strony dla aktualnej drukarki"
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
 msgid "_Close"
-msgstr "Zam_knij"
+msgstr "Za_mknij"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
@@ -416,7 +417,7 @@ msgstr "Tworzy nowe okno"
 
 #: libgnomeui/gnome-app-helper.c:252
 msgid "_Close This Window"
-msgstr "Zamkni_j okno"
+msgstr "Zamknij _okno"
 
 #: libgnomeui/gnome-app-helper.c:253
 msgid "Close the current window"
@@ -709,7 +710,7 @@ msgstr "ID"
 
 #: libgnomeui/gnome-client.c:837
 msgid "Specify prefix of saved configuration"
-msgstr "Okre¶l prefiks zapisanej konfiguracji"
+msgstr "Okre¶la przedrostek zapisanej konfiguracji"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
@@ -717,7 +718,7 @@ msgstr "PREFIX"
 
 #: libgnomeui/gnome-client.c:839
 msgid "Disable connection to session manager"
-msgstr "Nie ³±cz siê z mened¿erem sesji"
+msgstr "Nie nawi±zuje po³±czenia z mened¿erem sesji"
 
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
@@ -730,7 +731,7 @@ msgstr "Anuluj zakoñczenie sesji"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
-msgstr "Wska¿ kolor"
+msgstr "Wybór koloru"
 
 #. Calendar label, only shown if the date editor has a time field
 #: libgnomeui/gnome-dateedit.c:459
@@ -876,7 +877,7 @@ msgstr "Synchroniczna komunikacja z serwerem X"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Nie wykorzystuj pamiêci dzielonej - rozszerzenia X"
+msgstr "Bez wykorzystania rozszerzenia X, udostêpniaj±cego pamiêæ dzielon±"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
@@ -916,11 +917,11 @@ msgstr "Wyczyszczone znaczniki ¶ledzenia Gtk+"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
-msgstr "Traktuj ostrze¿enia jak b³êdy"
+msgstr "Traktowanie ostrze¿eñ jak b³êdów"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "Wczytaj dodatkowy modu³ Gtk"
+msgstr "Wczytuje dodatkowy modu³ Gtk"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
@@ -1267,7 +1268,7 @@ msgstr "Wy¶lij informacjê o b³êdzie"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "¦ledzenie"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"

@@ -1,3 +1,9 @@
+Sat Oct 07 21:32:46 2000  George Lebl <jirka@5z.com>
+
+	* gnomeui/tmpl/gnome-color-picker.sgml: Add gpointer data to
+	  the signal handler in the example.  While not strictly an error
+	  it is more consistent with other signal handler examples.
+
 1999-09-18  Miguel de Icaza  <miguel@gnu.org>
 
 	* gnome/tmpl/gnome-i18n.sgml: Added an example and documented the

@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.0.56\n"
+"Project-Id-Version: gnome-libs 1.2.5\n"
 "POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-03-16 04:10+0200\n"
+"PO-Revision-Date: 2000-10-13 03:37+0300\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-13\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,11 +20,11 @@ msgstr "gauti"
 
 #: libgnome/gconfigger.c:32
 msgid "Get config entry"
-msgstr "Gauti nustatymø áraðà"
+msgstr "Gauti parinktá"
 
 #: libgnome/gconfigger.c:32 libgnome/gconfigger.c:33
 msgid "CONFIG-PATH"
-msgstr "NUST-KELIAS"
+msgstr "PARINKT-KELIAS"
 
 #: libgnome/gconfigger.c:33
 msgid "set"
@@ -32,7 +32,7 @@ msgstr "nustatyti"
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
-msgstr "Nurodyti nustatymø áraðà"
+msgstr "Nustatyti parinktá"
 
 #: libgnome/gnome-popt.c:90
 #, c-format
@@ -40,28 +40,28 @@ msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Klaida pasirinktyje %s: %s.\n"
-"Paleisk ¥%s --help´, kad pamatytum galimas komandos pasirinktis.\n"
+"Klaida parinktyje %s: %s.\n"
+"Paleisk ¥%s --help´, kad pamatytum galimas komandos parinktis.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Uþdrausti garsø serverá"
+msgstr "Nenaudoti garsø serverio"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Leisti naudoti garsø serverá"
+msgstr "Naudoti garsø serverá"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Host:port, kurá naudos paleistas garsø serveris"
+msgstr "Hostas:prievadas, kurá naudos paleistas garsø serveris"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "HOSTAS:PORTAS"
+msgstr "HOSTAS:PRIEV"
 
 #: libgnome/gnomelib-init.c:150
 msgid "GNOME Options"
-msgstr "GNOME Pasirinktys"
+msgstr "GNOME Nuostatos"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -90,27 +90,27 @@ msgstr "_Byla/"
 
 #: libgnomeui/gnome-app-helper.c:80
 msgid "_Edit"
-msgstr "K_eisti"
+msgstr "_Taisa"
 
 #: libgnomeui/gnome-app-helper.c:81
 msgid "_Edit/"
-msgstr "K_eisti/"
+msgstr "_Taisa/"
 
 #: libgnomeui/gnome-app-helper.c:82
 msgid "_View"
-msgstr "_Þiûrëti"
+msgstr "_Rodinys"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr "_Þiûrëti/"
+msgstr "_Rodinys/"
 
 #: libgnomeui/gnome-app-helper.c:84
 msgid "_Settings"
-msgstr "_Nustatymai"
+msgstr "_Nuostatos"
 
 #: libgnomeui/gnome-app-helper.c:85
 msgid "_Settings/"
-msgstr "Nu_statymai/"
+msgstr "Nuo_statos/"
 
 #: libgnomeui/gnome-app-helper.c:86
 msgid "_New"
@@ -154,27 +154,27 @@ msgstr "Byla/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr "Keisti"
+msgstr "Taisa"
 
 #: libgnomeui/gnome-app-helper.c:98
 msgid "Edit/"
-msgstr "Keisti/"
+msgstr "Taisa/"
 
 #: libgnomeui/gnome-app-helper.c:99
 msgid "View"
-msgstr "Þiûrëti"
+msgstr "Rodinys"
 
 #: libgnomeui/gnome-app-helper.c:100
 msgid "View/"
-msgstr "Þiûrëti/"
+msgstr "Rodinys/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
-msgstr "Nustatymai"
+msgstr "Nuostatos"
 
 #: libgnomeui/gnome-app-helper.c:102
 msgid "Settings/"
-msgstr "Nustatymai/"
+msgstr "Nuostatos/"
 
 #: libgnomeui/gnome-app-helper.c:103
 msgid "New"
@@ -257,11 +257,11 @@ msgstr "Spausdinti ðià bylà"
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Puslapio nustat_ymai"
+msgstr "Puslapio nu_ostatos..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
-msgstr "Nurodyti puslapio nustatymus spausdinimui"
+msgstr "Nustatyti puslapio parinktis esamam spausdintuvui"
 
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
@@ -291,7 +291,7 @@ msgstr "_Iðkirpti"
 
 #: libgnomeui/gnome-app-helper.c:168
 msgid "Cut the selection"
-msgstr "Iðkirpti pasirinkimà"
+msgstr "Iðkirpti paþymëjimà"
 
 #. 10
 #. Copy
@@ -301,7 +301,7 @@ msgstr "_Kopijuoti"
 
 #: libgnomeui/gnome-app-helper.c:174
 msgid "Copy the selection"
-msgstr "Kopijuoti pasirinkimà"
+msgstr "Kopijuoti paþymëjimà"
 
 #. Paste
 #: libgnomeui/gnome-app-helper.c:179 libgnomeui/gnome-popup-help.c:62
@@ -319,7 +319,7 @@ msgstr "Iðva_lyti"
 
 #: libgnomeui/gnome-app-helper.c:184
 msgid "Clear the selection"
-msgstr "Iðvalyti pasirinkimà"
+msgstr "Iðvalyti paþymëjimà"
 
 #. Undo
 #: libgnomeui/gnome-app-helper.c:189
@@ -381,11 +381,11 @@ msgstr "Keisti bylos savybes"
 #. Settings
 #: libgnomeui/gnome-app-helper.c:224
 msgid "_Preferences..."
-msgstr "_Nustatymai..."
+msgstr "_Nuostatos..."
 
 #: libgnomeui/gnome-app-helper.c:225
 msgid "Configure the application"
-msgstr "Keisti programos nustatymus"
+msgstr "Sutvarkyti programà"
 
 #. 20
 #.
@@ -402,11 +402,11 @@ msgstr "Apie ðià programà"
 
 #: libgnomeui/gnome-app-helper.c:238
 msgid "_Select All"
-msgstr "Pasirinkti _viskà"
+msgstr "Paþymëti _viskà"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
-msgstr "Pasirinkti viskà"
+msgstr "Paþymëti viskà"
 
 #.
 #. * Window menu
@@ -485,7 +485,7 @@ msgstr "_Rekordai..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
-msgstr "Perþiûti rekordus"
+msgstr "Perþiûrëti rekordus"
 
 #: libgnomeui/gnome-app-helper.c:297
 msgid "_End game"
@@ -714,7 +714,7 @@ msgstr "ID"
 
 #: libgnomeui/gnome-client.c:837
 msgid "Specify prefix of saved configuration"
-msgstr "Nurodyti iðsaugotø nustatymø prieðdëlá"
+msgstr "Nurodyti iðsaugotø nuostatø prieðdëlá"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
@@ -727,11 +727,11 @@ msgstr "Uþdrausti prisijungimà prie sesijos tvarkyklës"
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
 msgid "Session management options"
-msgstr "Sesijos tvarkymo nustatymai"
+msgstr "Sesijos tvarkymo nuostatos"
 
 #: libgnomeui/gnome-client.c:2348
 msgid "Cancel Logout"
-msgstr "Atðaukti atsijungimà"
+msgstr "Atðaukti atsisveikinimà"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
@@ -820,7 +820,7 @@ msgstr "Baigti"
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
-msgstr "Pasirinkti bylà"
+msgstr "Pasirink bylà"
 
 #. browse button ...
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
@@ -852,7 +852,7 @@ msgstr "Perþiûra"
 
 #: libgnomeui/gnome-icon-sel.c:348
 msgid "Loading Icons..."
-msgstr "Kraunamos ikonos..."
+msgstr "Ákeliamos ikonos..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -905,7 +905,7 @@ msgstr "HOST"
 
 #: libgnomeui/gnome-init.c:177
 msgid "PORT"
-msgstr "PORT"
+msgstr "PRIEV"
 
 #: libgnomeui/gnome-init.c:179 libgnomeui/gnome-init.c:181
 msgid "STYLE"
@@ -1018,7 +1018,7 @@ msgid ""
 "is not in the dictionary.\n"
 "Proceed anyway?"
 msgstr ""
-"Þodþio ¥/%s´\n"
+"Þodþio ¥%s´\n"
 "nëra þodyne.\n"
 "Vistiek tæsti?"
 
@@ -1076,19 +1076,19 @@ msgstr "Pakeisti þodá"
 
 #: libgnomeui/gnome-spell.c:584
 msgid "Insert"
-msgstr "Ádëti"
+msgstr "Áterpti"
 
 #: libgnomeui/gnome-spell.c:589
 msgid ""
 "Insert the word\n"
 "in your personal dictionary"
 msgstr ""
-"Ádëti þodá\n"
+"Áterpti þodá\n"
 "á mano asmeniná þodynà"
 
 #: libgnomeui/gnome-spell.c:591
 msgid "Insert with case"
-msgstr "Ádëti su raidþiø dydþiu"
+msgstr "Áterpti su raidþiø dydþiu"
 
 #: libgnomeui/gnome-spell.c:597
 msgid ""
@@ -1097,7 +1097,7 @@ msgid ""
 "(if mixed-case preserve\n"
 "case-sensitivity)"
 msgstr ""
-"Ádëti þodá\n"
+"Áterpti þodá\n"
 "á mano asmeniná þodynà\n"
 "(jei skirtingi raidþiø dydþiai,\n"
 "iðsaugoti juos)"
@@ -1116,7 +1116,7 @@ msgstr "Asmeninis þodynas:"
 
 #: libgnomeui/gnome-spell.c:664
 msgid "Valid chars in words:"
-msgstr "Galiojantys simboliai þodþiuose:"
+msgstr "Galimi þenklai þodþiuose:"
 
 #: libgnomeui/gnome-spell.c:675
 msgid "Check words longer than:"
@@ -1144,7 +1144,7 @@ msgstr "Nuþudyti ispell procesà"
 
 #: libgnomeui/gnome-spell.c:752
 msgid "Spell"
-msgstr "Gramatika"
+msgstr "Raðyba"
 
 #: libgnomeui/gnome-spell.c:759
 msgid "Configure"
@@ -1164,7 +1164,7 @@ msgstr "Parinkti spalvà"
 
 #: libgnomeui/gnome-stock.c:829
 msgid "Table Borders"
-msgstr "Lentelës rëmai"
+msgstr "Lentelës rëmeliai"
 
 #: libgnomeui/gnome-stock.c:830
 msgid "Table Fill"
@@ -1269,7 +1269,7 @@ msgstr "Pateikti klaidos ataskaità"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "Derinti"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1301,7 +1301,7 @@ msgstr "Spausdinti..."
 
 #: libgnomeui/stock_demo.c:164
 msgid "Setup Page..."
-msgstr "Puslapio nustatymai..."
+msgstr "Puslapio nuostatos..."
 
 #: libgnomeui/stock_demo.c:173
 msgid "Quit"
@@ -1337,7 +1337,7 @@ msgstr "Savybës..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
-msgstr "Nustatymai..."
+msgstr "Nuostatos..."
 
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
@@ -1377,7 +1377,7 @@ msgstr "Apaèioje"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"
-msgstr "Darbastalis"
+msgstr "Darbalaukis"
 
 #: libgnomeui/winhints_demo.c:122
 msgid "Set Layer"
@@ -1389,7 +1389,7 @@ msgstr "Darbo erdvës:"
 
 #: libgnomeui/winhints_demo.c:151
 msgid "Sticky"
-msgstr "Limpantis"
+msgstr "Lipnus"
 
 #: libgnomeui/winhints_demo.c:155
 msgid "Set Workspace"
@@ -1417,7 +1417,7 @@ msgstr "Paslëptas"
 
 #: libgnomeui/winhints_demo.c:191
 msgid "Shaded"
-msgstr "Ðeðëlinis"
+msgstr "Suvyniotas"
 
 #: libgnomeui/winhints_demo.c:195
 msgid "Fixed Position"
@@ -1425,7 +1425,7 @@ msgstr "Nepajudinamas"
 
 #: libgnomeui/winhints_demo.c:199
 msgid "Ignore on Arrange"
-msgstr "Ignoruoti sutvarkant"
+msgstr "Nepaisyti tvarkant"
 
 #: libgnomeui/winhints_demo.c:203
 msgid "Set State"
@@ -1475,7 +1475,7 @@ msgstr "Kuriamas ¥/GNOME´ kontekstas %s %d"
 #: libgnorba/gnome-name-server.c:246
 #, c-format
 msgid "Creating '/GNOME/Servers' context %s %d"
-msgstr "Kuriamas ¥/GNOME´ kontekstas %s %d"
+msgstr "Kuriamas ¥/GNOME/Servers´ kontekstas %s %d"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
@@ -1495,7 +1495,7 @@ msgid ""
 "any services installed or I don't know the path to find them.\n"
 "In either case, please check your GNOME installation."
 msgstr ""
-"Negaliu rasti jokiø instaliuotø paslaugø. Arba nëra ádiegta\n"
+"Negaliu rasti jokiø ádiegtø paslaugø. Arba nëra ádiegta\n"
 "jokiø paslaugø, arba að neþinau kelio, kur jas rasti.\n"
 "Abiem atvejais, patikrink GNOME instaliacijà."
 
@@ -1509,7 +1509,7 @@ msgstr "(Tik vidiniam naudojimui) Aktyvuojamo serverio GOAD bylos apraðiklis"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
-msgstr "ID, pagal kurá GOAD paþysta ðá serverá"
+msgstr "ID, pagal kurá GOAD paþásta ðá serverá"
 
 #: libgnorba/loadshlib.c:11
 msgid "GOAD_ID"
@@ -1517,7 +1517,7 @@ msgstr "GOAD_ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "Repository ID under which GOAD knows this server"
-msgstr "Repository ID, pagal kurá GOAD paþysta ðá serverá"
+msgstr "Repository ID, pagal kurá GOAD paþásta ðá serverá"
 
 #: libgnorba/loadshlib.c:12
 msgid "REPO_ID"
@@ -1563,61 +1563,61 @@ msgstr "Neþinoma sistemos klaida"
 #: support/getopt.c:669
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: pasirinktis ¥%s´ nevienareikðmë\n"
+msgstr "%s: parinktis ¥%s´ nevienareikðmë\n"
 
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: pasirinktis ¥--%s´ neleidþia nurodyti argumento\n"
+msgstr "%s: parinktis ¥--%s´ neleidþia nurodyti argumento\n"
 
 #: support/getopt.c:698
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: pasirinktis ¥%c%s´ neleidþia nurodyti argumento\n"
+msgstr "%s: parinktis ¥%c%s´ neleidþia nurodyti argumento\n"
 
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: pasirinktis ¥%s´ reikalauja argumento\n"
+msgstr "%s: parinktis ¥%s´ reikalauja argumento\n"
 
 #. --option
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: neatpaþinta pasirinktis ¥--%s´\n"
+msgstr "%s: neatpaþinta parinktis ¥--%s´\n"
 
 #. +option or -option
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: neatpaþinta pasirinktis ¥%c%s´\n"
+msgstr "%s: neatpaþinta parinktis ¥%c%s´\n"
 
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:774
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr "%s: neteisëta pasirinktis -- %c\n"
+msgstr "%s: neteisëta parinktis -- %c\n"
 
 #: support/getopt.c:777
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr "%s: negaliojanti pasirinktis -- %c\n"
+msgstr "%s: negaliojanti parinktis -- %c\n"
 
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:807 support/getopt.c:937
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: pasirinktis reikalauja argumento -- %c\n"
+msgstr "%s: parinktis reikalauja argumento -- %c\n"
 
 #: support/getopt.c:854
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: pasirinktis ¥-W %s´ nevienareikðmë\n"
+msgstr "%s: parinktis ¥-W %s´ nevienareikðmë\n"
 
 #: support/getopt.c:872
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: pasirinktis ¥-W %s´ neleidþia nurodyti argumento\n"
+msgstr "%s: parinktis ¥-W %s´ neleidþia nurodyti argumento\n"
 
 #: support/popthelp.c:35
 msgid "Show this help message"
@@ -1635,7 +1635,7 @@ msgstr "Áprastas paveikslëlis"
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
 msgid "If you choose a font it will appear here"
-msgstr "Jei pasirinksi ðriftà jis pasirodys èia"
+msgstr "Jei pasirinksi ðriftà, jis pasirodys èia"
 
 #. Font_Info
 #: test-gnome/testgnome.c:807
@@ -1664,4 +1664,4 @@ msgstr "Vartotojas pasirinko Ne/Atðaukti su duomenimis:\n"
 
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
-msgstr "keistas skaièius atsakymo callback'e"
+msgstr "Keistas skaièius atsakymo callback'e"

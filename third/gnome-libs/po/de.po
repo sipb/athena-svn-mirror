@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.5cvs\n"
 "POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-09-18 05:08+02:00\n"
+"PO-Revision-Date: 2000-10-14 20:51+02:00\n"
 "Last-Translator: Karl Eichwalder <ke@suse.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1637,7 +1637,7 @@ msgstr "Diese Hilfemeldung anzeigen"
 
 #: support/popthelp.c:36
 msgid "Display brief usage message"
-msgstr "Gib eine Kurzanleitung aus"
+msgstr "Eine Kurzanleitung ausgeben"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
@@ -1656,11 +1656,11 @@ msgstr "Schrift-Information"
 
 #: test-gnome/testgnome.c:817
 msgid "Use Font in button with size"
-msgstr "Verwende Schrift im Knopf mit Größe"
+msgstr "Schrift im Knopf verwenden mit der Größe"
 
 #: test-gnome/testgnome.c:824
 msgid "Show font size"
-msgstr "Zeige Schriftgröße"
+msgstr "Schriftgröße zeigen"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"

@@ -1,3 +1,10 @@
+2000-10-23  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* zvtterm.c (zvt_term_motion_notify): don't increment y by the
+	scrollheight here, since it wasn't done before the previous patch
+
+	This fixes selection when the window is scrolled back
+	
 2000-08-24  Not Zed  <NotZed@HelixCode.com>
 
 	* update.c (vt_line_update): Dont clear the line modification

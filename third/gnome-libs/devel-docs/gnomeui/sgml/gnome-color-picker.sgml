@@ -1,4 +1,4 @@
-<refentry id="GnomeColorPicker" revision="17 Jul 2000">
+<refentry id="GnomeColorPicker" revision="11 Oct 2000">
 <refmeta>
 <refentrytitle>GnomeColorPicker</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -91,7 +91,7 @@ depending on your needs.</para>
 
 <informalexample>
   <programlisting>
-void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a)
+void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a, gpointer data)
 {
 	g_print("User selected color (rgba): <literal>d</literal> <literal>d</literal> <literal>d</literal> <literal>d</literal>\n", r, g, b, a);
 	/* save colors to configuration file, or use them some other way */

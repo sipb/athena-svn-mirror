@@ -19,7 +19,7 @@ depending on your needs.</para>
 
 <informalexample>
   <programlisting>
-void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a)
+void color_picked_callback(GtkWidget *w, guint r, guint g, guint b, guint a, gpointer data)
 {
 	g_print("User selected color (rgba): %d %d %d %d\n", r, g, b, a);
 	/* save colors to configuration file, or use them some other way */

@@ -10,6 +10,7 @@ _ORBIT_GNOME_Table_OutOfRange_marshal(GIOPSendBuffer * _ORBIT_send_buffer,
 				      CORBA_Environment * ev)
 {
 }
+
 void
 _ORBIT_skel_GNOME_Table_get(POA_GNOME_Table * _ORBIT_servant,
 			    GIOPRecvBuffer * _ORBIT_recv_buffer,
@@ -51,62 +52,66 @@ _ORBIT_skel_GNOME_Table_get(POA_GNOME_Table * _ORBIT_servant,
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-	 register CORBA_unsigned_long _ORBIT_tmpvar_0;
-	 CORBA_unsigned_long _ORBIT_tmpvar_1;
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    CORBA_unsigned_long _ORBIT_tmpvar_1;
 
-	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					  (_ORBIT_send_buffer), 2);
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer),
-					&((*_ORBIT_retval)._d),
-					sizeof((*_ORBIT_retval)._d));
-	 switch ((*_ORBIT_retval)._d) {
-	   case 2:
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 8);
+					     (_ORBIT_send_buffer), 2);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer),
-					   &((*_ORBIT_retval)._u.v_float),
-					   sizeof((*_ORBIT_retval)._u.
-						  v_float));
-	    break;
-	   case 0:
-	    _ORBIT_tmpvar_1 = strlen((*_ORBIT_retval)._u.str) + 1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
+					   &((*_ORBIT_retval)._d),
+					   sizeof((*_ORBIT_retval)._d));
+	    switch ((*_ORBIT_retval)._d) {
+	      case 2:
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 8);
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						&((*_ORBIT_retval)._u.
+						  v_float),
+						sizeof((*_ORBIT_retval)._u.
+						       v_float));
+		 break;
+	      case 0:
+		 _ORBIT_tmpvar_1 = strlen((*_ORBIT_retval)._u.str) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
 
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_1));
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1),
+			   sizeof(_ORBIT_tmpvar_1));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_1));
+		 }
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						((*_ORBIT_retval)._u.str),
+						sizeof((*_ORBIT_retval)._u.
+						       str[_ORBIT_tmpvar_0]) *
+						_ORBIT_tmpvar_1);
+		 break;
+	      default:
+		 break;
 	    }
-	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					   (_ORBIT_send_buffer),
-					   ((*_ORBIT_retval)._u.str),
-					   sizeof((*_ORBIT_retval)._u.
-						  str[_ORBIT_tmpvar_0]) *
-					   _ORBIT_tmpvar_1);
-	    break;
-	   default:
-	    break;
-	 }
-      } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	 static const ORBit_exception_marshal_info _ORBIT_user_exceptions[] =
-	    { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
-	       (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
-	    {CORBA_OBJECT_NIL, NULL} };
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       = { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
+		    (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
 
-	 ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				   _ORBIT_user_exceptions);
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_free(_ORBIT_retval);
    }
@@ -148,23 +153,21 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
 	    _ORBIT_curptr += 2;
 	 switch (val._d) {
 	   case 2:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-	    
-	       (*((guint64 *) & (val._u.v_float))) =
-	       GUINT64_SWAP_LE_BE(*((guint64 *) _ORBIT_curptr));
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+	      iiop_byteswap((guchar *) & (val._u.v_float), _ORBIT_curptr, 8);
+	      break;
 	   case 0:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
-	    val._u.str = (void *) _ORBIT_curptr;
-	    _ORBIT_curptr +=
-	       sizeof(val._u.str[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      
+		 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	      _ORBIT_curptr += 4;
+	      val._u.str = (void *) _ORBIT_curptr;
+	      _ORBIT_curptr +=
+		 sizeof(val._u.str[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -176,19 +179,19 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
 	 _ORBIT_curptr += 2;
 	 switch (val._d) {
 	   case 2:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
-	    val._u.v_float = *((CORBA_double *) _ORBIT_curptr);
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
+	      val._u.v_float = *((CORBA_double *) _ORBIT_curptr);
+	      break;
 	   case 0:
-	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	    _ORBIT_curptr += 4;
-	    val._u.str = (void *) _ORBIT_curptr;
-	    _ORBIT_curptr +=
-	       sizeof(val._u.str[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-	    break;
+	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	      _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	      _ORBIT_curptr += 4;
+	      val._u.str = (void *) _ORBIT_curptr;
+	      _ORBIT_curptr +=
+		 sizeof(val._u.str[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+	      break;
 	   default:
-	    break;
+	      break;
 	 }
       }
    }
@@ -201,30 +204,33 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
 				    connection, NULL,
 				    _ORBIT_recv_buffer->message.u.request.
 				    request_id, ev->_major);
-      if (ev->_major == CORBA_NO_EXCEPTION) {
-	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					  (_ORBIT_send_buffer), 4);
-	 {
-	    guchar *_ORBIT_t;
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_retval));
-	    memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
-	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_retval));
-	 }
-      } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	 static const ORBit_exception_marshal_info _ORBIT_user_exceptions[] =
-	    { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
-	       (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
-	    {CORBA_OBJECT_NIL, NULL} };
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
+	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
+	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
+	       = { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
+		    (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
+	       {CORBA_OBJECT_NIL, NULL} };
 
-	 ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				   _ORBIT_user_exceptions);
-      } else
-	 ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
+	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
+				      _ORBIT_user_exceptions);
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
    }
 }
 static ORBitSkeleton
@@ -235,19 +241,19 @@ get_skel_GNOME_Table(POA_GNOME_Table * servant,
 
    switch (opname[0]) {
      case 'g':
-      if (strcmp((opname + 1), "et"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_Table_epv->get;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_Table_get;
-      break;
+	if (strcmp((opname + 1), "et"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Table_epv->get;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Table_get;
+	break;
      case 's':
-      if (strcmp((opname + 1), "et"))
-	 break;
-      *impl = (gpointer) servant->vepv->GNOME_Table_epv->set;
-      return (ORBitSkeleton) _ORBIT_skel_GNOME_Table_set;
-      break;
+	if (strcmp((opname + 1), "et"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Table_epv->set;
+	return (ORBitSkeleton) _ORBIT_skel_GNOME_Table_set;
+	break;
      default:
-      break;
+	break;
    }
    return NULL;
 }
@@ -257,6 +263,7 @@ init_local_objref_GNOME_Table(CORBA_Object obj, POA_GNOME_Table * servant)
 {
    obj->vepv[GNOME_Table__classid] = servant->vepv->GNOME_Table_epv;
 }
+
 void
 POA_GNOME_Table__init(PortableServer_Servant servant, CORBA_Environment * env)
 {
