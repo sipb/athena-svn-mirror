@@ -1,0 +1,529 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libebook-e-book-async">
+<refmeta>
+<refentrytitle>e-book-async</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBEBOOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-book-async</refname><refpurpose>
+Handles asynchronous interactions with the EBook.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        (<link linkend="EBookCallback">*EBookCallback</link>)                (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="void">void</link>        (<link linkend="EBookOpenProgressCallback">*EBookOpenProgressCallback</link>)    (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *status_message,
+                                             <link linkend="short-----------percent">short           percent</link>,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="void">void</link>        (<link linkend="EBookIdCallback">*EBookIdCallback</link>)              (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="void">void</link>        (<link linkend="EBookContactCallback">*EBookContactCallback</link>)         (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="void">void</link>        (<link linkend="EBookBookViewCallback">*EBookBookViewCallback</link>)        (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="EBookView">EBookView</link> *book_view,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-get-supported-fields">e_book_async_get_supported_fields</link>
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookEListCallback">EBookEListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-get-supported-auth-methods">e_book_async_get_supported_auth_methods</link>
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookEListCallback">EBookEListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-authenticate-user">e_book_async_authenticate_user</link>  (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *user,
+                                             const <link linkend="char">char</link> *passwd,
+                                             const <link linkend="char">char</link> *auth_method,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-get-contact">e_book_async_get_contact</link>        (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="EBookContactCallback">EBookContactCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-get-contacts">e_book_async_get_contacts</link>       (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookQuery">EBookQuery</link> *query,
+                                             <link linkend="EBookListCallback">EBookListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-remove-contact">e_book_async_remove_contact</link>     (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-remove-contact-by-id">e_book_async_remove_contact_by_id</link>
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-remove-contacts">e_book_async_remove_contacts</link>    (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="GList">GList</link> *id_list,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-book-async-add-contact">e_book_async_add_contact</link>        (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookIdCallback">EBookIdCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-commit-contact">e_book_async_commit_contact</link>     (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+<link linkend="guint">guint</link>       <link linkend="e-book-async-get-book-view">e_book_async_get_book_view</link>      (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookQuery">EBookQuery</link> *query,
+                                             <link linkend="GList">GList</link> *requested_fields,
+                                             <link linkend="int">int</link> max_results,
+                                             <link linkend="EBookBookViewCallback">EBookBookViewCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EBookCallback"/>EBookCallback ()</title>
+<indexterm><primary>EBookCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*EBookCallback)                (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="EBookOpenProgressCallback"/>EBookOpenProgressCallback ()</title>
+<indexterm><primary>EBookOpenProgressCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*EBookOpenProgressCallback)    (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *status_message,
+                                             <link linkend="short-----------percent">short           percent</link>,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_message</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="EBookIdCallback"/>EBookIdCallback ()</title>
+<indexterm><primary>EBookIdCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*EBookIdCallback)              (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="EBookContactCallback"/>EBookContactCallback ()</title>
+<indexterm><primary>EBookContactCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*EBookContactCallback)         (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="EBookBookViewCallback"/>EBookBookViewCallback ()</title>
+<indexterm><primary>EBookBookViewCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*EBookBookViewCallback)        (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookStatus">EBookStatus</link> status,
+                                             <link linkend="EBookView">EBookView</link> *book_view,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>book_view</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-get-supported-fields"/>e_book_async_get_supported_fields ()</title>
+<indexterm><primary>e_book_async_get_supported_fields</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_get_supported_fields
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookEListCallback">EBookEListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-get-supported-auth-methods"/>e_book_async_get_supported_auth_methods ()</title>
+<indexterm><primary>e_book_async_get_supported_auth_methods</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_get_supported_auth_methods
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookEListCallback">EBookEListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-authenticate-user"/>e_book_async_authenticate_user ()</title>
+<indexterm><primary>e_book_async_authenticate_user</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_authenticate_user  (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *user,
+                                             const <link linkend="char">char</link> *passwd,
+                                             const <link linkend="char">char</link> *auth_method,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>passwd</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>auth_method</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-get-contact"/>e_book_async_get_contact ()</title>
+<indexterm><primary>e_book_async_get_contact</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_get_contact        (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="EBookContactCallback">EBookContactCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-get-contacts"/>e_book_async_get_contacts ()</title>
+<indexterm><primary>e_book_async_get_contacts</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_get_contacts       (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookQuery">EBookQuery</link> *query,
+                                             <link linkend="EBookListCallback">EBookListCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>query</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-remove-contact"/>e_book_async_remove_contact ()</title>
+<indexterm><primary>e_book_async_remove_contact</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_remove_contact     (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-remove-contact-by-id"/>e_book_async_remove_contact_by_id ()</title>
+<indexterm><primary>e_book_async_remove_contact_by_id</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_remove_contact_by_id
+                                            (<link linkend="EBook">EBook</link> *book,
+                                             const <link linkend="char">char</link> *id,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-remove-contacts"/>e_book_async_remove_contacts ()</title>
+<indexterm><primary>e_book_async_remove_contacts</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_remove_contacts    (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="GList">GList</link> *id_list,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id_list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-add-contact"/>e_book_async_add_contact ()</title>
+<indexterm><primary>e_book_async_add_contact</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_book_async_add_contact        (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookIdCallback">EBookIdCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-commit-contact"/>e_book_async_commit_contact ()</title>
+<indexterm><primary>e_book_async_commit_contact</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_commit_contact     (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EContact">EContact</link> *contact,
+                                             <link linkend="EBookCallback">EBookCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>contact</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-async-get-book-view"/>e_book_async_get_book_view ()</title>
+<indexterm><primary>e_book_async_get_book_view</primary></indexterm><programlisting><link linkend="guint">guint</link>       e_book_async_get_book_view      (<link linkend="EBook">EBook</link> *book,
+                                             <link linkend="EBookQuery">EBookQuery</link> *query,
+                                             <link linkend="GList">GList</link> *requested_fields,
+                                             <link linkend="int">int</link> max_results,
+                                             <link linkend="EBookBookViewCallback">EBookBookViewCallback</link> cb,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>book</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>query</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>requested_fields</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>max_results</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

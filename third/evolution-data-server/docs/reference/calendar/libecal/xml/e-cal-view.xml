@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libecal-ECalView">
+<refmeta>
+<refentrytitle>ECalView</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBECAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ECalView</refname><refpurpose>Represents a search against a calendar.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="ECal"/>
+<synopsis>
+
+
+
+struct      <link linkend="ECal-struct">ECal</link>;
+#define     <link linkend="E-CAL-VIEW-CAPS">E_CAL_VIEW</link>                      (obj)
+#define     <link linkend="E-CAL-VIEW-CLASS-CAPS">E_CAL_VIEW_CLASS</link>                (klass)
+<link linkend="GType">GType</link>       <link linkend="e-cal-view-get-type">e_cal_view_get_type</link>             (void);
+<link linkend="ECalView">ECalView</link>*   <link linkend="e-cal-view-new">e_cal_view_new</link>                  (<link linkend="GNOME-Evolution-Calendar-CalView">GNOME_Evolution_Calendar_CalView</link> corba_view,
+                                             <link linkend="ECalViewListener">ECalViewListener</link> *listener,
+                                             struct <link linkend="ECal">_ECal</link> *client);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----ECal
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="ECal-backend-died">backend-died</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="ECal-backend-error">backend-error</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="ECal-cal-opened">cal-opened</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="ECal-cal-set-mode">cal-set-mode</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="ECalSetModeStatusEnum">ECalSetModeStatusEnum</link> arg1,
+                                            <link linkend="CalModeEnum">CalModeEnum</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="ECal-categories-changed">categories-changed</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+In the same way that an EBookView represents a view of an addressbook, the
+ECalView is a view of the ECal.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ECal-struct"/>struct ECal</title>
+<indexterm><primary>ECal</primary></indexterm><programlisting>struct ECal;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="E-CAL-VIEW-CAPS"/>E_CAL_VIEW()</title>
+<indexterm><primary>E_CAL_VIEW</primary></indexterm><programlisting>#define E_CAL_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_VIEW, ECalView))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="E-CAL-VIEW-CLASS-CAPS"/>E_CAL_VIEW_CLASS()</title>
+<indexterm><primary>E_CAL_VIEW_CLASS</primary></indexterm><programlisting>#define E_CAL_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_VIEW, ECalViewClass))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>klass</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-cal-view-get-type"/>e_cal_view_get_type ()</title>
+<indexterm><primary>e_cal_view_get_type</primary></indexterm><programlisting><link linkend="GType">GType</link>       e_cal_view_get_type             (void);</programlisting>
+<para>
+Registers the <link linkend="ECalView"><type>ECalView</type></link> class if necessary, and returns the type ID assigned
+to it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The type ID of the <link linkend="ECalView"><type>ECalView</type></link> class.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-cal-view-new"/>e_cal_view_new ()</title>
+<indexterm><primary>e_cal_view_new</primary></indexterm><programlisting><link linkend="ECalView">ECalView</link>*   e_cal_view_new                  (<link linkend="GNOME-Evolution-Calendar-CalView">GNOME_Evolution_Calendar_CalView</link> corba_view,
+                                             <link linkend="ECalViewListener">ECalViewListener</link> *listener,
+                                             struct <link linkend="ECal">_ECal</link> *client);</programlisting>
+<para>
+Creates a new view object by issuing the view creation request to the
+calendar server.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>corba_view</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-created view object, or NULL if the request failed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="ECal-backend-died"/>The &quot;backend-died&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para>
+
+@:</refsect2><refsect2><title><anchor id="ECal-backend-error"/>The &quot;backend-error&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para>
+
+@: 
+@:</refsect2><refsect2><title><anchor id="ECal-cal-opened"/>The &quot;cal-opened&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para>
+
+@: 
+@:</refsect2><refsect2><title><anchor id="ECal-cal-set-mode"/>The &quot;cal-set-mode&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="ECalSetModeStatusEnum">ECalSetModeStatusEnum</link> arg1,
+                                            <link linkend="CalModeEnum">CalModeEnum</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para>
+
+@: 
+@: 
+@:</refsect2><refsect2><title><anchor id="ECal-categories-changed"/>The &quot;categories-changed&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECal">ECal</link> *ecal,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para>
+
+@: 
+@:</refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="e-cal"><type>e-cal</type></link>, <link linkend="e-cal-view-listener"><type>e-cal-view-listener</type></link>
+</para>
+</refsect1>
+
+</refentry>
