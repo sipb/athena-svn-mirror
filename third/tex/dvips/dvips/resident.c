@@ -70,6 +70,7 @@ extern char *maxstring ;
 extern char *warningmsg ;
 extern Boolean disablecomments ;
 extern Boolean compressed ;
+extern Boolean partialdownload ;
 extern int quiet ;
 extern int filter ;
 extern Boolean reverse ;
@@ -79,14 +80,14 @@ extern Boolean removecomments ;
 extern Boolean safetyenclose ;
 extern Boolean dopprescan ;
 extern integer maxsecsize ;
-extern integer mag ;
+extern double mag ;
 extern Boolean sepfiles ;
 extern int actualdpi ;
 extern int vactualdpi ;
 extern int maxdrift ;
 extern int vmaxdrift ;
 extern char *printer ;
-extern char *mfmode ;
+extern char *mfmode, *mflandmode ;
 extern Boolean sendcontrolD ;
 extern int lastresortsizes[] ;
 extern integer hoff, voff ;
@@ -146,21 +147,42 @@ lookup(name)
          return(p) ;
    return(NULL) ;
 }
+
+struct resfont *
+findPSname(name)
+char *name ;
+{
+   register int i ;
+   register struct resfont *p ;
+   for (i=0; i<RESHASHPRIME; i++)
+      for (p=reshash[i]; p; p=p->next) {
+         if (strcmp(p->PSname, name)==0)
+            return p;
+      }
+   return NULL;
+}
+
 /*
  *   This routine adds an entry.
  */
 void
-add_entry(TeXname, PSname, specinfo, downloadinfo)
-   char *TeXname, *PSname, *specinfo, *downloadinfo ;
+add_entry(TeXname, PSname, Fontfile, Vectfile,  specinfo, downloadinfo)
+   char *TeXname, *PSname, *Fontfile, *Vectfile, *specinfo, *downloadinfo ;
 {
    struct resfont *p ;
    int h ;
 
+/* (SPQR), no, the fontfiles are explicitly located.
+   if (Fontfile == 0)
+      Fontfile = downloadinfo ;
+ */
    if (PSname == NULL)
       PSname = TeXname ;
    p = (struct resfont *)mymalloc((integer)sizeof(struct resfont)) ;
    p->Keyname = TeXname ;
    p->PSname = PSname ;
+   p->Fontfile = Fontfile;
+   p->Vectfile = Vectfile;
    p->TeXname = TeXname ;
    p->specialinstructions = specinfo ;
    if (downloadinfo && *downloadinfo)
@@ -199,7 +221,7 @@ residentfont(curfnt)
  *   directives, one that downloads fonts and one that downloads
  *   short headers that are innocuous.
  */
-   if (p->downloadheader && downloadpspk) {
+   if (p->Fontfile && downloadpspk) {
 #ifdef DEBUG
       if (dd(D_FONTS))
          (void)fprintf(stderr,"Using PK font %s for <%s>.\n",
@@ -243,8 +265,13 @@ residentfont(curfnt)
             add_header(q) ;
             *cp++ = ' ' ;
          } else {
-            add_header(q) ;
-            break ;
+            if (strstr(q,".pfa")||strstr(q,".pfb")||
+                strstr(q,".PFA")||strstr(q,".PFB"))
+               break ;       /* We don't add PS font file here */
+            else {
+              add_header(q) ;
+              break;
+            }
          }
          infont = 0 ;
       }
@@ -256,7 +283,7 @@ residentfont(curfnt)
    usesPSfonts = 1 ;
    return(i) ;
 }
-#define INLINE_SIZE (500)
+#define INLINE_SIZE (2000)
 static char was_inline[INLINE_SIZE] ;
 void
 bad_config() {
@@ -309,7 +336,7 @@ char *configstring(s, nullok)
 char *s ;
 int nullok ;
 {
-   char tstr[300] ;
+   char tstr[INLINE_SIZE] ;
    char *p = tstr ;
 
    while (*s && *s <= ' ')
@@ -338,7 +365,7 @@ getdefaults(s)
 char *s ;
 {
    FILE *deffile ;
-   char PSname[300] ;
+   char PSname[INLINE_SIZE] ;
    register char *p ;
    int i, j ;
    integer hsiz, vsiz ;
@@ -442,6 +469,18 @@ case 'm' :
          break ;
 case 'M' :
          mfmode = configstring(was_inline+1, 0) ;
+         mflandmode = 0 ;
+         {
+            char *pp ;
+            for (pp=mfmode; pp && *pp>' '; pp++) ;
+            if (pp && *pp == ' ') {
+               *pp++ = 0 ;
+               while (*pp && *pp <= ' ')
+                  pp++ ;
+               if (*pp)
+                  mflandmode = pp ;
+            }
+         }
          break ;
 case 'o' :
          oname = configstring(was_inline+1, 1) ;
@@ -455,7 +494,7 @@ case 'O' :
 #ifdef FONTLIB
 case 'L' : 
          {
-            char tempname[300] ;
+            char tempname[INLINE_SIZE] ;
             extern char *fliparse() ;
             if (sscanf(was_inline+1, "%s", PSname) != 1) bad_config() ;
             else {
@@ -582,7 +621,7 @@ case 'Y' :
          if (vactualdpi < 10 || vactualdpi > 10000) bad_config() ;
          break ;
 case 'x': case 'y':
-         if (sscanf(was_inline+1, "%d", &mag) != 1) bad_config() ;
+         if (sscanf(was_inline+1, "%lg", &mag) != 1) bad_config() ;
          overridemag = (was_inline[0] == 'x') ? 1 : -1 ;
          break ;
 case 'e' :
@@ -614,6 +653,9 @@ case 'N' :
 case 'Z' :
          compressed = (was_inline[1] != '0') ;
          break ;
+case 'j':
+         partialdownload = (was_inline[1] != '0') ;
+         break ;
 case 't' :
          if (sscanf(was_inline+1, "%s", PSname) != 1) bad_config() ;
          else {
@@ -636,71 +678,123 @@ default:
 }
 
 /*
- *   If a character pointer is passed in, use that name; else, use the
- *   default (possibly set) name.
- */
+*   If a character pointer is passed in, use that name; else, use the
+*   default (possibly set) name.
+*/
 void getpsinfo(name)
 char *name ;
 {
-   FILE *deffile ;
-   register char *p ;
-   char *specinfo, *downloadinfo ;
-   char downbuf[200] ;
+    FILE *deffile ;
+    register char *p ;
+    char *specinfo, *downloadinfo ;
+    char downbuf[200] ;
+    int slen;
 
-   if (name == 0)
-      name = psmapfile ;
-   if ((deffile=search(configpath, name, READ))!=NULL) {
-      while (fgets(was_inline, INLINE_SIZE, deffile)!=NULL) {
-         p = was_inline ;
-         if (*p > ' ' && *p != '*' && *p != '#' && *p != ';' && *p != '%') {
-            char *TeXname = NULL ;
-            char *PSname = NULL ;
-            specinfo = NULL ;
-            downloadinfo = NULL ;
-            downbuf[0] = 0 ;
-            while (*p) {
-               while (*p && *p <= ' ')
-                  p++ ;
-               if (*p) {
-                  if (*p == '"')
-                     specinfo = p + 1 ;
-                  else if (*p == '<') {
-                     if (downloadinfo) {
-                        strcat(downbuf, downloadinfo) ;
-                        strcat(downbuf, " ") ;
-                     }
-                     while (p[1] == ' ' || p[1] == '\t')
+    if (name == 0)
+        name = psmapfile ;
+    if ((deffile=search(configpath, name, READ))!=NULL)
+    {
+        while (fgets(was_inline, INLINE_SIZE, deffile)!=NULL)
+        {
+            p = was_inline ;
+            if (*p > ' ' && *p != '*' && *p != '#' && *p != ';' && *p != '%')
+            {
+                char *temp = NULL;
+                char *TeXname = NULL ;
+                char *PSname = NULL ;
+                char *Fontfile=NULL;
+                char *Vectfile=NULL;
+                specinfo = NULL ;
+                downloadinfo = NULL ;
+                downbuf[0] = 0 ;
+                while (*p)
+                {
+                    while (*p && *p <= ' ')
                         p++ ;
-                     downloadinfo = p + 1 ;
-                  } else if (TeXname)
-                     PSname = p ;
-                  else
-                     TeXname = p ;
-                  if (*p == '"') {
-                     p++ ;
-                     while (*p != '"' && *p)
-                        p++ ;
-                  } else
-                     while (*p > ' ')
-                        p++ ;
-                  if (*p)
-                     *p++ = 0 ;
-               }
-            }
-            if (downloadinfo)
-               strcat(downbuf, downloadinfo) ;
-            if (TeXname) {
-               TeXname = newstring(TeXname) ;
-               specinfo = newstring(specinfo) ;
-               PSname = newstring(PSname) ;
-               downloadinfo = newstring(downbuf) ;
-               add_entry(TeXname, PSname, specinfo, downloadinfo) ;
-            }
-   	 }
-      }
-      (void)fclose(deffile) ;
-   }
-   checkstrings() ;
+                    if (*p)
+                    {
+                        if (*p == '"')
+                            specinfo = p + 1 ;
+                        else if (*p == '<')
+                        {
+                          if (downloadinfo)
+                            {
+                                strcat(downbuf, downloadinfo) ;
+                                strcat(downbuf, " ") ;
+                            }
+                          while (p[1] == ' ' || p[1] == '\t')
+                                p++ ;
+                          temp = p + 1;
+                        }
+                        else if (TeXname)
+                        {                         /* Begin new condition */
+                            if(specinfo)
+                            {
+                                    PSname = p ;  /* Old condition */
+                            }
+                            else
+                            {
+                                    PSname = p;
+                            }
+
+                        }                          /* End new condition */
+                        else
+                            TeXname = p ;
+                        if (*p == '"')
+                        {
+                            p++ ;
+                            while (*p != '"' && *p)
+                                p++ ;
+                        }
+                        else
+                            while (*p > ' ')
+                                p++ ;
+                        if (*p)
+                            *p++ = 0 ;
+                        if (temp)
+                  {
+	    if (strstr(temp, ".pfb")||strstr(temp,".pfa")||
+                strstr(temp, ".PFB")||strstr(temp,".PFA"))
+                             {Fontfile = temp;
+                              downloadinfo = NULL;
+                             }
+/* (SPQR) if it is a reencoding, pass on to FontPart,
+ but download anyway
+*/
+                           else if (strstr(temp, ".enc"))
+                             {Vectfile = temp;
+                                strcat(downbuf, Vectfile) ;
+                                strcat(downbuf, " ") ;
+                              downloadinfo = NULL;
+                             }
+                           else
+                              downloadinfo = temp; 
+                          }
+                    }
+                }
+                if (downloadinfo)
+                    strcat(downbuf, downloadinfo) ;
+		    slen=strlen(downbuf)-1;
+		    while (slen >= 0 && downbuf[slen]==' ') 
+		      { downbuf[slen--]='\0'; }
+                if (TeXname)
+                {
+                    TeXname = newstring(TeXname) ;
+                    specinfo = newstring(specinfo) ;
+                    PSname = newstring(PSname) ;
+                    Fontfile=newstring(Fontfile);
+                    Vectfile=newstring(Vectfile);
+
+                    downloadinfo = newstring(downbuf) ;
+                    add_entry(TeXname, PSname, Fontfile, Vectfile,
+                              specinfo, downloadinfo) ;
+
+		  }
+	      }
+        }
+        (void)fclose(deffile) ;
+    }
+    checkstrings() ;
 }
 /*
  *   Get environment variables! These override entries in ./config.h.
@@ -789,8 +883,6 @@ extern int chdir() ;
 
 /* Memory operations: variants of malloc(3) and realloc(3) that just
    give up the ghost when they fail.  */
-
-extern char *realloc ();
 
 char *
 xmalloc (size)
