@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.2 1989-07-06 21:58:08 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.3 1989-07-12 17:17:12 tjcoppet Exp $";
 #endif 
 
 
@@ -380,7 +380,9 @@ olc_init()
       printf("\nWelcome back to OLC (2.0). \n\n");
       t_personal_status(&Request);
       break; 
-
+   case PERMISSION_DENIED:
+      printf("You are not allowed to use OLC.\n");
+      exit(1);
     default:
       if(handle_response(response, &Request) == ERROR)
 	exit(ERROR);
