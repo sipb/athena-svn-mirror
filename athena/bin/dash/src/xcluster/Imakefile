@@ -16,6 +16,8 @@
  *#include "mit-copyright.h"
  */
 
+#include "../Xj.defs"
+
 XCLUSTER	=	xcluster
 CVIEW		=	cview
 
@@ -30,7 +32,9 @@ M_LIB		=
 X_OBJS		=	xcluster.o read.o net.o check.o
 OBJS		=	cview.o net.o
 
-CFILES		=	xcluster.c read.c net.c check.c cview.c
+SRCS		=	xcluster.c read.c net.c check.c cview.c
+
+INCLUDES	=	-I.. ${LOCAL_INCLUDES}
 
 XLIB		=	-lX11
 XJLIB		=	../lib/libXj.a
@@ -38,17 +42,21 @@ HLIB		=	-lhesiod
 LIBS		=	${XJLIB} ${XLIB} ${M_LIB} ${HLIB}
 
 #if defined(ibm032)
-DEFINES		=	-DSHAPE -D_BSD -D_BSD_INCLUDES -DAIXV=12 -DAPPDEFDIR=\"${ATHXAPPDIR}\"
+DEFINES		=	-DSHAPE -D_BSD -D_BSD_INCLUDES -DAIXV=12
 #else
-DEFINES		=	-DSHAPE -DAPPDEFDIR=\"${ATHXAPPDIR}\"
+DEFINES		=	-DSHAPE
 #endif
 
+AllTarget(${XCLUSTER} ${CVIEW})
 
-AnsiCC()
+NormalProgramTarget(${XCLUSTER},${X_OBJS},,${LOCAL_LIBS},${LIBS})
+InstallProgram(${XCLUSTER},${DESTDIR}${ATHBINDIR})
 
-SimpleProgram(${XCLUSTER},${X_OBJS},${LIBS},${ATHBINDIR}/${XCLUSTER})
-SimpleProgram(${CVIEW},${OBJS},${HLIB},${ATHBINDIR}/${CVIEW})
-install_man(${XCLUSTER}.1,${XCLUSTER}.1)
-install_man(${CVIEW}.1,${CVIEW}.1)
-install_file(${RESOURCES},${ATHXAPPDIR}/${RESOURCES})
-create_depend(${CFILES})
+NormalProgramTarget(${CVIEW},${OBJS},,${LOCAL_LIBS},${HLIB})
+InstallProgram(${CVIEW},${DESTDIR}${ATHBINDIR})
+
+InstallNonExec(${CVIEW}.1,${DESTDIR}${MAN_DIR}/man1/${CVIEW}.1)
+InstallNonExec(${XCLUSTER}.1,${DESTDIR}${MAN_DIR}/man1/${XCLUSTER}.1)
+InstallNonExec(${RESOURCES},${DESTDIR}${ATHXAPPDIR}/${RESOURCES})
+
+DependTarget()
