@@ -1,0 +1,22 @@
+# $Id: Makefile.athena,v 1.1 2003-01-26 04:59:58 ghudson Exp $
+
+# Our build system's imake stuff is too old for this, so we'll use the
+# native stuff and bludgeon it into working.
+
+dist:
+
+prepare:
+	xmkmf -a
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all CC=gcc CCOPTIONS=-g PICFLAGS=-fPIC \
+	  THREADS_CFLAGS='-D_REENTRANT' THREADS_DEFINES=
+
+check:
+
+install:
+	${MAKE} install USRLIBDIR=/usr/athena/lib \
+	  SHLIBDIR=$$SRVD/usr/athena/lib INCROOT=$$SRVD/usr/athena/include
