@@ -1,0 +1,44 @@
+#
+# $Revision: 1.1.1.1 $
+#
+# Makefile for creating packages
+#
+
+prefix		= @prefix@
+srcdir		= @srcdir@
+topsrcdir 	= @top_srcdir@
+VPATH 		= @srcdir@
+
+@VarsMF@
+
+all mcdall: FRC
+
+SysInfoProg	= ../sysinfo/sysinfo
+SysInfoVer	= $(SysInfoProg) -msglevel terse -version
+GetVer		= `$(VERNAME) $(SysInfoVer)`
+
+mcdbuild: $(SysInfoProg)
+	@$(MKDIRHIER) $(PROTOROOT)
+	$(MCDBUILD) -R $(PROTOROOT) \
+		-s $(srcdir)/setup \
+		-i $(srcdir)/mcdinfo.template \
+		--distdir $(DistDir) \
+		--installdir $(prefix) \
+		--osname `$(BUILDINFO) -osname` \
+		--rcf $(topsrcdir)/config/`$(BUILDINFO) -osname`.rcf \
+		--arch `$(BUILDINFO) -apparch` \
+		--name $(GetVer)-$(ProtoPlatform) \
+		--product sysinfo \
+		--version `$(SysInfoVer) | awk '{print $$1}'` \
+		--release `$(SysInfoVer) | awk '{print $$2}'`
+
+clean:
+	rm -rf a.out core 
+	rm -f *~
+
+distclean: clean
+	rm -f Makefile
+
+fullclean: distclean
+
+FRC:

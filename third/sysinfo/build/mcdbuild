@@ -1,0 +1,805 @@
+#!/tools/bin/perl
+#
+# $Id: mcdbuild,v 1.1.1.1 2001-03-20 18:02:54 ghudson Exp $
+#
+# Build a distribution file
+#
+# Distribution files contain the following sections:
+#
+#	<Shell script to extract the distribution bundle>
+#	exit 0
+#	<Tar file containing the following:
+#		"setup"		Program which knows how to install dist files
+#		"mcdmap"	MagniComp Distribution map file
+#		"comp"		Compression program
+#		"files"		Compressed, tar of installable files
+#	>
+#
+# The 
+
+my $ProgramName = $0;
+$ProgramName            =~ s|.*/||g;
+my $MCD_MAP_FILE	= "mcdmap";
+my $MCD_INFO_FILE	= "mcdinfo";
+my $MCD_FILES_DIR	= "files";
+my $Compress		= "gzip";
+my $CompressExt		= "gz";
+my %EditVars;
+$EditVars->{'NAME'}	= "generic";
+my $InfoFileTemplate;
+
+my $DT_SELFEXTRACT	= 1;
+my $DT_TARDIST		= 2;
+my $DistType		= $DT_TARDIST;
+my $DistName		= "setup";
+
+#
+# Subroutines
+#
+sub Error {
+    printf STDERR "%s: ", $ProgramName;
+    printf STDERR @_;
+    printf STDERR "\n";
+}
+
+sub Msg {
+    printf @_;
+    printf "\n";
+}
+
+sub Debug {
+    if ($Debug) {
+	printf STDERR @_;
+	printf STDERR "\n";
+    }
+}
+
+sub Usage {
+    printf STDERR 
+      "Usage:\t%s [ options ] -R <mcdroot> -t <target> <file>\n",
+      $ProgramName;
+    printf STDERR qq{
+where [ options ] are:
+  --debug                    Enable debug output
+  --help                     Print this message and exit
+  -R <dir>                   Top level MCD root directory
+};
+}
+
+#
+# Return a NEW file handle
+#
+sub GetFH {
+    return ++$FHnumber;
+}
+
+sub DirName {
+    my $Path = $_[0];
+
+    my @Parts = split('/', $Path);
+    pop @Parts;
+
+    return join('/', @Parts);
+}
+
+sub BaseName {
+    my ($Path) = @_;
+
+    $Path =~ s|.*/||g;
+
+    return $Path;
+}
+
+#
+# Append File to FH
+#
+sub Append {
+    my $File = shift;
+    my $WFile = shift;
+    my $WFH = shift;
+
+    my $RFH = GetFH();
+    if (!open($RFH, "< $File")) {
+	Error("%s: Open for read failed: %s", $File, $!);
+	return -1;
+    }
+
+    while (my $Amt = sysread($RFH, my $Buff, 8192)) {
+	if (syswrite($WFH, $Buff, $Amt) == undef) {
+	    Error("%s: Write error: %s", $WFile, $!);
+	    close($RFH);
+	    return -1;
+	}
+    }
+
+    close($RFH);
+
+    return 0;
+}
+
+sub Run {
+    my $Fmt = shift;
+    my $Cmd = sprintf($Fmt, @_);
+
+    if ($Debug) {
+	printf STDERR "Running: %s\n", $Cmd;
+    }
+
+    return system($Cmd);
+}
+
+sub Cwd {
+    chop(my $cwd = `pwd`);
+
+    return $cwd;
+}
+
+sub Copy {
+    my $From = shift;
+    my $To = shift;
+
+    if ($From eq $To) {
+	Debug("Copy: From (%s) and To (%s) are identical.  No copy.",
+	     $From, $To);
+	return 1;
+    }
+
+    my $StartDir = Cwd();
+
+    my $FromDir = DirName($From);
+    my $ToDir;
+    if (-d $To) {
+	$ToDir = $To;
+    } else {
+	$ToDir = DirName($To);
+    }
+
+    if (!chdir(DirNameRel($FromDir, $StartDir))) {
+	Error("%s: chdir failed: %s", $FromDir, $!);
+	exit 1;
+    }
+    my $AbsFromDir = Cwd();
+    if (!chdir(DirNameRel($ToDir, $StartDir))) {
+	Error("%s: chdir failed: %s", $ToDir, $!);
+	exit 1;
+    }
+    my $AbsToDir = Cwd();
+
+    if ($AbsToDir eq $AbsFromDir) {
+	Debug("Copy: Directories (%s %s) are the same.  No copy.",
+	      $AbsToDir, $AbsFromDir);
+	chdir($StartDir);
+	return 1;
+    }
+
+    if (!chdir($StartDir)) {
+	Error("%s: chdir failed: %s", $StartDir, $!);
+	exit 1;
+    }
+
+    unlink($To);
+
+    if (Run("cp %s %s", $From, $To) == 0) {
+	my $Mode = 0644;
+	if (-x $From) {
+	    $Mode = 0755;
+	}
+	if (chmod($Mode, $To) != 1) {
+	    Error("%s: Chmod to %s failed: %s", $To, $Mode, $!);
+	    exit 1;
+	}
+	return 1;
+    } else {
+	return 0;
+    }
+}
+
+sub FindProg {
+    my $Name = shift;
+
+    foreach my $Dir (split(':', $ENV{'PATH'})) {
+	my $Path = $Dir . "/" . $Name;
+	if (-x $Path) {
+	    return $Path;
+	}
+    }
+}
+
+#
+# Get relative directory name
+#
+sub DirNameRel {
+    my $Dir = shift;
+    my $AbsDir = shift;
+
+    if ($Dir =~ /^\//) {
+	return $Dir;
+    } else {
+	return $AbsDir . "/" . $Dir;
+    }
+}
+
+#
+# Get a list of input files for bundle from the map file
+#
+sub GetFilesList {
+    my $MapFile = shift;
+    my $FilesDir = shift;
+
+    my $FH = GetFH();
+    if (!open($FH, "< $MapFile")) {
+	Error("%s: Open for read failed: %s", $MapFile, $!);
+	return -1;
+    }
+
+    my $StartDir = Cwd();
+
+    if (!chdir($FilesDir)) {
+	Error("%s: chdir failed: %s", $FilesDir, $!);
+	return -1;
+    }
+
+    my @Files;
+    while (my $Line = <$FH>) {
+	if ($Line =~ /^#/) {
+	    next;
+	}
+	my @Fields = split(/[ \t]+/, $Line);
+	my $File = $Fields[1];
+	if ($Fields[0] eq "f" && !(-f $File)) {
+	    Error("%s: Required file from mapfile (%s) missing.",
+		  $File, $MapFile);
+	    chdir($StartDir);
+	    return -1;
+	}
+	push @Files, $Fields[1];
+    }
+    
+    close($FH);
+
+    chdir($StartDir);
+
+    return @Files;
+}
+
+#
+# Make a tmp directory
+#
+sub MakeTmpDir {
+    my $TmpDir = sprintf("%s/%s.%s", 
+			 $ENV{'TMPDIR'} || "/tmp",
+			 $ProgramName, $$);
+
+    if (!length($TmpDir) || $TmpDir eq "/" || $TmpDir eq "/tmp") {
+	Error("Bad value <%s> for TmpDir.", $TmpDir);
+	exit 1;
+    }
+
+    Msg("Creating temporary directory %s", $TmpDir);
+
+    if (-d $TmpDir) {
+	system("rm -rf $TmpDir");
+    }
+
+    if (!mkdir($TmpDir, 0700)) {
+	Error("%s: mkdir failed: %s", $TmpDir, $!);
+	exit 1;
+    }
+
+    return $TmpDir;
+}
+
+#
+# Make an mcd info file
+#
+sub MakeInfoFile {
+    my $OutFile = shift;
+
+    Msg("Building mcdinfo file %s . . .", $OutFile);
+
+    my $RFH = GetFH();
+    if (!open($RFH, "< $InfoFileTemplate")) {
+	Error("%s: Open for read failed: %s", $InfoFileTemplate, $!);
+	exit 1;
+    }
+
+    my $OFH = GetFH();
+    if (!open($OFH, "> $OutFile")) {
+	Error("%s: Open for write failed: %s", $OutFile, $!);
+	exit 1;
+    }
+
+    $EditVars->{'DISTBTIME'} = time;
+
+    while (my $Line = <$RFH>) {
+	if ($Line =~ /^#/) {
+	    printf $OFH "%s", $Line;
+	    next;
+	} 
+	chop($Line);
+
+	if ($Line =~ /@.*@/) {
+	    my @p = split('@', $Line);
+	    my $Key = $p[1];
+	    my $KEY = uc($Key);
+	    my $Value = $EditVars->{$KEY};
+	    if ($Value) {
+		$Line =~ s/\@$Key\@/$Value/;
+	    } else {
+		# Delete this line since the Value is undefined
+		next;
+	    }
+	}
+
+	printf $OFH "%s\n", $Line;
+    }
+    close($RFH);
+    close($OFH);
+    chmod(0644, $OutFile);
+
+    return 0;
+}
+
+#
+# Get total size of all files
+#
+sub GetFilesSize {
+    my $Args = shift;
+    my @Files = @{$Args->{Files}};
+    my $FilesDir = $Args->{Dir};
+
+    my $StartDir = Cwd();
+
+    if (!chdir($FilesDir)) {
+	Error("%s: chdir failed: %s", $FilesDir, $!);
+	return -1;
+    }
+
+    my $Amt;
+    foreach my $File (@Files) {
+	my @Stat = stat($File);
+	if ($#Stat <= 0) {
+	    Error("%s: Stat failed: %s", $File, $!);
+	    next;
+	}
+	$Amt += $Stat[7];
+    }
+
+    Debug("Total size of files = <%s>", $Amt);
+
+    chdir($StartDir);
+
+    return $Amt;
+}
+
+#
+# Make a tar dist file
+#
+sub MakeTarDist {
+    my $Args = shift;
+    my $DistFile = $Args->{DistFile};
+    my $McdRoot = $Args->{McdRoot};
+    my $Setup = $Args->{Setup};
+
+    my $WorkDir = Cwd();
+
+    #
+    # Copy the setup and map files
+    #
+    if ($Setup) {
+	if (!Copy($Setup, sprintf("%s/%s/%s", 
+				  $McdRoot, $MCD_FILES_DIR, 
+				  BaseName($Setup)))) {
+	    exit 1;
+	}
+    }
+    if (!Copy($Args->{MapFile}, sprintf("%s/%s/%s",
+					$McdRoot,
+					$MCD_FILES_DIR, 
+					BaseName($Args->{MapFile})))) {
+	exit 1;
+    }
+
+    #
+    # Make the tar files bundle
+    #
+    my $FilesDir = DirNameRel($McdRoot . "/" . $MCD_FILES_DIR, $WorkDir);
+    Msg("Reading files list from map . . .");
+    my @Files = GetFilesList($Args->{MapFile}, $FilesDir);
+    $EditVars->{'SIZE'} = GetFilesSize({ Files=>\@Files, Dir=>$FilesDir });
+    if ($#Files <= 0) {
+	Error("Problem getting list of files from map <%s>",
+	      $Args->{MapFile});
+	exit 1;
+    }
+
+    #
+    # Need to make the info file after SIZE is set
+    #
+    if (MakeInfoFile(sprintf("%s/%s/%s",
+			     $McdRoot,
+			     $MCD_FILES_DIR, $MCD_INFO_FILE))) {
+	exit 1;
+    }
+
+    if (!chdir($McdRoot)) {
+	Error("%s: chdir failed: %s", $McdRoot, $!);
+	exit 1;
+    }
+
+    #
+    # Make sure the DistName is made part of the file names in the
+    # dist file.
+    #
+    if ((-l $DistName) && unlink($DistName) != 1) {
+	Error("%s: Remove failed: %s", $DistName, $!);
+	exit 1;
+    }
+    if (!symlink($MCD_FILES_DIR, $DistName)) {
+	Error("%s -> %s: Symlink failed: %s", $DistName, $MCD_FILES_DIR, $!);
+	exit 1;
+    }
+
+    my $DistPath = DirNameRel($DistFile, $WorkDir);
+    Msg("Creating tar dist . . .");
+
+    my @List;
+    push @List, BaseName($Setup), BaseName($Args->{MapFile}), $MCD_INFO_FILE;
+    push @List, @Files;
+    foreach my $file (@List) {
+	$file = $DistName . "/" . $file;
+    }
+
+    if (Run("tar cf - %s | %s > %s",
+	    join(' ', @List), $Compress, $DistPath) != 0) {
+	Error("An error occured creating <%s>",
+	      $DistPath);
+	exit 1;
+    }
+
+    if (!chdir($WorkDir)) {
+	Error("%s: chdir failed: %s", $WorkDir, $!);
+	exit 1;
+    }
+
+    return $DistPath;
+}
+
+#
+# Make the bundle file
+#
+sub MakeBundleFile {
+    my $Args = shift;
+    my $TmpDir = $Args->{TmpDir};
+    my $McdRoot = $Args->{McdRoot};
+    my $Setup = $Args->{Setup};
+
+    #
+    # Copy the setup and map files
+    #
+    if ($Setup) {
+	Msg("Copying Setup (%s) . . .", $Setup);
+	if (!Copy($Setup, $TmpDir)) {
+	    exit 1;
+	}
+    }
+    Msg("Copying Mapfile (%s) . . .", $Args->{MapFile});
+    if (!Copy($Args->{MapFile}, $TmpDir)) {
+	exit 1;
+    }
+
+    #
+    # Find and copy the compression program
+    #
+    my $CompProg;
+    my $CompName;
+    if ($Args->{Compress} =~ /^\//) {
+	if (!(-f $Args->{Compress})) {
+	    Error("%s: Program does not exist.", $Args->{Compress});
+	    exit 1;
+	}
+	$CompProg = $Args->{Compress};
+    } else {
+	$CompProg = FindProg($Args->{Compress});
+	if (!$CompProg) {
+	    Error("Cannot find the <%s> program in \$PATH", 
+		  $Args->{Compress});
+	    exit 1;
+	}
+    }
+    Msg("Copying Compress (%s) . . .", $CompProg);
+    $CompName = "comp";
+    if (!Copy($CompProg, $TmpDir . "/" . $CompName)) {
+	exit 1;
+    }
+
+    my $WorkDir = Cwd();
+
+    #
+    # Make the tar files bundle
+    #
+    my $FilesDir = DirNameRel($McdRoot . "/" . $MCD_FILES_DIR, $WorkDir);
+    Msg("Reading files list from map . . .");
+    my @Files = GetFilesList($Args->{MapFile}, $FilesDir);
+    if ($#Files <= 0) {
+	Error("Problem getting list of files from map <%s>",
+	      $Args->{MapFile});
+	exit 1;
+    }
+
+    if (!chdir($FilesDir)) {
+	Error("%s: chdir failed: %s", $FilesDir, $!);
+	exit 1;
+    }
+
+    my $FileBundle = $TmpDir . "/files";
+    Msg("Creating files bundle (%s) . . .", $FileBundle);
+    if (Run("tar cf - %s | %s > %s",
+	    join(' ', @Files), $CompProg, $FileBundle) != 0) {
+	Error("An error occured creating the <files> bundle <%s>",
+	      $FileBundle);
+	exit 1;
+    }
+
+    #
+    # Now create the main tar ball
+    #
+    if (!chdir($TmpDir)) {
+	Error("%s: chdir failed: %s", $TmpDir, $!);
+	exit 1;
+    }
+    my $TarBall = $TmpDir . "/tarball";
+    Msg("Creating primary tarball . . .");
+    if (Run("tar cf - setup %s %s comp files > %s", 
+	    $MCD_MAP_FILE, $MCD_INFO_FILE, $TarBall) != 0) {
+	Error("An error occured creating the main tar ball file <%s>",
+	      $TarBall);
+	exit 1;
+    }
+
+    if (!chdir($WorkDir)) {
+	Error("%s: chdir failed: %s", $WorkDir, $!);
+	exit 1;
+    }
+
+    return $TarBall;
+}
+
+#
+# Read a Runtime Configuration File (RCF) which is a sysinfo
+# config file of form KEY=Value
+#
+sub ReadRCF {
+    my $File = shift;
+
+    my $FH = GetFH();
+    if (!open($FH, "< $File")) {
+	Error("%s: Open for read failed: %s", $File, $!);
+	exit 1;
+    }
+
+    while (my $Line = <$FH>) {
+	if ($Line =~ /^#/) {
+	    next;
+	}
+	chop($Line);
+	my ($Key, $Value) = split('=', $Line);
+	$Key = lc($Key);
+	if ($Key eq "minosver") {
+	    $EditVars->{'MINOSVERSION'} = $Value;
+	} elsif ($Key eq "maxosver") {
+	    $EditVars->{'MAXOSVERSION'} = $Value;
+	} elsif ($Key eq "libcname") {
+	    $EditVars->{'LIBCNAME'} = $Value;
+	} elsif ($Key eq "minlibcver") {
+	    $EditVars->{'MINLIBCVERSION'} = $Value;
+	}
+    }
+
+    close($FH);
+}
+
+#
+# Remove a file
+#
+sub Remove {
+    my $File = shift;
+
+    Debug("Remove <%s>", $File);
+    if (unlink($File) != 1) {
+	Error("%s: Remove failed: %s", $File, $!);
+	return -1;
+    }
+
+    return 0;
+}
+
+sub SetDistType {
+    my $Name = shift;
+
+    if (lc($Name) eq "tar") {
+	$DistType = $DT_TARDIST;
+    } elsif (lc($Name) eq "selfextract") {
+	Error("selfextract is not supported right now.");
+	exit 1;
+	$DistType = $DT_SELFEXTRACT;
+    } else {
+	Error("Dist type <%s> is unknown.", $Name);
+	Usage();
+	exit 1;
+    }
+}
+
+#
+# Next command line arg
+#
+sub NextArg {
+    my $i = shift;
+    my $Arg = $ARGV[$i];
+
+    if (!length($ARGV[$i+1]) || $ARGV[$i+1] =~ /^-/) {
+	Error("The `%s' option requires an argument.", $Arg);
+	Usage();
+	exit 1;
+    }
+
+    return $ARGV[$i+1];
+}
+
+#
+# Main
+#
+{
+    my $DistDir;
+
+    for (my $i = 0; $i <= $#ARGV; ++$i) {
+	my $Arg = $ARGV[$i];
+	if ($Arg eq '--debug') {
+	    $Debug = 1;
+	} elsif ($Arg eq '--help') {
+	    Usage();
+	    exit 0;
+	} elsif ($Arg eq '-R') {
+	    $McdRoot = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-P') {
+	    $Platform = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-T') {
+	    SetDistType(NextArg($i));
+	    ++$i;
+	} elsif ($Arg eq '-i') {
+	    $InfoFileTemplate = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-s') {
+	    $Setup = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-e') {
+	    $Extractor = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-c') {
+	    $Compress = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--distdir') {
+	    $DistDir = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--name') {
+	    $DistName = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--installdir') {
+	    $EditVars->{'INSTALLDIR'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--product') {
+	    $EditVars->{'NAME'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--version') {
+	    $EditVars->{'VERSION'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--release') {
+	    $EditVars->{'RELEASE'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--osname') {
+	    $EditVars->{'OSNAME'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--osversion') {
+	    $EditVars->{'OSVERSION'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--minosversion') {
+	    $EditVars->{'MINOSVERSION'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--arch') {
+	    $EditVars->{'ARCH'} = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '--rcf') {
+	    $RcfFile = NextArg($i);
+	    ++$i;
+	} else {
+	    Error("Unknown argument `%s'", $Arg);
+	    Usage();
+	    exit 0;
+	}
+    }
+
+    if (!$McdRoot) {
+	Error("No MCD Root (-R) was specified.");
+	Usage();
+	exit 1;
+    }
+    if (!$InfoFileTemplate) {
+	Error("No mcdinfo template file (-i) was specified.");
+	Usage();
+	exit 1;
+    }
+
+    ReadRCF($RcfFile);
+
+    my $MapFile = sprintf("%s/%s", $McdRoot, $MCD_MAP_FILE);
+    my $DistFile;
+    if (!$DistDir) {
+	$DistDir = $McdRoot;
+    }
+
+    if ($DistType == $DT_SELFEXTRACT) {
+	$DistFile = sprintf("%s/%s", $DistDir, $DistName);
+	if ((-f $DistFile) && (unlink($DistFile) != 1)) {
+	    Error("%s: Cannot remove: %s", $DistFile, $!);
+	    exit 1;
+	}
+
+	Msg("Creating distribution file %s . . .", $DistFile);
+	my $FH = GetFH();
+	if (!open($FH, "> $DistFile")) {
+	    Error("%s: Cannot open/create: %s", $DistFile, $!);
+	    exit 1;
+	}
+
+	Msg("Adding Extractor (%s) . . .", $Extractor);
+	if (Append($Extractor, $DistFile, $FH) != 0) {
+	    close($FH);
+	    Remove($DistFile);
+	    exit 1;
+	}
+
+	my $TmpDir = MakeTmpDir();
+
+	my $TarFile = MakeBundleFile({ 
+				      TmpDir=>$TmpDir,
+				      McdRoot=>$McdRoot,
+				      MapFile=>$MapFile,
+				      Setup=>$Setup,
+				     });
+
+	Msg("Adding Tarball (%s) . . .", $TarFile);
+	if (Append($TarFile, $DistFile, $FH) != 0) {
+	    close($FH);
+	    Remove($DistFile);
+	    exit 1;
+	}
+
+	close($FH);
+
+	Msg("Cleaning up %s", $TmpDir);
+	Run("rm -rf %s", $TmpDir);
+    } elsif ($DistType == $DT_TARDIST) {
+	$DistFile = sprintf("%s/%s.tar.%s", 
+			    $DistDir, $DistName, $CompressExt);
+	if ((-f $DistFile) && (unlink($DistFile) != 1)) {
+	    Error("%s: Cannot remove: %s", $DistFile, $!);
+	    exit 1;
+	}
+
+	Msg("Creating distribution file %s . . .", $DistFile);
+
+	$DistFile = MakeTarDist({ 
+				    DistFile=>$DistFile,
+				    TmpDir=>$TmpDir,
+				    McdRoot=>$McdRoot,
+				    MapFile=>$MapFile,
+				    Setup=>$Setup,
+				   });
+    }
+
+    Msg("Created %s", $DistFile);
+
+    exit 0;
+}

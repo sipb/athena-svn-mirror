@@ -1,0 +1,12 @@
+
+			 SysInfo Build Notes
+
+Solaris 7 and later:
+	For 64-bit on 32-bit:
+		setenv KISA sparcv9
+	For 32-bit on 64-bit:
+		setenv KISA sparcv8
+
+Build info
+	setenv BUILD_HOST magnicomp.com
+	setenv BUILD_USER mcooper

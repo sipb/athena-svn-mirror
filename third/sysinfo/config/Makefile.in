@@ -1,0 +1,51 @@
+#
+# $Revision: 1.1.1.1 $
+#
+# Makefile for SysInfo config files
+#
+
+prefix		= @prefix@
+srcdir		= @srcdir@
+topsrcdir 	= @top_srcdir@
+VPATH 		= @srcdir@
+
+@VarsMF@
+
+#
+# OS Specific makefile info
+#
+@OSNAMEmf@
+@OSNAMEMVERmf@
+@OSNAMEVERmf@
+
+CFDIR 		= @cfdir@
+
+all: FRC
+
+mcdall:
+	@for f in $(topsrcdir)/config/*.cf $(topsrcdir)/config/*.rcf $(topsrcdir)/config/*.ddb ; do \
+		cf=`echo $$f | sed -e 's;.*/;;'`; \
+		cmd="$(MCDADD) -R $(PROTOROOT) -d $(PROTOCF) \
+			-m 444 $(INSTALLOWN) -t config/$$cf $$f"; \
+		echo $$cmd; \
+		$$cmd; \
+	done
+
+install:
+	@$(MKDIRHIER) $(CFDIR); \
+	for f in $(topsrcdir)/config/*.cf $(topsrcdir)/config/*.rcf $(topsrcdir)/config/*.ddb ; do \
+		cf=`echo $$f | sed -e 's;.*/;;'`; \
+		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(CFDIR)/$$cf"; \
+		echo $$cmd; \
+		$$cmd; \
+	done
+
+clean:
+	rm -f *~ core
+
+distclean: clean
+	rm -f Makefile
+
+fullclean: distclean
+
+FRC:

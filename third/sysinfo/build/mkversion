@@ -1,10 +1,14 @@
 #!/bin/sh
 #
-# $Id: mkversion,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
+# $Revision: 1.1.1.2 $
 #
-PATH=/usr/ucb:/usr/bsd:/usr/bin:/bin
+ORIGPATH=$PATH
+ABSPATH=/usr/ucb:/usr/bsd:/usr/bin:/bin
+PATH=$ABSPATH
 export PATH
 
+Base=`basename $0 /`
+BuildDir=`echo $0 | sed -e "s;/$Base\$;;"`
 outfile=versinfo.c
 count=1
 num=$#
@@ -44,6 +48,9 @@ if [ -z "$host" ]; then
 fi
 if [ -z "$user" ]; then
     who=`who am i 2>/dev/null`
+    if [ -z "$who" ]; then
+       who=$USER
+    fi
     if [ ! -z "$who" ]; then
 	user=`echo $who | awk '{print $1}' | sed -e 's;.*!;;'`
     else
@@ -51,12 +58,64 @@ if [ -z "$user" ]; then
     fi
 fi
 
-OSname=`build/buildinfo -osname -real`
-OSver=`build/buildinfo -osver -real`
-OStype=`build/buildinfo -osnamemver`
-AppArch=`build/buildinfo -apparch`
-CPUArch=`build/buildinfo -cpuarch`
-KISA=`build/buildinfo -kisa`
+OSname=`$BuildDir/buildinfo -osname -real`
+OSver=`$BuildDir/buildinfo -osver -real`
+OStype=`$BuildDir/buildinfo -osnamemver`
+AppArch=`$BuildDir/buildinfo -apparch`
+CPUArch=`$BuildDir/buildinfo -cpuarch`
+KISA=`$BuildDir/buildinfo -kisa`
+
+#
+# Remove extra dot values for certain OS's.
+#
+if [ "$OSname" = "Linux" ]; then
+    OSver=`echo $OSver | awk -F. '{printf "%s.%s", $1, $2}'`
+fi
+
+#
+# Need to restore ORIGPATH to make sure we find the right 'cc' etc.
+#
+PATH=$ORIGPATH
+export PATH
+if [ -f ./configvars.sh ]; then
+    ConfigVars="./configvars.sh"
+elif [ -f ../configvars.sh ]; then
+    ConfigVars="../configvars.sh"
+fi
+if [ ! -z "$ConfigVars" ]; then
+    . $ConfigVars
+    case "$CC" in
+	*gcc)
+	    CCver=`$CC --version`
+	    ;;
+	cc|*/cc)
+	    case "$OSname" in
+		SunOS)
+		    CCver=`($CC -V 2>&1) | head -1 | sed -e 's;^cc: ;;'`
+		    ;;
+		IRIX*)
+		    CCver=`($CC -version 2>&1) | head -1`
+		    ;;
+		AIX*)
+		    CCver=`($CC -help 2>&1) | grep -i version | head -1 | \
+			    sed -e 's;^[ ]*;;'`
+		    ;;
+		HP*UX)
+		    case "$CC" in
+			cc)
+			    ccpath=`which cc`
+			    ;;
+			*)
+			    ccpath="$CC"
+			    ;;
+		    esac
+		    if [ -f "$ccpath" ]; then
+			CCver=`strings $ccpath | egrep 'HP.*Compiler'`
+		    fi
+		    ;;
+	    esac
+    esac
+fi
 
 rm -f $outfile
 
@@ -73,4 +132,8 @@ char BuildOStype[] = "$OStype";
 char BuildAppArch[] = "$AppArch";
 char BuildCPUArch[] = "$CPUArch";
 char BuildKISA[] = "$KISA";
+char BuildCC[] = "$CC";
+char BuildCCver[] = "$CCver";
+char BuildCFLAGS[] = "$CFLAGS";
+char BuildLIBS[] = "$LIBS";
 EOF

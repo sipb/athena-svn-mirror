@@ -1,0 +1,16 @@
+#
+# $Id: linux.mf,v 1.1.1.1 2001-03-20 18:01:54 ghudson Exp $
+#
+# Linux Makefile variables
+#
+OSOBJS		= \
+			$(O)os/linux/linux.o \
+			$(O)std/dospart.o \
+			$(O)std/myata.o \
+			$(O)std/myscsi.o \
+			$(O)std/pci.o \
+			${NetIf-Objs} \
+			${RPM-Objs}
+
+#OSLDFLAGS	=
+

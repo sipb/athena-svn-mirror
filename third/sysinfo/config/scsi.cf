@@ -1,13 +1,19 @@
 #
-# $Id: scsi.cf,v 1.1.1.1 1998-12-24 22:03:02 ghudson Exp $
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
 #
-# Copyright (c) 1992-1998 Michael A. Cooper.  
-# This software may be freely used and distributed provided it is not
-# sold for profit or used in part or in whole for commercial gain
-# without prior written agreement, and the author is credited
-# appropriately.
+
+#
+# $Id: scsi.cf,v 1.1.1.2 2001-03-20 18:02:31 ghudson Exp $
 #
 # 	SCSI common definetions
+#
+# SCSI ANSI versions
+#	Defined by SCSI-X Primary Commands (SPC) under INQUIRY data
+#
+define|SCSIansiVer||0x02	||ANSI X3.131-1994 (SCSI-2)
+define|SCSIansiVer||0x03	||ANSI X3.301-1997 (SCSI-3)
 #
 # SCSI Device Types
 #
@@ -23,4 +29,14 @@ define|SCSIdtype||0x07	|		|Optical
 define|SCSIdtype||0x08	|		|Changer
 define|SCSIdtype||0x09	|serial		|Communications
 define|SCSIdtype||0x0C	|		|Array Controller
-define|SCSIdtype||0x0D	|		|ESI
+define|SCSIdtype||0x0D	|		|Enclosure Services Device
+#
+# SCSI Sequential device Compression Algorithms
+#	See Table 44 of SCSI-3 SSC - Compression algorithm identifiers
+#
+define|SCSIcompAlg||0x03	||IBM ALDC with 512 byte buffer
+define|SCSIcompAlg||0x04	||IBM ALDC with 1024 byte buffer
+define|SCSIcompAlg||0x05	||IBM ALDC with 2048 byte buffer
+define|SCSIcompAlg||0x10	||IBM IDRC
+define|SCSIcompAlg||0x20	||DCLZ
+define|SCSIcompAlg||0x10	||Unregistered algorithm

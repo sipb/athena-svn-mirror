@@ -1,0 +1,14 @@
+#
+# $Id: hpux.mf,v 1.1.1.1 2001-03-20 18:03:38 ghudson Exp $
+#
+# HPUX Makefile info
+#
+OSOBJS		= \
+			$(O)os/hpux/hpux.o \
+			$(O)os/hpux/ios.o \
+			$(O)os/hpux/sw.o \
+			$(O)std/myscsi.o \
+			${NetIf-Objs}
+
+# HPUX make does not define $(AR)
+AR		= ar

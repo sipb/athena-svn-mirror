@@ -1,0 +1,360 @@
+                           [MagniComp Home Page]
+
+                        SysInfoTM 4.0.2 Release Notes
+
+                                  MagniComp
+
+Documentation Guide
+
+   * SysInfo 4.0.2 README - A guide to this product.
+   * SysInfo 4.0.2 Release Notes (doc/RELEASE_NOTES.html
+     doc/RELEASE_NOTES.txt) - Supported platforms, platform specific notes,
+     and new features.
+   * SysInfo 4.0.2 Installation (INSTALL.html INSTALL.txt) - Installation
+     requirements and installation instructions including how to compile
+     from source.
+
+Supported Platforms
+
+The following table indicates what platforms are supported for this release
+of SysInfo. This platform list is subject to change with each dot dot
+release of SysInfo.
+
+                          SysInfo Class of Information
+
+ Man.     OS      Hard-  Gen  Ker  Sys  Dev  SW   Part         Notes
+                  ware
+
+                                                         AIX 4.1.4 - 4.3.3
+  IBM   AIX 4.x  rs6000   Y    N    Y    Y    Y    Y     tested. AIX 3.2 -
+                                                        4.1.3 should work,
+                                                         but are untested.
+
+        BSD/OS
+         3.1,      x86    Y    Y    Y    Y    N    Y
+       4.0, 4.1
+
+        FreeBSD
+         3.2 -     x86    Y    Y    Y    Y    N    Y    See Platform Notes
+          4.0
+
+         HP-UX                                          HP-UX 10.20 - 11.00
+  HP    10.x -   hp9000   Y    Y    N    Y    N    Y       tested. Older
+         11.x                                              versions will
+                                                          probably work.
+
+                                                         IRIX 6.5 tested.
+  SGI  IRIX 6.5   MIPS    Y    N    Y    Y    Y    Y    IRIX 5.x - 6.4 may
+                                                         no longer work.
+
+                                                             Supported
+                                                        Distributions: Red
+         Linux                                          Hat 6.0 and later,
+                                                        SuSe 6.1 and later.
+          2.2      x86    Y    Y    Y    Y    Y    Y    Other distributions
+        (glibc
+         2.0)                                            with Linux kernel
+                                                        2.2 + glibc 2.0 and
+                                                        later should work.
+                                                        See Platform Notes
+
+        Solaris
+  Sun     1.x     SPARC   Y    Y    Y    Y    N    Y    SunOS 4.1.4 tested.
+        (SunOS
+        4.1.x)
+
+        Solaris                                           Solaris 2.5 - 8
+  Sun     2.x     SPARC   Y    Y    Y    Y    Y    Y     (SunOS 5.5 - 5.8)
+        (SunOS                                           verified working.
+         5.x)                                           See Platform Notes
+
+        Solaris                                            Solaris 7 - 8
+  Sun     2.x      x86    Y    Y    Y    Y    Y    Y     (SunOS 5.7 - 5.8)
+        (SunOS                                           tested on limited
+         5.x)                                                hardware.
+
+ KEY:                    CLASS OF INFORMATION KEY:
+ Y - Yes, it's           Gen - General Information
+ supported               (-class general)
+ N - No, it's not        Ker - Kernel Information
+ supported               (-class kernel)
+ P - Planned             Sys - SysConf Information
+                         (-class sysconf)
+                         Dev - Device Information
+                         (-class device)
+                         SW - Software Information
+                         (-class software)
+                         Part - Partition Information
+                         (-class partition)
+
+License Information
+
+In order to fund future improvements to SysInfo, a new license scheme is
+introduced with version 3.5. The new license allows no-cost use by
+non-profit (government and military organizations are not eligible) and
+educational institutions and requires payment for use by all other users.
+More information, including pricing is available by clicking here
+
+SysInfo will automatically allow 60-days of free use for demonstration
+purposes whenever run if there is no license available.
+
+SysInfo will automatically detect if it's being run on an educational or
+non-profit system if the domain name of the system is one of the known
+educational or non-profit domains. Currently this includes:
+
+   * .edu
+   * .edu.CC
+   * .cc.state.us
+   * .ac.CC
+   * .uni-*.de
+   * .org
+
+where CC is a country code. All other institutions must register and request
+a (free) license.
+
+New Platform Support
+
+ AIX 4.3              SysInfo now supports AIX 4.3
+
+ Linux 2.2 on x86     This release adds Device class support for Linux
+                      systems.
+
+ Solaris 8 (SunOS     Full support for all Solaris 8 systems, including
+ 5.8)                 64-bit (UltraSPARC) systems.
+
+Major New Features/Improvements
+
+Changes added to 4.0.2
+
+This is a bug fix release. While we recommend you always run the latest
+version we specifically recommend you upgrade to this release for the
+following specific reasons:
+
+   * You are using HP-UX.
+   * You are using Sun UltraSPARC-III based systems such as Sun Blade 1000.
+   * You are experiencing any kind of SysInfo problem.
+
+See the CHANGES file for a list of specific changes/bug fixes in this
+release.
+
+Changes added to 4.0.1
+
+This is a bug fix release. While we recommend you always run the latest
+version we specifically recommend you upgrade to this release for the
+following specific reasons:
+
+   * You are using UPGRADE licenses which do not work.
+   * You are using HP-UX.
+   * You are using Solaris 2.x and later.
+
+See the CHANGES file for a list of specific changes/bug fixes in this
+release.
+
+Changes added to 4.0
+
+   * Provide information on installed software.   SysInfo uses OS specific
+     interfaces to obtain information on what software is installed on a
+     system. Information includes:
+        o Name
+        o Version
+        o Revision for this Version
+        o Description of software
+        o Verbose Description
+        o Product URL
+        o Product License
+        o Category pkg belongs to
+        o Sub Category
+        o OS name runs on
+        o OS version runs on
+        o Architecture runs on
+        o Instruct. Set Arch.
+        o Installation Date
+        o Build Date
+        o Production Stamp
+        o Base Dir for files
+        o Space used by FileList
+        o List of Files
+        o Misc Descriptions
+        o Name of vendor
+        o Email of vendor
+        o Phone of vendor
+        o Vendor's Stock # for Pkg
+
+     Here's an example from a Solaris 7 system:
+
+         SUNWxwrtl       X Window System & Graphics Runtime Library Links in /usr/lib
+             Name                  : SUNWxwrtl
+             Version               : 3.7.2100
+             Revision              : 0.98.08.05
+             Category              : system
+             Sub Category          : usr
+             Architecture          : sparc
+             Date Installed        : Nov 03 1999 10:15
+             Production Stamp      : fantasyland980815103017
+             Base Directory        : /usr
+             Vendor Name           : Sun Microsystems, Inc.
+             Classes               : none
+             Tz                    : US/Pacific
+             Path                  : /sbin:/usr/sbin:/usr/bin:/usr/sadm/install/bin
+             Oambase               : /usr/sadm/sysadm
+             Maxinst               : 1000
+             Sunw Pkgvers          : 1.0
+             Patchlist             : 107648-09 107656-05
+             Patch Info 107648 09  : Installed: Thu Oct 14 21:40:19 PDT 1999 From: fern Obsoletes:  Requires: 107078-17 Incompatibles:
+             Patch Info 107656 05  : Installed: Thu Oct 14 21:41:05 PDT 1999 From: fern Obsoletes:  Requires: 107648-06 Incompatibles:
+             Pkgsav                : /var/sadm/pkg/SUNWxwrtl/save
+             Pkg No Unified        : TRUE
+             Update                : yes
+             Part of Product       : OpenWindows 2.6.0
+             Description           : X Window System & Graphics Runtime Library Links in /usr/lib
+             Verbose Description   : X Window System & Graphics runtime library link
+
+     Additionally, a list of files associated with each software instance is
+     provided with the following attribute information:
+        o Type: File, dir, symlink, etc
+        o Path to file
+        o Link To name
+        o Size of file
+        o MD5 checksum
+        o List of Pkgs file is used by
+
+   * Provide information on storage partitions.   SysInfo now provides a
+     list of all storage partitions and their usage, if available. This
+     information provides data regardless of whether a partition is directly
+     on a hard disk or on a "meta" device provided through Veritas or other
+     storage management software.
+
+     The information collected includes:
+        o Entry type
+        o Dev Path e.g. /dev/c0t0s1
+        o Dev Name e.g. c0t0
+        o Basename e.g. c0t0s1
+        o Name e.g. s1
+        o Part # for this disk e.g. 1
+        o Type e.g. ufs
+        o Description of Type
+        o Numeric value of Type if any
+        o String value for Usage (below)
+        o Mount Name e.g. /usr
+        o Mount Options e.g. rw,quota
+        o Size of partition in bytes
+        o Amt of space currently used
+        o Size of 1 sector
+        o Starting Sector #
+        o Ending Sector #
+        o Number of Sectors (size)
+
+     Here are 2 examples:
+
+             c0t0d0s0        is a 7.9 GB ufs partition in use as /
+                 Name                  : c0t0d0s0
+                 Device Path           : /dev/dsk/c0t0d0s0
+                 Usage Status          : FILESYSTEM
+                 Mount/Usage           : /
+                 Mount/Usage Options   : rw suid dev=2580000 largefiles
+                 Type                  : ufs
+                 Size                  : 7.9 GB
+                 Amount In Use         : 5.5 GB
+                 Sector Size           : 512
+                 # of Sectors          : 16469712
+
+             c0t0d0s1        is a 400 MB SWAP partition
+                 Name                  : c0t0d0s1
+                 Device Path           : /dev/dsk/c0t0d0s1
+                 Usage Status          : SWAP
+                 Type                  : SWAP
+                 Size                  : 400 MB
+                 Sector Size           : 512
+                 Starting Sector       : 16469712
+                 Ending Sector         : 17289215
+                 # of Sectors          : 819504
+
+   * C callable API.   SysInfo now provides a documented C callable API for
+     embedding SysInfo into C applications. The API abstracts and cleans up
+     the previously undocumented API. See mcSysInfo(3) for the API
+     documentation.
+
+   * Major restructuring of code.   The entire source code base has been
+     re-organized and broken into distinct subdirectories.
+
+   * GNU autoconfigure configuration.   The GNU autoconfigure (i.e.
+     configure) is now used to configure the source code for compilation.
+     See the Installation (INSTALL.html or INSTALL.txt) documentation for
+     more information.
+
+   * Improved SCSI device support.   The SCSI code has undergone another
+     upgrade to support the SCSI-3 standard. Detailed information is also
+     now supported for CD/DVD devices which support the SCSI "CD" query.
+
+   * Improved ATA/ATAPI device support.   The ATA/ATAPI (aka IDE) code has
+     undergone a major upgrade and now is compliant with ATA-1 through
+     ATA-3.
+
+   * Full Linux support.   Support for Device class information has been
+     added thanks to newly added features in the Linux 2.2 kernel.
+
+   * Improved installation.   The installation of binary (precompiled)
+     distributions has been much improved with the introduction of the setup
+     (installation) program. See the Installation (INSTALL.html or
+     INSTALL.txt) documentation for more information.
+
+   * Improved DOS Partition information.   Supported for decoding DOS
+     parititon information has been revised significantly. SysInfo now
+     understands how to decode Extended DOS partition information.
+
+   * Automatic detection of the configuration file directory.   SysInfo will
+     now find it's own configuration files (i.e. the config directory)
+     automatically. It does this by looking for the config directory
+     relative to where the program is installed. See the sysinfo(1) man page
+     for more information.
+
+   * Cleaner runtime for multiple OS versions.   SysInfo now has a much
+     improved method of installing and supporting multiple versions of an OS
+     from one sysinfo installation directory. The primary, user run, sysinfo
+     program is now a wrapper script (formerly called metasysinfo in
+     previous releases) which runs the appropriate SysInfo binary based on
+     OS specific runtime configuration rules.
+
+   * Miscellaneous bug fixes and platform updates.   See the CHANGES file
+     for more information.
+
+Changes from Previous Releases
+
+Please see the Version 3.5 Release Notes for information about that release.
+
+Platform Specific Notes
+
+ HP-UX               When obtaining software class information on HP-UX,
+                     SysInfo may appear to be sluggish taking several
+                     minutes to gather information depending on the speed
+                     and hardware configuration of the system. It may also
+                     use lots of memory (20-70MB). These problems are due
+                     to the use of the HP-UX swlist command which is both
+                     slow in outputing information and copious in its
+                     output.
+
+ Solaris 7 and later Special compilation care is required on Solaris 7 and
+                     later. See the Solaris 7 and later compilation notes
+                     in the Installation documentation.
+
+ Sun/SPARC EDID      VESA Extend Display Identification Data (EDID) for
+                     monitors appears to only be available from Creator
+                     Series 2 (FFB2) and later Creator frame buffers. No
+                     sign of EDID data on any other Sun framebuffer so
+                     far.
+
+ Linux               Support for device class information is provided for
+                     Linux systems which run the Linux 2.2 or later
+                     kernel. Only devices connected to the PCI bus will be
+                     recognized by SysInfo even if Linux recognizes the
+                     device. Devices connected to ISA, EISA, MicroChannel,
+                     or other legacy buses will not be identified by
+                     SysInfo.
+
+ FreeBSD             On FreeBSD 4.0 and later, devices on PCI buses are
+                     recognized. On releases prior to 4.0, both PCI and
+                     ISA bus devices are recognized. There is no EISA
+                     support.
+----------------------------------------------------------------------------
+                     Copyright (c) 1992-2001 MagniComp
+                             $Revision: 1.1.1.1 $

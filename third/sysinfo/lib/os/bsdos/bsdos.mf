@@ -1,0 +1,8 @@
+#
+# $Id: bsdos.mf,v 1.1.1.1 2001-03-20 18:01:46 ghudson Exp $
+#
+# BSDi's BSD/OS Makefile variables
+#
+OSOBJS		= \
+		$(O)os/bsdos/bsdos.o \
+		${BSD-Objs}

@@ -1,11 +1,11 @@
 #
-# $Id: dospart.cf,v 1.1.1.1 1998-12-24 22:02:59 ghudson Exp $
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
 #
-# Copyright (c) 1992-1998 Michael A. Cooper.  
-# This software may be freely used and distributed provided it is not
-# sold for profit or used in part or in whole for commercial gain
-# without prior written agreement, and the author is credited
-# appropriately.
+
+#
+# $Id: dospart.cf,v 1.1.1.2 2001-03-20 18:02:28 ghudson Exp $
 #
 # 	DOS Partition Types
 #
@@ -13,24 +13,24 @@
 #
 #		      ID  DESCRIPTION
 define|DosPartTypes||0x00|unused
-define|DosPartTypes||0x01|Primary DOS with 12-bit FAT
-define|DosPartTypes||0x02|XENIX / filesystem
-define|DosPartTypes||0x03|XENIX /usr filesystem
-define|DosPartTypes||0x04|Primary DOS with 16-bit FAT (<= 32MB)
-define|DosPartTypes||0x05|Extended DOS
-define|DosPartTypes||0x06|Primary 'big' DOS (> 32MB)
-define|DosPartTypes||0x07|OS/2 HPFS, QNX or Advanced UNIX
-define|DosPartTypes||0x08|AIX filesystem
-define|DosPartTypes||0x09|AIX boot partition or Coherent
-define|DosPartTypes||0x0A|OS/2 Boot Manager or OPUS
-define|DosPartTypes||0x0B|DOS or Windows 9x with 32-bit FAT
-define|DosPartTypes||0x0C|DOS or Windows 9x with 32-bit FAT, LBA
-define|DosPartTypes||0x0E|Primary 'big' DOS (> 32MB, LBA)
-define|DosPartTypes||0x0F|Extended DOS, LBA
-define|DosPartTypes||0x10|OPUS
-define|DosPartTypes||0x1B|Windows 98
-define|DosPartTypes||0x40|VENIX 286
-define|DosPartTypes||0x42|PowerPC Boot
+define|DosPartTypes||0x01|Primary DOS with 12-bit FAT		|FAT12
+define|DosPartTypes||0x02|XENIX / filesystem			|XENIX-ROOT
+define|DosPartTypes||0x03|XENIX /usr filesystem			|XENIX-USR
+define|DosPartTypes||0x04|Primary DOS with 16-bit FAT		|FAT16
+define|DosPartTypes||0x05|Extended DOS				|EXTDOS
+define|DosPartTypes||0x06|Primary 'big' DOS (> 32MB)		|PRI-BIG-DOS
+define|DosPartTypes||0x07|OS/2 HPFS, QNX or Advanced UNIX	|OS2
+define|DosPartTypes||0x08|AIX filesystem			|AIX-FS
+define|DosPartTypes||0x09|AIX boot partition or Coherent	|AIX-BOOT
+define|DosPartTypes||0x0A|OS/2 Boot Manager or OPUS		|OS2-BOOT
+define|DosPartTypes||0x0B|Windows 9x 32-bit FAT			|FAT32
+define|DosPartTypes||0x0C|Windows 9x 32-bit FAT, LBA		|FAT32
+define|DosPartTypes||0x0E|Primary 'big' DOS (> 32MB, LBA)	|PRI-BIG-DOS
+define|DosPartTypes||0x0F|Extended DOS, LBA			|EXTDOS-LBA
+define|DosPartTypes||0x10|OPUS					|OPUS
+define|DosPartTypes||0x1B|Windows 98				|WIN98
+define|DosPartTypes||0x40|VENIX 286				|VENIX
+define|DosPartTypes||0x42|PowerPC Boot				|POWERPC-BOOT
 define|DosPartTypes||0x50|DM
 define|DosPartTypes||0x51|DM
 define|DosPartTypes||0x52|CP/M or Microport SysV/AT
@@ -42,20 +42,21 @@ define|DosPartTypes||0x65|Novell Netware 3.xx
 define|DosPartTypes||0x75|PCIX
 define|DosPartTypes||0x80|Minix 1.1 ... 1.4a
 define|DosPartTypes||0x81|Minix 1.4b ... 1.5.10
-define|DosPartTypes||0x82|Linux swap or Solaris filesystem
-define|DosPartTypes||0x83|Linux filesystem
-define|DosPartTypes||0x8F|BSD/OS
-define|DosPartTypes||0x92|Solaris
+define|DosPartTypes||0x82|Linux swap or Solaris filesystem	|LINUX-SW
+define|DosPartTypes||0x83|Linux filesystem			|LINUX-FS
+define|DosPartTypes||0x8F|BSD/OS				|BSDOS
+define|DosPartTypes||0x92|Solaris				|SOLARIS
 define|DosPartTypes||0x93|Amoeba filesystem
 define|DosPartTypes||0x94|Amoeba bad block table
-define|DosPartTypes||0x9f|BSD/OS
-define|DosPartTypes||0xA5|FreeBSD/NetBSD/386BSD
-define|DosPartTypes||0xA6|OpenBSD
-define|DosPartTypes||0xA7|NEXTSTEP
-define|DosPartTypes||0xBE|Solaris x86 Boot
-define|DosPartTypes||0xB7|BSD/OS or BSD/386 filesystem
-define|DosPartTypes||0xB8|BSD/OS or BSD/386 swap
-define|DosPartTypes||0xB5|FreeBSD/NetBSD/386BSD
+define|DosPartTypes||0x9f|BSD/OS				|BSDOS
+define|DosPartTypes||0xA0|Laptop Hibernation			|LAPTOP-HIB
+define|DosPartTypes||0xA5|FreeBSD/NetBSD/386BSD			|BSD
+define|DosPartTypes||0xA6|OpenBSD				|OPENBSD
+define|DosPartTypes||0xA7|NEXTSTEP				|NEXT
+define|DosPartTypes||0xBE|Solaris x86 Boot			|SOL-BOOT
+define|DosPartTypes||0xB7|BSD/OS or BSD/386 filesystem		|BSD-FS1
+define|DosPartTypes||0xB8|BSD/OS or BSD/386 swap		|BSD-SW
+define|DosPartTypes||0xB5|FreeBSD/NetBSD/386BSD			|BSD
 define|DosPartTypes||0xDB|Concurrent CPM or C.DOS or CTOS
 define|DosPartTypes||0xE1|Speed
 define|DosPartTypes||0xE3|Speed

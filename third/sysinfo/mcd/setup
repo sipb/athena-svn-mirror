@@ -1,0 +1,1006 @@
+#!/bin/sh
+#
+# $Id: setup,v 1.1.1.1 2001-03-20 18:04:05 ghudson Exp $
+#
+# Setup/Install an MCD distribution.
+#
+
+############################################################################
+#
+# Subroutines
+#
+############################################################################
+
+Error() {
+    echo "${ProgramName}: " $* 1>&2
+    if [ ! -z "$LogFile" ]; then
+	echo "${ProgramName}: " $* >> $LogFile
+    fi
+}
+
+Usage() {
+cat <<EOF
+Usage: ${ProgramName} [ options ]
+
+where [ options ] are:
+  --confirm                  Confirm/accept all default values
+  --debug                    Enable debugging messages
+  --help                     Display this help message
+  --installdir <dir>         Set installation directory to <dir>
+  --license                  Install the license file and exit
+  --licensefile <file>       Install <file> as the license file
+  --override                 Override errors which prompt for confirmation
+EOF
+}
+
+Msg() {
+    echopre=""
+    echopost=""
+
+    case "$1" in
+	+n)
+	    shift
+	    echopost="$EchoPost"
+	    echopre="$EchoPre"
+	    ;;
+	+f)
+	    if [ ! -z "$2" ]; then
+		cat $2
+		cat $2 >> $LogFile
+		return
+	    fi
+	    ;;
+    esac
+
+    echo $echopre "$*""$echopost"
+    echo $echopre "$*""$echopost" >> $LogFile
+}
+
+Debug() {
+    if [ $DebugVar -gt 0 ]; then
+	Msg $*
+    else
+	# Send it to the logfile anyway
+	echo $* >> $LogFile
+    fi
+}
+
+Ask() {
+    Question=$1
+    Default=$2
+    AnsPrompt=""
+    if [ -z "$Default" -o $# -eq 2 ]; then
+	shift
+    fi
+    shift
+    Answers=$*
+
+    if [ ! -z "$Answers" ] && [ $# -gt 1 ]; then
+	AnsPrompt=`echo $Answers | awk '{\
+	    for(i = 1; i <= NF; ++i) {\
+		if (i != 1) {\
+		    printf ",";\
+		}\
+		printf "%s", $i;\
+	    }\
+	}'`
+    fi
+
+    Prompt="$Question"
+    if [ ! -z "$AnsPrompt" ]; then
+	Prompt="$Prompt (${AnsPrompt})"
+    fi
+    if [ ! -z "$Default" ]; then
+	Prompt="$Prompt [${Default}]"
+    fi
+
+    while true ; do
+	Msg +n "$Prompt "
+	if [ $Confirm -gt 0 -a ! -z "$Default" ]; then
+	    Answer=$Default
+	    Msg $Answer
+	    return
+	else
+	    read Ans
+	fi
+	echo "$Ans" >> $LogFile
+
+	if [ ! -z "$Default" -a -z "$Ans" ]; then
+	    Answer=$Default
+	    return
+	fi
+
+	if [ -z "$Answers" ]; then
+	    Answer=$Ans
+	    return
+	else
+	    for a in $Answers; do
+		if [ "$Ans" = "$a" ]; then
+		    Answer=$Ans
+		    return
+		fi
+	    done
+	fi
+    done
+}
+
+#
+# Abort due to some failure
+#
+AbortInc() {
+    Msg ""
+    Msg "This installation is aborting before completion due to an error."
+    exit 1
+}
+
+#
+# Bailout due to user input
+#
+UserBail() {
+    Msg ""
+    Msg "The installation has been aborted at your request."
+    exit 1
+}
+
+PlatformAsk() {
+    if [ $Override -eq 0 ]; then
+	Msg ""
+	Ask "Do you wish to continue anyway?" "no" "yes"
+	if [ "$Answer" = "no" ]; then
+	    UserBail
+	fi
+    fi
+}
+
+#
+# Save state information to a file
+#
+SaveState() {
+    StateFile=$1
+
+    Debug "Saving state information to $StateFile . . ."
+
+    cat > $StateFile <<EOF
+InstallDir=$InstallDir
+EOF
+}
+
+#
+# Check to see if there is enough disk space
+#
+CheckDiskSpace() {
+    InstDir=$1
+    CheckDiskSpaceFailed=0
+
+    if [ -z "$SIZE" ]; then
+	Error "WARNING: The disk usage of this package is unknown."
+	Error "         Therefor no space check can be performed."
+	return
+    fi
+
+    Msg +n "Checking available disk space . . . "
+    Debug ""
+    Dir=$InstDir
+    while [ ! -z "$Dir" ]; do
+	Debug "CheckDiskSpace looking for $Dir"
+	if [ -d $Dir ]; then
+	    case $OSname in
+		SunOS)
+		    AvailSpace=`/usr/bin/df -b $Dir | \
+				tail -1 | \
+				awk '{print $2}'`
+		    ;;
+		AIX)
+		    AvailSpace=`/usr/bin/df -k $Dir | \
+				tail -1 | \
+				awk '{print $3}'`
+		    ;;
+		Linux)
+		    AvailSpace=`/bin/df -P $Dir | \
+				tail -1 | \
+				awk '{print $4}'`
+		    ;;
+		HPUX)
+		    AvailSpace=`/bin/df -k $Dir | \
+				grep free | \
+				awk '{print $1}'`
+		    ;;
+		IRIX*)
+		    AvailSpace=`/bin/df $Dir | \
+				tail -1 | \
+				awk '{print $5}'`
+		    ;;
+		*BSD*)
+		    # This should work on most BSD systems
+		    AvailSpace=`/bin/df $Dir | \
+				tail -1 | \
+				awk '{print $4}'`
+		    ;;
+		*)
+		    Error "CheckDiskSpace is not defined for $OSname"
+		    exit 1
+		    ;;
+	    esac
+
+	    if [ -z "$AvailSpace" ]; then
+		Error "WARNING: Cannot determine the amount of available disk space for $Dir"
+		return
+	    fi
+
+	    Debug "Disk usage for $Dir is $AvailSpace KB"
+
+	    AfterSpace=`expr $AvailSpace - $SIZEinKB`
+	    if [ $AfterSpace -le 100 ]; then
+		Error "There is insufficient disk space to install into $InstallDir"
+		Error "This package requires $SIZEinKB KB of disk space."
+		CheckDiskSpaceFailed=1
+	    fi
+
+	    Msg "[OK]"
+	    return
+	fi
+	# Slice last component off of $Dir
+	Dir=`echo $Dir | awk -F/ '{ for(i = 1; i < NF; ++i) { \
+					if (length($i)) {\
+					    printf("/%s",$i);\
+					}\
+				    }\
+				  }'`
+    done
+}
+
+#
+# Build an awk script which parses the mcdmap file
+# and creates a shell script to do all the real work.
+#
+# SPECIAL SHELL VARIABLES:
+#	$IsRoot			Are we running as root?
+#	$AwkParsesBackSlash	Some awk's parse \c themselves
+#
+WriteAwkScript() {
+    Script=$1
+
+    #
+    # Make it easy to do a root check
+    #
+    if [ $UserID -eq 0 ]; then
+	IsRoot=1
+    else
+	IsRoot=0
+    fi
+
+    cat > $Script <<EOF
+{
+    SpinChars[1]="|"
+    SpinChars[2]="/"
+    SpinChars[3]="-"
+    BackSlashB="$BackSpaceBSB"
+    CntrlH="$BackSpaceCH"
+    EchoPost="$EchoPost"
+    Line1="echo $EchoPre Installing distribution into $InstallDir . . . "
+
+    if ($DebugVar == 0) {
+	printf("%s ' '", Line1);
+	if (length(EchoPost)) {
+	    if ($AwkParsesBackSlash == 1) {
+		printf("' \\\%s'", EchoPost);
+	    } else {
+		printf("' %s'", EchoPost);
+	    }
+	}
+    }
+    printf("\n");
+
+    #
+    # getline seems to skip the first line which is ok since the first
+    # line is the header ID (#@MCDMAP) which we don't care about anyway.
+    #
+    s=1
+    while (getline) {
+	if (\$1 ~ /^#/) {
+	    continue;
+	}
+	if (s > 3) {
+	    s = 1;
+	}
+	if ($DebugVar > 0) {
+	    printf("echo Installing '%s' as $InstallDir/'%s'\n", \$2, \$3);
+	} else {
+	    printf("echo $EchoPre  ");
+	    if (length(BackSlashB)) {
+		if ($AwkParsesBackSlash == 1) {
+		    printf(" '\\%s'", BackSlashB);
+		} else {
+		    printf(" '%s'", BackSlashB);
+		}
+	    } else {
+		printf("%s", CntrlH);
+	    }
+	    printf("'%s'", SpinChars[s++]);
+	    if (length(EchoPost)) {
+		if ($AwkParsesBackSlash == 1) {
+		    printf("'\\\%s'", EchoPost);
+		} else {
+		    printf("'%s'", EchoPost);
+		}
+	    }
+	    printf("\n");
+	}
+
+	if (\$1 == "f") {
+	    printf("$Program --copy %s $InstallDir/%s --loadstate $StateTmp && ", \$2, \$3);
+	}
+	if (\$1 == "F") {
+	    printf("$Program --edit %s $InstallDir/%s --loadstate $StateTmp && ", \$2, \$3);
+	}
+	if ($IsRoot == 1) {
+	    printf("chown %s $InstallDir/%s && ", \$4, \$3);
+	    printf("chgrp %s $InstallDir/%s && ", \$5, \$3);
+	}
+	printf("chmod %s $InstallDir/%s", \$6, \$3);
+	printf("\n");
+    }
+
+    if (length(BackSlashB)) {
+	if ($AwkParsesBackSlash == 1) {
+	    printf("echo  '\\%s' '[OK]'\n", BackSlashB);
+	} else {
+	    printf("echo  '%s' '[OK]'\n", BackSlashB);
+	}
+    } else {
+	printf("echo  %s '[OK]'\n", CntrlH);
+    }
+
+}
+EOF
+}
+
+#
+# Copy the Input file to the Output file performing variable substitution
+# if necessary.
+#
+CopyFile() {
+    Input=$1
+    Output=$2
+
+    Dir=`dirname $Output`
+    if [ ! -d $Dir ]; then
+	Debug "mkdir -p $Dir"
+	mkdir -p $Dir
+    fi
+
+    rm -f $Output
+    cp $Input $Output
+}
+
+#
+# Edit the Input file to the Output file performing variable substitution
+# if necessary.
+#
+EditFile() {
+    Input=$1
+    Output=$2
+
+    Dir=`dirname $Output`
+    if [ ! -d $Dir ]; then
+	Debug "mkdir -p $Dir"
+	mkdir -p $Dir
+    fi
+
+    TmpFile=${Output}.tmp$$
+
+    rm -f $Output
+
+    sed	-e "s;@prefix@;$InstallDir;" \
+	-e "s;@cfdir@;$InstallDir/config;" \
+	-e "s;@libexecdir@;$InstallDir/libexec;" \
+	    < $Input > $TmpFile && \
+	    mv -f $TmpFile $Output
+}
+
+#
+# Perform license file install
+#
+DoLicenseFileInstall() {
+    if [ ! -z "$InstallLicenseFile" ]; then
+	LicenseTarget=$InstallDir/config/license.mcl
+	Msg +n "Installing license file $InstallLicenseFile . . . "
+	rm -f $LicenseTarget
+	if cp $InstallLicenseFile $LicenseTarget && chmod 444 $LicenseTarget ; then
+	    Msg "[OK]"
+	else
+	    Msg ""
+	    Error "A problem occured while installing $InstallLicenseFile to $LicenseTarget"
+	    exit 1
+	fi
+    fi
+}
+
+#
+# Run sysinfo to see if we need a license
+#
+RunSysinfoLicense() {
+
+    wrapper="bin/sysinfowrapper"
+
+    if [ ! -f $wrapper ]; then
+	Debug "Cannot find $wrapper to do license test."
+	return 1
+    fi
+
+    Msg +n "Checking license status . . . "
+
+    #
+    # These variables must match what's in sysinfowrapper.in
+    #
+    result=`(prefix=./; \
+	    cfdir=config; \
+	    exec_prefix=./; \
+	    DEFAULT_LIBEXECDIR=./libexec; \
+	    export prefix cfdir exec_prefix DEFAULT_LIBEXECDIR; \
+	    /bin/sh $wrapper -license 2>&1) | grep -i 'license key'`
+
+    if [ -z "$result" ]; then
+	Msg "A License File is required."
+	# No license found
+	return 1
+    else
+	Msg "No License File is needed."
+	# Found a license, usually an "automatic" educationally one
+	return 0
+    fi
+}
+
+#
+# Ask the user if they want to install a license now
+#
+AskLicenseFile() {
+
+    Msg ""
+
+    if RunSysinfoLicense ; then
+	return 1
+    fi
+
+    Msg "This software requires a license file for permanent operation."
+    Msg "Without a license file the software will work properly for"
+    Msg "60 days for demonstration purposes."
+    Msg ""
+    Msg "You may install the license file now or later by running"
+    Msg "    ${ProgramName} --license --licensefile <file>"
+    Msg ""
+
+    if [ ! -z "$InstallLicenseFile" ]; then
+	Msg "The license file $InstallLicenseFile will be used."
+	return 0
+    fi
+
+    if [ $Confirm -gt 0 ]; then
+	return 0
+    fi
+
+    DoLoop=1
+    while [ $DoLoop -gt 0 ]; do
+	Ask "Do you wish to install the license file now?" "yes" "no"
+	if [ "$Answer" = "yes" ]; then
+	    Msg "The license file you name will be copied into $InstallDir"
+	    Ask "Pathname to license file (e.g. license.mcl): " "none"
+	    if [ "$Answer" != "none" ]; then
+		if [ -f "$Answer" ]; then
+		    DoLoop=0
+		    InstallLicenseFile="$Answer"
+		else
+		    Msg "The file $Answer does not exist."
+		fi
+	    fi
+	else
+	    DoLoop=0
+	fi
+    done
+
+    return 0
+}
+
+#
+# Summerize for the user
+#
+ShowSummary() {
+Msg "                         Software: $NAME $VERSION $RELEASE"
+if [ ! -z "$SUMMARY" ]; then
+Msg "                      Description: $SUMMARY"
+fi
+if [ ! -z "$MINOSVERSION" -a ! -z "$MAXOSVERSION" ]; then
+Msg "                          Runs On: $OSNAME $MINOSVERSION - $MAXOSVERSION $ARCH"
+elif [ ! -z "$MINOSVERSION" ]; then
+Msg "                          Runs On: $OSNAME $MINOSVERSION and later $ARCH"
+else
+Msg "                          Runs On: $OSNAME $OSVERSIONS $ARCH"
+fi
+if [ ! -z "$LIBCNAME" -a ! -z "$MINLIBCVERSION" ]; then
+Msg "                         Requires: $LIBCNAME $MINLIBCVERSION"
+fi
+if [ ! -z "$InstallDir" ]; then
+Msg "           Installation Directory: $InstallDir"
+fi
+if [ ! -z "$SIZEinKB" ]; then
+Msg "                Amount to Install: $SIZEinKB KB"
+fi
+if [ ! -z "$AvailSpace" ]; then
+Msg "                  Available Space: $AvailSpace KB"
+fi
+if [ ! -z "$InstallLicenseFile" ]; then
+Msg "             License File To Copy: $InstallLicenseFile"
+fi
+}
+
+############################################################################
+#
+# Main
+#
+############################################################################
+
+#
+# Source the MCD Info file as soon as possible
+#
+INFOFILE=./mcdinfo
+MAPFILE=mcdmap
+if [ -f "$INFOFILE" ]; then
+    . $INFOFILE
+else
+    Msg "The $INFOFILE is missing.  This distribution is incomplete."
+    exit 1
+fi
+if [ ! -f "$MAPFILE" ]; then
+    Msg "The $MAPFILE file is missing.  This distribution is incomplete."
+    exit 1
+fi
+
+#
+# Critical variables which must be initialized first.
+#
+DebugVar=0
+Program="$0"
+ProgramName=`basename $0`
+LogFile=${TMP-/tmp}/${ProgramName}_${NAME}_log_$$
+StateTmp=${TMP-/tmp}/${ProgramName}_${NAME}_state_$$
+AwkScript=${TMP-/tmp}/${ProgramName}_${NAME}_awk_$$
+InstallScript=${TMP-/tmp}/${ProgramName}_${NAME}_install_$$
+TeeTmp=${TMP-/tmp}/${ProgramName}_${NAME}_tee_$$
+if [ ! -z "$SIZE" ]; then
+    SIZEinKB=`expr $SIZE / 1024`
+fi
+
+#
+# Set variables
+#
+LINE="------------------------------------------------------------------------------"
+AcceptLicense=0
+Confirm=0
+Override=0
+LicenseOnly=0
+
+while test $# -ne 0 ; do
+    case $1 in
+	--debug)
+	    DebugVar=1
+	    ;;
+	--confirm)
+	    Confirm=1
+	    ;;
+	--override)
+	    Override=1
+	    ;;
+	--installdir)
+	    if [ -z "$2" ]; then
+		Error "The $1 option requires an argument."
+		Usage
+		exit 1
+	    fi
+	    InstallDir="$2"
+	    shift
+	    ;;
+	--license)
+	    LicenseOnly=1
+	    ;;
+	--licensefile)
+	    if [ -z "$2" ]; then
+		Error "The $1 option requires an argument."
+		Usage
+		exit 1
+	    fi
+	    if [ ! -f "$2" ]; then
+		Error "The license file $2 does not exist."
+		exit 1
+	    fi
+	    InstallLicenseFile="$2"
+	    shift
+	    ;;
+	--acceptlicense)
+	    AcceptLicense=1
+	    ;;
+	--copy|--edit)
+	    if [ -z "$2" ]; then
+		Error "The $1 option requires an input file argument."
+		Usage
+		exit 1
+	    fi
+	    if [ -z "$3" ]; then
+		Error "The $1 option requires an output file argument."
+		Usage
+		exit 1
+	    fi
+	    CopyArg=$1
+	    FileIn="$2"
+	    FileOut="$3"
+	    shift
+	    shift
+	    ;;
+	 --loadstate)
+	    if [ -z "$2" ]; then
+		Error "The --loadstate option requires a file argument."
+		Usage
+		exit 1
+	    fi
+	    Debug "Loading state info from $2 . . ."
+	    . $2
+	    shift
+	    ;;
+	 *)
+	    Error "Unknown argument $1"
+	    Usage
+	    exit 1
+	    ;;
+    esac
+    shift
+done
+
+#
+# Setup
+#
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/ucb:/etc:/usr/etc:$PATH
+export PATH
+
+AwkParsesBackSlash=0
+OSname=`uname -s`
+case "$OSname" in
+    AIX)
+	OSmajor=`uname -v`
+	OSminor=`uname -r`
+	OSver="${OSmajor}.${OSminor}"
+	SysArch="powerpc"
+	AwkParsesBackSlash=1
+	;;
+    SunOS)
+	OSver=`uname -r`
+	SysArch=`uname -p`
+	;;
+    HP-UX)
+	OSname="HPUX"
+	OSver=`uname -r | sed -e 's;^[A-Za-z]\.;;' -e 's;^[0];;'`
+	SysArch=`uname -m | sed -e 's;9000.*;parisc;'`
+	;;
+    IRIX*)
+	OSver=`uname -r`
+	SysArch=`uname -p`
+	AwkParsesBackSlash=1
+	;;
+    *)
+	OSver=`uname -r`
+	SysArch=`uname -m`
+	;;
+esac
+OSver=`echo $OSver | sed -e 's;-.*;;'`
+
+Debug "STARTED " `date`
+Debug "System OSNAME=$OSname VERSION=$OSver ARCH=$SysArch"
+
+#
+# Set a reasonable umask
+#
+umask 22
+
+#
+# Don't use $UID as that's used on some OS
+#
+UserID=`id | awk '{print $1}' | sed -e 's;uid=;;' -e 's;(.*;;'`
+if [ -z "$UserID" ]; then
+    Error "Cannot determine your UserID."
+    exit 1
+fi
+
+#
+# Setup echo stuff
+#
+EchoTmp=${TMP-/tmp}/echotmp$$
+# From perl's Configure 
+(echo 'xxx' '\c'; echo " ") > $EchoTmp
+if [ ! -f $EchoTmp ]; then
+    Error "Cannot create $EchoTmp test file."
+    exit 1
+fi
+echoresult=`grep c $EchoTmp`
+if [ -z "$echoresult" ]; then
+    EchoPost="\c"
+else
+    EchoPre="-n"
+fi
+(echo 'xxx' '\b'; echo " ") > $EchoTmp
+if [ ! -f $EchoTmp ]; then
+    Error "Cannot create $EchoTmp test file."
+    exit 1
+fi
+echoresult=`grep b $EchoTmp`
+if [ -z "$echoresult" ]; then
+    EchoBackSpace="\b"
+    BackSpaceBSB=$EchoBackSpace
+else
+    EchoBackSpace=""
+    BackSpaceCH=$EchoBackSpace
+fi
+rm -f $EchoTmp
+
+############################################################################
+#
+# Begin real work
+#
+############################################################################
+
+#
+# Special cases
+#
+if [ ! -z "$CopyArg" ]; then
+    if [ "$CopyArg" = "--copy" ]; then
+	CopyFile $FileIn $FileOut
+    else
+	EditFile $FileIn $FileOut
+    fi
+    exit 0
+fi
+
+cat <<EOF
+==============================================================================
+
+		    Setup program for $NAME $VERSION
+
+		     Copyright (c) 2000 MagniComp
+
+==============================================================================
+
+EOF
+
+#
+# Special --license case
+#
+if [ $LicenseOnly -gt 0 ]; then
+    if [ -z "$InstallDir" ]; then
+	InstallDir="$INSTALLDIR"
+    fi
+    if AskLicenseFile ; then
+	DoLicenseFileInstall
+    else
+	Msg "No license file was specified so no license was installed."
+    fi
+    exit 0
+fi
+
+ShowSummary
+Msg ""
+Ask "Do you want to install this software?" "yes" "no"
+if [ "$Answer" != "yes" ]; then
+    UserBail
+fi
+
+#
+# Now ask for license acceptance.
+#
+if [ ! -z "$ACCEPTLICENSEFILE" -a -f "$ACCEPTLICENSEFILE" ]; then
+    Msg ""
+    Msg "The following is the license for this software:"
+    Msg $LINE
+    Msg +f $ACCEPTLICENSEFILE
+    Msg $LINE
+    Question="Do you accept the terms of this license?"
+    if [ $AcceptLicense -eq 0 ]; then
+	Ask "$Question" "" "accept" "decline"
+	if [ "$Answer" != "accept" ]; then
+	    Msg "Installation can only proceed if you accept the license terms."
+	    exit 1
+	fi
+    else
+	Msg "$Question" "ACCEPT"
+    fi
+fi
+
+#
+# Get the install directory
+#
+if [ -z "$InstallDir" ]; then
+    Msg ""
+    Ask "What directory do you want to install into?" "$INSTALLDIR"
+    InstallDir=$Answer
+fi
+
+Msg ""
+Msg "Checking system requirements . . ."
+
+#
+# Warn about root 
+#
+if [ $UserID -ne 0 ]; then
+    Msg ""
+    Msg "You must run ${ProgramName} as root for the installation to properly"
+    Msg "succeed.  You may still proceed with the installation if you wish."
+    Msg ""
+    Ask "Continue?" "no" "yes"
+    if [ "$Answer" != "yes" -a $Override -eq 0 ]; then
+	UserBail
+    fi
+fi
+
+#
+# Check $ARCH
+#
+if [ ! -z "$ARCH" ]; then
+    if [ "$SysArch" != "$ARCH" ]; then
+	Error "This software runs on $ARCH systems and this system is a $SysArch"
+	PlatformAsk
+    fi
+fi
+#
+# Perform platform checks
+#
+CurOsVerNum=`echo $OSver | tr . / | \
+    awk -F/ '{printf("%2.2d%2.2d%2.2d", $1, $2, $3);}'`
+
+if [ ! -z "$MINOSVERSION" ]; then
+    MinOsVerNum=`echo $MINOSVERSION | tr . / | \
+		awk -F/ '{printf("%2.2d%2.2d%2.2d", $1, $2, $3);}'`
+    if [ $CurOsVerNum -lt $MinOsVerNum ]; then
+	Error "The minimum supported OS version is $MINOSVERSION and this system is running ${OSver}"
+	PlatformAsk
+    fi
+fi
+if [ ! -z "$MAXOSVERSION" ]; then
+    MaxOsVerNum=`echo $MAXOSVERSION | tr . / | \
+		awk -F/ '{printf("%2.2d%2.2d%2.2d", $1, $2, $3);}'`
+    if [ $CurOsVerNum -lt $MaxOsVerNum ]; then
+	Error "The latest supported OS version is $MAXOSVERSION and this system is running ${OSver}"
+	PlatformAsk
+    fi
+fi
+#
+# Check libc version.  Usually only done on Linux
+#
+LibcName=""
+LibcVer=""
+if [ ! -z "$MINLIBCVERSION" -o ! -z "$LIBCNAME" ]; then
+    case "$OSname" in
+	Linux)
+	    Libc=`ldd /bin/sh | grep libc.so | awk '{print $3}'`
+	    LibcVerStr=`strings $Libc | grep -i 'c library'`
+	    LibcVer=`echo $LibcVerStr | awk '{print $7}' | sed -e 's;,;;'`
+	    if echo $LibcVerStr | grep GNU >/dev/null ; then
+		LibcName="glibc"
+	    else
+		LibcName="libc"
+	    fi
+	    ;;
+    esac
+fi
+
+if [ ! -z "$LIBCNAME" ]; then
+    if [ -z "$LibcName" ]; then
+	Error "Cannot determine the libc name for this system."
+	PlatformAsk
+    fi
+
+    Debug "Libc name is $LibcName"
+
+    if [ "$LIBCNAME" != "$LibcName" ]; then
+	Error "The required libc type is $LIBCNAME and this system has ${LibcName}"
+	PlatformAsk
+    fi
+fi
+
+if [ ! -z "$MINLIBCVERSION" ]; then
+    if [ -z "$LibcVer" ]; then
+	Error "Cannot determine the libc version for this system."
+	PlatformAsk
+    fi
+
+    Debug "Libc version is $LibcVer"
+
+    MinLibcVerNum=`echo $MINLIBCVERSION | tr . / | \
+		awk -F/ '{printf("%d%d", $1, $2);}'`
+    LibcVerNum=`echo $LibcVer | tr . / | \
+		awk -F/ '{printf("%d%d", $1, $2);}'`
+    if [ $LibcVerNum -lt $MinLibcVerNum ]; then
+	Error "The minimum supported libc is $MINLIBCVERSION and this system has ${LibcVer}"
+	PlatformAsk
+    fi
+fi
+
+#
+# Make sure we have enough disk space
+#
+CheckDiskSpace $InstallDir
+
+Msg "Your system appears to meet the system requirements."
+
+#
+# Ask about a license file
+#
+if [ ! -z "$ASKFORLICENSEFILE" -a "$ASKFORLICENSEFILE" -gt 0 ]; then
+    AskLicenseFile
+fi
+
+#
+# Final confirmation
+#
+Msg ""
+Msg "Installation summary:"
+ShowSummary
+Msg ""
+
+Ask "Proceed and install all files now?" "yes" "no"
+if [ "$Answer" != "yes" ]; then
+    UserBail
+fi
+
+#
+# Do the install now
+#
+Msg "$LINE"
+Msg +n "Preparing to install into $InstallDir . . . "
+
+#
+# Make the top level dir
+#
+if [ ! -d $InstallDir ]; then
+    if mkdir -p $InstallDir ; then
+	:
+    else
+	Error "mkdir $InstallDir failed"
+	exit 1
+    fi
+fi
+
+#
+# Save current state info for when the autobuilt shell script is called
+#
+SaveState $StateTmp
+
+#
+# Write Awk script
+#
+WriteAwkScript $AwkScript
+
+Msg "[OK]"
+
+#
+# Generate and then run the install shell script
+#
+if awk -f $AwkScript < $MAPFILE > $InstallScript ; then
+    (/bin/sh $InstallScript 2>&1) | tee $TeeTmp
+    cat $TeeTmp >> $LogFile
+else
+    Error "A problem occured while generating the installation script from $AwkScript"
+    AbortInc
+fi
+
+#
+# Install license file?
+#
+DoLicenseFileInstall
+
+if [ $DebugVar -eq 0 ]; then
+    rm -f $StateTmp $AwkScript $InstallScript $TeeTmp
+fi
+
+Msg ""
+Msg "Installation is now complete."
+Msg "A log of this installation is available as $LogFile"
+
+Debug "DONE " `date`
+
+exit 0

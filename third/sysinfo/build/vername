@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: vername,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
+# $Id: vername,v 1.1.1.2 2001-03-20 18:01:27 ghudson Exp $
 #
 # Get Version Name
 #
@@ -8,20 +8,24 @@ PATH=/usr/ucb:/usr/bin:/bin:/usr/bsd:$PATH
 export PATH
 
 Program=$1
+Cmd=$*
 
-Argv1=`$* | head -1 | awk '{print $1}' | tr '[A-Z]' '[a-z]'`
+set `$Cmd | head -1 | tr '[A-Z]' '[a-z]'`
 #
-# See if version string is "Version X.X (STATUS) ..." or
-# "Program Version X.X (STATUS) ...".
+# See if version string is one of:
+#   Version X.X (STATUS) ...
+#   X.X STATUS
+#   Program Version X.X (STATUS) ...
 #
-if [ "$Argv1" = "version" ]; then
-    Version=`$* | head -1 | awk '{print $2}'`
-    Status=`$* | head -1 | awk '{print $3}' | sed -e 's;);;' -e 's;(;;' | \
-	tr '[A-Z]' '[a-z]'`
+if [ "$1" = "version" ]; then
+    Version=$2
+    Status=`echo $3 | sed -e 's;);;' -e 's;(;;'`
+elif [ $# -eq 2 ]; then
+    Version=$1
+    Status=$2
 else
-    Version=`$* | head -1 | awk '{print $3}'`
-    Status=`$* | head -1 | awk '{print $4}' | sed -e 's;);;' -e 's;(;;' | \
-	tr '[A-Z]' '[a-z]'`
+    Version=$3
+    Status=`echo $4 | sed -e 's;);;' -e 's;(;;'`
 fi
 
 BaseProg=`basename $Program`

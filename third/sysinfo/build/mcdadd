@@ -1,0 +1,429 @@
+#!/tools/bin/perl
+#
+# $Id: mcdadd,v 1.1.1.1 2001-03-20 18:03:04 ghudson Exp $
+#
+# Add a file to a MagniComp Distribution prep directory.
+#
+
+my $ProgramName = $0;
+$ProgramName            =~ s|.*/||g;
+my $MCD_MAP_FILE	= "mcdmap";
+my $MCD_FILES_DIR	= "files";
+my $Owner 		= "bin";
+my $Group		= "bin";
+my $Mode		= "555";
+my $Debug;
+my $Root;
+my $Target;
+my $FHnumber		= '0000000';
+
+umask '022';
+
+#
+# Subroutines
+#
+sub Error {
+    printf STDERR "%s: ", $ProgramName;
+    printf STDERR @_;
+    printf STDERR "\n";
+}
+
+sub Msg {
+    printf @_;
+    printf "\n";
+}
+
+sub Debug {
+    if ($Debug) {
+	printf STDERR @_;
+	printf STDERR "\n";
+    }
+}
+
+sub Usage {
+    printf STDERR 
+      "Usage:\t%s [ options ] -R <root> -t <target> <file>\n",
+      $ProgramName;
+    printf STDERR qq{
+where [ options ] are:
+  --debug                    Enable debug output
+  --help                     Print this message and exit
+  -d <dir>                   Directory relative to <root> to copy to
+  -R <dir>                   Top level MCD root directory
+  -t <path>                  Relative installation target path
+  -o <name>                  Installed file owner name
+  -g <name>                  Installed file group owner name
+  -m <mode>                  Installation file mode
+};
+}
+
+#
+# Return a NEW file handle
+#
+sub GetFH {
+    return ++$FHnumber;
+}
+
+sub DirName {
+    my $Path = $_[0];
+
+    my @Parts = split('/', $Path);
+    pop @Parts;
+
+    return join('/', @Parts);
+}
+
+sub BaseName {
+    my ($Path) = @_;
+
+    $Path =~ s|.*/||g;
+
+    return $Path;
+}
+
+sub MkDirHier {
+    my $Path = shift;
+
+    my @DirParts = split('/', $Path);
+    my $Dir;
+    while (my $DirName = shift @DirParts) {
+	if ($Dir) {
+	    $Dir = $Dir . "/" . $DirName;
+	} else {
+	    $Dir = $DirName;
+	} 
+	if (length($Dir) && !(-d $Dir)) {
+	    Msg("mkdir $Dir");
+	    if (!mkdir($Dir, 0755)) {
+		Error("%s: mkdir failed: %s", $Dir, $!);
+		exit 1;
+	    }
+	}
+    }
+}
+
+#
+# Make sure each directory exists and is the right mode.
+#
+sub CheckDirHier {
+    my $Path = shift;
+
+    my @DirParts = split('/', $Path);
+    my $Dir;
+    for (my $i = 0; $i <= $#DirParts; ++$i) {
+	my $DirName = $DirParts[$i];
+
+	if ($Dir) {
+	    $Dir = $Dir . "/" . $DirName;
+	} elsif ($Path =~ /^\//) {
+	    $Dir = "/" . $DirName;
+	} else {
+	    $Dir = $DirName;
+	} 
+	if (!length($Dir)) {
+	    next;
+	}
+	if (!(-d $Dir)) {
+	    Msg("mkdir $Dir");
+	    if (!mkdir($Dir, 0755)) {
+		Error("%s: mkdir failed: %s", $Dir, $!);
+		exit 1;
+	    }
+	} elsif ($Path !~ /^\//) {
+	    if (chmod(0755, $Dir) != 1) {
+		Error("%s: chmod 0755 failed: %s", $Dir, $!);
+	    }
+	}
+    }
+}
+
+sub Run {
+    my $Fmt = shift;
+    my $Cmd = sprintf($Fmt, @_);
+
+    if ($Debug) {
+	printf STDERR "Running: %s\n", $Cmd;
+    }
+
+    return system($Cmd);
+}
+
+#
+# Add our header to a map file
+#
+sub AddMapHeader {
+    my $FH = shift;
+    my $MapFile = shift;
+
+    printf $FH ("%s\n", '#@MCDMAP1');
+}
+
+#
+# Add entry to map file
+#
+sub MapAdd {
+    my $Args = shift;
+    my $MapFile = $Args->{MapFile};
+    my $Type = $Args->{Type};
+    my $Src = $Args->{Src};
+    my $Target = $Args->{Target};
+    my $Owner = $Args->{Owner};
+    my $Group = $Args->{Group};
+    my $Mode = $Args->{Mode};
+
+    my $Entry = sprintf("%s %s %s %s %s %s",
+			$Type,
+			$Src,
+			$Target,
+			$Owner,
+			$Group,
+			$Mode
+			);
+
+    if (!(-f $MapFile)) {
+	my $FH = GetFH();
+	if (!open($FH, "> $MapFile")) {
+	    Error("%s: Open for write failed: %s", $MapFile, $!);
+	    return -1;
+	}
+
+	AddMapHeader($FH, $MapFile);
+
+	Debug("Created entry for <%s>", $Target);
+	printf $FH ("%s\n", $Entry);
+
+	close($FH);
+	return 0;
+    }
+
+    my $OldFH = GetFH();
+    if (!open($OldFH, "< $MapFile")) {
+	Error("%s: Open for read failed: %s", $MapFile, $!);
+	return -1;
+    }
+
+    my $NewFile = $MapFile . ".tmp$$";
+    my $NewFH = GetFH();
+    if (!open($NewFH, "> $NewFile")) {
+	Error("%s: Open for write failed: %s", $NewFile, $!);
+	return -1;
+    }
+
+    my $Found = 0;
+    my $LineNo = 0;
+    while (my $Line = <$OldFH>) {
+	++$LineNo;
+	#
+	# If there's no header in this file, add one now
+	#
+	if ($LineNo == 1 && $Line !~ /^#/) {
+	    AddMapHeader($NewFH, $NewFile);
+	}
+	my @Fields = split(/[ \t]+/, $Line);
+	if ($Fields[1] eq $Src) {
+	    Debug("Updated entry for <%s>", $Target);
+	    $Found = 1;
+	    printf $NewFH ("%s\n", $Entry);
+	} else {
+	    printf $NewFH ("%s", $Line);
+	}
+    }
+    if (!$Found) {
+	Debug("Added entry for <%s>", $Target);
+	printf $NewFH ("%s\n", $Entry);
+    }
+
+    close($OldFH);
+    close($NewFH);
+
+    unlink($MapFile);
+    if (rename($NewFile, $MapFile) != 1) {
+	Error("%s -> %s: Rename failed: %s", $NewFile, $MapFile, $!);
+	return -1;
+    }
+
+    return 0;
+}
+
+#
+# Get relative directory
+#
+sub GetRelDir {
+    my $Dest = shift;
+    my $Root = shift;
+
+    my $AbsRoot = undef;
+    my $AbsDest = undef;
+    my $AbsCurrent;
+    chop($AbsCurrent = `pwd`);
+    if (chdir(DirName($Dest))) {
+	chop($AbsDest = `pwd`);
+    }
+
+    if (!chdir($AbsCurrent)) {
+	Error("Cannot chdir back to cwd (%s): %s", $AbsCurrent, $!);
+	exit 1;
+    }
+
+    if (chdir($Root)) {
+	chop($AbsRoot = `pwd`);
+    }
+
+    if (!$AbsDest || !$AbsRoot) {
+	Error("Cannot determine absolute dest or root directories.");
+	exit 1;
+    }
+
+    my $RelDir = $AbsDest;
+    $RelDir =~ s/$AbsRoot//;
+    $RelDir =~ s|^/||;
+
+    if (!chdir($AbsCurrent)) {
+	Error("Cannot chdir back to cwd (%s): %s", $AbsCurrent, $!);
+	exit 1;
+    }
+
+    return $RelDir;
+}
+
+#
+# Next command line arg
+#
+sub NextArg {
+    my $i = shift;
+    my $Arg = $ARGV[$i];
+
+    if (!length($ARGV[$i+1]) || $ARGV[$i+1] =~ /^-/) {
+	Error("The `%s' option requires an argument.", $Arg);
+	Usage();
+	exit 1;
+    }
+
+    return $ARGV[$i+1];
+}
+
+#
+# Main
+#
+{
+    my @Files;
+
+    for (my $i = 0; $i <= $#ARGV; ++$i) {
+	my $Arg = $ARGV[$i];
+	if ($Arg eq '--debug') {
+	    $Debug = 1;
+	} elsif ($Arg eq '--help') {
+	    Usage();
+	    exit 0;
+	} elsif ($Arg eq '-d') {
+	    $DirRel = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-R') {
+	    $Root = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-t') {
+	    $Target = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-o') {
+	    $Owner = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-g') {
+	    $Group = NextArg($i);
+	    ++$i;
+	} elsif ($Arg eq '-m') {
+	    $Mode = NextArg($i);
+	    ++$i;
+	} elsif ($Arg =~ /^-/) {
+	    Error("Unknown argument `%s'", $Arg);
+	    Usage();
+	    exit 0;
+	} else {
+	    push @Files, $Arg;
+	}
+    }
+
+    if ($#Files < 0) {
+	Error("No files were specified.");
+	Usage();
+	exit 1;
+    }
+    if (!$Root) {
+	Error("No root (-R) was specified.");
+	Usage();
+	exit 1;
+    }
+    if (!$Target) {
+	Error("No target (-t) was specified.");
+	Usage();
+	exit 1;
+    }
+
+    my $MapFile = sprintf("%s/%s", $Root, $MCD_MAP_FILE);
+    my $File;
+
+    my $DistDir = sprintf("%s/%s/%s", 
+			  $Root, $MCD_FILES_DIR, $DirRel);
+
+    CheckDirHier($DistDir);
+
+    foreach $File (@Files) {
+	if (!(-f $File)) {
+	    Error("%s: No file was found.", $File);
+	    next;
+	}
+
+	my $Src = $File;
+	my $Base = BaseName($File);
+
+	my $Dest = $DistDir . "/" . $Base;
+	Debug("Copying %s to %s", $Src, $Dest);
+
+	#
+	# Compute the pathname of the source file placed into the MapFile
+	#
+	my $MapSrc;
+	if (length($DirRel)) {
+	    $MapSrc = $DirRel . "/" . $Base;
+	} else {
+	    $MapSrc = $Base;
+	}
+
+	#
+	# Set filetype
+	#
+	my $Type;
+	if ($File =~ /\.in$/) {
+	    $Type = "F";
+	    $MapSrc =~ s/\.in$//;
+	    $Dest =~ s/\.in$//;
+	} else {
+	    $Type = "f";
+	}
+
+	if (-f $Dest) {
+	    if (unlink($Dest) != 1) {
+		Error("%s: Remove failed: %s", $Dest, $!);
+		next;
+	    }
+	}
+
+	if (Run("cp -f %s %s", $Src, $Dest) == 0) {
+	    my $cpMode = 0644;
+	    if (-x $Src) {
+		$cpMode = 0755;
+	    }
+	    if (chmod($cpMode, $Dest) != 1) {
+		Error("%s: Chmod to %s failed: %s", $Dest, $cpMode, $!);
+		exit 1;
+	    }
+	    MapAdd({ MapFile=>$MapFile, 
+		     Type=>$Type,
+		     Src=>$MapSrc,
+		     Target=>$Target,
+		     Owner=>$Owner,
+		     Group=>$Group,
+		     Mode=>$Mode
+		   });
+	}
+    }
+}
