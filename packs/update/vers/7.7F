@@ -1,0 +1,13 @@
+#!/bin/sh -
+# Version-specific update script for 7.7F
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+DS*)
+	;;
+RSAIX)
+	;;
+SUN*)
+	;;
+esac
