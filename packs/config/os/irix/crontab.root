@@ -1,4 +1,4 @@
-# $Revision: 1.1 $
+# $Revision: 1.2 $
 #
 # The root crontab can be used to perform accounting data collection
 #	and cleanup.
@@ -13,7 +13,7 @@
 0	5	*	*	*	find / -local -type f '(' -name core -o -name dead.letter ')' -atime +7 -mtime +7 -exec rm -f '{}' ';'
 #
 # Remove old sendmail mail files
-2	5	*	*	*	find /var/spool/mqueue -local -type f -mtime +30 -exec rm -f '{}' ';'
+2	5	*	*	*	find /var/spool/mqueue -local -type f -mtime +30 ! -name syslog\* -exec rm -f '{}' ';'
 #
 # Remove old rwhod files
 2	5	*	*	*	find /var/spool/rwho -local -type f -mtime +7 -exec rm -f '{}' ';'
