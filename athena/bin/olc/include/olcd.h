@@ -17,16 +17,13 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: raeburn $
- *      $Id: olcd.h,v 1.6 1990-01-03 23:33:29 raeburn Exp $
+ *      $Id: olcd.h,v 1.7 1990-01-05 06:55:31 raeburn Exp $
  */
 
 #ifndef __olcd_h
 #define __olcd_h __FILE__
 
 #include <olc/lang.h>
-#if is_cplusplus
-extern "C" {
-#endif
 
 /* Important files. */
 
@@ -189,65 +186,54 @@ typedef struct t_ACL
 
 /* OLC procedure declarations. */
 
-extern ERRCODE olc_topic();             /* Change the current topic. */
-extern ERRCODE olc_comment();           /* Insert a comment in the log. */
-extern ERRCODE olc_describe();          /* Make more comments */
-extern ERRCODE olc_done();              /* Mark a question done. */
-extern ERRCODE olc_forward();           /* Forward a question. */
-extern ERRCODE olc_list();              /* List current conversations. */
-extern ERRCODE olc_mail();              /* Send mail to a user. */
-extern ERRCODE olc_on();                /* Sign on to OLC. */
-extern ERRCODE olc_off();               /* Sign off of OLC. */
-extern ERRCODE olc_replay();            /* Replay the conversation. */
-extern ERRCODE olc_send();              /* Send a message. */
-extern ERRCODE olc_who();               /* Print user's name. */
-extern ERRCODE olc_startup();           /* Start up an OLCR session. */
-extern ERRCODE olc_show();              /* Show any new messages. */
-extern ERRCODE olc_grab();              /* Grab a question on the queue. */
-extern ERRCODE olc_cancel();            /* Cancel a question. */
+extern ERRCODE olc_topic(int fd, REQUEST *request, int auth);             /* Change the current topic. */
+extern ERRCODE olc_comment(int fd, REQUEST *request, int auth);           /* Insert a comment in the log. */
+extern ERRCODE olc_describe(int fd, REQUEST *request, int auth);          /* Make more comments */
+extern ERRCODE olc_done(int fd, REQUEST *request, int auth);              /* Mark a question done. */
+extern ERRCODE olc_forward(int fd, REQUEST *request, int auth);           /* Forward a question. */
+extern ERRCODE olc_list(int fd, REQUEST *request, int auth);              /* List current conversations. */
+extern ERRCODE olc_mail(int fd, REQUEST *request, int auth);              /* Send mail to a user. */
+extern ERRCODE olc_on(int fd, REQUEST *request, int auth);                /* Sign on to OLC. */
+extern ERRCODE olc_off(int fd, REQUEST *request, int auth);               /* Sign off of OLC. */
+extern ERRCODE olc_replay(int fd, REQUEST *request, int auth);            /* Replay the conversation. */
+extern ERRCODE olc_send(int fd, REQUEST *request, int auth);              /* Send a message. */
+extern ERRCODE olc_who(int fd, REQUEST *request, int auth);               /* Print user's name. */
+extern ERRCODE olc_startup(int fd, REQUEST *request, int auth);           /* Start up an OLCR session. */
+extern ERRCODE olc_show(int fd, REQUEST *request, int auth);              /* Show any new messages. */
+extern ERRCODE olc_grab(int fd, REQUEST *request, int auth);              /* Grab a question on the queue. */
+extern ERRCODE olc_cancel(int fd, REQUEST *request, int auth);            /* Cancel a question. */
 extern ERRCODE olc_status();            /* Print user status information. */
-extern ERRCODE olc_ask();               /* ask a question */
-extern ERRCODE olc_chtopic();           /* change a topic */
-extern ERRCODE olc_list_topics();       /* list topics */
-extern ERRCODE olc_create_instance();   /* create a new instance */
-extern ERRCODE olc_default_instance();
-extern ERRCODE olc_motd();              /* retrieve the olc motd */
-extern ERRCODE olc_dump();              /* debugging info */
-extern ERRCODE olc_cancel();
-extern ERRCODE olc_verify_topic();
-extern ERRCODE olc_verify_instance();
-extern ERRCODE olc_load_user();
-extern ERRCODE olc_change_motd();
-extern ERRCODE olc_change_acl();
-extern ERRCODE olc_get_dbinfo();
-extern ERRCODE olc_list_acl();
-extern ERRCODE olc_change_dbinfo();
-extern ERRCODE olc_get_accesses();
+extern ERRCODE olc_ask(int fd, REQUEST *request, int auth);               /* ask a question */
+extern ERRCODE olc_chtopic(int fd, REQUEST *request, int auth);           /* change a topic */
+extern ERRCODE olc_list_topics(int fd, REQUEST *request, int auth);       /* list topics */
+extern ERRCODE olc_create_instance(int fd, REQUEST *request, int auth);   /* create a new instance */
+extern ERRCODE olc_default_instance(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_motd(int fd, REQUEST *request, int auth);              /* retrieve the olc motd */
+extern ERRCODE olc_dump(int fd, REQUEST *request, int auth);              /* debugging info */
+extern ERRCODE olc_cancel(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_verify_topic(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_verify_instance(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_load_user(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_change_motd(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_change_acl(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_get_dbinfo(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_list_acl(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_change_dbinfo(int fd, REQUEST *request, int auth);
+extern ERRCODE olc_get_accesses(int fd, REQUEST *request, int auth);
 
 /* Other external declarations. */
 
-extern void backup_data();      /* Backup the current state. */
+extern void backup_data(void);      /* Backup the current state. */
 
-KNUCKLE *create_user();
-KNUCKLE *create_knuckle();
+KNUCKLE *create_user(PERSON *person);
+KNUCKLE *create_knuckle(USER *user);
 
-void delete_user();
-void delete_knuckle();
-void init_user();
-QUEUE_STATUS *get_status_info();
+void delete_user(USER *user);
+void delete_knuckle(KNUCKLE *knuckle, int cont);
+void init_user(KNUCKLE *knuckle, PERSON *person);
+QUEUE_STATUS *get_status_info(void);
 
-extern char *get_next_word();
-
-extern char *fmt ();
-
-/* System functions. */
-
-#if __STDC__
-extern void *malloc (unsigned int), *realloc (void *, unsigned int);
-#else
-extern char *malloc(), *realloc();
-#endif
-
+extern char *fmt (const char *, ...);
 
 /* Global variables */
 
@@ -299,7 +285,6 @@ extern int	insert_knuckle (KNUCKLE *);
 extern int	insert_knuckle_in_user (KNUCKLE *, USER *);
 extern void	init_dbinfo (USER *);
 extern void	load_user (USER *);
-extern /*int*/	gettimeofday (struct timeval *, struct timezone *);
 extern int	verify_topic (char *);
 extern ERRCODE	init_log (KNUCKLE *, char *);
 extern int	is_topic (int *, int);
@@ -336,55 +321,41 @@ extern void	log_mail (KNUCKLE *, KNUCKLE *, char *);
 extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
 extern int	init_question (KNUCKLE *, char *, char *);
 
-/* C library stuff */
-extern int	socket (int, int, int);
-#ifdef SOCK_STREAM
-extern int	connect (int, struct sockaddr *, int);
-extern int	bind (int, struct sockaddr *, int);
-extern int	accept (int, struct sockaddr *, int *);
+#if is_cplusplus
+extern "C" {
 #endif
-#ifdef UIO_USERSPACE
-extern int	writev (int, struct iovec *, int);
-#endif
-extern int	setlinebuf (FILE *);
-extern int	setsockopt (int, int, int, void *, int);
-extern int	setenv (const char *, const char *, int);
-extern int	listen (int, int);
 
+    extern char *get_next_word();
 
-/* man page uses varargs.h, but ... */
-/*#include <stdarg.h>*/
-extern int	_doprnt (const char *, /*va_list*/char *, FILE *);
-
-/* other libraries */
-/* Kerberos */
+    /* other libraries */
+    /* Kerberos */
 #ifdef KERBEROS
-extern int krb_get_lrealm (char *, int);
-extern int krb_rd_req (KTEXT, const char *, char *, long, AUTH_DAT *,
-		       const char *);
-extern int dest_tkt (void);
-extern int krb_get_svc_in_tkt (const char *, const char *, const char *,
-			       const char *, const char *, int,
-			       const char *);
+    extern int krb_get_lrealm (char *, int);
+    extern int krb_rd_req (KTEXT, const char *, char *, long, AUTH_DAT *,
+			   const char *);
+    extern int dest_tkt (void);
+    extern int krb_get_svc_in_tkt (const char *, const char *, const char *,
+				   const char *, const char *, int,
+				   const char *);
 
 #endif
 
-/* Zephyr */
+    /* Zephyr */
 #if defined (ZEPHYR) && defined (ZVERSIONHDR)
-extern Code_t	ZInitialize (void);
-/* This is inconsistent between Code_t and int for return types, but
-   that's the way it goes...  */
-typedef int	(*OZMagicFunction) (ZNotice_t *, char *, int, int *);
-extern Code_t	ZSendNotice (ZNotice_t *, OZMagicFunction);
-extern Code_t	ZIfNotice (ZNotice_t *, struct sockaddr_in *, OZMagicFunction,
-			   char *);
-extern void	ZFreeNotice (ZNotice_t *);
+    extern Code_t	ZInitialize (void);
+    /* This is inconsistent between Code_t and int for return types, but
+     * that's the way it goes...  */
+    typedef int	(*OZMagicFunction) (ZNotice_t *, char *, int, int *);
+    extern Code_t	ZSendNotice (ZNotice_t *, OZMagicFunction);
+    extern Code_t	ZIfNotice (ZNotice_t *, struct sockaddr_in *,
+				   OZMagicFunction, char *);
+    extern void	ZFreeNotice (ZNotice_t *);
 #endif /* Zephyr */
 
-/* Acl library */
-extern int	acl_check (char *, char *);
-extern int	acl_add (char *, char *);
-extern int	acl_delete (char *, char *);
+    /* Acl library */
+    extern int	acl_check (char *, char *);
+    extern int	acl_add (char *, char *);
+    extern int	acl_delete (char *, char *);
 
 #if is_cplusplus
 };
