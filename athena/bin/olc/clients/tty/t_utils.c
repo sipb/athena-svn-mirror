@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.38 1994-03-15 10:48:34 vrt Exp $
- *	$Author: vrt $
+ *	$Id: t_utils.c,v 1.39 1994-04-08 13:28:18 miki Exp $
+ *	$Author: miki $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.38 1994-03-15 10:48:34 vrt Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.39 1994-04-08 13:28:18 miki Exp $";
 #endif
 #endif
 
@@ -705,6 +705,10 @@ mail_message(user, consultant, msgfile, args)
 char *
 happy_message()
 {
+#ifdef SOLARIS
+#define random lrand48
+#define srandom srand48
+#endif
   if(random()%3 == 1)
     {
       switch(random()%12)
