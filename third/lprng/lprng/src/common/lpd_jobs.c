@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_jobs.c,v 1.2 2001-03-07 01:19:31 ghudson Exp $";
+"$Id: lpd_jobs.c,v 1.3 2002-01-23 12:13:04 zacheiss Exp $";
 
 #include "lp.h"
 #include "lpd.h"
@@ -1003,7 +1003,6 @@ int Remote_job( struct job *job, char *id )
 			Set_str_value( &jcopy.info,ERROR,"bad bq_format value");
 		}
 		Set_str_value(lp,FORMAT,Bounce_queue_format_DYN);
-		Set_str_value(lp,"N","(lpr_filter)");
 		Set_flag_value(lp,COPIES,1);
 		Set_decimal_value(lp,SIZE,job_size);
 	}

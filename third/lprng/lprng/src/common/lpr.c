@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.14 2001-11-01 22:11:01 zacheiss Exp $";
+"$Id: lpr.c,v 1.15 2002-01-23 12:13:06 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -886,7 +886,6 @@ int Make_job( struct job *job )
 			fatal(LOG_INFO,"Make_job: no bq_format value");
 		}
 		Set_str_value(lp,FORMAT,Bounce_queue_format_DYN);
-		Set_str_value(lp,"N","(lpr_filter)");
 		Set_flag_value(lp,COPIES,1);
 		Set_decimal_value(lp,SIZE,job_size);
 		if( !name ) Set_str_value(&job->info,TRANSFERNAME,0);
