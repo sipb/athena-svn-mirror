@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.26 1990-12-05 21:28:44 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.27 1990-12-09 17:01:57 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.26 1990-12-05 21:28:44 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.27 1990-12-09 17:01:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -409,7 +409,7 @@ olc_who(fd,request,auth)
 
   if(is_logout(requester) && is_active(requester))
     {
-      if(requester->new_messages != (char *) NULL)
+      if(has_new_messages(requester))
 	{
 	  if (owns_question(requester))
 	    {
@@ -451,13 +451,15 @@ olc_who(fd,request,auth)
 		  free_new_messages(requester->connected);
 		  deactivate(requester->connected);
 		  disconnect_knuckles(requester, requester->connected);
-		  set_status(requester, PENDING);
+		  if (!(requester->status & REFERRED))
+		    set_status(requester, PENDING);
 		  olc_broadcast_message("resurrection",message, 
 					requester->question->topic);
 		}
 	    }
 	  else
-	    set_status(requester, PENDING);
+	    if (!(requester->status & REFERRED))
+	      set_status(requester, PENDING);
 	    olc_broadcast_message("resurrection",message, 
 				  requester->question->topic);
 	}
@@ -1298,7 +1300,7 @@ olc_send(fd, request, auth)
     return(send_response(fd, ERROR));
   
   if(!is_me(target,requester))
-    new_message(&(target->new_messages), requester,  msg);
+    new_message(target, requester,  msg);
   log_message(target,requester,msg);
 
   if(is_me(target,requester) && !is_connected(target))
@@ -1329,6 +1331,7 @@ olc_send(fd, request, auth)
 	  free_new_messages(target);
 	  set_status(requester, PENDING);
 	  disconnect_knuckles(requester, target);
+	  needs_backup = TRUE;
 	  (void) sprintf(mesg,"The %s server could not contact the %s you were connected to.\nLooking for another %s for you....\n",
 			 DaemonInst,DEFAULT_TITLE2,DEFAULT_TITLE2);
 	  (void) write_message_to_user (requester,
@@ -1372,7 +1375,6 @@ olc_send(fd, request, auth)
       )
     set_status(target->question->owner, SERVICED);
 
-  needs_backup = TRUE;
   return(SUCCESS);
 }
 
@@ -1683,10 +1685,10 @@ olc_show(fd, request, auth)
     }
 
 
-  if (target->new_messages != (char *)NULL) 
+  if (has_new_messages(target)) 
     {
       send_response(fd, SUCCESS);
-      write_text_to_fd(fd, target->new_messages);
+      write_file_to_fd(fd, target->nm_file);
       if((is_me(target,requester)) && 
 	 !(is_option(request->options, NOFLUSH_OPT)))
 	{
@@ -2097,6 +2099,7 @@ olc_motd(fd, request, auth)
 #endif /* LOG */
 
   send_response(fd,SUCCESS);
+  check_motd_timeout();
   status = write_file_to_fd(fd,MOTD_FILE);    
   return(status);
 }
