@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.20 1993-04-29 17:27:30 vrt Exp $
+# $Id: Imakefile,v 1.21 1993-05-05 12:16:23 miki Exp $
 #
 # Remember: most conditionalization should be done in the package, not here.
 
@@ -13,13 +13,25 @@
 XSCRIPTS=console-getty
 #endif
 
+#ifdef SOLARIS
+XSCRIPTS=console-ttymon 
+#endif
+
 SCRIPT= clean_tmp_areas config_afs reactivate shutdown_notify $(XSCRIPTS)
 
 SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
 
+#ifdef SOLARIS
 install::
 	for i in ${SCRIPT}; do \
 		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
 		done
+	$(INSTALL) -m 0755 -o bin cc.sh $(DESTDIR)/usr/ucb/cc; 
+#else
+install::
+	for i in ${SCRIPT}; do \
+		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
+		done
+#endif
 
 install_man(reactivate.8,reactivate.8)
