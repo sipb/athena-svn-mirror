@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.16 2001-06-05 19:33:27 rbasch Exp $
+# $Id: cshrc,v 1.17 2001-06-12 17:19:07 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -187,7 +187,13 @@ set bindir=arch/${ATHENA_SYS}/bin
 set noclobber			# Don't overwrite files with redirection
 
 if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
-    set prompt = "athena% "	#   Set prompt
+    # Set prompt.
+    if ($home =~ /var/athena/tmphomedir/*) then
+        set prompt = "athena (temporary homedir)% "
+    else
+        set prompt = "athena% "
+    endif
+
     set history = 20		#   Number of commands saved as history
     set cdpath = (~)		#   Path to search for directory changes
     set interactive		#   Provide shell variable for compatability
