@@ -1,10 +1,10 @@
 /*
- * $Id: main.c,v 1.30 1992-07-31 19:16:54 probe Exp $
+ * $Id: main.c,v 1.31 1992-12-22 17:48:00 probe Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.30 1992-07-31 19:16:54 probe Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.31 1992-12-22 17:48:00 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -231,7 +231,7 @@ fsidcmd(argc, argv)
     ops = "mapped";
 
 #ifdef ATHENA_COMPAT73
-    if (!strcmp(filsys_type, "NFS")) {
+    if (filsys_type && !strcmp(filsys_type, "NFS")) {
 	hostp = 1;
 	filsysp = 0;
     } else {
