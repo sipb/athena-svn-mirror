@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.7 1989-01-23 12:41:42 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.8 1989-01-23 12:57:22 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -437,9 +437,6 @@ int no_delete_mask;
 	  fprintf(stderr, "%s: %s would be removed\n", whoami, filename);
 	  return(0);
      }
-     if (verbose)
-	  fprintf(stderr, "%s: %s removed\n", whoami, filename);
-     
      if (! lstat(buf, &deleted_buf))
 	  unlink_completely(buf);
      if (rename(filename, buf)) {
@@ -447,8 +444,11 @@ int no_delete_mask;
 	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
 	  return(ERROR_MASK);
      }
-     else
+     else {
+	  if (verbose)
+	       fprintf(stderr, "%s: %s removed\n", whoami, filename);
 	  return(0);
+     }
 }
 
 
