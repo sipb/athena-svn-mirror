@@ -7,15 +7,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.9 1994-08-14 15:55:15 cfields Exp $
+ *	$Id: os.h,v 1.10 1995-11-29 00:11:34 cfields Exp $
  *	$Author: cfields $
  */
 
 #include <mit-copyright.h>
 #include <stdio.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
+/* not POSIX because has not been tested for other platforms where
+   we normally define it, although in olc's Imake it's only turned on
+   for SOLARIS and sgi. */
 #include <fcntl.h>
 #include <dirent.h>
 #else /* !SOLARIS */
