@@ -7,12 +7,13 @@ sun4)
 	echo "MINIROOT=true"				>> "$CONFVARS"
 	echo "NEWOS=true"				>> "$CONFVARS"
 	echo "NEWDEVS=true"				>> "$CONFVARS"
-	platform=`uname -m`
-	echo "SUNPLATFORM=$platform"			>> "$CONFVARS"
+	echo "OSCHANGES=true"				>> "$CONFVARS"
 
 	echo "/etc/athena/named-bootconf"		>> "$DEADFILES"
 	echo "/etc/athena/syslogd"			>> "$DEADFILES"
 	echo "/etc/athena/xdm"				>> "$DEADFILES"
+	echo "/usr/lib/cpp"				>> "$DEADFILES"
+	echo "/usr/ccs/lib/cpp"				>> "$DEADFILES"
 	cat "$LIBDIR/solaris26-7"			>> "$DEADFILES"
 
 	# Create list of old packages and old patches to be removed
@@ -43,6 +44,7 @@ sgi)
 	# Boot up the miniroot to upgrade the OS.
 	echo "NEWOS=true"				>> "$CONFVARS"
 	echo "MINIROOT=true"				>> "$CONFVARS"
+	echo "OSCHANGES=true"				>> "$CONFVARS"
 
 	# Hack to prevent inst from doing multiple make's
 	# of the filetype database.
