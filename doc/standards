@@ -129,8 +129,8 @@ test expressions:
 	non-empty			-n "$varname"
 	equal to a literal		literal = "$varname"
 	equal to another variable	"x$varname" = "x$othervarname"
-	set				${varname+set} = set
-	not set				${varname+set} != set
+	set				"${varname+set}" = set
+	not set				"${varname+set}" != set
 
 Software engineering practices
 ------------------------------
