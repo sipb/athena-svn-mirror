@@ -52,8 +52,8 @@ if [ ! -r /var/athena/core.root ]; then
 	chown root:daemon /var/athena/core.root
 fi
 
-# Remove old cruft and locks
-rm -rf /.deleted /etc/sm/* /etc/sm.bak/*
+# Remove old cruft, locks, and login session records.
+rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/*
 
 # Reset time with the time hub
 if [ "${TIMECLIENT}" = "true" ]; then

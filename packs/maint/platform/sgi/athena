@@ -54,8 +54,8 @@ if [ ! -r /var/athena/core.root ]; then
 	chown root:daemon /var/athena/core.root
 fi
 
-# Remove old cruft and locks
-rm -rf /.deleted
+# Remove old cruft and login session records.
+rm -rf /.deleted /var/athena/sessions/*
 
 # afsd is started by init.d/afs. We just do our little additions here.
 if [ "${AFSCLIENT}" != "false" ]; then
