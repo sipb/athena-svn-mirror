@@ -1,14 +1,15 @@
 # English/Canada translation of libgnomeui
 # Copyright (C) 2004 Adam Weinberger and the GNOME Foundation
 # This file is distributed under the same licence as the PACKAGE package.
-# Adam Weinberger <adamw@FreeBSD.org>, 2004.
+# Adam Weinberger <adamw@gnome.org>, 2004.
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 18:30+0200\n"
-"PO-Revision-Date: 2004-08-02 17:09-0400\n"
+"POT-Creation-Date: 2005-02-21 14:10+0100\n"
+"PO-Revision-Date: 2004-09-24 17:09-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,16 +32,16 @@ msgstr "Child Item 2"
 msgid "Hint for item 2"
 msgstr "Hint for item 2"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:668
+#: file-chooser/gtkfilesystemgnomevfs.c:677
 #, c-format
 msgid "%s is not a folder"
 msgstr "%s is not a folder"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:875
+#: file-chooser/gtkfilesystemgnomevfs.c:884
 msgid "Filesystem"
 msgstr "Filesystem"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:1539
+#: file-chooser/gtkfilesystemgnomevfs.c:1568
 #, c-format
 msgid "Bookmark saving failed (%s)"
 msgstr "Bookmark saving failed (%s)"
@@ -692,7 +693,7 @@ msgstr "Received invalid colour data\n"
 
 #: libgnomeui/gnome-color-picker.c:465
 msgid "Open a dialog to specify the color"
-msgstr "Open a dialog to specify the colour"
+msgstr "Open a dialogue to specify the colour"
 
 #: libgnomeui/gnome-color-picker.c:487
 msgid "Pick a color"
@@ -917,11 +918,11 @@ msgstr ""
 
 #: libgnomeui/gnome-file-entry.c:238 libgnomeui/gnome-icon-entry.c:186
 msgid "Browse Dialog Title"
-msgstr "Browse Dialog Title"
+msgstr "Browse Dialogue Title"
 
 #: libgnomeui/gnome-file-entry.c:239
 msgid "Title for the Browse file dialog."
-msgstr "Title for the Browse file dialog."
+msgstr "Title for the Browse file dialogue."
 
 #: libgnomeui/gnome-file-entry.c:246
 msgid "Directory Entry"
@@ -1033,7 +1034,7 @@ msgstr "Pick a Font"
 
 #: libgnomeui/gnome-font-picker.c:156
 msgid "The title of the selection dialog box"
-msgstr "The title of the selection dialog box"
+msgstr "The title of the selection dialogue box"
 
 #: libgnomeui/gnome-font-picker.c:164
 msgid "Mode"
@@ -1065,7 +1066,7 @@ msgstr "Preview text"
 
 #: libgnomeui/gnome-font-picker.c:193
 msgid "Preview text shown in the dialog"
-msgstr "Preview text shown in the dialog"
+msgstr "Preview text shown in the dialogue"
 
 #: libgnomeui/gnome-font-picker.c:201
 msgid "Use font in label"
@@ -1171,7 +1172,7 @@ msgstr ""
 
 #: libgnomeui/gnome-icon-entry.c:187
 msgid "Title for the Browse icon dialog."
-msgstr "Title for the Browse icon dialog."
+msgstr "Title for the Browse icon dialogue."
 
 #: libgnomeui/gnome-icon-entry.c:194
 msgid "Pixmap Directory"
@@ -1187,14 +1188,14 @@ msgstr "Filename that should be displayed in the icon entry."
 
 #: libgnomeui/gnome-icon-entry.c:211
 msgid "Picker dialog"
-msgstr "Picker dialog"
+msgstr "Picker dialogue"
 
 #: libgnomeui/gnome-icon-entry.c:212
 msgid ""
 "Icon picker dialog.  You can use this property to get the GtkDialog if you "
 "need to modify or query any of its properties."
 msgstr ""
-"Icon picker dialog.  You can use this property to get the GtkDialog if you "
+"Icon picker dialogue.  You can use this property to get the GtkDialog if you "
 "need to modify or query any of its properties."
 
 #: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:980
@@ -1203,11 +1204,11 @@ msgstr "No Icon"
 
 #: libgnomeui/gnome-icon-entry.c:750
 msgid "Icon selection dialog"
-msgstr "Icon selection dialog"
+msgstr "Icon selection dialogue"
 
 #: libgnomeui/gnome-icon-entry.c:751
 msgid "This dialog box lets you select an icon."
-msgstr "This dialog box lets you select an icon."
+msgstr "This dialogue box lets you select an icon."
 
 #: libgnomeui/gnome-icon-entry.c:757
 msgid "Icon selector"
@@ -1249,7 +1250,7 @@ msgstr "GnomeIconSelection: '%s' does not exist or is not a directory"
 #: libgnomeui/gnome-icon-sel.c:301
 #, c-format
 msgid "GnomeIconSelection: couldn't open directory '%s'"
-msgstr "GnomeIconSelection: couldn't open directory '%s'"
+msgstr "GnomeIconSelection: could not open directory '%s'"
 
 #: libgnomeui/gnome-icon-sel.c:401
 msgid "Loading Icons..."
@@ -1325,7 +1326,7 @@ msgstr "A preview of the image currently specified"
 
 #: libgnomeui/gnome-pixmap-entry.c:414
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "Can't find an hbox, using a normal file selection"
+msgstr "Cannot find an hbox, using a normal file selection"
 
 #: libgnomeui/gnome-pixmap-entry.c:420
 msgid "Preview"
@@ -1384,7 +1385,7 @@ msgstr "About"
 
 #: libgnomeui/gnome-ui-init.c:117
 msgid "Disable Crash Dialog"
-msgstr "Disable Crash Dialog"
+msgstr "Disable Crash Dialogue"
 
 #: libgnomeui/gnome-ui-init.c:119
 msgid "X display to use"
@@ -1402,7 +1403,7 @@ msgstr "GNOME GUI Library"
 #: libgnomeui/gnome-ui-init.c:708
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "Multiple segmentation faults occurred; cannot display error dialogue\n"
 
 #. Eeeek! Can't show dialog
 #: libgnomeui/gnome-ui-init.c:722
@@ -1412,7 +1413,7 @@ msgid ""
 "Cannot display crash dialog\n"
 msgstr ""
 "Segmentation fault!\n"
-"Cannot display crash dialog\n"
+"Cannot display crash dialogue\n"
 
 #: libgnomeui/gnome_segv.c:101
 #, c-format
@@ -1425,9 +1426,9 @@ msgid ""
 msgstr ""
 "The GNOME Session Manager (process %d) has crashed\n"
 "due to a fatal error (%s).\n"
-"When you close this dialog, all applications will close and your session "
+"When you close this dialogue, all applications will close and your session "
 "will exit.\n"
-"Please save all your files before closing this dialog."
+"Please save all your files before closing this dialogue."
 
 #: libgnomeui/gnome_segv.c:112
 #, c-format

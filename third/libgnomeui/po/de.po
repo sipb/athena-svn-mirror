@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 2.7.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 18:30+0200\n"
-"PO-Revision-Date: 2004-07-02 20:01+0200\n"
-"Last-Translator: Hendrik Richter <hendrik@gnome-de.org>\n"
+"POT-Creation-Date: 2005-02-21 14:10+0100\n"
+"PO-Revision-Date: 2005-01-24 04:56+0100\n"
+"Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,16 +34,16 @@ msgstr "Kindelement 2"
 msgid "Hint for item 2"
 msgstr "Hinweis für Kindelement 2"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:668
+#: file-chooser/gtkfilesystemgnomevfs.c:677
 #, c-format
 msgid "%s is not a folder"
 msgstr "%s ist kein Ordner"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:875
+#: file-chooser/gtkfilesystemgnomevfs.c:884
 msgid "Filesystem"
 msgstr "Dateisystem"
 
-#: file-chooser/gtkfilesystemgnomevfs.c:1539
+#: file-chooser/gtkfilesystemgnomevfs.c:1568
 #, c-format
 msgid "Bookmark saving failed (%s)"
 msgstr "Speichern von Lesezeichen gescheitert (%s)"
@@ -1216,7 +1216,9 @@ msgstr ""
 
 #: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:980
 msgid "No Icon"
-msgstr "Kein Symbol"
+msgstr ""
+"Kein\n"
+"Symbol"
 
 #: libgnomeui/gnome-icon-entry.c:750
 msgid "Icon selection dialog"

@@ -1,3 +1,57 @@
+2005-01-31  Rhys Jones  <rhys@sucs.org>
+
+	* cy.po: Further typo fixes.
+
+2005-01-30  Rhys Jones  <rhys@sucs.org>
+
+	* cy.po: Merged fixes from Telsa Gwynne/Gareth Bowker/myself that
+	were already in CVS HEAD
+
+2005-01-24  Frank Arnold  <farnold@cvs.gnome.org>
+
+	* de.po: Fix for #153273.
+
+2004-12-03  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* zu.po: Corrections to Zulu translation.
+
+2004-12-02  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* zu.po: Added Zulu translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-12-01  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Updated Northern Sotho translation.
+
+2004-11-20  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Vladimir Petkov <vpetkov@i-space.org>
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-06  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-09-24  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-19  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Francesco Marletta <francesco.marletta@tiscali.it>.
+
+2004-09-19  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+==================== 2.8.0 ====================
+
 2004-09-13  Jesus Bravo Alvarez  <suso@trasno.net>
 
 	* gl.po: Added Galician translation.
