@@ -3,14 +3,14 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.3 1991-04-14 13:37:06 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.4 1991-04-14 17:22:26 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.3 1991-04-14 13:37:06 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.4 1991-04-14 17:22:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -23,6 +23,17 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <netdb.h>
 #include <stdio.h>
 #include <strings.h>
+
+#ifdef NEEDS_SELECT_MACROS
+#define NBBY    8 /* number of bits in a byte */
+#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
+
+#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
+
+#endif
 
 static int session_id;
 static int fd;
