@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1999-04-20 19:35:48 ghudson Exp $
+# $Id: Makefile,v 1.6 1999-04-20 19:41:34 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -82,6 +82,8 @@ install:
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 system ${DESTDIR}${ETCDIR}
 	install -c -m 0644 vfstab.std ${DESTDIR}${ETCDIR}
+	rm -f ${DESTDIR}${ETCDIR}/sendmail.cf
+	ln -s mail/sendmail.cf ${DESTDIR}${ETCDIR}/sendmail.cf
 	rm -f ${DESTDIR}${ETCDIR}/shadow
 	ln -s /afs/athena.mit.edu/system/config/passwd/${ATHENA_SYS}/shadow \
 		${DESTDIR}${ETCDIR}/shadow
