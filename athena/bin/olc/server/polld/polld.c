@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.11 1992-02-04 20:32:33 lwvanels Exp $
+ *	$Id: polld.c,v 1.12 1992-08-12 13:43:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.11 1992-02-04 20:32:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.12 1992-08-12 13:43:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -97,6 +97,9 @@ main(argc, argv)
   int fd;
   int retval;
   char *dhost = NULL;
+#ifdef _POSIX_SOURCE
+  struct sigaction action;
+#endif
 
 #ifdef PROFILE
   /* Turn off profiling on startup; that way, we collect "steady state" */
@@ -149,15 +152,24 @@ main(argc, argv)
 
   strcpy(DaemonHost,dhost);
 
+#ifdef _POSIX_SOURCE
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = clean_up;
+
+  sigaction(SIGHUP, &action, NULL);
+  sigaction(SIGINT, &action, NULL);
+  sigaction(SIGTERM, &action, NULL);
+
+  action.sa_handler = SIG_IGN;
+  sigaction(SIGPIPE, &action, NULL);
+
+#else /* _POSIX_SOURCE */
   signal(SIGHUP,clean_up);
   signal(SIGINT,clean_up);
   signal(SIGTERM,clean_up);
   signal(SIGPIPE,SIG_IGN);
-#ifdef PROFILE
-  signal(SIGUSR1, dump_profile); /* Dump profiling information and stop */
-  /* profiling */
-  signal(SIGUSR2, start_profile); /* Start profiling */
-#endif /* PROFILE */
+#endif /* _POSIX_SOURCE */
   
 #if defined(ultrix)
 #ifdef LOG_CONS
