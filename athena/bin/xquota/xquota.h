@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: xquota.h,v 1.2 89/03/10 13:56:33 kit Locked $
+ * $Athena: xquota.h,v 1.3 89/03/10 18:36:39 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -21,7 +21,7 @@
 
 #include <X11/Intrinsic.h>
 
-#define APP_CLASS ("XQuota")
+#define APP_CLASS ("Xquota")
 
 #define VERSION   ("Xquota Version 0.1")
 #define AUTHOR    ("Chris D. Peterson")
