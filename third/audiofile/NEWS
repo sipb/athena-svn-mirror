@@ -1,18 +1,21 @@
-News for the Audio File Library version 0.1.7
-Michael Pruett <michael@68k.org>
+News for the Audio File Library version 0.2.2
+Michael Pruett <mpruett@sgi.com>
 
-The Audio File Library now has a much more robust configuration
-procedure, using automake and autoconf.
+Fixed a bug involving the processing of 24-bit audio data on
+little-endian systems.
 
-G.711 mu-law encoding is now available for the NeXT/Sun .snd/.au file
-format.
+Added support for the IRCAM file format.
 
-Documentation has been greatly improved but still needs work.  I'd like
-to convert it to the SGML DocBook format eventually.
+Added support for floating-point data in the AIFF-C and WAVE file
+formats.
 
-A simple test suite has been included in the test directory.  Type
-"make check" at the top level to ascertain that the Audio File Library
-builds correctly on your computer.
+Improved support for compressed data formats in AIFF-C, WAVE, and NeXT
+.snd file formats.
 
-Also as of version 0.1.6, the Audio File Library is now available under
-the LGPL.
+Cleaned up code for 64-bit systems.
+
+Cleaned up some compiler warnings.
+
+Added many new tests.
+
+Fixed several small bugs.

@@ -1,6 +1,6 @@
 /*
 	Audio File Library
-	Copyright (C) 1998, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -27,6 +27,7 @@
 
 #include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "aupvinternal.h"
@@ -35,7 +36,7 @@
 AUpvlist AUpvnew (int maxitems)
 {
 	AUpvlist	aupvlist;
-	int			i;
+	int		i;
 
 	if (maxitems <= 0)
 		return AU_NULL_PVLIST;
@@ -45,8 +46,7 @@ AUpvlist AUpvnew (int maxitems)
 	if (aupvlist == NULL)
 		return AU_NULL_PVLIST;
 
-	aupvlist->count = maxitems;
-	aupvlist->items = malloc(sizeof (struct _AUpvitem) * maxitems);
+	aupvlist->items = calloc(maxitems, sizeof (struct _AUpvitem));
 
 	assert(aupvlist->items);
 	if (aupvlist->items == NULL)
@@ -55,12 +55,17 @@ AUpvlist AUpvnew (int maxitems)
 		return AU_NULL_PVLIST;
 	}
 
+	/* Initialize the items in the list. */
 	for (i=0; i<maxitems; i++)
 	{
+		aupvlist->items[i].valid = _AU_VALID_PVITEM;
 		aupvlist->items[i].type = AU_PVTYPE_LONG;
 		aupvlist->items[i].parameter = 0;
 		memset(&aupvlist->items[i].value, 0, sizeof (aupvlist->items[i].value));
 	}
+
+	aupvlist->valid = _AU_VALID_PVLIST;
+	aupvlist->count = maxitems;
 
 	return aupvlist;
 }
@@ -69,22 +74,33 @@ int AUpvgetmaxitems (AUpvlist list)
 {
 	assert(list);
 
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+
 	return list->count;
 }
 
 int AUpvfree (AUpvlist list)
 {
-	size_t	size;
-
 	assert(list);
 	assert(list->items);
 
-	size = list->count;
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
 
-	free(list->items);
+	if ((list->items != _AU_NULL_PVITEM) &&
+		(list->items[0].valid == _AU_VALID_PVITEM))
+	{
+		free(list->items);
+	}
+
 	free(list);
 
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvsetparam (AUpvlist list, int item, int param)
@@ -94,8 +110,17 @@ int AUpvsetparam (AUpvlist list, int item, int param)
 	assert(item >= 0);
 	assert(item < list->count);
 
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
+
 	list->items[item].parameter = param;
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvsetvaltype (AUpvlist list, int item, int type)
@@ -105,8 +130,17 @@ int AUpvsetvaltype (AUpvlist list, int item, int type)
 	assert(item >= 0);
 	assert(item < list->count);
 
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
+
 	list->items[item].type = type;
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvsetval (AUpvlist list, int item, void *val)
@@ -115,6 +149,15 @@ int AUpvsetval (AUpvlist list, int item, void *val)
 	assert(list->items);
 	assert(item >= 0);
 	assert(item < list->count);
+
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
 
 	switch (list->items[item].type)
 	{
@@ -127,9 +170,12 @@ int AUpvsetval (AUpvlist list, int item, void *val)
 		case AU_PVTYPE_PTR:
 			list->items[item].value.v = *((void **) val);
 			break;
+		default:
+			assert(0);
+			return AU_BAD_PVLIST;
 	}
 
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvgetparam (AUpvlist list, int item, int *param)
@@ -139,8 +185,17 @@ int AUpvgetparam (AUpvlist list, int item, int *param)
 	assert(item >= 0);
 	assert(item < list->count);
 
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
+
 	*param = list->items[item].parameter;
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvgetvaltype (AUpvlist list, int item, int *type)
@@ -150,8 +205,17 @@ int AUpvgetvaltype (AUpvlist list, int item, int *type)
 	assert(item >= 0);
 	assert(item < list->count);
 
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
+
 	*type = list->items[item].type;
-	return 0;
+	return _AU_SUCCESS;
 }
 
 int AUpvgetval (AUpvlist list, int item, void *val)
@@ -160,6 +224,15 @@ int AUpvgetval (AUpvlist list, int item, void *val)
 	assert(list->items);
 	assert(item >= 0);
 	assert(item < list->count);
+
+	if (list == AU_NULL_PVLIST)
+		return AU_BAD_PVLIST;
+	if (list->valid != _AU_VALID_PVLIST)
+		return AU_BAD_PVLIST;
+	if ((item < 0) || (item > list->count - 1))
+		return AU_BAD_PVITEM;
+	if (list->items[item].valid != _AU_VALID_PVITEM)
+		return AU_BAD_PVLIST;
 
 	switch (list->items[item].type)
 	{
@@ -174,5 +247,5 @@ int AUpvgetval (AUpvlist list, int item, void *val)
 			break;
 	}
 
-	return 0;
+	return _AU_SUCCESS;
 }

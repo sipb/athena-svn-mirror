@@ -1,6 +1,6 @@
 /*
 	Audio File Library
-	Copyright (C) 1998-1999, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -31,165 +31,23 @@
 #include <stdlib.h>
 
 #include "audiofile.h"
+#include "afinternal.h"
 #include "aupvlist.h"
 #include "error.h"
+#include "util.h"
+#include "units.h"
+#include "instrument.h"
 
-struct _instrumentparameter
-{
-	int	id, type;
-	const char	*name;
-	long	defaultvalue;
-};
-
-struct _instrument
-{
-	int	supported;
-	int	idcount;
-	int	parametersupported;
-	int	parameteridcount;
-
-	const struct _instrumentparameter	parameters[64];
-	/* some other things for the instrument parameters */
-
-	int	loopsupported;
-	int	loopidcount;
-};
-
-struct _miscellaneous
-{
-	int	typecount;
-	const int	*types;
-	int	maxnumber;
-};
-
-struct _fileformat
-{
-	int		id;
-	const char	*label, *name, *description;
-	int		implemented;
-	int		defaultsampleformat;
-	int		defaultsamplewidth;
-
-	const struct _instrument	*dick;
-};
-
-const int _FILEFORMATCOUNT = 7;
-static const struct _instrument _aiffinstrument =
-{
-	1, 1, 1, 9,
-	{
-		{AF_INST_MIDI_BASENOTE, AU_PVTYPE_LONG, "MIDI base note", 60},
-		{AF_INST_NUMCENTS_DETUNE, AU_PVTYPE_LONG, "Detune in cents", 0},
-		{AF_INST_MIDI_LONOTE, AU_PVTYPE_LONG, "Low note", 0},
-		{AF_INST_MIDI_HINOTE, AU_PVTYPE_LONG, "High note", 127},
-		{AF_INST_MIDI_LOVELOCITY, AU_PVTYPE_LONG, "Low velocity", 1},
-		{AF_INST_MIDI_HIVELOCITY, AU_PVTYPE_LONG, "High velocity", 127},
-		{AF_INST_NUMDBS_GAIN, AU_PVTYPE_LONG, "Gain in dB", 0},
-		{AF_INST_SUSLOOPID, AU_PVTYPE_LONG, "Sustain loop id", 1},
-		{AF_INST_RELLOOPID, AU_PVTYPE_LONG, "Release loop id", 2}
-	},
-	1, 1
-};
-
-static const struct _instrument _otherinstrument =
-{
-	0, 0, 0, 0,
-	{},
-	0, 0
-};
-
-static struct _fileformat _FILEFORMATS[] =
-{
-	{
-		AF_FILE_AIFF,
-		"aiff",
-		"AIFF",
-		"Audio Interchange File Format AIFF",
-		1,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_aiffinstrument
-	},
-	{
-		AF_FILE_AIFFC,
-		"aifc",
-		"AIFF-C",
-		"Audio Interchange File Format AIFF-C",
-		1,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_aiffinstrument
-	},
-	{
-		AF_FILE_WAVE,
-		"wave",
-		"MS RIFF WAVE",
-		"MS RIFF WAVE Format",
-		1,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_otherinstrument
-	},
-	{
-		AF_FILE_NEXTSND,
-		"next",
-		"NeXT .snd/Sun .au",
-		"NeXT .snd/Sun .au Format",
-		1,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_otherinstrument
-	},
-	{
-		AF_FILE_BICSF,
-		"bicsf",
-		"BICSF",
-		"Berkeley/IRCAM/CARL Sound File Format",
-		0,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_otherinstrument
-	},
-	{
-		AF_FILE_VOC,
-		"voc",
-		"VOC",
-		"Creative Voice File Format",
-		0,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_otherinstrument
-	},
-	{
-		AF_FILE_RAWDATA,
-		"raw",
-		"Raw Data",
-		"Raw Sound Data",
-		0,
-		AF_SAMPFMT_TWOSCOMP,
-		16,
-		&_otherinstrument
-	}
-};
+extern _Unit _af_units[];
 
 AUpvlist _afQueryFileFormat (int arg1, int arg2, int arg3, int arg4);
 AUpvlist _afQueryInstrument (int arg1, int arg2, int arg3, int arg4);
 AUpvlist _afQueryInstrumentParameter (int arg1, int arg2, int arg3, int arg4);
+AUpvlist _afQueryLoop (int arg1, int arg2, int arg3, int arg4);
+AUpvlist _afQueryMarker (int arg1, int arg2, int arg3, int arg4);
+AUpvlist _afQueryMiscellaneous (int arg1, int arg2, int arg3, int arg4);
 AUpvlist _afQueryCompression (int arg1, int arg2, int arg3, int arg4);
 AUpvlist _afQueryCompressionParameter (int arg1, int arg2, int arg3, int arg4);
-AUpvlist _afQueryMiscellaneous (int arg1, int arg2, int arg3, int arg4);
-
-struct _fileformat *findfileformatbyid (int id)
-{
-	int	i;
-	for (i=0; i<_FILEFORMATCOUNT; i++)
-	{
-		if (_FILEFORMATS[i].id == id)
-			return &_FILEFORMATS[i];
-	}
-
-	return NULL;
-}
 
 AUpvlist afQuery (int querytype, int arg1, int arg2, int arg3, int arg4)
 {
@@ -197,203 +55,159 @@ AUpvlist afQuery (int querytype, int arg1, int arg2, int arg3, int arg4)
 	{
 		case AF_QUERYTYPE_INST:
 			return _afQueryInstrument(arg1, arg2, arg3, arg4);
-			break;
 		case AF_QUERYTYPE_INSTPARAM:
 			return _afQueryInstrumentParameter(arg1, arg2, arg3, arg4);
-			break;
 		case AF_QUERYTYPE_LOOP:
-			break;
+			return _afQueryLoop(arg1, arg2, arg3, arg4);
 		case AF_QUERYTYPE_FILEFMT:
 			return _afQueryFileFormat(arg1, arg2, arg3, arg4);
-			break;
 		case AF_QUERYTYPE_COMPRESSION:
 			/* FIXME: This selector is not implemented. */
 			return AU_NULL_PVLIST;
-			break;
 		case AF_QUERYTYPE_COMPRESSIONPARAM:
 			/* FIXME: This selector is not implemented. */
 			return AU_NULL_PVLIST;
-			break;
 		case AF_QUERYTYPE_MISC:
 			/* FIXME: This selector is not implemented. */
 			return AU_NULL_PVLIST;
-			break;
+		case AF_QUERYTYPE_MARK:
+			return _afQueryMarker(arg1, arg2, arg3, arg4);
 		default:
-			_af_error(AF_BAD_QUERYTYPE);
+			_af_error(AF_BAD_QUERYTYPE, "bad query type");
 			return AU_NULL_PVLIST;
 	}
 
+	/* NOTREACHED */
 	return AU_NULL_PVLIST;
 }
 
-
+/* ARGSUSED3 */
 AUpvlist _afQueryFileFormat (int arg1, int arg2, int arg3, int arg4)
 {
-	AUpvlist	list;
-
-	if (arg1 == AF_QUERY_LABEL)
+	switch (arg1)
 	{
-		struct _fileformat	*format;
-		list = AUpvnew(1);
-		assert(list);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_PTR);
-
-		if ((format = findfileformatbyid(arg2)) != NULL)
+		/* The following select only on arg1. */
+		case AF_QUERY_ID_COUNT:
 		{
-			assert(format);
-			AUpvsetval(list, 0, &format->label);
+			int	count = 0, idx;
+			for (idx = 0; idx < _AF_NUM_UNITS; idx++)
+				if (_af_units[idx].implemented)
+					count++;
+			return _af_pv_long(count);
 		}
+		/* NOTREACHED */
+		break;
 
-		return list;
-	}
-	else if (arg1 == AF_QUERY_NAME)
-	{
-		struct _fileformat	*format;
-		list = AUpvnew(1);
-		assert(list);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_PTR);
-
-		if ((format = findfileformatbyid(arg2)) != NULL)
+		case AF_QUERY_IDS:
 		{
-			assert(format);
-			AUpvsetval(list, 0, &format->name);
-		}
+			int	count = 0, idx;
+			int	*buffer;
 
-		return list;
-	}
-	else if (arg1 == AF_QUERY_DESC)
-	{
-		struct _fileformat	*format;
-		list = AUpvnew(1);
-		assert(list);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_PTR);
+			buffer = _af_calloc(_AF_NUM_UNITS, sizeof (int));
+			if (buffer == NULL)
+				return AU_NULL_PVLIST;
 
-		if ((format = findfileformatbyid(arg2)) != NULL)
-		{
-			assert(format);
-			AUpvsetval(list, 0, &format->description);
-		}
+			for (idx = 0; idx < _AF_NUM_UNITS; idx++)
+				if (_af_units[idx].implemented)
+					buffer[count++] = idx;
 
-		return list;
-	}
-	else if (arg1 == AF_QUERY_IMPLEMENTED)
-	{
-		struct _fileformat	*format;
-		list = AUpvnew(1);
-		assert(list);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_LONG);
-
-		if ((format = findfileformatbyid(arg2)) != NULL)
-		{
-			assert(format);
-			AUpvsetval(list, 0, &format->implemented);
-		}
-
-		return list;
-	}
-	else if (arg1 == AF_QUERY_ID_COUNT)
-	{
-		long	count = 0;
-		int		i;
-
-		list = AUpvnew(1);
-		assert(list);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_LONG);
-		for (i=0; i<_FILEFORMATCOUNT; i++)
-		{
-			if (_FILEFORMATS[i].implemented)
-				count++;
-		}
-		AUpvsetval(list, 0, &count);
-		return list;
-	}
-	else if (arg1 == AF_QUERY_IDS)
-	{
-		long	count = 0;
-		int		i;
-		long	*idarray;
-
-		for (i=0; i<_FILEFORMATCOUNT; i++)
-		{
-			if (_FILEFORMATS[i].implemented)
-				count++;
-		}
-
-		list = AUpvnew(1);
-		AUpvsetvaltype(list, 0, AU_PVTYPE_PTR);
-		idarray = malloc(count * sizeof (long));
-
-		for (i=0, count=0; i<_FILEFORMATCOUNT; i++)
-		{
-			if (_FILEFORMATS[i].implemented)
+			if (count == 0)
 			{
-				idarray[count] = _FILEFORMATS[i].id;
-				count++;
+				free(buffer);
+				return AU_NULL_PVLIST;
+			}
+
+			return _af_pv_pointer(buffer);
+		}
+		/* NOTREACHED */
+		break;
+
+		/* The following select on arg2. */
+		case AF_QUERY_LABEL:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_pointer(_af_units[arg2].label);
+
+		case AF_QUERY_NAME:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_pointer(_af_units[arg2].name);
+
+		case AF_QUERY_DESC:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_pointer(_af_units[arg2].description);
+
+		case AF_QUERY_IMPLEMENTED:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].implemented);
+
+		/* The following select on arg3. */
+		case AF_QUERY_SAMPLE_FORMATS:
+			if (arg3 < 0 || arg3 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			switch (arg2)
+			{
+				case AF_QUERY_DEFAULT:
+					return _af_pv_long(_af_units[arg3].defaultSampleFormat);
+				default:
+					return AU_NULL_PVLIST;
+			}
+			/* NOTREACHED */
+			break;
+
+		case AF_QUERY_SAMPLE_SIZES:
+			if (arg3 < 0 || arg3 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+
+			switch (arg2)
+			{
+				case AF_QUERY_DEFAULT:
+					return _af_pv_long(_af_units[arg3].defaultSampleWidth);
+				default:
+					break;
+			}
+			/* NOTREACHED */
+			break;
+
+		case AF_QUERY_COMPRESSION_TYPES:
+		{
+			int	idx, count;
+			int	*buffer;
+
+			if (arg3 < 0 || arg3 >= _AF_NUM_UNITS)
+			{
+				_af_error(AF_BAD_QUERY,
+					"unrecognized file format %d", arg3);
+				return AU_NULL_PVLIST;
+			}
+
+			switch (arg2)
+			{
+				case AF_QUERY_VALUE_COUNT:
+					count = _af_units[arg3].compressionTypeCount;
+					return _af_pv_long(count);
+
+				case AF_QUERY_VALUES:
+					count = _af_units[arg3].compressionTypeCount;
+					if (count == 0)
+						return AU_NULL_PVLIST;
+
+					buffer = _af_calloc(count, sizeof (int));
+					if (buffer == NULL)
+						return AU_NULL_PVLIST;
+
+					for (idx = 0; idx < count; idx++)
+					{
+						buffer[idx] = _af_units[arg3].compressionTypes[idx];
+					}
+
+					return _af_pv_pointer(buffer);
 			}
 		}
-		AUpvsetval(list, 0, &idarray);
-		return list;
+		break;
 	}
-	/* no compression formats are supported at the present */
-	else if (arg1 == AF_QUERY_COMPRESSION_TYPES)
-	{
-		long	count = 0;
-		long	*nullpointer = NULL;
-
-		list = AUpvnew(1);
-
-		switch (arg2)
-		{
-			case AF_QUERY_VALUE_COUNT:
-				AUpvsetvaltype(list, 0, AU_PVTYPE_LONG);
-				AUpvsetval(list, 0, &count);
-				break;
-			case AF_QUERY_VALUES:
-				AUpvsetvaltype(list, 0, AU_PVTYPE_PTR);
-				AUpvsetval(list, 0, &nullpointer);
-				break;
-		}
-
-		return list;
-	}
-	else if (arg1 == AF_QUERY_SAMPLE_FORMATS)
-	{
-		struct _fileformat	*format;
-
-		if (arg2 != AF_QUERY_DEFAULT)
-		{
-			_af_error(AF_BAD_QUERY);
-			return AU_NULL_PVLIST;
-		}
-
-		list = AUpvnew(1);
-		if ((format = findfileformatbyid(arg3)) != NULL)
-		{
-			assert(format);
-			AUpvsetval(list, 0, &format->defaultsampleformat);
-		}
-		return list;
-	}
-	else if (arg1 == AF_QUERY_SAMPLE_SIZES)
-	{
-		struct _fileformat	*format;
-
-		if (arg2 != AF_QUERY_DEFAULT)
-		{
-			_af_error(AF_BAD_QUERY);
-			return AU_NULL_PVLIST;
-		}
-
-		list = AUpvnew(1);
-		if ((format = findfileformatbyid(arg3)) != NULL)
-		{
-			assert(format);
-			AUpvsetval(list, 0, &format->defaultsamplewidth);
-		}
-		return list;
-	}
-	else
-		_af_error(AF_BAD_QUERY);
 
 	return AU_NULL_PVLIST;
 }
@@ -401,10 +215,15 @@ AUpvlist _afQueryFileFormat (int arg1, int arg2, int arg3, int arg4)
 long afQueryLong (int querytype, int arg1, int arg2, int arg3, int arg4)
 {
 	AUpvlist	list;
+	int		type;
 	long		value;
 
 	list = afQuery(querytype, arg1, arg2, arg3, arg4);
-	assert(list);
+	if (list == AU_NULL_PVLIST)
+		return -1;
+	AUpvgetvaltype(list, 0, &type);
+	if (type != AU_PVTYPE_LONG)
+		return -1;
 	AUpvgetval(list, 0, &value);
 	AUpvfree(list);
 	return value;
@@ -413,10 +232,15 @@ long afQueryLong (int querytype, int arg1, int arg2, int arg3, int arg4)
 double afQueryDouble (int querytype, int arg1, int arg2, int arg3, int arg4)
 {
 	AUpvlist	list;
+	int		type;
 	double		value;
 
 	list = afQuery(querytype, arg1, arg2, arg3, arg4);
-	assert(list);
+	if (list == AU_NULL_PVLIST)
+		return -1;
+	AUpvgetvaltype(list, 0, &type);
+	if (type != AU_PVTYPE_DOUBLE)
+		return -1;
 	AUpvgetval(list, 0, &value);
 	AUpvfree(list);
 	return value;
@@ -425,95 +249,179 @@ double afQueryDouble (int querytype, int arg1, int arg2, int arg3, int arg4)
 void *afQueryPointer (int querytype, int arg1, int arg2, int arg3, int arg4)
 {
 	AUpvlist	list;
+	int		type;
 	void		*value;
 
 	list = afQuery(querytype, arg1, arg2, arg3, arg4);
-	assert(list);
+	if (list == AU_NULL_PVLIST)
+		return NULL;
+	AUpvgetvaltype(list, 0, &type);
+	if (type != AU_PVTYPE_PTR)
+		return NULL;
 	AUpvgetval(list, 0, &value);
 	AUpvfree(list);
 	return value;
 }
 
-AUpvlist _afQueryInstrument (int arg1, int arg2, int arg3, int arg4)
-{
-	_af_error(AF_BAD_NOT_IMPLEMENTED);
-	return AU_NULL_PVLIST;
-
-#if 0
-	if (arg1 == AF_QUERY_SUPPORTED)
-	{
-		struct _format	*format;
-
-		if (format = findformatbyid(arg2))
-		{
-			list = AUpvnew(1);
-			AUpvsetvalue(list, 0, format->instrument.supported);
-			return list;
-		}
-		else
-		{
-			/* The format specified was not a recognized format. */
-			_af_error(AF_BAD_QUERY);
-		}
-	}
-	else if (arg1 == AF_QUERY_ID_COUNT)
-	{
-		if (format = findformatbyid(arg2))
-		{
-			list = AUpvnew(1);
-			AUpvsetvalue(list, 0, format->instrument.idcount);
-			return list;
-		}
-		else
-		{
-			/* The format specified was not a recognized format. */
-			_af_error(AF_BAD_QUERY);
-		}
-	}
-
-	_af_error(AF_BAD_QUERY);
-	return AU_NULL_PVLIST;
-#endif
-}
-
+/* ARGSUSED3 */
 AUpvlist _afQueryInstrumentParameter (int arg1, int arg2, int arg3, int arg4)
 {
-	_af_error(AF_BAD_NOT_IMPLEMENTED);
-	return AU_NULL_PVLIST;
+	switch (arg1)
+	{
+		/* For the following query types, arg2 is the file format. */
+		case AF_QUERY_SUPPORTED:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].instrumentParameterCount != 0);
 
-	if (arg1 == AF_QUERY_SUPPORTED)
-	{
-	}
-	else if (arg1 == AF_QUERY_ID_COUNT)
-	{
-	}
-	else if (arg1 == AF_QUERY_IDS)
-	{
-	}
-	else if (arg1 == AF_QUERY_TYPE)
-	{
-	}
-	else if (arg1 == AF_QUERY_NAME)
-	{
-	}
-	else if (arg1 == AF_QUERY_DEFAULT)
-	{
+		case AF_QUERY_ID_COUNT:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].instrumentParameterCount);
+
+		case AF_QUERY_IDS:
+		{
+			int	i, count;
+			int	*buffer;
+
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			count = _af_units[arg2].instrumentParameterCount;
+			if (count == 0)
+				return AU_NULL_PVLIST;
+			buffer = _af_calloc(count, sizeof (int));
+			if (buffer == NULL)
+				return AU_NULL_PVLIST;
+			for (i=0; i<count; i++)
+				buffer[i] = _af_units[arg2].instrumentParameters[i].id;
+			return _af_pv_pointer(buffer);
+		}
+		/* NOTREACHED */
+		break;
+
+		/*
+			For the next few query types, arg2 is the file
+			format and arg3 is the instrument parameter id.
+		*/
+		case AF_QUERY_TYPE:
+		{
+			int	idx;
+
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+
+			idx = _af_instparam_index_from_id(arg2, arg3);
+			if (idx<0)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].instrumentParameters[idx].type);
+		}
+
+		case AF_QUERY_NAME:
+		{
+			int	idx;
+
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			idx = _af_instparam_index_from_id(arg2, arg3);
+			if (idx < 0)
+				return AU_NULL_PVLIST;
+			return _af_pv_pointer(_af_units[arg2].instrumentParameters[idx].name);
+		}
+
+		case AF_QUERY_DEFAULT:
+		{
+			int	idx;
+
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			idx = _af_instparam_index_from_id(arg2, arg3);
+			if (idx >= 0)
+			{
+				AUpvlist	ret = AUpvnew(1);
+				AUpvsetparam(ret, 0, _af_units[arg2].instrumentParameters[idx].id);
+				AUpvsetvaltype(ret, 0, _af_units[arg2].instrumentParameters[idx].type);
+				AUpvsetval(ret, 0, &_af_units[arg2].instrumentParameters[idx].defaultValue);
+				return ret;
+			}
+			return AU_NULL_PVLIST;
+		}
+
+		default:
+			break;
 	}
 
 	return AU_NULL_PVLIST;
 }
 
+/* ARGSUSED2 */
 AUpvlist _afQueryLoop (int arg1, int arg2, int arg3, int arg4)
 {
-	_af_error(AF_BAD_NOT_IMPLEMENTED);
+	if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+		return AU_NULL_PVLIST;
+
+	switch (arg1)
+	{
+		case AF_QUERY_SUPPORTED:
+			return _af_pv_long(_af_units[arg2].loopPerInstrumentCount != 0);
+		case AF_QUERY_MAX_NUMBER:
+			return _af_pv_long(_af_units[arg2].loopPerInstrumentCount);
+		default:
+			break;
+	}
+
 	return AU_NULL_PVLIST;
+}
 
-	if (arg1 == AF_QUERY_SUPPORTED)
+/* ARGSUSED2 */
+AUpvlist _afQueryInstrument (int arg1, int arg2, int arg3, int arg4)
+{
+	switch (arg1)
 	{
-	}
-	else if (arg1 == AF_QUERY_ID_COUNT)
-	{
+		case AF_QUERY_SUPPORTED:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].instrumentCount != 0);
+
+		case AF_QUERY_MAX_NUMBER:
+			if (arg2 < 0 || arg2 >= _AF_NUM_UNITS)
+				return AU_NULL_PVLIST;
+			return _af_pv_long(_af_units[arg2].instrumentCount);
+
+		default:
+			break;
 	}
 
+	return AU_NULL_PVLIST;
+}
+
+/* ARGSUSED0 */
+AUpvlist _afQueryMiscellaneous (int arg1, int arg2, int arg3, int arg4)
+{
+	_af_error(AF_BAD_NOT_IMPLEMENTED, "not implemented yet");
+	return AU_NULL_PVLIST;
+}
+
+/* ARGSUSED2 */
+AUpvlist _afQueryMarker (int arg1, int arg2, int arg3, int arg4)
+{
+	switch (arg1)
+	{
+		case AF_QUERY_SUPPORTED:
+			return _af_pv_long(_af_units[arg2].markerCount != 0);
+		case AF_QUERY_MAX_NUMBER:
+			return _af_pv_long(_af_units[arg2].markerCount);
+		default:
+			_af_error(AF_BAD_QUERY, "bad query");
+			return AU_NULL_PVLIST;
+	}
+
+	/* NOTREACHED */
+	return AU_NULL_PVLIST;
+}
+
+/* ARGSUSED0 */
+AUpvlist _afQueryCompression (int arg1, int arg2, int arg3, int arg4)
+{
+	_af_error(AF_BAD_NOT_IMPLEMENTED, "not implemented yet");
 	return AU_NULL_PVLIST;
 }

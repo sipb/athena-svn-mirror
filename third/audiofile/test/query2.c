@@ -1,7 +1,7 @@
 /*
 	Audio File Library
 
-	Copyright 1998, Michael Pruett <michael@68k.org>
+	Copyright 1998-2000, Michael Pruett <michael@68k.org>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -30,69 +30,137 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+const char *paramtypename (int paramtype);
+void printinstparams (int format);
+
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBG printf
+#else
+#define DEBG
+#endif
+
 int main (int ac, char **av)
 {
 	AUpvlist	formatlist;
-	long		*flist;
-	long		*larray;
+	int		*flist;
 	long		lvalue;
-	int			i, formatcount;
+	int		i, formatcount;
 
 	formatlist = afQuery(AF_QUERYTYPE_FILEFMT, AF_QUERY_IDS, 0, 0, 0);
 	formatcount = afQueryLong(AF_QUERYTYPE_FILEFMT, AF_QUERY_ID_COUNT, 0, 0, 0);
 
-	printf("formatcount = %d\n", formatcount);
+	DEBG("formatcount = %d\n", formatcount);
+
 	AUpvgetval(formatlist, 0, &flist);
 	AUpvfree(formatlist);
 
 	for (i=0; i<formatcount; i++)
 	{
-		long	format;
+		int	format;
 		char	*formatstring;
 
 		format = flist[i];
-		printf("format = %ld\n", format);
+		DEBG("format = %d\n", format);
 		formatstring = afQueryPointer(AF_QUERYTYPE_FILEFMT, AF_QUERY_NAME,
 			format, 0, 0);
-		printf("format = %s\n", formatstring);
+		DEBG("format = %s\n", formatstring);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INST, AF_QUERY_SUPPORTED,
 			format, 0, 0);
-		printf("instrument query: supported: %ld\n", lvalue);
+		DEBG("instrument query: supported: %ld\n", lvalue);
 
-		lvalue = afQueryLong(AF_QUERYTYPE_INST, AF_QUERY_ID_COUNT,
+		lvalue = afQueryLong(AF_QUERYTYPE_INST, AF_QUERY_MAX_NUMBER,
 			format, 0, 0);
-		printf("instrument query: id count: %ld\n", lvalue);
+		DEBG("instrument query: maximum number: %ld\n", lvalue);
 
 		lvalue = afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_SUPPORTED,
 			format, 0, 0);
-		printf("instrument parameter query: supported: %ld\n", lvalue);
+		DEBG("instrument parameter query: supported: %ld\n", lvalue);
 
-		lvalue = afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_ID_COUNT,
-			format, 0, 0);
-		printf("instrument parameter query: id count: %ld\n", lvalue);
-
-		larray = afQueryPointer(AF_QUERYTYPE_INSTPARAM, AF_QUERY_IDS,
-			format, 0, 0);
-
-		if (larray != NULL)
-		{
-			int	i;
-			for (i=0; i<lvalue; i++)
-			{
-				printf("instrument parameter query: id: %ld\n", larray[i]);
-				printf("	type of parameter: %ld\n",
-					afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_TYPE,
-						format, larray[i], 0));
-				printf("	name of parameter: %s\n",
-				       (char *)
-					afQueryPointer(AF_QUERYTYPE_INSTPARAM, AF_QUERY_NAME,
-						format, larray[i], 0));
-			}
-			free(larray);
-		}
+		/*
+			Print instrument parameter information only if
+			instrument parameters are supported.
+		*/
+		if (lvalue)
+			printinstparams(format);
 	}
 	free(flist);
 
 	return 0;
+}
+
+void printinstparams (int format)
+{
+	int	i, *iarray;
+	long	instParamCount;
+
+	instParamCount = afQueryLong(AF_QUERYTYPE_INSTPARAM, AF_QUERY_ID_COUNT,
+		format, 0, 0);
+	DEBG("instrument parameter query: id count: %ld\n", instParamCount);
+
+	iarray = afQueryPointer(AF_QUERYTYPE_INSTPARAM, AF_QUERY_IDS,
+		format, 0, 0);
+
+	if (iarray == NULL)
+		printf("AF_QUERYTYPE_INSTPARAM failed for format %d\n", format);
+
+	for (i=0; i<instParamCount; i++)
+	{
+		int		paramType;
+		AUpvlist	defaultValue;
+
+		DEBG("instrument parameter query: id: %d\n", iarray[i]);
+		paramType = afQueryLong(AF_QUERYTYPE_INSTPARAM,
+			AF_QUERY_TYPE, format, iarray[i], 0);
+
+		DEBG("\ttype of parameter: %s\n", paramtypename(paramType));
+		DEBG("\tname of parameter: %s\n",
+			(char *) afQueryPointer(AF_QUERYTYPE_INSTPARAM,
+				AF_QUERY_NAME, format, iarray[i], 0));
+
+		defaultValue = afQuery(AF_QUERYTYPE_INSTPARAM, AF_QUERY_DEFAULT,
+			format, iarray[i], 0);
+
+		if (paramType == AU_PVTYPE_LONG)
+		{
+			long	ldefault;
+			AUpvgetval(defaultValue, 0, &ldefault);
+			DEBG("\tdefault value: %ld\n", ldefault);
+		}
+		else if (paramType == AU_PVTYPE_DOUBLE)
+		{
+			double	ddefault;
+			AUpvgetval(defaultValue, 0, &ddefault);
+			DEBG("\tdefault value: %f\n", ddefault);
+		}
+		else if (paramType == AU_PVTYPE_PTR)
+		{
+			void	*vdefault;
+			AUpvgetval(defaultValue, 0, &vdefault);
+			DEBG("\tdefault value: %p\n", vdefault);
+		}
+	}
+
+	free(iarray);
+}
+
+const char *paramtypename (int paramtype)
+{
+	static const char	*longname = "long";
+	static const char	*doublename = "double";
+	static const char	*pointername = "pointer";
+
+	switch (paramtype)
+	{
+		case AU_PVTYPE_LONG:
+			return longname;
+		case AU_PVTYPE_DOUBLE:
+			return doublename;
+		case AU_PVTYPE_PTR:
+			return pointername;
+	}
+
+	return NULL;
 }

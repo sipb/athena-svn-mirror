@@ -1,6 +1,7 @@
 /*
 	Audio File Library
-	Copyright (C) 1998-1999, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
+	Copyright (C) 2000, Silicon Graphics, Inc.
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,319 +14,288 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
 /*
 	instrument.c
 
-	This file contains routines dealing with instruments.
+	Info about instrument parameters:
+
+	Each unit has an array of _InstParamInfo structures, one for
+	each instrument parameter.  Each of these structures describes
+	the inst parameters.
+
+	id: a 4-byte id as in AIFF file
+	type: data type AU_PVLIST_*
+	name: text name
+	defaultValue: default value, to which it is set when a file with
+		instruments is first opened for writing.
+
+	Each inst has only an array of values (_AFPVu's).  Each value in the
+	instrument's array is the value of the corresponding index into the
+	unit's instparaminfo array.
+
+	So for a unit u and an instrument i, u.instparam[N] describes
+	the parameter whose value is given in i.value[N].
 */
 
-#include <stdlib.h>
-#include <assert.h>
-
+#include <audiofile.h>
 #include "afinternal.h"
-#include "audiofile.h"
-#include "aupvlist.h"
+#include "instrument.h"
+#include "units.h"
+#include "setup.h"
+#include "util.h"
 
-static struct _Instrument *initInstrument (struct _Instrument *instrument);
-static struct _Instrument *findInstrumentByID (int id,
-	struct _Instrument *instruments, int count);
+#include <stdio.h>
 
-static struct _Instrument *initInstrument (struct _Instrument *instrument)
+extern _Unit _af_units[];
+
+/*
+	Initialize instrument id list for audio file.
+*/
+void afInitInstIDs (AFfilesetup setup, int *instids, int ninsts)
 {
-	assert(instrument);
+	int i;
 
-	instrument->id = AF_DEFAULT_INST;
-	instrument->midiBaseNote = 60;
-	instrument->detune = 0;
-	instrument->midiLowNote = 0;
-	instrument->midiHighNote = 127;
-	instrument->midiLowVelocity = 1;
-	instrument->midiHighVelocity = 127;
-	instrument->gain = 0;
-	instrument->sustainLoopID = 1;
-	instrument->releaseLoopID = 2;
+	if (!_af_filesetup_ok(setup))
+		return;
 
-	return instrument;
+	if (!_af_unique_ids(instids, ninsts, "instrument", AF_BAD_INSTID))
+		return;
+
+	_af_setup_free_instruments(setup);
+
+	setup->instrumentCount = ninsts;
+	setup->instrumentSet = AF_TRUE;
+
+	setup->instruments = _af_instsetup_new(setup->instrumentCount);
+
+	for (i=0; i < setup->instrumentCount; i++)
+		setup->instruments[i].id = instids[i];
 }
 
-static struct _Instrument *findInstrumentByID (int id,
-	struct _Instrument *instruments, int count)
+int afGetInstIDs (AFfilehandle file, int *instids)
 {
-	int	i;
+	int i;
 
-	assert(instruments);
-	assert(count > 0);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
-	for (i=0; i<count; i++)
-	{
-		if (instruments[i].id == id)
-		{
-			return &instruments[i];
-		}
-	}
-
-	return NULL;
-}
-
-/* afInitInstIDs */
-void afInitInstIDs (AFfilesetup setup, int *ids, int nids)
-{
-	assert(setup);
-	assert(nids >= 0);
-
-	if (nids > 0)
-	{
-		assert(ids);
-		if (nids != setup->instrumentCount)
-		{
-			int	i;
-
-			setup->instruments =
-				realloc(setup->instruments, nids * sizeof (struct _Instrument));
-
-			for (i=0; i<nids; i++)
-			{
-				initInstrument(&setup->instruments[i]);
-				setup->instruments[i].id = ids[i];
-			}
-		}
-	}
-}
-
-int afGetInstIDs (AFfilehandle file, int *ids)
-{
-	assert(file);
-
-	if (ids != NULL)
-	{
-		int	i;
-
-		for (i=0; i<file->instrumentCount; i++)
-		{
-			ids[i] = file->instruments[i].id;
-		}
-	}
+	if (instids)
+		for (i=0; i < file->instrumentCount; i++)
+			instids[i] = file->instruments[i].id;
 
 	return file->instrumentCount;
 }
 
-void afSetInstParams (AFfilehandle file, int instid, AUpvlist pvlist,
-	int parameterCount)
+/*
+	This routine checks and sets instrument parameters.
+	npv is number of valid AUpvlist pairs.
+*/
+void _af_instparam_set (AFfilehandle file, int instid, AUpvlist pvlist, int npv)
 {
-	int	i;
+	int i, instno, j;
 
-	assert(file);
+	if (!_af_filehandle_ok(file))
+		return;
 
-	for (i=0; i<parameterCount; i++)
+	if (!_af_filehandle_can_write(file))
+		return;
+
+	if ((instno = _af_handle_instrument_index_from_id(file, instid)) == -1)
+		return;
+
+	if (AUpvgetmaxitems(pvlist) < npv)
+	npv = AUpvgetmaxitems(pvlist);
+
+	for (i=0; i < npv; i++)
 	{
-		int		parameter;
-		int		valueType;
-		long	value;
+		int	param;
+		int	type;
 
-		AUpvgetparam(pvlist, i, &parameter);
-		AUpvgetvaltype(pvlist, i, &valueType);
+		AUpvgetparam(pvlist, i, &param);
 
-		/* At present, only long-valued parameters are recognized. */
-		if (valueType != AU_PVTYPE_LONG)
+		if  ((j = _af_instparam_index_from_id(file->fileFormat, param)) == -1)
+			/* no parameter with that id; ignore */
 			continue;
 
-		AUpvgetval(pvlist, i, &value);
+		if (_af_units[file->fileFormat].write.instparamvalid &&
+			!_af_units[file->fileFormat].write.instparamvalid(file, pvlist, i))
+			/* bad parameter value; ignore */
+			continue;
 
-		switch (parameter)
+		type = _af_units[file->fileFormat].instrumentParameters[j].type;
+
+		switch (type)
 		{
-			case AF_INST_MIDI_BASENOTE:
-			case AF_INST_NUMCENTS_DETUNE:
-			case AF_INST_MIDI_LONOTE:
-			case AF_INST_MIDI_HINOTE:
-			case AF_INST_MIDI_LOVELOCITY:
-			case AF_INST_MIDI_HIVELOCITY:
-			case AF_INST_NUMDBS_GAIN:
-			case AF_INST_SUSLOOPID:
-			case AF_INST_RELLOOPID:
-				afSetInstParamLong(file, instid, parameter, value);
+			case AU_PVTYPE_LONG:
+				AUpvgetval(pvlist, i, &file->instruments[instno].values[j].l);
 				break;
-
+			case AU_PVTYPE_DOUBLE:
+				AUpvgetval(pvlist, i, &file->instruments[instno].values[j].d);
+				break;
+			case AU_PVTYPE_PTR:
+				AUpvgetval(pvlist, i, &file->instruments[instno].values[j].v);
+				break;
 			default:
-				_af_error(AF_BAD_INSTPID);
-				break;
+				return;
 		}
 	}
 }
 
-void afGetInstParams (AFfilehandle file, int instid, AUpvlist pvlist,
-	int parameterCount)
+void afSetInstParams (AFfilehandle file, int instid, AUpvlist pvlist, int npv)
 {
-	int	i;
-
-	assert(file);
-
-	for (i=0; i<parameterCount; i++)
-	{
-		int		parameter;
-		long	value;
-
-		AUpvgetparam(pvlist, i, &parameter);
-
-		switch (parameter)
-		{
-			case AF_INST_MIDI_BASENOTE:
-			case AF_INST_NUMCENTS_DETUNE:
-			case AF_INST_MIDI_LONOTE:
-			case AF_INST_MIDI_HINOTE:
-			case AF_INST_MIDI_LOVELOCITY:
-			case AF_INST_MIDI_HIVELOCITY:
-			case AF_INST_NUMDBS_GAIN:
-			case AF_INST_SUSLOOPID:
-			case AF_INST_RELLOOPID:
-				value = afGetInstParamLong(file, instid, parameter);
-				AUpvsetvaltype(pvlist, i, AU_PVTYPE_LONG);
-				AUpvsetval(pvlist, i, &value);
-				break;
-
-			default:
-				_af_error(AF_BAD_INSTPID);
-				break;
-		}
-	}
+	_af_instparam_set(file, instid, pvlist, npv);
 }
 
-void afSetInstParamLong (AFfilehandle file, int instid, int parameter,
-	long value)
+void afSetInstParamLong (AFfilehandle file, int instid, int param, long value)
 {
-	struct _Instrument	*instrument;
+	AUpvlist pvlist = AUpvnew(1);
 
-	assert(file);
-	assert(instid == AF_DEFAULT_INST);
+	AUpvsetparam(pvlist, 0, param);
+	AUpvsetvaltype(pvlist, 0, AU_PVTYPE_LONG);
+	AUpvsetval(pvlist, 0, &value);
 
-	instrument = findInstrumentByID(instid, file->instruments,
-		file->instrumentCount);
+	_af_instparam_set(file, instid, pvlist, 1);
 
-	if (instrument == NULL)
-	{
-		_af_error(AF_BAD_INSTID);
+	AUpvfree(pvlist);
+}
+
+/*
+	This routine gets instrument parameters.
+	npv is number of valid AUpvlist pairs
+*/
+void _af_instparam_get (AFfilehandle file, int instid, AUpvlist pvlist, int npv,
+	bool forceLong)
+{
+	int	i, instno, j;
+
+	if (!_af_filehandle_ok(file))
 		return;
-	}
 
-	switch (parameter)
+	if ((instno = _af_handle_instrument_index_from_id(file, instid)) == -1)
+		return;
+
+	if (AUpvgetmaxitems(pvlist) < npv)
+		npv = AUpvgetmaxitems(pvlist);
+
+	for (i=0; i < npv; i++)
 	{
-		case AF_INST_MIDI_BASENOTE:
-			if (parameter >= 0 && parameter <= 127)
-				instrument->midiBaseNote = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
+		int param;
+		int type;
+		AUpvgetparam(pvlist, i, &param);
 
-			break;
+		if  ((j = _af_instparam_index_from_id(file->fileFormat, param)) == -1)
+			/* no parameter with that id; ignore */
+			continue;
 
-		case AF_INST_NUMCENTS_DETUNE:
-			instrument->detune = parameter;
-			break;
+		type = _af_units[file->fileFormat].instrumentParameters[j].type;
 
-		case AF_INST_MIDI_LONOTE:
-			if (parameter >= 0 && parameter <= 127)
-				instrument->midiLowNote = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
+		/*
+			forceLong is true when this routine called by
+			afGetInstParamLong().
+		*/
+		if (forceLong && type != AU_PVTYPE_LONG)
+		{
+			_af_error(AF_BAD_INSTPTYPE, "type of instrument parameter %d is not AU_PVTYPE_LONG", param);
+			continue;
+		}
 
-		case AF_INST_MIDI_HINOTE:
-			if (parameter >= 0 && parameter <= 127)
-				instrument->midiHighNote = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
+		AUpvsetvaltype(pvlist, i, type);
 
-		case AF_INST_MIDI_LOVELOCITY:
-			if (parameter >= 1 && parameter <= 127)
-				instrument->midiLowVelocity = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
+		switch (type)
+		{
+			case AU_PVTYPE_LONG:
+				AUpvsetval(pvlist, i, &file->instruments[instno].values[j].l);
+				break;
+			case AU_PVTYPE_DOUBLE:
+				AUpvsetval(pvlist, i, &file->instruments[instno].values[j].d);
+				break;
+			case AU_PVTYPE_PTR:
+				AUpvsetval(pvlist, i, &file->instruments[instno].values[j].v);
+				break;
 
-		case AF_INST_MIDI_HIVELOCITY:
-			if (parameter >= 1 && parameter <= 127)
-				instrument->midiHighVelocity = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
-
-		case AF_INST_NUMDBS_GAIN:
-			instrument->gain = parameter;
-			break;
-
-		case AF_INST_SUSLOOPID:
-			if (parameter >= 1)
-				instrument->sustainLoopID = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
-
-		case AF_INST_RELLOOPID:
-			if (parameter >= 1)
-				instrument->releaseLoopID = parameter;
-			else
-				_af_error(AF_BAD_INSTPID);
-			break;
-
-		default:
-			_af_error(AF_BAD_INSTPID);
-			break;
+			default:
+				_af_error(AF_BAD_INSTPTYPE, "invalid instrument parameter type %d", type);
+				return;
+		}
 	}
 }
 
-long afGetInstParamLong (AFfilehandle file, int instid, int parameter)
+/*
+	afGetInstParams -- get a parameter-value array containing
+	instrument parameters for the specified instrument chunk
+*/
+void afGetInstParams (AFfilehandle file, int inst, AUpvlist pvlist, int npv)
 {
-	struct _Instrument	*instrument;
+	_af_instparam_get(file, inst, pvlist, npv, AF_FALSE);
+}
 
-	assert(file);
-	assert(instid == AF_DEFAULT_INST);
+long afGetInstParamLong (AFfilehandle file, int inst, int param)
+{
+	long val;
+	AUpvlist pvlist = AUpvnew(1);
 
-	instrument = findInstrumentByID(instid, file->instruments,
-		file->instrumentCount);
+	AUpvsetparam(pvlist, 0, param);
+	AUpvsetvaltype(pvlist, 0, AU_PVTYPE_LONG);
 
-	if (instrument == NULL)
+	_af_instparam_get(file, inst, pvlist, 1, AF_TRUE);
+
+	AUpvgetval(pvlist, 0, &val);
+	AUpvfree(pvlist);
+
+	return(val);
+}
+
+/*
+	Search _af_units[fileFormat].instrumentParameters for the instrument
+	parameter with the specified id.
+
+	Report an error and return -1 if no such instrument parameter
+	exists.
+*/
+
+int _af_instparam_index_from_id (int filefmt, int id)
+{
+	int i;
+
+	for (i = 0; i < _af_units[filefmt].instrumentParameterCount; i++)
+		if (_af_units[filefmt].instrumentParameters[i].id == id)
+			break;
+
+	if (i == _af_units[filefmt].instrumentParameterCount)
 	{
-		/* _af_error(AF_BAD_INSTID); */
-		return 0;
+		_af_error(AF_BAD_INSTPID, "invalid instrument parameter id %d",
+			id);
+		return -1;
 	}
 
-	switch (parameter)
-	{
-		case AF_INST_MIDI_BASENOTE:
-			return instrument->midiBaseNote;
-			break;
-		case AF_INST_NUMCENTS_DETUNE:
-			return instrument->detune;
-			break;
-		case AF_INST_MIDI_LONOTE:
-			return instrument->midiLowNote;
-			break;
-		case AF_INST_MIDI_HINOTE:
-			return instrument->midiHighNote;
-			break;
-		case AF_INST_MIDI_LOVELOCITY:
-			return instrument->midiLowVelocity;
-			break;
-		case AF_INST_MIDI_HIVELOCITY:
-			return instrument->midiHighVelocity;
-			break;
-		case AF_INST_NUMDBS_GAIN:
-			return instrument->gain;
-			break;
-		case AF_INST_SUSLOOPID:
-			return instrument->sustainLoopID;
-			break;
-		case AF_INST_RELLOOPID:
-			return instrument->releaseLoopID;
-			break;
-		default:
-			/* _af_error(AF_BAD_INSTPID); */
-			break;
-	}
+	return i;
+}
 
-	return 0;
+int _af_handle_instrument_index_from_id (AFfilehandle file, int id)
+{
+	int i;
+
+	for (i = 0; i < file->instrumentCount; i++)
+		if (file->instruments[i].id == id)
+			return i;
+
+	_af_error(AF_BAD_INSTID, "invalid instrument id %d", id);
+	return -1;
+}
+
+int _af_setup_instrument_index_from_id (AFfilesetup setup, int id)
+{
+	int i;
+
+	for (i = 0; i < setup->instrumentCount; i++)
+		if (setup->instruments[i].id == id)
+			return i;
+
+	_af_error(AF_BAD_INSTID, "invalid instrument id %d", id);
+	return -1;
 }

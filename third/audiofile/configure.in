@@ -1,14 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(test/testaupv.c)
+AC_INIT(libaudiofile/aiff.c)
 
 PACKAGE=audiofile
 AUDIOFILE_MAJOR_VERSION=0
-AUDIOFILE_MINOR_VERSION=1
-AUDIOFILE_MICRO_VERSION=9
-AUDIOFILE_VERSION=$AUDIOFILE_MAJOR_VERSION.$AUDIOFILE_MINOR_VERSION.$AUDIOFILE_MICRO_VERSION
+AUDIOFILE_MINOR_VERSION=2
+AUDIOFILE_MICRO_VERSION=2
+AUDIOFILE_VERSION=${AUDIOFILE_MAJOR_VERSION}.${AUDIOFILE_MINOR_VERSION}.${AUDIOFILE_MICRO_VERSION}
 
 dnl set version info for libaudiofile.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
-AUDIOFILE_VERSION_INFO=1:9:1
+AUDIOFILE_VERSION_INFO=2:2:2
 
 AC_SUBST(AUDIOFILE_MAJOR_VERSION)
 AC_SUBST(AUDIOFILE_MINOR_VERSION)
@@ -18,13 +18,9 @@ AC_SUBST(AUDIOFILE_VERSION_INFO)
 
 VERSION=$AUDIOFILE_VERSION
 
-
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AM_CONFIG_HEADER(config.h)
 AM_PROG_LIBTOOL
-
-dnl Checks whether we are building static libraries.
-AM_CONDITIONAL(BUILD_STATIC_LIBS, test x$enable_static = xyes)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -35,8 +31,9 @@ dnl Checks for libraries.
 dnl Check for the ldexp function in the math library.
 AC_CHECK_LIB(m, ldexp)
 
-dnl Check for the SGI Audio Library function ALopenport.
-AC_CHECK_LIB(audio, ALopenport)
+dnl Check for the SGI Audio Library function alOpenPort.
+AC_CHECK_LIB(audio, alOpenPort, AUDIO_LIB=-laudio)
+AC_SUBST(AUDIO_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -48,10 +45,17 @@ AC_C_BIGENDIAN
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 
-dnl Workaround the lack of these typedefs
+AC_CHECK_SIZEOF(off_t)
+AC_CHECK_SIZEOF(size_t)
+AC_CHECK_SIZEOF(long)
+
+dnl Workaround the lack of these types.
 AC_CHECK_TYPE(u_int8_t, unsigned char)
 AC_CHECK_TYPE(u_int16_t, unsigned short)
 AC_CHECK_TYPE(u_int32_t, unsigned int)
+AC_CHECK_TYPE(int8_t, signed char)
+AC_CHECK_TYPE(int16_t, short)
+AC_CHECK_TYPE(int32_t, int)
 
 dnl Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
@@ -67,7 +71,7 @@ case "$host_os" in
     platform=linux
     ;;
   irix5* | irix6*)
-    TEST_BIN="irixread irixtest irixtestloop"
+    TEST_BIN="irixread irixtestloop"
     platform=irix
     ;;
 esac
@@ -79,6 +83,7 @@ AC_OUTPUT([
 	sfcommands/Makefile 
 	test/Makefile 
 	libaudiofile/Makefile 
+	libaudiofile/modules/Makefile 
 	docs/Makefile 
 	Makefile 
 	audiofile-config], [case "$CONFIG_FILES" in *audiofile-config*) chmod +x audiofile-config;; esac])

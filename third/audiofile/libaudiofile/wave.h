@@ -1,6 +1,7 @@
 /*
 	Audio File Library
 	Copyright (C) 1998, Michael Pruett <michael@68k.org>
+	Copyright (C) 2000, Silicon Graphics, Inc.
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -28,7 +29,7 @@
 #ifndef WAVE_H
 #define WAVE_H
 
-/* From RFC 2361 */
+/* These constants are from RFC 2361. */
 enum
 {
 	WAVE_FORMAT_UNKNOWN = 0x0000,	/* Microsoft Unknown Wave Format */
@@ -58,7 +59,37 @@ enum
 	WAVE_FORMAT_DOLBY_AC2 = 0x0030,	/* Dolby AC2 */
 	WAVE_FORMAT_GSM610 = 0x0031,	/* GSM610 */
 	WAVE_FORMAT_MSNAUDIO = 0x0032,	/* MSNAudio */
-	WAVE_FORMAT_ANTEX_ADPCME = 0x0033	/* Antex ADPCME */
+	WAVE_FORMAT_ANTEX_ADPCME = 0x0033,	/* Antex ADPCME */
+
+	WAVE_FORMAT_MPEG = 0x0050,		/* MPEG */
+	WAVE_FORMAT_MPEGLAYER3 = 0x0055,	/* MPEG layer 3 */
+	WAVE_FORMAT_LUCENT_G723 = 0x0059,	/* Lucent G.723 */
+	WAVE_FORMAT_G726_ADPCM = 0x0064,	/* G.726 ADPCM */
+	WAVE_FORMAT_G722_ADPCM = 0x0065,	/* G.722 ADPCM */
+
+	IBM_FORMAT_MULAW = 0x0101,
+	IBM_FORMAT_ALAW = 0x0102,
+	IBM_FORMAT_ADPCM = 0x0103,
+
+	WAVE_FORMAT_CREATIVE_ADPCM = 0x0200
 };
+
+#define _AF_WAVE_NUM_INSTPARAMS 7
+#define _AF_WAVE_NUM_COMPTYPES 2
+
+bool _af_wave_recognize (AFvirtualfile *fh);
+status _af_wave_read_init (AFfilesetup, AFfilehandle);
+status _af_wave_write_init (AFfilesetup, AFfilehandle);
+bool _af_wave_update (AFfilehandle);
+AFfilesetup _af_wave_complete_setup (AFfilesetup);
+bool _af_wave_instparam_valid (AFfilehandle, AUpvlist, int);
+
+typedef struct _WAVEInfo
+{
+	off_t	factOffset;	/* start of fact (frame count) chunk */
+	off_t	miscellaneousStartOffset;
+	off_t	totalMiscellaneousSize;
+	off_t	dataSizeOffset;
+} _WAVEInfo;
 
 #endif

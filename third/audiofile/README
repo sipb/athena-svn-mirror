@@ -1,39 +1,35 @@
 Audio File Library
-Version 0.1.7
+Version 0.2.2
+Thursday, 19 July 2001
 
-Copyright (C) 1998-1999, Michael Pruett
+Copyright (C) 1998-2000, Michael Pruett
+Copyright (C) 2000-2001, Silicon Graphics, Inc.
 
-michael@68k.org
-http://www.68k.org./~michael/audiofile/
+michael@68k.org / mpruett@sgi.com
+http://www.68k.org/~michael/audiofile/
+http://oss.sgi.com/projects/audiofile/
 
 ----
 
-This Audio File Library is an implementation of the SGI Audio File
-library.  Since the latter is specified ambiguously in places, I've
-taken some liberties in interpreting certain such ambiguities.  At the
-present, not all features of the SGI Audio File library are
-implemented.  I feel, though, that this implementation of the Audio
-File Library offers enough functionality to be useful for many
-tasks.
+The Silicon Graphics Audio File Library provides a uniform programming
+interface to standard digital audio file formats.
 
 This library allows the processing of audio data to and from audio
-files of many common formats (currently AIFF, AIFC, WAVE, and
-NeXT/Sun).
+files of many common formats (currently AIFF, AIFF-C, WAVE, and
+NeXT/Sun .snd/.au).  The library also supports compression (currently
+only G.711 mu-law and A-law) as well as PCM formats of all flavors (signed
+and unsigned integer, floating point and double-precision floating point).
 
-This software is not complete and is still under development.  Many
-sound file formats work well.  Some will not.
+One premise of the Audio File Library is that the data presented to
+an application need not be in the same format as the data contained in
+the file.  Another, however, is that the capabilities of the file format
+are exposed to the application programmer should the programmer wish to
+take advantage of them.
 
-Very little documentation is available for the Audio File Library at
-present. If you wish to consult a decent reference, you'll have to look
-at SGI's man pages (man afIntro).  For now, all that exists are my
-sample programs and the meager offerings in the docs directory.  Anyone
-who'd like to help out with documentation is encouraged to contact me.
-
-Please note that the Audio File Library itself is available under the
-GNU Library General Public License and that the programs in this
-package are available under the GNU General Public License.  The two
-licenses are included in the files COPYING and COPYING.GPL,
-respectively.
+The Audio File Library itself is available under the GNU Library General
+Public License, and the programs in this package are available under
+the GNU General Public License.  The two licenses are included in the
+files COPYING and COPYING.GPL, respectively.
 
 ----
 

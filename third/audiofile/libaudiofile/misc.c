@@ -13,8 +13,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -27,33 +27,38 @@
 
 #include <sys/types.h>
 #include <stdlib.h>
-#include <assert.h>
+#include <string.h>
 
 #include "audiofile.h"
 #include "afinternal.h"
+#include "util.h"
 
-static struct _Miscellaneous *initMiscellaneous
-	(struct _Miscellaneous *miscellaneous)
-{
-	miscellaneous->id = 0;
-	miscellaneous->type = 0;
-	miscellaneous->size = 0;
-	miscellaneous->offset = 0;
-	miscellaneous->position = 0;
-
-	return miscellaneous;
-}
-
-struct _Miscellaneous *findMiscellaneousByID (int id,
-	struct _Miscellaneous *miscellaneous, int count)
+_Miscellaneous *find_misc_by_id (AFfilehandle file, int id)
 {
 	int	i;
 
-	for (i=0; i<count; i++)
+	for (i=0; i<file->miscellaneousCount; i++)
 	{
-		if (miscellaneous[i].id == id)
-			return &miscellaneous[i];
+		if (file->miscellaneous[i].id == id)
+			return &file->miscellaneous[i];
 	}
+
+	_af_error(AF_BAD_MISCID, "bad miscellaneous id %d", id);
+
+	return NULL;
+}
+
+_MiscellaneousSetup *find_miscsetup_by_id (AFfilesetup setup, int id)
+{
+	int	i;
+
+	for (i=0; i<setup->miscellaneousCount; i++)
+	{
+		if (setup->miscellaneous[i].id == id)
+			return &setup->miscellaneous[i];
+	}
+
+	_af_error(AF_BAD_MISCID, "bad miscellaneous id %d", id);
 
 	return NULL;
 }
@@ -62,9 +67,8 @@ void afInitMiscIDs (AFfilesetup setup, int *ids, int nids)
 {
 	int	i;
 
-	assert(setup);
-	assert(ids);
-	assert(nids >= 0);
+	if (!_af_filesetup_ok(setup))
+		return;
 
 	if (setup->miscellaneous != NULL)
 	{
@@ -72,20 +76,34 @@ void afInitMiscIDs (AFfilesetup setup, int *ids, int nids)
 	}
 
 	setup->miscellaneousCount = nids;
-	setup->miscellaneous = malloc(nids * sizeof (struct _Miscellaneous));
 
-	for (i=0; i<nids; i++)
+	if (nids == 0)
+		setup->miscellaneous = NULL;
+	else
 	{
-		initMiscellaneous(&setup->miscellaneous[i]);
-		setup->miscellaneous[i].id = ids[i];
+		setup->miscellaneous = _af_calloc(nids,
+			sizeof (_Miscellaneous));
+
+		if (setup->miscellaneous == NULL)
+			return;
+
+		for (i=0; i<nids; i++)
+		{
+			setup->miscellaneous[i].id = ids[i];
+			setup->miscellaneous[i].type = 0;
+			setup->miscellaneous[i].size = 0;
+		}
 	}
+
+	setup->miscellaneousSet = AF_TRUE;
 }
 
 int afGetMiscIDs (AFfilehandle file, int *ids)
 {
 	int	i;
 
-	assert(file);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
 	if (ids != NULL)
 	{
@@ -100,27 +118,27 @@ int afGetMiscIDs (AFfilehandle file, int *ids)
 
 void afInitMiscType (AFfilesetup setup, int miscellaneousid, int type)
 {
-	struct _Miscellaneous	*miscellaneous;
+	_MiscellaneousSetup	*miscellaneous;
 
-	assert(setup);
+	if (!_af_filesetup_ok(setup))
+		return;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		setup->miscellaneous, setup->miscellaneousCount);
+	miscellaneous = find_miscsetup_by_id(setup, miscellaneousid);
 
 	if (miscellaneous)
 		miscellaneous->type = type;
 	else
-		_af_error(AF_BAD_MISCID);
+		_af_error(AF_BAD_MISCID, "bad miscellaneous id");
 }
 
 int afGetMiscType (AFfilehandle file, int miscellaneousid)
 {
-	struct _Miscellaneous	*miscellaneous;
+	_Miscellaneous	*miscellaneous;
 
-	assert(file);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		file->miscellaneous, file->miscellaneousCount);
+	miscellaneous = find_misc_by_id(file, miscellaneousid);
 
 	if (miscellaneous)
 	{
@@ -128,36 +146,36 @@ int afGetMiscType (AFfilehandle file, int miscellaneousid)
 	}
 	else
 	{
-		_af_error(AF_BAD_MISCID);
+		_af_error(AF_BAD_MISCID, "bad miscellaneous id");
 		return -1;
 	}
 }
 
 void afInitMiscSize (AFfilesetup setup, int miscellaneousid, int size)
 {
-	struct _Miscellaneous	*miscellaneous;
+	_MiscellaneousSetup	*miscellaneous;
 
-	assert(setup);
+	if (!_af_filesetup_ok(setup))
+		return;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		setup->miscellaneous, setup->miscellaneousCount);
+	miscellaneous = find_miscsetup_by_id(setup, miscellaneousid);
 
 	if (miscellaneous)
 	{
 		miscellaneous->size = size;
 	}
 	else
-		_af_error(AF_BAD_MISCID);
+		_af_error(AF_BAD_MISCID, "bad miscellaneous id");
 }
 
 int afGetMiscSize (AFfilehandle file, int miscellaneousid)
 {
-	struct _Miscellaneous	*miscellaneous;
+	_Miscellaneous	*miscellaneous;
 
-	assert(file);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		file->miscellaneous, file->miscellaneousCount);
+	miscellaneous = find_misc_by_id(file, miscellaneousid);
 
 	if (miscellaneous)
 	{
@@ -165,118 +183,98 @@ int afGetMiscSize (AFfilehandle file, int miscellaneousid)
 	}
 	else
 	{
-		_af_error(AF_BAD_MISCID);
+		_af_error(AF_BAD_MISCID, "bad miscellaneous id");
 		return -1;
 	}
 }
 
 int afWriteMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 {
-	struct _Miscellaneous	*miscellaneous;
-	ssize_t					result;
+	_Miscellaneous	*miscellaneous;
+	int		localsize;
 
-	assert(file);
-
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		file->miscellaneous, file->miscellaneousCount);
-
-	if (miscellaneous == NULL)
-	{
-		_af_error(AF_BAD_MISCID);
+	if (!_af_filehandle_ok(file))
 		return -1;
-	}
-	else
+
+	if (!_af_filehandle_can_write(file))
+		return -1;
+
+	if ((miscellaneous = find_misc_by_id(file, miscellaneousid)) == NULL)
+		return -1;
+
+	if (bytes <= 0)
 	{
-		off_t	currentPosition;
-		currentPosition = af_ftell(file->fh);
-
-/*
-		if (miscellaneous->offset == 0)
-		{
-			if (file->fileFormat == AF_FILE_AIFF ||
-				file->fileFormat == AF_FILE_AIFFC)
-				aiffWriteHeader(file);
-		}
-*/
-
-		af_fseek(file->fh, miscellaneous->offset + miscellaneous->position,
-			SEEK_SET);
-
-		assert(bytes + miscellaneous->position <= miscellaneous->size);
-		if (bytes + miscellaneous->position > miscellaneous->size)
-		{
-			_af_error(AF_BAD_MISCSEEK);
-			return -1;
-		}
-
-		result = af_fwrite(buf, bytes, 1, file->fh);
-
-		af_fseek(file->fh, currentPosition, SEEK_SET);
+		_af_error(AF_BAD_MISCSIZE, "invalid size (%d) for miscellaneous chunk", bytes);
 	}
 
-	return result;
+	if (miscellaneous->buffer == NULL && miscellaneous->size != 0)
+	{
+		miscellaneous->buffer = _af_malloc(miscellaneous->size);
+		memset(miscellaneous->buffer, 0, miscellaneous->size);
+		if (miscellaneous->buffer == NULL)
+			return -1;
+	}
+
+	if (bytes + miscellaneous->position > miscellaneous->size)
+		localsize = miscellaneous->size - miscellaneous->position;
+	else
+		localsize = bytes;
+
+	memcpy((char *) miscellaneous->buffer + miscellaneous->position,
+		buf, localsize);
+	miscellaneous->position += localsize;
+	return localsize;
 }
 
 int afReadMisc (AFfilehandle file, int miscellaneousid, void *buf, int bytes)
 {
-	struct _Miscellaneous	*miscellaneous;
+	int		localsize;
+	_Miscellaneous	*miscellaneous;
 
-	assert(file);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		file->miscellaneous, file->miscellaneousCount);
+	if (!_af_filehandle_can_read(file))
+		return -1;
 
-	if (miscellaneous == NULL)
+	if ((miscellaneous = find_misc_by_id(file, miscellaneousid)) == NULL)
+		return -1;
+
+	if (bytes <= 0)
 	{
-		_af_error(AF_BAD_MISCID);
+		_af_error(AF_BAD_MISCSIZE, "invalid size (%d) for miscellaneous chunk", bytes);
 		return -1;
 	}
+
+	if (bytes + miscellaneous->position > miscellaneous->size)
+		localsize = miscellaneous->size - miscellaneous->position;
 	else
-	{
-		off_t	position;
-		ssize_t	result;
+		localsize = bytes;
 
-		position = af_ftell(file->fh);
-
-		assert(miscellaneous->size);
-		assert(miscellaneous->position + bytes <= miscellaneous->size);
-
-		/*
-			Is this the correct error to return in this case?
-			I'd be surprised if anyone ever used this function.
-		*/
-		if (miscellaneous->size == 0)
-			_af_error(AF_BAD_MISCSIZE);
-		if (miscellaneous->position + bytes > miscellaneous->size)
-			_af_error(AF_BAD_MISCSEEK);
-
-		af_fseek(file->fh, miscellaneous->offset + miscellaneous->position, SEEK_SET);
-		result = af_fread(buf, bytes, 1, file->fh);
-		af_fseek(file->fh, position, SEEK_SET);
-		return result;
-	}
+	memcpy(buf, (char *) miscellaneous->buffer + miscellaneous->position,
+		localsize);
+	miscellaneous->position += localsize;
+	return localsize;
 }
 
 int afSeekMisc (AFfilehandle file, int miscellaneousid, int offset)
 {
-	struct _Miscellaneous	*miscellaneous;
+	_Miscellaneous	*miscellaneous;
 
-	assert(file);
-	assert(offset >= 0);
+	if (!_af_filehandle_ok(file))
+		return -1;
 
-	miscellaneous = findMiscellaneousByID(miscellaneousid,
-		file->miscellaneous, file->miscellaneousCount);
+	if ((miscellaneous = find_misc_by_id(file, miscellaneousid)) == NULL)
+		return -1;
 
-	if (miscellaneous == NULL)
+	if (offset >= miscellaneous->size)
 	{
-		_af_error(AF_BAD_MISCID);
-		return 0;
+		_af_error(AF_BAD_MISCSEEK,
+			"offset %d too big for miscellaneous chunk %d "
+			"(%d data bytes)",
+			offset, miscellaneousid, miscellaneous->size);
+		return -1;
 	}
-
-	assert(offset <= miscellaneous->size);
-
-	if (offset < 0 || offset > miscellaneous->size)
-		_af_error(AF_BAD_MISCSEEK);
 
 	miscellaneous->position = offset;
 

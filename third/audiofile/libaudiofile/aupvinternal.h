@@ -1,6 +1,6 @@
 /*
 	Audio File Library
-	Copyright (C) 1998, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -30,8 +30,9 @@
 
 struct _AUpvitem
 {
-	int		type;
-	int		parameter;
+	int	valid;
+	int	type;
+	int	parameter;
 
 	union
 	{
@@ -44,8 +45,31 @@ struct _AUpvitem
 
 struct _AUpvlist
 {
-	size_t				count;
+	int			valid;
+	size_t			count;
 	struct _AUpvitem	*items;
 };
+
+enum
+{
+	_AU_VALID_PVLIST = 30932,
+	_AU_VALID_PVITEM = 30933
+};
+
+enum
+{
+	AU_BAD_PVLIST = -5,
+	AU_BAD_PVITEM = -6,
+	AU_BAD_PVTYPE = -7,
+	AU_BAD_ALLOC = -8
+};
+
+enum
+{
+	_AU_FAIL = -1,
+	_AU_SUCCESS = 0
+};
+
+#define _AU_NULL_PVITEM ((struct _AUpvitem *) NULL)
 
 #endif

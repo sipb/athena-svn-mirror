@@ -36,15 +36,36 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/soundcard.h>
+
 #include <audiofile.h>
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+/*
+	If it's not defined already, define the native audio hardware
+	byte order.
+*/
+
+#ifndef AFMT_S16_NE
+#ifdef WORDS_BIGENDIAN /* defined in config.h */
+#define AFMT_S16_NE AFMT_S16_BE
+#else
+#define AFMT_S16_NE AFMT_S16_LE
+#endif /* WORDS_BIGENDIAN */
+#endif /* AFMT_S16_NE */
 
 void setupdsp (int audiofd, int channelCount);
 void usage (void);
 
+/* BUFFER_FRAMES represents the size of the buffer in frames. */
+#define BUFFER_FRAMES 4096
+
 int main (int argc, char **argv)
 {
 	AFfilehandle	file;
-	AFframecount	frameCount;
+	AFframecount	frameCount, framesRead;
 	int		sampleFormat, sampleWidth, channelCount, frameSize;
 	void		*buffer;
 	int		audiofd;
@@ -54,7 +75,7 @@ int main (int argc, char **argv)
 
 	file = afOpenFile(argv[1], "r", NULL);
 	frameCount = afGetFrameCount(file, AF_DEFAULT_TRACK);
-	printf("frame count: %d\n", (int)frameCount);
+	printf("frame count: %d\n", (int) frameCount);
 
 	channelCount = afGetChannels(file, AF_DEFAULT_TRACK);
 	afGetSampleFormat(file, AF_DEFAULT_TRACK, &sampleFormat, &sampleWidth);
@@ -77,8 +98,7 @@ int main (int argc, char **argv)
 		exit(-1);
 	}
 
-	buffer = malloc(frameCount * frameSize);
-	afReadFrames(file, AF_DEFAULT_TRACK, buffer, frameCount);
+	buffer = malloc(BUFFER_FRAMES * frameSize);
 
 	audiofd = open("/dev/dsp", O_WRONLY);
 	if (audiofd < 0)
@@ -89,7 +109,17 @@ int main (int argc, char **argv)
 
 	setupdsp(audiofd, channelCount);
 
-	write(audiofd, buffer, frameCount * frameSize);
+	framesRead = afReadFrames(file, AF_DEFAULT_TRACK, buffer,
+		BUFFER_FRAMES);
+
+	while (framesRead > 0)
+	{
+		printf("read %ld frames\n", framesRead);
+		write(audiofd, buffer, framesRead * frameSize);
+		framesRead = afReadFrames(file, AF_DEFAULT_TRACK, buffer,
+			BUFFER_FRAMES);
+	}
+
 	close(audiofd);
 	free(buffer);
 

@@ -1,7 +1,7 @@
 /*
 	Audio File Library
 
-	Copyright 1998, Michael Pruett <michael@68k.org>
+	Copyright 1998-2000, Michael Pruett <michael@68k.org>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -29,6 +29,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #ifdef __USE_SGI_HEADERS__
 #include <dmedia/audiofile.h>
@@ -47,10 +48,11 @@ void usage (void)
 int main (int argc, char **argv)
 {
 	AFfilehandle	outfile;
-	AFfilesetup		outfilesetup;
-	unsigned short		buffer[] = {0x1122, 0x3344, 0x5566, 0x7788,
-					    0x99aa, 0xbbcc, 0xddee, 0xff00};
-	int				format = AF_FILE_AIFF;
+	AFfilesetup	outfilesetup;
+	unsigned short	buffer[] = {0x1122, 0x3344, 0x5566, 0x7788,
+				    0x99aa, 0xbbcc, 0xddee, 0xff00};
+	int		format = AF_FILE_AIFF;
+	AFframecount	result;
 
 	if (argc < 3)
 		usage();
@@ -76,12 +78,44 @@ int main (int argc, char **argv)
 	afInitFileFormat(outfilesetup, format);
 
 	outfile = afOpenFile(argv[1], "w", outfilesetup);
-	afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 2);
+	if (outfile == AF_NULL_FILEHANDLE)
+	{
+		fprintf(stderr, "could not open file %s for writing\n", argv[1]);
+		exit(-1);
+	}
+
+	result = afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 2);
+	if (result != 2)
+	{
+		fprintf(stderr, "afWriteFrames did not return expected result\n");
+		fprintf(stderr, "got %ld, expected 2\n", result);
+		exit(-1);
+	}
 	afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer + 4, 2);
+	if (result != 2)
+	{
+		fprintf(stderr, "afWriteFrames did not return expected result\n");
+		fprintf(stderr, "got %ld, expected 2\n", result);
+		exit(-1);
+	}
+
 	afCloseFile(outfile);
 
 	outfile = afOpenFile(argv[2], "w", outfilesetup);
-	afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 4);
+	if (outfile == AF_NULL_FILEHANDLE)
+	{
+		fprintf(stderr, "could not open file %s for writing\n", argv[1]);
+		exit(-1);
+	}
+
+	result = afWriteFrames(outfile, AF_DEFAULT_TRACK, buffer, 4);
+	if (result != 4)
+	{
+		fprintf(stderr, "afWriteFrames did not return expected result\n");
+		fprintf(stderr, "got %ld, expected 4\n", result);
+		exit(-1);
+	}
+
 	afCloseFile(outfile);
 
 	afFreeFileSetup(outfilesetup);

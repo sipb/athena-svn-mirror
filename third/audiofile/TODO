@@ -1,33 +1,39 @@
-Audio File Library 0.1.7
-Michael Pruett <michael@68k.org>
+Audio File Library 0.2.2
+Michael Pruett <mpruett@sgi.com>
 
-Short-term:
-Fix querying on instrument parameters and loops.
+Short-term
+----------
 
-Correctly handle initialisation of file handles from file setups by
-paying attention to what was specified and what was not specified
-(i.e. which values were left as default).
+Sample rate conversion needs to be handled.
 
-Longer-term:
-(These will hopefully be resolved by version 0.2.)
+Handle more compressed data formats, most importantly ADPCM and Ogg
+Vorbis.  GSM 06.10 would also be nice.
+
+More comprehensive tests should be developed to stress-test the
+library.  Tests are needed most for the following sets of functions:
+	* af{Get,Set}VirtualChannels/afSetChannelMatrix
+	* afGetSampleFormat/af{Get,Set}VirtualSampleFormat
+	* af{Get,Set}Loop{IDs,Mode,Count,Start,End,StartFrame,EndFrame,Track}
+
+Support for auxiliary data in IRCAM files (maximum amplitude, comments,
+etc.) should be added.
+
+Long-term
+---------
+
+Support for reading and writing to pipes for IRCAM, NeXT, and raw data
+file formats should be investigated.  (The AIFF and WAVE file formats
+are more structured and couldn't cope with not being able to seek.)
+It's my suspicion that the work involved in this will be substantial.
+
+It would be nice to support some more file formats.
 
 Add locale support for error messages.
 
 Documentation should probably be in the SGML DocBook format.
 
-Sample rate conversion needs to be handled.
+Thread-safe error handling would be nice.
 
-Some compressed data formats need to be handled.
-
-Error values aren't always returned and may not always be proper.
-More research should be done here.
-
-Distant future:
-PCM mapping will be handled when I have nothing better to do.
-
-More comprehensive tests should be developed to stress-test the
-library (especially in the area of error values).
-
-Thread-safe error handling would be very nice.  I will probably have to
-implement SGI's digital media library error handling routines.  I don't
-think this will require that much modification.
+Whenever a compression format is requested, the library should scan
+through /usr/lib/audiofile/*.so to see if any DSOs support the requested
+format.

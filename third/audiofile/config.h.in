@@ -29,6 +29,15 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a off_t.  */
+#undef SIZEOF_OFF_T
+
+/* The number of bytes in a size_t.  */
+#undef SIZEOF_SIZE_T
+
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
 
@@ -37,9 +46,6 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
-
-/* Define if you have the audio library (-laudio).  */
-#undef HAVE_LIBAUDIO
 
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
