@@ -1,0 +1,119 @@
+.TH "dlog.h" 3 "7 Apr 2004" "Version 0.6" "libdaemon" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+dlog.h \- Contains a robust API for logging messages.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <syslog.h>\fP
+.br
+
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBdaemon_log_flags\fP { \fBDAEMON_LOG_SYSLOG\fP =  1, \fBDAEMON_LOG_STDERR\fP =  2, \fBDAEMON_LOG_STDOUT\fP =  4, \fBDAEMON_LOG_AUTO\fP =  8 }"
+.br
+.RI "\fISpecifies where to send the log messages to. \fP"
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdaemon_log\fP (int prio, const char *t,...)"
+.br
+.RI "\fILog a message using printf format strings using the specified syslog priority. \fP"
+.ti -1c
+.RI "char * \fBdaemon_ident_from_argv0\fP (char *argv0)"
+.br
+.RI "\fIReturn a sensible syslog identification for daemon_log_ident generated from argv[0]. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "enum \fBdaemon_log_flags\fP \fBdaemon_log_use\fP"
+.br
+.RI "\fIThis variable is used to specify the log target(s) to use. \fP"
+.ti -1c
+.RI "char * \fBdaemon_log_ident\fP"
+.br
+.RI "\fISpecifies the syslog identification, use \fBdaemon_ident_from_argv0()\fP to set this to a sensible value or generate your own. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains a robust API for logging messages. 
+
+
+.PP
+Definition in file \fBdlog.h\fP.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBdaemon_log_flags\fP"
+.PP
+Specifies where to send the log messages to. 
+.PP
+\fBEnumeration values: \fP
+.in +1c
+.TP
+\fB\fIDAEMON_LOG_SYSLOG \fP\fP
+Log messages are written to syslog. 
+.TP
+\fB\fIDAEMON_LOG_STDERR \fP\fP
+Log messages are written to STDERR. 
+.TP
+\fB\fIDAEMON_LOG_STDOUT \fP\fP
+Log messages are written to STDOUT. 
+.TP
+\fB\fIDAEMON_LOG_AUTO \fP\fP
+If this is set a \fBdaemon_fork()\fP will change this to DAEMON_LOG_SYSLOG in the daemon process. 
+.PP
+Definition at line 31 of file dlog.h.
+.SH "Function Documentation"
+.PP 
+.SS "char* daemon_ident_from_argv0 (char * argv0)"
+.PP
+Return a sensible syslog identification for daemon_log_ident generated from argv[0]. This will return a pointer to the file name of argv[0], i.e. strrchr(argv[0], '\\')+1 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIargv0\fP argv[0] as passed to main() 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The identification string 
+.RE
+.PP
+
+.PP
+\fBExamples: \fP
+.in +1c
+\fBtestd.c\fP.
+.SS "void daemon_log (int prio, const char * t,  ...)"
+.PP
+Log a message using printf format strings using the specified syslog priority. \fBParameters:\fP
+.RS 4
+\fIprio\fP The syslog priority (PRIO_xxx constants) 
+.br
+\fIt,...\fP The text message to log 
+.RE
+.PP
+
+.PP
+\fBExamples: \fP
+.in +1c
+\fBtestd.c\fP.
+.SH "Variable Documentation"
+.PP 
+.SS "char* \fBdaemon_log_ident\fP"
+.PP
+Specifies the syslog identification, use \fBdaemon_ident_from_argv0()\fP to set this to a sensible value or generate your own. Definition at line 45 of file dlog.h.
+.SS "enum \fBdaemon_log_flags\fP \fBdaemon_log_use\fP"
+.PP
+This variable is used to specify the log target(s) to use. Defaults to DAEMON_LOG_STDERR|DAEMON_LOG_AUTO Definition at line 41 of file dlog.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libdaemon from the source code.
