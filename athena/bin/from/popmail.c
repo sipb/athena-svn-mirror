@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.2 1991-07-01 15:13:47 epeisach Exp $
+ * $Id: popmail.c,v 1.3 1992-04-30 19:54:11 lwvanels Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
- * $Author: epeisach $
+ * $Author: lwvanels $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.2 1991-07-01 15:13:47 epeisach Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.3 1992-04-30 19:54:11 lwvanels Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -98,7 +98,8 @@ char *host;
       }
     rem=KSUCCESS;
     authopts = 0L;
-    rem = krb_sendauth(authopts, s, ticket, "pop", hp->h_name, (char *)0,
+    rem = krb_sendauth(authopts, s, ticket, "pop", hp->h_name,
+		       (char *) krb_realmofhost(hp->h_name),
 		       0, (MSG_DAT *) 0, (CREDENTIALS *) 0,
 		       (bit_64 *) 0, (struct sockaddr_in *)0,
 		       (struct sockaddr_in *)0,"ZMAIL0.0");
