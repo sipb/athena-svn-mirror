@@ -133,7 +133,7 @@ static int newName(varlist *vl, char *name)
   return vl->used++;
 }
 
-static int freeVar(varlist *vl, int i)
+static void freeVar(varlist *vl, int i)
 {
   int j;
 

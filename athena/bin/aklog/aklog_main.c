@@ -1,11 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.33 1999-02-19 17:45:59 ghudson Exp $
+ * $Id: aklog_main.c,v 1.34 1999-08-13 22:26:05 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.33 1999-02-19 17:45:59 ghudson Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.34 1999-08-13 22:26:05 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +15,7 @@ static const char rcsid[] = "$Id: aklog_main.c,v 1.33 1999-02-19 17:45:59 ghudso
 #include <sys/param.h>
 #include <errno.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <krb.h>
 

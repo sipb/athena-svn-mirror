@@ -41,7 +41,7 @@ static Const String XtNwrongParameters = "wrongParameters";
 	    return True;					\
 	}
 
-static XtConvertArgRec Const multiColorConvertArgs[] = {
+static XtConvertArgRec multiColorConvertArgs[] = {
     {XtWidgetBaseOffset,
        (XtPointer)XtOffset(Widget, core.screen),
        sizeof(Screen *)},

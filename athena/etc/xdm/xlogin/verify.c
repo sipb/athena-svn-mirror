@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.101 1999-04-12 13:41:14 rbasch Exp $ */
+/* $Id: verify.c,v 1.102 1999-08-13 22:28:11 danw Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -94,7 +94,7 @@ pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
 char *get_tickets(), *strsave();
-int abort_verify();
+void abort_verify();
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
@@ -355,7 +355,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	      strcpy(errbuf, "An unexpected error occured while entering you "
 		     "in the local password file.");
 	      return errbuf;
-	      break;
 	    case AL_WARNINGS:
 	      warning = warnings;
 	      while (*warning != AL_SUCCESS)
@@ -409,7 +408,6 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	      strcpy(errbuf, al_strerror(status, &alerrmem));
 	      al_free_errmem(alerrmem);
 	      return errbuf;
-	      break;
 	    }
 	}
     }
@@ -730,7 +728,7 @@ char *get_tickets(username, password)
 }
 
 /* Destroy kerberos tickets and let al_acct_revert clean up the rest. */
-cleanup(user)
+void cleanup(user)
      char *user;
 {
   dest_tkt();
@@ -750,7 +748,7 @@ cleanup(user)
     lose("Unable to reset real uid to root");
 }
 
-abort_verify(user)
+void abort_verify(user)
      char *user;
 {
   cleanup(user);
@@ -766,7 +764,7 @@ char *strsave(s)
   return ret;
 }
 
-add_utmp(user, tty, display)
+void add_utmp(user, tty, display)
      char *user;
      char *tty;
      char *display;

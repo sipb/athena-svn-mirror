@@ -389,7 +389,7 @@ long pc_receive(pc_message **mm, pc_port *p)
   return 0L;
 }
 
-static fd_print(fd_set *r)
+static void fd_print(fd_set *r)
 {
   int i;
 
@@ -479,6 +479,8 @@ long pc_wait(pc_message **mm, pc_state *s)
 	*mm = m;
 	return 0L;
       }
+
+  return 0L;
 }
 
 /* Close all connections and pending connections associated with
@@ -533,4 +535,6 @@ long pc_secure(pc_state *s, pc_port *p, pc_message *m)
       else
 	i++;
     }
+
+  return 0L;
 }

@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.85 1999-05-11 18:10:05 rbasch Exp $ */
+/* $Id: xlogin.c,v 1.86 1999-08-13 22:28:12 danw Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -80,6 +80,7 @@ void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB(), commandCB();
 void restartCB(), windowShutdownACT(), windowShutdownCB();
+void do_motd();
 extern void add_converter ();
 
 
@@ -731,7 +732,7 @@ static void screensave(data, timerid)
 }
 
 /* Check the motd file and update the contents of the widget if necessary. */
-do_motd()
+void do_motd()
 {
   static Widget motdtext = NULL;
   static time_t modtime = 0, modtime2 = 0;
@@ -1363,7 +1364,7 @@ void resetCB(w, s, unused)
 			      screensave, NULL);
 }
 
-setvalue(w, done, unused)
+void setvalue(w, done, unused)
      Widget w;
      int *done;
 {
@@ -1393,7 +1394,7 @@ void timeout_abort(client_data, timer_id)
   cdata->abort_proc(cdata->abort_arg);
 }
 
-prompt_user(msg, abort_proc, abort_arg)
+void prompt_user(msg, abort_proc, abort_arg)
      char *msg;
      void (*abort_proc)();
      void *abort_arg;

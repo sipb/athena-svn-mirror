@@ -198,4 +198,6 @@ int cvt_vars2buf(buffer **buf, varlist *vl)
 
   var_freeList(vl, vlist);
   *buf = b;
+
+  return 0;
 }

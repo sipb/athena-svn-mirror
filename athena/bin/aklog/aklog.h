@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog.h,v 1.9 1998-03-25 16:43:52 danw Exp $
+ * $Id: aklog.h,v 1.10 1999-08-13 22:26:04 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -17,7 +17,7 @@
 #include "linked_list.h"
 
 typedef struct {
-    int (*readlink)(char *, char *, int);
+    int (*readlink)(const char *, char *, size_t);
     int (*isdir)(char *, unsigned char *);
     char *(*getcwd)(char *, size_t);
     int (*get_cred)(char *, char *, char *, CREDENTIALS *);

@@ -646,7 +646,7 @@ char *handleVars(pc_message *input, disp_state *ds, buffer **buf)
   return "ha!";
 }
 
-int process(pc_message *input, disp_state *ds)
+void process(pc_message *input, disp_state *ds)
 {
   char *reply = NULL;
   int ret = 0;

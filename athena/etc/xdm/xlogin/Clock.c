@@ -42,7 +42,8 @@ extern struct tm *localtime();
 #endif
 
 static void clock_tic(), DrawHand(), DrawSecond(), SetSeg(), DrawClockFace();
-static erase_hands(), round();
+static void erase_hands();
+static int round();
 	
 /* Private Definitions */
 
@@ -444,7 +445,7 @@ static void clock_tic(client_data, id)
 		}
 }
 	
-static erase_hands (w, tm)
+static void erase_hands (w, tm)
 ClockWidget	w;
 struct tm	*tm;
 {
