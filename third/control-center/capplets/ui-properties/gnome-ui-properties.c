@@ -38,7 +38,7 @@ enum
 
 static GConfEnumStringPair toolbar_style_enums[] = {
   { 0, "both" },
-  { 1, "both_horiz" },
+  { 1, "both-horiz" },
   { 2, "icons" },
   { 3, "text" },
   { -1, NULL }
@@ -78,7 +78,7 @@ dialog_button_clicked_cb (GtkDialog *dialog, gint response_id, GConfChangeSet *c
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			"wgoscustdesk.xml",
+			"user-guide.xml",
 			"goscustuserinter-2");
 	else
 		gtk_main_quit ();
@@ -98,28 +98,28 @@ show_handlebar (GladeXML *dialog, gboolean show)
 {
   GtkWidget *handlebox;
   GtkWidget *toolbar;
-  GtkWidget *frame;
+  GtkWidget *align;
 
   handlebox = WID ("toolbar_handlebox");
   toolbar = WID ("toolbar_toolbar");
-  frame = WID ("toolbar_frame");
+  align = WID ("toolbar_align");
 
   g_object_ref (handlebox);
   g_object_ref (toolbar);
 
-  if (GTK_BIN (frame)->child)
-    gtk_container_remove (GTK_CONTAINER (frame), GTK_BIN (frame)->child);
+  if (GTK_BIN (align)->child)
+    gtk_container_remove (GTK_CONTAINER (align), GTK_BIN (align)->child);
   if (GTK_BIN (handlebox)->child)
     gtk_container_remove (GTK_CONTAINER (handlebox), GTK_BIN (handlebox)->child);
   if (show)
     {
-      gtk_container_add (GTK_CONTAINER (frame), handlebox);
+      gtk_container_add (GTK_CONTAINER (align), handlebox);
       gtk_container_add (GTK_CONTAINER (handlebox), toolbar);
       g_object_unref (handlebox);
     }
   else
     {
-      gtk_container_add (GTK_CONTAINER (frame), toolbar);
+      gtk_container_add (GTK_CONTAINER (align), toolbar);
     }
   g_object_unref (toolbar);
 
@@ -274,7 +274,7 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
   g_free (toolbar_style);
 
   gtk_window_set_resizable (GTK_WINDOW (widget), FALSE);
-  capplet_set_icon (widget, "behavior-capplet.png");
+  capplet_set_icon (widget, "gnome-settings-ui-behavior");
   gtk_widget_show_all (widget);
 }
 

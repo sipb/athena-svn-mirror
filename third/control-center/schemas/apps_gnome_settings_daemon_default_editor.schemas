@@ -11,69 +11,169 @@
         <long>If true, the mime handlers for text/plain and text/* will be kept in sync</long>
       </locale>
 
+      <locale name="af">
+        <short>Sinkroniseer teks/gewoon en tekst/* hanteerders</short>
+        <long>Indien waar, sal die MIME-hanteerders vir teks/gewoon en teks/* gesinkroniseer gehou word</long>
+      </locale>
+
+      <locale name="ar">
+        <short>تزمين معالجا text/plain و text/*</short>
+        <long>إذا ضبط لـ true، فسيبقى على معالجات mime لـ text/plain و text/* في تزامن</long>
+      </locale>
+
+      <locale name="az">
+        <short>Sync text/plain və text/* tutucuları</short>
+        <long>Seşilidirsə, text/plain və text/* üçün tutucular sync içində saxlanacaq</long>
+      </locale>
+
+      <locale name="be">
+        <short>Сынхранізаваць text/plain і text/* handlers</short>
+        <long>Калі ІСЬЦІНА, апрацоўшчыкі для text/plain і text/* мусяць быць сынхранізаваныя</long>
+      </locale>
+
+      <locale name="bn">
+        <short>text/plain এবং text/* প্রক্রিয়াকারীকে সিঙ্ক (Sync) করো</short>
+        <long>এটি সত্য হলে text/plain এবং text/* এর মাইম প্রক্রিয়াকারীকে সিঙ্ক (Sync) অবস্থায় রাখা হবে</long>
+      </locale>
+
+      <locale name="bs">
+        <short>Uskladi text/plain i text/* manipulatore</short>
+        <long>Ako je postavljeno, mime manipulatori za text/plain i text/* će biti usklađeni</long>
+      </locale>
+
       <locale name="ca">
         <short>Sincronitza els gestors text/plain i text/*</short>
-        <long>Si Ã©s vertader, els gestors mime per a text/plain i text/* es mantindran sincronitzats</long>
+        <long>Si és vertader, els gestors mime per a text/plain i text/* es mantindran sincronitzats</long>
       </locale>
 
       <locale name="cs">
         <short>Synchronizovat obsluhy text/plain a text/*</short>
-        <long>Je-li true, jsou obsluhy mime pro text/plain a text/* udrÅ¾ovÃ¡ny synchronizovanÃ©</long>
+        <long>Je-li true, jsou obsluhy mime pro text/plain a text/* udržovány synchronizované</long>
+      </locale>
+
+      <locale name="cy">
+        <short>Trinyddion testun/plaen a testun/*</short>
+        <long>Os yn wir, cedwir y trinyddion testun/plaen a testun/* yn gydwedd</long>
       </locale>
 
       <locale name="da">
-        <short>SynkronisÃ©r hÃ¥ndteringer til text/plain og text/*</short>
-        <long>Hvis sand, vil MIME-hÃ¥ndteringerne for text/plain og text/* blive holdt synkroniseret</long>
+        <short>Synkronisér håndteringer til text/plain og text/*</short>
+        <long>Hvis sand, vil MIME-håndteringerne for text/plain og text/* blive holdt synkroniseret</long>
       </locale>
 
       <locale name="de">
-        <short>Â»text/plainÂ« und Â»text/*Â«-Handler synchronisieren</short>
-        <long>Sollen MIME-Handler fÃ¼r Â»text/plainÂ« und Â»text/*Â« syncron gehalten werden?</long>
+        <short>»text/plain« und »text/*«-Handler synchronisieren</short>
+        <long>Sollen MIME-Handler für »text/plain« und »text/*« synchron gehalten werden?</long>
       </locale>
 
       <locale name="el">
-        <short>Î£ÏÎ³ÏÏÎ¿Î½Î¹ÏÎ¼ÏÏ ÏÎµÎ¹ÏÎ¹ÏÏÏÎ½ text/plain and text/*</short>
-        <long>ÎÎ½ true, Î¿Î¹ ÏÎµÎ¹ÏÎ¹ÏÏÎ­Ï mime Î³Î¹Î± text/plain ÎºÎ±Î¹ text/* Î¸Î± Î´Î¹Î±ÏÎ·ÏÎ¿ÏÎ½ÏÎ±Î¹ ÏÏÎ³ÏÏÎ¿Î½Î¹ÏÎ¼Î­Î½Î¿Î¹</long>
+        <short>Συγχρονισμός χειριστών text/plain and text/*</short>
+        <long>Αν true, οι χειριστές mime για text/plain και text/* θα διατηρούνται συγχρονισμένοι</long>
+      </locale>
+
+      <locale name="en_CA">
+        <short>Sync text/plain and text/* handlers</short>
+        <long>If true, the mime handlers for text/plain and text/* will be kept in sync</long>
+      </locale>
+
+      <locale name="en_GB">
+        <short>Sync text/plain and text/* handlers</short>
+        <long>If true, the mime handlers for text/plain and text/* will be kept in sync</long>
       </locale>
 
       <locale name="es">
         <short>Sincronizar los manejadores text/plain y text/*</short>
-        <long>Si es Â«trueÂ», los manejadores mime para text/plain y text/* se mantendrÃ¡n sincronizados</long>
+        <long>Si es «true», los manejadores mime para text/plain y text/* se mantendrán sincronizados</long>
+      </locale>
+
+      <locale name="eu">
+        <short>Sinkronizatu testu/soilaren eta testu/*-(a)ren maneiatzaileak</short>
+        <long>Egia bada, testu/soilerako eta testu/*-(e)rako mime maneiatzaileak sinkronizatuta mantenduko dira</long>
       </locale>
 
       <locale name="fi">
-        <short>PidÃ¤ tyyppien text/plain ja text/* kÃ¤sittelimet samoina</short>
-        <long>Jos tosi, pysyvÃ¤t mime-tyyppien text/plain ja text/* kÃ¤sittelimet samoina</long>
+        <short>Pidä tyyppien text/plain ja text/* käsittelimet samoina</short>
+        <long>Jos tosi, pysyvät mime-tyyppien text/plain ja text/* käsittelimet samoina</long>
       </locale>
 
       <locale name="fr">
-        <short>Synchroniser les gestionnaires text/plain et text/*</short>
-        <long>Si vrai, le gestionnaire de type MIME pour text/plain et text/* sera gardÃ© synchronisÃ©</long>
+        <short>Synchronise les gestionnaires text/plain et text/*</short>
+        <long>Si vrai, le gestionnaire de types MIME pour text/plain et text/* sera gardé synchronisé</long>
+      </locale>
+
+      <locale name="gu">
+        <short>સિંક લખાણ/સાદું અને લખાણ/* માટેનાં હેન્ડલરો</short>
+        <long>જો સાચુું હોય તો, લખાણ/સાદું અને લખાણ/* માટે માઈમ હેન્ડલર સિંકમાં સાચવી રાખો</long>
+      </locale>
+
+      <locale name="he">
+        <short>סנכרן הליכי טיפול של טקסט/פשוט וטקסט/*</short>
+        <long>אם אמת, הליכי הטיפול של mime בעבור טקסט/פשוט וטקסט/* ישמרו בסנכרון</long>
+      </locale>
+
+      <locale name="hi">
+        <short>पाठ/सादा तथा पाठ/* हैंडलर सिंक करें</short>
+        <long>यदि सही है तो पाठ/सादा और पाठ/* हेतु माइम हैंडलर सिंक में रखे जाएंगे</long>
+      </locale>
+
+      <locale name="hr">
+        <short>Sinkronizacija text/plain i text/* rukovatelja</short>
+        <long>Ako je postavljeno na uključeno, mime rukovatelji za text/plain i text/* će biti sinkronizirani.</long>
       </locale>
 
       <locale name="hu">
-        <short>A text/plain Ã©s a text/* kezelÅjÃ©nek szinkronizÃ¡lÃ¡sa</short>
-        <long>Ha ez be van Ã¡llÃ­tva, a text/plain Ã©s a text/* MIME-kezelÅje szinkronban lesz.</long>
+        <short>A text/plain és a text/* kezelőjének szinkronizálása</short>
+        <long>Ha be van állítva, a text/plain és a text/* MIME-kezelője szinkronban lesz</long>
+      </locale>
+
+      <locale name="is">
+        <short>Samstilla text/plain og text/* grip</short>
+        <long>Ef satt verða mime-gripin samstillt fyrir &quot;text/plain&quot; og &quot;text/*&quot;</long>
+      </locale>
+
+      <locale name="it">
+        <short>Sincronizza le associazioni text/plain e text/*</short>
+        <long>Se VERO, le associazioni mime per text/plain e text/* saranno mantenute in sincronia</long>
       </locale>
 
       <locale name="ja">
-        <short>text/plain ã¨ text/* ãã³ãã©ã®åæ</short>
-        <long>ããã True ã«ããã¨ãtext/plain ã¨ text/* ã® MIME åãã³ãã©ãåæããã¾ã</long>
+        <short>text/plain と text/* ハンドラの同期</short>
+        <long>TRUE にすると、text/plain と text/* の MIME 型ハンドラが同期されます</long>
       </locale>
 
       <locale name="ko">
-        <short>text/plainê³¼ text/* ì²ë¦¬ê¸° ëê¸°í</short>
-        <long>ì°¸ì´ë©´ text/plainê³¼ text/*ì mimeì²ë¦¬ê¸°ê° í­ì ëê¸°íë¨</long>
+        <short>text/plain과 text/* 처리기 동기화</short>
+        <long>참이면 text/plain과 text/*의 mime처리기가 항상 동기화됨</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Sinchronizuoti text/plain ir text/* tvarkykles</short>
+        <long>Jei &quot;true&quot;, mime tvarkyklės skirtos text/plain ir text/* bus sinchronizuotos</long>
       </locale>
 
       <locale name="lv">
-        <short>Sinhr text/plain un text/* rÄ«kotÄjus</short>
-        <long>Ja true, mime rÄ«kotÄji priekÅ¡ text/plain un text/* will bÅ«s sinhroni</long>
+        <short>Sinhr text/plain un text/* rīkotājus</short>
+        <long>Ja true, mime rīkotāji priekš text/plain un text/* will būs sinhroni</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Синхронизирај чист текст и текст/* управувачи</short>
+        <long>Ако е точно, mime управувачот за чист текст и останат тест ќе биде задржано во синхронизаторот</long>
       </locale>
 
       <locale name="mn">
-        <short>Â»text/plainÂ« Ð±Ð° Â»text/*Â«-ÑÐ¾Ð´Ð¾ÑÑÐ¾Ð¹Ð»Ð¾Ð³ÑÑÑÐ´ÑÐ½ Ð·ÑÑÑÐ³ÑÒ¯Ò¯Ð»ÑÑ (Sync)</short>
-        <long>Â»text/plainÂ« Ð±Ð° Â»text/*Â« -Ð½ ÑÑÐ²ÑÐ´ MIME-ÑÐ¾Ð´Ð¾ÑÑÐ¾Ð¹Ð»Ð¾Ð³ÑÐ¸Ð¹Ð³ ÑÐ°Ð´Ð³Ð°Ð»Ð°Ñ ÑÑ?</long>
+        <short>»text/plain« ба »text/*«-тодорхойлогчуудын зэрэгцүүлэх (Sync)</short>
+        <long>»text/plain« ба »text/*« -н хувьд MIME-тодорхойлогчийг хадгалах уу?</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Sinkronisasi pengendali text/plain and text/*</short>
+        <long>Jika benar, pengendali mime bagi text/plain dan text/* akan kekal disinkronisasikan</long>
+      </locale>
+
+      <locale name="nb">
+        <short>Synkroniser håndterere for text/plain og text/*</short>
+        <long>Hvis satt til sann vil MIME-håndtererene for text/plain og text/* holdes synkronisert</long>
       </locale>
 
       <locale name="nl">
@@ -81,64 +181,109 @@
         <long>Als dit waar is, worden de mime-afhandelaars voor text/plain en text/*synchroon gehouden</long>
       </locale>
 
+      <locale name="nn">
+        <short>Synkroniser handsamarane for text/plain og text/*</short>
+        <long>Dersom denne er sett til sann, vil MIME-handsamarane for text/plain og text/* haldast synkroniserte</long>
+      </locale>
+
       <locale name="no">
-        <short>Synkroniser hÃ¥ndterere for text/plain og text/*</short>
-        <long>Hvis satt til sann vil MIME-hÃ¥ndtererene for text/plain og text/* holdes synkronisert</long>
+        <short>Synkroniser håndterere for text/plain og text/*</short>
+        <long>Hvis satt til sann vil MIME-håndtererene for text/plain og text/* holdes synkronisert</long>
+      </locale>
+
+      <locale name="pa">
+        <short>Sync ਪਾਠ/plain ਅਤੇ ਪਾਠ/* ਹੈਡਲਰ</short>
+        <long>ਜੇਕਰ ਸੱਚ ਹੈ ਤਾਂ, ਪਾਠ/plain ਅਤੇ ਪਾਠ/* ਲਈ ਮਈਮ(mime) ਨੂੰ sync ਵਿੱਚ ਰੱਖਿਆ ਜਾਵੇਗਾ।</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Uzgadnianie sposobu obsługi text/plain i text/*</short>
+        <long>Określa, czy ustawienia sposobu obsługi dla typów text/plain i text/* powinny być ze sobą synchronizowane.</long>
       </locale>
 
       <locale name="pt">
-        <short>Sincronizar gestores text/plain e text/*</short>
-        <long>Se verdade, os gestores mime para text/plain e text/* serÃ£o mantidos em sincronismo</long>
+        <short>Sincronizar manipuladores text/plain e text/*</short>
+        <long>Se verdadeiro, os manipuladores mime para text/plain e text/* serão mantidos em sincronismo</long>
       </locale>
 
       <locale name="pt_BR">
         <short>Sincronizar aplicativos que cuidam de text/plain e text/*</short>
-        <long>Se verdadeiro, os aplicativos que cuidam de text/plain e text/* serÃ£o sempre sincronizados</long>
+        <long>Se verdadeiro, os aplicativos que cuidam de text/plain e text/* serão sempre sincronizados</long>
       </locale>
 
       <locale name="ro">
-        <short>SincronizeazÄ descriptorii text/plain Åi text/*</short>
-        <long>DacÄ este adevÄrat, descriptorul mime pentru text/plain Åi text/* va fi Å£inut sincronizat</long>
+        <short>Sincronizează descriptorii text/plain şi text/*</short>
+        <long>Dacă este adevărat, descriptorii MIME pentru text/plain şi text/* vor fi sincronizaţi tot timpul</long>
       </locale>
 
       <locale name="ru">
-        <short>Ð¡Ð¸Ð½ÑÑÐ¾Ð½Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°ÑÑ Ð¾Ð±ÑÐ°Ð±Ð¾ÑÑÐ¸ÐºÐ¸ Ð´Ð»Ñ text/plain Ð¸ text/*</short>
-        <long>ÐÑÐ»Ð¸ Ð¸ÑÑÐ¸Ð½Ð½Ð¾, Ð¾Ð±ÑÐ°Ð±Ð¾ÑÑÐ¸ÐºÐ¸ Ð´Ð»Ñ ÑÐ¸Ð¿Ð¾Ð² MIME text/plain Ð¸ text/* Ð±ÑÐ´ÑÑ ÑÐ¸Ð½ÑÑÐ¾Ð½Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°ÑÑÑÑ</long>
+        <short>Синхронизировать обработчики для text/plain и text/*</short>
+        <long>Если истинно, обработчики для типов MIME text/plain и text/* будут синхронизироваться</long>
       </locale>
 
       <locale name="sk">
-        <short>SynchronizovaÅ¥ programy pre text/plain a text/*</short>
-        <long>Ak je zapnutÃ©, programy pre MIME typy text/plain a text/* budÃº nastavenÃ© rovnako</long>
+        <short>Synchronizovať programy pre text/plain a text/*</short>
+        <long>Ak je zapnuté, programy pre MIME typy text/plain a text/* budú nastavené rovnako</long>
       </locale>
 
       <locale name="sl">
         <short>Uskladi glave text/plain in text/*</short>
-        <long>Äe je resniÄno, bodo obravnavalniki mime za text/plain in text/* ohranjeni v soskladju</long>
+        <long>Če je resnično, bodo obravnavalniki mime za text/plain in text/* ohranjeni v soskladju</long>
+      </locale>
+
+      <locale name="sq">
+        <short>Sinkronizo ndihmësit për tekst/i thjeshtë dhe teskt/*</short>
+        <long>Nëse e vërtetë,ndihmësit mime për tekst/i qartë dhe tekst/* do mbahen në sinkronizim</long>
+      </locale>
+
+      <locale name="sr">
+        <short>Усклади руковаоце за text/plain и text/*</short>
+        <long>Ако је постављено, миме руковаоци за text/plain и text/* ће бити усклађени</long>
+      </locale>
+
+      <locale name="sr@Latn">
+        <short>Uskladi rukovaoce za text/plain i text/*</short>
+        <long>Ako je postavljeno, mime rukovaoci za text/plain i text/* će biti usklađeni</long>
       </locale>
 
       <locale name="sv">
         <short>Synkronisera text/plain- och /text/*-hanterare</short>
-        <long>Om sant kommer mime-hanterarna fÃ¶r text/plain och text/* att hÃ¥llas synkroniserade</long>
+        <long>Om sant kommer mime-hanterarna för text/plain och text/* att hållas synkroniserade</long>
+      </locale>
+
+      <locale name="ta">
+        <short>Sync text/plain and text/* கையாளுபவர்கள்</short>
+        <long>உண்மையாக இருந்தால,மைம் கையாளுபவர்கான உரை/மட்டம் மற்றும் உரை/* சிங்க்கில் வைக்கப்படும் </long>
+      </locale>
+
+      <locale name="th">
+        <short>text/plain และ text/* ใช้โปรแกรมเดียวกัน</short>
+        <long>ถ้าจริง text/plain และ text/* จะเรียกใช้โปรแกรมเดียวกันเสมอ</long>
+      </locale>
+
+      <locale name="tr">
+        <short>text/plain ve text/* işleyicilierini ortak kullan</short>
+        <long>Eger seçiliyse, text/plain ve text/* mime işleyicileri aynı tutulacak.</long>
       </locale>
 
       <locale name="uk">
-        <short>Ð¡Ð¸Ð½ÑÑÐ¾Ð½ÑÐ·ÑÐ²Ð°ÑÐ¸ Ð¾Ð±ÑÐ¾Ð±Ð½Ð¸ÐºÐ¸ Ð´Ð»Ñ text/plain Ñ text/*</short>
-        <long>Ð¯ÐºÑÐ¾ ÐÑÑÐ¸Ð½Ð°, Ð¾Ð±ÑÐ¾Ð±Ð½Ð¸ÐºÐ¸ Ð´Ð»Ñ ÑÐ¸Ð¿ÑÐ² MIME text/plain Ñ text/* ÑÐ¸Ð½ÑÑÐ¾Ð½ÑÐ·ÑÐ²Ð°ÑÐ¸Ð¼ÑÑÑÑÑ</long>
+        <short>Синхронізувати обробники для text/plain і text/*</short>
+        <long>Якщо встановлено, обробники для типів MIME text/plain і text/* будуть синхронізуватись</long>
       </locale>
 
       <locale name="vi">
-        <short>Äá»ng bá» bá» xá»­ lÃ½ text/plain vÃ  text/*</short>
-        <long>Náº¿u true, bá» xá»­ lÃ½ MIME cho text/plain vÃ  text/* sáº½ ÄÆ°á»£c giá»¯ cho Äá»ng bá»</long>
+        <short>Đồng bộ bộ xử lý text/plain và text/*</short>
+        <long>Nếu true, bộ xử lý MIME cho text/plain và text/* sẽ được giữ cho đồng bộ</long>
       </locale>
 
       <locale name="zh_CN">
-        <short>åæ­¥ text/plain å text/* çå¤çç¨åº</short>
-        <long>å¦ææ¯çè¯ï¼text/plain å text/* ç MIME å¤çç¨åºå°ä¼ä¿æåæ­¥</long>
+        <short>同步 text/plain 和 text/* 的处理程序</short>
+        <long>如果是的话，text/plain 和 text/* 的 MIME 处理程序将会保持同步</long>
       </locale>
 
       <locale name="zh_TW">
-        <short>text/plain å text/* èçæ¹å¼ä¿æä¸è´</short>
-        <long>å¦é¸ç¨æ¬é¸é ï¼text/plain å text/* ç mime èçæ¹å¼æä¿æä¸è´</long>
+        <short>text/plain 及 text/* 處理方式保持一致</short>
+        <long>如選用本選項，text/plain 及 text/* 的 mime 處理方式會保持一致</long>
       </locale>
     </schema>
   </schemalist>

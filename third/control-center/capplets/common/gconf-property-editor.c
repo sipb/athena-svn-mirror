@@ -31,8 +31,6 @@
 #include "gconf-property-editor.h"
 #include "gconf-property-editor-marshal.h"
 
-#include "preview-file-selection.h"
-
 enum {
 	VALUE_CHANGED,
 	LAST_SIGNAL
@@ -255,6 +253,10 @@ gconf_property_editor_set_prop (GObject      *object,
 		client = gconf_client_get_default ();
 		cb = g_value_get_pointer (value);
 		peditor->p->callback = (GConfClientNotifyFunc) cb;
+		if (peditor->p->handler_id != 0) {
+			gconf_client_notify_remove (client,
+						    peditor->p->handler_id);
+		}
 		peditor->p->handler_id =
 			gconf_client_notify_add (client, peditor->p->key,
 						 peditor->p->callback,
@@ -326,9 +328,17 @@ gconf_property_editor_finalize (GObject *object)
 	g_return_if_fail (IS_GCONF_PROPERTY_EDITOR (object));
 
 	gconf_property_editor = GCONF_PROPERTY_EDITOR (object);
-
+	
 	if (gconf_property_editor->p->data_free_cb)
 		gconf_property_editor->p->data_free_cb (gconf_property_editor->p->data);
+
+ 	if (gconf_property_editor->p->handler_id != 0) {
+		GConfClient *client;
+
+		client = gconf_client_get_default ();		
+		gconf_client_notify_remove (client,
+					    gconf_property_editor->p->handler_id);
+	}
 	
 	g_free (gconf_property_editor->p);
 
@@ -373,6 +383,8 @@ gconf_peditor_new (gchar                 *key,
 	gconf_entry = gconf_client_get_entry (client, GCONF_PROPERTY_EDITOR (obj)->p->key, NULL, TRUE, NULL);
 	GCONF_PROPERTY_EDITOR (obj)->p->callback (client, 0, gconf_entry, obj);
 	GCONF_PROPERTY_EDITOR (obj)->p->inited = TRUE;
+	gconf_entry_free (gconf_entry);
+	g_object_unref (G_OBJECT (client));
 
 	return obj;
 }
@@ -381,6 +393,12 @@ const gchar *
 gconf_property_editor_get_key (GConfPropertyEditor *peditor)
 {
 	return peditor->p->key;
+}
+
+GObject *
+gconf_property_editor_get_ui_control (GConfPropertyEditor  *peditor)
+{
+	return peditor->p->ui_control;
 }
 
 static void
@@ -1068,9 +1086,16 @@ peditor_numeric_range_value_changed (GConfClient         *client,
 	if (value != NULL) {
 		value_wid = peditor->p->conv_to_widget_cb (peditor, value);
 
-		g_return_if_fail  (value_wid->type == GCONF_VALUE_FLOAT);
-
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (peditor->p->ui_control), gconf_value_get_float (value_wid));
+		switch (value_wid->type) {
+		case GCONF_VALUE_FLOAT:
+			gtk_adjustment_set_value (GTK_ADJUSTMENT (peditor->p->ui_control), gconf_value_get_float (value_wid));
+			break;
+		case GCONF_VALUE_INT:
+			gtk_adjustment_set_value (GTK_ADJUSTMENT (peditor->p->ui_control), gconf_value_get_int (value_wid));
+			break;
+		default:
+			g_warning ("Unknown type in range peditor: %d\n", value_wid->type);
+		}
 		gconf_value_free (value_wid);
 	}
 }
@@ -1079,11 +1104,41 @@ static void
 peditor_numeric_range_widget_changed (GConfPropertyEditor *peditor,
 				      GtkAdjustment       *adjustment)
 {
-	GConfValue *value, *value_wid;
+	GConfValue *value, *value_wid, *default_value;
 
 	if (!peditor->p->inited) return;
-	value_wid = gconf_value_new (GCONF_VALUE_FLOAT);
-	gconf_value_set_float (value_wid, gtk_adjustment_get_value (adjustment));
+
+	/* We try to get the default type from the schemas.  if not, we default
+	 * to a float.
+	 */
+	default_value = gconf_client_get_default_from_schema (gconf_client_get_default (),
+							      peditor->p->key,
+							      NULL);
+	if (default_value)
+		value_wid = gconf_value_new (default_value->type);
+	else {
+		g_warning ("Unable to find a default value for key for %s.\n"
+			   "I'll assume it is an integer, but that may break things.\n"
+			   "Please be sure that the associated schema is installed",
+			   peditor->p->key);
+		value_wid = gconf_value_new (GCONF_VALUE_INT);
+	}
+
+	gconf_value_free (default_value);
+
+	g_assert (value_wid);
+
+	if (value_wid->type == GCONF_VALUE_INT)
+		gconf_value_set_int (value_wid, gtk_adjustment_get_value (adjustment));
+	else if (value_wid->type == GCONF_VALUE_FLOAT)
+		gconf_value_set_float (value_wid, gtk_adjustment_get_value (adjustment));
+	else {
+		g_warning ("unable to set a gconf key for %s of type %d\n",
+			   peditor->p->key,
+			   value_wid->type);
+		gconf_value_free (value_wid);
+		return;
+	}
 	value = peditor->p->conv_from_widget_cb (peditor, value_wid);
 	peditor_set_gconf_value (peditor, peditor->p->key, value);
 	g_signal_emit (peditor, peditor_signals[VALUE_CHANGED], 0, peditor->p->key, value);
@@ -1099,14 +1154,19 @@ gconf_peditor_new_numeric_range (GConfChangeSet *changeset,
 				 ...)
 {
 	GObject *peditor;
-	GObject *adjustment;
+	GObject *adjustment = NULL;
 	va_list var_args;
 
 	g_return_val_if_fail (key != NULL, NULL);
 	g_return_val_if_fail (range != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_RANGE (range), NULL);
+	g_return_val_if_fail (GTK_IS_RANGE (range)||GTK_IS_SPIN_BUTTON (range), NULL);
 
-	adjustment = G_OBJECT (gtk_range_get_adjustment (GTK_RANGE (range)));
+	if (GTK_IS_RANGE (range))
+		adjustment = G_OBJECT (gtk_range_get_adjustment (GTK_RANGE (range)));
+	else if (GTK_IS_SPIN_BUTTON (range))
+		adjustment = G_OBJECT (gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (range)));
+	else
+		g_assert_not_reached ();
 
 	va_start (var_args, first_property_name);
 
@@ -1468,7 +1528,6 @@ gboolean
 peditor_image_set_filename (GConfPropertyEditor *peditor, const gchar *filename)
 {
 	GdkPixbuf *pixbuf = NULL;
-	GdkPixbuf *scaled;
 	GtkImage *image = NULL;
 	const int scale = 100;
 	gchar *message = NULL;
@@ -1487,7 +1546,7 @@ peditor_image_set_filename (GConfPropertyEditor *peditor, const gchar *filename)
 					   filename);
 
 	}
-	else if (!(pixbuf = gdk_pixbuf_new_from_file (filename, NULL)))
+	else if (!(pixbuf = gdk_pixbuf_new_from_file_at_size (filename, scale, scale, NULL)))
 	{
 		message = g_strdup_printf (_("I don't know how to open the file '%s'.\n"
 					     "Perhaps it's "
@@ -1535,34 +1594,39 @@ peditor_image_set_filename (GConfPropertyEditor *peditor, const gchar *filename)
 		return FALSE;
 	}
 
-	scaled = preview_file_selection_intelligent_scale (pixbuf,
-							   scale);
-
-	gtk_image_set_from_pixbuf (image, scaled);
+	gtk_image_set_from_pixbuf (image, pixbuf);
 	g_object_unref (G_OBJECT (pixbuf));
-	g_object_unref (G_OBJECT (scaled));
 
 	return TRUE;
 }
 
 void
-peditor_image_fsel_ok_cb (GtkFileSelection *fsel, gpointer data)
+peditor_image_chooser_response_cb (GtkWidget *chooser,
+				   gint response,
+				   GConfPropertyEditor *peditor)
 {
 	GConfValue *value, *value_wid;
-	GConfPropertyEditor *peditor;
-	const gchar *filename;
+	gchar *filename;
 
-	peditor = g_object_get_data (G_OBJECT (fsel), "peditor");
+	if (response == GTK_RESPONSE_CANCEL ||
+	    response == GTK_RESPONSE_DELETE_EVENT)
+	{
+		gtk_widget_destroy (chooser);
+		return;
+	}
 
 	if (!peditor->p->inited)
 		return;
 
-	filename = gtk_file_selection_get_filename (fsel);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
 	if (!(filename && peditor_image_set_filename (peditor, filename)))
+	{
+		g_free (filename);
 		return;
+	}
 
 	value_wid = gconf_value_new (GCONF_VALUE_STRING);
-	gconf_value_set_string (value_wid, gtk_file_selection_get_filename (fsel));
+	gconf_value_set_string (value_wid, filename);
 	value = peditor->p->conv_from_widget_cb (peditor, value_wid);
 
 	peditor_set_gconf_value (peditor, peditor->p->key, value);
@@ -1570,7 +1634,29 @@ peditor_image_fsel_ok_cb (GtkFileSelection *fsel, gpointer data)
 
 	gconf_value_free (value_wid);
 	gconf_value_free (value);
-	gtk_widget_destroy (GTK_WIDGET (fsel));
+	g_free (filename);
+	gtk_widget_destroy (chooser);
+}
+
+void
+peditor_image_chooser_update_preview_cb (GtkFileChooser *chooser,
+					 GtkImage *preview)
+{
+	char *filename;
+	GdkPixbuf *pixbuf = NULL;
+	const int scale = 100;
+
+	filename = gtk_file_chooser_get_preview_filename (chooser);
+
+	if (filename != NULL && g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+		pixbuf = gdk_pixbuf_new_from_file_at_size (filename, scale, scale, NULL);
+
+	gtk_image_set_from_pixbuf (preview, pixbuf);
+
+	g_free (filename);
+
+	if (pixbuf != NULL)
+		gdk_pixbuf_unref (pixbuf);
 }
 
 void
@@ -1578,10 +1664,32 @@ peditor_image_clicked_cb (GConfPropertyEditor *peditor, GtkButton *button)
 {
 	GConfValue *value = NULL, *value_wid;
 	const gchar *filename;
-	GtkWidget *fsel;
+	GtkWidget *chooser, *toplevel, *preview, *preview_box;
 
-	fsel = preview_file_selection_new (_("Please select an image."), TRUE);
-	gtk_window_set_modal (GTK_WINDOW (fsel), TRUE);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (button));
+	chooser = gtk_file_chooser_dialog_new (_("Please select an image."),
+					       GTK_IS_WINDOW (toplevel) ? GTK_WINDOW (toplevel)
+					       				: NULL,
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       _("_Select"), GTK_RESPONSE_OK,
+					       NULL);
+
+	preview = gtk_image_new ();
+
+	preview_box = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (preview_box), preview, FALSE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (preview_box), 6);
+
+	gtk_widget_show_all (preview_box);
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (chooser),
+					     preview_box);
+	gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (chooser),
+						    TRUE);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (chooser), GTK_RESPONSE_OK);
+	gtk_window_set_destroy_with_parent (GTK_WINDOW (chooser), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (chooser), TRUE);
 
 	/* need the current filename */
 	if (peditor->p->changeset)
@@ -1602,24 +1710,19 @@ peditor_image_clicked_cb (GConfPropertyEditor *peditor, GtkButton *button)
 	filename = gconf_value_get_string (value_wid);
 
 	if (filename && strcmp (filename, ""))
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION (fsel), filename);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), filename);
 
-	g_object_set_data (G_OBJECT (fsel), "peditor", peditor);
-
-	g_signal_connect_swapped  (G_OBJECT (GTK_FILE_SELECTION (fsel)->ok_button),
-				   "clicked",
-				   (GCallback) peditor_image_fsel_ok_cb,
-				   fsel);
-	
-	g_signal_connect_swapped  (G_OBJECT (GTK_FILE_SELECTION (fsel)->cancel_button),
-				   "clicked",
-				   (GCallback) gtk_widget_destroy,
-				   fsel);
+	g_signal_connect (G_OBJECT (chooser), "update-preview",
+			  G_CALLBACK (peditor_image_chooser_update_preview_cb),
+			  preview);
+	g_signal_connect (G_OBJECT (chooser), "response",
+			  G_CALLBACK (peditor_image_chooser_response_cb),
+			  peditor);
 
 	if (gtk_grab_get_current ())
-		gtk_grab_add (fsel);
+		gtk_grab_add (chooser);
 	
-	gtk_widget_show (fsel);
+	gtk_widget_show (chooser);
 
 	gconf_value_free (value);
 	gconf_value_free (value_wid);

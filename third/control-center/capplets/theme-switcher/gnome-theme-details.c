@@ -39,7 +39,7 @@ static void update_gconf_key_from_selection (GtkTreeSelection *selection,
 					     const gchar      *gconf_key);
 static void load_theme_names                (GtkTreeView        *tree_view,
 					     GList              *theme_list,
-					     gchar              *default_theme);
+					     const gchar        *default_theme);
 static char *path_to_theme_id               (const char *path);
 
 
@@ -60,7 +60,7 @@ static void
 cb_dialog_response (GtkDialog *dialog, gint response_id)
 {
   if (response_id == GTK_RESPONSE_HELP)
-    capplet_help (GTK_WINDOW (dialog), "wgoscustdesk.xml", "goscustdesk-12");
+    capplet_help (GTK_WINDOW (dialog), "user-guide.xml", "goscustdesk-12");
   else
     gtk_widget_hide (GTK_WIDGET (dialog));
 }
@@ -158,7 +158,7 @@ window_theme_selection_changed (GtkTreeSelection *selection,
     wm_settings.theme = window_theme_name;
     gnome_window_manager_change_settings (window_manager, &wm_settings);
   }
-
+  g_free (window_theme_name);
 }
 
 static void
@@ -186,7 +186,7 @@ icon_theme_selection_changed (GtkTreeSelection *selection,
 static void
 load_theme_names (GtkTreeView *tree_view,
 		  GList       *theme_list,
-		  gchar       *default_theme)
+		  const gchar *default_theme)
 {
   GList *list;
   GtkTreeModel *model;
@@ -213,7 +213,7 @@ load_theme_names (GtkTreeView *tree_view,
 
       gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
 
-      if (strcmp (default_theme, name) == 0)
+      if (default_theme && strcmp (default_theme, name) == 0)
 	is_default = TRUE;
       else
 	is_default = FALSE;
@@ -318,13 +318,13 @@ gnome_theme_details_init (void)
 
   /* window manager themes */
   widget = WID ("window_install_button");
-  g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_icon_theme_installer_run_cb), parent);
+  g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_theme_installer_run_cb), parent);
   widget = WID ("window_manage_button");
   g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_theme_manager_window_show_manage_themes), dialog);
 
   /* icon themes */
   widget = WID ("icon_install_button");
-  g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_theme_installer_run_cb), parent);
+  g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_icon_theme_installer_run_cb), parent);
   widget = WID ("icon_manage_button");
   g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (gnome_theme_manager_icon_show_manage_themes), dialog);
 
@@ -339,7 +339,7 @@ gnome_theme_details_init (void)
   g_signal_connect (G_OBJECT (parent), "drag-leave", G_CALLBACK (gnome_theme_manager_drag_leave_cb), NULL);
   g_signal_connect (G_OBJECT (parent), "drag-data-received", G_CALLBACK (gnome_theme_manager_drag_data_received_cb), NULL);
 
-  capplet_set_icon (parent, "gnome-ccthemes.png");
+  capplet_set_icon (parent, "gnome-settings-theme");
 
   gnome_theme_details_reread_themes_from_disk ();
 }
@@ -417,7 +417,7 @@ gnome_theme_details_reread_themes_from_disk (void)
     {
       have_gtk_theme = TRUE;
       gtk_widget_show (WID ("control_theme_vbox"));
-      load_theme_names (GTK_TREE_VIEW (WID ("control_theme_treeview")), string_list, GTK_THEME_DEFAULT_NAME);
+      load_theme_names (GTK_TREE_VIEW (WID ("control_theme_treeview")), string_list, gtk_theme_default_name);
       g_list_free (string_list);
     }
   g_list_free (theme_list);
@@ -440,7 +440,7 @@ gnome_theme_details_reread_themes_from_disk (void)
     {
       have_window_theme = TRUE;
       gtk_widget_show (WID ("window_theme_vbox"));
-      load_theme_names (GTK_TREE_VIEW (WID ("window_theme_treeview")), string_list, WINDOW_THEME_DEFAULT_NAME);
+      load_theme_names (GTK_TREE_VIEW (WID ("window_theme_treeview")), string_list, window_theme_default_name);
       g_list_free (string_list);
     }
   g_list_free (theme_list);
@@ -465,7 +465,7 @@ gnome_theme_details_reread_themes_from_disk (void)
     {
       have_icon_theme = TRUE;
       gtk_widget_show (WID ("icon_theme_vbox"));
-      load_theme_names (GTK_TREE_VIEW (WID ("icon_theme_treeview")), string_list, ICON_THEME_DEFAULT_NAME);
+      load_theme_names (GTK_TREE_VIEW (WID ("icon_theme_treeview")), string_list, icon_theme_default_name);
       g_list_free (string_list);
     }
   g_list_free (theme_list);
@@ -508,8 +508,20 @@ update_list_something (GtkWidget *tree_view, const gchar *theme)
       if (! strcmp (theme, theme_id))
 	{
 	  GtkTreePath *path;
+	  GtkTreePath *cursor_path;
+	  gboolean cursor_same = FALSE;
+
+	  gtk_tree_view_get_cursor (GTK_TREE_VIEW (tree_view), &cursor_path, NULL);
 	  path = gtk_tree_model_get_path (model, &iter);
-	  gtk_tree_view_set_cursor (GTK_TREE_VIEW (tree_view), path, NULL, FALSE);
+	  if (cursor_path && gtk_tree_path_compare (path, cursor_path) == 0)
+	    cursor_same = TRUE;
+
+	  gtk_tree_path_free (cursor_path);
+
+	  if (!cursor_same)
+	    {
+	      gtk_tree_view_set_cursor (GTK_TREE_VIEW (tree_view), path, NULL, FALSE);
+	    }
 	  gtk_tree_path_free (path);
 	  theme_found = TRUE;
 	}

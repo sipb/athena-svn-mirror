@@ -1,17 +1,28 @@
-INCLUDES=$(GNOME_SETTINGS_DAEMON_CFLAGS) -I$(top_srcdir)/libbackground -I$(top_srcdir) \
-  -DGNOMELOCALEDIR="\"$(datadir)/locale\"" \
-  -DESD_SERVER="\"$(ESD_SERVER)\""	\
-  -DDATADIR="\"$(datadir)\""
-bin_PROGRAMS=gnome-settings-daemon
+SUBDIRS = xrdb actions
+
+INCLUDES=$(LIBXKLAVIER_CFLAGS) $(GNOME_SETTINGS_DAEMON_CFLAGS) -I$(top_srcdir)/libbackground -I$(top_srcdir) \
+  -DGNOMELOCALEDIR="\"$(datadir)/locale\"" 	\
+  -DESD_SERVER="\"$(ESD_SERVER)\""		\
+  -DDATADIR="\"$(datadir)\""			\
+  -DPIXMAPSDIR="\"$(GNOMECC_PIXMAPS_DIR)\""	\
+  $(FB_CFLAGS)
+
+libexec_PROGRAMS=gnome-settings-daemon
 
 gnome_settings_daemon_SOURCES =	\
 	factory.c			\
+	eggaccelerators.h		\
+	eggaccelerators.c		\
 	gnome-settings-daemon.h		\
 	gnome-settings-daemon.c		\
 	gnome-settings-font.h		\
 	gnome-settings-font.c		\
 	gnome-settings-mouse.h		\
 	gnome-settings-mouse.c		\
+	gnome-settings-multimedia-keys.h \
+	gnome-settings-multimedia-keys.c \
+	gnome-settings-keyboard-xkb.h	\
+	gnome-settings-keyboard-xkb.c	\
 	gnome-settings-keyboard.h	\
 	gnome-settings-keyboard.c	\
 	gnome-settings-background.h	\
@@ -30,21 +41,30 @@ gnome_settings_daemon_SOURCES =	\
 	gnome-settings-default-editor.h	\
 	gnome-settings-gtk1theme.c      \
 	gnome-settings-gtk1theme.h	\
+	gnome-settings-xrdb.c		\
+	gnome-settings-xrdb.h		\
 	xsettings-common.c		\
 	xsettings-manager.c		\
 	xsettings-common.h		\
 	xsettings-manager.h		\
 	gnome-settings-keybindings.c    \
 	gnome-settings-keybindings.h    \
+	gnome-settings-typing-break.c	\
+	gnome-settings-typing-break.h	\
+	reaper.c			\
+	reaper.h			\
 	$(CORBA_GENERATED)
 
 #	$(AccessX_files)		
 
 gnome_settings_daemon_LDADD = \
-	$(GNOME_SETTINGS_DAEMON_LIBS)					\
+	$(LIBXKLAVIER_LIBS)						\
 	$(top_builddir)/libbackground/libbackground.la			\
 	$(top_builddir)/libsounds/libsounds.a				\
-	-L$(top_builddir)/libwindow-settings/ -lgnome-window-settings 	\
+	$(top_builddir)/libgswitchit/libgswitchit.a			\
+	$(top_builddir)/libwindow-settings/libgnome-window-settings.la 	\
+	$(top_builddir)/gnome-settings-daemon/actions/libacme.la	\
+	$(GNOME_SETTINGS_DAEMON_LIBS)					\
 	$(XF86MISC_LIBS)
 
 #AccessX_files = \
@@ -69,18 +89,14 @@ IDL_FLAGS = -D__GNOME_SettingsDaemon_COMPILATION -I $(idl_dir) -I $(datadir)/idl
         -I $(LIBBONOBO_IDL_DIR)                                 \
         -I $(BONOBO_ACTIVATION_IDL_DIR)
 
-$(CORBA_GENERATED): $(idl_dir)/GNOME_SettingsDaemon.idl
+$(CORBA_GENERATED): $(idl_dir)/GNOME_SettingsDaemon.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(IDL_FLAGS) $(idl_dir)/GNOME_SettingsDaemon.idl
 
-serverdir	= $(libdir)/bonobo/servers
-server_in_files = GNOME_SettingsDaemon.server.in
-server_DATA     = $(server_in_files:.server.in=.server)
+serverfile = GNOME_SettingsDaemon.server.in
+serverdir = $(libdir)/bonobo/servers
+install-data-hook :
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $(srcdir)/$(serverfile) > $(DESTDIR)$(serverdir)/$(serverfile:.in=)
 
-@INTLTOOL_SERVER_RULE@
-
+EXTRA_DIST = $(serverfile)
 CLEANFILES = $(BUILT_SOURCES)
-
-EXTRA_DIST =						\
-	$(BUILT_SOURCES)				\
-	$(server_DATA) 					\
-	$(server_in_files)				\

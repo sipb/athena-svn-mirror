@@ -69,7 +69,7 @@ cb_dialog_response (GtkDialog *dialog, gint response_id)
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			"wgoscustdesk.xml",
+			"user-guide.xml",
 			"goscustdesk-50");
 	else
 		gtk_main_quit ();
@@ -80,7 +80,7 @@ cb_details_dialog_response (GtkDialog *dialog, gint response_id)
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			      "wgoscustdesk.xml",
+			      "user-guide.xml",
 			      "goscustdesk-50");
 	else {
 		gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -136,7 +136,7 @@ cb_http_details_button_clicked (GtkWidget *button,
 	g_signal_connect (widget, "response",
 			  G_CALLBACK (cb_details_dialog_response), NULL);
 	
-	capplet_set_icon (widget, "gnome-globe.png");
+	capplet_set_icon (widget, "gnome-network-capplet.png");
 
 	gtk_widget_show_all (widget);
 }
@@ -170,6 +170,7 @@ proxy_mode_radiobutton_clicked_cb (GtkWidget *widget,
 {
 	GSList *mode_group;
 	int mode;
+	GConfClient *client;
 	
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widget)))
 		return;
@@ -184,6 +185,10 @@ proxy_mode_radiobutton_clicked_cb (GtkWidget *widget,
 				  mode == PROXYMODE_MANUAL);
 	gtk_widget_set_sensitive (WID ("auto_box"),
 				  mode == PROXYMODE_AUTO);
+	client = gconf_client_get_default ();
+	gconf_client_set_bool (client, USE_PROXY_KEY,
+				  mode == PROXYMODE_AUTO || mode == PROXYMODE_MANUAL, NULL);
+	g_object_unref (client);
 }
 
 static void
@@ -203,9 +208,15 @@ setup_dialog (GladeXML *dialog)
 	GConfPropertyEditor *peditor;
 	GSList *mode_group;
 	GType mode_type = 0;
+	GConfClient *client;
+	gint port_value;
 	
 	mode_type = g_enum_register_static ("NetworkPreferencesProxyType",
 				            proxytype_values);
+
+	/* There's a bug in peditors that cause them to not initialize the entry
+	 * correctly. */
+	client = gconf_client_get_default ();
 
 	/* Hackety hack */
 	gtk_label_set_use_markup (GTK_LABEL (GTK_BIN (WID ("none_radiobutton"))->child), TRUE);
@@ -221,6 +232,8 @@ setup_dialog (GladeXML *dialog)
 			TRUE, NULL));
 	
 	/* Http */
+	port_value = gconf_client_get_int (client, HTTP_PROXY_PORT_KEY, NULL);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (WID ("http_port_spinbutton")), (gdouble) port_value);
 	peditor = GCONF_PROPERTY_EDITOR (gconf_peditor_new_string (
 			NULL, HTTP_PROXY_HOST_KEY, WID ("http_host_entry"),
 			"conv-from-widget-cb", extract_proxy_host,
@@ -234,6 +247,8 @@ setup_dialog (GladeXML *dialog)
 			  WID ("network_dialog"));
 
 	/* Secure */
+ 	port_value = gconf_client_get_int (client, SECURE_PROXY_PORT_KEY, NULL);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (WID ("secure_port_spinbutton")), (gdouble) port_value);
 	peditor = GCONF_PROPERTY_EDITOR (gconf_peditor_new_string (
 			NULL, SECURE_PROXY_HOST_KEY, WID ("secure_host_entry"),
 			"conv-from-widget-cb", extract_proxy_host,
@@ -243,6 +258,8 @@ setup_dialog (GladeXML *dialog)
 			NULL));
 
 	/* Ftp */
+ 	port_value = gconf_client_get_int (client, FTP_PROXY_PORT_KEY, NULL);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (WID ("ftp_port_spinbutton")), (gdouble) port_value);
 	peditor = GCONF_PROPERTY_EDITOR (gconf_peditor_new_string (
 			NULL, FTP_PROXY_HOST_KEY, WID ("ftp_host_entry"),
 			"conv-from-widget-cb", extract_proxy_host,
@@ -252,6 +269,8 @@ setup_dialog (GladeXML *dialog)
 			NULL));
 
 	/* Socks */
+ 	port_value = gconf_client_get_int (client, SOCKS_PROXY_PORT_KEY, NULL);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (WID ("socks_port_spinbutton")), (gdouble) port_value);
 	peditor = GCONF_PROPERTY_EDITOR (gconf_peditor_new_string (
 			NULL, SOCKS_PROXY_HOST_KEY, WID ("socks_host_entry"),
 			"conv-from-widget-cb", extract_proxy_host,
@@ -287,13 +306,17 @@ main (int argc, char **argv)
 	client = gconf_client_get_default ();
 	gconf_client_add_dir (client, "/system/gnome-vfs",
 			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	gconf_client_add_dir (client, "/system/http_proxy",
+			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	gconf_client_add_dir (client, "/system/proxy",
+			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 
 	dialog = glade_xml_new (GNOMECC_DATA_DIR "/interfaces/gnome-network-preferences.glade",
 				"network_dialog", NULL);
 
 	setup_dialog (dialog);
 	widget = WID ("network_dialog");
-	capplet_set_icon (widget, "gnome-globe.png");
+	capplet_set_icon (widget, "stock_proxy");
 	gtk_widget_show_all (widget);
 	gtk_main ();
 

@@ -1,3 +1,109 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-mouse-properties.c: (main):
+	Use themed icon for WM hint.
+
+2004-06-15  Bastien Nocera  <hadess@hadess.net>
+
+	* .cvsignore: upd
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-mouse-properties.c: (dialog_response_cb): Update help
+	link to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+Mon Aug 11 13:53:23 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-mouse-properties.c (delay_value_changed_cb): fix the
+	double click peditor.
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* gnome-mouse-properties.glade: Patch to fix spacing between action 
+	area and vbox of preferences dialog.
+	
+Fri Aug  1 14:29:12 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-mouse-properties.c (setup_dialog): remove markup from
+	translated strings, #118801.
+
+Fri Aug  1 13:06:04 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-mouse-properties.c (create_dialog): add support for
+	Xcursors.
+
+Thu Jul 24 16:14:33 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-mouse-properties.c (setup_dialog): remove the float_to_int
+	conversion as the peditor already does that.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-17  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gnome-mouse-properties.glade:  HIGify dialog and fix 
+	ui-review bug 99532: remove help text from the dialog; 
+	s/Delay/Timeout; remove frames and use HIGified categories;
+	change check box text to "Highlight the pointer when you 
+	press Ctrl"; change the cursor theme's note to "<i><small><b>
+	Note:</b> Changes to theis setting will not take effect until 
+	you next log in.</small><i>"; and fix widget padding.
+	    
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-04-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-mouse-properties.c: (read_cursor_font), (setup_dialog):
+	Plug a couple of leaks.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

@@ -3,11 +3,7 @@
 #include <stdio.h>
 #include <glib.h>
 #include <libgnome/gnome-i18n.h>
-
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include <locale.h>
 
 #include "gnome-settings-daemon.h"
 #include "gnome-settings-xsettings.h"
@@ -80,6 +76,28 @@ translate_string_string (TranslationEntry *trans,
                                   gconf_value_get_string (value));
 }
 
+static void
+translate_string_string_toolbar (TranslationEntry *trans,
+				 GConfValue       *value)
+{
+  int i;
+  const char *tmp;
+  
+  g_assert (value->type == trans->gconf_type);
+
+  /* This is kind of a workaround since GNOME expects the key value to be
+   * "both_horiz" and gtk+ wants the XSetting to be "both-horiz".
+   */
+  tmp = gconf_value_get_string (value);
+  if (tmp && strcmp (tmp, "both_horiz") == 0)
+	  tmp = "both-horiz";
+
+  for (i = 0; managers [i]; i++) 
+    xsettings_manager_set_string (managers [i],
+                                  trans->xsetting_name,
+                                  tmp);
+}
+
 static TranslationEntry translations [] = {
   { "/desktop/gnome/peripherals/mouse/double_click",	"Net/DoubleClickTime",
       GCONF_VALUE_INT,		translate_int_int },
@@ -92,7 +110,7 @@ static TranslationEntry translations [] = {
   { "/desktop/gnome/interface/gtk_key_theme",		"Gtk/KeyThemeName",
       GCONF_VALUE_STRING,	translate_string_string },
   { "/desktop/gnome/interface/toolbar_style",			"Gtk/ToolbarStyle",
-      GCONF_VALUE_STRING,	translate_string_string },
+      GCONF_VALUE_STRING,	translate_string_string_toolbar },
   { "/desktop/gnome/interface/toolbar_icon_size",		"Gtk/ToolbarIconSize",
       GCONF_VALUE_STRING,	translate_string_string },
   { "/desktop/gnome/interface/can_change_accels",		"Gtk/CanChangeAccels",
@@ -106,7 +124,13 @@ static TranslationEntry translations [] = {
   { "/desktop/gnome/interface/gtk-im-preedit-style",	"Gtk/IMPreeditStyle",
       GCONF_VALUE_STRING,	translate_string_string },
   { "/desktop/gnome/interface/gtk-im-status-style",	"Gtk/IMStatusStyle",
-      GCONF_VALUE_STRING,	translate_string_string }
+      GCONF_VALUE_STRING,	translate_string_string },
+  { "/desktop/gnome/interface/icon_theme",		"Net/IconThemeName",
+      GCONF_VALUE_STRING,	translate_string_string },
+  { "/desktop/gnome/interface/file_chooser_backend",	"Gtk/FileChooserBackend",
+      GCONF_VALUE_STRING,	translate_string_string },
+  { "/desktop/gnome/interface/menus_have_icons",	"Gtk/MenuImages",
+      GCONF_VALUE_BOOL,		translate_bool_int },
 };
 
 static TranslationEntry*
@@ -258,7 +282,7 @@ gnome_xft_settings_get (GConfClient      *client,
   settings->antialias = TRUE;
   settings->hinting = TRUE;
   settings->hintstyle = "hintfull";
-  settings->dpi = 96;
+  settings->dpi = 96 * 1024;
   settings->rgba = "rgb";
 
   if ((int)(1024 * dpi + 0.5) > 0)
@@ -348,124 +372,14 @@ gnome_xft_settings_set_xsettings (GnomeXftSettings *settings)
     }
 }
 
-/*
- * Helper function for spawn_with_input() - write an entire
- * string to a fd.
- */
-static gboolean
-write_all (int         fd,
-	   const char *buf,
-	   gsize       to_write)
-{
-  while (to_write > 0)
-    {
-      gssize count = write (fd, buf, to_write);
-      if (count < 0)
-	{
-	  if (errno != EINTR)
-	    return FALSE;
-	}
-      else
-	{
-	  to_write -= count;
-	  buf += count;
-	}
-    }
-
-  return TRUE;
-}
-
-/*
- * Helper function for spawn_with_input() - wait for a child
- * to exit.
- */
-gboolean
-wait_for_child (int  pid,
-		int *status)
-{
-  gint ret;
-
- again:
-  ret = waitpid (pid, status, 0);
-
-  if (ret < 0)
-    {
-      if (errno == EINTR)
-        goto again;
-      else
-        {
-	  g_warning ("Unexpected error in waitpid() (%s)",
-		     g_strerror (errno));
-	  return FALSE;
-        }
-    }
-
-  return TRUE;
-}
-
-/**
- * spawn_with_input:
- * @argv: command line to run
- * @input: string to write to the child process. 
- * 
- * Spawns a child process specified by @argv, writes the text in
- * @input to it, then waits for the child to exit. Any failures
- * are output through g_warning(); if you wanted to use this in
- * cases where errors need to be presented to the user, some
- * modification would be needed.
- **/
-static void
-spawn_with_input (char      **argv,
-		  const char *input)
-{
-  int exit_status;
-  int child_pid;
-  int inpipe;
-  GError *err = NULL;
-  
-  if (!g_spawn_async_with_pipes (NULL /* working directory */, argv, NULL /* envp */,
-				 G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-				 NULL, NULL, /* child setup and data */
-				 &child_pid,
-				 &inpipe, NULL, NULL, /* stdin, stdout, stderr */
-				 &err))
-    {
-      gchar *command = g_strjoinv (" ", argv);
-      g_warning ("Could not execute %s: %s", command, err->message);
-      g_error_free (err);
-      g_free (command);
-
-      return;
-    }
-
-  if (input)
-    {
-      if (!write_all (inpipe, input, strlen (input)))
-	{
-	  gchar *command = g_strjoinv (" ", argv);
-	  g_warning ("Could not write input to %s", command);
-	  g_free (command);
-	}
-
-      close (inpipe);
-    }
-      
-  wait_for_child (child_pid, &exit_status);
-
-  if (!WIFEXITED (exit_status) || WEXITSTATUS (exit_status))
-    {
-      gchar *command = g_strjoinv (" ", argv);
-      g_warning ("Command %s failed", command);
-      g_free (command);
-    }
-}
-
 static void
 gnome_xft_settings_set_xresources (GnomeXftSettings *settings)
 {
   char *add[] = { "xrdb", "-merge", NULL };
   GString *add_string = g_string_new (NULL);
+  char *old_locale = g_strdup (setlocale (LC_NUMERIC, NULL));
 
+  setlocale (LC_NUMERIC, "C");
   g_string_append_printf (add_string,
 			  "Xft.dpi: %f\n", settings->dpi / 1024.);
   g_string_append_printf (add_string,
@@ -477,9 +391,11 @@ gnome_xft_settings_set_xresources (GnomeXftSettings *settings)
   g_string_append_printf (add_string,
 			  "Xft.rgba: %s\n", settings->rgba);
 
-  spawn_with_input (add, add_string->str);
+  gnome_settings_daemon_spawn_with_input (add, add_string->str);
 
   g_string_free (add_string, TRUE);
+  setlocale (LC_NUMERIC, old_locale);
+  g_free (old_locale);
 }
 
 /* We mirror the Xft properties both through XSETTINGS and through

@@ -5,7 +5,7 @@
 #ifndef GNOME_SettingsDaemon_H
 #define GNOME_SettingsDaemon_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -61,21 +61,18 @@ extern "C"
        CORBA_boolean(*awake) (PortableServer_Servant _servant,
 			      const CORBA_char * service,
 			      CORBA_Environment * ev);
-   }
-   POA_GNOME_SettingsDaemon__epv;
+   } POA_GNOME_SettingsDaemon__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_SettingsDaemon__epv *GNOME_SettingsDaemon_epv;
-   }
-   POA_GNOME_SettingsDaemon__vepv;
+   } POA_GNOME_SettingsDaemon__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_SettingsDaemon__vepv *vepv;
-   }
-   POA_GNOME_SettingsDaemon;
+   } POA_GNOME_SettingsDaemon;
    extern void POA_GNOME_SettingsDaemon__init(PortableServer_Servant servant,
 					      CORBA_Environment * ev);
    extern void POA_GNOME_SettingsDaemon__fini(PortableServer_Servant servant,

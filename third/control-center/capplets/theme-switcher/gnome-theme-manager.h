@@ -6,24 +6,23 @@
 
 
 #define GTK_THEME_KEY      "/desktop/gnome/interface/gtk_theme"
-#define WINDOW_THEME_KEY   "/desktop/gnome/applications/window_manager/theme"
 #define ICON_THEME_KEY     "/desktop/gnome/interface/icon_theme"
 #define FONT_KEY	   "/desktop/gnome/interface/font_name"
 
 #define METACITY_THEME_DIR "/apps/metacity/general"
 #define METACITY_THEME_KEY METACITY_THEME_DIR "/theme"
 
-#define META_THEME_DEFAULT_NAME   "Default"
-#define GTK_THEME_DEFAULT_NAME    "Default"
-#define WINDOW_THEME_DEFAULT_NAME "Atlanta"
-#define ICON_THEME_DEFAULT_NAME   "Default"
+extern const char *meta_theme_default_name; 
+extern const char *gtk_theme_default_name; 
+extern const char *window_theme_default_name; 
+extern const char *icon_theme_default_name; 
 
 
 /* Drag and drop info */
 enum
 {
   TARGET_URI_LIST,
-  TARGET_NS_URL,
+  TARGET_NS_URL
 };
 
 /* model info */
@@ -38,8 +37,7 @@ enum
 enum
 {
   THEME_FLAG_DEFAULT = 1 << 0,
-  THEME_FLAG_CUSTOM  = 1 << 1,
-  THEME_FLAG_INITIAL  = 1 << 2,
+  THEME_FLAG_CUSTOM  = 1 << 1
 };
 
 extern GtkTargetEntry drop_types[];
@@ -76,6 +74,7 @@ void      gnome_theme_manager_drag_data_received_cb     (GtkWidget        *widge
 							 guint             info,
 							 guint             time,
 							 gpointer          data);
+
 
 
 

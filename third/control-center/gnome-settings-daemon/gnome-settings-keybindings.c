@@ -8,6 +8,7 @@
 #include <libgnome/gnome-i18n.h>
 #include "gnome-settings-daemon.h"
 #include "gnome-settings-keybindings.h"
+#include "eggaccelerators.h"
 
 /* we exclude shift, GDK_CONTROL_MASK and GDK_MOD1_MASK since we know what 
    these modifiers mean 
@@ -35,25 +36,42 @@ typedef struct {
 } Binding;
   
 static GSList *binding_list = NULL;
+static GSList *screens = NULL;
 
-char *
-screen_exec_display_string (XEvent *xevent)
+static GSList *
+get_screens_list (void)
+{
+  GdkDisplay *display = gdk_display_get_default();
+  GSList *list = NULL;
+  int i;
+
+  if (gdk_display_get_n_screens (display) == 1) {
+    list = g_slist_append (list, gdk_screen_get_default ());
+  } else {
+    for (i = 0; i < gdk_display_get_n_screens (display); i++) {
+      GdkScreen *screen;
+
+      screen = gdk_display_get_screen (display, i);
+      if (screen != NULL) {
+        list = g_slist_append (list, screen);
+      }
+    }
+  }
+
+  return list;
+}
+
+extern char **environ;
+
+static char *
+screen_exec_display_string (GdkScreen *screen)
 {
   GString    *str;
   const char *old_display;
   char       *retval;
   char       *p;
 
-#ifdef HAVE_GTK_MULTIHEAD
-  
-  GdkScreen  *screen = NULL;
-  
-  GdkWindow *window = gdk_xid_table_lookup (xevent->xkey.root);
-  
-  if (window)
-    screen = gdk_drawable_get_screen (GDK_DRAWABLE (window));
-       
-  g_assert (GDK_IS_SCREEN (screen));
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
 
   old_display = gdk_display_get_name (gdk_screen_get_display (screen));
 
@@ -71,10 +89,57 @@ screen_exec_display_string (XEvent *xevent)
   g_string_free (str, FALSE);
 
   return retval;
-#else
-  return g_strdup ("DISPLAY=:0.0");
-#endif
 }
+
+/**
+ * get_exec_environment:
+ *
+ * Description: Modifies the current program environment to
+ * ensure that $DISPLAY is set such that a launched application
+ * inheriting this environment would appear on screen.
+ *
+ * Returns: a newly-allocated %NULL-terminated array of strings or
+ * %NULL on error. Use g_strfreev() to free it.
+ *
+ * mainly ripped from egg_screen_exec_display_string in
+ * gnome-panel/egg-screen-exec.c
+ **/
+char **
+get_exec_environment (XEvent *xevent)
+{
+  char **retval = NULL;
+  int    i;
+  int    display_index = -1;
+
+  GdkScreen  *screen = NULL;
+
+  GdkWindow *window = gdk_xid_table_lookup (xevent->xkey.root);
+
+  if (window)
+    screen = gdk_drawable_get_screen (GDK_DRAWABLE (window));
+
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  for (i = 0; environ [i]; i++)
+    if (!strncmp (environ [i], "DISPLAY", 7))
+      display_index = i;
+
+  if (display_index == -1)
+    display_index = i++;
+
+  retval = g_new (char *, i + 1);
+
+  for (i = 0; environ [i]; i++)
+    if (i == display_index)
+      retval [i] = screen_exec_display_string (screen);
+    else
+      retval [i] = g_strdup (environ [i]);
+
+  retval [i] = NULL;
+
+  return retval;
+}
+
 
 static gint 
 compare_bindings (gconstpointer a, gconstpointer b)
@@ -98,12 +163,8 @@ parse_binding (Binding *binding)
       strcmp (binding->binding_str, "Disabled") == 0)
           return FALSE;
 
-  gtk_accelerator_parse (binding->binding_str, &binding->key.keysym, &binding->key.state);
-
-  if (binding->key.keysym == 0)
+  if (egg_accelerator_parse_virtual (binding->binding_str, &binding->key.keysym, &binding->key.keycode, &binding->key.state) == FALSE)
           return FALSE;
-
-  binding->key.keycode = XKeysymToKeycode (GDK_DISPLAY (), binding->key.keysym);
 
   return TRUE;
 }
@@ -214,6 +275,23 @@ key_already_used (Binding *binding)
   return FALSE;
 }
 
+static void
+grab_key (GdkWindow *root, Key *key, int result, gboolean grab)
+{
+  gdk_error_trap_push ();
+  if (grab)
+    XGrabKey (GDK_DISPLAY(), key->keycode, (result | key->state),
+              GDK_WINDOW_XID (root), True, GrabModeAsync, GrabModeAsync);
+  else
+    XUngrabKey(GDK_DISPLAY(), key->keycode, (result | key->state),
+	       GDK_WINDOW_XID (root));
+  gdk_flush ();
+  if (gdk_error_trap_pop ()) {
+    g_warning (_("It seems that another application already has"
+                 " access to key '%d'."), key->keycode);
+  }
+}
+
 /* inspired from all_combinations from gnome-panel/gnome-panel/global-keys.c */
 #define N_BITS 32
 static void
@@ -235,19 +313,19 @@ do_grab (gboolean grab,
 
 	uppervalue = 1<<bits_set_cnt;
 	for (i = 0; i < uppervalue; i++) {
+		GSList *l;
 		int j, result = 0;
 
 		for (j = 0; j < bits_set_cnt; j++) {
 			if (i & (1<<j))
 				result |= (1<<indexes[j]);
 		}
-		/* FIXME need to grab for all root windows for the display */
-		if (grab) 
-		  XGrabKey (GDK_DISPLAY(), key->keycode, (result | key->state),
-			    GDK_ROOT_WINDOW(), True, GrabModeAsync, GrabModeAsync);
-		else 
-		  XUngrabKey(GDK_DISPLAY(), key->keycode, (result | key->state),
-			     GDK_ROOT_WINDOW());
+
+		for (l = screens; l ; l = l->next) {
+                  GdkScreen *screen = l->data;
+                  grab_key (gdk_screen_get_root_window (screen), key, result,
+			    grab);
+		}
 	}
 }
 
@@ -312,7 +390,7 @@ keybindings_filter (GdkXEvent *gdk_xevent,
 
   if(xevent->type != KeyPress)
           return GDK_FILTER_CONTINUE;
-        
+
   keycode = xevent->xkey.keycode;
   state = xevent->xkey.state;
   
@@ -335,9 +413,8 @@ keybindings_filter (GdkXEvent *gdk_xevent,
 				   &error))
 	    return GDK_FILTER_CONTINUE;
 
-	  envp = g_new0 (gchar *, 2);
-	  envp [0] = screen_exec_display_string (xevent);
-	  envp [1] = NULL;
+	  envp = get_exec_environment (xevent);
+
 	  
 	  retval = g_spawn_async (NULL,
 				  argv,
@@ -372,11 +449,22 @@ keybindings_filter (GdkXEvent *gdk_xevent,
 void
 gnome_settings_keybindings_init (GConfClient *client)
 {
+  GdkDisplay *dpy = gdk_display_get_default ();
+  GdkScreen *screen;
+  int screen_num = gdk_display_get_n_screens (dpy);
+  int i;
+
   gnome_settings_daemon_register_callback (GCONF_BINDING_DIR, bindings_callback);
   
   gdk_window_add_filter (gdk_get_default_root_window (),
 			 keybindings_filter,
 			 NULL);
+  for (i = 0; i < screen_num; i++)
+    {
+      screen = gdk_display_get_screen (dpy, i);
+      gdk_window_add_filter (gdk_screen_get_root_window (screen),
+			     keybindings_filter, NULL);
+    }
 }
 
 void
@@ -385,6 +473,7 @@ gnome_settings_keybindings_load (GConfClient *client)
   GSList *list, *li;
 
   list = gconf_client_all_dirs (client, GCONF_BINDING_DIR, NULL);
+  screens = get_screens_list ();
 
   for (li = list; li != NULL; li = li->next)
     {

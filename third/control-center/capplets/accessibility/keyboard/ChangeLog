@@ -1,3 +1,150 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-accessibility-keyboard-properties.c: (main):
+	Use themed icon for window hint.
+
+2004-07-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-accessibility-keyboard-properties.glade:  Add label-for/
+	labelled-by relations. Fixes bug #144174.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-16  Jody Goldberg <jody@gnome.org>
+
+	* accessibility-keyboard.c (cb_load_CDE_file) : Add a kludge to set
+	  the vertical size based on the monitor size until the filesel can do
+	  a better job of doing it itself.
+
+2003-12-07  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* accessibility-keyboard.c: (load_CDE_file),
+	(fchooser_handle_response), (cb_load_CDE_file): replace
+	GtkFileSelection with GtkFileChooser.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-accessibility-keyboard-properties.c: (dialog_response): Update
+	help link to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-11-18  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-accessibility-keyboard-properties.glade:  Add atk relations.
+	Fixes bug #126718
+	
+2003-11-03  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=120842
+	* gnome-accessibility-keyboard-properties.c : older xservers require
+	  X11/Xlib.h too, its not sun specific.
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=120842
+	* gnome-accessibility-keyboard-properties.glade : Remove bone headed
+	  spitting of checkbox and label.
+	* accessibility-keyboard.c (setup_toggles) : It was probably done so
+	  that the headers could be made bold.
+
+Mon Aug 11 11:55:49 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-accessibility-keyboard-properties.glade: Patch from Elijah
+	Newren <newren@math.utah.edu> to bring the possible repeat range
+	in sync with the keyboard capplet.
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* gnome-accessibility-keyboard-properties.glade: Patch to add 
+	two more pixels of spacing between action area and vbox of 
+	preferences dialog.
+
+2003-07-24  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* gnome-accessibility-keyboard-properties.glade:
+	Allow only numeric values in spinbutton.
+	Fixes bugzilla bug# 118175 
+
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-accessibility-keyboard-properties.glade,
+	  accessibility-keyboard.c:  HIG fixes for ui-review bug 
+	  report #98915.
+
+2003-07-16  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-accessibility-keyboard-properties.glade:  Adjust widget 
+	padding to make dialog a little more HIG compliant.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-accessibility-keyboard-properties.c: Merge fix
+	for bug #110266.
+
+2003-04-30  Alex Duggan  <aldug@astrolinux.com>
+
+	* gnome-accessibility-keyboard-properties.c: use appropriate
+	window border icon.
+
+2003-04-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-accessibility-keyboard-properties.c: Fix build
+	on Solaris. Fixes bug #106196.
+
+2003-02-21  Calum Benson  <calum.benson@sun.com>
+
+	* gnome-accessibility-keyboard-properties.glade:
+	HIG-ified frames and labels.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1
@@ -16,7 +163,7 @@ Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
 
 2003-01-08  Jody Goldberg <jody@gnome.org>
 
-	http://bugzilla.gnome.org/show_bug.cgi?id=a96483
+	http://bugzilla.gnome.org/show_bug.cgi?id=96483
 	* accessibility-keyboard.c : sigh.  The defaults apparently need to be
 	  0 too.
 

@@ -1,3 +1,605 @@
+Tue Sep 14 17:50:56 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in:
+	* NEWS: Release 2.8.0
+
+2004-09-03  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-daemon/gnome-settings-keyboard-xkb.c : revert
+	  unintended string change
+
+2004-08-31  Jody Goldberg <jody@gnome.org>
+
+	* capplets/common/gconf-property-editor.c
+	(peditor_numeric_range_widget_changed) : tracked the long running
+	  irrtation about 'expecting int received float'.  Running without a
+	  schema would default the value to float.  12 of 13 callers had ints
+	  so I have changed the default and added a warning.
+
+Sun Aug 29 22:37:00 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: post release bump.
+
+Sun Aug 29 21:55:09 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* NEWS: Release 2.7.1
+
+2004-07-23  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=148291
+	* configure.in : typo
+
+2004-06-07  Jody Goldberg <jody@gnome.org>
+
+	* po/POTFILES.in : add server file, still unused without the patch
+	* configure.in : ditto.
+
+2004-06-01  Jody Goldberg <jody@gnome.org>
+
+	* schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in : Add
+	  xkb/update_handlers.
+
+2004-08-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added «nb» to ALL_LINGUAS.
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+Sat Jul 31 11:00:33 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: post release bump
+
+Fri Jul 30 20:39:10 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: 2.7.0
+
+Wed Jul 21 15:43:55 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Blah.  badly applied patch.
+
+Wed Jul 21 15:09:17 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: patch from Mason Kidd <mrkidd@mrkidd.com> to put
+	back default-applications and remove file-types.
+
+Mon Jul 19 11:09:44 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): 
+	* configure.in: remove default-applications capplet.
+
+2004-07-15  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: fix OSS detection on NetBSD, patch from Julio M.
+	Merino Vidal <jmmv@menta.net> (Closes: #145038)
+
+2004-07-15  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: fix gdk-pixbuf-csource's double identity (was not
+	detecting gdk-pixbuf-csource-32 from gtk2-devel), detect and
+	substitute glib-genmarshal's binary
+
+2004-05-17  Sergey V. Udaltsov <svu@gnome.org>
+
+	* Merged the preview tab branch. The module libkbdraw appended
+
+2004-05-17  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : check for, but do not require nautilus libs.  These
+	  is necessary if we move to the osx/ximian style shell.
+
+2004-04-16  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post branch release bump to 2.7.0
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Force libxklavier 1.0.2 so that we can work with
+	  x.org and xfree86
+
+2004-04-14  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-08  Jody Goldberg <jody@gnome.org>
+
+	* libbackground/applier.c (egg_pixbuf_new_from_file_at_size) :
+	  disable translation until after gnome-2-6 branch
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : We'll keep bumping it until we get it right
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.1.
+
+2004-03-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.2.
+
+2004-03-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	* gnome-settings-daemon/actions/Makefile.am:
+          check for GStreamer 0.8 properly
+          make sure -gstreamer files get disted for gnome-settings-daemon
+          re-enable GStreamer by default since #131316 got fixed
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-25  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-16  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : require libxklavier 1.0 to get a few crashers fixed
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-28  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* help/es: Added Spanish help
+
+2004-02-25  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: Disable GStreamer by default until #131316 gets
+	fixed
+
+2004-02-25  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: check for GStreamer, make it possible to disable
+	ALSA support even if the libraries are there
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-07  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* capplets/display/main.c: (create_dialog): Fix alignment of Options
+	category. (#133715).
+
+2004-02-17  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=133214
+	* acinclude.m4 : quote the AC_DEFUN as per patch from
+	  alexander.winston@comcast.net
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=124064
+	* configure.in : add a test for ngettext.  Used the same test as
+	  gnome-vfs for consitency.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* schemas/Makefile.am : handle builddir != srcdir
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* capplets/display/main.c: (cb_dialog_response):
+	* capplets/localization/gnome-localization-properties.c:
+	(dialog_response): update help links to point to user-guide.xml
+
+2004-02-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* capplets/font/main.c: (sample_expose):
+	* gnome-settings-daemon/gnome-settings-gtk1theme.c:
+	(apply_settings):
+	* vfs-methods/themus/theme-method.c:
+	64bits fixes.
+
+2004-02-03  Carlos Perelló Marín <carlos@gnome.org>
+
+	* configure.in, capplets/Makefile.am: Removed the localization capplet
+	references, it will wait until GNOME 2.7, it's too late for GNOME 2.6.
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* schemas/Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-01-14  Bastien Nocera  <hadess@hadess.net>
+
+	* schemas/apps_gnome_settings_daemon_keybindings.schemas.in:
+	Change the labels for a couple of keys, make them more of the style
+	of the current ones
+
+2004-01-08  Carlos Perelló Marín <carlos@gnome.org>
+
+	* configure.in: The localization capplet is disabled until we remove
+	the libicu dependency.
+
+2004-01-08  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Damn, forgot to bump the version after to point release.
+
+2004-01-05  Carlos Perelló Marín <carlos@gnome.org>
+
+	* configure.in: Added a check for libicu and the needed lines to add
+	the localization capplet.
+	* capplets/Makefile.am: Added the localization dir.
+	* capplets/localization: Added the localization capplet to change
+	the locales.
+	* po/POTFILES.in: Added new files from localization capplet.
+
+2004-01-01  Rodney Dawes  <dobey@ximian.com>
+
+	* configure.in: Require GTK+ 2.3.0
+	  Fix --disable-vfs-methods to work
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Christian Neumair  <chris@gnome-de.org>
+
+	* capplets/font/main.c: (application_font_to_gconf):
+	* capplets/display/main.c: (timeout_string): Use ngettext for plurals
+	(#125175).
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-12-16  Jody Goldberg <jody@gnome.org>
+
+	* capplets/file-types/file-types.desktop.in : remove the png so that
+	  it can theme.
+
+	* capplets/desktop-links/Makefile.am : remove .in.in path kludge.
+	* capplets/desktop-links/Accessibility.directory.in :
+	* capplets/desktop-links/Advanced.directory.in : ditto.
+
+	* capplets/background/Makefile.am : no need to install capplet icon
+	  anymore its part of the theme.
+	* capplets/default-applications/Makefile.am :
+	* capplets/font/Makefile.am  :
+	* capplets/keybindings/Makefile.am :
+	* capplets/keyboard/Makefile.am :
+	* capplets/mouse/Makefile.am :
+	* capplets/network/Makefile.am :
+	* capplets/sound/Makefile.am :
+	* capplets/theme-switcher/Makefile.am :
+	* capplets/ui-properties/Makefile.am :
+	* capplets/windows/Makefile.am :
+
+	* capplets/accessibility/at-properties/Makefile.am :
+	* capplets/accessibility/keyboard/Makefile.am :
+
+	* capplets/background/background.desktop.in : Use the themed icon.
+	* capplets/default-applications/default-applications.desktop.in :
+	* capplets/font/font-properties.desktop.in :
+	* capplets/keybindings/keybinding.desktop.in :
+	* capplets/keyboard/keyboard.desktop.in :
+	* capplets/mouse/gnome-settings-mouse.desktop.in :
+	* capplets/network/gnome-network-preferences.desktop.in :
+	* capplets/sound/gnome-settings-sound.desktop.in :
+	* capplets/theme-switcher/gtk-theme-selector.desktop.in :
+	* capplets/ui-properties/gnome-ui-properties.desktop.in :
+	* capplets/windows/window-properties.desktop.in :
+	* capplets/accessibility/at-properties/at-properties.desktop.in :
+	* capplets/accessibility/keyboard/accessibility-keyboard.desktop.in :
+
+2003-12-09  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* capplets/display/main.c (create_dialog):
+	  Fixed conflict in Alt-C mnemonic.
+	  Bugzilla bug #125719.
+
+2003-11-12  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am : add a libgswitchit subdir
+
+	* configure.in : Add a test to ensure the new virtual include of
+	  libgswitchit is in place
+	* configure.in : define LIBXKLAVIER_*
+	* configure.in : include libgswitchit in SUBDIRS
+
+2003-11-05  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=125970
+	* configure.in : make x extension check more robust
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : version bump to 2.5.0 for head
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Add libxklavier as a build requirement to prep people
+
+2003-10-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/display/main.c: (create_screen_widgets): Merge
+	fix for bug #125403 from stable.
+
+Mon Sep  8 10:55:23 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Release 2.4.0
+
+2003-08-31  Jeff Waugh  <jdub@perkypants.org>
+
+	* capplets/display/display-capplet.png: Not an apple.
+
+2003-08-20  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS
+	
+2003-08-18  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" to ALL_LINGUAS.
+
+2003-08-13  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* gnome-network-preferences.glade: Allow ports up to 65535 to be
+	specified in the proxy dialog box. Fixes bug #108930.
+
+Tue Aug  5 17:51:13 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* capplets/display/main.c: Patch from James T. Richardson, Jr
+	<james@richardsons.us> to clean up the R and R capplet a little,
+	#115629
+
+Thu Jul 31 14:43:16 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* typing-break/drw-monitor.c: remove unneeded #include <sys/vt.h>
+	as it doesn't exist on Solaris.
+
+2003-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* capplets/sound/sound.desktop.in:
+	Use gnome-audio.png, not gnome-audio2.png for icon.
+
+2003-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* capplets/accessibility/at-properties/.cvsignore:
+	* vfs-methods/themus/.cvsignore:
+	Quiet CVS.
+
+	* vfs-methods/themus/Makefile.am:
+	Add missing files to EXTRA_DIST. Fix distcheck.
+
+	* gnome-settings-daemon/Makefile.am:
+	Really don't ship generated files in tarball.
+
+2003-07-24  Andrew Sobala  <aes@gnome.org>
+
+	* Added libglade to themus configure check
+
+2003-07-17  Richard Hult  <richard@imendio.com>
+
+	* typing-break/main.c (main): Remove session stuff since g-s-d
+	handles lifetime the cycle now.
+
+2003-07-11  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-07-02  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=116568
+	* gnome-settings-daemon/gnome-settings-xsettings.c
+	(gnome_xft_settings_set_xresources) : generate values in locale C
+
+2003-06-27  Richard Hult  <richard@imendio.com>
+
+	* typing-break/drw-intl.h: Remove this and use gnome-i18n.h
+	instead.
+
+	* typing-break/Makefile.am: Remove drw-intl.h
+	
+	* typing-break/drwright.c:
+	* typing-break/drwright.h:
+	* typing-break/drw-break-window.c: Merge in changes from drwright.
+
+Thu Jun 26 16:37:50 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* Makefile.am (SUBDIRS): add typing-break to subdirs.
+
+Thu Jun 26 07:38:45 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* typing-break/drwright.c: added the typing break to CVS from
+	drwright.
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-06-15  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-03  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* .cvsignore:
+	* capplets/common/.cvsignore:
+	* schemas/.cvsignore:
+	* vfs-methods/.cvsignore: Quiet cvs.
+
+	* capplets/common/Makefile.am: fix parallel build.
+
+	* capplets/common/gnome-theme-apply.c: add missing header.
+
+2003-05-23  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "id" "th" to ALL_LINGUAS.
+
+Tue May 20 19:14:19 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: 2.3.2 released.
+
+Tue May 20 12:43:59 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in (FONTILUS): add fontilus support.
+	* vfs-methods/Makefile.am: add fontilus support.
+	* vfs-methods/fontilus/Makefile.am: add fontilus support.
+
+2003-05-14  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "sr" "sr@Latn" to ALL_LINGUAS.
+
+2003-05-13  Andrew Sobala  <aes@gnome.org>
+
+	* Makefile.am: added themus support
+	* configure.in:	added themus support
+	* vfs-methods/Makefile.am: added
+
+2003-05-12  Marco Pesenti Gritti  <marco@it.gnome.org>
+
+	* capplets/file-types/service-info.c: (service_info_save),
+	(service_info_delete):
+
+	Set the enabled key for new services and unset it on delete
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-02  Ross Burton  <ross@burtonini.com>
+
+	* configure.in: Generate the Makefile I added last night. Whoops.
+
+2003-04-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Require 2.2.0 or newer of libgnomeui
+	and gnome-desktop for the icon theme stuff. Fix from Spider and
+	aes. Fixes bug #104907.
+
+2003-04-23  Alexander Larsson  <alexl@redhat.com>
+
+	* capplets/Makefile.am: 
+	* configure.in:
+	* capplets/display/*
+	Check for XRandR support.
+	Add display capplet.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" in ALL_LINGUAS.
+
+2003-03-10  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-03-04  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* capplets/network/gnome-network-preferences.c:
+	(proxy_mode_radiobutton_clicked_cb):
+        Set "system/proxy/use_http_proxy" GConf key
+	when Manual or
+        Auto is selected.
+
+
+2003-02-22   Laurent Dhima  <laurenti@alblinux.net>
+	
+	* configure.in: Added 'sq' to ALL_LINGUAS
+	
+Thu Feb 13 18:51:37 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* capplets/common/gconf-property-editor.c: (gconf_peditor_new):
+	* capplets/common/gnome-theme-info.c: (read_meta_theme),
+	(update_theme_index), (update_common_theme_dir_index),
+	(top_theme_dir_changed), (top_icon_theme_dir_changed),
+	(add_common_theme_dir_monitor), (real_add_top_theme_dir_monitor):
+	* capplets/default-applications/gnome-default-applications-properti
+	es.c: (initialize_default_applications), (read_editor),
+	(read_terminal):
+	* capplets/file-types/mime-edit-dialog.c: (fill_dialog):
+	* capplets/file-types/mime-type-info.c: (load_all_mime_types):
+	* capplets/file-types/mime-types-model.c:
+	(mime_types_model_get_value):
+	* capplets/font/main.c: (font_render_get_gconf), (enum_group_load):
+	* capplets/mouse/gnome-mouse-properties.c: (read_cursor_font),
+	(cursor_changed):
+	* capplets/theme-switcher/gnome-theme-details.c:
+	(window_theme_selection_changed):
+	* capplets/theme-switcher/gnome-theme-manager.c:
+	(meta_theme_selection_changed):
+	* capplets/theme-switcher/theme-thumbnail.c:
+	(generate_theme_thumbnail):
+	* libsounds/sound-properties.c: (sound_properties_add_directory),
+	(sound_properties_add_file):
+	* libsounds/sound-view.c: (compare_func):
+	* libwindow-settings/gnome-window-manager.c:
+	(gnome_window_manager_new): Patch from Kjartan Maraas to fix a
+	bunch of leaks.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1
@@ -981,7 +1583,7 @@ Fri Nov 30 15:35:39 2001  Owen Taylor  <otaylor@redhat.com>
 2001-09-28  Richard Hestilow  <hestilow@ximian.com>
 
 	* control-center/capplet-dir-view-html.c:
-	Committed patch from Carlos Perell� Mar�n <carlos@gnome-db.org>
+	Committed patch from Carlos Perelló Marín <carlos@gnome-db.org>
 	to handle UTF-8 correctly. Sorry it took so long; it got lost in
 	my mailbox.
 
@@ -1203,7 +1805,7 @@ Fri Nov 30 15:35:39 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* capplets/default-applications: Added.
 
-2001-07-14  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-07-14  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* *.directory: Renamed to *.directory.in to be used with
 	xml-i18n-tools.

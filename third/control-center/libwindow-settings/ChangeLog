@@ -1,3 +1,75 @@
+Mon Jun 21 17:41:23 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-window-manager.c (gnome_wm_settings_copy|free): add copy
+	and free functions for the WM settings.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-16  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* Makefile.am: Added libgnome_window_settings_la_LIBADD to get complete
+	inter-library dependency information into the library.
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+Fri May  2 17:48:07 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* metacity-window-manager.c (add_themes_from_dir): better error
+	checking.
+
+2003-03-30  Andrew Sobala  <aes@gnome.org>
+
+	* gnome-window-settings-2.0.pc.in:
+	s/-lwindow-settings/-lgnome-window-settings/
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

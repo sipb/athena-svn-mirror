@@ -27,12 +27,13 @@
 #define GNOME_THEME_INFO_H
 
 #include <glib.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 
 typedef enum {
   GNOME_THEME_TYPE_METATHEME,
   GNOME_THEME_TYPE_ICON,
-  GNOME_THEME_TYPE_REGULAR,
+  GNOME_THEME_TYPE_REGULAR
 } GnomeThemeType;
 
 typedef enum {
@@ -45,7 +46,7 @@ typedef enum {
 typedef enum {
   GNOME_THEME_METACITY = 1 << 0,
   GNOME_THEME_GTK_2 = 1 << 1,
-  GNOME_THEME_GTK_2_KEYBINDING = 1 << 2,
+  GNOME_THEME_GTK_2_KEYBINDING = 1 << 2
 } GnomeThemeElement;
 
 
@@ -117,7 +118,7 @@ GnomeThemeMetaInfo *gnome_theme_meta_info_find_by_uri      (const char         *
 GList              *gnome_theme_meta_info_find_all         (void);
 gint                gnome_theme_meta_info_compare          (GnomeThemeMetaInfo *a,
 							    GnomeThemeMetaInfo *b);
-
+GnomeThemeMetaInfo *gnome_theme_read_meta_theme                      (GnomeVFSURI *meta_theme_uri);
 
 /* Other */
 void                gnome_theme_init                       (gboolean           *monitor_not_added);

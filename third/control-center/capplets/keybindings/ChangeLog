@@ -1,3 +1,160 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-keybinding-properties.c: (setup_dialog):
+	Use themed icon for WM hint.
+
+2004-07-23 David Sedeño <david@alderia.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=148208
+	* gnome-keybinding-properties.glade: Expand to false to the hbox1
+
+2004-05-09 Jody Goldberg <jody@gnome.org>
+
+	For : Michael Terry <mike@mterry.name>
+	http://bugzilla.gnome.org/show_bug.cgi?id=99529
+	* gnome-keybinding-properties.c : remove functions dealing with
+	  the keyboard theme
+	* gnome-keybinding-properties.glade : remove keyboard theme option
+	  box and keyboard shortcut label
+
+2004-04-16  Jody Goldberg <jody@gnome.org>
+
+	From paolo borelli :
+	http://bugzilla.gnome.org/show_bug.cgi?id=139723
+	* gnome-keybinding-properties.c (accel_edited_callback) : fix leak
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=139605
+	* eggcellrendererkeys.c (grab_key_callback) : mouse buttons should not
+	  be valid modifiers.
+
+2004-04-06  Jody Goldberg <jody@gnome.org>
+
+	* gnome-keybinding-properties.c (cb_check_for_uniqueness) : Really fix
+	  this time to capture the vagaries of keys with and without names.
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* gnome-keybinding-properties.c (accel_edited_callback) : Use a cancel
+	  button on the 'already used' dialog so that escape will close it.
+	(cb_check_for_uniqueness) : fix brokeness.  It is entirely possible
+	  for keycode on loaded keys to be '0'
+
+2003-12-30  Sven Herzberg <herzi@gnome-de.org>
+
+	* capplets/keybindings/eggcellrendererkeys.c : change the "Type a
+	new accelerator..." tooltip to a shorter form "<New accelerator...>".
+	* capplets/keybindings/gnome-keybindings-properties.gladei : add an
+	explanation on how use the capplet.
+	This is based upon the work of Emmanuel Pacaud
+	<emmanuel.pacaud@univ-poitiers.fr>
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-22  Jody Goldberg <jody@gnome.org>
+
+	* gnome-keybinding-properties.c (reload_key_entries) : split the
+	  obvious media keys into a distinct category.  Call it 'Sound' to
+	  avoid string freeze problems.
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-17  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=128164
+	* gnome-keybinding-properties.c (accel_edited_callback) : don't use
+	  get_real_model.  The selection is based on the sorted model.
+	(accel_cleared_callback) : ditto, and fix a leak while I'm in here.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-keybinding-properties.c: (cb_dialog_response): Update help link
+	to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+Tue Nov 18 12:23:26 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* eggcellrendererkeys.[ch]: Patch from Bastien Nocera to to handle
+	keycodes as well as keysyms.
+
+	* eggaccelerators.[ch]: handle keycodes.
+
+	* gnome-keybinding-properties.c: handle keycodes.
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* gnome-keybinding-properties.glade: Patch to fix spacing between 
+	action area and vbox of preferences dialog.
+
+Fri Jul 25 16:29:29 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-keybinding-properties.c (desktop_key_list): Patch from
+	Ghee Teo to move the key bindings to the right place.
+
+2003-07-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-keybinding-properties.glade:  Minor HIG widget padding
+	adjustments.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-07-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* eggcellrendererkeys.c: (egg_cell_renderer_keys_set_accelerator):
+	Merge leak fix from stable.
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-04-30  Kjartan Maraas  <set EMAIL_ADDRESS environment variable>
+
+	* gnome-keybinding-properties.c: (make_key_theme_menu_item): Mark
+	string for translation. Patch from Hidetoshi Tajima.
+	Fixes bug #106560.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

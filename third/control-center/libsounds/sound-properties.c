@@ -228,9 +228,11 @@ sound_properties_add_directory (SoundProperties *props, gchar *directory,
 		
 		file = g_build_filename (directory, dent->d_name, NULL);
 		sound_properties_add_file (props, file, is_user, themedir);
+		g_free (file);
 	}
 
 	sound_properties_thaw (props);
+	closedir (dir);
 }
 
 static gchar *
@@ -400,10 +402,12 @@ sound_properties_add_file (SoundProperties *props, gchar *filename,
 
 		sound_properties_add_event (props, prefix, category, cat_desc,
 					    name, is_user, themedir);
+		g_free (name);
 	}
 
 	g_free (category);
-
+	g_free (prefix);
+	
 	sound_properties_thaw (props);
 }
 

@@ -38,6 +38,7 @@
 #include "capplet-stock-icons.h"
 #include <../accessibility/keyboard/accessibility-keyboard.h>
 
+#include "gnome-keyboard-properties-xkb.h"
 
 enum
 {
@@ -71,53 +72,13 @@ create_dialog (void)
 	return dialog;
 }
 
-static GConfEnumStringPair bell_enums[] = {
-	{ 0, "off" },
-	{ 1, "on" },
-	{ 2, "custom" },
-	{ -1, NULL }
-};
-
-static GConfValue *
-bell_from_widget (GConfPropertyEditor *peditor, const GConfValue *value)
-{
-	GConfValue *new_value;
-
-	new_value = gconf_value_new (GCONF_VALUE_STRING);
-	gconf_value_set_string (new_value,
-				gconf_enum_to_string (bell_enums, gconf_value_get_int (value)));
-
-	return new_value;
-}
-
-static GConfValue *
-bell_to_widget (GConfPropertyEditor *peditor, const GConfValue *value)
-{
-	GConfValue *new_value;
-	const gchar *str;
-	gint val = 2;
-
-	str = (value && (value->type == GCONF_VALUE_STRING)) ? gconf_value_get_string (value) : NULL;
-
-	new_value = gconf_value_new (GCONF_VALUE_INT);
-	if (value->type == GCONF_VALUE_STRING) {
-		gconf_string_to_enum (bell_enums,
-				      str,
-				      &val);
-	}
-	gconf_value_set_int (new_value, val);
-
-	return new_value;
-}
-
-
 static GConfValue *
 blink_from_widget (GConfPropertyEditor *peditor, const GConfValue *value)
 {
 	GConfValue *new_value;
 
 	new_value = gconf_value_new (GCONF_VALUE_INT);
-	gconf_value_set_int (new_value, 2600 - (int) gconf_value_get_float (value));
+	gconf_value_set_int (new_value, 2600 - gconf_value_get_int (value));
 
 	return new_value;
 }
@@ -129,27 +90,10 @@ blink_to_widget (GConfPropertyEditor *peditor, const GConfValue *value)
 	gint current_rate;
 
 	current_rate = gconf_value_get_int (value);
-	new_value = gconf_value_new (GCONF_VALUE_FLOAT);
-	gconf_value_set_float (new_value, CLAMP (2600 - current_rate, 100, 2500));
+	new_value = gconf_value_new (GCONF_VALUE_INT);
+	gconf_value_set_int (new_value, CLAMP (2600 - current_rate, 100, 2500));
 
 	return new_value;
-}
-
-static void
-bell_guard (GtkWidget *toggle,
-	    GladeXML  *dialog)
-{
-	gtk_widget_set_sensitive (WID ("bell_custom_fileentry"), GTK_TOGGLE_BUTTON (toggle)->active);
-}
-
-static gboolean
-mnemonic_activate (GtkWidget *toggle,
-		   gboolean   group_cycling,
-		   GtkWidget *entry)
-{
-	if (! group_cycling)
-		gtk_widget_grab_focus (entry);
-	return FALSE;
 }
 
 static void
@@ -170,7 +114,7 @@ dialog_response (GtkWidget *widget,
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (widget),
-			"wgoscustdesk.xml",
+			"user-guide.xml",
 			"goscustperiph-2");
 	else if (response_id == 0)
 		accessibility_button_clicked (NULL, NULL);
@@ -184,16 +128,11 @@ setup_dialog (GladeXML       *dialog,
 {
 	GObject *peditor;
 	GnomeProgram *program;
-	gchar *filename;
 
 	/* load all the images */
 	program = gnome_program_get ();
 
 	capplet_init_stock_icons ();
-        gtk_image_set_from_stock (GTK_IMAGE (WID ("repeat_image")), KEYBOARD_REPEAT, keyboard_capplet_icon_get_size());
-        gtk_image_set_from_stock (GTK_IMAGE (WID ("cursor_image")), KEYBOARD_CURSOR, keyboard_capplet_icon_get_size());
-        gtk_image_set_from_stock (GTK_IMAGE (WID ("volume_image")), KEYBOARD_VOLUME, keyboard_capplet_icon_get_size());
-        gtk_image_set_from_stock (GTK_IMAGE (WID ("bell_image")), KEYBOARD_BELL, keyboard_capplet_icon_get_size());
 	
 	peditor = gconf_peditor_new_boolean
 		(changeset, "/desktop/gnome/peripherals/keyboard/repeat", WID ("repeat_toggle"), NULL);
@@ -201,14 +140,10 @@ setup_dialog (GladeXML       *dialog,
 
 	gconf_peditor_new_numeric_range
 		(changeset, "/desktop/gnome/peripherals/keyboard/delay", WID ("repeat_delay_scale"),
-		 "conv-to-widget-cb",   gconf_value_int_to_float,
-		 "conv-from-widget-cb", gconf_value_float_to_int,
 		 NULL);
 
 	gconf_peditor_new_numeric_range
 		(changeset, "/desktop/gnome/peripherals/keyboard/rate", WID ("repeat_speed_scale"),
-		 "conv-to-widget-cb",   gconf_value_int_to_float,
-		 "conv-from-widget-cb", gconf_value_float_to_int,
 		 NULL);
 
 	peditor = gconf_peditor_new_boolean
@@ -220,24 +155,21 @@ setup_dialog (GladeXML       *dialog,
 		 "conv-from-widget-cb", blink_from_widget,
 		 NULL);
 
+	/* Ergonomics */
 	peditor = gconf_peditor_new_boolean
-		(changeset, "/desktop/gnome/peripherals/keyboard/click", WID ("volume_toggle"), NULL);
-	gconf_peditor_widget_set_guard (GCONF_PROPERTY_EDITOR (peditor), WID ("volume_hbox"));
+		(changeset, "/desktop/gnome/typing_break/enabled", WID ("break_enabled_toggle"), NULL);
+	gconf_peditor_widget_set_guard (GCONF_PROPERTY_EDITOR (peditor), WID ("break_details_table"));
 	gconf_peditor_new_numeric_range
-		(changeset, "/desktop/gnome/peripherals/keyboard/click_volume", WID ("volume_scale"),
-		 "conv-to-widget-cb",   gconf_value_int_to_float,
-		 "conv-from-widget-cb", gconf_value_float_to_int,
-		 NULL);
-	
-	g_signal_connect (G_OBJECT (WID ("bell_custom_radio")), "toggled", (GCallback) bell_guard, dialog);
-	peditor = gconf_peditor_new_select_radio
-		(changeset, "/desktop/gnome/peripherals/keyboard/bell_mode",
-		 gtk_radio_button_get_group (GTK_RADIO_BUTTON (WID ("bell_disabled_radio"))),
-		 "conv-to-widget-cb", bell_to_widget,
-		 "conv-from-widget-cb", bell_from_widget,
-		 NULL);
-	g_signal_connect (G_OBJECT (WID ("bell_custom_radio")), "mnemonic_activate", (GCallback) mnemonic_activate, WID ("bell_custom_entry"));
+		(changeset, "/desktop/gnome/typing_break/type_time", WID ("break_enabled_spin"), NULL);
+	gconf_peditor_new_numeric_range
+		(changeset, "/desktop/gnome/typing_break/break_time", WID ("break_interval_spin"), NULL);
+	gconf_peditor_new_boolean
+		(changeset, "/desktop/gnome/typing_break/allow_postpone", WID ("break_postponement_toggle"), NULL);
 	g_signal_connect (G_OBJECT (WID ("keyboard_dialog")), "response", (GCallback) dialog_response, changeset);
+	
+	gtk_label_set_use_markup (GTK_LABEL (GTK_BIN (WID ("break_enabled_toggle"))->child), TRUE);
+	
+        setup_xkb_tabs(dialog,changeset);
 }
 
 static void
@@ -279,8 +211,10 @@ main (int argc, char **argv)
 	GConfChangeSet *changeset;
 	GladeXML       *dialog;
 
-	static gboolean apply_only;
-	static gboolean get_legacy;
+	static gboolean apply_only = FALSE;
+	static gboolean get_legacy = FALSE;
+	static gboolean switch_to_typing_break_page = FALSE;
+
 	static struct poptOption cap_options[] = {
 		{ "apply", '\0', POPT_ARG_NONE, &apply_only, 0,
 		  N_("Just apply settings and quit (compatibility only; now handled by daemon)"), NULL },
@@ -288,6 +222,8 @@ main (int argc, char **argv)
 		  N_("Just apply settings and quit (compatibility only; now handled by daemon)"), NULL },
 		{ "get-legacy", '\0', POPT_ARG_NONE, &get_legacy, 0,
 		  N_("Retrieve and store legacy settings"), NULL },
+		{ "typing-break", '\0', POPT_ARG_NONE, &switch_to_typing_break_page, 0,
+		  N_("Start the page with the typing break settings showing"), NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
@@ -312,8 +248,11 @@ main (int argc, char **argv)
 		changeset = NULL;
 		dialog = create_dialog ();
 		setup_dialog (dialog, changeset);
+		if (switch_to_typing_break_page) {
+			gtk_notebook_set_current_page (GTK_NOTEBOOK (WID ("keyboard_notebook")), 3);
+		}
 		capplet_set_icon (WID ("keyboard_dialog"),
-			"keyboard-capplet.png");
+				  "gnome-dev-keyboard");
 		gtk_widget_show (WID ("keyboard_dialog"));
 		gtk_main ();
 	}

@@ -1,3 +1,374 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-wp-capplet.c: (gnome_wp_icon_theme_changed),
+	(wallpaper_properties_init):
+	Use themed icon for window hint.
+
+2004-08-16  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-capplet.c (wallpaper_properties_clicked):
+	Handle the GTK_RESPONSE_DELETE_EVENT case as well
+
+	Fixes #150273
+
+2004-08-15  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-item.c (gnome_wp_item_update_description):
+	Add "W x H pixels" to description, and remove file size
+	Mark the description string for translation as well
+
+2004-07-19  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-capplet.c (gnome_wp_remove_wallpaper, gnome_wp_list_sort):
+	Free what we get with gtk_tree_model_get
+
+	Fixes #147403
+
+2004-07-15  Rodney Dawes  <dobey@novell.com>
+
+	* gnome-wp-item.c (gnome_wp_item_new):
+	Check that item->fileinfo is not NULL, before trying to use a
+	string variable inside the struct for a strncmp
+
+	Fixes #147373
+
+2004-06-28  Rodney Dawes  <dobey@novell.com>
+
+	* *.[ch]: Update copyright info to have correct years (2003-2004)
+
+	* gnome-wp-capplet.c (gnome_wp_capplet_scroll_to_item):
+	Abstract this code out so that we don't have to duplicated it every
+	time we want to scroll to a particular item in the list
+
+	(gnome_wp_add_image): Update this to return the new item that we
+	created, and don't scroll to or set as the wallpaper, every time we
+	call this function
+	Use the new gnome_wp_item_new () call to create items
+
+	(gnome_wp_add_images): Change the API to not use the files argument
+	any longer, as we don't need it without the GTK+ 2.2 compat code
+	Add all the items to the list and select the last one when finished
+
+	(gnome_wp_file_open_dialog): Update to not pass in the files argument
+	to gnome_wp_add_images () and free the GSList of filenames
+
+	(bg_add_multiple_files): merge this code into the normal callback for
+	when images are dragged to the dialog
+
+	(bg_properties_dragged_image): Don't check if the list is more than
+	1 or not here, and always call gnome_wp_add_images () with the full
+	list that we are given
+	Convert the GList of GnomeVFSURIs that we get from gnome-vfs to a
+	GSList of char * uris to pass into gnome_wp_add_images ()
+
+	(gnome_wp_load_stuffs, gnome_wp_file_changed):
+	Use the new gnome_wp_capplet_scroll_to_item () and gnome_wp_item_new ()
+	API calls instead of duplicating code
+
+	* gnome-wp-capplet.h: Remove the GConf key path defines from here
+
+	* gnome-wp-item.[ch]: Add the gnome_wp_item_new () call to create the
+	GnomeWPItem structure for storing wallpapers in
+
+	* gnome-wp-utils.h: Put the GConf key path defines in here
+
+	* gnome-wp-xml.c (gnome_wp_load_legacy): Use the gnome_wp_item_new ()
+	call to create items from the old legacy (XD2 capplet) list file
+
+2004-05-14  Muktha Narayan <muktha.narayan@wipro.com>
+
+	* gnome-wp-capplet.c (set_accessible_name): New
+	(wallpaper_properties_init): Add accessible names.
+
+	Fixes #142517
+
+2004-04-27  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (gnome_wp_file_open_dialog):
+	(wallpaper_properties_init): Remove the #if checks for GTK+ 2.3.0 and
+	get rid of the compatibility code for building against 2.2
+
+2004-04-24  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (wallpaper_properties_init): Use the more correct
+	"Add Wallpaper" term for the file chooser window title
+
+	Fixes #135084
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-10  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (gnome_wp_list_sort): Use g_utf8_collate to sort
+	the descriptions, rather than a strcmp, so that we follow the locale
+	settings for LC_COLLATE
+
+	Fixes #139517
+
+2004-04-08  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (wallpaper_properties_init): Rever the previous
+	patch to Fix #135084 as it breaks string freeze
+
+2004-04-05  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (wallpaper_properties_init): Change file chooser
+	dialog title to say "Add Wallpaper" instead of "Add Wallpapers"
+
+	Fixes #135084
+
+2004-04-05  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (gnome_wp_scale_type_changed): Regenerate the
+	thumbnail in the list when we change scaling type now
+	(wallpaper_properties_init): Add GtkFileFilter support (needs love)
+	TreeView is buggy, so we need to not set the vertical-separator
+	style property for it
+	* gnome-wp-item.c: Include <config.h> and <gnome.h> here
+	(collect_save_options): Add a function to set all of the pixbuf options
+	for the thumbnail pixbuf properly, so we can save them back out
+	(gnome_wp_item_get_thumbnail): Fix up the code to
+	generate the thumbnails for the list a bit, so that we have sexy
+	thumbnails that look exactly like how the image would, on-screen
+	Initialize all of the width/height variables to 0
+	Add a new pixbuf variable for loading the original image to get the
+	dimensions of it, so we can do thumbnailing more properly
+	Use a LIST_IMAGE_WIDTH define, for the width of the images in the list
+	Just return the bgpixbuf if we are creating the "No Wallpaper" thumb
+	Save the thumbnail back out with the dimensions for the original image
+	If our image is smaller than the list thumbnail, then just use 1.0 as
+	the ratio for scaling the image for tiling/etc...
+	Use the new API to do scaling inside the center/tile functions
+	Reload the thumbnail pixbuf after generating it with the thumbnail
+	system, so that we get all of the pixbuf options set correctly
+	* gnome-wp-item.h (GnomeWPItem): store the original image's width
+	and height in the item, so we can avoid reopening the original image
+	every time we generate the thumbnail, on systems where the thumbnail
+	doesn't contain the appropriate information
+	* gnome-wp-utils.c (gnome_wp_pixbuf_tile):
+	(gnome_wp_pixbuf_center): Add API to do the scaling inside these calls
+
+	Fixes #136691
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-03-04  Rodney Dawes  <dobey@ximian.com>
+
+	* background-properties-capplet.c:
+	* background-properties.glade:
+	* background-properties.glade1:
+	* background-properties.xml: Removed these old files from the old
+	background capplet
+
+2004-03-04  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (gnome_wp_add_image): Select the added image, and
+	change the scaling type to "wallpaper" if it is "none" (#136228)
+
+	Fixes #136228
+
+2004-02-29  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c (gnome_wp_add_image): Split out real image adding
+	code into a separate call
+	(gnome_wp_add_images):
+	(gnome_wp_file_open_dialog):
+	(gnome_wp_properties_init): Add support for GtkFileChooser (#135317)
+	(bg_properties_dragged_image): Fix re-addition of deleted images
+	* gnome-wp-capplet.h: Store the filesel widget in GnomeWPCapplet
+	* gnome-wp-item.c: Fix warning about gnome_vfs_mime_get_description
+
+	Fixes #135317
+
+2004-02-24  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-info.c (gnome_wp_info_new):
+	* gnome-wp-item.c (gnome_wp_item_get_thumbnail): Escape the path for
+	thumbnails and fileinfo (#135089)
+
+	Fixes #135089
+
+2004-02-24  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-xml.c (gnome_wp_oad_legacy): Check that the file exists,
+	and continue through the loop if it doesn't (#135251)
+
+	Fixes #135251
+
+2004-02-24  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-item.c (gnome_wp_item_get_thumbnail): Add some explanatory
+	comments to bits of the code
+	Fix the ratio calculation to handle images of all sizes (#134541)
+	Don't force tiling of square images
+	Don't do _save_thumbnail () for the custom thumbnails
+	If pixbuf is NULL, copy away bgpixbuf and return that instead
+	* gnome-wp-utils.c (gnome_wp_tile_pixbuf):
+	(gnome_wp_center_pixbuf): Return copied pixbufs
+
+	Fixes #134541
+
+2004-02-17  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-background-properties.glade: Use untranslated strings for
+	the color picker dialog titles (glade bug set them to the translated
+	versions of the strings)
+
+	Fixes #134171
+
+2003-12-07  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* background-properties-capplet.c: remove unused
+	"preview_file_selection.h" include.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* background-properties-capplet.c: (cb_dialog_response):
+	* gnome-wp-capplet.c: (wallpaper_properties_clicked): Update help
+	links to point to user-guide.xml
+
+2004-02-04  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am:
+	* gnome-background-properties.glade:
+	* gnome-wp-capplet.[ch]: Convert the main dialog UI to glade
+
+2004-02-04  Rodney Dawes  <dobey@ximian.com>
+
+	* background.desktop.in: Use "Desktop Background" as name and change
+	  the Comment line to a verb phrase as per the HIG
+	* gnome-wp-capplet.c (gnome_wp_load_stuffs): Fix a little bug so that
+	  opening the capplet with "No Wallpaper" set, actually works
+	  (wallpaper_properties_init): "Desktop Background Preferences"
+
+2004-02-01  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: Switch the binary name to gnome-background-properties,
+	  Based on patch from Seth Nickell
+	* background.desktop.in: Use gnome-background-properties here also,
+	  based on patch from Seth Nickell
+	* gnome-wp-capplet.c: Fix a bug where you can't re-add a wallpaper
+	  after you remove it
+	  Use the new gnome_wp_item_update_description () call
+	  Use a GConfChangeSet to change the gconf keys, based on a patch
+	  from Seth Nickell
+	  Select the first item in the list ("No Wallpaper") when the wallpaper
+	  is removed, based on a patch from Seth Nickell
+	  Do the rc string parsing before creating the window, and change some
+	  defaults so we can fix the spacing between widgets and the border
+	  Fix spacing between widgets and window border
+	* gnome-wp-item.[ch]: Add update_description function to clean up
+	  code, based on patch from Seth Nickell
+	  Fix a crash when trying to thumbnail very wide images that are very
+	  short, while trying to maintain aspect ratio
+	* gnome-wp-xml.c: Use backgrounds.xml instead of wp-list.xml, and
+	  migrate the old wp-list.xml over if backgrounds.xml doesn't exist
+	  yet, based on patch from Seth Nickell
+
+2004-01-18  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-capplet.c: Enable the Help button (#131286)
+
+2004-01-16  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* Makefile.am: add DESTDIR variable in install-data-local section.
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-01-12  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-wp-xml.c (gnome_wp_load_legacy): Fix previous change to
+	use gnome_wp_item_free () instead of g_free (), and fix tab width
+
+2004-01-12  Diego Gonzalez <diego@pemas.net>
+
+	* gnome-wp-xml.c (gnome_wp_load_legacy): don't crash if we could
+	  not get the file information.
+
+2004-01-12  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am : As long as we're hard coding the path hard code it in
+	  only one place.  Passing in datadir then adding the magic subdir in
+	  C then building in Makefile seems unnecessary.
+	  Use GNOMECC_CAPPLETS_*
+
+2004-01-12  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: Add install hook to create data directory
+
+2004-01-12  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: Update for new capplet
+	* background.desktop.in: Update Name/Comment/Exec entries
+	* gnome-wp-capplet.[ch]:
+	* gnome-wp-info.[ch]:
+	* gnome-wp-item.[ch]:
+	* gnome-wp-utils.[ch]:
+	* gnome-wp-xml.[ch]: Add new capplet code to CVS
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+Fri Nov 21 09:42:19 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* background-properties.glade: Remove translatable radiobutton
+	strings, #119288
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* background-properties-capplet.c, background-properties.glade: 
+	Patch to fix spacing between action area and vbox of preferences 
+	dialog.
+	
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* background-properties.glade, 
+	  background-properties-capplet.c:  Fixes for ui-review
+	  bug report #98916 and duplicate mnemonic fixes.
+	  
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

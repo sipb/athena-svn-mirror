@@ -1,44 +1,136 @@
 # Max Valianskiy <maxcom@vinchi.ru> 1998-99
 # Sergey Panov <sipan@mit.edu> 1999
 # Valek Filippov <frob@df.ru>, 2000-2002
-# Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003
+# Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2004
+# Andrew W. Nosenko <awn@bcs.zp.ua>, 2003
+# Leonid Kanter <leon@asplinux.ru>, 2003, 2004.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-control-center\n"
-"POT-Creation-Date: 2003-02-04 16:51-0500\n"
-"PO-Revision-Date: 2003-01-31 13:30+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-14 13:27-0400\n"
+"PO-Revision-Date: 2004-09-03 08:39+0400\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:1
+msgid "<b>Applications</b>"
+msgstr "<b>Приложения</b>"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:2
+msgid "<b>Support</b>"
+msgstr "<b>Поддержка</b>"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:3
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next log in.</i></small>"
+msgstr ""
+"<i><small><b>Примечание:</b> Изменение этой установки вступит в силу только "
+"после следующего входа в сеанс.</small></i>"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:4
+msgid "Assistive Technology Preferences"
+msgstr "Настройки вспомогательных технологий"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:5
+msgid "Close and _Log Out"
+msgstr "Закрыть и _выйти из системы"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:6
+msgid "Start these assistive technologies every time you log in:"
+msgstr ""
+"Запускать следующие вспомогательные технологии при каждом входе в систему:"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:7
+msgid "_Enable assistive technologies"
+msgstr "_Включить вспомогательные технологии"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:8
+msgid "_Magnifier"
+msgstr "_Увеличительное стекло"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:9
+msgid "_On-screen keyboard"
+msgstr "_Экранная клавиатура"
+
+#: capplets/accessibility/at-properties/at-enable-dialog.glade.h:10
+msgid "_Screenreader"
+msgstr "_Чтение с экрана"
+
+#: capplets/accessibility/at-properties/at-properties.desktop.in.h:1
+msgid "Assistive Technology Support"
+msgstr "Поддержка вспомогательных технологий"
+
+#: capplets/accessibility/at-properties/at-properties.desktop.in.h:2
+msgid "Enable support for GNOME assistive technologies at login"
+msgstr "Диалог настройки вспомогательных технологий Гнома"
+
+#: capplets/accessibility/at-properties/main.c:60
+msgid ""
+"No Assistive Technology is available on your system.  The 'gok' package must "
+"be installed in order to get on-screen keyboard support, and the "
+"'gnopernicus' package must be installed for screenreading and magnifying "
+"capabilities."
+msgstr ""
+"Вспомогательные технологии не установлены в вашей системе.  Для подержки "
+"экранной клавиатуры должен быть установлен пакет \"gok\". Для поддержки "
+"чтения с экрана и увеличения должен быть установлен пакет \"gnopernicus\"."
+
+#: capplets/accessibility/at-properties/main.c:62
+msgid ""
+"Not all available assistive technologies are installed on your system.  The "
+"'gok' package must be installed in order to get on-screen keyboard support."
+msgstr ""
+"В вашей системе установлена поддержка не всех доступных вспомогательных "
+"технологий.  Для поддержки экранной клавиатуры необходимо установить пакет "
+"\"gok\"."
+
+#: capplets/accessibility/at-properties/main.c:64
+msgid ""
+"Not all available assistive technologies are installed on your system.  The "
+"'gnopernicus' package must be installed for screenreading and magnifying "
+"capabilities."
+msgstr ""
+"В вашей системе установлена поддержка не всех доступных вспомогательных "
+"технологий.  Для поддержки увеличительного стекла и чтения с экрана "
+"необходимо установить пакет \"gnopernicus\"."
+
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:241
 #, c-format
 msgid "There was an error launching the mouse preferences dialog: %s"
 msgstr "Произошла ошибка при запуске диалога настроек мыши: %s"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:337
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:396
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr "Невозможно импортировать установки AccessX из файла \"%s\""
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
-msgid "Select CDE AccessX file"
-msgstr "Выберите файл AccessX среды CDE"
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:433
+msgid "Import Feature Settings File"
+msgstr "Импорт файла установок"
+
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:437
+msgid "_Import"
+msgstr "_Импортировать"
 
 #: capplets/accessibility/keyboard/accessibility-keyboard.desktop.in.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:10
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:20
 #: capplets/keyboard/keyboard.desktop.in.h:1
 msgid "Keyboard"
 msgstr "Клавиатура"
 
 #: capplets/accessibility/keyboard/accessibility-keyboard.desktop.in.h:2
 msgid "Set your keyboard accessibility preferences"
-msgstr "Диалог настроек специальных возможностей клавиатуры"
+msgstr "Диалог настройки специальных возможностей клавиатуры"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:59
 msgid ""
 "This system does not seem to have the XKB extension.  The keyboard "
 "accessibility features will not operate without it."
@@ -47,86 +139,102 @@ msgstr ""
 "клавиатуры не работают без него."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
+#: capplets/font/font-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/mouse/gnome-mouse-properties.glade.h:1
+#: capplets/ui-properties/gnome-ui-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:1
 #: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:2
 #: capplets/network/gnome-network-preferences.glade.h:2
-#: capplets/theme-switcher/theme-properties.glade.h:1
 #: capplets/theme-switcher/theme-install.glade.h:1
+#: capplets/theme-switcher/theme-properties.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
+msgid "<b>Enable Bo_unce Keys</b>"
+msgstr "<b>Включить \"ска_чущие\" клавиши</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
+msgid "<b>Enable Slo_w Keys</b>"
+msgstr "<b>Включить \"_медленные\" клавиши</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+msgid "<b>Enable _Mouse Keys</b>"
+msgstr "<b>Включить \"пози_ционирующие\" клавиши</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+msgid "<b>Enable _Repeat Keys</b>"
+msgstr "<b>Включить а_втоповтор клавиш</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+msgid "<b>Enable _Sticky Keys</b>"
+msgstr "<b>Включить \"за_липающие\" клавиши</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+msgid "<b>Features</b>"
+msgstr "<b>Особенности</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+msgid "<b>Toggle Keys</b>"
+msgstr "<b>\"Перекл_ючающие\" клавиши</b>"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
 msgid "Basic"
 msgstr "Основные"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
 msgid "Beep if key is re_jected"
 msgstr "Подавать сигнал, когда клавиша н_е принята"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
 msgid "Beep when _features turned on or off from keyboard"
 msgstr "Подавать сигнал, когда _функция включается или выключается"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
 msgid "Beep when _modifier is pressed"
 msgstr "Под_авать сигнал, когда модификатор нажат"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
 msgid "Beep when an LED is turned on and two beeps when one is turned off."
 msgstr ""
-"Подавать один сигнал, когда LED-индикатор загорается и два сигнала, когда "
-"гаснет"
+"Подавать один сигнал, когда LED-индикатор загорается, и два сигнала, когда "
+"гаснет."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
 msgid "Beep when key is:"
 msgstr "Подавать сигнал, когда "
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
 msgid "Del_ay:"
 msgstr "За_держка:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
 msgid "Delay between keypress and pointer mo_vement:"
-msgstr "Задержка между нажатием и дви_жением указателя"
+msgstr "Задержка между нажатием и дви_жением указателя:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
 msgid "Disa_ble if two keys pressed together"
 msgstr "Откл_ючать, если две клавиши нажаты одновременно"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid "E_nable Toggle Keys"
 msgstr "Включить \"перекл_ючающие\" клавиши"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
-msgid "Enable Bo_unce Keys"
-msgstr "Включить \"ска_чущие\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
-msgid "Enable Slo_w Keys"
-msgstr "Включить \"_медленные\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Enable _Mouse Keys"
-msgstr "Включить \"пози_ционирующие\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
-msgid "Enable _Sticky Keys"
-msgstr "Включить \"за_липающие\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
-msgid "Features"
-msgstr "Функции"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
 msgid "Filters"
 msgstr "Фильтры"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
 msgid "I_gnore duplicate keypresses within:"
-msgstr "_Игнорировать повторные нажатия в период :"
+msgstr "_Игнорировать повторные нажатия в период "
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
@@ -134,24 +242,23 @@ msgstr ""
 "Игнорировать все последовательные нажатия ОДНОЙ клавиши, если они происходят "
 "в указанный пользователем промежуток времени."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
 msgid "Keyboard Accessibility Preferences (AccessX)"
 msgstr "Настройки специальных возможностей клавиатуры (AccessX)"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid "Ma_ximum pointer speed:"
-msgstr "Максимальная скорость _указателя :"
+msgstr "Максимальная скорость _указателя:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
-#: capplets/mouse/mouse.desktop.in.h:1
-msgid "Mouse"
-msgstr "Мышь"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
+msgid "Mouse Keys"
+msgstr "Кнопки мыши"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
 msgid "Mouse _Preferences..."
 msgstr "_Изменить настройки мыши..."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
@@ -159,217 +266,163 @@ msgstr ""
 "Принимать только те клавиши, которые были нажаты и задержаны на определённый "
 "пользователем период времени."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
 msgstr ""
 "Генерировать несколько нажатий клавиш одновременно по последовательному "
-"нажатию клавиш-модификаторов"
+"нажатию клавиш-модификаторов."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:28
 msgid "S_peed:"
 msgstr "С_корость:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
 msgid "Time to acce_lerate to maximum speed:"
-msgstr "Время ускорения до м_аксимальной скорости :"
+msgstr "Время ускорения до м_аксимальной скорости:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid "Toggle Keys"
-msgstr "\"Перекл_ючающие\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
 msgid "Turn the numeric keypad into a mouse control pad."
 msgstr "Сделать цифровую клавиатуру панелью управления мыши."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
 msgid "_Disable if unused for:"
 msgstr "О_тключать при неиспользовании в течении "
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
 msgid "_Enable keyboard accessibility features"
 msgstr "_Включить специальные возможности клавиатуры"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
 msgid "_Import Feature Settings..."
-msgstr "_Импортировать настройки..."
+msgstr "_Импортировать Установки..."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
 msgid "_Only accept keys held for:"
 msgstr "Принимать нажатия тол_ько после "
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "_Repeat Keys"
-msgstr "Включить \"повтор_яющиеся\" клавиши"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
-msgid "_Type to test settings:"
-msgstr "П_оле для проверки настроек:"
-
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:38
+msgid "_Type to test settings:"
+msgstr "П_оле для проверки установок:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
 msgid "_accepted"
 msgstr "клавиша прин_ята"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
 msgid "_pressed"
 msgstr "клавиша на_жата"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
 msgid "_rejected"
 msgstr "клавиша _не принята"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
 msgid "characters/second"
 msgstr "символов в секунду"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
 msgid "milliseconds"
 msgstr "миллисекунд"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
 msgid "pixels/second"
 msgstr "пикселей в секунду"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
-#: capplets/windows/gnome-window-properties.glade.h:7
+#. set the timeout value  label with correct value of timeout
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:43
+#: capplets/mouse/gnome-mouse-properties.c:133
+#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.glade.h:27
+#: capplets/windows/gnome-window-properties.glade.h:10
 msgid "seconds"
 msgstr "секунд"
 
-#. solid
-#: capplets/background/background-properties-capplet.c:228
-msgid "C_olor:"
-msgstr "_Цвет:"
+#: capplets/background/background.desktop.in.h:1
+msgid "Change your Desktop Background settings"
+msgstr "Диалог настройки фона рабочего стола"
 
-#. horiz
-#: capplets/background/background-properties-capplet.c:232
-msgid "_Left Color:"
-msgstr "Цвет с_лева:"
+#: capplets/background/background.desktop.in.h:2
+msgid "Desktop Background"
+msgstr "Фон рабочего стола"
 
-#: capplets/background/background-properties-capplet.c:233
-msgid "_Right Color:"
-msgstr "Цвет с_права:"
+#: capplets/background/gnome-background-properties.glade.h:1
+msgid "<b>Desktop _Wallpaper</b>"
+msgstr "<b>_Обои рабочего стола</b>"
 
-#. vert
-#: capplets/background/background-properties-capplet.c:236
-msgid "_Top Color:"
-msgstr "Цвет с_верху:"
+#: capplets/background/gnome-background-properties.glade.h:2
+msgid "<b>_Desktop Colors</b>"
+msgstr "<b>_Цвета рабочего стола</b>"
 
-#: capplets/background/background-properties-capplet.c:237
-msgid "_Bottom Color:"
-msgstr "Цвет с_низу:"
+#: capplets/background/gnome-background-properties.glade.h:3
+msgid "Desktop Background Preferences"
+msgstr "Настройки фона рабочего стола"
 
-#: capplets/background/background-properties-capplet.c:398
-msgid "_Wallpaper"
-msgstr "О_бои"
-
-#: capplets/background/background-properties-capplet.c:398
-msgid "C_entered"
-msgstr "Ц_ентрированная"
-
-#: capplets/background/background-properties-capplet.c:398
-msgid "_Scaled"
-msgstr "Мас_штабированная"
-
-#: capplets/background/background-properties-capplet.c:398
-msgid "Stretc_hed"
-msgstr "Раст_янутая"
-
-#: capplets/background/background-properties-capplet.c:398
-msgid "_No Picture"
-msgstr "Не_т картинки"
-
-#: capplets/background/background-properties-capplet.c:433
-msgid "Select _picture:"
-msgstr "Выбрать ка_ртинку:"
-
-#: capplets/background/background-properties-capplet.c:567
-#: capplets/common/capplet-util.c:243
-#: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:290
-#: capplets/mouse/gnome-mouse-properties.c:712
-#: capplets/sound/sound-properties-capplet.c:149
-msgid "Retrieve and store legacy settings"
-msgstr "Запрос и сохранение старых настроек"
-
-#: capplets/background/background-properties-capplet.c:593
-#: capplets/background/background-properties.glade.h:2
-msgid "Background Preferences"
-msgstr "Настройки фона"
-
-#: capplets/background/background-properties.glade.h:1
-msgid "A preview of the background picture."
-msgstr "Просмотр образца картинки фона."
-
-#: capplets/background/background-properties.glade.h:3
-msgid "Background Preview"
-msgstr "Образец фона"
-
-#: capplets/background/background-properties.glade.h:4
-msgid "Background _Style:"
-msgstr "Стил_ь фона:"
-
-#: capplets/background/background-properties.glade.h:5
-msgid "Horizontal gradient"
-msgstr "горизонтальный переход"
-
-#: capplets/background/background-properties.glade.h:6
+#: capplets/background/gnome-background-properties.glade.h:4
 msgid "Pick a color"
 msgstr "Выберите цвет"
 
-#: capplets/background/background-properties.glade.h:7
-msgid "Picture Options:"
-msgstr "Размещение картинки:"
+#: capplets/background/gnome-background-properties.glade.h:5
+msgid "_Add Wallpaper"
+msgstr "_Добавить обои"
 
-#: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:212
-msgid "Preview"
-msgstr "Образец"
+#: capplets/background/gnome-background-properties.glade.h:6
+msgid "_Style:"
+msgstr "_Стиль:"
 
-#: capplets/background/background-properties.glade.h:9
-msgid "Primary Color"
-msgstr "Первичный цвет"
+#: capplets/background/gnome-wp-capplet.c:72
+#: capplets/common/capplet-util.c:340
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:326
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Произошла ошибка при отображении справки: %s"
 
-#: capplets/background/background-properties.glade.h:10
-msgid "Secondary Color"
-msgstr "Вторичный цвет"
+#: capplets/background/gnome-wp-capplet.c:1048
+#: capplets/background/gnome-wp-capplet.c:1064
+msgid "Centered"
+msgstr "По центру"
 
-#: capplets/background/background-properties.glade.h:11
-msgid "Solid color"
-msgstr "сплошной цвет"
+#: capplets/background/gnome-wp-capplet.c:1072
+#: capplets/background/gnome-wp-capplet.c:1087
+msgid "Fill Screen"
+msgstr "На весь экран"
 
-#: capplets/background/background-properties.glade.h:12
-msgid "The background picture's file name."
-msgstr "Имя файла картинки фона."
+#: capplets/background/gnome-wp-capplet.c:1095
+#: capplets/background/gnome-wp-capplet.c:1108
+msgid "Scaled"
+msgstr "Масштабировать"
 
-#: capplets/background/background-properties.glade.h:13
-msgid "To set the background picture, drop an image or click to browse."
-msgstr ""
-"Чтобы установить картинку фона, перенесите сюда изображение или щёлкните для "
-"выбора."
+#: capplets/background/gnome-wp-capplet.c:1116
+#: capplets/background/gnome-wp-capplet.c:1129
+msgid "Tiled"
+msgstr "Черепицей"
 
-#: capplets/background/background-properties.glade.h:14
-msgid "Vertical gradient"
-msgstr "вертикальный переход"
+#: capplets/background/gnome-wp-capplet.c:1153
+#: capplets/background/gnome-wp-capplet.c:1162
+msgid "Solid Color"
+msgstr "Сплошной цвет"
 
-#: capplets/background/background-properties.glade.h:15
-msgid ""
-"You can drag image files\n"
-"into the window to set the \n"
-"background picture."
-msgstr ""
-"Вы можете перетаскивать файлы\n"
-"в окно, чтобы установить \n"
-"картинку в качестве фона."
+#: capplets/background/gnome-wp-capplet.c:1170
+#: capplets/background/gnome-wp-capplet.c:1179
+msgid "Horizontal Gradient"
+msgstr "Горизонтальный переход"
 
-#: capplets/background/background.desktop.in.h:1
-msgid "Background"
-msgstr "Фон"
+#: capplets/background/gnome-wp-capplet.c:1187
+#: capplets/background/gnome-wp-capplet.c:1196
+msgid "Vertical Gradient"
+msgstr "Вертикальный переход"
 
-#: capplets/background/background.desktop.in.h:2
-msgid "Customize your desktop background"
-msgstr "Диалог настроек фона рабочего стола"
+#. Create the file chooser dialog stuff here
+#: capplets/background/gnome-wp-capplet.c:1232
+msgid "Add Wallpaper"
+msgstr "Добавить обои"
+
+#: capplets/background/gnome-wp-info.c:49
+msgid "No Wallpaper"
+msgstr "Без обоев"
 
 #: capplets/common/activate-settings-daemon.c:18
 msgid ""
@@ -380,24 +433,27 @@ msgid ""
 "settings manager."
 msgstr ""
 "Невозможно запустить менеджер установок \"gnome2-settings-daemon\".\n"
-"Без менеджера установок среды Гном некоторые настройки могут не иметь "
-"эффекта. Либо это проблемы с системой Bonobo, либо иной менеджер настроек "
-"(например, мреды KDE) может быть уже запущен и конфликтовать с менеджером "
-"настроек среды Гном."
-
-#: capplets/common/capplet-util.c:239 capplets/common/capplet-util.c:241
-msgid "Just apply settings and quit"
-msgstr "Только применить установки и выйти"
-
-#: capplets/common/capplet-util.c:340
-#, c-format
-msgid "There was an error displaying help: %s"
-msgstr "Произошла ошибка при отображении справки: %s"
+"Без менеджера параметров среды Гном некоторые настройки могут не иметь "
+"эффекта. Либо это проблемы с системой Bonobo, либо иной менеджер установок "
+"(например, среды KDE) может быть уже запущен и конфликтовать с менеджером "
+"установок среды Гном."
 
 #: capplets/common/capplet-stock-icons.c:94
 #, c-format
 msgid "Unable to load capplet stock icon '%s'\n"
 msgstr "Невозможно загрузить встроенный значок \"%s\"\n"
+
+#: capplets/common/capplet-util.c:239 capplets/common/capplet-util.c:241
+msgid "Just apply settings and quit"
+msgstr "Только применить установки и выйти"
+
+#: capplets/common/capplet-util.c:243
+#: capplets/default-applications/gnome-default-applications-properties.c:735
+#: capplets/keyboard/gnome-keyboard-properties.c:224
+#: capplets/mouse/gnome-mouse-properties.c:812
+#: capplets/sound/sound-properties-capplet.c:244
+msgid "Retrieve and store legacy settings"
+msgstr "Запрос и сохранение унаследованных установок"
 
 #: capplets/common/file-transfer-dialog.c:95
 #, c-format
@@ -445,11 +501,11 @@ msgstr "Часть передачи выполнена"
 
 #: capplets/common/file-transfer-dialog.c:209
 msgid "Current URI index"
-msgstr "Текущий индекс тдентификатора (URI)"
+msgstr "Текущий индекс идентификатора (URI)"
 
 #: capplets/common/file-transfer-dialog.c:210
 msgid "Current URI index - starts from 1"
-msgstr "Текущий индекс илентификатора (URI) - начинается с 1"
+msgstr "Текущий индекс идентификатора (URI) - начинается с 1"
 
 #: capplets/common/file-transfer-dialog.c:217
 msgid "Total URIs"
@@ -469,84 +525,84 @@ msgstr "Соединяется..."
 msgid "Downloading..."
 msgstr "Передаётся..."
 
-#: capplets/common/gconf-property-editor.c:172
+#: capplets/common/gconf-property-editor.c:170
 msgid "Key"
 msgstr "Ключ"
 
-#: capplets/common/gconf-property-editor.c:173
+#: capplets/common/gconf-property-editor.c:171
 msgid "GConf key to which this property editor is attached"
 msgstr "Ключ системы GConf, к которому подключён этот редактор свойств"
 
-#: capplets/common/gconf-property-editor.c:179
+#: capplets/common/gconf-property-editor.c:177
 msgid "Callback"
 msgstr "Обратный вызов"
 
-#: capplets/common/gconf-property-editor.c:180
+#: capplets/common/gconf-property-editor.c:178
 msgid "Issue this callback when the value associated with key gets changed"
 msgstr ""
 "Произвести этот обратный вызов, когда значение, связанное с этим ключом, "
 "изменится"
 
-#: capplets/common/gconf-property-editor.c:185
+#: capplets/common/gconf-property-editor.c:183
 msgid "Change set"
 msgstr "Изменить набор"
 
-#: capplets/common/gconf-property-editor.c:186
+#: capplets/common/gconf-property-editor.c:184
 msgid ""
 "GConf change set containing data to be forwarded to the gconf client on apply"
 msgstr ""
-"Набор изменений системы GConf содержит данные, которые будут направлены по "
-"приминении к клиенту"
+"Набор изменений системы GConf содержит данные, которые будут направлены "
+"клиенту по применении"
 
-#: capplets/common/gconf-property-editor.c:191
+#: capplets/common/gconf-property-editor.c:189
 msgid "Conversion to widget callback"
 msgstr "Обратный вызов передачи к виджету"
 
-#: capplets/common/gconf-property-editor.c:192
+#: capplets/common/gconf-property-editor.c:190
 msgid ""
 "Callback to be issued when data are to be converted from GConf to the widget"
 msgstr ""
 "Обратный вызов, котрый будет произведён, когда данные передаются от системы "
 "GConf к клиенту"
 
-#: capplets/common/gconf-property-editor.c:197
+#: capplets/common/gconf-property-editor.c:195
 msgid "Conversion from widget callback"
 msgstr "Обратный вызов передачи от виджета"
 
-#: capplets/common/gconf-property-editor.c:198
+#: capplets/common/gconf-property-editor.c:196
 msgid ""
 "Callback to be issued when data are to be converted to GConf from the widget"
 msgstr ""
 "Обратный вызов, котрый будет произведён, когда данные переданы от клиента к "
 "системе GConf"
 
-#: capplets/common/gconf-property-editor.c:203
+#: capplets/common/gconf-property-editor.c:201
 msgid "UI Control"
 msgstr "Управление интерфейсом"
 
-#: capplets/common/gconf-property-editor.c:204
+#: capplets/common/gconf-property-editor.c:202
 msgid "Object that controls the property (normally a widget)"
 msgstr "Объект, управляющий свойством (обычно виджет)"
 
-#: capplets/common/gconf-property-editor.c:219
+#: capplets/common/gconf-property-editor.c:217
 msgid "Property editor object data"
 msgstr "Данные объекта редактора свойств"
 
-#: capplets/common/gconf-property-editor.c:220
+#: capplets/common/gconf-property-editor.c:218
 msgid "Custom data required by the specific property editor"
 msgstr "Пользовательские данные, требуемые частным редактором свойств"
 
-#: capplets/common/gconf-property-editor.c:226
+#: capplets/common/gconf-property-editor.c:224
 msgid "Property editor data freeing callback"
 msgstr "Обратный вызов освобождения данных редактора свойств"
 
-#: capplets/common/gconf-property-editor.c:227
+#: capplets/common/gconf-property-editor.c:225
 msgid "Callback to be issued when property editor object data is to be freed"
 msgstr ""
 "Обратный вызов, вызываемый, когда редактор данные объекта редактора свойств "
 "освобождаются"
 
-#: capplets/common/gconf-property-editor.c:1484
+#: capplets/common/gconf-property-editor.c:1543
 #, c-format
 msgid ""
 "Couldn't find the file '%s'.\n"
@@ -559,7 +615,7 @@ msgstr ""
 "Убедитесь, что он существует и попробуйте снова, или выберите иную картинку "
 "для фона."
 
-#: capplets/common/gconf-property-editor.c:1492
+#: capplets/common/gconf-property-editor.c:1551
 #, c-format
 msgid ""
 "I don't know how to open the file '%s'.\n"
@@ -572,12 +628,16 @@ msgstr ""
 "\n"
 "Выберите иную картинку, пожалуйста"
 
-#: capplets/common/gconf-property-editor.c:1583
+#: capplets/common/gconf-property-editor.c:1670
 msgid "Please select an image."
 msgstr "Выберите изображение."
 
+#: capplets/common/gconf-property-editor.c:1675
+msgid "_Select"
+msgstr "_Выбрать"
+
 #: capplets/default-applications/default-applications.desktop.in.h:1
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:19
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:18
 msgid "Preferred Applications"
 msgstr "Предпочтительные приложения"
 
@@ -585,79 +645,163 @@ msgstr "Предпочтительные приложения"
 msgid "Select your default applications"
 msgstr "Диалог выбора исходных приложений-обработчиков"
 
-#: capplets/default-applications/gnome-default-applications-properties.c:105
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:9
+msgid "Epiphany"
+msgstr "Эпифани"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:10
+msgid "Galeon"
+msgstr "Галеон"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:11
+msgid "Encompass"
+msgstr "Энкомпасс"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:12
+msgid "Firebird/FireFox"
+msgstr "Файрбёрд/Файрфокс"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:13
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:14
+msgid "Mozilla/Netscape 6"
+msgstr "Мозилла/Нетскейп 6"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:15
+msgid "Netscape Communicator"
+msgstr "Нетскейп коммуникатор"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:16
+msgid "Konqueror"
+msgstr "Конкверрор"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:17
+msgid "W3M Text Browser"
+msgstr "Текстовый браузер W3M"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:18
+msgid "Lynx Text Browser"
+msgstr "Текстовый браузер Линкс (Lynx)"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:19
+msgid "Links Text Browser"
+msgstr "Текстовый браузер Линкс (Links)"
+
+#. The code in gnome-default-applications-properties.c makes sure
+#. * there is only one (the first entry in this list) Evolution entry
+#. * in the list shown to the user
+#.
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:34
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:35
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:36
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:37
+msgid "Evolution Mail Reader"
+msgstr "Почтовая программа \"Эволюция\""
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:38
+msgid "Balsa"
+msgstr "Бальза"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:39
+msgid "KMail"
+msgstr "KMail"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:40
+msgid "Mozilla Mail"
+msgstr "Мозилла мейл"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:41
+msgid "Mutt"
+msgstr "Матт"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:52
+msgid "Gnome Terminal"
+msgstr "Терминал среды Гном"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:53
+msgid "Standard XTerminal"
+msgstr "Стандартный X-терминал"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:54
+msgid "NXterm"
+msgstr "NXterm"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:55
+msgid "RXVT"
+msgstr "RXVT"
+
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:56
+msgid "ETerm"
+msgstr "ETerm"
+
+#: capplets/default-applications/gnome-default-applications-properties.c:108
 msgid "Please specify a name and a command for this editor."
-msgstr "Укажите имя и команду для этого редактора"
+msgstr "Укажите имя и команду для этого редактора."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
-msgid "Acce_pts URLs"
-msgstr "При_нимает ссылки (URL)"
-
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:3
 msgid "Add..."
 msgstr "Добавить..."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:4
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:3
 msgid "C_ustom Editor"
 msgstr "Дру_гой редактор"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:5
-msgid "C_ustom Help Browser:"
-msgstr "Дру_гая программа просмотра справки:"
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:4
+msgid "C_ustom Mail Reader:"
+msgstr "Дру_гая почтовая программа:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:6
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:5
 msgid "C_ustom Terminal:"
 msgstr "Дру_гой терминал:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:7
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:6
 msgid "C_ustom Web Browser:"
 msgstr "Дру_гой веб-браузер:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:8
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:7
 msgid "Co_mmand:"
 msgstr "Коман_да:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:9
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:8
 msgid "Custom Editor Properties"
 msgstr "Свойства другого редактора"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:10
-msgid "Default Help Browser"
-msgstr "Исходная программа просмотра справки"
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:9
+msgid "Default Mail Reader"
+msgstr "Исходная почтовая программа"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:11
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:10
 msgid "Default Terminal"
 msgstr "Исходный терминал"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:12
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:11
 msgid "Default Text Editor"
 msgstr "Исходный текстовый редактор"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:13
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:12
 msgid "Default Web Browser"
 msgstr "Исходный веб-браузер"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:14
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:13
 msgid "Default Window Manager"
 msgstr "Исходный менеджер окон"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:15
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:14
 msgid "Delete"
 msgstr "Удалить"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:16
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:15
 msgid "E_xec Flag:"
 msgstr "Параметры зап_уска:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:17
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:16
 msgid "Edit..."
 msgstr "Изменить..."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:18
-msgid "Help Browser"
-msgstr "Программа просмотра справки"
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:17
+msgid "Mail Reader"
+msgstr "Почтовая программа"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:20
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:19
 msgid ""
 "Select the window manager you want.  You will need to hit apply, wave the "
 "magic wand, and do a magic dance for it to work."
@@ -665,212 +809,203 @@ msgstr ""
 "Выберите менеджер окон. Вам необходимо будет нажать \"Применить\", сделать "
 "несколько пасов руками и станцевать ритуальный танец, чтобы это заработало."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:21
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:20
 msgid "Start in T_erminal"
 msgstr "Запускать в _терминале"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:22
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:21
 msgid "Terminal"
 msgstr "Терминал"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:23
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:22
 msgid "Text Editor"
 msgstr "Текстовый редактор"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:24
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:23
 msgid "This application can open _URIs"
 msgstr "Это приложение может открывать _идентификаторы (URI)"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:25
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:24
 msgid "This application can open _multiple files"
 msgstr "Это приложение может открывать н_есколько файлов"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:26
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:25
 msgid "This application needs to be run in a _shell"
 msgstr "Это приложение должно быть запущено в _оболочке"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:27
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:26
 msgid "Understands _Netscape Remote Control"
 msgstr "По_нимает устройство Netscape Remote Control"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:28
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:27
 msgid "Use this _editor to open text files in the file manager"
 msgstr ""
 "Использовать этот _редактор для открытия текстовых файлов в менеджере файлов"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:29
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:28
 msgid "Web Browser"
 msgstr "Веб-браузер"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:30
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:29
 msgid "Window Manager"
 msgstr "Менеджер окон"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:31
-#: capplets/file-types/file-types-properties.glade.h:22
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:30
+#: capplets/file-types/file-types-properties.glade.h:23
 msgid "_Name:"
 msgstr "Наи_менование:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:32
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:31
 msgid "_Properties..."
 msgstr "_Настроить..."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:33
-msgid "_Select a Help Browser:"
-msgstr "_Выбрать программу просмотра справки:"
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:32
+msgid "_Select a Mail Reader:"
+msgstr "_Выберите почтовую программу:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:34
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:33
 msgid "_Select a Terminal:"
 msgstr "_Выбрать терминал:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:35
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:34
 msgid "_Select a Web Browser:"
 msgstr "_Выбрать веб-браузер:"
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:36
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:35
 msgid "_Select an Editor:"
 msgstr "_Выбрать редактор:"
 
-#: capplets/desktop-links/Accessibility.directory.in.in.h:1
+#: capplets/desktop-links/Accessibility.directory.in.h:1
 msgid "Accessibility"
 msgstr "Специальные возможности"
 
-#: capplets/desktop-links/Accessibility.directory.in.in.h:2
+#: capplets/desktop-links/Accessibility.directory.in.h:2
 msgid "Accessibility Settings"
-msgstr "Настройки специальных возможностей клавиатуры"
+msgstr "Установки специальных возможностей клавиатуры"
 
-#: capplets/desktop-links/Advanced.directory.in.in.h:1
+#: capplets/desktop-links/Advanced.directory.in.h:1
 msgid "Advanced"
 msgstr "Дополнительно"
 
-#: capplets/desktop-links/Advanced.directory.in.in.h:2
+#: capplets/desktop-links/Advanced.directory.in.h:2
 msgid "Advanced Settings"
-msgstr "Дополнительные настройки"
+msgstr "Дополнительные установки"
 
-#: capplets/desktop-links/Sawfish/Sawfish.directory.in.in.h:1
-msgid "Control Center Menu"
-msgstr "Меню Центра управления"
+#: capplets/display/display-properties.desktop.in.h:1
+msgid "Change screen resolution"
+msgstr "Изменить разрешение экрана"
 
-#: capplets/desktop-links/Sawfish/Sawfish.directory.in.in.h:2
-msgid "Sawfish window manager"
-msgstr "Менеджер окон Sawfish"
+#: capplets/display/display-properties.desktop.in.h:2
+msgid "Screen Resolution"
+msgstr "Разрешение экрана"
 
-#: capplets/desktop-links/Sawfish/appearance-properties.desktop.in.h:1
-msgid "Appearance"
-msgstr "Внешний вид"
+#: capplets/display/main.c:333
+#, c-format
+msgid "%d Hz"
+msgstr "%d Hz"
 
-#: capplets/desktop-links/Sawfish/appearance-properties.desktop.in.h:2
-msgid "Select themes and fonts for your windows"
-msgstr "Диалог выбора темы и шрифтов для окон"
+#: capplets/display/main.c:436
+msgid "_Resolution:"
+msgstr "_Разрешение:"
 
-#: capplets/desktop-links/Sawfish/bindings-properties.desktop.in.h:1
-msgid "Customize shortcut keys for your windows"
-msgstr "Диалог настроек комбинаций клавиш для окон"
+#: capplets/display/main.c:455
+msgid "Re_fresh rate:"
+msgstr "Частота _обновления:"
 
-#: capplets/desktop-links/Sawfish/bindings-properties.desktop.in.h:2
-msgid "Shortcuts"
-msgstr "Комбинации клавиш"
+#: capplets/display/main.c:476
+msgid "Default Settings"
+msgstr "Исходные установки"
 
-#: capplets/desktop-links/Sawfish/focus-properties.desktop.in.h:1
-msgid "Configure how to give focus to windows"
-msgstr "Диалог настроек передачи фокус оконам"
+#: capplets/display/main.c:478
+#, c-format
+msgid "Screen %d Settings\n"
+msgstr "Установки экрана %d\n"
 
-#: capplets/desktop-links/Sawfish/focus-properties.desktop.in.h:2
-msgid "Focus behavior"
-msgstr "Поведение фокуса"
+#: capplets/display/main.c:504
+msgid "Screen Resolution Preferences"
+msgstr "Настройки разрешения экрана"
 
-#: capplets/desktop-links/Sawfish/match-properties.desktop.in.h:1
-msgid "Configure matched windows to have particular characteristics"
-msgstr "Диалог настроек характеристик совпадающих окон"
+#: capplets/display/main.c:541
+#, c-format
+msgid "_Make default for this computer (%s) only"
+msgstr "Сделать ис_ходными только для этого (%s) компьютера"
 
-#: capplets/desktop-links/Sawfish/match-properties.desktop.in.h:2
-msgid "Matched Windows"
-msgstr "Совпадающие окна"
+#: capplets/display/main.c:559
+msgid "Options"
+msgstr "Параметры"
 
-#: capplets/desktop-links/Sawfish/maximize-properties.desktop.in.h:1
-msgid "Configure how to minimize, maximize, and restore windows"
-msgstr "Диалог настроек сжатия, развёртывания и восстанавления окон"
+#: capplets/display/main.c:580
+#, c-format
+msgid ""
+"Testing the new settings. If you don't respond in %d second the previous "
+"settings will be restored."
+msgid_plural ""
+"Testing the new settings. If you don't respond in %d seconds the previous "
+"settings will be restored."
+msgstr[0] ""
+"Проверка новых установок. Если вы не подтвердите в течении %d секунды, то "
+"будут восстановлены предыдущие установки."
+msgstr[1] ""
+"Проверка новых установок. Если вы не подтвердите в течении %d секунд, то "
+"будут восстановлены предыдущие установки."
+msgstr[2] ""
+"Проверка новых установок. Если вы не подтвердите в течении %d секунд, то "
+"будут восстановлены предыдущие установки."
 
-#: capplets/desktop-links/Sawfish/maximize-properties.desktop.in.h:2
-msgid "Minimizing and Maximizing"
-msgstr "Сжатие и развёртывание"
+#: capplets/display/main.c:626
+msgid "Keep Resolution"
+msgstr "Сохранить разрешение"
 
-#: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
-#: capplets/windows/gnome-window-properties.c:649
-msgid "Meta"
-msgstr "Мета"
+#: capplets/display/main.c:630
+msgid "Do you want to keep this resolution?"
+msgstr "Сохранить это разрешение?"
 
-#: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:2
-msgid "Select your Sawfish user level"
-msgstr "Диалог выбора уровня пользователя для оконного менеджера Sawfish"
+#: capplets/display/main.c:655
+msgid "Use _previous resolution"
+msgstr "Использовать _предыдущее разрешение"
 
-#: capplets/desktop-links/Sawfish/misc-properties.desktop.in.h:1
-msgid "Miscellaneous"
-msgstr "Разное"
+#: capplets/display/main.c:655
+msgid "_Keep resolution"
+msgstr "_Сохранить разрешение"
 
-#: capplets/desktop-links/Sawfish/misc-properties.desktop.in.h:2
-msgid "Select miscellaneous window options"
-msgstr "Диалог выбора различных свойств окон"
+#: capplets/display/main.c:806
+msgid ""
+"The X Server does not support the XRandR extension.  Runtime resolution "
+"changes to the display size are not available."
+msgstr ""
+"X-сервер не поддерживает расширение XRandR, изменение разрешения \"на лету\" "
+"невозможно."
 
-#: capplets/desktop-links/Sawfish/move-properties.desktop.in.h:1
-msgid "Configure how windows move and resize"
-msgstr "Диалог настроек перемещения и изменения размера окон"
+#: capplets/display/main.c:814
+msgid ""
+"The version of the XRandR extension is incompatible with this program. "
+"Runtime changes to the display size are not available."
+msgstr ""
+"Версия расширения XRandR несовместима с данной программой, изменение "
+"разрешения \"на ходу\" невозможно."
 
-#: capplets/desktop-links/Sawfish/move-properties.desktop.in.h:2
-msgid "Moving and Resizing"
-msgstr "Перемещение и размеры"
+#: capplets/file-types/file-types-capplet.c:158
+msgid "Are you sure you want to permanently delete this entry?"
+msgstr "Вы уверены, что хотите окончательно удалить эту запись?"
 
-#: capplets/desktop-links/Sawfish/placement-properties.desktop.in.h:1
-msgid "Configure positioning of windows on the desktop"
-msgstr "Диалог настроек позиционирования окон на рабочем столе"
-
-#: capplets/desktop-links/Sawfish/placement-properties.desktop.in.h:2
-msgid "Placement"
-msgstr "Размещение"
-
-#: capplets/desktop-links/Sawfish/sound-properties.desktop.in.h:1
-msgid "Associate sounds with window manager events"
-msgstr "Диалог ассоциирования звуков с событиями оконного менеджера"
-
-#: capplets/desktop-links/Sawfish/sound-properties.desktop.in.h:2
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:17
-#: capplets/sound/sound.desktop.in.h:2
-msgid "Sound"
-msgstr "Звук"
-
-#: capplets/desktop-links/Sawfish/workspace-properties.desktop.in.h:1
-msgid "Configure your workspaces and viewports"
-msgstr "Диалог настроек рабочих мест и экранов"
-
-#: capplets/desktop-links/Sawfish/workspace-properties.desktop.in.h:2
-msgid "Workspaces"
-msgstr "Рабочие места"
-
-#: capplets/desktop-links/legacy-applications.desktop.in.in.h:1
-msgid "Legacy Applications"
-msgstr "Унаследованные приложения"
-
-#: capplets/desktop-links/legacy-applications.desktop.in.in.h:2
-msgid "Legacy applications settings (grdb)"
-msgstr "Диалог настроек унаследованных приложений (grdb)"
-
-#: capplets/file-types/file-types-capplet.c:196
+#: capplets/file-types/file-types-capplet.c:210
+#: vfs-methods/themus/themus-properties-view.c:167
 msgid "Description"
 msgstr "Описание"
 
-#: capplets/file-types/file-types-capplet.c:218
+#: capplets/file-types/file-types-capplet.c:232
 msgid "Extensions"
 msgstr "Расширения"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:10
+#: capplets/file-types/file-types-properties.glade.h:11
 msgid "File Types and Programs"
 msgstr "Типы файлов и программы"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
 msgstr ""
-"Диалог настроек соответствия типов файлов и программ, использующихся для "
+"Диалог настройки соответствия типов файлов и программ, использующихся для "
 "открытия или просмотра каждого типа"
 
 #: capplets/file-types/file-types-properties.glade.h:2
@@ -886,83 +1021,87 @@ msgid "Add _Service..."
 msgstr "Добавить с_ервис..."
 
 #: capplets/file-types/file-types-properties.glade.h:5
+msgid "Browse icons"
+msgstr "Просмотреть значки"
+
+#: capplets/file-types/file-types-properties.glade.h:6
 msgid "C_hoose..."
 msgstr "_Выбрать..."
 
-#: capplets/file-types/file-types-properties.glade.h:6
+#: capplets/file-types/file-types-properties.glade.h:7
 msgid "Cate_gory:"
 msgstr "Кате_гория:"
 
-#: capplets/file-types/file-types-properties.glade.h:7
+#: capplets/file-types/file-types-properties.glade.h:8
 msgid "D_efault action:"
 msgstr "Ис_ходная команда:"
 
-#: capplets/file-types/file-types-properties.glade.h:8
+#: capplets/file-types/file-types-properties.glade.h:9
 msgid "Default _action:"
 msgstr "Ис_ходная команда:"
 
-#: capplets/file-types/file-types-properties.glade.h:9
+#: capplets/file-types/file-types-properties.glade.h:10
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr "Изменить тип файла"
 
-#: capplets/file-types/file-types-properties.glade.h:11
-msgid "Filename extensions:"
-msgstr "Расширения имён файлов"
-
 #: capplets/file-types/file-types-properties.glade.h:12
+msgid "Filename extensions:"
+msgstr "Расширения имён файлов:"
+
+#: capplets/file-types/file-types-properties.glade.h:13
 msgid "Look at content"
 msgstr "Смотреть содержимое"
 
-#: capplets/file-types/file-types-properties.glade.h:13
+#: capplets/file-types/file-types-properties.glade.h:14
 msgid "P_rogram:"
 msgstr "_Программа"
 
-#: capplets/file-types/file-types-properties.glade.h:14
+#: capplets/file-types/file-types-properties.glade.h:15
 msgid "Program to Run"
 msgstr "Запускаемая программа"
 
-#: capplets/file-types/file-types-properties.glade.h:15
+#: capplets/file-types/file-types-properties.glade.h:16
 msgid "Run a program"
 msgstr "Запустить программу"
 
-#: capplets/file-types/file-types-properties.glade.h:16
+#: capplets/file-types/file-types-properties.glade.h:17
 msgid "Run in _Terminal"
 msgstr "Запускать в т_ерминале"
 
-#: capplets/file-types/file-types-properties.glade.h:17
+#: capplets/file-types/file-types-properties.glade.h:18
 msgid "Use parent category _defaults"
 msgstr "Использовать _умолчания для родительской категории"
 
-#: capplets/file-types/file-types-properties.glade.h:18
+#: capplets/file-types/file-types-properties.glade.h:19
 msgid "_Add:"
 msgstr "Доб_авить:"
 
-#: capplets/file-types/file-types-properties.glade.h:19
+#: capplets/file-types/file-types-properties.glade.h:20
 msgid "_Description:"
 msgstr "_Описание:"
 
-#: capplets/file-types/file-types-properties.glade.h:20
+#: capplets/file-types/file-types-properties.glade.h:21
 msgid "_Edit..."
 msgstr "_Изменить..."
 
-#: capplets/file-types/file-types-properties.glade.h:21
+#: capplets/file-types/file-types-properties.glade.h:22
 msgid "_MIME type:"
 msgstr "Тип _MIME:"
 
-#: capplets/file-types/file-types-properties.glade.h:23
+#: capplets/file-types/file-types-properties.glade.h:24
 msgid "_Program to run:"
 msgstr "Запускаемая _программа:"
 
-#: capplets/file-types/file-types-properties.glade.h:24
+#: capplets/file-types/file-types-properties.glade.h:25
 msgid "_Protocol:"
 msgstr "П_ротокол:"
 
-#: capplets/file-types/file-types-properties.glade.h:25
+#: capplets/file-types/file-types-properties.glade.h:26
 msgid "_Remove"
 msgstr "У_брать"
 
-#: capplets/file-types/file-types-properties.glade.h:26
+#: capplets/file-types/file-types-properties.glade.h:27
 msgid "_Viewer component:"
 msgstr "Компонент про_смотра:"
 
@@ -973,7 +1112,7 @@ msgstr "Типы файлов и программы"
 #: capplets/file-types/file-types.desktop.in.h:2
 msgid "Specify which programs are used to open or view each type of file"
 msgstr ""
-"Диалог настроек соответствия типов файлов и программ, использующихся для "
+"Диалог настройки соответствия типов файлов и программ, использующихся для "
 "открытия или просмотра каждого типа"
 
 #: capplets/file-types/mime-category-edit-dialog.c:138
@@ -989,7 +1128,7 @@ msgstr "Модель"
 
 #: capplets/file-types/mime-category-edit-dialog.c:173
 msgid "GtkTreeModel that contains the category data"
-msgstr "Cnhenehf GtkTreeModel, содержащая данные категории"
+msgstr "Структура GtkTreeModel, содержащая данные категории"
 
 #: capplets/file-types/mime-category-edit-dialog.c:178
 msgid "MIME category info"
@@ -1000,8 +1139,8 @@ msgid "Structure containing information on the MIME category"
 msgstr "Структура, содержащая информацию о категориии типа MIME"
 
 #: capplets/file-types/mime-category-edit-dialog.c:344
-#: capplets/file-types/mime-edit-dialog.c:488
-#: capplets/file-types/mime-edit-dialog.c:592
+#: capplets/file-types/mime-edit-dialog.c:489
+#: capplets/file-types/mime-edit-dialog.c:594
 #: capplets/file-types/service-edit-dialog.c:358
 #: capplets/file-types/service-edit-dialog.c:407
 msgid "Custom"
@@ -1036,17 +1175,18 @@ msgstr "\"Истина\", если это диалог для добавлени
 msgid "Add File Type"
 msgstr "Добавить тип файла"
 
-#: capplets/file-types/mime-edit-dialog.c:434
-#: capplets/file-types/mime-type-info.c:673
+#: capplets/file-types/mime-edit-dialog.c:432
+#: capplets/file-types/mime-type-info.c:766
 msgid "Misc"
 msgstr "Разное"
 
-#: capplets/file-types/mime-edit-dialog.c:483
-#: capplets/file-types/mime-edit-dialog.c:542
+#: capplets/file-types/mime-edit-dialog.c:484
+#: capplets/file-types/mime-edit-dialog.c:545
 msgid "None"
 msgstr "Нет"
 
-#: capplets/file-types/mime-edit-dialog.c:852
+#: capplets/file-types/mime-edit-dialog.c:850
+#: capplets/file-types/mime-edit-dialog.c:864
 msgid ""
 "Please enter a valid MIME type.  It should be of the form class/type and may "
 "not contain any spaces."
@@ -1054,27 +1194,32 @@ msgstr ""
 "Введите допустимый тип MIME. Он должен быть в виде класс/тип и не может "
 "содержать пробелов."
 
-#: capplets/file-types/mime-edit-dialog.c:859
-msgid "A MIME type with that name already exists, overwrite ?."
+#: capplets/file-types/mime-edit-dialog.c:857
+msgid "A MIME type with that name already exists, overwrite?"
 msgstr "Тип MIME с этим именем уже существует, перезаписать?"
 
-#: capplets/file-types/mime-edit-dialog.c:924
+#: capplets/file-types/mime-edit-dialog.c:929
 msgid "Category"
 msgstr "Категория"
 
-#: capplets/file-types/mime-edit-dialog.c:929
+#: capplets/file-types/mime-edit-dialog.c:934
 msgid "Choose a file category"
 msgstr "Выберите категорию файла"
 
-#: capplets/file-types/mime-type-info.c:667
+#: capplets/file-types/mime-type-info.c:694
+#, c-format
+msgid "View as %s"
+msgstr "Просматривать как %s"
+
+#: capplets/file-types/mime-type-info.c:760
 msgid "Images"
 msgstr "Изображения"
 
-#: capplets/file-types/mime-type-info.c:669
+#: capplets/file-types/mime-type-info.c:762
 msgid "Video"
 msgstr "Видео"
 
-#: capplets/file-types/mime-type-info.c:671
+#: capplets/file-types/mime-type-info.c:764
 msgid "Audio"
 msgstr "Аудио"
 
@@ -1083,7 +1228,7 @@ msgstr "Аудио"
 msgid "Model for categories only"
 msgstr "Модель только для категорий"
 
-#: capplets/file-types/mime-types-model.c:421
+#: capplets/file-types/mime-types-model.c:422
 msgid "Internet Services"
 msgstr "Сервисы Интернета"
 
@@ -1161,174 +1306,236 @@ msgstr "Шрифт"
 
 #: capplets/font/font-properties.desktop.in.h:2
 msgid "Select fonts for the desktop"
-msgstr "Диалог настроек шрифтов для рабочего стола"
+msgstr "Диалог настройки шрифтов для рабочего стола"
 
-#: capplets/font/font-properties.glade.h:1
+#: capplets/font/font-properties.glade.h:2
+msgid "<b>Font Rendering</b>"
+msgstr "<b>Отрисовка шрифтов</b>"
+
+#: capplets/font/font-properties.glade.h:3
+msgid "<b>Hinting</b>:"
+msgstr "<b>Уточнение</b>:"
+
+#: capplets/font/font-properties.glade.h:4
+msgid "<b>Smoothing</b>:"
+msgstr "<b>Сглаживание</b>:"
+
+#: capplets/font/font-properties.glade.h:5
+msgid "<b>Subpixel order</b>:"
+msgstr "<b>Порядок субпикселов</b>:"
+
+#: capplets/font/font-properties.glade.h:6
 msgid "Best _shapes"
 msgstr "Наилучшее _начертание"
 
-#: capplets/font/font-properties.glade.h:2
+#: capplets/font/font-properties.glade.h:7
 msgid "Best co_ntrast"
 msgstr "Наилучшая _контрастность"
 
-#: capplets/font/font-properties.glade.h:3
-msgid "De_tails..."
-msgstr "Показать в по_дробностях..."
+#: capplets/font/font-properties.glade.h:8
+msgid "D_etails..."
+msgstr "По_дробнее..."
 
-#: capplets/font/font-properties.glade.h:4
+#: capplets/font/font-properties.glade.h:9
 msgid "Font Preferences"
 msgstr "Настройки шрифтов"
 
-#: capplets/font/font-properties.glade.h:5
-msgid "Font Rendering"
-msgstr "Режим отрисовки шрифтов:"
-
-#: capplets/font/font-properties.glade.h:6
+#: capplets/font/font-properties.glade.h:10
 msgid "Font Rendering Details"
 msgstr "Подробности отрисовки шрифтов"
 
-#: capplets/font/font-properties.glade.h:7
-msgid "G_rayscale"
+#: capplets/font/font-properties.glade.h:11
+msgid "Go _to font folder"
+msgstr "Перейти _в папку шрифтов"
+
+#: capplets/font/font-properties.glade.h:12
+msgid "Gra_yscale"
 msgstr "Пол_утона"
 
-#: capplets/font/font-properties.glade.h:8
-msgid "Hinting:"
-msgstr "Уточнение:"
-
-#: capplets/font/font-properties.glade.h:9
+#: capplets/font/font-properties.glade.h:13
 msgid "N_one"
 msgstr "Н_ет"
 
-#: capplets/font/font-properties.glade.h:10
-msgid "Resolution (_dots per inch):"
-msgstr "Разрешение (_точек на дюйм):"
+#: capplets/font/font-properties.glade.h:14
+msgid "R_esolution:"
+msgstr "_Разрешение:"
 
-#: capplets/font/font-properties.glade.h:11
+#: capplets/font/font-properties.glade.h:15
 msgid "Set the font for applications"
 msgstr "Установите шрифт для приложений"
 
-#: capplets/font/font-properties.glade.h:12
+#: capplets/font/font-properties.glade.h:16
 msgid "Set the font for the icons on the desktop"
 msgstr "Установите шрифт для значков на рабочем столе"
 
-#: capplets/font/font-properties.glade.h:13
+#: capplets/font/font-properties.glade.h:17
 msgid "Set the monospace font for terminals and similar applications"
 msgstr "Установите шрифт для терминалов и подобных приложений"
 
-#: capplets/font/font-properties.glade.h:14
-msgid "Smoothing:"
-msgstr "Сглаживание:"
-
-#: capplets/font/font-properties.glade.h:15
+#: capplets/font/font-properties.glade.h:18
 msgid "Sub_pixel (LCDs)"
 msgstr "С_убпиксельное (ЖК-мониторы)"
 
-#: capplets/font/font-properties.glade.h:16
+#: capplets/font/font-properties.glade.h:19
 msgid "Sub_pixel smoothing (LCDs)"
 msgstr "С_убпиксельное сглаживание (для ЖК-мониторов)"
 
-#: capplets/font/font-properties.glade.h:17
-msgid "Subpixel order:"
-msgstr "Порядок при субпиксельном сглаживании::"
-
-#: capplets/font/font-properties.glade.h:18
+#: capplets/font/font-properties.glade.h:20
 msgid "VB_GR"
 msgstr "VB_GR"
 
-#: capplets/font/font-properties.glade.h:19
+#: capplets/font/font-properties.glade.h:21
 msgid "_Application font:"
 msgstr "Шрифт _приложения:"
 
-#: capplets/font/font-properties.glade.h:20
+#: capplets/font/font-properties.glade.h:22
 msgid "_BGR"
 msgstr "_BGR"
 
-#: capplets/font/font-properties.glade.h:21
+#: capplets/font/font-properties.glade.h:23
 msgid "_Desktop font:"
 msgstr "Шрифт _рабочего стола:"
 
-#: capplets/font/font-properties.glade.h:22
+#: capplets/font/font-properties.glade.h:24
 msgid "_Full"
 msgstr "П_олное"
 
-#: capplets/font/font-properties.glade.h:23
+#: capplets/font/font-properties.glade.h:25
+#: capplets/mouse/gnome-mouse-properties.glade.h:22
 msgid "_Medium"
 msgstr "Сре_днее"
 
-#: capplets/font/font-properties.glade.h:24
+#: capplets/font/font-properties.glade.h:26
 msgid "_Monochrome"
 msgstr "_Монохромный"
 
-#: capplets/font/font-properties.glade.h:25
+#: capplets/font/font-properties.glade.h:27
 msgid "_None"
 msgstr "_Нет"
 
-#: capplets/font/font-properties.glade.h:26
+#: capplets/font/font-properties.glade.h:28
 msgid "_RGB"
 msgstr "_RGB"
 
-#: capplets/font/font-properties.glade.h:27
+#: capplets/font/font-properties.glade.h:29
 msgid "_Slight"
 msgstr "Сл_абое"
 
-#: capplets/font/font-properties.glade.h:28
+#: capplets/font/font-properties.glade.h:30
 msgid "_Terminal font:"
 msgstr "Шрифт т_ерминала:"
 
-#: capplets/font/font-properties.glade.h:29
+#: capplets/font/font-properties.glade.h:31
+msgid "_Use Font"
+msgstr "_Использовать шрифт"
+
+#: capplets/font/font-properties.glade.h:32
 msgid "_VRGB"
 msgstr "_VRGB"
 
-#: capplets/font/font-properties.glade.h:30
+#: capplets/font/font-properties.glade.h:33
 msgid "_Window title font:"
 msgstr "Шрифт за_головка окна:"
 
-#: capplets/keybindings/eggcellrendererkeys.c:160
-#: capplets/keybindings/eggcellrendererkeys.c:161
+#: capplets/font/font-properties.glade.h:34
+msgid "dots per inch"
+msgstr "точек на дюйм"
+
+#: capplets/font/main.c:506 capplets/font/main.c:513
+msgid "Font may be too large"
+msgstr "Фонт может быть слишком большим"
+
+#: capplets/font/main.c:507
+#, c-format
+msgid ""
+"The font selected is %d point large, and may make it difficult to "
+"effectively use the computer.  It is recommended that you select a size "
+"smaller than %d."
+msgid_plural ""
+"The font selected is %d points large, and may make it difficult to "
+"effectively use the computer.  It is recommended that you select a size "
+"smaller than %d."
+msgstr[0] ""
+"Выбранный шрифт имеет размер %d пункт, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта менее %d."
+msgstr[1] ""
+"Выбранный шрифт имеет размер %d пункта, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта менее %d."
+msgstr[2] ""
+"Выбранный шрифт имеет размер %d пунктов, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта менее %d."
+
+#: capplets/font/main.c:514
+#, c-format
+msgid ""
+"The font selected is %d point large, and may make it difficult to "
+"effectively use the computer.  It is recommended that you select a smaller "
+"sized font."
+msgid_plural ""
+"The font selected is %d points large, and may make it difficult to "
+"effectively use the computer.  It is recommended that you select a smaller "
+"sized font."
+msgstr[0] ""
+"Выбранный шрифт имеет размер %d пункт, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта меньшего размера."
+msgstr[1] ""
+"Выбранный шрифт имеет размер %d пункта, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта меньшего размера."
+msgstr[2] ""
+"Выбранный шрифт имеет размер %d пунктов, это может затрудинть использование "
+"компьютера. Рекомендуется выбрать выбрать размер шрифта меньшего размера."
+
+#: capplets/keybindings/eggcellrendererkeys.c:21
+msgid "New accelerator..."
+msgstr "Создать ускоритель..."
+
+#: capplets/keybindings/eggcellrendererkeys.c:163
+#: capplets/keybindings/eggcellrendererkeys.c:164
 msgid "Accelerator key"
 msgstr "Клавиша ускорителя"
 
-#: capplets/keybindings/eggcellrendererkeys.c:170
-#: capplets/keybindings/eggcellrendererkeys.c:171
+#: capplets/keybindings/eggcellrendererkeys.c:173
+#: capplets/keybindings/eggcellrendererkeys.c:174
 msgid "Accelerator modifiers"
 msgstr "Модификаторы ускорителя"
 
-#: capplets/keybindings/eggcellrendererkeys.c:180
+#: capplets/keybindings/eggcellrendererkeys.c:182
+#: capplets/keybindings/eggcellrendererkeys.c:183
+msgid "Accelerator keycode"
+msgstr "Код клавиши ускорителя"
+
+#: capplets/keybindings/eggcellrendererkeys.c:193
 msgid "Accel Mode"
 msgstr "Режим ускорителя"
 
-#: capplets/keybindings/eggcellrendererkeys.c:181
+#: capplets/keybindings/eggcellrendererkeys.c:194
 msgid "The type of accelerator."
 msgstr "Тип ускорителя."
 
-#: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:204
-#: libbackground/applier.c:588
+#: capplets/keybindings/eggcellrendererkeys.c:242
+#: capplets/keybindings/gnome-keybinding-properties.c:196
+#: libbackground/applier.c:757 typing-break/drwright.c:473
 msgid "Disabled"
 msgstr "Выкл."
 
-#: capplets/keybindings/eggcellrendererkeys.c:330
-#: capplets/keybindings/eggcellrendererkeys.c:563
-msgid "Type a new accelerator, or press Backspace to clear"
-msgstr "Введите новый ускоритель или нажмите клавишу Backspace для очистки"
-
-#: capplets/keybindings/eggcellrendererkeys.c:566
-msgid "Type a new accelerator"
-msgstr "Введите новый ускоритель"
-
-#: capplets/keybindings/gnome-keybinding-properties.c:540
+#: capplets/keybindings/gnome-keybinding-properties.c:538
 msgid "<Unknown Action>"
 msgstr "<Неизвестное действие>"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:559
+#: capplets/keybindings/gnome-keybinding-properties.c:557
 msgid "Desktop"
 msgstr "Рабочий стол"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:563
+#: capplets/keybindings/gnome-keybinding-properties.c:558
+#: capplets/sound/gnome-settings-sound.desktop.in.h:2
+msgid "Sound"
+msgstr "Звук"
+
+#: capplets/keybindings/gnome-keybinding-properties.c:562
 msgid "Window Management"
 msgstr "Управление окнами"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:698
+#: capplets/keybindings/gnome-keybinding-properties.c:659
 #, c-format
 msgid ""
 "The shortcut \"%s\" is already used for:\n"
@@ -1337,366 +1544,406 @@ msgstr ""
 "Комбинация клавиш \"%s\" уже используется для:\n"
 " \"%s\"\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:729
+#: capplets/keybindings/gnome-keybinding-properties.c:691
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
 "Произошла ошибка при установке нового ускорителя в базе данных конфигурации: "
 "%s\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:880
-msgid ""
-"Unable to find any keyboard themes.  This means your GTK+ installation has "
-"been incompletely installed."
-msgstr ""
-"Невозможно найти клавиатурные темы. Это значит, что установка GTK+ является "
-"неполной."
+#: capplets/keybindings/gnome-keybinding-properties.c:741
+#, c-format
+msgid "Error unsetting accelerator in configuration database: %s\n"
+msgstr "Ошибка при сбросе ускорителя в базе данных конфигурации: %s\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:902
+#: capplets/keybindings/gnome-keybinding-properties.c:830
 msgid "Action"
 msgstr "Команда"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:921
+#: capplets/keybindings/gnome-keybinding-properties.c:854
 msgid "Shortcut"
 msgstr "Комбинация клавиш"
 
 #: capplets/keybindings/gnome-keybinding-properties.glade.h:1
-msgid "Click for a list of keyboard navigation schemes."
-msgstr "Щёлкните для получения списка схем клавиатурной навигации."
-
-#: capplets/keybindings/gnome-keybinding-properties.glade.h:2
 #: capplets/keybindings/keybinding.desktop.in.h:2
 msgid "Keyboard Shortcuts"
 msgstr "Комбинации клавиш клавиатуры"
 
-#: capplets/keybindings/gnome-keybinding-properties.glade.h:3
-msgid "_Desktop shortcuts:"
-msgstr "Комбинации клавиш _Рабочего стола:"
-
-#: capplets/keybindings/gnome-keybinding-properties.glade.h:4
-msgid "_Text editing shortcuts:"
-msgstr "Комбинации клавиш редактирования _текста:"
+#: capplets/keybindings/gnome-keybinding-properties.glade.h:2
+msgid ""
+"To edit a shortcut key, click on the corresponding row and type a new "
+"accelerator, or press backspace to clear."
+msgstr ""
+"Для редактирования комбинации щёлкните по соответствующему ряду и введите "
+"новый ускоритель или нажмите клавишу Backspace для очистки"
 
 #: capplets/keybindings/keybinding.desktop.in.h:1
 msgid "Assign shortcut keys to commands"
 msgstr "Диалог назначения комбинаций клавиш командам"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:162
+#: capplets/keyboard/gnome-keyboard-properties-xkb.c:69
+#: capplets/keyboard/gnome-keyboard-properties-xkb.c:95
+msgid "Unknown"
+msgstr "Неизвестно"
+
+#: capplets/keyboard/gnome-keyboard-properties-xkbmc.c:80
+msgid "Models"
+msgstr "Модели"
+
+#: capplets/keyboard/gnome-keyboard-properties-xkbpv.c:59
+msgid "Keyboard layout preview"
+msgstr "Образец раскладки клавиатуры"
+
+#: capplets/keyboard/gnome-keyboard-properties.c:106
 #, c-format
 msgid "There was an error launching the keyboard capplet : %s"
 msgstr "Возникла ошибка при запуске капплета клавиатуры: %s"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:269
+#: capplets/keyboard/gnome-keyboard-properties.c:201
 msgid "_Accessibility"
 msgstr "_Специальные возможности"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:286
-#: capplets/keyboard/gnome-keyboard-properties.c:288
-#: capplets/sound/sound-properties-capplet.c:145
-#: capplets/sound/sound-properties-capplet.c:147
+#: capplets/keyboard/gnome-keyboard-properties.c:220
+#: capplets/keyboard/gnome-keyboard-properties.c:222
+#: capplets/sound/sound-properties-capplet.c:240
+#: capplets/sound/sound-properties-capplet.c:242
 msgid ""
 "Just apply settings and quit (compatibility only; now handled by daemon)"
 msgstr ""
 "Просто применить установки и выйти (только для совместимости; теперь "
 "обрабатывается демоном)"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:2
+#: capplets/keyboard/gnome-keyboard-properties.c:226
+msgid "Start the page with the typing break settings showing"
+msgstr "Начинать страницу с отображения установок перерыва в работе"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:3
+msgid "..."
+msgstr "..."
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:4
+msgid "<b>Cursor Blinking</b>"
+msgstr "<b>Мигание курсора</b>"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:5
+msgid "<b>Repeat Keys</b>"
+msgstr "<b>Автоповтор</b>"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:6
+msgid "<b>_Lock screen to enforce typing break</b>"
+msgstr "<b>_Блокировать экран для принудительного перерыва в работе</b>"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:7
 msgid "<small><i>Fast</i></small>"
 msgstr "<small><i>выше</i></small>"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:3
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:8
 msgid "<small><i>Long</i></small>"
 msgstr "<small><i>больше</i></small>"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:4
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:9
 msgid "<small><i>Short</i></small>"
 msgstr "<small><i>меньше</i></small>"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:5
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:10
 msgid "<small><i>Slow</i></small>"
 msgstr "<small><i>ниже</i></small>"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:6
-msgid "Bee_p"
-msgstr "_Включён"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:7
-msgid "C_ustom:"
-msgstr "Др_угой:"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:8
-msgid "Clic_k on keypress"
-msgstr "_Щелчок при нажатии"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:9
-msgid "Cursor Blinks"
-msgstr "Мигание курсора"
-
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:11
-msgid "Keyboard Bell"
-msgstr "Гудок клавиатуры"
+msgid "A_vailable layouts:"
+msgstr "_Доступные раскладки:"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:12
+msgid "A_vailable options:"
+msgstr "_Доступные параметры:"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:13
+msgid "All_ow postponing of breaks"
+msgstr "Разрешить _откладывание перерывов"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:14
+msgid "Check if breaks are allowed to be postponed"
+msgstr "Установите, если разрешено откладывать перерывы"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:15
+msgid "Choose a keyboard model"
+msgstr "Выберите модель клавиатуры"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "Cursor _blinks in text boxes and fields"
+msgstr "Курсор _мигает в полях ввода текста"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:17
+msgid "Duration of the break when typing is disallowed"
+msgstr "Продолжительность перерыва, когда работа на клавиатуре запрещена"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:18
+msgid "Duration of work before forcing a break"
+msgstr "Продолжительность работы перед принудительным перерывом"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:19
+msgid "Key presses _repeat when key is held down"
+msgstr "_Повторять удерживаемую нажатой клавишу"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:21
 msgid "Keyboard Preferences"
 msgstr "Настройки клавиатуры"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:13
-msgid "Keyboard _repeats when key is held down"
-msgstr "_Повторять нажатую клавишу"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:22
+msgid "Keyboard _model:"
+msgstr "_Модель клавиатуры:"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:14
-msgid "Keypress Click"
-msgstr "Щелчок при нажатии"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:23
+msgid "Layout Options"
+msgstr "Параметры раскладки"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:15
-msgid "Repeat Keys"
-msgstr "Повтор клавиш"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:24
+msgid "Layouts"
+msgstr "Раскладки"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:18
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:25
+msgid ""
+"Lock screen after a certain duration to help prevent repetitive keyboard use "
+"injuries"
+msgstr ""
+"Блокировать экран через определенное время для предотвращения болезней, "
+"связанных с продолжительным использованием клавиатуры"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:26
+msgid "Microsoft Natural Keyboard"
+msgstr "Клавиатура Microsoft Natural"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:27
+msgid "Reset to de_faults"
+msgstr "Сбросить в ис_ходные"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:29
+msgid "Typing Break"
+msgstr "Перерыв в работе"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:30
 msgid "_Accessibility..."
 msgstr "Спе_циальные возможности..."
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:19
-msgid "_Blinks in text boxes and fields"
-msgstr "Ку_рсор мигает в текстовых полях"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:31
+msgid "_Break interval lasts:"
+msgstr "Продолжительность _перерыва:"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:20
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:32
 msgid "_Delay:"
 msgstr "Зад_ержка:"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:21
-msgid "_Off"
-msgstr "В_ыключен"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:33
+msgid "_Models"
+msgstr "_Модель"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:22
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:34
+msgid "_Preview"
+msgstr "Показать образе_ц"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:35
+msgid "_Selected layouts:"
+msgstr "_Выбранные раскладки:"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:36
+msgid "_Selected options:"
+msgstr "_Выбранные параметры:"
+
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:37
 msgid "_Speed:"
 msgstr "С_корость:"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:23
-msgid "_Volume:"
-msgstr "Гр_омкость:"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:39
+msgid "_Work interval lasts:"
+msgstr "Продолжительность _работы:"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:24
-msgid "loud"
-msgstr "громче"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:25
-msgid "quiet"
-msgstr "тише"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:40
+msgid "minutes"
+msgstr "минут"
 
 #: capplets/keyboard/keyboard.desktop.in.h:2
 msgid "Set your keyboard preferences"
-msgstr "Диалог настроек клавиатуры"
+msgstr "Диалог настройки клавиатуры"
 
-#: capplets/mouse/gnome-mouse-properties.c:437
-#, c-format
-msgid ""
-"<b>Unknown Cursor</b>\n"
-"%s"
-msgstr ""
-"<b>Неизвестный курсор</>\n"
-"%s"
+#: capplets/mouse/gnome-mouse-properties.c:496
+msgid "Unknown Cursor"
+msgstr "Неизвестный курсор"
 
-#: capplets/mouse/gnome-mouse-properties.c:538
-msgid ""
-"<b>Default Cursor - Current</b>\n"
-"The default cursor that ships with X"
-msgstr ""
-"<b>Исходный курсор - текущий</b>\n"
-"Исходный курсор, поставляемый с системой X"
+#: capplets/mouse/gnome-mouse-properties.c:613
+msgid "Default Cursor - Current"
+msgstr "Курсор по умолчанию - текущий"
 
-#: capplets/mouse/gnome-mouse-properties.c:541
-msgid ""
-"<b>Default Cursor</b>\n"
-"The default cursor that ships with X"
-msgstr ""
-"<b>Курсор по умолчанию</b>\n"
-"Исходный курсор, поставляемый с системой X"
+#: capplets/mouse/gnome-mouse-properties.c:613
+#: capplets/mouse/gnome-mouse-properties.c:616
+msgid "The default cursor that ships with X"
+msgstr "Курсор по умолчанию, поставляемый с X"
 
-#: capplets/mouse/gnome-mouse-properties.c:559
-msgid ""
-"<b>White Cursor - Current</b>\n"
-"The default cursor inverted"
-msgstr ""
-"<b>Белый курсор - текущий</b>\n"
-"Инвертированный исходный курсор"
+#: capplets/mouse/gnome-mouse-properties.c:616
+msgid "Default Cursor"
+msgstr "Курсор по умолчанию"
 
-#: capplets/mouse/gnome-mouse-properties.c:562
-msgid ""
-"<b>White Cursor</b>\n"
-"The default cursor inverted"
-msgstr ""
-"<b>Белый курсор</b>\n"
-"Инвертированный исходный курсор"
+#: capplets/mouse/gnome-mouse-properties.c:634
+msgid "White Cursor - Current"
+msgstr "Белый курсор - Текущий"
 
-#: capplets/mouse/gnome-mouse-properties.c:580
-msgid ""
-"<b>Large Cursor - Current</b>\n"
-"Large version of normal cursor"
-msgstr ""
-"<b>Большой курсор - текущий</b>\n"
-"Увеличенная версия обычного курсора"
+#: capplets/mouse/gnome-mouse-properties.c:634
+#: capplets/mouse/gnome-mouse-properties.c:637
+msgid "The default cursor inverted"
+msgstr "Курсор по умолчанию инвертирован"
 
-#: capplets/mouse/gnome-mouse-properties.c:583
-msgid ""
-"<b>Large Cursor</b>\n"
-"Large version of normal cursor"
-msgstr ""
-"<b>Большой курсор</b>\n"
-"Увеличенная версия обычного курсора"
+#: capplets/mouse/gnome-mouse-properties.c:637
+msgid "White Cursor"
+msgstr "Белый курсор"
 
-#: capplets/mouse/gnome-mouse-properties.c:601
-msgid ""
-"<b>Large White Cursor - Current</b>\n"
-"Large version of white cursor"
-msgstr ""
-"<b>Большой белый курсор - текущий</b>\n"
-"Увеличенная версия белого курсора"
+#: capplets/mouse/gnome-mouse-properties.c:656
+msgid "Large Cursor - Current"
+msgstr "Увеличенный курсор - Текущий"
 
-#: capplets/mouse/gnome-mouse-properties.c:604
-msgid ""
-"<b>Large White Cursor</b>\n"
-"Large version of white cursor"
-msgstr ""
-"<b>Большой белый курсор</b>\n"
-"Увеличенная версия белого курсора"
+#: capplets/mouse/gnome-mouse-properties.c:656
+#: capplets/mouse/gnome-mouse-properties.c:659
+msgid "Large version of normal cursor"
+msgstr "Увеличенная версия обычного курсора"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:1
-msgid ""
-"<b>Note:</b> You will need to logout and log back in for this setting to "
-"take effect."
-msgstr ""
-"<b>Внимание:</b> Для того чтобы установки подействовали, надо выйти и заново "
-"войти в сеанс."
+#: capplets/mouse/gnome-mouse-properties.c:659
+msgid "Large Cursor"
+msgstr "Увеличенный курсор"
+
+#: capplets/mouse/gnome-mouse-properties.c:678
+msgid "Large White Cursor - Current"
+msgstr "Увеличенный белый курсор - Текущий"
+
+#: capplets/mouse/gnome-mouse-properties.c:678
+#: capplets/mouse/gnome-mouse-properties.c:681
+msgid "Large version of white cursor"
+msgstr "Увеличенная версия белого курсора"
+
+#: capplets/mouse/gnome-mouse-properties.c:681
+msgid "Large White Cursor"
+msgstr "Увеличенный белый курсор"
+
+#: capplets/mouse/gnome-mouse-properties.c:753
+msgid "Cursor Size"
+msgstr "Размер курсора"
+
+#: capplets/mouse/gnome-mouse-properties.c:762
+msgid "Cursor Theme"
+msgstr "Тема курсоров"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:2
+msgid "<b>Double-Click Timeout </b>"
+msgstr "<b>Задержка двойного щелчка </b>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:3
+msgid "<b>Drag and Drop</b>"
+msgstr "<b>Перетаскивание</b>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:4
+msgid "<b>Locate Pointer</b>"
+msgstr "<b>Поиск указателя</b>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:5
+msgid "<b>Mouse Orientation</b>"
+msgstr "<b>Ориентация мыши</b>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:6
+msgid "<b>Speed</b>"
+msgstr "<b>Скорость</b>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:7
+msgid ""
+"<i><small><b>Note:</b> Changes to this setting will not take effect until "
+"you next log in.</small></i>"
+msgstr ""
+"<i><small><b>Примечание:</b> Изменение этой установки вступит в силу только "
+"после следующей регистрации в системе.</small></i>"
+
+#: capplets/mouse/gnome-mouse-properties.glade.h:8
 msgid "<i>Fast</i>"
 msgstr "<i>большое</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:3
+#: capplets/mouse/gnome-mouse-properties.glade.h:9
 msgid "<i>High</i>"
 msgstr "<i>высокая</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:4
+#: capplets/mouse/gnome-mouse-properties.glade.h:10
 msgid "<i>Large</i>"
-msgstr "<i>большая</i>"
+msgstr "<i>высокий</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:5
+#: capplets/mouse/gnome-mouse-properties.glade.h:11
 msgid "<i>Low</i>"
 msgstr "<i>низкая</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:6
+#: capplets/mouse/gnome-mouse-properties.glade.h:12
 msgid "<i>Slow</i>"
 msgstr "<i>малое</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:7
+#: capplets/mouse/gnome-mouse-properties.glade.h:13
 msgid "<i>Small</i>"
-msgstr "<i>малая</i>"
+msgstr "<i>низкий</i>"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:8
-msgid ""
-"Animates a quick marker around the cursor when the Control key has been "
-"pressed and released."
-msgstr "Рисует вокруг курсора отметку при нажатии клавиши Ctrl."
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:9
+#: capplets/mouse/gnome-mouse-properties.glade.h:14
 msgid "Buttons"
 msgstr "Кнопки"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:10
-msgid "Cursor Theme"
-msgstr "Тема курсора"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:11
+#: capplets/mouse/gnome-mouse-properties.glade.h:15
 msgid "Cursors"
 msgstr "Курсоры"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:12
-msgid "Double-click Delay"
-msgstr "Задержка двойного щелчка"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:13
-msgid "Drag and Drop"
-msgstr "Перетаскивание и оставление"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:14
-msgid ""
-"Left-handed mouse mode switches the left and right buttons on the mouse."
-msgstr "Режим мыши под левую руку меняет местами левую и правую кнопки мыши."
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:15
-msgid "Locate Pointer"
-msgstr "Определение местоположения указателя"
-
 #: capplets/mouse/gnome-mouse-properties.glade.h:16
-msgid ""
-"Maximum time allowed between clicks when double-clicking.   Use the box on "
-"the right to test."
-msgstr ""
-"Максимальное время между щелчками в двойном щелчке. Используйте поле справа "
-"для проверки."
+msgid "Highlight the _pointer when you press Ctrl"
+msgstr "_Подсвечивать курсор мыши при нажатии на клавишу Ctrl"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:17
 msgid "Motion"
 msgstr "Движение"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:18
-msgid "Mouse Orientation"
-msgstr "Ориентация мыши"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:19
 msgid "Mouse Preferences"
 msgstr "Настройки мыши"
 
+#: capplets/mouse/gnome-mouse-properties.glade.h:19
+msgid "_Acceleration:"
+msgstr "_Ускорение:"
+
 #: capplets/mouse/gnome-mouse-properties.glade.h:20
-msgid "Set the distance you need to move your cursor before dragging an item."
-msgstr ""
-"Установите расстояние, на которое должен быть смещён курсор для "
-"перетаскивания элемента."
+msgid "_Large"
+msgstr "У_величенный"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:21
-msgid "Set the speed of your pointing device."
-msgstr "Установите скорость курсора."
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:22
-msgid "Speed"
-msgstr "Скорость"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:23
-msgid "_Acceleration:"
-msgstr "Уско_рение:"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:24
-msgid "_Delay (sec):"
-msgstr "Зад_ержка (сек):"
-
-#: capplets/mouse/gnome-mouse-properties.glade.h:25
 msgid "_Left-handed mouse"
 msgstr "Настроить мышь под _левую руку"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:26
+#: capplets/mouse/gnome-mouse-properties.glade.h:23
 msgid "_Sensitivity:"
 msgstr "_Чувствительность:"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:27
-msgid "_Show position of cursor when the Control key is pressed"
-msgstr "Пок_азывать положение курсора когда нажата клавиша Ctrl"
+#: capplets/mouse/gnome-mouse-properties.glade.h:24
+msgid "_Small"
+msgstr "_Уменьшенный"
 
-#: capplets/mouse/gnome-mouse-properties.glade.h:28
+#: capplets/mouse/gnome-mouse-properties.glade.h:25
 msgid "_Threshold:"
 msgstr "_Порог:"
 
-#: capplets/mouse/mouse.desktop.in.h:2
+#: capplets/mouse/gnome-mouse-properties.glade.h:26
+msgid "_Timeout:"
+msgstr "З_адержка:"
+
+#: capplets/mouse/gnome-settings-mouse.desktop.in.h:1
+msgid "Mouse"
+msgstr "Мышь"
+
+#: capplets/mouse/gnome-settings-mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
-msgstr "Диалог настроек мыши"
+msgstr "Диалог настройки мыши"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:1
-msgid "Network proxy"
+msgid "Network Proxy"
 msgstr "Сервис Прокси"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:2
 msgid "Network proxy preferences"
-msgstr "Диалог настроек сервиса Прокси"
+msgstr "Диалог настройки сервиса Прокси"
 
 #: capplets/network/gnome-network-preferences.glade.h:1
 msgid "      "
@@ -1723,46 +1970,66 @@ msgid "Autoconfiguration _URL:"
 msgstr "Иденти_фикатор (URL) автоконфигурации:"
 
 #: capplets/network/gnome-network-preferences.glade.h:8
+msgid "FTP proxy port"
+msgstr "Порт для сервиса Прокси типа FTP"
+
+#: capplets/network/gnome-network-preferences.glade.h:9
 msgid "HTTP Proxy Details"
 msgstr "Подробности сервиса Прокси типа HTTP"
 
-#: capplets/network/gnome-network-preferences.glade.h:9
-msgid "Network Proxy Configuration"
-msgstr "Настройки сервиса Прокси"
-
 #: capplets/network/gnome-network-preferences.glade.h:10
-msgid "Port:"
-msgstr "П_орт:"
+msgid "HTTP proxy port"
+msgstr "Порт для сервиса Прокси типа HTTP"
 
 #: capplets/network/gnome-network-preferences.glade.h:11
+msgid "H_TTP proxy:"
+msgstr "Сервис Прокси типа _HTTP:"
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+msgid "Network Proxy Configuration"
+msgstr "конфигурация сервиса Прокси"
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+msgid "Port:"
+msgstr "Порт:"
+
+#: capplets/network/gnome-network-preferences.glade.h:14
 msgid "S_ocks host:"
 msgstr "Узел протокола S_ocks:"
 
-#: capplets/network/gnome-network-preferences.glade.h:12
-msgid "_Details"
-msgstr "Показать по_дробности"
+#: capplets/network/gnome-network-preferences.glade.h:15
+msgid "Secure HTTP proxy port"
+msgstr "Порт для безопасного сервиса Прокси типа HTTP"
 
-#: capplets/network/gnome-network-preferences.glade.h:13
+#: capplets/network/gnome-network-preferences.glade.h:16
+msgid "Socks host port"
+msgstr "Порт для сервиса Прокси на узле протокола Socks"
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+msgid "U_sername:"
+msgstr "_Имя пользователя:"
+
+#: capplets/network/gnome-network-preferences.glade.h:18
+msgid "_Details"
+msgstr "По_дробнее"
+
+#: capplets/network/gnome-network-preferences.glade.h:19
 msgid "_FTP proxy:"
 msgstr "Сервис Прокси типа _FTP:"
 
-#: capplets/network/gnome-network-preferences.glade.h:14
-msgid "_HTTP proxy:"
-msgstr "Сервис Прокси типа _HTTP:"
-
-#: capplets/network/gnome-network-preferences.glade.h:15
+#: capplets/network/gnome-network-preferences.glade.h:20
 msgid "_Password:"
-msgstr "Пар_оль:"
+msgstr "_Пароль:"
 
-#: capplets/network/gnome-network-preferences.glade.h:16
+#: capplets/network/gnome-network-preferences.glade.h:21
 msgid "_Secure HTTP proxy:"
 msgstr "_Безопасный сервис Прокси типа HTTP"
 
-#: capplets/network/gnome-network-preferences.glade.h:17
-msgid "_Username:"
-msgstr "И_мя пользователя:"
+#: capplets/sound/gnome-settings-sound.desktop.in.h:1
+msgid "Enable sound and associate sounds with events"
+msgstr "Диалог включения звука и ассоциации звуков с событиями"
 
-#: capplets/sound/sound-properties-capplet.c:180
+#: capplets/sound/sound-properties-capplet.c:271
 msgid "Sound preferences"
 msgstr "Настройки звука"
 
@@ -1771,84 +2038,120 @@ msgid "E_nable sound server startup"
 msgstr "_Включать сервер звука при запуске"
 
 #: capplets/sound/sound-properties.glade.h:2
+msgid "Flash _entire screen"
+msgstr "Мигание _всего экрана"
+
+#: capplets/sound/sound-properties.glade.h:3
+msgid "Flash _window titlebar"
+msgstr "_Мигание заголовка окна"
+
+#: capplets/sound/sound-properties.glade.h:4
 msgid "General"
 msgstr "Общие"
 
-#: capplets/sound/sound-properties.glade.h:3
+#: capplets/sound/sound-properties.glade.h:5
 msgid "Sound Events"
-msgstr "Звуки _событий"
+msgstr "Звуки событий"
 
-#: capplets/sound/sound-properties.glade.h:4
+#: capplets/sound/sound-properties.glade.h:6
 msgid "Sound Preferences"
 msgstr "Настройки звука"
 
-#: capplets/sound/sound-properties.glade.h:5
+#: capplets/sound/sound-properties.glade.h:7
+msgid "System Bell"
+msgstr "Системный сигнал"
+
+#: capplets/sound/sound-properties.glade.h:8
+msgid "_Sound an audible bell"
+msgstr "В_оспроизводить звуковой сигнал"
+
+#: capplets/sound/sound-properties.glade.h:9
 msgid "_Sounds for events"
 msgstr "Использовать звуки _для событий"
 
-#: capplets/sound/sound.desktop.in.h:1
-msgid "Enable sound and associate sounds with events"
-msgstr "Диалог включения звука и ассоциации звуков с событиями"
+#: capplets/sound/sound-properties.glade.h:10
+msgid "_Visual feedback:"
+msgstr "_Визуальное отображение:"
 
-#: capplets/theme-switcher/control/control.c:18
-msgid "Eenie Meenie Mynie Moe Catcha Tiger By Its Toe"
-msgstr "Эники-беники ели вареники"
+#: capplets/theme-switcher/gnome-theme-details.c:372
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr ""
+"Ни одна тема не найдена в системе. Скорее всего, это значит, что диалог "
+"\"Тема\" был неверно установлен или не был установлен пакет \"gnome-themes\"."
 
-#: capplets/theme-switcher/control/control.c:43
-msgid "Selected themes from above will be tested by previewing here."
-msgstr "Образец выбранных выше тем можно просмотреть здесь."
+#: capplets/theme-switcher/gnome-theme-installer.c:127
+msgid "No theme file location specified to install"
+msgstr "Не указан адрес файла темы для установки"
 
-#. column one
-#: capplets/theme-switcher/control/control.c:48
-msgid "Sample Button"
-msgstr "Образец кнопки"
+#: capplets/theme-switcher/gnome-theme-installer.c:146
+msgid "The theme file location specified to install is invalid"
+msgstr "Указанный адрес файла темы недействителен"
 
-#: capplets/theme-switcher/control/control.c:52
-msgid "Sample Check Button"
-msgstr "Образец кнопки отметки"
+#: capplets/theme-switcher/gnome-theme-installer.c:173
+#, c-format
+msgid ""
+"%s is the path where the theme files will be installed. This can not be "
+"selected as the source location"
+msgstr ""
+"%s - это путь, где должен быть установлен файл темы. Он не может быть выбран "
+"как исходный адрес"
 
-#: capplets/theme-switcher/control/control.c:58
-msgid "Sample Text Entry Field"
-msgstr "Образец текстового поля"
+#: capplets/theme-switcher/gnome-theme-manager.c:677
+msgid "Custom theme"
+msgstr "Другая тема"
 
-#: capplets/theme-switcher/control/control.c:69
-msgid "Submenu"
-msgstr "Вложенное меню"
+#: capplets/theme-switcher/gnome-theme-manager.c:677
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr "Тему можно сохранить, нажав кнопку \"Сохранить тему\"."
 
-#: capplets/theme-switcher/control/control.c:74
-msgid "Item 1"
-msgstr "Элемент 1"
+#: capplets/theme-switcher/gnome-theme-manager.c:1455
+msgid ""
+"The default theme schemas could not be found on your system.  This means "
+"that you probably don't have metacity installed, or that your gconf is "
+"configured incorrectly."
+msgstr ""
+"Схемы для исходной темы не найдены.  Это может означать, что не установлен "
+"оконный менеджер Metacity, или что некорректно сконфигурирована система "
+"gconf."
 
-#: capplets/theme-switcher/control/control.c:76
-msgid "Another item"
-msgstr "Другой элемент"
+#: capplets/theme-switcher/gnome-theme-save.c:72
+msgid "Theme name must be present"
+msgstr "Имя темы должно присутствовать"
 
-#: capplets/theme-switcher/control/control.c:80
-msgid "Radio Button 1"
-msgstr "Радио-кнопка 1"
-
-#: capplets/theme-switcher/control/control.c:86
-msgid "Radio Button 2"
-msgstr "Радио-кнопка 2"
-
-#: capplets/theme-switcher/control/control.c:107
-msgid "One"
-msgstr "Один"
-
-#: capplets/theme-switcher/control/control.c:113
-msgid "Two"
-msgstr "Два"
+#: capplets/theme-switcher/gnome-theme-save.c:104
+msgid "The theme already exists. Would you like to replace it?"
+msgstr "Тема уже существует. Заменить её?"
 
 #: capplets/theme-switcher/gtk-theme-selector.desktop.in.h:1
 msgid "Select themes for various parts of the desktop"
 msgstr "Диалог выбора тем для различных частей рабочего стола"
 
 #: capplets/theme-switcher/gtk-theme-selector.desktop.in.h:2
+#: vfs-methods/themus/Themus_Properties_View.server.in.in.h:1
 msgid "Theme"
 msgstr "Тема"
 
+#: capplets/theme-switcher/theme-install.glade.h:2
+msgid "<span size=\"larger\" weight=\"bold\">Install a Theme</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Установить тему</span>"
+
+#: capplets/theme-switcher/theme-install.glade.h:3
+msgid "Theme Installation"
+msgstr "Установка темы"
+
+#: capplets/theme-switcher/theme-install.glade.h:4
+msgid "_Install"
+msgstr "_Установить"
+
+#: capplets/theme-switcher/theme-install.glade.h:5
+msgid "_Location:"
+msgstr "_Местоположение:"
+
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
+msgid "<span size=\"larger\" weight=\"bold\">Save Theme to Disk</span>"
 msgstr "<span size=\"larger\" weight=\"bold\">Сохранить тему на диск</span>"
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
@@ -1872,141 +2175,100 @@ msgid "New themes can also be installed by dragging them into the window."
 msgstr "Новые темы могут быть также установленны перетаскиванием их в окно."
 
 #: capplets/theme-switcher/theme-properties.glade.h:8
-msgid "Short _Description:"
-msgstr "Краткое _описание:"
+msgid "Save Theme"
+msgstr "Сохранить тему"
 
 #: capplets/theme-switcher/theme-properties.glade.h:9
-msgid "Theme Details"
-msgstr "Показать тему в подробностях"
+msgid "Select theme for the desktop"
+msgstr "Выберите тему рабочего стола"
 
 #: capplets/theme-switcher/theme-properties.glade.h:10
+msgid "Short _description:"
+msgstr "Краткое _описание:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:11
+msgid "Theme Details"
+msgstr "Описание темы"
+
+#: capplets/theme-switcher/theme-properties.glade.h:12
 msgid "Theme Preferences"
 msgstr "Настройки темы"
 
-#: capplets/theme-switcher/theme-properties.glade.h:11
-msgid ""
-"This theme suggests a\n"
-"background:"
-msgstr ""
-"Этой теме необходим\n"
-"фон:"
-
 #: capplets/theme-switcher/theme-properties.glade.h:13
-msgid ""
-"This theme suggests a\n"
-"font and background"
-msgstr ""
-"Этой теме необходимы\n"
-"шрифт и фон:"
+msgid "Theme _Details"
+msgstr "По_дробнее о теме"
+
+#: capplets/theme-switcher/theme-properties.glade.h:14
+msgid "This theme does not suggest any particular font or background."
+msgstr "Эта тема не подразумевает определенного шрифта или фона."
 
 #: capplets/theme-switcher/theme-properties.glade.h:15
-msgid ""
-"This theme suggests a\n"
-"font:"
-msgstr ""
-"Этой теме необходим\n"
-"шрифт:"
+msgid "This theme suggests a background:"
+msgstr "Эта тема подразумевает фон:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:16
+msgid "This theme suggests a font and a background:"
+msgstr "Эта тема подразумевает шрифт и фон:"
 
 #: capplets/theme-switcher/theme-properties.glade.h:17
+msgid "This theme suggests a font:"
+msgstr "Эта тема подразумевает шрифт:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
 msgid "Window Border"
 msgstr "Рамка окна"
 
-#: capplets/theme-switcher/theme-properties.glade.h:18
-msgid "_Details..."
-msgstr "Показать в по_дробностях..."
-
 #: capplets/theme-switcher/theme-properties.glade.h:19
-msgid "_Go to theme folder"
-msgstr "_Перейти в каталог тем"
+msgid "_Go To Theme Folder"
+msgstr "_Перейти в папку тем"
 
 #: capplets/theme-switcher/theme-properties.glade.h:20
-msgid "_Install theme..."
+msgid "_Install Theme..."
 msgstr "_Установить тему..."
 
 #: capplets/theme-switcher/theme-properties.glade.h:21
-msgid "_Save theme"
-msgstr "Со_хранить тему"
+msgid "_Revert"
+msgstr "_Восстановить"
 
 #: capplets/theme-switcher/theme-properties.glade.h:22
+msgid "_Save Theme..."
+msgstr "Со_хранить тему..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:23
 msgid "_Theme name:"
-msgstr "И_мя темы:"
+msgstr "_Имя темы:"
 
-#: capplets/theme-switcher/theme-install.glade.h:2
-msgid "Install new theme"
-msgstr "Установить новую тему"
+#: capplets/theme-switcher/theme-properties.glade.h:24
+msgid "theme selection tree"
+msgstr "дерево выбора темы"
 
-#: capplets/theme-switcher/theme-install.glade.h:3
-msgid "_Install"
-msgstr "_Установить"
-
-#: capplets/theme-switcher/theme-install.glade.h:4
-msgid "_Location of new theme:"
-msgstr "_Местоположение новой темы:"
-
-#: capplets/theme-switcher/gnome-theme-details.c:372
-#: capplets/theme-switcher/gnome-theme-manager.c:609
-msgid ""
-"No themes could be found on your system.  This probably means that your "
-"\"Theme Preferences\" dialog was improperly installed, or you haven't "
-"installed the \"gnome-themes\" package."
-msgstr ""
-"Ни одна тема не найдена в системе. Скорее всего, это значит, что диалог "
-"\"Тема\" был неверно установлен или не был установлен пакет \"gnome-themes\"."
-
-#: capplets/theme-switcher/gnome-theme-save.c:72
-msgid "Theme name must be present"
-msgstr "Имя темы должно присутствовать"
-
-#: capplets/theme-switcher/gnome-theme-manager.c:665
-#: capplets/theme-switcher/gnome-theme-manager.c:725
-msgid "Custom theme"
-msgstr "Другая тема"
-
-#: capplets/theme-switcher/gnome-theme-manager.c:665
-#: capplets/theme-switcher/gnome-theme-manager.c:725
-msgid "You can save this theme by pressing the Save Theme button."
-msgstr "Тему можно сохранить, нажав кнопку \"Сохранить Тему\""
-
-#: capplets/ui-properties/behavior.desktop.in.h:1
+#: capplets/ui-properties/gnome-ui-properties.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
-msgstr "Диалог настроек появления панелей меню и инструментов в приложениях"
+msgstr "Диалог настройки появления панелей меню и инструментов в приложениях"
 
-#: capplets/ui-properties/behavior.desktop.in.h:2
+#: capplets/ui-properties/gnome-ui-properties.desktop.in.h:2
 msgid "Menus & Toolbars"
 msgstr "Меню и панели инструментов"
 
-#: capplets/ui-properties/behavior.desktop.in.in.h:1
-msgid "Behavior"
-msgstr "Поведение"
-
-#: capplets/ui-properties/behavior.desktop.in.in.h:2
-msgid "Sets the default behavior of GNOME applications"
-msgstr "Диалог настройки исходного поведения приложений среды Гном"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:1
-msgid "A preview of what a menubar looks like with these settings."
-msgstr "Образец того, как строка меню будет выглядеть с этими настройками."
-
 #: capplets/ui-properties/gnome-ui-properties.glade.h:2
-msgid "A preview of what a toolbar looks like with these settings."
-msgstr ""
-"Образец того, как панель инстументов будет выглядеть с этими настройками."
+msgid "<b>Behavior and Appearance</b>"
+msgstr "<b>Поведение и внешний вид</b>"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:3
+msgid "<b>Preview</b>"
+msgstr "<b>Образец</b>"
+
+#: capplets/ui-properties/gnome-ui-properties.glade.h:4
 msgid "C_ut"
 msgstr "_Вырезать"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:4
-msgid "Icons Only"
+#: capplets/ui-properties/gnome-ui-properties.glade.h:5
+msgid "Icons only"
 msgstr "только значки"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:5
+#: capplets/ui-properties/gnome-ui-properties.glade.h:6
 msgid "Menu and Toolbar Preferences"
 msgstr "Настройки меню и панелей инструментов"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:6
-msgid "Menus"
-msgstr "Меню"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:7
 msgid "New File"
@@ -2017,147 +2279,175 @@ msgid "Open File"
 msgstr "Открыть файл"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:9
-msgid "Sample menubar:"
-msgstr "Образец строки меню:"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:10
-msgid "Sample toolbar:"
-msgstr "Образец панели инструментов:"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:11
 msgid "Save File"
 msgstr "Сохранить файл"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:12
-msgid "Select the toolbar style."
-msgstr "Выберите стиль панели инструментов."
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:13
+#: capplets/ui-properties/gnome-ui-properties.glade.h:10
 msgid "Show _icons in menus"
 msgstr "Пок_азывать значки в меню"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:14
-msgid "Text Below Icons"
+#: capplets/ui-properties/gnome-ui-properties.glade.h:11
+msgid "Text below icons"
 msgstr "текст под значками"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:15
-msgid "Text Beside Icons"
-msgstr "текст следом за значками"
+#: capplets/ui-properties/gnome-ui-properties.glade.h:12
+msgid "Text beside icons"
+msgstr "текст рядом со значками"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:16
-msgid "Text Only"
+#: capplets/ui-properties/gnome-ui-properties.glade.h:13
+msgid "Text only"
 msgstr "только текст"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:17
-msgid "Toolbar"
-msgstr "Панель инструментов"
+#: capplets/ui-properties/gnome-ui-properties.glade.h:14
+msgid "Toolbar _button labels: "
+msgstr "_Подписи кнопок панели: "
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:18
-msgid "Toolbars can be _detached and moved around"
-msgstr "Панели меню могут быть _отцеплены и перемещены"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:19
-msgid "_Button Labels: "
-msgstr "Вид меток _кнопок:"
-
-#: capplets/ui-properties/gnome-ui-properties.glade.h:20
+#: capplets/ui-properties/gnome-ui-properties.glade.h:15
 msgid "_Copy"
 msgstr "С_копировать"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:21
-msgid "_Edit"
-msgstr "_Изменить..."
+#: capplets/ui-properties/gnome-ui-properties.glade.h:16
+msgid "_Detachable toolbars"
+msgstr "_Отделяемые панели инструментов"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:22
+#: capplets/ui-properties/gnome-ui-properties.glade.h:17
+msgid "_Edit"
+msgstr "_Изменить"
+
+#: capplets/ui-properties/gnome-ui-properties.glade.h:18
 #: control-center/gnomecc-ui.xml.h:5
 msgid "_File"
 msgstr "_Файл"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:23
+#: capplets/ui-properties/gnome-ui-properties.glade.h:19
 msgid "_New"
 msgstr "_Создать"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:24
+#: capplets/ui-properties/gnome-ui-properties.glade.h:20
 msgid "_Open"
 msgstr "_Открыть"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:25
+#: capplets/ui-properties/gnome-ui-properties.glade.h:21
 msgid "_Paste"
 msgstr "Вст_авить"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:26
+#: capplets/ui-properties/gnome-ui-properties.glade.h:22
 msgid "_Print"
 msgstr "На_печатать"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:27
+#: capplets/ui-properties/gnome-ui-properties.glade.h:23
 msgid "_Quit"
 msgstr "В_ыйти"
 
-#: capplets/ui-properties/gnome-ui-properties.glade.h:28
+#: capplets/ui-properties/gnome-ui-properties.glade.h:24
 msgid "_Save"
 msgstr "Со_хранить"
 
-#: capplets/windows/gnome-window-properties.c:378
+#: capplets/windows/gnome-window-properties.c:388
 #, c-format
 msgid ""
 "<b>Cannot start the preferences application for your window manager</b>\n"
 "\n"
 "%s"
 msgstr ""
-"<b>Невозможно запустить приложение настроек оконного менеджера</b>\n"
+"<b>Невозможно запустить приложение настройки оконного менеджера</b>\n"
 "\n"
 "%s"
 
-#: capplets/windows/gnome-window-properties.c:624
+#: capplets/windows/gnome-window-properties.c:637
 msgid "Control"
 msgstr "Control"
 
-#: capplets/windows/gnome-window-properties.c:629
+#: capplets/windows/gnome-window-properties.c:642
 msgid "Alt"
 msgstr "Alt"
 
-#: capplets/windows/gnome-window-properties.c:635
+#: capplets/windows/gnome-window-properties.c:648
 msgid "Hyper"
 msgstr "Hyper"
 
-#: capplets/windows/gnome-window-properties.c:642
+#: capplets/windows/gnome-window-properties.c:655
 msgid "Super (or \"Windows logo\")"
-msgstr "Super (или \"Логотип системы Windows\""
+msgstr "Super (или \"Логотип ОС Виндоуз\""
+
+#: capplets/windows/gnome-window-properties.c:662
+msgid "Meta"
+msgstr "Мета"
 
 #: capplets/windows/gnome-window-properties.glade.h:1
-msgid "To _move a window, press-and-hold this key then grab the window:"
-msgstr ""
-"Для пере_мещения окна, нажмите и держите эту клавишу, затем захватите окно:"
+msgid "<b>Movement Key</b>"
+msgstr "<b>Клавиша перемещения</b>"
 
 #: capplets/windows/gnome-window-properties.glade.h:2
+msgid "<b>Titlebar Action</b>"
+msgstr "<b>Щелчок по заголовку</b>"
+
+#: capplets/windows/gnome-window-properties.glade.h:3
+msgid "<b>Window Selection</b>"
+msgstr "<b>Выбор окна</b>:"
+
+#: capplets/windows/gnome-window-properties.glade.h:4
+msgid "To _move a window, press-and-hold this key then grab the window:"
+msgstr ""
+"Для пере_мещения окна нажать и держать эту клавишу, затем захватить окно:"
+
+#: capplets/windows/gnome-window-properties.glade.h:5
 msgid "Window Preferences"
 msgstr "Настройки окна"
 
-#: capplets/windows/gnome-window-properties.glade.h:3
+#: capplets/windows/gnome-window-properties.glade.h:6
 msgid "_Double-click titlebar to perform this action:"
 msgstr "Д_войной щелчок на заголовке выполняет следующее действие:"
 
-#: capplets/windows/gnome-window-properties.glade.h:4
+#: capplets/windows/gnome-window-properties.glade.h:7
 msgid "_Interval before raising:"
 msgstr "За_держка перед поднятием:"
 
-#: capplets/windows/gnome-window-properties.glade.h:5
+#: capplets/windows/gnome-window-properties.glade.h:8
 msgid "_Raise selected windows after an interval"
 msgstr "_Поднимать выбранное окно после определённого интервала"
 
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.glade.h:9
 msgid "_Select windows when the mouse moves over them"
 msgstr "_Выбирать окно, когда указатель мыши находится над ним"
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
-msgstr "Далог настроек окон"
+msgstr "Далог настройки окон"
 
 #: capplets/windows/window-properties.desktop.in.h:2
 msgid "Windows"
 msgstr "Окна"
 
-#: control-center/capplet-dir-view-list.c:324
+#: control-center/GNOME_ControlCenter.server.in.h:1
+msgid "Control Center"
+msgstr "Центр управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:2
+msgid "Control Center Viewer"
+msgstr "компонент просмотра  в виде Центра управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:3
+msgid "Control Center view"
+msgstr "Просмотр в виде Центра управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:4
+msgid "Control Center view component"
+msgstr "Компонент просмотра в виде Центра управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:5
+msgid "Control Center view component's factory"
+msgstr "Фабрика компонента просмотра в виде Центра управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:6
+msgid "Control Center view factory"
+msgstr "Фабрика просмотра в виде Центра управления"
+
+#: control-center/GNOME_ControlCenter.server.in.h:7
+msgid "View as Control Center"
+msgstr "Режим просмотра: Центр управления"
+
+#: control-center/capplet-dir-view-list.c:319
 #, c-format
 msgid "GNOME Control Center: %s"
 msgstr "Центр управления средой Гном: %s"
@@ -2184,7 +2474,9 @@ msgstr ""
 "Макс Валянский <maxcom@vinchi.ru>\n"
 "Сергей Панов <sipan@mit.edu>\n"
 "Валёк Филиппов <frob@df.ru>\n"
-"Дмитрий Мастрюков <dmitry@taurussoft.org>"
+"Дмитрий Мастрюков <dmitry@taurussoft.org>\n"
+"Андрей Носенко <awn@bcs.zp.ua>\n"
+"Леонид Кантер <leon@asplinux.ru>"
 
 #: control-center/capplet-dir-view.c:357 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
@@ -2198,6 +2490,19 @@ msgstr "Менеджер настроек рабочего стола."
 #, c-format
 msgid "Gnome Control Center : %s"
 msgstr "Центр управления средой Гном: %s"
+
+#: control-center/control-center-categories.c:333
+msgid "Others"
+msgstr "Прочие"
+
+#: control-center/control-center-categories.c:424
+#: control-center/control-center.c:1091
+msgid "Gnome Control Center"
+msgstr "Центр управления средой Гном"
+
+#: control-center/control-center.c:78
+msgid "Use nautilus if it is running."
+msgstr "Использовать \"Наутилус\", если он запущен."
 
 #: control-center/gnomecc-ui.xml.h:1
 msgid "About this application"
@@ -2221,17 +2526,72 @@ msgstr "_Справка"
 
 #: control-center/gnomecc.desktop.in.h:2
 msgid "The GNOME configuration tool"
-msgstr "Средство конфигурации среды Гном"
+msgstr "Утилита настройки среды Гном"
 
 #: control-center/main.c:43
 msgid "Use shell even if nautilus is running."
 msgstr "Использовать оболочку, даже если запущен \"Наутилус\"."
 
-#: gnome-settings-daemon/factory.c:32
+#: gnome-settings-daemon/actions/acme.glade.h:1
+msgid "Volume"
+msgstr "Громкость"
+
+#: gnome-settings-daemon/factory.c:34
 msgid "Could not initialize Bonobo"
 msgstr "Не удалось проинициализировать систему Bonobo"
 
-#: gnome-settings-daemon/gnome-settings-font.c:74
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:411
+msgid "Slow Keys Alert"
+msgstr "Предупреждение функции \"Медленные клавиши\""
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:412
+msgid ""
+"You just held down the Shift key for 8 seconds.  This is the shortcut for "
+"the Slow Keys feature, which affects the way your keyboard works."
+msgstr ""
+"Вы только что нажали клавишу Shift на 8 секунд.  Это комбинация для функции "
+"\"Медленные клавиши\", которая влияет на способ работы вашей клавиатуры."
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:413
+msgid "Do you want to activate Slow Keys?"
+msgstr "Активировать функцию \"Медленные клавиши\"?"
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:414
+msgid "Do you want to deactivate Slow Keys?"
+msgstr "Отключить функцию \"Медленные клавиши\"?"
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:425
+msgid "Sticky Keys Alert"
+msgstr "Предупреждение функции \"Залипающие клавиши\""
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:426
+msgid ""
+"You just pressed the Shift key 5 times in a row.  This is the shortcut for "
+"the Sticky Keys feature, which affects the way your keyboard works."
+msgstr ""
+"Вы только что нажали клавишу \"Шифт\" 5 раз подряд.  Это комбинация для "
+"включения функции \"Залипающие клавиши\", которая влияет на способ работы "
+"клавиатуры."
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:427
+msgid ""
+"You just pressed two keys at once, or pressed the Shift key 5 times in a "
+"row.  This turns off the Sticky Keys feature, which affects the way your "
+"keyboard works."
+msgstr ""
+"Вы только что нажали две клавиши одновременно, или нажали клавишу Shift 5 "
+"раз подряд.  Это включает функцию \"Залипающие клавиши\", которая влияет на "
+"способ работы вашей клавиатуры."
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:428
+msgid "Do you want to activate Sticky Keys?"
+msgstr "Активировать функцию \"Залипающие клавиши\"?"
+
+#: gnome-settings-daemon/gnome-settings-accessibility-keyboard.c:429
+msgid "Do you want to deactivate Sticky Keys?"
+msgstr "Отключить функцию \"Залипающие клавиши\"?"
+
+#: gnome-settings-daemon/gnome-settings-font.c:102
 #, c-format
 msgid ""
 "Cannot create the directory \"%s\".\n"
@@ -2240,32 +2600,37 @@ msgstr ""
 "Невозможно создать каталог \"%s\".\n"
 "Это необходимо для возможности изменения курсора."
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:146
+#: gnome-settings-daemon/gnome-settings-keybindings.c:207
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr "Комбинация клавиш (%s) определена для нескольких действий\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:159
+#: gnome-settings-daemon/gnome-settings-keybindings.c:220
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr "Комбинация клавиш (%s) определена несколько раз\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:165
+#: gnome-settings-daemon/gnome-settings-keybindings.c:226
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr "Комбинация клавиш (%s) полностью не определена\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:193
+#: gnome-settings-daemon/gnome-settings-keybindings.c:254
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr "Комбинация клавиш (%s) недопустима\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:281
+#: gnome-settings-daemon/gnome-settings-keybindings.c:290
+#, c-format
+msgid "It seems that another application already has access to key '%d'."
+msgstr "Похоже, что другое приложение уже имеет доступ к ключу '%d'."
+
+#: gnome-settings-daemon/gnome-settings-keybindings.c:359
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr "Комбинация клавиш (%s) уже используется\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:357
+#: gnome-settings-daemon/gnome-settings-keybindings.c:434
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -2273,6 +2638,100 @@ msgid ""
 msgstr ""
 "Произошла ошибка при попытке запустить команду (%s),\n"
 "которая привязана к клавише (%s)"
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:73
+#, c-format
+msgid ""
+"Error activating XKB configuration.\n"
+"Probably internal X server problem.\n"
+"\n"
+"X server version data:\n"
+"%s\n"
+"%d\n"
+"%s\n"
+"If you report this situation as a bug, please include:\n"
+"- The result of <b>xprop -root | grep XKB</b>\n"
+"- The result of <b>gconftool-2 -R /desktop/gnome/peripherals/keyboard/xkb</b>"
+msgstr ""
+"Ошибка активирования параметров XKB.\n"
+"Возможно, это внутренняя ошибка X-сервера.\n"
+"\n"
+"Данные о версии X-сервера:\n"
+"%s\n"
+"%d\n"
+"%s\n"
+"При составлении отчета об ошибке пожалуйста включите:\n"
+"- Результат команды <b>xprop -root | grep XKB</b>\n"
+"- Результат команды <b>gconftool-2 -R /desktop/gnome/peripherals/keyboard/"
+"xkb</b>"
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:83
+msgid ""
+"You are using XFree 4.3.0.\n"
+"There are known problems with complex XKB configurations.\n"
+"Try using simpler configuration or taking more fresh version of XFree "
+"software."
+msgstr ""
+"Вы используете XFree версии 4.3.0.\n"
+"Эта версия имеет известные проблемы со сложной настройкой XKB.\n"
+"Попробуйте использовать более простую настройку или обновите XFree86."
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:170
+msgid ""
+"The X system keyboard settings differ from your current GNOME keyboard "
+"settings.  Which set would you like to use?"
+msgstr ""
+"Установки клавиатуры системы X разнятся с установками среды Гном. Какие вы "
+"хотите использовать?"
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:173
+msgid "Use X settings"
+msgstr "Использовать установки системы X"
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:175
+msgid "Use GNOME settings"
+msgstr "Использовать установки среды Гном"
+
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:227
+#, fuzzy, c-format
+msgid ""
+"You have a keyboard remapping file (%s) in your home directory whose "
+"contents will now be ignored. You can use the keyboard preferences to "
+"restore them."
+msgstr ""
+"Файл переназначения клавиатуры (%s) существует в домашнем каталоге, но его "
+"содержимое игнорируется. Добавьте его в ключ /desktop/gnome/peripherals/"
+"keyboard/xkb/update_handlers"
+
+#: gnome-settings-daemon/gnome-settings-multimedia-keys.c:114
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"Не удается выполнить команду: %s\n"
+"Убедитесь, что команда существует."
+
+#: gnome-settings-daemon/gnome-settings-multimedia-keys.c:130
+msgid ""
+"Couldn't put the machine to sleep.\n"
+"Verify that the machine is correctly configured."
+msgstr ""
+"Не удается перевести машину в спящий режим.\n"
+"Убедитесь, что машина правильно настроена."
+
+#: gnome-settings-daemon/gnome-settings-multimedia-keys.c:140
+#, c-format
+msgid "Permissions on the file %s are broken\n"
+msgstr "Неверные права файла %s\n"
+
+#: gnome-settings-daemon/gnome-settings-multimedia-keys.c:185
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Не удается загрузить файл Glade.\n"
+"Убедитесь, что этот демон установлен правильно."
 
 #: gnome-settings-daemon/gnome-settings-screensaver.c:92
 #, c-format
@@ -2298,17 +2757,26 @@ msgstr "_Не показывать это сообщение снова"
 msgid "Couldn't load sound file %s as sample %s"
 msgstr "Не удалось загрузить звуковой файл \"%s\" в качестве сэмпла \"%s\""
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:184
+#: gnome-settings-daemon/gnome-settings-xrdb.c:212
+#: gnome-settings-daemon/gnome-settings-xrdb.c:260
+msgid "Cannot determine user's home directory"
+msgstr "Не удалось определить домашний каталог пользователя"
+
+#: gnome-settings-daemon/gnome-settings-xsettings.c:208
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr ""
 "Ключ \"%s\" системы GConf установлен в тип %s, а ожидаемый тип был %s\n"
 
-#: libbackground/applier.c:254
+#: gnome-settings-daemon/reaper.c:103
+msgid "Error creating signal pipe."
+msgstr "Ошибка создания звукового канала."
+
+#: libbackground/applier.c:256
 msgid "Type"
 msgstr "Тип"
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:257
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -2316,39 +2784,35 @@ msgstr ""
 "Тип bg_applier: BG_APPLIER_ROOT для корневого окна или BG_APPLIER_PREVIEW "
 "для просмотра"
 
-#: libbackground/applier.c:262
+#: libbackground/applier.c:264
 msgid "Preview Width"
 msgstr "Ширина образца"
 
-#: libbackground/applier.c:263
+#: libbackground/applier.c:265
 msgid "Width if applier is a preview: Defaults to 64."
-msgstr "Ширина образца: Исходно 64"
+msgstr "Ширина образца: Исходно 64."
 
-#: libbackground/applier.c:270
+#: libbackground/applier.c:272
 msgid "Preview Height"
 msgstr "Высота образца"
 
-#: libbackground/applier.c:271
+#: libbackground/applier.c:273
 msgid "Height if applier is a preview: Defaults to 48."
-msgstr "Высота образца: Исходно 48"
+msgstr "Высота образца: Исходно 48."
 
-#: libbackground/applier.c:279
+#: libbackground/applier.c:280
 msgid "Screen"
 msgstr "Экран"
 
-#: libbackground/applier.c:280
+#: libbackground/applier.c:281
 msgid "Screen on which BGApplier is to draw"
 msgstr "Экран, на котором BGApplier будет рисовать"
 
-#: libbackground/preview-file-selection.c:207
-msgid "Can't find an hbox, using a normal file selection"
-msgstr "Нвозможно найти hbox, используется обычное выделение файла"
-
-#: libsounds/sound-view.c:122
+#: libsounds/sound-view.c:121 libsounds/sound-view.c:146
 msgid "The sound file for this event does not exist."
 msgstr "Звуковой файл для этого события не существует."
 
-#: libsounds/sound-view.c:124
+#: libsounds/sound-view.c:148
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -2358,38 +2822,47 @@ msgstr ""
 "Можно установить пакет gnome-audio\n"
 "для исходного набора звуков."
 
-#: libsounds/sound-view.c:216
+#: libsounds/sound-view.c:192
+#, c-format
+msgid "The file %s is not a valid wav file"
+msgstr "Файл %s не является действительным wav-файлом"
+
+#: libsounds/sound-view.c:257
 msgid "Event"
 msgstr "Событие"
 
-#: libsounds/sound-view.c:223
-msgid "File to play"
-msgstr "Файл для воспроизведения"
+#: libsounds/sound-view.c:266
+msgid "Sound File"
+msgstr "Звуковой файл"
 
-#: libsounds/sound-view.c:238
-msgid "_Sounds"
-msgstr "Зв_уки"
+#: libsounds/sound-view.c:282
+msgid "_Sounds:"
+msgstr "_Звуки:"
 
-#: libsounds/sound-view.c:252
+#: libsounds/sound-view.c:296
+msgid "Sound _file:"
+msgstr "Звуковой _файл:"
+
+#: libsounds/sound-view.c:300
+msgid "Select Sound File"
+msgstr "Выберите звуковой файл"
+
+#: libsounds/sound-view.c:324
 msgid "_Play"
 msgstr "_Воспроизвести"
-
-#: libsounds/sound-view.c:258
-msgid "Select sound file"
-msgstr "Выбрать звуковой файл"
 
 #: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
 msgid "Window manager \"%s\" has not registered a configuration tool\n"
 msgstr "Оконный менеджер \"%s\" не зарегестрировал средство конфигурации\n"
 
-#: libwindow-settings/metacity-window-manager.c:374
+#: libwindow-settings/metacity-window-manager.c:378
 msgid "Maximize"
-msgstr "развернуть на весь экран"
+msgstr "разворот на весь экран"
 
-#: libwindow-settings/metacity-window-manager.c:375
+#: libwindow-settings/metacity-window-manager.c:379
 msgid "Roll up"
-msgstr "раскрутить"
+msgstr "скручивание"
 
 #: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
@@ -2401,6 +2874,166 @@ msgstr ""
 #: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
 msgid "Sync text/plain and text/* handlers"
 msgstr "Синхронизировать обработчики для text/plain и text/*"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:1
+msgid "Brightness down"
+msgstr "Уменьшить яркость"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:2
+msgid "Brightness down's shortcut."
+msgstr "Комбинация клавиш для уменьшения яркости."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:3
+msgid "Brightness up"
+msgstr "Увеличить яркость"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:4
+msgid "Brightness up's shortcut."
+msgstr "Комбинация клавиш для увеличения яркости."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:5
+msgid "E-mail"
+msgstr "Запустить почтовую программу"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:6
+msgid "E-mail's shortcut."
+msgstr "Комбинация клавиш для вызова клиента электронной почты."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:7
+msgid "Eject"
+msgstr "Извлечь"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:8
+msgid "Eject's shortcut."
+msgstr "Комбинации клавиш для извлечения носителя."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:9
+msgid "Home folder"
+msgstr "Перейти в домашнюю папку"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:10
+msgid "Home folder's shortcut."
+msgstr "Комбинация клавиш для перехода в домашнюю папку."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:11
+msgid "Launch help browser"
+msgstr "Запустить просмотр справки"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:12
+msgid "Launch help browser's shortcut."
+msgstr "Комбинация клавиш для просмотра справки."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:13
+msgid "Launch web browser"
+msgstr "Запустить веб-браузер"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:14
+msgid "Launch web browser's shortcut."
+msgstr "Комбинация клавиш для запуска веб-браузера."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:15
+msgid "Lock screen"
+msgstr "Заблокировать экран"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:16
+msgid "Lock screen's shortcut."
+msgstr "Комбинация клавиш для блокирования экрана."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:17
+msgid "Log out"
+msgstr "Завершить сеанс"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:18
+msgid "Log out's shortcut."
+msgstr "Комбинация клавиш для завершения сеанса."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:19
+msgid "Next track key's shortcut."
+msgstr "Комбинация клавиш для перехода к следующей дорожке."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:20
+msgid "Pause"
+msgstr "Пауза"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:21
+msgid "Pause key's shortcut."
+msgstr "Комбинация клавиш для паузы в воспроизведении."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:22
+msgid "Play (or play/pause)"
+msgstr "Воспроизвести (или Воспроизвести/Пауза)"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:23
+msgid "Play (or play/pause) key's shortcut."
+msgstr "Комбинация клавиш для воспроизведения (или воспроизведения/паузы)."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:24
+msgid "Previous track key's shortcut."
+msgstr "Комбинация клавиш для перехода к предыдущей дорожке."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:25
+msgid "Search"
+msgstr "Найти"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:26
+msgid "Search's shortcut."
+msgstr "Комбинация клавиш для поиска."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:27
+msgid "Skip to next track"
+msgstr "Перейти к следующей дорожке"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:28
+msgid "Skip to previous track"
+msgstr "Перейти к предыдущей дорожке"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:29
+msgid "Sleep"
+msgstr "Перейти в спящий режим"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:30
+msgid "Sleep's shortcut."
+msgstr "Комбинация клавиш перехода в спящий режим."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:31
+msgid "Stop playback key"
+msgstr "Остановить"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:32
+msgid "Stop playback key's shortcut."
+msgstr "Комбинация клавиш для остановки воспроизведения."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:33
+msgid "Volume down"
+msgstr "Уменьшить громкость"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:34
+msgid "Volume down's shortcut."
+msgstr "Комбинация клавиш для уменьшения громкости."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:35
+msgid "Volume mute"
+msgstr "Отключить звук"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:36
+msgid "Volume mute's shortcut"
+msgstr "Комбинация клавиш для отключения звука"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:37
+msgid "Volume step"
+msgstr "Шаг изменения громкости"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:38
+msgid "Volume step as percentage of volume."
+msgstr "Шаг изменения громкости в процентах."
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:39
+msgid "Volume up"
+msgstr "Увеличить громкость"
+
+#: schemas/apps_gnome_settings_daemon_keybindings.schemas.in.h:40
+msgid "Volume up's shortcut."
+msgstr "Комбинация клавиш увеличения громкости."
 
 #: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
 msgid "Display a dialog when there are errors running XScreenSaver"
@@ -2472,3 +3105,723 @@ msgstr ""
 "Тип. уточнения, используемый при отрисовке шрифтов. Возможные значения: "
 "\"none\" - нет уточнения, \"slight\", \"medium\", and \"full\" - наиболее "
 "возможное уточнение; может вызвать искажение форм букв."
+
+#: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:1
+msgid ""
+"Very soon, XKB settings in gconf will be overridden (from the system "
+"configuration)"
+msgstr ""
+"Очень скоро параметры XKB в gconf будут перезаписаны (из системной "
+"конфигурации)"
+
+#: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:2
+msgid "XKB keyboard layout"
+msgstr "Раскладка клавиатуры XKB"
+
+#: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:3
+msgid "XKB keyboard model"
+msgstr "Модель клавиатуры XKB"
+
+#: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:4
+msgid "XKB options"
+msgstr "Параметры XKB"
+
+#: schemas/desktop_gnome_peripherals_keyboard_xkb.schemas.in.h:5
+msgid "XKB settings in gconf will be overridden from the system ASAP"
+msgstr "Параметры XKB будут переписаны из gconf, как только это будет возможно"
+
+#: typing-break/drw-break-window.c:214
+msgid "_Postpone break"
+msgstr "_Отложить перерыв"
+
+#: typing-break/drw-break-window.c:262
+msgid "Take a break!"
+msgstr "Сделайте перерыв!"
+
+#. { N_("/_Enabled"),      NULL, GIF_CB (popup_enabled_cb),     POPUP_ITEM_ENABLED, "<ToggleItem>", NULL },
+#: typing-break/drwright.c:136
+msgid "/_Preferences"
+msgstr "/_Изменить настройки"
+
+#: typing-break/drwright.c:137
+msgid "/_About"
+msgstr "/_О программе"
+
+#: typing-break/drwright.c:139
+msgid "/_Take a Break"
+msgstr "/_Сделать перерыв"
+
+#: typing-break/drwright.c:491
+#, c-format
+msgid "%d minute until the next break"
+msgid_plural "%d minutes until the next break"
+msgstr[0] "%d минута до следующего перерыва"
+msgstr[1] "%d минуты до следующего перерыва"
+msgstr[2] "%d минут до следующего перерыва"
+
+#: typing-break/drwright.c:495
+msgid "Less than one minute until the next break"
+msgstr "Менее одной минуты до следующего перерыва"
+
+#: typing-break/drwright.c:583
+#, c-format
+msgid ""
+"Unable to bring up the typing break properties dialog with the following "
+"error: %s"
+msgstr "Не удается отобразить диалог настройки перерыва печати. Ошибка: %s"
+
+#: typing-break/drwright.c:631
+msgid "About GNOME Typing Monitor"
+msgstr "О программе \"Монитор печати\""
+
+#: typing-break/drwright.c:655
+msgid "A computer break reminder."
+msgstr "Программа напоминания о перерыве."
+
+#: typing-break/drwright.c:656
+msgid "Written by Richard Hult &lt;richard@imendio.com&gt;"
+msgstr "Автор: Ричард Халт (Richard Hult) &lt;richard@imendio.com&gt;"
+
+#: typing-break/drwright.c:657
+msgid "Eye candy added by Anders Carlsson"
+msgstr "Дизайн: Андерс Карлссон (Anders Carlsson)"
+
+#: typing-break/drwright.c:832
+msgid "Break reminder"
+msgstr "Напоминание о перерыве"
+
+#: typing-break/main.c:93
+msgid "The typing monitor is already running."
+msgstr "Монитор печати уже запущен."
+
+#: typing-break/main.c:106
+msgid ""
+"The typing monitor uses the notification area to display information. You "
+"don't seem to have a notification area on your panel. You can add it by "
+"right-clicking on your panel and choose 'Add to panel -> Utilities -> "
+"Notification area'."
+msgstr ""
+"Монитор печати использует область уведомления для отображения информации. "
+"Похоже, что на вашей панели нет области уведомления. Вы можете добавить ее, "
+"щелкнув правой кнопкой на панели и выбрав \"Добавить на панель -> Утилиты -> "
+"Область уведомления\"."
+
+#: vfs-methods/fontilus/font-view.c:102
+msgid "The quick brown fox jumps over the lazy dog. 0123456789"
+msgstr "Съешь еще немного этих мягких французских булочек. 0123456789"
+
+#: vfs-methods/fontilus/font-view.c:253
+msgid "Name:"
+msgstr "Имя:"
+
+#: vfs-methods/fontilus/font-view.c:256
+msgid "Style:"
+msgstr "Стиль:"
+
+#: vfs-methods/fontilus/font-view.c:265
+msgid "Type:"
+msgstr "Тип:"
+
+#: vfs-methods/fontilus/font-view.c:272
+msgid "Size:"
+msgstr "Размер:"
+
+#: vfs-methods/fontilus/font-view.c:316 vfs-methods/fontilus/font-view.c:329
+msgid "Version:"
+msgstr "Версия:"
+
+#: vfs-methods/fontilus/font-view.c:320 vfs-methods/fontilus/font-view.c:331
+msgid "Copyright:"
+msgstr "Авторское право:"
+
+#: vfs-methods/fontilus/font-view.c:324
+msgid "Description:"
+msgstr "Описание:"
+
+#: vfs-methods/fontilus/font-view.c:394
+#, c-format
+msgid "usage: %s fontfile\n"
+msgstr "Использование: %s файл_шрифта\n"
+
+#: vfs-methods/fontilus/fontilus-context-menu.c:131
+msgid "Font context menu items"
+msgstr "Элементы контекстного меню шрифтов"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:1
+msgid "If set to true, then OpenType fonts will be thumbnailed."
+msgstr ""
+"Если этот ключ установлен, будут создаваться образцы просмотра шрифтов "
+"формата OpenType."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:2
+msgid "If set to true, then PCF fonts will be thumbnailed."
+msgstr ""
+"Если этот ключ установлен, будут создаваться образцы просмотра шрифтов "
+"формата PCF."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:3
+msgid "If set to true, then TrueType fonts will be thumbnailed."
+msgstr ""
+"Если этот ключ установлен, будут создаваться образцы просмотра шрифтов "
+"формата TrueType."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:4
+msgid "If set to true, then Type1 fonts will be thumbnailed."
+msgstr ""
+"Если этот ключ установлен, будут создаваться образцы просмотра шрифтов "
+"формата Type1."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:5
+msgid ""
+"Set this key to the command used to create thumbnails for OpenType fonts."
+msgstr ""
+"Этот ключ соответствует команде, используемой для создания образцов шрифтов "
+"формата OpenType."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:6
+msgid "Set this key to the command used to create thumbnails for PCF fonts."
+msgstr ""
+"Этот ключ соответствует команде, используемой для создания образцов шрифтов "
+"формата PCF."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:7
+msgid ""
+"Set this key to the command used to create thumbnails for TrueType fonts."
+msgstr ""
+"Этот ключ соответствует команде, используемой для создания образцов шрифтов "
+"формата TrueType."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:8
+msgid "Set this key to the command used to create thumbnails for Type1 fonts."
+msgstr ""
+"Этот ключ соответствует команде, используемой для создания образцов шрифтов "
+"формата Type1."
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:9
+msgid "Thumbnail command for OpenType fonts"
+msgstr "Команда создания образцов шрифтов формата OpenType"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:10
+msgid "Thumbnail command for PCF fonts"
+msgstr "Команда создания образцов шрифтов формата PCF"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:11
+msgid "Thumbnail command for TrueType fonts"
+msgstr "Команда создания образцов шрифтов формата TrueType"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:12
+msgid "Thumbnail command for Type1 fonts"
+msgstr "Команда создания образцов шрифтов формата Type1"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:13
+msgid "Whether to thumbnail OpenType fonts"
+msgstr "Создавать ли образцы шрифтов формата OpenType"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:14
+msgid "Whether to thumbnail PCF fonts"
+msgstr "Создавать ли образцы шрифтов PCF"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:15
+msgid "Whether to thumbnail TrueType fonts"
+msgstr "Создавать ли образцы шрифтов формата TrueType"
+
+#: vfs-methods/fontilus/fontilus.schemas.in.h:16
+msgid "Whether to thumbnail Type1 fonts"
+msgstr "Создавать ли образцы шрифтов формата Type1"
+
+#: vfs-methods/fontilus/fontilus.server.in.in.h:1
+msgid "Factory for the fontilus context menu"
+msgstr "Фабрика контекстного меню fontilus"
+
+#: vfs-methods/fontilus/fontilus.server.in.in.h:2
+msgid "Fontilus context menu"
+msgstr "Контекстное меню Fontilus"
+
+#: vfs-methods/fontilus/fontilus.server.in.in.h:3
+msgid "Fontilus context menu factory"
+msgstr "Фабрика контекстного меню Fontilus"
+
+#: vfs-methods/fontilus/fontilus.server.in.in.h:4
+msgid "Nautilus context menu entries for fonts"
+msgstr "Элементы контекстного меню Наутилуса для шрифтов"
+
+#: vfs-methods/fontilus/fontilus.server.in.in.h:5
+msgid "Set as Application Font"
+msgstr "Установить как шрифт приложения"
+
+#: vfs-methods/themus/Themus_Properties_View.server.in.in.h:2
+msgid "Theme Properties content view component"
+msgstr "Компонент просмотра свойств темы"
+
+#: vfs-methods/themus/Themus_Properties_View.server.in.in.h:3
+msgid "Themus Theme Properties view"
+msgstr "Вид параметров темы Themus"
+
+#: vfs-methods/themus/apply-font.glade.h:1
+msgid " "
+msgstr " "
+
+#: vfs-methods/themus/apply-font.glade.h:2
+msgid "<span weight=\"bold\" size=\"larger\">Apply new font?</span>"
+msgstr "<span weight=\"bold\" size=\"larger\">Применить новый шрифт?</span>"
+
+#: vfs-methods/themus/apply-font.glade.h:3
+msgid "Do _not apply font"
+msgstr "_Не применять новый шрифт"
+
+#: vfs-methods/themus/apply-font.glade.h:4
+msgid ""
+"The theme you have selected suggests a new font. A preview of the font is "
+"shown below."
+msgstr ""
+"Выбранная вами тема подразумевает новый шрифт. Образец шрифта показан ниже."
+
+#: vfs-methods/themus/apply-font.glade.h:5
+msgid "_Apply font"
+msgstr "_Применить шрифт"
+
+#: vfs-methods/themus/theme-method.c:520
+msgid "Themes"
+msgstr "Темы"
+
+#: vfs-methods/themus/themus-properties-view.c:172
+msgid "Control theme"
+msgstr "Тема для элементов управления"
+
+#: vfs-methods/themus/themus-properties-view.c:176
+msgid "Window border theme"
+msgstr "Тема для рамки окна"
+
+#: vfs-methods/themus/themus-properties-view.c:180
+msgid "Icon theme"
+msgstr "Тема для иконок"
+
+#: vfs-methods/themus/themus-properties-view.c:219
+msgid "URI currently displayed"
+msgstr "Текущий отображаемый идентификатор (URI)"
+
+#. translators: you may want to include non-western chars here
+#: vfs-methods/themus/themus-theme-applier.c:83
+msgid "ABCDEFG"
+msgstr "АБВГДЕЖЗ"
+
+#: vfs-methods/themus/themus.schemas.in.h:1
+msgid "If set to true, then installed themes will be thumbnailed."
+msgstr ""
+"Если имеет значение \"Истина\", то для установленных тем будут создаваться "
+"миниатюры предпросмотра."
+
+#: vfs-methods/themus/themus.schemas.in.h:2
+msgid "If set to true, then themes will be thumbnailed."
+msgstr ""
+"Если имеет значение \"Истина\", то для тем будут создаваться миниатюры "
+"предпросмотра."
+
+#: vfs-methods/themus/themus.schemas.in.h:3
+msgid ""
+"Set this key to the command used to create thumbnails for installed themes."
+msgstr ""
+"Команда, используемая для создания миниатюр предпросмотра для установленных "
+"тем."
+
+#: vfs-methods/themus/themus.schemas.in.h:4
+msgid "Set this key to the command used to create thumbnails for themes."
+msgstr "Команда, используемая для создания миниатюр предпросмотра для тем."
+
+#: vfs-methods/themus/themus.schemas.in.h:5
+msgid "Thumbnail command for installed themes"
+msgstr "Команда создания миниатюр для установленных тем"
+
+#: vfs-methods/themus/themus.schemas.in.h:6
+msgid "Thumbnail command for themes"
+msgstr "Команда создания миниатюр для тем"
+
+#: vfs-methods/themus/themus.schemas.in.h:7
+msgid "Whether to thumbnail installed themes"
+msgstr "Создавать ли миниатюры установленных тем"
+
+#: vfs-methods/themus/themus.schemas.in.h:8
+msgid "Whether to thumbnail themes"
+msgstr "Создавать ли миниатюры тем"
+
+#~ msgid "Co_lor:"
+#~ msgstr "_Цвет:"
+
+#~ msgid "_Left color:"
+#~ msgstr "Цвет с_лева:"
+
+#~ msgid "_Right color:"
+#~ msgstr "Цвет с_права:"
+
+#~ msgid "Top co_lor:"
+#~ msgstr "Цвет с_верху:"
+
+#~ msgid "_Bottom color:"
+#~ msgstr "Цвет с_низу:"
+
+#~ msgid "_Tile"
+#~ msgstr "_Черепицей"
+
+#~ msgid "C_enter"
+#~ msgstr "По _центру"
+
+#~ msgid "Sc_ale"
+#~ msgstr "_Масштабировать"
+
+#~ msgid "_Stretch"
+#~ msgstr "_Растянуть"
+
+#~ msgid "_No Picture"
+#~ msgstr "О_тсутствует"
+
+#~ msgid "Background Preferences"
+#~ msgstr "Настройки фона"
+
+#~ msgid "Bac_kground style:"
+#~ msgstr "_Стиль фона:"
+
+#~ msgid "E-Mail"
+#~ msgstr "Эл. почта"
+
+#~ msgid "Horizontal gradient"
+#~ msgstr "горизонтальный переход"
+
+#~ msgid "Picture _options:"
+#~ msgstr "_Размещение:"
+
+#~ msgid "Primary Color"
+#~ msgstr "Первичный цвет"
+
+#~ msgid "Secondary Color"
+#~ msgstr "Вторичный цвет"
+
+#~ msgid "Select _picture:"
+#~ msgstr "Выберите ка_ртинку:\n"
+
+#~ msgid "Solid color"
+#~ msgstr "сплошной цвет"
+
+#~ msgid "To set the background picture, drop an image or click to browse."
+#~ msgstr ""
+#~ "Чтобы установить картинку фона, перенесите сюда изображение или щёлкните "
+#~ "для выбора."
+
+#~ msgid "Vertical gradient"
+#~ msgstr "вертикальный переход"
+
+#~ msgid ""
+#~ "You can drag image files into the window to set the background picture."
+#~ msgstr "Чтобы установить изображение как фон, можно перетащить его в окно."
+
+#~ msgid "Sawfish window manager"
+#~ msgstr "Менеджер окон Sawfish"
+
+#~ msgid "Appearance"
+#~ msgstr "Внешний вид"
+
+#~ msgid "Select themes and fonts for your windows"
+#~ msgstr "Диалог выбора темы и шрифтов для окон"
+
+#~ msgid "Customize shortcut keys for your windows"
+#~ msgstr "Диалог настройки комбинаций клавиш для окон"
+
+#~ msgid "Shortcuts"
+#~ msgstr "Комбинации клавиш"
+
+#~ msgid "Configure how to give focus to windows"
+#~ msgstr "Диалог настройки передачи фокуса окнам"
+
+#~ msgid "Focus behavior"
+#~ msgstr "Поведение фокуса"
+
+#~ msgid "Configure matched windows to have particular characteristics"
+#~ msgstr "Диалог настройки характеристик совпадающих окон"
+
+#~ msgid "Matched Windows"
+#~ msgstr "Совпадающие окна"
+
+#, fuzzy
+#~ msgid "Configure how to minimize, maximize, and restore windows"
+#~ msgstr ""
+#~ "#-#-#-#-#  my.po (gnome-control-center)  #-#-#-#-#\n"
+#~ "Диалог настройки свёртывания, развёртывания и восстанавления окон\n"
+#~ "#-#-#-#-#  ru.po (gnome-control-center.HEAD)  #-#-#-#-#\n"
+#~ "Диалог настроек сжатия, развертывания и восстанавления окон"
+
+#, fuzzy
+#~ msgid "Minimizing and Maximizing"
+#~ msgstr ""
+#~ "#-#-#-#-#  my.po (gnome-control-center)  #-#-#-#-#\n"
+#~ "Сжатие и развёртывание\n"
+#~ "#-#-#-#-#  ru.po (gnome-control-center.HEAD)  #-#-#-#-#\n"
+#~ "Сжатие и развертывание"
+
+#~ msgid "Select your Sawfish user level"
+#~ msgstr "Диалог выбора уровня пользователя для оконного менеджера Sawfish"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Разное"
+
+#~ msgid "Select miscellaneous window options"
+#~ msgstr "Диалог выбора различных свойств окон"
+
+#~ msgid "Configure how windows move and resize"
+#~ msgstr "Диалог настройки перемещения и изменения размера окон"
+
+#~ msgid "Moving and Resizing"
+#~ msgstr "Перемещение и размеры"
+
+#~ msgid "Configure positioning of windows on the desktop"
+#~ msgstr "Диалог настройки позиционирования окон на рабочем столе"
+
+#~ msgid "Placement"
+#~ msgstr "Размещение"
+
+#~ msgid "Associate sounds with window manager events"
+#~ msgstr "Диалог ассоциирования звуков с событиями оконного менеджера"
+
+#~ msgid "Configure your workspaces and viewports"
+#~ msgstr "Диалог настройки рабочих мест и экранов"
+
+#~ msgid "Workspaces"
+#~ msgstr "Рабочие места"
+
+#~ msgid "Legacy Applications"
+#~ msgstr "Унаследованные приложения"
+
+#, fuzzy
+#~ msgid "Legacy applications settings (grdb)"
+#~ msgstr ""
+#~ "#-#-#-#-#  my.po (gnome-control-center)  #-#-#-#-#\n"
+#~ "Диалог настройки унаследованных приложений (grdb)\n"
+#~ "#-#-#-#-#  ru.po (gnome-control-center.HEAD)  #-#-#-#-#\n"
+#~ "Настройка унаследованных приложений (grdb)"
+
+#~ msgid "De_tails..."
+#~ msgstr "Показать в по_дробностях..."
+
+#~ msgid "GNOME Default"
+#~ msgstr "По умолчанию"
+
+#~ msgid ""
+#~ "Unable to find any keyboard themes.  This means your GTK+ installation "
+#~ "has been incompletely installed."
+#~ msgstr ""
+#~ "Невозможно найти клавиатурные темы. Это значит, что установка GTK+ "
+#~ "является неполной."
+
+#, fuzzy
+#~ msgid "Click for a list of keyboard navigation schemes."
+#~ msgstr ""
+#~ "#-#-#-#-#  my.po (gnome-control-center)  #-#-#-#-#\n"
+#~ "Щёлкните для получения списка схем клавиатурной навигации.\n"
+#~ "#-#-#-#-#  ru.po (gnome-control-center.HEAD)  #-#-#-#-#\n"
+#~ "Щелкните для получения списка схем клавиатурной навигации."
+
+#~ msgid "_Desktop shortcuts:"
+#~ msgstr "Комбинации клавиш _Рабочего стола:"
+
+#~ msgid "_Text editing shortcuts:"
+#~ msgstr "Комбинации клавиш редактирования _текста:"
+
+#~ msgid "Eenie Meenie Mynie Moe Catcha Tiger By Its Toe"
+#~ msgstr "Эники-беники ели вареники"
+
+#~ msgid "Selected themes from above will be tested by previewing here."
+#~ msgstr "Образец выбранных выше тем можно просмотреть здесь."
+
+#~ msgid "Sample Button"
+#~ msgstr "Образец кнопки"
+
+#~ msgid "Sample Check Button"
+#~ msgstr "Образец кнопки отметки"
+
+#~ msgid "Sample Text Entry Field"
+#~ msgstr "Образец текстового поля"
+
+#~ msgid "Submenu"
+#~ msgstr "Вложенное меню"
+
+#~ msgid "Item 1"
+#~ msgstr "Элемент 1"
+
+#~ msgid "Another item"
+#~ msgstr "Другой элемент"
+
+#~ msgid "Radio Button 1"
+#~ msgstr "Радио-кнопка 1"
+
+#~ msgid "Radio Button 2"
+#~ msgstr "Радио-кнопка 2"
+
+#~ msgid "One"
+#~ msgstr "Один"
+
+#~ msgid "Two"
+#~ msgstr "Два"
+
+#~ msgid "Select CDE AccessX file"
+#~ msgstr "Выберите файл AccessX среды CDE"
+
+#~ msgid "<b>Mouse</b>"
+#~ msgstr "<b>Мышь</b>"
+
+#~ msgid "A preview of the background picture."
+#~ msgstr "Просмотр образца картинки фона."
+
+#~ msgid "Background Preview"
+#~ msgstr "Образец фона"
+
+#~ msgid "The background picture's file name."
+#~ msgstr "Имя файла картинки фона."
+
+#~ msgid "Acce_pts URLs"
+#~ msgstr "При_нимает ссылки (URL)"
+
+#~ msgid "Default Help Browser"
+#~ msgstr "Исходная программа просмотра справки"
+
+#~ msgid "Bee_p"
+#~ msgstr "_Включён"
+
+#~ msgid "C_ustom:"
+#~ msgstr "Др_угой:"
+
+#~ msgid "Clic_k on keypress"
+#~ msgstr "_Щелчок при нажатии"
+
+#~ msgid "Keypress Click"
+#~ msgstr "Щелчок при нажатии"
+
+#~ msgid "Repeat Keys"
+#~ msgstr "Повтор клавиш"
+
+#~ msgid "_Off"
+#~ msgstr "В_ыключен"
+
+#~ msgid "loud"
+#~ msgstr "громче"
+
+#~ msgid "quiet"
+#~ msgstr "тише"
+
+#~ msgid ""
+#~ "<b>Default Cursor - Current</b>\n"
+#~ "The default cursor that ships with X"
+#~ msgstr ""
+#~ "<b>Исходный курсор - текущий</b>\n"
+#~ "Исходный курсор, поставляемый с системой X"
+
+#~ msgid ""
+#~ "<b>White Cursor - Current</b>\n"
+#~ "The default cursor inverted"
+#~ msgstr ""
+#~ "<b>Белый курсор - текущий</b>\n"
+#~ "Инвертированный исходный курсор"
+
+#~ msgid ""
+#~ "<b>Large Cursor - Current</b>\n"
+#~ "Large version of normal cursor"
+#~ msgstr ""
+#~ "<b>Большой курсор - текущий</b>\n"
+#~ "Увеличенная версия обычного курсора"
+
+#~ msgid "<b>Cursor Theme</b>"
+#~ msgstr "<b>Тема курсора</b>"
+
+#~ msgid "Install new theme"
+#~ msgstr "Установить новую тему"
+
+#~ msgid "_Location of new theme:"
+#~ msgstr "_Местоположение новой темы:"
+
+#~ msgid "Behavior"
+#~ msgstr "Поведение"
+
+#~ msgid "Sets the default behavior of GNOME applications"
+#~ msgstr "Диалог настройки исходного поведения приложений среды Гном"
+
+#~ msgid "A preview of what a menubar looks like with these settings."
+#~ msgstr "Образец того, как строка меню будет выглядеть с этими настройками."
+
+#~ msgid "A preview of what a toolbar looks like with these settings."
+#~ msgstr ""
+#~ "Образец того, как панель инстументов будет выглядеть с этими настройками."
+
+#~ msgid "Menus"
+#~ msgstr "Меню"
+
+#~ msgid "Sample menubar:"
+#~ msgstr "Образец строки меню:"
+
+#~ msgid "Select the toolbar style."
+#~ msgstr "Выберите стиль панели инструментов."
+
+#~ msgid "Toolbar"
+#~ msgstr "Панель инструментов"
+
+#~ msgid "Toolbars can be _detached and moved around"
+#~ msgstr "Панели меню могут быть _отцеплены и перемещены"
+
+#~ msgid "Can't find an hbox, using a normal file selection"
+#~ msgstr "Нвозможно найти hbox, используется обычное выделение файла"
+
+#~ msgid "File to play"
+#~ msgstr "Файл для воспроизведения"
+
+#~ msgid "Apply theme..."
+#~ msgstr "Применить тему..."
+
+#~ msgid "Themus component"
+#~ msgstr "Компонент Themus"
+
+#~ msgid ""
+#~ "<b>Note:</b> You will need to logout and log back in for this setting to "
+#~ "take effect."
+#~ msgstr ""
+#~ "<b>Внимание:</b> Для того чтобы установки подействовали, надо выйти и "
+#~ "заново войти в сеанс."
+
+#~ msgid ""
+#~ "Animates a quick marker around the cursor when the Control key has been "
+#~ "pressed and released."
+#~ msgstr "Рисует вокруг курсора отметку при нажатии клавиши Ctrl."
+
+#~ msgid "Double-click Delay"
+#~ msgstr "Задержка двойного щелчка"
+
+#~ msgid ""
+#~ "Left-handed mouse mode switches the left and right buttons on the mouse."
+#~ msgstr ""
+#~ "Режим мыши под левую руку меняет местами левую и правую кнопки мыши."
+
+#~ msgid ""
+#~ "Maximum time allowed between clicks when double-clicking.   Use the box "
+#~ "on the right to test."
+#~ msgstr ""
+#~ "Максимальное время между щелчками в двойном щелчке. Используйте поле "
+#~ "справа для проверки."
+
+#~ msgid ""
+#~ "Set the distance you need to move your cursor before dragging an item."
+#~ msgstr ""
+#~ "Установите расстояние, на которое должен быть смещён курсор для "
+#~ "перетаскивания элемента."
+
+#~ msgid "Set the speed of your pointing device."
+#~ msgstr "Установите скорость курсора."
+
+#~ msgid "_Delay (sec):"
+#~ msgstr "Зад_ержка (сек):"
+
+#~ msgid "_Show position of cursor when the Control key is pressed"
+#~ msgstr "Пок_азывать положение курсора когда нажата клавиша Ctrl"
+
+#~ msgid "_Repeat Keys"
+#~ msgstr "Включить \"повтор_яющиеся\" клавиши"
+
+#~ msgid ""
+#~ "The gnome-theme-manager does not know how to change the themes on the "
+#~ "current window manager."
+#~ msgstr ""
+#~ "gnome-theme-manager не знает, как изменить тему текущего менеджера окон."

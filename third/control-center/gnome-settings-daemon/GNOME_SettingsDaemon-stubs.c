@@ -11,26 +11,15 @@ GNOME_SettingsDaemon_awake(GNOME_SettingsDaemon _obj,
 			   const CORBA_char * service, CORBA_Environment * ev)
 {
    CORBA_boolean _ORBIT_retval;
-   POA_GNOME_SettingsDaemon__epv *_ORBIT_epv;
+   gpointer _args[1];
 
-   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
-       ORBIT_STUB_IsBypass(_obj, GNOME_SettingsDaemon__classid) &&
-       (_ORBIT_epv =
-	(POA_GNOME_SettingsDaemon__epv *) ORBIT_STUB_GetEpv(_obj,
-							    GNOME_SettingsDaemon__classid))->
-       awake) {
-      ORBIT_STUB_PreCall(_obj);
-      _ORBIT_retval =
-	 _ORBIT_epv->awake(ORBIT_STUB_GetServant(_obj), service, ev);
-      ORBIT_STUB_PostCall(_obj);
-   } else {			/* remote marshal */
-      gpointer _args[1];
+   _args[0] = (gpointer) & service;
+   ORBit_c_stub_invoke(_obj, &GNOME_SettingsDaemon__iinterface.methods, 0,
+		       &_ORBIT_retval, _args, NULL, ev,
+		       GNOME_SettingsDaemon__classid,
+		       G_STRUCT_OFFSET(POA_GNOME_SettingsDaemon__epv, awake),
+		       (ORBitSmallSkeleton)
+		       _ORBIT_skel_small_GNOME_SettingsDaemon_awake);
 
-      _args[0] = (gpointer) & service;
-      ORBit_small_invoke_stub_n(_obj,
-				&GNOME_SettingsDaemon__iinterface.methods, 0,
-				&_ORBIT_retval, _args, NULL, ev);
-
-   }
    return _ORBIT_retval;
 }
