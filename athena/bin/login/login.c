@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.33 1991-01-29 11:38:46 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.34 1991-02-27 12:03:52 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.33 1991-01-29 11:38:46 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.34 1991-02-27 12:03:52 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -33,7 +33,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
  */
 
 #include <sys/param.h>
-#ifndef VFS
+#if !defined(VFS) || defined(_I386)
 #include <sys/quota.h>
 #endif !VFS
 #include <sys/stat.h>
@@ -58,6 +58,9 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <grp.h>
+#ifdef SYSV
+#include <sys/termio.h>
+#endif
 
 typedef struct in_addr inaddr_t;
 
@@ -79,6 +82,10 @@ typedef int sigtype;
 #ifndef FALSE
 #define	FALSE	0
 #define	TRUE	-1
+#endif
+
+#ifndef MAXBSIZE
+#define MAXBSIZE 1024
 #endif
 
 #ifdef VFS
@@ -114,24 +121,38 @@ char	get_motd[] =	"/bin/athena/get_message";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 #ifdef POSIX
-struct  passwd nouser = {"",
-                             "nope",
-                             -2,
-                             0,
-                             -2,
-                             0,
-                             0,
-                             "",
-                             "",
-                             "",
-                             "" };
+struct  passwd nouser = {"",		/* name */
+                             "nope",	/* passwd */
+                             -2,	/* uid */
+#ifdef ultrix
+                             0,		/* pad */
+#endif
+                             -2,	/* gid */
+#ifdef ultrix
+                             0,		/* pad */
+#endif
+#ifdef _I386
+			     "",	/* age */
+#endif
+                             0,		/* quota */
+                             "",	/* comment */
+                             "",	/* etc/gecos */
+                             "",	/* dir */
+                             "" };	/* shell */
 
 struct  passwd newuser = {"\0\0\0\0\0\0\0\0",
                               "*",
                               START_UID,
+#ifdef ultrix
                               0,
+#endif
                               MIT_GID,
+#ifdef ultrix
                               0,
+#endif
+#ifdef _I386
+			      "",
+#endif
                               0,
                               NULL,
                               NULL,
@@ -205,8 +226,15 @@ main(argc, argv)
     FILE *nlfd;
     char *ttyn, *tty, saltc[2];
     long salt;
-    int ldisc = 0, zero = 0, found = 0, i;
+    int ldisc = 0, zero = 0, found = 0, i, j;
     char **envnew;
+#ifdef SYSV
+    struct termio tio;
+#endif
+#ifdef _I386
+    struct stat 	pwdbuf;
+#endif
+
 
     signal(SIGALRM, timedout);
     alarm(timeout);
@@ -216,6 +244,7 @@ main(argc, argv)
 #if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
 #endif /* !VFS || ultrix */
+
     /*
      * -p is used by getty to tell login not to destroy the environment
      * -r is used by rlogind to cause the autologin protocol;
@@ -295,11 +324,31 @@ main(argc, argv)
      */
     if (rflag || kflag || Kflag)
 	doremoteterm(term, &ttyb);
+
+#ifdef SYSV
+    /* Now setup pty as AIX shells expect */
+    (void)ioctl(0, TCGETA, &tio);
+    
+    tio.c_iflag |= (BRKINT|IGNPAR|ISTRIP|IXON|IXANY|ICRNL);
+    tio.c_oflag |= (OPOST|TAB3|ONLCR);
+    tio.c_cflag &= ~(CSIZE|CBAUD);
+    tio.c_cflag |= (CS8|B9600|CREAD|HUPCL|CLOCAL);
+    tio.c_lflag |= (ICANON|ISIG|ECHO|ECHOE|ECHOK);
+    tio.c_cc[VINTR] = CINTR;
+    tio.c_cc[VQUIT] = CQUIT;
+    tio.c_cc[VERASE] = CERASE;
+    tio.c_cc[VKILL] = CKILL;
+    tio.c_cc[VEOF] = CEOF;
+    tio.c_cc[VEOL] = CNUL;
+
+    (void)ioctl(0, TCSETA, &tio);
+#else
     ttyb.sg_erase = CERASE;
     ttyb.sg_kill = CKILL;
     ioctl(0, TIOCSLTC, &ltc);
     ioctl(0, TIOCSETC, &tc);
     ioctl(0, TIOCSETP, &ttyb);
+#endif
     for (t = getdtablesize(); t > 2; t--)
 	close(t);
     ttyn = ttyname(0);
@@ -315,17 +364,28 @@ main(argc, argv)
 #endif
     /* destroy environment unless user has asked to preserve it */
     /* (Moved before passwd stuff by asp) */
+#ifndef NOPFLAG
+#if 0
     if (!pflag)
 	environ = envinit;
+#endif
+#endif
 
     /* set up environment, this time without destruction */
     /* copy the environment before setenving */
+    /* AIX1.2 removes the INIT* variables */
     i = 0;
     while (environ[i] != NULL)
 	i++;
     envnew = (char **) malloc(sizeof (char *) * (i + 1));
-    for (; i >= 0; i--)
-	envnew[i] = environ[i];
+    for (j=0; i >= 0; i--) {
+	if(!environ[i]) continue;
+#ifdef _I386
+
+	if(strncmp(environ[i], "INIT", 4) == 0) continue;
+#endif
+	envnew[j++] = environ[i];
+    }
     environ = envnew;
 
     t = 0;
@@ -652,7 +712,7 @@ leavethis:
 
     if (!krbflag) puts("Warning: no Kerberos tickets obtained.");
     get_groups();
-#ifndef VFS
+#if !defined(VFS) || defined(ultrix)
     if (quota(Q_SETUID, pwd->pw_uid, 0, 0) < 0 && errno != EINVAL) {
 	if (errno == EUSERS)
 	    printf("%s.\n%s.\n",
@@ -668,7 +728,13 @@ leavethis:
 	exit(0);
     }
 #endif VFS
+#ifdef _I386
+    statx(pwd->pw_dir, &pwdbuf, sizeof(pwdbuf),0);
+    quota(Q_DOWARN,pwd->pw_uid,pwdbuf.st_dev,0); 
+#endif
+
     time(&utmp.ut_time);
+#ifndef SYSV
     t = ttyslot();
     if (t > 0 && (f = open("/etc/utmp", O_WRONLY)) >= 0) {
 	lseek(f, (long)(t*sizeof(utmp)), 0);
@@ -676,6 +742,23 @@ leavethis:
 	write(f, (char *)&utmp, sizeof(utmp));
 	close(f);
     }
+#else
+    strncpy(utmp.ut_id, "", 6);
+    utmp.ut_pid = getppid();
+    utmp.ut_type = USER_PROCESS;
+    if ((f = open("/etc/utmp", O_RDWR )) >= 0) {
+	struct utmp ut_tmp;
+	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
+	    if (ut_tmp.ut_pid == getppid())
+		break;
+	if (ut_tmp.ut_pid == getppid())
+	    lseek(f, -(long) sizeof(ut_tmp), 1);
+	strncpy(utmp.ut_id, ut_tmp.ut_id, 6);
+	SCPYN(utmp.ut_line, tty);
+	write(f, (char *)&utmp, sizeof(utmp));
+	close(f);
+    }
+#endif
     if ((f = open("/usr/adm/wtmp", O_WRONLY|O_APPEND)) >= 0) {
 	write(f, (char *)&utmp, sizeof(utmp));
 	close(f);
@@ -835,6 +918,8 @@ catch()
 rootterm(tty)
 	char *tty;
 {
+
+#ifndef INITTAB
 	register struct ttyent *t;
 
 	if ((t = getttynam(tty)) != NULL) {
@@ -842,6 +927,11 @@ rootterm(tty)
 			return (1);
 	}
 	return (0);
+#else 
+	/* This is moot when /etc/inittab is used - there is no
+	   per tty resource available */
+	return (1);
+#endif
 }
 
 showmotd()
@@ -1062,7 +1152,7 @@ done:
 }
 /* END TRASH */
 
-#ifndef ultrix
+#if !defined(ultrix) && !defined(SYSV)
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
