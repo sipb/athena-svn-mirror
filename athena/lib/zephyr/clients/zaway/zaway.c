@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zaway.c,v 1.15 2000-07-05 21:22:06 ghudson Exp $
+ *	$Id: zaway.c,v 1.16 2003-02-28 20:40:44 zacheiss Exp $
  *
  *	Copyright (c) 1987, 1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.15 2000-07-05 21:22:06 ghudson Exp $";
+static const char rcsid_zaway_c[] = "$Id: zaway.c,v 1.16 2003-02-28 20:40:44 zacheiss Exp $";
 #endif
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -143,6 +143,7 @@ int main(argc,argv)
 
 		if (strcmp(notice.z_sender,ZGetSender()) == 0 ||
 		    strcmp(notice.z_opcode,"PING") == 0 ||
+		    strcmp(notice.z_opcode,"AUTO") == 0 ||
 		    strcmp(notice.z_message,"Automated reply:") == 0) {
 		     ZFreeNotice(&notice);
 		     continue;
