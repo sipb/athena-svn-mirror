@@ -8,7 +8,7 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 \writestatus{loading}{Context Support Macros / Pretty TEX Verbatim}
@@ -29,7 +29,6 @@
 
 %D \macros
 %D   {ifsplitTEXparameters}
-%D   {}
 %D
 %D The mechanism described here, is meant to be used with
 %D color. It is nevertheless possible to use different fonts
@@ -42,7 +41,6 @@
 
 %D \macros
 %D   {ifsplitTEXcontrols}
-%D   {}
 %D
 %D With \type{\splittexcontrols} we can influence the way
 %D control characters are processed in macro names. By default,
@@ -80,32 +78,27 @@
 %D mechanism. That way we can use different schemes i a quite
 %D natural way. 
 
-\gdef\setupprettyTEXtype%
+\gdef\setupprettyTEXtype
   {\def\prettyidentifier{TEX}%
    \TEXsetcontrols
    \TEXsethandlers
    \TEXsetspecials}
 
-\gdef\TEXsetcontrols%
+\gdef\TEXsetcontrols
   {\saveprettycontrols
    \everyprettyend
      {\TEXendofcommand
       \TEXendofparameter}%
-   \def\obeyedspace%
+   \def\obeyedspace
      {\TEXendofcommand
       \TEXendofparameter
       \oldobeyedspace}%
-   \def\obeyedline%
+   \def\flushrestofverbatimline
      {\TEXendofcommand
-      \TEXendofparameter
-      \oldobeyedline}%
-   \def\obeyedpage%
-     {\TEXendofcommand
-      \TEXendofparameter
-      \oldobeyedpage}%
+      \TEXendofparameter}%
    \let\obeytabs=\ignoretabs}
 
-\gdef\TEXsetspecials%
+\gdef\TEXsetspecials
   {\setpretty`\$=1 \setpretty`\{=1 \setpretty`\}=1
    \setpretty`\[=2 \setpretty`\]=2 \setpretty`\(=2 \setpretty`\)=2
    \setpretty`\==2 \setpretty`\<=2 \setpretty`\>=2 \setpretty`\"=2
@@ -131,10 +124,9 @@
    \setpretty`\u=9 \setpretty`\v=9 \setpretty`\w=9 \setpretty`\x=9 \setpretty`\y=9
    \setpretty`\z=9
    \setpretty`\?=9 \setpretty`\!=9 \setpretty`\@=9
-   %\setpretty`\%=\ifnewpretty 0 \else 3 \fi}
    \setpretty`\%=0 }
 
-\gdef\TEXsethandlers%
+\gdef\TEXsethandlers
   {\installprettyhandler 1 \TEXtypeone
    \installprettyhandler 2 \TEXtypetwo
    \installprettyhandler 3 \TEXtypethree
@@ -149,7 +141,7 @@
 \doglobal\newif\ifinTEXcommand
 \doglobal\newif\ifinTEXparameter
 
-\gdef\TEXbeginofcommand%
+\gdef\TEXbeginofcommand
   {\TEXendofparameter
    \ifinTEXcommand
    \else
@@ -158,14 +150,14 @@
      \beginofpretty[\!!prettytwo]%
    \fi}
 
-\gdef\TEXendofcommand%
+\gdef\TEXendofcommand
   {\ifinTEXcommand
      \endofpretty
      \global\inTEXcommandfalse
      \global\firstinTEXcommandfalse
    \fi}
 
-\gdef\TEXbeginofparameter%
+\gdef\TEXbeginofparameter
   {\TEXendofcommand
    \ifinTEXparameter
    \else
@@ -173,7 +165,7 @@
      \beginofpretty[\!!prettythree]%
    \fi}
 
-\gdef\TEXendofparameter%
+\gdef\TEXendofparameter
   {\ifinTEXparameter
      \endofpretty
      \global\inTEXparameterfalse
@@ -259,7 +251,7 @@
    \fi
    \next}
 
-\gdef\TEXtypeeightB%
+\gdef\TEXtypeeightB
   {\TEXendofparameter
    \ifinTEXcommand
      \firstinTEXcommandfalse
@@ -268,20 +260,41 @@
      \expandafter\TEXtypethree
    \fi}
 
-\gdef\TEXtypeeight%
+\gdef\TEXtypeeight
   {\handlenextnextpretty\TEXtypeeightA\TEXtypeeightB}
 
-\gdef\TEXtypenine%
+\gdef\TEXtypenine
   {\TEXendofparameter
    \global\firstinTEXcommandfalse
    \getpretty}
 
-% \gdef\TEXtypezero%
-%   {\handlenewpretty\TEXtypethree}
+%\gdef\TEXtypezero
+%  {\disableprettyafterwards % only when enabled of course 
+%   \ifnewpretty\expandafter\handlenewpretty\fi\TEXtypethree}
 
-\gdef\TEXtypezero%
-  {\ifnewpretty\expandafter\handlenewpretty\fi\TEXtypethree}
+\bgroup
+\catcode`\%=\@@other
+\xdef\texcommentsymbol{%}
+\egroup
 
-\protect 
+\beginETEX \scantokens 
 
-\endinput 
+\long\gdef\naturalTEXtext#1#2\relax% local alternative for \naturaltextext
+  {\convertargument#2\to\ascii
+   \doifinstringelse{\texcommentsymbol}{\ascii}
+     {\long\def\next{\TEXtypethree{#1}#2\relax}}
+    %{\long\def\next{\bgroup\prettynaturalfont\restorecatcodes\scantokens{\ignorespaces#2}\egroup}}%
+     {\long\def\next{\bgroup\prettynaturalfont{\restorecatcodes\scantokens{\ignorespaces#2}}\egroup}}%
+   \next}
+
+\endETEX
+
+\gdef\TEXtypezero
+  {\ifnaturaltextext
+     \expandafter\naturalTEXtext
+   \else
+     \disableprettyafterwards % only when enabled of course 
+     \expandafter\handlenewpretty\expandafter\TEXtypethree
+   \fi}
+
+\protect \endinput 

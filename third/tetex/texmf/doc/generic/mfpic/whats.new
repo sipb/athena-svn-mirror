@@ -1,0 +1,182 @@
+%%% File: whats.new
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+What's new since mfpic 0.6
+--------------------------
+    -- Prior to 0.6, blank lines in mfpic environments were ignored. In
+       0.6 they weren't, in 0.6a something closer to the old behavior
+       was restored.
+    -- There was an embarassing bug in the definition of sinh in
+       both grafbase files. The sign was reversed from what it should
+       be. Corrected in 0.6b.
+
+What's new since mfpic 0.5
+--------------------------
+
+    -- \tlabel will now accept the following syntax under mplabels:
+         \tlabel[vh<rot>]{<pair>}{<text>}
+       where <pair> is any pair expression acceptable to MetaPost. The
+       same is true of most other label-like constructs. The old syntax
+       can still be used:
+         \tlabel[vh<rot>](<x>,<y>){<text>}
+       If the new syntax is used without mplabels, the braces are simply
+       stripped, and the old syntax is then expected.
+
+    -- \tlabel are now embedded in an alignment (\halign) and the lines
+       of a multiline label can be centered (by starting the line of
+       text with \hfil) and right aligned (by starting it with \hfill).
+
+    -- All the macros (except those involving placement of text) that
+       accept as their last parameter a list of points or numbers
+       separated by commas have been extended to permit, instead of the
+       list, the command \datafile{<file>}. If \using has been properly
+       set, the data in <file> will be used in place of an explicitly
+       typed list. The plain \datafile command (used in the context of
+       drawing a path) functions as before, choosing whether to draw a
+       \curve or a \polyline based on smoothness parameters. Now,
+       however, one can also do \closedcspline\datafile{file.dat}, for
+       example, or \point\datafile{file.dat}.
+
+    -- Two commands, equivalent to issuing the command "\using" with
+       default parameters for processing pair data (\usingpairdefault)
+       or with the default for processing numeric data
+       (\usingnumericdefault). The former sets up commands that get data
+       from a file to use the first two space separated items on each
+       line to produce a list of pair constants, and the latter takes
+       the first item on each line producing a list of numeric
+       constants.
+
+    -- \mfpicdraft, \mfpicfinal, \mfpicnowrite. The first tells mfpic to
+       do everything except include the figures. The second allows them
+       to be included even if mfpic's automatic detection thinks they
+       shouldn't (mfpic can be fooled in some cases, see the docs). The
+       third tells mfpic to do everything except write anything to the
+       .mf(.mp) file. This could be be used if the figures have all been
+       successfully debugged and might speed processing. All these
+       affect aspects of the \opengraphsfile command, and so should come
+       before it. In LaTeX, Package options "draft", "final" and
+       "nowrite" can also be used. Mfpic will see the
+       \documentclass option "draft", in which case the "final" option
+       can be given to mfpic in order to override it, if necessary.
+
+    -- mfpic.tex no longer issues the command \DeclareGraphicsRule when
+       in LaTeX2e and using metapost. Instead, a command internal to the
+       graphic{sx} package is used within a local group to declare the
+       current figure's numeric extension. This permits a possibly more
+       user-friendly error message if the user includes a non-mfpic
+       graphic with an unsupported extension
+
+    -- Added commands to graphic processing to save the bounding box
+       data for later use in proper label placement. As of version 0.5i,
+       one can use truebbox or mplabels without the other.
+
+    -- mfpicdoc now comes with an index of commands, mfpicdoc.ind. The
+       macros necessary to process it are in indexing.tex (included),
+       taken from eplain. The makeindex style, mfpic.ist, that produced
+       mfpicdoc.ind from mfpicdoc.idx is included also (though it should
+       not be required).
+
+    -- New prefix command \gclip that clips the picture-so-far to that
+       part which lies in the interior of the following closed curve.
+
+    -- Changed an internal command to a user level command \axismarks.
+       Then \axismarks{x}, for example, is the same as \xmarks.
+
+    -- Bug fixes:
+       * grafbase.mf: textrect, textoval, etc., easily triggered
+         arithmetic overflow for lower resolution (<=300) mf modes.
+         These have been changed to do calculations in graph coordinates
+         (resolution independent). Does not effect grafbase.mp (unless
+         text approaches a size of 400x400pt) but some changes made
+         there as well.
+
+       * \mfpverbtex incorrectly wrote every "#" symbol as "##". This
+         was fixed. Some labelling commands ("\tlabels" for example)
+         read their position argument(s) twice. This meant braces used
+         to hide parentheses and commas within them had to be doubled.
+         This was eliminated along with above noted extension of label
+         position syntax.
+
+What's new since mfpic 0.4?
+--------------------------------
+
+  * Axis commands:
+
+    There are now 6 axes that can be drawn, besides x- and y-axis there
+    are four border axes.
+    All axes may be dashed, dotted, etc., just like any curve.
+
+  * Tick marks:
+
+    They can now be on either side or centered (or even off-center).
+    They can be drawn on any of the 6 axes.
+
+  * Additional text labels:
+
+    Instead of issuing one \tlabel command for every label, there is now
+    a \tlabels command to list all the labels at once.
+        There is an abbreviation, \axislabels, for the special task of
+    placing labels along an axis.
+        There is a command, \tlabelsep, for setting a default separation
+    of a label from its point of placement, and another \tlabeloffset,
+    for shifting all following labels in a particular way.
+        There is command, \tlabeljustify, for changing the default
+    justification of the text in all following labels.
+        And a command, \plottext, which will place the same bit of text
+    at every one of a list of points.
+
+  * Framing text:
+
+    Given a bit of text, we now have commands for creating a rectangle,
+    oval or circle that exactly surrounds it. This allows clearing the
+    shape before placing the text, and the curve created can be dashed,
+    dotted, etc., like any other mfpic curve.
+
+  * Transformation prefixes:
+
+    Transformation prefixes can be used to alter the path that follows.
+    In addition to \rotatepath, we have now \shiftpath, \scalepath,
+    \xscalepath, \yscalepath, \slantpath, \xslantpath, \yslantpath,
+    \reflectpath and \xyswappath.
+
+  * Misc. commands:
+
+    There are now some commands for facilitating the creation of bar and
+    pie charts, automatically calculating the correct proportions from
+    supplied data.
+        A new command now exists for filling the graph with a
+    graph-paper like grid of lines, and a similar one for polar
+    coordinates.
+        There are two new commands for selecting colors in the graph:
+    \tlabelcolor, and \backgroundcolor. Despite its name,
+    \backgroundcolor doesn't change the background, but tells mfpic what
+    color the background will be (\gclear will then use it).
+
+  * Misc. changes:
+
+    -- \grid takes an optional argument for the size of the dots.
+    -- \datafile and \plotdata take an optional argument: p for
+       polygonal or s for smooth.
+    -- \plot, \plotsymbol, and \plotnodes formerly required a path name
+       Triangle, etc.) for one argument. They now accept a picture or
+       (in metapost) a string. You can do \plot{btex $\bullet$ etex}...
+       or \plotsymbol{"a"}...  (provided \bullet has a robust
+       meaning and " is not active).
+    -- The symbol name Star now produces the standard 5-pointed star,
+       and the new SolidStar is the same shape filled in. The old shape
+       was just five straight lines, which is now provided by a new
+       name, Asterisk.
+    -- The \mfpic command's optional arguments are now both truely
+       optional (default scale is 1).
+    -- All commands that take an optional smoothness specification (s or
+       p), now allow the s to be followed by a tension value.
+    -- \\ now works (mostly) in labels when \metapost option is
+       selected.
+    -- Some commands have been made somewhat more error tolerant
+       (invalid optional arguments replaced by defaults).
+    -- New command: \everytlabel{...}. The contents are saved, to be
+       inserted at the start of each \tlabel. This gets around the fact
+       that each line of a \tlabel is a group. These tokens are inside
+       the \tlabel group, but outside the group of each line.
+
+[eof]

@@ -1,0 +1,270 @@
+READ.ME for AMS-TeX version 2.2                             2001/08/29
+
+AMS-TeX is a macro package that works with the TeX typesetting program.
+A working TeX system is a prerequisite for using any of the components
+of AMS-TeX.  [TeX is not an AMS product; see the AMS TeX Resources page
+(http://www.ams.org/tex/tex-resources.html) for information if you
+do not already have TeX.]
+
+Obtain a printed copy of the full installation instructions:
+ - Process amstinst.tex with Plain TeX, or
+ - Print the amstinst.ps file provided.
+Read the instructions; they are much more complete than the summary
+provided here.
+
+The instructions assume that your TeX system is arranged according to
+the recommended TeX Directory Structure (TDS).  Check the documentation
+for your TeX system to find out if it uses the TDS.  A copy of the TDS
+report can be found at CTAN either as an online document
+    .../tds/standard/tds
+or as a printable pdf file
+    .../tds/standard/tds/tds.pdf
+Items on CTAN can usually be found through the CTAN Catalogue:
+    http://www.ctan.org/search
+
+
+FILES IN THE AMS-TeX DISTRIBUTION
+
+A complete list of the files contained in the distribution is included
+in the installation instructions (amstinst).
+
+There are two basic methods of obtaining the files needed for AMS-TeX:
+ - Retrieve one of the AMS-TeX bundles from the AMS FTP server
+    ftp://ftp.ams.org/pub/tex/
+   or the AMS web site
+    http://www.ams.org/tex/amstex.html
+ - Retrieve the individual files from one of the AMS servers or from CTAN
+    .../macros/amstex/
+Install these files as described in the installation instructions
+(amstinst); a summary appears below, under INSTALLING AMS-TeX.
+
+Also, AMS-TeX will call for AMSFonts.  Check the tfm-files subdirectory
+    TEXMF/fonts/tfm/ams/
+to see whether it is already populated (most TeX distributions now
+include the AMSFonts).  If not, retrieve the .tfm files for AMSFonts 2.2
+and install them into your system tfm-files subdirectory.
+
+These .tfm files can be retrieved in several ways:
+ - as a bundle from the AMSFonts page on the AMS web site at
+    http://www.ams.org/tex/amsfonts.html
+ - as a tfm.tar file in the /pub/tex directory at the AMS FTP site,
+    ftp://ftp.ams.org
+ - as individual .tfm files from the /pub/tex/amsfonts/tfm subdirectory
+   at the AMS FTP site or from CTAN in .../fonts/amsfonts/tfm
+(Note: set the file type to binary in FTP when transferring .tfm files.)
+Even if you do not use any symbols from the AMSFonts, you will need at
+least the .tfm files to use amsppt.sty and to TeX the accompanying
+documentation for AMS-TeX.
+
+The following documentation files will be useful in installing and using
+AMS-TeX.
+
+amstinst.tex -  Installation instructions, comprising Appendices B and C
+amstinst.ps     of amsguide, provided as both TeX source and ready-to-print
+                PostScript.
+amsguide.tex -  The AMS-TeX User's Guide, provided as both TeX source and
+amsguide.ps     a ready-to-print PostScript file.  When you have completed
+                the installation of AMS-TeX 2.2, process the .tex file using
+                AMS-TeX 2.2 and print the resulting .dvi file.  The output
+                will be a brief guide to using AMS-TeX 2.2, supplementing
+                The Joy of TeX.
+joyerr.tex   -  The TeX input file for a document listing errata to
+                The Joy of TeX prior to AMS-TeX 2.0. It also should be
+                run through TeX using AMS-TeX 2.2.
+joyerr2.tex  -  The TeX input file for a document listing errata to the
+                second edition of The Joy of TeX, for AMS-TeX 2.1 and up.
+                Process with AMS-TeX 2.2 as for the other .tex files.
+amsppt.doc   -  Technical documentation for amsppt.sty, including an update
+                history.
+amsppt.faq   -  Frequently asked questions and answers regarding AMS-TeX
+                and amsppt.sty.
+
+
+INSTALLING AMS-TeX 2.2 ON YOUR SYSTEM -- A BRIEF OVERVIEW
+
+Backup any existing AMS-TeX files before installing a new release.
+
+Read the instructions in amstinst; they are more complete than these notes.
+
+If you have retrieved a bundled distribution and unbundled it with the
+appropriate tool, the files will be placed into the following subdirectories:
+
+    TEXMF/doc/ams/amstex
+    TEXMF/source/amstex
+    TEXMF/tex/amstex/base
+    TEXMF/tex/plain/amsfonts
+
+If you have retrieved individual files, you will need to place them into
+subdirectories as described in amstinst.ps.
+
+AMS-TeX will call for the AMSFonts 2.2 .tfm files.  Check for their
+presence on your system and, if necessary, retrieve them and place them
+in the proper location as described above.
+
+Remember that most TDS sytems operate using a filename list or database,
+which must be updated when new files are added; consult your TeX system
+documentation for update instructions.
+
+Run amstex.ini through INITEX (the version of TeX which has no format
+preloaded, distributed with your implementation of TeX). It will produce
+a format file which will function as a preloaded version of AMS-TeX.
+Place this format file in the directory where your implementation of
+TeX looks for format files (see your system documentation), refresh the
+filename database, and you are ready to use AMS-TeX 2.2.
+
+If you habitually use the AMSPPT documentstyle, you may prefer to
+include it in the format file you create. This can be done by editing
+the file amstex.ini, using any text editor, and uncommenting the line
+that reads "\documentstyle{amsppt}".  Before creating the format file,
+read Appendix C from the installation instructions.
+
+We recommend that, as a first test of your installation, you run the
+file amsguide.tex through TeX, and print out the output. This will
+provide further information about using AMS-TeX.
+
+========================================================================
+Highlights of the differences between versions 2.1 and 2.2:
+
+AMSTEX.TEX
+----------
+
+---Removed copyright notice and restriction from message printed on
+   terminal and in log for every run.
+
+AMSPPT.STY
+----------
+(See the user's guide (amsguide.tex) and amsppt.doc, section 20, for
+full details.)
+
+---\subjclass was updated to use \subjclassyear as the date for the
+Mathematics Subject Classification scheme. (NOTE: THIS CHANGE IS NOT
+BACKWARD COMPATIBLE.  EXISTING DOCUMENT FILES NEED NOT BE MODIFIED BUT
+THE OUTPUT WILL BE DIFFERENT IF CLASSIFICATION WAS OLDER THAN 1991.)
+
+========================================================================
+Highlights of the differences between versions 2.0 and 2.1:
+
+AMSTEX.TEX
+----------
+---Improvements to the mechanisms for loading various fonts in
+the AMSFonts package. For example, \loadeusm now defines a
+\eusm command that can be used like \roman or \bold.
+
+---Revamped \printoptions command.
+
+---Some internal cleanup to reduce memory usage in some of TeX's
+memory categories (notably hash size).
+
+---Informational messages appear on screen identifying the
+modules within amstex.tex during the creation of a format file.
+
+AMSPPT.STY
+----------
+(See the user's guide (amsguide.tex) and amsppt.doc, sections 18 and 19,
+for full details.)
+
+---\curraddr was added, for giving the current address of an author,
+if different from the address given in \address.
+
+---\rom was added, for preventing unwanted italicization of certain
+things, such as parentheses or numbers, in theorems and other italic
+passages.  \rom automatically inserts italic corrections.
+
+---The implementation of \nofrills was completely changed, to provide
+better error messages for a missing or misspelled \endkeywords or
+similar end command when reading a delimited argument.
+
+---Multiple \thanks commands in the top matter will now produce
+multiple acknowledgment footnotes instead of discarding all but the
+last one.
+
+---A period is no longer added automatically at the end of a
+\thanks. (NOTE: THIS CHANGE IS NOT BACKWARD COMPATIBLE---DOCUMENT
+FILES WILL HAVE TO BE MODIFIED.)
+
+---\subjclassyear was added to specify the year of the Mathematics
+Subject Classification scheme.  Only 1991 and 2000 are recognized,
+defaulting to 1991 to maintain some backward compatibility.
+
+---\widestnumber\item now works as claimed in the User's Guide.
+
+---The missing \par in the internal command \penaltyandskip@ was added.
+
+---Additional checks were added for runaway \proclaim, \definition,
+\ref, \roster, etc.  The internal macro \runaway@ was changed to make
+its usage more consistent and robust; in the process its name was
+changed to \add@missing (and as the name suggests, it now tries to
+recover by adding the missing \end... command).
+
+---As with amstex.tex, informational messages were added identifying the
+modules within amsppt.sty.
+
+---The bibliography macros were substantially modified to correct
+another longstanding bug: line breaks after explicit hyphens,
+mathbins, and mathrels were inhibited. This also involved changing the
+\ref-specific version of \nofrills.  BACKWARD COMPATIBILITY (WITH
+VERSION 2.0) IS NOT COMPLETE WITH RESPECT TO \nofrills IN THE
+BIBLIOGRAPHY MACROS.  \nofrills NOW SHOULD ALWAYS FOLLOW IMMEDIATELY
+AFTER THE NAME OF THE FIELD TO WHICH IT APPLIES, E.G., \transl\nofrills,
+OR \paper\nofrills. This is more consistent with the usage of \nofrills
+outside of the references section. \nofrills will cause all the "frills",
+such as the parentheses around years in journal article citations, or
+words like "eds." or "vol." that are supplied automatically, to be
+omitted for the given field.  In addition, it will suppress the
+automatic punctuation at the end of the field, if any.
+
+---A \refstyle command was added to allow users to specify one of the
+three different reference styles most commonly used in AMS publications:
+letter labels in square brackets; unnumbered; and numbered (denoted A,
+B, and C, respectively). The syntax is "\refstyle{A}" (immediately after
+the \documentstyle command). Style C, numbered with arabic numerals, is
+the default selected by amsppt.sty.  The \refstyle command ensures 
+proper correspondence between the formatting of cites in the main text 
+and the formatting of the references section. Also, \key can now be used
+for all reference labels, and the \no command is redundant (though still
+supported, for backward compatibility).
+
+---\miscnote was added, and used in the implementation of \toappear,
+so that \toappear and \finalinfo would not be mutually exclusive.
+\miscnote might also be used for things like "preprint" or
+"submitted".  Unlike \finalinfo, \miscnote automatically adds
+parentheses.
+
+---\procinfo was added, to give place and date where the meeting
+took place, for a proceedings volume reference.
+
+---\eds or \ed information will now be used in place of an author's
+name, if \by is absent.  This would be for collections or proceedings
+volumes that are cited as a whole, instead of citing a single paper
+within the volume.
+
+AMSTEX.INI
+----------
+File to make format file creation more convenient. See the
+user's guide and/or installation notes above.
+
+AMSPPT1.TEX
+-----------
+Compatibility file to allow processing of AMS-TeX 1.1 and earlier
+documents under AMS-TeX 2.0+. See the user's guide.
+
+
+(NOTE:  Author packages for use with AMS-TeX are available from the AMS
+web site at http://www.ams.org/tex/author-info.html, or by FTP from
+ftp://ftp.ams.org/pub/author-info/packages.  All packages are compatible
+with AMS-TeX 2.2.  If you have previously received an AMS-TeX author
+package for use with an earlier version of AMS-TeX, for best results you
+should retrieve an upgraded copy from the AMS server.)
+
+========================================================================
+
+Questions or comments can be directed to:
+
+Technical Support
+American Mathematical Society
+201 Charles Street
+P.O. Box 6248
+Providence, RI 02940   USA
+     (800) 321-4AMS (321-4267) ext. 4080 (U.S. and Canada)
+     (401) 455-4080
+Email:  tech-support@ams.org

@@ -1,0 +1,22 @@
+<head>
+<title>UK TeX FAQ -- question 215</title>
+</head><body>
+<h3>Finding the width of a letter, word, or phrase</h3>
+<p>Put the word in a box, and measure the width of the box. For example,
+<pre>
+  \newdimen\stringwidth
+  \setbox0=\hbox{hi}
+  \stringwidth=\wd0
+</pre>
+Note that if the quantity in the <code>\hbox</code> is a phrase, the actual
+measurement only approximates the width that the phrase will occupy in
+running text, since the inter-word glue can be adjusted in paragraph
+mode.
+<p>The same sort of thing is expressed in LaTeX by:
+<pre>
+  \newlength{\gnat}
+  \settowidth{\gnat}{\textbf{small}}
+</pre>
+This sets the value of the length command <code>\gnat</code> to the width of "small"
+in bold-face text.
+<p></body>

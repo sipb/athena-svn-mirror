@@ -1,11 +1,5 @@
-%Filename: 8rppl.fd
-%Created by: tex Fam_613
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rppl.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/ppl.]
+   [2001/06/04 font definitions for 8r/ppl.]
 
 \DeclareFontFamily{8r}{ppl}{}
 

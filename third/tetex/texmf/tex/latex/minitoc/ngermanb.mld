@@ -1,0 +1,13 @@
+\ProvidesFile{ngermanb.mld}[1999/12/06]
+% New german (B) titles for minitoc.sty
+\def\mtctitle{Inhalt}%
+\def\mlftitle{Abbildungsverzeichnis}%
+\def\mlttitle{Tabellenverzeichnis}%
+
+\def\ptctitle{Inhaltsverzeichnis}%    % oder nur: Inhalt
+\def\plftitle{Abbildungsverzeichnis}%
+\def\plttitle{Tabellenverzeichnis}%
+
+\def\stctitle{Inhalt}%
+\def\slftitle{Abbildungsverzeichnis}%
+\def\slttitle{Tabellenverzeichnis}%

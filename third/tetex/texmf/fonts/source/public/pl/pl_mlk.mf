@@ -4,7 +4,7 @@
 % accented c, n, o, s, z, and dotted z) in text format.
 % The program is based on excerpts from the ITALL.MF file.
 % ---------------------------------------------------------------------------
-% PL VERSION 1.03,   18 Dec 1992
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 % AUTHORS OF ADAPTATION: {\bif{}Bogus\l{}aw Jackowski \& Marek Ry\'cko}
 % ---------------------------------------------------------------------------
@@ -13,24 +13,11 @@
 % 
 % For details see either the file MEXINFO.POL or MEXINFO.ENG.
 % ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-% 25 May 1992: version 1.02
-%    The stroke in crossed l (olde code for the letter l):
-%|  filldraw stroke z1e--z2e;  %| stem
-%    changed to:
-%|  filldraw stroke z1e--z2'e;  %| stem
-% 18 Dec 1992: version 1.03
-%    (no changes; the new version number due to changes in FIK_MIK.MF
-%    and some cosmetic changes in CMBX11.MF, CMR11.MF, CMTI11.MF, CMSL11.MF,
-%    CMSSBI10.MF, and POLAN.MF)
-% ---------------------------------------------------------------------------
+
 
 % ---------------------------------------------------------------------------
-limit_dist:=5/4u; % it is used in |put_accent| and |put_cross|
-% (the value of |u| is changed by |mono_adjust|, hence the global setting)
+%%% beginchar beginchar_twice
+%%% endfor repeat_once
 % ---------------------------------------------------------------------------
 
 cmchar "Italic letter a with ogonek";
@@ -55,7 +42,7 @@ beginchar(ogonked_a,9u#,x_height#,the_ogonek_depth);
 endchar; % italic a with ogonek
 
 cmchar "Italic letter accented c";
-beginchar(accented_c,8u#,x_height#,0);
+beginchar_twice(accented_c,8u#,x_height#,0);
  italcorr x_height#*slant-u#;
  adjust_fit(0,0); pickup fine.nib;
  pos0(flare,0); pos1(hair,0); pos2(vair,90);
@@ -69,6 +56,7 @@ beginchar(accented_c,8u#,x_height#,0);
   & pulled_arc.e(3,4)...{direction 1 of p}z5e;  % arc
  penlabels(0,1,2,3,4,5,6);
  hpos_corr=-.25u; put_accent;
+ repeat_once
 endchar; % italic accented c
 
 cmchar "Italic letter e with ogonek";
@@ -99,7 +87,8 @@ beginchar(ogonked_e,8u#,x_height#,the_ogonek_depth);
 endchar; % italic e with ogonek
 
 cmchar "Italic letter crossed l";
-beginchar(crossed_l,4u#,asc_height#,0); l_width#:=4u#;
+beginchar_twice(crossed_l,4u#,asc_height#,0);
+ l_width#:=4u#;
  italcorr max(1/3x_height#*slant+.5hair#+.5u#,asc_height#*slant+.5stem#-2u#);
  charwd_:=charwd; adjust_fit(if monospace:u#,u# else: 0,0 fi);
  pickup fine.nib;
@@ -115,10 +104,11 @@ beginchar(crossed_l,4u#,asc_height#,0); l_width#:=4u#;
 % some funny fonts have an extremally small |jut|:
  numeric l_jut; l_jut=.5stem+max(limit_dist,if hefty: .8 fi\\ jut);
  put_cross(l_jut,1.15l_jut);
+ repeat_once
 endchar; % italic crossed l
 
 cmchar "Italic letter accented n";
- beginchar(accented_n,10u#,x_height#,0);
+ beginchar_twice(accented_n,10u#,x_height#,0);
  italcorr 1/3x_height#*slant+.5hair#+.5u#;
  adjust_fit(0,0); pickup fine.nib;
  x0=0; x1=x2; pos2(stem,0); lft x2l=hround(2.5u-.5stem); y2-.5stem=-oo;
@@ -129,10 +119,11 @@ cmchar "Italic letter accented n";
  filldraw stroke z4e{down}..{-u,-x_height}z5e;  % right stem
  penlabels(0,a,1,2,3,4,5,6,7);
  hpos_corr=-.5u; put_accent;
+ repeat_once
 endchar; % italic accented n
 
 cmchar "Italic letter accented o";
-beginchar(accented_o,9u#,x_height#,0);
+beginchar_twice(accented_o,9u#,x_height#,0);
  italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi;
  adjust_fit(0,0); pickup fine.nib;
  pos1(vair,90); pos2(curve,180); pos3(vair,270); pos4(curve,360);
@@ -142,10 +133,11 @@ beginchar(accented_o,9u#,x_height#,0);
   & pulled_arc.e(3,4) & pulled_arc.e(4,1); % bowl
  penlabels(1,2,3,4);
  put_accent;
+ repeat_once
 endchar; % italic accented o
 
 cmchar "Italic letter accented s";
-beginchar(accented_s,5.25u#+max(1.75u#,flare#),x_height#,0);
+beginchar_twice(accented_s,5.25u#+max(1.75u#,flare#),x_height#,0);
  italcorr x_height#*slant-.5u#;
  adjust_fit(0,0); pickup fine.nib;
  numeric theta; theta=90-angle(40u,h); slope:=-h/40u;  % angle at middle
@@ -166,10 +158,11 @@ beginchar(accented_s,5.25u#+max(1.75u#,flare#),x_height#,0);
  bulb(2',1,10); bulb(7,8,9);  % bulbs
  penlabels(0,1,2,3,4,5,6,7,8,9,10);
  hpos_corr=-.5u; put_accent;
+ repeat_once
 endchar; % italic accented s
 
 cmchar "Italic letter accented z";
-beginchar(accented_z,5.5u#+max(1.5u#,stem#),x_height#,0);
+beginchar_twice(accented_z,5.5u#+max(1.5u#,stem#),x_height#,0);
  italcorr x_height#*slant+.5hair#;
  adjust_fit(if monospace:.5u#,.5u# else: 0,0 fi); pickup fine.nib;
  pos1(hair,0); pos2(stem,-90); pos3(vair,-90); pos4(hair,0);
@@ -184,10 +177,11 @@ beginchar(accented_z,5.5u#+max(1.5u#,stem#),x_height#,0);
  filldraw stroke z5e{p}..{p}z4e;  % diagonal
  penlabels(1,2,3,4,5,6,7,8);
  hpos_corr=-.5u; put_accent;
+ repeat_once
 endchar; % italic accented z
 
 cmchar "Italic letter dotted z";
-beginchar(dotted_z,5.5u#+max(1.5u#,stem#),x_height#,0);
+beginchar_twice(dotted_z,5.5u#+max(1.5u#,stem#),x_height#,0);
  italcorr x_height#*slant+.5hair#;
  adjust_fit(if monospace:.5u#,.5u# else: 0,0 fi); pickup fine.nib;
  pos1(hair,0); pos2(stem,-90); pos3(vair,-90); pos4(hair,0);
@@ -202,6 +196,7 @@ beginchar(dotted_z,5.5u#+max(1.5u#,stem#),x_height#,0);
  filldraw stroke z5e{p}..{p}z4e;  % diagonal
  penlabels(1,2,3,4,5,6,7,8);
  put_dot(fine,flare#);
+ repeat_once
 endchar; % italic dotted z
 
 endinput;

@@ -1,3 +1,4 @@
+\ProvidesFile{arab.mld}[1999/03/16]
 % Arabic titles for minitoc.sty
 % (strings taken from arabtex; to be used with arabtex)
 \def\mtctitle{al-mu.htawayAtu}

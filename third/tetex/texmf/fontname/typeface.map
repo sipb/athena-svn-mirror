@@ -1,6 +1,6 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   date = "27 May 1999",
+@c   date = "23 January 2003",
 @c   url = "http://tug.org/fontname/typeface.map",
 @c   supported = "yes",
 @c   docstring = "Typeface abbreviations."
@@ -20,6 +20,7 @@ aa aachen       Aachen
 ab aboeckli     ArnoldBoecklin
 ac acaslon      ACaslon                                 @r{Adobe Caslon}
 ad agaramon     AGaramond                               @r{Adobe Garamond}
+ae andalemo     AndaleMono
 ag avantgar     AvantGarde m:MAvantGardeGothicPS u:URWGothicL
 ah ashleysc     AshleyScript
 ai abadi        Abadi
@@ -122,7 +123,8 @@ dt dante        Dante
 dy academy      Academy
 e0 embassy      Embassy
 e1 empire       Empire
-ea lectra       Electra b:Transitional521BT
+e2 metatwo      Meta2
+ea electra      Electra b:Transitional521BT
 eb baskerbe     BaskervilleBE
 ec applecha     e:AppleChancery
 ee egyptian     Egyptian EgyptianExtended
@@ -173,6 +175,7 @@ gb gothicbb     GothicBBB
 ge geneva       e:Geneva
 gg garthgra     GarthGraphic
 gh galahad      Galahad
+gi georgia      Georgia
 gj granjon      Granjon b:ElegantGaramondBT
 gl galliard     Galliard
 gm garamond     Garamond
@@ -245,6 +248,9 @@ l3 lucia        Lucia
 l4 lucian       Lucian
 l5 baltica      Baltica
 l6 literatu     Literaturnaya
+l7 luxiseri     LuxiSerif
+l8 luxisans     LuxiSans
+l9 luximono     LuxiMono
 lb lubaling     LubalinGraph
 lc lucida       Lucida
 le legacy       Legacy
@@ -263,7 +269,7 @@ ly lydian       Lydian
 m0 monospac     Monospace
 m1 monolisc     MonolineScript
 m2 metro        Metro b:Geometric415BT
-m3 mirarae      Mirareae
+m3 mirarae      Mirarae
 m4 mrearl       MisterEarl
 m5 murrayhl     MurrayHill
 m6 mittlsft     Mittelschrift
@@ -408,6 +414,7 @@ s8 stonesan     StoneSans
 sa scala        Scala
 sb sabon        Sabon b:ClassicalGaramondBT
 sc slimbach     Slimbach
+se shelley      Shelley
 sf serifa       Serifa
 sg serifgth     SerifGothic
 sh shannon      Shannon
@@ -440,6 +447,7 @@ tl castella     Castellar
 tm times        Times u:NimbusRoman u:NimbusRomNo9L b:Dutch801BT
 to torino       Torino b:Industrial736BT
 tp tempo        Tempo
+tr trebuche     Trebuchet
 tv trumpmed     TrumpMediaeval b:Kuenstler480BT
 tw twentyc      TwentiethCentury
 ty typewrit     Typewriter
@@ -459,15 +467,20 @@ v0 vineta       Vineta
 va activa       Activa
 vc vectora      Vectora
 vd vandijck     VanDijck
+ve veraseri     VeraSerif
 vg visigoth     Visigoth
 vi victoria     Victoria
 vj veljovic     Veljovic
+vm veramono     VeraSansMono
 vn verdana      Verdana
 vl versaill     Versailles
 vr vagrnd       VAGRounded
+vs verasans     VeraSans
 vv viva         Viva
 w0 weddingt     WeddingT
+w1 wiesbswi     WiesbadenSwing
 wb walbaum      Walbaum
+wc snowcap      SnowCap
 wd weideman     Weidemann
 wg wlklgth      WilhelmKlingsporGotisch
 wh wendy        Wendy
@@ -596,5 +609,4 @@ __ tiepolo      Tiepolo
 __ toolbox      Toolbox
 __ verve        Verve              
 __ volutasc     VolutaScript         
-__ wiesbswi     WiesbadenSwing
 __ zebrawoo     Zebrawood

@@ -1,8 +1,8 @@
-Readme file for the `scale' package v1.1 <98/11/02>
----------------------------------------------------
+Readme file for the `scale' package v1.1.2 <99/08/13>
+-----------------------------------------------------
 
 This is the file `README', which accompanies the `scale' package
-distribution.  The package scales a document by \sqrt{2} og by
+distribution.  The package scales a document by \sqrt{2} or by
 \magstep2.
 
 This is useful if you are preparing a document on e.g. A5 paper and
@@ -16,6 +16,8 @@ The `scale' package consists of three files:
 
 To install the `scale' package, just run LaTeX on the file `scale.ins'.
 
-You may redistributre this package under the terms of the GNU general public license. Please see the file COPYING for more information.
+You may redistributre this package under the terms of the GNU general
+public license. Please see the file COPYING for more information.
 
+Please report bugs to
 Soeren Sandmann (sandmann@daimi.au.dk).

@@ -1,0 +1,53 @@
+                        -----------------------------
+			| PSTricks 97 contributions |
+                        -----------------------------
+
+  This directory contain contributions to the core of PSTricks.
+
+  Current content is:
+
+      - misc: the `pst-key' package from David Carlisle.
+It offer an interface between PSTricks and the standard `keyval' package
+(from David Carlisle too) to define and manage macro parameters. It must be
+added directly in a future version of the `keyval' package itself. It is used
+by some other contributions.
+
+      - piechart: two shell+AWK scripts from Denis Girou.
+It allow to generate pie charts using some small data and parameters files.
+The capacities are very limited and it will be superceded in the future by the
+PstChart program (see http://www.tug.org/applications/PSTricks/PstChart).
+
+      - pst-blur: the `pst-blur' package from Martin Giese.
+It allow to use "blurred" shadows for various PSTricks graphic objects,
+as opposite to the "hard" standard shadows offered by the "shadow" parameter.
+
+      - pst-ghsb: the `pst-ghsb' package from Denis Girou.
+It allow to use gradients in the HSB color model. This subdirectory contain
+both source codes and test files.
+** It is still in the distribution for compatibility reasons, but this
+package is considered today (September, 1998) as superceded by the `pst-slpe'
+from Martin Giese. Users of `pst-ghsb' are encouraged to migrate. **
+
+      - pst-gr3d: the `pst-gr3d' package from Denis Girou.
+It allow to draw various kinds of three dimensional grids.
+
+      - pst-lens: the `pst-lens' package from Denis Girou and Manuel Luque.
+It allow to simulate the effect of a lens.
+
+      - pst-osci: the `pst-osci' package from Manuel Luque and
+        Christophe Jorssen.
+It allow to draw easily oscilloscope screen shots. This subdirectory
+contain both source code and documentation. The documentation require the
+`fancyvrb' and `fvrb-ex' packages available on:
+CTAN/macros/latex/contrib/supported/fancyvrb
+
+      - pst-poly: the `pst-poly' package from Denis Girou.
+It allow to draw various kinds of polygons. This subdirectory contain both
+source code, documentation and test files.
+
+      - pst-slpe: the `pst-slpe' package from Martin Giese.
+Improved gradient mode (usage of fixed intermediate colors, HSV mode,
+"circular" gradients)
+
+--
+Denis Girou and Sebastian Rahtz (updated February 23, 2001)

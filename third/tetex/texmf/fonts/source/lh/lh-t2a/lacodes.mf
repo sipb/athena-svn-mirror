@@ -1,5 +1,5 @@
-% This is lacodes.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is lacodes.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 
@@ -71,10 +71,10 @@ CYR_.YO := hex"9c";
 CYR_.yo := hex"bc";
 CYR_.AE := hex"8c";
 CYR_.ae := hex"ac";
-CYR_.DJE := hex"83";
-CYR_.dje := hex"a3";
-CYR_.TSHE := hex"82";
-CYR_.tshe := hex"a2";
+CYR_.DJE := hex"82";
+CYR_.dje := hex"a2";
+CYR_.TSHE := hex"83";
+CYR_.tshe := hex"a3";
 CYR_.K_vcrs := hex"8b";
 CYR_.k_vcrs := hex"ab";
 CYR_.LJE := hex"87";

@@ -1,24 +1,24 @@
 %%% ======================================================================
 %%%  @LaTeX-style-file{
 %%%     filename        = "setspace.sty",
-%%%     version         = "6.4",
-%%%     date            = "Thu 26 November 1998",
-%%%     time            = "20:54 UT+11",
+%%%     version         = "6.7",
+%%%     date            = "Fri 1 December 2000",
+%%%     time            = "17:49 UT+11",
 %%%     author          = "Geoffrey Tobin",
 %%%     address         = "Department of Electronic Engineering
 %%%                        Faculty of Science and Technology
 %%%                        La Trobe University
-%%%                        Bundoora VIC 3124
+%%%                        Bundoora VIC 3086
 %%%                        Australia",
 %%%     email           = "G.Tobin@latrobe.edu.au (Internet)",
-%%%     telephone       = "(+ 613) 479-3736",
-%%%     FAX             = "(+ 613) 479-3025",
+%%%     telephone       = "(+ 613) 9479-3736",
+%%%     FAX             = "(+ 613) 9479-3025",
 %%%     supported       = "yes",
 %%%     archived        = "CTAN",
 %%%     distribution    = "freely redistributable",
 %%%     keywords        = "LaTeX package, line spacing",
 %%%     codetable       = "ISO/ASCII",
-%%%     checksum        = "18348 516 2446 20426",
+%%%     checksum        = "11793 546 2608 21972",
 %%%     docstring       = "setspace.sty is a LaTeX (2e) package.
 %%%                        Comments and bug reports welcome!
 %%%                        
@@ -129,7 +129,7 @@
 %%%                        \setspace@size from \setstretch,
 %%%                        as \@currsize suffices.
 %%%
-%%%                        Modified by Brett Presnell
+%%%                        Modified by Brett Presnell (BP)
 %%%                        <presnell@maths.anu.edu.au> on 21 Mar 1998
 %%%                        to add nodisplayskipstretch option, which
 %%%                        turns off the stretching of the space
@@ -161,6 +161,27 @@
 %%%                        Thanks to:  Bernd Schandl, Ron Smith,
 %%%                        Himanshu Gohel, and Kevin Ruland, for bringing
 %%%                        it to my long overdue attention.
+%%%
+%%%                        GT, Tue 27 July 1999:  On Saturday 24 July
+%%%                        1999, Alexander L. Wolf <alw@cs.colrado.edu>
+%%%                        informed me that the \doublespace and
+%%%                        \onehalfspace _macros_ are still at fault.
+%%%
+%%%                        GT, Fri 3 March 2000:  Today Stefano
+%%%                        Lacaprara of Italy brought my attention to
+%%%                        the need to extend the commands and macros
+%%%                        to point sizes other than 10, 11 and 12.
+%%%                        Since there's no general formula for the
+%%%                        line stretch values in terms of point size,
+%%%                        and they vary only slightly between 10, 11
+%%%                        and 12 pt, and furthermore the values were
+%%%                        presumably optimised specifically for the
+%%%                        Computer Modern fonts, i've chosen to use
+%%%                        the 10 pt values as the generic defaults.
+%%%
+%%%                        GT, Fri 1 December 2000:  George Pearson
+%%%                        requested package options for the three
+%%%                        common spacings.
 %%%
 %%%                        The checksum field above contains a CRC-16
 %%%                        checksum as the first value, followed by the
@@ -245,8 +266,8 @@
 
 \NeedsTeXFormat {LaTeX2e}[1994/12/01]
 \def \filename {setspace.sty}
-\def \filedate {1998/11/26}
-\def \fileversion {6.4}
+\def \filedate {2000/12/01}
+\def \fileversion {6.7}
 \ProvidesPackage {setspace}[\filedate\space\fileversion\space
   Contributed and Supported LaTeX2e package]
 \typeout {Package: `setspace' \fileversion\space <\filedate>}
@@ -256,6 +277,13 @@
 \newcommand{\displayskipstretch}{\baselinestretch}
 \newcommand{\setdisplayskipstretch}[1]{\renewcommand{\displayskipstretch}{#1}}
 \DeclareOption{nodisplayskipstretch}{\setdisplayskipstretch{1.0}}
+
+% GT: add George Pearsons' suggested options.
+
+\DeclareOption{singlespacing}{\AtEndOfPackage{\singlespacing}}
+\DeclareOption{onehalfspacing}{\AtEndOfPackage{\onehalfspacing}}
+\DeclareOption{doublespacing}{\AtEndOfPackage{\doublespacing}}
+
 \ProcessOptions
 
 % GT:  Sat 28 Sep 1996:  Widely using \newcommand, \renewcommand, and
@@ -292,11 +320,12 @@
 \SetSinglespace{1}
 
 \newcommand{\singlespacing}{%
-  \setstretch {\setspace@singlespace}%
+  \setstretch {\setspace@singlespace}%  normally 1
   \vskip \baselineskip  % Correction for coming into singlespace
 }
 
 \newcommand{\onehalfspacing}{%
+  \setstretch{1.25}%  default
   \ifcase \@ptsize \relax % 10pt
     \setstretch {1.25}%
   \or % 11pt
@@ -307,6 +336,7 @@
 }
 
 \newcommand{\doublespacing}{%
+  \setstretch {1.667}%  default
   \ifcase \@ptsize \relax % 10pt
     \setstretch {1.667}%
   \or % 11pt

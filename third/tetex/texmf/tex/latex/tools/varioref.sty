@@ -8,23 +8,39 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the Standard LaTeX `Tools Bundle'.
-%% -------------------------------------------------------
+%% This file was generated from file(s) of the Standard LaTeX `Tools Bundle'.
+%% --------------------------------------------------------------------------
 %% 
-%%  This file, and all the other files in this bundle as listed below,
-%%  may be distributed under the terms of the LaTeX Project Public
-%%  License, as described in lppl.txt in the base LaTeX distribution.
-%%  Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% `Tools Bundle'. You may however distribute the LaTeX `Tools Bundle'
+%% without such generated files.
+%% 
+%% The list of all files belonging to the LaTeX `Tools Bundle' is
+%% given in the file `manifest.txt'.
 %% 
 %% Package varioref to use with LaTeX2e
-%% Copyright (C) 1992-1999  Frank Mittelbach, all rights reserved.
+%% Copyright (C) 1992-2001  Frank Mittelbach, all rights reserved.
+%%
+%% For additions or updates to the language options please contact
+%% the author at
+%%
+%%   frank.mittelbach@latex-project.org
+%%
 \NeedsTeXFormat{LaTeX2e}[1995/05/16]
 \ProvidesPackage{varioref}
-    [1999/02/24 v1.2a package for extended references (FMi)]
+    [2001/09/04 v1.3c package for extended references (FMi)]
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -58,7 +74,7 @@
   \PackageWarningNoLine{varioref}{Sorry, language `#1'
             not supported%
             \MessageBreak
-            by in this version.
+            in this version.
             English strings used by default.
             \MessageBreak
             Please modify \protect\reftext... commands manually.%
@@ -94,6 +110,17 @@
   }}
 \DeclareOption{austrian}
   {\vref@addto\extrasaustrian{%
+    \def\reftextfaceafter {auf der n\"achsten Seite}%
+    \def\reftextfacebefore{auf der vorherigen Seite}%
+    \let\reftextafter     \reftextfaceafter
+    \let\reftextbefore    \reftextfacebefore
+    \def\reftextcurrent   {auf dieser Seite}%
+    \def\reftextfaraway#1{auf Seite~\pageref{#1}}%
+    \def\reftextpagerange#1#2{auf Seiten~\pageref{#1}--\pageref{#2}}%
+    \def\reftextlabelrange#1#2{\ref{#1} bis~\ref{#2}}%
+  }}
+\DeclareOption{naustrian}
+  {\vref@addto\extrasnaustrian{%
     \def\reftextfaceafter {auf der n\"achsten Seite}%
     \def\reftextfacebefore{auf der vorherigen Seite}%
     \let\reftextafter     \reftextfaceafter
@@ -142,10 +169,9 @@
     \let\reftextbefore    \reftextfacebefore
     \def\reftextcurrent   {en aquesta p\`agina}%
     \def\reftextfaraway#1{a la p\`agina~\pageref{#1}}%
-    \def\reftextpagerange#1#2{\vref@stringwarning\reftextpagerange
-                              on pages~\pageref{#1}--\pageref{#2}}%
-    \def\reftextlabelrange#1#2{\vref@stringwarning\reflabelpagerange
-                               \ref{#1} to~\ref{#2}}%
+    \def\reftextpagerange#1#2{a les
+                     p\`agines~\pageref{#1}--\pageref{#2}}%
+    \def\reftextlabelrange#1#2{\ref{#1} a~\ref{#2}}%
   }}
 \DeclareOption{croatian}
   {\vref@excuse{croatian}%
@@ -162,18 +188,16 @@
     \def\reftextlabelrange#1#2{\ref{#1} to~\ref{#2}}%
   }}
 \DeclareOption{czech}
-  {\vref@excuse{czech}%
+  {%\vref@excuse{czech}%
    \vref@addto\extrasczech{%
-    \def\reftextfaceafter {on the \reftextvario{facing}{next} page}%
-    \def\reftextfacebefore{on the \reftextvario{facing}{preceding}
-                           page}%
-    \def\reftextafter     {on the \reftextvario{following}{next} page}%
-    \def\reftextbefore    {on the \reftextvario{preceding page}{page
-                           before}}%
-    \def\reftextcurrent   {on \reftextvario{this}{the current} page}%
-    \def\reftextfaraway#1{on page~\pageref{#1}}%
-    \def\reftextpagerange#1#2{on pages~\pageref{#1}--\pageref{#2}}%
-    \def\reftextlabelrange#1#2{\ref{#1} to~\ref{#2}}%
+    \def\reftextfaceafter {na n\'a\-sle\-du\-j\'\i c\'\i\ stran\v{e}}%
+    \def\reftextfacebefore{na p\v{r}ed\-choz\'\i\ stran\v{e}}%
+    \def\reftextafter     {na n\'a\-sle\-du\-j\'\i c\'\i\ stran\v{e}}%
+    \def\reftextbefore    {na p\v{r}ed\-choz\'\i\ stran\v{e}}%
+    \def\reftextcurrent   {na t\'eto stran\v{e}}%
+    \def\reftextfaraway#1{na stran\v{e}~\pageref{#1}}%
+    \def\reftextpagerange#1#2{na stran\'ach~\pageref{#1}\--\pageref{#2}}%
+    \def\reftextlabelrange#1#2{\ref{#1} a\v{z}~\ref{#2}}%
   }}
 \DeclareOption{danish}
   {\vref@addto\extrasdanish{%
@@ -187,10 +211,8 @@
                                                {foreg\aa ende side}}%
     \def\reftextcurrent   {p\aa{} denne side}%
     \def\reftextfaraway#1{p\aa{} side~\pageref{#1}}%
-    \def\reftextpagerange#1#2{\vref@stringwarning\reftextpagerange
-                              on pages~\pageref{#1}--\pageref{#2}}%
-    \def\reftextlabelrange#1#2{\vref@stringwarning\reflabelpagerange
-                               \ref{#1} to~\ref{#2}}%
+    \def\reftextpagerange#1#2{p\aa{} side~\pageref{#1}--\pageref{#2}}%
+    \def\reftextlabelrange#1#2{\ref{#1} til~\ref{#2}}%
   }}
 \DeclareOption{dutch}
   {\vref@addto\extrasdutch{%
@@ -287,6 +309,17 @@
     \def\reftextpagerange#1#2{auf Seiten~\pageref{#1}--\pageref{#2}}%
     \def\reftextlabelrange#1#2{\ref{#1} bis~\ref{#2}}%
   }}
+\DeclareOption{ngerman}
+  {\vref@addto\extrasngerman{%
+    \def\reftextfaceafter {auf der n\"achsten Seite}%
+    \def\reftextfacebefore{auf der vorherigen Seite}%
+    \let\reftextafter     \reftextfaceafter
+    \let\reftextbefore    \reftextfacebefore
+    \def\reftextcurrent   {auf dieser Seite}%
+    \def\reftextfaraway#1{auf Seite~\pageref{#1}}%
+    \def\reftextpagerange#1#2{auf Seiten~\pageref{#1}--\pageref{#2}}%
+    \def\reftextlabelrange#1#2{\ref{#1} bis~\ref{#2}}%
+  }}
 \DeclareOption{greek}
   {\vref@addto\extrasgreek{%
     \def\reftextfaceafter {sthn \reftextvario{paro'usa}%
@@ -352,12 +385,10 @@
   }}
 \DeclareOption{nynorsk}
   {\vref@addto\extrasnynorsk{%
-    \def\reftextfaceafter {p\aa{} den neste sida}%
-    \def\reftextfacebefore{p\aa{} den f\o{}rre sida}%
-    \def\reftextafter     {p\aa{} \reftextvario{sida etter}%
-                                               {den neste sida}}%
-    \def\reftextbefore    {p\aa{} \reftextvario{sida f\o{}r}%
-                                            {den f\o{}rre sida}}%
+    \def\reftextfaceafter {p\aa{} neste side}%
+    \def\reftextfacebefore{p\aa{} f\o{}rre side}%
+    \def\reftextafter     {p\aa{} neste side}%
+    \def\reftextbefore    {p\aa{} f\o{}rre side}%
     \def\reftextcurrent   {p\aa{} denne sida}%
     \def\reftextfaraway#1{p\aa{} side~\pageref{#1}}%
     \def\reftextpagerange#1#2{p\aa{} side~\pageref{#1}--\pageref{#2}}%
@@ -378,18 +409,17 @@
     \def\reftextlabelrange#1#2{od~\ref{#1} do~\ref{#2}}%
   }}
 \DeclareOption{portuges}
-  {\vref@excuse{portuges}%
-   \vref@addto\extrasportuges{%
-    \def\reftextfaceafter {on the \reftextvario{facing}{next} page}%
-    \def\reftextfacebefore{on the \reftextvario{facing}{preceding}
-                           page}%
-    \def\reftextafter     {on the \reftextvario{following}{next} page}%
-    \def\reftextbefore    {on the \reftextvario{preceding page}{page
-                           before}}%
-    \def\reftextcurrent   {on \reftextvario{this}{the current} page}%
-    \def\reftextfaraway#1{on page~\pageref{#1}}%
-    \def\reftextpagerange#1#2{on pages~\pageref{#1}--\pageref{#2}}%
-    \def\reftextlabelrange#1#2{\ref{#1} to~\ref{#2}}%
+  {\vref@addto\extraportuges{%
+    \def\reftextfaceafter {na \reftextvario{p\'agina ao lado}{pr\'oxima
+                           p\'agina}}%
+    \def\reftextfacebefore{na p\'agina \reftextvario{ao lado}{anterior}}%
+    \def\reftextafter     {na \reftextvario{p\'agina seguinte}{pr\'oxima
+                           p\'agina}}%
+    \def\reftextbefore{na p\'agina \reftextvario{anterior}{precedente}}%
+    \def\reftextcurrent   {nesta p\'agina}%
+    \def\reftextfaraway#1{na p\'agina~\pageref{#1}}%
+     \def\reftextpagerange#1#2{nas p\'aginas~\pageref{#1}--\pageref{#2}}%
+     \def\reftextlabelrange#1#2{\ref{#1} a~\ref{#2}}%
   }}
 \DeclareOption{romanian}
   {\vref@excuse{romanian}%
@@ -508,11 +538,14 @@
 \ExecuteOptions{english,final}
 \ProcessOptions*
 \newcounter{vrcnt}
-\DeclareRobustCommand\vpageref{\@ifnextchar[%
+\DeclareRobustCommand\vpageref{\@ifstar
+     {\let\vref@space\relax\vp@geref}%
+     {\let\vref@space\space\vp@geref}}
+\def\vp@geref{\@ifnextchar[%
   \@vpageref{\@vpageref[\reftextcurrent]}%
 }
 \def\@vpageref[#1]{\@ifnextchar[%
-  {\@@vpageref{#1}}{\@@vpageref{#1}[\unskip\space]}}
+  {\@@vpageref{#1}}{\@@vpageref{#1}[\unskip\vref@space]}}
 \def\@@vpageref#1[#2]#3{%
   \leavevmode\unskip
   \global\advance\c@vrcnt\@ne
@@ -528,9 +561,14 @@
     \fi
   \fi
   \vrefpagenum\@tempb{#3}%
-  \space
+  \vref@space
   \ifx\@tempa\@tempb
-    #1%
+    \def\@tempc{#1}%
+    \ifx\@tempc\@empty
+       \unskip
+    \else
+       #1%
+    \fi
   \else
     #2%
     \is@pos@number\@tempb
@@ -579,8 +617,11 @@
      the \string\vref\MessageBreak
      or \noexpand\vpageref by a normal \noexpand\(page)ref to
      stop LaTeX running forever.}}}
-\DeclareRobustCommand\vref[1]{%
-  \leavevmode\unskip\nobreakspace
+\DeclareRobustCommand\vref{\@ifstar
+   {\let\vref@space\relax\vr@f}%
+   {\let\vref@space\nobreakspace\vr@f}}
+\def\vr@f#1{%
+  \leavevmode\unskip\vref@space
   \ref{#1}%
   \@vpageref[\unskip]{#1}}
 \def\is@pos@number#1{\is@pos@num0#1\space\@nil}
@@ -603,8 +644,16 @@
      \@latex@warning{Reference `#2' on page \thepage \space
              undefined}}{}%
   \vref@pagenum{#1}{#2}}
-
-\newcommand\vpagerefrange[3][\reftextcurrent]{%
+\newcommand\@svpagerefrange[3][\reftextcurrent]{%
+  \vrefpagenum\@tempa{#2}%
+  \vrefpagenum\@tempb{#3}%
+  \ifx\@tempa\@tempb
+    \vpageref*[#1]{#2}%
+  \else
+    \reftextpagerange{#2}{#3}%
+  \fi
+}
+\newcommand\@vpagerefrange[3][\reftextcurrent]{%
   \vrefpagenum\@tempa{#2}%
   \vrefpagenum\@tempb{#3}%
   \ifx\@tempa\@tempb
@@ -613,6 +662,7 @@
     \reftextpagerange{#2}{#3}%
   \fi
 }
+\newcommand\vpagerefrange{\@ifstar\@svpagerefrange\@vpagerefrange}
 \newcommand\vrefrange[3][\reftextcurrent]
   {\reftextlabelrange{#2}{#3} \vpagerefrange[#1]{#2}{#3}}
 \endinput

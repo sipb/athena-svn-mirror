@@ -5,31 +5,35 @@
 %% The original source files were:
 %%
 %% ngermanb.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{ngermanb}
-        [1999/04/22 v2.6h new German support from the babel system]
+        [2001/02/06 v2.6m new German support from the babel system]
 %% File `ngermanb.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% new Germanb Language Definition File
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Bernd Raichle <raichle@azu.Informatik.Uni-Stuttgart.de>,
 %%              Johannes Braams, TeXniek,
 %%              Walter Schmidt.
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
+\def\bbl@tempa{ngermanb}
+\ifx\CurrentOption\bbl@tempa
+  \def\CurrentOption{ngerman}
+\fi
 \LdfInit\CurrentOption{captions\CurrentOption}
 \ifx\l@ngerman\@undefined
   \@nopatterns{ngerman}
@@ -57,6 +61,7 @@
   \def\seename{siehe}%
   \def\alsoname{siehe auch}%
   \def\proofname{Beweis}%
+  \def\glossaryname{Glossar}%
   }
 \def\month@ngerman{\ifcase\month\or
   Januar\or Februar\or M\"arz\or April\or Mai\or Juni\or
@@ -70,13 +75,18 @@
   \languageshorthands{ngerman}}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \bbl@activate{"}}
+\addto\noextrasngerman{\bbl@deactivate{"}}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \babel@savevariable{\lccode25}%
   \lccode25=25}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \babel@save\"\umlautlow}
 \@namedef{noextras\CurrentOption}{\umlauthigh}
-\def\ngermanhyphenmins{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+  \bbl@frenchspacing}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+  \bbl@nonfrenchspacing}
 \begingroup \catcode`\"12
 \def\x{\endgroup
   \def\@SS{\mathchar"7019 }

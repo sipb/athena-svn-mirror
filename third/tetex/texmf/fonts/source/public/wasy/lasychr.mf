@@ -1,7 +1,16 @@
 %
-% These characters are taken from LASY.MF by L.Lamport
-% with minor changes and extensions (so 100% compatible)
+% Copyright, The LaTeX Project and Roland Waldi, 1992.
 %
+% These characters are taken from LASY.MF from the LaTeX project with minor
+% changes and extensions (so 100% compatible).  LASY.MF is part of the
+% "LaTeX fonts" package which is usually part of every LaTeX system. It
+% is also available at the URL
+%   ftp://ftp.dante.de/tex-archive/fonts/latex/
+%
+% Permission is granted without fee to use, modify and distribute this
+% file, but you are not allowed to distribute this file or any files
+% derived from it using the name LASY.MF.
+% 
 
 cmchar "Leftward arrowhead";
 compute_spread(.45x_height#,.55x_height#);

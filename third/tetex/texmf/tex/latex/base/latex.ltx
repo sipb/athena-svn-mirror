@@ -44,16 +44,29 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 %%% From File: ltdirchk.dtx
 \ifnum\catcode`\{=1
   \errmessage
@@ -89,6 +102,11 @@
 \def\ProvidesFile#1{%
   \begingroup
     \catcode`\ 10 %
+    \ifnum \endlinechar<256 %
+      \ifnum \endlinechar>\m@ne
+        \catcode\endlinechar 10 %
+      \fi
+    \fi
     \@makeother\/%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 \def\@providesfile#1[#2]{%
@@ -492,7 +510,8 @@
 \nonfrenchspacing
 %%% From File: ltvers.dtx
 \def\fmtname{LaTeX2e}
-\edef\fmtversion{1998/12/01}
+\edef\fmtversion{2001/06/01}
+\iffalse
 \def\reserved@a#1/#2/#3\@nil{%
   \count@\year
   \advance\count@-#1\relax
@@ -500,23 +519,24 @@
   \advance\count@\month
   \advance\count@-#2\relax}
 \expandafter\reserved@a\fmtversion\@nil
-\ifnum\count@>17
+\ifnum\count@>30
   \typeout{^^J%
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
 !  You are attempting to make a LaTeX format from a source file^^J%
-!  That is more than one year old.^^J%
+!  That is more than two years old.^^J%
 !^^J%
 !  If you enter <return> to scroll past this message then the format^^J%
 !  will be built, but please consider obtaining newer source files^^J%
 !  before continuing to build LaTeX.^^J%
 !^^J%
-!  LaTeX is re-issued every 6 months, in June and December.^^J%
+!  LaTeX is re-issued every year in June.^^J%
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
 }
    \errhelp{To avoid this error message, obtain new LaTeX sources.}
    \errmessage{LaTeX source files more than 1 year old!}
 \fi
 \let\reserved@a\relax
+\fi
 \everyjob{\typeout{\fmtname
                                      \space<\fmtversion>}}
 \immediate\write16{\fmtname
@@ -593,15 +613,21 @@
   \else
     \@x@protect#1%
   \fi}
-\long\def\@yargdef#1#2#3{%
+\long \def \@yargdef #1#2#3{%
   \ifx#2\tw@
     \def\reserved@b##11{[####1]}%
   \else
     \let\reserved@b\@gobble
   \fi
-  \def\reserved@a##1#3##2##{%
-    \expandafter\def\expandafter#1\reserved@b##1#3}%
-  \l@ngrel@x\reserved@a0##1##2##3##4##5##6##7##8##9###3}
+  \expandafter
+    \@yargd@f \expandafter{\number #3}#1%
+}
+\long \def \@yargd@f#1#2{%
+  \def \reserved@a ##1#1##2##{%
+    \expandafter\def\expandafter#2\reserved@b ##1#1%
+    }%
+  \l@ngrel@x \reserved@a 0##1##2##3##4##5##6##7##8##9###1%
+}
 \long\def\@reargdef#1[#2]{%
   \@yargdef#1\@ne{#2}}
 \def\renewcommand{\@star@or@long\renew@command}
@@ -1572,10 +1598,13 @@ Type  H <return>  for immediate help.}%
 \def\DeclareTextAccent#1#2#3{%
    \DeclareTextCommand#1{#2}{\add@accent{#3}}}
 \@onlypreamble\DeclareTextAccent
-\def\add@accent#1#2{{%
+\def\add@accent#1#2{\hmode@bgroup
+   \let\hmode@start@before@group\@firstofone
    \setbox\@tempboxa\hbox{#2%
       \global\mathchardef\accent@spacefactor\spacefactor}%
-   \accent#1 #2}\spacefactor\accent@spacefactor}
+   \accent#1 #2\egroup\spacefactor\accent@spacefactor}
+\let\accent@spacefactor\relax
+\def\hmode@bgroup{\leavevmode\bgroup}
 \def\DeclareTextCompositeCommand#1#2#3#4{%
   \expandafter\let\expandafter\reserved@a\csname#2\string#1\endcsname
   \expandafter\expandafter\expandafter\ifx
@@ -1612,18 +1641,23 @@ Type  H <return>  for immediate help.}%
       \reserved@a ^^@}}
 \catcode\z@=15\relax
 \@onlypreamble\DeclareTextComposite
-\def\UseTextSymbol#1#2{%
-   \def\@wrong@font@char{\MessageBreak for \noexpand\symbol`\string#2'}%
-   \let\@curr@enc\cf@encoding
-   \@use@text@encoding{#1}%
-   #2%
-   \let\@wrong@font@char\@empty
-   \@use@text@encoding\@curr@enc}
 \def\UseTextAccent#1#2#3{%
-   \let\@curr@enc\cf@encoding
-   \@use@text@encoding{#1}%
-   #2{\@use@text@encoding\@curr@enc#3}%
-   \@use@text@encoding\@curr@enc}
+  \hmode@start@before@group
+   {%
+    \let\hmode@start@before@group\@firstofone
+    \let\@curr@enc\cf@encoding
+    \@use@text@encoding{#1}%
+    #2{\@use@text@encoding\@curr@enc#3}%
+   }}
+\def\UseTextSymbol#1#2{%
+       \hmode@start@before@group
+       {%
+          \def\@wrong@font@char{\MessageBreak
+             for \noexpand\symbol`\string#2'}%
+          \@use@text@encoding{#1}%
+          #2%
+       }%
+    }
 \def\@use@text@encoding#1{%
    \edef\f@encoding{#1}%
    \xdef\font@name{%
@@ -1631,6 +1665,7 @@ Type  H <return>  for immediate help.}%
    \pickup@font
    \font@name
    \@@enc@update}
+\let\hmode@start@before@group\leavevmode
 \def\DeclareTextSymbolDefault#1#2{%
    \DeclareTextCommandDefault#1{\UseTextSymbol{#2}#1}}
 \def\DeclareTextAccentDefault#1#2{%
@@ -3475,7 +3510,7 @@ Type  H <return>  for immediate help.}%
 }
 \@onlypreamble\DeclareSymbolFontAlphabet@
 %%% From File: ltfssini.dtx
-%% Copyright (C) 1989-1999 Frank Mittelbach and Rainer Sch\"opf,
+%% Copyright (C) 1989-2001 Frank Mittelbach and Rainer Sch\"opf,
 %% all rights reserved.
 \DeclareMathVersion{normal}
 \DeclareMathVersion{bold}
@@ -3571,9 +3606,9 @@ Type  H <return>  for immediate help.}%
 \def\unlhd{\not@base\unlhd}
 \def\rhd{\not@base\rhd}
 \def\unrhd{\not@base\unrhd}
-\DeclareErrorFont{OT1}{cmr}{m}{n}{10}  %%% don't modify this setting
-                                       %%% overwrite it in fontdef.cfg
-                                       %%% if necessary
+\DeclareErrorFont{OT1}{cmr}{m}{n}{10}  %% don't modify this setting
+                                       %% overwrite it in fontdef.cfg
+                                       %% if necessary
 \ifnum\inputlineno=\m@ne
 \InputIfFileExists{fonttext.cfg}
            {\typeout{====================================^^J%
@@ -3647,10 +3682,11 @@ Type  H <return>  for immediate help.}%
     \ifmmode
       \nfss@text{#2##1}%
     \else
-      \leavevmode
-      {\text@command{##1}%
+      \hmode@bgroup
+       \text@command{##1}%
        #2\check@icl ##1\check@icr
-       \expandafter}%
+       \expandafter
+      \egroup
     \fi
                        }%
 }
@@ -3792,13 +3828,13 @@ Type  H <return>  for immediate help.}%
 \def\ref#1{\expandafter\@setref\csname r@#1\endcsname\@firstoftwo{#1}}
 \def\pageref#1{\expandafter\@setref\csname r@#1\endcsname
                                    \@secondoftwo{#1}}
-\def\@newl@bel#1#2#3{%
+\def\@newl@bel#1#2#3{{%
   \@ifundefined{#1@#2}%
     \relax
     {\gdef \@multiplelabels {%
        \@latex@warning@no@line{There were multiply-defined labels}}%
      \@latex@warning@no@line{Label `#2' multiply defined}}%
-  \global\@namedef{#1@#2}{#3}}
+  \global\@namedef{#1@#2}{#3}}}
 \def\newlabel{\@newl@bel r}
 \@onlypreamble\@newl@bel
 \let \@multiplelabels \relax
@@ -3819,6 +3855,7 @@ Type  H <return>  for immediate help.}%
 \@ignorefalse
 \let\ignorespacesafterend\@ignoretrue
 \def\enddocument{%
+   \let\AtEndDocument\@firstofone
    \@enddocumenthook
    \@checkend{document}%
    \clearpage
@@ -3833,7 +3870,7 @@ Type  H <return>  for immediate help.}%
      \@dofilelist
      \ifdim \font@submax >\fontsubfuzz\relax
        \@font@warning{Size substitutions with differences\MessageBreak
-                  up to \font@submax\space have occured.\@gobbletwo}%
+                  up to \font@submax\space have occurred.\@gobbletwo}%
      \fi
      \@defaultsubs
      \@refundefined
@@ -3924,6 +3961,7 @@ Type  H <return>  for immediate help.}%
     \fi}%
   \let\do\@makeother \dospecials
   \obeylines \verbatim@font \@noligs
+  \hyphenchar\font\m@ne
   \everypar \expandafter{\the\everypar \unpenalty}%
 }
 \def\verbatim{\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
@@ -4124,7 +4162,8 @@ Type  H <return>  for immediate help.}%
 \def\!{\mskip-\thinmuskip}
 \def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
 \let\:=\>
-{\catcode`\'=\active \gdef'{^\bgroup\prim@s}}
+\def\active@math@prime{^\bgroup\prim@s}
+{\catcode`\'=\active \global\let'\active@math@prime}
 \def\prim@s{%
   \prime\futurelet\@let@token\pr@m@s}
 \def\pr@m@s{%
@@ -4625,11 +4664,11 @@ Type  H <return>  for immediate help.}%
 \def\parbox{%
   \@ifnextchar[%]
     \@iparbox
-    {\@iiiparbox c\@empty[s]}}
+    {\@iiiparbox c\relax[s]}}
 \def\@iparbox[#1]{%
   \@ifnextchar[%]
     {\@iiparbox{#1}}%
-    {\@iiiparbox{#1}\@empty[s]}}
+    {\@iiiparbox{#1}\relax[s]}}
 \def\@iiparbox#1[#2]{%
   \@ifnextchar[%]
     {\@iiiparbox{#1}{#2}}%
@@ -4640,7 +4679,7 @@ Type  H <return>  for immediate help.}%
   \@pboxswfalse
   \setlength\@tempdima{#4}%
   \@begin@tempboxa\vbox{\hsize\@tempdima\@parboxrestore#5\@@par}%
-    \ifx\@empty#2\else
+    \ifx\relax#2\else
       \setlength\@tempdimb{#2}%
       \def\@parboxto{to\@tempdimb}%
     \fi
@@ -4674,11 +4713,11 @@ Type  H <return>  for immediate help.}%
 \def\minipage{%
   \@ifnextchar[%]
     \@iminipage
-    {\@iiiminipage c\@empty[s]}}
+    {\@iiiminipage c\relax[s]}}
 \def\@iminipage[#1]{%
   \@ifnextchar[%]
     {\@iiminipage{#1}}%
-    {\@iiiminipage{#1}\@empty[s]}}
+    {\@iiiminipage{#1}\relax[s]}}
 \def\@iiminipage#1[#2]{%
   \@ifnextchar[%]
     {\@iiiminipage{#1}{#2}}%
@@ -5214,7 +5253,10 @@ Type  H <return>  for immediate help.}%
 \advance\@clnht \@tempdima
 \ifdim \@linelen <\wd\@linechar
    \hskip \wd\@linechar
-   \@picture@warn
+   \ifdim \@linelen = \z@
+   \else
+     \@picture@warn
+   \fi
    \else\@upordown\@clnht\copy\@linechar\fi}
 \gdef\@hline{\ifnum \@xarg <\z@ \hskip -\@linelen \fi
 \vrule \@height \@halfwidth \@depth \@halfwidth \@width \@linelen
@@ -5244,15 +5286,17 @@ Type  H <return>  for immediate help.}%
     \@upordown\@clnht \hbox{\@linefnt  \if@negarg
     \@getlarrow(\@xarg,\@yyarg)\else \@getrarrow(\@xarg,\@yyarg)\fi}%
   \else\@badlinearg\fi}
-\gdef\@getlarrow(#1,#2){\ifnum #2=\z@ \@tempcnta'33 \else
-  \@tempcnta #1\relax\multiply\@tempcnta \sixt@@n \advance\@tempcnta
-  -9 \@tempcntb #2\relax\multiply\@tempcntb \tw@
+\gdef\@getlarrow(#1,#2){\ifnum #2=\z@ \@tempcnta 27 % '33
+  \else
+  \@tempcnta #1\relax\multiply\@tempcnta \sixt@@n
+  \advance\@tempcnta -9 \@tempcntb #2\relax\multiply\@tempcntb \tw@
   \ifnum \@tempcntb >\z@ \advance\@tempcnta \@tempcntb
   \else\advance\@tempcnta -\@tempcntb\advance\@tempcnta 64
   \fi\fi\char\@tempcnta}
 \gdef\@getrarrow(#1,#2){\@tempcntb #2\relax
 \ifnum\@tempcntb <\z@ \@tempcntb -\@tempcntb\relax\fi
-\ifcase \@tempcntb\relax \@tempcnta'55 \or
+\ifcase \@tempcntb\relax \@tempcnta 45  % '55
+\or
 \ifnum #1<\thr@@ \@tempcnta #1\relax\multiply\@tempcnta
 24\advance\@tempcnta -6 \else \ifnum #1=\thr@@ \@tempcnta 49
 \else\@tempcnta 58 \fi\fi\or
@@ -5270,10 +5314,11 @@ Type  H <return>  for immediate help.}%
 \gdef\@downline{%
   \hb@xt@\z@{\hskip -\@halfwidth \vrule \@width \@wholewidth
    \@height \z@ \@depth \@linelen \hss}}
-\gdef\@upvector{\@upline\setbox\@tempboxa\hbox{\@linefnt\char'66}\raise
-     \@linelen \hb@xt@\z@{\lower \ht\@tempboxa\box\@tempboxa\hss}}
+\gdef\@upvector{\@upline\setbox\@tempboxa\hbox{\@linefnt\char 54}%  % '66
+  \raise \@linelen \hb@xt@\z@{\lower \ht\@tempboxa\box\@tempboxa\hss}}
 \gdef\@downvector{\@downline\lower \@linelen
-      \hb@xt@\z@{\@linefnt\char'77\hss}}
+      \hb@xt@\z@{\@linefnt\char 63  % '77
+      \hss}}
 \gdef\dashbox#1(#2,#3){\leavevmode\hb@xt@\z@{\baselineskip \z@skip
 \lineskip \z@skip
 \@dashdim #2\unitlength
@@ -5673,7 +5718,16 @@ Type  H <return>  for immediate help.}%
 %%% From File: ltfloat.dtx
 \message{floats,}
 \newcount\@floatpenalty
-\def\caption{\refstepcounter\@captype \@dblarg{\@caption\@captype}}
+\def\caption{%
+   \ifx\@captype\@undefined
+     \@latex@error{\noexpand\caption outside float}\@ehd
+     \expandafter\@gobble
+   \else
+     \refstepcounter\@captype
+     \expandafter\@firstofone
+   \fi
+   {\@dblarg{\@caption\@captype}}%
+}
 \long\def\@caption#1[#2]#3{%
   \par
   \addcontentsline{\csname ext@#1\endcsname}{#1}%
@@ -6061,17 +6115,26 @@ Type  H <return>  for immediate help.}%
      \hfil}\let\@evenhead\@empty\let\@evenfoot\@oddfoot}
 \let\@leftmark\@firstoftwo
 \let\@rightmark\@secondoftwo
-\def\markboth#1#2{\gdef\@themark{{#1}{#2}}{%
-     \let\protect\@unexpandable@protect
-     \let\label\relax \let\index\relax \let\glossary\relax
-     \mark{\@themark}}\if@nobreak\ifvmode\nobreak\fi\fi}
-\def\markright#1{{\let\protect\@unexpandable@protect
-     \let\label\relax \let\index\relax \let\glossary\relax
-     \expandafter\@markright\@themark
-     {#1}\mark{\@themark}}\if@nobreak\ifvmode\nobreak\fi\fi}
-\def\@markright#1#2#3{\gdef\@themark{{#1}{#3}}}
-\def\leftmark{\expandafter\@leftmark\botmark{}{}}
-\def\rightmark{\expandafter\@rightmark\firstmark{}{}}
+\def\markboth#1#2{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \unrestored@protected@xdef\@themark {{#1}{#2}}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\def\markright#1{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \expandafter\@markright\@themark {#1}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\def\@markright#1#2#3{\@temptokena {#1}%
+  \unrestored@protected@xdef\@themark{{\the\@temptokena}{#3}}}
+\def\leftmark{\expandafter\@leftmark\botmark\@empty\@empty}
+\def\rightmark{\expandafter\@rightmark\firstmark\@empty\@empty}
 \def\@themark{{}{}}
 \def\raggedbottom{%
   \def\@textbottom{\vskip \z@ \@plus.0001fil}\let\@texttop\relax}
@@ -6413,7 +6476,6 @@ Type  H <return>  for immediate help.}%
        \boxmaxdepth \@maxdepth
        \@tempdima\dp\@cclv
        \unvbox \@cclv
-       \vskip-\@tempdima
        \vskip \skip\footins
        \color@begingroup
          \normalcolor
@@ -6480,14 +6542,18 @@ Type  H <return>  for immediate help.}%
 }
 \begingroup
 \obeylines\obeyspaces%
+\catcode`\'\active%
 \gdef\@resetactivechars{%
 \def^^M{\@activechar@info{EOL}\space}%
-\def {\@activechar@info{space}\space}}%
+\def {\@activechar@info{space}\space}%
+\let'\active@math@prime}%
 \endgroup
 \def\@outputpage{%
 \begingroup           % the \endgroup is put in by \aftergroup
   \let \protect \noexpand
   \@resetactivechars
+  \global\let\@@if@newlist\if@newlist
+  \global\@newlistfalse
   \@parboxrestore
   \shipout \vbox{%
     \set@typeset@protect
@@ -6533,6 +6599,7 @@ Type  H <return>  for immediate help.}%
       \color@endbox
       }%
     }%
+  \global\let\if@newlist\@@if@newlist
   \global \@colht \textheight
   \stepcounter{page}%
   \let\firstmark\botmark
@@ -7063,7 +7130,7 @@ Type  H <return>  for immediate help.}%
                            \hb@xt@\columnwidth {%
                              \box\@leftcolumn \hss}%
                            \hfil
-                           \vrule \@width\columnseprule
+                           {\normalcolor\vrule \@width\columnseprule}%
                            \hfil
                            \hb@xt@\columnwidth {%
                              \box\@outputbox \hss}%
@@ -7223,6 +7290,11 @@ Type  H <return>  for immediate help.}%
 \def\ProvidesFile#1{%
   \begingroup
     \catcode`\ 10 %
+    \ifnum \endlinechar<256 %
+      \ifnum \endlinechar>\m@ne
+        \catcode\endlinechar 10 %
+      \fi
+    \fi
     \@makeother\/%
     \@makeother\&%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
@@ -7625,7 +7697,6 @@ Type  H <return>  for immediate help.}%
 \@onlypreamble\filec@ntents
 %%% From File: ltfinal.dtx
 \tracingstats1
-\errhelp{}
 \newcount\@lowpenalty
 \newcount\@medpenalty
 \newcount\@highpenalty
@@ -7693,7 +7764,7 @@ Type  H <return>  for immediate help.}%
 \let\@addtofilelist\@gobble
 \ifdim \font@submax >\z@
    \@font@warning{Size substitutions with differences\MessageBreak
-                 up to \font@submax\space have occured.\MessageBreak
+                 up to \font@submax\space have occurred.\MessageBreak
                 \MessageBreak
                 Please check the transcript file
                 carefully\MessageBreak
@@ -7849,6 +7920,7 @@ Type  H <return>  for immediate help.}%
 \toks4{}
 \toks6{}
 \toks8{}
+\errhelp{}
 \def\@providesfile#1[#2]{%
     \wlog{File: #1 #2}%
     \expandafter\xdef\csname ver@#1\endcsname{#2}%

@@ -1,0 +1,50 @@
+%% Plain TeX example of poligraf
+\special{papersize=190mm,277mm}
+%\special{papersize=180mm,267mm} % try together with \xoffset and \yoffset
+%% --
+\hsize5.5in \vsize8in
+\input epsf           % standard dvips distribution
+\input colordvi       % standard dvips distribution
+\input poligraf.sty
+%% -- change some options ------
+%\NoOverPrintBlack    % default is overprint black
+%\Separate\CYAN       % or
+%\Separate\MAGENTA    % or
+%\Separate\YELLOW     % or
+%\Separate\BLACK
+
+%\xoffset{5}          % additional x an y offsets for printing on standard
+%\yoffset{5}          % printer (do not use it for typesetters!)
+%\cropmarkdistance{5} % 1--5 (default 3mm)
+%\cropmarksize{10}    % default 10mm
+%\barsize{6}          % default 6mm
+%\nocolorbars         % no color bars and scales
+%\onlycolorsteps      % color steps only
+%\onlycolorbars       % color bars only
+%\mirror              % mirror switch
+%\labeloff            % no page label
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\text{
+\Black{This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.}\par
+\Red{This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.}\par
+\Blue{This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.}\par
+\Green{This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.
+This is example of test page. This is example of test page.}
+}
+
+\text
+\bigskip
+
+\centerline{\epsffile{kol-cmyk.eps}}
+\vskip -10mm
+\centerline{\bf THIS TEXT IS BLACK}
+
+\bye

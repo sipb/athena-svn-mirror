@@ -1,0 +1,22 @@
+<head>
+<title>UK TeX FAQ -- question 256</title>
+</head><body>
+<h3>Getting <code>\marginpar</code> on the right side</h3>
+<p>In <code>twoside</code> documents, LaTeX makes sterling attempts to put
+<code>\marginpar</code>s in the correct margin (the outer or the gutter margin,
+according to the user's command).  However, a booby-trap arises
+because TeX runs its page maker asynchronously.  If a
+<code>\marginpar</code> is processed while page <i>n</i> is being being built, but
+doesn't get used until page <i>n</i>+1, then the <code>\marginpar</code> will turn
+up on the wrong side of the page.  This is an instance of a general
+problem: see
+
+"<a href="FAQ234.html">finding if you're on an odd or an even page</a>".
+<p>The solution to the problem is for LaTeX to 'remember' which side
+of the page each <code>\marginpar</code> <em>should</em> be on.  The
+<i>mparhack</i> package does this, using marks stored in the <code>.aux</code>
+file.
+<dl>
+<dt><tt><i>mparhack.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/mparhack.tar.gz">macros/latex/contrib/supported/mparhack.tar.gz</a>
+</dl>
+<p></body>

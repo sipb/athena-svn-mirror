@@ -1,0 +1,12 @@
+\ProvidesFile{ly1hlce.fd}[2003/01/04 v4.2k Lucida Calligraphy (KB names)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlce}{}
+\DeclareLucidaFontShape{LY1}{hlce}{m}{it}{hlcrie8y}{}
+\DeclareFontShape{LY1}{hlce}{m}{n}{<-> ssub * hlce/m/it}{}
+\DeclareFontShape{LY1}{hlce}{b}{n}{<-> ssub * hlce/m/it}{}
+\DeclareFontShape{LY1}{hlce}{b}{it}{<-> ssub * hlce/m/it}{}
+
+\endinput
+%%
+%% End of file `ly1hlce.fd'.

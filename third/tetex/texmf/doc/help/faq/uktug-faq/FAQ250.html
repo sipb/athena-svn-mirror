@@ -1,0 +1,83 @@
+<head>
+<title>UK TeX FAQ -- question 250</title>
+</head><body>
+<h3>Why doesn't <code>\verb</code> work within...?</h3>
+<p>The LaTeX verbatim commands work by changing category codes.  Knuth
+says of this sort of thing "Some care is needed to get the timing
+right...", since once the category code has been assigned to a
+character, it doesn't change.  So <code>\verb</code> has to assume that it is
+getting the first look at its parameter text; if it isn't, TeX has
+already assigned category codes so that <code>\verb</code> doesn't have a
+chance.  For example:
+<pre>
+    \verb+\error+
+</pre>
+will work (typesetting '<code>\error</code>'), but
+<pre>
+    \newcommand{\unbrace}[1]{#1}
+    \unbrace{\verb+\error+}
+</pre>
+will not (it will attempt to execute <code>\error</code>).  Other errors one
+may encounter are '<code>\verb</code> ended by end of line', or even '<code>\verb</code>
+illegal in command argument'.
+<p>This is why the LaTeX book insists that verbatim
+commands must not appear in the argument of any other command; they
+aren't just fragile, they're quite unusable in any command parameter,
+regardless of
+
+<a href="FAQ230.html"><code>\protect</code>ion</a>.
+<p>The first question to ask yourself is: "is <code>\verb</code> actually
+necessary?".
+<ul>
+<li> If <code>\texttt{<em>your text</em>}</code> produces the same result
+  as <code>\verb</code><code>+</code><code><em>your text</em></code><code>+</code>, then there's no need of
+  <code>\verb</code> in the first place.
+<li> If you're using <code>\verb</code> to typeset a URL or email
+  address or the like, then the <code>\url</code> command from the
+  <i>url</i> package will help: it doesn't suffer from the problems
+  of <code>\verb</code>.
+<li> If you're putting <code>\verb</code> into the argument of a boxing
+  command (such as <code>\fbox</code>), consider using the <code>lrbox</code>
+  environment:
+<pre>
+  \newsavebox{\mybox}
+  ...
+  \begin{lrbox}{\mybox}
+    \verb!VerbatimStuff!
+  \end{lrbox}
+  \fbox{\usebox{\mybox}}
+</pre>
+</ul>
+<p>Otherwise, there are three partial solutions to the problem.
+<ul>
+<li> The <i>fancyvrb</i> package defines a command
+  <code>\VerbatimFootnotes</code>, which redefines the <code>\footnotetext</code> (and
+  hence the <code>\footnote</code>) commands in such a way that you can include
+  <code>\verb</code> commands in its argument.  This approach could in
+  principle be extended to the arguments of other commands, but it can
+  clash with other packages: for example, <code>\VerbatimFootnotes</code>
+  interacts poorly with the <code>para</code> option to the <i>footmisc</i>
+  package.
+<li> The <i>fancyvrb</i> package defines a command <code>\SaveVerb</code>,
+  with a corresponding <code>\UseVerb</code> command, that allow you to save
+  and then to reuse the content of its argument; for details of this
+  extremely powerful facility, see the package documentation.
+<p>  Rather simpler is the <i>verbdef</i> package, which defines a
+  (robust) command which expands to the verbatim argument given.
+<li> If you have a single character that is giving trouble (in
+  its absence you could simply use <code>\texttt</code>), consider using
+  <code>\string</code>.  <code><code>my\string_name</code></code> typesets the same as
+  <code>\verb+my_name+</code>, and will work in the argument of a command.  It
+  won't, however, work in a moving argument, and no amount of
+  
+  <a href="FAQ230.html"><code>\protect</code>ion</a> will make it work in
+  such a case.
+</ul>
+Documentation of both <i>url</i> and <i>verbdef</i> is in the
+package files.
+<dl>
+<dt><tt><i>fancyvrb.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/fancyvrb.tar.gz">macros/latex/contrib/supported/fancyvrb.tar.gz</a>
+<dt><tt><i>url.sty</i></tt><dd><a href="ftp://macros/latex/contrib/other/misc/url.sty">macros/latex/contrib/other/misc/url.sty</a>
+<dt><tt><i>verbdef.sty</i></tt><dd><a href="ftp://macros/latex/contrib/other/misc/verbdef.sty">macros/latex/contrib/other/misc/verbdef.sty</a>
+</dl>
+<p></body>

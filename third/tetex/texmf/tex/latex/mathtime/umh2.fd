@@ -11,7 +11,7 @@
 %% Development of this package was commissioned by Y&Y Inc.
 %% http://www.yandy.com
 \ProvidesFile{umh2.fd}
- [1997/03/14 v1.0c
+ [2001/05/30 v1.0c
  Adobe Math Pi 2 (Unknown encoding)
   (FMi)]
 \DeclareFontFamily{U}{mh2}{}

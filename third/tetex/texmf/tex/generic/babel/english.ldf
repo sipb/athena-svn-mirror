@@ -5,32 +5,44 @@
 %% The original source files were:
 %%
 %% english.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{english}
-        [1999/04/11 v3.3i English support from the babel system]
+        [2001/04/15 v3.3l English support from the babel system]
 %% File 'english.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit\CurrentOption{date\CurrentOption}
 \ifx\l@english\@undefined
   \ifx\l@UKenglish\@undefined
     \ifx\l@british\@undefined
-      \@nopatterns{English}
-      \adddialect\l@english0
+      \ifx\l@american\@undefined
+        \ifx\l@USenglish\@undefined
+          \ifx\l@canadian\@undefined
+            \@nopatterns{English}
+            \adddialect\l@english0
+          \else
+            \let\l@english\l@canadian
+          \fi
+        \else
+          \let\l@english\l@USenglish
+        \fi
+      \else
+        \let\l@english\l@american
+      \fi
     \else
       \let\l@english\l@british
     \fi
@@ -41,12 +53,23 @@
 \ifx\l@british\@undefined
   \let\l@british\l@english
 \fi
+\ifx\l@UKenglish\@undefined
+  \let\l@UKenglish\l@english
+\fi
 \ifx\l@american\@undefined
   \ifx\l@USenglish\@undefined
     \adddialect\l@american\l@english
   \else
     \let\l@american\l@USenglish
   \fi
+\else
+  \ifx\l@USenglish\@undefined
+    \let\l@USenglish\l@american
+  \fi
+\fi
+
+\ifx\l@canadian\@undefined
+  \adddialect\l@canadian\l@english
 \fi
 \@namedef{captions\CurrentOption}{%
   \def\prefacename{Preface}%
@@ -69,24 +92,34 @@
   \def\seename{see}%
   \def\alsoname{see also}%
   \def\proofname{Proof}%
+  \def\glossaryname{Glossary}%
   }
-\@namedef{date\CurrentOption}{%
-  \def\today{\ifcase\day\or
-    1st\or 2nd\or 3rd\or 4th\or 5th\or
-    6th\or 7th\or 8th\or 9th\or 10th\or
-    11th\or 12th\or 13th\or 14th\or 15th\or
-    16th\or 17th\or 18th\or 19th\or 20th\or
-    21st\or 22nd\or 23rd\or 24th\or 25th\or
-    26th\or 27th\or 28th\or 29th\or 30th\or
-    31st\fi~\ifcase\month\or
-    January\or February\or March\or April\or May\or June\or
-    July\or August\or September\or October\or November\or December\fi
-    \space \number\year}}
-\def\dateamerican{%
-  \def\today{\ifcase\month\or
-    January\or February\or March\or April\or May\or June\or
-    July\or August\or September\or October\or November\or December\fi
-    \space\number\day, \number\year}}
+\def\bbl@tempa{american}
+\def\bbl@tempb{UK}
+\ifx\CurrentOption\bbl@tempa\def\bbl@tempb{US}\fi
+\def\bbl@tempa{USenglish}
+\ifx\CurrentOption\bbl@tempa\def\bbl@tempb{US}\fi
+\def\bbl@tempa{UK}
+\ifx\bbl@tempa\bbl@tempb
+  \@namedef{date\CurrentOption}{%
+    \def\today{\ifcase\day\or
+      1st\or 2nd\or 3rd\or 4th\or 5th\or
+      6th\or 7th\or 8th\or 9th\or 10th\or
+      11th\or 12th\or 13th\or 14th\or 15th\or
+      16th\or 17th\or 18th\or 19th\or 20th\or
+      21st\or 22nd\or 23rd\or 24th\or 25th\or
+      26th\or 27th\or 28th\or 29th\or 30th\or
+      31st\fi~\ifcase\month\or
+      January\or February\or March\or April\or May\or June\or
+      July\or August\or September\or October\or November\or
+      December\fi\space \number\year}}
+\else
+  \@namedef{date\CurrentOption}{%
+    \def\today{\ifcase\month\or
+      January\or February\or March\or April\or May\or June\or
+      July\or August\or September\or October\or November\or
+      December\fi \space\number\day, \number\year}}
+\fi
 \@namedef{extras\CurrentOption}{}
 \@namedef{noextras\CurrentOption}{}
 \ldf@finish\CurrentOption

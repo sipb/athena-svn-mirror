@@ -1,0 +1,46 @@
+<head>
+<title>UK TeX FAQ -- question 83</title>
+</head><body>
+<h3>Previewing files using Type 1 fonts</h3>
+<p>Until recently, free TeX previewers have only been capable of
+displaying bitmap PK fonts.  (Y&amp;Y's commercial previewer
+
+<a href="FAQ56.html">DVIWindo</a>
+has long used <i>Adobe Type Manager</i> to display Type 1 fonts
+directly, and the most recent releases of
+<i>xdvi</i> sport a Type 1 font renderer.)  Other previewers of
+the current generation offer automatic generation of the
+requisite PK files (using <i>gsftopk</i>, or similar, behind
+the scenes).  If your previewer isn't capable of this, you have three
+options:
+<ol>
+<li> Convert the DVI file to PostScript and use a
+  PostScript previewer.  Some systems offer this capability as
+  standard, but most people will need to use a separate previewer such
+  as <i>ghostscript</i> or <i>ghostscript</i>-based viewers
+  such as <i>ghostview</i> or shareware offering <i>gsview</i>.
+<li> Under Windows on a PC, or on a Macintosh, let Adobe Type Manager
+  display the fonts. Textures (Macintosh) works like this, and under
+  Windows you can use Y&amp;Y's <i>dviwindo</i> for bitmap-free
+  previewing.
+
+    (See <a href="FAQ56.html">commercial suppliers</a> for details.)
+<li> If you have the PostScript fonts in Type 1 format,
+  use <i>ps2pk</i> or <i>gsftopk</i>
+  (designed for use with the <i>ghostscript</i> fonts) to make
+  PK bitmap fonts which your previewer 
+  will understand. This can produce excellent results, also suitable
+  for printing with non-PostScript devices. Check the legalities of
+  this if you have purchased the fonts. The very commonest PostScript
+  fonts such as Times and Courier come in Type 1 format on disk with
+  Adobe Type Manager (often bundled with Windows, and part of OS/2).
+</ol>
+<dl>
+<dt><tt><i>ghostscript</i></tt><dd>Browse <a href="ftp://nonfree/support/ghostscript/">nonfree/support/ghostscript/</a>
+<dt><tt><i>ghostview</i></tt><dd>Browse <a href="ftp://support/ghostscript/gnu/ghostview/">support/ghostscript/gnu/ghostview/</a>
+<dt><tt><i>gsftopk</i></tt><dd><a href="ftp://fonts/utilities/gsftopk.tar.gz">fonts/utilities/gsftopk.tar.gz</a>
+<dt><tt><i>gsview</i></tt><dd>Browse <a href="ftp://nonfree/support/ghostscript/gsview/">nonfree/support/ghostscript/gsview/</a>
+<dt><tt><i>ps2pk</i></tt><dd><a href="ftp://fonts/utilities/ps2pk.tar.gz">fonts/utilities/ps2pk.tar.gz</a>
+<dt><tt><i>xdvi</i></tt><dd><a href="ftp://dviware/xdvi.tar.gz">dviware/xdvi.tar.gz</a>
+</dl>
+<p></body>

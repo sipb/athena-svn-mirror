@@ -1,0 +1,13 @@
+\ProvidesFile{mongol.mld}[1999/03/16]
+% Mongol (xalx) titles for minitoc.sty
+\def\mtctitle{{\mnr Garqig}}
+\def\mlftitle{{\mnr Zurgi"in jagsaalt}}
+\def\mlttitle{{\mnr X"usn"agti"in jagsaalt}}
+
+\def\ptctitle{{\mnr Garqig}}
+\def\plftitle{{\mnr Zurgi"in jagsaalt}}
+\def\plttitle{{\mnr X"usn"agti"in jagsaalt}}
+
+\def\stctitle{{\mnr Garqig}}
+\def\slftitle{{\mnr Zurgi"in jagsaalt}}
+\def\slttitle{{\mnr X"usn"agti"in jagsaalt}}

@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% anysize.sty --- version 1.1 --- Apr 16, 1999
+% anysize.sty --- version 1.0 --- Aug 13, 1994
 % set the paper&margin sizes in  \LaTeX2e
 % This style is LaTeX2e-conformant 
 %   and will not run under ANY older version of LaTeX!
@@ -8,19 +8,13 @@
 %         Thomas Esser (te@informatik.uni-hannover.de)
 %         Dirk Hillbrecht (hillbrec@informatik.uni-hannover.de)
 % documentation: anysize.tex/dvi
-%
-% Changes:
-%    * Fri Apr 16 20:29:47 CEST 1999, te
-%    changed -1in to -1truein
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 \NeedsTeXFormat{LaTeX2e}
-\def\filename{anysize.sty}
-\def\filedate{1999/04/16}
-\def\fileversion{1.1}
-\ProvidesPackage{anysize}[\filedate\space\fileversion\space
-                         Contributed LaTeX2e package]
-\typeout{Package: `anysize' \fileversion\space <\filedate>}
+\ProvidesPackage{anysize}[1994/08/13 setting margin sizes]
+\typeout{document style option `anysize' loaded}
+\typeout{Michael Salzenberg, Thomas Esser, Dirk Hillbrecht}
+\typeout{Version 1.0, Aug 13, 1994}
 %
 \DeclareOption{a4paper}
    {\setlength\paperheight {297mm}%
@@ -69,11 +63,11 @@
   \addtolength{\textheight}{-\headsep}
   \addtolength{\textheight}{-\footskip}
   \setlength{\oddsidemargin}{\@Leftmargin}
-  \addtolength{\oddsidemargin}{-1truein}
+  \addtolength{\oddsidemargin}{-1in}
   \setlength{\evensidemargin}{\@Rightmargin}
-  \addtolength{\evensidemargin}{-1truein}
+  \addtolength{\evensidemargin}{-1in}
   \setlength{\topmargin}{\@Topmargin}
-  \addtolength{\topmargin}{-1truein}
+  \addtolength{\topmargin}{-1in}
 }
 %
 \InitLayout

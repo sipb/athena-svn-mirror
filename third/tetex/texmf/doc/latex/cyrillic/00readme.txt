@@ -1,4 +1,4 @@
-README for the `cyrillic' bundle  (December 1998)
+README for the `cyrillic' bundle  (June 2001)
 =============================
 
 This `bundle' consists of LaTeX2e packages for Cyrillic languages
@@ -11,8 +11,8 @@ So you should first process cyrlatex.ins:
 
   latex cyrlatex.ins
 
-The files with extensions `.def' and `.fd' should then be moved to a
-directory on LaTeX's standard input path.
+The files with extensions `.def', `.fd', `.sty' and `.tex' should
+then be moved to a directory on LaTeX's standard input path.
 
 NOTE that this bundle must be used with at least the December 1998
 LaTeX2e Release. In particular, this prevents an error because of the
@@ -60,4 +60,4 @@ LaTeX distribution,  CTAN:macros/latex/base/lppl.txt;
 either version 1 of the license, or (at your option) any later
 version.
 
---- Copyright 1998 the LaTeX3 project.  All rights reserved ---
+--- Copyright 2001 the LaTeX3 project.  All rights reserved ---

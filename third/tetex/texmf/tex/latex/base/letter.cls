@@ -8,16 +8,29 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -35,7 +48,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}[1996/06/01]
 \ProvidesClass{letter}
-              [1999/02/09 v1.2z
+              [1999/04/29 v1.2z
                Standard LaTeX document class]
 \newcommand\@ptsize{}
 \DeclareOption{a4paper}
@@ -166,8 +179,8 @@
     \if@twoside \ifodd\c@page
                 \else\thispagestyle{empty}\null\newpage\fi
     \fi
-    \c@page\@ne
-    \c@footnote\@ne
+    \c@page \@ne
+    \c@footnote \z@
     \interlinepenalty=200 % smaller than the TeXbook value
     \@processto{\leavevmode\ignorespaces #1}}
   {\stopletter\@@par\pagebreak\@@par

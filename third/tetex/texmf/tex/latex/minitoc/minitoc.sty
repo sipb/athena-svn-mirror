@@ -1,13 +1,13 @@
-\def\fileversion{v27}
-\def\filedate{1996/12/20}
+\def\fileversion{v34}
+\def\filedate{2000/12/13}
 % minitoc.sty
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Jean-Pierre Drucbert
-% ONERA/CERT/GPI
-% Office National d'\'Etudes et de Recherches A\'erospatiales
-% Centre d'\'Etudes et de Recherches de Toulouse
-% Groupe de Prestations Informatiques
-% Complexe Scientifique de Rangueil
+% ONERA/Toulouse/SRI
+% Office national d'\'etudes et de recherches a\'erospatiales
+% Centre de Toulouse
+% Service r\'eseaux et informatique
+% Complexe scientifique de Rangueil
 % 2, Avenue \'Edouard Belin
 % BP 4025
 % F-31055 TOULOUSE CEDEX
@@ -18,15 +18,50 @@
 % Email: drucbert@onecert.fr
 %
 % Please send me any (constructive) suggestions and comments.
+
+% mtc31hyp.sty (version v31href): (renamed minitoc.sty, version 31 (JPFD))
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Patched by Heiko Oberdiek <oberdiek@ruf.uni-freiburg.de>
+% to work with _and_ without hyperref.sty.
+% The forth argument of hyperref's \contentsline
+% is transparently passed through.
+% It uses the patches of v30href (see below).
+% Additions and changes are marked with %%HO.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% mtc30hyp.sty (version v30href):
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Patched by Heiko Oberdiek <oberdiek@ruf.uni-freiburg.de>
+% to work with hyperref.sty.
+% It uses the patches of v28href (see below).
+% Additions and changes are marked with %%HO.
+% Bug fix: \stepcounter{mtc} removed in
+%          starchapter part of \PTC@contentsline.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% minitoc-hyper.sty (version v28href):
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Temporarily patched by Bernd Jaehne [Bernd.Jaehne@aeon.de]
+% and Didier Verna [verna@inf.enst.fr] to
+% work with hyperref.sty from s.rahtz@elsevier.co.uk
+% using input from Tony Roberts [aroberts@usq.edu.au]
+% For changes see comments %%BJ and %DV
+%
+% However: this patch works only when  hyperref.sty is used,
+% otherwise errors occur. Thus it may be advisable to add code
+% so that minitoc runs both in standard and hyperref mode.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % History (contains some obsolete things... it is NOT
 % the REAL documentation)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% minitoc.sty --- redefines the \chapter command to display a 
+% minitoc.sty --- redefines the \chapter command to display a
 %  mini-table-of-contents at the beginning of every chapter.
 %  Oct-90       Original version, by Nigel Ward.
-%  Nov-91       Revised to reuse \chapter, \section, \subsection commands
-%               transparently, generate toc-file-name automatically,
+%  Nov-91       Revised to reuse \chapter, \section, \subsection
+%               commands transparently, generate toc-file-name
+%               automatically,
 %               assorted other cleanup.  Dan Jurafsky
 %  Jun/Jul-93   New design, to avoid allocating a newwrite
 %               for each chapter (!)
@@ -53,16 +88,18 @@
 %               The depth of the minitoc is user-adjustable with
 %               the counter `minitocdepth' (as `tocdepth' for the table
 %               of contents).
-%               At least three passes (3!!!) of LaTeX are necessary to get
-%               correct minitoc's (the first pass creates the .mtcX files,
-%               the second uses them (but they may contain wrong page
-%               numbers) and recreates them, the third should be ok).
+%               At least three passes (3!!!) of LaTeX are necessary to
+%               get correct minitoc's (the first pass creates the
+%               .mtcX files, the second uses them (but they may
+%               contain wrong page numbers) and recreates them,
+%               the third should be ok).
 %
 %               Works with \chapter[xxx]{yyy} and floating bodies.
-%               Works with two columns (but the minitoc is in composed in
-%               one column; how to make it to spread over the two column?)
-%               Some mods added to work with xr.sty (external references).
-%               xr.sty version 5 is much more tolerant.
+%               Works with two columns (but the minitoc is composed in
+%               one column; how to make it to spread over the two
+%               column?)
+%               Some mods added to work with xr.sty (external
+%               references). xr.sty version 5 is much more tolerant.
 %   05Jul93     Version 2
 %               Added compatibility with hangcaption.sty (the option
 %               hangcaption (if present) must be given BEFORE minitoc
@@ -71,16 +108,16 @@
 %               Version 3 not released (buggy)
 %   09Jul93     Version 4
 %               Added \if@realch to avoid contentslines from
-%               pseudo-chapters to go into the toc! 
+%               pseudo-chapters to go into the toc!
 %               The option file mtcoff.sty allows to use a latex
 %               document with minitoc commands and to make them
 %               transparent: just replace the minitoc option by
 %               mtcoff.
 %   13Jul93     Version 5
-%               Added a selection mechanism to not write spurious things
-%               in the minitoc's.
+%               Added a selection mechanism to not write spurious
+%               things in the minitoc's.
 %   15Jul93     Version 6
-%               Fixed problems about chapters in the toc, 
+%               Fixed problems about chapters in the toc,
 %               removed obsolete \caption stuff (filters are better)
 %               added compatibility with toch.sty
 %               (toch.sty makes a table of chapters. If used,
@@ -97,7 +134,8 @@
 %   04Aug93     Version 9
 %               Added mods for MS-DOS (search MS-DOS, uncomment;
 %               search UNIX, comment out). MS-DOS allows only
-%               3 characters for extensions in file names (what a pity!).
+%               3 characters for extensions in file names
+%               (what a pity!).
 %   05Aug93     Version 10
 %               Works with appendices.
 %               Detects obsolete versions of latex.tex.
@@ -206,11 +244,11 @@
 %
 %   13Sep96     Version 25
 %               Updated mtcnorsk.sty and added mtcnynorsk.sty
-%		on a suggestion from Dag Langmyhr (dag@ifi.uio.no).
+%                on a suggestion from Dag Langmyhr (dag@ifi.uio.no).
 %
 %   14Nov96     Version 26
 %               Language specific commands are now names <language>.mld
-%               (in place of mtc<language>.sty) because there are not
+%               (in place of mtc<language>.sty) because they are not
 %               packages and it makes shorter names.
 %               Added breton, estonian, germanb, greek, irish,
 %               russianb, scottish, lower and upper sorbian;
@@ -224,60 +262,224 @@
 %               Renamed minitocoff.sty into mtcoff.sty to
 %               keep the name short.
 %
+%   29Oct97     Version 28
+%               Added afrikaan(s) language
+%               Added brazil language
+%               Added ethiopia(n) language
+%               Added autoconfiguration of extensions
+%               Added shortext option
+%               Added COFFEE stuff
+%               Added \addstarred stuff (for starchapter stuff)
+%               Fixed bug in parttocs.
 %
-%               Jean-Pierre Drucbert
+%   17Nov98     Version 28
+%               15Jun98: a typo corrected by Donald Arseneau:
+%                 {\let@dottedtocline\@undottedtocline}{}
+%               should probably be
+%                 {\let\@dottedtocline\@undottedtocline}{}
+%                      ^
+%                      |
+%               Thanks to him.
+%
+%               Added thebahasa language
+%
+%   03Dec98     Version 28
+%                Added the tight option
+%
+%   16Mar99     Version 29
+%               Added the bicig, buryat, mongol and russianc languages
+%   28Jun99     Added the armenian language (from ArmTeX)
+%   23Jul99     Added the dotted/undotted options (default: dotted)
+%   29Jul99     Added the lithuanian language
+%
+%   06Dec99     Version 30
+%               Added the basque, ngermanb, serbian, ukraineb,
+%               and welsh languages.
+%               Corrected a bug on \sltname definition (mlt->slt).
+%
+%   04Avr2000   Version 31
+%               Added compatibility with hyperref.sty,
+%               thanks to Heiko Oberdiek <oberdiek@ruf.uni-freiburg.de>,
+%               who has also simplified some code and fixed the
+%               infamous \chapter* bug.
+%
+%   08Aug2000   Version 32
+%               Added commands:
+%                     \before|part|toc
+%                     \after |    |lof
+%                            |    |lot
+%               and
+%                     \thispagepart|toc|style
+%                                  |lof|
+%                                  |lot|
+%
+%               Documentation improved by Stefan Ulrich
+%               <ulrich@cis.uni-muenchen.de>.
+%
+%               \nomtcrule corrected
+%
+%   07Dec2000   Version 33
+%               Added commands:
+%                     \mtcadd|chapter|[title]
+%                            |section|
+%                            |part|
+%
+%   These commands add stuff in the .toc, .lof and .lot files for
+%   the \chapter* (\section* and \part*) problem. From a suggestion
+%   by Karl F. Everitt (everitt@chem.skin1.chem.wisc.edu).
+%
+%   08Dec2000   Version 33
+%               Corrected a feature in \mtcaddchapter & co.
+%               with a blank optionnal argument.
+%
+%   13Dec2000b  Version 34
+%
+%   Jean-Pierre F. Drucbert
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\NeedsTeXFormat{LaTeX2e}[1994/12/01]%
+\NeedsTeXFormat{LaTeX2e}[1996/06/01]%
 %%% This file will not work with latex2.09
 \ProvidesPackage{minitoc}[\filedate\space\fileversion\space
-                        The minitoc package]
-\typeout{*** minitoc package, version 27 ***}%
-\@ifundefined{part}%
-{}%
-{\typeout{*** part level macros available ***}
-\let\mtc@svpart\part %23
-\def\part{\stepcounter{ptc}\mtc@svpart}} %23
-\@ifundefined{chapter}%
-{%
-\@ifundefined{section}%
-{\typeout{*** no section or chapter level macros available ***}%
-\typeout{*** PLEASE VERIFY YOUR MAIN DOCUMENT CLASS ***}}%
-{\typeout{*** section level macros available ***}
-\let\mtc@svsection\section %23
-\def\section{\stepcounter{stc}\mtc@svsection} %23
-\let\mtc@svss\@ssect %23
-%v25 \def\@ssect{\addtocounter{stc}{-1}\mtc@svss} %23
-}%
-}%
-{\typeout{*** chapter level macros available ***}
-\let\mtc@svchapter\@chapter %23
-\def\@chapter{\stepcounter{mtc}\mtc@svchapter} %23
+                        Package minitoc, patched for hyperref]
+\typeout{*** minitoc package, version 34 ***}%
+%%HO: <begin>
+\typeout{*** patched for hyperref ***}%
+\AtBeginDocument{%
+  \@ifpackageloaded{hyperref}{%
+    \def\toclevel@xpart{1000}%
+    \def\toclevel@xchapter{1000}%
+    \def\toclevel@xsect{1000}%
+    \let\toclevel@starchapter\toclevel@chapter
+    \let\toclevel@starsection\toclevel@section
+    \let\toclevel@starsubsection\toclevel@subsection
+    \let\toclevel@starsubsubsection\toclevel@subsubsection
+    \let\toclevel@starparagraph\toclevel@paragraph
+    \let\toclevel@starsubparagraph\toclevel@subparagraph
+  }{}%
 }
+%%HO: <end>
+\@ifundefined{part}{%
+}{%
+  \typeout{*** part level macros available ***}
+  \let\mtc@svspart\@spart %28d
+  \def\@spart{\stepcounter{ptc}\mtc@svspart} %28d
+  \let\mtc@svpart\@part %23
+  \def\@part{%
+    \stepcounter{ptc}%
+    \mtc@svpart
+  }%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% v33 2000/12/08
+% Some macros for testing an empty argument.            % v33 2000/12/08
+% (from ifmtarg.sty, Peter R. Wilson and                % v33 2000/12/08
+%  Donald Arseneau)                                     % v33 2000/12/08
+\begingroup                                             % v33 2000/12/08
+\catcode`\Q=3                                           % v33 2000/12/08
+\long\gdef\mtc@ifmtarg#1{%                              % v33 2000/12/08
+\mtc@xifmtarg#1QQ\@secondoftwo\@firstoftwo\@nil}        % v33 2000/12/08
+\long\gdef\mtc@xifmtarg#1#2Q#3#4#5\@nil{#4}             % v33 2000/12/08
+% \long\gdef\mtc@ifnotmtarg#1{%                         % v33 2000/12/08
+% \mtc@xifmtarg#1QQ\@firstofone\@gobble\@nil}           % v33 2000/12/08
+\endgroup                                               % v33 2000/12/08
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% v33 2000/12/08
+% Add a \part* and its title in the toc         % v33 2000/12/07
+\newcommand{\mtcaddpart}[1][]{%                 % v33 2000/12/07
+    \mtc@ifmtarg{#1}{%                          % v33 2000/12/08
+    \addcontentsline{toc}{xpart}{}%             % v33 2000/12/07
+    }{%                                         % v33 2000/12/08
+    \addcontentsline{toc}{part}{#1}%            % v33 2000/12/07
+    }                                           % v33 2000/12/08
+    \addcontentsline{lof}{xpart}{}%             % v33 2000/12/07
+    \addcontentsline{lot}{xpart}{}%             % v33 2000/12/07
+    \adjustptc%                                 % v33 2000/12/07
+}                                               % v33 2000/12/07
+} %23
+\@ifundefined{chapter}{%
+  \@ifundefined{section}{%
+    \typeout{*** no section or chapter level macros available ***}%
+    \typeout{*** PLEASE VERIFY YOUR MAIN DOCUMENT CLASS ***}%
+  }{%
+    \typeout{*** section level macros available ***}%
+    \let\mtc@svsection\section %23
+    \def\section{\stepcounter{stc}\mtc@svsection} %23
+    \let\mtc@svss\@ssect %23
+%v25 \def\@ssect{\addtocounter{stc}{-1}\mtc@svss} %23
+% Add a \section* and its title in the toc      % v33 2000/12/07
+\newcommand{\mtcaddsection}[1][]{%              % v33 2000/12/07
+    \mtc@ifmtarg{#1}{%                          % v33 2000/12/08
+    \addcontentsline{toc}{xsection}{}%          % v33 2000/12/08
+    }{%                                         % v33 2000/12/08
+    \addcontentsline{toc}{section}{#1}%         % v33 2000/12/07
+    }%                                          % v33 2000/12/08
+    \addcontentsline{lof}{xsection}{}%          % v33 2000/12/07
+    \addcontentsline{lot}{xsection}{}%          % v33 2000/12/07
+    \adjuststc%                                 % v33 2000/12/07
+}                                               % v33 2000/12/07
+  }%
+}{%
+  \typeout{*** chapter level macros available ***}
+  \let\mtc@svchapter\@chapter %23
+  \def\@chapter{\stepcounter{mtc}\mtc@svchapter} %23
+% Add a \chapter* and its title in the toc      % v33 2000/12/07
+\newcommand{\mtcaddchapter}[1][]{%              % v33 2000/12/07
+    \mtc@ifmtarg{#1}{%                          % v33 2000/12/08
+    \addcontentsline{toc}{xchapter}{}%          % v33 2000/12/07
+    }{%                                         % v33 2000/12/08
+    \addcontentsline{toc}{chapter}{#1}%         % v33 2000/12/07
+    }%                                          % v33 2000/12/08
+    \addcontentsline{lof}{xchapter}{}%          % v33 2000/12/07
+    \addcontentsline{lot}{xchapter}{}%          % v33 2000/12/07
+    \adjustmtc%                                 % v33 2000/12/07
+}                                               % v33 2000/12/07
+}
+\newwrite\tf@mtc  % a file descriptor to write minitocs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AUTOCONFIG (v28)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{*** Autoconfiguration of extensions ***}
+\newif\if@longextensions\@longextensionsfalse
+
+%---------------------------------
+%The order of the writes is vital!
+%---------------------------------
+\immediate\openout\tf@mtc \jobname.mtc1
+\immediate\write\tf@mtc{\string\@longextensionstrue}
+\immediate\closeout\tf@mtc
+
+\immediate\openout\tf@mtc \jobname.mtc
+\immediate\write\tf@mtc{\string\@longextensionsfalse}
+\immediate\closeout\tf@mtc
+
+\input{\jobname.mtc1}
+
+% Cover our tracks (scratch the files!):
+\immediate\openout\tf@mtc \jobname.mtc
+\immediate\closeout\tf@mtc
+
+\immediate\openout\tf@mtc \jobname.mtc1
+\immediate\closeout\tf@mtc
+
+
+\if@longextensions
+\typeout{*** Long extensions (Unix-like) will be used ***}
+\else
+\typeout{*** Short extensions (MSDOS-like) will be used ***sight***}
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%         *****  ****   ***  *****
-%         *      *   *   *     *
-%         ***    *   *   *     *
-%         *      *   *   *     *
-%         *****  ****   ***    *
-%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\def\SHORTEXT{SHORTEXT}    %%% UNCOMMENT FOR DOS AND
-                            %%% SYSTEMS WITH SHORT EXTENSIONS
-                            %%% TO FILE NAMES
-                            %%% LEAVE IT COMMENTED OUT
-                            %%% FOR UNIX AND O.S. WITH
-                            %%% LONG EXTENSIONS
-			    %%% YOU CAN VERIFY BY LATEXING
-			    %%% AN EXAMPLE DOCUMENT
-			    %%% ONE OF THE FOLLOWING MESSAGES APPEARS
-			    %%% PLEASE CORRECT IF THE MESSAGE IS WRONG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % v27 : claim the type of system!
-\@ifundefined{SHORTEXT}%
-{\typeout{==> this version is configured for UNIX-like (long extensions) file names.}}%
-{\typeout{==> this version is configured for MSDOS-like (8+3) file names.}}
+\if@longextensions%
+\typeout%
+{==> this version is configured for UNIX-like (long extensions) file names.}%
+\else
+\typeout{==> this version is configured for MSDOS-like (8+3) file names.}
+\fi
 %
+% Option tight: the flag (1998/12/03)
+\newif\iftightmtc \tightmtcfalse
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %not outer version of \newread
 \def\newread{\alloc@6\read\chardef\sixt@@n}
 \@ifundefined{@inputcheck}%
@@ -285,8 +487,9 @@
   \typeout{Trying to continue...}\newread\@inputcheck\relax}{}
 \@ifundefined{reset@font}%
   {\typeout{Your version of latex.tex is very obsolete.}%
-  \typeout{Trying to continue...}\let\reset@font\relax}{}
-\newwrite\tf@mtc  % a file descriptor to write minitocs
+  \typeout{Trying to continue... crossing fingers.}%
+  \let\reset@font\relax}{}
+
 \newtoks\mtc@toks
 \def\mtc@string{\relax}
 \newbox\mtc@strutbox
@@ -308,7 +511,7 @@
    \hskip -\leftskip                                                    % 17b
     #4\nobreak\hfill \nobreak                                           % 17b
            \null\par}\fi}                                               % 17b
-%% 
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
 \def\mtcpagenumbers{\let\mtc@pgno\null}         %17b
 \mtcpagenumbers %default                        %17b
@@ -340,6 +543,17 @@
 \pltpagenumbers %default                        %17b
 \def\nopltpagenumbers{\let\plt@pgno\relax}      %17b
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
+\let\beforeparttoc\cleardoublepage              %32
+\let\beforepartlof\cleardoublepage              %32
+\let\beforepartlot\cleardoublepage              %32
+\let\afterparttoc\cleardoublepage               %32
+\let\afterpartlof\cleardoublepage               %32
+\let\afterpartlot\cleardoublepage               %32
+\def\thispageparttocstyle{\thispagestyle{empty}}%32
+\def\thispagepartlofstyle{\thispagestyle{empty}}%32
+\def\thispagepartlotstyle{\thispagestyle{empty}}%32
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%32
 % if you don't want a table of contents, but want minitocs,
 % you need to create the .toc file, without inputing it
 % into your document. This command is a stripped off version
@@ -354,17 +568,51 @@
   \if@filesw \expandafter\newwrite\csname tf@#1\endcsname
              \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
   \fi \global\@nobreakfalse \endgroup}
-%% 
+%%
 \global\let\mtc@markboth\markboth
 \global\let\@mkboth\markboth
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\@ifundefined{chapter}{}{%
+%v30 starchapters
+\def\addst@rred#1#2{%
+  \addcontentsline{toc}{star#1}{#2}%
+  \@ifundefined{c@ptc}{}{%
+    \expandafter\ifx\csname #1\endcsname\part
+      \stepcounter{ptc}%
+    \fi
+  }%
+  \@ifundefined{c@mtc}{}{%
+    \expandafter\ifx\csname #1\endcsname\chapter
+      \stepcounter{mtc}%
+    \fi
+  }%
+  \@ifundefined{c@stc}{}{%
+    \expandafter\ifx\csname #1\endcsname\section
+      \@ifundefined{chapter}{\stepcounter{stc}}{}%
+    \fi
+  }%
+%%%<ESSAI
+%  \@ifundefined{c@mtc}{}{%
+%    \expandafter\ifx\csname #1\endcsname\starchapter
+%      \stepcounter{mtc}%
+%    \fi
+%  }%
+%  \@ifundefined{c@stc}{}{%
+%    \expandafter\ifx\csname #1\endcsname\starsection
+%      \@ifundefined{chapter}{\stepcounter{stc}}{}%
+%    \fi
+%  }%
+%%%>ESSAI
+}
+\@ifundefined{chapter}{%
+\gdef\addstarredsection#1{\addst@rred{section}{#1}}
+}{%
 \def\The@chapter{\arabic{mtc}} %23
 \def\firstchapteris#1%
   {\typeout{^^JWARNING*** \string\firstchapteris}%
    \typeout{ is an obsolete command^^J}}
 \newcounter{mtc}  % counter of minitocs
 \setcounter{mtc}{0}
+\def\adjustmtc{\stepcounter{mtc}}  %32
 \gdef\themtc{\arabic{mtc}}
 \newcounter{minitocdepth} % analog to tocdepth, but for minitocs
 \setcounter{minitocdepth}{2} % default value
@@ -382,6 +630,7 @@
 \def\mlffont{\mtcfont}     % font for the minilof (figures)
 \def\mltfont{\mtcfont}     % font for the minilot (tables)
 \def\mtifont{\large\bf}    % font for titles
+\def\coffeefont{\small\sl} % font for COFFEE breaks
 
 % Centering, flushleft, flushright or empty titles.
 \def\c@mti#1{\null\hfill #1\hfill\null}
@@ -390,7 +639,7 @@
 \def\e@mti#1{\relax}
 \def\n@mti#1{\relax}
 
-% Default: titles on left 
+% Default: titles on left
 \let\do@mtitc\l@mti
 \let\df@mtitc\l@mti
 \let\do@mtilf\l@mti
@@ -406,6 +655,9 @@
 
 \def\mtc@verse{\let\\=\@centercr
   \list{}{\itemsep\z@\itemindent \z@\listparindent \itemindent
+  \iftightmtc
+          \parsep\z@ % 19981203
+  \fi
           \leftmargin\mtcindent
           \rightmargin\leftmargin}\item[]}
 \def\endmtc@verse{\nopagebreak[4]\endlist}
@@ -451,19 +703,25 @@
   \makeatletter
   \@ifundefined{mtc@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{mtc\The@chapter}}%  % UNIX
-{\def\@tocfile{M\The@chapter}}%    % MS-DOS
+\if@longextensions
+\def\@tocfile{mtc\The@chapter}%  % UNIX
+\else
+\def\@tocfile{M\The@chapter}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
         \end{mtc@verse}%
         \kern0.\baselineskip%
-        \nopagebreak[4]\mtc@rule\null\leavevmode\\%
+        \nopagebreak[4]\mtc@bottom@rule\null\leavevmode\\%
         \vskip-1.0\baselineskip
         \vrule width \z@ height \z@
         depth \z@\end{samepage}% %## the \\ is essential
         \par\pagebreak[1]\vspace*{-1ex}}%
+\def\mtc@bottom@rule{%\kern-3\p@%
+  \ifx\mtc@rule\relax\relax\else  % 2000/08/08 v32 pb \nomtcrule
+  \vskip 5pt%
+  \hrule width \columnwidth \kern2.6\p@\fi}
         % some space under the minitoc
 
 % Added in version #13
@@ -509,9 +767,11 @@
   \makeatletter
   \@ifundefined{mlf@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{mlf\The@chapter}}%  % UNIX
-{\def\@tocfile{F\The@chapter}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{mlf\The@chapter}%  % UNIX
+\else
+\def\@tocfile{F\The@chapter}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -567,9 +827,11 @@
   \makeatletter
   \@ifundefined{mlt@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{mlt\The@chapter}}%  % UNIX
-{\def\@tocfile{T\The@chapter}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{mlt\The@chapter}%  % UNIX
+\else
+\def\@tocfile{T\The@chapter}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -591,6 +853,7 @@
 \def\@chapter[#1]#2{\sv@chapter[{#1}]{#2}\relax%
 \addcontentsline{lof}{xchapter}{#1}%
 \addcontentsline{lot}{xchapter}{#1}%
+\ignorespaces% %% Added 2000/05/02 (Adam Lewenberg <ahl@uakron.edu>)
 }
 
 % tricky code to deal with \chapter*
@@ -604,7 +867,105 @@
 \let\chapterend\relax
 \let\chapterbegin\relax
 
+%v28b
+\@ifundefined{chapter}%
+{\@ifundefined{section}{}{\def\addstarredsection#1{\addst@rred{section}{#1}}}}
+{\def\addstarredchapter#1{\addst@rred{chapter}{#1}}}
+\@ifundefined{part}{}%
+{\def\addstarredpart#1{\addst@rred{part}{#1}}}
+
+% for havlick COFFEE
+\def\addcoffeeline#1#2#3{%
+  \addtocontents{#1}{\protect\coffeeline{#2}{#3}{\null}}}
+\def\coffeeline#1{\csname l@#1\endcsname}
+\newcommand*\l@coffee{\@Undottedtocline{1}{1.5em}{2.3em}}
+\def\@Undottedtocline#1#2#3#4#5{%
+%\typeout{UNDOT}
+  \ifnum #1>\c@tocdepth \else
+    \vskip \z@ \@plus.2\p@
+    {\leftskip #2\relax \rightskip \@tocrmarg \parfillskip -\rightskip
+     \parindent #2\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima #3\relax
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {\coffeefont #4}\nobreak
+%     \leaders\hbox{$\m@th
+%        \mkern \@dotsep mu\hbox{.}\mkern \@dotsep
+%        mu$}%
+%        \hfill
+     \nobreak\null
+%     \hb@xt@\@pnumwidth{\hfil\normalfont \normalcolor #5}%
+     \par}%
+  \fi}
+
+% The same but with the page number
+%
+
+\def\@Undottedtoclinep#1#2#3#4#5{%
+%\typeout{UNDOT}
+  \ifnum #1>\c@tocdepth \else
+    \vskip \z@ \@plus.2\p@
+    {\leftskip #2\relax \rightskip \@tocrmarg \parfillskip -\rightskip
+     \parindent #2\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima #3\relax
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {#4}\nobreak
+%     \leaders\hbox{$\m@th
+%        \mkern \@dotsep mu\hbox{.}\mkern \@dotsep
+%        mu$}%
+        \hfill
+     \nobreak\null
+     \hb@xt@\@pnumwidth{\hfil\normalfont \normalcolor #5}%
+     \par}%
+  \fi}
+
 \let\appendixmtc\relax
+
+%
+% Hacks to remove the dots in the minitocs
+% Bug fixed 2000/04/26 v31
+% about optional argument
+%
+
+\newif\ifundottedmtc\undottedmtcfalse
+\@ifundefined{chapter}{}{%
+\let\sv@minitoc@\minitoc@
+\def\minitoc@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@minitoc@[#1]}}
+\let\sv@minilof@\minilof@
+\def\minilof@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@minilof@[#1]}}
+\let\sv@minilot@\minilot@
+\def\minilot@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@minilot@[#1]}}}
+
+\@ifundefined{part}{}{%
+\let\sv@parttoc@\parttoc@
+\def\parttoc@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@parttoc@[#1]}}
+\let\sv@partlof@\partlof@
+\def\partlof@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@partlof@[#1]}}
+\let\sv@partlot@\partlot@
+\def\partlot@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@partlot@[#1]}}}
+
+
+\@ifundefined{chapter}{%
+\@ifundefined{section}{}{%
+\let\sv@secttoc@\secttoc@
+\def\secttoc@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@secttoc@[#1]}}
+\let\sv@sectlof@\sectlof@
+\def\sectlof@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@sectlof@[#1]}}
+\let\sv@sectlot@\sectlot@
+\def\sectlot@[#1]{{\ifundottedmtc\let\@dottedtocline\@Undottedtoclinep\fi
+\sv@sectlot@[#1]}}}}{}
+
 
 % this command extracts info from the .toc file
 % and create the .mtcN files (.mtc -> .M on MS-DOS)
@@ -662,125 +1023,77 @@
 
 \def\MTC@next#1\relax#2\\{%
   \edef\MTC@list{#2}%
-  \MTC@loop{#1}}
+  \MTC@loop{#1}%
+}
 \def\MTC@toc{%
-  \ifx\MTC@list\@empty\else\expandafter\MTC@explist\fi}
+  \ifx\MTC@list\@empty\else\expandafter\MTC@explist\fi
+}
 
-\def\MTC@contentsline#1#2#3{%
-\gdef\themtc{\arabic{mtc}}
-\expandafter%
- \ifx\csname #1\endcsname\chapter\relax
- \stepcounter{mtc}% % the mtc counter simulates the chapter counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
-\def\mtcname{\jobname.mtc\themtc}}%              % UNIX
-{\typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
-\def\mtcname{\jobname.M\themtc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
- \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\section\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\paragraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSPfont
-      \space #3}}}}\@tempa
- \fi
-% Added v25: \starchapter and co. 
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\starchapter\relax
-\stepcounter{mtc}% % the mtc counter simulates the chapter counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
-\def\mtcname{\jobname.mtc\themtc}}%              % UNIX
-{\typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
-\def\mtcname{\jobname.M\themtc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
- \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\starsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mtcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSPfont
-      \space #3}}}}\@tempa
- \fi
+
+\def\MTC@contentsline#1#2#3#4{% %%HO/BJ: 4 instead of 3 parameters
+  \gdef\themtc{\arabic{mtc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+  \mtc@toks{\noexpand\leavevmode #2}%
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+% Added v25: \starchapter and co.
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\starchapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@longextensions
+      \typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
 }
 
 \def\MTC@explist{\expandafter\MTC@next\MTC@list\\}
@@ -790,26 +1103,35 @@
     \expandafter\MTC@toc
   \else
     \typeout{PREPARING MINITOCS FROM #1}%
-    \expandafter\MTC@read\fi}
+    \expandafter\MTC@read
+  \fi
+}
 \def\MTC@read{%
   \read\@inputcheck to\MTC@line
-  \expandafter\MTC@test\MTC@line....\MTC@%
-  }%
-\long\def\MTC@test#1#2#3#4#5\MTC@{%
+  \expandafter\MTC@test\MTC@line.....\MTC@% %%HO: . added
+}%
+%%HO/BJ: now patch \MTC@test,
+%%HO/BJ: call \MTC@contentsline with 4 instead of 3 parameters
+\long\def\MTC@test#1#2#3#4#5#6\MTC@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \MTC@contentsline{#2}{#3}{#4}%
+    \MTC@contentsline{#2}{#3}{#4}{#5}%
+    %%HO/BJ: 4. parameter added by Tony Roberts
     \let\mtc@string\relax
   \else\ifx#1\@input
-     \edef\MTC@list{\MTC@list#2\relax}%
+    \edef\MTC@list{\MTC@list#2\relax}%
   \else\ifx#1\chapterend % \chapter* closes .mtcN (.mtc->.M on MS-DOS)
-     \immediate\closeout\tf@mtc
-     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
   \else\ifx#1\chapterbegin
-     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+    \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
   \fi\fi\fi\fi
-  \ifeof\@inputcheck\expandafter\MTC@toc
-  \else\expandafter\MTC@read\fi}%
+  \ifeof\@inputcheck
+    \expandafter\MTC@toc
+  \else
+    \expandafter\MTC@read
+  \fi
+}%
 
 \def\MLF@next#1\relax#2\\{%
   \edef\MLF@list{#2}%
@@ -817,28 +1139,25 @@
 \def\MLF@lof{%
   \ifx\MLF@list\@empty\else\expandafter\MLF@explist\fi}
 
-\def\MLF@contentsline#1#2#3{%
-\gdef\themtc{\arabic{mtc}}
-\expandafter%
- \ifx\csname #1\endcsname\xchapter\relax
- \stepcounter{mtc}% % the mtc counter simulates the chapter counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.mlf\themtc}%     % UNIX
-\def\mlfname{\jobname.mlf\themtc}}%              % UNIX
-{\typeout{Writing\space\jobname.F\themtc}%       % MS-DOS
-\def\mlfname{\jobname.F\themtc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .mlfN .mlf->.F on MS-DOS
- \immediate\openout\tf@mtc=\mlfname % open next .mlfN (.mlf->.F if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\figure\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mlffont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mlffont%
-      \space #3}}}}\@tempa
- \fi
+\def\MLF@contentsline#1#2#3#4{% %%HO: added #4
+  \gdef\themtc{\arabic{mtc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\xchapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.mlf\themtc}%     % UNIX
+      \def\mlfname{\jobname.mlf\themtc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.F\themtc}%       % MS-DOS
+      \def\mlfname{\jobname.F\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mlfN .mlf->.F on MS-DOS
+    \immediate\openout\tf@mtc=\mlfname % open next .mlfN (.mlf->.F if MS-DOS)
+  \fi
+  % extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\figure
+    \mtc@toks{\noexpand\leavevmode#2}%
+    \MTC@WriteContentsline{#1}{mlf}{#3}{#4}%
+  \fi
 }
 
 \def\MLF@explist{\expandafter\MLF@next\MLF@list\\}
@@ -851,12 +1170,12 @@
     \expandafter\MLF@read\fi}
 \def\MLF@read{%
   \read\@inputcheck to\MLF@line
-  \expandafter\MLF@test\MLF@line....\MLF@%
+  \expandafter\MLF@test\MLF@line.....\MLF@% %%HO: . added
   }%
-\long\def\MLF@test#1#2#3#4#5\MLF@{%
+\long\def\MLF@test#1#2#3#4#5#6\MLF@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \MLF@contentsline{#2}{#3}{#4}%
+    \MLF@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\MLF@list{\MLF@list#2\relax}%
@@ -864,7 +1183,7 @@
      \immediate\closeout\tf@mtc
      \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
   \else\ifx#1\chapterbegin
-     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+    \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
   \fi\fi\fi\fi
   \ifeof\@inputcheck\expandafter\MLF@lof
   \else\expandafter\MLF@read\fi}%
@@ -875,28 +1194,25 @@
 \def\MLT@lot{%
   \ifx\MLT@list\@empty\else\expandafter\MLT@explist\fi}
 
-\def\MLT@contentsline#1#2#3{%
-\gdef\themtc{\arabic{mtc}}
-\expandafter%
- \ifx\csname #1\endcsname\xchapter\relax
- \stepcounter{mtc}% % the mtc counter simulates the chapter counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.mlt\themtc}%     % UNIX
-\def\mltname{\jobname.mlt\themtc}}%              % UNIX
-{\typeout{Writing\space\jobname.T\themtc}%       % MS-DOS
-\def\mltname{\jobname.T\themtc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .mltN .mlt->.T on MS-DOS
- \immediate\openout\tf@mtc=\mltname % open next .mltN (.mlt->.T if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\table\relax
+\def\MLT@contentsline#1#2#3#4{% %%HO: #4 added
+  \gdef\themtc{\arabic{mtc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\xchapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.mlt\themtc}%     % UNIX
+      \def\mltname{\jobname.mlt\themtc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.T\themtc}%       % MS-DOS
+      \def\mltname{\jobname.T\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mltN .mlt->.T on MS-DOS
+    \immediate\openout\tf@mtc=\mltname % open next .mltN (.mlt->.T if MS-DOS)
+  \fi
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\table
      \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\mltfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\mltfont%
-      \space #3}}}}\@tempa
- \fi
+     \MTC@WriteContentsline{#1}{mlt}{#3}{#4}%
+  \fi
 }
 
 \def\MLT@explist{\expandafter\MLT@next\MLT@list\\}
@@ -909,12 +1225,12 @@
     \expandafter\MLT@read\fi}
 \def\MLT@read{%
   \read\@inputcheck to\MLT@line
-  \expandafter\MLT@test\MLT@line....\MLT@%
+  \expandafter\MLT@test\MLT@line.....\MLT@% %%HO: . added
   }%
-\long\def\MLT@test#1#2#3#4#5\MLT@{%
+\long\def\MLT@test#1#2#3#4#5#6\MLT@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \MLT@contentsline{#2}{#3}{#4}%
+    \MLT@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\MLT@list{\MLT@list#2\relax}%
@@ -922,11 +1238,59 @@
      \immediate\closeout\tf@mtc
      \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
   \else\ifx#1\chapterbegin
-     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+        \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
   \fi\fi\fi\fi
   \ifeof\@inputcheck\expandafter\MLT@lot
   \else\expandafter\MLT@read\fi}%
 } % end of chapter level
+
+%%HO: new \MTC@WriteContentsline:
+%%HO: * makes definition of \MTC@contentsline shorter
+%%HO: * extra \edef level removed.
+\def\mtc@dot{.}
+\def\MTC@WriteContentsline#1#2#3#4{%
+  % #1: #1 of \MTC@contentsline
+  % #2: font shorthand ==> \csname #2font\endcsname
+  % #3: #3 of \MTC@contentsline
+  % #4: #4 of \MTC@contentsline
+  \def\mtc@param{#4}%
+  \immediate\write\tf@mtc{%
+    {%
+      \string\reset@font
+      \expandafter\string\csname #2font\endcsname
+      \string\mtc@string
+      \string\contentsline{#1}%
+      {\the\mtc@toks}%
+      {%
+        \string\reset@font
+        \expandafter\string\csname #2font\endcsname
+        \space #3%
+      }%
+      \ifx\mtc@dot\mtc@param
+      \else
+        {#4}% %%HO/BJ: #4 is hyperlink
+      \fi
+    }%
+  }%
+}
+\def\MTC@WriteCoffeeline#1#2#3{%
+  % #1: #1 of \MTC@contentsline
+  % #2: #3 of \MTC@contentsline
+  \immediate\write\tf@mtc{%
+    {%
+      \string\reset@font
+      \string\coffeefont
+      \string\mtc@string
+%COFFEE \string\textbf{#1}%
+      {\the\mtc@toks}%
+      {%
+        \string\reset@font
+        \string\coffeefont
+        \space #3%
+      }%
+    }%
+  }%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -937,12 +1301,14 @@
 \@ifundefined{part}{}%
 {%
 \def\xpart{xpart}
-\def\Thepart{\arabic{part}}
+\def\ypart{ypart}
+\def\Thepart{\arabic{ptc}} %v28c ; that \arabic{part}
 \def\firstpartis#1%
   {\typeout{^^JWARNING*** \string\firstpartis}%
    \typeout{ is an obsolete command^^J}}
 \newcounter{ptc}  % counter of parttocs
 \setcounter{ptc}{0}
+\def\adjustptc{\stepcounter{ptc}}  %32
 \def\theptc{\arabic{ptc}}
 \newcounter{parttocdepth} % analog to tocdepth, but for parttocs
 \setcounter{parttocdepth}{2}
@@ -1033,7 +1399,7 @@
     }}%
 }
 
-% Default: titles on left 
+% Default: titles on left
 \let\do@ptitc\l@pti
 \let\df@ptitc\l@pti
 \let\do@ptilf\l@pti
@@ -1063,10 +1429,11 @@
 \def\parttoc{\@ifnextchar[{\parttoc@}{\parttoc@[d]}}
 
 \def\parttoc@[#1]{%
-        \@ifundefined{chapter}{}{\cleardoublepage
+        \@ifundefined{chapter}{}{\beforeparttoc %32 Yannick Michou (corr. typo)
         \global\let\mtc@markboth\markboth
         \global\let\@mkboth\markboth
-        \thispagestyle{empty}
+%        \thispagestyle{empty}
+        \thispageparttocstyle %32
         \mtc@markboth{\uppercase{\ptctitle}}{\uppercase{\ptctitle}}%
         }%
         \relax\begin{samepage}% we begin a local group here, using samepage
@@ -1106,9 +1473,11 @@
   \makeatletter
   \@ifundefined{ptc@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{ptc\Thepart}}%  % UNIX
-{\def\@tocfile{P\Thepart}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{ptc\Thepart}%  % UNIX
+\else
+\def\@tocfile{P\Thepart}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1119,17 +1488,18 @@
         \vrule width \z@ height \z@
         depth \z@\end{samepage}% %## the \\ is essential
         \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
-        {\cleardoublepage}}
+        {\afterparttoc}}                  %32
 
 % this command must be used after \part
 % if you need a partlof (no automatic partlof)
 \def\partlof{\@ifnextchar[{\partlof@}{\partlof@[d]}}
 
 \def\partlof@[#1]{%
-        \@ifundefined{chapter}{}{\cleardoublepage
+        \@ifundefined{chapter}{}{\beforepartlof %32
         \global\let\mtc@markboth\markboth
         \global\let\@mkboth\markboth
-        \thispagestyle{empty}
+%        \thispagestyle{empty}
+        \thispagepartlofstyle                   %32
         \mtc@markboth{\uppercase{\plftitle}}{\uppercase{\plftitle}}%
         }%
         \relax\begin{samepage}% we begin a local group here, using samepage
@@ -1170,9 +1540,11 @@
   \makeatletter
   \@ifundefined{plf@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{plf\Thepart}}%  % UNIX
-{\def\@tocfile{G\Thepart}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{plf\Thepart}%  % UNIX
+\else
+\def\@tocfile{G\Thepart}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1183,7 +1555,7 @@
         \vrule width \z@ height \z@
         depth \z@\end{samepage}% %## the \\ is essential
         \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
-        {\cleardoublepage}}
+        {\afterpartlof}}                   %32
 
 % Added in version #13
 % this command must be used after \part
@@ -1191,10 +1563,11 @@
 \def\partlot{\@ifnextchar[{\partlot@}{\partlot@[d]}}
 
 \def\partlot@[#1]{%
-        \@ifundefined{chapter}{}{\cleardoublepage
+        \@ifundefined{chapter}{}{\beforepartlot   %32
         \global\let\mtc@markboth\markboth
         \global\let\@mkboth\markboth
-        \thispagestyle{empty}
+%        \thispagestyle{empty}
+        \thispagepartlotstyle                     %32
         \mtc@markboth{\uppercase{\plttitle}}{\uppercase{\plttitle}}%
         }%
         \relax\begin{samepage}% we begin a local group here, using samepage
@@ -1235,9 +1608,11 @@
   \makeatletter
   \@ifundefined{plt@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{plt\Thepart}}%  % UNIX
-{\def\@tocfile{U\Thepart}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{plt\Thepart}%  % UNIX
+\else
+\def\@tocfile{U\Thepart}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1248,20 +1623,31 @@
         \vrule width \z@ height \z@
         depth \z@\end{samepage}% %## the \\ is essential
         \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
-        {\cleardoublepage}}
+        {\afterpartlot}}                     %32
 
 % I use a depth of 10000 to inhibit the printing of
 % that contentsline.
 \def\l@xpart{\@dottedtocline{\@M}{1.0em}{2.3em}}
+\def\l@ypart{\@dottedtocline{0}{1.0em}{2.3em}}
 \def\l@pchapter{\@dottedtocline{1}{1.0em}{2.3em}}
+\def\l@psection{\@dottedtocline{2}{1.0em}{2.3em}}
 
 \def\pchapter{pchapter}
+\def\psection{psection}
 
-\let\sv@part\@part
+%v28d \let\sv@part\@part
+\let\sv@part\mtc@svpart %28d
 \def\@part[#1]#2{\sv@part[{#1}]{#2}\relax%
 \addcontentsline{lof}{xpart}{#1}%
 \addcontentsline{lot}{xpart}{#1}%
+\addcontentsline{toc}{xpart}{#1}%v28c
+\stepcounter{ptc}%
 }
+
+%v28d
+%\let\sv@spart\mtc@svspart
+\let\sv@spart\@spart
+\def\@spart{\stepcounter{ptc}\sv@spart}
 
 % tricky code to deal with \part*
 \let\ptc@spart\@spart
@@ -1336,127 +1722,85 @@
 \def\PTC@toc{%
   \ifx\PTC@list\@empty\else\expandafter\PTC@explist\fi}
 
-\def\PTC@contentsline#1#2#3{%
-\expandafter%
- \ifx\csname #1\endcsname\part\relax
- \stepcounter{ptc}% % the ptc counter simulates the part counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.ptc\theptc}%     % UNIX
-\def\ptcname{\jobname.ptc\theptc}}%              % UNIX
-{\typeout{Writing\space\jobname.P\theptc}%       % MS-DOS
-\def\ptcname{\jobname.P\theptc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .ptcN .ptc->.P on MS-DOS
- \immediate\openout\tf@mtc=\ptcname % open next .ptcN (.ptc->.P if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for chapters, sections, etc.
- \ifx\csname #1\endcsname\chapter\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcCfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcCfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\section\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\paragraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSPfont
-      \space #3}}}}\@tempa
- \fi
+\def\PTC@contentsline#1#2#3#4{% %%HO/DV: 4 instead of 3 parameters
+  \expandafter\ifx\csname #1\endcsname\part
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.ptc\theptc}%     % UNIX
+      \def\ptcname{\jobname.ptc\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.P\theptc}%       % MS-DOS
+      \def\ptcname{\jobname.P\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .ptcN .ptc->.P on MS-DOS
+    \immediate\openout\tf@mtc=\ptcname % open next .ptcN (.ptc->.P if MS-DOS)
+  \fi
+%%%%%%%%%%%%%%%%%%%%%%
+% v28c: starpart added
+%%%%%%%%%%%%%%%%%%%%%%
+  \expandafter\ifx\csname #1\endcsname\starpart\relax
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.ptc\theptc}%     % UNIX
+      \def\ptcname{\jobname.ptc\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.P\theptc}%       % MS-DOS
+      \def\ptcname{\jobname.P\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .ptcN .ptc->.P on MS-DOS
+    \immediate\openout\tf@mtc=\ptcname % open next .ptcN (.ptc->.P if MS-DOS)
+  \fi
+%%%%%%%%%%%%%%%%%%%%%%
+  \mtc@toks{\noexpand\leavevmode #2}%
+% extracts and writes info for chapters, sections, etc.
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \MTC@WriteContentsline{#1}{ptcC}{#3}{#4}%
+  \fi
+%19990316
+  \expandafter\ifx\csname #1\endcsname\pchapter
+    \MTC@WriteContentsline{#1}{ptcC}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{ptcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{ptcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{ptcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{ptcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{ptcSP}{#3}{#4}%
+  \fi
 % Added v25: \starchapter & co.
-\expandafter% % extracts and writes info for chapters, sections, etc.
- \ifx\csname #1\endcsname\starchapter\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcCfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcCfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\ptcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSPfont
-      \space #3}}}}\@tempa
- \fi
+% extracts and writes info for chapters, sections, etc.
+% v28a 960123
+  \expandafter\ifx\csname #1\endcsname\starchapter
+%%HO: the following line should be disabled:
+%%    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \MTC@WriteContentsline{#1}{ptcC}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{ptcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{ptcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{ptcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{ptcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{ptcSP}{#3}{#4}%
+  \fi
 }
 
 \def\PTC@explist{\expandafter\PTC@next\PTC@list\\}
@@ -1469,12 +1813,13 @@
     \expandafter\PTC@read\fi}
 \def\PTC@read{%
   \read\@inputcheck to\PTC@line
-  \expandafter\PTC@test\PTC@line....\PTC@%
+  \expandafter\PTC@test\PTC@line.....\PTC@% %%HO: . added
   }%
-\long\def\PTC@test#1#2#3#4#5\PTC@{%
+\long\def\PTC@test#1#2#3#4#5#6\PTC@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \PTC@contentsline{#2}{#3}{#4}%
+    \PTC@contentsline{#2}{#3}{#4}{#5}%
+    %%HO/DV: 4 instead of 3 parameters
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\PTC@list{\PTC@list#2\relax}%
@@ -1493,27 +1838,36 @@
 \def\PLF@lof{%
   \ifx\PLF@list\@empty\else\expandafter\PLF@explist\fi}
 
-\def\PLF@contentsline#1#2#3{%
-\expandafter%
- \ifx\csname #1\endcsname\xpart\relax
- \stepcounter{ptc}% % the ptc counter simulates the part counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.plf\theptc}%     % UNIX
-\def\plfname{\jobname.plf\theptc}}%              % UNIX
-{\typeout{Writing\space\jobname.G\theptc}%       % MS-DOS
-\def\plfname{\jobname.G\theptc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .plfN .plf->.G on MS-DOS
- \immediate\openout\tf@mtc=\plfname % open next .plfN (.plf->.G if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\figure\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\plffont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\plffont%
-      \space #3}}}}\@tempa
- \fi
+\def\PLF@contentsline#1#2#3#4{% %%HO: #4 added
+  \expandafter\ifx\csname #1\endcsname\xpart
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.plf\theptc}%     % UNIX
+      \def\plfname{\jobname.plf\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.G\theptc}%       % MS-DOS
+      \def\plfname{\jobname.G\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .plfN .plf->.G on MS-DOS
+    \immediate\openout\tf@mtc=\plfname % open next .plfN (.plf->.G if MS-DOS)
+  \fi
+  \expandafter\ifx\csname #1\endcsname\ypart
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.plf\theptc}%     % UNIX
+      \def\plfname{\jobname.plf\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.G\theptc}%       % MS-DOS
+      \def\plfname{\jobname.G\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .plfN .plf->.G on MS-DOS
+    \immediate\openout\tf@mtc=\plfname % open next .plfN (.plf->.G if MS-DOS)
+  \fi
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\figure
+    \mtc@toks{\noexpand\leavevmode#2}%
+    \MTC@WriteContentsline{#1}{plf}{#3}{#4}%
+  \fi
 }
 
 \def\PLF@explist{\expandafter\PLF@next\PLF@list\\}
@@ -1526,12 +1880,12 @@
     \expandafter\PLF@read\fi}
 \def\PLF@read{%
   \read\@inputcheck to\PLF@line
-  \expandafter\PLF@test\PLF@line....\PLF@%
+  \expandafter\PLF@test\PLF@line.....\PLF@% %%HO: . added
   }%
-\long\def\PLF@test#1#2#3#4#5\PLF@{%
+\long\def\PLF@test#1#2#3#4#5#6\PLF@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \PLF@contentsline{#2}{#3}{#4}%
+    \PLF@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\PLF@list{\PLF@list#2\relax}%
@@ -1550,27 +1904,36 @@
 \def\PLT@lot{%
   \ifx\PLT@list\@empty\else\expandafter\PLT@explist\fi}
 
-\def\PLT@contentsline#1#2#3{%
-\expandafter%
- \ifx\csname #1\endcsname\xpart\relax
- \stepcounter{ptc}% % the ptc counter simulates the part counter
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.plt\theptc}%     % UNIX
-\def\pltname{\jobname.plt\theptc}}%              % UNIX
-{\typeout{Writing\space\jobname.U\theptc}%       % MS-DOS
-\def\pltname{\jobname.U\theptc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .pltN .plt->.U on MS-DOS
- \immediate\openout\tf@mtc=\pltname % open next .pltN (.plt->.U if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for chapters, sections, etc.
- \ifx\csname #1\endcsname\table\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\pltfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\pltfont%
-      \space #3}}}}\@tempa
- \fi
+\def\PLT@contentsline#1#2#3#4{% %%HO: #4 added
+  \expandafter\ifx\csname #1\endcsname\xpart
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.plt\theptc}%     % UNIX
+      \def\pltname{\jobname.plt\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.U\theptc}%       % MS-DOS
+      \def\pltname{\jobname.U\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .pltN .plt->.U on MS-DOS
+    \immediate\openout\tf@mtc=\pltname % open next .pltN (.plt->.U if MS-DOS)
+  \fi
+  \expandafter\ifx\csname #1\endcsname\ypart
+    \stepcounter{ptc}% % the ptc counter simulates the part counter
+    \if@longextensions%
+      \typeout{Writing\space\jobname.plt\theptc}%     % UNIX
+      \def\pltname{\jobname.plt\theptc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.U\theptc}%       % MS-DOS
+      \def\pltname{\jobname.U\theptc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .pltN .plt->.U on MS-DOS
+    \immediate\openout\tf@mtc=\pltname % open next .pltN (.plt->.U if MS-DOS)
+  \fi
+% extracts and writes info for chapters, sections, etc.
+  \expandafter\ifx\csname #1\endcsname\table
+    \mtc@toks{\noexpand\leavevmode#2}%
+    \MTC@WriteContentsline{#1}{plt}{#3}{#4}%
+  \fi
 }
 
 \def\PLT@explist{\expandafter\PLT@next\PLT@list\\}
@@ -1583,12 +1946,12 @@
     \expandafter\PLT@read\fi}
 \def\PLT@read{%
   \read\@inputcheck to\PLT@line
-  \expandafter\PLT@test\PLT@line....\PLT@%
+  \expandafter\PLT@test\PLT@line.....\PLT@% %%HO: . added
   }%
-\long\def\PLT@test#1#2#3#4#5\PLT@{%
+\long\def\PLT@test#1#2#3#4#5#6\PLT@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \PLT@contentsline{#2}{#3}{#4}%
+    \PLT@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\PLT@list{\PLT@list#2\relax}%
@@ -1607,12 +1970,14 @@
 %%% the following macros are available (for article-like documents).
 %%% Braces are inscrutable!
 \@ifundefined{chapter}%
-{\@ifundefined{section}{}{%
+{% CAS \chapter inconnu
+\@ifundefined{section}{}{%
 \def\firstsectionis#1%
   {\typeout{^^JWARNING*** \string\firstsectionis}%
    \typeout{ is an obsolete command^^J}}
 \newcounter{stc}  % counter of secttocs
 \setcounter{stc}{0}
+\def\adjuststc{\stepcounter{stc}}  %32
 \newcounter{secttocdepth} % analog to tocdepth, but for secttocs
 \setcounter{secttocdepth}{2}
 
@@ -1638,7 +2003,7 @@
 \def\e@sti#1{\relax}
 \def\n@sti#1{\relax}
 
-% Default: titles on left 
+% Default: titles on left
 \let\do@stitc\l@sti
 \let\df@stitc\l@sti
 \let\do@stilf\l@sti
@@ -1699,9 +2064,11 @@
   \@ifundefined{stc@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
    \gdef\thestc{\arabic{stc}} %23
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{stc\thestc}}%  % UNIX
-{\def\@tocfile{S\thestc}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{stc\thestc}%  % UNIX
+\else
+\def\@tocfile{S\thestc}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1734,7 +2101,7 @@
         \nopagebreak[4]%
         \kern-0.8\baselineskip\nopagebreak[4]%
         \par\noindent
-	\ifx\stc@rule\relax % correction 07Nov94 v23
+        \ifx\stc@rule\relax % correction 07Nov94 v23
         \begin{tabular}{@{}p{\columnwidth}@{}}
         {\reset@font\stifont\do@stilf{\mtc@v\slftitle}}\\
         \end{tabular}\else
@@ -1757,9 +2124,11 @@
   \@ifundefined{slf@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
    \gdef\thestc{\arabic{stc}} %23
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{slf\thestc}}%  % UNIX
-{\def\@tocfile{H\thestc}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{slf\thestc}%  % UNIX
+\else
+\def\@tocfile{H\thestc}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1816,9 +2185,10 @@
   \@ifundefined{slt@pgno}%
   {\let\@dottedtocline\@undottedtocline}{}
     \gdef\thestc{\arabic{stc}}
-\@ifundefined{SHORTEXT}%
-{\def\@tocfile{slt\thestc}}%  % UNIX
-{\def\@tocfile{V\thestc}}%    % MS-DOS
+\if@longextensions%
+\def\@tocfile{slt\thestc}\else%  % UNIX
+\def\@tocfile{V\thestc}%    % MS-DOS
+\fi
   \@input{\jobname.\@tocfile}\if@filesw
   \fi%
   \global\@nobreakfalse\endgroup
@@ -1950,104 +2320,65 @@
 \def\STC@toc{%
   \ifx\STC@list\@empty\else\expandafter\STC@explist\fi}
 
-\def\STC@contentsline#1#2#3{%
-  \gdef\thestc{\arabic{stc}}
-\expandafter%
- \ifx\csname #1\endcsname\section\relax
- \stepcounter{stc}% % the stc counter simulates the section counter
-  \gdef\thestc{\arabic{stc}}
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.stc\thestc}%     % UNIX
-\def\stcname{\jobname.stc\thestc}}%              % UNIX
-{\typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
-\def\stcname{\jobname.S\thestc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
- \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\paragraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\subparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSPfont
-      \space #3}}}}\@tempa
- \fi
+\def\STC@contentsline#1#2#3#4{% %%HO: #4 added
+  \gdef\thestc{\arabic{stc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\section
+    \stepcounter{stc}% % the stc counter simulates the section counter
+%%    \gdef\thestc{\arabic{stc}} %% HO: removed
+    \if@longextensions%
+      \typeout{Writing\space\jobname.stc\thestc}%     % UNIX
+      \def\stcname{\jobname.stc\thestc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
+      \def\stcname{\jobname.S\thestc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
+    \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
+  \fi
+  %%%
+  \mtc@toks{\noexpand\leavevmode #2}%
+% COFFEE
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{stcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{stcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{stcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{stcSP}{#3}{#4}%
+  \fi
 % Added v25: \starsection and co.
- \ifx\csname #1\endcsname\starsection\relax
- \stepcounter{stc}% % the stc counter simulates the section counter
-  \gdef\thestc{\arabic{stc}}
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.stc\thestc}%     % UNIX
-\def\stcname{\jobname.stc\thestc}}%              % UNIX
-{\typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
-\def\stcname{\jobname.S\thestc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
- \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsection\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubsubsection\relax
-     \mtc@toks{\noexpand \leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSSSfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSSfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcPfont%
-      \space #3}}}}\@tempa
- \fi
-\expandafter%
- \ifx\csname #1\endcsname\starsubparagraph\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\stcSPfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSPfont
-      \space #3}}}}\@tempa
- \fi
+  \ifx\csname #1\endcsname\starsection
+    \stepcounter{stc}% % the stc counter simulates the section counter
+    \gdef\thestc{\arabic{stc}}
+    \if@longextensions%
+      \typeout{Writing\space\jobname.stc\thestc}%     % UNIX
+      \def\stcname{\jobname.stc\thestc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
+      \def\stcname{\jobname.S\thestc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
+    \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{stcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{stcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{stcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{stcSP}{#3}{#4}%
+  \fi
 }
 
 \def\STC@explist{\expandafter\STC@next\STC@list\\}
@@ -2060,12 +2391,12 @@
     \expandafter\STC@read\fi}
 \def\STC@read{%
   \read\@inputcheck to\STC@line
-  \expandafter\STC@test\STC@line....\STC@%
+  \expandafter\STC@test\STC@line.....\STC@% %%HO: . added
   }%
-\long\def\STC@test#1#2#3#4#5\STC@{%
+\long\def\STC@test#1#2#3#4#5#6\STC@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \STC@contentsline{#2}{#3}{#4}%
+    \STC@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\STC@list{\STC@list#2\relax}%
@@ -2084,29 +2415,26 @@
 \def\SLF@lof{%
   \ifx\SLF@list\@empty\else\expandafter\SLF@explist\fi}
 
-\def\SLF@contentsline#1#2#3{%
-  \gdef\thestc{\arabic{stc}}
-\expandafter%
- \ifx\csname #1\endcsname\xsect\relax
- \stepcounter{stc}% % the stc counter simulates the section counter
-  \gdef\thestc{\arabic{stc}}
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.slf\thestc}%     % UNIX
-\def\slfname{\jobname.slf\thestc}}%              % UNIX
-{\typeout{Writing\space\jobname.G\thestc}%       % MS-DOS
-\def\slfname{\jobname.H\thestc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .slfN .slf->.H on MS-DOS
- \immediate\openout\tf@mtc=\slfname % open next .slfN (.slf->.H if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for sections, etc.
- \ifx\csname #1\endcsname\figure\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\slffont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\slffont%
-      \space #3}}}}\@tempa
- \fi
+\def\SLF@contentsline#1#2#3#4{% %%HO: #4 added
+  \gdef\thestc{\arabic{stc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\xsect
+    \stepcounter{stc}% % the stc counter simulates the section counter
+%%    \gdef\thestc{\arabic{stc}} %%HO: removed
+    \if@longextensions%
+      \typeout{Writing\space\jobname.slf\thestc}%     % UNIX
+      \def\slfname{\jobname.slf\thestc}%              % UNIX
+    \else
+      \typeout{Writing\space\jobname.G\thestc}%       % MS-DOS
+      \def\slfname{\jobname.H\thestc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .slfN .slf->.H on MS-DOS
+    \immediate\openout\tf@mtc=\slfname % open next .slfN (.slf->.H if MS-DOS)
+  \fi
+  \mtc@toks{\noexpand\leavevmode #2}%
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\figure
+    \MTC@WriteContentsline{#1}{slf}{#3}{#4}%
+  \fi
 }
 
 \def\SLF@explist{\expandafter\SLF@next\SLF@list\\}
@@ -2119,12 +2447,12 @@
     \expandafter\SLF@read\fi}
 \def\SLF@read{%
   \read\@inputcheck to\SLF@line
-  \expandafter\SLF@test\SLF@line....\SLF@%
+  \expandafter\SLF@test\SLF@line.....\SLF@% %%HO: . added
   }%
-\long\def\SLF@test#1#2#3#4#5\SLF@{%
+\long\def\SLF@test#1#2#3#4#5#6\SLF@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \SLF@contentsline{#2}{#3}{#4}%
+    \SLF@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\SLF@list{\SLF@list#2\relax}%
@@ -2143,29 +2471,25 @@
 \def\SLT@lot{%
   \ifx\SLT@list\@empty\else\expandafter\SLT@explist\fi}
 
-\def\SLT@contentsline#1#2#3{%
-  \gdef\thestc{\arabic{stc}}
-\expandafter%
- \ifx\csname #1\endcsname\xsect\relax
- \stepcounter{stc}% % the stc counter simulates the section counter
-  \gdef\thestc{\arabic{stc}}
-\@ifundefined{SHORTEXT}%
-{\typeout{Writing\space\jobname.slt\thestc}%     % UNIX
-\def\mltname{\jobname.slt\thestc}}%              % UNIX
-{\typeout{Writing\space\jobname.V\thestc}%       % MS-DOS
-\def\sltname{\jobname.V\thestc}}%                % MS-DOS
- \immediate\closeout\tf@mtc % close current .sltN .slt->.V on MS-DOS
- \immediate\openout\tf@mtc=\sltname % open next .sltN (.slt->.V if MS-DOS)
- \fi
-\expandafter% % extracts and writes info for subsections, etc.
- \ifx\csname #1\endcsname\table\relax
-     \mtc@toks{\noexpand\leavevmode#2}%
-     \edef\@tempa{\immediate\write\tf@mtc {%
-     {\string\reset@font\string\sltfont\string\mtc@string%
-     \string\contentsline{#1}%
-     {\noexpand\the\mtc@toks}{\string\reset@font\string\sltfont%
-      \space #3}}}}\@tempa
- \fi
+\def\SLT@contentsline#1#2#3#4{% %%HO: #4 added
+  \gdef\thestc{\arabic{stc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\xsect
+    \stepcounter{stc}% % the stc counter simulates the section counter
+%%    \gdef\thestc{\arabic{stc}} %%HO: removed
+    \if@longextensions%
+      \typeout{Writing\space\jobname.slt\thestc}%     % UNIX
+      \def\sltname{\jobname.slt\thestc}%              % UNIX %bug mlt->slt
+    \else
+      \typeout{Writing\space\jobname.V\thestc}%       % MS-DOS
+      \def\sltname{\jobname.V\thestc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .sltN .slt->.V on MS-DOS
+    \immediate\openout\tf@mtc=\sltname % open next .sltN (.slt->.V if MS-DOS)
+  \fi
+% extracts and writes info for subsections, etc.
+  \expandafter\ifx\csname #1\endcsname\table
+    \MTC@WriteContentsline{#1}{slt}{#3}{#4}%
+  \fi
 }
 
 \def\SLT@explist{\expandafter\SLT@next\SLT@list\\}
@@ -2178,12 +2502,12 @@
     \expandafter\SLT@read\fi}
 \def\SLT@read{%
   \read\@inputcheck to\SLT@line
-  \expandafter\SLT@test\SLT@line....\SLT@%
+  \expandafter\SLT@test\SLT@line.....\SLT@% %%HO: . added
   }%
-\long\def\SLT@test#1#2#3#4#5\SLT@{%
+\long\def\SLT@test#1#2#3#4#5#6\SLT@{% %%HO: #6 added
   \ifx#1\contentsline
     \let\mtc@string\string
-    \SLT@contentsline{#2}{#3}{#4}%
+    \SLT@contentsline{#2}{#3}{#4}{#5}% %%HO: #4 added
     \let\mtc@string\relax
   \else\ifx#1\@input
      \edef\SLT@list{\SLT@list#2\relax}%
@@ -2195,7 +2519,9 @@
   \fi\fi\fi\fi
   \ifeof\@inputcheck\expandafter\SLT@lot
   \else\expandafter\SLT@read\fi}%
-}}{}
+}%
+}% FIN CAS \chapter inconnu: \secttoc &co. permis
+{} % CAS \chapter connu: pas de \secttoc & co.
 
 \@ifundefined{section}{}{\let\l@listof\l@section} %v27
 \@ifundefined{chapter}{}{\let\l@listof\l@chapter} %v27
@@ -2217,19 +2543,49 @@
 \def\stcrule{\def\stc@rule{\kern-3\p@%
   \hrule width \columnwidth \kern2.6\p@}} % the \hrule is .4pt high
 
+%v28b
+% init counters
+\AtBeginDocument{%
+\@ifundefined{c@ptc}{}{\setcounter{ptc}{0}}
+\@ifundefined{c@mtc}{}{\setcounter{mtc}{0}}
+\@ifundefined{c@stc}{}{\setcounter{stc}{0}}}
+
+%\@ifundefined{c@ptc}{}{\setcounter{ptc}{0}}
+%\@ifundefined{c@mtc}{}{\setcounter{mtc}{0}}
+%\@ifundefined{c@stc}{}{\setcounter{stc}{0}}
+
+%%% tight option
+\DeclareOption{tight}{\tightmtctrue}
+\DeclareOption{loose}{\tightmtcfalse} % default
+
+%%% undotted option
+\DeclareOption{undotted}{\undottedmtctrue}
+\DeclareOption{dotted}{\undottedmtcfalse} % default
+
 %%%% Language dependent part
 \DeclareOption{american}{\input{english.mld}}
+\DeclareOption{arab}{\input{arab.mld}}   %v27
+\DeclareOption{arabic}{\input{arab.mld}}   %v27
+\DeclareOption{armenian}{\input{armenian.mld}} %v29
 \DeclareOption{austrian}{\input{german.mld}}
-\DeclareOption{brazil}{\input{portuges.mld}}
+\DeclareOption{bahasa}{\input{bahasa.mld}} %v28
+\DeclareOption{basque}{\input{basque.mld}} %v30
+\DeclareOption{brazil}{\input{brazil.mld}} %v28
+\DeclareOption{bicig}{\input{bicig.mld}} %v29
 \DeclareOption{breton}{\input{breton.mld}} %v26
+\DeclareOption{buryat}{\input{buryat.mld}} %v29
 \DeclareOption{catalan}{\input{catalan.mld}}
 \DeclareOption{croatian}{\input{croatian.mld}}
 \DeclareOption{czech}{\input{czech.mld}}
 \DeclareOption{danish}{\input{danish.mld}}
 \DeclareOption{dutch}{\input{dutch.mld}}
+\DeclareOption{afrikaans}{\input{afrikaan.mld}} %v28
+\DeclareOption{afrikaan}{\input{afrikaan.mld}} %v28
 \DeclareOption{english}{\input{english.mld}}
 \DeclareOption{esperant}{\input{esperant.mld}} %v26
 \DeclareOption{esperanto}{\input{esperant.mld}} %v26
+\DeclareOption{ethiopia}{\input{ethiopia.mld}} %v28
+\DeclareOption{ethiopian}{\input{ethiopia.mld}} %v28
 \DeclareOption{finnish}{\input{finnish.mld}}
 \DeclareOption{francais}{\input{french.mld}}
 \DeclareOption{french}{\input{french.mld}}
@@ -2240,8 +2596,11 @@
 \DeclareOption{hungarian}{\input{magyar.mld}}
 \DeclareOption{irish}{\input{irish.mld}} %v26
 \DeclareOption{italian}{\input{italian.mld}}
+\DeclareOption{lithuanian}{\input{lithuanian.mld}} %v29
 \DeclareOption{lsorbian}{\input{lsorbian.mld}} %v26
 \DeclareOption{magyar}{\input{magyar.mld}}
+\DeclareOption{mongol}{\input{mongol.mld}} %v29
+\DeclareOption{ngermanb}{\input{ngermanb.mld}} %v30
 \DeclareOption{norsk}{\input{norsk.mld}}
 \DeclareOption{nynorsk}{\input{nynorsk.mld}} %v25
 \DeclareOption{polish}{\input{polish.mld}}
@@ -2249,17 +2608,23 @@
 \DeclareOption{romanian}{\input{romanian.mld}}
 %%%%russian not supported \DeclareOption{russian}{\input{russian.mld}}
 \DeclareOption{russianb}{\input{russianb.mld}} %v26
+\DeclareOption{russianc}{\input{russianc.mld}} %v29
 \DeclareOption{scottish}{\input{scottish.mld}} %v26
+\DeclareOption{serbian}{\input{serbian.mld}} %v30
 \DeclareOption{slovak}{\input{slovak.mld}}
 \DeclareOption{slovene}{\input{slovene.mld}}
 \DeclareOption{spanish}{\input{spanish.mld}}
 \DeclareOption{swedish}{\input{swedish.mld}}
 \DeclareOption{turkish}{\input{turkish.mld}}
+\DeclareOption{ukraineb}{\input{ukraineb.mld}} %v30
 \DeclareOption{usorbian}{\input{usorbian.mld}} %v26
 \DeclareOption{vietnam}{\input{vietnam.mld}}   %v27
 \DeclareOption{vietnamese}{\input{vietnam.mld}}   %v27
-\DeclareOption{arab}{\input{arab.mld}}   %v27
-\DeclareOption{arabic}{\input{arab.mld}}   %v27
+\DeclareOption{welsh}{\input{welsh.mld}}   %v30
+%%%%%%%%%
+\DeclareOption{shortext}{\@longextensionsfalse %v28
+\typeout{*** You have forced the use of short extensions ***}}
+%%%%%%%%%
 \ExecuteOptions{english} %v27 % default
 \ProcessOptions*
 %%\languagespecific{russian.dtx}
@@ -2280,5 +2645,5 @@
 %%   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %%   Right brace   \}     Tilde         \~}
 \endinput
-%% 
+%%
 %% End of file `minitoc.sty'.

@@ -11,26 +11,26 @@ Known mirrors of the CTAN reside on (alphabetically, by country):
 
   ftp.belnet.be (Belgium)                 /packages/TeX
 
-  ctan.math.mun.ca (Newfoundland, Canada) /tex-archive 
+  ctan.cms.math.ca (Canada)               /tex-archive
+  ftp.crc.ca (Canada)                     /pub/packages/tex/tex-archive
+  ftp.ctex.org (China)                    /CTAN
   scratchy.emate.ucr.ac.cr (Costa Rica)   /pub/ctan
-
   ftp.cstug.cz (The Czech Republic)       /pub/tex/CTAN
 
   ftp.net.uni-c.dk (Denmark)              /mirror/ftp.tex.ac.uk/tex-archive
-  sunsite.auc.dk (Denmark)                /pub/tex/ctan
+  sunsite.dk (Denmark)                    /pub/tex/ctan
 
   ftp.gwdg.de (Germany)                   /pub/dante
-  ftp.informatik.uni-hamburg.de (Germany) /tex-archive
   ftp.mpi-sb.mpg.de (Germany)             /pub/tex/mirror/ftp.dante.de
   ftp.tu-chemnitz.de (Germany)            /pub/tex
   ftp.uni-augsburg.de (Germany)           /pub/tex/ctan
-  ftp.uni-bielefeld.de (Germany)          /pub/tex
   ftp.uni-stuttgart.de (Germany)          /tex-archive (/pub/tex)
 
   ftp.ut.ee (Estonia)                     /tex-archive
 
   ftp.funet.fi (Finland)                  /pub/TeX/CTAN
-  ftp.jussieu.fr (France)                 /pub4/TeX/CTAN
+  guinness.domicile.fr (France)           /pub/CTAN
+  ftp.jussieu.fr (France)                 /pub/TeX/CTAN
   ftp.loria.fr (France)                   /pub/ctan
   ftp.oleane.net (France)                 /pub/mirrors/CTAN/
   ftp.uvsq.fr (France)                    /pub/TeX/CTAN
@@ -40,42 +40,54 @@ Known mirrors of the CTAN reside on (alphabetically, by country):
   ftp.comp.hkbu.edu.hk (Hong Kong)        /pub/TeX/CTAN
   ftp.sztaki.hu (Hungary)                 /pub/tex
 
+  mirror.csa.iisc.ernet.in (India)        /tex-archive
+  mirrors.piksi.itb.ac.id (Indonesia)     /pub/CTAN
   ftp.heanet.ie (Ireland)                 /pub/ctan/tex
   cis.uniRoma2.it (Italy)                 /TeX
-  ftp.unina.it (Italy)                    /pub/TeX
 
   ftp.lab.kdd.co.jp (Japan)               /CTAN
   ftp.meisei-u.ac.jp (Japan)              /pub/CTAN
   ftp.riken.go.jp (Japan)                 /pub/tex-archive
   ftp.u-aizu.ac.jp (Japan)                /pub/tex/CTAN
+  mirror.nucba.ac.jp (Japan)              /mirror/TeX
   sunsite.sut.ac.jp (Japan)               /pub/archives/ctan
 
   ftp.kreonet.re.kr (Korea)               /pub/CTAN
 
-  ftp.cs.ruu.nl (The Netherlands)         /pub/tex-archive
+  ftp.ntg.nl (The Netherlands)            /mirror/tex-archive
+  ctan.unik.no (Norway)                   /tex-archive
 
   sunsite.icm.edu.pl (Poland)             /pub/CTAN
+  ftp.di.uminho.pt (Portugal)             /pub/ctan
+  ftp.ist.utl.pt (Portugal)               /pub/ctan
 
-  ftp.radio-msu.net (Russia *only*)       /tex-archive
+  ftp.chg.ru (Russia)                     /pub/TeX/CTAN
+  ftp.radio-msu.net (Russia *only*)       /pub/CTAN/tex-archive
   tex.ihep.su (Russia)                    /pub/TeX/CTAN
 
   ftp.nus.edu.sg (Singapore)              /pub/docs/TeX
+  sunsite.uakom.sk (Slovak Republic)      /pub/mirrors/CTAN
+  archive.sun.ac.za (South Africa)        /CTAN
   ftp.rediris.es (Spain)                  /mirror/tex-archive
   ftp.sunsite.kth.se (Sweden)             /pub/tex
-  sunsite.cnlab-switch.ch (Switzerland)   /mirror/tex
+  sunsite.cnlab-switch.ch (Switzerland)   /ftp/mirror/tex
 
   ftp.ccu.edu.tw (Taiwan)                 /pub/tex
   dongpo.math.ncu.edu.tw (Taiwan)         /tex-archive
+  ftp.nctu.edu.tw (Taiwan)                /pub/tex
+  ftp.kmitl.ac.th (Thailand)              /pub/tex
   sunsite.bilkent.edu.tr (Turkey)         /pub/tex/ctan
 
   sunsite.doc.ic.ac.uk (UK)               /packages/tex/uk-tex
-  ftp.cdrom.com (West coast, USA)         /pub/tex/ctan
-  ftp.cise.ufl.edu (Florida, USA)         /tex-archive
-  ftp.duke.edu (North Carolina, USA)      /tex-archive
+  ctan.math.utah.edu (Utah, USA)          /tex-archive
+  ctan.teleglobe.net (New Jersey, USA)    /CTAN
+  ftp.cise.ufl.edu (Florida, USA)         /pub/mirrors/tex-archive
   ftp.rge.com (New York, USA)             /pub/tex
-  joshua.smcvt.edu (Vermont, USA)         /pub/tex
-  sunsite.unc.edu (North Carolina, USA)   /pub/packages/TeX
-  wuarchive.wustl.edu (Missouri, USA)     /packages/TeX
+  ftp.sunsite.utk.edu (Tennessee, USA)    /pub/CTAN
+  ibiblio.org (North Carolina, USA)	  /pub/packages/TeX
+  indian.cse.msu.edu (Michigan, USA)      /pub/mirrors/CTAN
+  jhcloos.com (Texas, USA)                /pub/mirror/tex-archive
+  uiarchive.uiuc.edu (Illinois, USA)      /mirrors/ftp/tug.ctan.org/pub/tex-archive
 
 Known partial mirrors of the CTAN reside on:
   ftp.dcc.uchile.cl (Chile)               /pub/Mirror/ctan
@@ -87,24 +99,22 @@ Known partial mirrors of the CTAN reside on:
   ftp.fcu.edu.tw (Taiwan)                 /pub2/tex
   ftp.uu.net (Virginia, USA)              /pub/text-processing/TeX
 
-Please send updates to this list to <ctan@urz.uni-heidelberg.de>.
+Please send updates to this list to <ctan@dante.de>.
 
 The participating hosts in the Comprehensive TeX Archive Network are:
-  ftp.dante.de  (Mainz, Germany)         
+  ftp.dante.de  (Hamburg, Germany)         
        -- anonymous ftp                   /tex-archive (/pub/tex /pub/archive)
-       -- gopher on node gopher.dante.de
        -- email via ftpmail@dante.de
        -- World Wide Web access on http://www.dante.de/
        -- Administrator: <ftpmaint@dante.de>
 
   ftp.tex.ac.uk (Cambridge, UK)
        -- anonymous ftp                   /tex-archive (/pub/tex /pub/archive)
-       -- gopher on node gopher.tex.ac.uk
-       -- NFS mountable from nfs.tex.ac.uk:/public/ctan/tex-archive
+       -- NFS mountable from nfs.tex.ac.uk:/tex-archive
        -- World Wide Web access on http://www.tex.ac.uk/
        -- Administrator: <ctan-uk@tex.ac.uk>
 
-  ctan.tug.org (Boston, Massachusetts, USA)
+  tug.ctan.org (Colchester, Vermont, USA)
        -- anonymous ftp                   /tex-archive (/pub/archive)
-       -- World Wide Web access on http://ctan.tug.org/
-       -- Administrator: <ctan@tug.org>
+       -- World Wide Web access on http://www.ctan.org/
+       -- Administrator: <tex@ctan.tug.org>

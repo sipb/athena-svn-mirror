@@ -1,14 +1,14 @@
-This is the beta version of fancyhdr, a replacement for fancyheadings. 
+This is fancyhdr, a replacement for fancyheadings. 
 
-There are no known bugs, and the only reason that this is not a real
-release is that I want to make a real .dtx of it, including the minimal
-documentation. The current documentation is in fancyhdr.tex, but this
-contains much more material than the fancyhdr doc. When the fancyhdr.dtx is
-ready, I will rename fancyhdr.tex into something like pagelay.tex to get it
-more in line with the title (Page Layout in LaTeX).
+I still still intend to make sometime in the future a real .dtx of it,
+including the minimal documentation. The current documentation is in
+fancyhdr.tex, but this contains much more material than the fancyhdr doc.
+When the fancyhdr.dtx is ready, I will rename fancyhdr.tex into something
+like pagelayout.tex to get it more in line with the title (Page Layout in
+LaTeX).
 
 fancyhdr is 99% compatible with fancyheadings. The only incompatibility is
-that \headrulewidth and \footrulewidth and their \plain.. versions are no
+that \headrulewidth and \footrulewidth and their \plain... versions are no
 longer length parameters, but normal macros (to be changed with
 \renewcommand rather than \setlength).
 
@@ -18,7 +18,16 @@ much easier to use in complicated cases. The old way of doing is no longer
 described in the manual, except for the simplest use of \lhead etc.
 
 In order to latex the documentation you need to install a copy of
-tex-archive/macros/latex209/contrib/misc/boxedminipage.sty
+tex-archive/macros/latex/contrib/other/misc/boxedminipage.sty
+
+The fixmarks.sty is now obsolete, as it is superseded by David Carlisle's
+fix2col.sty (tex-archive/macros/latex/contrib/supported/carlisle/) so it is
+no longer included here.
+
+LICENCE: All files in this package may be distributed under the terms of
+the LaTeX Project Public License, as described in lppl.txt in the base
+LaTeX distribution. Either version 1 or, at your option, any later
+version.
 -- 
 Piet van Oostrum.
 <piet@cs.ruu.nl>

@@ -1,34 +1,42 @@
 % \iffalse meta-comment
 %
-% Copyright 1993 1994 1995 1996 1997 1998 1999
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 % The LaTeX3 Project and any individual authors listed elsewhere
 % in this file. 
 % 
-% This file is part of the LaTeX2e system.
-% ----------------------------------------
+% This file is part of the LaTeX base system.
+% -------------------------------------------
 % 
-% It may be distributed under the terms of the LaTeX Project Public
-% License, as described in lppl.txt in the base LaTeX distribution.
-% Either version 1.0 or, at your option, any later version.
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
 % 
 % \fi
 % Filename: ltnews.cls
-% Author: Alan Jeffrey
-% Version: 0.14
+% Author: Alan Jeffrey et al
+% Version: 0.21
  
 % This is the LaTeX2e document class for the `LaTeX News' information 
 % sheet which comes with every LaTeX release.  It may be useful for 
 % newsletters, or as an example of how simple newsletters can be set
 % with LaTeX.  The changes log is at the end of the file.
  
-% Copyright 1994 1995 1996 1997 1999
+% Copyright 1994 1995 1996 1997 1999 2000
 % Alan Jeffrey and the LaTeX3 project.  
  
 % This is a LaTeX2e document class.
  
 \NeedsTeXFormat{LaTeX2e}
  
-\ProvidesClass{ltnews}[1999/02/23 Standard LaTeX class]
+\ProvidesClass{ltnews}[2001/07/12 v0.22  Standard LaTeX class]
 
 % The configuration file, used for passing options.
 
@@ -58,13 +66,17 @@
 
 \DeclareFontFamily{OT1}{ppl}{}
 \DeclareFontShape{OT1}{ppl}{m}{n}{<-> pplr7t}{}
+\DeclareFontShape{OT1}{ppl}{bx}{n}{<-> pplb7t}{}  
 \DeclareFontShape{OT1}{ppl}{m}{sc}{<-> pplrc7t}{}
 \DeclareFontShape{OT1}{ppl}{m}{it}{<-> pplri7t}{}
+\DeclareFontShape{OT1}{ppl}{m}{sl}{<-> pplro7t}{} 
 
 \DeclareFontFamily{T1}{ppl}{}
 \DeclareFontShape{T1}{ppl}{m}{n}{<-> pplr8t}{}
+\DeclareFontShape{T1}{ppl}{bx}{n}{<-> pplb8t}{}   
 \DeclareFontShape{T1}{ppl}{m}{sc}{<-> pplrc8t}{}
 \DeclareFontShape{T1}{ppl}{m}{it}{<-> pplri8t}{}
+\DeclareFontShape{T1}{ppl}{m}{sl}{<-> pplro8t}{}  
 
 % The Adobe Helvetica fonts:
 
@@ -203,6 +215,10 @@
         \kern-.17em
         \TeX}
 
+% The eTeX logo.
+
+\DeclareRobustCommand\eTeX{\ensuremath{\varepsilon}-\kern-.125em\TeX}
+       
 % Switch off some of the article options.
  
 \DeclareOption{a4paper}{\OptionNotUsed}
@@ -288,6 +304,52 @@
  
 \LoadClass[twocolumn,oneside]{article}
 
+%
+% The package url.sty takes care of breaking url's that are too long
+% to fit in a two-column design
+% but it might not be available on all installations.
+% Therefore we need to check if the file url.sty can be found.
+%
+% Also, it uses a verbatim input mode so Chris does not use it for
+% urls as he wants to control layout and use macros within it.  Also
+% he usuually wants to hand-craft the line-braeks in such text. 
+% 
+\IfFileExists{url.sty}{%
+  \RequirePackage{url}
+  \newcommand\email{\begingroup \Url}}{%
+  \newcommand*{\url}[1]{\texttt{##1}}
+  \newcommand*{\email}[1]{\texttt{##1}}
+  }
+%
+% The package html.sty defines a number of things needed for the LaTeX
+% to HTML conversion; noticeable the latexonly and htmlonly
+% environments.
+% Again, let's check if it exists and if not provide necessary stubs
+% 
+\IfFileExists{html.sty}{%
+  \RequirePackage{html}}{%
+  % When it couldn't be found, provide some necessary stuff...
+  \newenvironment{latexonly}{}{}
+  \newcommand{\latex}[1]{##1}
+%
+%  Code for excludecomment from html.sty
+%  by Robin Fairbairns, 22 September 1997
+%
+  \newcommand\@gobbleenv{\let\reserved@a\@currenvir\@gobble@nv}
+  \long\def\@gobble@nv##1\end##2{%
+    \def\reserved@b{##2}%
+    \ifx\reserved@a\reserved@b
+      \edef\reserved@a{\noexpand\end{\reserved@a}}%
+      \expandafter\reserved@a
+    \else
+      \expandafter\@gobble@nv
+    \fi
+    }
+  \newcommand{\excludecomment}[1]{%
+    \csname newenvironment\endcsname{##1}{\@gobbleenv}{}}
+  \excludecomment{htmlonly}
+  }
+
 % The page style.
  
 \pagestyle{empty}
@@ -330,7 +392,16 @@
 }
  
 \title{\LaTeXNews}
- 
+
+%
+% If pdf is being produced add some info to the pdf file.
+\ifx\pdfoutput\@undefined\else
+  \pdfinfo{%
+    /Title (LaTeX News)
+    /Author (The LaTeX project)
+    }
+\fi
+
 % The \maketitle for the LaTeX News.
  
 \renewcommand{\maketitle}{%
@@ -342,14 +413,25 @@
    }]%
    \thispagestyle{titlepage}
 }
- 
+
 \newcommand{\ps@titlepage}{%
    \renewcommand{\@oddhead}{\hfill}%
    \renewcommand{\@evenhead}{\hfill}%
    \renewcommand{\@oddfoot}{\@indiciafont\@indicia\hfill}%
    \renewcommand{\@evenfoot}{\@indiciafont\@indicia\hfill}%
 }
- 
+%
+% When PostScript fonts are use we want the first section heading 
+% to come out a little bit higher on the page.
+
+\newcommand{\raisefirstsection}{%
+  \ifx\TeX\pplTeX
+    \vspace*{-30pt}           % typesetting with lw35fonts
+    \setlength{\topskip}{18pt}
+  \else
+    \vspace*{-36pt}
+  \fi
+}
 % Sectioning commands.
  
 \renewcommand{\section}{%
@@ -367,13 +449,16 @@
 % It actually does nothing since after this \rightskip is set to
 % \@rightskip: I think \rightmargin was intended but should we change
 % it now?
+% FMi 1999/12/11: in fact it needs to go as it would affect the
+% paragraph before the list making it flush right and indented while
+% the rest of the document is set ragged.
  
 \renewcommand{\@listI}{%
    \setlength{\leftmargin}{\leftmargini}%
    \setlength{\topsep}{\medskipamount}%
    \setlength{\itemsep}{0pt}%
    \setlength{\listparindent}{1em}%
-   \setlength{\rightskip}{1em}%
+%   \setlength{\rightskip}{1em}%
 }
 \let \@listi \@listI
 
@@ -395,7 +480,7 @@
    \endlist
 }
  
-% Some logos.
+% Some logos:
  
 \newcommand{\NFSS}{NFSS}
 \newcommand{\LaTeXNews}{\LaTeX~News}
@@ -406,11 +491,23 @@
          -.125em{\protect\the\textfont2 S}}
 \newcommand{\AmSLaTeX}{\mbox{\AmS-\LaTeX}}
 \newcommand{\ctan}{\textsc{CTAN}}
+\newcommand{\PSNFSS}{\textsc{PSNFSS}}
 \newcommand{\babel}{\textsf{babel}}
+
+% Abbreviations:
+
+\newcommand{\ctanhttp}{http://www.tex.ac.uk/tex-archive/}
 
 % Needed for 09:
 
 \newcommand\cs[1]{\texttt{\textbackslash#1}}
+
+% Some logical markup:
+
+\newcommand*\class[1]{\texttt{#1}}
+\newcommand*\package[1]{\textsf{#1}}
+\let \pkg \package  % backward compatibility 
+\newcommand*\file[1]{\texttt{#1}}
 
 
 % Hacking to make <...> produce italics in verbatim.  NB: this can be 
@@ -483,7 +580,7 @@
 % 
 % 09 Dec 1995, v0.08: Upper case for Project Team.
 % 
-% 20 Dec 1995, v0.09: Tidided up the list stuff.
+% 20 Dec 1995, v0.09: Tidied up the list stuff.
 % 
 % 03 Jun 1996, v0.10: Changed fonts for lw35 option, for logical and
 %    aesthetic reasons.
@@ -499,11 +596,25 @@
 %    
 % 23 Feb 1999, v0.14: Added  some logos etc.
 %    
-
-
+% 02 Jul 1999, v0.15: Added some logical markup
+% 
+% 03 Jul 1999, v0.16: Amended \pkg and added \email
+%
+% 21 Dec 1999, v0.17: Added PDF info, load package url.sty
+%
+% 23 Dec 1999, v0.18: Don't depend on url.sty being present
+% 
+% 21 Jul 2000, v0.19: Extra short-cuts, added to doc re v0.17;
+%    and more fonts
+% 
+% 31 Aug 2000, v0.20: Fixed typo in URL (JLB)
+%
+% 06 Jun 2001, v0.21: Corrected undocumented stubs for html.sty
+% 
+% 12 Jul 2001, v0.22: Added eTeX logo (from ltugboat.cls)
+%
 % BUGS
 %
 % Switching between logos like this is a mess.
 %
 % The last column should be set flush bottom.
- 

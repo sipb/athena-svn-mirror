@@ -1,0 +1,33 @@
+<head>
+<title>UK TeX FAQ -- question 94</title>
+</head><body>
+<h3>Drawing Feynman diagrams in LaTeX</h3>
+<p>Michael Levine's <i>feynman</i> bundle for drawing the diagrams in
+LaTeX 2.09 is still available.
+<p>Thorsten Ohl's <i>feynmf</i> is designed for use with current
+LaTeX, and works in
+combination with Metafont (or, in its <i>feynmp</i> incarnation, with
+MetaPost).  The <i>feynmf</i> or
+<i>feynmp</i> package reads a description of the diagram written
+in TeX, and writes out code.  Metafont (or MetaPost) can then produce a
+font (or PostScript file) for use in a subsequent LaTeX run.  For
+new users, who have access to MetaPost, the PostScript version is
+probably the better route, for document portability and other reasons.
+
+<p>Jos Vermaseren's <i>axodraw</i> is mentioned as an alternative in
+the documentation of <i>feynmf</i>, but it is written entirely in
+terms of <i>dvips</i> <code>\special</code> commands, and is thus rather
+imperfectly portable.
+<p>An alternative approach is implemented by Norman Gray's <i>feyn</i>
+package.  Rather than creating complete diagrams as postscript images,
+<i>feyn</i> provides a font (in a variety of sizes) containing
+fragments, which you can compose to produce complete diagrams.  It
+offers fairly simple diagrams which look good in equations, rather
+than complicated ones more suitable for display in figures.
+<dl>
+<dt><tt><i>axodraw</i></tt><dd><a href="ftp://graphics/axodraw/export">graphics/axodraw/export</a>
+<dt><tt><i>feyn font bundle</i></tt><dd><a href="ftp://fonts/feyn.tar.gz">fonts/feyn.tar.gz</a>
+<dt><tt><i>feynman bundle</i></tt><dd><a href="ftp://macros/latex209/contrib/feynman.tar.gz">macros/latex209/contrib/feynman.tar.gz</a>
+<dt><tt><i>feynmf/feynmp bundle</i></tt><dd><a href="ftp://macros/latex/contrib/supported/feynmf.tar.gz">macros/latex/contrib/supported/feynmf.tar.gz</a>
+</dl>
+<p></body>

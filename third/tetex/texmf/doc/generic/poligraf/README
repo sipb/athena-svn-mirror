@@ -1,0 +1,121 @@
+poligraf.sty generic macros, crops.pro and separate.pro dvips header files
+Copyright (C) 1996, 2001 Janusz Marian Nowacki. Public domain.
+ver. 1.0, May 1996
+ver. 1.2, April 1997
+ver. 2.0, April 2001
+------
+ [Polish:]                         | [English:]
+,,Mi/edzy \TeX-em a drukarni/a''   | ``Between \TeX{} and the printing house''
+wersja 2.0, kwiecie/n 2001 r.      | version 2.0, April 2001
+------
+Cel: obs/luga strony dokumentu     | Purpose: preparation of pages for
+dla cel/ow drukarskich, separacje  | prepress, color separation, cropmarks,
+barwne, pasery, ,,lustro''.        | color and gray scale bars, mirror print.
+--
+Pakiet makr zaprezentowany po raz  | Macro package presented for the first
+pierwszy na IV konferecji polskiej | time on the Polish TeX Users Group 
+Grupy U/zytkownik/ow Systemu TeX   | (GUST) IV-th Conference ``BachoTeX'96''.
+(GUST) ,,Bacho\TeX'96''.           | 
+Niniejsza wersja r/o/zni si/e      | This package was completely rewritten,
+*znacznie* od poprzedniej.         | so it is *not* compatible with the 
+                                   | previous version.
+------
+UWAGA: Korzystanie z pakietu       | In order to use the package (with
+i programu GhostScript do podgl/adu| GhostScript for previewing) needs
+wymaga zaistalowania fontu         | Helvetica font to be installed.
+Helvetica. U/zycie opcji \labeloff | If you do not have the font, use
+nie wymaga posiadania tego fontu.  | \labeloff toggle.
+--
+Instalacja:                        | Installation:
+- plik poligraf.sty nale/zy        | - poligraf.sty should be copied to the
+  skopiowa/c do katalogu           |   directory searched by TeX, e.g.
+  przeszukiwanego przez TeX-a, np. |
+                    texmf/tex/generic/tex-ps/
+- pliki crops.pro i separate.pro   | - crops.pro and separate.pro should be
+  nale/zy skopiowa/c do katalogu   |   copied to the directory searched by
+  przeszukiwanego przez dvips, np. |   dvips, e.g.
+                    texmf/dvips/tex-ps/
+-------
+Zastosowanie:                      | Usage:
+W pliku \TeX-owym nale/zy u/zy/c   | The source file should contain
+polecenia (dla Plain):             | for Plain:
+  \input poligraf.sty              |    \input poligraf.sty
+lub (dla LaTeX):                   | or for LaTeX:
+  \usepackage{poligraf}            |    \usepackage{poligraf}
+Polecenia powy/zsze koniecznie     | The above commands should be preceded
+nale/zy poprzedzi/c zdefiniowaniem | by the definition of the paper size,
+rozmiar/ow papieru np:             | e.g.
+\special{papersize=x mm,y mm}      |    \special{papersize=x mm,y mm}
+Inaczej przyj/ete b/ed/a warto/sci | If not specified, default parameters
+domy/slne.                         | will be used.
+-------
+Separacje barwne uzyskujemy poprzez| Color separation toggle:
+\NoOverPrintBlack                  | \NoOverPrintBlack
+   wy/l/aczenie naddruku obiekt/ow |    turn off black overprint
+   czarnych (domy/slnie w/l/aczone)|    (default: black overprint)
+\Separate\BLACK                    | \Separate\BLACK           
+   (lub \CYAN \MAGENTA \YELLOW)    |      (or \CYAN \MAGENTA \YELLOW)
+Polecenia powy/zsze wymagaj/a      | To use them, you need cmyk-hax.tex
+zainstalowania pakietu cmyk-hax.tex| macros have installed:
+           CTAN:/macros/generic/TeX-PS/cmyk-hax/cmyk-hax.tex
+-------
+Dost/epne polecenia:               | Available options:
+(podano warto/sci domy/slne)       | (default values given)
+\cropmarkdistance{3}
+    odst/ep linii obci/ecia od     | cutting distance from the sheet
+    arkusza (0--5 mm)              | body (0--5 mm)
+\cropmarksize{10}                 
+    rozmiar paser/ow (mm)          | cropmarks size (in mm)
+\barsize{5}                      
+    rozmiar pask/ow barwnych (mm)  | color bar size (in mm)
+\nocolorbars        
+    tylko pasery i linie obci/ecia | cropmarks and registration marks only 
+\onlycolorbars      
+    tylko brudziki                 | color bars only 
+\onlycolorsteps     
+    tylko skale barwne             | color steps only 
+\mirror             
+    lustro                         | mirror
+\labeloff	      
+    bez opisu na marginesie        | turn off marginal label
+\xoffset{?mm}	      
+\yoffset{?mm}       
+    przesuni/ecie  uk/ladu         | additional x an y offsets for 
+    dla druku na drukarkach        | printing on laser and ink printers 
+ (nie stosowa/c dla na/swietle/n!) | (do not use it for typesetters!)
+-----
+Z plik/ow separate.pro i crops.pro | separate.pro and crops.pro header files
+mo/zna korzysta/c pomijaj/ac       | can be used without poligraf.sty. 
+poligraf.sty. Wystarczy wywo/la/c: | Just run:
+           dvips -h separate.pro -h crops.pro foo.dvi
+uzyskuj/ac efekty zgodne           | and you can have the results, as
+z warto/sciami domy/slnymi,        | default values from those files.
+zawartymi w wymienionych plikach.  | To use effectivelly separate.pro,
+Efektywne u/zycie separate.pro     | you need to copy it to the working
+wymaga skopiowania tego pliku do   | directory and to change the value
+katalogu roboczego i odpowiedniego | of the variable color_sep
+ustawienia zmiennej color_sep      |
+------
+Zawarto/s/c pakietu:               | Contents of the package:
+README          ten plik           | this file
+poligraf.sty    plik makr          | the main macro file
+crops.pro       pliki dla dvips    | header files for dvips
+separate.pro                       |
+sample.tex      przyk/lad Plain    | example for Plain
+samplelx.tex    przyk/lad LaTeX    | example for LaTeX
+kol-cmyk.eps    prosta grafika     | simple graphics file
+
+------
+Wszelkie uwagi s/a mile widziane   | Please report any comments 
+przez autora.                      | and corrections to the author.
+
+Author: Janusz Marian Nowacki
+        86-300 Grudziadz
+        ul. Sniadeckich 82/46
+        tel. +48 +56 46-218-37
+        Poland
+        e-mail: j.nowacki@gust.org.pl
+------
+(distribution prepared by Staszek Wawrykiewicz <StaW@gust.org.pl>)
+==========================================================================
+

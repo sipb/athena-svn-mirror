@@ -1,0 +1,24 @@
+<head>
+<title>UK TeX FAQ -- question 5</title>
+</head><body>
+<h3>How can I be sure it's really TeX?</h3>
+<p>TeX (and Metafont and MetaPost) are written in a
+
+  <a href="FAQ65.html">'literate' programming</a> language called Web
+which is designed to be portable across a wide range of computer
+systems.  How, then, is a new version of TeX checked?
+<p>Of course, any sensible software implementor will have his own suite
+of tests to check that his software runs: those who port TeX and
+its friends to other platforms do indeed perform such tests.
+<p>Knuth, however, provides a 'conformance test' for both TeX
+(<code>trip</code>) and Metafont (<code>trap</code>).
+
+He characterises these as 'torture tests': they are designed not to
+check the obvious things that ordinary typeset documents, or font
+designs, will exercise, but rather to explore small alleyways off the
+main path through the code of TeX.  They are, to the casual reader,
+pretty incomprehensible!
+<p>Once an implementation of TeX has passed its <code>trip</code>, or an
+implementation of Metafont has passed its <code>trap</code>, test it may
+reasonably be distributed as a working version.
+<p><p></body>

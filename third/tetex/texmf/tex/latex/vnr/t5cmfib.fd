@@ -1,0 +1,12 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5cmfib.fd}
+  [2000/01/27 v1.0 Vietnamese LaTeX font definitions]
+
+\DeclareFontFamily{T5}{cmfib}{}
+
+\DeclareFontShape{T5}{cmfib}{m}{n}{
+  <8> vnfib8
+}{}
+
+\endinput

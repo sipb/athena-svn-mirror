@@ -1,3 +1,4 @@
+\ProvidesFile{nynorsk.mld}[1999/03/16]
 % Nynorsk titles for minitoc.sty
 % Thanks to Dag Langmyhr (dag@ifi.uio.no)
 \def\mtctitle{Innhald}%

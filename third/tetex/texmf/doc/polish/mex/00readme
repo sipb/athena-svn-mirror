@@ -1,0 +1,226 @@
+%% Staszek Wawrykiewicz (StaW@gust.org.pl), January 2003.  Public domain.
+%% Web2c7.4x (teTeX, fpTeX, TeX Live) and MiKTeX 2.x revision
+MeX and pdfMeX
+
+Dokumentacja po polsku i po angielsku (ni¿ej).
+The documentation in Polish and in English (below).
+
+------------------------------------------------------------------------
+POLSKI (iso8859-2):
+------------------------------------------------------------------------
+MeX jest adaptacj± formatu Plain TeX do sk³adu w jêzyku polskim
+z uwzglêdnieniem polskich zwyczajów drukarskich.
+Autorzy: Bogus³aw Jackowski i Marek Ryæko.
+Dokumentacja poni¿sza omawia pokrótce tworzenie formatu mex.fmt (lub
+pdfmex.fmt, dla programu pdfTeX -- wersji TeX-a tworz±cej od razu pliki PDF)
+i jego u¿ycie w instalacji zgodnej z Web2c (dystrybucje teTeX, fpTeX, TeX
+Live) a tak¿e MiKTeX. Szczegó³owe informacje nt. pakietu MeX zawarto w pliku
+mexinfo.pol.
+
+W dystrybucji do³±czono ponadto prosty plik przyk³adowy
+doc/polish/mex/tstmex.tex, s³u¿±cy do przetestowania poprawnego dzia³ania
+formatu MeX. Pocz±tkuj±cym u¿ytkownikom zaleca siê zapoznanie z zawarto¶ci±
+tego pliku. Plik ten dostêpny jest tak¿e na serwerze GUST.
+------------------------------------------------------------------------
+
+I. Przygotowanie formatu MeX/pdfMeX (polskiej implementacji formatu Plain)
+
+Format w systemie TeX to wstêpnie prekompilowany (aby przyspieszyæ jego
+analizê przez program tex/pdftex) zestaw makrodefinicji oraz regu³
+przenoszenia wyrazów dla wybranego zestawu jêzyków. Plik formatu z regu³y
+posiada rozszerzenie .fmt.
+
+Przygotowanie formatu MeX (lub pdfMeX dla programu pdfTeX, tworz±cego pliki
+PDF) polega w skrócie na uruchomieniu:
+
+tex --ini mex.ini
+
+(dla pdfTeX: pdftex --ini pdfmex.ini). Podczas przetwarzania wczytywane s±
+pliki makr formatu MeX, a tak¿e plain.tex oraz wzorce przenoszenia wyrazów
+dla jêzyka polskiego i angloamerykañskiego.
+
+Poniewa¿ wygenerowany plik powinien znale¼æ siê w odpowiednim miejscu
+struktury katalogów, a tak¿e powinien zostaæ ,,zarejestrowany''
+w instalacji, wspó³czesne dystrybucje u³atwiaj± proces generowania.
+
+   * W dystrybucjach opartych na Web2c (fpTeX, teTeX, TeX Live) formaty
+     generowane s± przy pomocy programu fmtutil (fmtutil --help wy¶wietla
+     dostêpne opcje) za¶ deklaracje formatów znajduj± siê w pliku
+     texmf/web2c/fmtutil.cnf (gdy posiadamy drzewo katalogów zawieraj±ce
+     lokalne pliki konfiguracyjne instalacji systemu TeX, program fmtutil
+     korzysta z lokalnej kopii fmtutil.cnf; dok³adne po³o¿enie pliku 
+     wy¶wietli uruchomienie polecenia: kpsewhich fmtutil.cnf).
+
+     W systemach Unix/Linux ca³y proces generowania formatu dostêpny jest 
+     z menu Formats programu texconfig, które pozwala modyfikowaæ plik 
+     fmtutil.cnf, co polega na usuniêciu znaku # przed deklacj± wybranego 
+     formatu b±d¼ zablokowaniu takim znakiem formatów niepo¿±danych. 
+     Po zapisaniu zmian w pliku i zakoñczeniu edycji, format zostanie 
+     automatycznie wygenerowany.
+     W systemach Windows nale¿y samodzielnie zmodyfikowaæ plik fmtutil.cnf, 
+     po czym uruchomiæ polecenie fmtutil --byfmt=mex 
+     (lub fmtutil --byfmt=pdfmex).
+
+   * W MiKTeX (od wersji 2.0) nale¿y uruchomiæ w menu MiKTeX Options podmenu
+     TeX Formats, zaznaczyæ format MeX (pdfMeX) i utworzyæ (przyciskiem
+     Build) potrzebny plik formatu.
+
+W obu omawianych przypadkach tworzony jest plik formatu mex.fmt (lub
+pdfmex.fmt), który jest umieszczany w katalogu w³a¶ciwym dla tego rodzaju
+plików, oraz tworzony jest program mex lub pdfmex (uruchamia on
+program tex z formatem mex b±d¼ program pdftex z formatem pdfmex).
+
+------------------------------------------------------------------------
+
+II. U¿ycie
+
+Aktualne implementacje, oparte na Web2c, a tak¿e MiKTeX pozwalaj±
+na prawid³owe przekodowanie znaków diakrytycznych w pliku TeX-owym
+na wewnêtrzn± reprezentacjê, stosowan± przez programy. W Polsce, niestety, 
+stosowane s± ró¿ne ,,standardy'' kodowania diakrytyków w tworzonych przez 
+u¿ytkownika plikach, zale¿nie od systemu operacyjnego. Dla potrzeb systemu 
+TeX u¿ywamy zewnêtrznych, tekstowych plików TCX, pozwalaj±cych ,,obs³u¿yæ'' 
+ró¿ne spotykane ,,standardy''. Dziêki temu przekodowanie dzia³a te¿ w drug± 
+stronê, kiedy TeX wy¶wietla komunikaty i zapisuje pliki .log, a tak¿e 
+pliki ze spisem tre¶ci, skorowidzem itp.
+
+Uruchomienie polecenia:
+
+mex --translate-file=TCXFILE plik.tex
+
+oznacza uruchomienia TeX-a z formatem mex.fmt i z odpowiedni± tablic±
+przekodowañ (ich lista znajduje siê poni¿ej). Polecenie `mex' tworzone 
+jest zwykle jako dowi±zanie do programu tex w katalogu zawieraj±cym binaria.
+
+Przekodowanie (plik TCX) mo¿e byæ tak¿e deklarowane bezpo¶rednio 
+w pliku TeX-owym. Pocz±wszy od wersji Web2c 7.4, wymaga to podania w wierszu 
+poleceñ opcji `--parse' lub w³±czenia jej na sta³e, co wymaga zmiany 
+w g³ównym pliku konfiguracyjnym texmf.cnf:
+parse_first_line = t
+(t -- od `true', zamiast domy¶lnego przypisania f -- od `false').
+
+Przyk³adowo, je¶li _pierwszy_ wiersz pliku zawiera komentarz strukturalny
+
+%&mex --translate-file=il2-pl
+
+to plik mo¿e byæ przetworzony za pomoc± polecenia tex plik.tex; zostanie
+wtedy wczytany format mex.fmt oraz tablica il2-pl.tcx przekodowania z uk³adu
+iso8859-2 do uk³adu fontów PL (wewnêtrznego dla programu TeX). 
+
+W dystrybucjach dostarczono szereg plikow TCX. Mo¿na je znale¼æ w katalogu
+texmf/web2c/:
+
+   amiga-pl.tcx  AmigaPL <--> PL
+   il2-pl.tcx    iso8859-2 (latin2) <--> PL
+   cp1250pl.tcx  Windows cp1250 <--> PL
+   cp852-pl.tcx  IBM cp852 <--> PL
+   macce-pl.tcx  Apple MacCE <--> PL
+   maz-pl.tcx    Mazovia <--> PL
+------------------------------------------------------------------------
+
+III. Polskie fonty PostScriptowe
+
+Aktualne dystrybucje zawieraj± fonty serii PL (spolonizowane standardowe
+dla TeX-a fonty CM) w wersji Type 1 (postscriptowe). Mo¿na je tak¿e 
+znale¼æ w najbli¿szym wê¼le CTAN lub jego kopii, np.:
+ftp://sunsite.icm.edu.pl/CTAN/fonts/psfonts/polish/plpsfont/.
+Pliki .pfb powinny znale¼æ siê w podkatalogu texmf/fonts/type1/public/pl/
+naszej instalacji, za¶ pliki map fontowych (.map) oraz wektory kodowañ 
+(.enc) -- w katalogu texmf/dvips/pl/
+
+W dystrybucjach opartych na Web2c zautomatyzowano, poprzez u¿ycie programu
+updmap, proces tworzenia map fontowych dla programów dvips, pdftex 
+i dvipdfm. Poni¿ej omówiono wiêc jedynie czego ten proces dotyczy.
+
+Sterownik dvips (zamieniaj±cy wynik pracy TeX-a, plik DVI, do formatu
+PostScript) wymaga aby deklaracje map fontowych (dla fontów PL konkretnie
+zawarto¶æ texmf/dvips/pl/pl.map) by³y do³±czone do pliku
+texmf/dvips/config/psfonts.map. 
+Mapy fontowe mo¿na alternatywnie do³±czyæ w pliku 
+texmf/dvips/config/config.ps (lub jego lokalnej kopii), dopisuj±c wiersz:
+p +pl.map
+po deklaracji g³ównej mapy fontowej: p psfonts.map.
+
+Aby fonty Type 1 by³y u¿yte przez program pdfTeX, nale¿y sprawdziæ jakie
+mapy fontowe s± deklarowane w pliku texmf/dvips/config/pdftex.map --
+powinien on tak¿e zawieraæ deklaracje map fontowych dla fontów PL.
+
+W dystrybucjach wszystkie aktualnie dostêpne polskie fonty
+Type1 s± gotowe do u¿ycia zarówno przez program dvips,
+jak i pdftex.
+
+Bardziej szczegó³owe omówienie instalacji fontów Type1 zawarte jest
+w artykule http://www.gust.org.pl/fonty/fonthint.html.
+
+-----------------------------------------------------------------------
+ENGLISH:
+------------------------------------------------------------------------
+
+MeX is an adaptation of PLAIN TeX format to the Polish language and to the
+Polish printing customs.
+Authors: Bogus\l{}aw Jackowski & Marek Ry\'cko.
+This document describes shortly creation of mex.fmt and usage in MiKTeX
+environment. See mexinfo.eng for detailed informations about MeX.
+
+I. Preparing MeX/pdfMeX  (Polish Plain format)
+  * Web2c based distributions (teTeX, fpTeX, TeX Live). Invoke texconfig
+    and menu Formats, which edits fmtutil.cnf; uncomment mex (or pdfmex)
+    format; after saving the file, the desired format will be generated.
+  * MiKTeX (from ver. 2.0). Invoke `MiKTeX Options' menu and the submenu
+    `TeX Formats'. Select MeX (or pdfMeX). After pressing `Build' button
+    the format will be generated.
+
+II. Usage: the current implementations based on web2c 7.x, and MiKTeX
+    allow (hopefully) proper reencoding of input national characters
+    into internal TeX's, and back again, for all messages, .log, .toc,
+    .idx files written by TeX, etc. External readable TCX translation
+    files are used and they can be specified explicitly in the TeX file
+    or in the command line.
+    If the _first_ line of TeX's file contains a structured comment
+    of the form
+         %&mex --translate-file=cp1250pl
+    it suffices to run `tex --parse file.tex' with mex.fmt and cp1250pl.tcx
+    translation table (Windows cp1250 to internal PL reencoding).
+    Permanent parsing of the first line needs the following modification
+    in texmf.cnf:
+             parse_first_line = t
+    (instead of default = f)
+
+    You can also use the command
+         `tex &mex -translate-file=TCXFILE myfile.tex'
+    or just `mex -translate-file=TCXFILE myfile.tex' when you have linked 
+    tex[.exe] into mex[.exe] in the directory containing binaries.
+    Several TCX files are provided; they can be found in the texmf/web2c/
+    directory:
+          amiga-pl.tcx   AmigaPL <--> PL encoding
+          il2-pl.tcx     iso8859-2 (latin2) <--> PL encoding
+          cp1250pl.tcx   Windows cp1250 <--> PL encoding
+          cp852-pl.tcx   IBM cp852 <--> PL encoding
+          macce-pl.tcx   Apple MacCE <--> PL enconding
+          maz-pl.tcx     Mazovia <--> PL encoding
+
+III. Polish PostScript fonts in Type 1 format
+     The installation can already contain Type 1 PL fonts;
+     they can be also downloaded from the nearest CTAN node or its mirror:
+         CTAN//fonts/psfonts/polish/plpsfont/
+     or copied from the CD TeX Live.
+     .pfb files should reside in the directory: .../fonts/type1/public/pl/ ;
+     font map and encoding files should go to .../dvips/pl/ directory.
+
+     The preparation of map files are now automatized by running updmap
+     program.
+     
+     Dvips can be prepared for using PL fonts in Type 1 format in two ways:
+     * the contents of texmf/dvips/pl/pl.map should be included
+       into the standard texmf/dvips/config/psfonts.map.
+     * in texmf/dvips/config/config.ps the additional map file can be
+       declared after standard `p psfonts.map' line:
+       p +pl.map
+
+     In order to use Type 1 fonts with pdfTeX, the contents of 
+     texmf/dvips/config/pdftex.map file can be updated with
+     the contents of pl.map, or the line
+     map +pl.map
+     can be added to the file texmf/pdftex/config/pdftex.cfg.
+
+------------------------------------------------------------------------

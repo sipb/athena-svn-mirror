@@ -14,17 +14,7 @@
 %
 % For details see either the file MEXINFO.POL or MEXINFO.ENG.
 % ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-%  7 Jul 1992: version 1.02
-%    (CMBASE is being read here in order to prevent reading it while
-%    processing parametric files)
-% 18 Dec 1992: version 1.03
-%    possibility of arbitrary rescaling added: the value of |basic_unit#| can
-%    be used to override default |pt#| basic unit (suggestion of M. \L{}akomy);
-%    cf. the sample file DLR10.MF producing a |10dd#| roman font
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 if unknown cmbase: input cmbase fi
 

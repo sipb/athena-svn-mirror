@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -36,7 +36,7 @@
 % ``
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 if known spanish_shriek: % for CM fonts only
 
@@ -63,14 +63,23 @@ fi
 if (altcoding and (ligs <> 0)) % for CM
    or (genmode="ex"): % if T2 started
 
-   ligtable "<": "<" =: CYR_.flqq;     % "<<"
-   ligtable ">": ">" =: CYR_.frqq;     % ">>"
+      beginligtable
+         labelchar ([ASCII"<"]);
+            setlig ([ASCII"<"],CYR_.flqq);  % "<<"
+      endligtable;
 
-   if known CYR_.baseqq:
-      ligtable ",": "," =: CYR_.baseqq;% ",,"
-   fi
+      beginligtable
+         labelchar ([ASCII">"]);
+            setlig ([ASCII">"],CYR_.frqq);  % ">>"
+      endligtable;
+
+      beginligtable
+         labelchar ([ASCII","]);
+            setlig ([ASCII","],CYR_.baseqq);  % ",,"
+      endligtable;
 
 fi  % ligatures for cyrillic quotes
 
 %
 endinput;
+%end of file

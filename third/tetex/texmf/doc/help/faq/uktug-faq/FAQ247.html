@@ -1,0 +1,21 @@
+<head>
+<title>UK TeX FAQ -- question 247</title>
+</head><body>
+<h3>Where are the <code>am</code> fonts?</h3>
+<p>One <em>still</em> occasionally comes across a request for the <code>am</code>
+series of fonts.  The initials stood for 'Almost [Computer] Modern',
+and they were the predecessors of the Computer Modern fonts that we
+all know and love (or hate)
+.
+There's not a lot one can do with these
+fonts; they are (as their name implies) almost (but not quite) the
+same as the <code>cm</code> series; if you're faced with a document that requests
+them, all you can reasonably do is to edit the document.  The
+appearance of DVI files that request them is sufficiently rare that
+no-one has undertaken the mammoth task of creating a translation of
+them by means of virtual fonts; however, most drivers let you have a
+configuration file in which you can specify font substitutions. If you
+specify that every <code>am</code> font should be replaced by its corresponding
+<code>cm</code> font, the output should be almost correct.
+<p>
+<p><p><p><p><p></body>

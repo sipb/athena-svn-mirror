@@ -1,13 +1,7 @@
-%Filename: t1pcr.fd
-%Created by: tex Fam_29717
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{t1pcr.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for T1/pcr.]
+   [2001/06/04 font definitions for T1/pcr.]
 
-\DeclareFontFamily{T1}{pcr}{}
+\DeclareFontFamily{T1}{pcr}{\hyphenchar \font\m@ne}
 
 \DeclareFontShape{T1}{pcr}{m}{n}{
    <-> pcrr8t

@@ -3,8 +3,8 @@
 %% Plots and axes with PSTricks 97.
 %% See the PSTricks User's Guide for documentation.
 %%
-\def\fileversion{97 patch 1}
-\def\filedate{1997/04/28}
+\def\fileversion{97 patch 2}
+\def\filedate{1999/12/12}
 %%
 %% COPYRIGHT 1993, 1994, 1999 by Timothy Van Zandt, tvz@nwu.edu.
 %%
@@ -190,13 +190,13 @@ D\space##1%
 \def\beginqp@dots{%
   \psk@dotsize
   \@nameuse{psds@\psk@dotstyle}
-% DG/SR modification begin - 1996/1997
-%  Dot }
-%\def\doqp@dots{Dot }
-  /TheDot { gsave \psk@dotangle \psk@dotscale Dot grestore } def
-  TheDot }
+% DG/SR modification begin - Dec. 12, 1999 - Patch 2
+%  /TheDot { gsave \psk@dotangle \psk@dotscale Dot grestore } def
+%  TheDot }
+  Dot }
+%\def\doqp@dots{TheDot }
+\def\doqp@dots{Dot }
 % DG/SR modification end
-\def\doqp@dots{TheDot }
 \def\endqp@dots{\end@SpecialObj}
 \def\testqp@dots{\@psttrue}
 

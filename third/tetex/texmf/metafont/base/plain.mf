@@ -1,6 +1,12 @@
 % This is the plain METAFONT base that's described in The METAFONTbook.
 % N.B.: Please change "base_version" whenever this file is modified!
-% And don't modify the file under any circumstances.
+% And don't modify the file unless you change its name:
+%       Everybody's "plain.mf" file should be the same, worldwide.
+
+% Unlimited copying and redistribution of this file are permitted as long
+% as this file is not modified. Modifications are permitted, but only if
+% the resulting file is not named plain.mf.
+
 string base_name, base_version; base_name="plain"; base_version="2.71";
 
 message "Preloading the plain base, version "&base_version&": preliminaries,";

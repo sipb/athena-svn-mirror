@@ -15,7 +15,7 @@
 %%  archives in directory macros/latex/base/lppl.txt.
 %% 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hyphenat}[1999/02/13 v2.3 hyphenation utilities]
+\ProvidesPackage{hyphenat}[2001/01/02 v2.3a hyphenation utilities]
 \DeclareOption{none}%
     {\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
 \DeclareOption{htt}{%
@@ -50,7 +50,7 @@
 \DeclareRobustCommand{\colonhyp}{%
   \ifmmode:\else\BreakableColon\fi}
 \newcommand{\BreakableHyphen}{\leavevmode%
-  \prw@zbreak-\discretionary{-}{}{}\prw@zbreak}
+  \prw@zbreak-\discretionary{}{}{}\prw@zbreak}
 \DeclareRobustCommand{\hyp}{%
   \ifmmode-\else\BreakableHyphen\fi}
 \DeclareTextFontCommand{\textnhtt}{\nhttfamily}

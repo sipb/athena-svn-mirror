@@ -1,0 +1,21 @@
+<head>
+<title>UK TeX FAQ -- question 165</title>
+</head><body>
+<h3>Roman theorems</h3>
+<p>If you want to take advantage of the powerful <code>\newtheorem</code> command
+without the constraint that the contents of the theorem is in a sloped
+font (for example, to use it to create remarks, examples, proofs,
+...) then you can use the <i>theorem</i> package.
+Alternatively, the following sets up an 
+environment <code>remark</code> whose content is in roman.
+<pre>
+  \newtheorem{preremark}{Remark}
+  \newenvironment{remark}%
+    {\begin{preremark}\upshape}{\end{preremark}}
+</pre>
+The <i>ntheorem</i> package provides roman theorems directly.
+<dl>
+<dt><tt><i>ntheorem.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/ntheorem.tar.gz">macros/latex/contrib/supported/ntheorem.tar.gz</a>
+<dt><tt><i>theorem.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+</dl>
+<p></body>

@@ -1,3 +1,4 @@
+\ProvidesFile{germanb.mld}[1999/03/16]
 % German titles (variant) for minitoc.sty
 \def\mtctitle{Inhaltsverzeichnis}%    % oder nur: Inhalt
 \def\mlftitle{Abbildungsverzeichnis}

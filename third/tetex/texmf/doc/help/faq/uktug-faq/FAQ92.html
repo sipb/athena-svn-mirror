@@ -1,0 +1,57 @@
+<head>
+<title>UK TeX FAQ -- question 92</title>
+</head><body>
+<h3>Making MetaPost output display in <i>ghostscript</i></h3>
+<p>MetaPost ordinarily expects its output to be included in some context
+where the 'standard' Metafont fonts (that you've specified) are already
+defined - for example, as a figure in TeX document.  If you're
+debugging your MetaPost code, you may want to view it in
+<i>ghostscript</i> (or some other PostScript previewer).  However,
+the PostScript 'engine' in <i>ghostscript</i> <em>doesn't</em>
+ordinarily have the fonts loaded, and you'll eperience an error such
+as
+<pre>
+  Error: /undefined in cmmi10
+</pre>
+There is provision in MetaPost for avoiding this problem: issue the
+command <code>prologues := 2;</code> at the start of the <code>.mp</code> file.
+<p>Unfortunately, the PostScript that MetaPost inserts in its output,
+following this command, is incompatible with ordinary use of the
+PostScript in inclusions into (La)TeX documents, so it's best to
+make the <code>prologues</code> command optional.  Furthermore, MetaPost takes a
+very simple-minded approach to font encoding: since TeX font
+encodings regularly confuse sophisticated minds, this can prove
+troublesome.  If you're suffering such problems (the symptom is that
+characters disappear, or are wrongly presented) the only solution is
+to view the 'original' metapost output after processing through
+LaTeX and <i>dvips</i>.
+<p>Conditional compilation may be done either
+by inputting <i>MyFigure.mp</i> indirectly from a simple wrapper
+<i>MyFigureDisplay.mp</i>:
+<pre>
+  prologues := 2;
+  input MyFigure
+</pre>
+or by issuing a shell command such as
+<pre>
+  mp '\prologues:=2; input MyFigure'
+</pre>
+(which will work without the quote marks if you're not using a Unix
+shell).
+<p>A suitable LaTeX route would involve processing
+<i>MyFigure.tex</i>, which contains:
+<pre>
+  \documentclass{article}
+  \usepackage{graphicx}
+  \begin{document}
+  \thispagestyle{empty}
+  \includegraphics{MyFigure.1}
+  \end{document}
+</pre>
+Processing the resulting DVI file with the <i>dvips</i>
+command
+<pre>
+  dvips -E -o MyFigure.eps MyFigure
+</pre>
+would then give a satisfactory Encapsulated PostScript file.
+<p></body>

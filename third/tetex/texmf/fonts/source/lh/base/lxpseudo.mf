@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -24,7 +24,7 @@
 % parameters with different values at each occuerence (like |theta|).
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 % Diameters of dots
 %
@@ -102,3 +102,4 @@ fi
 enddef;
 
 endinput;
+%end of file

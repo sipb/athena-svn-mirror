@@ -5,26 +5,26 @@
 %% The original source files were:
 %%
 %% usorbian.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{usorbian}
-        [1998/06/07 v1.0g Upper Sorbian support from the babel system]
+        [2001/01/30 v1.0i Upper Sorbian support from the babel system]
 %% File `usorbian.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Upper Sorbian Language Definition File
-%% Copyright (C) 1994 - 1999
+%% Copyright (C) 1994 - 2001
 %%           by Eduard Werner
 %% Please report errors to: Eduard Werner <edi@kaihh.hanse.de>
 %%
@@ -53,6 +53,7 @@
   \def\seename{hl.}%
   \def\alsoname{hl.~te\v z}
   \def\proofname{Proof}%  <-- needs translation
+  \def\glossaryname{Glossary}% <-- Needs translation
   }%
 \def\newdateusorbian{%
   \def\today{\number\day.~\ifcase\month\or
@@ -70,11 +71,12 @@
 \initiate@active@char{"}
 \addto\extrasusorbian{\languageshorthands{usorbian}}
 \addto\extrasusorbian{\bbl@activate{"}}
+\addto\noextrasusorbian{\bbl@deactivate{"}}
 \addto\extrasusorbian{\babel@savevariable{\lccode`\^^Y}%
   \lccode`\^^Y`\^^Y}
 \addto\extrasusorbian{\babel@save\"\umlautlow}
 \addto\noextrasusorbian{\umlauthigh}
-\def\usorbianhyphenmins{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \begingroup \catcode`\"12
 \def\x{\endgroup
   \def\@SS{\mathchar"7019 }

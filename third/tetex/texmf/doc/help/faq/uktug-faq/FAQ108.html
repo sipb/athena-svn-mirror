@@ -1,0 +1,17 @@
+<head>
+<title>UK TeX FAQ -- question 108</title>
+</head><body>
+<h3>Multiple citations</h3>
+<p>A convention sometimes used in physics journals is to "collapse" a group of
+related citations into a single entry in the bibliography.  BibTeX,
+by default, can't cope with this arrangement, but the <i>mcite</i>
+package deals with the problem.
+<p>The package overloads the <code>\cite</code> command, so that citations of the
+form <code>\cite{paper1,paper2}</code> appear in the document as a
+single citation, and appear arranged appropriately in the bibliography
+itself.  You need to alter the bibliography style (<code>.bst</code>) file you
+use; the pakage documentation tells you how to do that.
+<dl>
+<dt><tt><i>mcite.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/mcite.tar.gz">macros/latex/contrib/supported/mcite.tar.gz</a>
+</dl>
+<p></body>

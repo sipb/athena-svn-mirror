@@ -54,7 +54,7 @@ for i in *; do
 	fi
 done
 
-test -w help/Catalogue/ctfull.html \
-  && (cd help/Catalogue; $MAKE) >&2
+# test -w help/Catalogue/ctfull.html \
+#   && (cd help/Catalogue; $MAKE) >&2
 
 exit 0

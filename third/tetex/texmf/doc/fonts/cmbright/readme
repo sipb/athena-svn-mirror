@@ -1,0 +1,239 @@
+************************************************************
+*                                                          *
+*      The COMPUTER MODERN BRIGHT family of fonts          *
+*                                                          *
+*   fonts:       v1.0g  2002-05-25                         *
+*   cmbright.sty v7.1   2000-06-30                         *
+*   fd files     v7.3   1999-05-12                         *
+*                                                          *
+*   There will be no more *basic* changes to the fonts.    *
+*   Extensions and bug fixes, however, may be expected.    *
+*                                                          *
+************************************************************
+                                              Walter Schmidt 
+                                             <was@VR-Web.de>
+
+
+`Computer Modern Bright' is a family of sans serif fonts for
+TeX and LaTeX, based on Donald Knuth's CM fonts.  It
+comprises OT1, T1 and TS1 encoded text fonts of various
+shapes as well as all the fonts necessary for mathematical
+typesetting, incl. the AMS symbols.
+
+This distribution includes
+
+* the fonts in the Metafont format in the directory ./mf,
+
+* the font metrics in the directory ./tfm,
+
+* the DTX sources of the LaTeX macro package cmbright.sty
+  and the related font definition files in the directory
+  ./latex.
+
+The CM Bright fonts are available in the Type1 format, too.
+See <http://www.micropress-inc.com/fonts/brmath/brmain.htm>.
+
+As to the license conditions for the fonts, see the file 
+`copyrite.txt' in the subdirectory ./mf.
+
+As to the license conditions for the macro package and the 
+.fd files, see the notice in the files cmbright.dtx and 
+cmbr.fdd.
+
+
+
+Installing the fonts in MF format
+=================================
+Skip this section, if you intend to use the CM Bright fonts
+in Type1 format only!
+
+Copy the files from the subdirectory ./mf of this collection
+to a directory searched by the Metafont program.  In a TDS
+compliant file system the suitable place might be:
+
+      texmf/fonts/source/public/cmbright 
+
+You will need the source files of Knuth's original CM fonts,
+of the original (roman) AMS fonts, and of J. Knappen's EC
+fonts, too, in order to generate the bitmaps.
+
+
+
+Installing the font metrics and the LaTeX interface files
+=========================================================
+Copy the files from the subdirectory ./tfm of this collection
+to a directory where TeX looks for the font metrics.  In a
+TDS compliant file system the suitable place might be:
+
+     texmf/fonts/tfm/public/cmbright 
+
+Copy the files from the directory ./latex of this collection
+to a place where you keep documented LaTeX sources or to a
+temporary directory.  Execute the installation script 
+cmbright.ins by running it through LaTeX in this directory 
+than; this will generate the file cmbright.sty and various
+.fd files.
+
+Move these files to a directory where you keep LaTeX's style
+files; in a TDS compliant files system the suitable place 
+is:
+    
+    texmf/tex/latex/cmbright 
+
+The latter step is not required if your "docstrip" program
+has been configured to write directly to the TeX directories
+and the directory tex/latex/cmbright exists in your TDS tree
+before unpacking the files.
+
+
+
+Using the fonts with LaTeX
+==========================
+See the documentation, which is obtained by running the file
+cmbright.dtx through LaTeX.
+
+
+
+Future changes
+==============
+Minor changes and/or bug fixes to the T1/TS1 fonts are still
+to be expected.
+
+All future changes, bug fixes and additions to the 
+`official' EC fonts will be adopted, if appropriate.
+
+
+
+History
+=======
+*** 2002-05-25 ***
+
+    Fixed tbsymb.mf and all TFM's of the TC Bright fonts,
+    which had wong \fontdimen's; notice that the the font 
+    shapes are unchanged!
+    Documentation (cmbright.dtx) cleaned up.
+    
+*** 2002-05-11 ***
+
+    fixed cmbr8.tfm cmbr9.tfm cmbrmb10.tfm cmbrmi8.tfm
+    cmbrmi9.tfm cmbrsl8.tfm cmbrsl9.tfm;
+    TFMs are no longer mentioned in manifest.txt
+
+*** 2000-06-30 ***
+
+    cmbright v7.1:  Bug fix.  Loading amsfonts.sty with the
+    option [psamsfonts] would use the `roman' AMS fonts instead
+    of the `Bright' ones.
+    Improved documentation.
+    
+*** 2000-02-09 ***
+
+   fonts v1.0f: Fixed all Euro symbols.
+    
+*** 1999-05-12 ***
+
+   documentation revisited and reorganized
+   
+*** 1999-03-28 ***
+
+   cmbright.sty v6.9:  new option [slantedGreek];
+   
+*** 1998-12-11 ***
+
+   cmbright.sty v6.7:  Fixed the math font setup, so that
+   \mathbold acts on lowercase greek, too.
+   fonts v1.0e: improved Euro symbol (the metrics remain
+   unchanged!)
+   
+*** 1998-02-02 ***
+
+   fd files v7.3: font sizes 29.86 and 35.83 pt suppported
+
+*** 1998-01-19 ***
+
+   Fixed cmbright.ins to prevent problems with Unix (teTeX):
+   Do not generate uppercase filenames automatically.
+   cmbright.ins now TDS-enabled.  
+   Added oinst.ins for LaTeX  < Dec.1996.
+
+*** 1997-09-11 ***
+
+   cmbright.sty v6.6: added \relax after \ProcessOptions,
+   removed spurious spaces in font definitions
+
+   fd files v7.2: forced \hyphenchar\font45 in OT1 fonts,
+   removed spurious spaces in font definitions
+
+   included the new installation script, which was
+   erroneously lacking in the previous distribution :-(
+   
+*** 1997-06-03 ***
+
+   fixed a bug in the installation script:  the fd files are
+   now generated with mixed-case names if necessary (i.e.
+   when running an obsolete LaTeX release on Unix)
+
+   fonts, v1.0d: corrected height of arithmetic symbols in
+   T1/TS1 fonts;
+
+*** 1997-05-26 *** 
+
+   Fonts, v1.0c:  changed lowercase hachek accent in order
+   to avoid METAFONT errors occurring with certain MF modes;
+   fixed `root' symbol and big circles in TS1 fonts;
+   corrected rule_width# in semibold fonts, which had been
+   larger than it is in the bx fonts;
+
+*** 1997/05/22 ***
+
+   fd files v7.0: lowercase filenames
+
+   fonts v1.0b:  br17pt.mf fixed (o#, apex_o#)
+
+   cmbright.sty v6.4:  minor fixes
+
+   enhanced documentation
+
+*** 1996/11/20 ***
+
+   Documentation update only,  e-mail address added.
+
+*** 1996/07/02 ***
+
+   cmbright.sty, v6.2:  The code for selecting font size and
+   \baselineskip has been basically changed.  The default
+   font sizes defined in the class file will no longer be
+   changed.  The size macros like \normalsize will no longer
+   be redefined.  Same font sizes will always get the same
+   leading:
+  
+   size    \baselineskip
+    8pt    10.00pt
+    9pt    11.25pt
+   10pt    12.50pt
+   11pt    13.70pt
+   12pt    15.00pt
+
+   A new option [standard-baselineskips] enables you to
+   suppress the enlarged \baseselineskip values.
+
+   The commands \textregistered, \pounds, \textsterling and
+   \mathsterling have been made working; they will use the
+   roman text font.
+
+   font definition files, v6.0:  In all .fd files octal
+   numbers have been changed to decimal ones, in order to
+   avoid conflicts with possibly active quote characters.
+
+   fonts, v1.0:  erroneous comments fixed
+
+*** 1996/05/02 ***
+
+   fonts:                    version 1.0
+   font definition files:            5.0
+   LaTeX package `cmbright':         5.0
+
+   The first `final' release, including the AMS fonts.
+
+
+%% finis

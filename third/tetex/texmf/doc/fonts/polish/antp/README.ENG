@@ -1,0 +1,624 @@
+*****************************************************************************
+*               A replica of Antykwa P\'o\l{}tawskiego font                 *
+*           in PostScript Type 1 format -- preliminary version              *
+*                            Public domain                                  *
+*****************************************************************************
+
+---------
+SYNOPSIS:
+---------
+
+The Antykwa P\'o\l{}tawskiego family (regular, italic, bold, and bold italic)
+consists of the following files:
+
+  antpr.pfb, antpri.pfb, antpb.pfb, antpbi.pfb -- outlines
+  antpr.afm, antpri.afm, antpb.afm, antpbi.afm -- Adobe font metric
+  antpr.pfm, antpri.pfm, antpb.pfm, antpbi.pfm -- printer font metric
+  antpr.tfm, antpri.tfm, antpb.tfm, antpbi.tfm -- TeX font metric
+  antp.enc                                     -- encoding file (for dvips)
+  antp.map                                     -- fonts map file (for dvips)
+  config.antp or antp.cfg                      -- config file (for dvips)
+
+Moreover LaTeX .sty and .fd files were added (see latex/ subdirectory).
+
+In order to use the font with either TeX or Windows you will need to
+follow standard installation procedures (consult respective manuals
+for details).
+
+The used character set is a subset of QX layout (see below).
+
+--------
+HISTORY:
+--------
+
+This font was designed in the 'twenties and the 'thirties of XX century
+by a Polish graphic artist and a typographer Adam P\'o\l{}tawski. It was
+widely used by Polish printing houses as long as metal types were in
+use (until ca the 'sixties).
+
+The electronic replica of Antykwa P\'o\l{}tawskiego was prepared by
+Bogus\l{}aw Jackowski, Janusz M. Nowacki and Piotr Strzelczyk (JNS TEAM)
+and released during the meeting of the Polish TeX Users Group (GUST)
+(Bachotek, Poland, April-May, 2000) as a preliminary version.
+
+The current version is 0.51 (of 17 May 2000).
+
+---------
+COLOPHON:
+---------
+
+The main source of Antykwa P\'o\l{}tawskiego were printouts
+of metal types. Janusz M. Nowacki programmed glyphs in METAPOST
+using tools prepared by Bogus\l{}aw Jackowski and Piotr Strzelczyk.
+The tools make use of METAPOST, AWK, TeX, Type 1 utilities, Ghostscript,
+and perl. A lot of testing and tuning was carried out in the BOP firm.
+
+Many thanks the JNS TEAM owes to Andrzej Tomaszewski and Adam Twardoch for
+valuable discussions and comments.  Hearty thanks go to Marcin Woli\'nski who
+devoted his time verifying preliminary versions of Antykwa P\'o\l{}tawskiego
+and prepared files that facilitate using Antykwa P\'o\l{}tawskiego in LaTeX.
+We are extremely grateful to Staszek Wawrykiewicz who carefully (as always)
+prepared the package for distribution.
+
+The current version of Antykwa P\'o\l{}tawskiego is meant for bold people,
+primarily for testing purposes.
+
+In the final version, the METAPOST sources and font making engine
+will be included.
+
+
+--------------
+EMAIL CONTACT:
+--------------
+
+  B.Jackowski@gust.org.pl
+or
+  J.Nowacki@gust.org.pl
+or
+  P.Strzelczyk@gust.org.pl
+
+
+---------
+QX LAYOUT 
+---------
+
+QX layout for TeX is based on EC encoding (Cork Encoding) with a bow
+towards PL layout (i.e., CM layout equipped with Polish diacritical
+characters, to be used with the Polish version of plain, MeX), while QX
+layout for Windows is a difficult compromise between several so called
+standards (how several ``standards'' can co-exist?). QX layout has been
+worked out by the Polish TeX Users Group GUST. The character set of the QX
+layout should suffice to typeset texts (using TeX) in most European
+languages.
+
+Below you'll find comparison of underlying TeX and Windows layouts with
+the QX one.
+
+% =========================================================================
+%                          COMPARISON OF TeX LAYOUTS
+% =========================================================================
+% CODE             CM                EC                PL       QX ver 0.03
+% =========================================================================
+  0  00         Gamma             grave             Gamma             alpha
+  1  01         Delta             acute             Delta             Delta
+  2  02         Theta        circumflex             Theta              beta
+  3  03        Lambda             tilde            Lambda             delta
+  4  04            Xi          dieresis                Xi                pi
+  5  05            Pi      hungarumlaut                Pi                Pi
+  6  06         Sigma              ring             Sigma             Sigma
+  7  07       Upsilon             caron           Upsilon                mu
+  8  08           Phi             breve               Phi          ellipsis
+  9  09           Psi            macron               Psi                fk
+ 10  0A         Omega         dotaccent             Omega             Omega
+ 11  0B            ff           cedilla                ff                ff
+ 12  0C            fi            ogonek                fi                fi
+ 13  0D            fl    quotesinglbase                fl                fl
+ 14  0E           ffi     guilsinglleft               ffi               ffi
+ 15  0F           ffl    guilsinglright               ffl               ffl
+ 16  10      dotlessi      quotedblleft          dotlessi          dotlessi
+ 17  11      dotlessj     quotedblright          dotlessj          dotlessj
+ 18  12         grave      quotedblbase             grave             grave
+ 19  13         acute     guillemotleft             acute             acute
+ 20  14         caron    guillemotright             caron             caron
+ 21  15         breve            endash             breve             breve
+ 22  16        macron            emdash            macron            macron
+ 23  17          ring  compoundwordmark              ring              ring
+ 24  18       cedilla       perthousand           cedilla           cedilla
+ 25  19    germandbls          dotlessi        germandbls        germandbls
+ 26  1A            ae          dotlessj                ae                ae
+ 27  1B            oe                ff                oe                oe
+ 28  1C        oslash                fi            oslash            oslash
+ 29  1D            AE                fl                AE                AE
+ 30  1E            OE               ffi                OE                OE
+ 31  1F        Oslash               ffl            Oslash            Oslash
+ 32  20      suppress       visualspace            ogonek             space
+ 33  21        exclam            exclam            exclam            exclam
+ 34  22 quotedblright          quotedbl     quotedblright     quotedblright
+ 35  23    numbersign        numbersign        numbersign        numbersign
+ 36  24        dollar            dollar            dollar            dollar
+ 37  25       percent           percent           percent           percent
+ 38  26     ampersand         ampersand         ampersand         ampersand
+ 39  27    quoteright        quoteright        quoteright        quoteright
+ 40  28     parenleft         parenleft         parenleft         parenleft
+ 41  29    parenright        parenright        parenright        parenright
+ 42  2A      asterisk          asterisk          asterisk          asterisk
+ 43  2B          plus              plus              plus              plus
+ 44  2C         comma             comma             comma             comma
+ 45  2D        hyphen            hyphen            hyphen            hyphen
+ 46  2E        period            period            period            period
+ 47  2F         slash             slash             slash             slash
+ 48  30          zero              zero              zero              zero
+ 49  31           one               one               one               one
+ 50  32           two               two               two               two
+ 51  33         three             three             three             three
+ 52  34          four              four              four              four
+ 53  35          five              five              five              five
+ 54  36           six               six               six               six
+ 55  37         seven             seven             seven             seven
+ 56  38         eight             eight             eight             eight
+ 57  39          nine              nine              nine              nine
+ 58  3A         colon             colon             colon             colon
+ 59  3B     semicolon         semicolon         semicolon         semicolon
+ 60  3C    exclamdown              less        exclamdown        exclamdown
+ 61  3D         equal             equal             equal             equal
+ 62  3E  questiondown           greater      questiondown      questiondown
+ 63  3F      question          question          question          question
+ 64  40            at                at                at                at
+ 65  41             A                 A                 A                 A
+ 66  42             B                 B                 B                 B
+ 67  43             C                 C                 C                 C
+ 68  44             D                 D                 D                 D
+ 69  45             E                 E                 E                 E
+ 70  46             F                 F                 F                 F
+ 71  47             G                 G                 G                 G
+ 72  48             H                 H                 H                 H
+ 73  49             I                 I                 I                 I
+ 74  4A             J                 J                 J                 J
+ 75  4B             K                 K                 K                 K
+ 76  4C             L                 L                 L                 L
+ 77  4D             M                 M                 M                 M
+ 78  4E             N                 N                 N                 N
+ 79  4F             O                 O                 O                 O
+ 80  50             P                 P                 P                 P
+ 81  51             Q                 Q                 Q                 Q
+ 82  52             R                 R                 R                 R
+ 83  53             S                 S                 S                 S
+ 84  54             T                 T                 T                 T
+ 85  55             U                 U                 U                 U
+ 86  56             V                 V                 V                 V
+ 87  57             W                 W                 W                 W
+ 88  58             X                 X                 X                 X
+ 89  59             Y                 Y                 Y                 Y
+ 90  5A             Z                 Z                 Z                 Z
+ 91  5B   bracketleft       bracketleft       bracketleft       bracketleft
+ 92  5C  quotedblleft         backslash      quotedblleft      quotedblleft
+ 93  5D  bracketright      bracketright      bracketright      bracketright
+ 94  5E    circumflex       asciicircum        circumflex        circumflex
+ 95  5F     dotaccent        underscore         dotaccent         dotaccent
+ 96  60     quoteleft         quoteleft         quoteleft         quoteleft
+ 97  61             a                 a                 a                 a
+ 98  62             b                 b                 b                 b
+ 99  63             c                 c                 c                 c
+100  64             d                 d                 d                 d
+101  65             e                 e                 e                 e
+102  66             f                 f                 f                 f
+103  67             g                 g                 g                 g
+104  68             h                 h                 h                 h
+105  69             i                 i                 i                 i
+106  6A             j                 j                 j                 j
+107  6B             k                 k                 k                 k
+108  6C             l                 l                 l                 l
+109  6D             m                 m                 m                 m
+110  6E             n                 n                 n                 n
+111  6F             o                 o                 o                 o
+112  70             p                 p                 p                 p
+113  71             q                 q                 q                 q
+114  72             r                 r                 r                 r
+115  73             s                 s                 s                 s
+116  74             t                 t                 t                 t
+117  75             u                 u                 u                 u
+118  76             v                 v                 v                 v
+119  77             w                 w                 w                 w
+120  78             x                 x                 x                 x
+121  79             y                 y                 y                 y
+122  7A             z                 z                 z                 z
+123  7B        endash         braceleft            endash            endash
+124  7C        emdash               bar            emdash            emdash
+125  7D  hungarumlaut        braceright      hungarumlaut      hungarumlaut
+126  7E         tilde        asciitilde             tilde             tilde
+127  7F      dieresis            hyphen          dieresis          dieresis
+128  80             @            Abreve                 @                 @
+129  81             @           Aogonek           Aogonek           Aogonek
+130  82             @            Cacute            Cacute            Cacute
+131  83             @            Ccaron                 @           greater
+132  84             @            Dcaron                 @      greaterequal
+133  85             @            Ecaron                 @       approxequal
+134  86             @           Eogonek           Eogonek           Eogonek
+135  87             @            Gbreve                 @           Iogonek
+136  88             @            Lacute                 @              less
+137  89             @       Lquoteright                 @         lessequal
+138  8A             @            Lslash            Lslash            Lslash
+139  8B             @            Nacute            Nacute            Nacute
+140  8C             @            Ncaron                 @        asciitilde
+141  8D             @               Eng                 @       asciicircum    
+142  8E             @     Ohungarumlaut                 @               ell
+143  8F             @            Racute                 @            dagger
+144  90             @            Rcaron                 @         daggerdbl  
+145  91             @            Sacute            Sacute            Sacute
+146  92             @            Scaron                 @            Scaron
+147  93             @          Scedilla                 @          Scedilla
+148  94             @            Tcaron                 @            degree
+149  95             @          Tcedilla                 @          Tcedilla
+150  96             @     Uhungarumlaut                 @            ogonek
+151  97             @             Uring                 @           Uogonek
+152  98             @         Ydieresis                 @         Ydieresis
+153  99             @            Zacute            Zacute            Zacute
+154  9A             @            Zcaron                 @            Zcaron
+155  9B             @        Zdotaccent        Zdotaccent        Zdotaccent
+156  9C             @                IJ                 @                 @
+157  9D             @        Idotaccent                 @         braceleft
+158  9E             @              dbar                 @        braceright
+159  9F             @           section                 @           section
+160  A0             @            abreve                 @                 @
+161  A1             @           aogonek           aogonek           aogonek
+162  A2             @            cacute            cacute            cacute
+163  A3             @            ccaron                 @        registered
+164  A4             @       dquoteright                 @         copyright
+165  A5             @            ecaron                 @            divide
+166  A6             @           eogonek           eogonek           eogonek
+167  A7             @            gbreve                 @           iogonek
+168  A8             @            lacute                 @             minus
+169  A9             @       lquoteright                 @          multiply
+170  AA             @            lslash            lslash            lslash
+171  AB             @            nacute            nacute            nacute
+172  AC             @            ncaron                 @         plusminus
+173  AD             @               eng                 @          infinity
+174  AE             @     ohungarumlaut     guillemotleft     guillemotleft
+175  AF             @            racute    guillemotright    guillemotright
+176  B0             @            rcaron                 @         paragraph
+177  B1             @            sacute            sacute            sacute
+178  B2             @            scaron                 @            scaron
+179  B3             @          scedilla                 @          scedilla
+180  B4             @       tquoteright                 @            bullet
+181  B5             @          tcedilla                 @          tcedilla
+182  B6             @     uhungarumlaut                 @                 @
+183  B7             @             uring                 @           uogonek
+184  B8             @         ydieresis                 @         ydieresis
+185  B9             @            zacute            zacute            zacute
+186  BA             @            zcaron                 @            zcaron
+187  BB             @        zdotaccent        zdotaccent        zdotaccent
+188  BC             @                ij                 @                 @
+189  BD             @        exclamdown                 @    periodcentered
+190  BE             @      questiondown                 @          quotedbl
+191  BF             @          sterling                 @       quotesingle
+192  C0             @            Agrave                 @            Agrave
+193  C1             @            Aacute                 @            Aacute
+194  C2             @       Acircumflex                 @       Acircumflex
+195  C3             @            Atilde                 @            Atilde
+196  C4             @         Adieresis                 @         Adieresis
+197  C5             @             Aring                 @             Aring
+198  C6             @                AE                 @         backslash
+199  C7             @          Ccedilla                 @          Ccedilla
+200  C8             @            Egrave                 @            Egrave
+201  C9             @            Eacute                 @            Eacute
+202  CA             @       Ecircumflex                 @       Ecircumflex
+203  CB             @         Edieresis                 @         Edieresis
+204  CC             @            Igrave                 @            Igrave
+205  CD             @            Iacute                 @            Iacute
+206  CE             @       Icircumflex                 @       Icircumflex
+207  CF             @         Idieresis                 @         Idieresis
+208  D0             @               Eth                 @               Eth
+209  D1             @            Ntilde                 @            Ntilde
+210  D2             @            Ograve                 @            Ograve
+211  D3             @            Oacute            Oacute            Oacute
+212  D4             @       Ocircumflex                 @       Ocircumflex
+213  D5             @            Otilde                 @            Otilde
+214  D6             @         Odieresis                 @         Odieresis
+215  D7             @                OE                 @          currency
+216  D8             @            Oslash                 @       perthousand
+217  D9             @            Ugrave                 @            Ugrave
+218  DA             @            Uacute                 @            Uacute
+219  DB             @       Ucircumflex                 @       Ucircumflex
+220  DC             @         Udieresis                 @         Udieresis
+221  DD             @            Yacute                 @            Yacute
+222  DE             @             Thorn                 @             Thorn
+223  DF             @        Germandbls                 @               bar
+224  E0             @            agrave                 @            agrave
+225  E1             @            aacute                 @            aacute
+226  E2             @       acircumflex                 @       acircumflex
+227  E3             @            atilde                 @            atilde
+228  E4             @         adieresis                 @         adieresis
+229  E5             @             aring                 @             aring
+230  E6             @                ae                 @        underscore
+231  E7             @          ccedilla                 @          ccedilla
+232  E8             @            egrave                 @            egrave
+233  E9             @            eacute                 @            eacute
+234  EA             @       ecircumflex                 @       ecircumflex
+235  EB             @         edieresis                 @         edieresis
+236  EC             @            igrave                 @            igrave
+237  ED             @            iacute                 @            iacute
+238  EE             @       icircumflex                 @       icircumflex
+239  EF             @         idieresis                 @         idieresis
+240  F0             @               eth                 @               eth
+241  F1             @            ntilde                 @            ntilde
+242  F2             @            ograve                 @            ograve
+243  F3             @            oacute            oacute            oacute
+244  F4             @       ocircumflex                 @       ocircumflex
+245  F5             @            otilde                 @            otilde
+246  F6             @         odieresis                 @         odieresis
+247  F7             @                oe                 @          anglearc
+248  F8             @            oslash                 @          diameter
+249  F9             @            ugrave                 @            ugrave
+250  FA             @            uacute                 @            uacute
+251  FB             @       ucircumflex                 @       ucircumflex
+252  FC             @         udieresis                 @         udieresis
+253  FD             @            yacute                 @            yacute
+254  FE             @             thorn                 @             thorn
+255  FF             @        germandbls      quotedblbase      quotedblbase
+% =========================================================================
+
+
+% =========================================================
+%              COMPARISON OF GUI LAYOUTS
+% =========================================================
+% CODE        NEW ANSI (0--127)    Macintosh   QX ver. 0.03
+%             +  CODE PAGE 1250     PLEURO
+% =========================================================
+  0  00              @                 @                 @
+  1  01              @                 @             acute
+  2  02              @                 @        circumflex
+  3  03              @                 @           cedilla
+  4  04              @                 @          dieresis
+  5  05              @                 @             breve
+  6  06              @                 @         dotaccent
+  7  07              @                 @            macron
+  8  08              @                 @              ring
+  9  09              @                 @                 @
+ 10  0A              @                 @      hungarumlaut
+ 11  0B              @                 @            ogonek
+ 12  0C              @                 @             caron
+ 13  0D              @                 @                 @
+ 14  0E              @                 @          dotlessi
+ 15  0F              @                 @          dotlessj
+ 16  10              @                 @             tilde
+ 17  11              @                 @                ff
+ 18  12              @                 @               ffi
+ 19  13              @                 @               ffl
+ 20  14              @                 @                fk
+ 21  15              @                 @       approxequal
+ 22  16              @                 @               ell
+ 23  17              @                 @          infinity
+ 24  18              @                 @             alpha
+ 25  19              @                 @              beta
+ 26  1A              @                 @             delta
+ 27  1B              @                 @                pi
+ 28  1C              @                 @             Delta
+ 29  1D              @                 @                Pi
+ 30  1E              @                 @             Sigma
+ 31  1F              @                 @             Omega
+ 32  20          space             space             space
+ 33  21         exclam            exclam            exclam
+ 34  22       quotedbl          quotedbl          quotedbl
+ 35  23     numbersign        numbersign        numbersign
+ 36  24         dollar            dollar            dollar
+ 37  25        percent           percent           percent
+ 38  26      ampersand         ampersand         ampersand
+ 39  27    quotesingle       quotesingle       quotesingle
+ 40  28      parenleft         parenleft         parenleft
+ 41  29     parenright        parenright        parenright
+ 42  2A       asterisk          asterisk          asterisk
+ 43  2B           plus              plus              plus
+ 44  2C          comma             comma             comma
+ 45  2D         hyphen            hyphen            hyphen
+ 46  2E         period            period            period
+ 47  2F          slash             slash             slash
+ 48  30           zero              zero              zero
+ 49  31            one               one               one
+ 50  32            two               two               two
+ 51  33          three             three             three
+ 52  34           four              four              four
+ 53  35           five              five              five
+ 54  36            six               six               six
+ 55  37          seven             seven             seven
+ 56  38          eight             eight             eight
+ 57  39           nine              nine              nine
+ 58  3A          colon             colon             colon
+ 59  3B      semicolon         semicolon         semicolon
+ 60  3C           less              less              less
+ 61  3D          equal             equal             equal
+ 62  3E        greater           greater           greater
+ 63  3F       question          question          question
+ 64  40             at                at                at
+ 65  41              A                 A                 A
+ 66  42              B                 B                 B
+ 67  43              C                 C                 C
+ 68  44              D                 D                 D
+ 69  45              E                 E                 E
+ 70  46              F                 F                 F
+ 71  47              G                 G                 G
+ 72  48              H                 H                 H
+ 73  49              I                 I                 I
+ 74  4A              J                 J                 J
+ 75  4B              K                 K                 K
+ 76  4C              L                 L                 L
+ 77  4D              M                 M                 M
+ 78  4E              N                 N                 N
+ 79  4F              O                 O                 O
+ 80  50              P                 P                 P
+ 81  51              Q                 Q                 Q
+ 82  52              R                 R                 R
+ 83  53              S                 S                 S
+ 84  54              T                 T                 T
+ 85  55              U                 U                 U
+ 86  56              V                 V                 V
+ 87  57              W                 W                 W
+ 88  58              X                 X                 X
+ 89  59              Y                 Y                 Y
+ 90  5A              Z                 Z                 Z
+ 91  5B    bracketleft       bracketleft       bracketleft
+ 92  5C      backslash         backslash         backslash
+ 93  5D   bracketright      bracketright      bracketright
+ 94  5E    asciicircum       asciicircum       asciicircum
+ 95  5F     underscore        underscore        underscore
+ 96  60          grave             grave             grave
+ 97  61              a                 a                 a
+ 98  62              b                 b                 b
+ 99  63              c                 c                 c
+100  64              d                 d                 d
+101  65              e                 e                 e
+102  66              f                 f                 f
+103  67              g                 g                 g
+104  68              h                 h                 h
+105  69              i                 i                 i
+106  6A              j                 j                 j
+107  6B              k                 k                 k
+108  6C              l                 l                 l
+109  6D              m                 m                 m
+110  6E              n                 n                 n
+111  6F              o                 o                 o
+112  70              p                 p                 p
+113  71              q                 q                 q
+114  72              r                 r                 r
+115  73              s                 s                 s
+116  74              t                 t                 t
+117  75              u                 u                 u
+118  76              v                 v                 v
+119  77              w                 w                 w
+120  78              x                 x                 x
+121  79              y                 y                 y
+122  7A              z                 z                 z
+123  7B      braceleft         braceleft         braceleft
+124  7C            bar               bar               bar
+125  7D     braceright        braceright        braceright
+126  7E     asciitilde        asciitilde        asciitilde
+127  7F              @                 @                 @
+128  80              @                 @           Iogonek
+129  81              @                 @                fi
+130  82 quotesinglbase    quotesinglbase                fl
+131  83              @         Ydieresis         Ydieresis
+132  84   quotedblbase      quotedblbase      quotedblbase
+133  85       ellipsis          ellipsis          ellipsis
+134  86         dagger            dagger            dagger
+135  87      daggerdbl         daggerdbl         daggerdbl
+136  88              @       Ecircumflex       Ecircumflex
+137  89    perthousand       perthousand       perthousand
+138  8A         Scaron            Scaron            Scaron
+139  8B  guilsinglleft     guilsinglleft          Scedilla
+140  8C         Sacute            Sacute            Sacute
+141  8D         Tcaron                OE                OE
+142  8E         Zcaron            Zcaron            Zcaron
+143  8F         Zacute            Zacute            Zacute
+144  90              @                 @           iogonek
+145  91      quoteleft         quoteleft         quoteleft
+146  92     quoteright        quoteright        quoteright
+147  93   quotedblleft      quotedblleft      quotedblleft
+148  94  quotedblright     quotedblright     quotedblright
+149  95         bullet            bullet            bullet
+150  96         endash            endash            endash
+151  97         emdash            emdash            emdash
+152  98              @       ecircumflex       ecircumflex
+153  99      trademark         trademark          anglearc
+154  9A         scaron            scaron            scaron
+155  9B guilsinglright    guilsinglright          scedilla
+156  9C         sacute            sacute            sacute
+157  9D    tquoteright                oe                oe
+158  9E         zcaron            zcaron            zcaron
+159  9F         zacute            zacute            zacute
+160  A0              @           nbspace           nbspace
+161  A1          caron        exclamdown        exclamdown
+162  A2          breve      questiondown      questiondown
+163  A3         Lslash            Lslash            Lslash
+164  A4       currency          currency          currency
+165  A5        Aogonek           Aogonek           Aogonek
+166  A6      brokenbar         brokenbar          diameter
+167  A7        section           section           section
+168  A8       dieresis          dieresis           Uogonek
+169  A9      copyright         copyright         copyright
+170  AA       Scedilla                AE                AE
+171  AB  guillemotleft     guillemotleft     guillemotleft
+172  AC     logicalnot            Ntilde            Ntilde
+173  AD         hyphen             minus             minus
+174  AE     registered        registered        registered
+175  AF     Zdotaccent        Zdotaccent        Zdotaccent
+176  B0         degree            degree            degree
+177  B1      plusminus         plusminus         plusminus
+178  B2         ogonek       twosuperior         lessequal
+179  B3         lslash            lslash            lslash
+180  B4          acute             acute      greaterequal
+181  B5             mu                mu                mu
+182  B6      paragraph         paragraph         paragraph
+183  B7 periodcentered    periodcentered    periodcentered
+184  B8        cedilla                 @           uogonek
+185  B9        aogonek           aogonek           aogonek
+186  BA       scedilla                ae                ae
+187  BB guillemotright    guillemotright    guillemotright
+188  BC    Lquoteright            ntilde            ntilde
+189  BD   hungarumlaut           onehalf          Tcedilla
+190  BE    lquoteright     threequarters          tcedilla
+191  BF     zdotaccent        zdotaccent        zdotaccent
+192  C0         Racute            Agrave            Agrave
+193  C1         Aacute            Aacute            Aacute
+194  C2    Acircumflex       Acircumflex       Acircumflex
+195  C3         Abreve            Atilde            Atilde
+196  C4      Adieresis         Adieresis         Adieresis
+197  C5         Lacute             Aring             Aring
+198  C6         Cacute            Cacute            Cacute
+199  C7       Ccedilla          Ccedilla          Ccedilla
+200  C8         Ccaron            Egrave            Egrave
+201  C9         Eacute            Eacute            Eacute
+202  CA        Eogonek           Eogonek           Eogonek
+203  CB      Edieresis         Edieresis         Edieresis
+204  CC         Ecaron            Igrave            Igrave
+205  CD         Iacute            Iacute            Iacute
+206  CE    Icircumflex       Icircumflex       Icircumflex
+207  CF         Dcaron         Idieresis         Idieresis
+208  D0            Eth               Eth               Eth
+209  D1         Nacute            Nacute            Nacute
+210  D2         Ncaron            Ograve            Ograve
+211  D3         Oacute            Oacute            Oacute
+212  D4    Ocircumflex       Ocircumflex       Ocircumflex
+213  D5  Ohungarumlaut            Otilde            Otilde
+214  D6      Odieresis         Odieresis         Odieresis
+215  D7       multiply          multiply          multiply
+216  D8         Rcaron            Oslash            Oslash
+217  D9          Uring            Ugrave            Ugrave
+218  DA         Uacute            Uacute            Uacute
+219  DB  Uhungarumlaut       Ucircumflex       Ucircumflex
+220  DC      Udieresis         Udieresis         Udieresis
+221  DD         Yacute            Yacute            Yacute
+222  DE       Tcedilla             Thorn             Thorn
+223  DF     germandbls        germandbls        germandbls
+224  E0         racute            agrave            agrave
+225  E1         aacute            aacute            aacute
+226  E2    acircumflex       acircumflex       acircumflex
+227  E3         abreve            atilde            atilde
+228  E4      adieresis         adieresis         adieresis
+229  E5         lacute             aring             aring
+230  E6         cacute            cacute            cacute
+231  E7       ccedilla          ccedilla          ccedilla
+232  E8         ccaron            egrave            egrave
+233  E9         eacute            eacute            eacute
+234  EA        eogonek           eogonek           eogonek
+235  EB      edieresis         edieresis         edieresis
+236  EC         ecaron            igrave            igrave
+237  ED         iacute            iacute            iacute
+238  EE    icircumflex       icircumflex       icircumflex
+239  EF    dquoteright         idieresis         idieresis
+240  F0           dbar               eth               eth
+241  F1         nacute            nacute            nacute
+242  F2         ncaron            ograve            ograve
+243  F3         oacute            oacute            oacute
+244  F4    ocircumflex       ocircumflex       ocircumflex
+245  F5  ohungarumlaut            otilde            otilde
+246  F6      odieresis         odieresis         odieresis
+247  F7         divide            divide            divide
+248  F8         rcaron            oslash            oslash
+249  F9          uring            ugrave            ugrave
+250  FA         uacute            uacute            uacute
+251  FB  uhungarumlaut       ucircumflex       ucircumflex
+252  FC      udieresis         udieresis         udieresis
+253  FD         yacute            yacute            yacute
+254  FE       tcedilla             thorn             thorn
+255  FF      dotaccent         ydieresis         ydieresis
+% =======================================================
+

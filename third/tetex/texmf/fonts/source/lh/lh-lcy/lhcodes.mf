@@ -1,5 +1,5 @@
-% This is lhcodes.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is lhcodes.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 

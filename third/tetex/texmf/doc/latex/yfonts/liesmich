@@ -2,14 +2,14 @@
 
 ************************************************************
 *                                                          *
-*                     yfonts.sty v1.2                      *
+*                     yfonts.sty v1.3                      *
 *                                                          *
 *     Ein Makropaket fuer den Fraktursatz mit LaTeX2e      *
 *                                                          *
 ************************************************************
                                               Walter Schmidt
-                               <walter.schmidt@arcormail.de>
-                                                  1999-05-12
+                                      <w-a-schmidt@arcor.de>
+                                                  2003-01-08
 
 Das Makropaket yfonts.sty ermoeglicht die Benutzung der von
 Yannis Haralambous entworfenen altdeutschen Schriften
@@ -59,18 +59,34 @@ diese Schriften entworfen hat.
 
 Installation des LaTeX-Pakets
 -----------------------------
-Bearbeiten Sie das Installations-Skript yfonts.ins mit
-LaTeX, um das Makropaket zu entpacken, und versetzen Sie
-dann yfonts.sty in ein Verzeichnis, wo LaTeX es findet.
+Legen Sie die Dateien yfonts.dtx und yfonts.ins in ein
+gemeinsames Verzeichnis.  In einem TDS-kompatiblen
+TeX-System sollte es das Verzeichnis
+
+  texmf/source/latex/yfonts
+
+sein.  Bearbeiten Sie das Installations-Skript yfonts.ins
+mit LaTeX, um das Makropaket zu entpacken.  Falls das
+Verzeichnis
+
+  texmf/tex/latex/yfonts
+             
+existiert, und wenn docstrip richtig konfiguriert ist, wird 
+das Paket automagisch in diesem Verzeichnis erzeugt.
+Ansonsten versetzen Sie es manuell dorthin -- oder in ein
+anderes Verzeichnis, wo LaTeX es findet.
 
 Bearbeiten Sie yfonts.dtx mit LaTeX, um die Beschreibung des
 Pakets zu erzeugen.
 
-Bearbeiten Sie den Beispieltext frktest.tex mit LaTeX.
+Bearbeiten Sie das File frktest.tex mit LaTeX, um ein 
+Beispiel zu sehen.
 
 
 Geschichte
 ----------
+v1.3 <2сс3-01-08>  Makros \AA und \aa funktionieren wieder.
+
 v1.2 <1999-05-12>  Geaenderte Lizenzbedingung: LPPL
 
 v1.2 <1998-10-03>  Neu: \yinipar (Dank an Bernd Raichle fuer

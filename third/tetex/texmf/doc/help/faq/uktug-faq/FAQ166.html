@@ -1,0 +1,23 @@
+<head>
+<title>UK TeX FAQ -- question 166</title>
+</head><body>
+<h3>Defining a new log-like function in LaTeX</h3>
+<p>Use the <code>\mathop</code> command, as in:
+<pre>
+  \newcommand{\diag}{\mathop{\mathrm{diag}}}
+</pre>
+<p>Subscripts and superscripts on <code>\diag</code> will be placed as they
+are on <code>\lim</code>.  If you want your subscripts and superscripts always
+placed to the right, do:
+
+<pre>
+  \newcommand{\diag}{\mathop{\mathrm{diag}}\nolimits}
+</pre>
+<p>AMSLaTeX (in its <i>amsopn</i> package) provides a command
+<code>\DeclareMathOperator</code> that satisfies the requirement.
+<p>(It should be noted that "log-like" was reportedly a <em>joke</em> on
+Lamport's part; it is of course clear what was meant.)
+<dl>
+<dt><tt><i>amsopn.sty</i></tt><dd>In the AMSLaTeX distribution <a href="ftp://macros/latex/required/amslatex.tar.gz">macros/latex/required/amslatex.tar.gz</a>
+</dl>
+<p></body>

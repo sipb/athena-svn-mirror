@@ -7,49 +7,50 @@
 %% amsfonts.dtx 
 %% 
 %%% ====================================================================
-%%%  @LaTeX-file{
-%%%     filename        = "amsfonts.dtx",
-%%%     version         = "2.2e",
-%%%     date            = "1997/09/17",
-%%%     time            = "10:26:27 EDT",
-%%%     author          = "American Mathematical Society",
-%%%     copyright       = "Copyright (C) 1995 American Mathematical Society,
-%%%                        all rights reserved.  Copying of this file is
-%%%                        authorized only if either:
-%%%                        (1) you make absolutely no changes to your copy,
-%%%                        including name; OR
-%%%                        (2) if you do make changes, you first rename it
-%%%                        to some other name.",
-%%%     address         = "American Mathematical Society,
-%%%                        Technical Support,
-%%%                        Electronic Products and Services,
-%%%                        P. O. Box 6248,
-%%%                        Providence, RI 02940,
-%%%                        USA",
-%%%     telephone       = "401-455-4080 or (in the USA and Canada)
-%%%                        800-321-4AMS (321-4267)",
-%%%     FAX             = "401-331-3842",
-%%%     checksum        = "30113 458 2121 18965",
-%%%     email           = "tech-support@ams.org (Internet)",
-%%%     codetable       = "ISO/ASCII",
-%%%     keywords        = "latex, amslatex, ams-latex, amsfonts, msam,
-%%%                        msbm, eufm, blackboard bold",
-%%%     supported       = "yes",
-%%%     abstract        = "This is part of the AMSFonts distribution,
-%%%                        It provides easy access to certain math fonts
-%%%                        for extra math symbols, fraktur letters, and
-%%%                        blackboard bold letters."
-%%%     docstring       = "The checksum field above contains a CRC-16
-%%%                        checksum as the first value, followed by the
-%%%                        equivalent of the standard UNIX wc (word
-%%%                        count) utility output of lines, words, and
-%%%                        characters.  This is produced by Robert
-%%%                        Solovay's checksum utility.",
-%%%  }
+%%% @LaTeX-file{
+%%%   filename        = "amsfonts.dtx",
+%%%   version         = "2.2f",
+%%%   date            = "2001/10/25",
+%%%   time            = "11:51:34 EDT",
+%%%   checksum        = "12894 459 2125 19071",
+%%%   author          = "American Mathematical Society",
+%%%   copyright       = "Copyright 2001 American Mathematical Society,
+%%%                      all rights reserved.  Copying of this file is
+%%%                      authorized only if either:
+%%%                      (1) you make absolutely no changes to your copy,
+%%%                      including name; OR
+%%%                      (2) if you do make changes, you first rename it
+%%%                      to some other name.",
+%%%   address         = "American Mathematical Society,
+%%%                      Technical Support,
+%%%                      Publications Technical Group,
+%%%                      P. O. Box 6248,
+%%%                      Providence, RI 02940,
+%%%                      USA",
+%%%   telephone       = "401-455-4080 or (in the USA and Canada)
+%%%                      800-321-4AMS (321-4267)",
+%%%   FAX             = "401-331-3842",
+%%%   email           = "tech-support@ams.org (Internet)",
+%%%   codetable       = "ISO/ASCII",
+%%%   keywords        = "latex, amslatex, ams-latex, amsfonts, msam,
+%%%                      msbm, eufm, blackboard bold",
+%%%   supported       = "yes",
+%%%   abstract        = "This file is part of the AMSFonts distribution.
+%%%                      It provides easy access in \LaTeXe{} to certain
+%%%                      math fonts for extra math symbols, fraktur
+%%%                      letters, and blackboard bold letters. See the
+%%%                      AMSFonts user's guide for more information.",
+%%%   docstring       = "The checksum field above contains a CRC-16
+%%%                      checksum as the first value, followed by the
+%%%                      equivalent of the standard UNIX wc (word
+%%%                      count) utility output of lines, words, and
+%%%                      characters.  This is produced by Robert
+%%%                      Solovay's checksum utility.",
+%%% }
 %%% ====================================================================
 \NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
-[1994/06/01]% LaTeX date must June 1994 or later
-\ProvidesPackage{amsfonts}[1997/09/17 v2.2e]
+[1994/12/01]% LaTeX date must be December 1994 or later
+\ProvidesPackage{amsfonts}[2001/10/25 v2.2f]
 \DeclareOption{psamsfonts}{%
   \ifnum\cmex@opt=7 \def\cmex@opt{10}%
   \else \def\cmex@opt{0}\fi
@@ -78,10 +79,8 @@
     \def\cmex@opt{0}%
   \fi
 \fi
-\@ifundefined{@mathmeasure}{%
-  \def\@mathmeasure#1#2#3{\setbox#1\hbox{\frozen@everymath\@emptytoks
-    \m@th$#2#3$}}
-}{}
+\providecommand*{\@mathmeasure}[3]{%
+  \setbox#1\hbox{\frozen@everymath\@emptytoks\m@th$#2#3$}}
 \@ifundefined{@emptytoks}{\csname newtoks\endcsname\@emptytoks}{}
 \DeclareSymbolFont{AMSa}{U}{msa}{m}{n}
 \DeclareSymbolFont{AMSb}{U}{msb}{m}{n}
@@ -98,10 +97,10 @@
   \edef\maltese{\noexpand\mathhexbox{\hexnumber@\symAMSa}7A}
 }{}
 \begingroup \catcode`\"=12
-\DeclareMathDelimiter\ulcorner{\mathopen} {AMSa}{"70}{AMSa}{"70}
-\DeclareMathDelimiter\urcorner{\mathclose}{AMSa}{"71}{AMSa}{"71}
-\DeclareMathDelimiter\llcorner{\mathopen} {AMSa}{"78}{AMSa}{"78}
-\DeclareMathDelimiter\lrcorner{\mathclose}{AMSa}{"79}{AMSa}{"79}
+\DeclareMathDelimiter{\ulcorner}{\mathopen} {AMSa}{"70}{AMSa}{"70}
+\DeclareMathDelimiter{\urcorner}{\mathclose}{AMSa}{"71}{AMSa}{"71}
+\DeclareMathDelimiter{\llcorner}{\mathopen} {AMSa}{"78}{AMSa}{"78}
+\DeclareMathDelimiter{\lrcorner}{\mathclose}{AMSa}{"79}{AMSa}{"79}
 \xdef\widehat#1{\noexpand\@mathmeasure\z@\textstyle{#1}%
   \noexpand\ifdim\noexpand\wd\z@>\tw@ em%
   \mathaccent"0\hexnumber@\symAMSb 5B{#1}%
@@ -110,34 +109,34 @@
   \noexpand\ifdim\noexpand\wd\z@>\tw@ em%
   \mathaccent"0\hexnumber@\symAMSb 5D{#1}%
   \noexpand\else\mathaccent"0365{#1}\noexpand\fi}
-\DeclareMathSymbol\dabar@{\mathord}{AMSa}{"39}
+\DeclareMathSymbol{\dabar@}{\mathord}{AMSa}{"39}
 \xdef\dashrightarrow{\mathrel{\dabar@\dabar@
                               \mathchar"0\hexnumber@\symAMSa 4B}}%
 \xdef\dashleftarrow{\mathrel{\mathchar"0\hexnumber@\symAMSa 4C\dabar@
                               \dabar@}}%
 \global\let\dasharrow\dashrightarrow
 \global\let\rightleftharpoons\undefined
-\DeclareMathSymbol\rightleftharpoons{\mathrel}{AMSa}{"0A}
+\DeclareMathSymbol{\rightleftharpoons}{\mathrel}{AMSa}{"0A}
 \global\let\angle\undefined
-\DeclareMathSymbol\angle            {\mathord}{AMSa}{"5C}
+\DeclareMathSymbol{\angle}            {\mathord}{AMSa}{"5C}
 \global\let\hbar\undefined
-\DeclareMathSymbol\hbar             {\mathord}{AMSb}{"7E}
+\DeclareMathSymbol{\hbar}             {\mathord}{AMSb}{"7E}
 \global\let\sqsubset\undefined
-\DeclareMathSymbol\sqsubset         {\mathrel}{AMSa}{"40}
+\DeclareMathSymbol{\sqsubset}         {\mathrel}{AMSa}{"40}
 \global\let\sqsupset\undefined
-\DeclareMathSymbol\sqsupset         {\mathrel}{AMSa}{"41}
+\DeclareMathSymbol{\sqsupset}         {\mathrel}{AMSa}{"41}
 \global\let\mho\undefined
-\DeclareMathSymbol\mho              {\mathord}{AMSb}{"66}
+\DeclareMathSymbol{\mho}              {\mathord}{AMSb}{"66}
 \endgroup
-\DeclareMathAlphabet\mathfrak{U}{euf}{m}{n}
-\SetMathAlphabet\mathfrak{bold}{U}{euf}{b}{n}
+\DeclareMathAlphabet{\mathfrak}{U}{euf}{m}{n}
+\SetMathAlphabet{\mathfrak}{bold}{U}{euf}{b}{n}
 \DeclareSymbolFontAlphabet{\mathbb}{AMSb}
 \DeclareFontEncodingDefaults{\relax}{\def\accentclass@{7}}
-\DeclareRobustCommand\frak[1]{%
+\DeclareRobustCommand{\frak}[1]{%
   {\@subst@obsolete{amsfonts}\frak\mathfrak{#1}}}
-\DeclareRobustCommand\Bbb[1]{%
+\DeclareRobustCommand{\Bbb}[1]{%
   {\@subst@obsolete{amsfonts}\Bbb\mathbb{#1}}}
-\DeclareRobustCommand\bold[1]{%
+\DeclareRobustCommand{\bold}[1]{%
   {\@subst@obsolete{amsfonts}\bold\mathbf{#1}}}
 \begingroup \catcode`\"=12 \relax
 \gdef\newsymbol#1#2#3#4#5{%
@@ -162,13 +161,13 @@
 \fi
 \def\@subst@obsolete#1#2#3{\@obsolete{#1}#2#3\gdef#2{#3}#2}
 \begingroup \catcode`\"=12
-\DeclareMathSymbol\square           {\mathord}{AMSa}{"03}
-\DeclareMathSymbol\lozenge          {\mathord}{AMSa}{"06}
-\DeclareMathSymbol\vartriangleright {\mathrel}{AMSa}{"42}
-\DeclareMathSymbol\vartriangleleft  {\mathrel}{AMSa}{"43}
-\DeclareMathSymbol\trianglerighteq  {\mathrel}{AMSa}{"44}
-\DeclareMathSymbol\trianglelefteq   {\mathrel}{AMSa}{"45}
-\DeclareMathSymbol\rightsquigarrow  {\mathrel}{AMSa}{"20}
+\DeclareMathSymbol{\square}           {\mathord}{AMSa}{"03}
+\DeclareMathSymbol{\lozenge}          {\mathord}{AMSa}{"06}
+\DeclareMathSymbol{\vartriangleright} {\mathrel}{AMSa}{"42}
+\DeclareMathSymbol{\vartriangleleft}  {\mathrel}{AMSa}{"43}
+\DeclareMathSymbol{\trianglerighteq}  {\mathrel}{AMSa}{"44}
+\DeclareMathSymbol{\trianglelefteq}   {\mathrel}{AMSa}{"45}
+\DeclareMathSymbol{\rightsquigarrow}  {\mathrel}{AMSa}{"20}
 \@ifpackageloaded{latexsym}{\@tempswafalse}{\@tempswatrue}
 \if@tempswa
   \global\let\Box\square
@@ -178,10 +177,10 @@
   \global\let\unlhd\@@undefined
   \global\let\rhd\@@undefined
   \global\let\unrhd\@@undefined
-  \DeclareMathSymbol\lhd     {\mathbin}{AMSa}{"43}
-  \DeclareMathSymbol\unlhd   {\mathbin}{AMSa}{"45}
-  \DeclareMathSymbol\rhd     {\mathbin}{AMSa}{"42}
-  \DeclareMathSymbol\unrhd   {\mathbin}{AMSa}{"44}
+  \DeclareMathSymbol{\lhd}     {\mathbin}{AMSa}{"43}
+  \DeclareMathSymbol{\unlhd}   {\mathbin}{AMSa}{"45}
+  \DeclareMathSymbol{\rhd}     {\mathbin}{AMSa}{"42}
+  \DeclareMathSymbol{\unrhd}   {\mathbin}{AMSa}{"44}
 \xdef\Join{\mathrel{\mathchar"0\hexnumber@\symAMSb 6F\mkern-13.8mu%
   \mathchar"0\hexnumber@\symAMSb 6E}}
 \fi

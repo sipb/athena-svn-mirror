@@ -1,3 +1,4 @@
+\ProvidesFile{croatian.mld}[1999/03/16]
 % Croatian titles for minitoc.sty
 \def\mtctitle{Sadr\v{z}aj}%
 \def\mlftitle{Slike}%

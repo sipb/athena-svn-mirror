@@ -40,10 +40,19 @@
 %% remote directory, which is then explicitly prepended to the names of
 %% any included aux files.
 %%
-%% 
+%% History
+%%
+%% 1997/10/06 v6.00beta2
+%%
+%% 1999/09/01 v6.00beta3
+%%   Definitions of \XR@addURL corrected (Heiko Oberdiek).
+%%
+%% 2000/03/22 v6.00beta4
+%%   \xdef changed to \protected@xdef.
+%%
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{xr}
-         [1997/10/06 v6.00beta2 eXternal References (DPC)]
+\ProvidesPackage{xr-hyper}
+         [2000/03/22 v6.00beta4 eXternal References (DPC)]
 
 \def\externaldocument{\@testopt\XR@{}}
 \def\XR@[#1]#2{\@testopt{\XR@@{#1}{#2}}{#2.\XR@ext}}
@@ -75,7 +84,7 @@
   \expandafter\XR@test\XR@line...\XR@}
 \long\def\XR@test#1#2#3#4\XR@{%
   \ifx#1\newlabel
-     \expandafter\xdef\csname r@\XR@prefix#2\endcsname
+     \expandafter\protected@xdef\csname r@\XR@prefix#2\endcsname
        {\XR@addURL{#3}}%
   \else\ifx#1\@input
      \edef\XR@list{\XR@list\filename@area#2\relax}%
@@ -83,20 +92,24 @@
   \ifeof\@inputcheck\expandafter\XR@aux
   \else\expandafter\XR@read\fi}
 
-
-\ifx\XR@addURL\@undefined
-  \def\XR@addURL#1\\{#1}
-\fi
+\providecommand*{\XR@addURL}[1]{#1}
 % The above definition doesn't actually use the URL, hyperref 6 could
 % make a definition like so to put the URL in the fifth field of its
 % ref structure.
 
-%\def\XR@addURL#1{\XR@@dURL#1{}{}{}{}}
+\@ifpackageloaded{hyperref}{%
+  \PackageWarningNoLine{xr-hyper}{Load package `hyperref' after `xr-hyper'}%
+}{}
 
-%\def\XR@@ddURL#1#2#3#4#5\\{{#1}{#2}%
-%  \if!#4!\else
+%\def\XR@addURL#1{\XR@@dURL#1{}{}{}{}\\}
+
+%\def\XR@@dURL#1#2#3#4#5\\{%
+%  {#1}{#2}%
+%  \if!#4!%
+%  \else
 %    {#3}{#4}{\XR@URL}%
-%  \fi}
+%  \fi
+%}
 
 \providecommand\XR@ext{dvi}
 

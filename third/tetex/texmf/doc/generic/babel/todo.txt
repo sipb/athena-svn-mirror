@@ -1,28 +1,39 @@
-Things that still need to be done (1999/03/10) :
+Things that still need to be done (2001/02/22) :
 ================================================
 
-- Integrate the work of Jun Takashima (<tjun@aa.tufs.ac.jp>) to
-  integrate his work on Sanskrit and Kannada into the babel
-  distribution. 
+- Vladimir Volovich suggested to have a babel option mechanism.
+  This may be implemented using something like:
+  \languageoption[<option>,<option>,...]{<language>}
+  (See PR 2814)
 
-- The introduction of \peek@token in the expansion of shorthands
-  made them inexpandable, which breaks things like \char"012,
-  \char'177 when " or ' are active.
+- The language attribute mechanism is not completely mature yet. It is
+  currently not possible to switch attibutes on and off in the middle
+  of a document. This restriction might be lifted in a future release.
 
-- The russian hyphenation file contains \uccode `\~=`\^...
-  This needs perhaps to be made a local change which is re-installed
-  when russian becomes the active language; needs investigation
+- I started work on support for hyphenation patterns depending on 
+  the encoding. So far this only works when loading the pattern file.
+  The encoding information isn't then subsequently stored as an
+  attribute for that hyphenation register.
 
-- Add slovakian quotatian characters,
-  as suggested by Jana Chlebikova:
-  we have another quotation characters as in English. The opening
-  quotation character is similar to Polish opening quotation (see
-  Proceedings from EUROTEX'92, pages 125) and closing quotation
-  characters is similar as German cl. quat. For ilustration I send you
-  macros (from another slovak.sty) with this things. In that sty you
-  can use both (english and slovak quotations marks) depending on the
-  value \csprimeon or \csprimeoff.  I think, it is a good idea and
-  macro looks quite nice. According me something similar is neccesery
-  to do in babel-slovak.sty.
+- An interface is  needed to be able to change the definition of
+  things like \figurename and keep the change over language
+  switches. (PR3291) 
 
-- Implement the suggestions for italian.sty from Claudio Beccari 
+- Jean-François Mertens <jfm@core.ucl.ac.be> has developped a fully
+  expandable way of `sanitizing' active characters. It needs thorough
+  testing by a larger number of users before it could be included in
+  the ditribution.
+
+- A contribution has been made for romanian support by 
+  Raider <raider@mailbox.ro>. It isn't yet included in babel 3.7 but
+  might be added later on.
+
+- A suggestion has been made by Ole Laursen <olau@hardworking.dk> to
+  make the comma active to be used as decimal delimiter instead of the
+  dot. This could be provided as an option as more European languages
+  need the comma for that purpose.
+
+- PRs 3067, 3235, 3236, 3270 report that shorthand characters can have
+  adverse effect when loading PostScript files or passing literal
+  PostScript through a \special command. I haven't found a good
+  solution yet.

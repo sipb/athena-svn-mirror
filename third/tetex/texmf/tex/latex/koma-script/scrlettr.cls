@@ -5,11 +5,12 @@
 %% The original source files were:
 %%
 %% scrlettr.dtx  (with options: `scrlettr')
+%% scrlogo.dtx 
 %% 
-%% Copyright 1994-1997 Axel Kielhorn, Markus Kohm and Frank Neukam.
+%% Copyright (C) 1994-2002 Axel Kielhorn, Markus Kohm and Frank Neukam.
+%% 
 %% All rights reserved. For further copyright information see the file
-%% readme.txt or liesmich.txt, and any other copyright indicated in this
-%% file.
+%% LEGAL.TXT or LEGALDE.TXT.
 %% 
 %% This file is part of the LaTeX2e KOMA-Script bundle.
 %% ----------------------------------------------------
@@ -17,7 +18,7 @@
 %% The KOMA-Script bundle bases on the Script-family created by
 %% Frank Neukam 1993 and the standard documents classes created
 %% by the LaTeX3-Team 1994-1996.
-%% -------------------------------------------------------------
+%% ------------------------------------------------------------------------
 %% 
 %%  This system is distributed in the hope that it will be useful,
 %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,19 +36,30 @@
 %% 
 %% You are allowed to distribute this file under the condition that
 %% it is distributed together with all files mentioned in readme.txt
-%% and liesmich.txt.
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
 %% 
 %% If you receive only some of these files from someone, complain!
 %% 
-%% You are NOT ALLOWED to distribute this file alone. You are NOT
-%% ALLOWED to take money for the distribution or use of either this
-%% file or a changed version, except for a nominal charge for copying
-%% etc.
+%% You are NOT ALLOWED to distribute this file alone.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{scrlettr}
-              [1997/11/25 v2.4c LaTeX2e KOMA
+              [2002/05/24 v2.6e
+               OBSOLETE
+               LaTeX2e KOMA
                document class]
+\ClassWarningNoLine{scrlettr}{%
+  THIS CLASS IS OBSOLETE AND NOT LONGER SUPPORTED!\MessageBreak
+  Since the new KOMA-Script letter class ``scrlttr2'' was\MessageBreak
+  released, the use of ``scrlettr'' is obsolete.\MessageBreak
+  You should not use this class for writing new letters.\MessageBreak
+  You should use ``scrlttr2''.\MessageBreak
+  All old commands of ``scrlettr'' are supported at\MessageBreak
+  the new class ``scrlttr2''. But the length are not\MessageBreak
+  and the typearea was changed - even using the\MessageBreak
+  compatiblity option ``KOMAold''. So you may have\MessageBreak
+  to do some changes}
 \newcommand*\@ptsize{}
 \newif\if@bigloc
 \newif\if@orgdate
@@ -60,11 +72,14 @@
 }
 \DeclareOption{draft}{\overfullrule 5pt}
 \DeclareOption{final}{\setlength\overfullrule{0pt}}
+\DeclareOption{a4paper}{
+  \setlength{\paperwidth}{210mm}
+  \setlength{\paperheight}{297mm}}
 \DeclareOption{wlocfield}{\@bigloctrue}
 \DeclareOption{slocfield}{\@biglocfalse}
 \DeclareOption{orgdate}{\@orgdatetrue}
 \DeclareOption{scrdate}{\@orgdatefalse}
-\ExecuteOptions{12pt,oneside,final,slocfield}
+\ExecuteOptions{12pt,oneside,final,slocfield,a4paper}
 \ProcessOptions
 \input{size1\@ptsize.clo}
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
@@ -111,6 +126,7 @@
   \def\datename{Datum}
   \def\pagename{Seite}}
  \let\captionsaustrian=\captionsgerman
+ \let\captionsngerman=\captionsgerman
  \def\captionsfrench{%
   \def\yourrefname{Vos r\'ef\'erences}
   \def\yourmailname{Votre lettre du}
@@ -159,48 +175,77 @@
   \let\dateamerican=\dateUSenglish
   \def\dategerman{\def\today{\number\day.\,\number\month.\,\number\year}}
   \let\dateaustrian=\dategerman
+  \let\datengerman=\dategerman
   \let\datefrench=\dategerman
   \let\dateitalian=\dategerman
   \let\datespanish=\dategerman
  \fi
  \captionsenglish
  \dateenglish
- \ifx\l@american\undefined\else\ifnum\language=\l@american
+ \ifx\languagename\undefined
+  \ClassWarningNoLine{scrlettr}{\string\languagename\space not
+    defined, using \string\language.\MessageBreak
+    This may result in use of wrong language!\MessageBreak
+    You should use a compatible language
+    package\MessageBreak
+    (e.g. `Babel', `german', `french', ...)}
+  \ifx\l@american\undefined\else\ifnum\language=\l@american
   \captionsamerican
   \dateamerican
- \fi\fi
- \ifx\l@british\undefined\else\ifnum\language=\l@british
+  \fi\fi
+  \ifx\l@british\undefined\else\ifnum\language=\l@british
   \captionsbritish
   \datebritish
- \fi\fi
- \ifx\l@UKenglish\undefined\else\ifnum\language=\l@UKenglish
+  \fi\fi
+  \ifx\l@UKenglish\undefined\else\ifnum\language=\l@UKenglish
   \captionsUKenglish
   \dateUKenglish
- \fi\fi
- \ifx\l@USenglish\undefined\else\ifnum\language=\l@USenglish
+  \fi\fi
+  \ifx\l@USenglish\undefined\else\ifnum\language=\l@USenglish
   \captionsUSenglish
   \dateUSenglish
- \fi\fi
- \ifx\l@german\undefined\else\ifnum\language=\l@german
-  \captionsgerman
-  \dategerman
- \fi\fi
- \ifx\l@austrian\undefined\else\ifnum\language=\l@austrian
+  \fi\fi
+  \ifx\l@austrian\undefined\else\ifnum\language=\l@austrian
   \captionsaustrian
   \dateaustrian
- \fi\fi
- \ifx\l@french\undefined\else\ifnum\language=\l@french
+  \fi\fi
+  \ifx\l@german\undefined\else\ifnum\language=\l@german
+  \captionsgerman
+  \dategerman
+  \fi\fi
+  \ifx\l@ngerman\undefined\else\ifnum\language=\l@ngerman
+  \captionsngerman
+  \datengerman
+  \fi\fi
+  \ifx\l@french\undefined\else\ifnum\language=\l@french
   \captionsfrench
   \datefrench
- \fi\fi
- \ifx\l@italian\undefined\else\ifnum\language=\l@italian
+  \fi\fi
+  \ifx\l@italian\undefined\else\ifnum\language=\l@italian
   \captionsitalian
   \dateitalian
- \fi\fi
- \ifx\l@spanish\undefined\else\ifnum\language=\l@spanish
+  \fi\fi
+  \ifx\l@spanish\undefined\else\ifnum\language=\l@spanish
   \captionsspanish
   \datespanish
- \fi\fi}
+  \fi\fi
+ \else
+   \edef\@tempa{nohyphenation}
+   \ifx\languagename\@tempa
+     \ClassWarningNoLine{scrlettr}
+       {You've selected language ``\languagename''.\MessageBreak
+        Maybe your LaTeX format contains Babel extension\MessageBreak
+        but you have not selected a language using\MessageBreak
+        Babel package.\MessageBreak
+        Please select another language!\MessageBreak
+        Only as a workaround english captions and date\MessageBreak
+        will be used}
+   \else
+     \expandafter\selectlanguage\expandafter{\languagename}
+     \ClassInfo{scrlettr}{used language is \languagename}
+   \fi
+ \fi
+}
 \oddsidemargin  0in
 \evensidemargin 0in
 \marginparwidth 0.9in
@@ -538,13 +583,13 @@
 \def\maketitle{\ifx\@title\@empty \else
  {\centering \LARGE \sectfont \@title\par}
  \vspace{1\baselineskip} \fi}
-\def\@subjfield{%
+\def\@subjfield{{%
  \if@subjafter%
-  \centerline%
+  \centering%
  \else%
   \if@subj\ifx\@subject\@empty\else\subjectname:\ \fi\fi
   \@subject\par\nobreak\vspace{1\baselineskip}%
- \fi}
+ \fi}}
 \def\opening#1{\thispagestyle{firstpage} \null \@foldmarks
  \if@afield \@addrfield \hfill \@locfield \par \fi
  \@datefield
@@ -554,18 +599,28 @@
  \vspace{0.5\baselineskip}% added by unknown
  \nobreak%
  \if@subjafter\@subjfield\fi}
+\newcommand*\presig@skip{}
+\newcommand*{\setpresigskip}[1]{%
+  \begingroup%
+    \setlength{\@tempdima}{#1}%
+  \endgroup%
+  \edef\presig@skip{#1}}
+\setpresigskip{2\baselineskip}
 \long\def\closing#1{\par\nobreak\vspace{0.5\baselineskip}
  \stopbreaks \noindent \sc@temp\textwidth \advance\sc@temp by
  -\sigindent \hspace{\sigindent}%
- \parbox{\sc@temp}{\raggedright \ignorespaces #1\\[2\baselineskip]
+ \parbox{\sc@temp}{\raggedright\ignorespaces #1\mbox{}\\[\presig@skip]
  \fromsig\strut}\par
  \vspace{1.5\baselineskip}}
 \def\ps{\par\startbreaks}
-\def\cc#1{\par\noindent \parbox[t]{\textwidth}{\@hangfrom{\ccname: }%
+\newcommand*{\ccnameseparator}{: }
+\newcommand*{\cc}[1]{\par\noindent\parbox[t]{\textwidth}
+ {\@hangfrom{\ccname\ccnameseparator}%
  \ignorespaces #1\strut}\par}
-\def\encl#1{\par\noindent%
+\newcommand*{\enclnameseparator}{: }
+\newcommand*{\encl}[1]{\par\noindent%
  \parbox[t]{\textwidth}{%
-  \ifx\enclname\@empty\else\@hangfrom{\enclname: }\fi%
+  \ifx\enclname\@empty\else\@hangfrom{\enclname\enclnameseparator}\fi%
   \ignorespaces #1\strut}\par}
 \def\footnoterule{\kern-1\p@
  \hrule width 0.4\columnwidth
@@ -653,6 +708,9 @@
 \pagenumbering{arabic}
 \raggedbottom
 \frenchspacing
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
 \endinput
 %%
 %% End of file `scrlettr.cls'.

@@ -1,0 +1,56 @@
+<head>
+<title>UK TeX FAQ -- question 174</title>
+</head><body>
+<h3>Tables longer than a single page</h3>
+<p>Tables are, by default, set entirely in boxes of their own: as a
+result, they won't split over a page boundary.  Sadly, the world keeps
+turning up tables longer than a single page that we need to typeset.
+<p>For simple tables (whose shape is highly regular), the simplest
+solution may well be to use the <code>tabbing</code> environment,
+which is tedious to set up, but which doesn't force the whole aligment
+onto a single page.
+<p>The <i>longtable</i> package builds the whole table (in chunks), in
+a first pass, and then uses information it has written to the <code>.aux</code>
+file during later passes to get the setting "right" (the package
+ordinarily manages to set tables in just two passes).  Since the
+package has overview of the whole table at the time it's doing
+"final" setting, the table is set "uniformly" over its entire
+length, with columns matching on consecutive pages.
+<i>longtable</i> has a reputation for failing to interwork with
+other packages, but it does work with <i>colortbl</i>, and its
+author has provided the <i>ltxtable</i> package to provide (most
+of) the facilities of <i>tabularx</i> (see
+
+<a href="FAQ172.html">fixed-width tables</a>) for long tables:
+beware of its rather curious usage constraints - each long table
+should be in a file of its own, and included by
+<code>\LTXtable{</code><em>width</em><code>}{</code><em>file</em><code>}</code>.  Since <i>longtable</i>'s
+multiple-page tables can't possibly live inside floats, the package
+provides for captions within the <code>longtable</code> environment
+itself.
+<p>The <i>supertabular</i> package starts and stops a
+<code>tabular</code> environment for each page of the table.  As a
+result, each 'page worth' of the table is compiled independently, and
+the widths of corresponding columns may differ on successive pages.
+However, if the correspondence doesn't matter, or if your columns are
+fixed-width, <i>supertabular</i> has the great advantage of doing
+its job in a single run.
+<p>Both <i>longtable</i> and <i>supertabular</i> allow definition
+of head- and footlines for the table; <i>longtable</i> allows
+distinction of the first and last head and foot.
+<p>The <i>xtab</i> package fixes some infelicities of
+<i>supertabular</i>, and also provides a "last head" facility
+(though this, of course, destroys <i>supertabular</i>'s advantage
+of operating in a single run).
+<p>The <i>stabular</i> package provides a simple-to-use "extension to
+<code>tabular</code>" that allows it to typeset tables that run over
+the end of a page; it also has usability extensions, but doesn't have
+the head- and footline capabilities of the major packages.
+<dl>
+<dt><tt><i>longtable.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+<dt><tt><i>ltxtable.sty</i></tt><dd>Generate by running <a href="ftp://macros/latex/contrib/supported/carlisle/ltxtable.tex">macros/latex/contrib/supported/carlisle/ltxtable.tex</a>
+<dt><tt><i>stabular.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/sttools.tar.gz">macros/latex/contrib/supported/sttools.tar.gz</a>
+<dt><tt><i>supertabular.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/supertabular.tar.gz">macros/latex/contrib/supported/supertabular.tar.gz</a>
+<dt><tt><i>xtab.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/xtab.tar.gz">macros/latex/contrib/supported/xtab.tar.gz</a>
+</dl>
+<p></body>

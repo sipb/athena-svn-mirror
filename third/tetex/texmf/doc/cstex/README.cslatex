@@ -1,0 +1,211 @@
+CSLaTeX --- úpravy LaTeXu 2e pro èeskou a slovenskou sazbu
+              Verze pro LaTeX z prosince '96
+==========================================================
+28.10.1997                                  Jaroslav ©najdr
+
+CSLaTeX je sada konfiguraèních souborù pro LaTeX2e, které umo¾òují v
+tomto systému pøipravovat èeské a slovenské dokumenty. Balík je
+distribuován (jak je u LaTeXu zvykem) v souboru cslatex.dtx, který
+obsahuje pøíslu¹ná makra i s dùkladnou dokumentací. Soubor cslatex.ins
+je dávka pro program docstrip, který z dtx zdroje vygeneruje vlastní
+soubory.
+
+Instalace
+---------
+
+(jednodu¹¹í postup instalace z balíku cslatex-10-97.tar, viz INSTALL.cslatex)
+
+Pro instalaci potøebujete (kromì TeXu):
+
+o CS-fonty.
+
+o èeské a slovenské vzory dìlení czhyphen.tex a skhyphen.tex. Jsou
+  souèástí csplainu.
+
+o LaTeXové "obrázkové" fonty lasy, lcircle a line.
+
+o Originální LaTeX2e. Distribuèní soubory jsou k nalezení na CTANu v
+  adresáøi /tex-archive/macros/latex/base/.
+
+Pokud toto v¹echno máte, mù¾ete zaèít instalovat:
+
+o Sma¾te (zazálohujte) starou verzi LaTeXu. POZOR! Toto se netýká
+  podpùrných balíèkù, napø. graphics, tools nebo psnfss. Jejich
+  upgrade (je-li k dispozici novìj¹í verze) je samostatnou zále¾itostí
+  a není bezpodmíneènì nutný. Pokud máte nainstalovanou star¹í verzi
+  CSLaTeXu, mìly by zmizet adresáøe texmf/tex/latex/cslatex, input a
+  src. Máte-li v adresáøi input nìkteré styly, které nejsou standardní
+  souèástí LaTeXu (napø. a4, a4wide, fancyhdr), vytvoøte adresáø
+  texmf/tex/latex/misc a pøesuòte je tam.
+
+o Pokud vá¹ TeX pou¾ívá ke hledání v adresáøovém stromu hashovací
+  soubor (napø. v teTeXu ls-R), nechte ho znovu vytvoøit, aby se
+  projevily provedené zmìny -- smazané soubory. V teTeXu k tomuto
+  slou¾í pøíkaz texhash.
+
+o Vytvoøte si nìkde v /tmp doèasný adresáø, do kterého zkopírujete
+  distribuèní soubory LaTeXu a CSLaTeXové soubory cslatex.dtx a
+  cslatex.ins.
+
+o V tomto adresáøi rozbalte distribuci LaTeXu pøíkazy "initex
+  unpack.ins" a "initex cslatex.ins".
+
+o V normální konfiguraci pou¾ívá LaTeX v kódování T1 dc-fonty. Máte-li
+  novìj¹í ec-fonty, vytvoøte pøíslu¹nì upravené definièní soubory
+  pøíkazem "initex ec.ins". Tento krok musí následovat a¾ PO
+  zpracování unpack.ins.
+
+o Vytvoøte formát LaTeX pøíkazem "initex latex.ltx".
+
+Nyní máme v na¹em adresáøi 266 souborù, z nich¾ ty potøebné pøesuneme
+na pøíslu¹ná místa do adresáøové struktury TeXu:
+
+o Soubor latex.fmt pøesuòte do adresáøe s formáty -- v teTeXu
+  texmf/web2c.
+
+o Konfiguraèní soubory pro èe¹tinu pøesuneme do adresáøe
+  texmf/tex/latex/cslatex. Jsou to tyto:
+
+	fonttext.cfg
+	hyphen.cfg
+	il2enc.def
+	il2*.fd
+	lczech.sty
+	lslovak.sty
+
+o Do adresáøe texmf/tex/latex/input dáme vstupní soubory LaTeXu:
+
+	docstrip.tex
+	*.cls
+	*.clo
+	*.sty
+	*.fd
+	*.ist
+	*.def
+	*.cfg
+
+o Zdrojové soubory LaTeXu
+
+	fontmath.ltx
+	fonttext.ltx
+	hyphen.ltx
+	latex.ltx
+	ltpatch.ltx
+	preload.ltx
+	
+nejsou tøeba pro normální práci, ale budeme je potøebovat, pokud
+chceme vygenerovat znovu formát. Tento pøípad mù¾e nastat, kdy¾ budeme
+do LaTeXu pøidávat nové vzory dìlení, nebo kdy¾ si fmt soubor prostì
+omylem sma¾eme. Proto je pøesuneme do adresáøe /texmf/tex/latex/src. 
+
+Ostatní soubory nebudeme potøebovat, proto je mù¾eme smazat.
+
+Vygenerujeme hashovací soubor pro TeX pøíkazem "texhash"
+(teTeX). LaTeX je nainstalován a mù¾eme ho otestovat na nìjakém
+krátkém dokumentíku.
+
+
+Konfigurace dìlení slov
+-----------------------
+
+Konfiguraèní pøíkazy se nacházejí v souboru cslatex/hyphen.cfg.
+Pøíslu¹ná èást souboru je viditelnì ohranièena komentáøovými
+øádkami. K zavedení vzorù dìlení slou¾í pøíkaz
+
+	\DeclareLanguage[seznam kódování]{jméno pøíkazu zapnutí vzorù}%
+	                {jméno souboru se vzory a výjimkami}%
+                        {\lefthyphenmin=èíslo \righthyphenmin=èíslo
+                         \@requesthyphens <nebo> \@splitrequestedfalse}
+
+Vzory dìlení naètené s \@requesthyphens umí vyu¾ívat funkci pøená¹ení
+pomlèky pøi dìlení (viz ní¾e).
+
+Implicitnì je zavedena americká angliètina, èe¹tina a sloven¹tina v
+kódování IL2. Pro zavedení èe¹tiny v IL2 i T1 pou¾ijte:
+
+	\DeclareLanguage[IL2,T1]{\czech}{czhyphen.tex}%
+                                {\lefthyphenmin=2 \righthyphenmin=3
+                                 \@requesthyphens}%
+
+V bì¾ném TeXu mù¾e být maximálnì 4 a¾ 5 vzorù najednou -- víc se do
+jeho pamìti nevejde.
+
+
+Styl czech.sty/slovak.sty
+-------------------------
+
+Bez zavedení tohoto stylu se CSLaTeX chová jako normální LaTeX a
+pou¾ívá cm-fonty bez èeských znakù.
+
+Pomocný styl zavedeme pomocí
+
+	\usepackage[parametry]{czech}
+popø.
+	\usepackage[paremetry]{slovak}
+
+Parametry mù¾ou být:
+
+T1
+	Cork kódování. Budou se pou¾ívat dc(ec) fonty. Aby se správnì
+        dìlila slova, musí být vzory dìlení nata¾eny také pro T1 (viz
+        vý¹e). Bez tohoto parametru je pou¾ito kódování IL2.
+
+split
+	Zapíná pøená¹ení pomlèky pøi dìlení slov typu propan-
+	-butan. Tato vlastnost funguje skoro bez problémù -- výjimkou
+	je pou¾ití `-' jako minus v èísle, které ète TeX v
+	horizontálním módu (tak bývá zadáváno napø. \looseness=-1); v
+	tìchto pøípadech je pøi zapnutém pøená¹ení dìlítka mo¾né
+	napsat \minus.
+
+nosplit
+	Vypíná pøená¹ení pomlèky. To je také implicitní chování.
+
+nocaptions
+	Nebudou pøedefinovány texty vkládané LaTeXem jako "Kapitola"
+        nebo "Obsah". Zùstanou tedy pùvodní "Chapter" nebo "Contents".
+
+olduv
+	Pøíkaz \uv je (novì) definován tak, ¾e zajistí správný kerning
+	kolem uvozovek, ale uvnitø jeho argumentu nelze pou¾ít pøíkaz
+        \verb. Pou¾itím volby olduv dostaneme starou definici, která
+	se chovala pøesnì obrácenì -- ¹patný kerning, lze pou¾ít \verb.
+	Oba tyto po¾adavky se navzájem vyluèují a nikdo dosud
+	nevymyslel øe¹ení, kde by fungovalo obojí najednou.
+
+Volba 'cstex', která umo¾òovala pou¾ívání pøíkazù \csprimeson/off,
+byla zru¹ena a tyto pøíkazy lze pou¾ívat rovnou. Kvùli zpìtné
+kompatibilitì je stále deklarována, ale vùbec nic nedìlá -- její
+pou¾ití pouze nezpùsobí chybu.
+
+Pøíkazy definované ve stylu czech/slovak.sty
+--------------------------------------------
+
+\dateczech
+	Pøíkaz \today expanduje na èeské datum, napø. 30. srpna 1977.
+
+\dateslovak
+	Slovenské datum, napø. 30. augusta 1977.
+
+\dateUSenglish
+	Americké \today, napø. August 30th, 1977.
+
+\dateenglish
+	Britské \today, napø. 30th August 1977.
+
+\captionsczech
+	Èeské captions -- Pøedmluva, Tabulka.
+
+\captionsslovak
+	Slovenské captions -- Predhovor, Tabuµka.
+
+\captionsenglish
+	Anglické captions -- Preface, Table.
+
+\csprimeson, \csprimesoff
+	``Anglické'' uvozovky se (ne)budou sázet jako èeské 99 66.
+
+\cstieon, \cstieoff
+	Pøedefinuje vlnku ~, aby se v mat. módu (ne)sázela mezera.
+
+--

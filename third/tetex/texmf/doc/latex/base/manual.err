@@ -19,7 +19,7 @@
 \def\ypmd{%                                                       %
 %                                                                 %
 %                                                                 %
-  Last modified on Thu Jan 14 11:21:51 PST 1999 by lamport        %
+  Last modified on Fri Aug 31 12:44:10 PDT 2001 by lamport        %
   endypmd}                                                        %
 %                                                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,7 +53,7 @@ Please report any additional errors to {\tt lamport@pa.dec.com}.
 
 \erratum{page 25, example of \texttt{verse} environment}
 Replace \verb|{\em all\/}| by \verb|\emph{all}|.
- \reportedby{Rosemary Bailey}{29 Aug 94}
+ \reportedby{Rosemary Bailey}{29 Aug 1994}
 
 \erratum{page 28, first paragraph} 
 Not an error, but it would be
@@ -64,31 +64,31 @@ arguments of the corresponding environment's \verb|\begin| command.)''
 
 \erratum{page 33, line 10}
 Add \verb|\]| to the list of fragile commands.
- \reportedby{Rosemary Bailey}{29 Aug 94}
+ \reportedby{Rosemary Bailey}{29 Aug 1994}
 
 \erratum{page 43, table 3.5}
 Add an entry for \verb|\notin| ($\notin$).
- \reportedby{Rosemary Bailey}{29 Aug 94}
+ \reportedby{Rosemary Bailey}{29 Aug 1994}
 
 \erratum{page 72, two examples}
 Change \verb|{\em ...}| to \verb|\emph{...}|
- \reportedby{Rosemary Bailey}{29 Aug 94}
+ \reportedby{Rosemary Bailey}{29 Aug 1994}
 
 \erratum{page 101}
 This is not an error, but some readers will find it helpful if, in the
 descriptions of \verb|\setlength| and \verb|\addtolength|,
 \verb|\gnat| were replaced by \verb|\parskip|.  
- \reportedby{Ellen Gilkerson}{9 Aug 94}
+ \reportedby{Ellen Gilkerson}{9 Aug 1994}
 
 \erratum{page 108, lines 7 and 10}
 This is not an error, but it might be easier to understand
 the example if \verb|\len| were replaced by something like \verb|\saved|.
- \reportedby{Rosemary Bailey}{29 Aug 94}
+ \reportedby{Rosemary Bailey}{29 Aug 1994}
 
 \erratum{page 139, lines $-8$ and $-9$}
 
 The funny break between these two lines should be eliminated.
-\reportedby{Malcolm Clark}{9 Aug 94}
+\reportedby{Malcolm Clark}{9 Aug 1994}
 
 \erratum{page 177, line $-12$}
 
@@ -99,7 +99,7 @@ class.
 
 The \verb|figure*| environment is ended by \verb|\end{figure*}|, and
 the \verb|table*| environment is ended by \verb|\end{table*}|.
-\reportedby{Malcolm Clark}{9 Aug 94}
+\reportedby{Malcolm Clark}{9 Aug 1994}
 
 \erratum{page 228}
 
@@ -136,23 +136,26 @@ The commands \verb|\dag|, \verb|\ddag|, \verb|\S|, and \verb|\P|
 can also be used in math mode.
 \end{quote}
 
-\erratum{page42, line 14}
+\erratum{page 42, line 14}
 Change ``through a symbol'' by ``through a relation symbol''.
 \reportedby{Frank Mittelbach}{15 Nov 1996}
 
-\erratum{page42, Table 3.4}
+\erratum{page 42, Table 3.4}
 \verb|\land| should be listed as a synonym for \verb|\wedge|, and
 \verb|\lor| should be listed as a synonym for \verb|\vee|.
 \reportedby{Chris Rowley}{28 Oct 1998}
 
-\erratum{page43, Table 3.7}
+\erratum{page 43, Table 3.7}
 \verb|\lnot| should be listed as a synonym for \verb|\neg|.
 \reportedby{Chris Rowley}{15 Oct 1998}
 
+\erratum{page 51, line 8}
+Change ``The \verb|\,| command'' to ``The \verb|\,| and \verb*|\ | commands''.
+\reportedby{Phillip J Shelton}{2 Jul 1999}
 
 \erratum{page 53, line 24}
 Change ``are needed in the'' to ``are used in the''
-\reportedby{Mike Piff}{21 Oct 94}
+\reportedby{Mike Piff}{21 Oct 1994}
 
 \erratum{page 80, line 1}
 The section heading should not be outdented.
@@ -246,7 +249,7 @@ The dimensions
 \verb|\pageheight| and \verb|\pagewidth|
 should be \verb|\paperheight| and \verb|\paperwidth|,
 respectively.  (The index entries on page 260 should also be changed.)
-\reportedby{Alan Jeffrey, on behalf of a user}{12 Sep 95}
+\reportedby{Alan Jeffrey, on behalf of a user}{12 Sep 1995}
 \erratum{page 192, line 19}
 Change ``\emph{cmd}'' to ``\emph{def}''.
 \reportedby{Martin Schr\"{o}der}{9 Mar 1995}
@@ -260,10 +263,23 @@ Replace ``\textit{num}$_1$ and \textit{num}$_1$ are numbers''
 with ``\textit{num}$_1$ and \textit{num}$_2$ are numbers''.
 \reportedby{Magnus Lewis-Smith}{14 Jan 1999}
 
+\erratum{page 196, line $-5$}
+Change \verb|\newboolean{|\emph{name}\verb|}| to
+\verb|\newboolean{|\emph{nam}\verb|}|.  
+\reportedby{Christopher von B\"{u}low}{28 Aug 2000}
+
+
 \erratum{page 197, line 14}
 After ``\verb|\textwidth|'' add ``or \verb|\columnwidth|''
 \reportedby{Volker Kuhlmann}{22 Jan 1995}
 
+
+\erratum{page 198, line 14}
+Change ``it will not be printed'' to ``it will usually not be printed''.
+
+\erratum{page 218, line $-14$}
+Change ``\texttt{tabular}'' to ``\texttt{tabbing}''.
+\reportedby{Carlos Pita}{27 Aug 2001}
 
 \erratum{page 226}
 
@@ -287,7 +303,11 @@ To the section ``Type Styles and Sizes'', add the following sentence:
 A few mathematical symbols now require the \texttt{latexsym} package---see
 Tables 3.4--3.7.
 
+\erratum{foldout, column 3, line 3}
+Replace \emph{style} with \emph{class}.  \reportedby{Christopher von B\"{u}low}{28 Aug 2000}
+
 \end{document}
 
 %try
 %try
+

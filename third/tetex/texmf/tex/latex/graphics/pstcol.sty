@@ -15,7 +15,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{pstcol}
-          [1999/02/16 v1.0a  PSTricks color colompatibility (DPC)]
+          [2001/06/20 v1.1 PSTricks color colompatibility (DPC)]
 %%%%%%%%%%%%%%%%%%
 \let\saved@gray\color@gray
 \RequirePackage{pstricks}
@@ -31,7 +31,7 @@
  {\edef#2{\expandafter\expandafter\expandafter
          \c@lor@to@ps\csname\string\color @#1\endcsname\@@}}}
 \def\pst@usecolor#1{#1\space}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \definecolor{darkgray}{gray}{.25}
 \definecolor{gray}{gray}{.5}
 \definecolor{lightgray}{gray}{.75}
@@ -47,7 +47,7 @@
 \psset@gridlabelcolor{black}
 \psset@shadowcolor{darkgray}
 \psset@subgridcolor{gray}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\newgray#1{%
   \definecolor{#1}{gray}}
 \def\newrgbcolor#1#2{%
@@ -58,6 +58,18 @@
   \newcmykcolorx{#1}#2\@@}
 \def\newcmykcolorx#1#2 #3 #4 #5\@@{%
   \definecolor{#1}{cmyk}{#2,#3,#4,#5}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\black    {\color{black}}
+\renewcommand\darkgray {\color{darkgray}}
+\renewcommand\gray     {\color{gray}}
+\renewcommand\lightgray{\color{lightgray}}
+\renewcommand\white    {\color{white}}
+\renewcommand\blue     {\color{blue}}
+\renewcommand\red      {\color{red}}
+\renewcommand\green    {\color{green}}
+\renewcommand\yellow   {\color{yellow}}
+\renewcommand\magenta  {\color{magenta}}
+\renewcommand\cyan     {\color{cyan}}
 
 \endinput
 %%

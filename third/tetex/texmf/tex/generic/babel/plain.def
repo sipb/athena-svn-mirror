@@ -5,24 +5,24 @@
 %% The original source files were:
 %%
 %% bbplain.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 %% File `bbplain.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \ifx\adddialect\@undefined
   \def\@empty{}
   \def\loadlocalcfg#1{%
@@ -71,6 +71,12 @@
     \toks@\expandafter{#1#2}%
     \xdef#1{\the\toks@}}}
 \def\@namedef#1{\expandafter\def\csname #1\endcsname}
+\def\@ifundefined#1{%
+  \expandafter\ifx\csname#1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi}
 \ifx\@preamblecmds\@undefined
   \def\@preamblecmds{}
 \fi
@@ -327,7 +333,9 @@
 \DeclareTextAccent{\^}{OT1}{94}
 \DeclareTextAccent{\`}{OT1}{18}
 \DeclareTextAccent{\~}{OT1}{126}
+\DeclareTextSymbol{\textquotedblleft}{OT1}{92}
 \DeclareTextSymbol{\textquotedblright}{OT1}{`\"}
+\DeclareTextSymbol{\textquoteleft}{OT1}{`\`}
 \DeclareTextSymbol{\textquoteright}{OT1}{`\'}
 \DeclareTextSymbol{\i}{OT1}{16}
 \DeclareTextSymbol{\ss}{OT1}{25}

@@ -4,12 +4,13 @@
 %%
 %% The original source files were:
 %%
-%% scrlettr.dtx  (with options: `scraddr')
+%% scraddr.dtx  (with options: `scraddr')
+%% scrlogo.dtx 
 %% 
-%% Copyright 1994-1997 Axel Kielhorn, Markus Kohm and Frank Neukam.
+%% Copyright (C) 1996-2002 Markus Kohm and Jens-Uwe Morawski.
+%% 
 %% All rights reserved. For further copyright information see the file
-%% readme.txt or liesmich.txt, and any other copyright indicated in this
-%% file.
+%% LEGAL.TXT or LEGALDE.TXT.
 %% 
 %% This file is part of the LaTeX2e KOMA-Script bundle.
 %% ----------------------------------------------------
@@ -17,7 +18,7 @@
 %% The KOMA-Script bundle bases on the Script-family created by
 %% Frank Neukam 1993 and the standard documents classes created
 %% by the LaTeX3-Team 1994-1996.
-%% -------------------------------------------------------------
+%% ------------------------------------------------------------------------
 %% 
 %%  This system is distributed in the hope that it will be useful,
 %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,29 +36,59 @@
 %% 
 %% You are allowed to distribute this file under the condition that
 %% it is distributed together with all files mentioned in readme.txt
-%% and liesmich.txt.
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
 %% 
 %% If you receive only some of these files from someone, complain!
 %% 
-%% You are NOT ALLOWED to distribute this file alone. You are NOT
-%% ALLOWED to take money for the distribution or use of either this
-%% file or a changed version, except for a nominal charge for copying
-%% etc.
+%% You are NOT ALLOWED to distribute this file alone.
 %% 
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesPackage{scraddr}
-              [1996/01/22 v1.0 LaTeX2e KOMA package]
-\ExecuteOptions\relax
+              [2002/06/02 v1.1b LaTeX2e KOMA
+               package]
+\newcommand*{\@adrFIVerror}{}
+\DeclareOption{adrFreeIVempty}{\renewcommand*{\@adrFIVerror}{0}}
+\DeclareOption{adrFreeIVshow}{\renewcommand*{\@adrFIVerror}{1}}
+\DeclareOption{adrFreeIVwarn}{\renewcommand*{\@adrFIVerror}{2}}
+\DeclareOption{adrFreeIVstop}{\renewcommand*{\@adrFIVerror}{3}}
+\ExecuteOptions{adrFreeIVshow}
 \ProcessOptions\relax
 \newcommand{\InputAddressFile}[1]{\begingroup
-  \def\adrentry##1##2##3##4##5##6##7##8{%
-    \def\@tempa{##8}\ifx\@tempa\@empty\else
-      \expandafter\gdef\csname ##8.LN\endcsname{##1}
-      \expandafter\gdef\csname ##8.FN\endcsname{##2}
-      \expandafter\gdef\csname ##8.A\endcsname{##3}
-      \expandafter\gdef\csname ##8.P\endcsname{##4}
-      \expandafter\gdef\csname ##8.FI\endcsname{##5}
-      \expandafter\gdef\csname ##8.FII\endcsname{##6}
-      \expandafter\gdef\csname ##8.C\endcsname{##7}
+  \ifcase\@adrFIVerror
+    \def\adrentry##1##2##3##4##5##6##7{%
+      \addrentry{##1}{##2}{##3}{##4}{##5}{##6}{##7}{}}%
+  \or
+    \def\adrentry##1##2##3##4##5##6##7##8{%
+      \addrentry{##1}{##2}{##3}{##4}{##5}{##6}{##7}{%
+        (entry FreeIV undefined at `##8')}{##8}}%
+  \or
+    \def\adrentry##1##2##3##4##5##6##7##8{%
+      \addrentry{##1}{##2}{##3}{##4}{##5}{##6}{##7}{%
+        \PackageWarning{scraddr}{%
+          `##8' was defined using \string\adrentry\MessageBreak
+          so \string\FreeIV-entry is not defined}}{##8}}%
+  \else
+    \def\adrentry##1##2##3##4##5##6##7##8{%
+      \addrentry{##1}{##2}{##3}{##4}{##5}{##6}{##7}{%
+        \PackageError{scraddr}{%
+          \string\FreeIV\space undefined at `##8'}{%
+          `##8' was defined using \string\adrentry\MessageBreak
+           so \string\FreeIV-entry is not defined.\MessageBreak
+          You may continue but you should check output}}{##8}}%
+  \fi
+  \providecommand*{\addrchar}[1]{}%
+  \providecommand*{\adrchar}{\addrchar}%
+  \def\addrentry##1##2##3##4##5##6##7##8##9{%
+    \def\@tempa{##9}\ifx\@tempa\@empty\else
+      \expandafter\gdef\csname ##9.LN\endcsname{##1}
+      \expandafter\gdef\csname ##9.FN\endcsname{##2}
+      \expandafter\gdef\csname ##9.A\endcsname{##3}
+      \expandafter\gdef\csname ##9.P\endcsname{##4}
+      \expandafter\gdef\csname ##9.FI\endcsname{##5}
+      \expandafter\gdef\csname ##9.FII\endcsname{##6}
+      \expandafter\gdef\csname ##9.FIII\endcsname{##7}
+      \expandafter\gdef\csname ##9.FIV\endcsname{##8}
     \fi}
   \InputIfFileExists{#1.adr}
                     {\typeout{Load addressfile: #1.adr.}}
@@ -73,7 +104,13 @@
 \newcommand*{\Telephone}[1]{\csname #1.P\endcsname}
 \newcommand*{\FreeI}[1]{\csname #1.FI\endcsname}
 \newcommand*{\FreeII}[1]{\csname #1.FII\endcsname}
-\newcommand*{\Comment}[1]{\csname #1.C\endcsname}
+\newcommand*{\Comment}{}
+\newcommand*{\FreeIII}[1]{\csname #1.FIII\endcsname}
+\let\Comment\FreeIII
+\newcommand*{\FreeIV}[1]{\csname #1.FIV\endcsname}
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
 \endinput
 %%
 %% End of file `scraddr.sty'.

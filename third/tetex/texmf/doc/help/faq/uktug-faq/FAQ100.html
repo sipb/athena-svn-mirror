@@ -1,0 +1,45 @@
+<head>
+<title>UK TeX FAQ -- question 100</title>
+</head><body>
+<h3>'String too long' in BibTeX</h3>
+<p>The BibTeX diagnostic "Warning-you've exceeded 1000, the
+<code>global-string-size</code>, for entry <code>foo</code>" usually arises from a very
+large abstract or annotation included in the database.  The diagnostic
+usually arises because of an infelicity in the coding of
+<i>abstract.bst</i>, or styles derived from it.  (One doesn't
+ordinarily output annotations in other styles.)
+<p>The solution is to make a copy of the style file (or get a clean copy
+from CTAN - <a href="ftp://biblio/bibtex/contrib/abstract.bst">biblio/bibtex/contrib/abstract.bst</a>), and rename it (e.g., on a
+long file-name system to <i>abstract-long.bst</i>).  Now edit it: find
+function <code>output.nonnull</code> and
+<ul>
+<li> change its first line (line 60 in the version on CTAN)
+  from <code>"{ 's :="</code> to <code>"{ swap$"</code>, and
+<li> delete its last line, which just says <code>"s"</code> (line 84 in the
+  version on CTAN).
+</ul>
+Finally, change your <code>\bibliographystyle</code> command to refer to the
+name of the new file.
+<p>This technique applies equally to any bibliography style: the same
+change can be made to any similar <code>output.nonnull</code> function.
+<p>
+
+
+
+
+<p>If you're reluctant to make this sort of change, the only way forward
+is to take the entry out of the database, so that you don't encounter
+BibTeX's limit, but you may need to retain the entry because it
+will be included in the typeset document.  In such cases, put the body
+of the entry in a separate file:
+<pre>
+  @article{long.boring,
+    author =    "Fred Verbose",
+    ...
+    abstract =  "{\input{abstracts/long.tex}}"
+  }
+</pre>
+In this way, you arrange that all BibTeX has to deal with is the
+file name, though it will tell TeX (when appropriate) to include
+all the long text.
+<p></body>

@@ -1,0 +1,33 @@
+<head>
+<title>UK TeX FAQ -- question 172</title>
+</head><body>
+<h3>Fixed-width tables</h3>
+<p>There are two basic techniques for making fixed-width tables in
+LaTeX: you can make the gaps between the columns stretch, or you
+can stretch particular cells in the table.
+<p>Basic LaTeX can make the gaps stretch: the <code>tabular*</code>
+environment 
+takes an extra argument (before the <code>clpr</code> layout one) which takes a
+length specification: you can say things like "<code>15cm</code>" or
+"<code>\columnwidth</code>" here.  You must also have an <code>\extracolsep</code>
+command in the <code>clpr</code> layout argument, inside an <code>@</code> directive.  So,
+for example, one might have
+<pre>
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lllr}
+</pre>
+
+The <code>\extracolsep</code> applies to all inter-column gaps to its right as
+well; if you don't want all gaps stretched, add
+<code>\extracolsep{0pt}</code> to cancel the original.
+<p>The <i>tabularx</i> package defines an extra <code>clpr</code> directive, <code>X</code>;
+<code>X</code> columns behave as <code>p</code> columns which expand to fill the space
+available.  If there's more than one <code>X</code> column in a table, the spare
+space is distributed between them.
+<p>The <i>ltxtable</i> combines the features of the
+<i>longtable</i> and <i>tabularx</i> packages: it's important to
+read the documentation, since usage is distinctly odd.
+<dl>
+<dt><tt><i>ltxtable.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/carlisle.tar.gz">macros/latex/contrib/supported/carlisle.tar.gz</a>
+<dt><tt><i>tabularx.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+</dl>
+<p></body>

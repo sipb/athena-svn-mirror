@@ -64,7 +64,7 @@
 % 0xB0
   /rcaron /sacute /scaron /scedilla
   /tquoteright /tcedilla /uhungarumlaut /uring
-  /ldot /zacute /zcaron /zdotaccent /ij /exclamdown /questiondown /sterling
+  /ydieresis /zacute /zcaron /zdotaccent /ij /exclamdown /questiondown /sterling
 % 0xC0
   /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla
   /Egrave /Eacute /Ecircumflex /Edieresis

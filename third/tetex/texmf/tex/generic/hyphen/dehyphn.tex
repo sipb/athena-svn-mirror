@@ -1,10 +1,10 @@
-% This is `dehyphn.tex', revision level 28
+% This is `dehyphn.tex', revision level 31
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% dehyphn   --  Vorlaeufige TeX-Trennmuster fuer die
+% dehyphn   --  TeX-Trennmuster fuer die
 %               neue deutsche Rechtschreibung
 %
-%               Preliminary hyphenation patterns for the
+%               TeX hyphenation patterns for the
 %               new German orthography
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -13,7 +13,7 @@
 %               [german hyphen patterns]
 % Copyright (C) 1993,1994,1999 Bernd Raichle/DANTE e.V.
 %               [macros, adaption for TeX 2]
-% Copyright (C) 1998,1999 Walter Schmidt
+% Copyright (C) 1998--2001 Walter Schmidt
 %               [adaption to new German orthography]
 %
 % -----------------------------------------------------------------
@@ -49,7 +49,7 @@
 %          Walter Schmidt
 %          Schornbaumstr. 2
 %          D-91052 Erlangen, Germany
-%   Email: wschmi@ibm.net
+%   Email: was@VR-Web.de
 %
 % ***   Please, send error reports to the latter address only!   ***
 % ***                                                            ***
@@ -62,8 +62,7 @@
 %
 % -----------------------------------------------------------------
 %
-\message{German New Hyphenation Patterns `dehyphn' Rev.28 <1999-03-08> (WaS)}
-\message{(Formerly known under the name `gnhyph01'.)}
+\message{New German Hyphenation Patterns `dehyphn' Rev.31 <2001-05-07> (WaS)}
 %
 % Next we define some commands which are used inside the patterns.
 % To keep them local, we enclose the rest of the file in a group
@@ -520,7 +519,9 @@ lu3the lu6t5or lu2t1r lu6\35 \c{lu6\95} l1v lve5r6u 2l1w 1ly lya6
 malu8 ma8lut 2m1amp 3man mand2 man3ds 8mangr mani5o 8m5anst 6mappa
 4m3arbe mar8kr ma1r4o mar8schm 3mas ma1sc \n{ma1t"o} 4m5auf ma5yo 2m1b
 mb6r 2m1c 2m1d \n{md6s"a} 1me me1ch me5isc 5meld mel8sa 8memp me5nal
-men4dr men8schl men8schw 8mentsp me1ra mer4gl me1ro 3mes me6s5ei me1th
+men4dr men8schl men8schw 8mentsp me1ra mer4gl me1ro 3mes me6s5ei 
+meta3s2 % R31
+me1th
 me8\3 \c{me8\9} 2m1f6 2m1g 2m1h 1mi mi1a mi6ale mi1la 2m1imm mi1na
 \n{mi5n"u} mi4s3an mit1h mi5t6ra 3mitt mitta8 mi6\35 \c{mi6\95} 6mj
 2m1k8 2m1l 2m1m m6mad m6m5ak m8menth m8mentw mme6ra m2mn mm5sp mm5ums
@@ -720,7 +721,9 @@ s3tral % 3s4tral % lat. Trennregeln ?
 % 5strik % ueberfluessig ?
 8s2t1ris % 8strisi
 % 3s4troa % ueberfluessig ?
-s8troma st5rose 4struf 3strum
+s8troma st5rose 
+2s1trua % R29
+4struf 3strum
 \n{6str"ag} 2st1s6 2stt 
 1stu stu5a 4stuc 2stue 8stun.  2stv 2stw s2tyl
 6stz \n{1st"a} \n{8st"ag} 
@@ -888,6 +891,7 @@ zu1b4 zu1f2 6z5uhr zun2a 8zunem zunf8 8zungl zu1o zup8fi zu1s8 zu1z
 i2s1tal
 2s1tani 2s1tan.
 fe2s1ta
+ta2s1ta % R30
 te2s1ta
 %
 nd2ste
@@ -1001,33 +1005,31 @@ s2s3z % ss1z \31z \c{\91z}
 % --------------------------------------
 %
 % \lefthyphenmin, \righthyphenmin:
-%   You can set both parameters to 2.
-%   The new German orthography allows hyphenation after the first
-%   letter, i.e. \lefthyphenmin=1.  Despite being ugly, this may
-%   ease line breaking in narrow columns.  However, the current
-%   patterns do *** NOT *** support this!
+%   Both parameters must be set to 2.
 %
 % \lccode <char>:
 %   To get correct hyphenation points within words containing
 %   umlauts or \ss, it's necessary to assign values > 0 to the
 %   appropriate \lccode <char> positions.
-%   These changes are _not_ done when reading this file and have to
-%   be included in the language switching mechanism as is done in,
-%   for example, `german.sty' (\lccode change for ^^Y = \ss in OT1,
-%   \left-/\righthyphenmin settings).
+%
+% These changes are _not_ done when reading this file and have to
+% be included in the language switching mechanism as is done in,
+% for example, `german.sty' (\lccode change for ^^Y = \ss in OT1,
+% \left-/\righthyphenmin settings).
 %
 % 
-% Warum ist diese Version "vorlaeufig" ?
-% --------------------------------------
+% Entstehung und Grundsaetze dieser Trennmuster
+% ---------------------------------------------
 %
 % Diese Trennmuster fuer die neue deutsche Rechtschreibung
 % entstanden durch manuelle Ueberarbeitung der Muster fuer die
-% traditionellen Schreibregeln.  Sie sind deshalb statistisch
-% nicht optimal.
+% traditionellen Schreibregeln.
 %
-% Die neuerdings erlaubten Trennstellen nach dem ersten Buchstaben
-% eines Wortes fehlen hier; ihre Implementierung wuerde eine
-% Neuberechnung der Muster erfordern.
+% Die jetzt erlaubten Trennstellen nach dem ersten Buchstaben 
+% eines Wort(stamm)es *** fehlen ***.  (Obwohl solche Trennungen 
+% haesslich sind, k”nnten sie in schmalen Spalten den Blocksatz
+% erleichterm.  Ihre Implementierung wuerde erfordern, die
+% Trennmuster von Grund auf neu zu berechnen.)
 %
 % Wo die neue Rechtschreibung sowohl die "traditionelle", also
 % etymologisch richtige Trennung, als auch eine Trennung nach
@@ -1036,10 +1038,6 @@ s2s3z % ss1z \31z \c{\91z}
 % als "s-tr" getrennt, ausser natuerlich am Anfang eines Wortstamms:
 % "Demons-tration", "Aus-tralien" usw., aber "de-struktiv".)
 %
-% Sobald Trennmuster fuer die neue deutsche Rechtschreibung
-% verfuegbar sind, die von Grund auf neu berechnet wurden, sollten
-% die vorliegenden Muster nicht laenger verwendet werden.
-% 
 %
 % Versionsgeschichte
 % -------------------
@@ -1053,6 +1051,7 @@ s2s3z % ss1z \31z \c{\91z}
 %                      korrigierte Makros aus `dehypht',
 %                      Lockerung des Copyright auf die Bedingungen
 %                      der `LaTeX Project Public License'
+% 2001-05-07       31
 %
 %
 %% \CharacterTable

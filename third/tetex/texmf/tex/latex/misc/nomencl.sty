@@ -7,14 +7,14 @@
 %% nomencl.dtx  (with options: `package')
 %% 
 %% Copyright 1996 Boris Veytsman
-%% Copyright 1999 Bernd Schandl
-%% email bschand@math.clemson.edu
-%% www   http://www.math.clemson.edu/~bschand/nomencl
+%% Copyright 1999-2000 Bernd Schandl
+%% email schandl@gmx.net
+%% www   http://members.nbci.com/schandl/nomencl
 %% 
 %% This file can be redistributed and/or modified under the terms
 %% of the LaTeX Project Public License distributed from CTAN
 %% archives in the directory macros/latex/base/lppl.txt; either
-%% version 1 of the license, or (at your option) any later version.
+%% version 1.2 of the license, or (at your option) any later version.
 %% 
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -33,8 +33,7 @@
 %%   Right brace   \}     Tilde         \~}
 %%
 \ProvidesPackage{nomencl}%
-          [1999/05/14 v2.7 Nomenclature package (BS)]
-
+          [2000/12/03 v3.1a Nomenclature package (BS)]
 \NeedsTeXFormat{LaTeX2e}
 \newif\if@printeqref
 \newif\if@printpageref
@@ -44,6 +43,13 @@
 \DeclareOption{norefpage}{\@printpagereffalse}
 \DeclareOption{prefix}{\def\nomprefix{a}}
 \DeclareOption{noprefix}{\def\nomprefix{}}
+\newif\if@loadcfg
+\DeclareOption{cfg}{\@loadcfgtrue}
+\DeclareOption{nocfg}{\@loadcfgfalse}
+\DeclareOption{croatian}{%
+  \def\eqdeclaration#1{, vidi jednad\v{z}bu\nobreakspace(#1)}%
+  \def\pagedeclaration#1{, stranica\nobreakspace#1}%
+  \def\nomname{Popis simbola}}
 \DeclareOption{danish}{%
   \def\eqdeclaration#1{, se ligning\nobreakspace(#1)}%
   \def\pagedeclaration#1{, side\nobreakspace#1}%
@@ -60,10 +66,18 @@
   \def\eqdeclaration#1{, siehe Gleichung\nobreakspace(#1)}%
   \def\pagedeclaration#1{, Seite\nobreakspace#1}%
   \def\nomname{Symbolverzeichnis}}
+\DeclareOption{italian}{%
+  \def\eqdeclaration#1{, equazione\nobreakspace(#1)}%
+  \def\pagedeclaration#1{, pagina\nobreakspace#1}%
+  \def\nomname{Elenco dei Simboli}}
 \DeclareOption{polish}{%
   \def\eqdeclaration#1{, porownaj rownanie\nobreakspace(#1)}%
   \def\pagedeclaration#1{, strona\nobreakspace#1}%
   \def\nomname{Lista symboli}}
+\DeclareOption{portuguese}{%
+  \def\eqdeclaration#1{, veja equa\c{c}\~ao\nobreakspace(#1)}%
+  \def\pagedeclaration#1{, p\'agina\nobreakspace#1}%
+  \def\nomname{Nomenclatura}}
 \DeclareOption{russian}{%
   \def\eqdeclaration#1{, \cyrs\cyrm.\nobreakspace(#1)}%
   \def\pagedeclaration#1{, \cyrs\cyrt\cyrr.\nobreakspace#1}%
@@ -79,7 +93,7 @@
   \def\pagedeclaration#1{, \cyrs\cyrt\cyro\cyrr.\nobreakspace#1}%
   \def\nomname{\CYRP\cyre\cyrr\cyre\cyrl\cyrii\cyrk%
          \ \cyrp\cyro\cyrz\cyrn\cyra\cyrch\cyre\cyrn\cyrsftsn}}
-\ExecuteOptions{norefeq,norefpage,prefix,english}
+\ExecuteOptions{norefeq,norefpage,prefix,cfg,english}
 \ProcessOptions\relax
 \def\makeglossary{%
   \newwrite\@glossaryfile
@@ -112,23 +126,27 @@
 \def\nomgroup#1{}
 \newdimen\nomlabelwidth
 \nomlabelwidth1cm\relax
+\newdimen\nom@tempdim
 \def\printglossary{%
   \@ifnextchar[%
     {\@printglossary}{\@printglossary[\nomlabelwidth]}}
 \def\@printglossary[#1]{%
-  \@tempdima#1\relax
+  \nom@tempdim#1\relax
   \@input@{\jobname.gls}}
 \def\nomlabel#1{#1\hfil}
 \def\nompreamble{}
 \def\nompostamble{}
 \def\nomentryend{}
+\newskip\nomitemsep
+\nomitemsep\itemsep
 \def\theglossary{%
   \@ifundefined{chapter}{\section*}{\chapter*}{\nomname}%
   \nompreamble
   \list{}{%
-    \labelwidth\@tempdima
+    \labelwidth\nom@tempdim
     \leftmargin\labelwidth
     \advance\leftmargin\labelsep
+    \itemsep\nomitemsep
     \let\makelabel\nomlabel}}
 \def\endtheglossary{%
   \endlist
@@ -142,8 +160,10 @@
 \def\nomeqref#1{\if@printeqref\eqdeclaration{#1}\fi\ignorespaces}
 \def\nompageref#1{\if@printpageref\pagedeclaration{#1}\fi%
   \nomentryend\endgroup}
-\InputIfFileExists{nomencl.cfg}{%
-  \typeout{Using the configuration file nomencl.cfg}}{}
+\if@loadcfg
+  \InputIfFileExists{nomencl.cfg}{%
+    \typeout{Using the configuration file nomencl.cfg}}{}
+\fi
 
 \endinput
 %%

@@ -1,0 +1,319 @@
+*****************************************************************************
+*         The collection of the PL fonts (the Polish version of the         *
+*               Computer Modern ones) in METAFONT source format             *
+*                           (public domain)                                 *
+*****************************************************************************
+
+Authors
+=======
+Bogus\l{}aw Jackowski <B.Jackowski@gust.org.pl>
+Marek Ry\'cko <marek@camk.edu.pl>
+consultant: Roman Tomaszewski
+
+see also GUST (Polish TeX Users Group) home page:
+http://www.gust.org.pl
+
+---------
+SYNOPSIS:
+---------
+
+The following set of METAFONT sources for PL fonts (ver. 1.09 of
+13 Apr 2001) is a part of MeX distribution and only EXCEPTIONALLY
+is released as a separate package.
+
+The reason for the release is a bug fix. Andreas Schwab and Joerg
+Knappen found a nasty bug in PL fonts during their works on EC
+family of fonts:  the heights and italic corrections of the
+accented characters depended on a given resolution. Unfortunately,
+the check sum in TFM files depends only on character widths,
+therefore the bug escaped fixing for a long time.
+
+In the corrected version, accented characters are processed twice
+(see macro `beginchar_twice' in pl_dod.mf): during the first pass,
+all drawing operations (fill, draw, cull, etc.) are neutralized --
+the result of the first pass are merely character dimensions (hopefully,
+resolution-independent ;-); during the second pass, the glyph is
+eventually created.
+
+The documentation below is an excerpt from mexinfo.eng---the documentation
+of MeX package (CTAN:/language/polish/mex*).
+
+PL fonts
+========
+The PL fonts were primarly designed for use with the MeX and LaMeX formats
+(Polish versions of the PLAIN and LaTeX209 macro files). Nowadays PL fonts
+can also be used with `PLaTeX' package (CTAN:/language/polish/platex*)
+that provides tools to typeset documents in Polish using LaTeX2e.
+This was a main reason to put them in the separate package.
+
+1. The Polish diacritical letters and quotation marks
+-----------------------------------------------------
+
+   There are nine diacritical letters in the Polish language (altogether
+   with majuscules---eighteen):
+
+          a with ogonek
+          c with acute accent
+          e with ogonek
+          l with cross
+          n with acute accent
+          o with acute accent
+          s with acute accent
+          z with acute accent
+          z with dot accent
+
+    Moreover, the Polish opening quotation mark is like English
+    closing one, but shifted to a baseline (like two commas, `,,');
+    additionally, in case of nested quotations, French quotation marks
+    (`<<' and `>>') are used.
+
+2. The PL layout
+----------------
+
+   The Polish fonts (PL) are extension of Computer Modern
+   fonts (CM), i.e., characters 0--127 are identical in PL and CM,
+   while the Polish characters and Polish and French quotation marks
+   are placed in higher ASCII positions, namely:
+
+       A with ogonek       -- 129         a with ogonek       -- 161
+       C with acute accent -- 130         c with acute accent -- 162
+       E with ogonek       -- 134         e with ogonek       -- 166
+       L with cross        -- 138         l with cross        -- 170
+       N with acute accent -- 139         n with acute accent -- 171
+       O with acute accent -- 211         o with acute accent -- 243
+       S with acute accent -- 145         s with acute accent -- 177
+       Z with acute accent -- 153         z with acute accent -- 185
+       Z with dot accent   -- 155         z with dot accent   -- 187
+
+       << (French opening quotes) -- 174
+       >> (French opening quotes) -- 175
+       ,, (Polish opening quotes) -- 255
+
+   Note that the Polish diacritical letters have the codes of the Extended
+   CM layout (Cork encoding).
+
+3. A few remarks on the design of the PL fonts
+----------------------------------------------
+
+  a) The METAFONT programs for letters and for the Polish opening quotes
+     are based on the respective CM programs; we decided not to
+     exploit a sneaky way of reading CM programs twice (or reading them
+     and storing) and modifying `extra_beginchar' and `extra_endchar',
+     or so, as we found such an aproach to be inconsistent with
+     the general philosophy of the Computer Modern font family design
+     (although see, e.g., the program for SS in the CSC font).
+
+  b) Unlike the CM parametric files, the PL ones do not contain lists
+     of parameter assignments. Instead, a CM driver file is input
+     while processing the corresponding PL driver.
+
+  c) The quotation marks are accessible via ligatures (,, << >>).
+     The Polish diacritical letters can be accessed either directly or
+     using an active prefix character (slash)---see the description of
+     the format MeX. No ligatures are used to form the Polish diacritical
+     characters. There are good reasons for doing so.
+
+  d) Since the Polish diacritical letters are not meant to be used as
+     math variables, they are not `math_adjusted'.
+
+  e) METAFONT doesn't allow for more than 16 different heights per font;
+     because of this limitation the upper half of the ASCII table is
+     deliberately left almost empty.
+
+     In spite of that an additional height introduced by accented
+     majuscules may cause an automatic adjustation of the remaining
+     heights, and it may happen that, e.g., `x_height' will be changed.
+     This makes the full compatibility between PL and CM fonts rather
+     impossible; let's hope that such incompatible situations will occur
+     very rarely.
+
+  f) An attempt was made to avoid introducing extra parameters; in some
+     cases, however, such extra (optional) parameters may prove to be
+     necessary for the final tunig. All optional parameters are described
+     in the file pl_dod.mf (an additional file for PL fonts; in fact,
+     a base format). Examples of use of optional parameters can be found
+     in the following files:
+       plb10, plbx5, plbx6, plbx7, plbx8, plcsc10, pldunh10, plfi10, plff10,
+       plitt10, plr5, plr6, plr7, plr8, plr9, plr12, plr17, plsl8, plsl9,
+       plsl12, plssq8, plssqi8, pltcsc10, plti7, plti8, plti12, and plvtt10.
+
+  g) plsy fonts include alternative less-or-equal and greater-or-equal
+     signs (like AMSTeX `\leqslant' and `\geqslant'), used in Polish math
+     texts; this extension was suggested by Mr. W\l{}odzimierz J. Martin.
+
+  h) plmi, plmib and pltex fonts are renamed (for uniformness) cmmi, cmmib
+     and cmtex fonts. The latter one reflects the layout of the keyboard
+     of the computer used by D. E. Knuth (D. E. Knuth, ``Computer Modern
+     Typefaces,'' p. 568); it is unlikely that Polish characters were
+     present there.
+
+  i) The design of the Polish diacritical characters in fonts plr, plbx,
+     pltt, plss, plti and plssbx was consulted with Mr. Roman Tomaszewski,
+     the President of the Polish Division of ATypI (Association Typographique
+     Internationale).
+
+     The authors are extremally grateful to him for his advices and for
+     the time he devoted to the problem of the Polish version of CM fonts.
+
+     Mr. Roman Tomaszewski died in December 1993.
+
+  j) D. E. Knuth encourages users to generate their own fonts: ``Many
+     more variations (bold and/or slanted and/or sans-serif) could be
+     tried.'' he says (``Computer Modern Typefaces'', p. 30). The authors
+     of the PL fonts share rather the Roman Tomaszewski's opinion, that one
+     should be very, very careful in following this advice.
+
+4. A few remarks on the design of the Polish diacritical characters
+-------------------------------------------------------------------
+
+  a) The accents over minuscules are very similar to the accents
+     that can be obtained using TeX's acute accent (\') operation;
+     accents over majuscules, however, are rotated a bit (if serifs)
+     or flattened a bit (if not serifs); exceptionally, in the extremely
+     slim pldunh10 font accents over majuscules are not sloped.
+
+  b) The dot accent over `z' and `Z' is like a dot over the letter `i'.
+     The dot accent put by TeX's command `\.' is a bit different, which
+     does not look nice in Polish words like `gwi\.zd\.ze' (eng. whistles).
+
+  c) The cross for the polish `l' and `L' is longer and thicker (for `L'
+     is bigger than for `l') than the standard CM's cross (TeX commands
+     `\l' and `\L').
+
+  d) The programs for the Polish opening quotes are based on the CM's
+     closing quotes; the French quotation marks are designed from scratch.
+
+  e) The geometry of an ogonek is very simple: its outer and inner edges
+     are single B\'ezier segments. The algorithm of computing the control
+     points for the B\'ezier curves, however, is admittedly sophisticated.
+     This is due to the fact that a wide spectrum of different ogonek shapes
+     is in fact to be programmed: one shape is needed for caps, another for
+     `a' with ogonek, yet another for `e' with ogonek, as they all have
+     different joins. Moreover, a sansserif ogonek differs significantly
+     from the serif one, a bold ogonek from the non-bold, an ogonek for hefty
+     fonts should still be different. And, if you take into account that
+     the basic font unit |u| may change during one session of font
+     generation (monospace and caps-small-caps) and that a few different
+     pens may be used to draw a single letter you'll understand why
+     so many |if| ... |else:| ... |fi| commands are used in the ogonek
+     program.
+
+  f) Implicit kerns are mostly the same for the Polish diacritical letters
+     as for the respective Latin ones; although, there are a few exceptions
+     (see the files polan.mf, polkur.mf and polkap.mf). The same concerns
+     the italic correction inserted after the Polish characters.
+
+The present distribution consists of:
+
+   (a) 12 basic files:
+       fik_mik.mf, pl_cud.mf, pl_dl.mf, pl_dod.mf, pl_ml.mf,
+       pl_mlk.mf, pl_sym.mf, polan.mf, polkap.mf, polkur.mf,
+       polmat.mf, poltyt.mf;
+
+   (b) 80 parameter files:
+       plb10.mf, plbsy10.mf, plbsy5.mf, plbsy7.mf, plbx10.mf, plbx12.mf,
+       plbx5.mf, plbx6.mf, plbx7.mf, plbx8.mf, plbx9.mf, plbxsl10.mf,
+       plbxti10.mf, plcsc10.mf, pldunh10.mf, plex10.mf, plff10.mf,
+       plfi10.mf, plfib8.mf, plinch.mf, plitt10.mf, plmi10.mf,
+       plmi12.mf, plmi5.mf, plmi6.mf, plmi7.mf, plmi8.mf, plmi9.mf,
+       plmib10.mf, plmib5.mf, plmib7.mf, plr10.mf, plr12.mf, plr17.mf,
+       plr5.mf, plr6.mf, plr7.mf, plr8.mf, plr9.mf, plsl10.mf, plsl12.mf,
+       plsl8.mf, plsl9.mf, plsltt10.mf, plss10.mf, plss12.mf, plss17.mf,
+       plss8.mf, plss9.mf, plssbi10.mf, plssbx10.mf, plssdc10.mf,
+       plssi10.mf, plssi12.mf, plssi17.mf, plssi8.mf, plssi9.mf,
+       plssq8.mf, plssqi8.mf, plsy10.mf, plsy5.mf, plsy6.mf, plsy7.mf,
+       plsy8.mf, plsy9.mf, pltcsc10.mf, pltex10.mf, pltex8.mf, pltex9.mf,
+       plti10.mf, plti12.mf, plti7.mf, plti8.mf, plti9.mf, pltt10.mf,
+       pltt12.mf, pltt8.mf, pltt9.mf, plu10.mf, plvtt10.mf;
+
+       nearly all parameter files employ Knuth's sources;
+       the exception are plbsy5.mf, plbsy7.mf, plmib5.mf, plmib7.mf,
+       which make use of the sources from AMS distribution of Computern
+       Modern family; these fonts are currently absent from the
+       distribution of Type 1 collection of PL fonts;
+
+   (c) 2 extra files:
+        * cmssbi10.mf -- added for the sake of completeness
+          (such a file is missing from the original set
+          of parameter files);
+        * dlr10.mf -- a sample file, demonstrating how to change the
+          basic unit of a font (in this case, the parameter file
+          defines 10 didot point font)
+
+--------
+HISTORY:
+--------
+
+ 7 Feb 1992: version 1.00
+11 Feb 1992: version 1.01
+    * no changes; the new version number due to changes in \MeX{} format
+ 25 May -- 1 Jun 1992: version 1.02
+    * pl_dod.mf:
+      the following two erroneous assignments:
+        z_a:=(x_down+the_left_pos,.5penkind); % starting point
+        z_d:=(xpart(z_a)-.5penkind,y_right+.5penkind)+the_tip_pos; % ending point
+      changed to the following ones:
+        z_a:=(x_down+the_left_pos,ypart(ogonek_pos)); % starting point
+        z_d:=(xpart(z_a)-.5penkind,y_right+ypart(ogonek_pos))+
+             the_tip_pos; % ending point
+      Some comments changed.
+    * pl_mlk.mf:
+      the stroke in crossed l (olde code for the letter l):
+        filldraw stroke z1e--z2e;  %| stem
+      changed to:
+        filldraw stroke z1e--z2'e;  %| stem
+    * fik_mik.mf:
+      cmbase.mf is being read by fik_mik.mf in order to prevent
+      reading it while processing parameter files
+18 Dec 1992: version 1.03
+    * fik_mik.mf:
+      possibility of arbitrary rescaling added: the value of
+      |basic_unit#| can be used to override default |pt#| basic
+      unit (suggestion of M. \L{}akomy; cf. the sample file dlr10.mf
+      producing a |10dd#| roman font)
+    * cosmetic changes in cmbx11.mf, cmr11.mf, cmti11.mf, cmsl11.mf,
+      cmssbi10.mf, and polan.mf
+14 Apr 1996: version 1.07$gamma$ -- unofficial release
+   (versions 1.04 thru 1.06 were never released)
+    * a nasty bug removed, found by Andreas Schwab in connection with
+      Joerg Knappen's works on including the code of PL fonts into
+      EC fonts: TFM files used to depend on resolution due to rounding
+      errors (many thanks, Andreas and Joerg)
+    * macro |put_dot| corrected (PL_DOD.MF)
+    * |qvair| and |limit_dist| defined as macros (used to be variables)
+    * some code cleaning
+13 Apr 2000: version 1.07 -- official release (for BachoTeX 2000)
+    * no changes of code since version 1.07$\gamma$
+    * files cmr11.mf, cmti11.mf, cmsl11.mf removed from the distribution
+      as useless.
+    * changes in the documentation and new comments in the files
+13 Apr 2000: version 1.08 (the date was deliberately retained)
+    * pl_dod:
+      a line added in |beginchar_twice| (at the beginning of ``discrete''
+      calculations):
+         save mode_guard_; % dedicated to those who use Karl Berry's modes.mf
+      the problems with modes.mf were reported by W\l{}odek Macewicz
+    * the modification HAS NOT INFLUENCE on metric files, i.e.,
+      the files generated from version 1.07 are identical; we do
+      our best to follow Donald E. Knuth's enunciation:
+      ``I absolutely guarantee that the TFM files will never change again.''
+                                                      (DeK, file CM85bug)
+    * font plex9 removed from the distribution as not relevant to
+      the original Computer Modern family; if required (?),
+      it suffices to copy plex10.mf to plex9.mf
+    * comment cleaning
+13 Apr 2001: version 1.09
+    * pl_dod:
+      the types of the parameters of |special| and |numspecial|,
+      re-defined in |beginchar_twice|, were inconsistent with
+      the METAFONT syntax (|primary| instead of |expr|):
+         <special command> :=
+           special <string expression> | numspecial <numeric expression>
+
+
+--------------
+EMAIL CONTACT:
+--------------
+
+B.Jackowski@gust.org.pl or M.Rycko@gust.org.pl
+

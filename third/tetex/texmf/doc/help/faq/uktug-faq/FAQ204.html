@@ -1,0 +1,47 @@
+<head>
+<title>UK TeX FAQ -- question 204</title>
+</head><body>
+<h3>Typesetting all those TeX-related logos</h3>
+<p>Knuth was making a particular point about the capabilities of TeX
+when he defined the logo.  Unfortunately, many believe, he thereby
+opened floodgates to give the world a whole range of rather silly
+'bumpy road' logos such as AMSTeX, PiCTeX, BibTeX, and so on,
+produced in a flurry of different fonts, sizes, and baselines - indeed,
+everything one might hope to cause them to obstruct the reading process.
+In particular, Lamport invented LaTeX
+
+  (silly enough in itself, with a raised small 'A' and a lowered 'E')
+and marketing input from Addison-Wesley led to the even
+stranger current logo
+
+  LaTeX2e, which appends a lowered single-stroke Greek letter epsilon.
+<p>Sensible users don't have to follow this stuff wherever it goes,
+but, for those who insist, a large collection of logos is defined in
+the <i>texnames</i> package (but note that this set of macros isn't
+entirely reliable in LaTeX2e).
+The Metafont and MetaPost logos can be set in fonts that LaTeX2e
+knows about (so that they scale with the surrounding text) using the
+<i>mflogo</i> package; but be aware that booby-traps surround the
+use of the Knuthian font for MetaPost (you might get
+
+
+
+
+something like 'META&amp;nbsp;O&amp;nbsp;T').
+You needn't despair, however - the author himself uses just 'MetaPost'.
+<p>For those who don't wish to acquire the 'proper' logos, the canonical
+thing to do is to say <code>AMS-</code><code>\TeX</code><code></code>
+
+for AMSTeX, <code>Pic</code><code>\TeX</code><code></code>
+
+for PiCTeX, <code>Bib</code><code>\TeX</code><code></code>
+
+for BibTeX, and so on.
+<p>While the author of this FAQ list can't quite bring himself to do away
+with the bumpy-road logos herein, he regularly advises everyone else
+to...
+<dl>
+<dt><tt><i>mflogo.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/mflogo.tar.gz">macros/latex/contrib/supported/mflogo.tar.gz</a>
+<dt><tt><i>texnames.sty</i></tt><dd><a href="ftp://macros/eplain/texnames.sty">macros/eplain/texnames.sty</a>
+</dl>
+<p></body>

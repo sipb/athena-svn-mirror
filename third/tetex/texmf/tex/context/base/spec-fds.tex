@@ -1,0 +1,80 @@
+%D \module
+%D   [       file=spec-fds,
+%D        version=2000.07.04,
+%D          title=\CONTEXT\ \PDF\ Macros,
+%D       subtitle=PDF color separation,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for
+%C details.
+
+%D Experimental (and yet undocumented) module. 
+
+\unprotect 
+
+\def\doPDFstartgraymode#1%
+  {\ifcase\colorfilter
+     \PDFcode{#1 g #1 G}%
+   \or
+     \PDFcode{1 g 1 G}%
+   \or
+     \PDFcode{1 g 1 G}%
+   \or
+     \PDFcode{1 g 1 G}%
+   \or
+     \PDFcode{#1 g #1 G}%
+   \or
+     \PDFcode{1 g 1 G}%
+   \or
+     \PDFcode{#1 g #1 G}%
+   \fi}
+
+\def\doPDFstartcmykcolormode#1#2#3#4%
+  {\ifcase\colorfilter
+     \PDFcode{#1 #2 #3 #4 k #1 #2 #3 #4 K}%
+   \or
+     \negatecolorcomponent{#1}%
+     \PDFcode{\colorcomponent\space g \colorcomponent\space G}%
+   \or
+     \negatecolorcomponent{#2}%
+     \PDFcode{\colorcomponent\space g \colorcomponent\space G}%
+   \or
+     \negatecolorcomponent{#3}%
+     \PDFcode{\colorcomponent\space g \colorcomponent\space G}%
+   \or
+     \negatecolorcomponent{#4}%
+     \PDFcode{\colorcomponent\space g \colorcomponent\space G}%
+   \or
+     \checkprocesscolor{#1}{#2}{#3}{#4}%
+     \ifdone
+       \negatecolorcomponent\processcolorpct
+       \PDFcode{\colorcomponent\space g \colorcomponent\space G}%
+     \else
+       \PDFcode{1 g 1 G}%
+     \fi
+   \or
+     \PDFcode{1 g 1 G}%
+   \fi}
+
+\def\doPDFstartrgbcolormode#1#2#3%
+  {\ifcase\colorfilter
+     \PDFcode{#1 #2 #3 rg #1 #2 #3 RG}%
+   \else
+     \message{don't use rgb colors}\wait
+   \fi}
+
+\let\doPDFstartgraycolormode\doPDFstartgraymode
+
+\def\doPDFstopgraymode
+  {\ifcase\colorfilter
+     \PDFcode{0 g 0 G}%
+   \else
+     \PDFcode{1 g 1 G}%
+   \fi}
+
+\let\doPDFstopcolormode\doPDFstopgraymode
+
+\protect \endinput 

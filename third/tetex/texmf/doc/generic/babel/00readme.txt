@@ -1,12 +1,14 @@
                        Babel Distribution Guide
 
-                            10 March 1999
+                             6 October 2002
 
 
 Welcome to the Babel system!
 
-This file contains the distribution guide for version 3.6 of the
-Babel system.
+This file contains the distribution guide for version 3.7 of the
+Babel system. The Babel system is distributed under the terms of 
+the LaTeX Project Public License version 1.2 or later. A copy of 
+the LPPL can be found in the LaTeX distribution.
 
 The Babel system supports multilingual typesetting.
 This version of the Babel system is compatible with LaTeX2e.
@@ -28,7 +30,10 @@ should read install.txt before starting to install Babel.
  * changes.txt is a chronological list of the changes to babel
 
  * install.txt describes how to install Babel.
- * install.mac describes how to install Babel on a Mac with OzTeX.
+ * install.OzTeX-4 describes how to install Babel on a Mac with a
+                   recent OzTeX distribution (4.0+).
+ * install.OzTeX-pre4 describes how to install Babel on a Mac with an
+                     old OzTeX distribution (before 4.0).
 
  * manifest.bbl lists all the files in the Babel distribution.
 
@@ -36,11 +41,14 @@ should read install.txt before starting to install Babel.
 
  * todo.txt lists a few things that haven't been done yet
 
- * howto.get lists the places where to get the Babel system and
-             other related software.
+ * howtoget.txt lists the places where to get the Babel system and
+                other related software.
 
 You are not allowed to change the files in this distribution.
 
+If you want to add your own options to extend Babel with local
+language definitions you can do that by adding \DeclareOption 
+statements to a configuration file, bblopt.cfg.
 
 If you like the babel system, please send me a postcard with a nice
 postage stamp for my collection!
@@ -50,7 +58,7 @@ through mail servers and TeX organisations.
 
 
 Please send bug reports to the LaTeX bug reporting address, 
-latex-bugs@uni-mainz.de. Please read the file bugs.txt in this
+latex-bugs@latex-project.org. Please read the file bugs.txt in this
 distribution and follow the guidelines.
 
 WARNINGS:
@@ -59,16 +67,11 @@ WARNINGS:
   changes of uppercase and lowercase codes. Amongst these is
   \uccode`\~=`\^ which may lead to unexpected results when the ~
   occurs in the argument of \uppercase
-- The file francais.dtx (francais.ldf) has been replaced by
-  frenchb.dtx (frenchb.ldf). When upgrading from an older version of
-  babel you need to remove francais.ldf.
 
 Send any suggestions, additions, complaints, to me:
-e-mail:  JLBraams@cistron.nl
-address: Kooienswater 62
-         2715 AJ Zoetermeer
+e-mail:  babel@braams.cistron.nl
+address: Kersengaarde 33
+         2723 BP Zoetermeer
          The Netherlands
 Note that I am more likely to respond to e-mail.
---- Copyright 1999 Johannes Braams.  All rights reserved ---
-
-
+--- Copyright 1997,2002 Johannes Braams.  All rights reserved ---

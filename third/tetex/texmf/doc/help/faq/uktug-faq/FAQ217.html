@@ -1,0 +1,34 @@
+<head>
+<title>UK TeX FAQ -- question 217</title>
+</head><body>
+<h3>Comparing the "job name"</h3>
+<p>The token <code>\jobname</code> amusingly produces a sequence of characters
+whose category code is 12 ('other'), regardless of what the characters
+actually are.  Since one inevitably has to compare a macro with the
+contents of another macro (using <code>\ifx</code>, somewhere) one needs to
+create a macro whose expansion looks the same as the expansion of
+<code>\jobname</code>.  We find we can do this with <code>\meaning</code>, if we strip
+the "<code>\show</code> command" prefix.
+<p>The full command looks like:
+
+<pre>
+\def\jobis#1{FF\fi
+  \def\predicate{#1}%
+  \edef\predicate{\expandafter\StripPrefix\meaning\predicate}%
+  \edef\job{\jobname}%
+  \ifx\job\predicate
+}
+</pre>
+And it's used as:
+<pre>
+\if\jobis{mainfile}%
+  \message{YES}%
+\else
+  \message{NO}%
+\fi
+</pre>
+Note that the command <code>\StripPrefix</code> need not be defined if you're
+using LaTeX - there's already an 
+<a href="FAQ229.html">internal command</a>
+<code>\strip@prefix</code> that you can use.
+<p></body>

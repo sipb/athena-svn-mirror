@@ -5,29 +5,29 @@
 %% The original source files were:
 %%
 %% portuges.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{portuges}
-        [1999/04/16 v1.2l Portuguese support from the babel system]
+        [2001/02/16 v1.2o Portuguese support from the babel system]
 %% File `portuges.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Portuguese Language Definition File
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit\CurrentOption{captions\CurrentOption}
 \ifx\l@portuges\@undefined
   \ifx\l@portuguese\@undefined
@@ -81,11 +81,12 @@
     \def\seename{ver}%
     \def\alsoname{ver tamb\'em}%
     \def\proofname{Demonstra\c{c}\~ao}%
+    \def\glossaryname{Glossary}% <-- Needs translation
     }
   \@namedef{date\CurrentOption}{%
     \def\today{\number\day\space de\space\ifcase\month\or
       Janeiro\or Fevereiro\or Mar\c{c}o\or Abril\or Maio\or Junho\or
-      Julho\or Agosto\or Setembro\or Outubro\or Novembro\or Dezembro
+      Julho\or Agosto\or Setembro\or Outubro\or Novembro\or Dezembro%
       \fi
       \space de\space\number\year}}
 \else
@@ -112,19 +113,21 @@
     \def\seename{veja}%
     \def\alsoname{veja tamb\'em}%
     \def\proofname{Demonstra\c{c}\~ao}%
+    \def\glossaryname{Glossary}% <-- Needs translation
     }
   \@namedef{date\CurrentOption}{%
     \def\today{\number\day\space de\space\ifcase\month\or
       janeiro\or fevereiro\or mar\c{c}o\or abril\or maio\or junho\or
-      julho\or agosto\or setembro\or outubro\or novembro\or dezembro
+      julho\or agosto\or setembro\or outubro\or novembro\or dezembro%
       \fi
       \space de\space\number\year}}
 \fi
-\@namedef{\CurrentOption hyphenmins}{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\thr@@}
 \initiate@active@char{"}
 \@namedef{extras\CurrentOption}{\languageshorthands{portuges}}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \bbl@activate{"}}
+\addto\noextrasportuges{\bbl@deactivate{"}}
 \declare@shorthand{portuges}{"<}{%
   \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
 \declare@shorthand{portuges}{">}{%

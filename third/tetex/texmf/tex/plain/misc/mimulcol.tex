@@ -1,7 +1,7 @@
 % copied from TUGboat, Vol.10 (1989) No.3 p.409--415 (B.J.)
 % MULTICOLUMN LaTeX environement.
 % Author: F. Mittelbach
-% Quick adaptation to PLAIN: B. Jackowski (Ver. 0.7); alterations are
+% Quick adaptation to PLAIN: B. Jackowski (Ver. 0.9); alterations are
 %                                                     marked by `(B.J.)'
 %
 % Since I do not understand floats I assume that they are
@@ -11,6 +11,8 @@
 % --------------------- PSEUDO-LaTeX ENVIRONEMENT ------------------------
 % ========================================================================
 \catcode`\@=11
+\newtoks\@uteroutput % (P.P.)
+\@uteroutput\output  %
 % --------------------------
 \def\adjust@PLAIN{%
   \newlinechar=`\^^J
@@ -195,7 +197,8 @@
                  \@spaces\@spaces Footnotes on page \thepage\space
                  might be wrong}\fi\fi
      \setbox\@cclv\vbox{\page@sofar}%
-     \plainoutput % <---------------- instead of \@makecol\@outputpage (B.J.)
+%     \plainoutput % <---------------- instead of \@makecol\@outputpage (B.J.)
+     \the\@uteroutput % <------------- instead of \plainoutput (P.P.)
      \global\@colroom\@colht
      \process@deferreds
      \ifnum\tracingmulticols>\@ne
@@ -236,9 +239,7 @@
   \splitmaxdepth\maxdepth
   \setbox\z@\vbox{\unvbox\@cclv}\dimen@\ht\z@
   \advance\dimen@ \col@number\topskip
-  \advance\dimen@ -\topskip
   \advance\dimen@ -\col@number\baselineskip
-  \advance\dimen@ \baselineskip
   \divide\dimen@ \col@number
   \advance\dimen@ \unbalance\baselineskip
   \ifnum\tracingmulticols>\@ne

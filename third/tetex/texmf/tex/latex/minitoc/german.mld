@@ -1,3 +1,4 @@
+\ProvidesFile{german.mld}[1999/03/16]
 % German titles for minitoc.sty
 \def\mtctitle{Inhaltsangabe}
 \def\mlftitle{Figuren}

@@ -1,13 +1,13 @@
-% file cbdigits.mf v.2.2 1997/09/29
+% file cbdigits.mf
 %
 % The first part of this file is the same as Computer Modern's romand.mf.
 % It contains the ten digits in so-called roman style.
 % Character codes '060 through '071 are generated.
 %
-% The rest is Copyright (C) 1997, 1999 Claudio Beccari
-%
+% The rest is Copyright (C) 1997, 1999, 2000, 2001, 2002 Claudio Beccari
+% v.2.6 2002/04/09
 % The second part contains the `greek numerals' and special signs for such
-% numerals.
+% numerals. The last part contains the 'Athenian numerals'.
 
 % All digits have the same height, width, depth, and italic correction.
 
@@ -22,6 +22,8 @@ y1r=h+o; y3r=-o; y2=y4=.5h-vair_corr; y2l:=y4l:=.52h;
 penstroke pulled_arc.e(1,2) & pulled_arc.e(2,3)
  & pulled_arc.e(3,4) & pulled_arc.e(4,1) & cycle;  % bowl
 penlabels(1,2,3,4); endchar;
+
+currentbreadth:=0;
 
 cmchar "The numeral 1";
 beginchar("1",9u#,fig_height#,0);
@@ -47,6 +49,8 @@ erase fill z3l{x4l-x3l,3(y4l-y3l)}...z4l{left}
  --(x4l,h+o+1)--(x3l,h+o+1)--cycle; % erase excess at top
 filldraw stroke z3e{x4e-x3e,3(y4e-y3e)}..z4e{left};  % point
 penlabels(1,2,3,4); endchar;
+
+currentbreadth:=0;
 
 cmchar "The numeral 2";
 beginchar("2",9u#,fig_height#,0);
@@ -74,6 +78,8 @@ erase fill z4l--z6l--lft z6l--(lft x6l,y4l)--cycle;  % erase excess at left
 filldraw stroke z2e{right}..tension atleast .9 and atleast 1
  ..z3e{down}.. z4e---z5e--z6e;  % stroke
 penlabels(0,1,2,3,4,5,6,7,8); endchar;
+
+currentbreadth:=0;
 
 cmchar "The numeral 3";
 beginchar("3",9u#,fig_height#,0);
@@ -116,6 +122,8 @@ else: pos1(.5[vair,flare],angle(-8u,h));
  filldraw stroke term.e(8,9,left,1,4); fi  % lower terminal
 penlabels(0,1,2,3,4,5,6,7,8,9,10); endchar;
 
+currentbreadth:=0;
+
 cmchar "The numeral 4";
 beginchar("4",9u#,fig_height#,0);
 italcorr fig_height#*slant-.5u#;
@@ -146,6 +154,8 @@ filldraw stroke z2'e--z7e;  % lower stem
 if serifs: dish_serif(7,2',a,1/3,1.75u,
   b,1/3,min(1.75u,w-.5u-rt x7r)); fi  % serif
 penlabels(0,1,2,3,4,5,6,7); endchar;
+
+currentbreadth:=0;
 
 cmchar "The numeral 5";
 beginchar("5",9u#,fig_height#,0);
@@ -186,6 +196,8 @@ else: numeric flag_breadth; flag_breadth=7/8[vair,cap_curve];
  filldraw stroke z1e...{right}z2e...z0e; fi  % flag
 penlabels(0,1,2,3,4,5,6,7,8,9,10); endchar;
 
+currentbreadth:=0;
+
 cmchar "The numeral 6";
 beginchar("6",9u#,fig_height#,0);
 italcorr fig_height#*slant-.5u#;
@@ -219,6 +231,8 @@ else: pos1(vround .1[top_thickness,flare],90);
  filldraw stroke term.e(2,1,right,.9,4); fi  % terminal
 penlabels(0,1,2,3,4,5,6,7); endchar;
 
+currentbreadth:=0;
+
 cmchar "The numeral 7";
 beginchar("7",9u#,fig_height#,0);
 italcorr fig_height#*slant-.5u#;
@@ -248,6 +262,8 @@ else: pos5(top_hair,0); y5=2/3h; z5=whatever[z4,(.75u,y6)];
  erase fill rt z4r--z4r--z5r--(rt x4r,y5)--cycle;  % erase excess at top
  filldraw stroke z4e---z5e...{down}z6e; fi  % stroke
 penlabels(1,2,3,4,5,6); endchar;
+
+currentbreadth:=0;
 
 cmchar "The numeral 8";
 beginchar("8",9u#,fig_height#,0);
@@ -294,6 +310,8 @@ else: pickup fine.nib; theta=90-angle(18u,h); slope:=-h/18u;
   ..tension atleast tau and atleast 1..{18u,.5h}z9e; fi % lower left stroke
 penlabels(0,1,2,3,4,5,6,7,8,9); endchar;
 
+currentbreadth:=0;
+
 cmchar "The numeral 9";
 beginchar("9",9u#,fig_height#,0);
 italcorr fig_height#*slant-.5u#;
@@ -327,7 +345,8 @@ else: pos1(.1[bot_thickness,flare],-120);
  filldraw stroke term.e(2,1,left,.9,4); fi  % terminal
 penlabels(0,1,2,3,4,5,6,7); endchar;
 
-% if small_caps: let NeX=relax; else: let NeX=endinput; fi NeX;
+currentbreadth:=0;
+
 
 % Here we start with the  greek  numerals; the three numerals stigma, qoppa,
 % and sampi, are  expressly  designed  with  the  suggestions  of  Apostolos
@@ -341,35 +360,54 @@ penlabels(0,1,2,3,4,5,6,7); endchar;
 
 cmchar "The lowercase numeral stigma";
 beginchar(6,9u#,x_height#,0);
-  adjust_fit(0,0);
+adjust_fit(0,0);
   if cursive:
-   if slitex or monospace: pickup fine.nib else: pickup crisp.nib fi;
+     if slitex or monospace: pickup fine.nib else: pickup crisp.nib fi;
      pos1(hair,90); top y1r=h+oo; rt x1=w-u;
      pos2(stem,180); lft x2r=u;
-     pos3(hair,-90); y3=.9bar_height; y2=.5[y1,y3]; 
+     pos3(hair,-90); y3=.9bar_height; y2=.5[y1,y3];
      rt x3=.5[rt x4,rt x1r];
      pos4(.6[hair,stem],0); y4=y3;
      pos5(.6[hair,stem],0); bot y5=0;
      x5=x4=.5[x2,x1];
      filldraw stroke z1e{left}..{down}z2e..{right}z3e;
      filldraw stroke z5e--z4e;
-     else:
-   if serifs: pickup crisp.nib; else: pickup fine.nib; fi
+   elseif cbleipzig or cbroman:
+    pickup fine.nib; numeric slope;
+    pos4(hair,-180); y4=.5h; lft x4r=hround .75u;             %left bulge
+    pos6(hair,-180); rt x6l=hround(w-.75u);                   %bottom right
+    top y3r=h+oo; x3=x5; pos3(vstem,90);
+    pos10(vstem,90); y10=y3;x10=x3+2.5u;                      %top inflecton
+    pos5(vstem,-90); bot y5r=0;                               %bottom inflection
+    x5-x4l=.5(y3l-y5l);
+    pos7(hair,-270); y6=.5[y7r,y5r]; x7-.5vstem=hround x5;
+    pos9(hair,180); x9=x6; y9-y3=y5-y6;
+    bot y7l=-if not slitex:.5fi desc_depth;
+    pair za; za=.5[z3,z5]; slope=angle((0,h)-za);
+    pos1(.25[hair,stem],slope); pos2(.25[hair,stem],360-slope);
+    y4=.5[y1l,y2l]; x1l=x2l;
+    z1l=za+1.05*((z4l-za) rotated -(180-slope));
+    pos8(vstem,-90); y8=y5;x8=x5+2u;
+    filldraw double_circ_stroke
+      z7e{right}...z6e...z8e...z5e{left}..z2e..%
+      z4e{up}..z1e..z3e{right}...z10e..{up}z9e;
+   else:
+     if serifs: pickup crisp.nib; else: pickup fine.nib; fi
      pos1(stem,90); top y1r=h+o; if serifs: if monospace:rt x1 = w-u+o;
                                                     else:rt x1 +.5stem =w-u+o;
-     					       fi
+                               fi
                                       else: rt x1=w-u;
-     				 fi
+                     fi
      pos6(.55[vair,stem],90); top y6r= top y1r;
      pos2(vair,180); lft x2r=u if serifs: -o fi;
-     pos3(stem,-90); y3=.9bar_height; y2=.5[y1,y3]; 
+     pos3(stem,-90); y3=.9bar_height; y2=.5[y1,y3];
      x3=.5w+u if not serifs:+.5stem fi;
      pos4(vair,0); y4=y3;
      pos5(stem,0); if serifs: if monospace: bot y5=-o;
                                       else: bot y5=.5stem -o;
-                                      fi 
+                                      fi
                         else: bot y5=0;
-     		   fi
+               fi
      x5=x4=.5[x2,x1]; x6=.5[x4,x3];
      if serifs:
        filldraw double_circ_stroke z1e..z6e..{down}z2e..{right}z3e;
@@ -379,27 +417,30 @@ beginchar(6,9u#,x_height#,0);
        filldraw stroke z5e--z4e;
      fi
   fi
-penlabels(1,2,3,4,5,6);
+penlabels(1,2,3,4,5,6,7,8,9,10);
 endchar;
 
+currentbreadth:=0;
 
 cmchar "The lowercase variant stigma";
-beginchar(7,10u#,body_height#,if cursive:desc_depth# else:2cap_stem# fi)
+beginchar(7,if cbroman:9else:10fi u#,%
+            if cbroman:x_height# else:body_height# fi,%
+            if cursive:desc_depth# elseif cbroman:0else:2cap_stem# fi);
 adjust_fit(0,0);
  if cursive:
   if slitex or monospace: pickup fine.nib else: pickup crisp.nib fi;
-  pos0(hair,90); pos3(stem,if serifs:60else:90fi); 
+  pos0(hair,90); pos3(stem,if serifs:60else:90fi);
   pos4(cap_stem,180);
   pos5(cap_stem,225); pos6(stem,180); pos7(hair,90);
-  w-rt x0r=3/4u=lft x4r; rt x0r=rt x6l; 
+  w-rt x0r=3/4u=lft x4r; rt x0r=rt x6l;
   top y0r=.3[h,x_height]; y4=x_height;
   path curva,mediana; curva=z4r{up}..{right}z0r; mediana=(w/2,-d)--(w/2,h);
   z3r=(curva intersectionpoint mediana);
-  %x3=w/2; top y3r=top y0r; 
-  x5=w/2; y5=.5[y4,y6]; y6=.5[y5,y7]; 
+  %x3=w/2; top y3r=top y0r;
+  x5=w/2; y5=.5[y4,y6]; y6=.5[y5,y7];
   bot y7l=-oo; x7=.3[x4,x5];
   filldraw stroke z0e{left}..z3e..{down}z4e..z5e..{down}z6e..{left}z7e;
-  path curva; curva=z7{right}..{up}z6; 
+  path curva; curva=z7{right}..{up}z6;
   pair zA,zB;
   zA= mediana intersectiontimes curva;
   z8=.5[point xpart zA of mediana, point ypart zA of curva];
@@ -408,25 +449,44 @@ adjust_fit(0,0);
   bot y9l=-d-oo; lft x9l=rt x8r; y10=top y9r; x9=.5[x8,x10];
   filldraw stroke z8e{down}..{right}z9e..z10e;
   path mediana, curva; pair zA,zB;
+  elseif cbroman:     % No variant stigma (2000/07/23)
+    pickup fine.nib; numeric slope;
+    pos4(hair,-180); y4=.5h; lft x4r=hround .75u;             %left bulge
+    pos6(hair,-180); rt x6l=hround(w-.75u);                   %bottom right
+    top y3r=h+oo; x3=x5; pos3(vstem,90);
+    pos10(vstem,90); y10=y3;x10=x3+2.5u;                      %top inflecton
+    pos5(vstem,-90); bot y5r=0;                               %bottom inflection
+    x5-x4l=.5(y3l-y5l);
+    pos7(hair,-270); y6=.5[y7r,y5r]; x7-.5vstem=hround x5;
+    pos9(hair,180); x9=x6; y9-y3=y5-y6;
+    bot y7l=-if not slitex:.5fi desc_depth;
+    pair za; za=.5[z3,z5]; slope=angle((0,h)-za);
+    pos1(.25[hair,stem],slope); pos2(.25[hair,stem],360-slope);
+    y4=.5[y1l,y2l]; x1l=x2l;
+    z1l=za+1.05*((z4l-za) rotated -(180-slope));
+    pos8(vstem,-90); y8=y5;x8=x5+2u;
+    filldraw double_circ_stroke
+      z7e{right}...z6e...z8e...z5e{left}..z2e..%
+      z4e{up}..z1e..z3e{right}...z10e..{up}z9e;
  else:
   pickup fine.nib;
   pos0(hair,-180); pos3(cap_stem,90);
   pos4(hair,-180); pos5(cap_stem,-90);
   pos6(hair,180); pos8(hair,90);
   pos7(cap_stem,90); pos9(hair,-90);
-  pos10(hair,-180);pos11(hair,-90); 
+  pos10(hair,-180);pos11(hair,-90);
   pos12(hair,-135); pos13(hair,-180); pos14(hair,-90);
   z8=z10;
   bot y9r=-2cap_stem; bot y8l=0; bot y7l=0; y5=y4-.5cap_stem;
-  y6=.5[y5r,y8r]; 
+  y6=.5[y5r,y8r];
   y4=math_axis+.7cap_stem;
-  y3l=x_height; y0=min(body_height,x_height+2cap_stem); 
+  y3l=x_height; y0=min(body_height,x_height+2cap_stem);
   y11=min(.5[y4,y7],y7+2cap_stem); y12l=y14l=y13l=y9l;
   x8=.5w; x9=x8+cap_stem; x7=.25w;
-  x6=.25[x0,x5]; 
-  x5=x8; 
-  lft x4r=.5u; 
-  x3=x5; 
+  x6=.25[x0,x5];
+  x5=x8;
+  lft x4r=.5u;
+  x3=x5;
   x11=x7;
   rt x0l=w-u; x12l=x14l=x13l; x13=x8;
   filldraw circ_stroke z0e{down}...z3e{left}...z4e{down};
@@ -438,51 +498,68 @@ adjust_fit(0,0);
 penlabels(0,3,4,5,6,7,8,9,10,11,12,13,14);
 endchar;
 
+currentbreadth:=0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 cmchar "The lowercase numeral qoppa";
-beginchar(18,if  monospace:9else:7fi u#,0.5[cap_height#,x_height#],0);
+beginchar(18,if  monospace:9else:7fi u#,%
+    if cbleipzig or cbroman:0else:0.5fi[asc_height#,x_height#],%
+    if cbleipzig or cbroman:desc_depth# else:0fi);
  if cursive and not (slitex or monospace):
   adjust_fit(.5u#,.5u#);  pickup crisp.nib;
   pos1(stem,180); pos2(stem,225);
   pos4(stem,225); pos5(stem,180);
   .5[z1,z5]=.5[z2,z4]=z3=(.5w,bar_height);
   top y1r=h; lft x1r=u; x2r= x1; y2l=bar_height;
-   pos3(hair,angle(z4-z2)-90); 
-  filldraw %stroke 
+   pos3(hair,angle(z4-z2)-90);
+  filldraw %stroke
   z1r{down}..z2r{right}..z3r{z4-z2}..{down}z5r--
-  z5l{up}..z4l{left}..z3l{z2-z4}..{up}z1l--cycle; 
+  z5l{up}..z4l{left}..z3l{z2-z4}..{up}z1l--cycle;
+ elseif cbleipzig or cbroman:
+  adjust_fit(0,0); numeric qhair; qhair=.5[hair,stem];
+  pos1(qhair,0); x1l=u;y1=h;
+  pos6(qhair,0);x6r=w-u;y6=-d;
+  z0=.5[z1l,z6r]; z0=.5[z5r,z2l]; z0=.5[z6r,z1l];
+  pos2(qhair,0); x2l=.5u; y2l=y0-stem/2;
+  pos3(stem,angle(z1l-z2l)); z3l=z2l;
+  pos4(stem,angle(z5r-z6r)); z4r=z5r;
+  pos5(qhair,0);
+  filldraw stroke z1e--z2e; filldraw stroke z3e--z4e; filldraw stroke z5e--z6e;
  else:
   adjust_fit(0,0);
-  numeric q_sl, q_rad;   
-  if serifs: 
-    pickup crisp.nib; 
-  else: 
-    pickup fine.nib;  
+  numeric q_sl, q_rad;
+  if serifs:
+    pickup crisp.nib;
+  else:
+    pickup fine.nib;
   fi
-  q_rad=.8[vair,stem];  
+  q_rad=.8[vair,stem];
   q_sl=if not monospace:1.414* fi(vair);
-  pos1(q_rad,180); pos4(q_rad,180);  
-  pos5(q_sl,225); 
-  pos7(q_sl,225); 
+  pos1(q_rad,180); pos4(q_rad,180);
+  pos5(q_sl,225);
+  pos7(q_sl,225);
   lft x1r =lft x5r=u; top y1r=h;
-  top y5l=bar_height;  
+  top y5l=bar_height;
   .5[z5,z7]= .5[z1,z4]=(.5w,bar_height);
-  if serifs: 
-    filldraw  double_circ_stroke 
+  if serifs:
+    filldraw  double_circ_stroke
     z1e{down}..{down}z5e--z7e{down}..{down}z4e;
   else:
-    filldraw stroke 
+    filldraw stroke
     z1e{down}..{down}z5e--z7e{down}..{down}z4e;
   fi
  fi
 penlabels(1,2,3,4,5,6,7,8);
 endchar;
 
+currentbreadth:=0;
+
 
 cmchar "The lowercase variant numeral qoppa";
-beginchar(19,9u#,.5(body_height#+x_height#),if cursive:.2desc_depth# else:0fi);
+beginchar(19,9u#,if cbleipzig or cbroman:1else:.5fi[body_height#,x_height#],
+if cursive:.2elseif cbleipzig or cbroman:1else:0fi desc_depth# );
 adjust_fit(0,0);
  if cursive:
   if slitex or monospace: pickup fine.nib else: pickup crisp.nib fi;
@@ -493,9 +570,24 @@ adjust_fit(0,0);
   pos5(if not monospace:.8fi stem,0); pos6(stem,0); z5=z3;
   x6=x5; bot y6=-d;
   filldraw stroke z5e--z6e;
+ elseif cbleipzig or cbroman:
+  if cbroman:pickup tiny.nib;fi
+  pos1(if cbleipzig:fine else:hair fi,90); pos2(stem,180); 
+  pos3(if cbleipzig:fine else:hair fi,270); pos4(stem,0);
+  lft x2r = w-rt x4r=u; y2=y4=.5[y1,y3]; x1=x3=w/2;
+  top y1r=h+oo; bot y3r=-oo;
+  filldraw stroke z1e{left}..z2e..z3e..z4e..{left}z1e;
+  pos5(if cbroman:stem else:hair fi,0); pos6(stem,0); z5=z3;
+  x6=x5; bot y6=-d if cbleipzig:+.5stem fi;
+  if cbroman:
+    filldraw stroke z5e--z6e;
+    dish_serif(6,5,a,1/3,.8jut,b,1/3,.8jut);
+  else:
+    filldraw circ_stroke z6e--z5e;
+  fi
  else:
   pickup pencircle xscaled vstem yscaled .5vstem  rotated 30;
-  x1=1.5u; x2=w-x1; 
+  x1=1.5u; x2=w-x1;
   y1=y2=x_height-.3vstem;
   draw z1..z2..cycle;
   penpos3(hair,0); penpos4(stem,0);
@@ -505,6 +597,8 @@ adjust_fit(0,0);
  fi
  penlabels(1,2,3,4,5,6);
 endchar;
+
+currentbreadth:=0;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -526,19 +620,34 @@ beginchar(oct"033",if monospace:9else:13fi u#,asc_height#,0);
   pos5(stem,base_dir); pos6(stem,base_dir);
   filldraw stroke z5e{dir(90+base_dir)}..{zA zscaled(0,1)}z3e;
   filldraw stroke z6e{dir(90+base_dir)}..{zB zscaled(0,1)}z4e;
+ elseif cbleipzig or cbroman:
+  if cbroman: pickup tiny.nib; fi
+  numeric s_width, S_width; s_width=.25[hair,stem]; S_width=.5[hair,stem];
+  pos1(S_width,90); pos2(stem,0);
+  lft x1r-s_width/2=w-rt x2r=u; top y1r=h+oo; bot y2r=s_width/2-oo;
+  path p_san; p_san:= z1{right}..{down}z2;
+  filldraw double_circ_stroke z1e{right}..{down}z2e;
+  pair zA,zB,zC; z3= point 2/5 of p_san; z4=point 3/5 of p_san;
+  zA= direction 2/5 of p_san; zB=direction 3/5 of p_san;
+  zC=direction 1/2 of p_san rotated -90;
+  pos3(s_width,angle(zA)); pos4(s_width,angle(zB));
+  z5=z3+5u*dir(angle(zC)); z6=z4+5u*dir(angle(zC));
+  pos5(s_width,angle(zC)+90); pos6(s_width,angle(zC)+90);
+  filldraw circ_stroke z5e..z3e;
+  filldraw circ_stroke z6e..z4e;
  else:
   if serifs: pickup crisp.nib; else: pickup fine.nib; fi
-  pos1(vstem,90); 
+  pos1(vstem,90);
   pos2(stem,0);
   rt x2r=hround(w-.75u);
   if serifs:
     bot y2-.5(stem-currentbreadth)=-o;
-    top y1r=h; 
+    top y1r=h;
     x1-.5(vstem-currentbreadth)+x2r=w;
     filldraw double_circ_stroke z1e{right}..{down}z2e;
   else:
-    y2=0; 
-    top y1r=h; 
+    y2=0;
+    top y1r=h;
     lft x1+x2r=w;
     filldraw stroke z1e{right}..{down}z2e;
   fi
@@ -546,7 +655,7 @@ beginchar(oct"033",if monospace:9else:13fi u#,asc_height#,0);
   numeric a_dir, b_dir; a_dir= 40; b_dir=60;
   pos3(vair,-a_dir); pos4(stem,0);
   pos5(vair,-b_dir); pos6(stem,0);
-  z3=directionpoint dir(-a_dir) of p_san; 
+  z3=directionpoint dir(-a_dir) of p_san;
   z5=directionpoint dir(-b_dir) of p_san;
   x4l=x1; y4=if slitex:.8 fi bar_height;
   x6=.5w; y6=.5y4;
@@ -562,124 +671,238 @@ beginchar(oct"033",if monospace:9else:13fi u#,asc_height#,0);
 penlabels(1,2,3,4,5,6);
 endchar;
 
+currentbreadth:=0;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 cmchar "The greek numeral right apex anw tonos";
   beginchar(oct"376",3.5u#,acc_ht#,0);
-  adjust_fit(0,0); 
+  adjust_fit(0,0);
   acute(2/5w);
 endchar;
 
+currentbreadth:=0;
+
 cmchar "The greek numeral left apex katw tonos";
 beginchar(oct"377",3.5u#,acc_ht#,desc_depth#);
-  adjust_fit(0,0); 
+  adjust_fit(0,0);
   numeric accent_tilt, alto, basso; accent_tilt:=-30;
   alto:=-.8(acc_ht - x_height);  basso:=0;
   2/3[x22,x21]=.5w;
 if serifs: pickup crisp.nib;
   accent_tilt:= (accent_tilt+angle(alto-basso,.5currentbreadth));
   pos22(max(stem/5,currentbreadth+eps),accent_tilt); pos21(stem,accent_tilt);
-  top y22=basso; bot y21-.5stem=alto; 
+  top y22=basso; bot y21-.5stem=alto;
   z21-z22=whatever*dir(90+accent_tilt);
   filldraw circ_stroke z21e--z22e;  % diagonal
-else: pickup fine.nib; 
+else: pickup fine.nib;
   accent_tilt:= accent_tilt;
   pos21(stem,0); pos22(vair,0);
   bot y21=alto; top y22=basso; x22-x21=(alto-basso)*sind accent_tilt;
   filldraw stroke z21e--z22e; % diagonal
-fi 
+fi
 penlabels(21,22);
 currentbreadth:=0;
 endchar;
 
+currentbreadth:=0;
 
 cmchar "The greek numeral centered dot";
-beginchar(oct"046",5u#,dot_size#,0);   
+beginchar(oct"046",5u#,dot_size#,0);
   adjust_fit(0,0); pickup fine.nib;
   pos1(dot_diam,0); pos2(dot_diam,90);
   lft x1l=hround(.5w-.5dot_diam);  y2=0; z1=z2; dot(1,2);  % dot
   currentpicture:=currentpicture shifted (0,math_axis);
 endchar;
 
+currentbreadth:=0;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Capital Greek numerals
+
+
+cmchar "Capital Qoppa";
+beginchar(oct"025",9u#,cap_height#,0);
+adjust_fit(0,0);
+pickup fine.nib;
+pos1(cap_stem,0); x1=w/2; y1=.65x_height;
+pos2(cap_stem,0); x2=x1; bot y2=0;
+filldraw stroke z1e--z2e;
+if serifs:
+    dish_serif(2,1,a,1/3,cap_jut,b,1/3,cap_jut); % serif
+fi
+pickup  crisp.nib;
+z3=z7=z1; pos3(hair,-90); pos7(hair,-90);
+pos5(hair,90); x5=x3; top y5r=h+oo;
+pos4(cap_stem,0-angle((1,slant))); %y4=.5[y3,y5]; x1=.5[x6,x4];
+pos6(cap_stem,180-angle((1,slant))); %y6=y4; lft x6r=.6u;
+.5[z4,z6]=.5[z3,z5]; z4-z6=whatever*(1,-.25slant); lft x6r=.6u;
+filldraw stroke z3e{right}...z4e...z5e...z6e...{right}z7e;
+penlabels(1,2,3,4,5,6,7,8,9);
+endchar;
+
+
+
+
+cmchar "Capital Stigma";
+beginchar(oct"026",14u#,cap_height#,0);
+italcorr cap_height#*slant-beak_jut#-.25u#;
+adjust_fit(0,0);
+h:=vround(h-2stem_corr);
+pickup tiny.nib; 
+pos1(cap_stem,0); pos2(cap_stem,0);
+lft x1l=lft x2l=hround(.6w-.5cap_stem); top y1=h; bot y2=0;
+filldraw stroke z1e--z2e; % stem
+pickup crisp.nib; pos3(slab,90); pos4(hair,0);
+top y3r=h; x3=x1; rt x4r=hround(w-.65u); y4=good.y(y3l-beak)-eps;
+if serifs:
+  arm(3,4,e,beak_darkness,.7beak_jut);  % right arm and beak
+  serif(2,1,b,1/3,cap_jut); % bottom serif
+fi
+pickup crisp.nib; 
+pos5(cap_stem,90);x5r=x1l-tiny/2; y5r=y3r;
+pos6(cap_stem,-90); x6r=x5r; y6r=y2r-tiny/2;
+pos7(cap_stem,180); lft x7r=w-x4r; y7=.5[y1,y2];
+pos8(hair,90); pos9(hair,-90); x8=x9=.55[x7l,x2l]; y9r=y2l-tiny/2; y8r=y3r;
+filldraw stroke z8e{left}..z7e..z9e{right};
+filldraw z5r--z8r--z8l{right}...{down}z5l--cycle;
+filldraw z6r--z9r--z9l{right}...{up}z6l--cycle;
+x10=x2;y10=y2-tiny/2; filldraw z10--z6r--z6--cycle;
+penlabels(1,2,3,4,5,6,7,8,9,10);
+endchar;
+
+
+
+cmchar"Capital Sampi";
+beginchar(oct"027",12u#,cap_height#,0);
+adjust_fit(if serifs:-.2u#,2u# else:-u#,0.5 u# fi);
+pickup tiny.nib;
+z1r=(w/4,h); z2r=(w-tiny/2,tiny/2);
+pos2(cap_stem,0); z1l-z2l=whatever*(z1r-z2r); z1r-z1l=whatever*up; z1=.5[z1r,z1l];
+filldraw stroke z1e--z2e;
+z3=.2[z1l,z2l]; pos3(stem,angle(z1l-z2l));
+numeric angolo; angolo=angle((z1l-z2l)xscaled-.4);
+z4-z3=whatever*dir(angolo); y4=tiny/2; 
+z4r-z3r=whatever*(z4-z3); y4r=tiny/2; z4=.5[z4r,z4l];
+filldraw stroke z3e--z4e;
+z5=.4[z3l,z2l];pos5(stem,angle(z1l-z2l));
+z6=z5+whatever*dir(angolo); y6=y4;
+z6r=z5r+whatever*(z5-z6); y6r=y6; z6=.5[z6r,z6l];
+filldraw stroke z5e--z6e;
+if serifs:
+dish_serif(2,1,a,1/3,cap_jut,b,1/3,.8cap_jut); % right serif
+dish_serif(4,3,c,1/3,jut,d,1/3,jut); % left serif
+dish_serif(6,5,e,1/3,jut,f,1/3,jut); % center serif
+fi
+penlabels(1,2,3,4,5,6,7,8);
+endchar;
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Athenian digits; this is the subset that includes the multiples of 50
+
 
 
 cmchar "Athenian numeral pente-deka";
 beginchar(2,15u#,cap_height#,0);
 adjust_fit(0,0);
-numeric left_stem,alpha;
-left_stem=cap_hair if hefty: -3stem_corr fi;
-x1l=w-x4r=if monospace: 2.25else:1.75fi u; 
-y1=y4=0;
-x2-x1=x4-x3; x3r=x2r+apex_corr; y2=y3=.9*(h+apex_o+apex_oo);
-alpha=diag_ratio(2,left_stem,y2-y1,x4r-x1l-apex_corr);
-penpos1(alpha*left_stem,0); penpos2(alpha*left_stem,0);
-penpos3(alpha*cap_stem,0); penpos4(alpha*cap_stem,0);
-fill diag_end(2l,1l,1,1,4r,3r)--diag_end(4r,3r,1,1,2l,1l)--cycle;  % triangle
-z0=whatever[z1r,z2r]=whatever[z3l,z4l];
-y5=y6=cap_vstem; z5=whatever[z1r,z2r]; z6=whatever[z3l,z4l];
-if y0<.9h-cap_notch_cut: y0:=.9h-cap_notch_cut;
- unfill z0+.5right{down}...{z4-z3}z6--z5{z2-z1}
-  ...{up}z0+.5left--cycle; % counter
-else: unfill z0--z5--z6--cycle; 
-fi  % counter
-pickup pensquare scaled (if monospace:.8 else:.5 fi u) slanted slant;
-.5[x50,x53]=.5[x51,x52]=.5[x1l,x4r]; x50=x51; 
-x50=x1l- if not monospace:.5 fi u;
-bot y50=bot y53=0; y51=y52=h;
+numeric PIstem; PIstem:=fudged.cap_stem-3stem_corr;
+if monospace and (gensize < 10): % small typewriter sizes!
+  numeric penna; penna:= PIstem*(.5+gensize/20);
+  pickup pencircle scaled penna;
+  x1=u+PIstem+penna; .5[x1,x4]=.5w;
+  y1=y4=.5penna;
+  x2-x1=x4-x3; x3=x2+apex_corr;
+  y2=y3=h-PIstem-penna;
+  draw z1--z2--z3--z4--z1;
+else:
+  numeric left_stem,alpha;
+  left_stem=cap_hair if hefty: -3stem_corr fi;
+  x1l=w-x4r=u+1.5stem;
+  y1=y4=0;
+  x2-x1=x4-x3; x3r=x2r+apex_corr;
+  y2=y3=h-1.5PIstem;
+  alpha=diag_ratio(2,left_stem,y2-y1,x4r-x1l-apex_corr);
+  penpos1(alpha*left_stem,0); penpos2(alpha*left_stem,0);
+  penpos3(alpha*cap_stem,0); penpos4(alpha*cap_stem,0);
+  fill diag_end(2l,1l,1,1,4r,3r)--diag_end(4r,3r,1,1,2l,1l)--cycle;  % triangle
+  z0=whatever[z1r,z2r]=whatever[z3l,z4l];
+  y5=y6=cap_vstem; z5=whatever[z1r,z2r]; z6=whatever[z3l,z4l];
+  if y0<y3-cap_notch_cut: y0:=y3-cap_notch_cut;
+   if gensize>7:
+    unfill z0+.5right...{z4-z3}z6--z5{z2-z1}...z0+.5left--cycle; % counter
+   else:
+    unfill z0--z5--z6--cycle;
+   fi
+  else: 
+    unfill z0--z5--z6--cycle;
+  fi  % counter
+fi
+%
+pickup if monospace:pencircle else:pensquare fi scaled PIstem slanted slant;
+lft x50=lft x51=u = w-rt x53; x53=x52;
+bot y50=bot y53=0; top y51=top y52=h;
 draw (z50)--(z51)--(z52)--(z53);
-penlabels(0,1,2,3,4,5,6); 
+penlabels(0,1,2,3,4,5,6,50,51,52,53);
 endchar;
-     
-     
+
+currentbreadth:=0;
+
+
 cmchar "Athenian numeral pente-hkaton";
-beginchar(3,13u#,cap_height#,0);
+beginchar(3,15u#,cap_height#,0);
 italcorr cap_height#*slant-.5u;
-adjust_fit(2cap_serif_fit#,2cap_serif_fit#);
-pickup tiny.nib; pos1(cap_stem,0); pos2(cap_stem,0);
-pos3(cap_stem,0); pos4(cap_stem,0);
-lft x1l=lft x2l=hround (max(2u,3u-.5cap_stem)+u); 
+adjust_fit(0,0);
+numeric PIstem; PIstem:=fudged.cap_stem-3stem_corr;
+pickup tiny.nib; pos1(stem,0); pos2(stem,0);
+pos3(stem,0); pos4(stem,0);
+lft x1l=lft x2l=hround (u+1.5PIstem if serifs:+if monospace:.3else:.5fi cap_jut fi);
 x3=x4=w-x1;
-top y1=top y3=.9h; bot y2=bot y4=0;
+top y1=top y3=h-1.5PIstem; bot y2=bot y4=0;
 filldraw stroke z1e--z2e; % left stem
 filldraw stroke z3e--z4e; % right stem
-penpos5(cap_bar,90); penpos6(cap_bar,90);
-x5=x1; x6=x3; y5=y6=.52*.9h;
+penpos5(bar,90); penpos6(bar,90);
+x5=x1; x6=x3; y5=y6=.52y1;
 fill stroke z5e--z6e;  % bar
-numeric inner_jut,outer_jut;
-if serifs: 
- if rt x1r+cap_jut+.5u+1<=lft x3l-cap_jut: inner_jut=cap_jut;
- else: rt x1r+inner_jut+.5u+1=lft x3l-inner_jut; fi
- outer_jut=.5[inner_jut,cap_jut];
+if serifs:
+ numeric inner_jut,outer_jut;
+ if monospace:
+   outer_jut=.4jut; inner_jut=.3jut;
+ else:
+   outer_jut=.7jut;inner_jut=.5stem;
+ fi
  dish_serif(1,2,a,1/3,outer_jut,b,1/3,inner_jut);  % upper left serif
  dish_serif(2,1,c,1/3,outer_jut,d,1/3,inner_jut);  % lower left serif
  dish_serif(3,4,e,1/3,inner_jut,f,1/3,outer_jut);  % upper right serif
  dish_serif(4,3,g,1/3,inner_jut,h,1/3,outer_jut);  % lower right serif
-else:
- inner_jut=outer_jut=0;
 fi
-pickup pensquare scaled (if monospace:.8 else:.5 fi u) slanted slant;
-.5[x50,x53]=.5[x51,x52]=.5[x2,x4]; x50=x51; 
-x50=lft x2l-(outer_jut +u);
-bot y50=bot y53=0; y51=y52=h;
+%
+pickup if monospace:pencircle else:pensquare fi scaled PIstem slanted slant;
+lft x50=lft x51=u = w-rt x53; x53=x52;
+bot y50=bot y53=0; top y51=top y52=h;
 draw (z50)--(z51)--(z52)--(z53);
-penlabels(1,2,3,4,5,6); 
+penlabels(1,2,3,4,5,6);
 endchar;
 
-     
+currentbreadth:=0;
+
 cmchar "Athenian numeral pente-qilioi";
 beginchar(4,15u#,cap_height#,0);
 italcorr cap_height#*slant-.5u#;
-adjust_fit(0,0); 
+adjust_fit(0,0);
 numeric stem[],outer_jut,xjut,alpha[];
 stem1=cap_stem-2stem_corr; stem2=min(cap_hair,stem1);
-outer_jut=.75cap_jut; xjut= if serifs: (stem1-stem2)/4 else: 0 fi;
-x1l=l+letter_fit+2u+outer_jut; x2r=r-letter_fit-2.5u-outer_jut-xjut;
-x3l=l+letter_fit+1.75u+outer_jut+xjut; x4r=r-letter_fit-1.75u-outer_jut;
-y1=y2=.9h; y3=y4=0;
+outer_jut=if monospace:-.2else:.7fi jut ; xjut= if serifs: (stem1-stem2)/4 else: 0 fi;
+numeric PIstem; PIstem:=fudged.cap_stem-3stem_corr;
+%
+lft x1l=u+1.5PIstem+outer_jut;           % top left
+lft x3l=x1l+xjut;                            % bottom left
+%
+rt x2r=x4r-xjut;                             % top right
+rt x4r=w-u-1.5PIstem-outer_jut;                % bottom right
+%
+top y1=top y2=h-1.5PIstem; bot y3= bot y4=0;
 alpha1=diag_ratio(1,stem1,h,x4r-x1l);
 alpha2=diag_ratio(1,stem2,h,x2r-x3l);
 penpos1(alpha1*stem1,0); penpos2(alpha2*stem2,0);
@@ -696,78 +919,94 @@ else: fill diag_end(4r,1r,.5,1,1l,4l)
   --diag_end(1l,4l,.5,1,4r,1r)--cycle; % left diagonal
  fill diag_end(2l,3l,.5,1,3r,2r)
   --diag_end(3r,2r,.5,1,2l,3l)--cycle; fi  % right diagonal
-if serifs: numeric inner_jut[]; pickup tiny.nib;
+if serifs and (not monospace):
+ pickup tiny.nib;
+ numeric inner_jut[];
  prime_points_inside(1,4); prime_points_inside(2,3);
  prime_points_inside(3,2); prime_points_inside(4,1);
- if rt x1'r+cap_jut+.5u+1<=lft x2'l-cap_jut-xjut: inner_jut1=cap_jut;
+ if rt x1'r+jut+.5u+1<=lft x2'l-jut-xjut: inner_jut1=jut;
  else: rt x1'r+inner_jut1+.5u+1=lft x2'l-inner_jut1-xjut; fi
- if rt x3'r+cap_jut+.5u+1<=lft x4'l-cap_jut-xjut: inner_jut2=cap_jut;
+ if rt x3'r+jut+.5u+1<=lft x4'l-jut-xjut: inner_jut2=jut;
  else: rt x3'r+inner_jut2+.5u+1=lft x4'l-inner_jut2-xjut; fi
  dish_serif(1',4,a,1/3,outer_jut,b,2/3,inner_jut1);  % upper left serif
  dish_serif(4',1,c,2/3,inner_jut2,d,1/3,outer_jut);  % lower right serif
- dish_serif(2',3,e,2/3,inner_jut1+xjut,
-  f,1/2,outer_jut+xjut)(dark);  % upper right serif
- dish_serif(3',2,g,1/2,outer_jut+xjut,
-  h,2/3,inner_jut2+xjut)(dark);  % lower left serif
+ dish_serif(2',3,e,2/3,inner_jut1+xjut,f,1/2,outer_jut+xjut)(dark);  % upper right serif
+ dish_serif(3',2,g,1/2,outer_jut+xjut,h,2/3,inner_jut2+xjut)(dark);  % lower left serif
 fi
-pickup pensquare scaled (if monospace:.8 else:.5 fi u) slanted slant;
-.5[x50,x53]=.5[x51,x52]=.5[x3,x4 if (serifs and (not monospace)):+.25u fi]; 
-x50=x51; 
-x50=lft x3l-(outer_jut + if monospace:.5fi u);
-bot y50=bot y53=0; y51=y52=h;
+%
+pickup if monospace:pencircle else:pensquare fi scaled PIstem slanted slant;
+lft x50=lft x51=u = w-rt x53; x53=x52;
+bot y50=bot y53=0; top y51=top y52=h;
 draw (z50)--(z51)--(z52)--(z53);
-penlabels(0,1,2,3,4,12,13,24,34); 
+penlabels(0,1,2,3,4,12,13,24,34,50,51,52,53);
 endchar;
 
+currentbreadth:=0;
 
 cmchar "Athenian numeral pente-muria";
-beginchar(5,16u#,cap_height#,0);
+beginchar(5,15u#,cap_height#,0);
 italcorr cap_height#*slant-.5u#;
-adjust_fit(2cap_serif_fit#,2cap_serif_fit#);
+adjust_fit(0,0);
 numeric stem[]; % thicknesses of the four strokes
 stem1=hround(fudged.hair+stem_corr);
 stem2=hround(fudged.cap_stem-4stem_corr);
 stem3=hround(fudged.hair-stem_corr);
 stem4=hround(fudged.cap_stem-3stem_corr);
 if stem4<stem1: stem4:=stem1; fi
-pickup tiny.nib; pos1(stem1,0); pos2(stem1,0);
+pickup tiny.nib;
+numeric PIstem; PIstem:=fudged.cap_stem-3stem_corr;
+pos1(stem1,0); pos2(stem1,0);
 pos3(stem4,0); pos4(stem4,0);
-x1=x2; x3=x4; x1l=w-x3r; 
-rt x3r=hround min(w-2u,w-3u+.5stem4)-1.5u;
-top y1=top y3=.9h; bot y2=bot y4=0;
+x1=x2; x3=x4; x1l=w-x3r;
+rt x3r=hround (w-u-1.5PIstem if monospace:-.3else:-.7fi jut);
+top y1=top y3=h-1.5PIstem; bot y2=bot y4=0;
 filldraw stroke z1e--z2e; % left stem
 filldraw stroke z3e--z4e; % right stem
 penpos5(stem2,0); penpos6(stem2,0); penpos7(stem3,0); penpos8(stem3,0);
-x5l=x1; x6l=x7l; x8=lft x3l; x6-x5=x8-x7; y5=y8=.9h; y6=y7;
-if hefty: y6=if monospace: vround (1/3*(.9h)) else: o fi;
- numeric upper_notch,lower_notch;
- upper_notch=.9h-cap_notch_cut; lower_notch=y6+cap_notch_cut;
- x1'=rt x1r; z1'=whatever[z5l,z6l]; x3'=lft x3l; z3'=whatever[z7r,z8r];
- z0=whatever[z5r,z6r]=whatever[z7l,z8l];
- fill z5l..
-  if y1'<upper_notch: {right}(x1'+1,upper_notch){down}... fi
-  {z6-z5}diag_in(5l,6l,1,6r)..diag_out(7l,1,7r,8r){z8-z7}
-  if y3'<upper_notch: ...{up}(x3'-1,upper_notch){right} fi
-  ..z8r--diag_out(8r,1,8l,7l){z7-z8}
-  if y0<=lower_notch: ..{z7-z8}z0{z5-z6}..
-  else: ...{down}(x0+.5,lower_notch)--(x0-.5,lower_notch){up}... fi
-  {z5-z6}diag_in(6r,5r,1,5l)--cycle;  % diagonals
-else: y6=0; z0=whatever[z5r,z6r]=whatever[z7l,z8l];
- fill z5l..{z6-z5}diag_in(5l,6l,1,6r)..diag_out(7l,1,7r,8r){z8-z7}
-  ..z8r--diag_out(8r,1,8l,7l){z7-z8}..{z7-z8}z0{z5-z6}
-  ..{z5-z6}diag_in(6r,5r,1,5l)--cycle; fi  % diagonals
-if serifs: serif(1,2,a,1/3,- if monospace:.8fi cap_jut);  % upper left serif
- dish_serif(2,1,b,1/2,if monospace:.8fi cap_jut,c,1/2,if monospace:.8fi cap_jut)(dark); % lower left serif
- serif(3,4,d,1/3,if monospace:.8fi cap_jut); %  upper right serif
- dish_serif(4,3,e,1/3,if monospace:.8fi cap_jut,f,1/3,if monospace:.8fi cap_jut);  % lower right serif
+x5l=x1; x6l=x7l; x8=lft x3l; x6-x5=x8-x7;
+top y5=top y8=top y1 if serifs:+1/4slab elseif slitex:+.5tiny fi; y6=y7;
+if monospace:
+  y6=vround (1/2*(y1));
+  filldraw stroke z1--z6--z3;
+else:
+  if hefty: y6=o;
+   numeric upper_notch,lower_notch;
+   upper_notch=top y1-notch_cut; lower_notch=y6+notch_cut;
+   x1'=rt x1r; z1'=whatever[z5l,z6l]; x3'=lft x3l; z3'=whatever[z7r,z8r];
+   z0=whatever[z5r,z6r]=whatever[z7l,z8l];
+   fill z5l..
+    if y1'<upper_notch: {right}(x1'+1,upper_notch){down}... fi
+    {z6-z5}diag_in(5l,6l,1,6r)..diag_out(7l,1,7r,8r){z8-z7}
+    if y3'<upper_notch: ...{up}(x3'-1,upper_notch){right} fi
+    ..z8r--diag_out(8r,1,8l,7l){z7-z8}
+    if y0<=lower_notch: ..{z7-z8}z0{z5-z6}..
+    else: ...{down}(x0+.5,lower_notch)--(x0-.5,lower_notch){up}... fi
+    {z5-z6}diag_in(6r,5r,1,5l)--cycle;  % diagonals
+  else: y6=0; z0=whatever[z5r,z6r]=whatever[z7l,z8l];
+   fill z5l..{z6-z5}diag_in(5l,6l,1,6r)..diag_out(7l,1,7r,8r){z8-z7}
+    ..z8r--diag_out(8r,1,8l,7l){z7-z8}..{z7-z8}z0{z5-z6}
+    ..{z5-z6}diag_in(6r,5r,1,5l)--cycle; fi  % diagonals
 fi
-pickup pensquare scaled (if monospace:.8 else:.5 fi u) slanted slant;
-.5[x50,x53]=.5[x51,x52]=x0; x50=x51; 
-x50=lft x2l-(cap_jut + u);
-bot y50=bot y53=0; y51=y52=h;
+if serifs and(not monospace):
+ serif(1,2,a,1/3,-.7jut);                       % upper left serif
+ serif(3,4,d,1/3,.7jut);                        % upper right serif
+fi
+if serifs: numeric low_i_jut,low_o_jut;
+low_i_jut:=if monospace:.3else:.7fi jut;
+low_o_jut:=if monospace:.4else:.7fi jut;
+ dish_serif(2,1,b,1/2,low_o_jut,c,1/2,low_i_jut)(dark); % lower left serif
+ dish_serif(4,3,e,1/3,low_i_jut,f,1/3,low_o_jut);       % lower right serif
+fi
+%
+pickup if monospace: pencircle else:pensquare fi scaled PIstem slanted slant;
+lft x50=lft x51=u = w-rt x53; x53=x52;
+bot y50=bot y53=0; top y51=top y52=h;
 draw (z50)--(z51)--(z52)--(z53);
 penlabels(0,1,1',2,3,3',4,5,6,7,8); endchar;
-     
+
+currentbreadth:=0;
+
+
 
 endinput;
 
@@ -783,30 +1022,31 @@ endinput;
 
 cmchar "The symbol Tao";
 beginchar(1,18u# if slitex:-3u# fi,body_height#,desc_depth#);
-adjust_fit(0,0); 
+adjust_fit(0,0);
 % always draw this symbol unslanted
 transform t_tao; t_tao=currenttransform;
-currenttransform:=currenttransform slanted (-slant); 
+currenttransform:=currenttransform slanted (-slant);
 numeric raggio; raggio=.5min(w,h+d);
-pickup pencircle scaled (raggio/18);  
+pickup pencircle scaled (raggio/18);
 y3=math_axis; x3=.5w;
 z1=z3+(0,raggio);
 z3=.5[z1,z2]=.5[z4,z7]=.5[z5,z6];
-z4=z3+(0,.7raggio); 
+z4=z3+(0,.7raggio);
 .5[z4,z5]=.5[z3,z1];
-path pa,pb,pc,pe,pf,pg; 
+path pa,pb,pc,pe,pf,pg;
 pa:=z2..z1..cycle; pg:= subpath (0,1) of pa;
 pb:=z1..z3..cycle; pe:= subpath (0,1) of pb;
 pc:=z2..z3..cycle; pf:= subpath (0,1) of pc;
 draw pa;                           % external circle
-fill pg & pe & reverse pf & cycle; % right black part 
+fill pg & pe & reverse pf & cycle; % right black part
 unfill z4..z5..cycle;              % right white circle
 fill z6..z7..cycle;                % left black circle
 penlabels(1,2,3,4,5,6,7);numeric raggio;
-path pa,pb,pc,pe,pf,pg; 
+path pa,pb,pc,pe,pf,pg;
 currenttransform:=t_tao; transform t_tao;
-endchar; 
+endchar;
 
+currentbreadth:=0;
 
 
 

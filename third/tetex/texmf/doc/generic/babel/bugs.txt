@@ -1,6 +1,6 @@
                          Babel Error Reports
  
-                            10 March 1999
+                           22 February 2001
 
 ERROR REPORTS
 
@@ -34,7 +34,12 @@ are reported:
  * Generate a bug report template by running the file
    latexbug.tex through LaTeX2e.
 
- * Fill in the spaces in the generated template file.
+ * Fill in the spaces in the generated template file. Please note that
+   the reporting language is *English* irregardless of the fact, that
+   the address you are sending the bug report to, might not be in an
+   English speaking country. Reports received in a language other than
+   English might not be understandable for the person currently
+   looking at bug reports!
  
  * Include all necessary information, especially a complete input
    file, a complete transcript file, and all other files used (if they
@@ -45,7 +50,10 @@ are reported:
    supplied by me.
 
    Any such non-standard files should be included in a `filecontents'
-   environment at the start of your input file.
+   environment at the start of your input file. This allows me to
+   run your test file without a lot of manual preparation; this is 
+   essential since we have to deal with many reports, not just with
+   the one written by you.
 
  * Please note that it is important to make the input file as small
    as possible since this will enable me to find and fix the error
@@ -64,5 +72,10 @@ sent by E-mail to:
 
   latex-bugs@latex-project.org
 
+You will receive an acknowledgement by E-mail containing at the
+beginning of its subject line a problem reference of the form
+category/number, e.g. babel/1234. Please use this subject line in ALL
+further E-mails concerning the problem. Otherwise your reply will be
+categorized and filed separately.
  
---- Copyright 1999 Johannes Braams.  All rights reserved ---
+--- Copyright 2001 Johannes Braams.  All rights reserved ---

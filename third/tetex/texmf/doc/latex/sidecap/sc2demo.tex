@@ -1,12 +1,10 @@
 
 % Rolf Niepraschk, 7/97
 
-
-\documentclass[12pt,a4paper,twocolumn]{article}
-\usepackage{german}
+\documentclass[12pt,a4paper,twocolumn,twoside,draft]{article}
 \usepackage[bf,footnotesize]{caption}
-%\usepackage[innercaption]{sidecap}
-\usepackage[outercaption]{sidecap}
+%\usepackage[innercaption,wide]{sidecap}
+\usepackage[outercaption,wide]{sidecap}
 
 \renewcommand\tablename{Tab.} \renewcommand\figurename{Fig.}
 \setlength{\belowcaptionskip}{\abovecaptionskip}
@@ -24,8 +22,13 @@
 
 \setlength\emergencystretch{20pt}
 
+\newcommand*{\MARKER}
+  {\noindent\strut\vrule\hrulefill\vrule%
+   \marginpar{\strut\vrule\hrulefill\vrule}} 
+\newcommand*{\VFILL}{\vspace*{\fill}}
+
 \setlength\unitlength{1cm}
-\newcommand{\FIGi}{\setlength{\fboxsep}{0mm}%\setlength{\fboxrule}{2mm}%
+\newcommand{\FIGi}{%
    \fbox{%
      \begin{picture}(4,6)
        \put(1,5){\circle{1}}
@@ -62,8 +65,8 @@
   
 \newcommand{\CAPi}{%
   Schematischer Aufbau eines Diodenlasers. Ober- und Unterseite des Kristalls
-  sind metallisch kontaktiert, die Vorder- und R"uckseite verspiegelt. Die
-  Dicke der aktiven Zone (pn-"Ubergang) liegt in der Gr"o"senordnung von 
+  sind metallisch kontaktiert, die Vorder- und R\"uckseite verspiegelt. Die
+  Dicke der aktiven Zone (pn-\"Ubergang) liegt in der Gr\"o{\ss}enordnung von 
   5\,$\mu$m.}
   
 \begin{document}
@@ -71,7 +74,13 @@
 \section*{\centering The \texttt{SideCap} package (two~column~layout)}
 
 
-
+{%\tracingall
+\errorcontextlines\maxdimen 
+\begin{SCfigure*}[50][bhp]
+  \FIGi%
+  \caption[\SHORTCAPi]{\CAPi}\label{fig:B}%
+\end{SCfigure*}
+}
 
 \begin{figure}[bhp]
   \centering
@@ -79,16 +88,6 @@
   \caption[\SHORTCAPi]{\CAPi}\label{fig:A}%
 \end{figure}
 
-%{%
-%\tracingall \tracingonline0
-\errorcontextlines\maxdimen 
-\begin{SCfigure*}[1.2][bhp]
-  \FIGi%
-  \caption[\SHORTCAPi]{\CAPi}\label{fig:B}%
-\end{SCfigure*}
-%}
-
-%\end{document}
 
 \begin{SCfigure}[1.2][bhp]
   \FIGi%
@@ -99,7 +98,6 @@
   \FIGi%
   \caption[\SHORTCAPi]{\CAPi}\label{fig:D}%
 \end{SCfigure}
-
 
 \begin{SCtable}
   \caption[\SHORTCAPi]{\CAPi}\label{tab:A}%    
@@ -117,17 +115,35 @@
   \TABi%     
 \end{SCtable}
 
-\clearpage
+%----------------------------
+\onecolumn
 
-\begin{figure*}
-  \centering
+\VFILL
+
+\MARKER
+
+\begin{SCfigure}[50][b]
   \FIGi%
   \caption[\SHORTCAPi]{\CAPi}\label{fig:E}%
-\end{figure*}
+\end{SCfigure}
 
-foo \newpage bar
+\clearpage
+
+\VFILL
+
+\MARKER
+
+\begin{SCfigure}[50][b]
+  \FIGi%
+  \caption[\SHORTCAPi]{\CAPi}\label{fig:F}%
+\end{SCfigure}
+
 
 \end{document}
+
+ 
+
+
 
 
 

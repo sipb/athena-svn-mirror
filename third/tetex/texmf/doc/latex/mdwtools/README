@@ -448,6 +448,8 @@ Version		Changes
 		* (mdwlist.dtx) Allowed compact lists and resumed lists
 		  to pass arguments on to the underlying environments.
 
+		* (syntax.dtx) Fix bug affecting underscore handling in
+		  syntax abbreviations.
 
 --- Future plans ---
 

@@ -1,0 +1,18 @@
+% This file is part of vntex. License: GPL.
+%
+cmchar casename "y with acute";
+define_vnchar(y, acute_);
+
+cmchar casename "y with grave";
+define_vnchar(y, grave_);
+
+cmchar casename "y with hook";
+define_vnchar(y, hook_);
+
+cmchar casename "y with tilde";
+define_vnchar(y, tilde_);
+
+cmchar casename "y with dot";
+define_vnchar_dot(y);
+
+endinput;

@@ -1,0 +1,76 @@
+%%
+%% This is file `getwidth.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% getwidth.dtx 
+%% 
+%%% ====================================================================
+%%% @LaTeX-doc-source-file{
+%%%   filename  = "getwidth.dtx",
+%%%   version   = "1.01",
+%%%   date      = "2001/12/19",
+%%%   time      = "20:56:06 PST",
+%%%   author    = "Michael J Downes",
+%%%   address   = "American Mathematical Society,
+%%%                Publications Technical Group,
+%%%                PO Box 6248,
+%%%                Providence, RI 02940,
+%%%                USA",
+%%%   email     = "tech-support@ams.org",
+%%%   URL       = "http://www.ams.org/",
+%%%   keywords  = "storing measurements"
+%%%   abstract  = "LaTeX package for storing and retrieving measurements
+%%%                for document objects.",
+%%%   checksum  = "09517 121 288 3286",
+%%%   docstring = "The checksum field, produced by Robert Solovay's
+%%%                checksum utility, gives CRC-16 checksum, lines,
+%%%                words, and characters.",
+%%%  }
+%%% ====================================================================
+\let\@nx\noexpand \let\@xp\expandafter
+\def\gw@index{0}%
+\let\saved@widths\@empty
+\newcommand{\GetWidth}[2][]{%
+  \begingroup
+  \@tempcnta\gw@index \advance\@tempcnta\@ne
+  \xdef\gw@index{\number\@tempcnta}%
+  \escapechar\m@ne
+  \edef\@tempa{W[\gw@index]\string#2\@empty}%
+  \xdef\saved@widths{{\@tempa}\saved@widths}%
+  \edef\X{\endgroup\@nx\@xp\@nx\gw@check
+    \@nx\csname r@\@tempa\endcsname{#2}{%
+      \ifx @#1@#2\else#1\fi}}%
+  \X
+}
+\def\gw@check#1#2#3{%
+  \ifx#1\relax #2=#3\relax
+  \else #2=#1\relax
+  \fi
+}
+\def\SaveWidth#1#2{%
+  \relax
+  \if@filesw
+    \begingroup
+    \settowidth\@tempdima{#2}%
+    \PopWidthLabel\@tempa
+    \immediate\write\@auxout{\string\newlabel{\@tempa}{\the\@tempdima}}%
+    \endgroup
+  \fi
+}
+\def\PopWidthLabel#1{%
+  \ifx\saved@widths\@empty
+    \PopError\saved@widths
+    \def#1{10pt}%
+  \else
+    \iffalse{\fi \afterassignment\PopWL@a \@xp\def\@xp#1\saved@widths}%
+  \fi
+}
+\def\PopWL@a{\xdef\saved@widths{\iffalse}\fi}
+\def\PopError#1{%
+  \@latex@error{Empty stack \string#1 cannot be popped}\@ehc
+}
+\endinput
+%%
+%% End of file `getwidth.sty'.

@@ -1,0 +1,30 @@
+<head>
+<title>UK TeX FAQ -- question 193</title>
+</head><body>
+<h3>Version control using RCS or CVS</h3>
+<p>If you use RCS or CVS to maintain your (La)TeX
+documents under version control, you may need some mechanism for
+including the RCS keywords in your document, in such a way that
+they can be typeset (that is, rather than just hiding them inside a
+comment).
+<p>The most complete solution is to use the (LaTeX) package
+<i>rcs</i>, which allows you to parse and display the contents of
+RCS keyword fields in an extremely flexible way.  The package
+rcsinfo is simpler, but does most of what you want, and some people
+prefer it; it is explicitly compatible with <i>LaTeX2HTML</i>.
+<p>If, however, you need a solution which works without using external
+packages, or which will work in plain TeX, then you can use the
+following minimal solution:
+
+<pre>
+  \def\RCS$#1: #2 ${\expandafter\def\csname RCS#1\endcsname{#2}}
+  \RCS$Revision: 1.1.1.1 $ % or any RCS keyword
+  \RCS$Date: 2003-02-26 03:04:06 $
+  ...
+  \date{Revision \RCSRevision, \RCSDate}
+</pre>
+<dl>
+<dt><tt><i>rcs.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/rcs.tar.gz">macros/latex/contrib/supported/rcs.tar.gz</a>
+<dt><tt><i>rcsinfo.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/rcsinfo.tar.gz">macros/latex/contrib/supported/rcsinfo.tar.gz</a>
+</dl>
+<p></body>

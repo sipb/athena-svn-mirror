@@ -1,0 +1,54 @@
+<head>
+<title>UK TeX FAQ -- question 130</title>
+</head><body>
+<h3>1-column abstract in 2-column document</h3>
+<p>One often requires that the abstract of a paper should appear across
+the entire page, even in a two-column paper.  The required trick is:
+<pre>
+  \documentclass[twocolumn]{article}
+  ...
+  \begin{document}
+  ... % \author, etc
+  \twocolumn[
+    \begin{@twocolumnfalse}
+      \maketitle
+      \begin{abstract}
+        ...
+      \end{abstract}
+    \end{@twocolumnfalse}
+  ]
+</pre>
+Unfortunately, with the above <code>\thanks</code> won't work in the
+<code>\author</code> list.  If you need such specially-numbered footnotes, you
+can make them like this:
+<pre>
+  \title{Demonstration}
+  \author{Me, You\thanks{}}
+  \twocolumn[
+    ... as above ...
+  ]
+  {
+    \renewcommand{\thefootnote}%
+      {\fnsymbol{footnote}}
+    \footnotetext[1]{Thanks for nothing}
+  }
+</pre>
+and so on.
+<p>As an alternative, among other facilities the <i>abstract</i> package 
+provides a
+<code>\saythanks</code> command and a <code>onecolabstract</code> environment
+which remove the need to fiddle with the <code>\thanks</code> and
+footnoting. They can be used like this:
+<pre>
+\twocolumn[
+  \maketitle             % full width title
+  \begin{onecolabstract} % full width abstract
+  ... text 
+  \end{onecolabstract}
+]
+\saythanks               % typeset any \thanks
+</pre>
+<dl>
+<dt><tt><i>abstract.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/abstract.tar.gz">macros/latex/contrib/supported/abstract.tar.gz</a>
+</dl>
+<p></body>

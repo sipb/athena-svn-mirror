@@ -1,0 +1,37 @@
+<head>
+<title>UK TeX FAQ -- question 40</title>
+</head><body>
+<h3>Documented LaTeX sources (<code>.dtx</code> files)</h3>
+<p>LaTeX2e, and many support macro packages, are now written in a
+
+<a href="FAQ65.html">literate programming</a> style,
+with source and documentation in the
+same file.  This format, known as 'doc', in fact originated before the
+days of the LaTeX project as one of the "Mainz" series of
+packages. The documented sources conventionally have the suffix
+<code>.dtx</code>, and should normally be stripped of documentation
+before use with LaTeX.  Alternatively you can run LaTeX on a
+<code>.dtx</code> file to produce a nicely formatted version of the
+documented code. An installation script (with suffix
+<code>.ins</code>) is usually provided, which needs the standard LaTeX2e
+<i>docstrip</i> package (among other things, the installation
+process strips all the comments that make up the documentation for
+speed when loading the file into a running LaTeX system).  Several
+packages can be included in one <code>.dtx</code> file, with conditional
+sections, and there facilities for indices of macros etc.  Anyone can
+write <code>.dtx</code> files; the format is explained in
+<em>The LaTeX Companion</em>
+
+(see <a href="FAQ22.html">books on TeX</a>), and a tutorial is
+available from CTAN (together with skeleton <code>.dtx</code> and
+<code>.ins</code> files).  There are no programs yet to assist in
+composition of <code>.dtx</code> files.
+<p><code>.dtx</code> files are not used by LaTeX after they have been
+processed to produce <code>.sty</code> or <code>.cls</code> (or whatever)
+files.  They need not be kept with the working system; however, for
+many packages the <code>.dtx</code> file is the primary source of
+documentation, so you may want to keep <code>.dtx</code> files elsewhere.
+<dl>
+<dt><tt><i>DTX tutorial</i></tt><dd><a href="ftp://info/dtxtut.tar.gz">info/dtxtut.tar.gz</a>
+</dl>
+<p></body>

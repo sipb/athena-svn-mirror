@@ -1,17 +1,14 @@
-% fancyhdr.sty version 1.99d
+% fancyhdr.sty version 2.1
 % Fancy headers and footers for LaTeX.
-% Piet van Oostrum, Dept of Computer Science, University of Utrecht
+% Piet van Oostrum, 
+% Dept of Computer and Information Sciences, University of Utrecht,
 % Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands
-% Telephone: +31 30 2532180. Email: piet@cs.ruu.nl
+% Telephone: +31 30 2532180. Email: piet@cs.uu.nl
 % ========================================================================
-% LICENCE: This is free software. You are allowed to use and distribute
-% this software in any way you like. You are also allowed to make modified
-% versions of it, but you can distribute a modified version only if you
-% clearly indicate that it is a modified version and the person(s) who
-% modified it. This indication should be in a prominent place, e.g. in the
-% top of the file. If possible a contact address, preferably by email,
-% should be given for these persons. If that is feasible the modifications
-% should be indicated in the source code.
+% LICENCE:
+% This file may be distributed under the terms of the LaTeX Project Public
+% License, as described in lppl.txt in the base LaTeX distribution.
+% Either version 1 or, at your option, any later version.
 % ========================================================================
 % MODIFICATION HISTORY:
 % Sep 16, 1994
@@ -99,10 +96,38 @@
 % version 1.99d
 % Changed the default \ps@empty to \ps@@empty in order to allow
 % \fancypagestyle{empty} redefinition.
+% Oct 11, 2000
+% version 2.0
+% Added LPPL license clause.
+%
+% A check for \headheight is added. An errormessage is given (once) if the
+% header is too large. Empty headers don't generate the error even if
+% \headheight is very small or even 0pt. 
+% Warning added for the use of 'E' option when twoside option is not used.
+% In this case the 'E' fields will never be used.
+%
+% Dec 9, 2002
+% version 2.1
+% The defaults for \footrulewidth, \plainheadrulewidth and
+% \plainfootrulewidth are changed from \z@skip to 0pt. In this way when
+% someone inadvertantly uses \setlength to change any of these, the value
+% of \z@skip will not be changed, rather an errormessage will be given.
 
-\let\fancy@def\gdef
+\def\ifancy@mpty#1{\def\temp@a{#1}\ifx\temp@a\@empty}
 
-\def\if@mpty#1#2#3{\def\temp@ty{#1}\ifx\@empty\temp@ty #2\else#3\fi}
+\def\fancy@gdef#1#2{\ifancy@mpty{#2}\gdef#1{\leavevmode}\else\gdef#1{#2\strut}\fi}
+\def\fancy@ldef#1#2{\ifancy@mpty{#2}\def#1{\leavevmode}\else\def#1{#2\strut}\fi}
+
+\let\fancy@def\fancy@gdef
+
+\def\@fancyerrmsg#1{%
+        \ifx\PackageError\undefined
+        \errmessage{#1}\else
+        \PackageError{Fancyhdr}{#1}{}\fi}
+\def\@fancywarning#1{%
+        \ifx\PackageWarning\undefined
+        \errmessage{#1}\else
+        \PackageWarning{Fancyhdr}{#1}{}\fi}
 
 % Usage: \@forc \var{charstring}{command to be executed for each char}
 % This is similar to LaTeX's \@tfor, but expands the charstring.
@@ -150,14 +175,14 @@
         {\expandafter\if@in\tmpf@ra{eolcrhf,EOLCRHF}%
             {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
     \ifx\@empty\temp@c\else
-        \ifx\PackageError\undefined
-        \errmessage{Illegal char `\temp@c' in fancyhdr argument:
-          [#2]}\else
-        \PackageError{Fancyhdr}{Illegal char `\temp@c' in fancyhdr argument:
-          [#2]}{}\fi
+        \@fancyerrmsg{Illegal char `\temp@c' in fancyhdr argument:
+          [#2]}%
     \fi
     \f@nfor\temp@c{#2}%
         {\def@ult\f@@@eo{eo}\temp@c
+         \if@twoside\else
+           \if\f@@@eo e\@fancywarning
+             {fancyhdr's E option without twoside option is useless}\fi\fi
          \def@ult\f@@@lcr{lcr}\temp@c
          \def@ult\f@@@hf{hf}{#1\temp@c}%
          \@forc\f@@eo\f@@@eo
@@ -196,15 +221,15 @@
 
 \newdimen\headwidth
 \newcommand{\headrulewidth}{0.4pt}
-\newcommand{\footrulewidth}{\z@skip}
+\newcommand{\footrulewidth}{0pt}
 \newcommand{\footruleskip}{.3\normalbaselineskip}
 
 % Fancyplain stuff shouldn't be used anymore (rather
 % \fancypagestyle{plain} should be used), but it must be present for
 % compatibility reasons.
 
-\newcommand{\plainheadrulewidth}{\z@skip}
-\newcommand{\plainfootrulewidth}{\z@skip}
+\newcommand{\plainheadrulewidth}{0pt}
+\newcommand{\plainfootrulewidth}{0pt}
 \newif\if@fancyplain \@fancyplainfalse
 \def\fancyplain#1#2{\if@fancyplain#1\else#2\fi}
 
@@ -233,9 +258,25 @@
 \fancyhf{} % clear all
 % lefthead empty on ``plain'' pages, \rightmark on even, \leftmark on odd pages
 % evenhead empty on ``plain'' pages, \leftmark on even, \rightmark on odd pages
-\fancyhead[el,or]{\fancyplain{}{\sl\rightmark}}
-\fancyhead[er,ol]{\fancyplain{}{\sl\leftmark}}
+\if@twoside
+  \fancyhead[el,or]{\fancyplain{}{\sl\rightmark}}
+  \fancyhead[er,ol]{\fancyplain{}{\sl\leftmark}}
+\else
+  \fancyhead[l]{\fancyplain{}{\sl\rightmark}}
+  \fancyhead[r]{\fancyplain{}{\sl\leftmark}}
+\fi
 \fancyfoot[c]{\rm\thepage} % page number
+
+% Use box 0 as a temp box and dimen 0 as temp dimen. 
+% This can be done, because this code will always
+% be used inside another box, and therefore the changes are local.
+
+\def\@fancyvbox#1#2{\setbox0\vbox{#2}\ifdim\ht0>#1\@fancywarning
+  {\string#1 is too small (\the\headheight): ^^J Make it at least \the\ht0.^^J
+    We now make it that large for the rest of the document.^^J
+    This may cause the page layout to be inconsistent, however\@gobble}%
+  \dimen0=#1\global\setlength{#1}{\ht0}\ht0=\dimen0\fi
+  \box0}
 
 % Put together a header or footer given the left, center and
 % right text, fillers at left and right and a rule.
@@ -251,22 +292,24 @@
 %    out. This is the reverse of parameter nr. 1. One of them is always
 %    \relax and the other one is \hss (after expansion).
 
-\def\@fancyhead#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset\vbox{\hbox
-{\rlap{\parbox[b]{\headwidth}{\raggedright#2\strut}}\hfill
-\parbox[b]{\headwidth}{\centering#3\strut}\hfill
-\llap{\parbox[b]{\headwidth}{\raggedleft#4\strut}}}\headrule}}#5}
+\def\@fancyhead#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset
+  \@fancyvbox\headheight{\hbox
+    {\rlap{\parbox[b]{\headwidth}{\raggedright#2}}\hfill
+      \parbox[b]{\headwidth}{\centering#3}\hfill
+      \llap{\parbox[b]{\headwidth}{\raggedleft#4}}}\headrule}}#5}
 
-\def\@fancyfoot#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset\vbox{\footrule
-\hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2\strut}}\hfill
-\parbox[t]{\headwidth}{\centering#3\strut}\hfill
-\llap{\parbox[t]{\headwidth}{\raggedleft#4\strut}}}}}#5}
+\def\@fancyfoot#1#2#3#4#5{#1\hbox to\headwidth{\fancy@reset
+    \@fancyvbox\footskip{\footrule
+      \hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2}}\hfill
+        \parbox[t]{\headwidth}{\centering#3}\hfill
+        \llap{\parbox[t]{\headwidth}{\raggedleft#4}}}}}#5}
 
 \def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi
-\hrule\@height\headrulewidth\@width\headwidth \vskip-\headrulewidth}}
+    \hrule\@height\headrulewidth\@width\headwidth \vskip-\headrulewidth}}
 
 \def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
-\vskip-\footruleskip\vskip-\footrulewidth
-\hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
+    \vskip-\footruleskip\vskip-\footrulewidth
+    \hrule\@width\headwidth\@height\footrulewidth\vskip\footruleskip}}
 
 \def\ps@fancy{%
 \@ifundefined{@chapapp}{\let\@chapapp\chaptername}{}%for amsbook
@@ -326,4 +369,4 @@
 \def\iffloatpage#1#2{\if@fcolmade #1\else #2\fi}
 
 \newcommand{\fancypagestyle}[2]{%
-  \@namedef{ps@#1}{\let\fancy@def\def#2\relax\ps@fancy}}
+  \@namedef{ps@#1}{\let\fancy@def\fancy@ldef#2\relax\ps@fancy}}

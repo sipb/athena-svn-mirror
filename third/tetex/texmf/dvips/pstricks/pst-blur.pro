@@ -10,12 +10,16 @@
 %% 
 %% For the copyright see the source file.
 %% 
-%% You are *not* allowed to modify this file.
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from pst-blur.pro.
 %% 
-%% You are *not* allowed to distribute this file.
 %% For distribution of the original source see the terms
 %% for copying and modification in the file pst-blur.dtx.
 %% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
 /tx@PstBlurDict 60 dict def
 tx@PstBlurDict begin
 /Iterate {
@@ -61,4 +65,3 @@ tx@PstBlurDict begin
   RMid GMid BMid RBeg GBeg BBeg InnerSteps Iterate
 } def
 end
-

@@ -3,12 +3,7 @@
 %
 % (c) Copyright 1995, 1996, 1997 J"org Knappen
 %
-% This file is part of ecfonts version 1.0
-%
-% Please read the files 00readme.txt, 00inst.txt, 00error.txt, and
-% copyrite.txt for further information
-%
-% EC Bright Version 1.0
+% This file is part of Ec Bright version 1.0g
 %
 % Driver file for the tb fonts
 %
@@ -54,15 +49,10 @@ font_max_height(max(asc_height#,body_height#,
 font_max_depth(max(desc_depth#,paren_depth#,the_ogonek_depth#));
 % font_digit_width % set inside the digits file
 font_cap_stem cap_stem#; % No letter capital I in the symbols
-font_baselineskip max(1.2*designsize,body_height#+paren_depth#);
-
-if monospace: font_normal_space 9u#; % no stretching or shrinking
- font_quad 18u#;
- font_extra_space 9u#;
-else: font_normal_space 6u#+2letter_fit#;
- font_normal_stretch 3u#; font_normal_shrink 2u#;
+font_baselineskip max(1.25*designsize,body_height#+paren_depth#);% (CMBR)
+ font_normal_space 5.7u#+2letter_fit#; % (CMBR)
+ font_normal_stretch 2.85u#; font_normal_shrink 1.9u#; %(CMBR)
  font_quad 18u#+4letter_fit#;
- font_extra_space 2u#;
-fi
+ font_extra_space 1.9u#; % (CMBR)
 
 bye.

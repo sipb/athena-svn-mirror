@@ -1,3 +1,4 @@
+\ProvidesFile{french.mld}[1999/03/16]
 % French titles for minitoc.sty
 \def\mtctitle{Sommaire}
 \def\mlftitle{Figures}

@@ -1,14 +1,14 @@
 
 	    This directory contains the LaTeX2e package `draftcopy'.
-			Version: 2.12; March 2, 1999
+			Version: 2.16; February 25, 2002
 
 This package is used to print on some pages the word `DRAFT'
 (or the language dependend analogon) ``behind'' the intended stuff.
 
-Copyright (C) 1996-1999, Dr. Juergen Vollmer, Karlsruhe,
-		         Viktoriastrasse 15,
-			 D-76133 Karlsruhe, Germany
-                         Juergen.Vollmer@acm.org
+Copyright (C) 1995 Dr. Juergen Vollmer, Karlsruhe,
+		   Viktoriastrasse 15,
+		   D-76133 Karlsruhe, Germany
+                   Juergen.Vollmer@acm.org
 
 This program can be redistributed and/or modified under the terms
 of the LaTeX Project Public License Distributed from CTAN
@@ -26,6 +26,6 @@ or:
   latex draftcopy.dtx
   latex draftcopy-test-1
   ...
-  latex draftcopy-test-9
+  latex draftcopy-test-16
 
-$Id: README,v 1.1.1.1 2000-03-10 17:57:28 ghudson Exp $
+$Id: README,v 1.1.1.2 2003-02-26 02:49:28 amb Exp $

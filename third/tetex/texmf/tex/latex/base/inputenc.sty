@@ -8,16 +8,29 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -34,10 +47,8 @@
 %%   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\message{beta test version}
 \ProvidesPackage{inputenc}
-   [1998/03/05 v0.97 Input encoding file
-                        (test version: still liable to change)]
+   [2001/07/10 v0.99a Input encoding file ]
 \def\DeclareInputMath#1{%
    \@inpenc@test
    \bgroup
@@ -67,25 +78,28 @@
 }
 \def\inputencoding#1{%
   \gdef\@inpenc@test{\global\let\@inpenc@test\relax}%
-  \def\@inpenc@undefined{\PackageError{inputenc}%
-        {Keyboard character used is undefined\MessageBreak
-         in inputencoding #1}%
-       {You need to provide a  definition with
-        \noexpand\DeclareInputText\MessageBreak or
-        \noexpand\DeclareInputMath before using this key.}}%
-  \ifvmode
-    \@inpenc@loop\^^A\^^H%
-    \@inpenc@loop\^^K\^^K%
-    \@inpenc@loop\^^N\^^_%
-    \@inpenc@loop\^^?\^^ff%
-    \input{#1.def}%
-  \fi
+  \edef\@inpenc@undefined{\noexpand\@inpenc@undefined@{#1}}%
+  \@inpenc@loop\^^A\^^H%
+  \@inpenc@loop\^^K\^^K%
+  \@inpenc@loop\^^N\^^_%
+  \@inpenc@loop\^^?\^^ff%
+  \advance\endlinechar\@M
+  \xdef\saved@space@catcode{\the\catcode`\ }%
+  \input{#1.def}%
+  \advance\endlinechar-\@M
+  \catcode`\ \saved@space@catcode\relax
   \ifx\@inpenc@test\relax\else
     \PackageWarning{inputenc}%
              {No characters defined\MessageBreak
               by input encoding change to `#1'\MessageBreak}%
   \fi
 }
+\def\@inpenc@undefined@#1{\PackageError{inputenc}%
+        {Keyboard character used is undefined\MessageBreak
+         in inputencoding `#1'}%
+       {You need to provide a  definition with
+        \noexpand\DeclareInputText\MessageBreak or
+        \noexpand\DeclareInputMath before using this key.}}%
 \def\@inpenc@loop#1#2{%
   \@tempcnta`#1\relax
   \loop

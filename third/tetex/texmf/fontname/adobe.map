@@ -1,7 +1,6 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   version = "2.7",
-@c   date = "18 March 1999",
+@c   date = "31 December 1999",
 @c   url = "http://tug.org/fontname/adobe.map",
 @c   supported = "yes",
 @c   docstring = "Adobe PostScript fonts."
@@ -333,7 +332,7 @@ phnli8a   HelveticaNeue-LightItalic         A    061    hlli____
 phnm8a    HelveticaNeue-Medium              A    061    hlm_____
 phnmi8a   HelveticaNeue-MediumItalic        A    061    hlmi____
 pttb8a    TimesTen-Bold                     A    062    ttb_____
-pttri8a   TimesTen-BoldItalic               A    062    ttbi____
+pttbi8a   TimesTen-BoldItalic               A    062    ttbi____
 pttri8a   TimesTen-Italic                   A    062    tti_____
 pttr8a    TimesTen-Roman                    A    062    ttr_____
 pkur8a    Kaufmann                          A    063    kf______
@@ -713,9 +712,9 @@ psxr8a    Syntax-Roman                      A    134    sxr_____
 psxu8a    Syntax-UltraBlack                 A    134    sxubl___
 pdrb8a    Doric-Bold                        A    135    drb_____
 pmxr8a    Maximus                           A    135    mx______
-zpshals   Shelley-AllegroScript             A    136    shal____
-zpshans   Shelley-AndanteScript             A    136    shan____
-zpshvos   Shelley-VolanteScript             A    136    shvo____
+pserd8a   Shelley-AllegroScript             A    136    shal____
+pser8a    Shelley-AndanteScript             A    136    shan____
+pserw8a   Shelley-VolanteScript             A    136    shvo____
 pnzk8a    NeuzeitS-Book                     A    137    new_____
 pnzh8a    NeuzeitS-BookHeavy                A    137    newh____
 pvlb8a    Versailles-Bold                   A    138    veb_____
@@ -1393,7 +1392,7 @@ p_____    BertholdScript-Medium             A    260    qrm_____
 p_____    BertholdScript-Regular            A    260    qrrg____
 pqsrw8a   Bellevue                          A    260    qsrg____
 pqtrw8a   Boulevard                         A    260    qtrg____
-pfr8brc   Frutiger-BoldCn                   A    261    ftbc____
+pfrb8ac   Frutiger-BoldCn                   A    261    ftbc____
 pfrc8ac   Frutiger-BlackCn                  A    261    ftblc___
 pfrr8ac   Frutiger-Cn                       A    261    ftc_____
 pfrx8ac   Frutiger-ExtraBlackCn             A    261    ftebc___
@@ -1704,12 +1703,12 @@ p_____    Christiana-MediumItalic           A    314    hcmi____
 p_____    Christiana-Regular                A    314    hcrg____
 p_____    Christiana-RegularExpert          A    314    hcrgx___
 p_____    Christiana-RegularSC              A    314    hcsc____
-pmnbz     MinionCyr-Bold                    A    315    mkb_____
-pmnbiz    MinionCyr-BoldItalic              A    315    mkbi____
-pmnriz    MinionCyr-Italic                  A    315    mki_____
-pmnrz     MinionCyr-Regular                 A    315    mkrg____
-pmnsz     MinionCyr-Semibold                A    315    mksb____
-pmnsiz    MinionCyr-SemiboldItalic          A    315    mksbi___
+pmnb6w    MinionCyr-Bold                    A    315    mkb_____
+pmnbi6w   MinionCyr-BoldItalic              A    315    mkbi____
+pmnri6w   MinionCyr-Italic                  A    315    mki_____
+pmnr6w    MinionCyr-Regular                 A    315    mkrg____
+pmns6w    MinionCyr-Semibold                A    315    mksb____
+pmnsi6w   MinionCyr-SemiboldItalic          A    315    mksbi___
 ptbb8ac   BodoniBE-BoldCn                   A    316    bpbc____
 ptbbi8ac  BodoniBE-BoldCnItalic             A    316    bpbci___
 ptbr8ac   BodoniBE-Condensed                A    316    bpc_____
@@ -1979,10 +1978,10 @@ pdirj8a   Diotima-RomanOsF                  A    353    dtros___
 pdirc8a   Diotima-RomanSC                   A    353    dtrsc___
 p_____    Smaragd                           A    353    smar____
 p_____    Smaragd-Alternate                 A    353    smara___
-pttbz     TimesTenCyr-Bold                  A    354    ttyb____
-pttbozr   TimesTenCyr-BoldInclined          A    354    ttybi___
-pttroz    TimesTenCyr-Inclined              A    354    ttyi____
-pttrz     TimesTenCyr-Upright               A    354    ttyu____
+pttb6w    TimesTenCyr-Bold                  A    354    ttyb____
+pttbo6w   TimesTenCyr-BoldInclined          A    354    ttybi___
+pttro6w   TimesTenCyr-Inclined              A    354    ttyi____
+pttr6w    TimesTenCyr-Upright               A    354    ttyu____
 panr8a    Anna                              A    355    iarg____
 p_____    Beesknees                         A    355    ikh_____
 p_____    MonaLisa-Recut                    A    355    iyin____
@@ -2001,11 +2000,11 @@ p_____    CaflischScriptMM-Alt              A    359    zea_____
 p_____    CaflischScriptMM                  A    359    zerg____
 p_____    CaflischScriptMM-Sw               A    359    zesw____
 p_____    GraphiteMM                        A    360    _grg____
-phirz     HelveticaInseratCyr-Upright       A    361    hiyu____
-phvbz     HelveticaCyr-Bold                 A    361    hvyb____
-phvboz    HelveticaCyr-BoldInclined         A    361    hvybi___
-phvroz    HelveticaCyr-Inclined             A    361    hvyi____
-phvrz     HelveticaCyr-Upright              A    361    hvyu____
+phir6w    HelveticaInseratCyr-Upright       A    361    hiyu____
+phvb6w    HelveticaCyr-Bold                 A    361    hvyb____
+phvbo6w   HelveticaCyr-BoldInclined         A    361    hvybi___
+phvro6w   HelveticaCyr-Inclined             A    361    hvyi____
+phvr6w    HelveticaCyr-Upright              A    361    hvyu____
 plebs8a   LegacySans-Bold                   A    362    lvb_____
 plebis8a  LegacySans-BoldItalic             A    362    lvbi____
 plems8a   LegacySans-Medium                 A    362    lvm_____
@@ -2020,12 +2019,12 @@ plemi8a   LegacySerif-MediumItalic          A    363    lzmi____
 pleu8a    LegacySerif-Ultra                 A    363    lzu_____
 plek8a    LegacySerif-Book                  A    363    lzw_____
 pleki8a   LegacySerif-BookItalic            A    363    lzwi____
-pexrz     ExcelsiorCyr-Upright              A    364    exy_____
-pexbz     ExcelsiorCyr-Bold                 A    364    exyb____
-pexroz    ExcelsiorCyr-Inclined             A    364    exyi____
-pbvrz     BaskervilleCyr-Upright            A    365    _by_____
-pbvbz     BaskervilleCyr-Bold               A    365    _byb____
-pbvboz    BaskervilleCyr-Inclined           A    365    _byi____
+pexr6w    ExcelsiorCyr-Upright              A    364    exy_____
+pexb6w    ExcelsiorCyr-Bold                 A    364    exyb____
+pexro6w   ExcelsiorCyr-Inclined             A    364    exyi____
+pbvr6w    BaskervilleCyr-Upright            A    365    _by_____
+pbvb6w    BaskervilleCyr-Bold               A    365    _byb____
+pbvbo6w   BaskervilleCyr-Inclined           A    365    _byi____
 p_____    Pepperwood-Fill                   A    366    uwfi____
 p_____    Pepperwood-Outline                A    366    uwou____
 p_____    Pepperwood-Regular                A    366    uwrg____
@@ -2392,11 +2391,11 @@ myhr8a    StrayhornMT-Regular               A    452    yhrg____
 myhbij8a  StrayhornMT-BoldItalicOsF         A    453    yhbio___
 myhbj8a   StrayhornMT-BoldOsF               A    453    yhbos___
 myhxj8a   StrayhornMT-ExtraBoldOsF          A    453    yhebs___
-myhxij8a  StrayhornMT-ExtraBoldItalicOsF    A    453    yheis___
+myhxij8a  StrayhornMT-ExtraBoldItaOsF       A    453    yheis___
 myhrij8a  StrayhornMT-ItalicOsF             A    453    yhios___
 myhlij8a  StrayhornMT-LightItalicOsF        A    453    yhlio___
 myhlc8a   StrayhornMT-LightSC               A    453    yhlsc___
-myhrc8a   StrayhornMT-RegulaSC              A    453    yhrsc___
+myhrc8a   StrayhornMT-RegularSC             A    453    yhrsc___
 p_____    Postino-Italic                    A    454    xzi_____
 p_____    Postino                           A    454    xzr_____
 p_____    ReliqMM-OsF                       A    455    qeosf___
@@ -2523,7 +2522,7 @@ p_____    BlueIsland                        A    505    ihrg____
 pbdp8ap   Bodoni-PosterCompressed           A    900    bdpsc___
 pbax8a    Barmeno-ExtraBold                 A    900    bfeb____
 pb0r8a    Blackoak                          A    900    bo______
-zpc33bc   Copperplate-ThirtyThreeBC         A    900    cp33c___
+zpcp33bc  Copperplate-ThirtyThreeBC         A    900    cp33c___
 prtr      Carta                             A    900    cr______
 pdcr8a    DomCasual                         A    900    dc______
 mtlr8a    CastellarMT                       A    900    el______

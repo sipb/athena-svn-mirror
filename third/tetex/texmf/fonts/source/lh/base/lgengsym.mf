@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -67,7 +67,7 @@
 % "7f oct"177"	-   Hyphenchar
 %
 
-LHver_check(3,2);
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Opening quotes";
 beginchar(oct"020",3u#+max(2u#,pdot_diam#),asc_height#,0);
@@ -112,7 +112,6 @@ if monospace: x2=w-x1 else: lft x1=hround .2u-eps fi;
 filldraw stroke z1e--z2e;  % bar
 penlabels(1,2); endchar;
 
-iff not monospace:
 iff hefty: % Sans or typewriter
 lhchar "Blank-space sign";
 beginchar(oct"040",9u#,x_height#,.5desc_depth#);
@@ -583,3 +582,6 @@ top y1r=top y2r=vround(.5h+.5thickness); rt x2=hround(w-u)+eps;
 x2=w-x1;
 filldraw stroke z1e--z2e;  % bar
 penlabels(1,2); endchar;
+
+endinput;
+%end of file

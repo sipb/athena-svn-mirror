@@ -10,14 +10,14 @@
 %                                       Corso Duca degli Abruzzi, 24
 %                                       10129 TORINO
 %
-% Copyright  1998, 1999 Claudio Beccari
+% Copyright  1998, 2001 Claudio Beccari
 %
 % This program can be redistributed and/or modified under the terms
 % of the LaTeX Project Public License Distributed from CTAN
 % archives in directory macros/latex/base/lppl.txt; either
 % version 1 of the License, or any later version.
 %
-% \versionnumber{4.8b}   \versiondate{1999/04/05}
+% \versionnumber{4.8d}   \versiondate{2001/11/21}
 %
 % These hyphenation patterns for the Italian language are supposed to comply
 % with the Reccomendation UNI 6461 on hyphenation issued by the Italian
@@ -29,11 +29,11 @@
 % \endinput line
 %
 {\lccode`\'=`\'      % Apostrophe has its own lccode so that it is treated
-                     % as a letter 
+                     % as a letter
                      %>> 1998/04/14 inserted grouping
                      %
-\lccode23=23        % Compound word mark is a letter in encoding T1
-\def\W{^^W}         % ^^W =\char23 = \char"17 =\char'27
+%\lccode23=23        % Compound word mark is a letter in encoding T1
+%\def\W{^^W}         % ^^W =\char23 = \char"17 =\char'27
 %
 \patterns{
 .a3p2n               % After the Garzanti dictionary: a-pnea, a-pnoi-co,...
@@ -42,7 +42,7 @@
 .ca4p3s
 .circu2m1
 .di2s3cine
-.e2x
+%.e2x
 .fran2k3
 .free3
 .narco1
@@ -59,11 +59,11 @@
 .wa2g3n
 .wel2t1
 a1ia a1ie  a1io  a1iu a1uo a1ya 2at.
-e1iu e2w  
+e1iu e2w
 o1ia o1ie  o1io  o1iu
 %u1u
 %
-1\W0a2 1\W0e2 1\W0i2 1\W0o2 1\W0u2
+%1\W0a2 1\W0e2 1\W0i2 1\W0o2 1\W0u2
 '2
 1b   2bb   2bc   2bd  2bf  2bm  2bn  2bp  2bs  2bt  2bv
      b2l   b2r   2b.  2b'. 2b''
@@ -93,7 +93,7 @@ o1ia o1ie  o1io  o1iu
      3t2sch      2tt  2tv  2tw  t2z  2tzk 2tzs 2t.  2t'. 2t''
 1v   2vc   v2l   v2r  2vv  2v.  2v'. 2v''
 1w   w2h   wa2r  2w1y 2w.  2w'. 2w''
-1x   2xw   2x.   2x'. 2x''
+1x   2xt   2xw   2x.   2x'. 2x''
 y1ou y1i
 1z   2zb   2zd   2zl  2zn  2zp  2zt  2zs  2zv  2zz  2z.  2z'. 2z''  .z2
 }}                          % Pattern end
@@ -112,35 +112,22 @@ initializer with its special way  of  being activated.  Before loading these
 patterns, then, it is necessary to read very carefully the instructions that
 come with your TeX system.
 
-Here I describe how to load the patterns with the freeware TeX system  named
-MiKTeX;  with minor changes the whole procedure is applicable with other TeX
-systems, but the details must be  deduced from your TeX system documentation
-at the section/chapter "How to build or to rebuild a format file"
+Here I describe how to load the  patterns with the freeware TeX system named
+MiKTeX version 2.x for Windows 9x, NT, 2000,  XP;  with  minor  changes  the
+whole  procedure  is applicable with other TeX systems, but the details must
+be deduced from your TeX system documentation at the section/chapter "How to
+build or to rebuild a format file".
 
 With MikTeX:
 
 a) copy this file and replace  the existing file ithyph.tex in the directory
-   c:\texmf\tex\generic\hyphen;
-
-b)  find  and  edit  a  file   named   language.dat   (it   should   be   in
-   c:\texmf\tex\generic\hyphen)  or  in  a  .\local  subdirectory; check the
-   named languages and comment out  those  you  do  not use while you should
-   decomment (or write anew if it is not there) the line
-
-   italian ithyph.tex
-
-c) from a DOS window of your Win95 or Win NT system give the line command
-
-   makefmt latex
-
-d) That's all!  With other systems you might need to move the latex.fmt file
-   to another directory or you might need to declare your intention  to  use
-   the  babel  package  by  changing  the hyphen.cfg file, but basically the
-   operations described here are the  ones  that  must be performed with any
-   TeX system.  The fact of opening a DOS window is specific to MikTeX,  but
-   more sophisticated systems may have dialog boxes, setup menus, buttons to
-   click  on,  that  are supposed to help the user in creating or updating a
-   format file.
+   \texmf\tex\generic\hyphen if the existing one has an older  version  date
+   and number.
+b) select Start|Programs|MiKTeX|MiKTeX options.
+c) in  the  Language tab add a check mark to the line concerning the Italian
+   language.
+d) in the Geneal tab click "Update format files".
+e) That's all!  
 
 For the activation of these  patterns  with the specific Italian typesetting
 features, use the babel package as this:
@@ -167,32 +154,7 @@ above paper is contained in LAHYPH.TEX available on the CTAN archives.
 
 From  the  above  patterns  I  extracted  the  minimum  set  necessary   for
 hyphenating  Italian  that  was made available on the CTAN archives with the
-name ITHYPH.tex the version number  3.5  on  the  16th of August 1994.  File
-LAHYPH.TEX, therefore, is now best suited only for the hyphenation of  Latin
-in  modern  spelling  or  for  a  babel  setup where Latin is a "dialect" of
-Italian.
-
-[If you want to use  both  Italian  and  Latin  with the babel package, edit
-language.dat by commenting out the line
-
-italian ithyph.tex
-
-and add the following two lines
-
-italian lahyph.tex
-=latin
-
-After updating the format file as described above, use babel as this:
-
-\documentclass{article} % Or whatever other class
-\usepackage[latin,italian]{babel} % Italian is the default language
-...
-\begin{document}
-...
-\end{document}
-
-Refer to the babel documentation for the details concerning the  composition
-of a document in two or more languages.]
+name ITHYPH.tex the version number  3.5  on  the  16th of August 1994.  
 
 The  original  pattern  set  required  37  ops;  being interested in a local
 version of TeX/LaTeX  capable  of  dealing  with  half  a dozen languages, I
@@ -252,17 +214,6 @@ insert a specific hyphenation  list  in  the  preamble of your document, for
 example:
 
 \hyphenation{su-per-in-dut-to-re su-per-in-dut-to-ri}
-
-In order to allow  etymological  hyphenation,  this  patter file defines the
-compound word mark character (character #23 in the T1 encoding) as a  letter
-and  specifies  suitable  patterns  that  include such character.  The babel
-package possibly is set up with  some  sort of facility for introducing in a
-simple way such character in your source .tex file so that you can get  your
-technical  terms,  your  chemical  names  and  the  like  hyphenated on word
-boundaries according to the etymology, but  it's up to you to know etymology
-well enough so as to place the compound word mark in the proper places.  For
-example you might be asked to type  something  such  as  super|induttore  in
-order to get the possible break points as in su-per-in-dut-to-re.
 
 Should you find any word that gets hyphenated in a wrong way, please, AFTER
 CHECKING ON A RELIABLE MODERN DICTIONARY, report to the author, preferably

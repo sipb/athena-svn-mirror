@@ -1,5 +1,5 @@
-% This is wncodes.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is wncodes.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 
@@ -69,10 +69,10 @@ CYR_.YA := hex"17";
 CYR_.ya := hex"1f";
 CYR_.YO := hex"13";
 CYR_.yo := hex"1b";
-CYR_.DJE := hex"07";
-CYR_.dje := hex"0f";
-CYR_.TSHE := hex"06";
-CYR_.tshe := hex"0e";
+CYR_.DJE := hex"06";
+CYR_.dje := hex"0e";
+CYR_.TSHE := hex"07";
+CYR_.tshe := hex"0f";
 CYR_.LAT_I := hex"04";
 CYR_.lat_i := hex"0c";
 CYR_.LAT_J := hex"4a";
@@ -89,8 +89,6 @@ CYR_.YAT := hex"23";
 CYR_.yat := hex"2b";
 CYR_.IZH := hex"14";
 CYR_.izh := hex"1c";
-CYR_.OTLD := hex"15";
-CYR_.otld := hex"1d";
 CYR_.UKR_E := hex"05";
 CYR_.ukr_e := hex"0d";
 CYR_.Aacute := hex"26";
@@ -101,3 +99,5 @@ CYR_.i_dotl := hex"3d";
 CYR_.No := hex"7d";
 CYR_.flqq := hex"3c";
 CYR_.frqq := hex"3e";
+CYR_.FITA := hex"15";
+CYR_.fita := hex"1d";

@@ -1,11 +1,11 @@
 %     O V E R C I T E . S T Y
 %
-%     version 3.8  (Apr 1999)
+%     version 3.9  (Nov 2001)
 %
 %     Compressed, sorted lists of superscript numerical citations.
 %     see also CITE.STY and DRFTCITE.STY
 %
-%     Copyright (C) 1989-1999 by Donald Arseneau
+%     Copyright (C) 1989-2001 by Donald Arseneau
 %     These macros may be freely transmitted, reproduced, or modified
 %     provided that this notice is left intact.
 %
@@ -56,9 +56,10 @@
 
 % Default is to move punctuation:
 \def\oc@movep#1{\futurelet\@tempb\@citey}
-\let\@citey\oc@movep % Temporary
+\let\@citey\relax % Temporary
 
-\@ifundefined{DeclareOption}{}%
+\@ifundefined{DeclareOption}%
+{}%
 { \toks@={\def\oc@verbo#1#2#3#4{}}
   \DeclareOption{verbose}{\the\toks@}
   \DeclareOption{nospace}{\def\citepunct{,\penalty\@m}}
@@ -67,13 +68,21 @@
   \DeclareOption{nosort}{\def\@addto@cite@list
    {\edef\@cite@list{\@cite@list \@celt{\@B@citeB}}}}
   \DeclareOption{sort}{\let\@cite@list\relax}% default!
-  \DeclareOption{nomove}{\def\oc@movep{\@tempa}}% Don't move punctuation
-  \DeclareOption{move}{\let\oc@movep\@citey}% default definition
+  \DeclareOption{nomove}{\def\oc@movep{\@tempa}\let\@citey\oc@movep}
+  \DeclareOption{move}{}% default
   \DeclareOption{noadjust}{\let\cite@adjust\@empty}% Don't change spaces
   \DeclareOption{adjust}{\let\cite@adjust\relax}% adjust space before [ ]
-  \ProvidesPackage{overcite}[1999/04/23 \space  v 3.8]
+  \ProvidesPackage{overcite}[2001/10/14 \space  v 3.9]
   \ProcessOptions
 }
+
+\ifx\@citey\relax % we are moving punctuation; must ensure sfcodes
+  \mathchardef\@bigSfactor3000
+  \expandafter\def\expandafter\frenchspacing\expandafter{\frenchspacing
+    \mathchardef\@bigSfactor1001
+    \sfcode`\.\@bigSfactor \sfcode`\?\@bigSfactor \sfcode`\!\@bigSfactor }%
+  \ifnum\sfcode`\.=\@m \frenchspacing \fi
+\fi
 
 %----------------------
 % \citen uses \nocite to ignore spaces after commas, and write the aux file
@@ -169,7 +178,7 @@
 %
 \def\@citex[#1]#2{\leavevmode
   \cite@adjust
-  \citeleft{\citen{#2}\citemid{#1}%
+  \citeleft{\citen{#2}\@safe@activesfalse\citemid{#1}%
   \spacefactor\@m % punctuation in note doesn't affect outside
   }\citeright}
 
@@ -177,11 +186,12 @@
 %  already or if there is extra space due to some punctuation, then change
 %  to one inter-word space.
 %
-\@ifundefined{cite@adjust}{\def\cite@adjust{%
+\@ifundefined{cite@adjust}{\def\cite@adjust{\begingroup%
   \@tempskipa\lastskip \edef\@tempa{\the\@tempskipa}\unskip
   \ifnum\lastpenalty=\z@ \penalty\@highpenalty \fi
   \ifx\@tempa\@zero@skip \spacefactor1001 \fi % if no space before, set flag
-  \ifnum\spacefactor>\@m \ \else \hskip\@tempskipa \fi}}{}
+  \ifnum\spacefactor>\@m \ \else \hskip\@tempskipa \fi
+  \endgroup}}{}
 
 %  No note, so superscript, but check for punctuation first.
 %
@@ -195,7 +205,7 @@
 %
 \def\@citey{\let\@tempc\oc@movep
    % Watch for double periods and suppress them
-   \ifx\@tempb.\ifnum\spacefactor<3000 .\fi
+   \ifx\@tempb.\ifnum\spacefactor<\@bigSfactor .\fi
    % Move other punctuation
    \else\ifx\@tempb,,%
    \else\ifx\@tempb::% add other punctuation as necessary,
@@ -237,14 +247,15 @@
     \oc@verbo \global\@namedef{b@\@citeb\@extra@b@citeb}{?}}{}}%
  \@esphack}
 
-\def\@nocite#1{\xdef\@no@sparg{\@ignsp#1 \! }% remove *ALL* spaces
+\def\@nocite#1{\begingroup\let\protect\string% normalize active chars
+ \xdef\@no@sparg{\expandafter\@ignsp#1 \: }\endgroup% and remove ALL spaces
  \if@filesw \immediate\write\@auxout {\string\citation {\@no@sparg}}\fi}
 
 % for ignoring *ALL* spaces in the input.  This presumes there are no
 % \outer tokens and no \if-\fi constructs in the parameter.  Spaces inside
 % braces are retained.
 %
-\def\@ignsp#1 {\ifx\!#1\@empty\else #1\expandafter\@ignsp\fi}
+\def\@ignsp#1 {\ifx\:#1\@empty\else #1\expandafter\@ignsp\fi}
 
 \let\nocitecount\relax  % in case \nocitecount was used for drftcite
 
@@ -252,6 +263,11 @@
 %  in case no fancy bib package (chapterbib) defines this
 
 \@ifundefined{G@refundefinedtrue}{\let\G@refundefinedtrue\relax}{}
+
+\@ifundefined{@safe@activesfalse}{}{}
+\@ifundefined{bbl@cite@choice}{}{\@ifundefined{org@@citex}{}%
+  {\let\org@@citex\@citex}}% Prevent stomping by babel
+
 
 \citenum % execute restore-catcodes
 
@@ -415,8 +431,9 @@ for draft mode citations.
 % 3.7: Add nomove option; catcode preservation and global \@no@sparg for
 %      french.sty; warnings in \nocite.
 % 3.8: \citedash hook, fix token look-ahead (Heiko Selber), noadjust, babel.
+% 3.9: More babel-compatibility hacks. Punctuation move with \frencspacing.
 %
-% Send problem reports to asnd@Reg.triumf.ca
+% Send problem reports to asnd@triumf.ca
 
 Test file integrity:  ASCII 32-57, 58-126:  !"#$%&'()*+,-./0123456789
 :;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~

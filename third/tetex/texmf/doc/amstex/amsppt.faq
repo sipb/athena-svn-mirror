@@ -1,0 +1,194 @@
+%% @txtfile{
+%%   filename  = "amsppt.faq",
+%%   version   = "2.2",
+%%   date      = "2001/08/07",
+%%   time      = "13:53:55 EDT",
+%%   checksum  = "02733 194 1367 9268",
+%%   filetype  = "AMS-TeX: user documentation",
+%%   author    = "American Mathematical Society",
+%%   copyright = "Copyright 2001 American Mathematical Society,
+%%                all rights reserved.  Copying of this file is
+%%                authorized only if either:
+%%                (1) you make absolutely no changes to your copy
+%%                    including name; OR
+%%                (2) if you do make changes, you first rename it
+%%                    to some other name.",
+%%   address   = "American Mathematical Society,
+%%                Technical Support,
+%%                Publications Technical Group,
+%%                P. O. Box 6248,
+%%                Providence, RI 02940,
+%%                USA",
+%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%                800-321-4AMS (321-4267)",
+%%   FAX       = "401-331-3842",
+%%   email     = "tech-support@ams.org (Internet)",
+%%   codetable = "ISO/ASCII",
+%%   keywords  = "amstex, ams-tex, tex",
+%%   abstract  = "This file contains frequently asked questions and
+%%                answers concerning AMS-TeX, and in particular how
+%%                to cope with ``missing'' features and features of
+%%                the preprint documentstyle (amsppt) that are
+%%                specifically tailored to AMS publication style.",
+%%   docstring = "The checksum field above contains a CRC-16 checksum
+%%                as the first value, followed by the equivalent of
+%%                the standard UNIX wc (word count) utility output of
+%%                lines, words, and characters.  This is produced by
+%%                Robert Solovay's checksum utility.",
+%% }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Frequently asked questions about AMS-TeX and amsppt.sty.
+
+  1) Why does the bottom of every page get cut off when \magnification
+     is used?
+  2) How can I prepare a two-column index for a book using AMS-TeX?
+  3) I need 12pt type in my paper.  How do I get it?
+  4) I need to put a footnote in my bibliography, but it disappears.
+     How do I get it to print out?
+  5) A page ending with a theorem is shorter than other pages.  Why?
+  6) Why am I getting a label ``E-mail address'' at the end of my paper
+     with no data?
+  7) I need diagonal arrows in my commutative diagrams.  How do I
+     get them?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+1) Why does the bottom of every page get cut off when \magnification
+   is used?
+
+Version 2.1 of amsppt.sty was modified (in January 1997) to make the
+output dimensions the same as those for the majority of AMS publications,
+in particular journals.  This made it possible to simplify quite radically
+the AMS ``author packages'' for particular publications, thus (in the
+long run) avoiding questions that were demanding scarce support time.
+
+One of the January 1997 changes consisted in positioning the running
+head, i.e. the top of the type block, at the exact top of the normal
+print area, rather than ``above'' the print area as is the default in
+plain TeX.  Although the default setting for laser printers starts the
+printing 1in down from the top edge of the paper, on a typesetter, that
+setting is traditionally 0 (to avoid wasting the expensive photographic
+medium), and unless special measures are taken, the running heads would
+print ``above'' the top, often overprinting something else or being lost
+off the edge, resulting in even greater waste of materials and time.
+In addition, running heads ``above'' the print area could not be checked
+in the previewers used at AMS.
+
+The earlier behavior can be restored by specifying
+    \voffset-2pc
+when processing a document with amsppt.sty.  This command is present,
+but commented out, in the file amsppt.sti, a file intended for the
+specification of local defaults.  Since amsppt.sti is automatically
+read in by amsppt.sty, uncommenting the relevant command would adjust
+the position of output on paper sufficiently to accommodate magnification
+up to \magstep 1.
+
+Note that no AMS publication uses magnification as a technique for
+providing larger type; if larger type is desired, that is encoded into
+the relevant author package by providing additional fonts.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+2) How can I prepare a two-column index for a book using AMS-TeX?
+
+AMS-TeX was originally intended to provide only features to make it
+easier to typeset mathematical content -- display equations, theorems,
+and similar material.  Niceties of formatting were to be provided by
+other packages such as LaTeX.  Things didn't quite turn out that way,
+and AMS-TeX and LaTeX didn't merge as readily as was once hoped.
+
+It is still not planned to add advanced formatting features, including
+double columns, to AMS-TeX.  However, some simple macros can be defined
+and used in an AMS-TeX source file to produce an .idx file, which can
+then be processed by the makeindex program.  (Makeindex is included
+with all standard TeX distributions.)  The resulting .ind file can be
+processed separately through (AMS-)LaTeX to create a two-column index.
+
+Macros compatible with makeindex and plain TeX (and therefore AMS-TeX)
+can be found on CTAN, in the area
+    /tex-archive/macros/texsis/index/
+
+Read the documentation that comes with makeindex and the comments in
+the file index.tex for instructions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+3) I need 12pt type in my paper.  How do I get it?
+
+This size isn't needed in most AMS publications, but when it is, it is
+defined for the author packages that need it.  In particular, \twelvepoint
+is defined in the file ams-spec.sty, which is used with monographs and
+book proceedings.  (\elevenpoint is also defined in ams-spec.sty.)
+
+The file amsspec.sty can be obtained as part of the gen-m (generic book)
+author package from the AMS web server:
+    http://www.ams.org/tex/author-info.html
+
+Create a file called myfonts.tex.  Begin that file with the line
+    \savecat @
+and end it with the line
+    \restorecat @
+Copy the definition of \twelvepoint and all associated \font@ commands
+from amsspec.sty into myfonts.tex.  Then include the command
+    \input myfonts
+in the preamble of your document file.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+4) I need to put a footnote in my bibliography, but it disappears.
+   How do I get it to print out?
+
+Not only the footnote disappears, but also the element of the reference
+to which the footnote is attached.  This happens because the parts of
+the footnote are boxed during processing, and footnotes disappear from
+boxed material.  The solution is to use \footnotemark in the reference,
+and \footnotetext{...} after \endref.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+5) A page ending with a theorem is shorter than other pages.  Why?
+
+If a page break occurs between two theorems, or between any combination
+of adjacent theorem or proof (\proclaim or \demo), the space following
+the first one will fall before a favorable penalty and will not be
+removed at the bottom of the page.  This is due to a bug, in which the
+vertical space preceding a theorem or proof will be removed only if it
+is less than the space to be added  In AMS style, the space above is
+the same as the space below, so what should have been done is test for
+a space less than or equal to the space to be added; however, to change
+this now could cause changes in the paging of existing documents.
+
+In order to get rid of the extra space, put \pagebreak immediately
+before the \endproclaim or \enddemo at the bottom of the page; this
+should, of course, be done only for the final run.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  6) Why am I getting a label ``E-mail address'' at the end of my paper
+     with no data?
+
+In the topmatter templates for AMS author packages, all possible tags
+for subject and author information are included for convenience.  If
+any of these are left in your file with no data, ``empty'' footnotes
+can appear on the first page (for \subjclass or \keywords), or labels
+associated with author addresses can appear at the end of a paper with
+no data.  Checking for ``empty'' tags isn't easily accomplished, so an
+author should make sure that any tag that doesn't have data is removed
+or commented out.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  7) I need diagonal arrows in my commutative diagrams.  How do I
+     get them?
+
+The \CD structure of AMS-TeX provides only vertical and horizontal
+connectors.  To get diagonal connectors, it is necessary to use another
+package.  XY-pic, by Kristoffer Rose, provides many more facilities
+than \CD, and it is compatible with AMS-TeX.  XY-pic can be found on
+CTAN, in the area
+    /tex-archive/macros/generic/diagrams/xypic/
+Be sure to read the excellent documentation, xyguide, which is available
+in dvi, PostScript and PDF form, ready to print.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

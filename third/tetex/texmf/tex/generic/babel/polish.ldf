@@ -5,38 +5,38 @@
 %% The original source files were:
 %%
 %% polish.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{polish}
-        [1999/04/13 v1.2g Polish support from the babel system]
+        [2001/01/30 v1.2j Polish support from the babel system]
 %% File `polish.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 -- 1999
+%% Copyright (C) 1989 -- 2001
 %%           by Johannes Braams, TeXniek
 %% Polish Language Definition File
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Elmar Schalueck, Michael Janich
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{polish}\captionspolish
 \ifx\l@polish\@undefined
   \@nopatterns{Polish}
   \adddialect\l@polish0\fi
 \addto\captionspolish{%
   \def\prefacename{Przedmowa}%
-  \def\refname{Bibliografia}%
+  \def\refname{Literatura}%
   \def\abstractname{Streszczenie}%
-  \def\bibname{Literatura}%
+  \def\bibname{Bibliografia}%
   \def\chaptername{Rozdzia\l}%
   \def\appendixname{Dodatek}%
   \def\contentsname{Spis tre\'sci}%
@@ -53,16 +53,18 @@
   \def\seename{Por\'ownaj}%
   \def\alsoname{Por\'ownaj tak\.ze}%
   \def\proofname{Dow\'od}%
+  \def\glossaryname{Glossary}% <-- Needs translation
 }
 \def\datepolish{%
   \def\today{\number\day~\ifcase\month\or
   stycznia\or lutego\or marca\or kwietnia\or maja\or czerwca\or lipca\or
   sierpnia\or wrze\'snia\or pa\'zdziernika\or listopada\or grudnia\fi
-  \space\number\year}
+  \space\number\year}%
 }
 \initiate@active@char{"}
 \addto\extraspolish{\languageshorthands{polish}}
 \addto\extraspolish{\bbl@activate{"}}
+\addto\noextraspolish{\bbl@deactivate{"}}
 \newdimen\pl@left
 \newdimen\pl@down
 \newdimen\pl@right
@@ -152,12 +154,25 @@
 \declare@shorthand{polish}{"N}{\textormath{\'N}{\acute N}}
 \declare@shorthand{polish}{"o}{\textormath{\'o}{\acute o}}
 \declare@shorthand{polish}{"O}{\textormath{\'O}{\acute O}}
-\declare@shorthand{polish}{"r}{\textormath{\zkb}{\ddot r}}
-\declare@shorthand{polish}{"R}{\textormath{\Zkb}{\ddot R}}
 \declare@shorthand{polish}{"s}{\textormath{\'s}{\acute s}}
 \declare@shorthand{polish}{"S}{\textormath{\'S}{\acute S}}
-\declare@shorthand{polish}{"z}{\textormath{\'z}{\acute z}}
-\declare@shorthand{polish}{"Z}{\textormath{\'Z}{\acute Z}}
+\newcommand*{\polishrz}{%
+  \declare@shorthand{polish}{"r}{\textormath{\zkb}{\ddot r}}%
+  \declare@shorthand{polish}{"R}{\textormath{\Zkb}{\ddot R}}%
+  \declare@shorthand{polish}{"z}{\textormath{\'z}{\acute z}}%
+  \declare@shorthand{polish}{"Z}{\textormath{\'Z}{\acute Z}}%
+  \declare@shorthand{polish}{"x}{\dq x}%
+  \declare@shorthand{polish}{"X}{\dq X}%
+  }
+\polishrz
+\newcommand*{\polishzx}{%
+  \declare@shorthand{polish}{"z}{\textormath{\zkb}{\ddot z}}%
+  \declare@shorthand{polish}{"Z}{\textormath{\Zkb}{\ddot R}}%
+  \declare@shorthand{polish}{"x}{\textormath{\'z}{\acute x}}%
+  \declare@shorthand{polish}{"X}{\textormath{\'Z}{\acute X}}%
+  \declare@shorthand{polish}{"r}{\dq r}%
+  \declare@shorthand{polish}{"R}{\dq R}%
+  }
 \declare@shorthand{polish}{"`}{%
   \textormath{\quotedblbase}{\mbox{\quotedblbase}}}
 \declare@shorthand{polish}{"'}{%

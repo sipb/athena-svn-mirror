@@ -1,12 +1,14 @@
-To run the example, just
+To view the example, just type
+
   pdftex example
+
 
 Note that pdftex is still in beta stage. If you plan to use it, you
 should subscribe to the mailing list
-  pdftex@tug.cs.umb.edu
+  pdftex@tug.org
 
 This is a majordomo list, so to subscribe, just send a message containing
   subscribe pdftex
-to majordomo@tug.cs.umb.edu
+to majordomo@tug.org
 
 Thomas

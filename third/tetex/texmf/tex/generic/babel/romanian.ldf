@@ -5,29 +5,29 @@
 %% The original source files were:
 %%
 %% romanian.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{romanian}
-        [1999/04/16 v1.2j Romanian support from the babel system]
+        [2001/01/30 v1.2k Romanian support from the babel system]
 %% File `romanian.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Romanian Language Definition File
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{romanian}\captionsromanian
 \ifx\l@romanian\@undefined
     \@nopatterns{Romanian}
@@ -53,6 +53,7 @@
   \def\seename{Vezi}%
   \def\alsoname{Vezi de asemenea}%
   \def\proofname{Demonstra\c{t}ie} %
+  \def\glossaryname{Glossary}% <-- Needs translation
   }%
 \def\dateromanian{%
   \def\today{\number\day~\ifcase\month\or

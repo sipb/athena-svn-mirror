@@ -1,0 +1,72 @@
+<head>
+<title>UK TeX FAQ -- question 251</title>
+</head><body>
+<h3>No line here to end</h3>
+<p>The error
+<pre>
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+</pre>
+
+comes in reaction to you giving LaTeX a <code>\</code><code>\</code> command at a time
+when it's not expecting it.  The commonest case is where you've
+decided you want the label of a list item to be on a line of its own,
+so you've written (for example):
+<pre>
+  \begin{description}
+  \item[Very long label] \\
+    Text...
+  \end{description}
+</pre>
+<code>\</code><code>\</code> is actually a rather bad command to use in this case (even if
+it worked), since it would force the 'paragraph' that's made up of the
+text of the item to terminate a line which has nothing on it but the
+label.  This would lead to an "<code>Underfull \hbox</code>" warning message
+(usually with 'infinite' badness of 10000); while this message doesn't
+do any actual harm other than slowing down your LaTeX run, any
+message that doesn't convey any information distracts for no useful
+purpose.
+<p>The proper solution to the problem is to write a new sort of
+<code>description</code> environment, that does just what you're after.  (The
+
+<a href="FAQ22.html">LaTeX Companion</a> offers a
+rather wide selection of variants of these things.)
+<p>The quick-and-easy solution, which avoids the warning, is to write:
+<pre>
+  \begin{description}
+  \item[Very long label] \hspace*{\fill} \\
+    Text...
+  \end{description}
+</pre>
+which fills out the under-full line before forcing its closure.  The
+<i>expdlist</i> package provides the same functionality with its
+<code>\breaklabel</code> command, and <i>mdwlist</i> provides it via its
+<code>\desclabelstyle</code> command.
+<p>The other common occasion for the message is when you're using the
+<code>center</code> (or <code>flushleft</code> or \environment{flushright})
+environment, and have decided you need extra separation between lines
+in the environment:
+<pre>
+  \begin{center}
+    First (heading) line\\
+    \\
+    body of the centred text...
+  \end{center}
+</pre>
+<p>The solution here is plain: use the <code>\</code><code>\</code> command in the way it's
+supposed to be used, to provide more than just a single line break
+space.  <code>\</code><code>\</code> takes an optional argument, which specifies how much
+extra space to add; the required effect in the text above can be had
+by saying:
+<pre>
+  \begin{center}
+    First (heading) line\\[\baselineskip]
+    body of the centred text...
+  \end{center}
+</pre>
+<dl>
+<dt><tt><i>expdlist.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/expdlist.tar.gz">macros/latex/contrib/supported/expdlist.tar.gz</a>
+<dt><tt><i>mdwlist.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/mdwtools.tar.gz">macros/latex/contrib/supported/mdwtools.tar.gz</a>
+</dl>
+<p><p><p></body>

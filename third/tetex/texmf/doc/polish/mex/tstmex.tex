@@ -1,0 +1,102 @@
+%& --translate-file=il2-pl
+%% Staszek Wawrykiewicz (staw@gust.org.pl). Styczeñ 2000. Public domain.
+%% Przyk³adowy plik TeX-owy; ilustruje proste polecenia sk³adu, deklarowanie
+%% fontu i w³±czanie grafiki.
+%% Plik przetwarzamy z u¿yciem polskiego formatu MeX: mex tstmex.tex
+%% Zaleca siê przestudiowanie zawarto¶ci ca³ego pliku!
+% =========
+% Znak % w wierszu oznacza komentarz; od tego znaku
+% do koñca wiersza tekst jest ignorowany w sk³adzie.
+% Wyj±tkiem jest pierwszy wiersz pliku, zaczynaj±cy siê
+% od znaków %& i zawieraj±cy deklaracjê u¿ytego w tek¶cie
+% kodowania znaków.
+% ==========
+
+Najpierw test polskich liter (iso8859-2): ±æê³ñó¶¼¿  ¡ÆÊ£ÑÓ¦¬¯
+
+Jak zobaczysz po przetworzeniu tego pliku, kolejny akapit zaczyna siê
+wciêciem. Domy¶lnie  ma ono wielko¶æ 20~pt, ale, jak wszystko w~\TeX-u,
+mo¿e to byæ zmienione.
+Sk³ad prostych tekstów jest bardzo   ³atwy; \TeX{} automatycznie ³amie
+akapity i~numeruje strony. Pisz±c tekst nie musisz siê martwiæ o~spacje,
+wciêcia itp., skupiasz siê tylko na tre¶ci. Wiele
+spacji    w~pisanym tek¶cie czy wiersz z³amany w~wygodnym
+dla nas miejscu
+da      nam
+identyczny efekt  w~sk³adzie. Zauwa¿y³e¶ pewnie znaczek tyldy, który
+pojawia siê w~tek¶cie ¼ród³owym; s³u¿y on do zaznaczenia spacji,
+na których \TeX{} nie powinien prze³amaæ wiersza.
+Pojedyncze litery na koñcu wiersza nie wygl±daj± zbyt ³adnie, prawda?
+
+\noindent % usuñ wciêcie dla tego akapitu
+Ten akapit nie ma wciêcia. Tekst sk³adany jest domy¶lnym fontem 10~pt
+o~nazwie plr10. {\it To tekst kursyw±}, a~to \bf tekst pogrubiony.
+\rm I~znów przywracamy krój prosty. Nieco dalej zobaczymy, jak mo¿na
+deklarowaæ inne fonty.
+
+\def\BSL{{\tt\char92}} % prosta definicja nowego makra
+\beginsection Punkt 1
+
+
+Polecenie {\tt\BSL beginsection} wyró¿nia tytu³ i~dodaje nieco ¶wiat³a.
+Tym razem zostawili¶my dwa wolne wiersze. Akapit rozpocz±³ siê od wciêcia.
+Spróbuj usun±æ jeden z~tych wolnych wierszy i~zobacz co siê stanie.
+Standardowy \TeX, jakiego u¿ywamy, posiada skromny zasób gotowych
+poleceñ do okre¶lania struktury dokumentu, niemniej jednak pozwala
+w~nieograniczony sposób definiowaæ w³asne polecenia dla tytu³ów, 
+podtytu³ów itp. oraz ca³ego uk³adu typograficznego (ang. {\it layout\/}).
+
+\beginsection To jest punkt 2
+
+Jedn± z~najwiêkszych zalet systemu \TeX{} jest elegancki sk³ad wyra¿eñ
+matematycznych, nawet bardzo skomplikowanych, zarówno w~ramach samego
+akapitu $\sum_{n\in A} {1\over n}$, jak i~wyeksponowanych w~osi strony:
+$$\sum_{n\in A} {1\over n}$$
+Czy widzisz ró¿nicê w sk³adzie takiego samego zapisu?
+
+\medskip % pionowy odstêp
+\font\ZZ plr10 at16pt         % deklaracja nowego fontu
+%\advance\baselineskip by 10pt % powiêksz interliniê
+\ZZ                           % w³±cz font
+Font 10pt skalowany do 16 pt.
+
+\rm      % ponownie font standardowy
+\beginsection Teraz nieco grafiki
+
+\medskip
+\input epsfx % wczytujemy makra do w³±czania grafiki
+\centerline{\eps{qq.eps}}
+
+\vskip0.7cm % pionowy odstêp
+A mo¿e by tak przeskalowaæ obrazek?
+
+\medskip
+\input trans % wczytujemy makra do transformacji grafiki
+\line{%
+ \hskip2cm
+ \zscale{120}\hbox{\eps{qq.eps}}    % skalowanie 120 proc.
+ \hfil albo \hfil
+ \xyscaleto{2cm}\hbox{\eps{qq.eps}} % do wymiaru poziomego 2cm
+\hskip2cm}
+
+\beginsection ¯yj kolorowo!
+
+\input colordvi % makra do obs³ugi koloru
+\centerline{\ZZ\textGreen Zielono mi!}
+
+%\bye % po zablokowaniu tego wiersza znakiem %
+     % mo¿na przetwarzaæ kolejny przyk³ad
+     % ale wynikowy plik DVI lepiej przetwarzaæ programem DVIPS:
+     %    dvips tstmex -o tstmex.ps
+     % za¶ ogl±daæ przy pomocy programu GSView/gv/Ghostview.
+\textBlack % przywracamy czarny kolor tekstu
+\beginsection Fonty PostScript-owe
+
+\medskip
+\font\QQ qplri at 23pt
+\QQ
+\centerline{\Red{ABCD  czerwone literki}}
+
+\bye % koniec
+Po poleceniu \bye mo¿na pisaæ dowolne komentarze.
+I tak nie uka¿e siê to w sk³adzie. ;-)

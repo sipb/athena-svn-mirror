@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -18,9 +18,9 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
-if is_small_cap:   % for accents
+if is_small_cap:  % for accents
    %%% fine higher
    % the `higher' values are used while putting accents
    forsuffixes $=u,o,letter_fit,x_height,bar_height,body_height,stem:
@@ -28,22 +28,35 @@ if is_small_cap:   % for accents
    endfor
 fi
 
-input lgrusu;	  % Russian letters
-input lgt2upu;    % letters from Upper part (128-255) of T2
-                  % there is endinput for wncoding and LH font
-input lgt2lou;    % letters from Lower part (0-127) of T2
-                  % there is endinput for LH font
+input lgrusu;     % Russian letters
+input lgt2comu;   % Letters common for couple of encodings
+
+if not is_small_cap:
+   if (known CYR_.LJE_title) or (known CYR_.NJE_title):
+      input lgcyrsp;   % special title LJE NJE
+   fi
+fi
+
+if not more_letters: endinput \\; fi
 
 if old_cyr:
-   input lgslavu; % Unicode Old Slav letters
-   input lgsladu; % additional Old slav letters
+   input lgt2slvu; % Unicode Old Slav letters
+   if not roman_ec:
+      input lgt2slxu; % additional Old slav letters
+   fi
+fi
+
+if not old_cyr or unic:
+   input lgt2upu; % letters from Upper part (128-255) of X2 container
+   input lgt2lou; % letters from Lower part (0-127) of X2 container
 fi
 
 if other_cyr:
    input lgunicu; % Unicode letters not included in T2
-
    input lgcmodu; % modified letters
    input lgcaccu; % accended letters
-
    input lgcvacu; % acuted vowels
 fi
+
+endinput;
+%end of file

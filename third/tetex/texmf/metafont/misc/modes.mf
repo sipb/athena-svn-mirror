@@ -13,7 +13,7 @@
 %%% true landscape landscape_
 %%% good mode_guard_ %%%% variable that take suffixes
 %%%%
-% Compiled 1991, 92, 93, 94, 95, 96, 97, 98 by K. Berry.  This file is
+% Compiled 1991, 92, 93, 94, 95, 96, 97, 98, 2002 by K. Berry.  This file is
 % not copyrighted and may be used freely.  You can retrieve the latest
 % version from {\tt ftp://ftp.tug.org/tex/modes.mf}.
 %
@@ -32,13 +32,12 @@
 %%\begingroup \tt \catcode`\{=12 \catcode`\}=12 \obeyspaces
 % @mffile{
 %   author = "The Metafont community",
-%   version = "3.4",
-%   date = "Mon Aug 10 14:32:36 EDT 1998"
+%   version = "3.5",
+%   date = "Tue Feb 26 08:01:56 PST 2002"
 %   filename = "modes.mf",
 %   contact = "K. Berry",
 %   email = "kb@tug.org"
-%   address = "135 Center Hill Rd. // Plymouth, MA 02360"
-%   checksum = "2469   12251   89950",
+%   checksum = "2493   12334   90692",
 %   codetable = "ISO/ASCII",
 %   supported = "yes",
 %   docstring = "
@@ -168,6 +167,8 @@
 %   such as one of the volumes of {\sl Computers \& Typesetting}.
 %   If you compare against the output of a typical write-black 300$\,$dpi
 %   engine, you will almost certainly wind up with something too dark.
+%   |blacker| should never be negative, the EC fonts do not compile with
+%   such a value.
 %
 % |fillin|: a correction factor for diagonals and other features which
 %   would otherwise be ``filled in'' (page 94).  An ideal device would
@@ -306,7 +307,7 @@
 %%\verbatim
 %% % modetest.tex               -- a file to test a METAFONT mode
 %% %
-%% % by Matt Swift <swift@bu.edu>
+%% % by Matt Swift <swift@alum.mit.edu>
 %% %
 %% % This file is in the public domain.
 %% %
@@ -417,10 +418,10 @@
 
 % Don't let ourselves be processed twice.
 if known modes_mf: endinput; fi;
-modes_mf := 3.4;
+modes_mf := 3.5;
 
 % Identify ourselves in the format file.
-base_version := base_version & "/modes 3.4";
+base_version := base_version & "/modes 3.5";
 
 
 %%\vfill\eject
@@ -662,7 +663,7 @@ enddef;
 %%\vfill\eject
 % Here are the modes, given mostly in alphabetical order.
 
-% From {\tt cudat@cu.warwick.ac.uk}.
+% From {\tt J.Hicks@warwick.ac.uk}.
 mode_def agfafzz =                  %\[ AGFA 400PS (406dpi)
   mode_param (pixels_per_inch, 406);
   mode_param (blacker, .2);
@@ -710,7 +711,7 @@ enddef;
 % From {\tt ee@dacth51.bitnet}.
 mode_def atariezf =                 %\[ Atari ST SLM 804 printer (300dpi)
   mode_param (pixels_per_inch, 300);
-  mode_param (blacker, -.25);
+  mode_param (blacker, 0);
   mode_param (fillin, .5);
   mode_param (o_correction, 0);
   mode_param (blacker_min, 2);
@@ -1016,14 +1017,26 @@ mode_def epsdrftl =                 %\[ Epson (72x120dpi)
 enddef;
 
 % From {\tt metcalf@catfish.LCS.MIT.EDU}, 5 Dec 1992.
-mode_def epsfast =                  %\[ Epson (60x72dpi)
+mode_def epsfast =                  %\[ Epson fast (60x72dpi)
   mode_param (pixels_per_inch, 60);
   mode_param (aspect_ratio, 72 / pixels_per_inch);
   epson_;
 enddef;
 
-mode_def epsfastl =                 %\[ Epson (72x60dpi)
+mode_def epsfastl =                 %\[ Epson fast landscape (72x60dpi)
   epsfast_;
+  landscape;
+enddef;
+
+% From Hippocrates Sendoukas {\tt <isendo@mail.ariadne-t.gr>}, 17 April 1999.
+mode_def epsmed =                   %\[ Epson med MX/FX 9-pin (240x144dpi)
+  mode_param (pixels_per_inch, 240);
+  mode_param (aspect_ratio, 144 / pixels_per_inch);
+  epson_;
+enddef;
+
+mode_def epsmedl =                  %\[ Epson med MX/FX 9-pin landscape (144x240dpi)
+  epsmed_;
   landscape;
 enddef;
 
@@ -1032,7 +1045,7 @@ enddef;
 % The 24-pin LQ family have higher resolutions; no one has sent me
 % definitions for them yet.  Ditto for Epson's laser printer.
 % (Thanks to {\tt cargo@escargot.cray.com} for all this information.)
-mode_def epson =                    %\[ 9-pin Epson MX/FX (240x216dpi)
+mode_def epson =                    %\[ Epson MX/FX 9-pin (240x216dpi)
   mode_param (pixels_per_inch, 240);
   mode_param (aspect_ratio, 216 / pixels_per_inch);
   mode_param (blacker, 0);
@@ -1044,7 +1057,7 @@ EpsonMXFX := epson;
 epshi := epson;
 epsonfx := epson;
 
-mode_def epsonl =                   %\[ 9-pin Epson MX/FX landscape (216x240dpi)
+mode_def epsonl =                   %\[ Epson MX/FX 9-pin landscape (216x240dpi)
   epson_;
   landscape;
 enddef;
@@ -1129,6 +1142,17 @@ mode_def epstypmd =                 %\[ Epson Stylus Pro (720x360dpi)
 enddef;
 EpsonStylusProMed := epstypmd;
 
+mode_def epswlo =                   %\[ Epson low MX/FX 9-pin (120x144dpi)
+  mode_param (pixels_per_inch, 120);
+  mode_param (aspect_ratio, 144 / pixels_per_inch);
+  epson_;
+enddef;
+
+mode_def epswlol =                  %\[ Epson low MX/FX 9-pin landscape (144x120dpi)
+  epswlo_;
+  landscape;
+enddef;
+
 mode_def esphi =                    %\[ Epson Stylus Pro (720dpi)
   mode_param (pixels_per_inch, 720);
   mode_param (blacker, 0);
@@ -1136,7 +1160,7 @@ mode_def esphi =                    %\[ Epson Stylus Pro (720dpi)
   mode_param (o_correction, 1);
   mode_common_setup_;
 enddef;
-EpsonStylusProHigh = esphi;
+EpsonStylusProHigh := esphi;
 
 % From {\tt Tobias.Guenzler@uni-konstanz.de}, 8 December 1994.
 %
@@ -1599,7 +1623,7 @@ linothree := linotzzh;
 LinotypeThreeZeroZeroHi := linotzzh;
 linosuper := linotzzh;
 
-% (From Matt Swift {\tt swift@bu.edu}, 1 Jan 1996.) This is a mode for
+% (From Matt Swift {\tt swift@alum.mit.edu}, 1 Jan 1996.) This is a mode for
 % the HP LaserJet 5P, using dvipsk-5.58f and gs-2.6.2.  I tuned it using
 % the file modetest.tex.  The first sweep was (b,f,o) = (0, {0, .3, .6},
 % 0).  The diagonal of 10$\,$pt lowercase z was too thin at .6, too thick
@@ -2027,7 +2051,7 @@ enddef;
 % Parameters other than |blacker| have little effect.
 mode_def phaserfs =                 %\[ Tektronix Phaser 560 (1200dpi)
   mode_param (pixels_per_inch, 1200);
-  mode_param (blacker, -0.2);
+  mode_param (blacker, 0);
   mode_param (fillin, 0);
   mode_param (o_correction, 1);
   mode_common_setup_;
@@ -2193,7 +2217,7 @@ LNZeroThree := ricohlp;
 % These printers are available only in Japan.
 mode_def ricohsp =                  %\[ Ricoh sp10ps/lp7200-ux (600dpi)
   mode_param (pixels_per_inch, 600);
-  mode_param (blacker, .0);
+  mode_param (blacker, 0);
   mode_param (fillin, 0.2);
   mode_param (o_correction, .6);
   mode_common_setup_;
@@ -2244,7 +2268,7 @@ SparcPrinter := sparcptr;
 mode_def starnlt =                  %\[ Star NL-10 (240x216dpi)
   mode_param (pixels_per_inch, 240);
   mode_param (aspect_ratio, 216 / pixels_per_inch);
-  mode_param (blacker, -.6);
+  mode_param (blacker, 0);
   mode_param (fillin, .2);
   mode_param (o_correction, .4);
   mode_common_setup_;

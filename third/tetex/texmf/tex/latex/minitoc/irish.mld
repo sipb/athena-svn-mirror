@@ -1,3 +1,4 @@
+\ProvidesFile{irish.mld}[1999/03/16]
 % Irish titles for minitoc.sty
 \def\mtctitle{Cl\'ar\'Abhair}
 \def\mlftitle{L\'ear\'aid\'{\i}}

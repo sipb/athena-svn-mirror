@@ -10,19 +10,20 @@ The font contains
 - The 12 signs of the zodiac
 - Scissor symbols
 - a CE sign
-and others.
+and many others.
 
 File list:
 README.1st      overview of what this package is
-astro.README    symbolic link to README.1st (for searching purposes)
-euro.README     symbolic link to README.1st (for searching purposes)
+astro.README    copy of README.1st (for search on CTAN)
+euro.README     copy of README.1st (for search on CTAN)
 fmvr8x.tfm      TeX font metric file for the marvosym font
-marvodoc.ps     The documentation for the marvosym package
+marvodoc.pdf    The documentation for the marvosym package (PDF)
+marvodoc.ps     The documentation for the marvosym package (PS)
 marvodoc.tex    The source of the documentation
 marvosym.afm    Type 1 font metric file for the marvosym font
 marvosym.pfb    Type 1 font
 marvosym.sty    The marvosym style file for LaTeX2e
-zodiac.README   symbolic link to README.1st (for searching purposes)
+zodiac.README   copy of README.1st (for search on CTAN)
 PROBLEMS	describes some problems and their solutions
 
 IMPORTANT:

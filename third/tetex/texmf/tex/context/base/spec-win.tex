@@ -8,7 +8,7 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 \unprotect
@@ -42,12 +42,14 @@
         {\doifparentfileelse{#4}
            {\!!doneafalse}
            {\!!doneatrue}}%
-      %\hsmash{[l:#5]}%
+      \setreferencefilename#4\to\DVIfile
+      \scratchdimen#1\edef\width {\the\scratchdimen\space}%
+      \scratchdimen#2\edef\height{\the\scratchdimen\space}%
       \special
         {button: 
-           #1 #2
+           \width \height
            \if!!donea 
-             file: #4, 
+             file: \DVIfile, 
            \fi
            "#5"}}
      {}% nog uri afhandelen 
@@ -61,12 +63,14 @@
         {\doifparentfileelse{#4}
            {\!!doneafalse}
            {\!!doneatrue}}%
-      %\hsmash{[p:#5]}%
+      \setreferencefilename#4\to\DVIfile
+      \scratchdimen#1\edef\width {\the\scratchdimen\space}%
+      \scratchdimen#2\edef\height{\the\scratchdimen\space}%
       \special
         {button: 
-           #1 #2
+           \width \height
            \if!!donea 
-             file: #4, 
+             file: \DVIfile, 
            \fi 
            \ifnum0#5=0 \else 
              page: #5 
@@ -75,20 +79,21 @@
    \egroup}
 
 \definespecial\dostartthisislocation#1%
-  {%\hsmash{[m:#1]}%
-   \special{mark: "#1"}}
+  {\special{mark: "#1"}}
 
 \definespecial\dostartthisisrealpage#1%
   {}
 
-\definespecial\dostartrunprogram#1#2#3%
-  {\special{button: #1 #2 launch: #3}}
+\definespecial\dostartrunprogram#1#2#3#4%
+  {\bgroup
+   \scratchdimen#1\edef\width {\the\scratchdimen\space}%
+   \scratchdimen#2\edef\height{\the\scratchdimen\space}%
+   \special{button: \width \height launch: #3 #4}%
+   \egroup}
 
 \let\doyandyinsertmov = \docommoninsertmov
 \let\dotrinsertmov    = \docommoninsertmov
 
 \stopspecials
 
-\protect
-
-\endinput
+\protect \endinput

@@ -1,0 +1,34 @@
+QuasiChancery (1.07)
+The fonts are copyrighted but free according to the conditions of the GNU
+General Public License, version 2 (http://www.gnu.org/licenses/gpl.txt).
+
+EN:
+  The font URW Chancery L (distributed with Ghostscript under
+  the GNU General Public Licence) augmented complying with QX layout
+  (see 00readme) and modified. The design of the font is due
+  to Hermann Zapf, who was inspired by the beautiful hand-lettering
+  found in Vatican documents from 16th century. Authors of the modification:
+  Bogus\l{}aw Jackowski, Janusz M. Nowacki and Piotr Strzelczyk.
+  The work was sponsored by the Polish TeX Users Group GUST and
+  the Polish State Committee for Scientific Research. The modified
+  font was renamed to QuasiChancery.
+
+  Comments and remarks please send to:
+  Bogus\l{}aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+
+PL (iso8859-2):
+  Uzupe³niony do uk³adu QX (p. 00readme) i nieco zmodyfikowany font
+  URW Chancery L (z dystrybucji programu Ghostscript, rozpowszechniany
+  na zasadach GNU General Public Licence). Pismo to zaprojektowa³
+  Hermann Zapf, czerpi±c inspiracjê z XVI-wiecznej pisanki, któr±
+  by³y drukowane dokumenty watykañskie. Autorami modyfikacji s±:
+  Bogus³aw Jackowski, Janusz M. Nowacki i Piotr Strzelczyk. Prace
+  nad adaptacj± tego fontu by³y czê¶ciowo sponsorowane przez Polsk±
+  Grupê U¿ytkowników Systemu TeX GUST i Komitet Badañ Naukowych.
+  Zmodyfikowany font otrzyma³ nazwê QuasiChancery.
+
+  Uwagi i komentarze prosimy kierowaæ pod adresem:
+  Bogus³aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+

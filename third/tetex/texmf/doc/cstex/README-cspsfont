@@ -1,0 +1,93 @@
+
+               Informace o balíku cspsfont
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%
+               23. 11. 1995     Petr Ol¹ák
+               5. 1. 1996    Zdenìk Wagner
+      
+24. 3. 1999: POZOR! Pro ¹est fontù pcrb8t, pcrbc8t, pcrbo8t, pcrr8t, pcrrc8t
+             a pcrro8t jsme museli zmìnit názvy na *8u, tak¾e nyní se
+             správnì jmenují: pcrb8u, pcrbc8u, pcrbo8u, pcrr8u,
+             pcrrc8u a pcrro8u. Dùvod: Názvy *8t byly v konfliktu se
+             stejnými názvy pou¾ívanými v LaTeXu v kódování T1.
+             Nebude-li vám tedy fungovat èe¹tina v rodinì Courier,
+             nezapomeòte zmìnit svá makra, která obsahují konfliktní
+             názvy *8t.
+
+Tento dokument byl pùvodnì vytvoøen Petrem Ol¹ákem. Podporu pro LaTeX2e
+vytvoøil nezávisle Zdenìk Wagner. Po mezinárodní dohodì o názvech
+èeskoslovenských fontù ZW upravil tento dokument, pøepsal makra PO pro plain a
+kvùli kompatibilitì se svým pøedchozím neoficiálním balíkem (a také proto, ¾e
+je vìt¹í a po soutoku dvou øek se výsledný tok také jmenuje podle té vìt¹í)
+jej pøejmenoval z cpmacros na cspsfont.
+
+Balík cspsfont obsahuje makra pro podporu práce se základními PostScriptovými
+fonty v kódování CSfontù.  Makra jsou urèena pro plain a LaTeX2e.
+
+Pøedpoklady:
+- Je instalován cstex96 nebo cstex95.alfa,
+- Pro konverzi z dvi se pou¾ije dvips,
+- Je k dispozici PostScriptový RIP (napø. v tiskárnì nebo Ghostscript),
+  který umí rastrovat základní PostScriptové fonty v Adobe StandardEncoding
+  (písmové sady Times, Bookman, NewCenturySchlbk, Helvetica,
+  Avantgarde-Book, Palatino, Courier).
+
+Instalace:
+  cd /usr/local/lib
+  zcat cspsfont.tar.gz | tar xvf -
+  Je-li v /usr/local/lib/texmf u¾ rozbalen csplain a cslatex a jsou-li
+  vygenerovány cs-formáty, není tøeba dìlat nic.
+
+Pou¾ití:
+- V plainu:
+   \input ctimes
+  Od této chvíle budou pøíkazy \bf, \tt, \rm a \it pracovat s fonty
+  odpovídající písmové sadì Times. V csplainu navíc je mo¾né na vstupu
+  pou¾ívat èeský/slovenský text. Fonty pou¾ité v matematickém re¾imu
+  zùstávají ze sady CM.
+  Pøíklad: Nech» $M_1$ je {\it mno¾ina} -- slovo "Nech»" a "je" bude
+           v Times-Roman, slovo "mno¾ina" bude v Times-Italic, písmeno "M"
+           zùstane v cmmi (Computer Modern math italic) a index "1" rovnì¾
+           zùstane v cmr (Computer Modern Roman).
+  Analogicky dal¹í písmové sady:
+           ctimes   ... Times-Roman
+           cbookman ... Bookman
+           cncent   ... NewCenturySchlbk
+           chelvet  ... Helvetica
+           cavantga ... AvantGarde-Book
+           cpalatin ... Palatino
+
+- V LaTeXu:
+  V adresáøi emtex\dist\cspsfont najdete soubor cspsfont.drv. Zpracujte jej
+  LaTeXem2e a vytisknìte. Tím získáte úplnou dokumentaci. Pokud vás nezajímá,
+  jak je v¹e udìláno, a chcete pouze návod pro u¾ivatele, najdìte pøed
+  zpracováním v souboru cspsfont.drv øádek obsahující \OnlyDescribtion a
+  vyma¾te ^^A z jeho zaèátku.
+
+Poznámka:
+  Pokud pro rastrování z PostScriptu pou¾íváte Ghostscript, je nutné
+  zamìnit náhradní fonty dodávané s balíkem (*.gsf) za skuteèné
+  PostScriptové fonty (*.pfb). Pokud to neudìláte, doèkáte se velmi
+  nekvalitního výsledku, který by mohl TeXu dìlat jen ostudu.
+  Skuteèné PostScriptové fonty (*.pfb) jsou ov¹em vázány licencí a není
+  mo¾né je ¹íøit zdarma. V Ghostscriptu od verze 3.33 jsou dodávány 
+  náhradníci ke standardním 35 fontùm ve formátu pfb, které uvolnila
+  firma URW a dal¹í firmy pro free pou¾ití. Tyto náhradní fonty u¾ mají
+  velmi slu¹nou kvalitu.
+
+Copyright
+%%%%%%%%%
+
+Tento balík patøí mezi volnì ¹íøený software; mù¾ete
+jej dále distribuovat anebo modifikovat za podmínek GNU General Public
+License, jak ji publikovala Free Software Foundation; buï ve verzi 2
+této licence nebo (podle Va¹í volby) v libovolné pozdìj¹í verzi.
+
+Tento software je distribuován s pøáním, aby byl u¾iteèný, ale BEZ
+®ÁDNÉ ZÁRUKY. Viz GNU General Public License.
+
+Anglický originál GNU General Publics License najdete v distribuci
+CSTeXu a mnoha dal¹ích volnì ¹íøených programù. Mù¾ete si té¾ o nìj
+napsat na adresu Free Software Foundation, Inc., 59 Temple Place,
+Suite 330, Boston, MA 02111-1307 USA
+
+

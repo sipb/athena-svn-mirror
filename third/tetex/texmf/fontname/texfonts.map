@@ -5,8 +5,7 @@
 % @mapfile{
 % @mapfile{
 %   email = "tex-fonts@tug.org",
-%   version = "2.2",
-%   date = "1 July 1998",
+%   date = "8 December 2002",
 %   url = "http://tug.org/fontname/texfonts.map",
 %   docstring = "Define aliases for font names in TeX."
 %   supported = "yes",
@@ -52,12 +51,38 @@ lcircw10        circlew10
 lcircw10        lcirclew10
 
 % Allow people to use PostScript font names.
-include adobe.map
-include apple.map
-include bitstrea.map
-include dtc.map
-include linotype.map
-include monotype.map
-% include skey1250.map
-% include skey1555.map
-include urw.map
+rpagk           AvantGarde-Book
+rpagko          AvantGarde-BookOblique
+rpagd           AvantGarde-Demi
+rpagdo          AvantGarde-DemiOblique
+rpbkd           Bookman-Demi
+rpbkdi          Bookman-DemiItalic
+rpbkl           Bookman-Light
+rpbkli          Bookman-LightItalic
+rpcrr           Courier
+rpcrb           Courier-Bold
+rpcrbo          Courier-BoldOblique
+rpcrro          Courier-Oblique
+rphvr           Helvetica
+rphvb           Helvetica-Bold
+rphvbo          Helvetica-BoldOblique
+rphvro          Helvetica-Oblique
+rpncb           NewCenturySchlbk-Bold
+rpncbi          NewCenturySchlbk-BoldItalic
+rpncri          NewCenturySchlbk-Italic
+rpncr           NewCenturySchlbk-Roman
+rpplb           Palatino-Bold
+rpplbi          Palatino-BoldItalic
+rpplri          Palatino-Italic
+rpplr           Palatino-Roman
+psyr            Symbol
+rpsyr           Symbol
+sy              Symbol
+rptmb           Times-Bold
+rptmbi          Times-BoldItalic
+rptmri          Times-Italic
+rptmr           Times-Roman
+rpzcmi          ZapfChancery-MediumItalic
+pzdr            ZapfDingbats
+rpzdr           ZapfDingbats
+zd              ZapfDingbats

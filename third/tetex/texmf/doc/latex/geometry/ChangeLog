@@ -1,0 +1,231 @@
+2002-07-08 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 3.2
+      * Added known problem: for crop package with its 'center' option and
+        'mag' larger than 1000, the result is not the one expected.
+      * Bug fix: double-valued marginratio setting like {1:1,1:5} didn't
+        work properly. {h|v}marginratio should have been set by \edef
+        instead of \def (line:439-440 in geometry.sty). 
+        The bug was introduced in v3.1.
+        (I'd like to thank Rolf Niepraschk for his pointing out the bug.)
+      * Added two test files: gtest15.tex gtest16.tex
+
+2002-07-04 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 3.1
+      * Bug fix: error in setting geometry dimensions with \widthof of
+        calc package. \Gm@defbylen and \Gm@defbycnt are introduced to set
+        geometry dimensions.
+
+2002-06-30 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      (Special thanks to Frank Mittelbach for checking codes patiently
+       and providing extremely helpful insight and suggestions)
+      * Release 3.0
+      * Revised geometry.dtx document.
+
+2002-06-28 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Bug fix: multiple landscape/portrait switches malfunctioned.
+      * Bug fix: default hmarginratio wasn't reset when twoside is reset.
+        The initialization of default margionratios added in \Gm@clean.
+
+2002-06-12 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Improved 'reset': can reset 'paper' given as a geometry option.
+      * Bug fix: class default papersize with class option 'landscape'
+        didn't work with \geometry command.
+
+2002-06-05 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added a landscape correction for dvips with 'special' command.
+      * Added 'dvipdfm' (same as 'dvips' internally).
+      * Changed driver settings ('dvips', 'pdftex', and all that) to exclusive.
+      * Bug fix: 'footnotesep' (\skip\footins) couldn't be reset.
+      * Bug fix: 'bindingoffset' didn't work with calc package
+      * Bug fix: 'showframe' vbox had improper height settings.
+      * Bug fix: complex margin settings with calc, e.g. (1in-50pt)*2/3,
+        didn't work well. 
+
+2002-05-27 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added many '\@onlypreamble' commands.
+      * The default vscale is changed to 0.7.
+      * Added 'compat2' to achieve option compatibility with the old version.
+
+2002-05-24 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * 'pdfoutput=1' is removed because it is unnecessary and rather harmful
+        with package 'hyperref'.
+      * The default hscale is changed to 0.7.
+      * The default hmaginratio '\Geom@Dhratiotwo' (=2:3) is used
+        if \@twosidetrue.
+      * 'asymmetric' sets \@mparswitchfalse and \@twosidetrue, so that
+         one can use 'asymmetric' as an alternative to the 'twoside' option.
+
+2002-05-21 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added 'nomarginpar' with \marginparwidth and \marginparsep set to 0pt.
+      * Added '\geom@checkmp' checking if marginal notes fall off the page.
+      * '\geom@process' revised with new internal macros.
+      * Bug fixed: odd/evensidemargin calculations totally modified.
+
+2002-05-20 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Changed the default settings (old defaults --> new defaults)
+        - scale={0.8,0.9} --> scale=0.8
+        - includeheadfoot, ignoremp --> ignoreall
+        - marginratio={2:3,1:2} for oneside, marginratio=2:3 for twoside  
+          -->  marginratio={1:1,2:3} for oneside, marginratio=2:3 for twoside
+
+2002-05-19 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * 'asymmetric' just sets \@mparswitchfalse. 'asymmetric=false' does
+        nothing.
+      * '\geom@process' revised.
+
+2002-05-14 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * 'nohead', 'nofoot' and 'noheadfoot' are just shortcut for
+         setting the corresponding LaTeX dimensions to zero, so they
+         are overwritable by subsequent options.
+      * Added 'asymmetric' option with the same layout on every pages.
+        'twoside' automatically set 'asymmetric=false', but users can
+         set manually 'asymmetric(=true)'.
+      * Changed showparam style.
+      * Added 'hcentering' and 'vcentering', which set |hmarginratio=1:1|
+        and |vmarginratio=1:1| respectively.
+      * Bug fixed: incorrect margins when 'twocolumn' and 'includemp'
+      * Bug fixed: '(h|v)centering' option was set even when the value is
+        false.
+      * Bug fixed: \mag and options with true dimension values caused
+        overspecification warning about \mag. Now \mag cannot be specified
+        more than once as geometry option.
+      * Known Problem: 'reset' still leaves the last papername given as
+        a geometry option, not the class original papername.
+        Set the proper paper name again after 'reset'.
+
+2002-05-13 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added 'twocolumn' option
+      * "verbose" displays the parameter results on the terminal,
+        "verbose=false" (default) still puts them into the log.
+      * 'heightrounded' calculation no longer needs ifthen package.
+      * Bug fixed: 'heightrounded' always adjusted downwards.
+      * Bug fixed: it didn't work with calc package. 
+        \Geom@setafter command needs \expandafter's
+      * Bug fixed: 'pass' and multiple 'reset' didn't work well.
+
+2002-05-10 Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added 'showframe' option, which shows textarea and page frames,
+        and lines for head and foot to check layout in detail.
+        Geometry.sty now contains features of showframe.sty. So showframe.sty
+        is deleted from the distribution.
+      * Bug fixed: {h,v}offset was set wrong values when 'mag', 'truedimen'
+        and \geometry{..} macro were used.
+      * Bug fixed: execution timing of changing papersize was wrong.
+        This bug was introduced in v3.0 beta.
+        
+2002-05-09  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Added 'heightrounded' option. If \textheight is not specified,
+        this option rounds it to n-times (n: an integer) of \baselineskip plus 
+        \topskip, \textheight = n * \baselineskip + \topskip,
+        to avoid "underfull vbox" in some cases. Default is false.
+        ifthen package included in LaTeX base bundle is required.
+      * Added 'lines' option, which enables users to specify \textheight
+        by the number of lines included in \textheight auto-calculating
+        \textheight = (lines - 1) * \baselineskip + \topskip.
+        This option is prior to all the other options determining 'textheight'
+        directly (ie. 'textheight', 'height', 'vscale').
+      * Bug fixed: \Geom@dset wasn't set by \edef.
+
+2002-04-26  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * \geom@setafter and \Geom@dset (both internal) makes LaTeX dimension
+        setting as a option (headsep, footskip, hoffset, and etc)
+        effective at the beginning of \geom@process for 'pass' option.
+      * Revised internal codes specifying papersize.
+      * Changed the way of displaying options and parameters in 'verbose' mode.
+    
+2002-04-25  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Version 3.0 beta
+      * Added 'screen' option as a new papersize (papersize={225mm,180mm}).
+        To make presentation with PC and video projector, geometry option
+        "screen,centering" with 'slide' documentclass must be the best choise.
+      * Added 'pass' option, which disables geometry's auto-layout.
+      * Added 'ratio' option equivalent to 'marginratio'.
+      * Added 'centering', a shortcut for 'marginratio=1:1'.
+      * Added 'innermargin' and 'outermargin', aliases for leftmargin
+        and rightmargin respectively.
+
+2002-04-22  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Version 3.0 Candidate alpha, alpha-2 (formly known as 2.4 alpha-1,2)
+      * Added `ignorehead', `ignorefoot', `ignoreheadfoot', and
+        `ignoreheadfootmp'(ignoreall) options to disregard
+        head/foot/marginpars spaces.
+      * Added `{h|v}marginratio' options.
+        These options specify visible marginal spaces in each direction,
+        left(inner):right(outer) for the horizontal ratio, top:bottom
+        for the vertical. They should be set in 'a:b' style and each
+        value should be a positive integer less than 100 to avoid
+        arithmetic overflow. In default, hmarginratio=2:3 (1:2 for
+        twoside) and  vmarginratio=1:2. 
+      * The 'automatic' centering is no longer default layout,
+        so marginratio={2:3,1:2} is used as default.
+      * Removed twosideshift option, use bindingoffset instead.
+        bindingoffset is set 0pt as default and supports twoside.
+
+2000-06-28  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 2.3
+      * Added `truedimen', `columnsep' and `footnotesep' options.
+      * VTeX supported.
+      * Modified internal settings for twosideshift and mag.
+
+1999-10-07  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 2.2
+      * Bug fixed: explicit twoside was needed for book.cls.
+
+1999-09-27  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 2.1
+      * Bug fixed: twosideshift with reversemarginpar made wrong margins.
+      * Added mag option.
+      * Paper sizes A6 and B6 supported.
+      * Changed license declaration to LPPL.
+
+1998-04-06  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 2.0
+      * Flexible setting scheme for package option with keyval.
+      * Removed exclamations and extra control sequences for paperwidth
+        and paperheight.
+      * Totally revised the code and document.
+
+1997-09-08  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.08
+      * Included geometry.cfg into geometry.dtx.
+      * Changed the catcode of exclamation mark.
+
+1997-07-05  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.07
+      * Modified process of 'dvips' option.
+      * pdftex supported.
+      * Added `a0paper' and `b0paper'.
+
+1997-04-16  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.06
+      * reversemarginpar supported.
+
+1997-02-17  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.05
+      * Changed the definition for dvips option.
+
+1996-08-05  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.04
+      * Bug fixed: papersize= had no effect when papertype was given
+        in geometry.cfg or as a package option.
+
+1996-07-17  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.03
+      * calc support
+
+1996-06-07  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.02
+      * Changed definition for `reset' option.
+      * Revised instructions for `reset' and `dvips' options.
+
+1996-06-03  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.01
+      * Fixed bugs in setting paper and option processing.
+      * geometry.cfg
+      * Added `dvips' option.
+
+1996-05-31  Hideo UMEKI <hideo.umeki@toshiba.co.jp>
+      * Release 1.00
+      * Started geometry package distribution.
+      * Use keyval interface.
+EOF

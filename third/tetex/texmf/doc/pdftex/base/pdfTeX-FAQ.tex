@@ -1,0 +1,1043 @@
+% This is the pdfTeX FAQ.
+% It should compile using
+% latex FAQNAME
+%    or
+% pdflatex FAQNAME
+%
+% It uses an index with a special index style file.
+% 1) Make a file faq.ist with the following lines in it:
+%      actual '=' % = instead of default @
+%      item_1 "\t"
+%      delim_1 "--"
+% 2) makeindex FAQNAME -s faq.ist
+%  (sorry had to do it to include the symbol ``@'' in the index)
+% rerun: latex FAQNAME
+%
+% You need url.sty from CTAN//tex-archive/macros/latex/contrib/other/misc
+% and while you are at it, you *really* should get all of hyperref.
+%
+% A PDF and DVI version of this FAQ are available at
+% http://www.tug.org/applications/pdftex/
+%
+%\documentclass[a4paper]{article}
+%\documentclass{faq}
+%\advance\oddsidemargin1cm
+\documentclass{article}
+
+% are we using pdftex or normal tex
+
+\usepackage{makeidx,xspace}
+\usepackage[bookmarksopen,colorlinks]{hyperref}
+\usepackage[monochrome]{color}
+\makeatletter
+\def\@seccntformat#1{\llap{\hbox to 2em{\hss\expandafter\upshape\csname
+       the#1\endcsname.\hspace*{6pt}}}}%
+\makeatother
+\usepackage{url}
+\urlstyle{small}
+%\usepackage{times}    % saves a lot of output space in PDF.  Delete if
+                      % you cannot get PS fonts working on your system.
+\makeindex
+
+\begin{document}
+\newcommand{\maintainer}{C.\ V.\ Radhakrishnan
+     (\url{mailto:cvr@river-valley.com})}
+\renewcommand\thesubsubsection{\normalfont\thesubsection.\arabic{subsubsection}}
+
+\long\def\question#1#2#3{\subsubsection{\normalsize#2}\label{q:#1}}
+
+\newcommand{\sectionf}[2]{\clearpage\section{#2}\label{sec:#1}}
+
+\newcommand{\subsectionf}[2]{\subsection{#2}\label{sec:#1}}
+
+\long\def\contributor#1#2#3{\index{#1=#1~\protect\url{mailto:#2}!Q\thesubsubsection}
+         {\noindent\small Contributed by: \href{mailto:#2}{#1}
+          \par\vspace{6pt}}\par\nobreak\noindent\ignorespaces}
+
+\newcommand{\pathf}[1]{\url{#1}}
+
+\renewcommand{\indexname}{Contributors}
+\renewenvironment{theindex}{\section{\indexname}
+ \begin{itemize}}{\end{itemize}}
+
+\title{The pdf\TeX{} FAQ \\
+  Version 0.12\protect\thanks{This document is for public distribution}}
+
+\author{%
+  Maintained by: \href{mailto:cvr@river-valley.com}{C.~V.~Radhakrishnan}}
+  
+\date{\today}
+
+\markboth{pdf\TeX{} FAQ}{\TeX{} Users Group}
+
+\maketitle
+\begin{abstract}\noindent\sffamily\itshape
+    This document is a preliminary version of pdf\TeX's
+    frequently asked questions (FAQ) and answers. If you can
+    contribute to this document, please mail
+    \href{mailto:cvr@river-valley.com}{C.~V.~Radhakrishnan}
+    or \href{mailto:pdftex@tug.org}{pdf\TeX's mailing list}.
+    Including the key \verb+FAQ+ in the
+    subject line of your contribution will help the FAQ maintainer
+    stay organized.  This document is in \LaTeX{} syntax and is
+    generated in an Intel 500\textsc{mh}z \textsc{piii} system
+    running Linux kernel version 2.2.12-20 by pdf\TeX{} ver.~14f.
+
+\vspace*{.5in}
+\copyright{This document is freely distributable.}
+
+\end{abstract}
+
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+
+\clearpage
+
+\sectionf{General}{General}
+
+\subsectionf{TeX_and_PDF}{\TeX{} and PDF}
+
+\question{What_is_pdfTeX}{What is pdf\TeX?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+  pdf\TeX{} is a variant of well known typesetting program of prof.
+  Donald E.  Knuth -- \TeX.  Output of Knuth's \TeX{} is a file in \textsc{dvi}
+  format. The difference between \TeX{} and pdfTeX is that pdf\TeX{}
+  directly generates \textsc{pdf}. You can also create \textsc{pdf} with Adobe's
+  Distiller program, using a \textsc{dvi} to PostScript program to create PS
+  from \TeX's \textsc{dvi} file.
+
+\question{What_is_TeX}{What is \TeX?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10} From `\TeX{} -- The
+Program' by Donald E. Knuth: ``This is \TeX, a document compiler
+intended to produce typesetting of high quality''. \TeX{} is a batch
+oriented typesetting system. When we talk about \TeX{} we mean the
+macro programming language as well as the program that interprets
+and executed this language.
+
+\question{What_is_PDF}{What is PDF?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+  This question is answered
+  in the Adobe Systems' document \emph{Portable Document Format
+    Reference Manual} available at
+  \url{http://www.adobe.com/supportservice/devrelations/PDFS/TN/PDFSPEC.PDF}
+  on page 27. It can not be reproduced here for strange copyright
+  reasons.
+
+  Think of \textsc{pdf} as PostScript without programming constructs. A \textsc{pdf}
+  file consists of graphical objects tight together in such a way that
+  fast viewing is possible and incremental updates become possible.
+
+\question{How_can_I_view_a_PDF_file}{How can I view a PDF file?}{1998/09/10}
+
+\contributor{Steve Phipps}{slpp@ix.netcom.com}{1998/09/14}
+\contributor{Michael Sanders}{sanders@umich.edu}{1998/09/17}
+  There are several .pdf readers available as free ware over the
+  Internet.
+
+  Adobe's Acrobat Reader is available for many operating systems,
+  including Win95, \textsc{nt}, and 3.1, Macintosh, Linux, Sun, and OS/2.
+  Download the self-installing executable from Adobe's web site:
+  \url{http://www.adobe.com/prodindex/acrobat/}.
+
+  \verb+Ghostscipt+ is a \verb+.ps+ interpreter and Ghostview is its graphical
+  front-end.  \verb+Ghostscript+ is also available for many operating
+  systems, including \textsc{unix} and \textsc{vms}, \textsc{ms-dos}, MS-Windows, OS/2 and
+  Macintosh.  See the \verb+Ghostscript+ home page at
+  \url{http://www.cs.wisc.edu/~ghost/} for details, documentation, and
+  downloads.
+
+  Another previewer is \verb+xpdf+, a \textsc{pdf} viewer for X maintained by
+  \href{mailto:derekn@aimnet.com}{Derek B. Noonburg} with a home page at
+  \url{http://www.aimnet.com/~derekn/xpdf}. Xpdf runs under the X
+  Window System on \textsc{unix, vms}, and \textsc{os}/2 and is designed
+  to be small and  efficient.  It does not use the Motif or Xt libraries
+  and only uses standard X fonts.
+
+  [FIXME: some words about Xpdf and other \textsc{pdf} viewers]
+
+\subsectionf{Authors}{Authors}
+
+\question{Who_is_the_author_of_pdfTeX}{Who is the author of pdf\TeX?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+  The primary author of pdf\TeX{} is
+  \href{mailto:thanh@fi.muni.cz}{Han The Thanh}. [FIXME: in pdftex.ch there is also
+  Petr Sojka and the current head (rector) of Masaryk's University and
+  Ji\v{r}\'{\i} Zlatu\v{s}ka.]
+
+\sectionf{Information}{Information}
+
+\subsectionf{Locations}{Locations}
+
+\question{Where_can_I_find_pdfTeX}{Where can I find pdf\TeX?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+\url{ftp://ftp.cstug.cz/pub/tex/local/cstug/{janik,thanh}}
+  daily mirror on \url{ftp://ftp.inet.cz/pub/Mirrors/pdfTeX}
+
+
+\question{What_is_the_latest_version}{What is the latest version?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+The latest version of pdf\TeX{} is pdf\TeX-0.14f. This is the latest
+  version of pdf\TeX{} approved by Han The Thanh (for now). 
+
+\question{Where_can_I_find_some_docs_about_pdfTeX}{Where can I find
+  some docs about pdf\TeX?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+A web site for the pdf\TeX{} project is maintained by
+   \href{mailto:sebastian.rahtz@oucs.ac.uk}{Sebastian Rahtz}, and can
+  be found at:\\
+  \url{http://www.tug.org/applications/pdftex/}\\
+  In it you will find:
+  \begin{itemize}
+    \item The pdf\TeX{} manual in \textsc{pdf} format:\\
+    \url{http://www.tug.org/applications/pdftex/pdftexman.pdf}\\
+    and HTML format:\\
+    \url{http://www.tug.org/applications/pdftex/pdftexman.html}
+    \item The pdf\TeX{} mailing list archives:\\
+    \url{http://tug.org/ListsArchives/pdftex/threads.html}
+    \item This FAQ in \textsc{pdf} format:\\
+    \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ.pdf}\\
+    and \textsc{dvi} format:\\
+    \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ.dvi}
+  \end{itemize}
+
+  [FIXME: The best documentation is in the source files...]
+
+\question{Is_there_a_pdfTeX_mailing_list}{Is there a pdf\TeX{} mailing
+  list?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+Yes, to subscribe send mail to \href{mailto:majordomo@tug.org}%
+{majordomo@tug.org}, and put the line:
+\begin{verbatim}
+subscribe pdftex username@hostname
+\end{verbatim}
+\noindent  in the body of the message, where \verb+username@hostname+ is your complete
+  email address.
+
+
+\question{Where_can_I_find_an_archive_of_the_pdfTeX_mailing_list} 
+ {Where can I find an archive of the pdf\TeX{} mailing list?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+An ftp site of the mailing list, arranged chronologically can be
+  found at: \url{ftp://ftp.tug.org/mail-archives/pdftex/} Daily mirror
+  is also at \url{ftp://ftp.inet.cz/pub/Mirrors/pdfTeX-MailArchive/}
+
+\question{How_do_I_get_new_versions_of_this_FAQ}{How do I get new
+  versions of this FAQ?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+  The \TeX{} version of this document is periodically posted to pdf\TeX's
+  mailing list.
+
+  It is also uploaded to
+  \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ.pdf}
+  with its \LaTeX{} source:
+  \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ.tex}.
+  A screen version of the FAQ is also available:
+  \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ-scr.pdf}.
+
+
+
+\question{How_do_I_contribute_to_this_FAQ}{How do I contribute to
+  this FAQ?}{1998/09/24}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/24}
+Send email to the FAQ maintainer: \href{cvr@river-valley.com}%
+{C.~V.~Radhakrishnan} with the word
+\texttt{FAQ} in the subject line.  If possible FAQ entries should be
+formatted like this example:
+
+\begin{verbatim}
+\question{This_is_a_template_faq_question}%
+   {This is a template faq question}{1998/09/24}
+\contributor{Pavel Jan\'{\i}k jr}
+{Pavel.Janik@inet.cz}{1998/09/10}
+\contributor{Jody Klymak}
+{jklymak@apl.washington.edu}{1998/09/24}
+
+This is a sample FAQ question.  It can reference other
+questions, like Question \ref{q:what_is_TeX}, or sections
+(See Section \ref{sec:General}).  This FAQ can be found
+at \url{http://www.tug.org/applications/pdftex/pdfTeX-FAQ.pdf},
+and is maintained by \href{mailto:jklymak@apl.washington.edu}
+{Jody Klymak}.
+\end{verbatim}
+
+
+
+\sectionf{Installation}{Installation}
+
+\subsectionf{General_Installation}{General Installation}
+
+\question{How_do_I_install_the_latest_version_of_pdfTeX}
+{How do I install the latest version of pdf\TeX?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+
+Get~the precompiled binaries and also the zip
+archive, pdftexlib-0.12.zip in the pdf\TeX{} distribution which contains
+platform--independent files required for running pdf\TeX:
+
+\begin{tabular}{ll}
+configuration file:& pdftex.cfg\\
+encoding vectors:& *.enc \\
+map files:&*.map\\
+macros:& *.tex
+\end{tabular}
+
+Unpacking this archive don't forget the \verb+-d+
+option when using \verb+pkunzip+  will create a texmf tree containing
+pdf\TeX--specific files.
+
+The next step is to place the binaries somewhere in PATH.
+If you want to use \LaTeX, you also need
+to make a copy (or symbolic link) of pdf\TeX{} and name it pdf\LaTeX. The
+files \verb+texmf.cnf+ and \verb+pdftex.pool+ and the directory
+\verb+texmf+, created by  
+unpacking the file \verb+pdftexlib-0.12.zip+, should be moved to the
+`appropriate' place (see below).
+
+Web2c--based programs, including pdf\TeX, use the Web2c run--time configuration
+file called \verb+texmf.cnf+. This file can be found via the user--set
+environment variable \verb+TEXMFCNF+ or via the compile--time default value if
+the former is not set. It is strongly recommended to use the first
+option. Next you need to edit \verb+texmf.cnf+ so pdf\TeX{} can find all
+necessary files. Usually one has to edit \verb+TEXMFS+ and maybe some of the
+next variables. When running pdf\TeX, some extra search paths are used
+beyond those normally requested by \TeX{} itself:
+
+\begin{tabular}{lp{3.7in}}
+\verb+VFFONTS+& the path where pdf\TeX{} looks for virtual fonts\\
+\verb+T1FONTS+& the path where pdf\TeX{} looks for Type1 fonts\\
+\verb+TTFONTS+& the path where pdf\TeX{} looks for TrueType fonts\\
+\verb+PKFONTS+& the path where pdf\TeX{} looks for PK fonts\\
+\verb+TEXPSHEADERS+& the path where pdf\TeX{} looks for the configuration file pdftex.cfg,
+font mapping files (*.map), encoding files (*.enc), and pictures
+\end{tabular}
+
+\question{How_do_I_use_pdflatex}{How do I use pdflatex (how to
+  generate pdflatex.fmt)?}{1998/09/10}
+
+Formats for pdf\TeX{} are created in the same way as for
+ \TeX. For plain \TeX{} and \LaTeX{} it looks like:
+\begin{verbatim}
+ pdftex -ini -fmt=pdftex plain \dump
+ pdftex -ini -fmt=pdflatex latex.ltx
+\end{verbatim}
+ In Con\TeX{}t the generation depends on the interface used.
+ A format using the English user interface is generated with
+\begin{verbatim}
+ pdftex -ini -fmt=cont-en cont-en
+\end{verbatim}
+
+ When properly set up, one can also use the
+ Con\TeX{}t command line interface \TeX\textsc{exec}
+ to generate one or more formats, like:
+ \verb+texexec --make en+ for an English format,
+ or
+\begin{verbatim}
+ texexec --make --tex=pdfetex en de
+\end{verbatim}
+ for an English and German one, using pdfe-\TeX.
+ Indeed, if there is pdf\TeX{} as well as pdfe-\TeX,
+ use it! Whatever macro package used, the formats should
+ be placed in the \verb+TEXFORMATS+ path. It is strongly
+ recommended to use pdfe-\TeX, if only because the main
+ stream macro packages (will) use it.
+
+\question{Why_use_pdflatex}{Why use pdflatex vs (??? i.e.
+  latex2html)?}{1998/09/10}
+
+For documents with complex formatting and mathematical content, which
+can not be realized satisfactorily or even at all with \textsc{html},
+pdf is the format of choice. Careful graphic design and skilled use of
+typography make for an attractive document, but \textsc{html} can not
+accomplish this. Pdf's strengths are particularly evident when the use
+of fonts is important. Apart from heavily formatted documents, long
+documents are also suited to being stored in pdf files. In
+\textsc{html}, large amounts of text are often hard to read and can not
+be printed out satisfactorily. \textsc{html} is only suitable for
+archiving long documents to a limited extent.
+
+
+\question{How_do_I_compress_my_PDF_files}{How do I compress my \textsc{pdf}
+  files?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+pdf\TeX{} can compress its output, but by default pdf\TeX{} does not
+  (depending on your configuration). You can manually specify
+  compression from 0 to 9 in the source file by the tag
+  \verb+\pdfcompresslevel+:
+\begin{verbatim}
+    \pdfcompresslevel9
+\end{verbatim}
+  or in the configuration file (pdftex.cfg):
+\begin{verbatim}
+     compress_level 9
+\end{verbatim}
+  0 means no compression and 9 is the most (and the slowest)
+  compression.
+
+\question{What_can_I_do_with_this_pdftex.cfg_file}{What can I do with
+  this pdftex.cfg file?}{1998/09/10}
+
+When pdf\TeX{} starts, it reads the Web2c configuration file as well
+as the pdf\TeX{} configuration file called pdftex.cfg, searched for in
+the TEXPSHEADERS path. As Web2c systems commonly specify a `private' tree
+for pdf\TeX{} where configuration and map files are located, this allows
+individual users or projects to maintain customized versions of the
+configuration file. The configuration file sets default values for the
+following parameters, all of which can be over--ridden in the \TeX{}
+source file:
+
+\begin{description}
+\item[output format] This integer parameter specifies whether the
+output format should be dvi or pdf. A positive value means pdf output,
+otherwise we get dvi output.
+
+\item[compress\_level] This integer parameter specifies the level of
+text and in--line graphics compression. pdf\TeX{} uses zip compression
+as provided by zlib. A value of 0 means no compression, 1 means fastest,
+9 means best, 2\dots8 means something in between. Just set this value
+to 9, unless there is a good reason to do otherwise---0 is great for
+testing macros that use \verb+\pdfliteral+.
+
+\item[decimal\_digits] This integer specifies the preciseness of real
+numbers in pdf page descriptions.
+It gives the maximal number of decimal digits after the decimal point
+of real numbers. Valid values are in range 0\dots5. A higher value
+means more precise output, but also results in a much larger file
+size and more time to display or print. In most cases the optimal value is
+2. This parameter does not influence the precision of numbers used in
+raw pdf code, like that used in \verb+\pdfliterals+ and annotation
+action specifications.
+
+\item[image\_resolution] When pdf\TeX{} is not able to determine the
+natural dimensions of an image, it assumes a resolution of type
+72 dots per inch. Use this variable to change this default value.
+
+\item[page\_width \& page height] These two dimension parameters specify
+the output medium dimensions (the paper, screen or whatever the page
+is put on). If they are not specified, the page width is calculated as
+$\mathcal{W}_{\mbox{\small box being shipped out}} + 2\times$
+(horigin $+$ \verb+\hoffset+). The page height is calculated in a
+similar way.
+
+\item[horigin \& vorigin] These dimension parameters can be used to
+set the offset of the \TeX{} output box from the top left corner of the
+`paper'.
+
+\item[map] This entry specifies the font mapping file, which is similar
+to those used by many dvi to PostScript drivers. More than one map
+file can be specified, using multiple map lines. If the name of the
+map file is prefixed with a+, its values are appended to the existing
+set, otherwise they replace it. If no map files are given, the default
+value psfonts.map is used. A typical pdftex.cfg file looks like this,
+setting up output for A4 paper size and the standard \TeX{} offset of
+1 inch, and loading two map files for fonts:
+
+\begin{small}
+\begin{tabbing}
+xxxxxxxxxxxxxxxxx\=xxxxxxxxx\kill
+output\_format\> 1\\
+compress\_level \>0\\
+decimal\_digits \>2\\
+image\_resolution\> 300\\
+page\_width \>210mm\\
+\end{tabbing}
+
+\vfill\eject
+
+
+\begin{tabbing}
+xxxxxxxxxxxxxxxxx\=xxxxxxxxx\kill
+page\_height\> 297mm\\
+horigin\> 1in\\
+vorigin \>1in\\
+map \>standard.map\\
+map \>+cm.map
+\end{tabbing}
+\end{small}
+
+Dimensions can be specified as true, which makes them immune for
+magnification (when set). The previous example settings, apart from
+map, can also be set during a \TeX{} run. This leaves a special case:
+
+\item[include\_form\_resources] Sometimes embedded pdf illustrations
+can pose viewers for problems. When set to 1, this variable makes
+pdf\TeX{} take some precautions. Forget about it when you never
+encounter problems. When all the programs you use conform to the
+pdf specifications, you will never need to set this variable.
+\end{description}
+
+\question{How_can_I_make_a_document_portable_to_both_latex_and_pdflatex}{How
+  can I make a document portable to both latex and
+  pdflatex}{1998/09/23}
+
+\contributor{Christian Kumpf}{kumpf@igd.fhg.de}{1998/09/23}
+Check for the existence of the variable \verb+\pdfoutput+:
+
+\begin{verbatim}
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+   \pdffalse              % we are not running PDFLaTeX
+\else
+\end{verbatim}
+
+\begin{verbatim}
+   \pdfoutput=1           % we are running PDFLaTeX
+   \pdftrue
+\fi
+\end{verbatim}
+
+Then use your new variable \verb+\ifpdf+
+
+\begin{verbatim}
+\ifpdf
+  \usepackage[pdftex]{graphicx}
+  \pdfcompresslevel=9
+\else
+  \usepackage{graphicx}
+\fi
+\end{verbatim}
+
+\sectionf{Fonts_in_pdfTeX}{Fonts in pdf\protect\TeX}
+
+
+\subsectionf{Fonts_in_general}{Fonts in general}
+
+\question{What_kind_of_fonts_can_I_use}{What kind of fonts can I use?
+}{1998/09/10}
+
+The pdf\TeX{} program normally works with Type I and TrueType fonts; a
+source must be available for all fonts used in the document, except for
+the 14 base fonts supplied by Acrobat (the Times, Helvetica, Courier,
+Symbol and Dingbats families). It is possible to use Metafont generated
+fonts in pdf\TeX. It is strongly recommended, however, not to do so if
+an equivalent is available in Type 1 or TrueType format, since the
+resulting Type 3 fonts render very poorly in current versions of
+Acrobat. Given the free availability of Type 1 versions of all the
+Computer Modern fonts and the ability to use standard PostScript fonts
+without further ado, this is not usually a problem.
+
+
+\subsectionf{Type1_fonts}{Type1 fonts}
+
+\question{How_do_I_use_Type1_fonts}{How do I use Type1 fonts?}{1998/09/10}
+
+{}
+
+
+\question{How_do_I_generate_TFM_files_for_Type1_fonts}{How do I
+  generate TFM files for Type1 fonts?}{1998/09/10}
+
+{}
+
+
+\subsectionf{TrueType_fonts}{TrueType fonts}
+
+\question{How_do_I_use_TrueType_fonts}{How do I use TrueType fonts?
+}{1998/09/10}
+
+{}
+
+
+\question{How_do_I_generate_TFM_files_for_TrueType_fonts}{How do I
+  generate TFM files for TrueType fonts?}{1998/09/10}
+
+{}
+
+
+\subsectionf{pk_fonts}{pk fonts}
+
+\question{How_do_I_use_pk_fonts}{How do I use pk fonts?
+}{1998/09/10}
+
+{}
+
+
+\question{Why_does_Acrobat_Reader_display_pk_fonts_so_poorly}{Why does
+  Acrobat Reader display pk fonts so poorly?}{1998/09/10}
+
+{}
+
+
+
+\sectionf{Graphics}{Graphics}
+
+
+\subsectionf{Graphics_in_general}{Graphics in general}
+
+\question{How_do_I_include_pictures_in_pdfLaTeX}{How do I include
+  pictures in pdfLa\TeX?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+  Pictures come in two formats, vector or bitmapped.  When possible,
+  use vector formats when making a \textsc{pdf} document since they can support
+  an arbitrary amount of magnification.  So far, pdfLa\TeX{} supports
+  graphics inclusions in \textsc{pdf, jpeg, png}, and MetaPost formats [FIXME:
+  what others?  Also which are vector or not?]
+
+  As with La\TeX, the best package for image inclusion is
+  graphics/graphicx, available on CTAN.  In order to get the graphicx
+  package working with pdflatex you must get
+  \url{http://tug.org/applications/pdftex/pdftex.def} and put it in
+  your \TeX{} tree (mine is at
+  \path+C:\TeX\share\texmf\tex\latex\graphics+).  Then some slight
+  modifications to your source file:
+
+\begin{verbatim}
+%% In the preamble add
+\usepackage[pdftex]{graphicx}
+
+%% OPTIONAL: In the main document, immediately after
+%% \begin{document}
+\DeclareGraphicsExtensions{.jpg,.pdf,.mps,.png}
+\end{verbatim}
+\begin{verbatim}
+%% To include a graphics file
+\includegraphics{filename_to_include}
+\end{verbatim}
+
+  The package will then search for the filename with the above
+  extensions if one isn't provided. With this package the image can
+  also be scaled or cropped.  This uses D. Carlisle's ``graphics''
+  package and is available on CTAN at
+  \path+/macros/latex/packages/graphics+.  Note that by not including
+  file-extensions in the \verb+\includegraphics+ command, you can
+  maintain \textsc{pdf} and \textsc{dvi} versions of your document,
+  especially if you include postscript figures (see question
+  \ref{q:How_do_I_include_EPS_pictures} and question
+  \ref{q:How_can_I_make_a_document_portable_to_both_latex_and_pdflatex}).
+
+
+\contributor{Himanshu Gohel}{gohel@csee.usf.edu}{1993/03/11} If you are
+using an old version of \LaTeX, such as the one from te\TeX{} 0.4, then
+you should probably update the graphics package first.  Alternatively,
+you could edit the graphics.sty file as per instructions in pdftex.def
+to allow the pdftex option.  Otherwise you will get errors when using
+the graphics or graphicx package to include figures.
+
+If you used \texttt{epstopdf} to convert your \textsc{eps} figure to
+\textsc{pdf}, then your \textsc{eps} file may be using
+\texttt{\%\%BoundingBox: (atend)} comment. This is not supported by
+\texttt{epstopdf} at present (September 1998 version).  A workaround is
+to edit the \textsc{eps} file and move the actual
+\texttt{\%\%BoundingBox} line from near the end of the document and
+replace the \texttt{\%\%BoundingBox: (atend)} with that instead.
+
+\subsectionf{Vector_Formats}{Vector Formats}
+
+\question{How_do_I_include_PDF_pictures}{How do I include PDF
+  pictures?}{1998/09/23}
+
+\contributor{Carl Zmola}{zmola@campbellsci.com}{1998/09/23}
+  In order to include \textsc{pdf} pictures you need pdf\LaTeX{} 0.12n or later.  Make sure that the \textsc{pdf} figure is
+  properly cropped. See Question
+  \ref{q:How_do_I_convert_an_EPS_figure_to_PDF} for how to do this for
+  EPS files.  [FIXME: How do you get Distiller to do this?] Then
+  follow the steps outlined in Question
+  \ref{q:How_do_I_include_pictures_in_pdfLaTeX}.
+
+\question{How_do_I_include_EPS_pictures}{How do I include EPS
+  pictures?}{1998/09/10}
+
+\contributor{Jody Klymak}{jklymak@apl.washington.edu}{1998/09/18}
+  You cannot directly do so.  You must convert encapsulated postscript
+  pictures to \textsc{pdf} first, explained in question
+  \ref{q:How_do_I_convert_an_EPS_figure_to_PDF}, and then include them
+  (see question \ref{q:How_do_I_include_PDF_pictures})
+
+\question{How_do_I_convert_an_EPS_figure_to_PDF}{How do I convert an
+  EPS figure to \textsc{pdf}?}{}
+
+\contributor {Colin Marquardt}{colin.marquardt@gmx.de}{1998/09/10}
+  You can use epstopdf (a Perl script which uses Ghostscript for
+  conversion) at \url{http://tug.org/applications/pdftex/epstopdf} or
+  Distiller to do the work for you.
+
+  To use epstopdf, you need Perl 5. Usage of \texttt{epstopdf} is easy:
+\begin{verbatim}
+     epstopdf.pl myfile.eps
+\end{verbatim}
+  converts your eps-graphic file \texttt{myfile.eps}
+  to the file \texttt{myfile.pdf}.
+
+\bigskip
+\noindent Valid options for \texttt{epstopdf} (v2.5) are:
+\medskip
+  
+\noindent\begin{tabular}{lll}
+\multicolumn{3}{l}{\textbf{Syntax:} \texttt{epstopdf [options]
+      $<$eps file$>$}}\\
+\textbf{Options:}                               \\
+\tt  --help:          & print usage           \\
+\tt  --outfile=$<$file$>$:& write result to $<$file$>$\\
+\tt  --(no)filter:    & read standard input   &(default: false)\\
+\tt  --(no)gs:        & run ghostscript       &(default: true) \\
+\tt  --(no)compress:  & use compression       &(default: true) \\
+\tt  --(no)hires:     & scan HiresBoundingBox &(default: false)\\
+\tt  --(no)exact:     & scan ExactBoundingBox &(default: false)\\
+\tt  --(no)debug:     & debug informations    &(default: false)
+\end{tabular}
+\bigskip
+  
+\noindent Examples for producing 'test.pdf':\par
+\begin{verbatim}
+  * epstopdf test.eps
+  * produce postscript | epstopdf --filter >test.pdf
+  * produce postscript | epstopdf -f -d -o=test.pdf
+\end{verbatim}
+Example: look for HiresBoundingBox and produce corrected PostScript:\par
+\begin{verbatim}
+  * epstopdf -d --nogs -hires test.ps>testcorr.ps
+\end{verbatim}
+
+  Change the line\par
+\begin{verbatim}
+     $GS="gs";
+\end{verbatim}
+  in this script to the name of your Ghostscript executable if it is
+  different, e.g.\par
+\begin{verbatim}
+     $GS="gswin32c";
+\end{verbatim}
+  on a Win32 system.
+
+  On some systems it is necessary to invoke Perl explicitly, e.g.
+  with\par
+\begin{verbatim}
+perl epstopdf.pl myfile.eps
+\end{verbatim}
+
+\question{Using_Distiller_for_PDF_graphics}{How do I use Adobe Distiller
+to create a pdf graphic for
+inclusion in pdf\LaTeX?}{199/12/16}
+
+\contributor{Mark Wroth}{mark.wroth@aerojet.com}{1998/12/15}
+First, create the \texttt{.eps} file.  Adobe's Distiller Assistant can
+be used to create a Postscript file from most applications, which can
+then be turned into an Encapsulated Postscript file; GhostScript works
+in this role.
+
+Then invoke Distiller, and process the \texttt{.eps} file
+normally---\textit{i.e.} set the job options you want, open the
+\texttt{.eps} file with \texttt{File/Open}, and select the destination
+\texttt{.pdf} file name in the resulting dialog.
+
+Under Distiller ``Job Options'' I have been running with Version 3 pdf
+files enabled, and all compression turned off; I'm not sure if this is
+a factor in success of the effort or not.
+
+The resulting graphic appears to be centered on a portrait mode page.
+The whitespace on this page is included in the graphic, so some
+scaling and an appropriate view port option in the
+\verb+\includegraphics+ command may be necessary.
+
+Since the page boundary as it appears in the \texttt{.pdf} file is not
+the same as the bounding box in the \texttt{.eps} file, this is likely
+to present problems for making the document portable between print and
+\texttt{.pdf} versions.
+
+Cropping the resulting \texttt{.pdf} graphic in Adobe Exchange using
+Document/Crop Pages is not effective.  Doing this appears to remove
+the necessary bounding information and apparently other information
+from the file, with the result that it creates an error in the output
+file from pdf\LaTeX.
+
+
+\question{Why_doesnt_my_pdf_picture_show_up_when_I_include_it?}
+  {Why doesn't my pdf picture show up when I include it?}{1998/09/25}
+
+\contributor{Carl Zmola}{zmola@acm.org}{1998/09/25}
+  You are using Distiller to convert your .eps file to pdf.  Distiller
+  does not always set the bounding box correctly. The bounding box of
+  an embedable pdf document must be the page size, and if any part of
+  your figure extends beyond the bounding box, the figure will not
+  show up.  There are two solutions.
+
+  \begin{enumerate}
+    \item Get texutil.pl from\\
+        \url{http://www.ntg.nl/context/zipped/texutil.zip} and say
+        \begin{verbatim}
+    texutil --fig --epspage file.eps
+        \end{verbatim}
+        and the file is corrected for distiller. (This solution is
+        from \href{mailto:pragma@wxs.nl}{Hans Hagen}.)\par
+    \item Instead of running distiller, use\\
+        \url{http://www.tug.org/applications/pdftex/epstopdf} (see
+question \ref{q:How_do_I_convert_an_EPS_figure_to_PDF})
+\end{enumerate}
+
+  Another tool that might be of some help is \textit{aimaker}.
+  \textit{Aimaker} is a perl script that is designed to convert
+  generic \verb+.eps+ files into \verb+.aieps+
+  files that can be read by adobe   illustrator.
+  \textit{Aimaker} calculates the bounding box for the
+  eps file. \textit{Aimaker} is available at
+  \url{ftp://ftp.aos.princeton.edu/pub/olszewsk/aimaker.shar}
+
+
+\subsectionf{Bitmap_Formats}{Bitmap Formats}
+
+\question{How_do_I_include_TIFF_pictures}{How do I include TIFF
+  pictures?}{1998/09/10}
+
+Use the command: \verb+\includegraphics[options]{filename.tiff}+
+
+\subsectionf{Other_Graphics}{Other Graphics}
+
+\question{How_can_I_use_MetaPost_in_pdfTeX}{How can I use MetaPost in
+  pdf\TeX?}{1998/09/10}
+
+\contributor{Radhakrishnan}{cvr@river-valley.com}{1999/11/14}
+The usual \verb+\includegraphics+ command will work as in other
+graphic file inclusion. You may have to change the extension of files
+generated with MetaPost to \texttt{.mps}.
+
+Another option is to use the command \verb+\ConvertMPtoPDF+ which
+derives from the Con\TeX{}t package. The syntax is as follows:\par
+\begin{verbatim}
+  \CovertMPtoPDF{filename}{xscale}{yscale}
+\end{verbatim}
+
+Yet another option available is the usage of \texttt{m-metapo.sty},
+which is again part of Con\TeX{}t package. In this case,
+instead of using \verb+\includegraphics+, one should use its
+little brother \verb+\includeMPgraphics+. This macro takes
+the same arguments.
+
+An example of using this module is given below:
+
+\begin{verbatim}
+ \documentclass{article}
+ \usepackage{graphicx}
+ \usepackage{m-metapo}
+
+ \begin{document}
+  \includeMPgraphics{file.mps}
+  \includeMPgraphics[angle=90]{file.mps}
+ \end{document}
+\end{verbatim}
+
+
+\sectionf{Miscellaneous}{Miscellaneous}
+
+\subsectionf{Kpathsea}{Kpathsea}
+
+\question{What_is_this_kpathsea?}{What is this kpathsea?}{}
+
+\subsectionf{Hyperref}{Hyperref}
+
+\question{What_is_hyperref}{What is hyperref?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+  The \texttt{hyperref} package is a way of adding hyper-references to a
+  \LaTeX{} document.  For instance, a reference to a figure in the text can be
+  marked up with a hyper-link, allowing the user to jump to the figure
+  without scrolling through a lot of text.
+
+The \texttt{hyperref} package is available on CTAN (or a CTAN mirror)
+at\\
+\url{ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/supported/hyperref}
+
+
+\question{How_can_I_use_it}{How can I use it?}{1998/09/10}
+
+This package can be used with more or less any normal \LaTeX{}
+document by specifying \verb+\usepackage{hyperref}+ in the document preamble.
+Make sure it comes last of your loaded packages, to give it a fighting
+chance of not being over-written, since its job is to redefine many
+\LaTeX{} commands. Hopefully you will find that all cross-references work
+correctly as hyper-text. In addition, the \verb+hyperindex+ option  attempts
+to make items in the index by hyperlinked back to the text, and the
+option \verb+backref+ inserts extra `back' links into the bibliography for
+each entry. Other options control the appearance of links, and give
+extra control over \textsc{pdf} output.     
+
+\question{My_pdftex.cfg_says_to_use_A4...}{My pdftex.cfg says to use
+  A4 paper, but the document comes out in Letter format.}{1998/09/10}
+
+\contributor{Colin Marquardt}{colin.marquardt@gmx.de}{1998/09/10}
+  You certainly use hyperref. This package sets the page dimensions
+  according to your settings in \LaTeX{}. If you do not specify
+  ``a4paper'' in your options to \verb+\documentclass+, it assumes
+  Letter paper and overrides the entries in your \verb+pdftex.cfg+
+  file.
+
+\question{I_get_the_message...}{I get the message: ``Warning (ext1):
+  destination with the same identifier already exists!''}{1998/09/10}
+
+\contributor{Colin Marquardt} {colin.marquardt@gmx.de}{1998/09/10}
+  You get this message if you use hyperref and have some page numbers
+  more than once, e.g. when re-starting page numbering with each
+  chapter or having an appendix.
+
+  Circumvent this with
+\begin{verbatim}
+   \usepackage[pdftex,plainpages=false]{hyperref}
+\end{verbatim}
+  or put
+\begin{verbatim}
+   plainpages=false
+\end{verbatim}
+  into your \verb+hyperref.cfg+.
+
+
+\def\context{\textsc{con}\TeX\textsc{t}\xspace}
+
+\sectionf{ConTeXt}{Con\protect\TeX t}
+\setcounter{subsubsection}{0}
+
+\question{What_is_ConTeXt}{What is \context?}{1998/09/10}
+
+\contributor{Pavel Jan\'{\i}k jr}{Pavel.Janik@inet.cz}{1998/09/10}
+  Con\TeX{}t is a full featured macro package that has built in support
+  for pdf\TeX. More information can be found at
+  \url{http://www.ntg.nl/context} (manuals, source code, examples).
+
+\question{What_do_I_need_to_use_ConTeXt}{What do I need to use
+   \context}{1998/09/10}
+
+From the perspective of \context, pdf\TeX{} does not differ from
+standard \TeX. However, since pdf\TeX{} directly produces the final
+output, you should enable its dedicated driver when in order to get PDF
+output. By default,  \context sets up pdf\TeX{} to produce \textsc{dvi} output.
+There are four ways to enable PDF output. The most convenient method is
+to use \verb+texexec+:
+\begin{verbatim}
+   texexec --pdf yourfile
+\end{verbatim}
+
+Alternatively you can specify \textsc{pdf} output in the first line of
+the file:
+
+\begin{verbatim}
+   % output=pdftex
+\end{verbatim}
+
+The third option is to include the driver setting in the file itself:
+
+\begin{verbatim}
+   \setupoutput[pdftex]
+\end{verbatim}
+
+Alternatively you can include this command in the file
+\verb+cont-sys.tex+, in which case you will always get \textsc{pdf}
+output.
+
+
+\question{How_do_I_install_ConTeXt}{How do I install \context}{1998/09/10}
+
+When you use te\TeX{} or fp\TeX, there is no need to install \context,
+since it comes with the system. By default, \context is set up to use
+the \textsc{pdf}-$\epsilon$-\TeX{} binaries. By using this one binary,
+you can produce \textsc{dvi} as well as \textsc{pdf}, and at the same
+time benefit from some $\epsilon$-\TeX{} features. pdf\TeX{} is
+occasionally updated. After such an update, or after updating \context,
+you should regenerate a new format file. When \context is properly set
+up, you only has to say:
+
+\begin{verbatim}
+   texexec --make
+\end{verbatim}
+
+In case of doubt, try to locate the file \verb+texexec.ini+
+and make sure that \textsc{pdf}-$\epsilon$-\TeX{}  is selected.
+
+\question{How_do_I_install_the_ConTeXt_symbol_fonts}{How do I install
+the \context symbol fonts?}{2000/04/24}
+
+These fonts are included in the \context distribution. When you unpack
+the archive file in the \verb+texmf+ tree, these fonts automatically end up in
+the right locations. In order to use these fonts, you need to register
+the corresponding font mapping file in \verb+pdftex.cfg+:
+
+\begin{verbatim}
+   map +context.map
+\end{verbatim}
+Alternatively you can add the next line to one of your local pdf\TeX{}
+mapping files.
+
+\begin{verbatim}
+   contnav ContextNavigation <contnav.pfb
+\end{verbatim}
+
+\question{How_do_I_activate_hyperlinks}{How do I activate
+hyperlinks?}{2000/05/30}
+
+By default, \context is producing a document ready for printing. When
+one wants to distribute a document electronically, it makes sense to
+add hyperlinks. Since support for interactive documents is integrated
+into the system, you only need to say:
+
+\begin{verbatim}
+   \setupinteraction[state=start]
+\end{verbatim}
+
+You can use this command to set up the colors associated to hyperlinks,
+as well as enable some special features. The commands that set up
+lists, registers, menus, buttons and alike, have keys that relate to
+hypertext features.
+
+\question{How_do_I_set_up_the_papersize}{How do I set up the papersize?}{1998/09/10}
+
+Since pdf\TeX{} produces the final output, it makes sense to set up
+both the paper size and the medium. You can do so by providing a second
+argument to \verb+\setuppapersize+, like:
+
+\begin{verbatim}
+   \setuppapersize[A4][A3]
+\end{verbatim}
+
+When you also want to center the page, and/or want to add crop marks,
+you can say:
+
+\begin{verbatim}
+   \setuplayout[location=middle,marking=on]
+\end{verbatim}
+
+You can also set up page imposition schemes, like A5 booklets and 16
+page folding sheets. Examples can be found in the manuals.
+
+
+\question{To_what_extend_does_ConTEXt_support_PDFTEX}{To what extend
+does \context support pdf\TeX?}{1998/09/10}
+
+In addition to normal typesetting, \context has built in support for
+multiple chained references, widgets, JavaScript, graphics, color, and
+more. Since features like this are part of the \context kernel, no
+special pdf\TeX{} related commands are needed. \context provides features
+to postprocess \textsc{pdf} files. In the \verb+texexec+ manual, one
+can find more on this.
+
+\question{Where_can_I_find_more_information_on_ConTEXt_and_PDFTEX}
+  {Where can I find more information on \context and pdf\TeX?}{}
+
+The functionality of \context is covered in several documents. At
+\url{http://www.pragma-ade.nl} and its mirrors one can
+find manuals for getting started as well as reference documentation.
+Some more advanced interactive features are described in the
+Up--To--Data documents (especially number 1). At this location you can
+also find examples of interactive documents as produced by \textsc{pdf}. When
+you wants to make interactive documents, the presentation styles are a
+good starting point. Their sources are documented and show some more
+advanced features.
+
+The best resource however, is the \context mailing
+list, as hosted by the \textsc{ntg}:
+\href{mailto:ntg-context@ntg.nl}{ntg-context@ntg.nl}.
+
+\printindex
+
+\end{document}
+

@@ -1,0 +1,63 @@
+<head>
+<title>UK TeX FAQ -- question 141</title>
+</head><body>
+<h3>Typesetting things in landscape orientation</h3>
+<p>It's often necessary to typeset part of a document in landscape
+orientation; to achieve this, one needs not only to change the page
+dimensions, but also to instruct the output device to print the
+strange page differently.
+<p>There are two "ordinary" mechanisms for doing two slight variations
+of landscape typesetting:
+<ul>
+<li> If you have a single floating object that is wider than it is
+  deep, and will only fit on the page in landscape orientation, use
+  the <i>rotating</i> package; this defines <code>sidewaysfigure</code> and
+  <code>sidewaystable</code> environments which create floats that
+  occupy a whole page.
+<li> If you have a long sequence of things that need to be typeset in
+  landscape (perhaps a code listing, a wide <code>tabbing</code>
+  environment, or a huge table typeset using <i>longtable</i> or
+  <i>supertabular</i>), use the <i>lscape</i> package (or
+  <i>pdflscape</i> if you're generating PDF output).  This
+  defines an environment <code>landscape</code>, which clears the current page
+  and restarts typesetting in landscape orientation (and clears the
+  page at the end of the environment before returning to portrait
+  orientation).
+</ul>
+No currently available package makes direct provision for typesetting
+in both portrait and landscape orientation on the same page (it's not
+the sort of thing that TeX is well set-up to do).  If such
+behaviour was an absolute necessity, one would use the techniques
+described in
+
+<a href="FAQ176.html">"flowing text around figures"</a>, and would
+rotate the landscape portion using the rotation facilities of the
+<i>graphics</i> package.  (Returning from landscape to portrait
+orientation would be somewhat easier: the portrait part of the page
+would be a bottom float at the end of the landscape section, with its
+content rotated.)
+<p>To set an entire document in landscape orientation, one might use
+<i>lscape</i> around the whole document.  A better option is the
+<code>landscape</code> option of the <i>geometry</i> package; if you also give
+it <code>dvips</code> or <code>pdftex</code> option, <i>geometry</i> also emits the
+rotation instructions to cause the output to be properly oriented.
+<p>A word of warning: most current TeX previewers do not honour
+rotation requests in <code>.dvi</code> files (the exceptions are the
+  (<a href="FAQ56.html">commercial</a>) Y&amp;Y previewer
+  <i>dviwindo</i>,
+
+and the fpTeX previewer WinDVI).  If your previewer is not
+capable of rotation, your best bet is to convert your output to
+PostScript or to PDF, and to view these 'final' forms with an
+appropriate viewer.
+<dl>
+<dt><tt><i>geometry.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/geometry.tar.gz">macros/latex/contrib/supported/geometry.tar.gz</a>
+<dt><tt><i>graphics.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/graphics.tar.gz">macros/latex/required/graphics.tar.gz</a>
+<dt><tt><i>longtable.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+<dt><tt><i>lscape.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/graphics.tar.gz">macros/latex/required/graphics.tar.gz</a>
+<dt><tt><i>pdflscape.sty</i></tt><dd>Distributed with Heiko Oberdiek's packages
+  <a href="ftp://macros/latex/contrib/supported/oberdiek.tar.gz">macros/latex/contrib/supported/oberdiek.tar.gz</a>
+<dt><tt><i>rotating.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/rotating.tar.gz">macros/latex/contrib/supported/rotating.tar.gz</a>
+<dt><tt><i>supertabular.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/supertabular.tar.gz">macros/latex/contrib/supported/supertabular.tar.gz</a>
+</dl>
+<p></body>

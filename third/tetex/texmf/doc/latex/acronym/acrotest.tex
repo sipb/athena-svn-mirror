@@ -6,17 +6,27 @@
 %%
 %% acronym.dtx  (with options: `acrotest')
 %% 
-%% Copyright (C) 1994 by Tobias Oetiker.
+%% Copyright (C) 1994,1999 by Tobias Oetiker.
 %% All rights reserved.
 %% 
 %%  This package is distributed in the hope that it will be useful,
 %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
 %%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %% 
+%%  It may be distributed under the conditions of the LaTeX Project Public
+%%  License, either version 1.2 of this license or (at your option) any
+%%  later version.  The latest version of this license is in
+%%     http://www.latex-project.org/lppl.txt
+%%  and version 1.2 or later is part of all distributions of LaTeX
+%%  version 1999/12/01 or later.
+%% 
+%%  The list of all files belonging to the `acronym' package is
+%%  given in the file `readme'.
+%% 
 \def\filename{acronym}
-\def\fileversion{v1.3}
-\def\filedate{1996/09/19}
-\def\docdate {94/07/13}
+\def\fileversion{v1.6}
+\def\filedate{2000/05/21}
+\def\docdate {2000/05/21}
 \documentclass{article}
 \usepackage{acronym}
 \begin{document}
@@ -30,6 +40,18 @@ been chosen over \ac{TDMA}.
 
 If you want to know more about \acf{GSM}, \acf{TDMA}, \acf{CDMA}
 and \ac{oa}, just read a book about mobile communication.
+
+\subsection{Some chemistry and physics}
+\ac{NAD+} is a major electron acceptor in the oxidation of fuel
+molecules. The reactive part of \ac{NAD+} is its nictinamide ring,
+a pyridine derivate.
+
+One mol consists of \acs{NA} atoms or molecules. There is a relation
+between the constant of Boltzmann and the \acl{NA}:
+\begin{equation}
+  k = R/\acs{NA}
+\end{equation}
+
 \section{Acronyms}
 \begin{acronym}
  \acro{GSM}{Global System for Mobile communication}.
@@ -40,6 +62,9 @@ and \ac{oa}, just read a book about mobile communication.
  \acro{CDMA}{Code Division Multiple Access}. The spread spectrum
       modulation used in the Qualcomm system.
  \acrodef{oa}{other acronyms}
+ \acro{NAD+}[NAD\textsuperscript{+}]{Nicotinamide Adenine Dinucleotide}.
+ \acro{NA}[\ensuremath{N_{\mathrm A}}]{Number of Avogadro}:
+        $\acs{NA} = 6.022045\cdot10^{23}\,\mathrm{mol}^{-1}$
 \end{acronym}
 \end{document}
 \endinput

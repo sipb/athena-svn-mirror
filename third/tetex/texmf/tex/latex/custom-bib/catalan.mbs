@@ -13,27 +13,27 @@
 % E-46071 Val\`encia
 % Spain
 % E-mail: rfuster@mat.upv.es
-% 
+%
 % This program can be redistributed and/or modified under the terms
 % of the LaTeX Project Public License Distributed from CTAN
 % archives in directory macros/latex/base/lppl.txt; either
 % version 1 of the License, or any later version.
 %
-% It is part of the custom-bib collection, 
+% It is part of the custom-bib collection,
 %   a contribution to the LaTeX2e system.
-%==================================================================== 
+%====================================================================
 %       A Language Definition File:  CATALAN
 %     to be included with other master bibliography style files
 %--------------------------------------------------------------------
 %   (See version and date in the \ProvidesFile command below)
 %--------------------------------------------------------------------
 %    This file is self-documenting: simply LaTeX it!
-%==================================================================== 
+%====================================================================
 %
 %\fi
  %-------------------------------------------------------------------
  % Begin module: catalan.mbs
- % \ProvidesFile{catalan.mbs}[1999/02/24 2.2 (PWD/RF)]
+ % \ProvidesFile{catalan.mbs}[2002/10/18 4.0a (PWD)]
 %\iffalse
 %<*a&!a>
 % The following ensures that the driver part is not seen by makebst
@@ -84,84 +84,86 @@
 % \changes{2.1}{1998 Aug 17}{Add \texttt{bbl.etal}}
 % \changes{2.2}{1999 Feb 1}{Add option \texttt{xedn}}
 % \changes{2.2}{1999 Feb 24}{Update copyright notice}
+% \changes{4.0}{1999 Oct 11}{For merlin 4.0}
+% \changes{4.0a}{2002 Oct 18}{Fix bug in page number suppression}
 %
 % \pagestyle{myheadings}
 % \markboth{R. Fuster}{Catalan Bibliographies}
 %
 % \title{{\bfseries Catalan Language Definition File}\\
 %      for master bibliographic style files}
-%    
+%
 % \author{Patrick W. Daly and Robert Fuster}
-%         
+%
 % \GetFileInfo{catalan.mbs}
 % \date{This paper describes file \texttt{\filename},\\
 %  version \fileversion{} from \filedate}
-% 
+%
 % \maketitle
 %
 % \MakeShortVerb{\|}
-% 
+%
 % \parskip=1ex \parindent=0pt
 %
 % \newcommand{\btx}{{\sc Bib}\TeX}
 % \newcommand{\dtx}{\textsf{docstrip}}
-% 
+%
 % \section{Introduction}
 % This file is to be used as a language definition file with master
 % bibliographic files. The language it defines is
 % \begin{quote}\bfseries Catalan\end{quote}
-% 
+%
 % This is not a self-sufficient \texttt{.mbs} file, but rather may
 % be used together with one that contains language support via
 % external definition files.
-% 
+%
 % See the documentation for \texttt{makebst} for formatting details.
-% 
+%
 % \section{The Menu Information}
-% 
+%
 % All the menu information is nested between \dtx{} guard options
 % |%<*options>| \dots\ |%</options>|, and the last command is
 % |\endoptions|. The rest of the file is nested between |%<*!options&!driver>|
 % \dots\ |%</!options&!driver>| in order to exclude it if \dtx{} is used to
 % extract only the menu information or the documentation driver.
-% 
+%
 %    \begin{macrocode}
 %<*options>
 \mes{^^JOptions for CATALAN}
 \wr{\spsp\spsp\sep catalan\pc: Catalan language}
 
-
-\mes{^^JABBREVIATE WORD `PAGINES':}
-\optdef{*}{}{`P`agina(es)'}{(no abbreviation)}
-\optdef{a}{ps}{`P`agina' abbreviated}{as p.}
-\optdef{b}{pag}{`P`agina' abbreviated}{as p`ag.}
+\beginoptiongroup{ABBREVIATE WORD `PAGINES':}{}
+\optdef{*}{}{`P\string`agina(es)'}{(no abbreviation)}
+\optdef{a}{ps}{`P\string`agina' abbreviated}{as p.}
+\optdef{b}{pag}{`P\string`agina' abbreviated}{as p\string`ag.}
+\optdef{x}{ppx}{`P\string`agina' omitted}{}
 \getans
-
-\mes{^^JABBREVIATE WORD `EDITOR':}
+\endoptiongroup
+\beginoptiongroup{ABBREVIATE WORD `EDITOR':}{}
 \optdef{*}{}{`editor(s)'}{(no abbreviation)}
 \optdef{a}{ed}{`editor' abbreviated}{as ed.}
 \getans
-
-\mes{^^JABBREVIATE `MONTHS'::}
-\optdef{*}{}{No abbreviations}{of \string gener, \string febrer, \string etcetera}
+\endoptiongroup
+\beginoptiongroup{ABBREVIATE `MONTHS'::}{}
+\optdef{*}{}{No abbreviations}{of gener, febrer, etcetera}
 \optdef{a}{mab}{Abbreviations}{of months, as in abbrev.bst}
 \getans
-
-\mes{^^JOTHER ABBREVIATIONS:}
-\optdef{*}{}{No abbreviations}{of \string Volum, \string Edici'o, \string Cap'itol}
+\endoptiongroup
+\beginoptiongroup{OTHER ABBREVIATIONS:}{}
+\optdef{*}{}{No abbreviations}{of Volum, Edici'o, Cap'itol}
 \optdef{a}{abr}{Abbreviations}{of such words}
 \getans
-
-\mes{^^JEDITION NUMBERS:}
+\endoptiongroup
+\beginoptiongroup{EDITION NUMBERS:}{}
 \optdef{*}{xedn}{Editions as in database}{saving much processing memory}
 \optdef{w}{nom}{Write out editions}{as primera, segona, tercera, etc}
 \optdef{a}{}{Numerical editions}{as 1a, 2a, 3a, etc}
 \getans
-
+\endoptiongroup
 \endoptions
 %</options>
 %    \end{macrocode}
-% 
+%
 % \StopEventually{\PrintChanges}
 %
 % \section{The Coding}
@@ -211,12 +213,19 @@ FUNCTION {bbl.pages}
 %<!ps&!pag>{ "p\`agines" }
 %<pag>{ "p\`ags." }
 %<ps>{ "ps." }
+%<!ps&!pp&ppx>{ "" }
 
 FUNCTION {bbl.page}
 %<!ps&!pag>{ "p\`agina" }
 %<pag>{ "p\`ag." }
 %<ps>{ "p." }
+%<!ps&!pp&ppx>{ "" }
 
+%<*revdata>
+FUNCTION {bbl.eidpp}
+{ "p\`agines" }
+
+%</revdata>
 FUNCTION {bbl.chapter}
 %<!abr>{ "cap\'{\i}tol" }
 %<abr>{ "cap." }

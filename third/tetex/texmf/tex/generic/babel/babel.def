@@ -5,30 +5,31 @@
 %% The original source files were:
 %%
 %% babel.dtx  (with options: `core')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
+%%
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2001/03/01 v3.7h The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989 -- 2001 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Please report errors to: J.L. Braams
+%%                          babel@braams.cistron.nl
 \ifx\bbl@afterfi\@undefined
 \else
   \bbl@afterfi\endinput
 \fi
-%%\ProvidesFile{babel.dtx}[1999/05/05 v3.6x The Babel package]
-%% Babel package for LaTeX2e.
-%% File 'babel.dtx'
-%% Copyright (C) 1989 -- 1999 by Johannes Braams,
-%%                            TeXniek
-%%                            all rights reserved.
-%% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
 \ifx\ProvidesFile\@undefined
   \def\ProvidesFile#1[#2 #3 #4]{%
     \wlog{File: #1 #4 #3 <#2>}%
@@ -36,7 +37,7 @@
     }
 \fi
 \ProvidesFile{babel.def}
-                [1999/05/05 v3.6x %
+                [2001/03/01 v3.7h %
          Babel common definitions]
 \ifx\AtBeginDocument\@undefined
   \input plain.def\relax
@@ -85,7 +86,7 @@
   \endinput
 }
 \def\ldf@finish#1{%
-  \loadlocalcfg{#1}
+  \loadlocalcfg{#1}%
   \expandafter\main@language\expandafter{#1}%
   \catcode`\@=\atcatcode \let\atcatcode\relax
   }
@@ -134,20 +135,36 @@
   \def\x{\endgroup
     \def\@initiate@active@char##1{%
       \ifcat\noexpand##1\noexpand~\relax
-        \expandafter\edef\csname normal@char\string##1\endcsname{##1}%
-        \expandafter\gdef
-          \expandafter##1%
-          \expandafter{%
-          \expandafter\active@prefix\expandafter##1%
-          \csname normal@char\string##1\endcsname}
+        \@ifundefined{normal@char\string##1}{%
+          \expandafter\let\csname normal@char\string##1\endcsname##1%
+          \expandafter\gdef
+            \expandafter##1%
+            \expandafter{%
+              \expandafter\active@prefix\expandafter##1%
+              \csname normal@char\string##1\endcsname}}{}%
       \else
         \@activated{##1}%
         \@namedef{normal@char\string##1}{##1}%
         \ifx##1'%
-          \let\pr@m@s\bbl@pr@m@s
+          \let\prim@s\bbl@prim@s
+          \@namedef{normal@char\string##1}{%
+            \textormath{##1}{^\bgroup\prim@s}}%
+        \fi
+        \ifx##1^%
+          \gdef\bbl@act@caret{%
+            \ifmmode
+              \csname normal@char\string^\endcsname
+            \else
+              \bbl@afterfi
+              {\if@safe@actives
+                \bbl@afterelse\csname normal@char\string##1\endcsname
+               \else
+                \bbl@afterfi\csname user@active\string##1\endcsname
+               \fi}%
+            \fi}
         \fi
         \@ifpackagewith{babel}{KeepShorthandsActive}{}{%
-          \edef\bbl@tempa{\catcode`\noexpand##1\the\catcode`##1}
+          \edef\bbl@tempa{\catcode`\noexpand##1\the\catcode`##1}%
           \expandafter\AtEndOfPackage\expandafter{\bbl@tempa}}%
         \@tempcnta=\lccode`\~
         \lccode`~=`##1%
@@ -168,12 +185,16 @@
             \csname normal@char\string##1\endcsname}}%
         \lccode`\~\@tempcnta
       \fi
-      \@namedef{active@char\string##1}{%
-        \if@safe@actives
-          \bbl@afterelse\csname normal@char\string##1\endcsname
-        \else
-          \bbl@afterfi\csname user@active\string##1\endcsname
-        \fi}%
+      \ifx##1^%
+        \@namedef{active@char\string##1}{\bbl@act@caret}%
+      \else
+        \@namedef{active@char\string##1}{%
+          \if@safe@actives
+            \bbl@afterelse\csname normal@char\string##1\endcsname
+          \else
+            \bbl@afterfi\csname user@active\string##1\endcsname
+          \fi}%
+      \fi
       \@namedef{user@active\string##1}{%
         \expandafter\ifx
         \csname \user@group @sh@\string##1@\endcsname
@@ -235,6 +256,8 @@
           \bbl@afterfi
           \csname \system@group @sh@\string##1@\string####1@\endcsname
         \fi}%
+      \@namedef{user@sh@\string##1@\string\protect@}{%
+        \csname user@active\string##1\endcsname}%
       }%
     }\x
 \def\active@prefix#1{%
@@ -297,7 +320,7 @@
       in \languagename}{%
       Maybe you made a typing mistake?\MessageBreak
       I will ignore your instruction}}{%
-    \csname bbl@switch@sh@#1\endcsname#2}
+    \csname bbl@switch@sh@#1\endcsname#2}%
   \ifx#3\@empty\else
     \bbl@afterfi\bbl@switch@sh{#1}#3\@nil
   \fi}
@@ -309,8 +332,8 @@
       \lccode`~=`##1%
       \lowercase{%
         \catcode`~\active
-        }
-      }
+        }%
+      }%
     }
 \x
 \declare@shorthand{system}{"}{\csname normal@char\string"\endcsname}
@@ -318,6 +341,8 @@
   \textormath{\csname normal@char\string'\endcsname}%
              {\sp\bgroup\prim@s}}
 \declare@shorthand{system}{`}{\csname normal@char\string`\endcsname}
+\def\bbl@prim@s{%
+  \prime\futurelet\@let@token\bbl@pr@m@s}
 \begingroup
   \catcode`\'\active\let'\relax
   \def\x{\endgroup
@@ -341,6 +366,88 @@
 \ifx\f@encoding\@undefined
   \def\f@encoding{OT1}
 \fi
+\newcommand\languageattribute[2]{%
+  \expandafter\ifx\csname l@#1\endcsname\relax
+    \@nolanerr{#1}%
+  \else
+    \@for\bbl@attr:=#2\do{%
+      \ifx\bbl@known@attribs\@undefined
+        \in@false
+      \else
+        \edef\bbl@tempa{\noexpand\in@{,#1-\bbl@attr,}%
+          {,\bbl@known@attribs,}}%
+        \bbl@tempa
+      \fi
+      \ifin@
+        \PackageWarning{Babel}{%
+          You have more than once selected the attribute
+          '\bbl@attr'\MessageBreak for language #1}%
+      \else
+        \edef\bbl@tempa{%
+          \noexpand\bbl@add@list\noexpand\bbl@known@attribs{#1-\bbl@attr}}%
+        \bbl@tempa
+        \edef\bbl@tempa{#1-\bbl@attr}%
+        \expandafter\bbl@ifknown@ttrib\expandafter{\bbl@tempa}\bbl@attributes%
+        {\csname#1@attr@\bbl@attr\endcsname}%
+        {\@attrerr{#1}{\bbl@attr}}%
+     \fi
+      }
+  \fi}
+\@onlypreamble\languageattribute
+  \newcommand*{\@attrerr}[2]{%
+    \PackageError{babel}%
+                 {The attribute #2 is unknown for language #1.}%
+        {Your command will be ignored, type <return> to proceed}}
+\def\bbl@declare@ttribute#1#2#3{%
+  \bbl@add@list\bbl@attributes{#1-#2}%
+  \expandafter\def\csname#1@attr@#2\endcsname{#3}%
+  }
+\def\bbl@ifattributeset#1#2#3#4{%
+  \ifx\bbl@known@attribs\@undefined
+    \in@false
+  \else
+    \edef\bbl@tempa{\noexpand\in@{,#1-#2,}%
+      {,\bbl@known@attribs,}}%
+    \bbl@tempa
+  \fi
+  \ifin@
+    \bbl@afterelse#3%
+  \else
+    \bbl@afterfi#4%
+  \fi
+  }
+\def\bbl@add@list#1#2{%
+  \ifx#1\@undefined
+    \def#1{#2}%
+  \else
+    \ifx#1\@empty
+      \def#1{#2}%
+    \else
+      \edef#1{#1,#2}%
+    \fi
+  \fi
+  }
+\def\bbl@ifknown@ttrib#1#2{%
+  \let\bbl@tempa\@secondoftwo
+  \@for\bbl@tempb:=#2\do{%
+    \expandafter\in@\expandafter{\expandafter,\bbl@tempb,}{,#1,}%
+    \ifin@
+      \let\bbl@tempa\@firstoftwo
+    \else
+    \fi}%
+  \bbl@tempa
+}
+\def\bbl@clear@ttribs{%
+  \ifx\bbl@attributes\@undefined\else
+    \@for\bbl@tempa:=\bbl@attributes\do{%
+      \expandafter\bbl@clear@ttrib\bbl@tempa.
+      }%
+    \let\bbl@attributes\@undefined
+  \fi
+  }
+\def\bbl@clear@ttrib#1-#2.{%
+  \expandafter\let\csname#1@attr@#2\endcsname\@undefined}
+\AtBeginDocument{\bbl@clear@ttribs}
 \def\babel@beginsave{\babel@savecnt\z@}
 \newcount\babel@savecnt
 \babel@beginsave
@@ -368,10 +475,10 @@
 \let\bbl@nonfrenchspacing\nonfrenchspacing
 \def\addto#1#2{%
   \ifx#1\@undefined
-    \def#1{#2}
+    \def#1{#2}%
   \else
     \ifx#1\relax
-      \def#1{#2}
+      \def#1{#2}%
     \else
       {\toks@\expandafter{#1#2}%
         \xdef#1{\the\toks@}}%
@@ -385,9 +492,11 @@
 \def\set@low@box#1{\setbox\tw@\hbox{,}\setbox\z@\hbox{#1}%
     \dimen\z@\ht\z@ \advance\dimen\z@ -\ht\tw@%
     \setbox\z@\hbox{\lower\dimen\z@ \box\z@}\ht\z@\ht\tw@ \dp\z@\dp\tw@}
-\def\save@sf@q#1{{\ifhmode
-    \edef\@SF{\spacefactor\the\spacefactor}\else
-    \let\@SF\@empty \fi \leavevmode #1\@SF}}
+\def\save@sf@q #1{\leavevmode
+ \begingroup
+  \edef\@SF{\spacefactor \the\spacefactor}#1\@SF
+ \endgroup
+}
 \def\bbl@disc#1#2{%
   \nobreak\discretionary{#2-}{}{#1}\allowhyphens}
 \ProvideTextCommand{\quotedblbase}{OT1}{%
@@ -561,13 +670,6 @@
   \fi
   \expandafter\def\csname\bbl@tempa\space\endcsname}
 \@onlypreamble\bbl@redefinerobust
-\CheckCommand*\@newl@bel[3]{%
-  \@ifundefined{#1@#2}%
-    \relax
-    {\gdef \@multiplelabels {%
-       \@latex@warning@no@line{There were multiply-defined labels}}%
-     \@latex@warning@no@line{Label `#2' multiply defined}}%
-  \global\@namedef{#1@#2}{#3}}
 \def\@newl@bel#1#2#3{%
   {%
     \@safe@activestrue
@@ -606,7 +708,19 @@
 \bbl@redefinerobust\pageref#1{%
   \@safe@activestrue\org@pageref{#1}\@safe@activesfalse}
 \bbl@redefine\@citex[#1]#2{%
-  \@safe@activestrue\org@@citex[#1]{#2}\@safe@activesfalse}
+  \@safe@activestrue\edef\@tempa{#2}\@safe@activesfalse
+  \org@@citex[#1]{\@tempa}}
+\AtBeginDocument{%
+  \@ifpackageloaded{natbib}{%
+    \def\@citex[#1][#2]#3{%
+      \@safe@activestrue\edef\@tempa{#3}\@safe@activesfalse
+      \org@@citex[#1][#2]{\@tempa}}%
+  }{}}
+\AtBeginDocument{%
+  \@ifpackageloaded{cite}{%
+    \def\@citex[#1]#2{%
+      \@safe@activestrue\org@@citex[#1]{#2}\@safe@activesfalse}%
+    }{}}
 \bbl@redefine\nocite#1{%
   \@safe@activestrue\org@nocite{#1}\@safe@activesfalse}
 \bbl@redefine\bibcite{%

@@ -1,0 +1,398 @@
+% File:      pdfcrypt.sty
+% Version:   2001/08/09 v0.6
+% Author:    Heiko Oberdiek
+% Email:     <oberdiek@uni-freiburg.de>
+%
+% Copyright: Copyright (C) 2001 Heiko Oberdiek.
+%
+%            This program may be distributed and/or modified under
+%            the conditions of the LaTeX Project Public License,
+%            either version 1.2 of this license or (at your option)
+%            any later version. The latest version of this license
+%            is in
+%              http://www.latex-project.org/lppl.txt
+%            and version 1.2 or later is part of all distributions
+%            of LaTeX version 1999/12/01 or later.
+%
+% Function:  This package allows the setting of pdf encryption
+%            options for
+%            * pdfTeX, patched by Ricardo Sanchez Carmenes
+%              <carmenes@bioquimica.uniovi.es>.
+%            * VTeX, version 7.35, http://www.micropress-inc.com/.
+%
+% Required:  pdfTeX-1.00a, pdfTeX-0.14h-pdfcrypt-20010310,
+%            pdfcrypt-20010331
+%            or
+%            VTeX 7.35, tested with linux version.
+%
+% Use:       The options can be set as package options or
+%            in the command \pdfcryptsetup:
+%              owner=OwnerPassword
+%              user=UserPassword
+%              print, copy, edit, annotate=true, false
+%              all, none
+%              debug
+%            The encryption is set at \begin{document} by default,
+%            but this can be forced for an earlier time
+%            by option `set'.
+%            Example:
+%              \usepackage[owner=Donald,user=Knuth,print=false]{pdfcrypt}
+%              ...
+%              \begin{document}
+%            or
+%              \usepackage{pdfcrypt}
+%              \pdfcryptsetup{owner=Donald,user=Knut}
+%              \pdfcryptsetup{print=false,set}
+%              ...
+%              \begin{document}
+%
+%            The characters `{', `}', and `\' has to be
+%            escaped with `\'. Then the string should not
+%            be specified as package option but in with
+%            the macro \pdfcryptsetup, eg:
+%              \pdfcryptsetup{user={\{\\Hello\}},print=false}
+%              The password here is "{\Hello}".
+%            Active characters can be used and are not expanded.
+%            Macros except for \{, \}, and \\ should not be used
+%            and are not expanded.
+%
+% Hints for pdfTeX:
+%            * There are packages such as thumbpdf that ships out
+%              some stuff (\immediate\pdfobj{...}). In this cases
+%              \pdfcrypt will be ignored without warning or error
+%              message. Therefore package pdfcrypt should be
+%              loaded before and option "set" should be used in
+%              order to force the call of \pdfcrypt, for example:
+%                \usepackage{pdfcrypt}
+%                \pdfcryptsetup{..., set}
+%                ...
+%                \usepackage{thumbpdf}
+%
+%            * Compiling pdfTeX (eg. version 1.00a-pretest-20010804):
+%              pdfTeX versions are available at
+%                ftp://ftp.cstug.cz/pub/tex/local/cstug/thanh/
+%                  pdftex/snapshots/
+%              Unpack the latest .tgz file:
+%              > tar xzf pdftex-20010804.tgz
+%              Enable encryption support:
+%              src> cd src/texk/web2c/pdftexdir
+%              src/texk/web2c/pdftexdir> ln -fs pdfcrypt-full.c pdfcrypt.c
+%              Compile:
+%              src/texk/web2c/pdftexdir> cd ../../..
+%              src> ./configure
+%              src> cd texk/web2c
+%              src/texk/web2c> make pdftexbin
+%              At last install the binary and pool files.
+%
+% History:   2001/04/02 v0.1:
+%              First public version, published in the pdftex
+%              mailing list for testing with pdfcrypt-20010331
+%            2001/07/19 v0.2:
+%              * Default: all allowed.
+%              * Support for VTeX added.
+%            2001/07/19 v0.3:
+%              * Bug fix: VTeX letter for edit is M (modify).
+%            2001/07/19 v0.4:
+%              * Bug fix: \VTeXversion is correct after
+%                regenerating the format file.
+%            2001/08/05 v0.5:
+%              * Syntax change in pdfTeX 1.00a.
+%            2001/08/09 v0.6:
+%              * Support of special characters:
+%                input: \{, \}, \\ for {, }, \
+%                output: " in VTeX
+%              * Option debug added.
+
+\ProvidesPackage{pdfcrypt}%
+  [2001/08/09 v0.6 *TEST* Setting pdf encryption (HO)]
+
+\let\pc@driver\@empty
+\let\pdfcryptsetup\@gobble
+\begingroup
+  % pdfTeX detection
+  \@ifundefined{pdfoutput}{%
+  }{%
+    \ifcase\pdfoutput
+    \else
+      \@ifundefined{pdfcrypt}{%
+        \PackageError{pdfcrypt}{%
+          PDF encryption is not supported with this pdfTeX%
+        }{%
+          You need pdfTeX 3.14159-14h-pdfcrypt-20010310 or higher.%
+        }%
+        \endgroup\endinput
+      }{%
+        \gdef\pc@driver{pdftex}%
+      }
+    \fi
+  }%
+  % VTeX detection
+  \@ifundefined{OpMode}{%
+  }{%
+    \ifnum\OpMode=1 %
+      \ifnum\@ifundefined{VTeXversion}0\VTeXversion<735 %
+        \PackageError{pdfcrypt}{%
+          PDF encryption is not supported with this VTeX%
+        }{%
+          You need VTeX 7.35 or higher.%
+        }%
+        \endgroup\endinput
+      \else
+        \gdef\pc@driver{vtex}%
+      \fi
+    \fi
+  }%
+\endgroup
+
+\RequirePackage{keyval}
+
+\newif\ifpc@set
+\newif\ifpc@print
+\newif\ifpc@copy
+\newif\ifpc@edit
+\newif\ifpc@annotate
+\newif\ifpc@debug
+\let\pc@owner\@empty
+\let\pc@user\@empty
+
+% default: allow all
+\pc@printtrue
+\pc@copytrue
+\pc@edittrue
+\pc@annotatetrue
+
+\edef\pc@temp{\catcode`\noexpand\"=\the\catcode`\"\relax}
+\@makeother\"
+\def\pc@set{%
+  \PackageInfo{pdfcrypt}{%
+    \ifpc@debug
+      \ifx\pc@owner\@empty
+        No owner password%
+      \else
+        Owner password: `\pc@owner'%
+      \fi
+      \MessageBreak
+      \ifx\pc@user\@empty
+        No user password%
+      \else
+        User password: `\pc@user'%
+      \fi
+      \MessageBreak
+      Flags: %
+      \ifpc@print   \else no\fi print, %
+      \ifpc@copy    \else no\fi copy, %
+      \ifpc@edit    \else no\fi edit, %
+      \ifpc@annotate\else no\fi annotate%
+      \MessageBreak
+    \fi
+    Encryption is set for `\pc@driver'%
+  }
+  \@ifundefined{pc@set@\pc@driver}{%
+    \ifx\pc@driver\@empty
+      \PackageError{pdfcrypt}{No driver for encryption %
+        support found}\@ehc
+    \else
+      \PackageError{pdfcrypt}{Cannot set encryption for %
+        unknown driver `\pc@driver'}\@ehc
+    \fi
+  }{%
+    \@nameuse{pc@set@\pc@driver}%
+  }%
+}
+\def\pc@set@pdftex{%
+  \ifnum\pdftexversion<100 %
+    \pc@set@pdftexold
+  \else
+    \pc@set@pdftexnew
+  \fi
+}
+\def\pc@set@pdftexold{%
+  \pdfcrypt{%
+    owner "\pc@owner"
+    user "\pc@user"
+    \ifpc@print   \else no\fi print
+    \ifpc@copy    \else no\fi copy
+    \ifpc@edit    \else no\fi edit
+    \ifpc@annotate\else no\fi annotate%
+  }%
+}
+\def\pc@set@pdftexnew{%
+  \pdfcrypt
+    owner{\pc@owner}%
+    user{\pc@user}%
+    \ifpc@print   \else no\fi print
+    \ifpc@copy    \else no\fi copy
+    \ifpc@edit    \else no\fi edit
+    \ifpc@annotate\else no\fi annotate%
+  \relax
+}
+\def\pc@set@vtex{%
+  \immediate\special{!security %
+    O=\pc@MakeVTeXString\pc@owner,%
+    U=\pc@MakeVTeXString\pc@user,%
+    P\ifpc@print +\else -\fi,%
+    C\ifpc@copy +\else -\fi,%
+    M\ifpc@edit +\else -\fi,%
+    A\ifpc@annotate +\else -\fi
+  }%
+}
+\def\pc@MakeVTeXString#1{%
+  "\expandafter\pc@@MakeVTeXString#1"\@nil"%
+}
+\def\pc@@MakeVTeXString#1"#2\@nil{%
+  #1%
+  \ifx\\#2\\%
+  \else
+    ""%
+    \@ReturnAfterFi{%
+      \pc@@MakeVTeXString#2\@nil
+    }%
+  \fi
+}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\pc@temp
+
+\begingroup
+  \catcode`\ =12 \gdef\pc@spaceother{ }\catcode`\ =10\relax
+  \catcode`\|=0 %
+  \catcode`\\=12 %
+  |gdef|pc@DefString#1#2{%
+    |def#1{#2}%
+    |edef#1{|expandafter|strip@prefix|meaning#1}%
+    |edef#1{|expandafter|pc@SpaceToOther#1 |@nil}%
+    |edef#1{|expandafter|pc@EscapeRemove#1|@empty\|@empty|@nil}%
+  }
+  |gdef|pc@EscapeRemove#1\#2#3|@nil{%
+    #1#2%
+    |ifx|\#3|\%
+    |else
+      |@ReturnAfterFi{%
+        |pc@EscapeRemove#3|@nil
+      }%
+    |fi
+  }
+|endgroup
+\def\pc@SpaceToOther#1 #2\@nil{%
+  #1%
+  \ifx\\#2\\%
+  \else
+    \pc@spaceother
+    \@ReturnAfterFi{%
+      \pc@SpaceToOther#2\@nil
+    }%
+  \fi
+}
+
+\def\pc@boolkey{\@dblarg\pc@@boolkey}
+\def\pc@@boolkey[#1]#2#3{%
+  \lowercase{\def\pc@temp{#3}}%
+  \ifx\pc@temp\@empty
+    \let\pc@temp\pc@true
+  \fi
+  \ifx\pc@temp\pc@true
+  \else
+    \ifx\pc@temp\pc@false
+    \else
+      \let\pc@temp\relax
+    \fi
+  \fi
+  \ifx\pc@temp\relax
+    \PackageWarning{pdfcrypt}{%
+      Unexpected value \string`#3\string' of
+      option \string`#2\string'\MessageBreak
+      instead of
+      \string`true\string' or \string`false\string'%
+    }%
+  \else
+    \csname pc@#2\pc@temp\endcsname
+  \fi
+}
+\def\pc@true{true}
+\def\pc@false{false}
+
+\define@key{pc}{set}[true]{%
+  \pc@boolkey{set}{#1}%
+}
+\define@key{pc}{pdftex}[]{%
+  \def\pc@driver{pdftex}%
+}
+\define@key{pc}{vtex}[]{%
+  \def\pc@driver{vtex}%
+}
+\define@key{pc}{print}[true]{%
+  \pc@boolkey{print}{#1}%
+}
+\define@key{pc}{copy}[true]{%
+  \pc@boolkey{copy}{#1}%
+}
+\define@key{pc}{edit}[true]{%
+  \pc@boolkey{edit}{#1}%
+}
+\define@key{pc}{annotate}[true]{%
+  \pc@boolkey{annotate}{#1}%
+}
+\define@key{pc}{all}[]{%
+  \pc@boolkey{print}{true}%
+  \pc@boolkey{copy}{true}%
+  \pc@boolkey{edit}{true}%
+  \pc@boolkey{annotate}{true}%
+}
+\define@key{pc}{none}[]{%
+  \pc@boolkey{print}{false}%
+  \pc@boolkey{copy}{false}%
+  \pc@boolkey{edit}{false}%
+  \pc@boolkey{annotate}{false}%
+}
+
+\define@key{pc}{owner}{%
+  \pc@DefString\pc@owner{#1}%
+}
+\define@key{pc}{user}{%
+  \pc@DefString\pc@user{#1}%
+}
+\define@key{pc}{debug}[true]{%
+  \pc@boolkey{debug}{#1}%
+}
+
+\def\pdfcryptsetup#1{%
+  \setkeys{pc}{#1}%
+  \ifpc@set
+    \pc@set
+    \global\let\pc@set\relax
+    \gdef\pdfcryptsetup##1{%
+      \PackageWarning{pdfcrypt}{%
+        Encryption options are already set\MessageBreak
+        new values are ignored%
+      }%
+    }%
+  \fi
+}
+\@onlypreamble\pdfcryptsetup
+
+% support of configuration file
+\let\pc@ExecuteOptions\ExecuteOptions
+\InputIfFileExists{pdfcrypt.cfg}{}{}
+\let\ExecuteOptions\pc@ExecuteOptions
+
+% process global and local options
+\def\pc@ProcessOptionsWithKV{%
+  \let\pc@temp\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+    \@ifundefined{KV@pc@\CurrentOption}{}{%
+      \edef\pc@temp{\pc@temp,\CurrentOption,}%
+      \@expandtwoargs\@removeelement\CurrentOption
+        \@unusedoptionlist\@unusedoptionlist
+    }%
+  }%
+  \edef\pc@temp{%
+    \noexpand\pdfcryptsetup{%
+      \pc@temp\@ptionlist{\@currname.\@currext}%
+    }%
+  }%
+  \pc@temp
+}
+\pc@ProcessOptionsWithKV
+\AtEndOfPackage{\let\@unprocessedoptions\relax}
+\AtBeginDocument{\pc@set}
+
+\endinput

@@ -1,0 +1,21 @@
+\rotatebox{90}{%
+\psset{nodesep=2pt}
+\newcommand{\XX}[2]{\TR{\ensuremath{#1_{\mbox{#2}}}}}
+\pstree[xbbr=1.5cm]{\XX{R}{AMSU}}
+ {
+  \XX{S}{RawData}
+  \pstree{\XX{S}{combine}
+          \trput{\ensuremath{\oplus}}
+          \tlput{\ensuremath{\oplus}}}
+   {
+   \psset{linestyle=dashed}
+   \XX{R}{Modes}
+   \XX{R}{Normal}
+   \XX{R}{Vertical}
+   \XX{R}{Latched}
+   \XX{R}{Tripped}
+   \XX{R}{Other}
+   }
+  \XX{S}{GenerateData}
+ }
+}

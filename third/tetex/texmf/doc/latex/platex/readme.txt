@@ -1,8 +1,13 @@
 Copyright (C) 1994 by Mariusz Olko.  All rights reserved.
 Copyright (C) 1997 by Mariusz Olko and Marcin Woli\'nski.
+Copyright (C) 2000,2002,2003 by Marcin Woli\'nski.
 
 Bundle `PLaTeX' provides tools to typeset documents in Polish using
-LaTeX2e.  Documented source codes are in *.dtx and *.fdd files.
+LaTeX2e.  Documented source code is in *.dtx and *.fdd files.
+
+`PLaTeX' is free software redistributable in according to LaTeX
+Project Public License version 1 or above (see lppl.txt in base LaTeX
+distribution).
 
 To install `PLaTeX' run TeX on instalation script platex.ins
     tex platex.ins

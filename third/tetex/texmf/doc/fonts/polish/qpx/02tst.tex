@@ -1,0 +1,35 @@
+%% test AMSTeX/AMSMeX + qpx
+%% this works only when amstex is loaded!!!
+Fonty standardowe (CM)
+$$\eqalign{\omega &= \nu+v(x,y)\,dx + w(x,y)\,dy+d\varPsi\cr
+  d\omega &=d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+
+\bigskip
+\loadbold
+$$\eqalign{\boldsymbol\omega &=
+  \boldsymbol\nu+v\boldsymbol\{(\boldkey x,\boldkey y)\boldsymbol\}\,dx +
+  w(\bold x,\bold y)\,dy+d\boldsymbol\varPsi\cr
+  d\omega &=d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+
+\bigskip
+\input qpxmath
+\input amsqpx.tex  % ³aduje amsqtx.def
+\input amspbold.tex % redefinicje \loadbold, dostêp do poleceñ \boldsymbol
+                   % \boldkey (zauwa¿ ró¿nicê miêdzy \boldkey i \bold)
+
+Fonty px + QuasiPalladio
+$$\eqalign{\omega &= \nu+v(x,y)\,dx + w(x,y)\,dy+d\varPsi\cr
+  d\omega &\xleq d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+
+\bigskip
+\loadbold
+$$\eqalign{\boldsymbol\omega &=
+  \boldsymbol\nu+v\boldsymbol\{(\boldkey x,\boldkey y)\boldsymbol\}\,dx +
+  w(\bold x,\bold y)\,dy+d\boldsymbol\varPsi\cr
+  d\omega &\boldsymbol\xleq d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+
+\bye

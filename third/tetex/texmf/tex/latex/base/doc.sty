@@ -8,19 +8,32 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 \NeedsTeXFormat{LaTeX2e}[1994/12/01]
  \ProvidesPackage{doc}
-  [1999/03/25 v2.0h
+  [2001/05/16 v2.0n
    Standard LaTeX documentation package (FMi)]
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -131,8 +144,7 @@
     \expandafter\ch@plus@etc
   \else \percentchar \fi}
 \gdef\ch@plus@etc<{\futurelet\next\check@plus@etc}
-\endgroup
-\def\check@plus@etc{%
+\gdef\check@plus@etc{%
     \if +\next
       \let\next\pm@module
     \else\if -\next
@@ -141,10 +153,13 @@
       \let\next\star@module
     \else\if /\next
       \let\next\slash@module
+    \else\ifx <\next
+      \percentchar
     \else
       \let\next\pm@module
-    \fi\fi\fi\fi
+    \fi\fi\fi\fi\fi
     \next}
+\endgroup
 \begingroup
 \catcode`\~=\active
 \lccode`\~=`\>
@@ -515,12 +530,12 @@
      {\def\index@prologue{\section*{Index}%
                  \markboth{Index}{Index}%
                  Numbers written in italic refer to the page
-                 where the corresponding entry is described, the ones
-                 underlined to the
+                 where the corresponding entry is described;
+                 numbers underlined refer to the
                  \ifcodeline@index
                    code line of the
                  \fi
-                 definition, the rest to the
+                 definition; numbers in roman refer to the
                  \ifcodeline@index
                    code lines
                  \else
@@ -610,20 +625,23 @@
 \def\OnlyDescription{\@bsphack\long\def\StopEventually##1{%
            ##1\endinput}\@esphack}
 \let\Finale\relax
-\begingroup
-\obeyspaces%
-\catcode`\^^M\active%
-\gdef\meta{\begingroup\obeyspaces\catcode`\^^M\active%
-\let^^M\do@space\let \do@space%
-\def\-{\egroup\discretionary{-}{}{}\hbox\bgroup\itshape}%
-\m@ta}%
-\endgroup
-\def\m@ta#1{\leavevmode\hbox\bgroup$\langle$\itshape#1\/$\rangle$\egroup
-    \endgroup}
-\def\do@space{\egroup\space
-    \hbox\bgroup\itshape\futurelet\next\sp@ce}
-\def\sp@ce{\ifx\next\do@space\expandafter\sp@@ce\fi}
-\def\sp@@ce#1{\futurelet\next\sp@ce}
+\ifx\l@nohyphenation\undefined
+  \newlanguage\l@nohyphenation
+\fi
+\DeclareRobustCommand\meta[1]{%
+     \ensuremath\langle
+     \ifmmode \expandafter \nfss@text \fi
+     {%
+      \meta@font@select
+      \edef\meta@hyphen@restore
+        {\hyphenchar\the\font\the\hyphenchar\font}%
+      \hyphenchar\font\m@ne
+      \language\l@nohyphenation
+      #1\/%
+      \meta@hyphen@restore
+     }\ensuremath\rangle
+}
+\def\meta@font@select{\itshape}
 \def\IndexInput#1{%
      \begingroup \macro@code
    \frenchspacing \@vobeyspaces

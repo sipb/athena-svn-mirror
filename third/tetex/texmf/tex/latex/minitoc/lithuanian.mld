@@ -1,0 +1,13 @@
+\ProvidesFile{lithuanian.mld}[1999/07/29]
+% Lithuanian titles for minitoc.sty
+\def\mtctitle{Turinys}
+\def\mlftitle{Paveiksl\protect\c u s\protect\c ara\protect\v sas}
+\def\mlttitle{Lentel\protect\.es}
+
+\def\ptctitle{Turinys}
+\def\plftitle{Paveiksl\protect\c u s\protect\c ara\protect\v sas}
+\def\plttitle{Lentel\protect\.es}
+
+\def\stctitle{Turinys}
+\def\slftitle{Paveiksl\protect\c u s\protect\c ara\protect\v sas}
+\def\slttitle{Lentel\protect\.es}

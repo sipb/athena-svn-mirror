@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Repeat loop macro, version 0.91, unreleased
-% Copyright Victor Eijkhout 1999
+% Repeat loop macro, version 0.92, December 2000
+% Copyright Victor Eijkhout 2000
 % file name: repeat.tex
 %
 % Author:
@@ -35,6 +35,8 @@
 %               \until{<cond>} \while{<cond>}
 %   \do { <loop body> }
 % where all control sequences in between \repeat and \do are optional.
+% The space after each argument is mandatory!
+% (This implies that you will have to write "\from\i" as "\from{\i}".)
 %
 % var: characters to form a control sequence;
 %    after \for{index} you can access the loop counter as \index.
@@ -50,7 +52,7 @@
 % at the beginning of the loop body.
 %
 % Exit from middle of loop: \breakrepeat
-% use this at any place in the loop; in case of a conditional use
+% use this at any place in the loop; in case of a conditional, use
 %   \ifsomething ... \expandafter \breakrepeat \fi
 %
 % There are some examples at the end of this file, after the \endinput line.
@@ -66,7 +68,9 @@
 % 0.91 documentation update,
 %      csarg-like control sequences made REP...
 %      counter update made global in case the body issues grouping,
-%      copyright notice
+%      copyright notice, February 1999
+% 0.92 installed trace switches, eliminated unwanted space caused by
+%      "\for{ijk} \do{...}"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
@@ -74,7 +78,7 @@
 %% Prevent multiple loading of this file
 %%
 \expandafter\ifx\csname REPdepth\endcsname\relax
-  \message{Loading loop macro, version 0.9}%
+  \message{Loading loop macro, version 0.92}%
 \else \endinput \fi
 
 %%
@@ -89,6 +93,8 @@
 
 \newcount\REPdepth
 \let\endrepeat\relax \def\csprotect{}
+% Trace switches may later be defined by PAC_utils
+\let\REPtraceinit\relax \let\REPtraceexit\relax
 
 %%
 %% Main repeat macro
@@ -98,8 +104,9 @@
 %% - scoop up body in token list; after the assignment define and
 %%   execute body
 %%
-\def\repeat#1\do{%
-  \advance\REPdepth by 1
+\def\repeat#1\do{
+  \REPtraceinit % exit in \breakrepeat
+  \advance\REPdepth by 1\relax
   \REPcsargrom\ifx{REPcount}\relax
     \REPcsargrom{\csname newcount\expandafter\endcsname}{REPcount}%
     \REPcsargrom{\csname newtoks\expandafter\endcsname}{REPtoks}%
@@ -119,7 +126,7 @@
         \REPcsargrom\the{REPutest}%
     \global\REPcsargrom\advance{REPcount} by \REPsign\REPcsrom{REPinc}\relax%
     \noexpand\endrepeat
-    \REPcsargrom\noexpand{REPrepeat}}%\show\REPbodyi
+    \REPcsargrom\noexpand{REPrepeat}}%
   \REPcsrom{REPbody}}
 %%
 %% Stop test
@@ -127,7 +134,7 @@
 %% \breakrepeat which scoops up the rest of the body and exits
 %%
 \def\breakrepeat#1\endrepeat{\REPzero\REPcsargrom\let{REPrepeat}\relax
-  \advance\REPdepth by -1
+  \advance\REPdepth by -1 \REPtraceexit
   }
 %%
 %% Setup
@@ -135,24 +142,24 @@
 %%
 \def\REPsetup#1{%
   \begingroup
-    \def\for##1{\edef\REPtmp{%
+    \def\for##1 {\edef\REPtmp{%
       \global\let\REPcsarg\noexpand{##1}\REPcsrom{REPcount}}\REPtmp}%
-    \def\from##1{\REPcsargrom\global{REPcount}##1\relax}%
-    \def\to##1{\edef\REPtmp{\global\REPcsargrom\noexpand{REPwtest}=
+    \def\from##1 {\REPcsargrom\global{REPcount}##1\relax}%
+    \def\to##1 {\edef\REPtmp{\global\REPcsargrom\noexpand{REPwtest}=
        {\REPcsargrom\the{REPwtest}%
         \noexpand\ifnum\REPcsargrom\noexpand{REPcount}\REPcomp##1\relax
           \noexpand\expandafter \noexpand\breakrepeat \noexpand\fi}}\REPtmp}%
-    \def\downto##1{\gdef\REPsign{-}\gdef\REPcomp{<}\to{##1}}%
-    \def\by##1{\ifnum##1<0 \message{REPEAT: increment has to be >0}%
+    \def\downto##1 {\gdef\REPsign{-}\gdef\REPcomp{<}\to{##1}}%
+    \def\by##1 {\ifnum##1<0 \message{REPEAT: increment has to be >0}%
                \REPcsargrom\gdef{REPinc}{-##1}\else
                \REPcsargrom\gdef{REPinc}{##1}\fi}
-    \def\until##1{\edef\REPtmp{\global\REPcsargrom\noexpand{REPutest}=
+    \def\until##1 {\edef\REPtmp{\global\REPcsargrom\noexpand{REPutest}=
        {\noexpand##1\relax
         \noexpand\expandafter \noexpand\breakrepeat \noexpand\fi}}\REPtmp}%
-    \def\while##1{\edef\REPtmp{\global\REPcsargrom\noexpand{REPwtest}=
+    \def\while##1 {\edef\REPtmp{\global\REPcsargrom\noexpand{REPwtest}=
        {\noexpand##1\relax \noexpand\else
         \noexpand\expandafter \noexpand\breakrepeat \noexpand\fi}}\REPtmp}%
-    \from{1}\by{1}#1%
+    \from{1} \by{1} #1%
   \endgroup}
 \def\REPzero
    {\REPcsrom{REPtoks}{}\REPcsrom{REPutest}{}\REPcsrom{REPwtest}{}%
@@ -161,7 +168,6 @@
 \endinput
 
 %\tracingmacros2
-\newcount\tmpcount
 \repeat \for{i} \by{2} \do {
   \ifnum\i=13 \expandafter\breakrepeat \fi
   \message{doing \number\i}
@@ -182,6 +188,7 @@
   \message{hello there!}
 }
 
+\newcount\tmpcount
 \repeat \for{j}
         \until{\tmpcount\j \divide\tmpcount by 37 \noexpand\ifnum\tmpcount=1}
   \do {

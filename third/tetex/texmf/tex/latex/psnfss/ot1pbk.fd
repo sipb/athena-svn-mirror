@@ -1,11 +1,5 @@
-%Filename: ot1pbk.fd
-%Created by: tex Fam_29465
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{ot1pbk.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for OT1/pbk.]
+   [2001/06/04 font definitions for OT1/pbk.]
 
 \DeclareFontFamily{OT1}{pbk}{}
 
@@ -56,4 +50,5 @@
 
 \DeclareFontShape{OT1}{pbk}{m}{ui}{<->ssub * pbk/m/it}{}
 \DeclareFontShape{OT1}{pbk}{b}{ui}{<->ssub * pbk/b/it}{}
+\DeclareFontShape{OT1}{pbk}{bx}{ui}{<->ssub * pbk/b/it}{}
 \endinput

@@ -1,0 +1,37 @@
+%Filename: ts1hlx.fd
+%Created by: tex hlx
+%Created using fontinst v1.914
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ts1hlx.fd}
+   [2003/01/04 Fontinst v1.914 font definitions for TS1/hlx.]
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+
+\DeclareFontFamily{TS1}{hlx}{}
+
+\DeclareLucidaFontShape{TS1}{hlx}{m}{n}{
+hlxr8c
+}{}
+
+\DeclareLucidaFontShape{TS1}{hlx}{m}{it}{
+hlxri8c
+}{}
+
+\DeclareLucidaFontShape{TS1}{hlx}{b}{n}{
+hlxb8c
+}{}
+
+\DeclareLucidaFontShape{TS1}{hlx}{b}{it}{
+hlxbi8c
+}{}
+
+\DeclareFontShape{TS1}{hlx}{m}{sl}{<->ssub * hlx/m/it}{}
+\DeclareFontShape{TS1}{hlx}{bx}{n}{<->ssub * hlx/b/n}{}
+\DeclareFontShape{TS1}{hlx}{bx}{it}{<->ssub * hlx/b/it}{}
+\DeclareFontShape{TS1}{hlx}{b}{sl}{<->ssub * hlx/b/it}{}
+\DeclareFontShape{TS1}{hlx}{bx}{sl}{<->ssub * hlx/b/sl}{}
+
+\endinput

@@ -1,2 +1,4 @@
-input blackcx % the `standard' black font is for the CX
-
+if mode=ljfour: input blacklj;
+elseif mode=cx: input blackcx;
+elseif mode=aps: input blackaps;
+fi  

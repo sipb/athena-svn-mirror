@@ -6,46 +6,13 @@
 %%
 %% supertabular.dtx  (with options: `package')
 %% 
-%% Copyright (C) 1988-97 by Theo Jurriens, Johanes Braams (90-96).
-%% All rights reserved.
-%% 
-%% IMPORTANT NOTICE:
-%% 
-%% You are not allowed to change this file.  You may however copy this file
-%% to a file with a different name and then change the copy.
-%% 
-%% You are NOT ALLOWED to distribute this file alone.  You are NOT ALLOWED
-%% to take money for the distribution or use of this file (or a changed
-%% version) except for a nominal charge for copying etc.
-%% 
-%% You are allowed to distribute this file under the condition that it is
-%% distributed together with all files mentioned below.
-%% 
-%% If you receive only some of these files from someone, complain!
-%% 
-%% Error Reports in case of UNCHANGED versions to either of
-%% 
-%%     J.L. Braams
-%%     TeXniek
-%%     Kooienswater 62
-%%     2715 AJ Zoetermeer
-%%     The Netherlands
-%%     Internet:  <JLBraams@cistron.nl>
-%% 
-%%     Theo Jurriens
-%%     Rijks Universiteit Groningen
-%%     P.O Box 800,
-%%     9700 AV Groningen
-%%     The Netherlands
-%%     Internet: <jurriens@fwn.rug.nl>
-%% 
 %% Sourcefile `supertabular.dtx'.
 %%
 %% Copyright (C) 1988 by Theo Jurriens <jurriens@fwn.rug.nl>
 %%                       P.O Box 800, 9700 AV Groningen
-%% Copyright (C) 1990-1999 by Johannes Braams <JLBraams@cistron.nl>
-%%                            Kooienswater 62
-%%                            2715 AJ Zoetermeer NL
+%% Copyright (C) 1990-2002 by Johannes Braams <texniek@braams.cistron.nl>
+%%                            Kersengaarde 33
+%%                            2723 BP Zoetermeer NL
 %%                       all rights reserved.
 %%
 %% This program can be redistributed and/or modified under the terms
@@ -55,7 +22,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{supertabular}
-              [1997/11/07 v4.1c the supertabular environment]
+              [2002/07/19 v4.1e the supertabular environment]
 \newcount\c@tracingst
 \DeclareOption{errorshow}{\c@tracingst\z@}
 \DeclareOption{pageshow}{\c@tracingst\tw@}
@@ -377,8 +344,6 @@
     \@topcaptiontrue
   \fi
   \global\let\\\@oldcr
-  \global\let\@table@first@head\undefined
-  \global\let\@table@last@tail\undefined
   \global\let\@process@tablecaption\relax
   \ST@trace\tw@{Ended a supertabular\ifST@star*\fi}%
   }
@@ -398,8 +363,6 @@
     \@topcaptiontrue
   \fi
   \global\let\\\@oldcr
-  \global\let\@table@first@head\undefined
-  \global\let\@table@last@tail\undefined
   \global\let\@process@tablecaption\relax
   \ST@trace\tw@{Ended a mpsupertabular\ifST@star*\fi}%
   }
@@ -440,6 +403,7 @@
     \global\ST@toadd=\z@
     \ST@trace\thr@@{Space left for tabular: \the\ST@pageleft}%
   }
+  \noalign{\global\let\ST@next\@empty}%
   \ifnum\ST@pageleft<\z@
     \ST@skippage
   \else
@@ -453,8 +417,6 @@
     \fi}
     \ifnum\ST@pageleft<\@tempdima
       \ST@newpage
-    \else
-      \noalign{\global\let\ST@next\@empty}%
     \fi
   \fi
   \ST@next}

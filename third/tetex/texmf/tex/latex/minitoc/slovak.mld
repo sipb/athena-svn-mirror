@@ -1,3 +1,4 @@
+\ProvidesFile{slovak.mld}[1999/03/16]
 % Slovak titles for minitoc.sty
 \def\mtctitle{Obsah}%
 \def\mlftitle{Zoznam obr\'azkov}%

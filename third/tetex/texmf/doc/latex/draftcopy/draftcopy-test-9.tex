@@ -29,23 +29,29 @@
 
 
 
-\documentclass[a5paper]{article}
+
+\documentclass{article}
 \usepackage[light,firsttwo,outline,bottomafter]{draftcopy}
 \newcommand{\xx}{
-Test9: This is a test page \thepage \vfill
+Test9: This is a test page \thepage\\
+test~the~tilde~tilde~tilde (1 fixed space (\~{})  between the words)\\
+test~~the~~tilde~~tilde~~tilde (2 fixed spaces (\~{}) between the words)\\
+test~~~the~~~tilde~~~tilde~~~tilde (3 fixed spaces (\~{}) between the words)
+\vfill
 This is a testpage \thepage \newpage
 }
-\draftcopyName{\today}{140}
-\draftcopySetScale{70}
+\draftcopyName{Release\space\space\space\today}{130}
+\draftcopySetScale{80}
 \begin{document}
-Should print the current date |verb\today| on the
-first two pages, light, outlined.\\
-Should print the current date on bottom of the page on the first
-two pages.\\
+Should print the word \verb+Release+  and the current date \verb|\today|
+(in english) on the first two pages, light, outlined.\\
+Should print the word \verb+Release+  and current date \verb|\today|
+(in english) on bottom of the page after the second page.\\
+Check that the lines with \~{} have correct spacing.\\
 \verb|\usepackage[light,firsttwo,outline,bottomafter]{draftcopy}|\\
 and \\
-\verb|\draftcopyName{\today}{155}|\\
-\verb|\draftcopySetScale{70}|\\
+\verb|\draftcopyName{Release\space\space\space\today}{130}|\\
+\verb|\draftcopySetScale{80}|\\
 in the preamble
 \xx\xx\xx\xx
 \end{document}

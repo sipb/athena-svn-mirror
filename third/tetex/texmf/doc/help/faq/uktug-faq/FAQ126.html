@@ -1,0 +1,35 @@
+<head>
+<title>UK TeX FAQ -- question 126</title>
+</head><body>
+<h3>How to create a <code>\subsubsubsection</code></h3>
+<p>LaTeX's set of "sections" stops at the level of
+<code>\subsubsection</code>.  This reflects a design decision by Lamport -
+for, after all, who can reasonably want a section with such huge
+strings of numbers in front of it?
+<p>In fact, LaTeX standard classes <em>do</em> define "sectioning"
+levels lower than <code>\subsubsection</code>, but they don't format them like
+sections (they're not numbered, and the text is run-in after the
+heading).  These deeply inferior section commands are <code>\paragraph</code>
+and <code>\subparagraph</code>; you can (if you <em>must</em>) arrange that these
+two commands produce numbered headings, so that you can use them as
+<code>\subsubsubsection</code>s and lower.
+<p>The <i>titlesec</i> allows you to adjust the definitions of the
+sectioning macros, and it may be used to
+transform a <code>\paragraph</code>'s typesetting so that it looks like that
+of a <code>\section</code>.
+<p>If you want to program the change yourself, you'll find that the
+commands (<code>\section</code> all the way down to <code>\subparagraph</code>) are
+defined in terms of the internal <code>\@startsection</code> command, which
+takes 6 arguments.  Before attempting this sort of work, you are well
+advised to read the LaTeX sources (<i>ltsect.dtx</i> in the
+LaTeX distribution) and the source of the standard packages
+(<i>classes.dtx</i>).
+
+The 
+<a href="FAQ22.html">LaTeX companion</a> discusses use of
+<code>\@startsection</code> for this sort of thing.
+<dl>
+<dt><tt><i>LaTeX source</i></tt><dd><a href="ftp://macros/latex/base.tar.gz">macros/latex/base.tar.gz</a>
+<dt><tt><i>titlesec.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/titlesec.tar.gz">macros/latex/contrib/supported/titlesec.tar.gz</a>
+</dl>
+<p></body>

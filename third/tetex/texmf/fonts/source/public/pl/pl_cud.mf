@@ -3,7 +3,7 @@
 % and French quotation marks: ,, << and >>) in text format.
 % The program is based on excerpts from the COMLIG.MF and ROMSUB.MF files.
 % ---------------------------------------------------------------------------
-% PL VERSION 1.03,   18 Dec 1992
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 % AUTHORS: {\bif{}Bogus\l{}aw Jackowski \& Marek Ry\'cko}
 % ---------------------------------------------------------------------------
@@ -14,23 +14,14 @@
 % 
 % For details see either the file MEXINFO.POL or MEXINFO.ENG.
 % ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-%  1 Jun 1992: version 1.02
-%    (no changes; the new version number due to changes in other files)
-% 18 Dec 1992: version 1.03
-%    (no changes; the new version number due to changes in FIK_MIK.MF
-%    and some cosmetic changes in CMBX11.MF, CMR11.MF, CMTI11.MF, CMSL11.MF,
-%    CMSSBI10.MF, and POLAN.MF)
-% ---------------------------------------------------------------------------
 
 
 % ---------------------------------------------------------------------------
 %%% italcorr corrital
-numeric qvair; qvair=max(round(xvair),fine+epsilon); % |qvair| = quotes vair
+%%% beginchar beginchar_twice
+%%% endfor repeat_once
 % ---------------------------------------------------------------------------
+
 cmchar "Polish opening quotes";
 if ligs>0:
 % in typical fonts the Polish opening quotation mark is based on COMLIG's
@@ -75,11 +66,14 @@ fi
 endchar;
 % ------------------------------------------------------------------------
 cmchar "French opening quotes";
-if not serifs or monospace:
-beginchar(french_opening_quotes,9u#,2bar_height#,0); adjust_fit(0,0);
-else:
-beginchar(french_opening_quotes,10u#,2bar_height#,0); adjust_fit(0,0);
-fi
+beginchar_twice(
+  if not serifs or monospace:
+   french_opening_quotes,9u#,2bar_height#,0
+  else:
+   french_opening_quotes,10u#,2bar_height#,0
+  fi
+ );
+ adjust_fit(0,0);
  pickup fine.nib;
  numeric the_shift,shift_corr;
  the_shift=hround(max(3u,1.7stem)); shift_corr=the_shift-3u;
@@ -103,14 +97,18 @@ fi
 % italic correction is set to |0| in |beginchar|, so let's correct it
  corrital z1'r;
  penlabels(1,2,3,1',2',3');
+repeat_once
 endchar; % French opening quotes
 % ------------------------------------------------------------------------
 cmchar "French closing quotes";
-if not serifs or monospace:
-beginchar(french_closing_quotes,9u#,2bar_height#,0); adjust_fit(0,0);
-else:
-beginchar(french_closing_quotes,10u#,2bar_height#,0); adjust_fit(0,0);
-fi
+ beginchar_twice(
+  if not serifs or monospace:
+   french_closing_quotes,9u#,2bar_height#,0
+  else:
+   french_closing_quotes,10u#,2bar_height#,0
+  fi
+ );
+ adjust_fit(0,0);
  pickup fine.nib;
  numeric the_shift,shift_corr;
  the_shift=hround(max(3u,1.7stem)); shift_corr=the_shift-3u;
@@ -134,6 +132,7 @@ fi
 % italic correction is set to |0| in |beginchar|, so let's correct it
  corrital z2r;
  penlabels(1,2,3,1',2',3');
+repeat_once
 endchar; % French closing quotes
 % ------------------------------------------------------------------------
 if ligs>0: % no ligatures in tt fonts

@@ -1,0 +1,137 @@
+%%% File: forfun.tex
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+\nopagenumbers
+\input mfpic.tex
+\usemetapost
+\usetruebbox
+\opengraphsfile{forfun}
+
+\mfpicunit=1bp
+
+\noindent
+\mfpic[1]{-1.25}{118.5}{-11.25}{40}
+
+% meta-ness:
+\mfsrc{h:=25; % height of "m"
+       s:=10; % width of stems
+}
+
+% Calculate key points:
+\mfsrc{% the "m"
+z1=(0,0);
+y1=y2=y5=y6=y9=y10;
+x2-x1=x6-x5=x10-x9=s;
+x6-x1=x10-x5=h;
+z15-z1=z3-z2=z4-z5=z7-z6=z8-z9=z11-z10=(0,h/2);
+y12=y1+h; x12=.5[x6,x9];
+y14=y12; x14=.5[x2,x5];
+z13= arcppp(z7,z14,z15) intersectionpoint arcppp(z11,z12,z4);}
+
+\mfsrc{% the "f"
+z21=z10; % start "f" where the "m" ends
+z22=z21+(s,0);
+z23=z22+(0,h-s);
+z24=z23+(3s/4,0);
+z25=z24+(0,s);
+z26=z23+(0,s);
+z27=z26+(0,s/4);
+z28=z27+(s/4,0)+ (s/4)*dir(30);
+z29=z28+s*dir(30);
+x30=x21; y30=y27;}%
+
+\mfsrc{% the "p"
+x31=x24;
+y31=y21;
+z32=z31-(0,s);
+z33=z32+(s,0);
+z35=(x33,h/2);
+z39=z31+(h,h)/2; %center of round part
+z34=(z33--z35) intersectionpoint (fullcircle scaled h shifted z39);
+z36=z39+(h/2,0);
+z37=z31+(0,h/2);}%
+
+\mfsrc{% the "i"
+z41=(x36,y31);
+z42=z41+(s,0);
+z43=z42+(0,h);
+z44=z41+(0,h);
+x45=0.5[x41,x42]; y45=y43 + s/2 +3/50;}% Center of dot
+
+\mfsrc{% the "c"
+z51=z42;
+z52=z51+(h,h)/2; %center
+z53=z52+(h/2)*dir(15);
+z54=z52-(h/2,0);
+z55=z52+(h/2)*dir(-15);
+z56=z52+(s/4)*dir(-15);
+z57=z52-(s/4,0);
+z58=z52+(s/4)*dir(15);}%
+
+\pen{2.5*\the\mfpicunit}
+
+% Calculate bounding box
+
+\mfsrc{%
+% Need to account for half the thickness of pen;
+% penwd is in absolute units so we need to convert.
+% This is a displacement, so use invvconv (not invzconv):
+begingroup
+save border,ll,ur;
+pair border,ll,ur; border:= invvconv((penwd,penwd))/2;
+ll=(0,y32)-border;
+ur=(x55,y30+(x29-x30)/2)+border;}
+
+\gfill[yellow]\rect{ll,ur}
+
+\mfsrc{endgroup;}
+
+\fillcolor{blue}
+\drawcolor{green}
+
+\mftitle{m}
+\draw\gfill\lclosed
+ \connect
+  \lines{z15,z1,z2,z3}
+  \arc[s]{z3,z4,-180}
+  \lines{z4,z5,z6,z7}
+  \arc[s]{z7,z8,-180}
+  \lines{z8,z9,z10,z11}
+  \arc[t]{z11,z12,z13}
+  \arc[t]{z13,z14,z15}
+ \endconnect
+
+
+\mftitle{f}
+\draw\gfill\lclosed
+ \connect
+  \lines{z21,z22,z23,z24,z25,z26,z27}
+  \arc[s]{z27,z28,-150}
+  \lines{z28,z29}
+  \arc[s]{z29,z30,150}
+ \endconnect
+
+\mftitle{p}
+\draw\gfill\lclosed
+ \connect
+  \lines{z31,z32,z33,z34}
+  \arc[t]{z34,z36,z37}
+ \endconnect
+
+\draw\gfill[yellow]\circle{z39,(h/2-s)}
+
+\mftitle{i}
+\draw\gfill\lclosed\lines{z41,z42,z43,z44}
+\draw\gfill\circle{z45,s/2}
+
+\mftitle{c}
+\draw\gfill\lclosed
+ \connect
+  \arc[t]{z53,z54,z55}
+  \arc[t]{z56,z57,z58}
+ \endconnect
+
+\endmfpic
+
+\closegraphsfile%{forfun}
+\bye

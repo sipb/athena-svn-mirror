@@ -1,0 +1,47 @@
+<head>
+<title>UK TeX FAQ -- question 183</title>
+</head><body>
+<h3>Footnotes in tables</h3>
+<p>The standard LaTeX <code>\footnote</code> command doesn't work in tables; the table
+traps the footnotes and they can't escape to the bottom of the page.
+<p>If your table is floating, your best bet is (unfortunately) to put the
+table in a <code>minipage</code> environment and to put the notes
+underneath the table, or to use Donald Arseneau's package
+<i>threeparttable</i> (which implements "table notes" proper).
+<p>Otherwise, if your table is not floating (it's just a
+'<code>tabular</code>' in the middle of some text), there are several
+things you can do to fix the problem.
+<ol>
+<li> Use <code>\footnotemark</code> to position the little marker
+  appropriately, and then put in <code>\footnotetext</code> commands to fill in
+  the text once you've closed the <code>tabular</code> environment.  This is
+  described in Lamport's book, but it gets messy if there's more than
+  one footnote.
+<li> Stick the table in a <code>minipage</code> anyway.  This provides
+  all the ugliness of footnotes in a minipage with no extra effort.
+<li> Use <i>threeparttable</i> anyway;
+  the package is intended for floating tables, and the result might
+  look odd if the table is not floating, but it will be reasonable.
+<li> Use <i>tabularx</i> or <i>longtable</i> from the LaTeX tools
+  distribution; they're noticeably less
+  efficient than the standard <code>tabular</code> environment, but they
+  do allow footnotes.
+<li> Grab hold of <i>footnote</i>, and put your <code>tabular</code>
+  environment inside a <code>savenotes</code> 
+  environment.  Alternatively, say <code>\makesavenoteenv{tabular}</code> in
+  the preamble of your document, and tables will all handle footnotes
+  correctly.
+<li> Use <i>mdwtab</i> from the same bundle; it will handle
+  footnotes properly, and has other facilities to 
+  increase the beauty of your tables.  It may also cause other
+  table-related packages (not the standard 'tools' ones, though) to
+  become very unhappy and stop working.
+</ol>
+<dl>
+<dt><tt><i>footnote.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/mdwtools.tar.gz">macros/latex/contrib/supported/mdwtools.tar.gz</a>
+<dt><tt><i>longtable.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+<dt><tt><i>mdwtab.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/mdwtools.tar.gz">macros/latex/contrib/supported/mdwtools.tar.gz</a>
+<dt><tt><i>threeparttable.sty</i></tt><dd><a href="ftp://macros/latex/contrib/other/misc/threeparttable.sty">macros/latex/contrib/other/misc/threeparttable.sty</a>
+<dt><tt><i>tabularx.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+</dl>
+<p></body>

@@ -1,3 +1,4 @@
+\ProvidesFile{italian.mld}[1999/03/16]
 % Italian titles for minitoc.sty
 \def\mtctitle{Contenuto}%
 \def\mlftitle{Elenco delle figure}%

@@ -1,0 +1,13 @@
+\ProvidesFile{russianc.mld}[1999/03/16]
+% Russian titles for minitoc.sty
+\def\mtctitle{\xalx{Soderjanie}}
+\def\mlftitle{\xalx{Spisok risunkow}}
+\def\mlttitle{\xalx{Spisok tablic}}
+
+\def\ptctitle{\xalx{Oglawlenie}}
+\def\plftitle{\xalx{Spisok risunkow}}
+\def\plttitle{\xalx{Spisok tablic}}
+
+\def\stctitle{\xalx{Soderjanie}}
+\def\slftitle{\xalx{Spisok risunkow}}
+\def\slttitle{\xalx{Spisok tablic}}

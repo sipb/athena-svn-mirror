@@ -1,4 +1,4 @@
-% EC Typewriter Light 10 point text companion font [1997/05/21 v1.0 (WaS)]
+% EC Typewriter Light 10 point text companion font [2000/02/09 v1.0f (WaS)]
 
 % This is a 10 pt typewriter font with all stroke widths
 % taken from cmtt8, so that it looks lighter than cmtt10
@@ -82,4 +82,4 @@ variant_g:=false;    % should an italic-style g be used?
 low_asterisk:=true;    % should the asterisk be centered at the axis?
 math_fitting:=false;    % should math-mode spacing be used?
 
-generate txsymb      % switch to the driver file
+generate ttsymb      % switch to the driver file

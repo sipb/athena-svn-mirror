@@ -1,0 +1,184 @@
+%%
+%% This is file `latin.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% latin.dtx  (with options: `code')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file is part of the Babel system release 3.7.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.2 or, at your option, any later version.
+%% 
+%% Copyright 1999-2001 Claudio Beccari All rights reserved.
+\ProvidesFile{latin.ldf}
+        [2001/06/04 v2.0d Latin support from the babel system]
+%% File `latin.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 2001
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams <babel@braams.cistron.nl>
+%%                          Claudio Beccari <beccari@polito.it>
+\LdfInit{latin}{captionslatin}
+\ifx\l@latin\@undefined
+    \@nopatterns{Latin}
+    \adddialect\l@latin0\fi
+\bbl@declare@ttribute{latin}{medieval}{%
+  \addto\captionslatin{\def\prefacename{Pr{\ae}fatio}}%
+  \def\november{Nouembris}%
+  \expandafter\addto\expandafter\extraslatin
+  \expandafter{\extrasmedievallatin}%
+  }
+\@namedef{captionslatin}{%
+  \def\prefacename{Praefatio}%
+  \def\refname{Conspectus librorum}%
+  \def\abstractname{Summarium}%
+  \def\bibname{Conspectus librorum}%
+  \def\chaptername{Caput}%
+  \def\appendixname{Additamentum}%
+  \def\contentsname{Index}%
+  \def\listfigurename{Conspectus descriptionum}%
+  \def\listtablename{Conspectus tabularum}%
+  \def\indexname{Index rerum notabilium}%
+  \def\figurename{Descriptio}%
+  \def\tablename{Tabula}%
+  \def\partname{Pars}%
+  \def\enclname{Adduntur}%   Or " Additur" ? Or simply Add.?
+  \def\ccname{Exemplar}%     Use the recipient's dative
+  \def\headtoname{\ignorespaces}% Use the recipient's dative
+  \def\pagename{Charta}%
+  \def\seename{cfr.}%
+  \def\alsoname{cfr.}% R.Tabacco never saw "cfr. atque" or similar forms
+  \def\proofname{Demonstratio}%
+  \def\glossaryname{Glossarium}%
+  }
+\def\datelatin{%
+  \def\november{Novembris}
+  \def\today{%
+    {\check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont
+      \uppercase\expandafter{\romannumeral\day}}~\ifcase\month\or
+    Ianuarii\or Februarii\or Martii\or Aprilis\or Maii\or Iunii\or
+    Iulii\or Augusti\or Septembris\or Octobris\or \november\or
+    Decembris\fi
+    \space{\uppercase\expandafter{\romannumeral\year}}}}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
+\addto\extraslatin{%
+  \babel@savevariable\clubpenalty
+  \babel@savevariable\widowpenalty
+  \clubpenalty3000\widowpenalty3000}
+\addto\extraslatin{%
+  \babel@savevariable\finalhyphendemerits
+  \finalhyphendemerits50000000}
+\addto\extrasmedievallatin{%
+\babel@savevariable{\lccode`\V}%
+\babel@savevariable{\uccode`\u}%
+\lccode`\V=`\u \uccode`\u=`\V}
+\addto\extraslatin{%
+  \babel@savevariable{\lccode`\^^e6}% T1
+  \babel@savevariable{\uccode`\^^e6}% T1
+  \babel@savevariable{\lccode`\^^c6}% T1
+  \babel@savevariable{\lccode`\^^f7}% T1
+  \babel@savevariable{\uccode`\^^d7}% T1
+  \babel@savevariable{\lccode`\^^d7}% T1
+  \babel@savevariable{\lccode`\^^1a}% OT1
+  \babel@savevariable{\uccode`\^^1a}% OT1
+  \babel@savevariable{\lccode`\^^1d}% OT1
+  \babel@savevariable{\lccode`\^^1b}% OT1
+  \babel@savevariable{\uccode`\^^1b}% OT1
+  \babel@savevariable{\lccode`\^^1e}% OT1
+  \SetLatinLigatures}
+\providecommand\SetLatinLigatures{%
+  \def\@tempA{T1}\ifx\@tempA\f@encoding
+    \catcode`\^^e6=11 \lccode`\^^e6=`\^^e6 \uccode`\^^e6=`\^^c6 % \ae
+    \catcode`\^^c6=11 \lccode`\^^c6=`\^^e6 % \AE
+    \catcode`\^^f7=11 \lccode`\^^f7=`\^^f7 \uccode`\^^f7=`\^^d7 % \oe
+    \catcode`\^^d7=11 \lccode`\^^d7=`\^^f7 % \OE
+  \else
+    \catcode`\^^1a=11 \lccode`\^^1a=`\^^1a \uccode`\^^1a=`\^^1d % \ae
+    \catcode`\^^1d=11 \lccode`\^^1d=`\^^1a % \AE (^^])
+    \catcode`\^^1b=11 \lccode`\^^1b=`\^^1b \uccode`\^^1b=`\^^1e % \oe
+    \catcode`\^^1e=11 \lccode`\^^1e=`\^^1b % \OE (^^^)
+  \fi
+  \let\@tempA\@undefined
+  }
+\initiate@active@char{^}
+\initiate@active@char{=}
+\addto\extraslatin{\languageshorthands{latin}}
+\addto\extraslatin{\bbl@activate{^}}
+\addto\extraslatin{\bbl@activate{=}}
+\addto\noextraslatin{\bbl@deactivate{^}}
+\addto\noextraslatin{\bbl@deactivate{=}}
+\declare@shorthand{latin}{^a}{%
+    \textormath{\u{a}\allowhyphens}{\hat{a}}}
+\declare@shorthand{latin}{^e}{%
+    \textormath{\u{e}\nobreak\hskip\z@skip}{\hat{e}}}
+\declare@shorthand{latin}{^i}{%
+    \textormath{\u{\i}\nobreak\hskip\z@skip}{\hat{\imath}}}
+\declare@shorthand{latin}{^o}{%
+    \textormath{\u{o}\nobreak\hskip\z@skip}{\hat{o}}}
+\declare@shorthand{latin}{^u}{%
+    \textormath{\u{u}\nobreak\hskip\z@skip}{\hat{u}}}
+\declare@shorthand{latin}{=a}{%
+    \textormath{\={a}\nobreak\hskip\z@skip}{\bar{a}}}
+\declare@shorthand{latin}{=e}{%
+    \textormath{\={e}\nobreak\hskip\z@skip}{\bar{e}}}
+\declare@shorthand{latin}{=i}{%
+    \textormath{\={\i}\nobreak\hskip\z@skip}{\bar{\imath}}}
+\declare@shorthand{latin}{=o}{%
+    \textormath{\={o}\nobreak\hskip\z@skip}{\bar{o}}}
+\declare@shorthand{latin}{=u}{%
+    \textormath{\={u}\nobreak\hskip\z@skip}{\bar{u}}}
+\catcode`\= 12\relax
+\catcode`\^ 7\relax
+\initiate@active@char{"}%
+\addto\extraslatin{%
+  \bbl@activate{"}%
+  }
+\declare@shorthand{latin}{"}{%
+  \ifmmode
+    \def\lt@@next{''}%
+  \else
+    \def\lt@@next{\futurelet\lt@temp\lt@cwm}%
+  \fi
+  \lt@@next
+  }%
+\def\lt@allowhyphens{\nobreak\discretionary{-}{}{}\hskip\z@skip}
+\newcommand*{\lt@cwm}{%
+  \let\lt@n@xt\relax
+  \ifcat\noexpand\lt@temp a%
+    \let\lt@n@xt\lt@allowhyphens
+  \else
+    \if\noexpand\lt@temp\string|%
+      \def\lt@n@xt{\lt@allowhyphens\@gobble}%
+    \fi
+  \fi
+  \lt@n@xt}%
+\ldf@finish{latin}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `latin.ldf'.

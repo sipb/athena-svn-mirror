@@ -1,3 +1,4 @@
+\ProvidesFile{english.mld}[1999/03/16]
 % English titles for minitoc.sty
 \def\mtctitle{Contents}
 \def\mlftitle{Figures}

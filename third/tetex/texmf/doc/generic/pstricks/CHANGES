@@ -1,5 +1,5 @@
             PSTricks changes since announcement of April 18, 1997
-                               (May 3, 1999)
+                             (February 21, 2001)
 	    -----------------------------------------------------
 
 
@@ -46,7 +46,7 @@ doesn't work, even if those from pst-node.tex were correct
 doesn't work correctly
 (reported by Denis Girou <Denis.Girou@idris.fr>)
 
-  * 97/07/11 pstricks.tex (97 patch 3): dotscale parameter inefficient
+  * 97/07/11 pstricks.tex (97 patch 3): dotscale parameter unefficient
 with \psdot and \psdots macros
 (reported by Ivan Maio <maio@polito.it>)
 
@@ -141,10 +141,6 @@ convention has another meaning for \pscharpath and \pscharclip, it can execute
 wrong code inside \solid@star.
 (reported by To Thanh Binh <binh@atlantis.ET.Uni-Magdeburg.De>)
 
-  * 99/03/11 pst-char.tex (97 patch 3): A spurious blank was introduced in the
-\pscharpath@ii macro by the patch 1 correction.
-(reported by Stanislav Brabec <utx@k332.feld.cvut.cz>)
-
   * 98/11/27 pst-node.tex (97 patch 8): The \multispan "plain" macro is broken
 by a change made in PSTricks 97 for LaTeX 2e compatibility. And in any case
 the \psspan macro of the "psmatrix" environment doesn't work because an
@@ -152,15 +148,78 @@ undefined \iterate macro is required.
 (reported by Stanislav Brabec <utx@k332.feld.cvut.cz> and
 Denis Girou <Denis.Girou@idris.fr>)
 
+  * 99/03/11 pst-char.tex (97 patch 3): A spurious blank was introduced in the
+\pscharpath@ii macro by the patch 1 correction.
+(reported by Stanislav Brabec <utx@k332.feld.cvut.cz>)
+
   * 99/03/24 pstricks.tex (97 patch 10): The * convention doesn't work
 in the \uput* macro, due to a broken definition in the code of pst-beta.tex
 used in PSTricks 97.
 (reported by Bob Howlett <bobh@maths.usyd.edu.au>)
 
-  * 99/04/14 pstricks.tex (97 patch 9): The \ncLine doesn't position
+  * 99/04/14 pst-node.tex (97 patch 9): The \ncLine doesn't position
 correctly it content, due to an erroneous order of the used coordinates 
 in the code of pst-beta.tex used in PSTricks 97.
 (reported by Frank Mueller <meckccef@sp.zrz.tu-berlin.de>)
+
+  * 99/08/03 pstricks.tex (97 patch 11): The \curveto and \rcurveto macros
+are broken due to a typo in the \pst@threecoor macro (in fact, it was
+already present in version 0.93...).
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 99/08/31 pst-tree.tex (97 patch 4): The \skiplevel macro and the relative
+"skiplevels" environment doesn't compute correctly the bounding boxes when
+their arguments are some trees with special configuration.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 99/09/03 pst-node.tex (97 patch 10): The \psspan macro doesn't work since
+LaTeX 2e, due to internal changes in LaTeX 2e.
+(sent by Michael Sharpe <msharpe@euclid.ucsd.edu>)
+
+  * 99/10/06 pstricks.tex (97 patch 12): The \pssetlength, \pssetxlength,
+\pssetylength and \psaddtolength have not the expected behaviour in a special
+circumstance, which can be cure by adding a \relax macro.
+(reported by Isaiah Shavitt <shavitt@chemistry.ohio-state.edu>)
+
+  * 99/10/06 vtex.con (97 patch 3): The \tx@Rot macro is redefined.
+(sent by Michael Vulis <support@micropress-inc.com>)
+
+  * 99/10/28 pst-tree.tex (97 patch 5): A *value for the levelsep parameter
+doesn't work in plain TeX, as the auxiliary unit file used to write temporary
+informations is not defined.
+(reported by Michael W. Daniels <daniels@ling.ohio-state.edu>)
+
+  * 99/11/17 vtex.con (97 patch 4): There is a coherency problem in the
+management of colors inside the pspicture environment.
+(reported by Michael Vulis <support@micropress-inc.com>)
+
+  * 99/12/12 pst-plot.tex (97 patch 2): The dotscale parameter is not
+correctly managed most of the time.
+(reported by Etienne Riga <etienne.riga@skynet.be>)
+
+  * 99/12/16 pstricks.tex (97 patch 13): The dot symbols for diamond and
+diamond* are now defined in the PSTricksDotFont font. The symbol Bdiamond
+is also added.
+(suggested and sent by Etienne Riga <etienne.riga@skynet.be>)
+
+  * 99/12/23 pstricks.tex (97 patch 14): The dotscale parameter is not
+correctly managed most of the time (the patch 5 was still unefficient).
+(reported by Etienne Riga <etienne.riga@skynet.be>)
+
+  * 00/04/26 pst-eps.tex (97 patch 2): There is a typo in the \pst@checkfile
+macro when using the "all*" value for the makeeps parameter.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 00/04/26 pst-tree.tex (97 patch 6): A *value for the levelsep parameter
+doesn't work in plain TeX, as the auxiliary unit file used to write temporary
+informations is not defined (replace the inefficient patch 5 for the same
+problem).
+(reported by Michael W. Daniels <daniels@ling.ohio-state.edu>)
+
+  * 00/11/09 pst-node.tex (97 patch 11): The \pst@newnode macro can introduce
+a spurious blank in some special circumstances. I add a \pst@killglue macro
+to solve the problem.
+(reported by Dominique Rodriguez <dominique.rodriguez@waika9.com>)
 
 
 pstricks/latex:
@@ -199,6 +258,21 @@ suggested by Michael Vulis to don't leave unused operands on the stack,
 which is essential for some drivers.
 (reported by Michael Vulis <support@micropress-inc.com>)
 
+  * 99/12/16 pst-dots.pro (97 patch 1): The dot symbols for diamond and
+diamond* are now defined in the PSTricksDotFont font. The symbol Bdiamond
+is also added.
+(suggested and sent by Etienne Riga <etienne.riga@skynet.be>)
+
+  * 00/05/02 pst-grad.pro (97 patch 1): There are two blank lines in
+the file which cause a bug when this header file is loaded using the \PSTtoEPS
+macro of the `pst-eps' package.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 00/05/02 pst-text.pro (97 patch 1): There are several blank lines in
+the file which cause a bug when this header file is loaded using the \PSTtoEPS
+macro of the `pst-eps' package.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
 
 pstricks/doc:
 ------------
@@ -220,8 +294,11 @@ correction of the bug in pst-key.tex 1.10 (see below).
   * 98/09/09 test-pst.tex: Version 1.3: add explicit page breaks to require
 less memory to be compiled (only 180000 bytes now).
 
-  * 99/03/24 pstricks.bug: Version 1.4: document the problem with the
-\psspan macro of `pst-node'.
+  * 00/03/15 pstricks.bug: Version 1.5: suppress the entry for the problem
+with the \psspan macro of `pst-node' (as the workaround proposed by Michael
+Sharpe was introduced in pst-node.tex as patch 10) and add the problem
+on two labels for a connection with at least one of them using also node
+connections, as reported by Anthony Doggett.
 
 
 pstricks/obsolete/doc/src:
@@ -259,3 +336,11 @@ definition of the \use@par macro.
 (from Martin Giese)
 
   * 98/09/16 Add the pst-gr3d subdirectory and relative files
+
+  * 99/11/26 Add the pst-osci subdirectory and relative files
+
+  * 01/02/19 Add the pst-lens subdirectory and relative files
+
+  * 01/02/19 Version 1.3 of the `pst-gr3d' package
+
+  * 01/02/21 Version 1.5 of the `pst-poly' package

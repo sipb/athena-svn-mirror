@@ -1,0 +1,102 @@
+<head>
+<title>UK TeX FAQ -- question 260</title>
+</head><body>
+<h3>(La)TeX makes overfull lines</h3>
+<p>When TeX is building a paragraph, it can make several attempts to
+get the line-breaking right; on each attempt it runs the same
+algorithm, but gives it different parameters.  You can affect the way
+TeX's line breaking works by adjusting the parameters: this answer
+deals with the "tolerance" and stretchability parameters.  The other
+vital 'parameter' is the set of hyphenations to be applied: see
+
+"<a href="FAQ197.html">my words aren't being hyphenated</a>"
+(and the questions it references) for advice.
+<p>If you're getting an undesired "overfull box", what has happened is
+that TeX has given up: the parameters you gave it don't allow it to
+produce a result that <em>doesn't</em> overfill.  In this circumstance,
+Knuth decided the best thing to do was to produce a warning, and to
+allow the user to solve the problem.  (The alternative, silently to go
+beyond the envelope of "good taste" defined for this run of TeX,
+would be distasteful to any discerning typographer.)  The user can
+almost always address the problem by rewriting the text that's
+provoking the problem - but that's not always possible, and in some
+cases it's impossible to solve the problem without adjusting the
+parameters.  This answer discusses the approaches one might take to
+resolution of the problem, on the assumption that you've got the
+hyphenation correct.
+<p>The simplest case is where a 'small' word fails to break at the end of
+a line; pushing the entire word to a new line isn't going to make much
+difference, but it might make things just bad enough that TeX won't
+do it by default.  In such a case on can <em>try</em> the LaTeX
+<code>\linebreak</code> command: it may solve the problem, and if it does, it
+will save an awful lot of fiddling.  Otherwise, one needs to adjust
+parameters: to do that we need to recap the details of TeX's line
+breaking mechanisms.
+<p>TeX's first attempt at breaking lines is performed without even
+trying hyphenation: TeX sets its "tolerance" of line breaking
+oddities to the internal value <code>\pretolerance</code>, and sees what
+happens.  If it can't get an acceptable break, TeX adds the
+hyphenation points allowed by the current patterns, and tries again
+using the internal <code>\tolerance</code> value.  If this pass also fails, and
+the internal <code>\emergencystretch</code> value is positive, TeX will try
+a pass that allows <code>\emergencystretch</code> worth of extra stretchability
+to the spaces in each line.
+<p>In principle, therefore, there are three parameters (other than
+hyphenation) that you can change: <code>\pretolerance</code>, <code>\tolerance</code>
+and <code>\emergencystretch</code>.  Both the <code>tolerance</code> values are
+simple numbers, and should be set by TeX primitive count
+assignment - for example
+<pre>
+  \pretolerance=150
+</pre>
+For both, an "infinite" tolerance is represented by the value
+<code>10</code><code>000</code>, but infinite tolerance is rarely
+appropriate, since it can lead to very bad line breaks indeed.
+<p><code>\emergencystretch</code> is a TeX-internal 'dimen' register, and can
+be set as normal for dimens in Plain TeX; in LaTeX, use
+<code>\setlength</code> - for example:
+<pre>
+  \setlength{\emergencystretch}{3em}
+</pre>
+<p>The the choice of method has time implications - each of the
+passes takes time, so adding a pass (by changing
+<code>\emergencystretch</code>) is less desirable than suppressing one (by
+changing <code>\pretolerance</code>).  However, it's unusual nowadays to find a
+computer that's slow enough that the extra passes are really
+troublesome.
+<p>In practice, <code>\pretolerance</code> is rarely used other than to manipulate
+the use of hyphenation; Plain TeX and LaTeX both set its value
+to <code>100</code>.  To suppress the first scan of paragraphs, set
+<code>\pretolerance</code> to <code>-1</code>.
+<p><code>\tolerance</code> is often a good method for adjusting spacing;
+Plain TeX and LaTeX both set its value to <code>200</code>.  LaTeX's
+<code>\sloppy</code> command sets it to <code>9999</code>, as does the
+<code>sloppypar</code> environment.  This value is the largest
+available, this side of infinity, and can allow pretty poor-looking
+breaks (this author rarely uses <code>\sloppy</code> "bare", though he does
+occasionally use <code>sloppypar</code> - that way, the change of
+<code>\tolerance</code> is confined to the environment).  More satisfactory is
+to make small changes to <code>\tolerance</code>, incrementally, and then to look to
+see how the change affects the result; very small increases can often
+do what's necessary.  Remember that <code>\tolerance</code> is a paragraph
+parameter, so you need to ensure it's actually applied - see
+
+"<a href="FAQ253.html">ignoring paragraph parameters</a>".
+LaTeX users could use an environment like:
+<pre>
+  \newenvironment{tolerant}[1]{%
+    \par\tolerance=#1\relax
+  }{%
+    \par
+  }
+</pre>
+enclosing entire paragraphs (or set of paragraphs) in it.
+<p><code>\emergencystretch</code> is a slightly trickier customer to understand.
+The example above set it to <code>3em</code>; the Computer Modern fonts
+ordinarily fit three space skips to the em, so the change would
+allow anything up to the equivalent of nine extra spaces in each
+line.  In a line with lots of spaces, this could be reasonable, but
+with (say) only three spaces on the line, each could stretch to four
+times its natural width.
+<p>
+<p><p><p></body>

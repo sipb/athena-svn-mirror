@@ -1,3 +1,4 @@
+\ProvidesFile{breton.mld}[1999/03/16]
 % Breton titles for minitoc.sty
 \def\mtctitle{Taolenn}
 \def\mlftitle{Listenn ar Figurenno\`u}

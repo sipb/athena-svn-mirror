@@ -6,20 +6,31 @@
 %%
 %% hyperref.dtx  (with options: `pd1enc')
 %% 
-%% File: hyperref.dtx Copyright (C) 1995-1999 Sebastian Rahtz
+%% File: hyperref.dtx Copyright 1995-2001 Sebastian Rahtz,
+%% RCS: $Id: pd1enc.def,v 1.1.1.2 2003-02-26 03:22:35 amb Exp $
 %%
-%% This package may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% This file is part of the `Hyperref Bundle'.
+%% -------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the `Hyperref Bundle' is
+%% given in the file `manifest.txt'.
 %%
 \ProvidesFile{pd1enc.def}
- [1999/03/30 v0.3 PDFDocEncoding (Heiko Oberdiek)]
-\DeclareTextCommand{\textLF}{PD1}{\string\n} % line feed
-\DeclareTextCommand{\textCR}{PD1}{\string\r} % carriage return
-\DeclareTextCommand{\textHT}{PD1}{\string\t} % horizontal tab
-\DeclareTextCommand{\textBS}{PD1}{\string\b} % backspace
-\DeclareTextCommand{\textFF}{PD1}{\string\f} % formfeed
+  [2003/01/22 v6.73n
+  Hyperref: PDFDocEncoding definition (HO)]
 \DeclareFontEncoding{PD1}{}{}
+\DeclareTextCommand{\textLF}{PD1}{\012} % line feed
+\DeclareTextCommand{\textCR}{PD1}{\015} % carriage return
+\DeclareTextCommand{\textHT}{PD1}{\011} % horizontal tab
+\DeclareTextCommand{\textBS}{PD1}{\010} % backspace
+\DeclareTextCommand{\textFF}{PD1}{\014} % formfeed
 \DeclareTextAccent{\`}{PD1}{\textgrave}
 \DeclareTextAccent{\'}{PD1}{\textacute}
 \DeclareTextAccent{\^}{PD1}{\textcircumflex}
@@ -29,8 +40,8 @@
 \DeclareTextAccent{\v}{PD1}{\textcaron}
 \DeclareTextAccent{\.}{PD1}{\textdotaccent}
 \DeclareTextAccent{\c}{PD1}{\textcedilla}
-\DeclareTextCompositeCommand{\'}{PD1}{\@empty}{\textgrave}
-\DeclareTextCompositeCommand{\`}{PD1}{\@empty}{\textacute}
+\DeclareTextCompositeCommand{\`}{PD1}{\@empty}{\textgrave}
+\DeclareTextCompositeCommand{\'}{PD1}{\@empty}{\textacute}
 \DeclareTextCompositeCommand{\^}{PD1}{\@empty}{\textcircumflex}
 \DeclareTextCompositeCommand{\~}{PD1}{\@empty}{\texttilde}
 \DeclareTextCompositeCommand{\"}{PD1}{\@empty}{\textdieresis}
@@ -55,7 +66,7 @@
 \DeclareTextCommand{\textparenright}{PD1}{\string\)} % parenright \051
 \DeclareTextCommand{\textless}{PD1}{<} % less \074
 \DeclareTextCommand{\textgreater}{PD1}{>} % greater \076
-\DeclareTextCommand{\textbackslash}{PD1}{\string\\} % backslash \134
+\DeclareTextCommand{\textbackslash}{PD1}{\134} % backslash
 \DeclareTextCommand{\textasciicircum}{PD1}{\136} % asciicircum
 \DeclareTextCommand{\textunderscore}{PD1}{\137} % underscore
 \DeclareTextCommand{\textgrave}{PD1}{\140} % grave
@@ -71,10 +82,10 @@
 \DeclareTextCommand{\textemdash}{PD1}{\204} % emdash
 \DeclareTextCommand{\textendash}{PD1}{\205} % endash
 \DeclareTextCommand{\textflorin}{PD1}{\206} % florin
-\DeclareTextCommand{\textfractionmark}{PD1}{\207} % fraction
+\DeclareTextCommand{\textfractionmark}{PD1}{/} % fraction, \207
 \DeclareTextCommand{\guilsinglleft}{PD1}{\210} % guilsinglleft
 \DeclareTextCommand{\guilsinglright}{PD1}{\211} % guilsinglright
-\DeclareTextCommand{\textminus}{PD1}{\212} % minus
+\DeclareTextCommand{\textminus}{PD1}{-} % minus, \212
 \DeclareTextCommand{\textperthousand}{PD1}{\213} % perthousand
 \DeclareTextCommand{\quotedblbase}{PD1}{\214} % quotedblbase
 \DeclareTextCommand{\textquotedblleft}{PD1}{\215} % quotedblleft
@@ -83,19 +94,20 @@
 \DeclareTextCommand{\textquoteright}{PD1}{\220} % quoteright
 \DeclareTextCommand{\quotesinglbase}{PD1}{\221} % quotesinglbase
 \DeclareTextCommand{\texttrademark}{PD1}{\222} % trademark
-\DeclareTextCommand{\textfi}{PD1}{\223} % fi ??
-\DeclareTextCommand{\textfl}{PD1}{\224} % fl ??
-\DeclareTextCommand{\L}{PD1}{\225} % Lslash
+\DeclareTextCommand{\textfi}{PD1}{fi} % fi ?? \223
+\DeclareTextCommand{\textfl}{PD1}{fl} % fl ?? \224
+\DeclareTextCommand{\L}{PD1}{L} % Lslash, \225
 \DeclareTextCommand{\OE}{PD1}{\226} % OE
 \DeclareTextCompositeCommand{\v}{PD1}{S}{\227} % Scaron
 \DeclareTextCompositeCommand{\"}{PD1}{Y}{\230} % Ydieresis
-\DeclareTextCompositeCommand{\v}{PD1}{Z}{\231} % Zcaron
-\DeclareTextCommand{\i}{PD1}{\232} % dotlessi
-\DeclareTextCommand{\l}{PD1}{\233} % lslash
+\DeclareTextCommand{\IJ}{PD1}{\230}
+\DeclareTextCompositeCommand{\v}{PD1}{Z}{Z} % Zcaron, \231
+\DeclareTextCommand{\i}{PD1}{i} % dotlessi, \232
+\DeclareTextCommand{\l}{PD1}{l} % lslash, \233
 \DeclareTextCommand{\oe}{PD1}{\234} % oe
 \DeclareTextCompositeCommand{\v}{PD1}{s}{\235} % scaron
-\DeclareTextCompositeCommand{\v}{PD1}{z}{\236} % zcaron
-\DeclareTextCommand{\texteuro}{PD1}{\240} % euro
+\DeclareTextCompositeCommand{\v}{PD1}{z}{z} % zcaron, 236
+\DeclareTextCommand{\texteuro}{PD1}{\240} % Euro
 \DeclareTextCommand{\textexclamdown}{PD1}{\241} % exclamdown
 \DeclareTextCommand{\textcent}{PD1}{\242} % cent
 \DeclareTextCommand{\textsterling}{PD1}{\243} % sterling
@@ -195,6 +207,7 @@
 \DeclareTextCompositeCommand{\'}{PD1}{y}{\375} % yacute
 \DeclareTextCommand{\th}{PD1}{\376} % thorn
 \DeclareTextCompositeCommand{\"}{PD1}{y}{\377} % ydieresis
+\DeclareTextCommand{\ij}{PD1}{\377}
 \DeclareTextCommand{\SS}{PD1}{SS}
 \DeclareTextCommand{\textcelsius}{PD1}{\textdegree C}
 \DeclareTextCommand{\textglqq}{PD1}{\quotedblbase}
@@ -211,6 +224,20 @@
 \DeclareTextCommand{\textpm}{PD1}{\textplusminus}
 \DeclareTextCommand{\textcdot}{PD1}{\textperiodcentered}
 \DeclareTextCommand{\textbeta}{PD1}{\ss}
+\DeclareTextCompositeCommand{\k}{PD1}{a}{a} % aogonek
+\DeclareTextCompositeCommand{\'}{PD1}{c}{c} % cacute
+\DeclareTextCompositeCommand{\k}{PD1}{e}{e} % eogonek
+\DeclareTextCompositeCommand{\'}{PD1}{n}{n} % nacute
+\DeclareTextCompositeCommand{\'}{PD1}{s}{s} % sacute
+\DeclareTextCompositeCommand{\'}{PD1}{z}{z} % zacute
+\DeclareTextCompositeCommand{\.}{PD1}{z}{z} % zdot
+\DeclareTextCompositeCommand{\k}{PD1}{A}{A} % Aogonek
+\DeclareTextCompositeCommand{\'}{PD1}{C}{C} % Cacute
+\DeclareTextCompositeCommand{\k}{PD1}{E}{E} % Eogonek
+\DeclareTextCompositeCommand{\'}{PD1}{N}{N} % Nacute
+\DeclareTextCompositeCommand{\'}{PD1}{S}{S} % Sacute
+\DeclareTextCompositeCommand{\'}{PD1}{Z}{Z} % Zacute
+\DeclareTextCompositeCommand{\.}{PD1}{Z}{Z} % Zdot
 \endinput
 %%
 %% End of file `pd1enc.def'.

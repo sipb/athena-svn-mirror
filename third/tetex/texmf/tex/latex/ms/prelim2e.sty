@@ -6,27 +6,19 @@
 %%
 %% prelim2e.dtx  (with options: `package')
 %% 
-%% Copyright (C) [1995..1998] by Martin Schroeder. All rights reserved.
-%% 
+%% Copyright (C) [1995..2001] by Martin Schroeder. All rights reserved.
 %% 
 %% This file is part of the Prelim2e package
 %% 
-%% IMPORTANT NOTICE:
-%% -----------------------------------------
+%% This program may be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License, either version 1.0 of this
+%% license, or (at your option) any later version.
+%% The latest version of this license is in
+%%    CTAN:macros/latex/base/lppl.txt.
 %% 
-%% You are *not* allowed to change this file.
-%% You may however copy this file to a file with a different name and
-%% then change the copy.
+%% Happy users are requested to send me a postcard. :-)
 %% 
-%% You are *not* allowed to distribute this file alone.
-%% 
-%% You are *not* allowed to take money for the distribution or use of
-%% this file (or a changed version) except for a nominal charge for
-%% copying etc.
-%% 
-%% You *are* allowed to distribute this file under the condition that it
-%% is distributed together with all files mentioned below (these files
-%% need not necessarily be in the same archive or directory).
+%% The Prelim2e package contains these files:
 %% 
 %%       prelim2e.asc
 %%       prelim2e.dtx
@@ -34,18 +26,17 @@
 %%       prelim2e.ins
 %%       prelim2e.bug
 %% 
-%% If you receive only some of these files from someone, complain!
-%% 
 %% Error Reports in case of UNCHANGED versions to
 %% 
 %%                         Martin Schr"oder
 %%                         Cr"usemannallee 3
-%%                         D-28213 Bremen
-%%                         Martin.Schroeder@ACM.org
+%%                         28213 Bremen
+%%                         Germany
+%%                         martin@oneiros.de
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesPackage{prelim2e}
-         [1998/08/09 v1.21 prelim2e Package (MS)]
+         [2001/02/17 v1.23 prelim2e Package (MS)]
 %% \CharacterTable
 %% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -66,14 +57,15 @@
 %% ===================================================================
 %%  @LaTeX-package-file{
 %%    author            = {Martin Schr\"oder},
-%%    version           = "1.21",
-%%    date              = "9 August 1998",
+%%    version           = "1.23",
+%%    date              = "17 February 2001",
 %%    filename          = "prelim2e.sty",
 %%    address           = {Martin Schr\"oder
 %%                         Cr\"usemannallee 3
-%%                         D-28213 Bremen},
+%%                         28213 Bremen
+%%                         Germany},
 %%    telephone         = "+49-421-2239425",
-%%    email             = "Martin.Schroeder@ACM.org",
+%%    email             = "martin@oneiros.de",
 %%    pgp-Key           = "2048 bit / KeyID 292814E5",
 %%    pgp-fingerprint   = "7E86 6EC8 97FA 2995 82C3  FEA5 2719 090E",
 %%    docstring         = "LaTeX package which allows the marking of
@@ -87,12 +79,16 @@
 \newcommand{\PrelimWords}{}
 \DeclareOption{draft}{\@prelim@drafttrue}
 \DeclareOption{final}{\@prelim@draftfalse}
+\DeclareOption{danish}{%
+   \renewcommand{\PrelimWords}{Forel\o{}big version}}
 \DeclareOption{english}{%
    \renewcommand{\PrelimWords}{Preliminary version}}
 \DeclareOption{french}{%
    \renewcommand{\PrelimWords}{Version pr\'eliminaire}}
 \DeclareOption{german}{%
    \renewcommand{\PrelimWords}{Vorl\"aufige Version}}
+\DeclareOption{italian}{%
+   \renewcommand{\PrelimWords}{Versione preliminare}}
 \DeclareOption{time}{\@prelim@timetrue}
 \DeclareOption{scrtime}{\@prelim@scrtimetrue\@prelim@timetrue}
 \DeclareOption*{%

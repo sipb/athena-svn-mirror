@@ -1,0 +1,63 @@
+<head>
+<title>UK TeX FAQ -- question 102</title>
+</head><body>
+<h3>URLs in BibTeX bibliographies</h3>
+<p>There is no citation type for URLs, <em>per se</em>, in the
+standard BibTeX styles, though Oren Patashnik (the author of
+BibTeX) is considering developing one such for use with the
+long-awaited BibTeX version 1.0.
+<p>The actual information that need be available in a citation of an
+URL is discussed at some length in the publicly available
+on-line 
+
+<a href="http://www.nlc-bnc.ca/iso/tc46sc9/standard/690-2e.htm">extracts of ISO 690-2</a>;
+the techniques below do <em>not</em> satisfy all the requirements of
+ISO 690-2, but they offer a solution that is at least
+available to users of today's tools.
+<p>Until the new version arrives, the simplest technique is to use the
+<code>howpublished</code> field of the standard styles' <code>@misc</code> function.  Of
+course, the strictures
+
+about <a href="FAQ153.html">typesetting URLs</a>
+ still apply, so the entry will look like:
+<pre>
+  @misc{...,
+    ...,
+    howpublished = "\url{http://...}"
+  }
+</pre>
+<p>Another possibility is that some conventionally-published paper,
+technical report (or even book) is also available on the Web.  In such
+cases, a useful technique is something like:
+<pre>
+  @techreport{...,
+    ...,
+    note = "Also available as \url{http://...}"
+  }
+</pre>
+<p>There is good reason to use the <i>url</i> or <i>hyperref</i>
+packages in this context, since (by default) the <code>\url</code> command
+ignores spaces in its argument.  BibTeX has a habit of splitting
+lines it considers excessively long, and if there are no space
+characters for it to use as 'natural' breakpoints, BibTeX will
+insert a comment ('<code>%</code>') character ... which
+is an acceptable character in an URL, so that <code>\url</code> will
+typeset it.  If you're using <i>url</i>, the way around the problem
+is to insert odd spaces inside the URL itself in the <code>.bib</code>
+file, to enable BibTeX to make reasonable decisions about breaking
+the line.  Note that the version of <code>\url</code> that comes with recent
+versions of the <i>hyperref</i> package doesn't suffer from the
+'<code>%</code>-end of line' problem: <i>hyperref</i>
+spots the problem, and suppresses the unwanted characters.
+<p>A possible alternative approach is to use the <i>harvard</i>
+package (if its citation styles are otherwise satisfactory for you).
+<i>Harvard</i> bibliography styles all include a "<code>url</code>" field in
+their specification; however, the typesetting offered is somewhat
+feeble (though it does recognise and use <i>LaTeX2HTML</i> macros
+if they are available, to create hyperlinks).
+<dl>
+<dt><tt><i>harvard</i></tt><dd><a href="ftp://macros/latex/contrib/supported/harvard.tar.gz">macros/latex/contrib/supported/harvard.tar.gz</a>
+<dt><tt><i>hyperref</i></tt><dd><a href="ftp://macros/latex/contrib/supported/hyperref.tar.gz">macros/latex/contrib/supported/hyperref.tar.gz</a>
+<dt><tt><i>url</i></tt><dd><a href="ftp://macros/latex/contrib/other/misc/url.sty">macros/latex/contrib/other/misc/url.sty</a>
+</dl>
+<p></body>

@@ -6,9 +6,9 @@
 %%
 %% paralist.dtx  (with options: `package')
 %% 
-%% Copyright 1998-1999 Bernd Schandl
-%% email bschand@math.clemson.edu
-%% www   http://www.math.clemson.edu/~bschand/paralist
+%% Copyright 1998-2002 Bernd Schandl
+%% email schandl@gmx.net
+%% www   http://schandl.gmxhome.de/paralist
 %% 
 %% This file can be redistributed and/or modified under the terms
 %% of the LaTeX Project Public License distributed from CTAN
@@ -32,18 +32,38 @@
 %%   Right brace   \}     Tilde         \~}
 %%
 \ProvidesPackage{paralist}%
-          [1999/04/29 v1.8 Some new list environments (BS)]
-
+          [2002/03/18 v2.3b Extended list environments (BS)]
 \NeedsTeXFormat{LaTeX2e}
-\newif\if@newitem\@newitemfalse
-\newif\if@newenum\@newenumfalse
-\newif\if@defblank\@defblankfalse
-\newif\if@increaseonly\@increaseonlyfalse
-\DeclareOption{newitem}{\@newitemtrue}
-\DeclareOption{newenum}{\@newenumtrue}
-\DeclareOption{defblank}{\@defblanktrue}
-\DeclareOption{increaseonly}{\@increaseonlytrue}
+\newif\if@plnewitem\@plnewitemtrue
+\newif\if@plnewenum\@plnewenumtrue
+\newif\if@plalwaysadjust\@plalwaysadjustfalse
+\newif\if@plneveradjust\@plneveradjustfalse
+\newif\if@plneverdecrease\@plneverdecreasefalse
+\newif\if@pldefblank\@pldefblankfalse
+\newif\if@plpointedenum\@plpointedenumfalse
+\newif\if@plpointlessenum\@plpointlessenumfalse
+\newif\if@plflushright\@plflushrighttrue
+\newif\if@plloadcfg\@plloadcfgtrue
+\DeclareOption{newitem}{\@plnewitemtrue}
+\DeclareOption{olditem}{\@plnewitemfalse}
+\DeclareOption{newenum}{\@plnewenumtrue}
+\DeclareOption{oldenum}{\@plnewenumfalse}
+\DeclareOption{alwaysadjust}{\@plalwaysadjusttrue}
+\DeclareOption{neveradjust}{\@plneveradjusttrue}
+\DeclareOption{neverdecrease}{\@plneverdecreasetrue}
+\DeclareOption{increaseonly}{\@plneverdecreasetrue
+  \PackageWarningNoLine{Paralist}{Option increaseonly deprecated.
+    \MessageBreak Use option neverdecrease instead}}
+\DeclareOption{defblank}{\@pldefblanktrue}
+\DeclareOption{pointedenum}{\@plpointedenumtrue}
+\DeclareOption{pointlessenum}{\@plpointlessenumtrue}
+\DeclareOption{cfg}{\@plloadcfgtrue}
+\DeclareOption{nocfg}{\@plloadcfgfalse}
+\DeclareOption{flushright}{\@plflushrighttrue}
+\DeclareOption{flushleft}{\@plflushrightfalse}
+\ExecuteOptions{newitem,newenum,cfg,flushright}
 \ProcessOptions\relax
+\if@plalwaysadjust\@plneveradjustfalse\fi
 \newlength{\pltopsep}
 \newlength{\plpartopsep}
 \newlength{\plitemsep}
@@ -63,9 +83,71 @@
     \fi
   \fi
   \settowidth{\@tempdima}{#1}%
-  \ifdim\@tempdima>\z@{#1}\nobreakspace\fi
+  \ifdim\@tempdima>\z@\makelabel{{#1}}\nobreakspace\fi
   \ignorespaces
   }
+\def\paradescriptionlabel#1{{\normalfont\bfseries #1}}
+\if@plflushright
+  \def\enumlabel#1{\hss#1}
+\else
+  \def\enumlabel#1{#1\hfil}
+\fi
+\if@plflushright
+  \def\itemlabel#1{\hss#1}
+\else
+  \def\itemlabel#1{#1\hfil}
+\fi
+\newif\if@plmylabel\@plmylabelfalse
+\newif\if@pldoadjust\@pldoadjustfalse
+\def\@adjust@enum@labelwidth{%
+  \if@plneveradjust\else
+    \if@plalwaysadjust\@pldoadjusttrue\else
+      \if@plmylabel\@pldoadjusttrue\fi
+    \fi
+  \fi
+  \if@pldoadjust
+    \csname c@\@enumctr\endcsname7
+    \settowidth{\@tempdima}{%
+      \csname label\@enumctr\endcsname\hspace{\labelsep}}%
+    \advance\@listdepth by 1\relax
+    \if@plneverdecrease
+      \ifdim\@tempdima >
+        \csname leftmargin\romannumeral\@listdepth\endcsname
+          \csname leftmargin\romannumeral\@listdepth\endcsname
+            \@tempdima
+      \fi
+    \else
+      \csname leftmargin\romannumeral\@listdepth\endcsname
+        \@tempdima
+    \fi
+    \advance\@listdepth by -1\relax
+  \fi
+  \@pldoadjustfalse
+  \@plmylabelfalse}
+\def\@adjust@item@labelwidth{%
+  \if@plneveradjust\else
+    \if@plalwaysadjust\@pldoadjusttrue\else
+      \if@plmylabel\@pldoadjusttrue\fi
+    \fi
+  \fi
+  \if@pldoadjust
+    \settowidth{\@tempdima}{%
+      \csname\@itemitem\endcsname\hspace{\labelsep}}%
+    \advance\@listdepth by 1\relax
+    \if@plneverdecrease
+      \ifdim\@tempdima >
+        \csname leftmargin\romannumeral\@listdepth\endcsname
+          \csname leftmargin\romannumeral\@listdepth\endcsname
+            \@tempdima
+      \fi
+    \else
+      \csname leftmargin\romannumeral\@listdepth\endcsname
+        \@tempdima
+    \fi
+    \advance\@listdepth by -1\relax
+  \fi
+  \@pldoadjustfalse
+  \@plmylabelfalse}
 \newtoks\pl@lab
 \def\pl@qmark{?}
 \def\pl@label#1#2{%
@@ -93,6 +175,7 @@
   \@tempa}
 \providecommand\pl@hook{}
 \def\@enumlabel@#1[#2]{%
+  \@plmylabeltrue
   \@tempcnta0
   \pl@lab{}%
   \let\pl@the\pl@qmark
@@ -103,35 +186,11 @@
   \fi
   \expandafter\edef\csname label\@enumctr\endcsname{\the\pl@lab}%
   \expandafter\let\csname the\@enumctr\endcsname\pl@the
-  \csname c@\@enumctr\endcsname7
-  \if@increaseonly
-    \settowidth{\@tempdima}{\the\pl@lab\hspace{\labelsep}}%
-    \ifdim\@tempdima >
-      \csname leftmargin\romannumeral\@enumdepth\endcsname
-        \csname leftmargin\romannumeral\@enumdepth\endcsname
-          \@tempdima
-    \fi
-  \else
-    \expandafter\settowidth
-      \csname leftmargin\romannumeral\@enumdepth\endcsname
-      {\the\pl@lab\hspace{\labelsep}}%
-  \fi
   #1}
 \def\@itemlabel@#1[#2]{%
+  \@plmylabeltrue
   \def\pl@itemitem{#2}%
   \def\@itemitem{pl@itemitem}%
-  \if@increaseonly
-    \settowidth{\@tempdima}{#2\hspace{\labelsep}}%
-    \ifdim\@tempdima >
-      \csname leftmargin\romannumeral\@itemdepth\endcsname
-        \csname leftmargin\romannumeral\@itemdepth\endcsname
-          \@tempdima
-    \fi
-  \else
-    \expandafter\settowidth
-      \csname leftmargin\romannumeral\@itemdepth\endcsname
-      {#2\hspace{\labelsep}}%
-  \fi
   #1}
 \def\asparaenum{%
   \ifnum\@enumdepth>\thr@@
@@ -167,6 +226,7 @@
   \usecounter{\@enumctr}%
   \def\@itemlabel{\csname label\@enumctr\endcsname}%
   \let\@item\pl@item
+  \def\makelabel##1{##1}%
   \ignorespaces}
 \let\endinparaenum\ignorespacesafterend
 \def\compactenum{%
@@ -178,15 +238,19 @@
   \fi
   \@ifnextchar[{\@enumlabel@{\@compactenum@}[}{\@compactenum@}}
 \def\@compactenum@{%
+  \@adjust@enum@labelwidth
   \expandafter\list\csname label\@enumctr\endcsname{%
     \usecounter{\@enumctr}%
     \parsep\plparsep
     \itemsep\plitemsep
     \topsep\pltopsep
     \partopsep\plpartopsep
-    \def\makelabel##1{\hss\llap{##1}}}}
+    \labelwidth
+      \csname leftmargin\romannumeral\@listdepth\endcsname
+    \advance\labelwidth-\labelsep
+    \let\makelabel\enumlabel}}
 \let\endcompactenum\endlist
-\if@newenum
+\if@plnewenum
   \def\enumerate{%
     \ifnum \@enumdepth >\thr@@
       \@toodeep
@@ -196,10 +260,14 @@
     \fi
     \@ifnextchar[{\@enumlabel@{\@enumerate@}[}{\@enumerate@}}
   \def\@enumerate@{%
+    \@adjust@enum@labelwidth
     \expandafter\list\csname label\@enumctr\endcsname{%
       \usecounter{\@enumctr}%
-      \def\makelabel##1{\hss\llap{##1}}}}
-\fi % \if@newenum
+      \labelwidth
+        \csname leftmargin\romannumeral\@listdepth\endcsname
+      \advance\labelwidth-\labelsep
+      \let\makelabel\enumlabel}}
+\fi
 \def\asparaitem{%
   \ifnum\@itemdepth>\thr@@
     \@toodeep
@@ -232,6 +300,7 @@
 \def\@inparaitem@{%
   \def\@itemlabel{\csname\@itemitem\endcsname}%
   \let\@item\pl@item
+  \def\makelabel##1{##1}%
   \ignorespaces}
 \let\endinparaitem\ignorespacesafterend
 \def\compactitem{%
@@ -243,14 +312,18 @@
   \fi
   \@ifnextchar[{\@itemlabel@{\@compactitem@}}{\@compactitem@}}
 \def\@compactitem@{%
+  \@adjust@item@labelwidth
   \expandafter\list\csname\@itemitem\endcsname{%
     \parsep\plparsep
     \itemsep\plitemsep
     \topsep\pltopsep
     \partopsep\plpartopsep
-    \def\makelabel##1{\hss\llap{##1}}}}
+    \labelwidth
+      \csname leftmargin\romannumeral\@listdepth\endcsname
+    \advance\labelwidth-\labelsep
+    \let\makelabel\itemlabel}}
 \let\endcompactitem\endlist
-\if@newitem
+\if@plnewitem
   \def\itemize{%
     \ifnum \@itemdepth >\thr@@
       \@toodeep
@@ -260,9 +333,32 @@
     \fi
     \@ifnextchar[{\@itemlabel@{\@itemize@}}{\@itemize@}}
   \def\@itemize@{%
+    \@adjust@item@labelwidth
     \expandafter\list\csname\@itemitem\endcsname{%
-      \def\makelabel##1{\hss\llap{##1}}}}
-\fi % \if@newitem
+      \labelwidth
+        \csname leftmargin\romannumeral\@listdepth\endcsname
+      \advance\labelwidth-\labelsep
+      \let\makelabel\itemlabel}}
+\fi
+\def\asparadesc{%
+  \list{}{%
+    \labelwidth\z@
+    \labelsep.5em
+    \leftmargin\z@
+    \parsep\parskip
+    \itemsep\z@
+    \topsep\z@
+    \partopsep\parskip
+    \itemindent\parindent
+    \advance\itemindent\labelsep
+    \let\makelabel\paradescriptionlabel}}
+\let\endasparadesc\endlist
+\def\inparadesc{%
+  \let\@itemlabel\@empty
+  \let\@item\pl@item
+  \let\makelabel\paradescriptionlabel
+  \ignorespaces}
+\let\endinparadesc\ignorespacesafterend
 \def\compactdesc{%
   \list{}{%
     \parsep\plparsep
@@ -273,7 +369,7 @@
     \itemindent-\leftmargin
     \let\makelabel\descriptionlabel}}
 \let\endcompactdesc\endlist
-\if@defblank
+\if@pldefblank
   \def\asparablank{%
     \list{}{%
       \labelwidth\z@
@@ -292,42 +388,84 @@
     \let\@item\pl@item
     \ignorespaces}
   \let\endinparablank\ignorespacesafterend
-\fi % \if@defblank
-\def\defaultitem#1#2#3#4{%
+\fi
+\def\setdefaultitem#1#2#3#4{%
   \if@empty{#1}{}{\def\labelitemi{#1}}%
   \if@empty{#2}{}{\def\labelitemii{#2}}%
   \if@empty{#3}{}{\def\labelitemiii{#3}}%
   \if@empty{#4}{}{\def\labelitemiv{#4}}}
-\def\defaultenum#1#2#3#4{%
+\def\defaultitem{%
+  \PackageWarning{Paralist}{Macro \protect\defaultitem\space
+    deprecated. \MessageBreak Use macro \protect\setdefaultitem
+    \space instead!! \MessageBreak Used}
+  \setdefaultitem}
+\newif\if@pltemp
+\def\setdefaultenum#1#2#3#4{%
+  \if@plneveradjust\@pltemptrue\else\@pltempfalse\fi
+  \@plneveradjusttrue
   \if@empty{#1}{}{%
-    \@tempdimb\leftmargini
     \def\@enumctr{enumi}%
-    \@enumlabel@{\relax}[[#1]%
-    \leftmargini\@tempdimb}%
+    \@enumlabel@{\relax}[[#1]}%
   \if@empty{#2}{}{%
-    \@tempdimb\leftmarginii
     \def\@enumctr{enumii}%
-    \@enumlabel@{\relax}[[#2]%
-    \leftmarginii\@tempdimb}%
+    \@enumlabel@{\relax}[[#2]}%
   \if@empty{#3}{}{%
-    \@tempdimb\leftmarginiii
     \def\@enumctr{enumiii}%
-    \@enumlabel@{\relax}[[#3]%
-    \leftmarginiii\@tempdimb}%
+    \@enumlabel@{\relax}[[#3]}%
   \if@empty{#4}{}{%
-    \@tempdimb\leftmarginiv
     \def\@enumctr{enumiv}%
-    \@enumlabel@{\relax}[[#4]%
-    \leftmarginiv\@tempdimb}%
+    \@enumlabel@{\relax}[[#4]}%
+  \if@pltemp\@plneveradjusttrue\else\@plneveradjustfalse\fi
+  \@plmylabelfalse
   \relax}
-\def\defaultleftmargin#1#2#3#4{%
+\def\defaultenum{%
+  \PackageWarning{Paralist}{Macro \protect\defaultenum\space
+    deprecated. \MessageBreak Use macro \protect\setdefaultenum
+    \space instead!! \MessageBreak Used}
+  \setdefaultitem}
+\def\setdefaultleftmargin#1#2#3#4#5#6{%
   \if@empty{#1}{}{\leftmargini#1}%
   \if@empty{#2}{}{\leftmarginii#2}%
   \if@empty{#3}{}{\leftmarginiii#3}%
   \if@empty{#4}{}{\leftmarginiv#4}%
+  \if@empty{#5}{}{\leftmarginv#5}%
+  \if@empty{#6}{}{\leftmarginvi#6}%
   \relax}
-\InputIfFileExists{paralist.cfg}{%
-  \typeout{Using the configuration file paralist.cfg}}{}
+\def\defaultleftmargin#1#2#3#4{%
+  \setdefaultleftmargin{#1}{#2}{#3}{#4}{}{}%
+  \PackageWarning{Paralist}{Macro \protect\defaultleftmargin
+    \space deprecated. \MessageBreak Use macro
+    \protect\setdefaultleftmargin\space instead!!
+    \MessageBreak But note that it has six arguments!
+    \MessageBreak Used}}
+\def\pl@pointxxxenum{%
+  \def\theenumi{\arabic{enumi}}%
+  \def\theenumii{\theenumi.\arabic{enumii}}%
+  \def\theenumiii{\theenumii.\arabic{enumiii}}%
+  \def\theenumiv{\theenumiii.\arabic{enumiv}}%
+  \def\p@enumi{}%
+  \def\p@enumii{}%
+  \def\p@enumiii{}%
+  \def\p@enumiv{}}
+\def\pl@pointedenum{%
+  \def\labelenumi{\theenumi.}%
+  \def\labelenumii{\theenumii.}%
+  \def\labelenumiii{\theenumiii.}%
+  \def\labelenumiv{\theenumiv.}}
+\def\pl@pointlessenum{%
+  \def\labelenumi{\theenumi}%
+  \def\labelenumii{\theenumii}%
+  \def\labelenumiii{\theenumiii}%
+  \def\labelenumiv{\theenumiv}}
+\def\pointedenum{\pl@pointxxxenum\pl@pointedenum}
+\def\pointlessenum{\pl@pointxxxenum\pl@pointlessenum}
+\if@plpointedenum\pointedenum\fi
+\if@plpointlessenum\pointlessenum\fi
+\if@plloadcfg
+  \InputIfFileExists{paralist.cfg}{%
+    \PackageInfo{Paralist}{%
+      Using the configuration file paralist.cfg}}{}
+\fi
 
 \endinput
 %%

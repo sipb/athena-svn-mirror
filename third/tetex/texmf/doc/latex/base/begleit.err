@@ -24,7 +24,7 @@ Weitere Fehlermeldungen bitte an:
 
 Danke)
 
-Version: 26 Sep 1998
+Version: 30 Apr 1999
 --------------------
 
 Neuste Version dieser Liste ist Teil der LaTeX Distribution
@@ -1096,12 +1096,6 @@ FMi: Font Fehler (reported)
  * Seite 261, Abschnitt 8.8.3; Absatz 1 v.u., Zeile 2 (TLa)
    Erg"anze: Auf diese Weise ... ben"otigten Zeichensatzinformationen ...
                                          ^
- * Seite 261, Abschnitt 8.8.3, 7. Zeile (SWi)
-   L"osche Wort:  erfolgen
-
- * Seite 261, Abschnitt 8.8.3, 8. Zeile (SWi)
-   ersetze `ben"otigen' durch `ben"otigten'.
- 
  * Seite 262, 4. Absatz, Formel (VSc)
    sollte es nicht b_0 statt b^0 hei"sen??
 
@@ -1604,6 +1598,12 @@ FMi: \par fehlt vor \vspace!
    italic correction: \index{\texttt{schl"ussel}} und \index{schl"ussel}
                                                ^                       ^
 
+ * Seite 365, Abb. 12.3, Absatz 2, 1. Zeile v.u. (TLa)
+   Erg"anze: in der Pr"aambel des Dokumentes angegeben wurde.
+                                                 ^^
+ * Seite 365, Abb. 12.4, Absatz 2, 1. Zeile v.u. (TLa)
+   Erg"anze analog zu vorhergehender Korrektur.
+
  * S. 366, Kapitel 12.2.1 bzw. 12.2.2 ("Uberschrift) (SWi)
    Index oder Indexes, (obwohl beides richtig ist).
 
@@ -1614,10 +1614,25 @@ FMi: \par fehlt vor \vspace!
    ab MakeIndex 2.13:
    -g setzt `+' als quote, kein Stil mehr erforderlich
 
+ * Seite 368, Option -p nr, 5. Zeile v.u. (TLa)
+   Vereinfache: der Protokolldatei  nach der letzten in der Datei
+                                  ^^         ^^^^^^^
+ * Seite 370, Abschnitt 12.3.2; Absatz 1 v.u., Zeile 3 v.u. (TLa)
+   Erg"anze: Conflicting entries ... auf zwei verschiedene
+                                                      ^
  * Seite 371, Tafel 12.1, quote (VSc)
      statt: '<<
    richtig: '"'
 
+ * Seite 371, Tafel 12.1, page_compositor (TLa)
+   Erg"anze: "--"
+              ^^^
+ * Seite 372, Tafel 12.2; headings_flag (TLa)
+   Erg"anze: Gro"s-/(Klein)buchstaben ...
+                  ^
+ * Seite 372, Tafel 12.2; headings_flag (TLa)
+   Entferne: headings_prefix und  headings_suffix ...
+                                 ^
  * Seite 373 Tafel 12.3 (MSc)
    suffix_p2  mu"s  suffix_2p  lauten.
    suffix_p3  mu"s  suffix_3p  lauten.
@@ -1627,6 +1642,9 @@ FMi: \par fehlt vor \vspace!
  * Seite 374, Absatz 4, Zeile 3 (MiB)
    korrigiere: ...die Option -p, die auf Seite 368 beschrieben ist).
                                                ^^^
+ * Seite 377, Abschnitt 12.4.5; Absatz 3, Zeile 2 (TLa)
+   Entferne: betrachtet, und ... Buchstaben. Dies  bedeutet
+                                                 ^
  * S. 377, 3. Absatz, 5. Zeile (SWi)
    ersetze 'Bearbeitung obigen Indexeintr"age'
    durch 'Bearbeitung obiger Indexeintr"age'.
@@ -1672,6 +1690,9 @@ FMi: \par fehlt vor \vspace!
  * Seite 390, Abbildung 13.1, 4.Item, 2. Zeile (VSc)
    korrigiere Ligatur: Auf"|l"osung statt Aufl"osung
 
+ * Seite 393, Abschnitt 13.2.2; item alpha (TLa)
+   Hinweis auf Sortierung nach Labeln (s. a. S. 398, Abb. 13.6)
+
  * Seite 396 (FMi)
    Extend the source of example to include abstract and keyword field
    which then can be shown in output of printbib auf Seite 410
@@ -1687,6 +1708,9 @@ FMi: \par fehlt vor \vspace!
  * Seite 407, 1. Absatz, 3. Zeile (VSc)
    erg"anze: so da"s die Wahl des einen oder anderen
                                      ^^
+ * Seite 407, Abschnitt 13.4; Absatz 2 v.u., Zeile 1 (TLa)
+   Ersetze: Eine Reihe von ... verf"ugbar. Die
+                                            ^^
  * Seite 409, Zeile 5 (RSc)
    In dem Wort schl"ussel-Argument ist der Umlaut als "u dargestellt.
 
@@ -1696,6 +1720,10 @@ FMi: \par fehlt vor \vspace!
  * Seite 409, printbib-Item, 1. Zeile (VSc)
    erg"anze: C-Shell-Script
                     ^
+ * Seite 409, Abschnitt 13.4; item bibclean (TLa)
+   Erg"anze: BiBTeX-Literaturdatenbank ... auf
+             UNIX-, Vax-/VMS- und MS-DOS-Plattformen
+                 ^     ^    ^           ^
  * Seite 411, vorletzter Absatz, letzte + 3.letzte Zeile (VSc)
    korrigiere 2x Ligatur: Auf"|listung statt Auflistung
 
@@ -1710,6 +1738,9 @@ FMi: \par fehlt vor \vspace!
    Say explicitly that quotes or braces *must* be omitted around
    abbreviations like the month names.
 
+ * Seite 417, Abschnitt 13.5.2; Absatz 2, Zeile 3 v.u. (TLa)
+   Ersetze: gesamten Eintrag begrenzen). Um ...
+                                       ^
  * Seite 419, 3. Absatz, letzte Zeile (VSc)
    korrigiere Ligatur: auf"|f"uhrt statt auff"uhrt
 
@@ -1725,6 +1756,18 @@ FMi: \par fehlt vor \vspace!
  * Seite 425, Tafel 13.3, edition-Item, 1. Zeile (VSc)
    korrigiere Ligatur: Auf"|lage statt Auflage
 
+ * Seite 425, Tafel 13.3, edition-Item, 1. Zeile (TLa)
+   Erg"anze: Die Auf"|lage eines Buches, z.\.B. ">Zweite"<. Sie ...
+                                                          ^
+ * Seite 425, Tafel 13.3, type-Item, Zeile 2 v.u. (TLa)
+   Vertausche: man anstelle ... chapter = "1.2",
+                                              ^^
+ * Seite 428, Tafel 13.5, if$-Funktion (TLa)
+   Erg"anze: F_1 ausf"uhren, wenn ...
+                           ^
+ * Seite 431, Abschnitt 13.8.1, FUNCTION fin-entry, Zeile 6 (TLa)
+   Entferne:  skip$
+             ^
  * Seite 433, vorletzte und letzte Zeile (VSc)
    korrigiere 2x Ligatur: Auf"|lage statt Auflage
 
@@ -1795,6 +1838,21 @@ FMi: \par fehlt vor \vspace!
           \changes{v2.2}{17 Nov 94}{"uberfl"ussiges 'item entfernt}
 FMi: ja alte konvention \ darzustellen :-)
 
+ * Seite 450, Abbildung 14.1, rechts, Absatz 3, Zeile 3 v.u. (TLa)
+   Erg"anze: \newcommand{docsamplecmd}[1]{\texttt{doc:}...
+                                                   ^
+ * Seite 451, Abbildung 14.2, links, Abschnitt 2, Zeile 2 v.u. (TLa)
+   Erg"anze: nen Text in kursiver ... verwenden doc!
+                                                   ^
+ * Seite 451, Abbildung 14.2, links, Abschnitt 3, Zeile 3 (TLa)
+   Erg"anze: 3 \newcommand{docsamplecmd}[1]{\texttt{doc:}..
+                                                       ^
+ * Seite 453, Abschnitt 14.3.1, Absatz 2 v.u., Zeile 4 v.u. (TLa)
+   Entferne: gabe von \keepsilent ... wird ein   gro"ser ...
+                                              ^^
+ * Seite 453, Abschnitt 14.3.1, Absatz 2 v.u., Zeile 2 v.u. (TLa)
+   Erg"anze/Ersetze: hinaus stehen ... zur Verf"ugung --- N"aheres ist ...
+                                                        ^ ^
  * Seite 454, Kapitel 14.4, 1. Absatz, letzte Zeile (VSc)
    erg"anze: da"s weitere Aktionen des Benutzers n"otig werden.
                                                   ^
@@ -1826,6 +1884,9 @@ FMi: ja alte konvention \ darzustellen :-)
    of missing closing argument braces and can be used if a command is
    intended to be used only within paragraphs.
 
+ * Seite 460, Abschnitt \newcommand{\EPsI}; Absatz 5, Zeile 1 v.u. (TLa)
+   l"oesche: \index{\Ps!Encapsulated}}\index{EPs}}
+                                    ^
  * Seite 462, 1. Absatz, 2. Zeile (VSc)
    l"osche: verwendet, so da"s damit wird das gleiche Resultat
                                      ^^^^
@@ -1835,9 +1896,21 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 463, 3. Absatz, 4. Zeile (VSc)
    f"uge ein: Zusammenfassung in einer quote-Umgebung.
                               ^^
+ * Seite 468, Abschnitt A.1.3; Absatz 1, Zeile 3 (TLa)
+   Erg"anze: \newcommand{\labelenumiii}{...
+                                    ^^
+ * Seite 468, Abschnitt A.1.3; Absatz 1, Zeile 4 (TLa)
+   Erg"anze: \newcommand{\labelenumiv}{...
+                                    ^
+ * Seite 468, Abschnitt A.1.4; Absatz 'stretch', Zeile 2 v.u. (TLa)
+   Entferne: Positionierung von Text vorzunehmen  bzw. ...
+                                                ^
  * Seite 469, Z. 4 (EPi)
    Entferne Akzent von: Did\^ot.
 
+ * Seite 469; Absatz dd (TLa)
+   Entferne: ... eines franz"osischen Zolls  = ...
+                                           ^
  * Seite 472, Zeile -5 (UMa)
    Ersetze:
      von TeX dar, und zur Umsetzung ...
@@ -1847,10 +1920,22 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 472, Zeile -1 (UMa)
    Boxen k"onnen nach oben, unten, links und rechts ...
                                  ^
+ * Seite 473, Abschnitt Rule; Zeile 1 v.u. (TLa)
+   Entferne: der Kolumnentitel  vom Haupttext.
+                              ^
  * Seite 474, Zeile 7 (UGo)
    The optional arguments to \raisebox are exchanged: "height" comes 
    before "depth".
 
+ * Seite 476, Abschnitt parbox-Beispiel; Absatz 3 v.l., Zeile 3 v.u. (TLa)
+   Erg"anze: lich ist, den Text
+                     ^
+ * Seite 476, Abschnitt parbox-Beispiel; Absatz 4 v.l., Zeile 2 v.u. (TLa)
+   Erg"anze: oft unm"oglich ist, den Text
+                               ^
+ * Seite 479, Abschnitt A.2.2; Absatz 3, Zeile 3 v.u. (TLa)
+   Erg"anze: zu erreichen. In ... Benutzers, n"otigenfalls ...
+                                           ^
  * Seite 480, Zeile 10 (UMa)
    Kein Komma vor und:
    ... in den der gesetzte Text abgespeichert und
@@ -1858,12 +1943,39 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 482, Zeile 15 (WJu)
    Ersetze YYYY/MM/DD durch JJJJ/MM/TT.
 
+ * Seite 483, Tafel A.4; item \NeedsTeXFormat, Zeile 2 (TLa)
+   Erg"anze/Entferne: Ben"otigt Format ... einem Versionsdatum  nicht ...
+                                                        ^     ^
  * Seite 485, 2ter Absatz, Zeile 4 (UMa)
    ... das sp"ater mit \usepackage geladen wird.
                                    ^^^^^^^
+ * Seite 485, Abschnitt A.3.3; Absatz 2 v.u., Zeile 2 v.u. (TLa)
+   Erg"anze: gekn"upft werden. ... beispielsweise, Dateien
+                                                 ^
+ * Seite 486, Abschnitt A.3.4; Absatz 3 v.u., Zeile 3 v.u. (TLa)
+   Ersetze: tionen werden ignoriert. ... wird der in
+                                                   ^
+ * Seite 486, Abschnitt A.3.4; Absatz 1 v.u., Zeile 3 v.u. (TLa)
+   Korrigiere: bearbeiten, in der sie ...
+                      ^^
+ * Seite 487, Abschnitt A.3.6; Absatz 1 v.u., Zeile 2 v.u. (TLa)
+   Ersetze: tionen, die von der ... dem entsprechenden
+                                                     ^
+ * Seite 490, Abschnitt A.3.8; Absatz 1, Zeile 3 (TLa)
+   Entferne: zur Erzeugung der ... (welche die gesetzte
+                                                       ^
  * Seite 493, 2.Zeile: (TQ)
    Ersetze "s:  einfache Beispiel (das einen ...)
                                      ^
+ * Seite 494, Zeile 1 (TLa)
+   Erg"anze: Dieses Beispiel erzeugt ...
+                  ^
+ * Seite 495; Absatz 2 v.u., Zeile 1 (TLa)
+   Ersetze: Zum Vergleich von ... Verf"ugung. In seinem
+                                                      ^
+ * Seite 495; Absatz 2 v.u., Zeile 2 (TLa)
+   Entferne: test-Argument k"onnen ... explizite Werte  wie 20cm ...
+                                                      ^
  * Seite 496, 2ter Absatz, Zeile 3 (UMa)
    Ersetze ; durch ,
 
@@ -1875,6 +1987,9 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 498 (ASc)
    The host pit-manager.mit.edu has changed its name to rtfm.mit.edu.
 
+ * Seite 498; Absatz 2 v.u., Zeile 3 v.u. (TLa)
+   Ersetze: nach einem Benutzernamen und Passwort ...
+                                                ^
  * Seite 498, Zeile 7 von unten (SWi)
    korrigiere Trennung im Wort 'Ziel-adresse'.
 
@@ -1884,6 +1999,12 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 500, Z. 1 (MSc,FMi)
    Es mu"s:  Der Befehl cd ctan:  hei"sen (mit Doppelpunkt)
                                ^
+ * Seite 500; Absatz 3, Zeile 2 (TLa)
+   Entferne: en mit   xspace im Namen ...
+                    ^^
+ * Seite 502; Absatz 5, Zeile 2 (TLa)
+   Entferne: anschauen, bevor man      entscheidet ...
+                                  ^^^^^
 ========== Literatur ==============
 
  * Seite 505, [1], 11. Zeile (VSc)
@@ -1892,21 +2013,58 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 505, [2], 6. Zeile (VSc)
    korrigiere: Encapsulated PostScript beschrieben.
                                 ^
+ * Seite 506, [10], Zeile 3 v.u. (TLa)
+   Erg"anze: analysiert. Das Programm ... von Initialisierungsdateien ...
+                                                ^
+ * Seite 507, [17], Zeile 3 (TLa)
+   Korrigiere: Eine Beschreibung ... von sprachspezifischen ...
+                                              ^^
  * Seite 509, [30], 10. Zeile (VSc)
    "ubersetze: ibidem -> ebenda
        besser: Diagrams with TeX von Michael Ramek, S. 227-258.
 
+ * Seite 509, [34], Zeile 3 v.u. (TLa)
+   Entferne: schriften von ... METAFONT  Fonts ...
+                                       ^
+ * Seite 509, [35], Zeile 2 v.u. (TLa)
+   Korrigiere: Die Beschreibung des Bourne-Shell-Skripts  latexindex  zur ...
+                                ^                       ^           ^
  * S. 510, Literaturstelle 41, 3. Zeile von unten (SWi)
    korrigiere Silbentrennung von 'kur-zen'.
 
+ * Seite 510, [41], Zeile 4 (TLa)
+   Erg"anze: zifiziert dessen ... f"ur einen 32-Bit-Zeichencode, ...
+                                                   ^
+ * Seite 512, [56], Zeile 5 (TLa)
+   Entferne: wicklung von TeX, METAFONT  und Computer Modern ...
+                                       ^
  * Seite 512, [60], 3. Zeile (VSc)
    korrigiere Ligatur: Neuauf"|lage statt Neuauflage
    + Update: "Ubersetzung ins Deutsche -> Referenz [??]
 
+ * Seite 513, [69], Zeile 3 v.u. (TLa)
+   Entferne: neue Benutzerkreise erschlie"sen  bzw. Probleme ...
+                                             ^
  * S. 515, Literaturstelle 80, 5. Zeile (SWi)
    korrigiere Silbentrennung von 'Benutzer-oberfl"ache'.
 
+ * Seite 515, [81], Zeile 2 v.u. (TLa)
+   Entferne: Ein detaillierter "Uberblick "uber verschiedene  Wege ...
+                                                            ^
+ * Seite 517, [98], Zeile 2 v.u. (TLa)
+   Erg"anze: Es benutzt die ... diagonale Pfeile, oder man ...
+                                                ^
+ * Seite 517, [105], Zeile 2 v.u. (TLa)
+   Erg"anze: Aufs"atze aus verschiedenen Schaffensperioden ...
+                                      ^^
+ * Seite 517, [107], Zeile 3 (TLa)
+   Korrigiere: Seit 1906 ist das ... Chicago Press die Standardreferenz ...
+                                                    ^^
 ========== Index =================
+
+ * Seite 519--554, pauschal (TLa)
+   Es fehlen etliche Bindestriche: *-Fonts, *-Option, *-Paket, *-Programm,
+   *-Klasse, *-Umgebung, *-L"ange, *-Farb*, *-Z"ahler, etc.
 
  * (JKn)
    I suggest to index the table 5.4 (page 129) under `language'
@@ -1937,12 +2095,18 @@ FMi: ja alte konvention \ darzustellen :-)
  * Seite 555, 2. Absatz, 4. + 7. Zeile (VSc)
    korrigiere 2x Ligatur: Auf"|l"osung statt Aufl"osung
 
+ * Seite 555; Absatz 3, Zeile 3 (TLa)
+   Korrigiere: -Side Studios. Frank ... in eine \LaTeXe-Klassendatei ...
+                                                     ^^
  * Seite 555, 5. Absatz, 1. Zeile (VSc)
    korrigiere Trennung, statt "Mar-kup" setze "Mark-up"
 
  * Seite 555, 5. Absatz (VSc)
    dieser Absatz enth"alt 6 aufeinanderfolgende Zeilen mit Trennung
 
+ * Seite 556; Absatz 3 v.u., Zeile 1 (TLa)
+   Entferne: Ein harter Seitenumbruch ... jeder zehnten Seite  ...
+                                                             ^
 
 ==================================================
 

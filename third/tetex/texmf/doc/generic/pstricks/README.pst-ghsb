@@ -1,0 +1,24 @@
+               ------------------------------------------------
+               | pst-ghsb: PSTricks package for HSB gradients |
+               |                                              |
+               |          Version 1.0 (May 13, 1997)          |
+               |      Denis Girou <Denis.Girou@idris.fr>      |
+               ------------------------------------------------
+
+
+
+  * Install pst-ghsb.sty and pst-ghsb.tex in one of your TeX input directories
+
+  * Install pst-ghsb.pro in one of your DVI to PostScript converter input
+directories
+
+  * As the programmation and usage are stricly modeled on the `pst-grad'
+package, there is no documentation but only two test files: t-ghsb.tex
+and t2-ghsb.tex
+
+  * It must be considered today (September, 1998) as superceded
+by the `pst-slpe' package from Martin Giese. Users of `pst-ghsb'
+are encouraged to migrate.
+
+--
+Denis Girou (updated September 15, 1998)

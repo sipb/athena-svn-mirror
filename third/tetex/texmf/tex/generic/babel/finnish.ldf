@@ -5,26 +5,26 @@
 %% The original source files were:
 %%
 %% finnish.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{finnish}
-        [1999/04/13 v1.3m Finnish support from the babel system]
+        [2001/03/12 v1.3o Finnish support from the babel system]
 %% File `finnish.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{finnish}\captionsfinnish
 \ifx\l@finnish\@undefined
     \@nopatterns{Finnish}
@@ -50,6 +50,7 @@
   \def\seename{katso}%
   \def\alsoname{katso my\"os}%
   \def\proofname{Todistus}%
+  \def\glossaryname{Sanasto}%
   }%
 \def\datefinnish{%
   \def\today{\number\day.~\ifcase\month\or
@@ -69,6 +70,7 @@
 \initiate@active@char{"}
 \addto\extrasfinnish{\languageshorthands{finnish}}
 \addto\extrasfinnish{\bbl@activate{"}}
+\addto\noextrasfinnish{\bbl@deactivate{"}}
 \addto\extrasfinnish{\umlautlow\umlautelow}
 \addto\noextrasfinnish{\umlauthigh}
 \declare@shorthand{finnish}{"`}{%
@@ -85,9 +87,9 @@
 \declare@shorthand{finnish}{"|}{%
   \textormath{\discretionary{-}{}{\kern.03em}}{}}
 \addto\extrasfinnish{\babel@save\-}
-\addto\extrasfinnish{\def\-{\allowhyphens
-                          \discretionary{-}{}{}\allowhyphens}}
-\def\finnishhyphenmins{\tw@\tw@}
+\addto\extrasfinnish{\def\-{\bbl@allowhyphens
+                          \discretionary{-}{}{}\bbl@allowhyphens}}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \ldf@finish{finnish}
 %%
 %% \CharacterTable

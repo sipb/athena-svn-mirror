@@ -5,30 +5,30 @@
 %% The original source files were:
 %%
 %% galician.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{galician}
-        [1999/04/21 v1.2h Galician support from the babel system]
+        [2001/02/20 v1.2k Galician support from the babel system]
 %% File `galician.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Galician Language Definition File
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Manuel Carriba <mcarriba@eunetcom.net>
 %%              Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{galician}\captionsgalician
 \ifx\l@galician\@undefined
   \@nopatterns{Galician}
@@ -53,7 +53,8 @@
   \def\pagename{P\'axina}%
   \def\seename{v\'exase}%
   \def\alsoname{v\'exase tam\'en}%
-  \def\proofname{Proof}%  <-- Needs Translation!
+  \def\proofname{Demostraci\'on}%
+  \def\glossaryname{Glossary}% <-- Needs translation
 }
 \def\dategalician{%
   \def\today{\number\day~de\space\ifcase\month\or
@@ -69,6 +70,10 @@
   \initiate@active@char{'}}{}
 \@ifpackagewith{babel}{activeacute}{%
   \addto\extrasgalician{\bbl@activate{'}}}{}
+\addto\noextrasgalician{%
+  \bbl@deactivate{"}\bbl@deactivate{~}}
+\@ifpackagewith{babel}{activeacute}{%
+  \addto\noextrascatalan{\bbl@deactivate{'}}}{}
 \addto\extrasgalician{%
   \babel@save\"\babel@save\~%
   \def\"{\protect\@umlaut}%

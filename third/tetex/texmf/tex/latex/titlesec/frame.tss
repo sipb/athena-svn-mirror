@@ -1,7 +1,11 @@
-% This file is copyrighted (c) 1998 1999 by Javier Bezos.
+% +--------------------------------------------------+
+% | Typeset titlesec.tex to get the documentation.   |
+% +--------------------------------------------------+
+%
+% Copyright (c) 1998-2002 by Javier Bezos.
 % All Rights Reserved.
 %
-% This file is part of the titlesec distribution release 2.1.
+% This file is part of the titlesec distribution release 2.5
 % -----------------------------------------------------------
 %
 % This program can be redistributed and/or modified under the terms
@@ -9,44 +13,46 @@
 % archives in directory macros/latex/base/lppl.txt; either
 % version 1 of the License, or any later version.
 
-\ProvidesFile{frame.tss}[1999/02/20]
+\ProvidesFile{frame.tss}[2002/04/19]
 
 \gdef\ttlh@frame#1#2#3#4#5#6#7#8{%
-  \def\es@filleft##1{\hfill}%
-  \def\es@filright##1{\hfill}%
-  \gdef\ttl@makeline##1{\hskip#6\relax##1\hskip#7}%
+  \def\ttl@filleft##1{\hfill}%
+  \def\ttl@filright##1{\hfill}%
+  \gdef\ttl@makeline##1{%
+    \ttl@calc\hspace{#6}##1\ttl@calc\hspace{#7}}%
   \interlinepenalty\@M
-  #1%
+  #1\ifhmode\ttl@hmode@error\fi
   \parindent\z@
   \leavevmode
   \@tempdima\fboxrule
   \addtolength\@tempdima{#3}%
-  \addtolength\leftskip{#6}%
-  \addtolength\rightskip{#7}%
+  \setlength\leftskip{#6}%
+  \setlength\rightskip{#7}%
   \lower\@tempdima\hbox{%
     \everypar{}%
     \setbox\z@\hbox{#2}%  
     \addtolength\hsize{-#6}%
     \addtolength\hsize{-#7}%
-    \@tempdima.5\ht\z@
+    \@tempdima\dp\z@ %  2002/3/22
+    \advance\@tempdima.5\ht\z@
     \vbox{%
-       \hbox to \hsize{%
-          \leaders\hrule\@height\fboxrule\es@filleft{#3}%
-          \ifttl@numsec\lower\@tempdima\box\z@\fi
-          \leaders\hrule\@height\fboxrule\es@filright{#3}}%
-          \vskip-\lineskip
-          \vskip-\@tempdima\vskip.5\ht\z@
-          \hbox{%
-            \vrule\@width\fboxrule
-            \kern-\fboxrule
-            \vbox{%
-               \vspace{#3}%
-               \leavevmode
-	           \addtolength\leftskip {#3}\addtolength\leftskip{-#6}%
-	           \addtolength\rightskip{#3}\addtolength\rightskip{-#7}%
-	           \strut#4{#8}\kern\z@\strut\@@par
-               \vspace{#3}}%
-           \kern-\fboxrule
-           \vrule\@width\fboxrule}%
+        \hbox to \hsize{%
+          \leaders\hrule\@height\fboxrule\ttl@filleft{#3}%
+          \ifttl@label\lower.5\ht\z@\box\z@\fi
+          \leaders\hrule\@height\fboxrule\ttl@filright{#3}}%
+        \vskip-\lineskip
+        \ifttl@label\vskip-\@tempdima\fi
+        \hbox{%
+          \vrule\@width\fboxrule
+          \kern-\fboxrule
+          \vbox{%
+             \ttl@calc\vspace{#3}%
+             \leavevmode
+	         \addtolength\leftskip {#3}\addtolength\leftskip{-#6}%
+	         \addtolength\rightskip{#3}\addtolength\rightskip{-#7}%
+	         \strut#4{#8}\kern\z@\strut\@@par
+             \ttl@calc\vspace{#3}}%
+          \kern-\fboxrule
+          \vrule\@width\fboxrule}%
        \hrule\@height\fboxrule}}%
-	   \@@par\nobreak\ttl@savewrite#5\@@par}
+	   \@@par\nobreak#5\@@par}

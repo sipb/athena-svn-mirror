@@ -2,8 +2,8 @@
 %%
 %% Trees with PSTricks 97.
 %%
-\def\fileversion{97 patch 3}
-\def\filedate{1997/09/24}
+\def\fileversion{97 patch 5}
+\def\filedate{1999/10/28}
 %%
 %% COPYRIGHT 1993, 1994, 1999 by Timothy Van Zandt, tvz@nwu.edu.
 %%
@@ -308,6 +308,9 @@ pstree@levelsepadjust-\pstree@thetree-\the\pstreelevel}%
 \expandafter\xdef\csname pstree@levelsepadjust-#1\endcsname
 {#2}%
 \fi}
+% DG/SR modification begin - October 28, 1999 - Patch 5 - For plain TeX
+\ifx\@undefined\@auxout\newwrite\@auxout\fi
+% DG/SR modification end
 \def\pstree@initlevelsepadjust{%
 \@ifundefined{@latexerr}{%
 \immediate\openin1 \jobname.pst
@@ -923,11 +926,21 @@ tx@Dict begin \psline@iii pop end
 \pstree@setlevelpar
 \@skipleveltrue
 \pstree@do}
-\def\pstree@gettop#1{\expandafter\pstree@@gettop#1\@nil}
-\def\pstree@@gettop#1,#2\@nil{#1}
+% DG/SR modification begin - Aug. 31, 1999 - Patch 4
+%\def\pstree@gettop#1{\expandafter\pstree@@gettop#1\@nil}
+%\def\pstree@@gettop#1,#2\@nil{#1}
+% DG/SR modification end
 \def\skiplevel@horizontal{%
-\pst@dimc=\pstree@gettop\pstree@theupprofile sp
-\pst@dimd=\pstree@gettop\pstree@thedownprofile sp
+% DG/SR modification begin - Aug. 31, 1999 - Patch 4
+%\pst@dimc=\pstree@gettop\pstree@theupprofile sp
+%\pst@dimd=\pstree@gettop\pstree@thedownprofile sp
+\edef\pstree@upprofile{\pst@tempc,\pstree@theupprofile}%
+\edef\pstree@downprofile{\pst@tempd,\pstree@thedownprofile}%
+\pstree@max\pstree@upprofile\pst@cntg
+\pst@dimc=\pst@cntg sp
+\pstree@max\pstree@downprofile\pst@cntg
+\pst@dimd=\pst@cntg sp
+% DG/SR modification end
 \pstree@treebboxadjust
 \gdef\pstree@treebboxadjust{}%
 \xdef\pstree@next{%
@@ -936,8 +949,16 @@ tx@Dict begin \psline@iii pop end
 \endgroup
 \pstree@next}
 \def\skiplevel@vertical{%
-\pst@dima=\pstree@gettop\pstree@theleftprofile sp
-\pst@dimb=\pstree@gettop\pstree@therightprofile sp
+% DG/SR modification begin - Aug. 31, 1999 - Patch 4
+%\pst@dima=\pstree@gettop\pstree@theleftprofile sp
+%\pst@dimb=\pstree@gettop\pstree@therightprofile sp
+\edef\pstree@leftprofile{\pst@tempa,\pstree@theleftprofile}%
+\edef\pstree@rightprofile{\pst@tempb,\pstree@therightprofile}%
+\pstree@max\pstree@leftprofile\pst@cntg
+\pst@dima=\pst@cntg sp
+\pstree@max\pstree@rightprofile\pst@cntg
+\pst@dimb=\pst@cntg sp
+% DG/SR modification end
 \pstree@treebboxadjust
 \gdef\pstree@treebboxadjust{}%
 \xdef\pstree@next{%

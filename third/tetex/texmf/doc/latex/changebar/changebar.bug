@@ -3,6 +3,7 @@
 %         dvips             (Tom Rokicki)
 %         dvitoln03         (Brian {Hamilton Kelly})
 %         emTeX (dvidrv)    (Eberhard Mattes)
+%         VTeX		    (Michael Vulis)
 %
 % change history
 %
@@ -111,6 +112,45 @@
 %       Added chbar.1 to the distribution. The file was provided by
 %       John A. Murdie <john@minster.cs.york.ac.uk>
 %
+% v3.3i Changebar didn't pay enough attention to the setting of
+%       twoside. In onesided documents the value of \evensidemargin
+%       should be ignored.
+%       \cb@startSpanBars no longer pushes points on the current stack
+%       as this confused the algorithm and was wrong anyway.
+%       Introduced a tracing facility for the stack mechanisms
+%       Now use the history stack to determine the final page on which
+%       the beginning and ending of the changebars appear. This fixes
+%       most problems with floating objects and diagonal bars at page
+%       boundaries.
+%       Redefined \cbstart and \cbend in terms of the LaTeX
+%       environment. This catches wrong use of \cbstart ...\cbend with
+%       respect to TeX's grouping levels. 
+%
+% v3.3j The rightbars option was broken; 
+%       found by Richard Stanton" <stanton@haas.berkeley.edu>
+%       In the oneside mode \cb@even@right received no value instead
+%       \cb@even@left was set equal to \cb@odd@left and reset
+%       afterwards.
+%
+% v3.4a Michael Vulis submitted the code for VTeX support
+%
+% v3.4b Changebar and the color package clash;
+%       found by Erwin Achermann <acherman@inf.ethz.ch>
+%       Because of the extra group and box level for floating objects. 
+%       The redefinition in this package of \@endfloat didn't take
+%       that into account.
+%       repaired a few typos in the documentation.
+%       Introduced support for coloured changebars with the dvips
+%       driver.
+%
+% v3.4c small typo repaired
+%
+% v3.4d Autodetect VTeX and provide the right default driver;
+%       added possibility of having changebar.cfg to specify a default
+%       driver. 
+%       Issue an error when \cbcolor is used when the color option
+%       isn't specified.
+%
 % Known problems
 %        - With PostScript a dictstack overflow seems to occur with
 %          many changebars. cb@maxpoint=20 seems to help
@@ -118,3 +158,6 @@
 %          David B. Johnson (dbj@titan.rice.edu) back in 1990. It uses
 %          LaTeX marginpar mechanism to implement change bars. I Haven't
 %          yet dared to see if I can merge these two packages into one
+%        - I haven't yet been able to get changebar to work with
+%          pdfTeX. I don't know whether it is possible; I may be lacking
+%          in kowledge of the pdf language to do it.

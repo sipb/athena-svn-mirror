@@ -1,0 +1,40 @@
+<head>
+<title>UK TeX FAQ -- question 91</title>
+</head><body>
+<h3>Graphics in PDFLaTeX</h3>
+<p>PDFTeX itself has a rather wide range of formats that it can
+"natively" incorporate into its output PDF stream:
+JPEG (<code>.jpg</code> files) for photographs and similar images,
+TIFF (<code>.tif</code> files) and PNG files for artificial bitmap
+images, and PDF for vector drawings.
+<p>In addition, the standard PDFLaTeX <i>graphics</i> package setup
+causes Hans Hagen's <i>supp-pdf</i> macros to be loaded: these macros
+are capable of translating the output of MetaPost to PDF "on the
+fly"; thus MetaPost output (<code>.mps</code> files) may also be included in
+PDFLaTeX documents.
+<p>The commonest problem users encounter, when switching from TeX, is
+that there is no straightforward way to include EPS files:
+since PDFTeX is its own "driver", and since it contains no means
+of converting PostScript to PDF, there's no direct way the job can
+be done.
+<p>The simple solution is to convert the EPS to an appropriate
+PDF file.  The <i>epstopdf</i> program will do this: it's
+available either as a Windows executable or as a <i>Perl</i>
+script to run on Unix and other similar systems.  A LaTeX package,
+<i>epstopdf</i>, can be used to generate the requisite PDF
+files "on the fly"; this is convenient, but requires that you
+suppress one of TeX's security checks: don't use it in files from
+sources you don't entirely trust.
+<p>An alternative (and, I find, deeply satisfying) solution is to use
+<i>purifyeps</i>, a <i>perl</i> script which uses the good
+offices of <i>pstoedit</i> and of MetaPost to convert your
+Encapsulated PostScript to "Encapsulated PostScript that comes out of MetaPost",
+and can therefore be included directly.
+<dl>
+<dt><tt><i>epstopdf</i></tt><dd>Browse <a href="ftp://support/epstopdf/">support/epstopdf/</a>
+<dt><tt><i>epstopdf.sty</i></tt><dd>Distributed with Heiko Oberdiek's packages
+  <a href="ftp://macros/latex/contrib/supported/oberdiek.tar.gz">macros/latex/contrib/supported/oberdiek.tar.gz</a>
+<dt><tt><i>pstoedit</i></tt><dd><a href="ftp://support/pstoedit.tar.gz">support/pstoedit.tar.gz</a>
+<dt><tt><i>purifyeps</i></tt><dd><a href="ftp://support/purifyeps.tar.gz">support/purifyeps.tar.gz</a>
+</dl>
+<p></body>

@@ -1,0 +1,20 @@
+\ProvidesFile{ly1hlh.fd}[2003/01/04 v4.2k Lucida Bright (KB Names)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlh}{}
+\DeclareLucidaFontShape{LY1}{hlh}{m}{n}{hlhr8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{m}{it}{hlhri8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{m}{sl}{hlhro8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{m}{sc}{hlhrc8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{b}{n}{hlhb8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{b}{it}{hlhbi8y}{}
+\DeclareLucidaFontShape{LY1}{hlh}{b}{sc}{hlhbc8y}{}
+\DeclareFontShape{LY1}{hlh}{b} {sl}{<->ssub * hlh/b/it}{}
+\DeclareFontShape{LY1}{hlh}{bx}{n} {<->ssub * hlh/b/n}{}
+\DeclareFontShape{LY1}{hlh}{bx}{it}{<->ssub * hlh/b/it}{}
+\DeclareFontShape{LY1}{hlh}{bx}{sl}{<->ssub * hlh/b/it}{}
+\DeclareFontShape{LY1}{hlh}{bx}{sc}{<->ssub * hlh/b/sc}{}
+
+\endinput
+%%
+%% End of file `ly1hlh.fd'.

@@ -1,0 +1,47 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5cmtt.fd}
+  [2000/01/27 v1.0 Vietnamese LaTeX font definitions]
+
+\DeclareFontFamily{T5}{vcmtt}{\hyphenchar \font\m@ne}
+
+\DeclareFontShape{T5}{vcmtt}{m}{n}{
+  <5><6><7><8> vcmtt8
+  <9> vcmtt9
+  <10><10.95> vcmtt10
+  <12><14.4><17.28><20.74><24.88> vcmtt12
+}{}
+
+% make sure subst shapes are available
+\DeclareFontShape{T5}{vcmtt}{m}{it}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vcmitt10
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{m}{sl}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vcmsltt10
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{m}{sc}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vcmtcsc10
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{m}{ui}{
+  <-> ssub * cmtt/m/it
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{bx}{n}{
+  <-> ssub * cmtt/m/n
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{bx}{it}{
+  <-> ssub * cmtt/m/it
+}{}
+
+\DeclareFontShape{T5}{vcmtt}{bx}{ui}{
+  <-> ssub * cmtt/m/it
+}{}
+
+\endinput

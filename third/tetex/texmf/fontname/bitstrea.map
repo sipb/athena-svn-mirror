@@ -1,12 +1,13 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   date = "13 May 1999",
+@c   date = "20 May 1999",
 @c   url = "http://tug.org/fontname/bitstrea.map",
 @c   supported = "yes",
 @c   docstring = "Bitstream PostScript fonts."
 @c }
 @c
 @c List of Bitstream fonts on the Corel Draw 7 CD-ROM.
+@c see http://www.bitstream.com/products/world/font_cd/fontlists/500cd_fontlist.txt
 @c
 bhvl8a    Swiss721BT-Light                  BT  0001    swz721l
 bhvli8a   Swiss721BT-LightItalic            BT  0002    swz721li
@@ -301,9 +302,9 @@ bbers8a   BellGothicBT-Roman                BT  0359    belgothn
 bbebs8a   BellGothicBT-Bold                 BT  0360    belgothb
 bbecs8a   BellGothicBT-Black                BT  0361    belgothk
 bpar8a    ParkAvenueBT-Regular              BT  0362    parkaven
-ba8r8a    News706BT-RomanC                  BT  0363    news706n
-ba8ri8a   News706BT-ItalicC                 BT  0364    news706i
-ba8b8a    News706BT-BoldC                   BT  0365    news706b
+bn7r8a    News706BT-RomanC                  BT  0363    news706n
+bn7ri8a   News706BT-ItalicC                 BT  0364    news706i
+bn7b8a    News706BT-BoldC                   BT  0365    news706b
 blbj8a    LubalinGraphITCbyBT-XtraLight     BT  0366    lubgrxl
 blbk8a    LubalinGraphITCbyBT-Book          BT  0367    lubgrhn
 blbm8a    LubalinGraphITCbyBT-Medium        BT  0368    lubgrhm
@@ -325,7 +326,7 @@ baor8a    Incised901BT-Roman                BT  0388    inc901n
 baori8a   Incised901BT-Italic               BT  0389    inc901i
 baob8a    Incised901BT-Bold                 BT  0390    inc901b
 baoc8a    Incised901BT-Black                BT  0391    inc901k
-boar8a    OCRAbyBT-Regular                  BT  0395    ocran
+boar      OCRAbyBT-Regular                  BT  0395    ocran
 bbhl8a    BauhausITCbyBT-Light              BT  0405    bauhausl
 bbhm8a    BauhausITCbyBT-Medium             BT  0406    bauhausm
 bbhb8a    BauhausITCbyBT-Bold               BT  0408    bauhausb
@@ -432,9 +433,9 @@ bkgl8a    BankGothicBT-Light                BT  0589    bnkgothl
 bkgm8a    BankGothicBT-Medium               BT  0590    bnkgothm
 bf0r8a    FlemishScriptBT-Regular           BT  0591    flemscrn
 bp5r8a    PiranesiItalicBT-Regular          BT  0592    piranesi
-zbshans   ShelleyAndanteBT-Regular          BT  0593    shlyandn
-zbshals   ShelleyAllegroBT-Regular          BT  0594    shlyalln
-zbshvos   ShelleyVolanteBT-Regular          BT  0595    shlyvoln
+bser8a    ShelleyAndanteBT-Regular          BT  0593    shlyandn
+bserd8a   ShelleyAllegroBT-Regular          BT  0594    shlyalln
+bserw8a   ShelleyVolanteBT-Regular          BT  0595    shlyvoln
 bhvrt8a   Monospace821BT-Roman              BT  0596    mono821n
 bhvrit8a  Monospace821BT-Italic             BT  0597    mono821i
 bhvbt8a   Monospace821BT-Bold               BT  0598    mono821b
@@ -468,7 +469,7 @@ buhhi8a   CushingITCbyBT-HeavyItalic        BT  0642    cushnghi
 beor8a    AmerigoBT-RomanA                  BT  0643    amrigon
 beori8a   AmerigoBT-ItalicA                 BT  0644    amrigoi
 beob8a    AmerigoBT-BoldA                   BT  0645    amrigob
-bobr8a    OCRB10PitchBT-Regular             BT  0646    ocrb10n
+bobr      OCRB10PitchBT-Regular             BT  0646    ocrb10n
 bchr8a    CharterBT-Roman                   BT  0648    chartrn
 bchri8a   CharterBT-Italic                  BT  0649    chartri
 bnzm8a    Geometric706BT-MediumB            BT  0660    geo706m
@@ -527,10 +528,10 @@ bc2ki8a   Caslon224ITCbyBT-BookItalic       BT  0746    cas224ni
 bc2b8a    Caslon224ITCbyBT-Bold             BT  0749    cas224b
 bc2bi8a   Caslon224ITCbyBT-BoldItalic       BT  0750    cas224bi
 bnabi8a   Dutch823BT-BoldItalicB            BT  0753    dut823bi
-borr108a  OratorBT-TenPitch                 BT  0755    orator10
+borr8a10  OratorBT-TenPitch                 BT  0755    orator10
 bvrr8a    VAGRoundedBT-Regular              BT  0756    vagron
-bclc8a    CloisterBlackBT-Regular           BT  0757    cloistrk
-borr158a  OratorBT-FifteenPitch             BT  0758    orator15
+bclr8a    CloisterBlackBT-Regular           BT  0757    cloistrk
+borr8a15  OratorBT-FifteenPitch             BT  0758    orator15
 bhvm8a    Swiss721BT-Medium                 BT  0759    swz721m
 bhvmi8a   Swiss721BT-MediumItalic           BT  0760    swz721mi
 btvr8a    Kuenstler480BT-Roman              BT  0761    kuen408n
@@ -840,9 +841,10 @@ bo1b8ac   OrandaBT-BoldCondensed            BT  1209    orandabc
 bm4r8a    MisterEarlBT-Regular              BT  1221    mrearln
 bb9b8a    BremenBT-Bold                     BT  1231    bremenb
 bb9c8a    BremenBT-Black                    BT  1232    bremenk
-bpi006    SnowCapBT-Regular                 BT  1237    ________
+bwcr8a    SnowCapBT-Regular                 BT  1237    ________
 bpi007    SprocketDeluxeBT-Regular          BT  1243    ________
 bpi008    SprocketBT-Regular                BT  1244    ________
+bpi009    SonicCutThruBT-Heavy              BT  1247    ________
 bo0r8a    OldDreadfulNo7BT-Regular          BT  7009    ________
 bzdr      ZapfDingbatsITCbyBT-Regular       BT  8556    zafdingn
 b_____    MICR10byBT-Regular                BT  8729    micr010n
@@ -851,5 +853,5 @@ b_____    MICR13byBT-Regular                BT  8731    micr013n
 bpi003    UniversalMath1BT-Regular          BT  9014    ________
 bpi004    CommercialPiBT-Regular            BT  9025    ________
 bpi002    SymbolProportionalBT-Regular      BT  9830    symbpron
-bpi009    SonicCutThruBT-Heavy              BT  9832    ________
+bpi010    HolidayPiBT-Regular               BT  9832    ________
 bpi001    NewspaperPiBT-Regular             BT  9836    ________

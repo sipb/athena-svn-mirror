@@ -7,7 +7,7 @@
 %% graphics.dtx  (with options: `package')
 %% 
 %% graphics.dtx Copyright (C) 1994      David Carlisle Sebastian Rahtz
-%%              Copyright (C) 1995 1996 1997 1998 1999 David Carlisle
+%%              Copyright (C) 1995--1999 2001 David Carlisle
 %%
 %% This file is part of the Standard LaTeX `Graphics Bundle'.
 %% It may be distributed under the terms of the LaTeX Project Public
@@ -16,7 +16,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesPackage{graphics}
-          [1999/02/16 v1.0l  Standard LaTeX Graphics (DPC,SPQR)]
+          [2001/07/07 v1.0n  Standard LaTeX Graphics (DPC,SPQR)]
 \edef\Gin@codes{%
  \catcode`\noexpand\^^A\the\catcode`\^^A\relax
  \catcode`\noexpand\"\the\catcode`\"\relax
@@ -305,7 +305,7 @@
 \let\Grot@d\@ydim
 \let\Grot@x\@linelen
 \let\Grot@y\@dashdim
-\def\rotatebox#1#2{%
+\long\def\rotatebox#1#2{%
   \leavevmode
   \Grot@setangle{#1}%
   \setbox\z@\hbox{{#2}}%

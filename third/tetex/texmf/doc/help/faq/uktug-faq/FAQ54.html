@@ -1,0 +1,183 @@
+<head>
+<title>UK TeX FAQ -- question 54</title>
+</head><body>
+<h3>(La)TeX for different machines</h3>
+<!-- windows,macintosh,ms-dos,os/2,unix,linux -->
+<p>We list here the free or shareware packages;
+
+  another question addresses
+  <a href="FAQ56.html">commercial TeX vendors'</a> products.
+<dl>
+<dt>Unix<dd> Instructions for retrieving the <i>web2c</i> Unix
+  TeX distribution via anonymous <code>ftp</code> are to be found in
+  <i>unixtex.ftp</i>, though nowadays the sensible installer will
+  take (and possibly customise) one of the packaged distributions such
+  as teTeX (which often has a more recent version of
+  <i>web2c</i> embedded than has been released "in the wild"), or the
+  TeX Live CDROM (see <a href="FAQ53.html">TeX CDROMs</a>).
+<p>  For teTeX, you need a <code>.tar.gz</code> file for each of <code>teTeX-src</code>,
+  <code>teTeX-texmf</code> and <code>teTeX-texmfsrc</code>
+<p>  As yet, no sets of teTeX binaries are available; however,
+  compilation of this version of teTeX has been pretty
+  comprehensively tested under a wide variety of operating systems.
+  If you don't have the means to compile teTeX yourself, your best
+  bet is to use one of the current TeX-live discs, which offer a
+  good range of binaries, not much older than teTeX.
+<p>  MacOS X users should refer to the information below,
+  under item "Mac".
+  <dl>
+  <dt><tt><i>tetex</i></tt><dd>Browse <a href="ftp://systems/unix/teTeX/2.0/distrib/">systems/unix/teTeX/2.0/distrib/</a>
+  <dt><tt><i>unixtex.ftp</i></tt><dd><a href="ftp://systems/unix/unixtex.ftp">systems/unix/unixtex.ftp</a>
+  <dt><tt><i>web2c</i></tt><dd><a href="ftp://systems/web2c.tar.gz">systems/web2c.tar.gz</a>
+  </dl>
+<dt>Linux<dd> There are at least two respectable implementations of
+  TeX to run on Linux, NTeX and teTeX (see above).
+<p>  The most recent offering is a free version of the
+  commercial 
+  <a href="FAQ56.html">VTeX</a>, which specialises
+  in direct production of PDF from (La)TeX input.
+  <dl>
+  <dt><tt><i>ntex</i></tt><dd><a href="ftp://systems/unix/ntex.tar.gz">systems/unix/ntex.tar.gz</a>
+  <dt><tt><i>tetex</i></tt><dd>Browse <a href="ftp://systems/unix/teTeX/2.0/distrib/">systems/unix/teTeX/2.0/distrib/</a>
+  <dt><tt><i>vtex</i></tt><dd><a href="ftp://systems/vtex/linux.tar.gz">systems/vtex/linux.tar.gz</a>
+  <dt><tt><i>vtex required common files</i></tt><dd><a href="ftp://systems/vtex/common.tar.gz">systems/vtex/common.tar.gz</a>
+  </dl>
+<dt>PC; MSDOS or OS/2<dd> EmTeX, by Eberhard Mattes,
+  includes LaTeX, BibTeX, previewers, and drivers, and is
+  available  as a series of zip archives.  Documentation is
+  available in both German and English.  Appropriate memory managers
+  for using emTeX with 386 (and better) processors and under
+  Windows, are included in the distribution.  EmTeX will operate
+  under Windows, but Windows users are better advised to use a
+  distribution tailored for the Windows environment.
+<p>  A version of emTeX, packaged to use a
+  
+  
+  <a href="FAQ44.html">TDS directory structure</a>, is separately
+  available as an emTeX 'contribution'.
+  <dl>
+  <dt><tt><i>emtex</i></tt><dd><a href="ftp://systems/msdos/emtex.tar.gz">systems/msdos/emtex.tar.gz</a>
+  <dt><tt><i>emtexTDS</i></tt><dd><a href="ftp://systems/os2/emtex-contrib/emtexTDS.tar.gz">systems/os2/emtex-contrib/emtexTDS.tar.gz</a>
+  </dl>
+<dt>PC; MSDOS<dd> The most recent offering is an MSDOS
+  port of the Web2C 7.0 implementation, using the GNU
+  <i>djgpp</i> compiler.
+  <dl>
+  <dt><tt><i>djgpp</i></tt><dd><a href="ftp://systems/msdos/djgpp.tar.gz">systems/msdos/djgpp.tar.gz</a>
+  </dl>
+<dt>PC; OS/2<dd> OS/2 may also use a free version of the
+  commercial 
+  <a href="FAQ56.html">VTeX</a>, which specialises
+  in direct production of PDF from (La)TeX input.
+  <dl>
+  <dt><tt><i>vtex</i></tt><dd><a href="ftp://systems/vtex/os2.tar.gz">systems/vtex/os2.tar.gz</a>
+  <dt><tt><i>vtex required common files</i></tt><dd><a href="ftp://systems/vtex/common.tar.gz">systems/vtex/common.tar.gz</a>
+  </dl>
+<dt>PC: Win32<dd>
+  fpTeX, by Fabrice Popineau, is a version of teTeX for Windows
+  systems.  As such, it is particularly attractive to those who need
+  to switch back and forth between Windows and Unix environments, and
+  to administrators who need to maintain both (fpTeX can use the
+  same <code>texmf</code> tree as a teTeX installation).  fpTeX's
+  previewer (<i>Windvi</i>) is based on <i>xdvi</i>, and takes
+  advantage of extra facilities in the Win32 environment.
+  <i>Windvi</i> is capable of printing directly, and a version of
+  <i>dvips</i> is also available.
+<p>  MikTeX, by Christian Schenk, is also a comprehensive
+  distribution, developed separately from the teTeX work.  It has
+  its own previewer, YAP, which is itself capable of printing,
+  though the distribution also includes a port of <i>dvips</i>.
+  The current version is available for file-by-file download (the
+  HTML files in the directory offer hints
+  on what you need to get going).  A prepackaged version of the whole
+  directory is also available.
+<p>  A further (free) option arises from the
+  <a href="http://www.cygwin.com">"CygWin" bundle</a>, which presents a
+  Unix-like environment over the Win32 interface; an X-windows server
+  is available.  If you run CygWin on your Windows machine, you have
+  the option of using teTeX, too (you will need the X-server, to
+  run <i>xdvi</i>).  Of course, teTeX components will look like
+  Unix applications (but that's presumably what you wanted), but it's
+  also reputedly somewhat slower than native Win32 implementations
+  such as MikTeX or fpTeX.  TeTeX is available as part of the
+  CygWin distribution (in the same way that a version is available
+  with most Linux distributions, nowadays), and you may also build
+  your own copy from the current sources.
+<p>  BaKoMa TeX, by Basil Malyshev, is a comprehensive (shareware)
+  distribution, which focuses on support of Acrobat.  The distribution
+  comes with a bunch of Type 1 fonts packaged to work with BaKoMa
+  TeX, which further the focus.
+  <dl>
+  <dt><tt><i>bakoma</i></tt><dd><a href="ftp://nonfree/systems/win32/bakoma.tar.gz">nonfree/systems/win32/bakoma.tar.gz</a>
+  <dt><tt><i>fptex</i></tt><dd><a href="ftp://systems/win32/fptex.tar.gz">systems/win32/fptex.tar.gz</a>
+  <dt><tt><i>miktex</i></tt><dd>Acquire <a href="ftp://systems/win32/miktex/setup/setup.exe">systems/win32/miktex/setup/setup.exe</a>, and read
+    <a href="ftp://systems/win32/miktex/setup/install.html">systems/win32/miktex/setup/install.html</a>
+  <dt><tt><i>tetex</i></tt><dd><a href="ftp://systems/unix/teTeX/2.0/distrib/">systems/unix/teTeX/2.0/distrib/</a>
+  </dl>
+<dt>Windows NT, other platforms<dd> Ports of MikTeX for
+  NT on Power PC and AXP are available.  Neither
+  version has been updated for version 1.2 (or later) of
+  MikTeX - they may not be satisfactory.
+  <dl>
+  <dt><tt><i>miktex for AXP</i></tt><dd><a href="ftp://systems/win32/miktex-AXP.tar.gz">systems/win32/miktex-AXP.tar.gz</a>
+  <dt><tt><i>miktex for Power PC</i></tt><dd><a href="ftp://systems/win32/miktexppc.tar.gz">systems/win32/miktexppc.tar.gz</a>
+  </dl>
+<dt>Mac<dd> OzTeX, by Andrew Trevorrow, is a shareware version of
+  TeX for the Macintosh.  A DVI previewer and PostScript
+  driver are also included.
+
+
+<p>  UK TUG prepays the shareware fee, so that its members may
+  acquire the software without further payment.  Questions about
+  OzTeX may be directed to <a href="mailto:oztex@midway.uchicago.edu"><i>oztex@midway.uchicago.edu</i></a>
+<p>  Another partly shareware program is CMacTeX, put together
+  by Tom Kiffe. This is much closer 
+  to the Unix TeX setup (it uses <i>dvips</i>, for instance).
+  CMacTeX includes a port of the latest version of
+  <a href="FAQ277.html">Omega</a>.
+<p>  Both OzTeX and CMacTeX are additionally available on
+  
+  <a href="http://www.esm.psu.edu/mac-tex/versionsX.html">MacOS X</a>,
+  but OS X users also have the option of a build of
+  teTeX by Gerben Wierda.  This is naturally usable from the
+  command line, just like any other Unix-based system, but it can also
+  be used Mac-style as the engine behind Richard Koch's (free)
+  TeXShop, which is an integrated TeX editor and previewer.
+<p>
+  A useful
+  <a href="http://www.esm.psu.edu/mac-tex/">resource for Mac users</a>
+  has a news and 'help' section, as well as details of systems and
+  tools.
+  <dl>
+  <dt><tt><i>cmactex</i></tt><dd><a href="ftp://systems/mac/cmactex.tar.gz">systems/mac/cmactex.tar.gz</a>
+  <dt><tt><i>oztex</i></tt><dd><a href="ftp://nonfree/systems/mac/oztex.tar.gz">nonfree/systems/mac/oztex.tar.gz</a>
+  <dt><tt><i>MacOS X teTeX</i></tt><dd><a href="ftp://ftp.nluug.nl/pub/comp/macosx/tex-gs/">ftp://ftp.nluug.nl/pub/comp/macosx/tex-gs/</a>
+  <dt><tt><i>TeXShop</i></tt><dd><a href="http://darkwing.uoregon.edu/~koch/texshop/texshop.html">http://darkwing.uoregon.edu/~koch/texshop/texshop.html</a>
+  </dl>
+<dt>OpenVMS<dd> TeX for OpenVMS is available.
+<p>
+
+  
+  <dl>
+  <dt><tt><i>OpenVMS</i></tt><dd><a href="ftp://systems/OpenVMS/TEX97_CTAN.ZIP">systems/OpenVMS/TEX97_CTAN.ZIP</a>
+  </dl>
+<dt>Atari<dd> TeX is available for the Atari ST.
+<p>  If anonymous <code>ftp</code> is not available to you, send a message
+  containing the line '<code>help</code>' to
+  <a href="mailto:atari@atari.archive.umich.edu"><i>atari@atari.archive.umich.edu</i></a>
+  <dl>
+  <dt><tt><i>Atari TeX</i></tt><dd><a href="ftp://systems/atari.tar.gz">systems/atari.tar.gz</a>
+  </dl>
+<dt>Amiga<dd> Full implementations of TeX 3.1 (PasTeX) and Metafont
+  2.7 are available.
+  <dl>
+  <dt><tt><i>PasTeX</i></tt><dd><a href="ftp://systems/amiga.tar.gz">systems/amiga.tar.gz</a>
+  </dl>
+<dt>TOPS-20<dd> TeX was originally written on a DEC-10
+  under WAITS,
+  and so was easily ported to TOPS-20. A distribution that runs on
+  TOPS-20 is available via anonymous <code>ftp</code> from <a href="ftp://ftp.math.utah.edu/">ftp.math.utah.edu</a>
+  in <i>pub/tex/pub/web</i>
+  
+</dl>
+<p></body>

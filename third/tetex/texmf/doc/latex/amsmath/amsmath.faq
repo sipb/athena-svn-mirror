@@ -1,0 +1,315 @@
+amsmath.faq  [2000/10/03] American Mathematical Society
+
+Frequently asked questions about the amsmath package and related
+packages.
+
+Suggestions? Please send mail to tech-support@ams.org.
+
+------------------------------------------------------------------------
+(1) Question: Where should I look for documentation?
+
+Answer: User documentation is found in the "User's Guide for the amsmath
+Package" (amsldoc.dvi, .pdf, .ps, .tex). If you do not find it on your
+system, it can be downloaded from
+
+ ftp://ftp.ams.org/pub/tex/amslatex/math/amsldoc.tex
+
+The full list of documentation files is as follows:
+
+  TeX files
+    amsldoc.tex   User's Guide for the Amsmath Package
+    diffs-m.txt   Differences between amsmath versions 1.1, 1.2, 2.0
+    subeqn.tex    Sample document illustrating use of the subequations
+                  environment and the effect of the fleqn option
+    technote.tex  Discusses some technical issues
+    testmath.tex  Samples of most of the math constructions
+                  provided by the amsmath package
+
+  non-TeX files
+    amsmath.faq   This file
+    00readme.txt  Overview
+    install.txt   Installation instructions
+
+------------------------------------------------------------------------
+(2) Question: I get a weird error that seems to be related to a section
+title or a figure caption.
+
+Answer: Check to see if you have used a `fragile' command inside a
+`moving' argument (article titles, section titles, figure captions,
+table captions, etc.). Bear in mind that not all math commands are
+robust, and a few that are robust in ordinary LaTeX become fragile when
+the amsmath package is added (e.g., \bigotimes). See Section C.1.3
+of the LaTeX book.
+
+Most of the more common math commands have been made robust, but for
+each such command there is a hidden cost to users: making it robust uses
+up an extra control sequence name, which makes the following sort of
+error message more likely:
+
+  TeX capacity exceeded [hash size=3500]
+
+Unlike the `require \protect' solution, this latter problem can be very
+difficult for the average user to solve.
+
+------------------------------------------------------------------------
+(3) Question: Why can't I use an abbreviation for the `align'
+environment?
+
+Answer: It is a fairly common practice to use abbreviations such as \bal
+... \eal for \begin{align} ... \end{align}. This is not possible with
+most of the more complex amsmath equation structures, for technical
+reasons (see technote.tex for some additional details).
+
+------------------------------------------------------------------------
+(4) Question: Why can't I use \begin{align} ... \end{align} in the
+definition of another environment?
+
+If you want to make a more elaborate environment using align or one of
+the others as a base, it can be done as follows:
+
+\newenvironment{myalign}{%
+  % extra material here
+  \align
+}{%
+  \endalign
+  % extra material here
+}
+
+See also technote.tex which contains a bit more detail.
+
+------------------------------------------------------------------------
+(5) Question: Why did \matrix, \pmatrix, and \cases stop working when
+I added the amsmath package?
+
+Answer: The old form of those commands should be considered obsolete.
+When LaTeX was first written back in 1983--1985, those three commands
+were carried over directly from plain.tex, for lack of anything better.
+When the amsmath package was ported to LaTeX (its origin was in
+AMS-TeX), it came with commands of the same name but different syntax.
+Both of them are ill-matched with the rest of LaTeX. The only tenable
+solution was to depart from both the AMS-TeX syntax and the plain TeX
+syntax. Therefore users of the amsmath package should follow standard
+LaTeX "environment" syntax and write
+
+  \begin{matrix}
+  ... \\
+  ... \\
+  ...
+  \end{matrix}
+
+(similarly for pmatrix and cases).
+
+------------------------------------------------------------------------
+(6) Question: Why do \over, \atop, \above, ..., \overwithdelims give
+warnings when I add the amsmath package?
+
+Answer: These are primitive TeX commands whose unusual syntax is out of
+place in a LaTeX document. Using them at surface level in a document
+also makes it very difficult to achieve certain kinds of typesetting
+improvements that would otherwise be possible. If you use the amsmath
+package the commands \frac, \binom, and \genfrac provide all the same
+functionality with standard LaTeX syntax. Some additional details are
+given in the file technote.tex.
+
+If you are writing a LaTeX package that uses \over or another
+generalized fraction operator for internal purposes in building more
+complex commands, we recommend that you use \@@over, \@@atop, etc.,
+after checking first to make sure that they are defined:
+
+\@ifundefined{@@over}{%
+  \let\@@over\over % fallback if amsmath is not loaded
+  \let\@@overwithdelims\overwithdelims
+  \let\@@atop\atop \let\@@atopwithdelims\atopwithdelims
+  \let\@@above\above \let\@@abovewithdelims\abovewithdelims
+}{}
+
+------------------------------------------------------------------------
+(7) Question: How do I get my equations and my theorems to share the
+same numbering sequence?
+
+Answer:
+
+  \numberwithin{equation}{section}% [if desired]
+
+  \newtheorem{thm}[equation]{Theorem}
+  \newtheorem{prop}[equation]{Proposition}
+  ...
+
+------------------------------------------------------------------------
+(8) Question: How do I put a box around an entire equation, including
+the equation number?
+
+Answer: It depends. For a simple equation it can be done like this:
+
+  \newcommand{\boxedeqn}[1]{%
+    \[\fbox{%
+        \addtolength{\linewidth}{-2\fboxsep}%
+        \addtolength{\linewidth}{-2\fboxrule}%
+        \begin{minipage}{\linewidth}%
+        \begin{equation}#1\end{equation}%
+        \end{minipage}%
+      }\]%
+  }
+
+    ...
+
+  Here is some text preceding the boxed equation.
+  \boxedeqn{
+    X_1(j\omega) = 
+        \int\limits^{+\infty}_{-\infty} x_1(t) e^{-j\omega t} dt
+  }
+  And here is some text after it.
+
+------------------------------------------------------------------------
+(9) Question: When I change \mathindent I see no effect.
+
+Answer: The amsmath package doesn't really use \mathindent in the way
+that basic LaTeX does. Instead, it uses an internal variable
+\@mathmargin that is a "glue" variable rather than a "dimen" variable.
+However if you upgrade to version 2.0 of the amsmath package you will
+probably get the results you want because there \mathindent is aliased
+to \@mathmargin.
+
+------------------------------------------------------------------------
+(10) Question: I tried \raisetag but it didn't have any visible effect.
+
+Answer: The adjustment specified with \raisetag is not applied unless
+the equation number has been shifted away from its normal position
+because LaTeX thinks there is not enough room for it to fit there. For a
+normal equation with plenty of room, the \raisetag adjustment is
+ignored. If you are trying to use \raisetag in such circumstances
+perhaps the object being placed is not a true equation number; try using
+instead the standard LaTeX commands for moving objects around (\makebox,
+\raisebox, picture environment, etc).
+
+------------------------------------------------------------------------
+(11) Question: I want something like the "cases" environment that
+permits a separate equation number for each line.
+
+Answer: Try the "cases" package of Donald Arseneau. It is available from
+CTAN if you do not have it on your system already.
+
+------------------------------------------------------------------------
+(12) Question: The vertical placement of symbols attached to a base
+symbol with \underset and/or \overset is not good enough.
+
+Answer: Try the "accents" package of Javier Bezos. It is available from
+CTAN.
+
+------------------------------------------------------------------------
+(13) Question: With \sideset the subscript is overlapping with
+neighboring material.
+
+Answer: This is a bug. As of amsmath version 2.0 it has not been fixed
+yet.
+
+------------------------------------------------------------------------
+(14) Question: Lower limits on \iint\nolimits are positioned too far
+away from the int symbol.
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package.
+
+------------------------------------------------------------------------
+(15) Question: \ldots spacing differs from normal LaTeX values when I
+add the amsmath package. 
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package.
+
+------------------------------------------------------------------------
+(16) Question: In `xalignat' I get an error `Extra & on this line'.
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package.
+
+------------------------------------------------------------------------
+(17) Question: Empty first cell in `aligned' environment leads to a TeX
+error.
+
+Answer: The LaTeX mechanism for scanning optional arguments does not
+work reliably in this context. A workaround was added in version 2.0 of
+the amsmath package.
+
+------------------------------------------------------------------------
+(18) Question: `align*' within `gather' is shifted to the right (for
+example in testmath.tex, p. 37).
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package.
+
+------------------------------------------------------------------------
+(19) Question: Equation numbers are sometimes misplaced or shifted to a
+     separate line when there seems to be enough room to keep them on
+     the same line.
+
+Answer: If you have an older version of the amsmath package, try
+upgrading. Some bugs of this type were cleared up in version 2.0.
+
+------------------------------------------------------------------------
+(20) Question: With fleqn + leqno options, the `align' environment
+nevertheless puts the numbers on the right.
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package.
+
+------------------------------------------------------------------------
+(21) Question: \numberwithin{equation}{chapter} with the `report' or
+`book' documentclass adds too many levels to the equation numbers:
+(1.1.x) instead of (1.x).
+
+Answer: This is a bug. It was fixed in version 2.0 of the amsmath
+package. If you have an older version, a workaround is to simplify the
+definition of \theequation before calling \numberwithin:
+
+  \renewcommand{\theequation}{\arabic{equation}}
+  \numberwithin{equation}{chapter}
+
+------------------------------------------------------------------------
+(22) Question: \accentedsymbol produces error message `Missing number,
+treated as zero.'
+
+Answer: This is a bug. It was fixed in version 1.2c of the amsxtra
+package.
+
+------------------------------------------------------------------------
+(23) Question: I get a puzzling error message from using \ensuremath
+inside an alignment environment (aligned, array, etc):
+
+  ! Incomplete \ifmmode; all text was ignored after line 9.
+  <inserted text>
+                  \fi
+  l.9 }
+
+Answer: This problem is not specific to amsmath but ultimately resolves
+to a deficiency in the definition of \ensuremath that was fixed in LaTeX
+as of 1996/06/01. If you can't upgrade your version of LaTeX to remedy
+this problem, you may need to resort to the following patch in your
+documents:
+
+  \DeclareRobustCommand\ensuremath[1]{\ifmmode#1\else{$#1$}\fi}
+
+------------------------------------------------------------------------
+(24) Question: I want to show an example of a few lines to be typed
+into a computer, centered with an equation number. amsmath doesn't
+allow one to use \verb in the equation environment. How can I
+create this example?
+
+Answer: This does not apply for simple equation environments as of
+amsmath version 2.0. For special equation environments such as align,
+gather, split, multline, aligned, alignat, etc, store the text
+beforehand using an lrbox environment and then call it with \usebox (if
+you do not know how to use lrbox and \usebox, see the LaTeX book (2nd
+edition) and/or the documentation usrguide.tex that comes with LaTeX).
+
+------------------------------------------------------------------------
+(25) Question: In amsmath.sty, the @! and @, from amstex.sty disappeared.
+How do I get the same effect using amsmath?
+
+Answer: For @, use \mspace{.3mu}, and for @! use \mspace{-.3mu}. However
+since these very small spaces normally were used in multiples of three
+or more, bear in mind that it is better to replace @!@!@! with
+\mspace{-.9mu} than with three separate \mspace commands.
+
+------------------------------------------------------------------------
+

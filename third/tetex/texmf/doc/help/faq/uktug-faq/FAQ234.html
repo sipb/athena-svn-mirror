@@ -1,0 +1,35 @@
+<head>
+<title>UK TeX FAQ -- question 234</title>
+</head><body>
+<h3>Finding if you're on an odd or an even page</h3>
+<p><a href="FAQ256.html">Another question</a> discusses the issue
+of getting <code>\marginpar</code> commands to put their output in the correct
+margin of two-sided documents.  This is an example of the general
+problem of knowing where a particular bit of text lies: the output
+routine is asynchronous, and (La)TeX will usually process quite a
+bit of the "next" page before deciding to output any page.  As a
+result, the <code>page</code> counter (known internally in LaTeX as
+<code>\c@page</code>) is normally only reliable when you're actually <em>in</em>
+the output routine.
+<p>The solution is to use some version of the <code>\label</code> mechanism to
+determine which side of the page you're on; the value of the page
+counter that appears in a <code>\pageref</code> command has been inserted in
+the course of the output routine, and is therefore safe.
+<p>However, <code>\pageref</code> itself isn't reliable: one might hope that
+<pre>
+\ifthenelse{\isodd{\pageref{foo}}}{odd}{even}
+</pre>
+would do the necessary, but both the <i>babel</i> and
+<i>hyperref</i> packages have been known to interfere with the
+output of <code>\pageref</code>; be careful!
+<p>The <i>chngpage</i> package needs to provide this functionality for
+its own use, and therefore provides a command <code>\checkoddpage</code>; this
+sets a private-use label, and the page reference part of that label is
+then examined (in a <i>hyperref</i>-safe way) to set a conditional 
+<code>\ifcpoddpage</code> true if the command was issued on an odd page.  Of
+course, the <code>\label</code> contributes to LaTeX's "Rerun to get
+cross-references right" error messages...
+<dl>
+<dt><tt><i>chngpage.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/misc/chngpage.sty">macros/latex/contrib/supported/misc/chngpage.sty</a>
+</dl>
+<p></body>

@@ -1,0 +1,41 @@
+-----------------------------------------------------------------------------
+                   This file belongs to the TAP package
+-----------------------------------------------------------------------------
+BRIEF DESCRIPTION OF THE CONTENTS
+
+TAP.TEX: a TeX package for typesetting tables; it exploits some possibilities
+         offered by PostScript. The idea of the package was taken from
+         the package TABLES by Michael J. Ferguson, however, the package TAP
+         was re-implemented from scratch.
+
+TAPCV:   directory containing TAPCV.AWK (AWK program for translating tables
+         written in extended ASCII format into TeX/TAP form) and
+         a few samples.
+
+TAPDOC:  directory containing files necessary for typesetting (TeXing)
+         the documentation; moreover, there are two files, TAPXAMP1.TEX
+         and TAPXAMP2.TEX, demonstrating a technique for constructing
+         ``simple-but-complex'' tables.
+-----------------------------------------------------------------------------
+
+AUTHORS' COORDINATES
+
+Names:  Bogu\l{}aw Jackowski, Piotr Pianowski, Piotr Strzelczyk
+Mail:   BOP s.c., ul. Piastowska 70, 80-363 Gda\'nsk, Poland
+Email:  B.Jackowski@GUST.ORG.PL
+
+-----------------------------------------------------------------------------
+
+All copyrights, copylefts, copyups, copydowns, or whatever you wish to call
+them, concerning all the files in the TAP package are essentially of the
+public domain character. In particular, you are entitled to do with the files
+whatever you wish. If you alter a file, however, please remove the line
+containing the comment:
+
+      `This file belongs to the TAP package'
+
+in order to avoid mess.
+
+-----------------------------------------------------------------------------
+
+END OF THE 0TAP.DOC FILE

@@ -1,0 +1,92 @@
+Note about lucida bright support by Thomas Esser, Jan. 2003:
+============================================================
+
+The map files lucidabr-k.map and lumath-k.map assume that your type1
+font files for lucida are named using the "Berry" scheme. You can rename
+your files using the supplied makefile.
+
+Or, you can add the following aliases to the file aliases at top of your
+texmf tree if your TeX system supports it (works for web2c, teTeX, fpTeX):
+
+lbc.afm hlcrie8a.afm
+lbc.pfb hlcrie8a.pfb
+lbd.afm hlhb8a.afm
+lbd.pfb hlhb8a.pfb
+lbdi.afm hlhbi8a.afm
+lbdi.pfb hlhbi8a.pfb
+lbdsc.afm hlhbc8a.afm
+lbdsc.pfb hlhbc8a.pfb
+lbh.afm hlcriw8a.afm
+lbh.pfb hlcriw8a.pfb
+lbi.afm hlhri8a.afm
+lbi.pfb hlhri8a.pfb
+lbki.afm hlcrin8a.afm
+lbki.pfb hlcrin8a.pfb
+lbkr.afm hlcrn8a.afm
+lbkr.pfb hlcrn8a.pfb
+lbl.afm hlcrf8a.afm
+lbl.pfb hlcrf8a.pfb
+lbma.afm hlcra.afm
+lbma.pfb hlcra.pfb
+lbmad.afm hlcda.afm
+lbmad.pfb hlcda.pfb
+lbmd.afm hlcdm.afm
+lbmd.pfb hlcdm.pfb
+lbmdi.afm hlcdim.afm
+lbmdi.pfb hlcdim.pfb
+lbmdo.afm hlcdima.afm
+lbmdo.pfb hlcdima.pfb
+lbme.afm hlcrv.afm
+lbme.pfb hlcrv.pfb
+lbmi.afm hlcrim.afm
+lbmi.pfb hlcrim.pfb
+lbmo.afm hlcrima.afm
+lbmo.pfb hlcrima.pfb
+lbmr.afm hlcrm.afm
+lbmr.pfb hlcrm.pfb
+lbms.afm hlcry.afm
+lbms.pfb hlcry.pfb
+lbmsd.afm hlcdy.afm
+lbmsd.pfb hlcdy.pfb
+lbr.afm hlhr8a.afm
+lbr.pfb hlhr8a.pfb
+lbrsc.afm hlhrc8a.afm
+lbrsc.pfb hlhrc8a.pfb
+lbsl.afm hlhro8a.afm
+lbsl.pfb hlhro8a.pfb
+lbtb.afm hlcbt8a.afm
+lbtb.pfb hlcbt8a.pfb
+lbtbo.afm hlcbot8a.afm
+lbtbo.pfb hlcbot8a.pfb
+lbto.afm hlcrot8a.afm
+lbto.pfb hlcrot8a.pfb
+lbtr.afm hlcrt8a.afm
+lbtr.pfb hlcrt8a.pfb
+lfd.afm hlxb8a.afm
+lfd.pfb hlxb8a.pfb
+lfdi.afm hlxbi8a.afm
+lfdi.pfb hlxbi8a.pfb
+lfi.afm hlxri8a.afm
+lfi.pfb hlxri8a.pfb
+lfr.afm hlxr8a.afm
+lfr.pfb hlxr8a.pfb
+lsb.afm hlsu8a.afm
+lsb.pfb hlsu8a.pfb
+lsbi.afm hlsui8a.afm
+lsbi.pfb hlsui8a.pfb
+lsd.afm hlsb8a.afm
+lsd.pfb hlsb8a.pfb
+lsdi.afm hlsbi8a.afm
+lsdi.pfb hlsbi8a.pfb
+lsi.afm hlsri8a.afm
+lsi.pfb hlsri8a.pfb
+lsr.afm hlsr8a.afm
+lsr.pfb hlsr8a.pfb
+lstb.afm hlsbt8a.afm
+lstb.pfb hlsbt8a.pfb
+lstbo.afm hlsbot8a.afm
+lstbo.pfb hlsbot8a.pfb
+lsto.afm hlsrot8a.afm
+lsto.pfb hlsrot8a.pfb
+lstr.afm hlsrt8a.afm
+lstr.pfb hlsrt8a.pfb

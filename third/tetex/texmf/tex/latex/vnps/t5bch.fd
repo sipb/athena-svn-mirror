@@ -1,0 +1,38 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5bch.fd}
+
+\DeclareFontFamily{T5}{bch}{}
+
+\DeclareFontShape{T5}{bch}{b}{n}{
+   <-> bchb8v
+}{}
+
+\DeclareFontShape{T5}{bch}{b}{sl}{
+   <-> bchbo8v
+}{}
+
+\DeclareFontShape{T5}{bch}{b}{it}{
+   <-> bchbi8v
+}{}
+
+\DeclareFontShape{T5}{bch}{m}{n}{
+   <-> bchr8v
+}{}
+
+\DeclareFontShape{T5}{bch}{m}{sl}{
+   <-> bchro8v
+}{}
+
+\DeclareFontShape{T5}{bch}{m}{it}{
+   <-> bchri8v
+}{}
+
+\DeclareFontShape{T5}{bch}{bx}{n}{<->ssub * bch/b/n}{}
+\DeclareFontShape{T5}{bch}{bx}{sl}{<->ssub * bch/b/sl}{}
+\DeclareFontShape{T5}{bch}{bx}{it}{<->ssub * bch/b/it}{}
+\DeclareFontShape{T5}{bch}{l}{n}{<->ssub * bch/m/n}{}
+\DeclareFontShape{T5}{bch}{l}{sl}{<->ssub * bch/m/sl}{}
+\DeclareFontShape{T5}{bch}{l}{it}{<->ssub * bch/m/it}{}
+
+\endinput

@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-2">
+<TITLE>PLaTeX, pdfPLaTeX</TITLE>
+</HEAD>
+
+<BODY>
+
+<!-- January 2003. Staszek Wawrykiewicz (StaW@gust.org.pl).
+teTeX 2.0 revision. Public domain. -->
+
+<center>
+<h2>PLaTeX i pdfPLaTeX</h2>
+</center>
+
+Dokumentacja niniejsza omawia pokrótce tworzenie formatów dla programów
+<code>tex</code> i&nbsp;<code>pdftex</code> (wersji TeX-a tworzącej od razu
+pliki PDF) ze wsparciem dla języka polskiego i&nbsp;ich użycie
+w&nbsp;środowisku opartym na  <code>web2c</code> (dystrybucje 
+TeX Live/teTeX/fpTeX) lub MiKTeX. <p>
+
+<p>
+Poniżej pokazano prosty przykład tworzenia pliku z użyciem
+pakietu PLaTeX. Pakiet ten dostarcza narzędzi potrzebnych do składu
+dokumentów w&nbsp;języku polskim LaTeXem&nbsp;2e.<br>
+Autorzy pakietu: Mariusz Olko i Marcin Woliński.<br>
+Więcej informacji na temat samego pakietu -- patrz plik 
+<code>czytaj.txt</code> dystrybucji PLaTeX.
+
+<p>
+Ponadto w&nbsp;dystrybucjach
+dołączono przykładowy plik <code>doc/latex/platex/tstlatex.tex</code>.
+służący do przetestowania poprawnego 
+działania formatu LaTeX/PLaTeX. Początkującym użytkownikom zaleca się 
+zapoznanie z&nbsp;zawartością tego pliku.
+Plik ten dostępny jest także na serwerze 
+<a href="ftp://ftp.gust.org.pl/pub/TeX/GUST/contrib/zaczynam/">GUST</a>.
+Techniczne szczegóły dotyczące użycia pakietu polski.sty 
+(główny element pakietu platex) dostępne są po dwukrotnym uruchomieniu:<br>
+  <code>platex polski.dtx</code><br>
+  <code>platex polski.dtx</code><br>
+i wyświetleniu wynikowego <code>polski.dvi</code>.<p>
+
+<hr>
+
+<h3>I. Przygotowanie formatu LaTeX2e do obsługi języka polskiego</h3>
+
+Format w&nbsp;systemie TeX to wstępnie prekompilowany (aby przyspieszyć 
+jego analizę przez program <code>tex/pdftex</code>) zestaw makrodefinicji oraz reguł
+przenoszenia wyrazów dla wybranego zestawu języków. 
+Plik formatu z&nbsp;reguły posiada rozszerzenie <code>.fmt</code>.
+Tworzenie formatu to, w&nbsp;skrócie, uruchomienie programu
+<code>tex/pdftex</code>
+z&nbsp;opcją <code>--ini</code> i&nbsp;wczytanie odpowiedniego pliku
+inicjującego (dla LateX jest to plik <code>latex.ltx</code>).
+W&nbsp;LaTeX&nbsp;2e zestaw reguł przenoszenia wyrazów jest zwyczajowo 
+deklarowany w&nbsp;pliku o&nbsp;nazwie <code>language.dat</code>.
+Plik ten znajduje się zwykle w&nbsp;podkatalogu 
+<code>tex/generic/config/language.dat</code> lokalnej konfiguracji systemu
+TeX bądź w&nbsp;identycznym podkatalogu katalogu głównego instalacji. Modyfikacja
+<code>language.dat</code> polega na usunięciu w&nbsp;tym pliku znaku komentarza
+`%' w&nbsp;wierszu<br>
+<code>polish plhyph.tex</code><br>
+i&nbsp;ewentualnym
+zablokowaniu takim znakiem niepożądanych deklaracji wzorców dzielenia wyrazów.
+
+Przygotowanie formatu:
+<ul>
+  <li> <b>standardowe</b>: w teTeX należy uruchomić program <code>texconfig</code>,
+   uaktywnić reguły dzielenia wyrazów dla języka polskiego (menu
+   <code>Hyphenation</code> uruchamia edycję pliku
+   <code>language.dat</code>; po zapisaniu zmian w&nbsp;pliku
+   i&nbsp;zakończeniu edycji, zostanie automatyczne wygenerowany format
+   <code>latex.fmt</code> zawierający
+   wybrane wzorce dzielenia oraz mechanizm Babel przełączania języków;
+   <code>texconfig</code> tworzy ponadto dowiązanie (lub program) 
+   <code>latex</code>.<br>
+   Dla dociekliwych: powyższe odpowiada uruchomieniu z&nbsp;linii
+   poleceń:<br>
+   <code>fmtutil --byfmt latex</code><br>
+   zaś na niższym poziomie -- poleceniu<br>
+   <code>tex --ini --progname=latex latex.ini</code><br>
+   W instalacji MiKTeX (od wersji 2.0) należy uruchomić menu 
+   <code>MiKTeX Options</code>, zaznaczyć w&nbsp;podmenu 
+   <code>Languages: polish</code> reguły przenoszenia wyrazów, po czym
+   w&nbsp;menu <code>TeX Formats</code> wygenerować (przyciskiem
+  <code>Build</code>) nowy format <code>latex.fmt</code>, zawierający
+  polskie wzorce.<br>
+  Format <code>pdflatex.fmt</code> dla programu <code>pdftex</code>
+  tworzony jest analogicznie.
+<li> <b>niestandardowe</b>, które tworzy ,,czysty'' format LaTeX2e zawierający
+   jedynie wybrane wzorce dzielenia wyrazów, bez zbędnych mechanizmów Babel.
+   Jest to metoda preferowana przez wielu polskich użytkownikow. ;-)
+   <a href=#AA1>Dlaczego PLaTeX a&nbsp;nie Babel?</a> O&nbsp;tym poniżej.
+   Dla odróżnienia przyjęto nazywać taki format <code>platex</code>
+   (lub <code>pdfplatex</code> dla pdfTeX). Formaty te korzystają z&nbsp;,,prywatnej''
+   kopii pliku <code>language.dat</code> z&nbsp;zadeklarowanymi od razu
+   polskimi i&nbsp;angloamerykanskimi wzorcami przenoszenia wyrazów.
+   Procedura opisana 
+   w&nbsp;poprzednim punkcie pozwala na wygenerowanie takich formatów
+   za pomocą programu <code>texconfig</code>: menu
+   <code>Formats</code>
+   uruchamia edycję pliku <code>fmtutil.cnf</code>, należy tu
+   odblokować wiersz dotyczący formatu <code>platex</code> lub 
+   <code>pdfplatex</code> (usunąć znak # przed deklaracją interesującego nas
+   formatu) i&nbsp;, po zapisaniu pliku, powrócić do menu nadrzędnego;
+   ,,w tle'' zostanie wykonany  program <code>fmtutil</code>;
+   utworzone zostanie ponadto dowiązanie
+   <code>platex</code> (<code>pdfplatex</code>).<br>
+ W wypadku gdy nie mamy (jeszcze) programu <code>texconfig</code> (fpTeX dla
+ Windows) procedura generowania formatu <code>platex</code> (lub
+ <code>pdfplatex</code>) da się przedstawić następująco:<br>
+<ol>
+<li>należy odszukać plik <code>texmf/web2c/fmtutil.cnf</code> (edytujemy 
+   kopię tego pliku
+   znajdującą sią w&nbsp;lokalnym drzewie katalogów TeX-owych użytkownika 
+   lub w&nbsp;drzewie przeznaczonym na lokalne konfiguracje; położenie 
+   właściwego pliku pokaże uruchomienie polecenia
+   <code>kpsewhich fmtutil.cnf</code>);
+<li> w&nbsp;pliku fmtutil.cnf należy odblokować wiersz dotyczący formatu
+   <code>platex</code> lub <code>pdfplatex</code> (usunąć znak #);
+<li> uruchomić polecenie: <code>fmtutil --byfmt platex --dolinks</code> (lub 
+    <code>fmtutil --byfmt pdfplatex --dolinks</code>).
+</ol>
+
+ Dla MiKTeX (od wersji 2.0)
+ należy uruchomić menu <code>MiKTeX Options</code>, w&nbsp;podmenu
+ <code>TeX Formats</code> zaznaczyć format
+ <code>PLaTeX</code> (lub <code>pdfPLaTeX</code>) i&nbsp;utworzyć 
+ (przyciskiem <code>Build</code>) potrzebne formaty. 
+ 
+<p>
+W&nbsp;omawianych wyżej przypadkach tworzony jest plik formatu
+ <code>platex.fmt</code> (lub <code>pdfplatex.fmt</code>), który jest
+ umieszczany w&nbsp;katalogu właściwym dla tego rodzaju
+ plików, oraz tworzony jest program <code>platex</code> lub
+ <code>pdfplatex</code> (uruchamia on program <code>tex</code> lub
+ <code>pdftex</code> z&nbsp;odpowiednim formatem). 
+</ul>
+<p>
+
+
+<a name=AA1>
+<h4>Dlaczego PLaTeX a&nbsp;nie Babel?</h4>
+
+(Fragment ten jest cytatem z&nbsp;listu nadesłanego na listę dyskusyjną GUST
+przez Marcina Wolińskiego).<br>
+
+W&nbsp;porównaniu do pakietu Babel, PLaTeX ma kilka mniej lub bardziej 
+istotnych zalet:
+
+</para>
+<ul>
+<li>
+ PLaTeX udostępnia tradycyjne definicje nazw polskich funkcji 
+ trygonometrycznych <code>\tg</code>, <code>\ctg</code>, <code>\arc</code> 
+ i&nbsp;polskich znaków mniejsze-równe oraz większe-równe.
+<li>
+ PLaTeX umie poprawne przenosić wyrazy złożone (tj. takie jak np. 
+ biało-czerwony) udostępniając do tego celu polecenie <code>\dywiz</code>.
+<li>
+ PLaTeX wstawia prawidłowe odstępy na końcu zdania.
+<li>
+ Babel nie wspiera do końca fontów w&nbsp;układzie OT4 (fontów PL), 
+ co powoduje, 
+ że polskie znaki diakrytyczne w&nbsp;wyrazach wstawianych automatycznie 
+ przez LaTeX (dokładnie ,,ę'' w&nbsp;słowie część oraz ,,ą'' w&nbsp;słowie 
+ ,,załącznik'') sklejane z&nbsp;dwóch znaków.  Jest to drobny, ale ciągle 
+ nie usunięty błąd. (Można go poprawić samodzielnie dokonując niewielkiej
+ modyfikacji pliku polish.sty z&nbsp;dystrybucji pakietu Babel.)
+ Obwiedniowe fonty OT4 są niezastąpione przy tworzeniu plików 
+ w&nbsp;formacie PDF.
+</ul>
+<para>
+ Podsumowując: jeżeli nie potrzebujemy środowiska wielojęzycznego to dużo 
+ mniejsza objętość pakietu PLaTeX oznacza także mniejszą liczbę błędów
+ i&nbsp;potencjalnych kolizji z&nbsp;innymi częściami LaTeXa.<br>
+ [achiwum GUST-L, list z 06/06/1997]
+</para>
+
+<hr>
+
+<h3>II. Użycie</h3>
+
+Aktualne implementacje, oparte na Web2c, a&nbsp;także MiKTeX pozwalają
+na prawidłowe przekodowanie znaków diakrytycznych w&nbsp;pliku TeX-owym
+na wewnętrzną reprezentację, stosowaną przez programy. 
+W&nbsp;Polsce, niestety, 
+stosowane są różne ,,standardy'' kodowania diakrytyków w&nbsp;tworzonych przez
+użytkownika plikach, zależnie od systemu operacyjnego. Dla potrzeb systemu 
+TeX używamy zewnętrznych, tekstowych plików TCX, pozwalających ,,obsłużyć'' 
+różne spotykane ,,standardy''. Dzięki temu przekodowanie działa też 
+w&nbsp;drugą stronę, kiedy TeX wyświetla komunikaty i&nbsp;zapisuje pliki 
+<code>.log</code>, a&nbsp;także pliki ze spisem treści, skorowidzem itp.<p>
+
+Uruchomienie polecenia:<br>
+<code>latex --translate-file=TCXFILE myfile.tex</code><br>
+oznacza uruchomienia TeX-a z&nbsp;formatem <code>latex.fmt</code>
+i&nbsp;z&nbsp;odpowiednią tablicą przekodowań (ich lista znajduje się 
+poniżej). W&nbsp;identyczny sposób uruchamiamy polecenie <code>platex</code>.<p>
+
+Przekodowanie (plik TCX) może być deklarowane bezpośrednio w&nbsp;pliku
+TeX-owym. Począwszy od wersji Web2c&nbsp;7.4, wymaga to podania 
+w&nbsp;wierszu poleceń opcji <code>--parse</code> lub włączenia jej na 
+stałe, co wymaga zmiany w&nbsp;głównym pliku
+konfiguracyjnym <code>texmf.cnf</code>:<br>
+<code>parse_first_line = t</code><br>
+(t -- od `true', zamiast domyślnego przypisania f -- od `false').
+
+<p>
+Przykładowo, jeśli <b>pierwszy</b> wiersz pliku zawiera
+ komentarz strukturalny postaci<br>
+     <code>%&platex --translate-file=il2-pl</code><br>
+ to plik może być przetworzony za pomocą polecenia <code>tex plik.tex</code>;
+ zostanie wtedy wczytany format <code>platex.fmt</code> oraz tablica
+ <code>il2-pl.tcx</code>
+ przekodowania z&nbsp;układu iso8859-2 do układu fontów PL (wewnętrznego
+ dla programu TeX; w&nbsp;LaTeX-u ma on kryptonim OT4).<p>
+
+Tym samym zbędna jest deklaracja w&nbsp;preambule pliku LaTeX-owego:<br>
+      <code>\usepackage[latin2]{inputenc}</code><p>
+      <code>\usepackage[OT4]{fontenc}</code><p>
+
+
+W&nbsp;dystrybucjach dostarczono szereg plikow TCX. Można je znaleźć
+w&nbsp;katalogu <code>texmf/web2c/</code>:<br>
+<table border>
+<tr>
+ <td>  amiga-pl.tcx </td> <td> AmigaPL do PL </td>
+</tr>
+<tr>
+   <td>il2-pl.tcx</td>    <td> iso8859-2 (latin2) do PL </td>
+</tr>
+<tr>
+   <td>cp1250pl.tcx</td> <td> Windows cp1250 do PL </td>
+</tr>
+<tr>
+   <td>cp852-pl.tcx</td>  <td> IBM cp852 do PL </td>
+</tr>
+<tr>
+   <td>macce-pl.tcx</td>    <td> Apple MacCE do PL  </td>
+</tr>
+<tr>
+   <td>maz-pl.tcx</td>    <td> Mazovia do PL  </td>
+</tr>
+</table>
+
+<p>
+A oto przykład pliku LaTeX-owego:
+
+<pre>
+        %& --translate-file=cp1250pl
+        \documentclass[a4paper]{article}
+        \usepackage{polski}
+        \begin{document}
+          Polskie literki piszemy w standardzie Windows cp1250: .....
+        \end{document}
+</pre>
+
+     Jak widać, nasz plik ma krótką preambułę -- pakiet <code>polski</code>
+     korzysta domyślnie z&nbsp;zainstalowanych fontów PL (odpowiada mu układ 
+     OT4, więc zbędna jest deklaracja <code>\usepackage[OT4]{fontenc}</code>). 
+     Jeśli korzystamy
+     z&nbsp;fontów EC nasza preambuła powinna zawierać dodatkowy wiersz:<br>
+     <code>\usepackage[T1]{fontenc}</code>
+
+
+<h3> III. Polskie fonty PostScriptowe</h3>
+
+ Aktualne dystrybucje zawierają fonty serii PL
+ (spolonizowane standardowe dla TeX-a fonty CM) w&nbsp;wersji 
+ Type&nbsp;1 (postscriptowe).
+ Można je także znaleźć w&nbsp;najbliższym węźle CTAN lub jego kopii,
+ np.:<br>
+ <code>ftp://sunsite.icm.edu.pl/CTAN/fonts/psfonts/polish/plpsfont/</code>.<br>
+ Pliki <code>.pfb</code> powinny znaleźć się w&nbsp;podkatalogu
+ <code>texmf/fonts/type1/public/pl/</code> naszej instalacji, zaś pliki 
+ map fontowych (<code>.map</code>) oraz wektory kodowań 
+(<code>.enc</code>) -- w&nbsp;katalogu <code>texmf/dvips/pl/</code>
+<p>
+W dystrybucjach opartych na Web2c zautomatyzowano, poprzez użycie programu
+<code>updmap</code>, proces tworzenia map fontowych dla programów
+<code>dvips</code>, <code>pdftex</code> 
+i&nbsp;<code>dvipdfm</code>. Poniżej omówiono więc jedynie czego ten proces
+dotyczy.
+<p>
+ Sterownik <code>dvips</code> (zamieniający wynik pracy TeX-a, plik DVI,
+ do formatu PostScript) wymaga aby deklaracje map fontowych 
+ (dla fontów PL konkretnie zawartość <code>texmf/dvips/pl/pl.map</code>) 
+ były dołączone do pliku <code>texmf/dvips/config/psfonts.map</code>.
+ Mapy fontowe można alternatywnie dołączyć w&nbsp;pliku 
+ <code>texmf/dvips/config/config.ps</code> (lub jego lokalnej kopii),
+ dopisując wiersz:<br>
+ <code>p +pl.map</code><br>
+ po deklaracji głównej mapy fontowej: <code>p psfonts.map</code>. <p>
+
+ Aby fonty Type&nbsp;1 były użyte przez program <code>pdfTeX</code>, 
+ należy sprawdzić jakie mapy fontowe są deklarowane w&nbsp;pliku 
+ <code>texmf/dvips/config/pdftex.map</code> -- powinien on także
+ zawierać deklaracje map fontowych dla fontów PL.<p>
+
+W&nbsp;dystrybucjach wszystkie aktualnie dostępne polskie fonty
+Type1 są gotowe do użycia zarówno przez program <code>dvips</code>,
+jak i&nbsp;<code>pdftex</code>.<p>
+
+Bardziej szczegółowe omówienie instalacji fontów Type1 zawarte
+jest w&nbsp;artykule <a href="http://www.gust.org.pl/fonty/fonthint.html">Instalowanie
+fontów Type1/True Type</a>. <p>
+
+<hr>
+
+<i>Staszek Wawrykiewicz</i> (StaW@gust.org.pl), 13.01.2003.
+
+</BODY>
+</HTML>
+

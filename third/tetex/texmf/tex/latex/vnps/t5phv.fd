@@ -1,0 +1,47 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5phv.fd}
+
+\DeclareFontFamily{T5}{phv}{}
+
+\DeclareFontShape{T5}{phv}{m}{n}{
+   <-> phvr8v
+}{}
+
+\DeclareFontShape{T5}{phv}{m}{sl}{
+   <-> phvro8v
+}{}
+
+\DeclareFontShape{T5}{phv}{mc}{n}{
+   <-> phvr8vn
+}{}
+
+\DeclareFontShape{T5}{phv}{mc}{sl}{
+   <-> phvro8vn
+}{}
+
+\DeclareFontShape{T5}{phv}{b}{n}{
+   <-> phvb8v
+}{}
+
+\DeclareFontShape{T5}{phv}{b}{sl}{
+   <-> phvbo8v
+}{}
+
+\DeclareFontShape{T5}{phv}{bc}{n}{
+   <-> phvb8vn
+}{}
+
+\DeclareFontShape{T5}{phv}{bc}{sl}{
+   <-> phvbo8vn
+}{}
+
+\DeclareFontShape{T5}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{T5}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+\DeclareFontShape{T5}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{T5}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T5}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T5}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{T5}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+
+\endinput

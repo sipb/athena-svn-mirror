@@ -70,45 +70,15 @@ The files from the subdirectory `src' must be moved to a
 directory where METAFONT searches for its input files.  The
 files from the subdirectory `tfm' must be moved to a
 directory where TeX/LaTeX searches for font metrics.  In
-order to generate the bitmap fonts you will need the
-METAFONT sources of the EC fonts, version 1.0 or later, too.
+order to generate the bitmap fonts, METAFONT sources of the
+EC fonts, version 1.0 or later, are also required.
 
-Within EC 1.0 there is a font named `ecssdc10'.  The
-corresponding tfm file `ecssdc10.tfm', however, is possibly
-still missing on your computer, even if you have installed
-the EC fonts.  In this case you must generate it and keep it
-together with the other EC font metrics, because it may be 
-needed in conjunction with the Concrete fonts.
-
-
-
-List of FAQs
-============
-
-How can I use the EC Concrete Fonts with LaTeX?
-
-       You need appropriate font definition files and the
-       LaTeX package `ccfonts'.  You will find both on the
-       CTAN in the directory
-       `macros/latex/contrib/supported/ccfonts'.
-
-Why is there a font named tcssdc10?  It does not belong to
-the Concrete family.
-
-       It is recommended to use ecssdc10 as a substitute for
-       the missing bold typefaces.  At the moment (Apr.
-       1997), however, its text companion counterpart
-       tcssdc10 is not contained in the EC 1.0 collection,
-       so I have provided it here.  (You will not need to
-       install it, if you have received it with a later
-       version of EC.)
-
-Why is there no interpolation of missing design sizes?
-
-       Knuth's original Concrete fonts do not include design
-       sizes > 10pt, so we have, at the moment, no
-       sufficient base for interpolation.  Do the scaled
-       fonts look ugly to you?
+Note:
+The Concrete fonts are lacking a bold variant.  It is
+recommended to use `CM sansserif demibold condensed'
+(cmssdc10, ecssdc10) as a substitute.  The related text
+companion font tcssdc10 is, however, not distributed as part
+of EV 1.0.  That's why I have provided it here.
 
 
 
@@ -132,10 +102,7 @@ Comments, bug reports and suggestions
 
 ... are welcome and should be addressed to the author:
 
-Walter Schmidt <wschmi@ibm.net>
+Walter Schmidt <walter.schmidt@arcormail.de>
 
-Please obtain my e-mail address from the most recent
-version of this `readme' file.
-
-%% end of file `readme'
+-- finis
 

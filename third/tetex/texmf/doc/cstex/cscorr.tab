@@ -1,0 +1,132 @@
+% The description file for a2ac program for making Czech and Slovak composites
+%
+% Petr Olsak,  June 1995
+%
+% Tested for 32 fonts (see file mfonts.bat and psfonts.tex)
+
+ReduceKerns 9
+
+>> Captop = b(I,4)
+>> distance = 0.0916 Captop
+>> Acutetop = Captop + h(acute) + distance
+>> Carontop = Captop + h(caron) + distance
+>> acutewidth = w(acute)
+>> acuteshift = 0.1 acutewidth
+>> Acuteshift = 0.19 acutewidth
+>> vshift = 0
+>> diershift = b(acute,4) - b(dieresis,4)
+>> Ccorrection = 0.1 w(C)
+>> ccorrection = 0.05 w(c)
+>> quotwidth = w(quoteright)
+>> quotshift = .1quotwidth-b(quoteright,1)
+
+NC Aacute 2 ; PCC A 0 0 ; PAT acute Acuteshift Acutetop ;
+NC Adieresis 2 ; PCC A 0 0 ; PAT dieresis 0 Acutetop-diershift ;
+NK (Aacute,Adieresis) : A
+NC aacute 2 ; PCC a 0 0 ; PAC acute acuteshift vshift ;
+NC adieresis 2 ; PCC a 0 0 ; PAC dieresis 0 vshift ;
+NK (aacute,adieresis) : a
+RK (T,P) (aacute,adieresis) 0
+NC Agrave 2 ; PCC A 0 0 ; PAT grave -Acuteshift Acutetop ;
+NC agrave 2 ; PCC a 0 0 ; PAC grave -acuteshift vshift ;
+%  Agrave needn't kerns---it is symbol only.
+
+NC Ccaron 2 ; PCC C 0 0 ; PAT caron Ccorrection Carontop ;
+NK Ccaron : C
+NC ccaron 2 ; PCC c 0 0 ; PAC caron ccorrection vshift ;
+NK ccaron : c
+RK V ccaron 0
+
+NC Dcaron 2 ; PCC D 0 0 ; PAT caron 0 Carontop ;
+NK Dcaron : D
+NC dcaron 2 ; PCC d 0 0 ; PCT quoteright quotshift+b(d,3) 1.1b(d,4) ;
+RWX dcaron W(d)+0.7quotwidth
+NK * dcaron : * d
+NK dcaron * : f * -.3quotwidth
+
+NC Ecaron 2 ; PCC E 0 0 ; PAT caron 0 Carontop ;
+NC Eacute 2 ; PCC E 0 0 ; PAT acute Acuteshift Acutetop ;
+NK (Ecaron,Eacute) : E
+NC ecaron 2 ; PCC e 0 0 ; PAC caron 0 0 ;
+NC eacute 2 ; PCC e 0 0 ; PAC acute acuteshift vshift ;
+NK (ecaron,eacute) : e
+RK (P,T,V) ecaron 0
+RK (P,T) eacute 0
+
+NC Iacute 2 ; PCC I 0 0 ; PAT acute Acuteshift Acutetop ;
+NK Iacute : I
+NC iacute 2 ; PCC dotlessi 0 0 ; PAC acute acuteshift 0 ;
+NK iacute : i
+
+NC Lcaron 2 ; PCC L 0 0 ; PCT quoteright quotshift+b(I,3) 1.1Captop ;
+NC Lacute 2 ; PCC L 0 0 ; PAT acute 0 Acutetop ;
+NK (Lcaron,Lacute) : L
+NC lcaron 2 ; PCC l 0 0 ; PCT quoteright quotshift+b(l,3) 1.1b(l,4) ;
+RWX lcaron W(l)+0.7quotwidth
+NK * lcaron : * l
+NK lcaron * : f * -.3quotwidth
+NC lacute 2 ; PCC l 0 0 ; PAT acute acuteshift Acutetop ;
+NK lacute : l
+
+NC Ncaron 2 ; PCC N 0 0 ; PAT caron 0 Carontop ;
+NK Ncaron : N
+NC ncaron 2 ; PCC n 0 0 ; PAC caron 0 vshift ;
+NK ncaron : n
+
+NC Ocircumflex 2 ; PCC O 0 0 ; PAT circumflex 0 Carontop ;
+NC Odieresis 2 ; PCC O 0 0 ; PAT dieresis 0 Acutetop-diershift ;
+NC Oacute 2 ; PCC O 0 0 ; PAT acute Acuteshift Acutetop ;
+NK (Ocircumflex,Odieresis,Oacute) : O
+NC ocircumflex 2 ; PCC o 0 0 ; PAC circumflex 0 vshift ;
+NC odieresis 2 ; PCC o 0 0 ; PAC dieresis 0 vshift ;
+NC oacute 2 ; PCC o 0 0 ; PAC acute acuteshift vshift ;
+NK (ocircumflex,odieresis,oacute) : o
+
+NC Rcaron 2 ; PCC R 0 0 ; PAT caron 0 Carontop ;
+NC Racute 2 ; PCC R 0 0 ; PAT acute Acuteshift Acutetop ;
+NK (Rcaron,Racute) : R
+NC rcaron 2 ; PCC r 0 0 ; PAC caron 0 vshift ;
+NC racute 2 ; PCC r 0 0 ; PAC acute acuteshift vshift ;
+NK (rcaron,racute) : r
+RK (F,P,T,V) rcaron 0
+RK (P,T) racute 0
+
+NC Scaron 2 ; PCC S 0 0 ; PAT caron 0 Carontop ;
+NK Scaron : S
+NC scaron 2 ; PCC s 0 0 ; PAC caron 0 vshift ;
+NK scaron : s
+RK (F,P,T,V) scaron 0
+
+NC Tcaron 2 ; PCC T 0 0 ; PAT caron 0 Carontop ;
+NK Tcaron : T
+NC tcaron 2 ; PCC t 0 0 ; PCC quoteright quotshift+b(t,3) 0 ;
+RWX tcaron W(t)+0.7quotwidth
+NK * tcaron : * t
+NK tcaron * : f * -.3quotwidth
+
+NC Udieresis 2 ; PCC U 0 0 ; PAT dieresis 0 Acutetop-diershift ;
+NC Uring 2 ; PCC U 0 0 ; PAT ring 0 Carontop ;
+NC Uacute 2 ; PCC U 0 0 ; PAT acute Acuteshift Acutetop ;
+NK (Udieresis,Uring,Uacute) : U
+NC udieresis 2 ; PCC u 0 0 ; PAC dieresis 0 vshift ;
+NC uring 2 ; PCC u 0 0 ; PAC ring 0 vshift ;
+NC uacute 2 ; PCC u 0 0 ; PAC acute acuteshift vshift ;
+NK (udieresis,uring,uacute) : u
+RK (F,P,T,V) uring 0
+
+NC Yacute 2 ; PCC Y 0 0 ; PAT acute Acuteshift Acutetop ;
+NK Yacute : Y
+NC yacute 2 ; PCC y 0 0 ; PAC acute acuteshift vshift ;
+NK yacute : y
+
+RC Zcaron 2 ; PCC Z 0 0 ; PAT caron 0 Carontop ;
+NK Zcaron : Z
+RC zcaron 2 ; PCC z 0 0 ; PAC caron 0 vshift ;
+NK zcaron : z
+RK (F,P,T,V) zcaron 0
+
+NK (eacute,ecaron,iacute) quotedblleft quotwidth
+
+ReduceKerns 9
+
+

@@ -1,0 +1,47 @@
+<head>
+<title>UK TeX FAQ -- question 88</title>
+</head><body>
+<h3>Using the "Concrete" fonts</h3>
+<p>The Concrete Roman fonts were designed by Don Knuth for a book called
+"Concrete Mathematics", which he wrote with Graham and Patashnik
+(<em>the</em> Patashnik, of BibTeX fame).  Knuth
+only designed text fonts, since the book used the Euler fonts for
+mathematics.  The book was typeset using Plain TeX, of course, with
+additional macros that may be viewed in a file <i>gkpmac.tex</i>,
+which is available on CTAN.  A few years later, Ulrik Vieth
+designed the Concrete Math fonts.  The packages <i>beton</i>,
+<i>concmath</i>, and <i>ccfonts</i> are LaTeX packages that
+change the default text fonts from Computer Modern to Concrete.
+Packages <i>beton</i> and <i>ccfonts</i> also slightly increase
+the default value of <code>\baselineskip</code> to account for the rather
+heavier weight of the Concrete fonts.  Packages
+<i>concmath</i>, and <i>ccfonts</i> also change the default math
+fonts from Computer Modern to Concrete and use the Concrete versions
+of the AMS fonts (this last behaviour is optional in the case
+of the <i>concmath</i> package).
+<p>There are no bold Concrete fonts, but it is generally accepted that
+the Computer Modern Sans Serif demibold condensed fonts are an
+adequate substitute.  If you are using <i>concmath</i> or
+<i>ccfonts</i> and you want to follow this suggestion, then use the
+package with <code>boldsans</code> class option (in spite of the fact
+that the <i>concmath</i> documentation calls it
+<code>sansbold</code> class option). If you are using <i>beton</i>,
+add <code>\renewcommand{<code>\bfdefault</code>}{sbc}</code> to the preamble of
+your document.
+<p>Type 1 versions of the fonts are available.  For the OT1 encoding,
+they are available from 
+<a href="FAQ86.html">MicroPress</a>.  The
+
+<a href="FAQ281.html">CM-Super fonts</a> contain Type 1 versions
+of the Concrete fonts in the T1 encoding.
+<dl>
+<dt><tt><i>beton.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/beton.tar.gz">macros/latex/contrib/supported/beton.tar.gz</a>
+<dt><tt><i>ccfonts.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/ccfonts.tar.gz">macros/latex/contrib/supported/ccfonts.tar.gz</a>
+<dt><tt><i>CM-Super fonts</i></tt><dd><a href="ftp://fonts/ps-type1/cm-super.tar.gz">fonts/ps-type1/cm-super.tar.gz</a>
+<dt><tt><i>concmath.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/concmath.tar.gz">macros/latex/contrib/supported/concmath.tar.gz</a>
+<dt><tt><i>Concmath fonts</i></tt><dd><a href="ftp://fonts/concmath.tar.gz">fonts/concmath.tar.gz</a>
+<dt><tt><i>Concrete fonts</i></tt><dd><a href="ftp://fonts/concrete.tar.gz">fonts/concrete.tar.gz</a>
+<dt><tt><i>gkpmac.tex</i></tt><dd><a href="ftp://systems/knuth/local/lib/gkpmac.tex">systems/knuth/local/lib/gkpmac.tex</a>
+</dl>
+<p>
+<p><p><p></body>

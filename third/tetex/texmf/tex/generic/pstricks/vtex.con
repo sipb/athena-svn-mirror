@@ -2,31 +2,24 @@
 %%
 %% Configuration file for PSTricks 97
 %%
-%% Version 97 patch 2 (1998/07/10)
+%% Version 97 patch 4 (11-17-99)
 %%
-%% For use with VTeX PostScript driver v 6.1+
+%% For use with VTeX PostScript driver v 6.61+
 %% [MV, MK, special thanks to Denis Girou for help]
+%%
+%% Requires vtex.def 7.46 or newer, 10-14-01
 %%
 %% For support and possible updates, check
 %%      http://www.micropress-inc.com
+%%
 
 \def\pstdriver{VTeX}
 {\catcode`\"=12\gdef
 \pstverb#1{%
-\ifnum\OpMode=1
- \special{pS*#1}%            //Raw: PDFmode only.
-\else
- \special{pS: GS }%
- \special{pS: GS }%
- \special{pS: #1}%
- \special{pS: GR }%
-\fi
- }}
+ \special{pS*GS @beginspecial @setspecial #1 @endspecial GR }%
+}}%
 \def\pstunit{1bp}%
-\def\pstVerb#1{\special{pS: #1}}
-\def\pstVerb#1{%
- \special{pS: #1}%
- }
+\def\pstVerb#1{\special{pS: #1}}%
 \def\pstverbscale{SDict begin normalscale end}
 \ifx\textsuperscript\@undefined
    \def\pstheader#1{\special{header=#1}}
@@ -48,10 +41,27 @@
 %
 %  Some customization needed for VTeX since the coordinate system
 %  is different.
+\newif\if@colorstack
+\ifnum\OpMode>-1
+\ifnum\OpMode<3
+\@colorstacktrue
+% D.G. modification begin - Nov. 17, 1999
+\let\vtex@pspicture=\pspicture
+\def\pspicture{\special{G(}\@colorstackfalse\vtex@pspicture}%
+\let\vtex@endpspicture=\endpspicture
+\def\endpspicture{\vtex@endpspicture\@colorstacktrue\special{G)}%
+}
+% D.G. modification end
+\fi
+\fi
 
 \pstcustomize
 \def\tx@RotBegin{neg RotBegin }
-\endinput
+\def\pst@rotlist{mark RAngle /a ED cleartomark a }
+% D.G. modification begin - Oct.  6, 1999
+\def\tx@Rot{neg Rot }
+% D.G. modification end
 
+\endinput
 %%
 %% END: pstricks.con

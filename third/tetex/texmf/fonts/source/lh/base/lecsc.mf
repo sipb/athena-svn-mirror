@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -19,34 +19,26 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 
 input lxpseudo;
 
-mode_setup; font_setup; pseudo_setup;
-
-% trick for uppercase descender ?for future?
-Adesc_up:=Adesc_lo;
-numeric Adesc_lo; % let's forget this definition
+mode_setup; font_setup;
+pseudo_setup;    % |pseudo_setup| from ec
 
 % upper part exr(u/l)(lett/west/east) changed to cyrillic glyphs
-input lgrusu;  % input Russian uppercase shapes
-input lgt2upu; % input upper part Cyrillic uppercase shapes
-input lgt2lou; % input lower part Cyrillic uppercase shapes
+%vvv
+if roman_ec:
+   input exrulett;
+fi
+%<<<
+input lgcyru;  % input Cyrillic uppercase shapes
 
 input lgcyrsym;  % floating symbols in Cyrillic
 input lgengsym;  % latin symbols
 input lgromp;    % roman & ?
 input lgrdigit;  % roman digits
-
-input lgcyrsp;   % special title lje nje
-
-% added by vvv
-if roman_ec:
-  input exrulett;
-fi
-%<<<
 
 is_small_cap:=true;
 %%% fine higher
@@ -75,17 +67,8 @@ input lxpseudo;  % Recalculate pseudoparameters
 
 font_setup; pseudo_setup; % now try again with |lower| settings
 
-% moved down by vvv
-%input lgcspl;    % Small Caps dotless i, j
-
 % upper part exr(u/l)(lett/west/east) changed to cyrillic glyphs
-input lgrusu;  % input Russian uppercase shapes
-input lgt2upu; % input upper part Cyrillic uppercase shapes
-input lgt2lou; % input lower part Cyrillic uppercase shapes
-
-% added by vvv
-input lgcspl;  % Small Caps dotless i, j and FF-ligatures for ec_roman
-
+%vvv
 if roman_ec:
   extra_endchar:=extra_endchar&"charcode:=charcode+code_offset";
   code_offset:=ASCII"a" - ASCII"A";
@@ -93,12 +76,19 @@ if roman_ec:
   code_offset:=0;
 fi
 %<<<
+input lgcyru;  % input Cyrillic uppercase shapes
+
+input lgcspl;  % Small Caps dotless I, J and FF-ligatures for ec_roman
 
 input lypseudo; % Recalculate pseudoparameters for capital accents
 
 font_setup; pseudo_setup;  % now try again with |lower| settings
 
 input lycyracc; % Accents for capital letters with small cap parameters
+if old_cyr:
+   input lgocyrac; % Cyrillic Old Slav accents & signs
+fi
+
 
 endgroup;
 
@@ -123,15 +113,17 @@ font_baselineskip (1.2*designsize);
 if monospace: font_normal_space 9u#; % no stretching or shrinking
    font_quad 18u#;
    font_extra_space 9u#;
-   input llmligtb;   % do the monospace ligature programs
+   input llmligtb;   % do the ligature programs for monospaced fonts
 else: font_normal_space 6u#+2letter_fit#;
    font_normal_stretch 3u#; font_normal_shrink 2u#;
    font_quad 18u#+4letter_fit#;
    font_extra_space 2u#;
-   input llvligtb;   % do the ligature programs, not for monospaced fonts
-   k#:=-.5u#; kk#:=-1.5u#; kkk#:=-2u#; % three degrees of kerning
    TITLEfont:=false; SmallCapsfont:=true; ROMANfont:=false;
+   input llvligtb;   % do the ligature programs, not for monospaced fonts
+   if roman_ec: input llcligtb; fi
+   k#:=-.5u#; kk#:=-1.5u#; kkk#:=-2u#; % three degrees of kerning
    scantokens("input "&(substring(fonteq-2,fonteq) of param_base)&"liker"); % Cyrillic ligs & kerns
 fi
 
 bye.
+%end of file

@@ -1,3 +1,4 @@
+\ProvidesFile{esperant.mld}[1999/03/16]
 % Esperanto titles for minitoc.sty
 \def\mtctitle{Enhavo}%
 \def\mlftitle{Listo de figuroj}%

@@ -1,0 +1,35 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5put.fd}
+
+\DeclareFontFamily{T5}{put}{}
+
+\DeclareFontShape{T5}{put}{m}{n}{
+   <-> putr8v
+}{}
+
+\DeclareFontShape{T5}{put}{m}{sl}{
+   <-> putro8v
+}{}
+
+\DeclareFontShape{T5}{put}{m}{it}{
+   <-> putri8v
+}{}
+
+\DeclareFontShape{T5}{put}{b}{n}{
+   <-> putb8v
+}{}
+
+\DeclareFontShape{T5}{put}{b}{sl}{
+   <-> putbo8v
+}{}
+
+\DeclareFontShape{T5}{put}{b}{it}{
+   <-> putbi8v
+}{}
+
+\DeclareFontShape{T5}{put}{bx}{n}{<->ssub * put/b/n}{}
+\DeclareFontShape{T5}{put}{bx}{sl}{<->ssub * put/b/sl}{}
+\DeclareFontShape{T5}{put}{bx}{it}{<->ssub * put/b/it}{}
+
+\endinput

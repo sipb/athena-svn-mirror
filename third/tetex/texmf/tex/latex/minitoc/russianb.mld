@@ -1,3 +1,4 @@
+\ProvidesFile{russianb.mld}[1999/03/16]
 & russianb.mld
 \def\mtctitle{%
   {\cyr \CYRO\CYRg\CYRl\CYRa\CYRv\CYRl\CYRe\CYRn\CYRi\CYRe}}%

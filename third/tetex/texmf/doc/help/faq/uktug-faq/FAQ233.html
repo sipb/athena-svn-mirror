@@ -1,0 +1,20 @@
+<head>
+<title>UK TeX FAQ -- question 233</title>
+</head><body>
+<h3>Making labels from a counter</h3>
+<p>Suppose we have a LaTeX counter, which we've defined with
+<code>\newcounter{foo}</code>.  We can increment the value of the counter
+by <code>\addtocounter{foo}{1}</code>, but that's pretty clunky for an
+operation that happens so often ... so there's a command
+<code>\stepcounter{foo}</code> that does this special case of
+increasing-by-one.
+<p>There's an internal LaTeX variable, the "current label", that
+remembers the last 'labellable' thing that LaTeX has processed.
+You could (if you were to insist) set that value by the relevant
+TeX command (having taken the necessary precautions to ensure that
+the internal command worked) - but it's not necessary.  If, instead
+of either of the stepping methods above, you say
+<code>\refstepcounter{foo}</code>, the internal variable is set to the
+new value, and (until something else comes along), <code>\label</code> will
+refer to the counter.
+<p></body>

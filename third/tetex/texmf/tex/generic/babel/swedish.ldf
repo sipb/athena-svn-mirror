@@ -5,26 +5,26 @@
 %% The original source files were:
 %%
 %% swedish.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{swedish}
-        [1999/04/18 v2.2 Swedish support from the babel system]
+        [2001/03/12 v2.3c Swedish support from the babel system]
 %% File `swedish.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{swedish}\captionsswedish
 \ifx\l@swedish\@undefined
     \@nopatterns{Swedish}
@@ -43,13 +43,14 @@
   \def\figurename{Figur}%
   \def\tablename{Tabell}%
   \def\partname{Del}%
-  \def\enclname{Bil}%
+  \def\enclname{Bil.}%
   \def\ccname{Kopia f\"or k\"annedom}%
   \def\headtoname{Till}% in letter
   \def\pagename{Sida}%
   \def\seename{se}%
   \def\alsoname{se \"aven}%
   \def\proofname{Bevis}%
+  \def\glossaryname{Ordlista}%
   }%
 \def\dateswedish{%
   \def\today{%
@@ -58,12 +59,19 @@
     juli\or augusti\or september\or oktober\or november\or
     december\fi
     \space\number\year}}
-\def\swedishhyphenmins{\tw@\tw@}
+\def\datesymd{%
+  \def\today{\number\year-\two@digits\month-\two@digits\day}%
+  }
+\def\datesdmy{%
+  \def\today{\number\day/\number\month\space\number\year}%
+  }
+\providehyphenmins{swedish}{\tw@\tw@}
 \addto\extrasswedish{\bbl@frenchspacing}
 \addto\noextrasswedish{\bbl@nonfrenchspacing}
 \initiate@active@char{"}
 \addto\extrasswedish{\languageshorthands{swedish}}
 \addto\extrasswedish{\bbl@activate{"}}
+\addto\noextrasswedish{\bbl@deactivate{"}}
 \addto\extrasswedish{\babel@save\"\umlautlow}
 \addto\noextrasswedish{\umlauthigh}
 \begingroup \catcode`\"12
@@ -71,12 +79,12 @@
   \def\@SS{\mathchar"7019 }
   \def\dq{"}}
 \x
-\declare@shorthand{swedish}{"w}{\textormath{{\aa}}{\ddot w}}
-\declare@shorthand{swedish}{"a}{\textormath{\"{a}}{\ddot a}}
-\declare@shorthand{swedish}{"o}{\textormath{\"{o}}{\ddot o}}
-\declare@shorthand{swedish}{"W}{\textormath{{\AA}}{\ddot W}}
-\declare@shorthand{swedish}{"A}{\textormath{\"{A}}{\ddot A}}
-\declare@shorthand{swedish}{"O}{\textormath{\"{O}}{\ddot O}}
+\declare@shorthand{swedish}{"w}{\textormath{{\aa}\allowhyphens}{\ddot w}}
+\declare@shorthand{swedish}{"a}{\textormath{\"{a}\allowhyphens}{\ddot a}}
+\declare@shorthand{swedish}{"o}{\textormath{\"{o}\allowhyphens}{\ddot o}}
+\declare@shorthand{swedish}{"W}{\textormath{{\AA}\allowhyphens}{\ddot W}}
+\declare@shorthand{swedish}{"A}{\textormath{\"{A}\allowhyphens}{\ddot A}}
+\declare@shorthand{swedish}{"O}{\textormath{\"{O}\allowhyphens}{\ddot O}}
 \declare@shorthand{swedish}{"b}{\textormath{\bbl@disc b{bb}}{b}}
 \declare@shorthand{swedish}{"B}{\textormath{\bbl@disc B{BB}}{B}}
 \declare@shorthand{swedish}{"d}{\textormath{\bbl@disc d{dd}}{d}}
@@ -99,13 +107,17 @@
 \declare@shorthand{swedish}{"S}{\textormath{\bbl@disc S{SS}}{S}}
 \declare@shorthand{swedish}{"t}{\textormath{\bbl@disc t{tt}}{t}}
 \declare@shorthand{swedish}{"T}{\textormath{\bbl@disc T{TT}}{T}}
-\declare@shorthand{swedish}{"-}{\nobreak\-\bbl@allowhyphens}
+\declare@shorthand{swedish}{"-}{\nobreak-\bbl@allowhyphens}
 \declare@shorthand{swedish}{"|}{%
   \textormath{\nobreak\discretionary{-}{}{\kern.03em}%
               \bbl@allowhyphens}{}}
 \declare@shorthand{swedish}{""}{\hskip\z@skip}
-\declare@shorthand{swedish}{"~}{\textormath{\leavevmode\hbox{-}}{-}}
-\declare@shorthand{swedish}{"=}{\nobreak-\hskip\z@skip}
+\declare@shorthand{swedish}{"~}{%
+  \textormath{\leavevmode\hbox{-}\bbl@allowhyphens}{-}}
+\declare@shorthand{swedish}{"=}{\hbox{-}\allowhyphens}
+\addto\extrasswedish{\babel@save\-}
+\addto\extrasswedish{\def\-{\allowhyphens
+                          \discretionary{-}{}{}\allowhyphens}}
 \ldf@finish{swedish}
 %%
 %% \CharacterTable

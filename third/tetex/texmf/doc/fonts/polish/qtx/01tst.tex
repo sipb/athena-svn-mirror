@@ -1,0 +1,163 @@
+%&mex --translate-file=il2-pl
+%% test of qtxmath.tex (09.03.2001, StaW)
+\def\PT{dd} %% sk³ad 10dd ;-)
+\input qtxmath
+\parindent0pt
+%%======
+\def\TEST{Nieco zwyk³ego tekstu \bf pó³grubo, \it a teraz kursyw±,
+a~mo¿e nawet \sc Kapitalikiem. \rm OK, wystarczy. Teraz matematyka
+w~tek¶cie $\sum_{\alpha\rightarrow\infty}{a+1\over a-b^4}$
+i~dalej ($f_m,f_n)=(f_{r_{k-1}}, f_{r_k})$. I~jeszcze $x^{4m}+y^{4m}=z^{4m}$,
+gdzie $m\xgeq 1$. $\cal A + \cal G$. ${\mit\Gamma}+\Phi$. Cyfry nautyczne
+$\oldstyle 1967$}
+
+\tenpoint 10pt. \TEST
+
+\smallskip\ninepoint 9pt. \TEST
+
+\smallskip\eightpoint 8pt. \TEST
+
+\medskip\tenpoint 10pt (albo czego¶tam)
+$$A,\dots,Z\quad a,\dots,z\quad \Gamma, \dots,\Omega\quad
+ \varGamma, \dots, \varOmega\quad
+ \alpha,\dots,\omega\quad \varg\quad \varv\quad \varw\quad \vary$$
+\smallskip
+$$\aleph_\alpha\times\aleph_\beta=\aleph_\beta\iff \alpha\le \beta$$
+\smallskip
+$$\forall \varepsilon >\alpha, \Gamma_\alpha\hookrightarrow
+  \Gamma_\varepsilon$$
+$$|x-a| < \delta \Rightarrow |f(x)-l| < \varepsilon$$
+\smallskip
+$$\underbrace {V \times \cdots \times V}_k \times
+  \underbrace {V \times \cdots \times V}_l \rightarrow
+  \underbrace {V \times \cdots \times V}_{k+l}$$
+\smallskip
+$$\{x\mid x \ne x\} = \emptyset\qquad (A\cap B)^\circ\subset A^\circ
+  \cap B^\circ$$
+\medskip
+$$\eqalign{\omega &= \nu+v(x,y)\,dx + w(x,y)\,dy+d\varPsi\cr
+  d\omega &=d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+\medskip
+$$\hat x+\widehat X+\widehat{xy}+\widehat{xyz}+\vec A$$
+\smallskip
+$$R_{ijkl}=-R_{jikl}=-R_{ijlk}=R_{klij}$$
+\smallskip
+% $$(f\comp g)'(x)=f'(g(x))\cdot g'(x)$$
+\smallskip
+$$f(x)=\cases{|x|&$x>a$\cr -|x|&$x\le a$\cr}$$
+\smallskip
+$$\int_{-\infty}^\infty e^{-x\cdot\,x}\,dx=\sqrt\pi$$
+\smallskip
+$$ X=\sum_i \xi^i {\partial\over\partial x^i}+\sum_j
+  x^j{\partial\over\partial \dot x^j}$$
+\smallskip
+$$\prod_{j\ge0}\biggl(\sum_{k\ge0}a_{jk}z^k\biggr)
+  =\sum_{n\ge0}z^n\,\Biggl(\sum_
+     {\scriptstyle k_0,k_1,\ldots\ge0\atop
+      \scriptstyle k_0+k_1+\cdots=n}
+   a_{0k_0}a_{1k_1}\ldots\,\Biggr)$$
+\smallskip
+$$\def\\#1#2{(1-q^{#1_#2+n})} % to save typing
+\Pi_R{a_1,a_2,\ldots,a_M\atopwithdelims[]b_1,b_2,\ldots,b_N}
+  =\prod_{n=0}^R{\\a1\\a2\ldots\\aM\over\\b1\\b2\ldots\\bN}$$
+\smallskip
+$$\int_0^\infty{t-ib\over t^2+b^2}e^{iat}\,dt=e^{ab}E_1(ab),\qquad a,b>0$$
+
+%%
+\smallskip\ninepoint 9pt (albo czego¶tam)
+$$A,\dots,Z\quad a,\dots,z\quad \Gamma, \dots,\Omega\quad
+ \varGamma, \dots, \varOmega\quad
+ \alpha,\dots,\omega\quad \varg\quad \varv\quad \varw\quad \vary$$
+\smallskip
+$$\aleph_\alpha\times\aleph_\beta=\aleph_\beta\iff \alpha\le \beta$$
+\smallskip
+$$\forall \varepsilon >\alpha, \Gamma_\alpha\hookrightarrow
+  \Gamma_\varepsilon$$
+$$|x-a| < \delta \Rightarrow |f(x)-l| < \varepsilon$$
+\smallskip
+$$\underbrace {V \times \cdots \times V}_k \times
+  \underbrace {V \times \cdots \times V}_l \rightarrow
+  \underbrace {V \times \cdots \times V}_{k+l}$$
+\smallskip
+$$\{x\mid x \ne x\} = \emptyset\qquad (A\cap B)^\circ\subset A^\circ
+  \cap B^\circ$$
+\medskip
+$$\eqalign{\omega &= \nu+v(x,y)\,dx + w(x,y)\,dy+d\varPsi\cr
+  d\omega &=d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+\medskip
+$$\hat x+\widehat X+\widehat{xy}+\widehat{xyz}+\vec A$$
+\smallskip
+$$R_{ijkl}=-R_{jikl}=-R_{ijlk}=R_{klij}$$
+\smallskip
+%%-- $$(f\comp g)'(x)=f'(g(x))\cdot g'(x)$$
+\smallskip
+$$f(x)=\cases{|x|&$x>a$\cr -|x|&$x\le a$\cr}$$
+\smallskip
+$$\int_{-\infty}^\infty e^{-x\cdot\,x}\,dx=\sqrt\pi$$
+\smallskip
+$$ X=\sum_i \xi^i {\partial\over\partial x^i}+\sum_j
+  x^j{\partial\over\partial \dot x^j}$$
+\smallskip
+$$\prod_{j\ge0}\biggl(\sum_{k\ge0}a_{jk}z^k\biggr)
+  =\sum_{n\ge0}z^n\,\Biggl(\sum_
+     {\scriptstyle k_0,k_1,\ldots\ge0\atop
+      \scriptstyle k_0+k_1+\cdots=n}
+   a_{0k_0}a_{1k_1}\ldots\,\Biggr)$$
+\smallskip
+$$\def\\#1#2{(1-q^{#1_#2+n})} % to save typing
+\Pi_R{a_1,a_2,\ldots,a_M\atopwithdelims[]b_1,b_2,\ldots,b_N}
+  =\prod_{n=0}^R{\\a1\\a2\ldots\\aM\over\\b1\\b2\ldots\\bN}$$
+\smallskip
+$$\int_0^\infty{t-ib\over t^2+b^2}e^{iat}\,dt=e^{ab}E_1(ab),\qquad a,b>0$$
+
+%%
+\smallskip \eightpoint 8pt (albo czego¶tam)
+$$A,\dots,Z\quad a,\dots,z\quad \Gamma, \dots,\Omega\quad
+ \varGamma, \dots, \varOmega\quad
+ \alpha,\dots,\omega\quad \varg\quad \varv\quad \varw\quad \vary$$
+\smallskip
+$$\aleph_\alpha\times\aleph_\beta=\aleph_\beta\iff \alpha\le \beta$$
+\smallskip
+$$\forall \varepsilon >\alpha, \Gamma_\alpha\hookrightarrow
+  \Gamma_\varepsilon$$
+$$|x-a| < \delta \Rightarrow |f(x)-l| < \varepsilon$$
+\smallskip
+$$\underbrace {V \times \cdots \times V}_k \times
+  \underbrace {V \times \cdots \times V}_l \rightarrow
+  \underbrace {V \times \cdots \times V}_{k+l}$$
+\smallskip
+$$\{x\mid x \ne x\} = \emptyset\qquad (A\cap B)^\circ\subset A^\circ
+  \cap B^\circ$$
+\medskip
+$$\eqalign{\omega &= \nu+v(x,y)\,dx + w(x,y)\,dy+d\varPsi\cr
+  d\omega &=d\nu+ \left({\partial w\over \partial x}-
+  {\partial v\over \partial y}\right) dx\wedge dy\cr}$$
+\medskip
+$$\hat x+\widehat X+\widehat{xy}+\widehat{xyz}+\vec A$$
+\smallskip
+$$R_{ijkl}=-R_{jikl}=-R_{ijlk}=R_{klij}$$
+\smallskip
+%%-- $$(f\comp g)'(x)=f'(g(x))\cdot g'(x)$$
+\smallskip
+$$f(x)=\cases{|x|&$x>a$\cr -|x|&$x\le a$\cr}$$
+\smallskip
+$$\int_{-\infty}^\infty e^{-x\cdot\,x}\,dx=\sqrt\pi$$
+\smallskip
+$$ X=\sum_i \xi^i {\partial\over\partial x^i}+\sum_j
+  x^j{\partial\over\partial \dot x^j}$$
+\smallskip
+$$\prod_{j\ge0}\biggl(\sum_{k\ge0}a_{jk}z^k\biggr)
+  =\sum_{n\ge0}z^n\,\Biggl(\sum_
+     {\scriptstyle k_0,k_1,\ldots\ge0\atop
+      \scriptstyle k_0+k_1+\cdots=n}
+   a_{0k_0}a_{1k_1}\ldots\,\Biggr)$$
+\smallskip
+$$\def\\#1#2{(1-q^{#1_#2+n})} % to save typing
+\Pi_R{a_1,a_2,\ldots,a_M\atopwithdelims[]b_1,b_2,\ldots,b_N}
+  =\prod_{n=0}^R{\\a1\\a2\ldots\\aM\over\\b1\\b2\ldots\\bN}$$
+\smallskip
+$$\int_0^\infty{t-ib\over t^2+b^2}e^{iat}\,dt=e^{ab}E_1(ab),\qquad a,b>0$$
+
+\bye

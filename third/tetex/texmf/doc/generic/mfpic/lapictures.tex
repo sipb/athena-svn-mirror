@@ -1,0 +1,186 @@
+%%% File: lapictures.tex
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+% Magnify to same scale as pictures.tex :
+% (Use of \mag is against the law of LaTeX, but Bugs Bunny set a precedent.)
+\mag=1200
+\documentclass{article}
+
+%%!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% adjust these to your liking:
+\setlength{\paperheight}{11truein}
+\setlength{\paperwidth}{8.5truein}
+
+% Default plainTeX margins
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-2truein}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-2.1truein}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\footskip}{\baselineskip}
+
+% Add the metapost option if you prefer.
+\usepackage{mfpic}
+
+\ifx\pdfoutput\UndEfInEd
+\else
+  \setlength{\pdfpageheight}{\paperheight}
+  \setlength{\pdfpagewidth}{\paperwidth}
+\fi
+
+\opengraphsfile{pics}
+
+\setlength{\fboxsep}{0pt}
+\headshape{1}{1}{true}
+\newcommand{\vs}{\bigskip\filbreak}
+\renewcommand\raggedright{\rightskip 0pt plus2em \spaceskip.3333em \xspaceskip.5em\relax}
+\begin{document}
+\mftitle{Commutative Diagram example.}
+
+%  A-----D
+%  |\   /|
+%  | C-F |
+%  |/   \|
+%  B- - -E
+
+\noindent
+\fbox{%
+\begin{mfpic}[12]{0}{10}{0}{10}
+\tcaption[2.0,1.0]{\raggedright{\it Figure 1:}  Commutative diagram example.}
+\tlabel[cc](1,9){A}
+\tlabel[cc](1,1){B}
+\tlabel[cc](3,5){C}
+\tlabel[cc](9,9){D}
+\tlabel[cc](9,1){E}
+\tlabel[cc](7,5){F}
+\arrow\lines{(1,8.5), (1,1.5)}      % A -> B.
+\arrow\lines{(1.5,8.5), (2.5,5.5)}  % A -> C.
+\arrow\lines{(2.5,4.5), (1.5,1.5)}  % C -> B.
+\arrow\lines{(1.5,9), (8.5,9)}      % A -> D.
+\arrow\lines{(9,8.5), (9,1.5)}      % D -> E.
+\arrow\lines{(8.5,8.5), (7.5,5.5)}  % D -> F.
+\arrow\lines{(7.5,4.5), (8.5,1.5)}  % F -> E.
+\arrow\lines{(3.5,5), (6.5,5)}      % C -> F.
+% B- - ->E :
+\dotted\arrow[r90][b-12pt]\arrow[b15pt]\reverse\arrow\lines{(1.5,1), (8.5,1)}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Function Plot with Cartesian Axes.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[20]{-3}{3}{-3}{3}
+\axes
+\function{-2,2,0.1}{((x**3)-x)/3}
+\tcaption{\raggedright{\it Figure 2:}  Function Plot with Cartesian Axes.}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Parametric Function Plot, and Filled Circle.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[30]{-1.5}{1.5}{-1}{1}
+\parafcn{0,6,0.1}{cosd(150t)*dir(90t)}
+\gfill\circle{(0,0),0.25}
+\tcaption{\raggedright{\it Figure 3:}  Parametric Function Plot, and Filled Circle.}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Bar Graph.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[20]{-0.5}{4}{-0.5}{4}
+\axes
+\shade\draw\rect{(0,0),(1,0.5)}
+\darkershade
+\shade\draw\rect{(1,0),(2,1)}
+\hatch\draw\rect{(2,0),(3,2)}
+\tcaption{\raggedright{\it Figure 4:}  Bar Graph.}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Pie Chart.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[30]{-1.3}{1.7}{-1}{1.1}
+\gfill\sector{(0.3,0.2), 1, 0,60}
+\shade\sector{(0,0), 1, 60,105}
+\turtle{(0,0), \plr{(1,105)}}
+\sector{(0,0), 1, 60,360}
+\tcaption{\raggedright{\it Figure 5:}  Pie Chart.}
+\end{mfpic}%
+}
+
+\noindent Unindented text here.
+
+\vs
+
+\mftitle{Circle with Arrow.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[20]{-2}{2}{-1}{1}
+\arrow\circle{(0,0),1}
+\tcaption{\raggedright{\it Figure 6:}  Circle with Arrow.}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Use of hatch, draw, lclosed, connect, curve, point, lines,
+  dotted, reverse.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[20]{-3}{3}{-3}{3}
+\hatch\draw\lclosed\connect
+\curve{(1,0), (1,0.5), (1,1), (0,1.5)}
+\point{(0,0)}
+\endconnect
+\lines{(-1,1), (-1,-1), (1,-1.5)}
+\point{(0,0)}
+\dotted\reverse\lines{(-2,2), (-2,-2), (2,-3)}
+\tcaption{\rightskip= 0pt plus 3em {\it Figure 7:}  Use of hatch, draw, lclosed, connect,
+  curve, point, lines, dotted, reverse.}
+\end{mfpic}%
+}
+
+\vs
+
+\mftitle{Simpler variant of the previous figure.}
+
+\noindent
+\fbox{%
+\begin{mfpic}[40]{-1}{1}{-1}{1}  % Was `[20]'.
+\tcaption{\raggedright{\it Figure 8:} Simpler variant of the previous figure.}
+\hatch\draw\lclosed\connect
+\curve{(1,0), (0.5,0.25), (0.5,0.5), (0,0.75)}
+\point{(0,0)}
+\endconnect
+\reverse\lines{(-0.5,0.5), (-0.5,-0.5), (0.5,-0.75)}
+\tcaption{\raggedright{\it Figure 8:} Simpler variant of the previous figure.}
+\end{mfpic}%
+}
+
+\closegraphsfile
+
+\end{document}
+
+%%%
+%%%  EOF  lapictures.tex
+%%%

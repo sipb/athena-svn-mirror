@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -36,7 +36,7 @@
 %  "60    `
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Exclamation point";
 beginchar("!",5u#+width_adj#,asc_height#,0);
@@ -229,3 +229,60 @@ x1-.5dot_size=hround(.5w-.5dot_size); y1+.5dot_size=h-comma_depth;
 if monospace: ammoc(1,a,dot_size,.28u,vround 1.5comma_depth);  % large ammoc
 else: ammoc(1,a,dot_size,.25u,comma_depth); fi  % normal ammoc
 penlabels(1); endchar;
+
+%
+% excerpts from CM's files romsub.mf and sym.mf
+%
+if wncoding and monospace:
+minus=ASCII"-";
+backslash=ASCII"\";
+vertical=ASCII"|";
+straight_quotes=oct"042";
+fi
+
+iff known minus:
+lhchar "Minus sign";
+beginarithchar(minus); pickup rule.nib;
+lft x1=hround 1.5u-eps; x2=w-x1; y1=y2=math_axis;
+draw z1--z2;  % bar
+labels(1,2); endchar;
+
+iff known backslash:
+lhchar "Reverse slash (backslash)";
+beginchar(backslash,9u#,body_height#,paren_depth#);
+adjust_fit(0,0); pickup rule.nib;
+lft x1=hround u-eps; top y1=h+eps;
+rt x2=hround(w-u)+eps; bot y2=-d-eps;
+draw z1--z2;  % diagonal
+labels(1,2); endchar;
+
+iff known vertical:
+lhchar "Vertical line";
+beginchar(vertical,5u#,body_height#,paren_depth#);
+italcorr body_height#*slant+.5rule_thickness#-2u#;
+adjust_fit(0,0); pickup rule.nib;
+x1=x2=good.x .5w; top y1=h+eps; bot y2=-d-eps;
+draw z1--z2;  % stem
+labels(1,2); endchar;
+
+iff known straight_quotes:
+lhchar "Straight double quotes";
+beginchar(straight_quotes,9u#,asc_height#,0);
+numeric top_width#,spread#; top_width#=if serifs: flare# else: stem# fi;
+spread#=max(3u#,top_width#+.5u#); define_pixels(spread);
+italcorr asc_height#*slant+.5top_width#+.5spread#-4u#;
+adjust_fit(0,0);
+x1=x2; x3=x4=w-x1; x3-x1=spread+2; y1=y3;
+y2=y4=max(.5[bar_height,x_height]+.5vair,h-x_height);
+if serifs: pickup crisp.nib; pos1(flare,0); pos2(vair,0);
+ pos3(flare,0); pos4(vair,0);
+ y1+.5stem=h; filldraw circ_stroke z1e--z2e;  % left stem and bulb
+ filldraw circ_stroke z3e--z4e;  % right stem and bulb
+else: pickup fine.nib; pos1(stem,0); pos2(vair,0);
+ pos3(stem,0); pos4(vair,0);
+ top y1=h; filldraw stroke z1e--z2e;  % left stem
+ filldraw stroke z3e--z4e; fi  % right stem
+penlabels(1,2,3,4); endchar;
+
+endinput;
+%end of file

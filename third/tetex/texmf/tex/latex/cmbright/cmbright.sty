@@ -23,7 +23,7 @@
 \NeedsTeXFormat{LaTeX2e}
  [1995/06/01]
 \ProvidesPackage{cmbright}
-           [1999/05/12 v7.0 (WaS)]
+           [2002/05/25 v7.1 (WaS)]
 \renewcommand{\familydefault}{\sfdefault}
 \renewcommand{\sfdefault}{cmbr}
 \renewcommand{\ttdefault}{cmtl}
@@ -64,18 +64,6 @@
 \DeclareMathSymbol{\varrho}{\mathalpha}{letters}{37}
 \DeclareMathSymbol{\varsigma}{\mathalpha}{letters}{38}
 \DeclareMathSymbol{\varphi}{\mathalpha}{letters}{39}
-\DeclareFontFamily{U}{msa}{}
-\DeclareFontShape{U}{msa}{m}{n}{%
-<5><6><7><8>cmbras8%
-<9>cmbras9%
-<10><10.95><12><14.4><17.28><20.74><24.88>cmbras10%
-}{}
-\DeclareFontFamily{U}{msb}{}
-\DeclareFontShape{U}{msb}{m}{n}{%
-<5><6><7><8>cmbrbs8%
-<9>cmbrbs9%
-<10><10.95><12><14.4><17.28><20.74><24.88>cmbrbs10%
-}{}
 \DeclareOption{slantedGreek}{%
   \DeclareMathSymbol{\Gamma}{\mathalpha}{letters}{0}
   \DeclareMathSymbol{\Delta}{\mathalpha}{letters}{1}
@@ -124,6 +112,21 @@
 \def\mathsterling{\textsl{\textsterling}}
 \DeclareTextCommandDefault{\textregistered}{%
    \textcircled{{\rmfamily\scshape r}}}
+\AtBeginDocument{%
+  \DeclareFontFamily{U}{msa}{}
+  \DeclareFontShape{U}{msa}{m}{n}{%
+  <5><6><7><8>cmbras8%
+  <9>cmbras9%
+  <10><10.95><12><14.4><17.28><20.74><24.88>cmbras10%
+  }{}
+  \DeclareFontFamily{U}{msb}{}
+  \DeclareFontShape{U}{msb}{m}{n}{%
+  <5><6><7><8>cmbrbs8%
+  <9>cmbrbs9%
+  <10><10.95><12><14.4><17.28><20.74><24.88>cmbrbs10%
+  }{}
+}
+
 \ProcessOptions\relax
 \normalfont\normalsize
 \endinput

@@ -1,11 +1,5 @@
-%Filename: t1put.fd
-%Created by: tex Fam_6100
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{t1put.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for T1/put.]
+   [2001/06/04 v1.801 font definitions for T1/put.]
 
 \DeclareFontFamily{T1}{put}{}
 

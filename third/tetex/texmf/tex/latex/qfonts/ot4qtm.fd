@@ -1,0 +1,38 @@
+\ProvidesFile{ot4qtm.fd}
+   [2001/02/06 v1.0 font definition file for OT4/QuasiTimes (MW)]
+
+\DeclareFontFamily{OT4}{qtm}{}
+
+\DeclareFontShape{OT4}{qtm}{m}{n}{
+   <-> qtmr
+}{}
+\DeclareFontShape{OT4}{qtm}{m}{sc}{
+   <-> sub * qtm/m/n
+}{}
+\DeclareFontShape{OT4}{qtm}{m}{sl}{
+   <-> sub * qtm/m/it
+}{}
+\DeclareFontShape{OT4}{qtm}{m}{it}{
+   <-> qtmri
+}{}
+\DeclareFontShape{OT4}{qtm}{b}{n}{
+   <-> qtmb
+}{}
+\DeclareFontShape{OT4}{qtm}{b}{sc}{
+   <-> sub * qtm/b/n
+}{}
+\DeclareFontShape{OT4}{qtm}{b}{sl}{
+   <-> sub * qtm/b/it
+}{}
+\DeclareFontShape{OT4}{qtm}{b}{it}{
+   <-> qtmbi
+}{}
+\DeclareFontShape{OT4}{qtm}{bx}{n}{ <-> ssub * qtm/b/n}{}
+\DeclareFontShape{OT4}{qtm}{bx}{sc}{ <-> ssub * qtm/b/sc}{}
+\DeclareFontShape{OT4}{qtm}{bx}{sl}{ <-> ssub * qtm/b/sl}{}
+\DeclareFontShape{OT4}{qtm}{bx}{it}{ <-> ssub * qtm/b/it}{}
+
+\endinput
+
+%%
+%% End of font definition file ot4qtm.fd.

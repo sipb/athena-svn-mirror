@@ -1,0 +1,22 @@
+<head>
+<title>UK TeX FAQ -- question 129</title>
+</head><body>
+<h3>Wide figures in two-column documents</h3>
+<p>Floating figures and tables ordinarily come out the same width as the
+page, but in two-column documents they're restricted to the width of
+the column.  This is sometimes not good enough; so there are alternative
+versions of the float environments - in two-column documents,
+<code>figure*</code> provides a floating page-wide figure (and <code>table*</code> a
+page-wide table) which will do the necessary.
+<p>The "<code>*</code>"ed float environments can only appear at the top of a page,
+or on a whole page - <code>h</code> or <code>b</code> float placement directives are
+simply ignored.
+<p>Unfortunately, page-wide equations can only be accommodated inside
+float environments.  You should include them in <code>figure</code> environments,
+or use the <i>float</i> or <i>ccaption</i>package to define a
+new float type. 
+<dl>
+<dt><tt><i>ccaption.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/ccaption.tar.gz">macros/latex/contrib/supported/ccaption.tar.gz</a>
+<dt><tt><i>float.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/float.tar.gz">macros/latex/contrib/supported/float.tar.gz</a>
+</dl>
+<p></body>

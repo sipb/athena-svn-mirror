@@ -5,35 +5,36 @@
 %% The original source files were:
 %%
 %% catalan.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{catalan}
-        [1999/05/05 v2.2k Catalan support from the babel system]
+        [2001/02/19 v2.2n Catalan support from the babel system]
 %% File `catalan.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Catalan Language Definition File
-%% Copyright (C) 1991 - 1999
+%% Copyright (C) 1991 - 2001
 %%           by Goncal Badenes <badenes@imec.be>
 %%              Johannes Braams, TeXniek
-%% Please report errors to: J.L. Braams <JLBraams@cistron.nl>
+%% Please report errors to: J.L. Braams <babel@braams.cistron.nl>
 %%
 \LdfInit{catalan}\captionscatalan
 \ifx\l@catalan\@undefined
   \@nopatterns{Catalan}
   \adddialect\l@catalan0
 \fi
+\providehyphenmins{catalan}{\tw@\tw@}
 \addto\captionscatalan{%
   \def\prefacename{Pr\`oleg}%
   \def\refname{Refer\`encies}%
@@ -55,6 +56,7 @@
   \def\seename{Vegeu}%
   \def\alsoname{Vegeu tamb\'e}%
   \def\proofname{Demostraci\'o}%
+  \def\glossaryname{Glossary}% <-- Needs translation
 }
 \def\datecatalan{%
   \def\today{\number\day~\ifcase\month\or
@@ -70,13 +72,24 @@
 \initiate@active@char{"}
 \addto\extrascatalan{\bbl@activate{"}}
 \@ifpackagewith{babel}{activegrave}{%
-  \initiate@active@char{`}}{}
+  \AtBeginDocument{%
+    \if@filesw\immediate\write\@auxout{\catcode096=12}\fi}
+  \initiate@active@char{`}%
+  }{}
 \@ifpackagewith{babel}{activegrave}{%
-  \addto\extrascatalan{\bbl@activate{`}}}{}
+  \addto\extrascatalan{\bbl@activate{`}}%
+  }{}
 \@ifpackagewith{babel}{activeacute}{%
-  \initiate@active@char{'}}{}
+  \initiate@active@char{'}%
+  }{}
 \@ifpackagewith{babel}{activeacute}{%
-  \addto\extrascatalan{\bbl@activate{'}}}{}
+  \addto\extrascatalan{\bbl@activate{'}}%
+  }{}
+\addto\noextrascatalan{\bbl@deactivate{"}}
+\@ifpackagewith{babel}{activegrave}{%
+  \addto\noextrascatalan{\bbl@deactivate{`}}}{}
+\@ifpackagewith{babel}{activeacute}{%
+  \addto\noextrascatalan{\bbl@deactivate{'}}}{}
 \addto\extrascatalan{%
   \babel@save\"%
   \def\"{\protect\@umlaut}}%
@@ -136,7 +149,7 @@
   \declare@shorthand{catalan}{`A}{\textormath{\@grave A}{\grave A}}
   \declare@shorthand{catalan}{`E}{\textormath{\@grave E}{\grave E}}
   \declare@shorthand{catalan}{`O}{\textormath{\@grave O}{\grave O}}
-  \declare@shorthand{catalan}{``}{\textquotedblleft}
+  \declare@shorthand{catalan}{``}{\textquotedblleft}%''
   }{}
 \@ifpackagewith{babel}{activeacute}{%
   \declare@shorthand{catalan}{'a}{\textormath{\@acute a}{^{\prime} a}}

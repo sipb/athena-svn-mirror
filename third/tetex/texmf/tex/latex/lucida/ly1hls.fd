@@ -1,0 +1,22 @@
+\ProvidesFile{ly1hls.fd}[2003/01/04 v4.2k Lucida Bright Sans (KB Names)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hls}{}
+\DeclareLucidaFontShape{LY1}{hls}{m}{n}{hlsr8y}{}
+\DeclareLucidaFontShape{LY1}{hls}{m}{it}{hlsri8y}{}
+\DeclareLucidaFontShape{LY1}{hls}{b}{n}{hlsb8y}{}
+\DeclareLucidaFontShape{LY1}{hls}{b}{it}{hlsbi8y}{}
+\DeclareLucidaFontShape{LY1}{hls}{ub}{n}{hlsu8y}{}
+\DeclareLucidaFontShape{LY1}{hls}{ub}{it}{hlsui8y}{}
+\DeclareFontShape{LY1}{hls}{m}{sl}{<->ssub * hls/m/it}{}
+\DeclareFontShape{LY1}{hls}{m}{sc}{<->ssub * hls/m/n}{}
+\DeclareFontShape{LY1}{hls}{b}{sc}{<->ssub * hls/m/sc}{}
+\DeclareFontShape{LY1}{hls}{bx}{sc}{<->ssub * hls/b/sc}{}
+\DeclareFontShape{LY1}{hls}{b}{sl}{<->ssub * hls/b/it}{}
+\DeclareFontShape{LY1}{hls}{bx}{n}{<->ssub * hls/ub/n}{}
+\DeclareFontShape{LY1}{hls}{bx}{it}{<->ssub * hls/ub/it}{}
+\DeclareFontShape{LY1}{hls}{bx}{sl}{<->ssub * hls/ub/it}{}
+
+\endinput
+%%
+%% End of file `ly1hls.fd'.

@@ -1,49 +1,11 @@
-%% 
-%% This is file `pspicture.ps', generated on <1999/3/11> 
-%% with the docstrip utility (2.2i).
-%% 
-%% The original source files were:
-%% 
-%% pspicture.doc  (with options: `ps')
-%% 
-%% IMPORTANT NOTICE:
-%% You are not allowed to distribute this file.
-%% For distribution of the original source see
-%% the copyright notice in the file pspicture.doc .
-%% 
-%%% ====================================================================
-%%%  @LaTeX-style-file{
-%%%     author          = "David Carlisle",
-%%%     version         = "2.01",
-%%%     date            = "16 June 1992",
-%%%     time            = "18:30:53 BST",
-%%%     filename        = "pspicture.sty",
-%%%     address         = "Computer Science Department
-%%%                        Manchester University
-%%%                        Oxford Road
-%%%                        Manchester
-%%%                        England
-%%%                        M13 9PL",
-%%%     telephone       = "+44 61 275 6139",
-%%%     FAX             = "+44 61 275 6236",
-%%%     checksum        = "56975 755 2882 22245",
-%%%     email           = "carlisle@cs.man.ac.uk (Internet)",
-%%%     codetable       = "ISO/ASCII",
-%%%     keywords        = "LaTeX, pictures, PostScript",
-%%%     supported       = "yes",
-%%%     docstring       = "
-%%%
-%%%     pspicture.sty
-%%%
-%%%     A LaTeX style option that reimplements most of the picture
-%%%     environment commands to use PostScript \special's, rather than
-%%%     the line and circle fonts. This allows lines to have arbitrary
-%%%     slope and thickness, and circles to be any size.
-%%%
-%%%     The checksum field above was produced by
-%%%     Robert Solovay's checksum utility.",
-%%%  }
-%%% ====================================================================
+%!
+%%
+%% Source File `pspicture.dtx'.
+%% Copyright (C) 1992 1999 David Carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%%
+
 
 
 
@@ -68,13 +30,13 @@
   !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
          {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
   lineto
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   currentpoint
   stroke
   translate
   !y !x atan
   rotate
-  !A % @arrowlength
+  !A            % @arrowlength
   }def
 /!L{
   !BP
@@ -86,14 +48,14 @@
   !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
          {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
   lineto
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   stroke
   }def
 /!C{
   !BP
   0 0 3 2 roll
   2 div 0 360 arc
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   stroke
   }def
 /!D{
@@ -109,7 +71,7 @@
     2 copy gt {exch} if pop
     2 copy gt {exch} if pop
       def
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   1 eq
   {newpath
    !x neg 0 moveto
@@ -145,18 +107,18 @@
   0 0 moveto
   lineto          % <x*unitlength> <y*unitlength>
   3 2 roll
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   stroke
   translate       % <x*unitlength> <y*unitlength>
   a rotate
-  !A % @arrowlength
+  !A                    % @arrowlength
   }def
 /!L2{
   !BP
   newpath
   0 0 moveto
   lineto          % <x*unitlength> <y*unitlength>
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   stroke
   }def
 /!C2{
@@ -171,8 +133,6 @@
   !y 2 div  !x 10 div  !s mul sub
   !x !y
   curveto
-  setlinewidth % @wholewidth
+  setlinewidth  % @wholewidth
   stroke
   }def
-%% 
-%% End of file `pspicture.ps'.

@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -36,12 +36,11 @@
 %  (borrowed from exaccess)
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 let lhchar=\; % `|lhchar|' should precede each character
 
 if roman_ec: % for inputed exrullett.mf and exrllett.mf
-     more_letters:=true; % for lgup/lo*.mf
      def version_check(expr e,f) = enddef;
      let ecchar=\;
 fi;
@@ -67,6 +66,9 @@ if unknown autocount: % set auto code count for miscelaneous fonts
    enddef;
 fi
 
+% next macro necessary for absent Old Slav letters in Italic fonts
+def cyrcharmoving (suffix $) = if known CYR_.$: CYR_.$ := -2; fi enddef;
+
 %
 % load components absent in parameter files
 %
@@ -88,7 +90,8 @@ sbeak# 	   := (if serifs: max(beak#,3/4desc_depth#) else: desc_depth# fi) /1.2;
 cap_sbeak# :=  if serifs: max(beak#,3/4desc_depth#) else: desc_depth# fi;
 
 %
-% add absent parameters in cmbase's font_setup
+% add absent exbase parameters in cmbase's font_setup
+% original font_setup macro redefined to ADD necessary settings in it's context
 %
 let font_setup_ = font_setup;
 
@@ -97,7 +100,7 @@ def font_setup =
     define_whole_blacker_pixels(acc_height);
     define_pixels(cap_sbeak,sbeak);
     pickup pencircle scaled min(hair,vair);
-    extra_rule.nib :=savepen;
+    extra_rule.nib:=savepen;
 enddef;
 
 %
@@ -117,7 +120,7 @@ cyrcaph.cyrcaph  = true;
 % sets for bar axis in lowercase letters
 %
 vardef set_bar_axis =
-    pickup tiny.nib; y1.bh:=vround(.55h-.6[thin_join,vair]/2);
+    pickup tiny.nib; y1.bh:=vround(.55x_height-.6[thin_join,vair]/2);
     y2.bh:=y1.bh+.6[thin_join,vair]; y0.bh:=.5[y2.bh,y1.bh];
 enddef;
 
@@ -211,8 +214,7 @@ def r_serif(suffix $,$$,@)  % descender at |z$| for stroke from |z$$|
            (suffix @@)
            (expr right_darkness,beak_darkness,right_jut,beak_jut) =
     serif($,$$,@,left_darkness,-left_jut);
-    cyr_serif($,$$,@@,
-              right_darkness,beak_darkness,right_jut,beak_jut);
+    cyr_serif($,$$,@@,right_darkness,beak_darkness,right_jut,beak_jut);
 enddef;
 
 %
@@ -451,7 +453,7 @@ enddef;
 %
 vardef uppercase_cedilla(expr x_center,y_move,
   cedi_one,cedi_two,cedi_three,cedi_four,cedi_five) =
-x[cedi_one]=x_center;;
+x[cedi_one]=x_center;
 if serifs:
  pickup crisp.nib;
  pos[cedi_one](stem,0);
@@ -548,7 +550,7 @@ else:
  x[hat_two]=good.x x_center; %  optically centered
  x[hat_one]=good.x x[hat_two]-2.25u if monospace: /expansion_factor fi ;
  x[hat_three]=2x[hat_two]-x[hat_one];
- bot y[hat_one]=bot y[hat_three]=vround (2/3[h,x_height]-eps);
+ bot y[hat_one]=bot y[hat_three]=vround (2/3[x_height+acc_height,x_height]-eps); %!!!
      % same slope as in the acute accent
  z[hat_zero]=whatever[z[hat_one]r,z[hat_two]r]=
     whatever[z[hat_two]l,z[hat_three]l];
@@ -921,7 +923,7 @@ numeric hpos_corr;
 % width of the acute accent:
 vardef a_wd@# = 9hi.u@# enddef;
 % height of the acute accent:
-vardef a_ht@# =
+vardef a_ht@# = %!!!in plfonts: skipped ,hi.x_height@#+acc_h
  min(asc_height@#,2hi.x_height@#,hi.x_height@#+acc_height@#) enddef;
 % height of the letter `i':
 vardef i_ht@#(suffix diam) =
@@ -936,7 +938,7 @@ vardef cap_A_wd@# = 13u@# enddef;
 def mark_height(expr sharp_h)=
 % |sharp_h| is the height of an accented minuscule
  if known sharp_calc:
-  charht:=if is_cap: h/vppp else: sharp_h fi;
+  charht:=if is_cap: h/vppp else: sharp_h fi;% in plfonts line placed after `if' in ec---before
   if\\ (proofing>0) and is_cap:
 % BJ likes to have proofs vertically aligned (somehow):
    proofoffset(0,h-charht*vppp-1mm);
@@ -1390,4 +1392,4 @@ penlabels(50,51,52,52',53,54);
 enddef;
 
 endinput;
-%%% end-of-file %%%
+% end-of-file

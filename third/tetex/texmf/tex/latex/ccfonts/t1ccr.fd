@@ -21,7 +21,7 @@
 %% same distribution. (The sources need not necessarily be
 %% in the same archive or directory.)
  \ProvidesFile{t1ccr.fd}
-        [1997/10/24 v0.98 (WaS)]
+        [1999/11/22 v1.0a (WaS)]
 \DeclareFontFamily{T1}{ccr}{}
 
 \DeclareFontShape{T1}{ccr}{m}{n}{%

@@ -1,11 +1,5 @@
-%Filename: 8rpag.fd
-%Created by: tex Fam_29274
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rpag.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/pag.]
+   [2001/06/04 font definitions for 8r/pag.]
 
 \DeclareFontFamily{8r}{pag}{}
 

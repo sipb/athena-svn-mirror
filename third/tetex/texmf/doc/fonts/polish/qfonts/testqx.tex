@@ -1,0 +1,91 @@
+%& --translate-file=il2-pl
+% Pl: Ten dokument prezentuje fonty z paczki ,,qfonts'' u¿yte w LaTeXu 2e.
+%     Stosowany jest uk³ad QX --- naturalny uk³ad tych fontów (linia 13.),
+%     co umo¿liwia dostêp do dodatkowych znaków.
+% En: This document demonstrates fonts from the `qfonts' package in LaTeX2e.
+%     We use here QX encoding, which gives access to some additional symbols.
+% Marcin Woliñski <2002/01/23>. Public domain.
+
+\documentclass{article}
+\usepackage{polski}
+\usepackage{qtimes,qcourier}
+\usepackage[QX]{fontenc}
+
+\newcommand*{\tekst}{%
+  Pójd¼ kiñ¿e tê chmurno¶æ w~g³±b flaszy.\par
+  PÓJD¬ KIÑ¯E TÊ CHMURNO¦Æ W~G£¡B FLASZY.\par
+  [(<<@>>,,0123456789''\&\#/=+*)] -- --- ,.;:!? <> fifka ff ffi\par
+  }
+
+\newcommand*{\testfam}[3][]{\bgroup
+  \normalfont
+  \centerline{\bf #3 (\texttt{#2})}\bigskip\bigskip
+  #1\fontfamily{#2}\selectfont
+  \mdseries\tekst\bigskip
+  {\itshape\tekst}\bigskip
+  {\bfseries\tekst\bigskip
+    {\itshape\tekst}}\bigskip
+  \qxsymbole
+  \egroup
+  \newpage}
+
+\newcommand*{\qxsymbole}{%
+  \textDelta \textbeta \textdelta \textpi \textPi \textSigma \textmu
+  \textOmega
+
+  \i\ \j\ \` x \' x \v x \u x \= x
+  \b x \r x \c x \^ x \. x \H x \~ x \" x \k x \d x
+
+  \ss\ \ae\ \oe\ \o\ \AE\ \OE\ \O\ \k A \' C \k E \k I \L\ \' N \' S
+  \v S \c S \c T \k U \" Y \' Z \v Z \. Z \k a \' c \k e \k i \l\ \' n
+  \' s \v s \c s \c t \k u \" y \' z \v z \. z \` A \' A \^ A \~ A \"
+  A \AA\ \c C \` E \' E \^ E \" E \` I \' I \^ I \" I \DH\ %=\DJ\
+  \~ N \` O \' O \^ O \~ O \" O \` U \' U \^ U \" U \' Y \TH\ \`a \'a
+  \^a \~ a \" a \aa\ %=\r a
+  \c c \` e \' e \^ e \" e \` i \' i \^ i \" i \dh\ %=\dj\
+  \~ n \` o \' o \^ o \~ o \" o \` u \' u \^ u \" u \' y \th\
+
+  \textellipsis \textquotedblright\ \textdollar\ \texteuro\ \textquoteright\
+  *
+  \textexclamdown\ \textquestiondown\ @ \textquotedblleft\
+  \textquoteleft\ \textendash\ \textemdash\ \textgreater\
+  \textxgeq\
+  \textapprox\ %=\textapproxequal\
+  \textless\ \textxleq\
+  \textasciitilde\ \textasciicircum\ \textell\ \textdagger\ %=\dag\
+  \textdaggerdbl\ %=\ddag\
+  \textdegree\ %=\textcirc\
+  \textbraceleft\ \textbraceright\ \textsection\ \textregistered\
+  \copyright\ \textdiv\ %=\textdivide
+  \textminus\ \texttimes\ %=\textmultiply\
+  \textpm
+  \textinfty\ %=\textinfinity
+  \guillemotleft\ \guillemotright\ \textparagraph\ \textbullet\
+  \textperiodcentered\ %=\textcdot\
+  \textquotedbl\ \textquotesingle\
+  \textbackslash\ \textcurrency\ \% \textperthousand\ \textbar\
+  \textunderscore\ \textanglearc\ \textdiameter\ \quotedblbase
+
+  }
+
+\begin{document}
+\parindent0pt
+\fontsize{12dd}{16dd}\selectfont
+
+\testfam{qtm}{QuasiTimes}
+\testfam{qpl}{QuasiPalatino}
+\testfam{qbk}{QuasiBookman}
+\testfam{qhv}{QuasiSwiss}
+\testfam{qcr}{QuasiCourier}
+\testfam[\def\mddefault{mc}\def\bfdefault{bc}]{qhv}{QuasiSwissCondensed}
+
+\centerline{\bf QuasiChancery (\texttt{qzc})}\bigskip\bigskip
+\bgroup
+\fontfamily{qzc}\itshape
+\tekst\bigskip
+\qxsymbole
+\egroup
+\newpage
+
+\end{document}
+

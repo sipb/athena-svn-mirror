@@ -1,0 +1,48 @@
+<head>
+<title>UK TeX FAQ -- question 113</title>
+</head><body>
+<h3>Where to put new files</h3>
+<p>Where precisely you put files that you have downloaded does
+depend on what TeX distribution you have. However,
+assuming that you have one of the modern TDS-compliant
+distributions (such as teTeX, fpTeX or mikTeX) there are
+some general rules that you can follow:
+<p>
+
+
+
+(1) Always install new files in a local <i>texmf</i>
+tree. The root directory will be named something like:
+<pre>
+ teTeX:          /usr/share/texmf-local/ or
+                 /usr/local/share/texmf/
+ fpTeX:          c:\fptex\texmf.local\
+ mikTeX:         c:\localtexmf\
+</pre>
+(In fact, a teTeX system can be asked to tell you what its local
+root is; on a Unix system, the command to use is:
+<pre>
+  kpsewhich -expand-var \$TEXMFLOCAL
+</pre>
+the output being the actual path.)
+<p>Let's write <code>$TEXMF</code> for this root, whatever it is for your system.
+<p>
+(2) In your local texmf tree, imitate the directory structure in your
+main tree. Here's some examples of where files of given extensions should
+go:
+<pre>
+.sty, .cls or .fd: $TEXMF/tex/latex/&lt;package&gt;/
+.dvi, .ps or .pdf: $TEXMF/doc/latex/&lt;package&gt;/
+.mf:   $TEXMF/fonts/source/&lt;supplier&gt;/&lt;font&gt;/
+.tfm:  $TEXMF/fonts/tfm/&lt;supplier&gt;/&lt;font&gt;/
+.vf:   $TEXMF/fonts/vf/&lt;supplier&gt;/&lt;font&gt;/
+.afm:  $TEXMF/fonts/afm/&lt;supplier&gt;/&lt;font&gt;/
+.pfb:  $TEXMF/fonts/type1/&lt;supplier&gt;/&lt;font&gt;/
+.ttf:  $TEXMF/fonts/truetype/&lt;supplier&gt;/&lt;font&gt;/
+</pre>
+Where of course &lt;<em>package</em>&gt;, &lt;<em>font</em>&gt; and &lt;<em>supplier</em>&gt; depend
+upon what's appropriate for the individual file.  Note, however, that
+&lt;<em>font</em>&gt; may stand for a single font or an entire family: for
+example, files for all of Knuth's Computer Modern font family are to
+be found in <code>.../public/cm</code>, with various prefixes as appropriate.
+<p></body>

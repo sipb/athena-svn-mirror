@@ -43,6 +43,9 @@
 %DPC
 % and one set of three commands marked with the comment
 %RF (at DPC's request)
+%
+% one place where extraneous \par token, and two places where
+% extraneous spaces appeared corrected RF 2001/09/14
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1990/11/14   initial version
 % 1994-5       Robin Fairbairns kindly fixed up a few things
@@ -102,7 +105,7 @@
 %
 % \line changed to \@@line because LaTeX redefines \line
 \let\line\@@line
-
+% <-- this comment marker inserted by RF 2001-09-14
 % LaTeX has its own tabbing environment, so PLAIN's is disabled.
 \def\cleartabs{\global\setbox\tabsyet\null \setbox\tabs\null}%
 \def\settabs{\setbox\tabs\null \futurelet\next\sett@b}%
@@ -111,7 +114,7 @@
     \def\next{\afterassignment\s@tt@b\let\next}%
   \else\let\next\s@tcols\fi\next}%
 \def\s@tt@b{\let\next\relax\us@false\m@ketabbox}%
-\def\tabalign{\us@true\m@ketabbox} % non-\outer version of \+
+\def\tabalign{\us@true\m@ketabbox}%  non-\outer version of \+
 \outer\def\+{\tabalign}%
 \def\s@tcols##1\columns{\count@##1 \dimen@\hsize
   \loop\ifnum\count@>\z@ \@nother \repeat}%
@@ -181,7 +184,7 @@
 \def\nopagenumbers{\pagestyle{empty}}%
 %
 \def\advancepageno{\ifnum\pageno<\z@ \global\advance\pageno\m@ne
-  \else\global\advance\pageno\@ne \fi} % increase |pageno|
+  \else\global\advance\pageno\@ne \fi}%  increase |pageno|
 %
 \countdef\pageno\z@
 %

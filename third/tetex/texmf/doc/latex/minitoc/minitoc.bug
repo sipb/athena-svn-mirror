@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%% minitoc.bug
 There is a list of problems and frequently asked questions about
-minitoc.sty. If your version is < 27, please upgrade.
+minitoc.sty. If your version is < 34, please upgrade.
 (1)  How avoid a page break near the rules before and after
      the minitoc?
      > This problem seemed solved since version #8,
@@ -23,6 +23,8 @@ minitoc.sty. If your version is < 27, please upgrade.
      you must edit minitoc.sty: find the line containing
      ``%\def\SHORTEXT'' and remove the leading percent sign.
      No other modification is needed: all is automatic!
+     From version #28, the extensions are auto-configured.
+     Do not worry any more! Added also a ``shortext'' option.
 (7)  Do not cheat with the ``chapter'' counter, i.e. do not
      write things like \setcounter{chapter}{6}. The mechanism
      would be broken. It is better to add \chapter commands,
@@ -47,12 +49,14 @@ minitoc.sty. If your version is < 27, please upgrade.
 (10) Some demanding users want to have minilof, minilot and
      minibbl. First, minibbl is an other problem, strongly
      related to the BibTeX's dealing with .aux files. Look
-     at chapterbib.sty. To make `minilof' (minilot is the
-     same problem), we could apply the same method as for
-     minitoc, but we need to add marks in the .lof (or .lot)
-     file. It should be possible to do from minitoc.sty, but
-     long to test. Version #13 implements basic minilofs
-     and minilots. Minibbls are not the aim of this option file.
+     at chapterbib.sty, bibunits.sty, multibib.sty, and
+     bibtopic.sty.
+     To make `minilof' (minilot is the same problem), we could apply
+     the same method as for minitoc, but we need to add marks
+     in the .lof (or .lot) file. It should be possible to do from
+     minitoc.sty, but long to test. Version #13 implements basic
+     minilofs and minilots. Minibbls are not the aim of this option
+     file.
 (11) This option creates a lot of auxiliary files and some users
      argue that it is too many. A deep redesign would be
      necessary to avoid that. Using only one big auxiliary file
@@ -71,3 +75,6 @@ minitoc.sty. If your version is < 27, please upgrade.
      latex-2e specific.
 (14) From version #23, works with document classes resetting
      chapter (or section) number at each part.
+(15) From version #29, you can have tight minitocs with the
+     tight option.
+(16) The lines of dots are removed by the undotted option (#29).

@@ -1,0 +1,44 @@
+<head>
+<title>UK TeX FAQ -- question 76</title>
+</head><body>
+<h3>Quality of PDF from PostScript</h3>
+<p>Any output of <i>dvips</i> may (in principle) be converted to
+PDF, using either a sufficiently recent version of
+<i>ghostscript</i> or Adobe's (commercial) <i>Distiller</i>,
+but the results can be pretty poor if certain simple precautions are
+omitted.
+<p>First, it's important to use type 1 fonts in preparing the output;
+Metafont bitmap fonts get converted to type 3 fonts when converting to
+PDF, and Adobe's <i>Acrobat</i> <i>Reader</i> (which most of the
+world uses to view PDF files) makes a very poor fist of
+displaying type 3 fonts.  If you've written a document that uses
+nothing but fonts such as Adobe Times, which only exist in type 1
+format, no further action is actually required; however, most ordinary
+(La)TeX documents contain at least odd characters that originate in
+Metafont, and it's advisable to tell <i>dvips</i> to use type 1
+versions regardless.  One does this by using the <i>dvips</i>
+switches <code>-Pcmz</code> and <code>-Pamz</code>.
+<p>Second, if you're using <i>ghostscript</i> (or the
+<i>ps2pdf</i> script that's distributed with it) make sure you
+have an appropriate version.  Again, if your document contains nothing
+but the "basic PostScript" set of fonts (Times, etc), the
+restrictions are less burdensome and you can get away with using
+<i>ghostscript</i> version 5.50; however, that version makes
+type 3 fonts of any type 1 fonts embedded in the PostScript, which is
+pretty unsatisfactory.  To be safe, ensure that you're using
+<i>ghostscript</i> version 6.00 at least (at the time of writing,
+version 7.04 is current).
+<p>Third, some versions of <i>Acrobat</i> <i>Reader</i> are confused by
+characters that are in positions where Adobe fonts don't hold
+characters, and most Metafont-supplied fonts have such characters (even
+after they've been converted to type 1).  <i>Dvips</i> provides a
+means for remapping these characters to places where they'll be
+harmless; to invoke this facility, execute <i>dvips</i> with the
+switch <code>-G1</code>
+<p>Recent distributions of <i>dvips</i> come with a "<code>pdf</code>"
+pseudo-printer description file; this bundles selection of the type 1
+fonts and character remapping with setting a very high nominal printer
+resolution, thus sidestepping <i>dvips</i>'s tendency to
+'optimise' output destined for low-resolution printers.  Use this by
+including the <code>-Ppdf</code> switch in your <i>dvips</i> command line.
+<p></body>

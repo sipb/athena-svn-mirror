@@ -1,0 +1,39 @@
+%%% File: LTXMFobj.tex
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+%  Testing mfpic objects in LaTeX using Metafont
+%
+\mag=1200
+\documentclass{article}
+
+%%!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% adjust these to your liking:
+\setlength{\paperheight}{11truein}
+\setlength{\paperwidth}{8.5truein}
+
+% Default plainTeX margins
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-2truein}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-2.1truein}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\footskip}{\baselineskip}%???
+%Test if changing to metaFONT _after_ indicating metaPOST works.
+\usepackage{latexsym}
+\usepackage[centeredcaptions]{mfpic}
+
+\opengraphsfile{objs}
+
+\begin{document}
+
+\centerline{\bfseries Pictures in \LaTeX\ with Metafont}
+
+\input MFobjs
+
+\closegraphsfile
+
+\end{document}
+

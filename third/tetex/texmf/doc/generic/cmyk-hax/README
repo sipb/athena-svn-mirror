@@ -1,0 +1,35 @@
+% cmyk-hax, version 0.75, 15.06.2000, Public domain
+The package CMYK-HAX contains the following files:
+
+cmyk-hax.tex  - The set of macros for making color separation
+rules.tex     - The patch for DVIPS rules definitions
+cmyk-doc.pdf  - Documentation in Polish
+fountain.eps  - EPS file used in sample1.tex
+gdansk.eps    - EPS file used in sample2.tex
+readme        - This file
+sam1-sep.bat  - The batch file for sample1.tex
+sample1.tex   - Example 1: color separation for outline graphics and text
+sample2.tex   - Example 2: color separation for outline graphics 
+                by color changes
+sample3.tex   - Example 3: color separation for bitmap
+sample4.tex   - Example 4: color separation for bitmap with color changes
+screen.eps    - EPS file used in sample3.tex and sample4.tex
+
+=============================================================================
+
+Pakiet CMYK-HAX zawiera nast/epuj/ace pliki:
+
+cmyk-hax.tex  - Pakiet makr do wykonywania wyci/ag/ow barwnych
+rules.tex     - /Lata na DVIPS-owe definicje ruli
+cmyk-doc.pdf  - Dokumentacja po polsku
+fountain.eps  - Plik EPS u/zywany w przyk/ladzie sample1.tex
+gdansk.eps    - Plik EPS u/zywany w przyk/ladzie sample2.tex
+readme        - Ten plik
+sam1-sep.bat  - Plik wsadowy do przyk/ladu sample1.tex
+sample1.tex   - Przyk/lad 1: rozbarwianie grafiki obwiedniowej i tekst/ow
+sample2.tex   - Przyk/lad 2: rozbarwianie grafiki obwiedniowej poprzez 
+                podmian/e kolor/ow
+sample3.tex   - Przyk/lad 3: rozbarwianie mapy bitowej
+sample4.tex   - Przyk/lad 4: rozbarwianie mapy bitowej wraz 
+                z podmian/a kolor/ow
+screen.eps    - Plik EPS u/zywany w przyk/ladach sample3.tex i sample4.tex

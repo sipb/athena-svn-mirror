@@ -1,0 +1,39 @@
+<head>
+<title>UK TeX FAQ -- question 38</title>
+</head><body>
+<h3>Virtual fonts</h3>
+<p>Virtual fonts for TeX were first implemented by David Fuchs in the
+early days of TeX, but for most people they started when Knuth
+redefined the format, and wrote some support software, in 1989 (he
+published an article in <em>TUGboat</em> at the time, and a copy is
+available on CTAN).
+Virtual fonts provide a way of telling TeX about something more
+complicated than just a one-to-one character mapping. The entities you
+define in a virtual font look like characters to TeX (they appear
+with their sizes in a font metric file), but the DVI processor may
+expand them to something quite different. You can use this facility
+just to remap characters, to make a composite font with glyphs drawn
+from several sources, or to build up an effect in arbitrarily
+complicated ways - a virtual font may contain anything which is
+legal in a DVI file.
+In practice, the most common use of virtual fonts is to remap
+PostScript fonts (see <a href="FAQ84.html">font metrics</a>) or to
+build 'fake' maths fonts.
+<p>It is important to realise that TeX itself does <em>not</em> see
+virtual fonts; for every virtual font read by the DVI driver there
+is a corresponding TFM file read by TeX. Virtual fonts are normally
+created in a single ASCII <code>vpl</code> (Virtual Property List) file, which
+includes both sets of information. The <i>vptovf</i> program is
+then used to the create the binary TFM and VF files.  The
+commonest way (nowadays) of generating <code>vpl</code> files is to use the
+<i>fontinst</i> package, which is described in detail
+together with the 
+<a href="FAQ84.html">discussion of PostScript font metrics</a>.
+<i>qdtexvpl</i> is another utility for creating ad-hoc virtual
+fonts.
+<dl>
+<dt><tt><i>fontinst</i></tt><dd><a href="ftp://fonts/utilities/fontinst.tar.gz">fonts/utilities/fontinst.tar.gz</a>
+<dt><tt><i>Knuth on virtual fonts</i></tt><dd><a href="ftp://info/virtual-fonts.knuth">info/virtual-fonts.knuth</a>
+<dt><tt><i>qdtexvpl</i></tt><dd><a href="ftp://fonts/utilities/qdtexvpl.tar.gz">fonts/utilities/qdtexvpl.tar.gz</a>
+</dl>
+<p></body>

@@ -1,46 +1,55 @@
 %% @texfile{
-%%     filename="amstex.tex",
-%%     version="2.1",
-%%     date="5-APR-1991",
-%%     filetype="AMS-TeX: documentstyle",
-%%     copyright="Copyright (C) American Mathematical Society,
-%%            all rights reserved.  Copying of this file is
-%%            authorized only if either:
-%%            (1) you make absolutely no changes to your copy
-%%                including name; OR
-%%            (2) if you do make changes, you first rename it to some
-%%                other name.",
-%%     author="American Mathematical Society",
-%%     address="American Mathematical Society,
-%%            Technical Support Department,
-%%            P. O. Box 6248,
-%%            Providence, RI 02940,
-%%            USA",
-%%     telephone="401-455-4080 or (in the USA) 800-321-4AMS",
-%%     email="Internet: Tech-Support@Math.AMS.org",
-%%     codetable="ISO/ASCII",
-%%     checksumtype="line count",
-%%     checksum="1797",
-%%     keywords="amstex, ams-tex, tex",
-%%     abstract="This file contains the AMS-TeX Version 2.1 macro
-%%            package.  It is intended to be used in conjunction with
-%%            plain TeX. The macros defined herein are chiefly oriented
-%%            to the construction of mathematical formulas, both display
-%%            and nondisplay, using AMS conventions for fonts, spacing,
-%%            and other details."
-%%     }
+%%   filename  = "amstex.tex",
+%%   version   = "2.2",
+%%   date      = "2001/10/04",
+%%   time      = "09:08:48 EDT",
+%%   checksum  = "54330 1806 2947 78920",
+%%   filetype  = "AMS-TeX: documentstyle",
+%%   author    = "American Mathematical Society",
+%%   copyright = "Copyright 1985, 1990, 1991, 2001
+%%                American Mathematical Society,
+%%                all rights reserved.  Copying of this file is
+%%                authorized only if either:
+%%                (1) you make absolutely no changes to your copy
+%%                    including name; OR
+%%                (2) if you do make changes, you first rename it
+%%                    to some other name.",
+%%   address   = "American Mathematical Society,
+%%                Technical Support,
+%%                Publications Technical Group,
+%%                P. O. Box 6248,
+%%                Providence, RI 02940,
+%%                USA",
+%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%                800-321-4AMS (321-4267)",
+%%   FAX       = "401-331-3842",
+%%   email     = "tech-support@ams.org (Internet)",
+%%   codetable = "ISO/ASCII",
+%%   keywords  = "amstex, ams-tex, tex",
+%%   abstract  = "This file contains the AMS-TeX Version 2.2
+%%                macro package.  It is intended to be used in
+%%                conjunction with plain TeX. The macros defined
+%%                herein are chiefly oriented to the construction
+%%                of mathematical formulas, both display and
+%%                nondisplay, using AMS conventions for fonts,
+%%                spacing, and other details."
+%%   docstring = "The checksum field above contains a CRC-16
+%%                checksum as the first value, followed by the
+%%                equivalent of the standard UNIX wc (word
+%%                count) utility output of lines, words, and
+%%                characters.  This is produced by Robert
+%%                Solovay's checksum utility.",
+%%   }
+%% ====================================================================
 \def\fmtname{AmS-TeX}
 \let\plainfmtversion\fmtversion
-\def\fmtversion{2.1}
+\def\fmtversion{2.2}
 \catcode`\@=11
 \ifx\amstexloaded@\relax\catcode`\@=\active
   \endinput\else\let\amstexloaded@\relax\fi
 \newlinechar=`\^^J
 \def\W@{\immediate\write\sixt@@n}
-\def\CR@{\W@{^^J\fmtname - Version \fmtversion^^J%
-COPYRIGHT 1985, 1990, 1991 - AMERICAN MATHEMATICAL SOCIETY^^J%
-Use of this macro package is not restricted provided^^J%
-each use is acknowledged upon publication.^^J}}
+\def\CR@{\W@{^^J\fmtname - Version \fmtversion^^J}}
 \CR@ \everyjob{\CR@}
 \message{Loading definitions for}
 \message{misc utility macros,}
@@ -187,7 +196,7 @@ conflict with other uses that are important to me.}
 \let\lbrace\{
 \let\rbrace\}
 \def\AmSTeX{{\textfontii A\kern-.1667em%
-  \lower.5ex\hbox{M}\kern-.125emS}-\TeX}
+  \lower.5ex\hbox{M}\kern-.125emS}-\TeX\spacefactor1000 }
 \message{line and page breaks,}
 \def\vmodeerr@#1{\Err@{\string#1\space not allowed between paragraphs}}
 \def\mathmodeerr@#1{\Err@{\string#1\space not allowed in math mode}}
@@ -1498,7 +1507,7 @@ and fix things up.}
 \def\frak{\mathfont@\frak}
 \def\frakfam{\eufmfam}
 \let\goth\frak
-\def\loadmathfont#1{% 
+\def\loadmathfont#1{%
    \expandafter\font@\csname ten#1\endcsname=#110
    \expandafter\font@\csname seven#1\endcsname=#17
    \expandafter\font@\csname five#1\endcsname=#15

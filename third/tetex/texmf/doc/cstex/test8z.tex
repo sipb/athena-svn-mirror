@@ -1,0 +1,77 @@
+
+% test.tex -- plainTeX file for test of standard PostScript fonts
+%             in Czech and Slovak, font metric names: p*8z and p*8u.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Juni 1995                                              Petr Ol¹ák
+% March 1999: pcr*8t was renamed to pcr*8u
+
+% Encoding: ISO-8859-2
+% Needs Format: csplain
+
+\chyph  % czech hyphenation used
+
+\advance\vsize by2\baselineskip
+
+\def\allowhyphens{\nobreak\hskip0pt\relax}
+\def \uv#1{\char254 \allowhyphens#1\allowhyphens\char255 }
+
+\def\text#1{Tento text je napsán Post\-Scrip\-to\-vým fontem #1 za pou¾ití
+\TeX{}ov\-ské metriky {\tt \fontname\testfont}. Metrika fontu
+v~èeské/slovenské variantì byla pøipravena konvertorem {\tt a2ac}
+s~následným pou¾itím programu {\tt afm2tfm}. Je potøeba si v¹ímat ménì
+obvyklých slov, jako je slovo ¹»astný (písmeno » uprostøed slova), nebo
+tøeba slovenské koµko. Vìøme, ¾e výsledný text pùjde nejen pøeèíst, ale
+bude i typograficky pokud mo¾no v~poøádku. Také je tøeba \uv{sledovat
+chování} na¹ich \uv{uvozovek}.
+\medskip
+Á á Ä ä È è Ï ï É é Ì ì Í í Å å ¥ µ Ò ò Ó ó Ô ô Ö ö Ø ø À à © ¹ « » Ú ú Ù ù
+Ü ü Ý ý ® ¾.}
+
+\def\extension{8z}
+\def\test#1 #2 {\font\testfont=#1\extension\space{\testfont\text{#2}\bigskip}}
+\emergencystretch=1em
+
+\test ptmr   Times-Roman
+\test ptmb   Times-Bold
+\test ptmbi  Times-BoldItalic
+\test ptmri  Times-Italic
+\test ptmrc  Times-Roman-SmallCaps
+
+\test pagk   AvantGarde-Book
+\test pagko  AvantGarde-BookOblique
+\test pagd   AvantGarde-Demi
+\test pagdo  AvantGarde-DemiOblique
+
+\test pbkd    Bookman-Demi
+\test pbkdi   Bookman-DemiItalic
+\test pbkl    Bookman-Light
+\test pbkli   Bookman-LightItalic
+
+{\rightskip=0pt plus4em \def\extension{8u}
+\test pcrb    Courier-Bold
+\test pcrbo   Courier-BoldOblique
+\test pcrro   Courier-Oblique
+\test pcrr    Courier
+}
+
+\test pncb   NewCenturySchlbk-Bold
+\test pncbi  NewCenturySchlbk-BoldItalic
+\test pncri  NewCenturySchlbk-Italic
+\test pncr   NewCenturySchlbk-Roman
+
+\test phvb    Helvetica-Bold
+\test phvbo   Helvetica-BoldOblique
+\test phvbn   Helvetica-Narrow-Bold
+\test phvron  Helvetica-Narrow-Oblique
+\test phvrn   Helvetica-Narrow
+\test phvro   Helvetica-Oblique
+\test phvr    Helvetica
+
+\test pplbi   Palatino-BoldItalic
+\test pplri   Palatino-Italic
+\test pplr    Palatino-Roman
+\test pplb    Palatino-Bold
+
+\test pzcmi   ZapfChancery-MediumItalic
+
+\end

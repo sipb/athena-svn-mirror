@@ -1,0 +1,344 @@
+*****************************************************************************
+*            Kolekcja fontów PL (polskiego rozszerzenia fontów              *
+*             Computer Modern) w formacie ¼ród³owym METAFONT-a              *
+*                     (dobro wspólne -- public domain)                      *
+*****************************************************************************
+
+Autorzy
+=======
+Bogus³aw Jackowski <B.Jackowski@gust.org.pl>
+Marek Ryæko <M.Rycko@gust.org.pl>
+konsultacje: Roman Tomaszewski
+
+-------------
+OPIS PAKIETU:
+-------------
+Niniejsza dystrybucja METAFONT-owych plików ¼ród³owych fontów PL
+(wersja 1.09, 13 kwietnia 2001) jest czê¶ci± dystrybucji pakietu MeX
+i WYJ¡TKOWO jest rozpowszechniana jako odrêbny pakiet.
+
+Powodem aktualizacji jest usuniêcie b³êdu wykrytego (podczas pracy nad
+fontami EC) przez Andreasa Schwaba i Joerga Knappena. B³±d polega³
+na ró¿nicach wysoko¶ci i korekt kursywy liter diakrytycznych w zale¿no¶ci
+od u¿ytej rozdzielczo¶ci. Poniewa¿ suma kontrolna plików TFM
+zale¿y wy³±cznie od szeroko¶ci znaków, b³±d ukrywa³ siê przez wiele lat.
+
+W wersji poprawionej znaki diakrytyczne s± przetwarzane dwukrotnie
+(patrz makro ,beginchar_twice' w pliku pl_dod.mf). Za pierwszym razem
+wszystkie operacje rysowania (fill, draw, cull itp.) s± neutralizowane,
+w rezultacie otrzymujemy w tym przebiegu jedynie wymiary znaków
+(mamy nadziej±, ¿e niezale¿ne od rozdzielczo¶ci ;-). W drugim przebieg± s±
+tworzone obrysy (glyphs) znaków.
+
+Poni¿szy fragment zaczerpniêto z dokumentacji mexinfo.pol zawartej
+w pakiecie MeX
+ ftp://ftp.gust.org.pl/pub/TeX/language/polish/mex105.zip
+lub archiwa CTAN, np.
+ ftp://ftp.dante.de/tex-archive/language/polish/mex105.zip
+
+Fonty PL (polskie rozszerzenie fontów CM)
+==========================================
+
+Fonty PL przeznaczone s± do sk³adania polskich lub polsko-angielskich
+tekstów przy u¿yciu formatów MeX i LaMeX.  Obecnie  mog± te¿ byæ
+wykorzystane do sk³adu przy u¿yciu pakietu PLaTeX (autorstwa Mariusza Olko
+i Marcina Woliñskiego), wspomagaj±cego sk³ad polskich dokumentów przy u¿yciu
+formatu LaTeX2e:
+       ftp://ftp.gust.org.pl/pub/TeX/language/polish/platex-1.??.zip
+  lub ftp://ftp.dante.de/tex-archive/language/polish/platex-1.??.zip
+
+Autorzy starali siê zachowaæ ,,ducha CM-ów'' przy projektowaniu polskich
+znaków diakrytycznych. Np. przekre¶lenie ma³ej litery ,,³'' zosta³o
+nieco tylko powiêkszone w stosunku do przekre¶lenia fontów rodziny CM
+(METAFONT-owy program ,,Cross for Polish l and L'' w pliku ACCENT.MF)
+umieszczanego w sk³adzie komendami TeX-owymi \l oraz \L, chocia¿ w
+niektórych fontach autorzy chêtnie widzieliby przekre¶lenie znacznie
+wyra¼niejsze. Podobnie podciêcia wstawiane automatycznie pomiêdzy znakami
+(implicit kerns) by³y dodawane raczej ostro¿nie. Np. zdaniem autorów
+podciêcie miêdzy polskim otwieraj±cym cudzys³owem (,,) a liter± ,,W''
+b±d¼ ,,T'' mog³oby byæ znacznie wiêksze, gdyby nie to, ¿e w fontach CM
+nie ma ¿adnego podciêcia miêdzy liter± ,,A'' a cudzys³owem zamykaj±cym
+('').
+
+Fonty PL, podobnie jak macierzyste fonty CM, projektowane by³y
+pod k±tem zastosowañ profesjonalnych, tzn. urz±dzeñ o wiêkszych
+rozdzielczo¶ciach. Niemniej jednak sporo wysi³ku w³o¿ono w prawid³ow±
+dyskretyzacjê przy ma³ych rozdzielczo¶ciach (dla potrzeb wydruków
+testowych na drukarkach mozaikowych 9- i 24-ig³owych).
+
+ 1. Fonty PL stanowi± rozszerzenie standardowego zestawu rodziny
+    Computer Modern (CM) o polskie znaki diakrytyczne i bazuj± na tych
+    samych plikach parametrycznych co fonty rodziny CM. Zmiany parametrów
+    odbiegaj±ce zbyt daleko od standardu zaproponowanego przez D. E. Knutha
+    mog± spowodowaæ nieoczekiwane efekty (do b³êdu w trakcie obliczeñ
+    w³±cznie). Przyk³adowo, za³o¿one zosta³o, ¿e kursywa i grotesk
+    wykluczaj± siê.
+
+    Uk³ad fontów PL charakteryzuje siê tym, ¿e znaki o kodach < 128
+    s± identyczne ze znakami rodziny CM, natomiast polskim znakom
+    diakrytycznym przypisane zosta³y kody > 127 (innych cech TeX-a 3.x
+    nie wykorzystuje siê). Polskie znaki diakrytyczne maj± kody zgodne
+    z uk³adem ECM (Extended Computer Modern, Cork encoding), natomiast
+    cudzys³owy maj± kody niestandardowe (w ECM cudzys³owy maj±
+    kody < 127):
+
+              ¡ -- 129     ± -- 161
+              Æ -- 130     æ -- 162
+              Ê -- 134     ê -- 166
+              £ -- 138     ³ -- 170
+              Ñ -- 139     ñ -- 171
+              Ó -- 211     ó -- 243
+              ¦ -- 145     ¶ -- 177
+              ¬ -- 153     ¼ -- 185
+              ¯ -- 155     ¿ -- 187
+
+             << (francuski cudzys³ów otwieraj±cy) -- 174
+             >> (francuski cudzys³ów zamykaj±cy)  -- 175
+             ,, (polski cudzys³ów otwieraj±cy)    -- 255
+
+     Uwagi:
+       * Fonty matematyczne plmi, plmib oraz plex nie zawieraj± polskich
+         znaków diakrytycznych i nie ró¿ni± siê od odpowiednich fontów
+         CM; przedrostki CM zosta³y zmienione na PL jedynie dla zachowania
+         jednorodno¶ci.
+       * Podobnie font pltex10 to po prostu font cmtex10 ze zmienion± dla
+         jednolito¶ci nazw±; font cmtex10 odzwierciedla uk³ad klawiatury
+         na komputerze u¿ywanym przez profesora Knutha (D. E. Knuth,
+         ,,Computer Modern Typefaces'', str. 568), tym samym nie powinien
+         raczej zawieraæ polskich znaków diakrytycznych.
+       * Fonty plsy zosta³y poszerzone (w stosunku do cmsy) o znaki
+         ,,wiêksze-równe'' i ,,mniejsze-równe'' odpowiadaj±ce
+         polskim zwyczajom drukarskim (dolna kreska sko¶na zamiast
+         poziomej); na konieczno¶æ takiego rozszerzenia zwróci³
+         uwagê p. W³odzimierz J. Martin; majusku³y kaligraficzne tych
+         fontów (opisane w pliku calu.mf) nie zosta³y uzupe³nione
+         o polskie znaki diakrytyczne.
+
+ 2. Jedynymi znakami ,,polskimi'' dostêpnymi poprzez ligatury s±
+    cudzys³owy (,, << >>). Polskie znaki diakrytyczne s± dostêpne
+    albo bezpo¶rednio, albo za pomoc± komendy realizowanej przez
+    ,,aktywny ciach'' (/a /c /e /l /n /o /s /x /z /A /C /E
+    /L /N /O /S /X /Z) zaprogramowanej w formatach MeX i LaMeX
+    (p. opis u¿ywania formatów MeX i LaMeX). Istniej± zasadnicze powody,
+    dla których autorzy nie wykorzystali do tego celu ligatur.
+
+ 3. Ze wzglêdu na ograniczenie liczby ró¿nych wysoko¶ci znaków w foncie
+    do 15 niezerowych, zrezygnowano z kusz±cego wype³niania ,,górnej
+    po³ówki'' fontu. Ponadto w programach METAFONT-owych podjête zosta³y
+    zabiegi maj±ce na celu minimalizacjê liczby ró¿nych wysoko¶ci.
+    Niestety, mimo to w niektórych przypadkach liczba ró¿nych niezerowych
+    wysoko¶ci przekracza 15. W takiej sytuacji METAFONT automatycznie
+    zmienia niektóre spo¶ród wysoko¶ci. Oznacza to, ¿e w pewnych
+    (bardzo z³o¶liwych i -- miejmy nadziejê -- niezwykle rzadkich)
+    przypadkach mo¿e siê zdarzyæ, ¿e tekst czysto angielski z³o¿ony
+    fontami PL zostanie inaczej prze³amany na strony ni¿ tekst z³o¿ony
+    fontami CM.
+
+ 4. Starano siê unikaæ wprowadzania dodatkowych parametrów, co jednak
+    nie zawsze by³o mo¿liwe. Szczegó³y dotycz±ce mo¿liwo¶ci zmiany
+    zachowania domy¶lnego opisane s± w pliku pl_dod.mf. Przyk³ady u¿ycia
+    opcjonalnych parametrów zmieniaj±cych zachowanie domy¶lne znale¼æ
+    mo¿na w plikach ¼ród³owych fontów plb10, plbx5, plbx6, plbx7, plbx8,
+    plcsc10, pldunh10, plfi10, plff10, plitt10, plr5, plr6, plr7, plr8,
+    plr9, plr12, plr17, plsl8, plsl9, plsl12, plssq8, plssqi8, pltcsc10,
+    plti7, plti8, plti12 oraz plvtt10.
+
+ 5. Programy opisuj±ce polskie znaki diakrytyczne zosta³y oparte na
+    odpowiednich programach rodziny CM. Opisy polskich znaków
+    diakrytycznych stanowi± niezale¿ne programy, co jest zgodne
+    z ogóln± filozofi± programów rodziny CM (mo¿na by np. zapamiêtywaæ
+    mapy bitowe liter ,,A'', ,,C'', ,,a'', ,,c'', ..., itd., i te mapy
+    bitowe modyfikowaæ; z takiego podej¶cia i mu podobnych zrezygnowano).
+
+    Nieco trickowe rozwi±zanie zastosowano w celu unikniêcia duplikowania
+    plików parametrycznych (plb10, plbx10, ..., itd.). Wykorzystano tu
+    METAFONT-ow± zmienn± ,,jobname'' do czytania odpowiednich plików
+    parametrycznych rodziny CM. Pliki te powinny znajdowaæ siê w kartotece
+    przeszukiwanej przez METAFONT-a w trakcie realizacji komendy ,,input''.
+
+ 6. Program dla polskiego cudzys³owu otwieraj±cego zaczerpniêty zosta³
+    z programów rodziny CM. Natomiast kszta³t cudzys³owów francuskich
+    zosta³ zaprojektowany i zaprogramowany ,,od zera''.
+
+ 7. Pierwsz± i najwa¿niejsz± faz± pracy nad fontami PL by³o
+    zaprojektowanie i zaprogramowanie kszta³tów polskich znaków
+    diakrytycznych w sze¶ciu podstawowych krojach: plr, plss, plbx, plssbx,
+    pltt oraz plti (stopnie pisma od 5 do 17 punktów).
+
+    Tym etapem pracy opiekowa³ siê troskliwie p. Roman Tomaszewski,
+    wybitny polski typograf, cz³onek zarz±du Miêdzynarodowego
+    Stowarzyszenia Typograficznego ATypI i zarazem przewodnicz±cy Polskiego
+    Oddzia³u ATypI. Autorzy s± mu g³êboko wdziêczni za ¿yczliwe
+    wspieranie sw± wiedz± i do¶wiadczeniem prac projektowych nad
+    fontami PL.
+
+    Pan Roman Tomaszewski zmar³ w grudniu 1992 roku.
+
+ 8. Akcenty nad minusku³ami ,,æ'' ,,ñ'' ,,ó'' ,,¶'' ,,¼''  s± takie
+    same jak wstawiany TeX-ow± komend± \' akcent ,,acute'', tyle ¿e
+    w niektórych przypadkach s± nieco przesuniête w poziomie. Natomiast
+    akcenty nad majusku³ami ,,Æ'' ,,Ñ'' ,,Ó'' ,,¦'' ,,¬'' s± wprawdzie
+    konstruowane w oparciu o akcent ,,acute'', ale s± nieco ,,sp³aszczone''
+    (w przypadku odmian szeryfowych jest to zwyk³y obrót, natomiast
+    w przypadku odmian bezszeryfowych -- obrót po³±czony z pewn±
+    modyfikacj±, ze wzglêdu na konieczno¶æ zachowania poziomego
+    po³o¿enia górnej i dolnej krawêdzi akcentu oraz optycznej grubo¶ci
+    kreski akcentowej). Wyj±tkowo w karykaturalnie smuk³ym foncie pldunh10
+    akcent nad minusku³ami i majusku³ami jest pochylony tak samo.
+
+    Powy¿sze zabiegi s± zgodne z regu³ami sztuki typograficznej, powoduj±
+    natomiast, ¿e akcenty k³adzione za pomoc± TeX-owej komendy \accent
+    mog± siê istotnie ró¿niæ od akcentowanych majusku³ w fontach PL.
+
+ 9. Akcent nad literami ,,¿'' oraz ,,¯'' jest taki sam jak kropka nad
+    liter± ,,i'', czyli inny ni¿ akcent wstawiany przez TeX-a (za pomoc±
+    komendy \.). W literze ,,¿'' jest tak¿e umieszczony na tej samej
+    wysoko¶ci co kropka nad ,,i'' (oczywi¶cie nie w foncie kapitalikowym).
+    Dziêki temu w s³owach takich jak ,,gwi¿d¿e'' czy ,,ni¿ej'' kropka
+    zachowuje tê sam± wysoko¶æ. Niestety, w niektórych fontach rodziny
+    CM kropka nad ,,i'' jest stanowczo za ma³a (np. CMTT), co powoduje,
+    ¿e warto¶æ optyczna kropki nad ,,¿'' oraz ,,¯'' jest te¿ czasami
+    zbyt ma³a. Z powiêkszenia kropki zrezygnowano, uznaj±c jej wielko¶æ
+    za cechê fontów CM.
+
+10. Przekre¶lenie litery ,,£'' jest znacznie wiêksze od przekre¶lenia
+    litery ,,³'', a przekre¶lenie litery ,,³'' jest z kolei wiêksze od
+    przekre¶lenia w fontach rodziny CM (p. punkt 0 powy¿ej).
+
+11. ,,Ogonki'' pod literami  ,,¡'' ,,Ê'' ,,±'' ,,ê''  budowane s± za
+    pomoc± stosunkowo skomplikowanego algorytmu, ale geometria
+    ogonka jest bardzo prosta: zewnêtrzna i wewnêtrzna krawêd¼ to
+    pojedyncze segmenty krzywych B\'eziera. Ogonki takie -- jak
+    pokazuje do¶wiadczenie -- s± najzgrabniejsze.
+
+    Opcjonalne parametry dodatkowe wp³ywaj±ce na kszta³t ogonków
+    opisane s± w pliku pl_dod.mf.
+
+12. Polskie znaki diakrytyczne nie s± przeznaczone do u¿ywania jako
+    znaki matematyczne, dlatego w programach opisuj±cych te znaki
+    pominiêta zosta³a komenda ,,math_adjust''.
+
+13. Podciêcia wstawiane automatycznie miêdzy znakami (implicit kerns)
+    s± w zasadzie takie same dla polskich znaków diakrytycznych jak dla
+    odpowiednich liter alfabetu ³aciñskiego, z pewnymi wszak¿e wyj±tkami
+    (p. pliki polan.mf, polkur.mf oraz polkap.mf); podobnie rzecz siê ma
+    z korekt± italikow± wstawian± za polskimi znakami diakrytycznymi.
+
+14. Dla tych, którzy chcieliby wydrukowaæ ¼ród³a METAFONT-owe w postaci
+    sformatowanej za pomoc± programu MFT, do³±czony jest odpowiedni
+    format o nazwie pl.mft. Format ten jest przygotowany do sk³adania
+    z u¿yciem fontów rodziny CM; je¶li u¿ytkownik zamieni³ ju¿
+    wszystkie CM-y na fonty PL, musi odpowiednio zmieniæ nazwy fontów
+    w plikach pl.mft oraz mftmac.tex (plik mftmac.tex znale¼æ mo¿na np.
+    w ka¿dej dystrybucji TeX-a lub CTAN:/macros/generic/plain/base/).
+
+Aktualna dystrybucja sk³ada siê z:
+
+   (a) 12 plików podstawowych:
+       fik_mik.mf, pl_cud.mf, pl_dl.mf, pl_dod.mf, pl_ml.mf,
+       pl_mlk.mf, pl_sym.mf, polan.mf, polkap.mf, polkur.mf,
+       polmat.mf, poltyt.mf;
+
+   (b) 80 plików parametrycznych:
+       plb10.mf, plbsy10.mf, plbsy5.mf, plbsy7.mf, plbx10.mf, plbx12.mf,
+       plbx5.mf, plbx6.mf, plbx7.mf, plbx8.mf, plbx9.mf, plbxsl10.mf,
+       plbxti10.mf, plcsc10.mf, pldunh10.mf, plex10.mf, plff10.mf,
+       plfi10.mf, plfib8.mf, plinch.mf, plitt10.mf, plmi10.mf,
+       plmi12.mf, plmi5.mf, plmi6.mf, plmi7.mf, plmi8.mf, plmi9.mf,
+       plmib10.mf, plmib5.mf, plmib7.mf, plr10.mf, plr12.mf, plr17.mf,
+       plr5.mf, plr6.mf, plr7.mf, plr8.mf, plr9.mf, plsl10.mf, plsl12.mf,
+       plsl8.mf, plsl9.mf, plsltt10.mf, plss10.mf, plss12.mf, plss17.mf,
+       plss8.mf, plss9.mf, plssbi10.mf, plssbx10.mf, plssdc10.mf,
+       plssi10.mf, plssi12.mf, plssi17.mf, plssi8.mf, plssi9.mf,
+       plssq8.mf, plssqi8.mf, plsy10.mf, plsy5.mf, plsy6.mf, plsy7.mf,
+       plsy8.mf, plsy9.mf, pltcsc10.mf, pltex10.mf, pltex8.mf, pltex9.mf,
+       plti10.mf, plti12.mf, plti7.mf, plti8.mf, plti9.mf, pltt10.mf,
+       pltt12.mf, pltt8.mf, pltt9.mf, plu10.mf, plvtt10.mf;
+
+       prawie wszystkie pliki parametryczne odwo³uj± siê do oryginalnych
+       plików ¼ród³owych D. E. Knutha; wyj±tkiem s± jedynie plbsy5.mf,
+       plbsy7.mf, plmib5.mf oraz plmib7.mf, które odwo³uj± siê do
+       dodatkowych plików ¼ród³owych fontów Computern Modern zawartych
+       w dystrybucji AMS; podczas generowania fontów PL wymagana jest
+       dostêpno¶æ w systemie oryginalnych plików ¼ród³owych CM i AMS;
+
+   (c) 2 pliki dodatkowe:
+        * cmssbi10.mf -- dodany dla kompletno¶ci (pliku tego brak
+          w oryginalnym zestawie plików parametrycznych);
+        * dlr10.mf -- plik przyk³adowy, demonstruje sposób zmiany
+          jednostki podstawowej fontu (w tym wypadku plik parametryczny
+          definiuje font wielko¶ci 10 dd)
+
+---------
+HISTORIA:
+---------
+
+ 7 lutego 1992: wersja 1.00
+11 lutego 1992: wersja 1.01
+    * brak zmian; nowy numer wersji wynik³ ze zmian w formacie MeX
+ 1 Jun 1992: wersja 1.02
+    * pl_dod.mf:
+      dwa b³êdne wiersze:
+        z_a:=(x_down+the_left_pos,.5penkind); % starting point
+        z_d:=(xpart(z_a)-.5penkind,y_right+.5penkind)+the_tip_pos; % ending point
+      zast±piono nastêpuj±cymi:
+        z_a:=(x_down+the_left_pos,ypart(ogonek_pos)); % starting point
+        z_d:=(xpart(z_a)-.5penkind,y_right+ypart(ogonek_pos))+
+             the_tip_pos; % ending point
+      zmiany komentarzy
+    * pl_mlk.mf:
+      przekre¶lenie w literze ³:
+        filldraw stroke z1e--z2e;  %| stem
+      zamieniono na:
+        filldraw stroke z1e--z2'e;  %| stem
+    * fik_mik.mf wczytuje cmbase.mf, aby unikn±æ wielokrotnego wczytywania
+      bazy podczas przetwarzania pliku parametrycznego
+18 grudnia 1992: wersja 1.03
+    * fik_mik.mf:
+      dodano mo¿liwo¶æ dowolnego przeskalowania; warto¶æ |basic_unit#|
+      mo¿e byæ u¿yta do zmiany domy¶lnej jednostki podstawowej |pt#|
+      generowanego fontu (sugestia M. £akomego; patrz przyk³adowy
+      plik dlr10.mf generuj±cy font |10dd#|)
+    * kosmetyczne zmiany w plikach cmbx11.mf, cmr11.mf, cmti11.mf,
+      cmsl11.mf, cmssbi10.mf oraz polan.mf
+14 kwietnia 1996: wersja 1.07$gamma$ -- nieoficjalna
+   (wersje od 1.04 do 1.06 nie by³y nigdy publikowane)
+    * usuniêto przykry b³±d wykryty przez Andreasa Schwaba i Joerga Knappena
+      podczas prac nad w³±czeniem kodu fontów PL do fontów EC:
+      b³±d zaokr±gleñ powodowa³, ¿e pliki TFM zale¿a³y od rozdzielczo¶ci
+      (podziêkowania dla Andreasa i Joerga)
+    * poprawiono makro |put_dot| (pl_dod.mf)
+    * zdefiniowano |qvair| i |limit_dist| (u¿ywane jako zmienne)
+    * kosmetyczne zmiany kodu
+13 kwietnia 2000: wersja 1.07 -- oficjalne udostêpnienie (BachoTeX 2000)
+    * bez zmian kodu od wersji 1.07$\gamma$
+    * usuniêto z dystrybucji zbêdne pliki cmr11.mf, cmti11.mf, cmsl11.mf
+    * aktualizacja dokumentacji i komentarzy w plikach ¼ród³owych
+13 kwietnia 2000: wersja 1.08 (data zosta³a zachowana celowo)
+    * pl_dod:
+      w definicji makra |beginchar_twice| (przed rozpoczêciem w³a¶ciwego
+      rysowania znaku) dodano:
+         save mode_guard_; % dedicated to those who use Karl Berry's modes.mf
+      problemy z u¿ywaniem modes.mf zosta³y zg³oszone przez W³odka Macewicza
+    * zmiana ta NIE WP£YNÊ£A na pliki metryczne, tzn. pliki generowane
+      z wersji 1.07 s± identyczne; do³o¿ymy wszelkich starañ, ¿eby
+      zachowaæ stabilno¶æ plików TFM, zgodnie z enuncjacj± Donalda E. Knutha:
+      ,,I absolutely guarantee that the TFM files will never change again.''
+                                                      (DeK, plik CM85bug)
+    * z dystrybucji usuniêty zosta³ font plex9 jako niezwi±zany
+      z oryginalnym zestawem fontów Computer Modern; w razie potrzeby (?)
+      wystarczy przenazwowaæ plik plex10.mf
+    * przeczyszczono komentarze
+13 kwietnia 2001: wersja 1.09
+    * pl_dod:
+      typ parametru redefiniowanych w |beginchar_twice| instrukcji |special|
+      i |numspecial| by³ niezgodny ze sk³adni± (|primary| zamiast |expr|):
+         <special command> :=
+           special <string expression> | numspecial <numeric expression>
+
+------
+EMAIL:
+------
+
+B.Jackowski@gust.org.pl lub M.Rycko@gust.org.pl
+

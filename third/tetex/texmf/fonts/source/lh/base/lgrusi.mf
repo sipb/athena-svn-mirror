@@ -4,12 +4,12 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
 % those of D. E. Knuth specified for the Computer Modern family of fonts.
-% In particular, only the author is entitled to modify this file
+% In particular, only the authors are entitled to modify this file
 % and to save it under the same name.
 %
 % Content:
@@ -23,7 +23,7 @@
 % and n_width (russian letter n) at the end of `cyrchar...' line)
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Italic Russian letter a";
 cyrchar(a,9u#,x_height#,0);
@@ -194,17 +194,18 @@ italcorr if math_fitting:1/3x_height#*slant else:x_height#*slant-u# fi; %e
 adjust_fit(0,0);
 % ital_z;
 pickup fine.nib; pos0(flare,180); pos1(hair,180); pos2(vair,-90);
-pos7(curve,0); pos8(curve,180); pos4(vair,270); pos5(hair,340);
+pos7(curve,0); pos8(curve,0); pos4(vair,90); pos5(hair,160);
+pos3(vair,90); pos3'(vair,-90); pos9(vair,90); pos9'(vair,-90);
 x2=x4=.5(w-u); lft x1r=min(lft x2,hround(.25u))-eps;
-lft x5l=good.x x1r+eps; x6=x5;
+lft x5r=good.x x1r+.15u+eps; x6=x5;
 y1=.5bar_height; bot y2r=-oo; bulb(2,1,0);  % bulb
-rt x7r=w-hround(1.5u-.5curve); rt x8l=w-hround(2u-.5curve);
-top y4l=h+oo; y7=.5[y2,y3]; y5l=y8=.5[y3,y4]; y6=bar_height;
+rt x7r=w-hround(1.5u-.5curve); rt x8r=w-hround(2u-.5curve);
+top y4r=h+oo; y7=.5[y2,y3]; y5r=y8=.5[y3,y4]; y6=bar_height;
 x3=x2; lft x9=hround min(lft x2-1-eps,rt x0l+1+eps);
-y3=y9=bar_height; pos3(vair,90); pos9(vair,90);
+y3=y9=bar_height; z9'=z9; z3'=z3;
 path p; p=z4{left}..(x5,h-.52bar_height)..z6;
 filldraw stroke z9e{right}...pulled_arc.e(3,7) & pulled_arc.e(7,2); % lower arc
-filldraw stroke z9e{right}...pulled_arc.e(3,8) & pulled_arc.e(8,4)
+filldraw stroke z9'e{right}...pulled_arc.e(3',8) & pulled_arc.e(8,4)
   ...{direction 1 of p}z5e;  % upper arc
 %%%
 penlabels(0,1,2,3,4,5,7,8,9); endchar;
@@ -488,35 +489,35 @@ cyrchar(f,max(2u#,stem#)+max(4u#,2flare#),asc_height#,desc_depth#);
 italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi; %p
 adjust_fit(3.15u#,3.15u#); pickup fine.nib;
 pickup fine.nib;
-numeric theta; z12=(.5w-.5u,h); z13=(.5w+.5u,-d); theta=angle(z12-z13);
+numeric theta; theta=angle(-u,d+h);
 pos0(flare,0); pos1(hair,0); pos2(vair,90);
 pos3(.5[hair,stem],180); pos4(stem,theta+90);
 pos5(stem,theta-90); pos6(.5[hair,stem],0);
 pos7(vair,-90); pos8(hair,-180); pos9(flare,-180);
+crisp.top y15r=x_height+oo; crisp.bot y17r=-oo;
+x14=.5w; y14=y16=y19=.5[y15r,y17r];
 rt x1r=hround(w+.25u); lft x8r=hround-.35u; x2=.6[x1,x4]; x7=.6[x8,x5];
 y9-.5flare=vround -.85d; y2-y0=y9-y7; top y2r=h+oo; bot y7r=-d-oo;
-y4=.25[x_height,h]; y5=.5[-d,y4];
-z4=whatever[z12,z13]; z5=whatever[z12,z13];
+y4=.25[x_height,h]; z4=whatever[z14,z14+dir theta];
+y5=.5[-d,y4]; z5=whatever[z14,z14+dir theta];
+y12=h; z12=whatever[z14,z14+dir theta];
+y13=-d; z13=whatever[z14,z14+dir theta];
 x3=.8[x2+x4-x12,x12]; x6=.8[x7+x5-x13,x13]; y3=.8[y4,y2]; y6=.8[y5,y7];
 bulb(2,1,0); bulb(7,8,9);  % bulbs
 filldraw stroke z2e{left}...z3e...{z13-z12}z4e;  % upper arc
 filldraw z4r--z5l--z5r--z4l--cycle;  % stem
 filldraw stroke z5e{z13-z12}...z6e...{left}z7e;  % lower arc
-pickup crisp.nib; pos10(bar,90); pos11(bar,90);
+pickup crisp.nib;
 pos14(hair,0); pos15(vair,90); pos16(curve,180); pos17(vair,270);
-top y10r=top y11r=x_height;
-lft x10=lft x4r-.5stem-u; rt x11=rt x4l+.5stem+1.5u;
-x14=x5; y14=y16=.5[y15,y17]; top y15r=x_height+oo; bot y17r=-oo;
+pos14'(hair,180); z14'=z14;
+pos18(vair,90); pos19(curve,0); pos20(vair,-90);
 x15=x17=.5[x16,x14];
-lft x16r=l+letter_fit+hround(1.5u-.5curve)
-    if not monospace:-.35u else:-.75u fi;
+lft x16r=l+letter_fit+hround(1.5u-.5curve) if monospace:-.75u else:-.35u fi;
+y18=y15; y20=y17; x18=w-x15; x19=w-x16; x20=w-x17;
 filldraw stroke super_arc.e(14,15) & pulled_arc.e(15,16)
- & pulled_arc.e(16,17) & super_arc.e(17,14); % bowl
-pos18(vair,-90); pos19(curve,-180); pos20(vair,-270);
-y18=y15; y19=y16; y20=y17; x18-x14=x14-x15;
-x19-x14=x14-x16; x20-x14=x14-x17;
-filldraw stroke super_arc.e(14,18) & pulled_arc.e(18,19)
- & pulled_arc.e(19,20) & super_arc.e(20,14); % bowl
+ & pulled_arc.e(16,17) & super_arc.e(17,14); % left bowl
+filldraw stroke super_arc.e(14',18) & pulled_arc.e(18,19)
+ & pulled_arc.e(19,20) & super_arc.e(20,14'); % right bowl
 math_fit(desc_depth#*slant+u#,x_height#*slant);
 penlabels(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
 endchar;
@@ -725,7 +726,7 @@ filldraw circ_stroke z6e--z7e; % stem
 penlabels(0,1,1',2,3,4,5,6,7,8,9,10); endchar;
 
 lhchar "Italic Russian letter sftsn - soft sign";
-cyrchar(sftsn,if monospace: 9u# else:9u#fi,x_height#,0);
+cyrchar(sftsn,if monospace: 9u# else: 9u# fi,x_height#,0);
 italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi; %"Weierstrass p"
 adjust_fit(if monospace:.5u#,.5u# else:0,0 fi); pickup tiny.nib;
 pos2(stem,0); y2=.6bar_height;
@@ -749,12 +750,12 @@ italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi; %o
 adjust_fit(0,if monospace:0 else:-.35u# fi); %o
 % ital_erev;
 pickup fine.nib;
-pos0(flare,-180); pos1(hair,-180); pos2'(vair,-90); pos2(vair,90);
-pos3(curve,180); pos4(vair,270); pos5(hair,320);
+pos0(flare,180); pos1(hair,-180); pos2(vair,-90);
+pos3(curve,0); pos4(vair,90); pos5(hair,140);
 x2+.5u=x4=.5(w-u); lft x1r=min(lft x2,hround(.25u))-eps;
-rt x3l=w-hround(1.5u-.5curve); lft x5l=good.x (lft x1r-eps); x6=x5;
-y1-.5flare=.1h; bot y2l=-oo; z2'=z2; bulb(2',1,0);  % bulb
-top y4l=h+oo; y3=.5[y2,y4]; top y5l=vround .5[bar_height,h];
+rt x3r=w-hround(1.5u-.5curve); lft x5r=good.x (lft x1r-eps); x6=x5;
+y1-.5flare=.1h; bot y2r=-oo; bulb(2,1,0);  % bulb
+top y4r=h+oo; y3=.5[y2,y4]; top y5r=vround .5[bar_height,h];
 y6=bar_height; path p; p=z4{left}....z5..z6;
 filldraw stroke pulled_arc.e(2,3)
  & pulled_arc.e(3,4)...{direction 1 of p}z5e;  % arc
@@ -834,4 +835,4 @@ h:=x_height+acc_height; lowercase_umlaut(0,0,71,72,73,74); %2
 penlabels(0,1,2,3,4,5,6); endchar;
 
 endinput;
-% end of file
+%end of file

@@ -8,19 +8,32 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ltxdoc}
-         [1998/08/17 v2.0s Standard LaTeX documentation class]
+         [1999/08/08 v2.0u Standard LaTeX documentation class]
 \DeclareOption{a5paper}{\@latexerr{Option not supported}%
    {}}
 \DeclareOption*{%
@@ -35,7 +48,7 @@
 \RequirePackage{doc}
 \AtBeginDocument{\MakeShortVerb{\|}}
 \DeclareFontShape{OT1}{cmtt}{bx}{n}{<-> ssub * cmtt/m/n}{}
-\DeclareFontFamily{OMS}{cmtt}{\skewchar\font'60}
+\DeclareFontFamily{OMS}{cmtt}{\skewchar\font 48}  % '60
 \DeclareFontShape{OMS}{cmtt}{m}{n}{<-> ssub * cmsy/m/n}{}
 \DeclareFontShape{OMS}{cmtt}{bx}{n}{<-> ssub * cmsy/b/n}{}
 \DeclareFontShape{OT1}{cmss}{m}{it}{<->ssub*cmss/m/sl}{}
@@ -124,11 +137,11 @@
 \endgroup%
 \@addtoreset{CodelineNo}{part}
 \def\partname{File}
-\def\DocInclude#1{%
+\newcommand*{\DocInclude}[1]{%
   \relax
   \clearpage
   \docincludeaux
-  \def\currentfile{#1.dtx}%
+  \IfFileExists{#1.fdd}{\def\currentfile{#1.fdd}}{\def\currentfile{#1.dtx}}%
   \ifnum\@auxout=\@partaux
     \@latexerr{\string\include\space cannot be nested}\@eha
   \else \@docinclude#1 \fi}
@@ -139,10 +152,20 @@
 \if@tempswa \let\@auxout\@partaux \if@filesw
 \immediate\openout\@partaux #1.aux
 \immediate\write\@partaux{\relax}\fi
-\part{#1.dtx}%
+\let\@ltxdoc@PrintIndex\PrintIndex
+\let\PrintIndex\relax
+\let\@ltxdoc@PrintChanges\PrintChanges
+\let\PrintChanges\relax
+\let\@ltxdoc@theglossary\theglossary
+\let\@ltxdoc@endtheglossary\endtheglossary
+\part{\currentfile}%
   {\let\ttfamily\relax
   \xdef\filekey{\filekey, \thepart={\ttfamily\currentfile}}}%
-\DocInput{#1.dtx}%
+\DocInput{\currentfile}%
+\let\PrintIndex\@ltxdoc@PrintIndex
+\let\PrintChanges\@ltxdoc@PrintChanges
+\let\theglossary\@ltxdoc@theglossary
+\let\endtheglossary\@ltxdoc@endtheglossary
 \clearpage
 \@writeckpt{#1}\if@filesw \immediate\closeout\@partaux \fi
 \else\@nameuse{cp@#1}\fi\let\@auxout\@mainaux}

@@ -1,0 +1,24 @@
+<head>
+<title>UK TeX FAQ -- question 140</title>
+</head><body>
+<h3>'Watermarks' on every page</h3>
+<p>It's often useful to place some text (such as 'DRAFT') in the
+background of every page of a document.  For LaTeX users, this can
+be achieved with the <i>draftcopy</i> package.  This can deal with
+many types of DVI processors (in the same way that the graphics
+package does) and knows translations for the word 'DRAFT' into a wide
+range of languages (though you can choose your own word, too).
+<p>More elaborate watermarks may be achieved using the <i>eso-pic</i>
+package, which in turn uses the package <i>everyshi</i>, part of
+Martin Schr&ouml;der's <i>ms</i> bundle.  <i>Eso-pic</i> attaches a
+<code>picture</code> environment to every page as it is shipped out;
+you can put things into that environment.  The package provides
+commands for placing things at certain useful points (like "text
+upper left" or "text centre") in the picture, but you're at liberty
+to do what you like.
+<dl>
+<dt><tt><i>draftcopy.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/draftcopy.tar.gz">macros/latex/contrib/supported/draftcopy.tar.gz</a>
+<dt><tt><i>eso-pic.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/eso-pic.tar.gz">macros/latex/contrib/supported/eso-pic.tar.gz</a>
+<dt><tt><i>everyshi.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/ms.tar.gz">macros/latex/contrib/supported/ms.tar.gz</a>
+</dl>
+<p></body>

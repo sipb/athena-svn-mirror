@@ -1,3 +1,4 @@
+\ProvidesFile{turkish.mld}[1999/03/16]
 % Turkish titles for minitoc.sty
 \def\mtctitle{\.I\c cindekiler}%
 \def\mlftitle{\c Sekiller Listesi}%

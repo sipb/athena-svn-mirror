@@ -1,0 +1,428 @@
+
+<html><head>
+<title>TeX Frequently Asked Questions</title>
+</head><body>
+<h1 align="center">Welcome to the UK List of<br>
+                TeX Frequently Asked Questions</h1>
+<h2>Introduction</h2>
+<p>This FAQ was originated by the Committee of the UK TeX
+Users' Group (UK TUG) as a development of a regular
+posting to the <em>Usenet</em> newsgroup <i>comp.text.tex</i> that
+was maintained for some time by Bobby Bodenheimer.  The first
+UK version was much re-arranged and corrected from the
+original, and little of Bodenheimer's work now remains.
+<p>
+<p>An alternative HTML version of the FAQ may be found on the
+
+TeX Live <a href="FAQ53.html">CDROM</a>.
+<p>  A copy of the complete FAQ, in PDF with many
+  hyperlinks, may be found on
+  <a href="ftp://help/uk-tex-faq/newfaq.pdf">help/uk-tex-faq/newfaq.pdf</a> (formatted for A4 paper) or
+  <a href="ftp://help/uk-tex-faq/letterfaq.pdf">help/uk-tex-faq/letterfaq.pdf</a> (formatted for North American "letter"
+  paper).
+<p>Most members of the committee of UK TUG, over the years
+since 1994, have contributed to this FAQ to some extent.  The
+following people, who have never been members of the committee, have
+also contributed help or advice:
+Donald Arseneau,
+Barbara Beeton,
+Karl Berry,
+Giuseppe Bilotta,
+Charles Cameron,
+Damian Cugley,
+Michael Dewey,
+Michael Downes,
+Thomas Esser,
+Anthony Goreham,
+Norman Gray,
+Eitan Gurari,
+Hartmut Henkel,
+John Hobby,
+Berthold Horn,
+Ian Hutchinson,
+Werner Icking,
+David Kastrup,
+Regnor Jernsletten,
+Daniel Luecking,
+Sanjoy Mahajan,
+Andreas Matthias,
+
+Ted Nieland,
+Hans Nordhaug,
+Pat Rau,
+Heiko Oberdiek,
+Piet van Oostrum,
+Scott Pakin,
+Oren Patashnik,
+Jos&eacute; Carlos Santos,
+Walter Schmidt,
+Hans-Peter Schr&ouml;cker,
+Joachim Schrod,
+Ulrik Vieth,
+Mike Vulis,
+Peter Wilson,
+Rick Zaccone and
+Reinhard Zierke.
+<p><p>
+<b>Caveat: Acquiring files</b>
+<p>Most answers in this FAQ provide links for downloading
+software; a large proportion of these links direct you to entire
+directories on the CTAN archives.  Unfortunately, some browsers
+issue a sequence of commands that causes CTAN servers to deny
+the existence of compressed archive files of the directory.  The
+FAQ now therefore offers three possible links for downloading
+directories (that aren't already designated "browse only"): the
+links give you <code>.tar.gz</code> and <code>.zip</code> archives, and (for those with the
+troublesome browsers) a link for browsing the directory.
+<p>
+<p>
+<p><h3>The Background</h3><ul>
+<li><a href="FAQ1.html">What is TeX?</a>
+<li><a href="FAQ2.html">How should I pronounce "TeX"?</a>
+<li><a href="FAQ3.html">What is Metafont?</a>
+<li><a href="FAQ4.html">What is MetaPost?</a>
+<li><a href="FAQ5.html">How can I be sure it's really TeX?</a>
+<li><a href="FAQ6.html">Are TeX and friends Y2K compliant?</a>
+<li><a href="FAQ7.html">What is LaTeX?</a>
+<li><a href="FAQ8.html">What is LaTeX2e?</a>
+<li><a href="FAQ9.html">How should I pronounce "LaTeX(2e)"?</a>
+<li><a href="FAQ10.html">Should I use Plain TeX or LaTeX?</a>
+<li><a href="FAQ11.html">How does LaTeX relate to Plain TeX?</a>
+<li><a href="FAQ12.html">What is ConTeXt?</a>
+<li><a href="FAQ13.html">What are the AMS packages (AMSTeX, <em>etc</em>.)?</a>
+<li><a href="FAQ14.html">What is Eplain?</a>
+<li><a href="FAQ15.html">What is Lollipop?</a>
+<li><a href="FAQ16.html">What is Texinfo?</a>
+<li><a href="FAQ17.html">If TeX is so good, how come it's free?</a>
+<li><a href="FAQ18.html">What is the future of TeX?</a>
+<li><a href="FAQ19.html">Reading (La)TeX files</a>
+<li><a href="FAQ20.html">Why is TeX not a WYSIWYG system?</a>
+<li><a href="FAQ21.html">TeX User Groups</a>
+</ul><h3>Documentation and Help</h3><ul>
+<li><a href="FAQ22.html">Books on TeX and its relations</a>
+<li><a href="FAQ23.html">Books on Type</a>
+<li><a href="FAQ24.html">Where to find FAQs</a>
+<li><a href="FAQ25.html">Where to get help</a>
+<li><a href="FAQ26.html">How to ask a question</a>
+<li><a href="FAQ27.html">(La)TeX Tutorials, etc.</a>
+<li><a href="FAQ28.html">Documentation of packages</a>
+<li><a href="FAQ29.html">Learning to write LaTeX classes and packages</a>
+<li><a href="FAQ30.html">Metafont and MetaPost Tutorials</a>
+<li><a href="FAQ31.html">BibTeX Documentation</a>
+<li><a href="FAQ32.html">Where can I find the symbol for...</a>
+<li><a href="FAQ33.html">The PiCTeX manual</a>
+</ul><h3>Bits and pieces of TeX</h3><ul>
+<li><a href="FAQ34.html">What is a DVI file?</a>
+<li><a href="FAQ35.html">What is a driver?</a>
+<li><a href="FAQ36.html">What are PK files?</a>
+<li><a href="FAQ37.html">What are TFM files?</a>
+<li><a href="FAQ38.html">Virtual fonts</a>
+<li><a href="FAQ39.html"><code>\special</code> commands</a>
+<li><a href="FAQ40.html">Documented LaTeX sources (<code>.dtx</code> files)</a>
+<li><a href="FAQ41.html">What are encodings?</a>
+<li><a href="FAQ42.html">How does hyphenation work in TeX?</a>
+<li><a href="FAQ43.html">What are the EC fonts?</a>
+<li><a href="FAQ44.html">What is the TDS?</a>
+<li><a href="FAQ45.html">What is "Encapsulated PostScript"</a>
+</ul><h3>Acquiring the Software</h3><ul>
+<li><a href="FAQ46.html">Repositories of TeX material</a>
+<li><a href="FAQ47.html">What's the CTAN <code>nonfree</code> tree?</a>
+<li><a href="FAQ48.html">Contributing a file to the archives</a>
+<li><a href="FAQ49.html">Finding (La)TeX macro packages</a>
+<li><a href="FAQ50.html">Finding files in the CTAN archives</a>
+<li><a href="FAQ51.html">Finding files by Web search</a>
+<li><a href="FAQ52.html">Finding new fonts</a>
+<li><a href="FAQ53.html">TeX CDROMs</a>
+</ul><h3>TeX Systems</h3><ul>
+<li><a href="FAQ54.html">(La)TeX for different machines</a>
+<li><a href="FAQ55.html">TeX-friendly editors and shells</a>
+<li><a href="FAQ56.html">Commercial TeX implementations</a>
+</ul><h3>DVI Drivers and Previewers</h3><ul>
+<li><a href="FAQ57.html">DVI to PostScript conversion programs</a>
+<li><a href="FAQ58.html">DVI drivers for HP LaserJet</a>
+<li><a href="FAQ59.html">Output to "other" printers</a>
+<li><a href="FAQ60.html">DVI previewers</a>
+</ul><h3>Support Packages for TeX</h3><ul>
+<li><a href="FAQ61.html">Fig, a TeX-friendly drawing package</a>
+<li><a href="FAQ62.html">TeXCAD, a drawing package for LaTeX</a>
+<li><a href="FAQ63.html">Spelling checkers for work with TeX</a>
+<li><a href="FAQ64.html">How many words have you written?</a>
+</ul><h3>Literate programming</h3><ul>
+<li><a href="FAQ65.html">What is Literate Programming?</a>
+<li><a href="FAQ66.html">WEB systems for various languages</a>
+</ul><h3>Format conversions</h3><ul>
+<li><a href="FAQ67.html">Conversion between (La)TeX and others</a>
+<li><a href="FAQ68.html">Conversion from (La)TeX to plain ASCII</a>
+<li><a href="FAQ69.html">Conversion from SGML or HTML to TeX</a>
+<li><a href="FAQ70.html">(La)TeX conversion to HTML</a>
+<li><a href="FAQ71.html">Using TeX to read SGML or XML directly</a>
+<li><a href="FAQ72.html">Retrieving (La)TeX from DVI, etc.</a>
+<li><a href="FAQ73.html">Translating LaTeX to Plain TeX</a>
+</ul><h3>Hypertext and PDF</h3><ul>
+<li><a href="FAQ74.html">Making hypertext documents from TeX</a>
+<li><a href="FAQ75.html">Making Acrobat documents from LaTeX</a>
+<li><a href="FAQ76.html">Quality of PDF from PostScript</a>
+<li><a href="FAQ77.html">Finding '8-bit' Type 1 fonts</a>
+<li><a href="FAQ78.html">Replacing Type 3 fonts in PostScript</a>
+</ul><h3>Fonts</h3><ul>
+</ul><h4>Metafont fonts</h4><ul>
+<li><a href="FAQ79.html">Getting Metafont to do what you want</a>
+<li><a href="FAQ80.html">Which font files should be kept</a>
+<li><a href="FAQ81.html">Acquiring bitmap fonts</a>
+</ul><h4>Adobe Type 1 ("PostScript") fonts</h4><ul>
+<li><a href="FAQ82.html">Using PostScript fonts with TeX</a>
+<li><a href="FAQ83.html">Previewing files using Type 1 fonts</a>
+<li><a href="FAQ84.html">TeX font metric files for PostScript fonts</a>
+<li><a href="FAQ85.html">Deploying Type 1 fonts</a>
+<li><a href="FAQ86.html">Choice of scalable outline fonts</a>
+<li><a href="FAQ87.html">Weird characters in <i>dvips</i> output</a>
+</ul><h4>Particular font families</h4><ul>
+<li><a href="FAQ88.html">Using the "Concrete" fonts</a>
+</ul><h3>Graphics</h3><ul>
+<li><a href="FAQ89.html">How to import graphics into (La)TeX documents</a>
+<li><a href="FAQ90.html">Graphics in <i>dvips</i></a>
+<li><a href="FAQ91.html">Graphics in PDFLaTeX</a>
+<li><a href="FAQ92.html">Making MetaPost output display in <i>ghostscript</i></a>
+<li><a href="FAQ93.html">Drawing with TeX</a>
+<li><a href="FAQ94.html">Drawing Feynman diagrams in LaTeX</a>
+<li><a href="FAQ95.html">Labelling graphics</a>
+<li><a href="FAQ96.html">Limit the width of included graphics</a>
+<li><a href="FAQ97.html">Top-aligning graphics</a>
+</ul><h3>Bibliographies and citations</h3><ul>
+</ul><h4>Creating bibliographies</h4><ul>
+<li><a href="FAQ98.html">Creating a bibliography style</a>
+<li><a href="FAQ99.html">Capitalisation in BibTeX</a>
+<li><a href="FAQ100.html">'String too long' in BibTeX</a>
+<li><a href="FAQ101.html">BibTeX doesn't understand lists of names</a>
+<li><a href="FAQ102.html">URLs in BibTeX bibliographies</a>
+<li><a href="FAQ103.html">Using BibTeX with Plain TeX</a>
+</ul><h4>Creating citations</h4><ul>
+<li><a href="FAQ104.html">Separate bibliographies per chapter?</a>
+<li><a href="FAQ105.html">Multiple bibliographies?</a>
+<li><a href="FAQ106.html">Putting bibliography entries in text</a>
+<li><a href="FAQ107.html">Sorting and compressing citations</a>
+<li><a href="FAQ108.html">Multiple citations</a>
+<li><a href="FAQ109.html">References from the bibliography to the citation</a>
+</ul><h4>Manipulating whole bibliographies</h4><ul>
+<li><a href="FAQ110.html">Listing all your BibTeX entries</a>
+<li><a href="FAQ111.html">Making HTML of your Bibliography</a>
+</ul><h3>Installing (La)TeX files</h3><ul>
+<li><a href="FAQ112.html">Installing a new package</a>
+<li><a href="FAQ113.html">Where to put new files</a>
+<li><a href="FAQ114.html">Installing MikTeX "known packages"</a>
+<li><a href="FAQ115.html">"Temporary" installation of (La)TeX files</a>
+</ul><h3>Adjusting the typesetting</h3><ul>
+</ul><h4>Alternative document classes</h4><ul>
+<li><a href="FAQ116.html">Replacing the standard classes</a>
+<li><a href="FAQ117.html">Formatting a thesis in LaTeX</a>
+<li><a href="FAQ118.html">Setting papers for journals</a>
+<li><a href="FAQ119.html">A 'report' from lots of 'article's</a>
+<li><a href="FAQ120.html"><em>Curriculum Vitae</em> (Resum&eacute;)</a>
+<li><a href="FAQ121.html">Letters and the like</a>
+<li><a href="FAQ122.html">Other "document font" sizes?</a>
+</ul><h4>Document structure</h4><ul>
+<li><a href="FAQ123.html">The style of document titles</a>
+<li><a href="FAQ124.html">The style of section headings</a>
+<li><a href="FAQ125.html">Indent after section headings</a>
+<li><a href="FAQ126.html">How to create a <code>\subsubsubsection</code></a>
+<li><a href="FAQ127.html">The style of captions</a>
+<li><a href="FAQ128.html">Alternative head- and footlines in LaTeX</a>
+<li><a href="FAQ129.html">Wide figures in two-column documents</a>
+<li><a href="FAQ130.html">1-column abstract in 2-column document</a>
+<li><a href="FAQ131.html">Really blank pages between chapters</a>
+<li><a href="FAQ132.html">Balancing columns at the end of a document</a>
+<li><a href="FAQ133.html">My section title is too wide for the page header</a>
+<li><a href="FAQ134.html">Page numbering "&lt;<em>n</em>&gt; of &lt;<em>m</em>&gt;"</a>
+<li><a href="FAQ135.html">Page numbering by chapter</a>
+</ul><h4>Page layout</h4><ul>
+<li><a href="FAQ136.html">Changing the margins in LaTeX</a>
+<li><a href="FAQ137.html">How to get rid of page numbers</a>
+<li><a href="FAQ138.html"><code>\pagestyle{empty}</code> on first page in LaTeX</a>
+<li><a href="FAQ139.html">How to create crop marks</a>
+<li><a href="FAQ140.html">'Watermarks' on every page</a>
+<li><a href="FAQ141.html">Typesetting things in landscape orientation</a>
+<li><a href="FAQ142.html">Putting things at fixed positions on the page</a>
+<li><a href="FAQ143.html">Preventing page breaks between lines</a>
+<li><a href="FAQ144.html">Parallel setting of text</a>
+</ul><h4>Spacing of characters and lines</h4><ul>
+<li><a href="FAQ145.html">Double-spaced documents in LaTeX</a>
+<li><a href="FAQ146.html">Changing the space between letters</a>
+<li><a href="FAQ147.html">Setting text ragged right</a>
+<li><a href="FAQ148.html">Cancelling <code>\ragged</code> commands</a>
+</ul><h4>Typesetting specialities</h4><ul>
+<li><a href="FAQ149.html">Including a file verbatim in LaTeX</a>
+<li><a href="FAQ150.html">Including line numbers in typeset output</a>
+<li><a href="FAQ151.html">Code listings in LaTeX</a>
+<li><a href="FAQ152.html">Generating an index in (La)TeX</a>
+<li><a href="FAQ153.html">Typesetting URLs</a>
+<li><a href="FAQ154.html">Typesetting music in TeX</a>
+<li><a href="FAQ155.html">Zero paragraph indent</a>
+<li><a href="FAQ156.html">Big letters at the start of a paragraph</a>
+<li><a href="FAQ157.html">The comma as a decimal separator</a>
+<li><a href="FAQ158.html">Breaking boxes of text</a>
+<li><a href="FAQ159.html">Overstriking characters</a>
+</ul><h4>Tables of contents and indexes</h4><ul>
+<li><a href="FAQ160.html">The format of the Table of Contents, etc.</a>
+<li><a href="FAQ161.html">Unnumbered sections in the Table of Contents</a>
+<li><a href="FAQ162.html">Bibliography, index, etc., in TOC</a>
+<li><a href="FAQ163.html">Multiple indexes</a>
+</ul><h3>How do I do...?</h3><ul>
+</ul><h4>Mathematics</h4><ul>
+<li><a href="FAQ164.html">Proof environment</a>
+<li><a href="FAQ165.html">Roman theorems</a>
+<li><a href="FAQ166.html">Defining a new log-like function in LaTeX</a>
+<li><a href="FAQ167.html">Set specifications and Dirac brackets</a>
+<li><a href="FAQ168.html">Cancelling terms in maths expressions</a>
+</ul><h4>Lists</h4><ul>
+<li><a href="FAQ169.html">Fancy enumeration lists</a>
+<li><a href="FAQ170.html">How to reduce list spacing</a>
+<li><a href="FAQ171.html">Interrupting enumerated lists</a>
+</ul><h4>Tables, figures and diagrams</h4><ul>
+<li><a href="FAQ172.html">Fixed-width tables</a>
+<li><a href="FAQ173.html">Spacing lines in tables</a>
+<li><a href="FAQ174.html">Tables longer than a single page</a>
+<li><a href="FAQ175.html">How to alter the alignment of tabular cells</a>
+<li><a href="FAQ176.html">Flowing text around figures in LaTeX</a>
+</ul><h4>Floating tables, figures, etc.</h4><ul>
+<li><a href="FAQ177.html">Floats on their own on float pages</a>
+<li><a href="FAQ178.html">Extra vertical space in floats</a>
+<li><a href="FAQ179.html">Placing two-column floats at bottom of page</a>
+<li><a href="FAQ180.html">Floats in multicolumn setting</a>
+<li><a href="FAQ181.html">Facing floats on 2-page spread</a>
+<li><a href="FAQ182.html">Vertical layout of float pages</a>
+</ul><h4>Footnotes</h4><ul>
+<li><a href="FAQ183.html">Footnotes in tables</a>
+<li><a href="FAQ184.html">Footnotes in LaTeX section headings</a>
+<li><a href="FAQ185.html">Footnotes in captions</a>
+<li><a href="FAQ186.html">Footnotes whose texts are identical</a>
+<li><a href="FAQ187.html">More than one sequence of footnotes</a>
+</ul><h4>Document management</h4><ul>
+<li><a href="FAQ188.html">What's the name of this file</a>
+<li><a href="FAQ189.html">All the files used by this document</a>
+<li><a href="FAQ190.html">Marking changed parts of your document</a>
+<li><a href="FAQ191.html">Conditional compilation and "comments"</a>
+<li><a href="FAQ192.html">Bits of document from other directories</a>
+<li><a href="FAQ193.html">Version control using RCS or CVS</a>
+<li><a href="FAQ194.html">Makefiles for LaTeX documents</a>
+<li><a href="FAQ195.html">How many pages are there in my document?</a>
+<li><a href="FAQ196.html">Including Plain TeX files in LaTeX</a>
+</ul><h4>Hyphenation</h4><ul>
+<li><a href="FAQ197.html">My words aren't being hyphenated</a>
+<li><a href="FAQ198.html">Weird hyphenation of words</a>
+<li><a href="FAQ199.html">(Merely) peculiar hyphenation</a>
+<li><a href="FAQ200.html">Accented words aren't hyphenated</a>
+<li><a href="FAQ201.html">Using a new language with Babel</a>
+<li><a href="FAQ202.html">Stopping all hyphenation</a>
+<li><a href="FAQ203.html">Preventing hyphenation of a particular word</a>
+</ul><h4>Odds and ends</h4><ul>
+<li><a href="FAQ204.html">Typesetting all those TeX-related logos</a>
+<li><a href="FAQ205.html">Referring to things by their name</a>
+<li><a href="FAQ206.html">How to do bold-tt or bold-sc</a>
+</ul><h3>Symbols, etc.</h3><ul>
+<li><a href="FAQ207.html">Symbols for the number sets</a>
+<li><a href="FAQ208.html">Better script fonts for maths</a>
+<li><a href="FAQ209.html">Setting bold Greek letters in LaTeX</a>
+<li><a href="FAQ210.html">The Principal Value Integral symbol</a>
+<li><a href="FAQ211.html">How to use the underscore character</a>
+<li><a href="FAQ212.html">How to type an '@' sign?</a>
+<li><a href="FAQ213.html">Typesetting the Euro sign</a>
+<li><a href="FAQ214.html">How to get copyright, trademark, etc.</a>
+</ul><h3>Macro programming</h3><ul>
+</ul><h4>"Generic" macros</h4><ul>
+<li><a href="FAQ215.html">Finding the width of a letter, word, or phrase</a>
+<li><a href="FAQ216.html">Patching existing commands</a>
+<li><a href="FAQ217.html">Comparing the "job name"</a>
+<li><a href="FAQ218.html">Is the argument a number?</a>
+<li><a href="FAQ219.html">Defining macros within macros</a>
+<li><a href="FAQ220.html">Spaces in macros</a>
+<li><a href="FAQ221.html">How to break the 9-argument limit</a>
+<li><a href="FAQ222.html">Defining characters as macros</a>
+<li><a href="FAQ223.html">Active characters in command arguments</a>
+<li><a href="FAQ224.html">Defining a macro from an argument</a>
+<li><a href="FAQ225.html">Transcribing LaTeX command definitions</a>
+</ul><h4>LaTeX macros</h4><ul>
+<li><a href="FAQ226.html">How to change LaTeX's "fixed names"</a>
+<li><a href="FAQ227.html">Changing the words <i>babel</i> uses</a>
+<li><a href="FAQ228.html">Running equation, figure and table numbering</a>
+<li><a href="FAQ229.html"><code>\@</code> and <code>@</code> in macro names</a>
+<li><a href="FAQ230.html">What's the reason for 'protection'?</a>
+<li><a href="FAQ231.html"><code>\edef</code> does not work with <code>\protect</code></a>
+<li><a href="FAQ232.html">Optional arguments like <code>\section</code></a>
+<li><a href="FAQ233.html">Making labels from a counter</a>
+<li><a href="FAQ234.html">Finding if you're on an odd or an even page</a>
+<li><a href="FAQ235.html">How to change the format of labels</a>
+<li><a href="FAQ236.html">A command with two optional arguments</a>
+<li><a href="FAQ237.html">Adjusting the presentation of section numbers</a>
+<li><a href="FAQ238.html">The definitions of LaTeX commands</a>
+</ul><h3>Things are Going Wrong...</h3><ul>
+</ul><h4>Getting things to fit</h4><ul>
+<li><a href="FAQ239.html">Enlarging TeX</a>
+<li><a href="FAQ240.html">Why can't I load PiCTeX?</a>
+</ul><h4>Making things stay where you want them</h4><ul>
+<li><a href="FAQ241.html">Moving tables and figures in LaTeX</a>
+<li><a href="FAQ242.html">Underlined text won't break</a>
+<li><a href="FAQ243.html">Controlling widows and orphans</a>
+</ul><h4>Things have "gone away"</h4><ul>
+<li><a href="FAQ244.html">Old LaTeX font references such as <code>\tenrm</code></a>
+<li><a href="FAQ245.html">Missing symbol commands</a>
+<li><a href="FAQ246.html">Where are the <code>msx</code> and <code>msy</code> fonts?</a>
+<li><a href="FAQ247.html">Where are the <code>am</code> fonts?</a>
+</ul><h3>Why does it <em>do</em> that?</h3><ul>
+</ul><h4>Common errors</h4><ul>
+<li><a href="FAQ248.html">LaTeX gets cross-references wrong</a>
+<li><a href="FAQ249.html">Start of line goes awry</a>
+<li><a href="FAQ250.html">Why doesn't <code>\verb</code> work within...?</a>
+<li><a href="FAQ251.html">No line here to end</a>
+</ul><h4>Common misunderstandings</h4><ul>
+<li><a href="FAQ252.html">What's going on in my <code>\include</code> commands?</a>
+<li><a href="FAQ253.html">Why does it ignore paragraph parameters?</a>
+<li><a href="FAQ254.html">Case-changing oddities</a>
+<li><a href="FAQ255.html">Why does LaTeX split footnotes across pages?</a>
+<li><a href="FAQ256.html">Getting <code>\marginpar</code> on the right side</a>
+<li><a href="FAQ257.html">Where have my characters gone?</a>
+<li><a href="FAQ258.html">"Rerun" messages won't go away</a>
+<li><a href="FAQ259.html">Commands gobble following space</a>
+<li><a href="FAQ260.html">(La)TeX makes overfull lines</a>
+</ul><h3>The joy of TeX errors</h3><ul>
+<li><a href="FAQ261.html">How to approach errors</a>
+<li><a href="FAQ262.html">The structure of TeX error messages</a>
+<li><a href="FAQ263.html">An extra '<code>}</code>'??</a>
+<li><a href="FAQ264.html">Capacity exceeded [semantic nest...]</a>
+<li><a href="FAQ265.html">No room for a new '<em>thing</em>'</a>
+<li><a href="FAQ266.html"><code>epsf</code> gives up after a bit</a>
+<li><a href="FAQ267.html">Improper <code>\hyphenation</code> will be flushed</a>
+<li><a href="FAQ268.html">"Too many unprocessed floats"</a>
+<li><a href="FAQ269.html"><code>\spacefactor</code> complaints</a>
+<li><a href="FAQ270.html"><code>\end</code> occurred inside a group</a>
+<li><a href="FAQ271.html">"Missing number, treated as zero"</a>
+<li><a href="FAQ272.html">"Please type a command or say <code>\end</code>"</a>
+<li><a href="FAQ273.html">"Unknown graphics extension"</a>
+<li><a href="FAQ274.html">"Missing $ inserted"</a>
+<li><a href="FAQ275.html">Warning: "Font shape ... not available"</a>
+</ul><h3>Current TeX Projects</h3><ul>
+<li><a href="FAQ276.html">The LaTeX3 project</a>
+<li><a href="FAQ277.html">The Omega project</a>
+<li><a href="FAQ278.html">The <i>NTS</i> project</a>
+<li><a href="FAQ279.html">The PDFTeX project</a>
+<li><a href="FAQ280.html">Future WEB technologies and (La)TeX</a>
+<li><a href="FAQ281.html">The TeXtrace project</a>
+<li><a href="FAQ282.html">The TeX document preparation environment</a>
+</ul><h3>You're still stuck?</h3><ul>
+<li><a href="FAQ283.html">You don't understand the answer</a>
+<li><a href="FAQ284.html">Submitting new material for the FAQ</a>
+<li><a href="FAQ285.html">Reporting a LaTeX bug</a>
+<li><a href="FAQ286.html">What to do if you find a bug</a>
+</ul>
+
+<hr><address>
+   Maintenance of the
+   <a href="http://www.tex.ac.uk/faq">TeX FAQ</a>
+   is coordinated by Robin Fairbairns.<p>
+
+   Comments, suggestions, or error reports? -- see
+   "<a href="FAQ283.html">Improving the FAQ</a>" or
+   "<a href="FAQ284.html">Extending the FAQ</a>". 
+<p>
+   This is FAQ version 3.4b, last modified on 2003/02/06.
+</address>
+</body></html>

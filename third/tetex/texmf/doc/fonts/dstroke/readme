@@ -1,11 +1,21 @@
 
-Doublestroke Font V1.0          1st of October, 1995
+Doublestroke Font V1.11         31th of March, 2002
 -----------------------
 
 This font is based on the Computer Modern Roman family of fonts
 by D. E. Knuth. It is useful for typesetting the mathematical
 symbols for the natural numbers (N), whole numbers (Z),
 rational numbers (Q), real numbers (R) and complex numbers (C).
+
+
+License
+-------
+
+You may use and distribute these fonts as you like.
+You may modify these fonts as long as you do not
+rename the files to one of those names that 
+Donald E. Knuth chose for the Computer Modern fonts.
+(And seriously, who would want to do that?)
 
 
 How to Install
@@ -17,6 +27,12 @@ Metafont after the first installation.
 
 2. Depending on how you obtained this package it might be
 necessary to unpack/uncompress an archive. Now the files
+
+Udsrom.fd  dsfont.sty   dsrom12.tfm  dsss10.mf   dsss8.tfm
+Udsss.fd   dsrom.mf     dsrom8.mf    dsss10.tfm  readme
+dsdoc.dvi  dsrom10.mf   dsrom8.tfm   dsss12.mf
+dsdoc.ps   dsrom10.tfm  dsromo.mf    dsss12.tfm
+dsdoc.tex  dsrom12.mf   dsromu.mf    dsss8.mf                     
 
 should be present.
 
@@ -68,7 +84,7 @@ the following actions:
       mf '\mode=localfont; input dsrom10'
     for each of the fonts.
   - If Metafont is called and complains about missing source
-    files, check whether these are placed correctly.
+    files, check whether these (*.mf) are placed correctly.
   - If Metafont is called and complains about strange paths
     or about paths that do not intersect, you are probably
     generating the font at a lower resolution than 100 dpi.
@@ -82,14 +98,11 @@ the following actions:
     checksum error, check whether you have deleted all files from
     previous versions of this font.
 
-If that does not help, you might want to have a look at
-http://www.informatik.uni-hamburg.de/TGI/mitarbeiter/wimis/kummer/ds.html
-where possible updates and bug reports will occur first. If this
-does not help and your friendly TeXnician is unavailable, drop me
-a mail. I will try to help you, if time permits.
+If that does not help and your friendly TeXnician is unavailable,
+drop me a mail. I will try to help you, if time permits.
 
-I am always glad to hear about improvements and bug reports, general
-comments are appreciated, too.
+I am always glad to hear about improvements and bug reports,
+general comments are appreciated, too.
 
 Olaf Kummer
 

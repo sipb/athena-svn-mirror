@@ -1,0 +1,47 @@
+<head>
+<title>UK TeX FAQ -- question 161</title>
+</head><body>
+<h3>Unnumbered sections in the Table of Contents</h3>
+<p>The way the relevant parts of sectioning commands work is exemplified
+by the way the <code>\chapter</code> command uses the counter <code>secnumdepth</code>
+(described in Appendix C of the LaTeX manual):
+<ol>
+<li> put something in the <code>.aux</code> file, which will appear in the <code>.toc</code>;
+
+<li> if the <code>secnumdepth</code> counter is greater than or equal to zero,
+      increase the counter for the chapter and write it out.
+<li> write the chapter title.
+</ol>
+Other sectioning commands are similar, but with other values 
+used in the test.
+<p>So a simple way to get headings of funny 'sections' such as
+prefaces in  the table of contents is to use the counter:
+<pre>
+  \setcounter{secnumdepth}{-1}
+  \chapter{Preface}
+</pre>
+Of course, you have to set <code>secnumdepth</code> back to its usual value
+(which is 2 in the standard styles) before you do
+any 'section' which you want to be numbered.
+<p>Similar settings are made automatically in the LaTeX book class by
+the <code>\frontmatter</code> and <code>\backmatter</code> commands.
+<p>The value of the counter <code>tocdepth</code> controls which headings will be
+finally printed in the table of contents.  This normally has to be set
+in the preamble and is a constant for the document.  The package
+<i>tocvsec2</i> package  provides a convenient
+interface to allow you to change the <code>secnumdepth</code> and/or the
+<code>tocdepth</code> counter values at any point in the body of the document;
+this provides convenient independent controls over the sectional
+numbering and the table of contents.
+<p>The package <i>abstract</i> (see
+<a href="FAQ130.html">one-column abstracts</a>)
+includes an option to add the <code>abstract</code> to the table of contents,
+while the package <i>tocbibind</i> 
+has options to include the table of contents itself, the
+<code>bibliography</code>, <code>index</code>, etc., to the table of contents.
+<dl>
+<dt><tt><i>abstract.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/abstract.tar.gz">macros/latex/contrib/supported/abstract.tar.gz</a>
+<dt><tt><i>tocbibind.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/tocbibind.tar.gz">macros/latex/contrib/supported/tocbibind.tar.gz</a>
+<dt><tt><i>tocvsec2.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/tocvsec2.tar.gz">macros/latex/contrib/supported/tocvsec2.tar.gz</a>
+</dl>
+<p></body>

@@ -1,0 +1,120 @@
+%%
+%% This is file `8859-8.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hebinp.dtx  (with options: `8859-8')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1997-1998 Boris Lavva and any individual authors
+%% listed elsewhere in this file. All rights reserved.
+%% 
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file is part of the Babel system release 3.7.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.2 or, at your option, any later version.
+ \ProvidesFile{8859-8.def}
+        [2000/09/26 v1.0a Input encoding file (test version)]
+\makeatletter
+\ProvideTextCommandDefault{\textdegree}{\ensuremath{{^\circ}}}
+\ProvideTextCommandDefault{\textonehalf}{\ensuremath{\frac12}}
+\ProvideTextCommandDefault{\textonequarter}{\ensuremath{\frac14}}
+\ProvideTextCommandDefault{\textthreequarters}{\ensuremath{\frac34}}
+\ProvideTextCommandDefault{\textcent}
+   {\TextSymbolUnavailable\textcent}
+\ProvideTextCommandDefault{\textyen}
+   {\TextSymbolUnavailable\textyen}
+\ProvideTextCommandDefault{\textcurrency}
+   {\TextSymbolUnavailable\textcurrency}
+\ProvideTextCommandDefault{\textbrokenbar}
+   {\TextSymbolUnavailable\textbrokenbar}
+\providecommand{\mathonesuperior}{{^1}}
+\providecommand{\maththreesuperior}{{^3}}
+\providecommand{\mathtwosuperior}{{^2}}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\pounds}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{165}{\textyen}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{169}{\textcopyright}
+\DeclareInputMath{170}{\times}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\@tabacckludge={}}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputMath{177}{\pm}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\c\ }
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputMath{186}{\div}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{190}{\textthreequarters}
+\DeclareInputText{224}{\alef}
+\DeclareInputText{225}{\bet}
+\DeclareInputText{226}{\gimel}
+\DeclareInputText{227}{\dalet}
+\DeclareInputText{228}{\he}
+\DeclareInputText{229}{\vav}
+\DeclareInputText{230}{\zayin}
+\DeclareInputText{231}{\het}
+\DeclareInputText{232}{\tet}
+\DeclareInputText{233}{\yod}
+\DeclareInputText{234}{\finalkaf}
+\DeclareInputText{235}{\kaf}
+\DeclareInputText{236}{\lamed}
+\DeclareInputText{237}{\finalmem}
+\DeclareInputText{238}{\mem}
+\DeclareInputText{239}{\finalnun}
+\DeclareInputText{240}{\nun}
+\DeclareInputText{241}{\samekh}
+\DeclareInputText{242}{\ayin}
+\DeclareInputText{243}{\finalpe}
+\DeclareInputText{244}{\pe}
+\DeclareInputText{245}{\finaltsadi}
+\DeclareInputText{246}{\tsadi}
+\DeclareInputText{247}{\qof}
+\DeclareInputText{248}{\resh}
+\DeclareInputText{249}{\shin}
+\DeclareInputText{250}{\tav}
+\makeatother
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `8859-8.def'.

@@ -1,4 +1,3 @@
-%
 % This is the file citehack.sty of the T2 package.
 %
 % Allow inputenc-generated characters as references in \cite and \bibitem.
@@ -9,12 +8,10 @@
 \let\org@IeC\IeC
 \def\tmp@IeC#1{\string\IeC\space{\string#1 }}
 
-%
 % This is a modified \@bibitem command;
 % we added \let\protect\noexpand, like in \@lbibitem,
 % because the item may include, e.g., \IeC {...}
 % or some other protected commands.
-%
 \def\@bibitem#1{\item\if@filesw {\let\protect\noexpand\immediate\write\@auxout
        {\string\bibcite{#1}{\the\value{\@listctr}}}}\fi\ignorespaces}
 %\def\@lbibitem[#1]#2{\item[\@biblabel{#1}\hfill]\if@filesw
@@ -53,9 +50,7 @@
      \@latex@warning@no@line{Label `#2' multiply defined}}%
   \global\@namedef{#1@#2}{#3}\let\IeC\org@IeC}
 
-%
 % This is a modified \@testdef command taken from Babel:
-%
 \def\@testdef #1#2#3{%
   \let\IeC\tmp@IeC
   \expandafter\let\expandafter\bbl@tempa\csname #1@#2\endcsname
@@ -66,9 +61,7 @@
   \ifx \bbl@tempa \bbl@tempb
   \else \@tempswatrue \fi\let\IeC\org@IeC}
 
-%
 % \ref, \pageref and \label support:
-%
 \DeclareRobustCommand\ref[1]{\let\IeC\tmp@IeC
   \expandafter\let\expandafter\CH@temp\csname r@#1\endcsname
   \let\IeC\org@IeC\@setref\CH@temp\@firstoftwo{#1}}
@@ -79,11 +72,17 @@
   \@bsphack\protected@write\@auxout{}{\string\newlabel{#1}{{\@currentlabel}{\thepage}}}\@esphack
   \let\IeC\org@IeC}
 
-%
 % varioref package support:
-%
-\let\org@@vpageref\@@vpageref
-\def\@@vpageref#1[#2]#3{\let\IeC\tmp@IeC\edef\CH@temp{#3}\let\IeC\org@IeC
-  \org@@vpageref{#1}[#2]\CH@temp}
-
-% end of citehack.sty
+\def\vref@pagenum#1#2{\let\IeC\tmp@IeC
+  \@ifundefined{r@#2}{\@namedef{r@#2}{{??}{??}}}{}%
+  \edef#1{\expandafter\expandafter\expandafter
+                \@cdr\csname r@#2\endcsname
+                \@nil}%
+  \let\IeC\org@IeC}
+\def\vrefpagenum#1#2{\let\IeC\tmp@IeC
+  \@ifundefined{r@#2}%
+    {\G@refundefinedtrue
+     \@latex@warning{Reference `#2' on page \thepage \space
+             undefined}}{}%
+  \let\IeC\org@IeC
+  \vref@pagenum{#1}{#2}}

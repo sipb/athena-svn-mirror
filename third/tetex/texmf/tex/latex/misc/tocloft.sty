@@ -16,36 +16,35 @@
 %%         now at: peter.r.wilson@boeing.com
 %% 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{tocloft}[1999/03/07 v0.2b parameterised ToC, etc., typesetting]
-\RequirePackage{stdclsdv}
-\ifSCDnodivs
-  \PackageWarning{tocloft}%
-    {I don't recognize any sectional divisions so I'll do nothing}
-  \renewcommand{\SCDquit}{\endinput}
-\fi
-\SCDquit
-\ifSCDknownclass\else
-  \PackageWarning{tocloft}%
-    {I don't recognize the class but I'll do my best}
-  \ifSCDnodivs
+\ProvidesPackage{tocloft}[2003/01/20 v2.3b parameterised ToC, etc., typesetting]
+\providecommand{\PRWPackageNote}[2]{%
+  \GenericWarning{%
+    (#1)\@spaces\@spaces\@spaces\@spaces
+  }{%
+   Package #1 Note: #2%
+   }%
+}
+\providecommand{\PRWPackageNoteNoLine}[2]{%
+  \PRWPackageNote{#1}{#2\@gobble}%
+}
+\newcommand{\@cftquit}{}
+\newif\if@cfthaschapter
+\newif\if@cftkoma
+  \@cftkomafalse
+\@ifclassloaded{scrartcl}{\@cftkomatrue}{}
+\@ifclassloaded{scrreprt}{\@cftkomatrue}{}
+\@ifclassloaded{scrbook}{\@cftkomatrue}{}
+
+\@ifundefined{chapter}{%
+  \@cfthaschapterfalse
+  \@ifundefined{section}{%
     \PackageWarning{tocloft}%
       {I don't recognize any sectional divisions so I'll do nothing}
-    \renewcommand{\SCDquit}{\endinput}
-  \else
-    \ifSCDchapter
-      \PackageWarning{tocloft}{The document class has chapter divisions}
-    \else
-      \ifSCDsection
-        \PackageWarning{tocloft}{The document class has section divisions}
-      \else
-        \PackageWarning{tocloft}%
-          {The class has neither chapters nor sections, so I'll do nothing}
-        \renewcommand{\SCDquit}{\endinput}
-      \fi
-    \fi
-  \fi
-\fi
-\SCDquit
+    \renewcommand{\@cftquit}{\endinput}
+    }{\PRWPackageNoteNoLine{tocloft}{The document has section divisions}}
+  }{\@cfthaschaptertrue
+    \PRWPackageNoteNoLine{tocloft}{The document has chapter divisions}}
+\@cftquit
 \newif\if@cfttocbibind
 \AtBeginDocument{%
   \@ifpackageloaded{tocbibind}{\@cfttocbibindtrue}{\@cfttocbibindfalse}
@@ -58,113 +57,159 @@ The results may be surprising.\MessageBreak
 Consider installing the current version of tocbibind.}}
   \fi
 }
+\newif\if@cftnctoc\@cftnctocfalse
+\DeclareOption{titles}{\@cftnctoctrue}
+  %% \ProcessOptions\relax
+\newif\if@cftsubfigopt\@cftsubfigoptfalse
+\DeclareOption{subfigure}{\@cftsubfigopttrue}
+
+\ProcessOptions\relax
+
+\newcommand{\tocloftpagestyle}[1]{%
+  \def\@cftpagestyle{\thispagestyle{#1}}}
+\tocloftpagestyle{plain}
+
 \newcommand{\cftmarktoc}{%
   \@mkboth{\MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
 \newcommand{\cftmarklof}{%
   \@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}}
 \newcommand{\cftmarklot}{%
   \@mkboth{\MakeUppercase\listtablename}{\MakeUppercase\listtablename}}
-\newcommand{\@cfttocstart}{%
-  \ifSCDchapter
+\if@cftkoma
+  \renewcommand{\cftmarktoc}{%
+    \@mkboth{\contentsname}{\contentsname}}
+  \renewcommand{\cftmarklof}{%
+    \@mkboth{\listfigurename}{\listfigurename}}
+  \renewcommand{\cftmarklot}{%
+    \@mkboth{\listtablename}{\listtablename}}
+\fi
+\providecommand{\@cfttocstart}{%
+  \if@cfthaschapter
     \if@twocolumn
       \@restonecoltrue\onecolumn
     \else
       \@restonecolfalse
     \fi
   \fi}
-\newcommand{\@cfttocfinish}{%
-  \ifSCDchapter
+\providecommand{\@cfttocfinish}{%
+  \if@cfthaschapter
     \if@restonecol\twocolumn\fi
   \fi}
+\providecommand{\phantomsection}{}
+
 \newcommand{\@cftdobibtoc}{%
   \if@dotoctoc
     \if@bibchapter
+      \phantomsection
       \addcontentsline{toc}{chapter}{\contentsname}
     \else
+      \phantomsection
       \addcontentsline{toc}{\@tocextra}{\contentsname}
     \fi
   \fi}
+
+\newlength{\cftparskip}
+\setlength{\cftparskip}{0pt}
+
 \AtBeginDocument{%
-\renewcommand{\tableofcontents}{%
-  \@cfttocstart
-  \par
-  \begingroup
-    \parindent\z@ \parskip\z@
-    \@cftmaketoctitle
-    \if@cfttocbibind
-      \@cftdobibtoc
-    \fi
-    \@starttoc{toc}%
-  \endgroup
-  \@cfttocfinish}
+\if@cftnctoc\else
+  \renewcommand{\tableofcontents}{%
+    \@cfttocstart
+    \par
+    \begingroup
+      \parindent\z@ \parskip\cftparskip
+      \@cftmaketoctitle
+      \if@cfttocbibind
+        \@cftdobibtoc
+      \fi
+      \@starttoc{toc}%
+    \endgroup
+    \@cfttocfinish}
+\fi
 }
 \newcommand{\@cftmaketoctitle}{%
-  \vspace*{\cftbeforetoctitleskip}
-  \interlinepenalty\@M
+  \addpenalty\@secpenalty
+  \if@cfthaschapter
+    \vspace*{\cftbeforetoctitleskip}
+  \else
+    \vspace{\cftbeforetoctitleskip}
+  \fi
+  \@cftpagestyle
+  {\interlinepenalty\@M
   {\cfttoctitlefont\contentsname}{\cftaftertoctitle}
   \cftmarktoc
   \par\nobreak
   \vskip \cftaftertoctitleskip
-  \@afterheading}
+  \@afterheading}}
 \newlength{\cftbeforetoctitleskip}
 \newlength{\cftaftertoctitleskip}
-\ifSCDchapter
+\if@cfthaschapter
   \setlength{\cftbeforetoctitleskip}{50pt}
   \setlength{\cftaftertoctitleskip}{40pt}
 \else
   \setlength{\cftbeforetoctitleskip}{3.5ex \@plus 1ex \@minus .2ex}
   \setlength{\cftaftertoctitleskip}{2.3ex \@plus.2ex}
 \fi
-\ifSCDchapter
+\if@cfthaschapter
   \newcommand{\cfttoctitlefont}{\normalfont\Huge\bfseries}
+  \if@cftkoma\renewcommand{\cfttoctitlefont}{\size@chapter\sectfont}\fi
 \else
   \newcommand{\cfttoctitlefont}{\normalfont\Large\bfseries}
+  \if@cftkoma\renewcommand{\cfttoctitlefont}{\size@section\sectfont}\fi
 \fi
 \newcommand{\cftaftertoctitle}{}
 \newcommand{\cftsetpnumwidth}[1]{\renewcommand{\@pnumwidth}{#1}}
 \newcommand{\cftsetrmarg}[1]{\renewcommand{\@tocrmarg}{#1}}
-\newcommand{\cftdot}{.}
-\newcommand{\@cftdotfill}[1]{%
+\providecommand{\cftdot}{.}
+\providecommand{\cftdotfill}[1]{%
   \leaders\hbox{$\m@th\mkern #1 mu\hbox{\cftdot}\mkern #1 mu$}\hfill}
-\newcommand{\cftdotsep}{4.5}
+\providecommand{\cftdotsep}{4.5}
 \newcommand{\cftnodots}{10000}
 \newcommand{\cftparfillskip}{\parfillskip=0pt plus1fil}
 \renewcommand{\numberline}[1]{%
-  \hb@xt@\@tempdima{#1\@cftasnum\hfil}\@cftasnumb}
+  \hb@xt@\@tempdima{\@cftbsnum #1\@cftasnum\hfil}\@cftasnumb}
+\newcommand{\@cftbsnum}{}
 \newcommand{\@cftasnum}{}
 \newcommand{\@cftasnumb}{}
 \newif\if@cftdopart
-\ifSCDpart
+\newif\if@cfthaspart
+\@ifundefined{part}{\@cfthaspartfalse}{\@cfthasparttrue}
+\if@cfthaspart
 \renewcommand*{\l@part}[2]{%
   \@cftdopartfalse
   \ifnum \c@tocdepth >-2\relax
-    \ifSCDchapter
+    \if@cfthaschapter
       \@cftdoparttrue
     \fi
     \ifnum \c@tocdepth >\m@ne
-      \ifSCDchapter\else
+      \if@cfthaschapter\else
         \@cftdoparttrue
       \fi
     \fi
   \fi
   \if@cftdopart
-    \ifSCDchapter
+    \if@cfthaschapter
       \addpenalty{-\@highpenalty}%
     \else
       \addpenalty\@secpenalty
     \fi
     \addvspace{\cftbeforepartskip}%
-    \@tempdima \cftpartnumwidth\relax
-    \let\@cftasnum \cftpartaftersnum
-    \let\@cftasnumb \cftpartaftersnumb
     \begingroup
-      \parindent \z@ \rightskip \@pnumwidth
-      \parfillskip -\@pnumwidth
-      {\leavevmode
-      {\cftpartfont #1}{\cftpartleader}
-        {\hb@xt@\@pnumwidth{\hss {\cftpartpagefont #2}}}\cftpartafterpnum}\par
+      {\leftskip \cftpartindent\relax
+       \rightskip \@tocrmarg
+       \parfillskip -\rightskip
+       \parindent \cftpartindent\relax\@afterindenttrue
+       \interlinepenalty\@M
+       \leavevmode
+       \@tempdima \cftpartnumwidth\relax
+       \let\@cftbsnum \cftpartpresnum
+       \let\@cftasnum \cftpartaftersnum
+       \let\@cftasnumb \cftpartaftersnumb
+       \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+       {\cftpartfont \cftpartpresnum #1}%
+       \cftpartfillnum{#2}}
       \nobreak
-      \ifSCDchapter
+      \if@cfthaschapter
         \global\@nobreaktrue
         \everypar{\global\@nobreakfalse\everypar{}}%
       \else
@@ -176,18 +221,32 @@ Consider installing the current version of tocbibind.}}
     \endgroup
   \fi}
 \fi
-\newlength{\cftbeforepartskip}
-  \setlength{\cftbeforepartskip}{2.25em \@plus\p@}
-\newlength{\cftpartnumwidth}
-  \setlength{\cftpartnumwidth}{3em}
-\newcommand{\cftpartfont}{\large\bfseries}
-\newcommand{\cftpartaftersnum}{}
-\newcommand{\cftpartaftersnumb}{}
-\newcommand{\cftpartleader}{\large\bfseries\@cftdotfill{\cftpartdotsep}}
-\newcommand{\cftpartdotsep}{\cftnodots}
-\newcommand{\cftpartpagefont}{\large\bfseries}
-\newcommand{\cftpartafterpnum}{}
-\ifSCDchapter
+\if@cfthaspart
+  \newlength{\cftbeforepartskip}
+    \setlength{\cftbeforepartskip}{2.25em \@plus\p@}
+  \newlength{\cftpartnumwidth}
+    \setlength{\cftpartnumwidth}{0em}
+  \newcommand{\cftpartfont}{\large\bfseries}
+  \newcommand{\cftpartpresnum}{}
+  \newcommand{\cftpartaftersnum}{}
+  \newcommand{\cftpartaftersnumb}{}
+  \newcommand{\cftpartleader}{\large\bfseries\cftdotfill{\cftpartdotsep}}
+  \newcommand{\cftpartdotsep}{\cftnodots}
+  \newcommand{\cftpartpagefont}{\large\bfseries}
+  \newcommand{\cftpartafterpnum}{}
+  \newlength{\cftpartindent}
+    \setlength{\cftpartindent}{0em}
+  \newcommand{\cftpartfillnum}[1]{%
+    {\cftpartleader}%
+    {\hb@xt@\@pnumwidth{\hss {\cftpartpagefont #1}}}\cftpartafterpnum\par}
+  \if@cftkoma
+    \setlength{\cftpartnumwidth}{2em}
+    \renewcommand{\cftpartfont}{\sectfont\large}
+    \renewcommand{\cftpartpagefont}{\sectfont\large}
+  \fi
+\fi
+
+\if@cfthaschapter
 \renewcommand*{\l@chapter}[2]{%
   \ifnum \c@tocdepth >\m@ne
     \addpenalty{-\@highpenalty}%
@@ -199,31 +258,40 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftchapnumwidth\relax
+     \let\@cftbsnum \cftchappresnum
      \let\@cftasnum \cftchapaftersnum
      \let\@cftasnumb \cftchapaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftchapfont #1}\nobreak
-     {\cftchapleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftchappagefont #2}\cftchapafterpnum\par}%
+     \cftchapfillnum{#2}}
   \fi}
 \fi
-\newlength{\cftbeforechapskip}
-  \setlength{\cftbeforechapskip}{1.0em \@plus\p@}
-\newlength{\cftchapindent}
-  \setlength{\cftchapindent}{0em}
-\newlength{\cftchapnumwidth}
-  \setlength{\cftchapnumwidth}{1.5em}
-\newcommand{\cftchapfont}{\bfseries}
-\newcommand{\cftchapaftersnum}{}
-\newcommand{\cftchapaftersnumb}{}
-\newcommand{\cftchapleader}{\bfseries\@cftdotfill{\cftchapdotsep}}
-\newcommand{\cftchapdotsep}{\cftnodots}
-\newcommand{\cftchappagefont}{\bfseries}
-\newcommand{\cftchapafterpnum}{}
+\if@cfthaschapter
+  \newlength{\cftbeforechapskip}
+    \setlength{\cftbeforechapskip}{1.0em \@plus\p@}
+  \newlength{\cftchapindent}
+    \setlength{\cftchapindent}{0em}
+  \newlength{\cftchapnumwidth}
+    \setlength{\cftchapnumwidth}{1.5em}
+  \newcommand{\cftchapfont}{\bfseries}
+  \newcommand{\cftchappresnum}{}
+  \newcommand{\cftchapaftersnum}{}
+  \newcommand{\cftchapaftersnumb}{}
+  \newcommand{\cftchapleader}{\bfseries\cftdotfill{\cftchapdotsep}}
+  \newcommand{\cftchapdotsep}{\cftnodots}
+  \newcommand{\cftchappagefont}{\bfseries}
+  \newcommand{\cftchapafterpnum}{}
+  \newcommand{\cftchapfillnum}[1]{
+    {\cftchapleader}\nobreak
+    \hb@xt@\@pnumwidth{\hfil\cftchappagefont #1}\cftchapafterpnum\par}
+  \if@cftkoma
+    \renewcommand{\cftchapfont}{\sectfont}
+  \fi
+\fi
+
 \renewcommand*{\l@section}[2]{%
   \ifnum \c@tocdepth >\z@
-    \ifSCDchapter
+    \if@cfthaschapter
       \vskip \cftbeforesecskip
     \else
       \addpenalty\@secpenalty
@@ -236,55 +304,41 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftsecnumwidth\relax
+     \let\@cftbsnum \cftsecpresnum
      \let\@cftasnum \cftsecaftersnum
      \let\@cftasnumb \cftsecaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftsecfont #1}\nobreak
-     {\cftsecleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftsecpagefont #2}\cftsecafterpnum\par}%
+     \cftsecfillnum{#2}}
   \fi}
 \newlength{\cftbeforesecskip}
-\ifSCDchapter
-  \setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
-\else
-  \setlength{\cftbeforesecskip}{1.0em \@plus\p@}
-\fi
 \newlength{\cftsecindent}
-\ifSCDchapter
-  \setlength{\cftsecindent}{1.5em}
-\else
-  \setlength{\cftsecindent}{0em}
-\fi
 \newlength{\cftsecnumwidth}
-\ifSCDchapter
-  \setlength{\cftsecnumwidth}{2.3em}
-\else
-  \setlength{\cftsecnumwidth}{1.5em}
-\fi
-\ifSCDchapter
-  \newcommand{\cftsecfont}{\normalfont}
-\else
-  \newcommand{\cftsecfont}{\bfseries}
-\fi
+\newcommand{\cftsecpresnum}{}
 \newcommand{\cftsecaftersnum}{}
 \newcommand{\cftsecaftersnumb}{}
-\ifSCDchapter
-  \newcommand{\cftsecleader}{\normalfont\@cftdotfill{\cftsecdotsep}}
-\else
-  \newcommand{\cftsecleader}{\bfseries\@cftdotfill{\cftsecdotsep}}
-\fi
-\ifSCDchapter
+\if@cfthaschapter
+  \setlength{\cftbeforesecskip}{\z@ \@plus.2\p@}
+  \setlength{\cftsecindent}{1.5em}
+  \setlength{\cftsecnumwidth}{2.3em}
+  \newcommand{\cftsecfont}{\normalfont}
+  \newcommand{\cftsecleader}{\normalfont\cftdotfill{\cftsecdotsep}}
   \newcommand{\cftsecdotsep}{\cftdotsep}
-\else
-  \newcommand{\cftsecdotsep}{\cftnodots}
-\fi
-\ifSCDchapter
   \newcommand{\cftsecpagefont}{\normalfont}
 \else
+  \setlength{\cftbeforesecskip}{1.0em \@plus\p@}
+  \setlength{\cftsecindent}{0em}
+  \setlength{\cftsecnumwidth}{1.5em}
+  \newcommand{\cftsecfont}{\bfseries}
+  \newcommand{\cftsecleader}{\bfseries\cftdotfill{\cftsecdotsep}}
+  \newcommand{\cftsecdotsep}{\cftnodots}
   \newcommand{\cftsecpagefont}{\bfseries}
 \fi
 \newcommand{\cftsecafterpnum}{}
+\newcommand{\cftsecfillnum}[1]{%
+  {\cftsecleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsecpagefont #1}\cftsecafterpnum\par}
+
 \renewcommand*{\l@subsection}[2]{%
   \ifnum \c@tocdepth >\@ne
     \vskip \cftbeforesubsecskip
@@ -295,35 +349,36 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftsubsecnumwidth\relax
+     \let\@cftbsnum \cftsubsecpresnum
      \let\@cftasnum \cftsubsecaftersnum
      \let\@cftasnumb \cftsubsecaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftsubsecfont #1}\nobreak
-     {\cftsubsecleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftsubsecpagefont #2}\cftsubsecafterpnum\par}%
+     \cftsubsecfillnum{#2}}
   \fi}
 \newlength{\cftbeforesubsecskip}
   \setlength{\cftbeforesubsecskip}{\z@ \@plus.2\p@}
 \newlength{\cftsubsecindent}
-\ifSCDchapter
-  \setlength{\cftsubsecindent}{3.8em}
-\else
-  \setlength{\cftsubsecindent}{1.5em}
-\fi
 \newlength{\cftsubsecnumwidth}
-\ifSCDchapter
+\if@cfthaschapter
+  \setlength{\cftsubsecindent}{3.8em}
   \setlength{\cftsubsecnumwidth}{3.2em}
 \else
+  \setlength{\cftsubsecindent}{1.5em}
   \setlength{\cftsubsecnumwidth}{2.3em}
 \fi
 \newcommand{\cftsubsecfont}{\normalfont}
+\newcommand{\cftsubsecpresnum}{}
 \newcommand{\cftsubsecaftersnum}{}
 \newcommand{\cftsubsecaftersnumb}{}
-\newcommand{\cftsubsecleader}{\normalfont\@cftdotfill{\cftsubsecdotsep}}
+\newcommand{\cftsubsecleader}{\normalfont\cftdotfill{\cftsubsecdotsep}}
 \newcommand{\cftsubsecdotsep}{\cftdotsep}
 \newcommand{\cftsubsecpagefont}{\normalfont}
 \newcommand{\cftsubsecafterpnum}{}
+\newcommand{\cftsubsecfillnum}[1]{%
+  {\cftsubsecleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsubsecpagefont #1}\cftsubsecafterpnum\par}
+
 \renewcommand*{\l@subsubsection}[2]{%
   \ifnum \c@tocdepth >\tw@
     \vskip \cftbeforesubsubsecskip
@@ -334,35 +389,36 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftsubsubsecnumwidth\relax
+     \let\@cftbsnum \cftsubsubsecpresnum
      \let\@cftasnum \cftsubsubsecaftersnum
      \let\@cftasnumb \cftsubsubsecaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftsubsubsecfont #1}\nobreak
-     {\cftsubsubsecleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftsubsubsecpagefont #2}\cftsubsubsecafterpnum\par}%
+     \cftsubsubsecfillnum{#2}}
   \fi}
 \newlength{\cftbeforesubsubsecskip}
   \setlength{\cftbeforesubsubsecskip}{\z@ \@plus.2\p@}
 \newlength{\cftsubsubsecindent}
-\ifSCDchapter
-  \setlength{\cftsubsubsecindent}{7.0em}
-\else
-  \setlength{\cftsubsubsecindent}{3.8em}
-\fi
 \newlength{\cftsubsubsecnumwidth}
-\ifSCDchapter
+\if@cfthaschapter
+  \setlength{\cftsubsubsecindent}{7.0em}
   \setlength{\cftsubsubsecnumwidth}{4.1em}
 \else
+  \setlength{\cftsubsubsecindent}{3.8em}
   \setlength{\cftsubsubsecnumwidth}{3.2em}
 \fi
 \newcommand{\cftsubsubsecfont}{\normalfont}
+\newcommand{\cftsubsubsecpresnum}{}
 \newcommand{\cftsubsubsecaftersnum}{}
 \newcommand{\cftsubsubsecaftersnumb}{}
-\newcommand{\cftsubsubsecleader}{\normalfont\@cftdotfill{\cftsubsubsecdotsep}}
+\newcommand{\cftsubsubsecleader}{\normalfont\cftdotfill{\cftsubsubsecdotsep}}
 \newcommand{\cftsubsubsecdotsep}{\cftdotsep}
 \newcommand{\cftsubsubsecpagefont}{\normalfont}
 \newcommand{\cftsubsubsecafterpnum}{}
+\newcommand{\cftsubsubsecfillnum}[1]{%
+  {\cftsubsubsecleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsubsubsecpagefont #1}\cftsubsubsecafterpnum\par}
+
 \renewcommand*{\l@paragraph}[2]{%
   \ifnum \c@tocdepth >3\relax
     \vskip \cftbeforeparaskip
@@ -373,35 +429,36 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftparanumwidth\relax
+     \let\@cftbsnum \cftparapresnum
      \let\@cftasnum \cftparaaftersnum
      \let\@cftasnumb \cftparaaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftparafont #1}\nobreak
-     {\cftparaleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftparapagefont #2}\cftparaafterpnum\par}%
+     \cftparafillnum{#2}}
   \fi}
 \newlength{\cftbeforeparaskip}
   \setlength{\cftbeforeparaskip}{\z@ \@plus.2\p@}
 \newlength{\cftparaindent}
-\ifSCDchapter
-  \setlength{\cftparaindent}{10em}
-\else
-  \setlength{\cftparaindent}{7.0em}
-\fi
 \newlength{\cftparanumwidth}
-\ifSCDchapter
+\if@cfthaschapter
+  \setlength{\cftparaindent}{10em}
   \setlength{\cftparanumwidth}{5em}
 \else
+  \setlength{\cftparaindent}{7.0em}
   \setlength{\cftparanumwidth}{4.1em}
 \fi
 \newcommand{\cftparafont}{\normalfont}
+\newcommand{\cftparapresnum}{}
 \newcommand{\cftparaaftersnum}{}
 \newcommand{\cftparaaftersnumb}{}
-\newcommand{\cftparaleader}{\normalfont\@cftdotfill{\cftparadotsep}}
+\newcommand{\cftparaleader}{\normalfont\cftdotfill{\cftparadotsep}}
 \newcommand{\cftparadotsep}{\cftdotsep}
 \newcommand{\cftparapagefont}{\normalfont}
 \newcommand{\cftparaafterpnum}{}
+\newcommand{\cftparafillnum}[1]{%
+  {\cftparaleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftparapagefont #1}\cftparaafterpnum\par}
+
 \renewcommand*{\l@subparagraph}[2]{%
   \ifnum \c@tocdepth >4\relax
     \vskip \cftbeforesubparaskip
@@ -412,49 +469,54 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftsubparanumwidth\relax
+     \let\@cftbsnum \cftsubparapresnum
      \let\@cftasnum \cftsubparaaftersnum
      \let\@cftasnumb \cftsubparaaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftsubparafont #1}\nobreak
-     {\cftsubparaleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftsubparapagefont #2}\cftsubparaafterpnum\par}%
+     \cftsubparafillnum{#2}}
   \fi}
 \newlength{\cftbeforesubparaskip}
   \setlength{\cftbeforesubparaskip}{\z@ \@plus.2\p@}
 \newlength{\cftsubparaindent}
-\ifSCDchapter
-  \setlength{\cftsubparaindent}{12em}
-\else
-  \setlength{\cftsubparaindent}{10em}
-\fi
 \newlength{\cftsubparanumwidth}
-\ifSCDchapter
+\if@cfthaschapter
+  \setlength{\cftsubparaindent}{12em}
   \setlength{\cftsubparanumwidth}{6em}
 \else
+  \setlength{\cftsubparaindent}{10em}
   \setlength{\cftsubparanumwidth}{5em}
 \fi
 \newcommand{\cftsubparafont}{\normalfont}
+\newcommand{\cftsubparapresnum}{}
 \newcommand{\cftsubparaaftersnum}{}
 \newcommand{\cftsubparaaftersnumb}{}
-\newcommand{\cftsubparaleader}{\normalfont\@cftdotfill{\cftsubparadotsep}}
+\newcommand{\cftsubparaleader}{\normalfont\cftdotfill{\cftsubparadotsep}}
 \newcommand{\cftsubparadotsep}{\cftdotsep}
 \newcommand{\cftsubparapagefont}{\normalfont}
 \newcommand{\cftsubparaafterpnum}{}
+\newcommand{\cftsubparafillnum}[1]{%
+  {\cftsubparaleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsubparapagefont #1}\cftsubparaafterpnum\par}
+
 \newcommand{\@cftdobiblof}{%
   \if@dotoclof
     \if@bibchapter
+      \phantomsection
       \addcontentsline{toc}{chapter}{\listfigurename}
     \else
+      \phantomsection
       \addcontentsline{toc}{\@tocextra}{\listfigurename}
     \fi
   \fi}
+
 \AtBeginDocument{
+\if@cftnctoc\else
 \renewcommand{\listoffigures}{%
   \@cfttocstart
   \par
   \begingroup
-    \parindent\z@ \parskip\z@
+    \parindent\z@ \parskip\cftparskip
     \@cftmakeloftitle
     \if@cfttocbibind
       \@cftdobiblof
@@ -462,31 +524,44 @@ Consider installing the current version of tocbibind.}}
     \@starttoc{lof}%
   \endgroup
   \@cfttocfinish}
+\fi
 }
+
 \newcommand{\@cftmakeloftitle}{%
-  \vspace*{\cftbeforeloftitleskip}
-  \interlinepenalty\@M
+  \addpenalty\@secpenalty
+  \if@cfthaschapter
+    \vspace*{\cftbeforeloftitleskip}
+  \else
+    \vspace{\cftbeforeloftitleskip}
+  \fi
+  \@cftpagestyle
+  {\interlinepenalty\@M
   {\cftloftitlefont\listfigurename}{\cftafterloftitle}
   \cftmarklof
   \par\nobreak
   \vskip \cftafterloftitleskip
-  \@afterheading}
+  \@afterheading}}
+
 \newlength{\cftbeforeloftitleskip}
 \newlength{\cftafterloftitleskip}
-\ifSCDchapter
+\if@cfthaschapter
   \setlength{\cftbeforeloftitleskip}{50pt}
   \setlength{\cftafterloftitleskip}{40pt}
 \else
   \setlength{\cftbeforeloftitleskip}{3.5ex \@plus 1ex \@minus .2ex}
   \setlength{\cftafterloftitleskip}{2.3ex \@plus.2ex}
 \fi
-\ifSCDchapter
+\if@cfthaschapter
   \newcommand{\cftloftitlefont}{\normalfont\Huge\bfseries}
+  \if@cftkoma\renewcommand{\cftloftitlefont}{\size@chapter\sectfont}\fi
 \else
   \newcommand{\cftloftitlefont}{\normalfont\Large\bfseries}
+  \if@cftkoma\renewcommand{\cftloftitlefont}{\size@section\sectfont}\fi
 \fi
 \newcommand{\cftafterloftitle}{}
+
 \renewcommand*{\l@figure}[2]{%
+  \ifnum \c@lofdepth >\z@
     \vskip \cftbeforefigskip
     {\leftskip \cftfigindent\relax
      \rightskip \@tocrmarg
@@ -495,13 +570,13 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cftfignumwidth\relax
+     \let\@cftbsnum \cftfigpresnum
      \let\@cftasnum \cftfigaftersnum
      \let\@cftasnumb \cftfigaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cftfigfont #1}\nobreak
-     {\cftfigleader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cftfigpagefont #2}\cftfigafterpnum\par}%
+     \cftfigfillnum{#2}}
+   \fi
   }
 \newlength{\cftbeforefigskip}
   \setlength{\cftbeforefigskip}{\z@ \@plus.2\p@}
@@ -510,26 +585,40 @@ Consider installing the current version of tocbibind.}}
 \newlength{\cftfignumwidth}
   \setlength{\cftfignumwidth}{2.3em}
 \newcommand{\cftfigfont}{\normalfont}
+\newcommand{\cftfigpresnum}{}
 \newcommand{\cftfigaftersnum}{}
 \newcommand{\cftfigaftersnumb}{}
-\newcommand{\cftfigleader}{\normalfont\@cftdotfill{\cftfigdotsep}}
+\newcommand{\cftfigleader}{\normalfont\cftdotfill{\cftfigdotsep}}
 \newcommand{\cftfigdotsep}{\cftdotsep}
 \newcommand{\cftfigpagefont}{\normalfont}
 \newcommand{\cftfigafterpnum}{}
+\newcommand{\cftfigfillnum}[1]{%
+  {\cftfigleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftfigpagefont #1}\cftfigafterpnum\par}
+
+\if@cftsubfigopt\else
+  \newcounter{lofdepth}\setcounter{lofdepth}{1}
+  \newcounter{lotdepth}\setcounter{lotdepth}{1}
+\fi
+
 \newcommand{\@cftdobiblot}{%
   \if@dotoclot
     \if@bibchapter
+      \phantomsection
       \addcontentsline{toc}{chapter}{\listtablename}
     \else
+      \phantomsection
       \addcontentsline{toc}{\@tocextra}{\listtablename}
     \fi
   \fi}
+
 \AtBeginDocument{
+\if@cftnctoc\else
 \renewcommand{\listoftables}{%
   \@cfttocstart
   \par
   \begingroup
-    \parindent\z@ \parskip\z@
+    \parindent\z@ \parskip\cftparskip
     \@cftmakelottitle
     \if@cfttocbibind
       \@cftdobiblot
@@ -537,31 +626,44 @@ Consider installing the current version of tocbibind.}}
     \@starttoc{lot}%
   \endgroup
   \@cfttocfinish}
+\fi
 }
+
 \newcommand{\@cftmakelottitle}{%
-  \vspace*{\cftbeforelottitleskip}
-  \interlinepenalty\@M
+  \addpenalty\@secpenalty
+  \if@cfthaschapter
+    \vspace*{\cftbeforelottitleskip}
+  \else
+    \vspace{\cftbeforelottitleskip}
+  \fi
+  \@cftpagestyle
+  {\interlinepenalty\@M
   {\cftlottitlefont\listtablename}{\cftafterlottitle}
   \cftmarklot
   \par\nobreak
   \vskip \cftafterlottitleskip
-  \@afterheading}
+  \@afterheading}}
+
 \newlength{\cftbeforelottitleskip}
 \newlength{\cftafterlottitleskip}
-\ifSCDchapter
+\if@cfthaschapter
   \setlength{\cftbeforelottitleskip}{50pt}
   \setlength{\cftafterlottitleskip}{40pt}
 \else
   \setlength{\cftbeforelottitleskip}{3.5ex \@plus 1ex \@minus .2ex}
   \setlength{\cftafterlottitleskip}{2.3ex \@plus.2ex}
 \fi
-\ifSCDchapter
+\if@cfthaschapter
   \newcommand{\cftlottitlefont}{\normalfont\Huge\bfseries}
+  \if@cftkoma\renewcommand{\cftlottitlefont}{\size@chapter\sectfont}\fi
 \else
   \newcommand{\cftlottitlefont}{\normalfont\Large\bfseries}
+  \if@cftkoma\renewcommand{\cftlottitlefont}{\size@section\sectfont}\fi
 \fi
 \newcommand{\cftafterlottitle}{}
+
 \renewcommand*{\l@table}[2]{%
+  \ifnum\c@lotdepth >\z@
     \vskip \cftbeforetabskip
     {\leftskip \cfttabindent\relax
      \rightskip \@tocrmarg
@@ -570,13 +672,13 @@ Consider installing the current version of tocbibind.}}
      \interlinepenalty\@M
      \leavevmode
      \@tempdima \cfttabnumwidth\relax
+     \let\@cftbsnum \cfttabpresnum
      \let\@cftasnum \cfttabaftersnum
      \let\@cftasnumb \cfttabaftersnumb
      \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
      {\cfttabfont #1}\nobreak
-     {\cfttableader}
-     \nobreak
-     \hb@xt@\@pnumwidth{\hfil\cfttabpagefont #2}\cfttabafterpnum\par}%
+     \cfttabfillnum{#2}}
+   \fi
   }
 \newlength{\cftbeforetabskip}
   \setlength{\cftbeforetabskip}{\z@ \@plus.2\p@}
@@ -585,12 +687,390 @@ Consider installing the current version of tocbibind.}}
 \newlength{\cfttabnumwidth}
   \setlength{\cfttabnumwidth}{2.3em}
 \newcommand{\cfttabfont}{\normalfont}
+\newcommand{\cfttabpresnum}{}
 \newcommand{\cfttabaftersnum}{}
 \newcommand{\cfttabaftersnumb}{}
-\newcommand{\cfttableader}{\normalfont\@cftdotfill{\cfttabdotsep}}
+\newcommand{\cfttableader}{\normalfont\cftdotfill{\cfttabdotsep}}
 \newcommand{\cfttabdotsep}{\cftdotsep}
 \newcommand{\cfttabpagefont}{\normalfont}
 \newcommand{\cfttabafterpnum}{}
+\newcommand{\cfttabfillnum}[1]{%
+  {\cfttableader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cfttabpagefont #1}\cfttabafterpnum\par}
+
+\newcommand{\@cftl@subfig}{
+\renewcommand*{\l@subfigure}[2]{%
+  \ifnum \c@lofdepth > \toclevel@subfigure
+    \vskip \cftbeforesubfigskip
+    {\leftskip \cftsubfigindent\relax
+     \rightskip \@tocrmarg
+     \parfillskip -\rightskip
+     \parindent \cftsubfigindent\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima \cftsubfignumwidth\relax
+     \let\@cftbsnum \cftsubfigpresnum
+     \let\@cftasnum \cftsubfigaftersnum
+     \let\@cftasnumb \cftsubfigaftersnumb
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {\cftsubfigfont ##1}\nobreak
+     \cftsubfigfillnum{##2}}
+  \fi
+  }
+}
+
+\newcommand{\@cftsetsubfig}{%
+\newlength{\cftbeforesubfigskip}
+  \setlength{\cftbeforesubfigskip}{\z@ \@plus.2\p@}
+\newlength{\cftsubfigindent}
+  \setlength{\cftsubfigindent}{3.8em}
+\newlength{\cftsubfignumwidth}
+  \setlength{\cftsubfignumwidth}{2.5em}
+\newcommand{\cftsubfigfont}{\normalfont}
+\newcommand{\cftsubfigpresnum}{}
+\newcommand{\cftsubfigaftersnum}{}
+\newcommand{\cftsubfigaftersnumb}{}
+\newcommand{\cftsubfigleader}{\normalfont\cftdotfill{\cftsubtabdotsep}}
+\newcommand{\cftsubfigdotsep}{\cftdotsep}
+\newcommand{\cftsubfigpagefont}{\normalfont}
+\newcommand{\cftsubfigafterpnum}{}
+\providecommand{\toclevel@subfigure}{1}
+\newcommand{\cftsubfigfillnum}[1]{%
+  {\cftsubfigleader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsubfigpagefont ##1}\cftsubfigafterpnum\par}
+}
+
+\newcommand{\@cftl@subtab}{
+\renewcommand*{\l@subtable}[2]{%
+  \ifnum \c@lotdepth > \toclevel@subtable
+    \vskip \cftbeforesubtabskip
+    {\leftskip \cftsubtabindent\relax
+     \rightskip \@tocrmarg
+     \parfillskip -\rightskip
+     \parindent \cftsubtabindent\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima \cftsubtabnumwidth\relax
+     \let\@cftbsnum \cftsubtabpresnum
+     \let\@cftasnum \cftsubtabaftersnum
+     \let\@cftasnumb \cftsubtabaftersnumb
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {\cftsubtabfont ##1}\nobreak
+     \cftsubtabfillnum{##2}}
+  \fi
+  }
+}
+\newcommand{\@cftsetsubtab}{
+\newlength{\cftbeforesubtabskip}
+  \setlength{\cftbeforesubtabskip}{\z@ \@plus.2\p@}
+\newlength{\cftsubtabindent}
+  \setlength{\cftsubtabindent}{3.8em}
+\newlength{\cftsubtabnumwidth}
+  \setlength{\cftsubtabnumwidth}{2.5em}
+\newcommand{\cftsubtabfont}{\normalfont}
+\newcommand{\cftsubtabpresnum}{}
+\newcommand{\cftsubtabaftersnum}{}
+\newcommand{\cftsubtabaftersnumb}{}
+\newcommand{\cftsubtableader}{\normalfont\cftdotfill{\cftsubtabdotsep}}
+\newcommand{\cftsubtabdotsep}{\cftdotsep}
+\newcommand{\cftsubtabpagefont}{\normalfont}
+\newcommand{\cftsubtabafterpnum}{}
+\providecommand{\toclevel@subtable}{1}
+\newcommand{\cftsubtabfillnum}[1]{%
+  {\cftsubtableader}\nobreak
+  \hb@xt@\@pnumwidth{\hfil\cftsubtabpagefont ##1}\cftsubtabafterpnum\par}
+}
+
+
+\if@cftsubfigopt
+  \@cftsetsubfig\@cftsetsubtab
+  \AtBeginDocument{\@cftl@subfig\@cftl@subtab}
+\fi
+%%  \AtBeginDocument{\if@cftsubfigopt
+%%    \@cftsetsubfig\@cftsetsubtab
+%%    \@cftl@subfig\@cftl@subtab
+%%  \fi}
+
+\newcommand{\newlistentry}[4][\@empty]{%
+  \@ifundefined{c@#2}{%    check & set the counter
+    \ifx \@empty#1\relax
+      \newcounter{#2}
+    \else
+      \@ifundefined{c@#1}{\PackageWarning{tocloft}%
+                          {#1 has no counter for use as a `within'}
+        \newcounter{#2}}%
+      {\newcounter{#2}[#1]%
+       \expandafter\edef\csname the#2\endcsname{%
+         \expandafter\noexpand\csname the#1\endcsname.\noexpand\arabic{#2}}}
+    \fi
+    \setcounter{#2}{0}
+  }
+  {\PackageError{tocloft}{#2 has been previously defined}{\@eha}}
+
+  \@namedef{l@#2}##1##2{%
+    \ifnum \@nameuse{c@#3depth} > #4\relax
+      \vskip \@nameuse{cftbefore#2skip}
+      {\leftskip \@nameuse{cft#2indent}\relax
+       \rightskip \@tocrmarg
+       \parfillskip -\rightskip
+       \parindent \@nameuse{cft#2indent}\relax\@afterindenttrue
+       \interlinepenalty\@M
+       \leavevmode
+       \@tempdima \@nameuse{cft#2numwidth}\relax
+       \expandafter\let\expandafter\@cftbsnum\csname cft#2presnum\endcsname
+       \expandafter\let\expandafter\@cftasnum\csname cft#2aftersnum\endcsname
+       \expandafter\let\expandafter\@cftasnumb\csname cft#2aftersnumb\endcsname
+       \advance\leftskip\@tempdima \null\nobreak\hskip -\leftskip
+       {\@nameuse{cft#2font}##1}\nobreak
+       \@nameuse{cft#2fillnum}{##2}}
+    \fi
+  }  % end of \l@#2
+
+  \expandafter\newlength\csname cftbefore#2skip\endcsname
+    \setlength{\@nameuse{cftbefore#2skip}}{\z@ \@plus .2\p@}
+  \expandafter\newlength\csname cft#2indent\endcsname
+  \expandafter\newlength\csname cft#2numwidth\endcsname
+  \ifcase #4\relax  % 0
+    \setlength{\@nameuse{cft#2indent}}{0em}
+    \setlength{\@nameuse{cft#2numwidth}}{1.5em}
+  \or               % 1
+    \setlength{\@nameuse{cft#2indent}}{1.5em}
+    \setlength{\@nameuse{cft#2numwidth}}{2.3em}
+  \or               % 2
+    \setlength{\@nameuse{cft#2indent}}{3.8em}
+    \setlength{\@nameuse{cft#2numwidth}}{3.2em}
+  \or               % 3
+    \setlength{\@nameuse{cft#2indent}}{7.0em}
+    \setlength{\@nameuse{cft#2numwidth}}{4.1em}
+  \else             % anything else
+    \setlength{\@nameuse{cft#2indent}}{10.0em}
+    \setlength{\@nameuse{cft#2numwidth}}{5.0em}
+  \fi
+  \@namedef{cft#2font}{\normalfont}
+  \@namedef{cft#2presnum}{}
+  \@namedef{cft#2aftersnum}{}
+  \@namedef{cft#2aftersnumb}{}
+  \@namedef{cft#2dotsep}{\cftdotsep}
+  \@namedef{cft#2leader}{\normalfont\cftdotfill{\@nameuse{cft#2dotsep}}}
+  \@namedef{cft#2pagefont}{\normalfont}
+  \@namedef{cft#2afterpnum}{}
+  \@namedef{toclevel@#2}{#4}
+  \@namedef{cft#2fillnum}##1{%
+    {\@nameuse{cft#2leader}}\nobreak
+    \hb@xt@\@pnumwidth{\hfil\@nameuse{cft#2pagefont}##1}\@nameuse{cft#2afterpnum}\par}
+} % end \newlistentry
+
+\newcommand{\newlistof}[4][\@empty]{%
+  \ifx \@empty#1\relax
+    \newlistentry{#2}{#3}{0}
+  \else
+    \newlistentry[#1]{#2}{#3}{0}
+  \fi
+
+  \@namedef{ext@#3}{#3}
+  \newcounter{#3depth}
+  \setcounter{#3depth}{1}
+
+  \if@cftkoma
+    \@namedef{cftmark#3}{%
+      \@mkboth{#4}{#4}}
+  \else
+    \@namedef{cftmark#3}{%
+      \@mkboth{\MakeUppercase{#4}}{\MakeUppercase{#4}}}
+  \fi
+ \if@cftnctoc
+  \@namedef{listof#2}{%
+    \@cfttocstart
+    \if@cfthaschapter
+      \chapter*{#4}
+    \else
+      \section*{#4}
+    \fi
+    \@nameuse{cftmark#3}
+    \@starttoc{#3}%
+    \@cfttocfinish}
+ \else
+  \@namedef{listof#2}{%
+    \@cfttocstart
+    \par
+    \begingroup
+      \parindent\z@ \parskip\cftparskip
+      \@nameuse{@cftmake#3title}
+      \@starttoc{#3}%
+    \endgroup
+    \@cfttocfinish}
+ \fi
+
+  \@namedef{@cftmake#3title}{%
+    \addpenalty\@secpenalty
+    \if@cfthaschapter
+      \vspace*{\@nameuse{cftbefore#3titleskip}}
+    \else
+      \vspace{\@nameuse{cftbefore#3titleskip}}
+    \fi
+    \@cftpagestyle
+    {\interlinepenalty\@M
+    {\@nameuse{cft#3titlefont}#4}{\@nameuse{cftafter#3title}}
+    \@nameuse{cftmark#3}
+    \par\nobreak
+    \vskip \@nameuse{cftafter#3titleskip}
+    \@afterheading}}
+
+   \expandafter\newlength\csname cftbefore#3titleskip\endcsname
+   \expandafter\newlength\csname cftafter#3titleskip\endcsname
+   \if@cfthaschapter
+      \setlength{\@nameuse{cftbefore#3titleskip}}{50pt}
+      \setlength{\@nameuse{cftafter#3titleskip}}{40pt}
+      \if@cftkoma
+        \@namedef{cft#3titlefont}{\size@chapter\sectfont}
+      \else
+        \@namedef{cft#3titlefont}{\normalfont\Huge\bfseries}
+      \fi
+    \else
+      \setlength{\@nameuse{cftbefore#3titleskip}}{3.5ex \@plus 1ex \@minus .2ex}
+      \setlength{\@nameuse{cftafter#3titleskip}}{2.3ex \@plus .2ex}
+      \if@cftkoma
+        \@namedef{cft#3titlefont}{\size@section\sectfont}
+      \else
+        \@namedef{cft#3titlefont}{\normalfont\Huge\bfseries}
+      \fi
+    \fi
+    \@namedef{cftafter#3title}{}
+} % end \newlistof
+
+\newcommand{\cftsetindents}[3]{%
+  \def\@cftemp{#1}
+  \ifx\@cftemp\cftchapname
+    \@cftsetindents{chap}{#2}{#3}
+  \else
+    \ifx\@cftemp\cftsecname \@cftsetindents{sec}{#2}{#3}
+    \else
+      \ifx\@cftemp\cftsubsecname \@cftsetindents{subsec}{#2}{#3}
+      \else
+        \ifx\@cftemp\cftsubsubsecname \@cftsetindents{subsubsec}{#2}{#3}
+        \else
+          \ifx\@cftemp\cftparaname \@cftsetindents{para}{#2}{#3}
+          \else
+            \ifx\@cftemp\cftsubparaname \@cftsetindents{subpara}{#2}{#3}
+            \else
+              \ifx\@cftemp\cftfigname \@cftsetindents{fig}{#2}{#3}
+              \else
+                \ifx\@cftemp\cftsubfigname \@cftsetindents{subfig}{#2}{#3}
+                \else
+                  \ifx\@cftemp\cfttabname \@cftsetindents{tab}{#2}{#3}
+                  \else
+                    \ifx\@cftemp\cftsubtabname \@cftsetindents{subtab}{#2}{#3}
+                    \else
+                      \@cftsetindents{#1}{#2}{#3}
+                    \fi
+                  \fi
+                \fi
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+
+\newcommand{\@cftsetindents}[3]{%
+  \setlength{\@nameuse{cft#1indent}}{#2}
+  \setlength{\@nameuse{cft#1numwidth}}{#3}
+}
+
+\newcommand{\@cftpnumoff}[1]{%
+  \@namedef{cft#1fillnum}##1{%
+    \cftparfillskip\@nameuse{cft#1afterpnum}\par}}
+
+\newcommand*{\cftchapname}{chapter}
+\newcommand*{\cftsecname}{section}
+\newcommand*{\cftsubsecname}{subsection}
+\newcommand*{\cftsubsubsecname}{subsubsection}
+\newcommand*{\cftparaname}{paragraph}
+\newcommand*{\cftsubparaname}{subparagraph}
+\newcommand*{\cftfigname}{figure}
+\newcommand*{\cftsubfigname}{subfigure}
+\newcommand*{\cfttabname}{table}
+\newcommand*{\cftsubtabname}{subtable}
+
+\DeclareRobustCommand{\cftpagenumbersoff}[1]{%
+  \def\@cftemp{#1}
+  \ifx\@cftemp\cftchapname
+    \@cftpnumoff{chap}
+  \else
+    \ifx\@cftemp\cftsecname \@cftpnumoff{sec}
+    \else
+      \ifx\@cftemp\cftsubsecname \@cftpnumoff{subsec}
+      \else
+        \ifx\@cftemp\cftsubsubsecname \@cftpnumoff{subsubsec}
+        \else
+          \ifx\@cftemp\cftparaname \@cftpnumoff{para}
+          \else
+            \ifx\@cftemp\cftsubparaname \@cftpnumoff{subpara}
+            \else
+              \ifx\@cftemp\cftfigname \@cftpnumoff{fig}
+              \else
+                \ifx\@cftemp\cftsubfigname \@cftpnumoff{subfig}
+                \else
+                  \ifx\@cftemp\cfttabname \@cftpnumoff{tab}
+                  \else
+                    \ifx\@cftemp\cftsubtabname \@cftpnumoff{subtab}
+                    \else
+                      \@cftpnumoff{#1}
+                    \fi
+                  \fi
+                \fi
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+
+\DeclareRobustCommand{\cftpagenumberson}[1]{%
+  \def\@cftemp{#1}
+  \ifx\@cftemp\cftchapname
+    \@cftpnumon{chap}
+  \else
+    \ifx\@cftemp\cftsecname \@cftpnumon{sec}
+    \else
+      \ifx\@cftemp\cftsubsecname \@cftpnumon{subsec}
+      \else
+        \ifx\@cftemp\cftsubsubsecname \@cftpnumon{subsubsec}
+        \else
+          \ifx\@cftemp\cftparaname \@cftpnumon{para}
+          \else
+            \ifx\@cftemp\cftsubparaname \@cftpnumon{subpara}
+            \else
+              \ifx\@cftemp\cftfigname \@cftpnumon{fig}
+              \else
+                \ifx\@cftemp\cftsubfigname \@cftpnumon{subfig}
+                \else
+                  \ifx\@cftemp\cfttabname \@cftpnumon{tab}
+                  \else
+                    \ifx\@cftemp\cftsubtabname \@cftpnumon{subtab}
+                    \else
+                      \@cftpnumon{#1}
+                    \fi
+                  \fi
+                \fi
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+
+\newcommand{\@cftpnumon}[1]{%
+  \@namedef{cft#1fillnum}##1{%
+    {\@nameuse{cft#1leader}}\nobreak
+    \hb@xt@\@pnumwidth{\hfil\@nameuse{cft#1pagefont}##1}\@nameuse{cft#1afterpnum}\par}}
+
 \newcommand{\cftchapterprecis}[1]{%
   \cftchapterprecishere{#1}
   \cftchapterprecistoc{#1}}

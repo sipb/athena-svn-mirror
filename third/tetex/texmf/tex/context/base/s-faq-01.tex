@@ -8,13 +8,13 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 \usemodule[faq-00]
 
 \setuppapersize
-  [S6]
+  [S6][S6]
 
 \setuplayout
   [topspace=.5cm,
@@ -35,25 +35,37 @@
 \setupinteraction
   [state=start,
    page=yes,
-   color=red,
+   color=darkred,
+   contrastcolor=black,
    menu=on]
 
 \setupcolors
   [state=start]
 
 \setupbackgrounds
+  [state=repeat]
+
+\setupbackgrounds
   [page]
   [offset=3pt]
 
 \setupbackgrounds
-  [text,bottom]
+  [text]
+  [text]
+  [background={screen,go-on}]
+
+\setupbackgrounds
+  [bottom]
   [text]
   [background=screen]
 
 \setupframedtexts
-  [background=color,
+  [background=MyFrame,
    backgroundcolor=white,
-   framecolor=red]
+   framecolor=darkred,
+   frame=overlay]
+
+\defineoverlay[go-on][\overlaybutton{forward}]
 
 \useexternaldocument
   [paperfaq]
@@ -62,7 +74,9 @@
 
 \setupregister
   [index]
-  [coupling=yes]
+  [coupling=yes,
+   unknownreference=none,
+   interaction=text]
 
 \coupleregister
   [index]
@@ -72,12 +86,15 @@
 
 \setupinteractionmenu
   [bottom, bottom 1, bottom 2]
-  [background=color,
+  [background=MyFrame,
    backgroundcolor=white,
    color=black,
-   framecolor=red,
+   contrastcolor=black,
+   frame=overlay,
+   framecolor=darkred,
    dummy=yes,
    middle=\hskip1em,
+   height=\bottomheight,
    distance=overlay]
 
 \setupinteractionmenu
@@ -104,25 +121,27 @@
 \def\CurrentIndexOfFAQ%
   {\bgroup
    \setupinteraction[color=]%
-   \menubox[bottom]{\let\index\coupledindex\IndexOfFAQ}%
+   \menubox[bottom]%
+     {\hskip-.5em\def\index{\hskip.5em\coupledindex}\IndexOfFAQ}%
    \egroup}
 
 \setupinteractionmenu
   [bottom 1]
   [state=start]
 
-\def\EndAnswer%
+\def\EndAnswer
   {\vfill
    \bgroup
    \tfx\setstrut
    \framed
-     [framecolor=red,
-      background=color,
+     [frame=overlay,
+      framecolor=darkred,
+      background=MyFrame,
       backgroundcolor=white]
      {\AuthorOfFAQ}
     \egroup}
 
-\def\TitlePage%
+\def\TitlePage
   {\startstandardmakeup
    \blank[3*big]
    \midaligned{\bfd \labeltext{FAQ}}
@@ -137,16 +156,22 @@
    \blank[3*big]
    \stopstandardmakeup}
 
-\def\FileWithFAQs%
+\def\StartReadingFAQ
   {\setupinteractionmenu[bottom 1][state=stop]
    \setupinteractionmenu[bottom 2][state=start]
-   \page
-   \input \FileNameOfFAQ \relax
-   \page
+   \page}
+
+\def\StopReadingFAQ
+  {\page
    \setupinteractionmenu[bottom 2][state=stop]
    \setupinteractionmenu[bottom 1][state=start]}
 
-\def\IndexPage%
+\def\FileWithFAQs
+  {\StartReadingFAQ
+   \input \FileNameOfFAQ \relax
+   \StopReadingFAQ}
+
+\def\IndexPage
   {\page
    \def\CurrentIndexOfFAQ{}
    \def\NameOfFAQ{}
@@ -154,19 +179,22 @@
    \placeregister[index]
    \page}
 
-\def\BeginFAQ%
+\def\BeginFAQ
   {\doglobal\increment\CurrentNOfFAQ
    \setbox0=\vbox\bgroup
    \setupframedtexts[before=,after=,linecorrection=off]
    \startframedtext}
 
-\def\EndFAQ%
+\def\EndFAQ
   {\stopframedtext
    \egroup 
-   \button[frame=off,offset=overlay]{\copy0}[faq:\CurrentNOfFAQ]
+   \button
+     [color=,contrastcolor=,frame=overlay,offset=overlay]
+     {\copy0}
+     [faq:\CurrentNOfFAQ]
    \vskip6pt}
 
-\def\AllFAQs%
+\def\AllFAQs
   {\page
    \def\CurrentIndexOfFAQ{}
    \def\NameOfFAQ{}
@@ -174,5 +202,14 @@
    \setupblock[question][before=\BeginFAQ,after=\EndFAQ]
    \pagereference[faqs]
    \useblocks[question]}
+
+\startuniqueMPgraphic{Frame}
+  path p ; p := unitsquare xscaled \overlaywidth yscaled \overlayheight ;
+  pickup pencircle scaled 2pt ; 
+  fill p withcolor \MPcolor{\overlaycolor} ;
+  draw p withcolor \MPcolor{\overlaylinecolor} ;
+\stopuniqueMPgraphic
+
+\defineoverlay[MyFrame][\uniqueMPgraphic{Frame}]
 
 \endinput

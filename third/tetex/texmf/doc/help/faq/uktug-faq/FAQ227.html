@@ -1,0 +1,45 @@
+<head>
+<title>UK TeX FAQ -- question 227</title>
+</head><body>
+<h3>Changing the words <i>babel</i> uses</h3>
+<p>LaTeX uses symbolic names for many of the automatically-generated
+text it produces (special-purpose section headings, captions, etc.).
+As noted in <a href="FAQ226.html">"\LaTeX fixed names"</a> (which
+includes a list of the names themselves),
+this enables the user to change the
+names used by the standard classes, which is particularly useful if
+the document is being prepared in some language other than LaTeX's
+default English.  So, for example, a Danish author may wish that her
+table of contents was called "Indholdsfortegnelse", and so 
+would expect to place a command
+<pre>
+\renewcommand{\contentsname}%
+    {Indholdsfortegnelse}
+</pre>
+in the preamble of her document.
+<p>However, it's natural for a user of a non-English language to use
+<i>babel</i>, because it offers many conveniences and typesetting
+niceties for those preparing documents in those languages.  In
+particular, when <i>babel</i> is selecting a new language, it
+ensures that LaTeX's symbolic names are translated appropriately
+for the language in question.  Unfortunately, <i>babel</i>'s choice
+of names isn't always to everyone's choice, and there is still a need
+for a mechanism to replace the 'standard' names.
+<p>Whenever a new language is selected, <i>babel</i> resets all the
+names to the settings for that language.  In particular,
+<i>babel</i> selects the document's main language when
+<code>\begin{document}</code> is executed, which immediately destroys
+any changes to these symbolic names made in the prologue of a document
+that uses <i>babel</i>. 
+<p>Therefore, babel defines a command to enable users to change the
+definitions of the symbolic names, on a per-language basis:
+<code>\addto</code><code>\captions</code><code>&lt;<em>language</em>&gt;</code> is the thing
+(<code>&lt;<em>language</em>&gt;</code> being the language option you gave to
+<i>babel</i> in the first place).  For example:
+<pre>
+\addto\captionsdanish{%
+  \renewcommand{\contentsname}%
+    {Indholdsfortegnelse}%
+}
+</pre>
+<p></body>

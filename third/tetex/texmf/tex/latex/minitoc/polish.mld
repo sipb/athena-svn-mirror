@@ -1,3 +1,4 @@
+\ProvidesFile{polish.mld}[1999/03/16]
 % Polish titles for minitoc.sty
 \def\mtctitle{Spis rzeczy}%
 \def\mlftitle{Spis rysunk\'ow}%

@@ -1,0 +1,43 @@
+%% Begin of file `qpalatin.sty'. Public domain.
+%% This was previously part of `pl-qx' package.
+%% Piotr K\l{}osowski; Wydawnictwo UMCS <pklosows@press.umcs.lublin.pl>
+%% 2001.04.21. Changed by StaW to adapt it to the new QX encoding.
+%% ----------------------------------------------------------------------------
+%% [EN] LaTeX2e support for QuasiPalatino fonts made by JNS Team.
+%% [PL] Wspomaga u/zywanie w LaTeX2e font/ow PostScript-owych QuasiPalatino
+%%      opracowanych przez JNS Team.
+%% (CTAN://fonts/psfonts/polish/qfonts/).
+%%
+%% Umieszczenie linijki `\usepackage{qpalatin}' w preambule spowoduje, /ze
+%% standardowe komendy LaTeX-a odnosz/ace si/e do \rmfamily b/ed/a dotyczy/ly
+%% kroju Palatino. Do sk/ladu w j/ezyku angielskim wystarczy LaTeX-owy uk/lad
+%% kodowania OT1. Do sk/ladu w j/ezyku polskim nale/zy w/l/aczy/c uk/lad OT4
+%% (najlepiej pos/luguj/ac si/e pakietem `PLaTeX'). Pe/lne wykorzystanie
+%% zestawu znak/ow fontu QuasiPalatino umo/zliwi w/l/aczenie uk/ladu QX, np.:
+%%
+%% \usepackage{polski}
+%% \usepackage{qpalatin}
+%% \usepackage[QX]{fontenc}
+%% ----------------------------------------------------------------------------
+
+\def\fileversion{v0.9}
+\def\filedate{2001/04/21}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{qpalatin}
+  [\filedate\space\fileversion\space QuasiPalatino package (P.K.)]
+
+\renewcommand{\rmdefault}{qpl}
+\renewcommand{\familydefault}{\rmdefault}
+\fontfamily{\familydefault}
+
+%% Standardowa interlinia LaTeX-a jest za ma/la dla sk/ladu w j/ezyku polskim 
+%% i wiersze normalnego tekstu w stylach 10pt i 12pt mog/a si/e `rozsuwa/c',
+%% /zeby na siebie nie `zachodzi/c'. Je/zeli jest to niepo/z/adane, a nie chcemy
+%% powa/znie modyfikowa/c stylu, to sytuacj/e poprawia:
+
+\lineskiplimit = -0.2pt
+
+\endinput
+%% 
+%% End of file `qpalatin.sty'.

@@ -1,0 +1,11 @@
+% File    : language.dat
+% Purpose : specify which hypenation patterns to load 
+%           while running iniTeX 
+english ushyphen.tex
+% mongolian       mnhyph.tex
+spanish         eshyph.tex
+russian         ruhyph.tex
+greek           grmhyph.tex
+inuit           inuit.hpn
+dumylang        dumyhyph.tex   % for testing a new language.
+nohyphenation   zerohyph.tex   % a language with no patterns at all.

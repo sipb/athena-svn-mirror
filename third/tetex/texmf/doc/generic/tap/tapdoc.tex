@@ -1,0 +1,1139 @@
+% ---------------------------------------------------------------------------
+%              THIS FILE BELONGS TO THE TAP PACKAGE
+% ---------------------------------------------------------------------------
+\input tap
+% ---
+\newif\ifpenetrating
+\penetratingfalse
+\penetratingtrue % OK, this part we include for some experienced users ;-)
+% ---
+\font\csc cmcsc10
+\font\srm cmr8
+\font\stt cmtt8
+\hyphenchar\tentt-1
+\frenchspacing
+\widowpenalty10000
+\clubpenalty10000
+\raggedbottom
+% ---
+\baselineskip11.6pt
+\def\verbatimbaselinecorr{0.5pt}
+\advance\medskipamount-1.5pt
+\advance\bigskipamount-2pt
+% ---
+% center the text on A4 page:
+\hoffset210mm \advance\hoffset-\hsize \hoffset.5\hoffset \advance\hoffset-1in
+\vsize 244mm \voffset-2mm
+% ---
+% verbatim macros, see DeK, pp. 344, 380--382, 351--352
+\def\uncatcodespecials{\def\do##1{\catcode`##1=12}\dospecials}%
+\def\setupverbatim {\tt \advance\baselineskip-\verbatimbaselinecorr
+  \obeylines \uncatcodespecials \obeyspaces}%
+{\obeyspaces \global\let =\ }% this causes that leading blanks aren't skipped
+{\catcode`\|0 \catcode`\\12 |gdef|brev{\brev}}%
+\def\?{?}
+\catcode`\?13
+\edef\verb{\begingroup \let\noexpand?\noexpand\inverb
+  \noexpand\setupverbatim \noexpand\doverbatim{\brev}}%
+\def\doverbatim#1{\def\next##1#1{##1\endgroup}\next}%
+\def\shortverb{\begingroup\setupverbatim\doverbatim}%
+\def\inverb#1?{{$\langle$\it #1\/$\rangle$}}
+\def?{\shortverb?}
+% ---
+\newbox\itembox
+\let\oriitem\item
+\def\item{\afterassignment\itemcont\setbox\itembox\hbox}
+\def\itemcont{\aftergroup\itemcontcont}
+\def\itemcontcont{\oriitem{\box\itembox}}
+\newcount\itemcnt
+\newbox\itemabcbox
+\def\itemabc{\advance\itemcnt1\relax
+  \setbox\itemabcbox\hbox{\rm (\kern-.1em m\kern-.1em)}%
+  \item{\hbox to\wd\itemabcbox{(\hss\char\itemcnt\/\hss)}}}
+\def\initabc{\itemcnt`\a \advance\itemcnt-1\relax}
+% ---
+\def\PS{{\csc Post}\-{\csc Script}}
+\def\LaTeX{{\rm L\kern-.36em\raise.3ex\hbox{\csc a}\kern-.15em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+% ---
+\def\maybeinput #1 {%
+ \immediate\openin\toinput#1\relax
+ \ifeof\toinput
+   \immediate\closein\toinput \let\NEXT\empty
+   \edef\FILNAM{#1}%
+   \uppercase
+     \expandafter{\expandafter\def\expandafter\FILNAM\expandafter
+     {\FILNAM}}%
+   {\errorcontextlines0 \errmessage{File \FILNAM\space not found}}%
+   \errhelp{}%
+ \else
+   \immediate\closein\toinput
+   \def\NEXT{\input #1 }%
+ \fi
+ \NEXT}
+\newread\toinput
+% ---
+\def\epsffile#1{}% emergency meaning of \epsffile
+\errhelp{EPS files will be ignored, go on.}%
+\maybeinput epsfx
+% ---
+\def\section#1. #2. {\bigskip\noindent {\bf #1.\enspace#2.}\ }
+% ========================================================================
+\immediate
+  \write16{=============================================================}%
+\immediate
+  \write16{ This text is to be processed further by T. Rokicki's DVIPS,}%
+\immediate
+  \write16{ D. Wujastyk's English hyphenation patterns are recommended.}%
+\immediate
+  \write16{=============================================================}
+% ========================================================================
+\def\makeheadline{%
+  \vbox to0pt{\vskip-28pt
+    \line{\vbox to8.5pt{}\the\headline}\ifnum\pageno>1\kern2pt\hrule\fi
+  \vss}
+  \nointerlineskip}
+\headline{\rm \ifnum\pageno>1
+   \ifodd\pageno\else \the\pageno\fi
+   \hfil\rm TAP -- a set of \TeX\ macros for typesetting tables using \PS\hfil
+   \ifodd\pageno \the\pageno\fi
+ \else\hfil\fi
+}
+\footline{\hfil}
+
+
+\topglue-8mm
+\centerline{\bf TAP -- a set of \TeX\ macros}
+\centerline{for typesetting tables using \PS}
+{\advance\baselineskip-1pt
+\medskip
+\centerline{\srm Version 0.75 of Thursday, March 30th, 2000}
+\medskip
+\centerline{\srm Bogus\l{}aw Jackowski, Piotr Pianowski and Piotr Strzelczyk}
+\centerline{\srm BOP s.c., ul. Piastowska 70, 80-363 Gda\'nsk, Poland}
+\centerline{\stt e-mail: B.Jackowski@GUST.org.pl}
+}
+
+\bigskip \bigskip
+
+The starting point of this package was a neat package by Michael~J.~Ferguson.
+With his kind permission we rebuilt the package from scratch. Some notational
+``bells and whistles'' have been added, and---perhaps more importantly---the
+package has been enhanced by \PS-oriented features (painting cells with an
+arbitrary colour, drawing diagonals in cells,~etc.).
+
+TAP macros are designed to be convenient and efficient in, say, 80--90\% of
+typical cases; on the other hand, special cases always require special
+treatment.
+
+\medskip
+
+\section 1. Overview. The general form of the table is as follows:
+
+\medskip \verb
+\begintable
+?table preamble?
+?table row(s)?
+\endtable
+\brev \medskip
+
+{\it Table preamble\/} will be described momentarily.
+
+{\it Table row\/} can be either a {\it horizontal rule}, or a {\it normal
+row}, or an {\it anchor row\/} (see the section on using \PS).
+
+\smallskip
+
+{\it Horizontal rules\/} can be obtained using two macros, ?\-? and ?\=?. A
+normal (0.4pt) rule is denoted by ?\-?, a thicker one (1.2pt) is denoted by
+?\=?. Both can appear either as a full table rule or as a cell rule (see
+examples below).
+
+\smallskip
+
+{\it Normal table rows\/} have the following form:
+
+\smallskip \verb
+\B?suffix(es)? ?cell contents? ?cell separator? ?cell contents? ?cell separator? ... \E?suffix?
+\brev \smallskip
+
+{\it Cell contents\/} seems obvious, {\it cell separator\/} can be one of the
+three characters: {\it vertical bar}~?|?, {\it exclamation mark\/}~?!?, and
+{\it double quotes\/}~?"?. The first one denotes a normal vertical rule
+(0.4pt), the second one---a thicker rule (1.2pt), the last one---no rule.
+The spaces preceding and following {\it cell separators\/} are ignored.
+
+\smallskip
+
+The simplest suffixes for the ?\B? and ?\E? commands ({\it begin\/} and {\it
+end\/} of a row) are just cell separators, with exactly the same meaning. The
+command ?\B?, however, may have an optional second suffix. Namely, one of the
+five characters can be used: ?0? (zero), ?-?, ?+?, ?_?, ?^?, or ?:?. They
+convey information about an extra space to be added above and/or below the
+current line:
+
+{
+\setbox0\hbox{Suffix ?0?\enspace}\advance\parindent\wd0
+
+ \item{Suffix ?0?} says that no extra space is needed, that is, that the
+natural height of the line is required.
+
+ \item{Suffix ?-?} says that the cells of a given row are to be ``squashed''
+as if they had zero height. In order to keep ``squashed'' text lines
+aligned, a strut is added to each cell.
+
+ \item{Suffix ?+?} says that a normal strut should precede the current row
+(the strut is defined as a ?\vrule? of zero width, height $h$ plus 0.25ex,
+and depth $d$ plus 0.25ex, where $h$ and $d$ are the height and depth of
+?\hbox{(pl}? under the assumption that the current font on entering the table
+is used).
+
+ \item{Suffix ?_?} says that a special strut (the normal strut lengthened
+downwards by 0.5ex) should precede the current row---to be used before
+(above) a horizontal rule.
+
+ \item{Suffix ?^?} says that another special strut (the normal strut
+lengthened upwards by 0.5ex) should precede the current row---to be used
+after (below) a horizontal rule;
+
+ \item{Suffix ?:?} says that yet another special strut (the normal strut
+lengthened both upwards and downwards by 0.5ex) should precede the current
+row (it is to be used between horizontal rules);
+
+ \item{Suffix ?=?} followed by a dimen specifies explicitly the height of a
+given row, stored globally in variable ?\tablerowheight?. The contents of a
+cell is vertically centered. Suffix~?=0mm? is almost equivalent to
+suffix~?-?. The only difference is that the former puts no strut at the front
+of a cell. (This option was introduced in version~0.74 as a result of a
+stimulating discussion with Tadeush Sheibak.)
+
+}
+
+\medskip
+
+At the first glance, the classification of suffixes may look somewhat
+arbitrary.  After thinking a while, however, you should admit that all the
+listed cases occur in almost each table, therefore it makes sense to provide
+standard means for handling them. This notation is supposed to be memorable
+as the character~?-?  can be remembered as ``flat,'' character~?^? as ``up,''
+character~?_? as ``down,'' character~?:? as ``both up and down,''
+and character~?=? obviously as ``equal~to.''
+
+If you don't like this approach, you may ignore the optional suffixes and add
+lines containing only the necessary rules above and below a given line.
+
+If you like it, however, there is one more macro exploiting the same
+notation, namely, ?\D? (``distender''). This macro can be followed by the
+same list of special characters: ?0?, ?-?, ?+?, ?_?, ?^?, ?:? or ?=?. As a
+result, a rule of the null width and the desired height and depth is typeset.
+Since ?\D-? causes no squashing of any objects, ?\D-? and ?\D0?  yield, in
+fact, the same results. Exceptionally, ?\D=? is equivalent to ?\D0?. This
+means that ?\D=?, unlike ?\B=?, does not gobble the dimen that follows
+(TAP warns about it).
+
+\medskip
+
+{\it Table preamble\/} has the following form:
+
+\medskip \verb
+\begintableformat
+?cell descriptor? ?cell separator? ?cell descriptor? ?cell separator? ...
+\endtableformat
+\brev \medskip
+
+In this case, {\it cell separator\/} is a {\it double quote\/} character~?"?,
+{\it cell descriptor\/} can be ?\left?, ?\center? or ?\right? command
+(?\left? and ?\right? restore their original meaning in math). The last {\it
+cell descriptor\/} can be preceded by an {\it ampersand\/}~?&?, if the last
+cell descriptor is to be used for all subsequent cells.
+
+
+\medskip
+
+Finally, there is an operator for joining a couple of cells together into one
+cell. It is represented by an {\it at\/}~character~?@?. For example, writing
+?@6? means that the contents should be spread over six cells and the
+template of the last cell is to be used for the placement.
+
+\bigskip
+
+\noindent {\csc Examples.} The following data
+
+\medskip \verb
+\begintable
+\begintableformat \right " &\center \endtableformat
+\=
+\B!^     | Polish     |         |         \E!
+\B!- No. |            | Polish  | English \E! % flat row
+\B!_     | diminutive |         |         \E!
+\-
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+\=
+\endtable
+\brev \medskip
+
+\noindent yield the following table:
+
+\medskip \moveright\parindent
+\begintable
+\begintableformat \right " &\center \endtableformat
+
+\=
+
+\B!^     | Polish     |         |         \E!
+\B!- No. |            | Polish  | English \E! % flat row
+\B!_     | diminutive |         |         \E!
+
+\-
+
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+
+\=
+\endtable
+
+\medskip
+
+Assume now that the cell containing the text ``No.'' is to be replaced by an
+empty space, that is, we wish to have a table with an incision at the upper
+left corner:
+
+\medskip \moveright\parindent
+\begintable
+\begintableformat \right " &\center \endtableformat
+\B"      !               @3 \=            \E! % incised row (slice)
+\B"^     ! Polish     |         |         \E! % incised row (slice)
+\B"-     !            | Polish  | English \E! % incised flat row (slice)
+\B"_     ! diminutive |         |         \E! % incised row (slice)
+\B! \=   ! \-         | \-      | \-      \E!
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+\=
+\endtable
+\medskip
+
+Thinking in terms of ``horizontal slices'' is crucial here: such an approach
+is natural for the ASCII notation, and the ASCII notation is, in turn,
+intrinsic for typesetting using \TeX. You will admit that the solution is
+still simple and legible:
+
+\medskip \verb
+\begintable
+\begintableformat \right " &\center \endtableformat
+\B"      !               @3 \=            \E! % incised row (slice)
+\B"^     ! Polish     |         |         \E! % incised row (slice)
+\B"-     !            | Polish  | English \E! % incised flat row (slice)
+\B"_     ! diminutive |         |         \E! % incised row (slice)
+\B! \=   ! \-         | \-      | \-      \E!
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+\=
+\endtable
+\brev \medskip
+
+\section 2. Useful macros. A couple of macros is provided for handling a bit
+more complex cases.
+
+We found it useful to have the following abbreviations: ?\>? standing for
+?\rlap?, ?\<? standing for ?\llap?, ?\P?~standing for ?\phantom?,
+?\V?~standing for ?\vphantom?, ?\K? standing for vertical spacing (kerning
+between rows).
+
+A tilde ?~? returns the space of the width of the digit zero of a current
+font which is useful for aligning the columns of numbers.
+
+A one-parameter macro ?\F? sets the current font for the rest of the table,
+for example, ?\F\it? switches the font to italic for the subsequent rows
+(note that the font is not set globally). It should be used between rows
+(after~?\E?  and before~?\B?).
+
+Macro ?\X? takes a series of lines (separated by double backslashes ?\\?,
+surrounded obligatorily by curly braces) as its parameter and returns a box
+containing lines which are aligned depending on a template for the current
+column. In order to override the inherited alignment template inside ?\X?,
+you can use one-parameter macros ?\C?, ?\L?, or ?\R? for centring, aligning
+to left, or aligning to right, respectively. There is also macro ?\x?  that
+works similarly, but the resulting box is flat (its height and depth are
+equal to zero) and centred with respect to a baseline.  Usually, ?\X? and
+?\x?  expand to ?\halign?. If you don't want to break all lines manually
+?\halign?  is inconvenient. In such a case you should supply a desired width
+of the resulting box between the command name and the opening curly brace.
+For example, ?\X?~?30mm?~?{?~\inverb contents?~?}? will cause that the
+contents will be set as a paragraph of width 30mm (inheriting centring, left
+alignment or right alignment from the template for a given column).
+
+A pair of macros ?\Y? and ?\y? is very similar to the pair ?\X? and ?\x?
+except that ?\vtop? is used for the construction of the resulting box instead
+of~?\vbox?. This means that ?\x? and ?\y? are, in fact, equivalent.
+
+Finally, you can use macros ?\center?, ?\left? and ?\right? also in the table
+text, not only in the preamble. Their purpose is to override locally the
+template set in the preamble of a table. The first command they expand to is
+?\omit?, therefore no \TeX\ command may appear between cell separators and
+these macros.
+
+\section 3. Configurability. The basic parameters of TAP macros can be
+adjusted to meet particular needs.
+
+The width of the rules is controlled by two dimen registers: ?\trth? (default
+0.4pt, for normal rules) and ?\TRTH? (default 1.2pt, for thicker rules). The
+macro ?\defaultstrut?  determines the height of rules inserted by the
+macro~?\B? (see section ``Overview'') and can also be adjusted if needed.
+
+Another quantity that you may wish to adjust is a cell margin. It is governed
+by a dimen register ?\cellmarg?, set at the beginning of a table to a default
+value 0.5em a current font.
+
+In more complex cases, it may turn out that the actual parameterization does
+not provide sufficient flexibility and introducing new macros or modifying
+existing ones may turn out unavoidable. Fortunately, \TeX\ programs are
+available mostly as sources. If programs are exceedingly large (\LaTeX\ may
+serve as a notable example), modifying them is nearly impossible. We hope,
+however, that here the task is not as difficult as it may appear at the first
+glance. If you are bold enough, you will certainly be able to make the
+alterations you need.
+
+Before you go so far, however, try to adjust table settings by assigning a
+befitting value to either ?\everytable? or ?\thistable?, both being token
+registers, prior to setting a table. For example, if you want to override the
+previously mentioned meaning of ?\<? and ?\>? in all subsequent tables, you
+may use the statement ?\everytable{\def\<{$<$}\def\>{$>$}}?. The assignment
+?\thistable{\def\<{$<$}\def\>{$>$}}? affects only the first ensuing table.
+
+\section 4. Active characters. The ``magic'' characters ?|?, ?!?, ?"?, and
+?@? are active inside a table (i.e., they are assigned category~13). You
+should be aware that using active characters is a mixed blessing: on one
+hand, notation becomes more legible, on the other hand, using active
+characters foretells troubles, because they cannot be used in parameters to
+most \TeX\ macros. For example, the construction ?\centerline? ?{\begintable?
+?...?  ?\endtable}?  will not work since ?\centerline? swallows its parameter
+before ?\begintable?  changes the category codes. Incidentally, the
+construction ?\line?  ?{\hss\begintable?  ?...?  ?\endtable\hss}? does work.
+Can you see why\?
+
+In order to facilitate dealing with cases where a table---for some
+reasons---is to be passed in a parameter, the macro ?\deftable? was
+introduced. It allows to store the contents of a table or the fragment of a
+table as a macro of a given name. For example, after saying ?\deftable\foo?
+?\begintable? \inverb contents?  ?\endtable?  you may safely say
+?\centerline? ?{\begintable?  ?\foo? ?\endtable}? (?\foo? is defined
+globally).
+
+\section 5. Forcing the width of a table. If a dimen register ?\desiredwidth?
+is assigned a positive value (default is~0mm), a special technique is used in
+order to obtain a table of the desired width by ``padding'' cells
+appropriately with empty space. A self-suggesting approach, namely, using a
+?\tabskip? glue, seems inadequate here because of the techniques used for
+employing \PS\ (see below).
+
+\section 6. Using \PS. Frequently, some cells or rows, or even the whole
+table, is to be printed against a non-white background. Sometimes a diagonal
+line is to be drawn across a cell. \PS\ is an excellent tool that can be used
+for this purpose. The technique implemented in the TAP package bases on
+?\special? commands we call ``anchors.'' Obviously, using ?\special? commands
+is always driver-oriented. The current version of the TAP package is by
+default meant for further processing using T.~Rokicki's DVIPS. Switching to
+another DVI-to-\PS\ driver is trivial: it suffices to re-define the two
+macros: ?\tapspecial? and ?\psunitsperinch?; the former defines the form of
+the ?\special? (in DVIPS it is ?\special{ps:?~?...?~?}?), the latter---the
+\PS\ macro that returns the resolution of a \PS\ document (in DVIPS it is
+?Resolution?).
+
+\TeX\ should be informed explicitly that anchors are to be employed. To do
+this you should use a pair of macros ?\beginanchtable? ?...?  ?\endanchtable?
+instead of ?\begintable? ?...? ?\endtable?.
+
+A pair of macros, ?\uranchor? (cast an anchor at the {\it upper right\/}
+corner of a cell) and ?\llanchor? (cast an anchor at the {\it lower left
+corner\/} of a cell) can be put between rows for determining a rectangle to
+be filled or crossed. The filling can be accomplished using macros
+?\rectfill?  and ?\trianfill?, diagonal lines can be drawn using macro
+?\diagstroke?. Macros ?\uranchor? and ?\llanchor? are supposed to be put
+below and above a rule, respectively. Macros ?\rectfill?, ?\trianfill? and
+?\diagstroke? can be put between any two rows of a table, their order,
+however, is significant.
+
+Here you have the exact syntax of the anchor commands:
+
+\smallskip \verb
+\uranchor ?number of a column? ?anchor identifier?
+\brev \nobreak \verb
+\llanchor ?number of a column? ?anchor identifier?
+\rectfill {?cmyk coordinates of a colour?} ?anchor identifier?
+\trianfill ?triangle descriptor? {?cmyk coordinates of a colour?} ?anchor identifier?
+\brev \nobreak \verb
+\diagstroke ?pen width? ?diagonal descriptor? {?cmyk coordinates of a colour?} ?anchor identifier?
+\brev \medskip
+
+\medskip
+
+\noindent {\csc Remarks}.
+
+\initabc
+
+\itemabc {\it The number of a column\/} is simply a \TeX\ count (integer
+number). If a whole row is meant rather than a particular cell you may use an
+artificial column index~${\le0}$.
+
+\itemabc {\it Anchor identifier\/} is an arbitrary sequence of characters
+(typically a single letter).
+
+\itemabc {\it Cmyk coordinates\/} are four numbers from the range
+[0.\kern.15em.1] separated by spaces. Curly braces are obligatory, even
+if you pass a macro expanding to cmyk coordinates as a parameter.
+
+\itemabc {\it Triangle descriptor\/} can be one of the following two-letter
+sequences:  ?SW?, ?SE?, ?NW?, ?NE? (standing for south-west, south-east,
+north-west, and north-east, respectively). It determines the position of the
+right angle of a triangle. The case of letters is meaningless, curly
+braces should not be used.
+
+\itemabc {\it Pen width\/} is just a \TeX\ dimen that is swallowed using
+assignment, therefore curly braces should not be used.
+
+\itemabc {\it Diagonal descriptor\/} can be one of the following sequences:
+?BOTH?, ?DOWN?, ?UP?. The meaning, hopefully, is self-explaining. The case of
+letters is meaningless, curly braces should not be used.
+
+\bigskip
+
+\noindent {\csc Examples}.
+
+The following example shows how anchors can be used. The application is
+admittedly artificial, nevertheless, it demonstrates possibilities.
+The following \TeX\ code:
+
+\medskip \verb
+\beginanchtable
+\brev \nobreak \verb
+\begintableformat \right " &\center \endtableformat
+\rectfill {0 0 0 .1} a          % fill a rectangle marked by the anchors suffixed `a'
+\trianfill SE {0 0 0 .1} b      % fill a triangle marked by the anchors suffixed `b'
+\diagstroke .4pt UP {0 0 0 1} b % draw a stroke marked by the anchors suffixed `b'
+\=
+\uranchor0a \uranchor1b
+\B!^     | Polish     |         |         \E!
+\B!-     |            | Polish  | English \E!
+\B!_     | diminutive |         |         \E!
+\llanchor2a \llanchor1b
+\-
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+\=
+\endanchtable
+\brev \medskip
+
+\smallskip
+
+\noindent produces a table that is not so easy to obtain without \PS:
+
+\smallskip
+
+\medskip \moveright\parindent
+\beginanchtable
+\begintableformat \right " &\center \endtableformat
+
+\rectfill {0 0 0 .1} a          % fill a rectangle marked by the anchors suffixed `a'
+\trianfill SE {0 0 0 .1} b      % fill a triangle marked by the anchors suffixed `b'
+\diagstroke .4pt UP {0 0 0 1} b % draw a stroke marked by the anchors suffixed `b'
+
+\=
+\uranchor0a \uranchor1b
+\B!^     | Polish     |         |         \E!
+\B!-     |            | Polish  | English \E!
+\B!_     | diminutive |         |         \E!
+\llanchor2a \llanchor1b
+\-
+\B!^  1. | Ala        | Alicja  | Alice   \E!
+\B!+  2. | Ania       | Anna    | Ann     \E!
+\B":               @4 $\cdots$            \E"
+\B!_ 10. | Zuzia      | Zuzanna | Susan   \E!
+\=
+
+\endanchtable
+
+\medskip
+
+Finally, an excerpt from a real-life example demonstrating most of the
+described features.
+
+\newcount\anycount
+\def\3{\afterassignment\threecont\anycount}
+\def\threecont{\setbox0\hbox{\rm000}\hbox to\wd0{\hss\the\anycount}}
+\def\4{\afterassignment\fourcont\anycount}
+\def\fourcont{\setbox0\hbox{\rm0000}\hbox to\wd0{\hss\the\anycount}}
+
+\medskip
+\medskip
+\thistable{\desiredwidth\hsize \longcalculationfalse}
+\beginanchtable
+\begintableformat
+  \right " \left " &\center
+\endtableformat
+%
+\rectfill{0 0 0 .1}a
+\rectfill{0 0 0 .1}b
+%
+\=
+\uranchor0a
+\B!^        !           !        !   @3                      !  @2              \E!
+\B!-        !           !        !   @3 citizens of Poland   !  @2 foreigners   \E!
+\B!_        !           !        !   @3                      !  @2              \E!
+\B!- \center{\X{group/\\subgroup}}
+     !  \center{\X{name\\of the group}} !  \X{number\\of tested\\persons}
+                                  !                          @5  \-             \E!
+\B!^        !           !         !         |        |       !        |         \E!
+\B!-        !           !         !\X{after leaving\\the country}
+                                  |\X{not leaving\\the country}
+                                  |\X{missing\\data}
+                                  !\X{from Africa\\and Asia}
+                                  |\X{from\\Cuba} \E!
+\B!_        !           !         !         |        |        !        |        \E!
+\llanchor0a
+\=
+\B!  @8 \vrule width 0mm height 0.75mm \E!
+\=
+\uranchor1b
+\F\bf
+\B!:  I.    ! disease X ! \4  378 ! \4  262 | \3  62 | \3   0 ! \3  51 | \3   3 \E!
+\F\rm
+\-
+\B!^  1.    ! variant A ! \4  195 ! \4  131 | \3  38 | \3   0 ! \3  23 | \3   3 \E!
+\B!+  2.    ! variant B ! \4  131 ! \4   95 | \3  24 | \3   0 ! \3  12 | \3   0 \E!
+\B!_  3.    ! variant C ! \4   52 ! \4   36 | \3   0 | \3   0 ! \3  16 | \3   0 \E!
+\=
+\F\bf
+\B!^        ! control   !         !         |        |        !        |        \E!
+\K-.5pt % tiny correction of vertical spacing
+\B!- II.    !           ! \4 3990 ! \4 2808 | \3 276 | \3 143 ! \3 577 | \3 186 \E!
+\K-.5pt % tiny correction of vertical spacing
+\B!_        ! group     !         !         |        |        !        |        \E!
+\llanchor1b
+\=
+\endanchtable
+\medskip
+\medskip
+
+As usually, real-life examples demonstrate not only the advantages of a
+method, but also uncover its drawbacks. In this particular example, the main
+difficulty was a convenient alignment to the right both bold and roman
+numbers and centring the result in a column. If the only typeface used were
+either roman or bold, macro tilde~?~?~might have been used (see section
+``Useful macros'').  Aligning digits of varying width can be considered a
+weird demand and the TAP package is not supposed to be prepared for such
+cases.
+
+\smallskip
+
+We decided to define macros putting a number into a box of a desired width.
+It sufficed to introduce two such macros, ?\3?  and ?\4?, for formatting
+three and four digit numbers, respectively (note that they are not defined in
+the TAP~package):
+
+\medskip \verb
+\newcount\anycount
+\def\3{\afterassignment\threecont\anycount}
+\def\threecont{\setbox0\hbox{\rm000}\hbox to\wd0{\hss\the\anycount}}
+\def\4{\afterassignment\fourcont\anycount}
+\def\fourcont{\setbox0\hbox{\rm0000}\hbox to\wd0{\hss\the\anycount}}
+\brev \medskip \medskip
+
+The \TeX\ code for the table reads:
+
+\nobreak \medskip
+
+\medskip\verb
+\thistable{\desiredwidth\hsize}% set the width of this table to \hsize
+\beginanchtable
+\begintableformat
+  \right " \left " &\center
+\endtableformat
+%
+\rectfill{0 0 0 .1}a
+\rectfill{0 0 0 .1}b
+%
+\=
+\uranchor0a
+\B!^        !           !        !   @3                      !  @2              \E!
+\B!-        !           !        !   @3 citizens of Poland   !  @2 foreigners   \E!
+\B!_        !           !        !   @3                      !  @2              \E!
+\B!- \center{\X{group/\\subgroup}}
+     !  \center{\X{name\\of the group}} !  \X{number\\of tested\\persons}
+                                  !                    @5  \-                   \E!
+\B!^        !           !         !         |        |       !        |         \E!
+\B!-        !           !         !\X{after leaving\\the country}
+                                  |\X{not leaving\\the country}
+                                  |\X{missing\\data}
+                                  !\X{from Africa\\and Asia}
+                                  |\X{from\\Cuba} \E!
+\B!_        !           !         !         |        |        !        |        \E!
+\llanchor0a
+\=
+\B!  @8 \vrule width 0mm height 0.75mm \E!
+\=
+\uranchor1b
+\F\bf
+\B!:  I.    ! disease X ! \4  378 ! \4  262 | \3  62 | \3   0 ! \3  51 | \3   3 \E!
+\F\rm
+\-
+\B!^  1.    ! variant A ! \4  195 ! \4  131 | \3  38 | \3   0 ! \3  23 | \3   3 \E!
+\B!+  2.    ! variant B ! \4  131 ! \4   95 | \3  24 | \3   0 ! \3  12 | \3   0 \E!
+\B!_  3.    ! variant C ! \4   52 ! \4   36 | \3   0 | \3   0 ! \3  16 | \3   0 \E!
+\=
+\F\bf
+\B!^        ! control   !         !         |        |        !        |        \E!
+\K-.5pt % tiny correction of vertical spacing
+\B!- II.    !           ! \4 3990 ! \4 2808 | \3 276 | \3 143 ! \3 577 | \3 186 \E!
+\K-.5pt % tiny correction of vertical spacing
+\B!_        ! group     !         !         |        |        !        |        \E!
+\llanchor1b
+\=
+\endanchtable
+\brev
+
+\section 7. Implicit anchors ({ver. 0.74}). Under pressure from TAP users, a
+few new drawing capabilities has been introduced. The most important are
+pairs of commands that simplify using anchors: ?\bstroke?~?...?~?\estroke?
+and ?\brectangle?~?...?~?\erectangle?. You don't need to specify anchors
+explicitly when using them. Below, the syntax of these commands is
+specified:
+
+\smallskip \verb
+\brectangle ?corner descriptor? ?number of a column? ?anchor identifier?
+\brev \nobreak \verb
+\erectangle ?cmyk colour? ?corner descriptor? ?number of a column? ?anchor identifier?
+\bstroke ?corner descriptor? ?number of a column? ?anchor identifier?
+\brev \nobreak \verb
+\estroke ?pen width? ?cmyk colour? ?dashing pattern? ?corner descriptor?
+\brev \nobreak \verb
+  ?number of a column? ?anchor identifier?
+\brev
+
+\noindent {\csc Remarks}. Nearly all notions occurring in the syntax
+definition were already mentioned in the description of anchor commands.
+Only {\it dashing pattern\/} and {\it corner position\/} needs some
+explanations:
+
+\initabc
+
+\itemabc {\it Corner descriptor\/} is a two-letter sequence; currently, the
+following descriptors are admissible: {\it ur}, {\it ul}, {\it lr}, {\it ll},
+{\it nr}, and {\it nl}.  They stand for: {\it upper-right}, {\it upper-left},
+{\it lower-right}, {\it lower-left}, {\it no-offset-right}, {\it
+no-offset-left}, respectively.  A bit misleading is perhaps the notion of
+{\it upper\/} and {\it lower} positioning. Their meaning is related to the
+thickness of the rule. It is assumed that anchors positioned with {\it ur},
+{\it ul\/} are placed {\it below a horizontal rule}, and hence at {\it the
+top of a cell\/}; the corner descriptor helps TAP macros to compute extra
+offset in order to ``hide'' anchors under rules (?\anchoffset?). Similarly,
+descriptors {\it lr}, {\it ll\/} concern anchors that are positioned {\it
+above a rule}, and hence at {\it the bottom of a cell}. Descriptors {\it nr},
+{\it nl\/} simply ignore extra offsets. (See also Section~8 below.)
+
+Needless to say, macros ?\uranchor? and ?\llanchor? use, actually,
+the descriptors {\it ur}~and~{\it ll}.
+
+\itemabc {\it Dashing pattern\/} is a sequence of real numbers that defines
+the length (in \TeX\ points) of dashed fragments and gaps between them. The
+form is similar to that of the pattern argument of the \PS\ command
+?setdash?. In particular, empty pattern means solid line. The example below,
+again admittedly artificial, demonstrates the variety of cases that can be
+defined using the operations ?\bstroke?~?...?~?\estroke? and
+?\brectangle?~?...?~?\erectangle?:
+
+\setbox0\vbox{\verb
+\beginanchtable \begintableformat &\center \endtableformat
+\=
+\brectangle nl 1 {ala}
+\bstroke nl 3 {kot1}
+\bstroke nr 3 {kot2}
+\B!: Ala     "    ma   "   kota   \E!
+\estroke \TRTH {0 1 0 0} {3} nr 3 {kot1}
+\ontext\estroke \TRTH {0 1 0 0} {3 3} nl 3 {kot2}
+\erectangle {0 0 1 0} nr 2 {ala}
+\bstroke nl 0 a
+\ontext\estroke 1pt {1 1 0 0} {1 1 3 1} nr 0 a
+\brectangle nl 2 a
+\B!: Ola     "        @2 psa      \E!
+\erectangle {0 0 .7 0} nr 0 a
+\=
+\endanchtable
+\brev}
+
+\setbox1\vbox{
+\beginanchtable
+\begintableformat &\center \endtableformat
+\=
+\brectangle nl 1 {ala}
+\bstroke nl 3 {kot1}
+\bstroke nr 3 {kot2}
+\B!: Ala     "    ma   "   kota   \E!
+\estroke \TRTH {0 1 0 0} {3} nr 3 {kot1}
+\ontext\estroke \TRTH {0 1 0 0} {3 3} nl 3 {kot2}
+\erectangle {0 0 1 0} nr 2 {ala}
+\bstroke nl 0 a
+\ontext\estroke 1pt {1 1 0 0} {1 2 3 2} nr 0 a
+\brectangle nl 2 a
+\B!: Ola     "        @2 psa      \E!
+\erectangle {0 0 .7 0} nr 0 a
+\=
+\endanchtable
+}
+
+\medskip
+
+\line{\valign{\vss#\vss\cr
+  \rlap{\copy0}\cr
+  \noalign{\hfill}
+  \copy1\cr
+  \noalign{\kern15mm}
+}}
+
+\medskip
+
+Observe the presence of the operator ?\ontext?, that hasn't yet been
+mentioned. It can be used before either ?\estroke? or ?\erectangle? in order
+to put a line or a rectangle on the top of table contents.
+
+\section 8. More about anchors. The placement of anchors is a fairly complex
+task. The main problem is that the position of the ``ceiling'' of a cell is
+not available within \TeX{} program---the anchors can be placed only at the
+``floor'' of a cell. Actually, anchor commands (like table rules) are invoked
+in two ways:  either in a ?\noalign? clause (?\llanchor?  and ?\uranchor?
+followed by an artificial column number equal to zero) or from inside a cell.
+In the latter case, a dummy row of null height is created, containing an
+appropriately placed anchor. In the figure presented below, white rectangles
+symbolize cells, gray ones---rules; a white dot show a place where an anchor
+command is invoked, a black dot---a place where finally a ?\special? command
+containing a \PS{} code is placed; thick lines visualize distances ``known''
+to anchor commands. The letters show various cases of the placement of
+anchors:
+
+{
+\advance\parindent1.75\parindent
+\def\node#1 {\item{\hbox to.8em{\hss$#1$\hss}---\kern-.5em}}
+
+\node{A}   the placement of an anchor with the {\it ur\/} descriptor
+           at the second column (e.g., ?\uranchor?~?2?~?...?);
+\node{A'}  the example of an anchor with the {\it ur\/} descriptor,
+           placed mistakenly above a rule, i.e., below a cell
+           (e.g., ?\uranchor?~?2?~?...?);
+\node{B}   the placement of an anchor with the {\it ll\/} descriptor
+           at the second column (e.g., ?\llanchor?~?2?~?...?);
+\node{B'}  the example of an anchor with the {\it ll\/} descriptor,
+           placed mistakenly below a rule, i.e., above a cell
+           (e.g., ?\llanchor?~?2?~?...?);
+\node{C}   the placement of an anchor with the {\it ur\/} descriptor
+           at ``column 0'', i.e., at the right edge of
+           a table (e.g., ?\uranchor?~?0?~?...?); anchor casting
+           takes place in a ?\noalign? clause and makes use of
+           the current table width;
+\node{D}   the placement of an anchor with the {\it ll\/} descriptor
+           at ``column 0'', i.e., at the left edge of
+           a table (e.g., ?\llanchor?~?0?~?...?); anchor casting
+           takes place in a ?\noalign? clause;
+\node{E}   the placement of an anchor with the {\it nl\/} descriptor
+           at column~1;
+\node{F}   the placement of an anchor with the {\it nr\/} descriptor
+           at column~1.
+
+}
+
+\medskip
+
+\centerline{\eps{tapanch.100}}
+
+\section 9. Final remarks. As always, the ultimate documentation are the
+source files, in this case ?tap.tex? and ?tapdoc.tex?. A~careful inspection
+of the files may provide some hints, reveal possibilities not mentioned in
+this documentation, explain some points that were explained vaguely.  The
+code is not as simple as one would expect, however, it should be remembered
+that there is a trade-off between notation and implementation. Here we
+sacrificed the simplicity of implementation in favour of the ease of~use and
+the legibility of user's \TeX~code.
+
+\section 10. Acknowledgements. The authors express their gratitude to all
+people who pointed out several deficiences of the TAP package and helped
+to improve it with the penetrating comments.
+
+\ifpenetrating
+
+\bigskip
+
+\section $\infty$. Fine points of using TAP.
+
+\nobreak
+
+\initabc
+
+\smallskip
+
+\itemabc The vertical rules (set by ?|? and ?!?) occupy, actually,
+a separate column. The ?\cellmarg? setting does not affect these colomns.
+
+\smallskip
+
+\itemabc $\rm\hbox{?\parindent?}=0\,mm$ inside ?\X?, ?\x?, ?\Y?, and ?\y?
+ if the width is specified explicitly (that is, in a ``paragraph'' mode).
+
+\smallskip
+
+\itemabc ?~?, ?\-?, ?\=? restore the meaning they have on entry to the table
+in ?\X?, ?\x?, ?\Y?, and ?\y?, provided the width of a box is given
+explicitly. Moreover, in math mode also ?\>? and ?\!? restore the meaning
+they have on entry to the table (in plain they are defined as follows:
+?\def\>{\mskip\medmuskip}? ?\def\!{\mskip-\thinmuskip}?). An exclamation mark
+?!? and an at sign ?@? are directly available in math mode and inside ?\X?,
+?\x?, ?\Y?, and~?\y?. The original meaning of ?\L? and ?\l? (presumably
+Polish `L' and `l' \`a la Knuth) is assigned on the entry to a table to
+?\Lslash? and ?\lslash?, respectively.
+
+\smallskip
+
+\itemabc Cell correction used for forcing a desired width is by default
+symmetric; however, it can be forced to be asymmetric which is useful when
+one wants to keep stiff cell margins. The cell correction is governed by
+macros ?\symcellcorr? and ?\asymcellcorr?. If a cell correction becomes
+dangerously small (less than ?\TRTH?), a warning is issued. Observe that
+changing ?\asymcellcorr? to ?\symcellcorr? may cause that the warning
+disappears (but not vice versa), or that the displayed correction is
+different.
+
+\smallskip
+
+\itemabc In fact, there are three kinds of struts: a normal row strut, an
+extended row strut and an inner strut (the latter to be used inside ?\X?,
+?\x?, ?\Y?, and ?\y?). You can change the row strut using either of two
+macros: ?\settablestrut? or ?\adjusttablestrut?. Both expect four dimens to
+follow (not parameters): normal height, normal depth, extended height and
+extended depth. A pair of macros ?\setstrut? and ?\adjuststrut? can be used
+to specify the inner strut. Both macros expect two dimens to follow. It can
+easily be guessed that ?\set...? macros assign a value while ?\adjust...?
+macros increment the respective dimens by a specified value. By default,
+inner and normal struts are identical.
+
+\smallskip
+
+\itemabc Prior to squashing the contents of a cell, an inner strut is put
+in front of the contents. This guarantees that squashed cells containing
+single lines will be vertically aligned. Can you predict, however, the result
+of a construction like this: ?\B!-?~?Ala?~?!?~?\x{Ala}?~?\E!?, that is, what
+is the consequence of a ``double squashing'': one ``global'' (suffix~?-?) and
+one local (macro~?\x?)\?
+
+\smallskip
+
+\itemabc Horizontal rules are not squashed. \TeX\ has no means to produce
+rules that expand to implicit dimensions and have a null thickness. As a
+result, gaps may appear:
+
+\def\castcirc{%
+  \hfill
+  \castat {\anchoffset} {\anchoffset}
+    {\vbox to0mm{\vss\hbox to0mm{\hss\epsffile{circ.eps}\hss}\vss}}%
+  \kern -\cellmarg
+  \kern -\ifignorecellstate 1\else\ifcase\cellstate 2\or 1\or 0\fi\fi\cellcorr
+}
+
+\setbox0\vbox{
+\verb
+\begintable
+\begintableformat &\center \endtableformat
+\B"                !     @2  \=       \E!
+\B":               !     @2 Name      \E!
+\B"                !     @2  \-       \E!
+\B"^               ! Alicja  |  Ala   \E!
+\B"_               ! Zuzanna | Zuzia  \E!
+\B!  \=            !     @2  \-       \E!
+\B!: Altogether    |    2    |    2   \E!
+\=
+\endtable
+\brev
+}
+
+\setbox1\hbox{\begintable
+\begintableformat &\center \endtableformat
+\B"                !     @2  \=       \E!
+\B":               !     @2 Name      \E!
+\B"                !     @2  \-       \E!
+\B"^               ! Alicja  |  Ala   \E!
+\B"_               ! Zuzanna | Zuzia  \E!
+\B!  \=            !     @2  \-       \E!
+\B"                "\castcirc"        \E"
+\B!: Altogether    |    2    |    2   \E!
+\=
+\endtable}
+
+\medskip
+\line{\valign{\vss#\vss\cr
+  \rlap{\copy0}\cr
+  \noalign{\hfill}
+  \copy1\cr
+  \noalign{\kern5mm}
+  \vbox to\ht0{\vss\epsffile{circmag.eps}\vss}\cr
+}}
+\medskip
+
+\item{} A remedy is to add a kern correction immediately above the offending
+line ?\B!?~?\=?~?!?~?@2?~?\-?~?\E!?, for example, ?\K-\TRTH?~?\K.5\trth?
+(recall that ?\trth? and ?\TRTH? are the \TeX\ dimens that control the
+thickness of table rules). Another possibility, perhaps more natural, is to
+specify all vertical rules explicitly: ?\B!?~?\=?~?!?~?\-?~?|?~?\-?~?\E!?.
+
+\smallskip
+
+\itemabc In general, boxes can be squashed vertically either by setting a
+box register using ?\vcenter? command and next setting the height and depth
+of the box to 0$\,$mm, or by using ?\vbox{\vss?~?...?~?\vss}? construction.
+In the former case, the box is centered with respect to the math axis of a
+given font, in the latter case---with respect to the baseline. We consider
+the latter approach more adequate for tables.
+
+\smallskip
+
+\itemabc The resulting width of a table is stored in a globally defined
+macro ?\tablewidth?. If ${?\desiredwidth?>0}$, the value of ?\tablewidth? may
+differ from the value of ?\desiredwidth? at the level of the actual accuracy
+(governed by the dimen ?\widthaccuracy?).
+
+\smallskip
+
+\itemabc In ?\deftable? macro, ?\begintable? and ?\endtable? are just
+separators, thus you may define a table ``in parts'' and then
+combine some parts together:
+
+\nobreak
+
+\medskip \verb
+\deftable\headA
+\begintable
+\begintableformat &\center \endtableformat
+\endtable
+\brev
+
+\medskip \verb
+\deftable\headB
+\begintable
+\begintableformat &\left \endtableformat
+\endtable
+\brev
+
+\medskip \verb
+\deftable\contents
+\begintable
+\B" table \E"
+\B" contents \E"
+\endtable
+\brev
+
+\medskip \verb
+\centerline{\begintable\headA\contents\endtable} % centered table
+\centerline{\begintable\headB\contents\endtable} % left-aligned table
+\brev
+
+\medskip
+
+\itemabc In special cases you may also wish to use the table active
+characters---there is a macro ?\tableactive? which makes the respective
+characters active. There is no a ``reverse'' macro to ?\tableactive?
+(similarly to macros ?\obeylines?  and ?\obeyspaces?). If it is to be used
+locally, it should be used in a group.
+
+\itemabc The width of a table is forced using a binary search method which
+usually takes time. You may try a simpler method, much faster but not too
+much reliable. The command controlling the choice of the method is
+?\??iflongcalculation?. % ?\iflongcalculation? does not work;
+                        % can you guess when and why?
+ By default, ?\longcalculationtrue? is performed for every table, that is,
+?\everytable{\longcalculationfalse}? or ?\thistable{\longcalculationfalse}?
+can be used to override the default. If the process of forcing the width
+fails, you will get a warning, and the best cure is to abandon the short-cut
+method for that particular table.  (Note that the second ``anchor'' table is,
+in fact, typeset using the short-cut method.)
+
+\itemabc Both ?\begintable? and ?\beginanchtable? are defined with the
+attribute ?\long?, however, inside a table the meaning of ?\par? is changed
+to ?\empty?. This allows to use empty lines as separators of rows which
+may help to improve the legibility of the table code. The original meaning of
+?\par? is restored at the beginning of every ?\vbox?.
+
+\itemabc The table rules need not to be black and the table background
+needs not to be white. The colour of rules can be set by macro
+?\tablerulecmyk?, the background colour---by ?\tablebkgcmyk?. The following
+example shows how to use them:
+
+\setbox0\vbox{\verb
+\thistable{\tablerulecmyk{1 0 1 0}\tablebkgcmyk{0 0 1 0}}
+\beginanchtable
+\begintableformat &\center \endtableformat
+\=
+\B!:   Ala  | Alice  \E!
+\-
+\B!:  Zuzia | Susan  \E!
+\=
+\endanchtable
+\brev}
+
+\setbox1\vbox{
+\thistable{\tablerulecmyk{0 1 1 0}\tablebkgcmyk{0 0 1 0}}
+\moveright\parindent \beginanchtable
+\begintableformat &\center \endtableformat
+\=
+\B!:   Ala  | Alice  \E!
+\-
+\B!:  Zuzia | Susan  \E!
+\=
+\endanchtable
+}
+
+\medskip
+\line{\valign{\vss#\vss\cr
+  \rlap{\copy0}\cr
+  \noalign{\hfill}
+  \copy1\cr
+  \noalign{\kern20mm}
+}}
+\medskip
+
+\item{} Note that the background colour can be used only with anchor tables,
+as anchors are needed for putting the background patch. Moreover, you can say
+?\tablerulecmyk{}? or ?\tablebkgcmyk{}?; in such a case the colour will be
+ignored. As the matter of fact, TAP defaults are ?\tablerulecmyk{}?  and
+?\tablebkgcmyk{0?~?0?~?0?~?0}?.
+
+\itemabc Besides macros ?\bstroke?~?...?~?\estroke? and
+?\brectangle?~?...?~?\erectangle? there are also ``advanced'' variants of
+these macros: ?\bgenstroke?~?...?~?\egenstroke? and
+?\bgenrectangle?~?...?~?\egenrectangle?. As their names suggest, they are a
+bit more general and allow for using nearly arbitrary \PS\ code prior to
+drawing a stroke or a rectangle, respectively. Their syntax is more
+uniform than their ``user-friendly'' counterparts:
+
+{\catcode`\@13 \let@\PS
+
+\smallskip \verb
+\bgenrectangle ?corner descriptor? ?number of a column? ?anchor identifier?
+\brev \nobreak \verb
+\egenrectangle ?@ code? ?corner descriptor? ?number of a column? ?anchor identifier?
+\bgenstroke ?corner descriptor? ?number of a column? ?anchor identifier?
+\brev \nobreak \verb
+\egenstroke ?@ code? ?corner descriptor? ?number of a column? ?anchor identifier?
+\brev
+
+}
+
+\fi
+
+\end
+

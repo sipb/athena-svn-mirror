@@ -1,6 +1,20 @@
-% examples.tex - Examples for the rotfloat package
-% (c) 1995 Harald Axel Sommerfeldt (axel@hp1.ang-physik.uni-kiel.de)
-
+%%
+%% This is file `examples.tex',
+%% Examples for the rotfloat package
+%%
+%% Copyright (c) 1995-2002 Axel Sommerfeldt (rotfloat@sommerfeldt.net)
+%% 
+%% This file is part of the rotfloat package.
+%% ------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
 \documentclass{article}
 \usepackage[figuresright]{rotfloat}[1995/03/30]
 \usepackage{shortvrb}
@@ -15,8 +29,11 @@
 \restylefloat{table}
 
 \begin{document}
-\noindent First of all, here comes the examples from the \textsf{float} package,
-the rotated versions of these will follow on the next pages:
+%\errorcontextlines9
+%\tracingmacros=1\tracingcommands=1
+
+\noindent First of all, here comes the original examples from the \textsf{float} package
+(just to see if they still work), the rotated versions of these will follow on the next pages:
 
 \begin{program}[H]
 \begin{verbatim}
@@ -85,7 +102,10 @@ int main(int argc, char **argv)
    \label{prog1.2}}
 \end{sidewaysprogram}
 
-\begin{sidewaysexample}[H]
+% Here we try the star-form just for fun.
+% Note that this leads to an error is rotating < 2.10 is used!
+%
+\begin{sidewaysexample*}[H]
 \begin{verse}
 \MakeShortVerb{\|}
 |\floatstyle{ruled}|\\
@@ -100,7 +120,7 @@ int main(int argc, char **argv)
 \DeleteShortVerb{\|}
 \end{verse}
 \caption{This is another silly floating Example.}
-\end{sidewaysexample}
+\end{sidewaysexample*}
 
 \begin{sidewaystable}[H] \def\B#1{$\displaystyle{n\choose#1}$}
 \begin{center} \begin{tabular}{c|cccccccc}
@@ -119,4 +139,3 @@ $n$&\B0&\B1&\B2&\B3&\B4&\B5&\B6&\B7\\ \hline
 \end{sidewaystable}
 
 \end{document}
-

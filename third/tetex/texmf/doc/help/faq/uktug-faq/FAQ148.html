@@ -1,0 +1,34 @@
+<head>
+<title>UK TeX FAQ -- question 148</title>
+</head><body>
+<h3>Cancelling <code>\ragged</code> commands</h3>
+<p>LaTeX provides commands <code>\raggedright</code> and <code>\raggedleft</code>, but
+none to cancel their effect.
+<p>The following code (to be inserted in a package of your own, or as
+
+
+<a href="FAQ229.html">internal LaTeX code</a>) defines a command that
+restores flush justification at both margins:
+<pre>
+\def\flushboth{%
+  \let\\\@normalcr
+  \@rightskip\z@skip \rightskip\@rightskip
+  \leftskip\z@skip
+  \parindent 1.5em\relax}
+</pre>
+There's a problem with the setting of <code>\parindent</code> in the code: it's
+necessary because both the <code>\ragged</code> commands set <code>\parindent</code> to
+zero, but the setting isn't a constant of nature: documents using a
+standard LaTeX class with <code>twocolumn</code> option will have <code>1.0em</code> by
+default, and there's no knowing what you (or some other class) will
+have done.
+<p>
+
+
+
+
+
+
+
+
+<p><p><p></body>

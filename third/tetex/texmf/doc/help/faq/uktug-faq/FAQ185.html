@@ -1,0 +1,37 @@
+<head>
+<title>UK TeX FAQ -- question 185</title>
+</head><body>
+<h3>Footnotes in captions</h3>
+<p>Footnotes in captions are especially tricky: they present problems of
+their own, on top of the problems one experiences with
+
+
+<a href="FAQ184.html">footnotes in section titles</a> and with
+
+<a href="FAQ183.html">footnotes in tables</a>.
+<p>So <em>as well as</em> using the optional argument of <code>\caption</code> (or
+whatever) to avoid the footnote migrating to the List of ..., and
+putting the object whose caption bears the footnote in a minipage, one
+<em>also</em> has to deal with the tendency of the <code>\caption</code> command
+to produce the footnote's text twice.  For this last problem, there is
+no tidy solution this author is aware of.  If you're suffering the
+problem, a well-constructed <code>\caption</code> command in a <code>minipage</code>
+environment within a float, such as:
+<pre>
+\begin{figure}
+  \begin{minipage}{\textwidth}
+    ...
+    \caption[Caption for LOF]%
+      {Real caption\footnote{blah}}
+  \end{minipage}
+\end{figure}
+</pre>
+can produce <em>two</em> copies of the footnote body "blah".  (In
+fact, the effect occurs with captions that are long enough to require
+two lines to be typeset, and so wouldn't appear with such a short
+caption.)  The <i>ccaption</i> package's documentation describes a
+really rather awful work-around.
+<dl>
+<dt><tt><i>ccaption.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/ccaption.tar.gz">macros/latex/contrib/supported/ccaption.tar.gz</a>
+</dl>
+<p></body>

@@ -1,0 +1,30 @@
+<head>
+<title>UK TeX FAQ -- question 230</title>
+</head><body>
+<h3>What's the reason for 'protection'?</h3>
+<p>Sometimes LaTeX saves data it will reread later. These data are
+often the argument of some command; they are the so-called moving
+arguments.  ('Moving' because data are moved around.)  Places to look for
+are all arguments that may go into table of contents, list of figures,
+<em>etc</em>.; namely, data that are written to an auxiliary file and
+read in later.  Other places are those data that might appear in head-
+or footlines.  Section headings and figure captions are the most
+prominent examples; there's a complete list in Lamport's book
+(see <a href="FAQ22.html">TeX-related books</a>).
+<p>
+
+<p>What's going on really, behind the scenes? The commands in the moving
+arguments are already expanded to their internal structure during the
+process of saving. Sometimes this expansion results in invalid TeX
+code when processed again. "<code>\protect</code><code>\cmd</code>" tells LaTeX to save
+<code>\cmd</code> as <code>\cmd</code>, without expansion.
+<p>What is a 'fragile command'?  It's a command that expands into illegal
+TeX code during the save process.
+<p>What is a 'robust command'?  It's a command that expands into legal
+TeX code during the save process.
+<p>No-one (of course) likes this situation; the LaTeX3 team have
+removed the need for protection of some things in the production of
+LaTeX2e, but the techniques available to them within current
+LaTeX mean that this is an expensive exercise.  It remains a
+long-term aim of the team to remove all need for these things.
+<p></body>

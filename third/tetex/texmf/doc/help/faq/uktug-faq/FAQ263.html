@@ -1,0 +1,31 @@
+<head>
+<title>UK TeX FAQ -- question 263</title>
+</head><body>
+<h3>An extra '<code>}</code>'??</h3>
+You've looked at your LaTeX source and there's no sign of a misplaced
+<code>}</code> on the line in question.
+<p>Well, no: this is TeX's cryptic way of hinting that you've put a
+<a href="FAQ230.html">fragile command</a> in a moving argument.
+
+<p>For example, <code>\footnote</code> is fragile, and if we put that in the
+moving argument of a <code>\section</code> command, as
+<pre>
+  \section{Mumble\footnote{%
+      I couldn't think of anything better}}
+</pre>
+we get told
+<pre>
+  ! Argument of \@sect has an extra }.
+</pre>
+<p>The solution is usually to use a robust command in place of the one
+you are using, or to force your command to be robust by prefixing it
+with <code>\protect</code>, which in the above case would show as
+<pre>
+  \section{Mumble\protect\footnote{%
+      I couldn't think of anything better}}
+</pre>
+<p>Note that, in some cases, simple <code>\protect</code>ion is <em>not</em> the
+answer;
+<a href="FAQ184.html">Footnotes in LaTeX section headings</a>
+deals specifically with this case.
+<p></body>

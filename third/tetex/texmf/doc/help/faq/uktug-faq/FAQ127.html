@@ -1,0 +1,33 @@
+<head>
+<title>UK TeX FAQ -- question 127</title>
+</head><body>
+<h3>The style of captions</h3>
+<p>Changes to the style of captions may be made by redefining the commands
+that produce the caption.  So, for example, <code>\fnum@figure</code> (which
+produces the float number for figure floats) may be redefined:
+<pre>
+  \renewcommand{\fnum@figure}{\textbf{Fig.~\thefigure}}
+</pre>
+
+which will cause the number to be typeset in bold face.  (Note that
+the original definition used 
+<a href="FAQ226.html"><code>\figurename</code></a>.)  More elaborate changes can be
+made by patching the <code>\caption</code> command, but since there are
+packages to do the job, such changes (which can get rather tricky)
+aren't recommended for ordinary users.
+<p>The <i>float</i> package provides some control of the appearance of
+captions, though it's principally designed for the creation of
+non-standard floats).  The <i>caption2</i> and <i>ccaption</i>
+(note the double "<em>c</em>") packages provide a range of different
+formatting options; <i>ccaption</i> is the more modern and
+comprehensive, and also provides 'continuation' captions and captions
+that can be placed outside of float environments.
+<dl>
+<dt><tt><i>caption2.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/caption.tar.gz">macros/latex/contrib/supported/caption.tar.gz</a>; note that <i>caption2</i>'s
+  documentation is incomplete, and the documentation of the older
+  <i>caption</i> should be typeset as well as that of the newer
+  package.
+<dt><tt><i>ccaption.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/ccaption.tar.gz">macros/latex/contrib/supported/ccaption.tar.gz</a>
+<dt><tt><i>float.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/float.tar.gz">macros/latex/contrib/supported/float.tar.gz</a>
+</dl>
+<p></body>

@@ -1,0 +1,38 @@
+\ProvidesFile{qxqbk.fd}
+   [2001/04/20 v1.0 font definition file for QX/QuasiBookman (MW)]
+
+\DeclareFontFamily{QX}{qbk}{}
+
+\DeclareFontShape{QX}{qbk}{m}{n}{
+   <-> qbkr
+}{}
+\DeclareFontShape{QX}{qbk}{m}{sc}{
+   <-> sub * qbk/m/n
+}{}
+\DeclareFontShape{QX}{qbk}{m}{sl}{
+   <-> sub * qbk/m/it
+}{}
+\DeclareFontShape{QX}{qbk}{m}{it}{
+   <-> qbkri
+}{}
+\DeclareFontShape{QX}{qbk}{b}{n}{
+   <-> qbkb
+}{}
+\DeclareFontShape{QX}{qbk}{b}{sc}{
+   <-> sub * qbk/b/n
+}{}
+\DeclareFontShape{QX}{qbk}{b}{sl}{
+   <-> sub * qbk/b/it
+}{}
+\DeclareFontShape{QX}{qbk}{b}{it}{
+   <-> qbkbi
+}{}
+\DeclareFontShape{QX}{qbk}{bx}{n}{ <-> ssub * qbk/b/n}{}
+\DeclareFontShape{QX}{qbk}{bx}{sc}{ <-> ssub * qbk/b/sc}{}
+\DeclareFontShape{QX}{qbk}{bx}{sl}{ <-> ssub * qbk/b/sl}{}
+\DeclareFontShape{QX}{qbk}{bx}{it}{ <-> ssub * qbk/b/it}{}
+
+\endinput
+
+%%
+%% End of font definition file qxqbk.fd.

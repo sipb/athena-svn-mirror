@@ -4,46 +4,45 @@
 %%
 %% The original source files were:
 %%
-%% plfonts.fdd  (with options: `fd,ori,OMLplm')
+%% plfonts.fdd  (with options: `OMLplm,any')
 %% 
-%% IMPORTANT NOTICE:
+%% This is a generated file.
 %% 
-%% For the copyright see the source file.
+%% Copyright (C) 2000,2002,2003 by Marcin Woli\'nski.
 %% 
-%% Any modified versions of this file must be renamed
-%% with new filenames distinct from omlplm.fd.
+%% This file is part of the package `PLaTeX'
+%% -----------------------------------------
 %% 
-%% For distribution of the original source see the terms
-%% for copying and modification in the file plfonts.fdd.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
 %% 
-%% This generated file may be distributed as long as the
-%% original source files, as listed above, are part of the
-%% same distribution. (The sources need not necessarily be
-%% in the same archive or directory.)
+%% This file may only be distributed together with a copy of the PLaTeX
+%% package.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
 \ProvidesFile{omlplm.fd}
-    [1997/11/07 v1.0 Font defs for `pl' fonts (MOl).]
-\DeclareFontFamily{OML}
-             {plm}
-                            {\skewchar\font'177}
-\DeclareFontShape{OML}
-            {plm}
-                           {m}{it}
-      {
-      <5> <6> <7> <8> <9> gen * plmi
-      <10><10.95>plmi10
-      <12><14.4><17.28><20.74><24.88>plmi12
+        [2000/10/09 v1.2 Font defs for fonts PL (MW)]
+\DeclareFontFamily{OML}{plm}{\skewchar\font127 }
+\DeclareFontShape{OML}{plm}{m}{it}%
+     {<-5.5>   plmi5      <5.5-6.5> plmi6
+      <6.5-7.5> plmi7      <7.5-8.5> plmi8
+      <8.5-9.5> plmi9      <9.5-11>  plmi10
+      <11->   plmi12
       }{}
-\DeclareFontShape{OML}
-            {plm}
-                           {b}{it}
-      {
-      <-10> sub * plm/m/it
-      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> plmib10
+\DeclareFontShape{OML}{plm}{b}{it}
+     {<->   plmib10
       }{}
-\DeclareFontShape{OML}
-            {plm}
-                           {bx}{it}
-     { <-> ssub * plm/b/it}{}
+\DeclareFontShape{OML}{plm}{bx}{it}%
+   {<->ssub*cmm/b/it}{}
 \endinput
 %%
 %% End of file `omlplm.fd'.

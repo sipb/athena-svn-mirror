@@ -1,0 +1,67 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5cmr.fd}
+  [2000/01/27 v1.0 Vietnamese LaTeX font definitions]
+
+\DeclareFontFamily{T5}{cmr}{}
+
+\DeclareFontShape{T5}{cmr}{m}{n}{
+  <5><6><7><8><9><10><12> gen * vnr
+  <10.95> vnr10
+  <14.4> vnr12
+  <17.28><20.74><24.88> vnr17
+}{}
+
+\DeclareFontShape{T5}{cmr}{m}{sl}{
+  <5><6><7> vnsl8
+  <8><9> gen * vnsl
+  <10><10.95> vnsl10
+  <12><14.4><17.28><20.74><24.88> vnsl12
+}{}
+
+\DeclareFontShape{T5}{cmr}{m}{it}{
+  <5><6><7> vnti7
+  <8> vnti8
+  <9> vnti9
+  <10><10.95> vnti10
+  <12><14.4><17.28><20.74><24.88> vnti12
+}{}
+
+\DeclareFontShape{T5}{cmr}{m}{sc}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vncsc10
+}{}
+
+\DeclareFontShape{T5}{cmr}{m}{ui} {
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnu10
+}{}
+
+% bold series
+\DeclareFontShape{T5}{cmr}{b}{n}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnb10
+}{}
+
+% bold extended series
+\DeclareFontShape{T5}{cmr}{bx}{n}{
+  <5><6><7><8><9> gen * vnbx
+  <10><10.95> vnbx10
+  <12><14.4><17.28><20.74><24.88> vnbx12
+}{}
+
+\DeclareFontShape{T5}{cmr}{bx}{sl}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnbxsl10
+}{}
+
+\DeclareFontShape{T5}{cmr}{bx}{it}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnbxti10
+}{}
+
+\DeclareFontShape{T5}{cmr}{bx}{ui}{
+  <-> ssub * cmr/m/ui
+}{}
+
+\endinput

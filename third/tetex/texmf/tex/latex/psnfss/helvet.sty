@@ -6,25 +6,46 @@
 %%
 %% psfonts.dtx  (with options: `helvet')
 %% 
-%% Copyright (C) 1995 Sebastian Rahtz
-%% All rights reserved.
+%% IMPORTANT NOTICE:
 %% 
-%% This file is part of the PSNFSS2e package.
-%% -----------------------------------------
+%% For the copyright see the source file.
 %% 
-%% This is a generated file.  Permission is granted to to customize the
-%% declarations in this file to serve the needs of your installation.
-%% However, no permission is granted to distribute a modified version of
-%% this file under its original name.
-%% Copyright 1995--1999 Sebastian Rahtz
-%% This package may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
-%%
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from helvet.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file psfonts.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
 \ProvidesPackage{helvet}
-[1999/03/29 PSNFSS v.7.2
-Helvetica font as default sans
-: S Rahtz]
+[2002/09/08 PSNFSS-v9.0a
+(WaS)
+]
+\RequirePackage{keyval}
+\define@key{Hel}{scaled}[.95]{%
+  \def\Hv@scale{#1}}
+\def\ProcessOptionsWithKV#1{%
+  \let\@tempc\relax
+  \let\Hv@tempa\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+    \@ifundefined{KV@#1@\CurrentOption}%
+    {}%
+    {\edef\Hv@tempa{\Hv@tempa,\CurrentOption,}}%
+  }%
+  \edef\Hv@tempa{%
+    \noexpand\setkeys{#1}{%
+      \Hv@tempa\@ptionlist{\@currname.\@currext}%
+    }%
+  }%
+  \Hv@tempa
+}
+\ProcessOptionsWithKV{Hel}
+\AtEndOfPackage{%
+  \let\@unprocessedoptions\relax
+}
 \renewcommand{\sfdefault}{phv}
 \endinput
 %%

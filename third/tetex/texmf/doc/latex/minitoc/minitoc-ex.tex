@@ -1,10 +1,13 @@
 %%%%%%%%%%%%%%%%%%%%% A example file (differs from previous versions)
 % minitoc-ex.tex
-% This file contains a set of tests for the minitoc.sty version #27
+% This file contains a set of tests for the minitoc.sty version #34
 % style option file. You can alter most of parameters to test.
 % book/report (\chapter must be defined)
-\documentclass[12pt,a4paper]{book}
-\usepackage{minitoc}
+\documentclass[12pt,a4paper]{report} % the report class uses less pages
+%\documentclass[12pt,a4paper]{book}
+%\usepackage{hyperref} % if used, load it BEFORE minitoc
+%\usepackage{mtcoff}
+\usepackage[tight]{minitoc} % tight shortens the lists
 \setcounter{secnumdepth}{5}   % depth of numbering of sectionning commands
 \setcounter{tocdepth}{3}           % depth of table of contents
 \setlength{\mtcindent}{24pt}       % indentation of minitocs, default
@@ -22,8 +25,9 @@
 %\makeatother
 %%% END TEST
 \begin{document}
+% \nomtcrule                    % suppresses minitoc rules
 \dominitoc
-\dominilof[c]                   % center title of minilof's
+\dominilof[c]                   % centers title of minilof's
 \dominilot
 \doparttoc                      % test of parttoc/partlof stuff
 \dopartlof                      % added in version #15
@@ -37,7 +41,6 @@
 \partlof[r]
 \partlot[r]
 \twocolumn                      % the minitoc in twocolumn layout is ugly,
-                                % but works. Ideas to make it better?
 \chapter{AAAAA}                 % a chapter with a lot of sections
 \minitoc[r]                     % minitoc title on the right
 bla bla bla bla bla bla bla bla bla bla bla
@@ -173,27 +176,27 @@ bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \chapter*{CCCCC}         % tests a pseudo-chapter. should have no minitoc
-\addcontentsline{toc}{starchapter}{CCCCC}
+\addstarredchapter{CCCCC}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \section*{U1}
-\addcontentsline{toc}{starsection}{U1}
+\addcontentsline{toc}{section}{U1}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \subsection*{UU1}
-\addcontentsline{toc}{starsubsection}{UU1}
+\addcontentsline{toc}{subsection}{UU1}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \subsubsection*{UUU1}
-\addcontentsline{toc}{starsubsubsection}{UUU1}
+\addcontentsline{toc}{subsubsection}{UUU1}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \paragraph*{UUUU1}
-\addcontentsline{toc}{starparagraph}{UUUU1}
+\addcontentsline{toc}{paragraph}{UUUU1}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \section*{U2}
-\addcontentsline{toc}{starsection}{U2}
+\addcontentsline{toc}{section}{U2}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \part{Second Part}

@@ -5,49 +5,36 @@
 %% The original source files were:
 %%
 %% frenchb.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
-\ProvidesLanguage{frenchb}
-         [1999/01/14 v1.3e French support from the babel system]
-%% File `frenchb.dtx'
+%% Either version 1.2 or, at your option, any later version.
+\ProvidesLanguage{french}
+        [2001/09/09 v1.5g French support from the babel system]
+%%    File `frenchb.dtx'
 %%    Babel package for LaTeX version 2e
-%%    Copyright (C) 1989 - 1999
+%%    Copyright (C) 1989 - 2001
 %%              by Johannes Braams, TeXniek
 %%    Frenchb language Definition File
-%%    Copyright (C) 1989 - 1999
+%%    Copyright (C) 1989 - 2001
 %%              by Johannes Braams, TeXniek
 %%                 Daniel Flipo, GUTenberg
 %%    Please report errors to: Daniel Flipo, GUTenberg
 %%                             Daniel.Flipo@univ-lille1.fr
-%% Please report errors to: Daniel Flipo, GUTenberg
-%%                          Daniel.Flipo@univ-lille1.fr
 %%
-\LdfInit{frenchb}\NoAutoSpaceBeforeFDP
-\ifx\l@french\@undefined
-  \ifx\l@francais\@undefined
-    \@nopatterns{French}
-    \adddialect\l@french0
-  \fi
-\fi
-\def\CurrentOption{frenchb}
-\ifx\l@francais\@undefined
-  \let\l@francais\l@french
-\else
-  \let\l@french\l@francais
-\fi
-\let\l@frenchb\l@french
-\def\PlainFmtName{plain}
-\def\LaTeXeFmtName{LaTeX2e}
+\LdfInit\CurrentOption\datefrench
+\newif\ifLaTeX
+\ifx\magnification\@undefined\LaTeXtrue\fi
+\newif\ifLaTeXe
+\ifx\@compatibilitytrue\@undefined\else\LaTeXetrue\fi
 \newif\if@Two@E \@Two@Etrue
 \def\@FI@{\fi}
 \ifx\@compatibilitytrue\@undefined
@@ -55,12 +42,76 @@
 \else
   \if@compatibility \@Two@Efalse \fi
 \@FI@
+\ifx\l@french\@undefined
+  \ifx\l@francais\@undefined
+    \ifx\l@canadien\@undefined
+      \ifx\l@acadian\@undefined
+        \@nopatterns{French}
+        \adddialect\l@french0
+      \else
+        \let\l@french\l@acadian
+      \fi
+    \else
+      \let\l@french\l@canadien
+    \fi
+  \else
+    \let\l@french\l@francais
+  \fi
+\fi
+\def\CurrentOption{french}
+\ifx\l@francais\@undefined
+  \let\l@francais\l@french
+\fi
+\ifx\l@frenchb\@undefined
+  \let\l@frenchb\l@french
+\fi
+\ifx\l@canadien\@undefined
+  \let\l@canadien\l@french
+\fi
+\ifx\l@acadian\@undefined
+  \let\l@acadian\l@french
+\fi
+\def\datefrancais{\datefrench}
+\def\extrasfrancais{\extrasfrench}
+\def\noextrasfrancais{\noextrasfrench}
+\def\datefrenchb{\datefrench}
+\def\extrasfrenchb{\extrasfrench}
+\def\noextrasfrenchb{\noextrasfrench}
+\ifLaTeXe
+  \AtBeginDocument{\let\captions@French\captionsfrench
+                   \ifx\captionsfrenchb\@undefined
+                      \let\captions@Frenchb\relax
+                   \else
+                      \let\captions@Frenchb\captionsfrenchb
+                   \fi
+                   \ifx\captionsfrancais\@undefined
+                      \let\captions@Francais\relax
+                   \else
+                      \let\captions@Francais\captionsfrancais
+                   \fi
+                   \def\captionsfrench{\captions@French
+                          \captions@Francais\captions@Frenchb}%
+                   \def\captionsfrancais{\captionsfrench}%
+                   \def\captionsfrenchb{\captionsfrench}%
+                  }
+\else
+  \def\captionsfrancais{\captionsfrench}
+  \def\captionsfrenchb{\captionsfrench}
+\fi
+\@ifpackagewith{babel}{canadien}{%
+  \def\captionscanadien{\captionsfrench}%
+  \def\datecanadien{\datefrench}%
+  \def\extrascanadien{\extrasfrench}%
+  \def\noextrascanadien{\noextrasfrench}%
+  }{}
+\@ifpackagewith{babel}{acadian}{%
+  \def\captionsacadian{\captionsfrench}%
+  \def\dateacadian{\datefrench}%
+  \def\extrasacadian{\extrasfrench}%
+  \def\noextrasacadian{\noextrasfrench}%
+  }{}
 \@namedef{extras\CurrentOption}{\lccode`\'=`\'}
 \@namedef{noextras\CurrentOption}{\lccode`\'=0}
-\def\extrasfrancais{\extrasfrenchb}
-\def\extrasfrench{\extrasfrenchb}
-\def\noextrasfrancais{\noextrasfrenchb}
-\def\noextrasfrench{\noextrasfrenchb}
 \ifx\scshape\@undefined
   \ifx\sc\@undefined
      \let\scshape\relax
@@ -75,21 +126,45 @@
      \def\emph#1{\em #1}
   \fi
 \fi
-\def\CaptionSeparator{\string:\space}
-\long\def\@makecaption#1#2{%
-  \vskip\abovecaptionskip
-  \sbox\@tempboxa{#1\CaptionSeparator #2}%
-  \ifdim \wd\@tempboxa >\hsize
-    #1\CaptionSeparator #2\par
+\ifLaTeXe
+  \long\def\STD@makecaption#1#2{%
+    \vskip\abovecaptionskip
+    \sbox\@tempboxa{#1: #2}%
+    \ifdim \wd\@tempboxa >\hsize
+      #1: #2\par
+    \else
+      \global \@minipagefalse
+      \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \vskip\belowcaptionskip}
+  \def\CaptionSeparator{\string:\space}
+  \long\def\FB@makecaption#1#2{%
+    \vskip\abovecaptionskip
+    \sbox\@tempboxa{#1\CaptionSeparator #2}%
+    \ifdim \wd\@tempboxa >\hsize
+      #1\CaptionSeparator #2\par
+    \else
+      \global \@minipagefalse
+      \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \vskip\belowcaptionskip}
+  \AtBeginDocument{%
+  \ifx\@makecaption\STD@makecaption
+      \let\@makecaption\FB@makecaption
   \else
-    \global \@minipagefalse
-    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+    \ifx\@makecaption\@undefined\else
+      \PackageWarning{frenchb.ldf}%
+        {The definition of \protect\@makecaption\space
+         has been changed,\MessageBreak
+         frenchb will NOT customize it;\MessageBreak reported}%
+    \fi
   \fi
-  \vskip\belowcaptionskip}
-\expandafter\addto\csname noextras\CurrentOption\endcsname{%
-  \def\CaptionSeparator{\string:\space}}
-\ifx\fmtname\PlainFmtName
-\else
+  \let\FB@makecaption\relax
+  \let\STD@makecaption\relax}
+  \expandafter\addto\csname noextras\CurrentOption\endcsname{%
+    \def\CaptionSeparator{\string:\space}}
+\fi
+\ifLaTeX
 \@namedef{captions\CurrentOption}{%
    \def\refname{R\'ef\'erences}%
    \def\abstractname{R\'esum\'e}%
@@ -103,7 +178,7 @@
    \def\indexname{Index}%
    \def\figurename{{\scshape Fig.}}%
    \def\tablename{{\scshape Tab.}}%
-   \def\CaptionSeparator{\space--\space}%
+   \def\CaptionSeparator{\space\textendash\space}%
    \def\partname{\protect\@Fpt partie}%
    \def\@Fpt{{\ifcase\value{part}\or Premi\`ere\or Deuxi\`eme\or
    Troisi\`eme\or Quatri\`eme\or Cinqui\`eme\or Sixi\`eme\or
@@ -118,16 +193,15 @@
    \def\ccname{Copie \`a }%
    \def\headtoname{}%
    \def\proofname{D\'emonstration}% for AMS-\LaTeX
+   \def\glossaryname{Glossaire}%
    }
-   \def\captionsfrench{\captionsfrenchb}
-   \def\captionsfrancais{\captionsfrenchb}
 \fi
 \initiate@active@char{:}
 \initiate@active@char{;}
 \initiate@active@char{!}
 \initiate@active@char{?}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
-  \languageshorthands{frenchb}}
+  \languageshorthands{french}}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \bbl@activate{:}\bbl@activate{;}%
   \bbl@activate{!}\bbl@activate{?}}
@@ -138,7 +212,7 @@
   \bbl@frenchspacing}
 \expandafter\addto\csname noextras\CurrentOption\endcsname{%
   \bbl@nonfrenchspacing}
-\declare@shorthand{frenchb}{;}{%
+\declare@shorthand{french}{;}{%
     \ifhmode
       \ifdim\lastskip>\z@
         \unskip\penalty\@M\thinspace
@@ -147,7 +221,7 @@
       \fi
     \fi
     \string;}
-\declare@shorthand{frenchb}{!}{%
+\declare@shorthand{french}{!}{%
     \ifhmode
       \ifdim\lastskip>\z@
         \unskip\penalty\@M\thinspace
@@ -156,7 +230,7 @@
       \fi
     \fi
     \string!}
-\declare@shorthand{frenchb}{?}{%
+\declare@shorthand{french}{?}{%
     \ifhmode
       \ifdim\lastskip>\z@
         \unskip\penalty\@M\thinspace
@@ -165,32 +239,37 @@
       \fi
     \fi
     \string?}
-\declare@shorthand{frenchb}{:}{%
+\declare@shorthand{french}{:}{%
     \ifhmode
       \ifdim\lastskip>\z@
-        \unskip\penalty\@M\
+        \unskip\penalty\@M\Fcolonspace
       \else
-        \FDP@space
+        \FDP@colonspace
       \fi
     \fi
     \string:}
+\newcommand{\Fcolonspace}{\space}
 \def\AutoSpaceBeforeFDP{%
       \def\FDP@thinspace{\penalty\@M\thinspace}%
-      \def\FDP@space{\penalty\@M\ }}
+      \def\FDP@colonspace{\penalty\@M\Fcolonspace}}
 \def\NoAutoSpaceBeforeFDP{\let\FDP@thinspace\@empty
-                          \let\FDP@space\@empty}
+                          \let\FDP@colonspace\@empty}
 \AutoSpaceBeforeFDP
 \declare@shorthand{system}{:}{\string:}
 \declare@shorthand{system}{!}{\string!}
 \declare@shorthand{system}{?}{\string?}
 \declare@shorthand{system}{;}{\string;}
-\ifx\fmtname\LaTeXeFmtName
-   \def\CyrillicGuillemets{\DeclareFontEncoding{OT2}{}{}%
-     \DeclareFontSubstitution{OT2}{wncyr}{m}{n}%
+\newcommand{\og}{\@empty}
+\newcommand{\fg}{\@empty}
+\ifLaTeXe
+   \def\FrenchGuillemetsFrom#1#2#3#4{%
+     \DeclareFontEncoding{#1}{}{}%
+     \DeclareFontSubstitution{#1}{#2}{m}{n}%
      \DeclareTextCommand{\guillemotleft}{OT1}{%
-        {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char60}}%
+        {\fontencoding{#1}\fontfamily{#2}\selectfont\char#3}}%
      \DeclareTextCommand{\guillemotright}{OT1}{%
-        {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char62}}}
+        {\fontencoding{#1}\fontfamily{#2}\selectfont\char#4}}}
+   \def\CyrillicGuillemets{\FrenchGuillemetsFrom{OT2}{wncyr}{60}{62}}
    \def\LasyGuillemets{%
      \DeclareTextCommand{\guillemotleft}{OT1}{\hbox{%
         \fontencoding{U}\fontfamily{lasy}\selectfont(\kern-0.20em(}}%
@@ -202,13 +281,15 @@
    \def\guill@spacing{\penalty\@M\hskip.8\fontdimen2\font
                                plus.3\fontdimen3\font
                                minus.8\fontdimen4\font}
-   \newcommand{\og}{\@empty}
-   \newcommand{\fg}{\@empty}
    \DeclareRobustCommand*{\begin@guill}{\leavevmode
                              \guillemotleft\penalty\@M\guill@spacing}
    \DeclareRobustCommand*{\end@guill}{\ifdim\lastskip>\z@\unskip\fi
                      \penalty\@M\guill@spacing\guillemotright\xspace}
    \AtBeginDocument{\ifx\xspace\@undefined\let\xspace\relax\fi}
+   \def\bbl@frenchguillemets{\renewcommand{\og}{\begin@guill}%
+                             \renewcommand{\fg}{\end@guill}}
+   \def\bbl@nonfrenchguillemets{\renewcommand{\og}{``}%
+            \renewcommand{\fg}{\ifdim\lastskip>\z@\unskip\fi ''}}
 \else
    \def\begin@guill{\leavevmode\raise0.25ex%
                     \hbox{$\scriptscriptstyle\ll$}%
@@ -220,86 +301,98 @@
                   plus.3\fontdimen3\font minus.3\fontdimen4\font
                   \raise0.25ex\hbox{$\scriptscriptstyle\gg$}}
    \let\xspace\relax
+   \def\bbl@frenchguillemets{\let\og\begin@guill
+                             \let\fg\end@guill}
+   \def\bbl@nonfrenchguillemets{\def\og{``}%
+                     \def\fg{\ifdim\lastskip>\z@\unskip\fi ''}}
 \fi
-\def\bbl@frenchguillemets{\let\og\begin@guill
-                          \let\fg\end@guill}
-\def\bbl@nonfrenchguillemets{\def\og{``}%
-                             \def\fg{\ifdim\lastskip>\z@\unskip\fi ''}}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
   \bbl@frenchguillemets}
 \expandafter\addto\csname noextras\CurrentOption\endcsname{%
   \bbl@nonfrenchguillemets}
 \newif\ifFrenchListSpacing \FrenchListSpacingtrue
-\ifx\fmtname\PlainFmtName
-\else
+\newif\ifFrenchOldTrivlist
+\ifLaTeX
+  \let\listORI\list
+  \let\endlistORI\endlist
+  \def\FR@listsettings{%
+     \setlength{\itemsep}{0.4ex plus 0.2ex minus 0.2ex}%
+     \setlength{\parsep}{0.4ex plus 0.2ex minus 0.2ex}%
+     \setlength{\topsep}{0.8ex plus 0.4ex minus 0.4ex}%
+     \setlength{\partopsep}{0.4ex plus 0.2ex minus 0.2ex}%
+     \@tempdima=\parskip
+     \addtolength{\topsep}{-\@tempdima}%
+     \addtolength{\partopsep}{\@tempdima}}%
+  \def\listFR#1#2{\listORI{#1}{\FR@listsettings #2}}%
   \let\@trivlistORI\@trivlist
-  \def\bbl@frenchlistspacing{%
-    \ifFrenchListSpacing
-      \def\@trivlist{%
-          \setlength{\itemsep}{0.4ex plus 0.2ex minus 0.2ex}%
-          \setlength{\parsep}{0.4ex plus 0.2ex minus 0.2ex}%
-          \setlength{\topsep}{0.8ex plus 0.4ex minus 0.4ex}%
-          \setlength{\partopsep}{0.4ex plus 0.2ex minus 0.2ex}%
-          \addtolength{\topsep}{-\parskip}%
-          \addtolength{\partopsep}{\parskip}%
-          \@trivlistORI}%
-    \fi}
-  \def\bbl@nonfrenchlistspacing{\let\@trivlist\@trivlistORI}
+  \def\@trivlistFR{\FR@listsettings\@trivlistORI}
+  \def\bbl@frenchlistspacing{\ifFrenchListSpacing\let\list\listFR\fi
+                   \ifFrenchOldTrivlist\let\@trivlist\@trivlistFR
+                                       \let\list\listORI\fi}
+  \def\bbl@nonfrenchlistspacing{\let\list\listORI
+                                \let\@trivlist\@trivlistORI}
   \expandafter\addto\csname extras\CurrentOption\endcsname{%
     \bbl@frenchlistspacing}
   \expandafter\addto\csname noextras\CurrentOption\endcsname{%
     \bbl@nonfrenchlistspacing}
 \fi
 \newif\ifFrenchItemizeSpacing \FrenchItemizeSpacingtrue
-\ifx\fmtname\PlainFmtName
-\else
-  \let\@ltiORI\labelitemi
-  \let\@ltiiORI\labelitemii
-  \let\@ltiiiORI\labelitemiii
-  \let\@ltivORI\labelitemiv
-  \let\itemizeORI\itemize
-  \let\enditemizeORI\enditemize
+\ifLaTeX
+  \newcommand{\FrenchLabelItem}{\textendash}
+  \newcommand{\Frlabelitemi}{\FrenchLabelItem}
+  \newcommand{\Frlabelitemii}{\FrenchLabelItem}
+  \newcommand{\Frlabelitemiii}{\FrenchLabelItem}
+  \newcommand{\Frlabelitemiv}{\FrenchLabelItem}
   \def\bbl@frenchitemize{%
+    \let\@ltiORI\labelitemi
+    \let\@ltiiORI\labelitemii
+    \let\@ltiiiORI\labelitemiii
+    \let\@ltivORI\labelitemiv
+    \let\itemizeORI\itemize
+    \let\labelitemi\Frlabelitemi
+    \let\labelitemii\Frlabelitemii
+    \let\labelitemiii\Frlabelitemiii
+    \let\labelitemiv\Frlabelitemiv
     \ifFrenchItemizeSpacing
-      \renewenvironment{itemize}%
-        {\begin{list}{\textendash}%
-          {\let\@trivlist\@trivlistORI
-             \settowidth{\labelwidth}{\textendash}%
-             \setlength{\leftmargin}{\labelwidth}%
-             \addtolength{\leftmargin}{\labelsep}%
-             \ifnum\@listdepth=0
-               \setlength{\itemindent}{\parindent}%
-             \else
-               \addtolength{\leftmargin}{\parindent}%
-             \fi
-             \setlength{\itemsep}{\z@}%
-             \setlength{\parsep}{\z@}%
-             \setlength{\topsep}{\z@}%
-             \setlength{\partopsep}{\z@}%
-             \addtolength{\topsep}{-\parskip}%
-             \addtolength{\partopsep}{\parskip}%
-          }%
-        }%
-        {\end{list}}%
-    \else
-      \def\labelitemi{\textendash}%
-      \def\labelitemii{\textendash}%
-      \def\labelitemiii{\textendash}%
-      \def\labelitemiv{\textendash}%
-    \fi}
-  \def\bbl@nonfrenchitemize{\let\labelitemi\@ltiORI
+      \def\itemize{\let\@trivlist\@trivlistORI
+        \ifnum \@itemdepth >\thr@@\@toodeep\else
+        \advance\@itemdepth\@ne
+        \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+        \expandafter
+        \listORI
+        \csname\@itemitem\endcsname
+        {\settowidth{\labelwidth}{\csname\@itemitem\endcsname}%
+         \setlength{\leftmargin}{\labelwidth}%
+         \addtolength{\leftmargin}{\labelsep}%
+         \ifnum\@listdepth=0
+           \setlength{\itemindent}{\parindent}%
+         \else
+           \addtolength{\leftmargin}{\parindent}%
+         \fi
+         \setlength{\itemsep}{\z@}%
+         \setlength{\parsep}{\z@}%
+         \setlength{\topsep}{\z@}%
+         \setlength{\partopsep}{\z@}%
+         \@tempdima=\parskip
+         \addtolength{\topsep}{-\@tempdima}%
+         \addtolength{\partopsep}{\@tempdima}}%
+        \fi}%
+     \fi}
+  \def\bbl@nonfrenchitemize{\let\Frlabelitemi\labelitemi
+                            \let\Frlabelitemii\labelitemii
+                            \let\Frlabelitemiii\labelitemiii
+                            \let\Frlabelitemiv\labelitemiv
+                            \let\labelitemi\@ltiORI
                             \let\labelitemii\@ltiiORI
                             \let\labelitemiii\@ltiiiORI
                             \let\labelitemiv\@ltivORI
-                            \let\itemize\itemizeORI
-                            \let\enditemize\enditemizeORI}
+                            \let\itemize\itemizeORI}
   \expandafter\addto\csname extras\CurrentOption\endcsname{%
     \bbl@frenchitemize}
   \expandafter\addto\csname noextras\CurrentOption\endcsname{%
     \bbl@nonfrenchitemize}
 \fi
-\ifx\fmtname\PlainFmtName
-\else
+\ifLaTeX
   \let\@aifORI\@afterindentfalse
   \def\bbl@frenchindent{\let\@afterindentfalse\@afterindenttrue
                         \@afterindenttrue}
@@ -310,9 +403,18 @@
   \expandafter\addto\csname noextras\CurrentOption\endcsname{%
     \bbl@nonfrenchindent}
 \fi
+\newcommand{\DecimalMathComma}{\iflanguage{french}%
+                                 {\mathcode`\,="013B}{}%
+              \addto\extrasfrench{\mathcode`\,="013B}}
+\newcommand{\StandardMathComma}{\mathcode`\,="613B%
+            \addto\extrasfrench{\mathcode`\,="613B}}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+   \mathcode`\,="613B}
 \mathchardef\m@comma="013B
 \def\@comma@{\ifmmode\m@comma\else,\fi}
 \def\f@thousandsep{\ifmmode\mskip5.5mu\else\penalty\@M\kern.3em\fi}
+\def\ThinSpaceInFrenchNumbers{\def\f@thousandsep{%
+                   \ifmmode\mskip3mu\else\penalty\@M\kern.16667em\fi}}
 \newcommand{\decimalsep}{.}
 \newcommand{\thousandsep}{\@comma@}
 \expandafter\addto\csname extras\CurrentOption\endcsname{%
@@ -380,20 +482,49 @@
   \else
     \thousandsep\expandafter\@addthousandsep\expandafter#4%
   \fi}
-\ifx\fmtname\LaTeXeFmtName
-  \let\textellipsisORI\textellipsis
-  \AtBeginDocument{\ifx\tdots@ORI\@undefined\let\tdots@ORI\tdots@\fi}
+\ifLaTeXe
   \DeclareTextCommandDefault{\Frtextellipsis}{%
     .\kern\fontdimen3\font.\kern\fontdimen3\font.\xspace}
-  \def\bbl@frenchdots{\let\textellipsis\Frtextellipsis
-                      \let\tdots@ORI\tdots@
-                      \let\tdots@\Frtextellipsis}
-  \def\bbl@nonfrenchdots{\let\textellipsis\textellipsisORI
-           \ifx\tdots@ORI\@undefined\else\let\tdots@\tdots@ORI\fi}
+  \newcommand{\Tdots@ORI}{\@xp\textellipsis}
+  \newcommand{\Tdots@}{\Tdots@ORI}
+  \newcommand{\Mdots@}{\@xp\mdots@}
+  \AtBeginDocument{\DeclareRobustCommand{\dots}{\relax
+                   \csname\ifmmode M\else T\fi dots@\endcsname}%
+                   \ifx\@xp\@undefined\let\@xp\relax\fi
+                   \ifx\mdots@\@undefined\let\Tdots@ORI\textellipsis
+                                         \let\Mdots@\mathellipsis\fi}
+  \def\bbl@frenchdots{\let\Tdots@\Frtextellipsis}
+  \def\bbl@nonfrenchdots{\let\Tdots@\Tdots@ORI}
   \expandafter\addto\csname extras\CurrentOption\endcsname{%
     \bbl@frenchdots}
   \expandafter\addto\csname noextras\CurrentOption\endcsname{%
     \bbl@nonfrenchdots}
+\fi
+\ifLaTeXe
+  \newcommand{\FrenchLayout}{%
+    \renewcommand{\StandardLayout}{%
+      \PackageWarning{frenchb.ldf}%
+        {\protect\StandardLayout\space makes no change\MessageBreak
+         (\protect\FrenchLayout\space has been selected before
+         \MessageBreak for the whole document)}%
+    }%
+    \AtBeginDocument{\bbl@frenchitemize\bbl@frenchlistspacing
+                     \bbl@frenchindent}%
+    \let\bbl@nonfrenchitemize\relax
+    \let\bbl@nonfrenchlistspacing\relax
+    \let\bbl@nonfrenchindent\relax}
+  \newcommand{\StandardLayout}{%
+    \renewcommand{\FrenchLayout}{%
+      \PackageWarning{frenchb.ldf}%
+        {\protect\FrenchLayout\space makes no change\MessageBreak
+         (\protect\StandardLayout\space has been selected before
+         \MessageBreak for the whole document)}%
+    }%
+    \let\bbl@frenchitemize\relax
+    \let\bbl@frenchlistspacing\relax
+    \let\bbl@frenchindent\relax}
+  \@onlypreamble\FrenchLayout
+  \@onlypreamble\StandardLayout
 \fi
 \ifx\sevenrm\@undefined
   \ifx\@ptsize\@undefined
@@ -442,7 +573,7 @@
 \DeclareRobustCommand*{\No}{N\up{\lowercase{o}}\kern+.2em}
 \DeclareRobustCommand*{\no}{n\up{\lowercase{o}}\kern+.2em}
 \DeclareRobustCommand*{\bsc}[1]{\leavevmode\hbox{\scshape #1}}
-\ifx\fmtname\LaTeXeFmtName
+\ifLaTeXe
   \DeclareTextSymbol{\ae}{T1}{230}
   \DeclareTextSymbol{\ae}{OT1}{26}
   \DeclareTextSymbol{\oe}{T1}{247}
@@ -457,6 +588,9 @@
   \DeclareTextSymbol{\circonflexe}{OT1}{94}
   \DeclareTextSymbol{\tild}{T1}{126}
   \DeclareTextSymbol{\tild}{OT1}{126}
+  \DeclareTextSymbolDefault{\at}{OT1}
+  \DeclareTextSymbolDefault{\circonflexe}{OT1}
+  \DeclareTextSymbolDefault{\tild}{OT1}
   \DeclareRobustCommand*{\boi}{\textbackslash}
   \DeclareRobustCommand*{\degre}{\r{}}
 \else
@@ -473,7 +607,7 @@
 \fi
 \DeclareRobustCommand*{\degres}{%
                        \leavevmode\hbox to 0.3em{\hss\degre\hss}}
-\ifx\fmtname\LaTeXeFmtName
+\ifLaTeXe
   \AtBeginDocument{%
     \ifx\csubinverse\@undefined
       \DeclareTextCompositeCommand{\^}{OT1}{i}{\^\i}%
@@ -481,20 +615,23 @@
     \fi}
 \fi
 \@namedef{date\CurrentOption}{%
-  \edef\today{\number\day
-    \ifnum1=\day \noexpand\ier\fi
+  \def\today{\number\day
+    \ifnum1=\day {\ier}\fi
     \space \ifcase\month
     \or janvier\or f\'evrier\or mars\or avril\or mai\or juin\or
     juillet\or ao\^ut\or septembre\or octobre\or novembre\or
     d\'ecembre\fi
     \space \number\year}}
-\def\datefrench{\datefrenchb}
-\def\datefrancais{\datefrenchb}
 \let\T@one\relax
 \let\@FI@\relax
-\let\PlainFmtName\relax
-\let\LaTeXeFmtName\relax
-\ldf@finish\CurrentOption
+\let\ifLaTeX\@undefined
+\let\LaTeXtrue\@undefined
+\let\LaTeXfalse\@undefined
+\let\ifLaTeXe\@undefined
+\let\LaTeXetrue\@undefined
+\let\LaTeXefalse\@undefined
+\loadlocalcfg{frenchb}
+\ldf@quit\CurrentOption
 %%
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z

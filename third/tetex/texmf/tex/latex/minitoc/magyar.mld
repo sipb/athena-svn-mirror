@@ -1,3 +1,4 @@
+\ProvidesFile{magyar.mld}[1999/03/16]
 % Magyar titles for minitoc.sty
 \def\mtctitle{Tratalom}%
 \def\mlftitle{\'Abr\'ak}% or {\'Abr\'ak list\'aja}%

@@ -1,0 +1,19 @@
+<head>
+<title>UK TeX FAQ -- question 179</title>
+</head><body>
+<h3>Placing two-column floats at bottom of page</h3>
+<p>You specified placement '<code>[htbp]</code>' for your full-width figure or
+table, but they always get placed at the top of the page...  Well,
+it <em>is</em> what the documentation says: LaTeX, unadorned, only
+allows full-width floats at the top of a page, or occupying (part of) a
+float page.
+<p>The <i>stfloats</i> package ameliorates the situation somewhat, and
+makes LaTeX honour '[b]' placement as well.
+<p>The FAQ team doesn't know of any package that will make
+LaTeX honour '[h]' placement of double-column floats, but the
+<i>midfloat</i> package can be pressed into service to provide
+something approximating the effect it would have.
+<dl>
+<dt><tt><i>stfloats.sty, midfloat.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/sttools.tar.gz">macros/latex/contrib/supported/sttools.tar.gz</a>
+</dl>
+<p></body>

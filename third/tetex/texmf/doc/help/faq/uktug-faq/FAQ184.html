@@ -1,0 +1,25 @@
+<head>
+<title>UK TeX FAQ -- question 184</title>
+</head><body>
+<h3>Footnotes in LaTeX section headings</h3>
+<p>The <code>\footnote</code> command is fragile, so that simply placing the
+command in <code>\section</code>'s arguments isn't satisfactory.  Using
+<code>\protect</code><code>\footnote</code> isn't a good idea either: the arguments of a
+section command are used in the table of contents and (more
+dangerously) potentially also in page headings.  Unfortunately,
+there's no mechanism to suppress the footnote in the heading while
+allowing it in the table of contents, though having footnotes in the
+table of contents is probably unsatisfactory anyway.
+<p>To suppress the footnote in headings and table of contents:
+<ul>
+<li> Take advantage of the fact that the mandatory argument doesn't
+  'move' if the optional argument is present:
+  <code>\section[title]{title</code><code>\footnote</code><code>{title ftnt}}</code>
+<li> Use the <i>footmisc</i> package, with package option
+  <code>stable</code> - this modifies footnotes so that they softly and silently
+  vanish away if used in a moving argument.
+</ul>
+<dl>
+<dt><tt><i>footmisc.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/footmisc.tar.gz">macros/latex/contrib/supported/footmisc.tar.gz</a>
+</dl>
+<p></body>
