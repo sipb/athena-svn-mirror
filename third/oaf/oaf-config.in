@@ -84,7 +84,12 @@ while test $# -gt 0; do
 done
 
 the_libs="$the_libs -L$libdir -loaf `@ORBIT_CONFIG@ --use-service=name --libs server` @INTLLIBS@"
-the_flags="$the_flags -I$includedir `@ORBIT_CONFIG@ --cflags server`"
+
+if test $includedir != /usr/include ; then
+  the_flags="$the_flags -I$includedir `@ORBIT_CONFIG@ --cflags server`"
+else
+  the_flags="$the_flags `@ORBIT_CONFIG@ --cflags server`"
+fi
 
 if $cflags; then
     all_flags="$the_flags"
