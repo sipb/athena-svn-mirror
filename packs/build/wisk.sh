@@ -2,7 +2,7 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.34 $
+# $Revision: 1.35 $
 
 umask 2
 
@@ -35,6 +35,9 @@ endif
 rehash
 echo $path
 
+# If no owner is specified to install, default to root.
+setenv INSTOPT "-o root" 
+
 #this script assumes that a dependency list has been generated from somewhere.
 #At the moment that just might be a hard coded list.
 
@@ -42,7 +45,7 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 t
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/unsupported/perl third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-19.28 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
 
 switch ( $machine )
   case decmips
@@ -140,20 +143,21 @@ endif
 if ($installman == 1) then
   foreach package ( $packages )
     echo "Installing man in $package" >>& $outfile
-    switch($package)
-      case third/supported/X11R4
-      case third/supported/xfonts
-      case athena/lib/kerberos1
-      case athena/lib/moira.dev
-        breaksw
-      case third/supported/X11R5
-        (cd /build/$package/mit ; make install.man SUBDIRS="util clients demos man" >>& $outfile)
-        breaksw
-      case athena/lib/kerberos2
-        set package="athena/lib/kerberos"
-      default:
-        (cd /build/$package ; make install.man >>& $outfile)
-    endsw
+
+    if (-e /build/$package/.build) then
+	source /build/$package/.build
+    else
+        switch($package)
+          case third/supported/xfonts
+          case athena/lib/kerberos1
+          case athena/lib/moira.dev
+            breaksw
+          case athena/lib/kerberos2
+            set package="athena/lib/kerberos"
+          default:
+            (cd /build/$package ; make install.man >>& $outfile)
+        endsw
+    endif
   end
   exit 0
 endif
@@ -188,6 +192,10 @@ echo "***** In $package" >>& $outfile
 switch ($package)
 	case setup
 	(echo In setup >>& $outfile)
+
+	# Probably want this in build/bin... change Imake.tmpl...
+	mkdir -p $SRVD/usr/athena/bin
+	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 
 	mkdir /build/bin
 	cd /build/support/imake
@@ -240,7 +248,11 @@ switch ($package)
 		exit -1
 	endif
 
+# We if on these machines because we don't expect to do any of this
+# for future machines, so this shouldn't require changes for new ports.
+if ($machine == "decmips" || machine == "sun4" || $machine == "rsaix") then
 	source /source/support/scripts/X.csh
+endif
 
 # Mark, why don't we just do everything in build/support?
 #	cd /build/support/makedepend
@@ -259,9 +271,6 @@ switch ($package)
 
 	rehash
 
-	# Probably want this in build/bin... change Imake.tmpl...
-#	mkdir -p $SRVD/usr/athena/bin
-#	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 	# Hack...
 	if ($machine == "decmips") then
 		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix /build/bin/mkdep >>& $outfile)
@@ -354,7 +363,7 @@ endif # installonly
 		echo "K5 did not build to completion."  >>& $outfile
 	endif
 
-	if ( (! -r /build/$package/src/lib/libkrb5.a) ||
+	if ( (! -r /build/$package/src/lib/libkrb5.a) || \
 	     (! -r /build/$package/src/lib/libcrypto.a) ) then
 			echo "We bombed in $package"  >>& $outfile
 			exit -1
@@ -408,52 +417,6 @@ endif # installonly
 	endif
 	breaksw
 
-	case third/unsupported/perl
-	case third/unsupported/perl-4.036
-	(echo In $package >>& $outfile)
-	set PERLFILES = "  ./x2p/s2p.SH ./x2p/find2perl.SH ./x2p/Makefile.SH ./x2p/cflags.SH ./Makefile.SH ./config_h.SH ./c2ph.SH ./h2ph.SH ./makedepend.SH ./cflags.SH ./makedir.SH"
-if ( $installonly == "0" ) then
-	( cd /build/$package ; cp config.sh.$machine config.sh) 
-	( cd /build/$package  ; cp cppstdin.$machine cppstdin ) 
-	 cd /build/$package ; \
-		  foreach p ($PERLFILES)
-		   sh $p >>& $outfile
-		  end 
-	(( cd /build/$package ;  make clean >>& $outfile) && \
-	( cd /build/$package ;  make depend >>& $outfile) && \
-	( cd /build/$package ;  make >>& $outfile) && \
-	( cd /build/$package ;  make test >>& $outfile))
-        if ( $status == 1 ) then
-                echo "We bombed in $package" >> & $outfile
-                exit -1
-        endif
-endif #installonly
-
-	cd /build/$package
-	(( make install DESTDIR=$SRVD >>& $outfile) &&\
-	 (( sed -e "s:/usr/:$SRVD/usr/:" h2ph > h2phsrvd ) >>& $outfile) && \
-	 ( chmod 755 h2phsrvd >>& $outfile ) && \
-	 (( cd $SRVD/usr/include; /build/$package/h2phsrvd * */* ) >>& $outfile ) && \
-	 (( sed -e "s:/usr/include:/usr/athena/include:" h2phsrvd > hath2phsrvd ) >>& $outfile) && \
-	 ( chmod 755 hath2phsrvd >>& $outfile ) && \
-	 (( cd $SRVD/usr/athena/include; /build/$package/hath2phsrvd * */* ) >>& $outfile) && \
-	 ( rm -f h2phsrvd hath2phsrvd >>& $outfile ))
-        if ( $status == 1 ) then
-                echo "We bombed in $package" >> & $outfile
-                exit -1
-        endif
-	breaksw
-
-	case third/unsupported/sysinfo
-	(echo In $package >>& $outfile)
-if ( $installonly == "0" ) then
-	( cd /build/$package ; make clean >>& $outfile )
-	( cd /build/$package ; make >>& $outfile )
-endif # installonly
-	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
-	rehash
-	breaksw
-
 	case third/unsupported/top
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
@@ -478,27 +441,6 @@ endif # installonly
         ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
 	endif
         breaksw
-
-# Ummm... We don't do ls anymore, right?
-# We might like to call it something different and let people
-# alias it? What's the deal here anyway?
-	case athena/bin/ls
-	(echo In $package >>& $outfile)
-if ( $installonly == "0" ) then
-	(( cd /build/$package ; make clean  >>& $outfile ) && \
-	( cd /build/$package ; make -f Makefile.$machine >>& $outfile))
-        if ( $status == 1 ) then
-                echo "We bombed in $package" >> & $outfile
-                exit -1
-        endif
-endif # installonly
-	( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
-        if ( $status == 1 ) then
-                echo "We bombed in $package" >> & $outfile
-                exit -1
-        endif
-
-	breaksw
 
 	case third/supported/tcsh6
 	(echo In $package >>& $outfile)
@@ -567,18 +509,6 @@ endif # installonly
 	rehash
 	breaksw
 
-	case third/supported/X11R4
-	(echo In $package >> & $outfile) 
-if ( $installonly == "0" ) then
-	if ($machine == "sun4") then
-	(cd /build/$package ; make -k World BOOTSTRAPCFLAGS=-DSYSV >>& $outfile)
-	else
-	(cd /build/$package ; make -k World >>& $outfile)
-	endif
-endif # installonly
-	(cd /build/$package ; make -k install SUBDIRS="include lib extensions" DESTDIR=$SRVD >>& $outfile)
-	breaksw
-
 	case third/supported/xfonts
 	if ($machine == "decmips") then
 		echo In $package >>& $outfile
@@ -599,22 +529,6 @@ endif # installonly
 	endif
 	breaksw
 
-	case third/supported/motif
-	(echo In $package >> & $outfile)
-if ( $installonly == "0" ) then
-	(cd /build/$package ; imake -DTOPDIR=. -I./config/ >>& $outfile)
-	(cd /build/$package ; make -k World >>& $outfile)
-endif # installonly
-	((cd /build/$package ; make -k install DESTDIR=$SRVD >>& $outfile) && \
-	(cp -p /build/motif/`machtype`bin/mwm $SRVD/usr/athena/bin >>& $outfile) && \
-	(cp -p /build/motif/`machtype`lib/X11/system.mwmrc $SRVD/usr/athena/lib/X11 >>& $outfile ) && \
-	(cp -p /build/motif/`machtype`lib/X11/app-defaults/Mwm $SRVD/usr/athena/lib/X11/app-defaults >>& $outfile ))
-	if ($status == 1) then
-		echo "We bombed in $package" >>& $outfile
-		exit -1
-	endif
-	breaksw
-
 	case third/supported/afs
 	(echo In $package >> & $outfile )
 if ( $installonly == "0" ) then
@@ -625,20 +539,6 @@ if ( $installonly == "0" ) then
 endif # installonly
 	(cd /build/$package; make install DESTDIR=$SRVD >>& $outfile)
 	breaksw	
-
-	case third/supported/X11R5
-	(echo In $package >> & $outfile)
-if ( $installonly == "0" ) then
-	if ( $machine == "sun4" ) then
-	(cd /build/$package/mit ; make -f Makefile.ini -k World 'BOOTSTRAPCFLAGS="-DSVR4"' >>& $outfile)
-	else
-	(cd /build/$package/mit ; make -k World >>& $outfile)
-	endif
-endif # installonly
-	(cd /build/$package/mit ;  make -k install SUBDIRS="util clients demos" DESTDIR=$SRVD >>& $outfile)
-	(cd /build/$package/mit/include/bitmaps; make install INCDIR=$SRVD/usr/athena/lib/X11 >>& $outfile)
-	rehash
-	breaksw
 
 	case athena/lib/zephyr.p4
 	(echo In $package >>& $outfile)
@@ -736,8 +636,6 @@ endif # installonly
 	rehash
 	breaksw
 
-# Mark? Are you piping to true??
-# Changed to || (true)
 	case athena/lib/moira.dev
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
@@ -780,7 +678,18 @@ endif # installonly
 	breaksw
 
 	default:
-		switch (`cat /build/$package/.rule`)
+		if (-e /build/$package/.build) then
+			source /build/$package/.build
+			if ($status != 0) exit $status
+		else
+			if (-e /build/$package/.rule) then
+				set rule = `cat /build/$package/.rule`
+			else
+				set rule = simple
+			endif
+		endif
+
+		switch ($rule)
 
 		case complex
 if ( $installonly == "0" ) then
@@ -808,6 +717,10 @@ endif # installonly
    endif
  rehash
 		breaksw
+
+		case skip
+		breaksw
+
 		case simple
 		default:
 if ( $installonly == "0" ) then
