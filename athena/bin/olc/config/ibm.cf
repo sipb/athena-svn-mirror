@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.8 1991-04-19 00:59:34 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.9 1991-05-06 23:14:14 lwvanels Exp $ */
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
 
@@ -15,4 +15,13 @@
 
 #ifdef RtArchitecture
 #define HasSaber 1
+#endif
+
+#ifdef RiosArchitecture
+#define MachSpecDef		-I/usr/athena/include -D_BSD -D_BSD_INCLUDES -DAIXV=31 -qlanglvl=extended
+#define ExtraLoadFlags		-lbsd
+#define HaveAnsiIncludes	1
+#define HaveTermIO		1
+#define HaveMotif		0
+#define HaveDefErrno		0
 #endif
