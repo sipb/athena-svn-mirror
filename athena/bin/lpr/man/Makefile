@@ -2,7 +2,7 @@ MANDIR=/usr/man
 MAN1=${DESTDIR}${MANDIR}/man1
 MAN5=${DESTDIR}${MANDIR}/man5
 MAN8=${DESTDIR}${MANDIR}/man8
-all depend:
+all depend Makefile:
 
 clean:
 	rm -f *~
