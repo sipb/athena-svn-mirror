@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/sendbug/Makefile,v $
-#	$Author: epeisach $
+#	$Author: raeburn $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/sendbug/Makefile,v 1.4 1989-09-16 12:52:40 epeisach Exp $
+#	$Id: Makefile,v 1.5 1989-12-04 15:26:38 raeburn Exp $
 #
 
 
@@ -13,7 +13,6 @@ all:
 
 install: 
 	install -c sendbug.sh ${DESTDIR}${CONFDIR}/sendbug
-	install -c bug_report ${DESTDIR}${CONFDIR}/lib/bug_report
 
 clean:
 
