@@ -1,0 +1,379 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeCanvasText</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME Canvas Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GNOME Canvas Library (libgnomecanvas)"
+HREF="c4.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeCanvasShape"
+HREF="libgnomecanvas-gnomecanvasshape.html"><LINK
+REL="NEXT"
+TITLE="GnomeCanvasWidget"
+HREF="libgnomecanvas-gnomecanvaswidget.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME Canvas Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomecanvas-gnomecanvasshape.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomecanvas-gnomecanvaswidget.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="LIBGNOMECANVAS-GNOMECANVASTEXT">GnomeCanvasText</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1872"
+></A
+><H2
+>Name</H2
+>GnomeCanvasText&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1875"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <A
+HREF="libgnomecanvas-gnomecanvastext.html#GNOMECANVASTEXT"
+>GnomeCanvasText</A
+>;
+struct      <A
+HREF="libgnomecanvas-gnomecanvastext.html#GNOMECANVASTEXTPRIVATE"
+>GnomeCanvasTextPrivate</A
+>;&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1880"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1883"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1885"
+></A
+><H3
+><A
+NAME="GNOMECANVASTEXT"
+></A
+>struct GnomeCanvasText</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeCanvasText {
+	GnomeCanvasItem item;
+
+	PangoFontDescription *font_desc; /* Font description for text */
+	PangoAttrList *attr_list;        /* Attribute list of the text (caching) */
+	PangoUnderline underline;
+	gboolean       strikethrough;
+	int            rise;
+	double         scale;
+	
+	char *text;			/* Text to display */
+	GdkBitmap *stipple;		/* Stipple for text */
+	GdkGC *gc;			/* GC for drawing text */
+        PangoLayout *layout;            /* The PangoLayout containing the text */
+
+	gulong pixel;			/* Fill color */
+
+	double x, y;			/* Position at anchor */
+
+	double clip_width;		/* Width of optional clip rectangle */
+	double clip_height;		/* Height of optional clip rectangle */
+
+	double xofs, yofs;		/* Text offset distance from anchor position */
+
+	double affine[6];               /* The item -&gt; canvas affine */ /*AA*/
+
+	GtkAnchorType anchor;		/* Anchor side for text */
+	GtkJustification justification;	/* Justification for text */
+
+	int cx, cy;			/* Top-left canvas coordinates for text */
+	int clip_cx, clip_cy;		/* Top-left canvas coordinates for clip rectangle */
+	int clip_cwidth, clip_cheight;	/* Size of clip rectangle in pixels */
+	int max_width;			/* Maximum width of text lines */
+	int height;			/* Rendered text height in pixels */
+
+        guint32 rgba;			/* RGBA color for text */ /*AA*/
+
+	guint clip : 1;			/* Use clip rectangle? */
+
+	guint underline_set : 1;        /* Apply specified underline style? */
+	guint strike_set    : 1;        /* Apply specified strikethrough style? */
+	guint rise_set      : 1;        /* Apply specified ascension/descension? */
+
+	guint scale_set     : 1;        /* Apply specified font scaling ratio? */
+
+	GnomeCanvasTextPrivate *priv;	
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1890"
+></A
+><H3
+><A
+NAME="GNOMECANVASTEXTPRIVATE"
+></A
+>struct GnomeCanvasTextPrivate</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeCanvasTextPrivate;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomecanvas-gnomecanvasshape.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomecanvas-gnomecanvaswidget.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeCanvasShape</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeCanvasWidget</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,15 @@
+August 14, 2001:
+===============
+
+* Released libgnomecanvas 1.102.0 "Roswell".
+
+  This is the first library freeze release of libgnomeui.
+
+  Outstanding issues:
+
+  - GnomeCanvasRichText: this may need some love.
+
+
+
+
+

@@ -1,0 +1,64 @@
+<!-- ##### SECTION Title ##### -->
+GnomeCanvasText
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomeCanvasText ##### -->
+<para>
+
+</para>
+
+@item: 
+@font_desc: 
+@attr_list: 
+@underline: 
+@strikethrough: 
+@rise: 
+@scale: 
+@text: 
+@stipple: 
+@gc: 
+@layout: 
+@pixel: 
+@x: 
+@y: 
+@clip_width: 
+@clip_height: 
+@xofs: 
+@yofs: 
+@affine: 
+@anchor: 
+@justification: 
+@cx: 
+@cy: 
+@clip_cx: 
+@clip_cy: 
+@clip_cwidth: 
+@clip_cheight: 
+@max_width: 
+@height: 
+@rgba: 
+@clip: 
+@underline_set: 
+@strike_set: 
+@rise_set: 
+@scale_set: 
+@priv: 
+
+<!-- ##### STRUCT GnomeCanvasTextPrivate ##### -->
+<para>
+
+</para>
+
+
