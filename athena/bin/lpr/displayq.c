@@ -206,6 +206,8 @@ displayq(format)
 	 */
 	if (chdir(SD) < 0) {
 	        char msgbuf[255];
+
+		if (RM) return(rem_fils);
 		sprintf(msgbuf,
 			"Cannot chdir to spooling directory %s for %s",
 			SD, printer);
