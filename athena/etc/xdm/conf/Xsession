@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.13 1995-09-04 21:22:27 cfields Exp $
+# $Id: Xsession,v 1.14 1997-03-19 01:29:49 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -57,7 +57,7 @@ if [ $status != 0 ]; then
 		echo 'to login and repair your dot files.'
 		kdestroy			# destroy tickets.
 		sleep 10
-		exit $status
+		exit 1
 fi
 
 
