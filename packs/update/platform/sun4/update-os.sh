@@ -29,8 +29,10 @@ rm -f /var/athena/rc.conf.sync
 
 if [ "$NEWOS" = true ]; then
 	echo "Copying new system files"
-	cp -p /os/etc/driver_aliases /etc/driver_aliases
-	cp -p /os/etc/name_to_major /etc/name_to_major
+	cp -p "/srvd/etc/driver_aliases.$SUNPLATFORM" /etc/driver_aliases
+	cp -p "/srvd/etc/driver_classes.$SUNPLATFORM" /etc/driver_classes
+	cp -p "/srvd/etc/minor_perm.$SUNPLATFORM" /etc/minor_perm
+	cp -p "/srvd/etc/name_to_major.$SUNPLATFORM" /etc/name_to_major
 fi
 
 if [ "$NEWUNIX" = true ] ; then
