@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.8 2003-07-29 14:03:36 zacheiss Exp $
+# $Id: machtype_linux.sh,v 1.9 2003-08-12 21:47:50 jweiss Exp $
 
 # We need to support the following options:
 # NOTE: c, v, d, L, and M are needed by olc, and it cares what order
@@ -133,7 +133,7 @@ if [ $cpu ] ; then
 fi
 
 if [ $display ] ; then
-        /sbin/lspci | awk -F: '/VGA/ {print $3}'
+        /sbin/lspci | awk -F: '/VGA/ {print $3}' | sed -n -e 's/^ //' -e p
 	printed=1
 fi
 
