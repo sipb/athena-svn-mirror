@@ -2,18 +2,20 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.4 1999-05-04 19:12:35 mwhitson Exp $
+#* $Id: Makefile.in,v 1.5 1999-05-11 18:40:40 mwhitson Exp $
 #
 
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libexecdir=@libexecdir@
+datadir=@datadir@
 ADMINDIR=@ADMINDIR@
 SHELL=@SHELL@
 
 # where the filters are installed:
 INSTDIR=${libexecdir}/filters
+DATAINSTDIR=${datadir}/filters
 
 # shell to use
 
@@ -60,7 +62,8 @@ INCS=$(patsubst %,-I%,$(INCLUDE))
 FLAGS=  $(QUIET) $(INCS)
 
 # commands
-INSTALL=$(SRC)/psbanner.ps $(SRC)/pclbanner
+DATAINSTALL=$(SRC)/psbanner.ps
+INSTALL=$(SRC)/pclbanner
 COMMANDS= ifhp textps accounting.sh
 
 .SUFFIXES: .sh .sh_init
@@ -104,6 +107,10 @@ install: all
 	done ;
 	for i in $(INSTALL) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR)/`basename $$i`; \
+	done ;
+	${SRC}/mkinstalldirs $(DESTDIR)$(DATAINSTDIR)
+	for i in $(DATAINSTALL) ; do \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(DATAINSTDIR)/`basename $$i`; \
 	done ;
 	cd $(DESTDIR)$(INSTDIR); rm -f ofhp banner; \
 		ln -s ifhp ofhp; ln -s ifhp banner

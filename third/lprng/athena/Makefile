@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.2 1999-04-05 16:06:32 mwhitson Exp $
+# $Id: Makefile,v 1.3 1999-05-11 18:40:30 mwhitson Exp $
 
 SHELL=/bin/sh
 
 libexecdir=/usr/athena/libexec
-libdir=/usr/athena/lib
+datadir=/usr/athena/lib
+sysconfdir=/etc/athena
 
 prepare:
 
@@ -14,13 +15,14 @@ all:
 check:
 
 install:
-	mkdir -p ${DESTDIR}${libexecdir}
+	mkdir -p ${DESTDIR}${libexecdir}/filters
+	mkdir -p ${DESTDIR}${datadir}/filters
+	mkdir -p ${DESTDIR}${sysconfdir}
 	install -c -m 755 get_hesiod_pcap.sh \
 		${DESTDIR}${libexecdir}/get_hesiod_pcap
-	mkdir -p ${DESTDIR}${libdir}/filters
 	install -c -m 755 banner.pl \
-		${DESTDIR}${libdir}/filters/banner.pl
+		${DESTDIR}${libexecdir}/filters/banner.pl
 	install -c -m 644 banner.ps \
-		${DESTDIR}${libdir}/filters/banner.ps
+		${DESTDIR}${datadir}/filters/banner.ps
 	install -c -m 644 owl.ps \
-		${DESTDIR}${libdir}/filters/print.logo.ps
+		${DESTDIR}${sysconfdir}/print.logo.ps

@@ -1,10 +1,10 @@
 #!/usr/athena/bin/perl
 
-# $Id: banner.pl,v 1.1 1999-04-05 16:06:33 mwhitson Exp $
+# $Id: banner.pl,v 1.2 1999-05-11 18:40:31 mwhitson Exp $
 
 $template = "/usr/athena/lib/filters/banner.ps";
 $motdfile = "/etc/athena/print.motd";
-$logofile = "/usr/athena/lib/filters/print.logo.ps";
+$logofile = "/etc/athena/print.logo.ps";
 
 # default to pass to banner.ps
 $bannertype = "random";
