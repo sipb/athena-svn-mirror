@@ -157,6 +157,7 @@ fi
 chkconfig --add athena-ws
 chkconfig --add athena-verify
 chkconfig --add syncconf
+chkconfig --add athena-sysconfig
 # Force a reset to what's specified in the rc file; we changed it to
 # run after afs in 9.0.
 chkconfig --level 2345 athena-ws reset
@@ -292,6 +293,7 @@ if [ $1 = 0 ]; then
   chkconfig --del athena-ws
   chkconfig --del athena-verify
   chkconfig --del syncconf
+  chkconfig --del athena-sysconfig
 fi
 
 %postun
