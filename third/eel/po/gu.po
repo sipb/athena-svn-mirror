@@ -1,0 +1,267 @@
+# translation of eel.HEAD.gu.po to Gujarati
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# MagNet <magnet@magnet-i.com>, 2004.
+# Ankit Patel <ankit@redhat.com>, 2004.
+msgid ""
+msgstr ""
+"Project-Id-Version: eel.HEAD.gu\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"PO-Revision-Date: 2004-08-06 19:00+0530\n"
+"Last-Translator: Ankit Patel <ankit@redhat.com>\n"
+"Language-Team: Gujarati\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"<magnet@magnet-i.com>\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
+
+#: eel/eel-alert-dialog.c:114
+msgid "Image/label border"
+msgstr "ચિત્ર/લેબલ કિનારી"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "ચેતવણી સંવાદમાં લેબલ અને ચિત્રની ફરતેની કિનારીની પહોળાઈ"
+
+#: eel/eel-alert-dialog.c:124
+msgid "Alert Type"
+msgstr "ચેતવણી પ્રકાર"
+
+#: eel/eel-alert-dialog.c:125
+msgid "The type of alert"
+msgstr "ચેતવણાનો પ્રકાર"
+
+#: eel/eel-alert-dialog.c:133
+msgid "Alert Buttons"
+msgstr "ચેતવણી બટનો"
+
+#: eel/eel-alert-dialog.c:134
+msgid "The buttons shown in the alert dialog"
+msgstr "ચેતવણી સંવાદમાં દેખાતા બટનો"
+
+#: eel/eel-alert-dialog.c:198
+msgid "Show more _details"
+msgstr "વધુ વિગતો બતાવો (_d)"
+
+#: eel/eel-canvas.c:1226 eel/eel-canvas.c:1227
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1233 eel/eel-canvas.c:1234
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:365
+msgid "Text"
+msgstr "લખાણ"
+
+#: eel/eel-editable-label.c:366
+msgid "The text of the label."
+msgstr "લેબલ પરનું લખાણ."
+
+#: eel/eel-editable-label.c:372
+msgid "Justification"
+msgstr "સમર્થન"
+
+#: eel/eel-editable-label.c:373
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"લેબલ પરના લખાણમાં લીટીઅોની અેક-બીજાને અનુલક્ષીને કતારબંધ ગોઠવણી.અા તેની ફાળવણીમાં "
+"લેબલની કતારબંધ ગોઠવણીને અસર કરતુ નથી.તેના માટે GtkMisc::xalign જૂઅો."
+
+#: eel/eel-editable-label.c:381
+msgid "Line wrap"
+msgstr "લીટી લપેટો"
+
+#: eel/eel-editable-label.c:382
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "જો સુયોજિત હોય અને લખાણ બહુ મોટું થઈ જાય તો લીટી લપેટી દો."
+
+#: eel/eel-editable-label.c:389
+msgid "Cursor Position"
+msgstr "કર્સરની જગ્યા"
+
+#: eel/eel-editable-label.c:390
+msgid "The current position of the insertion cursor in chars."
+msgstr "દાખલ કરવા માટેના કર્સરની અક્ષરોમાં વર્તમાન સ્થિતિ."
+
+#: eel/eel-editable-label.c:399
+msgid "Selection Bound"
+msgstr "પસંદગી સીમા"
+
+#: eel/eel-editable-label.c:400
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "કર્સરથી અક્ષરોમાં પસંદગીની વિરુદ્ધ દિશામાં સ્થિતિ."
+
+#: eel/eel-editable-label.c:3069
+msgid "Select All"
+msgstr "બધુ પસંદ કરો"
+
+#: eel/eel-editable-label.c:3080
+msgid "Input Methods"
+msgstr "ઈનપુટની પધ્ધિતઓ"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"જીકોન્ફ ભૂલ:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "જીકોન્ફ ભૂલ: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "હવે પછીની ભૂલો ફક્ત ટર્મિનલ પર દર્શાવવામાં અાવશે."
+
+#: eel/eel-gconf-extensions.c:92
+msgid "GConf Error"
+msgstr "જીકોન્ફ ભૂલ"
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1162
+msgid "01/01/00, 01:00 AM"
+msgstr "૦૧/૦૧/૦૦, ૦૧:૦૦ AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1164
+msgid "1/1/00, 1:00 AM"
+msgstr "૧/૧/૦૦, ૧:૦૦ AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1166
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " ૧/૧/૦૦,  ૧:૦૦ AM"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "કોઈ ચિત્ર પસંદ થયેલ નથી."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "ચિત્ર પસંદ કરવા તેના પર ક્લિક કરવુ જ પડશે."
+
+#: eel/eel-gnome-extensions.c:286
+msgid "No Selection Made"
+msgstr "કોઈ જ પસંદગી સ્થિતિ નથી"
+
+#: eel/eel-mime-application-chooser.c:224
+msgid "Default"
+msgstr "મૂળભુત"
+
+#: eel/eel-mime-application-chooser.c:233
+msgid "Name"
+msgstr "નામ"
+
+#: eel/eel-mime-application-chooser.c:425
+msgid "<i>No applications selected</i>"
+msgstr "<i>કોઈ કાર્યક્રમો પસંદ નથી</i>"
+
+#: eel/eel-mime-application-chooser.c:469 eel/eel-open-with-dialog.c:581
+#, c-format
+msgid "%s document"
+msgstr "%s દસ્તાવેજ"
+
+#: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
+msgid "Unknown"
+msgstr "અજ્ઞાત"
+
+#: eel/eel-mime-application-chooser.c:485
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr "<i>%s</i> અને \"%s\" પ્રકારનું બીજુ ખોલવા માટે કાર્યક્રમ પસંદ કરો"
+
+#: eel/eel-open-with-dialog.c:125 eel/eel-open-with-dialog.c:127
+#: eel/eel-open-with-dialog.c:193 eel/eel-open-with-dialog.c:195
+msgid "Could not run application"
+msgstr "કાર્યક્રમ ચલાવી શક્યા નહિં"
+
+#: eel/eel-open-with-dialog.c:144
+#, c-format
+msgid "The application '%s' is not a valid executable"
+msgstr "કાર્યક્રમ '%s' એ ચલાવી શકાય તેવી નથી"
+
+#: eel/eel-open-with-dialog.c:147 eel/eel-open-with-dialog.c:149
+msgid "Could not open application"
+msgstr "કાર્યક્રમ ખોલી શક્યા નથી"
+
+#: eel/eel-open-with-dialog.c:161
+#, c-format
+msgid "Could not find '%s'"
+msgstr "'%s' શોધી શક્યા નહિં"
+
+#: eel/eel-open-with-dialog.c:164 eel/eel-open-with-dialog.c:166
+msgid "Could not find application"
+msgstr "કાર્યક્રમ શોધી શક્યા નહિં"
+
+#: eel/eel-open-with-dialog.c:251 eel/eel-open-with-dialog.c:253
+msgid "Could not add application"
+msgstr "કાર્યક્રમ ઉમેરી શક્યા નહિં"
+
+#: eel/eel-open-with-dialog.c:252
+msgid "Could not add application to the application database"
+msgstr "કાર્યક્રમ ડેટાબેઝમાં કાર્યક્રમ ઉમેરી શક્યા નહિં"
+
+#: eel/eel-open-with-dialog.c:366
+msgid "Select an Application"
+msgstr "કાર્યક્રમ પસંદ કરો"
+
+#: eel/eel-open-with-dialog.c:438
+msgid "Open With"
+msgstr "ની સાથે ખોલો"
+
+#: eel/eel-open-with-dialog.c:481
+msgid "_Browse..."
+msgstr "શોધો (_B)..."
+
+#: eel/eel-open-with-dialog.c:600
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "<i>%s</i> અને \"%s\" પ્રકારની બીજી ફાઈલો આની સાથે ખોલો:"
+
+#: eel/eel-open-with-dialog.c:631
+msgid "_Add"
+msgstr "ઉમેરો (_A)"
+
+#: eel/eel-open-with-dialog.c:636
+msgid "Add Application"
+msgstr "કાર્યક્રમ ઉમેરો"
+
+#: eel/eel-stock-dialogs.c:216
+msgid "You can stop this operation by clicking cancel."
+msgstr "તમે આ પ્રક્રિયા રદ કરો બટન પર ક્લિક કરીને અટકાવી શકો છો."
+
+#: eel/eel-stock-dialogs.c:462 eel/eel-stock-dialogs.c:482
+msgid "Info"
+msgstr "જાણકારી"
+
+#: eel/eel-stock-dialogs.c:501
+msgid "Warning"
+msgstr "ચેતવણી"
+
+#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:537
+msgid "Error"
+msgstr "ભૂલ"
+
+#: eel/eel-stock-dialogs.c:567 eel/eel-stock-dialogs.c:602
+msgid "Question"
+msgstr "પ્રશ્ન"
+
+#: eel/eel-vfs-extensions.c:693
+msgid " (invalid Unicode)"
+msgstr " (અયોગ્ય યુનીકોડ)"

@@ -7,6 +7,7 @@ EXTRA_DIST=					\
 	HACKING					\
 	MAINTAINERS				\
 	eel.spec.in				\
+	eel-2.0-uninstalled.pc.in		\
 	$(NULL)
 
 pkgconfigdir = $(libdir)/pkgconfig

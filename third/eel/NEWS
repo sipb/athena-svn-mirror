@@ -1,9 +1,127 @@
-This is eel 2.2.4.  It is part of the Gnome 2 desktop and is used
+This is eel 2.8.0 It is part of the Gnome 2 desktop and is used
 mainly by Nautilus.
 
-Major changes since 2.2.3 were:
+Major changes since 2.7.92 were:
+* Refresh mime application chooser when mime db changes
+* Create ~/.local/share/applications as needed
+* Remove some mime-related debug output
+
+Major changes since 2.7.4 were:
+* Don't pop up cancel dialog if password dialog is visible.
+
+Major changes since 2.7.3 were:
+* Import new foocanvas
+* Use right i18n header
+* Fix memleaks
+* Translation updates
+
+Major changes since 2.7.2 were:
+* MIME helpers functions and dialogs  
+
+Major changes since 2.7.1 were:
+* Translation updates.
+
+Major changes since 2.6.2 were:
+* Unstable branch
+
+Major changes since 2.6.1 were:
+* Translation updates.
+
+Major changes since 2.6.0 were:
+* Translation updates.
+
+Major changes since 2.5.91.1 were:
+* Translation updates.
+
+Major changes since 2.5.91 were:
+* fix utf8 bug in EelEditableLabel
+
+Major changes since 2.5.90 were:
+* translations
+
+Major changes since 2.5.8 were:
+* Replaced egg-screen-exec usage with g_spawn
+* Use new file chooser
+* portability patches
+
+Major changes since 2.5.7 were:
+* Translations
+
+Major changes since 2.5.6 were:
+* Support for SUS modifiers in eel_strdup_strftime
+* Set right a11y role on alerts
+
+Major changes since 2.5.5 were:
+* Fix a11y coloring of editable label
+* Canvas update
+
+Major changes since 2.5.4 were:
+* Removed unused source files
+* Added a GList API for string lists in eel-preferences.
+
+Major changes since 2.5.3 were:
+* HIG message dialogs
+
+Major changes since 2.5.2 were:
+* Mem leak fix in accessibility support.
+
+Major changes since 2.5.1 were:
+* Added accessibility support to editable label widget
+
+Major changes since 2.5.0 were:
+* Some ICCCM fixes
+* disable deprecation warnings
+* fix leaks
+
+Major changes since 2.4.1 were:
+* Don't use GTK_DISABLE_DEPRECATED atm, since gtk 2.4 deprecated some
+  new widgets
+* Added new marshallers needed by Nautilus
+* Fix accessibiliyt crashes in foocanvas
+
+Major changes since 2.3.90 were:
+* Don't use RevertToNone in eel_gdk_window_focus
+
+Major changes since 2.3.9 were:
+* New and updated translations
+
+Major changes since 2.3.8 were:
+* New translations
+
+Major changes since 2.3.7 were:
+
+* new calls for handling non-writable gconf keys
+
+Major changes since 2.3.6 were:
+
+* Build fixes
+
+* Crash fix in new FooCanvas
+
+Major changes since 2.3.5 were:
+
+* Version changed.
+
+Major changes since 2.3.4 were:
+
+* Updated to new FooCanvas
+
+* Build fixes for gcc 3.3
+
+Major changes since 2.3.3 were:
 
 * Translation updates
+
+Major changes since 2.3.2 were:
+* Removed unused widgets.
+
+Major changes since 2.3.1 were:
+* Added eel_uri_is_desktop and EEL_DESKTOP_URI.
+
+Major changes since 2.2.3 were:
+* Cygwin port
+
+* New foo-canvas import
 
 Major changes since 2.2.2 were:
 

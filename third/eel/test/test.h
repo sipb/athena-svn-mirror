@@ -34,16 +34,6 @@ void       test_window_set_title_with_pid       (GtkWindow              *window,
 						 const char             *title);
 char *     eel_pixmap_file                      (const char             *partial_path);
 
-// /* Preferences hacks */
-// void test_text_caption_set_text_for_int_preferences            (EelTextCaption       *text_caption,
-// 								const char                *name);
-// void test_text_caption_set_text_for_string_preferences         (EelTextCaption       *text_caption,
-// 								const char                *name);
-// void test_text_caption_set_text_for_default_int_preferences    (EelTextCaption       *text_caption,
-// 								const char                *name);
-// void test_text_caption_set_text_for_default_string_preferences (EelTextCaption       *text_caption,
-// 								const char                *name);
-
 #include <eel/eel-debug.h>
 #include <eel/eel.h>
 #include <gtk/gtk.h>

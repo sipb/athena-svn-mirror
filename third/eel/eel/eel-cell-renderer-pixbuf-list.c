@@ -60,7 +60,7 @@ static void eel_cell_renderer_pixbuf_list_render     (GtkCellRenderer           
 
 enum {
 	PROP_ZERO,
-	PROP_PIXBUFS,
+	PROP_PIXBUFS
 };
 
 EEL_CLASS_BOILERPLATE (EelCellRendererPixbufList, eel_cell_renderer_pixbuf_list, GTK_TYPE_CELL_RENDERER)

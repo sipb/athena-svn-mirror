@@ -1,17 +1,681 @@
-2003-05-07  Abel Cheung  <maddog@linux.org.hk>
+2004-09-11  Dafydd Harries  <daf@muse.19inch.net>
+
+	* cy.po: Updated Welsh translation.
+
+2004-09-11  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team.
+
+2004-09-10  Theppitak Karoonboonyanan  <thep@linux.thai.net>
+
+	* th.po: Updated Thai translation
+	by Supranee Thirawattanasuk  <supranee@opentle.org>
+
+2004-09-08  David Lodge <dave@cirt.net>
+
+	* ang.po: Added Olde Englisc translation.
+
+2004-09-08  Mugurel Tudor  <mugurelu@go.ro>
+
+	* ro.po: Updated Romanian translation
+
+2004-09-06  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-09-03  Baris Cicek <baris@teamforce.name.tr>
+
+	* tr.po: Updated Turkish Translation
+	
+2004-09-02  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
+2004-09-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Fixed wrong translations.
+
+2004-08-31  Arafat Medini <lumina@silverpen.de>
+
+	* ar.po: Updated  Arabic translation
+
+=== eel 2.7.92 ===
+
+2004-08-29  Kostas Papadimas <pkst@gnome.org>
+
+	* el.po: Updated  Greek translation.
+
+2004-08-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-20  Jayaradha <njaya@redhat.com>
+
+	* ta.po: Updated Tamil Translation
+2004-08-19  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2004-08-18  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2004-08-18  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Translation updated by Mətin Əmirov.
+
+2004-08-18  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-08-18  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation from
+	Baptiste Mille-Mathias <bmm80@free.fr>.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* bs.po: Updated Bosnian translation by
+	Kenan Hadžiavdić <kenanh@frisurf.no>.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nb.po: Added this.
+
+=== eel 2.7.4 ===
+
+2004-08-13  Tommi Vainikainen  <thv@iki.fi>
+
+	* fi.po: Unified some fields in po headers for Finnish team.
+
+2004-08-11  Hasbullah Bin Pit <sebol@my-penguin.org>
+                                                                                                                                               
+        * ms.po: Updated Malay translation.
+                                                                                                                                               
+2004-08-10  Estêvão Samuel Procópio  <tevaum@cvs.gnome.org>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2004-08-09  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated by Elros Cyriatan.
+
+2004-08-09  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2004-08-08  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-08-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+2004-08--06  Guntupalli Karunakar  <karunakaar@freedomink.org>
+
+	* hi.po: Updated Hindi translation.
+
+2004-08-06  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-08-04  Nikos Charonitakis  <charosn@her.forthnet.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-08-03  Maxim Dziumanenko <mvd@mylinux.com.ua>
+
+	* uk.po: Updated Ukrainian translation.
+
+2004-08-03  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation
+
+2004-08-02  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-08-01  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-07-30  Žygimantas Beručka  <uid0@akl.lt>
+
+	* lt.po: Updated Lithuanian translation.
+
+2004-07-29  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* eu.po: Updated Basque translation.
+
+2004-07-29  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-07-29  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Translated new messages
+
+2004-07-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2004-07-28  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-07-27  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Rostislav Raykov <zbrox@i-space.org>
+
+2004-07-27  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-07-26  Duarte Loreto <happyguy_pt@hotmail.com>
+
+	* pt.po: Updated Portuguese translation.
+
+2004-07-25  David Lodge <dave@cirt.net>
+
+	* en_GB.po: Updated British translation.
+
+2004-07-24  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2004-07-23  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2004-07-23  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Updated German translation.
+
+2004-07-23  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+=== eel 2.7.3 ===
+
+2004-07-22  Dave Camp  <dave@novell.com>
+
+	* POTFILES.in: Updated
+
+2004-07-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * hi.po: Updated Hindi translation.
+
+2004-07-16  Guntupalli Karunakar  <karunakar@freedomink.org>
+	
+	* hi.po: Updated Hindi translation.
+
+2004-07-12  Pawan Chitrakr  <pawan@nplinux.org>
+
+	* ne.po: Updated Nepali Translation
+
+2004-07-06  Estêvão Samuel Procópio  <tevaum@ig.com.br>
+
+	# pt_BR.po: Updated Brazilian Portuguese translation.
+
+2004-06-28  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Translation updated.
+
+2004-06-09  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Rostislav Raykov <zbrox@i-space.org>
+
+=== eel 2.7.1 ===
+=== eel 2.6.2 ===
+	
+2004-05-03  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* wa.po: Updated Walloon file
+	* ChangeLog: corrected utf-8 encoding of the file
+
+2004-04-24  Gil Osher  <dolfin@rpg.org.il>
+
+	* he.po: Updated Hebrew translation.
+
+=== eel 2.6.1 ===
+
+2004-04-15  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* gu.po: Added Gujurati translation by
+        Gujarati Team <magnet@magnet-i.com>.
+
+2004-04-08  Gareth Owen  <gowen72@yahoo.com>
+
+	* en_GB.po: Chnaged encoding to UTF-8
+
+2004-04-03  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Updated Icelandic translation by
+	Helgi Ãormar ÃorbjÃ¶rnsson  <helgi@trance.is>
+
+2004-04-02  IÃ±aki LarraÃ±aga  <dooteo@euskalgnu.org>
+
+	* eu.po: Updated Basque translation by
+	IÃ±aki LarraÃ±aga  <dooteo@euskalgnu.org>.
+
+=== eel 2.6.0 ===
+
+2004-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * pa.po: Punjabi translation by
+        Amanpreet Singh Alam <amanlinux@netscape.net>.
+
+2004-03-20  Telsa Gwynne <hobbit@aloss.ukuu.org.uk>
+
+	* cy.po: Updated Welsh translation.
+
+2004-03-20  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation from
+	  Woodman Tuen <woodnman@culturecom.com.hk>.
+
+2004-03-19  Gareth Owen  <gowen72@yahoo.com>
+
+	* en_GB.po: Updated British translation
+
+=== eel 2.5.91.1 ===
+
+2004-03-15  Dafydd Harries  <daf@muse.19inch.net>
+
+	* cy.po: Updated Welsh translation.
+
+=== eel 2.5.91 ===
+
+2004-03-14  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* hr.po: Updated Croatian translation.
+
+2004-03-11  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-03-09  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2004-03-06  MÉtin Æmirov  <metin@karegen.com>
+
+	* az.po: Translation updated.
+
+2004-03-06  Priit Laes  <plaes@cvs.gnome.org>
+
+	* et.po: Translation updated.
+
+2004-03-05  Yuriy Syrota  <rasta@cvs.gnome.org>
+
+	* uk.po: Updated Ukrainian Translation.
+
+2004-02-29  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-02-27  Dinesh Nadarajah <dinesh_list@sbcglobal.net>
+
+	* ta.po: Updated Tamil Translation.
+
+2004-02-27  Priit Laes  <plaes@cvs.gnome.org>
+
+	* et.po: Translation updated.
+
+2004-02-24 Alastair McKinstry <mckinstry@debian.org>
+
+	* ga.po: Updated Irish translation.
+
+2004-02-23  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* hi.po: Updated Hindi translation.
+
+=== eel 2.5.8 ===
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* en_CA.po: Added Canadian English translation by
+	Adam Weinberger <adamw@FreeBSD.org>.
+
+2004-02-20  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* th.po: Updated Thai translation.
+
+2004-02-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Fixed Albanian translation.
+
+2004-02-17  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
+2004-02-17  Ãsmund SkjÃŠveland  <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-02-16  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+=== eel 2.5.7 ===
+
+2004-02-11  Arafat Medini  <lumina@silverpen.de>
+                                                                                
+        * ar.po: Updated Arabic translation.
+
+2004-02-10  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2004-02-09  Nikos Charonitakis  <charosn@her.forthnet.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-02-05  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2004-02-01  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* hr.po: Updated Croatian translation.
+
+2004-02-01  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-01-31  MÉtin Æmirov  <metin@karegen.com>
+
+	* az.po: Translation updated.
+
+2004-01-31  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+=== eel 2.5.6===
+
+2004-01-28  Ãsmund SkjÃŠveland  <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-01-28  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Fixed Czech translation.
+
+2004-01-25  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-01-25  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-01-25  Kostas Papadimas <pkst@gnome.org>
+
+	* el.po: Updated  Greek translation.
+
+2003-01-18  Hasbullah Bin Pit <sebol@my-penguin.org>
+
+	* ms.po: Updated Malay translation.
+
+2004-01-18  Åœygimantas BeruÄka  <uid0@tuxfamily.org>
+
+	* lt.po: Updated Lithuanian translation.
+
+2004-01-15 Alastair McKinstry <mckinstry@computer.org>
+
+	* ga.po: Updated Irish translation.
+
+2004-01-15  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-01-14  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-01-13  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated by Kees van den Broek.
+
+=== eel 2.5.5 ===
+	
+2004-01-12  Sanlig Badral  <badral@openmn.org>
+
+	* mn.po: Updated Mongolian translation.
+
+2004.01.09  Arafat Medini <lumina@silverpen.de>
+
+	* ar.po: Updated Arabic translation
+
+2004-01-06  Ãsmund SkjÃŠveland  <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-01-04  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-01-04  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated by Tino Meinen.
+
+2004-01-02  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-01-02  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* hr.po: Updated Croatian translation.
+
+2003-12-29  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Updated German translation.
+
+=== eel 2.5.4 ===
+	
+2003-12-25  Duarte Loreto <happyguy_pt@hotmail.com>
+
+	* pt.po: Updated and revised Portuguese translation.
+
+2003-12-23  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation.
+
+2003-12-23  Gustavo Noronha Silva  <kov@debian.org>
+
+	* pt_BR.po: updated translation.
+
+2003-12-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+  
+2003-12-20  Arafat Medini <lumina@silverpen.de>
+                                                                                
+        * ar.po: Updated Arabic translation
+
+2003-12-18  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2003-12-17  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2003-12-15  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2003-12-15  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2003-12-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2003-12-14  Danilo Å egan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+	* POTFILES.in: Added eel/eel-alert-dialog.c.
+
+2003-12-13  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2003-12-12  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+=== eel 2.5.2 ===
+=== eel 2.5.1 ===
+=== eel 2.5.0 ===
+	
+2003-10-17  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+	* es.po: Updated Spanish translation by
+                 Yelitza Louze <ylouze@redhat.com>
+
+2003-10-09  Åœygimantas BeruÄka  <uid0@tuxfamily.org>
+
+	* lt.po: Updated Lithuanian translation.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* mr.po: Added Marathi translation by
+	Jitendra Shah <jitendras@vsnl.com>.
+
+2003-09-26  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Applied revision by Augusta Marques da Silva
+	<augusta.marques@gmx.net>.
+
+2003-09-19  Christian Rose  <menthos@menthos.com>
+
+	* br.po: Added Breton translation by
+	Francis Tyers <francis.tyers@hp.com>.
+
+2003-09-18  TÃµivo LeedjÃ€rv  <toivo@linux.ee>
+
+	* et.po: Updated Estonian translation
+	by Priit Laes <amd@tt.ee>.
+
+=== eel 2.4.0 ===
+=== eel 2.3.90 ===
+	
+2003-08-30  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* cy.po: Updated Welsh translation.
+
+2003-08-28  Christian Rose  <menthos@menthos.com>
+
+	* ne.po: Added Nepali translation by
+	Pawan Chitrakar <pawan@nplinux.org>.
+
+2003-08-28  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* bn.po: Updated Bangla (Bengali) translation.
+
+2003-08-27  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+	* es.po: Revision of Spanish translation by
+                 Francisco Javier F. Serrador <serrador@arrakis.es>.
+
+2003-08-27  Vincent van Adrighem  <V.vanAdrighem@dirck.mine.nu>
+
+	* nl.po: Dutch translation updated by Kees van den Broek.
+
+2003-08-20  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Updated Icelandic translation.
+
+2003-08-18  Metin Amiroff <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+=== eel 2.3.8 ===
+	
+2003-08-07  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Funda Wang <fundawang@linux.net.cn>.
+
+2003-07-27  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2003-07-26  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2003-07-13  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2002-07-08  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2003-07-07  Gil "Dolfin" Osher <dolfin@rpg.org.il>
+
+	* he.po: Updated Hebrew translation.
+
+=== eel 2.3.6 ===
+
+=== eel 2.3.5 ===
+
+=== eel 2.3.4 ===
+
+2003-06-05 Mathieu van Woerkom <mathieu@brabants.org>
+
+	* li.po: Added Limburgish translation
+
+2003-06-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* ta.po: Fix broken encoding.
+
+2003-05-31 Dafydd Harries <daf@parnassus.ath.cx>
+
+	* cy.po: Welsh translation corrections.
+
+2003-05-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* POTFILES.in: Remove non-existant file(s).
+
+=== eel 2.3.2 ===
+
+2003-05-17  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* cy.po: Updated Welsh translation from 
+	Dafydd Harries <daf@parnassus.ath.cx>
+	Fixed header locally then saw entry below. Sorry!
+
+2003-05-15  Abel Cheung  <maddog@linux.org.hk>
 
 	* zh_TW.po: Updated traditional Chinese translation.
+	* cy.po: Fix header (msgfmt check failed).
 
+=== eel 2.3.1 ===
+	
 2003-05-04  Christian Rose  <menthos@menthos.com>
 
 	* sr.po, sr@Latn.po: Added Serbian translation by
-	Danilo Šegan <dsegan@gmx.net>.
+	Danilo Å egan <dsegan@gmx.net>.
 
 2003-04-30  Abel Cheung  <maddog@linux.org.hk>
 
 	* zh_TW.po: Updated traditional Chinese translation.
-
-=== eel 2.2.3.1 ===
 
 === eel 2.2.3 ===
 
@@ -31,7 +695,7 @@
 	* bn.po: Added Bangla/Bengali translation
 	by Jamil Ahmed <jamil@bengalinux.org>.
 
-2003-02-25  Samúel Jón Gunnarsson <sammi@techattack.nu>
+2003-02-25  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
 
 	* is.po: Added Icelandic translation.
 
@@ -41,7 +705,7 @@
 
 2003-02-21  Paisa Seeluangsawat  <paisa@colorado.edu>
 
-        * th.po: Added Thai translation.
+	* th.po: Added Thai translation.
 
 2003-02-21  Metin Amiroff  <metin@karegen.com>
 
@@ -90,7 +754,7 @@
 
 2003-01-26  Duarte Loreto <happyguy_pt@hotmail.com>
 
-        * pt.po: Updated Portuguese translation.
+	* pt.po: Updated Portuguese translation.
 
 2003-01-23  Takeshi AIHANA <aihana@gnome.gr.jp>
 
@@ -182,7 +846,7 @@
 	Alexander Shopov <al_shopov@yahoo.com>.
 
 === eel 2.1.5 ===
-	
+
 2002-12-15  Christophe Merlet  <redfox@redfoxcenter.org>
 
 	* fr.po: Updated French translation.
@@ -195,7 +859,7 @@
 	
 2002-12-06  Andras Timar  <timar@gnome.hu>
 
-        * hu.po: Updated Hungarian translation.
+	* hu.po: Updated Hungarian translation.
 
 2002-12-03  Kostas Papadimas <pkst@gmx.net>
 
@@ -302,7 +966,7 @@
 
 2002-08-13  Andras Timar  <timar@gnome.hu>
 
-        * hu.po: Updated Hungarian translation.
+	* hu.po: Updated Hungarian translation.
 
 2002-08-06  Peteris Krisjanis <peteris.krisjanis@os.lv>
 
@@ -392,7 +1056,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 	* fi.po: Updated Finnish translation.
 
-2002-06-02  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-06-02  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* ca.po: Updated by Jordi Mallach <jordi@sindominio.net>
 
@@ -406,7 +1070,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2002-05-31  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 
 2002-05-31  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
 
@@ -414,7 +1078,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2002-05-29  Duarte Loreto <happyguy_pt@hotmail.com>
 
-        * pt.po: Updated Portuguese translation
+	* pt.po: Updated Portuguese translation
 
 2002-05-28  Christian Rose  <menthos@menthos.com>
 
@@ -455,7 +1119,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2002-04-29  Duarte Loreto <happyguy_pt@hotmail.com>
 
-        * pt.po: Converted Portuguese translation to UTF-8.
+	* pt.po: Converted Portuguese translation to UTF-8.
 
 === eel 1.1.12 ===
 	
@@ -468,7 +1132,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 	
 2002-03-28  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 
 2002-03-29  Changwoo Ryu  <cwryu@debian.org>
 
@@ -492,20 +1156,20 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 	* POTFILES.in: Remove lots of files that don't need
 	translation any more. No strings added, but many removed.
 
-2002-03-06  Germán Poo-Caamaño <gpoo@ubiobio.cl>
+2002-03-06  GermÃ¡n Poo-CaamaÃ±o <gpoo@ubiobio.cl>
 
-        * es.po: Updated spanish translation from 
+	* es.po: Updated spanish translation from 
 	Pablo del Campo <pablodc@mapfre.com.ar>
 
 === eel 1.1.6 ===
 
 2002-03-03  Duarte Loreto <happyguy_pt@hotmail.com>
 
-        * pt.po: Updated Portuguese translation.
+	* pt.po: Updated Portuguese translation.
 
 2002-03-03  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 
 2002-03-02  Ole Laursen  <olau@hardworking.dk>
 
@@ -555,17 +1219,17 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 	* pl.po: Updated Polish translation by
 	GNOME PL Team <translators@gnome.pl>.
 
-2002-02-12  Tõivo Leedjärv  <leedjarv@interest.ee>
+2002-02-12  TÃµivo LeedjÃ€rv  <leedjarv@interest.ee>
 
 	* et.po: Added Estonian translation.
 
 2002-02-12  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 
 2002-02-10  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	* POTFILES.in: Added eel/eel-labeled-image.c and
 	eel/eel-wrap-table.c
 	
@@ -618,7 +1282,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2002-01-26  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	* POTFILES.in: Added eel-cell-renderer-pixbuf-list.c
 	
 2002-01-25  Ole Laursen  <olau@hardworking.dk>
@@ -648,7 +1312,7 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2001-12-25  Fatih Demir <kabalak@gtranslator.org>
 
-	* tr.po: Committed updated Turkish translation by Ömer.
+	* tr.po: Committed updated Turkish translation by Ãmer.
 
 2001-12-21  Abel Cheung  <maddog@linux.org.hk>
 
@@ -657,11 +1321,11 @@ Mon Jun 03 15:57:44 2002  George Lebl <jirka@5z.com>
 
 2001-12-21  Duarte Loreto <happyguy_pt@hotmail.com>
 
-        * pt.po: Added new portuguese translation
+	* pt.po: Added new portuguese translation
 
 2001-12-16  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	
 2001-12-15  Valek Filippov  <frob@df.ru>
 
@@ -805,7 +1469,7 @@ Tue May 22 00:47:20 2001  George Lebl <jirka@5z.com>
 
 2001-05-04  Fatih Demir <kabalak@gtranslator.org>
 
-	* tr.po: Updated Turkish translation by Görkem.
+	* tr.po: Updated Turkish translation by GÃ¶rkem.
 
 2001-05-04  Ramiro Estrugo  <ramiro@eazel.com>
 

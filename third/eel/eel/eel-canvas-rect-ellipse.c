@@ -35,10 +35,10 @@
 #include <math.h>
 #include "eel-canvas-rect-ellipse.h"
 #include "eel-canvas-util.h"
-#include <gdk/gdkx.h>
 #include <string.h>
 
 #ifdef HAVE_RENDER
+#include <gdk/gdkx.h>
 #include <X11/extensions/Xrender.h>
 #endif
 
@@ -567,18 +567,12 @@ eel_canvas_re_set_property (GObject              *object,
 static void
 get_color_value (EelCanvasRE *re, gulong pixel, GValue *value)
 {
-	GdkColor *color;
-	GdkColormap *colormap;
-	EelCanvasItem *item;
+	GdkColor color;
+	EelCanvasItem *item = (EelCanvasItem *) re;
+	GdkColormap *colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
 
-	item = (EelCanvasItem *) re;
-
-	color = g_new (GdkColor, 1);
-	color->pixel = pixel;
-
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
-	gdk_rgb_find_color (colormap, color);
-	g_value_set_boxed (value,  color);
+	gdk_colormap_query_color (colormap, pixel, &color);
+	g_value_set_boxed (value, &color);
 }
 
 static void
@@ -642,6 +636,16 @@ eel_canvas_re_get_property (GObject              *object,
 }
 
 static void
+set_colors_and_stipples (EelCanvasRE *re)
+{
+	set_gc_foreground (re->fill_gc, re->fill_pixel);
+	set_gc_foreground (re->outline_gc, re->outline_pixel);
+	set_stipple (re->fill_gc, &re->fill_stipple, re->fill_stipple, TRUE);
+	set_stipple (re->outline_gc, &re->outline_stipple, re->outline_stipple, TRUE);
+	set_outline_gc_width (re);
+}
+
+static void
 eel_canvas_re_update_shared (EelCanvasItem *item, double i2w_dx, double i2w_dy, int flags)
 {
 	EelCanvasRE *re;
@@ -654,11 +658,7 @@ eel_canvas_re_update_shared (EelCanvasItem *item, double i2w_dx, double i2w_dy, 
 	if (re_parent_class->update)
 		(* re_parent_class->update) (item, i2w_dx, i2w_dy, flags);
 
-	set_gc_foreground (re->fill_gc, re->fill_pixel);
-	set_gc_foreground (re->outline_gc, re->outline_pixel);
-	set_stipple (re->fill_gc, &re->fill_stipple, re->fill_stipple, TRUE);
-	set_stipple (re->outline_gc, &re->outline_stipple, re->outline_stipple, TRUE);
-	set_outline_gc_width (re);
+	set_colors_and_stipples (re);
 
 #ifdef OLD_XFORM
 	recalc_bounds (re);
@@ -679,7 +679,10 @@ eel_canvas_re_realize (EelCanvasItem *item)
 		(* re_parent_class->realize) (item);
 
 	re->fill_gc = gdk_gc_new (item->canvas->layout.bin_window);
+	re->fill_pixel = eel_canvas_get_color_pixel (item->canvas, re->fill_color);
 	re->outline_gc = gdk_gc_new (item->canvas->layout.bin_window);
+	re->outline_pixel = eel_canvas_get_color_pixel (item->canvas, re->outline_color);
+	set_colors_and_stipples (re);
 
 #ifdef OLD_XFORM
 	(* EEL_CANVAS_ITEM_CLASS (item->object.klass)->update) (item, NULL, NULL, 0);
@@ -882,7 +885,11 @@ render_rect_alpha (EelCanvasRect *rect,
 	a = (rgba >> 0) & 0xff;
 
 #ifdef HAVE_RENDER
-	if (priv->use_render) {
+	/* Every visual is not guaranteed to have a matching
+	 * XRenderPictFormat. So make sure that format is not null before
+	 * trying to render using Xrender calls.
+	 */
+	if (priv->use_render && (priv->format != NULL)) {
 		GdkDrawable *real_drawable;
 		int x_offset, y_offset;
 
@@ -1398,7 +1405,7 @@ eel_canvas_ellipse_update (EelCanvasItem *item, double i2w_dx, double i2w_dy, gi
 	double x0, y0, x1, y1;
 
 #ifdef VERBOSE
-	g_print ("eel_canvas_rect_update item %x\n", item);
+	g_print ("eel_canvas_sllipse_update item %x\n", item);
 #endif
 
 	eel_canvas_re_update_shared (item, i2w_dx, i2w_dy, flags);

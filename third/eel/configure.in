@@ -7,9 +7,9 @@ GCONF_REQUIRED=1.1.11
 GDK_PIXBUF_REQUIRED=2
 GLIB_REQUIRED=2
 GNOME_REQUIRED=2.0
-GNOME_UI_REQUIRED=2.0
-GNOME_VFS_REQUIRED=1.9
-GTK_REQUIRED=2.1.0
+GNOME_UI_REQUIRED=2.7.92
+GNOME_VFS_REQUIRED=2.7.91
+GTK_REQUIRED=2.3.0
 POPT_REQUIRED=1.5
 XML_REQUIRED=2.4.7
 GAIL_REQUIRED=0.16
@@ -31,9 +31,13 @@ AC_SUBST(LIBGLADE_REQUIRED)
 dnl ===========================================================================
 
 EEL_MAJOR_VERSION=2
-EEL_MINOR_VERSION=2
-EEL_MICRO_VERSION=4
-EEL_VERSION=$EEL_MAJOR_VERSION.$EEL_MINOR_VERSION.$EEL_MICRO_VERSION
+EEL_MINOR_VERSION=8
+EEL_MICRO_VERSION=0
+# If you need a modifier for the version number. 
+# Normally empty, but can be used to make "fixup" releases.
+LIBGNOMEVFS_EXTRAVERSION=
+	
+EEL_VERSION=$EEL_MAJOR_VERSION.$EEL_MINOR_VERSION.$EEL_MICRO_VERSION$LIBGNOMEVFS_EXTRAVERSION
 EEL_VERSION_INFO=`expr $EEL_MAJOR_VERSION + $EEL_MINOR_VERSION`:$EEL_MICRO_VERSION:$EEL_MINOR_VERSION
 
 AC_SUBST(EEL_MAJOR_VERSION)
@@ -54,6 +58,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_AWK
 AM_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_STDC_HEADERS
 AM_SANITY_CHECK
@@ -63,25 +68,80 @@ AC_PROG_MAKE_SET
 AC_C_CONST
 AC_C_BIGENDIAN
 
-PKG_CHECK_MODULES(EEL, \
-	gconf-2.0 >= $GCONF_REQUIRED \
-	gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED \
-	gthread-2.0 >= $GLIB_REQUIRED \
-	glib-2.0 >= $GLIB_REQUIRED \
-	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED \
-	gtk+-2.0 >= $GTK_REQUIRED \
-	gail >= $GAIL_REQUIRED \
-	libart-2.0 >= $ART_REQUIRED \
-	libgnome-2.0 >= $GNOME_REQUIRED \
-	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
-	libxml-2.0 >= $XML_REQUIRED \
-	libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(EEL, [
+	gail			>= $GAIL_REQUIRED
+	gconf-2.0		>= $GCONF_REQUIRED
+	gdk-pixbuf-2.0		>= $GDK_PIXBUF_REQUIRED
+	glib-2.0		>= $GLIB_REQUIRED
+	gnome-vfs-2.0		>= $GNOME_VFS_REQUIRED
+	gnome-vfs-module-2.0	>= $GNOME_VFS_REQUIRED
+	gthread-2.0		>= $GLIB_REQUIRED
+	gtk+-2.0		>= $GTK_REQUIRED
+	libart-2.0		>= $ART_REQUIRED
+	libglade-2.0		>= $LIBGLADE_REQUIRED
+	libgnome-2.0		>= $GNOME_REQUIRED
+	libgnomeui-2.0		>= $GNOME_UI_REQUIRED
+	libxml-2.0		>= $XML_REQUIRED
+])
 AC_SUBST(EEL_CFLAGS)
 AC_SUBST(EEL_LIBS)
 
 dnl ===========================================================================
 
-ALL_LINGUAS="am ar az be bg bn bs ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu id is it ja kn ko lt lv mk ml mn ms nl nn no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
+dnl strftime checks
+
+AC_TRY_RUN([#include <time.h>
+                int main ()
+                {
+                  char buf[100];
+                  struct tm tm = {0};
+                  tm.tm_year = 99;
+                  if (strftime(buf, 100, "%EY", &tm) == 4 &&
+		      strcmp (buf, "1999")==0)
+                    return 0;
+                  return 1;
+                }
+            ],
+	    AC_DEFINE(HAVE_STRFTIME_EXTENSION, 1, [Define if strftime supports %E and %O modifiers.])
+            )
+
+dnl ===========================================================================
+
+dnl X development libraries check
+
+#
+# If Pango included the shared library dependencies from X11 in
+# the pkg-config output, then we use that (to avoid duplicates).
+# but if they were omitted to avoid binary compatibility problems
+# then we need to repeat the checks.
+#
+if $PKG_CONFIG --exists pangoxft ; then
+  PANGO_PACKAGES="pangox pangoxft"
+else
+  PANGO_PACKAGES="pangox"
+fi
+
+x_libs="`$PKG_CONFIG --libs $PANGO_PACKAGES`"
+case x_libs in
+  *-lX11*) pango_omitted_x_deps=no ;;
+  *)       pango_omitted_x_deps=yes ;;
+esac
+
+if test $pango_omitted_x_deps = yes ; then
+  AC_PATH_XTRA
+
+  if test x$no_x = xyes ; then
+    AC_MSG_ERROR([X development libraries not found])
+  else
+    X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+  fi
+fi
+
+AC_SUBST(X_LIBS)
+
+dnl ===========================================================================
+
+ALL_LINGUAS="am ang ar az be bg bn br bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko li lt lv mk ml mn mr ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
 
 GETTEXT_PACKAGE=eel-2.0
 AC_SUBST(GETTEXT_PACKAGE)
@@ -174,9 +234,9 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Werror \
 	$CFLAGS"
 
-	for option in -Wsign-promo -Wno-sign-compare; do
+	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$option $CFLAGS"
+		CFLAGS="$CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
@@ -198,6 +258,7 @@ dnl ===========================================================================
 AC_OUTPUT([
 Makefile
 eel-2.0.pc
+eel-2.0-uninstalled.pc
 eel.spec
 eel/Makefile
 eel/eel-features.h

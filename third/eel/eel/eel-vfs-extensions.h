@@ -35,6 +35,7 @@
 G_BEGIN_DECLS
 
 #define	EEL_TRASH_URI "trash:"
+#define EEL_DESKTOP_URI "x-nautilus-desktop:"
 
 typedef void     (* EelReadFileCallback) (GnomeVFSResult result,
 					  GnomeVFSFileSize file_size,
@@ -64,6 +65,8 @@ void               eel_read_file_cancel                  (EelReadFileHandle    *
 gboolean           eel_uri_is_trash                      (const char           *uri);
 gboolean           eel_uri_is_trash_folder               (const char           *uri);
 gboolean           eel_uri_is_in_trash                   (const char           *uri);
+gboolean           eel_uri_is_desktop                    (const char           *uri);
+
 
 char *             eel_format_uri_for_display            (const char           *uri);
 char *             eel_make_uri_from_input               (const char           *location);

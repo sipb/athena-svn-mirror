@@ -28,7 +28,7 @@ test_init (int *argc,
 int
 test_quit (int exit_code)
 {
-	//gnome_vfs_shutdown ();
+	/*gnome_vfs_shutdown ();*/
 
 	if (gtk_main_level () > 0) {
 		gtk_main_quit ();
@@ -139,77 +139,6 @@ test_pixbuf_new_named (const char *name, float scale)
 
 	return pixbuf;
 }
-
-// /* Preferences hacks */
-// void
-// test_text_caption_set_text_for_int_preferences (EelTextCaption *text_caption,
-// 					 const char *name)
-// {
-// 	int int_value;
-// 	char *text;
-
-// 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
-// 	g_return_if_fail (name != NULL);
-	
-// 	int_value = eel_preferences_get_integer (name);
-
-// 	text = g_strdup_printf ("%d", int_value);
-
-// 	eel_text_caption_set_text (EEL_TEXT_CAPTION (text_caption), text);
-
-// 	g_free (text);
-// }
-
-// void
-// test_text_caption_set_text_for_string_preferences (EelTextCaption *text_caption,
-// 						   const char *name)
-// {
-// 	char *text;
-
-// 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
-// 	g_return_if_fail (name != NULL);
-	
-// 	text = eel_preferences_get (name);
-	
-// 	eel_text_caption_set_text (EEL_TEXT_CAPTION (text_caption), text);
-
-// 	g_free (text);
-// }
-
-// void
-// test_text_caption_set_text_for_default_int_preferences (EelTextCaption *text_caption,
-// 							const char *name)
-// {
-// 	int int_value;
-// 	char *text;
-	
-// 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
-// 	g_return_if_fail (name != NULL);
-	
-// 	int_value = 0;
-
-// 	text = g_strdup_printf ("%d", int_value);
-
-// 	eel_text_caption_set_text (EEL_TEXT_CAPTION (text_caption), text);
-
-// 	g_free (text);
-// }
-
-// void
-// test_text_caption_set_text_for_default_string_preferences (EelTextCaption *text_caption,
-// 							   const char *name)
-// {
-// 	char *text;
-	
-// 	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
-// 	g_return_if_fail (name != NULL);
-	
-// 	text = g_strdup ("");
-
-// 	eel_text_caption_set_text (EEL_TEXT_CAPTION (text_caption), text);
-
-// 	g_free (text);
-// }
 
 #if 0
 int

@@ -44,6 +44,7 @@ eel_accessibility_set_up_label_widget_relation (GtkWidget *label, GtkWidget *wid
 	relation = atk_relation_new (targets, 1, ATK_RELATION_LABEL_FOR);
 	atk_relation_set_add (relation_set, relation);
 	g_object_unref (relation);
+	g_object_unref (relation_set);
 
 	/* Create the widget -> label relation */
 	relation_set = atk_object_ref_relation_set (atk_widget);
@@ -51,6 +52,7 @@ eel_accessibility_set_up_label_widget_relation (GtkWidget *label, GtkWidget *wid
 	relation = atk_relation_new (targets, 1, ATK_RELATION_LABELLED_BY);
 	atk_relation_set_add (relation_set, relation);
 	g_object_unref (relation);
+	g_object_unref (relation_set);
 }
 
 /*

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "eel-stock-dialogs.h"
 
+#include "eel-alert-dialog.h"
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
 #include "eel-string.h"
@@ -36,6 +37,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-authentication-manager.h>
 
 #define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
@@ -89,24 +91,6 @@ timed_wait_hash_equal (gconstpointer value1, gconstpointer value2)
 
 	return wait1->cancel_callback == wait2->cancel_callback
 		&& wait1->callback_data == wait2->callback_data;
-}
-
-static void
-add_label_to_dialog (GtkDialog *dialog, const char *message)
-{
-	GtkLabel *message_widget;
-
-	if (message == NULL) {
-		return;
-	}
-	
-	message_widget = GTK_LABEL (gtk_label_new (message));
-	gtk_label_set_line_wrap (message_widget, TRUE);
-	gtk_label_set_justify (message_widget,
-			       GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    GTK_WIDGET (message_widget),
-			    TRUE, TRUE, GNOME_PAD);
 }
 
 static void
@@ -218,11 +202,22 @@ timed_wait_callback (gpointer callback_data)
 
 	wait = callback_data;
 
+	if (gnome_authentication_manager_dialog_is_visible ()) {
+		return TRUE;
+	}
+	
 	/* Put up the timed wait window. */
 	button = wait->cancel_callback != NULL ? GTK_STOCK_CANCEL : GTK_STOCK_OK;
-	dialog = GTK_DIALOG (gtk_dialog_new_with_buttons (wait->window_title, NULL, 0,
-							  button, GTK_RESPONSE_OK,
-							  NULL));
+	dialog = GTK_DIALOG (eel_alert_dialog_new (NULL,
+		                                   0,
+		                                   GTK_MESSAGE_INFO,
+		                                   GTK_BUTTONS_NONE,
+		                                   wait->wait_message,
+		                                   _("You can stop this operation by clicking cancel."),
+		                                   wait->window_title));
+							
+	gtk_dialog_add_button (GTK_DIALOG (dialog), button, GTK_RESPONSE_OK);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 
 	/* The contents are often very small, causing tiny little
 	 * dialogs with their titles clipped if you just let gtk
@@ -232,10 +227,8 @@ timed_wait_callback (gpointer callback_data)
 	gtk_window_set_default_size (GTK_WINDOW (dialog),
 				     TIMED_WAIT_MINIMUM_DIALOG_WIDTH,
 				     -1);
-	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Eel");
-	add_label_to_dialog (dialog, wait->wait_message);
 	wait->dialog_creation_time = eel_get_system_time ();
-	gtk_widget_show_all (GTK_WIDGET (dialog));
+	gtk_widget_show (GTK_WIDGET (dialog));
 
 	/* FIXME bugzilla.eazel.com 2441: 
 	 * Could parent here, but it's complicated because we
@@ -333,7 +326,8 @@ eel_timed_wait_stop (EelCancelCallback cancel_callback,
 
 int
 eel_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
-		       const char *text, const char *title, ...)
+		       GtkMessageType message_type, const char *primary_text,
+		       const char *secondary_text, const char *title, ...)
 {
 	va_list button_title_args;
 	const char *button_title;
@@ -352,8 +346,14 @@ eel_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 	}
 	
 	/* Create the dialog. */
-        dialog = gtk_dialog_new ();
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	dialog = eel_alert_dialog_new (GTK_WINDOW (chosen_parent), 
+	                               0,
+	                               message_type,
+	                               GTK_BUTTONS_NONE,
+	                               primary_text,
+	                               secondary_text,
+	                               title);
+	
 	va_start (button_title_args, title);
 	response_id = 0;
 	while (1) {
@@ -362,17 +362,13 @@ eel_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 			break;
 		}
 		gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
 		response_id++;
 	}
 	va_end (button_title_args);
-	
-	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Eel");
-
-	/* Title it if asked to. */
-	add_label_to_dialog (GTK_DIALOG (dialog), text);
 
 	/* Run it. */
-        gtk_widget_show_all (dialog);
+        gtk_widget_show (dialog);
         result = gtk_dialog_run (GTK_DIALOG (dialog));
 	while ((result == GTK_RESPONSE_NONE || result == GTK_RESPONSE_DELETE_EVENT) && ignore_close_box) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -384,108 +380,92 @@ eel_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 }
 
 static GtkDialog *
-create_message_dialog (const char *message,
+create_message_dialog (const char *primary_text,
+		       const char *secondary_text,
 		       const char *dialog_title,
 		       GtkMessageType type,
 		       GtkButtonsType buttons_type,
 		       GtkWindow *parent)
 {  
-	GtkWidget *box;
+	GtkWidget *dialog;
 
-	g_assert (dialog_title != NULL);
-
-	box = gtk_message_dialog_new (parent, 0, type, buttons_type, "%s", message);
-	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
-	gtk_window_set_wmclass (GTK_WINDOW (box), "stock_dialog", "Eel");
-	
-	return GTK_DIALOG (box);
+	dialog = eel_alert_dialog_new (parent,
+	                               0,
+	                               type,
+	                               buttons_type,
+	                               primary_text,
+	                               secondary_text,
+	                               dialog_title);
+	return GTK_DIALOG (dialog);
 }
 
 static GtkDialog *
-show_message_dialog (const char *message,
+show_message_dialog (const char *primary_text,
+		     const char *secondary_text,
 		     const char *dialog_title,
 		     GtkMessageType type,
 		     GtkButtonsType buttons_type,
-		     const char *additional_button_label,
-		     int additional_button_response_id,
+		     const char *details_text,
 		     GtkWindow *parent)
 {
 	GtkDialog *dialog;
-	GtkWidget *additional_button;
-	GtkWidget *box;
 
-	dialog = create_message_dialog (message, dialog_title, type, 
+	dialog = create_message_dialog (primary_text, secondary_text, dialog_title, type, 
 					buttons_type, parent);
-	if (additional_button_label != NULL) {
-		additional_button = gtk_dialog_add_button (dialog,
-							   additional_button_label,
-							   additional_button_response_id);
-		box = gtk_widget_get_parent (additional_button);
-		if (GTK_IS_BOX (box)) {
-			gtk_box_reorder_child (GTK_BOX (box), additional_button, 0);
-		}
+	if (details_text != NULL) {
+		eel_alert_dialog_set_details_label (EEL_ALERT_DIALOG (dialog), details_text);
 	}
 	gtk_widget_show (GTK_WIDGET (dialog));
 
-	return dialog;
-}
-
-static GtkDialog *
-show_ok_dialog (const char *message,
-		const char *dialog_title,
-		GtkMessageType type,
-		GtkWindow *parent)
-{  
-	GtkDialog *dialog;
-
-	dialog = show_message_dialog (message, dialog_title, type,
-				      GTK_BUTTONS_OK, NULL, 0, parent);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (gtk_object_destroy), NULL);
 
 	return dialog;
 }
 
+static GtkDialog *
+show_ok_dialog (const char *primary_text,
+		const char *secondary_text,
+		const char *dialog_title,
+		GtkMessageType type,
+		GtkWindow *parent)
+{  
+	GtkDialog *dialog;
+
+	dialog = show_message_dialog (primary_text, secondary_text, dialog_title, type,
+				      GTK_BUTTONS_OK, NULL, parent);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	
+	return dialog;
+}
+
 GtkDialog *
-eel_create_info_dialog (const char *info,
+eel_create_info_dialog (const char *primary_text,
+			const char *secondary_text,
 			const char *dialog_title,
 			GtkWindow *parent)
 {
-	return create_message_dialog (info, dialog_title, 
+	return create_message_dialog (primary_text, secondary_text, dialog_title,
 				      GTK_MESSAGE_INFO,
 				      GTK_BUTTONS_OK,
 				      parent);
 }
 
 GtkDialog *
-eel_show_info_dialog (const char *info,
+eel_show_info_dialog (const char *primary_text,
+		      const char *secondary_text,
 		      const char *dialog_title,
 		      GtkWindow *parent)
 {
-	return show_ok_dialog (info, 
+	return show_ok_dialog (primary_text, 
+			    secondary_text,
 			    dialog_title == NULL ? _("Info") : dialog_title, 
 			    GTK_MESSAGE_INFO, parent);
 }
 
-static void
-details_dialog_response_callback (GtkDialog *dialog,
-				  int response_id,
-				  const char *detailed_message)
-{
-	if (response_id == RESPONSE_DETAILS) {
-		gtk_label_set_text (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
-				    detailed_message);
-		gtk_dialog_set_response_sensitive (dialog, RESPONSE_DETAILS, FALSE);
-	} else {
-		gtk_object_destroy (GTK_OBJECT (dialog));
-	}
-}
-
-
 GtkDialog *
-eel_show_info_dialog_with_details (const char *info,
+eel_show_info_dialog_with_details (const char *primary_text,
+				   const char *secondary_text,
 				   const char *dialog_title,
 				   const char *detailed_info,
 				   GtkWindow *parent)
@@ -493,24 +473,17 @@ eel_show_info_dialog_with_details (const char *info,
 	GtkDialog *dialog;
 
 	if (detailed_info == NULL
-	    || strcmp (info, detailed_info) == 0) {
-		return eel_show_info_dialog (info, dialog_title, parent);
+	    || strcmp (primary_text, detailed_info) == 0) {
+		return eel_show_info_dialog (primary_text, secondary_text, dialog_title, parent);
 	}
 
-	dialog = show_message_dialog (info,
+	dialog = show_message_dialog (primary_text,
+				      secondary_text,
 				      dialog_title == NULL ? _("Info") : dialog_title, 
 				      GTK_MESSAGE_INFO, 
-				      GTK_BUTTONS_OK, _("Details"), RESPONSE_DETAILS,
+				      GTK_BUTTONS_OK,
+				      detailed_info,
 				      parent);
-
-
-	g_signal_connect_closure (G_OBJECT (dialog),
-				  "response",
-				  g_cclosure_new (
-					  G_CALLBACK (details_dialog_response_callback),
-					  g_strdup (detailed_info),  
-					  (GClosureNotify) g_free),
-				  FALSE);
 
 	return dialog;
 
@@ -518,56 +491,53 @@ eel_show_info_dialog_with_details (const char *info,
 
 
 GtkDialog *
-eel_show_warning_dialog (const char *warning,
+eel_show_warning_dialog (const char *primary_text,
+			 const char *secondary_text,
 			 const char *dialog_title,
 			 GtkWindow *parent)
 {
-	return show_ok_dialog (warning, 
+	return show_ok_dialog (primary_text, 
+			       secondary_text,
 			       dialog_title == NULL ? _("Warning") : dialog_title, 
 			       GTK_MESSAGE_WARNING, parent);
 }
 
 
 GtkDialog *
-eel_show_error_dialog (const char *error,
+eel_show_error_dialog (const char *primary_text,
+		       const char *secondary_text,
 		       const char *dialog_title,
 		       GtkWindow *parent)
 {
-	return show_ok_dialog (error,
+	return show_ok_dialog (primary_text,
+			       secondary_text,
 			       dialog_title == NULL ? _("Error") : dialog_title, 
 			       GTK_MESSAGE_ERROR, parent);
 }
 
-
 GtkDialog *
-eel_show_error_dialog_with_details (const char *error_message,
+eel_show_error_dialog_with_details (const char *primary_text,
+				    const char *secondary_text,
 				    const char *dialog_title,
 				    const char *detailed_error_message,
 				    GtkWindow *parent)
 {
 	GtkDialog *dialog;
 
-	g_return_val_if_fail (error_message != NULL, NULL);
+	g_return_val_if_fail (primary_text != NULL, NULL);
 	g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
 
 	if (detailed_error_message == NULL
-	    || strcmp (error_message, detailed_error_message) == 0) {
-		return eel_show_error_dialog (error_message, dialog_title, parent);
+	    || strcmp (primary_text, detailed_error_message) == 0) {
+		return eel_show_error_dialog (primary_text, secondary_text, dialog_title, parent);
 	}
 	
-	dialog = show_message_dialog (error_message, 
+	dialog = show_message_dialog (primary_text, 
+				      secondary_text,
 				      dialog_title == NULL ? _("Error") : dialog_title,
 				      GTK_MESSAGE_ERROR,
-				      GTK_BUTTONS_OK, _("Details"), RESPONSE_DETAILS,
+				      GTK_BUTTONS_OK, detailed_error_message,
 				      parent);
-	
-	/* Show the details when you click on the details button. */
-	g_signal_connect_closure (G_OBJECT (dialog), "response",
-				  g_cclosure_new (
-					  G_CALLBACK (details_dialog_response_callback),
-					  g_strdup (detailed_error_message),  
-					  (GClosureNotify) g_free),
-				  FALSE);
 	return dialog;
 }
 
@@ -584,14 +554,16 @@ eel_show_error_dialog_with_details (const char *error_message,
  * @parent: The parent window for this dialog.
  */
 GtkDialog *
-eel_show_yes_no_dialog (const char *question, 
+eel_show_yes_no_dialog (const char *primary_text, 
+			const char *secondary_text,
 			const char *dialog_title,
 			const char *yes_label,
 			const char *no_label,
 			GtkWindow *parent)
 {
 	GtkDialog *dialog = 0;
-	dialog = eel_create_question_dialog (question,
+	dialog = eel_create_question_dialog (primary_text,
+					     secondary_text,
 					     dialog_title == NULL ? _("Question") : dialog_title,
 					     no_label, GTK_RESPONSE_CANCEL,
 					     yes_label, GTK_RESPONSE_YES,
@@ -614,7 +586,8 @@ eel_show_yes_no_dialog (const char *question,
  * @parent: The parent window for this dialog.
  */
 GtkDialog *
-eel_create_question_dialog (const char *question,
+eel_create_question_dialog (const char *primary_text,
+			    const char *secondary_text,
 			    const char *dialog_title,
 			    const char *answer_1,
 			    int response_1,
@@ -624,11 +597,13 @@ eel_create_question_dialog (const char *question,
 {
 	GtkDialog *dialog;
 	
-	dialog = create_message_dialog (question,
+	dialog = create_message_dialog (primary_text,
+					secondary_text,
 					dialog_title == NULL ? _("Question") : dialog_title, 
 					GTK_MESSAGE_QUESTION,
 					GTK_BUTTONS_NONE,
 					parent);
 	gtk_dialog_add_buttons (dialog, answer_1, response_1, answer_2, response_2, NULL);
+	gtk_dialog_set_default_response (dialog, response_2);
 	return dialog;
 }

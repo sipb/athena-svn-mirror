@@ -42,7 +42,7 @@ enum
 	PROP_Y_SPACING,
 	PROP_X_JUSTIFICATION,
 	PROP_Y_JUSTIFICATION,
-	PROP_HOMOGENEOUS,
+	PROP_HOMOGENEOUS
 };
 
 /* Detail member struct */
@@ -178,7 +178,7 @@ eel_wrap_table_class_init (EelWrapTableClass *wrap_table_class)
 				       FALSE, G_PARAM_READWRITE));
 }
 
-void
+static void
 eel_wrap_table_init (EelWrapTable *wrap_table)
 {
 	GTK_WIDGET_SET_FLAGS (wrap_table, GTK_NO_WINDOW);

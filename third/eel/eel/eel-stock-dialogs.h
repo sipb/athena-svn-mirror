@@ -26,6 +26,7 @@
 #define EEL_STOCK_DIALOGS_H
 
 #include <gtk/gtkdialog.h>
+#include <gtk/gtkmessagedialog.h>
 
 typedef void (* EelCancelCallback) (gpointer callback_data);
 
@@ -47,44 +48,55 @@ void       eel_timed_wait_stop                (EelCancelCallback  cancel_callbac
 /* Basic dialog with buttons. */
 int        eel_run_simple_dialog              (GtkWidget         *parent,
 					       gboolean           ignore_close_box,
-					       const char        *text,
+					       GtkMessageType     message_type,
+					       const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *title,
 					       ...);
 
 /* Variations on gnome stock dialogs; these do line wrapping, we don't
  * bother with non-parented versions, we allow setting the title,
- * and we return GtkDialog pointers instead of GtkWidget pointers.
+ * primary, and secondary messages, and we return GtkDialog pointers 
+ * instead of GtkWidget pointers.
  */
-GtkDialog *eel_show_info_dialog               (const char        *informative_message,
+GtkDialog *eel_show_info_dialog               (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       GtkWindow         *parent);
-GtkDialog *eel_show_info_dialog_with_details  (const char        *informative_message,
+GtkDialog *eel_show_info_dialog_with_details  (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       const char        *detailed_informative_message,
 					       GtkWindow         *parent);
-GtkDialog *eel_show_warning_dialog            (const char        *warning_message,
+GtkDialog *eel_show_warning_dialog            (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       GtkWindow         *parent);
-GtkDialog *eel_show_error_dialog              (const char        *error_message,
+GtkDialog *eel_show_error_dialog              (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       GtkWindow         *parent);
-GtkDialog *eel_show_error_dialog_with_details (const char        *error_message,
+GtkDialog *eel_show_error_dialog_with_details (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       const char        *detailed_error_message,
 					       GtkWindow         *parent);
-GtkDialog *eel_show_yes_no_dialog             (const char        *question,
+GtkDialog *eel_show_yes_no_dialog             (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       const char        *yes_label,
 					       const char        *no_label,
 					       GtkWindow         *parent);
-GtkDialog *eel_create_question_dialog         (const char        *question,
+GtkDialog *eel_create_question_dialog         (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       const char        *answer_one,
 					       int                response_one,
 					       const char        *answer_two,
 					       int                response_two,
 					       GtkWindow         *parent);
-GtkDialog *eel_create_info_dialog             (const char        *informative_message,
+GtkDialog *eel_create_info_dialog             (const char        *primary_text,
+					       const char        *secondary_text,
 					       const char        *dialog_title,
 					       GtkWindow         *parent);
 

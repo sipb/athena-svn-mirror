@@ -55,6 +55,15 @@ EelStringList *eel_preferences_get_string_list                 (const char      
 void           eel_preferences_set_string_list                 (const char              *name,
 								const EelStringList     *string_list_value);
 
+GList         *eel_preferences_get_string_glist                 (const char              *name);
+void           eel_preferences_set_string_glist                 (const char              *name,
+								 const GList             *string_list_value);
+
+void           eel_preferences_unset                            (const char              *name);
+
+/* Writability of a key */
+gboolean       eel_preferences_key_is_writable                 (const char              *name);
+
 /* Callbacks */
 void           eel_preferences_add_callback                    (const char              *name,
 								EelPreferencesCallback   callback,
@@ -72,6 +81,8 @@ void           eel_preferences_add_auto_string                 (const char      
 								const char             **storage);
 void           eel_preferences_add_auto_string_list            (const char              *name,
 								const EelStringList    **storage);
+void           eel_preferences_add_auto_string_glist           (const char              *name,
+								const GList            **storage);
 void           eel_preferences_add_auto_integer                (const char              *name,
 								int                     *storage);
 void           eel_preferences_add_auto_enum                   (const char              *name,
