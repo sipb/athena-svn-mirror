@@ -2,73 +2,8 @@ This file describes cases where platforms we care about do not
 correctly implement the ANSI C and POSIX specifications.  The cases
 described are:
 
-	setsid() and Ultrix 4.2
-	getpgrp() and Ultrix, SunOS 4.x
-	Pseudo-ttys and Ultrix 4.2
+	getpgrp() and SunOS 4.x
 	strerror() and SunOS
-
-setsid() and Ultrix 4.2
------------------------
-
-Under Ultrix 4.2, setsid() does not dissociate a process from its
-controlling tty.
-
-For a program using imake, an appropriate way to detect the problem
-is:
-
-	#define HAVE_SETSID
-	#ifdef ultrix
-	/* Under Ultrix 4.2, setsid() doesn't dissociate the calling process
-	 * from its controlling tty.  Use setpgid() and the TIOCNOTTY
-	 * ioctl instead. */
-	#undef HAVE_SETSID
-	#endif
-
-For a program using Autoconf, you should put the following test in
-your aclocal.m4:
-
-	AC_DEFUN(ATHENA_FUNC_SETSID,
-	[AC_MSG_CHECKING(for working setsid)
-	AC_CACHE_VAL(athena_cv_func_setsid,
-	[AC_TRY_RUN([
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <fcntl.h>
-	#include <unistd.h>
-	int main()
-	{
-	    setsid();
-	    return (open("/dev/tty", O_RDWR, 0666) < 0) ? 0 : 1;
-	}
-	], athena_cv_func_setsid=yes, athena_cv_func_setsid=no,
-	   athena_cv_func_setsid=no)])dnl
-	AC_MSG_RESULT($athena_cv_func_regcomp)
-	if test $athena_cv_func_regcomp = yes; then
-	  AC_DEFINE(HAVE_SETSID)
-	fi])
-
-and then put ATHENA_FUNC_SETSID in your configure.in.
-
-In either case, an appropriate workaround is:
-
-	#ifndef HAVE_SETSID
-	#include <sys/ioctl.h>
-	static int bsd_emulate_setsid()
-	{
-	    int fd, status;
-
-	    status = setpgid(getpid(), getpid());
-	    if (status < 0)
-		return status;
-	    fd = open("/dev/tty", O_RDWR, 0666);
-	    if (fd >= 0) {
-		status = ioctl(fd, TIOCNOTTY, (char *) 0);
-		close(fd);
-	    }
-	    return status;
-	}
-	#define setsid bsd_emulate_setsid
-	#endif
 
 getpgrp() and Ultrix, SunOS 4.x
 -------------------------------
@@ -76,25 +11,22 @@ getpgrp() and Ultrix, SunOS 4.x
 The BSD 4.3 getpgrp() interface takes a process ID argument indicating
 which process one wants the process group of.  POSIX "simplified" the
 getpgrp() interface by eliminating the argument and assuming the
-calling process's ID.  Ultrix and SunOS both have "POSIX" or "System
-V" environments which have the correct getpgrp() interface, but we
-don't use those environments.
+calling process's ID.  SunOS has "POSIX" and "System V" environments
+which have the correct getpgrp() interface, but we don't use those
+environments.
 
-For a program using imake, an appropriate way to detect the problem
-is:
+For a program using autoconf, put AC_FUNC_GETPGRP in your configure.in
+file.  Otherwise, an appropriate way to detect the problem is:
 
 	#define GETPGRP_VOID
-	#if defined(ultrix) || (defined(sun) && !defined(__svr4__))
-	/* Ultrix 4.2 and SunOS 4.1.3_U1 use the old BSD interface for
-	 * getpgrp(), which takes an argument.  Use the BSD getpgrp()
-	 * interface instead of the POSIX interface. */
+	#if defined(sun) && !defined(SOLARIS)
+	/* SunOS 4.1.3_U1 uses the old BSD interface for getpgrp(),
+	 * which takes an argument.  Use the BSD getpgrp() interface
+	 * instead of the POSIX interface. */
 	#undef GETPGRP_VOID
 	#endif
 
-For a program which uses Autoconf, put AC_FUNC_GETPGRP in your
-configure.in file.
-
-In either case, an appropriate workaround is:
+Then use code like:
 
 	#ifndef GETPGRP_VOID
 	#include <sys/types.h>
@@ -104,15 +36,6 @@ In either case, an appropriate workaround is:
 	}
 	#define getpgrp bsd_emulate_getpgrp
 	#endif
-
-Pseudo-ttys and Ultrix 4.2
---------------------------
-
-Opening a slave pty under Ultrix without opening the parent causes the
-pty to become unusable until a reboot.  The best workaround is to
-always open the parent side of pseudo-ttys first.  See the section on
-pseudo-ttys in the "nonstd" file in this directory for more
-information about obtaining a pseudo-tty.
 
 strerror() and SunOS
 --------------------
@@ -125,20 +48,17 @@ them directly.  Not only is this solution nonstandard, but modern
 operating systems often have their own declarations of those
 variables, which may conflict with your declarations.
 
-For a program using imake, an appropriate way to detect the problem
-is:
+For a program using autoconf, put AC_CHECK_FUNC(strerror) in your
+configure.in.  Otherwise, an appropriate way to detect the problem is:
 
 	#define HAVE_STRERROR
-	#if defined(sun) && !defined(__svr4__)
+	#if defined(sun) && !defined(SOLARIS)
 	/* SunOS 4.1.3_U1 doesn't have strerror().  Use sys_errlist
 	 * instead. */
 	#undef HAVE_STRERROR
 	#endif
 
-For a program using autoconf, put AC_CHECK_FUNC(strerror) in your
-configure.in.
-
-In either case, an appropriate workaround is:
+Then use code like:
 
 	#ifndef HAVE_STRERROR
 	extern const char *const sys_errlist[];
