@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: jfc $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.12 1991-03-24 14:27:09 jfc Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.13 1992-05-07 22:37:55 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -374,7 +374,7 @@ int X_driver_init(drivername, notfirst, pargc, argv)
 
     xshowinit();
     x_gram_init(dpy);
-    xselInitAtoms(dpy);
+    xicccmInitAtoms(dpy);
     
     mux_add_input_source(ConnectionNumber(dpy), x_get_input, dpy);
 

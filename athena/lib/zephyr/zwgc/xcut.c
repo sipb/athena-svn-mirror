@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xcut.c,v $
- *      $Author: jfc $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.8 1991-08-08 07:51:53 jfc Exp $";
+static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.9 1992-05-07 22:37:55 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -169,6 +169,10 @@ void xdestroygram(dpy,w,desc_context,gram)
     free(gram->text);
     free(gram->blocks);
     free(gram);
+
+    if (bottom_gram == NULL && unlinked == NULL) {
+       /* flush colormap here */
+    }
 }
 
 void xcut(dpy,event,desc_context)
@@ -191,6 +195,13 @@ void xcut(dpy,event,desc_context)
      * Dispatch on the event type:
      */
     switch(event->type) {
+      case ClientMessage:
+	if ((event->xclient.message_type == XA_WM_PROTOCOLS) &&
+	    (event->xclient.format == 32) &&
+	    (event->xclient.data.l[0] == XA_WM_DELETE_WINDOW))
+	    xdestroygram(dpy,w,desc_context,gram);
+	break;
+
       case MapNotify:
 	/* I don't like using the local time, but MapNotify events don't
 	 * come with a timestamp, and there's no way to query the server
@@ -201,6 +212,10 @@ void xcut(dpy,event,desc_context)
 	    gram->can_die.tv_sec += (int) (ttl/1000);
 	    gram->can_die.tv_usec += (ttl%1000)*1000;
 	}
+	break;
+
+      case UnmapNotify:
+	unlink_gram(gram);
 	break;
 
       case LeaveNotify:
@@ -271,18 +286,37 @@ void xcut(dpy,event,desc_context)
 	   XWindowAttributes wa;
 	   int gx,gy;
 	   Window temp;
+	   x_gram *next;
 
-	   for (gram = bottom_gram ; gram ; gram = gram->above) {
+	   for (gram = bottom_gram ; gram ; gram = next) {
 	      XGetWindowAttributes(dpy,gram->w,&wa);
 	      XTranslateCoordinates(dpy,gram->w,wa.root,0,0,&gx,&gy,
 				    &temp);
+
+	      next = gram->above;
 
 	      if ((wa.map_state == IsViewable) &&
 		  (gx <= event->xbutton.x_root) &&
 		  (event->xbutton.x_root < gx+wa.width) &&
 		  (gy <= event->xbutton.y_root) &&
-		  (event->xbutton.y_root < gy+wa.height))
+		  (event->xbutton.y_root < gy+wa.height)) {
 		 xdestroygram(dpy,gram->w,desc_context,gram);
+	      }
+	   }
+	   for (gram = unlinked ; gram ; gram = next) {
+	      XGetWindowAttributes(dpy,gram->w,&wa);
+	      XTranslateCoordinates(dpy,gram->w,wa.root,0,0,&gx,&gy,
+				    &temp);
+
+	      next = gram->above;
+
+	      if ((wa.map_state == IsViewable) &&
+		  (gx <= event->xbutton.x_root) &&
+		  (event->xbutton.x_root < gx+wa.width) &&
+		  (gy <= event->xbutton.y_root) &&
+		  (event->xbutton.y_root < gy+wa.height)) {
+		 xdestroygram(dpy,gram->w,desc_context,gram);
+	      }
 	   }
 	}
 	current_pressop = PRESSOP_NONE;

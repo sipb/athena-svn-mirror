@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xrevstack.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.6 1989-11-21 11:30:09 jtkohl Exp $";
+static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.7 1992-05-07 22:37:55 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -23,6 +23,7 @@ static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.6 1989-11-21 11:30:09 jt
 #include <stdio.h>
 
 x_gram *bottom_gram = NULL;
+x_gram *unlinked = NULL;
 int reverse_stack = 0;
 
 void add_to_bottom(gram)
@@ -60,10 +61,39 @@ void delete_gram(gram)
       } else {
 	 bottom_gram = NULL;
       }
+   } else if (gram == unlinked) {
+      if (gram->above) {
+	 unlinked = gram->above;
+	 unlinked->below = NULL;
+      } else {
+	 unlinked = NULL;
+      }
    } else {
       if (gram->above)
 	gram->above->below = gram->below;
       gram->below->above = gram->above;     
+   }
+
+   /* fix up above & below pointers so that calling delete_gram
+      again is safe */
+   gram->below = gram;
+   gram->above = gram;
+}
+
+void unlink_gram(gram)
+     x_gram *gram;
+{
+   delete_gram(gram);
+
+   if (unlinked) {
+      unlinked->below = gram;
+      gram->below = NULL;
+      gram->above = unlinked;
+      unlinked = gram;
+   } else {
+      gram->above = NULL;
+      gram->below = NULL;
+      unlinked = gram;
    }
 }
 
