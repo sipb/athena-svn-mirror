@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.2 1990-01-17 02:54:00 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.3 1990-02-14 14:30:17 vanharen Exp $";
 #endif
 
 
@@ -76,7 +76,7 @@ do_olc_help(arguments)
 	char *arguments[];
 {
   char help_filename[NAME_SIZE]; /* Name of help file. */
-  char ret[LINE_SIZE];
+  int  index;
 
   if (arguments[1] == (char *)NULL) 
     {
@@ -88,16 +88,20 @@ do_olc_help(arguments)
     {
       (void) strcpy(help_filename, HELP_DIR);
       (void) strcat(help_filename, "/");
-      
-      if (command_index(Command_Table, arguments[1], ret) == -1) 
+
+      if ((index = command_index(Command_Table, arguments[1])) == ERROR)
 	{
-	  printf("The command \"%s\" is not defined.  ", ret);
-	  printf("For a list of commands, type \"?\"\n");
+	  printf("The command \"%s\" is not defined.  ", arguments[1]);
+	  printf("For a list of commands, type \"?\".\n");
 	  return(ERROR);
 	}
-      else 
-	(void) strcat(help_filename, ret);
+      else
+	if (index == NOT_UNIQUE)
+	  return(NOT_UNIQUE);
+
+      (void) strcat(help_filename, Command_Table[index]);
     }
+
   (void) strcat(help_filename, HELP_EXT);
   return(display_file(help_filename));
 }
