@@ -49,17 +49,9 @@ char	restart_fail[] =
 displayq(format)
 	int format;
 {
-#ifdef SOLARIS
 	register struct queue_ *q;
-#else
-	register struct queue *q;
-#endif
 	register int i, nitems, fd;
-#ifdef SOLARIS
 	struct queue_ **queue;
-#else
-	struct queue **queue;
-#endif
 	struct stat statb;
 	int rem_fils;
 	char *tmpptr;
@@ -188,7 +180,7 @@ displayq(format)
 	/*
 	 * Allow lpq -l info about printing
 	 */
-	if(lflag) {
+	else if (lflag) {
 #ifdef KERBEROS
 	    if(KA > 0) {
 		printf("\nKerberos authenticated");
@@ -222,11 +214,7 @@ displayq(format)
 			SD, printer);
 		fatal(msgbuf);
 		}
-#ifdef SOLARIS
 	if ((nitems = getq_(&queue)) < 0) {
-#else
-	if ((nitems = getq(&queue)) < 0) {
-#endif
 	  	char msgbuf[255];
 		sprintf(
 			msgbuf,
