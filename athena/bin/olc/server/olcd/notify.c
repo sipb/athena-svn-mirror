@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.1 1989-07-16 17:15:43 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.2 1989-08-08 14:42:19 tjcoppet Exp $";
 #endif
 
 
@@ -215,7 +215,7 @@ write_message_to_user(k, message, flags)
       break;
 
     case MACHINE_DOWN:
-      set_status(k->user, MACHINE_DOWN);
+      set_status(k->user, UNKNOWN_STATUS);
       (void) sprintf(msgbuf,"Unable to contact %s %s. Host machine down.", 
 	      k->title, k->user->username);
       if(!(flags & NO_RESPOND))
@@ -235,6 +235,7 @@ write_message_to_user(k, message, flags)
       break;
 
     default:
+      set_status(k->user,ACTIVE);
       status = SUCCESS;
       break;
     }

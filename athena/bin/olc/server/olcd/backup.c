@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.1 1989-07-16 17:14:45 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.2 1989-08-08 14:39:54 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -213,7 +213,8 @@ ensure_consistent_state()
   register KNUCKLE **k_ptr, *k;
   KNUCKLE *foo;
   char msgbuf[BUFSIZ];
-      
+     
+  return;     
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++) 
     {
       k = *k_ptr;

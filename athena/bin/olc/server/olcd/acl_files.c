@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.1 1989-07-16 17:14:37 tjcoppet Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.2 1989-08-08 14:39:20 tjcoppet Exp $";
 #endif lint
 
 /*
@@ -40,7 +40,7 @@ All Rights Reserved.
 #define NEW_FILE "%s.~NEWACL~"	/* Format for name of altered acl file */
 #define WAIT_TIME 300		/* Maximum time allowed write acl file */
 
-#define CACHED_ACLS 2 /* How many acls to cache */
+#define CACHED_ACLS 15 /* How many acls to cache */
 				/* Each acl costs 1 open file descriptor */
 #define ACL_LEN 32		/* Twice a reasonable acl length */
 
@@ -422,6 +422,7 @@ char *name;
 	       acl_canonicalize_principal(buf, canon);
 	       add_hash(acl_cache[i].acl, canon);
 	   }
+	   fclose(f);
 	   acl_cache[i].status = s;
        }
     return(i);

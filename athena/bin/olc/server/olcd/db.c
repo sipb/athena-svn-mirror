@@ -119,6 +119,7 @@ load_db()
       (void) sprintf(msgbuf, "load_db: can't open OLC database %s", 
 		     TOPIC_FILE);
       log_error(msgbuf);
+      perror("load_db");
       return(ERROR);
     }
 
@@ -176,6 +177,7 @@ load_user(user)
       (void) sprintf(msgbuf, "load_user: can't open OLC database %s", 
 		     USER_FILE);
       log_error(msgbuf);
+      perror("load_user");
       return(ERROR);
     }
 

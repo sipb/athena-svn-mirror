@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.1 1989-07-16 17:15:05 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.2 1989-08-08 14:40:14 tjcoppet Exp $";
 #endif
 
 
@@ -377,7 +377,7 @@ insert_topic(t)
   return(SUCCESS);
 }
 
-
+    
 
 /*
  * Function:	delete_user() 
@@ -425,6 +425,8 @@ delete_knuckle(knuckle,cont)
   int i;
 
   /* maintain continuity in the master knuckle list */
+  /* linked lists anybody? */
+
   for (n_knuckles=0; Knuckle_List[n_knuckles] != (KNUCKLE *)NULL; n_knuckles++)
     if (Knuckle_List[n_knuckles] == knuckle)
       knuckle_idx = n_knuckles;
@@ -471,6 +473,16 @@ delete_knuckle(knuckle,cont)
 }
 
 
+deactivate_knuckle(knuckle)
+     KNUCKLE *knuckle;
+{
+  if(knuckle->instance > 0)
+    delete_knuckle(knuckle);
+  else
+    knuckle->status = 0;
+  
+  return(SUCCESS);
+}
 
 
 void
@@ -486,7 +498,7 @@ init_user(knuckle,person)
   (void) strcpy(knuckle->user->title1, DEFAULT_TITLE);
   (void) strcpy(knuckle->user->title2, DEFAULT_TITLE2);
   knuckle->user->max_ask = 1;
-  knuckle->user->max_answer = 1;
+  knuckle->user->max_answer = 2;
   knuckle->status = 0;
   knuckle->user->specialties[0] = UNKNOWN_TOPIC;
   load_user(knuckle->user);
@@ -510,6 +522,9 @@ init_question(k,topic,text)
   k->question->owner = k;
   k->queue = ACTIVE_Q;
   k->question->nseen = 0;
+  k->question->note[0] = '\0';
+  k->question->comment[0] = '\0';
+  k->question->topic_code = verify_topic(topic);
   (void) strcpy(k->title,k->user->title1);
   (void) strcpy(k->question->topic,topic);
   init_log(k,text);
@@ -556,13 +571,10 @@ get_knuckle(name,instance,knuckle)
 	       (*k_ptr)->instance);
 #endif TEST
 
-	if(((*k_ptr)->instance == instance) && !(((*k_ptr)->status == 0) &&
+	if(((*k_ptr)->instance == instance) && !(!is_active((*k_ptr)) &&
 						 (*k_ptr)->instance > 0))
 	  {
 	    *knuckle = *k_ptr;
-#ifdef TEST
-            printf("kperms: %d\n",(*knuckle)->user->permissions);
-#endif TEST
 	    return(SUCCESS);
 	  }
 
@@ -608,7 +620,8 @@ match_knuckle(name,instance,knuckle)
     return(EMPTY_LIST);
   
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(string_equiv(name,(*k_ptr)->user->username,strlen(name)))
+    if(string_equiv(name,(*k_ptr)->user->username,strlen(name)) && 
+       is_active((*k_ptr)))
       {
 
 #ifdef TEST
@@ -678,6 +691,36 @@ find_knuckle(person,knuckle)
   return(status);
 }
   
+
+get_instance(user,instance)
+     char *user;
+     int *instance;
+{
+  KNUCKLE **k_ptr;
+  KNUCKLE *k_save = (KNUCKLE *) NULL;
+
+  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
+    if(string_eq(user,(*k_ptr)->user->username) && 
+      is_active((*k_ptr)))
+      {
+	if(k_save != (KNUCKLE *) NULL)
+	  {
+	    if(((*k_ptr)->instance < k_save->instance))
+	    k_save = *k_ptr;
+	  }
+	else
+	  k_save = *k_ptr;
+      }
+
+  if(k_save != (KNUCKLE *) NULL)
+    *instance = k_save->instance;
+  else
+    *instance = 0;
+  
+  return(SUCCESS);
+}
+
+
 verify_instance(knuckle,instance)
      KNUCKLE *knuckle;
      int instance;
@@ -685,10 +728,13 @@ verify_instance(knuckle,instance)
   KNUCKLE **k;
   int i;
 
+  if(instance == 0)
+    return(SUCCESS);
+
   k = knuckle->user->knuckles;
-  
+   
   for(i=0; i<= knuckle->user->no_knuckles; i++)
-    if(((*(k+i))->instance == instance) && (*(k+i))->status > 0)
+    if(((*(k+i))->instance == instance) && is_active((*(k+i))))
       return(SUCCESS);
   return(FAILURE);
 }
@@ -755,9 +801,11 @@ connect_knuckles(a,b)
 	  log_error("connect: connectee has no question");
 	  return(ERROR);
 	}
-      add_status(a,BUSY);
+/*      add_status(a,BUSY);*/
       set_status(b, SERVICED);
       a->question = b->question;
+      strcpy(a->title,a->user->title2);
+      strcpy(b->title,b->user->title1);
     }
   else
     {
@@ -766,9 +814,11 @@ connect_knuckles(a,b)
 	  log_error("connect: connectee already has question");
 	  return(ERROR);
 	}
-      add_status(b,BUSY);
+/*      add_status(b,BUSY);*/
       set_status(a, SERVICED);
       b->question = a->question;
+      strcpy(a->title,a->user->title1);
+      strcpy(b->title,b->user->title2);
     }
   
   a->connected = b;
@@ -782,24 +832,24 @@ connect_knuckles(a,b)
 	  a->title, a->user->realname);
   if(write_message_to_user(b,msg,0)!=SUCCESS)
     {
-      a->connected = (KNUCKLE *) NULL;
+/*      a->connected = (KNUCKLE *) NULL;
       b->connected = (KNUCKLE *) NULL;
       a->status = astatus;
       b->status = bstatus;
-      return(FAILURE);
+      return(FAILURE);*/
     }
       
   (void) sprintf(msg,"You are connected to %s %s.\n",
 	  b->title, b->user->realname);
   if((write_message_to_user(a,msg,0) != SUCCESS) &&  (!is_signed_on(b)))
     {
-      sprintf(msg,"Oops, he just logged out. Will try to find another...");
+/*      sprintf(msg,"Oops, he just logged out. Will try to find another...");
       write_message_to_user(b,msg,0);
       a->connected = (KNUCKLE *) NULL;
       b->connected = (KNUCKLE *) NULL;
       a->status = astatus;
       b->status = bstatus;
-      return(FAILURE);
+      return(FAILURE);*/
     }
   a->question->nseen++;
   return(SUCCESS);
@@ -827,7 +877,7 @@ match_maker(knuckle)
   if(!has_question(knuckle))
     {
       if(is_logout(knuckle) ||
-	 is_busy(knuckle) ||
+	 is_connected(knuckle) ||
 	 !is_signed_on(knuckle))
 	return(FAILURE);
 
@@ -855,6 +905,8 @@ match_maker(knuckle)
 	  if(is_connected((*k_ptr)))
 	    continue;
 	  if(is_logout((*k_ptr)))
+	    continue;
+	  if((*k_ptr)->status > QUESTION_STATUS)
 	    continue;
 	  if((*k_ptr) == knuckle)
 	    continue;
@@ -907,7 +959,8 @@ match_maker(knuckle)
     {
       if(is_logout(knuckle) ||
 	 is_pitted(knuckle) ||
-	 is_connected(knuckle))
+	 is_connected(knuckle) ||
+	 (knuckle->status > QUESTION_STATUS))
 	return(FAILURE);
       
       for(k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
@@ -916,7 +969,7 @@ match_maker(knuckle)
 	    continue;
 	  if(is_logout((*k_ptr)))
 	    continue;
-	  if(is_busy((*k_ptr)))
+	  if(is_connected((*k_ptr)))
 	    continue;
 	  if(priority < (*k_ptr)->status & SIGNED_ON)
 	     continue;
@@ -1053,10 +1106,10 @@ printf("message: %s\n",new_message);
  *	The status information is returned in a static structure.
  */
 
-STATUS *
+QUEUE_STATUS *
 get_status_info()
 {
-  static STATUS status;	/* Static status structure. */
+  static QUEUE_STATUS status;	/* Static status structure. */
   KNUCKLE **k_ptr;	/* Current consultant. */
 
   status.consultants = 0;
@@ -1098,19 +1151,13 @@ verify_topic(topic)
 {
   TOPIC **t_ptr;
 
-  while (!isalnum(*topic) && *topic)
-    topic++;
   if (strlen(topic) == 0) 
     return(FAILURE);
   
   for(t_ptr = Topic_List; *t_ptr != (TOPIC *) NULL; t_ptr++)
-    {
-      if(string_eq(topic,(*t_ptr)->name))
-	return(IS_TOPIC);
-/*      for(sub_ptr = (*t_ptr)->subtopic; sub_ptr != (TOPIC *) NULL; sub_ptr++)
-	if(string_eq(topic,sub_ptr->name))
-	  return(IS_SUBTOPIC);  I don't know about this yet */
-    }
+    if(string_eq(topic,(*t_ptr)->name))
+      return((*t_ptr)->value);
+
   return(FAILURE);
 }
 
@@ -1129,18 +1176,17 @@ owns_question(knuckle)
 }
 
 
-
-is_specialty(user,code)
-     USER *user;
+is_topic(topics,code)
+     int *topics;
      int code;
 {
-  int *s = user->specialties;
-
-  while(*s != UNKNOWN_TOPIC)
+  while(topics != (int *) NULL)
     {
-      if(*s = code)
+      if(*topics == code)
 	return(TRUE);
-      ++s;
+      ++topics;
+      if((*topics == UNKNOWN_TOPIC) || (*topics <= 0))
+	break;
     }
   return(FALSE);
 }

@@ -20,24 +20,25 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.3 1989-08-04 11:12:50 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.4 1989-08-08 14:35:05 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
 ERRCODE
-t_list_queue(Request,queues,topics,stati,comments)
+t_list_queue(Request,queues,topics,users,stati,comments)
      REQUEST *Request;
      char *queues;
      char *topics;
+     char *users;
      int stati;
      int comments;
 {
   int status;
   LIST *list;
   
-  status = OListQueue(Request,&list,queues,topics,stati);
+  status = OListQueue(Request,&list,queues,topics,users,stati);
   switch (status)
     {
     case SUCCESS:

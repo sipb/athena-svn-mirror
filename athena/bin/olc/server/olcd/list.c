@@ -69,9 +69,13 @@ printf("true\n");
 
 
 
-list_queue(queue,data,size)
+list_queue(queue,data,queues,topics,stati,name,size)
      int queue;
      LIST **data;
+     int queues;
+     int *topics;
+     int stati;
+     char *name;
      int *size;
 {
   KNUCKLE **k_ptr;
@@ -88,15 +92,39 @@ list_queue(queue,data,size)
   *data = d;
   n = 0;
 
+#ifdef TEST
+  printf("list ststu: %d %s\n",stati,name);
+#endif TEST
+
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
       {
-	get_list_info((*k_ptr),d++);
-	n++;
+	if((stati != 0) && ((*k_ptr)->status != stati) && 
+	   ((*k_ptr)->user->status != stati))
+	  continue;
+
+	if(name != (char *) NULL)
+	  if(*name != '\0')
+	    if(!(string_equiv(name,(*k_ptr)->user->username,1)))
+	      continue;
+
+	if((topics != (int *) NULL) && (has_question((*k_ptr))))
+	  if(!is_topic(topics,(*k_ptr)->question->topic_code))
+	    continue;
+
+	get_list_info((*k_ptr),d);
 #ifdef TEST
 	printf("putting %s %d\n",(*k_ptr)->user->username,n);
 	printf("sizes: %d  %d\n",(1024 * NBLOCKS * page), ((n-1) * sizeof(LIST)));
+	printf("status: %d title %s\n",d->ukstatus, d->user.title);
+        if(d->connected.uid >=0)
+	  printf("connect: %s status: %d\n",d->connected.username, d->ckstatus);
+	if(d->nseen >= 0)
+	  printf("question: %s \n",d->topic);
+
 #endif TEST
+	d++;
+	n++;
 	if((1024 * NBLOCKS * page) <= ((n-1) * sizeof(LIST)))
 	  {
 	    ++page;
@@ -120,98 +148,6 @@ list_queue(queue,data,size)
   return(SUCCESS);
 }
 
-
-
-
-
-list_topic(topic,data,n)
-     char *topic;
-     LIST **data;
-     int *n;
-{
-  KNUCKLE **k_ptr;
-  LIST *d;
-  int page = 1;
-
-  d = (LIST *) malloc(1024 * NBLOCKS);
-  if(d == (LIST *) NULL)
-    {
-      log_error("malloc error: list queue");
-      return(ERROR);
-    }
-  *data = d;
-  *n = 0;
-
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(has_question((*k_ptr)))
-       if(string_equiv(topic,(*k_ptr)->question->topic,strlen(topic)) &&
-	  (*k_ptr)->question->owner == (*k_ptr))       
-       {
-	 get_list_info((*k_ptr),d++);
-	 *n++;
-	 if((1024 * NBLOCKS * page) <= (*n * sizeof(LIST)) + 1)
-	   {
-	     d = (LIST *) realloc(d,1024 * NBLOCKS);
-	     if(d == (LIST *) NULL)
-	       {
-		 log_error("realloc error: list queue");
-		 return(ERROR);
-	       }
-	     page++;
-	   }
-       }
-
-  d->ustatus = END_OF_LIST;
-  d->ukstatus = END_OF_LIST;
-
-  return(SUCCESS);
-}
-
-
-
-
-
-list_name(knuckle,name,data,n)
-     char *name;
-     LIST **data;
-     int *n;
-{
-  KNUCKLE **k_ptr;
-  LIST *d;
-  int page = 1;
-
-  d = (LIST *) malloc(1024 * NBLOCKS);
-  if(d == (LIST *) NULL)
-    {
-      log_error("malloc error: list queue");
-      return(ERROR);
-    }
-  *data = d;
-  *n = 0;
-
-  for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
-    if(is_active((*k_ptr)))
-       if(string_equiv(name,(*k_ptr)->user->username,strlen(name)))
-       {
-	 get_list_info((*k_ptr),d++);
-	 *n++;
-	 if((1024 * NBLOCKS * page) <= (*n * sizeof(LIST)) + 1)
-	   {
-	     d = (LIST *) realloc(d,1024 * NBLOCKS);
-	     if(d == (LIST *) NULL)
-	       {
-		 log_error("realloc error: list queue");
-		 return(ERROR);
-	       }
-	     page++;
-	   }
-       }
-
-  d->ustatus = END_OF_LIST;
-  d->ukstatus = END_OF_LIST;
-
-  return(SUCCESS);
-}
 
 
 

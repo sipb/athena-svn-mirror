@@ -584,7 +584,7 @@ int
 get_kerberos_ticket()
 {
   int ret;
-  char error[BUFSIZ];
+  char mesg[BUFSIZ];
   char sinstance[NAME_LENGTH];
   char *ptr;
 
@@ -595,16 +595,15 @@ get_kerberos_ticket()
 
   if(ticket_time < NOW - (96L * 5L) + 15L) 
     {
-      sprintf(error, "get new tickets: %d %d %d", ticket_time, NOW,
-	      NOW - (96L * 5L) + 15L);
-      log_status(error);
+      sprintf(mesg, "get new tickets: %s %s ", K_SERVICE, sinstance);
+      log_status(mesg);
       dest_tkt();
       if((ret = get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM, 
 			       "krbtgt", "ATHENA.MIT.EDU",
 			       96, SRVTAB_FILE)) != KSUCCESS)
 	{
-	  sprintf(error,"get_tkt: %s", krb_err_txt[ret]);
-	  log_error(error);
+	  sprintf(mesg,"get_tkt: %s", krb_err_txt[ret]);
+	  log_error(mesg);
 	  ticket_time = 0L;
 	  return(ERROR);
 	}

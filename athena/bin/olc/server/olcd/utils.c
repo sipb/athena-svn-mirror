@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.1 1989-07-16 17:16:16 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.2 1989-08-08 14:44:26 tjcoppet Exp $";
 #endif
 
 
@@ -155,9 +155,13 @@ get_list_info(k,data)
 
   if(has_question(k))
     {
-      strcpy(data->topic, k->question->topic);
+      strncpy(data->topic, k->question->topic,TOPIC_SIZE);
+      strncpy(data->note, k->question->note,NOTE_SIZE);
       data->nseen = k->question->nseen;
     }
   else 
-    data->nseen = -1;
+    {
+      data->nseen = -1;
+      data->note[0] = '\0';
+    }
 }

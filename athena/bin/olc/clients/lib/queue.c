@@ -20,18 +20,19 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.5 1989-08-04 11:21:00 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.6 1989-08-08 14:35:23 tjcoppet Exp $";
 #endif
 
 
 #include <olc/olc.h>
 
 ERRCODE
-OListQueue(Request,list,queues,topics,stati)
+OListQueue(Request,list,queues,topics,users,stati)
      REQUEST *Request;
      LIST **list;
      char *queues;
      char *topics;
+     char *users;
      int stati;
 {
   int fd;
@@ -42,6 +43,9 @@ OListQueue(Request,list,queues,topics,stati)
     return(ERROR);
 
   if(strlen(topics) > NAME_LENGTH)
+    return(ERROR);
+
+  if(strlen(users) > NAME_LENGTH)
     return(ERROR);
 
   Request->request_type = OLC_LIST;
@@ -59,6 +63,7 @@ OListQueue(Request,list,queues,topics,stati)
 	{
 	  write_text_to_fd(fd,queues);
 	  write_text_to_fd(fd,topics);
+	  write_text_to_fd(fd,users);
 	  write_int_to_fd(fd,stati);
 	}
       

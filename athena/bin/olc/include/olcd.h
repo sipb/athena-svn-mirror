@@ -87,19 +87,6 @@ extern char *SRVTAB_FILE;
 
 /* OLCD data definitions */
 
-typedef struct tQUESTION
-{
-  struct tKNUCKLE *owner;
-  char  logfile[NAME_LENGTH];        /* Name of the logfile. */
-  long  logfile_timestamp;           /* timestamp used for logfile caching */
-  int   seen[MAX_SEEN];               /* UIDs of users who have seen 
-                                        this question */
-  int   nseen;                       /* Number who have seen it. */
-  char  topic[TOPIC_SIZE];           /* topic of this question. */
-  int   topic_code;                  /* number version of the above */
-  char  title[NAME_LENGTH];          /* Title for log. */
-} QUESTION;
-
 typedef struct tUSER 
 {
   struct tKNUCKLE **knuckles;       /* all user instances */
@@ -139,6 +126,20 @@ typedef struct tKNUCKLE
   char   *new_messages;              /* new messages from this connection */
 } KNUCKLE;
 
+typedef struct tQUESTION
+{
+  struct tKNUCKLE *owner;
+  char  logfile[NAME_SIZE];          /* Name of the logfile. */
+  long  logfile_timestamp;           /* timestamp used for logfile caching */
+  int   seen[MAX_SEEN];              /* UIDs of users who have seen 
+                                        this question */
+  int   nseen;                       /* Number who have seen it. */
+  char  topic[TOPIC_SIZE];           /* topic of this question. */
+  int   topic_code;                  /* number version of the above */
+  char  title[NAME_SIZE];            /* Title for log. */
+  char  note[NOTE_SIZE];
+  char  comment[COMMENT_SIZE];
+} QUESTION;
 
 typedef struct tTOPIC
 {
@@ -157,13 +158,13 @@ typedef struct tOLC_PROC
 
 /* OLC status structure. */
 
-typedef struct tSTATUS	
+typedef struct tQUEUE_STATUS	
 {
   int   consultants;    /* Number of visible consultants. */
   int   invisible;      /* Number of invisible consultants; */
   int   busy;           /* Number of busy consultants. */
   int   waiting;        /* Number of waiting users. */
-} STATUS;
+} QUEUE_STATUS;
 
 
 typedef struct t_ACL
@@ -179,6 +180,7 @@ typedef struct t_ACL
 
 extern olc_topic();             /* Change the current topic. */
 extern olc_comment();           /* Insert a comment in the log. */
+extern olc_describe();          /* Make more comments */
 extern olc_done();              /* Mark a question done. */
 extern olc_forward();           /* Forward a question. */
 extern olc_list();              /* List current conversations. */
@@ -197,6 +199,7 @@ extern olc_ask();               /* ask a question */
 extern olc_chtopic();           /* change a topic */
 extern olc_list_topics();       /* list topics */
 extern olc_create_instance();   /* create a new instance */
+extern olc_default_instance();
 extern olc_motd();              /* retrieve the olc motd */
 extern olc_dump();              /* debugging info */
 extern olc_cancel();
@@ -214,7 +217,7 @@ KNUCKLE *create_knuckle();
 void delete_user();
 void delete_knuckle();
 void init_user();
-STATUS *get_status_info();
+QUEUE_STATUS *get_status_info();
 
 extern char *get_next_word();
 
@@ -236,27 +239,30 @@ extern int              needs_backup;
 #define has_question(k)         k->question
 #define is_signed_on(k)         (k->status & SIGNED_ON)
 #define sign_on(k,code)         k->status |= code
-#define sign_off(k)             k->status &= ~SIGNED_ON
+#define sign_off(k)             k->status = 0
 #define is_logout(k)            (k->user->status & LOGGED_OUT)
 #define is_pitted(k)            (k->queue  & PIT_Q)
 #define is_busy(k)              (k->status & BUSY)
 #define add_status(k,s)         k->status |= s
 #define sub_status(k,s)         k->status &= ~s
 #define set_status(k,s)         k->status = s
-#define is_active(k)            (k->status)
+#define is_active(k)            ((k->status) || (k->connected))
 #define deactivate(k)           k->status = 0;
 #define is_me(r,t)              (r->user == t->user)
-#define is_connected_to(t,r)    (r->connected == t->connected)
+#define is_connected_to(t,r)    (r->connected) && (t->connected) && \
+                                (r->connected == t->connected)
+#define is_specialty(user,code) is_topic(user->specialties,code)
 
 #define ON_ACL                  1<<1
 #define MONITOR_ACL             1<<2
 #define OLC_ACL                 1<<3
 #define CONSULT_ACL             1<<4
-#define GRESOLVE_ACL            1<<5
-#define GASK_ACL                1<<6
-#define GCOMMENT_ACL            1<<7
-#define GMESSAGE_ACL            1<<8
-#define ADMIN_ACL               1<<9
-#define GCHTOPIC_ACL            1<<10
+#define GRAB_ACL                1<<5
+#define GRESOLVE_ACL            1<<6
+#define GASK_ACL                1<<7
+#define GCOMMENT_ACL            1<<8
+#define GMESSAGE_ACL            1<<9
+#define ADMIN_ACL               1<<10
+#define GCHTOPIC_ACL            1<<11
 
 

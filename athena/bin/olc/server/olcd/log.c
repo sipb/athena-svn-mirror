@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.1 1989-07-16 17:15:31 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.2 1989-08-08 14:42:00 tjcoppet Exp $";
 #endif
 
 
@@ -103,7 +103,7 @@ log_log(knuckle, message, header)
 
   if ((log = fopen(knuckle->question->logfile, "a")) == (FILE *)NULL) 
     {
-      (void) sprintf(error, "log_message: can't open log %s\n",
+      (void) sprintf(error, "log_log: can't open log %s\n",
 	      knuckle->question->logfile);
       log_error(error);
       return(ERROR);
@@ -138,9 +138,9 @@ log_message(owner,sender,message)
   char header[DB_LINE];
   
   time_now(time);
-  (void) sprintf(header, "*** Reply from %s %s@%s (%d)\n    [%s]\n",
+  (void) sprintf(header, "*** Reply from %s %s@%s\n    [%s]\n",
 	  sender->title, sender->user->username, 
-	  sender->user->machine, sender->instance, time);
+	  sender->user->machine, time);
   (void) log_log(owner,message,header);
 }
 
@@ -168,8 +168,10 @@ log_comment(owner,sender,message)
   char header[DB_LINE];
 
   time_now(time);
-  (void) sprintf(header, "--- Comment by %s@%s\n    [%s]\n",
-	  sender->user->username,sender->user->machine,time);
+  (void) sprintf(header, "--- Comment by %s %s@%s\n    [%s]\n",
+		 sender->title, 
+		 sender->user->username,
+		 sender->user->machine,time);
 
   (void) log_log(owner,message,header);
 }
@@ -414,8 +416,7 @@ terminate_log_answered(knuckle)
 
   time_now(time_buf);
   fprintf(logfile, "\n--- Conversation terminated at %.24s\n", time_buf);
-  if (strlen(question->title) > 32)
-    fprintf(logfile, "\n--- Title: %s\n", question->title);
+  fprintf(logfile, "\n--- Title: %s\n", question->title);
 
   (void) fclose(logfile);
   if (dispose_of_log(knuckle, ANSWERED) == ERROR)
@@ -532,6 +533,10 @@ dispose_of_log(knuckle, answered)
   int pid, pid2;		/* Process ID for fork. */
   char msgbuf[BUFSIZ];
   
+#ifdef TEST
+  printf("dispose title: %s\n",knuckle->question->title);
+#endif TEST
+
   question = knuckle->question;
   (void) strcpy(newfile, question->logfile);
   *(rindex(newfile, '/') + 1) = '\0';
