@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM Imake rules for building libraries, programs, scripts, and data files
-XCOMM rules:  $XConsortium: Imake.rules,v 1.121 91/08/22 16:32:50 rws Exp $
+XCOMM rules:  $XConsortium: Imake.rules,v 1.122 91/09/16 18:04:09 rws Exp $
 
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
@@ -115,16 +115,10 @@ XCOMM rules:  $XConsortium: Imake.rules,v 1.121 91/08/22 16:32:50 rws Exp $
  * InstallFontAliases		(dest)
  * FontSrc			(basename)
  * FontBaseObj			(basename)
- * FontBaseObj			(basename)
  * InstallFontScale		(dest)
- * FontSrc			(basename)
- * FontBaseObj			(basename)
- * FontBaseObj			(basename)
  * UncompressedFontTarget	(basename)
  * UncompressedFontTarget	(basename)
  * CompressedFontTarget		(basename)
- * FontTarget			(basename)
- * FontObj			(basename)
  * FontTarget			(basename)
  * FontObj			(basename)
  * AllTarget			(depends)
@@ -1438,11 +1432,16 @@ install::  fonts.alias							@@\
 	$(INSTALL) -c $(INSTDATFLAGS) fonts.alias $(DESTDIR)dest
 #endif /* InstallFontAliases */
 
+#ifndef FontSrc
 #define FontSrc(basename) basename.bdf
+#endif
+
+#ifndef FontBaseObj
 #ifdef SnfFonts
 #define FontBaseObj(basename) basename.snf
 #else
 #define FontBaseObj(basename) basename.pcf
+#endif
 #endif
 
 /*
@@ -1454,13 +1453,6 @@ install::  fonts.scale							@@\
 	MakeDir($(DESTDIR)dest)						@@\
 	$(INSTALL) -c $(INSTDATFLAGS) fonts.scale $(DESTDIR)dest
 #endif /* InstallFontScale */
-
-#define FontSrc(basename) basename.bdf
-#ifdef SnfFonts
-#define FontBaseObj(basename) basename.snf
-#else
-#define FontBaseObj(basename) basename.pcf
-#endif
 
 /*
  * UncompressedFontTarget
