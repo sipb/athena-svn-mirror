@@ -269,7 +269,7 @@ switch ($package)
 	case athena/lib/zephyr.p4
 		(echo In $package >>& $outfile)
                 ((cd /build/$package ; /usr/athena/bin/xmkmf $cwd  >>& $outfile ) && \
-                (cd /build/$package ;make World >>& $outfile) && \
+                (cd /build/$package ;make world >>& $outfile) && \
                 (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
                 if ($status == 1) then
                         echo "We bombed at $package" >>& $outfile
