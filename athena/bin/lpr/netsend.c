@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.2 1990-04-16 12:12:04 epeisach Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.3 1990-07-07 10:20:37 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.2 1990-04-16 12:12:04 epeisach Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.3 1990-07-07 10:20:37 epeisach Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -48,6 +48,11 @@ int	ofilter;		/* id of output filter, if any */
 int	remote;			/* true if sending files to remote */
 dev_t	fdev;			/* device of file pointed to by symlink */
 ino_t	fino;			/* inode of file pointed to by symlink */
+
+#if BUFSIZ != 1024
+#undef BUFSIZ
+#define BUFSIZ 1024
+#endif
 
 #ifdef KERBEROS
 KTEXT_ST kticket;
@@ -198,16 +203,41 @@ sendfile(type, file)
 	}
 	if (write(pfd, "", 1) != 1 || (resp=response())) {
 #ifdef PQUOTA
+	    /* Gross but lpr didnt have any error returns. Something
+	     * is better than nothing :)
+	     */
 	    if (resp == '\3') {
 		fprintf(stderr, "You are not known by the quota server and ");
 		fprintf(stderr, "are not allowed to print. \n");
 		fprintf(stderr, "See an Accounts Administrator to be added.\n");
 		cleanup();	/* Never returns */
-	    }
-	    if (resp == '\4') {
-		fprintf(stderr, "You are not allowed to print on this printer\n");
+	    } else if (resp == '\4') {
+		fprintf(stderr, 
+			"You are not allowed to print on this printer\n");
 		/* You cannot be over quota, because of policy... */
-		fprintf(stderr, "Contact an administrator if you should be able to.\n");
+		fprintf(stderr, 
+			"Contact an administrator if you should be able to.\n");
+		cleanup();	/* Never returns */
+	    } else if (resp == '\5') {
+		fprintf(stderr, 
+			"The group account is not known by the quota server.\n");
+		cleanup();	/* Never returns */
+	    } else if (resp == '\6') {
+		fprintf(stderr, "You are not a member of the group account.\n");
+		fprintf(stderr, 
+			"See one the group's administrator to be added.\n");
+		cleanup();
+	    } else if (resp == '\7') {
+		fprintf(stderr, 
+			"You are marked for deletion on the quota server.");
+		fprintf(stderr, 
+			"\nContact an administrator if you should not be.\n");
+		cleanup();	/* Never returns */
+	    } else if (resp == '\10') {
+		fprintf(stderr, 
+			"The group is marked as deleted on the quota server.");
+		fprintf(stderr, 
+			"\nContact an administrator if it should not be.\n");
 		cleanup();	/* Never returns */
 	    }
 #endif PQUOTA
