@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.17 2004-03-27 03:04:45 ghudson Exp $
+# $Id: xsession,v 1.18 2004-05-27 18:37:06 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -80,8 +80,11 @@ set sleep_time=0
 
 if ($?verbose_login) echo "Setting up environment..."
 
-# Source the system login if necessary.
+# Source the system startup scripts if necessary.
 if (-r /etc/.login) source /etc/.login
+if (-r /etc/.cshrc) source /etc/.cshrc
+if (-r /etc/csh.login) source /etc/csh.login
+if (-r /etc/csh.cshrc) source /etc/csh.cshrc
 
 if ($?NOCALLS) then
   if (-r ${initdir}/cshrc) source ${initdir}/cshrc
