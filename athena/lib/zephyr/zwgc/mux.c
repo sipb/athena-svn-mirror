@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.8 1994-11-01 16:11:37 ghudson Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.9 1994-11-01 21:14:50 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -199,7 +199,7 @@ static int check_tty()
 
     if (tty < 0) return 0;
 
-#ifdef defined(POSIX) || defined(SUNOS)
+#if defined(POSIX) || defined(SUNOS)
     result = ( ((pgrp = tcgetpgrp(tty)) < 0)      ? 0 : 1 );
 #else
     result = ( (ioctl(tty, TIOCGPGRP, &pgrp) < 0) ? 0 : 1 );
