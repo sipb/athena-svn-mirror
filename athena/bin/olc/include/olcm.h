@@ -10,7 +10,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcm.h,v $
- *      $Id: olcm.h,v 1.1 1991-04-02 13:59:12 lwvanels Exp $
+ *      $Id: olcm.h,v 1.2 1991-11-06 15:43:34 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
@@ -29,6 +29,4 @@
 /* Insert your realm here */
 #define DFLT_REALM	"FOO.BAR.EDU"
 #endif
-
-#define SRVTAB_FILE	"/etc/srvtab"
 #endif
