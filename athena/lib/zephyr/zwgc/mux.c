@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.9 1994-11-01 21:14:50 ghudson Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.10 1994-11-12 03:37:23 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -68,6 +68,8 @@ static int max_source = -1;
 static fd_set input_sources;
 static void (*input_handler[MAX_SOURCES])();
 static pointer input_handler_arg[MAX_SOURCES];
+
+static int check_tty();
 
 /*
  *    void mux_init()
