@@ -6,6 +6,7 @@ noinst_LTLIBRARIES = libwidgets.la
 libwidgets_la_SOURCES = 			\
 	color-group.c				\
 	color-palette.c				\
+	e-canvas-background.c			\
 	e-canvas-utils.c			\
 	e-canvas-vbox.c				\
 	e-canvas.c				\
@@ -51,6 +52,7 @@ libwidgetsincludedir = $(includedir)/gal/widgets
 libwidgetsinclude_HEADERS = 			\
 	color-group.h				\
 	color-palette.h				\
+	e-canvas-background.h			\
 	e-canvas-utils.h			\
 	e-canvas-vbox.h				\
 	e-canvas.h				\

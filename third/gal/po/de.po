@@ -1,22 +1,21 @@
 # German translation for gal.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Kai Lahmann <kl@linuxfaqs.de>, 2000.
-# Christian Meyer <linux@chrisime.de>, 2000.
 # Benedikt Roth <Benedikt.Roth@gmx.net>, 2000.
-# Matthias Warkus <mawarkus@gnome.org>, 2000-2001.
+# Christian Meyer <chrisime@gnome.org>, 2000, 2001.
+# Matthias Warkus <mawarkus@gnome.org>, 2000, 2001.
 # Manuel Borchers <webmaster@matronix.de>, 2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gal 0.5.99.0\n"
-"POT-Creation-Date: 2001-11-14 17:29-0500\n"
-"PO-Revision-Date: 2001-10-28 19:01GMT\n"
+"Project-Id-Version: gal 0.18.x\n"
+"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"PO-Revision-Date: 2001-11-24 19:24+0100\n"
 "Last-Translator: Manuel Borchers <webmaster@matronix.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -50,19 +49,19 @@ msgstr "%d. %b %H.%M"
 msgid "%b %d %Y"
 msgstr "%d. %b %Y"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Ascending)"
 msgstr "(Aufsteigend)"
 
-#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
 msgid "(Descending)"
 msgstr "(Absteigend)"
 
-#: gal/e-table/e-table-config.c:288
+#: gal/e-table/e-table-config.c:289
 msgid "Not sorted"
 msgstr "Nicht sortiert"
 
-#: gal/e-table/e-table-config.c:329
+#: gal/e-table/e-table-config.c:330
 msgid "No grouping"
 msgstr "Nicht gruppieren"
 
@@ -119,7 +118,7 @@ msgstr "Nach _oben"
 #: gal/e-table/e-table-config-no-group.glade.h:11
 #: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
-msgstr "Diese Felder in dieser _Reihenfolge anzeigen:"
+msgstr "Diese Felder in dieser _Reihenfolge zeigen:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
 #: gal/e-table/e-table-config.glade.h:12
@@ -192,51 +191,72 @@ msgstr "Verfügbare Felder"
 msgid "Show in this order"
 msgstr "In dieser Reihenfolge anzeigen"
 
-#: gal/e-table/e-table-header-item.c:1294
-msgid "Configuring view: FIXME"
-msgstr "Ansicht konfigurieren: FIXME"
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d Objekt)"
 
-#: gal/e-table/e-table-header-item.c:1309
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d Objekte)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d Objekt)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d Objekte)"
+
+#: gal/e-table/e-table-header-item.c:1302
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Aktuelle Ansicht anpassen..."
+
+#: gal/e-table/e-table-header-item.c:1317
 msgid "Sort Ascending"
 msgstr "Aufsteigend sortieren"
 
-#: gal/e-table/e-table-header-item.c:1310
+#: gal/e-table/e-table-header-item.c:1318
 msgid "Sort Descending"
 msgstr "Absteigend sortieren"
 
-#: gal/e-table/e-table-header-item.c:1311
+#: gal/e-table/e-table-header-item.c:1319
 msgid "Unsort"
 msgstr "Nicht sortieren"
 
-#: gal/e-table/e-table-header-item.c:1313
+#: gal/e-table/e-table-header-item.c:1321
 msgid "Group By This Field"
 msgstr "Nach diesem Feld gruppieren"
 
-#: gal/e-table/e-table-header-item.c:1314
+#: gal/e-table/e-table-header-item.c:1322
 msgid "Group By Box"
 msgstr "Nach Fächern gruppieren"
 
-#: gal/e-table/e-table-header-item.c:1316
+#: gal/e-table/e-table-header-item.c:1324
 msgid "Remove This Column"
 msgstr "Diese Spalte entfernen"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1325
 msgid "Add a Column..."
 msgstr "Spalte hinzufügen..."
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1327
 msgid "Alignment"
 msgstr "Ausrichtung"
 
-#: gal/e-table/e-table-header-item.c:1320
+#: gal/e-table/e-table-header-item.c:1328
 msgid "Best Fit"
 msgstr "Optimal"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1329
 msgid "Format Columns..."
 msgstr "Spalten formatieren..."
 
-#: gal/e-table/e-table-header-item.c:1323
+#: gal/e-table/e-table-header-item.c:1331
 msgid "Customize Current View..."
 msgstr "Aktuelle Ansicht anpassen..."
 
@@ -280,7 +300,7 @@ msgstr "Name der neuen Ansicht:"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Type of view:"
-msgstr "Type der neuen Ansicht:"
+msgstr "Typ der neuen Ansicht:"
 
 #: gal/shortcut-bar/e-group-bar.c:632
 #, c-format
@@ -487,7 +507,7 @@ msgstr "Aus der globalen Kategorienliste entfernen"
 
 #: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
-msgstr "Alle aus der globalen Kategorienliste entfernene"
+msgstr "Alle aus der globalen Kategorienliste entfernen"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -629,17 +649,5 @@ msgstr "Hinzuzufügende _Kategorie:"
 msgid "_Category to Modify:"
 msgstr "Zu ändernde _Kategorie:"
 
-#~ msgid "label20"
-#~ msgstr "label20"
-
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d Objekt)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d Objekte)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d Objekt)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d Objekte)"
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Ansicht konfigurieren: FIXME"

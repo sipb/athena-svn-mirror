@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -304,6 +304,31 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-group-bar.lo e-group-bar.o : e-group-bar.c ../../config.h \
+	../../gal/util/e-i18n.h e-group-bar.h
+e-icon-bar-bg-item.lo e-icon-bar-bg-item.o : e-icon-bar-bg-item.c \
+	../../config.h e-icon-bar-bg-item.h e-icon-bar.h \
+	../../gal/widgets/e-canvas.h
+e-icon-bar.lo e-icon-bar.o : e-icon-bar.c ../../config.h e-icon-bar.h \
+	../../gal/widgets/e-canvas.h e-icon-bar-bg-item.h \
+	../../gal/e-text/e-text.h ../../gal/widgets/e-font.h \
+	../../gal/util/e-text-event-processor.h \
+	../../gal/util/e-text-event-processor-types.h \
+	../../gal/e-text/e-text-model.h \
+	../../gal/widgets/e-canvas-utils.h ../../gal/util/e-util.h
+e-shortcut-bar.lo e-shortcut-bar.o : e-shortcut-bar.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/e-text/e-entry.h \
+	../../gal/e-text/e-text.h ../../gal/widgets/e-font.h \
+	../../gal/util/e-text-event-processor.h \
+	../../gal/util/e-text-event-processor-types.h \
+	../../gal/e-text/e-text-model.h ../../gal/widgets/e-canvas.h \
+	../../gal/e-text/e-completion.h \
+	../../gal/e-text/e-completion-match.h e-shortcut-bar.h \
+	e-group-bar.h e-icon-bar.h e-shortcut-model.h e-vscrolled-bar.h
+e-shortcut-model.lo e-shortcut-model.o : e-shortcut-model.c \
+	../../config.h ../../gal/util/e-util.h e-shortcut-model.h
+e-vscrolled-bar.lo e-vscrolled-bar.o : e-vscrolled-bar.c ../../config.h \
+	e-vscrolled-bar.h
 
 info-am:
 info: info-am

@@ -1,3 +1,94 @@
+2001-12-18  Christopher James Lahey  <clahey@helixcode.com>
+
+	* configure.in: Bumped version number to 0.19.
+
+2001-12-17  Christopher James Lahey  <clahey@ximian.com>
+
+From a patch by Dan Nguyen <dnn@austin.ibm.com>
+
+	* configure.in: Added configure check for %l and %k in strftime.
+
+	* gal/util/e-util.c, gal/util/e-util.h (e_strftime): New function.
+	Handles %l and %k even on platforms that don't support them by
+	translating to %I and %H.
+
+2001-12-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-selection-model-simple.c
+	(e_selection_model_simple_set_row_count): Set esma->selected_row
+	and esma->selected_range_end to -1 here.
+
+	* gal/widgets/e-selection-model-array.c
+	(e_selection_model_array_confirm_row_count): Set selected_row and
+	selected_range_end to -1 here.
+	(esma_select_single_row): Check that selected_row is within the
+	range of possible rows.  This should never happen, but this check
+	will help if it does.
+
+2001-11-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am: Added e-canvas-background.lo.
+
+	* gal/widgets/Makefile.am: Added e-canvas-background.c and
+	e-canvas-background.h.
+
+	* gal/widgets/e-canvas-background.c,
+	gal/widgets/e-canvas-background.h: New class, provides infinite
+	background color or arbitrary rectangle of background color.
+
+2001-12-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/unicode/gunidecomp.c (_g_utf8_normalize_wc): Handle the case
+	of invalid utf8 here by simply dropping any invalid characters.
+
+2001-12-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-canvas.c (e_canvas_unrealize): Turn off idle
+	handling in the unrealize function instead of the destroy
+	function.
+
+2001-12-10  Jon Trowbridge  <trow@ximian.com>
+
+	* gal/e-text/e-text.c (text_width_with_objects): Don't crash if
+	the text string is NULL.
+	(text_draw_with_objects): Don't crash if the text string is NULL.
+	(Fixes #16359)
+
+2001-12-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in (GAL_CURRENT): Bumped version number to 0.18.99.0
+	and CURRENT to 19.
+
+2001-11-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-reflow.c, gal/widgets/e-reflow.h: Handle
+	selection_row_changed signal.
+
+	* gal/widgets/e-selection-model-array.c,
+	gal/widgets/e-selection-model-array.h: Properly send
+	selection_row_changed signals if changing from a single row
+	selected to a single other row selected or if moving the
+	selection_end by a single row.
+
+	* gal/widgets/e-selection-model.c,
+	gal/widgets/e-selection-model.h: Added selection_row_changed
+	signal.
+	(e_selection_model_select_as_key_press): Fixed the case statement
+	here to make MULTIPLE and EXTENDED the same as BROWSE instead of
+	as SINGLE.
+
+2001-11-30  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.18.2 and GAL_REVISION
+	to 2.
+
+2001-11-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-gui-utils.c
+	(e_container_change_tab_order_callback): Don't do anything if
+	focus_child is NULL.  This makes tab when cycling around tab order
+	not skip to the beginning of this tab order group.
+
 2001-11-14  Christopher James Lahey  <clahey@ximian.com>
 
 	* configure.in (GAL_CURRENT): Bumped version number to 0.18.1.

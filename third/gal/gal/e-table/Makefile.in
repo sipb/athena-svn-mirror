@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -351,6 +351,370 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-cell-checkbox.lo e-cell-checkbox.o : e-cell-checkbox.c ../../config.h \
+	e-cell-checkbox.h e-cell-toggle.h e-cell.h e-table-model.h \
+	e-table-tooltip.h ../../gal/util/e-util.h e-table-item.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h \
+	e-table-defines.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h ../../gal/widgets/e-printable.h \
+	check-empty.xpm check-filled.xpm
+e-cell-combo.lo e-cell-combo.o : e-cell-combo.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-unicode.h \
+	../../gal/unicode/gunicode.h e-table-item.h e-table-model.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-defines.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-printable.h e-cell-combo.h e-cell-popup.h \
+	e-cell-text.h
+e-cell-date.lo e-cell-date.o : e-cell-date.c ../../config.h \
+	e-cell-date.h e-cell-text.h e-cell.h e-table-model.h \
+	e-table-tooltip.h ../../gal/util/e-util.h \
+	../../gal/widgets/e-unicode.h ../../gal/unicode/gunicode.h \
+	../../gal/util/e-i18n.h
+e-cell-float.lo e-cell-float.o : e-cell-float.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-i18n.h e-cell-float.h \
+	e-cell-text.h e-cell.h e-table-model.h e-table-tooltip.h
+e-cell-number.lo e-cell-number.o : e-cell-number.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-i18n.h e-cell-number.h \
+	e-cell-text.h e-cell.h e-table-model.h e-table-tooltip.h
+e-cell-pixbuf.lo e-cell-pixbuf.o : e-cell-pixbuf.c e-cell-pixbuf.h \
+	e-table.h e-table-model.h e-table-header.h e-table-sort-info.h \
+	e-table-col.h e-cell.h e-table-tooltip.h e-table-group.h \
+	e-table-defines.h ../../gal/util/e-util.h \
+	../../gal/widgets/e-printable.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h
+e-cell-popup.lo e-cell-popup.o : e-cell-popup.c ../../config.h \
+	../../gal/util/e-util.h e-table-item.h e-table-model.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-defines.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-printable.h e-cell-popup.h
+e-cell-size.lo e-cell-size.o : e-cell-size.c ../../config.h \
+	../../gal/util/e-util.h e-cell-size.h e-cell-text.h e-cell.h \
+	e-table-model.h e-table-tooltip.h
+e-cell-spin-button.lo e-cell-spin-button.o : e-cell-spin-button.c \
+	../../config.h e-table-item.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-defines.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h ../../gal/widgets/e-printable.h \
+	e-cell-float.h e-cell-text.h e-cell-number.h \
+	../../gal/util/e-util.h e-cell-spin-button.h
+e-cell-text.lo e-cell-text.o : e-cell-text.c ../../config.h \
+	e-cell-text.h e-cell.h e-table-model.h e-table-tooltip.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-canvas.h \
+	../../gal/widgets/e-font.h ../../gal/widgets/e-unicode.h \
+	../../gal/unicode/gunicode.h e-table-item.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-table-defines.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-printable.h \
+	../../gal/util/e-text-event-processor.h \
+	../../gal/util/e-text-event-processor-types.h \
+	../../gal/e-text/e-text.h ../../gal/e-text/e-text-model.h \
+	../../gal/util/e-text-event-processor-emacs-like.h \
+	e-table-tooltip.h
+e-cell-toggle.lo e-cell-toggle.o : e-cell-toggle.c ../../config.h \
+	e-cell-toggle.h e-cell.h e-table-model.h e-table-tooltip.h \
+	../../gal/util/e-util.h e-table-item.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-table-defines.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-printable.h
+e-cell-tree.lo e-cell-tree.o : e-cell-tree.c ../../config.h \
+	e-tree-table-adapter.h e-table-model.h e-tree-model.h \
+	e-tree-model.h ../../gal/util/e-util.h e-table-item.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-defines.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-printable.h e-cell-tree.h tree-expanded.xpm \
+	tree-unexpanded.xpm
+e-cell.lo e-cell.o : e-cell.c ../../config.h e-cell.h e-table-model.h \
+	e-table-tooltip.h ../../gal/util/e-util.h
+e-table-click-to-add.lo e-table-click-to-add.o : e-table-click-to-add.c \
+	../../config.h e-table-header.h e-table-sort-info.h \
+	e-table-col.h e-cell.h e-table-model.h e-table-tooltip.h \
+	e-table-click-to-add.h e-table-header.h e-table-item.h \
+	e-table-defines.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h ../../gal/widgets/e-printable.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-defines.h e-table-one.h \
+	../../gal/e-text/e-text.h ../../gal/widgets/e-font.h \
+	../../gal/util/e-text-event-processor.h \
+	../../gal/util/e-text-event-processor-types.h \
+	../../gal/e-text/e-text-model.h ../../gal/widgets/e-canvas.h \
+	../../gal/widgets/e-canvas-utils.h ../../gal/util/e-util.h
+e-table-col.lo e-table-col.o : e-table-col.c ../../config.h \
+	e-table-col.h e-cell.h e-table-model.h e-table-tooltip.h \
+	../../gal/util/e-util.h
+e-table-column-specification.lo e-table-column-specification.o : \
+	e-table-column-specification.c ../../config.h \
+	../../gal/util/e-xml-utils.h ../../gal/util/e-util.h \
+	e-table-column-specification.h
+e-table-config.lo e-table-config.o : e-table-config.c ../../config.h \
+	e-table-config.h e-table-sort-info.h e-table-specification.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-state.h e-table-column-specification.h \
+	e-table-defines.h ../../gal/widgets/gtk-combo-text.h \
+	../../gal/widgets/gtk-combo-box.h ../../gal/util/e-util.h \
+	../../gal/util/e-i18n.h
+e-table-extras.lo e-table-extras.o : e-table-extras.c ../../config.h \
+	../../gal/util/e-util.h e-cell-text.h e-cell.h e-table-model.h \
+	e-table-tooltip.h e-cell-checkbox.h e-cell-toggle.h \
+	e-cell-date.h e-cell-number.h e-cell-pixbuf.h e-table.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h \
+	e-table-group.h e-table-defines.h \
+	../../gal/widgets/e-printable.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h e-cell-size.h \
+	e-cell-tree.h e-table-extras.h
+e-table-field-chooser-dialog.lo e-table-field-chooser-dialog.o : \
+	e-table-field-chooser-dialog.c ../../config.h \
+	e-table-field-chooser-dialog.h e-table-field-chooser.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-model.h e-table-tooltip.h ../../gal/util/e-i18n.h
+e-table-field-chooser-item.lo e-table-field-chooser-item.o : \
+	e-table-field-chooser-item.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-xml-utils.h \
+	../../gal/widgets/e-canvas.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-model.h \
+	e-table-tooltip.h e-table-col-dnd.h e-table-defines.h \
+	e-table-header-utils.h e-table-field-chooser-item.h \
+	e-table-header.h
+e-table-field-chooser.lo e-table-field-chooser.o : \
+	e-table-field-chooser.c ../../config.h e-table-field-chooser.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-model.h e-table-tooltip.h e-table-field-chooser-item.h
+e-table-group-container.lo e-table-group-container.o : \
+	e-table-group-container.c ../../config.h \
+	e-table-group-container.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-group.h e-table-defines.h ../../gal/util/e-util.h \
+	../../gal/widgets/e-printable.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-group-leaf.h e-table-subset.h e-table-item.h \
+	../../gal/util/e-unicode-i18n.h ../../gal/widgets/e-canvas.h \
+	../../gal/widgets/e-canvas-utils.h \
+	../../gal/widgets/e-unicode.h ../../gal/unicode/gunicode.h \
+	../../gal/e-text/e-text.h ../../gal/widgets/e-font.h \
+	../../gal/util/e-text-event-processor.h \
+	../../gal/util/e-text-event-processor-types.h \
+	../../gal/e-text/e-text-model.h e-table-defines.h
+e-table-group-leaf.lo e-table-group-leaf.o : e-table-group-leaf.c \
+	../../config.h e-table-group-leaf.h e-table-group.h \
+	e-table-model.h e-table-header.h e-table-sort-info.h \
+	e-table-col.h e-cell.h e-table-tooltip.h e-table-defines.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-printable.h \
+	e-table-subset.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-item.h e-table-sorted-variable.h \
+	e-table-subset-variable.h e-table-sorted.h \
+	../../gal/widgets/e-canvas.h
+e-table-group.lo e-table-group.o : e-table-group.c ../../config.h \
+	e-table-group.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-defines.h ../../gal/util/e-util.h \
+	../../gal/widgets/e-printable.h e-table-group-container.h \
+	e-table-group.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-group-leaf.h e-table-subset.h e-table-item.h
+e-table-header-item.lo e-table-header-item.o : e-table-header-item.c \
+	../../config.h e-table-header-item.h e-table.h e-table-model.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-group.h e-table-defines.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-printable.h \
+	e-table-item.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h e-tree.h \
+	e-tree-model.h e-tree-selection-model.h \
+	../../gal/widgets/e-cursors.h ../../gal/util/e-i18n.h \
+	../../gal/util/e-xml-utils.h ../../gal/widgets/e-canvas.h \
+	../../gal/widgets/e-popup-menu.h e-table-header.h \
+	e-table-header-utils.h e-table-col-dnd.h e-table-defines.h \
+	e-table-field-chooser-dialog.h e-table-field-chooser.h \
+	e-table-config.h ../../gal/widgets/gtk-combo-text.h \
+	../../gal/widgets/gtk-combo-box.h e-table.h add-col.xpm \
+	remove-col.xpm arrow-up.xpm arrow-down.xpm
+e-table-header-utils.lo e-table-header-utils.o : e-table-header-utils.c \
+	../../config.h e-table-defines.h e-table-header-utils.h \
+	e-table-col.h e-cell.h e-table-model.h e-table-tooltip.h
+e-table-header.lo e-table-header.o : e-table-header.c ../../config.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-model.h e-table-tooltip.h e-table-defines.h \
+	../../gal/util/e-util.h
+e-table-item.lo e-table-item.o : e-table-item.c ../../config.h \
+	e-table-item.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-defines.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h ../../gal/widgets/e-printable.h \
+	e-table-subset.h e-cell.h ../../gal/widgets/e-hsv-utils.h \
+	../../gal/widgets/e-canvas.h ../../gal/widgets/e-canvas-utils.h \
+	../../gal/util/e-util.h
+e-table-memory-callbacks.lo e-table-memory-callbacks.o : \
+	e-table-memory-callbacks.c ../../config.h \
+	e-table-memory-callbacks.h e-table-memory.h e-table-model.h
+e-table-memory.lo e-table-memory.o : e-table-memory.c ../../config.h \
+	e-table-memory.h e-table-model.h ../../gal/util/e-util.h \
+	../../gal/util/e-xml-utils.h
+e-table-model.lo e-table-model.o : e-table-model.c ../../config.h \
+	e-table-model.h ../../gal/util/e-util.h
+e-table-one.lo e-table-one.o : e-table-one.c ../../config.h \
+	e-table-one.h e-table-model.h
+e-table-scrolled.lo e-table-scrolled.o : e-table-scrolled.c \
+	../../config.h e-table.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-group.h e-table-defines.h ../../gal/util/e-util.h \
+	../../gal/widgets/e-printable.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h e-table-scrolled.h \
+	../../gal/widgets/e-scroll-frame.h e-table.h
+e-table-selection-model.lo e-table-selection-model.o : \
+	e-table-selection-model.c ../../config.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/util/e-bit-array.h e-table-model.h e-table-header.h \
+	e-table-sort-info.h e-table-col.h e-cell.h e-table-tooltip.h \
+	../../gal/util/e-util.h
+e-table-simple.lo e-table-simple.o : e-table-simple.c ../../config.h \
+	e-table-simple.h e-table-model.h
+e-table-sort-info.lo e-table-sort-info.o : e-table-sort-info.c \
+	../../config.h e-table-sort-info.h ../../gal/util/e-util.h \
+	../../gal/util/e-xml-utils.h
+e-table-sorted-variable.lo e-table-sorted-variable.o : \
+	e-table-sorted-variable.c ../../config.h \
+	../../gal/util/e-util.h e-table-sorted-variable.h \
+	e-table-model.h e-table-subset-variable.h e-table-subset.h \
+	e-table-sort-info.h e-table-header.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-sorting-utils.h e-tree-model.h
+e-table-sorted.lo e-table-sorted.o : e-table-sorted.c ../../config.h \
+	../../gal/util/e-util.h e-table-sorted.h e-table-model.h \
+	e-table-subset.h e-table-sort-info.h e-table-header.h \
+	e-table-col.h e-cell.h e-table-tooltip.h \
+	e-table-sorting-utils.h e-tree-model.h
+e-table-sorter.lo e-table-sorter.o : e-table-sorter.c ../../config.h \
+	../../gal/util/e-util.h e-table-sorter.h \
+	../../gal/util/e-sorter.h e-table-model.h \
+	e-table-subset-variable.h e-table-subset.h e-table-sort-info.h \
+	e-table-header.h e-table-col.h e-cell.h e-table-tooltip.h
+e-table-sorting-utils.lo e-table-sorting-utils.o : \
+	e-table-sorting-utils.c ../../config.h e-table-sorting-utils.h \
+	e-table-model.h e-tree-model.h e-table-sort-info.h \
+	e-table-header.h e-table-col.h e-cell.h e-table-tooltip.h \
+	../../gal/util/e-util.h
+e-table-specification.lo e-table-specification.o : \
+	e-table-specification.c ../../config.h e-table-specification.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-state.h e-table-sort-info.h \
+	e-table-column-specification.h e-table-defines.h \
+	../../gal/util/e-util.h ../../gal/util/e-xml-utils.h
+e-table-state.lo e-table-state.o : e-table-state.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-xml-utils.h \
+	e-table-state.h e-table-sort-info.h
+e-table-subset-variable.lo e-table-subset-variable.o : \
+	e-table-subset-variable.c ../../config.h \
+	../../gal/util/e-util.h e-table-subset-variable.h \
+	e-table-subset.h e-table-model.h
+e-table-subset.lo e-table-subset.o : e-table-subset.c ../../config.h \
+	../../gal/util/e-util.h e-table-subset.h e-table-model.h
+e-table-utils.lo e-table-utils.o : e-table-utils.c ../../config.h \
+	../../gal/util/e-i18n.h ../../gal/util/e-util.h e-table-utils.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-model.h e-table-tooltip.h e-table-state.h \
+	e-table-specification.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h e-table-column-specification.h \
+	e-table-defines.h e-table-extras.h e-table-header-utils.h
+e-table-without.lo e-table-without.o : e-table-without.c ../../config.h \
+	../../gal/util/e-util.h e-table-without.h e-table-subset.h \
+	e-table-model.h
+e-table.lo e-table.o : e-table.c ../../config.h ../../gal/util/e-i18n.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-canvas.h \
+	../../gal/widgets/e-canvas-vbox.h ../../gal/widgets/e-unicode.h \
+	../../gal/unicode/gunicode.h e-table.h e-table-model.h \
+	e-table-header.h e-table-sort-info.h e-table-col.h e-cell.h \
+	e-table-tooltip.h e-table-group.h e-table-defines.h \
+	../../gal/widgets/e-printable.h e-table-item.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h \
+	e-table-header-item.h e-table.h e-tree.h e-tree-model.h \
+	e-tree-selection-model.h e-table-header-utils.h \
+	e-table-subset.h e-table-item.h e-table-group.h \
+	e-table-group-leaf.h e-table-click-to-add.h \
+	e-table-specification.h e-table-state.h \
+	e-table-column-specification.h e-table-utils.h
+e-tree-memory-callbacks.lo e-tree-memory-callbacks.o : \
+	e-tree-memory-callbacks.c ../../config.h \
+	../../gal/util/e-util.h e-tree-memory-callbacks.h \
+	e-tree-memory.h e-tree-model.h
+e-tree-memory.lo e-tree-memory.o : e-tree-memory.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-xml-utils.h \
+	e-tree-memory.h e-tree-model.h
+e-tree-model.lo e-tree-model.o : e-tree-model.c ../../config.h \
+	../../gal/util/e-util.h ../../gal/util/e-xml-utils.h \
+	e-tree-model.h
+e-tree-scrolled.lo e-tree-scrolled.o : e-tree-scrolled.c ../../config.h \
+	../../gal/util/e-util.h e-tree-scrolled.h \
+	../../gal/widgets/e-scroll-frame.h e-tree-model.h e-tree.h \
+	../../gal/widgets/e-printable.h e-table-extras.h e-cell.h \
+	e-table-model.h e-table-tooltip.h e-table-specification.h \
+	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
+	e-table-state.h e-table-sort-info.h \
+	e-table-column-specification.h e-table-defines.h \
+	e-tree-selection-model.h
+e-tree-selection-model.lo e-tree-selection-model.o : \
+	e-tree-selection-model.c ../../config.h \
+	e-tree-selection-model.h ../../gal/util/e-sorter.h \
+	../../gal/widgets/e-selection-model.h e-tree-model.h \
+	../../gal/util/e-bit-array.h ../../gal/util/e-util.h \
+	e-tree-sorted.h e-table-sort-info.h e-table-header.h \
+	e-table-col.h e-cell.h e-table-model.h e-table-tooltip.h \
+	e-tree-table-adapter.h
+e-tree-sorted.lo e-tree-sorted.o : e-tree-sorted.c ../../config.h \
+	e-tree-sorted.h e-tree-model.h e-table-sort-info.h \
+	e-table-header.h e-table-col.h e-cell.h e-table-model.h \
+	e-table-tooltip.h ../../gal/util/e-util.h \
+	../../gal/util/e-xml-utils.h e-table-sorting-utils.h
+e-tree-table-adapter.lo e-tree-table-adapter.o : e-tree-table-adapter.c \
+	../../config.h ../../gal/util/e-util.h \
+	../../gal/util/e-xml-utils.h e-tree-table-adapter.h \
+	e-table-model.h e-tree-model.h
+e-tree.lo e-tree.o : e-tree.c ../../config.h ../../gal/util/e-i18n.h \
+	../../gal/util/e-util.h ../../gal/widgets/e-canvas.h \
+	e-table-column-specification.h e-table-header-item.h e-table.h \
+	e-table-model.h e-table-header.h e-table-sort-info.h \
+	e-table-col.h e-cell.h e-table-tooltip.h e-table-group.h \
+	e-table-defines.h ../../gal/widgets/e-printable.h \
+	e-table-item.h ../../gal/widgets/e-selection-model.h \
+	../../gal/util/e-sorter.h e-table-selection-model.h \
+	../../gal/widgets/e-selection-model-array.h \
+	../../gal/util/e-bit-array.h e-table-extras.h \
+	e-table-specification.h e-table-state.h e-table-sorter.h \
+	e-table-subset-variable.h e-table-subset.h e-tree.h \
+	e-tree-model.h e-tree-selection-model.h e-table-utils.h \
+	e-tree-sorted.h e-tree-table-adapter.h e-tree.h
 
 info-am:
 info: info-am

@@ -32,6 +32,7 @@ libgal_la_LIBADD = \
 	\
 	widgets/color-group.lo				\
 	widgets/color-palette.lo			\
+	widgets/e-canvas-background.lo			\
 	widgets/e-canvas-utils.lo			\
 	widgets/e-canvas-vbox.lo			\
 	widgets/e-canvas.lo				\

@@ -259,8 +259,14 @@ _g_utf8_normalize_wc (const gchar    *str,
   while ((max_len < 0 || p < str + max_len) && *p)
     {
       gunichar wc = g_utf8_get_char (p);
+      guchar *decomp;
 
-      guchar *decomp = find_decomposition (wc, do_compat);
+      if (wc == (gunichar) -1) {
+	p++;
+	continue;
+      }
+
+      decomp = find_decomposition (wc, do_compat);
 
       if (decomp)
 	{
@@ -288,6 +294,11 @@ _g_utf8_normalize_wc (const gchar    *str,
       guchar *decomp;
       int cc;
       gsize old_n_wc = n_wc;
+
+      if (wc == (gunichar) -1) {
+	p++;
+	continue;
+      }
 	  
       decomp = find_decomposition (wc, do_compat);
 	  
