@@ -1,0 +1,36 @@
+# $Id: Makefile,v 1.1 1996-09-20 05:02:02 ghudson Exp $
+
+SHELL=/bin/sh
+INITD=/etc/init.d
+RC0=/etc/rc0.d
+RC2=/etc/rc2.d
+
+all:
+
+check:
+
+install:
+	-mkdir -p ${DESTDIR}${INITD}
+	-mkdir -p ${DESTDIR}${RC0}
+	-mkdir -p ${DESTDIR}${RC2}
+	install -c -m 0755 athena ${DESTDIR}${INITD}
+	install -c -m 0755 athena.config ${DESTDIR}${INITD}
+	install -c -m 0755 axdm ${DESTDIR}${INITD}
+	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
+	install -c -m 0755 network ${DESTDIR}${INITD}
+	rm -f ${DESTDIR}${RC0}/K02axdm
+	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02axdm
+	rm -f ${DESTDIR}${RC0}/K07athena
+	ln -s ../init.d/athena ${DESTDIR}${RC0}/K07athena
+	rm -f ${DESTDIR}${RC2}/S13athena.config
+	ln -s ../init.d/athena.config ${DESTDIR}${RC2}/S13athena.config
+	rm -f ${DESTDIR}${RC2}/S24autoconfig.reboot
+	ln -s ../init.d/autoconfig.reboot ${DESTDIR}${RC2}/S24autoconfig.reboot
+	rm -f ${DESTDIR}${RC2}/S93athena
+	ln -s ../init.d/athena ${DESTDIR}${RC2}/S93athena
+	rm -f ${DESTDIR}${RC2}/S98axdm
+	ln -s ../init.d/axdm ${DESTDIR}${RC2}/S98axdm
+
+clean:
+
+distclean:
