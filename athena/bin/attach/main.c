@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.8 1990-07-04 16:21:22 jfc Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.9 1990-07-04 17:27:43 jfc Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -234,7 +234,9 @@ nfsidcmd(argc, argv)
 		break;
 	    case 'p':
 		if (!trusted_user(real_uid)) {
-		    fprintf(stderr, "nfsid purge is a privileged operation\n");
+		    fprintf(stderr,
+			    "%s: nfsid purge is a privileged operation\n",
+			    progname);
 		    return ERR_NFSIDPERM;
 		}
 		op = MOUNTPROC_KUIDPURGE;
@@ -242,7 +244,7 @@ nfsidcmd(argc, argv)
 		break;
 	    case 's':
 		if (i == argc-1) {
-		    fprintf(stderr, "No spoof host specified\n");
+		    fprintf(stderr, "%s: No spoof host specified\n", progname);
 		    return (ERR_BADARGS);
 		}
 		spoofhost = argv[++i];
@@ -258,12 +260,17 @@ nfsidcmd(argc, argv)
 		unlock_attachtab();
 		break;
 	    case 'U':
+		++i;
 		if (trusted_user(real_uid)) {
-			if (argv[++i])
-				owner_uid = parse_username(argv[i]);
+			if (!argv[i]) {
+				fprintf(stderr, "%s: Username required with -U.\n",
+					progname);
+				return ERR_BADARGS;
+			}
+			owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use the -user option\n");
+		"%s: You are not authorized to use the -user option\n", progname);
 		}
 		break;
 	    case 'a':
@@ -284,18 +291,18 @@ nfsidcmd(argc, argv)
 				if ((nfsid(atp->host, atp->hostaddr, op, 1,
 					   atp->hesiodname, 0, owner_uid)
 				     == SUCCESS) && verbose)
-					printf("%s: %s\n", atp->hesiodname,
-					       ops);
+					printf("%s: %s %s\n", progname,
+					       atp->hesiodname, ops);
 			} else
-				printf("%s: Ignored (not NFS)\n",
-				       atp->hesiodname);
+				printf("%s: %s ignored (not NFS)\n",
+				       progname, atp->hesiodname);
 			atp = atp->next;
 		}
 		free_attachtab();
 		gotname = 2;
 		break;
 	    default:
-		fprintf(stderr, "Unknown switch %s\n", argv[i]);
+		fprintf(stderr, "%s: Unknown switch %s\n", progname, argv[i]);
 		return (ERR_BADARGS);
 	    }
 	    continue;
@@ -313,18 +320,18 @@ nfsidcmd(argc, argv)
 			    if ((nfsid(atp->host, atp->hostaddr, op, 1,
 				       argv[i], 0, owner_uid) == SUCCESS) &&
 				verbose)
-				    printf("%s: %s\n", argv[i], ops);
+				    printf("%s: %s %s\n", progname, argv[i], ops);
 		    } else if (atp->fs->type == TYPE_AFS) {
 #ifdef AFS
 			    if (op == MOUNTPROC_KUIDMAP &&
 				(afs_auth(atp->hesiodname, atp->hostdir,
 			  AFSAUTH_DOAUTH) == SUCCESS) && verbose)
-				    printf("%s: %s\n", argv[i], ops);
+				    printf("%s: %s %s\n", progname, argv[i], ops);
 #endif
 		    }
 	    } else {
 		error_status = ERR_NFSIDNOTATTACHED;
-		fprintf(stderr, "%s: Not attached\n", argv[i]);
+		fprintf(stderr, "%s: %s not attached\n", progname, argv[i]);
 	    }
 	} else {
 	    /*
@@ -332,7 +339,7 @@ nfsidcmd(argc, argv)
 	     */
 	    hent = gethostbyname(argv[i]);
 	    if (!hent) {
-		fprintf(stderr, "Can't resolve host %s\n", argv[i]);
+		fprintf(stderr, "%s: Can't resolve host %s\n", progname, argv[i]);
 		error_status = ERR_NFSIDBADHOST;
 	    }
 	    else {
@@ -340,7 +347,7 @@ nfsidcmd(argc, argv)
 		bcopy(hent->h_addr_list[0], &addr, 4);
 		if ((nfsid(hostname, addr,
 			   op, 1, "nfsid", 0, owner_uid) == SUCCESS) && verbose)
-		    printf("%s: %s\n", hostname, ops);
+		    printf("%s: %s %s\n", progname, hostname, ops);
 	    }
 	} 
     }
@@ -486,14 +493,16 @@ attachcmd(argc, argv)
 		break;
 	    case 'm':
 		if (i == argc-1) {
-			fprintf(stderr, "No mount point specified\n");
+			fprintf(stderr, "%s: No mount point specified\n", 
+				progname);
 			return (ERR_BADARGS);
 		}
 		if (exp_mntpt || trusted_user(real_uid)) {
 			mntpt = argv[++i];
 		} else {
 			fprintf(stderr,
-		"Sorry, you're not allowed to use the -mountpoint option\n");
+		"%s: You are not allowed to use the -mountpoint option\n",
+				progname);
 			i++;
 		}
 		break;
@@ -528,25 +537,25 @@ attachcmd(argc, argv)
 			explicit = 1;
 		else
 			fprintf(stderr,
-		"Sorry, you're not allowed to use the -explicit option\n");
+		"%s: You are not allowed to use the -explicit option\n", progname);
 		break;
 	    case 't':
 		if (i == argc-1) {
-		    fprintf(stderr, "No filesystem type specified\n");
+		    fprintf(stderr, "%s: No filesystem type specified\n", progname);
 		    return (ERR_BADARGS);
 		}
 		filsys_type = argv[++i];
 		break;
 	    case 'o':
 		if (i == argc-1) {
-		    fprintf(stderr, "No mount options specified\n");
+		    fprintf(stderr, "%s: No mount options specified\n", progname);
 		    return (ERR_BADARGS);
 		}
 		mount_options = argv[++i];
 		break;
 	    case 's':
 		if (i == argc-1) {
-		    fprintf(stderr, "No spoof host specified\n");
+		    fprintf(stderr, "%s: No spoof host specified\n", progname);
 		    return (ERR_BADARGS);
 		}
 		spoofhost = argv[++i];
@@ -560,15 +569,15 @@ attachcmd(argc, argv)
 		else {
 			fprintf(stderr,
 
-		"Sorry, you're not authorized to the -setuid option\n");
+		"%s: You are not authorized to the -setuid option\n", progname);
 		}
 		break;
 	    case 'O':
 		if (trusted_user(real_uid))
 			override = 1;
 		else {
-			fprintf(stderr,
-		"Sorry, you're not authorized to use -override option\n");
+			fprintf(stderr, 
+		"%s: You are not authorized to use -override option\n", progname);
 		}
 		break;
 	    case 'L':
@@ -576,7 +585,7 @@ attachcmd(argc, argv)
 			lock_filesystem = 1;
 		else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use -lock option\n");
+		"%s: You are not authorized to use -lock option\n", progname);
 		}
 		break;
 	    case 'F':
@@ -589,11 +598,11 @@ attachcmd(argc, argv)
 				owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use the -user option\n");
+		"You are not authorized to use the -user option\n", progname);
 		}
 		break;
 	    default:
-		fprintf(stderr, "Unknown switch %s\n", argv[i]);
+		fprintf(stderr, "%s: Unknown switch %s\n", progname, argv[i]);
 		return (ERR_BADARGS);		
 	    }
 	    continue;
@@ -705,7 +714,8 @@ detachcmd(argc, argv)
 		break;
 	    case 't':
 		if (i == argc-1) {
-		    fprintf(stderr, "No filesystem type specified\n");
+		    fprintf(stderr, "%s: No filesystem type specified\n", 
+			    progname);
 		    return (ERR_BADARGS);
 		}
 		filsys_type = argv[++i];
@@ -716,7 +726,7 @@ detachcmd(argc, argv)
 		break;
 	    case 's':
 		if (i == argc-1) {
-		    fprintf(stderr, "No spoof host specified\n");
+		    fprintf(stderr, "%s: No spoof host specified\n", progname);
 		    return (ERR_BADARGS);
 		}
 		spoofhost = argv[++i];
@@ -726,20 +736,21 @@ detachcmd(argc, argv)
 			override = 1;
 		else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use -override option\n");
+		"%s: You are not authorized to use -override option\n", progname);
 		}
 		break;
    	    case 'U':
 		++i;
 		if (trusted_user(real_uid)) {
 			if (!argv[i]) {
-				fprintf(stderr, "Username required with -U.\n");
+				fprintf(stderr, "%s: Username required with -U.\n",
+					progname);
 				return (ERR_BADARGS);
 			}
 			owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use the -user option\n");
+		"%s: You are not authorized to use the -user option\n", progname);
 		}
 		break;
 	case 'C':
@@ -747,7 +758,7 @@ detachcmd(argc, argv)
 			clean_detach++;
 		} else {
 			fprintf(stderr,
-		"Sorry, you're not authorized to use the -clean option\n");
+		"%s: You are not authorized to use the -clean option\n", progname);
 		}
 		break;
 	case 'L':
@@ -755,7 +766,7 @@ detachcmd(argc, argv)
 		gotname = 1;
 		break;
 	default:
-		fprintf(stderr, "Unknown switch %s\n", argv[i]);
+		fprintf(stderr, "%s: Unknown switch %s\n", progname, argv[i]);
 		return (ERR_BADARGS);
 	    }
 	    continue;
