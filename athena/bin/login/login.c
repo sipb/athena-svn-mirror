@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.21 1988-08-04 15:23:14 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.22 1988-09-07 18:14:59 shanzer Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.21 1988-08-04 15:23:14 jtkohl Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.22 1988-09-07 18:14:59 shanzer Exp $";
 #endif	lint
 
 /*
@@ -1173,7 +1173,15 @@ attach_homedir()
 	
 	if (!attachable)
 		return (1);
-	
+	chdir("/");	/* XXX This is a temproary hack to fix the
+			 * fact that home directories sometimes do
+			 * not get attached if the user types his
+			 * password wrong the first time. Some how
+			 * working direcotyr becomes the users home
+			 * directory BEFORE we try to attach. and it
+			 * of course fails.
+			 */
+
 	if (!(attachpid = fork())) {
 		setuid(pwd->pw_uid);
 		freopen("/dev/null","w",stdout);
