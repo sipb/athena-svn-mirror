@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.36 2000-05-23 17:59:37 ghudson Exp $
+# $Id: do-update.sh,v 1.37 2000-05-31 17:57:44 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -33,6 +33,16 @@ undup() {
 
 echo "Starting update at `date`."
 . /srvd/usr/athena/lib/update/update-environment
+
+# Remove the version script state files.
+rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
+rm -f "$CONFIGVERS" "$LOCALPACKAGES" "$LINKPACKAGES" "$PATCHES"
+if [ -n "$LOCALPACKAGES" ]; then
+	rm -f "$LOCALPACKAGES".*
+fi
+if [ -n "$LINKPACKAGES" ]; then
+	rm -f "$LINKPACKAGES".*
+fi
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
 # it doesn't work in Solaris 2.4 and prior, and "uname -m" works for now.
