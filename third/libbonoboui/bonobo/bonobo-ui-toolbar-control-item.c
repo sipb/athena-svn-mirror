@@ -22,7 +22,8 @@ GNOME_CLASS_BOILERPLATE (BonoboUIToolbarControlItem,
 			 bonobo_ui_toolbar_button_item_get_type ());
 
 struct _BonoboUIToolbarControlItemPrivate {
-        BonoboWidget *control;	/* The wrapped control */
+	GtkWidget    *widget;   /* The widget (of a control, or custom */
+        BonoboWidget *control;	/* The wrapped control - if a control, or NULL */
 	GtkWidget *button;	/* Button to display instead of control in
 				   vertical mode */
 	GtkWidget *box;		/* Container for control and button. Which of
@@ -133,16 +134,16 @@ impl_set_orientation (BonoboUIToolbarItem *item,
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_CONTROL:
 		gtk_widget_hide (priv->button);
-		gtk_widget_show (GTK_WIDGET (priv->control));
+		gtk_widget_show (priv->widget);
 		break;
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_BUTTON:
-		gtk_widget_hide (GTK_WIDGET (priv->control));
+		gtk_widget_hide (priv->widget);
 		gtk_widget_show (priv->button);
 		break;
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_NONE:
-		gtk_widget_hide (GTK_WIDGET (priv->control));
+		gtk_widget_hide (priv->widget);
 		gtk_widget_hide (priv->button);
 		break;
 
@@ -205,9 +206,10 @@ impl_dispose (GObject *object)
 
 	control_item = (BonoboUIToolbarControlItem *) object;
 	
-	if (control_item->priv->control) {
-		gtk_widget_destroy (GTK_WIDGET (control_item->priv->control));
+	if (control_item->priv->widget) {
+		gtk_widget_destroy (control_item->priv->widget);
 		control_item->priv->control = NULL;
+		control_item->priv->widget = NULL;
 	}
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
@@ -264,16 +266,20 @@ proxy_activate_cb (GtkWidget *button, GtkObject *item)
 GtkWidget *
 bonobo_ui_toolbar_control_item_construct (
         BonoboUIToolbarControlItem *control_item,
+	GtkWidget                  *widget,
         Bonobo_Control              control_ref)
 {
         BonoboUIToolbarControlItemPrivate *priv = control_item->priv;
-	GtkWidget *w  = bonobo_widget_new_control_from_objref (
-		control_ref, CORBA_OBJECT_NIL);
 
-        if (!w)
+	if (!widget)
+		widget = bonobo_widget_new_control_from_objref (
+			control_ref, CORBA_OBJECT_NIL);
+
+        if (!widget)
                 return NULL;
 
-	priv->control  = BONOBO_WIDGET (w); 
+	priv->widget   = widget;
+	priv->control  = BONOBO_IS_WIDGET (widget) ? BONOBO_WIDGET (widget) : NULL;
 	priv->button   = bonobo_ui_toolbar_button_item_new (NULL, NULL);
         priv->eventbox = gtk_event_box_new ();
         priv->box      = gtk_vbox_new (FALSE, 0);
@@ -281,13 +287,12 @@ bonobo_ui_toolbar_control_item_construct (
 	g_signal_connect (priv->button, "activate",
 			  G_CALLBACK (proxy_activate_cb), control_item);
 	
-	gtk_container_add (GTK_CONTAINER (priv->box),
-			   GTK_WIDGET (priv->control));
+	gtk_container_add (GTK_CONTAINER (priv->box), widget);
         gtk_container_add (GTK_CONTAINER (priv->box), priv->button);
 
         gtk_container_add (GTK_CONTAINER (priv->eventbox), priv->box);
 
-	gtk_widget_show (GTK_WIDGET (priv->control));
+	gtk_widget_show (priv->widget);
 	gtk_widget_show (priv->box);
 	gtk_widget_show   (priv->eventbox);
         gtk_container_add (GTK_CONTAINER (control_item), priv->eventbox);
@@ -305,10 +310,28 @@ bonobo_ui_toolbar_control_item_new (Bonobo_Control control_ref)
                 bonobo_ui_toolbar_control_item_get_type (), NULL);
 
         ret = bonobo_ui_toolbar_control_item_construct (
-		control_item, control_ref);
+		control_item, NULL, control_ref);
 
 	if (!ret)
 		g_object_unref (control_item);
+
+	return ret;
+}
+
+GtkWidget *
+bonobo_ui_toolbar_control_item_new_widget (GtkWidget *custom_in_proc_widget)
+{
+	GtkWidget *ret;
+        BonoboUIToolbarControlItem *control_item;
+
+        control_item = g_object_new (
+                bonobo_ui_toolbar_control_item_get_type (), NULL);
+
+        ret = bonobo_ui_toolbar_control_item_construct (
+		control_item, custom_in_proc_widget, CORBA_OBJECT_NIL);
+
+	if (!ret)
+		g_object_unref (custom_in_proc_widget);
 
 	return ret;
 }

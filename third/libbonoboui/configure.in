@@ -1,7 +1,7 @@
 AC_INIT(bonobo/bonobo-ui-engine.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libbonoboui, 2.0.3.3)
+AM_INIT_AUTOMAKE(libbonoboui, 2.2.0)
 
 AM_MAINTAINER_MODE
 
@@ -26,7 +26,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(gnomelocaledir)
 
-ALL_LINGUAS="am ar az be bg ca cs de el es fi fr hi hu it ja ko lv ms nn no pl pt pt_BR ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es fi fr he hi hu it ja ko lv ms nl nn no pl pt pt_BR ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 AC_SUBST(CFLAGS)
@@ -54,6 +54,17 @@ if $PKG_CONFIG --atleast-version 2.1.0 gtk+-2.0; then
 else
    AC_MSG_RESULT(no)
 fi
+
+AC_MSG_CHECKING([for broken, old development packages])
+if $PKG_CONFIG --exists gdk_pixbuf; then
+	if $PKG_CONFIG --modversion 'gdk_pixbuf >= 0.12'; then
+		AC_MSG_RESULT([parallel install ok]);
+	else
+		AC_ERROR([If you have gdk-pixbuf you need at least ver 0.12]);
+	fi
+else
+	AC_MSG_RESULT([clean])
+fi;
 
 PKG_CHECK_MODULES(BONOBOUI_GLADE, $BONOBOUI_MODULES libglade-2.0 >= 1.99.11)
 AC_SUBST(BONOBOUI_GLADE_CFLAGS)

@@ -87,6 +87,9 @@ typedef struct {
 	GtkWidget    *(*get_attached)    (BonoboUISync     *sync,
 					  GtkWidget        *widget,
 					  BonoboUINode     *node);
+
+	GtkWidget    *(*wrap_widget)     (BonoboUISync     *sync,
+					  GtkWidget        *custom_widget);
 } BonoboUISyncClass;
 
 GType      bonobo_ui_sync_get_type           (void) G_GNUC_CONST;
@@ -148,6 +151,9 @@ gboolean   bonobo_ui_sync_do_show_hide       (BonoboUISync     *sync,
 					      BonoboUINode     *node,
 					      BonoboUINode     *cmd_node,
 					      GtkWidget        *widget);
+
+GtkWidget *bonobo_ui_sync_wrap_widget        (BonoboUISync     *sync,
+					      GtkWidget        *custom_widget);
 
 /*
  *  These are to allow you to remove certain types of Sync

@@ -10,7 +10,7 @@
 #ifndef _BONOBO_UI_COMPONENT_H_
 #define _BONOBO_UI_COMPONENT_H_
 
-#include <glib-object.h>
+#include <gtk/gtkwidget.h>
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-ui-node.h>
 
@@ -177,10 +177,15 @@ BonoboUINode      *bonobo_ui_component_get_tree     (BonoboUIComponent  *compone
 void               bonobo_ui_component_object_set   (BonoboUIComponent  *component,
 						     const char         *path,
 						     Bonobo_Unknown      control,
-						     CORBA_Environment  *ev);
+						     CORBA_Environment  *opt_ev);
 
 Bonobo_Unknown     bonobo_ui_component_object_get   (BonoboUIComponent  *component,
 						     const char         *path,
+						     CORBA_Environment  *opt_ev);
+
+void               bonobo_ui_component_widget_set   (BonoboUIComponent  *component,
+						     const char         *path,
+						     GtkWidget          *widget,
 						     CORBA_Environment  *opt_ev);
 
 void               bonobo_ui_component_freeze       (BonoboUIComponent  *component,

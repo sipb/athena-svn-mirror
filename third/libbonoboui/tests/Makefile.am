@@ -25,7 +25,7 @@ INCLUDES =	\
 	$(WARN_CFLAGS)					\
 	$(BONOBOUI_CFLAGS)
 
-LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la -lpopt
+LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la -lpopt $(BONOBOUI_LIBS)
 
 test_ui_SOURCES = test-ui.c
 test_ui_auto_SOURCES = test-ui-auto.c

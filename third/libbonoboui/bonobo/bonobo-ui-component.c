@@ -13,9 +13,11 @@
 #include <bonobo/bonobo-types.h>
 #include <bonobo/bonobo-ui-xml.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-ui-engine.h>
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-marshal.h>
+#include <bonobo/bonobo-control.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
@@ -876,7 +878,7 @@ impl_xml_rm (BonoboUIComponent  *component,
  * @component: the component
  * @path: the path to set
  * @control: a CORBA object reference
- * @ev: the (optional) CORBA exception environment
+ * @opt_ev: the (optional) CORBA exception environment
  * 
  * This registers the @control CORBA object into the
  * #BonoboUIContainer associated with this @component at
@@ -887,7 +889,7 @@ void
 bonobo_ui_component_object_set (BonoboUIComponent  *component,
 				const char         *path,
 				Bonobo_Unknown      control,
-				CORBA_Environment  *ev)
+				CORBA_Environment  *opt_ev)
 {
 	CORBA_Environment *real_ev, tmp_ev;
 	Bonobo_UIContainer container;
@@ -896,8 +898,8 @@ bonobo_ui_component_object_set (BonoboUIComponent  *component,
 	container = component->priv->container;
 	g_return_if_fail (container != CORBA_OBJECT_NIL);
 
-	if (ev)
-		real_ev = ev;
+	if (opt_ev)
+		real_ev = opt_ev;
 	else {
 		CORBA_exception_init (&tmp_ev);
 		real_ev = &tmp_ev;
@@ -905,11 +907,58 @@ bonobo_ui_component_object_set (BonoboUIComponent  *component,
 
 	Bonobo_UIContainer_setObject (container, path, control, real_ev);
 
-	if (!ev && BONOBO_EX (real_ev))
+	if (!opt_ev && BONOBO_EX (real_ev))
 		g_warning ("Serious exception setting object '%s' '%s'",
 			   path, bonobo_exception_get_text (real_ev));
 
-	if (!ev)
+	if (!opt_ev)
+		CORBA_exception_free (&tmp_ev);
+}
+
+void
+bonobo_ui_component_widget_set (BonoboUIComponent  *component,
+				const char         *path,
+				GtkWidget          *widget,
+				CORBA_Environment  *opt_ev)
+{
+	gpointer in_proc_servant;
+	BonoboObject *in_proc_container;
+	CORBA_Environment *real_ev, tmp_ev;
+	Bonobo_UIContainer container;
+
+	g_return_if_fail (widget != CORBA_OBJECT_NIL);
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (component));
+	container = component->priv->container;
+	g_return_if_fail (container != CORBA_OBJECT_NIL);
+
+	if (opt_ev)
+		real_ev = opt_ev;
+	else {
+		CORBA_exception_init (&tmp_ev);
+		real_ev = &tmp_ev;
+	}
+
+	if ((in_proc_servant = ORBit_small_get_servant (container)) &&
+	    (in_proc_container = bonobo_object (in_proc_servant)) &&
+	    BONOBO_IS_UI_CONTAINER (in_proc_container)) {
+		BonoboUIEngine *engine;
+
+		engine = bonobo_ui_container_get_engine (
+			BONOBO_UI_CONTAINER (in_proc_container));
+		g_return_if_fail (engine != NULL);
+		bonobo_ui_engine_widget_set (engine, path, widget);
+	} else {
+		BonoboControl *control = bonobo_control_new (widget);
+		Bonobo_UIContainer_setObject (
+			container, path, BONOBO_OBJREF (control), real_ev);
+		bonobo_object_unref (control);
+	}
+
+	if (!opt_ev && BONOBO_EX (real_ev))
+		g_warning ("Serious exception setting object '%s' '%s'",
+			   path, bonobo_exception_get_text (real_ev));
+
+	if (!opt_ev)
 		CORBA_exception_free (&tmp_ev);
 }
 

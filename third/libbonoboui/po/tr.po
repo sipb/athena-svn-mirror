@@ -1,18 +1,18 @@
 # translation of tr.po to Turkish
 # Turkish translation of libbonoboui.
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Ömer Fadýl USTA <omer_fad@hotmail.com> , 2001.
-# Görkem Çetin <gorkem@gelecek.com.tr>, 2002
+# Ã–mer FadÄ±l USTA <omer_fad@hotmail.com> , 2001.
+# GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>, 2002
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: tr\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
 "PO-Revision-Date: 2002-09-18 05:08+0300\n"
-"Last-Translator: Ömer Fadýl USTA <omer_fad@hotmail.com>\n"
+"Last-Translator: Ã–mer FadÄ±l USTA <omer_fad@hotmail.com>\n"
 "Language-Team: GNOME Turk <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-canvas-item.c:647
@@ -41,34 +41,34 @@ msgstr ""
 
 #: bonobo/bonobo-dock-item.c:291 bonobo/bonobo-dock-item.c:292
 msgid "Shadow type"
-msgstr "Gölge tipi"
+msgstr "GÃ¶lge tipi"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr ""
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
-msgstr "Tercih edilen geniþlik"
+msgstr "Tercih edilen geniÅŸlik"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
-msgstr "Tercih edilen yükseklik"
+msgstr "Tercih edilen yÃ¼kseklik"
 
 #: bonobo/bonobo-file-selector-util.c:383
 msgid "Select a file to open"
-msgstr "Açmak için bir dosya seçin"
+msgstr "AÃ§mak iÃ§in bir dosya seÃ§in"
 
 #: bonobo/bonobo-file-selector-util.c:411
 msgid "Select files to open"
-msgstr "Açýlacak dosyalarý seçin"
+msgstr "AÃ§Ä±lacak dosyalarÄ± seÃ§in"
 
 #: bonobo/bonobo-file-selector-util.c:440
 msgid "Select a filename to save"
-msgstr "Kaydetmek için bir isim belirleyin"
+msgstr "Kaydetmek iÃ§in bir isim belirleyin"
 
 #: bonobo/bonobo-plug.c:372
 msgid "Event Forwarding"
@@ -80,15 +80,15 @@ msgstr ""
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:415
 msgid "Name"
-msgstr "Ýsim"
+msgstr "Ä°sim"
 
 #: bonobo/bonobo-selector-widget.c:322
 msgid "Description"
-msgstr "Tanýmlama"
+msgstr "TanÄ±mlama"
 
 #: bonobo/bonobo-selector.c:345
 msgid "Interfaces required"
-msgstr "Arayüzler gerekiyor"
+msgstr "ArayÃ¼zler gerekiyor"
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
@@ -107,11 +107,11 @@ msgstr ""
 
 #: bonobo/bonobo-ui-config-widget.c:267
 msgid "Visible"
-msgstr "Görünürlük"
+msgstr "GÃ¶rÃ¼nÃ¼rlÃ¼k"
 
 #: bonobo/bonobo-ui-config-widget.c:274
 msgid "_Show"
-msgstr "_Göster"
+msgstr "_GÃ¶ster"
 
 #: bonobo/bonobo-ui-config-widget.c:281
 msgid "_Hide"
@@ -119,15 +119,15 @@ msgstr "Gi_zle"
 
 #: bonobo/bonobo-ui-config-widget.c:287
 msgid "_View tooltips"
-msgstr "_Araç ipucunu göster"
+msgstr "_AraÃ§ ipucunu gÃ¶ster"
 
 #: bonobo/bonobo-ui-config-widget.c:292
 msgid "Toolbars"
-msgstr "Araç çubuðu"
+msgstr "AraÃ§ Ã§ubuÄŸu"
 
 #: bonobo/bonobo-ui-config-widget.c:302
 msgid "toolbars"
-msgstr "Araç çubuklarý"
+msgstr "AraÃ§ Ã§ubuklarÄ±"
 
 #: bonobo/bonobo-ui-config-widget.c:313 bonobo/bonobo-ui-sync-toolbar.c:552
 msgid "Look"
@@ -147,11 +147,23 @@ msgstr "Sadece metin"
 
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
-msgstr "_Öncelikli yalnýz metin"
+msgstr "_Ã–ncelikli yalnÄ±z metin"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr ""
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
-msgstr "UI Yapýlandýrmasý"
+msgstr "UI YapÄ±landÄ±rmasÄ±"
 
 #: bonobo/bonobo-ui-init-gtk.c:113
 msgid "Gdk debugging flags to set"
@@ -172,7 +184,7 @@ msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:120
 msgid "DISPLAY"
-msgstr "GÖRÜNTÜ"
+msgstr "GÃ–RÃœNTÃœ"
 
 #: bonobo/bonobo-ui-init-gtk.c:125
 msgid "X screen to use"
@@ -196,7 +208,7 @@ msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:139
 msgid "NAME"
-msgstr "ÝSÝM"
+msgstr "Ä°SÄ°M"
 
 #: bonobo/bonobo-ui-init-gtk.c:142
 msgid "Program class as used by the window manager"
@@ -208,7 +220,7 @@ msgstr "SINIF"
 
 #: bonobo/bonobo-ui-init-gtk.c:146
 msgid "HOST"
-msgstr "MAKÝNA"
+msgstr "MAKÄ°NA"
 
 #: bonobo/bonobo-ui-init-gtk.c:150
 msgid "PORT"
@@ -216,7 +228,7 @@ msgstr "PORT"
 
 #: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
 msgid "STYLE"
-msgstr "STÝL"
+msgstr "STÄ°L"
 
 #: bonobo/bonobo-ui-init-gtk.c:162
 msgid "Gtk+ debugging flags to set"
@@ -236,7 +248,7 @@ msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:171
 msgid "MODULE"
-msgstr "MODÜL"
+msgstr "MODÃœL"
 
 #: bonobo/bonobo-ui-init-gtk.c:180
 msgid "GTK+"
@@ -248,7 +260,7 @@ msgstr ""
 
 #: bonobo/bonobo-ui-sync-toolbar.c:552
 msgid "B_oth"
-msgstr "Ýkisi_de"
+msgstr "Ä°kisi_de"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:552
 msgid "T_ext"
@@ -256,37 +268,37 @@ msgstr "Me_tin"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Hide t_ips"
-msgstr "Ýpucunu giz_le"
+msgstr "Ä°pucunu giz_le"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Show t_ips"
-msgstr "Ýpucunu göste_r"
+msgstr "Ä°pucunu gÃ¶ste_r"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "_Hide toolbar"
-msgstr "Ara_ç çubuðunu gizle"
+msgstr "Ara_Ã§ Ã§ubuÄŸunu gizle"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Customi_ze"
-msgstr "Özelle_þtir"
+msgstr "Ã–zelle_ÅŸtir"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:555
 msgid "Customize the toolbar"
-msgstr "Araç ç_ubuðunu özelleþtir"
+msgstr "AraÃ§ Ã§_ubuÄŸunu Ã¶zelleÅŸtir"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
-msgstr "_Ýçerik-"
+msgstr "_Ä°Ã§erik-"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr ""
 
@@ -344,19 +356,19 @@ msgstr ""
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:1
 msgid "About this application"
-msgstr "Bu uygulama hakkýnda bilgi"
+msgstr "Bu uygulama hakkÄ±nda bilgi"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:2
 msgid "Select"
-msgstr "Seç"
+msgstr "SeÃ§"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:3
 msgid "_About..."
-msgstr "_Hakkýnda"
+msgstr "_HakkÄ±nda"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:4
 msgid "_Edit"
-msgstr "_Düzen"
+msgstr "_DÃ¼zen"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
 msgid "_File"
@@ -364,11 +376,11 @@ msgstr "_Dosya"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:6
 msgid "_Select"
-msgstr "_Seç"
+msgstr "_SeÃ§"
 
 #: samples/bonoboui/hello.c:63
 msgid "This does nothing; it is only a demonstration."
-msgstr "Bu sadece bir demo ; bu kadarý hiç birþey"
+msgstr "Bu sadece bir demo ; bu kadarÄ± hiÃ§ birÅŸey"
 
 #: samples/bonoboui/hello.c:145
 msgid "BonoboUI-Hello."
@@ -381,18 +393,18 @@ msgstr "Gnome Hello"
 #. Create Label and put it in the Button:
 #: samples/bonoboui/hello.c:272
 msgid "Hello, World!"
-msgstr "Merhaba, Dünya!"
+msgstr "Merhaba, DÃ¼nya!"
 
 #: samples/bonoboui/hello.c:312
 msgid "Cannot init libbonoboui code"
-msgstr "Libbonoboui kodu çalýþtýrýlamýyor"
+msgstr "Libbonoboui kodu Ã§alÄ±ÅŸtÄ±rÄ±lamÄ±yor"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr ""
 
 #~ msgid "Can not bonobo_ui_init"
-#~ msgstr "Bonoboui çalýþtýrýlamý_yor"
+#~ msgstr "Bonoboui Ã§alÄ±ÅŸtÄ±rÄ±lamÄ±_yor"
 
 #~ msgid "Select an object"
-#~ msgstr "Bir nesne seçin"
+#~ msgstr "Bir nesne seÃ§in"

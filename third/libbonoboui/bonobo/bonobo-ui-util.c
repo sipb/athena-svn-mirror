@@ -320,6 +320,21 @@ bonobo_ui_image_set_stock (GtkImage   *image,
 		gtk_image_set_from_stock (image, name, icon_size);
 }
 
+static GtkIconSize
+bonobo_ui_util_xml_get_icon_size (BonoboUINode *node,
+				  GtkIconSize   default_size)
+{
+	GtkIconSize  retval;
+	const char  *size_name;
+
+	retval = default_size;
+
+	if ((size_name = bonobo_ui_node_peek_attr (node, "icon_size")))
+		retval = gtk_icon_size_from_name (size_name);
+
+	return retval;
+}
+
 void
 bonobo_ui_util_xml_set_image (GtkImage     *image,
 			      BonoboUINode *node,
@@ -333,12 +348,14 @@ bonobo_ui_util_xml_set_image (GtkImage     *image,
 
 	g_return_if_fail (node != NULL);
 
-	if (!(type = bonobo_ui_node_peek_attr (node, "pixtype")) && cmd_node &&
-	    !(type = bonobo_ui_node_peek_attr (cmd_node, "pixtype")))
-		return;
+	if ((type = bonobo_ui_node_peek_attr (node, "pixtype"))) {
+		text = bonobo_ui_node_peek_attr (node, "pixname");
+		icon_size = bonobo_ui_util_xml_get_icon_size (node, icon_size);
 
-	if (!(text = bonobo_ui_node_peek_attr (node, "pixname")) && cmd_node &&
-	    !(text = bonobo_ui_node_peek_attr (cmd_node, "pixname")))
+	} else if (cmd_node && (type = bonobo_ui_node_peek_attr (cmd_node, "pixtype"))) {
+		text = bonobo_ui_node_peek_attr (cmd_node, "pixname");
+		icon_size = bonobo_ui_util_xml_get_icon_size (cmd_node, icon_size);
+	} else
 		return;
 
 	if (!strcmp (type, "stock")) {
@@ -531,18 +548,19 @@ bonobo_help_display_cb (BonoboUIComponent *component,
 
 		if (cl->app_prefix)
 			prefix = g_strdup (cl->app_prefix);
-		else {
-			g_object_get (G_OBJECT (gnome_program_get ()),
-				      GNOME_PARAM_APP_PREFIX, &prefix, NULL);
-			if (!prefix)
-				g_object_get (G_OBJECT (gnome_program_get ()),
-					      GNOME_PARAM_GNOME_PREFIX, &prefix, NULL);
-		}
+		else
+			prefix = NULL;
 
-		/* sub-optimal, but what can you do */
 		if (prefix)
 			datadir = g_strdup_printf ("%s/share", prefix);
-		else
+
+ 		else {
+			datadir = NULL;
+			g_object_get (G_OBJECT (gnome_program_get ()),
+				      GNOME_PARAM_APP_DATADIR, &datadir, NULL);
+		}
+
+		if (!datadir) /* desparate fallback */
 			datadir = g_strdup (BONOBO_DATADIR);
 
 		cl->program = gnome_program_init (

@@ -308,7 +308,10 @@ show_popup_window (BonoboUIToolbar *toolbar)
 {
 	BonoboUIToolbarPrivate *priv;
 	const GtkAllocation *toolbar_allocation;
-	int x, y;
+	gint x, y;
+	GdkScreen *screen;
+	gint screen_width, screen_height;
+	gint window_width, window_height;
 
 	priv = toolbar->priv;
 
@@ -317,13 +320,21 @@ show_popup_window (BonoboUIToolbar *toolbar)
 	create_popup_window (toolbar);
 
 	gdk_window_get_origin (GTK_WIDGET (toolbar)->window, &x, &y);
-
 	toolbar_allocation = & GTK_WIDGET (toolbar)->allocation;
-
 	if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
 		x += toolbar_allocation->x + toolbar_allocation->width;
 	else
 		y += toolbar_allocation->y + toolbar_allocation->height;
+
+	gtk_window_get_size (GTK_WINDOW (priv->popup_window),
+			     &window_width, &window_height);
+	screen = gtk_widget_get_screen (GTK_WIDGET (toolbar));
+	screen_width = gdk_screen_get_width (screen);
+	screen_height = gdk_screen_get_height (screen);
+	if ((x + window_width) > screen_width)
+		x -= window_width;
+	if ((y + window_height) > screen_height)
+		x += toolbar_allocation->width;
 
 	gtk_window_move (GTK_WINDOW (priv->popup_window), x, y);
 
@@ -374,37 +385,43 @@ get_popup_item_size (BonoboUIToolbar *toolbar)
 /* Update the various sizes.  This is performed during ::size_request.  */
 
 static void
+accumulate_item_size (BonoboUIToolbarPrivate *priv,
+		      GtkWidget              *item_widget)
+{
+	GtkRequisition item_requisition;
+
+	gtk_widget_size_request (item_widget, &item_requisition);
+
+	priv->max_width     = MAX (priv->max_width,  item_requisition.width);
+	priv->total_width  += item_requisition.width;
+	priv->max_height    = MAX (priv->max_height, item_requisition.height);
+	priv->total_height += item_requisition.height;
+}
+
+static void
 update_sizes (BonoboUIToolbar *toolbar)
 {
-	BonoboUIToolbarPrivate *priv;
-	int max_width, max_height;
-	int total_width, total_height;
 	GList *p;
+	BonoboUIToolbarPrivate *priv;
 
 	priv = toolbar->priv;
 
-	max_width = max_height = total_width = total_height = 0;
+	priv->max_width = priv->total_width = 0;
+	priv->max_height = priv->total_height = 0;
 
 	for (p = priv->items; p != NULL; p = p->next) {
 		GtkWidget *item_widget;
-		GtkRequisition item_requisition;
 
 		item_widget = GTK_WIDGET (p->data);
-		if (! GTK_WIDGET_VISIBLE (item_widget) || item_widget->parent != GTK_WIDGET (toolbar))
+		if (! GTK_WIDGET_VISIBLE (item_widget) ||
+		    item_widget->parent != GTK_WIDGET (toolbar))
 			continue;
 
-		gtk_widget_size_request (item_widget, &item_requisition);
-
-		max_width     = MAX (max_width,  item_requisition.width);
-		total_width  += item_requisition.width;
-		max_height    = MAX (max_height, item_requisition.height);
-		total_height += item_requisition.height;
+		accumulate_item_size (priv, item_widget);
 	}
 
-	priv->max_width = max_width;
-	priv->total_width = total_width;
-	priv->max_height = max_height;
-	priv->total_height = total_height;
+	if (priv->items_moved_to_popup_window)
+		accumulate_item_size (priv, GTK_WIDGET (priv->popup_item));
 }
 
 static void

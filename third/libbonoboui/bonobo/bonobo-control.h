@@ -46,9 +46,10 @@ typedef struct {
 
 	POA_Bonobo_Control__epv epv;
 
-	gpointer dummy[4];
+	gpointer dummy[3];
 
 	/* Signals. */
+	void (*disconnected)   (BonoboControl *control);
 	void (*set_frame)      (BonoboControl *control);
 	void (*activate)       (BonoboControl *control, gboolean state);
 } BonoboControlClass;
@@ -123,6 +124,14 @@ gboolean                    bonobo_control_do_popup_full           (BonoboContro
 								    gpointer             data,
 								    guint                button,
 								    guint32              activate_time);
+
+/* Simple lifecycle helpers - using the 'disconnected' signal */
+typedef void (*BonoboControlLifeCallback) (void);
+void bonobo_control_life_set_purge    (long                      ms);
+void bonobo_control_life_set_callback (BonoboControlLifeCallback all_dead_callback);
+void bonobo_control_life_instrument   (BonoboControl            *control);
+int  bonobo_control_life_get_count    (void);
+
 G_END_DECLS
 
 #endif /* _BONOBO_CONTROL_H_ */

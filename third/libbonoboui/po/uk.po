@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-11-06 08:12--500\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2002-04-05 09:49+0200\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-canvas-item.c:647
@@ -42,17 +42,17 @@ msgid "Shadow type"
 msgstr "Тип тіні"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Орієнтація"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Бажана ширина"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Бажана висота"
 
@@ -86,7 +86,7 @@ msgstr "Опис"
 
 #: bonobo/bonobo-selector.c:345
 msgid "Interfaces required"
-msgstr "Потрібні інтерфейси"
+msgstr ""
 
 #: bonobo/bonobo-selector.c:346
 msgid ""
@@ -94,17 +94,14 @@ msgid ""
 "to be listed in the selector.  Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
-"Завершений нулем масив інтерфейсів, які необхідно підтримувати, щоб бути "
-"перерахованим. Якщо інтерфейси не переаховано, використовуватиметься \"IDL:"
-"Bonobo/Embeddable:1.0\"."
 
 #: bonobo/bonobo-selector.c:348
 msgid "Interface required entry"
-msgstr "Елемент потрібного інтерфейсу"
+msgstr ""
 
 #: bonobo/bonobo-selector.c:349
 msgid "One of the interfaces that's required"
-msgstr "Один з потрібних інтерфейсів"
+msgstr ""
 
 #: bonobo/bonobo-ui-config-widget.c:267
 msgid "Visible"
@@ -143,12 +140,25 @@ msgid "_Text and Icon"
 msgstr "Текст і піктограма"
 
 #: bonobo/bonobo-ui-config-widget.c:334
+#, fuzzy
 msgid "Text only"
-msgstr "Лише текст"
+msgstr "Текст і піктограма"
 
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "Лише текст _приорітету"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr ""
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -176,12 +186,13 @@ msgid "DISPLAY"
 msgstr "ДИСПЛЕЙ"
 
 #: bonobo/bonobo-ui-init-gtk.c:125
+#, fuzzy
 msgid "X screen to use"
-msgstr "Екран X Window, що потрібно використовувати"
+msgstr "Дисплей X Window, до використовуватиметься"
 
 #: bonobo/bonobo-ui-init-gtk.c:125
 msgid "SCREEN"
-msgstr "ЕКРАН"
+msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:129
 msgid "Make X calls synchronous"
@@ -275,25 +286,26 @@ msgstr "Налаштувати"
 msgid "Customize the toolbar"
 msgstr "Налаштувати панель"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "відірваний"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "чи пенал відірваний"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
-msgstr "_Зміст"
+msgstr ""
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
+#, fuzzy
 msgid "View help for this application"
-msgstr "Показати довідку до цього додатка"
+msgstr "Про цей додаток"
 
 #: bonobo/bonobo-window.c:416
 msgid "Name of the window - used for configuration serialization."
-msgstr "Назва вікна – використовується для серіалізації налаштувань."
+msgstr ""
 
 #: bonobo/bonobo-zoomable.c:326
 msgid "Zoom level"
@@ -388,6 +400,6 @@ msgstr "Привіт, світ!"
 msgid "Cannot init libbonoboui code"
 msgstr "Неможливо ініціалізувати код libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Не вдалося ініціалізувати графічний інтерфейс Bonobo"

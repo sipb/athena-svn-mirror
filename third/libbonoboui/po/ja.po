@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.0.3\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
 "PO-Revision-Date: 2002-09-09 19:21+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -43,17 +43,17 @@ msgid "Shadow type"
 msgstr "シャドウの種類"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "向き"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "希望する幅"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "希望する高さ"
 
@@ -150,6 +150,18 @@ msgstr "テキストのみ"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "優先テキストのみ(_P)"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr ""
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr ""
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -276,19 +288,19 @@ msgstr "設定変更(_Z)"
 msgid "Customize the toolbar"
 msgstr "ツールバーのカスタマイズ"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "取り外し中"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "ツールバーが取り外されている状態かどうか"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "内容"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "このアプリケーションのヘルプを表示"
 
@@ -389,7 +401,7 @@ msgstr "こんにちは、世界!"
 msgid "Cannot init libbonoboui code"
 msgstr "libbonoboui のコードを初期化できません"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Bonobo UI を初期化できませんでした"
 

@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-06-11 01:10+0200\n"
-"Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
-"Language-Team: Bulgarian <dict@linuz.zonebg.com>\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2002-12-10 19:39+0200\n"
+"Last-Translator: Alexander Shopov <al_shopov@web.bg>\n"
+"Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: bonobo/bonobo-canvas-item.c:647
 msgid "corba factory"
@@ -21,7 +21,7 @@ msgstr "corba фабрика"
 
 #: bonobo/bonobo-canvas-item.c:648
 msgid "The factory pointer"
-msgstr "Указателът на фабриката"
+msgstr "Указателят на фабриката"
 
 #: bonobo/bonobo-canvas-item.c:657
 msgid "corba UI container"
@@ -44,17 +44,17 @@ msgid "Shadow type"
 msgstr "Тип сянка"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Ориентация"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Предпочитана ширина"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Предпочитана височина"
 
@@ -152,6 +152,18 @@ msgstr "Те_кст"
 msgid "_Priority text only"
 msgstr "Само важ_ния текст"
 
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Чисти грешки"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Покажи XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Показва цялото описание на потребителския интерфейс в XML на конзолата"
+
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
 msgstr "Настрой потребителски интерфейс"
@@ -195,7 +207,7 @@ msgstr "Забрана на използването на X разширение
 
 #: bonobo/bonobo-ui-init-gtk.c:139
 msgid "Program name as used by the window manager"
-msgstr "Име на програмата, както е използвано от менажера на прозорци"
+msgstr "Име на програмата, както е използвано от мениджъра на прозорци"
 
 #: bonobo/bonobo-ui-init-gtk.c:139
 msgid "NAME"
@@ -203,7 +215,7 @@ msgstr "NAME"
 
 #: bonobo/bonobo-ui-init-gtk.c:142
 msgid "Program class as used by the window manager"
-msgstr "Клас на програмата, както е използвано от менажера на прозорци"
+msgstr "Клас на програмата, както е използвано от мениджъра на прозорци"
 
 #: bonobo/bonobo-ui-init-gtk.c:142
 msgid "CLASS"
@@ -277,19 +289,19 @@ msgstr "Настро_й"
 msgid "Customize the toolbar"
 msgstr "Настрой лентата с инструменти"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "е свободна"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "дали лентата с инструменти е свободна"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Съдържание"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Виж помощ за това приложение"
 
@@ -390,6 +402,6 @@ msgstr "Здравей, Свят!"
 msgid "Cannot init libbonoboui code"
 msgstr "Не мога да инициализирам кода на libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Грешка при инициализацията на Bonobo UI"

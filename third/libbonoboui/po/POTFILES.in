@@ -8,6 +8,7 @@ bonobo/bonobo-plug.c
 bonobo/bonobo-selector-widget.c
 bonobo/bonobo-selector.c
 bonobo/bonobo-ui-config-widget.c
+bonobo/bonobo-ui-engine.c
 bonobo/bonobo-ui-engine-config.c
 bonobo/bonobo-ui-init-gtk.c
 bonobo/bonobo-ui-main.c
