@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v 2.6 1996/12/10 19:09:40 thakur Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v 2.10 1997/01/20 19:25:14 morin Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v $ */
 
 /* Copyright (C) 1989 Transarc Corporation - All rights reserved */
@@ -38,7 +38,7 @@ struct prheader {
     int32 freePtr;			/* first free entry in freelist */
     int32 eofPtr;			/* first free byte in file */
     int32 maxGroup;			/* most negative group id */
-    int32 maxID;				/* largest user id allocated */
+    int32 maxID;			/* largest user id allocated */
     int32 maxForeign;			/* largest foreign id allocated*/
     int32 maxInst;			/* largest sub/super id allocated */
     int32 orphan;			/* groups owned by deleted users */
@@ -101,7 +101,7 @@ extern struct prheader cheader;
 struct prentry {
     int32 flags;				/* random flags */
     int32 id;				/* user or group id*/
-    int32 cellid;			/* reserved for cellID */
+    int32 cellid;			/* A foreign users's repsenting group */
     int32 next;				/* next block same entry (or freelist) */
 #ifdef PR_REMEMBER_TIMES
     u_int32 createTime, addTime, removeTime, changeTime;
@@ -112,10 +112,12 @@ struct prentry {
     int32 entries[PRSIZE];		/* groups a user is a member of (or list of members */
     int32 nextID;			/* id hash table next pointer */
     int32 nextName;			/* name has table next ptr */
-    int32 owner;				/* id of owner of entry */
+    int32 owner;			/* id of owner of entry */
     int32 creator;			/* may differ from owner */
-    int32 ngroups;			/* number of groups this user has created - 0 for group entries */
-    int32 nusers;			/* number of foreign user entries this user has created - 0 for group entries NYI */
+    int32 ngroups;			/* number of groups this user has created
+					 * -- 0 for reg group entries
+					 * -- number of foreign users if foreign group */
+    int32 nusers;			/* Users added to foreign group */
     int32 count;				/* number of members/groups for this group/user */
     int32 instance;			/* number of sub/super instances for this user NYI */
     int32 owned;			        /* chain of groups owned by this entry */
@@ -136,10 +138,3 @@ struct contentry {			/* continuation of entry */
 };
 
 #define	CROSS_CELL	1		/* Enable it by default */
-
-#if	!defined(PR_START)
-#define PR_START                0
-#define PR_RESTART              1
-#endif
-
-
