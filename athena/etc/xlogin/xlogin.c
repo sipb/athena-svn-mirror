@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.18 2001-06-07 20:13:45 jweiss Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.19 2001-06-11 04:07:31 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -578,6 +578,12 @@ int main(int argc, char **argv)
 						 root, NULL, 0);
 		      XtAddEventHandler(savershell[i], MASK,
 					FALSE, unsave, (XtPointer)TRUE);
+
+		      /* Clear the moires on all other screens as well. */
+		      XSetWindowBackground(dpy1, DefaultRootWindow(dpy1),
+					   BlackPixel(dpy1,
+						      DefaultScreen(dpy1)));
+		      XClearWindow(dpy1, DefaultRootWindow(dpy1));
 		    }
 		}
 	    }
