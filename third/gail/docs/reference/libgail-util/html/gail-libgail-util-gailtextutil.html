@@ -1,0 +1,989 @@
+<HTML
+><HEAD
+><TITLE
+>GailTextUtil</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GAIL Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="GAIL libgail-util Library"
+HREF="libgail-util-main.html"><LINK
+REL="PREVIOUS"
+TITLE="GAIL libgail-util Library"
+HREF="libgail-util-main.html"><LINK
+REL="NEXT"
+TITLE="GailMisc"
+HREF="gail-libgail-util-gailmisc.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GAIL Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgail-util-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgail-util-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gail-libgail-util-gailmisc.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GAIL-LIBGAIL-UTIL-GAILTEXTUTIL"
+>GailTextUtil</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN11"
+></A
+><H2
+>Name</H2
+>GailTextUtil&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN14"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+>;
+struct      <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTILCLASS"
+>GailTextUtilClass</A
+>;
+enum        <A
+HREF="gail-libgail-util-gailtextutil.html#GAILOFFSETTYPE"
+>GailOffsetType</A
+>;
+<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+>* <A
+HREF="gail-libgail-util-gailtextutil.html#GAIL-TEXT-UTIL-NEW"
+>gail_text_util_new</A
+>            (void);
+void        <A
+HREF="gail-libgail-util-gailtextutil.html#GAIL-TEXT-UTIL-TEXT-SETUP"
+>gail_text_util_text_setup</A
+>       (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             const gchar *text);
+void        <A
+HREF="gail-libgail-util-gailtextutil.html#GAIL-TEXT-UTIL-BUFFER-SETUP"
+>gail_text_util_buffer_setup</A
+>     (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             GtkTextBuffer *buffer);
+gchar*      <A
+HREF="gail-libgail-util-gailtextutil.html#GAIL-TEXT-UTIL-GET-TEXT"
+>gail_text_util_get_text</A
+>         (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             gpointer layout,
+                                             <A
+HREF="gail-libgail-util-gailtextutil.html#GAILOFFSETTYPE"
+>GailOffsetType</A
+> function,
+                                             <A
+HREF=../atk/atk-atktext.html#ATKTEXTBOUNDARY
+>AtkTextBoundary</A> boundary_type,
+                                             gint offset,
+                                             gint *start_offset,
+                                             gint *end_offset);
+gchar*      <A
+HREF="gail-libgail-util-gailtextutil.html#GAIL-TEXT-UTIL-GET-SUBSTRING"
+>gail_text_util_get_substring</A
+>    (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             gint start_pos,
+                                             gint end_pos);
+&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN42"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN45"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN47"
+></A
+><H3
+><A
+NAME="GAILTEXTUTIL"
+></A
+>struct GailTextUtil</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GailTextUtil
+{
+  GObject parent;
+
+  GtkTextBuffer *buffer;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN52"
+></A
+><H3
+><A
+NAME="GAILTEXTUTILCLASS"
+></A
+>struct GailTextUtilClass</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GailTextUtilClass;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN57"
+></A
+><H3
+><A
+NAME="GAILOFFSETTYPE"
+></A
+>enum GailOffsetType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  GAIL_BEFORE_OFFSET,
+  GAIL_AT_OFFSET,
+  GAIL_AFTER_OFFSET
+}GailOffsetType;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN62"
+></A
+><H3
+><A
+NAME="GAIL-TEXT-UTIL-NEW"
+></A
+>gail_text_util_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+>* gail_text_util_new            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function creates a new GailTextUtil object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the GailTextUtil object</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN78"
+></A
+><H3
+><A
+NAME="GAIL-TEXT-UTIL-TEXT-SETUP"
+></A
+>gail_text_util_text_setup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gail_text_util_text_setup       (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             const gchar *text);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function initializes the GailTextUtil with the specified character string,</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>textutil</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> to be initialized.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A gchar* which points to the text to be stored in the GailTextUtil</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN100"
+></A
+><H3
+><A
+NAME="GAIL-TEXT-UTIL-BUFFER-SETUP"
+></A
+>gail_text_util_buffer_setup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gail_text_util_buffer_setup     (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             GtkTextBuffer *buffer);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function initializes the GailTextUtil with the specified GtkTextBuffer</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>textutil</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> to be initialized</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The GtkTextBuffer which identifies the text to be stored in the GailUtil.</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN123"
+></A
+><H3
+><A
+NAME="GAIL-TEXT-UTIL-GET-TEXT"
+></A
+>gail_text_util_get_text ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      gail_text_util_get_text         (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             gpointer layout,
+                                             <A
+HREF="gail-libgail-util-gailtextutil.html#GAILOFFSETTYPE"
+>GailOffsetType</A
+> function,
+                                             <A
+HREF=../atk/atk-atktext.html#ATKTEXTBOUNDARY
+>AtkTextBoundary</A> boundary_type,
+                                             gint offset,
+                                             gint *start_offset,
+                                             gint *end_offset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function gets the requested substring from the text in the GtkTextUtil.
+The layout is used only for getting the text on a line. The value is NULL 
+for a GtkTextView which is not wrapped, is a GtkTextView for a GtkTextView 
+which is wrapped and is a PangoLayout otherwise.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>textutil</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>layout</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A gpointer which is a PangoLayout, a GtkTreeView of NULL</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>function</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An enumeration specifying whether to return the text before, at, or
+  after the offset.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>boundary_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The boundary type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>offset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The offset of the text in the GailTextUtil </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>start_offset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Address of location in which the start offset is returned</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>end_offset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Address of location in which the end offset is returned</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the substring requested</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN175"
+></A
+><H3
+><A
+NAME="GAIL-TEXT-UTIL-GET-SUBSTRING"
+></A
+>gail_text_util_get_substring ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gchar*      gail_text_util_get_substring    (<A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+> *textutil,
+                                             gint start_pos,
+                                             gint end_pos);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the substring indicated by <TT
+CLASS="PARAMETER"
+><I
+>start_pos</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>end_pos</I
+></TT
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>textutil</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A <A
+HREF="gail-libgail-util-gailtextutil.html#GAILTEXTUTIL"
+>GailTextUtil</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>start_pos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The start position of the substring</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>end_pos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The end position of the substring.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the substring indicated by <TT
+CLASS="PARAMETER"
+><I
+>start_pos</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>end_pos</I
+></TT
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgail-util-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgail-util-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gail-libgail-util-gailmisc.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GAIL libgail-util Library</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GailMisc</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
