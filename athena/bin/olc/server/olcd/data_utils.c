@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.7 1990-01-05 06:22:36 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.8 1990-01-10 11:13:05 vanharen Exp $";
 #endif
 
 
@@ -55,9 +55,15 @@ extern PROC         Proc_List[];
  *           is_specialty()
  */
 
+#ifdef __STDC__
 static int validate_instance (KNUCKLE *);
 static int assign_instance (USER *);
 static int was_connected (KNUCKLE *, KNUCKLE *);
+#else
+static int validate_instance ();
+static int assign_instance ();
+static int was_connected ();
+#endif /* STDC */
 
 
 /*
@@ -74,7 +80,12 @@ static int was_connected (KNUCKLE *, KNUCKLE *);
  */
 
 KNUCKLE *
+#ifdef __STDC__
 create_user(PERSON *person)
+#else
+create_user(person)
+     PERSON *person;
+#endif /* STDC */
 {
   KNUCKLE *knuckle;           /* Ptr. to new user struct. */
   USER *user;                 /* Ptr. to another new struct */
@@ -136,7 +147,12 @@ create_user(PERSON *person)
  */
 
 KNUCKLE *
+#ifdef __STDC__
 create_knuckle(USER *user)
+#else
+create_knuckle(user)
+     USER *user;
+#endif /* STDC */
 {
   KNUCKLE *k, **k_ptr;
 
@@ -211,7 +227,13 @@ create_knuckle(USER *user)
  *          Inserts a knuckle to the Knuckle List. 
  */
 
-int insert_knuckle(KNUCKLE *knuckle)
+int
+#ifdef __STDC__
+insert_knuckle(KNUCKLE *knuckle)
+#else
+insert_knuckle(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr;
   int n_knuckles=0;
@@ -293,7 +315,14 @@ int insert_knuckle(KNUCKLE *knuckle)
  *          Inserts a knuckle to the User list. 
  */
 
-int insert_knuckle_in_user(KNUCKLE *knuckle, USER *user)
+int
+#ifdef __STDC__
+insert_knuckle_in_user(KNUCKLE *knuckle, USER *user)
+#else
+insert_knuckle_in_user(knuckle, user)
+     KNUCKLE *knuckle;
+     USER *user;
+#endif /* STDC */
 {
   int n_knuckles;
 
@@ -345,7 +374,13 @@ int insert_knuckle_in_user(KNUCKLE *knuckle, USER *user)
  *          the database. The List manipulation is the same.
  */
 
-int insert_topic(TOPIC *t)
+int
+#ifdef __STDC__
+insert_topic(TOPIC *t)
+#else
+insert_topic(t)
+     TOPIC *t;
+#endif /* STDC */
 {
   int n_topics;
   
@@ -396,7 +431,12 @@ int insert_topic(TOPIC *t)
  */
 
 void
+#ifdef __STDC__
 delete_user(USER *user)
+#else
+delete_user(user)
+     USER *user;
+#endif /* STDC */
 {
   KNUCKLE *k;
   int i;
@@ -421,7 +461,13 @@ delete_user(USER *user)
  */
 
 void
+#ifdef __STDC__
 delete_knuckle(KNUCKLE *knuckle, int cont)
+#else
+delete_knuckle(knuckle,cont)
+     KNUCKLE *knuckle;
+     int cont;
+#endif /* STDC */
 {
   int n_knuckles, knuckle_idx;
   char msgbuf[BUFSIZ];
@@ -474,7 +520,12 @@ delete_knuckle(KNUCKLE *knuckle, int cont)
 }
 
 
+#ifdef __STDC__
 deactivate_knuckle(KNUCKLE *knuckle)
+#else
+deactivate_knuckle(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
   if(knuckle->instance > 0)
     delete_knuckle(knuckle, /*???*/0);
@@ -486,7 +537,13 @@ deactivate_knuckle(KNUCKLE *knuckle)
 
 
 void
+#ifdef __STDC__
 init_user(KNUCKLE *knuckle, PERSON *person)
+#else
+init_user(knuckle,person)
+     KNUCKLE *knuckle;
+     PERSON *person;
+#endif /* STDC */
 {
   (void) strncpy(knuckle->user->realname,person->realname, NAME_LENGTH);
   (void) strncpy(knuckle->user->username,person->username, LOGIN_SIZE);
@@ -498,7 +555,13 @@ init_user(KNUCKLE *knuckle, PERSON *person)
 }
 
 
-void init_dbinfo(USER *user)
+void
+#ifdef __STDC__
+init_dbinfo(USER *user)
+#else
+init_dbinfo(user)
+    USER *user;
+#endif /* STDC */
 {
   (void) strcpy(user->title1, DEFAULT_TITLE);
   (void) strcpy(user->title2, DEFAULT_TITLE2);
@@ -510,7 +573,15 @@ void init_dbinfo(USER *user)
 }
 
 
-int init_question(KNUCKLE *k, char *topic, char *text)
+int
+#ifdef __STDC__
+init_question(KNUCKLE *k, char *topic, char *text)
+#else
+init_question(k,topic,text)
+     KNUCKLE *k;
+     char *topic;
+     char *text;
+#endif /* STDC */
 {
   struct timeval tp, tp1;
 
@@ -544,7 +615,13 @@ int init_question(KNUCKLE *k, char *topic, char *text)
 
 
 int
+#ifdef __STDC__
 get_user(PERSON *person, USER **user)
+#else
+get_user(person,user)
+     PERSON *person;
+     USER **user;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr;  
   int status = 0;
@@ -580,7 +657,15 @@ get_user(PERSON *person, USER **user)
  */
 
 int
+#ifdef __STDC__
 get_knuckle(char *name, int instance, KNUCKLE **knuckle, int active)
+#else
+get_knuckle(name,instance,knuckle,active)
+     char *name;
+     int instance;
+     KNUCKLE **knuckle;
+     int active;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr;  
   int status = 0;
@@ -637,7 +722,14 @@ get_knuckle(char *name, int instance, KNUCKLE **knuckle, int active)
 
 
 int
+#ifdef __STDC__
 match_knuckle(char *name, int instance, KNUCKLE **knuckle)
+#else
+match_knuckle(name,instance,knuckle)
+     char *name;
+     int instance;
+     KNUCKLE **knuckle;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr,*store_ptr;
   int status;
@@ -703,7 +795,13 @@ match_knuckle(char *name, int instance, KNUCKLE **knuckle)
 
 
 int
+#ifdef __STDC__
 find_knuckle(PERSON *person, KNUCKLE **knuckle)
+#else
+find_knuckle(person,knuckle)
+     PERSON *person;
+     KNUCKLE **knuckle;
+#endif /* STDC */
 {
   char mesg[BUF_SIZE];
   int status;
@@ -734,7 +832,13 @@ find_knuckle(PERSON *person, KNUCKLE **knuckle)
 }
   
 
+#ifdef __STDC__
 get_instance(char *user, int *instance)
+#else
+get_instance(user,instance)
+     char *user;
+     int *instance;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr;
   KNUCKLE *k_save = (KNUCKLE *) NULL;
@@ -761,7 +865,13 @@ get_instance(char *user, int *instance)
 }
 
 
+#ifdef __STDC__
 verify_instance(KNUCKLE *knuckle, int instance)
+#else
+verify_instance(knuckle,instance)
+     KNUCKLE *knuckle;
+     int instance;
+#endif /* STDC */
 {
   KNUCKLE **k;
   int i;
@@ -778,7 +888,13 @@ verify_instance(KNUCKLE *knuckle, int instance)
 }
       
 
-static int validate_instance(KNUCKLE *knuckle)
+static int
+#ifdef __STDC__
+validate_instance(KNUCKLE *knuckle)
+#else
+validate_instance(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
   int i;
 
@@ -789,8 +905,14 @@ static int validate_instance(KNUCKLE *knuckle)
     return(knuckle->instance);
 }
 
+
 static int
+#ifdef __STDC__
 assign_instance(USER *user)
+#else
+assign_instance(user)
+     USER *user;
+#endif /* STDC */
 {
   KNUCKLE **k;
   int match;
@@ -829,7 +951,13 @@ assign_instance(USER *user)
  * Notes:
  */
 
-int connect_knuckles(KNUCKLE *a, KNUCKLE *b)
+int
+#ifdef __STDC__
+connect_knuckles(KNUCKLE *a, KNUCKLE *b)
+#else
+connect_knuckles(a,b)
+     KNUCKLE *a, *b;
+#endif /* STDC */
 {
   char msg[BUFSIZ];
 
@@ -909,7 +1037,13 @@ int connect_knuckles(KNUCKLE *a, KNUCKLE *b)
  * Notes:
  */
 
-int match_maker(KNUCKLE *knuckle)
+int
+#ifdef __STDC__
+match_maker(KNUCKLE *knuckle)
+#else
+match_maker(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr, *temp = (KNUCKLE *) NULL;	
   int priority, queue, foo;
@@ -929,7 +1063,7 @@ int match_maker(KNUCKLE *knuckle)
 #ifdef TEST
       printf("match_maker: %s (%d) has no question\n", 
 	     knuckle->user->username, knuckle->instance);
-#endif
+#endif /* TEST */
 
       for(k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
 	{
@@ -941,7 +1075,7 @@ int match_maker(KNUCKLE *knuckle)
 	  printf("match_maker: status: %d   %d queue: %d   ts:  %d\n",
 		 knuckle->status, knuckle->user->status,
 		 knuckle->queue, knuckle->timestamp);
-#endif
+#endif /* TEST */
 	  
 	  if(!has_question((*k_ptr)))
 	    continue;
@@ -1104,7 +1238,15 @@ int match_maker(KNUCKLE *knuckle)
  *	to point at the right string.
  */
 
-void new_message(char **msg_field, KNUCKLE *sender, char *message)
+void
+#ifdef __STDC__
+new_message(char **msg_field, KNUCKLE *sender, char *message)
+#else
+new_message(msg_field, sender, message)
+     char **msg_field;	/* Place to store the new message. */
+     KNUCKLE *sender;
+     char *message;		/* Message string. */
+#endif /* STDC */
 {
   int curr_length;	        /* Length of current message. */
   int msg_length;		/* Length of the new message. */
@@ -1158,7 +1300,11 @@ void new_message(char **msg_field, KNUCKLE *sender, char *message)
  */
 
 QUEUE_STATUS *
+#ifdef __STDC__
 get_status_info(void)
+#else
+get_status_info()
+#endif /* STDC */
 {
   static QUEUE_STATUS status;	/* Static status structure. */
   KNUCKLE **k_ptr;	/* Current consultant. */
@@ -1197,7 +1343,12 @@ get_status_info(void)
 
 
 int
+#ifdef __STDC__
 verify_topic(char *topic)
+#else
+verify_topic(topic)
+     char *topic;
+#endif /* STDC */
 {
   TOPIC **t_ptr;
 
@@ -1213,7 +1364,13 @@ verify_topic(char *topic)
 
 
   
-int owns_question(KNUCKLE *knuckle)
+int
+#ifdef __STDC__
+owns_question(KNUCKLE *knuckle)
+#else
+owns_question(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
   if(knuckle == (KNUCKLE *) NULL)
     return(FALSE);
@@ -1228,7 +1385,14 @@ int owns_question(KNUCKLE *knuckle)
 }
 
 
-int is_topic(int *topics, int code)
+int
+#ifdef __STDC__
+is_topic(int *topics, int code)
+#else
+is_topic(topics,code)
+     int *topics;
+     int code;
+#endif /* STDC */
 {
   while(topics != (int *) NULL)
     {
@@ -1241,7 +1405,13 @@ int is_topic(int *topics, int code)
   return(FALSE);
 }
 
-static int was_connected(KNUCKLE *a, KNUCKLE *b)
+static int
+#ifdef __STDC__
+was_connected(KNUCKLE *a, KNUCKLE *b)
+#else
+was_connected(a,b)
+     KNUCKLE *a, *b;
+#endif /* STDC */
 {
   int i = 0;
 
