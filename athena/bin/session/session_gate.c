@@ -1,11 +1,12 @@
 /*
  *  session_gate - Keeps session alive by continuing to run
  *
- *	$Id: session_gate.c,v 1.16 1999-01-22 23:15:28 ghudson Exp $
+ *	$Id: session_gate.c,v 1.17 1999-08-13 22:27:18 danw Exp $
  */
 
 #include <signal.h>
 #include <string.h>
+#include <stdio.h>
 #ifdef SOLARIS
 #include <sys/fcntl.h>
 #endif
@@ -16,7 +17,6 @@
 #include <unistd.h>
 
 #ifdef SGISession
-#include <stdio.h>
 #include <errno.h>
 #include <X11/Xlib.h>
 
@@ -38,7 +38,6 @@ void flaglogout();
 void SGISession_EndSession(), SGISession_Debug();
 #endif
 
-#define BUFSIZ 1024
 #define MINUTE 60
 #define PID_FILE_TEMPLATE "/tmp/session_gate_pid."
 
@@ -278,7 +277,6 @@ int SGISession_Wait()
 	  break;
 	case 0:
 	  return SGISession_TIMEOUT;
-	  break;
 	default:
 	  if (!FD_ISSET(ConnectionNumber(dpy), &read))
 	    {
@@ -336,7 +334,7 @@ void SGISession_Debug(message)
 #endif
 
 
-static powers[] = {100000,10000,1000,100,10,1,0};
+static int powers[] = {100000,10000,1000,100,10,1,0};
 
 int itoa(x, buf)
 int x;

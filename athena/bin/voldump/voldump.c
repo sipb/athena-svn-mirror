@@ -13,7 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.6 1999-04-23 08:06:06 tb Exp $
+ * $Id: voldump.c,v 1.7 1999-08-13 22:27:29 danw Exp $
  */
 
 #include <stdio.h>
@@ -304,7 +304,7 @@ static void print_diagnostics(const char *astring, int32 acode)
     if (acode == EACCES) {
 	fprintf(stderr,
 		"You are not authorized to perform the 'vos %s' command\n",
-		astring, acode);
+		astring);
     } else {
 	fprintf(stderr, "Error in vos %s command. ", astring);
 	PrintError("", acode);
