@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.10 1990-11-21 12:24:18 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.11 1990-11-26 16:41:42 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.10 1990-11-21 12:24:18 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.11 1990-11-26 16:41:42 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -407,6 +407,8 @@ char *msg;
     ioctl (0, TIOCCONS, 0);		/* Grab the console   */
     ioctl (1, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
+    i = 0;
+    ioctl(0, TIOCFLUSH, &i);
 #endif
 
 #ifdef vax
@@ -555,13 +557,37 @@ char **argv;
 
 void shutdown()
 {
+    int pgrp, i;
+    struct sgttyb mode;
+    char buf[BUFSIZ];
+
     if (login_running == RUNNING)
       kill(loginpid, SIGHUP);
     if (console_running == RUNNING)
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
-      kill(xpid, SIGKILL);
-    while (1) sigpause(0);
+      kill(xpid, SIGTERM);
+
+#ifndef BROKEN_CONSOLE_DRIVER
+    setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
+    ioctl(0, TIOCSPGRP, &pgrp);
+#ifdef TIOCCONS
+    ioctl (0, TIOCCONS, 0);		/* Grab the console   */
+    ioctl (1, TIOCCONS, 0);		/* Grab the console   */
+#endif  /* TIOCCONS */
+    i = 0;
+    ioctl(0, TIOCFLUSH, &i);
+#endif
+
+    ioctl(0, TIOCGETP, &mode);
+    mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
+    ioctl(0, TIOCSETP, &mode);
+    sigsetmask(0);
+
+    while (1) {
+	i = read(console_tty, buf, sizeof(buf));
+	write(1, buf, i);
+    }
 }
 
 
@@ -618,6 +644,9 @@ char *tty;
 	/* Clean up password file */
 	removepwent(login);
     }
+
+    file = 0;
+    ioctl(0, TIOCFLUSH, &file);
 }
 
 
@@ -713,6 +742,8 @@ void catchalarm()
 
 void die()
 {
+    int flush;
+
 #ifdef DEBUG
     message("Killing children and exiting\n");
 #endif
@@ -722,6 +753,9 @@ void die()
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
       kill(xpid, SIGKILL);
+
+    flush = 0;
+    ioctl(0, TIOCFLUSH, &flush);
     _exit(0);
 }
 
