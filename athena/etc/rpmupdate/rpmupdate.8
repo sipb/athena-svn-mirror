@@ -1,4 +1,4 @@
-.\" $Id: rpmupdate.8,v 1.1 2001-03-09 20:38:00 ghudson Exp $
+.\" $Id: rpmupdate.8,v 1.2 2001-07-25 15:11:54 ghudson Exp $
 .\"
 .\" Copyright 2000 by the Massachusetts Institute of Technology.
 .\"
@@ -17,7 +17,7 @@
 .SH NAME
 rpmupdate \- Update workstation from one RPM list to another
 .SH SYNOPSIS
-.B rpmupdate [-hnp] \fIoldlist\fP \fInewlist\fP
+.B rpmupdate [-hnpv] [-u \fIupgradelist\fP] \fIoldlist\fP \fInewlist\fP
 .SH DESCRIPTION
 .B rpmupdate
 is normally invoked by
@@ -41,11 +41,20 @@ instead of the private workstation rules.  If this option is
 specified, the information in
 .I oldlist
 is not used.
+.TP 5
+.B \-u \fIupgradelist\fP
+Read the file 
+.I upgradelist
+and use its contents to upgrade locally installed RPMs; see below.
+.TP 5
+.B \-v
+Increase the verbosity of the installation output.
 .PP
 The files
-.I oldlist
-and
-.I newlist
+.IR oldlist ,
+.IR newlist ,
+and (if specified)
+.I upgradelist
 should each contain a list of RPM pathnames, possibly followed by
 whitespace and an epoch number.  The RPM pathnames may be relative to
 the current directory and must include the package name, version,
@@ -62,8 +71,11 @@ If the epoch number is not included, it is assumed that the RPM does
 not have one.  rpmupdate will automatically downgrade architectures
 which are too advanced for the current system; e.g. on an i586 system,
 rpmupdate will replace "i686" with "i586" in the architecture field.
+If the resulting RPM does not exist, rpmupdate will continue to apply
+downgrades to the architecture field until it finds an existing RPM.
 .PP
-After reading the old list, new list, and installed list of RPMs, 
+After reading the old list, new list, upgrade list (if specified) and
+installed list of RPMs,
 .B rpmupdate
 decides which packages to erase, install, and update according to
 either the public or private workstation rules.  The public
@@ -83,8 +95,8 @@ release as the package in the old list, or if a package is present in
 the new list but is not locally installed and is not present in the
 old list, apply the public workstation rules to this package.
 .IP *
-If the new list contains an upgrade for a locally installed package,
-install the upgrade.
+If the new list or upgrade list contains an upgrade for a locally
+installed package, install the upgrade.
 .PP
 Thus, on private workstations, packages which are in sync with the
 existing release will remain in sync with the new release, but a
@@ -93,6 +105,14 @@ workstation will stay erased, a package which has been locally
 upgraded will stay upgraded until the release has a newer version
 available, and a package which has been locally installed will stay
 installed.
+.PP
+If the file
+.B /etc/athena/rpmupdate.exceptions
+exists, it specifies a list of RPM names, one per line, which
+rpmupdate will not touch in any way.  This file does not operate if
+the
+.B \-p
+flag is specified.
 .SH "SEE ALSO"
 .BR update_ws (8)
 .SH AUTHOR

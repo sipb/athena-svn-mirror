@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.8 2001-04-18 18:55:00 amb Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.9 2001-07-25 15:11:55 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -51,6 +51,8 @@ struct package {
   struct rev oldlistrev;
   struct rev newlistrev;
   struct rev instrev;		/* Most recent version installed */
+  int notouch;
+  int only_upgrade;
   int erase;
   struct package *next;
 };
@@ -69,6 +71,8 @@ static char *progname;
 
 static void read_old_list(struct package **pkgtab, const char *oldlistname);
 static void read_new_list(struct package **pkgtab, const char *newlistname);
+static void read_upgrade_list(struct package **pkgtab, const char *listname);
+static void read_exception_list(struct package **pkgtab, const char *listname);
 static void read_installed_versions(struct package **pkgtab);
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks);
@@ -105,7 +109,7 @@ int main(int argc, char **argv)
 {
   struct package *pkgtab[HASHSIZE];
   int i, c, public = 0, dryrun = 0, hashmarks = 0;
-  const char *oldlistname, *newlistname;
+  const char *oldlistname, *newlistname, *upgradelistname;
 
   /* Initialize rpmlib. */
   rpmReadConfigFiles(NULL, NULL);
@@ -114,7 +118,7 @@ int main(int argc, char **argv)
   rpmSetVerbosity(RPMMESS_NORMAL);
   progname = strrchr(argv[0], '/');
   progname = (progname == NULL) ? argv[0] : progname + 1;
-  while ((c = getopt(argc, argv, "hnpv")) != EOF)
+  while ((c = getopt(argc, argv, "hnpu:v")) != EOF)
     {
       switch (c)
 	{
@@ -126,6 +130,9 @@ int main(int argc, char **argv)
 	  break;
 	case 'p':
 	  public = 1;
+	  break;
+	case 'u':
+	  upgradelistname = optarg;
 	  break;
 	case 'v':
 	  rpmIncreaseVerbosity();
@@ -148,6 +155,10 @@ int main(int argc, char **argv)
   /* Read the lists and the current versions into the hash table. */
   read_old_list(pkgtab, oldlistname);
   read_new_list(pkgtab, newlistname);
+  if (upgradelistname != NULL)
+    read_upgrade_list(pkgtab, upgradelistname);
+  if (!public)
+    read_exception_list(pkgtab, SYSCONFDIR "/rpmupdate.exceptions");
   read_installed_versions(pkgtab);
 
   /* Walk the table and perform the required updates. */
@@ -174,6 +185,8 @@ static void read_old_list(struct package **pkgtab, const char *oldlistname)
     {
       parse_line(buf, &pkgname, &epoch, &version, &release, NULL);
       pkg = get_package(pkgtab, pkgname);
+      if (pkg->oldlistrev.present)
+	die("Duplicate package %s in old list %s\n", pkgname, oldlistname);
       pkg->oldlistrev.present = 1;
       pkg->oldlistrev.epoch = epoch;
       pkg->oldlistrev.version = version;
@@ -198,12 +211,61 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
     {
       parse_line(buf, &pkgname, &epoch, &version, &release, &filename);
       pkg = get_package(pkgtab, pkgname);
+      if (pkg->newlistrev.present)
+	die("Duplicate package %s in new list %s\n", pkgname, newlistname);
       pkg->filename = filename;
       pkg->newlistrev.present = 1;
       pkg->newlistrev.epoch = epoch;
       pkg->newlistrev.version = version;
       pkg->newlistrev.release = release;
       free(pkgname);
+    }
+  free(buf);
+}
+
+static void read_upgrade_list(struct package **pkgtab, const char *listname)
+{
+  FILE *fp;
+  char *buf = NULL, *pkgname, *version, *release, *filename;
+  int bufsize, epoch;
+  struct package *pkg;
+
+  fp = fopen(listname, "r");
+  if (!fp)
+    die("Can't read upgrade list %s", listname);
+
+  while (read_line(fp, &buf, &bufsize) == 0)
+    {
+      parse_line(buf, &pkgname, &epoch, &version, &release, &filename);
+      pkg = get_package(pkgtab, pkgname);
+      if (pkg->newlistrev.present)
+	die("Duplicate package %s in upgrade list %s\n", pkgname, listname);
+      pkg->filename = filename;
+      pkg->newlistrev.present = 1;
+      pkg->newlistrev.epoch = epoch;
+      pkg->newlistrev.version = version;
+      pkg->newlistrev.release = release;
+      pkg->only_upgrade = 1;
+      free(pkgname);
+    }
+  free(buf);
+}
+
+static void read_exception_list(struct package **pkgtab, const char *listname)
+{
+  FILE *fp;
+  char *buf = NULL;
+  int bufsize;
+  struct package *pkg;
+
+  fp = fopen(listname, "r");
+  if (!fp)
+    return;
+
+  while (read_line(fp, &buf, &bufsize) == 0)
+    {
+      pkg = get_package(pkgtab, buf);
+      pkg->notouch = 1;
     }
   free(buf);
 }
@@ -286,7 +348,9 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
     {
       for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
 	{
-	  if (public)
+	  if (pkg->notouch)
+	    continue;
+	  else if (public)
 	    action = decide_public(pkg);
 	  else
 	    action = decide_private(pkg);
@@ -431,6 +495,10 @@ static enum act decide_public(struct package *pkg)
   /* Erase any installed package which isn't in the new list. */
   if (pkg->instrev.present && !pkg->newlistrev.present)
     return ERASE;
+
+  /* Erase or don't install packages in the upgrade list. */
+  if (pkg->only_upgrade)
+    return (pkg->instrev.present) ? ERASE : NONE;
 
   /* Update any new list package which isn't installed at the new list rev. */
   if (pkg->newlistrev.present && !revsame(&pkg->instrev, &pkg->newlistrev))
@@ -797,6 +865,8 @@ struct package *get_package(struct package **table, const char *pkgname)
   pkg->oldlistrev.present = 0;
   pkg->newlistrev.present = 0;
   pkg->instrev.present = 0;
+  pkg->notouch = 0;
+  pkg->only_upgrade = 0;
   pkg->erase = 0;
   pkg->next = NULL;
   *pkgptr = pkg;
