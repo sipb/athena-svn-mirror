@@ -1,7 +1,7 @@
 #
 # Makefile for building a standalone send-pr.
 #
-RELEASE=krb5-1.0.6-beta5
+RELEASE=krb5-1.0.6
 SUBMITTER=net
 sendprname = krb5-send-pr
 EMACS=emacs
