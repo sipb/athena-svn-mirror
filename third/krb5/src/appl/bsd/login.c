@@ -476,19 +476,13 @@ static int unix_needs_passwd ()
 static int unix_passwd_okay (pass)
     char *pass;
 {
-    char user_pwcopy[9], *namep;
+    char *namep;
     char *crypt ();
 
     assert (pwd != 0);
 
-    /* copy the first 8 chars of the password for unix crypt */
-    strncpy(user_pwcopy, pass, sizeof(user_pwcopy));
-    user_pwcopy[sizeof(user_pwcopy) - 1]='\0';
-    namep = crypt(user_pwcopy, salt);
-    memset (user_pwcopy, 0, sizeof(user_pwcopy));
-    /* ... and wipe the copy now that we have the string */
-
     /* verify the local password string */
+    namep = crypt(pass, salt);
 #ifdef HAVE_SHADOW
     if (spwd)
 	return !strcmp(namep, spwd->sp_pwdp);
