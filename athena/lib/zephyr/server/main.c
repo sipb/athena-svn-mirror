@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,14 +15,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.11 1987-08-01 11:35:45 rfrench Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.12 1987-08-09 18:08:53 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (Prerelease DEBUG) 0.6";
+char version[] = "Zephyr Server (DEBUG) 1.0";
 #else
-char version[] = "Zephyr Server (Prerelease) 0.6";
+char version[] = "Zephyr Server 1.0";
 #endif DEBUG
 /*
  * Server loop for Zephyr.
