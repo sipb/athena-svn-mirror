@@ -267,7 +267,7 @@ PUBLIC=false;		export PUBLIC		# Public workstation?
 EOF
 
 grep -q ^NOCREATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-NOCREATE=false;		export NOCREATE		# Disallow the public to login?
+NOCREATE=false;		export NOCREATE		# Create /etc/nocreate; see al_login_allowed(3)
 EOF
 
 grep -q ^NOATTACH /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
@@ -275,7 +275,7 @@ NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
 EOF
 
 grep -q ^NOREMOTE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-NOREMOTE=false;		export NOREMOTE		# Deny access to remote users not in /etc/passwd
+NOREMOTE=false;		export NOREMOTE		# Create /etc/noremote; see al_login_allowed(3)
 EOF
 
 grep -q ^AUTOUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
