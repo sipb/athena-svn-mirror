@@ -15,7 +15,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.4 2004-02-13 18:58:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.4.2.1 2004-10-27 01:22:07 ghudson Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -303,33 +303,37 @@ int afs_remount_fs(struct super_block *sbp, int *, char *)
  * copy it.
  */
 #if defined(AFS_LINUX24_ENV)
-int afs_statfs(struct super_block *sbp, struct statfs *statp)
+int
+afs_statfs(struct super_block *sbp, struct statfs *statp)
 #else
-int afs_statfs(struct super_block *sbp, struct statfs *statp, int size)
+int
+afs_statfs(struct super_block *sbp, struct statfs *__statp, int size)
 #endif
 {
+#if !defined(AFS_LINUX24_ENV)
     struct statfs stat;
+
+    if (size < sizeof(struct statfs))
+	return;
+
+    memset(&stat, 0, size);
+    statp = &stat;
+#else
+    memset(statp, 0, sizeof(*statp));
+#endif
 
     AFS_STATCNT(afs_statfs);
 
-#if !defined(AFS_LINUX24_ENV)
-    if (size < sizeof(struct statfs))
-	return;
-	
-    memset(&stat, 0, size);
-#endif
-    stat.f_type = 0; /* Can we get a real type sometime? */
-    stat.f_bsize = sbp->s_blocksize;
-    stat.f_blocks =  stat.f_bfree =  stat.f_bavail =  stat.f_files =
-	stat.f_ffree = 9000000;
-    stat.f_fsid.val[0] = AFS_VFSMAGIC;
-    stat.f_fsid.val[1] = AFS_VFSFSID;
-    stat.f_namelen = 256;
+    statp->f_type = 0;		/* Can we get a real type sometime? */
+    statp->f_bsize = sbp->s_blocksize;
+    statp->f_blocks = statp->f_bfree = statp->f_bavail = statp->f_files =
+	statp->f_ffree = 9000000;
+    statp->f_fsid.val[0] = AFS_VFSMAGIC;
+    statp->f_fsid.val[1] = AFS_VFSFSID;
+    statp->f_namelen = 256;
 
-#if defined(AFS_LINUX24_ENV)
-    *statp = stat;
-#else
-    memcpy_tofs(statp, &stat, size);
+#if !defined(AFS_LINUX24_ENV)
+    memcpy_tofs(__statp, &stat, size);
 #endif
     return 0;
 }
