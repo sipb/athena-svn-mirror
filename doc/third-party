@@ -97,7 +97,7 @@ Distribution sites for software under third
 	perl		prep.ai.mit.edu:pub/gnu
 	rcs		prep.ai.mit.edu:pub/gnu
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
-	ssh		See below
+	ssh		ftp.cs.hut.fi:pub/ssh
 	sysinfo		usc.edu:pub/sysinfo
 	talk		From NetBSD (ftp.netbsd.org)
 			usr.bin/talk goes in the talk subdirectory
@@ -182,13 +182,6 @@ the CTAN archive is not especially well-organized in that respect.  If
 anyone ever attempts a reorganization around distributions, they
 should probably just create a new hierarchy and delete the contents of
 the "lib" hierarchy.
-
-ssh
----
-
-ssh is available at ftp.cs.hut.fi:pub/ssh.  Before importing into CVS,
-we applied patches for Kerberos 4 and AFS from umich, available at
-http://www-personal.umich.edu/~dugsong/ssh-afs-kerberos.html.
 
 Third-party build systems
 -------------------------
