@@ -17,6 +17,7 @@ Use the --buildroot option to RPM or the buildroot rpmrc entry.
 MESSAGE
 exit 1
 fi
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
 
 cp version src/appl/version
