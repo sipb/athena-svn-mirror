@@ -1,12 +1,12 @@
 #
-# $Id: Imakefile,v 1.15 1991-04-05 17:14:53 lwvanels Exp $
+# $Id: Imakefile,v 1.16 1991-04-08 21:28:01 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
 #
 
 #define IHaveSubdirs
-SUBDIRS=common logger clients server browser # man lib 
+SUBDIRS=common logger clients server browser man lib 
 RM=rm -f
 MV=mv -f
 
