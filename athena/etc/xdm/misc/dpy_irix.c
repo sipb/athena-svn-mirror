@@ -21,7 +21,7 @@ extern int debug;
 
 #define USE_GETTY
 
-static int run(char *what)
+static int run(char *what, int newpag)
 {
   char cmd[1024], *args[20], *ptr;
   int i = 0, status;
@@ -49,6 +49,8 @@ static int run(char *what)
 
   if ((pid = fork()) == 0)
     {
+      if (newpag)
+	setpag();
       sigprocmask(SIG_SETMASK, &omask, NULL);
       execv(args[0], args);
       exit(-1);
@@ -101,15 +103,26 @@ int dpy_startX(dpy_state *dpy)
   if (dpy == NULL || dpy->mode != DPY_NONE)
     return 1;
 
-  if (run(CHKCONFIG WS "on"))
+  if (run(CHKCONFIG WS "on", 0))
     return 1;
 
-  if (ret = run(KILLALL "-HUP " XDM))
+  if (ret = run(KILLALL "-HUP " XDM, 0))
     {
       if (debug > 3)
 	syslog(LOG_ERR, "killall -hup " XDM " returned %d", ret);
 
-      if (ret = run(XDMCMD))
+      /*
+       * We make xdm's PAG unique - we don't want it shared with the
+       * default root PAG, since user's tokens will be flying through
+       * it. But xdm does need to see the user's tokens, because it
+       * tries to stat their home directory before making it their
+       * HOME and logging it in. (Otherwise they get HOME=/.)
+       * Therefore, xlogin does not to a setpag() under this OS. Note:
+       * this means that we cannot currently use xdm to drive multiple
+       * sessions without getting into race conditions.
+       */
+
+      if (ret = run(XDMCMD, 1))
 	{
 	  if (debug > 3)
 	    syslog(LOG_ERR, XDM " returned %d", ret);
@@ -126,13 +139,13 @@ int dpy_stopX(dpy_state *dpy)
   if (dpy == NULL || dpy->mode != DPY_X)
     return 1;
 
-  if (1 != run(CHKCONFIG WS "off"))
+  if (1 != run(CHKCONFIG WS "off", 0))
     return 1;
 
-  run(KILLALL "Xsgi"); /* don't know enough about the exit status...
-			  it might not have found a server, which is
-			  fine, or something strange might have happened,
-			  which isn't */
+  run(KILLALL "Xsgi", 0); /* don't know enough about the exit status...
+			     it might not have found a server, which is
+			     fine, or something strange might have happened,
+			     which isn't */
   dpy->mode = DPY_NONE;
   return 0;
 }
