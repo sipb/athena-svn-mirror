@@ -213,8 +213,9 @@ int no_p;
   */
   packet[0] = LERT_VERSION;
   packet[1] = no_p;
-  memcpy((char *) &packet[LERT_LENGTH], (char *)&authent, sizeof(authent));
-  plen = sizeof(authent) + LERT_LENGTH;
+  memcpy((char *) &packet[LERT_LENGTH], (char *)&authent,
+	 sizeof(int) + authent.length);
+  plen = LERT_LENGTH + sizeof(int) + authent.length;
 
   s = socket(AF_INET, SOCK_DGRAM, 0);
   if (s < 0) bombout(ERR_SOCKET);
