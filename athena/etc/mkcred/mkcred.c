@@ -15,17 +15,25 @@
 
 /* mkcred: used to compile credentials files for knfs mountd */
 
-static const char rcsid[] = "$Id: mkcred.c,v 1.1 1999-03-18 22:59:54 danw Exp $";
+static const char rcsid[] = "$Id: mkcred.c,v 1.1.4.1 1999-11-09 02:59:37 tb Exp $";
 
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <sys/stat.h>
 #include <limits.h>
-#include <ndbm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined (HAVE_DB_H) && !defined (HAVE_NDBM_H)
+#define DB_DBM_HSEARCH 1
+#include <db.h>
+#elif defined (HAVE_NDBM_H)
+#include <ndbm.h>
+#else
+#error Cannot find a suitable database header
+#endif
 
 void add_cred(DBM *db, char *str);
 int read_line(FILE *fp, char **buf, int *bufsize);
