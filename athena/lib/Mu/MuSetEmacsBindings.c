@@ -16,6 +16,9 @@
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuSetEmacsBindings.c,v $
  * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  90/08/28  14:33:58  vanharen
+ * added return binding for single-line bindings.
+ * 
  * Revision 1.3  90/08/23  13:27:24  vanharen
  * fixed translation table.
  * 
@@ -63,8 +66,7 @@ static char EmacsBindingsText[] =
 	Ctrl<Key>L:		redraw-display() \n\
 	Ctrl<Key>M:		newline() \n\
 	Ctrl<Key>J:		newline() \n\
-	<Key>Return:		newline()
-";
+	<Key>Return:		newline() ";
 
 static XtTranslations SingleLineEmacsBindings = NULL;
 static char SingleLineEmacsBindingsText[] = 
@@ -84,8 +86,7 @@ static char SingleLineEmacsBindingsText[] =
 	~Shift Meta<Key><:	beginning-of-line() \n\
 	Shift Meta<Key><:	end-of-line() \n\
 	Meta<Key>>:		end-of-line() \n\
-	<Key>Return:		activate()
-";
+	<Key>Return:		activate() ";
 
 void MuSetEmacsBindings(w)
 Widget w;
