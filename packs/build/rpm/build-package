@@ -202,6 +202,9 @@ mkdir $RPM_BUILD_ROOT
 # Don't try to install a /usr/athena/info/dir file.
 rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
 
+# Don't try to install scrollkeeper output files.
+rm -rf $RPM_BUILD_ROOT/usr/athena/var/scrollkeeper
+
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
