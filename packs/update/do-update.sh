@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.30 1998-10-05 22:24:38 jweiss Exp $
+# $Id: do-update.sh,v 1.31 1999-05-20 05:59:42 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -51,8 +51,6 @@ esac
 method=$1
 version=$2
 newvers=$3
-
-echo "Starting update"
 
 echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
 	"$CONFDIR/version"
