@@ -1,7 +1,11 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.0 1992-04-22 01:46:56 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.1 1993-06-18 14:33:43 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:46:56  tom
+ * release 7.4
+ * 	defines for new variables
+ * 
  * Revision 1.3  90/05/26  13:42:31  tom
  * athena release 7.0e
  * 
@@ -32,7 +36,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.0 1992-04-22 01:46:56 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.1 1993-06-18 14:33:43 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -750,5 +754,10 @@ struct snmp_tree_info {
 #ifdef TIMED
 #define N_TIMEDMASTER     695
 #endif TIMED
+
+#define N_WRTIME          700
+#define N_WRLOCATION      701
+#define N_WRTEMP          702
+
 #endif MIT
 

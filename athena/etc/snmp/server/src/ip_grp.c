@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.0 1992-04-22 02:03:19 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.1 1993-06-18 14:33:05 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  02:03:19  tom
+ * release 7.4
+ * 	no change
+ * 
  * Revision 1.2  90/05/26  13:37:50  tom
  * athena release 7.0e - also some ultrix-ism's added
  * 
@@ -30,7 +34,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.0 1992-04-22 02:03:19 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.1 1993-06-18 14:33:05 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -333,6 +337,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 	}
 }
 
+#ifndef SOLARIS
 /*
  *  Given a network number, find the corresponding route entry from
  *  the kernel.  If there is no entry return the "next" entry from
@@ -596,6 +601,8 @@ lu_rtent(varnode, repl, instptr, reqflg)
 			return(BUILD_ERR);
 	}
 }
+
+#endif /* SOLARIS */
 
 int
 lu_ipstat(varnode, repl, instptr, reqflg)

@@ -1,9 +1,14 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.0 1992-04-22 01:44:00 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.1 1993-06-18 14:33:24 tom Exp $
  *  $Author: tom $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:44:00  tom
+ * release 7.4
+ * 	changed path names to conform to 7.3 reorg and added
+ * 	default path name variables to allow customization of paths
+ * 
  * Revision 1.6  90/07/17  14:17:18  tom
  * changed sysObjectID to be 'athena'
  * 
@@ -79,7 +84,7 @@
 #define VERSION		"3.4"
 
 #ifdef  MIT
-#define MIT_VERSION     "3a"
+#define MIT_VERSION     "3b"
 
 /*
  * default files
@@ -99,6 +104,7 @@
 #define SRV_FILE         "/site/server/.services"
 #define DNS_STAT_FILE    "/usr/tmp/named.stats"
 #define USER             "daemon"
+#define WEATHER_TTY      "/dev/weather"
 
 #endif  MIT
 

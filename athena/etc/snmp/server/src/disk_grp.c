@@ -15,6 +15,10 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:55:38  tom
+ * release 7.4
+ * 	no changes
+ * 
  * Revision 1.6  90/06/05  16:07:31  tom
  * the total variable length must be counted (not just "instance")
  * 
@@ -35,8 +39,10 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 2.0 1992-04-22 01:55:38 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 2.1 1993-06-18 14:32:48 tom Exp $";
 #endif
+
+#ifndef SOLARIS
 
 #include "include.h"
 #include <mit-copyright.h>
@@ -53,9 +59,17 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 
 #include <sys/param.h>
 #include <errno.h>
+
+#if defined(ultrix) || defined(SOLARIS)
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <ustat.h>
+#include <sys/fs_types.h>
+#else
 #include <ufs/fs.h>
 #include <sys/vfs.h>
 #include <mntent.h>
+#endif
 
 /*
  * local utilities
@@ -64,6 +78,12 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 static int dfreedev();
 static int dfreemnt();
 static int bread();
+
+#if defined(mips) && defined(ultrix)
+#define MSIZE (NMOUNT*sizeof(struct fs_data))
+#endif
+
+
 
 /*
  * plastic shopping bags are 5 cents
@@ -101,8 +121,12 @@ lu_ndparts(varnode, repl, instptr, reqflg)
      objident *instptr;
      int reqflg;
 {
+#if defined(mips) && defined(ultrix)
+  struct  fs_data *mountbuffer;
+#else
   FILE *mtabp;
   struct mntent *mnt;
+#endif
   int cnt = 0;
 
   if (varnode->flags & NOT_AVAIL ||
@@ -117,6 +141,22 @@ lu_ndparts(varnode, repl, instptr, reqflg)
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.ncmp++;      
   repl->val.type = INT;   
+  
+#if defined(mips) && defined(ultrix)
+
+  if(!(mountbuffer = (struct fs_data *) malloc(MSIZE)))
+    {
+      syslog(LOG_ERR, "lu_ndparts: could not alloc mount buffer");
+      return(BUILD_ERR);
+    }
+  
+   if((cnt = getmnt(&loc,mountbuffer,MSIZE,STAT_MANY,0)) < 0)
+     {
+      syslog(LOG_ERR, "lu_ndparts: error from getmnt");
+      return(BUILD_ERR);
+    }
+
+#else
   
   /*
    * Open mtab and count 'em up. We only care about MNTTYPE_42 types.
@@ -136,6 +176,8 @@ lu_ndparts(varnode, repl, instptr, reqflg)
     }
 
   endmntent(mtabp);
+#endif
+
   repl->val.value.intgr = cnt;
   return(BUILD_SUCCESS);
 }
@@ -168,16 +210,21 @@ lu_disk(varnode, repl, instptr, reqflg)
      objident *instptr;
      int reqflg;
 {
+#if defined(mips) && defined(ultrix)
+  struct  fs_data *mountbuffer;
+  register struct fs_data *fd;
+#else
   struct stat statbuf;
   struct mntent *mnt;
   FILE *mtabp;
-  int cnt = 0;
+#endif
   int len;
   char *ch;
   struct thing df;     
   struct thing di;
   char disk[SNMPMXID];
   int nflag = 0;
+  int cnt = 0;
 
   if ((varnode->flags & NOT_AVAIL) || (varnode->offset <= 0))
     return (BUILD_ERR);
@@ -195,6 +242,26 @@ lu_disk(varnode, repl, instptr, reqflg)
       disk[cnt] = '\0';
     }
 
+#if defined(mips) && defined(ultrix)
+
+  if(!(mountbuffer = (struct fs_data *) malloc(MSIZE)))
+    {
+      syslog(LOG_ERR, "lu_disk: could not alloc mount buffer");
+      return(BUILD_ERR);
+    }
+  
+   if((cnt = getmnt(&loc,mountbuffer,MSIZE,STAT_MANY,0)) < 0)
+     {
+      syslog(LOG_ERR, "lu_disk: error from getmnt");
+      return(BUILD_ERR);
+    }
+
+  for (fd=mountbuffer; fd < &mountbuffer[ret]; fd++) 
+    {
+    }
+
+#else
+  
   /*
    * open mtab and get the partition associated with given instance 
    */
@@ -448,4 +515,5 @@ bread(fi, bno, buf, cnt)
 }
 
 
-#endif MIT
+#endif /* MIT */
+#endif /* SOLARIS */

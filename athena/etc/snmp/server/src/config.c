@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.0 1992-04-22 01:49:35 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.1 1993-06-18 14:32:32 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:49:35  tom
+ * release 7.4
+ * 	allowed specification of a domain name in snmpd.conf
+ * 
  * Revision 1.3  92/04/18  19:19:57  tom
  * *** empty log message ***
  * 
@@ -33,7 +37,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.0 1992-04-22 01:49:35 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.1 1993-06-18 14:32:32 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -93,6 +97,7 @@ parse_config(fd)
 	strcpy(srv_file,          SRV_FILE);
 	strcpy(dns_stat_file,     DNS_STAT_FILE);
 	strcpy(user,              USER);
+	strcpy(weather_tty,       WEATHER_TTY);
 
 #else  MIT
 	(void) strcpy(gw_version_id, SYS_DESCR);
@@ -296,7 +301,25 @@ parse_config(fd)
 			}
 			else
 		       strncpy(user, name, sizeof(user));
-	        }		
+	        }	
+		else if (strcmp(keyword, "wtty") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(weather_tty, name, sizeof(weather_tty));
+	        }	
+		else if (strcmp(keyword, "wlocation") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(weather_location, name, sizeof(user));
+	        }	
 		else if (strcmp(keyword, "logintrap") == 0) {
 		        if (sscanf(buf, "%*s %s", name) != 1) {
 			        syslog(LOG_ERR, "config syntax error, line %d",

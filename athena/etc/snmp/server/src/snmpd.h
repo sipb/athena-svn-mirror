@@ -1,7 +1,11 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.0 1992-04-22 01:45:58 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.1 1993-06-18 14:33:33 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:45:58  tom
+ * release 7.4
+ * 	added variables to allow customization of various config files
+ * 
  * Revision 1.4  90/07/17  14:19:30  tom
  * commented out function declarations not functional on decmips
  * 
@@ -38,7 +42,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.0 1992-04-22 01:45:58 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.1 1993-06-18 14:33:33 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -170,11 +174,13 @@ extern int	kmem;			/* file descriptor fpr kmem */
 extern int	debuglevel;		/* snmpd debug level */
 extern struct	intf_info *iilst;	/* interface info list */
 extern struct	snmp_session *sessions;	/* snmp session list */
-#ifdef ULTRIX3
+#ifndef SOLARIS
+#if defined(ultrix)
 extern struct rtentry *rtnet[RTHASHSIZ];/* buffer for net routing tables */
 #else
 extern struct	mbuf *rtnet[RTHASHSIZ]; /* buffer for net routing tables */
 #endif
+#endif /* SOLARIS */
 extern int	newpacket;		/* are we processing a new packet? */
 extern struct	snmp_stats s_stat;	/* SNMPD stats kept here */
 extern int	send_authen_traps;	/* do we send authen traps? */
@@ -204,7 +210,8 @@ extern char     syspack_file[SNMPSTRLEN];      /* path for srvd info  file */
 extern char     dns_stat_file[SNMPSTRLEN];     /* path for dns stat file */
 extern char     srv_file[SNMPSTRLEN];          /* path for mksrv file */
 extern char     user[SNMPSTRLEN];              /* default uid to run as */
-
+extern char     weather_tty[SNMPSTRLEN];      /* tty for weather device */
+extern char     weather_location[SNMPSTRLEN];  /* location string for wthr st*/
 extern int      logintrap;                     /* whether to send login trap */
 
 #ifdef RSPOS
@@ -347,7 +354,7 @@ extern int lu_dns();
 #ifdef TIMED
 extern int lu_timed();
 #endif TIMED
-
+extern int lu_weather();
 
 extern char *stattime();
 #endif MIT

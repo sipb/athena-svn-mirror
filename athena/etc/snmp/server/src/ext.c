@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.1 1992-04-22 02:39:32 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.2 1993-06-18 14:32:52 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  92/04/22  02:39:32  tom
+ * fixed bungle with disk group object identifiers
+ * 
  * Revision 2.0  92/04/22  02:04:48  tom
  * release 7.4
  * 
@@ -56,7 +59,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.1 1992-04-22 02:39:32 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.2 1993-06-18 14:32:52 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -110,6 +113,8 @@ char    syspack_file[SNMPSTRLEN];       /* path for syspack file */
 char    dns_stat_file[SNMPSTRLEN];      /* path for dns stat file */
 char    srv_file[SNMPSTRLEN];           /* path for mksrv file */
 char    user[SNMPSTRLEN];               /* default uid to run as */
+char    weather_tty[SNMPSTRLEN];        /* tty of weather device */
+char    weather_location[SNMPSTRLEN];   /* location of weather device */
 
 #ifdef RSPOS
 struct   mbuf *rthost[RTHASHSIZ];       /* routing table structs for rs6k */
@@ -2148,6 +2153,21 @@ objident tdMaster = {
 };
 #endif TIMED
 
+objident wrLocation = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 14, 1
+};
+
+objident wrTime = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 14, 2
+};
+
+objident wrTemperature = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 14, 3
+};
+
 #endif MIT
 
 
@@ -2165,6 +2185,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 
 { &sysID,             lu_vers,  NULL, N_VERID, NULL_OBJINST|VAL_STR },
 { &sysObjectID,       lu_vers,  NULL, N_VEREV, NULL_OBJINST|VAL_OBJ },
+#ifndef SOLARIS
 #ifdef RSPOS
 { &sysUpTime,         lu_status,NULL, N_LINIT, NULL_OBJINST|VAL_TIME },
 #else /* RSPOS */
@@ -2215,6 +2236,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ipAdEntIndex,      lu_ipadd, NULL, N_IPIND, VAL_INT },
 { &ipAdEntNetMask,    lu_ipadd, NULL, N_IPMSK, VAL_IPADD },
 { &ipAdEntBcastAddr,  lu_ipadd, NULL, N_IPBRD, VAL_IPADD },
+#ifndef SOLARIS 
 /*
  *  IP route table
  */
@@ -2227,6 +2249,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ipRouteType,       lu_rtent, NULL, N_RTTYP, WRITE_VAR|VAL_INT },
 { &ipRouteProto,      NULL,     NULL, 0,       WRITE_VAR|VAL_INT },
 { &ipRouteAge,        NULL,     NULL, 0,       WRITE_VAR|VAL_INT },
+#endif /* SOLARIS */
 /*
  *  ICMP Group as specified in RFC 1066.	26/26 variables
  */
@@ -2286,7 +2309,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &egpInErrors, 	 NULL,    NULL, 0, 	   NULL_OBJINST|VAL_CNTR },
 { &egpOutMsgs,  	 NULL,    NULL, 0, 	   NULL_OBJINST|VAL_CNTR },
 { &egpOutErrors,  	 NULL,    NULL, 0, 	   NULL_OBJINST|VAL_CNTR },
-
+#endif SOLARIS
 /*********************** MIT *************************/
 #ifdef MIT
 #ifdef ATHENA
@@ -2363,12 +2386,12 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #endif /* ATHENA */
 
 { &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT  },
-#ifndef RSPOS
+#if !defined(SOLARIS) && !defined(RSPOS)
 { &loadRunTime,  lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
 #endif /* RSPOS */
 { &statLogin, 	 lu_status,   NULL, N_STATLOGIN,    NULL_OBJINST|VAL_INT  },
 
-#if !defined(ultrix) && !defined(RSPOS)
+#if !defined(ultrix) && !defined(RSPOS) && !defined(SOLARIS)
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkPath,   lu_disk,     NULL, N_DKPATH,       VAL_STR  },
 { &statDkDname,  lu_disk,     NULL, N_DKDNAME,      VAL_STR  },
@@ -2382,6 +2405,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &statDkType,   lu_disk,     NULL, N_DKTYPE,       VAL_STR  },
 #endif
 
+#ifndef SOLARIS
 #ifndef RSPOS
 #ifndef decmips
 { &vpR,          lu_vmstat,   NULL, N_VMPROCR,      NULL_OBJINST|VAL_INT  },
@@ -2488,6 +2512,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ptActive,     lu_pstat,    NULL, N_PTACTIVE,     NULL_OBJINST|VAL_INT  },
 #endif /* decmips */
 #endif /* RSPOS */		 	
+#endif /* SOLARIS */
 	
 #ifdef RPC		 
 { &rpcCall,      lu_rpccl,    NULL, N_RPCCCALL,     NULL_OBJINST|VAL_CNTR },
@@ -2653,6 +2678,11 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #ifdef TIMED
 { &tdMaster,     lu_timed,    NULL, N_TIMEDMASTER,  NULL_OBJINST|VAL_STR  },
 #endif TIMED
+#ifdef WEATHER
+{ &wrTime,       lu_weather,  NULL, N_WRTIME,       NULL_OBJINST|VAL_STR  },
+{ &wrLocation,   lu_weather,  NULL, N_WRLOCATION,   NULL_OBJINST|VAL_STR  },
+{ &wrTemperature,lu_weather,  NULL, N_WRTEMP,       NULL_OBJINST|VAL_STR  },
+#endif
 #endif MIT
 
 /*
@@ -2666,11 +2696,8 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
  *  get variables from the kernel.
  */
 
-/* 
- * It's people like IBM who create crap like AIX that gets me upset.
- */
 
-#ifndef RSPOS
+#if !defined(RSPOS) && !defined(SOLARIS)
 
 struct nlist nl[] = 
 {
