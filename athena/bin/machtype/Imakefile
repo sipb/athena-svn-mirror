@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.5 1992-04-01 19:14:20 lwvanels Exp $
+ * $Id: Imakefile,v 1.6 1992-04-22 14:41:19 lwvanels Exp $
  */
 
 #ifdef ULTRIX40
@@ -11,7 +11,7 @@ DEFINES=-DULTRIX_40 -I/usr/include/sys
 machtype_rios.o:
 	$(RM) $@
 	. $(ATHVERS); \
-	$(CC) -c $(CFLAGS) -DATHENA_VERSION=\"$$NEWVERS\" $*.c
+	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
 
 SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
 #endif
@@ -20,7 +20,7 @@ SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
 machtype_std.o:
 	$(RM) $@
 	. $(ATHVERS); \
-	$(CC) -c $(CFLAGS) -DATHENA_VERSION=\"$$NEWVERS\" $*.c
+	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
 	
 build_program(machtype, machtype_std.o,,)
 install_program(machtype,-m 2755 -g kmem,$(ATHRBINDIR))
