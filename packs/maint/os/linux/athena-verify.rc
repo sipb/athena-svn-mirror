@@ -20,7 +20,7 @@ case "$1" in
   start)
 	if [ "$PUBLIC" = true ]; then
 		echo "Starting public workstation integrity check"
-		/etc/athena/verify
+		/etc/athena/verify 2>&1 | tee /var/athena/verify.log
 	fi
 	;;
   stop)
