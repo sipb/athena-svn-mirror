@@ -1,8 +1,6 @@
 # Prototype user .cshrc file
-# $Author: epeisach $
-# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.13 1989-08-14 17:36:01 epeisach Exp $
-
+#
+# $Id: dot.cshrc,v 1.14 1991-06-08 18:39:17 probe Exp $
 
 # This file sources a system-wide cshrc file, which:
 #      - sets up standard environment variables
@@ -16,25 +14,16 @@ set initdir=/usr/athena/lib/init
 if (-r $initdir/cshrc) then
         source $initdir/cshrc
 else
-	if (-r /usr/prototype_user/.cshrc) then
-		if ($?prompt) then		# Don't echo if noninteractive
-		  echo -n "Warning: "
-		  echo "This workstation has not been upgraded to Release 6.3."
-		  echo "Using old initialization files."
-		endif
-		source /usr/prototype_user/.cshrc
-	else
-		if ($?prompt) then		# Don't echo if noninteractive
-		  echo "Warning: System-wide initialization files not found."
-		  echo "C Shell initialization has not been performed."
-		  stty dec
-		endif
-		# set some basic defaults if failed initialization
-		umask 077
-		set path=( . ~/${hosttype}bin /srvd/patch /usr/athena \
-			/bin/athena /usr/bin/X /usr/new /usr/new/mh/bin \
-			/usr/ucb /bin /usr/bin /usr/ibm )
+	if ($?prompt) then		# Don't echo if noninteractive
+	  echo "Warning: System-wide initialization files not found."
+	  echo "C Shell initialization has not been performed."
+	  stty dec
 	endif
+	# set some basic defaults if failed initialization
+	umask 077
+	set path=( . ~/${hosttype}bin /srvd/patch /usr/athena \
+		/bin/athena /usr/bin/X /usr/new /usr/new/mh/bin \
+		/usr/ucb /bin /usr/bin /usr/ibm )
 endif
 
 
@@ -57,5 +46,3 @@ endif
 # WARNING: If you revise this .cshrc file, you will not automatically
 # get any changes that Project Athena may make to the system-wide file at 
 # a later date.  Be sure you know what you are doing.
-
-
