@@ -5,4 +5,5 @@ cp $1/packs/config/os/linux/passwd.fallback $2
 cp $1/packs/config/os/linux/syslog.conf $2
 cp $1/packs/config/os/linux/athena.cron $2
 cp $1/packs/update/os/linux/update_ws.sh $2
+cp $1/packs/update/os/linux/rpmupdate.c $2
 cp $1/packs/config/os/linux/XTerm $2
