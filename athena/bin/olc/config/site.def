@@ -153,6 +153,18 @@ HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
 #define TermIODef
 #endif
 
+#if Posix
+#define PosixDef -DPOSIX
+#else
+#define PosixDef
+#endif Posix
+
+#if Solaris
+#define SolarisDef -DSOLARIS
+#else
+#define SolarisDef
+#endif
+
 
 /* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
    depending on what you have installed.  */
@@ -173,11 +185,11 @@ CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
 ComErrLib	=	-L/usr/athena/lib -lcom_err$(LIBSUFFIX)
 MotifResLib	=	-L/mit/motif/$(MACHINE)lib -lMrm
 MotifLib	=	-L/mit/motif/$(MACHINE)lib -lXm
-MotifToolLib	=	-L/mit/motif/$(MACHINE)lib -lXtm
+MotifToolLib	=	 -lXt
 XUtilLib	=	-L/usr/athena/lib -lXmu$(LIBSUFFIX)
 XtoolLib	=	-L/usr/athena/lib -lXt$(LIBSUFFIX)
 XLib		=	-L/usr/athena/lib -lX11$(LIBSUFFIX)
 
 #define StandardDefines	ZephyrDef HesiodDef KerberosDef AthenaDef \
-LogDef ULogDef SilentDef SyslogDef DiscussDef MachSpecDef
+LogDef ULogDef SilentDef SyslogDef DiscussDef MachSpecDef PosixDef
 
