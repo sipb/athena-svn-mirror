@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.29 1990-07-12 12:42:23 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.30 1990-07-15 17:42:39 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.29 1990-07-12 12:42:23 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.30 1990-07-15 17:42:39 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -892,8 +892,8 @@ stypeof(ttyid)
 doremotelogin(host)
 	char *host;
 {
-	getstr(rusername, sizeof (rusername), "remuser");
-	getstr(lusername, sizeof (lusername), "locuser");
+	getstr(rusername, sizeof (rusername), "Remote user");
+	getstr(lusername, sizeof (lusername), "Local user");
 	getstr(term, sizeof(term), "Terminal type");
 	if (getuid()) {
 		pwd = &nouser;
@@ -946,7 +946,7 @@ paranoid:
 			exit(1);
 		}
 	}
-	getstr(lusername, sizeof (lusername), "locuser");
+	getstr(lusername, sizeof (lusername), "Local user");
 	getstr(term, sizeof(term), "Terminal type");
 	if (getuid()) {
 		pwd = &nouser;
@@ -986,13 +986,16 @@ getstr(buf, cnt, err)
 	int cnt;
 	char *err;
 {
+	int ocnt = cnt;
+	char *obuf = buf;
 	char c;
 
 	do {
 		if (read(0, &c, 1) != 1)
 			exit(1);
 		if (--cnt < 0) {
-			printf("%s too long\r\n", err);
+			fprintf(stderr, "%s '%.*s' too long, %d characters maximum.\r\n",
+				err, ocnt, obuf, ocnt-1);
 			exit(1);
 		}
 		*buf++ = c;
