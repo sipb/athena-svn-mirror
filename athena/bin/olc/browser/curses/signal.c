@@ -23,18 +23,20 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Id: signal.c,v 1.10 1999-01-22 23:11:46 ghudson Exp $
+ *	$Id: signal.c,v 1.11 1999-01-26 00:42:04 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Id: signal.c,v 1.10 1999-01-22 23:11:46 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: signal.c,v 1.11 1999-01-26 00:42:04 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
+#include <sys/types.h>
+#include <sys/ioctl.h>
 #include <signal.h>
 #include <curses.h>
 #include <termios.h>
