@@ -64,7 +64,7 @@ static char Bsd_order[]
 ;
 
 static char LPRng_order[]
-  = "HPJCLIMWT1234*"
+  = "_HPJCLIMWT1234*"
 ;
 
 
