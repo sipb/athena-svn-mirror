@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ta\n"
-"POT-Creation-Date: 2004-08-30 15:13+1200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-08 09:54+1300\n"
 "PO-Revision-Date: 2004-09-06 17:55+0530\n"
 "Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
 "Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "0500\n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -386,7 +386,7 @@ msgstr "%s இந்த உரையாடலில் ஆதரவு இல்
 msgid "Two or more dialog options specified\n"
 msgstr "இரண்டுக்கும் மேற்பட்ட உரையாடல் தேர்வுசெய்யப்பட்டது\n"
 
-#: src/tree.c:303
+#: src/tree.c:304
 msgid "No column titles specified for List dialog.\n"
 msgstr "பட்டியல் உரையாடல் பெட்டியில் நெடுவரிசை தலைப்பு எதுவும் அமைக்கப்படவில்லை\n"
 

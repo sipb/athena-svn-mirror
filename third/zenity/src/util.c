@@ -190,7 +190,7 @@ zenity_util_set_window_icon_from_stock (GtkWidget *widget, const gchar *stock_id
 {
   GdkPixbuf *pixbuf;
 	
-  pixbuf = gtk_widget_render_icon (widget, stock_id, (GtkIconSize) -1, NULL);
+  pixbuf = gtk_widget_render_icon (widget, stock_id, GTK_ICON_SIZE_BUTTON, NULL);
   gtk_window_set_icon (GTK_WINDOW (widget), pixbuf);
   g_object_unref (pixbuf);
 }
@@ -269,7 +269,7 @@ zenity_util_return_exit_code ( ZenityExitCode value )
 #ifdef GDK_WINDOWING_X11
 
 static Window
-transient_get_xterm ()
+transient_get_xterm (void)
 {
   const char *wid_str = g_getenv ("WINDOWID");
   if (wid_str) {
@@ -306,7 +306,7 @@ transient_is_toplevel (Window wid)
  */
 
 static Window
-transient_get_xterm_toplevel ()
+transient_get_xterm_toplevel (void)
 {
   Window xterm = transient_get_xterm ();
   Display *dpy = GDK_DISPLAY ();

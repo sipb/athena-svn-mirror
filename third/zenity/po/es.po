@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zenity.HEAD\n"
-"POT-Creation-Date: 2004-08-30 15:13+1200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-08 09:54+1300\n"
 "PO-Revision-Date: 2004-08-15 10:23+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 
 #. Translators: This is a special message that shouldn't be translated
@@ -388,7 +388,7 @@ msgstr "%s no está soportado para este diálogo\n"
 msgid "Two or more dialog options specified\n"
 msgstr "Se han especificado opciones para dos o más diálogos\n"
 
-#: src/tree.c:303
+#: src/tree.c:304
 msgid "No column titles specified for List dialog.\n"
 msgstr ""
 "No se han especificado los títulos de columnas para el diálogo de la lista\n"
