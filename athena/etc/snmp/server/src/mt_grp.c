@@ -15,6 +15,9 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1997/02/27 06:47:38  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.0  1992/04/22 02:04:30  tom
  *    release 7.4
  *    	added new machtype variables
@@ -36,7 +39,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 2.1 1997-02-27 06:47:38 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 2.2 1997-02-27 18:13:56 ghudson Exp $";
 #endif
 
 
@@ -328,7 +331,7 @@ mt_machtype()
     syslog(LOG_ERR, "mt_machtype: unable to allocate teensie string");
   else
     strcpy(machine_type, lbuf);
-  if(c = rindex(machine_type, '\n'))
+  if(c = strrchr(machine_type, '\n'))
     *c = '\0';
   return;
 }
@@ -352,7 +355,7 @@ mt_version()
     syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
   else
     strcpy(version, lbuf);
-  if(c = rindex(version, '\n'))
+  if(c = strrchr(version, '\n'))
     *c = '\0';
   return;
 }
@@ -376,7 +379,7 @@ mt_osversion()
     syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
   else
     strcpy(os, lbuf);
-  if(c = rindex(os, '\n'))
+  if(c = strrchr(os, '\n'))
     *c = '\0';
 
   call_program(MACH_PROGRAM, MACH_OSVOPT, lbuf, sizeof(lbuf)-1);
@@ -386,7 +389,7 @@ mt_osversion()
     syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
   else
     strcpy(osversion, lbuf);
-  if(c = rindex(osversion, '\n'))
+  if(c = strrchr(osversion, '\n'))
     *c = '\0';
   return;
 }

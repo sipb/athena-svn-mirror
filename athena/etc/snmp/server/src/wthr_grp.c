@@ -15,6 +15,9 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 1.2  1997/02/27 06:48:04  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 1.1  1993/06/18 14:33:19  tom
  *    Initial revision
  *
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/wthr_grp.c,v 1.2 1997-02-27 06:48:04 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/wthr_grp.c,v 1.3 1997-02-27 18:13:57 ghudson Exp $";
 #endif
 
 #ifdef WEATHER
@@ -83,7 +86,7 @@ lu_weather(varnode, repl, instptr, reqflg)
     case N_WRTIME:      
       t = time(0);
       tstr = ctime(&t);
-       c   = rindex(tstr, '\n');
+       c   = strrchr(tstr, '\n');
       *c  = '\0';
       return(make_str(&(repl->val), tstr));
     case N_WRLOCATION:      

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.4 1997-02-27 06:47:30 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.5 1997-02-27 18:13:54 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1997/02/27 06:47:30  ghudson
+ * BSD -> ANSI memory functions
+ *
  * Revision 1.3  1995/07/12 03:42:22  cfields
  * Was this code really built under Solaris before?
  *
@@ -33,7 +36,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.4 1997-02-27 06:47:30 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.5 1997-02-27 18:13:54 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -236,9 +239,6 @@ lu_intf(varnode, repl, instptr, reqflg)
 {
 	struct ifnet ifnet;
 	char *ch;
-#ifndef index
-	char *index();
-#endif
 	char scope[16];
 	struct intf_info *tmp1;
 	u_long intnum;
@@ -332,7 +332,7 @@ lu_intf(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			scope[15] = '\0';
-			ch = index(scope, '\0');
+			ch = strchr(scope, '\0');
 			*ch++ = ifnet.if_unit + '0';
 			*ch = '\0';
 
@@ -357,7 +357,7 @@ lu_intf(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			scope[15] = '\0';
-			ch = index(scope, '\0');
+			ch = strchr(scope, '\0');
 			*ch++ = ifnet.if_unit + '0';
 			*ch = '\0';
 
@@ -395,7 +395,7 @@ lu_intf(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			scope[15] = '\0';
-			ch = index(scope, '\0');
+			ch = strchr(scope, '\0');
 			*ch++ = ifnet.if_unit + '0';
 			*ch = '\0';
 

@@ -15,6 +15,9 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1997/02/27 06:48:00  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.0  1992/04/22 01:59:26  tom
  *    added make_str construct
  *
@@ -31,7 +34,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 2.1 1997-02-27 06:48:00 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 2.2 1997-02-27 18:13:57 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -66,7 +69,7 @@ stattime(file)
     return((char *) NULL);
   
   t   = ctime(&(statbuf.st_mtime));
-  c   = rindex(t, '\n');
+  c   = strrchr(t, '\n');
   *c  = '\0';
   return(t);
 }

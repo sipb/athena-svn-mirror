@@ -15,6 +15,9 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1997/02/27 06:47:18  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.0  1992/04/22 01:48:49  tom
  *    release 7.4
  *    	added table for afs config files
@@ -35,7 +38,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 2.1 1997-02-27 06:47:18 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 2.2 1997-02-27 18:13:51 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -314,19 +317,19 @@ get_afs_db(instptr, reqflg, offset)
 	    fclose(fp);
 	    instptr->ncmp = 4;
 	    e = c;
-	    if((e = index(c, '.')) == (char *) NULL)
+	    if((e = strchr(c, '.')) == (char *) NULL)
 	      return((char *) NULL);
 	    *e++ = '\0';
 	    instptr->cmp[0] = atoi(c);
 
 	    c = e;
-	    if((e = index(c, '.')) == (char *) NULL)
+	    if((e = strchr(c, '.')) == (char *) NULL)
 	      return((char *) NULL);
 	    *e++ = '\0';
 	    instptr->cmp[1] = atoi(c);
 
 	    c = e;
-	    if((e = index(c, '.')) == (char *) NULL)
+	    if((e = strchr(c, '.')) == (char *) NULL)
 	      return((char *) NULL);
 	    *e++ = '\0';
 	    instptr->cmp[2] = atoi(c);
@@ -382,7 +385,7 @@ crock_cachesize()
     {
       if(*lbuf == '\0')
 	continue;
-      cp = rindex(lbuf, ':');
+      cp = strrchr(lbuf, ':');
       if(cp++ == (char *) NULL)
 	return(0);
       

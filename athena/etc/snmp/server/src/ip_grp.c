@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.3 1997-02-27 06:47:32 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.4 1997-02-27 18:13:55 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1997/02/27 06:47:32  ghudson
+ * BSD -> ANSI memory functions
+ *
  * Revision 2.2  1994/08/15 15:05:01  cfields
  * include sys/sockio.h for Solaris
  *
@@ -40,7 +43,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.3 1997-02-27 06:47:32 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.4 1997-02-27 18:13:55 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -271,7 +274,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			scope[15] = '\0';
-			ch = index(scope, '\0');
+			ch = strchr(scope, '\0');
 			*ch++ = ifnet.if_unit + '0';
 			*ch = '\0';
 
@@ -321,7 +324,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			scope[15] = '\0';
-			ch = index(scope, '\0');
+			ch = strchr(scope, '\0');
 			*ch++ = ifnet.if_unit + '0';
 			*ch = '\0';
 
