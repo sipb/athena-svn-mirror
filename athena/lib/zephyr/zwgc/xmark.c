@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: jtkohl $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.5 1989-11-16 16:01:45 jtkohl Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.6 1990-12-21 17:07:38 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -49,7 +49,7 @@ void xmarkSetBound(gram,x,y,which)
    int i,xofs,yofs;
    XFontStruct *font;
    xblock *xb;
-   char *s;
+   unsigned char *s;
 
 #ifdef MARK_DEBUG
 #define RETURN \
@@ -112,7 +112,7 @@ void xmarkSetBound(gram,x,y,which)
 	    RETURN;
 	 }
 	 font=get_fontst_from_fid(xb->fid);
-	 for (i=0,s=((gram->text)+(xb->strindex));
+	 for (i=0,s=(unsigned char *)((gram->text)+(xb->strindex));
 	      xofs<x && i<xb->strlen;
 	      i++,s++) {
 	     /* if font->per_char is NULL, then we should use min_bounds */
