@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.6 1990-07-03 12:44:05 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.7 1990-08-25 14:06:17 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.6 1990-07-03 12:44:05 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.7 1990-08-25 14:06:17 epeisach Exp $";
 #endif lint
 
 /*
@@ -617,10 +617,6 @@ chkhost(f)
 		}
 	}
 	*cp = '\0';
-#ifndef _AUX_SOURCE
-	/* AUX does not have a validuser routine in the C lib.
-	   We cheat in the Athena environ and say that no printing allowed
-	   check above should be sufficient */
 
 	hostf = fopen("/etc/hosts.equiv", "r");
 again:
@@ -637,7 +633,6 @@ again:
 		goto again;
 	}
 	printer = (char *) NULL;
-#endif /* _AUX_SOURCE */
 	fatal("Your host does not have line printer access");
 }
 
@@ -679,3 +674,75 @@ perr(msg)
 	fputs(errno < sys_nerr ? sys_errlist[errno] : "Unknown error" , stdout);
 	putchar('\n');
 }
+
+#if defined(ultrix) || defined(_AUX_SOURCE)
+_validuser(hostf, rhost, luser, ruser, baselen)
+char *rhost, *luser, *ruser;
+FILE *hostf;
+int baselen;
+{
+	char *user;
+	char ahost[MAXHOSTNAMELEN];
+	register char *p;
+
+	while (fgets(ahost, sizeof (ahost), hostf)) {
+		p = ahost;
+		while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0') {
+			*p = islower(*p) ? toupper(*p) : *p;
+			p++;
+		}
+		if (*p == ' ' || *p == '\t') {
+			*p++ = '\0';
+			while (*p == ' ' || *p == '\t')
+				p++;
+			user = p;
+			while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0')
+				p++;
+		} else
+			user = p;
+		*p = '\0';
+		if (_checkhost(rhost, ahost, baselen) &&
+		    !strcmp(ruser, *user ? user : luser)) {
+			return (0);
+		}
+	}
+	return (-1);
+}
+
+_checkhost(rhost, lhost, len)
+char *rhost, *lhost;
+int len;
+{
+	static char ldomain[MAXHOSTNAMELEN + 1];
+	static char *domainp = NULL;
+	static int nodomain = 0;
+	register char *cp;
+
+	if (len == -1)
+		return(!strcmp(rhost, lhost));
+	if (strncmp(rhost, lhost, len))
+		return(0);
+	if (!strcmp(rhost, lhost))
+		return(1);
+	if (*(lhost + len) != '\0')
+		return(0);
+	if (nodomain)
+		return(0);
+	if (!domainp) {
+		if (gethostname(ldomain, sizeof(ldomain)) == -1) {
+			nodomain = 1;
+			return(0);
+		}
+		ldomain[MAXHOSTNAMELEN] = NULL;
+		if ((domainp = index(ldomain, '.')) == (char *)NULL) {
+			nodomain = 1;
+			return(0);
+		}
+		for (cp = ++domainp; *cp; ++cp)
+			if (islower(*cp))
+				*cp = toupper(*cp);
+	}
+	return(!strcmp(domainp, rhost + len +1));
+
+}
+#endif
