@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.4 1990-07-17 14:19:30 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.0 1992-04-22 01:45:58 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  90/07/17  14:19:30  tom
+ * commented out function declarations not functional on decmips
+ * 
  * Revision 1.3  90/05/26  13:42:27  tom
  * athena release 7.0e + patch 15
  * 
@@ -35,7 +38,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.4 1990-07-17 14:19:30 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 2.0 1992-04-22 01:45:58 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -47,8 +50,10 @@
 /*
  *  general definitions
  */
+#ifndef RSPOS
 #define TRUE	 0x1
 #define FALSE	 0x0
+#endif /* RSPOS */
 
 #define GEN_ERR	 	-1
 #define GEN_SUCCESS	0x1
@@ -181,6 +186,33 @@ extern int	tcprtoalg;		/* TCP RTO Algorithm variable */
 extern char	gw_version_id[SNMPSTRLEN];	  /* ID of the gateway */
 extern struct   snmp_tree_info  var_tree_info[];  /* Static tree info array */
 
+#ifdef MIT
+extern char     lbuf[BUFSIZ];                  /* random buffer */
+
+extern char     supp_sysdescr[SNMPSTRLEN];     /* supplementary sysdescr */
+extern char     mail_q[SNMPSTRLEN];            /* path for mailq directory */
+extern char     mail_alias_file[SNMPSTRLEN];   /* path for mail aliases */
+extern char     rc_file[SNMPSTRLEN];           /* path for rc config file */
+extern char     rpc_cred_file[SNMPSTRLEN];     /* path for rpc cred file */
+extern char     afs_cache_file[SNMPSTRLEN];    /* path for afs cache file */
+extern char     afs_suid_file[SNMPSTRLEN];     /* path for afs setuid file */
+extern char     afs_cell_file[SNMPSTRLEN];     /* path for afs cell file */
+extern char     afs_cellserv_file[SNMPSTRLEN]; /* path for cellsrvdb */
+extern char     login_file[SNMPSTRLEN];        /* path for utmp */
+extern char     version_file[SNMPSTRLEN];      /* path for version file */
+extern char     syspack_file[SNMPSTRLEN];      /* path for srvd info  file */
+extern char     dns_stat_file[SNMPSTRLEN];     /* path for dns stat file */
+extern char     srv_file[SNMPSTRLEN];          /* path for mksrv file */
+extern char     user[SNMPSTRLEN];              /* default uid to run as */
+
+extern int      logintrap;                     /* whether to send login trap */
+
+#ifdef RSPOS
+extern char     *sys_errlist[];
+#endif /* RSPOS */
+#endif MIT
+
+
 /*
  *  function type declarations
  */
@@ -192,7 +224,9 @@ extern char *inet_ntoa();
 extern long lseek();
 extern u_long inet_addr();
 extern time_t time();
+#ifndef RSPOS 
 extern char *strcpy();
+#endif /* RSPOS */
 
 /*
  *  SNMP library functions.
@@ -205,7 +239,16 @@ extern int oidcmp();
  *  routines specific to SNMPD
  */
 
+#ifdef MIT
+#ifdef decmips
+extern void quit();
+#else  decmips
 extern int quit();
+#endif decmips
+#else  MIT
+extern int quit();
+#endif MIT
+
 extern int init_kmem();
 extern int get_my_address();
 extern int varlist_free();
@@ -259,21 +302,27 @@ extern int set_intf();
 #ifdef MIT
 extern int lu_kernvers();
 extern int lu_status();
-
-#if !defined(decmips)
+#ifndef RSPOS
 extern int lu_vmstat();
 extern int lu_pstat();
 extern int lu_disk();
+#endif /* RSPOS */
 extern int lu_ndparts();
-#endif
-
 extern int lu_tuchtime();
+extern int get_inuse();         /* for trap generation in main   */
+extern int lu_mail();
 
 #ifdef ATHENA
 extern int lu_rcvar();
 extern int lu_relvers();
+extern int lu_spnum();
+extern int lu_spvers();
+extern int lu_snmpvers();
+extern int lu_service();
+extern int lu_servtbl();
 extern int lu_machtype();
 #endif ATHENA
+
 #ifdef RPC
 extern int lu_rpccl();
 extern int lu_rpcsv();
@@ -287,12 +336,18 @@ extern int lu_rvdcl();
 #endif RVD
 #ifdef AFS
 extern int lu_afs();
+extern int lu_afsdb();
 #endif AFS
 #ifdef KERBEROS
 extern int lu_kerberos();
 #endif KERBEROS
-#ifdef LOGIN
-extern int get_inuse();         /* for trap generation in main   */
-#endif LOGIN
-extern int lu_mail();
+#ifdef DNS
+extern int lu_dns();
+#endif DNS
+#ifdef TIMED
+extern int lu_timed();
+#endif TIMED
+
+
+extern char *stattime();
 #endif MIT
