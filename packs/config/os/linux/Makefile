@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2000-03-01 17:12:13 ghudson Exp $
+# $Id: Makefile,v 1.8 2000-03-06 23:51:57 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -20,16 +20,15 @@ install:
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Console ${DESTDIR}${ATHLOGINDIR}
-	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
-	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
