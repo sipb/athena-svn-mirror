@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.5 1999-05-12 17:35:13 danw Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.5.2.1 1999-07-30 22:08:30 ghudson Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -87,6 +87,10 @@ int fsid_main(int argc, char **argv)
 
 	    case 'c':
 	      mode = FSID_CELL;
+	      break;
+
+	    case 'f':
+	      mode = FSID_FILESYSTEM;
 	      break;
 
 	    case 'h':

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.5 1999-05-20 19:57:56 danw Exp $";
+"$Id: lpr.c,v 1.5.2.1 1999-07-30 22:08:45 ghudson Exp $";
 
 
 #include "lp.h"
@@ -803,15 +803,12 @@ int Make_job( struct job *job )
 		}
 	}
 
-	if( Auth_JOB )
-		Set_DYN(&Auth_DYN, Auth_JOB);
-
-	/* For Athena 8.3 beta: if "ka#1" but no "auth=", assume
-	 * "auth=kerberos4". (Hesiod info will be fixed after term
-	 * ends.)
-	 */
-	if( KA_DYN && !Auth_DYN )
-		Set_DYN(&Auth_DYN, "kerberos4");
+	if( Auth_JOB ){
+		/* Edit our copy of the printcap record: Fix_auth
+		 * will update Auth_DYN from it later.
+		 */
+		Set_str_value(&PC_entry_line_list, "auth", Auth_JOB);
+	}
 
 	get_job_number(job);
 
