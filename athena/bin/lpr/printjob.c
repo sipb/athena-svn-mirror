@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.21 1992-11-09 01:10:29 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.22 1992-11-09 01:28:58 probe Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.21 1992-11-09 01:10:29 probe Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.22 1992-11-09 01:28:58 probe Exp $";
 #endif
 
 /*
@@ -44,6 +44,7 @@ static char *rcsid_printjob_c = "$Id: printjob.c,v 1.21 1992-11-09 01:10:29 prob
 
 static int	network;		/* true if network access to printer */
 #ifdef ZEPHYR
+#undef STAT
 #include <zephyr/zephyr.h>
 
 #define ZCLASS "MESSAGE"

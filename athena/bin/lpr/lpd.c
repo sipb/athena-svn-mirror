@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.15 1992-11-09 01:10:44 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.16 1992-11-09 01:28:11 probe Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.15 1992-11-09 01:10:44 probe Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.16 1992-11-09 01:28:11 probe Exp $";
 #endif
 
 /*
@@ -54,6 +54,7 @@ static char *rcsid_lpd_c = "$Id: lpd.c,v 1.15 1992-11-09 01:10:44 probe Exp $";
 #include "lp.h"
 
 #ifdef ZEPHYR
+#undef STAT
 #include <zephyr/zephyr.h>
 #endif
 
@@ -566,7 +567,7 @@ chkhost(f)
 {
   /* The following definitions define what consititutes an "athena machine":
    */
-#ifdef   ws
+#ifdef WS
 #ifdef NET
 #undef NET
 #endif
@@ -601,7 +602,7 @@ chkhost(f)
 #endif
 	if (!strcasecmp(from, host))
 		return;
-#ifdef	ws
+#ifdef WS
 	/* Code for workstation printing only which permits any machine on the 
 	   Athena network, and in the namespace, to print, even if not
 	   in /etc/hosts.equiv or /etc/hosts.lpd */
