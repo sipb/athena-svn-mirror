@@ -1,22 +1,22 @@
-# $Id: Makefile.athena,v 1.2 1996-10-13 04:28:40 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 1996-10-13 20:33:53 ghudson Exp $
 
 SHELL=/bin/sh
 
 configure: force
-	rm -f config.cache
-	./configure
+	cd src && rm -f config.cache
+	cd src && ./configure
 
 force:
 
 clean:
-	${MAKE} clean
+	cd src && ${MAKE} clean
 
 all:
-	${MAKE} depend all
+	cd src && ${MAKE} depend all
 
 check:
 
 install:
-	cd include && ${MAKE} install DESTDIR="$$SRVD"
-	cd lib/krb5 && ${MAKE} install DESTDIR="$$SRVD"
-	cd lib/crypto && ${MAKE} install DESTDIR="$$SRVD"
+	cd src/include && ${MAKE} install DESTDIR="$$SRVD"
+	cd src/lib/krb5 && ${MAKE} install DESTDIR="$$SRVD"
+	cd src/lib/crypto && ${MAKE} install DESTDIR="$$SRVD"
