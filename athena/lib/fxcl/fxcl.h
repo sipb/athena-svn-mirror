@@ -1,7 +1,7 @@
 /***********************************************************************
  * to be included by all fx library clients
  *
- * $Id: fxcl.h,v 1.1 1999-09-28 22:07:22 danw Exp $
+ * $Id: fxcl.h,v 1.2 2003-03-20 07:34:06 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -27,6 +27,7 @@
 #include <time.h>
 #include <netdb.h>
 #include <string.h>
+#include <errno.h>
 
 #define paper_clear(p) memset((char *) p, 0, sizeof(Paper))
 #define paper_copy(a, b)  memcpy(b, a, sizeof(Paper))
