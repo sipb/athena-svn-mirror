@@ -34,8 +34,9 @@
 /* based on @(#)genget.c	8.1 (Berkeley) 6/4/93 */
 
 #include <ctype.h>
+#include "misc.h"
 
-#define	LOWER(x) (isupper(x) ? tolower(x) : (x))
+#define	LOWER(x) (isupper((int) x) ? tolower((int) x) : (x))
 /*
  * The prefix function returns 0 if *s1 is not a prefix
  * of *s2.  If *s1 exactly matches *s2, the negative of
@@ -95,7 +96,7 @@ genget(name, table, stlen)
  */
 	int
 Ambiguous(s)
-	char *s;
+	void *s;
 {
 	return((char **)s == &ambiguous);
 }

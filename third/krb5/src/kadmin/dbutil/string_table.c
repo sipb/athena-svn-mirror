@@ -1,16 +1,9 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.c,v 1.1.1.3 1999-02-09 21:04:19 danw Exp $
  */
 
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.c,v 1.1.1.3 1999-02-09 21:04:19 danw Exp $";
-#endif
-
 /* String table of messages for kadm5_create */
-
-char *str_INITING_KCONTEXT = "while initializing the kerberos context";
 
 char *str_PARSE_NAME = "while parsing admin principal name.";
 

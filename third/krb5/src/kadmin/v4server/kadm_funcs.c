@@ -64,7 +64,7 @@ static char *dummypw()
  * Convert a kadm5_principal_ent_t to a Principal.  Assumes that princ
  * is already allocated.
  */
-krb5_error_code
+static krb5_error_code
 kadm_entry2princ(entry, princ)
     kadm5_principal_ent_t entry;
     Principal *princ;
@@ -83,7 +83,7 @@ kadm_entry2princ(entry, princ)
     strncpy(princ->exp_date_txt,
 	    ctime((const time_t *) &entry->pw_expiration), DATE_SZ);
     princ->attributes = entry->attributes;
-    princ->max_life = entry->max_life / (60 * 5);
+    princ->max_life = krb_time_to_life(0, entry->max_life);
     princ->kdc_key_ver = 1; /* entry->mkvno .... WTF??? --tlyu */
     for (i = 0; i < entry->n_key_data; i++) {
 	/* XXX This assumes knowledge of the internals of krb5_key_data */
@@ -108,7 +108,7 @@ kadm_entry2princ(entry, princ)
     return 0;
 }
 
-int check_access(pname, pinst, prealm, acltype)
+static int check_access(pname, pinst, prealm, acltype)
     char *pname;
     char *pinst;
     char *prealm;
@@ -140,7 +140,7 @@ int check_access(pname, pinst, prealm, acltype)
     return(acl_check(filename, checkname));
 }
 
-int wildcard(str)
+static int wildcard(str)
 char *str;
 {
     if (!strcmp(str, WILDCARD_STR))
@@ -197,7 +197,7 @@ kadm_add_entry (rname, rinstance, rrealm, valsin, valsout)
     }
 
     if (IS_FIELD(KADM_MAXLIFE,valsin->fields)) {
-	newentry.max_life = data_i.max_life * (60 * 5);
+	newentry.max_life = krb_life_to_time(0, data_i.max_life);
 	mask |= KADM5_MAX_LIFE;
     }
 
@@ -277,6 +277,7 @@ err:
 #ifndef KADM5
 #define faildel(code) {  (void) syslog(LOG_ERR, "FAILED deleting '%s.%s' (%s)", valsin->name, valsin->instance, error_message(code)); return code; }
 
+krb5_error_code
 kadm_del_entry (rname, rinstance, rrealm, valsin, valsout)
 char *rname;				/* requestors name */
 char *rinstance;			/* requestors instance */
@@ -466,7 +467,7 @@ kadm_mod_entry (rname, rinstance, rrealm, valsin1, valsin2, valsout)
     }
 
     if (IS_FIELD(KADM_MAXLIFE,valsin2->fields)) {
-	entry.max_life = temp_key.max_life * (60 * 5);
+	entry.max_life = krb_life_to_time(0, temp_key.max_life);
 	mask |= KADM5_MAX_LIFE;
     }
 
@@ -531,6 +532,7 @@ err:
 #ifndef KADM5
 #define failchange(code) {  syslog(LOG_ERR, "FAILED changing key for '%s.%s@%s' (%s)", rname, rinstance, rrealm, error_message(code)); return code; }
 
+krb5_error_code
 kadm_change (rname, rinstance, rrealm, newpw)
 char *rname;
 char *rinstance;
@@ -622,6 +624,7 @@ des_cblock newpw;
 #undef failchange
 #endif /* !KADM5 */
 
+static int
 check_pw(newpw, checkstr)
 	des_cblock	newpw;
 	char		*checkstr;
@@ -636,7 +639,7 @@ check_pw(newpw, checkstr)
 #endif /* NOENCRYPTION */
 }
 
-char *reverse(str)
+static char *reverse(str)
 	char	*str;
 {
 	static char newstr[80];
@@ -655,21 +658,22 @@ char *reverse(str)
 	return(newstr);
 }
 
-int lower(str)
+static int lower(str)
 	char	*str;
 {
 	register char	*cp;
 	int	effect=0;
 
 	for (cp = str; *cp; cp++) {
-		if (isupper(*cp)) {
-			*cp = tolower(*cp);
+		if (isupper((int) *cp)) {
+			*cp = tolower((int) *cp);
 			effect++;
 		}
 	}
 	return(effect);
 }
 
+static int
 des_check_gecos(gecos, newpw)
 	char	*gecos;
 	des_cblock newpw;
@@ -679,11 +683,11 @@ des_check_gecos(gecos, newpw)
 	for (cp = gecos; *cp; ) {
 		/* Skip past punctuation */
 		for (; *cp; cp++)
-			if (isalnum(*cp))
+			if (isalnum((int) *cp))
 				break;
 		/* Skip to the end of the word */
 		for (ncp = cp; *ncp; ncp++)
-			if (!isalnum(*ncp) && *ncp != '\'')
+			if (!isalnum((int) *ncp) && *ncp != '\'')
 				break;
 		/* Delimit end of word */
 		if (*ncp)
@@ -709,6 +713,7 @@ des_check_gecos(gecos, newpw)
 	return(0);
 }
 
+static int
 str_check_gecos(gecos, pwstr)
 	char	*gecos;
 	char	*pwstr;
@@ -718,11 +723,11 @@ str_check_gecos(gecos, pwstr)
 	for (cp = gecos; *cp; ) {
 		/* Skip past punctuation */
 		for (; *cp; cp++)
-			if (isalnum(*cp))
+			if (isalnum((int) *cp))
 				break;
 		/* Skip to the end of the word */
 		for (ncp = cp; *ncp; ncp++)
-			if (!isalnum(*ncp) && *ncp != '\'')
+			if (!isalnum((int) *ncp) && *ncp != '\'')
 				break;
 		/* Delimit end of word */
 		if (*ncp)
@@ -742,6 +747,7 @@ str_check_gecos(gecos, pwstr)
 }
 
 
+krb5_error_code
 kadm_approve_pw(rname, rinstance, rrealm, newpw, pwstring)
 char *rname;
 char *rinstance;
@@ -804,7 +810,7 @@ char *pwstring;
  * (relatively) reasonable assumption that both the name and the
  * instance will  not contain '.' or '@'. 
  */
-int kadm_check_srvtab(name, instance)
+static int kadm_check_srvtab(name, instance)
 	char	*name;
 	char	*instance;
 {

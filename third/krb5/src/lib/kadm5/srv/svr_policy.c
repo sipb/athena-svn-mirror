@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_policy.c,v 1.1.1.3 1999-02-09 21:00:18 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_policy.c,v 1.1.1.4 2004-02-27 04:17:52 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_policy.c,v 1.1.1.3 1999-02-09 21:00:18 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_policy.c,v 1.1.1.4 2004-02-27 04:17:52 zacheiss Exp $";
 #endif
 
 #include	<sys/types.h>
@@ -29,7 +29,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
  *	entry	(input) The policy entry to be written out to the DB.
  *	mask	(input)	Specifies which fields in entry are to ge written out
  *			and which get default values.
- *	<return value> 0 if sucsessfull otherwise an error code is returned.
+ *	<return value> 0 if successful otherwise an error code is returned.
  *
  * Requires:
  *	Entry must be a valid principal entry, and mask have a valid value.
@@ -62,14 +62,14 @@ kadm5_create_policy(void *server_handle,
  *	entry	(input) The policy entry to be written out to the DB.
  *	mask	(input)	Specifies which fields in entry are to ge written out
  *			and which get default values.
- *	<return value> 0 if sucsessfull otherwise an error code is returned.
+ *	<return value> 0 if successful otherwise an error code is returned.
  *
  * Requires:
  *	Entry must be a valid principal entry, and mask have a valid value.
  * 
  * Effects:
  *	Writes the data to the database, and does a database sync if
- *	sucsessfull.
+ *	successful.
  *
  */
 

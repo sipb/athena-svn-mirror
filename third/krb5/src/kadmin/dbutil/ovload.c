@@ -1,17 +1,19 @@
 #include    <unistd.h>
 #include    <string.h>
 #include    <stdlib.h>
+#ifdef HAVE_MEMORY_H
 #include    <memory.h>
+#endif
 
 #include    <kadm5/adb.h>
 #include    "import_err.h"
-
-char *nstrtok();
+#include    "kdb5_util.h"
+#include    "nstrtok.h"
 
 #define LINESIZE	32768 /* XXX */
 #define PLURAL(count)	(((count) == 1) ? error_message(IMPORT_SINGLE_RECORD) : error_message(IMPORT_PLURAL_RECORDS))
 
-int parse_pw_hist_ent(current, hist)
+static int parse_pw_hist_ent(current, hist)
    char *current;
    osa_pw_hist_ent *hist;
 {
@@ -77,7 +79,7 @@ done:
  * Purpose: parse principal line in db dump file
  *
  * Arguments:
- * 	<return value>	0 on sucsess, error code on failure
+ * 	<return value>	0 on success, error code on failure
  *
  * Requires:
  *	principal database to be opened.
@@ -106,7 +108,7 @@ int process_ov_principal(fname, kcontext, filep, verbose, linenop, pol_db)
     krb5_db_entry	    kdb;
     char		    *current;
     char		    *cp;
-    int			    tmp, x, i, one;
+    int			    x, one;
     krb5_boolean	    more;
     char		    line[LINESIZE];
 
@@ -184,16 +186,16 @@ int process_ov_principal(fname, kcontext, filep, verbose, linenop, pol_db)
     tl_data.tl_data_contents = (krb5_octet *) xdralloc_getdata(&xdrs);
 
     one = 1;
-    ret = krb5_db_get_principal(kcontext, princ, &kdb, &one,
-				&more);
+    ret = krb5_db_get_principal(kcontext, princ, &kdb, &one, &more);
     if (ret)
 	 goto done;
     
-    if (ret = krb5_dbe_update_tl_data(kcontext, &kdb,
-				&tl_data))
+    ret = krb5_dbe_update_tl_data(kcontext, &kdb, &tl_data);
+    if (ret)
 	 goto done;
 
-    if (ret = krb5_db_put_principal(kcontext, &kdb, &one))
+    ret = krb5_db_put_principal(kcontext, &kdb, &one);
+    if (ret)
 	 goto done;
 
     xdr_destroy(&xdrs);

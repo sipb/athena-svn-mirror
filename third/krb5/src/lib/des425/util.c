@@ -13,13 +13,14 @@
 
 /* Application include files */
 #include "k5-int.h"
+#include "des_int.h"
 #include "des.h"
 
 void des_cblock_print_file(x, fp)
     des_cblock *x;
     FILE *fp;
 {
-    unsigned char *y = (unsigned char *) x;
+    unsigned char *y = *x;
     register int i = 0;
     fprintf(fp," 0x { ");
 

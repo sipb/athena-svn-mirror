@@ -20,12 +20,10 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * $Id: util_cksum.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
- */
-
 #include "gssapiP_krb5.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 
 /* Checksumming the channel bindings always uses plain MD5.  */
 krb5_error_code
@@ -35,14 +33,17 @@ kg_checksum_channel_bindings(context, cb, cksum, bigend)
      krb5_checksum *cksum;
      int bigend;
 {
-   int len;
-   char *buf, *ptr;
+   size_t len;
+   char *buf = 0;
+   char *ptr;
    size_t sumlen;
    krb5_data plaind;
    krb5_error_code code;
+   void *temp;
 
    /* initialize the the cksum */
-   if (code = krb5_c_checksum_length(context, CKSUMTYPE_RSA_MD5, &sumlen))
+   code = krb5_c_checksum_length(context, CKSUMTYPE_RSA_MD5, &sumlen);
+   if (code)
        return(code);
 
    cksum->checksum_type = CKSUMTYPE_RSA_MD5;
@@ -84,14 +85,24 @@ kg_checksum_channel_bindings(context, cb, cksum, bigend)
    plaind.length = len;
    plaind.data = buf;
 
-   if (code = krb5_c_make_checksum(context, CKSUMTYPE_RSA_MD5, 0, 0,
-				   &plaind, cksum)) {
-      xfree(buf);
-      return(code);
+   code = krb5_c_make_checksum(context, CKSUMTYPE_RSA_MD5, 0, 0,
+			       &plaind, cksum);
+   if (code)
+       goto cleanup;
+
+   if ((temp = xmalloc(cksum->length)) == NULL) {
+       krb5_free_checksum_contents(context, cksum);
+       code = ENOMEM;
+       goto cleanup;
    }
 
-   /* success */
+   memcpy(temp, cksum->contents, cksum->length);
+   krb5_free_checksum_contents(context, cksum);
+   cksum->contents = (krb5_octet *)temp;
 
-   xfree(buf);
-   return(0);
+   /* success */
+ cleanup:
+   if (buf)
+       xfree(buf);
+   return code;
 }

@@ -1,13 +1,12 @@
 /*
   * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
   * 
-  * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.h,v 1.1.1.3 1999-02-09 21:04:19 danw Exp $
+  * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.h,v 1.1.1.4 2004-02-27 04:18:45 zacheiss Exp $
   *
   */
  
 #ifndef _OVSEC_ADM_STRINGS_
  
-extern char *str_INITING_KCONTEXT;
 extern char *str_PARSE_NAME;
 extern char *str_HISTORY_PARSE_NAME;
 extern char *str_ADMIN_PRINC_EXISTS;

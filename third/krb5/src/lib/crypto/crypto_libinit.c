@@ -1,6 +1,9 @@
 #include <assert.h>
+#include "crypto_libinit.h"
 
 static	int		initialized = 0;
+
+extern void prng_cleanup (void);
 
 /*
  * Initialize the crypto library.

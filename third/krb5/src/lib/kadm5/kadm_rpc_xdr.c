@@ -7,6 +7,7 @@
 #include <k5-int.h>
 #include <kadm5/admin.h>
 #include <kadm5/kadm_rpc.h>
+#include <kadm5/admin_xdr.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -135,16 +136,8 @@ xdr_krb5_kvno(XDR *xdrs, krb5_kvno *objp)
 
 	tmp = '\0'; /* for purify, else xdr_u_char performs a umr */
 
-	if (xdrs->x_op == XDR_ENCODE) {
+	if (xdrs->x_op == XDR_ENCODE)
 		tmp = (unsigned char) *objp;
-#if 0
-		/* We can't change the protocol right now, so let's
-		   just reject (legitimate!) values that won't fit in
-		   our broken one-byte encoding.  */
-		if (tmp != *objp)
-		    return FALSE;
-#endif
-	}
 
 	if (!xdr_u_char(xdrs, &tmp))
 		return (FALSE);
@@ -202,6 +195,30 @@ xdr_krb5_int16(XDR *xdrs, krb5_int16 *objp)
 
     return(TRUE);
 }
+
+/*
+ * Function: xdr_krb5_ui_2
+ *
+ * Purpose: XDR function which serves as a wrapper for xdr_u_int,
+ * to prevent compiler warnings about type clashes between u_int
+ * and krb5_ui_2.
+ */
+bool_t
+xdr_krb5_ui_2(XDR *xdrs, krb5_ui_2 *objp)
+{
+    unsigned int tmp;
+
+    tmp = (unsigned int) *objp;
+
+    if (!xdr_u_int(xdrs, &tmp))
+	return(FALSE);
+
+    *objp = (krb5_ui_2) tmp;
+
+    return(TRUE);
+}
+
+
 
 bool_t xdr_krb5_key_data_nocontents(XDR *xdrs, krb5_key_data *objp)
 {
@@ -265,7 +282,7 @@ bool_t xdr_krb5_tl_data(XDR *xdrs, krb5_tl_data **tl_data_head)
 {
      krb5_tl_data *tl, *tl2;
      bool_t more;
-     int len;
+     unsigned int len;
 
      switch (xdrs->x_op) {
      case XDR_FREE:

@@ -1,100 +1,19 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: client.c,v 1.1.1.4 1999-10-05 16:15:19 ghudson Exp $
- * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v $
- * 
- * $Log: not supported by cvs2svn $
- * Revision 1.16  1998/02/14 02:29:42  tlyu
- * 	* client.c: Update header locations.  Rename of xdr_free.
- *
- * 	* rpc_test.h: Update header locations.
- *
- * 	* server.c: Update header locations.
- *
- * Revision 1.15  1998/02/12 21:40:16  tlyu
- * 	* client.c (main): Tweak the kludge variable
- * 	krb5_gss_dbg_clietn_expcreds so we can send expired creds to the
- * 	server.
- *
- * Revision 1.14  1996/11/12 21:29:54  bjaspan
- * 	* lib/helpers.exp, client.c, server.c, config/unix.exp,
- *  	Makefile.in: test GSS-RPC with both TCP and UDP transport layers
- *  	[krb5-libs/180]
- *
- * Revision 1.13  1996/07/22 20:41:40  marc
- * this commit includes all the changes on the OV_9510_INTEGRATION and
- * OV_MERGE branches.  This includes, but is not limited to, the new openvision
- * admin system, and major changes to gssapi to add functionality, and bring
- * the implementation in line with rfc1964.  before committing, the
- * code was built and tested for netbsd and solaris.
- *
- * Revision 1.12.4.1  1996/07/18 04:20:03  marc
- * merged in changes from OV_9510_BP to OV_9510_FINAL1
- *
- * Revision 1.12.2.1  1996/06/20  23:41:56  marc
- * File added to the repository on a branch
- *
- * Revision 1.12  1996/05/12  06:58:10  marc
- * type renamings for compatibility with beta6
- *
- * Revision 1.11  1996/02/12  15:58:42  grier
- * [secure/3570]
- * long conversion
- *
- * Revision 1.10  1995/12/07  17:37:03  jik
- * Use "rpc_test" instead of "rpc-test", to avoid problems with rpcgen on
- * some systems.  See PR 3553.
- *
- * Revision 1.9  1994/09/21 18:38:56  bjaspan
- * [secure-rpc/2536: unit test client.c: memory initialization and out-of-bounds reference bugs]
- * [secure-releng/2537: audit secure-rpc/2536: minor memory problems in unit-test client]
- *
- * Sandbox:
- *
- *  1. Don't allow the count specifie on the command line to be bigger
- *     than the size of the buffer use for testing.
- *  2. When initializing the buffer for the lengths test, initialize it to
- *     count bytes.
- *
- * Revision 1.9  1994/09/19  01:28:04  root
- * 1. Don't allow the count specifie on the command line to be bigger
- *    than the size of the buffer use for testing.
- * 2. When initializing the buffer for the lengths test, initialize it to
- *    count bytes.
- *
- * Revision 1.8  1994/04/06  22:13:01  jik
- * Change -auth_once to -o, add -a, -m and -s arguments to set
- * auth_debug_gssapi, svc_debug_gssapi and misc_debug_gssapi variables.
- *
- * Revision 1.7  1994/04/05  20:50:09  bjaspan
- * fix typo that causes coredump when server blocks/fails
- *
- * Revision 1.6  1993/12/08  21:44:45  bjaspan
- * test fix for secure-rpc/586, improve arg handlng
- *
- * Revision 1.5  1993/12/06  21:23:30  bjaspan
- * accept count arg for RPC_TEST_LENGTHS
- *
- * Revision 1.4  1993/12/01  23:41:45  bjaspan
- * don't free echo_resp if call fails
- *
- * Revision 1.3  1993/11/15  19:53:09  bjaspan
- * test auto-syncrhonization
- *
- * Revision 1.2  1993/11/12  02:33:43  bjaspan
- * use clnt_pcreateerror for auth failures
- *
- * Revision 1.1  1993/11/03  23:53:58  bjaspan
- * Initial revision
+ * $Id: client.c,v 1.1.1.5 2004-02-27 04:18:56 zacheiss Exp $
  *
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.4 1999-10-05 16:15:19 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.5 2004-02-27 04:18:56 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
+#include <string.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <gssrpc/rpc.h>
 #include <gssapi/gssapi.h>
 #include <gssrpc/rpc.h>
@@ -120,6 +39,14 @@ struct auth_gssapi_data {
 extern int auth_debug_gssapi;
 char *whoami;
 
+static void usage()
+{
+     fprintf(stderr, "usage: %s {-t|-u} [-a] [-s num] [-m num] host service [count]\n",
+	     whoami);
+     exit(1);
+}
+
+int
 main(argc, argv)
    int argc;
    char **argv;
@@ -129,7 +56,8 @@ main(argc, argv)
      CLIENT      *clnt;
      AUTH	 *tmp_auth;
      struct rpc_err e;
-     int i, count, auth_once;
+     int i, auth_once;
+     unsigned int count;
      extern int optind;
      extern char *optarg;
      extern int svc_debug_gssapi, misc_debug_gssapi, auth_debug_gssapi;
@@ -177,8 +105,8 @@ main(argc, argv)
      switch (argc) {
      case 3:
 	  count = atoi(argv[2]);
-	  if (count > BIG_BUF) {
-	    fprintf(stderr, "Test count cannot exceed %d.\n", BIG_BUF);
+	  if (count > BIG_BUF-1) {
+	    fprintf(stderr, "Test count cannot exceed %d.\n", BIG_BUF-1);
 	    usage();
 	  }
      case 2:
@@ -217,7 +145,7 @@ main(argc, argv)
 	  if (strncmp(*echo_resp, "Echo: ", 6) &&
 	      strcmp(echo_arg, (*echo_resp) + 6) != 0)
 	       fprintf(stderr, "RPC_TEST_ECHO call %d response wrong: "
-		       "arg = %s, resp = %s\n", echo_arg, *echo_resp);
+		       "arg = %s, resp = %s\n", i, echo_arg, *echo_resp);
 	  gssrpc_xdr_free(xdr_wrapstring, echo_resp);
      }
 
@@ -312,7 +240,7 @@ main(argc, argv)
       * this last, since it takes a while..
       */
      echo_arg = buf;
-     memset(buf, 0, count);
+     memset(buf, 0, count+1);
      for (i = 0; i < count; i++) {
 	  echo_resp = rpc_test_echo_1(&echo_arg, clnt);
 	  if (echo_resp == NULL) {
@@ -323,7 +251,7 @@ main(argc, argv)
 	       if (strncmp(*echo_resp, "Echo: ", 6) &&
 		   strcmp(echo_arg, (*echo_resp) + 6) != 0)
 		    fprintf(stderr,
-			    "RPC_TEST_LENGTHS call %d response wrong\n");
+			    "RPC_TEST_LENGTHS call %d response wrong\n", i);
 	       gssrpc_xdr_free(xdr_wrapstring, echo_resp);
 	  }
 	  
@@ -342,9 +270,3 @@ main(argc, argv)
      exit(0);
 }
 
-usage()
-{
-     fprintf(stderr, "usage: %s {-t|-u} [-a] [-s num] [-m num] host service [count]\n",
-	     whoami);
-     exit(1);
-}

@@ -43,6 +43,7 @@
 
 #include "k5-int.h"
 #include "admin_internal.h"
+#include "adm_proto.h"
 
 /*
  * Local data structures.
@@ -334,8 +335,9 @@ krb5_string_to_keysalts(string, tupleseps, ksaltseps, dups, ksaltp, nksaltp)
 	    len = (size_t) *nksaltp;
 
 	    /* Get new keysalt array */
-	    if (*ksaltp = (krb5_key_salt_tuple *)
-		malloc((len + 1) * sizeof(krb5_key_salt_tuple))) {
+	    *ksaltp = (krb5_key_salt_tuple *) 
+		malloc((len + 1) * sizeof(krb5_key_salt_tuple));
+	    if (*ksaltp) {
 
 		/* Copy old keysalt if appropriate */
 		if (savep) {
@@ -391,8 +393,7 @@ krb5_keysalt_iterate(ksaltlist, nksalt, ignoresalt, iterator, arg)
     krb5_key_salt_tuple	*ksaltlist;
     krb5_int32		nksalt;
     krb5_boolean	ignoresalt;
-    krb5_error_code	(*iterator) KRB5_NPROTOTYPE((krb5_key_salt_tuple *,
-						     krb5_pointer));
+    krb5_error_code	(*iterator) (krb5_key_salt_tuple *, krb5_pointer);
     krb5_pointer	arg;
 {
     int			i;
@@ -407,7 +408,8 @@ krb5_keysalt_iterate(ksaltlist, nksalt, ignoresalt, iterator, arg)
 				     i,
 				     scratch.ks_enctype,
 				     scratch.ks_salttype)) {
-	    if (kret = (*iterator)(&scratch, arg))
+	    kret = (*iterator)(&scratch, arg);
+	    if (kret)
 		break;
 	}
     }

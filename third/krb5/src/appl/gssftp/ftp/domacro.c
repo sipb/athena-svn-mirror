@@ -44,7 +44,7 @@ static char sccsid[] = "@(#)domacro.c	1.8 (Berkeley) 9/28/90";
 #include <ctype.h>
 #include <string.h>
 
-domacro(argc, argv)
+void domacro(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -52,9 +52,8 @@ domacro(argc, argv)
 	register char *cp1, *cp2;
 	int count = 2, loopflg = 0;
 	char line2[200];
-	extern char **glob(), *globerr;
+	extern char **glob();
 	struct cmd *getcmd(), *c;
-	extern struct cmd cmdtab[];
 
 	if (argc < 2 && !another(&argc, &argv, "macro name")) {
 		printf("Usage: %s macro_name.\n", argv[0]);
@@ -76,7 +75,7 @@ domacro(argc, argv)
 TOP:
 	cp1 = macros[i].mac_start;
 	while (cp1 != macros[i].mac_end) {
-		while (isspace(*cp1)) {
+		while (isspace((int) *cp1)) {
 			cp1++;
 		}
 		cp2 = line;
@@ -86,9 +85,9 @@ TOP:
 				 *cp2++ = *++cp1;
 				 break;
 			    case '$':
-				 if (isdigit(*(cp1+1))) {
+				 if (isdigit((int) *(cp1+1))) {
 				    j = 0;
-				    while (isdigit(*++cp1)) {
+				    while (isdigit((int) (*++cp1))) {
 					  j = 10*j +  *cp1 - '0';
 				    }
 				    cp1--;
@@ -106,7 +105,7 @@ TOP:
 					loopflg = 1;
 					cp1++;
 					if (count < argc) {
-                                           if(cp2 + strlen(argv[j+1]) - line < sizeof(line))
+                                           if(cp2 + strlen(argv[count]) - line < sizeof(line))
 					   (void) strncpy(cp2, argv[count],
 							  sizeof(line) - 1 -
 							  (cp2 - line));

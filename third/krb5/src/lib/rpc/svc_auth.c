@@ -52,24 +52,16 @@ static char sccsid[] = "@(#)svc_auth.c	2.1 88/08/07 4.0 RPCSRC; from 1.19 87/08/
  *
  */
 
-#define _svcauth_null		_gssrpc_svcauth_null
-#define _svcauth_unix		_gssrpc_svcauth_unix
-#define _svcauth_short		_gssrpc_svcauth_short
-
-enum auth_stat _svcauth_null();		/* no authentication */
-enum auth_stat _svcauth_unix();		/* unix style (uid, gids) */
-enum auth_stat _svcauth_short();	/* short hand unix style */
-enum auth_stat _svcauth_gssapi();	/* GSS-API style */
-
 static struct svcauthsw_type {
      unsigned int flavor;
-     enum auth_stat (*authenticator)();
+     enum auth_stat (*authenticator)(struct svc_req *, struct rpc_msg *,
+				     bool_t *);
 } svcauthsw[] = {
-     AUTH_GSSAPI, _svcauth_gssapi,		/* AUTH_GSSAPI */
-     AUTH_NONE, _svcauth_null,			/* AUTH_NULL */
-     AUTH_GSSAPI_COMPAT, _svcauth_gssapi,	/* AUTH_GSSAPI_COMPAT */
-     AUTH_UNIX, _svcauth_unix,			/* AUTH_UNIX */
-     AUTH_SHORT, _svcauth_short,		/* AUTH_SHORT */
+     {AUTH_GSSAPI, _svcauth_gssapi},		/* AUTH_GSSAPI */
+     {AUTH_NONE, _svcauth_null},		/* AUTH_NULL */
+     {AUTH_GSSAPI_COMPAT, _svcauth_gssapi},	/* AUTH_GSSAPI_COMPAT */
+     {AUTH_UNIX, _svcauth_unix},		/* AUTH_UNIX */
+     {AUTH_SHORT, _svcauth_short},		/* AUTH_SHORT */
 };
 static int svcauthnum = sizeof(svcauthsw) / sizeof(struct svcauthsw_type);
 
@@ -114,9 +106,10 @@ _authenticate(rqst, msg, no_dispatch)
 }
 
 enum auth_stat
-_svcauth_null(rqst, msg)
+_svcauth_null(rqst, msg, no_dispatch)
    struct svc_req *rqst;
    struct rpc_msg *msg;
+   bool_t *no_dispatch;
 {
      rqst->rq_xprt->xp_auth = &svc_auth_any;
      return (AUTH_OK);

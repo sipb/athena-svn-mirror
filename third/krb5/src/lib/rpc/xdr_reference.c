@@ -41,6 +41,7 @@ static char sccsid[] = "@(#)xdr_reference.c 1.11 87/08/11 SMI";
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <gssrpc/types.h>
 #include <gssrpc/xdr.h>
 
@@ -77,7 +78,10 @@ xdr_reference(xdrs, pp, size, proc)
 				    "xdr_reference: out of memory\n");
 				return (FALSE);
 			}
-			memset(loc, 0, (int)size);
+			memset(loc, 0, size);
+			break;
+
+		case XDR_ENCODE:
 			break;
 	}
 

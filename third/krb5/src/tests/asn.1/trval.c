@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 #define OK 0
 #define NOTOK (-1)
@@ -105,14 +106,22 @@ int print_krb5_types = 0;
 
 int current_appl_type = -1;
 
-void print_tag_type();
-int trval(), trval2(), decode_len(), do_cons(), do_prim();
+int decode_len (FILE *, unsigned char *, int);
+int do_prim (FILE *, int, unsigned char *, int, int);
+int do_cons (FILE *, unsigned char *, int, int, int *);
+int do_prim_bitstring (FILE *, int, unsigned char *, int, int);
+int do_prim_int (FILE *, int, unsigned char *, int, int);
+int do_prim_string (FILE *, int, unsigned char *, int, int);
+void print_tag_type (FILE *, int, int);
+int trval (FILE *, FILE *);
+int trval2 (FILE *, unsigned char *, int, int, int *);
+
 
 /****************************************************************************/
 
 #ifdef STANDALONE
 
-void usage()
+static void usage()
 {
 	fprintf(stderr, "Usage: trval [--types] [--krb5] [--krb5decode] [--hex] [-notypebytes] [file]\n");
 	exit(1);
@@ -122,6 +131,7 @@ void usage()
  * Returns true if the option was selected.  Allow "-option" and
  * "--option" syntax, since we used to accept only "-option"
  */
+static
 int check_option(word, option)
 	char *word;
 	char *option;
@@ -182,7 +192,7 @@ int main(argc, argv)
 }
 #endif
 
-int convert_nibble(ch)
+static int convert_nibble(ch)
 {
     if (isdigit(ch))
 	return (ch - '0');
@@ -198,7 +208,7 @@ int trval(fin, fout)
 	FILE	*fout;
 {
 	unsigned char *p;
-	int maxlen;
+	unsigned int maxlen;
 	int len;
 	int cc, cc2, n1, n2;
 	int r;
@@ -490,7 +500,7 @@ struct typestring_table {
 	int	new_appl;
 };
 
-char *lookup_typestring(table, key1, key2)
+static char *lookup_typestring(table, key1, key2)
 	struct typestring_table *table;
 	int	key1, key2;
 {

@@ -1,17 +1,19 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.6 2004-02-27 04:17:05 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.6 2004-02-27 04:17:05 zacheiss Exp $";
 #endif
 
 #include    <gssrpc/rpc.h>
 #include    <kadm5/admin.h>
 #include    <kadm5/kadm_rpc.h>
+#ifdef HAVE_MEMORY_H
 #include    <memory.h>
+#endif
 #include    "client_internal.h"
 
 kadm5_ret_t
@@ -212,7 +214,6 @@ kadm5_get_principal(void *server_handle,
     gprinc_arg	arg;
     gprinc_ret	*r;
     kadm5_server_handle_t handle = server_handle;
-    krb5_error_code retval;
 
     CHECK_HANDLE(server_handle);
 
@@ -257,7 +258,6 @@ kadm5_get_principals(void *server_handle,
     gprincs_arg	arg;
     gprincs_ret	*r;
     kadm5_server_handle_t handle = server_handle;
-    krb5_error_code retval;
 
     CHECK_HANDLE(server_handle);
 
@@ -436,7 +436,6 @@ kadm5_randkey_principal_3(void *server_handle,
 {
     chrand3_arg		arg;
     chrand_ret		*r;
-    krb5_keyblock	new;
     kadm5_server_handle_t handle = server_handle;
     int			i, ret;
 
@@ -488,7 +487,6 @@ kadm5_randkey_principal(void *server_handle,
 {
     chrand_arg		arg;
     chrand_ret		*r;
-    krb5_keyblock	new;
     kadm5_server_handle_t handle = server_handle;
     int			i, ret;
 

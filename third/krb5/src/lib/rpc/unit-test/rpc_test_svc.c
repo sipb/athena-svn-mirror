@@ -1,5 +1,6 @@
 #include "rpc_test.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h> /* getenv, exit */
 #include <sys/types.h>
 #include <syslog.h>
@@ -20,7 +21,7 @@ void _msgout(msg)
 }
 
 void
-rpc_test_prog_1(rqstp, transp)
+rpc_test_prog_1_svc(rqstp, transp)
 	struct svc_req *rqstp;
 	register SVCXPRT *transp;
 {
@@ -43,7 +44,7 @@ rpc_test_prog_1(rqstp, transp)
 	case RPC_TEST_ECHO:
 		xdr_argument = xdr_wrapstring;
 		xdr_result = xdr_wrapstring;
-		local = (char *(*)()) rpc_test_echo_1;
+		local = (char *(*)()) rpc_test_echo_1_svc;
 		break;
 
 	default:

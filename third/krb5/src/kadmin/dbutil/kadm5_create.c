@@ -1,7 +1,6 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: kadm5_create.c,v 1.1.1.4 1999-10-05 16:11:26 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/kadm5_create.c,v $
  */
 
@@ -31,10 +30,6 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/kadm5_create.c,v 1.1.1.4 1999-10-05 16:11:26 ghudson Exp $";
-#endif
-
 #include "string_table.h"
 
 #include <stdio.h>
@@ -42,23 +37,22 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <string.h>
 #include <kadm5/adb.h>
 #include <kadm5/admin.h>
+#include <krb5/adm_proto.h>
+
 
 #include <krb5.h>
 #include <krb5/kdb.h>
+#include "kdb5_util.h"
 
-int add_admin_princ(void *handle, krb5_context context,
+static int add_admin_princ(void *handle, krb5_context context,
 		    char *name, char *realm, int attrs, int lifetime);
+static int add_admin_princs(void *handle, krb5_context context, char *realm);
 
 #define ERR 1
 #define OK 0
 
 #define ADMIN_LIFETIME 60*60*3 /* 3 hours */
 #define CHANGEPW_LIFETIME 60*5 /* 5 minutes */
-
-extern char *progname;
-
-extern krb5_keyblock master_keyblock;
-extern krb5_db_entry master_db;
 
 /*
  * Function: kadm5_create
@@ -74,26 +68,24 @@ extern krb5_db_entry master_db;
 int kadm5_create(kadm5_config_params *params)
 {
      int retval;
-     void *handle;
      krb5_context context;
-     FILE *f;
 
      kadm5_config_params lparams;
 
-     if (retval = krb5_init_context(&context))
+     if ((retval = krb5_init_context(&context)))
 	  exit(ERR);
 
      /*
       * The lock file has to exist before calling kadm5_init, but
       * params->admin_lockfile may not be set yet...
       */
-     if (retval = kadm5_get_config_params(context, NULL, NULL,
-					  params, &lparams)) {
-	  com_err(progname, retval, str_INITING_KCONTEXT);
+     if ((retval = kadm5_get_config_params(context, NULL, NULL,
+					   params, &lparams))) {
+	  com_err(progname, retval, "while looking up the Kerberos configuration");
 	  return 1;
      }
 
-     if (retval = osa_adb_create_policy_db(&lparams)) {
+     if ((retval = osa_adb_create_policy_db(&lparams))) {
 	  com_err(progname, retval, str_CREATING_POLICY_DB);
 	  return 1;
      }
@@ -107,22 +99,27 @@ int kadm5_create(kadm5_config_params *params)
 }
 
 int kadm5_create_magic_princs(kadm5_config_params *params,
-			      krb5_context *context)
+			      krb5_context context)
 {
      int retval;
      void *handle;
      
+     retval = krb5_klog_init(context, "admin_server", progname, 0);
+     if (retval)
+	  return retval;
      if ((retval = kadm5_init(progname, NULL, NULL, params,
 			      KADM5_STRUCT_VERSION,
 			      KADM5_API_VERSION_2,
 			      &handle))) {
-	  com_err(progname, retval, str_INITING_KCONTEXT);
+	  com_err(progname, retval, "while initializing the Kerberos admin interface");
 	  return retval;
      }
 
      retval = add_admin_princs(handle, context, params->realm);
 
      kadm5_destroy(handle);
+
+     krb5_klog_close(context);
 
      return retval;
 }
@@ -144,7 +141,7 @@ int kadm5_create_magic_princs(kadm5_config_params *params,
  *
  * Requires: both strings are null-terminated
  */
-char *build_name_with_realm(char *name, char *realm)
+static char *build_name_with_realm(char *name, char *realm)
 {
      char *n;
 
@@ -173,7 +170,7 @@ char *build_name_with_realm(char *name, char *realm)
  * printed.  If any of these existing principal do not have the proper
  * attributes, a warning message is printed.
  */
-int add_admin_princs(void *handle, krb5_context context, char *realm)
+static int add_admin_princs(void *handle, krb5_context context, char *realm)
 {
   krb5_error_code ret = 0;
   
@@ -228,25 +225,25 @@ int add_admin_princ(void *handle, krb5_context context,
 		    char *name, char *realm, int attrs, int lifetime)
 {
      char *fullname;
-     int nprincs;
      krb5_error_code ret;
      kadm5_principal_ent_rec ent;
 
      memset(&ent, 0, sizeof(ent));
 
      fullname = build_name_with_realm(name, realm);
-     if (ret = krb5_parse_name(context, fullname, &ent.principal)) {
+     ret = krb5_parse_name(context, fullname, &ent.principal);
+     if (ret) {
 	  com_err(progname, ret, str_PARSE_NAME);
 	  return(ERR);
      }
      ent.max_life = lifetime;
      ent.attributes = attrs | KRB5_KDB_DISALLOW_ALL_TIX;
      
-     if (ret = kadm5_create_principal(handle, &ent,
-					   (KADM5_PRINCIPAL |
-					    KADM5_MAX_LIFE |
-					    KADM5_ATTRIBUTES),
-					   "to-be-random")) {
+     ret = kadm5_create_principal(handle, &ent,
+				  (KADM5_PRINCIPAL | KADM5_MAX_LIFE |
+				   KADM5_ATTRIBUTES),
+				  "to-be-random");
+     if (ret) {
 	  if (ret != KADM5_DUP) {
 	       com_err(progname, ret, str_PUT_PRINC, fullname);
 	       krb5_free_principal(context, ent.principal);

@@ -21,11 +21,9 @@
  */
 
 #include "gssapiP_krb5.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
-
-/*
- * $Id: util_seed.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
- */
+#endif
 
 static unsigned char zeros[16] = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 
@@ -39,7 +37,8 @@ kg_make_seed(context, key, seed)
    krb5_keyblock *tmpkey;
    int i;
 
-   if (code = krb5_copy_keyblock(context, key, &tmpkey))
+   code = krb5_copy_keyblock(context, key, &tmpkey);
+   if (code)
       return(code);
 
    /* reverse the key bytes, as per spec */
