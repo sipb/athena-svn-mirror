@@ -38,6 +38,7 @@ static char *rcsid_commands_c = "$Header: ";
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <errno.h>			/* System error codes. */
+#include <fcntl.h>
 
 #include "cref.h"			/* CREF finder defs. */
 #include "globals.h"			/* Global state variable defs. */
