@@ -71,15 +71,8 @@ list_redundant(knuckle)
      KNUCKLE *knuckle;
 #endif /* STDC */
 {
-
-printf("listing for %s %d\n",knuckle->user->username, knuckle->instance);
-if((is_connected(knuckle)) && (knuckle->question->owner == knuckle))
-printf("true\n");
-
-  if((is_connected(knuckle)) &&  (knuckle->question->owner != knuckle))
-    return(TRUE);
-  else
-    return(FALSE);
+    return is_connected(knuckle)
+	&&  knuckle->question->owner != knuckle;
 }
 
 
