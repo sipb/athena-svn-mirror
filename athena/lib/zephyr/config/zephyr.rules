@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: zephyr.rules,v 1.12 1995-05-28 20:17:41 cfields Exp $
+/**/#	$Id: zephyr.rules,v 1.13 1997-04-01 01:15:38 ghudson Exp $
 
 /* General system configuration */
 #define KERBEROS	/* Has Kerberos installed */
@@ -49,7 +49,7 @@ CDEFS_SS = -I$(D_UTIL)
 #define SsLibs $(D_SS)/libss.a
 #endif
 
-ZPIDDIR = /etc/athena
+ZPIDDIR = /var/athena
 ZETCDIR = $(ATHCONFDIR)/zephyr
 ZLIBDIR = $(ATHLIBDIR)/zephyr
 ZINCDIR = $(ATHINCDIR)/zephyr
