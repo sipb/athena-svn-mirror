@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.6 1991-07-12 13:59:09 probe Exp $
+ * $Id: from.c,v 1.7 1991-07-26 10:58:00 lwvanels Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: probe $
+ * $Author: lwvanels $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.6 1991-07-12 13:59:09 probe Exp $";
+static char *rcsid = "$Id: from.c,v 1.7 1991-07-26 10:58:00 lwvanels Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -541,9 +541,9 @@ print_report(headers, num_headers, winlength)
       while (p[0] == ' ') 
 	p++;
       subject_field = p;
+      subject_found = 1;
       if (from_found)
 	break;
-      subject_found = 1;
     }
   }
 
@@ -568,7 +568,8 @@ print_report(headers, num_headers, winlength)
     }    
   buf1[0] = '\0';
 
-  strncpy(buf1, subject_field, winlength - len - 1);
+  if (subject_found)
+    strncpy(buf1, subject_field, winlength - len - 1);
   
   printf("%-30s %s\n", buf, buf1);
 
