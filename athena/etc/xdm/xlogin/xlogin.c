@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.25 1992-06-03 16:35:40 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.26 1992-06-10 19:35:14 lwvanels Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -625,7 +625,7 @@ do_motd()
     struct stat stbuf, stbuf2;
     Arg args[1];
     char buf[10000], *temp, *s, *d;
-    int fid, len;
+    int fid, len, do_motd, do_l_motd;
 
     if (!motdtext) {
 	motdtext = WcFullNameToWidget(appShell, "*motd");
@@ -639,15 +639,19 @@ do_motd()
     }
 
     if (resources.showMotd) {
-	if ((resources.motdFile != NULL && *resources.motdFile &&
-	     !stat(resources.motdFile, &stbuf) &&
-	     stbuf.st_mtime > modtime) ||
-	    (resources.motd2File != NULL && *resources.motd2File &&
-	     !stat(resources.motd2File, &stbuf2) &&
-	     stbuf2.st_mtime > modtime2)) {
-	    /* time to update the motd */
+        do_motd = (resources.motdFile != NULL && *resources.motdFile &&
+		   !stat(resources.motdFile, &stbuf) && 
+		   stbuf.st_mtime != modtime);
+	if (do_motd)
 	    modtime = stbuf.st_mtime;
-	    modtime2 = stbuf2.st_mtime;
+
+	do_l_motd = (resources.motd2File != NULL && *resources.motd2File &&
+		       !stat(resources.motd2File, &stbuf2) &&
+		       stbuf2.st_mtime != modtime2);
+	if (do_l_motd)
+	        modtime2 = stbuf2.st_mtime;
+
+	if (do_motd || do_l_motd) {
 	    /* read the new motd */
 	    len = 0;
 	    if (resources.motdFile != NULL && *resources.motdFile &&
