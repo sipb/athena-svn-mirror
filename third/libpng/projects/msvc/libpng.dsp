@@ -24,6 +24,7 @@ CFG=libpng - Win32 DLL
 !MESSAGE "libpng - Win32 DLL Debug ASM" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "libpng - Win32 LIB" (based on "Win32 (x86) Static Library")
 !MESSAGE "libpng - Win32 LIB Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "libpng - Win32 DLL VB" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -56,7 +57,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll\libpng3.dll"
+# ADD LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll\libpng13.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "libpng - Win32 DLL Debug"
@@ -84,7 +85,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:".\win32\libpng\dll_dbg\libpng3d.dll"
+# ADD LINK32 /nologo /dll /debug /machine:I386 /out:".\win32\libpng\dll_dbg\libpng13d.dll"
 
 !ELSEIF  "$(CFG)" == "libpng - Win32 DLL ASM"
 
@@ -111,7 +112,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll_asm\libpng3a.dll"
+# ADD LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll_asm\libpng13a.dll"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "libpng - Win32 DLL Debug ASM"
@@ -133,13 +134,13 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /i "..\.." /d "_DEBUG" /d PNG_DEBUG=1  /d "PNG_USE_PNGVCRD"
+# ADD RSC /l 0x409 /i "..\.." /d "_DEBUG" /d PNG_DEBUG=1 /d "PNG_USE_PNGVCRD"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:".\win32\libpng\dll_dbga\libpng3b.dll"
+# ADD LINK32 /nologo /dll /debug /machine:I386 /out:".\win32\libpng\dll_dbga\libpng13b.dll"
 
 !ELSEIF  "$(CFG)" == "libpng - Win32 LIB"
 
@@ -193,6 +194,36 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL VB"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "libpng___Win32_DLL_VB"
+# PROP BASE Intermediate_Dir "libpng___Win32_DLL_VB"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir ".\win32\libpng\dll_vb"
+# PROP Intermediate_Dir ".\win32\libpng\dll_vb"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+CPP=cl.exe
+# ADD BASE CPP /nologo /MD /W3 /O1 /I "..\.." /I "..\..\..\zlib" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PNG_BUILD_DLL" /D "ZLIB_DLL" /Yu"png.h" /FD /c
+# ADD CPP /nologo /Gd /MD /W3 /O1 /I "..\.." /I "..\..\..\zlib" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PNG_BUILD_DLL" /D "ZLIB_DLL" /D PNGAPI=__stdcall /Yu"png.h" /FD /c
+MTL=midl.exe
+RSC=rc.exe
+# ADD BASE RSC /l 0x409 /i "..\.." /d "NDEBUG"
+# ADD RSC /l 0x409 /i "..\.." /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll\libpng13.dll"
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 /nologo /dll /machine:I386 /out:".\win32\libpng\dll_vb\libpngvb13.dll"
+# SUBTRACT LINK32 /pdb:none
+
 !ENDIF 
 
 # Begin Target
@@ -203,6 +234,7 @@ LIB32=link.exe -lib
 # Name "libpng - Win32 DLL Debug ASM"
 # Name "libpng - Win32 LIB"
 # Name "libpng - Win32 LIB Debug"
+# Name "libpng - Win32 DLL VB"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -231,6 +263,8 @@ SOURCE=.\png.rc
 
 # PROP Exclude_From_Build 1
 
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL VB"
+
 !ENDIF 
 
 # End Source File
@@ -253,6 +287,8 @@ SOURCE=.\png32ms.def
 !ELSEIF  "$(CFG)" == "libpng - Win32 LIB Debug"
 
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL VB"
 
 !ENDIF 
 
@@ -322,6 +358,11 @@ SOURCE=..\..\pngvcrd.c
 
 # PROP Exclude_From_Build 1
 
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL VB"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
 !ENDIF 
 
 # End Source File
@@ -361,7 +402,38 @@ SOURCE=..\..\pngconf.h
 # Begin Source File
 
 SOURCE=.\readme.txt
+
+!IF  "$(CFG)" == "libpng - Win32 DLL"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL ASM"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL Debug ASM"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 LIB"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 LIB Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libpng - Win32 DLL VB"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

@@ -1,17 +1,26 @@
-# makefile for libpng on HP-UX using GCC
+# makefile for libpng on HP-UX using GCC with the HP ANSI/C linker.
+# Copyright (C) 2002, Glenn Randers-Pehrson
 # Copyright (C) 2001, Laurent faillie
 # Copyright (C) 1998, 1999 Greg Roelofs
 # Copyright (C) 1996, 1997 Andreas Dilger
 # For conditions of distribution and use, see copyright notice in png.h
 
 CC=gcc
+LD=ld
 
-# where "make install" puts libpng.a, libpng.so*, png.h and pngconf.h
+# where "make install" puts libpng.a, libpng.sl*, png.h and pngconf.h
 prefix=/usr/local
 
 # Where the zlib library and include files are located
 ZLIBLIB=/opt/zlib/lib
 ZLIBINC=/opt/zlib/include
+
+# Note that if you plan to build a libpng shared library, zlib must also
+# be a shared library, which zlib's configure does not do.  After running
+# zlib's configure, edit the appropriate lines of makefile to read:
+#   CFLAGS=-O1 -DHAVE_UNISTD -DUSE_MAP -fPIC \
+#   LDSHARED=ld -b
+#   SHAREDLIB=libz.sl
 
 ALIGN=
 # for i386:
@@ -25,20 +34,36 @@ WARNMORE=-Wwrite-strings -Wpointer-arith -Wshadow \
 
 CFLAGS=-I$(ZLIBINC) -Wall -O3 -funroll-loops \
 	$(ALIGN) # $(WARNMORE) -g -DPNG_DEBUG=5
-#LDFLAGS=-L. -Wl,-rpath,. -L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) -lpng -lz -lm
-LDFLAGS=-L. -L$(ZLIBLIB) -lpng -lz -lm
+#LDFLAGS=-L. -Wl,-rpath,. -L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) -lpng12 -lz -lm
+LDFLAGS=-L. -L$(ZLIBLIB) -lpng12 -lz -lm
 
 RANLIB=ranlib
 #RANLIB=echo
 
-# read libpng.txt or png.h to see why PNGMAJ is 3.  You should not
-# have to change it.
-PNGMAJ = 3
-PNGMIN = 1.2.1
+PNGMAJ = 0
+PNGMIN = 1.2.5
 PNGVER = $(PNGMAJ).$(PNGMIN)
+LIBNAME = libpng12
 
 INCPATH=$(prefix)/include
 LIBPATH=$(prefix)/lib
+MANPATH=$(prefix)/man
+BINPATH=$(prefix)/bin
+
+# override DESTDIR= on the make install command line to easily support
+# installing into a temporary location.  Example:
+#
+#    make install DESTDIR=/tmp/build/libpng
+#
+# If you're going to install into a temporary location
+# via DESTDIR, $(DESTDIR)$(prefix) must already exist before
+# you execute make install.
+DESTDIR=
+
+DB=$(DESTDIR)$(BINPATH)
+DI=$(DESTDIR)$(INCPATH)
+DL=$(DESTDIR)$(LIBPATH)
+DM=$(DESTDIR)$(MANPATH)
 
 OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 	pngread.o pngrio.o pngwio.o pngwrite.o pngrtran.o \
@@ -51,41 +76,121 @@ OBJSDLL = $(OBJS:.o=.pic.o)
 .c.pic.o:
 	$(CC) -c $(CFLAGS) -fPIC -o $@ $*.c
 
-all: libpng.a libpng.sl pngtest
+all: libpng.a $(LIBNAME).sl pngtest libpng.pc libpng-config
 
 libpng.a: $(OBJS)
 	ar rc $@ $(OBJS)
 	$(RANLIB) $@
 
-libpng.sl: libpng.sl.$(PNGMAJ)
-	ln -f -s libpng.sl.$(PNGMAJ) libpng.sl
+libpng.pc:
+	cat scripts/libpng.pc.in | sed -e s\!@PREFIX@!$(prefix)! > libpng.pc
 
-libpng.sl.$(PNGMAJ): libpng.sl.$(PNGVER)
-	ln -f -s libpng.sl.$(PNGVER) libpng.sl.$(PNGMAJ)
+libpng-config:
+	( cat scripts/libpng-config-head.in; \
+	echo prefix=\"$(prefix)\"; \
+	echo I_opts=\"-I$(INCPATH)/$(LIBNAME)\"; \
+	echo libs=\"-lpng12 -lz -lm\"; \
+	cat scripts/libpng-config-body.in ) > libpng-config
+	chmod +x libpng-config
 
-libpng.sl.$(PNGVER): $(OBJSDLL)
-	$(LD) -b -L$(ZLIBLIB) +s +b $(ZLIBLIB) \
-	+h libpng.sl.$(PNGMAJ) -o libpng.sl.$(PNGVER) $(OBJSDLL) -lz
+$(LIBNAME).sl: $(LIBNAME).sl.$(PNGMAJ)
+	ln -sf $(LIBNAME).sl.$(PNGMAJ) $(LIBNAME).sl
 
-pngtest: pngtest.o libpng.sl
+$(LIBNAME).sl.$(PNGMAJ): $(LIBNAME).sl.$(PNGVER)
+	ln -sf $(LIBNAME).sl.$(PNGVER) $(LIBNAME).sl.$(PNGMAJ)
+
+$(LIBNAME).sl.$(PNGVER): $(OBJSDLL)
+	$(LD) -b +s \
+	+h $(LIBNAME).sl.$(PNGMAJ) -o $(LIBNAME).sl.$(PNGVER) $(OBJSDLL)
+
+libpng.sl.3.$(PNGMIN): $(OBJSDLL)
+	$(LD) -b +s \
+	+h libpng.sl.3 -o libpng.sl.3.$(PNGMIN) $(OBJSDLL)
+
+pngtest: pngtest.o $(LIBNAME).sl
 	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
 
 test: pngtest
 	./pngtest
 
-install: libpng.a libpng.sl.$(PNGVER)
-	-@if [ ! -d $(INCPATH)  ]; then mkdir $(INCPATH); fi
-	-@if [ ! -d $(LIBPATH) ]; then mkdir $(LIBPATH); fi
-	cp png.h pngconf.h $(INCPATH)
-	chmod 644 $(INCPATH)/png.h $(INCPATH)/pngconf.h
-	cp libpng.a libpng.sl.$(PNGVER) $(LIBPATH)
-	chmod 755 $(LIBPATH)/libpng.sl.$(PNGVER)
-	-@/bin/rm -f $(LIBPATH)/libpng.sl.$(PNGMAJ) $(LIBPATH)/libpng.sl
-	(cd $(LIBPATH); ln -sf libpng.sl.$(PNGVER) libpng.sl.$(PNGMAJ); \
-	 ln -sf libpng.sl.$(PNGMAJ) libpng.sl)
+
+install-headers: png.h pngconf.h
+	-@if [ ! -d $(DI) ]; then mkdir $(DI); fi
+	-@if [ ! -d $(DI)/$(LIBNAME) ]; then mkdir $(DI)/$(LIBNAME); fi
+	cp png.h pngconf.h $(DI)/$(LIBNAME)
+	chmod 644 $(DI)/$(LIBNAME)/png.h $(DI)/$(LIBNAME)/pngconf.h
+	-@/bin/rm -f $(DI)/png.h $(DI)/pngconf.h
+	-@/bin/rm -f $(DI)/libpng
+	(cd $(DI); ln -sf $(LIBNAME) libpng; ln -sf $(LIBNAME)/* .)
+
+install-static: install-headers libpng.a
+	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
+	cp libpng.a $(DL)/$(LIBNAME).a
+	chmod 644 $(DL)/$(LIBNAME).a
+	-@/bin/rm -f $(DL)/libpng.a
+	(cd $(DL); ln -sf $(LIBNAME).a libpng.a)
+
+install-shared: install-headers $(LIBNAME).sl.$(PNGVER) libpng.pc \
+	libpng.sl.3.$(PNGMIN)
+	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
+	-@/bin/rm -f $(DL)/$(LIBNAME).sl.$(PNGVER)* $(DL)/$(LIBNAME).sl
+	-@/bin/rm -f $(DL)/libpng.sl
+	-@/bin/rm -f $(DL)/libpng.sl.3
+	-@/bin/rm -f $(DL)/libpng.sl.3.$(PNGMIN)*
+	cp $(LIBNAME).sl.$(PNGVER) $(DL)
+	cp libpng.sl.3.$(PNGMIN) $(DL)
+	chmod 755 $(DL)/$(LIBNAME).sl.$(PNGVER)
+	chmod 755 $(DL)/libpng.sl.3.$(PNGMIN)
+	(cd $(DL); \
+	ln -sf libpng.sl.3.$(PNGMIN) libpng.sl.3; \
+	ln -sf libpng.sl.3 libpng.sl; \
+	ln -sf $(LIBNAME).sl.$(PNGVER) $(LIBNAME).sl.$(PNGMAJ); \
+	ln -sf $(LIBNAME).sl.$(PNGMAJ) $(LIBNAME).sl)
+	-@if [ ! -d $(DL)/pkgconfig ]; then mkdir $(DL)/pkgconfig; fi
+	-@/bin/rm -f $(DL)/pkgconfig/$(LIBNAME).pc
+	-@/bin/rm -f $(DL)/pkgconfig/libpng.pc
+	cp libpng.pc $(DL)/pkgconfig/$(LIBNAME).pc
+	chmod 644 $(DL)/pkgconfig/$(LIBNAME).pc
+	(cd $(DL)/pkgconfig; ln -sf $(LIBNAME).pc libpng.pc)
+
+install-man: libpng.3 libpngpf.3 png.5
+	-@if [ ! -d $(DM) ]; then mkdir $(DM); fi
+	-@if [ ! -d $(DM)/man3 ]; then mkdir $(DM)/man3; fi
+	-@/bin/rm -f $(DM)/man3/libpng.3
+	-@/bin/rm -f $(DM)/man3/libpngpf.3
+	cp libpng.3 $(DM)/man3
+	cp libpngpf.3 $(DM)/man3
+	-@if [ ! -d $(DM)/man5 ]; then mkdir $(DM)/man5; fi
+	-@/bin/rm -f $(DM)/man5/png.5
+	cp png.5 $(DM)/man5
+
+install-config: libpng-config
+	-@if [ ! -d $(DB) ]; then mkdir $(DB); fi
+	-@/bin/rm -f $(DB)/libpng-config
+	-@/bin/rm -f $(DB)/$(LIBNAME)-config
+	cp libpng-config $(DB)/$(LIBNAME)-config
+	chmod 755 $(DB)/$(LIBNAME)-config
+	(cd $(DB); ln -sf $(LIBNAME)-config libpng-config)
+
+install: install-static install-shared install-man install-config
+
+# If you installed in $(DESTDIR), test-installed won't work until you
+# move the library to its final location.
+
+test-installed:
+	echo
+	echo Testing installed dynamic shared library.
+	$(CC) -I$(ZLIBINC) \
+	   `$(BINPATH)/libpng12-config --cflags` pngtest.c \
+	   -L$(ZLIBLIB) -Wl,-rpath,$(ZLIBLIB) \
+	   -o pngtesti `$(BINPATH)/libpng12-config --ldflags`
+	./pngtesti pngtest.png
 
 clean:
-	/bin/rm -f *.o libpng.a libpng.sl libpng.sl.$(PNGMAJ)* pngtest pngout.png
+	/bin/rm -f *.o libpng.a pngtest pngtesti pngout.png \
+	libpng-config $(LIBNAME).sl $(LIBNAME).sl.$(PNGMAJ)* \
+	libpng.sl.3.$(PNGMIN) \
+	libpng.pc
 
 DOCS = ANNOUNCE CHANGES INSTALL KNOWNBUG LICENSE README TODO Y2KINFO
 writelock:
