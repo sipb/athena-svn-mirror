@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getqueue.c,v 1.9 2001-03-07 01:19:23 ghudson Exp $";
+"$Id: getqueue.c,v 1.9.6.1 2003-10-23 03:47:11 ghudson Exp $";
 
 
 /***************************************************************************
@@ -121,6 +121,19 @@ int Scan_queue( const char *dirpath, struct line_list *spool_control,
 		hf_name[2]='A';
 		s = hf_name+3;
 		while( isdigit( cval(s) ) ) ++s;
+		c = s - hf_name - 3;
+		switch( c ){
+		case 0: case 1: case 2: case 3:
+		  break;
+		case 4: case 5:
+		  c = 3;
+		  break;
+		default:
+		  if( cval(hf_name+9) == '.' ) c = 3;
+		  else c = 6;
+		  break;
+		}
+		s = hf_name + 3 + c;
 		*s = 0;
 		DEBUG4("Scan_queue: hold file '%s'", hf_name );
 
@@ -938,16 +951,28 @@ int Check_format( int type, const char *name, struct job *job )
 		Set_str_value(&job->info,PRIORITY,msg);
 		msg[0] = 0;
 	}
-	s = &name[3];
-	n = strtol(s,&t,10);
-	c = 0;
-	if( t ) c = t - s;
-	/* check on length of number */
-	if( c != 3 && c != 6 ){
-		plp_snprintf(msg, sizeof(msg),
-			"id number length %d out of bounds '%s' ", c, name );
-		goto error;
+
+	safestrncpy(msg,&name[3]);
+	for( t = msg; isdigit(cval(t)); ++t );
+	c = t - msg;
+	switch( c ){
+	case 0: case 1: case 2: case 3:
+	  break;
+	case 4: case 5:
+	  c = 3;
+	  break;
+	default:
+	  if( cval(msg+6) == '.' ) c = 3;
+	  else c = 6;
+	  break;
 	}
+	/* get the number */
+	t = &msg[c];
+	c = *t;
+	*t = 0;
+	n = strtol(msg,0,10);
+	*t = c;
+
 	if( (c = Find_decimal_value( &job->info,NUMBER,Value_sep)) ){
 		if( c != n ){
 			plp_snprintf(msg, sizeof(msg),
