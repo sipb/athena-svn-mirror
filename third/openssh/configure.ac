@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.4 2002-04-08 15:08:51 ghudson Exp $
+# $Id: configure.ac,v 1.4.2.1 2002-06-26 22:43:00 ghudson Exp $
 
 AC_INIT
 AC_CONFIG_SRCDIR([ssh.c])
@@ -2032,14 +2032,14 @@ AC_ARG_ENABLE(suid-ssh,
 [ case "$enableval" in
   no)
        AC_MSG_RESULT(no)
-       SSHMODE=0711
+       SSHMODE=0755
        ;;
   *)   AC_MSG_RESULT(yes)
-       SSHMODE=4711
+       SSHMODE=4755
        ;;
   esac ],
   AC_MSG_RESULT(yes)
-  SSHMODE=4711
+  SSHMODE=4755
 )
 AC_SUBST(SSHMODE)
 

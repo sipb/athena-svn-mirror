@@ -1,5 +1,5 @@
 #!/usr/athena/bin/perl
-# $Id: hostinfo.pl,v 1.4 2000-12-18 08:45:13 ghudson Exp $
+# $Id: hostinfo.pl,v 1.4.4.1 2002-06-26 22:43:31 ghudson Exp $
 
 # Copyright 1998 by the Massachusetts Institute of Technology.
 #
@@ -85,13 +85,18 @@ while (@ARGV) {
     $host = $hinfo = "";
     @addr = @mx = ();
 
-    if (!$show_mx) {
-	$flags = "-t a";
-    } else {
-	$flags = "";
+    if ($show_mx) {
+	open(HOST, "$hostprog -t mx '$arg' '$server' 2>&1 |");
+	while (<HOST>) {
+	    if (/mail is handled .*by [ \d]*([^ ]*)$/) {
+		push(@mx, $1);
+	    }
+	}
+	close(HOST);
     }
+    chomp (@mx);
 
-    open(HOST, "$hostprog $flags '$arg' '$server' 2>&1 |");
+    open(HOST, "$hostprog -t a '$arg' '$server' 2>&1 |");
     while (<HOST>) {
 	if (/(.*) has address (.*)$/) {
 	    $host = $1;
@@ -99,8 +104,6 @@ while (@ARGV) {
 	} elsif ( /domain name pointer (.*)$/) {
 	    $host = $1;
 	    push(@addr, $arg);
-	} elsif (/mail is handled \(pri=\d+\) by (.*)$/) {
-	    push(@mx, $1);
 	} else {
 	    $error = $error . $_;
 	}
@@ -114,10 +117,10 @@ while (@ARGV) {
 	    print STDERR "Cannot resolve name '$arg' due to network difficulties.\n";
 	} elsif (!@mx) {
 	    print STDERR "No such host '$arg'.\n";
-	} else {
+	} elsif (!$show_mx) {
 	    print STDERR "No address for '$arg'.\n";
 	}
-	next;
+	next unless ($show_mx && @mx);
     }
 
     if ($show_hinfo) {
@@ -132,7 +135,9 @@ while (@ARGV) {
 
     if ($long_output) {
 	print "Desired host:\t$arg\n";
-	print "Official name:\t$host\n";
+	if ($host) {
+	    print "Official name:\t$host\n";
+	}
 	foreach (@addr) { print "Host address:\t$_\n"; }
 	print "Host info:\t$hinfo\n" if $show_hinfo && $hinfo;
 	foreach (@mx) { print "MX address:\t$_\n" if $show_mx; }
