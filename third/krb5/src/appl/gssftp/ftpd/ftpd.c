@@ -1054,6 +1054,7 @@ pass(passwd)
 	char *passwd;
 {
 	char *xpasswd, *salt;
+	int match;
 
 	if (authorized && !want_creds || have_creds) {
 		reply(202, "PASS command superfluous.");
@@ -1079,14 +1080,19 @@ pass(passwd)
 #endif
 		/* Fail if:
 		 *   pw is NULL
-		 *   kpass fails and we want_creds and the user isn't local
-		 *   kpass fails and the user has no local password
-		 *   kpass fails and the provided password doesn't match pw
+		 *   the user is local and the password doesn't match
+		 *   the user is non-local and kpass fails and we want creds
+		 *   the user is non-local and kpass fails and the
+		 *     password doesn't match.
+		 *
+		 * An empty password never matches.
 		 */
-		if (pw == NULL || (!kpass(pw->pw_name, passwd) &&
-				   ((want_creds && !al_local_acct) ||
-				    !*pw->pw_passwd ||
-				    strcmp(xpasswd, pw->pw_passwd)))) {
+		match = pw && *pw->pw_passwd &&
+		  !strcmp(xpasswd, pw->pw_passwd);
+		if (pw == NULL ||
+		    (al_local_acct && !match) ||
+		    (!al_local_acct && !kpass(pw->pw_name, passwd) &&
+		     (want_creds || !match))) {
 			pw = NULL;
 			sleep(5);
 			if (++login_attempts >= 3) {
