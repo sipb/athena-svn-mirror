@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.20 1994-12-16 05:34:03 cfields Exp $
+# $Id: add.csh,v 1.21 1994-12-29 06:32:56 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -109,7 +109,10 @@ if ( $?add_oldverbose && ! $?add_new ) set add_debug
 #
 
 if ( ! $?ATHENA_SYS ) then
-  setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
+  setenv ATHENA_SYS `machtype -S`
+  if ( $ATHENA_SYS == "" ) then
+    setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
+  endif
   if ( $ATHENA_SYS == "" ) setenv ATHENA_SYS "@sys"
 endif
 
@@ -142,10 +145,12 @@ endif
 #
 
 if ( $?add_new ) then
+
 #
 # New, sane behavior for cases with no authentication and
 # fascist lockers, and more reliable output.
 #
+
   if ( $?add_verbose ) then
     attach $add_attach
     set add_dirs = `attach -h -p $add_attach`
@@ -153,9 +158,11 @@ if ( $?add_new ) then
     set add_dirs = `attach -p $add_attach`
   endif
 else
+
 #
 # Old behavior.
 #
+
   if ( $?add_verbose ) then
     attach -n -h $add_attach
   endif
