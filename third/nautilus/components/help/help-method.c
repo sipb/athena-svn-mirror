@@ -57,7 +57,7 @@ typedef struct {
 
 static gboolean file_in_info_path (const char *file);
 
-/* This is a copy of nautilus_shell_quote. The best thing to do is to
+/* This is a copy of eel_shell_quote. The best thing to do is to
  * use the one on GNOME for GNOME 2.0, but we could also move this
  * into gnome-vfs or some other library so we could share it.
  */
@@ -117,7 +117,11 @@ help_uri_to_string (HelpURI *help_uri)
 
 	switch (help_uri->type) {
 	case SGML_FILE: case XML_FILE:
+#ifdef USE_GNOME_DB2HTML3
+		command = "gnome-db2html3";
+#else
                 command = "gnome-db2html2";
+#endif
 		if (help_uri->section != NULL) {
                         parameter = g_strconcat (help_uri->file, "?", help_uri->section, NULL);
                 } else {
@@ -129,10 +133,9 @@ help_uri_to_string (HelpURI *help_uri)
                 parameter = g_strdup (help_uri->file);
 		break;
 	case INFO_FILE:
-                command = "info2html2";
+                command = "gnome-info2html2";
                 parameter = g_strdup (help_uri->file);
 		break;
-
 	case HTML_FILE:
                 escaped = gnome_vfs_escape_path_string (help_uri->file);
 		if (help_uri->section == NULL) {
@@ -145,7 +148,7 @@ help_uri_to_string (HelpURI *help_uri)
 	case UNKNOWN_FILE:
 		return NULL;
 	default:
-		/* FIXME bugzilla.eazel.com 2401: 
+		/* FIXME bugzilla.gnome.org 42401: 
 		 * An assert at runtime may be a bit harsh.
                  * We'd prefer behavior more like g_return_if_fail.
                  * In glib 2.0 we can use g_return_val_if_reached.
@@ -153,6 +156,11 @@ help_uri_to_string (HelpURI *help_uri)
 		g_assert_not_reached ();
                 return NULL;
 	}
+
+        if (parameter[0] == '-') {
+                g_free (parameter);
+                return NULL;
+        }
         
         /* Build a command line. */
         escaped = shell_quote (parameter);
@@ -211,7 +219,7 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
 	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
-                /* FIXME bugzilla.eazel.com 2402: 
+                /* FIXME bugzilla.gnome.org 42402: 
                  * The check above used to check for a prefix
                  * of "application/x-troff-man", but now we check for
                  * an exact string match. Is that what we really want?
@@ -264,7 +272,7 @@ strdup_string_to_substring_end (const char *string, const char *substring)
 }
 
 /*
- * bugzilla.eazel.com 6761:
+ * bugzilla.gnome.org 46761:
  * Automatically promote requests for html help to sgml help
  * if available
  *
@@ -375,52 +383,71 @@ help_name_to_local_path (const char *old_uri)
 	GList *language_list;
 	char *new_uri_with_extension;
 	char *old_help;
+        gboolean is_toc;
 
+        is_toc = FALSE;
+        
         base_name = file_from_path (old_uri);
         if (base_name == NULL || base_name[0] == '\0') {
                 g_free (base_name);
                 return NULL;
         }
 
+        is_toc = strcmp (old_uri, "toc") == 0;
+        
 	new_uri_with_extension = NULL;
 	new_uri = NULL;
-	
+        
 	language_list = gnome_i18n_get_language_list ("LC_MESSAGES");
 
 	while (!new_uri_with_extension && language_list) {
 		const char *lang;
 
 		lang = language_list->data;
-		buf = g_strdup_printf ("gnome/help/%s/%s/%s", base_name, lang, old_uri);
+                if (is_toc)
+                        buf = g_strdup_printf ("gnome/help/help-browser/%s/default-page.html",
+                                               lang);
+                else
+                        buf = g_strdup_printf ("gnome/help/%s/%s/%s", base_name, lang, old_uri);
+
 		new_uri = gnome_unconditional_datadir_file (buf);
 		g_free (buf);
 
-		new_uri_with_extension = g_strconcat (new_uri, ".xml", NULL);
-		/* FIXME: Should we use g_file_test instead? */
-		if (!g_file_exists (new_uri_with_extension)) {
-			/* XML file doesn't exist - now try SGML */
-			g_free (new_uri_with_extension);
-	
-			new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
-			if (!g_file_exists (new_uri_with_extension)) {
+                if (is_toc) {
+                        if (g_file_exists (new_uri)) {
+                                new_uri_with_extension = new_uri;
+                                new_uri = NULL;
+                        }
+                } else {
+                        new_uri_with_extension = g_strconcat (new_uri, ".xml", NULL);
+                        /* FIXME: Should we use g_file_test instead? */
+                        if (!g_file_exists (new_uri_with_extension)) {
+                                /* XML file doesn't exist - now try SGML */
+                                g_free (new_uri_with_extension);
+                                
+                                new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
+                                if (!g_file_exists (new_uri_with_extension)) {
 				/* SGML file doesn't exist - fallback to SGML */
-				g_free (new_uri_with_extension);
+                                        g_free (new_uri_with_extension);
+                                        
+                                        old_help = g_strdup_printf ("gnome/help/%s/%s/index.html", base_name, lang);
+                                        new_uri_with_extension = gnome_unconditional_datadir_file (old_help);
+                                        g_free (old_help);
+                                        
+                                        if (!g_file_exists (new_uri_with_extension)) {
+                                                /* HTML file doesn't exist - next language */
+                                                g_free (new_uri_with_extension);
+                                                new_uri_with_extension = NULL;
+                                        }
+                                }
+                        }
+                }
 
-				old_help = g_strdup_printf ("gnome/help/%s/%s/index.html", base_name, lang);
-				new_uri_with_extension = gnome_unconditional_datadir_file (old_help);
-				g_free (old_help);
-				
-				if (!g_file_exists (new_uri_with_extension)) {
-					/* HTML file doesn't exist - next language */
-					g_free (new_uri_with_extension);
-					new_uri_with_extension = NULL;
-				}
-			}
-		}
-		g_free (new_uri);
-		new_uri = NULL;
-		language_list = language_list->next;
-	}
+                g_free (new_uri);
+                new_uri = NULL;
+                language_list = language_list->next;
+        }
+        
 	return new_uri_with_extension;			
 }
 

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,8 +60,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-AMMONITE_CFLAGS = @AMMONITE_CFLAGS@
-AMMONITE_LIBS = @AMMONITE_LIBS@
 APPLETS_CFLAGS = @APPLETS_CFLAGS@
 APPLETS_LIBS = @APPLETS_LIBS@
 AS = @AS@
@@ -71,6 +69,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -79,43 +78,44 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
-EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
-EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
-EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
-EAZEL_SERVICES = @EAZEL_SERVICES@
-ENABLE_INSTALLER = @ENABLE_INSTALLER@
+ECHO = @ECHO@
+EEL_CFLAGS = @EEL_CFLAGS@
+EEL_LIBS = @EEL_LIBS@
+EEL_REQUIRED = @EEL_REQUIRED@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
+FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
-FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GHTTP_CFLAGS = @GHTTP_CFLAGS@
-GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
+GNOMECANVASPIXBUF_CFLAGS = @GNOMECANVASPIXBUF_CFLAGS@
 GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
 GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DB2HTML3_FLAG = @GNOME_DB2HTML3_FLAG@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -128,6 +128,8 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
+HAVE_JW = @HAVE_JW@
+ICONV_LIBS = @ICONV_LIBS@
 IDL_CFLAGS = @IDL_CFLAGS@
 IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
@@ -135,8 +137,16 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
+LIBART_CFLAGS = @LIBART_CFLAGS@
+LIBART_CONFIG = @LIBART_CONFIG@
+LIBART_LIBS = @LIBART_LIBS@
+LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
+LIBRSVG_LIBS = @LIBRSVG_LIBS@
+LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
@@ -151,43 +161,59 @@ MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
 MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
-MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
 MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
+NAUTILUS_DEPENDENCY_CFLAGS = @NAUTILUS_DEPENDENCY_CFLAGS@
+NAUTILUS_DEPENDENCY_LIBS = @NAUTILUS_DEPENDENCY_LIBS@
+NAUTILUS_INCLUDEDIR = @NAUTILUS_INCLUDEDIR@
+NAUTILUS_LIBDIR = @NAUTILUS_LIBDIR@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
+NAUTILUS_PRIVATE_CFLAGS = @NAUTILUS_PRIVATE_CFLAGS@
+NAUTILUS_PRIVATE_LIBS = @NAUTILUS_PRIVATE_LIBS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
 OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
-PACKAGESYSTEM = @PACKAGESYSTEM@
-PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
-PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
-PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
 POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-RPM_LIBS = @RPM_LIBS@
-RPM_VERSION = @RPM_VERSION@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML2_CFLAGS = @XML2_CFLAGS@
+XML2_CONFIG = @XML2_CONFIG@
+XML2_LIBS = @XML2_LIBS@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 Z_LIBS = @Z_LIBS@
 gnomelocaledir = @gnomelocaledir@
@@ -195,19 +221,16 @@ l = @l@
 
 NULL = 
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DPREFIX=\"$(prefix)\" 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" 	-DDATADIR=\"$(datadir)\" 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) 	$(MOZILLA_PROFILES_CFLAGS) 	-I$(top_srcdir) 	-I$(top_builddir) 	$(BONOBO_CFLAGS) 	$(GCONF_CFLAGS) 	$(GNOMEUI_CFLAGS) 	$(MOZILLA_COMPONENT_CFLAGS) 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) 	$(AMMONITE_CFLAGS) 	$(NULL)
+INCLUDES =  	-I$(top_srcdir) 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" 	-DDATADIR=\"$(datadir)\" 	-DPREFIX=\"$(prefix)\" 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) 	$(MOZILLA_PROFILES_CFLAGS) 	$(MOZILLA_COMPONENT_CFLAGS) 	$(GCONF_CFLAGS) 	$(NAUTILUS_DEPENDENCY_CFLAGS) 	$(NULL)
 
 
 bin_PROGRAMS =  	nautilus-mozilla-content-view 	$(NULL)
 
 
-nautilus_mozilla_content_view_SOURCES =  	bonobo-extensions.c 	main.c 	mozilla-components.cpp 	mozilla-events.cpp 	mozilla-preferences.cpp 	nautilus-mozilla-content-view.c 	nautilus-mozilla-embed-extensions.cpp 	nautilus-mozilla-encoding-tables.c 	$(NULL)
+nautilus_mozilla_content_view_SOURCES =  	bonobo-extensions.c 	main.c 	mozilla-components.cpp 	mozilla-events.cpp 	mozilla-preferences.cpp 	nautilus-mozilla-content-view.c 	nautilus-mozilla-embed-extensions.cpp 	nautilus-mozilla-encoding-tables.c 	bonobo-extensions.h 	mozilla-components.h 	mozilla-events.h 	mozilla-preferences.h 	nautilus-mozilla-content-view.h 	nautilus-mozilla-embed-extensions.h 	nautilus-mozilla-encoding-tables.h 	$(NULL)
 
 
-noinst_HEADERS =  	bonobo-extensions.h 	mozilla-components.h 	mozilla-events.h 	mozilla-preferences.h 	nautilus-mozilla-content-view.h 	nautilus-mozilla-embed-extensions.h 	nautilus-mozilla-encoding-tables.h 	$(NULL)
-
-
-nautilus_mozilla_content_view_LDADD =  	$(top_builddir)/libnautilus/libnautilus.la 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la 	$(BONOBO_LIBS) 	$(GCONF_LIBS) 	$(GNOMEUI_LIBS) 	$(VFS_LIBS) 	$(OAF_LIBS) 	$(MOZILLA_COMPONENT_LDFLAGS) 	$(MOZILLA_COMPONENT_LIBS) 	$(AMMONITE_LIBS) 	$(NULL)
+nautilus_mozilla_content_view_LDADD =  	$(top_builddir)/libnautilus/libnautilus.la 	$(MOZILLA_COMPONENT_LDFLAGS) 	$(MOZILLA_COMPONENT_LIBS) 	$(GCONF_LIBS) 	$(NAUTILUS_DEPENDENCY_LIBS) 	$(NULL)
 
 
 nautilus_mozilla_content_view_LDFLAGS =  	$(MOZILLA_COMPONENT_RPATH_FLAGS) 	$(NULL)
@@ -228,6 +251,7 @@ EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(oaf_in_files)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  nautilus-mozilla-content-view$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -235,13 +259,13 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-nautilus_mozilla_content_view_OBJECTS =  bonobo-extensions.o main.o \
-mozilla-components.o mozilla-events.o mozilla-preferences.o \
-nautilus-mozilla-content-view.o nautilus-mozilla-embed-extensions.o \
-nautilus-mozilla-encoding-tables.o
+nautilus_mozilla_content_view_OBJECTS =  bonobo-extensions.$(OBJEXT) \
+main.$(OBJEXT) mozilla-components.$(OBJEXT) mozilla-events.$(OBJEXT) \
+mozilla-preferences.$(OBJEXT) nautilus-mozilla-content-view.$(OBJEXT) \
+nautilus-mozilla-embed-extensions.$(OBJEXT) \
+nautilus-mozilla-encoding-tables.$(OBJEXT)
 nautilus_mozilla_content_view_DEPENDENCIES =  \
-$(top_builddir)/libnautilus/libnautilus.la \
-$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la
+$(top_builddir)/libnautilus/libnautilus.la
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -253,8 +277,6 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(oaf_DATA) $(ui_DATA)
-
-HEADERS =  $(noinst_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -268,7 +290,7 @@ OBJECTS = $(nautilus_mozilla_content_view_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .lo .o .s
+.SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.shared
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps components/mozilla/Makefile
 
@@ -305,6 +327,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -313,6 +340,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -340,11 +368,13 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-nautilus-mozilla-content-view: $(nautilus_mozilla_content_view_OBJECTS) $(nautilus_mozilla_content_view_DEPENDENCIES)
-	@rm -f nautilus-mozilla-content-view
+nautilus-mozilla-content-view$(EXEEXT): $(nautilus_mozilla_content_view_OBJECTS) $(nautilus_mozilla_content_view_DEPENDENCIES)
+	@rm -f nautilus-mozilla-content-view$(EXEEXT)
 	$(CXXLINK) $(nautilus_mozilla_content_view_LDFLAGS) $(nautilus_mozilla_content_view_OBJECTS) $(nautilus_mozilla_content_view_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
+.cpp.obj:
+	$(CXXCOMPILE) -c `cygpath -w $<`
 .cpp.lo:
 	$(LTCXXCOMPILE) -c $<
 
@@ -430,6 +460,28 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+bonobo-extensions.o: bonobo-extensions.c ../../config.h \
+	bonobo-extensions.h
+main.o: main.c ../../config.h nautilus-mozilla-content-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h
+mozilla-components.o: mozilla-components.cpp ../../config.h \
+	mozilla-components.h
+mozilla-events.o: mozilla-events.cpp ../../config.h mozilla-events.h
+mozilla-preferences.o: mozilla-preferences.cpp ../../config.h \
+	mozilla-preferences.h
+nautilus-mozilla-content-view.o: nautilus-mozilla-content-view.c \
+	../../config.h nautilus-mozilla-content-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h bonobo-extensions.h \
+	mozilla-components.h mozilla-events.h mozilla-preferences.h \
+	nautilus-mozilla-embed-extensions.h
+nautilus-mozilla-embed-extensions.o: \
+	nautilus-mozilla-embed-extensions.cpp ../../config.h \
+	nautilus-mozilla-embed-extensions.h \
+	nautilus-mozilla-encoding-tables.h
+nautilus-mozilla-encoding-tables.o: nautilus-mozilla-encoding-tables.c \
+	../../config.h nautilus-mozilla-encoding-tables.h
 
 info-am:
 info: info-am
@@ -450,7 +502,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-oafDATA uninstall-uiDATA
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install

@@ -25,6 +25,8 @@ int inTable=0;
 char *BaseFilename=NULL;
 char *OverrideBaseFilename=NULL;
 
+int galeon_mode=0;
+
 /* prototypes */
 char *form_info_tag_href( char *nodefile, char *nodename );
 int make_Top_link( char *destdir, char *destfile );
@@ -53,7 +55,10 @@ char *form_info_tag_href( char *nodefile, char *nodename )
   else
 	  filename = nodefile;
 
-  g_snprintf (tmp, sizeof (tmp), "HREF=\"#%s\"", escaped_nodename);
+  if (galeon_mode)
+    g_snprintf (tmp, sizeof (tmp), "HREF=\"info:%s?%s\"", filename,  escaped_nodename);
+  else
+    g_snprintf (tmp, sizeof (tmp), "HREF=\"#%s\"", escaped_nodename);
 
   if (escaped_nodename)
     g_free(escaped_nodename);
@@ -861,7 +866,7 @@ void write_menu_entry_html( FILE *f, char *p, char *nodefile, char **menu_end )
 	    }
 
 	  for (i=1; i<4; i++)
-	    if (!isspace(*(realend+i)) && *(realend+i) != '\n')
+	    if (!isspace((guchar)*(realend+i)) && *(realend+i) != '\n')
 	      {
 		done = 1;
 		break;

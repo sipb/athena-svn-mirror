@@ -33,8 +33,20 @@
 #include "nautilus-link-set-window.h"
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
+
+#include <bonobo/bonobo-property-bag-client.h>
+#include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-exception.h>
+
+#include <eel/eel-background.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
@@ -46,27 +58,18 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-drag.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-file-operations.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-program-choosing.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-trash-monitor.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
-#include <liboaf/liboaf.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file-dnd.h>
+#include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-keep-last-vertical-box.h>
+#include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
+#include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/nautilus-trash-monitor.h>
 #include <math.h>
 
 struct NautilusSidebarDetails {
@@ -91,39 +94,40 @@ struct NautilusSidebarDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static void     nautilus_sidebar_initialize_class    (GtkObjectClass   *object_klass);
-static void     nautilus_sidebar_initialize          (GtkObject        *object);
-static void     nautilus_sidebar_deactivate_panel    (NautilusSidebar  *sidebar);
-static gboolean nautilus_sidebar_press_event         (GtkWidget        *widget,
-						      GdkEventButton   *event);
-static gboolean nautilus_sidebar_release_event       (GtkWidget        *widget,
-						      GdkEventButton   *event);
-static gboolean nautilus_sidebar_leave_event         (GtkWidget        *widget,
-						      GdkEventCrossing *event);
-static gboolean nautilus_sidebar_motion_event        (GtkWidget        *widget,
-						      GdkEventMotion   *event);
-static void     nautilus_sidebar_destroy             (GtkObject        *object);
-static void     nautilus_sidebar_drag_data_received  (GtkWidget        *widget,
-						      GdkDragContext   *context,
-						      int               x,
-						      int               y,
-						      GtkSelectionData *selection_data,
-						      guint             info,
-						      guint             time);
-static void     nautilus_sidebar_read_theme          (NautilusSidebar  *sidebar);
-static void     nautilus_sidebar_size_allocate       (GtkWidget        *widget,
-						      GtkAllocation    *allocation);
-static void     nautilus_sidebar_realize             (GtkWidget        *widget);
-static void     nautilus_sidebar_theme_changed       (gpointer          user_data);
-static void     nautilus_sidebar_update_appearance   (NautilusSidebar  *sidebar);
-static void     nautilus_sidebar_update_buttons      (NautilusSidebar  *sidebar);
-static void     add_command_buttons                  (NautilusSidebar  *sidebar,
-						      GList            *application_list);
-static void     background_metadata_changed_callback (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_initialize_class      (GtkObjectClass   *object_klass);
+static void     nautilus_sidebar_initialize            (GtkObject        *object);
+static void     nautilus_sidebar_deactivate_panel      (NautilusSidebar  *sidebar);
+static gboolean nautilus_sidebar_press_event           (GtkWidget        *widget,
+							GdkEventButton   *event);
+static gboolean nautilus_sidebar_release_event         (GtkWidget        *widget,
+						        GdkEventButton   *event);
+static gboolean nautilus_sidebar_leave_event           (GtkWidget        *widget,
+							GdkEventCrossing *event);
+static gboolean nautilus_sidebar_motion_event          (GtkWidget        *widget,
+							GdkEventMotion   *event);
+static void     nautilus_sidebar_destroy               (GtkObject        *object);
+static void     nautilus_sidebar_drag_data_received    (GtkWidget        *widget,
+							GdkDragContext   *context,
+							int               x,
+							int               y,
+							GtkSelectionData *selection_data,
+							guint             info,
+							guint             time);
+static void     nautilus_sidebar_read_theme            (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_size_allocate         (GtkWidget        *widget,
+							GtkAllocation    *allocation);
+static void     nautilus_sidebar_realize               (GtkWidget        *widget);
+static void     nautilus_sidebar_theme_changed         (gpointer          user_data);
+static void     nautilus_sidebar_confirm_trash_changed (gpointer          user_data);
+static void     nautilus_sidebar_update_appearance     (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_update_buttons        (NautilusSidebar  *sidebar);
+static void     add_command_buttons                    (NautilusSidebar  *sidebar,
+							GList            *application_list);
+static void     background_metadata_changed_callback   (NautilusSidebar  *sidebar);
 
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
-/* FIXME bugzilla.eazel.com 1245: hardwired sizes */
+/* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDEBAR_MINIMUM_WIDTH 1
 #define SIDEBAR_MINIMUM_HEIGHT 400
 
@@ -141,6 +145,7 @@ enum {
 	TARGET_COLOR,
 	TARGET_BGIMAGE,
 	TARGET_KEYWORD,
+	TARGET_BACKGROUND_RESET,
 	TARGET_GNOME_URI_LIST
 };
 
@@ -149,6 +154,7 @@ static GtkTargetEntry target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "property/keyword", 0, TARGET_KEYWORD },
+	{ "x-special/gnome-reset-background", 0, TARGET_BACKGROUND_RESET },	
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
@@ -160,8 +166,10 @@ typedef enum {
 	TABS_PART
 } SidebarPart;
 
+static gboolean confirm_trash_auto_value;
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
+
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
 
 /* initializing the class object by installing the operations we override */
 static void
@@ -195,6 +203,9 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
+
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					       &confirm_trash_auto_value);
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -276,12 +287,15 @@ nautilus_sidebar_initialize (GtkObject *object)
 	make_button_box (sidebar);
 
 	/* add a callback for when the theme changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);
+
+	/* add a callback for when the preference whether to confirm trashing/deleting file changes */
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH, nautilus_sidebar_confirm_trash_changed, sidebar);
 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (sidebar),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   target_table, NAUTILUS_N_ELEMENTS (target_table),
+			   target_table, EEL_N_ELEMENTS (target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 }
 
@@ -301,155 +315,197 @@ nautilus_sidebar_destroy (GtkObject *object)
 		nautilus_file_unref (sidebar->details->file);
 	}
 
+	gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
+	
 	g_free (sidebar->details->uri);
 	g_free (sidebar->details->default_background_color);
 	g_free (sidebar->details->default_background_image);
 	
 	g_free (sidebar->details);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_sidebar_theme_changed,
 					      sidebar);
 
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					      nautilus_sidebar_confirm_trash_changed,
+					      sidebar);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
 
-/* utility routines to test if sidebar panel is currently enabled */
-static char *
-nautilus_sidebar_get_sidebar_panel_key (const char *panel_iid)
-{
-	g_return_val_if_fail (panel_iid != NULL, NULL);
-
-	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
-}
-
-static gboolean
-nautilus_sidebar_sidebar_panel_enabled (const char *panel_iid)
-{
-	gboolean enabled;
-        char *key;
-
-	key = nautilus_sidebar_get_sidebar_panel_key (panel_iid);
-        enabled = nautilus_preferences_get_boolean (key);
-        g_free (key);
-        return enabled;
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* callback to handle resetting the background */
 static void
 reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 
-	background = nautilus_get_widget_background(sidebar);
+	background = eel_get_widget_background (sidebar);
 	if (background != NULL) { 
-		nautilus_background_reset (background); 
+		eel_background_reset (background); 
 	}
+}
+
+static const char *
+get_page_iid (NautilusSidebar *sidebar,
+	      int page_number)
+{
+	GtkWidget *page;
+	
+	page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
+					  page_number);
+	if (page == NULL) {
+		return NULL;
+	}
+	return nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (page));
 }
 
 /* utility routine that checks if the active panel matches the passed-in object id */
 static gboolean
-nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *id)
+nautilus_sidebar_active_panel_matches_id_or_is_damaged (NautilusSidebar *sidebar, const char *id)
 {
-	GtkWidget *current_view;
 	const char *current_iid;
 	
 	if (sidebar->details->selected_index < 0) {
 		return FALSE;
 	}
-	current_view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
-						  sidebar->details->selected_index);	
+	
 	/* if we can't get the active one, say yes to removing it, to make sure to
 	 * remove the tab
 	 */
-	if (current_view == NULL) {
+	current_iid = get_page_iid (sidebar, sidebar->details->selected_index);
+	if (current_iid == NULL) {
 		return TRUE;
 	}
-	
-	current_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (current_view));
-	return nautilus_strcmp (current_iid, id) == 0;	
+	return eel_strcmp (current_iid, id) == 0;	
 }
 
 /* if the active panel matches the passed in id, hide it. */
 void
 nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar, const char *sidebar_id)
 {
-	if (nautilus_sidebar_active_panel_matches_id (sidebar, sidebar_id)) {
+	if (nautilus_sidebar_active_panel_matches_id_or_is_damaged (sidebar, sidebar_id)) {
 		nautilus_sidebar_deactivate_panel (sidebar);
 	}
 }
 
+static gboolean
+any_panel_matches_iid (NautilusSidebar *sidebar, const char *id)
+{
+	int i, count;
+	const char *page_iid;
+
+	count = g_list_length (GTK_NOTEBOOK (sidebar->details->notebook)->children);
+	for (i = 0; i < count; i++) {
+		page_iid = get_page_iid (sidebar, i);
+		if (page_iid != NULL && strcmp (page_iid, id) == 0) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 /* callback for sidebar panel menu items to toggle their visibility */
 static void
-toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
+toggle_sidebar_panel (GtkWidget *widget,
+		      const char *sidebar_iid)
 {
  	NautilusSidebar *sidebar;
-        char *key;
-	
+	const char *preference_key;
+	gboolean already_on;
+
+	g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (widget));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget))));
+	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key") != NULL);
+
+	preference_key = gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key");
+
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
-	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_id);
-		
-	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
-	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key));
-	g_free (key); 
+	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_iid);
+	
+	already_on = any_panel_matches_iid (sidebar, sidebar_iid);
+	
+	/* This little dance gets the preferences code to send a
+	 * notification even though it thinks there's "no change".
+	 *
+	 * This is needed to deal with situations when the display
+	 * become out of whack with the number of running sidebar
+	 * panels, for example when a panel crashes.
+	 */
+	eel_preferences_set_boolean (preference_key, already_on);
+	eel_preferences_set_boolean (preference_key, !already_on);
+}
+
+typedef struct
+{
+	NautilusSidebar *sidebar;
+	GtkMenu *menu;
+} ForEachPanelData;
+
+static void
+sidebar_for_each_sidebar_panel (const char *name,
+				const char *iid,
+				const char *preference_key,
+				gpointer callback_data) 
+{
+	ForEachPanelData *data;
+	GtkWidget *menu_item;
+	gboolean panel_visible;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (iid != NULL);
+	g_return_if_fail (preference_key != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	data = callback_data;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (data->sidebar));
+	g_return_if_fail (GTK_IS_MENU (data->menu));
+
+	/* If the panel is not visible in the current user level, then
+	 * we dont need to create a menu item for it.
+	 */
+	panel_visible = any_panel_matches_iid (data->sidebar, iid);
+	if (!panel_visible && !eel_preferences_is_visible (preference_key)) {
+		return;
+	}
+
+	/* add a check menu item */
+	menu_item = gtk_check_menu_item_new_with_label (name);
+
+	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), panel_visible);
+	gtk_widget_show (menu_item);
+	gtk_object_set_user_data (GTK_OBJECT (menu_item), data->sidebar);
+	gtk_menu_append (data->menu, menu_item);
+	gtk_signal_connect_full (GTK_OBJECT (menu_item),
+				 "activate",
+				 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
+				 NULL,
+				 g_strdup (iid),
+				 g_free,
+				 FALSE,
+				 FALSE);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "nautilus-sidebar/preference-key",
+				  g_strdup (preference_key),
+				  g_free);
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
-
 static void
-nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
+sidebar_add_panel_context_menu_items (NautilusSidebar *sidebar,
+				      GtkWidget *menu)
 {
-	CORBA_Environment ev;
-	const char *query;
-        OAF_ServerInfoList *oaf_result;
-	guint i;
-	gboolean enabled;
-	GList *name_list;
-	GtkWidget *menu_item;
-	NautilusViewIdentifier *id;
+	ForEachPanelData data;
 
-	CORBA_exception_init (&ev);
+	data.sidebar = sidebar;
+	data.menu = GTK_MENU (menu);
 
-	/* ask OAF for all of the sidebars panels */
-	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
-	oaf_result = oaf_query (query, NULL, &ev);
-	
-	/* loop through the results, appending a new menu item for each unique sidebar panel */
-	name_list = NULL;
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
-		for (i = 0; i < oaf_result->_length; i++) {
-			id = nautilus_view_identifier_new_from_sidebar_panel
-				(&oaf_result->_buffer[i]);
-			/* check to see if we've seen this one */
-			if (g_list_find_custom (name_list, id->name, (GCompareFunc) strcmp) == NULL) {
-				name_list = g_list_append (name_list, g_strdup (id->name));
-				
-				/* add a check menu item */
-				menu_item = gtk_check_menu_item_new_with_label (id->name);
-				enabled = nautilus_sidebar_sidebar_panel_enabled (id->iid);
-				gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
-				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), enabled);
-				gtk_widget_show (menu_item);
-				gtk_object_set_user_data (GTK_OBJECT (menu_item), sidebar);
-				gtk_menu_append (GTK_MENU(menu), menu_item);
-				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate",
-							 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
-							 NULL, g_strdup(id ->iid), g_free,
-							 FALSE, FALSE);
-			}
-			nautilus_view_identifier_free (id);
-		}
-	} 
-	if (name_list != NULL)
-		nautilus_g_list_free_deep(name_list);
-		
-	if (oaf_result != NULL) {
-		CORBA_free (oaf_result);
-	}
-	
-	CORBA_exception_free (&ev);
+	nautilus_sidebar_for_each_panel (sidebar_for_each_sidebar_panel, &data);
 }
 
 /* check to see if the background matches the default */
@@ -478,10 +534,10 @@ GtkWidget *
 nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 {
 	GtkWidget *menu, *menu_item;
-	NautilusBackground *background;
+	EelBackground *background;
 	gboolean has_background;
 
-	background = nautilus_get_widget_background (GTK_WIDGET(sidebar));
+	background = eel_get_widget_background (GTK_WIDGET(sidebar));
 	has_background = background && !nautilus_sidebar_background_is_default (sidebar);
 	
 	menu = gtk_menu_new ();
@@ -499,7 +555,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	gtk_menu_append (GTK_MENU (menu), menu_item);
 	
 	/* add the sidebar panels */
-	nautilus_sidebar_add_panel_items(sidebar, menu);
+	sidebar_add_panel_context_menu_items (sidebar, menu);
 	return menu;
 }
 
@@ -515,9 +571,9 @@ static char*
 map_local_data_file (char *file_name)
 {
 	char *temp_str;
-	if (file_name && !nautilus_istr_has_prefix (file_name, "file://")) {
+	if (file_name && !eel_istr_has_prefix (file_name, "file://")) {
 
-		if (nautilus_str_has_prefix (file_name, "./")) {
+		if (eel_str_has_prefix (file_name, "./")) {
 			temp_str = nautilus_theme_get_image_path (file_name + 2);
 		} else {
 			temp_str = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, file_name);
@@ -572,17 +628,28 @@ nautilus_sidebar_theme_changed (gpointer user_data)
 	gtk_widget_queue_draw (GTK_WIDGET (sidebar)) ;	
 }
 
+/* handler for handling confirming trash preferences changes */
+
+static void
+nautilus_sidebar_confirm_trash_changed (gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (user_data);
+	nautilus_sidebar_update_buttons (sidebar);
+}
+
 /* hit testing */
 
 static SidebarPart
 hit_test (NautilusSidebar *sidebar,
 	  int x, int y)
 {
-	if (nautilus_point_in_widget (GTK_WIDGET (sidebar->details->sidebar_tabs), x, y)) {
+	if (eel_point_in_widget (GTK_WIDGET (sidebar->details->sidebar_tabs), x, y)) {
 		return TABS_PART;
 	}
 	
-	if (nautilus_point_in_widget (GTK_WIDGET (sidebar->details->title_tab), x, y)) {
+	if (eel_point_in_widget (GTK_WIDGET (sidebar->details->title_tab), x, y)) {
 		return TITLE_TAB_PART;
 	}
 	
@@ -590,7 +657,7 @@ hit_test (NautilusSidebar *sidebar,
 		return ICON_PART;
 	}
 	
-	if (nautilus_point_in_widget (GTK_WIDGET (sidebar), x, y)) {
+	if (eel_point_in_widget (GTK_WIDGET (sidebar), x, y)) {
 		return BACKGROUND_PART;
 	}
 
@@ -635,12 +702,12 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
-		/* FIXME bugzilla.eazel.com 2507: Does this work for all images, or only background images?
+		/* FIXME bugzilla.gnome.org 42507: Does this work for all images, or only background images?
 		 * Other views handle background images differently from other URIs.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
-			nautilus_background_receive_dropped_background_image
-				(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
+			eel_background_receive_dropped_background_image
+				(eel_get_widget_background (GTK_WIDGET (sidebar)),
 				 uris[0]);
 		} else if (exactly_one) {
 			gtk_signal_emit (GTK_OBJECT (sidebar),
@@ -655,7 +722,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 		/* handle images dropped on the logo specially */
 		
 		if (!exactly_one) {
-			nautilus_show_error_dialog (
+			eel_show_error_dialog (
 				_("You can't assign more than one custom icon at a time! "
 				  "Please drag just one image to set a custom icon."), 
 				_("More Than One Image"),
@@ -675,15 +742,15 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 							    NULL);
 			}
 		} else {	
-			if (nautilus_is_remote_uri (uris[0])) {
-				nautilus_show_error_dialog (
+			if (eel_is_remote_uri (uris[0])) {
+				eel_show_error_dialog (
 					_("The file that you dropped is not local.  "
 					  "You can only use local images as custom icons."), 
 					_("Local Images Only"),
 					window);
 			
 			} else {
-				nautilus_show_error_dialog (
+				eel_show_error_dialog (
 					_("The file that you dropped is not an image.  "
 					  "You can only use local images as custom icons."),
 					_("Images Only"),
@@ -763,8 +830,8 @@ receive_dropped_color (NautilusSidebar *sidebar,
 	case ICON_PART:
 	case BACKGROUND_PART:
 		/* Let the background change based on the dropped color. */
-		nautilus_background_receive_dropped_color
-			(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
+		eel_background_receive_dropped_color
+			(eel_get_widget_background (GTK_WIDGET (sidebar)),
 			 GTK_WIDGET (sidebar), x, y, selection_data);
 		break;
 	}
@@ -791,6 +858,7 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 guint info, guint time)
 {
 	NautilusSidebar *sidebar;
+	EelBackground *background;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
 
@@ -808,12 +876,27 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		if (hit_test (sidebar, x, y) == BACKGROUND_PART)
 			receive_dropped_uri_list (sidebar, x, y, selection_data);
 		break;	
+	case TARGET_BACKGROUND_RESET:
+		background = eel_get_widget_background ( GTK_WIDGET (sidebar));
+		if (background != NULL) { 
+			eel_background_reset (background); 
+		}
+		break;
 	case TARGET_KEYWORD:
 		receive_dropped_keyword (sidebar, x, y, selection_data);
 		break;
 	default:
 		g_warning ("unknown drop type");
 	}
+}
+
+static void
+view_loaded_callback (NautilusViewFrame *view_frame, gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (user_data);	
+	nautilus_sidebar_tabs_connect_view (sidebar->details->sidebar_tabs, GTK_WIDGET (view_frame));
 }
 
 /* add a new panel to the sidebar */
@@ -833,6 +916,8 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	gtk_widget_show (label);
 	
+	gtk_signal_connect (GTK_OBJECT (panel), "view_loaded", view_loaded_callback, sidebar);
+	
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
 				  GTK_WIDGET (panel), label);
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (sidebar->details->notebook),
@@ -840,7 +925,7 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	/* tell the index tabs about it */
 	nautilus_sidebar_tabs_add_view (sidebar->details->sidebar_tabs,
-					_(description), GTK_WIDGET (panel), page_num);
+					description, GTK_WIDGET (panel), page_num);
 	
 	g_free (description);
 
@@ -867,11 +952,33 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	}
 	
 	/* Remove the tab associated with this panel */
-	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, _(description));
+	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
 	if (page_num <= sidebar->details->selected_index) {
 		sidebar->details->selected_index -= 1;
 	}
 	g_free (description);
+}
+
+static void
+notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property, gboolean value)
+{
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	Bonobo_Control control;
+	GtkWidget *notebook_page;
+	
+	notebook_page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
+						   sidebar->details->selected_index);
+	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (notebook_page));	
+	if (control != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (control, &ev);
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			bonobo_property_bag_client_set_value_gboolean (property_bag, property, value, &ev);
+			bonobo_object_release_unref (property_bag, NULL);
+		}
+		CORBA_exception_free (&ev);
+	}
 }
 
 /* utility to activate the panel corresponding to the passed in index  */
@@ -881,6 +988,11 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	char *title;
 	GtkNotebook *notebook;
 
+	/* nothing to do if it's already active */
+	if (sidebar->details->selected_index == which_view) {
+		return;
+	}
+	
 	notebook = sidebar->details->notebook;
 	if (sidebar->details->selected_index < 0) {
 		gtk_widget_show (GTK_WIDGET (notebook));
@@ -896,6 +1008,8 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 					  GTK_WIDGET (sidebar->details->title_tab),
 					  FALSE, FALSE, 0);
 		}
+	} else {
+		notify_current_sidebar_view (sidebar, "close", TRUE);
 	}
 	
 	sidebar->details->selected_index = which_view;
@@ -911,6 +1025,7 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
 	
 	gtk_notebook_set_page (notebook, which_view);
+	notify_current_sidebar_view (sidebar, "close", FALSE);
 }
 
 /* utility to deactivate the active panel */
@@ -920,6 +1035,7 @@ nautilus_sidebar_deactivate_panel (NautilusSidebar *sidebar)
 	if (sidebar->details->selected_index >= 0) {
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->notebook));
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->title_tab));
+		notify_current_sidebar_view (sidebar, "close", TRUE);
 	}
 	
 	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
@@ -998,9 +1114,9 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	/* handle the context menu */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		menu = nautilus_sidebar_create_context_menu (sidebar);	
-		nautilus_pop_up_context_menu (GTK_MENU(menu),
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+		eel_pop_up_context_menu (GTK_MENU(menu),
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      event);
 	}	
 	return TRUE;
@@ -1059,12 +1175,12 @@ nautilus_sidebar_release_event (GtkWidget *widget, GdkEventButton *event)
 /* Handle the background changed signal by writing out the settings to metadata.
  */
 static void
-background_settings_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
+background_settings_changed_callback (EelBackground *background, NautilusSidebar *sidebar)
 {
 	char *image;
 	char *color;
 
-	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (EEL_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
 
 	if (sidebar->details->file == NULL) {
@@ -1077,8 +1193,8 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 					  background_metadata_changed_callback,
 					  sidebar);
 
-	color = nautilus_background_get_color (background);
-	image = nautilus_background_get_image_uri (background);
+	color = eel_background_get_color (background);
+	image = eel_background_get_image_uri (background);
 	
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
@@ -1089,18 +1205,6 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 				    NULL,
 				    image);
-				    
-	/* Block so this fn is not reinvoked due to nautilus_background_set_combine_mode */
-	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-					  background_settings_changed_callback,
-					  sidebar);
-	/* Combine mode uses dithering to avoid striations in gradients.
-	 */
-	nautilus_background_set_combine_mode (background, nautilus_gradient_is_gradient (color));
-	
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-					    background_settings_changed_callback,
-					    sidebar);
 
 	g_free (color);
 	g_free (image);
@@ -1113,9 +1217,9 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 /* handle the background reset signal by writing out NULL to metadata and setting the backgrounds
    fields to their default values */
 static void
-background_reset_callback (NautilusBackground *background, NautilusSidebar *sidebar)
+background_reset_callback (EelBackground *background, NautilusSidebar *sidebar)
 {
-	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (EEL_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
 
 	if (sidebar->details->file == NULL) {
@@ -1252,7 +1356,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    FALSE, FALSE, 
 				    0);
 
-		/* FIXME bugzilla.eazel.com 2510: Security hole?
+		/* FIXME bugzilla.gnome.org 42510: Security hole?
 		 * Unsafe to use a string from the MIME file as a
 		 * printf format string without first checking it over
 		 * somehow. We can do a search and replace on the "%s"
@@ -1265,12 +1369,12 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 			file_path = g_strdup (sidebar->details->uri);
 		} 
 
-		temp_str = nautilus_shell_quote (file_path);		
+		temp_str = eel_shell_quote (file_path);		
 		id_string = g_strdup_printf (application->id, temp_str); 		
 		g_free (file_path);
 		g_free (temp_str);
 
-		nautilus_gtk_signal_connect_free_data 
+		eel_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), "clicked",
 			 GTK_SIGNAL_FUNC (command_button_callback), id_string);
 
@@ -1324,7 +1428,7 @@ add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
 					command_string = g_strdup (temp_str + 1);
 					g_free (button_name);
 					
-					nautilus_gtk_signal_connect_free_data 
+					eel_gtk_signal_connect_free_data 
 						(GTK_OBJECT (temp_button), "clicked",
 						 GTK_SIGNAL_FUNC (metadata_button_callback), command_string);
 		                	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
@@ -1385,9 +1489,12 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 
 	/* here is a hack to provide an "empty trash" button when displaying the trash.  Eventually, we
 	 * need a framework to allow protocols to add commands buttons */
-	if (nautilus_istr_has_prefix (sidebar->details->uri, "trash:")) {
+	if (eel_istr_has_prefix (sidebar->details->uri, "trash:")) {
 		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_label (_("  Empty Trash  "));		    
+		temp_button = gtk_button_new_with_label (confirm_trash_auto_value 
+							 ? _("Empty Trash...") 
+							 : _("Empty Trash"));
+		eel_gtk_button_set_standard_padding (GTK_BUTTON (temp_button));
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 					temp_button, FALSE, FALSE, 0);
 		gtk_widget_set_sensitive (temp_button, !nautilus_trash_monitor_is_empty ());
@@ -1428,16 +1535,15 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 static void
 nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 	char *color_spec;
 	char *background_color;
 	char *background_image;
-	gboolean combine;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	
 	/* Connect the background changed signal to code that writes the color. */
-	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
+	background = eel_get_widget_background (GTK_WIDGET (sidebar));
 	if (!sidebar->details->background_connected) {
 		sidebar->details->background_connected = TRUE;
 		gtk_signal_connect (GTK_OBJECT (background),
@@ -1453,12 +1559,8 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	/* Set up the background color and image from the metadata. */
 
 	if (nautilus_sidebar_background_is_default (sidebar)) {
-		char* combine_str;
 		background_color = g_strdup (sidebar->details->default_background_color);
 		background_image = g_strdup (sidebar->details->default_background_image);
-		combine_str = nautilus_theme_get_theme_data ("sidebar", "combine");
-		combine = combine_str != NULL;
-		g_free (combine_str);
 	} else {
 		background_color = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
@@ -1466,10 +1568,6 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		background_image = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							       NULL);
-		       
-		/* Combine mode uses dithering to avoid striations in gradients.
-		 */
-		combine = nautilus_gradient_is_gradient (background_color);
 	}
 		
 	/* Block so we don't write these settings out in response to our set calls below */
@@ -1477,9 +1575,8 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 					  background_settings_changed_callback,
 					  sidebar);
 
-	nautilus_background_set_image_uri (background, background_image);
-	nautilus_background_set_color (background, background_color);
-	nautilus_background_set_combine_mode (background, combine);
+	eel_background_set_image_uri (background, background_image);
+	eel_background_set_color (background, background_color);
 
 	g_free (background_color);
 	g_free (background_image);
@@ -1535,7 +1632,7 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	g_return_if_fail (initial_title != NULL);
 
 	/* there's nothing to do if the uri is the same as the current one */ 
-	if (nautilus_strcmp (sidebar->details->uri, new_uri) == 0) {
+	if (eel_strcmp (sidebar->details->uri, new_uri) == 0) {
 		return;
 	}
 	
@@ -1590,14 +1687,14 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
 {
 	NautilusSidebar *sidebar = NAUTILUS_SIDEBAR(widget);
 	
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* remember the size if it changed */
 	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
- 		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-					      widget->allocation.width);
+ 		eel_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+					     widget->allocation.width);
 	}	
 }
 
@@ -1607,7 +1704,7 @@ nautilus_sidebar_realize (GtkWidget *widget)
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
 	
 	/* Superclass does the actual realize */
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 	
 	/* Tell X not to erase the window contents when resizing */
 	gdk_window_set_static_gravities (widget->window, TRUE);

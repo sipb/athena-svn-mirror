@@ -28,7 +28,7 @@
 #define NAUTILUS_APPLICATION_H
 
 #include <bonobo/bonobo-object.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
 
@@ -57,8 +57,8 @@ NautilusApplication *nautilus_application_new               (void);
 void                 nautilus_application_startup           (NautilusApplication *application,
 							     gboolean             kill_shell,
 							     gboolean             restart_shell,
-							     gboolean             start_desktop,
 							     gboolean             no_default_window,
+							     gboolean             no_desktop,
 							     gboolean             do_first_time_druid_check,
 							     const char          *default_geometry,
 							     const char          *urls[]);

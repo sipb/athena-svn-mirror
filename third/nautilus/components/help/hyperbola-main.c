@@ -23,7 +23,9 @@
 #include <config.h>
 
 #include <bonobo.h>
+#include <eel/eel-debug.h>
 #include <gnome.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
 
 #include "hyperbola-nav.h"
@@ -38,26 +40,41 @@ do_destroy (GtkObject * obj)
 	if (object_count <= 0)
 		gtk_main_quit ();
 }
+/*
+ * If scrollkeeper support is enabled then hyperbola_navigation_tree_new()
+ * is the only function called. This will create the contents display and
+ * the index/search display.
+ *
+ * If scrollkeeper support is not enabled, then this function is called and
+ * will only create the contents display. The other functions 
+ * hyperbola_navigation_index_new() and hyperbola_navigation_search_new()
+ * are not implemented.
+ */
 
 static BonoboObject *
 make_obj (BonoboGenericFactory * Factory, const char *goad_id, void *closure)
 {
 	BonoboObject *retval = NULL;
-
+	/*
+         * If scrollkeeper support is enabled then hyperbola_navigation_tree_new()
+	 * will create the access to the contents display  and the index/search display.
+	 */
 	if (!strcmp
 	    (goad_id,
 	     "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"))
 			retval = hyperbola_navigation_tree_new ();
-	else
-		if (!strcmp
-		    (goad_id,
-		     "OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49"))
-	       retval = hyperbola_navigation_index_new ();
-	else
-		if (!strcmp
-		    (goad_id,
-		     "OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813"))
-	       retval = hyperbola_navigation_search_new ();
+#ifndef ENABLE_SCROLLKEEPER_SUPPORT
+ 	else
+ 		if (!strcmp
+ 		    (goad_id,
+ 		     "OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49"))
+ 	       retval = hyperbola_navigation_index_new ();
+ 	else
+ 		if (!strcmp
+ 		    (goad_id,
+ 		     "OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813"))
+ 	       retval = hyperbola_navigation_search_new ();
+#endif
 
 	if (retval) {
 		object_count++;
@@ -82,6 +99,13 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
+
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
@@ -95,6 +119,8 @@ main (int argc, char *argv[])
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	nautilus_global_preferences_initialize ();
+
 	registration_id =
 		oaf_make_registration_id
 		("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb",
@@ -103,6 +129,7 @@ main (int argc, char *argv[])
 		bonobo_generic_factory_new_multi (registration_id, make_obj,
 						  NULL);
 	g_free (registration_id);
+
 
 	do {
 		bonobo_main ();

@@ -31,6 +31,12 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
 #include "nautilus-shell-interface.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -39,14 +45,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
@@ -85,7 +85,7 @@ static void     corba_restart                   (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static gboolean restore_window_states           (NautilusShell          *shell);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusShell,
 				   nautilus_shell,
 				   BONOBO_OBJECT_TYPE)
 
@@ -159,7 +159,7 @@ destroy (GtkObject *object)
 	shell = NAUTILUS_SHELL (object);
 	g_free (shell->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusShell *
@@ -221,19 +221,19 @@ display_caveat (GtkWindow *parent_window)
 		}
 	}
 
-  	text = nautilus_label_new
+  	text = eel_label_new
 		(_("Thank you for your interest in Nautilus.\n "
 		   "\n"
 		   "As with any software under development, you should exercise caution when "
-		   "using Nautilus.  Eazel does not provide any guarantee that it will work "
+		   "using Nautilus. We do not provide any guarantee that it will work "
 		   "properly, or assume any liability for your use of it.  Please use it at your "
 		   "own risk.\n"
 		   "\n"
-		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
+		   "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
 		   "comments, and suggestions."));
-	nautilus_label_make_larger (NAUTILUS_LABEL (text), 1);
-	nautilus_label_set_justify (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (text), TRUE);
+	eel_label_make_larger (EEL_LABEL (text), 1);
+	eel_label_set_justify (EEL_LABEL (text), GTK_JUSTIFY_LEFT);
+	eel_label_set_wrap (EEL_LABEL (text), TRUE);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
 
@@ -254,7 +254,7 @@ display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
-	/* FIXME bugzilla.eazel.com 1256: It's not on top of the
+	/* FIXME bugzilla.gnome.org 41256: It's not on top of the
          * windows other than the first one.
 	 */
 	if (!showed_caveat
@@ -274,7 +274,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	window = nautilus_application_create_window (shell->details->application);
 
 	if (geometry != NULL) {
-		nautilus_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
+		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								      geometry,
 								      APPLICATION_WINDOW_MIN_WIDTH,
 								      APPLICATION_WINDOW_MIN_HEIGHT);
@@ -353,24 +353,37 @@ corba_quit (PortableServer_Servant servant,
  *
  * for now, only the window geometry & uri is saved, into "start-state",
  * in a list of strings like:
- *     "90x90+1+1 uri"
+ *
+ *     "<width>,<height>,<x>,<y>,<location>"
+ *
+ * For example:
+ *
+ *     "800,600,10,10,file:///tmp"
  */
+
+#define WINDOW_STATE_ATTRIBUTE_WIDTH	0
+#define WINDOW_STATE_ATTRIBUTE_HEIGHT	1
+#define WINDOW_STATE_ATTRIBUTE_X	2
+#define WINDOW_STATE_ATTRIBUTE_Y	3
+#define WINDOW_STATE_ATTRIBUTE_LOCATION	4
 
 static void
 save_window_states (void)
 {
-	GList *windows, *iter;
-	GList *out;
+	GList *windows;
+	GList *node;
 	NautilusWindow *window;
 	GdkWindow *gdk_window;
-	char *window_info;
+	char *window_attributes;
 	int x, y, width, height;
 	char *location;
+	EelStringList *states;
 
-	out = NULL;
+	states = NULL;
 	windows = nautilus_application_get_window_list ();
-	for (iter = windows; iter; iter = g_list_next (iter)) {
-		window = (NautilusWindow *) (iter->data);
+	for (node = windows; node; node = g_list_next (node)) {
+		g_assert (node->data != NULL);
+		window = node->data;
 
 		width = GTK_WIDGET (window)->allocation.width;
 		height = GTK_WIDGET (window)->allocation.height;
@@ -381,81 +394,79 @@ save_window_states (void)
 
 		location = nautilus_window_get_location (window);
 
-		/* FIXME bugzilla.eazel.com 4375
-		   This hardcoded subst should be parameterized
-		   at some point. This ensures that when eazel-install:nautilus
-		   restarts nautilus, it doesn't go to eazel-install:nautilus but
-		   to eazel: instead */
-		if (nautilus_istr_has_prefix (location, "eazel-install:")) {
-			g_free (location);
-			location = g_strdup ("eazel:");
-		}
-
-		window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
-					       width, height, 
-					       x, y, 
-					       location);
-
+		window_attributes = g_strdup_printf ("%d,%d,%d,%d,%s", 
+						     width, height, 
+						     x, y, 
+						     location);
 		g_free (location);
-
-		out = g_list_prepend (out, window_info);
+		
+		if (states == NULL) {
+			states = eel_string_list_new (TRUE);
+		}
+		eel_string_list_insert (states, window_attributes);
+		g_free (window_attributes);
 	}
 
-	nautilus_preferences_set_string_list (START_STATE_CONFIG, out);
-	nautilus_g_list_free_deep (out);
+	eel_preferences_set_string_list (START_STATE_CONFIG, states);
+
+	eel_string_list_free (states);
+}
+
+static void
+restore_one_window_callback (const char *attributes,
+			     gpointer callback_data)
+{
+	NautilusShell *shell;
+	EelStringList *attribute_list;
+	int x;
+	int y;
+	int width;
+	int height;
+	char *location;
+	NautilusWindow *window;
+
+	g_return_if_fail (eel_strlen (attributes) > 0);
+	g_return_if_fail (NAUTILUS_IS_SHELL (callback_data));
+
+	shell = NAUTILUS_SHELL (callback_data);
+
+	attribute_list = eel_string_list_new_from_tokens (attributes, ",", TRUE);
+
+	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_WIDTH, &width);
+	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_HEIGHT, &height);
+	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_X, &x);
+	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_Y, &y);
+	location = eel_string_list_nth (attribute_list, WINDOW_STATE_ATTRIBUTE_LOCATION);
+
+	window = nautilus_application_create_window (shell->details->application);
+	
+	if (eel_strlen (location) > 0) {
+		nautilus_window_go_to (window, location);
+	} else {
+		nautilus_window_go_home (window);
+	}
+
+	gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
+	gtk_widget_set_usize (GTK_WIDGET (window), width, height);
+	display_caveat_first_time (shell, window);
+
+	g_free (location);
+	eel_string_list_free (attribute_list);
 }
 
 /* returns TRUE if there was state info which has been used to create new windows */
 static gboolean
 restore_window_states (NautilusShell *shell)
 {
-	GList *start_state, *iter;
-	NautilusWindow *window;
-	char *window_info, *p, *uri;
-	int x, y, width, height;
+	EelStringList *states;
+	gboolean result;
 
-	start_state = nautilus_preferences_get_string_list (START_STATE_CONFIG);
-	if (! start_state) {
-		return FALSE;
-	}
-
-	for (iter = start_state; iter; iter = iter->next) {
-		p = window_info = (char *) (iter->data);
-
-		width = strtol (p, &p, 10);
-		if (*p == 'x') {
-			p++;
-		}
-		height = strtol (p, &p, 10);
-		if (*p == '+') {
-			p++;
-		}
-		x = strtol (p, &p, 10);
-		if (*p == '+') {
-			p++;
-		}
-		y = strtol (p, &p, 10);
-		p = strchr (p, ' ');
-		if (p) {
-			uri = p+1;
-		} else {
-			uri = NULL;
-		}
-
-		window = nautilus_application_create_window (shell->details->application);
-		if (uri == NULL) {
-			nautilus_window_go_home (window);
-		} else {
-			nautilus_window_go_to (window, uri);
-		}
-
-		gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
-		gtk_widget_set_usize (GTK_WIDGET (window), width, height);
-		display_caveat_first_time (shell, window);
-	}
-	nautilus_g_list_free_deep (start_state);
-	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);
-	return TRUE;
+	states = eel_preferences_get_string_list (START_STATE_CONFIG);
+	result = eel_string_list_get_length (states) > 0;
+	eel_string_list_for_each (states, restore_one_window_callback, shell);
+	eel_string_list_free (states);
+	eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	return result;
 }
 
 static void
@@ -465,5 +476,5 @@ corba_restart (PortableServer_Servant servant,
 	save_window_states ();
 
 	nautilus_main_event_loop_quit ();
-	nautilus_setenv ("_NAUTILUS_RESTART", "yes", 1);
+	eel_setenv ("_NAUTILUS_RESTART", "yes", 1);
 }

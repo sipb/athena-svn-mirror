@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,8 +60,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-AMMONITE_CFLAGS = @AMMONITE_CFLAGS@
-AMMONITE_LIBS = @AMMONITE_LIBS@
 APPLETS_CFLAGS = @APPLETS_CFLAGS@
 APPLETS_LIBS = @APPLETS_LIBS@
 AS = @AS@
@@ -71,6 +69,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -79,43 +78,44 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
-EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
-EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
-EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
-EAZEL_SERVICES = @EAZEL_SERVICES@
-ENABLE_INSTALLER = @ENABLE_INSTALLER@
+ECHO = @ECHO@
+EEL_CFLAGS = @EEL_CFLAGS@
+EEL_LIBS = @EEL_LIBS@
+EEL_REQUIRED = @EEL_REQUIRED@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
+FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
-FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
-GHTTP_CFLAGS = @GHTTP_CFLAGS@
-GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
+GNOMECANVASPIXBUF_CFLAGS = @GNOMECANVASPIXBUF_CFLAGS@
 GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
 GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DB2HTML3_FLAG = @GNOME_DB2HTML3_FLAG@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -128,6 +128,8 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
+HAVE_JW = @HAVE_JW@
+ICONV_LIBS = @ICONV_LIBS@
 IDL_CFLAGS = @IDL_CFLAGS@
 IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
@@ -135,8 +137,16 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
+LIBART_CFLAGS = @LIBART_CFLAGS@
+LIBART_CONFIG = @LIBART_CONFIG@
+LIBART_LIBS = @LIBART_LIBS@
+LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
+LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
+LIBRSVG_LIBS = @LIBRSVG_LIBS@
+LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
@@ -151,43 +161,59 @@ MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
 MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
-MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
 MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
+NAUTILUS_DEPENDENCY_CFLAGS = @NAUTILUS_DEPENDENCY_CFLAGS@
+NAUTILUS_DEPENDENCY_LIBS = @NAUTILUS_DEPENDENCY_LIBS@
+NAUTILUS_INCLUDEDIR = @NAUTILUS_INCLUDEDIR@
+NAUTILUS_LIBDIR = @NAUTILUS_LIBDIR@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
+NAUTILUS_PRIVATE_CFLAGS = @NAUTILUS_PRIVATE_CFLAGS@
+NAUTILUS_PRIVATE_LIBS = @NAUTILUS_PRIVATE_LIBS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
 OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
-PACKAGESYSTEM = @PACKAGESYSTEM@
-PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
-PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
-PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
 POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-RPM_LIBS = @RPM_LIBS@
-RPM_VERSION = @RPM_VERSION@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML2_CFLAGS = @XML2_CFLAGS@
+XML2_CONFIG = @XML2_CONFIG@
+XML2_LIBS = @XML2_LIBS@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 Z_LIBS = @Z_LIBS@
 gnomelocaledir = @gnomelocaledir@
@@ -197,10 +223,10 @@ NULL =
 
 lib_LTLIBRARIES = libnautilus.la
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) -I. 	$(GNOME_CFLAGS) 	$(GTK_CFLAGS) 	$(BONOBOX_CFLAGS) 	$(OAF_CFLAGS) 	$(VFS_CFLAGS) 	$(XML_CFLAGS) 	-DDATADIR=\""$(datadir)"\" 			-D_REENTRANT
+INCLUDES =  	-I$(builddir) 	-I$(top_srcdir) 	-I$(top_builddir) 	$(NAUTILUS_DEPENDENCY_CFLAGS) 	-DDATADIR=\""$(datadir)"\" 	$(NULL)
 
 
-libnautilus_la_LDFLAGS =  	$(GNOME_LIBS) 	$(OAF_LIBS) 	$(BONOBOX_LIBS) 	$(VFS_LIBS) 	$(XML_LIBS) 	$(LIBPNG)
+libnautilus_la_LDFLAGS =  	$(NULL)
 
 
 nautilus_view_component_idl_sources =  	nautilus-view-component-stubs.c			nautilus-view-component-skels.c			nautilus-view-component.h			nautilus-view-component-common.c
@@ -221,7 +247,11 @@ uidir = $(datadir)/gnome/ui
 ui_DATA =  	nautilus-clipboard-ui.xml		$(NULL)
 
 
-EXTRA_DIST =  	$(ui_DATA)				nautilus-view-component.idl		nautilus-distributed-undo.idl		$(NULL)
+idldir = $(datadir)/idl
+idl_DATA =  	nautilus-view-component.idl		nautilus-distributed-undo.idl		$(NULL)
+
+
+EXTRA_DIST =  	$(ui_DATA)				$(idl_DATA)				$(NULL)
 
 
 BUILT_SOURCES =  	$(nautilus_view_component_idl_sources)			$(nautilus_distributed_undo_idl_sources)		$(NULL)
@@ -252,7 +282,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(ui_DATA)
+DATA =  $(idl_DATA) $(ui_DATA)
 
 HEADERS =  $(libnautilusinclude_HEADERS)
 
@@ -268,7 +298,7 @@ OBJECTS = $(libnautilus_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.shared
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps libnautilus/Makefile
 
@@ -305,6 +335,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -313,6 +348,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -342,6 +378,25 @@ maintainer-clean-libtool:
 
 libnautilus.la: $(libnautilus_la_OBJECTS) $(libnautilus_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libnautilus_la_LDFLAGS) $(libnautilus_la_OBJECTS) $(libnautilus_la_LIBADD) $(LIBS)
+
+install-idlDATA: $(idl_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(idldir)
+	@list='$(idl_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-idlDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(idl_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(idldir)/$$p; \
+	done
 
 install-uiDATA: $(ui_DATA)
 	@$(NORMAL_INSTALL)
@@ -421,6 +476,43 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+nautilus-bonobo-workarounds.lo nautilus-bonobo-workarounds.o : \
+	nautilus-bonobo-workarounds.c ../config.h \
+	nautilus-bonobo-workarounds.h
+nautilus-clipboard.lo nautilus-clipboard.o : nautilus-clipboard.c \
+	../config.h nautilus-clipboard.h nautilus-bonobo-ui.h
+nautilus-distributed-undo-common.lo nautilus-distributed-undo-common.o : \
+	nautilus-distributed-undo-common.c nautilus-distributed-undo.h
+nautilus-distributed-undo-skels.lo nautilus-distributed-undo-skels.o : \
+	nautilus-distributed-undo-skels.c nautilus-distributed-undo.h
+nautilus-distributed-undo-stubs.lo nautilus-distributed-undo-stubs.o : \
+	nautilus-distributed-undo-stubs.c nautilus-distributed-undo.h
+nautilus-idle-queue.lo nautilus-idle-queue.o : nautilus-idle-queue.c \
+	../config.h nautilus-idle-queue.h
+nautilus-undo-transaction.lo nautilus-undo-transaction.o : \
+	nautilus-undo-transaction.c ../config.h \
+	nautilus-undo-transaction.h nautilus-undo.h \
+	nautilus-distributed-undo.h nautilus-undo-private.h \
+	nautilus-bonobo-workarounds.h
+nautilus-undo.lo nautilus-undo.o : nautilus-undo.c ../config.h \
+	nautilus-undo.h nautilus-undo-private.h \
+	nautilus-distributed-undo.h nautilus-undo-transaction.h \
+	nautilus-undo.h
+nautilus-view-component-common.lo nautilus-view-component-common.o : \
+	nautilus-view-component-common.c nautilus-view-component.h
+nautilus-view-component-skels.lo nautilus-view-component-skels.o : \
+	nautilus-view-component-skels.c nautilus-view-component.h
+nautilus-view-component-stubs.lo nautilus-view-component-stubs.o : \
+	nautilus-view-component-stubs.c nautilus-view-component.h
+nautilus-view-standard-main.lo nautilus-view-standard-main.o : \
+	nautilus-view-standard-main.c ../config.h \
+	nautilus-view-standard-main.h nautilus-view.h \
+	nautilus-view-component.h
+nautilus-view.lo nautilus-view.o : nautilus-view.c ../config.h \
+	nautilus-view.h nautilus-view-component.h \
+	nautilus-bonobo-workarounds.h nautilus-idle-queue.h \
+	nautilus-undo.h
 
 info-am:
 info: info-am
@@ -433,22 +525,23 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-uiDATA install-libnautilusincludeHEADERS
+install-data-am: install-idlDATA install-uiDATA \
+		install-libnautilusincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-uiDATA \
-		uninstall-libnautilusincludeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES uninstall-idlDATA \
+		uninstall-uiDATA uninstall-libnautilusincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(uidir) \
-		$(DESTDIR)$(libnautilusincludedir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(idldir) \
+		$(DESTDIR)$(uidir) $(DESTDIR)$(libnautilusincludedir)
 
 
 mostlyclean-generic:
@@ -494,18 +587,18 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-uiDATA install-uiDATA \
-uninstall-libnautilusincludeHEADERS install-libnautilusincludeHEADERS \
-tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-am install-data \
-install-am install uninstall-am uninstall all-redirect all-am all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-libtool uninstall-idlDATA install-idlDATA \
+uninstall-uiDATA install-uiDATA uninstall-libnautilusincludeHEADERS \
+install-libnautilusincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
-
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
@@ -514,6 +607,11 @@ $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
 nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-distributed-undo.idl
 	touch nautilus_distributed_undo_idl_stamp
+
+$(libnautilus_la_OBJECTS): nautilus_view_component_idl_stamp nautilus_distributed_undo_idl_stamp
+
+dist-hook:
+	cd $(distdir); rm -f $(CLEANFILES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

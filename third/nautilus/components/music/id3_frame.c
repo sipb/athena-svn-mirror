@@ -8,7 +8,7 @@
  * Author:        Espen Skoglund <espensk@stud.cs.uit.no>
  * Created at:    Fri Feb  5 23:47:08 1999
  * 
- * $Id: id3_frame.c,v 1.1.1.1 2001-02-03 22:47:49 ghudson Exp $
+ * $Id: id3_frame.c,v 1.1.1.2 2002-01-03 23:27:18 amb Exp $
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -257,7 +257,7 @@ int id3_read_frame(id3_t *id3)
 	 */
 	frame->fr_size_z = frame->fr_size;
 	frame->fr_size   = g_ntohl( *((guint32 *) frame->fr_data) );
-	frame->fr_data_z = (void *) ((int) frame->fr_data + 4);
+	frame->fr_data_z = GINT_TO_POINTER ((GPOINTER_TO_INT (frame->fr_data) + 4));
 	frame->fr_data   = NULL;
     } else {
 	/*

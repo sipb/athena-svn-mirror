@@ -1,10 +1,10 @@
 #ifndef __GDB3HTML_H__
 #define __GDB3HTML_H__
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/parserInternals.h>
-#include <gnome-xml/SAX.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/parserInternals.h>
+#include <libxml/SAX.h>
+#include <libxml/xmlmemory.h>
 #include <glib.h>
 #include <string.h>
 
@@ -137,7 +137,8 @@ typedef enum ElementIndex {
 	QANDAENTRY,
 	QANDASET,
 	BRIDGEHEAD,
-	UNDEFINED /* 125 */
+	RELEASEINFO, /* 125 */
+	UNDEFINED /* 126 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -210,6 +211,7 @@ typedef struct HeaderInfo {
 	gchar *subtitle;
 	gchar *copyright_year;
 	gchar *copyright_holder;
+	gchar *releaseinfo;
 	GSList *authors;
 } HeaderInfo;
 

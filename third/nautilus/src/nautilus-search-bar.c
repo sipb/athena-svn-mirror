@@ -30,16 +30,16 @@
 #include <config.h>
 #include "nautilus-search-bar.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
-/* FIXME bugzilla.eazel.com 2516: This adds nothing to NautilusNavigationBar.
+/* FIXME bugzilla.gnome.org 42516: This adds nothing to NautilusNavigationBar.
  * Perhaps we can remove it.
  */
 
 static void nautilus_search_bar_initialize_class (NautilusSearchBarClass *class);
 static void nautilus_search_bar_initialize       (NautilusSearchBar      *bar);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static void
 nautilus_search_bar_initialize_class (NautilusSearchBarClass *klass)

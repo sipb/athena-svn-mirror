@@ -36,12 +36,11 @@
 
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
 
 
 struct NautilusAdapterControlEmbedStrategyDetails {
-	Bonobo_Control      control;
 	BonoboControlFrame *control_frame;
 	BonoboObject       *zoomable;
 	GtkWidget          *widget;
@@ -59,7 +58,7 @@ static GtkWidget *nautilus_adapter_control_embed_strategy_get_widget (NautilusAd
 static BonoboObject *nautilus_adapter_control_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void
@@ -90,15 +89,8 @@ static void
 nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 {
 	NautilusAdapterControlEmbedStrategy *strategy;
-	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
-
-	if (strategy->details->control != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		bonobo_object_release_unref (strategy->details->control, &ev);
-		CORBA_exception_free (&ev);
-	}
 
 	if (strategy->details->control_frame != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (strategy->details->control_frame));
@@ -106,7 +98,7 @@ nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void 
@@ -149,7 +141,7 @@ activate_uri_callback (BonoboControlFrame *frame,
 		       gboolean relative,
 		       NautilusAdapterControlEmbedStrategy *strategy)
 {
-	/* FIXME bugzilla.eazel.com 4404: ignoring `relative' parameter as
+	/* FIXME bugzilla.gnome.org 44404: ignoring `relative' parameter as
 	 * the concept is kind of broken. 
 	 */
 	nautilus_adapter_embed_strategy_emit_open_location (NAUTILUS_ADAPTER_EMBED_STRATEGY (strategy), 
@@ -168,7 +160,6 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	gtk_object_ref (GTK_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
-	strategy->details->control = control;
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
 
 	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control);

@@ -29,6 +29,7 @@ static char *requested_nodename=NULL;
 static struct poptOption options[] = {
   {NULL, 'a', POPT_ARG_STRING, &requested_nodename},
   {NULL, 'b', POPT_ARG_STRING, &OverrideBaseFilename},
+  {NULL, 'g', POPT_ARG_NONE, &galeon_mode},
   {NULL}
 };
 
@@ -64,7 +65,7 @@ main(int argc, char **argv)
 	if (!be_quiet)
 		printf("info2html Version %s\n",INFO2HTML_VERSION);
 
-	ctx = poptGetContext("gnome-info2html2", argc, argv, options, 0);
+	ctx = poptGetContext("gnome-info2html2", argc, argv, options, 0); 
 
 	while(poptGetNextOpt(ctx) >= 0)
 	  /**/ ;
@@ -77,7 +78,9 @@ main(int argc, char **argv)
 	for(n = 0; args[n]; n++) /* */;
 	if(n == 1 && !file_exists(args[0]))
 	  {
-	    char *ctmp, *infopath = g_getenv("INFOPATH");
+	    /* As strtok destroys the string it parses and g_getenv returns a pointer to
+	       the actually env var, we have to duplicate the var before parsing it. */
+	    char *ctmp, *infopath = g_strdup(g_getenv("INFOPATH"));
 	    char *dirs[64], *ext = NULL;
 	    int ndirs;
 	    char buf[PATH_MAX];
@@ -89,7 +92,7 @@ main(int argc, char **argv)
 	     * necessary because we may not have an 'INFOPATH' set */
 	    ndirs = 2;
 	    if(infopath)
-	      for(ndirs = 2, ctmp = strtok((char *)args[0], ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
+	      for(ndirs = 2, ctmp = strtok(infopath, ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
 		dirs[ndirs] = strdup(ctmp);
 
 	    for(i = 0; i < ndirs; i++)

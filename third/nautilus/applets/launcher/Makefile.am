@@ -1,14 +1,12 @@
 include $(top_srcdir)/Makefile.shared
 
-INCLUDES = -I. -I$(srcdir) \
+INCLUDES =\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(includedir) \
-	$(GNOME_CFLAGS) \
-	$(APPLETS_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
+	-I$(top_srcdir) \
+	$(APPLETS_CFLAGS) \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
 bin_PROGRAMS = nautilus-launcher-applet
@@ -19,8 +17,9 @@ nautilus_launcher_applet_SOURCES =\
 
 nautilus_launcher_applet_LDADD =	\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(top_builddir)/libnautilus-private/libnautilus-private.la \
 	$(APPLETS_LIBS) \
+	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
 gnorbadir  = $(sysconfdir)/CORBA/servers

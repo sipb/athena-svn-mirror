@@ -37,10 +37,10 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <eel/eel-gtk-macros.h>
+#include <libnautilus-private/nautilus-search-uri.h>
+#include <eel/eel-string.h>
 #include <stdio.h>
 
 struct NautilusSwitchableNavigationBarDetails {
@@ -64,7 +64,7 @@ static void  nautilus_switchable_navigation_bar_initialize_class (NautilusSwitch
 static void  nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
 static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   nautilus_switchable_navigation_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
@@ -110,7 +110,7 @@ static void
 nautilus_switchable_navigation_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (object)->details);
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -156,31 +156,57 @@ nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar    
 }
 
 void
+nautilus_switchable_navigation_bar_activate (NautilusSwitchableNavigationBar *bar)
+{
+	NautilusNavigationBar *bar_to_activate;
+
+	switch (bar->details->mode) {
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->details->location_bar);
+		break;
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->details->search_bar);
+		break;
+	default:
+		g_return_if_fail (FALSE);
+	}
+
+	nautilus_navigation_bar_activate (bar_to_activate);
+}
+
+
+void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)
 {
+	GtkWidget *widget_to_hide, *widget_to_show;
 	GtkWidget *dock;
 
 	if (bar->details->mode == mode) {
 		return;
 	}
 
+	bar->details->mode = mode;
+
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		gtk_widget_show (GTK_WIDGET (bar->details->location_bar));
-		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->location_bar));
-		gtk_widget_hide (GTK_WIDGET (bar->details->search_bar));
+		widget_to_show = GTK_WIDGET (bar->details->location_bar);
+		widget_to_hide = GTK_WIDGET (bar->details->search_bar);
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		gtk_widget_show (GTK_WIDGET (bar->details->search_bar));
-		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->search_bar));
-		gtk_widget_hide (GTK_WIDGET (bar->details->location_bar));
+		widget_to_show = GTK_WIDGET (bar->details->search_bar);
+		widget_to_hide = GTK_WIDGET (bar->details->location_bar);
 		break;
 	default:
 		g_return_if_fail (mode && 0);
 	}
 
-	/* FIXME bugzilla.eazel.com 3171:
+	gtk_widget_show (widget_to_show);
+	gtk_widget_hide (widget_to_hide);
+
+	nautilus_switchable_navigation_bar_activate (bar);
+
+	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch from the complex search
 	 * bar to the location bar (though it does grow when switching in
@@ -191,7 +217,6 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 		gtk_widget_queue_resize (dock);
 	}
 
-	bar->details->mode = mode;
 	gtk_signal_emit (GTK_OBJECT (bar), signals[MODE_CHANGED], mode);
 }
 

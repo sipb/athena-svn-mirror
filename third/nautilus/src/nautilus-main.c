@@ -21,7 +21,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * Authors: Elliot Lee <sopwith@redhat.com>,
- *          Darin Adler <darin@eazel.com>,
+ *          Darin Adler <darin@bentspoon.com>,
  *          John Sullivan <sullivan@eazel.com>
  *
  */
@@ -36,21 +36,24 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
-#include <gnome-xml/parser.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-self-checks.h>
+#include <gdk/gdkx.h>
+#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <libnautilus-extensions/nautilus-debug.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
-#include <libnautilus-extensions/nautilus-self-checks.h>
-#include <libnautilus-extensions/nautilus-directory-metafile.h>
+#include <libnautilus-private/nautilus-directory-metafile.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <liboaf/liboaf.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <X11/Xlib.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList *event_loop_registrants;
@@ -82,7 +85,7 @@ quit_if_in_main_loop (gpointer callback_data)
 }
 
 static void
-nautilus_gtk_main_quit_all (void)
+eel_gtk_main_quit_all (void)
 {
 	/* Calling gtk_main_quit directly only kills the current/top event loop.
 	 * This idler will be run by the current event loop, killing it, and then
@@ -97,7 +100,7 @@ event_loop_unregister (GtkObject* object)
 	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
 	if (!is_event_loop_needed ()) {
-		nautilus_gtk_main_quit_all ();
+		eel_gtk_main_quit_all ();
 	}
 }
 
@@ -128,8 +131,8 @@ main (int argc, char *argv[])
 {
 	gboolean kill_shell;
 	gboolean restart_shell;
-	gboolean start_desktop;
 	gboolean no_default_window;
+	gboolean no_desktop;
 	char *geometry;
 	gboolean perform_self_check;
 	poptContext popt_context;
@@ -147,6 +150,8 @@ main (int argc, char *argv[])
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
 		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0,
 		  N_("Only create windows for explicitly specified URIs."), NULL },
+		{ "no-desktop", '\0', POPT_ARG_NONE, &no_desktop, 0,
+		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
 		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0,
 		  N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0,
@@ -159,7 +164,7 @@ main (int argc, char *argv[])
 	 * explicitly for each domain.
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		nautilus_make_warnings_and_criticals_stop_in_debugger
+		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib,
 			 "Bonobo",
 			 "Gdk",
@@ -184,23 +189,30 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	/* Disable bug-buddy for now. */
-	nautilus_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
+	eel_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
 
 	/* Get parameters. */
 	geometry = NULL;
 	kill_shell = FALSE;
 	no_default_window = FALSE;
+	no_desktop = FALSE;
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
 	gnomelib_register_popt_table (oaf_popt_options, 
 				      oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
-
-        gnome_init_with_popt_table ("nautilus", VERSION,
+	gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
-	gdk_rgb_init ();
+	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
+	orb = oaf_init (argc, argv);
+        gdk_rgb_init ();
+
+	/* Workaround for gnome-libs bug.
+	 * If the first call is gnome_metadata_get, it doesn't initialize properly.
+	 */
+	gnome_metadata_lock ();
+	gnome_metadata_unlock ();
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
@@ -242,27 +254,34 @@ main (int argc, char *argv[])
 	 * happens.
 	 */
 	nautilus_global_preferences_initialize ();
-
-	start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP);
+	if (no_desktop) {
+		eel_preferences_set_is_invisible
+			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
+		eel_preferences_set_is_invisible
+			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
+	}
 		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks for nautilus and libnautilus (each twice). */
+		/* Run the checks (each twice) for nautilus and libnautilus-private. */
+
 		nautilus_directory_use_self_contained_metafile_factory ();
+
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
-		nautilus_exit_if_self_checks_failed ();
+		eel_exit_if_self_checks_failed ();
+
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
-		nautilus_exit_if_self_checks_failed ();
+		eel_exit_if_self_checks_failed ();
 #endif
 	} else {
 		/* Run the nautilus application. */
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell, start_desktop, no_default_window,
+			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 !(kill_shell || restart_shell),
 			 geometry,
 			 args);
@@ -281,7 +300,7 @@ main (int argc, char *argv[])
 	 */
 
 	if (g_getenv ("_NAUTILUS_RESTART") != NULL) {
-		nautilus_unsetenv ("_NAUTILUS_RESTART");
+		eel_unsetenv ("_NAUTILUS_RESTART");
 		
 		/* Might eventually want to copy all the parameters
 		 * from argv into the new exec. For now, though, that

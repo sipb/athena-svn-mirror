@@ -3,24 +3,19 @@ NULL =
 bin_PROGRAMS=nautilus-notes
 
 INCLUDES=\
+	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
-	-I$(top_builddir)	\
-	-I$(top_builddir)/libnautilus	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOMEUI_CFLAGS)	\
-	$(GCONF_CFLAGS)		\
-	$(BONOBO_CFLAGS)	\
-	$(VFS_CFLAGS)
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS)
+	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 nautilus_notes_SOURCES=nautilus-notes.c
-
 
 oafdir = $(datadir)/oaf
 oaf_in_files =					\

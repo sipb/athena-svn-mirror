@@ -1,16 +1,11 @@
 include $(top_srcdir)/Makefile.shared
 
 INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
 	-DDATADIR=\"$(datadir)\"		\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(OAF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
-	$(GCONF_CFLAGS) 			\
-	$(GNOMEUI_CFLAGS)			\
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
 uidir = $(datadir)/gnome/ui
@@ -26,12 +21,8 @@ nautilus_content_loser_SOURCES =		\
 
 nautilus_content_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(GNOMEUI_LIBS)					\
-	$(BONOBO_LIBS)					\
-	$(GCONF_LIBS) \
-	$(VFS_LIBS)					\
-	$(OAF_LIBS)
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 

@@ -19,7 +19,7 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Darin Adler <darin@eazel.com>
+ *  Author: Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -68,6 +68,8 @@ execute_queued_functions (gpointer callback_data)
 			if (function->free_callback_data != NULL) {
 				(* function->free_callback_data) (function->callback_data);
 			}
+
+			g_free (function);
 		}
 
 		g_list_free (functions);
@@ -128,6 +130,8 @@ nautilus_idle_queue_destroy (NautilusIdleQueue *queue)
 		if (function->free_callback_data != NULL) {
 			(* function->free_callback_data) (function->callback_data);
 		}
+
+		g_free (function);
 	}
 	
 	g_list_free (queue->functions);

@@ -38,9 +38,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <eel/eel-gtk-macros.h>
 
 static void		     real_activate				     (NautilusNavigationBar	       *bar);
 static void                  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
@@ -55,7 +55,7 @@ static NautilusSearchBarMode nautilus_search_uri_to_search_bar_mode          (co
 static gboolean              nautilus_search_uri_is_displayable_by_mode      (const char *uri,
 									      NautilusSearchBarMode mode);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 				   nautilus_switchable_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -77,7 +77,7 @@ search_bar_preference_changed_callback (gpointer user_data)
 	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (user_data));
 
 	/* Switch immediately as long as the current search_uri doesn't veto the switch.
-	 * FIXME bugzilla.eazel.com 2515: 
+	 * FIXME bugzilla.gnome.org 42515: 
 	 * Perhaps switch immediately anyway and blow away partially-formed
 	 * search criteria?
 	 */
@@ -103,11 +103,11 @@ nautilus_switchable_search_bar_destroy (GtkObject *object)
 
 	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (object);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					      search_bar_preference_changed_callback,
 					      bar);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -115,7 +115,6 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 {
 	GtkWidget *label;
 	GtkWidget *event_box;
-	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *switchable_search_bar;
 	NautilusSwitchableSearchBar *bar;
@@ -128,7 +127,6 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
 	
-	vbox = gtk_vbox_new (0, FALSE);
 	label = gtk_label_new (_("Find:"));
 	gtk_container_add (GTK_CONTAINER (event_box), label);
 	
@@ -156,13 +154,13 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 	gtk_widget_show_all (hbox);
 	nautilus_switchable_search_bar_set_mode 
 		(bar, 
-		 nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE));
-
+		 eel_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE));
+	
 	/* React to future preference changes. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-					   search_bar_preference_changed_callback,
-					   bar);
-
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+				      search_bar_preference_changed_callback,
+				      bar);
+	
 	return switchable_search_bar;
 
 }
@@ -225,7 +223,7 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 		break;
 	}
 
-	/* FIXME bugzilla.eazel.com 3171:
+	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch to the simple search bar
 	 * (though it does grow when switching to the complex one).
@@ -266,7 +264,7 @@ nautilus_switchable_search_bar_set_location (NautilusNavigationBar *navigation_b
 	/* Set the mode of the search bar,
 	   in case preferences have changed 
 	*/
-	/* FIXME bugzilla.eazel.com 2514:  This doesn't work yet. */
+	/* FIXME bugzilla.gnome.org 42514:  This doesn't work yet. */
 	mode = nautilus_search_uri_to_search_bar_mode (location);
 	nautilus_switchable_search_bar_set_mode (bar, mode);
 						 
@@ -283,7 +281,7 @@ nautilus_search_uri_to_search_bar_mode (const char *uri)
 {
 	NautilusSearchBarMode preferred_mode;
 
-	preferred_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE);
+	preferred_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE);
 	if (nautilus_search_uri_is_displayable_by_mode (uri, preferred_mode)) {
 		return preferred_mode;
 	}
@@ -298,7 +296,7 @@ gboolean
 nautilus_search_uri_is_displayable_by_mode (const char *uri,
 					    NautilusSearchBarMode mode)
 {
-	/* FIXME bugzilla.eazel.com 2514 */
+	/* FIXME bugzilla.gnome.org 42514 */
 	return TRUE;
 }
 

@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Authors: Darin Adler <darin@eazel.com>
+ * Authors: Darin Adler <darin@bentspoon.com>
  */
 
 /* nautilus-desktop-window.h
@@ -42,13 +42,15 @@ typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 typedef struct {
 	NautilusWindow parent_spot;
 	NautilusDesktopWindowDetails *details;
+        gboolean affect_desktop_on_next_location_change;
 } NautilusDesktopWindow;
 
 typedef struct {
 	NautilusWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
-GtkType                nautilus_desktop_window_get_type (void);
-NautilusDesktopWindow *nautilus_desktop_window_new      (NautilusApplication *application);
+GtkType                nautilus_desktop_window_get_type            (void);
+NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application);
+void                   nautilus_desktop_window_update_directory    (NautilusDesktopWindow *window);
 
 #endif /* NAUTILUS_DESKTOP_WINDOW_H */

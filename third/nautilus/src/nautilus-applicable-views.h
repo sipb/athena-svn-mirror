@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *           Maciej Stachowiak <mjs@eazel.com>
  *
  */
@@ -32,7 +32,7 @@
 #ifndef NAUTILUS_APPLICABLE_VIEWS_H
 #define NAUTILUS_APPLICABLE_VIEWS_H
 
-#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
 typedef struct NautilusDetermineViewHandle NautilusDetermineViewHandle;
 

@@ -8,26 +8,19 @@ noinst_PROGRAMS=test-help-method
 
 INCLUDES = \
 	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(GNOMEUI_CFLAGS) \
-	$(BONOBO_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
 	-DPREFIX=\""$(prefix)"\" \
 	-DHYPERBOLA_DATADIR=\""$(datadir)/nautilus/components/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\" \
-	-DENABLE_SCROLLKEEPER_SUPPORT
-	
+	-DENABLE_SCROLLKEEPER_SUPPORT \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(GNOME_DB2HTML3_FLAG) \
+	$(NULL)
 
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(XML_LIBS)
+	$(top_builddir)/libnautilus-private/libnautilus-private.la \
+	$(NAUTILUS_PRIVATE_LIBS) 
 
 hyperbola_SOURCES=		\
 	hyperbola-nav.h		\
@@ -60,6 +53,9 @@ modulesconf_DATA = help-methods.conf
 hyperboladir=$(datadir)/nautilus/components/hyperbola
 hyperbola_DATA=topleveldocs.xml
 
+uidir=$(datadir)/gnome/ui
+ui_DATA = nautilus-hyperbola-ui.xml
+
 oafdir = $(datadir)/oaf
 oaf_in_files =					\
 	Nautilus_View_help.oaf.in		\
@@ -69,4 +65,4 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 @XML_I18N_MERGE_OAF_RULE@
 
 
-EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) help-methods.conf topleveldocs.xml
+EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) $(modulesconf_DATA) $(hyperbola_DATA) $(ui_DATA)

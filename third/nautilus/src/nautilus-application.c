@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>,
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -39,33 +39,46 @@
 #include "nautilus-shell.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
+#include <dirent.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string-list.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-sound.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <libnautilus-extensions/nautilus-volume-monitor.h>
-#include <libnautilus-extensions/nautilus-metafile-factory.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-metafile-factory.h>
+#include <libnautilus-private/nautilus-sound.h>
+#include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-volume-monitor.h>
+#include <libnautilus-private/nautilus-authn-manager.h>
 #include <liboaf/liboaf.h>
 
+/* Needed for the is_kdesktop_present check */
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
+
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
-#define ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
 #define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
+
+/* Keeps track of the one and only desktop window. */
+static NautilusDesktopWindow *nautilus_application_desktop_window;
+
+/* Keeps track of all the nautilus windows. */
+static GList *nautilus_application_window_list;
 
 static CORBA_boolean manufactures                          (PortableServer_Servant    servant,
 							    const CORBA_char         *iid,
@@ -80,15 +93,18 @@ static void          nautilus_application_destroy          (GtkObject           
 static gboolean      confirm_ok_to_run_as_root             (void);
 static gboolean      need_to_show_first_time_druid         (void);
 static void          desktop_changed_callback              (gpointer                  user_data);
+static void          desktop_location_changed_callback     (gpointer                  user_data);
 static void          volume_mounted_callback               (NautilusVolumeMonitor    *monitor,
 							    NautilusVolume           *volume,
 							    NautilusApplication      *application);
 static void          volume_unmounted_callback             (NautilusVolumeMonitor    *monitor,
 							    NautilusVolume           *volume,
 							    NautilusApplication      *application);
+static void	     update_session			    (gpointer		      callback_data);
 static void	     init_session 			    (void);
+static gboolean      is_kdesktop_present                    (void);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
 static POA_GNOME_ObjectFactory__epv factory_epv = {
 	NULL,
@@ -106,9 +122,9 @@ manufactures (PortableServer_Servant servant,
 	      const CORBA_char *iid,
 	      CORBA_Environment *ev)
 {
-	return strcmp (iid, ICON_VIEW_IID) == 0
+	return strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0
 		|| strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0
-		|| strcmp (iid, LIST_VIEW_IID) == 0
+		|| strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0
 		|| strcmp (iid, SEARCH_LIST_VIEW_IID) == 0
 		|| strcmp (iid, SHELL_IID) == 0
 		|| strcmp (iid, METAFILE_FACTORY_IID) == 0;
@@ -124,13 +140,13 @@ create_object (PortableServer_Servant servant,
 	FMDirectoryView *directory_view;
 	NautilusApplication *application;
 
-	if (strcmp (iid, ICON_VIEW_IID) == 0) {
+	if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_desktop_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, LIST_VIEW_IID) == 0) {
+	} else if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, SEARCH_LIST_VIEW_IID) == 0) {
@@ -160,12 +176,6 @@ create_factory (PortableServer_POA poa,
 	POA_GNOME_ObjectFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
-
-/* Keeps track of the one and only desktop window. */
-static NautilusDesktopWindow *nautilus_application_desktop_window;
-
-/* Keeps track of all the nautilus windows. */
-static GList *nautilus_application_window_list;
 
 GList *
 nautilus_application_get_window_list (void)
@@ -227,75 +237,68 @@ nautilus_application_destroy (GtkObject *object)
 	
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
 check_required_directories (NautilusApplication *application)
 {
-	char			*user_directory;
-	char			*user_main_directory;
-	char			*desktop_directory;
-	NautilusStringList	*dir_list;
-	char 			*dir_list_concatenated;
-	char 			*error_string;
-	char 			*dialog_title;
-	GnomeDialog 		*dialog;
-	int			 failed_count;
+	char *user_directory;
+	char *desktop_directory;
+	EelStringList *directories;
+	char *directories_as_string;
+	char *error_string;
+	char *dialog_title;
+	GnomeDialog *dialog;
+	int failed_count;
 	
 	g_assert (NAUTILUS_IS_APPLICATION (application));
 
 	user_directory = nautilus_get_user_directory ();
-	user_main_directory = nautilus_get_user_main_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
-	dir_list = nautilus_string_list_new (TRUE);
+	directories = eel_string_list_new (TRUE);
 	
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, user_directory);
+		eel_string_list_insert (directories, user_directory);
 	}
-	g_free (user_directory);
-	    
-	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, user_main_directory);
-	}
-	g_free (user_main_directory);
+	g_free (user_directory);	    
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, desktop_directory);
+		eel_string_list_insert (directories, desktop_directory);
 	}
 	g_free (desktop_directory);
 
-	failed_count = nautilus_string_list_get_length (dir_list);
+	failed_count = eel_string_list_get_length (directories);
 
 	if (failed_count != 0) {
-		dir_list_concatenated = nautilus_string_list_as_concatenated_string (dir_list, "\n");
+		directories_as_string = eel_string_list_as_string (directories, "\n", EEL_STRING_LIST_ALL_STRINGS);
 
 		if (failed_count == 1) {
 			dialog_title = g_strdup (_("Couldn't Create Required Folder"));
 			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\". "
 							  "Before running Nautilus, please create this folder, or "
 							  "set permissions such that Nautilus can create it."),
-							dir_list_concatenated);
+							directories_as_string);
 		} else {
 			dialog_title = g_strdup (_("Couldn't Create Required Folders"));
 			error_string = g_strdup_printf (_("Nautilus could not create the following required folders:\n\n"
 							  "%s\n\n"
 							  "Before running Nautilus, please create these folders, or "
 							  "set permissions such that Nautilus can create them."),
-							dir_list_concatenated);
+							directories_as_string);
 		}
 		
-		dialog = nautilus_show_error_dialog (error_string, dialog_title, NULL);
+		dialog = eel_show_error_dialog (error_string, dialog_title, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
-		g_free (dir_list_concatenated);
+		g_free (directories_as_string);
 		g_free (error_string);
 		g_free (dialog_title);
 	}
 
-	nautilus_string_list_free (dir_list);
+	eel_string_list_free (directories);
 
 	return failed_count == 0;
 }
@@ -323,7 +326,7 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	uri_list->_length = length;
 	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
 	for (i = 0; i < length; i++) {
-		translated_uri = nautilus_make_uri_from_shell_arg (strv[i]);
+		translated_uri = eel_make_uri_from_shell_arg (strv[i]);
 		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
 		g_free (translated_uri);
 		translated_uri = NULL;
@@ -333,12 +336,133 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
+/* Find ~/.gnome-desktop/Trash and rename it to ~/.gnome-desktop/Trash.gmc
+ * Only if it is a directory
+ */
+static void
+migrate_gmc_trash (void)
+{
+	char *dp, *trash_dir, *dest;
+	struct stat buf;
+
+	dp = nautilus_get_desktop_directory ();
+	trash_dir = g_strconcat (dp, "/", "Trash", NULL);
+	dest = g_strconcat (dp, "/", "Trash.gmc", NULL);
+	
+	if (stat (trash_dir, &buf) == 0 && S_ISDIR (buf.st_mode)) {
+		rename (trash_dir, dest);
+		gnome_metadata_rename (trash_dir, dest);
+	}
+	
+	g_free (dp);
+	g_free (trash_dir);
+	g_free (dest);
+}
+
+static void
+migrate_old_nautilus_files (void)
+{
+	char *new_desktop_dir, *np;
+	char *old_desktop_dir, *op;
+	char *old_desktop_dir_new_name;
+	struct stat buf;
+	DIR *dir;
+	struct dirent *de;
+	
+	old_desktop_dir = g_strconcat (g_get_home_dir (), "/.nautilus/desktop", NULL);
+	if (stat (old_desktop_dir, &buf) == -1) {
+		g_free (old_desktop_dir);
+		return;
+	}
+	if (!S_ISLNK (buf.st_mode)){
+		dir = opendir (old_desktop_dir);
+		if (dir == NULL) {
+			g_free (old_desktop_dir);
+			return;
+		}
+	
+		new_desktop_dir = nautilus_get_desktop_directory ();
+		
+		while ((de = readdir (dir)) != NULL){
+			if (de->d_name [0] == '.'){
+				if (de->d_name [0] == 0)
+					continue;
+				
+				if (de->d_name [1] == '.' && de->d_name [2] == 0)
+					continue;
+			}
+	
+			op = g_strconcat (old_desktop_dir, "/", de->d_name, NULL);
+			np = g_strconcat (new_desktop_dir, "/", de->d_name, NULL);
+	
+			rename (op, np);
+	
+			g_free (op);
+			g_free (np);
+		}
+
+		closedir (dir);
+
+		g_free (new_desktop_dir);
+	}
+
+	/* In case we miss something */
+	old_desktop_dir_new_name = g_strconcat (old_desktop_dir, "-old", NULL);
+	rename (old_desktop_dir, old_desktop_dir_new_name);
+	g_free (old_desktop_dir_new_name);
+
+	g_free (old_desktop_dir);
+}
+
+static gint
+create_starthere_link_callback (gpointer data)
+{
+	char *desktop_path;
+	char *desktop_link_file;
+	char *cmd;
+	
+	/* Create default services icon on the desktop */
+	desktop_path = nautilus_get_desktop_directory ();
+	desktop_link_file = nautilus_make_path (desktop_path,
+						"starthere.desktop");
+
+	cmd = g_strconcat ("/bin/cp ",
+			   NAUTILUS_DATADIR,
+			   "/starthere-link.desktop ",
+			   desktop_link_file,
+			   NULL);
+
+	if (system (cmd) != 0) {
+		g_warning ("Failed to execute command '%s'\n", cmd);
+	}
+	
+	g_free (desktop_path);
+	g_free (desktop_link_file);
+	g_free (cmd);
+	
+	return FALSE;
+}
+
+static void
+finish_startup (NautilusApplication *application)
+{
+	/* initialize the sound machinery */
+	nautilus_sound_initialize ();
+
+	/* initialize URI authentication manager */
+	nautilus_authentication_manager_initialize ();
+
+	/* Make the desktop work with gmc and old Nautilus. */
+	migrate_gmc_trash ();
+	migrate_old_nautilus_files ();
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
 			      gboolean restart_shell,
-			      gboolean start_desktop,
 			      gboolean no_default_window,
+			      gboolean no_desktop,
 			      gboolean do_first_time_druid_check,
 			      const char *geometry,
 			      const char *urls[])
@@ -364,19 +488,20 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
-	if (!check_required_directories (application)) {
+	if (!kill_shell && !check_required_directories (application)) {
 		return;
 	}
 
 	/* Run the first time startup druid if needed. */
 	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		nautilus_first_time_druid_show (application, start_desktop, urls);
-		return;
+		/* Do this at idle time, once nautilus has initialized
+		 * itself. Otherwise we may spawn a second nautilus
+		 * process when looking for a metadata factory..
+		 */
+		g_idle_add (create_starthere_link_callback, NULL);
+		nautilus_set_first_time_file_flag ();
 	}
-	
-	/* initialize the sound machinery */
-	nautilus_sound_initialize ();
-	
+
 	CORBA_exception_init (&ev);
 
 	/* Start up the factory. */
@@ -388,6 +513,7 @@ nautilus_application_startup (NautilusApplication *application,
 		switch (result) {
 		case OAF_REG_SUCCESS:
 			/* We are registered with OAF and all is right with the world. */
+			finish_startup (application);
 		case OAF_REG_ALREADY_ACTIVE:
 			/* Another copy of nautilus already is running and registered. */
 			message = NULL;
@@ -409,7 +535,7 @@ nautilus_application_startup (NautilusApplication *application,
 				    " from the console may fix the problem. If not,"
 				    " you can try rebooting the computer or"
 				    " installing Nautilus again.");
-			/* FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame. */
+			/* FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
 					     "Running the command \"nautilus-clean.sh -x\""
 					     " from the console may fix the problem. If not,"
@@ -436,7 +562,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * version of OAF). Show dialog and terminate the
 			 * program.
 			 */
-			/* FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
+			/* FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
 			 * current OAF. I guess I read the code
 			 * wrong. Need to figure out when and make a
 			 * good message.
@@ -458,7 +584,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * we better stop looping.
 			 */
 			if (result == OAF_REG_SUCCESS) {
-				/* FIXME bugzilla.eazel.com 2538: When can this happen? */
+				/* FIXME bugzilla.gnome.org 42538: When can this happen? */
 				message = _("Nautilus can't be used now, due to an unexpected error.");
 				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
 						     "from OAF when attempting to locate the factory."
@@ -476,7 +602,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = nautilus_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
+			dialog = eel_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;
@@ -488,14 +614,25 @@ nautilus_application_startup (NautilusApplication *application,
 	} else if (restart_shell) {
 		Nautilus_Shell_restart (shell, &ev);
 	} else {
-		if (start_desktop) {
+		/* If KDE desktop is running, then force no_desktop */
+		if (is_kdesktop_present ())
+			no_desktop = TRUE;
+		
+		if (!no_desktop && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
 		
 		/* Monitor the preference to show or hide the desktop */
-		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							       desktop_changed_callback,
 							       application,
+							       GTK_OBJECT (application));
+
+		/* Monitor the preference to have the desktop */
+		/* point to the Unix home folder */
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+							       desktop_location_changed_callback,
+							       NULL,
 							       GTK_OBJECT (application));
 
 		/* CORBA C mapping doesn't allow NULL to be passed
@@ -553,7 +690,7 @@ nautilus_application_close_desktop (void)
 	if (nautilus_application_desktop_window != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop_window));
 		nautilus_application_desktop_window = NULL;
-	}	
+	}
 }
 
 void
@@ -642,6 +779,16 @@ confirm_ok_to_run_as_root (void)
 	return result == 0;
 }
 
+/* callback for changing the directory the desktop points to */
+static void
+desktop_location_changed_callback (gpointer user_data)
+{
+	if (nautilus_application_desktop_window != NULL) {
+		nautilus_desktop_window_update_directory
+			(nautilus_application_desktop_window);
+	}
+}
+
 /* callback for showing or hiding the desktop based on the user's preference */
 static void
 desktop_changed_callback (gpointer user_data)
@@ -649,11 +796,16 @@ desktop_changed_callback (gpointer user_data)
 	NautilusApplication *application;
 	
 	application = NAUTILUS_APPLICATION (user_data);
-	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+	if ( eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();
 	}
+
+	/* Can't make this function just watch the preference
+	 * itself changing since ordering is important
+	 */
+	update_session (gnome_master_client ());
 }
 
 /*
@@ -685,10 +837,7 @@ need_to_show_first_time_druid (void)
 	
 	user_directory = nautilus_get_user_directory ();
 
-	druid_flag_file_name = g_strdup_printf ("%s/%s",
-						user_directory,
-						"first-time-flag");
-
+	druid_flag_file_name = g_strconcat (user_directory, "/first-time-flag", NULL);
 	result = !g_file_exists (druid_flag_file_name);	
 	g_free (druid_flag_file_name);
 
@@ -696,24 +845,33 @@ need_to_show_first_time_druid (void)
 	 * check for and delete the old one, if the new one didn't exist 
 	 */
 	if (result) {
-		druid_flag_file_name = g_strdup_printf ("file://%s/%s",
-						user_directory,
-						"first-time-wizard-flag");
-		gnome_vfs_unlink (druid_flag_file_name);
+		druid_flag_file_name = g_strconcat (user_directory, "/first-time-wizard-flag", NULL);
+		unlink (druid_flag_file_name);
 		g_free (druid_flag_file_name);
 	}
 	g_free (user_directory); 
 	return result;
 }
 
-/* Called whenever a volume is mounted.
- * It would also be cool to restore open windows and
- * position info saved when the volume was unmounted.
- */
 static void
 volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			 NautilusApplication *application)
 {
+	NautilusWindow *window;
+	char *uri;
+	
+	if (volume == NULL || application == NULL) {
+		return;
+	}
+	
+	/* Open a window to the CD if the user has set that preference. */
+	if (nautilus_volume_get_device_type (volume) == NAUTILUS_DEVICE_CDROM_DRIVE
+		&& gnome_config_get_bool ("/magicdev/Options/do_fileman_window=true")) {		
+		window = nautilus_application_create_window (application);
+		uri = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
+		nautilus_window_go_to (window, uri);
+		g_free (uri);
+	}
 }
 
 static gboolean
@@ -767,7 +925,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 		if (window != NULL && window_can_be_closed (window)) {
 			uri = nautilus_window_get_location (window);
 			path = gnome_vfs_get_local_path_from_uri (uri);
-			if (nautilus_str_has_prefix (path, volume->mount_path)) {
+			if (eel_str_has_prefix (path, nautilus_volume_get_mount_path (volume))) {
 				close_list = g_list_prepend (close_list, window);
 			}
 			g_free (path);
@@ -809,15 +967,26 @@ set_session_restart (GnomeClient *client, gboolean restart)
 	static char *restart_argv[] = { "nautilus", "--no-default-window", 0 };
 
 	gnome_client_set_restart_command (client, 2, restart_argv);
-
 	gnome_client_set_priority (client, 40);
-	
-	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+
+	if (restart && g_getenv ("NAUTILUS_DEBUG") == NULL) {
 		/* Don't respawn in debug mode */
-		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
+		gnome_client_set_restart_style (client, GNOME_RESTART_IMMEDIATELY);
 	} else {
-		gnome_client_set_restart_style (client, (restart ? GNOME_RESTART_IMMEDIATELY : GNOME_RESTART_NEVER));
+		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
 	}
+}
+
+static void
+update_session (gpointer callback_data)
+{
+	set_session_restart (callback_data,
+			     eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
+			     /* Only ever add ourselves to the session
+			      * if we have a desktop window. Prevents the
+			      * session thrashing that's seen otherwise
+			      */
+			     && nautilus_application_desktop_window != NULL);
 }
 
 static void
@@ -828,13 +997,141 @@ init_session (void)
 	client = gnome_master_client ();
 
 	gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
-			   (GtkSignalFunc) save_session,
+			    (GtkSignalFunc) save_session,
 			    NULL);
-
+	
 	gtk_signal_connect (GTK_OBJECT (client), "die",
 			    (GtkSignalFunc) removed_from_session,
 			    NULL);
-			    			    			    	
-	set_session_restart (client, nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION));
+	
+	eel_preferences_add_callback
+		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,
+		 update_session, client);
+
+	update_session (client);
 }
 
+static gboolean
+get_self_typed_prop (Window      xwindow,
+                     Atom        atom,
+                     gulong     *val)
+{  
+	Atom type;
+	int format;
+	gulong nitems;
+	gulong bytes_after;
+	gulong *num;
+	int err;
+  
+	gdk_error_trap_push ();
+	type = None;
+	XGetWindowProperty (gdk_display,
+			    xwindow,
+			    atom,
+			    0, G_MAXLONG,
+			    False, atom, &type, &format, &nitems,
+			    &bytes_after, (guchar **)&num);  
+
+	err = gdk_error_trap_pop ();
+	if (err != Success) {
+		return FALSE;
+	}
+  
+	if (type != atom) {
+		return FALSE;
+	}
+
+	if (val)
+		*val = *num;
+  
+	XFree (num);
+
+	return TRUE;
+}
+
+static gboolean
+has_wm_state (Window xwindow)
+{
+	return get_self_typed_prop (xwindow,
+				    XInternAtom (gdk_display, "WM_STATE", False),
+				    NULL);
+}
+
+static gboolean
+look_for_kdesktop_recursive (Window xwindow)
+{
+  
+	Window ignored1, ignored2;
+	Window *children;
+	unsigned int n_children;
+	unsigned int i;
+	gboolean retval;
+  
+	/* If WM_STATE is set, this is a managed client, so look
+	 * for the class hint and end recursion. Otherwise,
+	 * this is probably just a WM frame, so keep recursing.
+	 */
+	if (has_wm_state (xwindow)) {      
+		XClassHint ch;
+      
+		gdk_error_trap_push ();
+		ch.res_name = NULL;
+		ch.res_class = NULL;
+      
+		XGetClassHint (gdk_display, xwindow, &ch);
+      
+		gdk_error_trap_pop ();
+      
+		if (ch.res_name)
+			XFree (ch.res_name);
+      
+		if (ch.res_class) {
+			if (strcmp (ch.res_class, "kdesktop") == 0) {
+				XFree (ch.res_class);
+				return TRUE;
+			}
+			else
+				XFree (ch.res_class);
+		}
+
+		return FALSE;
+	}
+  
+	retval = FALSE;
+  
+	gdk_error_trap_push ();
+  
+	XQueryTree (gdk_display,
+		    xwindow,
+		    &ignored1, &ignored2, &children, &n_children);
+
+	if (gdk_error_trap_pop ()) {
+		return FALSE;
+	}
+
+	i = 0;
+	while (i < n_children) {
+		if (look_for_kdesktop_recursive (children[i])) {
+			retval = TRUE;
+			break;
+		}
+      
+		++i;
+	}
+  
+	if (children)
+		XFree (children);
+
+	return retval;
+}
+
+static gboolean
+is_kdesktop_present (void)
+{
+	/* FIXME this is a pretty lame hack, should be replaced
+	 * eventually with e.g. a requirement that desktop managers
+	 * support a manager selection, ICCCM sec 2.8
+	 */
+
+	return look_for_kdesktop_recursive (GDK_ROOT_WINDOW ());
+}

@@ -1,7 +1,6 @@
 This file contains build instructions for Nautilus, the GNOME shell
 and file manager. At some point we probably should move these to
-INSTALL or HACKING and put an explanation of what Nautilus is here in
-README instead.
+INSTALL or HACKING and put a user-oriented README here instead.
 
 ====================
 0: Table of contents
@@ -21,7 +20,7 @@ README instead.
 ==========
 
 If you would like to hack on Nautilus, or have patches, please send
-mail to the Nautilus maintainer: Darin Adler <darin@eazel.com>.
+mail to the Nautilus maintainer: Darin Adler <darin@bentspoon.com>.
 Patches should also be sent to the Nautilus mailing list:
 <nautilus-list@lists.eazel.com>
 
@@ -105,9 +104,6 @@ Hacking rpm's for RPM, available from:
 4: Compiling from cvs
 =====================
 
-NOTE: Instructions on compiling from tarballs should be extracted from
-the copy of Nautilus inside the tarball, not here in CVS.
-
 Compiling from cvs a lot of work, and some packages may not compile at
 any given moment when you check them out.
 
@@ -136,17 +132,17 @@ The following lists the packages and the versions that are required.
     ORBit:             orbit-stable-0-5
     gnome-libs:        gnome-libs-1-0     --enable-prefer-db1
     gnome-http:        HEAD
-    xml-i18n-tools:    xml-i18n-tools-stable-1-x
-    oaf:               oaf-stable-0-6
+    intltool:          HEAD
+    oaf:               HEAD
     gconf:             gconf-1-0          --disable-debug
     gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
-    gnome-print:       GNOME_PRINT_0_25
+    gnome-print:       gnome-1-4-branch
+    gnome-vfs:         gnome-vfs-1
     control-center     control-center-1-0
-    gnome-vfs:         gnome-vfs-1-0
     bonobo:            HEAD
-    ammonite           HEAD
-    medusa:            HEAD
-    nautilus:          HEAD
+    librsvg:	       librsvg-1-0
+    eel:	       eel-1-0
+    nautilus:          nautilus-gnome-1
 
 One difference between tarball and cvs compilation is that when you
 get stuff from cvs, you don't get a configure script. This script has
@@ -174,6 +170,7 @@ We assume you want to install these packages in another prefix than
 assume you are installing in /usr/local. ie: ${prefix}=/usr/local
 
 Redefine your PATH environment variable:
+
         export PATH=$PATH:${prefix}/bin
 
 Redefine your LD_LIBRARY_PATH environment variable:
@@ -206,7 +203,7 @@ Nautilus sources. If OAF or GConf changes, you may need to run this
 script to get Nautilus to work properly. One way to invoke it is like
 this:
 
-        ./nautilus-clean.sh -x
+        nautilus-clean.sh -x
 
 ==================
 6: Mozilla support
@@ -218,16 +215,14 @@ Nautilus Mozilla component. This component can be optionally built
 with Nautilus. It is automatically enabled at configure time if
 Mozilla development libraries are detected on your system.
 
-The latest Mozilla RPMs that we require can be found here:
+The recommended version of Mozilla for use with Nautilus is 0.9.5.
 
-RedHat 6.x: http://developer.eazel.com/eazel-hacking/updates/redhat62/mozilla
-RedHat 7.x: http://developer.eazel.com/eazel-hacking/updates/redhat70/mozilla
+The latest Mozilla packages can be found here:
 
-The minimum Mozilla version required is Mozilla 0.8. Mozilla 0.7, the
-0.8 predecessor, no longer works.
+ftp://ftp.mozilla.org/pub/mozilla/releases/mozilla0.9.5/
 
-After installing these rpms, you can build nautilus with Mozilla
-support as follows:
+After installing these packages (RPMs for example) you can build Nautilus
+with Mozilla support as follows:
 
         cd nautilus
         rm -f config.cache config.status
@@ -299,13 +294,19 @@ follows:
 
         ./configure --disable-mozilla-component
 
+Mike Fleming has written some useful information about common
+Mozilla problems and how to fix them.  This information can be
+found in the Nautilus Support FAQ:
+
+	http://www.eazel.com/nautilus-faq.html
+
 ==================
 7: FreeType issues
 ==================
 
 Nautilus includes support for rendering anti aliased text (smooth
-mode).For smooth mode to work, Nautilus needs to detect and use
-FreeType2 in your system.
+mode). For smooth mode to work, the Nautilus library librsvg needs
+to detect and use FreeType2 in your system.
 
 To learn more about FreeType2, please see:
 
@@ -343,7 +344,7 @@ Nautilus documentation is set up with metadata needed by Scrollkeeper. In order
 to get the docs fully installed by Scrollkeeper the latest Scrollkeeper has to be 
 installed from here:
 
-http://sourceforge.net/project/showfiles.php?group_id=11543
+	http://sourceforge.net/project/showfiles.php?group_id=11543
 
 This is needed for building and for installing Nautilus.
 

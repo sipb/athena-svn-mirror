@@ -33,7 +33,7 @@
 #include "nautilus-adapter-progressive-load-strategy.h"
 
 #include <gtk/gtkobject.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <bonobo/Bonobo.h>
 
@@ -64,7 +64,7 @@ static void nautilus_adapter_progressive_load_strategy_load_location (NautilusAd
 static void nautilus_adapter_progressive_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterProgressiveLoadStrategy, nautilus_adapter_progressive_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterProgressiveLoadStrategy, nautilus_adapter_progressive_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
 
 
 static void
@@ -107,7 +107,7 @@ nautilus_adapter_progressive_load_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusAdapterLoadStrategy *
@@ -249,7 +249,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	CORBA_exception_init (&ev);
 
-	/* FIXME bugzilla.eazel.com 3455: this code is stupid and
+	/* FIXME bugzilla.gnome.org 43455: this code is stupid and
            loads the component in a way that blocks the nautilus
            adapter component, which is pointless/stupid; it should be
            async. */

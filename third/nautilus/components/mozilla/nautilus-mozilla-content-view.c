@@ -29,6 +29,30 @@
  * widget to display and munge html.
  */
 
+#include <config.h>
+#include "nautilus-mozilla-content-view.h"
+
+#include "bonobo-extensions.h"
+#include "gtkmozembed.h"
+#include "mozilla-components.h"
+#include "mozilla-events.h"
+#include "mozilla-preferences.h"
+#include "nautilus-mozilla-embed-extensions.h"
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <stdlib.h>
+
 #define nopeDEBUG_ramiro 1
 #define nopeDEBUG_mfleming 1
 #define nopeDEBUG_pepper 1
@@ -38,36 +62,6 @@
 #else
 #define DEBUG_MSG(x)
 #endif
-
-#include <config.h>
-#include "nautilus-mozilla-content-view.h"
-
-#include "gtkmozembed.h"
-
-#include "mozilla-preferences.h"
-#include "mozilla-components.h"
-#include "mozilla-events.h"
-#include "nautilus-mozilla-embed-extensions.h"
-#include "bonobo-extensions.h"
-
-#include <bonobo/bonobo-ui-util.h>
-#include <bonobo/bonobo-control.h>
-#include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <stdlib.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-
-#ifdef EAZEL_SERVICES
-#include <libtrilobite/libammonite-gtk.h>
-#endif
-
-#define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
 /* Code-copied from nsGUIEvent.h */
 
@@ -89,10 +83,19 @@ enum nsEventStatus {
 /* Menu Path for charset encoding submenu */
 #define MENU_VIEW_CHARSET_ENCODING_PATH "/menu/View/Encoding"
 
+/* property bag properties */
+enum {
+	ICON_NAME,
+	COMPONENT_INFO
+};
+
+
 struct NautilusMozillaContentViewDetails {
 	char 		*uri;			/* The URI stored here is nautilus's idea of the URI */
 	GtkMozEmbed 	*mozilla;		/* If this is NULL, the mozilla widget has not yet been initialized */ 
 	NautilusView 	*nautilus_view;
+	BonoboPropertyBag *property_bag;
+	
 	GdkCursor 	*busy_cursor;
 	char		*vfs_read_buffer;
 	GnomeVFSAsyncHandle *vfs_handle;
@@ -103,7 +106,16 @@ struct NautilusMozillaContentViewDetails {
 	gboolean	user_initiated_navigation;
 
 	BonoboUIComponent *ui;
+
+	GSList            *chrome_list;
+
 };
+
+typedef struct NautilusMozillaContentViewChrome {
+	GtkWidget                   *toplevel_window;
+	GtkMozEmbed                 *mozilla;
+	NautilusMozillaContentView  *view;
+} NautilusMozillaContentViewChrome;
 
 /* GTK Type System */
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
@@ -166,14 +178,29 @@ static gint	mozilla_dom_mouse_click_callback		(GtkMozEmbed			*mozilla,
 								 gpointer			dom_event,
 								 gpointer			user_data);
 
-static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla);
+static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla,
+								 GtkMozEmbed                    **new_mozilla,
+								 guint                          chromemask,
+								 NautilusMozillaContentView     *view);
+
+/* Chrome callback functions */
+
+static void     mozilla_chrome_visibility_callback             (GtkMozEmbed                      *mozilla,
+								gboolean                         visibility,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_destroy_brsr_callback           (GtkMozEmbed                      *mozilla,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_size_to_callback                (GtkMozEmbed                      *mozilla,
+								gint                              width,
+								gint                              height,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_title_callback                  (GtkMozEmbed                      *mozilla,
+								NautilusMozillaContentViewChrome *chrome);
 
 /* Private NautilusMozillaContentView functions */ 
-
-static char *	translate_uri_nautilus_to_mozilla 		(NautilusMozillaContentView 	*view,
-								 const char 			*uri);
-static char * 	translate_uri_mozilla_to_nautilus 		(NautilusMozillaContentView 	*view,
-								 const char 			*uri);
 
 #ifdef BUSY_CURSOR
 static void     set_busy_cursor           			(NautilusMozillaContentView     *view);
@@ -210,51 +237,15 @@ static gint	string_list_get_index_of_string 		(const char			*string_list[],
 static void	pre_widget_initialize				(void);
 static void	post_widget_initialize				(void);
 
-#ifdef EAZEL_SERVICES
-
-/*
- * URL scheme hack for the eazel-services: scheme
- */
-
-static char *	eazel_services_scheme_to_http			(NautilusMozillaContentView	*view,
-								 const char			*uri);
-
-static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*view,
-				  				 const char			*uri);
-#endif /* EAZEL_SERVICES */
-
 /* BonoboControl callbacks */
 static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
 
 /***********************************************************************************/
 /***********************************************************************************/
 
-static GtkVBoxClass *parent_class = NULL;
-
-GtkType
-nautilus_mozilla_content_view_get_type (void)
-{
-	static GtkType mozilla_content_view_type = 0;
-	
-	if (!mozilla_content_view_type)
-	{
-		static const GtkTypeInfo mozilla_content_view_info =
-		{
-			"NautilusMozillaContentView",
-			sizeof (NautilusMozillaContentView),
-			sizeof (NautilusMozillaContentViewClass),
-			(GtkClassInitFunc) nautilus_mozilla_content_view_initialize_class,
-			(GtkObjectInitFunc) nautilus_mozilla_content_view_initialize,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
-		
-		mozilla_content_view_type = gtk_type_unique (GTK_TYPE_VBOX, &mozilla_content_view_info);
-	}
-	
-	return mozilla_content_view_type;
-}
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusMozillaContentView,
+			      nautilus_mozilla_content_view,
+			      GTK_TYPE_VBOX);
 
 static void
 nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass)
@@ -263,11 +254,54 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (GTK_TYPE_VBOX);
-	
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 
 	pre_widget_initialize ();
+}
+
+
+/* property bag property access routines to return sidebar icon */
+static void
+get_bonobo_properties (BonoboPropertyBag *bag,
+			BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+	NautilusMozillaContentView *content_view;
+	
+	content_view = (NautilusMozillaContentView*) callback_data;
+
+	switch (arg_id) {
+        	case ICON_NAME:	
+			if (eel_istr_has_prefix (content_view->details->uri, "man:")) {
+                   		BONOBO_ARG_SET_STRING (arg, "manual");					
+			} else if (eel_istr_has_prefix (content_view->details->uri, "http:")) {
+                		BONOBO_ARG_SET_STRING (arg, "i-web");					
+			} else {
+                		BONOBO_ARG_SET_STRING (arg, "");					
+                	}
+                	break;
+
+        	case COMPONENT_INFO:
+               		BONOBO_ARG_SET_STRING (arg, "");					
+                 	break;
+        		
+        	default:
+                	g_warning ("Unhandled arg %d", arg_id);
+                	break;
+	}
+}
+
+/* there are no settable properties, so complain if someone tries to set one */
+static void
+set_bonobo_properties (BonoboPropertyBag *bag,
+			const BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+                g_warning ("Bad Property set on mozilla view: property ID %d", arg_id);
 }
 
 static void
@@ -361,6 +395,14 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
                             bonobo_control_activate_callback,
                             view);
 
+ 	/* allocate a property bag to specify the name of the icon for this component */
+	view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, view);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (view->details->nautilus_view), view->details->property_bag);
+	bonobo_property_bag_add (view->details->property_bag, "icon_name", ICON_NAME, BONOBO_ARG_STRING, NULL,
+				 _("name of icon for the mozilla view"), 0);
+	bonobo_property_bag_add (view->details->property_bag, "summary_info", COMPONENT_INFO, BONOBO_ARG_STRING, NULL,
+				 _("mozilla summary info"), 0);
+
 	gtk_widget_show_all (GTK_WIDGET (view));
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -385,12 +427,33 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 
 	cancel_pending_vfs_operation (view);
 
-	g_free (view->details);
-	
-	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	/* free the property bag */
+	if (view->details->property_bag != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (view->details->property_bag));
 	}
 
+	/* make sure to destroy any pending dialogs */
+	while (view->details->chrome_list) {
+		NautilusMozillaContentViewChrome *chrome;
+		GSList *tmp_list;
+
+		/* save the list and advance to the next element */
+		tmp_list = view->details->chrome_list;
+		view->details->chrome_list = view->details->chrome_list->next;
+
+		/* get the chrome and destroy it */
+		chrome = (NautilusMozillaContentViewChrome *)tmp_list->data;
+		gtk_widget_destroy (chrome->toplevel_window);
+
+		/* and free everything */
+		g_free (tmp_list->data);
+		g_slist_free (tmp_list);
+	}
+
+	g_free (view->details);
+
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 
@@ -552,12 +615,13 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		/* Add new encodings to the list only once */
 		if (encoding_group != NULL) {
 			if (!g_list_find_custom	(groups, encoding_group, (GCompareFunc) strcoll)) {
-				groups = g_list_append (groups, encoding_group);
+				groups = g_list_prepend (groups, encoding_group);
 			}
 		}
 		
 		g_free (encoding_title);
 	}
+	groups = g_list_reverse (groups);
 	
 	/* Create the encoding group submenus */
 	node = groups;
@@ -770,7 +834,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
-	new_title = gtk_moz_embed_get_title (view->details->mozilla);
+	new_title = mozilla_get_document_title (view->details->mozilla);
 
 	DEBUG_MSG (("=%s : new title='%s'\n", __FUNCTION__, new_title));
 
@@ -784,32 +848,107 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 
-static GtkWindow *
-mozilla_get_containing_window (GtkMozEmbed *mozilla)
+static void
+mozilla_new_window_callback (GtkMozEmbed *mozilla, GtkMozEmbed **new_mozilla, guint chromemask, NautilusMozillaContentView *view)
 {
-	GtkWidget *window;
+	static GnomeDialog *dialog;
+	NautilusMozillaContentViewChrome *chrome;
 
-	window = gtk_widget_get_ancestor (GTK_WIDGET (mozilla), GTK_TYPE_WINDOW);
-	if (window == NULL) {
-		return NULL;
+	/* it's a chrome window so just create a simple shell to play with. */
+	if (chromemask & GTK_MOZ_EMBED_FLAG_OPENASCHROME) {
+
+		chrome = g_new0 (NautilusMozillaContentViewChrome, 1);
+		if (!chrome) {
+			return;
+		}
+
+		/* save this in this view's chrome list */
+		view->details->chrome_list = g_slist_append (view->details->chrome_list, chrome);
+
+		chrome->view = view;
+
+		chrome->toplevel_window = gtk_window_new (GTK_WINDOW_DIALOG);
+		chrome->mozilla = GTK_MOZ_EMBED (gtk_moz_embed_new());
+
+		gtk_container_add (GTK_CONTAINER (chrome->toplevel_window), GTK_WIDGET (chrome->mozilla));
+
+		/* set up all the signals that we care about for chrome windows. */
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "visibility",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_visibility_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "destroy_browser",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_destroy_brsr_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "size_to",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_size_to_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "title",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_title_callback),
+				    chrome);
+
+		/* and realize the widgets */
+		gtk_widget_realize (chrome->toplevel_window);
+		gtk_widget_realize (GTK_WIDGET(chrome->mozilla));
+
+		/* save the new embed object */
+		*new_mozilla = chrome->mozilla;
+		return;
 	}
 
-	return GTK_WINDOW (window);
+	if (dialog == NULL) {
+		dialog = eel_show_warning_dialog (_("A JavaScript function (small software program) on this page "
+						    "tried to open a new window, but Nautilus does not support the "
+						    "opening new windows by JavaScript.\n\n"
+						    "Try viewing the page in a different web browser, such as Mozilla."),
+						  _("Nautilus JavaScript Warning"),
+						  NULL);
+		eel_nullify_when_destroyed (&dialog);
+	}
 }
 
 static void
-mozilla_new_window_callback (GtkMozEmbed *mozilla)
+mozilla_chrome_visibility_callback (GtkMozEmbed *mozilla, gboolean visibility, NautilusMozillaContentViewChrome *chrome)
 {
-	GnomeDialog     *dialog;
+	/* hide? */
+	if (!visibility) {
+		gtk_widget_hide (chrome->toplevel_window);
+		return;
+	}
+	/* else show */
+	gtk_widget_show (GTK_WIDGET(chrome->mozilla));
+	gtk_widget_show (chrome->toplevel_window);
+}
 
-#ifdef DEBUG_pepper
-	g_warning ("Nautilus does not support JavaScript spawning of new windows!\n");
-#endif
+static void
+mozilla_chrome_destroy_brsr_callback (GtkMozEmbed *mozilla, NautilusMozillaContentViewChrome *chrome)
+{
+	GSList *tmp_list;
+	gtk_widget_destroy (chrome->toplevel_window);
+	tmp_list = g_slist_find (chrome->view->details->chrome_list, chrome);
+	chrome->view->details->chrome_list = g_slist_remove_link (chrome->view->details->chrome_list, tmp_list);
+	g_free (tmp_list->data);
+	g_slist_free (tmp_list);
+}
 
-	dialog = nautilus_show_warning_dialog (_("A JavaScript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by JavaScript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
-					     _("Nautilus Mozilla View Warning"),
-					     mozilla_get_containing_window (mozilla));
+static void
+mozilla_chrome_size_to_callback (GtkMozEmbed *mozilla, gint width, gint height,	NautilusMozillaContentViewChrome *chrome)
+{
+	gtk_widget_set_usize (GTK_WIDGET (chrome->mozilla), width, height);
+}
 
+static void
+mozilla_chrome_title_callback (GtkMozEmbed *mozilla, NautilusMozillaContentViewChrome *chrome)
+{
+	char *new_title;
+
+	new_title = gtk_moz_embed_get_title (chrome->mozilla);
+
+	if (new_title) {
+		if (strcmp (new_title, "") != 0) {
+			gtk_window_set_title (GTK_WINDOW (chrome->toplevel_window), new_title);
+		}
+		g_free (new_title);
+	}
 }
 
 static void
@@ -817,7 +956,6 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
-	char				*new_location_translated;
 
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -830,9 +968,7 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	new_location = gtk_moz_embed_get_location (view->details->mozilla);
 
-	new_location_translated = translate_uri_mozilla_to_nautilus (view, new_location);
-
-	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location_translated));
+	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location));
 
 	/*
 	 * FIXME bug 7114
@@ -854,19 +990,19 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	 */
 
 	if (view->details->uri == NULL 
-	    || (!uris_identical (new_location_translated, view->details->uri))) {
+	    || (!uris_identical (new_location, view->details->uri))) {
 		if (view->details->user_initiated_navigation) {
-			update_nautilus_uri (view, new_location_translated);
+			update_nautilus_uri (view, new_location);
 		} else {
 			DEBUG_MSG (("=%s : Navigation not user initiated, reporting as redirect\n", __FUNCTION__));
 
-			DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", view->details->uri, new_location_translated));
+			DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", view->details->uri, new_location));
 
 			nautilus_view_report_redirect (view->details->nautilus_view, 
-				view->details->uri, new_location_translated, NULL, new_location_translated);
+				view->details->uri, new_location, NULL, new_location);
 
 			g_free (view->details->uri);
-			view->details->uri = g_strdup (new_location_translated);
+			view->details->uri = g_strdup (new_location);
 		}
 	} else {
 		DEBUG_MSG (("=%s : URI's identical, ignoring request\n", __FUNCTION__));
@@ -874,12 +1010,7 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	view->details->user_initiated_navigation = FALSE;
 
-	g_free (new_location_translated);
-	new_location_translated = NULL;	
-
 	g_free (new_location);
-	new_location = NULL;
-
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1002,7 +1133,6 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*link_message;
-	char				*translated_link_message;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -1018,13 +1148,9 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	 * for fragments inside a document).
 	 */
 
-	/* This is actually not that efficient */
-	translated_link_message = translate_uri_mozilla_to_nautilus (view, link_message);
+	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, link_message)); */
 
-	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, translated_link_message)); */
-
-	nautilus_view_report_status (view->details->nautilus_view, translated_link_message);
-	g_free (translated_link_message);
+	nautilus_view_report_status (view->details->nautilus_view, link_message);
 	g_free (link_message);
 
 	/* DEBUG_MSG (("-%s\n", __FUNCTION__)) */
@@ -1100,12 +1226,10 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
  	NautilusMozillaContentView	*view;
 	char				*href;
 	char 				*href_full;
-	char 				*href_mozilla;
 	gint				ret;
 
 	href = NULL;
 	href_full = NULL;
-	href_mozilla = NULL;
 	ret = NS_DOM_EVENT_IGNORED;
 
 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla), NS_DOM_EVENT_IGNORED);
@@ -1126,56 +1250,11 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 
 	if (href != NULL) {
 
-		/*
-		 * What's up with these translations?
-		 * mozilla_to_nautilus translates http://localhost:160xx -> eazel-services:///
-		 * nautilus_to_mozilla translates eazel--services -> http://localhost:160xx
-		 * 
-		 * Case 0)
-		 *  "href" is a full normal HTTP uri
-		 *  href_full is identical to href
-		 *  Both the mozilla and nautilus versions of the href are identical
-		 *  We let the navigate continue w/o interrupting
-		 *
-		 * Case 1)
-		 *  "href" is a partial URI inside a normal HTTP page
-		 *  href_full is the full version of the uri
-		 *  Like in case 0,
-		 *  Both the mozilla and nautilus versions of the href are identical
-		 *  We let the navigate continue w/o interrupting
-		 *
-		 * Case 2)
-		 *   "href" is a relative link inside an eazel-services page
-		 *   href_full is "eazel-services:///<whatever>"
-		 *   href_mozilla is "http://localhost:160xx/<whatever>"
-		 *   We let the navigate continue w/o interrupting
-		 * 
-		 * Case 3)
-		 *   "href" is a full eazel-services: URI
-		 *   href_full is "eazel-services:///<whatever>"
-		 *   href_mozilla is "http://localhost:160xx/<whatever>"
-		 *   We need to interrupt the navigate to translate.  It's the
-		 *   same case as case (2) in the if statement below
-		 *
-		 * It's not actually feasible to get an http://localhost:160xx
-		 * as href_full here, so we don't handle the case where
-		 * href_full needs to be converted to a "nautilus" URI
-		 */
-	
 		href_full = make_full_uri_from_relative (view->details->uri, href);
-		href_mozilla = translate_uri_nautilus_to_mozilla (view, href_full);
 
-		DEBUG_MSG (("=%s href='%s' full='%s' xlate='%s'\n", __FUNCTION__, href, href_full, href_mozilla));
+		DEBUG_MSG (("=%s href='%s' full='%s'\n", __FUNCTION__, href, href_full));
 
-		if (href_mozilla == NULL) {
-			/* An eazel-services URL when the user isn't logged in.
-			 * Right now, we report a load error.  But we
-			 * could tell ammonite to prompt for login
-			 */
-			DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
-			nautilus_view_report_load_failed (view->details->nautilus_view);
-			ret = NS_DOM_EVENT_CONSUMED;
-		} else if (href[0] == '#') {
+		if (href[0] == '#') {
 			/* a navigation to an anchor within the same page */
 			view->details->user_initiated_navigation = TRUE;
 
@@ -1205,8 +1284,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		} else if (should_uri_navigate_bypass_nautilus (href_full)) {
 			view->details->user_initiated_navigation = TRUE;
 
-			if ((should_mozilla_load_uri_directly (href_full) 
-			     && 0 == strcmp (href_full, href_mozilla))
+			if (should_mozilla_load_uri_directly (href_full)
 			     || is_uri_relative (href)) {
 				/* If the URI doesn't need to be translated and we can load it directly,
 				 * then just keep going...report_location_change will happen in the
@@ -1238,7 +1316,6 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		DEBUG_MSG (("=%s no href, ignoring\n", __FUNCTION__));
 	}
 
-	g_free (href_mozilla);
 	g_free (href_full);
 	g_free (href);
 
@@ -1323,53 +1400,6 @@ vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 /***********************************************************************************/
 /***********************************************************************************/
 
-/*
- * FIXME
- * Both of these calls can make outbound CORBA calls which
- * can allow incoming CORBA calls that can cause things to bust
- */
-
-/*
- * FIXME
- * Right now, if you're on a normal HTML page and you encounter a link
- * to eazel-services:///<something>, you'll get a failure from Mozilla instead
- * of a login prompt.  Login prompting needs to be added to Mozilla like
- * the eazel-install view
- */
-
-/* A NULL return from this function must trigger a nautilus load error */
-static char *
-translate_uri_nautilus_to_mozilla (NautilusMozillaContentView *view, const char *uri)
-{
-	/* gint i; */
-	char *ret;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-
-#ifdef EAZEL_SERVICES
-	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
-		ret = eazel_services_scheme_to_http (view, uri);
-	} else
-#endif /* EAZEL_SERVICES */
-		{
-		ret = g_strdup (uri);
-	}
-
-	return ret;
-
-}
-
-static char *
-translate_uri_mozilla_to_nautilus (NautilusMozillaContentView *view, const char *uri)
-{
-#ifdef EAZEL_SERVICES
-	return eazel_services_scheme_from_http (view, uri);
-#else
-	return g_strdup (uri);
-#endif /* EAZEL_SERVICES */
-}
-
 #ifdef BUSY_CURSOR
 static void
 set_busy_cursor (NautilusMozillaContentView *view)
@@ -1416,22 +1446,12 @@ cancel_pending_vfs_operation (NautilusMozillaContentView *view)
 
 /* this takes a "nautilus" uri, not a "mozilla" uri */
 static void
-navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
-			 	  const char			*nautilus_uri)
+navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView    *view,
+			 	  const char			*uri)
 {
-	char *mozilla_uri;
-	char *old_mozilla_uri;
-	char *old_nautilus_uri;
-
-	mozilla_uri = translate_uri_nautilus_to_mozilla (view, nautilus_uri);
+	char *old_uri;
 
 	cancel_pending_vfs_operation (view);
-
-	if (mozilla_uri == NULL) {
-		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
-		nautilus_view_report_load_failed (view->details->nautilus_view);
-		goto error;
-	}
 
 	if (!GTK_WIDGET_REALIZED (view->details->mozilla)) {
 
@@ -1446,7 +1466,7 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 		DEBUG_MSG (("=%s: Postponing navigation request to widget realization\n", __FUNCTION__));
 		/* Note that view->details->uri is still set below */
 	} else {
-		if (should_mozilla_load_uri_directly (nautilus_uri)) {
+		if (should_mozilla_load_uri_directly (uri)) {
 
 			/* See if the current URI is the same as what mozilla already
 			 * has.  If so, issue a reload rather than a load.
@@ -1456,36 +1476,27 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 			 * locations)
 			 */
 
-			old_mozilla_uri = gtk_moz_embed_get_location (view->details->mozilla);
-			old_nautilus_uri = translate_uri_mozilla_to_nautilus (view, old_mozilla_uri);
+			old_uri = gtk_moz_embed_get_location (view->details->mozilla);
 
-			if (old_nautilus_uri != NULL && uris_identical (nautilus_uri, old_nautilus_uri)) {
+			if (old_uri != NULL && uris_identical (uri, old_uri)) {
 				DEBUG_MSG (("=%s uri's identical, telling mozilla to reload\n", __FUNCTION__));
 				gtk_moz_embed_reload (view->details->mozilla,
 					GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
 			} else {
-				gtk_moz_embed_load_url (view->details->mozilla,
-							mozilla_uri);
+				gtk_moz_embed_load_url (view->details->mozilla, uri);
 			}
 
-			g_free (old_mozilla_uri);
-			old_mozilla_uri = NULL;
-			g_free (old_nautilus_uri);
-			old_nautilus_uri = NULL;
+			g_free (old_uri);
 		} else {
 			DEBUG_MSG (("=%s loading URI via gnome-vfs\n", __FUNCTION__));
-			gnome_vfs_async_open (&(view->details->vfs_handle), nautilus_uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
+			gnome_vfs_async_open (&(view->details->vfs_handle), uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
 		}
 	}
 
 	g_free (view->details->uri);
-	view->details->uri = g_strdup (nautilus_uri);
+	view->details->uri = g_strdup (uri);
 
 	DEBUG_MSG (("=%s current URI is now '%s'\n", __FUNCTION__, view->details->uri));
-
-error:
-	g_free (mozilla_uri);
-	mozilla_uri = NULL;
 }
 
 static void
@@ -1616,7 +1627,7 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 
 	/* See section 5.2 in RFC 2396 */
 
-	/* FIXME bugzilla.eazel.com 4413: This function does not take
+	/* FIXME bugzilla.gnome.org 44413: This function does not take
 	 * into account a BASE tag in an HTML document, so its
 	 * functionality differs from what Mozilla itself would do.
 	 */
@@ -1847,7 +1858,7 @@ should_uri_navigate_bypass_nautilus (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	return string_list_get_index_of_string (handled_by_nautilus, NUM_ELEMENTS_IN_ARRAY (handled_by_nautilus),
+	return string_list_get_index_of_string (handled_by_nautilus, EEL_N_ELEMENTS (handled_by_nautilus),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
@@ -1864,7 +1875,7 @@ should_mozilla_load_uri_directly (const char *uri)
 		"eazel-services"
 	};
 
-	return string_list_get_index_of_string (handled_by_mozilla, NUM_ELEMENTS_IN_ARRAY (handled_by_mozilla),
+	return string_list_get_index_of_string (handled_by_mozilla, EEL_N_ELEMENTS (handled_by_mozilla),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
@@ -1965,85 +1976,3 @@ post_widget_initialize (void)
 
 	cache_dir = NULL;
 }
-
-
-#ifdef EAZEL_SERVICES
-
-/*
- * URL scheme hack for the eazel-services: scheme
- */
-
-/* A NULL return from this function must trigger a nautilus load error */
-static char *
-eazel_services_scheme_to_http (NautilusMozillaContentView	*view,
-			       const char			*uri)
-{
-	const char *uri_minus_scheme;
-	char *new_uri = NULL;
-	char *ret = NULL;
-	AmmoniteError err;
-	GnomeVFSURI *vfs_uri;
-
-	/* Chew off the the scheme, leave the colon */
-	uri_minus_scheme = strchr (uri, (unsigned char)':');
-
-	g_assert (uri_minus_scheme);
-
-	err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
-
-	switch (err) {
-	case ERR_Success:
-		ret = g_strconcat ("http", new_uri, NULL);
-		g_free (new_uri);
-		new_uri = NULL;
-	break;
-	case ERR_UserNotLoggedIn:
-		/* Rather than try to use the ammonite login dialog directly here,
-		 * we're going to coax the ammonite autoprompter to come
-		 * up by using gnome-vfs
-		 */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		if (vfs_uri != NULL) {
-			/* Don't remove: no-op to force ammonite login */
-			gnome_vfs_uri_is_local (vfs_uri);
-			gnome_vfs_uri_unref (vfs_uri);
-			vfs_uri = NULL;
-		}
-
-		err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
-
-		if (err == ERR_Success) {
-			ret = g_strconcat ("http", new_uri, NULL);
-			g_free (new_uri);
-			new_uri = NULL;
-		} else {
-			ret = NULL;
-		}
-	break;
-	default:
-		ret = NULL;
-	break;
-	}
-
-	return ret;
-}
-
-static char *
-eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
-				 const char			*uri)
-{
-	AmmoniteError err;
-	char *ret;
-
-	err = ammonite_eazel_url_for_http_url (uri, &ret);
-
-	if (ERR_Success == err) {
-		DEBUG_MSG (("%s untranslated uri '%s' to '%s'\n", __FUNCTION__, uri, ret));
-	} else {
-		ret = g_strdup (uri);
-	}
-
-	return ret;
-}
-
-#endif /* EAZEL_SERVICES */

@@ -26,25 +26,22 @@
 #include <config.h>
 #include "nautilus-tree-expansion-state.h"
 
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 struct NautilusTreeExpansionStateDetails {
 	GHashTable *table;
 	GHashTable *ever_expanded_table;
 };
 
-
-
-
 static void               nautilus_tree_expansion_state_destroy          (GtkObject   *object);
 static void               nautilus_tree_expansion_state_initialize       (gpointer     object,
 									  gpointer     klass);
 static void               nautilus_tree_expansion_state_initialize_class (gpointer     klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
 
 
 static gboolean	          expansion_table_hash_remove_func               (gpointer key,
@@ -69,27 +66,30 @@ nautilus_tree_expansion_state_initialize_class (gpointer klass)
 
 }
 
-/* Give full gconf path so that this preference won't be coupled to user level. */
-#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"tree-sidebar-panel/expansion_state"
+/* Preference name for the list of expanded uris */
+#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
 
 static void
-expansion_state_load_callback (gpointer node_data,
+expansion_state_load_callback (const char *uri,
 			       gpointer callback_data)
 {
+	g_return_if_fail (eel_strlen (uri) > 0);
+	g_return_if_fail (NAUTILUS_IS_TREE_EXPANSION_STATE (callback_data));
+
 	nautilus_tree_expansion_state_expand_node_internal
-		(callback_data, node_data);
+		(callback_data, uri);
 }
 
 static void 
-nautilus_tree_expansion_state_load_table_from_gconf (NautilusTreeExpansionState *expansion_state)
+nautilus_tree_expansion_state_load_from_preferences (NautilusTreeExpansionState *expansion_state)
 {
-	GList *uris;
+	EelStringList *uris;
 
-	uris = nautilus_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
-	g_list_foreach (uris, expansion_state_load_callback, expansion_state);
-	nautilus_g_list_free_deep (uris);
+	uris = eel_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
+
+	eel_string_list_for_each (uris, expansion_state_load_callback, expansion_state);
+	eel_string_list_free (uris);
 }
-
 
 static void
 hash_table_get_keys_callback (gpointer key,
@@ -115,14 +115,18 @@ hash_table_get_keys (GHashTable *hash_table)
 }
 
 static void 
-nautilus_tree_expansion_state_save_table_to_gconf (NautilusTreeExpansionState *expansion_state)
+nautilus_tree_expansion_state_save_to_preferences (NautilusTreeExpansionState *expansion_state)
 {
-	GList *uris;
+	GList *glist;
+	EelStringList *uris;
 
-	uris = hash_table_get_keys (expansion_state->details->table);
-	uris = nautilus_g_str_list_alphabetize (uris);
-	nautilus_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
-	g_list_free (uris);
+	glist = hash_table_get_keys (expansion_state->details->table);
+	glist = eel_g_str_list_alphabetize (glist);
+
+	uris = eel_string_list_new_from_g_list (glist, TRUE);
+	eel_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
+	g_list_free (glist);
+	eel_string_list_free (uris);
 }
 
 static void
@@ -137,7 +141,7 @@ nautilus_tree_expansion_state_initialize (gpointer object, gpointer klass)
 	expansion_state->details->table = g_hash_table_new (g_str_hash, g_str_equal);
 	expansion_state->details->ever_expanded_table = g_hash_table_new (g_str_hash, g_str_equal);
 	
-	nautilus_tree_expansion_state_load_table_from_gconf (expansion_state);
+	nautilus_tree_expansion_state_load_from_preferences (expansion_state);
 }
 
 
@@ -160,7 +164,7 @@ nautilus_tree_expansion_state_destroy (GtkObject *object)
 
 	g_free (expansion_state->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -260,7 +264,7 @@ nautilus_tree_expansion_state_remove_node (NautilusTreeExpansionState *expansion
 void
 nautilus_tree_expansion_state_save (NautilusTreeExpansionState *expansion_state)
 {
-	nautilus_tree_expansion_state_save_table_to_gconf (expansion_state);
+	nautilus_tree_expansion_state_save_to_preferences (expansion_state);
 }
 
 static gboolean	

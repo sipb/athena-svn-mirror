@@ -34,7 +34,7 @@
 #include "bonobo-stream-vfs.h"
 
 #include <gtk/gtkobject.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
 
 struct NautilusAdapterStreamLoadStrategyDetails {
@@ -52,7 +52,7 @@ static void nautilus_adapter_stream_load_strategy_load_location (NautilusAdapter
 static void nautilus_adapter_stream_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterStreamLoadStrategy, nautilus_adapter_stream_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterStreamLoadStrategy, nautilus_adapter_stream_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
 
 
 static void
@@ -93,7 +93,7 @@ nautilus_adapter_stream_load_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -132,7 +132,7 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	if (stream == NULL) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 	} else {
-		/* FIXME bugzilla.eazel.com 1248: 
+		/* FIXME bugzilla.gnome.org 41248: 
 		 * Dan Winship points out that we should pass the
 		 * MIME type here to work with new implementers of
 		 * PersistStream that pay attention to the MIME type. It
@@ -167,5 +167,5 @@ nautilus_adapter_stream_load_strategy_stop_loading  (NautilusAdapterLoadStrategy
 {
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_STREAM_LOAD_STRATEGY (strategy));
 
-	/* FIXME bugzilla.eazel.com 3456: is there anything we can do? */
+	/* FIXME bugzilla.gnome.org 43456: is there anything we can do? */
 }

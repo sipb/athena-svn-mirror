@@ -1,20 +1,12 @@
 NULL = 
 
-SUBDIRS =
-
-INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
-	-DG_LOG_DOMAIN=\"Nautilus-Throbber-Control\"	\
-	-DDATADIR=\""$(datadir)"\" 		\
-	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	-I$(top_builddir)/libnautilus		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOMEUI_CFLAGS)                       \
-	$(GCONF_CFLAGS) 			\
-	$(OAF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
-	$(VFS_CFLAGS)
+INCLUDES =						\
+	-DG_LOG_DOMAIN=\"Nautilus-Throbber\"		\
+	-DDATADIR=\""$(datadir)"\" 			\
+	-I$(top_srcdir)					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(NAUTILUS_PRIVATE_CFLAGS)			\
+	$(NULL)
 
 bin_PROGRAMS =					\
 	nautilus-throbber
@@ -26,14 +18,9 @@ nautilus_throbber_SOURCES =		        \
 
 nautilus_throbber_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
-	$(BONOBO_LIBS)					\
-	$(GNOMEUI_LIBS)					\
-	$(GCONF_LIBS) 					\
-	$(VFS_LIBS)					\
-	$(GNORBA_LIBS)
-
-OBJECT_DIRECTORY_LIBS = $(GNOME_LIBS) $(OAF_LIBS)
+	$(top_builddir)/libnautilus-private/libnautilus-private.la \
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 oaf_in_files =					\

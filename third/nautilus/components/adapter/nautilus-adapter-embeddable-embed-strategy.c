@@ -37,11 +37,10 @@
 #include <bonobo/bonobo-client-site.h>
 #include <bonobo/bonobo-item-container.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
 
 struct NautilusAdapterEmbeddableEmbedStrategyDetails {
-	BonoboObjectClient *embeddable_wrapper;
 	BonoboItemContainer *container;
       	BonoboClientSite   *client_site;
 	BonoboViewFrame    *view_frame;
@@ -62,7 +61,7 @@ static GtkWidget *nautilus_adapter_embeddable_embed_strategy_get_widget (Nautilu
 static BonoboObject *nautilus_adapter_embeddable_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_adapter_embeddable_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_adapter_embeddable_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void
@@ -96,9 +95,6 @@ nautilus_adapter_embeddable_embed_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (object);
 
- 	if (strategy->details->embeddable_wrapper != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (strategy->details->embeddable_wrapper));
-	}
  	if (strategy->details->view_frame != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (strategy->details->view_frame));
 	}
@@ -111,7 +107,7 @@ nautilus_adapter_embeddable_embed_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -167,6 +163,7 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 						Bonobo_UIContainer ui_container)
 {
 	NautilusAdapterEmbeddableEmbedStrategy *strategy;
+	BonoboObjectClient *embeddable_wrapper;
 	Bonobo_Zoomable corba_zoomable;
 	Bonobo_View corba_view;
 	CORBA_Environment ev;
@@ -175,12 +172,15 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 	gtk_object_ref (GTK_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
-	strategy->details->embeddable_wrapper = bonobo_object_client_from_corba (embeddable);
+	embeddable_wrapper = bonobo_object_client_from_corba
+		(bonobo_object_dup_ref (embeddable, NULL));
 
 	strategy->details->container = bonobo_item_container_new ();
       	strategy->details->client_site = bonobo_client_site_new (strategy->details->container);
 
-	bonobo_client_site_bind_embeddable (strategy->details->client_site, strategy->details->embeddable_wrapper);
+	bonobo_client_site_bind_embeddable (strategy->details->client_site, embeddable_wrapper);
+
+	bonobo_object_unref (BONOBO_OBJECT (embeddable_wrapper));
 
 	strategy->details->view_frame = bonobo_client_site_new_view (strategy->details->client_site, ui_container);
 	strategy->details->client_widget = bonobo_view_frame_get_wrapper (strategy->details->view_frame);
