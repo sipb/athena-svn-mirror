@@ -1,0 +1,18 @@
+# $Id: Makefile.athena,v 1.1 1999-02-09 19:58:12 danw Exp $
+
+SHELL=/bin/sh
+
+prepare:
+	rm -f config.cache
+	./configure --enable-nmh-pop --enable-nmh-debug
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"

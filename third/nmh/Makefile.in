@@ -1,7 +1,7 @@
 #
 # Makefile for top level of nmh distribution
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:05 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-09 19:58:13 danw Exp $
 #
 
 # nmh version
@@ -26,10 +26,10 @@ exec_prefix = @exec_prefix@
 bindir      = @bindir@
 
 # location of support binaries and scripts
-libdir      = @libdir@
+libdir      = @libexecdir@
 
 # location of nmh configuration and formats files
-etcdir      = @sysconfdir@
+etcdir      = /usr/athena/etc
 
 # location of man pages
 mandir      = @mandir@

@@ -142,7 +142,7 @@
  * are using KPOP, you will probably need to change this
  * to "kpop".
  */
-#define POPSERVICE "pop3"
+#define POPSERVICE "kpop"
 
 /*
  * Define the default creation modes for folders and messages.
