@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fs.c,v 1.2 2003-03-20 00:09:43 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fs.c,v 1.3 2004-02-13 18:58:46 zacheiss Exp $");
 
 #include <afs/afs_args.h>
 #include <rx/xdr.h>
@@ -43,6 +43,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fs.c,
 #include <strings.h>
 #include <afs/afsutil.h>
 #include <stdlib.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
 #include <assert.h>
 #include <afs/ptclient.h>
 
@@ -65,6 +72,7 @@ static int RxStatProcCmd(), RxStatPeerCmd();
 extern char *hostutil_GetNameByINet();
 extern struct hostent *hostutil_GetHostByName();
 extern afs_int32 VL_GetEntryByNameO();
+
 
 extern struct cmd_syndesc *cmd_CreateSyntax();
 static char pn[] = "fs";

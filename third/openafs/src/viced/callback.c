@@ -82,7 +82,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.5 2003-11-12 12:48:23 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.6 2004-02-13 18:58:48 zacheiss Exp $");
 
 #include <stdio.h> 
 #include <stdlib.h>      /* for malloc() */
@@ -444,7 +444,7 @@ static CDel(cb, deletefe)
 	assert(0);
 	ViceLog(0,("CDel: Internal Error -- shutting down: wanted %d from %d, now at %d\n",cbi,fe->firstcb,*cbp));
 	DumpCallBackState();
-	ShutDown();
+	ShutDownAndCore(PANIC);
       }
     }
     CDelPtr(fe, cbp, deletefe);
@@ -494,7 +494,7 @@ static u_short *FindCBPtr(fe, host)
 	if (safety > cbstuff.nblks) {
 	  ViceLog(0,("FindCBPtr: Internal Error -- shutting down.\n"));
 	  DumpCallBackState();
-	  ShutDown();
+	  ShutDownAndCore(PANIC);
 	}
 	cb = itocb(*cbp);
 	if (cb->hhead == hostindex)
@@ -696,7 +696,7 @@ AddCallBack1_r(host, fid, thead, type, locked)
 	if (safety > cbstuff.nblks) {
 	  ViceLog(0,("AddCallBack1: Internal Error -- shutting down.\n"));
 	  DumpCallBackState();
-	  ShutDown();
+	  ShutDownAndCore(PANIC);
 	}
 	if (cb->hhead == h_htoi(host))
 	    break;
@@ -1502,7 +1502,7 @@ CleanupTimedOutCallBacks_r()
 		if (ntimedout > cbstuff.nblks) {
 		  ViceLog(0,("CCB: Internal Error -- shutting down...\n"));
 		  DumpCallBackState();
-		  ShutDown();
+		  ShutDownAndCore(PANIC);
 		}
 	    } while (cbi != *thead);
 	    *thead = 0;
@@ -1830,7 +1830,7 @@ main(argc, argv)
     }
     if (err || argc != 1) {
 	fprintf(stderr,
-		"Usage: cbd [-host cbid] [-fid volume vnode] [-stats] callbackdumpfile\n");
+		"Usage: cbd [-host cbid] [-fid volume vnode] [-stats] [-all] callbackdumpfile\n");
 	fprintf(stderr, "[cbid is shown for each host in the hosts.dump file]\n");
 	exit(1);
     }
@@ -1953,7 +1953,9 @@ struct AFSCBFids*	afidp;
 
 	i = host->interface->numberOfInterfaces;
 	addr = malloc(i * sizeof(afs_int32));
+	if (!addr) return 1;
 	conns = malloc(i * sizeof(struct rx_connection *));
+	if (!conns) { free(addr); return 1; }
 
 	/* initialize alternate rx connections */
 	for ( i=0,j=0; i < host->interface->numberOfInterfaces; i++)
@@ -2038,7 +2040,9 @@ struct host*		host;
 
 	i = host->interface->numberOfInterfaces;
 	addr = malloc(i * sizeof(afs_int32));
+	if (!addr) return 1;
 	conns = malloc(i * sizeof(struct rx_connection *));
+	if (!conns) { free(addr); return 1; }
 
 	/* initialize alternate rx connections */
 	for ( i=0,j=0; i < host->interface->numberOfInterfaces; i++)

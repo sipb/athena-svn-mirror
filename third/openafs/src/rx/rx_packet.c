@@ -14,7 +14,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.2 2003-01-19 17:14:53 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.3 2004-02-13 18:58:42 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)
@@ -33,7 +33,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packe
 #include "../afs/sysincludes.h"
 #endif
 #include "../h/socket.h"
-#if !defined(AFS_SUN5_ENV) &&  !defined(AFS_LINUX20_ENV)
+#if !defined(AFS_SUN5_ENV) &&  !defined(AFS_LINUX20_ENV) && !defined(AFS_HPUX110_ENV)
 #if	!defined(AFS_OSF_ENV) && !defined(AFS_AIX41_ENV)
 #include "../sys/mount.h"   /* it gets pulled in by something later anyway */
 #endif
@@ -959,7 +959,7 @@ int osi_NetSend(socket, addr, dvec, nvecs, length, istack)
  * message receipt is done in rxk_input or rx_put.
  */
 
-#ifdef AFS_SUN5_ENV
+#if defined(AFS_SUN5_ENV) || defined(AFS_HPUX110_ENV)
 /*
  * Copy an mblock to the contiguous area pointed to by cp.
  * MTUXXX Supposed to skip <off> bytes and copy <len> bytes,
@@ -1081,7 +1081,7 @@ return len;
 
 #if !defined(AFS_LINUX20_ENV)
 int rx_mb_to_packet(amb, free, hdr_len, data_len, phandle)
-#ifdef	AFS_SUN5_ENV
+#if defined(AFS_SUN5_ENV) || defined(AFS_HPUX110_ENV)
 mblk_t *amb;
 #else
 struct mbuf *amb;
@@ -1593,11 +1593,8 @@ void rxi_SendPacket(struct rx_call * call, struct rx_connection * conn,
 /* Send a list of packets to appropriate destination for the specified
  * connection.  The headers are first encoded and placed in the packets.
  */
-void rxi_SendPacketList(struct rx_call * call,
-			struct rx_connection * conn,
-			struct rx_packet **list,
-			int len,
-			int istack)
+void rxi_SendPacketList(struct rx_call * call, struct rx_connection * conn,
+			struct rx_packet **list, int len, int istack)
 {
 #if     defined(AFS_SUN5_ENV) && defined(KERNEL)
     int waslocked;

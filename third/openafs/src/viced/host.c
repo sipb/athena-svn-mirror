@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.7 2003-11-12 12:48:23 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.8 2004-02-13 18:58:48 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -1059,9 +1059,9 @@ retry:
 	{
 	    char uuid1[128], uuid2[128];
 	    if (identP->valid)
-		afsUUID_to_string(identP->uuid, uuid1, 127);
+		afsUUID_to_string(&identP->uuid, uuid1, 127);
 	    if (host->interface)
-		afsUUID_to_string(host->interface->uuid, uuid2, 127);
+		afsUUID_to_string(&host->interface->uuid, uuid2, 127);
 	    ViceLog(0, 
 		    ("CB: new identity for host %s:%d, deleting(%x %x %s %s)\n", 
 		     afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port), 
@@ -1217,7 +1217,7 @@ static MapName_r(aname, acell, aval)
 		return 0;
 	    }		    
 	    foreign = 1;  /* attempt cross-cell authentication */
-	    tname = (char *) malloc(anamelen+cnamelen+2);
+	    tname = (char *) malloc(PR_MAXNAMELEN);
 	    strcpy(tname, aname);
 	    tname[anamelen] = '@';
 	    strcpy(tname+anamelen+1, acell);

@@ -120,6 +120,23 @@ AC_MSG_RESULT($ac_cv_linux_exports_sys_call_table)
 CPPFLAGS="$save_CPPFLAGS"])
 
 
+AC_DEFUN(LINUX_EXPORTS_IA32_SYS_CALL_TABLE, [
+AC_MSG_CHECKING(for exported ia32_sys_call_table)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_exports_ia32_sys_call_table,
+[
+AC_TRY_COMPILE(
+[#include <linux/modversions.h>],
+[#ifndef __ver_ia32_sys_call_table
+#error ia32_sys_call_table not exported
+#endif],
+ac_cv_linux_exports_ia32_sys_call_table=yes,
+ac_cv_linux_exports_ia32_sys_call_table=no)])
+AC_MSG_RESULT($ac_cv_linux_exports_ia32_sys_call_table)
+CPPFLAGS="$save_CPPFLAGS"])
+
+
 AC_DEFUN(LINUX_EXPORTS_SYS_CHDIR, [
 AC_MSG_CHECKING(for exported sys_chdir)
 save_CPPFLAGS="$CPPFLAGS"
@@ -151,6 +168,23 @@ AC_TRY_COMPILE(
 ac_cv_linux_exports_sys_close=yes,
 ac_cv_linux_exports_sys_close=no)])
 AC_MSG_RESULT($ac_cv_linux_exports_sys_close)
+CPPFLAGS="$save_CPPFLAGS"])
+
+
+AC_DEFUN(LINUX_EXPORTS_SYS_WAIT4, [
+AC_MSG_CHECKING(for exported sys_wait4)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_exports_sys_wait4,
+[
+AC_TRY_COMPILE(
+[#include <linux/modversions.h>],
+[#ifndef __ver_sys_wait4
+#error sys_wait4 not exported
+#endif],
+ac_cv_linux_exports_sys_wait4=yes,
+ac_cv_linux_exports_sys_wait4=no)])
+AC_MSG_RESULT($ac_cv_linux_exports_sys_wait4)
 CPPFLAGS="$save_CPPFLAGS"])
 
 
@@ -298,21 +332,6 @@ AC_MSG_RESULT($ac_cv_linux_sched_struct_task_struct_has_real_parent)
 CPPFLAGS="$save_CPPFLAGS"])
 
 
-AC_DEFUN(LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_SIGMASK_LOCK, [
-AC_MSG_CHECKING(for sigmask_lock in struct task_struct)
-save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
-AC_CACHE_VAL(ac_cv_linux_sched_struct_task_struct_has_sigmask_lock,
-[
-AC_TRY_COMPILE(
-[#include <linux/sched.h>],
-[struct task_struct _tsk;
-printf("%d\n", _tsk.sigmask_lock);],
-ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=yes,
-ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=no)])
-AC_MSG_RESULT($ac_cv_linux_sched_struct_task_struct_has_sigmask_lock)
-CPPFLAGS="$save_CPPFLAGS"])
-
 AC_DEFUN(LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_SIG, [
 AC_MSG_CHECKING(for sig in struct task_struct)
 save_CPPFLAGS="$CPPFLAGS"
@@ -326,6 +345,21 @@ printf("%d\n", _tsk.sig);],
 ac_cv_linux_sched_struct_task_struct_has_sig=yes,
 ac_cv_linux_sched_struct_task_struct_has_sig=no)])
 AC_MSG_RESULT($ac_cv_linux_sched_struct_task_struct_has_sig)
+CPPFLAGS="$save_CPPFLAGS"])
+
+AC_DEFUN(LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_SIGMASK_LOCK, [
+AC_MSG_CHECKING(for sigmask_lock in struct task_struct)
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I${LINUX_KERNEL_PATH}/include -D__KERNEL__ $CPPFLAGS"
+AC_CACHE_VAL(ac_cv_linux_sched_struct_task_struct_has_sigmask_lock,
+[
+AC_TRY_COMPILE(
+[#include <linux/sched.h>],
+[struct task_struct _tsk;
+printf("%d\n", _tsk.sigmask_lock);],
+ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=yes,
+ac_cv_linux_sched_struct_task_struct_has_sigmask_lock=no)])
+AC_MSG_RESULT($ac_cv_linux_sched_struct_task_struct_has_sigmask_lock)
 CPPFLAGS="$save_CPPFLAGS"])
 
 AC_DEFUN(LINUX_SCHED_STRUCT_TASK_STRUCT_HAS_SIGHAND, [
@@ -342,4 +376,3 @@ ac_cv_linux_sched_struct_task_struct_has_sighand=yes,
 ac_cv_linux_sched_struct_task_struct_has_sighand=no)])
 AC_MSG_RESULT($ac_cv_linux_sched_struct_task_struct_has_sighand)
 CPPFLAGS="$save_CPPFLAGS"])
-

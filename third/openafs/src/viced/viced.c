@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.4 2003-11-12 12:48:24 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.5 2004-02-13 18:58:48 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,6 +141,7 @@ struct afs_PerfStats afs_perfstats;
 extern	int     LogLevel;
 extern	int	Statistics;
 
+int     busyonrst = 1;
 int     timeout = 30;
 int 	SawSpare;
 int 	SawPctSpare;
@@ -216,7 +217,7 @@ static CheckDescriptors()
 #ifdef AFS_PTHREAD_ENV
 void CheckSignal_Signal(x)       {CheckSignal(0);}
 void ShutDown_Signal(x)          {ShutDown(0);}
-void CheckDescriptors_Signal(x)  {CheckDescriptors(0);}
+void CheckDescriptors_Signal(x)  {CheckDescriptors();}
 #else /* AFS_PTHREAD_ENV */
 void CheckSignal_Signal(x)       {IOMGR_SoftSig(CheckSignal, 0);}
 void ShutDown_Signal(x)          {IOMGR_SoftSig(ShutDown, 0);}
@@ -236,10 +237,12 @@ static void ResetCheckSignal(void)
 
 #if defined(AFS_HPUX_ENV)
     signo = SIGPOLL;
-#elif defined(AFS_NT40_ENV)
+#else
+#if defined(AFS_NT40_ENV)
     signo = SIGUSR2;
 #else
     signo = SIGXCPU;
+#endif
 #endif
 
 #if defined(AFS_PTHREAD_ENV) && !defined(AFS_NT40_ENV)
@@ -667,6 +670,19 @@ main(argc, argv)
 #endif /* AFS_PTHREAD_ENV */
 }
 
+
+static void setThreadId(char *s)
+{
+#ifdef AFS_PTHREAD_ENV
+    /* set our 'thread-id' so that the host hold table works */
+    MUTEX_ENTER(&rx_stats_mutex);   /* protects rxi_pthread_hinum */ 
+    ++rxi_pthread_hinum;
+    pthread_setspecific(rx_thread_id_key, (void *)rxi_pthread_hinum);
+    MUTEX_EXIT(&rx_stats_mutex);
+    ViceLog(0,("Set thread id %d for '%s'\n", pthread_getspecific(rx_thread_id_key), s));
+#endif
+}
+
 /* This LWP does things roughly every 5 minutes */
 static FiveMinuteCheckLWP()
 {
@@ -674,6 +690,7 @@ static FiveMinuteCheckLWP()
     char tbuffer[32];
 
     ViceLog(1, ("Starting five minute check process\n"));
+    setThreadId("FiveMinuteCheckLWP");
     while (1) {
 #ifdef AFS_PTHREAD_ENV
 	sleep(fiveminutes);
@@ -715,6 +732,7 @@ static FiveMinuteCheckLWP()
 static HostCheckLWP()
 {
     ViceLog(1, ("Starting Host check process\n"));
+    setThreadId("HostCheckLWP");
     while(1) {
 #ifdef AFS_PTHREAD_ENV
 	sleep(fiveminutes);
@@ -933,7 +951,7 @@ int dopanic;
     }
 #endif
     DFlush();
-    PrintCounters();
+    if (!dopanic) PrintCounters();
 
     /* do not allows new reqests to be served from now on, all new requests
        are returned with an error code of RX_RESTARTING ( transient failure ) */
@@ -996,6 +1014,7 @@ static FlagMsg()
     strcat(buffer, "[-implicit <admin mode bits: rlidwka>] ");
     strcat(buffer, "[-hr <number of hours between refreshing the host cps>] ");
     strcat(buffer, "[-busyat <redirect clients when queue > n>] ");
+    strcat(buffer, "[-nobusy <no VBUSY before a volume is attached>] ");
     strcat(buffer, "[-rxpck <number of rx extra packets>] ");
     strcat(buffer, "[-rxdbg (enable rx debugging)] ");
     strcat(buffer, "[-rxdbge (enable rxevent debugging)] ");
@@ -1225,7 +1244,10 @@ static ParseArgs(argc, argv)
 			   busy_threshold);
 		    Sawbusy = 0;
 		}
-	    }
+	      }
+	    else
+	      if (!strcmp(argv[i], "-nobusy")) 
+		busyonrst=0;
 #ifdef	AFS_AIX32_ENV
 	else
 	    if (!strcmp(argv[i], "-m")) {

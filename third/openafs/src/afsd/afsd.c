@@ -55,7 +55,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.3 2002-12-13 22:06:47 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.4 2004-02-13 18:58:39 zacheiss Exp $");
 
 #define VFS 1
 
@@ -146,6 +146,27 @@ void set_staticaddrs(void);
 #ifdef AFS_LINUX20_ENV
 #include <sys/resource.h>
 #endif
+#ifdef AFS_DARWIN_ENV
+#include <mach/mach.h>
+/* Relevant definitions from DiskArbitration.h (not included with Mac OS X) */
+#ifndef __DISKARBITRATION_H
+typedef char    DiskArbDiskIdentifier[1024];
+typedef char    DiskArbMountpoint[1024];
+kern_return_t   DiskArbStart(mach_port_t * portPtr);
+kern_return_t   DiskArbDiskAppearedWithMountpointPing_auto(
+    DiskArbDiskIdentifier diskIdentifier,
+    unsigned flags,
+    DiskArbMountpoint mountpoint);
+kern_return_t   DiskArbDiskDisappearedPing_auto(
+    DiskArbDiskIdentifier diskIdentifier,
+    unsigned flags);
+enum {
+    kDiskArbDiskAppearedNoFlags = 0x00000000,
+    kDiskArbDiskAppearedEjectableMask = 1 << 1,
+    kDiskArbDiskAppearedNetworkDiskMask = 1 << 3
+};
+#endif /* __DISKARBITRATION_H */
+#endif /* AFS_DARWIN_ENV */
 
 #ifndef MOUNT_AFS
 #define	MOUNT_AFS AFS_MOUNT_AFS
@@ -170,6 +191,7 @@ void set_staticaddrs(void);
 #define	AFSLOGFILE	"AFSLog"
 #define	DCACHEFILE	"CacheItems"
 #define	VOLINFOFILE	"VolumeItems"
+#define CELLINFOFILE	"CellItems"
 
 #define MAXIPADDRS 1024
 
@@ -211,6 +233,7 @@ char cacheBaseDir[1024];		/*Where the workstation AFS cache lives*/
 char confDir[1024];			/*Where the workstation AFS configuration lives*/
 char fullpn_DCacheFile[1024];		/*Full pathname of DCACHEFILE*/
 char fullpn_VolInfoFile[1024];		/*Full pathname of VOLINFOFILE*/
+char fullpn_CellInfoFile[1024];		/*Full pathanem of CELLINFOFILE*/
 char fullpn_AFSLogFile[1024];		/*Full pathname of AFSLOGFILE*/
 char fullpn_CacheInfo[1024];		/*Full pathname of CACHEINFO*/
 char fullpn_VFile[1024];		/*Full pathname of data cache files*/
@@ -224,7 +247,6 @@ char cacheMountDir[1024];		/*Mount directory for AFS*/
 char rootVolume[64] = "root.afs";	/*AFS root volume name*/
 afs_int32 cacheSetTime = 1;			/*Keep checking time to avoid drift?*/
 afs_int32 isHomeCell;			/*Is current cell info for the home cell?*/
-afs_int32 lookingForHomeCell;		/*Are we still looking for the home cell?*/
 int createAndTrunc = O_CREAT | O_TRUNC; /*Create & truncate on open*/
 int ownerRWmode	= 0600;			/*Read/write OK by owner*/
 static int filesSet = 0;		/*True if number of files explicitly set*/
@@ -245,6 +267,7 @@ static int enable_afsdb = 0;		/* enable AFSDB support */
 #endif
 static int enable_dynroot = 0;		/* enable dynroot support */
 static int enable_fakestat = 0;		/* enable fakestat support */
+static int enable_nomount = 0;		/* do not mount */
 #ifdef notdef
 static int inodes = 60;		        /* VERY conservative, but has to be */
 #endif
@@ -270,10 +293,11 @@ int *dir_for_V = NULL;			/* Array: dir of each cache file.
 					 */
 AFSD_INO_T *inode_for_V;		/* Array of inodes for desired
 					 * cache files */
-int missing_DCacheFile	= 1;		/*Is the DCACHEFILE missing?*/
-int missing_VolInfoFile	= 1;		/*Is the VOLINFOFILE missing?*/
-int afsd_rmtsys = 0;				/* Default: don't support rmtsys */
-struct afs_cacheParams cparams;          /* params passed to cache manager */
+int missing_DCacheFile	 = 1;		/*Is the DCACHEFILE missing?*/
+int missing_VolInfoFile  = 1;		/*Is the VOLINFOFILE missing?*/
+int missing_CellInfoFile = 1;		/*Is the CELLINFOFILE missing?*/
+int afsd_rmtsys = 0;			/* Default: don't support rmtsys */
+struct afs_cacheParams cparams;         /* params passed to cache manager */
 
 static int HandleMTab();
 
@@ -626,6 +650,16 @@ int CreateCacheFile(fname, statp)
     return(0);
 }
 
+static void CreateFileIfMissing(char *fullpn, int missing)
+{
+    if (missing) {
+	if (afsd_verbose)
+	    printf("CreateFileIfMissing: Creating '%s'\n", fullpn);
+	if (CreateCacheFile(fullpn, NULL))
+	    printf("CreateFileIfMissing: Can't create '%s'\n", fullpn);
+    }
+}
+
 /*-----------------------------------------------------------------------------
   * SweepAFSCache
   *
@@ -802,6 +836,12 @@ static int doSweepAFSCache(vFilesFound,directory,dirNum,maxDir)
 	     */
 	    missing_VolInfoFile = 0;
 	}
+	else if (dirNum < 0 && strcmp(currp->d_name, CELLINFOFILE) == 0) {
+	    /*
+	     * Found the file holding the cell info.
+	     */
+	    missing_CellInfoFile = 0;
+	}
 	else  if ((strcmp(currp->d_name,          ".") == 0) ||
 	          (strcmp(currp->d_name,         "..") == 0) ||
 #ifdef AFS_DECOSF_ENV
@@ -842,25 +882,12 @@ static int doSweepAFSCache(vFilesFound,directory,dirNum,maxDir)
 
     if (dirNum < 0) {
 
-        /*
+	/*
 	 * Create all the cache files that are missing.
 	 */
-        if (missing_DCacheFile) {
-	    if (afsd_verbose)
-	        printf("%s: Creating '%s'\n",
-		       rn, fullpn_DCacheFile);
-	    if (CreateCacheFile(fullpn_DCacheFile, NULL))
-	        printf("%s: Can't create '%s'\n",
-		       rn, fullpn_DCacheFile);
-	}
-	if (missing_VolInfoFile) {
-	    if (afsd_verbose)
-	        printf("%s: Creating '%s'\n",
-		       rn, fullpn_VolInfoFile);
-	    if (CreateCacheFile(fullpn_VolInfoFile, NULL))
-	        printf("%s: Can't create '%s'\n",
-		       rn, fullpn_VolInfoFile);
-	}
+	CreateFileIfMissing(fullpn_DCacheFile, missing_DCacheFile);
+	CreateFileIfMissing(fullpn_VolInfoFile, missing_VolInfoFile);
+	CreateFileIfMissing(fullpn_CellInfoFile, missing_CellInfoFile);
 
 	/* ADJUST CACHE FILES */
 
@@ -1035,19 +1062,14 @@ register struct afsconf_cell *aci;
 char *arock;
 struct afsconf_dir *adir; {
     register int isHomeCell;
-    register int i;
-    afs_int32 cellFlags;
+    register int i, code;
+    afs_int32 cellFlags = 0;
     afs_int32 hosts[MAXHOSTSPERCELL];
     
     /* figure out if this is the home cell */
     isHomeCell = (strcmp(aci->name, LclCellName) == 0);
-    if (isHomeCell) {
-	lookingForHomeCell = 0;
-	cellFlags = 1;	    /* home cell, suid is ok */
-    }
-    else {
+    if (!isHomeCell)
 	cellFlags = 2;	    /* not home, suid is forbidden */
-    }
     
     /* build address list */
     for(i=0;i<MAXHOSTSPERCELL;i++)
@@ -1057,11 +1079,13 @@ struct afsconf_dir *adir; {
 					    for upwards compatibility */
 
     /* configure one cell */
-    call_syscall(AFSOP_ADDCELL2,
+    code = call_syscall(AFSOP_ADDCELL2,
 	     hosts,			/* server addresses */
 	     aci->name,			/* cell name */
 	     cellFlags,			/* is this the home cell? */
 	     aci->linkedCell);		/* Linked cell, if any */
+    if (code)
+	printf("Adding cell '%s': error %d\n", aci->name, code);
     return 0;
 }
 
@@ -1341,6 +1365,10 @@ mainproc(as, arock)
 	/* -fakestat-all */
 	enable_fakestat = 1;
     }
+    if (as->parms[29].items) {
+	/* -nomount */
+	enable_nomount = 1;
+    }
 
     /*
      * Pull out all the configuration info for the workstation's AFS cache and
@@ -1472,8 +1500,9 @@ mainproc(as, arock)
     /*
      * Set up all the pathnames we'll need for later.
      */
-    sprintf(fullpn_DCacheFile,  "%s/%s", cacheBaseDir, DCACHEFILE);
-    sprintf(fullpn_VolInfoFile, "%s/%s", cacheBaseDir, VOLINFOFILE);
+    sprintf(fullpn_DCacheFile,   "%s/%s", cacheBaseDir, DCACHEFILE);
+    sprintf(fullpn_VolInfoFile,  "%s/%s", cacheBaseDir, VOLINFOFILE);
+    sprintf(fullpn_CellInfoFile, "%s/%s", cacheBaseDir, CELLINFOFILE);
     sprintf(fullpn_VFile,       "%s/",  cacheBaseDir);
     vFilePtr = fullpn_VFile + strlen(fullpn_VFile);
 
@@ -1572,6 +1601,83 @@ mainproc(as, arock)
     }
 #endif
 
+    code = call_syscall(AFSOP_BASIC_INIT, 1);
+    if (code)
+	printf("%s: Error %d in basic initialization.\n", rn, code);
+
+    /*
+     * Tell the kernel some basic information about the workstation's cache.
+     */
+    if (afsd_verbose)
+	printf("%s: Calling AFSOP_CACHEINIT: %d stat cache entries, %d optimum cache files, %d blocks in the cache, flags = 0x%x, dcache entries %d\n",
+	       rn, cacheStatEntries, cacheFiles, cacheBlocks, cacheFlags,
+	       dCacheSize);
+    memset(&cparams, '\0', sizeof(cparams));
+    cparams.cacheScaches = cacheStatEntries;
+    cparams.cacheFiles = cacheFiles;
+    cparams.cacheBlocks = cacheBlocks;
+    cparams.cacheDcaches = dCacheSize;
+    cparams.cacheVolumes = vCacheSize;
+    cparams.chunkSize = chunkSize;
+    cparams.setTimeFlag = cacheSetTime;
+    cparams.memCacheFlag = cacheFlags;
+#ifdef notdef
+    cparams.inodes       = inodes;
+#endif
+    call_syscall(AFSOP_CACHEINIT, &cparams);
+    if (afsd_CloseSynch) 
+	call_syscall(AFSOP_CLOSEWAIT);
+
+    /*
+     * Sweep the workstation AFS cache directory, remembering the inodes of
+     * valid files and deleting extraneous files.  Keep sweeping until we
+     * have the right number of data cache files or we've swept too many
+     * times.
+     *
+     * This also creates files in the cache directory like VolumeItems and
+     * CellItems, and thus must be ran before those are sent to the kernel.
+     */
+    if (afsd_verbose)
+	printf("%s: Sweeping workstation's AFS cache directory.\n",
+	       rn);
+    cacheIteration = 0;
+    /* Memory-cache based system doesn't need any of this */
+    if(!(cacheFlags & AFSCALL_INIT_MEMCACHE)) {
+	do {
+	    cacheIteration++;
+	    if (SweepAFSCache(&vFilesFound)) {
+		printf("%s: Error on sweep %d of workstation AFS cache \
+                       directory.\n", rn, cacheIteration);
+		exit(1);
+	    }
+	    if (afsd_verbose)
+		printf("%s: %d out of %d data cache files found in sweep %d.\n",
+		       rn, vFilesFound, cacheFiles, cacheIteration);
+	} while ((vFilesFound < cacheFiles) &&
+		 (cacheIteration < MAX_CACHE_LOOPS));
+    } else if(afsd_verbose)
+	printf("%s: Using memory cache, not swept\n", rn);
+
+    /*
+     * Pass the kernel the name of the workstation cache file holding the 
+     * dcache entries.
+     */
+    if (afsd_debug)
+	printf("%s: Calling AFSOP_CACHEINFO: dcache file is '%s'\n",
+	       rn, fullpn_DCacheFile);
+    /* once again, meaningless for a memory-based cache. */
+    if(!(cacheFlags & AFSCALL_INIT_MEMCACHE))
+	call_syscall(AFSOP_CACHEINFO, fullpn_DCacheFile);
+
+    /*
+     * Pass the kernel the name of the workstation cache file holding the
+     * cell information.
+     */
+    if (afsd_debug)
+	printf("%s: Calling AFSOP_CELLINFO: cell info file is '%s'\n",
+	       rn, fullpn_CellInfoFile);
+    call_syscall(AFSOP_CELLINFO, fullpn_CellInfoFile);
+
     if (enable_dynroot) {
 	if (afsd_verbose)
 	    printf("%s: Enabling dynroot support in kernel.\n", rn);
@@ -1587,6 +1693,17 @@ mainproc(as, arock)
 	if (code)
 	    printf("%s: Error enabling fakestat support.\n", rn);
     }
+
+    /*
+     * Tell the kernel about each cell in the configuration.
+     */
+    afsconf_CellApply(cdir, ConfigCell, NULL);
+    afsconf_CellAliasApply(cdir, ConfigCellAlias, NULL);
+
+    /*
+     * Set the primary cell name.
+     */
+    call_syscall(AFSOP_SET_THISCELL, LclCellName);
 
     /* Initialize AFS daemon threads. */
     if (afsd_verbose)
@@ -1644,23 +1761,6 @@ mainproc(as, arock)
 #endif
 
     /*
-     * Tell the kernel about each cell in the configuration.
-     */
-    lookingForHomeCell = 1;
-
-    afsconf_CellApply(cdir, ConfigCell, (char *) 0);
-    afsconf_CellAliasApply(cdir, ConfigCellAlias, (char *) 0);
-
-    /*
-     * If we're still looking for the home cell after the whole cell configuration database
-     * has been parsed, there's something wrong.
-     */
-    if (lookingForHomeCell) {
-	printf("%s: Can't find information for home cell '%s' in cell database!\n",
-	       rn, LclCellName);
-    }
-
-    /*
      * If the root volume has been explicitly set, tell the kernel.
      */
     if (rootVolSet) {
@@ -1669,67 +1769,6 @@ mainproc(as, arock)
 	      rn, rootVolume);
 	call_syscall(AFSOP_ROOTVOLUME, rootVolume);
     }
-
-    /*
-     * Tell the kernel some basic information about the workstation's cache.
-     */
-    if (afsd_verbose)
-	printf("%s: Calling AFSOP_CACHEINIT: %d stat cache entries, %d optimum cache files, %d blocks in the cache, flags = 0x%x, dcache entries %d\n",
-	       rn, cacheStatEntries, cacheFiles, cacheBlocks, cacheFlags,
-	       dCacheSize);
-    memset(&cparams, '\0', sizeof(cparams));
-    cparams.cacheScaches = cacheStatEntries;
-    cparams.cacheFiles = cacheFiles;
-    cparams.cacheBlocks = cacheBlocks;
-    cparams.cacheDcaches = dCacheSize;
-    cparams.cacheVolumes = vCacheSize;
-    cparams.chunkSize = chunkSize;
-    cparams.setTimeFlag = cacheSetTime;
-    cparams.memCacheFlag = cacheFlags;
-#ifdef notdef
-    cparams.inodes       = inodes;
-#endif
-    call_syscall(AFSOP_CACHEINIT, &cparams);
-    if (afsd_CloseSynch) 
-      call_syscall(AFSOP_CLOSEWAIT);
-
-    /*
-     * Sweep the workstation AFS cache directory, remembering the inodes of
-     * valid files and deleting extraneous files.  Keep sweeping until we
-     * have the right number of data cache files or we've swept too many
-     * times.
-     */
-    if (afsd_verbose)
-	printf("%s: Sweeping workstation's AFS cache directory.\n",
-	       rn);
-    cacheIteration = 0;
-    /* Memory-cache based system doesn't need any of this */
-    if(!(cacheFlags & AFSCALL_INIT_MEMCACHE)) {
-	do {
-	    cacheIteration++;
-	    if (SweepAFSCache(&vFilesFound)) {
-		printf("%s: Error on sweep %d of workstation AFS cache \
-                       directory.\n", rn, cacheIteration);
-		exit(1);
-	    }
-	    if (afsd_verbose)
-		printf("%s: %d out of %d data cache files found in sweep %d.\n",
-		       rn, vFilesFound, cacheFiles, cacheIteration);
-	} while ((vFilesFound < cacheFiles) &&
-		 (cacheIteration < MAX_CACHE_LOOPS));
-    } else if(afsd_verbose)
-	printf("%s: Using memory cache, not swept\n", rn);
-
-    /*
-     * Pass the kernel the name of the workstation cache file holding the 
-     * dcache entries.
-     */
-    if (afsd_debug)
-	printf("%s: Calling AFSOP_CACHEINFO: dcache file is '%s'\n",
-	       rn, fullpn_DCacheFile);
-    /* once again, meaningless for a memory-based cache. */
-    if(!(cacheFlags & AFSCALL_INIT_MEMCACHE))
-	call_syscall(AFSOP_CACHEINFO, fullpn_DCacheFile);
 
     /*
      * Pass the kernel the name of the workstation cache file holding the
@@ -1797,6 +1836,8 @@ mainproc(as, arock)
 	call_syscall(AFSOP_START_TRUNCDAEMON);
 	exit(1);
     }
+
+    if (!enable_nomount) {
 
     mountFlags = 0;	/* Read/write file system, can do setuid() */
 #if	defined(AFS_SUN_ENV) || defined(AFS_SUN5_ENV)
@@ -1880,6 +1921,8 @@ mainproc(as, arock)
 
     HandleMTab();
 
+    }
+
     if (afsd_rmtsys) {
 	if (afsd_verbose)
 	    printf("%s: Forking 'rmtsys' daemon.\n", rn);
@@ -1943,6 +1986,7 @@ char **argv; {
     cmd_AddParm(ts, "-dynroot", CMD_FLAG, CMD_OPTIONAL, "Enable dynroot support");
     cmd_AddParm(ts, "-fakestat", CMD_FLAG, CMD_OPTIONAL, "Enable fakestat support for cross-cell mounts");
     cmd_AddParm(ts, "-fakestat-all", CMD_FLAG, CMD_OPTIONAL, "Enable fakestat support for all mounts");
+    cmd_AddParm(ts, "-nomount", CMD_FLAG, CMD_OPTIONAL, "Do not mount AFS");
     return (cmd_Dispatch(argc, argv));
 }
 
@@ -2016,6 +2060,18 @@ static int HandleMTab() {
 #endif	/* AFS_SGI_ENV */
 #endif	/* AFS_SUN5_ENV */
 #endif	/* unreasonable systems */
+#ifdef AFS_DARWIN_ENV
+    mach_port_t diskarb_port;
+    kern_return_t status;
+
+    status = DiskArbStart(&diskarb_port);
+    if (status == KERN_SUCCESS) {
+	status = DiskArbDiskAppearedWithMountpointPing_auto("AFS",
+	             kDiskArbDiskAppearedNetworkDiskMask, cacheMountDir);
+    }
+
+    return status;
+#endif /* AFS_DARWIN_ENV */
     return 0;
 }
 
@@ -2032,7 +2088,7 @@ long param1, param2, param3, param4, param5, param6, param7;
     eparm[2] = param6;
     eparm[3] = param7;
 
-    param4 = eparm;
+    param4 = (long) eparm;
 #endif
 
     error = syscall(AFS_SYSCALL, AFSCALL_CALL, param1, param2, param3, param4, param5, param6, param7);
