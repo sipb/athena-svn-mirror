@@ -1,34 +1,32 @@
-Utilitiesdir = $(datadir)/gnome/apps/Utilities
+Utilitiesdir = $(datadir)/applications
 
 SUBDIRS = help
 
-INCLUDES = 						\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
+INCLUDES = 	\
+	$(GNOME_UTILS_CFLAGS)				\
+	$(GNOMEVFS_CFLAGS)				\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
-	-I$(includedir)					\
-	$(GNOME_INCLUDEDIR)
+	-DDATADIR=\""$(datadir)"\"
 
-bin_PROGRAMS = gsearchtool 
+bin_PROGRAMS = gnome-search-tool
 
-gsearchtool_SOURCES =	\
+gnome_search_tool_SOURCES =	\
 	gsearchtool.c	\
-	gsearchtool.h	\
-        outdlg.c	\
-	outdlg.h
+	gsearchtool.h
 
-gsearchtool_LDADD = \
-	$(GNOME_LIBDIR) \
-	$(GNOMEUI_LIBS) \
-	$(INTLLIBS)
+gnome_search_tool_LDADD = \
+	$(GNOME_UTILS_LIBS) \
+	$(GNOMEVFS_LIBS)
 
-man_MANS = gsearchtool.1
+man_MANS = gnome-search-tool.1
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-searchtool.png
 
-Utilities_in_files = gsearchtool.desktop.in 
+Utilities_in_files = gnome-search-tool.desktop.in 
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = \
 	$(pixmap_DATA) \

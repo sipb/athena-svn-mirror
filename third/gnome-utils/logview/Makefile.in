@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -59,14 +59,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_alias = @build_alias@
-build_triplet = @build@
-host_alias = @host_alias@
-host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
-BUILD_GUILE = @BUILD_GUILE@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+APPLET_CFLAGS = @APPLET_CFLAGS@
+APPLET_LIBS = @APPLET_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,165 +72,104 @@ CURSES_INCLUDEDIR = @CURSES_INCLUDEDIR@
 CURSES_LIBS = @CURSES_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
-EXPANDED_GSHUTDOWNDIR = @EXPANDED_GSHUTDOWNDIR@
 EXPANDED_LOGVIEWDIR = @EXPANDED_LOGVIEWDIR@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
-GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
-GENCAT = @GENCAT@
-GLADE_CFLAGS = @GLADE_CFLAGS@
-GLADE_LIBS = @GLADE_LIBS@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
-GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
-GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
-GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
-GNOME_XML_LIB = @GNOME_XML_LIB@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
-GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-GUILE_INCS = @GUILE_INCS@
-GUILE_LIBS = @GUILE_LIBS@
-HAVE_JW = @HAVE_JW@
-HAVE_LIBXML = @HAVE_LIBXML@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
+GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNOME_UTILS_CFLAGS = @GNOME_UTILS_CFLAGS@
+GNOME_UTILS_LIBS = @GNOME_UTILS_LIBS@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
-JW = @JW@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
-LEX = @LEX@
-LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
-LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
-LIBGTOP_CONFIG = @LIBGTOP_CONFIG@
-LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_INCLUDEDIR = @LIBGTOP_INCLUDEDIR@
-LIBGTOP_INCS = @LIBGTOP_INCS@
-LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
-LIBGTOP_LIBDIR = @LIBGTOP_LIBDIR@
-LIBGTOP_LIBS = @LIBGTOP_LIBS@
-LIBGTOP_MAJOR_VERSION = @LIBGTOP_MAJOR_VERSION@
-LIBGTOP_MICRO_VERSION = @LIBGTOP_MICRO_VERSION@
-LIBGTOP_MINOR_VERSION = @LIBGTOP_MINOR_VERSION@
-LIBGTOP_NAMES_INCS = @LIBGTOP_NAMES_INCS@
-LIBGTOP_NAMES_LIBS = @LIBGTOP_NAMES_LIBS@
-LIBGTOP_SERVER = @LIBGTOP_SERVER@
-LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
-LIBGTOP_VERSION = @LIBGTOP_VERSION@
-LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
+LIBBONOBOUI_CFLAGS = @LIBBONOBOUI_CFLAGS@
+LIBBONOBOUI_LIBS = @LIBBONOBOUI_LIBS@
+LIBGLADE_CFLAGS = @LIBGLADE_CFLAGS@
+LIBGLADE_LIBS = @LIBGLADE_LIBS@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-OAF_CFLAGS = @OAF_CFLAGS@
-OAF_CONFIG = @OAF_CONFIG@
-OAF_LIBS = @OAF_LIBS@
-OAF_REQUIRED = @OAF_REQUIRED@
-OBGNOME_INCLUDEDIR = @OBGNOME_INCLUDEDIR@
-OBGNOME_LIBS = @OBGNOME_LIBS@
-OBGTK_LIBS = @OBGTK_LIBS@
-OBJC = @OBJC@
-OBJC_LIBS = @OBJC_LIBS@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
-ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PAM_LIBS = @PAM_LIBS@
 PAM_PREFIX = @PAM_PREFIX@
-PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
-PIXBUF_LIBS = @PIXBUF_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-PTHREAD_LIB = @PTHREAD_LIB@
-QTTHREADS_LIB = @QTTHREADS_LIB@
 RANLIB = @RANLIB@
-READLINE_LIB = @READLINE_LIB@
-TERMCAP_LIB = @TERMCAP_LIB@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-XLIBDIR = @XLIBDIR@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
+WARN_CFLAGS = @WARN_CFLAGS@
+X_LIBS = @X_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
-cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
-l = @l@
+gnomeutilslocaledir = @gnomeutilslocaledir@
 
-SUBDIRS = pixmaps doc
+SUBDIRS = pixmaps help
 
-Utilitiesdir = $(datadir)/gnome/apps/System
-additionaldir = $(datadir)/logview
+Utilitiesdir = $(datadir)/applications
+additionaldir = $(datadir)/gnome-system-log
 
-INCLUDES = -DG_LOG_DOMAIN=\"logview\"						-DGNOMELOCALEDIR=\""$(datadir)/locale"\"				-I$(includedir) $(GNOME_INCLUDEDIR) -I$(top_srcdir)/logview/pixmaps 	-DLOGVIEWINSTALLPREFIX=\""$(prefix)/\""
-
-
-bin_PROGRAMS = logview
-
-logview_SOURCES =  	about.c			actions.c		calendar.c		config.c		desc_db.c       	info.c			log_repaint.c		logrtns.c		logrtns.h		logview.c		logview.h		menus.c			misc.c			monitor.c       	userprefsdialog.c       	zoom.c
+INCLUDES = -DG_LOG_DOMAIN=\"gnome-system-log\"	$(GNOME_UTILS_CFLAGS) 			-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"				-I$(top_srcdir)/logview/pixmaps 	-DDATADIR=\""$(datadir)"\" 	-DLOGVIEWINSTALLPREFIX=\""$(prefix)/\""
 
 
-logview_LDADD =  	$(GNOME_LIBDIR) 	$(GNOMEUI_LIBS) 	$(INTLLIBS)
+bin_PROGRAMS = gnome-system-log
+
+gnome_system_log_SOURCES =  	about.c			actions.c		calendar.c		config.c		desc_db.c       	info.c			log_repaint.c		logrtns.c		logrtns.h		logview.c		logview.h		menus.c			misc.c			monitor.c       	userprefsdialog.c       	zoom.c
 
 
-man_MANS = logview.1
+gnome_system_log_LDADD =  	$(GNOME_UTILS_LIBS)
 
-Utilities_in_files = logview.desktop.in
+
+man_MANS = gnome-system-log.1
+
+Utilities_in_files = gnome-system-log.desktop.in
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 
-additional_DATA = logview-descript.db                    logview-regexp.db 		   logview-actions.db
+additional_DATA = gnome-system-log-descript.db                    gnome-system-log-regexp.db 		   gnome-system-log-actions.db
 
 
-EXTRA_DIST =  	$(Utilities_in_files)		$(Utilities_DATA)		$(additional_DATA)		logview-pam			logview-security.in		$(man_MANS)
+EXTRA_DIST =  	$(Utilities_in_files)		$(Utilities_DATA)		$(additional_DATA)		gnome-system-log-pam			gnome-system-log-security.in		$(man_MANS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  logview-security
+CONFIG_CLEAN_FILES =  gnome-system-log-security
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-logview_OBJECTS =  about.o actions.o calendar.o config.o desc_db.o \
-info.o log_repaint.o logrtns.o logview.o menus.o misc.o monitor.o \
-userprefsdialog.o zoom.o
-logview_DEPENDENCIES = 
-logview_LDFLAGS = 
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+gnome_system_log_OBJECTS =  about.o actions.o calendar.o config.o \
+desc_db.o info.o log_repaint.o logrtns.o logview.o menus.o misc.o \
+monitor.o userprefsdialog.o zoom.o
+gnome_system_log_DEPENDENCIES = 
+gnome_system_log_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
@@ -246,15 +179,16 @@ MANS = $(man_MANS)
 NROFF = nroff
 DATA =  $(Utilities_DATA) $(additional_DATA)
 
-DIST_COMMON =  Makefile.am Makefile.in logview-security.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in \
+gnome-system-log-security.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-SOURCES = $(logview_SOURCES)
-OBJECTS = $(logview_OBJECTS)
+SOURCES = $(gnome_system_log_SOURCES)
+OBJECTS = $(gnome_system_log_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -266,7 +200,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-logview-security: $(top_builddir)/config.status logview-security.in
+gnome-system-log-security: $(top_builddir)/config.status gnome-system-log-security.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-binPROGRAMS:
@@ -313,9 +247,9 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-logview: $(logview_OBJECTS) $(logview_DEPENDENCIES)
-	@rm -f logview
-	$(LINK) $(logview_LDFLAGS) $(logview_OBJECTS) $(logview_LDADD) $(LIBS)
+gnome-system-log: $(gnome_system_log_OBJECTS) $(gnome_system_log_DEPENDENCIES)
+	@rm -f gnome-system-log
+	$(LINK) $(gnome_system_log_LDFLAGS) $(gnome_system_log_OBJECTS) $(gnome_system_log_LDADD) $(LIBS)
 
 install-man1:
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
@@ -604,14 +538,14 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-@XML_I18N_MERGE_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
-install-data-local: logview-security
-@CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D logview-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/logview
-@CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D logview-security $(DESTDIR)$(PAM_PREFIX)/security/console.apps/logview
+install-data-local: gnome-system-log-security
+@CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D gnome-system-log-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gnome-system-log
+@CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -D gnome-system-log-security $(DESTDIR)$(PAM_PREFIX)/security/console.apps/gnome-system-log
 @CONSOLE_HELPER_TRUE@	$(INSTALL_DATA) -m 755 -d $(DESTDIR)$(sbindir)
-@CONSOLE_HELPER_TRUE@	mv -f $(DESTDIR)$(bindir)/logview $(DESTDIR)$(sbindir)
-@CONSOLE_HELPER_TRUE@	$(LN_S) @CONSOLE_HELPER@ $(DESTDIR)$(bindir)/logview
+@CONSOLE_HELPER_TRUE@	mv -f $(DESTDIR)$(bindir)/gnome-system-log $(DESTDIR)$(sbindir)
+@CONSOLE_HELPER_TRUE@	$(LN_S) @CONSOLE_HELPER@ $(DESTDIR)$(bindir)/gnome-system-log
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

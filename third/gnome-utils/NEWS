@@ -1,262 +1,612 @@
-gnome-utils 1.4.1.2 (2002-1-31)
+GNOME Utilities 2.0.6		" A translation is for life, not just for 2.0.3"
 
-general:
-	* Translation updates. (Pablo Saratxaga, Christian Rose, Duarte Loreto,
-	  Kjartan Maraas, Zbigniew Chyla, Peteris Krisjanis, Stanislav Visnovsky,
-	  Roy-Magne-Mo, Artis Trops, Gustavo Maciel Dias Vieira,
-	  Carlos Perelló Marín, Fatih Demir, Görkem Cetin, Sami Pesonen,
-	  Antti Ahvensalmi)
-	* Build fixes. (Abel Cheung)
+GNOME System Log
 
-gfloppy: 
-	* Japanese help files. (Yukihiro Nakai)
+	Load up sys.log in the default (Glynn)
 
-gtt:
-	* 1.5 Guile compatibiliy fixes (Linas Vepstas)
-	* Update documentation (Linas Vepstas)
-	* Search unusual install paths for data (Derek Atkins)
-	* Fix task redraw bug (Linas Vepstas)
-	* New popup menu entries (Linas Vepstas)
-	* Misc bugfixes (Linas Vepstas)
+Translations -
 
-gnome-utils 1.4.1.1 (2001-10-20)
+	Vincent, Dmitry, He.
 
-general:
-	* Fixes to configure/makefile setup (Abel Cheung, Adrian Bunk, moi)
-	* spec file file list fixes (moi) 
-	* Translation updates.  (Stanislav Visnovsky, Carlos Perelló Marín,
-	  Duarte Loreto, Gustavo Maciel Dias Vieira)
+Miscellaneous -
 
-gtt:
-	* coredump fixes (Jeff Putsch, Linas Vepstas)
-	* column drawing fixes (Linas Vepstas)
-	* fix for printing dates, titles and tooltips (Linas Vepstas)
-	* updated man page (Linas Vepstas)
+        README, NEWS (Glynn)
 
-gnome-utils 1.4.1 (2001-10-04)
+===================================================================
 
-general:
-	* Translation updates.  (Christian Rose, Stanislav Visnovsky,
-	  Kjartan Maraas, Linas Vepstas, Pablo Saratxaga)
+GNOME Utilities 2.0.5		" <subliminal> Vote Gman </subliminal> "
 
-gtt:
-	* Many new things including: UI for custom reports, Uses guile
-	  internally for reports, can stop timer on idleness, add some
-	  more values, can edit properties without changing current project
-	  (Linas Vepstas)
-	* Misc fixes (George)
+GNOME Calculator -
 
-gcalc:
-	* Fix resizing (Glynn Foster)
+	Keypad read correctly when numlock is on (twaugh, Frederic)
+	Do not set accellerators for upper case (Padraig)
+	Add Page_Up, Page_Down, Home and End to keybindings (Emmanuel)
 
-logview:
-	* Documentation (John Fleck)
+GNOME Search Tool -
 
-gnome-utils 1.4.0.99 (2001-09-04)
+	Substitute "-xdev" for "-mount" for compatibility (Dennis)
 
-general:
-	* Update doc build stuff to use jw on RH 7.1 and any other dist which
-          has moved to docbook-utils. (Dan Mueth)
-	* We now require GConf (George)
-	* Fix DESTDIR on installation. (George)
-	* use xml-i18n-tools for .desktop/.keys files (Kjartan Maraas)
-	* az docs removed, apparently they were quite broken (John Fleck)
-	* Translation updates. (Abel Cheung, Valek Filippov, Kjartan Maraas,
-	  Stanislav Visnovsky, Zbigniew Chyla, Andras Timar, Takayuki KUSANO,
-	  Christian Rose, Ole Laursen, Carlos Perelló Marín, Peteris Krisjanis,
-	  Christian Meyer, Almer S. Tigelaar, Fatih Demir, Marc Maurer,
-	  Görkem Cetin, Christophe Merlet, Stanislav Brabec, Faith Demir,
-	  Jesus Bravo Alvarez)
+GNOME System Log Monitor -
 
-gcalc:
-	* Warning fix. (Kjartan Maraas)
-	* Documentation fix. (John Fleck)
-	* Fix compilations on some systems. (George)
+	Unref the logo in the about dialog (Kjartan)
 
-gdialog:
-	* Fix compilations on some systems. (George)
-	* Docs (Patanjali Somayaji, John Fleck)
+Translations -
 
-gdiskfree:
-	* Some internal reorganization for excluded filesystems (Gregory McLean)
-	* New icon/splash pixmap. (Matthias Warkus, Timothy Musson)
-	* Minor fixes. (George)
-
-gcharmap:
-	* Don't use the system colormap. (Kjartan Maraas)
-
-gcolorsel:
-	* Hook up help button in preferences to do something. (Kjartan Maraas)
-	* Don't use the system colormap. (Kjartan Maraas)
-
-gtt:
-	* An ongoing rewrite to support many MANY cool new features.
-	  Still not 100% stable though.  (Linas Vepstas)
-
-logview:
-	* Fix FreeBSD compilation. (Peter A Jonsson)
-	* Massage the scrolling to be more sane (it still doesn't work
-	  completely correctly). (George)
-	* Fix compilations on some systems + various minor fixes. (George)
-
-stripchart:
-	* Fix 64bit issues with reading /proc (George)
-
-gnome-utils 1.4.0.2 (2001-07-01)
-
-general:
-	* Simple man pages for all executables. (Jochen Voss)
-	* Translation updates. ("R.I.P. Deaddog", Christian Rose, Ole Laursen,
-          Andras Timar, Takayuki KUSANO, Kjartan Maraas)
-
-gcalc:
-	* Keypad without numlock support, and some more keyboard
-	  navigation foo. (George)
-	* Analog mode directly snarfed from X11R3. (jwz)
-
-gcharmap:
-	* Miscellaneous minor fixes from bugzilla. (George)
-
-gdict:
-	* Some compile fixes. (Kjartan Maraas)
-	* Spanish documentation. (Manuel de Vega Barreiro)
-
-gfloppy:
-	* Spanish documentation. (Manuel de Vega Barreiro)
-
-gshutdown:
-	* Look in /sbin and /usr/sbin for commands regardless of PATH. (George)
-
-gtt:
-	* Add exporting of current status to a tab delimited spreadsheet file.
-	  (George)
-
-gw:
-	* Fix crash on removing last entry. (George)
-
-idetool:
-	* Fix list geometry issues. (George)
-	* Fix the 32bit w/ sync mode reporting. (George)
-
-logview:
-	* Some message fixes. (George)
-	* Better reading of internationalized logs. (George)
-	* Display dates in correct locale specific settings. (George)
-
-meat-grinder:
-	* Add a 'add file or folder' menu item and some fixes. (George)
-	* Various fixes. (George)
-	* Add tooltips. (George)
-
-stripchart:
-	* Many crash and warning fixes. (John Kodis)
-	* Tickmark and indicator draw fixes. (John Kodis)
-	* Calls the correct helpfile. (John Kodis)
-	* Handle very small numbers correctly. (John Kodis)
-	* Autosizing (shrinking) of window works. (John Kodis)
-	* Add a .gnorba file to make the applet work again. (George)
-
-gnome-utils 1.4.0.1 (2001-06-23)
-
-general:
-	* Add support for xml-i18n-tools. Not .desktop files yet since
-	  there still are issues with different encodings in the same
-	  file. (Kjartan)
-	* Fix build to comply with new docs standards. (John)
-	* Translation updates. (George, Christophe, Zbigniew, Christian
-	  Matthias, Ole, Andras, Kjartan, Pablo, Antti, Stanislav,
-	  Gediminas, Fatih, Valek)
-
-exe-handler:
-
-	* New program from Miguel.
-	* gnome-exe-handler is invoked by applications that
-	  try to launch executables in Unix, but do not have the
-	  executable permission bit set.
-
-gcalc:
-	* Backported gnome-calc from GTK+ 2.0 (Chema)
-	* Make backspace and delete work. (Chema)
-	* Fix layout/spacing bugs. (Chema)
-	* New German docs. (Peter)
-	* New Spanish docs. (Manuel)
-	* Lots of doc fixes (John)
-	* Resize window fixes (Kevin)
+	Vincent, Jordi, Pablo, Stanislav, He, Marius, Andras, Abel,
+	Fatih, Christian, Changwoo, Simos and Daniel.
 	
-gcharmap:
-	* Fix lots of i18n brokenness and make the help
-	  button work. (Kjartan)
+Documentation -
 
-gdialog:
-	* Fix i18n brokenness. (George)
-	* Fix return values (Jochen)
+	Updates (Dennis)
+
+Miscellaneous -
+
+        README, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 2.0.4           " Amygdala "
+
+Translations -
+
+        Peteris, Pablo, Kjartan, Duarte and Takayuki.
+
+Miscellaneous -
+
+        README, HACKING, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 2.0.3		" Start hacking or the goat gets it "
+
+GNOME Calculator -
+
+	Mark string in about box for translation (Glynn)
+
+GNOME Character Map -
+
+	Update authors email address (Glynn)
+
+gdialog -
+
+	Add scrollbars to menu items (Archit)
+	Use GtkTextView for text items (Archit)
+	Exit with proper error codes (Archit)
+		
+Documentation -
 	
-gdict:
-	* Robustness fixes. (Kjartan)
-	* Lots of i18n cleanup. (Kjartan)
-	* Apply patches from Red Hat to make a dialog
-	  if the server can't be contacted instead of spewing
-	  it on the console.
-	* Handlebar fixes (Bradford)
+	Man page updates (Glynn)
 
-gdiskfree:
-	* Don't show usage over 100%. (George)
-	* Don't crash on very large disks. (George).
-	* Default to show mount point and size. (George).
-	* Exclude "usbdevfs". (Kjartan)
-	* Fix resizing on orientation change. (George)
-	* Fix help button in preferences. (John)
+Translations -
 
-gfloppy:
-	* Fix i18n brokenness. (Kjartan)
-	* Fix check for recognized devices. (George)
-	* Fix check for write permission. (George)
-	* Error out if we can't find the glade file. (George)
+	Christophe, Evandro, Vincent, Duarte, Christian M, Christian R,
+	Yanko, Christian N, Christian other M, Andras, Ole, Kjartan,
+	Dmitry and Zbigniew.
+		
+Build -
+
+	Remove more cruft (Glynn)
+	Make sure we distcheck nicely (Glynn)
 	
-gsearchtool:
-	* Fix filename corruption. (George)
-	* Fix locate interface to actually show matches. (George)
-	* i18n fixes. (Kjartan)
-	* Limit number of errors to 20. (George)
-	
-gtt:
-	* Lots of cleanup, code correctness etc. (George)
-	* Remove pid file on "unclean" exit. (George)
-	* Spanish translation of docs. (Manuel)
-	
-logview:
-	* Tons of fixes to make the app actually work as expected
-	  in most cases. Fixes crashes in actions among other things. (George)
-	* Fix a lot of i18n problems. (George, Kjartan)
-	* Actually hide the window when the user requests it. (George)
-	* Add more default logs. (George)
-	* Add console helper support. (George)
-	* Cleanup warnings and remove unused code. (Kjartan)
-	
-meat-grinder:
-	* New program by George.
-	* Program to make archives.
-	
-gcolorsel:
-	* Fix bug in float range view. (George)
-	* Fix races in loading of preferences. (George)
+Miscellaneous -
 
-gshutdown:
-	* Add console helper support. (Kjartan)
-	* Spanish translation of docs. (Manuel)
-	* Fix help button. (George, patch from Ximian)
+	README, HACKING, NEWS (Glynn)
 
-guname:
-	* Fix build with WITH_SPARKLES defined. (George, patch from Ximian)
+===================================================================
 
-gw:
-	* Remove Save from the menu since it does nothing. (John)
-	* Docs updates. (John)
-	* Add help. (George, patch from Ximian)
+GNOME Utilities 2.0.2		" Obsession "
 
-stripchart:
-	* Don't try to save parameters that have been deleted.
-	  (John Kodis)
-	* Spanish translation of docs. (Manuel)
-	* Build/warning fixes. (Jason, Kjartan)
+GNOME Character Map -
+
+	Make sure button font scales properly (Muktha)
+
+Documentation -
+
+	Updates on omf and documentation (Irene)
+
+Build - 
+	Make things nice with gcc 3.1.x (Frederic)
+
+Translations -
+
+	Hasbullah, Christian and T\xf5ivo.
+
+Miscellaneous -
+
+	README, HACKING, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 2.0.1		" Will you take me where I want to go? "
+
+GNOME Calculator -
+
+	Add power labels (George)
+	s/DocPath/X-GNOME-DocPath to conform to spec (Glynn)
+		
+GNOME Search Tool -
+
+	Exec the search command  (Aruna)	
+	s/DocPath/X-GNOME-DocPath to conform to spec (Glynn)
+
+GNOME Dictionary -
+	
+	Install applet to libexec (Mark)
+	Move server.in to server.in.in (Mark)
+	Mark strings for translation (Kjartan)
+	Clear the applet entry after lookup (Glynn)
+	
+GNOME System Log Monitor -
+
+	Use dialogs a little bit more (Deepa)
+	s/DocPath/X-GNOME-DocPath to conform to spec (Glynn)
+	Action now uses fork and execlp instead of system (Laavanya)
+	Pass the command to execute twice for execlp (Deepa)
+
+GNOME Floppy - 
+	
+	Restructure the code to use new help button (Glynn)
+
+GNOME Archive Generator -
+	
+	s/DocPath/X-GNOME-DocPath to conform to spec (Glynn)
+	
+GNOME Dialog -
+	
+	Accept --seperate-output now (Sam)
+
+Documentation -
+
+	New calculator screenshot (John)
+	New gfloppy screenshots (John)
+	Updates on omf and documentation (John, Irene)
+	
+Translations -
+
+	Kjartan, Zbigniew, Ole, Pablo, Christophe, Changwoo, Christian, 
+	Yanko, Dmitry and Stanislav.
+
+Build -
+
+	POTFILES.in updates (Mark)
+	Add X checks (Glynn)
+
+Miscellaneous -
+
+	README, HACKING, THANKS, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 2.0.0 			"Zivot je jinde"
+
+Bedroom, Dublin, Ireland -- June 17, 2002 -- the GNOME project today 
+proudly announced the release of gnome-utils 2.0.0, targeted for the 
+"GNOME 2.0 Platform and Desktop" release. Much has changed since
+the initial start of the project in late 1998 and this release marks
+the start of a more intuitive and appealing user interface, coupled
+with the port to the new GNOME 2.0 platform.
+
+
+It is available at the following location -
+
+    ftp://ftp.gnome.org/pub/GNOME/pre-gnome2/sources/gnome-utils
+
+
+GNOME Utilities is a collection of small applications all there
+to make your day just that little bit brighter [*].
+
+System Log Viewer	Monitor and view system log files.
+
+Character Map		Select characters from a table and insert them into 
+			your applications.
+
+Calculator		A simple mathematical and scientific calculator that
+			includes arithmetic, trigonometric, and logarithmic
+			functions.
+
+Search Tool		Search for files on your system using simple and 
+			advanced search options.
+
+Dictionary		Look up an online dictionary for definitions and 
+			correct spelling of words.
+
+Archive Generator	Create archives from collections of files and 
+			folders using gzip compressed archive files.
+
+Floppy Format		Format floppy disks under Linux.
+
+"I could say good and whacky things about it [gnome-utils], but I'm too
+lazy" - Bastien Nocerra
+
+"GNOME Utilities taught me to shave" - Jeff Waugh
+
+
+GNOME Utilities has the following requirements -
+
+        intltool        >= 0.21
+        libgnome        >= 2.0.0
+        libgnomeui      >= 2.0.0
+        libglade        >= 2.0.0
+        libbonoboui     >= 2.0.0
+        libgnomevfs     >= 2.0.0
+        libpanel-applet >= 2.0.0
+
+
+Many thanks, in particular, to John Fleck, George Lebl and Kevin Vandersloot,
+and to the following people for making this release what it is -
+
+Ali Akcaagac, Josh Barrow, Jacob Berkman, Jonathan Blandford, Ross Burton,
+Anders Carlsson, Abel Cheung, Dennis Cranston, Zbigniew Chyla, 
+Stephane Demurget, John Fleck, Mikael Hallendal, Lauris Kaplinski, 
+Satyajit Kanungo, Rajeev Karale, Santhana Krishnan, Sasi Kiran Lanka,
+George Lebl, Gaute Lindkvist, Josh Lucas, Paolo Maggi, Kjartan Maraas, 
+Carlos Perello Marin, Yogeesh Mathighatta, Mark McLoughlin, Federico Mena 
+Quintero, Muktha Narayan, Seth Nickell, Bastien Nocera, Narayana Pattipati, 
+Gediminas Paulauskas, Havoc Pennington, Chris Phelps, Deepa Chacko Pillai, 
+Aruna Pourhit, Senthilkumar Ramasamy, Arvind Samptur, Ganesan Sethuraman, 
+Andrew Sobala, Samuel Stringham, Adam Sulmicki, Hidetoshi Tajima, Owen Taylor, 
+Malcolm Tredinnick, Kevin Vandersloot, Sander Vesik, Xing Wang and David 
+Westlund.
+
+Extra special thanks also go to our poor documentation folks whose 
+continuing 'sigh's are not completely unnoticed. We love you too.
+
+Daniel Carrera, Nicholas Curran, Pat Costello, John Fleck, Eugene O'Connor, 
+Irene Ryan and Patanjali Somayaji.
+
+And without our translators our software would be nothing. Also huge
+thanks go to the following, whose tireless work we perhaps never really
+appreciate. You guys ROCK.
+
+Vincent van Adrighem, Hasbullah Bin Pit, Pablo Gonzalo del Campo, Abel Cheung, 
+Zbigniew Chyla, Gustavo Maciel Dias Vieira, Christophe Fergeau, Valek 
+Filippov, Vlad Harchev, Wang Jian, Yanko Kaneti, Mantas Kriauciunas, Takayuki 
+Kusano, Ole Laursen, George Lebl, T\xf5ivo Leedj\xe4rv, Duarte Loreto, 
+Kjartan Maraas, Dmitry G. Mastrukov, Christophe Merlet, Christian Meyer, 
+Bastien Nocera, Mohamad Afifi Omar, Gediminas Paulauskas, Germ\xe1n 
+Poo-Caama\xf1o, Christian Rose, Changwoo Ryu, Pablo Saratxaga and Stanislav 
+Visnovsky.
+
+[*] And some that don't -
+
+gdialog			Command line application used to display UI dialogs
+			that can be used within shell scripts
+	
+===================================================================
+
+GNOME Utilities 1.109.0		" Oh so nearly, but not quite "
+
+
+GNOME Calculator -
+
+	Use _UI_SUBTREE instead of _UI_SUBTREE_STOCK (George)
+
+GNOME Dictionary -
+	
+	Fix applet button press hack to use gtk_propagate_event (Arvind)
+	Use _UI_SUBTREE instead of _UI_SUBTREE_STOCK (George)
+	
+GNOME System Log Monitor -
+
+	Use _UI_SUBTREE instead of _UI_SUBTREE_STOCK (George)
+
+Documentation -
+
+	Update GFloppy docs (John)
+
+Build -
+
+	Add Bulgarian translation (Yanko)
+
+Translations -
+		
+	Pablo, Changwoo, George, Tivo, Kjartan, Zbigniew, Christian,
+	Yanko, Dmitry, Ole, Gediminas, Hasbullah and Mantas.
+
+Miscellaneous -
+
+	README, THANKS, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 1.108.0		" This ain't no disco "
+
+
+GNOME Calculator -
+
+	Convert display to use GtkTextView (Kevin)
+	Disable visible cursor for 'm' (Glynn)
+	Fix 'e' easter egg (George)
+	Remove store global and do it properly (George)
+	Random easter egg fixage (George)
+	Fix about dialog to be transient of parent (Ross)
+
+GNOME Dictionary -
+
+	Don't set wmclass on about dialog (Glynn)
+	Fix about dialog to be transient of parent (Ross)
+	
+GNOME Search Tool -
+
+	Fix crash when quiting before search has completed (Yogeesh)
+	Fix about dialog to be transient of parent (Ross)
+	
+GNOME System Log Monitor -
+
+	Enable help again (Glynn)
+	Remove ugly pango-ification from monitor dialog (Glynn)
+	
+GNOME Floppy - 
+
+	Add window and menu icon (Glynn)
+	Add appropriate libglade LDFLAG (Glynn)
+	Fix up dialog to agree to HIG (Glynn)	
+	
+GNOME Archive Generator -
+	
+	Pre-populate save dialog with an example of format (Glynn)
+	Close IO channel before quiting (Yogeesh)
+	Fix about dialog to be transient of parent (Ross)
+	
+Build -
+
+	Fix GNOMELOCALEDIR to be the right place (Toshi)
+	Remove dtd from help docs (Glynn)
+	Remove more cruft (Glynn)
+
+Translations -
+
+	Duarte, Vincent, Stanislav, Zbigniew, Ole, Pablo, Christian,
+	Kjartan and Abel
+
+Documentation -
+
+	Update gnome-dictionary docs (Sander)
+	Update gnome-system-log docs (Sander)
+			
+Miscellaneous -
+
+	README, THANKS, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 1.107.0 	" 69036' 45030' N - mmm "
+
+
+GNOME Calculator -
+
+	New icon (Jimmac)
+	Don't negate 0's (Glynn)
+	Add 'm' to indicate something is stored (Glynn)
+
+GNOME Dictionary -
+	
+	Fix up button press hack on applet (Kevin)	
+
+GNOME Search Tool -
+
+	Remove mnemonics from tabs (Glynn)
+	Fix handling of 'locate' searches (Dennis)
+	
+GNOME System Log Monitor -
+	
+	Save description in the actions dialog (Narayana)
+	Disable multiple opening of the same log (Aruna)
+	Treeview fix to prevent parent & child being created (Narayana)
+	Fix up default focus (Glynn)
+	
+GNOME Floppy -
+
+	Add error dialog for case of non-help (Federico)
+	Change dialog type to info (Stephane)
+	Fix up help environment (Federico)
+
+GNOME Archive Generator -
+
+	Fix help (Glynn)
+	Really fix help (Federico)
+
+Build -
+
+	More cruft removal (Glynn)
+	Fix up install of schemas (Glynn)
+	Disable logview docs until they're fixed (Glynn)
+
+Translations -
+
+	Hasbullah, Kjartan, Ole, Zbigniew, Pablo, Stanislav and Dmitry
+	
+Documentation -
+	
+	Update gnome-dictionary docs (John)
+	Update gnome-search-tool docs (John)
+
+Miscellaneous -
+
+	README, THANKS, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 1.106.0		" Not yet a Plaything"
+
+
+GNOME Dictionary -
+
+	Usability applet changes (Seth)
+	Fix crash in preferences dialog (Kevin)
+	Translate the schemas file (Anders, Glynn)
+
+GNOME Search Tool -
+	
+	Fix problems with utf8->locale conversion (Dennis)
+
+GNOME System Log Monitor -
+
+	Fix i18n problems (George)
+
+Build -
+	
+	Bump requirements for intltool (Glynn)
+
+Translations -
+
+	Kjartan, Vlad, Zbigniew, Ole, Pablo, George and Stanislav
+
+Documentation -
+
+	Updates for GNOME Search Tool from Sun (Sander)
+		
+Miscellaneous -
+
+	README, THANKS, NEWS (Glynn)
+
+===================================================================
+
+GNOME Utilities 1.105.0		" I'm just a Toy "
+
+
+GNOME Calculator -
+
+	Give gnome-calculator it's first easter egg (Glynn)
+	Fix help (Satayajit)
+	Fix order of operators (Yogeesh, Sasi)
+	Fix bad EE calculation (Andrew)
+
+GNOME Character Map -
+
+	Remove seperator from help menu (Ali)
+	Fix help (Satayajit)
+	Fix sensitivity of menus (Glynn)
+
+GNOME Dictionary -
+	
+	Fix memory leaks (Havard)
+	Remove 'Find' from status bar and make a dialog (Glynn)
+	Cleaned up 'Find' dialog (Paolo)
+	Wrap 'Find' functionality when it reaches the end (Paolo)
+	Prevent dialog destruction when 'Esc'd (Paolo)
+	Make applet a text entry again (Kevin)
+	Fix sensitivity of menus (Glynn)
+	Give preferences default settings in case gconf fails (Glynn)
+	Left align items in strategy menu (Havoc)
+	Add progress bar, although not hooked up yet (Glynn)
+	Fix mnemonics (Deepa)
+
+GNOME Search Tool -
+
+	Fix help (Satayajit)
+	Supress results only due to match in basename (Gaute, Dennis)
+	Fix memory leaks (Dennis)
+	Add 'Matches Regular Expression' to options (Rajeev)
+	Can now double click 'No Files Found' (Paolo)
+	Add a status bar with activity bar (Paolo)
+
+GNOME System Log Monitor -
+
+	Fix help (Satayajit)
+	UI love (Sam)
+	Fix repaint on zoom box (Sam)
+	HIG Compliance (Glynn)
+	Prevent dialog destruction when 'Esc'd (Glynn)
+	Fix crash in actions dialog (Sam)
+	
+
+GNOME Archive Generator -
+
+	Fix help (Satayajit)
+	Add status bar (Josh, Glynn)
+	Use g_spawn badly (Glynn)
+	Hook menu hints up to the status bar (Glynn)
+
+Build -
+	
+	Break build (Glynn)
+	Fix build (Jacob)
+
+Translations -
+	
+	Zbigniew, Christophe, Ole, Hasbullah, Abel & Kjartan
+
+Miscellaneous -
+
+	Remove cromagnon & edit-menus from module (Glynn)
+
+===================================================================
+
+GNOME Utilities 1.5.0 		" A Brave New World "
+
+
+(Also to be known as " The One that Didn't Exist ")
+
+GNOME Calculator -
+	
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	Richard Scarry's My First Easter Egg (Glynn)
+	New screenshots (John)
+	HIG UI conformance (Glynn)
+	New logo for the about dialog (Dennis)	
+
+
+GNOME Character Map-
+
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	HIG UI conformance (Ali, Glynn)	
+	Break build (Glynn)
+	Fix build (Glynn)
+	Break build again (Glynn)
+	Fix build again (Carlos)
+	New logo for the about dialog (Dennis)
+
+GNOME Dictionary -
+	
+	Fix build to enable help on applets (Satyajit)
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	Fix build to get distchecking (Glynn)
+	HIG UI conformace (Paolo, Glynn, Dennis)
+	New logo for about dilaog (Dennis)
+
+GNOME Search Tool -
+	
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	HIG UI conformance (Paolo, Glynn)
+	Add 'Starting in Folder' option to searches (Dennis)
+	Filter out annoying 'Permission denied' messages (Dennis)
+	Build build (Glynn)
+	Fix build (Owen)
+
+GNOME System Log Monitor -
+
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	Rename 'Date' field to something a little bit saner (Glynn)
+	GtkDialogize Calendar (Xing, Glynn)
+	Recognise marked logs (Voss)
+	More about dialog love (Dennis)
+
+GNOME Archiver Generator -
+
+	Fix .desktop file to point to correct DocPath (Satyajit)
+	New documentation (Pat, John)
+	HIG UI conformance (Glynn)
+	De-sensitivize buttons if nothing to select (Yogeesh)
+	Break build (Glynn)
+	Fix build (Owen)
+	Add default window icon (Dennis)
+	Even more about dialog love (Dennis)	
+		
+Build -
+
+	Break build (Glynn)
+	Fix build (Jacob)
+	Break build (Glynn)
+	Fix build (Jacob)
+	. . . . .
+	Fix build (Glynn) - yeah, I did once I think :)
+
+Translations -
+
+	Kjartan, Pablo, Vincent, Duarte, Abel & Changwoo
+
+Miscellaneous -
+
+	THANKS, README, MAINTAINERS updates (Glynn)
 

@@ -24,24 +24,22 @@
 
 #include <gnome.h>
 
+void edit_menu_set_sensitivity (gboolean flag);
 void cb_about_click (GtkWidget *widget, gpointer user_data);
+void cb_browsebtn_click (GtkButton *button, gpointer data);
 void cb_charbtn_click (GtkButton *button, gpointer user_data);
-void cb_charbtn_enter (GtkButton *button, gpointer user_data);
-void cb_charbtn_leave (GtkButton *button, gpointer user_data);
+gboolean cb_charbtn_enter (GtkButton *button, GdkEventFocus *event, gpointer user_data);
+gboolean cb_charbtn_leave (GtkButton *button, GdkEventFocus *event, gpointer user_data);
 void cb_clear_click (GtkWidget *widget, gpointer user_data);
 void cb_copy_click (GtkWidget *widget, gpointer user_data);
 void cb_cut_click (GtkWidget *widget, gpointer user_data);
 void cb_exit_click (GtkWidget *widget, gpointer user_data);
-void cb_fontpicker_font_set (GnomeFontPicker *gfp, gchar *font_name);
 void cb_help_click (GtkWidget *widget, gpointer user_data);
 void cb_set_chartable_font (GtkWidget *widget, gpointer user_data);
 void cb_insert_char_click (GtkWidget *widget, gpointer user_data);
 void cb_paste_click (GtkWidget *widget, gpointer user_data);
 void cb_select_all_click (GtkWidget *widget, gpointer user_data);
-void cb_set_button_focusable (GtkCheckMenuItem *checkmenuitem, gpointer user_data);
-void cb_set_insert_at_end (GtkCheckMenuItem *checkmenuitem, gpointer user_data);
-void cb_toggle_actionbar (GtkCheckMenuItem *checkmenuitem, gpointer user_data);
-void cb_toggle_textbar (GtkCheckMenuItem *checkmenuitem, gpointer user_data);
-void cb_toggle_statusbar (GtkCheckMenuItem *checkmenuitem, gpointer user_data);
+gboolean cb_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
+void cb_entry_changed (GtkWidget *widget, gpointer data);
 
 #endif /* _CALLBACKS_H_ */

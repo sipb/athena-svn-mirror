@@ -41,23 +41,45 @@ dialog_guage (const char *title, const char *prompt, int height,
     char buf[1024];
     char prompt_buf[1024];
     WINDOW *dialog;
+    gint input;
 
     /* center dialog box on screen */
     x = (COLS - width) / 2;
     y = (LINES - height) / 2;
 
+    if(percent < 0) {
+        percent = 0;
+      }      
+    else if (percent > 100) {
+        percent = 100;
+      }
     if(gnome_mode)
       {
-	GtkWidget *w = gnome_dialog_new(title, NULL, NULL);
+	GtkWidget *w = gtk_dialog_new_with_buttons (title,NULL,GTK_DIALOG_DESTROY_WITH_PARENT,NULL);
 	GtkWidget *p = gtk_progress_bar_new();
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+	guint input;
+	GIOChannel *giochannel;
+
+	GList *labellist;
 	
 	label_autowrap(vbox, prompt, width);
-	gtk_progress_bar_update( GTK_PROGRESS_BAR( p ), .34 );
+	gtk_progress_set_percentage( GTK_PROGRESS( p ), ( (gfloat) percent ) / 100);
 	gtk_box_pack_start(GTK_BOX(vbox), p, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(w)->vbox), vbox,
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(w)->vbox), vbox,
 			   TRUE, TRUE, GNOME_PAD);
 	gtk_window_set_position(GTK_WINDOW(w), GTK_WIN_POS_CENTER);
+
+	giochannel = g_io_channel_unix_new (0);
+	input = g_io_add_watch(giochannel, G_IO_IN, callback_progress_bar, (gpointer) p);
+
+	if(GTK_IS_ACCESSIBLE(gtk_widget_get_accessible(p))) {
+		labellist = gtk_container_get_children(GTK_CONTAINER(vbox));
+		add_atk_namedesc(p, _("Gdialog progressbar"), _("Indicates the percentage specified at the standard input"));
+		add_atk_relation(GTK_WIDGET(labellist->data), p, ATK_RELATION_LABEL_FOR);
+		add_atk_relation(p, GTK_WIDGET(labellist->data), ATK_RELATION_LABELLED_BY);
+	}
+
 	gtk_widget_show_all(w);
 	gtk_main();
 	exit( 0 );
@@ -123,3 +145,36 @@ dialog_guage (const char *title, const char *prompt, int height,
     delwin (dialog);
     return (0);
 }
+
+#ifdef WITH_GNOME
+
+/*
+ *	Gnome Callbacks
+ */
+
+gboolean callback_progress_bar (GIOChannel *giochannel, GIOCondition condition,
+				gpointer p)
+{
+	gint percent;
+	gchar buf[1024];
+
+	if (feof (stdin)) {
+	    /*gdk_input_remove(input);*/
+	    gtk_main_quit();
+	}
+
+	fgets (buf, sizeof(buf)-1, stdin);
+	percent = atoi (buf);
+	if(percent < 0) {
+            percent = 0;
+	}      
+	else if (percent > 100) {
+	    percent = 100;
+	}
+
+	gtk_progress_bar_set_fraction ( p, ( (gfloat) percent ) / 100);
+
+
+}
+
+#endif

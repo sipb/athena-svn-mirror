@@ -29,13 +29,14 @@ static void cancelled(GtkWidget *w, gpointer *d)
 
 static void okayed(GtkWidget *w, int button, gpointer *d)
 {
-	if(button==0)
-	{
-		char *p=gtk_entry_get_text(GTK_ENTRY(input));
+	if(button==GTK_RESPONSE_OK) {
+		gchar *p = (gchar *) gtk_entry_get_text(GTK_ENTRY(input));
+
 		write(2,p, strlen(p));
 		write(2, "\n", 1);
-	}
-	exit(button);
+		exit (0);
+	} else if (button == GTK_RESPONSE_CANCEL)
+		exit (1);
 }
 
 
@@ -48,20 +49,29 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 		    const char *init)
 {
 	int i, x, y, box_y, box_x, box_width;
-	int input_x = 0, scroll = 0, key = 0, button = -1;
+	int input_x = 0, scroll = 0, key = 0, button = GTK_RESPONSE_NONE;
 	unsigned char *instr = dialog_input_result;
 	WINDOW *dialog;
 
 	if (gnome_mode) {
-		GtkWidget *w = gnome_dialog_new(title,
-		    GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+			GtkWidget *w  = gtk_dialog_new_with_buttons (title,
+						NULL,
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_STOCK_OK,
+						GTK_RESPONSE_OK,
+						GTK_STOCK_CANCEL,
+						GTK_RESPONSE_CANCEL,
+						NULL);
+
 		GtkWidget *hbox;
 		GtkWidget *vbox;
 		GtkWidget *ibox;
 
-		gnome_dialog_set_default (GNOME_DIALOG (w), 0);
-		gnome_dialog_set_close(GNOME_DIALOG(w), TRUE);
+		GList *labellist;
+
+		gtk_dialog_set_default_response (GTK_DIALOG(w),GTK_RESPONSE_OK);
 		gtk_window_set_title(GTK_WINDOW(w), title);
+
 
 		hbox = gtk_hbox_new(FALSE, 0);
 		vbox = gtk_vbox_new(FALSE, 0);
@@ -73,8 +83,16 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 		input = gtk_entry_new();
 		if(init)
 			gtk_entry_set_text(GTK_ENTRY(input),init);
-		gnome_dialog_editable_enters (GNOME_DIALOG (w), GTK_EDITABLE (input));
-			
+			gtk_signal_connect_object(GTK_OBJECT(input), "activate",
+                        GTK_SIGNAL_FUNC(gtk_window_activate_default),GTK_OBJECT(w));
+
+		if(GTK_IS_ACCESSIBLE(gtk_widget_get_accessible(input))) {
+			add_atk_namedesc(input, _("GDialog Entry"), _("Enter the text"));
+			labellist = gtk_container_get_children(GTK_CONTAINER(vbox));
+			add_atk_relation(GTK_WIDGET(labellist->data), input, ATK_RELATION_LABEL_FOR);
+			add_atk_relation(input, GTK_WIDGET(labellist->data), ATK_RELATION_LABELLED_BY);
+		}
+
 		gtk_container_set_border_width(GTK_CONTAINER(ibox), GNOME_PAD);
 			
 		gtk_box_pack_start(GTK_BOX(ibox), input, TRUE, TRUE, 0);
@@ -82,13 +100,13 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 
 		gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
-		gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(w)->vbox),
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(w)->vbox),
 				   hbox,
 				   TRUE, TRUE, GNOME_PAD);
 		gtk_window_set_position(GTK_WINDOW(w), GTK_WIN_POS_CENTER);
 		gtk_signal_connect(GTK_OBJECT(w), "destroy",
 			GTK_SIGNAL_FUNC(cancelled), NULL);
-		gtk_signal_connect(GTK_OBJECT(w), "clicked",
+		gtk_signal_connect(GTK_OBJECT(w), "response",
 			GTK_SIGNAL_FUNC(okayed), NULL);
 		gtk_widget_show_all(w);
 		gtk_widget_grab_focus (input);
@@ -168,7 +186,7 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 	while (key != ESC) {
 		key = mouse_wgetch(dialog);
 
-		if (button == -1) {	/* Input box selected */
+		if (button == GTK_RESPONSE_NONE) {	/* Input box selected */
 			switch (key) {
 			case TAB:
 			case KEY_UP:
@@ -236,25 +254,39 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 		case M_EVENT + 'i':	/* mouse enter events */
 		case M_EVENT + 'o':	/* use the code for 'UP' */
 		case M_EVENT + 'c':
-			button = (key == M_EVENT + 'o') - (key == M_EVENT + 'c');
+			if(key == M_EVENT + 'o')
+			{
+				if(key == M_EVENT + 'c')
+					button = GTK_RESPONSE_OK;
+				else
+					button = GTK_RESPONSE_CANCEL; 
+			}
+			else
+			{
+				if(key == M_EVENT + 'c')
+					button = GTK_RESPONSE_NONE;
+				else
+					button = GTK_RESPONSE_OK; 
+			}
+								
 		case KEY_UP:
 		case KEY_LEFT:
 			switch (button) {
-			case -1:
-				button = 1;	/* Indicates "Cancel" button is selected */
+			case GTK_RESPONSE_NONE:
+				button = GTK_RESPONSE_CANCEL;	/* Indicates "Cancel" button is selected */
 				print_button(dialog, "  OK  ", y, x, FALSE);
 				print_button(dialog, "Cancel", y, x + 14, TRUE);
 				wrefresh(dialog);
 				break;
-			case 0:
-				button = -1;	/* Indicates input box is selected */
+			case GTK_RESPONSE_OK:
+				button = GTK_RESPONSE_NONE;	/* Indicates input box is selected */
 				print_button(dialog, "Cancel", y, x + 14, FALSE);
 				print_button(dialog, "  OK  ", y, x, TRUE);
 				wmove(dialog, box_y, box_x + input_x);
 				wrefresh(dialog);
 				break;
-			case 1:
-				button = 0;	/* Indicates "OK" button is selected */
+			case GTK_RESPONSE_CANCEL:
+				button = GTK_RESPONSE_OK;/* Indicates "OK" button is selected */
 				print_button(dialog, "Cancel", y, x + 14, FALSE);
 				print_button(dialog, "  OK  ", y, x, TRUE);
 				wrefresh(dialog);
@@ -265,20 +297,20 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 		case KEY_DOWN:
 		case KEY_RIGHT:
 			switch (button) {
-			case -1:
-				button = 0;	/* Indicates "OK" button is selected */
+			case GTK_RESPONSE_NONE:
+				button = GTK_RESPONSE_OK;/* Indicates "OK" button is selected */
 				print_button(dialog, "Cancel", y, x + 14, FALSE);
 				print_button(dialog, "  OK  ", y, x, TRUE);
 				wrefresh(dialog);
 				break;
-			case 0:
-				button = 1;	/* Indicates "Cancel" button is selected */
+			case GTK_RESPONSE_OK:
+				button = GTK_RESPONSE_CANCEL;	/* Indicates "Cancel" button is selected */
 				print_button(dialog, "  OK  ", y, x, FALSE);
 				print_button(dialog, "Cancel", y, x + 14, TRUE);
 				wrefresh(dialog);
 				break;
-			case 1:
-				button = -1;	/* Indicates input box is selected */
+			case GTK_RESPONSE_CANCEL:
+				button = GTK_RESPONSE_NONE;	/* Indicates input box is selected */
 				print_button(dialog, "Cancel", y, x + 14, FALSE);
 				print_button(dialog, "  OK  ", y, x, TRUE);
 				wmove(dialog, box_y, box_x + input_x);
@@ -289,7 +321,10 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
 		case ' ':
 		case '\n':
 			delwin(dialog);
-			return (button == -1 ? 0 : button);
+			if(button == GTK_RESPONSE_NONE || button == GTK_RESPONSE_OK)
+				return 0;
+			else if (button == GTK_RESPONSE_CANCEL)
+				return 1;
 		case ESC:
 			break;
 		}

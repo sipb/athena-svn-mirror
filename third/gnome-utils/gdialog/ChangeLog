@@ -1,3 +1,124 @@
+2002-08-20  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* menubox.c (dialog_menu): semi-fix for #2467 only in Gnome mode.
+
+	* textbox.c (dialog_textbox): put the GtkTextView in a Scrolled Window,
+	so we don't get broken output. Fixes #78038 in bugzilla.
+
+	* inputbox.c (okayed): exit with proper error code.
+	(dialog_inputbox): likewise.
+
+	* yesno.c (callback_yn): exit with the proper return code.
+	Fixes #87032 in bugzilla.
+	(dialog_yesno_with_default): likewise, if in curses mode.
+
+2002-07-24  Samuel Stringham <sams@e-sa.com>
+
+	* checklist.c: accepts --seperate-output now. Fixes 
+	#71570.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* Makefile.am: Update for #83627.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* Makefile.am: Fix GNOMELOCALEDIR to point to correct
+	place. Fixes #83627.
+
+2002-05-21 Muktha <muktha.narayan@wipro.com>
+
+	* Accessibility changes for gdialog
+	Files changed : dialog.h dialog.c inputbox.c
+			checklist.c guage.c
+
+2002-04-25  Glynn Foster  <glynn.foster@sun.com>
+
+	* gdialog.1: Remove the documentation for the
+	password box until we decide if we add this 
+	pre or post 2.0.
+
+2002-04-24 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog-C.omf
+	updating OMF file to match that required by
+	ScrollKeeper >= 0.3.8
+
+2002-04-23  Satyajit Kanungo<satyajit.kanungo@wipro.com>
+
+	* checklist.c, dialog.c, guage.c, inputbox.c,
+	* menubox.c, msgbox.c, textbox.c, yesno.c: 
+	Replace use of GtkCList in checklist with GtkTreeView 
+	and GtkListStore, GtkDialog with GnomeDialog.
+
+2002-04-22 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog-C.omf
+	updating omf file to match new ScrollKeeper DTD
+
+2002-04-20 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog.xml
+	edits from Nicholas Curran
+
+2002-04-12 Yogeesh MB <yogeeshappa.mathighatta@wipro.com>
+
+        * dialog.c: Validating height and width of dialog box for text mode,  
+	fixes bug#75100.		
+
+2002-04-07 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog-C.omf
+	updating OMF file
+
+2002-04-07 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog.xml
+	* help/C/figures/*.png
+	updating docs for GNOME2 with new screenshots and 
+	some rewriting of doc
+
+2002-02-21 Senthilkumar Ramasamy <senthil.ramasamy@wipro.com>
+
+	* gnome-utils/gdialog/dialog.c - gdialog - added a check to avoid 
+	negative values & alphabets for the height & width arguments.
+
+2002-03-16 David Westlund <daw@wlug.westbo.se>
+
+	* /gnome-utils/gdialog/guage.c  The progressbar can be updated
+	from stdin in gnome. Added the callback function
+	callback_progress_bar
+
+	* /gnome-utils/gdialog/dialog.h  Added the function
+	callback_progress_bar
+
+2002-03-12 Yogeesh MB <yogeeshappa.mathighatta@wipro.com>
+
+	* /gnome-utils/gdialog/guage.c  Patch for the bug#71580 
+	This fixes Percent argument specified for dialog guage to work
+	Removed deprecated gtk_progress_bar_update() call	
+
+2002-01-31 John Fleck <jfleck@inkstain.net>
+
+	* help/C/Makefile.am - adding legal.xml to the build
+
+2002-01-30 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gdialog.xml, help/C/legal.xml
+	updating docs to new template
+
+2002-01-07 John Fleck <jfleck@inkstain.net>
+
+	* Makefile.am, help/C/Makefile.am, gdialog.xml, gdialog-C.omf
+	xmlizing the documentation
+
+2001-10-14  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am, * checklist.c: (clist_add), dialog.c: (main),
+	dialog.h, inputbox.c: (okayed), textbox.c: (dialog_textbox):
+	ported to Gnome2, still need to get a way for gnome_program_init
+	not to eat all the program arguments.
+
 Sat Aug 25 11:50:37 MDT 2001 John Fleck <jfleck@inkstain.net>
 
 	* adding docs by Patanjali Somayaji

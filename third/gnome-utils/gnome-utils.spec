@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define  ver      1.4.1.2
+%define  ver      2.0.6
 %define  RELEASE  1
 %define  rel      %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 
@@ -72,7 +72,7 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} \
 %{_datadir}/gnome-utils
 %{_datadir}/gnome/apps/*/*
 %{_datadir}/locale/*/*/*
-%{_datadir}/gnome/help/*
+%{_datadir}/gnome/help/*/*
 %{_datadir}/gtt
 %{_datadir}/idl/*
 %{_datadir}/logview
@@ -91,9 +91,6 @@ if which scrollkeeper-update>/dev/null 2>&1; then scrollkeeper-update; fi
 
 
 %changelog
-* Sat Oct 20 2001 <jirka@5z.com>
-- Fixes to the damn %files thing
-
 * Thu Mar 29 2001 <dan@eazel.com>
 - scrollkeeper stuff
 

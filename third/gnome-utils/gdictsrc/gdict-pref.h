@@ -1,7 +1,7 @@
 #ifndef __GDICT_PREF_H_
 #define __GDICT_PREF_H_
 
-/* $Id: gdict-pref.h,v 1.1.1.1 2001-05-02 20:42:34 ghudson Exp $ */
+/* $Id: gdict-pref.h,v 1.1.1.2 2003-01-04 21:13:22 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim@cs.cmu.edu>
@@ -19,7 +19,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <gtk/gtk.h>
-
+#include <gconf/gconf-client.h>
 #include "dict.h"
 
 enum {
@@ -58,7 +58,7 @@ typedef struct _GDictPref {
 extern GDictPref gdict_pref;
 
 void gdict_pref_load (void);
-void gdict_pref_save (void);
+GConfClient* gdict_get_gconf_client (void);
 
 #ifdef __cplusplus
 }

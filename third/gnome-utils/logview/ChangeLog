@@ -1,0 +1,390 @@
+2002-11-18  Glynn Foster  <glynn.foster@sun.com>
+
+        * logview.c: (SetDefaultUserPrefs): Add /var/log/sys.log to
+        list of possible logs to open. Apply duct tape to bug that
+        I don't have time to look at.
+
+2002-10-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* about.c: Unref the logo pixbuf. Fixing a leak.
+	
+2002-08-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log-security.in: Default session to true, otherwise
+	user can't launch it when console helper is enabled.
+
+2002-08-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* actions.c: (apply_actions): Fix another case of 'logview'. [sigh]
+
+2002-08-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log-security.in: Point to gnome-system-log instead
+	of logview. Thanks to Frederic for pointing this out.
+
+2002-08-21  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/C/gnome-system-log-C.xml, gnome-system-log.omf: Updates
+	from HEAD.
+
+2002-08-09  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log.1: Update man page.
+
+2002-07-24  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* actions.c: Pass the command to execute twice for execlp (),
+	so that the action happens. Fixes bug# 88207.
+
+2002-07-08  Laavanya K R <laavanya.gopalan@wipro.com>
+
+        * actions.c: Modified exec_action_in_db() to execute "action"
+        by a combination of fork() and execlp() calls instead of
+        executing through system().  There is a potential of Time of
+        Check and Time of Use (TOCTOU) issues with system() since
+        shell is spawned first and command's executed after a small
+        time gap. Fixes #87110.
+
+2002-07-05  Glynn Foster  <glynn.foster@sun.com>
+
+        * gnome-system-log.desktop.in: s/DocPath/X-GNOME-DocPath.
+        Now conforms to spec.
+
+2002-06-19  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* actions.c: Change the windows to dialog boxes. Set
+     	atk relation between entry box and label, set mnemonics,
+     	set default button, change title of dialog to "Actions",
+     	position buttons to the right of the tree view. 
+     	s/gtk_widget_set_usize/gtk_widget_set_size_request.
+
+2002-06-12  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+        * monitor.c: In mon_read_new_lines function, as new lines are read,
+        update the current position and start reading next set of lines from 
+        the new position.
+
+        * logrtns.c: In ReadPageDown function fixed a crash when the lines
+        read are more than ten. Bug#84084.
+
+2002-06-12  Christophe Merlet  <christophe@merlet.net>
+
+	* Makefile.am: Add $DESTDIR variable.
+
+2002-06-04  George Lebl <jirka@5z.com>
+
+	* logview.c: use _UI_SUBTREE instead of _UI_SUBTREE_STOCK since 
+	that makes translations actually work. _UI_SUBTREE_STOCK means
+	that the string comes from libgnomeui which in this case it 
+	doesn't.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* Makefile.am: Update for #83627.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* Makefile.am: Fix GNOMELOCALEDIR to point to correct
+	place. Fixes #83627.
+
+2002-05-31  Glynn Foster <glynn.foster@sun.com>
+
+	* monitor.c: Remove ugly pangoification in the 
+	monitor dialog.
+
+2002-05-31  Glynn Foster <glynn.foster@sun.com>
+	
+	* Makefile.am: Enable help again. Fixes #83518.
+
+2002-05-25  Glynn Foster <glynn.foster@sun.com>
+
+	* logview.c, actions.c: Some focus issues. Hum, we really
+	need to get mnemonics going here.
+
+2002-05-25  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* logview.c: Treeview fix to prevent parent and child being
+	created for first action entry. Fixes #81942.
+
+2002-05-23  Aruna P R <aruna.pou@wipro.com>
+
+	* logview.c: Disable multiple openings of the same file. Fixes 
+	#75121.
+
+2002-05-23  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* actions.c: Make sure we save the description in the actions
+	dialog. Fixes #82334.
+
+2002-15-20 Glynn Foster <glynn.foster@sun.com>
+
+	* Makefile.am: Diable docs until they are fixed - dtd validation
+	problems with scrollkeeper.dtd.
+
+Fri May 17 10:09:46 2002  George Lebl <jirka@5z.com>
+
+	* config.c: add note to translators about fonts, especially about
+	  Helvetica vs asian fonts
+
+	* info.c, zoom.c: fix crashes on window closing, also add more
+	  elaborate logic for figuring out the size of the label area,
+	  still quite stupid, but now it gets it wrong by getting more space
+	  rather then less which is nicer.  Also better get single char
+	  width info in an uglier, more elaborate and hackish way but
+	  in a way that we get more correct.  Some more geometry fixage
+	  to get asian fonts right.
+
+Thu May 16 18:39:42 2002  George Lebl <jirka@5z.com>
+
+	* info.c, log_repaint.c, logview.h, misc.c, zoom.c:
+	  handle cases where we can't convert the line to utf8.  We can
+	  really guess the language anyway though so maybe we could do more.
+
+	* logrtns.c: make sure not to leave other time locales around and
+	  fix a leak thus created.
+
+Thu May 16 18:19:59 2002  George Lebl <jirka@5z.com>
+
+	* info.c, log_repaint.c, logrtns.c, logview.h, misc.c, zoom.c:
+	  Some i18n fixage, especially with getting utf8 vs locale
+	  encoding straight.  It is quite ugly, though now we again read
+	  localized logs and don't spew out tons of warnings.  I can't make
+	  sure that the problem for Chinese is gone since I think I don't
+	  have the right fonts for this.  So I'll mark #81252 as fixed.
+
+Thu May 16 15:20:35 2002  George Lebl <jirka@5z.com>
+
+	* logview.c: make the window and make sure it's shown before opening
+	  files since then we look like we are loading faster, especially if
+	  your logfile is very long.
+
+Thu May 16 15:09:19 2002  George Lebl <jirka@5z.com>
+
+	* log_repaint.c, zoom.c: partially fix #81252 by converting output
+	  of strftime to utf8.  Also convert the string to utf8, this still
+	  needs a bit of work, so I'm not closing the bug yet
+
+	* logview.c: fix crash when closing window
+
+2002-05-14  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log-actions.db: Comment out example
+	strings. I wish I am more time to look through this 
+	properly.
+
+2002-05-11 Samuel Stringham  <sams@e-sa.com> 
+
+	* logrtns.c: On log rotation, or log creation, 
+	or just empty logs logview fails.  Tough to tell if 
+	a log is actually a system log when it is empty, but 
+	should still try to read/monitor it. Fixes #81348.
+
+2002-05-11  Samuel Stringham  <sams@e-sa.com>
+	
+	* actions.c: Fix crash in actions dialog. Fixes #81397.
+
+2002-05-11  Samuel Stringham  <sams@e-sa.com>
+
+	* logview.c: remove bogus spacing. Fixes #81399.
+
+2002-05-10  Glynn Foster  <glynn.foster@sun.com>
+
+	* calendar.c, logview.c, zoom.c: Fix crashes on dialog 
+	boxes when 'Esc' is used.
+
+2002-05-10  Glynn Foster  <glynn.foster@sun.com>
+
+	* logrtns.c: Add sanity check. Fixes #81265.
+
+2002-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* about.c, logview.c: Fix up some inconsistancies as pointed
+	out by the doc team.
+
+2002-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* calendar.c, log_repaint.c, logview.c, zoom.c: More
+	HIG Compliance stuff. Fixes #76685 in part. Man, this 
+	code is *so* ugly. Hack after hack after hack. [sigh].
+
+2002-05-07  Samuel Stringham <sams@e-sa.com>
+
+	* zoom.c: (repaint_zoom): Fix repaint on zoom-in box. Fixes	
+	#80904.
+
+2002-05-07  Samuel Stringham <sams@e-sa.com>
+
+	* actions.c, log_repaint.c: Some UI love.
+
+2002-05-07  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* gnome-system-log.desktop.in: Added DocPath in the 
+	desktop.in file. Fixes #80921.
+
+2002-05-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: s/Date/Last Modified. It seems a slightly better
+	solution, although when you scroll up it seems to randomly
+	change the date in the status bar. Fixes #72782 somewhat
+	but we should get rid of the updates and just use one non
+	changing date, whatever that might be.
+	* logrtns.c: Include <errno.h> in the view to giving more 
+	useful error messages.
+ 
+2002-05-03  Xing Wang <quixon@gnuchina.org>
+
+	* calendar.c: (CalendarMenu), (close_calendar): Don't NULL
+	CalendarDialog when we are only hiding the widget. Fixes
+	#80403.
+
+2002-05-01  Glynn Foster  <glynn.foster@sun.com>
+
+	* calendar.c: (CalendarMenu): Oops, forgot to 
+	make non-resizable.
+
+2002-05-01  Glynn Foster  <glynn.foster@sun.com>
+
+	* calendar.c: (CalendarMenu): Adapted patch from
+	Xing Wang <quixon@gnuchina.org> to fix #77194.
+
+2002-05-01  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log-regexp.db: Add fix from 
+	 voss@debian.org (Jochen Voss) for #73406.
+
+2002-04-28 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* about.c:  fix code to correctly find logview.xpm logo
+	in the about dialog.  Change name to match application menu.
+	Fixes #80109.
+	
+2002-04-24 Aruna P R <aruna.pou@wipro.com>
+
+	* config.c, info.c, log_repaint.c, logview.c,
+	  logview.h, monitor.c, zoom.c:
+
+	Start using Pango wherever we can.
+
+2002-04-18 - John Fleck <jfleck@inkstain.net>
+
+	* help/Makefile.am, help/C/Makefile.am
+	gnome-system-log.xml, gnome-system-log-C/omf, legal.xml
+	figures/gnome-system-log.png
+	incorporating placeholder docs, completing patch from
+	Satyajit
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+        * Makefile.am, logview.c : get help working - almost
+
+2002-03-21 Aruna P R <aruna.pou@wipro.com>
+
+	* logview.c: add session managment to systemlogmoitor
+
+2002-03-30 Aruna P R <aruna.pou@wipro.com>
+	
+	* actions.c, monitor.c, logview.h:
+
+        Replaced GtkClist and GtkCtree calls with GtkTreeView calls in the files        
+
+2002-03-20  Yogeesh MB <yogeeshappa.mathighatta@wipro.com>
+
+	* logview.c :Removed user preference dialog, Patch #57968
+
+2002-03-26 Aruna P R <aruna.pou@wipro.com>
+
+        * monitor.c: Monitor options gives the messages when tried to add more
+        than the MON_MAX_NUM_LOGS(4) log files.
+        Fixes the problem with Add and Remove button
+
+        * logview.c: made menu items and view items sensitive.
+        Added the condition to give the message when tried to open more than
+        MAX_NUM_LOGS(10) log files.
+
+        Fix for bugs #75124 & 75074
+
+2002-03-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* actions.c: Use gtk_text_buffer_set_text. May fix 
+	a crash. Also don't cast the textview to a gtkeditable
+
+2002-03-15  Ganesan Sethuraman <ganesan.sethuraman@wipro.com>
+
+       * log_repaint.c: Fixed the display of the status bar when the
+       last log file is closed.Fix for bug #74610
+
+2002-03-18  Kevin Vandersloot <kfv101@psu.edu> 
+
+	* logview.c: fix checks for logfiles. Thanks to Aruna Pourohit
+	for pointing this out. Realy fixes bug 75125. Also update
+	binary name in gnome_init
+
+2002-03-17  Kevin Vandersloot <kfv101@psu.edu>
+
+	* logview.c: fix typo. Fixes bug 75125
+
+2002-03-04  Kevin Vandersloot <kfv101@psu.edu>
+	
+	* log_repaint.c: show details on double click and 
+	select row on single click. Also handle mouse scroll
+	events. 
+
+	* logview.c: don't select row on motion events.
+
+2002-02-28  Santhana Krishnan  <santhana.krishnan@wipro.com>
+
+	* logview.c: fixed bug on scroll bars when log view is empty. 
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* logrtns.c: (isLogFile): don't crash on empty files
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* actions.c: (edit_action_entry): use non-deprecated calls
+	(and the proper ones in fact)
+	* logview.h, logrtns.c: (ReadPageUp), (ReadPageDown): fix bug on
+	platforms where a char is unsigned (Closes:68013)
+	(patch from Jochen Voss <voss@debian.org>)
+	* logview.c: (CloseApp): fix double-closing exit core dump
+
+2002-01-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* about.c (AboutShowWindow): Don't try to translate empty string.
+
+2001-02-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* .cvsignore: s/logview/gnome-system-log/
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* gnome-system-log-actions.db:
+	* gnome-system-log-descript.db:
+	* gnome-system-log-pam:
+	* gnome-system-log-regexp.db:
+	* gnome-system-log-security.in:
+	* gnome-system-log.1:
+	* gnome-system-log.desktop.in:
+	* logview-actions.db:
+	* logview-descript.db:
+	* logview-pam:
+	* logview-regexp.db:
+	* logview-security.in:
+	* logview.1:
+	* logview.c: (open_databases):
+	* logview.desktop.in:
+	* pixmaps/Makefile.am:
+
+
+	Rename application binary to match menu name.
+
+	Whew. This one was a PITA.
+	
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* logview.desktop.in:
+
+	Change menu names to conform with the HIG, and
+	install into the GNOME2 .desktop file location.
+

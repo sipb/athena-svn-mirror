@@ -1,20 +1,22 @@
-bin_PROGRAMS = gcharmap
+bin_PROGRAMS = gnome-character-map
 
 INCLUDES =\
 	-DG_LOG_DOMAIN=\"gcharmap\"\
 	-I$(srcdir)/../pixmaps\
-	$(GNOME_INCLUDEDIR)\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
+	-DDATADIR=\""$(datadir)"\"	\
+	$(GNOME_UTILS_CFLAGS) \
+	$(LIBBONOBOUI_CFLAGS) \
+	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"
 
-gcharmap_SOURCES = \
+gnome_character_map_SOURCES = \
         main.c\
         interface.c interface.h\
         menus.c menus.h\
         callbacks.c callbacks.h\
         asciiselect.c asciiselect.h
 
-gcharmap_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
+gnome_character_map_LDADD = $(GNOME_UTILS_LIBS) $(LIBBONOBOUI_LIBS) $(INTLLIBS)
 
-man_MANS = gcharmap.1
+man_MANS = gnome-character-map.1
 
-EXTRA_DIST = $(gcharmap_SOURCES) gcharmap.1
+EXTRA_DIST = $(gnome_character_map_SOURCES) gnome-character-map.1

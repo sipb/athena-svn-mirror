@@ -1,3 +1,341 @@
+2002-08-12  Glynn Foster <glynn.foster@sun.com>
+
+	* doc/*: Remove, we don't use it anymore.
+	* src/callbacks.c, src/gnome-character-map.1,
+	/help/C/gnome-character-map.xml: Update 
+	authors email address. Fixes #88967
+
+2002-08-08  Glynn Foster <glynn.foster@sun.com>
+
+	* src/gnome-character-map.1: Update man page.
+
+2002-08-05  Muktha  <muktha.narayan@wipro.com>
+
+	* src/interface.c, interface.h, asciiselect.c: Make the 
+	character buttons respect the font change. Fixes #86827.
+
+2002-07-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/callbacks.c: Remove dumb stuff which breaks the build.
+
+2002-07-11  Glynn Foster  <glynn.foster@sun.com>
+
+        * src/asciiselect.c: (ascii_select_init): Add mnemonics
+        * src/interface.c: (edit_menu_set_sensitivity): De-sensitize the
+        Cut and Copy items when there is nothing in the text entry.
+        * src/menus.c: Change mnemonic to avoid a clash.
+        Fixes #87907, 87908.
+
+2002-07-05  Glynn Foster  <glynn.foster@sun.com>
+
+        * gnome-character-map.desktop.in: s/DocPath/X-GNOME-DocPath.
+        Conforms to spec now.
+
+2002-07-05  Glynn Foster  <glynn.foster@sun.com>
+
+        * src/callbacks.c, src/interface.h: Remove some uneccessary
+        headers and rearrange.
+
+2002-07-04 John Fleck <jfleck@inkstain.net>
+
+        * help/C/Makefile.am
+        fix typo that was preventing screenshots from being
+        installed
+
+2002-07-01  Glynn Foster <glynn.foster@sun.com>
+
+        * src/callbacks.c, src/callbacks.h, src/interface.c: Fix silly
+        caused by me and restructure some code.
+
+2002-07-01  Mats-Ole Persson <polli@hadjaha.org>
+
+	* src/callbacks.c, src/callbacks.h, src/interface.c: Enabled
+	'Clear' and 'Select All' when inputing characters from the
+	keyboard. Fixes #86036.
+
+2002-06-12  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/callbacks.c: Set the browse dialog as transient for
+	the parent window.
+
+2002-06-10  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+        * src/menus.c: use _UI_SUBTREE instead of _UI_SUBTREE_STOCK 
+	since that makes translations actually work. _UI_SUBTREE_STOCK 
+	means that the string comes from libgnomeui which in these cases
+	it doesn't.
+	
+2002-06-01  Ross Burton  <ross@hactar>
+
+	* src/interface.c (main_app_create_ui): Pass a reference to the
+	top-level window as the user_data to the menu callbacks.
+
+	* src/callbacks.c (cb_about_click): Set the about window as
+	transient for the parent window. Fixes #83799.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+	
+	* src/Makefile.am: Updated patch for #83627.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* src/Makefile.am: Fix GNOMELOCALEDIR to point to correct
+	place. Fixes #83627.
+
+2002-05-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/callbacks.c, src/callbacks.h, 
+	src/interface.c, src/interface.h: Incredible hacks to 
+	set the sensitivity of the edit menu.
+
+2002-05-07  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* gnome-character-map.desktop.in: Added DocPath in the 
+	desktop.in file. Fixes #80921.
+
+2002-05-07  Ali Akcaagac <ali.akcaagac@stud.fh-wilhelmshaven.de> 
+
+	* src/menus.c: Remove seperator from Help menu. Fixes #80828.
+
+2002-05-02  Carlos Perello Marin <carlos@gnome-db.org>
+
+	* Makefile.am: Small schemas fix ;-)
+
+2002-05-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Remove schemas from build. Stupid connection.
+
+2002-05-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gcharmap.schemas, src/Makefile.am, src/asciiselect.c,
+	  src/callbacks.c, src/callbacks.h, src/interface.c, 
+	  src/interface.h, src/main.c, src/menus.c, src/menus.h,
+	  src/notifiers.c: Some small UI changes. Remove the 'View'
+	  and 'Settings' Menu as they made no sense at all. Add some
+	  icons and generally make pretty. Fixes #76424 and #75909.
+
+2002-04-28  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* src/callbacks.c:  In the about dialog use gnome-character-map.png 
+	for the logo. Fixes #80109. 
+	
+	* src/main.c:  add same png image as the default window icon. 
+	
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/* get help working from patch by Satyajit Kanungo. 
+	Fixes bug #78527
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+	
+	* gcharmap.schemas: add gconf pref saving support. Patch
+	from Christophe Fergeau.
+
+	* src/* implement prefs saving. Fixes bug #74090
+
+2002-03-28  Ganesan Sethuraman <ganesan.sethuraman@wipro.com>
+
+	* src/asciiselect.c : Restricted entering ASCII code greater 
+	than 255. Fixed handling of keyboard inputs. Fixes bug #72240.
+
+2002-03-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/main.c: update for binary rename
+
+	* src/callbacks.c: move cursor to after insert text. This
+	makes the "not insert at end" option behave as one would
+	want.
+
+	* src/interface.c: make insert at end FALSE as default since
+	it now behaves properly
+
+2002-03-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	Patch from Muktha <muktha.narayan@wipro.com>. Fixes bug
+	#74318
+	* src/interface.c: remove the tooltip for the copy button
+
+	* src/callbacks.c: focus_in_events return gbooleans. Fixes
+	a small issue noticed on Solaris.
+
+2002-03-14  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/callbacks.c: comment out the delay when cutting.
+	It just seems to put in a noticable delay for no purpose
+
+2002-03-13  Ganesan Sethuraman <ganesan.sethuraman@wipro.com>
+
+	* src/callbacks.c: Fix for copy/cut operations.If some portion of 
+	the text is selected, then copy/cut that portion only otherwise 
+	copy/cut the entire text.Fix for bug #73845
+	* src/callbacks.c : Replaced the deprecated call 
+	gtk_entry_select_region() with gtk_editable_select_region().
+
+2002-03-01   Muktha  <muktha.narayan@wipro.com>
+
+        * src/interface.c: Added new code and functions
+          needed for accessibility.
+        * src/asciiselect.c: Added code for accessibility.
+        * src/interface.h: Added prototype of check_gail(),
+          add_atk_namedesc() and add_atk_relation().
+
+Wed Mar 13 09:55:47 2002  George Lebl <jirka@5z.com>
+
+	* README, TODO, NEWS, BUGS, src/gnome-character-map.1:  Applied
+	  update patch from Hongli Lai
+
+2002-03-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* interface.c: set some default prefs - insert at end to true
+	add some padding to the text label
+
+2002-03-06 Aruna Pourhit <aruna.pou@wipro.co>
+ 
+	* replaced deprecated calls from the following files
+	asciiselect.c
+	callbacks.h
+	callbacks.c
+	interface.c
+	main.c
+	menus.c
+	* Added session management stuffs
+ 
+
+2002-03-07  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/asciiselect.c: update when spin is change by typing the
+	spin and fix the entry chnaging to handle utf8 properly.
+	Fixes bug #72240
+
+2002-03-04 Muktha <muktha.narayan@wipro.com>
+        
+        * src/asciiselect.c: convert the strings to utf8 so
+        that the characters after character code 127 are
+        displayed in the 'browse characters' dialog.
+        * src/callbacks.c: convert to unicode character so
+        that the character codes displayed for higher Ascii
+        characters are correct.
+
+2002-03-01 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-character-map.xml
+	* help/C/gnome-character-map-C.omf
+	updating docs from Sun
+
+2002-02-27  jacob berkman  <jacob@ximian.com>
+
+	* help/C/legal.xml: add legal.xml
+
+2002-02-26 John Fleck <jfleck@inkstain.net>
+
+	* gcharmap/help/C/Makefile.am
+	adding
+	* gcharmap/help/C/figures/gnome-character-map.png
+	* gcharmap/help/C/figures/gnome-character-map-C.omf
+	* gcharmap/help/C/figures/gnome-character-map.xml
+	removing
+	* gcharmap/help/C/gcharmap-C.omf
+	* gcharmap/help/C/gcharmap.xml
+	* gcharmap/help/C/figures/gcharmap.png 
+	* gcharmap/help/C/figures/gcharmap_insertascii.png
+	adding Sun-contributed help docs
+
+2002-02-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* menus.c, interface.c: remove the ability to remove the 
+	menu since there's no way to get it back
+	
+	* interface.c: add mnemonic to label and a little padding to
+	the copy button
+
+2002-01-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* src/callbacks.c (cb_about_click): Don't try to translate empty string.
+
+2001-02-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* .cvsignore: s/gcharmap.desktop/gnome-character-map.desktop/
+
+	* src/.cvsignore: s/gcharmap/gnome-character-map/
+
+2002-01-29  Kevin Vandersloot <kfv101@psu.edu>
+
+	* menus.c: remove some of the toolbar items that are a bit
+	strange to be there. 
+
+	* interface.c: improve the overall layout of the app. Remove
+	toolbars and unneeded stuff from main window
+
+	* asciiselect.c: port to GtkDialog and rearange buttons
+	according to HIG
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* gcharmap.desktop.in:
+	* gnome-character-map.desktop.in:
+	* src/Makefile.am:
+	* src/gcharmap.1:
+	* src/gnome-character-map.1:
+
+	Rename binary to match the menu name.
+	
+2002-01-06 John Fleck <jfleck@inkstain.net>
+
+	* Makefile.am, help/Makefile.am, gcharmap.xml - converting
+	documentation to xml
+
+2001-12-03  Kevin Vandersloot <kfv101@psu.edu>
+
+	* interface.c: clean up GtkObject stuff. Kill most of the
+	error messages that are this programs fault
+
+2001-12-04  Sander Vesik <Sander.Vesik@sun.com>
+	* src/interface.h : change a guint to GType so that
+	  src/interface.c actually builds
+
+2001-11-27  Seth Nickell  <snickell@stanford.edu>
+
+	* gcharmap.desktop.in:
+	* pixmaps/Makefile.am:
+	* pixmaps/gnome-character-map.png:
+
+	Use character map icon from Ximian GNOME.
+	
+	* pixmaps/charmap_24.xpm:
+	* pixmaps/charmap_big.xpm:
+	* pixmaps/gcharmap-map-16.xpm:
+	* pixmaps/gcharmap-map-24.xpm:
+	* pixmaps/gcharmap-map-big.xpm:
+	* pixmaps/gcharmap.xpm:
+	* pixmaps/gnome-character-map.xpm:
+	* pixmaps/logo.xpm:
+
+	Remove crufty XPM icons.
+
+	* src/menus.c:
+
+	Remove references to crufty icons.
+	
+2001-11-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+
+	install .desktop to datadir/applications
+	
+	* gcharmap.desktop.in:
+
+	Rename "Character Map", add Categories field
+
+2001-11-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/interface.c: convert the strings utf8. Thanks to
+	Alex Larsson for suggesting the fix. Fixes the pango errors.
+
+2001-10-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: couple of fixes to make it build again
+
 2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/interface.c: s/gdk_colormap_get_system()/gtk_widget_get_colormap()

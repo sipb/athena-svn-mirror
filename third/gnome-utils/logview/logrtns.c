@@ -22,6 +22,7 @@
 #include <config.h>
 #include <gnome.h>
 #include <locale.h>
+#include <errno.h>
 #include "logview.h"
 #include "logrtns.h"
 
@@ -105,22 +106,24 @@ get_month (const char *str)
 
 	for (i = 0; i < 12; i++) {
 		if (monthname[i] == NULL) {
-			GDate *date;
+			struct tm tm = {0};
 			char buf[256];
 
-			date = g_date_new_dmy (1, i+1, 2000 /* bogus */);
+			tm.tm_mday = 1;
+			tm.tm_year = 2000 /* bogus */;
+			tm.tm_mon = i;
 
-			if (g_date_strftime (buf, sizeof (buf), "%b", date) <= 0) {
+			/* Note: we don't want utf-8 here, we WANT the
+			 * current locale! */
+			if (strftime (buf, sizeof (buf), "%b", &tm) <= 0) {
 				/* eek, just use C locale cuz we're screwed */
 				monthname[i] = g_strndup (C_monthname[i], 3);
 			} else {
 				monthname[i] = g_strdup (buf);
 			}
-
-			g_date_free (date);
 		}
 
-		if (g_strcasecmp (str, monthname[i]) == 0) {
+		if (g_ascii_strcasecmp (str, monthname[i]) == 0) {
 			return i;
 		}
 	}
@@ -143,18 +146,22 @@ get_month (const char *str)
 				if (setlocale (LC_TIME, locales[j]) == NULL) {
 					strcpy (buf, "");
 				} else {
-					GDate *date;
+					struct tm tm = {0};
 
-					date = g_date_new_dmy (1, i+1, 2000 /* bogus */);
+					tm.tm_mday = 1;
+					tm.tm_year = 2000 /* bogus */;
+					tm.tm_mon = i;
 
-					if (g_date_strftime (buf, sizeof (buf), "%b", date) <= 0) {
+
+					if (strftime (buf, sizeof (buf), "%b",
+						      &tm) <= 0) {
 						strcpy (buf, "");
 					}
+				}
 
-					if (old_locale != NULL) {
-						setlocale (LC_TIME, old_locale);
-						g_free (old_locale);
-					}
+				if (old_locale != NULL) {
+					setlocale (LC_TIME, old_locale);
+					g_free (old_locale);
 				}
 
 				name = g_strdup (buf);
@@ -164,7 +171,7 @@ get_month (const char *str)
 
 			if (name != NULL &&
 			    name[0] != '\0' &&
-			    g_strcasecmp (str, name) == 0) {
+			    g_ascii_strcasecmp (str, name) == 0) {
 				return i;
 			}
 		}
@@ -305,12 +312,25 @@ isLogFile (char *filename)
    fp = fopen (filename, "r");
    if (fp == NULL)
    {
+      /* FIXME: this error message is really quite poor
+       * we should state why the open failed
+       * ie. file too large etc etc..
+       */
       g_snprintf (buff, sizeof (buff),
 		  _("%s could not be opened."), filename);
       ShowErrMessage (buff);
       return FALSE;
    }
-   fgets (buff, sizeof (buff), fp);
+   if (fgets (buff, sizeof (buff), fp) == NULL) {
+       /* Either an error, or empty log */
+       fclose (fp);
+       if (feof(fp)) 
+           /* EOF -> empty file, still a valid log though */
+           return TRUE;
+       else 
+           /* !EOF -> read error */
+           return FALSE;
+   }
    fclose (fp);
    token = strtok (buff, " ");
    /* This is not a good assumption I don't think, especially
@@ -324,6 +344,13 @@ isLogFile (char *filename)
       return FALSE;
    }
    */
+
+   if (token == NULL)
+   {
+      g_snprintf (buff, sizeof (buff), _("%s not a log file."), filename);
+      ShowErrMessage (buff);
+      return FALSE;
+   }
 
    i = get_month (token);
 
@@ -405,7 +432,8 @@ ReadPageUp (Log * lg, Page * pg)
 {
    LogLine *line;
    FILE *fp;
-   char *c, ch, buffer[R_BUF_SIZE + 1];
+   char *c, buffer[R_BUF_SIZE + 1];
+   int ch;
    int ln;
    long int old_pos;
 
@@ -476,7 +504,8 @@ ReadPageDown (Log * lg, Page * pg, gboolean exec_actions)
 {
    FILE *fp;
    LogLine *line;
-   char *c, ch, buffer[R_BUF_SIZE + 1];
+   char *c, buffer[R_BUF_SIZE + 1];
+   int ch;
    int ln, len;
 
    g_return_val_if_fail (lg != NULL, FALSE);
@@ -503,7 +532,12 @@ ReadPageDown (Log * lg, Page * pg, gboolean exec_actions)
       if (ch == EOF)
       {
 	 if (ln == 0)
-	    pg->prev->islastpage = TRUE;
+	   {
+	     if (pg->prev != NULL)
+	       pg->prev->islastpage = TRUE;
+	     else
+	       pg->islastpage = TRUE; 
+	   }
 	 else
 	   pg->islastpage = TRUE;
 	 ungetc (ch, fp);
@@ -557,6 +591,10 @@ ParseLine (char *buff, LogLine * line)
    char scratch[1024];
    int i;
 
+   /* just copy as a whole line to be the default */
+   strncpy (line->message, buff, MAX_WIDTH);
+   line->message[MAX_WIDTH-1] = '\0';
+
    token = strtok (buff, " ");
    if (token == NULL) return;
    /* This is not a good assumption I don't think, especially
@@ -579,8 +617,6 @@ ParseLine (char *buff, LogLine * line)
 
    if (i == 12)
    {
-      strncpy (line->message, buff, MAX_WIDTH);
-      line->message[MAX_WIDTH-1] = '\0';
       line->month = -1;
       line->date = -1;
       line->hour = -1;
@@ -1113,6 +1149,8 @@ CloseLog (Log * log)
 {
    Page *cur, *next;
    int i;
+
+   g_return_if_fail (log);
 
    /* Close file */
    if (log->fp != NULL)

@@ -68,12 +68,15 @@ extern int numlogs, curlognum;
 
 static GtkWidget *monoptions = NULL;
 static GtkWidget *monwindow = NULL;
-static GtkWidget *srclist, *destlist;
+static GtkListStore *srclist, *destlist;
+static GtkWidget *srclist_view, *destlist_view;
 
 static int monitorcount = 0;
 static gboolean mon_opts_visible = FALSE, mon_win_visible = FALSE;
 static gboolean mon_exec_actions = FALSE, mon_hide_while_monitor = FALSE;
 static gboolean main_app_hidden = FALSE;
+static long new_pos_offset = 0L;
+static gboolean is_first_line = TRUE;
 
 /* ----------------------------------------------------------------------
    NAME:         MonitorMenu
@@ -90,10 +93,12 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
    GtkWidget *list_item;
    GtkWidget *button;       
    GtkWidget *vbox2;       
-   GtkStyle *style;
    GtkBox *vbox;
    char buffer[10];
    int i;
+   GtkCellRenderer *cell_renderer;
+   GtkTreeViewColumn *column;
+   GtkTreeIter newiter;
 
    if (curlog == NULL || mon_opts_visible)
       return;
@@ -108,7 +113,6 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       monoptions = gtk_window_new (GTK_WINDOW_TOPLEVEL);
       gtk_container_set_border_width (GTK_CONTAINER (monoptions), 5);
       gtk_window_set_title (GTK_WINDOW (monoptions), _("Monitor options"));
-      gtk_widget_set_style (monoptions, cfg->main_style);
       gtk_signal_connect (GTK_OBJECT (monoptions), "destroy",
 			  GTK_SIGNAL_FUNC (close_monitor_options),
 			  NULL);
@@ -118,12 +122,8 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_container_add (GTK_CONTAINER (monoptions), GTK_WIDGET (vbox));
       gtk_widget_show (GTK_WIDGET (vbox)); 
 
-      style = gtk_style_new ();
-      memcpy (style, cfg->main_style, sizeof(GtkStyle));
-      style->font = cfg->heading;
       label = gtk_label_new (_("Choose logs to monitor"));
       gtk_misc_set_alignment(GTK_MISC (label), 0.0, 0.0);
-      gtk_widget_set_style (label, style);
       gtk_box_pack_start (vbox, label, TRUE, TRUE, 0);
       gtk_widget_show (label);
 
@@ -138,26 +138,27 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_widget_set_usize (scrolled_win, 160, 100);
       gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
       gtk_box_pack_start (GTK_BOX (hbox), scrolled_win, TRUE, TRUE, 0);
-      gtk_widget_set_style (scrolled_win, cfg->main_style);
       gtk_widget_show (scrolled_win);
 
-      srclist = gtk_list_new ();
-      gtk_list_set_selection_mode (GTK_LIST (srclist), GTK_SELECTION_SINGLE);
-      gtk_scrolled_window_add_with_viewport
-	      (GTK_SCROLLED_WINDOW (scrolled_win), srclist);
-      gtk_widget_set_style (srclist, cfg->main_style);
-      gtk_widget_show (srclist);
+      srclist = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_INT);
+      srclist_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (srclist));
+      cell_renderer = gtk_cell_renderer_text_new ();
+      column = gtk_tree_view_column_new_with_attributes (NULL, cell_renderer,
+                                                         "text", 0, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (srclist_view), column);
+      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (srclist_view), FALSE);
+      gtk_tree_selection_set_mode
+                               ( (GtkTreeSelection *)gtk_tree_view_get_selection
+                                (GTK_TREE_VIEW (srclist_view)),
+                                 GTK_SELECTION_SINGLE);
+      gtk_container_add (GTK_CONTAINER (scrolled_win), srclist_view);
+      gtk_widget_show (srclist_view);
 
       for (i = 0; i < numlogs; i++)
         {
-          list_item = gtk_list_item_new_with_label (loglist[i]->name);
-          gtk_container_add (GTK_CONTAINER (srclist), list_item);
-	  g_snprintf (buffer, sizeof (buffer), "%d", i);
-	  gtk_widget_set_name (list_item, buffer);
-	  
-	  gtk_widget_set_style (list_item, cfg->main_style);
-	  gtk_container_set_border_width (GTK_CONTAINER (list_item), 0);
-          gtk_widget_show (list_item);
+          gtk_list_store_append (srclist, (GtkTreeIter *)&newiter);
+          gtk_list_store_set (srclist, (GtkTreeIter *)&newiter, 0,
+                              loglist[i]->name, 1, i, -1);
         }
 
       vbox2 = gtk_vbox_new (FALSE, 2);
@@ -187,16 +188,23 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
                                       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
       gtk_widget_set_usize( scrolled_win, 160, 100);
-      gtk_widget_set_style( scrolled_win, cfg->main_style );
       gtk_box_pack_start (GTK_BOX (hbox), scrolled_win, TRUE, TRUE, 0);
       gtk_widget_show (scrolled_win);
 
-      destlist = gtk_list_new ();
-      gtk_list_set_selection_mode (GTK_LIST (srclist), GTK_SELECTION_SINGLE);
-      gtk_scrolled_window_add_with_viewport
-	      (GTK_SCROLLED_WINDOW (scrolled_win), destlist);
+      destlist = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_INT); 
+      destlist_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (destlist));
+      cell_renderer = gtk_cell_renderer_text_new ();
+      column = gtk_tree_view_column_new_with_attributes (NULL, cell_renderer,
+                                                         "text", 0, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (destlist_view), column);
+      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (destlist_view), FALSE);
+      gtk_tree_selection_set_mode
+                               ( (GtkTreeSelection *)gtk_tree_view_get_selection
+                                (GTK_TREE_VIEW (destlist_view)),
+                                 GTK_SELECTION_SINGLE);
+      gtk_container_add (GTK_CONTAINER (scrolled_win), destlist_view);
       gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
-      gtk_widget_show (destlist);
+      gtk_widget_show (destlist_view);
 
       /* Make bottom part of window  -------------------------------- */
       hbox2 = gtk_hbox_new (FALSE, 2);
@@ -209,7 +217,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (mon_hide_app_checkbox),
-                          srclist);
+                          srclist_view);
       gtk_widget_show (button);
       
       button = gtk_check_button_new_with_label (_("Exec actions"));
@@ -217,7 +225,7 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (mon_actions_checkbox),
-                          srclist);
+                          srclist_view);
       gtk_widget_show (button);
 
       mon_hide_while_monitor = FALSE;
@@ -229,10 +237,10 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (mon_edit_actions),
-                          srclist);
+                          srclist_view);
 
       /* OK button */
-      button = gnome_stock_button (GNOME_STOCK_BUTTON_OK);
+      button = gtk_button_new_from_stock (GNOME_STOCK_BUTTON_OK);
       gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -240,12 +248,13 @@ MonitorMenu (GtkWidget * widget, gpointer user_data)
                           NULL);
 
       /* Cancel button */
-      button = gnome_stock_button (GNOME_STOCK_BUTTON_CANCEL);
+      button = gtk_button_new_from_stock (GNOME_STOCK_BUTTON_CANCEL);
       gtk_widget_show (button);
       gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, TRUE, 0);
       gtk_signal_connect (GTK_OBJECT (button), "clicked",
                           GTK_SIGNAL_FUNC (close_monitor_options),
                           NULL);
+      gtk_widget_grab_focus (button);
 
    }
    mon_opts_visible = TRUE;
@@ -265,43 +274,36 @@ void
 mon_add_log (GtkWidget *widget,
 	   GtkWidget *list)
 {
-  GList *tmp_list;
-  GList *clear_list;
-  GtkWidget *newitem;
-  char *name;
+  GtkTreeSelection *selection = NULL;
+  GtkTreeIter newiter;
+  GtkTreeModel *model = NULL;
+  const char *name;
   int sellognum;
+  gboolean selected = TRUE;
 
   if (monitorcount >= MON_MAX_NUM_LOGS)
-    return;
-  else 
-    monitorcount++;
+    {
+      ShowErrMessage (_("Too many logs to monitor. Remove one and try again"));
+      return;
+    } 
 
-  tmp_list = GTK_LIST (srclist)->selection;
-  if (tmp_list == NULL)
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (srclist_view));
+  selected = gtk_tree_selection_get_selected (selection, &model, &newiter);
+  if (selected == FALSE)
     {
     DB (printf (_("tmp_list is NULL\n")));
     return;
     }
-  name = gtk_widget_get_name (tmp_list->data);
-  sellognum = atoi (name);
+  gtk_tree_model_get (model, &newiter, 1, &sellognum, -1);
   
-  newitem = gtk_list_item_new_with_label (loglist[sellognum]->name);
-  gtk_container_add (GTK_CONTAINER (destlist), newitem);
-  gtk_widget_set_name (newitem, name);
-  gtk_widget_show (newitem);
-   
-  clear_list = NULL;
+  gtk_list_store_append (destlist, &newiter); 
+  gtk_list_store_set (destlist, &newiter, 0,
+                      loglist[sellognum]->name, 1, sellognum, -1); 
 
-  while (tmp_list)
-    {
-      clear_list = g_list_prepend (clear_list, tmp_list->data);
-      tmp_list = tmp_list->next;
-    }
+  gtk_tree_selection_get_selected (selection, NULL, &newiter);
+  gtk_list_store_remove (srclist, &newiter);
 
-  clear_list = g_list_reverse (clear_list);
-
-  gtk_list_remove_items (GTK_LIST (srclist), clear_list);
-  g_list_free (clear_list);
+  monitorcount++;
 }
 
 /* ----------------------------------------------------------------------
@@ -313,43 +315,33 @@ void
 mon_remove_log (GtkWidget *widget,
 		GtkWidget *foo)
 {  
-  GList *tmp_list;
-  GList *clear_list;
-  GtkWidget *newitem;
-  char *name;
+  GtkTreeModel *model = NULL;
+  GtkTreeSelection *selection = NULL;
+  GtkTreeIter newiter; 
+  const char *name;
   int sellognum;
+  static gboolean selected = TRUE;
 
   if (monitorcount == 0)
     return;
-  else 
-    monitorcount--;
-  tmp_list = GTK_LIST (destlist)->selection;
-  if (tmp_list == NULL)
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (destlist_view));
+  selected = gtk_tree_selection_get_selected (selection, &model, &newiter);
+  if (selected == FALSE)
     {
       DB (printf (_("tmp_list is NULL\n")));
       return;
     }
-  name = gtk_widget_get_name (tmp_list->data);
-  sellognum = atoi (name);
-  
-  newitem = gtk_list_item_new_with_label (loglist[sellognum]->name);
-  gtk_container_add (GTK_CONTAINER (srclist), newitem);
-  gtk_widget_set_name (newitem, name);
-  gtk_widget_show (newitem);
-   
-  clear_list = NULL;
+  gtk_tree_model_get (model, &newiter, 1, &sellognum, -1);
+ 
+  gtk_list_store_append (srclist, &newiter);
+  gtk_list_store_set (srclist, &newiter, 0,
+                      loglist[sellognum]->name, 1, sellognum, -1);
 
-  while (tmp_list)
-    {
-      clear_list = g_list_prepend (clear_list, tmp_list->data);
-      tmp_list = tmp_list->next;
-    }
+  gtk_tree_selection_get_selected (selection, NULL, &newiter);
+  gtk_list_store_remove (destlist, &newiter);
 
-  clear_list = g_list_reverse (clear_list);
-
-  gtk_list_remove_items (GTK_LIST (destlist), clear_list);
-  g_list_free (clear_list);
-
+  monitorcount--;
 }  
 
 
@@ -406,24 +398,28 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    GtkWidget *notebook;
    GtkWidget *frame;
    GtkWidget *vbox;
-   GtkCList *clist;
-   GList *tmplist;
+   GtkListStore *clist;
    char logfile[1024];
    int i,lnum,x,y,w,h;
+   GtkWidget *clist_view;
+   GtkCellRenderer *clist_cellrenderer;
+   GtkTreeViewColumn *clist_column;
+   GtkTreeIter newiter;
+   gboolean flag = FALSE;
 
    /* Set flag in log structures to indicate that they should be
       monitored */
-   tmplist = GTK_LIST (destlist)->children;
+   flag = gtk_tree_model_get_iter_root (GTK_TREE_MODEL (destlist), &newiter);
    i = 0;
-   while (tmplist != NULL)
+   while (flag == TRUE)
      {
-     lnum = atoi(gtk_widget_get_name(tmplist->data));
+     gtk_tree_model_get ( GTK_TREE_MODEL (destlist), &newiter, 1, &lnum, -1);
      if (loglist[lnum] != NULL)
        {
 	 i++;
 	 loglist[lnum]->mon_on = TRUE;
        }
-     tmplist = tmplist->next;
+     flag = gtk_tree_model_iter_next (GTK_TREE_MODEL (destlist), &newiter);
      }
 
    /* Close monitor dialog */
@@ -454,7 +450,6 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
    monwindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_container_set_border_width (GTK_CONTAINER (monwindow), 0);
    gtk_window_set_title (GTK_WINDOW (monwindow), _("Monitoring logs..."));
-   gtk_widget_set_style (monwindow, cfg->main_style);
 
    gtk_widget_set_usize(monwindow, w, h);
    gtk_widget_set_uposition(monwindow, x, y);
@@ -487,18 +482,28 @@ go_monitor_log (GtkWidget * widget, gpointer client_data)
        gtk_widget_show (frame);
        
        /* Create destination list */
-       clist = (GtkCList *)gtk_clist_new (1);
+       clist = gtk_list_store_new (1, G_TYPE_STRING); 
+       clist_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (clist));
+       clist_cellrenderer = gtk_cell_renderer_text_new ();
+       clist_column = gtk_tree_view_column_new_with_attributes
+                              (NULL, clist_cellrenderer, "text", 0, NULL);
+       gtk_tree_view_append_column (GTK_TREE_VIEW (clist_view), clist_column);
+       gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (clist_view), FALSE);
        swin = gtk_scrolled_window_new (NULL, NULL);
-       gtk_container_add (GTK_CONTAINER (swin), GTK_WIDGET (clist));
-       gtk_clist_set_column_width (clist, 0, 500);
-       gtk_clist_set_selection_mode (clist, GTK_SELECTION_BROWSE);
+       gtk_container_add (GTK_CONTAINER (swin), GTK_WIDGET (clist_view));
+       gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN
+                                             (clist_column), 300); 
+       gtk_tree_selection_set_mode
+                               ( (GtkTreeSelection *)gtk_tree_view_get_selection
+                                (GTK_TREE_VIEW (clist_view)),
+                                 GTK_SELECTION_BROWSE);
        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-       gtk_clist_set_column_justification (clist, 0, GTK_JUSTIFY_LEFT); 
-       gtk_widget_set_style (GTK_WIDGET (clist), cfg->main_style);
-       loglist[i]->mon_lines = (GtkCList *) clist;
+       gtk_tree_view_column_set_alignment (GTK_TREE_VIEW_COLUMN (clist_column),
+                                          0.0);
+       loglist[i]->mon_lines = (GtkWidget *) clist_view;
        gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (swin));
        gtk_widget_show_all (swin);
        
@@ -526,35 +531,44 @@ void
 mon_read_last_page (Log *log)
 {
   Page pg;
-  char buffer[1024];
-  const gchar *texts[2];
+  char buffer[1024], buf[10];
   int i, j;
+  GtkTreeIter iter;
+  GtkListStore *list;
+  GtkTreePath *path;
 
   log->mon_numlines = 0;
   fseek (log->fp, log->offset_end, SEEK_SET);
   
   /* Read pages into buffers --------------------------- */
   ReadPageUp (log, &pg);
-  
-  texts[0] = buffer;
-  texts[1] = NULL;
 
   for (i=pg.ll-5;i<pg.ll;i++)
     {
       if (i<0)
 	continue;
       mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
-      gtk_clist_append (log->mon_lines, (char **)texts);
+      list = (GtkListStore *)
+              gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
+      gtk_list_store_append (list, &iter);
+      gtk_list_store_set (list, &iter, 0, buffer, -1);
       log->mon_numlines++;
       if (log->mon_numlines > MON_MAX_NUM_LINES)
 	{
-	  gtk_clist_freeze (log->mon_lines);
 	  for(j=0;j<LINES_P_PAGE;j++)
-	    gtk_clist_remove (log->mon_lines, j);
+	     {
+               g_snprintf (buf, sizeof (buf), "%d", j);
+               gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL(list),
+                                                    &iter, buf); 
+               gtk_list_store_remove (list, &iter);
+             }
 	  log->mon_numlines -= LINES_P_PAGE;
-	  gtk_clist_thaw (log->mon_lines);
 	}
-      gtk_clist_moveto (log->mon_lines, log->mon_numlines, -1,0,0);
+        g_snprintf (buf, sizeof (buf), "%d", log->mon_numlines);
+        path = gtk_tree_path_new_from_string (buf);
+        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),  
+                                  path, NULL, TRUE, 0, 0);
+        gtk_tree_path_free (path);
     }
 }
 
@@ -568,37 +582,58 @@ void
 mon_read_new_lines (Log *log)
 {
   Page pg;
-  char buffer[1024];
-  const gchar *texts[2];
+  char buffer[1024], buf[10];
   int i,j;
+  GtkTreeIter iter;
+  GtkListStore *list;
+  GtkTreePath *path;
+  pg.prev = NULL;
 
-  fseek (log->fp, log->offset_end, SEEK_SET);
+  if (is_first_line)
+    {
+      new_pos_offset = log->offset_end;
+      is_first_line = FALSE;
+    }
+  fseek (log->fp, new_pos_offset, SEEK_SET);
   
+  list = (GtkListStore *)
+          gtk_tree_view_get_model (GTK_TREE_VIEW(log->mon_lines));
+
   /* Read pages into buffers --------------------------- */
   ReadPageDown (log, &pg, mon_exec_actions);
-  texts[0] = buffer;
-  texts[1] = NULL;
+
+  /* Get last changed position & start reading next set of lines from there */
+  new_pos_offset = pg.lastchpos;
 
   while (TRUE) 
     {
       for (i=pg.fl;i<pg.ll;i++)
 	{
 	  mon_format_line (buffer, sizeof (buffer), &pg.line[i]);
-	  gtk_clist_append (log->mon_lines, (char **)texts);
+	  gtk_list_store_append (list, &iter);
+	  gtk_list_store_set (list, &iter, 0, buffer, -1);
 	  log->mon_numlines++;
 	} 
       if (log->mon_numlines > MON_MAX_NUM_LINES)
 	{
-	  gtk_clist_freeze (log->mon_lines);
 	  for(j=0;j<LINES_P_PAGE;j++)
-	    gtk_clist_remove (log->mon_lines, j);
+	    {
+              g_snprintf (buf, sizeof (buf), "%d", j);
+              gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL(list),
+                                                   &iter, buf);
+              gtk_list_store_remove (list, &iter);
+            }
 	  log->mon_numlines -= LINES_P_PAGE;
-	  gtk_clist_thaw (log->mon_lines);
 	}
-      gtk_clist_moveto (log->mon_lines, log->mon_numlines, -1,0,0);
+      g_snprintf (buf, sizeof (buf), "%d", log->mon_numlines);
+      path = gtk_tree_path_new_from_string (buf);
+      gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (log->mon_lines),
+                                    path, NULL, TRUE, 0, 0);
+      gtk_tree_path_free (path);
       if (pg.islastpage)
 	break;
       ReadPageDown (log, &pg, mon_exec_actions);
+      new_pos_offset = pg.lastchpos;
     }
 }
 

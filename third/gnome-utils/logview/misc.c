@@ -31,6 +31,42 @@ extern GtkWidget *app;
 static gboolean queue_err_messages = FALSE;
 static GList *msg_queue = NULL;
 
+PangoFont *
+LoadFont (PangoContext *context, PangoFontDescription *fontd)
+{
+	PangoFont *font;
+
+	font = pango_context_load_font (context, fontd);
+	if (font == NULL) {
+		PangoFontDescription *d;
+		d = (PangoFontDescription *)
+			pango_font_description_from_string ("fixed 10"); 
+		font = pango_context_load_font (context, d);
+		pango_font_description_free (d);
+	}
+	if (font == NULL) {
+		PangoFontDescription *d;
+		d = (PangoFontDescription *)
+			pango_font_description_from_string ("Sans 10"); 
+		font = pango_context_load_font (context, d);
+		pango_font_description_free (d);
+	}
+	if (font == NULL) {
+		GtkWidget *msgbox;
+		msgbox = gnome_message_box_new (_("Cannot load required fonts, "
+						  "cannot continue"),
+						GNOME_MESSAGE_BOX_ERROR,
+						GNOME_STOCK_BUTTON_OK, NULL);
+		if (app != NULL)
+			gnome_dialog_set_parent (GNOME_DIALOG (msgbox), GTK_WINDOW (app));
+		gtk_window_set_modal (GTK_WINDOW(msgbox), TRUE); 
+		gtk_widget_show (msgbox);
+		gnome_dialog_run (GNOME_DIALOG (msgbox));
+		exit (1);
+	}
+	return font;
+}
+
 static void
 MakeErrorDialog (const char *msg)
 {
@@ -91,5 +127,22 @@ ShowQueuedErrMessages (void)
 		MakeErrorDialog (gs->str);
 
 		g_string_free (gs, TRUE);
+	}
+}
+
+char *
+LocaleToUTF8 (const char *in)
+{
+	/* FIXME: we could guess the language from the line how we guessed
+	 * the month and can we get this to utf8 correctly even if it's not in
+	 * the current encoding */
+	char *out = g_locale_to_utf8 (in, -1, NULL, NULL, NULL);
+	if (out == NULL) {
+		if (g_utf8_validate (in, -1, NULL))
+			return g_strdup (in);
+		else
+			return g_strdup ("?");
+	} else {
+		return out;
 	}
 }

@@ -1,20 +1,24 @@
 ## Process this file with automake to produce Makefile.in
 
-appsdir = $(datadir)/gnome/apps
-Utilitiesdir = $(appsdir)/Utilities
-Mimedir = $(datadir)/mime-info
 
 SUBDIRS = doc src
 
+
+gfloppyappdir = $(datadir)/applications
+gfloppyapp_in_files = gfloppy.desktop.in
+gfloppyapp_DATA = $(gfloppyapp_in_files:.desktop.in=.desktop)
+
+Mimedir = $(datadir)/mime-info
+
+@INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_KEYS_RULE@
+
 EXTRA_DIST = \
-	gfloppy.desktop \
-	gfloppy.desktop.in \
+	$(gfloppyapp_in_files) \
+	$(gfloppyapp_DATA) \
 	gfloppy.keys \
 	gfloppy.keys.in \
 	gfloppy.mime
-
-@XML_I18N_MERGE_DESKTOP_RULE@
-@XML_I18N_MERGE_KEYS_RULE@
 
 install-data-local: gfloppy.desktop gfloppy.keys
 	@$(NORMAL_INSTALL)
@@ -27,9 +31,7 @@ install-data-local: gfloppy.desktop gfloppy.keys
 	  done \
 	fi
 
-	$(mkinstalldirs) $(DESTDIR)$(Utilitiesdir)
 	$(mkinstalldirs) $(DESTDIR)$(Mimedir)
-	$(INSTALL_DATA) $(srcdir)/gfloppy.desktop $(DESTDIR)$(Utilitiesdir)/
 	$(INSTALL_DATA) $(srcdir)/gfloppy.mime $(DESTDIR)$(Mimedir)/
 	$(INSTALL_DATA) $(srcdir)/gfloppy.keys $(DESTDIR)$(Mimedir)/
 

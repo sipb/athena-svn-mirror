@@ -84,7 +84,7 @@ extern Log *curlog, *loglist[];
 extern int numlogs, curlognum;
 extern char *month[12];
 extern GtkWidget *main_win_scrollbar;
-
+extern GnomeUIInfo view_menu[];
 GtkWidget *CalendarDialog = NULL;
 GtkWidget *CalendarWidget;
 int calendarvisible;
@@ -107,30 +107,37 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
 
    if (CalendarDialog == NULL)
    {
-      CalendarDialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-      gtk_container_set_border_width (GTK_CONTAINER (CalendarDialog), 1);
-      gtk_window_set_title (GTK_WINDOW (CalendarDialog), _("Calendar"));
-      gtk_signal_connect (GTK_OBJECT (CalendarDialog), "destroy",
-			  GTK_SIGNAL_FUNC (close_calendar),
-			  &CalendarDialog);
-      gtk_signal_connect (GTK_OBJECT (CalendarDialog), "delete_event",
-			  GTK_SIGNAL_FUNC (close_calendar),
-			  NULL);
+      CalendarDialog = gtk_dialog_new ();
 
+      gtk_window_set_title (GTK_WINDOW (CalendarDialog), _("Calendar"));
+      gtk_window_set_resizable (GTK_WINDOW (CalendarDialog), FALSE);
+      gtk_dialog_add_button (GTK_DIALOG (CalendarDialog), 
+			     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
+      g_signal_connect (G_OBJECT (CalendarDialog), "response",
+		        G_CALLBACK (close_calendar),
+			&CalendarDialog);
+      g_signal_connect (G_OBJECT (CalendarDialog), "destroy",
+			G_CALLBACK (close_calendar),
+			NULL);
+      g_signal_connect (G_OBJECT (CalendarDialog), "delete_event",
+			G_CALLBACK (gtk_true),
+			NULL);
       gtk_widget_set_style (CalendarDialog, cfg->main_style);
+
       vbox = gtk_vbox_new (FALSE, 2);
+
+      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (CalendarDialog)->vbox), vbox, 
+			  TRUE, TRUE, 0);
       gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
-      gtk_container_add (GTK_CONTAINER (CalendarDialog), vbox);
-      gtk_widget_show (vbox);
 
       frame = gtk_frame_new (NULL);
+
       gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
       gtk_container_set_border_width (GTK_CONTAINER (frame), 3);
-      gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
       gtk_widget_set_style (frame, cfg->main_style);
-      gtk_widget_show (frame);
 
       calendar = (GtkCalendar *)gtk_calendar_new();
+
       gtk_signal_connect (GTK_OBJECT (calendar), "month_changed",
 			  GTK_SIGNAL_FUNC (calendar_month_changed),
 			  NULL);
@@ -140,13 +147,19 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
       gtk_signal_connect (GTK_OBJECT (calendar), "day_selected_double_click",
 			  GTK_SIGNAL_FUNC (calendar_day_selected_double_click),
 			  NULL);
-
       gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (calendar));
+      gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
       gtk_widget_show (GTK_WIDGET (calendar));
+      gtk_widget_show (frame);
+
+      gtk_dialog_set_default_response (GTK_DIALOG (CalendarDialog), GTK_RESPONSE_CLOSE); 
+   
+      gtk_widget_show (vbox);
+      
       CalendarWidget = GTK_WIDGET (calendar);
+      init_calendar_data ();
    }
    calendarvisible = TRUE;
-   init_calendar_data ();
 
    gtk_widget_show (CalendarDialog);
 
@@ -336,11 +349,12 @@ calendar_day_selected_double_click (GtkWidget *widget, gpointer data)
    ---------------------------------------------------------------------- */
 
 void
-close_calendar (GtkWidget * widget, gpointer client_data)
+close_calendar (GtkWidget *widget, gpointer client_data)
 {
-   if (calendarvisible)
+   if (calendarvisible) {
       gtk_widget_hide (CalendarDialog);
-   CalendarDialog = NULL;
+      gtk_check_menu_item_set_active  (GTK_CHECK_MENU_ITEM (view_menu[0].widget), FALSE);
+   }
    calendarvisible = FALSE;
 }
 

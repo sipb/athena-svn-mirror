@@ -1,10 +1,7 @@
-figs = \
-	figures/meat-grinder-main.png  \
-	figures/meat-grinder-main-full.png
-
-docname = meat-grinder
+figdir = figures
+docname = archive-generator
 lang = C
-omffile = meat-grinder-C.omf
-sgml_ents =
-include $(top_srcdir)/sgmldocs.make
+omffile = archive-generator-C.omf
+entities = legal.xml
+include $(top_srcdir)/xmldocs.make
 dist-hook: app-dist-hook
