@@ -8,19 +8,15 @@ RPCLIB=-lrpcsvc
 BSDLIB = -lbsd
 #endif
 
-#ifdef sgi
-XLIBS=-lregex
-#endif
-
 LIBS = $(BSDLIB) -lhesiod $(RPCLIB) -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto \
-	-lcom_err -lathdir $(XLIBS) 
+	-lcom_err -lathdir
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
 	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c add.c stringlist.c\
-	getrealm.c rvdutil.c pathcan.c config.c $(XSRCS)
+	getrealm.c rvdutil.c pathcan.c config.c
 OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
 	afs.o ufs.o rpc.o mount.o unmount.o zephyr.o add.o stringlist.o\
-	getrealm.o rvdutil.o pathcan.o config.o $(XOBJS)
+	getrealm.o rvdutil.o pathcan.o config.o
 
 build_program(attach,$(OBJS),,$(LIBS))
 install_program(attach,-m 4755 -o root -s,$(ATHRBINDIR))
