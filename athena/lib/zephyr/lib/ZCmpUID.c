@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUID.c,v 1.2 1987-06-13 00:59:12 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCmpUID.c,v 1.3 1987-07-01 04:36:23 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -19,5 +19,5 @@
 int ZCompareUID(uid1,uid2)
 	ZUnique_Id_t *uid1,*uid2;
 {
-	return (!bcmp(uid1,uid2,sizeof (*uid1)));
+	return (!bcmp((char *)uid1,(char *)uid2,sizeof (*uid1)));
 }

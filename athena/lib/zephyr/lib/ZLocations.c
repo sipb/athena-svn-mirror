@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.6 1987-07-01 01:49:49 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.7 1987-07-01 04:38:16 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -26,8 +26,9 @@ Code_t ZSetLocation()
 	struct passwd *pw;
 	
         quiet = 0;
+	/*NOSTRICT*/
 	if (pw = getpwuid(getuid())) {
-		sprintf(bfr,"%s/.hideme",pw->pw_dir);
+		(void) sprintf(bfr,"%s/.hideme",pw->pw_dir);
 		quiet = !access(bfr,F_OK);
 	} 
 

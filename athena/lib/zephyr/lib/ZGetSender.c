@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.1 1987-06-26 03:35:17 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.2 1987-07-01 04:36:57 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -31,15 +31,16 @@ char *ZGetSender()
 
 	tktfile = (char *)TKT_FILE;
 	if (!(fp = fopen(tktfile,"r"))) {
+		/*NOSTRICT*/
 		pw = getpwuid(getuid());
 		if (!pw)
 			return ("unauth");
-		sprintf(sender,"%s@UNAUTH",pw->pw_name);
+		(void) sprintf(sender,"%s@UNAUTH",pw->pw_name);
 		return (sender);
 	} 
 	getst(fp,pname,ANAME_SZ);
 	getst(fp,pinst,INST_SZ);
-	sprintf(sender,"%s%s%s@%s",pname,(pinst[0]?".":""),pinst,
+	(void) sprintf(sender,"%s%s%s@%s",pname,(pinst[0]?".":""),pinst,
 		__Zephyr_realm);
 	
 	return (sender);
