@@ -88,8 +88,9 @@ struct deviceSyncNode{
 */
 #define TC_TRAILERBEGIN		"+=!@#$%><%$#@!=+"	/*indicates that trailer follows */
 #define	TC_MAXTAPENAMELEN 100	/*dont know how to estimate these numbers */
-#define TC_DEVICEINUSE 0x1000  	/* used to indicate use of device by somebody *
-/
+#define TC_DEVICEINUSE 0x1000  	/* used to indicate use of device by somebody */
+#define TC_NULLTAPENAME  "<NULL>"   /* default tape name */
+#define TC_QUOTEDNULLTAPENAME "\"<NULL>\""  /* null tapename in quotes */
 
 /* for user prompt generation */
 #define READOPCODE  	0			/* read tape - for restore */
@@ -176,6 +177,7 @@ struct saveDbIf
 #define TC_BADQUEUE                              (156566289L)
 #define TC_NOMEMORY                              (156566290L)
 #define TC_NOTPERMITTED                          (156566291L)
+#define TC_SKIPTAPE                              (156566292L)
 extern void initialize_butc_error_table ();
 #define ERROR_TABLE_BASE_butc (156566272L)
 

@@ -18,6 +18,7 @@
 #define PRINCONSISTENT                           (267277L)
 #define PRDBADDR                                 (267278L)
 #define PRTOOMANY                                (267279L)
+#define PRNOMEM                                  (267280L)
 extern void initialize_pt_error_table ();
 #define ERROR_TABLE_BASE_pt (267264L)
 

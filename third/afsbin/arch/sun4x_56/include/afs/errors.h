@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/errors.h,v 1.1.1.1 1998-02-20 21:35:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/errors.h,v 1.1.1.2 1999-12-21 04:05:52 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/errors.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsiderrors = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/errors.h,v 1.1.1.1 1998-02-20 21:35:27 ghudson Exp $";
+static char *rcsiderrors = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/errors.h,v 1.1.1.2 1999-12-21 04:05:52 ghudson Exp $";
 #endif
 
 /*

@@ -26,9 +26,6 @@ Author:  	M.Satyanarayanan
 
 
 $Log: not supported by cvs2svn $
- * Revision 2.1  1990/08/07  19:38:45  hines
- * Start with clean version to sync test and dev trees.
- *
  * Revision 1.2  89/03/30  21:48:33  kazar
  * update copyright notice
  * 
@@ -152,7 +149,7 @@ Abstract:	Contains miscellaneous general-purpose  macros.
 	Also beware: you cannot make the NOASSERT case a null macro, because of side effects */
 
 #ifndef NOASSERT
-#define assert(ex) {if (!(ex)){fprintf(stderr,"Assertion failed: file %s, line %d\n", __FILE__, __LINE__);fprintf(stderr, "\t ex \n"); abort();}}
+#define assert(ex) {if (!(ex)){fprintf(stderr,"Assertion failed: file %s, line %d\n", __FILE__, __LINE__);fprintf(stderr, "\t%s\n", # ex); abort();}}
 #else
 #define assert(ex) {if (!(ex)) abort();}
 #endif

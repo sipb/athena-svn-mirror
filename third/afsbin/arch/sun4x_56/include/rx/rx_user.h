@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_user.h,v 1.1.1.1 1998-02-20 21:35:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_user.h,v 1.1.1.2 1999-12-21 04:06:16 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_user.h,v $ */
 
 /*
@@ -32,11 +32,8 @@ error-foo error-foo error-foo
 
 #include <afs/param.h>
 #include <stdio.h>
+#include <stdlib.h>	/* for malloc() */
 #include <lwp.h>
-
-#ifdef RXDEBUG
-extern FILE *rx_debugFile;
-#endif
 
 /* These routines are no-ops in the user level implementation */
 #define SPLVAR
@@ -58,8 +55,13 @@ extern void rxi_StartServerProc();
 extern void rxi_ReScheduleEvents();
 
 /* Some "operating-system independent" stuff, for the user mode implementation */
+#ifdef UAFS_CLIENT
+typedef void *osi_socket;
+#define	OSI_NULLSOCKET	((osi_socket) 0)
+#else /* UAFS_CLIENT */
 typedef int32 osi_socket;
 #define	OSI_NULLSOCKET	((osi_socket) -1)
+#endif /* UAFS_CLIENT */
 
 #define	osi_rxSleep(x)		    rxi_Sleep(x)
 #define	osi_rxWakeup(x)		    rxi_Wakeup(x)
@@ -67,11 +69,11 @@ typedef int32 osi_socket;
 #ifndef	AFS_AIX32_ENV
 
 #ifndef osi_Alloc
-#define	osi_Alloc(size)		    ((char *) malloc(size))
+#define	osi_Alloc(size)		    malloc(size)
 #endif
 
 #ifndef osi_Free
-#define	osi_Free(ptr, size)	    free((char *)(ptr))
+#define	osi_Free(ptr, size)	    free(ptr)
 #endif
 
 #endif
@@ -82,7 +84,9 @@ typedef int32 osi_socket;
 #define	osi_QuickFree(ptr, size)    osi_Free(ptr, size)
 #define	osi_QuickAlloc(size)	    osi_Alloc(size)
 
-extern osi_Panic();
+extern void osi_Panic();
+extern void osi_AssertFailU(const char *expr, const char *file, int line);
+#define osi_Assert(e) (void)((e) || (osi_AssertFailU(#e, __FILE__, __LINE__), 0))
 
 #if  !defined(_ANSI_C_SOURCE) || defined(AFS_NEXT20_ENV) || defined(AFS_SUN_ENV)
 #ifdef AFS_NEXT20_ENV

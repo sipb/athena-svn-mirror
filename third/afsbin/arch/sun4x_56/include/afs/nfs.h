@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/nfs.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/nfs.h,v 1.1.1.2 1999-12-21 04:06:05 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/nfs.h,v $ */
 
 #include <errno.h>
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/nfs.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $";
+static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/nfs.h,v 1.1.1.2 1999-12-21 04:06:05 ghudson Exp $";
 #endif
 
 #ifndef	AFS_VOL_NFS_H

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/fssync.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/fssync.h,v 1.1.1.2 1999-12-21 04:06:08 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/fssync.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidfssync = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/fssync.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $";
+static char *rcsidfssync = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/fssync.h,v 1.1.1.2 1999-12-21 04:06:08 ghudson Exp $";
 #endif
 
 /*
@@ -46,3 +46,14 @@ static char *rcsidfssync = "$Header: /afs/dev.mit.edu/source/repository/third/af
 
 #define FSYNC_DENIED		0
 #define FSYNC_OK		1
+
+
+/* Prototypes from fssync.c */
+void FSYNC_clientFinis(void);
+int FSYNC_clientInit(void);
+void FSYNC_fsInit(void);
+int FSYNC_askfs(VolumeId volume, char *partName, int com, int reason);
+
+
+
+

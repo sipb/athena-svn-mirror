@@ -24,17 +24,10 @@
  *
  *	defines a few constants used throughout ITC code
  *
- *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/itc.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/itc.h,v 1.1.1.2 1999-12-21 04:05:46 ghudson Exp $
  */
 
 /* $Log: not supported by cvs2svn $
- * Revision 2.2  1992/11/06  19:09:44  bob
- * Change anything after #else and #endif to comments to make files
- * more likely to be ANSI-C compliant.
- *
- *
- * [from revision 2.1 by delta bob-2970-ansify-#else-and-#endif, revision 1.1]
- *
  * Revision 1.2  89/03/30  21:48:14  kazar
  * update copyright notice
  * 
@@ -76,6 +69,5 @@ typedef	int	boolean;
 /* very commonly used values */
 #define	TRUE	1
 #define	FALSE	0
-#define	NULL	0
 
 #endif /* _ITC */

@@ -29,7 +29,7 @@
 */
 
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rxkad.h,v 1.1.1.1 1998-02-20 21:35:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rxkad.h,v 1.1.1.2 1999-12-21 04:06:21 ghudson Exp $ */
 
 #ifndef TRANSARC_RXKAD_RXKAD_H
 #define TRANSARC_RXKAD_RXKAD_H
@@ -122,7 +122,25 @@ struct rxkad_stats {
     long spares[10];
 };
 
-extern struct rxkad_stats rxkad_stats;
+#if defined(AFS_NT40_ENV) && defined(AFS_PTHREAD_ENV)
+#ifndef RXKAD_STATS_DECLSPEC
+#define RXKAD_STATS_DECLSPEC __declspec(dllimport) extern
+#endif
+#else
+#define RXKAD_STATS_DECLSPEC extern
+#endif
+RXKAD_STATS_DECLSPEC struct rxkad_stats rxkad_stats;
+#ifdef AFS_PTHREAD_ENV
+#include <pthread.h>
+#include <assert.h>
+extern pthread_mutex_t rxkad_stats_mutex;
+#define LOCK_RXKAD_STATS assert(pthread_mutex_lock(&rxkad_stats_mutex)==0);
+#define UNLOCK_RXKAD_STATS assert(pthread_mutex_unlock(&rxkad_stats_mutex)==0);
+#else
+#define LOCK_RXKAD_STATS
+#define UNLOCK_RXKAD_STATS
+#endif
+
 
 /* gak! using up spares already! */
 #define rxkad_stats_clientObjects (rxkad_stats.spares[0])

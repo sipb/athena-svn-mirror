@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lwp.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lwp.h,v 1.1.1.2 1999-12-21 04:05:47 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lwp.h,v $ */
 
 #ifndef __LWP_INCLUDE_
 #define	__LWP_INCLUDE_	1
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lwp.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $";
+static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lwp.h,v 1.1.1.2 1999-12-21 04:05:47 ghudson Exp $";
 #endif
 
 /*
@@ -36,7 +36,7 @@ static char *rcsidlwp = "$Header: /afs/dev.mit.edu/source/repository/third/afsbi
 * 								    *
 \*******************************************************************/
 
-#if !defined(KERNEL) && !defined(_KMEMUSER)
+#if !defined(KERNEL) && !defined(_KMEMUSER) && !defined(AFS_PTHREAD_ENV)
 #include <afs/param.h>
 #include <setjmp.h>
 
@@ -170,6 +170,9 @@ extern pthread_mutex_t lwp_mutex;
 #define LWP_EXIT_LWP_CONTEXT() pthread_mutex_unlock(&lwp_mutex)
 #define LWP_ENTER_LWP_CONTEXT() pthread_mutex_lock(&lwp_mutex)
 #else
+#ifndef AFS_NT40_ENV
+#define lwp_abort() abort()
+#endif
 /* Maximum priority permissible (minimum is always 0) */
 #define LWP_MAX_PRIORITY 4	/* changed from 1 by Satya, 22 Nov. 85 */
 
@@ -181,6 +184,29 @@ extern pthread_mutex_t lwp_mutex;
 
 typedef struct lwp_pcb *PROCESS;
 
+#ifdef AFS_NT40_ENV
+#include <windef.h>
+typedef struct lwp_pcb {
+    char name[32];	/* name of LWP */
+    LPVOID fiber;
+    int (*funP)();	/* function to execute on this LWP */
+    void *argP;		/* argument for function */
+    int priority;	/* LWP priority */
+    int stacksize;	/* Just for reference. */
+    /* the following are used for scheduling */
+    int status:8;
+    int eventlistsize:8;
+    int eventcnt:8;
+    int padding:8;
+    void **eventlist;
+    int wakevent;
+    int waitcnt;
+    struct lwp_pcb *next, *prev;
+    struct IoRequest *iomgrRequest;
+    int index;	/* new number (++) for each process created. */
+} lwp_pcb_t;
+
+#else
 struct lwp_context {	/* saved context for dispatcher */
     char *topstack;	/* ptr to top of process stack */
 #ifdef sparc
@@ -229,6 +255,7 @@ struct lwp_pcb {			/* process control block */
   int           index;                  /* LWP index: should be small index; actually is
                                            incremented on each lwp_create_process */ 
   };
+#endif /* AFS_NT40_ENV */
 
 extern int lwp_nextindex;                      /* Next lwp index to assign */
 
@@ -252,7 +279,7 @@ struct	 lwp_ctl {			/* LWP control structure */
     struct lwp_pcb *outerpid;		/* process carved by Initialize */
     struct lwp_pcb *first, last;	/* ptrs to first and last pcbs */
 #ifdef __hp9000s800
-    double	dsptchstack[100];	/* stack for dispatcher use only */
+    double	dsptchstack[200];	/* stack for dispatcher use only */
 					/* force 8 byte alignment        */
 #else
     char	dsptchstack[800];	/* stack for dispatcher use only */
@@ -267,12 +294,15 @@ extern
 /* 
  * Under hpux, any stack size smaller than 16K seems prone to
  * overflow problems.
+ *
+ * On Solaris 2.5, gethostbyname() can use up to 21920 bytes of stack
+ * space.  Note: when measuring this, it is important to check the
+ * amount of stack space it uses for hosts that are known as well as
+ * for hosts that are unknown; the stack usage can differ between these
+ * cases, and also between machines apparently running the same OS
+ * version.
  */
-#if defined(AFS_HPUX_ENV) || defined(AFS_NEXT_ENV) || defined(AFS_AIX_ENV) || defined(AFS_OSF_ENV)
-#define AFS_LWP_MINSTACKSIZE	(24 * 1024)
-#else
-#define AFS_LWP_MINSTACKSIZE	(16 * 1024)
-#endif /* defined(AFS_HPUX_ENV) */
+#define AFS_LWP_MINSTACKSIZE	(48 * 1024)
 
 /* Action to take on stack overflow. */
 #define LWP_SOQUIET	1		/* do nothing */
@@ -283,10 +313,67 @@ extern int lwp_overflowAction;
 /* Tells if stack size counting is enabled. */
 extern int lwp_stackUseEnabled;
 extern int lwp_MaxStackSeen;
-#endif	/* USE_PTHREADS */
+
 #ifndef	AFS_AIX32_ENV
-#define	LWP_CreateProcess2(a, b, c, d, e, f)	LWP_CreateProcess((a), (b), (c), (d), (e), (f))
+#define	LWP_CreateProcess2(a, b, c, d, e, f)	\
+	LWP_CreateProcess((a), (b), (c), (d), (e), (f))
 #endif
+
+/* External function declarations. */
+#ifdef AFS_NT40_ENV
+#include <winsock2.h>
+#elif defined(AFS_LINUX20_ENV)
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#else
+# include <unistd.h>			/* select() prototype */
+# include <sys/types.h>			/* fd_set on older platforms */
+# include <sys/time.h>			/* struct timeval, select() prototype */
+# ifndef FD_SET
+#  include <sys/select.h>		/* fd_set on newer platforms */
+# endif
+#endif
+
+#endif	/* USE_PTHREADS */
+
+/* iomgr.c */
+extern fd_set *IOMGR_AllocFDSet(void);
+extern int IOMGR_Select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds,
+			struct timeval *tvp);
+extern int IOMGR_Poll(void);
+extern void IOMGR_Sleep(int seconds);
+extern int IOMGR_Cancel(PROCESS pid);
+extern int IOMGR_Initialize(void);
+extern void IOMGR_FreeFDSet(fd_set * fds);
+static void SignalTimeout(int code, struct timeval *timeout);
+
+/* fasttime.c */
+extern int FT_GetTimeOfDay(struct timeval *tv, struct timezone *tz);
+extern int FT_Init (int printErrors, int notReally);
+extern int FT_AGetTimeOfDay(struct timeval *tv, struct timezone *tz);
+extern unsigned int FT_ApproxTime(void);
+
+
+extern int LWP_WaitForKeystroke(int seconds); /* -1 => forever */
+extern int LWP_GetResponseKey(int seconds, char *key);
+extern int LWP_GetLine(char *linebuf, int len);
+#ifdef AFS_NT40_ENV
+/* lwp.c */
+extern int LWP_InitializeProcessSupport(int priority, PROCESS *pid);
+extern int LWP_CreateProcess(int (*funP)(), int stacksize, int priority,
+			     void *argP, char *name, PROCESS *pid);
+extern int LWP_DestroyProcess(PROCESS pid);
+extern int LWP_DispatchProcess(void);
+extern int LWP_WaitProcess(void *event);
+extern int LWP_INTERNALSIGNAL(void *event, int yield);
+extern int LWP_QWait(void);
+extern int LWP_QSignal(PROCESS pid);
+#endif
+
+/* max time we are allowed to spend in a select call on NT */
+#define IOMGR_MAXWAITTIME        5 /* seconds */
+
 #endif /* __LWP_INCLUDE_ */
 
 #endif /* !KERNEL && !_KMEMUSER */

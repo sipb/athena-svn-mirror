@@ -6,6 +6,12 @@
 #ifdef	KERNEL
 /* The following 'ifndefs' are not a good solution to the vendor's omission of surrounding all system includes with 'ifndef's since it requires that this file is included after the system includes...*/
 #include "../afs/param.h"
+#ifdef	UKERNEL
+#include "../afs/sysincludes.h"
+#include "../rx/xdr.h"
+#include "../rx/rx.h"
+#include "../rx/rx_globals.h"
+#else	/* UKERNEL */
 #include "../h/types.h"
 #ifndef	SOCK_DGRAM  /* XXXXX */
 #include "../h/socket.h"
@@ -14,7 +20,9 @@
 #ifdef AFS_DEC_ENV
 #include "../h/smp_lock.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../h/file.h"
+#endif
 #endif
 #ifndef	S_IFMT  /* XXXXX */
 #include "../h/stat.h"
@@ -25,19 +33,44 @@
 #ifndef	DST_USA  /* XXXXX */
 #include "../h/time.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../rpc/types.h"
+#endif /* AFS_LINUX22_ENV */
 #ifndef	XDR_GETLONG /* XXXXX */
-#include "../rpc/xdr.h"
+#ifdef AFS_LINUX22_ENV
+#ifndef quad_t
+#define quad_t __quad_t
+#define u_quad_t __u_quad_t
 #endif
+#endif
+#ifdef AFS_LINUX22_ENV
+#include "../rx/xdr.h"
+#else /* AFS_LINUX22_ENV */
+#include "../rpc/xdr.h"
+#endif /* AFS_LINUX22_ENV */
+#endif /* XDR_GETLONG */
+#endif   /* UKERNEL */
 #include "../afsint/rxgen_consts.h"
-#include "../afs/osi.h"
+#include "../afs/afs_osi.h"
 #include "../rx/rx.h"
+#include "../rx/rx_globals.h"
 #else	/* KERNEL */
+#include <afs/param.h>
+#include <afs/stds.h>
 #include <sys/types.h>
 #include <rx/xdr.h>
 #include <rx/rx.h>
+#include <rx/rx_globals.h>
 #include <afs/rxgen_consts.h>
 #endif	/* KERNEL */
+
+#ifdef AFS_NT40_ENV
+#ifndef AFS_RXGEN_EXPORT
+#define AFS_RXGEN_EXPORT __declspec(dllimport)
+#endif /* AFS_RXGEN_EXPORT */
+#else /* AFS_NT40_ENV */
+#define AFS_RXGEN_EXPORT
+#endif /* AFS_NT40_ENV */
 
 
 struct ka_CBS {
@@ -84,8 +117,8 @@ bool_t xdr_EncryptionKey();
 #ifndef Date
 #define Date u_int32
 #endif
-#if !defined(AFS_AIX22_ENV) && !defined(AFS_HPUX_ENV)
-#define AUTH_LOG
+#if !defined(AFS_HPUX_ENV) && !defined(AFS_NT40_ENV) && !defined(AFS_LINUX20_ENV)
+#define AUTH_DBM_LOG
 #endif
 
 typedef char *kaname;
@@ -235,16 +268,46 @@ bool_t xdr_ka_debugInfo();
 #define KAA_HIGHEST_OPCODE	22
 #define KAA_NUMBER_OPCODES	4
 
+#define KAA_NO_OF_CLIENT_STAT_FUNCS	4
+
+#define KAA_NO_OF_SERVER_STAT_FUNCS	4
+
+AFS_RXGEN_EXPORT
+extern const char *KAA_client_function_names[];
+
+AFS_RXGEN_EXPORT
+extern const char *KAA_server_function_names[];
+
 
 /* Opcode-related useful stats for package: KAT_ */
 #define KAT_LOWEST_OPCODE   3
 #define KAT_HIGHEST_OPCODE	23
 #define KAT_NUMBER_OPCODES	2
 
+#define KAT_NO_OF_CLIENT_STAT_FUNCS	2
+
+#define KAT_NO_OF_SERVER_STAT_FUNCS	2
+
+AFS_RXGEN_EXPORT
+extern const char *KAT_client_function_names[];
+
+AFS_RXGEN_EXPORT
+extern const char *KAT_server_function_names[];
+
 
 /* Opcode-related useful stats for package: KAM_ */
 #define KAM_LOWEST_OPCODE   4
 #define KAM_HIGHEST_OPCODE	15
 #define KAM_NUMBER_OPCODES	12
+
+#define KAM_NO_OF_CLIENT_STAT_FUNCS	12
+
+#define KAM_NO_OF_SERVER_STAT_FUNCS	12
+
+AFS_RXGEN_EXPORT
+extern const char *KAM_client_function_names[];
+
+AFS_RXGEN_EXPORT
+extern const char *KAM_server_function_names[];
 
 #endif	/* _RXGEN_KAUTH_ */

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/preempt.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/preempt.h,v 1.1.1.2 1999-12-21 04:05:46 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/preempt.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidpreempt = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/preempt.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $";
+static char *rcsidpreempt = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/preempt.h,v 1.1.1.2 1999-12-21 04:05:46 ghudson Exp $";
 #endif
 
 /*
@@ -35,8 +35,16 @@ static char *rcsidpreempt = "$Header: /afs/dev.mit.edu/source/repository/third/a
 \*******************************************************************/
 
 
+#if defined( _WIN32) || defined(AFS_LINUX20_ENV)
+/* preemption not implemented for win32. Use threads instead. */
+#define PRE_InitPreempt(A)
+#define PRE_PreemptMe()		
+#define PRE_BeginCritical()
+#define PRE_EndCritical()
+#else
 #define PRE_PreemptMe()		lwp_cpptr->level = 0
 #define PRE_BeginCritical()	lwp_cpptr->level++
 #define PRE_EndCritical()	lwp_cpptr->level--
+#endif
 
 #define DEFAULTSLICE	10

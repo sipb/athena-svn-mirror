@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_queue.h,v 1.1.1.1 1998-02-20 21:35:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_queue.h,v 1.1.1.2 1999-12-21 04:06:19 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_queue.h,v $ */
 
 /*
@@ -181,4 +181,6 @@ for (n=0, queue_Scan(&myqueue, qe, nqe, myelement), n++) {}
 	!queue_IsEnd(q,	qe);				\
 	(qe) = prev, prev = queue_Prev(qe, s)
 
+#define queue_Count(q, qe, nqe, s, n) 			\
+    for (n=0, queue_Scan(q, qe, nqe, s), n++) {}	
 #endif /* _RX_QUEUE_ */

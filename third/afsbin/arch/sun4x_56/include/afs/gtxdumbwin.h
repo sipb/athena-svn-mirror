@@ -21,7 +21,7 @@ struct gator_dumbgwin {
     char box_vertchar;	/*Vertical char for boxing purposes*/
     char box_horizchar;	/*Horizontal char for boxing purposes*/
 };
-#endif 0
+#endif /* 0 */
 
 /*Dumb gwin's creation parameters*/
 struct gator_dumbgwin_params {

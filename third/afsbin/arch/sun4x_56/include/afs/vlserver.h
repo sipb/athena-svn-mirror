@@ -14,6 +14,7 @@
 #define	_VLSERVER_
 
 #include "vldbint.h"
+#include <afs/afsutil.h>
 
 extern struct vldstats dynamic_statistics;
 
@@ -21,7 +22,7 @@ extern struct vldstats dynamic_statistics;
 
 #define	HASHSIZE		8191	/* Must be prime */
 #define	NULLO			0
-#define	VLDBALLOCCOUNT		40
+#define	VLDBALLOCCOUNT		500
 
 /* Current upper limits limits on certain entries; increase with care! */
 #define	BADSERVERID	255
@@ -136,8 +137,7 @@ struct extentaddr {
 #define	ex_addrs	_ex_un._ex_addrentry.addrs
 #define	ex_uniquifier	_ex_un._ex_addrentry.uniquifier
 
-extern int LogLevel;
-#define VLog(level, str)  if ((level) <= LogLevel) (VLLog str)
+#define VLog(level, str)   ViceLog(5, str) 
 
 #endif /* _VLSERVER_ */
 

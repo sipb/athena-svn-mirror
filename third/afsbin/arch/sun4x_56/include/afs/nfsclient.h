@@ -9,7 +9,7 @@
 
 #define	NNFSCLIENTS	32	/* Hash table size for afs_nfspags table */
 #define	NHash(host)	((host) & (NNFSCLIENTS-1))
-#define NFSCLIENTGC     (10*3600) /* time after which to GC nfsclientpag structs */
+#define NFSCLIENTGC     (24*3600) /* time after which to GC nfsclientpag structs */
 #define	NFSXLATOR_CRED	0xaaaa
 
 struct nfsclientpag {
