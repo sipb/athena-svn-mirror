@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.10 1989-11-26 16:33:31 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.11 1989-12-07 11:12:22 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -75,12 +75,6 @@ endif
 # Load user X resources.
 
 if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
-
-
-# Set the terminal characteristics.  This is done here so as to obtain
-# proper terminal behavior from shells started by your window manager
-
-/bin/stty dec
 
 
 # Start window manager.  To change your default window manager, set the 
