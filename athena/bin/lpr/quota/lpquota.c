@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.13 1991-05-08 12:17:33 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.14 1992-12-23 11:50:46 probe Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: probe $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.13 1991-05-08 12:17:33 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.14 1992-12-23 11:50:46 probe Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -30,14 +30,12 @@ static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include <time.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <strings.h>
 #include <lp.local.h>
 
 extern uid_t getuid();
 extern uuid_$t uuid_$nil;
 extern char *getenv();
-#if !defined(_AUX_SOURCE)
-extern char *rindex();
-#endif
 extern char *pgetstr();
 extern long atol();
 
