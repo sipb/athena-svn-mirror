@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:40:18  tom
+ * athena release 7.0e
+ * 
  * Revision 1.2  90/04/26  17:46:22  tom
  * added function declarations
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ps_grp.c,v 1.3 1990-05-26 13:40:18 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ps_grp.c,v 2.0 1992-04-22 01:58:31 tom Exp $";
 #endif
 
 
@@ -30,21 +33,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #include <mit-copyright.h>
 
 #ifdef MIT
-
-/*
- * This gets set again
- */
-
-#ifdef BSD
-#undef BSD
-#endif BSD
-
-#include <sys/param.h>
-#include <sys/dir.h>
-
-#define KERNEL
-#include <sys/file.h>
-#undef  KERNEL
+#ifndef RSPOS 
 
 #include <sys/proc.h>
 #include <sys/text.h>
@@ -62,6 +51,36 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #include <sys/conf.h>
 #include <sys/vm.h>
 #include <machine/pte.h>
+
+#ifdef decmips
+#define inode gnode
+#define i_count g_count
+#endif decmips
+
+#ifdef decmips
+struct  file 
+{
+  int     f_flag;         
+  short   f_type;         
+  short   f_count;        
+  short   f_msgcount;     
+  struct  fileops 
+    {
+      int     (*fo_rw)();
+      int     (*fo_ioctl)();
+      int     (*fo_select)();
+      int     (*fo_close)();
+    } *f_ops;
+  caddr_t f_data;         
+  off_t  f_offset;
+  struct ucred *f_cred;
+};
+
+#else  decmips
+#define KERNEL
+#include <sys/file.h>
+#undef  KERNEL
+#endif  decmips
 
 #define btok(x) ((x) / (1024 / DEV_BSIZE))
 
@@ -222,6 +241,7 @@ psinode(offset, value)
 
       for(ip = in; ip < &in[n]; ip++)
 	{
+
 #ifdef VFS
 	  if(ip->i_vnode.v_count)
 #else  VFS
@@ -310,10 +330,10 @@ pstext(offset, value)
 
       for(tp = tt; tp < &tt[n]; tp++)
 	{
-#ifdef VFS
+#ifdef VFS 
 	  if(tp->x_vptr != NULL)
 #else  VFS
-	  if(tp->x_vitr != NULL)
+	  if(tp->x_iptr != NULL)
 #endif VFS
 	    ++ntxa;
 	  if(tp->x_count != 0)
@@ -431,8 +451,8 @@ psfile(offset, value)
      int offset;
      int *value;
 {
-  struct file *xfile;
   register struct file *fp;
+  struct file *xfile;
   int n = 0;
   int nfile = 0;
   long afile;
@@ -891,5 +911,7 @@ vusize(p)
 		clrnd(ctopt(p->p_tsize+p->p_dsize+p->p_ssize+UPAGES)) - tsz));
 }
 
+
+#endif /* RSPOS */
 
 #endif MIT
