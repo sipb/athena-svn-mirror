@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.17 1992-02-06 17:06:43 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_connect.c,v 1.18 1997-04-30 18:04:25 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.17 1992-02-06 17:06:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.18 1997-04-30 18:04:25 ghudson Exp $";
 #endif
 #endif
 
@@ -51,7 +51,7 @@ t_grab(Request,flag,hold)
   switch (status)
     {
     case GRAB_ME:
-      fprintf(stderr, "You cannot grab yourself in %s.\n",OLC_SERVICE_NAME);
+      fprintf(stderr, "You cannot grab yourself in %s.\n",client_service_name());
       status = NO_ACTION;
       break;
 
@@ -148,9 +148,9 @@ t_forward(Request)
     case SIGNED_OFF:
       printf("Question forwarded.  ");
       if(is_option(Request->options, OFF_OPT))
-	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
+	printf("You have signed off %s.\n", client_service_name());
       else
-	printf("(You are not signed on to %s.)\n", OLC_SERVICE_NAME);
+	printf("(You are not signed on to %s.)\n", client_service_name());
 
       t_set_default_instance(Request);
       status = SUCCESS;
