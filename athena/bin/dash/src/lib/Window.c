@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.3 1993-07-01 23:38:44 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.4 1995-05-26 04:13:52 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -65,6 +65,8 @@ static XjResource resources[] = {
      offset(window.minHeight), XjRInt, 0 },
   { XjNoverrideRedirect, XjCOverrideRedirect, XjRBoolean, sizeof(Boolean),
      offset(window.overrideRedirect), XjRBoolean, (caddr_t)False },
+  { XjNshowCommand, XjCShowCommand, XjRBoolean, sizeof(Boolean),
+     offset(window.showCommand), XjRBoolean, (caddr_t)True },
   { XjNrootTransient, XjCRootTransient, XjRBoolean, sizeof(Boolean),
      offset(window.rootTransient), XjRBoolean, (caddr_t)False },
   { XjNcursorCode, XjCCursorCode, XjRInt, sizeof(int),
@@ -415,7 +417,7 @@ static void realize(me)
   XSetWMProperties(me->core.display,
 		   me->core.window,
 		   &name, &name,
-		   global_argv, global_argc,
+		   me->window.showCommand ? global_argv : NULL, global_argc,
 		   &me->window.sizeHints,
 		   &wmHints,
 		   &classHints);
