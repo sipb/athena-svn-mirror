@@ -1,6 +1,6 @@
 #!/bin/athena/tcsh
 
-# $Revision: 1.29 $
+# $Revision: 1.30 $
 
 umask 2
 
@@ -57,7 +57,7 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 
 set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/viewscribe athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
 
-set end="config/dotfiles config/config"
+set end="athena/man config/dotfiles config/config"
 
 # athena/bin/inittty is not listed now. Hopefully we have a better
 # solution now.
@@ -134,7 +134,7 @@ if ($installman == 1) then
       case athena/lib/moira.dev
         breaksw
       case third/supported/X11R5
-        (cd /build/$package/mit ; make install.man SUBDIRS="util clients demos" >>& $outfile)
+        (cd /build/$package/mit ; make install.man SUBDIRS="util clients demos man" >>& $outfile)
         breaksw
       case athena/lib/kerberos2
         set package="athena/lib/kerberos"
