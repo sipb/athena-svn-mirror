@@ -19,14 +19,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.25 1991-01-23 13:54:43 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.26 1991-02-24 11:42:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.25 1991-01-23 13:54:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.26 1991-02-24 11:42:38 lwvanels Exp $";
 #endif
+#endif
+
+#ifdef m68k
+#define MORE_PROG "/bin/more"
+#else
+#define MORE_PROG "/usr/ucb/more"
 #endif
 
 #include <mit-copyright.h>
@@ -38,11 +44,13 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef m68k
+#include <sys/termio.h>
+struct termio mode;
+#else
 #include <sgtty.h>
-
-
 struct sgttyb mode;
-
+#endif
 /*
  * Function:	display_file() prints a file on a user's terminal.
  * Arguments:	filename:	Name of file to be printed.
@@ -69,7 +77,7 @@ display_file(filename)
       return(ERROR);
     }
   
-  if (call_program("/usr/ucb/more", filename) == ERROR) 
+  if (call_program(MORE_PROG, filename) == ERROR) 
     {
       while(fgets(line, LINE_SIZE, file) != (char *)NULL)
 	printf("%s", line);
@@ -216,7 +224,11 @@ get_key_input(text)
   printf("%s",text);
   fflush(stdout);
   raw_mode();
+#ifdef m68k
+  ioctl(0, TCFLSH, 2);
+#else
   ioctl(0, TIOCFLUSH, 0);
+#endif
   c = getchar();
   cooked_mode();
  
@@ -224,6 +236,21 @@ get_key_input(text)
 }
 
 
+#ifdef m68k
+raw_mode()
+{
+  ioctl(0, TCGETA, &mode);
+  mode.c_lflag = mode.c_lflag & (~ECHO | ~ICANON | ~ISIG);
+  ioctl(0, TCSETA, &mode);
+}
+
+cooked_mode()
+{
+  ioctl(0, TCGETA, &mode);
+  mode.c_lflag = mode.c_lflag & (ICANON | ISIG | ECHO);
+  ioctl(0, TCSETA, &mode);
+}
+#else
 raw_mode()
 {
   ioctl(0, TIOCGETP, &mode);
@@ -237,7 +264,7 @@ cooked_mode()
   mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
   ioctl(0, TIOCSETP, &mode);
 }
-
+#endif
 
 
 int
@@ -532,11 +559,7 @@ what_now(file, edit_first, editor)
 	edit_message(file, editor);
       else if (string_equiv(inbuf,"quit",max(strlen(inbuf),1)))
 	return(NO_ACTION);
-      else if (string_equiv(inbuf,"send",max(strlen(inbuf),1)) ||
-	       string_equiv(inbuf,"sned",max(strlen(inbuf),1)) ||
-	       string_equiv(inbuf,"sedn",max(strlen(inbuf),1)) ||
-	       string_equiv(inbuf,"sden",max(strlen(inbuf),1)) ||
-	       string_equiv(inbuf,"snde",max(strlen(inbuf),1)))
+      else if (string_equiv(inbuf,"send",max(strlen(inbuf),1)))
 	return(SUCCESS);
       else if (string_equiv(inbuf,"list",max(strlen(inbuf),1)))
 	display_file(file);
