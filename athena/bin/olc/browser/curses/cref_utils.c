@@ -24,18 +24,19 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
  *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.9 1997-04-30 17:27:13 ghudson Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.10 1997-11-22 19:25:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.9 1997-04-30 17:27:13 ghudson Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.10 1997-11-22 19:25:18 ghudson Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
+#include <string.h>
 #include <curses.h>			/* Curses package defs. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
@@ -115,8 +116,6 @@ call_program(program, argument)
 {
   int pid;				/* Process id for forking. */
   char error[ERRSIZE];			/* Error message. */
-  extern int errno;			/* Global error variable. */
-  extern char *sys_errlist[];		/* System error messages. */
   
 #ifdef NO_VFORK
   pid = fork();
@@ -132,8 +131,7 @@ call_program(program, argument)
   else if (pid == 0)
     {
       execlp(program, program, argument, 0);
-      sprintf(error,"Error execing %s: %s", program,
-	      sys_errlist[errno]);
+      sprintf(error,"Error execing %s: %s", program, strerror(errno));
       message(1, error);
       return(ERROR);
     }
@@ -331,7 +329,9 @@ wait_for_key()
   mvaddstr(LINES-1, 0, " Hit any key to continue...");
   standend();
   refresh();
+  noecho();
   getch();
+  echo();
 }
 
 /* Function:	create_cref_dir() makes a new CREF directory with an
