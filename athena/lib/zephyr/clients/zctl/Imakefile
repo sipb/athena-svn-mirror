@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v 1.3 1989-03-23 11:15:55 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v 1.4 1989-04-05 18:48:56 jtkohl Exp $
 /**/#
 
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${SS_LIB} ${KRB_LIB} ${DES_LIB}
@@ -16,7 +16,7 @@ OBJS = zctl.o zctl_cmds.o
 OTHERSRCS= zctl_cmds.ct
 
 #ifdef LOCAL_LIBS
-LINCLUDES=-I$(BUILDTOP)/ss/lib
+LINCLUDES=-I$(BUILDTOP)/ss
 #endif
 
 SRCDIR= ${SRCTOP}/clients/zctl
