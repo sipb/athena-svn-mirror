@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.6 1997-07-29 22:20:05 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.7 1998-01-15 23:01:39 danw Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v $
 #	$Author: danw $
 #
@@ -177,7 +177,6 @@ R<>			$@@				turn into magic token
 
 # basic textual canonicalization
 R$*<$+>$*		$2				basic RFC821/822 parsing
-R$+ at $+		$1@$2				"at" -> "@" for RFC 822
 R$*<$*>$*		$1$2$3				in case recursive
 
 # make sure <@a,@b,@c:user@d> syntax is easy to parse -- undone later
@@ -228,8 +227,10 @@ R$*<$*.LOCAL>$*		$1<$2>$3.LOCAL			Extract .LOCAL
 R$*<$*.POP>$*		$1<$2>.POP			Extract .POP
 
 # Resolve name (so our CNAMES work)
-R$*<@$+>$*		$:$1<$[$2$]:@$2>$3
-R$*<$j:@$+>$*		$1<@$j>$3			This mail is for us
+R$*<@$+.$D>$*		$:$1<$[$2$]:@$2>$3		@something.mit.edu
+R$*<@$->$*		$:$1<$[$2$]:@$2>$3		@something [no .s]
+R$*<$=w:@$+>$*		$1<@$j>$3			This mail is for us
+R$*<$=w.$D:@$+>$*	$1<@$j>$3			also for us
 R$*<$*:@$+>$*		$1<@$3>$4			Not for us; don't frob
 
 # deliver mail
