@@ -11,18 +11,22 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_data.c,v $
- *      $Author: tjcoppet $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_data.c,v $
+ *	$Id: t_data.c,v 1.3 1990-05-26 11:59:40 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_data.c,v 1.2 1989-11-17 14:10:27 tjcoppet Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_data.c,v 1.3 1990-05-26 11:59:40 vanharen Exp $";
 #endif
 
+#include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 

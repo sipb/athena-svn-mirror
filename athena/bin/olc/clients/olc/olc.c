@@ -15,19 +15,22 @@
  *      converted to use Hesiod in place of clustertab
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *      $Author: vanharen $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
+ *	$Id: olc.c,v 1.17 1990-05-26 12:03:27 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.16 1990-04-25 16:24:24 vanharen Exp $";
-#endif 
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.17 1990-05-26 12:03:27 vanharen Exp $";
+#endif
 
-
+#include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 #include "olc.h"
