@@ -1132,7 +1132,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.9 2005-03-10 22:16:40 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.10 2005-03-11 05:29:05 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
@@ -2848,7 +2848,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sun4x_59)
@@ -2869,7 +2869,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sun4x_510)
@@ -2890,7 +2890,7 @@ case $AFS_SYSNAME in
 		XLIBELFA="-lelf"
 		XLIBKVM="-lkvm"
 		XLIBS="${LIB_AFSDB} -lsocket -lnsl -lintl -ldl"
-		SHLIB_LINKER="${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
+		SHLIB_LINKER="\${CC} -G -dy -Wl,-M\$(srcdir)/mapfile -Bsymbolic -z text"
 		;;
 
 	sunx86_57)
