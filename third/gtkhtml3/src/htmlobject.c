@@ -1413,7 +1413,7 @@ html_object_cursor_backward (HTMLObject *self, HTMLCursor *cursor)
 		return FALSE;
 
 	if (cursor->offset > 1 || (cursor->offset > 0 && (! (prev = html_object_prev_not_slave (self))
-							  || HTML_IS_CLUEALIGNED (prev)))) {
+							  || HTML_IS_CLUEALIGNED (prev) || !html_object_accepts_cursor (prev)))) {
 		cursor->offset --;
 		cursor->position --;
 		return TRUE;
@@ -1512,11 +1512,22 @@ next_object_uptree_cursor (HTMLObject *obj, HTMLObject * (*next_fn ) (HTMLObject
 /* go down in tree to leaf in way given by down_fn children */
 
 static HTMLObject *
-move_object_downtree_cursor (HTMLObject *obj, HTMLObject * (*down_fn ) (HTMLObject *))
+move_object_downtree_cursor (HTMLObject *obj, HTMLObject * (*down_fn ) (HTMLObject *), HTMLObject * (*next_fn ) (HTMLObject *))
 {
+	HTMLObject *last_obj = obj;
+
 	while ((obj = (*down_fn) (obj))) {
 		if (html_object_accepts_cursor (obj))
 			break;
+		last_obj = obj;
+	}
+
+	if (!obj && last_obj) {
+		obj = last_obj;
+
+		while ((obj = (*next_fn) (obj)))
+			if (html_object_accepts_cursor (obj))
+				break;
 	}
 
 	return obj;
@@ -1532,7 +1543,7 @@ move_object_cursor (HTMLObject *obj, gint *offset, gboolean forward,
 		gboolean found = FALSE;
 		if (((*offset == 0 && forward) || (*offset && !forward)) && html_object_is_container (obj))
 			if ((down = (*down_fn) (obj))) {
-				down = move_object_downtree_cursor (down, down_fn);
+				down = move_object_downtree_cursor (down, down_fn, next_fn);
 				if (down) {
 					if (html_object_is_container (down))
 						*offset = forward ? 0 : 1;
@@ -1552,7 +1563,7 @@ move_object_cursor (HTMLObject *obj, gint *offset, gboolean forward,
 					found = TRUE;
 				} else {
 					HTMLObject *down;
-					down = move_object_downtree_cursor (obj, down_fn);
+					down = move_object_downtree_cursor (obj, down_fn, next_fn);
 					if (down) {
 						if (html_object_is_container (down))
 							*offset = forward ? 0 : 1;

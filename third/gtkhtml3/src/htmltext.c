@@ -104,10 +104,10 @@ get_tags (const HTMLText *text,
 		nt = HTML_TEXT (next);
 
 	/* font tag */
-	std_color = html_color_equal (text->color, html_colorset_get_color (state->engine->settings->color_set,
-									     HTMLTextColor))
-		|| html_color_equal (text->color,
-				      html_colorset_get_color (state->engine->settings->color_set, HTMLLinkColor));
+	std_color = (HTML_IS_TEXT (text) && html_color_equal (text->color, html_colorset_get_color (state->engine->settings->color_set,
+												    HTMLTextColor)))
+		|| (HTML_IS_LINK_TEXT (text) && html_color_equal (text->color,
+								  html_colorset_get_color (state->engine->settings->color_set, HTMLLinkColor)));
 	std_size = (font_style & GTK_HTML_FONT_STYLE_SIZE_MASK) == 0;
 
 

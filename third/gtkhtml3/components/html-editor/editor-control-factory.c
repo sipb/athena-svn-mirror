@@ -307,6 +307,14 @@ url_requested_cb (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointe
 	}
 }
 
+static gboolean
+html_show_popup(GtkWidget *html, GtkHTMLControlData *cd)
+{
+	popup_show_at_cursor (cd);
+
+	return TRUE;
+}
+
 static gint
 html_button_pressed (GtkWidget *html, GdkEventButton *event, GtkHTMLControlData *cd)
 {
@@ -629,6 +637,7 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 	g_signal_connect (html_widget, "url_requested", G_CALLBACK (url_requested_cb), cd);
 	g_signal_connect (html_widget, "button_press_event", G_CALLBACK (html_button_pressed), cd);
 	g_signal_connect_after (html_widget, "button_press_event", G_CALLBACK (html_button_pressed_after), cd);
+	g_signal_connect (html_widget, "popup_menu", G_CALLBACK(html_show_popup), cd);
 
 	cd->control = control;
 }

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: $PACKAGE $GTKHTML_RELEASE.0.99\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
+"POT-Creation-Date: 2003-06-26 11:33-0500\n"
 "PO-Revision-Date: 2002-05-09 16:03+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.8\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
+"POT-Creation-Date: 2003-06-26 11:33-0500\n"
 "PO-Revision-Date: 2003-05-22 14:20+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"

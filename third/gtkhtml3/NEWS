@@ -1,7 +1,16 @@
-gtkhtml-3.0.7 "Project Blue" 2003-06-02
+gtkhtml-3.0.8 "Evening ride" 2003-07-28
 ------------------------------------------------
 
 New in this release
+
+  * fixed blue text saving.
+  * example text changed to be more self-explaining.
+  * fixed printing font issues.
+  * fixed cursor naviagtion.
+  * removed old indent keybindings.
+  * Shift-F10 keybinding for popup menu in the editor.
+
+New in 3.0.7
 
   * emergency bugfix in gtk_html_editor_event.
 
