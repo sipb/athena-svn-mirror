@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v $
-#	$Author: shanzer $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.9 1988-01-22 14:56:05 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.10 1989-09-16 12:54:56 epeisach Exp $
 #
 DESTDIR=
 INCDIR=/usr/include
@@ -29,29 +29,9 @@ clean:
 	rm -f atob btoa *.o
 
 depend:
-	cat </dev/null >x.c
-	for i in btoa atob; do \
-		(echo $$i: $$i.c >>makedep; \
-		/bin/grep '^#[ 	]*include' x.c $$i.c | sed \
-			-e 's,<\(.*\)>,"${INCDIR}/\1",' \
-			-e 's/:[^"]*"\([^"]*\)".*/: \1/' \
-			-e 's/\.c//' >>makedep); done
-	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
-	echo '$$r makedep' >>eddep
-	echo 'w' >>eddep
-	cp Makefile Makefile.bak
-	ed - Makefile < eddep
-	rm eddep makedep x.c
-	echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile
-	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile
-	echo '# see make depend above' >> Makefile
+	mkdep -p ${CFLAGS} btoa.c atob.c
 
-# DO NOT DELETE THIS LINE -- make depend uses it
+# DO NOT DELETE THIS LINE -- mkdep uses it.
 
-btoa: btoa.c
-btoa: /usr/include/stdio.h
-atob: atob.c
-atob: /usr/include/stdio.h
-# DEPENDENCIES MUST END AT END OF FILE
-# IF YOU PUT STUFF HERE IT WILL GO AWAY
-# see make depend above
+btoa: btoa.c /usr/include/stdio.h
+atob: atob.c /usr/include/stdio.h
