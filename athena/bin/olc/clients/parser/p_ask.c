@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.4 1989-11-17 14:06:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.5 1990-02-14 13:05:16 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -67,7 +67,7 @@ do_olc_ask(arguments)
 		    {
 		      printf("Usage is: \task [-topic <topic>] ");
 		      printf("[<username> <instance id>]\n");
-		      printf("\t\t[-instance <instance id>\n");
+		      printf("\t\t[-instance <instance id]>\n");
 		    }
 		  
 		  return(ERROR);
