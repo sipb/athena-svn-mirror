@@ -3,8 +3,8 @@
 #  end_session - Sends hangup signal to all session_gate processes
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v 1.2 1992-03-13 07:35:56 epeisach Exp $
-#	$Author: epeisach $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session.sh,v 1.3 1993-03-12 19:07:49 probe Exp $
+#	$Author: probe $
 #
 
 MAX_PASSES=10
@@ -33,7 +33,7 @@ done
 
 #  Name of file containing process ID of the session_gate process.
 
-## This is not needed, thanks to the T-shell (/bin/csh) $uid variable.
+## This is not needed, thanks to the T-shell (/bin/athena/tcsh) $uid variable.
 #awkcmd='BEGIN {found=0;} ($1=="'$USER'" && found==0) {print $3; found=1;}'
 #uid=`awk -F: "$awkcmd" < /etc/passwd`
 #if [ x"$uid" = x"" ]; then
@@ -48,7 +48,7 @@ done
 #	exit 5
 #fi
 
-uid=`/bin/csh -fc 'echo $uid'`
+uid=`/bin/athena/tcsh -fc 'echo $uid'`
 pid_file=/tmp/session_gate_pid.$uid
 
 if [ $force = 1 ]; then
