@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.10 1991-07-31 22:12:00 lwvanels Exp $
+# $Id: Imakefile,v 1.11 1992-04-30 10:17:51 lwvanels Exp $
 
 USRSCRIPTS=mitvma
 
@@ -29,6 +29,15 @@ install::
 	-for i in $(BITMAPS); do \
 		$(INSTALL) $(DESTDIR)$(ATHXBITDIR)/$$i \
 			$(DESTDIR)/etc/athena/login/$$i; done
+
+
+#if defined(_IBMR2)
+create_dir(/etc/athena/login/fonts)
+
+install_file(fonts.alias,/etc/athena/login/fonts/)
+install_file(fonts.dir,/etc/athena/login/fonts/)
+install_file(7x13.snf,/etc/athena/login/fonts/)
+#endif
 
 
 #if defined(vax) || defined(ibm032) || defined(ultrix)
