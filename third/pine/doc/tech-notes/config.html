@@ -253,6 +253,16 @@ addresses you may have.  If set, the option affects the behavior of the
 <EM>Reply</EM> command and the <EM>+</EM> symbol in the "Folder Index", which
 denotes that a message has been addressed specifically to you. <P>
  
+In the default INDEX display
+the personal name (or email address) of
+the person listed in the message's &quot;From:&quot; header
+field is usually displayed except when that address is yours or one of your
+alternate addresses.
+In that case you will usually see the name of
+the first person specified in the
+message's &quot;To:&quot; header field
+with the prefix &quot;To: &quot; prepended. <P>
+
 With respect to <EM>Reply</EM>, the <EM>Reply to All</EM> option will
 exclude addresses listed here. <P>
 
@@ -335,6 +345,11 @@ This will cause the default colors to be different, but other than that
 things should work fine.
 The escape sequences used to set the background colors are the same
 as for the foreground colors except a &quot;4&quot; replaces the &quot;3&quot;.
+<P>
+Note: With the Tera Term terminal emulator this setting works well.
+You should also have the Tera Term &quot;Full color&quot; option turned OFF.
+You may find the &quot;Full color&quot; option in Tera Term's &quot;Setup&quot;
+menu, in the &quot;Window&quot; submenu.
 </DD>
 
 <DT>force-ansi-16color</DT>
@@ -367,6 +382,39 @@ because C means Config).
 Most categories of color which <EM>Pine</EM> supports are configurable there.
 <A HREF="#index-color-config">Index line color</A> is configured separately.
 <P>
+Beginning with <EM>Pine</EM> 4.41, the default names of some colors were changed
+in order to have better interoperability between <EM>PC-Pine</EM> and Unix
+<EM>Pine</EM> with both eight and 16-color terminals.
+Both <EM>PC-Pine</EM> and 8-color Unix <EM>Pine</EM> will interpret the
+colors named color008, color009, ..., color015 as black, red, ..., white.
+When changing a configuration color they will put the colors black, color009,
+color010, ..., color015 into the config file.
+That is, the colors red, green, ..., white will only appear in the config
+file if put there manually or if they were already there from an older
+version of <EM>Pine</EM>.
+The reason for this is because with 16-color xterm the colors red, green, ...,
+white are actually two-thirds intensity colors, and the colors color009,
+color010, ..., color015 (in pine terminology) are full intensity colors
+which better match the default eight of <EM>PC-Pine</EM> or 8-color
+Unix terminal emulators.
+The idea is that you can use the eight colors of an 8-color terminal on
+a 16-color terminal and with <EM>PC-Pine</EM>.
+Those eight colors will be about the same in all three situations.
+<P>
+In pre-4.41 <EM>PC-Pine</EM> the three default grays offered were called
+color008, color009, and color010.
+Since this conflicts with three of the colors on 16-color terminals these
+three colors have been renamed colorlgr, colormgr, and colordgr.
+<EM>PC-Pine</EM> will attempt to automatically change those color names
+the first time you run a version higher than 4.40.
+If that fails for some reason, you will see your old light grays displayed as
+black, your old medium grays displayed as red,
+and your old dark grays displayed as green.
+You may fix these from within the <EM>PC-Pine</EM> color config screens.
+If you then go back to running a pre-4.41 version of <EM>PC-Pine</EM> the
+colors with the new names (colorlgr...) will show up as Normally colored
+text.
+<P>
 
 <DT> <A NAME="composer-wrap-column"><EM>composer-wrap-column</EM></A>
 
@@ -376,6 +424,11 @@ width of lines justified using the ^J Justify command.  The normal default
 is <EM>74</EM>.  The largest allowed setting is normally <EM>80</EM> in order to
 prevent very long lines from being sent in outgoing mail.  When the mail
 is actually sent, trailing spaces will be stripped off of each line.
+<P>
+
+<DT> <A NAME="current-indexline-style"><EM>current-indexline-style</EM></A>
+
+<DD> <A HREF="#cur-il-style"><EM>current-indexline-style</EM></A>.
 <P>
 
 <DT> <A NAME="cust-hdr"><EM>customized-hdrs</EM></A>
@@ -680,7 +733,7 @@ feature is set.  <P>
 
 <DD> When sending, if all of the To, Cc, and Newsgroups fields are empty,
 <EM>Pine</EM> will put a special address in the To line. The default value is
-"Undisclosed recipients: ;". The reason for this is to avoid
+"undisclosed-recipients: ;". The reason for this is to avoid
 embarrassment caused by some Internet mail transfer software that
 interprets a "missing" To: header as an error and replaces it with an
 Apparently-to: header that may contain the addresses you entered on the
@@ -1078,8 +1131,9 @@ There is always one space between every pair of columns, so if you use fixed
 column widths (like 13) you should remember to take that into account.
 Several of the fields are virtually fixed-width, so it doesn't make
 much sense to specify the width for them.  The fields STATUS,
-FULLSTATUS, MSGNO, the DATE fields, SIZE, and DESCRIPSIZE all fall into that
-category.  You <EM>may</EM> specify widths for those if you wish, but
+FULLSTATUS, IMAPSTATUS, MSGNO, the DATE fields, SIZE,
+and DESCRIPSIZE all fall into that category.
+You <EM>may</EM> specify widths for those if you wish, but
 you're probably better off letting the system pick those widths.  <P>
 
 <P>
@@ -1225,9 +1279,10 @@ Tokens contained in the signature work the same way they do with the regular
 <P>
 
 The Setup/Signature command in <EM>Pine</EM>'s Main Menu will edit
-the <EM>literal-signature</EM> if defined, otherwise
-it will edit the file named in the <EM>signature-file</EM> option.
-Likewise, Compose (Reply, Forward, ...) will default to using the
+the <EM>literal-signature</EM> by default.  However, if no
+<EM>literal-signature</EM> is defined and the file named in the
+<EM>signature-file</EM> option exists, then the latter will be used
+instead.  Compose (Reply, Forward, ...) will default to using the
 <EM>literal-signature</EM> if defined, otherwise it will use the contents
 of the file named in <EM>signature-file</EM>.
 <P>
@@ -1247,6 +1302,31 @@ SETUP CONFIGURATION window after you are done editing the signature.
 <DD> This option specifies, in seconds, how often <EM>Pine</EM> will check for new
 mail. If set to zero, new-mail checking is disabled. There is a minimum
 value, normally 15 seconds.
+<P>
+There are some situations where new-mail checking does not work.
+For example, if a mail folder is opened using the POP protocol or a newsgroup
+is being read using the NNTP protocol, then new-mail checking is disabled.
+<P>
+It may be possible to check for new mail in these cases by reopening the
+folder.
+There is an experimental method for doing this.
+You reopen by going back to the folder list screen from the message
+index screen with the &quot;&lt;&quot; command,
+and then going back into the message index screen with
+the &quot;&gt;&quot; command.
+If <EM>Pine</EM> knows that reopening the folder would be a way to discover
+new mail, it offers to do the reopen.
+If you don't agree to reopen (you answer No) then you are just back in
+the message index with no change.
+However, if you agree to reopen the folder by answering Yes,
+the folder is closed and then reopened.
+In this case, the current state of the open folder is lost.
+The New status, Important and Answered flags,
+selected state, Zoom state, collapsed or expanded state of threads,
+current message number,
+and any other temporary state is all lost when the reopen happens.
+For POP folders (but not NNTP newsgroups) the Deleted flags are also lost.
+<P>
 A side effect of disabling mail checking is that there will be situations
 in which the user's IMAP connection will be broken due to inactivity timers
 on the server. Another side effect is that the
@@ -1368,6 +1448,24 @@ Then use the Shuffle command to move existing patterns into the file.
 This isn't very convenient but it isn't thought that many users will
 need this functionality.
 The purpose of indexcolor files is for sharing indexcolors.
+<P>
+
+<DT> <A NAME="patterns-other"><EM>patterns-other</EM></A>
+
+<DD> Matching patterns and their corresponding actions are stored in
+this variable.
+These patterns are used with
+<A HREF="#other-config"><EM>Miscellaneous Rules</EM></A> configuration.
+This variable is normally maintained through the Setup/Rules/Other
+configuration screen.
+It is a list variable.
+Each member of the list is a single pattern/action pair, or it can be
+a file which contains zero or more lines of pattern/action pairs.
+The only way to create a rules file is to use the InsertFile command in
+the Setup/Rules/Other screen with a filename which doesn't yet exist. Then use
+the Shuffle command to move existing rules into the file.
+This isn't very convenient but it isn't thought that many users will
+need this functionality.
 <P>
 
 <DT> <A NAME="patterns-roles"><EM>patterns-roles</EM></A>
@@ -1578,6 +1676,7 @@ The following tokens are substituted for the message's corresponding value:
 <DL>
 <DT>_FROM_</DT>
 <DD>This token gets replaced with the message sender's &quot;username&quot;.
+At most six characters are used.
 </DD>
 
 <DT>_NICK_</DT>
@@ -1585,6 +1684,7 @@ The following tokens are substituted for the message's corresponding value:
 address as found in your addressbook.
 If no addressbook entry is found,
 Pine replaces the characters &quot;_NICK_&quot; with nothing.
+At most six characters are used.
 </DD>
 
 <DT>_INIT_</DT>
@@ -1685,10 +1785,12 @@ then <EM>Pine</EM> will offer the folder "saved-messages" (UNIX) or "SAVEMAIL"
 (PC) for <EM>Sav</EM>ing messages. The default folder offered in this way
 may be changed by using the configuration variable
 <A HREF="#def-save"><EM>default-saved-msg-folder</EM></A>.
+<P>
+
 If this rule is set to <EM>last-folder-used</EM>, <EM>Pine</EM> offers to
 <EM>Save</EM> to the folder you last successfully <EM>Saved</EM> a message
-to (this session). The first
-time you <EM>Save</EM> a message in a session,
+to (this session).
+The first time you <EM>Save</EM> a message in a session,
 <EM>Pine</EM> offers to <EM>Save</EM> the message to the default folder.
 <P>
 
@@ -1707,21 +1809,57 @@ If <EM>by-replyto</EM> is chosen and no value is
 obtained, <EM>Pine</EM> uses <EM>by-from</EM>.
 <P>
  
-If any of the <EM>by-nick-</EM> options are chosen, the resulting address is
-looked up in the user's address books and if found, the nickname for that
-entry is used.
+If any of the &quot;by-realname&quot; options are chosen, <EM>Pine</EM> will attempt
+to use the personal name part of the address instead of the mailbox part.
+If any of the &quot;by-nick&quot; options are chosen, the
+address is looked up in your address book and if found, the
+nickname for that entry is used.
 Only simple address book entries are checked, not distribution lists.
-Similarly, if any of the <EM>by-fcc-</EM> options are chosen,
-the fcc from the corresponding address book entry is used.
-If no value
-is found in the address book, then if the chosen option ends with the
-&quot;-then-from&quot;, &quot;-then-sender&quot;, &quot;-then-replyto&quot;, or &quot;-then-recip&quot; suffix, <EM>Pine</EM> reverts to
-the same behavior as <EM>by-from</EM>,
-<EM>by-sender</EM>, <EM>by-replyto</EM>, or <EM>by-recipient</EM>
+Similarly, if any of the
+&quot;by-fcc&quot; options are chosen, the fcc from the corresponding
+address book entry is used.
+If by-realname, or the by-nick or by-fcc lookups result in no value,
+then if the chosen option ends with the &quot;then-from&quot;,
+&quot;then-sender&quot;, &quot;then-replyto&quot;,
+or &quot;then-recip&quot; suffix, <EM>Pine</EM>
+reverts to the same behavior as &quot;by-from&quot;,
+&quot;by-sender&quot;, &quot;by-replyto&quot;, or &quot;by-recip&quot;
 depending on which option was specified.
-If the chosen option doesn't
-end with one of the "then-" suffixes, then <EM>Pine</EM> reverts to the default
+If the chosen option doesn't end with one of
+the &quot;then-&quot; suffixes, then <EM>Pine</EM> reverts to the default
 folder when no match is found in the address book.
+
+<P>
+Here is an example to make some of the options clearer.
+If the message is From
+<P>
+<CENTER><SAMP>Fred Flintstone &lt;flint@bedrock.org&gt;</SAMP></CENTER>
+<P>
+and this rule is set to &quot;by-from&quot;, then the default folder offered
+in the save dialog would be &quot;flint&quot;.
+<P>
+If this rule is set to &quot;by-realname-of-from&quot; then the default would
+be &quot;Fred Flintstone&quot;.
+<P>
+If this rule is set to &quot;by-nick-of-from&quot; then <EM>Pine</EM> will search
+for the address &quot;flint@bedrock.org&quot; in your address book.
+If an entry is found and it has a nickname associated with it, that nickname
+will be offered as the default folder.
+If not, the default saved message folder will be offered as the default.
+<P>
+If this rule is set to &quot;by-fcc-of-from&quot; then <EM>Pine</EM> will search
+for the address &quot;flint@bedrock.org&quot; in your address book.
+If an entry is found and it has an Fcc associated with it, that Fcc
+will be offered as the default folder.
+If not, the default saved message folder will be offered as the default.
+<P>
+If this rule is set to &quot;by-nick-of-from-then-from&quot; then <EM>Pine</EM> will search
+for the address &quot;flint@bedrock.org&quot; in your address book.
+If an entry is found and it has a nickname associated with it, that nickname
+will be offered as the default folder.
+If it is not found (or has no nickname) then the default offered will be
+the same as it would be for the &quot;by-from&quot; rule.
+That is, it would be &quot;flint&quot;
 <P>
 
 <DT> <A NAME="scroll-margin"><EM>scroll-margin</EM></A>
@@ -1950,10 +2088,37 @@ It is not possible to have a literal backslash followed by an expanded token.
 use for outgoing mail.  If not set, <EM>Pine</EM> passes outgoing email to the
 <EM>sendmail</EM> program on the local machine.  <EM>PC-Pine</EM> users must have
 this variable set in order to send mail as they have no <EM>sendmail</EM>
-program.  An alternate port may be specified by appending <CODE>:port</CODE>
-to the host name or IP address.  See the <A
+program.
+<P>
+If the SMTP server offers SMTP AUTH authentication you may specify a
+user name parameter to cause <EM>Pine</EM> to attempt to authenticate.
+This parameter requires an associated value,
+the username identifier with which to establish the server
+connection.
+An example might be:
+
+<P>
+<CENTER><SAMP>smtpserver.example.com/user=katie</SAMP></CENTER>
+<P>
+
+If AUTH authentication is offered by the server, this will cause <EM>Pine</EM> to
+attempt to use it.
+If AUTH authentication is not offered by the server, this will cause <EM>Pine</EM>
+to fail sending with an error similar to:
+
+<P>
+<CENTER><SAMP>Error: SMTP authentication not available</SAMP></CENTER>
+<P>
+
+To use a non-standard port number on the SMTP server, follow the hostname
+with colon portnumber.
+
+<P>
+<CENTER><SAMP>smtpserver.example.com:12345</SAMP></CENTER>
+<P>
+See the <A
 HREF="config-notes.html#smtp-server">SMTP Servers</A> section for
-details.  <P>
+some more details.  <P>
 
 <DT> <A NAME="sort-key"><EM>sort-key</EM></A>
 
@@ -2072,6 +2237,210 @@ The default is 15 seconds. The minimum is 5 seconds and the maximumn is
 1000 seconds.
 <P>
 
+<DT> <A NAME="threading-display-style"><EM>threading-display-style</EM></A>
+
+<DD> When a folder is sorted by Threads or OrderedSubject,
+this option will affect the MESSAGE INDEX display.
+By default, <EM>Pine</EM> will display the MESSAGE INDEX in the
+&quot;show-thread-structure&quot; style if a folder is sorted
+by Threads or OrderedSubject.
+The possible values are:
+<P>
+
+<DL>
+<DT><EM>none</EM></DT>
+<DD>Regular index display.
+The same index line as would be displayed without threading is used.
+The only difference will be in the order of the messages.
+</DD>
+
+<DT><EM>show-thread-structure</EM></DT>
+<DD>Threaded Subjects will be indented and vertical bars and horizontal
+lines will be added to make it easier to see the relationships among
+the messages in a thread (a conversation).
+</DD>
+
+<DT><EM>mutt-like</EM></DT>
+<DD>This is the same as the option above except that the Subject
+is suppressed (is blank) if it matches the previous Subject in the thread.
+The name comes from the email client <A HREF="http://www.mutt.org/">Mutt</A>.
+</DD>
+
+<DT><EM>indent-subject-1</EM></DT>
+<DD>Threaded Subjects will be indented one space per level of the conversation.
+The bars and lines that show up in the show-thread-structure display will
+not be there with this style.
+</DD>
+
+<DT><EM>indent-subject-2</EM></DT>
+<DD>Same as above but indent two spaces per level instead of one space.
+</DD>
+
+<DT><EM>indent-from-1</EM></DT>
+<DD>Similar to indent-subject-1, except that instead of indenting the
+Subject field one space the From field of a thread will be indented one
+space per level of the conversation.
+</DD>
+
+<DT><EM>indent-from-2</EM></DT>
+<DD>Same as above but indent two spaces per level instead of one space.
+</DD>
+
+<DT><EM>show-structure-in-from</EM></DT>
+<DD>The structure of the thread is illustrated with indenting, vertical bars,
+and horizontal lines just like with the show-thread-structure option, but
+the From field is used to show the relationships instead of the Subject field. 
+</DD>
+
+</DL>
+<P>
+
+<DT> <A NAME="threading-expanded-character"><EM>threading-expanded-character</EM></A>
+
+<DD> The Threading-Expanded-Character option has a small effect on the MESSAGE
+INDEX display when using a
+<A HREF="#threading-display-style"><EM>threading-display-style</EM></A>
+other than <EM>none</EM>.
+The value of this option is a single character.
+This character is used to indicate that part of a thread has been expanded
+and could be collapsed if desired with
+the &quot;/&quot; Collapse/Expand command.
+By default, the value of this option is a dot (.).
+<P>
+If this option is set to the Empty Value, then the column (and the following
+blank column) will be deleted from the display.
+<P>
+This option is closely related to the
+<A HREF="#threading-indicator-character"><EM>threading-indicator-character</EM></A>
+option.
+Another similar option which affects the thread display is the
+<A HREF="#threading-lastreply-character"><EM>threading-lastreply-character</EM></A> option.
+
+<DT> <A NAME="threading-index-style"><EM>threading-index-style</EM></A>
+
+<DD> When a folder is sorted by Threads or OrderedSubject,
+this option will affect the INDEX displays.
+The possible values are:
+<P>
+
+<DL>
+<DT><EM>regular-index-with-expanded-threads</EM></DT>
+<DD>This is the default display.
+If the configuration option
+<A HREF="#threading-display-style"><EM>threading-display-style</EM></A>
+is set to something other than &quot;none&quot;, then this setting
+will cause <EM>Pine</EM> to start off with a MESSAGE INDEX with all of
+the threads expanded.
+That is, each message will have a line in the MESSAGE INDEX display.
+The Collapse/Expand command (/) may be used to manually collapse or
+expand a thread or subthread (see also <A HREF="#slash-collapses-entire-thread"><EM>slash-collapses-entire-thread</EM></A>).
+<P>
+This setting affects the display when the folder is first threaded.
+The collapsed state may also be re-initialized by re-sorting the folder manually
+using the SortIndex command ($).
+After re-sorting the threads will once again all be expanded, even if you
+have previously collapsed some of them.
+<P>
+If &quot;threading-display-style&quot; is set to &quot;none&quot;, then
+the display will be the regular default Pine MESSAGE INDEX, but sorted
+in a different order.
+</DD>
+
+<DT><EM>regular-index-with-collapsed-threads</EM></DT>
+<DD>If the configuration option
+<A HREF="#threading-display-style"><EM>threading-display-style</EM></A>
+is set to something other than &quot;none&quot;, then this setting
+will cause <EM>Pine</EM> to start out with all of the threads collapsed instead of
+starting out with all of the threads expanded.
+The Collapse/Expand command (/) may be used to manually collapse or
+expand a thread or subthread (see also <A HREF="#slash-collapses-entire-thread"><EM>slash-collapses-entire-thread</EM></A>).
+<P>
+This setting affects the display when the folder is first threaded.
+The collapsed state may also be re-initialized by re-sorting the folder manually
+using the SortIndex command ($).
+After re-sorting the threads will once again all be collapsed, even if you
+have previously expanded some of them.
+</DD>
+
+<DT><EM>separate-index-screen-always</EM></DT>
+<DD>With this setting and the next, you will see an index of threads
+instead of an
+index of messages, provided you have sorted by Threads or OrderedSubject.
+<P>
+The THREAD INDEX contains a '*' in the first column if any message in the thread
+is marked Important.
+If not, it contains a '+' if any message in the thread is to you.
+The second column is blank. The third column contains a 'D' if all of the
+messages in the thread are deleted.
+Otherwise, it contains an 'N' if any of the messages in the thread are New.
+<P>
+When you view a particular thread from the THREAD INDEX you will be
+in the MESSAGE INDEX display
+but the index will only contain messages from the thread you are viewing.
+</DD>
+
+<DT><EM>separate-index-screen-except-for-single-messages</EM></DT>
+<DD>This is very similar to the option above.
+When you are in the THREAD INDEX, one of the available commands
+is &quot;ViewThd&quot;.
+With the setting &quot;separate-index-screen-always&quot; (the option above)
+when you view a particular thread you will be in the
+MESSAGE INDEX display and the index will only contain messages from
+the thread you are viewing.
+If the thread you are viewing consists of a single message, the MESSAGE INDEX
+will be an index with only one message in it.
+If you use this &quot;separate-index-screen-except-for-single-messages&quot;
+setting instead, then that index which contains a single message
+will be skipped and you will go directly from the THREAD INDEX into the
+MESSAGE VIEW screen.
+</DD>
+
+</DL>
+
+<P>
+
+<DT> <A NAME="threading-indicator-character"><EM>threading-indicator-character</EM></A>
+
+<DD> The Threading-Indicator-Character option has a small effect on the MESSAGE
+INDEX display when using a
+<A HREF="#threading-display-style"><EM>threading-display-style</EM></A>
+other than <EM>none</EM> and sorting by Threads or OrderedSubject.
+The value of this option is a single character.
+This character is used to indicate that part of a thread (a conversation) is
+hidden beneath a message.
+The message could be expanded
+if desired with the &quot;/&quot; Collapse/Expand command.
+By default, the value of this option is the greater than sign (&gt;).
+<P>
+If this option is set to the Empty Value, then the column (and the following
+blank column) will be deleted from the display.
+
+<P>
+This option is closely related to the
+<A HREF="#threading-expanded-character"><EM>threading-expanded-character</EM></A>
+option.
+Another similar option which affects the thread display is the
+<A HREF="#threading-lastreply-character"><EM>threading-lastreply-character</EM></A> option.
+<P>
+
+<DT> <A NAME="threading-lastreply-character"><EM>threading-lastreply-character</EM></A>
+
+<DD>The Threading-Lastreply-Character option has a small effect on the MESSAGE
+INDEX display when using a
+<A HREF="#threading-display-style"><EM>threading-display-style</EM></A>
+of <EM>show-thread-structure</EM>, <EM>mutt-like</EM>, or
+<EM>show-structure-in-from</EM>; and sorting by Threads or OrderedSubject.
+The value of this option is a single character.
+This character is used instead of the vertical line character when there are
+no more replies directly to the parent of the current message.
+It can be used to &quot;round-off&quot; the bottom of the vertical line
+by setting it to a character such as a backslash.
+By default, the value of this option is the vertical bar character (|).
+This option may not be set to the Empty Value.
+In that case, the default will be used instead.
+
+<P>
+
 <DT> <A NAME="tcp-write-warning-timeout"><EM>tcp-write-warning-timeout</EM></A>
 
 <DD> Sets the time in seconds that <EM>Pine</EM> will
@@ -2084,6 +2453,11 @@ minimum is 5 and the maximum is 1000.
 <DT> <A NAME="title-foreground-color"><EM>title-foreground-color</EM></A>
 
 <DD> <A HREF="#title-color"><EM>Title Color</EM></A>.
+<P>
+
+<DT> <A NAME="titlebar-color-style"><EM>titlebar-color-style</EM></A>
+
+<DD> <A HREF="#titlebar-style"><EM>titlebar-color-style</EM></A>.
 <P>
 
 <DT> <A NAME="upload-command"><EM>upload-command</EM></A>
@@ -2291,6 +2665,40 @@ messages while you are running <EM>Pine</EM>, you should enable this feature.
  
 If you do enable this feature and see a <EM>talk</EM> message, you must 
 suspend or quit <EM>Pine</EM> before you can respond.
+<P>
+
+<DT> <A NAME="alternate-compose-menu"><EM>alternate-compose-menu</EM></A>
+
+<DD>This feature controls the menu that is displayed when Compose is selected.
+If set, a list of options will be presented, with each option representing
+the type of composition that could be used. This feature is most useful for
+users who want to avoid being prompted with each option separately, or who
+want to avoid the checking of remote postponed or form letter folders.
+The possible types of composition are:
+
+<P>
+New, for starting a new composition. Note that if New is selected and roles
+are set, roles are checked for matches and applied according to the setting
+of the matching role.
+
+<P>
+Interrupted, for continuing an interrupted composition. This option is only
+offered if an interrupted message folder is detected.
+
+<P>
+Postponed, for continuing postponed compositions. This option is offered
+if a postponed-folder is set in the config <EM>REGARDLESS OF</EM> whether or not
+the postponed folder actually exists. This option is especially handy
+for avoiding having to check for the existence of a remote postponed folder.
+
+<P>
+Form, for using form letters. This option is offered if the form-letter-folder
+is set in the config, and is not checked for existence for reasons similar
+to those explained by the postponed option.
+
+<P>
+setRole, for selecting a role to apply to a composition.
+
 <P>
 
 <DT> <A NAME="assume-slow-link"><EM>assume-slow-link</EM></A>
@@ -2520,12 +2928,55 @@ current message deleted and advance to the next message that is not marked
 deleted.
 <P>
 
+<DT> <A NAME="disable-2022-jp-conversions"><EM>disable-2022-jp-conversions</EM></A>
+
+<DD> By default, UNIX <EM>Pine</EM> will convert ISO-2022-JP data into EUC
+and <EM>PC-Pine</EM>
+will convert ISO-2022-JP data into Shift-JIS before displaying it.
+Conversely, when sending mail UNIX <EM>Pine</EM> will convert EUC into ISO-2022-JP
+and <EM>PC-Pine</EM> will convert Shift-JIS into ISO-2022-JP.
+If this feature is set, those conversions are turned off.
+<P>
+Most of <EM>Pine</EM> is not set up to handle multi-byte characters or variable width characters.
+From time to time, your display will be garbled because <EM>Pine</EM>'s word wrapping
+code, which is not aware of the possibility that characters may be
+multi-byte, may wrap a line in the middle of a character.
+<EM>Pico</EM> is also not able to edit Japanese data so you will need to use an
+<A HREF="#enable-alt-ed"><EM>alternate editor</EM></A>
+when composing or replying to mail.
+<P>
+
 <DT> <A NAME="disable-busy-alarm"><EM>disable-busy-alarm</EM></A>
 
 <DD> If set, the spinning bar that sometimes appears in the status line will not
 appear when <EM>Pine</EM> is busy. This might be useful if it is suspected that
 the alarm(2) system calls that <EM>Pine</EM> uses to implement the busy spinner
 are suspected of causing a problem.
+<P>
+
+<DT> <A NAME="disable-charset-conversions"><EM>disable-charset-conversions</EM></A>
+
+<DD> By default, if your
+&quot;character-set&quot; configuration option
+is different from the character set
+of the message you are viewing, then <EM>Pine</EM> will
+attempt to convert the characters to the character set you have set
+in the &quot;character-set&quot; configuration option before
+sending them to your display.
+This does not work for multi-byte or variable width character sets.
+<P>
+If this feature is set, the conversions are turned off.
+<P>
+Conversion is only possible if the character being converted is present in
+both character sets.
+Many pairs of character sets have no characters in common.
+In that case, <EM>Pine</EM> will not attempt any conversion.
+If there are some characters in common then <EM>Pine</EM> will attempt to convert
+those and will display the unknown characters as question marks.
+<P>
+Japanese character set conversions are controlled separately with the
+<A HREF="#disable-2022-jp-conversions"><EM>disable-2022-jp-conversions</EM></A>
+feature.
 <P>
 
 <DT> <A NAME="disable-config-cmd"><EM>disable-config-cmd</EM></A>
@@ -2552,6 +3003,27 @@ another <EM>^G</EM> or <EM>?</EM> will show it to you.
 After the key menu has popped
 up with the help key it will remain there for an <EM>O Other</EM> command but
 will disappear if any other command is typed.
+<P>
+
+<DT> <A NAME="disable-password-caching"><EM>disable-password-caching</EM></A>
+
+<DD> Normally, loginname/password combinations are cached in <EM>Pine</EM>
+so that the user does not have to enter the same password more than once
+in a session.
+A disadvantage to this approach is that the password must be stored in
+the memory image of the running <EM>Pine</EM> in order that it can be reused.
+In the event that <EM>Pine</EM> crashes and produces a core dump, and that core
+dump is readable by others, the loginname and password could possibly be read
+from the core dump.
+<P>
+If this hidden feature is set, then the passwords will not be cached and
+the user will have to retype the password whenever <EM>Pine</EM> needs it.
+Even with this feature set there is still some chance that the core
+file will contain a password, so care should be taken to make the
+core files unreadable.
+<P>
+NOTE: If PASSFILE caching is enabled, this does not disable it.
+That is a separate and independent feature.
 <P>
 
 <DT> <A NAME="disable-password-cmd"><EM>disable-password-cmd</EM></A>
@@ -2592,6 +3064,27 @@ editing of signature files with the F subcommand.
 
 <DD> If set the roles editor in the <EM>Setup/Roles</EM> command will not allow
 editing of template files with the F subcommand.
+<P>
+
+<DT> <A NAME="disable-sender"><EM>disable-sender</EM></A>
+
+<DD> If set, <EM>Pine</EM> will not generate a &quot;Sender:&quot; or &quot;X-X-Sender&quot; header.
+This may be desirable on a system which is virtually hosting many domains,
+and the sysadmin has other methods available for tracking a message to
+its originator.
+<P>
+
+<DT> <A NAME="disable-shared-namespaces"><EM>disable-shared-namespaces</EM></A>
+
+<DD> If this hidden feature is set
+the automatic search for namespaces &quot;ftp&quot;,
+&quot;imapshared&quot;, and &quot;imappublic&quot; by the underlying library
+will be disabled.
+The reason this feature exists is because there are some implementations
+of system password lookup routines which are very slow when presented with
+a long loginname which does not exist.
+This feature could be set to prevent the delay at startup time when the
+names above are searched for in the password file.
 <P>
 
 <DT> <A NAME="disable-signature-edit-cmd"><EM>disable-signature-edit-cmd</EM></A>
@@ -2909,6 +3402,16 @@ and <EM>Reply</EM> functions. (For <EM>Reply</EM>, the
 the <EM>include-headers-in-reply</EM> feature setting.)
 <P>
 
+<DT> <A NAME="enable-full-header-and-text"><EM>enable-full-header-and-text</EM></A>
+
+<DD>
+<P>This feature affects how the <EM>H Full Headers</EM> command displays
+message text.  If set, the raw message text will be displayed.  This
+especially affects MIME formatted email, where the entire MIME format
+will be displayed.  This feature similarly affects how messages are
+included for the <EM>Export</EM>, <EM>Pipe</EM>, <EM>Print</EM>, <EM>Forward</EM>, 
+and <EM>Reply</EM> functions.
+
 <DT> <A NAME="enable-goto-in-file-browser"><EM>enable-goto-in-file-browser</EM></A>
 
 <DD> Setting this causes <EM>Pine</EM> to offer the <EM>G Goto</EM> command in
@@ -3184,6 +3687,16 @@ partial name already entered to be automatically
 completed, provided the partial name is unambiguous.
 <P>
 
+<DT> <A NAME="enable-take-export"><EM>enable-take-export</EM></A>
+
+<DD> Normally, the Take command takes addresses from a message and helps you
+put them into your Address Book.
+When this feature is set, you will be given an extra prompt which gives you
+the choice to Take addresses into a file instead of your Address
+Book.
+Only the user@domain_name part of the address is put in the file.
+<P>
+
 <DT> <A NAME="enable-tray-icon"><EM>enable-tray-icon</EM></A>
 
 <DD> <EM>PC-Pine</EM> only.
@@ -3242,26 +3755,13 @@ is also set.
 <DD> The purpose of this feature is to allow you to change configuration
 features and variables which are normally hidden.
 This is particularly useful if you are using a remote configuration file,
-where it is impossible to edit the file manually, but it may also be used
+where it is difficult to edit the file manually, but it may also be used
 on a local pinerc configuration file.
 <P>
 If set, most configuration variables and features which are normally
 hidden from view will show up in the Setup/Configuration screen.
 They will be at the bottom of the configuration screen.
 You can find them by searching for the word &quot;hidden&quot;.
-<P>
-This feature will usually be used by setting it on the command line.
-Any feature may be turned on temporarily for a particular <EM>Pine</EM>
-session from the command line. For example, this feature may be temporarily set
-with the syntax
-
-<BLOCKQUOTE>
-pine -feature-list=expose-hidden-config
-</BLOCKQUOTE>
-
-You could also set this feature in your configuration file (it is one
-of the hidden features which can be set) so that the hidden configuration
-always shows up.
 <P>
 
 Note that this is an advanced feature which should be used with care.
@@ -3387,6 +3887,18 @@ composer you will automatically be prompted to add the result of the
 directory lookup to your address book.
 <P>
 
+<DT> <A NAME="mark-fcc-seen"><EM>mark-fcc-seen</EM></A>
+
+<DD> This features controls the way FCCs (File Carbon Copies) are
+made of the messages you send.
+Normally, when <EM>Pine</EM> saves a copy of a message you sent as an Fcc, that
+copy will be marked as Unseen.
+When you look at the folder it was saved in the message will appear to
+be a New message until you read it.
+When this feature is enabled, the message will be marked as having
+been Seen.
+<P>
+
 <DT> <A NAME="mark-for-cc"><EM>mark-for-cc</EM></A>
 
 <DD> This feature affects Pine's MESSAGE INDEX display.
@@ -3476,11 +3988,46 @@ If not set, the newsgroups
 will be presented in alphabetical order.
 <P>
 
+<DT> <A NAME="next-thread-without-confirm"><EM>next-thread-without-confirm</EM></A>
+
+<DD> This feature controls an aspect of <EM>Pine</EM>'s Next and Prev commands in
+the case where you are using one of the
+&quot;separate-index-screen&quot; styles for the configuration option
+<A HREF="#threading-index-style"><EM>threading-index-style</EM></A>
+and currently have the folder sorted by a Threaded or OrderedSubject sort.
+When you are Viewing a particular thread you have a
+MESSAGE INDEX of only the messages in that thread.
+If you press the Next command with the last message in the thread highlighted
+you will normally be asked if you want to &quot;View next thread?&quot;,
+assuming there is a next thread to view.
+If this feature is set it will be assumed that you always want to view the
+next thread and you won't be asked to confirm that.
+Similarly, if the first message of the thread is highlighted and you
+press the Prev command, this feature will prevent the question
+&quot;View previous thread&quot;.
+<P>
+This feature only has an effect in the MESSAGE INDEX screen.
+If you then view a particular message from that screen and press the
+Next command, you will be sent to the next thread without being asked,
+independent of the setting of this feature.
+<P>
+
 <DT> <A NAME="pass-control-characters-as-is"><EM>pass-control-characters-as-is</EM></A>
 
-<DD> If set, all characters in a message will be sent to the
-screen.  Normally, control characters are automatically suppressed in
+<DD> UNIX <EM>Pine</EM> only (this feature is automatically on with <EM>PC-Pine</EM>).
+If set, all characters in a message will be sent to the
+screen. Normally, control characters are automatically suppressed in
 order to avoid inadvertently changing terminal setup parameters.
+Control characters are usually displayed as two character sequences like
+<P><CENTER><SAMP> ^C </SAMP></CENTER><P>
+for Control-C or
+<P><CENTER><SAMP> ^[ </SAMP></CENTER><P>
+for ESCAPE (the three high-order bits are masked off of the control character to get the 2nd character to display).
+Sometimes, in cases where changing a single control character into a
+two-character sequence would confuse <EM>Pine</EM>'s display routines,
+a question mark is substituted for the control character.
+This feature is not available in <EM>PC-Pine</EM> where control characters
+are never suppressed.
 <P>
 
 <DT> <A NAME="prefer-plain-text"><EM>prefer-plain-text</EM></A>
@@ -3563,6 +4110,17 @@ restricted to using those that have been previously configured in the
 <EM>Setup/Printer</EM> screen.
 <P>
 
+<DT> <A NAME="quell-attachment-extra-prompt"><EM>quell-attachment-extra-prompt</EM></A>
+<DD> By default, when you attempt to view an attachment externally
+from the &quot;Attachment View&quot; screen, you are asked if you
+really want to view the selected attachment.
+
+<P>
+If this feature is set, you will <B>not</B> be prompted to confirm
+your selection.  Prior to <EM>Pine</EM> 4.50, the default behavior was to not
+prompt. This feature was added for those wanting to preserve that
+behavior.
+
 <DT> <A NAME="quell-berkeley-format-timezone"><EM>quell-berkeley-format-timezone</EM></A>
 
 <DD> POSIX mandates a timezone in UNIX mailbox format folder delimiters
@@ -3570,6 +4128,40 @@ restricted to using those that have been previously configured in the
 Some versions of Berkeley mail have trouble with this, and don't recognize
 the line as a message delimiter.
 If this feature is set, the timezone will be left off the delimiter line.
+<P>
+
+<DT> <A NAME="quell-content-id"><EM>quell-content-id</EM></A>
+
+<DD> This feature changes the behavior of <EM>Pine</EM> when sending messages.
+It is intended to work around a bug in Microsoft's Outlook XP mail user
+agent.
+As of this writing, Microsoft has acknowledged the bug but
+has not added it to the Knowledge Base.
+We have been told that there will be a post-SP1 hotfix for Outlook XP.
+This particular bug has bug fix number OfficeQFE:4781.
+The nature of the bug is that messages with attachments which
+contain a Content-ID header (which standard <EM>Pine</EM> attachments do)
+do not show the attachment indicator (a paperclip) when viewed with
+Outlook XP.
+So the user has no indication that the message contains an attachment.
+
+<P>
+If this feature is set then <EM>Pine</EM> will remove most Content-ID headers
+before sending a message.
+If an attachment is of type MESSAGE, then the existing Content-ID headers
+inside the message will be left intact.
+This would only happen with <EM>Pine</EM> if a message was forwarded as an attachment
+or if a message with a message attached was forwarded.
+Similarly if an attachment of type MULTIPART/ALTERNATIVE is forwarded,
+the Content-ID headers of the alternative parts will not be removed.
+
+<P>
+Because the Content-ID header is a standard part of MIME it is possible
+that setting this feature will break something.
+For example, if an attachment has a Content-ID header which is necessary
+for the correct functioning of that attachment, it is possible that <EM>Pine</EM>
+may remove that header when the attachment is forwarded.
+However, it seems fairly safe at this time.
 <P>
 
 <DT> <A NAME="quell-dead-letter-on-cancel"><EM>quell-dead-letter-on-cancel</EM></A>
@@ -3679,6 +4271,19 @@ attempts to modify the mail folder.  This is most likely to occur to one's
 <EM>INBOX</EM> or other "Incoming Message Folder".
 <P>
 
+<DT> <A NAME="quell-maildomain-warning"><EM>quell-maildomain-warning</EM></A>
+
+<DD> When your configuration is set up so that your domain name contains no dots,
+it is usually a configuration error.
+By default, <EM>Pine</EM> will warn you about this when you start it up.
+You will see a warning message that looks like
+<P>
+<CENTER><SAMP>Incomplete maildomain &quot;&lt;domain&gt;&quot;.</SAMP></CENTER>
+
+<P>
+If this feature is set, the warning is turned off.
+<P>
+
 <DT> <A NAME="quell-news-envelope-update"><EM>quell-news-envelope-update</EM></A>
 
 <DD> In the MESSAGE INDEX screen, if the open folder is being accessed
@@ -3712,9 +4317,43 @@ problem so that the fetching of data takes significantly longer when partial
 fetching is used. Turning on this feature will turn off partial fetching.
 <P>
 
+<DT> <A NAME="quell-ssl-largeblocks"><EM>quell-ssl-largeblocks</EM></A>
+
+<DD> This feature (<EM>PC-Pine</EM> only) changes the behavior of fetching messages
+and attachments so that the message data is fetched in chunks no larger
+than 12K bytes.
+This works around a bug in Microsoft's SSL/TLS support.
+Some versions of Microsoft SSL are not able to read full-sized (16K)
+SSL/TLS packets.
+Some servers will send such packets and this will
+cause <EM>PC-Pine</EM> to crash with the error
+
+<P>
+<CENTER><SAMP>incomplete SecBuffer exceeds maximum buffer size</SAMP></CENTER>
+
+<P>
+Microsoft is aware of the problem and has developed a hotfix for it, but as of
+this writing the hotfix has not yet been added to the Knowledge Base.
+<P>
+
 <DT> <A NAME="quell-status-message-beeping"><EM>quell-status-message-beeping</EM></A>
 
 <DD> If set status messages will never emit a beep.
+<P>
+
+<DT> <A NAME="quell-timezone-comment-when-sending"><EM>quell-timezone-comment-when-sending</EM></A>
+
+<DD> Normally, when <EM>Pine</EM> generates a Date header for outgoing mail,
+it will try to include the symbolic timezone at the end of the
+header inside parentheses.
+The symbolic timezone is often three characters long, but on
+some operating systems, it may be longer.
+Apparently there are some SMTP servers in the world which will reject an
+incoming message if it has a Date header longer than about 80 characters.
+If this feature is set, the symbolic timezone normally generated by
+<EM>Pine</EM> will not be included.
+You probably don't need to worry about this feature unless you run into
+the problem described above.
 <P>
 
 <DT> <A NAME="quell-user-lookup-in-passwd-file"><EM>quell-user-lookup-in-passwd-file</EM></A>
@@ -3830,6 +4469,31 @@ incompatible with other mail programs), then this issue does not arise,
 and the feature is irrelevant.
 <P>
 
+<DT> <A NAME="scramble-message-id"><EM>scramble-message-id</EM></A>
+
+<DD> Normally the Message-ID header that <EM>Pine</EM> generates when sending a message
+contains the name of the computer from which the message is being sent.
+Some believe that this hostname could be used by spammers or could
+be used by others for nefarious purposes.
+If this feature is set, that name will be transformed with a simple
+Rot13 transformation.
+The result will still have the correct syntax for a Message-ID but the
+part of the MessageID that is often a domain name will not be an actual
+domain name because the letters will be scrambled.
+<P>
+It is possible (but unlikely?) that some spam detection
+software will use that as a reason to reject the mail as spam.
+It has also been reported that some spam detection software uses the
+fact that there are no dots after the &quot;@&quot; as a reason to reject
+messages.
+If your <EM>PC-Pine</EM> Message-ID is using a name without a dot that is because
+that is what Windows thinks is your &quot;Full computer name&quot;.
+The method used to set this varies from one type of Windows to another but
+check under Settings -> Control Panel -> System and
+look for Network Identification or Computer Name or something similar.
+How to set it is beyond the scope of <EM>Pine</EM>.
+<P>
+
 <DT> <A NAME="select-without-confirm"><EM>select-without-confirm</EM></A>
 
 <DD> This feature controls an aspect of
@@ -3920,6 +4584,34 @@ This feature does not affect the results of a <EM>Forward</EM> command.
 instead of several per line.
 <P>
 
+<DT> <A NAME="slash-collapses-entire-thread"><EM>slash-collapses-entire-thread</EM></A>
+
+<DD> Normally, the Collapse/Expand Thread command Collapses or Expands the subthread which
+starts at the currently highlighted message, if any.
+If this feature is set, then the slash command Collapses or Expands the
+<EM>entire</EM> current thread instead of just the subthread.
+<P>
+
+<DT> <A NAME="spell-check-before-sending"><EM>spell-check-before-sending</EM></A>
+
+<DD> When this feature is set, every composed message will be spell-checked before
+being sent.
+
+<P>
+
+<DT> <A NAME="store-window-position-in-config"><EM>store-window-position-in-config</EM></A>
+
+<DD> Normally, <EM>PC-Pine</EM> will store its window size and position in the
+Windows Registry.
+This is convenient if you want to use the same remote
+configuration from more than one PC.
+If you use multiple configuration files to start <EM>PC-Pine</EM>, you may want
+to store the window size and position in the configuration file instead
+of in the Registry.
+Setting this feature causes that to happen.
+
+<P>
+
 <DT> <A NAME="strip-from-sigdashes-on-reply"><EM>strip-from-sigdashes-on-reply</EM></A>
 
 <DD> This feature doesn't do anything if the feature
@@ -3957,18 +4649,95 @@ Beginning with 4.00 this hidden runtime feature can be turned
 on to accomplish the same thing.
 <P>
 
+<DT> <A NAME="thread-index-shows-important-color"><EM>thread-index-shows-important-color</EM></A>
+
+<DD> This option affects only the THREAD INDEX screen.
+Whether or not you ever see a THREAD INDEX screen depends on the setting
+of the configuration option
+<A HREF="#threading-index-style"><EM>threading-index-style</EM></A>
+and on the sort order of the index.
+If a message within a thread is flagged as Important
+and this option is set, then
+the entire line in the THREAD INDEX will be colored the color of the
+Index-important Symbol, which can be set using the
+Setup Kolor screen.
+<P>
+
 <DT> <A NAME="try-alternative-authentication-driver-first"><EM>try-alternative-authentication-driver-first</EM></A>
 
-<DD> This feature controls how <EM>Pine</EM> provides authentication credentials
-to the IMAP server you are connecting to.
-Normally, <EM>Pine</EM> and the server
-negotiate the most secure method to exchange such information.
+<DD> This feature affects how <EM>Pine</EM> connects to IMAP servers.
+It's utility has largely been overtaken by events,
+but it may still be useful in some circumstances.
+If you only connect to modern IMAP servers that support
+&quot;TLS&quot; you can ignore this feature.
 
 <P>
-However, some methods aren't available for negotiation, and thus
-require pre-configuration (typically, per server) on <EM>Pine</EM>'s part.
-This feature allows <EM>Pine</EM> to implicitly try an alternative to the
-default methods that may have been added to <EM>Pine</EM> when it was built.
+Details:
+
+<P>
+By default, <EM>Pine</EM> will attempt to connect to an IMAP server on the
+normal IMAP service port (143), and if the server offers &quot;Transport Layer
+Security&quot; (TLS) and <EM>Pine</EM> has been compiled with encryption capability,
+then a secure (encrypted) session will be negotiated.
+
+<P>
+With this feature enabled, before connecting on the normal IMAP port, <EM>Pine</EM>
+will first attempt to connect to an alternate IMAP service port (993) used
+specifically for encrypted IMAP sessions via the Secure Sockets Layer
+(SSL) method.
+If the SSL attempt fails, <EM>Pine</EM> will then try the default
+behavior described in the previous paragraph.
+
+<P>
+TLS negotiation on the normal port is preferred, and supersedes the use of
+SSL on port 993, but older servers may not provide TLS support.
+This feature may be convenient when accessing IMAP servers that do not support
+TLS, but do support SSL connections on port 993.
+However, it is important to understand that with this feature enabled,
+<EM>Pine</EM> will <EM>attempt</EM> to make a secure connection if that is possible,
+but it will proceed to make an insecure connection if that is the only
+option offered by the server, or if the <EM>Pine</EM> in question has been built
+without encryption capability.
+
+<P>
+Note that this feature specifies a per-user (or system-wide) default
+behavior, but host/folder specification flags may be used to control the
+behavior of any specific connection.
+This feature interacts with some of
+the possible host/folder path specification flags as follows:
+
+<P>
+The <SAMP>/tls</SAMP> host flag, for example,
+
+<P>
+<CENTER><SAMP>{foo.bar.com/tls}INBOX</SAMP></CENTER>
+<P>
+will over-ride this feature for the specified host by bypassing the
+SSL connection attempt.
+Moreover, with <SAMP>/tls</SAMP> specified,
+the connection attempt will fail if the
+service on port 143 does not offer TLS support.
+
+<P>
+The <SAMP>/ssl</SAMP> host flag, for example,
+
+<P>
+<CENTER><SAMP>{foo.bar.com/ssl}INBOX</SAMP></CENTER>
+<P>
+will insist on an SSL connection for the specified host,
+and will fail if the SSL service on port 993 is not available.
+<EM>Pine</EM> will not subsequently retry a connection
+on port 143 if <SAMP>/ssl</SAMP> is specified.
+<P>
+
+<DT> <A NAME="unselect-will-not-advance"><EM>unselect-will-not-advance</EM></A>
+
+<DD> Normally, when the Unselect current message command (:) is typed when the
+current message is selected, the message will be unselected and the next
+message will become the current message.
+If this feature is set, the cursor will not advance to the next message.
+Instead, the current message will remain the current message after
+unselecting.
 <P>
 
 <DT> <A NAME="use-current-dir"><EM>use-current-dir</EM></A>
@@ -4010,7 +4779,7 @@ Sender address for such purposes.  These implementations often even recognize th
 <EM>X-Sender</EM> fields as being equivalent to the <EM>Sender</EM> field, and use it
 if present.  This is why Pine defaults to <EM>X-X-Sender</EM>.
 <P>
-Note, PC-Pine always adds
+Note, <EM>PC-Pine</EM> always adds
 either an <EM>X-X-Sender</EM> line if there is an open, remote mailbox, or an
 <EM>X-Warning: UNAuthenticated User</EM> otherwise
 
@@ -4153,15 +4922,16 @@ They will be at the bottom of the screen.
 <LI> <A HREF="#disable-busy-alarm">disable-busy-alarm</A>
 <LI> <A HREF="#disable-config-cmd">disable-config-cmd</A>
 <LI> <A HREF="#disable-kblock">disable-keyboard-lock-cmd</A>
+<LI> <A HREF="#disable-password-caching">disable-password-caching</A>
 <LI> <A HREF="#disable-password-cmd">disable-password-cmd</A>
 <LI> <A HREF="#disable-pipes-in-sigs">disable-pipes-in-sigs</A>
 <LI> <A HREF="#disable-pipes-in-templates">disable-pipes-in-templates</A>
 <LI> <A HREF="#disable-roles-setup-cmd">disable-roles-setup-cmd</A>
 <LI> <A HREF="#disable-roles-sig-edit">disable-roles-sig-edit</A>
 <LI> <A HREF="#disable-roles-template-edit">disable-roles-template-edit</A>
+<LI> <A HREF="#disable-shared-namespaces">disable-shared-namespaces</A>
 <LI> <A HREF="#disable-signature-edit-cmd">disable-signature-edit-cmd</A>
 <LI> <A HREF="#enable-mailcap-param-substitution">enable-mailcap-param-substitution</A>
-<LI> <A HREF="#expose-hidden-config">expose-hidden-config</A>
 <LI> <A HREF="#quell-berkeley-format-timezone">quell-berkeley-format-timezone</A>
 <LI> <A HREF="#quell-imap-envelope-update">quell-imap-envelope-update</A>
 <LI> <A HREF="#quell-news-envelope-update">quell-news-envelope-update</A>
@@ -4256,101 +5026,6 @@ option, but they must be surrounded by underscores for the
 <H3><EM>Tokens Available for all Cases</EM></H3>
 
 <DL>
-<DT>DATE</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format MMM DD. For example, &quot;Oct 23&quot;.
-</DD>
-
-<DT>SMARTDATE</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It is &quot;Today&quot; if the message was sent today,
-&quot;Yesterday&quot; for yesterday,
-&quot;Wednesday&quot; if it was last Wednesday, and so on. If the
-message is from more than six months ago it includes the year, as well.
-There is no adjustment made for different time zones, so you'll get
-the day the message was sent according to the time zone the sender
-was in.
-</DD>
-
-<DT>LONGDATE</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format MMM DD, YYYY. For example, &quot;Oct 23, 1998&quot;.
-</DD>
-
-<DT>DATEISO</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format YYYY-MM-DD. For example, &quot;1998-10-23&quot;.
-</DD>
-
-<DT>SHORTDATEISO</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format YY-MM-DD. For example, &quot;98-10-23&quot;.
-</DD>
-
-<DT>SHORTDATE1</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format MM/DD/YY. For example, &quot;10/23/98&quot;.
-</DD>
-
-<DT>SHORTDATE2</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format DD/MM/YY. For example, &quot;23/10/98&quot;.
-</DD>
-
-<DT>SHORTDATE3</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format DD.MM.YY. For example, &quot;23.10.98&quot;.
-</DD>
-
-<DT>SHORTDATE4</DT>
-<DD>
-This token represents the date on which the message was sent, according
-to the &quot;Date&quot; header field.
-It has the format YY.MM.DD. For example, &quot;98.10.23&quot;.
-</DD>
-
-<DT>TIME24</DT>
-<DD>
-This token represents the time at which the message was sent, according
-to the &quot;Date&quot; header field.
-There is no adjustment made for different time zones, so you'll get
-the time the message was sent according to the time zone the sender
-was in.
-It has the format HH:MM. For example, &quot;17:28&quot;.
-</DD>
-
-<DT>TIME12</DT>
-<DD>
-This token represents the time at which the message was sent, according
-to the &quot;Date&quot; header field.
-This time is for a 12 hour clock.
-It has the format HH:MMpm.
-For example, &quot;5:28pm&quot; or &quot;11:13am&quot;.
-</DD>
-
-<DT>TIMEZONE</DT>
-<DD>
-This token represents the numeric timezone from
-the &quot;Date&quot; header field.
-It has the format [+-]HHMM. For example, &quot;-0800&quot;.
-</DD>
-
 <DT>SUBJECT</DT>
 <DD>
 This token represents the Subject the sender gave the message.
@@ -4361,6 +5036,20 @@ This token represents the Subject the sender gave the message.
 This token represents the personal name (or email address if the name
 is unavailable) of the person specified in the message's &quot;From:&quot;
 header field.
+</DD>
+
+<DT>ADDRESS</DT>
+<DD>
+This is similar to the &quot;FROM&quot; token, only it is always the
+email address, never the personal name.
+For example, &quot;mailbox@domain&quot;.
+</DD>
+
+<DT>MAILBOX</DT>
+<DD>
+This is the same as the &quot;ADDRESS&quot; except that the 
+domain part of the address is left off.
+For example, &quot;mailbox&quot;.
 </DD>
 
 <DT>SENDER</DT>
@@ -4425,148 +5114,110 @@ message's &quot;To:&quot; and &quot;Cc:&quot; header fields.
 Same as &quot;NEWSANDRECIPS&quot; except in the opposite order.
 </DD>
 
-<DT>MONTHABBREV</DT>
+<DT>INIT</DT>
 <DD>
-This token represents the month the message was sent, according
+This token represents the initials from the personal name
+of the person specified in the message's &quot;From:&quot;
+header field.
+If there is no personal name, it is blank.
+</DD>
+
+<DT>DATE</DT>
+<DD>
+This token represents the date on which the message was sent, according
 to the &quot;Date&quot; header field.
-For example, &quot;Oct&quot;.
+It has the format MMM DD. For example, &quot;Oct 23&quot;.
 </DD>
 
-</DL>
-
-<P>
-<H3><EM>Tokens Available Only for Index-Format</EM></H3>
-
-<DL>
-<DT>MSGNO</DT>
+<DT>SMARTDATE</DT>
 <DD>
-This token represents the message's current position in the folder which,
-of course, may change as the folder is sorted or new mail arrives.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It is &quot;Today&quot; if the message was sent today,
+&quot;Yesterday&quot; for yesterday,
+&quot;Wednesday&quot; if it was last Wednesday, and so on. If the
+message is from more than six months ago it includes the year, as well.
+There is no adjustment made for different time zones, so you'll get
+the day the message was sent according to the time zone the sender
+was in.
 </DD>
 
-<DT>STATUS</DT>
+<DT>SMARTTIME</DT>
 <DD>
-This token represents a three character wide field displaying various
-aspects of the message's state.
-The first character is either blank,
-a '*' for message marked Important, or a '+' indicating a message
-addressed directly to you (as opposed to your having received it via a
-mailing list, for example).
-When the feature
-<A HREF="#mark-for-cc"><EM>mark-for-cc</EM></A>
-is set, if the first character would have been
-blank then it will instead be a '-' if the message is cc'd to you.
-The second character is typically blank,
-though the arrow cursor may occupy it if the 
-<A HREF="#assume-slow-link"><EM>assume-slow-link</EM></A>
-feature is set, or you actually are on a slow link.
-The third character is either the letter 'D' if the
-message is deleted, 'A' if it is answered (but not deleted), or 'N' if
-it is new (but not deleted or answered), or blank if it is neither
-deleted, answered nor new.
+This token represents the most relevant elements of the date on which
+the message was sent (according to the &quot;Date&quot; header field),
+in a compact form. If the message was sent today, only the time is used
+(e.g. &quot;9:22am&quot;, &quot;10:07pm&quot;); if it was sent during
+the past week, the day of the week and the hour are used
+(e.g. &quot;Wed09am&quot;, &quot;Thu10pm&quot;); other dates are
+given as date, month, and year (e.g. &quot;23Aug00&quot;,
+&quot;9Apr98&quot;).
+There is no adjustment made for different time zones, so you'll get
+the day/time the message was sent according to the time zone the sender
+was in.
 </DD>
 
-<DT>FULLSTATUS</DT>
+<DT>SMARTDATETIME</DT>
 <DD>
-This token represents a less abbreviated alternative
-to the &quot;STATUS&quot; field.
-It is six characters wide.
-The first character is '+', '-', or blank, the
-second blank, the third either '*' or blank, the fourth 'N' or blank,
-the fifth 'A' or blank, and the sixth character is either 'D' or
-blank.
+This is a combination of SMARTDATE and SMARTTIME.
+It is SMARTDATE unless the SMARTDATE value is &quot;Today&quot;, in which
+case it is SMARTTIME.
 </DD>
 
-<DT>IMAPSTATUS</DT>
+<DT>DATEISO</DT>
 <DD>
-This token represents an even less abbreviated alternative to the
-&quot;FULLSTATUS&quot; field.
-It differs in only the fourth character which is
-either an 'N' if the message is new to this folder since the last time
-it was opened <EM>and</EM> it has not been viewed, an 'R' if the message
-is new to the folder and has been viewed (Recent), a 'U' if the message is not 
-new to the folder since it was last opened <EM>but</EM> has not been
-viewed (Unseen), or a blank if the message has been in the folder since it was
-last opened and has been viewed.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format YYYY-MM-DD. For example, &quot;1998-10-23&quot;.
 </DD>
 
-<DT>SIZE</DT>
+<DT>SHORTDATEISO</DT>
 <DD>
-This token represents the total size, in bytes, of the message.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format YY-MM-DD. For example, &quot;98-10-23&quot;.
 </DD>
 
-<DT>DESCRIPSIZE</DT>
+<DT>SHORTDATE1</DT>
 <DD>
-This token is intended to represent a more useful description of the
-message than just its size, but it isn't very useful at this point.
-The plus sign in this view means there are attachments.
-Note that including this token in
-the &quot;Index-Format&quot; could slow down the
-display a little while <EM>Pine</EM> collects the necessary information.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format MM/DD/YY. For example, &quot;10/23/98&quot;.
 </DD>
 
-<DT>ATT</DT>
+<DT>SHORTDATE2</DT>
 <DD>
-This is a one column wide field which represents the number of attachments
-a message has. It will be blank if there are no attachments, a single
-digit for one to nine attachments, or an asterisk for more than nine.
-Note that including this token in
-the &quot;Index-Format&quot; could slow down the
-display a little while <EM>Pine</EM> collects the necessary information.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format DD/MM/YY. For example, &quot;23/10/98&quot;.
 </DD>
 
-<DT>FROMORTO</DT>
+<DT>SHORTDATE3</DT>
 <DD>
-This token represents <EM>either</EM> the personal name (or email address) of
-the person listed in the message's &quot;From:&quot; header
-field, <EM>or</EM>, if that address is yours or one of your
-<A HREF="#alt-addresses"><EM>alternate addresses</EM></A>,
-the first person specified in the
-message's &quot;To:&quot; header field
-with the prefix &quot;To: &quot; prepended.
-If the from address is yours and there is also no &quot;To&quot; address,
-<EM>Pine</EM> will use the address on the &quot;Cc&quot; line.
-If there is no address there, either, <EM>Pine</EM> will look
-for a newsgroup name
-from the &quot;Newsgroups&quot; header field and put
-that after the &quot;To: &quot; prefix.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format DD.MM.YY. For example, &quot;23.10.98&quot;.
 </DD>
 
-<DT>FROMORTONOTNEWS</DT>
+<DT>SHORTDATE4</DT>
 <DD>
-This is almost the same as <EM>FROMORTO</EM>.
-The difference is that newsgroups aren't considered.
-When a message is from you, doesn't have a To or Cc, and does have
-a Newsgroups header; this token will be your name instead of the name
-of the newsgroup (like it would be with FROMORTO).
-</DD>
-</DL>
-
-<P>
-<H3><EM>Tokens Available for all but Index-Format</EM></H3>
-
-<DL>
-<DT>ADDRESS</DT>
-<DD>
-This is similar to the &quot;FROM&quot; token, only it is always the
-email address, never the personal name.
-For example, &quot;mailbox@domain&quot;.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format YY.MM.DD. For example, &quot;98.10.23&quot;.
 </DD>
 
-<DT>MAILBOX</DT>
+<DT>LONGDATE</DT>
 <DD>
-This is the same as the &quot;ADDRESS&quot; except that the 
-domain part of the address is left off.
-For example, &quot;mailbox&quot;.
+This token represents the date on which the message was sent, according
+to the &quot;Date&quot; header field.
+It has the format MMM DD, YYYY. For example, &quot;Oct 23, 1998&quot;.
 </DD>
 
 <DT>DAYDATE</DT>
 <DD>
 This token represents the date on which the message was sent, according
 to the &quot;Date&quot; header field.
-It looks like &quot;Sat, 23 Oct 1998&quot; unless the day of
-the week is not available, in which case it looks like
-&quot;23 Oct 1998&quot;.
+It looks like &quot;Sat, 23 Oct 1998&quot;.
 </DD>
 
 <DT>DAY</DT>
@@ -4590,6 +5241,27 @@ This token represents the ordinal number which is the day of
 the month on which the message was sent,
 according to the &quot;Date&quot; header field.
 For example, &quot;23rd&quot; or &quot;9th&quot;.
+</DD>
+
+<DT>DAYOFWEEK</DT>
+<DD>
+This token represents the day of the week on which the message was sent,
+according to the &quot;Date&quot; header field.
+For example, &quot;Sun&quot; or &quot;Wed&quot;.
+</DD>
+
+<DT>DAYOFWEEKLONG</DT>
+<DD>
+This token represents the day of the week on which the message was sent,
+according to the &quot;Date&quot; header field.
+For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
+</DD>
+
+<DT>MONTHABBREV</DT>
+<DD>
+This token represents the month the message was sent, according
+to the &quot;Date&quot; header field.
+For example, &quot;Oct&quot;.
 </DD>
 
 <DT>MONTHLONG</DT>
@@ -4629,6 +5301,256 @@ For example, &quot;98&quot; or &quot;01&quot;.
 It is always 2 digits.
 </DD>
 
+<DT>TIME24</DT>
+<DD>
+This token represents the time at which the message was sent, according
+to the &quot;Date&quot; header field.
+There is no adjustment made for different time zones, so you'll get
+the time the message was sent according to the time zone the sender
+was in.
+It has the format HH:MM. For example, &quot;17:28&quot;.
+</DD>
+
+<DT>TIME12</DT>
+<DD>
+This token represents the time at which the message was sent, according
+to the &quot;Date&quot; header field.
+This time is for a 12 hour clock.
+It has the format HH:MMpm.
+For example, &quot;5:28pm&quot; or &quot;11:13am&quot;.
+</DD>
+
+<DT>TIMEZONE</DT>
+<DD>
+This token represents the numeric timezone from
+the &quot;Date&quot; header field.
+It has the format [+-]HHMM. For example, &quot;-0800&quot;.
+</DD>
+
+</DL>
+
+<P>
+<H3><EM>Tokens Available Only for Index-Format</EM></H3>
+
+<DL>
+<DT>MSGNO</DT>
+<DD>
+This token represents the message's current position in the folder which,
+of course, may change as the folder is sorted or new mail arrives.
+</DD>
+
+<DT>STATUS</DT>
+<DD>
+This token represents a three character wide field displaying various
+aspects of the message's state.
+The first character is either blank,
+a '*' for message marked Important, or a '+' indicating a message
+addressed directly to you (as opposed to your having received it via a
+mailing list, for example).
+When the feature
+<A HREF="#mark-for-cc"><EM>mark-for-cc</EM></A>
+is set, if the first character would have been
+blank then it will instead be a '-' if the message is cc'd to you.
+The second character is typically blank,
+though the arrow cursor may occupy it if the 
+<A HREF="#assume-slow-link"><EM>assume-slow-link</EM></A>
+feature is set, or you actually are on a slow link.
+The third character is either the letter 'D' if the
+message is deleted, 'A' if it is answered (but not deleted), or 'N' if
+it is new (but not deleted or answered), or blank if it is neither
+deleted, answered nor new.
+<P>
+If you are using a threaded view of the index and this message is at the
+top of a collapsed portion of a thread,
+then this token refers to all of the messages in the collapsed portion of
+the thread instead of just the top message.
+The first character will be a '*' if <EM>any</EM> of the messages in the thread
+are marked Important, else a '+' if any of the messages are addressed
+to you, else a '-' if any of the messages are cc'd to you.
+The third character will be a 'D' if <EM>all</EM> of the messages
+in the collapsed thread are marked deleted, else it will be 'N' if any of
+the messages are undeleted and unseen, and it will be blank otherwise.
+</DD>
+
+<DT>FULLSTATUS</DT>
+<DD>
+This token represents a less abbreviated alternative
+to the &quot;STATUS&quot; token.
+It is six characters wide.
+The first character is '+', '-', or blank, the
+second blank, the third either '*' or blank, the fourth 'N' or blank,
+the fifth 'A' or blank, and the sixth character is either 'D' or
+blank.
+<P>
+If you are using a threaded view of the index and this message is at the
+top of a collapsed portion of a thread,
+then this token refers to all of the messages in the collapsed portion of
+the thread instead of just the top message.
+The first character is '+', '-', or blank depending on whether <EM>any</EM>
+of the messages in the collapsed thread are addressed to you or cc'd to you.
+The third character will be '*' if any of the messages are marked
+Important.
+The fourth character will be 'N' if all of the messages in the thread
+are New, else 'n' if some of the messages in the thread are New, else blank.
+The fifth character will be 'A' or 'a' or blank, and the sixth character
+will be 'D' or 'd' or blank.
+</DD>
+
+<DT>IMAPSTATUS</DT>
+<DD>
+This token represents an even less abbreviated alternative to the
+&quot;STATUS&quot; token.
+It differs from &quot;FULLSTATUS&quot; in only the fourth character which is
+an 'N' if the message is new to this folder since the last time
+it was opened <EM>and</EM> it has not been viewed, an 'R' (Recent) if the message
+is new to the folder and has been viewed, a 'U' (Unseen) if the message is not 
+new to the folder since it was last opened <EM>but</EM> has not been
+viewed, or a blank if the message has been in the folder since it was
+last opened and has been viewed.
+<P>
+If you are using a threaded view of the index and this message is at the
+top of a collapsed portion of a thread,
+then the fourth character will be
+'N' if all of the messages in the thread are unseen and recent;
+else 'n' if some of the messages in the thread are unseen and recent;
+else 'U' if all of the messages in the thread are unseen and not recent;
+else 'u' if some of the messages in the thread are unseen and not recent;
+else 'R' if all of the messages in the thread are seen and recent;
+else 'r' if some of the messages in the thread are seen and recent;
+else blank.
+</DD>
+
+<DT>SIZE</DT>
+<DD>
+This token represents the total size, in bytes, of the message.
+If a &quot;K&quot; (Kilobyte)
+follows the number, the size is approximately 1,000
+times that many bytes (rounded to the nearest 1,000).
+If an &quot;M&quot; (Megabyte) follows the number, the size is approximately
+1,000,000 times that many bytes.
+Commas are not used in this field.
+This field is seven characters wide, including the enclosing parentheses.
+Sizes are rounded when &quot;K&quot; or &quot;M&quot; is present.
+The progression of sizes used looks like:
+
+<P>
+<CENTER><SAMP>0 1 ... 9999 10K ... 999K 1.0M ... 99.9M 100M ... 2000M</SAMP></CENTER>
+<P>
+</DD>
+
+<DT>SIZECOMMA</DT>
+<DD>
+This token represents the total size, in bytes, of the message.
+If a &quot;K&quot; (Kilobyte)
+follows the number, the size is approximately 1,000
+times that many bytes (rounded to the nearest 1,000).
+If an &quot;M&quot; (Megabyte) follows the number, the size is approximately
+1,000,000 times that many bytes.
+Commas are used if the number shown is 1,000 or greater.
+The SIZECOMMA field is one character wider than the SIZE field.
+Sizes are rounded when &quot;K&quot; or &quot;M&quot; is present.
+The progression of sizes used looks like:
+
+<P>
+<CENTER><SAMP>0 1 ... 99,999 100K ... 9,999K 10.0M ... 999.9M 1,000M ... 2,000M</SAMP></CENTER>
+<P>
+</DD>
+
+<DT>KSIZE</DT>
+<DD>
+This token represents the total size of the message, expressed in
+kilobytes or megabytes, as most appropriate.
+These are 1,024 byte kilobytes and 1,024 x 1,024 byte megabytes.
+The progression of sizes used looks like:
+
+<P>
+<CENTER><SAMP>0K 1K ... 1023K 1.0M ... 99.9M 100M ... 2047M</SAMP></CENTER>
+<P>
+</DD>
+
+<DT>SIZENARROW</DT>
+<DD>
+This token represents the total size, in bytes, of the message.
+If a &quot;K&quot; (Kilobyte)
+follows the number, the size is approximately 1,000
+times that many bytes.
+If an &quot;M&quot; (Megabyte) follows the number, the size is approximately
+1,000,000 times that many bytes.
+If a &quot;G&quot; (Gigabyte) follows the number, the size is approximately
+1,000,000,000 times that many bytes.
+This field uses only five characters of screen width, including the enclosing
+parentheses.
+The progression of sizes used looks like:
+
+<P>
+<CENTER><SAMP>0 1 ... 999 1K ... 99K .1M ... .9M 1M ... 99M .1G ... .9G 1G 2G</SAMP></CENTER>
+<P>
+</DD>
+
+<DT>DESCRIPSIZE</DT>
+<DD>
+This token is intended to represent a more useful description of the
+message than just its size, but it isn't very useful at this point.
+The plus sign in this view means there are attachments.
+Note that including this token in
+the &quot;Index-Format&quot; could slow down the
+display a little while <EM>Pine</EM> collects the necessary information.
+</DD>
+
+<DT>ATT</DT>
+<DD>
+This is a one column wide field which represents the number of attachments
+a message has. It will be blank if there are no attachments, a single
+digit for one to nine attachments, or an asterisk for more than nine.
+Note that including this token in
+the &quot;Index-Format&quot; could slow down the
+display a little while <EM>Pine</EM> collects the necessary information.
+</DD>
+
+<DT>FROMORTO</DT>
+<DD>
+This token represents <EM>either</EM> the personal name (or email address) of
+the person listed in the message's &quot;From:&quot; header
+field, <EM>or</EM>, if that address is yours or one of your
+<A HREF="#alt-addresses"><EM>alternate addresses</EM></A>,
+the first person specified in the
+message's &quot;To:&quot; header field
+with the prefix &quot;To: &quot; prepended.
+If the from address is yours and there is also no &quot;To&quot; address,
+<EM>Pine</EM> will use the address on the &quot;Cc&quot; line.
+If there is no address there, either, <EM>Pine</EM> will look for a newsgroup name
+from the &quot;Newsgroups&quot; header field and put
+that after the &quot;To: &quot; prefix.
+</DD>
+
+<DT>FROMORTONOTNEWS</DT>
+<DD>
+This is almost the same as <EM>FROMORTO</EM>.
+The difference is that newsgroups aren't considered.
+When a message is from you, doesn't have a To or Cc, and does have
+a Newsgroups header; this token will be your name instead of the name
+of the newsgroup (like it would be with FROMORTO).
+</DD>
+
+<DT>SCORE</DT>
+<DD>
+This gives the score
+of each message.
+This will be six columns wide to accomodate the widest possible score.
+You will probably want to use the index-format fixed-field width feature
+to limit the width of the field to the widest score that
+you use (e.g. SCORE(3) if your scores are always between 0 and 999).
+If you have not defined any score rules the scores will all be zero.
+If any of your score rules contain AllText or BodyText patterns
+then including SCORE in the index-format
+may slow down the display of the MESSAGE INDEX screen.
+</DD>
+</DL>
+
+<P>
+<H3><EM>Tokens Available for all but Index-Format</EM></H3>
+
+<DL>
 <DT>MSGID</DT>
 <DD>
 This token represents the message ID of the message.
@@ -5149,14 +6071,150 @@ or if you are using <EM>PC-Pine</EM>, then it is possible to
 set up <EM>Pine</EM> so that various parts of the display will be
 shown in colors you configure.
 This is done using the Setup Color screen.
-The Setup Color screen is divided into three broad sections, General Colors,
-Index Colors, and Header Colors.
-In addition to these three categories you may also color lines in the
+The Setup Color screen is divided into four broad sections: Options,
+General Colors, Index Colors, and Header Colors.
+In addition to these four categories you may also color lines in the
 MESSAGE INDEX screen by configuring the
 <A HREF="#index-color-config">Index Line Color</A>.
 <P>
 Each color is defined as a foreground color (the color of the actual text)
 and a background color (the color of the area behind the text).
+<P>
+<H3><A NAME="color-options"></A>Color Options</H3>
+
+<DL>
+
+<DT> <A NAME="cur-il-style"><EM>current-indexline-style</EM></A>
+<DD> 
+This option affects the colors used to display the current line in the
+MESSAGE INDEX screen.
+If you do not have
+<A HREF="#index-color-config">Index Line Colors</A>
+defined, then this option will have no effect.
+
+<P>
+The available options include:
+<P>
+
+<DL>
+<DT>flip-colors</DT>
+<DD>This is the default.
+If an index line is colored because it matches one of your
+Index Color Rules, then its colors will be reversed when it is the currently
+highlighted line.
+For example, if the line is normally red text on a blue background, then
+when it is the current line it will be drawn as blue text on a red background.
+<P>
+The rest of the option values all revert to this flip-colors behavior if
+there is no Reverse Color defined.
+</DD>
+
+<DT>reverse</DT>
+<DD>With this option the Reverse color is always used to highlight the
+current line.
+</DD>
+
+<DT>reverse-fg</DT>
+<DD>The foreground part of the Reverse Color is used to highlight
+the current line.
+If this would cause the text to be unreadable (because the foreground and
+background colors are the same) or if it would cause no change in the
+color of the index line, then the colors are flipped instead.
+<P>
+Some people think this works particularly well if you use different
+background colors to emphasize &quot;interesting&quot; lines,
+but always with the same Normal foreground color,
+and you use a different foreground color for the Reverse Color.
+</DD>
+
+<DT>reverse-fg-no-ambiguity</DT>
+<DD>With the &quot;reverse-fg&quot; rule above, it is possible that
+the resulting color will be exactly the same as the regular Reverse
+Color.
+That can lead to some possible confusion because an
+&quot;interesting&quot;
+line which is the current line will be displayed exactly the same as a
+non-interesting line which is current.
+You can't tell whether the line is just a regular current line or if it is
+an &quot;interesting&quot; current line by looking at the color.
+Setting the option to this value removes that ambiguity.
+It is the same as the &quot;reverse-fg&quot; setting unless the resulting
+interesting current line would look just like a non-interesting current line.
+In that case, the interesting line's colors are simply flipped (like in the
+default behavior).
+<P>
+As an alternative way to preserve the line's interestingness in this case,
+you may find that using both a different foreground and a different
+background color for the interesting line will help.
+</DD>
+
+<DT>reverse-bg</DT>
+<DD>The background part of the Reverse Color is used to highlight
+the current line.
+If this would cause the text to be unreadable (because the foreground and
+background colors are the same) or if it would cause no change in the
+color of the index line, then the colors are flipped instead.
+<P>
+Some people think this works particularly well if you use different
+foreground colors to emphasize &quot;interesting&quot; lines,
+but always with the same Normal background color,
+and you use a different background color for the Reverse Color.
+</DD>
+
+<DT>reverse-bg-no-ambiguity</DT>
+<DD>As with the &quot;reverse-fg&quot; case, the &quot;reverse-bg&quot;
+rule may also result in a color which is exactly the same as the regular
+Reverse Color.
+Setting the option to this value removes that ambiguity.
+It is the same as the &quot;reverse-bg&quot; setting unless the resulting
+current line has the same color as the Reverse Color.
+In that case, the interesting line's colors are simply flipped (like in the
+default behavior).
+</DD>
+</DL>
+
+<DT> <A NAME="titlebar-style"><EM>titlebar-color-style</EM></A>
+<DD> 
+This option affects the colors used to display the titlebar (the top
+line on the screen) when viewing a message.
+
+<P>
+The available options include:
+<P>
+
+<DL>
+<DT>default</DT>
+<DD>The color of the titlebar will be the color you set for the
+<A HREF="#title-color"><EM>Title Color</EM></A>.
+The Title Color may be set by using the
+</DD>
+
+<DT>indexline</DT>
+<DD>The color of the titlebar will be the same as the color of the
+index line corresponding to the message being viewed.
+The rules which determine what color the index line will be may be set
+up by going to the Setup/Rules/Indexcolor screen.
+If the index line for a message is not colored explicitly by the
+Indexcolor rules, then the titlebar will be colored the same as for
+the &quot;default&quot; option above (which is not the same color that
+the index line itself will have).
+</DD>
+
+<DT>reverse-indexline</DT>
+<DD>This is similar to the &quot;indexline&quot; option except the
+foreground and background colors from the corresponding index line will
+be reversed.
+For example, if the index line color is red letters on a white background,
+then the titlebar will be white letters on a red background.
+If the index line for a message is not colored explicitly by the
+Indexcolor rules, then the titlebar will be colored the same as for
+the &quot;default&quot; option above (which is not the same color that
+the index line itself will have).
+</DD>
+</DL>
+
+</DL>
+
 <P>
 <H3><A NAME="general-colors"></A>General Colors</H3>
 
@@ -5180,6 +6238,10 @@ screen but the color may be set to whatever you'd like.
 <DD> The color <EM>Pine</EM> uses for the titlebar (the top line on the
 screen).
 By default, the Title Color is the same as the Reverse Color.
+The actual titlebar color may be different from the Title Color if
+the option
+<A HREF="#titlebar-color-style"><EM>titlebar-color-style</EM></A>
+is set to some value other than default.
 <P>
 
 <DT> <A NAME="status-color"><EM>Status Color</EM></A>
@@ -5195,6 +6257,18 @@ By default, the Status Color is the same as the Reverse Color.
 two-line menu at the bottom of the screen.
 The label is the long name, for example, &quot;PrevMsg&quot;.
 By default, the KeyLabel Color is the same as the Normal Color.
+<P>
+WARNING: Some terminal emulators have the property that the screen will scroll
+down one line whenever a character is written to the character cell in the
+lower right corner of the screen.
+<EM>Pine</EM> can usually avoid writing a character in that corner of the screen.
+However, if you have defined a KeyLabel Color then <EM>Pine</EM> does have to write
+a character in that cell in order to color the cell correctly.
+If you find that your display sometimes scrolls up a line this could be
+the problem.
+The most obvious symptom is probably that the titlebar at the top of the
+screen scrolls off the screen.
+Try setting KeyLabel Color to Default to see if that fixes the problem.
 <P>
 
 <DT> <A NAME="keyname-color"><EM>KeyName Color</EM></A>
@@ -5420,8 +6494,7 @@ For Forward Use, the message used to compare the Pattern with is the message
 being forwarded.
 For Compose Use, there is no message, so the parts of the Pattern which depend
 on a message (everything other than Current Folder Type) are ignored.
-In all cases, the Current Folder is checked if defined, and the
-Score Interval is checked if defined.
+In all cases, the Current Folder is checked if defined.
 If there is a match then this role will either be used without confirmation
 or will be the default when confirmation is asked for, depending on
 which of the two options is selected.
@@ -5437,8 +6510,9 @@ These Patterns are the same for use with Roles, Filtering, Index Coloring,
 and Scoring, so are described in only one place,
 &quot;<A HREF="#patterns-section">here</A>&quot;.
 <P>
-Since header patterns and AllText patterns which are unset are ignored,
+Since header patterns, AllText patterns, and BodyText patterns which are unset are ignored,
 a role which has all header patterns unset, the AllText pattern unset,
+the BodyText pattern unset,
 the Score Interval unset, and the Current Folder Type set to
 &quot;Any&quot; may be used as a default role.
 It should be put last in the list of roles since the matching
@@ -5446,7 +6520,7 @@ starts at the beginning and proceeds until one of the roles is a match.
 If no roles at all match, then <EM>Pine</EM> will
 use its regular methods of defining the role.
 If you wanted to, you could define a different &quot;default&quot; role
-for Replying, Forwarding, Composing, and Index Line Color by setting the
+for Replying, Forwarding, and Composing by setting the
 &quot;Use&quot; fields appropriately.
 
 <H3>Role Actions</H3>
@@ -5471,8 +6545,9 @@ The fields affected by this field are the fields labeled
 &quot;Set Other Headers&quot;,
 &quot;Set Fcc&quot;,
 &quot;Set LiteralSig&quot;,
-&quot;Set Signature&quot;, and
-&quot;Set Template&quot;.
+&quot;Set Signature&quot;,
+&quot;Set Template&quot;, and
+&quot;Use SMTP Server&quot;.
 <P>
 You might use this field if the &quot;action&quot; part of one of your roles
 is something you want to use in more than one role.
@@ -5747,6 +6822,20 @@ It is not possible to have a literal backslash followed by an expanded token.
 A blank field here means that <EM>Pine</EM> will not use a template file when
 this role is being used.
 
+<H4>Use SMTP Server</H4>
+
+If this field has a value, then it will be used as the SMTP server
+to send mail when this role is being used (unless the SMTP server variable
+is set in the system-wide fixed configuration file).
+It has the same semantics as the
+<A HREF="#smtp-server"><EM>smtp-server</EM></A>
+variable in the Setup/Config screen.
+When you postpone the composition this SMTP server list will be saved
+with the postponed composition and it cannot be changed later.
+Because of that, you may want to make this a list of SMTP servers
+with the preferred server at the front of the list and alternate servers
+later in the list.
+
 <P>
 If any of the actions are left unset, then the action depends on what
 is present in the &quot;Initialize settings using role&quot; field.
@@ -5767,22 +6856,31 @@ However, if you'd like <EM>Pine</EM> to help with this, <EM>Pine</EM>'s filterin
 <P>
 Filtering is a way to automatically move certain messages from one folder
 to another or to delete messages.
+It can also be used to set message status bits (Important, Deleted, New,
+Answered).
 <EM>Pine</EM> doesn't have the ability to forward mail to another address.
 <P>
-Each filtering rule has a &quot;Pattern&quot; and possibly a &quot;Folder&quot;.
-When a folder is opened, or when new mail arrives in an open folder, each
+Each filtering rule has a &quot;Pattern&quot; and a &quot;Filter Action&quot;.
+When a folder is opened, when new mail arrives in an open folder, or
+when mail is Expunged from a folder; each
 message is compared with the Patterns of your filtering rules.
 The comparisons start with the first rule and keep going until there
 is a match.
-If a match is found, the message is copied to the folders you've listed 
-in the &quot;Folder&quot; field and then it is deleted.
-If the Folder field is <EM>not set</EM>, then the matching message is simply
-<EM>deleted</EM>.
+If a match is found, the message may be deleted or moved, depending on
+the setting of the Filter Action.
+If the message is not deleted, it may have its status altered.
+<P>
+For efficiency, each message is usually only checked once.
+When new mail arrives, the new messages are checked but not the old.
+There are some exceptions to this rule.
+The expunge command will cause all messages to be rechecked, as will
+editing of the filtering rules.
 
 <P>
 <EM>NOTE:</EM>
-When setting up a pattern used to only delete messages,
-it is recommended that you test the pattern first with a folder specified in
+When setting up a Pattern used to delete messages,
+it is recommended that you test the Pattern first with a &quot;Move&quot;
+folder specified in
 case unintended matches occur.  Messages that are deleted will be removed 
 from the folder and <EM>unrecoverable</EM> from within <EM>Pine</EM> after the
 next Expunge command or once the folder being filtered has been closed.
@@ -5792,25 +6890,45 @@ next Expunge command or once the folder being filtered has been closed.
 In order to determine whether or not a message matches a filter the message is
 compared with the Filter's Pattern.
 These Patterns are the same for use with Roles, Filtering, Index Coloring,
-and Scoring, so are described in only one place,
+Scoring, and Other Rules, so are described in only one place,
 &quot;<A HREF="#patterns-section">here</A>&quot;.
 <P>
 Since filtering is a potentially destructive action, if you have a filtering
 Pattern with nothing other than Current Folder Type set, that filtering
 rule is ignored.
 
-<H3>Move to Folder</H3>
+<H3>Filter Actions</H3>
 
-Once a filter match is found for a particular message, that message is
-moved into these folders.
-Folder may be left unset.
-In that case, the message is simply deleted if it matches.
-Folder may be set to more than one folder name by listing the folders
-separated with commas.
-The message will be saved to each of the folders listed and then deleted
-from the current folder.
+Once a filter match is found for a particular message, there are some actions
+which may be taken.
+First, the message may have its status changed.
+This is the same message status that you can manipulate manually using the
+Flag Command.
+There are four elements of message status that you can control.
+You can set or clear the Important status, the New status, the Deleted
+status, and the Answered status.
+Of course, if the filter is going to delete the message,
+then there is no point in setting message status.
+<P>
+Second, the filter may delete or move the message.
+Deleting the message marks it Deleted and removes it from view.
+It is effectively gone forever (though it technically is still there until
+the next expunge command, which may happen implicitly).
+Moving the message moves it from the open folder into the folder
+listed on the &quot;to Folder&quot; line of the filter configuration.
+If you list more than one folder name (separated by commas) then the message
+will be copied to each of those folders.
+In any case, if &quot;Delete&quot; or &quot;Move&quot; is set then the
+message is removed from the current folder.
+If you just want to set the messages status without deleting it from
+the folder, then set the filter action to
+&quot;Just Set Message Status&quot;.
+<P>
+(There is no way to do a Copy instead of a Move, due to the difficulties
+involved in keeping track of whether or not a message has
+already been copied.)
 
-<H3><A NAME="move-only-if-not-deleted"></A>Move-only-if-deleted option</H3>
+<H4><A NAME="move-only-if-not-deleted"></A>Move-only-if-not-deleted option</H4>
 
 If you have specified a Move to Folder to filter messages into, then this
 option has an effect.
@@ -5825,8 +6943,42 @@ filtered into the folder.
 For example, if you deleted it in another <EM>Pine</EM> or
 another mail program that didn't know about the filtering rule.
 <P>
-This option has no effect if the Filter Action is set to Delete instead
-of Move.
+This option has no effect if the Filter Action is not set to Move.
+
+<H4><A NAME="dont-quit-even-if-rule-matches"></A>Dont-quit-even-if-rule-matches option</H4>
+
+If this option is set then this is a non-terminating rule.
+Usually, for each message, <EM>Pine</EM> searches through the filter rules until
+a match is found and then it performs the action associated with that rule.
+Rules following the match are not considered.
+If this option is set then the search for matches will continue at the next
+rule.
+<P>
+If a non-terminating rule matches then the actions associated with
+that rule, except for any implied deletion of the message, are performed
+before the match for the next rule is checked.
+For example, if the non-terminating rule sets the Important status, then that
+status will be set when the next rule is considered.
+However, if the non-terminating rule Moves the message, the message will
+actually be copied instead of copied and deleted so that it is still there
+for the next rule.
+A moved message is deleted after all the relevant rules have been checked.
+The name of the &quot;Move&quot; action is confusing in this case because
+a single message can be moved to more than one folder.
+It turns the Move into a Copy instead, but it is still followed by a deletion
+at the end.
+<P>
+This option may be useful if you want to have a single message filtered to
+two different folders because it matches two different Patterns.
+For example, suppose you normally filter messages to a particular mailing
+list into one folder, and messages addressed directly to you into a second
+folder.
+If a message is sent to both you and the list (and you can tell that by
+looking at the headers of the message) this option may give you a convenient
+way to capture a copy to each folder.
+(It may also cause you to capture two copies to each folder,
+depending on whether your mail system delivers one or two copies of the
+message to you and on how the list works.)
 
 <H2><A NAME="scoring-config"></A>Scoring Configuration</H2>
 
@@ -5875,10 +7027,80 @@ rule's Pattern is a match.
 Each individual Score Value is an integer between -100 and 100, and the
 values from matching rules are added together to get a message's score.
 
+<H2><A NAME="other-config"></A>Other Rules Configuration</H2>
+
+Using this screen, you may define configuration Rules which don't fit
+nicely into the other Rules categories.
+
+<H3>Other Rule Patterns</H3>
+
+Other Rules are a little different from the rest of the Rules because
+they depend only on the current folder, and not on a particular message.
+In order to determine whether or not a rule's actions should be applied
+the current folder is compared with the rule's Pattern, which consists
+of only the Current Folder Type.
+Current Folder Type works the same for Other Rules as it does for Roles,
+Filtering, Index Coloring, and Scoring.
+Keep in mind that the only part of the Pattern which applies to Other
+Rules is the Current Folder Type when looking at the description of
+Patterns given
+&quot;<A HREF="#patterns-section">here</A>&quot;.
+
+<H3>Other Rule Actions</H3>
+
+Once a pattern match is found, the rule's Actions are taken.
+Neither of the following two rule's depends on a message for its match.
+That means that all the parts of the Pattern which depend on matching an
+attribute of a message are ignored.
+So the only part of the Pattern that matters for these Actions is
+the Current Folder Type.
+
+<H4>Set Sort Order</H3>
+
+When you enter a new folder, these rules will be checked to see if you
+have set a sort order which is different from your default sort order.
+The default is set in the Setup/Config screen with
+the <A HREF="#sort-key">Sort-Key</A> option.
+If the Sort Order action is set, then the folder will be displayed sorted in
+that sort order instead of in the default order.
+<P>
+A possible point of confusion arises when you change the configuration
+of the Sort Order for the currently open folder.
+The folder will normally be re-sorted when you go back to viewing the
+index.
+However, if you have manually sorted the folder with the
+Sort command, it will not be re-sorted.
+
+<H4>Set Index Format</H3>
+
+When you enter a new folder, these rules will be checked to see if you
+have set an Index Format which is different from your default Index Format,
+which is set with the
+<A HREF="#index-format"><EM>Index-Format</EM></A> option.
+If so, the index will be displayed with this format instead of the default.
+
+<H4>Set Startup Rule</H4>
+
+When you enter a new folder, these rules will be checked to see if you
+have set a startup rule which is different from the default startup rule.
+The default for incoming folders is set in the Setup/Config screen with
+the &quot;incoming-startup-rule&quot; option.
+The default for folders other than INBOX that are not part of your
+incoming collection
+(see <A HREF="#enable-incoming-folders">enable-incoming-folders</A> feature)
+is to start with the last message in the folder.
+If the Startup Rule is set to something other than &quot;default&quot;,
+then the rule will determine which message will be the current message when
+the folder is first opened.
+<P>
+The various startup rule possibilities work the same here as they do in
+the incoming collection, except that the folder can be any specific
+folder or any folder type.
+
 <H2><A NAME="patterns-section"></A>Patterns</H2>
 
 Patterns are used with Roles, Filtering, Index Coloring,
-and Scoring.
+Scoring, and Other Rules.
 Patterns are compared with a message to see if there is a match.
 For Filtering, the messages being checked are all the messages in the
 folder, one at a time.
@@ -5896,6 +7118,8 @@ Only the Current Folder Type matters for Compose.
 For Scoring, the message being scored is compared with all of the Score
 Patterns, and the Score Values from the ones that match are added together to 
 get the message's score.
+For Other Rules, there is no message. Only the Current Folder Type is checked
+for Other Rules.
 <P>
 Each Pattern has several possible parts, all of which are optional.
 In order for there to be a match, <EM>ALL</EM> of the
@@ -5928,12 +7152,21 @@ and the Partic pattern is a header pattern which stands for
 Participant (From OR To OR Cc).
 (Defining the Recip pattern does not have the same effect as defining both
 the To and Cc patterns. Recip is To <EM>OR</EM> Cc, not To <EM>AND</EM> Cc.)
-Similar to the header patterns is the AllText pattern.
+Similar to the header patterns are the AllText pattern and the BodyText pattern.
 Instead of comparing this pattern's text against only the contents of
 a particular header field, the text for the AllText pattern is compared
-with text anywhere in the message's header or body.
+with text anywhere in the message's header or body, and the text for the
+BodyText pattern is compared with text anywhere in the message's body.
 <P>
-The contents of each of these header patterns (or the AllText pattern) may
+Any of the header patterns, the AllText pattern, or the BodyText pattern may be negated with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+You can tell that <EM>NOT</EM> has been turned on by looking for the character
+&quot;!&quot; at the beginning of the pattern line.
+When the &quot;!&quot; is present, it reverses the meaning of the match.
+That is, if the pattern matches then it is considered to NOT be a match, and
+if it does not match it is considered to be a match.
+<P>
+The contents of each of these header patterns (or the AllText or BodyText patterns) may
 be a complete email address, part of an address, or a random set of
 characters to match against.
 It may also be a comma-separated list of such patterns, which means you
@@ -5949,6 +7182,16 @@ would match all messages with a subject which contained at least one
 of those words.
 It would also match subjects containing the words &quot;alerts&quot; or
 &quot;Urgently&quot;.
+<P>
+The same example with &quot;NOT&quot; turned on would be
+<P>
+<PRE>
+ ! Subject pattern = urgent, emergency, alert
+</PRE>
+<P>
+which would match all messages with a subject which did NOT contain any of
+those words.
+<P>
 (It is not possible to specify two patterns which must <EM>BOTH</EM> be
 present for a match.
 It is only possible to specify that <EM>EITHER</EM> pattern1 <EM>OR</EM>
@@ -5958,9 +7201,16 @@ and that is exactly what the comma-separated list does.)
 The &quot;Current Folder Type&quot; and the &quot;Score Interval&quot; are
 also part of the Pattern, although the &quot;Score Interval&quot; is not used
 when checking for matches for Scoring.
-There are also four similar settings which relate to the status of the message.
+There are five similar settings which relate to the status of the message.
 These settings rely on the message being New or not, Deleted or not,
-Answered or not, and Important or not.
+Answered or not, Important or not, and Recent or not.
+There are also three more specialized settings.
+The first is the Age of the message in days.
+The second is a setting which detects whether or not the Subject of a
+message contains raw 8-bit characters (unencoded characters with the most
+significant bit set) .
+And the third is a setting which detects whether or not the From address of a
+message appears in your address book.
 
 <H3>Parts of a Pattern</H3>
 
@@ -5989,6 +7239,12 @@ This is only true for the To header.
 Resent-cc and Resent-From headers are never used unless you add them
 with the eXtraHdrs command.
 <P>
+The meaning of a header pattern may be negated with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+You can tell that <EM>NOT</EM> has been turned on by looking for the character
+&quot;!&quot; at the beginning of the pattern line.
+When the &quot;!&quot; is present, it reverses the meaning of the match.
+<P>
 If you want to check for the presence of a header field but don't care
 about its value, then
 the empty pattern which you get by entering a pair of
@@ -6001,7 +7257,15 @@ AllText patterns are just like header patterns except that the text is
 searched for anywhere in the message's headers or body, not just in the
 contents of a particular header field.
 <P>
-If there is more than one header pattern or AllText pattern
+
+<H3><A NAME="pattern_bodytext">BodyText patterns</A></H3>
+
+BodyText patterns are just like header patterns except that the text is
+searched for anywhere in the message's body, not just in the
+contents of a particular header field.
+<P>
+
+If there is more than one header pattern or AllText pattern or BodyText pattern
 for which you want to take the
 same action there is a shorthand notation which may be used.
 Any of these patterns may be a comma-separated list of patterns instead of
@@ -6018,8 +7282,14 @@ This means that if the mail you are replying to was addressed to
 either &quot;anything@company1.com&quot; or &quot;anything@company2.com&quot;,
 then this Pattern is a match and the same actions will be taken.
 <P>
+The meaning of an AllText or BodyText pattern may be negated with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+You can tell that <EM>NOT</EM> has been turned on by looking for the character
+&quot;!&quot; at the beginning of the pattern line.
+When the &quot;!&quot; is present, it reverses the meaning of the match.
+<P>
 A technicality: Since comma is the character used to separate multiple values
-in a header or AllText pattern field, you have to escape comma with a
+in a header, AllText, or BodyText pattern field, you have to escape comma with a
 backslash (&#92;) if you want to include a literal comma in one of those fields.
 The same is true for the backslash character itself, which must be escaped
 with another backslash to make it literal.
@@ -6048,11 +7318,13 @@ the technical specification
 of the folder (like what appears in your configuration file) or, if the
 folder is one of your incoming folders, it may be the nickname you've given
 the folder.
-Here are a couple samples of specific folder names:
+Here are some samples of specific folder names:
 <P>
 <CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
 <P>
 <CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<P>
+<CENTER><SAMP>mail/local-folder</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder&quot; field is to use
 the &quot;T&quot; command which is available when the &quot;Folder&quot; line is
@@ -6069,6 +7341,42 @@ If you have Patterns with a Current Folder Type of either
 &quot;Any&quot; or &quot;News&quot; and those Patterns are used for
 Index Line Coloring or Scoring, you may experience
 slower screen redrawing in the MESSAGE INDEX screen when in a newsgroup.
+
+<H4>Age Interval</H4>
+
+The &quot;Age Interval&quot; may be set to an interval of message
+ages which should be considered a match.
+Like the other parts of the Pattern, if it is unset it will be ignored.
+The Age Interval looks like
+<P>
+<CENTER><SAMP>(min_age,max_age)</SAMP></CENTER>
+<P>
+where &quot;min_age&quot; and &quot;max_age&quot; are integers greater
+than or equal to zero.
+The special value &quot;INF&quot; may be used for
+the max value. It represents infinity.
+<P>
+When there is an Age Interval defined, it is a match if the age, in days, of
+the message is contained in the interval.
+The interval includes both endpoints.
+<P>
+Even though this option is called Age, it isn't actually
+the <EM>age</EM> of the message.
+Instead, it is how many days ago the message arrived in one of your folders.
+If the current time is a little past midnight, then a message that arrived
+just before midnight arrived yesterday, even though the message is only
+a few minutes old.
+By default, the date being used is not the date in the Date
+header of the message.
+It is the date that the message arrived in one of your folders.
+When you Save a message from one folder to another that arrival date
+is preserved.
+If you would like to use the date in the Date header that is possible.
+Turn on the option
+<EM>use-date-header-for-age</EM>
+near the bottom of the rule definition.
+<P>
+A value of 0 is today, 1 is yesterday, 2 is the day before yesterday, and so on.
 
 <H4>Score Interval</H4>
 
@@ -6094,20 +7402,50 @@ calculating the score, the Score Interval is ignored.
 
 <H4>Message Status</H4>
 
-There are four separate message status settings.
-By default, all four are set to the value &quot;Don't care&quot;, which
+There are five separate message status settings.
+By default, all five are set to the value &quot;Don't care&quot;, which
 will match any message.
 The value &quot;Yes&quot; means that the particular status must be true
 for a match, and the value &quot;No&quot; means that the particular
 status must not be true for a match.
-For example, one of the four Message Status settings is whether a message
+For example, one of the five Message Status settings is whether a message
 is marked Important or not.
 A &quot;Yes&quot; means that the message must be Important to be
 considered a match and &quot;No&quot; means that the message must not be
 Important to be considered a match.
-The same is true of the other three message status settings which depend
+The same is true of the other four message status settings which depend
 on whether or not the message is New; whether the message has 
-been Answered or not; and whether the message has been Deleted or not. 
+been Answered or not; whether the message has been Deleted or not, and
+whether the message is Recent or not. 
+The nomenclature is a bit confusing.
+New means that the message is Unseen.
+It could have been in your mailbox for a long time but if you haven't looked
+at it, it is still considered New.
+That matches the default <EM>Pine</EM> index display which shows an N for such a
+message.
+Recent means that the message was added to this folder since the last time
+you opened the folder.
+
+<H4>Raw 8-bit in Subject</H4>
+
+It seems that lots of unwanted email contains unencoded 8-bit characters
+in the Subject.
+Normally, characters with the 8th bit set are not allowed in the Subject
+header unless they are MIME-encoded.
+This option gives you a way to match messages which have Subjects which
+contain unencoded 8-bit characters.
+Setting this option will affect performance in large folders because the
+subject of each message in the folder has to be checked.
+
+<H4>From or Reply-To address in Address Books</H3>
+
+This option gives you a way to match messages which have a From or
+a Reply-To address
+which is in one of your address books.
+Only the simple entries in your address books are searched.
+Address book distribution lists are ignored!
+Setting this option will affect performance in large folders because the
+From and Reply-To of each message in the folder have to be checked.
 
 <H3><A NAME="help-for-pattern-config"></A>Help Configuring Pattern Fields</H3>
 
@@ -6137,6 +7475,11 @@ patterns are ignored.
 If this pattern is a comma-separated list of patterns, then at least one of the
 recipients must match at least one of the patterns.
 (Any other non-blank parts of the Pattern must match, too.)
+It is possible to add a <EM>NOT</EM> to the To Pattern meaning with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+This changes the meaning of the To pattern so that it has the opposite meaning.
+It will be considered a match if there are no matches between the
+addresses in the To: line and the list of To patterns.
 If the message being replied to or forwarded has a Resent-To header line,
 then that is used in place of the To line.
 <P>
@@ -6251,6 +7594,68 @@ done using the character set you have defined with the
 by entering the MIME encoding of the header string here.)
 <P>
 
+<DT> <A NAME="bodytext-pattern"><EM>BodyText pattern</EM></A>
+
+<DD> Just like AllText, except it is compared only with the body of the
+message, not the body and header.
+
+<P>
+If you enter non-ascii characters in this field then the search will be
+done using the character set you have defined with the
+&quot;character-set&quot; configuration variable.
+(The truly sophisticated may use an alternate character set for a search
+by entering the MIME encoding of the header string here.)
+<P>
+
+<DT> <A NAME="age-interval"><EM>Age Interval</EM></A>
+
+<DD>The Age Interval, if defined, is part of the Pattern.
+If you use this, it should be set to something like:
+<P>
+<CENTER><SAMP>(min_age,max_age)</SAMP></CENTER>
+<P>
+where &quot;min_age&quot; and &quot;max_age&quot; are non-negative integers.
+The special value &quot;INF&quot; may be used for the max value.
+It represents infinity.
+<P>
+When there is an Age Interval defined, it is a match if the age, in days, of
+the message is contained in the interval.
+The interval includes both endpoints.
+<P>
+Even though this option is called Age, it isn't actually
+the <EM>age</EM> of the message.
+Instead, it is how many days ago the message arrived in one of your folders.
+If the current time is a little past midnight, then a message that arrived
+just before midnight arrived yesterday, even though the message is only
+a few minutes old.
+By default, the date being used is not the date in the Date
+header of the message.
+It is the date that the message arrived in one of your folders.
+When you Save a message from one folder to another that arrival date
+is preserved.
+If you would like to use the date in the Date header that is possible.
+Turn on the option
+<EM>use-date-header-for-age</EM>
+near the bottom of the rule definition.
+<P>
+A value of 0 is today, 1 is yesterday, 2 is the day before yesterday, and so on.
+The age interval
+<P>
+<CENTER><SAMP>(2,2)</SAMP></CENTER>
+<P>
+matches all messages that arrived on the day before yesterday.
+The interval
+<P>
+<CENTER><SAMP>(180,INF)</SAMP></CENTER>
+<P>
+matches all messages that arrived at least 180 days before today.
+The interval
+<P>
+<CENTER><SAMP>(0,1)</SAMP></CENTER>
+<P>
+matches all messages that arrived today or yesterday.
+<P>
+
 <DT> <A NAME="score-interval"><EM>Score Interval</EM></A>
 
 <DD> The Score Interval, if defined, is part of the Pattern.
@@ -6342,6 +7747,38 @@ to be a match.
 &quot;New&quot; is the same as <EM>Unseen</EM> and not &quot;New&quot; is the
 same as <EM>Seen</EM>.
 <P>
+The nomenclature is a bit confusing.
+New means that the message is Unseen.
+It could have been in your mailbox for a long time but if you haven't looked
+at it, it is still considered New.
+That matches the default <EM>Pine</EM> index display which shows an N for such a
+message.
+Recent means that the message was added to this folder since the last time
+you opened the folder.
+<P>
+
+<DT> <A NAME="message-status-recent"><EM>Message Status Recent</EM></A>
+
+<DD> This part of the Pattern may have one of three possible values.
+The default value is &quot;Don't care&quot;, which matches any message.
+The other two values are &quot;Yes&quot;, which means the message must be
+&quot;Recent&quot; in order to be a match; or &quot;No&quot;, which
+means the message must <EM>not</EM> be &quot;Recent&quot; in order
+to be a match.
+&quot;Recent&quot; means that the message was added to the folder since
+the last time the folder was opened.
+If more than one mail client has the folder opened, the message will
+appear to be &quot;Recent&quot; to only one of the clients.
+<P>
+The nomenclature is a bit confusing.
+New means that the message is Unseen.
+It could have been in your mailbox for a long time but if you haven't looked
+at it, it is still considered New.
+That matches the default <EM>Pine</EM> index display which shows an N for such a
+message.
+Recent means that the message was added to this folder since the last time
+you opened the folder.
+<P>
 
 <DT> <A NAME="message-status-deleted"><EM>Message Status Deleted</EM></A>
 
@@ -6369,6 +7806,47 @@ The other two values are &quot;Yes&quot;, which means the message must be
 marked &quot;Answered&quot; in order to be a match; or &quot;No&quot;, which
 means the message must <EM>not</EM> be marked &quot;Answered&quot; in order
 to be a match.
+<P>
+
+<DT> <A NAME="subject-contains-raw-8bit"><EM>Subject Contains Raw 8-bit</EM></A>
+
+<DD> This part of the Pattern may have one of three possible values.
+The default value is &quot;Don't care&quot;, which matches any message.
+The other two values are &quot;Yes&quot;, which means the Subject of
+the message must contain unencoded 8-bit characters (characters with the
+most significant bit set)
+in order to be a match; or &quot;No&quot;, which
+means the Subject must <EM>not</EM>
+contain unencoded 8-bit characters in order to be a match.
+<P>
+
+<DT> <A NAME="from-in-abook"><EM>From or Reply-To in Address Book</EM></A>
+
+<DD> This part of the Pattern may have one of five possible values.
+The default value is &quot;Don't care&quot;, which matches any message.
+The value &quot;Yes, in any address book&quot; means either the From address
+or the Reply-To address of the message must be in at least one of your
+address books in order to be a match.
+The value &quot;No, not in any address book&quot;
+means neither the From nor the Reply-To addresses may
+be in any of your address books in order to be a match.
+<P>
+The values &quot;Yes, in specific address books&quot; and
+&quot;No, not in any of specific address books&quot; are similar but instead
+of depending on all address books you are allowed to give a list of address
+books to look in.
+Usually this would be a single address book but it may be a comma-separated
+list of address books as well.
+For each of these &quot;specific&quot; address book options you Select which
+of the Specific options you want (Yes or No) <EM>AND</EM> fill in the
+name (or comma-separated list of names) of the address book in the
+&quot;Abook List&quot; field.
+The names to be used are those that appear in the ADDRESS BOOK LIST screen.
+The easiest way to fill in the Abook List field it to use
+the &quot;T&quot; command which is available when the &quot;Abook List&quot;
+line is highlighted.
+Note that you won't be able to edit the &quot;Abook List&quot; line unless the
+option is set to one of the two &quot;Specific&quot;, values.
 <P>
 
 </DL>

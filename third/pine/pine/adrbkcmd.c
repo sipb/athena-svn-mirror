@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.1 2001-02-19 07:11:45 ghudson Exp $";
+static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.1 2001-02-19 07:11:45 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -175,7 +175,7 @@ view_abook_entry(ps, cur_line)
     SCROLL_S	sargs;
     HANDLE_S   *handles = NULL;
     gf_io_t	pc, gc;
-    int         width, cmd;
+    int         cmd;
     long	offset = 0L;
 
     dprint(5, (debugfile, "- view_abook_entry -\n"));
@@ -296,9 +296,10 @@ repaint_view:
 	gf_filter_init();
 
 	if(F_ON(F_VIEW_SEL_URL, ps_global)
-	   || F_ON(F_VIEW_SEL_URL_HOST, ps_global))
+	   || F_ON(F_VIEW_SEL_URL_HOST, ps_global)
+	   || F_ON(F_SCAN_ADDR, ps_global))
 	  gf_link_filter(gf_line_test,
-			 gf_line_test_opt(url_hilite_abook, NULL));
+			 gf_line_test_opt(url_hilite_abook, &handles));
 
 	gf_link_filter(gf_wrap, gf_wrap_filter_opt(ps->ttyo->screen_cols - 4,
 						   ps->ttyo->screen_cols,
@@ -314,7 +315,7 @@ repaint_view:
 	    so_give(&out_store);
 	    free_handles(&handles);
 	    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-			      "Can't format entry : %s", errstr);
+			      "Can't format entry : %.200s", errstr);
 	    return;
 	}
 
@@ -446,6 +447,12 @@ process_abook_view_cmd(cmd, msgmap, sparms)
 	 * the ab_resize.
 	 */
 	pab = &as.adrbks[cur_addr_book()];
+	if(pab && pab->access == ReadOnly){
+	    readonly_warning(NO_DING, NULL);
+	    rv = 0;
+	    break;
+	}
+
 	if(adrbk_check_all_validity_now()){
 	    if(resync_screen(pab, AddrBookScreen, 0)){
 		q_status_message(SM_ORDER | SM_DING, 3, 4,
@@ -655,7 +662,7 @@ expand_addrs_for_pico(headents, s)
 	bldto.arg.abe = &abe;
 	our_build_address(bldto, &addr, &error, NULL, 0);
 	if(error){
-	    q_status_message1(SM_ORDER, 3, 4, "%s", error);
+	    q_status_message1(SM_ORDER, 3, 4, "%.200s", error);
 	    fs_give((void **)&error);
 	}
 	
@@ -681,7 +688,7 @@ expand_addrs_for_pico(headents, s)
 	}
 
 	if(wp_err.error){
-	    q_status_message1(SM_ORDER, 3, 4, "%s", wp_err.error);
+	    q_status_message1(SM_ORDER, 3, 4, "%.200s", wp_err.error);
 	    fs_give((void **)&wp_err.error);
 	}
     }
@@ -717,7 +724,7 @@ expand_addrs_for_pico(headents, s)
 	    a->next = NULL;
 	    bufp = (char *)fs_get((size_t)est_size(a));
 	    tmp2 = (char *)rfc1522_decode((unsigned char *)tmp_20k_buf+5000,
-					  SIZEOF_20KBUF,
+					  SIZEOF_20KBUF-5000,
 					  addr_string(a, bufp), NULL);
 	    a->next = next_addr;
 
@@ -827,7 +834,7 @@ view_message_for_pico(error)
     gf_set_so_writec(&pc, store);
 
     format_message(msgno_for_pico_callback, env_for_pico_callback,
-		   body_for_pico_callback, FM_NEW_MESS | FM_DISPLAY, pc);
+		   body_for_pico_callback, NULL, FM_NEW_MESS | FM_DISPLAY, pc);
 
     gf_clear_so_writec(store);
 
@@ -989,7 +996,7 @@ edit_entry(abook, abe, entry, old_tag, readonly, warped, cmd)
 				      ps_global->mail_stream,
 				      ps_global->context_current,
 				      ps_global->cur_folder,ps_global->msgmap, 
-				      0, FolderName, 0, 0);
+				      0, FolderName, 0, 0, NULL);
     pbf.pine_flags   |= P_NOBODY;
     if(readonly)
       pbf.pine_flags |= P_VIEW;
@@ -1333,7 +1340,7 @@ edit_entry(abook, abe, entry, old_tag, readonly, warped, cmd)
 
     if(rc == -2 || rc == -3){
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			"Error updating address book: %s",
+			"Error updating address book: %.200s",
 			rc == -2 ? error_description(errno) : "Pine bug");
     }
     else if(rc == 0
@@ -1362,7 +1369,7 @@ edit_entry(abook, abe, entry, old_tag, readonly, warped, cmd)
 	      fs_give((void **)&dummy);
 
 	    q_status_message4(SM_ORDER, 5, 9,
-		"Warning! Nickname %s also exists in \"%s\"%s%s",
+	       "Warning! Nickname %.200s also exists in \"%.200s\"%.200s%.200s",
 		nick, as.adrbks[which_addrbook].nickname,
 		(decode && *decode) ? " as " : "",
 		(decode && *decode) ? decode : "");
@@ -1764,7 +1771,6 @@ ab_modify_abook_list(edit, global, abook_num, def_serv, def_fold, def_nick)
     PICO pbf;
     STORE_S *msgso;
     int editor_result, i, how_many_in_list, new_abook_num, num_in_list;
-    int quote_folder = 0, quote_nick = 0;
     int ret = 0;
     char *server, *folder, *nickname;
     char *new_item = NULL;
@@ -1822,7 +1828,7 @@ ab_modify_abook_list(edit, global, abook_num, def_serv, def_fold, def_nick)
 				      ps_global->mail_stream,
 				      ps_global->context_current,
 				      ps_global->cur_folder,ps_global->msgmap, 
-				      0, FolderName, 0, 0);
+				      0, FolderName, 0, 0, NULL);
     pbf.pine_flags   |= P_NOBODY;
 
     /* An informational message */
@@ -2272,7 +2278,6 @@ convert_abook_to_remote(ps, pab, rem_folder_prefix, len, count)
 	return(-2);
     }
     else if(abook_num >= 0){			/* give user some info */
-	int       i;
 	STORE_S  *store;
 	SCROLL_S  sargs;
 	char     *beg, *end;
@@ -2378,7 +2383,7 @@ any_rule_files_to_warn_about(ps)
     PAT_S      *pat;
 
     rflags = (ROLE_DO_ROLES | ROLE_DO_INCOLS | ROLE_DO_SCORES |
-	      ROLE_DO_FILTER | PAT_USE_MAIN);
+	      ROLE_DO_FILTER | ROLE_DO_OTHER | PAT_USE_MAIN);
     if(any_patterns(rflags, &pstate)){
 	for(pat = first_pattern(&pstate);
 	    pat;
@@ -2396,8 +2401,9 @@ any_rule_files_to_warn_about(ps)
 
 
 int
-convert_sigs_to_remote(ps)
+convert_sigs_to_literal(ps, interactive)
     struct pine *ps;
+    int          interactive;
 {
     EditWhich   ew = Main;
     char       *sigfile, *litsig, *cstring_version, *nick, *src = NULL;
@@ -2417,35 +2423,53 @@ convert_sigs_to_remote(ps)
 
     if(sigfile && *sigfile && !litsig && sigfile[strlen(sigfile)-1] != '|' &&
        !IS_REMOTE(sigfile)){
-	sprintf(prompt, "Convert signature file \"%.30s\" to a literal sig ",
-		sigfile);
-	ClearBody();
-	ps->mangled_body = 1;
-	if((ans=want_to(prompt, 'y', 'x', h_convert_sig, WT_NORM)) == 'y'){
-	    if((src = get_signature_file(sigfile, 0, 0, 0)) != NULL){
-		cstring_version = string_to_cstring(src);
-		set_variable(V_LITERAL_SIG, cstring_version, 0, ew);
+	if(interactive){
+	    sprintf(prompt,
+		    "Convert signature file \"%.30s\" to a literal sig ",
+		    sigfile);
+	    ClearBody();
+	    ps->mangled_body = 1;
+	    if((ans=want_to(prompt, 'y', 'x', h_convert_sig, WT_NORM)) == 'x'){
+		cmd_cancelled(NULL);
+		return(-1);
+	    }
+	}
+	else
+	  ans = 'y';
 
-		if(cstring_version)
-		  fs_give((void **)&cstring_version);
+	if(ans == 'y' && (src = get_signature_file(sigfile, 0, 0, 0)) != NULL){
+	    cstring_version = string_to_cstring(src);
+	    set_variable(V_LITERAL_SIG, cstring_version, 0, 0, ew);
 
-		fs_give((void **)&src);
+	    if(cstring_version)
+	      fs_give((void **)&cstring_version);
 
+	    fs_give((void **)&src);
+
+	    if(interactive){
 		if(!(store = so_get(CharStar, NULL, EDIT_ACCESS))){
 		    q_status_message(SM_ORDER | SM_DING, 7, 10,
 				     "Error allocating space for message.");
 		    return(-1);
 		}
 
-		sprintf(prompt, "\nYour signature file \"%.30s\" has been converted", sigfile);
+		sprintf(prompt,
+    "\nYour signature file \"%.30s\" has been converted", sigfile);
 		so_puts(store, prompt);
-		so_puts(store, "\nto a literal signature, which means it is contained in your");
-		so_puts(store, "\nPine configuration instead of being in a file of its own.");
-		so_puts(store, "\nIf that configuration is copied to a remote folder then the");
-		so_puts(store, "\nsignature will be available remotely also.");
-		so_puts(store, "\nChanges to the signature file itself will no longer have any");
-		so_puts(store, "\neffect on Pine but you may still edit the signature with the");
-		so_puts(store, "\nSetup/Signature command.\n");
+		so_puts(store,
+    "\nto a literal signature, which means it is contained in your");
+		so_puts(store,
+    "\nPine configuration instead of being in a file of its own.");
+		so_puts(store,
+    "\nIf that configuration is copied to a remote folder then the");
+		so_puts(store,
+    "\nsignature will be available remotely also.");
+		so_puts(store,
+    "\nChanges to the signature file itself will no longer have any");
+		so_puts(store,
+    "\neffect on Pine but you may still edit the signature with the");
+		so_puts(store,
+    "\nSetup/Signature command.\n");
 
 		memset(&sargs, 0, sizeof(SCROLL_S));
 		sargs.text.text  = so_text(store);
@@ -2460,10 +2484,6 @@ convert_sigs_to_remote(ps)
 		so_give(&store);
 		ps->mangled_screen = 1;
 	    }
-	}
-	else if(ans == 'x'){
-	    cmd_cancelled(NULL);
-	    return(-1);
 	}
     }
 
@@ -2484,33 +2504,43 @@ convert_sigs_to_remote(ps)
 		if(sigfile && *sigfile && !litsig &&
 		   sigfile[strlen(sigfile)-1] != '|' &&
 		   !IS_REMOTE(sigfile)){
-		    sprintf(prompt,
-		     "Convert signature file \"%.30s\"%s%.50s%s to a literal sig ",
-			    sigfile,
-			    nick ? " in role \"" : "",
-			    nick ? nick : "",
-			    nick ? "\"" : "");
-		    ClearBody();
-		    ps->mangled_body = 1;
-		    if(want_to(prompt,'y','x',h_convert_sig,WT_NORM) == 'y'){
-			if((src = get_signature_file(sigfile,0,0,0)) != NULL){
+		    if(interactive){
+			sprintf(prompt,
+		 "Convert signature file \"%.30s\"%s%.50s%s to a literal sig ",
+				sigfile,
+				nick ? " in role \"" : "",
+				nick ? nick : "",
+				nick ? "\"" : "");
+			ClearBody();
+			ps->mangled_body = 1;
+			if((ans=want_to(prompt, 'y', 'x',
+					h_convert_sig, WT_NORM)) == 'x'){
+			    cmd_cancelled(NULL);
+			    return(-1);
+			}
+		    }
+		    else
+		      ans = 'y';
 
-			    cstring_version = string_to_cstring(src);
+		    if(ans == 'y' &&
+		       (src = get_signature_file(sigfile,0,0,0)) != NULL){
 
-			    if(pat->action->litsig)
-			      fs_give((void **)&pat->action->litsig);
+			cstring_version = string_to_cstring(src);
 
-			    pat->action->litsig = cstring_version;
-			    fs_give((void **)&src);
+			if(pat->action->litsig)
+			  fs_give((void **)&pat->action->litsig);
 
-			    set_pathandle(rflags);
-			    if(patline->type == Literal)
-			      (*cur_pat_h)->dirtypinerc = 1;
-			    else
-			      patline->dirty = 1;
+			pat->action->litsig = cstring_version;
+			fs_give((void **)&src);
 
-			    if(write_patterns(rflags) == 0){
+			set_pathandle(rflags);
+			if(patline->type == Literal)
+			  (*cur_pat_h)->dirtypinerc = 1;
+			else
+			  patline->dirty = 1;
 
+			if(write_patterns(rflags) == 0){
+			    if(interactive){
 				/*
 				 * Flush out current_vals of anything we've
 				 * possibly changed.
@@ -2519,28 +2549,37 @@ convert_sigs_to_remote(ps)
 
 				if(!(store=so_get(CharStar,NULL,EDIT_ACCESS))){
 				    q_status_message(SM_ORDER | SM_DING, 7, 10,
-						     "Error allocating space for message.");
+					 "Error allocating space for message.");
 				    return(-1);
 				}
 
-				sprintf(prompt, "Your signature file \"%.30s\"%s%.50s%s has been converted",
+				sprintf(prompt,
+		    "Your signature file \"%.30s\"%s%.50s%s has been converted",
 					sigfile,
 					nick ? " in role \"" : "",
 					nick ? nick : "",
 					nick ? "\"" : "");
 				so_puts(store, prompt);
-				so_puts(store, "\nto a literal signature, which means it is contained in your");
-				so_puts(store, "\nPine configuration instead of being in a file of its own.");
-				so_puts(store, "\nIf that configuration is copied to a remote folder then the");
-				so_puts(store, "\nsignature will be available remotely also.");
-				so_puts(store, "\nChanges to the signature file itself will no longer have any");
-				so_puts(store, "\neffect on Pine. You may edit the signature with the");
-				so_puts(store, "\nSetup/Rules/Roles command.\n");
+				so_puts(store,
+	    "\nto a literal signature, which means it is contained in your");
+				so_puts(store,
+	    "\nPine configuration instead of being in a file of its own.");
+				so_puts(store,
+	    "\nIf that configuration is copied to a remote folder then the");
+				so_puts(store,
+	    "\nsignature will be available remotely also.");
+				so_puts(store,
+	    "\nChanges to the signature file itself will no longer have any");
+				so_puts(store,
+	    "\neffect on Pine. You may edit the signature with the");
+				so_puts(store,
+	    "\nSetup/Rules/Roles command.\n");
 
 				memset(&sargs, 0, sizeof(SCROLL_S));
 				sargs.text.text  = so_text(store);
 				sargs.text.src   = CharStar;
-				sargs.text.desc  = "Literal Signature Information";
+				sargs.text.desc  =
+					    "Literal Signature Information";
 				sargs.bar.title  = "ABOUT LITERAL SIG";
 				sargs.help.text  = NO_HELP;
 				sargs.help.title = NULL;
@@ -2550,14 +2589,15 @@ convert_sigs_to_remote(ps)
 				so_give(&store);
 				ps->mangled_screen = 1;
 			    }
-			    else
-			      q_status_message(SM_ORDER | SM_DING, 7, 10,
-					       "Error writing rules config.");
 			}
-		    }
-		    else if(ans == 'x'){
-			cmd_cancelled(NULL);
-			return(-1);
+			else if(interactive){
+			  q_status_message(SM_ORDER | SM_DING, 7, 10,
+					   "Error writing rules config.");
+			}
+			else{
+			    fprintf(stderr, "Error converting role sig\n");
+			    return(-1);
+			}
 		    }
 		}
 	    }
@@ -2724,7 +2764,7 @@ ab_del_abook(cur_line, command_line, err)
     int    command_line;
     char **err;
 {
-    int          abook_num, varnum, delete_data = 0, delete_config = 0,
+    int          abook_num, varnum, delete_data = 0,
 		 num_in_list, how_many_in_list, i, cnt, warn_about_revert = 0;
     char       **list, **new_list, **t, **lval;
     char         tmp[200];
@@ -2992,7 +3032,8 @@ ab_del_abook(cur_line, command_line, err)
 	     */
 	    if(pab->type & REMOTE_VIA_IMAP){
 		MAILSTREAM *del_stream = NULL;
-		REMDATA_S *rd;
+		REMDATA_S  *rd;
+		int         exists;
 
 		del_stream = same_stream(origfile, ps_global->mail_stream);
 		if(!del_stream)
@@ -3011,7 +3052,8 @@ ab_del_abook(cur_line, command_line, err)
 		rd_close_remdata(&rd);
 
 		/* Check to see if it's still there */
-		if(folder_exists(NULL, origfile)){
+		if((exists=folder_exists(NULL, origfile)) &&
+		   (exists != FEX_ERROR)){
 		    o++;
 		    dprint(1, (debugfile, "Trouble deleting %s\n", origfile));
 		}
@@ -3784,7 +3826,7 @@ ab_compose_internal(bldto, allow_role)
     good_addr = (our_build_address(bldto, &addr, &error, &fcc, 0) >= 0);
 	
     if(error){
-	q_status_message1(SM_ORDER, 3, 4, "%s", error);
+	q_status_message1(SM_ORDER, 3, 4, "%.200s", error);
 	fs_give((void **)&error);
     }
 
@@ -3925,7 +3967,7 @@ ab_export(ps, cur_line, command_line, agg)
 
 	  case -2:
 	    q_status_message1(SM_ORDER, 0, 2,
-		"Can't export to file outside of %s", VAR_OPER_DIR);
+		"Can't export to file outside of %.200s", VAR_OPER_DIR);
 	    break;
 	}
 
@@ -3937,7 +3979,7 @@ ab_export(ps, cur_line, command_line, agg)
 
     if(!(store = so_get(FileStar, full_filename, WRITE_ACCESS))){
 	q_status_message2(SM_ORDER | SM_DING, 3, 4,
-		  "Error opening file \"%s\" for address export: %s",
+		  "Error opening file \"%.200s\" for address export: %.200s",
 		  full_filename, error_description(errno));
 	goto fini;
     }
@@ -3986,7 +4028,7 @@ ab_export(ps, cur_line, command_line, agg)
 									  >= 0);
 	
 		    if(error){
-			q_status_message1(SM_ORDER, 0, 4, "%s", error);
+			q_status_message1(SM_ORDER, 0, 4, "%.200s", error);
 			fs_give((void **)&error);
 		    }
 
@@ -4066,7 +4108,7 @@ ab_export(ps, cur_line, command_line, agg)
 	    }
 
 	    if(error){
-		q_status_message1(SM_ORDER, 3, 4, "%s", error);
+		q_status_message1(SM_ORDER, 3, 4, "%.200s", error);
 		fs_give((void **)&error);
 	    }
 
@@ -4116,7 +4158,8 @@ ab_export(ps, cur_line, command_line, agg)
     if(vcard)
       gf_clear_so_writec(store);
 
-    so_give(&store);				/* release storage */
+    if(so_give(&store))				/* release storage */
+      failure++;
 
     if(failure){
 #ifndef	DOS
@@ -4125,13 +4168,13 @@ ab_export(ps, cur_line, command_line, agg)
 	dprint(1, (debugfile, "FAILED Export: file \"%s\" : %s\n",
 	       full_filename,  error_description(orig_errno)));
 	q_status_message2(SM_ORDER | SM_DING, 3, 4,
-		  "Error exporting to \"%s\" : %s",
+		  "Error exporting to \"%.200s\" : %.200s",
 		  filename, error_description(orig_errno));
     }
     else{
 	ret = 1;
 	q_status_message3(SM_ORDER,0,3,
-			  "%s %s to file \"%s\"",
+			  "%.200s %.200s to file \"%.200s\"",
 			  vcard ? (agg ? "Entries" : "Entry")
 			        : (plur ? "Addresses" : "Address"),
 			  over==0 ? "exported"
@@ -4227,7 +4270,7 @@ ab_forward(ps, cur_line, agg)
 	}
 
 	if(role)
-	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%s\"",
+	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%.200s\"",
 			    role->nick);
 
 	if(sig = detoken(role, NULL, 2, 0, 1, NULL, NULL)){
@@ -4544,7 +4587,7 @@ prepare_abe_for_vcard(ps, abe, expand_nicks)
 	bldto.arg.str = init_addr; 
 	our_build_address(bldto, &addr, &error, NULL, 0);
 	if(error){
-	    q_status_message1(SM_ORDER, 3, 4, "%s", error);
+	    q_status_message1(SM_ORDER, 3, 4, "%.200s", error);
 	    fs_give((void **)&error);
 	    free_vcard_info(&vinfo);
 	    return(NULL);
@@ -4952,7 +4995,7 @@ ab_save(ps, abook, cur_line, command_line, agg)
 
 		if(pab->ostatus != Open && pab->ostatus != NoDisplay){
 		    q_status_message1(SM_ORDER, 0, 4,
-				 "Can't re-open address book %s to save from",
+				 "Can't re-open address book %.200s to save from",
 				 pab->nickname);
 		    err++;
 		    goto get_out;
@@ -5133,7 +5176,7 @@ ab_save(ps, abook, cur_line, command_line, agg)
 	if(!(abe = adrbk_get_ae(al->pab->address_book,
 				(a_c_arg_t)al->num, Normal))){
 	    q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			      "Error saving entry: %s",
+			      "Error saving entry: %.200s",
 			      error_description(errno));
 	    err++;
 	    goto get_out;
@@ -5152,7 +5195,7 @@ ab_save(ps, abook, cur_line, command_line, agg)
 	    }
 	    else{
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				 "Error replacing entry in %s: %s",
+				 "Error replacing entry in %.200s: %.200s",
 				 pab_dst->nickname,
 				 error_description(errno));
 		err++;
@@ -5216,7 +5259,7 @@ ab_save(ps, abook, cur_line, command_line, agg)
 
 	if(rc != 0){
 	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			     "Error saving %s: %s",
+			     "Error saving %.200s: %.200s",
 			     (abe && abe->nickname) ? abe->nickname
 						      : "entry",
 			     error_description(errno));
@@ -5482,7 +5525,7 @@ ab_print(agg)
 		      fs_give((void **)&init_addr);
 
 		    if(error){
-			q_status_message1(SM_ORDER, 0, 4, "%s", error);
+			q_status_message1(SM_ORDER, 0, 4, "%.200s", error);
 			fs_give((void **)&error);
 
 			ps_global->mangled_footer = 1;
@@ -5852,7 +5895,7 @@ ab_agg_delete(ps, agg)
 
 		if(rc && rc != -5){
 		    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			              "Error updating %s: %s",
+			              "Error updating %.200s: %.200s",
 				      (as.n_addrbk > 1) ? pab->nickname
 						        : "address book",
 				      error_description(errno));
@@ -6107,7 +6150,7 @@ single_entry_delete(abook, cur_line, warped)
 
 	    if(rc != -5)
               q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			      "Error updating address book: %s",
+			      "Error updating address book: %.200s",
 		    error_description(errno));
 	    pab = &as.adrbks[as.cur];
             dprint(1, (debugfile, "Error deleting entry from %s (%s): %s\n",
@@ -6277,7 +6320,7 @@ query_server(ps, selecting, exit, who, error)
 					  ps_global->context_current,
 					  ps_global->cur_folder,
 					  ps_global->msgmap, 
-					  0, FolderName, 0, 0);
+					  0, FolderName, 0, 0, NULL);
 	pbf.pine_flags   |= P_NOBODY;
 
 	/* An informational message */
@@ -6900,7 +6943,7 @@ prep_ldap_for_viewing(ps, winning_e, srctype, handlesp)
 			fs_give((void **)&addr);
 
 			if(path){
-			    h = new_handle();
+			    h = new_handle(handlesp);
 			    h->type = URL;
 			    h->h.url.path = path;
 			    sprintf(buf, "%d", h->key);
@@ -7244,16 +7287,41 @@ url_local_ldap(url)
     LDAPMessage     *result;
     LDAP_SERV_S     *info;
     LDAP_SERV_RES_S *serv_res = NULL;
+    LDAPURLDesc     *ldapurl = NULL;
     WP_ERR_S wp_err;
 
     dprint(2, (debugfile, "url_local_ldap(%s)\n", url));
 
-    we_cancel = busy_alarm(1, "Searching for LDAP url", NULL, 1);
+    ld_err = ldap_url_parse(url, &ldapurl);
+    if(ld_err || !ldapurl){
+      sprintf(ebuf, "URL parse failed for %.200s", url);
+      q_status_message(SM_ORDER, 3, 5, ebuf);
+      return(retval);
+    }
+
+    if(!ldapurl->lud_host){
+      sprintf(ebuf, "No host in %.200s", url);
+      q_status_message(SM_ORDER, 3, 5, ebuf);
+      ldap_free_urldesc(ldapurl);
+      return(retval);
+    }
+    
     intr_handling_on();
+    we_cancel = busy_alarm(1, "Searching for LDAP url", NULL, 1);
     ps_global->mangled_footer = 1;
 
-    if((ld = ldap_init(NULL, 0)) == NULL){
-      q_status_message(SM_ORDER,3,5, "LDAP search failed: can't initialize");
+#if (LDAPAPI >= 11)
+    if((ld = ldap_init(ldapurl->lud_host, ldapurl->lud_port)) == NULL)
+#else
+    if((ld = ldap_open(ldapurl->lud_host, ldapurl->lud_port)) == NULL)
+#endif
+    {
+	if(we_cancel){
+	    cancel_busy_alarm(-1);
+	    we_cancel = 0;
+	}
+
+	q_status_message(SM_ORDER,3,5, "LDAP search failed: can't initialize");
     }
     else if(!ps_global->intr_pending){
       if(ldap_v3_is_supported(ld) &&
@@ -7268,12 +7336,25 @@ url_local_ldap(url)
       our_ldap_set_option(ld, LDAP_OPT_RESTART, LDAP_OPT_ON);
 
       t.tv_sec = 30; t.tv_usec = 0;
-      if((ld_err = ldap_url_search_st(ld,url,0,&t,&result)) != LDAP_SUCCESS){
-	sprintf(ebuf, "LDAP search failed: %.200s", ldap_err2string(ld_err));
-	q_status_message(SM_ORDER, 3, 5, ebuf);
-	ldap_unbind(ld);
+      ld_err = ldap_search_st(ld, ldapurl->lud_dn, ldapurl->lud_scope,
+			      ldapurl->lud_filter, ldapurl->lud_attrs,
+			      0, &t, &result);
+      if(ld_err != LDAP_SUCCESS){
+	  if(we_cancel){
+	      cancel_busy_alarm(-1);
+	      we_cancel = 0;
+	  }
+
+	  sprintf(ebuf, "LDAP search failed: %.200s", ldap_err2string(ld_err));
+	  q_status_message(SM_ORDER, 3, 5, ebuf);
+	  ldap_unbind(ld);
       }
       else if(!ps_global->intr_pending){
+	if(we_cancel){
+	    cancel_busy_alarm(-1);
+	    we_cancel = 0;
+	}
+
 	intr_handling_off();
 	if(ldap_count_entries(ld, result) == 0){
 	  q_status_message(SM_ORDER, 3, 5, "No matches found for url");
@@ -7311,9 +7392,13 @@ url_local_ldap(url)
       }
     }
 
-    intr_handling_off();
     if(we_cancel)
       cancel_busy_alarm(-1);
+
+    intr_handling_off();
+
+    if(ldapurl)
+      ldap_free_urldesc(ldapurl);
 
     return(retval);
 }

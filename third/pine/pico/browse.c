@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: browse.c,v 1.1.1.1 2001-02-19 07:04:03 ghudson Exp $";
+static char rcsid[] = "$Id: browse.c,v 1.1.1.2 2003-02-12 07:58:17 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support file browser in pico and Pine composer
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: browse.c,v 1.1.1.1 2001-02-19 07:04:03 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1999 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -92,18 +92,18 @@ static	char	*browser_title = NULL;
 
 
 #ifdef	ANSI
-    struct bmaster *getfcells(char *);
+    struct bmaster *getfcells(char *, int);
     int    PaintCell(int, int, int, struct fcell *, int);
     int    PaintBrowser(struct bmaster *, int, int *, int *);
-    int    BrowserKeys(void);
-    int    layoutcells(struct bmaster *);
-    int    percdircells(struct bmaster *);
+    void   BrowserKeys(void);
+    void   layoutcells(struct bmaster *);
+    void   percdircells(struct bmaster *);
     int    PlaceCell(struct bmaster *, struct fcell *, int *, int *);
-    int    zotfcells(struct fcell *);
-    int    zotmaster(struct bmaster **);
+    void   zotfcells(struct fcell *);
+    void   zotmaster(struct bmaster **);
     struct fcell *FindCell(struct bmaster *, char *);
     int    sisin(char *, char *);
-    int    BrowserAnchor(char *);
+    void   BrowserAnchor(char *);
     void   ClearBrowserScreen(void);
     void   BrowserRunChild(char *, char *);
     int    LikelyASCII(char *);
@@ -111,14 +111,15 @@ static	char	*browser_title = NULL;
     struct bmaster *getfcells();
     int    PaintCell();
     int    PaintBrowser();
-    int    BrowserKeys();
-    int    percdircells();
+    void   BrowserKeys();
+    void   layoutcells();
+    void   percdircells();
     int    PlaceCell();
-    int    zotfcells();
-    int    zotmaster();
+    void   zotfcells();
+    void   zotmaster();
     struct fcell *FindCell();
     int    sisin();
-    int    BrowserAnchor();
+    void   BrowserAnchor();
     void   ClearBrowserScreen();
     void   BrowserRunChild();
     int    LikelyASCII();
@@ -317,9 +318,9 @@ pico_file_browse(pdata, dir, dirlen, fn, fnlen, sz, flags)
  *                   0 if no files seleted
  *                  -1 if there where problems
  */
-FileBrowse(dir, dirlen, fn, fnlen, sz, flags)
+FileBrowse(dir, dirlen, fn, fnlen, sz, fb_flags)
 char *dir, *fn, *sz;			/* dir, name and optional size */
-int   dirlen, fnlen, flags;
+int   dirlen, fnlen, fb_flags;
 {
     int status, i, j, c, new_c;
     int row, col, crow, ccol;
@@ -344,7 +345,7 @@ int   dirlen, fnlen, flags;
     }
 
     /* build contents of cell structures */
-    if((gmp = getfcells(dir)) == NULL)
+    if((gmp = getfcells(dir, fb_flags)) == NULL)
       return(-1);
     
     tp = NULL;
@@ -943,7 +944,7 @@ int   dirlen, fnlen, flags;
 		    }
  
 		    if(isdir(child, (long *) NULL, NULL)){
-			if((mp = getfcells(child)) == NULL){
+			if((mp = getfcells(child, fb_flags)) == NULL){
 			    /* getfcells should explain what happened */
 			    i++;
 			    break;
@@ -1061,7 +1062,7 @@ int   dirlen, fnlen, flags;
 			 * and redraw...
 			 */
 			if(!strcmp(tmp, gmp->dname)){ 
-			    if((mp = getfcells(gmp->dname)) == NULL)
+			    if((mp = getfcells(gmp->dname, fb_flags)) == NULL)
 			      /* getfcells should explain what happened */
 			      break;
 
@@ -1183,7 +1184,7 @@ int   dirlen, fnlen, flags;
 			 */
 			if(!strcmp(tmp, gmp->dname)){ 
 			    strcpy(child, gmp->current->fname);
-			    if((mp = getfcells(gmp->dname)) == NULL)
+			    if((mp = getfcells(gmp->dname, fb_flags)) == NULL)
 			      /* getfcells should explain what happened */
 			      break;
 
@@ -1287,7 +1288,7 @@ int   dirlen, fnlen, flags;
 			    *p = '\0';
 			    strcpy(tmp, (p == child) ? S_FILESEP: child);
 
-			    if((mp = getfcells(tmp)) == NULL)
+			    if((mp = getfcells(tmp, fb_flags)) == NULL)
 			      /* getfcells should explain what happened */
 			      break;
 
@@ -1363,13 +1364,21 @@ int   dirlen, fnlen, flags;
 			  }
 		    }
 		}
+		else if((fb_flags&FB_SAVE) && p[0] == '.' && p[1] == '\0'){
+		    if ((strlen(gmp->dname) < dirlen) && 
+			(strlen(gmp->current->fname) < fnlen)){
+			strcpy(dir, gmp->dname);
+		    }
+		    zotmaster(&gmp);
+		    return(0);  /* just change the directory, still return no selection */
+		}
 		else{
 		    if(tmp[1] != '\0')		/* were in root? */
 		      strcat(tmp, S_FILESEP);
 		    strcat(tmp, gmp->current->fname);
 		}
 
-		if((mp = getfcells(tmp)) == NULL)
+		if((mp = getfcells(tmp, fb_flags)) == NULL)
 		  /* getfcells should explain what happened */
 		  break;
 
@@ -1551,8 +1560,9 @@ int   dirlen, fnlen, flags;
  *             return NULL if there's a problem.
  */
 struct bmaster *
-getfcells(dname)
+getfcells(dname, fb_flags)
     char *dname;
+    int   fb_flags;
 {
     int  i, 					/* various return codes */
          flength,
@@ -1626,7 +1636,8 @@ getfcells(dname)
 	 * Filter dot files?  Always filter ".", never filter "..",
 	 * and sometimes fitler ".*"...
 	 */
-	if(*np == '.' && !(*(np+1) == '.' && *(np+2) == '\0')
+	if(*np == '.' && (!(*(np+1) == '.' && *(np+2) == '\0')
+			  && !(*(np+1) == '\0' && (fb_flags&FB_SAVE)))
 	   && (*(np+1) == '\0' || !(gmode & MDDOTSOK))){
 	    np += strlen(np) + 1;
 	    continue;
@@ -1705,7 +1716,9 @@ getfcells(dname)
 	    ncp->mode = FIODIR;
 	    sprintf(ncp->size, "(%sdir)",
 		    (ncp->fname[0] == '.' && ncp->fname[1] == '.'
-		     && ncp->fname[2] == '\0') ? "parent " : "");
+		     && ncp->fname[2] == '\0') ? "parent " : 
+		    ((fb_flags&FB_SAVE) && ncp->fname[0] == '.' && ncp->fname[1] == '\0'
+		     ? "SELECT " : ""));
 	    break;
 	  case FIOSYM :
 	    ncp->mode = FIOSYM;
@@ -1846,6 +1859,7 @@ int *row, *col;
 /*
  * BrowserKeys - just paints the keyhelp at the bottom of the display
  */
+void
 BrowserKeys()
 {
     menu_browse[QUIT_KEY].name  = (gmode&MDBRONLY) ? "Q" : "E";
@@ -1875,6 +1889,7 @@ BrowserKeys()
  * layoutcells - figure out max length of cell and how many cells can 
  *               go on a line of the display
  */
+void
 layoutcells(mp)
 struct bmaster *mp;
 {
@@ -1900,6 +1915,7 @@ struct bmaster *mp;
  * percdircells - bubble all the directory cells to the top of the
  *                list.
  */
+void
 percdircells(mp)
 struct bmaster *mp;
 {
@@ -2003,6 +2019,7 @@ int    *x, *y;
 /*
  * zotfcells - clean up malloc'd cells of file names
  */
+void
 zotfcells(hp)
 struct fcell *hp;
 {
@@ -2020,6 +2037,7 @@ struct fcell *hp;
 /*
  * zotmaster - blast the browser master struct
  */
+void
 zotmaster(mp)
 struct bmaster **mp;
 {
@@ -2088,6 +2106,7 @@ char *s1, *s2;
 /*
  * set_browser_title - 
  */
+void
 set_browser_title(s)
 char *s;
 {
@@ -2098,6 +2117,7 @@ char *s;
 /*
  * BrowserAnchor - draw the browser's anchor line.
  */
+void
 BrowserAnchor(dir)
 char *dir;
 {
@@ -2205,7 +2225,7 @@ BrowserRunChild(child, dir)
     if(t_in && isdir(dir, NULL, &t_out) && t_in < t_out){
 	struct bmaster *mp;
 
-	if(mp = getfcells(dir)){
+	if(mp = getfcells(dir, 0)){
 	    zotmaster(&gmp);
 	    gmp = mp;
 	}

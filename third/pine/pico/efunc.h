@@ -1,5 +1,5 @@
 /*
- * $Id: efunc.h,v 1.1.1.1 2001-02-19 07:05:27 ghudson Exp $
+ * $Id: efunc.h,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $
  *
  * Program:	Pine's composer and pico's function declarations
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -84,7 +84,7 @@ extern	int bindtokey PROTO((int c, int (*) PROTO((int, int))));
 /* browse.c */
 extern	int FileBrowse PROTO((char *, int, char *, int, char *, int));
 extern	int ResizeBrowser PROTO((void));
-extern	int set_browser_title PROTO((char *));
+extern	void set_browser_title PROTO((char *));
 
 /* buffer.c */
 extern	int anycb PROTO((void));
@@ -159,7 +159,7 @@ extern	int in_oper_tree PROTO((char *));
 /* fileio.c */
 extern	int ffropen PROTO((char *));
 extern	int ffputline PROTO((CELL *, int));
-extern	int ffgetline PROTO((char *, int, int));
+extern	int ffgetline PROTO((char *, int, int *, int));
 
 /* line.c */
 extern	struct LINE *lalloc PROTO((int));
@@ -205,7 +205,7 @@ extern	int ttputc PROTO((int));
 extern	int ttflush PROTO((void));
 extern	int ttgetc PROTO((int, int (*)(), void (*)()));
 extern	int simple_ttgetc PROTO((int (*)(), void (*)()));
-extern	int ttgetwinsz PROTO((int *, int *));
+extern	void ttgetwinsz PROTO((int *, int *));
 extern	int GetKey PROTO((void));
 extern	int alt_editor PROTO((int, int));
 extern	void picosigs PROTO((void));
@@ -221,7 +221,7 @@ extern	int homeless PROTO((char *));
 extern	char *errstr PROTO((int));
 extern	char *getfnames PROTO((char *, char *, int *, char *));
 extern	void fioperr PROTO((int, char *));
-extern	int fixpath PROTO((char *, size_t));
+extern	void fixpath PROTO((char *, size_t));
 extern	char *pfnexpand PROTO((char *, size_t));
 extern	int compresspath PROTO((char *, char *, int));
 extern	void tmpname PROTO((char *, char *));
@@ -250,6 +250,7 @@ extern	int (*pcollator)();
 extern  COLOR_PAIR *new_color_pair PROTO((char *, char *));
 extern	COLOR_PAIR *pico_get_cur_color PROTO((void));
 extern	COLOR_PAIR *pico_get_rev_color PROTO((void));
+extern	COLOR_PAIR *pico_get_normal_color PROTO((void));
 extern	void free_color_pair PROTO((COLOR_PAIR **));
 extern	void pico_nfcolor PROTO((char *));
 extern	void pico_nbcolor PROTO((char *));
@@ -266,6 +267,8 @@ extern	void pico_set_nbg_color PROTO((void));
 extern	void pico_set_normal_color PROTO((void));
 extern	int pico_usingcolor PROTO((void));
 extern	char *color_to_asciirgb PROTO((char *));
+extern	char *colorx PROTO((int));
+extern	char *color_to_canonical_name PROTO((char *));
 extern	int pico_count_in_color_table PROTO((void));
 /* these color functions aren't needed for Windows */
 extern	int pico_hascolor PROTO((void));
@@ -304,17 +307,19 @@ extern	int forwdel PROTO((int, int));
 extern	int backdel PROTO((int, int));
 extern	int killtext PROTO((int, int));
 extern	int yank PROTO((int, int));
-extern	char *colorx PROTO((int));
+extern	COLOR_PAIR *pico_apply_rev_color PROTO((COLOR_PAIR *, int));
 
 /* region.c */
 extern	int killregion PROTO((int, int));
 extern	int deleteregion PROTO((int, int));
 extern	int markregion PROTO((int));
+extern	void unmarkbuffer PROTO((void));
 
 /* search.c */
 extern	int forwsearch PROTO((int, int));
 extern	int readpattern PROTO((char *, int));
 extern	int forscan PROTO((int *, char *, LINE *, int, int));
+extern	void chword PROTO((char *, char *));
 
 /* spell.c */
 #ifdef	SPELLER
@@ -322,7 +327,7 @@ extern	int spell PROTO((int, int));
 #endif
 
 /* window.c */
-extern	int  refresh PROTO((int, int));
+extern	int  pico_refresh PROTO((int, int));
 extern	void redraw_pico_for_callback();
 
 /* word.c */
@@ -331,6 +336,6 @@ extern	int backword PROTO((int, int));
 extern	int forwword PROTO((int, int));
 extern	int fillpara PROTO((int, int));
 extern	int inword PROTO((void));
-extern	int quote_match PROTO((char *, LINE *));
+extern	int quote_match PROTO((char *, LINE *, char *, int));
 
 #endif	/* EFUNC_H */

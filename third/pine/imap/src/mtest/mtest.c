@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	8 July 1988
- * Last Edited:	24 October 2000
+ * Last Edited:	2 July 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  *
@@ -251,8 +251,10 @@ void mm (MAILSTREAM *stream,long debug)
 	break;
       }
 				/* get the new mailbox */
-      while (!(stream = mail_open (stream,arg,debug)))
+      while (!(stream = mail_open (stream,arg,debug))) {
 	prompt ("Mailbox: ",arg);
+	if (!arg[0]) break;
+      }
       last = 0;
       status (stream);
       break;
@@ -627,11 +629,7 @@ void mm_login (NETMBX *mb,char *user,char *pwd,long trial)
   }
   if (curusr) fs_give ((void **) &curusr);
   curusr = cpystr (user);
-#if UNIXLIKE
   strcpy (pwd,getpass (tmp));
-#else
-  prompt (tmp,pwd);
-#endif
 }
 
 

@@ -1,4 +1,4 @@
-# $Id: makefile.nto,v 1.1.1.1 2001-02-19 07:05:36 ghudson Exp $
+# $Id: makefile.nto,v 1.1.1.2 2003-02-12 08:01:17 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -19,7 +19,7 @@
 #   permission of the University of Washington.
 #
 #   Pine, Pico, and Pilot software and its included text are Copyright
-#   1989-1998 by the University of Washington.
+#   1989-2001 by the University of Washington.
 #
 #   The full text of our legal notices is contained in the file called
 #   CPYRIGHT, included with this distribution.
@@ -63,7 +63,7 @@ LDAPOFILES=   addrbook.o adrbkcmd.o args.o bldaddr.o init.o \
 
 STDLIBS=     -lncurses
 LOCLIBS=     $(PICODIR)/libpico.a $(CCLIENTDIR)/c-client.a
-LIBS=        $(EXTRALIBES) $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
+LIBS=        $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
              `cat $(CCLIENTDIR)/LDFLAGS`
 
 STDCFLAGS=   -DNTO -DSYSTYPE=\"NTO\"
@@ -83,19 +83,24 @@ HFILES=	headers.h os.h pine.h context.h helptext.h \
 	$(CCLIENTDIR)/mail.h $(CCLIENTDIR)/osdep.h \
 	$(CCLIENTDIR)/rfc822.h $(CCLIENTDIR)/misc.h
 
+all:	pine rpload rpdump
+
 pine:  $(OFILES) $(LOCLIBS)
 	echo "char datestamp[]="\"`date`\"";" > date.c
 	echo "char hoststamp[]="\"`hostname`\"";" >> date.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o pine $(OFILES) date.c $(LIBS)
 
-abookcpy:	abookcpy.o $(LOCLIBES)
-	$(CC) $(LDFLAGS) $(CFLAGS) -o abookcpy abookcpy.o $(LIBS)
+rpload:	rpload.o $(CCLIENTDIR)/c-client.a
+	$(CC) $(LDFLAGS) $(CFLAGS) -o rpload rpload.o $(LIBS)
+
+rpdump:	rpdump.o $(CCLIENTDIR)/c-client.a
+	$(CC) $(LDFLAGS) $(CFLAGS) -o rpdump rpdump.o $(LIBS)
 
 pine-use:	pine-use.c
 	$(CC) -o pine-use pine-use.c
 
 clean:
-	$(RM) *.o os.h os.c helptext.c helptext.h pine
+	$(RM) *.o os.h os.c helptext.c helptext.h pine rpdump rpload
 	cd osdep; make clean; cd ..
 
 os.h:	osdep/os-nto.h

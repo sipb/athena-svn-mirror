@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailpart.c,v 1.1.1.1 2001-02-19 07:11:48 ghudson Exp $";
+static char rcsid[] = "$Id: mailpart.c,v 1.1.1.2 2003-02-12 08:01:28 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailpart.c,v 1.1.1.1 2001-02-19 07:11:48 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -63,8 +63,9 @@ typedef struct atdisp_line {
  * struct defining attachment screen's current state
  */
 typedef struct att_screen {
-    ATDISP_S  *current,
-	      *top_line;
+    ATDISP_S   *current,
+	       *top_line;
+    COLOR_PAIR *titlecolor;
 } ATT_SCREEN_S;
 static ATT_SCREEN_S *att_screen;
 
@@ -136,6 +137,7 @@ static FETCH_READC_S *g_fr_desc;
 #define	INIT_FETCH_CHUNK	((unsigned long)(8 * 1024L))
 #define	MIN_FETCH_CHUNK		((unsigned long)(4 * 1024L))
 #define	MAX_FETCH_CHUNK		((unsigned long)(256 * 1024L))
+#define	AVOID_MICROSOFT_SSL_CHUNKING_BUG ((unsigned long)(12 * 1024L))
 #define	TARGET_INTR_TIME	((unsigned long)2000000L) /* two seconds */
 #define	FETCH_READC	g_fr_desc->readc
 
@@ -263,7 +265,8 @@ int	    process_attachment_cmd PROTO((int, MSGNO_S *, SCROLL_S *));
 int	    format_msg_att PROTO((long, ATTACH_S **, gf_io_t, int));
 void	    display_vcard_att PROTO((long, ATTACH_S *, int));
 void	    display_attach_info PROTO((long, ATTACH_S *));
-void	    run_viewer PROTO((char *, BODY *));
+void        update_att_screen_titlebar PROTO(());
+void	    run_viewer PROTO((char *, BODY *, int));
 void	    fetch_readc_init PROTO((FETCH_READC_S *, MAILSTREAM *, long,
 				    char *, unsigned long, long));
 int	    fetch_readc_cleanup PROTO(());
@@ -345,7 +348,7 @@ attachment_screen(ps)
     }
     else if(ps->atmts && ps->atmts->description && !(ps->atmts + 1)->description)
       q_status_message1(SM_ASYNC, 0, 3,
-	"Message %s has only one part (the message body), and no attachments.",
+    "Message %.200s has only one part (the message body), and no attachments.",
 	long2string(mn_get_cur(ps->msgmap)));
 
     /*
@@ -368,7 +371,7 @@ attachment_screen(ps)
     for(atmp = ps->atmts; atmp && atmp->description; atmp++)
       new_attline(&current)->attp = atmp;
 
-    screen.current     = screen.top_line = NULL;
+    memset(&screen, 0, sizeof(screen));
     msgno	       = mn_m2raw(ps->msgmap, mn_get_cur(ps->msgmap));
     ps->mangled_screen = 1;			/* build display */
     ps->redrawer       = attachment_screen_redrawer;
@@ -383,7 +386,7 @@ attachment_screen(ps)
 
     if (current == NULL){
       q_status_message1(SM_ORDER | SM_DING, 0, 3,      
-                       "Malformed message: %s",
+                       "Malformed message: %.200s",
 			ps->c_client_error ? ps->c_client_error : "?");
       ps->next_screen = mail_view_screen;
     }
@@ -468,7 +471,7 @@ attachment_screen(ps)
 			if((dlen=strlen(q)) > (i=len - (p - ctmp->dstring)))
 			  dlen = i;
 
-			strncpy(p, q, dlen);
+			istrncpy(p, q, dlen);
 			*(p += dlen) = '\"';
 		    }
 		}
@@ -491,9 +494,7 @@ attachment_screen(ps)
 	  break;
 
 	if(ps->mangled_header){
-	    set_titlebar("ATTACHMENT INDEX", ps->mail_stream,
-			 ps->context_current, ps->cur_folder, ps->msgmap, 1,
-			 MessageNumber, 0, 0);
+	    update_att_screen_titlebar();
 	    ps->mangled_header = 0;
 	}
 
@@ -601,8 +602,9 @@ attachment_screen(ps)
 	cmd = menu_command(ch, &att_index_keymenu);
 
 	if(km_popped)
-	  switch(ch){
+	  switch(cmd){
 	    case MC_NONE :
+	    case MC_OTHER :
 	    case MC_RESIZE :
 	    case MC_REPAINT :
 	      km_popped++;
@@ -982,6 +984,9 @@ attachment_screen(ps)
 	free_attline(&current);
 	current = ctmp;
     }
+
+    if(screen.titlecolor)
+      free_color_pair(&screen.titlecolor);
 }
 
 
@@ -1155,10 +1160,8 @@ attachment_screen_redrawer()
 {
     bitmap_t	 bitmap;
 
-    set_titlebar("ATTACHMENT INDEX", ps_global->mail_stream,
-		 ps_global->context_current, ps_global->cur_folder,
-		 ps_global->msgmap, 1, FolderName,0,0);
-
+    update_att_screen_titlebar();
+    ps_global->mangled_header = 0;
     ClearLine(1);
 
     ps_global->mangled_body = 1;
@@ -1167,6 +1170,79 @@ attachment_screen_redrawer()
     setbitmap(bitmap);
     draw_keymenu(&att_index_keymenu, bitmap, ps_global->ttyo->screen_cols,
 		 1-FOOTER_ROWS(ps_global), 0, SameMenu);
+}
+
+
+void
+update_att_screen_titlebar()
+{
+    long        raw_msgno;
+    COLOR_PAIR *returned_color = NULL;
+    COLOR_PAIR *titlecolor = NULL;
+    int         colormatch;
+    SEARCHSET  *ss = NULL;
+    PAT_STATE  *pstate = NULL;
+
+    if(ps_global->titlebar_color_style != TBAR_COLOR_DEFAULT){
+	raw_msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
+	ss = mail_newsearchset();
+	ss->first = ss->last = (unsigned long) raw_msgno;
+
+	if(ss){
+	    colormatch = get_index_line_color(ps_global->mail_stream,
+					      ss, &pstate, &returned_color);
+	    mail_free_searchset(&ss);
+
+	    /*
+	     * This is a bit tricky. If there is a colormatch but
+	     * returned_color
+	     * is NULL, that means that the user explicitly wanted the
+	     * Normal color used in this index line, so that is what we
+	     * use. If no colormatch then we will use the TITLE color
+	     * instead of Normal.
+	     */
+	    if(colormatch){
+		if(returned_color)
+		  titlecolor = returned_color;
+		else
+		  titlecolor = new_color_pair(ps_global->VAR_NORM_FORE_COLOR,
+					      ps_global->VAR_NORM_BACK_COLOR);
+	    }
+
+	    if(titlecolor
+	       && ps_global->titlebar_color_style == TBAR_COLOR_REV_INDEXLINE){
+		char cbuf[MAXCOLORLEN+1];
+
+		strncpy(cbuf, titlecolor->fg, MAXCOLORLEN);
+		strncpy(titlecolor->fg, titlecolor->bg, MAXCOLORLEN);
+		strncpy(titlecolor->bg, cbuf, MAXCOLORLEN);
+	    }
+	}
+	
+	/* Did the color change? */
+	if((!titlecolor && att_screen->titlecolor)
+	   ||
+	   (titlecolor && !att_screen->titlecolor)
+	   ||
+	   (titlecolor && att_screen->titlecolor
+	    && (strcmp(titlecolor->fg, att_screen->titlecolor->fg)
+		|| strcmp(titlecolor->bg, att_screen->titlecolor->bg)))){
+
+	    if(att_screen->titlecolor)
+	      free_color_pair(&att_screen->titlecolor);
+
+	    att_screen->titlecolor = titlecolor;
+	    titlecolor = NULL;
+	}
+
+	if(titlecolor)
+	  free_color_pair(&titlecolor);
+    }
+
+    set_titlebar("ATTACHMENT INDEX", ps_global->mail_stream,
+		 ps_global->context_current, ps_global->cur_folder,
+		 ps_global->msgmap, 1, MessageNumber, 0, 0,
+		 att_screen->titlecolor);
 }
 
 
@@ -1303,7 +1379,7 @@ export_attachment(qline, msgno, a)
       export_digest_att(msgno, a);
     else
       q_status_message1(SM_ORDER, 0, 3,
-	 "Can't Export %s. Use \"Save\" to write file, \"<\" to leave index.",
+     "Can't Export %.200s. Use \"Save\" to write file, \"<\" to leave index.",
 	 body_type_names(a->body->type));
 }
 
@@ -1315,9 +1391,8 @@ write_attachment(qline, msgno, a, method)
      ATTACH_S *a;
      char     *method;
 {
-    char	filename[MAXPATH+1], full_filename[MAXPATH+1], *ill,
-	       *l_string, title_buf[64], prompt_buf[256], *att_name, *err;
-		
+    char	filename[MAXPATH+1], full_filename[MAXPATH+1], *charset,
+	       *l_string, title_buf[64], prompt_buf[256], *att_name, *err, *terr;
     int         r, is_text, over = 0, we_cancel = 0;
     long        len, orig_size;
     gf_io_t     pc;
@@ -1339,7 +1414,10 @@ write_attachment(qline, msgno, a, method)
        (err = rfc2231_get_param(a->body->disposition.parameter, att_name,
 				NULL, NULL))) ||
        (err = rfc2231_get_param(a->body->parameter, att_name + 4, NULL, NULL))){
-	strncpy(filename, err, sizeof(filename)-1);
+	terr = last_cmpnt(err);
+	if(!terr)
+	  terr = err;
+	strncpy(filename, terr, sizeof(filename)-1);
 	filename[sizeof(filename)-1] = '\0';
 	fs_give((void **) &err);
     }
@@ -1379,7 +1457,7 @@ write_attachment(qline, msgno, a, method)
 
 	  case -2:
 	    q_status_message1(SM_ORDER, 0, 2,
-			      "Can't save to file outside of %s",
+			      "Can't save to file outside of %.200s",
 			      ps_global->VAR_OPER_DIR);
 	    break;
 	}
@@ -1402,6 +1480,7 @@ write_attachment(qline, msgno, a, method)
 	tfp = temp_nam(NULL, "pd");
 	dprint(1, (debugfile, "Download attachment called!\n"));
 	if(store = so_get(FileStar, tfp, WRITE_ACCESS|OWNER_ONLY)){
+
 	    sprintf(prompt_buf, "Saving to \"%.50s\"", tfp);
 	    we_cancel = init_att_progress(prompt_buf,
 					  ps_global->mail_stream,
@@ -1411,14 +1490,15 @@ write_attachment(qline, msgno, a, method)
 	    if(err = detach(ps_global->mail_stream, msgno,
 			    a->number, &len, pc, NULL))
 	      q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"%s: Error writing attachment to \"%s\"",
+			       "%.200s: Error writing attachment to \"%.200s\"",
 				err, tfp);
 
 	    /* cancel regardless, so it doesn't get in way of xfer */
 	    cancel_busy_alarm(0);
 
 	    gf_clear_so_writec(store);
-	    so_give(&store);		/* close file */
+	    if(so_give(&store))		/* close file */
+	      err = "Error writing tempfile for download";
 
 	    if(!err){
 		build_updown_cmd(cmd, ps_global->VAR_DOWNLOAD_CMD_PREFIX,
@@ -1441,7 +1521,7 @@ write_attachment(qline, msgno, a, method)
 	}
 
 	if(!err)
-	  q_status_message1(SM_ORDER, 0, 4, "Part %s downloaded",
+	  q_status_message1(SM_ORDER, 0, 4, "Part %.200s downloaded",
 			    a->number);
 			    
 	return;
@@ -1453,7 +1533,7 @@ write_attachment(qline, msgno, a, method)
 
     if((store = so_get(FileStar, full_filename, WRITE_ACCESS)) == NULL){
 	q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			  "Error opening destination %s: %s",
+			  "Error opening destination %.200s: %.200s",
 			  full_filename, error_description(errno));
 	return;
     }
@@ -1468,7 +1548,8 @@ write_attachment(qline, msgno, a, method)
     if(we_cancel)
       cancel_busy_alarm(0);
 
-    so_give(&store);			/* close file */
+    if(so_give(&store))			/* close file */
+      err = error_description(errno);
 
     if(err){
 	if(!over)
@@ -1477,13 +1558,13 @@ write_attachment(qline, msgno, a, method)
 	  truncate(full_filename, (over == -1) ? orig_size : 0);
 
 	q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			  "%s: Error writing attachment to \"%s\"",
+			  "%.200s: Error writing attachment to \"%.200s\"",
 			  err, full_filename);
     }
     else{
         l_string = cpystr(byte_string(len));
         q_status_message8(SM_ORDER, 0, 4,
-			  "Part %s, %s%s %s to \"%s\"%s%s%s",
+	     "Part %.200s, %.200s%.200s %.200s to \"%.200s\"%.200s%.200s%.200s",
 			  a->number, 
 			  is_text
 			    ? comatose(a->body->size.lines) : l_string,
@@ -1511,7 +1592,6 @@ write_attached_msg(msgno, ap, store, newfile)
 {
     char      *err = NULL;
     long      start_of_append;
-    BODY     *b;
     gf_io_t   pc;
 
     if((*ap)->body->nested.msg->env){
@@ -1577,7 +1657,7 @@ save_msg_att(msgno, a)
 				   a->body->size.bytes, flags, date, so);
 	    if(rv == 1)
 	      q_status_message2(SM_ORDER, 0, 4,
-				"Attached message (part %s) saved to \"%s\"",
+			   "Attached message (part %.200s) saved to \"%.200s\"",
 				a->number, 
 				save_folder);
 	    else if(rv == -1)
@@ -1658,7 +1738,7 @@ save_digest_att(msgno, a)
 
 	if(rv == 1)
 	  q_status_message2(SM_ORDER, 0, 4,
-			    "Attached digest (part %s) saved to \"%s\"",
+			    "Attached digest (part %.200s) saved to \"%.200s\"",
 			    a->number, 
 			    save_folder);
 	else if(rv == -1)
@@ -1743,7 +1823,7 @@ export_msg_att(msgno, a)
 
 	  case -2:
 	    q_status_message1(SM_ORDER, 0, 2,
-			      "Can't export to file outside of %s",
+			      "Can't export to file outside of %.200s",
 			      ps_global->VAR_OPER_DIR);
 	    break;
 	}
@@ -1757,17 +1837,20 @@ export_msg_att(msgno, a)
 	  q_status_message(SM_ORDER | SM_DING, 3, 4, err);
 	else
           q_status_message3(SM_ORDER, 0, 4,
-			    "Attached message (part %s) %s to \"%s\"",
+			  "Attached message (part %.200s) %.200s to \"%.200s\"",
 			    a->number, 
 			    over==0 ? "written"
 				    : over==1 ? "overwritten" : "appended",
 			    full_filename);
 
-	so_give(&store);
+	if(so_give(&store))
+	  q_status_message2(SM_ORDER | SM_DING, 3, 4,
+			   "Error writing %.200s: %.200s",
+			   full_filename, error_description(errno));
     }
     else
       q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			"Error opening file \"%s\" to export message: %s",
+		    "Error opening file \"%.200s\" to export message: %.200s",
 			full_filename, error_description(errno));
 }
 
@@ -1816,7 +1899,7 @@ export_digest_att(msgno, a)
 
 	  case -2:
 	    q_status_message1(SM_ORDER, 0, 2,
-			      "Can't export to file outside of %s",
+			      "Can't export to file outside of %.200s",
 			      ps_global->VAR_OPER_DIR);
 	    break;
 	}
@@ -1853,17 +1936,18 @@ export_digest_att(msgno, a)
 	      err = "Can't write export file";
 	}
 
-	so_give(&store);
+	if(so_give(&store))
+	  err = error_description(errno);
 
 	if(err){
 	    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-			      "Error exporting: %s", err);
+			      "Error exporting: %.200s", err);
 	    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-			    "%s messages exported before error occurred", err);
+			"%.200s messages exported before error occurred", err);
 	}
 	else
           q_status_message4(SM_ORDER, 0, 4,
-			"%s messages in digest (part %s) %s to \"%s\"",
+		"%.200s messages in digest (part %.200s) %.200s to \"%.200s\"",
 			    long2string(count),
 			    a->number, 
 			    over==0 ? "written"
@@ -1872,7 +1956,7 @@ export_digest_att(msgno, a)
     }
     else
       q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			"Error opening file \"%s\" to export digest: %s",
+		    "Error opening file \"%.200s\" to export digest: %.200s",
 			full_filename, error_description(errno));
 }
 
@@ -1909,7 +1993,7 @@ print_attachment(qline, msgno, a)
 	else if(MIME_DGST_A(a))
 	  print_digest_att(msgno, a);
 	else
-	  (void) decode_text(a, msgno, print_char, QStatus, 0);
+	  (void) decode_text(a, msgno, print_char, NULL, QStatus, 0);
 
 	close_printer();
     }
@@ -1941,7 +2025,7 @@ print_msg_att(msgno, a, next)
 
 
     q_status_message2(SM_ORDER | SM_DING, 3, 3,
-		      "Error printing message %s, part %s",
+		      "Error printing message %.200s, part %.200s",
 		      long2string(msgno), a->number);
     return(0);
 }
@@ -1981,7 +2065,7 @@ print_digest_att(msgno, a)
 				    0, 80, print_char);
 		if(p){
 		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				      "Can't print digest: %s", p);
+				      "Can't print digest: %.200s", p);
 		    break;
 		}
 		else if(print_msg_att(msgno, ap, next))
@@ -1989,7 +2073,7 @@ print_digest_att(msgno, a)
 	    }
 	}
 	else if(ap->body->type == TYPETEXT
-		&& decode_text(ap, msgno, print_char, QStatus, 0))
+		&& decode_text(ap, msgno, print_char, NULL, QStatus, 0))
 	  break;
 	else if(!gf_puts("Unknown type in Digest", print_char))
 	  break;
@@ -2025,14 +2109,14 @@ display_attachment(msgno, a, flags)
         /*----- Can't display this type ------*/
 	if(a->body->encoding < ENCOTHER)
 	  q_status_message4(SM_ORDER | SM_DING, 3, 5,
-		     "Don't know how to display %s%s%s attachments.%s",
+	     "Don't know how to display %.200s%.200s%.200s attachments.%.200s",
 			    body_type_names(a->body->type),
 			    a->body->subtype ? "/" : "",
 			    a->body->subtype ? a->body->subtype :"",
 			    (flags & DA_SAVE) ? " Try Save." : "");
 	else
 	  q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			    "Don't know how to unpack \"%s\" encoding",
+			    "Don't know how to unpack \"%.200s\" encoding",
 			    body_encodings[(a->body->encoding <= ENCMAX)
 					     ? a->body->encoding : ENCOTHER]);
 
@@ -2045,7 +2129,7 @@ display_attachment(msgno, a, flags)
 		  display_digest_att(msgno, a, flags);
 		else
 		  q_status_message1(SM_ORDER, 3, 5,
-				   "Can't display Multipart/%s",
+				   "Can't display Multipart/%.200s",
 				   a->body->subtype);
 	    }
 	    else
@@ -2063,6 +2147,32 @@ display_attachment(msgno, a, flags)
 	return(0);
     }
 
+    if(F_OFF(F_QUELL_ATTACH_EXTRA_PROMPT, ps_global) 
+       && (!(flags & DA_DIDPROMPT)))
+      if(want_to("View selected Attachment", 'y',
+		 0, NO_HELP, WT_NORM) == 'n'){
+	  cmd_cancelled(NULL);
+	  return(1);
+      }
+    if((a->can_display & MCD_EXT_PROMPT)){
+	char prompt[256], *namep = NULL, *ext = NULL;
+
+	if(namep = rfc2231_get_param(a->body->parameter, "name", NULL, NULL))
+	  mt_get_file_ext((char *) namep, &ext);
+	sprintf(prompt, 
+		"Attachment %.12s%s unrecognized. %s%.10s%s", 
+		a->body->subtype, 
+		strlen(a->body->subtype) > 12 ? "..." : "", 
+		ext ? "Try open by file extension (." : "Try opening anyways",
+		ext ? ext : "",
+		ext ? ")" : "");
+	if(namep)
+	  fs_give((void **)&namep);
+	if(want_to(prompt, 'n', 0, NO_HELP, WT_NORM) == 'n'){
+	    cmd_cancelled(NULL);
+	    return(1);
+	}
+    }
     /*------ Write the image to a temporary file ------*/
 #if defined(DOS) || defined(OS2)
     /*
@@ -2103,7 +2213,7 @@ display_attachment(msgno, a, flags)
 
     if((store = so_get(FileStar, filename, WRITE_ACCESS|OWNER_ONLY)) == NULL){
         q_status_message2(SM_ORDER | SM_DING, 3, 5,
-                          "Error \"%s\", Can't write file %s",
+                          "Error \"%.200s\", Can't write file %.200s",
                           error_description(errno), filename);
 	if(filename){
 	    (void)unlink(filename);
@@ -2153,7 +2263,8 @@ display_attachment(msgno, a, flags)
 
     if(err){
 	q_status_message2(SM_ORDER | SM_DING, 3, 5,
-		     "%s: Error saving image to temp file %s", err, filename);
+		     "%.200s: Error saving image to temp file %.200s",
+		     err, filename);
 	if(filename){
 	    (void)unlink(filename);
 	    fs_give((void **)&filename);
@@ -2163,7 +2274,7 @@ display_attachment(msgno, a, flags)
     }
 
     /*----- Run the viewer process ----*/
-    run_viewer(filename, a->body);
+    run_viewer(filename, a->body, a->can_display & MCD_EXT_PROMPT);
     if(filename)
       fs_give((void **)&filename);
 
@@ -2181,7 +2292,7 @@ A side effect may be that scrolltool is called as well if
 exec_mailcap_cmd has any substantial output...
  ----*/
 void
-run_viewer(image_file, body)
+run_viewer(image_file, body, chk_extension)
      char *image_file;
      BODY *body;
 {
@@ -2191,7 +2302,7 @@ run_viewer(image_file, body)
     we_cancel = busy_alarm(1, "Displaying attachment", NULL, 1);
 
     if(cmd = mailcap_build_command(body->type, body->subtype, body->parameter,
-				   image_file, &needs_terminal)){
+				   image_file, &needs_terminal, chk_extension)){
 	if(we_cancel)
 	  cancel_busy_alarm(-1);
 
@@ -2202,7 +2313,7 @@ run_viewer(image_file, body)
 	if(we_cancel)
 	  cancel_busy_alarm(-1);
 
-	q_status_message1(SM_ORDER, 3, 4, "Cannot display %s attachment",
+	q_status_message1(SM_ORDER, 3, 4, "Cannot display %.200s attachment",
 			  type_desc(body->type, body->subtype,
 				    body->parameter, 1));
     }
@@ -2219,10 +2330,10 @@ run_viewer(image_file, body)
   Result: 
  ----*/
 STORE_S *
-format_text_att(msgno, a, h)
+format_text_att(msgno, a, handlesp)
     long       msgno;
     ATTACH_S  *a;
-    HANDLE_S **h;
+    HANDLE_S **handlesp;
 {
     STORE_S	*store;
     gf_io_t	 pc;
@@ -2231,13 +2342,11 @@ format_text_att(msgno, a, h)
     if(store = so_get(CharStar, NULL, EDIT_ACCESS)){
 	flags = FM_DISPLAY;
 
-	if(h){
-	    init_handles(h);
-	    flags |= FM_HANDLES;
-	}
+	if(handlesp)
+	  init_handles(handlesp);
 
 	gf_set_so_writec(&pc, store);
-	(void) decode_text(a, msgno, pc, QStatus, flags);
+	(void) decode_text(a, msgno, pc, handlesp, QStatus, flags);
 	gf_clear_so_writec(store);
     }
 
@@ -2386,7 +2495,7 @@ display_digest_att(msgno, a, flags)
 					     ps_global->ttyo->screen_cols,
 					     pc)){
 		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				      "Can't format digest: %s", errstr);
+				      "Can't format digest: %.200s", errstr);
 		    bad_news++;
 		}
 		else if(!gf_puts(NEWLINE, pc))
@@ -2396,7 +2505,7 @@ display_digest_att(msgno, a, flags)
 		if(errstr = part_desc(ap->number, ap->body->nested.msg->body,
 				      0, ps_global->ttyo->screen_cols, pc)){
 		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				      "Can't format digest: %s", errstr);
+				      "Can't format digest: %.200s", errstr);
 		    bad_news++;
 		}
 		else if(format_msg_att(msgno, &ap, pc, FM_DISPLAY))
@@ -2404,7 +2513,7 @@ display_digest_att(msgno, a, flags)
 	    }
 	}
 	else if(ap->body->type == TYPETEXT
-		&& decode_text(ap, msgno, pc, QStatus, FM_DISPLAY))
+		&& decode_text(ap, msgno, pc, NULL, QStatus, FM_DISPLAY))
 	  bad_news++;
 	else if(!gf_puts("Unknown type in Digest", pc))
 	  bad_news++;
@@ -2481,6 +2590,8 @@ scroll_attachment(title, store, src, handles, a, flags)
 	clrbitn(ATV_EXPORT_KEY, sargs.keys.bitmap);
     }
 
+    sargs.use_indexline_color = 1;
+
     if(DA_RESIZE & flags)
       sargs.resize_exit = 1;
 
@@ -2534,14 +2645,14 @@ process_attachment_cmd(cmd, msgmap, sparms)
       case MC_DELETE :
 	if(delete_attachment(rawno, sparms->proc.data.p))
 	  q_status_message1(SM_ORDER, 0, 3,
-			    "Part %s deleted", AD(sparms)->number);
+			    "Part %.200s deleted", AD(sparms)->number);
 
 	break;
 
       case MC_UNDELETE :
 	if(undelete_attachment(rawno, sparms->proc.data.p, &n))
 	  q_status_message1(SM_ORDER, 0, 3,
-			    "Part %s UNdeleted", AD(sparms)->number);
+			    "Part %.200s UNdeleted", AD(sparms)->number);
 
 	break;
 
@@ -2595,7 +2706,8 @@ format_msg_att(msgno, a, pc, flags)
 	HD_INIT(&h, ps_global->VAR_VIEW_HEADERS, ps_global->view_all_except,
 		FE_DEFAULT);
 	switch(format_header(ps_global->mail_stream, msgno, (*a)->number,
-			     (*a)->body->nested.msg->env, &h, NULL, 0, pc)){
+			     (*a)->body->nested.msg->env, &h, NULL, NULL,
+			     0, pc)){
 	  case -1 :			/* write error */
 	    return(0);
 
@@ -2610,7 +2722,7 @@ format_msg_att(msgno, a, pc, flags)
 	gf_puts(NEWLINE, pc);
 	if((++(*a))->description
 	   && (*a)->body && (*a)->body->type == TYPETEXT){
-	    if(decode_text(*a, msgno, pc, QStatus, flags))
+	    if(decode_text(*a, msgno, pc, NULL, QStatus, flags))
 	      rv = 0;
 	}
 	else if(!(gf_puts("[Can't display ", pc)
@@ -2628,7 +2740,7 @@ format_msg_att(msgno, a, pc, flags)
 	     && gf_puts(display_parameters((*a)->body->parameter), pc)))
 	  rv = 0;
     }
-    else if(decode_text(*a, msgno, pc, QStatus, flags))
+    else if(decode_text(*a, msgno, pc, NULL, QStatus, flags))
       rv = 0;
 
     return(rv);
@@ -2644,7 +2756,7 @@ display_vcard_att(msgno, a, flags)
     STORE_S   *in_store, *out_store = NULL;
     HANDLE_S  *handles = NULL;
     gf_io_t    gc, pc;
-    char     **lines, **ll, *errstr = NULL, tmp[MAILTMPLEN], *p, *q;
+    char     **lines, **ll, *errstr = NULL, tmp[MAILTMPLEN], *p;
     int	       cmd, indent, begins = 0;
 
     lines = detach_vcard_att(ps_global->mail_stream,
@@ -2701,8 +2813,10 @@ display_vcard_att(msgno, a, flags)
 	    gf_filter_init();
 
 	    if(F_ON(F_VIEW_SEL_URL, ps_global)
-	       || F_ON(F_VIEW_SEL_URL_HOST, ps_global))
-	      gf_link_filter(gf_line_test, gf_line_test_opt(url_hilite, NULL));
+	       || F_ON(F_VIEW_SEL_URL_HOST, ps_global)
+	       || F_ON(F_SCAN_ADDR, ps_global))
+	      gf_link_filter(gf_line_test, gf_line_test_opt(url_hilite,
+							    &handles));
 
 	    gf_link_filter(gf_wrap,
 			   gf_wrap_filter_opt(ps_global->ttyo->screen_cols - 4,
@@ -2741,7 +2855,7 @@ display_vcard_att(msgno, a, flags)
 
     if(errstr)
       q_status_message1(SM_ORDER | SM_DING, 3, 3,
-			"Can't format entry : %s", errstr);
+			"Can't format entry : %.200s", errstr);
 
     so_give(&in_store);
 }
@@ -2864,7 +2978,8 @@ display_attach_info(msgno, a)
 	char *cmd;
 
 	if(cmd = mailcap_build_command(a->body->type, a->body->subtype,
-				       a->body->parameter, "<datafile>", &nt)){
+				       a->body->parameter, "<datafile>", &nt,
+				       a->can_display & MCD_EXT_PROMPT)){
 	    so_puts(store, "\"");
 #ifdef	_WINDOWS
 	    /* Special Windows-specific handling? */
@@ -2893,6 +3008,8 @@ display_attach_info(msgno, a)
     sargs.bar.title  = "ABOUT ATTACHMENT";
     sargs.help.text  = h_simple_text_view;
     sargs.help.title = "HELP FOR \"ABOUT ATTACHMENT\"";
+
+    sargs.use_indexline_color = 1;
 
     scrolltool(&sargs);
 
@@ -2929,7 +3046,7 @@ forward_attachment(stream, msgno, a)
 	outgoing->message_id  = generate_message_id();
 	outgoing->subject     = cpystr("Forwarded attachment...");
 
-	if(!ps_global->anonymous && nonempty_patterns(rflags, &dummy)){
+	if(nonempty_patterns(rflags, &dummy)){
 	    /*
 	     * There is no message, but a Current Folder Type might match.
 	     */
@@ -2946,7 +3063,7 @@ forward_attachment(stream, msgno, a)
 
 	if(role)
 	  q_status_message1(SM_ORDER, 3, 4,
-			    "Forwarding using role \"%s\"", role->nick);
+			    "Forwarding using role \"%.200s\"", role->nick);
 
 	/*
 	 * as with all text bound for the composer, build it in 
@@ -3000,13 +3117,8 @@ forward_attachment(stream, msgno, a)
 
 	    if(fetch_contents(stream, msgno, a->number,
 			      &body->nested.part->next->body)){
-		if(ps_global->anonymous)
-		  pine_simple_send(outgoing, &body, NULL, NULL, NULL, 1);
-		else		/* partially formatted outgoing message */
-		  pine_send(outgoing, &body,
-			    ps_global->nr_mode
-			      ? "SEND MESSAGE" : "FORWARD MESSAGE",
-			    role, NULL, NULL, redraft_pos, NULL, NULL, FALSE);
+		pine_send(outgoing, &body, "FORWARD MESSAGE",
+			  role, NULL, NULL, redraft_pos, NULL, NULL, FALSE);
 
 		ps_global->mangled_screen = 1;
 		pine_free_body(&body);
@@ -3051,10 +3163,13 @@ forward_msg_att(stream, msgno, a)
     ENVELOPE      *outgoing;
     BODY          *body;
     ACTION_S      *role = NULL;
+    REPLY_S        reply;
     REDRAFT_POS_S *redraft_pos = NULL;
 
     outgoing             = mail_newenvelope();
     outgoing->message_id = generate_message_id();
+
+    memset((void *)&reply, 0, sizeof(reply));
 
     if(outgoing->subject = forward_subject(a->body->nested.msg->env, 0)){
 	/*
@@ -3071,7 +3186,7 @@ forward_msg_att(stream, msgno, a)
 	       ret = want_to("Forward message as an attachment", 'n', 0,
 			     NO_HELP, WT_SEQ_SENSITIVE);
 	    /* Setup possible role */
-	    if(!ps_global->anonymous && nonempty_patterns(rflags, &dummy)){
+	    if(nonempty_patterns(rflags, &dummy)){
 		role = set_role_from_msg(ps_global, rflags, msgno, a->number);
 		if(confirm_role(rflags, &role))
 		  role = combine_inherited_role(role);
@@ -3086,7 +3201,7 @@ forward_msg_att(stream, msgno, a)
 
 	    if(role)
 	      q_status_message1(SM_ORDER, 3, 4,
-				"Forwarding using role \"%s\"", role->nick);
+				"Forwarding using role \"%.200s\"", role->nick);
 
 	    if(role && role->template){
 		char *filtered;
@@ -3135,22 +3250,29 @@ forward_msg_att(stream, msgno, a)
 				     &body->nested.part->next, msgtext))
 		  mail_free_body(&body);
 	    }
-	    else
-	      body = forward_body(stream, a->body->nested.msg->env,
-				  a->body->nested.msg->body, msgno,
-				  p = body_partno(stream, msgno, a->body),
-				  msgtext, (ps_global->anonymous)
-					      ? FWD_ANON : FWD_NONE);
+	    else{
+		reply.flags = REPLY_FORW;
+		if(a->body->nested.msg->body){
+		    reply.orig_charset =
+		      rfc2231_get_param(a->body->nested.msg->body->parameter,
+				        "charset", NULL, NULL);
+		    if(reply.orig_charset
+		       && !strucmp(reply.orig_charset, "us-ascii"))
+		      fs_give((void **) &reply.orig_charset);
+		}
+
+		body = forward_body(stream, a->body->nested.msg->env,
+				    a->body->nested.msg->body, msgno,
+				    p = body_partno(stream, msgno, a->body),
+				    msgtext, FWD_NONE);
+	    }
 
 	    fs_give((void **) &p);
 
 	    if(body){
-		if(ps_global->anonymous)
-		  pine_simple_send(outgoing, &body, NULL, NULL, NULL, 1);
-		else		/* partially formatted outgoing message */
-		  pine_send(outgoing, &body,
-		      ps_global->nr_mode ? "SEND MESSAGE" : "FORWARD MESSAGE",
-			    role, NULL, NULL, redraft_pos, NULL, NULL, FALSE);
+		pine_send(outgoing, &body,
+			  "FORWARD MESSAGE",
+			  role, NULL, &reply, redraft_pos, NULL, NULL, FALSE);
 
 		ps_global->mangled_screen = 1;
 		pine_free_body(&body);
@@ -3175,8 +3297,11 @@ forward_msg_att(stream, msgno, a)
     }
     else
       q_status_message1(SM_ORDER,3,4,
-			"Error fetching message %s. Can't forward it.",
+			"Error fetching message %.200s. Can't forward it.",
 			long2string(msgno));
+
+    if(reply.orig_charset)
+      fs_give((void **)&reply.orig_charset);
 
     mail_free_envelope(&outgoing);
 }
@@ -3247,7 +3372,7 @@ reply_msg_att(stream, msgno, a)
 
 	if(role){
 	    q_status_message1(SM_ORDER, 3, 4,
-			      "Replying using role \"%s\"", role->nick);
+			      "Replying using role \"%.200s\"", role->nick);
 
 	    /* override fcc gotten in reply_seed */
 	    if(role->fcc){
@@ -3270,6 +3395,19 @@ reply_msg_att(stream, msgno, a)
 	 * Now fix up the body...
 	 */
 	if(msgtext = (void *) so_get(PicoText, NULL, EDIT_ACCESS)){
+	    REPLY_S reply;
+
+	    memset((void *)&reply, 0, sizeof(reply));
+	    reply.flags = REPLY_FORW;
+	    if(a->body->nested.msg->body){
+		reply.orig_charset =
+		      rfc2231_get_param(a->body->nested.msg->body->parameter,
+				        "charset", NULL, NULL);
+		if(reply.orig_charset
+		   && !strucmp(reply.orig_charset, "us-ascii"))
+		  fs_give((void **) &reply.orig_charset);
+	    }
+
 	    if(body = reply_body(stream, a->body->nested.msg->env,
 				 a->body->nested.msg->body, msgno,
 				 tp = body_partno(stream, msgno, a->body),
@@ -3277,7 +3415,7 @@ reply_msg_att(stream, msgno, a)
 				 1, &redraft_pos)){
 		/* partially formatted outgoing message */
 		pine_send(outgoing, &body, "COMPOSE MESSAGE REPLY",
-			  role, fcc.tptr, NULL, redraft_pos, NULL, NULL, 0);
+			  role, fcc.tptr, &reply, redraft_pos, NULL, NULL, 0);
 
 		pine_free_body(&body);
 		ps_global->mangled_screen = 1;
@@ -3287,6 +3425,8 @@ reply_msg_att(stream, msgno, a)
 			       "Error building message body");
 
 	    fs_give((void **) &tp);
+	    if(reply.orig_charset)
+	      fs_give((void **)&reply.orig_charset);
 	}
 	else
 	  q_status_message(SM_ORDER | SM_DING, 3, 4,
@@ -3336,7 +3476,7 @@ pipe_attachment(msgno, a)
      ATTACH_S *a;
 {
     char    *err, *resultfilename = NULL, prompt[80];
-    int      rc, flags, capture = 1, raw = 0, we_cancel = 0;
+    int      rc, capture = 1, raw = 0, we_cancel = 0;
     PIPE_S  *syspipe;
     HelpType help;
     char     pipe_command[MAXPATH+1];
@@ -3440,7 +3580,7 @@ pipe_attachment(msgno, a)
 
 		if(err)
 		  q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				    "Error detaching for pipe: %s", err);
+				    "Error detaching for pipe: %.200s", err);
 
 		display_output_file(resultfilename,
 				    (err)
@@ -3460,7 +3600,7 @@ pipe_attachment(msgno, a)
 	    cmd_cancelled("Pipe");
 	    break;
 	}
-	else if(rc = 3)
+	else if(rc == 3)
 	  help = (help == NO_HELP) ? h_pipe_attach : NO_HELP;
     }
 }
@@ -3483,7 +3623,7 @@ delete_attachment(msgno, a)
 	rv = 1;
     }
     else
-      q_status_message1(SM_ORDER, 0, 3, "Part %s already deleted",
+      q_status_message1(SM_ORDER, 0, 3, "Part %.200s already deleted",
 			a->number);
 
     return(rv);
@@ -3508,7 +3648,7 @@ undelete_attachment(msgno, a, expbitsp)
 	rv = 1;
     }
     else
-      q_status_message1(SM_ORDER, 0, 3, "Part %s already UNdeleted",
+      q_status_message1(SM_ORDER, 0, 3, "Part %.200s already UNdeleted",
 			a->number);
 
     return(rv);
@@ -3599,13 +3739,10 @@ detach(stream, msg_no, part_no, len, pc, aux_filters)
     SourceType     src = CharStar;
     static char    err_string[100];
     FETCH_READC_S  fetch_part;
-#ifdef	DOS
-    extern unsigned char  *xlate_to_codepage;
-#endif
 
     err_string[0] = '\0';
 
-    if(!ps_global->print)
+    if(!ps_global->print && !pc_is_picotext(pc))
       we_cancel = busy_alarm(1, NULL, NULL, 0);
 
     gf_filter_init();			/* prepare for filtering! */
@@ -3673,18 +3810,6 @@ detach(stream, msg_no, part_no, len, pc, aux_filters)
        || body->type == TYPEMESSAGE
        || body->type == TYPEMULTIPART){
 	gf_link_filter(gf_nvtnl_local, NULL);
-#ifdef	DOS
-	/*
-	 * When detaching a text part AND it's US-ASCII OR it
-	 * matches what the user's defined as our charset,
-	 * translate it...
-	 */
-	if(mime_can_display(body->type, body->subtype,
-			    body->parameter) != MCD_NONE
-	   && xlate_to_codepage)
-	  gf_link_filter(gf_translate,
-			 gf_translate_opt(xlate_to_codepage, 256));
-#endif
     }
 
     /*
@@ -3833,7 +3958,6 @@ df_valid_test(body, test)
 	    passed++;				/* NULL test also wins! */
 	}
 	else if(body && !struncmp(test, "_CHARSET(", 9)){
-	    PARAMETER *parms;
 	    char *p = strrindex(test, ')');
 
 	    if(p){
@@ -4074,48 +4198,62 @@ dfilter(rawcmd, input_so, output_pc, aux_filters)
 	/*
 	 * If it was requested that the interaction take place via
 	 * a tmpfile, fill it with text from our input_so, and let
-	 * system_pipe handle the rest...
+	 * system_pipe handle the rest.  Session key and tmp file
+	 * mode support additions based loosely on a patch 
+	 * supplied by Thomas Stroesslin <thomas.stroesslin@epfl.ch>
 	 */
 	if(tmpfile){
 	    PIPE_S	  *filter_pipe;
-	    FILE	  *fp;
+	    FILE          *fp;
 	    gf_io_t	   gc, pc;
+	    STORE_S       *tmpf_so;
 
 	    /* write the tmp file */
 	    so_seek(input_so, 0L, 0);
-	    if(fp = fopen(tmpfile, WRITE_MODE)){
-		/* copy input to tmp file */
+	    if(tmpf_so = so_get(FileStar, tmpfile, EDIT_ACCESS|OWNER_ONLY)){
+	        if(key){
+		    so_puts(tmpf_so, filter_session_key());
+                    so_puts(tmpf_so, NEWLINE);
+		}
+	        /* copy input to tmp file */
 		gf_set_so_readc(&gc, input_so);
-		gf_set_writec(&pc, fp, 0L, FileStar);
+		gf_set_so_writec(&pc, tmpf_so);
 		gf_filter_init();
-		if(!(status = gf_pipe(gc, pc))){
-		    fclose(fp);		/* close descriptor */
+		status = gf_pipe(gc, pc);
+		gf_clear_so_readc(input_so);
+		gf_clear_so_writec(tmpf_so);
+		if(so_give(&tmpf_so) != 0 && status == NULL)
+		  status = error_description(errno);
+
+		/* prepare the terminal in case the filter uses it */
+		if(status == NULL){
 		    if(filter_pipe = open_system_pipe(cmd, NULL, NULL,
 						      PIPE_USER | PIPE_RESET,
 						      0)){
-			(void) close_system_pipe(&filter_pipe);
+			if (close_system_pipe(&filter_pipe) == 0){
+			    /* pull result out of tmp file */
+			    if(fp = fopen(tmpfile, READ_MODE)){
+				gf_set_readc(&gc, fp, 0L, FileStar);
+				gf_filter_init();
+				if(aux_filters)
+				  for( ; aux_filters->filter; aux_filters++)
+				    gf_link_filter(aux_filters->filter,
+						   aux_filters->data);
 
-			/* pull result out of tmp file */
-			if(fp = fopen(tmpfile, READ_MODE)){
-			    gf_set_readc(&gc, fp, 0L, FileStar);
-			    gf_filter_init();
-			    if(aux_filters)
-			      for( ; aux_filters->filter; aux_filters++)
-			        gf_link_filter(aux_filters->filter,
-					       aux_filters->data);
-
-			    status = gf_pipe(gc, output_pc);
-			    fclose(fp);
+				status = gf_pipe(gc, output_pc);
+				fclose(fp);
+			    }
+			    else
+			      status = "Can't read result of display filter";
 			}
 			else
-			  status = "Can't read result of display filter";
+			  status = "Filter command returned error.";
 		    }
 		    else
 		      status = "Can't open pipe for display filter";
 		}
 
 		unlink(tmpfile);
-		gf_clear_so_readc(input_so);
 	    }
 	    else
 	      status = "Can't open display filter tmp file";
@@ -4399,7 +4537,14 @@ fetch_readc_init(frd, stream, msgno, section, size, flags)
     if(modern_imap_stream(stream)
        && !imap_cache(stream, msgno, section, NULL, NULL)
        && size > INIT_FETCH_CHUNK
-       && F_OFF(F_QUELL_PARTIAL_FETCH, ps_global)){
+       && (F_OFF(F_QUELL_PARTIAL_FETCH, ps_global)
+           ||
+#ifdef	_WINDOWS
+	   F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global)
+#else
+	   0
+#endif
+	   )){
 	frd->allocsize = INIT_FETCH_CHUNK;
 	frd->chunk = (char *) fs_get ((frd->allocsize + 1) * sizeof(char));
 	frd->chunksize = frd->allocsize/2;  /* this gets doubled 1st time */
@@ -4578,6 +4723,17 @@ fetch_readc(c)
 	    g_fr_desc->chunksize = min(MAX_FETCH_CHUNK,
 				       max(MIN_FETCH_CHUNK,
 					   g_fr_desc->chunksize));
+	    
+#ifdef	_WINDOWS
+	    /*
+	     * If this feature is set, limit the max size to less than
+	     * 16K - 5, the magic number that avoids Microsoft's bug.
+	     * Let's just go with 12K instead of 16K - 5.
+	     */
+	    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global))
+	      g_fr_desc->chunksize =
+		  min(AVOID_MICROSOFT_SSL_CHUNKING_BUG, g_fr_desc->chunksize);
+#endif
 
 	    /* don't ask for more than there should be left to ask for */
 	    g_fr_desc->chunksize =
@@ -4634,7 +4790,7 @@ fetch_readc(c)
 		g_fr_desc->fetchtime = (g_fr_desc->fetchtime == 0)
 					? wdiff
 					: g_fr_desc->fetchtime/2 + wdiff/2;
-		dprint(4, (debugfile,
+		dprint(8, (debugfile,
 	         "fetch: diff=%ld wdiff=%ld fetchave=%ld prev chunksize=%ld\n",
 	         diff, wdiff, g_fr_desc->fetchtime, g_fr_desc->chunksize));
 	    }
@@ -4740,7 +4896,7 @@ display_att_window(a)
 	      display_digest_att(msgno, a, flags);
 	    else */
 	      q_status_message1(SM_ORDER, 3, 5,
-				"Can't display Multipart/%s",
+				"Can't display Multipart/%.200s",
 				a->body->subtype);
 	}
 	else

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: context.c,v 1.1.1.1 2001-02-19 07:05:03 ghudson Exp $";
+static char rcsid[] = "$Id: context.c,v 1.1.1.2 2003-02-12 08:00:09 ghudson Exp $";
 #endif
 /*
  * Program:	Mailbox Context Management
@@ -18,7 +18,7 @@ static char rcsid[] = "$Id: context.c,v 1.1.1.1 2001-02-19 07:05:03 ghudson Exp 
  * permission of the University of Washington.
  *
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  *
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -29,6 +29,10 @@ static char rcsid[] = "$Id: context.c,v 1.1.1.1 2001-02-19 07:05:03 ghudson Exp 
  */
 
 #include "headers.h"
+
+
+char    *context_percent_quote PROTO((char *));
+
 
 /* Context Manager context format digester
  * Accepts: context string and buffers for sprintf-suitable context,
@@ -204,20 +208,73 @@ context_apply(b, c, name, len)
 	sprintf(b+strlen(b), "%.*s", len-1-strlen(b), name);
     }
     else{					/* no ref, apply to context */
+	char *pq = NULL;
+
+	/*
+	 * Have to quote %s for the sprintf because we're using context
+	 * as a format string.
+	 */
+	pq = context_percent_quote(c->context);
+
 	if(strlen(c->context) + strlen(name) < len)
-	  sprintf(b, c->context, name);
+	  sprintf(b, pq, name);
 	else{
 	    char *t;
 
-	    t = (char *)fs_get((strlen(c->context)+strlen(name))*sizeof(char));
-	    sprintf(t, c->context, name);
+	    t = (char *)fs_get((strlen(pq)+strlen(name))*sizeof(char));
+	    sprintf(t, pq, name);
 	    strncpy(b, t, len-1);
 	    fs_give((void **)&t);
 	}
+
+	if(pq)
+	  fs_give((void **) &pq);
     }
 
     b[len-1] = '\0';
     return(b);
+}
+
+
+/*
+ * Insert % before existing %'s so printf will print a real %.
+ * This is a special routine just for contexts. It only does the % stuffing
+ * for %'s inside of the braces of the context name, not for %'s to
+ * the right of the braces, which we will be using for printf format strings.
+ * Returns a malloced string which the caller is responsible for.
+ */
+char *
+context_percent_quote(context)
+    char *context;
+{
+    char *pq = NULL;
+
+    if(!context || !*context)
+      pq = cpystr("");
+    else{
+	if(IS_REMOTE(context)){
+	    char *end, *p, *q;
+
+	    /* don't worry about size efficiency, just allocate double */
+	    pq = (char *) fs_get((2*strlen(context) + 1) * sizeof(char));
+
+	    end = strchr(context, '}');
+	    p = context;
+	    q = pq;
+	    while(*p){
+		if(*p == '%' && p < end)
+		  *q++ = '%';
+		
+		*q++ = *p++;
+	    }
+
+	    *q = '\0';
+	}
+	else
+	  pq = cpystr(context);
+    }
+
+    return(pq);
 }
 
 
@@ -270,8 +327,18 @@ context_open (context, old, name, opt)
 {
   char tmp[MAILTMPLEN];		/* build FQN from ambiguous name */
 
-  return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	  ? pine_mail_open(old,tmp,opt) : (MAILSTREAM *)NULL);
+  if(!cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))){
+      /*
+       * If a stream is passed to context_open, we will either re-use
+       * it or close it.
+       */
+      if(old)
+	pine_mail_close(old);
+
+      return((MAILSTREAM *)NULL);
+  }
+
+  return(pine_mail_open(old, tmp, opt));
 }
 
 
@@ -291,9 +358,70 @@ context_status (context, stream, name, opt)
     long	opt;
 {
     char tmp[MAILTMPLEN];	/* build FQN from ambiguous name */
+    long flags = opt;
+
+#ifdef	DEBUG
+    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+      flags |= OP_DEBUG;
+#endif
 
     return(cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp)))
-	     ? mail_status(stream,tmp,opt) : 0L);
+	     ? mail_status(stream,tmp,flags) : 0L);
+}
+
+
+/* Context Manager status
+ *
+ * This is very similar to context_status. Instead of a stream pointer we
+ * receive a pointer to a pointer so that we can return a stream that we
+ * opened for further use by the caller.
+ *
+ * Accepts: context
+ *	    candidate stream for recycling
+ *	    mailbox name
+ *	    open options
+ * Returns: T if call succeeds, NIL on failure
+ */
+
+long
+context_status_streamp (context, streamp, name, opt)
+    CONTEXT_S   *context;
+    MAILSTREAM **streamp;
+    char        *name;
+    long	 opt;
+{
+    MAILSTREAM *stream;
+    char        tmp[MAILTMPLEN];	/* build FQN from ambiguous name */
+    long        flags;
+
+    if(!cntxt_allowed(context_apply(tmp, context, name, sizeof(tmp))))
+      return(0L);
+
+    if(!streamp)
+      stream = NULL;
+    else{
+	if(!*streamp && IS_REMOTE(tmp)){
+	    flags = OP_SILENT|OP_HALFOPEN;
+
+#ifdef	DEBUG
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+	      flags |= OP_DEBUG;
+#endif
+
+	    *streamp = pine_mail_open(NULL, tmp, flags);
+	}
+
+	stream = *streamp;
+    }
+
+    flags = opt;
+
+#ifdef	DEBUG
+    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+      flags |= OP_DEBUG;
+#endif
+
+    return(mail_status(stream, tmp, flags));
 }
 
 

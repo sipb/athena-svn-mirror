@@ -19,7 +19,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -35,7 +35,6 @@ extern FILE		*gfDebugFile = NULL;
 
 
 
-void chword PROTO((char *, char *));
 int  movetoword PROTO((char *));
 
 
@@ -177,25 +176,6 @@ spell(f, n)
       emlwrite("Done checking spelling", NULL);
 
     return(ret);
-}
-
-
-
-
-/* 
- * chword() - change the given word, wp, pointed to by the curwp->w_dot 
- *            pointers to the word in cb
- */
-void
-chword(wb, cb)
-  char *wb;					/* word buffer */
-  char *cb;					/* changed buffer */
-{
-    ldelete((long) strlen(wb), NULL);		/* not saved in kill buffer */
-    while(*cb != '\0')
-      linsert(1, *cb++);
-
-    curwp->w_flag |= WFEDIT;
 }
 
 

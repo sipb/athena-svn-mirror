@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-bsf.h,v 1.1.1.1 2001-02-19 07:02:32 ghudson Exp $
+  $Id: os-bsf.h,v 1.1.1.2 2003-02-12 08:09:33 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -219,7 +219,7 @@
 /*----------------------------------------------------------------------
    If no nntp-servers are defined, this program will be used to post news.
  ----*/
-#define SENDNEWS	"/usr/local/news/inews -h"
+/* #define SENDNEWS	"/usr/local/news/inews -h" */
 
 
 /*--------- Program employed by users to change their password ---------*/
@@ -231,7 +231,7 @@
 #undef MAXPATH                  /* Sometimes defined in param.h differently */
 #define MAXPATH MAXPATHLEN      /* Longest pathname we ever expect */
 /* #define MAXPATH        (512) */ /* Longest pathname we ever expect */
-#define MAXFOLDER      (64)     /* Longest foldername we ever expect */  
+#define MAXFOLDER      (128)    /* Longest foldername we ever expect */  
 
 
 /*-- Max screen pine will display on. Used to define some array sizes --*/

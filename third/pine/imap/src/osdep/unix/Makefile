@@ -9,10 +9,10 @@
 #		Internet: MRC@CAC.Washington.EDU
 #
 # Date:		11 May 1989
-# Last Edited:	1 February 2001
+# Last Edited:	14 October 2002
 #
 # The IMAP toolkit provided in this Distribution is
-# Copyright 2001 University of Washington.
+# Copyright 2002 University of Washington.
 #
 # The full text of our legal notices is contained in the file called
 # CPYRIGHT, included with this Distribution.
@@ -21,9 +21,32 @@
 # Command line build parameters
 
 EXTRAAUTHENTICATORS=
-SPECIALAUTHENTICATORS=
 EXTRADRIVERS=mbox
 PASSWDTYPE=std
+SSLTYPE=nopwd
+
+
+# Extended flags needed for SSL.  You may need to modify.
+
+SSLDIR=/usr/local/ssl
+SSLCERTS=$(SSLDIR)/certs
+SSLINCLUDE=$(SSLDIR)/include
+SSLLIB=$(SSLDIR)/lib
+
+SSLCRYPTO=-lcrypto
+
+# Older versions of MIT Kerberos also have a libcrypto.  If so, you may need
+# to use this instead
+#SSLCRYPTO=$(SSLLIB)/libcrypto.a
+
+# RSA Security Inc. released the RSA public key encryption algorithm into
+# the public domain on September 6, 2000.  There is no longer any need to
+# use RSAREF.
+SSLRSA= # -lRSAglue -lrsaref
+
+SSLCFLAGS= -I$(SSLINCLUDE) -I$(SSLINCLUDE)/openssl\
+ -DSSL_CERT_DIRECTORY=\"$(SSLCERTS)\"
+SSLLDFLAGS= -L$(SSLLIB) -lssl $(SSLCRYPTO) $(SSLRSA)
 
 
 # Extended flags needed for non-standard passwd types.  You may need to modify.
@@ -81,14 +104,14 @@ RANLIB=ranlib
 
 # Standard distribution build parameters
 
-DEFAULTAUTHENTICATORS=md5 $(SPECIALAUTHENTICATORS) log
+DEFAULTAUTHENTICATORS=md5 pla log
 DEFAULTDRIVERS=imap nntp pop3 mh mx mbx tenex mtx mmdf unix news phile
 
 
 # Normally no need to change any of these
 
 ARCHIVE=c-client.a
-BINARIES=mail.o misc.o newsrc.o smanager.o osdep.o utf8.o siglocal.o \
+BINARIES=osdep.o mail.o misc.o newsrc.o smanager.o utf8.o siglocal.o \
  dummy.o pseudo.o netmsg.o flstring.o fdstring.o \
  rfc822.o nntp.o smtp.o imap4r1.o pop3.o \
  unix.o mbox.o mbx.o mmdf.o tenex.o mtx.o news.o phile.o mh.o mx.o
@@ -106,7 +129,8 @@ SH=sh
 BUILD=$(MAKE) build EXTRACFLAGS='$(EXTRACFLAGS)'\
  EXTRALDFLAGS='$(EXTRALDFLAGS)'\
  EXTRADRIVERS='$(EXTRADRIVERS)' EXTRAAUTHENTICATORS='$(EXTRAAUTHENTICATORS)'\
- PASSWDTYPE=$(PASSWDTYPE) SPECIALAUTHENTICATORS='$(SPECIALAUTHENTICATORS)'
+ PASSWDTYPE=$(PASSWDTYPE) SSLTYPE=$(SSLTYPE)
+
 
 # Here if no make argument established
 
@@ -134,7 +158,7 @@ a41:	# AIX 4.1 for RS/6000
 	 SPOOLDIR=/var/spool \
 	 RSHPATH=/usr/bin/rsh \
 	 BASECFLAGS="-g -Dunix=1 -D_BSD" \
-	 BASELDFLAGS="-lbsd -ls"
+	 BASELDFLAGS="-ls"
 
 aix:	# AIX/370
 	@echo You are building for AIX on an S/370 class machine
@@ -217,6 +241,16 @@ cvx:	# Convex
 	 CRXTYPE=nfs \
 	 BASECFLAGS="-O -ext -Dconst="
 
+cyg:	# Cygwin
+	$(BUILD) `$(CAT) SPECIALS` OS=$@ \
+	SIGTYPE=psx CHECKPW=cyg LOGINPW=cyg CRXTYPE=std \
+	SPOOLDIR=/var \
+	ACTIVEFILE=/usr/local/news/lib/active \
+	RSHPATH=/usr/bin/rsh \
+	BASECFLAGS="-g -O" \
+	BASELDFLAGS="-lcrypt" \
+	CC=gcc
+
 d-g:	# Data General DG/UX
 	$(BUILD) `$(CAT) SPECIALS` OS=$@ \
 	 SIGTYPE=sv4 CRXTYPE=nfs \
@@ -285,7 +319,7 @@ gas:	# GCC Altos SVR4
 	 BASELDFLAGS="-lsocket -lrpc -lgen -lcrypt -lxenix" \
 	 RANLIB=true CC=gcc
 
-gh9:	# GCC HP-UX9.x
+gh9:	# GCC HP-UX 9.x
 	$(BUILD) `$(CAT) SPECIALS` OS=hpp \
 	 SIGTYPE=psx CRXTYPE=nfs \
 	 MAILSPOOL=/usr/mail \
@@ -293,13 +327,23 @@ gh9:	# GCC HP-UX9.x
 	 BASECFLAGS="-g -O2" \
 	 RANLIB=true CC=gcc
 
-ghp:	# GCC HP-UX
+ghp:	# GCC HP-UX 10.x
 	$(BUILD) `$(CAT) SPECIALS` OS=hpp \
 	 SIGTYPE=psx CRXTYPE=nfs \
 	 SPOOLDIR=/var \
 	 ACTIVEFILE=/var/news/active \
 	 RSHPATH=/usr/bin/remsh \
 	 BASECFLAGS="-g -O2" \
+	 RANLIB=true CC=gcc
+
+ghs:	# GCC HP-UX with Trusted Computer Base
+	$(BUILD) `$(CAT) SPECIALS` OS=shp \
+	 SIGTYPE=psx CHECKPW=sec CRXTYPE=nfs \
+	 SPOOLDIR=/var \
+	 ACTIVEFILE=/var/news/active \
+	 RSHPATH=/usr/bin/remsh \
+	 BASECFLAGS="-g -O2" \
+	 BASELDFLAGS="-lnet -lV3 -lsec" \
 	 RANLIB=true CC=gcc
 
 go5:	# GCC 2.7.1 (95q4) SCO Open Server 5.0.x
@@ -309,7 +353,7 @@ go5:	# GCC 2.7.1 (95q4) SCO Open Server 5.0.x
 	 SPOOLDIR=/var/spool \
 	 ACTIVEFILE=/var/lib/news/active \
 	 RSHPATH=/usr/bin/rcmd \
-	 BASECFLAGS="-O3 -belf -I/usr/include -L/lib" \
+	 BASECFLAGS="-O3 -I/usr/include -L/lib" \
 	 BASELDFLAGS="-lsocket -lprot -lx -ltinfo -lm" \
 	 RANLIB=true CC=gcc
 
@@ -449,7 +493,7 @@ nto:	# QNX Neutrino RTP
 	 SPOOLDIR=/var/spool \
 	 ACTIVEFILE=/var/lib/news/active \
 	 RSHPATH=/usr/bin/rsh \
-	 BASECFLAGS="-g -O -DNFSKLUDGE"
+	 BASECFLAGS="-g -O"
 
 nxt:	# NEXTSTEP
 	$(BUILD) `$(CAT) SPECIALS` OS=$@ \
@@ -545,14 +589,14 @@ sg6:	# Silicon Graphics, IRIX 6.5
 	 SIGTYPE=sv4 CRXTYPE=nfs \
 	 MAILSPOOL=/usr/mail \
 	 RSHPATH=/usr/bsd/rsh \
-	 BASECFLAGS="-g3 -O2 -woff 1048,1110,1116" \
+	 BASECFLAGS="-g3 -O2 -OPT:Olimit=0 -woff 1110,1116" \
 	 RANLIB=true
 
 # Note: Mark Kaesling says that setluid() isn't in HP-UX with SecureWare.
 
 shp:	# HP-UX with Trusted Computer Base
 	$(BUILD) `$(CAT) SPECIALS` OS=$@ \
-	 SIGTYPE=psx CHECKPW=sec LOGINPW=std CRXTYPE=nfs \
+	 SIGTYPE=psx CHECKPW=sec CRXTYPE=nfs \
 	 SPOOLDIR=/var \
 	 ACTIVEFILE=/var/news/active \
 	 RSHPATH=/usr/bin/remsh \
@@ -734,7 +778,7 @@ $(ARCHIVE): $(BINARIES)
 # Cleanup
 
 clean:
-	sh -c '$(RM) auths.c crexcl.c flockbsd.c linkage.[ch] siglocal.c osdep*.[ch] *.o ARCHIVE *FLAGS *TYPE $(ARCHIVE) || true'
+	sh -c '$(RM) auths.c crexcl.c nfstest.c linkage.[ch] siglocal.c osdep*.[ch] *.o ARCHIVE *FLAGS *TYPE $(ARCHIVE) || true'
 
 
 # Dependencies
@@ -771,19 +815,24 @@ utf8.o: mail.h misc.h osdep.h utf8.h
 osdep.o:mail.h misc.h env.h fs.h ftl.h nl.h tcp.h \
 	osdep.h env_unix.h tcp_unix.h \
 	osdep.c env_unix.c fs_unix.c ftl_unix.c nl_unix.c tcp_unix.c \
-	auths.c crexcl.c flock.c flockbsd.c flcksafe.c fsync.c gethstid.c \
+	auths.c crexcl.c flocksim.c nfstest.c flcksafe.c fsync.c gethstid.c \
 	gr_wait.c gr_wait4.c gr_waitp.c \
-	auth_gss.c auth_log.c auth_md5.c auth_ssl.c \
+	auth_gss.c auth_log.c auth_md5.c auth_pla.c \
 	pmatch.c scandir.c setpgrp.c strerror.c truncate.c write.c \
 	memmove.c memmove2.c memset.c \
 	tz_bsd.c tz_nul.c tz_sv4.c \
-	write.c \
+	write.c sslstdio.c \
 	strerror.c strpbrk.c strstr.c strtok.c strtoul.c \
 	OSCFLAGS
+	@echo Building OS-dependent module
+	@echo If you get No such file error messages for files x509.h, ssl.h,
+	@echo pem.h, buffer.h, bio.h, and crypto.h, that means that OpenSSL
+	@echo is not installed on your system.  Either install OpenSSL first
+	@echo or build with command: make `$(CAT) OSTYPE` SSLTYPE=none
 	`$(CAT) CCTYPE` -c `$(CAT) CFLAGS` `$(CAT) OSCFLAGS` -c osdep.c
 
-osdep.c: osdepbas.c osdepckp.c osdeplog.c
-	$(CAT) osdepbas.c osdepckp.c osdeplog.c > osdep.c
+osdep.c: osdepbas.c osdepckp.c osdeplog.c osdepssl.c
+	$(CAT) osdepbas.c osdepckp.c osdeplog.c osdepssl.c > osdep.c
 
 osdepbas.c:
 	@echo osdepbas.c not found...try make clean and new make
@@ -797,8 +846,12 @@ osdeplog.c:
 	@echo osdeplog.c not found...try make clean and new make
 	@false
 
-flockbsd.c:
-	@echo flockbsd.c not found...try make clean and new make
+osdepssl.c:
+	@echo osdepssl.c not found...try make clean and new make
+	@false
+
+nfstest.c:
+	@echo nfstest.c not found...try make clean and new make
 	@false
 
 siglocal.c:
@@ -811,7 +864,7 @@ crexcl.c:
 
 # Once-only environment setup
 
-once:	onceenv ckp$(PASSWDTYPE) osdep.c 
+once:	onceenv ckp$(PASSWDTYPE) ssl$(SSLTYPE) osdep.c
 
 onceenv:
 	@echo Once-only environment setup...
@@ -824,6 +877,7 @@ onceenv:
 	 -DRSHPATH=\"$(RSHPATH)\" -DLOCKPGM=\"$(LOCKPGM)\" > OSCFLAGS
 	echo $(BASELDFLAGS) $(EXTRALDFLAGS) > LDFLAGS
 	echo "$(ARRC) $(ARCHIVE) $(BINARIES);$(RANLIB) $(ARCHIVE)" > ARCHIVE
+	echo $(OS) > OSTYPE
 	./drivers $(EXTRADRIVERS) $(DEFAULTDRIVERS) dummy
 	./mkauths $(EXTRAAUTHENTICATORS) $(DEFAULTAUTHENTICATORS)
 	$(LN) os_$(OS).h osdep.h
@@ -831,11 +885,13 @@ onceenv:
 	$(LN) log_$(LOGINPW).c osdeplog.c
 	$(LN) sig_$(SIGTYPE).c siglocal.c
 	$(LN) crx_$(CRXTYPE).c crexcl.c
-	sh -c '(test -f /usr/include/sys/statvfs.h -a $(OS) != sc5 -a $(OS) != sco) && $(LN) flocksun.c flockbsd.c || $(LN) flocksv4.c flockbsd.c'
+	sh -c '(test -f /usr/include/sys/statvfs.h -a $(OS) != sc5 -a $(OS) != sco) && $(LN) nfstnew.c nfstest.c || $(LN) nfstold.c nfstest.c'
+
 
 # Password checkers
 
 ckpafs:	# AFS
+	@echo AFS password authentication
 	echo $(AFSCFLAGS) >> OSCFLAGS
 #	echo $(AFSLDFLAGS) >> LDFLAGS
 # Note: Steve Roseman says that AFS libraries have to be lunk before SSL
@@ -844,41 +900,75 @@ ckpafs:	# AFS
 	$(LN) ckp_afs.c osdepckp.c
 
 ckpdce:	# DCE
+	@echo DCE password authentication
 	echo $(DCECFLAGS) >> OSCFLAGS
 	echo $(DCELDFLAGS) >> LDFLAGS
 	$(LN) ckp_dce.c osdepckp.c
 
 ckpgss:	# Kerberos V (must have gss EXTRAAUTHENTICATOR as well)
+	@echo Kerberos V password authentication
 	$(LN) ckp_gss.c osdepckp.c
 
-ckpkrb:	# Kerberos IV (must have krb EXTRAAUTHENTICATOR as well)
-	$(LN) ckp_krb.c osdepckp.c
-
-ckpmd5:	# MD5 database (must have md5 AUTHENTICATOR as well)
-	$(LN) ckp_md5.c osdepckp.c
-
 ckpnul:	# NUL authenticator (disables all plaintext authentication)
-#	echo -DPLAINTEXT_DISABLED >> CFLAGS
-# Setting CFLAGS=`$(CAT) CFLAGS` won't work if there's a newline in the file,
-# so work around it this way
-	echo `$(CAT) CFLAGS` -DPLAINTEXT_DISABLED > CFLAGS.tmp
-	mv CFLAGS.tmp CFLAGS
+	@echo Plaintext authentication prohibited
+	echo "  mail_parameters (NIL,SET_DISABLEPLAINTEXT,(void *) 1);" >> linkage.c
 	$(LN) ckp_nul.c osdepckp.c
 
 ckppam:	# Pluggable Authentication Modules authenticator
+	@echo PAM password authentication
 	echo $(PAMLDFLAGS) >> LDFLAGS
 	$(LN) ckp_pam.c osdepckp.c
 
 ckppmb:	# Broken (e.g. SUN) Pluggable Authentication Modules authenticator
+	@echo Broken PAM password authentication
 	echo $(PAMLDFLAGS) >> LDFLAGS
 	$(LN) ckp_pmb.c osdepckp.c
 
 ckpstd:	# Port standard
+	@echo Standard password authentication
 	$(LN) ckp_$(CHECKPW).c osdepckp.c
 
 ckptwo:	# Something plus standard
+	@echo $(CHECKPWALT) password authentication first, then standard
 	$(CAT) ckp_1st.c ckp_$(CHECKPWALT).c ckp_2nd.c ckp_$(CHECKPW).c \
 	 ckp_3rd.c > osdepckp.c
+
+
+# SSL support
+
+sslnone:# No SSL
+	@echo Building without SSL support
+	$(LN) ssl_none.c osdepssl.c
+
+sslnopwd: sslunix snopwd
+
+sslunix.nopwd: sslnopwd
+
+sslsco.nopwd: sslsco snopwd
+
+sslunix: sbasic sldunix
+
+sslsco:	sbasic sldsco
+
+sbasic:	# UNIX OpenSSL
+	@echo Building with SSL
+	$(LN) ssl_unix.c osdepssl.c
+	echo $(SSLCFLAGS) >> OSCFLAGS
+	echo "  ssl_onceonlyinit ();" >> linkage.c
+
+snopwd:	# Plaintext disable
+	@echo Building with SSL and plaintext passwords disabled unless SSL/TLS
+	echo "  mail_parameters (NIL,SET_DISABLEPLAINTEXT,(void *) 2);" >> linkage.c
+
+sldunix:# Normal UNIX SSL load flags
+	echo $(SSLLDFLAGS) >> LDFLAGS
+
+
+sldsco:	# SCO SSL load flags
+# Note: Tim Rice says that SSL has to be lunk before other libraries on SCO.
+	echo $(SSLLDFLAGS) `cat LDFLAGS` > LDFLAGS.tmp
+	mv LDFLAGS.tmp LDFLAGS
+
 
 # A monument to a hack of long ago and far away...
 

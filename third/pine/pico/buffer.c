@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: buffer.c,v 1.1.1.1 2001-02-19 07:04:47 ghudson Exp $";
+static char rcsid[] = "$Id: buffer.c,v 1.1.1.2 2003-02-12 08:10:54 ghudson Exp $";
 #endif
 /*
  * Program:	Buffer management routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: buffer.c,v 1.1.1.1 2001-02-19 07:04:47 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -191,7 +191,6 @@ char	**buf;
 int	*blen;
 int	lcrlf;				/* EOLs are local or CRLF */
 {
-    register int    s;
     register int    i = 0;
     register LINE   *lp;
     register int    retval = 0;

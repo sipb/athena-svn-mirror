@@ -128,7 +128,12 @@ typedef unsigned short usign16_t;
 
 
 /*-------- If no vfork, use regular fork -------------------------------*/
-/* #define vfork fork */ /* vfork is just a lightweight fork, so can use fork */
+/*
+ * There is a vfork on MacOS X but it clashes with our use. We set
+ * SIGCHLD to default action in the child in open_system_pipe and that
+ * turns out to affect the parent as well. So just use fork.
+ */
+#define vfork fork /* vfork is just a lightweight fork, so can use fork */
 
 
 
@@ -176,7 +181,7 @@ typedef unsigned short usign16_t;
 /*
  * Make sys_errlist visible
  */
-extern int   sys_nerr;
+/* extern int   sys_nerr; */
 
 
 #endif /* _PICO_OS_INCLUDED */

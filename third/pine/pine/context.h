@@ -1,6 +1,6 @@
 /*
  *
- * $Id: context.h,v 1.1.1.1 2001-02-19 07:04:41 ghudson Exp $
+ * $Id: context.h,v 1.1.1.2 2003-02-12 07:59:13 ghudson Exp $
  *
  * Program:	Mailbox Context Management
  *
@@ -18,7 +18,7 @@
  * permission of the University of Washington.
  *
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  *
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -44,6 +44,8 @@ char	   *context_apply PROTO((char *, CONTEXT_S *, char *, size_t));
 long	    context_create PROTO((CONTEXT_S *, MAILSTREAM *, char *));
 MAILSTREAM *context_open PROTO((CONTEXT_S *, MAILSTREAM *, char *, long));
 long	    context_status PROTO((CONTEXT_S *, MAILSTREAM *, char *, long));
+long	    context_status_streamp PROTO((CONTEXT_S *, MAILSTREAM **,
+					  char *, long));
 long	    context_rename PROTO((CONTEXT_S *, MAILSTREAM *, char *, char *));
 long	    context_delete PROTO((CONTEXT_S *, MAILSTREAM *, char *));
 long	    context_append PROTO((CONTEXT_S *, MAILSTREAM *, char *, \

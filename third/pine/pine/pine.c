@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pine.c,v 1.1.1.1 2001-02-19 07:06:00 ghudson Exp $";
+static char rcsid[] = "$Id: pine.c,v 1.1.1.2 2003-02-12 08:02:32 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: pine.c,v 1.1.1.1 2001-02-19 07:06:00 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -47,7 +47,7 @@ static char rcsid[] = "$Id: pine.c,v 1.1.1.1 2001-02-19 07:06:00 ghudson Exp $";
  * Handy local definitions...
  */
 #define	LEGAL_NOTICE \
-   "Copyright 1989-2001.  PINE is a trademark of the University of Washington."
+   "Copyright 1989-2003.  PINE is a trademark of the University of Washington."
 
 #define	PIPED_FD	5			/* Some innocuous desc	    */
 
@@ -88,14 +88,19 @@ void	do_menu PROTO((int, Pos *, struct key_menu *));
 void	main_redrawer PROTO(());
 void	new_user_or_version PROTO((struct pine *));
 void	do_setup_task PROTO((int));
+int     choose_setup_cmd PROTO((int, MSGNO_S *, SCROLL_S *));
 void	queue_init_errors PROTO((struct pine *));
 void	upgrade_old_postponed PROTO(());
-void	goodnight_gracey PROTO((struct pine *, int, char *));
+void	goodnight_gracey PROTO((struct pine *, int));
 int	read_stdin_char PROTO(());
 void	pine_read_progress PROTO((GETS_DATA *, unsigned long));
 void	flag_search PROTO((MAILSTREAM *, int, MsgNo, MSGNO_S *,
 			   long (*) PROTO((MAILSTREAM *))));
+long    flag_search_sequence PROTO((MAILSTREAM *, MSGNO_S *, long, int));
 int	nuov_processor PROTO((int, MSGNO_S *, SCROLL_S *));
+MAILSTREAM *stream_cache PROTO((char *));
+void        cache_stream PROTO((MAILSTREAM *));
+void        end_stream_cache PROTO((void));
 #ifdef	WIN32
 char   *pine_user_callback PROTO((void));
 #endif
@@ -220,6 +225,7 @@ main(argc, argv)
     int		 rv;
     struct pine *pine_state;
     gf_io_t	 stdin_getc = NULL;
+    char        *args_for_debug = NULL, *init_pinerc_debugging = NULL;
 #ifdef DYN
     char	 stdiobuf[64];
 #endif
@@ -292,6 +298,32 @@ main(argc, argv)
     }
 #endif
 
+#ifdef DEBUG
+    {   size_t len = 0;
+	int   i;
+	char *p;
+	char *no_args = " <no args>";
+
+	for(i = 0; i < argc; i++)
+	  len += (strlen(argv[i] ? argv[i] : "")+3);
+	
+	if(argc == 1)
+	  len += strlen(no_args);
+	
+	p = args_for_debug = (char *)fs_get((len+2) * sizeof(char));
+	*p++ = '\n';
+	*p = '\0';
+
+	for(i = 0; i < argc; i++){
+	    sprintf(p, "%s\"%s\"", i ? " " : "", argv[i] ? argv[i] : "");
+	    p += strlen(p);
+	}
+	
+	if(argc == 1)
+	  strncat(args_for_debug, no_args, len-strlen(args_for_debug));
+    }
+#endif
+
     /*----------------------------------------------------------------------
            Parse arguments and initialize debugging
       ----------------------------------------------------------------------*/
@@ -316,7 +348,20 @@ main(argc, argv)
     }
 #endif
 
-    init_pinerc(pine_state);
+    if(ps_global->convert_sigs &&
+       (!ps_global->pinerc || !ps_global->pinerc[0])){
+	fprintf(stderr, "Use -p <pinerc> with -convert_sigs\n");
+	exit(-1);
+    }
+
+    /* set some default timeouts in case pinerc is remote */
+    mail_parameters(NULL, SET_OPENTIMEOUT, (void *)(long)30);
+    mail_parameters(NULL, SET_READTIMEOUT, (void *)(long)15);
+    mail_parameters(NULL, SET_TIMEOUT, (void *) pine_tcptimeout);
+    /* could be TO_BAIL_THRESHOLD, 15 seems more appropriate for now */
+    pine_state->tcp_query_timeout = 15;
+
+    init_pinerc(pine_state, &init_pinerc_debugging);
 
 #ifdef DEBUG
     /* Since this is specific debugging we don't mind if the
@@ -331,7 +376,31 @@ main(argc, argv)
       mal_debug(ps_global->debug_malloc);
 #endif
 
-    init_debug();
+    if(!ps_global->convert_sigs)
+      init_debug();
+
+    if(args_for_debug){
+	dprint(0, (debugfile, " %s\n\n", args_for_debug));
+	fs_give((void **)&args_for_debug);
+    }
+
+    if(getenv("HOME") != NULL){
+	dprint(2, (debugfile, "Setting home dir from $HOME: \"%s\"\n",
+	       getenv("HOME")));
+    }
+    else{
+	dprint(2, (debugfile, "Setting home dir: \"%s\"\n",
+	       pine_state->home_dir ? pine_state->home_dir : "<?>"));
+    }
+
+    /* Watch out. Sensitive information in debug file. */
+    if(ps_global->debug_imap > 4)
+      mail_parameters(NULL, SET_DEBUGSENSITIVE, (void *) TRUE);
+
+#ifndef DEBUGJOURNAL
+    if(ps_global->debug_tcp)
+#endif
+      mail_parameters(NULL, SET_TCPDEBUG, (void *) TRUE);
 
 #ifdef	_WINDOWS
     mswin_setdebug(debug, debugfile);
@@ -352,6 +421,12 @@ main(argc, argv)
 
     /*------- Set up c-client drivers -------*/ 
 #include "../c-client/linkage.c"
+    /*
+     * Lookups of long login names which don't exist are very slow in aix.
+     * This would normally get set in system-wide config if not needed.
+     */
+    if(F_ON(F_DISABLE_SHARED_NAMESPACES, ps_global))
+      mail_parameters(NULL, SET_DISABLEAUTOSHAREDNS, (void *) TRUE);
 
     /*------- ... then tune the drivers just installed -------*/ 
 #ifdef	DOS
@@ -393,7 +468,35 @@ main(argc, argv)
     (void) mail_parameters(NULL, SET_READPROGRESS, (void *)pine_read_progress);
 #endif
 
+    /*
+     * Install callback to handle certificate validation failures,
+     * allowing the user to continue if they wish.
+     */
+    mail_parameters(NULL, SET_SSLCERTIFICATEQUERY, (void *) pine_sslcertquery);
+    mail_parameters(NULL, SET_SSLFAILURE, (void *) pine_sslfailure);
+
+    if(init_pinerc_debugging){
+	dprint(2, (debugfile, init_pinerc_debugging));
+	fs_give((void **)&init_pinerc_debugging);
+    }
+
     init_vars(pine_state);
+
+    if(ps_global->convert_sigs){
+	if(convert_sigs_to_literal(ps_global, 0) == -1){
+	    fprintf(stderr, "trouble converting sigs\n");
+	    exit(-1);
+	}
+
+	if(ps_global->prc){
+	    if(ps_global->prc->outstanding_pinerc_changes)
+	      write_pinerc(ps_global, Main);
+
+	    free_pinerc_s(&pine_state->prc);
+	}
+
+	exit(0);
+    }
 
     /*
      * Set up a c-client read timeout and timeout handler.  In general,
@@ -457,7 +560,7 @@ main(argc, argv)
 	      sprintf(tmp_20k_buf,
 		     "Failed to disable mail driver \"%.500s\": name not found",
 		      *t);
-	      init_error(ps_global, tmp_20k_buf);
+	      init_error(ps_global, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	  }
     }
 
@@ -477,7 +580,7 @@ main(argc, argv)
 	      sprintf(tmp_20k_buf,
 	      "Failed to disable SASL authenticator \"%.500s\": name not found",
 		      *t);
-	      init_error(ps_global, tmp_20k_buf);
+	      init_error(ps_global, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	  }
     }
 
@@ -491,6 +594,11 @@ main(argc, argv)
      * Install handler to let us know about potential delays
      */
     (void) mail_parameters(NULL, SET_BLOCKNOTIFY, (void *) pine_block_notify);
+
+    if(ps_global->dump_supported_options){
+	dump_supported_options();
+	exit(0);
+    }
 
     /*
      * Install extra headers to fetch along with all the other stuff
@@ -564,6 +672,14 @@ main(argc, argv)
     pine_state->dont_use_init_cmds = 1;	/* don't use up initial_commands yet */
     ClearScreen();
 
+#ifdef	DEBUG
+    if(ps_global->debug_imap > 4 || debug > 9){
+	q_status_message(SM_ORDER | SM_DING, 5, 9,
+	      "Warning: sensitive authentication data included in debug file");
+	flush_status_messages(0);
+    }
+#endif
+
     if(args.action == aaPrcCopy || args.action == aaAbookCopy){
 	int   exit_val = -1;
 	char *err_msg = NULL;
@@ -585,16 +701,14 @@ main(argc, argv)
 	  q_status_message(SM_ORDER | SM_DING, 3, 4, err_msg);
 	  fs_give((void **)&err_msg);
 	}
-	goodnight_gracey(pine_state, exit_val, NULL);
+	goodnight_gracey(pine_state, exit_val);
     }
 
     if(args.action == aaFolder
        && (pine_state->first_time_user || pine_state->show_new_version)){
 	pine_state->mangled_header = 1;
-	show_main_screen(pine_state, 0, FirstMenu, NULL, 0, (Pos *)NULL);
-	if(!pine_state->nr_mode)
-	  new_user_or_version(pine_state);
-
+	show_main_screen(pine_state, 0, FirstMenu, &main_keymenu, 0, (Pos *)NULL);
+	new_user_or_version(pine_state);
 	ClearScreen();
     }
     
@@ -634,7 +748,7 @@ main(argc, argv)
 		    if(decode_error = gf_pipe(stdin_getc, pc)){
 			dice = 0;
 			q_status_message1(SM_ORDER, 3, 4,
-					  "Problem reading stdin: %s",
+					  "Problem reading stdin: %.200s",
 					  decode_error);
 		    }
 
@@ -645,7 +759,9 @@ main(argc, argv)
 	    }
 	    else{
 		src = FileStar;
-		strcpy(ps_global->cur_folder, args.data.file);
+		strncpy(ps_global->cur_folder, args.data.file,
+			sizeof(ps_global->cur_folder)-1);
+		ps_global->cur_folder[sizeof(ps_global->cur_folder)-1] = '\0';
 		if(!(store = so_get(src, args.data.file, READ_ACCESS)))
 		  dice = 0;
 	    }
@@ -676,9 +792,6 @@ main(argc, argv)
 		sargs.bar.style = FileTextPercent;
 		sargs.keys.menu = &simple_file_keymenu;
 		setbitmap(sargs.keys.bitmap);
-		if(ps_global->anonymous)
-		  clrbitn(SAVE_KEY, sargs.keys.bitmap);
-
 		scrolltool(&sargs);
 
 		printf("\n\n");
@@ -687,17 +800,18 @@ main(argc, argv)
 	}
 
 	if(!dice){
-	    q_status_message2(SM_ORDER, 3, 4, "Can't display \"%s\": %s",
+	    q_status_message2(SM_ORDER, 3, 4,
+		"Can't display \"%.200s\": %.200s",
 		 (redir) ? "Standard Input" 
 			 : args.data.file ? args.data.file : "NULL",
 		 error_description(errno));
 	}
 
-	goodnight_gracey(pine_state, 0, NULL);
+	goodnight_gracey(pine_state, 0);
     }
     else if(args.action == aaMail || (stdin_getc && (args.action != aaURL))){
         /*======= address on command line/send one message mode ============*/
-        char	   *to = NULL, **t, *error = NULL, *addr = NULL;
+        char	   *to = NULL, *error = NULL, *addr = NULL;
         int	    len, good_addr = 1;
 	int	    exit_val = 0;
 	BUILDER_ARG fcc;
@@ -727,9 +841,9 @@ main(argc, argv)
 	    }
 
 	    memset((void *)&fcc, 0, sizeof(BUILDER_ARG));
-	    dprint(1, (debugfile, "building addr: -->%s<--\n", to));
+	    dprint(2, (debugfile, "building addr: -->%s<--\n", to));
 	    good_addr = (build_address(to, &addr, &error, &fcc, NULL) >= 0);
-	    dprint(1, (debugfile, "mailing to: -->%s<--\n", addr));
+	    dprint(2, (debugfile, "mailing to: -->%s<--\n", addr));
 	    free_strlist(&args.data.mail.addrlist);
 	}
 	else
@@ -740,7 +854,7 @@ main(argc, argv)
 			 args.data.mail.attachlist, stdin_getc);
 	}
 	else{
-	    q_status_message1(SM_ORDER, 3, 4, "Bad address: %s", error);
+	    q_status_message1(SM_ORDER, 3, 4, "Bad address: %.200s", error);
 	    exit_val = -1;
 	}
 
@@ -759,7 +873,7 @@ main(argc, argv)
 	if(error)
 	  fs_give((void **) &error);
 
-	goodnight_gracey(pine_state, exit_val, NULL);
+	goodnight_gracey(pine_state, exit_val);
     }
     else{
 	char             int_mail[MAXPATH+1];
@@ -776,12 +890,12 @@ main(argc, argv)
 
 	    if(f = url_local_handler(args.data.url)){
 		if(!((*f)(args.data.url) && pine_state->next_screen))
-		  goodnight_gracey(pine_state, 0, NULL);	/* no return */
+		  goodnight_gracey(pine_state, 0);	/* no return */
 	    }
 	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				  "Unrecognized URL \"%s\"", args.data.url);
-		goodnight_gracey(pine_state, -1, NULL);	/* no return */
+				  "Unrecognized URL \"%.200s\"", args.data.url);
+		goodnight_gracey(pine_state, -1);	/* no return */
 	    }
 	}
 	else if(!pine_state->start_in_index){
@@ -835,7 +949,7 @@ main(argc, argv)
 	      PutLine1(min(4, pine_state->ttyo->screen_rows - 4),
 		max(min(11, pine_state->ttyo->screen_cols -40), 0),
 		"Please wait, opening %s......",
-		 pine_state->nr_mode ? "news messages" : "mail folder");
+		"mail folder");
         }
 
         fflush(stdout);
@@ -865,13 +979,11 @@ main(argc, argv)
 		  rv--, cntxt = cntxt->next)
 		;
 
-            if(do_broach_folder(args.data.folder, cntxt) <= 0){
-		q_status_message2(SM_ORDER, 3, 4,
-		    "Unable to open %s \"%s\"",
-		    pine_state->nr_mode ? "news messages" : "folder",
-		    args.data.folder);
+            if(do_broach_folder(args.data.folder, cntxt, NULL) <= 0){
+		q_status_message1(SM_ORDER, 3, 4,
+		    "Unable to open folder \"%.200s\"", args.data.folder);
 
-		goodnight_gracey(pine_state, -1, NULL);
+		goodnight_gracey(pine_state, -1);
 	    }
 	}
 	else if(args.action == aaFolder){
@@ -927,7 +1039,7 @@ main(argc, argv)
 			|| strucmp(pine_state->VAR_INBOX_PATH, "inbox") == 0)
 		     && want_to("Preserve folder as \"inbox-path\" in PINERC", 
 				'y', 'n', NO_HELP, WT_NORM) == 'y'){
-			set_variable(V_INBOX_PATH, int_mail, 1, Main);
+			set_variable(V_INBOX_PATH, int_mail, 1, 1, Main);
 		    }
 		    else{
 			if(pine_state->VAR_INBOX_PATH)
@@ -937,7 +1049,7 @@ main(argc, argv)
 		    }
 
 		    do_broach_folder(pine_state->inbox_name, 
-				     pine_state->context_list);
+				     pine_state->context_list, NULL);
     		}
 		else
 		  q_status_message(SM_ORDER, 0, 2 ,"No folder opened");
@@ -946,14 +1058,14 @@ main(argc, argv)
 	    else
 
 #endif
-            do_broach_folder(pine_state->inbox_name, pine_state->context_list);
+            do_broach_folder(pine_state->inbox_name,
+			     pine_state->context_list, NULL);
         }
 
         if(pine_state->mangled_footer)
 	  pine_state->painted_footer_on_startup = 0;
 
-        if(!pine_state->nr_mode
-	   && args.action == aaFolder
+        if(args.action == aaFolder
 	   && pine_state->mail_stream
 	   && expire_sent_mail())
 	  pine_state->painted_footer_on_startup = 0;
@@ -971,8 +1083,7 @@ main(argc, argv)
 		   ps_global->VAR_OPER_DIR ? ps_global->VAR_OPER_DIR
 					   : pine_state->home_dir,
 		   INTERRUPTED_MAIL, sizeof(int_mail));
-	if(!pine_state->nr_mode
-	   && args.action == aaFolder
+	if(args.action == aaFolder
 	   && (folder_exists(NULL, int_mail) & FEX_ISFILE))
 	  q_status_message(SM_ORDER | SM_DING, 4, 5, 
 		       "Use compose command to continue interrupted message.");
@@ -984,7 +1095,7 @@ main(argc, argv)
 	    q = disk_quota(pine_state->home_dir, &over);
 	    if(q > 0 && over){
 		q_status_message2(SM_ASYNC | SM_DING, 4, 5,
-			      "WARNING! Over your disk quota by %s bytes (%s)",
+		      "WARNING! Over your disk quota by %.200s bytes (%.200s)",
 			      comatose(q),byte_string(q));
 	    }
 	}
@@ -1047,7 +1158,7 @@ read_stdin_char(c)
 		continue;
 	    }
 	    else
-	      dprint(0, (debugfile, "read_stdin_char: read FAILED: %s\n",
+	      dprint(1, (debugfile, "read_stdin_char: read FAILED: %s\n",
 			 error_description(errno)));
 	}
 	break;
@@ -1263,6 +1374,9 @@ main_menu_screen(pine_state)
 	}
 #ifdef	DEBUG
 	else if(debug && ch && strchr("123456789", ch)){
+	    int olddebug;
+
+	    olddebug = debug;
 	    debug = ch - '0';
 	    if(debug > 7)
 	      ps_global->debug_timestamp = 1;
@@ -1295,9 +1409,16 @@ main_menu_screen(pine_state)
 		}
 	    }
 
+	    if(debug > 7 && olddebug <= 7)
+	      mail_parameters(NULL, SET_TCPDEBUG, (void *) TRUE);
+	    else if(debug <= 7 && olddebug > 7 && !ps_global->debugmem)
+	      mail_parameters(NULL, SET_TCPDEBUG, (void *) FALSE);
+
 	    dprint(1, (debugfile, "*** Debug level set to %d ***\n", debug));
-	    fflush(debugfile);
-	    q_status_message1(SM_ORDER, 0, 1, "Debug level set to %s",
+	    if(debugfile)
+	      fflush(debugfile);
+
+	    q_status_message1(SM_ORDER, 0, 1, "Debug level set to %.200s",
 			      int2string(debug));
 	    continue;
 	}
@@ -1513,20 +1634,24 @@ help_case :
 	    }
 #endif
 	    if(new_folder)
-	      visit_folder(ps_global, new_folder, tc);
+	      visit_folder(ps_global, new_folder, tc, NULL);
 
 	    return;
 
 
 	    /*---------- Go to index ----------*/
 	  case MC_INDEX :
+	    if(THREADING() && pine_state->viewing_a_thread)
+	      unview_thread(pine_state, pine_state->mail_stream,
+			    pine_state->msgmap);
+
 	    pine_state->next_screen = mail_index_screen;
 	    return;
 
 
 	    /*---------- Review Status Messages ----------*/
 	  case MC_JOURNAL :
-	    review_messages("REVIEW RECENT MESSAGES");
+	    review_messages();
 	    pine_state->mangled_screen = 1;
 	    break;
 
@@ -1721,7 +1846,7 @@ show_main_screen(ps, quick_draw, what, km, km_popped, cursor_pos)
     /* paint the titlebar if needed */
     if(ps->mangled_header){
 	set_titlebar("MAIN MENU", ps->mail_stream, ps->context_current,
-		     ps->cur_folder, ps->msgmap, 1, FolderName, 0, 0);
+		     ps->cur_folder, ps->msgmap, 1, FolderName, 0, 0, NULL);
 	ps->mangled_header = 0;
     }
 
@@ -2058,7 +2183,10 @@ setup_menu(ps)
 
     so_puts(store, "\n");
     so_puts(store, "(R) Rules:\n");
-    so_puts(store, "    This has four sub-categories: Roles, Index Colors, Filters, and SetScores.\n");
+    so_puts(store, "    This has up to five sub-categories: Roles, Index Colors, Filters,\n");
+    so_puts(store, "    SetScores, and Other. If the Index Colors option is missing\n");
+    so_puts(store, "    you may turn it on (if possible) with Setup/Kolor.\n");
+    so_puts(store, "    If Roles is missing it has probably been administratively disabled.\n");
 
     if(dir){
 	so_puts(store, "\n");
@@ -2171,6 +2299,7 @@ do_setup_task(command)
     char *err = NULL;
     int   rtype;
     int   edit_exceptions = 0;
+    int   do_lit_sig = 0;
 
     if(command & EDIT_EXCEPTION){
 	edit_exceptions = 1;
@@ -2180,9 +2309,29 @@ do_setup_task(command)
     switch(command) {
         /*----- EDIT SIGNATURE -----*/
       case 's':
-	if(ps_global->VAR_LITERAL_SIG){
+	if(ps_global->VAR_LITERAL_SIG)
+	  do_lit_sig = 1;
+	else {
+	    char sig_path[MAXPATH+1];
+
+	    if(!signature_path(ps_global->VAR_SIGNATURE_FILE, sig_path, MAXPATH))
+	      do_lit_sig = 1;
+	    else if((!IS_REMOTE(ps_global->VAR_SIGNATURE_FILE)
+		     && can_access(sig_path, READ_ACCESS) == 0)
+		    ||(IS_REMOTE(ps_global->VAR_SIGNATURE_FILE)
+		       && (folder_exists(NULL, sig_path) & FEX_ISFILE)))
+	      do_lit_sig = 0;
+	    else if(!ps_global->vars[V_SIGNATURE_FILE].main_user_val.p
+		    && !ps_global->vars[V_SIGNATURE_FILE].cmdline_val.p
+		    && !ps_global->vars[V_SIGNATURE_FILE].fixed_val.p)
+	      do_lit_sig = 1;
+	    else
+	      do_lit_sig = 0;
+	}
+
+	if(do_lit_sig){
 	    char     *result = NULL;
-	    char     *pval, **apval;
+	    char    **apval;
 	    EditWhich ew;
 	    int       readonly = 0;
 
@@ -2226,7 +2375,7 @@ do_setup_task(command)
 
 		cstring_version = string_to_cstring(result);
 
-		set_variable(V_LITERAL_SIG, cstring_version, 0, ew);
+		set_variable(V_LITERAL_SIG, cstring_version, 0, 0, ew);
 
 		if(cstring_version)
 		  fs_give((void **)&cstring_version);
@@ -2276,17 +2425,24 @@ do_setup_task(command)
 
         /*----- RULES -----*/
       case 'r':
-	rtype = rule_setup_type(ps_global, 0, "Type of rule setup : ");
+	rtype = rule_setup_type(ps_global, RS_RULES, "Type of rule setup : ");
 	switch(rtype){
 	  case 'r':
 	  case 's':
 	  case 'i':
 	  case 'f':
+	  case 'o':
 	    role_config_screen(ps_global, (rtype == 'r') ? ROLE_DO_ROLES :
 					   (rtype == 's') ? ROLE_DO_SCORES :
-					    (rtype == 'f') ? ROLE_DO_FILTER :
-							      ROLE_DO_INCOLS,
+					    (rtype == 'o') ? ROLE_DO_OTHER :
+					     (rtype == 'f') ? ROLE_DO_FILTER :
+							       ROLE_DO_INCOLS,
 			       edit_exceptions);
+	    break;
+
+	  case 'Z':
+	    q_status_message(SM_ORDER | SM_DING, 3, 5,
+			"Try turning on color with the Setup/Kolor command.");
 	    break;
 
 	  default:
@@ -2342,21 +2498,23 @@ do_setup_task(command)
 
 
 int
-rule_setup_type(ps, include_addr_opt, prompt)
+rule_setup_type(ps, flags, prompt)
     struct pine *ps;
-    int          include_addr_opt;
+    int          flags;
     char        *prompt;
 {
-    ESCKEY_S opts[6];
+    ESCKEY_S opts[8];
     int ekey_num = 0, deefault = 0;
 
-    if(include_addr_opt){
+    if(flags & RS_INCADDR){
 	deefault = 'a';
 	opts[ekey_num].ch      = 'a';
 	opts[ekey_num].rval    = 'a';
 	opts[ekey_num].name    = "A";
 	opts[ekey_num++].label = "Addrbook";
     }
+
+  if(flags & RS_RULES){
 
     if(F_OFF(F_DISABLE_ROLES_SETUP,ps)){ /* roles are allowed */
 	if(deefault != 'a')
@@ -2387,12 +2545,32 @@ rule_setup_type(ps, include_addr_opt, prompt)
 	opts[ekey_num++].label = "Indexcolor";
 #ifndef	_WINDOWS
     }
+    else{
+	opts[ekey_num].ch      = 'i';
+	opts[ekey_num].rval    = 'Z';		/* notice this rval! */
+	opts[ekey_num].name    = "I";
+	opts[ekey_num++].label = "Indexcolor";
+    }
 #endif
 
     opts[ekey_num].ch      = 'f';
     opts[ekey_num].rval    = 'f';
     opts[ekey_num].name    = "F";
     opts[ekey_num++].label = "Filters";
+
+    opts[ekey_num].ch      = 'o';
+    opts[ekey_num].rval    = 'o';
+    opts[ekey_num].name    = "O";
+    opts[ekey_num++].label = "Other";
+
+  }
+
+    if(flags & RS_INCEXP){
+	opts[ekey_num].ch      = 'e';
+	opts[ekey_num].rval    = 'e';
+	opts[ekey_num].name    = "E";
+	opts[ekey_num++].label = "Export";
+    }
 
     opts[ekey_num].ch    = -1;
 
@@ -2411,9 +2589,12 @@ queue_init_errors(ps)
     int i;
 
     if(ps->init_errs){
-	for(i = 0; ps->init_errs[i]; i++){
-	    q_status_message(SM_ORDER | SM_DING, 3, 5, ps->init_errs[i]);
-	    fs_give((void **)&ps->init_errs[i]);
+	for(i = 0; (ps->init_errs)[i].message; i++){
+	    q_status_message((ps->init_errs)[i].flags,
+			     (ps->init_errs)[i].min_time,
+			     (ps->init_errs)[i].max_time,
+			     (ps->init_errs)[i].message);
+	    fs_give((void **)&(ps->init_errs)[i].message);
 	}
 
 	fs_give((void **)&ps->init_errs);
@@ -2509,7 +2690,7 @@ new_user_or_version(ps)
 	    gf_link_filter(gf_html2plain,
 			   gf_html2plain_opt("x-pine-help:",
 					   ps->ttyo->screen_cols,
-					   GFHP_HANDLES | GFHP_LOCAL_HANDLES));
+					   &handles, GFHP_LOCAL_HANDLES));
 
 	    error = gf_pipe(helper_getc, pc);
 
@@ -2761,24 +2942,23 @@ quit_screen(pine_state)
 
     dprint(1, (debugfile, "\n\n    ---- QUIT SCREEN ----\n"));    
 
-    if(!pine_state->nr_mode
-       && F_ON(F_CHECK_MAIL_ONQUIT,ps_global)
+    if(F_ON(F_CHECK_MAIL_ONQUIT,ps_global)
        && new_mail(1, VeryBadTime, NM_STATUS_MSG | NM_DEFER_SORT) >= 0
        && (quit = want_to("Quit even though new mail just arrived", 'y', 0,
 			  NO_HELP, WT_NORM)) != 'y'){
-	refresh_sort(pine_state->msgmap, TRUE);
+	refresh_sort(pine_state->msgmap, SRT_VRB);
         pine_state->next_screen = pine_state->prev_screen;
         return;
     }
 
     if(quit != 'y'
-       && !pine_state->nr_mode && F_OFF(F_QUIT_WO_CONFIRM,pine_state)
+       && F_OFF(F_QUIT_WO_CONFIRM,pine_state)
        && want_to("Really quit pine", 'y', 0, NO_HELP, WT_NORM) != 'y'){
         pine_state->next_screen = pine_state->prev_screen;
         return;
     }
 
-    goodnight_gracey(pine_state, 0, NULL);
+    goodnight_gracey(pine_state, 0);
 }
 
 
@@ -2793,10 +2973,9 @@ quit_screen(pine_state)
 
   ----*/
 void
-goodnight_gracey(pine_state, exit_val, err_msg)
+goodnight_gracey(pine_state, exit_val)
     struct pine *pine_state;
     int		 exit_val;
-    char        *err_msg;
 {
     int   i, cur_is_inbox;
     char *final_msg = NULL;
@@ -2804,11 +2983,14 @@ goodnight_gracey(pine_state, exit_val, err_msg)
     char *pf = "Pine finished";
     extern KBESC_T *kbesc;
 
+    dprint(2, (debugfile, "goodnight_gracey:\n"));    
+
     completely_done_with_adrbks();
 
     cur_is_inbox = (pine_state->inbox_stream == pine_state->mail_stream);
 
     /* clean up open streams */
+    dprint(5, (debugfile, "goodnight_gracey: close open streams\n"));    
     if(pine_state->mail_stream)
       expunge_and_close(pine_state->mail_stream, pine_state->context_current,
 			pine_state->cur_folder,
@@ -2836,6 +3018,8 @@ goodnight_gracey(pine_state, exit_val, err_msg)
       (void)get_windsize(ps_global->ttyo);
 #endif
 
+    dprint(7, (debugfile, "goodnight_gracey: close config files\n"));    
+
     if(pine_state->prc){
 	if(pine_state->prc->outstanding_pinerc_changes)
 	  write_pinerc(pine_state, Main);
@@ -2859,9 +3043,6 @@ goodnight_gracey(pine_state, exit_val, err_msg)
 	free_pinerc_s(&pine_state->post_prc);
     }
 
-    if(!final_msg && err_msg)
-      final_msg = err_msg;
-
     if(final_msg){
 	strcpy(msg, pf);
 	strcat(msg, " -- ");
@@ -2871,6 +3052,7 @@ goodnight_gracey(pine_state, exit_val, err_msg)
     else
       strcpy(msg, pf);
 
+    end_stream_cache();
     end_screen(msg, exit_val);
     end_titlebar();
     end_keymenu();
@@ -2891,6 +3073,9 @@ goodnight_gracey(pine_state, exit_val, err_msg)
     close_every_pattern();
     free_extra_hdrs();
     free_contexts(&ps_global->context_list);
+    dprint(7, (debugfile, "goodnight_gracey: end_status_review\n"));    
+    end_status_review();
+    dprint(7, (debugfile, "goodnight_gracey: free more memory\n"));    
 #ifdef	ENABLE_LDAP
     free_saved_query_parameters();
 #endif
@@ -2913,6 +3098,19 @@ goodnight_gracey(pine_state, exit_val, err_msg)
       fs_give((void **)&pine_state->ui.fullname);
     if(pine_state->index_disp_format)
       fs_give((void **)&pine_state->index_disp_format);
+    if(pine_state->conv_table){
+	if(pine_state->conv_table->table)
+	  fs_give((void **) &pine_state->conv_table->table);
+	
+	if(pine_state->conv_table->from_charset)
+	  fs_give((void **) &pine_state->conv_table->from_charset);
+	
+	if(pine_state->conv_table->to_charset)
+	  fs_give((void **) &pine_state->conv_table->to_charset);
+
+	fs_give((void **)&pine_state->conv_table);
+    }
+
     if(pine_state->pinerc)
       fs_give((void **)&pine_state->pinerc);
 #if defined(DOS) || defined(OS2)
@@ -2921,6 +3119,10 @@ goodnight_gracey(pine_state, exit_val, err_msg)
     if(pine_state->aux_files_dir)
       fs_give((void **)&pine_state->aux_files_dir);
 #endif
+#ifdef PASSFILE
+    if(pine_state->passfile)
+      fs_give((void **)&pine_state->passfile);
+#endif /* PASSFILE */
 
     if(ps_global->hdr_colors)
       free_hdr_colors(&ps_global->hdr_colors);
@@ -2934,7 +3136,10 @@ goodnight_gracey(pine_state, exit_val, err_msg)
 	fs_give((void **)&ps_global->atmts);
     }
     
+    dprint(7, (debugfile, "goodnight_gracey: free_vars\n"));    
     free_vars(pine_state);
+
+    dprint(2, (debugfile, "goodnight_gracey finished\n"));    
 
     fs_give((void **)&pine_state);
 
@@ -2947,38 +3152,13 @@ goodnight_gracey(pine_state, exit_val, err_msg)
 }
 
 
-/*
- * Useful flag checking macro for 
- */
-#define FLAG_MATCH(F, M)   (((((F)&F_SEEN)   ? (M)->seen		     \
-				: ((F)&F_UNSEEN)     ? !(M)->seen : 1)	     \
-			  && (((F)&F_DEL)    ? (M)->deleted		     \
-				: ((F)&F_UNDEL)      ? !(M)->deleted : 1)    \
-			  && (((F)&F_ANS)    ? (M)->answered		     \
-				: ((F)&F_UNANS)	     ? !(M)->answered : 1)   \
-			  && (((F)&F_FLAG) ? (M)->flagged		     \
-				: ((F)&F_UNFLAG)   ? !(M)->flagged : 1)	     \
-			  && (((F)&F_RECENT) ? (M)->recent		     \
-				: ((F)&F_UNRECENT)   ? !(M)->recent : 1))    \
-			  || ((((F)&F_OR_SEEN) ? (M)->seen		     \
-				: ((F)&F_OR_UNSEEN)   ? !(M)->seen : 0)      \
-			  || (((F)&F_OR_DEL)   ? (M)->deleted		     \
-				: ((F)&F_OR_UNDEL)    ? !(M)->deleted : 0)   \
-			  || (((F)&F_OR_ANS)   ? (M)->answered		     \
-				: ((F)&F_OR_ANS)      ? !(M)->answered : 0)  \
-			  || (((F)&F_OR_FLAG)? (M)->flagged		     \
-				: ((F)&F_OR_UNFLAG) ? !(M)->flagged : 0)     \
-			  || (((F)&F_OR_RECENT)? (M)->recent		     \
-				: ((F)&F_OR_UNRECENT) ? !(M)->recent : 0)))
-
-
-
 /*----------------------------------------------------------------------
   Return sequence number based on given index that are search-worthy
 
     Args: stream --
 	  msgmap --
-	  n --
+	  msgno --
+	  flags -- flags for msgline_hidden
 
   Result:  0		     : index not search-worthy
 	  -1		     : index out of bounds
@@ -2986,19 +3166,22 @@ goodnight_gracey(pine_state, exit_val, err_msg)
 
   ----*/
 long
-flag_search_sequence(stream, msgmap, n)
+flag_search_sequence(stream, msgmap, msgno, flags)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
-    long	n;
+    long	msgno;
+    int         flags;
 {
-    return((n > stream->nmsgs
-	    || n <= 0
-            || (msgmap && !(n = mn_m2raw(msgmap, n))))
-	     ? -1L		/* out of range! */
-	     : ((get_lflag(stream, NULL, n, MN_EXLD)
-		  || (msgmap && get_lflag(stream, NULL, n, MN_HIDE)))
-		 ? 0L		/* NOT interesting! */
-		 : n));
+    long rawno = msgno;
+
+    return((msgno > stream->nmsgs
+	    || msgno <= 0
+            || (msgmap && !(rawno = mn_m2raw(msgmap, msgno))))
+	      ? -1L		/* out of range! */
+	      : ((get_lflag(stream, NULL, rawno, MN_EXLD)
+		  || (msgmap && msgline_hidden(stream, msgmap, msgno, flags)))
+		    ? 0L		/* NOT interesting! */
+		    : rawno));
 }
 
 
@@ -3027,7 +3210,7 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
     MSGNO_S    *set_msgmap;
     long      (*ping) PROTO((MAILSTREAM *));
 {
-    long	        n, i, new, expunged;
+    long	        n, i, new;
     char	       *seq;
     SEARCHPGM	       *pgm;
     SEARCHSET	       *full_set = NULL, **set;
@@ -3035,7 +3218,6 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
     extern  MAILSTREAM *mm_search_stream;
 
     new = ps_global->new_mail_count;
-    expunged = ps_global->expunge_count;
 
     /* Anything we don't already have flags for? */
     if(set_start){
@@ -3047,7 +3229,7 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	  mail_elt(stream, i)->sequence = 0;
 
 	for(i = set_start;
-	    (n = flag_search_sequence(stream, set_msgmap, i)) >= 0L;
+	    (n = flag_search_sequence(stream, set_msgmap, i, MH_ANYTHD)) >= 0L;
 	    (flags & F_SRCHBACK) ? i-- : i++)
 	  if(n > 0L && !(mc = mail_elt(stream, n))->valid)
 	    mc->sequence = 1;
@@ -3086,15 +3268,11 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	    if(ping)
 	      (*ping)(stream);	/* prod server for any flag updates */
 
-	    if(new != ps_global->new_mail_count ||
-	       expunged != ps_global->expunge_count){
-		n = any_lflagged(ps_global->msgmap, MN_EXLD);
+	    if(new != ps_global->new_mail_count){
 		process_filter_patterns(stream, ps_global->msgmap,
 					ps_global->new_mail_count);
-		if((n -= any_lflagged(ps_global->msgmap, MN_EXLD)) < 0)
-		  ps_global->new_mail_count += n;
 
-		refresh_sort(ps_global->msgmap, FALSE);
+		refresh_sort(ps_global->msgmap, SRT_NON);
 		flag_search(stream, flags, set_start, set_msgmap, ping);
 	    }
 
@@ -3219,13 +3397,9 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	mail_search_full(mm_search_stream = stream, NULL,
 			 pgm, SE_NOPREFETCH | SE_FREE);
 
-	if(new != ps_global->new_mail_count ||
-	   expunged != ps_global->expunge_count){
-	    n = any_lflagged(ps_global->msgmap, MN_EXLD);
+	if(new != ps_global->new_mail_count){
 	    process_filter_patterns(stream, ps_global->msgmap,
 				    ps_global->new_mail_count);
-	    if((n -= any_lflagged(ps_global->msgmap, MN_EXLD)) < 0)
-	      ps_global->new_mail_count += n;
 
 	    flag_search(stream, flags, set_start, set_msgmap, ping);
 	}
@@ -3238,7 +3412,7 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	else{
 	    /* light sequence bits of interesting msgs */
 	    for(i = 1L;
-		(n = flag_search_sequence(stream, set_msgmap, i)) >= 0L;
+		(n = flag_search_sequence(stream, set_msgmap, i, MH_ANYTHD)) >= 0L;
 		i++)
 	      if(n > 0L && !(mc = mail_elt(stream, n))->valid)
 		mc->sequence = 1;
@@ -3309,25 +3483,48 @@ count_flagged(stream, flags)
 	 number of the last message if none found.
   ----------------------------------------------------------------------*/
 MsgNo
-first_sorted_flagged(flags, stream, last)
+first_sorted_flagged(flags, stream, set_start, opts)
     unsigned long  flags;
     MAILSTREAM    *stream;
-    int		   last;
+    long           set_start;
+    int            opts;
 {
-    MsgNo	  i, n, winner = 0L;
+    MsgNo	  i, n, start_with, winner = 0L;
     MESSAGECACHE *mc;
+    int		  last;
 
-    flag_search(stream, flags, 1L, ps_global->msgmap, NULL);
+    last = (opts & FSF_LAST);
 
-    for(i = 1L;
-	(n = flag_search_sequence(stream, ps_global->msgmap, i)) >= 0L;
-	i++)
+    /* set_start only affects which search bits we light */
+    start_with = set_start ? set_start
+			   : (flags & F_SRCHBACK)
+			       ? mn_get_total(ps_global->msgmap) : 1L;
+    flag_search(stream, flags, start_with, ps_global->msgmap, NULL);
+
+    for(i = start_with;
+	(n = flag_search_sequence(stream, ps_global->msgmap, i,
+				 (opts & FSF_SKIP_CHID) ? 0 : MH_ANYTHD)) >= 0L;
+	(flags & F_SRCHBACK) ? i-- : i++)
       if(n && ((mc = mail_elt(stream, n))->searched
 	       || (mc->valid && FLAG_MATCH(flags, mc)))){
 	  winner = i;
 	  if(!last)
 	    break;
       }
+
+    if(winner == 0L && flags != F_UNDEL && flags != F_NONE){
+	dprint(4, (debugfile,
+	   "First_sorted_flagged didn't find a winner, look for undeleted\n"));
+	winner = first_sorted_flagged(F_UNDEL, stream, 0L,
+		opts | (mn_get_revsort(ps_global->msgmap) ? 0 : FSF_LAST));
+    }
+
+    if(winner == 0L && flags != F_NONE){
+	dprint(4, (debugfile,
+          "First_sorted_flagged didn't find an undeleted, look for visible\n"));
+	winner = first_sorted_flagged(F_NONE, stream, 0L,
+		opts | (mn_get_revsort(ps_global->msgmap) ? 0 : FSF_LAST));
+    }
 
     dprint(4, (debugfile,
 	       "First_sorted_flagged returning winner = %ld\n", winner));
@@ -3361,12 +3558,13 @@ next_sorted_flagged(flags, stream, start, opts)
 {
     MsgNo	  i, n, dir;
     MESSAGECACHE *mc;
-    int           rev;
+    int           rev, fss_flags = 0;
 
     /*
      * Search for the next thing the caller's interested in...
      */
 
+    fss_flags = (opts && *opts & NSF_SKIP_CHID) ? 0 : MH_ANYTHD;
     rev = (opts && *opts & NSF_SEARCH_BACK);
     dir = (rev ? -1L : 1L);
 
@@ -3375,7 +3573,8 @@ next_sorted_flagged(flags, stream, start, opts)
 		(opts && ((*opts) & NSF_TRUST_FLAGS)) ? NULL : mail_ping);
 
     for(i = start + dir;
-	(n = flag_search_sequence(stream, ps_global->msgmap, i)) >= 0L;
+	(n = flag_search_sequence(stream, ps_global->msgmap,
+				  i, fss_flags)) >= 0L;
 	i += dir)
       if(n && ((mc = mail_elt(stream, n))->searched
 	       || (mc->valid && FLAG_MATCH(flags, mc)))){
@@ -3410,15 +3609,24 @@ get_lflag(stream, msgs, n, f)
      int         f;
 {
     MESSAGECACHE *mc;
+    unsigned long rawno;
 
-    if(n < 1L || (msgs && n > mn_get_total(msgs)))
+    rawno = msgs ? mn_m2raw(msgs, n) : n;
+    if(!stream || rawno < 1L || rawno > stream->nmsgs)
       return(0);
 
-    mc = mail_elt(stream, msgs ? mn_m2raw(msgs, n) : n);
-    return((!mc) ? 0 : (!f) ? !(mc->spare || mc->spare2 || mc->spare3)
-			    : (((f & MN_HIDE) ? mc->spare : 0)
-			       || ((f & MN_EXLD) ? mc->spare2 : 0)
-			       || ((f & MN_SLCT) ? mc->spare3 : 0)));
+    mc = mail_elt(stream, rawno);
+    return((!mc) ? 0 : (!f)
+		    ? !(mc->spare || mc->spare2 || mc->spare3 ||
+		        mc->spare4 || mc->spare5)
+		    : (((f & MN_HIDE) ? mc->spare : 0)
+		       || ((f & MN_EXLD) ? mc->spare2 : 0)
+		       || ((f & MN_SLCT) ? mc->spare3 : 0)
+		       || ((f & MN_STMP) ? mc->spare6 : 0)
+		       || ((f & MN_USOR) ? mc->spare7 : 0)
+		       || ((f & MN_COLL) ? mc->spare5 : 0)
+		       || ((f & MN_CHID) ? mc->spare4 : 0)
+		       || ((f & MN_CHID2) ? mc->spare8 : 0)));
 }
 
 
@@ -3442,14 +3650,57 @@ set_lflag(stream, msgs, n, f, v)
      int         f, v;
 {
     MESSAGECACHE *mc;
+    long          rawno = 0L;
+    PINETHRD_S   *thrd, *topthrd = NULL;
 
     if(n < 1L || n > mn_get_total(msgs))
       return(0L);
 
-    if(mc = mail_elt(stream, mn_m2raw(msgs, n))){
+    if(mc = mail_elt(stream, (rawno=mn_m2raw(msgs, n)))){
+	int was_invisible, is_invisible;
+	int chk_thrd_cnt = 0, thrd_was_visible, was_hidden, is_hidden;
+
+	was_invisible = (mc->spare || mc->spare4) ? 1 : 0;
+
+	if(chk_thrd_cnt = ((msgs->visible_threads >= 0L)
+	   && THRD_INDX_ENABLED() && (f & MN_HIDE) && (mc->spare != v))){
+	    thrd = fetch_thread(stream, rawno);
+	    if(thrd && thrd->top){
+		if(thrd->top == thrd->rawno)
+		  topthrd = thrd;
+		else
+		  topthrd = fetch_thread(stream, thrd->top);
+	    }
+
+	    if(topthrd){
+		thrd_was_visible = thread_has_some_visible(stream, topthrd);
+		was_hidden = mc->spare ? 1 : 0;
+	    }
+	}
+
 	if((f & MN_HIDE) && mc->spare != v){
 	    mc->spare = v;
 	    msgs->flagged_hid += (v) ? 1L : -1L;
+	}
+
+	if((f & MN_CHID) && mc->spare4 != v){
+	    mc->spare4 = v;
+	    msgs->flagged_chid += (v) ? 1L : -1L;
+	}
+
+	if((f & MN_CHID2) && mc->spare8 != v){
+	    mc->spare8 = v;
+	    msgs->flagged_chid2 += (v) ? 1L : -1L;
+	}
+
+	if((f & MN_COLL) && mc->spare5 != v){
+	    mc->spare5 = v;
+	    msgs->flagged_coll += (v) ? 1L : -1L;
+	}
+
+	if((f & MN_USOR) && mc->spare7 != v){
+	    mc->spare7 = v;
+	    msgs->flagged_usor += (v) ? 1L : -1L;
 	}
 
 	if((f & MN_EXLD) && mc->spare2 != v){
@@ -3460,6 +3711,34 @@ set_lflag(stream, msgs, n, f, v)
 	if((f & MN_SLCT) && mc->spare3 != v){
 	    mc->spare3 = v;
 	    msgs->flagged_tmp += (v) ? 1L : -1L;
+	}
+
+	if((f & MN_STMP) && mc->spare6 != v){
+	    mc->spare6 = v;
+	    msgs->flagged_stmp += (v) ? 1L : -1L;
+	}
+
+	is_invisible = (mc->spare || mc->spare4) ? 1 : 0;
+
+	if(was_invisible != is_invisible)
+	  msgs->flagged_invisible += (v) ? 1L : -1L;
+	
+	/*
+	 * visible_threads keeps track of how many of the max_thrdno threads
+	 * are visible and how many are MN_HIDE-hidden.
+	 */
+	if(chk_thrd_cnt && topthrd
+	   && (was_hidden != (is_hidden = mc->spare ? 1 : 0))){
+	    if(!thrd_was_visible && !is_hidden){
+		/* it is visible now, increase count by one */
+		msgs->visible_threads++;
+	    }
+	    else if(thrd_was_visible && is_hidden){
+		/* thread may have been hidden, check */
+		if(!thread_has_some_visible(stream, topthrd))
+		  msgs->visible_threads--;
+	    }
+	    /* else no change */
 	}
     }
 
@@ -3485,13 +3764,20 @@ any_lflagged(msgs, f)
       return(0L);
 
     if(f == MN_NONE)
-      return(!(msgs->flagged_hid || msgs->flagged_exld || msgs->flagged_tmp));
+      return(!(msgs->flagged_hid || msgs->flagged_exld || msgs->flagged_tmp ||
+	       msgs->flagged_coll || msgs->flagged_chid));
+    else if(f == (MN_HIDE | MN_CHID))
+      return(msgs->flagged_invisible);		/* special non-bogus case */
     else
       return(((f & MN_HIDE)   ? msgs->flagged_hid  : 0L)
 	     + ((f & MN_EXLD) ? msgs->flagged_exld : 0L)
-	     + ((f & MN_SLCT) ? msgs->flagged_tmp  : 0L));
+	     + ((f & MN_SLCT) ? msgs->flagged_tmp  : 0L)
+	     + ((f & MN_STMP) ? msgs->flagged_stmp  : 0L)
+	     + ((f & MN_COLL) ? msgs->flagged_coll  : 0L)
+	     + ((f & MN_USOR) ? msgs->flagged_usor  : 0L)
+	     + ((f & MN_CHID) ? msgs->flagged_chid : 0L)
+	     + ((f & MN_CHID2) ? msgs->flagged_chid2 : 0L));
 }
-
 
 
 /*----------------------------------------------------------------------
@@ -3508,32 +3794,76 @@ same_stream(name, stream)
     char *name;
     MAILSTREAM *stream;
 {
-    NETMBX mb_s, mb_n;
+    NETMBX mb_s, mb_n, mb_o;
 
-    dprint(3, (debugfile, "same_stream: %s == %s\n", name,
+    dprint(7, (debugfile, "same_stream: %s == %s\n", name,
 	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
 
     if(stream && stream->mailbox && *stream->mailbox && name && *name
+       && !(stream == ps_global->mail_stream && ps_global->dead_stream)
+       && !(stream != ps_global->mail_stream
+	    && stream == ps_global->inbox_stream && ps_global->dead_inbox)
        && mail_valid_net_parse(stream->mailbox, &mb_s)
+       && mail_valid_net_parse(stream->original_mailbox, &mb_o)
        && mail_valid_net_parse(name, &mb_n)
        && !strucmp(mb_n.service, mb_s.service)
-       && !strucmp(canonical_name(mb_n.host), mb_s.host)
+       && (!strucmp(mb_n.host, mb_o.host)
+	   || !strucmp(canonical_name(mb_n.host), mb_s.host))
        && (!mb_n.port || mb_n.port == mb_s.port)
        && mb_n.anoflag == stream->anonymous
        && (struncmp(mb_n.service, "imap", 4)
 	    ? 1
 	    : (strcmp(imap_host(stream), ".NO-IMAP-CONNECTION.")
-	       && ((mb_n.user && *mb_n.user
-	         && mb_s.user && !strcmp(mb_n.user, mb_s.user))
-		   || ((!mb_n.user || !*mb_n.user)
-		       && (mb_s.user
-		        && ps_global->VAR_USER_ID
-		        && !strcmp(ps_global->VAR_USER_ID, mb_s.user)))
-		   || (!((mb_n.user && *mb_n.user)
-		      || (mb_s.user && *mb_s.user)) && stream->anonymous)))))
-      return(stream);
+	       && ((mb_n.user && *mb_n.user &&
+	            mb_s.user && !strcmp(mb_n.user, mb_s.user))
+		   ||
+		   ((!mb_n.user || !*mb_n.user)
+		    && mb_s.user
+		    && ((ps_global->VAR_USER_ID
+		         && !strcmp(ps_global->VAR_USER_ID, mb_s.user))
+		        ||
+		        (!ps_global->VAR_USER_ID
+			 && ps_global->ui.login[0]
+		         && !strcmp(ps_global->ui.login, mb_s.user))))
+		   ||
+		   (!((mb_n.user && *mb_n.user) || (mb_s.user && *mb_s.user))
+		    && stream->anonymous))))){
+	dprint(7, (debugfile, "same_stream: yes\n"));
+	return(stream);
+    }
 
-    dprint(3, (debugfile, "same_stream: no dice\n"));
+    dprint(7, (debugfile, "same_stream: no dice\n"));
+    return(NULL);
+}
+
+
+/*----------------------------------------------------------------------
+  See if this stream has the named mailbox selected.
+
+   Accepts: mailbox name
+            candidate stream
+   Returns: stream if it can be used, else NIL
+  ----*/
+MAILSTREAM *
+same_stream_and_mailbox(name, stream)
+    char *name;
+    MAILSTREAM *stream;
+{
+    NETMBX mb_s, mb_n;
+
+    dprint(7, (debugfile, "same_stream_and_mailbox: %s == %s\n", name,
+	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
+
+    if(same_stream(name, stream)
+       && mail_valid_net_parse(stream->mailbox, &mb_s)
+       && mail_valid_net_parse(name, &mb_n)
+       && (mb_n.mailbox && mb_s.mailbox
+       &&  !strucmp(mb_n.mailbox,mb_s.mailbox))){
+	dprint(7, (debugfile, "same_stream_and_mailbox: yes\n"));
+	return(stream);
+    }
+
+    dprint(7, (debugfile, "same_stream_and_mailbox: no dice\n"));
     return(NULL);
 }
 
@@ -3645,8 +3975,12 @@ pine_mail_open(stream, mailbox, flags)
 {
     MAILSTREAM *retstream;
 
+    dprint(7, (debugfile, "pine_mail_open: opening \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
 #ifdef	DEBUG
-    if(ps_global->debug_imap > 3)
+    if(ps_global->debug_imap > 3 || ps_global->debugmem)
       flags |= OP_DEBUG;
 #endif
     
@@ -3658,6 +3992,18 @@ pine_mail_open(stream, mailbox, flags)
 	  flags |= OP_TRYALT;
     }
 
+    /* try to re-use stream during startup */
+    if(!stream){
+	stream = stream_cache(mailbox);
+	if(stream)
+	  dprint(9,
+		 (debugfile, "pine_mail_open: attempting to re-use stream\n"));
+    }
+
+    /*
+     * When we pass a stream to mail_open, it will either re-use it or
+     * close it.
+     */
     retstream = mail_open(stream, mailbox, flags);
 
     /*
@@ -3713,6 +4059,10 @@ pine_mail_create(stream, mailbox)
     MAILSTREAM *ourstream = stream;
     long        return_val;
 
+    dprint(7, (debugfile, "pine_mail_create: creating \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
      * We'll leave it since it works and since it gives us OP_DEBUG.
@@ -3725,7 +4075,7 @@ pine_mail_create(stream, mailbox)
 	    long flags = (OP_HALFOPEN | OP_TRYALT | OP_SILENT);
 
 #ifdef	DEBUG
-	    if(ps_global->debug_imap > 3)
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
 	      flags |= OP_DEBUG;
 #endif
 
@@ -3736,7 +4086,7 @@ pine_mail_create(stream, mailbox)
     return_val = mail_create(stream, mailbox);
 
     if(stream != ourstream)
-      mail_close(stream);
+      pine_mail_close(stream);
 
     return(return_val);
 }
@@ -3744,29 +4094,78 @@ pine_mail_create(stream, mailbox)
 
 
 /*----------------------------------------------------------------------
-  Call back for c-client to feed us back the progress of network reads
-
-  Input: 
-
- Result: 
+  Our mail_close wrapper to clean up anything on the mailstream we may have
+  added to it.  mostly in the unused bits of the elt's.
   ----*/
 void
-pine_close_stream(stream)
+pine_mail_close(stream)
     MAILSTREAM *stream;
 {
     PARTEX_S **partp;
     long       n;
 
-    for(n = 1L; n <= stream->nmsgs; n++)
-      if(*(partp = (PARTEX_S **) &mail_elt(stream, n)->sparep))
-	msgno_free_exceptions(partp);
+    if(!stream)
+      return;
 
-    dprint(9, (debugfile, "pine_close_stream: closing \"%s\"\n", 
+    for(n = 1L; n <= stream->nmsgs; n++)
+      free_pine_elt((PINELT_S **) &mail_elt(stream, n)->sparep);
+
+    dprint(7, (debugfile, "pine_mail_close: closing \"%s\"\n", 
 	       stream && stream->mailbox ? stream->mailbox : "(NULL)"));
     
-    mail_close(stream);
+    cache_stream(stream);
 }
 
+
+static MAILSTREAM *streamcache;
+
+MAILSTREAM *
+stream_cache(mailbox)
+    char *mailbox;
+{
+    MAILSTREAM *stream = NULL;
+
+    if(same_stream(mailbox, streamcache)){
+	stream = streamcache;
+	streamcache = NULL;
+    }
+    else
+      end_stream_cache();
+
+    return(stream);
+}
+
+
+void
+cache_stream(stream)
+    MAILSTREAM *stream;
+{
+    /*
+     * stream caching is intended to save serial opening/closing/opening
+     * of folders on the same server as we start up and acquire remote
+     * config and such (that is, until we have an established initial
+     * mail session open). The general case is problematic in that we
+     * don't necessarily want to tie up server resources on the outside chance
+     * we may do some activity, so we add the !mail_stream requirement.
+     */
+
+    if(!ps_global->mail_stream && !streamcache){
+	streamcache = stream;
+	dprint(9, (debugfile, "    caching stream for possible re-use\n"));
+    }
+    else
+      mail_close(stream);
+}
+
+
+void
+end_stream_cache()
+{
+    if(streamcache){
+	mail_close(streamcache);
+	streamcache = NULL;
+    }
+}
 
 
 /*----------------------------------------------------------------------
@@ -3817,9 +4216,6 @@ ns_test(mailbox, namespace)
     char *namespace;
 {
     if(mailbox){
-	if(ps_global->nr_mode && !strucmp(namespace, "news"))
-	  return(1);
-
 	switch(*mailbox){
 	  case '#' :
 	    return(!struncmp(mailbox + 1, namespace, strlen(namespace)));

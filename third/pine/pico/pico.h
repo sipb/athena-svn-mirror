@@ -1,5 +1,5 @@
 /*
- * $Id: pico.h,v 1.1.1.1 2001-02-19 07:05:54 ghudson Exp $
+ * $Id: pico.h,v 1.1.1.2 2003-02-12 08:01:46 ghudson Exp $
  *
  * Program:	pico.h - definitions for Pine's composer library
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -185,6 +185,7 @@ typedef struct pico_struct {
     char  *pine_anchor;			/* ptr to pine anchor line */
     char  *pine_version;		/* string containing Pine's version */
     char  *oper_dir;			/* Operating dir (confine to tree) */
+    char  *home_dir;                    /* Home directory that should be used (WINDOWS) */
     char  *quote_str;			/* prepended to lines of quoted text */
     char  *exit_label;			/* Label for ^X in keymenu */
     char  *ctrlr_label;			/* Label for ^R in keymenu */
@@ -193,9 +194,11 @@ typedef struct pico_struct {
     int    fillcolumn;			/* where to wrap */
     int    menu_rows;			/* number of rows in menu (0 or 2) */
     long   edit_offset;			/* offset into hdr line or body */
+    int   *hibit_entered;		/* hibit input came from user */
     PATMT *attachments;			/* linked list of attachments */
     PCOLORS *colors;                    /* colors for titlebar and keymenu */
     long   pine_flags;			/* entry mode flags */
+    int    always_spell_check;          /* TRUE if always spell-checking upon quit */
     int   (*helper)();			/* Pine's help function  */
     int   (*showmsg)();			/* Pine's display_message */
     int   (*suspend)();			/* Pine's suspend */
@@ -246,6 +249,7 @@ typedef struct _save_stuff {
                         ComposerEditing;
     long                gmode;
     char               *alt_speller;	/* save pointer */
+    char               *quote_str;      /* save pointer */
     int                 currow,
 	                curcol,
 	                thisflag,
@@ -404,7 +408,7 @@ extern	void	kbdestroy PROTO((KBESC_T *));
  */
 #ifdef	maindef
 PICO	*Pmaster = NULL;		/* composer specific stuff */
-char	*version = "4.0";		/* PICO version number */
+char	*version = "4.4";		/* PICO version number */
 
 #else
 extern	PICO *Pmaster;			/* composer specific stuff */

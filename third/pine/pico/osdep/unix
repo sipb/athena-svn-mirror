@@ -27,6 +27,7 @@ static unsigned mnoop;
 
 struct color_table {
     char *name;
+    char *canonical_name;
     int   namelen;
     char *rgb;
     int   val;
@@ -37,7 +38,7 @@ static unsigned color_options;
 #define	ANSI16_COLOR()	(color_options & COLOR_ANSI16_OPT)
 #define	ANSI_COLOR()	(color_options & (COLOR_ANSI8_OPT | COLOR_ANSI16_OPT))
 #define	END_PSEUDO_REVERSE	"EndInverse"
-static COLOR_PAIR *the_rev_color;
+static COLOR_PAIR *the_rev_color, *the_normal_color;
 static COLOR_PAIR *color_blasted_by_attrs;
 static int pinvstate;	/* physical state of inverse (standout) attribute */
 static int pboldstate;	/* physical state of bold attribute */
@@ -78,6 +79,7 @@ static int	tfgcolor PROTO((int));
 static int	tbgcolor PROTO((int));
 static struct color_table *init_color_table PROTO((void));
 static void	free_color_table PROTO((struct color_table **));
+static int      color_to_val PROTO((char *));
 
 extern char   *_op, *_oc, *_setaf, *_setab, *_setf, *_setb, *_scp;
 extern int	_colors;
@@ -109,6 +111,7 @@ ttopen()
 	if(gmode & MDMOUSE)
 	  init_mouse();
 #endif	/* MOUSE */
+	xonxoff_proc(preserve_start_stop);
     }
 
     if(!Pmaster || (gmode ^ MDEXTFB))
@@ -182,6 +185,7 @@ ttclose()
  * ttgetwinsz - set global row and column values (if we can get them)
  *		and return.
  */
+void
 ttgetwinsz(row, col)
     int *row, *col;
 {
@@ -343,6 +347,9 @@ ReadyForKey(timeout)
 	kill(getpid(), SIGHUP);	/* Bomb out (saving our work)! */
 	/* no return */
     }
+
+    /* can't happen */
+    return(0);
 }
 
 
@@ -500,6 +507,9 @@ GetKey()
 	(*term.t_beep)();
 	break;
     }
+
+    if(ch & 0x80 && Pmaster && Pmaster->hibit_entered)
+      *Pmaster->hibit_entered = 1;
 
     if (ch >= 0x00 && ch <= 0x1F)       /* C0 control -> C-     */
       ch = CTRL | (ch+'@');
@@ -1014,12 +1024,17 @@ tbgcolor(color)
  * In fact, on some systems color 1 and color 4 are swapped, and color 3
  * and color 6 are swapped. So don't believe the RGB values.
  * Still, it feels right to have them be the canonical values, so we do that.
+ *
+ * More than one "name" can map to the same "canonical_name".
+ * More than one "name" can map to the same "val".
+ * The "val" for a "name" and for its "canonical_name" are the same.
  */
 static struct color_table *
 init_color_table()
 {
     struct color_table *ct = NULL, *t;
     int                 i, size, count;
+    char                colorname[12];
 
     count = pico_count_in_color_table();
 
@@ -1033,10 +1048,6 @@ init_color_table()
      * take a boatload of programming to convert what we have now into that,
      * and it is highly likely that no one would ever use anything other
      * than the 8/16 case. So we'll stick with that special case for now.
-     *
-     * The other place where code is modified for this is in other.c's
-     * add_color_setting_disp(). The arguments to new_color_line have a
-     * special case for (count == 8).
      */
     if(count == 8)
       size = 16;
@@ -1050,50 +1061,211 @@ init_color_table()
 
 	for(i = 0, t = ct; t && i < size; i++, t++){
 	    t->val = i % count;
-	    t->namelen = strlen(colorx(i));
+
+	    switch(i){
+	      case COL_BLACK:
+		strcpy(colorname, "black");
+		break;
+	      case COL_RED:
+		strcpy(colorname, "red");
+		break;
+	      case COL_GREEN:
+		strcpy(colorname, "green");
+		break;
+	      case COL_YELLOW:
+		strcpy(colorname, "yellow");
+		break;
+	      case COL_BLUE:
+		strcpy(colorname, "blue");
+		break;
+	      case COL_MAGENTA:
+		strcpy(colorname, "magenta");
+		break;
+	      case COL_CYAN:
+		strcpy(colorname, "cyan");
+		break;
+	      case COL_WHITE:
+		strcpy(colorname, "white");
+		break;
+	      default:
+		sprintf(colorname, "color%03.3d", i);
+		break;
+	    }
+
+	    t->namelen = strlen(colorname);
 	    t->name = (char *)malloc((t->namelen+1) * sizeof(char));
 	    if(t->name)
-	      strcpy(t->name, colorx(i));
+	      strcpy(t->name, colorname);
+
+	    /*
+	     * For an 8 color terminal, canonical black == black, but
+	     * canonical red == color009, etc.
+	     *
+	     * This is weird. What we have is 16-color xterms where color 0
+	     * is black (fine, that matches) colors 1 - 7 are called
+	     * red, ..., white but they are set at 2/3rds brightness so that
+	     * bold can be brighter. Those 7 colors suck. Color 8 is some
+	     * sort of gray, colors 9 - 15 are real red, ..., white. On other
+	     * 8 color terminals and in PC-Pine, we want to equate color 0
+	     * with color 0 on 16-color, but color 1 (red) is really the
+	     * same as the 16-color color 9. So color 9 - 15 are the real
+	     * colors on a 16-color terminal and colors 1 - 7 are the real
+	     * colors on an 8-color terminal. We make that work by mapping
+	     * the 2nd eight into the first eight when displaying on an
+	     * 8-color terminal, and by using the canonical_name when
+	     * we modify and write out a color. The canonical name is set
+	     * to the "real* color (0, 9, 10, ..., 15 on 16-color terminal).
+	     */
+	    if(size == count || i == 0 || i > 7){
+		t->canonical_name = (char *)malloc((t->namelen+1)*sizeof(char));
+		strcpy(t->canonical_name, colorname);
+	    }
+	    else{
+		t->canonical_name = (char *)malloc(9*sizeof(char));
+		sprintf(t->canonical_name, "color%03.3d", i+8);
+	    }
 
 	    t->rgb = (char *)malloc((RGBLEN+1) * sizeof(char));
 	    if(t->rgb){
-	      switch(i){
-	        case COL_BLACK:
-		  strcpy(t->rgb, "  0,  0,  0");
-		  break;
-	        case COL_RED:
-		  strcpy(t->rgb, "255,  0,  0");
-		  break;
-	        case COL_GREEN:
-		  strcpy(t->rgb, "  0,255,  0");
-		  break;
-	        case COL_YELLOW:
-		  strcpy(t->rgb, "255,255,  0");
-		  break;
-	        case COL_BLUE:
-		  strcpy(t->rgb, "  0,  0,255");
-		  break;
-	        case COL_MAGENTA:
-		  strcpy(t->rgb, "255,  0,255");
-		  break;
-	        case COL_CYAN:
-		  strcpy(t->rgb, "  0,255,255");
-		  break;
-	        case COL_WHITE:
-		  strcpy(t->rgb, "255,255,255");
-		  break;
-	        default:
+		if(count == 8){
+		  switch(i){
+		    case COL_BLACK:
+		    case 8:
+		      strcpy(t->rgb, "000,000,000");
+		      break;
+		    case COL_RED:
+		    case 9:
+		      strcpy(t->rgb, "255,000,000");
+		      break;
+		    case COL_GREEN:
+		    case 10:
+		      strcpy(t->rgb, "000,255,000");
+		      break;
+		    case COL_YELLOW:
+		    case 11:
+		      strcpy(t->rgb, "255,255,000");
+		      break;
+		    case COL_BLUE:
+		    case 12:
+		      strcpy(t->rgb, "000,000,255");
+		      break;
+		    case COL_MAGENTA:
+		    case 13:
+		      strcpy(t->rgb, "255,000,255");
+		      break;
+		    case COL_CYAN:
+		    case 14:
+		      strcpy(t->rgb, "000,255,255");
+		      break;
+		    case COL_WHITE:
+		    case 15:
+		      strcpy(t->rgb, "255,255,255");
+		      break;
+		    default:
+		      /*
+		       * These aren't really used as RGB values, just as
+		       * strings for the lookup. We don't know how to
+		       * convert to any RGB, we just know how to output
+		       * the escape sequences. So it doesn't matter that
+		       * the numbers in the sprintf below are too big.
+		       * We are using the fact that all rgb values start with
+		       * a digit or space and color names don't in the lookup
+		       * routines below.
+		       */
+		      sprintf(t->rgb, "%d,%d,%d", 256+i, 256+i, 256+i);
+		      break;
+		  }
+		}
+		else if(count == 16){
 		  /*
-		   * Since these are just unique strings, they don't actually
-		   * even have to be rgb values. Make them rgb-like in case
-		   * something checks.
-		   * We are using the fact that all rgb values start with
-		   * a digit or space and color names don't in the lookup
-		   * routines below.
+		   * This set of RGB values seems to come close to describing
+		   * what a 16-color xterm gives you.
 		   */
-		  sprintf(t->rgb, "%d,%d,%d", 256+i, 256+i, 256+i);
-		  break;
-	      }
+		  switch(i){
+		    case COL_BLACK:
+		      strcpy(t->rgb, "000,000,000");
+		      break;
+		    case COL_RED:		/* actually dark red */
+		      strcpy(t->rgb, "174,000,000");
+		      break;
+		    case COL_GREEN:		/* actually dark green */
+		      strcpy(t->rgb, "000,174,000");
+		      break;
+		    case COL_YELLOW:		/* actually dark yellow */
+		      strcpy(t->rgb, "174,174,000");
+		      break;
+		    case COL_BLUE:		/* actually dark blue */
+		      strcpy(t->rgb, "000,000,174");
+		      break;
+		    case COL_MAGENTA:		/* actually dark magenta */
+		      strcpy(t->rgb, "174,000,174");
+		      break;
+		    case COL_CYAN:		/* actually dark cyan */
+		      strcpy(t->rgb, "000,174,174");
+		      break;
+		    case COL_WHITE:		/* actually light gray */
+		      strcpy(t->rgb, "174,174,174");
+		      break;
+		    case 8:			/* dark gray */
+		      strcpy(t->rgb, "064,064,064");
+		      break;
+		    case 9:			/* red */
+		      strcpy(t->rgb, "255,000,000");
+		      break;
+		    case 10:			/* green */
+		      strcpy(t->rgb, "000,255,000");
+		      break;
+		    case 11:			/* yellow */
+		      strcpy(t->rgb, "255,255,000");
+		      break;
+		    case 12:			/* blue */
+		      strcpy(t->rgb, "000,000,255");
+		      break;
+		    case 13:			/* magenta */
+		      strcpy(t->rgb, "255,000,255");
+		      break;
+		    case 14:			/* cyan */
+		      strcpy(t->rgb, "000,255,255");
+		      break;
+		    case 15:			/* white */
+		      strcpy(t->rgb, "255,255,255");
+		      break;
+		    default:
+		      sprintf(t->rgb, "%d,%d,%d", 256+i, 256+i, 256+i);
+		      break;
+		  }
+		}
+		else{
+		  switch(i){
+		    case COL_BLACK:
+		      strcpy(t->rgb, "000,000,000");
+		      break;
+		    case COL_RED:
+		      strcpy(t->rgb, "255,000,000");
+		      break;
+		    case COL_GREEN:
+		      strcpy(t->rgb, "000,255,000");
+		      break;
+		    case COL_YELLOW:
+		      strcpy(t->rgb, "255,255,000");
+		      break;
+		    case COL_BLUE:
+		      strcpy(t->rgb, "000,000,255");
+		      break;
+		    case COL_MAGENTA:
+		      strcpy(t->rgb, "255,000,255");
+		      break;
+		    case COL_CYAN:
+		      strcpy(t->rgb, "000,255,255");
+		      break;
+		    case COL_WHITE:
+		      strcpy(t->rgb, "255,255,255");
+		      break;
+		    default:
+		      sprintf(t->rgb, "%d,%d,%d", 256+i, 256+i, 256+i);
+		      break;
+		  }
+		}
 	    }
 	}
     }
@@ -1102,19 +1274,145 @@ init_color_table()
 }
 
 
+/*
+ * Map from integer color value to canonical color name.
+ */
+char *
+colorx(color)
+    int color;
+{
+    struct color_table *ct;
+    static char         cbuf[12];
+
+    /* before we get set up, we still need to use this a bit */
+    if(!color_tbl){
+	switch(color){
+	  case COL_BLACK:
+	    return("black");
+	  case COL_RED:
+	    return("red");
+	  case COL_GREEN:
+	    return("green");
+	  case COL_YELLOW:
+	    return("yellow");
+	  case COL_BLUE:
+	    return("blue");
+	  case COL_MAGENTA:
+	    return("magenta");
+	  case COL_CYAN:
+	    return("cyan");
+	  case COL_WHITE:
+	    return("white");
+	  default:
+	    sprintf(cbuf, "color%03.3d", color);
+	    return(cbuf);
+	}
+    }
+    
+    for(ct = color_tbl; ct->name; ct++)
+      if(ct->val == color)
+        break;
+
+    if(ct->name)
+      return(ct->canonical_name);
+
+    /* not supposed to get here */
+    sprintf(cbuf, "color%03.3d", color);
+    return(cbuf);
+}
+
+
+/*
+ * Argument is a color name which could be an RGB string, a name like "blue",
+ * or a name like "color011".
+ *
+ * Returns a pointer to the canonical name of the color.
+ */
+char *
+color_to_canonical_name(s)
+    char *s;
+{
+    struct color_table *ct;
+
+    if(!s || !color_tbl)
+      return(NULL);
+    
+    if(*s == ' ' || isdigit(*s)){
+	/* check for rgb string instead of name */
+	for(ct = color_tbl; ct->rgb; ct++)
+	  if(!strncmp(ct->rgb, s, RGBLEN))
+	    break;
+    }
+    else{
+	for(ct = color_tbl; ct->name; ct++)
+	  if(!struncmp(ct->name, s, ct->namelen))
+	    break;
+    }
+    
+    if(ct->name)
+      return(ct->canonical_name);
+    
+    return("");
+}
+
+
+/*
+ * Argument is the name of a color or an RGB value that we recognize.
+ * The table should be set up so that the val returned is the same whether
+ * or not we choose the canonical name.
+ *
+ * Returns the integer value for the color.
+ */
+static int
+color_to_val(s)
+    char *s;
+{
+    struct color_table *ct;
+
+    if(!s || !color_tbl)
+      return(-1);
+    
+    if(*s == ' ' || isdigit(*s)){
+	/* check for rgb string instead of name */
+	for(ct = color_tbl; ct->rgb; ct++)
+	  if(!strncmp(ct->rgb, s, RGBLEN))
+	    break;
+    }
+    else{
+	for(ct = color_tbl; ct->name; ct++)
+	  if(!struncmp(ct->name, s, ct->namelen))
+	    break;
+    }
+    
+    if(ct->name)
+      return(ct->val);
+    else
+      return(-1);
+}
+
+
 static void
 free_color_table(ctbl)
     struct color_table **ctbl;
 {
-    int i;
     struct color_table *t;
 
     if(ctbl && *ctbl){
-	for(i = 0, t = *ctbl; t->name; t++){
-	    if(t->name)
-	      free(t->name);
-	    if(t->rgb)
-	      free(t->rgb);
+	for(t = *ctbl; t->name; t++){
+	    if(t->name){
+		free(t->name);
+		t->name = NULL;
+	    }
+
+	    if(t->canonical_name){
+		free(t->canonical_name);
+		t->canonical_name = NULL;
+	    }
+
+	    if(t->rgb){
+		free(t->rgb);
+		t->rgb = NULL;
+	    }
 	}
 	
 	free(*ctbl);
@@ -1143,7 +1441,12 @@ pico_nfcolor(s)
 	_nfcolor = (char *)malloc(strlen(s)+1);
 	if(_nfcolor)
 	  strcpy(_nfcolor, s);
+
+	if(the_normal_color)
+	  strcpy(the_normal_color->fg, _nfcolor);
     }
+    else if(the_normal_color)
+      free_color_pair(&the_normal_color);
 }
 
 
@@ -1160,7 +1463,12 @@ pico_nbcolor(s)
 	_nbcolor = (char *)malloc(strlen(s)+1);
 	if(_nbcolor)
 	  strcpy(_nbcolor, s);
+
+	if(the_normal_color)
+	  strcpy(the_normal_color->bg, _nbcolor);
     }
+    else if(the_normal_color)
+      free_color_pair(&the_normal_color);
 }
 
 void
@@ -1286,8 +1594,21 @@ pico_endcolor()
 	_rbcolor = NULL;
     }
 
+    if(_last_fg_color){
+	free(_last_fg_color);
+	_last_fg_color = NULL;
+    }
+
+    if(_last_bg_color){
+	free(_last_bg_color);
+	_last_bg_color = NULL;
+    }
+
     if(the_rev_color)
       free_color_pair(&the_rev_color);
+
+    if(the_normal_color)
+      free_color_pair(&the_normal_color);
 }
 
 void
@@ -1333,6 +1654,26 @@ pico_get_rev_color()
     else
       return(NULL);
 }
+
+/*
+ * Returns a pointer to the normal color.
+ *
+ * NOTE: Don't free this!
+ */
+COLOR_PAIR *
+pico_get_normal_color()
+{
+    if(pico_usingcolor() && _nfcolor && _nbcolor &&
+       pico_is_good_color(_nfcolor) && pico_is_good_color(_nbcolor)){
+	if(!the_normal_color)
+	  the_normal_color = new_color_pair(_nfcolor, _nbcolor);
+	
+	return(the_normal_color);
+    }
+    else
+      return(NULL);
+}
+
 
 /*
  * Just like pico_set_color except it doesn't set the color, it just
@@ -1414,10 +1755,7 @@ pico_is_good_color(s)
 {
     struct color_table *ct;
 
-    if(!s)
-      return(FALSE);
-
-    if(!color_tbl)
+    if(!s || !color_tbl)
       return(FALSE);
 
     if(!strcmp(s, END_PSEUDO_REVERSE))
@@ -1445,44 +1783,32 @@ int
 pico_set_fg_color(s)
     char *s;
 {
-    struct color_table *ct;
+    int val;
 
-    if(!s)
-      return(FALSE);
-
-    if(!color_tbl)
+    if(!s || !color_tbl)
       return(FALSE);
 
     if(!strcmp(s, END_PSEUDO_REVERSE)){
 	EndInverse();
 	return(TRUE);
     }
-    else if(*s == ' ' || isdigit(*s)){
-	/* check for rgb string instead of name */
-	for(ct = color_tbl; ct->rgb; ct++)
-	  if(!strncmp(ct->rgb, s, RGBLEN))
-	    break;
-    }
-    else{
-	for(ct = color_tbl; ct->name; ct++)
-	  if(!struncmp(ct->name, s, ct->namelen))
-	    break;
-    }
-    
-    if(ct->name){
+
+    if((val = color_to_val(s)) >= 0){
 	/* already set correctly */
 	if(!_force_fg_color_change && _last_fg_color &&
-	   !strcmp(_last_fg_color,ct->name))
+	   !strcmp(_last_fg_color,colorx(val)))
 	  return(TRUE);
 
 	_force_fg_color_change = 0;
-	if(_last_fg_color)
-	  free(_last_fg_color);
+	if(_last_fg_color){
+	    free(_last_fg_color);
+	    _last_fg_color = NULL;
+	}
 	
-	if(_last_fg_color = (char *)malloc(strlen(ct->name)+1))
-	  strcpy(_last_fg_color, ct->name);
+	if(_last_fg_color = (char *)malloc(strlen(colorx(val))+1))
+	  strcpy(_last_fg_color, colorx(val));
 
-	tfgcolor(ct->val);
+	tfgcolor(val);
 	return(TRUE);
     }
     else
@@ -1494,44 +1820,32 @@ int
 pico_set_bg_color(s)
     char *s;
 {
-    struct color_table *ct;
+    int val;
 
-    if(!s)
-      return(FALSE);
-
-    if(!color_tbl)
+    if(!s || !color_tbl)
       return(FALSE);
 
     if(!strcmp(s, END_PSEUDO_REVERSE)){
 	EndInverse();
 	return(TRUE);
     }
-    else if(*s == ' ' || isdigit(*s)){
-	/* check for rgb string instead of name */
-	for(ct = color_tbl; ct->rgb; ct++)
-	  if(!strncmp(ct->rgb, s, RGBLEN))
-	    break;
-    }
-    else{
-	for(ct = color_tbl; ct->name; ct++)
-	  if(!struncmp(ct->name, s, ct->namelen))
-	    break;
-    }
-    
-    if(ct->name){
+
+    if((val = color_to_val(s)) >= 0){
 	/* already set correctly */
 	if(!_force_bg_color_change && _last_bg_color &&
-	   !strcmp(_last_bg_color,ct->name))
+	   !strcmp(_last_bg_color,colorx(val)))
 	  return(TRUE);
 
 	_force_bg_color_change = 0;
-	if(_last_bg_color)
-	  free(_last_bg_color);
+	if(_last_bg_color){
+	    free(_last_bg_color);
+	    _last_bg_color = NULL;
+	}
 	
-	if(_last_bg_color = (char *)malloc(strlen(ct->name)+1))
-	  strcpy(_last_bg_color, ct->name);
+	if(_last_bg_color = (char *)malloc(strlen(colorx(val))+1))
+	  strcpy(_last_bg_color, colorx(val));
 
-	tbgcolor(ct->val);
+	tbgcolor(val);
 	return(TRUE);
     }
     else
@@ -1663,9 +1977,7 @@ alt_editor(f, n)
     char   *cp;
     char   *args[MAXARGS];			/* ptrs into edit command */
     char   result[128];				/* result string */
-    int	   child, pid, i, done = 0;
-    long   l;
-    FILE   *p;
+    int	   child, pid, i, done = 0, ret = 0;
     SigType (*ohup) SIG_PROTO((int));
     SigType (*oint) SIG_PROTO((int));
     SigType (*osize) SIG_PROTO((int));
@@ -1892,9 +2204,11 @@ alt_editor(f, n)
 	 */
 	if(WIFEXITED(stat) && WEXITSTATUS(stat) == 0)
 	  strcpy(result, "Alternate %s done");
-	else
+	else {
 	  sprintf(result, "Alternate %%s abnormally terminated (%d)",
 		  WIFEXITED(stat) ? WEXITSTATUS(stat) : -1);
+	  ret = -1;
+	}
     }
     else if(child == 0){		/* spawn editor */
 	signal(SIGHUP, SIG_DFL);	/* let editor handle signals */
@@ -1908,8 +2222,10 @@ alt_editor(f, n)
 	if(execvp(args[0], args) < 0)
 	  exit(-1);
     }
-    else				/* error! */
-      sprintf(result, "\007Can't fork %%s: %s", errstr(errno));
+    else {				/* error! */
+	sprintf(result, "\007Can't fork %%s: %s", errstr(errno));
+	ret = -1;
+    }
 
 #ifdef	SIGCHLD
     (void) signal(SIGCHLD,  SIG_DFL);
@@ -1919,6 +2235,12 @@ alt_editor(f, n)
       (*Pmaster->tty_fix)(1);
 
     /*
+     * Editor may have set a hibit, we don't know. Assume it did.
+     */
+    if(!f && Pmaster && Pmaster->hibit_entered)
+     *Pmaster->hibit_entered = 1;
+
+    /*
      * replace edited text with new text 
      */
     curbp->b_flag &= ~BFCHG;		/* make sure old text gets blasted */
@@ -1926,10 +2248,10 @@ alt_editor(f, n)
     unlink(fn);				/* blast temp file */
     curbp->b_flag |= BFCHG;		/* mark dirty for packbuf() */
     ttopen();				/* reset the signals */
-    refresh(0, 1);			/* redraw */
+    pico_refresh(0, 1);			/* redraw */
     update();
     emlwrite(result, f ? "speller" : "editor");
-    return(0);
+    return(ret);
 }
 
 
@@ -1977,8 +2299,6 @@ int
 bktoshell()		/* suspend MicroEMACS and wait to wake up */
 {
 #ifdef	SIGTSTP
-    int pid;
-
     if(!(gmode&MDSSPD)){
 	emlwrite("\007Unknown command: ^Z", NULL);
 	return(0);
@@ -2004,7 +2324,7 @@ bktoshell()		/* suspend MicroEMACS and wait to wake up */
 	    ttresize();
 	    picosigs();
 	    if(rv)		/* Did showmsg corrupt the display? */
-	      refresh(0, 1);	/* Yes, repaint */
+	      pico_refresh(0, 1);	/* Yes, repaint */
 
 	    mpresf = 1;
 	    if(km_popped){
@@ -2015,7 +2335,7 @@ bktoshell()		/* suspend MicroEMACS and wait to wake up */
 	else{
 	    ttresize();
 	    pclear(0, term.t_nrow);
-	    refresh(0, 1);
+	    pico_refresh(0, 1);
 	}
 
 	return(1);
@@ -2066,7 +2386,7 @@ rtfrmshell SIG_PROTO((int sig))
     ttopen();
     ttresize();
     pclear(0, term.t_nrow);
-    refresh(0, 1);
+    pico_refresh(0, 1);
 #endif
 }
 
@@ -2149,7 +2469,6 @@ off_t *l;			/* t means use lstat         */
     struct stat	sbuf;
     extern int lstat();
     int		(*stat_f)() = (m && *m == 't') ? lstat : stat;
-    int accessible;
 
     if(l)
       *l = (off_t)0;
@@ -2530,6 +2849,7 @@ char *pfnexpand(fn, len)
 /*
  * fixpath - make the given pathname into an absolute path
  */
+void
 fixpath(name, len)
     char  *name;
     size_t len;
@@ -2544,7 +2864,7 @@ fixpath(name, len)
                    && (*name != '~' && strlen(name)+2 < len)){
 
 	    if(gmode&MDTREE && strlen(name)+strlen(opertree)+1 < len){
-		int i, off = strlen(opertree);
+		int off = strlen(opertree);
 
 		for(shft = strchr(name, '\0'); shft >= name; shft--)
 		  shft[off+1] = *shft;
@@ -2671,12 +2991,13 @@ was_nonexistent_tmp_name(as, create_it)
     char *as;
     int   create_it;
 {
-    register char *start, *trv;
-    struct stat    sbuf;
-    unsigned       pid;
-    int            fd;
+    register char  *start, *trv;
+    struct stat     sbuf;
+    unsigned        pid;
+    static unsigned n = 0;
+    int             fd;
 
-    pid = (unsigned)getpid();
+    pid = ((unsigned)getpid() * 100) + n++;
 
     /* extra X's get set to 0's */
     for(trv = as; *trv; ++trv)
@@ -3208,9 +3529,11 @@ pico_new_mail()
     char   inbox[256], *p;
 
     if(p = (char *)getenv("MAIL"))
-      sprintf(inbox, p);
+      /* fix unsafe sprintf - noticed by petter wahlman <petter@bluezone.no> */
+      sprintf(inbox, "%.*s", sizeof(inbox)-1, p);
     else
-      sprintf(inbox,"%s/%s", MAILDIR, getlogin());
+      sprintf(inbox,"%.*s/%.*s", sizeof(inbox)/3, MAILDIR, sizeof(inbox)/3,
+	      getlogin());
 
     if(stat(inbox, &sbuf) == 0){
 	ret = sbuf.st_atime <= sbuf.st_mtime &&
@@ -3389,8 +3712,10 @@ chkptinit(file, n)
 void
 set_collation()
 {
-    char *status = NULL;
     extern int collator();  /* strcoll isn't declared on all systems */
+#ifdef LC_COLLATE
+    char *status = NULL;
+#endif
 
     pcollator = strucmp;
 
@@ -3611,7 +3936,6 @@ unsigned *ch;
 int	  down, mcol, mrow;
 {
     static int oindex;
-    register int k;			/* current bit/button of mouse */
     int i = 0, rv = 0;
     MENUITEM *mp;
 
@@ -3685,8 +4009,7 @@ int state;
 MENUITEM *m;
 {
     unsigned i, j;
-    int   r, c, p, oldr, oldc, col_offset;
-    int   savettrow, savettcol;
+    int   col_offset, savettrow, savettcol;
     char *lp;
 
     get_cursor(&savettrow, &savettcol);

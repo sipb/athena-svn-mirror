@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-sc5.h,v 1.1.1.1 2001-02-19 07:02:44 ghudson Exp $
+  $Id: os-sc5.h,v 1.1.1.2 2003-02-12 08:09:30 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -235,7 +235,7 @@
 #define MAXPATHLEN 256
 #undef MAXPATH                  /* Sometimes defined in param.h differently */
 #define MAXPATH        (512)    /* Longest pathname we ever expect */
-#define MAXFOLDER      (64)     /* Longest foldername we ever expect */  
+#define MAXFOLDER      (128)    /* Longest foldername we ever expect */  
 
 
 /*-- Max screen pine will display on. Used to define some array sizes --*/

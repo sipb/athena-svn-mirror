@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.1 2001-02-19 07:12:05 ghudson Exp $";
+static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.2 2003-02-12 08:02:06 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.1 2001-02-19 07:12:05 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -63,7 +63,6 @@ char   *trouble_filename;
 
 void           add_forced_entries PROTO((AdrBk *));
 AdrBk_Entry   *address_to_abe PROTO((ADDRESS *));
-AccessType     adrbk_access PROTO((PerAddrBook *));
 AdrBk_Entry   *adrbk_lookup_with_opens_by_nick PROTO((char *, int, int *, int));
 DL_CACHE_S    *dlc_mgr PROTO((long, DlMgrOps, DL_CACHE_S *));
 DL_CACHE_S    *dlc_next PROTO((DL_CACHE_S *, DL_CACHE_S *));
@@ -81,6 +80,7 @@ void           initialize_dlc_cache PROTO((void));
 ADDRESS       *massage_phrase_addr PROTO ((char *, char *, char *));
 char          *skip_to_next_addr PROTO((char *));
 void           strip_personal_quotes PROTO((ADDRESS *));
+int	       addr_is_in_addrbook PROTO((PerAddrBook *, ADDRESS *, ADDRESS *));
 #ifdef	ENABLE_LDAP
 int              ask_user_which_entry PROTO((LDAP_SERV_RES_S *, char *,
 					     LDAP_SERV_RES_S **,
@@ -2535,7 +2535,7 @@ adrbk_access(pab)
 		else{
 		    access = ReadOnly;
 		    q_status_message1(SM_ORDER, 2, 2,
-				      "Address book directory (%s) is ReadOnly",
+				      "Address book directory (%.200s) is ReadOnly",
 				      dir);
 		}
 	    }
@@ -2689,10 +2689,10 @@ init_abook(pab, want_status)
 		if(want_status == Open){
 		    new_status = HalfOpen;  /* best we can do */
 		    q_status_message1(SM_ORDER | SM_DING, *warning?1:3, 4,
-				      "Error opening/creating address book %s",
+				      "Error opening/creating address book %.200s",
 				      pab->nickname);
 		    if(*warning)
-			q_status_message2(SM_ORDER, 3, 4, "%s: %s",
+			q_status_message2(SM_ORDER, 3, 4, "%.200s: %.200s",
 			    as.n_addrbk > 1 ? pab->nickname : "addressbook",
 			    warning);
 		}
@@ -2755,7 +2755,7 @@ init_abook(pab, want_status)
 				 pab->nickname, pab->filename, warning));
 		    if(!pab->gave_parse_warnings && want_status == Open){
 			pab->gave_parse_warnings++;
-			q_status_message2(SM_ORDER, 3, 4, "%s: %s",
+			q_status_message2(SM_ORDER, 3, 4, "%.200s: %.200s",
 			    as.n_addrbk > 1 ? pab->nickname : "addressbook",
 			    warning);
 		    }
@@ -2766,7 +2766,7 @@ init_abook(pab, want_status)
 	    if(want_status == Open){
 		new_status = HalfOpen;  /* best we can do */
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-		   "Insufficient permissions for opening address book %s",
+		   "Insufficient permissions for opening address book %.200s",
 		   pab->nickname);
 	    }
 	    else
@@ -2858,17 +2858,18 @@ adrbk_check_and_fix(pab, safe, low_freq, check_now)
 
 	if(pab->address_book->flags & FILE_OUTOFDATE ||
 	   (pab->address_book->rd &&
-	    pab->address_book->rd->flags & REM_OUTOFDATE)){
+	    pab->address_book->rd->flags & REM_OUTOFDATE &&
+	    !(pab->address_book->rd->flags & USER_SAID_NO))){
 	    if(safe){
 		OpenStatus save_status;
 		int        save_rem_abook_valid = 0;
 
 		dprint(2, (debugfile, "adrbk_check_and_fix %s: fixing %s\n",
-		       debug_time(0),
+		       debug_time(0,0),
 		       pab->filename ? pab->filename : "?"));
 		if(ab_nesting_level > 0){
 		    q_status_message3(SM_ORDER, 0, 2,
-				     "Resyncing address book%s%s%s",
+				     "Resyncing address book%.200s%.200s%.200s",
 				     as.n_addrbk > 1 ? " \"" : "",
 				     as.n_addrbk > 1 ? pab->nickname : "",
 				     as.n_addrbk > 1 ? "\"" : "");
@@ -2921,7 +2922,7 @@ adrbk_check_and_fix(pab, safe, low_freq, check_now)
 
 		if(ab_nesting_level > 0 && pab->ostatus == save_status)
 		    q_status_message3(SM_ORDER, 0, 2,
-				     "Resynced address book%s%s%s",
+				     "Resynced address book%.200s%.200s%.200s",
 				     as.n_addrbk > 1 ? " \"" : "",
 				     as.n_addrbk > 1 ? pab->nickname : "",
 				     as.n_addrbk > 1 ? "\"" : "");
@@ -3025,7 +3026,7 @@ adrbk_maintenance()
 	    if(now > pab->address_book->rd->last_use + IMAP_IDLE_TIMEOUT){
 		dprint(2, (debugfile,
 		    "adrbk_maint %s: closing idle (%ld secs) connection: %s\n",
-		    debug_time(0),
+		    debug_time(0,0),
 		    (long)(now - pab->address_book->rd->last_use),
 		    pab->address_book->orig_filename));
 		rd_close_remote(pab->address_book->rd);
@@ -3041,7 +3042,7 @@ adrbk_maintenance()
 		if(!rd_ping_stream(pab->address_book->rd)){
 		    dprint(2, (debugfile,
 		      "adrbk_maint: %s: abook stream closed unexpectedly: %s\n",
-		      debug_time(0),
+		      debug_time(0,0),
 		      pab->address_book->orig_filename));
 		}
 	    }
@@ -3299,6 +3300,14 @@ build_addr_lcc(lcc, full_lcc, error, barg, mangled)
     save_nesting_level = cpyint(ab_nesting_level);
     memcpy(save_jmp_buf, addrbook_changed_unexpectedly, sizeof(jmp_buf));
     if(setjmp(addrbook_changed_unexpectedly)){
+	no_repo = 0;
+	pt = NULL;
+	af = NULL;
+	fcc_local = NULL;
+	to = NULL;
+	if(error != NULL)
+	  *error = (char *)NULL;
+
 	if(full_lcc && *full_lcc)
 	  fs_give((void **)full_lcc);
 
@@ -3358,7 +3367,7 @@ build_addr_lcc(lcc, full_lcc, error, barg, mangled)
 
     /* to is what ends up in the To: line */
     if(to && *to){
-	long csum;
+	unsigned long csum;
 	size_t len;
 
 	/*
@@ -3438,7 +3447,7 @@ build_addr_lcc(lcc, full_lcc, error, barg, mangled)
 		lcc[af->cksumlen] = save;
 	    }
 	    else
-	      csum = af->cksumval + 1;
+	      csum = af->cksumval + 1;		/* so they aren't equal */
 	}
 
 	if(!pt ||
@@ -3485,7 +3494,7 @@ build_addr_lcc(lcc, full_lcc, error, barg, mangled)
     }
 
     if(fcc_local){
-	long    csum;
+	unsigned long csum;
 
 	/*
 	 * If *barg->next->aff is set, that means fcc was set from a list
@@ -3659,6 +3668,14 @@ build_address(to, full_to, error, barg, mangled)
     save_nesting_level = cpyint(ab_nesting_level);
     memcpy(save_jmp_buf, addrbook_changed_unexpectedly, sizeof(jmp_buf));
     if(setjmp(addrbook_changed_unexpectedly)){
+	no_repo = 0;
+	pt = NULL;
+	af = NULL;
+	fcc_local = NULL;
+	dummy = NULL;
+	if(error != NULL)
+	  *error = (char *)NULL;
+
 	if(full_to && *full_to)
 	  fs_give((void **)full_to);
 
@@ -3683,7 +3700,7 @@ build_address(to, full_to, error, barg, mangled)
      * Have to rfc1522_decode the full_to string before sending it back.
      */
     if(full_to && *full_to ){
-	long    csum_start, csum_end;
+	unsigned long csum_start, csum_end, csum_mid;
 	char   *q;
 	size_t  len;
 
@@ -3706,32 +3723,57 @@ build_address(to, full_to, error, barg, mangled)
 	    if(pt && pt->encoded){
 		int len;
 
+		/* set to something not equal to cksumval */
+		csum_start = csum_end = csum_mid = pt->encoded->cksumval + 1;
+
 		/*
 		 * Compare hash value computed from prefix and suffix of
 		 * new string to see if it matches the hash value of the
 		 * old string. If it does, that means we've just appended
 		 * or prepended something new, so we can preserve the old
-		 * charset info.
+		 * charset info. Also check if it is just the old string
+		 * with quotes around it.
 		 */
-		len = strlen(to);
+		len = strlen(p);
 		if(len >= pt->encoded->cksumlen){
 		    char *begin;
 
-		    save = to[pt->encoded->cksumlen];
-		    to[pt->encoded->cksumlen] = '\0';
-		    csum_start = line_hash(to);
-		    to[pt->encoded->cksumlen] = save;
+		    save = p[pt->encoded->cksumlen];
+		    p[pt->encoded->cksumlen] = '\0';
+		    csum_start = line_hash(p);
+		    p[pt->encoded->cksumlen] = save;
 
 		    if(len > pt->encoded->cksumlen){
-			begin = to + (len - pt->encoded->cksumlen);
+			begin = p + (len - pt->encoded->cksumlen);
 			csum_end = line_hash(begin);
 		    }
 		    else
 		      csum_end = csum_start;
-		}
-		else{
-		    /* set to something not equal to cksumval */
-		    csum_start = csum_end = pt->encoded->cksumval + 1;
+		    
+		    /*
+		     * Maybe just added quotes?
+		     * This is tough because the quotes are around the phrase
+		     * not around the whole thing. So we're just taking a
+		     * guess about that second quote. But if we guess right,
+		     * we are right, and we can just leave the pt->encoded
+		     * stuff as it is now.
+		     */
+		    if(len == pt->encoded->cksumlen+2 &&
+		       p[0] == '"' &&
+		       strchr(p+1, '"')){
+			char *tmp, *quote, *r;
+
+			quote = strchr(p+1, '"');
+			*quote = '\0';
+			tmp = (char *)fs_get((len-1) * sizeof(char));
+			r = tmp;
+			sstrcpy(&r, p+1);
+			sstrcpy(&r, quote+1);
+			*quote = '"';
+
+			csum_mid = line_hash(tmp);
+			fs_give((void **)&tmp);
+		    }
 		}
 	    }
 
@@ -3739,6 +3781,7 @@ build_address(to, full_to, error, barg, mangled)
 	    if(barg && barg->me){
 		if(!pt || !pt->encoded ||
 	           (csum_start != pt->encoded->cksumval &&
+		      csum_mid != pt->encoded->cksumval &&
 		      csum_end != pt->encoded->cksumval)){
 
 		    /* no match, save whole string */
@@ -3771,10 +3814,13 @@ build_address(to, full_to, error, barg, mangled)
 		    }
 		}
 		else{	/* got a match */
-		    char *etext1, *etext2, *etext3, *r;
-		    int   end_of_new;
+		  char *etext1, *etext2, *etext3, *r;
+		  int   end_of_new;
 
-		    if(csum_start == pt->encoded->cksumval){/* matched prefix */
+		  if(csum_mid != pt->encoded->cksumval){ /* else, leave alone */
+
+		    /* matched prefix */
+		    if(csum_start == pt->encoded->cksumval){
 			etext1 = "";
 			etext2 = pt->encoded->etext;
 			/*
@@ -3811,6 +3857,7 @@ build_address(to, full_to, error, barg, mangled)
 
 		    pt->encoded->cksumlen = strlen(p);
 		    pt->encoded->cksumval = line_hash(p);
+		  }
 		}
 	    }
 	    else
@@ -3838,7 +3885,7 @@ build_address(to, full_to, error, barg, mangled)
     }
 
     if(fcc_local){
-	long    csum;
+	unsigned long csum;
 
 	/* Pt will point to headents[Fcc].bldr_private */
 	pt = NULL;
@@ -5248,8 +5295,8 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
 	    (string && *string) ? string : "",
 	    (string && *string) ? "\"" : "",
 	    serv);
-    we_cancel = busy_alarm(1, ebuf, NULL, 1);
     intr_handling_on();		/* this erases keymenu */
+    we_cancel = busy_alarm(1, ebuf, NULL, 1);
     if(wp_err->mangled)
       *(wp_err->mangled) = 1;
 
@@ -5736,9 +5783,10 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
       }
     }
 
-    intr_handling_off();
     if(we_cancel)
       cancel_busy_alarm(-1);
+
+    intr_handling_off();
 
     if(serv)
       fs_give((void **)&serv);
@@ -5968,7 +6016,7 @@ break_up_ldap_server(serv_str)
     tail = lserv;
     while((tail = strindex(tail, SPACE)) != NULL){
 	tail++;
-	if(*tail == '"'){
+	if(*tail == '"' || *tail == '/'){
 	    *(tail-1) = '\0';
 	    break;
 	}
@@ -6536,6 +6584,7 @@ get_nickname_from_addr(adr, buffer, buflen)
     save_nesting_level = cpyint(ab_nesting_level);
     memcpy(save_jmp_buf, addrbook_changed_unexpectedly, sizeof(jmp_buf));
     if(setjmp(addrbook_changed_unexpectedly)){
+	ret = NULL;
 	if(state.savep)
 	  fs_give((void **)&(state.savep));
 	if(state.stp)
@@ -6606,6 +6655,7 @@ get_fcc_from_addr(adr, buffer, buflen)
     save_nesting_level = cpyint(ab_nesting_level);
     memcpy(save_jmp_buf, addrbook_changed_unexpectedly, sizeof(jmp_buf));
     if(setjmp(addrbook_changed_unexpectedly)){
+	ret = NULL;
 	if(state.savep)
 	  fs_give((void **)&(state.savep));
 	if(state.stp)
@@ -6646,6 +6696,270 @@ get_fcc_from_addr(adr, buffer, buflen)
 
     if(save_nesting_level)
       fs_give((void **)&save_nesting_level);
+
+    return(ret);
+}
+
+
+/*
+ * This is a very special-purpose routine.
+ * It implements the From or Reply-To address is in the Address Book
+ * part of Pattern matching.
+ */
+void
+from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
+    MAILSTREAM *stream;
+    SEARCHSET  *searchset;
+    int         abookfrom;
+    PATTERN_S  *abooks;
+{
+    char         *savebits;
+    MESSAGECACHE *mc;
+    long          i;
+    SEARCHSET    *s, *ss, **sset;
+    ADDRESS      *from, *reply_to;
+    int           is_there, adrbknum, *abooklist = NULL, positive_match;
+    PATTERN_S    *pat;
+    PerAddrBook  *pab;
+    ENVELOPE     *e;
+    SAVE_STATE_S  state;
+    jmp_buf	  save_jmp_buf;
+    int          *save_nesting_level;
+
+    if(!stream)
+      return;
+
+    /* everything that matches remains a match */
+    if(abookfrom == AFRM_EITHER)
+      return;
+
+    state.savep          = NULL;
+    state.stp            = NULL;
+    state.dlc_to_warp_to = NULL;
+
+    /*
+     * This may call build_header_line recursively because we may be in
+     * build_header_line now. So we have to preserve and restore the
+     * sequence bits since we want to use them here.
+     */
+    savebits = (char *) fs_get((stream->nmsgs+1) * sizeof(char));
+
+    for(i = 1L; i <= stream->nmsgs; i++){
+	savebits[i] = (mc=mail_elt(stream, i))->sequence;
+	mc->sequence = 0;
+    }
+
+    /*
+     * Build a searchset so we can look at all the envelopes
+     * we need to look at but only those we need to look at.
+     * Everything with the searched bit set is still a
+     * possibility, so restrict to that set.
+     */
+
+    for(s = searchset; s; s = s->next)
+      for(i = s->first; i <= s->last; i++)
+	if(i <= stream->nmsgs && (mc=mail_elt(stream, i))->searched)
+	  mc->sequence = 1;
+
+    ss = build_searchset(stream);
+
+    /*
+     * We save the address book state here so we don't have to do it
+     * each time through the loop below.
+     */
+    if(ss){
+	if(ps_global->remote_abook_validity > 0)
+	  (void)adrbk_check_and_fix_all(ab_nesting_level == 0, 0, 0);
+
+	save_nesting_level = cpyint(ab_nesting_level);
+	memcpy(save_jmp_buf, addrbook_changed_unexpectedly, sizeof(jmp_buf));
+	if(setjmp(addrbook_changed_unexpectedly)){
+	    if(state.savep)
+	      fs_give((void **)&(state.savep));
+	    if(state.stp)
+	      fs_give((void **)&(state.stp));
+	    if(state.dlc_to_warp_to)
+	      fs_give((void **)&(state.dlc_to_warp_to));
+
+	    q_status_message(SM_ORDER, 3, 5, "Resetting address book...");
+	    dprint(1, (debugfile,
+		"RESETTING address book... from_or_replyto()!\n"));
+	    addrbook_reset();
+	    ab_nesting_level = *save_nesting_level;
+	}
+
+	ab_nesting_level++;
+	init_ab_if_needed();
+	save_state(&state);
+
+	if(as.n_addrbk > 0){
+	    abooklist = (int *) fs_get(as.n_addrbk * sizeof(*abooklist));
+	    memset((void *) abooklist, 0, as.n_addrbk * sizeof(*abooklist));
+	}
+
+	if(abooklist)
+	  switch(abookfrom){
+	    case AFRM_YES:
+	    case AFRM_NO:
+	      for(adrbknum = 0; adrbknum < as.n_addrbk; adrbknum++)
+	        abooklist[adrbknum] = 1;
+
+	      break;
+
+	    case AFRM_SPEC_YES:
+	    case AFRM_SPEC_NO:
+	      /* figure out which address books we're going to look in */
+	      for(adrbknum = 0; adrbknum < as.n_addrbk; adrbknum++){
+		  pab = &as.adrbks[adrbknum];
+		  /*
+		   * For each address book, check all of the address books
+		   * in the pattern's list to see if they are it.
+		   */
+		  for(pat = abooks; pat; pat = pat->next){
+		      if(!strcmp(pab->nickname, pat->substring)
+			 || !strcmp(pab->filename, pat->substring)){
+			  abooklist[adrbknum] = 1;
+			  break;
+		      }
+		  }
+	      }
+
+	      break;
+	   }
+
+	switch(abookfrom){
+	  case AFRM_YES:
+	  case AFRM_SPEC_YES:
+	    positive_match = 1;
+	    break;
+
+	  case AFRM_NO:
+	  case AFRM_SPEC_NO:
+	    positive_match = 0;
+	    break;
+	}
+    }
+
+    for(s = ss; s; s = s->next){
+	for(i = s->first; i <= s->last; i++){
+	    if(i > stream->nmsgs)
+	      continue;
+
+	    /*
+	     * This causes the lookahead to fetch precisely
+	     * the messages we want (in the searchset) instead
+	     * of just fetching the next 20 sequential
+	     * messages. If the searching so far has caused
+	     * a sparse searchset in a large mailbox, the
+	     * difference can be substantial.
+	     */
+	    sset = (SEARCHSET **) mail_parameters(stream,
+						  GET_FETCHLOOKAHEAD,
+						  (void *) stream);
+	    if(sset)
+	      *sset = s;
+
+	    e = mail_fetchenvelope(stream, i);
+
+	    from = e ? e->from : NULL;
+	    reply_to = e ? e->reply_to : NULL;
+
+	    is_there = 0;
+	    for(adrbknum = 0; !is_there && adrbknum < as.n_addrbk; adrbknum++){
+		if(!abooklist[adrbknum])
+		  continue;
+		
+		pab = &as.adrbks[adrbknum];
+		is_there = addr_is_in_addrbook(pab, from, reply_to);
+	    }
+
+	    if(positive_match){
+		/*
+		 * We matched up until now. If it isn't there, then it
+		 * isn't a match. If it is there, leave the searched bit
+		 * set.
+		 */
+		if(!is_there)
+		  mail_elt(stream,i)->searched = NIL;
+	    }
+	    else{
+		if(is_there)
+		  mail_elt(stream,i)->searched = NIL;
+	    }
+	}
+    }
+
+    if(ss){
+	restore_state(&state);
+	memcpy(addrbook_changed_unexpectedly, save_jmp_buf, sizeof(jmp_buf));
+	ab_nesting_level--;
+
+	if(save_nesting_level)
+	  fs_give((void **)&save_nesting_level);
+    }
+
+    /* restore sequence bits */
+    for(i = 1L; i <= stream->nmsgs; i++)
+      mail_elt(stream, i)->sequence = savebits[i];
+
+    fs_give((void **) &savebits);
+
+    if(ss)
+      mail_free_searchset(&ss);
+
+    if(abooklist)
+      fs_give((void **) &abooklist);
+}
+
+
+/*
+ * Given two addresses, check to see if either is in the address book.
+ * Returns 1 if yes, 0 if not found.
+ */
+int
+addr_is_in_addrbook(pab, adr1, adr2)
+    PerAddrBook *pab;
+    ADDRESS     *adr1,
+                *adr2;
+{
+    AdrBk_Entry *abe = NULL;
+    int          ret = 0;
+    char         abuf[MAX_ADDR_FIELD+1];
+
+    if(!(pab && (adr1 && adr1->mailbox || adr2 && adr2->mailbox)))
+      return(ret);
+
+    if(adr1){
+	strncpy(abuf, adr1->mailbox, MAX_ADDR_FIELD);
+	abuf[MAX_ADDR_FIELD] = '\0';
+	if(adr1->host && adr1->host[0]){
+	    strncat(abuf, "@", MAX_ADDR_FIELD-strlen(abuf));
+	    strncat(abuf, adr1->host, MAX_ADDR_FIELD-strlen(abuf));
+	}
+
+	if(pab->ostatus != Open && pab->ostatus != NoDisplay)
+	  init_abook(pab, NoDisplay);
+	
+	abe = adrbk_lookup_by_addr(pab->address_book, abuf,
+				   (adrbk_cntr_t *) NULL);
+    }
+
+    if(!abe && adr2 && !address_is_same(adr1, adr2)){
+	strncpy(abuf, adr2->mailbox, MAX_ADDR_FIELD);
+	abuf[MAX_ADDR_FIELD] = '\0';
+	if(adr2->host && adr2->host[0]){
+	    strncat(abuf, "@", MAX_ADDR_FIELD-strlen(abuf));
+	    strncat(abuf, adr2->host, MAX_ADDR_FIELD-strlen(abuf));
+	}
+
+	if(pab->ostatus != Open && pab->ostatus != NoDisplay)
+	  init_abook(pab, NoDisplay);
+	
+	abe = adrbk_lookup_by_addr(pab->address_book, abuf,
+				   (adrbk_cntr_t *) NULL);
+    }
+
+    ret = abe ? 1 : 0;
 
     return(ret);
 }
@@ -7234,8 +7548,8 @@ est_size(a)
     for(; a; a = a->next){
 
 	/* two times personal for possible quoting */
-	cnt   += 2 * (a->personal  ? strlen(a->personal)  : 0);
-	cnt   += (a->mailbox  ? strlen(a->mailbox)  : 0);
+	cnt   += 2 * (a->personal  ? (strlen(a->personal)+1)  : 0);
+	cnt   += 2 * (a->mailbox  ? (strlen(a->mailbox)+1)    : 0);
 	cnt   += (a->adl      ? strlen(a->adl)      : 0);
 	cnt   += (a->host     ? strlen(a->host)     : 0);
 

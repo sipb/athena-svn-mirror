@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: main.c,v 1.1.1.1 2001-02-19 07:04:17 ghudson Exp $";
+static char rcsid[] = "$Id: main.c,v 1.1.1.2 2003-02-12 08:01:36 ghudson Exp $";
 #endif
 /*
  * Program:	Main stand-alone Pine Composer routines
@@ -75,6 +75,7 @@ static int fkm[12][2] = {
 
 char *pico_args PROTO((int, char **, int *, int *));
 void  pico_args_help PROTO((void));
+void  pico_vers_help PROTO((void));
 void  pico_display_args_err PROTO((char *, char **, int));
 
 char  args_pico_missing_flag[]  = "unknown flag \"%c\"";
@@ -93,7 +94,9 @@ char *args_pico_args[] = {
 "\t -g \t\tShow - show cursor in file browser",
 "\t -m \t\tMouse - turn on mouse support",
 "\t -x \t\tNoKeyhelp - suppress keyhelp",
+"\t -p \t\tPreserveStartStop - preserve \"start\"(^Q) and \"stop\"(^S) characters",
 "\t -q \t\tTermdefWins - termcap or terminfo takes precedence over defaults",
+"\t -Q <quotestr> \tSet quote string (eg. \"> \") esp. for composing email",
 "\t -d \t\tRebind - let delete key delete current character",
 "\t -f \t\tKeys - force use of function keys",
 "\t -b \t\tReplace - allow search and replace",
@@ -113,6 +116,7 @@ char *args_pico_args[] = {
 #endif
 "\t +[line#] \tLine - start on line# line, default=1",
 "\t -v \t\tView - view file",
+"\t -version\tPico version number",
 "", 
 "\t All arguments may be followed by a file name to display.",
 "",
@@ -173,7 +177,7 @@ char    *argv[];
     update();				/* let the user know we are here */
 
 #ifdef	_WINDOWS
-    mswin_setwindow(NULL, NULL, NULL, NULL, NULL);
+    mswin_setwindow(NULL, NULL, NULL, NULL, NULL, NULL);
     mswin_showcaret(1);			/* turn on for main window */
     mswin_allowpaste(MSWIN_PASTE_FULL);
     mswin_setclosetext("Use the ^X command to exit Pico.");
@@ -378,8 +382,11 @@ Loop:
       /* while more chars in this argument */
       else while(*++*av){
 
+	if(strcmp(*av, "version") == 0){
+	    pico_vers_help();
+	}
 #if	defined(DOS) || defined(OS2)
-	if(strcmp(*av, "cnf") == 0
+	else if(strcmp(*av, "cnf") == 0
 	   || strcmp(*av, "cnb") == 0
 	   || strcmp(*av, "crf") == 0
 	   || strcmp(*av, "crb") == 0){
@@ -448,6 +455,9 @@ Loop:
 	  case 'm':			/* turn on mouse support */
 	    gmode ^= MDMOUSE;
 	    break;
+	  case 'p':
+	    preserve_start_stop = 1;
+	    break;
 	  case 'q':			/* -q for termcap takes precedence */
 	    gmode ^= MDTCAPWINS;
 	    break;
@@ -476,6 +486,7 @@ Loop:
 	  case 'n':			/* -n for new mail notification */
 	  case 's' :			/* speller */
 	  case 'o' :			/* operating tree */
+	  case 'Q' :                    /* Quote string */
 	    if(*++*av)
 	      str = *av;
 	    else if(--ac)
@@ -500,6 +511,10 @@ Loop:
 	      case 'o':
 		strncpy(opertree, str, NLINE);
 		gmode ^= MDTREE;
+		break;
+	      case 'Q':
+		strncpy(glo_quote_str_buf, str, NLINE);
+		glo_quote_str = glo_quote_str_buf;
 		break;
 
 	/* numeric args */
@@ -604,6 +619,21 @@ pico_args_help()
 {
     /**  print out possible starting arguments... **/
     pico_display_args_err(NULL, args_pico_args, 0);
+    exit(1);
+}
+
+
+void
+pico_vers_help()
+{
+    char v0[100];
+    char *v[2];
+
+    sprintf(v0, "Pico %.50s", version);
+    v[0] = v0;
+    v[1] = NULL;
+
+    pico_display_args_err(NULL, v, 0);
     exit(1);
 }
 

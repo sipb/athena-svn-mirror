@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: args.c,v 1.1.1.1 2001-02-19 07:05:02 ghudson Exp $";
+static char rcsid[] = "$Id: args.c,v 1.1.1.2 2003-02-12 08:01:10 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: args.c,v 1.1.1.1 2001-02-19 07:05:02 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -70,12 +70,14 @@ void args_add_attach PROTO((PATMT **, char *, int));
  */
 char args_err_missing_pinerc[] =	"missing argument for option \"-pinerc\" (use - for standard out)";
 char args_err_missing_aux[] =		"missing argument for option \"-aux\"";
+char args_err_missing_passfile[] =	"missing argument for option \"-passfile\"";
+char args_err_non_abs_passfile[] =	"argument to \"-passfile\" should be fully-qualified";
 char args_err_missing_lu[] =		"missing argument for option \"-create_lu\"\nUsage: pine -create_lu <addrbook_file> <addrbook_sort_type>";
 char args_err_missing_sort[] =		"missing argument for option \"-sort\"";
 char args_err_missing_flag_arg[] =	"missing argument for flag \"%c\"";
 char args_err_missing_flag_num[] =	"Non numeric argument for flag \"%c\"";
 char args_err_missing_debug_num[] =	"Non numeric argument for \"%s\"";
-char args_err_missing_url[] =		"missing URL for \"%s\"";
+char args_err_missing_url[] =		"missing URL for \"-url\"";
 char args_err_missing_attachment[] =	"missing attachment for \"%s\"";
 char args_err_conflict[] =		"conflicting action: \"%s\"";
 char args_err_unknown[] =		"unknown flag \"%c\"";
@@ -104,7 +106,7 @@ char *args_pine_args[] = {
 " -bail\t\tExit if pinerc file doesn't already exist",
 #ifdef	DEBUG
 " -d n\t\tDebug - set debug level to 'n', or use the following:",
-" -d keywords...\tflush,timestamp,imap=0..4,numfiles=0..31,verbose=0..9",
+" -d keywords...\tflush,timestamp,imap=0..4,tcp,numfiles=0..31,verbose=0..9",
 #endif
 " -f <folder>\tFolder - give folder name to open",
 " -c <number>\tContext - which context to apply to -f arg",
@@ -131,12 +133,19 @@ char *args_pine_args[] = {
 #else
 " -aux <aux_files_dir>\tUse this with remote pinerc",
 " -P <pine.conf>\tUse pine.conf file for default settings",
+" -nosplash \tDisable the PC-Pine splash screen",
+#ifdef PASSFILE
+" -passfile <fully_qualified_filename>\tSet the password file to something other",
+"\t\tthan the default",
+#endif /* PASSFILE */
 #endif
 " -x <config>\tUse configuration exceptions in <config>.",
 "\t\tExceptions are used to override your default pinerc",
 "\t\tsettings for a particular platform, can be a local file or",
 "\t\ta remote folder.",
 " -v \t\tVersion - show version information",
+" -version\tVersion - show version information",
+" -supported\tList supported options",
 #if defined(OS2)
 " -w <rows>\tSet window size in rows on startup",
 #endif
@@ -145,13 +154,10 @@ char *args_pine_args[] = {
 "\t\tStandard input redirection is not allowed with URLs.",
 "\t\tFor mailto URLs, 'body='text should be used in place of",
 "\t\tinput redirection.",
-" -create_lu <abook_file> <ab_sort_type>   create .lu from script",
-" -copy_pinerc <local_pinerc> <remote_pinerc>   copy local pinerc to remote",
-" -copy_abook <local_abook> <remote_abook>   copy local addressbook to remote",
-#ifdef notdef
-" -nr\t\tSpecial mode for UWIN",
-" -a\t\tSpecial anonymous mode for UWIN",
-#endif /* notdef */
+" -create_lu <abook_file> <ab_sort_type>       create .lu from script",
+" -copy_pinerc <local_pinerc> <remote_pinerc>  copy local pinerc to remote",
+" -copy_abook <local_abook> <remote_abook>     copy local addressbook to remote",
+" -convert_sigs -p <pinerc>   convert signatures to literal signatures",
 #if	defined(_WINDOWS)
 " -registry <cmd>\tWhere cmd is set,clear,dump",
 #endif
@@ -198,7 +204,6 @@ pine_args(pine_state, argc, argv, args)
     char *lc		      = NULL;
     int   do_help             = 0;
     int   do_conf             = 0;
-    int   anonymous           = 0;
     int   usage               = 0;
     int   do_use_fk           = 0;
     int   do_can_suspend      = 0;
@@ -273,6 +278,33 @@ Loop: while(--ac > 0)
 
 		  goto Loop;
 	      }
+	      else if(strcmp(*av, "nosplash") == 0)
+		goto Loop;   /* already taken care of in WinMain */
+#ifdef PASSFILE
+	      else if(strcmp(*av, "passfile") == 0){
+		  if(--ac){
+		      if((str = *++av) != NULL){
+			  if(!is_absolute_path(str)){
+			      display_args_err(args_err_non_abs_passfile,
+					       NULL, 1);
+			      ++usage;
+			  }
+			  else{
+			      if(pine_state->passfile)
+				fs_give((void **)&pine_state->passfile);
+
+			      pine_state->passfile = cpystr(str);
+			  }
+		      }
+		  }
+		  else{
+		      display_args_err(args_err_missing_passfile, NULL, 1);
+		      ++usage;
+		  }
+
+		  goto Loop;
+	      }
+#endif  /* PASSFILE */
 #endif
 	      else if(strcmp(*av, "create_lu") == 0){
 		  if(ac > 2){
@@ -285,6 +317,14 @@ Loop: while(--ac > 0)
 		      exit(-1);
 		  }
 
+		  goto Loop;
+	      }
+	      else if(strcmp(*av, "convert_sigs") == 0){
+		  ps_global->convert_sigs = 1;
+		  goto Loop;
+	      }
+	      else if(strcmp(*av, "supported") == 0){
+		  ps_global->dump_supported_options = 1;
 		  goto Loop;
 	      }
 	      else if(strcmp(*av, "copy_pinerc") == 0){
@@ -301,7 +341,8 @@ Loop: while(--ac > 0)
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-copy_pinerc");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
@@ -321,18 +362,13 @@ Loop: while(--ac > 0)
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-copy_abook");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
 		  goto Loop;
 	      }
-#ifdef notdef
-	      else if(strcmp(*av, "nr") == 0){
-		  pine_state->nr_mode = 1;
-		  goto Loop;
-	      }
-#endif /* notdef */
 	      else if(strcmp(*av, "sort") == 0){
 		  if(--ac){
 		      sort = *++av;
@@ -357,7 +393,8 @@ Loop: while(--ac > 0)
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-url");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
@@ -372,12 +409,14 @@ Loop: while(--ac > 0)
 					  *++av, FALSE);
 		      }
 		      else{
-			  display_args_err(args_err_missing_attachment,NULL,1);
+			  sprintf(tmp_20k_buf, args_err_missing_attachment, "-attach");
+			  display_args_err(tmp_20k_buf, NULL, 1);
 			  ++usage;
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-attach");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
@@ -400,12 +439,14 @@ Loop: while(--ac > 0)
 			  while(ac);
 		      }
 		      else{
-			  display_args_err(args_err_missing_attachment,NULL,1);
+			  sprintf(tmp_20k_buf, args_err_missing_attachment, "-attachList");
+			  display_args_err(tmp_20k_buf, NULL, 1);
 			  ++usage;
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-attachList");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
@@ -420,12 +461,14 @@ Loop: while(--ac > 0)
 					  *++av, TRUE);
 		      }
 		      else{
-			  display_args_err(args_err_missing_attachment,NULL,1);
+			  sprintf(tmp_20k_buf, args_err_missing_attachment, "-attach_and_delete");
+			  display_args_err(tmp_20k_buf, NULL, 1);
 			  ++usage;
 		      }
 		  }
 		  else{
-		      display_args_err(args_err_conflict, NULL, 1);
+		      sprintf(tmp_20k_buf, args_err_conflict, "-attach_and_delete");
+		      display_args_err(tmp_20k_buf, NULL, 1);
 		      ++usage;
 		  }
 
@@ -433,6 +476,10 @@ Loop: while(--ac > 0)
 	      }
 	      else if(strcmp(*av, "bail") == 0){
 		  pine_state->exit_if_no_pinerc = 1;
+		  goto Loop;
+	      }
+	      else if(strcmp(*av, "version") == 0){
+		  do_version = 1;
 		  goto Loop;
 	      }
 #ifdef	_WINDOWS
@@ -485,11 +532,6 @@ Loop: while(--ac > 0)
 		    case 'k':
 		      do_use_fk = 1;
 		      break;
-#ifdef notdef
-		    case 'a':
-		      anonymous = 1;
-		      break;
-#endif /* notdef */
 		    case 'z':
 		      do_can_suspend = 1;
 		      break;
@@ -529,7 +571,8 @@ Loop: while(--ac > 0)
 			      args->data.folder = str;
 			  }
 			  else{
-			      display_args_err(args_err_conflict, NULL, 1);
+			      sprintf(tmp_20k_buf, args_err_conflict, "-f");
+			      display_args_err(tmp_20k_buf, NULL, 1);
 			      usage++;
 			  }
 			  
@@ -540,7 +583,8 @@ Loop: while(--ac > 0)
 			      args->data.file = str;
 			  }
 			  else{
-			      display_args_err(args_err_conflict, NULL, 1);
+			      sprintf(tmp_20k_buf, args_err_conflict, "-F");
+			      display_args_err(tmp_20k_buf, NULL, 1);
 			      usage++;
 			  }
 
@@ -688,7 +732,8 @@ Loop: while(--ac > 0)
 	  *slp = stp;
       }
       else{
-	  display_args_err(args_err_conflict, NULL, 1);
+	  sprintf(tmp_20k_buf, args_err_conflict, *av);
+	  display_args_err(tmp_20k_buf, NULL, 1);
 	  usage++;
       }
 
@@ -748,15 +793,6 @@ Loop: while(--ac > 0)
 	if(error){
 	    sprintf(tmp_20k_buf, args_err_internal, error);
 	    display_args_err(tmp_20k_buf, NULL, 1);
-	    exit(-1);
-	}
-    }
-
-    if(anonymous){
-	if(pine_state->nr_mode)
-	  pine_state->anonymous = 1;
-	else{
-	    display_args_err("Can't currently use -a without -nr", NULL, 1);
 	    exit(-1);
 	}
     }
@@ -842,11 +878,14 @@ process_debug_str(debug_str)
 		    }
 		    else{
 			i = atoi(q+1);
-			ps_global->debug_imap = min(4,max(0,i));
+			ps_global->debug_imap = min(5,max(0,i));
 		    }
 		}
 		else if(struncmp(*p, "flush", 5) == 0){
 		    ps_global->debug_flush = 1;
+		}
+		else if(struncmp(*p, "tcp", 3) == 0){
+		    ps_global->debug_tcp = 1;
 		}
 		else if(struncmp(*p, "verbose", 7) == 0){
 		    q = *p + 7;
@@ -912,10 +951,10 @@ process_debug_str(debug_str)
 	}
 	else{
 	    debug = atoi(debug_str);
-	    if(debug > 7){
-		ps_global->debug_imap = 4;
-		ps_global->debug_timestamp = 1;
-	    }
+	    if(debug > 9)
+	      ps_global->debug_imap = 5;
+	    else if(debug > 7)
+	      ps_global->debug_imap = 4;
 	    else if(debug > 6)
 	      ps_global->debug_imap = 3;
 	    else if(debug > 4)
@@ -923,8 +962,14 @@ process_debug_str(debug_str)
 	    else if(debug > 2)
 	      ps_global->debug_imap = 1;
 
+	    if(debug > 7)
+	      ps_global->debug_timestamp = 1;
+
 	    if(debug > 8)
 	      ps_global->debug_flush = 1;
+
+	    if(debug > 7)
+	      ps_global->debug_tcp = 1;
 	}
     }
 

@@ -106,7 +106,8 @@ open_system_pipe(command, outfile, errfile, mode, timeout)
     char    shellpath[32], *shell;
     int     p[2], oparentd = -1, ochildd = -1, iparentd = -1, ichildd = -1;
 
-    dprint(5, (debugfile, "Opening pipe: \"%s\" (%s%s%s%s%s%s)\n", command,
+    dprint(5, (debugfile, "Opening pipe: \"%s\" (%s%s%s%s%s%s)\n",
+	       command ? command : "NULL cmd",
 	       (mode & PIPE_WRITE)   ? "W":"", (mode & PIPE_READ)  ? "R":"",
 	       (mode & PIPE_NOSHELL) ? "N":"", (mode & PIPE_PROT)  ? "P":"",
 	       (mode & PIPE_USER)    ? "U":"", (mode & PIPE_RESET) ? "T":""));
@@ -351,7 +352,7 @@ pipe_error_cleanup(syspipe, cmd, op, res)
     PIPE_S **syspipe;
     char    *cmd, *op, *res;
 {
-    q_status_message3(SM_ORDER, 3, 3, "Pipe can't %s \"%.20s\": %s",
+    q_status_message3(SM_ORDER, 3, 3, "Pipe can't %s \"%.30s\": %s",
 		      op, cmd, res);
     dprint(1, (debugfile, "* * PIPE CAN'T %s(%s): %s\n", op, cmd, res));
     zot_pipe(syspipe);

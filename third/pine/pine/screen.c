@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: screen.c,v 1.1.1.1 2001-02-19 07:04:25 ghudson Exp $";
+static char rcsid[] = "$Id: screen.c,v 1.1.1.2 2003-02-12 08:00:55 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: screen.c,v 1.1.1.1 2001-02-19 07:04:25 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -60,7 +60,7 @@ int   equalbits PROTO((bitmap_t, bitmap_t, int));
 char *percentage PROTO((long, long, int));
 void  output_keymenu PROTO((struct key_menu *, bitmap_t, int, int));
 int   digit_count PROTO((long));
-void  output_titlebar PROTO((char *, int));
+void  output_titlebar PROTO((TITLE_S *));
 #ifdef	MOUSE
 void  print_inverted_label PROTO((int, MENUITEM *));
 #endif
@@ -321,9 +321,7 @@ int		 row,
 		    Write_to_screen(temp);
 		    c = k->column + strlen(temp);
 		    if(!empty){
-			if(name_color)
-			  (void)pico_set_colorp(label_color, PSC_NONE);
-			else
+			if(!name_color)
 			  EndInverse();
 		    }
 
@@ -358,6 +356,9 @@ int		 row,
 		    }
 
 		    strcpy(last_time->label, this_label);
+		    if(label_color)
+		      (void)pico_set_colorp(label_color, PSC_NONE);
+
 		    Write_to_screen(temp);
 		}
 	    }
@@ -430,7 +431,7 @@ print_inverted_label(state, m)
     int      col_offset, do_color = 0, skip = 0, len, c;
     char    *lp, *label;
     COLOR_PAIR *name_color = NULL, *label_color = NULL, *lastc = NULL;
-    COLOR_PAIR *defnamec = NULL, *deflabelc = NULL;
+    COLOR_PAIR *deflabelc = NULL;
     struct variable *vars = ps_global->vars;
 
     col_offset = (m->label && (lp=strchr(m->label, ' '))) ? (lp - m->label) : 0;
@@ -505,7 +506,7 @@ print_inverted_label(state, m)
     for(i = m->tl.r; i <= m->br.r; i++)
       for(j = m->tl.c + skip; j < m->br.c; j++){
 	  c = (i == m->lbl.r &&
-	       j - m->lbl.c >= 0 &&
+	       j - m->lbl.c >= 0 &&	/* what's this, has to be true? */
 	       j - m->lbl.c < len) ? label[j - m->lbl.c] : ' ';
 	  if(name_color && col_offset && j == m->lbl.c)
 	    (void)pico_set_colorp(name_color, PSC_NONE);
@@ -976,6 +977,7 @@ static struct titlebar_state {
 		*context_name;
     long	 current_msg,
 		 current_line,
+		 current_thrd,
 		 total_lines;
     int		 msg_state,
 		 cur_mess_col,
@@ -985,46 +987,9 @@ static struct titlebar_state {
 		 screen_cols;
     enum	 {Normal, OnlyRead, Closed} stream_status;
     TitleBarType style;
+    TITLE_S      titlecontainer;
 } as, titlebar_stack;
 
-    
-
-/*----------------------------------------------------------------------
-       Create little string for displaying message status
-
-  Args: message_cache  -- pointer to MESSAGECACHE 
-
-    Create a string with letters that indicate the status of the message.
-  This is a function despite it's current simplicity so we can easily 
-  add a few more flags
-  ----------------------------------------------------------------------*/
-char *
-status_string(stream, mc)
-     MAILSTREAM   *stream;
-     MESSAGECACHE *mc;
-{
-     static char string[2] = {'\0', '\0'};
-
-     if(!mc || ps_global->nr_mode) {
-         string[0] = ' ';
-         return(string);
-     } 
-
-     string[0] = (!stream || !IS_NEWS(stream)
-		  || F_ON(F_FAKE_NEW_IN_NEWS, ps_global))
-		   ? 'N' : ' ';
-
-     if(mc->seen)
-       string[0] = ' ';
-
-     if(mc->answered)
-       string[0] = 'A';
-
-     if(mc->deleted)
-       string[0] = 'D';
-
-     return(string);
-}
 
 
 
@@ -1093,7 +1058,7 @@ together and then the three parts are put together adjusting the
 spacing to make it look nice. Finally column numbers and lengths of
 various fields are saved to make updating parts of it more efficient.
 
-It's OK to call this withy a bogus current message - it is only used
+It's OK to call this with a bogus current message - it is only used
 to look up status of current message 
  
 Formats only change the right section (part3).
@@ -1110,7 +1075,7 @@ This code is some what complex, and might benefit from some improvements.
 
 char *
 set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
-	     current_pl, total_pl)
+	     current_pl, total_pl, color)
      char        *title;
      MAILSTREAM  *stream;
      CONTEXT_S   *cntxt;
@@ -1119,17 +1084,19 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
      TitleBarType style;
      int          display_on_screen;
      long	  current_pl, total_pl;
+     COLOR_PAIR  *color;
 {
-    char          *tb;
+    struct variable *vars = ps_global->vars;
     MESSAGECACHE  *mc = NULL;
-    int            start_col;
+    PINETHRD_S    *thrd = NULL;
+    TITLE_S       *tc;
 
     dprint(9, (debugfile, "set_titlebar - style: %d  current message cnt:%ld",
 	       style, mn_total_cur(msgmap)));
     dprint(9, (debugfile, "  current_pl: %ld  total_pl: %ld\n", 
 	       current_pl, total_pl));
 
-    as.current_msg   = (mn_get_total(msgmap) > 0L)
+    as.current_msg = (mn_get_total(msgmap) > 0L)
 			 ? max(0, mn_get_cur(msgmap)) : 0L;
     as.msgmap	     = msgmap;
     as.style	     = style;
@@ -1138,6 +1105,33 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
     as.stream_status = (!as.stream || (as.stream == ps_global->mail_stream
 				       && ps_global->dead_stream))
 			 ? Closed : as.stream->rdonly ? OnlyRead : Normal;
+
+    if(color){
+	memset(&as.titlecontainer.color, 0, sizeof(as.titlecontainer.color));
+	if(color->fg){
+	    strncpy(as.titlecontainer.color.fg, color->fg, MAXCOLORLEN);
+	    as.titlecontainer.color.fg[MAXCOLORLEN] = '\0';
+	}
+
+	if(color->bg){
+	    strncpy(as.titlecontainer.color.bg, color->bg, MAXCOLORLEN);
+	    as.titlecontainer.color.bg[MAXCOLORLEN] = '\0';
+	}
+    }
+    else{
+	memset(&as.titlecontainer.color, 0, sizeof(as.titlecontainer.color));
+	if(VAR_TITLE_FORE_COLOR){
+	    strncpy(as.titlecontainer.color.fg,
+		    VAR_TITLE_FORE_COLOR, MAXCOLORLEN);
+	    as.titlecontainer.color.fg[MAXCOLORLEN] = '\0';
+	}
+
+	if(VAR_TITLE_BACK_COLOR){
+	    strncpy(as.titlecontainer.color.bg,
+		    VAR_TITLE_BACK_COLOR, MAXCOLORLEN);
+	    as.titlecontainer.color.bg[MAXCOLORLEN] = '\0';
+	}
+    }
 
     if(as.folder_name)
       fs_give((void **)&as.folder_name);
@@ -1163,7 +1157,8 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
     else
       as.context_name = cpystr("");
 
-    if(as.stream && style != FolderName && as.current_msg > 0L) {
+    if(as.stream && style != FolderName
+       && style != ThrdIndex && as.current_msg > 0L) {
 	long rawno;
 
 	if((rawno = mn_m2raw(msgmap, as.current_msg)) > 0L
@@ -1173,13 +1168,30 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
 	}
     }
     
+    if(style == ThrdIndex || style == ThrdMsgNum || style == ThrdMsgPercent){
+	if(mn_get_total(msgmap) > 0L)
+	  thrd = fetch_thread(stream, mn_m2raw(msgmap, mn_get_cur(msgmap)));
+	
+	if(thrd && thrd->top && thrd->top != thrd->rawno)
+	  thrd = fetch_thread(stream, thrd->top);
+
+	if(thrd)
+	  as.current_thrd = thrd->thrdno;
+    }
+
     switch(style) {
+      case ThrdIndex:
+	as.total_lines = msgmap->max_thrdno;
+	break;
+
       case TextPercent:
       case MsgTextPercent:
       case FileTextPercent :
+      case ThrdMsgPercent:
         as.total_lines = total_pl;
         as.current_line = current_pl;
 				        /* fall through to set state */
+      case ThrdMsgNum:
       case MessageNumber:
         as.msg_state = STATUS_BITS(mc);
 
@@ -1187,36 +1199,33 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
 	break;
     }
 
-    tb = format_titlebar(&start_col);
+    tc = format_titlebar();
     if(display_on_screen)
-      output_titlebar(tb, start_col);
+      output_titlebar(tc);
 
-    return(tb);
+    return(tc->titlebar_line);
 }
 
 void 
 redraw_titlebar()
 {
-    int   start_col;
-    char *tb;
-
-    tb = format_titlebar(&start_col);
-    output_titlebar(tb, start_col);
+    output_titlebar(format_titlebar());
 }
 
 
 void
-output_titlebar(tb, start_col)
-    char *tb;
-    int   start_col;
+output_titlebar(tc)
+    TITLE_S *tc;
 {
-    struct variable *vars = ps_global->vars;
-    COLOR_PAIR *lastc;
+    COLOR_PAIR *lastc = NULL, *newcolor;
 
-    lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-			    PSC_REV|PSC_RET);
+    newcolor = tc ? &tc->color : NULL;
+
+    if(newcolor)
+      lastc = pico_set_colorp(newcolor, PSC_REV | PSC_RET);
 	    
-    PutLine0(0, start_col, tb+start_col);
+    if(tc && tc->titlebar_line)
+      PutLine0(0, 0, tc->titlebar_line);
 
     if(lastc){
 	(void)pico_set_colorp(lastc, PSC_NONE);
@@ -1253,20 +1262,16 @@ output_titlebar(tb, start_col)
      e) show 1), 2) 3), and some portion of 4)
 
    Returns - Formatted title bar 
-	   - Start_col will point to column to start printing in on return.
  ----*/
-char *
-format_titlebar(start_col)
-    int *start_col;
+TITLE_S *
+format_titlebar()
 {
-    static  char titlebar_line[MAX_SCREEN_COLS+1];
-    char    version[50], fold_tmp[MAXPATH],
-           *loc_label, *ss_string;
+    char    version[50], fold_tmp[MAXPATH], *titlebar_line,
+           *loc_label, *thd_label, *ss_string;
     int     sc, tit_len, ver_len, loc_len, fold_len, num_len, ss_len, 
             is_context;
 
-    if(start_col)
-      *start_col = 0; /* default */
+    titlebar_line = as.titlecontainer.titlebar_line;
 
     /* blank the line */
     memset((void *)titlebar_line, ' ', MAX_SCREEN_COLS*sizeof(char));
@@ -1294,14 +1299,22 @@ format_titlebar(start_col)
 	int i = max(0, sc - tit_len)/2;
 	strncpy(titlebar_line + i, as.title, min(sc, tit_len));
 	titlebar_is_dirty = 0;
-	return(titlebar_line);
+	return(&as.titlecontainer);
     }
 
     /* 
      * set location field's length and value based on requested style 
      */
-    loc_label = (is_context) ? "Msg" : "Message";
+    if(as.style == ThrdIndex)
+      loc_label = is_context ? "Thd" : "Thread";
+    else
+      loc_label = is_context ? "Msg" : "Message";
+
+    if(as.style == ThrdMsgNum || as.style == ThrdMsgPercent)
+      thd_label = is_context ? "Thd" : "Thread";
+
     loc_len   = strlen(loc_label);
+
     if(!mn_get_total(as.msgmap)){
 	sprintf(tmp_20k_buf, "No %ss", loc_label);
 	loc_len += 4;
@@ -1314,7 +1327,7 @@ format_titlebar(start_col)
 	    break;
 	  case MessageNumber :	       	/* "<loc_label> xxx of xxx DEL"  */
 	    num_len	     = digit_count(mn_get_total(as.msgmap));
-	    loc_len	    += (2 * num_len) + 9;	/* add spaces and "DEL" */
+	    loc_len	    += (2 * num_len) + 9;    /* add spaces and "DEL" */
 	    as.cur_mess_col  = sc - (2 * num_len) - 10;
 	    as.del_column    = as.cur_mess_col + num_len 
 	      + digit_count(as.current_msg) + 5;
@@ -1323,16 +1336,50 @@ format_titlebar(start_col)
 		    strcpy(tmp_20k_buf + 1500, comatose(mn_get_total(as.msgmap))),
 		    BAR_STATUS(as.msg_state));
 	    break;
-	  case MsgTextPercent :		/* "<loc_label> xxx of xxx xxx% DEL" */
-	    num_len	       = digit_count(mn_get_total(as.msgmap));
-	    loc_len	      += (2 * num_len) + 13; /* add spaces, %, and "DEL" */
-	    as.cur_mess_col    = sc - 16 - (2 * num_len);
-	    as.percent_column  = as.cur_mess_col + num_len
-	      + digit_count(as.current_msg) + 7;
-	    as.del_column      = as.percent_column + 4;
-	    sprintf(tmp_20k_buf, "%s %s of %s %s %s", loc_label, 
+	  case ThrdIndex :	       	/* "<loc_label> xxx of xxx"  */
+	    num_len	     = digit_count(as.total_lines);
+	    loc_len	    += (2 * num_len) + 5;	/* add spaces */
+	    as.cur_mess_col  = sc - (2 * num_len) - 6;
+	    sprintf(tmp_20k_buf, "%s %s of %s", loc_label,
+		    strcpy(tmp_20k_buf + 1000, comatose(as.current_thrd)),
+		    strcpy(tmp_20k_buf + 1500, comatose(as.total_lines)));
+	    break;
+	  case ThrdMsgNum :	       	/* "<loc_label> xxx of Thd xxx DEL"  */
+	    num_len	     = digit_count(mn_get_total(as.msgmap));
+	    loc_len	    += (2 * num_len) + 10 + strlen(thd_label);
+	    as.cur_mess_col  = sc - (2 * num_len) - 11 - strlen(thd_label);
+	    as.del_column    = as.cur_mess_col + num_len 
+	      + digit_count(as.current_thrd) + 6 + strlen(thd_label);
+	    sprintf(tmp_20k_buf, "%s %s in %s %s %s", loc_label,
 		    strcpy(tmp_20k_buf + 1000, comatose(as.current_msg)),
-		    strcpy(tmp_20k_buf + 1500, comatose(mn_get_total(as.msgmap))),
+		    thd_label,
+		    strcpy(tmp_20k_buf + 1500, comatose(as.current_thrd)),
+		    BAR_STATUS(as.msg_state));
+	    break;
+	  case MsgTextPercent :		/* "<loc_label> xxx of xxx xx% DEL" */
+	    num_len	       = digit_count(mn_get_total(as.msgmap));
+	    loc_len	      += (2 * num_len) + 13;
+	    as.cur_mess_col    = sc - (2 * num_len) - 14;
+	    as.percent_column  = as.cur_mess_col + num_len 
+	      + digit_count(as.current_msg) + 5;
+	    as.del_column  = as.percent_column + 4;
+	    sprintf(tmp_20k_buf, "%s %s of %s %s %s", loc_label, 
+		    strcpy(tmp_20k_buf+1000, comatose(as.current_msg)),
+		    strcpy(tmp_20k_buf+1500, comatose(mn_get_total(as.msgmap))),
+		    percentage(as.current_line, as.total_lines, 1),
+		    BAR_STATUS(as.msg_state));
+	    break;
+	  case ThrdMsgPercent :	  /* "<loc_label> xxx of Thrd xxx xx% DEL"  */
+	    num_len	       = digit_count(mn_get_total(as.msgmap));
+	    loc_len	    += (2 * num_len) + 14 + strlen(thd_label);
+	    as.cur_mess_col  = sc - (2 * num_len) - 15 - strlen(thd_label);
+	    as.percent_column    = as.cur_mess_col + digit_count(as.current_msg)
+	      + digit_count(as.current_thrd) + 6 + strlen(thd_label);
+	    as.del_column  = as.percent_column + 4;
+	    sprintf(tmp_20k_buf, "%s %s in %s %s %s %s", loc_label, 
+		    strcpy(tmp_20k_buf+1000, comatose(as.current_msg)),
+		    thd_label,
+		    strcpy(tmp_20k_buf+1500, comatose(as.current_thrd)),
 		    percentage(as.current_line, as.total_lines, 1),
 		    BAR_STATUS(as.msg_state));
 	    break;
@@ -1351,8 +1398,6 @@ format_titlebar(start_col)
 
     /* at least the version will fit */
     strncpy(titlebar_line + 2, version, ver_len);
-    if(!titlebar_is_dirty && start_col)
-      *start_col = 2 + ver_len;
 
     titlebar_is_dirty = 0;
 
@@ -1361,13 +1406,13 @@ format_titlebar(start_col)
 	strncpy((titlebar_line + sc) - (tit_len + 2), as.title, tit_len);
         as.del_column = as.cur_mess_col = as.percent_column
 	  = as.page_column = -1;
-	return(titlebar_line);		/* put title and leave */
+	return(&as.titlecontainer);
     }
 
     /* figure folder_length and what's to be displayed */
     fold_tmp[0] = '\0';
     if(as.style == FileTextPercent || as.style == TextPercent){
-	if(as.style == FileTextPercent && !ps_global->anonymous){
+	if(as.style == FileTextPercent){
 	    char *fmt    = "File: %s%s";
 	    int   avail  = sc - (ver_len + tit_len + loc_len + 10);
 	    fold_len     = strlen(as.folder_name);
@@ -1428,7 +1473,7 @@ format_titlebar(start_col)
 	if(as.stream
 	   && as.stream->mailbox
 	   && mail_valid_net_parse(as.stream->mailbox, &mb)
-	   && mb.altflag)
+	   && (mb.sslflag || mb.tlsflag))
 	  titlebar_line[sc - 1] = '+';
     }
     
@@ -1441,7 +1486,7 @@ format_titlebar(start_col)
       strncpy((titlebar_line + sc) - (loc_len + fold_len + 4), fold_tmp,
 	      fold_len);
 
-    return(titlebar_line);
+    return(&as.titlecontainer);
 }
 
 
@@ -1458,39 +1503,79 @@ columns and shorten tail, the string holding the rest of the line.
 void
 update_titlebar_message()
 {
-    struct variable *vars = ps_global->vars;
+    long curnum = mn_get_cur(as.msgmap), maxnum;
+    long oldnum;
+    PINETHRD_S *thrd = NULL;
 
-    if(as.cur_mess_col >= 0 && as.current_msg != mn_get_cur(as.msgmap)){
-	COLOR_PAIR *lastc;
-	int delta = digit_count(mn_get_cur(as.msgmap))
-						 - digit_count(as.current_msg);
-	as.current_msg = mn_get_cur(as.msgmap);
-	lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-				PSC_REV|PSC_RET);
+    if(as.style == ThrdIndex){
+	unsigned long rawno;
+
+	oldnum = as.current_thrd;
+
+	if(as.stream && (rawno=mn_m2raw(as.msgmap, mn_get_cur(as.msgmap))))
+	  thrd = fetch_thread(as.stream, rawno);
+	
+	if(thrd && thrd->top && (thrd=fetch_thread(as.stream, thrd->top)))
+	  curnum = thrd->thrdno;
+    }
+    else if(as.cur_mess_col >= 0){
+	curnum = mn_get_cur(as.msgmap);
+	oldnum = as.current_msg;
+    }
+
+    if(as.cur_mess_col >= 0 && oldnum != curnum){
+	COLOR_PAIR *lastc = NULL, *titlecolor;
+	int delta = digit_count(curnum) - digit_count(oldnum);
+
+	if(as.style == ThrdIndex)
+	  as.current_thrd = curnum;
+	else
+	  as.current_msg = curnum;
+
+	titlecolor = &as.titlecontainer.color;
+
+	if(titlecolor)
+	  lastc = pico_set_colorp(titlecolor, PSC_REV|PSC_RET);
 
 	if(delta){
-	    as.del_column += delta;
+	    maxnum = mn_get_total(as.msgmap);
+	    if(as.style == ThrdIndex)
+	      maxnum = as.msgmap->max_thrdno;
+
+	    if(as.del_column >= 0)
+	      as.del_column += delta;
 
 	    if(as.style == MsgTextPercent){
 		as.percent_column += delta;
 		PutLine5(0, as.cur_mess_col, "%s of %s %s %s%s",
-			 strcpy(tmp_20k_buf + 1000, comatose(as.current_msg)),
-			 strcpy(tmp_20k_buf + 1500,
-				comatose(mn_get_total(as.msgmap))),
+			 strcpy(tmp_20k_buf + 1000, comatose(curnum)),
+			 strcpy(tmp_20k_buf + 1500, comatose(maxnum)),
 			 percentage(as.current_line, as.total_lines, 0),
 			 BAR_STATUS(as.msg_state),
 			 repeat_char(max(0, -delta), SPACE));
 	    }
+	    else if(as.style == ThrdMsgNum){
+	      char *thd_label;
+
+	      thd_label = strlen(as.context_name) ? "Thd" : "Thread";
+	      PutLine5(0, as.cur_mess_col, "%s in %s %s %s%s",
+		       strcpy(tmp_20k_buf + 1000, comatose(curnum)),
+		       thd_label,
+		       strcpy(tmp_20k_buf + 1500, comatose(as.current_thrd)),
+		       BAR_STATUS(as.msg_state),
+		       repeat_char(max(0, -delta), SPACE));
+	    }
 	    else
 	      PutLine4(0, as.cur_mess_col, "%s of %s %s%s",
-		       strcpy(tmp_20k_buf + 1000, comatose(as.current_msg)),
+		       strcpy(tmp_20k_buf + 1000, comatose(curnum)),
 		       strcpy(tmp_20k_buf + 1500,
-			      comatose(mn_get_total(as.msgmap))),
-		       BAR_STATUS(as.msg_state),
+			      comatose(maxnum)),
+		       (as.style == ThrdIndex) ? ""
+					       : BAR_STATUS(as.msg_state),
 		       repeat_char(max(0, -delta), SPACE));
 	}
 	else
-	  PutLine0(0, as.cur_mess_col, comatose(as.current_msg));
+	  PutLine0(0, as.cur_mess_col, comatose(curnum));
 
 	if(lastc){
 	    (void)pico_set_colorp(lastc, PSC_NONE);
@@ -1513,11 +1598,15 @@ int
 update_titlebar_status()
 {
     MESSAGECACHE *mc;
-    struct variable *vars = ps_global->vars;
-    COLOR_PAIR  *lastc;
+    COLOR_PAIR *lastc = NULL, *titlecolor;
     
     if(!as.stream || as.current_msg <= 0L || as.del_column < 0)
       return(1);
+
+    if(as.current_msg != mn_get_cur(as.msgmap)){
+	update_titlebar_message();
+	return(1);
+    }
 
     mc = mail_elt(as.stream, mn_m2raw(as.msgmap, as.current_msg));
 
@@ -1544,8 +1633,11 @@ update_titlebar_status()
     }
 
     as.msg_state = STATUS_BITS(mc);
-    lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-			    PSC_REV|PSC_RET);
+
+    titlecolor = &as.titlecontainer.color;
+
+    if(titlecolor)
+      lastc = pico_set_colorp(titlecolor, PSC_REV|PSC_RET);
 
     PutLine0(0, as.del_column, BAR_STATUS(as.msg_state));
 
@@ -1570,16 +1662,17 @@ void
 update_titlebar_percent(new_line_number)
     long new_line_number;
 {
-    struct variable *vars = ps_global->vars;
-    COLOR_PAIR *lastc;
+    COLOR_PAIR *lastc = NULL, *titlecolor;
 
     if(as.percent_column < 0 || new_line_number == as.current_line)
       return;
 
     as.current_line = new_line_number;
 
-    lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-			    PSC_REV|PSC_RET);
+    titlecolor = &as.titlecontainer.color;
+
+    if(titlecolor)
+      lastc = pico_set_colorp(titlecolor, PSC_REV|PSC_RET);
 
     PutLine0(0, as.percent_column,
 	     percentage(as.current_line, as.total_lines, 0));
@@ -1605,8 +1698,7 @@ void
 update_titlebar_lpercent(new_line_number)
     long new_line_number;
 {
-    struct variable *vars = ps_global->vars;
-    COLOR_PAIR *lastc;
+    COLOR_PAIR *lastc = NULL, *titlecolor;
 
     if(as.page_column < 0 || new_line_number == as.current_line)
       return;
@@ -1614,8 +1706,10 @@ update_titlebar_lpercent(new_line_number)
     as.current_line = new_line_number;
 
 
-    lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-			    PSC_REV|PSC_RET);
+    titlecolor = &as.titlecontainer.color;
+
+    if(titlecolor)
+      lastc = pico_set_colorp(titlecolor, PSC_REV|PSC_RET);
 
     sprintf(tmp_20k_buf, "%*ld of %*ld %s    ",
 	    digit_count(as.total_lines), as.current_line, 
@@ -1696,4 +1790,44 @@ end_keymenu()
 	if(last_time_buf[i].label)
 	  fs_give((void **)&last_time_buf[i].label);
     }
+}
+
+
+/*----------------------------------------------------------------------
+   Exported method to display status of mail check
+
+   Args: putstr -- should be NO LONGER THAN 2 bytes
+
+ Result: putstr displayed at upper-left-hand corner of screen
+  ----*/
+void
+check_cue_display(putstr)
+     char* putstr;
+{
+    COLOR_PAIR *lastc = NULL, *titlecolor;
+    static char check_cue_char;
+  
+    if(ps_global->read_predicted && 
+       (check_cue_char == putstr[0]
+	|| putstr[0] == ' ' && putstr[1] == '\0'))
+        return;
+    else{
+        if(putstr[0] == ' ')
+	  check_cue_char = '\0';
+	else
+	  check_cue_char = putstr[0];
+    }
+
+    titlecolor = &as.titlecontainer.color;
+
+    if(titlecolor)
+      lastc = pico_set_colorp(titlecolor, PSC_REV|PSC_RET);
+
+    PutLine0(0, 0, putstr);		/* show delay cue */
+    if(lastc){
+	(void)pico_set_colorp(lastc, PSC_NONE);
+	free_color_pair(&lastc);
+    }
+
+    fflush(stdout);
 }

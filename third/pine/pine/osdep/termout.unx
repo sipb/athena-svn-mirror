@@ -35,7 +35,6 @@ now assumes it dosn't know where the cursor is after outputing in the
 static int   _lines, _columns;
 static int   _line  = FARAWAY;
 static int   _col   = FARAWAY;
-static int   _in_inverse;
 
 
 /*
@@ -800,8 +799,9 @@ Writechar(ch, new_esc_len)
 	    putchar(ch);
 	    break;
 
-	  default :		/* Change remaining control characters to ? */
-	    if(F_ON(F_PASS_CONTROL_CHARS, ps_global))
+	  default :
+	    /* Change remaining control characters to ? */
+	    if(ps_global->pass_ctrl_chars)
 	      putchar(ch);
 	    else
 	      putchar('?');

@@ -404,7 +404,9 @@ optionally_enter(string, y_base, x_base, field_len,
 #endif
 
 	/* Timeout 10 min to keep imap mail stream alive */
+	ps_global->conceal_sensitive_debugging = passwd ? 1 : 0;
         ch = read_char(600);
+	ps_global->conceal_sensitive_debugging = 0;
 
 #ifdef	MOUSE
 	clear_mfunc(mouse_in_content);
@@ -859,7 +861,7 @@ line_paint(offset, passwd)
 
 	extra = 0;
 	MoveCursor(dline.row, dline.col);
-	while(extra++ < dline.dlen)
+	while(extra++ <= dline.dlen)
 	  Writechar(' ', 0);
 
 	MoveCursor(dline.row, dline.col);

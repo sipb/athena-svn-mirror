@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.1.1.1 2001-02-19 07:11:41 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: strings.c,v 1.1.1.1 2001-02-19 07:11:41 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -81,6 +81,7 @@ static char rcsid[] = "$Id: strings.c,v 1.1.1.1 2001-02-19 07:11:41 ghudson Exp 
  ====*/
 
 #include "headers.h"
+#include "../c-client/utf8.h"
 
 typedef struct role_args {
     char    *ourcharset;
@@ -109,15 +110,19 @@ char       *data_for_patline PROTO((PAT_S *));
 PAT_LINE_S *parse_pat_lit PROTO((char *));
 PAT_LINE_S *parse_pat_inherit PROTO((void));
 PAT_S      *parse_pat PROTO((char *));
+void        parse_patgrp_slash PROTO((char *, PATGRP_S *));
+void        parse_action_slash PROTO((char *, ACTION_S *));
 void        free_patline PROTO((PAT_LINE_S **));
 void        free_patgrp PROTO((PATGRP_S **));
 ARBHDR_S   *parse_arbhdr PROTO((char *));
 void        free_arbhdr PROTO((ARBHDR_S **));
 PAT_S      *copy_pat PROTO((PAT_S *));
 PATGRP_S   *copy_patgrp PROTO((PATGRP_S *));
-PATTERN_S  *copy_pattern PROTO((PATTERN_S *));
 void        set_up_search_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
 				     ROLE_ARGS_T *));
+SEARCHPGM  *next_not PROTO((SEARCHPGM *));
+SEARCHOR   *next_or PROTO((SEARCHOR **));
+char       *next_arb PROTO((char *));
 void        add_type_to_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
 				   ROLE_ARGS_T *));
 void        set_srch PROTO((char *, char *, SEARCHPGM *, ROLE_ARGS_T *));
@@ -669,19 +674,254 @@ istrncpy(d, s, n)
 {
     char *rv = d;
 
+    if(!d || !s)
+      return(NULL);
+    
     do
-      if(F_OFF(F_PASS_CONTROL_CHARS, ps_global) && *s && CAN_DISPLAY(*s))
+      if(!ps_global->pass_ctrl_chars && *s && CAN_DISPLAY(*s)
+	 && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
 	if(n-- > 0){
 	    *d++ = '^';
 
 	    if(n-- > 0)
-	      *d++ = *s++ + '@';
+	      *d = (*s++ & 0x7f) + '@';
 	}
-    while(n-- > 0 && (*d++ = *s++));
+      }
+      else{
+	  if(n-- > 0)
+	    *d = *s++;
+      }
+    while(n > 0 && *d++);
 
     return(rv);
 }
 
+
+/*
+ * Copies the source string into allocated space with the 8-bit EUC codes
+ * (on Unix) or the Shift-JIS (on PC) converted into ISO-2022-JP.
+ * Caller is responsible for freeing the result.
+ */
+unsigned char *
+trans_euc_to_2022_jp(src)
+    unsigned char *src;
+{
+    size_t len, alloc;
+    unsigned char *rv, *p, *q;
+    int    inside_esc_seq = 0;
+    int    c1 = -1;		/* remembers first of pair for Shift-JIS */
+
+    if(!src)
+      return(NULL);
+    
+    if(F_ON(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+      return((unsigned char *) cpystr((char *) src));
+
+    len = strlen((char *) src);
+
+    /*
+     * Worst possible increase is every other character an 8-bit character.
+     * In that case, each of those gets 6 extra charactes for the escape
+     * sequences. We're not too concerned about the extra length because
+     * these are relatively short strings.
+     */
+    alloc = len + 1 + ((len+1)/2) * 6;
+    rv = (unsigned char *) fs_get(alloc * sizeof(char));
+
+    for(p = src, q = rv; *p; p++){
+	if(inside_esc_seq){
+	    if(c1 >= 0){			/* second of a pair? */
+		int adjust = *p < 159;
+		int rowOffset = c1 < 160 ? 112 : 176;
+		int cellOffset = adjust ? (*p > 127 ? 32 : 31) : 126;
+
+		*q++ = ((c1 - rowOffset) << 1) - adjust;
+		*q++ = *p - cellOffset;
+		c1 = -1;
+	    }
+	    else if(*p & 0x80){
+#ifdef _WINDOWS
+		c1 = *p;			/* remember first of pair */
+#else						/* EUC */
+		*q++ = (*p & 0x7f);
+#endif
+	    }
+	    else{
+		*q++ = '\033';
+		*q++ = '(';
+		*q++ = 'B';
+		*q++ = (*p);
+		c1 = -1;
+		inside_esc_seq = 0;
+	    }
+	}
+	else{
+	    if(*p & 0x80){
+		*q++ = '\033';
+		*q++ = '$';
+		*q++ = 'B';
+#ifdef _WINDOWS
+		c1 = *p;
+#else
+		*q++ = (*p & 0x7f);
+#endif
+		inside_esc_seq = 1;
+	    }
+	    else{
+		*q++ = (*p);
+	    }
+	}
+    }
+
+    if(inside_esc_seq){
+	*q++ = '\033';
+	*q++ = '(';
+	*q++ = 'B';
+    }
+
+    *q = '\0';
+
+    return(rv);
+}
+
+
+/*
+ * Copies the source string into allocated space with the ISO-2022-JP
+ * converted into 8-bit EUC codes (on Unix) or into Shift-JIS (on PC).
+ * Caller is responsible for freeing the result.
+ */
+unsigned char *
+trans_2022_jp_to_euc(src)
+    unsigned char *src;
+{
+    size_t len;
+    unsigned char *rv, *p, *q, c;
+    int    inside_esc_seq = 0;
+    int    c1 = -1;		/* remembers first of pair for Shift-JIS */
+#define DFL	0
+#define ESC	1	/* saw ESCAPE */
+#define ESCDOL	2	/* saw ESCAPE $ */
+#define ESCPAR	3	/* saw ESCAPE ( */
+#define EUC	4	/* filtering into EUC */
+    int    state = DFL;
+
+    if(!src)
+      return(NULL);
+    
+    if(F_ON(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+      return((unsigned char *) cpystr((char *) src));
+
+    len = strlen((char *) src);
+    rv = (unsigned char *) fs_get((len + 1) * sizeof(char));
+
+    /*
+     * The state machine is dumb because it is copied from the same
+     * state machine in gf_2022_jp_to_euc where we only have access to
+     * one character at a time with no lookahead. Obviously, we could
+     * look ahead here, but why make it different?
+     */
+    for(p = src, q = rv; *p; p++){
+	switch(state){
+	  case ESC:				/* saw ESC */
+	    if(!inside_esc_seq && *p == '$')
+	      state = ESCDOL;
+	    else if(inside_esc_seq && *p == '(')
+	      state = ESCPAR;
+	    else{
+		*q++ = '\033';
+		*q++ = (*p);
+		state = DFL;
+	    }
+
+	    break;
+
+	  case ESCDOL:			/* saw ESC $ */
+	    if(*p == 'B' || *p == '@'){
+		state = EUC;
+		inside_esc_seq = 1;		/* filtering into euc */
+		c1 = -1;			/* first character of pair */
+	    }
+	    else{
+		*q++ = '\033';
+		*q++ = '$';
+		*q++ = (*p);
+		state = DFL;
+	    }
+
+	    break;
+
+	  case ESCPAR:			/* saw ESC ( */
+	    if(*p == 'B' || *p == 'J' || *p == 'H'){
+		state = DFL;
+		inside_esc_seq = 0;		/* done filtering */
+	    }
+	    else{
+		*q++ = '\033';		/* Don't set hibit for     */
+		*q++ = '(';		/* escape sequences, which */
+		*q++ = (*p);		/* this appears to be.     */
+	    }
+
+	    break;
+
+	  case EUC:				/* filtering into euc */
+	    if(*p == '\033')
+	      state = ESC;
+	    else{
+#ifdef _WINDOWS					/* Shift-JIS */
+		c = (*p) & 0x7f;		/* 8-bit can't win */
+		if(c1 >= 0){			/* second of a pair? */
+		    int rowOffset = (c1 < 95) ? 112 : 176;
+		    int cellOffset = (c1 % 2) ? ((c > 95) ? 32 : 31)
+					      : 126;
+
+		    *q++ = ((c1 + 1) >> 1) + rowOffset;
+		    *q++ = c + cellOffset;
+		    c1 = -1;			/* restart */
+		}
+		else if(c > 0x20 && c < 0x7f)
+		  c1 = c;			/* first of pair */
+		else{
+		    *q++ = c;			/* write CTL as itself */
+		    c1 = -1;
+		}
+#else						/* EUC */
+		*q++ = (*p > 0x20 && *p < 0x7f) ? *p | 0x80 : *p;
+#endif
+	    }
+
+	    break;
+
+	  case DFL:
+	  default:
+	    if(*p == '\033')
+	      state = ESC;
+	    else
+	      *q++ = (*p);
+
+	    break;
+	}
+    }
+
+    switch(state){
+      case ESC:
+	*q++ = '\033';
+	break;
+
+      case ESCDOL:
+	*q++ = '\033';
+	*q++ = '$';
+	break;
+
+      case ESCPAR:
+	*q++ = '\033';		/* Don't set hibit for */
+	*q++ = '(';		/* escape sequences.   */
+	break;
+    }
+
+    *q = '\0';
+
+    return(rv);
+}
 
 
 char *xdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", NULL};
@@ -832,6 +1072,7 @@ parse_date(given_date, d)
     for(i = xdays; *i != NULL; i++) 
       if(struncmp(p, *i, 3) == 0) /* Match first 3 letters */
         break;
+
     if(*i != NULL) {
         /* Started with week day */
         d->wkday = i - xdays;
@@ -840,6 +1081,7 @@ parse_date(given_date, d)
         while(*p && (isspace((unsigned char)*p) || *p == ','))
           p++;
     }
+
     if(isdigit((unsigned char)*p)) {
         d->day = atoi(p);
         while(*p && isdigit((unsigned char)*p))
@@ -965,12 +1207,24 @@ parse_date(given_date, d)
 	      }
         }
     }
-    dprint(9, (debugfile,
-	 "Parse date: \"%s\" to..  hours_off_gmt:%d  min_off_gmt:%d\n",
-               given_date, d->hours_off_gmt, d->min_off_gmt));
-    dprint(9, (debugfile,
-	       "Parse date: wkday:%d  month:%d  year:%d  day:%d  hour:%d  min:%d  sec:%d\n",
-            d->wkday, d->month, d->year, d->day, d->hour, d->minute, d->sec));
+
+    if(d->wkday == -1){
+	MESSAGECACHE elt;
+	struct tm   *tm;
+	time_t       t;
+
+	/*
+	 * Not sure why we aren't just using this from the gitgo, but
+	 * since not sure will just use it to repair wkday.
+	 */
+	if(mail_parse_date(&elt, given_date)){
+	    t = mail_longdate(&elt);
+	    tm = localtime(&t);
+
+	    if(tm)
+	      d->wkday = tm->tm_wday;
+	}
+    }
 }
 
 
@@ -1096,7 +1350,6 @@ comatose(number)
     char       *b;
 
     whichbuf = (whichbuf + 1) % 3;
-    dprint(9, (debugfile, "comatose(%ld) returns:", number));
     if(number == 0){
         strcpy(buf[whichbuf], "0");
         return(buf[whichbuf]);
@@ -1116,8 +1369,6 @@ comatose(number)
 	}
     }
     *b = '\0';
-
-    dprint(9, (debugfile, "\"%s\"\n", buf[whichbuf]));
 
     return(buf[whichbuf]);
 #endif	/* DOS */
@@ -1601,7 +1852,7 @@ put_pair(label, value)
     
     sprintf(result, "%s%s%s",
 	    lab ? lab : "",
-	    (lab && val) ? " " : "",
+	    (lab && lab[0] && val && val[0]) ? " " : "",
 	    val ? val : "");
 
     if(lab && lab != label)
@@ -1764,7 +2015,7 @@ string_to_cstring(s)
 		break;
 
 	      default:
-		if(*s >= SPACE && *s <= '~'){
+		if(*s >= SPACE && *s < '~' && *s != '\"' && *s != '$'){
 		    *p++ = *s;
 		    i++;
 		}
@@ -2637,9 +2888,11 @@ rfc1522_decode(d, len, s, charset)
     char	  **charset;
 {
     unsigned char *rv = NULL, *p;
-    char	  *start = s, *sw, *cset, *enc, *txt, *ew, **q, *lang;
+    char	  *start = s, *sw, *enc, *txt, *ew, **q, *lang;
+    char          *cset, *cs = NULL;
     unsigned long  l;
     int		   i;
+    int            translate_2022_jp = 0;
 
     *d = '\0';					/* init destination */
     if(charset)
@@ -2666,11 +2919,38 @@ rfc1522_decode(d, len, s, charset)
 	      *lang++ = '\0';
 
 	    /* Insert text explaining charset if we don't know what it is */
-	    if((!ps_global->VAR_CHAR_SET
-		|| strucmp((char *) cset, ps_global->VAR_CHAR_SET))
-	       && strucmp((char *) cset, "US-ASCII")){
+	    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global)
+	       && !strucmp((char *) cset, "iso-2022-jp")){
+		translate_2022_jp++;
+		dprint(5, (debugfile, "RFC1522_decode: translating %s\n",
+			   cset));
+		if(!ps_global->VAR_CHAR_SET
+		   || strucmp(ps_global->VAR_CHAR_SET, "iso-2022-jp")){
+		    if(charset){
+			if(!*charset)		/* only write first charset */
+			  *charset = cpystr(cset);
+		    }
+		    else{
+			if(d-rv<len-1)
+			  *d++ = '[';
+
+			sstrncpy((char **) &d, cset, len-1-(d-rv));
+			if(d-rv<len-1)
+			  *d++ = ']';
+			if(d-rv<len-1)
+			  *d++ = SPACE;
+		    }
+		}
+		/* else, just translate it silently */
+	    }
+	    else if((!ps_global->VAR_CHAR_SET
+		     || strucmp((char *) cset, ps_global->VAR_CHAR_SET))
+	            && strucmp((char *) cset, "US-ASCII")){
 		dprint(5, (debugfile, "RFC1522_decode: charset mismatch: %s\n",
 			   cset));
+		if(!cs)
+		  cs = cpystr(cset);
+
 		if(charset){
 		    if(!*charset)		/* only write first charset */
 		      *charset = cpystr(cset);
@@ -2788,9 +3068,45 @@ rfc1522_decode(d, len, s, charset)
     }
 
     if(rv && *s)				/* copy remaining text */
-      strncat((char *)rv, s, len-1-strlen((char *)rv));
+      strncat((char *) rv, s, len - 1 - strlen((char *) rv));
 
-/* BUG: MUST do code page mapping under DOS after decoding */
+    if(translate_2022_jp){
+	unsigned char *trans;
+
+	/*
+	 * We want to do the translation in place in the string, but to do
+	 * that first we get an allocated copy of the translation and then
+	 * we put it back into rv.
+	 */
+	trans = trans_2022_jp_to_euc(rv);
+	if(trans){
+	    istrncpy(rv, (char *) trans, len);
+	    rv[len - 1] = '\0';
+	    fs_give((void **) &trans);
+	}
+    }
+    else if(cs){
+	if(rv && F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
+	   && ps_global->VAR_CHAR_SET
+	   && strucmp(ps_global->VAR_CHAR_SET, cs)){
+	    unsigned char *tab;
+
+	    /*
+	     * If we know how to do the translation from cs
+	     * to VAR_CHAR_SET, do it in place.
+	     */
+	    if((tab = conversion_table(cs, ps_global->VAR_CHAR_SET)) != NULL){
+		p = rv;
+		while(len-- > 0 && *p){
+		    *p = tab[*p];
+		    p++;
+		}
+	    }
+	}
+    }
+
+    if(cs)
+      fs_give((void **) &cs);
 
     return(rv ? rv : (unsigned char *) start);
 
@@ -3069,6 +3385,129 @@ rfc1522_binary (src, srcl)
 
     *d = '\0';			/* tie off string */
     return(ret);		/* return the resulting string */
+}
+
+
+/*
+ * Returns a 256 character table to do the translation if feasible, else NULL.
+ */
+unsigned char *
+conversion_table(from_cs, to_cs)
+    char *from_cs,
+         *to_cs;
+{
+    int             translate_it = 0, i, j;
+    unsigned char  *p = NULL;
+    unsigned short *fromtab, *totab;
+    CONV_TABLE     *ct = NULL;
+    CHARSET        *from, *to;
+
+    if(!(from_cs && *from_cs && to_cs && *to_cs) || !strucmp(from_cs, to_cs))
+      return(NULL);
+
+    /*
+     * First check to see if we are already set up for this pair of charsets.
+     */
+    if((ct = ps_global->conv_table) != NULL
+       && ct->from_charset && ct->to_charset
+       && !strucmp(ct->from_charset, from_cs)
+       && !strucmp(ct->to_charset, to_cs))
+      return(ct->table);
+
+    /*
+     * No such luck. Check to see if a translation is feasible.
+     */
+    from = utf8_charset(from_cs);
+    to   = utf8_charset(to_cs);
+
+    if(from && to){
+	if(from->type == to->type && from->tab == to->tab)
+	  translate_it = 0;		/* no translation is necessary */
+	else if(from->type == CT_1BYTE && to->type == CT_1BYTE)
+	  translate_it = (from->script & to->script) ? 2 : 1;
+    
+	/*
+	 * We're not exactly sure what to do with translate_it right now, but
+	 * it means:
+	 *
+	 *   translate_it == 0   no can do
+	 *                   1   can do but may lose some letters
+	 *                       and special characters
+	 *                   2   can do for all letters, may lose some
+	 *                       special characters
+	 *
+	 * Maybe we should use this to warn the user appropriately, but we
+	 * have to worry about cascading warnings. For now, we're just
+	 * translating the 1 and 2 cases.
+	 */
+    }
+    
+
+    /*
+     * Get rid of the cache of the previous translation table
+     * and build a new one.
+     */
+    if(ct){
+	if(ct->table)
+	  fs_give((void **) &ct->table);
+	
+	if(ct->from_charset)
+	  fs_give((void **) &ct->from_charset);
+	
+	if(ct->to_charset)
+	  fs_give((void **) &ct->to_charset);
+    }
+    else
+      ct = ps_global->conv_table = (CONV_TABLE *) fs_get(sizeof(*ct));
+    
+    memset(ct, 0, sizeof(*ct));
+
+    ct->from_charset = cpystr(from_cs);
+    ct->to_charset   = cpystr(to_cs);
+
+    if(!translate_it)
+      return(ct->table);	/* which is still NULL */
+    
+    fromtab = (unsigned short *) from->tab;
+    totab   = (unsigned short *) to->tab;
+
+    /*
+     * The fromtab and totab tables are mappings from the 128 character
+     * positions 128-255 to their Unicode values (so unsigned shorts).
+     * The table we are creating is such that if
+     *
+     *    from_char_value -> unicode_value
+     *    to_char_value   -> same_unicode_value
+     *
+     *  then we want to map from_char_value -> to_char_value
+     *
+     * To simplify conversions we create the whole 256 element array, with
+     * the first 128 positions just the identity. If there is no conversion
+     * for a particular from_char_value (that is, no to_char_value maps to
+     * the same unicode character) then we put '?' in that character. We
+     * may want to output blob on the PC, but don't so far.
+     *
+     * If fromtab or totab are NULL, that means the mapping is simply the
+     * identity mapping. Since that is still useful to us, we create it
+     * on the fly.
+     */
+
+    p = ct->table = (unsigned char *) fs_get(256 * sizeof(unsigned char));
+    for(i = 0; i < 256; i++){
+	p[i] = i;
+	if(i >= 128){
+	    p[i] = '?';
+	    for(j = 0; j < 128; j++){
+		if((fromtab ? fromtab[i-128] : i)
+		   == (totab ? totab[j] : j+128)){
+		    p[i] = 128 + j;
+		    break;
+		}
+	    }
+	}
+    }
+
+    return(ct->table);
 }
 
 
@@ -3380,7 +3819,7 @@ char *
 rfc1738_encode_mailto(s)
     char *s;
 {
-    char *p, *d, *ret = NULL;
+    char *d, *ret = NULL;
 
     if(s){
 	/* Worst case, encode every character */
@@ -3478,7 +3917,6 @@ web_host_scan(line, len)
     int  *len;
 {
     char *end, last = '\0';
-    int   n;
 
     for(; *line; last = *line++)
       if((*line == 'w' || *line == 'W')
@@ -3520,7 +3958,6 @@ mail_addr_scan(line, len)
     int  *len;
 {
     char *amp, *start, *end;
-    int   n;
 
     /* process each : in the line */
     for(; amp = strindex(line, '@'); line = end){
@@ -3552,7 +3989,7 @@ mail_addr_scan(line, len)
 	/*
 	 * Make sure everyhing up to the colon is a known scheme...
 	 */
-	if(start && (n = amp - start) > 0){
+	if(start && (amp - start) > 0){
 	    /*
 	     * Second, make sure that everything to the right of
 	     * amp is valid for a "domain"...
@@ -3830,7 +4267,6 @@ rfc2231_list_params(plist)
 {
     PARAMETER *pp, **ppp;
     int	       i;
-    char      *cp;
 
     if(plist->value)
       fs_give((void **) &plist->value);
@@ -3869,26 +4305,37 @@ rfc2231_list_params(plist)
  * the _ne (NonEmpty) versions are used routinely. We open the patterns by
  * calling either nonempty_patterns (normal use) or any_patterns (config).
  *
- * There are five different pinerc variables which contain patterns. They are
- * patterns-filters, patterns-roles, patterns-scores, patterns-indexcolors,
- * and the old "patterns". The first four are the active patterns variables
- * but the old patterns variable is kept around so that we can convert old
- * patterns to new. The reason we split it into four separate variables is
- * so that each can independently be controlled by the main pinerc or by the
- * exception pinerc.
+ * There are eight different pinerc variables which contain patterns. They are
+ * patterns-filters2, patterns-roles, patterns-scores2, patterns-indexcolors,
+ * patterns-other, and the old patterns, patterns-filters, and patterns-other.
+ * The first five are the active patterns variables and the old variable are
+ * kept around so that we can convert old patterns to new. The reason we
+ * split it into five separate variables is so that each can independently
+ * be controlled by the main pinerc or by the exception pinerc. The reason
+ * for the change to filters2 and scores2 was so we could change the semantics
+ * of how rules work when there are pieces in the rule that we don't
+ * understand. We added a rule to detect 8bitSubjects. So a user might have
+ * a filter that deletes messages with 8bitSubjects. The problem was that
+ * that same filter in a old patterns-filters pine would match because it
+ * would ignore the 8bitSubject part of the pattern and match on the rest.
+ * So we changed the semantics so that rules with unknown pieces would be
+ * ignored instead of used. We had to change variable names at the same time
+ * because we were adding the 8bit thing and the old pines are still out
+ * there. Filters and Scores can both be dangerous. Roles, Colors, and Other
+ * seem less dangerous so not worth adding a new variable for them.
  *
- * Each of the five variables has its own handle and status variables below.
+ * Each of the eight variables has its own handle and status variables below.
  * That means that they operate independently.
  *
  * Looking at just a single one of those variables, it has four possible
  * values. In normal use, we use the current_val of the variable to set
  * up the patterns. We do that by calling nonempty_patterns with the
- * appropriate rflags. When editing configurations, we have the other three
- * variables to deal with: pre_user_val, main_user_val, and post_user_val.
+ * appropriate rflags. When editing configurations, we have the other two
+ * variables to deal with: main_user_val  and post_user_val.
  * We only ever deal with one of those at a time, so we re-use the variables.
  * However, we do sometimes want to deal with one of those and at the same
  * time refer to the current current_val. For example, if we are editing
- * the pre, post, or main user_val for the filters variable, we still want
+ * the post or main user_val for the filters variable, we still want
  * to check for new mail. If we find new mail we'll want to call
  * process_filter_patterns which uses the current_val for filter patterns.
  * That means we have to provide for the case where we are using current_val
@@ -3899,36 +4346,48 @@ rfc2231_list_params(plist)
  * one value at a time, whereas rflags may be more than one value OR'd together.
  */
 PAT_HANDLE	       **cur_pat_h;
-static PAT_HANDLE	*pattern_h_roles_ne,  *pattern_h_roles_any,
-			*pattern_h_scores_ne, *pattern_h_scores_any,
-			*pattern_h_filts_ne,  *pattern_h_filts_any,
-			*pattern_h_incol_ne,  *pattern_h_incol_any,
-			*pattern_h_old_ne,    *pattern_h_old_any;
+static PAT_HANDLE	*pattern_h_roles_ne,    *pattern_h_roles_any,
+			*pattern_h_scores_ne,   *pattern_h_scores_any,
+			*pattern_h_filts_ne,    *pattern_h_filts_any,
+			*pattern_h_incol_ne,    *pattern_h_incol_any,
+			*pattern_h_other_ne,    *pattern_h_other_any,
+			*pattern_h_oldpat_ne,   *pattern_h_oldpat_any,
+			*pattern_h_oldfilt_ne,  *pattern_h_oldfilt_any,
+			*pattern_h_oldscore_ne, *pattern_h_oldscore_any;
 
 /*
  * These contain the PAT_OPEN_MASK open status and the PAT_USE_MASK use status.
  */
 static long		*cur_pat_status;
-static long	  	 pat_status_roles_ne,  pat_status_roles_any,
-			 pat_status_scores_ne, pat_status_scores_any,
-			 pat_status_filts_ne,  pat_status_filts_any,
-			 pat_status_incol_ne,  pat_status_incol_any,
-			 pat_status_old_ne,    pat_status_old_any;
+static long	  	 pat_status_roles_ne,    pat_status_roles_any,
+			 pat_status_scores_ne,   pat_status_scores_any,
+			 pat_status_filts_ne,    pat_status_filts_any,
+			 pat_status_incol_ne,    pat_status_incol_any,
+			 pat_status_other_ne,    pat_status_other_any,
+			 pat_status_oldpat_ne,   pat_status_oldpat_any,
+			 pat_status_oldfilt_ne,  pat_status_oldfilt_any,
+			 pat_status_oldscore_ne, pat_status_oldscore_any;
 
 #define SET_PATTYPE(rflags)						\
     set_pathandle(rflags);						\
     cur_pat_status =							\
       ((rflags) & PAT_USE_CURRENT)					\
 	? (((rflags) & ROLE_DO_INCOLS) ? &pat_status_incol_ne :		\
-	    ((rflags) & ROLE_DO_FILTER) ? &pat_status_filts_ne :	\
-	     ((rflags) & ROLE_DO_SCORES) ? &pat_status_scores_ne :	\
-	      ((rflags) & ROLE_DO_ROLES) ?  &pat_status_roles_ne :	\
-					   &pat_status_old_ne)		\
+	    ((rflags) & ROLE_DO_OTHER)  ? &pat_status_other_ne :	\
+	     ((rflags) & ROLE_DO_FILTER) ? &pat_status_filts_ne :	\
+	      ((rflags) & ROLE_DO_SCORES) ? &pat_status_scores_ne :	\
+	       ((rflags) & ROLE_DO_ROLES)  ? &pat_status_roles_ne :	\
+	        ((rflags) & ROLE_OLD_FILT)  ? &pat_status_oldfilt_ne :	\
+	         ((rflags) & ROLE_OLD_SCORE) ? &pat_status_oldscore_ne :\
+					        &pat_status_oldpat_ne)	\
 	: (((rflags) & ROLE_DO_INCOLS) ? &pat_status_incol_any :	\
-	    ((rflags) & ROLE_DO_FILTER) ? &pat_status_filts_any :	\
-	     ((rflags) & ROLE_DO_SCORES) ? &pat_status_scores_any :	\
-	      ((rflags) & ROLE_DO_ROLES) ?  &pat_status_roles_any :	\
-					   &pat_status_old_any);
+	    ((rflags) & ROLE_DO_OTHER)  ? &pat_status_other_any :	\
+	     ((rflags) & ROLE_DO_FILTER) ? &pat_status_filts_any :	\
+	      ((rflags) & ROLE_DO_SCORES) ? &pat_status_scores_any :	\
+	       ((rflags) & ROLE_DO_ROLES)  ? &pat_status_roles_any :	\
+	        ((rflags) & ROLE_OLD_FILT)  ? &pat_status_oldfilt_any :	\
+	         ((rflags) & ROLE_OLD_SCORE) ? &pat_status_oldscore_any:\
+					        &pat_status_oldpat_any);
 #define CANONICAL_RFLAGS(rflags)	\
     ((((rflags) & (ROLE_DO_ROLES | ROLE_REPLY | ROLE_FORWARD | ROLE_COMPOSE)) \
 					? ROLE_DO_ROLES  : 0) |		   \
@@ -3938,8 +4397,14 @@ static long	  	 pat_status_roles_ne,  pat_status_roles_any,
 					? ROLE_DO_SCORES : 0) |		   \
      (((rflags) & (ROLE_DO_FILTER))					   \
 					? ROLE_DO_FILTER : 0) |		   \
-     (((rflags) & (ROLE_OLD_PATS))					   \
-					? ROLE_OLD_PATS  : 0))
+     (((rflags) & (ROLE_DO_OTHER))					   \
+					? ROLE_DO_OTHER  : 0) |		   \
+     (((rflags) & (ROLE_OLD_FILT))					   \
+					? ROLE_OLD_FILT  : 0) |		   \
+     (((rflags) & (ROLE_OLD_SCORE))					   \
+					? ROLE_OLD_SCORE : 0) |		   \
+     (((rflags) & (ROLE_OLD_PAT))					   \
+					? ROLE_OLD_PAT  : 0))
 
 #define SETPGMSTATUS(val,yes,no)	\
     switch(val){			\
@@ -3957,7 +4422,7 @@ static long	  	 pat_status_roles_ne,  pat_status_roles_any,
 #define SET_STATUS(srchin,srchfor,assignto)				\
     {char *qq, *pp;							\
      int   ii;								\
-     NAMEVAL_S *vv;						\
+     NAMEVAL_S *vv;							\
      if((qq = srchstr(srchin, srchfor)) != NULL){			\
 	if((pp = remove_pat_escapes(qq+strlen(srchfor))) != NULL){	\
 	    for(ii = 0; vv = role_status_types(ii); ii++)		\
@@ -3971,6 +4436,25 @@ static long	  	 pat_status_roles_ne,  pat_status_roles_any,
      }									\
     }
 
+#define SET_MSGSTATE(srchin,srchfor,assignto)				\
+    {char *qq, *pp;							\
+     int   ii;								\
+     NAMEVAL_S *vv;							\
+     if((qq = srchstr(srchin, srchfor)) != NULL){			\
+	if((pp = remove_pat_escapes(qq+strlen(srchfor))) != NULL){	\
+	    for(ii = 0; vv = msg_state_types(ii); ii++)			\
+	      if(!strucmp(pp, vv->shortname)){				\
+		  assignto = vv->value;					\
+		  break;						\
+	      }								\
+									\
+	    fs_give((void **)&pp);					\
+	}								\
+     }									\
+    }
+
+#define PATTERN_N (8)
+
 
 void
 set_pathandle(rflags)
@@ -3978,15 +4462,17 @@ set_pathandle(rflags)
 {
     cur_pat_h = (rflags & PAT_USE_CURRENT)
 		? ((rflags & ROLE_DO_INCOLS) ? &pattern_h_incol_ne :
-		    (rflags & ROLE_DO_FILTER) ? &pattern_h_filts_ne :
-		     (rflags & ROLE_DO_SCORES) ? &pattern_h_scores_ne :
-		      (rflags & ROLE_DO_ROLES)  ? &pattern_h_roles_ne :
-					           &pattern_h_old_ne)
+		    (rflags & ROLE_DO_OTHER)  ? &pattern_h_other_ne :
+		     (rflags & ROLE_DO_FILTER) ? &pattern_h_filts_ne :
+		      (rflags & ROLE_DO_SCORES) ? &pattern_h_scores_ne :
+		       (rflags & ROLE_DO_ROLES)  ? &pattern_h_roles_ne :
+					            &pattern_h_oldpat_ne)
 	        : ((rflags & ROLE_DO_INCOLS) ? &pattern_h_incol_any :
-		    (rflags & ROLE_DO_FILTER) ? &pattern_h_filts_any :
-		     (rflags & ROLE_DO_SCORES) ? &pattern_h_scores_any :
-		      (rflags & ROLE_DO_ROLES)  ? &pattern_h_roles_any :
-					           &pattern_h_old_any);
+		    (rflags & ROLE_DO_OTHER)  ? &pattern_h_other_any :
+		     (rflags & ROLE_DO_FILTER) ? &pattern_h_filts_any :
+		      (rflags & ROLE_DO_SCORES) ? &pattern_h_scores_any :
+		       (rflags & ROLE_DO_ROLES)  ? &pattern_h_roles_any :
+					            &pattern_h_oldpat_any);
 }
 
 
@@ -4008,12 +4494,18 @@ open_any_patterns(rflags)
       sub_open_any_patterns(ROLE_DO_INCOLS | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_FILTER)
       sub_open_any_patterns(ROLE_DO_FILTER | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_DO_OTHER)
+      sub_open_any_patterns(ROLE_DO_OTHER  | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_SCORES)
       sub_open_any_patterns(ROLE_DO_SCORES | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_ROLES)
-      sub_open_any_patterns(ROLE_DO_ROLES | (rflags & PAT_USE_MASK));
-    if(canon_rflags & ROLE_OLD_PATS)
-      sub_open_any_patterns(ROLE_OLD_PATS | (rflags & PAT_USE_MASK));
+      sub_open_any_patterns(ROLE_DO_ROLES  | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_FILT)
+      sub_open_any_patterns(ROLE_OLD_FILT  | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_SCORE)
+      sub_open_any_patterns(ROLE_OLD_SCORE | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_PAT)
+      sub_open_any_patterns(ROLE_OLD_PAT   | (rflags & PAT_USE_MASK));
 }
 
 
@@ -4027,7 +4519,6 @@ void
 sub_open_any_patterns(rflags)
     long rflags;
 {
-    PAT_S      *pat;
     PAT_LINE_S *patline = NULL, *pl = NULL;
     char      **t = NULL;
     struct variable *var;
@@ -4041,11 +4532,17 @@ sub_open_any_patterns(rflags)
       var = &ps_global->vars[V_PAT_ROLES];
     else if(rflags & ROLE_DO_FILTER)
       var = &ps_global->vars[V_PAT_FILTS];
+    else if(rflags & ROLE_DO_OTHER)
+      var = &ps_global->vars[V_PAT_OTHER];
     else if(rflags & ROLE_DO_SCORES)
       var = &ps_global->vars[V_PAT_SCORES];
     else if(rflags & ROLE_DO_INCOLS)
       var = &ps_global->vars[V_PAT_INCOLS];
-    else if(rflags & ROLE_OLD_PATS)
+    else if(rflags & ROLE_OLD_FILT)
+      var = &ps_global->vars[V_PAT_FILTS_OLD];
+    else if(rflags & ROLE_OLD_SCORE)
+      var = &ps_global->vars[V_PAT_SCORES_OLD];
+    else if(rflags & ROLE_OLD_PAT)
       var = &ps_global->vars[V_PATTERNS];
 
     switch(rflags & PAT_USE_MASK){
@@ -4085,7 +4582,7 @@ sub_open_any_patterns(rflags)
 	    }
 	    else
 	      q_status_message1(SM_ORDER, 0, 3,
-				"Invalid patterns line \"%.40s\"", *t);
+				"Invalid patterns line \"%.200s\"", *t);
 	}
     }
 
@@ -4096,15 +4593,19 @@ sub_open_any_patterns(rflags)
 void
 close_every_pattern()
 {
-    close_patterns(ROLE_DO_INCOLS | ROLE_DO_FILTER | ROLE_DO_SCORES |
-		   ROLE_DO_ROLES | ROLE_OLD_PATS | PAT_USE_CURRENT);
+    close_patterns(ROLE_DO_INCOLS | ROLE_DO_FILTER | ROLE_DO_SCORES
+		   | ROLE_DO_OTHER | ROLE_DO_ROLES
+		   | ROLE_OLD_FILT | ROLE_OLD_SCORE | ROLE_OLD_PAT
+		   | PAT_USE_CURRENT);
     /*
      * Since there is only one set of variables for the other three uses
      * we can just close any one of them. There can only be one open at
      * a time.
      */
-    close_patterns(ROLE_DO_INCOLS | ROLE_DO_FILTER | ROLE_DO_SCORES |
-		   ROLE_DO_ROLES | ROLE_OLD_PATS | PAT_USE_MAIN);
+    close_patterns(ROLE_DO_INCOLS | ROLE_DO_FILTER | ROLE_DO_SCORES
+		   | ROLE_DO_OTHER | ROLE_DO_ROLES
+		   | ROLE_OLD_FILT | ROLE_OLD_SCORE | ROLE_OLD_PAT
+		   | PAT_USE_MAIN);
 }
 
 
@@ -4123,14 +4624,20 @@ close_patterns(rflags)
 
     if(canon_rflags & ROLE_DO_INCOLS)
       sub_close_patterns(ROLE_DO_INCOLS | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_DO_OTHER)
+      sub_close_patterns(ROLE_DO_OTHER  | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_FILTER)
       sub_close_patterns(ROLE_DO_FILTER | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_SCORES)
       sub_close_patterns(ROLE_DO_SCORES | (rflags & PAT_USE_MASK));
     if(canon_rflags & ROLE_DO_ROLES)
-      sub_close_patterns(ROLE_DO_ROLES | (rflags & PAT_USE_MASK));
-    if(canon_rflags & ROLE_OLD_PATS)
-      sub_close_patterns(ROLE_OLD_PATS | (rflags & PAT_USE_MASK));
+      sub_close_patterns(ROLE_DO_ROLES  | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_FILT)
+      sub_close_patterns(ROLE_OLD_FILT  | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_SCORE)
+      sub_close_patterns(ROLE_OLD_SCORE | (rflags & PAT_USE_MASK));
+    if(canon_rflags & ROLE_OLD_PAT)
+      sub_close_patterns(ROLE_OLD_PAT   | (rflags & PAT_USE_MASK));
 }
 
 
@@ -4190,14 +4697,20 @@ any_patterns(rflags, pstate)
 
     if(canon_rflags & ROLE_DO_INCOLS)
       ret += sub_any_patterns(ROLE_DO_INCOLS, pstate);
+    if(canon_rflags & ROLE_DO_OTHER)
+      ret += sub_any_patterns(ROLE_DO_OTHER, pstate);
     if(canon_rflags & ROLE_DO_FILTER)
       ret += sub_any_patterns(ROLE_DO_FILTER, pstate);
     if(canon_rflags & ROLE_DO_SCORES)
       ret += sub_any_patterns(ROLE_DO_SCORES, pstate);
     if(canon_rflags & ROLE_DO_ROLES)
       ret += sub_any_patterns(ROLE_DO_ROLES, pstate);
-    if(canon_rflags & ROLE_OLD_PATS)
-      ret += sub_any_patterns(ROLE_OLD_PATS, pstate);
+    if(canon_rflags & ROLE_OLD_FILT)
+      ret += sub_any_patterns(ROLE_OLD_FILT, pstate);
+    if(canon_rflags & ROLE_OLD_SCORE)
+      ret += sub_any_patterns(ROLE_OLD_SCORE, pstate);
+    if(canon_rflags & ROLE_OLD_PAT)
+      ret += sub_any_patterns(ROLE_OLD_PAT, pstate);
 
     return(ret);
 }
@@ -4284,7 +4797,8 @@ parse_pat_file(filename)
 
     if(VAR_OPER_DIR && !in_dir(VAR_OPER_DIR, path)){
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			  "Can't use Roles file outside of %s", VAR_OPER_DIR);
+			  "Can't use Roles file outside of %.200s",
+			  VAR_OPER_DIR);
 	return(NULL);
     }
 
@@ -4330,7 +4844,7 @@ parse_pat_file(filename)
     if(can_access(path, EDIT_ACCESS) == 0){
 	if(patline->readonly)
 	  q_status_message1(SM_ORDER, 0, 3,
-			    "Pattern file directory (%s) is ReadOnly", dir);
+			    "Pattern file directory (%.200s) is ReadOnly", dir);
     }
     else if(can_access(path, READ_ACCESS) == 0)
       patline->readonly = 1;
@@ -4350,7 +4864,7 @@ parse_pat_file(filename)
 		    if(strcmp(buf, PATTERN_MAGIC) == 0){
 			if(atoi(PATTERN_FILE_VERS) < atoi(buf + len + 1))
 			  q_status_message1(SM_ORDER, 0, 4,
-      "Pattern file \"%s\" is made by newer Pine, will try to use it anyway",
+  "Pattern file \"%.200s\" is made by newer Pine, will try to use it anyway",
 					    filename);
 
 			ok++;
@@ -4364,7 +4878,7 @@ parse_pat_file(filename)
 	    if(!ok){
 		patline->readonly = 1;
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				  "\"%s\" is not a Pattern file", path);
+				  "\"%.200s\" is not a Pattern file", path);
 	    }
 
 	    p = NULL;
@@ -4391,14 +4905,14 @@ parse_pat_file(filename)
 	else{
 	    patline->readonly = 1;
 	    q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			      "Error \"%s\" reading pattern file \"%s\"",
+			  "Error \"%.200s\" reading pattern file \"%.200s\"",
 			      error_description(errno), path);
 	}
     }
     else{		/* doesn't exist yet, try to create it */
 	if(patline->readonly)
 	  q_status_message1(SM_ORDER, 0, 3,
-			    "Pattern file directory (%s) is ReadOnly", dir);
+			    "Pattern file directory (%.200s) is ReadOnly", dir);
 	else{
 	    /*
 	     * We try to create it by making up an empty patline and calling
@@ -4409,7 +4923,7 @@ parse_pat_file(filename)
 		patline->readonly = 1;
 		patline->dirty = 0;
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				  "Error creating pattern file \"%s\"",
+				  "Error creating pattern file \"%.200s\"",
 				  path);
 	    }
 	}
@@ -4450,8 +4964,7 @@ parse_pat(str)
 {
     PAT_S *pat = NULL;
     char  *p, *q, *astr, *pstr;
-    int    i;
-    NAMEVAL_S *v;
+    int    backslashed;
 #define PTRN "pattern="
 #define PTRNLEN 8
 #define ACTN "action="
@@ -4469,60 +4982,35 @@ parse_pat(str)
     if((p = srchstr(str, PTRN)) != NULL){
 	pat->patgrp = (PATGRP_S *)fs_get(sizeof(*pat->patgrp));
 	memset((void *)pat->patgrp, 0, sizeof(*pat->patgrp));
+	pat->patgrp->fldr_type = FLDR_DEFL;
+	pat->patgrp->abookfrom = AFRM_DEFL;
 
 	if((pstr = copy_quoted_string_asis(p+PTRNLEN)) != NULL){
-	    /* get the nickname (we always force a nickname) */
-	    if((q = srchstr(pstr, "/NICK=")) != NULL)
-	      pat->patgrp->nick = remove_pat_escapes(q+6);
-	    else
-	      pat->patgrp->nick = cpystr("Alternate Role");
+	    /* move to next slash */
+	    for(q=pstr, backslashed=0; *q; q++){
+		switch(*q){
+		  case '\\':
+		    backslashed = !backslashed;
+		    break;
 
-	    pat->patgrp->to      = parse_pattern("/TO=",     pstr, 1);
-	    pat->patgrp->cc      = parse_pattern("/CC=",     pstr, 1);
-	    pat->patgrp->recip   = parse_pattern("/RECIP=",  pstr, 1);
-	    pat->patgrp->partic  = parse_pattern("/PARTIC=", pstr, 1);
-	    pat->patgrp->from    = parse_pattern("/FROM=",   pstr, 1);
-	    pat->patgrp->sender  = parse_pattern("/SENDER=", pstr, 1);
-	    pat->patgrp->news    = parse_pattern("/NEWS=",   pstr, 1);
-	    pat->patgrp->subj    = parse_pattern("/SUBJ=",   pstr, 1);
-	    pat->patgrp->alltext = parse_pattern("/ALL=",    pstr, 1);
-
-	    pat->patgrp->arbhdr = parse_arbhdr(pstr);
-
-	    if((q = srchstr(pstr, "/SCOREI=")) != NULL){
-		if((p = remove_pat_escapes(q+8)) != NULL){
-		    int left, right;
-
-		    if(parse_score_interval(p, &left, &right)){
-			pat->patgrp->do_score  = 1;
-			pat->patgrp->score_min = left;
-			pat->patgrp->score_max = right;
+		  case '/':
+		    if(!backslashed){
+			parse_patgrp_slash(q, pat->patgrp);
+			if(pat->patgrp->bogus && !pat->raw)
+			  pat->raw = cpystr(str);
 		    }
 
-		    fs_give((void **)&p);
+		  /* fall through */
+
+		  default:
+		    backslashed = 0;
+		    break;
 		}
 	    }
 
-	    /* folder type */
-	    pat->patgrp->fldr_type = FLDR_DEFL;
-	    if((q = srchstr(pstr, "/FLDTYPE=")) != NULL){
-		if((p = remove_pat_escapes(q+9)) != NULL){
-		    for(i = 0; v = pat_fldr_types(i); i++)
-		      if(!strucmp(p, v->shortname)){
-			  pat->patgrp->fldr_type = v->value;
-			  break;
-		      }
-
-		    fs_give((void **)&p);
-		}
-	    }
-
-	    pat->patgrp->folder = parse_pattern("/FOLDER=", pstr, 1);
-
-	    SET_STATUS(pstr,"/STATN=",pat->patgrp->stat_new);
-	    SET_STATUS(pstr,"/STATI=",pat->patgrp->stat_imp);
-	    SET_STATUS(pstr,"/STATA=",pat->patgrp->stat_ans);
-	    SET_STATUS(pstr,"/STATD=",pat->patgrp->stat_del);
+	    /* we always force a nickname */
+	    if(!pat->patgrp->nick)
+	      pat->patgrp->nick = cpystr("Alternate Role");
 
 	    fs_give((void **)&pstr);
 	}
@@ -4531,176 +5019,519 @@ parse_pat(str)
     if((p = srchstr(str, ACTN)) != NULL){
 	pat->action = (ACTION_S *)fs_get(sizeof(*pat->action));
 	memset((void *)pat->action, 0, sizeof(*pat->action));
+	pat->action->startup_rule = IS_NOTSET;
+	pat->action->repl_type = ROLE_REPL_DEFL;
+	pat->action->forw_type = ROLE_FORW_DEFL;
+	pat->action->comp_type = ROLE_COMP_DEFL;
+	pat->action->nick = cpystr((pat->patgrp && pat->patgrp->nick
+				    && pat->patgrp->nick[0])
+				       ? pat->patgrp->nick : "Alternate Role");
 
 	if((astr = copy_quoted_string_asis(p+ACTNLEN)) != NULL){
-	    ACTION_S *action;
+	    /* move to next slash */
+	    for(q=astr, backslashed=0; *q; q++){
+		switch(*q){
+		  case '\\':
+		    backslashed = !backslashed;
+		    break;
 
-	    action = pat->action;
-	    memset((void *)action, 0, sizeof(*action));
-
-	    action->nick = cpystr((pat->patgrp->nick && pat->patgrp->nick[0])
-				   ? pat->patgrp->nick : "Alternate Role");
-
-	    if(srchstr(astr, "/ROLE=1"))
-	      action->is_a_role = 1;
-
-	    if(srchstr(astr, "/ISINCOL=1"))
-	      action->is_a_incol = 1;
-
-	    if(srchstr(astr, "/ISSCORE=1"))
-	      action->is_a_score = 1;
-
-	    /* get the score associated with this pattern */
-	    if(action->is_a_score && (q = srchstr(astr, "/SCORE=")) != NULL){
-		if((p = remove_pat_escapes(q+7)) != NULL){
-		    i = atoi(p);
-		    if(i >= SCORE_MIN && i <= SCORE_MAX)
-		      action->scoreval = i;
-
-		    fs_give((void **)&p);
-		}
-	    }
-
-	    if(srchstr(astr, "/FILTER=1")){
-		action->is_a_filter = 1;
-		action->folder	    = parse_pattern("/FOLDER=", astr, 1);
-		action->move_only_if_not_deleted =
-		    (action->folder && srchstr(astr, "/NOTDEL=1")) ? 1 : 0;
-	    }
-
-	    if(action->is_a_role){
-		/* reply type */
-		action->repl_type = ROLE_REPL_DEFL;
-		if((q = srchstr(astr, "/RTYPE=")) != NULL){
-		    if((p = remove_pat_escapes(q+7)) != NULL){
-			for(i = 0; v = role_repl_types(i); i++)
-			  if(!strucmp(p, v->shortname)){
-			      action->repl_type = v->value;
-			      break;
-			  }
-
-			fs_give((void **)&p);
+		  case '/':
+		    if(!backslashed){
+			parse_action_slash(q, pat->action);
+			if(pat->action->bogus && !pat->raw)
+			  pat->raw = cpystr(str);
 		    }
-		}
 
-		/* forward type */
-		action->forw_type = ROLE_FORW_DEFL;
-		if((q = srchstr(astr, "/FTYPE=")) != NULL){
-		    if((p = remove_pat_escapes(q+7)) != NULL){
-			for(i = 0; v = role_forw_types(i); i++)
-			  if(!strucmp(p, v->shortname)){
-			      action->forw_type = v->value;
-			      break;
-			  }
+		  /* fall through */
 
-			fs_give((void **)&p);
-		    }
-		}
-
-		/* compose type */
-		action->comp_type = ROLE_COMP_DEFL;
-		if((q = srchstr(astr, "/CTYPE=")) != NULL){
-		    if((p = remove_pat_escapes(q+7)) != NULL){
-			for(i = 0; v = role_comp_types(i); i++)
-			  if(!strucmp(p, v->shortname)){
-			      action->comp_type = v->value;
-			      break;
-			  }
-
-			fs_give((void **)&p);
-		    }
-		}
-
-		/* get the from */
-		if((q = srchstr(astr, "/FROM=")) != NULL){
-		    if((p = remove_pat_escapes(q+6)) != NULL){
-			rfc822_parse_adrlist(&action->from, p,
-					     ps_global->maildomain);
-			fs_give((void **)&p);
-		    }
-		}
-
-		/* get the reply-to */
-		if((q = srchstr(astr, "/REPL=")) != NULL){
-		    if((p = remove_pat_escapes(q+6)) != NULL){
-			rfc822_parse_adrlist(&action->replyto, p,
-					     ps_global->maildomain);
-			fs_give((void **)&p);
-		    }
-		}
-
-		/* get the fcc */
-		if((q = srchstr(astr, "/FCC=")) != NULL)
-		  action->fcc = remove_pat_escapes(q+5);
-
-		/* get the literal sig */
-		if((q = srchstr(astr, "/LSIG=")) != NULL)
-		  action->litsig = remove_pat_escapes(q+6);
-
-		/* get the sig file */
-		if((q = srchstr(astr, "/SIG=")) != NULL)
-		  action->sig = remove_pat_escapes(q+5);
-
-		/* get the template file */
-		if((q = srchstr(astr, "/TEMPLATE=")) != NULL)
-		  action->template = remove_pat_escapes(q+10);
-
-		/* get the custom headers */
-		if((q = srchstr(astr, "/CSTM=")) != NULL){
-		    if((p = remove_pat_escapes(q+6)) != NULL){
-			char *list;
-			int   commas = 0;
-
-			/* count elements in list */
-			for(q = p; q && *q; q++)
-			  if(*q == ',')
-			    commas++;
-
-			action->cstm = parse_list(p, commas+1, NULL);
-			fs_give((void **)&p);
-		    }
-		}
-
-		/* get the inherit nick */
-		if((q = srchstr(astr, "/INICK=")) != NULL)
-		  action->inherit_nick = remove_pat_escapes(q+7);
-	    }
-	    else{
-		action->repl_type = ROLE_NOTAROLE_DEFL;
-		action->forw_type = ROLE_NOTAROLE_DEFL;
-		action->comp_type = ROLE_NOTAROLE_DEFL;
-	    }
-
-
-	    /* get the index color */
-	    if(action->is_a_incol && (q = srchstr(astr, "/INCOL=")) != NULL){
-		if((p = remove_pat_escapes(q+7)) != NULL){
-		    char *fg = NULL, *bg = NULL, *z;
-		    /*
-		     * Color should look like
-		     * /FG=white/BG=red
-		     */
-		    if((z = srchstr(p, "/FG=")) != NULL)
-		      fg = remove_pat_escapes(z+4);
-		    if((z = srchstr(p, "/BG=")) != NULL)
-		      bg = remove_pat_escapes(z+4);
-
-		    if(fg && *fg && bg && *bg)
-		      action->incol = new_color_pair(fg, bg);
-
-		    if(fg)
-		      fs_give((void **)&fg);
-		    if(bg)
-		      fs_give((void **)&bg);
-		    fs_give((void **)&p);
+		  default:
+		    backslashed = 0;
+		    break;
 		}
 	    }
 
 	    fs_give((void **)&astr);
+
+	    if(!pat->action->is_a_score)
+	      pat->action->scoreval = 0;
+	    
+	    if(pat->action->is_a_filter)
+	      pat->action->kill = (pat->action->folder
+				   || pat->action->kill == -1) ? 0 : 1;
+	    else{
+		if(pat->action->folder)
+		  free_pattern(&pat->action->folder);
+	    }
+
+	    if(!pat->action->is_a_role){
+		pat->action->repl_type = ROLE_NOTAROLE_DEFL;
+		pat->action->forw_type = ROLE_NOTAROLE_DEFL;
+		pat->action->comp_type = ROLE_NOTAROLE_DEFL;
+		if(pat->action->from)
+		  mail_free_address(&pat->action->from);
+		if(pat->action->replyto)
+		  mail_free_address(&pat->action->replyto);
+		if(pat->action->fcc)
+		  fs_give((void **)&pat->action->fcc);
+		if(pat->action->litsig)
+		  fs_give((void **)&pat->action->litsig);
+		if(pat->action->sig)
+		  fs_give((void **)&pat->action->sig);
+		if(pat->action->template)
+		  fs_give((void **)&pat->action->template);
+		if(pat->action->cstm)
+		  free_list_array(&pat->action->cstm);
+		if(pat->action->smtp)
+		  free_list_array(&pat->action->smtp);
+		if(pat->action->inherit_nick)
+		  fs_give((void **)&pat->action->inherit_nick);
+	    }
+
+	    if(!pat->action->is_a_incol){
+		if(pat->action->incol)
+		  free_color_pair(&pat->action->incol);
+	    }
+
+	    if(!pat->action->is_a_other){
+		pat->action->sort_is_set = 0;
+		pat->action->sortorder = 0;
+		pat->action->revsort = 0;
+		pat->action->startup_rule = IS_NOTSET;
+		if(pat->action->index_format)
+		  fs_give((void **)&pat->action->index_format);
+	    }
 	}
     }
-    
+
     return(pat);
+}
+
+
+/*
+ * Fill in one member of patgrp from str.
+ *
+ * The multiple constant strings are lame but it evolved this way from
+ * previous versions and isn't worth fixing.
+ */
+void
+parse_patgrp_slash(str, patgrp)
+    char *str;
+    PATGRP_S *patgrp;
+{
+    char  *p;
+
+    if(!patgrp)
+      panic("NULL patgrp to parse_patgrp_slash");
+    else if(!(str && *str)){
+	panic("NULL or empty string to parse_patgrp_slash");
+	patgrp->bogus = 1;
+    }
+    else if(!strncmp(str, "/NICK=", 6))
+      patgrp->nick = remove_pat_escapes(str+6);
+    else if(!strncmp(str, "/TO=", 4) || !strncmp(str, "/!TO=", 5))
+      patgrp->to = parse_pattern("TO", str, 1);
+    else if(!strncmp(str, "/CC=", 4) || !strncmp(str, "/!CC=", 5))
+      patgrp->cc = parse_pattern("CC", str, 1);
+    else if(!strncmp(str, "/RECIP=", 7) || !strncmp(str, "/!RECIP=", 8))
+      patgrp->recip = parse_pattern("RECIP", str, 1);
+    else if(!strncmp(str, "/PARTIC=", 8) || !strncmp(str, "/!PARTIC=", 9))
+      patgrp->partic = parse_pattern("PARTIC", str, 1);
+    else if(!strncmp(str, "/FROM=", 6) || !strncmp(str, "/!FROM=", 7))
+      patgrp->from = parse_pattern("FROM", str, 1);
+    else if(!strncmp(str, "/SENDER=", 8) || !strncmp(str, "/!SENDER=", 9))
+      patgrp->sender = parse_pattern("SENDER", str, 1);
+    else if(!strncmp(str, "/NEWS=", 6) || !strncmp(str, "/!NEWS=", 7))
+      patgrp->news = parse_pattern("NEWS", str, 1);
+    else if(!strncmp(str, "/SUBJ=", 6) || !strncmp(str, "/!SUBJ=", 7))
+      patgrp->subj = parse_pattern("SUBJ", str, 1);
+    else if(!strncmp(str, "/ALL=", 5) || !strncmp(str, "/!ALL=", 6))
+      patgrp->alltext = parse_pattern("ALL", str, 1);
+    else if(!strncmp(str, "/BODY=", 6) || !strncmp(str, "/!BODY=", 7))
+      patgrp->bodytext = parse_pattern("BODY", str, 1);
+    else if(!strncmp(str, "/FOLDER=", 8) || !strncmp(str, "/!FOLDER=", 9))
+      patgrp->folder = parse_pattern("FOLDER", str, 1);
+    else if(!strncmp(str, "/ABOOKS=", 8) || !strncmp(str, "/!ABOOKS=", 9))
+      patgrp->abooks = parse_pattern("ABOOKS", str, 1);
+    else if(!strncmp(str, "/ARB", 4) || !strncmp(str, "/!ARB", 5)
+	    || !strncmp(str, "/EARB", 5) || !strncmp(str, "/!EARB", 6))
+      patgrp->arbhdr = parse_arbhdr(str);
+    else if(!strncmp(str, "/SENTDATE=", 10))
+      patgrp->age_uses_sentdate = 1;
+    else if(!strncmp(str, "/SCOREI=", 8)){
+	if((p = remove_pat_escapes(str+8)) != NULL){
+	    int left, right;
+
+	    if(parse_score_interval(p, &left, &right)){
+		patgrp->do_score  = 1;
+		patgrp->score_min = left;
+		patgrp->score_max = right;
+	    }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/AGE=", 5)){
+	if((p = remove_pat_escapes(str+5)) != NULL){
+	    int left, right;
+
+	    if(parse_score_interval(p, &left, &right)){
+		patgrp->do_age  = 1;
+		patgrp->age_min = left;
+		patgrp->age_max = right;
+	    }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/FLDTYPE=", 9)){
+	if((p = remove_pat_escapes(str+9)) != NULL){
+	    int        i;
+	    NAMEVAL_S *v;
+
+	    for(i = 0; v = pat_fldr_types(i); i++)
+	      if(!strucmp(p, v->shortname)){
+		  patgrp->fldr_type = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/AFROM=", 7)){
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    int        i;
+	    NAMEVAL_S *v;
+
+	    for(i = 0; v = abookfrom_fldr_types(i); i++)
+	      if(!strucmp(p, v->shortname)){
+		  patgrp->abookfrom = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/STATN=", 7)){
+	SET_STATUS(str,"/STATN=",patgrp->stat_new);
+    }
+    else if(!strncmp(str, "/STATR=", 7)){
+	SET_STATUS(str,"/STATR=",patgrp->stat_rec);
+    }
+    else if(!strncmp(str, "/STATI=", 7)){
+	SET_STATUS(str,"/STATI=",patgrp->stat_imp);
+    }
+    else if(!strncmp(str, "/STATA=", 7)){
+	SET_STATUS(str,"/STATA=",patgrp->stat_ans);
+    }
+    else if(!strncmp(str, "/STATD=", 7)){
+	SET_STATUS(str,"/STATD=",patgrp->stat_del);
+    }
+    else if(!strncmp(str, "/8BITS=", 7)){
+	SET_STATUS(str,"/8BITS=",patgrp->stat_8bitsubj);
+    }
+    else{
+	char save;
+
+	patgrp->bogus = 1;
+
+	if((p = strindex(str, '=')) != NULL){
+	    save = *(p+1);
+	    *(p+1) = '\0';
+	}
+
+	dprint(1, (debugfile,
+	       "parse_patgrp_slash(%.20s): unrecognized in \"%s\"\n",
+	       str, patgrp->nick ? patgrp->nick : ""));
+	q_status_message4(SM_ORDER, 1, 3,
+	      "Warning: unrecognized pattern element \"%.20s\"%.20s%.20s%.20s",
+	      str, patgrp->nick ? " in rule \"" : "",
+	      patgrp->nick ? patgrp->nick : "", patgrp->nick ? "\"" : "");
+
+	if(p)
+	  *(p+1) = save;
+    }
+}
+
+
+/*
+ * Fill in one member of action struct from str.
+ *
+ * The multiple constant strings are lame but it evolved this way from
+ * previous versions and isn't worth fixing.
+ */
+void
+parse_action_slash(str, action)
+    char *str;
+    ACTION_S *action;
+{
+    char      *p;
+    int        stateval, i;
+    NAMEVAL_S *v;
+
+    if(!action)
+      panic("NULL action to parse_action_slash");
+    else if(!(str && *str))
+      panic("NULL or empty string to parse_action_slash");
+    else if(!strncmp(str, "/ROLE=1", 7))
+      action->is_a_role = 1;
+    else if(!strncmp(str, "/OTHER=1", 8))
+      action->is_a_other = 1;
+    else if(!strncmp(str, "/ISINCOL=1", 10))
+      action->is_a_incol = 1;
+    /*
+     * This is unfortunate. If a new filter is set to only set
+     * state bits it will be interpreted by an older pine which
+     * doesn't have that feature like a filter that is set to Delete.
+     * So we change the filter indicator to FILTER=2 to disable the
+     * filter for older versions.
+     */
+    else if(!strncmp(str, "/FILTER=1", 9) || !strncmp(str, "/FILTER=2", 9))
+      action->is_a_filter = 1;
+    else if(!strncmp(str, "/ISSCORE=1", 10))
+      action->is_a_score = 1;
+    else if(!strncmp(str, "/SCORE=", 7)){
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    int i;
+
+	    i = atoi(p);
+	    if(i >= SCORE_MIN && i <= SCORE_MAX)
+	      action->scoreval = i;
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/FOLDER=", 8))
+      action->folder = parse_pattern("FOLDER", str, 1);
+    else if(!strncmp(str, "/NOKILL=", 8))
+      action->kill = -1;
+    else if(!strncmp(str, "/NOTDEL=", 8))
+      action->move_only_if_not_deleted = 1;
+    else if(!strncmp(str, "/NONTERM=", 9))
+      action->non_terminating = 1;
+    else if(!strncmp(str, "/STATI=", 7)){
+	stateval = ACT_STAT_LEAVE;
+	SET_MSGSTATE(str,"/STATI=",stateval);
+	switch(stateval){
+	  case ACT_STAT_LEAVE:
+	    break;
+	  case ACT_STAT_SET:
+	    action->state_setting_bits |= F_FLAG;
+	    break;
+	  case ACT_STAT_CLEAR:
+	    action->state_setting_bits |= F_UNFLAG;
+	    break;
+	}
+    }
+    else if(!strncmp(str, "/STATD=", 7)){
+	stateval = ACT_STAT_LEAVE;
+	SET_MSGSTATE(str,"/STATD=",stateval);
+	switch(stateval){
+	  case ACT_STAT_LEAVE:
+	    break;
+	  case ACT_STAT_SET:
+	    action->state_setting_bits |= F_DEL;
+	    break;
+	  case ACT_STAT_CLEAR:
+	    action->state_setting_bits |= F_UNDEL;
+	    break;
+	}
+    }
+    else if(!strncmp(str, "/STATA=", 7)){
+	stateval = ACT_STAT_LEAVE;
+	SET_MSGSTATE(str,"/STATA=",stateval);
+	switch(stateval){
+	  case ACT_STAT_LEAVE:
+	    break;
+	  case ACT_STAT_SET:
+	    action->state_setting_bits |= F_ANS;
+	    break;
+	  case ACT_STAT_CLEAR:
+	    action->state_setting_bits |= F_UNANS;
+	    break;
+	}
+    }
+    else if(!strncmp(str, "/STATN=", 7)){
+	stateval = ACT_STAT_LEAVE;
+	SET_MSGSTATE(str,"/STATN=",stateval);
+	switch(stateval){
+	  case ACT_STAT_LEAVE:
+	    break;
+	  case ACT_STAT_SET:
+	    action->state_setting_bits |= F_UNSEEN;
+	    break;
+	  case ACT_STAT_CLEAR:
+	    action->state_setting_bits |= F_SEEN;
+	    break;
+	}
+    }
+    else if(!strncmp(str, "/RTYPE=", 7)){
+	/* reply type */
+	action->repl_type = ROLE_REPL_DEFL;
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    for(i = 0; v = role_repl_types(i); i++)
+	      if(!strucmp(p, v->shortname)){
+		  action->repl_type = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/FTYPE=", 7)){
+	/* forward type */
+	action->forw_type = ROLE_FORW_DEFL;
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    for(i = 0; v = role_forw_types(i); i++)
+	      if(!strucmp(p, v->shortname)){
+		  action->forw_type = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/CTYPE=", 7)){
+	/* compose type */
+	action->comp_type = ROLE_COMP_DEFL;
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    for(i = 0; v = role_comp_types(i); i++)
+	      if(!strucmp(p, v->shortname)){
+		  action->comp_type = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/FROM=", 6)){
+	/* get the from */
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    rfc822_parse_adrlist(&action->from, p,
+				 ps_global->maildomain);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/REPL=", 6)){
+	/* get the reply-to */
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    rfc822_parse_adrlist(&action->replyto, p,
+				 ps_global->maildomain);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/FCC=", 5))
+      action->fcc = remove_pat_escapes(str+5);
+    else if(!strncmp(str, "/LSIG=", 6))
+      action->litsig = remove_pat_escapes(str+6);
+    else if(!strncmp(str, "/SIG=", 5))
+      action->sig = remove_pat_escapes(str+5);
+    else if(!strncmp(str, "/TEMPLATE=", 10))
+      action->template = remove_pat_escapes(str+10);
+    /* get the custom headers */
+    else if(!strncmp(str, "/CSTM=", 6)){
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    int   commas = 0;
+	    char *q;
+
+	    /* count elements in list */
+	    for(q = p; q && *q; q++)
+	      if(*q == ',')
+		commas++;
+
+	    action->cstm = parse_list(p, commas+1, NULL);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/SMTP=", 6)){
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    int   commas = 0;
+	    char *q;
+
+	    /* count elements in list */
+	    for(q = p; q && *q; q++)
+	      if(*q == ',')
+		commas++;
+
+	    action->smtp = parse_list(p, commas+1, NULL);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/INICK=", 7))
+      action->inherit_nick = remove_pat_escapes(str+7);
+    else if(!strncmp(str, "/INCOL=", 7)){
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    char *fg = NULL, *bg = NULL, *z;
+
+	    /*
+	     * Color should look like
+	     * /FG=white/BG=red
+	     */
+	    if((z = srchstr(p, "/FG=")) != NULL)
+	      fg = remove_pat_escapes(z+4);
+	    if((z = srchstr(p, "/BG=")) != NULL)
+	      bg = remove_pat_escapes(z+4);
+
+	    if(fg && *fg && bg && *bg)
+	      action->incol = new_color_pair(fg, bg);
+
+	    if(fg)
+	      fs_give((void **)&fg);
+	    if(bg)
+	      fs_give((void **)&bg);
+	    fs_give((void **)&p);
+	}
+    }
+    /* per-folder sort */
+    else if(!strncmp(str, "/SORT=", 6)){
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    SortOrder def_sort;
+	    int       def_sort_rev;
+
+	    if(decode_sort(p, &def_sort, &def_sort_rev) != -1){
+		action->sort_is_set = 1;
+		action->sortorder = def_sort;
+		action->revsort   = (def_sort_rev ? 1 : 0);
+	    }
+
+	    fs_give((void **)&p);
+	}
+    }
+    /* per-folder index-format */
+    else if(!strncmp(str, "/IFORM=", 7))
+      action->index_format = remove_pat_escapes(str+7);
+    /* per-folder startup-rule */
+    else if(!strncmp(str, "/START=", 7)){
+	if((p = remove_pat_escapes(str+7)) != NULL){
+	    for(i = 0; v = startup_rules(i); i++)
+	      if(!strucmp(p, S_OR_L(v))){
+		  action->startup_rule = v->value;
+		  break;
+	      }
+
+	    fs_give((void **)&p);
+	}
+    }
+    else{
+	char save;
+
+	action->bogus = 1;
+
+	if((p = strindex(str, '=')) != NULL){
+	    save = *(p+1);
+	    *(p+1) = '\0';
+	}
+
+	dprint(1, (debugfile,
+	       "parse_action_slash(%.20s): unrecognized in \"%s\"\n",
+	       str, action->nick ? action->nick : ""));
+	q_status_message4(SM_ORDER, 1, 3,
+	      "Warning: unrecognized pattern action \"%.20s\"%.20s%.20s%.20s",
+	      str, action->nick ? " in rule \"" : "",
+	      action->nick ? action->nick : "", action->nick ? "\"" : "");
+
+	if(p)
+	  *(p+1) = save;
+    }
 }
 
 
@@ -4757,11 +5588,11 @@ parse_score_interval(str, left, right)
     
     if(*left == SCORE_UNDEF || *right == SCORE_UNDEF)
       q_status_message1(SM_ORDER, 3, 5,
-		    "Error: Score Interval \"%s\" (syntax is (min,max)",
+		    "Error: Interval \"%.200s\" (syntax is (min,max)",
 			str);
     else if(*left > *right)
       q_status_message1(SM_ORDER, 3, 5,
-			"Error: Score Interval \"%s\", min > max", str);
+			"Error: Interval \"%.200s\", min > max", str);
     else
       ret++;
 
@@ -4803,7 +5634,7 @@ stringform_of_score_interval(left, right)
 /*
  * Args -- flags  - SCOREUSE_INVALID  Mark scores_in_use invalid so that we'll
  *					recalculate if we want to use it again.
- *		  - SCOREUSE_GET      Return whether scores are being used or not.
+ *		  - SCOREUSE_GET    Return whether scores are being used or not.
  *
  * Returns -- 0 - Scores not being used at all.
  *	     >0 - Scores are used. The return value consists of flag values
@@ -4812,6 +5643,10 @@ stringform_of_score_interval(left, right)
  *			SCOREUSE_INCOLS  - scores needed for index line colors
  *			SCOREUSE_ROLES   - scores needed for roles
  *			SCOREUSE_FILTERS - scores needed for filters
+ *			SCOREUSE_OTHER   - scores needed for other stuff
+ *			SCOREUSE_INDEX   - scores needed for index drawing
+ *
+ *			SCOREUSE_STATEDEP - scores depend on message state
  */
 int
 scores_are_used(flags)
@@ -4819,6 +5654,7 @@ scores_are_used(flags)
 {
     static int  scores_in_use = -1;
     long        type1, type2;
+    int         scores_are_defined, scores_are_used_somewhere = 0;
     PAT_STATE   pstate1, pstate2;
 
     if(flags & SCOREUSE_INVALID) /* mark invalid so we recalculate next time */
@@ -4835,8 +5671,14 @@ scores_are_used(flags)
 	type1 = ROLE_SCORE;
 	type2 = (ROLE_REPLY | ROLE_FORWARD | ROLE_COMPOSE |
 		 ROLE_INCOL | ROLE_DO_FILTER);
-	if(nonempty_patterns(type1, &pstate1) && first_pattern(&pstate1) &&
-	   nonempty_patterns(type2, &pstate2) && first_pattern(&pstate2)){
+	scores_are_defined = nonempty_patterns(type1, &pstate1)
+			     && first_pattern(&pstate1);
+	if(scores_are_defined)
+	  scores_are_used_somewhere =
+	     ((nonempty_patterns(type2, &pstate2) && first_pattern(&pstate2))
+	      || ps_global->a_format_contains_score);
+
+	if(scores_are_used_somewhere){
 	    PAT_S *pat;
 
 	    /*
@@ -4845,18 +5687,36 @@ scores_are_used(flags)
 	     * sure to reset it after we call nonempty_patterns().
 	     */
 	    scores_in_use = 0;
+	    if(ps_global->a_format_contains_score)
+	      scores_in_use |= SCOREUSE_INDEX;
 
-	    for(pat = first_pattern(&pstate2);
-		pat;
-		pat = next_pattern(&pstate2))
-	      if(pat->patgrp && pat->patgrp->do_score){
-		  if(pat->action && pat->action->is_a_incol)
-		    scores_in_use |= SCOREUSE_INCOLS;
-		  if(pat->action && pat->action->is_a_role)
-		    scores_in_use |= SCOREUSE_ROLES;
-		  if(pat->action && pat->action->is_a_filter)
-		    scores_in_use |= SCOREUSE_FILTERS;
-	      }
+	    if(nonempty_patterns(type2, &pstate2))
+	      for(pat = first_pattern(&pstate2);
+		  pat;
+		  pat = next_pattern(&pstate2))
+	        if(pat->patgrp && !pat->patgrp->bogus && pat->patgrp->do_score){
+		    if(pat->action && pat->action->is_a_incol)
+		      scores_in_use |= SCOREUSE_INCOLS;
+		    if(pat->action && pat->action->is_a_role)
+		      scores_in_use |= SCOREUSE_ROLES;
+		    if(pat->action && pat->action->is_a_filter)
+		      scores_in_use |= SCOREUSE_FILTERS;
+		    if(pat->action && pat->action->is_a_other)
+		      scores_in_use |= SCOREUSE_OTHER;
+	        }
+	    
+	    /*
+	     * Note whether scores depend on message state or not.
+	     */
+	    if(scores_in_use)
+	      for(pat = first_pattern(&pstate1);
+		  pat;
+		  pat = next_pattern(&pstate1))
+		if(patgrp_depends_on_active_state(pat->patgrp)){
+		    scores_in_use |= SCOREUSE_STATEDEP;
+		    break;
+		}
+	      
 	}
 	else
 	  scores_in_use = 0;
@@ -4866,8 +5726,38 @@ scores_are_used(flags)
 }
 
 
+int
+patgrp_depends_on_state(patgrp)
+    PATGRP_S *patgrp;
+{
+    return(patgrp && !patgrp->bogus
+           && (patgrp->stat_new  != PAT_STAT_EITHER ||
+	       patgrp->stat_rec  != PAT_STAT_EITHER ||
+	       patgrp->stat_del  != PAT_STAT_EITHER ||
+	       patgrp->stat_imp  != PAT_STAT_EITHER ||
+	       patgrp->stat_ans  != PAT_STAT_EITHER));
+}
+
+
+/*
+ * Recent doesn't count for this function because it doesn't change while
+ * the mailbox is open.
+ */
+int
+patgrp_depends_on_active_state(patgrp)
+    PATGRP_S *patgrp;
+{
+    return(patgrp && !patgrp->bogus
+           && (patgrp->stat_new  != PAT_STAT_EITHER ||
+	       patgrp->stat_del  != PAT_STAT_EITHER ||
+	       patgrp->stat_imp  != PAT_STAT_EITHER ||
+	       patgrp->stat_ans  != PAT_STAT_EITHER));
+}
+
+
 /*
  * Look for label in str and return a pointer to parsed string.
+ * Actually, we look for "label=" or "!label=", the second means NOT.
  * Converts from string from patterns file which looks like
  *       /NEWS=comp.mail.,comp.mail.pine/TO=...
  * This is the string that came from pattern="string" with the pattern=
@@ -4881,17 +5771,39 @@ parse_pattern(label, str, hex_to_backslashed)
     char *str;
     int   hex_to_backslashed;
 {
+    char       copy[50];	/* local copy of label */
+    char       copynot[50];	/* local copy of label, NOT'ed */
     char      *q, *labeled_str;
     PATTERN_S *head = NULL;
 
     if(!label || !str)
       return(NULL);
+    
+    q = copy;
+    sstrncpy(&q, "/", sizeof(copy));
+    sstrncpy(&q, label, sizeof(copy) - (q-copy));
+    sstrncpy(&q, "=", sizeof(copy) - (q-copy));
+    copy[sizeof(copy)-1] = '\0';
+    q = copynot;
+    sstrncpy(&q, "/!", sizeof(copynot));
+    sstrncpy(&q, label, sizeof(copynot) - (q-copynot));
+    sstrncpy(&q, "=", sizeof(copynot) - (q-copynot));
+    copynot[sizeof(copynot)-1] = '\0';
 
-    if((q = srchstr(str, label)) != NULL){
+    if((q = srchstr(str, copy)) != NULL){
 	if((labeled_str = (hex_to_backslashed
-		? remove_pat_escapes(q+strlen(label))
-		: remove_backslash_escapes(q+strlen(label)))) != NULL){
+		? remove_pat_escapes(q+strlen(copy))
+		: remove_backslash_escapes(q+strlen(copy)))) != NULL){
 	    head = string_to_pattern(labeled_str);
+	    fs_give((void **)&labeled_str);
+	}
+    }
+    else if((q = srchstr(str, copynot)) != NULL){
+	if((labeled_str = (hex_to_backslashed
+		? remove_pat_escapes(q+strlen(copynot))
+		: remove_backslash_escapes(q+strlen(copynot)))) != NULL){
+	    head = string_to_pattern(labeled_str);
+	    head->not = 1;
 	    fs_give((void **)&labeled_str);
 	}
     }
@@ -4902,6 +5814,7 @@ parse_pattern(label, str, hex_to_backslashed)
 
 /*
  * Look for /ARB's in str and return a pointer to parsed ARBHDR_S.
+ * Actually, we look for /!ARB and /!EARB as well. Those mean NOT.
  * Converts from string from patterns file which looks like
  *       /ARB<fieldname1>=pattern/.../ARB<fieldname2>=pattern...
  * This is the string that came from pattern="string" with the pattern=
@@ -4913,8 +5826,8 @@ ARBHDR_S *
 parse_arbhdr(str)
     char *str;
 {
-    char      *q, *qq, *s, *equals, *noesc;
-    int        empty, skip;
+    char      *q, *s, *equals, *noesc;
+    int        not, empty, skip;
     ARBHDR_S  *ahdr = NULL, *a, *aa;
     PATTERN_S *p = NULL;
 
@@ -4922,12 +5835,10 @@ parse_arbhdr(str)
       return(NULL);
 
     aa = NULL;
-    s = str;
-    for(s = str;
-	(q = (qq = srchstr(s, "/ARB")) ? qq : (srchstr(s, "/EARB")));
-	s = q+1){
-	empty = (q[1] == 'E') ? 1 : 0;
-	skip = empty ? 5 : 4;
+    for(s = str; q = next_arb(s); s = q+1){
+	not = (q[1] == '!') ? 1 : 0;
+	empty = (q[not+1] == 'E') ? 1 : 0;
+	skip = 4 + not + empty;
 	if((noesc = remove_pat_escapes(q+skip)) != NULL){
 	    if(*noesc != '=' && (equals = strindex(noesc, '=')) != NULL){
 		a = (ARBHDR_S *)fs_get(sizeof(*a));
@@ -4940,6 +5851,9 @@ parse_arbhdr(str)
 		else if(*(equals+1) &&
 			(p = string_to_pattern(equals+1)) != NULL)
 		  a->p     = p;
+		
+		if(not && a->p)
+		  a->p->not = 1;
 
 		/* keep them in the same order */
 		if(aa){
@@ -4957,6 +5871,29 @@ parse_arbhdr(str)
     }
 
     return(ahdr);
+}
+
+
+char *
+next_arb(start)
+    char *start;
+{
+    char *q1, *q2, *q3, *q4, *p;
+
+    q1 = srchstr(start, "/ARB");
+    q2 = srchstr(start, "/!ARB");
+    q3 = srchstr(start, "/EARB");
+    q4 = srchstr(start, "/!EARB");
+
+    p = q1;
+    if(!p || (q2 && q2 < p))
+      p = q2;
+    if(!p || (q3 && q3 < p))
+      p = q3;
+    if(!p || (q4 && q4 < p))
+      p = q4;
+    
+    return(p);
 }
 
 
@@ -5110,7 +6047,7 @@ first_any_pattern(pstate)
      * last and prev. For next_any's benefit, we allow cur_rflag_num to
      * start us out past the first set.
      */
-    for(i = pstate->cur_rflag_num; i <= 5; i++){
+    for(i = pstate->cur_rflag_num; i <= PATTERN_N; i++){
 
 	local_rflag = 0L;
 
@@ -5132,7 +6069,19 @@ first_any_pattern(pstate)
 	    break;
 
 	  case 5:
-	    local_rflag = ROLE_OLD_PATS & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_OTHER & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case 6:
+	    local_rflag = ROLE_OLD_FILT & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case 7:
+	    local_rflag = ROLE_OLD_SCORE & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case PATTERN_N:
+	    local_rflag = ROLE_OLD_PAT & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 	}
 
@@ -5186,7 +6135,9 @@ first_pattern(pstate)
     for(pat = first_any_pattern(pstate);
 	pat && !((pat->action &&
 		  ((rflags & ROLE_DO_ROLES && pat->action->is_a_role) ||
-	           (rflags & ROLE_DO_INCOLS && pat->action->is_a_incol) ||
+	           (rflags & (ROLE_DO_INCOLS|ROLE_INCOL) &&
+		    pat->action->is_a_incol) ||
+	           (rflags & ROLE_DO_OTHER && pat->action->is_a_other) ||
 	           (rflags & ROLE_DO_SCORES && pat->action->is_a_score) ||
 		   (rflags & ROLE_SCORE && pat->action->scoreval) ||
 		   (rflags & ROLE_DO_FILTER && pat->action->is_a_filter) ||
@@ -5199,13 +6150,9 @@ first_pattern(pstate)
 	           (rflags & ROLE_COMPOSE &&
 		    (pat->action->comp_type == ROLE_COMP_YES ||
 		     pat->action->comp_type == ROLE_COMP_NOCONF)) ||
-		   (rflags & ROLE_INCOL && pat->action->incol &&
-		    (!VAR_NORM_FORE_COLOR || !VAR_NORM_BACK_COLOR ||
-		     !pat->action->incol->fg ||
-		     !pat->action->incol->bg ||
-		     strucmp(VAR_NORM_FORE_COLOR,pat->action->incol->fg) ||
-		     strucmp(VAR_NORM_BACK_COLOR,pat->action->incol->bg))) ||
-	           (rflags & ROLE_OLD_PATS)))
+	           (rflags & ROLE_OLD_FILT) ||
+	           (rflags & ROLE_OLD_SCORE) ||
+	           (rflags & ROLE_OLD_PAT)))
 		||
 		 pat->inherit);
 	pat = next_any_pattern(pstate))
@@ -5256,7 +6203,19 @@ last_any_pattern(pstate)
 	    break;
 
 	  case 5:
-	    local_rflag = ROLE_OLD_PATS & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_OTHER & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case 6:
+	    local_rflag = ROLE_OLD_FILT & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case 7:
+	    local_rflag = ROLE_OLD_SCORE & CANONICAL_RFLAGS(pstate->rflags);
+	    break;
+
+	  case PATTERN_N:
+	    local_rflag = ROLE_OLD_PAT & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 	}
 
@@ -5307,14 +6266,16 @@ last_pattern(pstate)
     struct variable *vars = ps_global->vars;
     long             rflags;
 
-    pstate->cur_rflag_num = 5;
+    pstate->cur_rflag_num = PATTERN_N;
 
     rflags = pstate->rflags;
 
     for(pat = last_any_pattern(pstate);
 	pat && !((pat->action &&
 		  ((rflags & ROLE_DO_ROLES && pat->action->is_a_role) ||
-	           (rflags & ROLE_DO_INCOLS && pat->action->is_a_incol) ||
+	           (rflags & (ROLE_DO_INCOLS|ROLE_INCOL) &&
+		    pat->action->is_a_incol) ||
+	           (rflags & ROLE_DO_OTHER && pat->action->is_a_other) ||
 	           (rflags & ROLE_DO_SCORES && pat->action->is_a_score) ||
 		   (rflags & ROLE_SCORE && pat->action->scoreval) ||
 		   (rflags & ROLE_DO_FILTER && pat->action->is_a_filter) ||
@@ -5327,13 +6288,9 @@ last_pattern(pstate)
 	           (rflags & ROLE_COMPOSE &&
 		    (pat->action->comp_type == ROLE_COMP_YES ||
 		     pat->action->comp_type == ROLE_COMP_NOCONF)) ||
-		   (rflags & ROLE_INCOL && pat->action->incol &&
-		    (!VAR_NORM_FORE_COLOR || !VAR_NORM_BACK_COLOR ||
-		     !pat->action->incol->fg ||
-		     !pat->action->incol->bg ||
-		     strucmp(VAR_NORM_FORE_COLOR,pat->action->incol->fg) ||
-		     strucmp(VAR_NORM_BACK_COLOR,pat->action->incol->bg))) ||
-	           (rflags & ROLE_OLD_PATS)))
+	           (rflags & ROLE_OLD_FILT) ||
+	           (rflags & ROLE_OLD_SCORE) ||
+	           (rflags & ROLE_OLD_PAT)))
 		||
 		 pat->inherit);
 	pat = prev_any_pattern(pstate))
@@ -5402,7 +6359,9 @@ next_pattern(pstate)
     for(pat = next_any_pattern(pstate);
 	pat && !((pat->action &&
 		  ((rflags & ROLE_DO_ROLES && pat->action->is_a_role) ||
-	           (rflags & ROLE_DO_INCOLS && pat->action->is_a_incol) ||
+	           (rflags & (ROLE_DO_INCOLS|ROLE_INCOL) &&
+		    pat->action->is_a_incol) ||
+	           (rflags & ROLE_DO_OTHER && pat->action->is_a_other) ||
 	           (rflags & ROLE_DO_SCORES && pat->action->is_a_score) ||
 		   (rflags & ROLE_SCORE && pat->action->scoreval) ||
 		   (rflags & ROLE_DO_FILTER && pat->action->is_a_filter) ||
@@ -5415,13 +6374,9 @@ next_pattern(pstate)
 	           (rflags & ROLE_COMPOSE &&
 		    (pat->action->comp_type == ROLE_COMP_YES ||
 		     pat->action->comp_type == ROLE_COMP_NOCONF)) ||
-		   (rflags & ROLE_INCOL && pat->action->incol &&
-		    (!VAR_NORM_FORE_COLOR || !VAR_NORM_BACK_COLOR ||
-		     !pat->action->incol->fg ||
-		     !pat->action->incol->bg ||
-		     strucmp(VAR_NORM_FORE_COLOR,pat->action->incol->fg) ||
-		     strucmp(VAR_NORM_BACK_COLOR,pat->action->incol->bg))) ||
-	           (rflags & ROLE_OLD_PATS)))
+	           (rflags & ROLE_OLD_FILT) ||
+	           (rflags & ROLE_OLD_SCORE) ||
+	           (rflags & ROLE_OLD_PAT)))
 		||
 		 pat->inherit);
 	pat = next_any_pattern(pstate))
@@ -5489,7 +6444,9 @@ prev_pattern(pstate)
     for(pat = prev_any_pattern(pstate);
 	pat && !((pat->action &&
 		  ((rflags & ROLE_DO_ROLES && pat->action->is_a_role) ||
-	           (rflags & ROLE_DO_INCOLS && pat->action->is_a_incol) ||
+	           (rflags & (ROLE_DO_INCOLS|ROLE_INCOL) &&
+		    pat->action->is_a_incol) ||
+	           (rflags & ROLE_DO_OTHER && pat->action->is_a_other) ||
 	           (rflags & ROLE_DO_SCORES && pat->action->is_a_score) ||
 		   (rflags & ROLE_SCORE && pat->action->scoreval) ||
 		   (rflags & ROLE_DO_FILTER && pat->action->is_a_filter) ||
@@ -5502,13 +6459,9 @@ prev_pattern(pstate)
 	           (rflags & ROLE_COMPOSE &&
 		    (pat->action->comp_type == ROLE_COMP_YES ||
 		     pat->action->comp_type == ROLE_COMP_NOCONF)) ||
-		   (rflags & ROLE_INCOL && pat->action->incol &&
-		    (!VAR_NORM_FORE_COLOR || !VAR_NORM_BACK_COLOR ||
-		     !pat->action->incol->fg ||
-		     !pat->action->incol->bg ||
-		     strucmp(VAR_NORM_FORE_COLOR,pat->action->incol->fg) ||
-		     strucmp(VAR_NORM_BACK_COLOR,pat->action->incol->bg))) ||
-	           (rflags & ROLE_OLD_PATS)))
+	           (rflags & ROLE_OLD_FILT) ||
+	           (rflags & ROLE_OLD_SCORE) ||
+	           (rflags & ROLE_OLD_PAT)))
 		||
 		 pat->inherit);
 	pat = prev_any_pattern(pstate))
@@ -5534,12 +6487,14 @@ write_patterns(rflags)
 
     if(canon_rflags & ROLE_DO_INCOLS)
       err += sub_write_patterns(ROLE_DO_INCOLS | (rflags & PAT_USE_MASK));
+    if(!err && canon_rflags & ROLE_DO_OTHER)
+      err += sub_write_patterns(ROLE_DO_OTHER  | (rflags & PAT_USE_MASK));
     if(!err && canon_rflags & ROLE_DO_FILTER)
       err += sub_write_patterns(ROLE_DO_FILTER | (rflags & PAT_USE_MASK));
     if(!err && canon_rflags & ROLE_DO_SCORES)
       err += sub_write_patterns(ROLE_DO_SCORES | (rflags & PAT_USE_MASK));
     if(!err && canon_rflags & ROLE_DO_ROLES)
-      err += sub_write_patterns(ROLE_DO_ROLES | (rflags & PAT_USE_MASK));
+      err += sub_write_patterns(ROLE_DO_ROLES  | (rflags & PAT_USE_MASK));
 
     if(!err)
       write_pinerc(ps_global, (rflags & PAT_USE_MAIN) ? Main : Post);
@@ -5597,6 +6552,8 @@ sub_write_patterns(rflags)
 
 	    if(rflags & ROLE_DO_ROLES)
 	      var = &ps_global->vars[V_PAT_ROLES];
+	    else if(rflags & ROLE_DO_OTHER)
+	      var = &ps_global->vars[V_PAT_OTHER];
 	    else if(rflags & ROLE_DO_FILTER)
 	      var = &ps_global->vars[V_PAT_FILTS];
 	    else if(rflags & ROLE_DO_SCORES)
@@ -5656,7 +6613,7 @@ write_pattern_file(lvalue, patline)
        || ((fd = open(tfile, O_TRUNC|O_WRONLY|O_CREAT, 0600)) < 0)
        || ((fp_new = fdopen(fd, "w")) == NULL)){
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			  "Can't write in directory containing file \"%s\"",
+			  "Can't write in directory containing file \"%.200s\"",
 			  patline->filepath);
 	if(tfile){
 	    (void)unlink(tfile);
@@ -5689,14 +6646,14 @@ write_pattern_file(lvalue, patline)
 
 	err--;
 	q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			  "I/O error: \"%s\": %s",
+			  "I/O error: \"%.200s\": %.200s",
 			  tfile, error_description(errno));
     }
 
     if(!err && rename_file(tfile, patline->filepath) < 0){
 	err--;
 	q_status_message3(SM_ORDER | SM_DING, 3, 4,
-			  "Error renaming \"%s\" to \"%s\": %s",
+			  "Error renaming \"%.200s\" to \"%.200s\": %.200s",
 			  tfile, patline->filepath, error_description(errno));
 	dprint(2, (debugfile,
 		   "write_pattern_file: Error renaming (%s,%s): %s\n",
@@ -5773,21 +6730,43 @@ char *
 data_for_patline(pat)
     PAT_S *pat;
 {
-    char          *p, *q, *to_pat = NULL, *news_pat = NULL, *from_pat = NULL,
+    char          *p = NULL, *q, *to_pat = NULL,
+		  *news_pat = NULL, *from_pat = NULL,
 		  *sender_pat = NULL, *cc_pat = NULL, *subj_pat = NULL,
 		  *arb_pat = NULL, *fldr_type_pat = NULL, *fldr_pat = NULL,
+		  *afrom_type_pat = NULL, *abooks_pat = NULL,
 		  *alltext_pat = NULL, *scorei_pat = NULL, *recip_pat = NULL,
+		  *bodytext_pat = NULL, *age_pat = NULL, *sentdate = NULL,
 		  *partic_pat = NULL, *stat_new_val = NULL,
+		  *stat_rec_val = NULL,
 		  *stat_imp_val = NULL, *stat_del_val = NULL,
-		  *stat_ans_val = NULL,
+		  *stat_ans_val = NULL, *stat_8bit_val = NULL,
 		  *from_act = NULL, *replyto_act = NULL, *fcc_act = NULL,
 		  *sig_act = NULL, *nick = NULL, *templ_act = NULL,
-		  *litsig_act = NULL, *cstm_act = NULL,
+		  *litsig_act = NULL, *cstm_act = NULL, *smtp_act = NULL,
 		  *repl_val = NULL, *forw_val = NULL, *comp_val = NULL,
 		  *incol_act = NULL, *inherit_nick = NULL, *score_act = NULL,
-		  *folder_act = NULL, *filt_ifnotdel = NULL;
+		  *sort_act = NULL, *iform_act = NULL, *start_act = NULL,
+		  *folder_act = NULL, *filt_ifnotdel = NULL,
+		  *filt_nokill = NULL, *filt_del_val = NULL,
+		  *filt_imp_val = NULL, *filt_ans_val = NULL,
+		  *filt_new_val = NULL, *filt_nonterm = NULL;
+    int            to_not = 0, news_not = 0, from_not = 0,
+		   sender_not = 0, cc_not = 0, subj_not = 0,
+		   partic_not = 0, recip_not = 0, alltext_not, bodytext_not;
     ACTION_S      *action = NULL;
     NAMEVAL_S     *f;
+
+    if(!pat)
+      return(p);
+
+    if((pat->patgrp && pat->patgrp->bogus)
+       || (pat->action && pat->action->bogus)){
+	if(pat->raw)
+	  p = cpystr(pat->raw);
+
+	return(p);
+    }
 
     if(pat->patgrp){
 	if(pat->patgrp->nick)
@@ -5796,6 +6775,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->to){
 	    p = pattern_to_string(pat->patgrp->to);
+	    to_not = pat->patgrp->to->not;
 	    if(p){
 		to_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5804,6 +6784,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->from){
 	    p = pattern_to_string(pat->patgrp->from);
+	    from_not = pat->patgrp->from->not;
 	    if(p){
 		from_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5812,6 +6793,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->sender){
 	    p = pattern_to_string(pat->patgrp->sender);
+	    sender_not = pat->patgrp->sender->not;
 	    if(p){
 		sender_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5820,6 +6802,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->cc){
 	    p = pattern_to_string(pat->patgrp->cc);
+	    cc_not = pat->patgrp->cc->not;
 	    if(p){
 		cc_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5828,6 +6811,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->recip){
 	    p = pattern_to_string(pat->patgrp->recip);
+	    recip_not = pat->patgrp->recip->not;
 	    if(p){
 		recip_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5836,6 +6820,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->partic){
 	    p = pattern_to_string(pat->patgrp->partic);
+	    partic_not = pat->patgrp->partic->not;
 	    if(p){
 		partic_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5844,6 +6829,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->news){
 	    p = pattern_to_string(pat->patgrp->news);
+	    news_not = pat->patgrp->news->not;
 	    if(p){
 		news_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5852,6 +6838,7 @@ data_for_patline(pat)
 
 	if(pat->patgrp->subj){
 	    p = pattern_to_string(pat->patgrp->subj);
+	    subj_not = pat->patgrp->subj->not;
 	    if(p){
 		subj_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
@@ -5860,8 +6847,18 @@ data_for_patline(pat)
 
 	if(pat->patgrp->alltext){
 	    p = pattern_to_string(pat->patgrp->alltext);
+	    alltext_not = pat->patgrp->alltext->not;
 	    if(p){
 		alltext_pat = add_pat_escapes(p);
+		fs_give((void **)&p);
+	    }
+	}
+
+	if(pat->patgrp->bodytext){
+	    p = pattern_to_string(pat->patgrp->bodytext);
+	    bodytext_not = pat->patgrp->bodytext->not;
+	    if(p){
+		bodytext_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
 	    }
 	}
@@ -5880,8 +6877,10 @@ data_for_patline(pat)
 							    sizeof(char));
 		    sprintf(p2, "%s=%s", a->field, p1);
 		    p3 = add_pat_escapes(p2);
-		    p4 = (char *)fs_get((strlen(p3)+6) * sizeof(char));
-		    sprintf(p4, "/%sARB%s", a->isemptyval ? "E" : "", p3);
+		    p4 = (char *)fs_get((strlen(p3)+7) * sizeof(char));
+		    sprintf(p4, "/%s%sARB%s",
+			    (a->p && a->p->not) ? "!" : "",
+			    a->isemptyval ? "E" : "", p3);
 		    len += strlen(p4);
 
 		    if(p1)
@@ -5905,8 +6904,10 @@ data_for_patline(pat)
 							    sizeof(char));
 		    sprintf(p2, "%s=%s", a->field, p1);
 		    p3 = add_pat_escapes(p2);
-		    p4 = (char *)fs_get((strlen(p3)+6) * sizeof(char));
-		    sprintf(p4, "/%sARB%s", a->isemptyval ? "E" : "", p3);
+		    p4 = (char *)fs_get((strlen(p3)+7) * sizeof(char));
+		    sprintf(p4, "/%s%sARB%s",
+			    (a->p && a->p->not) ? "!" : "",
+			    a->isemptyval ? "E" : "", p3);
 		    sstrcpy(&p, p4);
 
 		    if(p1)
@@ -5921,11 +6922,23 @@ data_for_patline(pat)
 	    }
 	}
 
+	if(pat->patgrp->age_uses_sentdate)
+	  sentdate = cpystr("/SENTDATE=1");
+
 	if(pat->patgrp->do_score){
 	    p = stringform_of_score_interval(pat->patgrp->score_min,
 					     pat->patgrp->score_max);
 	    if(p){
 		scorei_pat = add_pat_escapes(p);
+		fs_give((void **)&p);
+	    }
+	}
+
+	if(pat->patgrp->do_age){
+	    p = stringform_of_score_interval(pat->patgrp->age_min,
+					     pat->patgrp->age_max);
+	    if(p){
+		age_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
 	    }
 	}
@@ -5941,9 +6954,25 @@ data_for_patline(pat)
 	    }
 	}
 
+	if((f = abookfrom_fldr_types(pat->patgrp->abookfrom)) != NULL
+	   && f->value != AFRM_DEFL)
+	  afrom_type_pat = f->shortname;
+
+	if(pat->patgrp->abooks){
+	    p = pattern_to_string(pat->patgrp->abooks);
+	    if(p){
+		abooks_pat = add_pat_escapes(p);
+		fs_give((void **)&p);
+	    }
+	}
+
 	if(pat->patgrp->stat_new != PAT_STAT_EITHER &&
 	   (f = role_status_types(pat->patgrp->stat_new)) != NULL)
 	  stat_new_val = f->shortname;
+
+	if(pat->patgrp->stat_rec != PAT_STAT_EITHER &&
+	   (f = role_status_types(pat->patgrp->stat_rec)) != NULL)
+	  stat_rec_val = f->shortname;
 
 	if(pat->patgrp->stat_del != PAT_STAT_EITHER &&
 	   (f = role_status_types(pat->patgrp->stat_del)) != NULL)
@@ -5956,6 +6985,10 @@ data_for_patline(pat)
 	if(pat->patgrp->stat_imp != PAT_STAT_EITHER &&
 	   (f = role_status_types(pat->patgrp->stat_imp)) != NULL)
 	  stat_imp_val = f->shortname;
+
+	if(pat->patgrp->stat_8bitsubj != PAT_STAT_EITHER &&
+	   (f = role_status_types(pat->patgrp->stat_8bitsubj)) != NULL)
+	  stat_8bit_val = f->shortname;
     }
 
     if(pat->action){
@@ -6014,6 +7047,35 @@ data_for_patline(pat)
 		}
 	    }
 
+	    if(action->smtp){
+		size_t sz;
+		char **l, *q;
+
+		/* concatenate into string with commas first */
+		sz = 0;
+		for(l = action->smtp; l[0] && l[0][0]; l++)
+		  sz += strlen(l[0]) + 1;
+
+		if(sz){
+		    char *p;
+		    int   first_one = 1;
+
+		    q = (char *)fs_get(sz);
+		    memset(q, 0, sz);
+		    p = q;
+		    for(l = action->smtp; l[0] && l[0][0]; l++){
+			if(!first_one)
+			  sstrcpy(&p, ",");
+
+		        first_one = 0;
+			sstrcpy(&p, l[0]);
+		    }
+
+		    smtp_act = add_pat_escapes(q);
+		    fs_give((void **)&q);
+		}
+	    }
+
 	    if((f = role_repl_types(action->repl_type)) != NULL)
 	      repl_val = f->shortname;
 
@@ -6041,6 +7103,24 @@ data_for_patline(pat)
 	      fs_give((void **)&p2);
 	}
 
+	if(action->is_a_other){
+	    char buf[256];
+
+	    if(action->sort_is_set){
+		sprintf(buf, "%.50s%.50s",
+			sort_name(action->sortorder),
+			action->revsort ? "/Reverse" : "");
+		sort_act = add_pat_escapes(buf);
+	    }
+
+	    if(action->index_format)
+	      iform_act = add_pat_escapes(action->index_format);
+
+	    if(action->startup_rule != IS_NOTSET &&
+	       (f = startup_rules(action->startup_rule)) != NULL)
+	      start_act = S_OR_L(f);
+	}
+
 	if(action->is_a_role && action->from){
 	    char *bufp;
 
@@ -6063,13 +7143,47 @@ data_for_patline(pat)
 	    }
 	}
 
-	if(action->is_a_filter && action->folder){
-	    if(p = pattern_to_string(action->folder)){
-		folder_act = add_pat_escapes(p);
-		fs_give((void **) &p);
+	if(action->is_a_filter){
+	    if(action->folder){
+		if(p = pattern_to_string(action->folder)){
+		    folder_act = add_pat_escapes(p);
+		    fs_give((void **) &p);
 
-		if(action->move_only_if_not_deleted)
-		  filt_ifnotdel = cpystr("/NOTDEL=1");
+		    if(action->move_only_if_not_deleted)
+		      filt_ifnotdel = cpystr("/NOTDEL=1");
+		}
+	    }
+
+	    if(!action->kill)
+	      filt_nokill = cpystr("/NOKILL=1");
+	    
+	    if(action->non_terminating)
+	      filt_nonterm = cpystr("/NONTERM=1");
+	    
+	    if(action->state_setting_bits){
+		char buf[256];
+		int  dval, nval, ival, aval;
+
+		buf[0] = '\0';
+		p = buf;
+
+		convert_statebits_to_vals(action->state_setting_bits,
+					  &dval, &aval, &ival, &nval);
+		if(dval != ACT_STAT_LEAVE &&
+		   (f = msg_state_types(dval)) != NULL)
+		  filt_del_val = f->shortname;
+
+		if(aval != ACT_STAT_LEAVE &&
+		   (f = msg_state_types(aval)) != NULL)
+		  filt_ans_val = f->shortname;
+
+		if(ival != ACT_STAT_LEAVE &&
+		   (f = msg_state_types(ival)) != NULL)
+		  filt_imp_val = f->shortname;
+
+		if(nval != ACT_STAT_LEAVE &&
+		   (f = msg_state_types(nval)) != NULL)
+		  filt_new_val = f->shortname;
 	    }
 	}
     }
@@ -6084,8 +7198,13 @@ data_for_patline(pat)
 			strlen(news_pat ? news_pat : "") +
 			strlen(subj_pat ? subj_pat : "") +
 			strlen(alltext_pat ? alltext_pat : "") +
+			strlen(bodytext_pat ? bodytext_pat : "") +
 			strlen(arb_pat ? arb_pat : "") +
 			strlen(scorei_pat ? scorei_pat : "") +
+			strlen(age_pat ? age_pat : "") +
+			strlen(fldr_pat ? fldr_pat : "") +
+			strlen(abooks_pat ? abooks_pat : "") +
+			strlen(sentdate ? sentdate : "") +
 			strlen(inherit_nick ? inherit_nick : "") +
 			strlen(score_act ? score_act : "") +
 			strlen(from_act ? from_act : "") +
@@ -6093,10 +7212,17 @@ data_for_patline(pat)
 			strlen(fcc_act ? fcc_act : "") +
 			strlen(litsig_act ? litsig_act : "") +
 			strlen(cstm_act ? cstm_act : "") +
+			strlen(smtp_act ? smtp_act : "") +
 			strlen(sig_act ? sig_act : "") +
 			strlen(incol_act ? incol_act : "") +
+			strlen(sort_act ? sort_act : "") +
+			strlen(iform_act ? iform_act : "") +
+			strlen(start_act ? start_act : "") +
+			strlen(filt_ifnotdel ? filt_ifnotdel : "") +
+			strlen(filt_nokill ? filt_nokill : "") +
+			strlen(filt_nonterm ? filt_nonterm : "") +
 			(folder_act ? (strlen(folder_act) + 8) : 0) +
-			strlen(templ_act ? templ_act : "") + 300)*sizeof(char));
+			strlen(templ_act ? templ_act : "") + 480)*sizeof(char));
 
     q = p;
     sstrcpy(&q, "pattern=\"/NICK=");
@@ -6109,57 +7235,103 @@ data_for_patline(pat)
       sstrcpy(&q, "Alternate Role");
 
     if(to_pat){
-	sstrcpy(&q, "/TO=");
+	sstrcpy(&q, "/");
+	if(to_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "TO=");
 	sstrcpy(&q, to_pat);
 	fs_give((void **) &to_pat);
     }
 
     if(from_pat){
-	sstrcpy(&q, "/FROM=");
+	sstrcpy(&q, "/");
+	if(from_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "FROM=");
 	sstrcpy(&q, from_pat);
 	fs_give((void **) &from_pat);
     }
 
     if(sender_pat){
-	sstrcpy(&q, "/SENDER=");
+	sstrcpy(&q, "/");
+	if(sender_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "SENDER=");
 	sstrcpy(&q, sender_pat);
 	fs_give((void **) &sender_pat);
     }
 
     if(cc_pat){
-	sstrcpy(&q,"/CC=");
+	sstrcpy(&q,"/");
+	if(cc_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q,"CC=");
 	sstrcpy(&q, cc_pat);
 	fs_give((void **) &cc_pat);
     }
 
     if(recip_pat){
-	sstrcpy(&q, "/RECIP=");
+	sstrcpy(&q, "/");
+	if(recip_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "RECIP=");
 	sstrcpy(&q, recip_pat);
 	fs_give((void **) &recip_pat);
     }
 
     if(partic_pat){
-	sstrcpy(&q, "/PARTIC=");
+	sstrcpy(&q, "/");
+	if(partic_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "PARTIC=");
 	sstrcpy(&q, partic_pat);
 	fs_give((void **) &partic_pat);
     }
 
     if(news_pat){
-	sstrcpy(&q, "/NEWS=");
+	sstrcpy(&q, "/");
+	if(news_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "NEWS=");
 	sstrcpy(&q, news_pat);
 	fs_give((void **) &news_pat);
     }
 
     if(subj_pat){
-	sstrcpy(&q, "/SUBJ=");
+	sstrcpy(&q, "/");
+	if(subj_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "SUBJ=");
 	sstrcpy(&q, subj_pat);
 	fs_give((void **)&subj_pat);
     }
 
     if(alltext_pat){
-	sstrcpy(&q, "/ALL=");
+	sstrcpy(&q, "/");
+	if(alltext_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "ALL=");
 	sstrcpy(&q, alltext_pat);
 	fs_give((void **) &alltext_pat);
+    }
+
+    if(bodytext_pat){
+	sstrcpy(&q, "/");
+	if(bodytext_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "BODY=");
+	sstrcpy(&q, bodytext_pat);
+	fs_give((void **) &bodytext_pat);
     }
 
     if(arb_pat){
@@ -6173,6 +7345,17 @@ data_for_patline(pat)
 	fs_give((void **) &scorei_pat);
     }
 
+    if(age_pat){
+	sstrcpy(&q, "/AGE=");
+	sstrcpy(&q, age_pat);
+	fs_give((void **) &age_pat);
+    }
+
+    if(sentdate){
+	sstrcpy(&q, sentdate);
+	fs_give((void **) &sentdate);
+    }
+
     if(fldr_type_pat){
 	sstrcpy(&q, "/FLDTYPE=");
 	sstrcpy(&q, fldr_type_pat);
@@ -6184,9 +7367,25 @@ data_for_patline(pat)
 	fs_give((void **) &fldr_pat);
     }
 
+    if(afrom_type_pat){
+	sstrcpy(&q, "/AFROM=");
+	sstrcpy(&q, afrom_type_pat);
+    }
+
+    if(abooks_pat){
+	sstrcpy(&q, "/ABOOKS=");
+	sstrcpy(&q, abooks_pat);
+	fs_give((void **) &abooks_pat);
+    }
+
     if(stat_new_val){
 	sstrcpy(&q, "/STATN=");
 	sstrcpy(&q, stat_new_val);
+    }
+
+    if(stat_rec_val){
+	sstrcpy(&q, "/STATR=");
+	sstrcpy(&q, stat_rec_val);
     }
 
     if(stat_del_val){
@@ -6202,6 +7401,11 @@ data_for_patline(pat)
     if(stat_ans_val){
 	sstrcpy(&q, "/STATA=");
 	sstrcpy(&q, stat_ans_val);
+    }
+
+    if(stat_8bit_val){
+	sstrcpy(&q, "/8BITS=");
+	sstrcpy(&q, stat_8bit_val);
     }
 
     sstrcpy(&q, "\" action=\"");
@@ -6222,8 +7426,23 @@ data_for_patline(pat)
 	if(action->is_a_score)
 	  sstrcpy(&q, "/ISSCORE=1");
 
-	if(action->is_a_filter)
-	  sstrcpy(&q, "/FILTER=1");
+	if(action->is_a_filter){
+	    /*
+	     * Older pine will interpret a filter that has no folder
+	     * as a Delete, even if we set it up here to be a Just Set
+	     * State filter. Disable the filter for older versions in that
+	     * case. If kill is set then Delete is what is supposed to
+	     * happen, so that's ok. If folder is set then Move is what is
+	     * supposed to happen, so ok.
+	     */
+	    if(!action->kill && !action->folder)
+	      sstrcpy(&q, "/FILTER=2");
+	    else
+	      sstrcpy(&q, "/FILTER=1");
+	}
+
+	if(action->is_a_other)
+	  sstrcpy(&q, "/OTHER=1");
     }
 
     if(score_act){
@@ -6274,6 +7493,12 @@ data_for_patline(pat)
 	fs_give((void **)&cstm_act);
     }
 
+    if(smtp_act){
+	sstrcpy(&q, "/SMTP=");
+	sstrcpy(&q, smtp_act);
+	fs_give((void **)&smtp_act);
+    }
+
     if(repl_val){
 	sstrcpy(&q, "/RTYPE=");
 	sstrcpy(&q, repl_val);
@@ -6295,6 +7520,23 @@ data_for_patline(pat)
 	fs_give((void **)&incol_act);
     }
 
+    if(sort_act){
+	sstrcpy(&q, "/SORT=");
+	sstrcpy(&q, sort_act);
+	fs_give((void **)&sort_act);
+    }
+
+    if(iform_act){
+	sstrcpy(&q, "/IFORM=");
+	sstrcpy(&q, iform_act);
+	fs_give((void **)&iform_act);
+    }
+
+    if(start_act){
+	sstrcpy(&q, "/START=");
+	sstrcpy(&q, start_act);
+    }
+
     if(folder_act){
 	sstrcpy(&q, "/FOLDER=");
 	sstrcpy(&q, folder_act);
@@ -6306,30 +7548,121 @@ data_for_patline(pat)
 	fs_give((void **) &filt_ifnotdel);
     }
 
+    if(filt_nonterm){
+	sstrcpy(&q, filt_nonterm);
+	fs_give((void **) &filt_nonterm);
+    }
+
+    if(filt_nokill){
+	sstrcpy(&q, filt_nokill);
+	fs_give((void **) &filt_nokill);
+    }
+
+    if(filt_new_val){
+	sstrcpy(&q, "/STATN=");
+	sstrcpy(&q, filt_new_val);
+    }
+
+    if(filt_del_val){
+	sstrcpy(&q, "/STATD=");
+	sstrcpy(&q, filt_del_val);
+    }
+
+    if(filt_imp_val){
+	sstrcpy(&q, "/STATI=");
+	sstrcpy(&q, filt_imp_val);
+    }
+
+    if(filt_ans_val){
+	sstrcpy(&q, "/STATA=");
+	sstrcpy(&q, filt_ans_val);
+    }
+
     *q++ = '\"';
     *q   = '\0';
 
     return(p);
 }
 
+
+void
+convert_statebits_to_vals(bits, dval, aval, ival, nval)
+    long bits;
+    int *dval,
+        *aval,
+	*ival,
+	*nval;
+{
+    if(dval)
+      *dval = ACT_STAT_LEAVE;
+    if(aval)
+      *aval = ACT_STAT_LEAVE;
+    if(ival)
+      *ival = ACT_STAT_LEAVE;
+    if(nval)
+      *nval = ACT_STAT_LEAVE;
+
+    if(ival){
+	if(bits & F_FLAG)
+	  *ival = ACT_STAT_SET;
+	else if(bits & F_UNFLAG)
+	  *ival = ACT_STAT_CLEAR;
+    }
+
+    if(aval){
+	if(bits & F_ANS)
+	  *aval = ACT_STAT_SET;
+	else if(bits & F_UNANS)
+	  *aval = ACT_STAT_CLEAR;
+    }
+
+    if(dval){
+	if(bits & F_DEL)
+	  *dval = ACT_STAT_SET;
+	else if(bits & F_UNDEL)
+	  *dval = ACT_STAT_CLEAR;
+    }
+
+    if(nval){
+	if(bits & F_UNSEEN)
+	  *nval = ACT_STAT_SET;
+	else if(bits & F_SEEN)
+	  *nval = ACT_STAT_CLEAR;
+    }
+}
+
     
 /*
- * Returns 1 if any message in the searchset matches this pattern, else 0.
  * The "searched" bit will be set for each message which matches.
+ *
+ * Args:   patgrp -- Pattern to search with
+ *         stream --
+ *      searchset -- Restrict search to this set
+ *        section -- Searching a section of the message, not the whole thing
+ *      get_score -- Function to return the score for a message
+ * no_srvr_search -- If this is set we are in a callback from c-client because
+ *                   some imap data arrived. We don't want to call c-client
+ *                   again because it isn't re-entrant safe. This is only a
+ *                   problem if we need to get the text of a message to
+ *                   do the search, the envelope is cached already.
+ *
+ * Returns:   1 if any message in the searchset matches this pattern
+ *            0 if no matches
+ *           -1 if couldn't perform search because of no_fetch restriction
  */
 int
-match_pattern(patgrp, stream, searchset, section, get_score)
+match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
     PATGRP_S   *patgrp;
     MAILSTREAM *stream;
     SEARCHSET  *searchset;
     char       *section;
     int         (*get_score) PROTO((MAILSTREAM *, long));
+    int         no_srvr_search;
 {
     char         *charset = NULL;
     SEARCHPGM    *pgm;
     SEARCHSET    *s;
     MESSAGECACHE *mc;
-    PATTERN_S    *p;
     long          i, msgno = 0L;
     long          flags = (SO_NOSERVER|SE_NOPREFETCH|SE_FREE);
 
@@ -6339,7 +7672,7 @@ match_pattern(patgrp, stream, searchset, section, get_score)
      * Is the current folder the right type and possibly the right specific
      * folder for a match?
      */
-    if(!(patgrp && match_pattern_folder(patgrp, stream)))
+    if(!(patgrp && !patgrp->bogus && match_pattern_folder(patgrp, stream)))
       return(0);
 
     /*
@@ -6352,18 +7685,30 @@ match_pattern(patgrp, stream, searchset, section, get_score)
     if(!searchset)
       return(1);
 
+    /*
+     * change by sderr : match_pattern_folder will sometimes
+     * accept NULL streams, but if we are not in a folder-type-only
+     * match test, we don't
+     */
+    if(!stream)
+      return(0);
+
+    if(no_srvr_search && is_imap_stream(stream)
+       && (patgrp->alltext || patgrp->bodytext))
+      return(-1);
+
     pgm = match_pattern_srchpgm(patgrp, stream, &charset, searchset);
 
-    if(patgrp->alltext
+    if((patgrp->alltext || patgrp->bodytext)
        && (!is_imap_stream(stream) || modern_imap_stream(stream)))
-	/*
-	 * Cache isn't going to work. Search on server.
-	 * Except that is likely to not work on an old imap server because
-	 * the OR criteria won't work and we are likely to have some ORs.
-	 * So turn off the NOSERVER flag (and search on server if remote)
-	 * unless the server is an old server. It doesn't matter if we
-	 * turn if off if it's not an imap stream, but we do it anyway.
-	 */
+      /*
+       * Cache isn't going to work. Search on server.
+       * Except that is likely to not work on an old imap server because
+       * the OR criteria won't work and we are likely to have some ORs.
+       * So turn off the NOSERVER flag (and search on server if remote)
+       * unless the server is an old server. It doesn't matter if we
+       * turn if off if it's not an imap stream, but we do it anyway.
+       */
       flags &= ~SO_NOSERVER;
 
     if(section){
@@ -6445,7 +7790,7 @@ match_pattern(patgrp, stream, searchset, section, get_score)
 	      mc->sequence = 1;
 	
 	if((ss = build_searchset(stream)) != NULL){
-	    calculate_some_scores(stream, ss);
+	    (void)calculate_some_scores(stream, ss, no_srvr_search);
 	    mail_free_searchset(&ss);
 	}
 
@@ -6456,7 +7801,8 @@ match_pattern(patgrp, stream, searchset, section, get_score)
 	 */
 	for(s = searchset; s; s = s->next)
 	  for(msgno = s->first; msgno <= s->last; msgno++)
-	    if((mc = mail_elt(stream, msgno))->searched){
+	    if(msgno <= stream->nmsgs
+	       && (mc = mail_elt(stream, msgno))->searched){
 		int score;
 
 		score = (*get_score)(stream, msgno);
@@ -6476,6 +7822,101 @@ match_pattern(patgrp, stream, searchset, section, get_score)
 	fs_give((void **)&savebits);
     }
 
+    /* if there are still matches, check for 8bit subject match */
+    if(patgrp->stat_8bitsubj != PAT_STAT_EITHER){
+	char      *savebits;
+	SEARCHSET *ss = NULL;
+
+	/*
+	 * Again we may call build_header_line recursively.
+	 */
+	savebits = (char *)fs_get((stream->nmsgs+1) * sizeof(char));
+
+	for(i = 1L; i <= stream->nmsgs; i++){
+	    savebits[i] = (mc=mail_elt(stream, i))->sequence;
+	    mc->sequence = 0;
+	}
+
+	/*
+	 * Build a searchset so we can look at all the envelopes
+	 * we need to look at but only those we need to look at.
+	 * Everything with the searched bit set is still a
+	 * possibility, so restrict to that set.
+	 */
+
+	for(s = searchset; s; s = s->next)
+	  for(msgno = s->first; msgno <= s->last; msgno++)
+	    if(msgno <= stream->nmsgs
+	       && (mc=mail_elt(stream, msgno))->searched)
+	      mc->sequence = 1;
+
+	ss = build_searchset(stream);
+
+	for(s = ss; s; s = s->next){
+	    for(msgno = s->first; msgno <= s->last; msgno++){
+		ENVELOPE   *e;
+		SEARCHSET **sset;
+
+		if(msgno > stream->nmsgs)
+		  continue;
+
+	        /*
+	         * This causes the lookahead to fetch precisely
+	         * the messages we want (in the searchset) instead
+	         * of just fetching the next 20 sequential
+	         * messages. If the searching so far has caused
+	         * a sparse searchset in a large mailbox, the
+	         * difference can be substantial.
+	         */
+	        sset = (SEARCHSET **) mail_parameters(stream,
+						      GET_FETCHLOOKAHEAD,
+						      (void *) stream);
+		if(sset)
+	          *sset = s;
+
+		e = mail_fetchenvelope(stream, msgno);
+		if(patgrp->stat_8bitsubj == PAT_STAT_YES){
+		    if(e && e->subject){
+			char *p;
+
+			for(p = e->subject; *p; p++)
+			  if(*p & 0x80)
+			    break;
+
+			if(!*p)
+			  mail_elt(stream,msgno)->searched = NIL;
+		    }
+		    else
+		      mail_elt(stream,msgno)->searched = NIL;
+		}
+		else if(patgrp->stat_8bitsubj == PAT_STAT_NO){
+		    if(e && e->subject){
+			char *p;
+
+			for(p = e->subject; *p; p++)
+			  if(*p & 0x80)
+			    break;
+
+			if(*p)
+			  mail_elt(stream,msgno)->searched = NIL;
+		    }
+		}
+	    }
+	}
+
+	for(i = 1L; i <= stream->nmsgs; i++)
+	  mail_elt(stream, i)->sequence = savebits[i];
+    
+	fs_give((void **)&savebits);
+
+	if(ss)
+	  mail_free_searchset(&ss);
+    }
+
+    if(patgrp->abookfrom != AFRM_EITHER)
+      from_or_replyto_in_abook(stream, searchset, patgrp->abookfrom,
+			       patgrp->abooks);
+
     for(s = searchset; s; s = s->next)
       for(msgno = s->first; msgno <= s->last; msgno++)
         if(mail_elt(stream, msgno)->searched)
@@ -6492,13 +7933,15 @@ match_pattern_folder(patgrp, stream)
 {
     int	       is_news;
     
-    return(stream
-	   && ((patgrp->fldr_type == FLDR_ANY)
-	       || ((is_news = IS_NEWS(stream))
-		   && patgrp->fldr_type == FLDR_NEWS)
-	       || (!is_news && patgrp->fldr_type == FLDR_EMAIL)
-	       || (patgrp->fldr_type == FLDR_SPECIFIC
-		   && match_pattern_folder_specific(patgrp->folder,stream,1))));
+    /* change by sderr : we match FLDR_ANY even if stream is NULL */
+    return((patgrp->fldr_type == FLDR_ANY)
+	   || (stream
+	       && (((is_news = IS_NEWS(stream))
+	            && patgrp->fldr_type == FLDR_NEWS)
+	           || (!is_news && patgrp->fldr_type == FLDR_EMAIL)
+	           || (patgrp->fldr_type == FLDR_SPECIFIC
+		       && match_pattern_folder_specific(patgrp->folder,
+						        stream, 1)))));
 }
 
 
@@ -6515,6 +7958,8 @@ match_pattern_folder_specific(folders, stream, flags)
 {
     PATTERN_S *p;
     int        match = 0;
+
+    dprint(8, (debugfile, "match_pattern_folder_specific\n"));
 
     if(!(stream && stream->mailbox && stream->mailbox[0]))
       return(0);
@@ -6608,7 +8053,8 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
     char       **charsetp;
     SEARCHSET	*searchset;
 {
-    SEARCHPGM	 *pgm;
+    SEARCHPGM	 *pgm, *tmppgm;
+    SEARCHOR     *or;
     SEARCHSET	**sp;
     ROLE_ARGS_T	  rargs;
 
@@ -6633,62 +8079,90 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
 	sp = &s->next;
     }
 
-    if(patgrp->subj)
-      set_up_search_pgm("subject", patgrp->subj, pgm, &rargs);
+    if(!patgrp)
+      return(pgm);
 
-    if(patgrp->cc)
-      set_up_search_pgm("cc", patgrp->cc, pgm, &rargs);
+    if(patgrp->subj){
+	if(patgrp->subj->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
 
-    if(patgrp->from)
-      set_up_search_pgm("from", patgrp->from, pgm, &rargs);
+	set_up_search_pgm("subject", patgrp->subj, tmppgm, &rargs);
+    }
 
-    if(patgrp->to)
-      set_up_search_pgm("to", patgrp->to, pgm, &rargs);
+    if(patgrp->cc){
+	if(patgrp->cc->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
 
-    if(patgrp->sender)
-      set_up_search_pgm("sender", patgrp->sender, pgm, &rargs);
+	set_up_search_pgm("cc", patgrp->cc, tmppgm, &rargs);
+    }
 
-    if(patgrp->news)
-      set_up_search_pgm("newsgroups", patgrp->news, pgm, &rargs);
+    if(patgrp->from){
+	if(patgrp->from->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("from", patgrp->from, tmppgm, &rargs);
+    }
+
+    if(patgrp->to){
+	if(patgrp->to->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("to", patgrp->to, tmppgm, &rargs);
+    }
+
+    if(patgrp->sender){
+	if(patgrp->sender->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("sender", patgrp->sender, tmppgm, &rargs);
+    }
+
+    if(patgrp->news){
+	if(patgrp->news->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("newsgroups", patgrp->news, tmppgm, &rargs);
+    }
 
     /* To OR Cc */
     if(patgrp->recip){
-	SEARCHOR *or, **or_ptr;
-
-	/* find next unused or slot */
-	for(or = pgm->or; or && or->next; or = or->next)
-	  ;
-
-	if(or)
-	  or_ptr = &or->next;
+	if(patgrp->recip->not)
+	  tmppgm = next_not(pgm);
 	else
-	  or_ptr = &pgm->or;
+	  tmppgm = pgm;
+	
+	or = next_or(&tmppgm->or);
 
-	*or_ptr = mail_newsearchor();
-	set_up_search_pgm("to", patgrp->recip, (*or_ptr)->first, &rargs);
-	set_up_search_pgm("cc", patgrp->recip, (*or_ptr)->second, &rargs);
+	set_up_search_pgm("to", patgrp->recip, or->first, &rargs);
+	set_up_search_pgm("cc", patgrp->recip, or->second, &rargs);
     }
 
     /* To OR Cc OR From */
     if(patgrp->partic){
-	SEARCHOR *or, **or_ptr;
-
-	/* find next unused or slot */
-	for(or = pgm->or; or && or->next; or = or->next)
-	  ;
-
-	if(or)
-	  or_ptr = &or->next;
+	if(patgrp->partic->not)
+	  tmppgm = next_not(pgm);
 	else
-	  or_ptr = &pgm->or;
+	  tmppgm = pgm;
 
-	*or_ptr = mail_newsearchor();
-	set_up_search_pgm("to", patgrp->partic, (*or_ptr)->first, &rargs);
+	or = next_or(&tmppgm->or);
 
-	(*or_ptr)->second->or = mail_newsearchor();
-	set_up_search_pgm("cc", patgrp->partic, (*or_ptr)->second->or->first,
-			  &rargs);
-	set_up_search_pgm("from", patgrp->partic, (*or_ptr)->second->or->second,
+	set_up_search_pgm("to", patgrp->partic, or->first, &rargs);
+
+	or->second->or = mail_newsearchor();
+	set_up_search_pgm("cc", patgrp->partic, or->second->or->first, &rargs);
+	set_up_search_pgm("from", patgrp->partic, or->second->or->second,
 			  &rargs);
     }
 
@@ -6696,19 +8170,143 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
 	ARBHDR_S *a;
 
 	for(a = patgrp->arbhdr; a; a = a->next)
-	  if(a->field && a->field[0] && a->p)
-	    set_up_search_pgm(a->field, a->p, pgm, &rargs);
+	  if(a->field && a->field[0] && a->p){
+	      if(a->p->not)
+	        tmppgm = next_not(pgm);
+	      else
+	        tmppgm = pgm;
+
+	      set_up_search_pgm(a->field, a->p, tmppgm, &rargs);
+	  }
     }
 
-    if(patgrp->alltext)
-      set_up_search_pgm("alltext", patgrp->alltext, pgm, &rargs);
+    if(patgrp->alltext){
+	if(patgrp->alltext->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("alltext", patgrp->alltext, tmppgm, &rargs);
+    }
+    
+    if(patgrp->bodytext){
+	if(patgrp->bodytext->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	set_up_search_pgm("bodytext", patgrp->bodytext, tmppgm, &rargs);
+    }
+
+    if(patgrp->do_age && patgrp->age_min <= patgrp->age_max){
+	time_t       now, comparetime;
+	struct tm   *tm;
+	unsigned short i;
+
+	now = time(0);
+
+	if(patgrp->age_min >= 0 && patgrp->age_min == patgrp->age_max){
+	    comparetime = now;
+	    comparetime -= (patgrp->age_min * 86400);
+	    tm = localtime(&comparetime);
+	    if(tm && tm->tm_year >= 70){
+		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+				   tm->tm_mday);
+		if(patgrp->age_uses_sentdate)
+		  pgm->senton = i;
+		else
+		  pgm->on = i;
+	    }
+	}
+	else{
+	    /*
+	     * The 20000's are just protecting against overflows.
+	     * That's back past the start of email time, anyway.
+	     */
+	    if(patgrp->age_min > 0 && patgrp->age_min < 20000){
+		comparetime = now;
+		comparetime -= ((patgrp->age_min - 1) * 86400);
+		tm = localtime(&comparetime);
+		if(tm && tm->tm_year >= 70){
+		    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+				       tm->tm_mday);
+		    if(patgrp->age_uses_sentdate)
+		      pgm->sentbefore = i;
+		    else
+		      pgm->before = i;
+		}
+	    }
+
+	    if(patgrp->age_max >= 0 && patgrp->age_max < 20000){
+		comparetime = now;
+		comparetime -= (patgrp->age_max * 86400);
+		tm = localtime(&comparetime);
+		if(tm && tm->tm_year >= 70){
+		    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
+				       tm->tm_mday);
+		    if(patgrp->age_uses_sentdate)
+		      pgm->sentsince = i;
+		    else
+		      pgm->since = i;
+		}
+	    }
+	}
+    }
     
     SETPGMSTATUS(patgrp->stat_new,pgm->unseen,pgm->seen);
+    SETPGMSTATUS(patgrp->stat_rec,pgm->recent,pgm->old);
     SETPGMSTATUS(patgrp->stat_del,pgm->deleted,pgm->undeleted);
     SETPGMSTATUS(patgrp->stat_imp,pgm->flagged,pgm->unflagged);
     SETPGMSTATUS(patgrp->stat_ans,pgm->answered,pgm->unanswered);
 
     return(pgm);
+}
+
+
+SEARCHPGM *
+next_not(pgm)
+    SEARCHPGM *pgm;
+{
+    SEARCHPGMLIST *not, **not_ptr;
+
+    if(!pgm)
+      return(NULL);
+
+    /* find next unused not slot */
+    for(not = pgm->not; not && not->next; not = not->next)
+      ;
+    
+    if(not)
+      not_ptr = &not->next;
+    else
+      not_ptr = &pgm->not;
+    
+    /* allocate */
+    *not_ptr = mail_newsearchpgmlist();
+
+    return((*not_ptr)->pgm);
+}
+
+
+SEARCHOR *
+next_or(startingor)
+    SEARCHOR **startingor;
+{
+    SEARCHOR *or, **or_ptr;
+
+    /* find next unused or slot */
+    for(or = (*startingor); or && or->next; or = or->next)
+      ;
+    
+    if(or)
+      or_ptr = &or->next;
+    else
+      or_ptr = startingor;
+    
+    /* allocate */
+    *or_ptr = mail_newsearchor();
+
+    return(*or_ptr);
 }
 
 
@@ -6719,9 +8317,10 @@ set_up_search_pgm(field, pattern, pgm, rargs)
     SEARCHPGM   *pgm;
     ROLE_ARGS_T *rargs;
 {
-    SEARCHOR *or, **or_ptr;
+    SEARCHOR *or;
 
     if(field && pattern && rargs && pgm){
+
 	/*
 	 * To is special because we want to use the ReSent-To header instead
 	 * of the To header if it exists.  We set up something like:
@@ -6732,37 +8331,25 @@ set_up_search_pgm(field, pattern, pgm, rargs)
 	 */
 	if(!strucmp(field, "to")){
 	    ROLE_ARGS_T local_args;
-	    char       *space = " ";
 
-	    /* find next unused or slot */
-	    for(or = pgm->or; or && or->next; or = or->next)
-	      ;
-
-	    if(or)
-	      or_ptr = &or->next;
-	    else
-	      or_ptr = &pgm->or;
-
-	    *or_ptr = mail_newsearchor();
+	    or = next_or(&pgm->or);
 
 	    local_args = *rargs;
 	    local_args.cset = NULL;	/* just to save having to check */
 	    /* check for resent-to exists */
-	    set_srch("resent-to", space, (*or_ptr)->first, &local_args);
+	    set_srch("resent-to", "", or->first, &local_args);
 
 	    local_args.cset = rargs->cset;
-	    add_type_to_pgm("resent-to", pattern, (*or_ptr)->first,
-			    &local_args);
+	    add_type_to_pgm("resent-to", pattern, or->first, &local_args);
 
 	    /* check for resent-to doesn't exist */
-	    (*or_ptr)->second->not = mail_newsearchpgmlist();
+	    or->second->not = mail_newsearchpgmlist();
 	    local_args.cset = NULL;
-	    set_srch("resent-to", space, (*or_ptr)->second->not->pgm,
-		     &local_args);
+	    set_srch("resent-to", "", or->second->not->pgm, &local_args);
 
 	    /* now add the real To search to second */
 	    local_args.cset = rargs->cset;
-	    add_type_to_pgm(field, pattern, (*or_ptr)->second, &local_args);
+	    add_type_to_pgm(field, pattern, or->second, &local_args);
 	}
 	else
 	  add_type_to_pgm(field, pattern, pgm, rargs);
@@ -6778,7 +8365,7 @@ add_type_to_pgm(field, pattern, pgm, rargs)
     ROLE_ARGS_T *rargs;
 {
     PATTERN_S *p;
-    SEARCHOR  *or, **or_ptr;
+    SEARCHOR  *or;
 
     if(field && pattern && rargs && pgm){
 	for(p = pattern; p; p = p->next){
@@ -6793,19 +8380,11 @@ add_type_to_pgm(field, pattern, pgm, rargs)
 		 * OR tree (which is what this for loop is building).
 		 */
 
-		/* find next unused or slot */
-		for(or = pgm->or; or && or->next; or = or->next)
-		  ;
+		or = next_or(&pgm->or);
 
-		if(or)
-		  or_ptr = &or->next;
-		else
-		  or_ptr = &pgm->or;
-
-		*or_ptr = mail_newsearchor();
 		set_srch(field, p->substring ? p->substring : "",
-			 (*or_ptr)->first, rargs);
-		pgm = (*or_ptr)->second;
+			 or->first, rargs);
+		pgm = or->second;
 	    }
 	    else{
 		set_srch(field, p->substring ? p->substring : "", pgm, rargs);
@@ -6850,6 +8429,8 @@ set_srch(field, value, pgm, rargs)
       list = &pgm->followup_to;
     else if(!strucmp(field, "alltext"))
       list = &pgm->text;
+    else if(!strucmp(field, "bodytext"))
+      list = &pgm->body;
     else{
 	set_srch_hdr(field, value, pgm, rargs);
 	return;
@@ -6960,7 +8541,7 @@ calc_extra_hdrs()
     long      type = (ROLE_INCOL | ROLE_SCORE);
     ARBHDR_S *a;
     PAT_STATE pstate;
-    char     *q, *p = NULL, *s, *hdrs[MLCMD_COUNT + 1], **pp;
+    char     *q, *p = NULL, *hdrs[MLCMD_COUNT + 1], **pp;
 #define INITIALSIZE 1000
 
     q = (char *)fs_get((INITIALSIZE+1) * sizeof(char));
@@ -7143,6 +8724,9 @@ free_pat(pat)
 	free_pat(&(*pat)->next);
 	free_patgrp(&(*pat)->patgrp);
 	free_action(&(*pat)->action);
+	if((*pat)->raw)
+	  fs_give((void **)&(*pat)->raw);
+
 	fs_give((void **)pat);
     }
 }
@@ -7164,6 +8748,7 @@ free_patgrp(patgrp)
 	free_pattern(&(*patgrp)->news);
 	free_pattern(&(*patgrp)->subj);
 	free_pattern(&(*patgrp)->alltext);
+	free_pattern(&(*patgrp)->bodytext);
 	free_pattern(&(*patgrp)->folder);
 	free_arbhdr(&(*patgrp)->arbhdr);
 	fs_give((void **)patgrp);
@@ -7217,6 +8802,8 @@ free_action(action)
 	  fs_give((void **)&(*action)->template);
 	if((*action)->cstm)
 	  free_list_array(&(*action)->cstm);
+	if((*action)->smtp)
+	  free_list_array(&(*action)->smtp);
 	if((*action)->nick)
 	  fs_give((void **)&(*action)->nick);
 	if((*action)->inherit_nick)
@@ -7225,6 +8812,8 @@ free_action(action)
 	  free_color_pair(&(*action)->incol);
 	if((*action)->folder)
 	  free_pattern(&(*action)->folder);
+	if((*action)->index_format)
+	  fs_give((void **)&(*action)->index_format);
 
 	fs_give((void **)action);
     }
@@ -7331,6 +8920,12 @@ copy_patgrp(patgrp)
 	    fs_give((void **)&p);
 	}
 	
+	if(patgrp->bodytext){
+	    p = pattern_to_string(patgrp->bodytext);
+	    new_patgrp->bodytext = string_to_pattern(p);
+	    fs_give((void **)&p);
+	}
+	
 	if(patgrp->arbhdr){
 	    ARBHDR_S *aa, *a, *new_a;
 
@@ -7369,14 +8964,31 @@ copy_patgrp(patgrp)
 	    fs_give((void **)&p);
 	}
 
+	new_patgrp->abookfrom = patgrp->abookfrom;
+
+	if(patgrp->abooks){
+	    p = pattern_to_string(patgrp->abooks);
+	    new_patgrp->abooks = string_to_pattern(p);
+	    fs_give((void **)&p);
+	}
+
 	new_patgrp->do_score  = patgrp->do_score;
 	new_patgrp->score_min = patgrp->score_min;
 	new_patgrp->score_max = patgrp->score_max;
 
+	new_patgrp->do_age    = patgrp->do_age;
+	new_patgrp->age_min   = patgrp->age_min;
+	new_patgrp->age_max   = patgrp->age_max;
+
+	new_patgrp->age_uses_sentdate = patgrp->age_uses_sentdate;
+
 	new_patgrp->stat_new  = patgrp->stat_new;
+	new_patgrp->stat_rec  = patgrp->stat_rec;
 	new_patgrp->stat_del  = patgrp->stat_del;
 	new_patgrp->stat_imp  = patgrp->stat_imp;
 	new_patgrp->stat_ans  = patgrp->stat_ans;
+
+	new_patgrp->stat_8bitsubj  = patgrp->stat_8bitsubj;
     }
 
     return(new_patgrp);
@@ -7400,20 +9012,32 @@ copy_action(action)
 	newaction = (ACTION_S *)fs_get(sizeof(*newaction));
 	memset((void *)newaction, 0, sizeof(*newaction));
 
-	newaction->repl_type   = action->repl_type;
-	newaction->forw_type   = action->forw_type;
-	newaction->comp_type   = action->comp_type;
-	newaction->scoreval    = action->scoreval;
-	newaction->move_only_if_not_deleted = action->move_only_if_not_deleted;
 	newaction->is_a_role   = action->is_a_role;
 	newaction->is_a_incol  = action->is_a_incol;
 	newaction->is_a_score  = action->is_a_score;
 	newaction->is_a_filter = action->is_a_filter;
+	newaction->is_a_other  = action->is_a_other;
+	newaction->repl_type   = action->repl_type;
+	newaction->forw_type   = action->forw_type;
+	newaction->comp_type   = action->comp_type;
+	newaction->scoreval    = action->scoreval;
+	newaction->kill        = action->kill;
+	newaction->state_setting_bits = action->state_setting_bits;
+	newaction->move_only_if_not_deleted = action->move_only_if_not_deleted;
+	newaction->non_terminating = action->non_terminating;
+	newaction->sort_is_set = action->sort_is_set;
+	newaction->sortorder   = action->sortorder;
+	newaction->revsort     = action->revsort;
+	newaction->startup_rule = action->startup_rule;
 
 	if(action->from)
 	  newaction->from = copyaddr(action->from);
 	if(action->replyto)
 	  newaction->replyto = copyaddr(action->replyto);
+	if(action->cstm)
+	  newaction->cstm = copy_list_array(action->cstm);
+	if(action->smtp)
+	  newaction->smtp = copy_list_array(action->smtp);
 	if(action->fcc)
 	  newaction->fcc = cpystr(action->fcc);
 	if(action->litsig)
@@ -7424,38 +9048,22 @@ copy_action(action)
 	  newaction->template = cpystr(action->template);
 	if(action->nick)
 	  newaction->nick = cpystr(action->nick);
-	if(action->cstm)
-	  newaction->cstm = copy_list_array(action->cstm);
+	if(action->inherit_nick)
+	  newaction->inherit_nick = cpystr(action->inherit_nick);
 	if(action->incol)
 	  newaction->incol = new_color_pair(action->incol->fg,
 					    action->incol->bg);
-	if(action->inherit_nick)
-	  newaction->inherit_nick = cpystr(action->inherit_nick);
 	if(action->folder){
 	    char *p = pattern_to_string(action->folder);
 	    newaction->folder = string_to_pattern(p);
 	    fs_give((void **) &p);
 	}
+
+	if(action->index_format)
+	  newaction->index_format = cpystr(action->index_format);
     }
 
     return(newaction);
-}
-
-
-PATTERN_S *
-copy_pattern(pattern)
-    PATTERN_S *pattern;
-{
-    char      *p;
-    PATTERN_S *new_pattern = NULL;
-
-    if(pattern){
-	p = pattern_to_string(pattern);
-	new_pattern = string_to_pattern(p);
-	fs_give((void **) &p);
-    }
-
-    return(new_pattern);
 }
 
 
@@ -7539,6 +9147,11 @@ combine_inherited_role(role)
 	else if(inherit_role && inherit_role->cstm)
 	  newrole->cstm = copy_list_array(inherit_role->cstm);
 
+	if(role->smtp)
+	  newrole->smtp = copy_list_array(role->smtp);
+	else if(inherit_role && inherit_role->smtp)
+	  newrole->smtp = copy_list_array(inherit_role->smtp);
+
 	if(role->nick)
 	  newrole->nick = cpystr(role->nick);
     }
@@ -7601,7 +9214,7 @@ rfc2369_parse_fields(h, data)
     RFC2369_S *data;
 {
     char *ep, *nhp, *tp;
-    int	  i, l, rv = FALSE;
+    int	  i, rv = FALSE;
 
     for(i = 0; i < MLCMD_COUNT; i++)
       data[i].field = rfc2369_fields[i];

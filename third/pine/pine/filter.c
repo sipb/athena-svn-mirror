@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: filter.c,v 1.1.1.1 2001-02-19 07:05:29 ghudson Exp $";
+static char rcsid[] = "$Id: filter.c,v 1.1.1.2 2003-02-12 08:02:21 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: filter.c,v 1.1.1.1 2001-02-19 07:05:29 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -246,16 +246,18 @@ so_get(source, name, rtype)
  * so_give - free resources associated with a storage object and then
  *           the object itself.
  */
-void
+int
 so_give(so)
 STORE_S **so;
 {
+    int ret = 0;
+
     if(!so)
-      return;
+      return(ret);
 
     if((*so)->src == FileStar || (*so)->src == TmpFileStar){
-        if((*so)->txt)
-	  fclose((FILE *)(*so)->txt);	/* disassociate from storage */
+        if((*so)->txt)			/* disassociate from storage */
+	  ret = fclose((FILE *)(*so)->txt) == EOF ? -1 : 0;
 
 	if((*so)->name && (*so)->src == TmpFileStar)
 	  (void)unlink((*so)->name);	/* really disassociate! */
@@ -269,6 +271,8 @@ STORE_S **so;
       fs_give((void **)&((*so)->name));	/* blast the name            */
 
     fs_give((void **)so);		/* release the object        */
+
+    return(ret);
 }
 
 
@@ -505,8 +509,10 @@ so_seek(so, pos, orig)
 			        ? so->dp += pos, 0 : -1)
 			   : 0));
 	    case 2 :				/* SEEK_END */
-	      return((pos < so->eod - (unsigned char *) so->txt)
-		      ? so->dp = so->eod - pos, 0 : -1);
+	      return((pos > 0)
+		       ? -1
+		       : ((-pos <= so->eod - (unsigned char *) so->txt)
+			    ? so->dp = so->eod + pos, 0 : -1));
 	    default :
 	      return(-1);
 	}
@@ -609,13 +615,14 @@ STORE_S *so;
 
     if(!so->txt && (so->src == FileStar || so->src == TmpFileStar)){
 	if(!(so->txt = so_file_open(so))){
-	    q_status_message2(SM_ORDER,3,5, "ERROR reopening %s : %s", so->name,
-				error_description(errno));
+	    q_status_message2(SM_ORDER,3,5, "ERROR reopening %.200s : %.200s",
+			      so->name, error_description(errno));
 	    rv = 0;
 	}
 	else if(fset_pos((FILE *)so->txt, (fpos_t *)&(so->used))){
-	    q_status_message2(SM_ORDER, 3, 5, "ERROR positioning in %s : %s",
-				so->name, error_description(errno));
+	    q_status_message2(SM_ORDER, 3, 5,
+			      "ERROR positioning in %.200s : %.200s",
+			      so->name, error_description(errno));
 	    rv = 0;
 	}
     }
@@ -667,6 +674,10 @@ static	jmp_buf   gf_error_state;
 #define	TAG	7
 #define	HANDLE	8
 #define	HDATA	9
+#define	ESC	10
+#define	ESCDOL	11
+#define	ESCPAR	12
+#define	EUC	13
 
 
 
@@ -728,6 +739,24 @@ static GF_SO_STACK {
     STORE_S	*so;
     GF_SO_STACK *next;
 } *gf_so_in, *gf_so_out;
+
+
+
+/*
+ * Returns 1 if pc will write into a PicoText object, 0 otherwise.
+ *
+ * The purpose of this routine is so that we can avoid setting SIGALARM
+ * when writing into a PicoText object, because that type of object uses
+ * unprotected malloc/free/realloc, which can't be interrupted.
+ */
+int
+pc_is_picotext(pc)
+    gf_io_t pc;
+{
+    return(pc == gf_so_writec && gf_so_out && gf_so_out->so &&
+	   gf_so_out->so->src == PicoText);
+}
+
 
 
 /*
@@ -1154,7 +1183,7 @@ gf_pipe(gc, pc)
     EndInverse();
 #endif
 
-    dprint(1, (debugfile, "done.\n"));
+    dprint(4, (debugfile, "done.\n"));
     return(NULL);			/* everything went OK */
 }
 
@@ -1514,6 +1543,12 @@ gf_binary_b64(f, flg)
 	    GF_PUTC(f->next, v[(f->t) & 0x3f]);
 	    GF_PUTC(f->next, '=');	/* byte 4 */
 	    break;
+	}
+
+	/* end with CRLF */
+	if(f->n){
+	    GF_PUTC(f->next, '\015');
+	    GF_PUTC(f->next, '\012');
 	}
 
 	GF_FLUSH(f->next);
@@ -1906,6 +1941,277 @@ gf_8bit_qp(f, flg)
 
 
 /*
+ * ISO-2022-JP to EUC (on Unix) or Shift-JIS (on PC) filter
+ *
+ * The routine is call ..._to_euc but it is really to either euc (unix Pine)
+ * or to Shift-JIS (if PC-Pine).
+ */
+void
+gf_2022_jp_to_euc(f, flg)
+    FILTER_S *f;
+    int       flg;
+{
+    register unsigned char c;
+    register int state = f->f1;
+
+    /*
+     * f->t lit means we're in middle of decoding a sequence of characters.
+     * f->f2 keeps track of first character of pair for Shift-JIS.
+     * f->f1 is the state.
+     */
+
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	while(GF_GETC(f, c)){
+	    switch(state){
+	      case ESC:				/* saw ESC */
+	        if(!f->t && c == '$')
+		  state = ESCDOL;
+	        else if(f->t && c == '(')
+		  state = ESCPAR;
+		else{
+		    GF_PUTC(f->next, '\033');
+		    GF_PUTC(f->next, c);
+		    state = DFL;
+		}
+
+	        break;
+
+	      case ESCDOL:			/* saw ESC $ */
+	        if(c == 'B' || c == '@'){
+		    state = EUC;
+		    f->t = 1;			/* filtering into euc */
+		    f->f2 = -1;			/* first character of pair */
+		}
+		else{
+		    GF_PUTC(f->next, '\033');
+		    GF_PUTC(f->next, '$');
+		    GF_PUTC(f->next, c);
+		    state = DFL;
+		}
+
+	        break;
+
+	      case ESCPAR:			/* saw ESC ( */
+	        if(c == 'B' || c == 'J' || c == 'H'){
+		    state = DFL;
+		    f->t = 0;			/* done filtering */
+		}
+		else{
+		    GF_PUTC(f->next, '\033');	/* Don't set hibit for     */
+		    GF_PUTC(f->next, '(');	/* escape sequences, which */
+		    GF_PUTC(f->next, c);	/* this appears to be.     */
+		}
+
+	        break;
+
+	      case EUC:				/* filtering into euc */
+		if(c == '\033')
+		  state = ESC;
+		else{
+#ifdef _WINDOWS					/* Shift-JIS */
+		    c &= 0x7f;			/* 8-bit can't win */
+		    if (f->f2 >= 0){		/* second of a pair? */
+			int rowOffset = (f->f2 < 95) ? 112 : 176;
+			int cellOffset = (f->f2 % 2) ? ((c > 95) ? 32 : 31)
+						     : 126;
+
+			GF_PUTC(f->next, ((f->f2 + 1) >> 1) + rowOffset);
+			GF_PUTC(f->next, c + cellOffset);
+			f->f2 = -1;		/* restart */
+		    }
+		    else if(c > 0x20 && c < 0x7f)
+		      f->f2 = c;		/* first of pair */
+		    else{
+			GF_PUTC(f->next, c);	/* write CTL as itself */
+			f->f2 = -1;
+		    }
+#else						/* EUC */
+		    GF_PUTC(f->next, (c > 0x20 && c < 0x7f) ? c | 0x80 : c);
+#endif
+		}
+
+	        break;
+
+	      case DFL:
+	      default:
+		if(c == '\033')
+		  state = ESC;
+		else
+		  GF_PUTC(f->next, c);
+
+		break;
+	    }
+	}
+
+	f->f1 = state;
+	GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	switch(state){
+	  case ESC:
+	    GF_PUTC(f->next, '\033');
+	    break;
+
+	  case ESCDOL:
+	    GF_PUTC(f->next, '\033');
+	    GF_PUTC(f->next, '$');
+	    break;
+
+	  case ESCPAR:
+	    GF_PUTC(f->next, '\033');	/* Don't set hibit for     */
+	    GF_PUTC(f->next, '(');	/* escape sequences.       */
+	    break;
+	}
+
+	GF_FLUSH(f->next);
+	(*f->next->f)(f->next, GF_EOD);
+    }
+    else if(flg == GF_RESET){
+	dprint(9, (debugfile, "-- gf_reset jp_to_euc\n"));
+	f->f1 = DFL;		/* state */
+	f->t = 0;		/* not translating to euc */
+    }
+}
+
+
+
+/*
+ * EUC (on Unix) or Shift-JIS (on PC) to ISO-2022-JP filter
+ *
+ * The routine is call euc_to... but it is really from either euc (unix Pine)
+ * or from Shift-JIS (if PC-Pine).
+ */
+void
+gf_euc_to_2022_jp(f, flg)
+    FILTER_S *f;
+    int       flg;
+{
+    register unsigned char c;
+
+    /*
+     * f->t lit means we've sent the start esc seq but not the end seq.
+     * f->f2 keeps track of first character of pair for Shift-JIS.
+     */
+
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	while(GF_GETC(f, c)){
+	    if(f->t){
+		if(f->f2 >= 0){			/* second of a pair? */
+		    int adjust = c < 159;
+		    int rowOffset = f->f2 < 160 ? 112 : 176;
+		    int cellOffset = adjust ? (c > 127 ? 32 : 31) : 126;
+
+		    GF_PUTC(f->next, ((f->f2 - rowOffset) << 1) - adjust);
+		    GF_PUTC(f->next, c - cellOffset);
+		    f->f2 = -1;
+		}
+		else if(c & 0x80){
+#ifdef _WINDOWS					/* Shift-JIS */
+		    f->f2 = c;			/* remember first of pair */
+#else						/* EUC */
+		    GF_PUTC(f->next, c & 0x7f);
+#endif
+		}
+		else{
+		    GF_PUTC(f->next, '\033');
+		    GF_PUTC(f->next, '(');
+		    GF_PUTC(f->next, 'B');
+		    GF_PUTC(f->next, c);
+		    f->f2 = -1;
+		    f->t = 0;
+		}
+	    }
+	    else{
+		if(c & 0x80){
+		    GF_PUTC(f->next, '\033');
+		    GF_PUTC(f->next, '$');
+		    GF_PUTC(f->next, 'B');
+#ifdef _WINDOWS
+		    f->f2 = c;
+#else
+		    GF_PUTC(f->next, c & 0x7f);
+#endif
+		    f->t = 1;
+		}
+		else{
+		    GF_PUTC(f->next, c);
+		}
+	    }
+	}
+
+	GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	if(f->t){
+	    GF_PUTC(f->next, '\033');
+	    GF_PUTC(f->next, '(');
+	    GF_PUTC(f->next, 'B');
+	    f->t = 0;
+	    f->f2 = -1;
+	}
+
+	GF_FLUSH(f->next);
+	(*f->next->f)(f->next, GF_EOD);
+    }
+    else if(flg == GF_RESET){
+	dprint(9, (debugfile, "-- gf_reset euc_to_jp\n"));
+	f->t = 0;
+	f->f2 = -1;
+    }
+}
+
+
+/*
+ * This filter converts characters in one character set (the character
+ * set of a message, for example) to another (the user's character set).
+ * The translation table is set using gf_convert_charset_opt().
+ */
+void
+gf_convert_charset(f, flg)
+    FILTER_S *f;
+    int       flg;
+{
+    static unsigned char *conv_table = NULL;
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	 register unsigned char c;
+
+	 while(GF_GETC(f, c)){
+	   GF_PUTC(f->next, conv_table ? conv_table[c] : c);
+	 }
+
+	 GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	 GF_FLUSH(f->next);
+	 (*f->next->f)(f->next, GF_EOD);
+    }
+    else if(flg == GF_RESET){
+	 dprint(9, (debugfile, "-- gf_reset convert_charset\n"));
+	 conv_table = (f->opt) ? (unsigned char *) (f->opt) : NULL;
+
+    }
+}
+
+
+/*
+ * Sets the translation table to be used by gf_convert_charset.
+ */
+void *
+gf_convert_charset_opt(conv_table)
+    unsigned char *conv_table;
+{
+    return((void *) conv_table);
+}
+
+
+
+/*
  * RICHTEXT-TO-PLAINTEXT filter
  */
 
@@ -1935,6 +2241,8 @@ gf_rich2plain(f, flg)
     FILTER_S *f;
     int       flg;
 {
+    static int rich_bold_on = 0, rich_uline_on = 0;
+
 /* BUG: qoute incoming \255 values */
     GF_INIT(f, f->next);
 
@@ -1972,21 +2280,27 @@ gf_rich2plain(f, flg)
 			 if(!strcmp(f->line, "bold")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_BOLDON);
+			     rich_bold_on = 1;
 			 } else if(!strcmp(f->line, "/bold")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_BOLDOFF);
+			     rich_bold_on = 0;
 			 } else if(!strcmp(f->line, "italic")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_ULINEON);
+			     rich_uline_on = 1;
 			 } else if(!strcmp(f->line, "/italic")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_ULINEOFF);
+			     rich_uline_on = 0;
 			 } else if(!strcmp(f->line, "underline")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_ULINEON);
+			     rich_uline_on = 1;
 			 } else if(!strcmp(f->line, "/underline")) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, TAG_ULINEOFF);
+			     rich_uline_on = 0;
 			 }
 		     }
 		     /* else we just ignore the token! */
@@ -2034,6 +2348,17 @@ gf_rich2plain(f, flg)
 	     /* incomplete token!! */
 	     gf_error("Incomplete token in richtext");
 	     /* NO RETURN */
+	 }
+
+	 if(rich_uline_on){
+	     GF_PUTC(f->next, TAG_EMBED);
+	     GF_PUTC(f->next, TAG_ULINEOFF);
+	     rich_uline_on = 0;
+	 }
+	 if(rich_bold_on){
+	     GF_PUTC(f->next, TAG_EMBED);
+	     GF_PUTC(f->next, TAG_BOLDOFF);
+	     rich_bold_on = 0;
 	 }
 
 	 fs_give((void **)&(f->line));
@@ -2091,6 +2416,8 @@ gf_enriched2plain(f, flg)
     FILTER_S *f;
     int       flg;
 {
+    static int enr_uline_on = 0, enr_bold_on = 0;
+
 /* BUG: qoute incoming \255 values */
     GF_INIT(f, f->next);
 
@@ -2127,12 +2454,15 @@ gf_enriched2plain(f, flg)
 			 if(!strcmp("bold", token)) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, off ? TAG_BOLDOFF : TAG_BOLDON);
+			     enr_bold_on = off ? 0 : 1;
 			 } else if(!strcmp("italic", token)) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, off ? TAG_ULINEOFF : TAG_ULINEON);
+			     enr_uline_on = off ? 0 : 1;
 			 } else if(!strcmp("underline", token)) {
 			     GF_PUTC(f->next, TAG_EMBED);
 			     GF_PUTC(f->next, off ? TAG_ULINEOFF : TAG_ULINEON);
+			     enr_uline_on = off ? 0 : 1;
 			 }
 		     }
 		     /* else we just ignore the token! */
@@ -2213,6 +2543,16 @@ gf_enriched2plain(f, flg)
 	     gf_error("Incomplete token in richtext");
 	     /* NO RETURN */
 	 }
+	 if(enr_uline_on){
+	     GF_PUTC(f->next, TAG_EMBED);
+	     GF_PUTC(f->next, TAG_ULINEOFF);
+	     enr_uline_on = 0;
+	 }
+	 if(enr_bold_on){
+	     GF_PUTC(f->next, TAG_EMBED);
+	     GF_PUTC(f->next, TAG_BOLDOFF);
+	     enr_bold_on = 0;
+	 }
 
 	 /* Make sure we end with a newline so everything gets flushed */
 	 GF_PUTC(f->next, '\015');
@@ -2276,7 +2616,7 @@ gf_enriched2plain_opt(plain)
 /*
  * Some important constants
  */
-#define	HTML_BUF_LEN	1024		/* max scratch buffer length */
+#define	HTML_BUF_LEN	2048		/* max scratch buffer length */
 #define	MAX_ENTITY	20		/* maximum length of an entity */
 #define	MAX_ELEMENT	72		/* maximum length of an element */
 #define	HTML_BADVALUE	0x0100		/* good data, but bad entity value */
@@ -2306,6 +2646,8 @@ typedef struct handler_s {
     long	      x, y, z;
     unsigned char    *s;
 } HANDLER_S;
+
+static void html_handoff PROTO((HANDLER_S *, int));
 
 
 /*
@@ -2367,6 +2709,7 @@ typedef struct html_data {
     int		wrapcol;		/* column to wrap lines on */
     int	       *prefix;			/* buffer containing Anchor prefix */
     int		prefix_used;
+    long        line_bufsize;           /* current size of the line buffer */
     COLOR_PAIR *color;
     unsigned	wrapstate:1;		/* whether or not to wrap output */
     unsigned	li_pending:1;		/* <LI> next token expected */
@@ -2386,8 +2729,8 @@ typedef struct html_data {
 typedef	struct _html_opts {
     char      *base;			/* Base URL for this html file */
     int	       columns;			/* Display columns */
+    HANDLE_S **handlesp;		/* Head of handles */
     unsigned   strip:1;			/* Hilite TAGs allowed */
-    unsigned   handles:1;		/* Anchors as handles requested? */
     unsigned   handles_loc:1;		/* Local handles requested? */
 } HTML_OPT_S;
 
@@ -2398,7 +2741,8 @@ typedef	struct _html_opts {
 #define	WRAP_COLS(X)	((X)->opt ? ((HTML_OPT_S *)(X)->opt)->columns : 80)
 #define	HTML_BASE(X)	((X)->opt ? ((HTML_OPT_S *)(X)->opt)->base : NULL)
 #define	STRIP(X)	((X)->opt && ((HTML_OPT_S *)(X)->opt)->strip)
-#define	HANDLES(X)	((X)->opt && ((HTML_OPT_S *)(X)->opt)->handles)
+#define	HANDLESP(X)	(((HTML_OPT_S *)(X)->opt)->handlesp)
+#define	DO_HANDLES(X)	((X)->opt && HANDLESP(X))
 #define	HANDLES_LOC(X)	((X)->opt && ((HTML_OPT_S *)(X)->opt)->handles_loc)
 #define	MAKE_LITERAL(C)	(HTML_LITERAL | ((C) & 0xff))
 #define	IS_LITERAL(C)	(HTML_LITERAL & (C))
@@ -2435,7 +2779,7 @@ typedef	struct _html_opts {
 #define	HTML_FLUSH(X)	{						    \
 			   html_write(X, (X)->line, (X)->linep - (X)->line); \
 			   (X)->linep = (X)->line;			    \
-			   (X)->f2 = 0L;				    \
+			   (X)->f2 = 0L;   				    \
 			 }
 #define	HTML_BOLD(X, S) if(! STRIP(X)){					\
 			   if(S){					\
@@ -2501,6 +2845,16 @@ typedef	struct _html_opts {
 			    else					    \
 			      HTML_TEXT(F, C);				    \
 			  }
+#define HTML_LINEP_PUTC(F, C) {						    \
+		   if((F)->linep - (F)->line >= (HD(F)->line_bufsize - 1)){ \
+		       size_t offset = (F)->linep - (F)->line;		    \
+		       fs_resize((void **) &(F)->line,			    \
+				 (HD(F)->line_bufsize * 2) * sizeof(char)); \
+		       HD(F)->line_bufsize *= 2;			    \
+		       (F)->linep = &(F)->line[offset];			    \
+		   }							    \
+		   *(F)->linep++ = (C);					    \
+	       }
 #define	HTML_TEXT(F, C)	switch((F)->f1){				    \
 			     case WSPACE :				    \
 			       if(HTML_ISSPACE(C)) /* ignore repeated WS */  \
@@ -2522,7 +2876,7 @@ typedef	struct _html_opts {
 			       html_output(F, C);
 #ifdef	DEBUG
 #define	HTML_DEBUG_EL(S, D)   {						    \
-				 dprint(2, (debugfile, "-- html %s: %s\n",  \
+				 dprint(5, (debugfile, "-- html %s: %s\n",  \
 					    S, (D)->element		    \
 						 ? (D)->element : "NULL")); \
 				 if(debug > 5){				    \
@@ -2578,6 +2932,8 @@ int	html_div PROTO((HANDLER_S *, int, int));
 int	html_dl PROTO((HANDLER_S *, int, int));
 int	html_dt PROTO((HANDLER_S *, int, int));
 int	html_dd PROTO((HANDLER_S *, int, int));
+int	html_style PROTO((HANDLER_S *, int, int));
+int	html_script PROTO((HANDLER_S *, int, int));
 
 /*
  * Proto's for support routines
@@ -2783,6 +3139,8 @@ static struct element_table {
     {"OPTION",		NULL},			/* One option within Select */
     {"SELECT",		NULL},			/* Selection from a set */
     {"TEXTAREA",	NULL},			/* A multi-line input field */
+    {"SCRIPT",		html_script},		/* Embedded scripting statements */
+    {"STYLE",		html_style},		/* Embedded CSS data */
 
 /*----- Handlers below provide limited support for RFC 1942 Tables -----*/
 
@@ -2872,6 +3230,7 @@ html_pop(fd, hf)
 /*
  * Deal with data passed a hander in its GF_DATA state
  */
+static void
 html_handoff(hd, ch)
     HANDLER_S *hd;
     int	       ch;
@@ -3102,9 +3461,8 @@ html_img(hd, ch, cmd)
 	      if(p->value && p->value[0]){
 		  HTML_DUMP_LIT(hd->html_data, p->value, strlen(p->value));
 		  HTML_TEXT(hd->html_data, ' ');
+		  return(0);
 	      }
-
-	      return(0);
 	  }
 
 	for(p = HD(hd->html_data)->el_data->attribs;
@@ -3135,7 +3493,6 @@ html_form(hd, ch, cmd)
     int	       ch, cmd;
 {
     if(cmd == GF_RESET){
-	char *p;
 
 	html_blank(hd->html_data, 0);
 
@@ -3270,8 +3627,8 @@ html_a(hd, ch, cmd)
 	  else if(!strucmp(p->attribute, "NAME"))
 	    name = p;
 
-	if(HANDLES(hd->html_data) && (href || name)){
-	    h = new_handle();
+	if(DO_HANDLES(hd->html_data) && (href || name)){
+	    h = new_handle(HANDLESP(hd->html_data));
 
 	    /*
 	     * Enhancement: we might want to get fancier and parse the
@@ -3385,9 +3742,15 @@ void
 html_a_finish(hd)
     HANDLER_S *hd;
 {
-    if(HANDLES(hd->html_data)){
-	if(HD(hd->html_data)->prefix)
-	  html_a_prefix(hd->html_data);
+    if(DO_HANDLES(hd->html_data)){
+	if(HD(hd->html_data)->prefix){
+	    char *empty_link = "[LINK]";
+	    int   i;
+
+	    html_a_prefix(hd->html_data);
+	    for(i = 0; empty_link[i]; i++)
+	      html_output(hd->html_data, empty_link[i]);
+	}
 
 	if(pico_usingcolor()){
 	    char *fg = NULL, *bg = NULL, *p;
@@ -4382,6 +4745,34 @@ html_div(hd, ch, cmd)
 
 
 /*
+ * HTML <SCRIPT> (Inline Script) element handler
+ */
+int
+html_script(hd, ch, cmd)
+    HANDLER_S *hd;
+    int	       ch, cmd;
+{
+    /* ignore everything */
+    return(1);
+}
+
+
+
+/*
+ * HTML <STYLE> (Embedded CSS data) element handler
+ */
+int
+html_style(hd, ch, cmd)
+    HANDLER_S *hd;
+    int	       ch, cmd;
+{
+    /* ignore everything */
+    return(1);
+}
+
+
+
+/*
  * return the function associated with the given element name
  */
 html_f
@@ -4437,7 +4828,7 @@ html_element_collector(fd, ch)
 		  return(1);
 	    }
 	    else{
-		dprint(2, (debugfile, "-- html <!-- OK: %.*s\n",
+		dprint(5, (debugfile, "-- html <!-- OK: %.*s\n",
 			   ED(fd)->len, ED(fd)->buf));
 		if(ED(fd)->start_comment == ED(fd)->end_comment){
 		    if(ED(fd)->len > 10){
@@ -4873,7 +5264,7 @@ html_entity_collector(f, ch, alternate)
 	switch(buf[0]){
 	  case '#' :
 	    rv = atoi(&buf[1]);
-	    if(F_ON(F_PASS_CONTROL_CHARS, ps_global)
+	    if(ps_global->pass_ctrl_chars
 	       || (rv == '\t' || rv == '\n' || rv == '\r'
 		   || (rv > 31 && rv < 127) || (rv > 159 && rv < 256))){
 		if(alternate)
@@ -5008,6 +5399,10 @@ gf_html2plain(f, flg)
 	  html_pop(f, HANDLERS(f)->f);
 
 	html_output(f, HTML_NEWLINE);
+	if(ULINE_BIT(f))
+	  HTML_ULINE(f, ULINE_BIT(f) = 0);
+	if(BOLD_BIT(f))
+	  HTML_BOLD(f, BOLD_BIT(f) = 0);
 	HTML_FLUSH(f);
 	fs_give((void **)&f->line);
 	if(HD(f)->color)
@@ -5034,9 +5429,9 @@ gf_html2plain(f, flg)
 	f->f2    = 0;			/* chars in wrap buffer */
 	f->n     = 0L;			/* chars on line so far */
 	f->linep = f->line = (char *)fs_get(HTML_BUF_LEN * sizeof(char));
+	HD(f)->line_bufsize = HTML_BUF_LEN; /* initial bufsize of line */
 	HD(f)->alt_entity =  (!ps_global->VAR_CHAR_SET
-			      || strucmp(ps_global->VAR_CHAR_SET,
-					 "iso-8859-1"));
+			      || strucmp(ps_global->VAR_CHAR_SET, "iso-8859-1"));
     }
 }
 
@@ -5150,7 +5545,7 @@ html_output(f, ch)
 
 	    if(ch == TAG_EMBED){	/* takes up no space */
 		embedded = 1;
-		*(f->linep)++ = TAG_EMBED;
+		HTML_LINEP_PUTC(f, TAG_EMBED);
 	    }
 	    else if(embedded){	/* ditto */
 		if(ch == TAG_HANDLE)
@@ -5180,7 +5575,7 @@ html_output(f, ch)
 		    }
 		}
 
-		*(f->linep)++ = ch;
+		HTML_LINEP_PUTC(f, ch);
 	    }
 	    else if(HTML_ISSPACE(ch)){
 		html_output_flush(f);
@@ -5190,13 +5585,14 @@ html_output(f, ch)
 		  html_a_prefix(f);
 
 		if(++f->f2 >= WRAP_COLS(f)){
+		    HTML_LINEP_PUTC(f, ch & 0xff);
 		    HTML_FLUSH(f);
 		    html_newline(f);
 		    if(HD(f)->in_anchor)
 		      html_write_anchor(f, HD(f)->in_anchor);
 		}
 		else
-		  *(f->linep)++ = ch & 0xff;
+		  HTML_LINEP_PUTC(f, ch & 0xff);
 	    }
 	}
 	else{
@@ -5465,7 +5861,7 @@ void
 html_centered_flush(f)
     FILTER_S *f;
 {
-    int i, h;
+    int i;
 
     /*
      * If word present (what about line?) we need to deal with
@@ -5717,7 +6113,7 @@ html_write(f, s, n)
 
     while(n-- > 0){
 	/* keep track of attribute state?  Not if last char! */
-	if(*s == TAG_EMBED && n-- > 0){
+	if(!STRIP(f) && *s == TAG_EMBED && n-- > 0){
 	    GF_PUTC(f->next, TAG_EMBED);
 	    switch(*++s){
 	      case TAG_BOLDON :
@@ -5792,9 +6188,11 @@ html_putc(f, ch)
  * bound to a printer or composer.
  */
 void *
-gf_html2plain_opt(base, columns, flags)
-    char *base;
-    int	  columns, flags;
+gf_html2plain_opt(base, columns, handlesp, flags)
+    char      *base;
+    int	       columns;
+    HANDLE_S **handlesp;
+    int	       flags;
 {
     HTML_OPT_S *op;
 
@@ -5803,7 +6201,7 @@ gf_html2plain_opt(base, columns, flags)
     op->base	    = cpystr(base);
     op->columns	    = columns;
     op->strip	    = ((flags & GFHP_STRIPPED) == GFHP_STRIPPED);
-    op->handles	    = ((flags & GFHP_HANDLES) == GFHP_HANDLES);
+    op->handlesp    = handlesp;
     op->handles_loc = ((flags & GFHP_LOCAL_HANDLES) == GFHP_LOCAL_HANDLES);
     return((void *) op);
 }
@@ -5937,6 +6335,41 @@ gf_control_filter(f, flg)
 }
 
 
+/*
+ * TAG FILTER - quote all TAG_EMBED characters by doubling them.
+ * This prevents the possibility of embedding other tags.
+ * We assume that this filter should only be used for something
+ * that is eventually writing to a display, which has the special
+ * knowledge of quoted TAG_EMBEDs.
+ */
+void
+gf_tag_filter(f, flg)
+    FILTER_S *f;
+    int       flg;
+{
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	register unsigned char c;
+
+	while(GF_GETC(f, c)){
+
+	    if((c & 0xff) == (TAG_EMBED & 0xff)){
+		GF_PUTC(f->next, TAG_EMBED);
+		GF_PUTC(f->next, c);
+	    }
+	    else
+	      GF_PUTC(f->next, c);
+	}
+
+	GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	GF_FLUSH(f->next);
+	(*f->next->f)(f->next, GF_EOD);
+    }
+}
+
 
 /*
  * LINEWRAP FILTER - insert CRLF's at end of nearest whitespace before
@@ -5984,7 +6417,6 @@ typedef struct wrap_col_s {
 #define	WRAP_SPEC(S, C)	(S)[C]
 #define	WRAP_COLOR(F)	(((WRAP_S *)(F)->opt)->color)
 #define	WRAP_COLOR_SET(F)  ((WRAP_COLOR(F)) && (WRAP_COLOR(F)->fg[0]))
-
 #define	WRAP_EOL(F)	{						\
 			    if(WRAP_BOLD(F)){				\
 				GF_PUTC((F)->next, TAG_EMBED);		\
@@ -6013,7 +6445,7 @@ typedef struct wrap_col_s {
 			    }						\
 			    GF_PUTC((F)->next, '\015');			\
 			    GF_PUTC((F)->next, '\012');			\
-			    f->n = 0L;					\
+			    (F)->n = 0L;				\
 			    WRAP_SPACE(F) = 0;				\
 			}
 
@@ -6182,6 +6614,31 @@ typedef struct wrap_col_s {
 /*
  * the simple filter, breaks lines at end of white space nearest
  * to global "gf_wrap_width" in length
+ *
+ ***************************************************************************
+ Things that seem broken with wrapping.
+ Wrap_threshold is wrong the first time through because the indent only
+   applies to the 2nd and subsequent lines. So, header lines are getting
+   wrapped too soon on the first line. I think we could replace wrap_threshold
+   with the macro
+     WRAP_THRESHOLD(F) = WRAP_MAX_COL(F) - WRAP_DO_IND(F) * WRAP_INDENT(F)
+ The test that wraps when f->n and ... >= WRAP_COL() seems like it ought to
+   be wrapping > WRAP_COL() instead so that we can put a word that fits
+   perfectly to the last column followed by a space in that last column.
+   Right now we're wrapping 80 column input at 79 columns when it would fit
+   just right in 80.
+   If we change that we probably want to also change the allocation of
+   f->line to be (WRAP_MAX_COL() + 1) chars so that we don't trigger the
+   fs_resize in WRAP_PUTC().
+ The other comparison to wrap_threshold, when !f->n, should probably not
+   change to > instead of >=.
+ In the GF_RESET code which sets special there is a WRAP_QUOTED() call which
+   shouldn't be there.
+ I was going to make the above changes right before releasing 4.50, but
+   chickened out. For one thing, the WRAP_COMMA stuff is broken by the
+   above changes.
+       Hubert 2002-11-14
+ ***************************************************************************
  */
 void
 gf_wrap(f, flg)
@@ -6847,65 +7304,6 @@ gf_local_nvtnl(f, flg)
 
 }
 
-#if defined(DOS) || defined(OS2)
-/*
- * DOS CodePage to Character Set Translation (and back) filters
- */
-
-/*
- * Charset and CodePage mapping table pointer and length
- */
-static unsigned char *gf_xlate_tab;
-static unsigned gf_xlate_tab_len;
-
-/*
- * the simple filter takes DOS Code Page values and maps them into
- * the indicated external CharSet mapping or vice-versa.
- */
-void
-gf_translate(f, flg)
-    FILTER_S *f;
-    int       flg;
-{
-    GF_INIT(f, f->next);
-
-    if(flg == GF_DATA){
-	register unsigned char c;
-
-	while(GF_GETC(f, c))
-	  if((unsigned long) c < ((SIZEDTEXT *) (f->opt))->size)
-	    GF_PUTC(f->next, (int) ((SIZEDTEXT *) (f->opt))->data[c]);
-
-	GF_END(f, f->next);
-    }
-    else if(flg == GF_EOD){
-	fs_give((void **) &f->opt);	/* free up table description */
-	GF_FLUSH(f->next);
-	(*f->next->f)(f->next, GF_EOD);
-    }
-    else if(GF_RESET){
-	dprint(9, (debugfile, "-- gf_reset translate\n"));
-    }
-}
-
-
-/*
- * function called from the outside to set
- * prefix filter's prefix string
- */
-void *
-gf_translate_opt(xlatetab, xlatetablen)
-    unsigned char *xlatetab;
-    unsigned       xlatetablen;
-{
-    SIZEDTEXT *xlate_tab = (SIZEDTEXT *) fs_get(sizeof(SIZEDTEXT));
-
-    xlate_tab->data = xlatetab;
-    xlate_tab->size = (unsigned long) xlatetablen;
-
-    return((void *) xlate_tab);
-}
-#endif
 
 /*
  * display something indicating we're chewing on something

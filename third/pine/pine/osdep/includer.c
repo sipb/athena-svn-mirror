@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: includer.c,v 1.1.1.1 2001-02-19 06:59:50 ghudson Exp $";
+static char rcsid[] = "$Id: includer.c,v 1.1.1.2 2003-02-12 08:10:57 ghudson Exp $";
 #endif
 #include <stdio.h>
 #include <string.h>
@@ -39,7 +39,6 @@ readfile(fpin, fpout)
 FILE *fpin, *fpout;
 {
     char line[BUFSIZ+1];
-    char tmp[BUFSIZ+1];
     FILE *fp;
     char *p, *fname, *fend;
 
@@ -72,4 +71,6 @@ FILE *fpin, *fpout;
             fputs(p, fpout);
         }
     }
+
+    return(1);
 }

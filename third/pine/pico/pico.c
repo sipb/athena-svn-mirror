@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pico.c,v 1.1.1.1 2001-02-19 07:04:51 ghudson Exp $";
+static char rcsid[] = "$Id: pico.c,v 1.1.1.2 2003-02-12 08:01:55 ghudson Exp $";
 #endif
 /*
  * Program:	Main Pine Composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: pico.c,v 1.1.1.1 2001-02-19 07:04:51 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -123,14 +123,18 @@ PICO *pm;
     register int    n;
     char     bname[NBUFN];		/* buffer name of file to read */
     extern   struct on_display ods;
-    int      checkpointcnt = 0, input = 0, cursor_shown;
+    int      checkpointcnt = 0, input = 0;
     char     chkptfile[NLINE];
+#ifdef	_WINDOWS
+    int      cursor_shown;
+#endif
 
     Pmaster       = pm;
     gmode	  = MDWRAP;
     gmode        |= pm->pine_flags;	/* high 4 bits rsv'd for pine */
 
     alt_speller   = pm->alt_spell;
+    glo_quote_str = pm->quote_str;
     pico_all_done = 0;
     km_popped     = 0;
 
@@ -430,8 +434,8 @@ char    bname[];
     wp->w_linep = bp->b_linep;
     wp->w_dotp  = bp->b_linep;
     wp->w_doto  = 0;
-    wp->w_markp = NULL;
-    wp->w_marko = 0;
+    wp->w_markp = wp->w_imarkp = NULL;
+    wp->w_marko = wp->w_imarko = 0;
     bp->b_linecnt = -1;
 
     if(Pmaster){
@@ -483,7 +487,6 @@ int c, f, n;
 {
     register KEYTAB *ktp;
     register int    status;
-    register int    i;
 
     ktp = (Pmaster) ? &keytab[0] : &pkeytab[0];
 
@@ -541,7 +544,7 @@ int c, f, n;
 	    register int j;
 	    register int k;
 
-	    for(i = j = k = 0; j < llength(curwp->w_dotp); j++, k++)
+	    for(j = k = 0; j < llength(curwp->w_dotp); j++, k++)
 	      if(isspace((unsigned char)lgetc(curwp->w_dotp, j).c)){
 		  if(lgetc(curwp->w_dotp, j).c == TAB)
 		    while(k+1 & 0x07)
@@ -669,7 +672,7 @@ int f, n;
     register int    s;
 
     if(Pmaster){
-	char *prompt, *result;
+	char *result;
 
 	/* First, make sure there are no outstanding problems */ 
 	if(AttachError()){
@@ -677,6 +680,9 @@ int f, n;
 	    return(FALSE);
 	}
 
+	if(Pmaster->always_spell_check)
+	  if(spell(0, 0) == -1)
+	    sleep(3);    /* problem, show error */
 	/*
 	 * if we're not in header, show some of it as we verify sending...
 	 */
@@ -849,7 +855,7 @@ int i;
 void
 zotedit()
 {
-    wheadp->w_linep = wheadp->w_dotp = wheadp->w_markp = NULL;
+    wheadp->w_linep = wheadp->w_dotp = wheadp->w_markp = wheadp->w_imarkp = NULL;
     bheadp->b_linep = bheadp->b_dotp = bheadp->b_markp = NULL;
 
     free((char *) wheadp);			/* clean up window */
@@ -1593,7 +1599,7 @@ composer_file_drop(x, y, filename)
 	PaintBody(0);
     }
     else{
-	refresh(0, 1);
+	pico_refresh(0, 1);
 	update();
     }
 

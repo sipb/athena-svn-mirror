@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: random.c,v 1.1.1.1 2001-02-19 07:03:51 ghudson Exp $";
+static char rcsid[] = "$Id: random.c,v 1.1.1.2 2003-02-12 08:01:59 ghudson Exp $";
 #endif
 /*
  * Program:	Random routines
@@ -380,48 +380,63 @@ int f, n;
 
 
 /*
- * Returns a pointer to the name of color number color.
- * The colors 0 through 7 are the names of the ANSI colors, then
- * come the strings color008, color009, color010, ...
+ * Original idea from Stephen Casner <casner@acm.org>.
  *
- * Warning, returns a pointer to a static buffer, so the result must be
- * copied before another call to colorx.
+ * Apply the appropriate reverse color transformation to the given
+ * color pair and return a new color pair. The caller should free the
+ * color pair.
+ *
  */
-char *
-colorx(color)
-    int color;
+COLOR_PAIR *
+pico_apply_rev_color(cp, style)
+    COLOR_PAIR *cp;
+    int         style;
 {
-    static char cbuf[12];
+    COLOR_PAIR *rc = pico_get_rev_color();
 
-    switch(color){
-      case COL_BLACK:
-	strcpy(cbuf, "black");
-	break;
-      case COL_RED:
-	strcpy(cbuf, "red");
-	break;
-      case COL_GREEN:
-	strcpy(cbuf, "green");
-	break;
-      case COL_YELLOW:
-	strcpy(cbuf, "yellow");
-	break;
-      case COL_BLUE:
-	strcpy(cbuf, "blue");
-	break;
-      case COL_MAGENTA:
-	strcpy(cbuf, "magenta");
-	break;
-      case COL_CYAN:
-	strcpy(cbuf, "cyan");
-	break;
-      case COL_WHITE:
-	strcpy(cbuf, "white");
-	break;
-      default:
-        sprintf(cbuf, "color%03.3d", color);
-	break;
+    if(rc){
+	if(style == IND_COL_REV){
+	    /* just use Reverse color regardless */
+	    return(new_color_pair(rc->fg, rc->bg));
+	}
+	else if(style == IND_COL_FG){
+	    /*
+	     * If changing to Rev fg is readable and different
+	     * from what it already is, do it.
+	     */
+	    if(strcmp(rc->fg, cp->bg) && strcmp(rc->fg, cp->fg))
+	      return(new_color_pair(rc->fg, cp->bg));
+	}
+	else if(style == IND_COL_BG){
+	    /*
+	     * If changing to Rev bg is readable and different
+	     * from what it already is, do it.
+	     */
+	    if(strcmp(rc->bg, cp->fg) && strcmp(rc->bg, cp->bg))
+	      return(new_color_pair(cp->fg, rc->bg));
+	}
+	else if(style == IND_COL_FG_NOAMBIG){
+	    /*
+	     * If changing to Rev fg is readable, different
+	     * from what it already is, and not the same as
+	     * the Rev color, do it.
+	     */
+	    if(strcmp(rc->fg, cp->bg) && strcmp(rc->fg, cp->fg) &&
+	       strcmp(rc->bg, cp->bg))
+	      return(new_color_pair(rc->fg, cp->bg));
+	}
+	else if(style == IND_COL_BG_NOAMBIG){
+	    /*
+	     * If changing to Rev bg is readable, different
+	     * from what it already is, and not the same as
+	     * the Rev color, do it.
+	     */
+	    if(strcmp(rc->bg, cp->fg) && strcmp(rc->bg, cp->bg) &&
+	       strcmp(rc->fg, cp->fg))
+	      return(new_color_pair(cp->fg, rc->bg));
+	}
     }
 
-    return(cbuf);
+    /* come here for IND_COL_FLIP and for the cases which fail the tests  */
+    return(new_color_pair(cp->bg, cp->fg));	/* flip the colors */
 }

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailindx.c,v 1.1.1.1 2001-02-19 07:12:03 ghudson Exp $";
+static char rcsid[] = "$Id: mailindx.c,v 1.1.1.2 2003-02-12 08:02:07 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailindx.c,v 1.1.1.1 2001-02-19 07:12:03 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -67,7 +67,7 @@ static char rcsid[] = "$Id: mailindx.c,v 1.1.1.1 2001-02-19 07:12:03 ghudson Exp
 static struct key index_keys[] = 
        {HELP_MENU,
 	OTHER_MENU,
-	{"<", "FldrList", {MC_FOLDERS,2,{'<',','}}, KS_NONE},
+	{"<", NULL, {MC_FOLDERS,2,{'<',','}}, KS_NONE},
 	VIEWMSG_MENU,
 	PREVMSG_MENU,
 	NEXTMSG_MENU,
@@ -113,14 +113,15 @@ static struct key index_keys[] =
 	NULL_MENU,
 	NULL_MENU,
 	NULL_MENU,
-	NULL_MENU,
+	{"/","Collapse/Expand",{MC_COLLAPSE,1,{'/'}},KS_NONE},
 	NULL_MENU,
 	NULL_MENU};
 INST_KEY_MENU(index_keymenu, index_keys);
+#define BACK_KEY 2
 #define PREVM_KEY 4
 #define NEXTM_KEY 5
-#define EXCLUDE_KEY 26
-#define UNEXCLUDE_KEY 27
+#define EXCLUDE_KEY 26		/* used for thread_keymenu, too */
+#define UNEXCLUDE_KEY 27	/* used for thread_keymenu, too */
 #define SELECT_KEY 28
 #define APPLY_KEY 29
 #define VIEW_FULL_HEADERS_KEY 32
@@ -129,50 +130,8 @@ INST_KEY_MENU(index_keymenu, index_keys);
 #define VIEW_PIPE_KEY 35
 #define SELCUR_KEY 38
 #define ZOOM_KEY 39
+#define COLLAPSE_KEY 45
 
-static struct key nr_anon_index_keys[] = 
-       {HELP_MENU,
-	WHEREIS_MENU,
-	QUIT_MENU,
-	VIEWMSG_MENU,
-	PREVMSG_MENU,
-	NEXTMSG_MENU,
-	PREVPAGE_MENU,
-	NEXTPAGE_MENU,
-	FWDEMAIL_MENU,
-	JUMP_MENU,
-	FLDRSORT_MENU,
-	NULL_MENU};
-INST_KEY_MENU(nr_anon_index_keymenu, nr_anon_index_keys);
-
-static struct key nr_index_keys[] = 
-       {HELP_MENU,
-	OTHER_MENU,
-	QUIT_MENU,
-	VIEWMSG_MENU,
-	PREVMSG_MENU,
-	NEXTMSG_MENU,
-	PREVPAGE_MENU,
-	NEXTPAGE_MENU,
-	FWDEMAIL_MENU,
-	JUMP_MENU,
-	PRYNTMSG_MENU,
-	SAVE_MENU,
-
-	HELP_MENU,
-	OTHER_MENU,
-	EXPORT_MENU,
-	COMPOSE_MENU,
-	FLDRSORT_MENU,
-	RCOMPOSE_MENU,
-	NULL_MENU,
-	WHEREIS_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU};
-INST_KEY_MENU(nr_index_keymenu, nr_index_keys);
-  
 static struct key simple_index_keys[] = 
        {HELP_MENU,
 	{"E","ExitSelect",{MC_EXIT,1,{'e'}},KS_EXITMODE},
@@ -189,6 +148,62 @@ static struct key simple_index_keys[] =
 INST_KEY_MENU(simple_index_keymenu, simple_index_keys);
 
 
+static struct key thread_keys[] = 
+       {HELP_MENU,
+	OTHER_MENU,
+	{"<", "FldrList", {MC_FOLDERS,2,{'<',','}}, KS_NONE},
+	{">", "[ViewThd]", {MC_VIEW_ENTRY,5,{'v','.','>',ctrl('M'),ctrl('J')}},
+								    KS_VIEW},
+	{"P", "PrevThd", {MC_PREVITEM, 1, {'p'}}, KS_PREVMSG},
+	{"N", "NextThd", {MC_NEXTITEM, 1, {'n'}}, KS_NEXTMSG},
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	DELETE_MENU,
+	UNDELETE_MENU,
+	REPLY_MENU,
+	FORWARD_MENU,
+
+	HELP_MENU,
+	OTHER_MENU,
+	MAIN_MENU,
+	QUIT_MENU,
+	COMPOSE_MENU,
+	GOTO_MENU,
+	TAB_MENU,
+	WHEREIS_MENU,
+	PRYNTMSG_MENU,
+	TAKE_MENU,
+	SAVE_MENU,
+	EXPORT_MENU,
+
+	HELP_MENU,
+	OTHER_MENU,
+	{"X",NULL,{MC_EXPUNGE,1,{'x'}},KS_NONE},
+	{"&","unXclude",{MC_UNEXCLUDE,1,{'&'}},KS_NONE},
+	{";","Select",{MC_SELECT,1,{';'}},KS_SELECT},
+	{"A","Apply",{MC_APPLY,1,{'a'}},KS_APPLY},
+	FLDRSORT_MENU,
+	JUMP_MENU,
+	HDRMODE_MENU,
+	BOUNCE_MENU,
+	FLAG_MENU,
+	PIPE_MENU,
+
+	HELP_MENU,
+	OTHER_MENU,
+	{":","SelectCur",{MC_SELCUR,1,{':'}},KS_SELECTCUR},
+	{"Z","ZoomMode",{MC_ZOOM,1,{'z'}},KS_ZOOM},
+	LISTFLD_MENU,
+	RCOMPOSE_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	{"/","Collapse/Expand",{MC_COLLAPSE,1,{'/'}},KS_NONE},
+	NULL_MENU,
+	NULL_MENU};
+INST_KEY_MENU(thread_keymenu, thread_keys);
+
+
 static OtherMenu what_keymenu = FirstMenu;
 
 /*
@@ -202,14 +217,15 @@ typedef struct _offsets {
 
 #define OFFS 5
 
-typedef struct header_line {
-    unsigned long id;				/* header line's uid   */
+typedef struct _header_line {
+    unsigned long id;				/* header line's hash value */
     unsigned      color_lookup_done:1;
     COLOR_PAIR	  linecolor;
     OFFCOLOR_S    offs[OFFS];
+    int           plus;
+    struct _header_line *tihl;			/* thread index header line */
     char          line[1];			/* header line data    */
 } HLINE_S;
-
 
 
 /*
@@ -222,17 +238,14 @@ static struct global_sort_data {
 } g_sort;
 
 
-
-
-
-
 /*-----------
   Saved state to redraw message index body 
   ----*/
 struct entry_state {
     unsigned hilite:1;
     unsigned bolded:1;
-    long     id;
+    int      plus;
+    unsigned long id;
 };
 
 
@@ -244,6 +257,7 @@ static struct index_state {
     MSGNO_S    *msgmap;
     MAILSTREAM *stream;
     int         status_col;		/* column for select X's */
+    int         plus_col;		/* column for threading '+' or '>' */
 } *current_index_state = NULL;
 
 
@@ -262,7 +276,6 @@ typedef struct index_data {
 	       *date;			/* always valid */
     long	msgno,			/* tells us what we're looking at */
 		rawno,
-		uid,
 		size;			/* always valid */
     unsigned	no_fetch:1,		/* lit when we're in a callback */
 		bogus:2,		/* lit when there were problems */
@@ -276,6 +289,24 @@ typedef struct index_data {
 
 
 
+struct save_thrdinfo {
+    HLINE_S  *(*format_index_line) PROTO((INDEXDATA_S *));
+    void      (*setup_header_widths) PROTO((void));
+    unsigned  viewing_a_thread:1;
+    unsigned  inbox_viewing_a_thread:1;
+};
+
+
+/*
+ * Keep track of the sort array and some of the thread structure
+ * temporarily as we're building the PINETHRD_S structures.
+ */
+struct pass_along {
+    unsigned long rawno;
+    PINETHRD_S   *thrd;
+} *thrd_flatten_array;
+
+
 /*
  * Binary tree to accumulate runs of subject groups (poor man's threads)
  */
@@ -286,10 +317,18 @@ typedef struct _subject_run_s {
 } SUBR_S;
 
 
+HLINE_S	       *(*format_index_line) PROTO((INDEXDATA_S *));
+void		(*setup_header_widths) PROTO((void));
+
+
 
 /*
  * Internal prototypes
  */
+void            index_index_screen PROTO((struct pine *));
+void            thread_index_screen PROTO((struct pine *));
+void            setup_for_index_index_screen PROTO((void));
+void            setup_for_thread_index_screen PROTO((void));
 int		update_index PROTO((struct pine *, struct index_state *));
 int		index_scroll_up PROTO((long));
 int		index_scroll_down PROTO((long));
@@ -302,19 +341,22 @@ int		pine_compare_scores PROTO((const QSType *, const QSType *));
 void		build_score_array PROTO((MAILSTREAM *, MSGNO_S *));
 void		free_score_array PROTO((void));
 HLINE_S	       *get_index_cache PROTO((long));
+HLINE_S	       *get_tindex_cache PROTO((long));
 int		fetch_sort_data PROTO((MAILSTREAM *, long, int, char *));
 HLINE_S	       *build_header_line PROTO((struct pine *, MAILSTREAM *,
-					 MSGNO_S *, long));
-HLINE_S	       *format_index_line PROTO((INDEXDATA_S *));
+					  MSGNO_S *, long, int *));
+HLINE_S	       *format_index_index_line PROTO((INDEXDATA_S *));
+HLINE_S	       *format_thread_index_line PROTO((INDEXDATA_S *));
 void		index_data_env PROTO((INDEXDATA_S *, ENVELOPE *));
 int		set_index_addr PROTO((INDEXDATA_S *, char *, ADDRESS *,
 				      char *, int, char *));
 int		i_cache_size PROTO((long));
 int		i_cache_width PROTO(());
-void		setup_header_widths PROTO((void));
+int             ctype_is_fixed_length PROTO((IndexColType));
+void		setup_index_header_widths PROTO((void));
+void		setup_thread_header_widths PROTO((void));
 int		parse_index_format PROTO((char *, INDEX_COL_S **));
 void		clear_icache_flags PROTO(());
-void		set_need_format_setup PROTO(());
 int		need_format_setup PROTO(());
 void		set_format_includes_msgno PROTO(());
 int		format_includes_msgno PROTO(());
@@ -332,24 +374,47 @@ char	       *fetch_subject PROTO((INDEXDATA_S *));
 char	       *fetch_date PROTO((INDEXDATA_S *));
 long		fetch_size PROTO((INDEXDATA_S *));
 BODY	       *fetch_body PROTO((INDEXDATA_S *));
+void		subj_str PROTO((INDEXDATA_S *, int, char *));
+void		from_str PROTO((IndexColType, INDEXDATA_S *, int, char *));
 void            set_msg_score PROTO((MAILSTREAM *, long, int));
-COLOR_PAIR     *get_index_line_color PROTO((MAILSTREAM *, SEARCHSET *,
-					    PAT_STATE **));
 void		load_overview PROTO((MAILSTREAM *, unsigned long, OVERVIEW *));
+int		paint_index_line PROTO((long, HLINE_S *, int, int, int,
+					struct entry_state *, int, int));
 void		paint_index_hline PROTO((MAILSTREAM *, long, HLINE_S *));
 void		index_search PROTO((struct pine *,MAILSTREAM *,int,MSGNO_S *));
 void		msgno_flush_selected PROTO((MSGNO_S *, long));
+void            msgno_reset_isort PROTO((MSGNO_S *));
 void		sort_sort_callback PROTO((MAILSTREAM *, unsigned long *,
 					  unsigned long));
 void		sort_thread_callback PROTO((MAILSTREAM *, THREADNODE *));
-long	       *sort_thread_flatten PROTO((THREADNODE *, long *));
+struct pass_along
+	       *sort_thread_flatten PROTO((THREADNODE *, MAILSTREAM *,
+					   struct pass_along *,
+					   PINETHRD_S *, unsigned));
+void            make_thrdflags_consistent PROTO((MAILSTREAM *, MSGNO_S *,
+						 PINETHRD_S *, int));
+THREADNODE     *collapse_threadnode_tree PROTO((THREADNODE *));
+PINETHRD_S     *msgno_thread_info PROTO((MAILSTREAM *, unsigned long,
+					 PINETHRD_S *, unsigned));
+long            calculate_visible_threads PROTO((MAILSTREAM *));
+void		set_thread_subtree PROTO((MAILSTREAM *, PINETHRD_S *,
+					  MSGNO_S *, int, int));
+void		thread_command PROTO((struct pine *, MAILSTREAM *, MSGNO_S *,
+				      int, int));
+void		set_flags_for_thread PROTO((MAILSTREAM *, MSGNO_S *, int,
+					    PINETHRD_S *, int));
+unsigned long   count_flags_in_thread PROTO((MAILSTREAM *, PINETHRD_S *, long));
+int             mark_msgs_in_thread PROTO((MAILSTREAM *, PINETHRD_S *,
+					   MSGNO_S *));
+char            to_us_symbol_for_thread PROTO((MAILSTREAM *, PINETHRD_S *,
+					       int));
+char            status_symbol_for_thread PROTO((MAILSTREAM *, PINETHRD_S *,
+						IndexColType));
+int             msgline_hidden PROTO((MAILSTREAM *, MSGNO_S *, long, int));
+void		copy_lflags PROTO((MAILSTREAM *, MSGNO_S *, int, int));
+void		set_lflags PROTO((MAILSTREAM *, MSGNO_S *, int, int));
 int             day_of_week PROTO((struct date *));
 int             day_of_year PROTO((struct date *));
-#if defined(DOS) && !defined(_WINDOWS)
-void		i_cache_hit PROTO((long));
-void		icread PROTO((void));
-void		icwrite PROTO((void));
-#endif
 #ifdef	_WINDOWS
 int		index_scroll_callback PROTO((int,long));
 int		index_gettext_callback PROTO((char *, void **, long *, int *));
@@ -358,6 +423,21 @@ char	       *pcpine_help_index PROTO((char *));
 char	       *pcpine_help_index_simple PROTO((char *));
 int		pcpine_resize_index PROTO((void));
 #endif
+
+#if defined(ISORT_ASSERT)
+
+char           *assert_isort_validity PROTO((MSGNO_S *));
+void            dump_isort PROTO((MSGNO_S *));
+
+#define ASSERT_ISORT(msgmap, place) {char *qqq; \
+				     if(qqq=assert_isort_validity(msgmap)){ \
+				       dprint(1, (debugfile, place));  \
+				       panic(qqq);                          \
+				     }}
+#else
+#define ASSERT_ISORT(msgmap, place)
+#endif
+
 
 
 
@@ -375,29 +455,35 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
      IndexType    style;
      int         *which_keys, flags;
 {
-    struct key_menu *km = (ps_global->anonymous)
-			    ? &nr_anon_index_keymenu
-			    : (ps_global->nr_mode)
-			        ? &nr_index_keymenu
-				: (ps_global->mail_stream != stream)
-				    ? &simple_index_keymenu
-				    : &index_keymenu;
+    struct key_menu *km = (style == ThreadIndex)
+			    ? &thread_keymenu
+			    : (ps_global->mail_stream != stream)
+			      ? &simple_index_keymenu
+			      : &index_keymenu;
 
     if(flags & INDX_CLEAR)
       ClearScreen();
 
     if(flags & INDX_HEADER)
-      set_titlebar((stream == ps_global->mail_stream)
-		     ? (style == MsgIndex || style == MultiMsgIndex)
+      set_titlebar((style == ThreadIndex)
+		     ? "THREAD INDEX"
+		     : (stream == ps_global->mail_stream)
+		       ? (style == MsgIndex || style == MultiMsgIndex)
 		         ? "MESSAGE INDEX"
 			 : "ZOOMED MESSAGE INDEX"
-		     : (!strcmp(folder, INTERRUPTED_MAIL))
+		       : (!strcmp(folder, INTERRUPTED_MAIL))
 			 ? "COMPOSE: SELECT INTERRUPTED"
 			 : (ps_global->VAR_FORM_FOLDER
 			    && !strcmp(ps_global->VAR_FORM_FOLDER, folder))
 			     ? "COMPOSE: SELECT FORM LETTER"
 			     : "COMPOSE: SELECT POSTPONED",
-		   stream, cntxt, folder, msgmap, 1, MessageNumber, 0, 0);
+		   stream, cntxt, folder, msgmap, 1,
+		   (style == ThreadIndex) ? ThrdIndex
+					  : (THREADING()
+					     && ps_global->viewing_a_thread)
+					    ? ThrdMsgNum
+					    : MessageNumber,
+		   0, 0, NULL);
 
     if(flags & INDX_FOOTER) {
 	bitmap_t bitmap;
@@ -406,6 +492,16 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
 	setbitmap(bitmap);
 
 	if(km == &index_keymenu){
+	    if(THREADING() && ps_global->viewing_a_thread){
+		menu_init_binding(km, '<', MC_THRDINDX, "<",
+				  "ThrdIndex", BACK_KEY);
+		menu_add_binding(km, ',', MC_THRDINDX);
+	    }
+	    else{
+		menu_init_binding(km, '<', MC_FOLDERS, "<",
+				  "FldrList", BACK_KEY);
+		menu_add_binding(km, ',', MC_FOLDERS);
+	    }
 #ifndef DOS
 	    if(F_OFF(F_ENABLE_PIPE,ps_global))
 #endif
@@ -425,21 +521,26 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
 
 	    }
 
-	    if(IS_NEWS(stream)){
-		index_keys[EXCLUDE_KEY].label = "eXclude";
-		KS_OSDATASET(&index_keys[EXCLUDE_KEY], KS_NONE);
-	    }
-	    else {
-		clrbitn(UNEXCLUDE_KEY, bitmap);
-		index_keys[EXCLUDE_KEY].label = "eXpunge";
-		KS_OSDATASET(&index_keys[EXCLUDE_KEY], KS_EXPUNGE);
-	    }
-
 	    if(style == MultiMsgIndex){
 		clrbitn(PREVM_KEY, bitmap);
 		clrbitn(NEXTM_KEY, bitmap);
 	    }
 	}
+
+	if(km == &index_keymenu || km == &thread_keymenu){
+	    if(IS_NEWS(stream)){
+		km->keys[EXCLUDE_KEY].label = "eXclude";
+		KS_OSDATASET(&km->keys[EXCLUDE_KEY], KS_NONE);
+	    }
+	    else {
+		clrbitn(UNEXCLUDE_KEY, bitmap);
+		km->keys[EXCLUDE_KEY].label = "eXpunge";
+		KS_OSDATASET(&km->keys[EXCLUDE_KEY], KS_EXPUNGE);
+	    }
+	}
+
+	if(km != &simple_index_keymenu && !THRD_COLLAPSE_ENABLE())
+	  clrbitn(COLLAPSE_KEY, bitmap);
 
 	menu_clear_binding(km, KEY_LEFT);
 	menu_clear_binding(km, KEY_RIGHT);
@@ -486,7 +587,6 @@ void
 mail_index_screen(state)
      struct pine *state;
 {
-    dprint(1, (debugfile, "\n\n ---- MAIL INDEX ----\n"));
     if(!state->mail_stream) {
 	q_status_message(SM_ORDER, 0, 3, "No folder is currently open");
         state->prev_screen = mail_index_screen;
@@ -496,10 +596,101 @@ mail_index_screen(state)
 
     state->prev_screen = mail_index_screen;
     state->next_screen = SCREEN_FUN_NULL;
+
+    if(THRD_AUTO_VIEW() && state->viewing_a_thread
+       && state->view_skipped_index)
+      unview_thread(state, state->mail_stream, state->msgmap);
+
+    if(THRD_INDX())
+      thread_index_screen(state);
+    else
+      index_index_screen(state);
+}
+
+
+void
+index_index_screen(state)
+     struct pine *state;
+{
+    dprint(1, (debugfile, "\n\n ---- MAIL INDEX ----\n"));
+
+    setup_for_index_index_screen();
+
     index_lister(state, state->context_current, state->cur_folder,
 		 state->mail_stream, state->msgmap);
 }
 
+
+void
+thread_index_screen(state)
+     struct pine *state;
+{
+    dprint(1, (debugfile, "\n\n ---- THREAD INDEX ----\n"));
+
+    setup_for_thread_index_screen();
+
+    index_lister(state, state->context_current, state->cur_folder,
+		 state->mail_stream, state->msgmap);
+}
+
+
+void
+setup_for_index_index_screen()
+{
+    format_index_line = format_index_index_line;
+    setup_header_widths = setup_index_header_widths;
+    if(ps_global->mail_stream == ps_global->inbox_stream && THREADING())
+      ps_global->inbox_viewing_a_thread = ps_global->viewing_a_thread;
+}
+
+
+void
+setup_for_thread_index_screen()
+{
+    format_index_line = format_thread_index_line;
+    setup_header_widths = setup_thread_header_widths;
+    if(ps_global->mail_stream == ps_global->inbox_stream)
+      ps_global->inbox_viewing_a_thread = ps_global->viewing_a_thread;
+}
+    
+
+void *
+stop_threading_temporarily()
+{
+    struct save_thrdinfo *ti;
+
+    ps_global->turn_off_threading_temporarily = 1;
+
+    ti = (struct save_thrdinfo *) fs_get(sizeof(*ti));
+    ti->format_index_line = format_index_line;
+    ti->setup_header_widths = setup_header_widths;
+    ti->viewing_a_thread = ps_global->viewing_a_thread;
+    ti->inbox_viewing_a_thread = ps_global->inbox_viewing_a_thread;
+
+    setup_for_index_index_screen();
+
+    return((void *) ti);
+}
+
+
+void
+restore_threading(p)
+    void **p;
+{
+    struct save_thrdinfo *ti;
+
+    ps_global->turn_off_threading_temporarily = 0;
+
+    if(p && *p){
+	ti = (struct save_thrdinfo *) (*p);
+	format_index_line = ti->format_index_line;
+	setup_header_widths = ti->setup_header_widths;
+	ps_global->viewing_a_thread = ti->viewing_a_thread;
+	ps_global->inbox_viewing_a_thread = ti->inbox_viewing_a_thread;
+
+	fs_give(p);
+    }
+}
 
 
 /*----------------------------------------------------------------------
@@ -535,10 +726,11 @@ index_lister(state, cntxt, folder, stream, msgmap)
     km_popped             = 0;
     state->mangled_screen = 1;
     what_keymenu          = FirstMenu;
+    old_max_msgno         = mn_get_total(msgmap);
     memset((void *)&id, 0, sizeof(struct index_state));
     current_index_state   = &id;
     id.msgmap		  = msgmap;
-    if(msgmap->top > 0L)
+    if(msgmap->top != 0L)
       id.msg_at_top = msgmap->top;
 
     if((id.stream = stream) != state->mail_stream)
@@ -554,15 +746,13 @@ index_lister(state, cntxt, folder, stream, msgmap)
 		if(!state->mangled_body
 		   && id.entry_state
 		   && id.lines_per_page > 1){
-		    id.entry_state[id.lines_per_page-2].id = -1;
-		    id.entry_state[id.lines_per_page-1].id = -1;
+		    id.entry_state[id.lines_per_page-2].id = 0;
+		    id.entry_state[id.lines_per_page-1].id = 0;
 		}
 		else
 		  state->mangled_body = 1;
 	    }
 	}
-
-	old_max_msgno = mn_get_total(msgmap);
 
 	/*------- Check for new mail -------*/
         new_mail(force, NM_TIMING(ch), NM_STATUS_MSG);
@@ -578,9 +768,11 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	   (old_max_msgno < 1000L && mn_get_total(msgmap) >= 1000L
 	    || old_max_msgno < 10000L && mn_get_total(msgmap) >= 10000L
 	    || old_max_msgno < 100000L && mn_get_total(msgmap) >= 100000L)){
-	    clear_index_cache();
+	    clear_iindex_cache();
 	    state->mangled_body = 1;
         }
+
+	old_max_msgno = mn_get_total(msgmap);
 
 	/*
 	 * If the display includes the SMARTDATE ("Today", "Yesterday", ...)
@@ -595,7 +787,7 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	    rfc822_date(db);
 	    parse_date(db, &nnow);
 	    if(old_day != -1 && nnow.day != old_day){
-		clear_index_cache();
+		clear_iindex_cache();
 		state->mangled_body = 1;
 	    }
 
@@ -616,14 +808,17 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	 * events may have occured that require us to shift from
 	 * mode to another...
 	 */
-	style = (any_lflagged(msgmap, MN_HIDE))
-		  ? ZoomIndex
-		  : (mn_total_cur(msgmap) > 1L) ? MultiMsgIndex : MsgIndex;
+	style = THRD_INDX()
+		  ? ThreadIndex
+		  : (any_lflagged(msgmap, MN_HIDE))
+		    ? ZoomIndex
+		    : (mn_total_cur(msgmap) > 1L) ? MultiMsgIndex : MsgIndex;
 	if(style != old_style){
             state->mangled_header = 1;
             state->mangled_footer = 1;
 	    old_style = style;
-	    id.msg_at_top = 0L;
+	    if(!(style == ThreadIndex || old_style == ThreadIndex))
+	      id.msg_at_top = 0L;
 	}
 
         /*------------ Update the title bar -----------*/
@@ -775,7 +970,11 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	    (void) process_cmd(state, stream, msgmap, MC_PREVITEM,
 			       (style == MsgIndex
 				|| style == MultiMsgIndex
-				|| style == ZoomIndex),
+				|| style == ZoomIndex)
+				   ? MsgIndx
+				   : (style == ThreadIndex)
+				     ? ThrdIndx
+				     : View,
 			       &force);
 	    if(mn_get_cur(msgmap) < (id.msg_at_top + HS_MARGIN(state)))
 	      index_scroll_up(1L);
@@ -794,10 +993,14 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	    (void) process_cmd(state, stream, msgmap, MC_NEXTITEM,
 			       (style == MsgIndex
 				|| style == MultiMsgIndex
-				|| style == ZoomIndex),
+				|| style == ZoomIndex)
+				   ? MsgIndx
+				   : (style == ThreadIndex)
+				     ? ThrdIndx
+				     : View,
 			       &force);
 	    for(j = 0L, k = i = id.msg_at_top; ; i++){
-		if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+		if(!msgline_hidden(stream, msgmap, i, 0)){
 		    k = i;
 		    if(j++ >= id.lines_per_page)
 		      break;
@@ -819,7 +1022,7 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	  case MC_PAGEUP :
 	    j = -1L;
 	    for(k = i = id.msg_at_top; ; i--){
-		if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+		if(!msgline_hidden(stream, msgmap, i, 0)){
 		    k = i;
 		    if(++j >= id.lines_per_page){
 			if((id.msg_at_top = i) == 1L)
@@ -827,10 +1030,15 @@ index_lister(state, cntxt, folder, stream, msgmap)
 
 			break;
 		    }
-	       }
+	        }
 
 		if(i <= 1L){
-		    if(mn_get_cur(msgmap) == 1L)
+		    if((!THREADING() && mn_get_cur(msgmap) == 1L)
+		       || (THREADING()
+		           && mn_get_cur(msgmap) == first_sorted_flagged(F_NONE,
+								         stream,
+									 0L,
+							        FSF_SKIP_CHID)))
 		      q_status_message(SM_ORDER, 0, 1,
 			  "Already at start of Index");
 
@@ -848,10 +1056,10 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	  case MC_PAGEDN :
 	    j = -1L;
 	    for(k = i = id.msg_at_top; ; i++){
-		if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+		if(!msgline_hidden(stream, msgmap, i, 0)){
 		    k = i;
 		    if(++j >= id.lines_per_page){
-			if(i+id.lines_per_page >= mn_get_total(msgmap))
+			if(i+id.lines_per_page > mn_get_total(msgmap))
 			  q_status_message(SM_ORDER, 0, 1, "Last Index page");
 
 			id.msg_at_top = i;
@@ -885,8 +1093,81 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	     *	     we need to get at the number..
 	     */
 	  case MC_JUMP :
-	    (void) jump_to(msgmap, -FOOTER_ROWS(ps_global), ch);
+	    j = jump_to(msgmap, -FOOTER_ROWS(ps_global), ch, NULL,
+			(style == ThreadIndex) ? ThrdIndx : MsgIndx);
+	    if(j > 0L){
+		if(style == ThreadIndex){
+		    PINETHRD_S *thrd;
+
+		    thrd = find_thread_by_number(stream, msgmap, j, NULL);
+
+		    if(thrd && thrd->rawno)
+		      mn_set_cur(msgmap, mn_raw2m(msgmap, thrd->rawno));
+		}
+		else{
+		    /* jump to message */
+		    if(mn_total_cur(msgmap) > 1L){
+			mn_reset_cur(msgmap, j);
+		    }
+		    else{
+			mn_set_cur(msgmap, j);
+		    }
+		}
+
+		id.msg_at_top = 0L;
+	    }
+
 	    state->mangled_footer = 1;
+	    break;
+
+
+	  case MC_VIEW_ENTRY :		/* only happens in thread index */
+
+	    /*
+	     * If the feature F_THRD_AUTO_VIEW is turned on and there
+	     * is only one message in the thread, then we skip the index
+	     * view of the thread and go straight to the message view.
+	     */
+view_a_thread:
+	    if(THRD_AUTO_VIEW() && style == ThreadIndex){
+		PINETHRD_S *thrd;
+
+		thrd = fetch_thread(stream,
+				    mn_m2raw(msgmap, mn_get_cur(msgmap)));
+		if(thrd
+		   && (count_lflags_in_thread(stream, thrd,
+		       msgmap, MN_NONE) == 1)){
+		    if(view_thread(state, stream, msgmap, 1)){
+			state->view_skipped_index = 1;
+			cmd = MC_VIEW_TEXT;
+			goto do_the_default;
+		    }
+		}
+	    }
+
+	    if(view_thread(state, stream, msgmap, 1)){
+		ps_global->redrawer = NULL;
+		current_index_state = NULL;
+		if(id.entry_state)
+		  fs_give((void **)&(id.entry_state));
+
+		return(0);
+	    }
+
+	    break;
+
+
+	  case MC_THRDINDX :
+	    msgmap->top = msgmap->top_after_thrd;
+	    if(unview_thread(state, stream, msgmap)){
+		ps_global->redrawer = NULL;
+		current_index_state = NULL;
+		if(id.entry_state)
+		  fs_give((void **)&(id.entry_state));
+
+		return(0);
+	    }
+
 	    break;
 
 
@@ -902,7 +1183,7 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	      for(i = id.msg_at_top;
 		  mp.row >= 0 && i <= mn_get_total(msgmap);
 		  i++)
-		if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+		if(!msgline_hidden(stream, msgmap, i, 0)){
 		    mp.row--;
 		    new_cur = i;
 		}
@@ -917,20 +1198,28 @@ index_lister(state, cntxt, folder, stream, msgmap)
 			  if(F_ON(F_ENABLE_AGG_OPS, ps_global)){
 			      (void) individual_select(state, msgmap,
 						       -FOOTER_ROWS(state),
-						       TRUE);
+						       MsgIndx);
 			  }
 		      }
 		      else if(!(mp.flags & M_KEY_SHIFT)){
-			  if (mp.doubleclick){
+			  if (THREADING()
+			      && mp.col >= 0
+			      && mp.col == id.plus_col
+			      && style != ThreadIndex){
+			      collapse_or_expand(state, stream, msgmap,
+						 mn_get_cur(msgmap));
+			  }
+			  else if (mp.doubleclick){
 			      if(mp.button == M_BUTTON_LEFT){
 				  if(stream == state->mail_stream){
-				      msgmap->top = id.msg_at_top;
-				      process_cmd(state, stream, msgmap,
-						  MC_VIEW_TEXT,
-						  (style == MsgIndex
-						   || style == MultiMsgIndex
-						   || style == ZoomIndex),
-						  &force);
+				      if(THRD_INDX()){
+					  cmd = MC_VIEW_ENTRY;
+					  goto view_a_thread;
+				      }
+				      else{
+					  cmd = MC_VIEW_TEXT;
+					  goto do_the_default;
+				      }
 				  }
 
 				  ps_global->redrawer = NULL;
@@ -1011,6 +1300,64 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	    break;
 
 
+	  case MC_COLLAPSE :
+	    thread_command(state, stream, msgmap, ch, -FOOTER_ROWS(state));
+	    break;
+
+          case MC_DELETE :
+          case MC_UNDELETE :
+          case MC_REPLY :
+          case MC_FORWARD :
+          case MC_TAKE :
+          case MC_SAVE :
+          case MC_EXPORT :
+          case MC_BOUNCE :
+          case MC_PIPE :
+          case MC_FLAG :
+          case MC_SELCUR :
+	    { int collapsed = 0;
+	      unsigned long rawno;
+	      PINETHRD_S *thrd = NULL;
+
+	      if(THREADING()){
+		  rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+		  if(rawno)
+		    thrd = fetch_thread(stream, rawno);
+
+		  collapsed = thrd && thrd->next
+			      && get_lflag(stream, NULL, rawno, MN_COLL);
+	      }
+
+	      if(collapsed){
+		  thread_command(state, stream, msgmap,
+				 ch, -FOOTER_ROWS(state));
+		  /* increment current */
+		  if(cmd == MC_DELETE){
+		      advance_cur_after_delete(state, stream, msgmap,
+					       (style == MsgIndex
+						  || style == MultiMsgIndex
+						  || style == ZoomIndex)
+						    ? MsgIndx
+						    : (style == ThreadIndex)
+						      ? ThrdIndx
+						      : View);
+		  }
+		  else if((cmd == MC_SELCUR
+			   && (state->ugly_consider_advancing_bit
+			       || F_OFF(F_UNSELECT_WONT_ADVANCE, state)))
+			  || (state->ugly_consider_advancing_bit
+			      && cmd == MC_SAVE
+			      && F_ON(F_SAVE_ADVANCES, state))){
+		      mn_inc_cur(stream, msgmap, MH_NONE);
+		  }
+	      }
+	      else
+		goto do_the_default;
+	    }
+
+            break;
+
+
             /*---------- First HELP command with menu hidden ----------*/
 	  case MC_HELP :
 	    if(FOOTER_ROWS(state) == 1 && km_popped == 0){
@@ -1025,12 +1372,17 @@ index_lister(state, cntxt, folder, stream, msgmap)
 
             /*---------- Default -- all other command ----------*/
           default:
+   do_the_default:
 	    if(stream == state->mail_stream){
 		msgmap->top = id.msg_at_top;
 		process_cmd(state, stream, msgmap, cmd,
 			    (style == MsgIndex
 			     || style == MultiMsgIndex
-			     || style == ZoomIndex),
+			     || style == ZoomIndex)
+			       ? MsgIndx
+			       : (style == ThreadIndex)
+				 ? ThrdIndx
+				 : View,
 			    &force);
 		if(state->next_screen != SCREEN_FUN_NULL){
 		    ps_global->redrawer = NULL;
@@ -1051,6 +1403,9 @@ index_lister(state, cntxt, folder, stream, msgmap)
 		    }
 
 		    current_index_state = &id;
+
+		    if(cmd == MC_ZOOM && THRD_INDX())
+		      id.msg_at_top = 0L;
 		}
 	    }
 	    else{			/* special processing */
@@ -1080,7 +1435,7 @@ index_lister(state, cntxt, folder, stream, msgmap)
 			}
 
 			q_status_message2(SM_ORDER, 0, 1,
-					  "Message %s %sdeleted",
+					  "Message %.200s %.200sdeleted",
 					  long2string(mn_get_cur(msgmap)),
 					  (del) ? "" : "already ");
 		    }
@@ -1104,7 +1459,7 @@ index_lister(state, cntxt, folder, stream, msgmap)
 			}
 
 			q_status_message2(SM_ORDER, 0, 1,
-					  "Message %s %sdeleted",
+					  "Message %.200s %.200sdeleted",
 					  long2string(mn_get_cur(msgmap)),
 					  (del) ? "UN" : "NOT ");
 		    }
@@ -1128,11 +1483,11 @@ index_lister(state, cntxt, folder, stream, msgmap)
 		    return(0);
 
 		  case MC_PREVITEM :		/* previous */
-		    mn_dec_cur(stream, msgmap);
+		    mn_dec_cur(stream, msgmap, MH_NONE);
 		    break;
 
 		  case MC_NEXTITEM :		/* next */
-		    mn_inc_cur(stream, msgmap);
+		    mn_inc_cur(stream, msgmap, MH_NONE);
 		    break;
 
 		  default :
@@ -1164,8 +1519,11 @@ update_index(state, screen)
     struct pine         *state;
     struct index_state  *screen;
 {
-    int  i, retval = -1, row;
-    long n;
+    int  i, retval = -1, row, already_fetched = 0;
+    long n, visible;
+    PINETHRD_S *thrd = NULL;
+
+    dprint(7, (debugfile, "--update_index--\n"));
 
     if(!screen)
       return(-1);
@@ -1202,14 +1560,12 @@ update_index(state, screen)
 		    (size_t)screen->lines_per_page);
 
 	for(; i < screen->lines_per_page; i++)	/* init new entries */
-	  screen->entry_state[i].id = -1;
+	  screen->entry_state[i].id = 0;
     }
 
     /*---- figure out the first message on the display ----*/
     if(screen->msg_at_top < 1L
-       || (any_lflagged(screen->msgmap, MN_HIDE) > 0L
-	   && get_lflag(screen->stream, screen->msgmap,
-			screen->msg_at_top, MN_HIDE))){
+       || msgline_hidden(screen->stream, screen->msgmap, screen->msg_at_top,0)){
 	screen->msg_at_top = top_ent_calc(screen->stream, screen->msgmap,
 					  screen->msg_at_top,
 					  screen->lines_per_page);
@@ -1222,7 +1578,7 @@ update_index(state, screen)
 	    for(i = screen->lines_per_page, j = screen->msg_at_top-1L, k = 0L;
 		i > 0L && j > 0L;
 		j--)
-	      if(!get_lflag(screen->stream, screen->msgmap, j, MN_HIDE)){
+	      if(!msgline_hidden(screen->stream, screen->msgmap, j, 0)){
 		  k = j;
 		  i--;
 	      }
@@ -1241,9 +1597,11 @@ update_index(state, screen)
 	    for(i = screen->lines_per_page, j = k = screen->msg_at_top;
 		j <= mn_get_total(screen->msgmap) && i > 0L;
 		j++)
-	      if(!get_lflag(screen->stream, screen->msgmap, j, MN_HIDE)){
+	      if(!msgline_hidden(screen->stream, screen->msgmap, j, 0)){
 		  k = j;
 		  i--;
+		  if(mn_get_cur(screen->msgmap) <= k)
+		    break;
 	      }
 
 	    if(mn_get_cur(screen->msgmap) <= k)
@@ -1251,7 +1609,7 @@ update_index(state, screen)
 	    else{
 		/* set msg_at_top to next displayed message */
 		for(i = k + 1L; i <= mn_get_total(screen->msgmap); i++)
-		  if(!get_lflag(screen->stream, screen->msgmap, i, MN_HIDE)){
+		  if(!msgline_hidden(screen->stream, screen->msgmap, i, 0)){
 		      k = i;
 		      break;
 		  }
@@ -1262,70 +1620,293 @@ update_index(state, screen)
     }
 
 #ifdef	_WINDOWS
-    /* Set scroll range and position.  Note that message numbers start at 1
-     * while scroll position starts at 0. */
-    if(n = any_lflagged(screen->msgmap, MN_HIDE)){
-	long x;
+    /*
+     * Set scroll range and position.  Note that message numbers start at 1
+     * while scroll position starts at 0.
+     */
 
-	scroll_setrange(screen->lines_per_page,
-			mn_get_total(screen->msgmap) - n - 1);
+    if(THREADING() && state->viewing_a_thread
+       && mn_get_total(screen->msgmap) > 1L){
+	long x = 0L, range = 0L, lowest_numbered_msg;
 
-	for(n = 1, x = 0; n != screen->msg_at_top; n++)
-	  if(!get_lflag(screen->stream, screen->msgmap, n, MN_HIDE))
-	    x++;
+	/*
+	 * We know that all visible messages in the thread are marked
+	 * with MN_CHID2.
+	 */
+	thrd = fetch_thread(screen->stream,
+			    mn_m2raw(screen->msgmap,
+				     mn_get_cur(screen->msgmap)));
+	if(thrd && thrd->top && thrd->top != thrd->rawno)
+	  thrd = fetch_thread(screen->stream, thrd->top);
 
+	if(thrd){
+	    if(mn_get_revsort(screen->msgmap)){
+		n = mn_raw2m(screen->msgmap, thrd->rawno);
+		while(n > 1L && get_lflag(screen->stream, screen->msgmap,
+					  n-1L, MN_CHID2))
+		  n--;
+
+		lowest_numbered_msg = n;
+	    }
+	    else
+	      lowest_numbered_msg = mn_raw2m(screen->msgmap, thrd->rawno);
+	}
+	
+	if(thrd){
+	    n = lowest_numbered_msg;
+	    for(; n <= mn_get_total(screen->msgmap); n++){
+
+		if(!get_lflag(screen->stream, screen->msgmap, n, MN_CHID2))
+		  break;
+		
+		if(!msgline_hidden(screen->stream, screen->msgmap, n, 0)){
+		    range++;
+		    if(n < screen->msg_at_top)
+		      x++;
+		}
+	    }
+	}
+
+	scroll_setrange(screen->lines_per_page, range-1L);
 	scroll_setpos(x);
+    }
+    else if(THRD_INDX()){
+	if(any_lflagged(screen->msgmap, MN_HIDE)){
+	    long x = 0L, range;
+
+	    range = screen->msgmap->visible_threads - 1L;
+	    scroll_setrange(screen->lines_per_page, range);
+	    if(range >= screen->lines_per_page){	/* else not needed */
+		PINETHRD_S *topthrd;
+		int         thrddir;
+		long        xdir;
+
+		/* find top of currently displayed top line */
+		topthrd = fetch_thread(screen->stream,
+				       mn_m2raw(screen->msgmap,
+					        screen->msg_at_top));
+		if(topthrd && topthrd->top != topthrd->rawno)
+		  topthrd = fetch_thread(screen->stream, topthrd->top);
+		
+		if(topthrd){
+		    /*
+		     * Split into two halves to speed up finding scroll pos.
+		     * It's tricky because the thread list always goes from
+		     * past to future but the thrdno's will be reversed if
+		     * the sort is reversed and of course the order on the
+		     * screen will be reversed.
+		     */
+		    if((!mn_get_revsort(screen->msgmap)
+		        && topthrd->thrdno <= screen->msgmap->max_thrdno/2)
+		       ||
+		       (mn_get_revsort(screen->msgmap)
+		        && topthrd->thrdno > screen->msgmap->max_thrdno/2)){
+
+			/* start with head of thread list */
+			if(topthrd && topthrd->head)
+			  thrd = fetch_thread(screen->stream, topthrd->head);
+			else
+			  thrd = NULL;
+
+			thrddir = 1;
+		    }
+		    else{
+			long tailrawno;
+
+			/*
+			 * Start with tail thread and work back.
+			 */
+		        if(mn_get_revsort(screen->msgmap))
+			  tailrawno = mn_m2raw(screen->msgmap, 1L);
+			else
+			  tailrawno = mn_m2raw(screen->msgmap,
+					       mn_get_total(screen->msgmap));
+
+			thrd = fetch_thread(screen->stream, tailrawno);
+			if(thrd && thrd->top && thrd->top != thrd->rawno)
+			  thrd = fetch_thread(screen->stream, thrd->top);
+
+			thrddir = -1;
+		    }
+
+		    /*
+		     * x is the scroll position. We try to use the fewest
+		     * number of steps to find it, so we start with either
+		     * the beginning or the end.
+		     */
+		    if(topthrd->thrdno <= screen->msgmap->max_thrdno/2){
+			x = 0L;
+			xdir = 1L;
+		    }
+		    else{
+			x = range;
+			xdir = -1L;
+		    }
+
+		    while(thrd && thrd != topthrd){
+			if(!msgline_hidden(screen->stream, screen->msgmap,
+					   mn_raw2m(screen->msgmap,thrd->rawno),
+					   0))
+			  x += xdir;
+			
+			if(thrddir > 0 && thrd->nextthd)
+			  thrd = fetch_thread(screen->stream, thrd->nextthd);
+			else if(thrddir < 0 && thrd->prevthd)
+			  thrd = fetch_thread(screen->stream, thrd->prevthd);
+			else
+			  thrd = NULL;
+		    }
+		}
+
+		scroll_setpos(x);
+	    }
+	}
+	else{
+	    long x;
+
+	    /*
+	     * This works for forward or reverse sort because the thrdno's
+	     * will have been reversed.
+	     */
+	    thrd = fetch_thread(screen->stream,
+				mn_m2raw(screen->msgmap, screen->msg_at_top));
+	    if(thrd){
+		scroll_setrange(screen->lines_per_page,
+				screen->msgmap->max_thrdno - 1L);
+		scroll_setpos(thrd->thrdno - 1L);
+	    }
+	}
+    }
+    else if(n = any_lflagged(screen->msgmap, MN_HIDE | MN_CHID)){
+	long x, range;
+
+	range = mn_get_total(screen->msgmap) - n - 1L;
+	scroll_setrange(screen->lines_per_page, range);
+
+	if(range >= screen->lines_per_page){	/* else not needed */
+	    if(screen->msg_at_top < mn_get_total(screen->msgmap) / 2){
+		for(n = 1, x = 0; n != screen->msg_at_top; n++)
+		  if(!msgline_hidden(screen->stream, screen->msgmap, n, 0))
+		    x++;
+	    }
+	    else{
+		for(n = mn_get_total(screen->msgmap), x = range;
+		    n != screen->msg_at_top; n--)
+		  if(!msgline_hidden(screen->stream, screen->msgmap, n, 0))
+		    x--;
+	    }
+
+	    scroll_setpos(x);
+	}
     }
     else{
 	scroll_setrange(screen->lines_per_page,
 			mn_get_total(screen->msgmap) - 1L);
-
 	scroll_setpos(screen->msg_at_top - 1L);
     }
 #endif
 
     /*
      * Set up c-client call back to tell us about IMAP envelope arrivals
+     * Can't do it (easily) if single lines on the screen need information
+     * about more than a single message before they can be drawn.
      */
-    if(F_OFF(F_QUELL_IMAP_ENV_CB, ps_global))
+    if(F_OFF(F_QUELL_IMAP_ENV_CB, ps_global) && !THRD_INDX()
+       && !(THREADING() && (state->viewing_a_thread
+                            || any_lflagged(screen->msgmap, MN_COLL))))
       mail_parameters(NULL, SET_IMAPENVELOPE, (void *) pine_imap_envelope);
+
+    if(THRD_INDX())
+      visible = screen->msgmap->visible_threads;
+    else if(THREADING() && state->viewing_a_thread){
+	/*
+	 * We know that all visible messages in the thread are marked
+	 * with MN_CHID2.
+	 */
+	for(visible = 0L, n = screen->msg_at_top;
+	    visible < (int) screen->lines_per_page
+	    && n <= mn_get_total(screen->msgmap); n++){
+
+	    if(!get_lflag(screen->stream, screen->msgmap, n, MN_CHID2))
+	      break;
+	    
+	    if(!msgline_hidden(screen->stream, screen->msgmap, n, 0))
+	      visible++;
+	}
+    }
+    else
+      visible = mn_get_total(screen->msgmap)
+		  - any_lflagged(screen->msgmap, MN_HIDE|MN_CHID);
 
     /*---- march thru display lines, painting whatever is needed ----*/
     for(i = 0, n = screen->msg_at_top; i < (int) screen->lines_per_page; i++){
-	if(n < 1 || n > mn_get_total(screen->msgmap)){
-	    if(screen->entry_state[i].id){
+	if(visible == 0L || n < 1 || n > mn_get_total(screen->msgmap)){
+	    if(screen->entry_state[i].id != LINE_HASH_N){
+		/*
+		 * Id is initialized to zero. We do the ClearLine in that
+		 * case. If id is any legitimate line_hash value then we
+		 * previously drew something here, so clear it. After we
+		 * do the ClearLine we set id to LINE_HASH_N which is not
+		 * zero and is not a legitimate line_hash value. That means
+		 * we've already done the clear and don't have to do it
+		 * again.
+		 */
 		screen->entry_state[i].hilite = 0;
 		screen->entry_state[i].bolded = 0;
-		screen->entry_state[i].id     = 0L;
+		screen->entry_state[i].id     = LINE_HASH_N;
 		ClearLine(HEADER_ROWS(state) + i);
 	    }
 	}
 	else{
-	    row = paint_index_line(n, build_header_line(state, screen->stream,
-							screen->msgmap, n),
+	    HLINE_S *hline;
+
+	    /*
+	     * This changes status_col as a side effect so it has to be
+	     * executed before next line.
+	     */
+	    hline = build_header_line(state, screen->stream, screen->msgmap,
+				      n, &already_fetched);
+	    if(visible > 0L)
+	      visible--;
+
+	    if(THRD_INDX()){
+		unsigned long rawno;
+
+		rawno = mn_m2raw(screen->msgmap, n);
+		if(rawno)
+		  thrd = fetch_thread(screen->stream, rawno);
+	    }
+
+	    row = paint_index_line(n, hline,
 				   i, screen->status_col,
+				   !THRD_INDX() ? screen->plus_col : -1,
 				   &screen->entry_state[i],
 				   mn_is_cur(screen->msgmap, n),
-				   get_lflag(screen->stream, screen->msgmap,
-					     n, MN_SLCT));
+				   THRD_INDX()
+				     ? (count_lflags_in_thread(screen->stream,
+							       thrd,
+							       screen->msgmap,
+							       MN_SLCT) > 0)
+				     : get_lflag(screen->stream, screen->msgmap,
+					         n, MN_SLCT));
 	    if(row && retval < 0)
 	      retval = row;
 	}
 
 	/*--- increment n ---*/
-	while(++n <= mn_get_total(screen->msgmap)
-	      && get_lflag(screen->stream, screen->msgmap, n, MN_HIDE))
+	while((visible == -1L || visible > 0L)
+	      && ++n <= mn_get_total(screen->msgmap)
+	      && msgline_hidden(screen->stream, screen->msgmap, n, 0))
 	  ;
-
     }
 
-    if(F_OFF(F_QUELL_IMAP_ENV_CB, ps_global))
-      mail_parameters(NULL, SET_IMAPENVELOPE, (void *) NULL);
+    mail_parameters(NULL, SET_IMAPENVELOPE, (void *) NULL);
 
 #ifdef _WINDOWS
     mswin_endupdate();
 #endif
     fflush(stdout);
+    dprint(7, (debugfile, "--update_index done\n"));
     return(retval);
 }
 
@@ -1335,54 +1916,74 @@ update_index(state, screen)
      Paint the given index line
 
 
-  Args: h -- structure describing the header line to paint
+  Args: hline -- structure describing the header line to paint
 	n -- message number to paint
 	screen -- structure describing current screen state
 
   Returns: 0 or the row number if the message is "current"
  ----*/
 int
-paint_index_line(msg, h, line, col, entry, cur, sel)
+paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
     long		msg;
-    HLINE_S	       *h;
-    int			line, col;
+    HLINE_S	       *hline;
+    int			line, scol, pcol;
     struct entry_state *entry;
     int			cur, sel;
 {
     COLOR_PAIR *lastc = NULL, *base_color = NULL;
     int inverse_hack = 0;
+    HLINE_S	      *h;
 
-    if(h->id != entry->id || (cur != entry->hilite) || (sel != entry->bolded)){
+    h = (THRD_INDX() && hline) ? hline->tihl : hline;
+
+    /* This better not happen! */
+    if(!h){
+	q_status_message1(SM_ORDER | SM_DING, 5, 5,
+			  "NULL hline in paint_index_line: %.200s",
+			  THRD_INDX() ? "THRD_INDX" : "reg index");
+	dprint(1, (debugfile, "NULL hline in paint_index_line: %s\n",
+			       THRD_INDX() ? "THRD_INDX" : "reg index"));
+	return 0;
+    }
+
+    if(h->id != entry->id || (cur != entry->hilite)
+       || (sel != entry->bolded) || (h->plus != entry->plus)){
 
 	if(F_ON(F_FORCE_LOW_SPEED,ps_global) || ps_global->low_speed){
-	    MoveCursor(HEADER_ROWS(ps_global) + line, col);
+	    MoveCursor(HEADER_ROWS(ps_global) + line, scol);
 	    Writechar((sel)
 		      ? 'X'
-		      : (cur && h->line[col] == ' ')
+		      : (cur && h->line[scol] == ' ')
 			  ? '-'
-			  : h->line[col], 0);
-	    Writechar((cur) ? '>' : h->line[col+1], 0);
+			  : h->line[scol], 0);
+	    Writechar((cur) ? '>' : h->line[scol+1], 0);
 
 	    if(h->id != entry->id){
-		if(col == 0)
+		if(scol == 0)
 		  PutLine0(HEADER_ROWS(ps_global) + line, 2, &h->line[2]);
 		else{ /* this will rarely be set up this way */
 		    char save_char1, save_char2;
 
-		    save_char1 = h->line[col];
-		    save_char2 = h->line[col+1];
-		    h->line[col] = (sel) ? 'X' :
+		    save_char1 = h->line[scol];
+		    save_char2 = h->line[scol+1];
+		    h->line[scol] = (sel) ? 'X' :
 		      (cur && save_char1 == ' ') ?
 		      '-' : save_char1;
-		    h->line[col+1] = (cur) ? '>' : save_char2;
+		    h->line[scol+1] = (cur) ? '>' : save_char2;
 		    PutLine0(HEADER_ROWS(ps_global) + line, 0, &h->line[0]);
-		    h->line[col]   = save_char1;
-		    h->line[col+1] = save_char2;
+		    h->line[scol]   = save_char1;
+		    h->line[scol+1] = save_char2;
 		}
+	    }
+
+	    if(pcol >= 0){
+		MoveCursor(HEADER_ROWS(ps_global) + line, pcol);
+		Writechar(h->plus, 0);
+		Writechar(' ', 0);
 	    }
 	}
 	else{
-	    char *draw = h->line, *p, save_char, save;
+	    char *draw = h->line, save_schar, save_pchar, save;
 	    int   uc, i, drew_X = 0, cols = ps_global->ttyo->screen_cols;
 
 	    if(uc=pico_usingcolor())
@@ -1392,13 +1993,14 @@ paint_index_line(msg, h, line, col, entry, cur, sel)
 
 	    if(cur){
 		/*
-		 * If the current line has a linecolor, we're going to use
-		 * the reverse of that to show it is current.
+		 * If the current line has a linecolor, apply the
+		 * appropriate reverse transformation to show it is current.
 		 */
 		if(uc && h->linecolor.fg[0] && h->linecolor.bg[0] &&
 		   pico_is_good_colorpair(&h->linecolor)){
-		    base_color = new_color_pair(h->linecolor.bg,
-						h->linecolor.fg); /* reverse */
+		    base_color = pico_apply_rev_color(&h->linecolor,
+						ps_global->index_color_style);
+
 		    (void)pico_set_colorp(base_color, PSC_NONE);
 		}
 		else{
@@ -1415,12 +2017,17 @@ paint_index_line(msg, h, line, col, entry, cur, sel)
 	    else
 	      base_color = lastc;
 
-	    save_char = draw[col];
+	    save_schar = draw[scol];
 
 	    if(sel && (F_OFF(F_SELECTED_SHOWN_BOLD, ps_global)
 		       || !StartBold())){
-		draw[col] = 'X';
+		draw[scol] = 'X';
 		drew_X++;
+	    }
+
+	    if(pcol >= 0 && pcol < cols){
+		save_pchar = draw[pcol];
+		draw[pcol] = h->plus;
 	    }
 
 	    if(h->offs[0].offset < 0 || h->offs[0].offset >= cols){
@@ -1455,8 +2062,8 @@ paint_index_line(msg, h, line, col, entry, cur, sel)
 		 * But don't switch if we drew an X in this column.
 		 */
 		if(h->offs[i].color.fg[0] && (!drew_X ||
-					      col != h->offs[i].offset ||
-					      save_char != '+')){
+					      scol != h->offs[i].offset ||
+					      save_schar != '+')){
 		    (void)pico_set_colorp(&h->offs[i].color, PSC_NORM);
 		}
 
@@ -1506,8 +2113,8 @@ paint_index_line(msg, h, line, col, entry, cur, sel)
 
 	    /* switch to color for 4, which shouldn't be NULL */
 	    if(h->offs[4].color.fg[0] && (!drew_X ||
-					  col != h->offs[4].offset ||
-					  save_char != '+')){
+					  scol != h->offs[4].offset ||
+					  save_schar != '+')){
 		(void)pico_set_colorp(&h->offs[4].color, PSC_NORM);
 	    }
 
@@ -1531,13 +2138,16 @@ paint_index_line(msg, h, line, col, entry, cur, sel)
 
 done_drawing:
 	    if(drew_X)
-	      draw[col] = save_char;
+	      draw[scol] = save_schar;
 
 	    if(sel && !drew_X)
 	      EndBold();
 
 	    if(cur)
 	      EndInverse();
+
+	    if(pcol >= 0 && pcol < cols)
+	      draw[pcol] = save_pchar;
 	}
 
 	if(base_color && base_color != lastc && base_color != &h->linecolor)
@@ -1552,9 +2162,10 @@ done_drawing:
     entry->hilite = cur;
     entry->bolded = sel;
     entry->id     = h->id;
+    entry->plus   = h->plus;
 
     if(!h->color_lookup_done && pico_usingcolor())
-      entry->id = -1;
+      entry->id = 0;
 
     return(cur ? (line + HEADER_ROWS(ps_global)) : 0);
 }
@@ -1574,12 +2185,12 @@ pine_imap_envelope(stream, rawno, env)
 {
     MESSAGECACHE *mc;
 
-    dprint(5, (debugfile, "imap_env(%ld)\n", rawno));
+    dprint(7, (debugfile, "imap_env(%ld)\n", rawno));
     if(!ps_global->mail_box_changed
        && stream == ps_global->mail_stream
        && (mc = mail_elt(stream,rawno))->valid
        && mc->rfc822_size
-       && !get_lflag(stream, NULL, rawno, MN_HIDE | MN_EXLD)){
+       && !get_lflag(stream, NULL, rawno, MN_HIDE | MN_CHID | MN_EXLD)){
 	INDEXDATA_S  idata;
 	HLINE_S	    *hline;
 
@@ -1596,7 +2207,6 @@ pine_imap_envelope(stream, rawno, env)
 	 * Look for resent-to already in MAILCACHE data 
 	 */
 	if(mc->private.msg.header.text.data){
-	    char       *p, *q;
 	    STRINGLIST *lines;
 	    SIZEDTEXT	szt;
 	    static char *linelist[] = {"resent-to" , NULL};
@@ -1614,7 +2224,7 @@ pine_imap_envelope(stream, rawno, env)
 	    free_strlst(&lines);
 	}
 
-	hline = format_index_line(&idata);
+	hline = (*format_index_line)(&idata);
 	if(idata.bogus)
 	  hline->line[0] = '\0';
 	else
@@ -1633,6 +2243,8 @@ paint_index_hline(stream, msgno, hline)
     long	msgno;
     HLINE_S    *hline;
 {
+    PINETHRD_S *thrd;
+
     /*
      * Trust only what we get back that isn't bogus since
      * we were prevented from doing any fetches and such...
@@ -1644,26 +2256,67 @@ paint_index_hline(stream, msgno, hline)
        && !ps_global->msgmap->hilited){
 	int line;
 
+	/*
+	 * This test isn't right if there are hidden lines. The line will
+	 * fail the test because it seems like it is past the end of the
+	 * screen but since the hidden lines don't take up space the line
+	 * might actually be on the screen. Don't know that it is worth
+	 * it to fix this, though, since you may have to file through
+	 * many hidden lines before finding the visible ones. I'm not sure
+	 * if the logic inside the if is correct when we do pass the
+	 * top-level test. Leave it for now.  Hubert - 2002-06-28
+	 */
 	if((line = (int)(msgno - current_index_state->msg_at_top)) >= 0
 	   && line < current_index_state->lines_per_page){
-	    if(any_lflagged(ps_global->msgmap, MN_HIDE)){
+	    if(any_lflagged(ps_global->msgmap, MN_HIDE | MN_CHID)){
 		long n;
+		long zoomhide, collapsehide;
 
+		zoomhide = any_lflagged(ps_global->msgmap, MN_HIDE);
+		collapsehide = any_lflagged(ps_global->msgmap, MN_CHID);
+
+		/*
+		 * Line is visible if it is selected and not hidden due to
+		 * thread collapse, or if there is no zooming happening and
+		 * it is not hidden due to thread collapse.
+		 */
 		for(line = 0, n = current_index_state->msg_at_top;
 		    n != msgno;
 		    n++)
-		  if(get_lflag(current_index_state->stream,
-			       current_index_state->msgmap, n, MN_SLCT))
+		  if((zoomhide
+		      && get_lflag(stream, current_index_state->msgmap,
+				   n, MN_SLCT)
+		      && (!collapsehide
+		          || !get_lflag(stream, current_index_state->msgmap, n,
+				        MN_CHID)))
+		     ||
+		     (!zoomhide
+		      && !get_lflag(stream, current_index_state->msgmap,
+				    n, MN_CHID)))
 		    line++;
+	    }
+
+	    thrd = NULL;
+	    if(THRD_INDX()){
+		unsigned long rawno;
+
+		rawno = mn_m2raw(current_index_state->msgmap, msgno);
+		if(rawno)
+		  thrd = fetch_thread(stream, rawno);
 	    }
 
 	    paint_index_line(msgno, hline, line,
 			     current_index_state->status_col,
+			     !THRD_INDX()
+			       ? current_index_state->plus_col : -1,
 			     &current_index_state->entry_state[line],
 			     mn_is_cur(current_index_state->msgmap, msgno),
-			     get_lflag(current_index_state->stream,
-				       current_index_state->msgmap,
-				       msgno, MN_SLCT));
+			     THRD_INDX()
+			       ? (count_lflags_in_thread(stream, thrd,
+						   current_index_state->msgmap,
+						         MN_SLCT) > 0)
+			       : get_lflag(stream, current_index_state->msgmap,
+					   msgno, MN_SLCT));
 	    fflush(stdout);
 	}
     }
@@ -1694,40 +2347,26 @@ long	pos;
     /*
      * Put the requested line at the top of the screen...
      */
-#if 1
+
     /*
-     * Starting at msg 'pos' find next visable message.
+     * Starting at msg 'pos' find next visible message.
      */
     for(i=pos; i <= mn_get_total(current_index_state->msgmap); i++) {
-      if(!get_lflag(current_index_state->stream, 
-	            current_index_state->msgmap, i, MN_HIDE)){
+      if(!msgline_hidden(current_index_state->stream,
+			 current_index_state->msgmap, i, 0)){
 	  current_index_state->msg_at_top = i;
 	  break;
       }
     }
-#else
-    for(i=1L, j=pos; i <= mn_get_total(current_index_state->msgmap); i++) {
-      if(!get_lflag(current_index_state->stream, 
-	            current_index_state->msgmap, i, MN_HIDE)){
-	  if((current_index_state->msg_at_top = i) > 
-		  mn_get_cur(current_index_state->msgmap))
-	    mn_set_cur(current_index_state->msgmap, i);
-
-	  if(--j <= 0L)
-	    break;
-      }
-    }
-#endif
 
     /*
-     * If single selection, move selected message to be on the sceen.
+     * If single selection, move selected message to be on the screen.
      */
     if (mn_total_cur(current_index_state->msgmap) == 1L) {
       if (current_index_state->msg_at_top > 
 			      mn_get_cur (current_index_state->msgmap)) {
 	/* Selection was above screen, move to top of screen. */
-	mn_set_cur (current_index_state->msgmap, 
-					current_index_state->msg_at_top);
+	mn_set_cur(current_index_state->msgmap,current_index_state->msg_at_top);
       }
       else {
 	/* Scan through the screen.  If selection found, leave where is.
@@ -1738,8 +2377,8 @@ long	pos;
 		i <= mn_get_total(current_index_state->msgmap) && 
 		j > 0L;
 	      i++) {
-	    if(!get_lflag(current_index_state->stream, 
-	            current_index_state->msgmap, i, MN_HIDE)){
+	    if(!msgline_hidden(current_index_state->stream,
+			       current_index_state->msgmap, i, 0)){
 	        j--;
 	        k = i;
             }
@@ -1783,8 +2422,8 @@ index_scroll_down(scroll_count)
     for(k = i = current_index_state->msg_at_top; ; i++){
 
 	/* Only examine non-hidden messages. */
-        if(!get_lflag(current_index_state->stream, 
-		      current_index_state->msgmap, i, MN_HIDE)){
+	if(!msgline_hidden(current_index_state->stream,
+			   current_index_state->msgmap, i, 0)){
 	    /* Remember this message */
 	    k = i;
 	    /* Increment count of lines.  */
@@ -1810,8 +2449,8 @@ index_scroll_down(scroll_count)
 	j = 0L;
 	cur = mn_get_cur (current_index_state->msgmap);
 	for (i = current_index_state->msg_at_top; i <= total; ++i) {
-	    if(!get_lflag(current_index_state->stream, 
-		          current_index_state->msgmap, i, MN_HIDE)) {
+	    if(!msgline_hidden(current_index_state->stream,
+			       current_index_state->msgmap, i, 0)){
 	        if (++j >= current_index_state->lines_per_page) {
 		    break;
 	        }
@@ -1856,8 +2495,8 @@ index_scroll_up(scroll_count)
     for(k = i = current_index_state->msg_at_top; ; i--){
 
 	/* Only examine non-hidden messages. */
-        if(!get_lflag(current_index_state->stream, 
-		      current_index_state->msgmap, i, MN_HIDE)){
+	if(!msgline_hidden(current_index_state->stream,
+			   current_index_state->msgmap, i, 0)){
 	    /* Remember this message */
 	    k = i;
 	    /* Increment count of lines.  */
@@ -1886,8 +2525,8 @@ index_scroll_up(scroll_count)
 	for (	i = current_index_state->msg_at_top; 
 		i <= mn_get_total(current_index_state->msgmap);
 		++i) {
-	    if(!get_lflag(current_index_state->stream, 
-		          current_index_state->msgmap, i, MN_HIDE)) {
+	    if(!msgline_hidden(current_index_state->stream,
+			       current_index_state->msgmap, i, 0)){
 	        if (++j >= current_index_state->lines_per_page) {
 		    k = i;
 		    break;
@@ -1923,11 +2562,12 @@ on the page.
  ----*/
 long
 top_ent_calc(stream, msgs, at_top, lines_per_page)
-     MAILSTREAM *stream;
-     MSGNO_S *msgs;
-     long     at_top, lines_per_page;
+    MAILSTREAM *stream;
+    MSGNO_S *msgs;
+    long     at_top, lines_per_page;
 {
-    long current;
+    long current, hidden, visible, lastn;
+    long n, m = 0L, t = 1L;
 
     current = (mn_total_cur(msgs) <= 1L) ? mn_get_cur(msgs) : at_top;
 
@@ -1937,17 +2577,152 @@ top_ent_calc(stream, msgs, at_top, lines_per_page)
     if(lines_per_page == 0L)
       return(current);
 
-    if(any_lflagged(msgs, (MN_HIDE|MN_EXLD))){
-	long n, m = 0L, t = 1L;
+    if(THRD_INDX_ENABLED()){
+	long rawno;
+	PINETHRD_S *thrd = NULL;
 
-	for(n = 1L; n <= mn_get_total(msgs); n++)
-	  if(!get_lflag(stream, msgs, n, MN_HIDE)
-	     && (++m % lines_per_page) == 1L){
-	      if(n > current)
-		break;
+	rawno = mn_m2raw(msgs, mn_get_cur(msgs));
+	if(rawno)
+	  thrd = fetch_thread(stream, rawno);
 
-	      t = n;
-	  }
+	if(THRD_INDX()){
+
+	    if(any_lflagged(msgs, MN_HIDE)){
+		long vis = 0L;
+		PINETHRD_S *is_current_thrd;
+
+		is_current_thrd = thrd;
+		if(is_current_thrd){
+		    if(mn_get_revsort(msgs)){
+			/* start with top of tail of thread list */
+			thrd = fetch_thread(stream, mn_m2raw(msgs, 1L));
+			if(thrd && thrd->top && thrd->top != thrd->rawno)
+			  thrd = fetch_thread(stream, thrd->top);
+		    }
+		    else{
+			/* start with head of thread list */
+			thrd = fetch_head_thread(stream);
+		    }
+
+		    t = 1L;
+		    m = 0L;
+		    if(thrd)
+		      n = mn_raw2m(msgs, thrd->rawno);
+
+		    while(thrd){
+			if(!msgline_hidden(stream, msgs, n, 0)
+			   && (++m % lines_per_page) == 1L)
+			  t = n;
+			
+			if(thrd == is_current_thrd)
+			  break;
+
+			if(mn_get_revsort(msgs) && thrd->prevthd)
+			  thrd = fetch_thread(stream, thrd->prevthd);
+			else if(!mn_get_revsort(msgs) && thrd->nextthd)
+			  thrd = fetch_thread(stream, thrd->nextthd);
+			else
+			  thrd = NULL;
+
+			if(thrd)
+			  n = mn_raw2m(msgs, thrd->rawno);
+		    }
+		}
+	    }
+	    else{
+		if(thrd){
+		    n = thrd->thrdno;
+		    m = lines_per_page * ((n - 1L)/ lines_per_page) + 1L;
+		    n = thrd->rawno;
+		    /*
+		     * We want to find the m'th thread and the
+		     * message number that goes with that. We just have
+		     * to back up from where we are to get there.
+		     * If we have a reverse sort backing up is going
+		     * forward through the thread.
+		     */
+		    while(thrd && m < thrd->thrdno){
+			n = thrd->rawno;
+			if(mn_get_revsort(msgs) && thrd->nextthd)
+			  thrd = fetch_thread(stream, thrd->nextthd);
+			else if(!mn_get_revsort(msgs) && thrd->prevthd)
+			  thrd = fetch_thread(stream, thrd->prevthd);
+			else
+			  thrd = NULL;
+		    }
+
+		    if(thrd)
+		      n = thrd->rawno;
+
+		    t = mn_raw2m(msgs, n);
+		}
+	    }
+	}
+	else{		/* viewing a thread */
+
+	    lastn = mn_get_total(msgs);
+	    t = 1L;
+
+	    /* get top of thread */
+	    if(thrd && thrd->top && thrd->top != thrd->rawno)
+	      thrd = fetch_thread(stream, thrd->top);
+
+	    if(thrd){
+		if(mn_get_revsort(msgs))
+		  lastn = mn_raw2m(msgs, thrd->rawno);
+		else
+		  t = mn_raw2m(msgs, thrd->rawno);
+	    }
+
+	    n = 0L;
+
+	    /* n is the end of this thread */
+	    while(thrd){
+		n = mn_raw2m(msgs, thrd->rawno);
+		if(thrd->branch)
+		  thrd = fetch_thread(stream, thrd->branch);
+		else if(thrd->next)
+		  thrd = fetch_thread(stream, thrd->next);
+		else
+		  thrd = NULL;
+	    }
+
+	    if(n){
+		if(mn_get_revsort(msgs))
+		  t = n;
+		else
+		  lastn = n;
+	    }
+
+	    for(m = 0L, n = t; n <= min(current, lastn); n++)
+	      if(!msgline_hidden(stream, msgs, n, 0)
+		 && (++m % lines_per_page) == 1L)
+		t = n;
+	}
+
+	return(t);
+    }
+    else if(hidden = any_lflagged(msgs, MN_HIDE | MN_CHID)){
+
+	if(current < mn_get_total(msgs) / 2){
+	    t = 1L;
+	    m = 0L;
+	    for(n = 1L; n <= min(current, mn_get_total(msgs)); n++)
+	      if(!msgline_hidden(stream, msgs, n, 0)
+		 && (++m % lines_per_page) == 1L)
+	        t = n;
+	}
+	else{
+	    t = current+1L;
+	    m = mn_get_total(msgs)-hidden+1L;
+	    for(n = mn_get_total(msgs); n >= 1L && t > current; n--)
+	      if(!msgline_hidden(stream, msgs, n, 0)
+		 && (--m % lines_per_page) == 1L)
+	        t = n;
+	    
+	    if(t > current)
+	      t = 1L;
+	}
 
 	return(t);
     }
@@ -1985,12 +2760,25 @@ INDEX_COL_S **answer;
 {
     int column = 0;
 
+    /*
+     * Record the fact that SCORE appears in some index format. This
+     * is a heavy-handed approach. It will stick at 1 if any format ever
+     * contains score during this session. This is ok since it will just
+     * cause recalculation if wrong and these things rarely change much.
+     */
+    if(!ps_global->a_format_contains_score && format
+       && strstr(format, "SCORE")){
+	ps_global->a_format_contains_score = 1;
+	/* recalculate need for scores */
+	scores_are_used(SCOREUSE_INVALID);
+    }
+
     set_need_format_setup();
     /* if custom format is specified, try it, else go with default */
     if(!(format && *format && parse_index_format(format, answer))){
 	static INDEX_COL_S answer_default[] = {
 	    {iStatus, Fixed, 3},
-	    {iMessNo, WeCalculate },
+	    {iMessNo, WeCalculate},
 	    {iDate, Fixed, 6},
 	    {iFromTo, Percent, 33}, /* percent of rest */
 	    {iSize, WeCalculate},
@@ -2014,33 +2802,54 @@ INDEX_COL_S **answer;
 	      case iAtt:
 		(*answer)[column].req_width = 1;
 		break;
+	      case iYear2Digit:
+	      case iDay:
+	      case iMon:
+	      case iDay2Digit:
+	      case iMon2Digit:
+		(*answer)[column].req_width = 2;
+		break;
 	      case iStatus:
 	      case iMessNo:
 	      case iMonAbb:
+	      case iInit:
+	      case iDayOfWeekAbb:
 		(*answer)[column].req_width = 3;
+		break;
+	      case iYear:
+	      case iDayOrdinal:
+		(*answer)[column].req_width = 4;
 		break;
 	      case iTime24:
 	      case iTimezone:
+	      case iSizeNarrow:
 		(*answer)[column].req_width = 5;
 		break;
 	      case iFStatus:
 	      case iIStatus:
 	      case iDate:
+	      case iScore:
 		(*answer)[column].req_width = 6;
 		break;
 	      case iTime12:
+	      case iSTime:
+	      case iKSize:
+	      case iSize:
 		(*answer)[column].req_width = 7;
 		break;
 	      case iS1Date:
 	      case iS2Date:
 	      case iS3Date:
 	      case iS4Date:
-	      case iSize:
 	      case iDateIsoS:
+	      case iSizeComma:
 		(*answer)[column].req_width = 8;
 		break;
 	      case iDescripSize:
 	      case iSDate:
+	      case iSDateTime:
+	      case iMonLong:
+	      case iDayOfWeek:
 		(*answer)[column].req_width = 9;
 		break;
 	      case iDateIso:
@@ -2048,6 +2857,9 @@ INDEX_COL_S **answer;
 		break;
 	      case iLDate:
 		(*answer)[column].req_width = 12;
+		break;
+	      case iRDate:
+		(*answer)[column].req_width = 16;
 		break;
 	    }
 	}
@@ -2063,11 +2875,15 @@ static INDEX_PARSE_T itokens[] = {
     {"FROMORTO",	iFromTo,	FOR_INDEX},
     {"FROMORTONOTNEWS",	iFromToNotNews,	FOR_INDEX},
     {"SIZE",		iSize,		FOR_INDEX},
+    {"SIZECOMMA",	iSizeComma,	FOR_INDEX},
+    {"SIZENARROW",	iSizeNarrow,	FOR_INDEX},
+    {"KSIZE",		iKSize,		FOR_INDEX},
     {"SUBJECT",		iSubject,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"FULLSTATUS",	iFStatus,	FOR_INDEX},
     {"IMAPSTATUS",	iIStatus,	FOR_INDEX},
     {"DESCRIPSIZE",	iDescripSize,	FOR_INDEX},
     {"ATT",		iAtt,		FOR_INDEX},
+    {"SCORE",		iScore,		FOR_INDEX},
     {"LONGDATE",	iLDate,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"SHORTDATE1",	iS1Date,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"SHORTDATE2",	iS2Date,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
@@ -2076,10 +2892,14 @@ static INDEX_PARSE_T itokens[] = {
     {"DATEISO",		iDateIso,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"SHORTDATEISO",	iDateIsoS,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"SMARTDATE",	iSDate,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"SMARTTIME",	iSTime,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"SMARTDATETIME",	iSDateTime,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"TIME24",		iTime24,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"TIME12",		iTime12,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"TIMEZONE",	iTimezone,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"MONTHABBREV",	iMonAbb,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAYOFWEEKABBREV",	iDayOfWeekAbb,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAYOFWEEK",	iDayOfWeek,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"FROM",		iFrom,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"TO",		iTo,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"SENDER",		iSender,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
@@ -2091,17 +2911,18 @@ static INDEX_PARSE_T itokens[] = {
     {"RECIPSANDNEWS",	iRecipsAndNews,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"NEWSANDRECIPS",	iNewsAndRecips,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"MSGID",		iMsgID,		FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"DAYDATE",		iRDate,		FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"DAY",		iDay,		FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"DAYORDINAL",	iDayOrdinal,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"DAY2DIGIT",	iDay2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"MONTHLONG",	iMonLong,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"MONTH",		iMon,		FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"MONTH2DIGIT",	iMon2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"YEAR",		iYear,		FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"YEAR2DIGIT",	iYear2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"ADDRESS",		iAddress,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"MAILBOX",		iMailbox,	FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAYDATE",		iRDate,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAY",		iDay,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAYORDINAL",	iDayOrdinal,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"DAY2DIGIT",	iDay2Digit,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"MONTHLONG",	iMonLong,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"MONTH",		iMon,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"MONTH2DIGIT",	iMon2Digit,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"YEAR",		iYear,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"YEAR2DIGIT",	iYear2Digit,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"ADDRESS",		iAddress,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"MAILBOX",		iMailbox,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"INIT",		iInit,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"CURDATE",		iCurDate,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"CURDATEISO",	iCurDateIso,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"CURDATEISOS",	iCurDateIsoS,	FOR_REPLY_INTRO|FOR_TEMPLATE},
@@ -2181,7 +3002,7 @@ INDEX_COL_S **answer;
 	    dprint(1, (debugfile,
 		       "parse_index_format: unrecognized token: %s\n", q));
 	    q_status_message1(SM_ORDER | SM_DING, 0, 3,
-			      "Unrecognized string in index-format: %s", q);
+			      "Unrecognized string in index-format: %.200s", q);
 	    continue;
 	}
 
@@ -2192,7 +3013,7 @@ INDEX_COL_S **answer;
 	if(*p == '('){
 	    p++;
 	    q = p;
-	    while(p && *p && isdigit((unsigned char)*p))
+	    while(p && *p && isdigit((unsigned char) *p))
 	      p++;
 	    
 	    if(p && *p && *p == ')' && p > q){
@@ -2267,18 +3088,48 @@ redraw_index_body()
 }
 
 
+/*
+ * These types are basically fixed in width.
+ * The order is slightly significant. The ones towards the front of the
+ * list get space allocated sooner than the ones at the end of the list.
+ */
+static IndexColType fixed_ctypes[] = {
+    iMessNo, iStatus, iFStatus, iIStatus, iDate, iSDate, iSDateTime,
+    iSTime, iLDate,
+    iS1Date, iS2Date, iS3Date, iS4Date, iDateIso, iDateIsoS,
+    iSize, iSizeComma, iSizeNarrow, iKSize, iDescripSize,
+    iAtt, iTime24, iTime12, iTimezone, iMonAbb, iYear, iYear2Digit,
+    iDay2Digit, iMon2Digit, iDayOfWeekAbb, iScore
+};
+
+
+int
+ctype_is_fixed_length(ctype)
+    IndexColType ctype;
+{
+    int j;
+
+    for(j = 0; ; j++){
+	if(j >= sizeof(fixed_ctypes)/sizeof(*fixed_ctypes))
+	  break;
+    
+	if(ctype == fixed_ctypes[j])
+	  return 1;
+    }
+
+    return 0;
+}
+    
 
 /*----------------------------------------------------------------------
       Setup the widths of the various columns in the index display
-
-   Args: news      -- mail stream is news
-	 max_msgno -- max message number in mail stream
  ----*/
 void
-setup_header_widths()
+setup_index_header_widths()
 {
     int		 j, columns, some_to_calculate;
     int		 space_left, screen_width, width, fix, col, scol, altcol;
+    int          pcol, pluscol;
     int		 keep_going, tot_pct, was_sl;
     long         max_msgno;
     WidthType	 wtype;
@@ -2286,7 +3137,7 @@ setup_header_widths()
 
     max_msgno = mn_get_total(ps_global->msgmap);
 
-    dprint(8, (debugfile, "=== setup_header_widths(%ld) ===\n",max_msgno));
+    dprint(8, (debugfile, "=== setup_index_header_widths() ===\n"));
 
     clear_icache_flags();
     screen_width = ps_global->ttyo->screen_cols;
@@ -2303,24 +3154,7 @@ setup_header_widths()
 	cdesc->ctype != iNothing;
 	cdesc++){
 
-	/* These aren't included in nr mode */
-	if(ps_global->nr_mode && (cdesc->ctype == iFromTo ||
-				  cdesc->ctype == iFromToNotNews ||
-				  cdesc->ctype == iFrom ||
-				  cdesc->ctype == iSender ||
-				  cdesc->ctype == iCc ||
-				  cdesc->ctype == iRecips ||
-				  cdesc->ctype == iNews ||
-				  cdesc->ctype == iToAndNews ||
-				  cdesc->ctype == iNewsAndTo ||
-				  cdesc->ctype == iRecipsAndNews ||
-				  cdesc->ctype == iNewsAndRecips ||
-				  cdesc->ctype == iTo)){
-	    cdesc->req_width = 0;
-	    cdesc->width = 0;
-	    cdesc->wtype = Fixed;
-	}
-	else if(cdesc->wtype == Fixed){
+	if(cdesc->wtype == Fixed){
 	  cdesc->width = cdesc->req_width;
 	  if(cdesc->width > 0)
 	    columns++;
@@ -2340,107 +3174,138 @@ setup_header_widths()
 
     space_left -= (columns - 1); /* space between columns */
 
+    /*
+     * Set the actual lengths for the fixed width fields and set up
+     * the left or right adjustment for everything.
+     * There should be a case setting actual_length for all of the types
+     * in fixed_ctypes.
+     */
     for(cdesc = ps_global->index_disp_format;
 	cdesc->ctype != iNothing;
 	cdesc++){
+
 	wtype = cdesc->wtype;
-	if(wtype != WeCalculate && wtype != Percent && cdesc->width == 0)
-	  continue;
 
-	switch(cdesc->ctype){
-	  case iStatus:
-	  case iMonAbb:
-	    cdesc->actual_length = 3;
-	    cdesc->adjustment = Left;
-	    break;
+	if(wtype == WeCalculate || wtype == Percent || cdesc->width != 0){
+	    if(ctype_is_fixed_length(cdesc->ctype)){
+		switch(cdesc->ctype){
+		  case iAtt:
+		    cdesc->actual_length = 1;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iTime24:
-	  case iTimezone:
-	    cdesc->actual_length = 5;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iYear2Digit:
+		  case iDay2Digit:
+		  case iMon2Digit:
+		    cdesc->actual_length = 2;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iFStatus:
-	  case iIStatus:
-	  case iDate:
-	    cdesc->actual_length = 6;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iStatus:
+		  case iMonAbb:
+		  case iDayOfWeekAbb:
+		    cdesc->actual_length = 3;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iTime12:
-	    cdesc->actual_length = 7;
-	    cdesc->adjustment = Right;
-	    break;
+		  case iMessNo:
+		    set_format_includes_msgno();
+		    if(max_msgno < 1000)
+		      cdesc->actual_length = 3;
+		    else if(max_msgno < 10000)
+		      cdesc->actual_length = 4;
+		    else if(max_msgno < 100000)
+		      cdesc->actual_length = 5;
+		    else
+		      cdesc->actual_length = 6;
 
-	  case iLDate:
-	    cdesc->actual_length = 12;
-	    cdesc->adjustment = Left;
-	    break;
+		    cdesc->adjustment = Right;
+		    break;
 
-	  case iS1Date:
-	  case iS2Date:
-	  case iS3Date:
-	  case iS4Date:
-	  case iDateIsoS:
-	    cdesc->actual_length = 8;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iYear:
+		    cdesc->actual_length = 4;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iSDate:
-	    set_format_includes_smartdate();
-	    cdesc->actual_length = 9;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iTime24:
+		  case iTimezone:
+		    cdesc->actual_length = 5;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iDateIso:
-	    cdesc->actual_length = 10;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iSizeNarrow:
+		    cdesc->actual_length = 5;
+		    cdesc->adjustment = Right;
+		    break;
 
-	  case iAtt:
-	    cdesc->actual_length = 1;
-	    cdesc->adjustment = Left;
-	    break;
+		  case iFStatus:
+		  case iIStatus:
+		  case iDate:
+		    cdesc->actual_length = 6;
+		    cdesc->adjustment = Left;
+		    break;
 
-	  case iFromTo:
-	  case iFromToNotNews:
-	  case iFrom:
-	  case iSender:
-	  case iTo:
-	  case iCc:
-	  case iRecips:
-	  case iNews:
-	  case iToAndNews:
-	  case iNewsAndTo:
-	  case iRecipsAndNews:
-	  case iNewsAndRecips:
-	  case iSubject:
-	    cdesc->adjustment = Left;
-	    break;
+		  case iScore:
+		    cdesc->actual_length = 6;
+		    cdesc->adjustment = Right;
+		    break;
 
-	  case iMessNo:
-	    set_format_includes_msgno();
-	    if(max_msgno < 1000)
-	      cdesc->actual_length = 3;
-	    else if(max_msgno < 10000)
-	      cdesc->actual_length = 4;
-	    else if(max_msgno < 100000)
-	      cdesc->actual_length = 5;
+		  case iTime12:
+		  case iSize:
+		  case iKSize:
+		    cdesc->actual_length = 7;
+		    cdesc->adjustment = Right;
+		    break;
+
+		  case iSTime:
+		    set_format_includes_smartdate();
+		    cdesc->actual_length = 7;
+		    cdesc->adjustment = Left;
+		    break;
+
+		  case iS1Date:
+		  case iS2Date:
+		  case iS3Date:
+		  case iS4Date:
+		  case iDateIsoS:
+		    cdesc->actual_length = 8;
+		    cdesc->adjustment = Left;
+		    break;
+
+		  case iSizeComma:
+		    cdesc->actual_length = 8;
+		    cdesc->adjustment = Right;
+		    break;
+
+		  case iSDate:
+		  case iSDateTime:
+		    set_format_includes_smartdate();
+		    cdesc->actual_length = 9;
+		    cdesc->adjustment = Left;
+		    break;
+
+		  case iDescripSize:
+		    cdesc->actual_length = 9;
+		    cdesc->adjustment = Right;
+		    break;
+
+		  case iDateIso:
+		    cdesc->actual_length = 10;
+		    cdesc->adjustment = Left;
+		    break;
+
+		  case iLDate:
+		    cdesc->actual_length = 12;
+		    cdesc->adjustment = Left;
+		    break;
+		  
+		  default:
+		    panic("Unhandled fixed case in setup_index_header");
+		    break;
+		}
+	    }
 	    else
-	      cdesc->actual_length = 6;
-
-	    cdesc->adjustment = Right;
-	    break;
-
-	  case iSize:
-	    cdesc->actual_length = 8;
-	    cdesc->adjustment = Right;
-	    break;
-
-	  case iDescripSize:
-	    cdesc->actual_length = 9;
-	    cdesc->adjustment = Right;
-	    break;
+	      cdesc->adjustment = Left;
 	}
     }
 
@@ -2448,7 +3313,9 @@ setup_header_widths()
     for(cdesc = ps_global->index_disp_format;
 	cdesc->ctype != iNothing;
 	cdesc++)
-      if(cdesc->ctype == iSize || cdesc->ctype == iDescripSize){
+      if(cdesc->ctype == iSize || cdesc->ctype == iKSize ||
+         cdesc->ctype == iSizeNarrow ||
+	 cdesc->ctype == iSizeComma || cdesc->ctype == iDescripSize){
 	  if(cdesc->actual_length == 0){
 	      if((fix=cdesc->width) > 0){ /* had this reserved */
 		  cdesc->width = 0;
@@ -2462,21 +3329,18 @@ setup_header_widths()
     /*
      * Calculate the field widths that are basically fixed in width.
      * Do them in this order in case we don't have enough space to go around.
+     * The set of fixed_ctypes here is the same as the set where we
+     * set the actual_lengths above.
      */
     for(j = 0; space_left > 0 && some_to_calculate; j++){
-      static IndexColType targetctype[] = {
-	iMessNo, iStatus, iFStatus, iIStatus, iDate, iSDate, iLDate,
-	iS1Date, iS2Date, iS3Date, iS4Date, iDateIso, iDateIsoS,
-	iSize, iDescripSize, iAtt, iTime24, iTime12, iTimezone, iMonAbb
-      };
 
-      if(j >= sizeof(targetctype)/sizeof(*targetctype))
+      if(j >= sizeof(fixed_ctypes)/sizeof(*fixed_ctypes))
 	break;
 
       for(cdesc = ps_global->index_disp_format;
 	  cdesc->ctype != iNothing && space_left > 0 && some_to_calculate;
 	  cdesc++)
-	if(cdesc->ctype == targetctype[j] && cdesc->wtype == WeCalculate){
+	if(cdesc->ctype == fixed_ctypes[j] && cdesc->wtype == WeCalculate){
 	    some_to_calculate--;
 	    fix = min(cdesc->actual_length - cdesc->width, space_left);
 	    cdesc->width += fix;
@@ -2491,16 +3355,52 @@ setup_header_widths()
      */
     if(space_left > 0){
       if(some_to_calculate){
+	int tot_requested = 0;
+
+	/*
+	 * Requests are treated as percent of screen width. See if they
+	 * will all fit. If not, trim them back proportionately.
+	 */
 	for(cdesc = ps_global->index_disp_format;
-	    cdesc->ctype != iNothing && space_left > 0;
+	    cdesc->ctype != iNothing;
 	    cdesc++){
 	  if(cdesc->wtype == Percent){
 	      /* The 2, 200, and +100 are because we're rounding */
 	      fix = ((2*cdesc->req_width *
 		      (screen_width-(columns-1)))+100) / 200;
-	      fix = min(fix, space_left);
-	      cdesc->width += fix;
-	      space_left -= fix;
+	      tot_requested += fix;
+	  }
+	}
+
+	if(tot_requested > space_left){
+	  int multiplier = (100 * space_left) / tot_requested;
+
+	  for(cdesc = ps_global->index_disp_format;
+	      cdesc->ctype != iNothing && space_left > 0;
+	      cdesc++){
+	    if(cdesc->wtype == Percent){
+	        /* The 2, 200, and +100 are because we're rounding */
+	        fix = ((2*cdesc->req_width *
+		        (screen_width-(columns-1)))+100) / 200;
+		fix = (2 * fix * multiplier + 100) / 200;
+	        fix = min(fix, space_left);
+	        cdesc->width += fix;
+	        space_left -= fix;
+	    }
+	  }
+	}
+	else{
+	  for(cdesc = ps_global->index_disp_format;
+	      cdesc->ctype != iNothing && space_left > 0;
+	      cdesc++){
+	    if(cdesc->wtype == Percent){
+	        /* The 2, 200, and +100 are because we're rounding */
+	        fix = ((2*cdesc->req_width *
+		        (screen_width-(columns-1)))+100) / 200;
+	        fix = min(fix, space_left);
+	        cdesc->width += fix;
+	        space_left -= fix;
+	    }
 	  }
 	}
       }
@@ -2535,20 +3435,7 @@ setup_header_widths()
       for(cdesc = ps_global->index_disp_format;
 	  cdesc->ctype != iNothing && space_left > 0;
 	  cdesc++){
-	if(cdesc->wtype == WeCalculate &&
-	  (cdesc->ctype == iFromTo ||
-	   cdesc->ctype == iFromToNotNews ||
-	   cdesc->ctype == iFrom ||
-	   cdesc->ctype == iSender ||
-	   cdesc->ctype == iTo ||
-	   cdesc->ctype == iCc ||
-	   cdesc->ctype == iRecips ||
-	   cdesc->ctype == iNews ||
-	   cdesc->ctype == iToAndNews ||
-	   cdesc->ctype == iNewsAndTo ||
-	   cdesc->ctype == iRecipsAndNews ||
-	   cdesc->ctype == iNewsAndRecips ||
-	   cdesc->ctype == iSubject)){
+	if(cdesc->wtype == WeCalculate && !ctype_is_fixed_length(cdesc->ctype)){
 	  keep_going++;
 	  cdesc->width++;
 	  space_left--;
@@ -2567,20 +3454,7 @@ setup_header_widths()
       for(cdesc = ps_global->index_disp_format;
 	  cdesc->ctype != iNothing && space_left > 0;
 	  cdesc++){
-	if(cdesc->wtype == Percent &&
-	  (cdesc->ctype == iFromTo ||
-	   cdesc->ctype == iFromToNotNews ||
-	   cdesc->ctype == iFrom ||
-	   cdesc->ctype == iSender ||
-	   cdesc->ctype == iTo ||
-	   cdesc->ctype == iCc ||
-	   cdesc->ctype == iRecips ||
-	   cdesc->ctype == iNews ||
-	   cdesc->ctype == iToAndNews ||
-	   cdesc->ctype == iNewsAndTo ||
-	   cdesc->ctype == iRecipsAndNews ||
-	   cdesc->ctype == iNewsAndRecips ||
-	   cdesc->ctype == iSubject)){
+	if(cdesc->wtype == Percent && !ctype_is_fixed_length(cdesc->ctype)){
 	  keep_going++;
 	  cdesc->width++;
 	  space_left--;
@@ -2606,7 +3480,7 @@ setup_header_widths()
     col = 0;
     scol = -1;
     altcol = -1;
-    /* figure out what column is start of status field */
+    /* figure out which column is start of status field */
     for(cdesc = ps_global->index_disp_format;
 	cdesc->ctype != iNothing;
 	cdesc++){
@@ -2641,8 +3515,63 @@ setup_header_widths()
 	  scol = altcol;
     }
 
-    if(current_index_state)
-      current_index_state->status_col = scol;
+    col = 0;
+    pluscol = -1;
+    /* figure out which column to use for threading '+' */
+    if(THREADING()
+       && ps_global->thread_disp_style != THREAD_NONE
+       && ps_global->VAR_THREAD_MORE_CHAR[0]
+       && ps_global->VAR_THREAD_EXP_CHAR[0])
+      for(cdesc = ps_global->index_disp_format;
+	cdesc->ctype != iNothing;
+	cdesc++){
+	width = cdesc->width;
+	if(width == 0)
+	  continue;
+
+	/* space between columns */
+	if(col > 0)
+	  col++;
+
+	if(cdesc->ctype == iSubject
+	   && (ps_global->thread_disp_style == THREAD_STRUCT
+	       || ps_global->thread_disp_style == THREAD_MUTTLIKE
+	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ1
+	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ2)){
+	    pluscol = col;
+	    break;
+	}
+
+	if((cdesc->ctype == iFrom
+	    || cdesc->ctype == iFromToNotNews
+	    || cdesc->ctype == iFromTo
+	    || cdesc->ctype == iAddress
+	    || cdesc->ctype == iMailbox)
+	   && (ps_global->thread_disp_style == THREAD_INDENT_FROM1
+	       || ps_global->thread_disp_style == THREAD_INDENT_FROM2
+	       || ps_global->thread_disp_style == THREAD_STRUCT_FROM)){
+	    pluscol = col;
+	    break;
+	}
+
+	col += width;
+      }
+
+    if(current_index_state){
+	current_index_state->status_col = scol;
+	current_index_state->plus_col = pluscol;
+    }
+}
+
+
+void
+setup_thread_header_widths()
+{
+    clear_icache_flags();
+    if(current_index_state){
+	current_index_state->status_col = 0;
+	current_index_state->plus_col = -1;
+    }
 }
 
 
@@ -2657,21 +3586,33 @@ setup_header_widths()
           saves string in a cache for next call for same header
  ----*/
 HLINE_S *
-build_header_line(state, stream, msgmap, msgno)
+build_header_line(state, stream, msgmap, msgno, already_fetched)
     struct pine *state;
     MAILSTREAM  *stream;
     MSGNO_S     *msgmap;
     long         msgno;
+    int         *already_fetched;
 {
     HLINE_S	 *hline;
     MESSAGECACHE *mc;
-    long          n, i, cnt;
+    long          n, i, cnt, rawno, visible, limit = -1L;
 
     /* cache hit? */
-    if(*(hline = get_index_cache(msgno))->line && hline->color_lookup_done){
-        dprint(9, (debugfile, "Hit: Returning %p -> <%s (%d), %ld>\n",
-		   hline, hline->line, strlen(hline->line), hline->id));
-	return(hline);
+    if(THRD_INDX()){
+	hline = get_index_cache(msgno);
+	if(hline->tihl && *hline->tihl->line && hline->tihl->color_lookup_done){
+	    dprint(9, (debugfile, "Hitt: Returning %p -> <%s (%d), 0x%lx>\n",
+		       hline->tihl, hline->tihl->line,
+		       strlen(hline->tihl->line), hline->tihl->id));
+	    return(hline);
+	}
+    }
+    else{
+	if(*(hline = get_index_cache(msgno))->line && hline->color_lookup_done){
+	    dprint(9, (debugfile, "Hit: Returning %p -> <%s (%d), 0x%lx>\n",
+		       hline, hline->line, strlen(hline->line), hline->id));
+	    return(hline);
+	}
     }
 
     /*
@@ -2684,11 +3625,17 @@ build_header_line(state, stream, msgmap, msgno)
      * what we want rather than relying on linear lookahead sort
      * of prefetch...
      */
-    if(!*hline->line && index_in_overview(stream)){
+    if(!(already_fetched && *already_fetched) && index_in_overview(stream)
+       && ((THRD_INDX() && !(hline->tihl && *hline->tihl->line))
+           || (!THRD_INDX() && !*hline->line))){
 	char	     *uidseq, *p;
 	long	      uid, next;
 	int	      count;
 	MESSAGECACHE *mc;
+	PINETHRD_S   *thrd;
+
+	if(already_fetched)
+	  (*already_fetched)++;
 
 	/* clear sequence bits */
 	for(n = 1L; n <= stream->nmsgs; n++)
@@ -2699,22 +3646,107 @@ build_header_line(state, stream, msgmap, msgno)
 	 * NOTE: not set above because m2raw's cheaper
 	 * than raw2m for every message
 	 */
-	for(count=0, i=0, n = current_index_state->msg_at_top;
-	    i < current_index_state->lines_per_page;
-	    i++){
 
-	    if(n >= msgno
-	       && n <= mn_get_total(msgmap)
-	       && !*get_index_cache(n)->line
-	       && !(mc = mail_elt(stream,mn_m2raw(msgmap,n)))->private.msg.env){
-		mc->sequence = 1;
-		count++;
+	/*
+	 * Unfortunately, it is expensive to calculate visible pages
+	 * in thread index if we are zoomed, so we don't try.
+	 */
+	if(THRD_INDX() && any_lflagged(msgmap, MN_HIDE))
+	  visible = msgmap->visible_threads;
+	else if(THREADING() && state->viewing_a_thread){
+	    /*
+	     * We know that all visible messages in the thread are marked
+	     * with MN_CHID2.
+	     */
+	    for(visible = 0L, n = current_index_state->msg_at_top;
+		visible < (int) current_index_state->lines_per_page
+		&& n <= mn_get_total(msgmap); n++){
+
+		if(!get_lflag(stream, msgmap, n, MN_CHID2))
+		  break;
+		
+		if(!msgline_hidden(stream, msgmap, n, 0))
+		  visible++;
 	    }
+	    
+	}
+	else
+	  visible = mn_get_total(msgmap)
+		      - any_lflagged(msgmap, MN_HIDE|MN_CHID);
 
-	    /* find next n which is visible */
-	    while(++n <=  mn_get_total(msgmap) &&
-		  get_lflag(stream, msgmap, n, MN_HIDE))
-	      ;
+	limit = min(visible, current_index_state->lines_per_page);
+
+	if(THRD_INDX()){
+	    HLINE_S    *h;
+
+	    thrd = fetch_thread(stream,
+				mn_m2raw(msgmap,
+					 current_index_state->msg_at_top));
+	    /*
+	     * Loop through visible threads, marking them for fetching.
+	     * Stop at end of screen or sooner if we run out of visible
+	     * threads.
+	     */
+	    count = i = 0;
+	    while(thrd){
+		n = mn_raw2m(msgmap, thrd->rawno);
+		if(n >= msgno
+		   && n <= mn_get_total(msgmap)
+		   && !((h=get_index_cache(n)->tihl) && *h->line)){
+		    count += mark_msgs_in_thread(stream, thrd, msgmap);
+		}
+
+		if(++i >= limit)
+		  break;
+
+		/* find next thread which is visible */
+		do{
+		    if(mn_get_revsort(msgmap) && thrd->prevthd)
+		      thrd = fetch_thread(stream, thrd->prevthd);
+		    else if(!mn_get_revsort(msgmap) && thrd->nextthd)
+		      thrd = fetch_thread(stream, thrd->nextthd);
+		    else
+		      thrd = NULL;
+		} while(thrd
+			&& msgline_hidden(stream, msgmap,
+					  mn_raw2m(msgmap, thrd->rawno), 0));
+	    }
+	}
+	else{
+	    count = i = 0;
+	    n = current_index_state->msg_at_top;
+	    while(1){
+		if(n >= msgno
+		   && n <= mn_get_total(msgmap)
+		   && !*get_index_cache(n)->line){
+		    rawno = mn_m2raw(msgmap, n);
+		    /*
+		     * When a thread is expanded the msgline_hidden returns
+		     * 0 below and we are counting many of the messages
+		     * in a thread more than once. For example, if the
+		     * thread has 3 members, the first call marks 3,
+		     * then the next call marks the 2nd two, and the third
+		     * call marks the 3rd for the 3rd time. So the count
+		     * would be 6 instead of 3. The only implication is
+		     * that the alloc below is too big, so we just
+		     * don't care.
+		     */
+		    if(thrd = fetch_thread(stream, rawno))
+		      count += mark_msgs_in_thread(stream, thrd, msgmap);
+		    else if(!(mc = mail_elt(stream,rawno))->private.msg.env){
+			mc->sequence = 1;
+			count++;
+		    }
+		}
+
+		if(++i >= limit)
+		  break;
+
+		/* find next n which is visible */
+		while(++n <=  mn_get_total(msgmap)
+		      && msgline_hidden(stream, msgmap, n, 0))
+		  ;
+	    }
 	}
 
 	if(count){
@@ -2758,7 +3790,8 @@ build_header_line(state, stream, msgmap, msgno)
 	hline = get_index_cache(msgno);
     }
 
-    if(!*(hline->line)){
+    if((THRD_INDX() && !(hline->tihl && *hline->tihl->line))
+       || (!THRD_INDX() && !*hline->line)){
 	INDEXDATA_S idata;
 
 	/*
@@ -2769,7 +3802,6 @@ build_header_line(state, stream, msgmap, msgno)
 	idata.stream   = stream;
 	idata.msgno    = msgno;
 	idata.rawno    = mn_m2raw(msgmap, msgno);
-	idata.uid	   = mail_uid(stream, idata.rawno);
 	if(mc = mail_elt(stream, idata.rawno)){
 	    idata.size = mc->rfc822_size;
 	    index_data_env(&idata, mail_fetchenvelope(stream, idata.rawno));
@@ -2777,70 +3809,11 @@ build_header_line(state, stream, msgmap, msgno)
 	else
 	  idata.bogus = 2;
 
-	hline = format_index_line(&idata);
+	hline = (*format_index_line)(&idata);
     }
 
-#if defined(PRECALCULATE_SCORES)
-Instead of calculating the scores of all the visible messages, we may
-defer the calculation until we actually need it in match_pattern while
-looking up index line colors. That way we will only calculate those that we
-need. It could be less efficient if it turns out we needed them all
-afterall and we calculate them bits at a time instead of all at once.
-    /*
-     * Get message scores.
-     */
-    cnt = 0L;
-    if(scores_are_used(SCOREUSE_GET) & SCOREUSE_INCOLS){
-	/* see if any of the visible messages are missing a score */
-	for(i=0, n = current_index_state->msg_at_top;
-	    i < current_index_state->lines_per_page;
-	    i++){
-	    
-	    if(n >= msgno && n <= mn_get_total(msgmap) &&
-	       get_msg_score(stream, mn_m2raw(msgmap,n)) == SCORE_UNDEF){
-		cnt++;
-		break;
-	    }
-
-	    /* find next n which is visible */
-	    while(++n <=  mn_get_total(msgmap) &&
-		  get_lflag(stream, msgmap, n, MN_HIDE))
-	      ;
-	}
-    }
-
-    /* if any scores need to be calculated */
-    if(cnt){
-	SEARCHSET  *ss;
-	HLINE_S    *h;
-
-	/* clear sequence bits */
-	for(n = 1L; n <= stream->nmsgs; n++)
-	  mail_elt(stream, n)->sequence = 0;
-
-	/* build searchset of messages we need to find the score for */
-	for(cnt=0, i=0, n = current_index_state->msg_at_top;
-	    i < current_index_state->lines_per_page;
-	    i++){
-	    
-	    if(n >= msgno && n <= mn_get_total(msgmap) &&
-	       get_msg_score(stream, mn_m2raw(msgmap,n)) == SCORE_UNDEF){
-		mail_elt(stream,mn_m2raw(msgmap,n))->sequence = 1;
-		cnt++;
-	    }
-
-	    /* find next n which is visible */
-	    while(++n <=  mn_get_total(msgmap) &&
-		  get_lflag(stream, msgmap, n, MN_HIDE))
-	      ;
-	}
-
-	if((ss = build_searchset(stream)) != NULL){
-	    calculate_some_scores(stream, ss);
-	    mail_free_searchset(&ss);
-	}
-    }
-#endif
+    if(THRD_INDX() && hline->tihl)
+      hline->tihl->color_lookup_done = 1;
 
     /*
      * Look for a color for this line (and other lines in the current
@@ -2849,32 +3822,54 @@ afterall and we calculate them bits at a time instead of all at once.
      * cache created by the mail_fetch_overview above if it is a header
      * search.
      */
-    if(!hline->color_lookup_done){
+    if(!THRD_INDX() && !hline->color_lookup_done){
 	COLOR_PAIR *linecolor;
-	long        cnt;
 	SEARCHSET  *ss, *s;
 	HLINE_S    *h;
 	PAT_STATE  *pstate = NULL;
 
 	if(pico_usingcolor()){
+	    if(limit < 0L){
+		if(THREADING() && state->viewing_a_thread){
+		    for(visible = 0L, n = current_index_state->msg_at_top;
+			visible < (int) current_index_state->lines_per_page
+			&& n <= mn_get_total(msgmap); n++){
+
+			if(!get_lflag(stream, msgmap, n, MN_CHID2))
+			  break;
+			
+			if(!msgline_hidden(stream, msgmap, n, 0))
+			  visible++;
+		    }
+		    
+		}
+		else
+		  visible = mn_get_total(msgmap)
+			      - any_lflagged(msgmap, MN_HIDE|MN_CHID);
+
+		limit = min(visible, current_index_state->lines_per_page);
+	    }
 	    /* clear sequence bits */
 	    for(n = 1L; n <= stream->nmsgs; n++)
 	      mail_elt(stream, n)->sequence = 0;
 
-	    for(cnt=0, i=0, n = current_index_state->msg_at_top;
-		i < current_index_state->lines_per_page;
-		i++){
-		
+	    cnt = i = 0;
+	    n = current_index_state->msg_at_top;
+	    while(1){
 		if(n >= msgno
 		   && n <= mn_get_total(msgmap)
 		   && !(h=get_index_cache(n))->color_lookup_done){
+
 		    mail_elt(stream,mn_m2raw(msgmap,n))->sequence = 1;
 		    cnt++;
 		}
 
+		if(++i >= limit)
+		  break;
+
 		/* find next n which is visible */
-		while(++n <=  mn_get_total(msgmap) &&
-		      get_lflag(stream, msgmap, n, MN_HIDE))
+		while(++n <=  mn_get_total(msgmap)
+		      && msgline_hidden(stream, msgmap, n, 0))
 		  ;
 	    }
 
@@ -2892,14 +3887,18 @@ afterall and we calculate them bits at a time instead of all at once.
 	    while(cnt > 0L){
 		ss = build_searchset(stream);
 		if(ss){
-		    linecolor = get_index_line_color(stream, ss, &pstate);
+		    int colormatch;
+
+		    linecolor = NULL;
+		    colormatch = get_index_line_color(stream, ss, &pstate,
+						      &linecolor);
 
 		    /*
 		     * Assign this color to all matched msgno's and
 		     * turn off the sequence bit so we won't check
 		     * for them again.
 		     */
-		    if(linecolor){
+		    if(colormatch){
 			for(s = ss; s; s = s->next){
 			  for(n = s->first; n <= s->last; n++){
 			    if(mail_elt(stream, n)->searched){
@@ -2921,14 +3920,21 @@ afterall and we calculate them bits at a time instead of all at once.
 				if(i >= msgno){	/* it has to be */
 				    h = get_index_cache(i);
 				    h->color_lookup_done = 1;
-				    strcpy(h->linecolor.fg, linecolor->fg);
-				    strcpy(h->linecolor.bg, linecolor->bg);
+				    if(linecolor){
+					strcpy(h->linecolor.fg, linecolor->fg);
+					strcpy(h->linecolor.bg, linecolor->bg);
+				    }
+				    else{
+					h->linecolor.fg[0] = '\0';
+					h->linecolor.bg[0] = '\0';
+				    }
 				}
 			    }
 			  }
 			}
 
-			free_color_pair(&linecolor);
+			if(linecolor)
+			  free_color_pair(&linecolor);
 		    }
 		    else{
 			/* have to mark the rest of the lookups done */
@@ -2967,7 +3973,7 @@ afterall and we calculate them bits at a time instead of all at once.
 	  hline->color_lookup_done = 1;
     }
 
-    return(hline); /* Return formatted index data */
+    return(hline);		/* Return formatted index data */
 }
 
 
@@ -3008,14 +4014,22 @@ get_msg_score(stream, rawmsgno)
  * Set all the score values to undefined.
  */
 void
-clear_msg_scores(stream)
+clear_folder_scores(stream)
     MAILSTREAM *stream;
 {
-    int  score = SCORE_UNDEF;
     long n;
 
     for(n = 1L; n <= stream->nmsgs; n++)
-      set_msg_score(stream, n, score);
+      clear_msg_score(stream, n);
+}
+
+
+void
+clear_msg_score(stream, rawmsgno)
+    MAILSTREAM *stream;
+    long        rawmsgno;
+{
+    set_msg_score(stream, rawmsgno, SCORE_UNDEF);
 }
 
 
@@ -3108,6 +4122,7 @@ day_of_year(d)
 }
 
 
+
 /*----------------------------------------------------------------------
    Format a string summarizing the message header for index on screen
 
@@ -3119,19 +4134,21 @@ day_of_year(d)
 	  still suitable for display)
  ----*/
 HLINE_S *
-format_index_line(idata)
+format_index_index_line(idata)
     INDEXDATA_S	*idata;
 {
-    char          str_buf[MAXIFLDS][MAX_SCREEN_COLS+1], to_us, *field,
+    char          str_buf[MAXIFLDS][MAX_SCREEN_COLS+1], to_us, status, *field,
 		 *buffer, *s_tmp, *p, *str, *newsgroups;
     int		  width, offsets_set = 0, i, j, smallest, which_array = 0;
     int           plus_off = -1, imp_off = -1, del_off = -1, ans_off = -1,
-		  new_off = -1, rec_off = -1, uns_off = -1, status_offset = 0;
+		  new_off = -1, rec_off = -1, uns_off = -1, status_offset = 0,
+		  score, collapsed = 0;
     long	  l;
     HLINE_S	 *hline;
     BODY	 *body = NULL;
-    MESSAGECACHE *cache;
+    MESSAGECACHE *mc;
     ADDRESS      *addr, *toaddr, *ccaddr, *last_to;
+    PINETHRD_S   *thrd = NULL;
     INDEX_COL_S	 *cdesc = NULL;
     struct variable *vars = ps_global->vars;
 
@@ -3139,6 +4156,14 @@ format_index_line(idata)
 	       idata ? idata->msgno : -1, idata ? idata->rawno : -1));
 
     hline = get_index_cache(idata->msgno);
+
+    /* is this a collapsed thread index line? */
+    if(!idata->bogus && THREADING()){
+	thrd = fetch_thread(idata->stream, idata->rawno);
+	collapsed = thrd && thrd->next
+		    && get_lflag(idata->stream, NULL,
+				 idata->rawno, MN_COLL);
+    }
 
     /* calculate contents of the required fields */
     for(cdesc = ps_global->index_disp_format;
@@ -3159,33 +4184,50 @@ format_index_line(idata)
 	  else
 	    switch(cdesc->ctype){
 	      case iStatus:
-		to_us = ' ';
-		if(mail_elt(idata->stream, idata->rawno)->flagged)
-		  to_us = '*';		/* simple */
-		else if(!IS_NEWS(idata->stream)){
-		    for(addr = fetch_to(idata); addr; addr = addr->next)
-		      if(address_is_us(addr, ps_global)){
+		to_us = status = ' ';
+		if(collapsed){
+		    thrd = fetch_thread(idata->stream, idata->rawno);
+		    to_us = to_us_symbol_for_thread(idata->stream, thrd, 1);
+		    status = status_symbol_for_thread(idata->stream, thrd,
+						      cdesc->ctype);
+		}
+		else{
+		    if((mc=mail_elt(idata->stream, idata->rawno))->flagged)
+		      to_us = '*';		/* simple */
+		    else if(!IS_NEWS(idata->stream)){
+			for(addr = fetch_to(idata); addr; addr = addr->next)
+			  if(address_is_us(addr, ps_global)){
+			      to_us = '+';
+			      break;
+			  }
+		      
+			if(to_us == ' ' && resent_to_us(idata))
 			  to_us = '+';
-			  break;
-		      }
-		  
-		    if(to_us == ' ' && resent_to_us(idata))
-		      to_us = '+';
 
-		    if(to_us == ' ' && F_ON(F_MARK_FOR_CC,ps_global))
-		      for(addr = fetch_cc(idata); addr; addr = addr->next)
-			if(address_is_us(addr, ps_global)){
-			    to_us = '-';
-			    break;
-			}
+			if(to_us == ' ' && F_ON(F_MARK_FOR_CC,ps_global))
+			  for(addr = fetch_cc(idata); addr; addr = addr->next)
+			    if(address_is_us(addr, ps_global)){
+				to_us = '-';
+				break;
+			    }
+		    }
+
+		    status = (!idata->stream || !IS_NEWS(idata->stream)
+			      || F_ON(F_FAKE_NEW_IN_NEWS, ps_global))
+			       ? 'N' : ' ';
+
+		     if(mc->seen)
+		       status = ' ';
+
+		     if(mc->answered)
+		       status = 'A';
+
+		     if(mc->deleted)
+		       status = 'D';
 		}
 
-		if(idata->bogus)
-		  break;
+		sprintf(str, "%c %c", to_us, status);
 
-		sprintf(str, "%c %s", to_us,
-			status_string(idata->stream,
-				      mail_elt(idata->stream, idata->rawno)));
 		if(!offsets_set && pico_usingcolor()){
 		    offsets_set = 1;
 		    status_offset -= (width + 1);
@@ -3209,54 +4251,92 @@ format_index_line(idata)
 	      {
 		  char new, answered, deleted, flagged;
 
-		  to_us = ' ';
-		  if(!IS_NEWS(idata->stream)){
-		    for(addr = fetch_to(idata); addr; addr = addr->next)
-		      if(address_is_us(addr, ps_global)){
+		  if(collapsed){
+		      thrd = fetch_thread(idata->stream, idata->rawno);
+		      to_us = to_us_symbol_for_thread(idata->stream, thrd, 0);
+		  }
+		  else{
+		      to_us = ' ';
+		      if(!IS_NEWS(idata->stream)){
+			for(addr = fetch_to(idata); addr; addr = addr->next)
+			  if(address_is_us(addr, ps_global)){
+			      to_us = '+';
+			      break;
+			  }
+		      
+			if(to_us == ' ' && resent_to_us(idata))
 			  to_us = '+';
-			  break;
-		      }
-		  
-		    if(to_us == ' ' && resent_to_us(idata))
-		      to_us = '+';
 
-		    if(to_us == ' ' && F_ON(F_MARK_FOR_CC,ps_global))
-		      for(addr = fetch_cc(idata); addr; addr = addr->next)
-			if(address_is_us(addr, ps_global)){
-			    to_us = '-';
-			    break;
-			}
+			if(to_us == ' ' && F_ON(F_MARK_FOR_CC,ps_global))
+			  for(addr = fetch_cc(idata); addr; addr = addr->next)
+			    if(address_is_us(addr, ps_global)){
+				to_us = '-';
+				break;
+			    }
+		      }
 		  }
 
-		  if(idata->bogus)
-		    break;
+		  new = answered = deleted = flagged = ' ';
 
-		  new   = answered = deleted = flagged = ' ';
-		  cache = mail_elt(idata->stream, idata->rawno);
-		  if(!ps_global->nr_mode && cache->valid){
-		      if(cdesc->ctype == iIStatus){
-			  if(cache->recent)
-			    new = cache->seen ? 'R' : 'N';
-			  else if (!cache->seen)
-			    new = 'U';
-		      }
-		      else if(!cache->seen
-			      && (!IS_NEWS(idata->stream)
-			          || F_ON(F_FAKE_NEW_IN_NEWS, ps_global)))
-			new = 'N';
+		  if(collapsed){
+		      unsigned long save_branch, cnt, tot_in_thrd;
 
-		      if(cache->answered)
-			answered = 'A';
+		      /*
+		       * Branch is a sibling, not part of the thread, so
+		       * don't consider it when displaying this line.
+		       */
+		      save_branch = thrd->branch;
+		      thrd->branch = 0L;
 
-		      if(cache->deleted)
-			deleted = 'D';
+		      tot_in_thrd = count_flags_in_thread(idata->stream, thrd,
+							  F_NONE);
 
-		      if(cache->flagged)
+		      cnt = count_flags_in_thread(idata->stream, thrd, F_DEL);
+		      if(cnt)
+			deleted = (cnt == tot_in_thrd) ? 'D' : 'd';
+
+		      cnt = count_flags_in_thread(idata->stream, thrd, F_ANS);
+		      if(cnt)
+			answered = (cnt == tot_in_thrd) ? 'A' : 'a';
+
+		      /* no lower case *, same thing for some or all */
+		      if(count_flags_in_thread(idata->stream, thrd, F_FLAG))
 			flagged = '*';
+
+		      new = status_symbol_for_thread(idata->stream, thrd,
+						     cdesc->ctype);
+
+		      thrd->branch = save_branch;
+		  }
+		  else{
+		      mc = mail_elt(idata->stream, idata->rawno);
+		      if(mc->valid){
+			  if(cdesc->ctype == iIStatus){
+			      if(mc->recent)
+				new = mc->seen ? 'R' : 'N';
+			      else if (!mc->seen)
+				new = 'U';
+			  }
+			  else if(!mc->seen
+				  && (!IS_NEWS(idata->stream)
+				      || F_ON(F_FAKE_NEW_IN_NEWS, ps_global)))
+			    new = 'N';
+
+			  if(mc->answered)
+			    answered = 'A';
+
+			  if(mc->deleted)
+			    deleted = 'D';
+
+			  if(mc->flagged)
+			    flagged = '*';
+		      }
 		  }
 
+		  
 		  sprintf(str, "%c %c%c%c%c", to_us, flagged, new,
 			  answered, deleted);
+
 		  if(!offsets_set && pico_usingcolor()){
 		      offsets_set = 1;
 		      status_offset -= (width + 1);
@@ -3287,10 +4367,55 @@ format_index_line(idata)
 		sprintf(str, "%ld", idata->msgno);
 		break;
 
+	      case iScore:
+		score = get_msg_score(idata->stream, idata->rawno);
+		if(score == SCORE_UNDEF){
+		    SEARCHSET *ss = NULL;
+
+		    ss = mail_newsearchset();
+		    ss->first = ss->last = (unsigned long) idata->rawno;
+		    if(ss){
+			/*
+			 * This looks like it might be expensive to get the
+			 * score for each message when needed but it shouldn't
+			 * be too bad because we know we have the envelope
+			 * data cached. We can't calculate all of the scores
+			 * we need for the visible messages right here in
+			 * one fell swoop because we don't have the other
+			 * envelopes yet. And we can't get the other
+			 * envelopes at this point because we may be in
+			 * the middle of a c-client callback (pine_imap_env).
+			 * (Actually we could, because we know whether or
+			 * not we're in the callback because of the no_fetch
+			 * parameter.)
+			 * We have another problem if the score rules depend
+			 * on something other than envelope data. I guess they
+			 * only do that if they have an alltext (search the
+			 * text of the message) definition. So, we're going
+			 * to pass no_fetch to calculate_scores so that it
+			 * can return an error if we need the text data but
+			 * can't get it because of no_fetch. Setting bogus
+			 * will cause us to do the scores calculation later
+			 * when we are no longer in the callback.
+			 */
+			idata->bogus =
+			    (calculate_some_scores(current_index_state->stream,
+						   ss, idata->no_fetch) == 0)
+					? 1 : 0;
+			score = get_msg_score(idata->stream, idata->rawno);
+			mail_free_searchset(&ss);
+		    }
+		}
+
+		sprintf(str, "%d", score != SCORE_UNDEF ? score : 0);
+		break;
+
 	      case iDate:
 	      case iMonAbb:
 	      case iLDate:
 	      case iSDate:
+	      case iSTime:
+	      case iSDateTime:
 	      case iS1Date:
 	      case iS2Date:
 	      case iS3Date:
@@ -3300,48 +4425,27 @@ format_index_line(idata)
 	      case iTime24:
 	      case iTime12:
 	      case iTimezone:
+	      case iYear:
+	      case iYear2Digit:
+	      case iRDate:
+	      case iDay:
+	      case iDay2Digit:
+	      case iMon2Digit:
+	      case iDayOrdinal:
+	      case iMon:
+	      case iMonLong:
+	      case iDayOfWeekAbb:
+	      case iDayOfWeek:
 		date_str(fetch_date(idata), cdesc->ctype, 0, str);
 		break;
 
 	      case iFromTo:
 	      case iFromToNotNews:
-		if(!(addr = fetch_from(idata))
-		     || address_is_us(addr, ps_global)){
-		    if(width <= 4){
-			strcpy(str, "To: ");
-			str[width] = '\0';
-			break;
-		    }
-		    else{
-			if((field = ((addr = fetch_to(idata))
-				     ? "To"
-				     : (addr = fetch_cc(idata))
-				     ? "Cc"
-				     : NULL))
-			   && set_index_addr(idata, field, addr, "To: ",
-					     width, str))
-			  break;
-
-			if(cdesc->ctype == iFromTo &&
-			   (newsgroups = fetch_newsgroups(idata)) &&
-			   *newsgroups){
-			    sprintf(str, "To: %-*.*s", width-4, width-4,
-				    newsgroups);
-			    break;
-			}
-
-			/* else fall thru to From: */
-		    }
-		}
-		/* else fall thru to From: */
-
-		if(idata->bogus)
-		  break;
-
 	      case iFrom:
-		set_index_addr(idata, "From", fetch_from(idata),
-			       NULL, width, str);
-		break;
+	      case iAddress:
+	      case iMailbox:
+		from_str(cdesc->ctype, idata, width, str);
+	        break;
 
 	      case iTo:
 		if(((field = ((addr = fetch_to(idata))
@@ -3386,13 +4490,142 @@ format_index_line(idata)
 
 		break;
 
+	      case iInit:
+		{ADDRESS *addr;
+
+		 if((addr = fetch_from(idata)) && addr->personal){
+		    char *name, *initials = NULL, *dummy = NULL;
+
+			
+		    name = (char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
+						   SIZEOF_20KBUF,
+						   addr->personal, &dummy);
+		    if(dummy)
+		      fs_give((void **)&dummy);
+
+		    if(name == addr->personal){
+			strncpy(tmp_20k_buf, name, SIZEOF_20KBUF-1);
+			tmp_20k_buf[SIZEOF_20KBUF - 1] = '\0';
+			name = (char *) tmp_20k_buf;
+		    }
+
+		    if(name && *name){
+			initials = reply_quote_initials(name);
+			sprintf(str, "%-*.*s", width, width, initials);
+		    }
+		 }
+		}
+
+	        break;
+
 	      case iSize:
-		if((l = fetch_size(idata)) < 100000)
-		  sprintf(str, "(%s)", comatose(l));
-		else if(l < 10000000)
-		  sprintf(str, "(%sK)", comatose(l/1000));
+		/* 0 ... 9999 */
+		if((l = fetch_size(idata)) < 10*1000L)
+		  sprintf(str, "(%lu)", l);
+		/* 10K ... 999K */
+		else if(l < 1000L*1000L - 1000L/2){
+		    l = l/1000L + (l%1000L >= 1000L/2 ? 1L : 0L);
+		    sprintf(str, "(%luK)", l);
+		}
+		/* 1.0M ... 99.9M */
+		else if(l < 1000L*100L*1000L - 100L*1000L/2){
+		    l = l/(100L*1000L) + (l%(100L*1000L) >= (100*1000L/2)
+								? 1L : 0L);
+		    sprintf(str, "(%lu.%luM)", l/10L, l % 10L);
+		}
+		/* 100M ... 2000M */
+		else if(l <= 2*1000L*1000L*1000L){
+		    l = l/(1000L*1000L) + (l%(1000L*1000L) >= (1000L*1000L/2)
+								? 1L : 0L);
+		    sprintf(str, "(%luM)", l);
+		}
 		else
-		  strcpy(str, "(BIG!)");
+		  strcpy(str, "(HUGE!)");
+
+		break;
+
+	      case iSizeComma:
+		/* 0 ... 99,999 */
+		if((l = fetch_size(idata)) < 100*1000L)
+		  sprintf(str, "(%s)", comatose(l));
+		/* 100K ... 9,999K */
+		else if(l < 10L*1000L*1000L - 1000L/2){
+		    l = l/1000L + (l%1000L >= 1000L/2 ? 1L : 0L);
+		    sprintf(str, "(%sK)", comatose(l));
+		}
+		/* 10.0M ... 999.9M */
+		else if(l < 1000L*1000L*1000L - 100L*1000L/2){
+		    l = l/(100L*1000L) + (l%(100L*1000L) >= (100*1000L/2)
+								? 1L : 0L);
+		    sprintf(str, "(%lu.%luM)", l/10L, l % 10L);
+		}
+		/* 1,000M ... 2,000M */
+		else if(l <= 2*1000L*1000L*1000L){
+		    l = l/(1000L*1000L) + (l%(1000L*1000L) >= (1000L*1000L/2)
+								? 1L : 0L);
+		    sprintf(str, "(%sM)", comatose(l));
+		}
+		else
+		  strcpy(str, "(HUGE!)");
+
+		break;
+
+	      case iSizeNarrow:
+		/* 0 ... 999 */
+		if((l = fetch_size(idata)) < 1000L)
+		  sprintf(str, "(%lu)", l);
+		/* 1K ... 99K */
+		else if(l < 100L*1000L - 1000L/2){
+		    l = l/1000L + (l%1000L >= 1000L/2 ? 1L : 0L);
+		    sprintf(str, "(%luK)", l);
+		}
+		/* .1M ... .9M */
+		else if(l < 1000L*1000L - 100L*1000L/2){
+		    l = l/(100L*1000L) + (l%(100L*1000L) >= 100L*1000L/2
+								? 1L : 0L);
+		    sprintf(str, "(.%luM)", l);
+		}
+		/* 1M ... 99M */
+		else if(l < 1000L*100L*1000L - 1000L*1000L/2){
+		    l = l/(1000L*1000L) + (l%(1000L*1000L) >= (1000L*1000L/2)
+								? 1L : 0L);
+		    sprintf(str, "(%luM)", l);
+		}
+		/* .1G ... .9G */
+		else if(l < 1000L*1000L*1000L - 100L*1000L*1000L/2){
+		    l = l/(100L*1000L*1000L) + (l%(100L*1000L*1000L) >=
+					    (100L*1000L*1000L/2) ? 1L : 0L);
+		    sprintf(str, "(.%luG)", l);
+		}
+		/* 1G ... 2G */
+		else if(l <= 2*1000L*1000L*1000L){
+		    l = l/(1000L*1000L*1000L) + (l%(1000L*1000L*1000L) >=
+					    (1000L*1000L*1000L/2) ? 1L : 0L);
+		    sprintf(str, "(%luG)", l);
+		}
+		else
+		  strcpy(str, "(HUGE!)");
+
+		break;
+
+	      /* From Carl Jacobsen <carl@ucsd.edu> */
+	      case iKSize:
+		l = fetch_size(idata);
+		l = (l / 1024L) + (l % 1024L != 0 ? 1 : 0);
+
+		if(l < 1024L) {				/* 0k .. 1023k */
+		  sprintf(str, "(%luk)", l);
+
+		} else if (l < 100L * 1024L){		/* 1.0M .. 99.9M */
+		  sprintf(str, "(%lu.M)", (l * 10L) / 1024L);
+		  if ((p = strchr(str, '.')) != NULL) {
+		    p--; p[1] = p[0]; p[0] = '.';  /* swap last digit & . */
+		  }
+		} else if (l <= 2L * 1024L * 1024L) {	/* 100M .. 2048 */
+		  sprintf(str, "(%luM)", l / 1024L);
+		} else {
+		  strcpy(str, "(HUGE!)");
+		}
 
 		break;
 
@@ -3401,12 +4634,12 @@ format_index_line(idata)
 		  switch(body->type){
 		    case TYPETEXT:
 		    {
-			cache = mail_elt(idata->stream, idata->rawno);
-			if(cache->rfc822_size < 6000)
+			mc = mail_elt(idata->stream, idata->rawno);
+			if(mc->rfc822_size < 6000)
 			  strcpy(str, "(short  )");
-			else if(cache->rfc822_size < 25000)
+			else if(mc->rfc822_size < 25000)
 			  strcpy(str, "(medium )");
-			else if(cache->rfc822_size < 100000)
+			else if(mc->rfc822_size < 100000)
 			  strcpy(str, "(long   )");
 			else
 			  strcpy(str, "(huge   )");
@@ -3502,25 +4735,7 @@ format_index_line(idata)
 		break;
 
 	      case iSubject:
-		p = str;
-		if(ps_global->nr_mode){
-		    str[0] = ' ';
-		    str[1] = '\0';
-		    p++;
-		    width--;
-		}
-
-		if(s_tmp = fetch_subject(idata)){
-		    unsigned char *tmp;
-		    size_t len;
-		    len = strlen(s_tmp)+1;
-		    tmp = fs_get(len * sizeof(unsigned char));
-		    istrncpy(p,
-			     (char *) rfc1522_decode(tmp, len, s_tmp, NULL),
-			     width);
-		    fs_give((void **) &tmp);
-		}
-
+		subj_str(idata, width, str);
 		break;
 
 	      case iNews:
@@ -3641,6 +4856,7 @@ format_index_line(idata)
 		}
 
 		break;
+
 	    }
       }
 
@@ -3758,7 +4974,7 @@ format_index_line(idata)
 		/* swap */
 		tmp = hline->offs[j];
 		hline->offs[j] = hline->offs[smallest];
-		    hline->offs[smallest] = tmp;
+		hline->offs[smallest] = tmp;
 	    }
 	}
     }
@@ -3766,12 +4982,220 @@ format_index_line(idata)
     /* Truncate it to be sure not too wide */
     buffer[min(ps_global->ttyo->screen_cols, i_cache_width())] = '\0';
     hline->id = line_hash(buffer);
-    dprint(9, (debugfile, "INDEX(%p) -->%s<-- (%d), %ld>\n",
+    dprint(9, (debugfile, "INDEX(%p) -->%s<-- (%d), 0x%lx>\n",
 	       hline, hline->line, strlen(hline->line), hline->id));
 
     return(hline);
 }
 
+
+HLINE_S *
+format_thread_index_line(idata)
+    INDEXDATA_S	*idata;
+{
+    char         *p, *buffer;
+    int           thdlen, space_left, i;
+    HLINE_S	 *hline, *thline = NULL;
+    PINETHRD_S   *thrd;
+
+    dprint(8, (debugfile, "=== format_thread_index_line(%ld,%ld) ===\n",
+	       idata ? idata->msgno : -1, idata ? idata->rawno : -1));
+
+    space_left = ps_global->ttyo->screen_cols;
+
+    if(ps_global->msgmap->max_thrdno < 1000)
+      thdlen = 3;
+    else if(ps_global->msgmap->max_thrdno < 10000)
+      thdlen = 4;
+    else if(ps_global->msgmap->max_thrdno < 100000)
+      thdlen = 5;
+    else
+      thdlen = 6;
+
+    hline = get_index_cache(idata->msgno);
+
+    thrd = fetch_thread(idata->stream, idata->rawno);
+
+    if(!thrd)			/* can't happen? */
+      return(hline);
+    
+    hline->tihl = thline = get_tindex_cache(thrd->thrdno);
+
+    if(!thline)
+      return(hline);
+
+    for(i = 0; i < OFFS; i++)
+      thline->offs[i].offset = -1;
+
+    *(p = buffer = thline->line) = '\0';
+
+    if(space_left >= 3){
+	char to_us, status;
+
+	to_us = to_us_symbol_for_thread(idata->stream, thrd, 1);
+	status = status_symbol_for_thread(idata->stream, thrd, iStatus);
+
+	if(pico_usingcolor()){
+	    struct variable *vars = ps_global->vars;
+
+	    i = 0;
+	    if(to_us == '*'
+	       && VAR_IND_IMP_FORE_COLOR && VAR_IND_PLUS_BACK_COLOR){
+		thline->offs[i].offset = p - buffer;
+		strncpy(thline->offs[i].color.fg, VAR_IND_IMP_FORE_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[i].color.bg, VAR_IND_IMP_BACK_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+		if(F_ON(F_COLOR_LINE_IMPORTANT, ps_global)){
+		    strncpy(thline->linecolor.fg, VAR_IND_IMP_FORE_COLOR,
+			    MAXCOLORLEN);
+		    strncpy(thline->linecolor.bg, VAR_IND_IMP_BACK_COLOR,
+			    MAXCOLORLEN);
+		}
+	    }
+	    else if((to_us == '+' || to_us == '-')
+		    && VAR_IND_PLUS_FORE_COLOR && VAR_IND_PLUS_BACK_COLOR){
+		thline->offs[i].offset = p - buffer;
+		strncpy(thline->offs[i].color.fg, VAR_IND_PLUS_FORE_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[i].color.bg, VAR_IND_PLUS_BACK_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+	    }
+
+	    if(status == 'D'
+	       && VAR_IND_DEL_FORE_COLOR && VAR_IND_DEL_BACK_COLOR){
+		thline->offs[i].offset = p + 2 - buffer;
+		strncpy(thline->offs[i].color.fg, VAR_IND_DEL_FORE_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[i].color.bg, VAR_IND_DEL_BACK_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+	    }
+	    else if(status == 'N'
+		    && VAR_IND_NEW_FORE_COLOR && VAR_IND_NEW_BACK_COLOR){
+		thline->offs[i].offset = p + 2 - buffer;
+		strncpy(thline->offs[i].color.fg, VAR_IND_NEW_FORE_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[i].color.bg, VAR_IND_NEW_BACK_COLOR,
+			MAXCOLORLEN);
+		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+	    }
+	}
+
+	p[0] = to_us;
+	p[1] = ' ';
+
+	p[2] = status;
+	p += 3;
+	space_left -= 3;
+    }
+
+    if(space_left >= thdlen+1){
+	char threadnum[50];
+
+	*p++ = ' ';
+	space_left--;
+
+	threadnum[0] = '\0';
+	if(thrd->thrdno)
+	  sprintf(threadnum, "%ld", thrd->thrdno);
+
+	sprintf(p, "%*.*s", thdlen, thdlen, threadnum);
+	p += thdlen;
+	space_left -= thdlen;
+    }
+
+    if(space_left >= 7){
+	*p++ = ' ';
+	space_left--;
+	date_str(fetch_date(idata), iDate, 0, p);
+	p[6] = '\0';
+	if(strlen(p) < 6){
+	    char *q;
+
+	    for(q = p + strlen(p); q < p + 6; q++)
+	      *q = ' ';
+	}
+
+	p += 6;
+	space_left -= 6;
+    }
+
+    if(space_left > 3){
+	int   from_width, subj_width, bigthread_adjust;
+	long  in_thread;
+	char *subj_start;
+	char  from[MAX_SCREEN_COLS+1];
+	char *from_start;
+	char  tcnt[50];
+
+	*p++ = ' ';
+	space_left--;
+
+	in_thread = count_lflags_in_thread(idata->stream, thrd,
+					   ps_global->msgmap, MN_NONE);
+
+	sprintf(tcnt, "(%ld)", in_thread);
+	bigthread_adjust = max(0, strlen(tcnt) - 3);
+	
+	/* third of the rest */
+	from_start = p;
+	from_width = max((space_left-1)/3 - bigthread_adjust, 1);
+
+	/* the rest */
+	subj_start = p + from_width + 1;
+	subj_width = space_left - from_width - 1;
+
+	from[0] = '\0';
+	from_str(iFromTo, idata, from_width, from);
+	sprintf(from_start, "%-*.*s", from_width, from_width, from);
+
+	subj_start[-1] = ' ';
+
+	if(strlen(tcnt) > subj_width)
+	  tcnt[subj_width] = '\0';
+
+	strncpy(subj_start, tcnt, subj_width);
+	subj_width -= strlen(tcnt);
+	subj_start += strlen(tcnt);
+
+	if(subj_width > 0){
+	    *subj_start++ = ' ';
+	    subj_width--;
+	}
+
+	if(subj_width > 0){
+	    if(idata->bogus){
+		if(idata->bogus < 2)
+		  sprintf(subj_start, "%-*.*s", subj_width, subj_width,
+			  "[ No Message Text Available ]");
+	    }
+	    else{
+		char  subj[MAX_SCREEN_COLS+1];
+
+		subj[0] = '\0';
+		subj_str(idata, subj_width, subj);
+		sprintf(subj_start, "%-*.*s", subj_width, subj_width, subj);
+	    }
+	}
+    }
+    else if(space_left > 0)
+      sprintf(p, "%-*.*s", space_left, space_left, "");
+
+    /* Truncate it to be sure not too wide */
+    buffer[min(ps_global->ttyo->screen_cols, i_cache_width())] = '\0';
+    thline->id = line_hash(buffer);
+    dprint(9, (debugfile, "THDINDEX(%p) -->%s<-- (%d), 0x%lx>\n",
+	       thline, thline->line, strlen(thline->line), thline->id));
+
+    return(hline);
+}
 
 
 /*
@@ -3788,20 +5212,27 @@ format_index_line(idata)
  *                      so that next_pattern goes to the next one after the
  *                      ones we've already checked.
  *
- * Returns   The color that goes with the matched rule.
+ * Returns   0 if no match, 1 if a match.
+ *           The color that goes with the matched rule in returned_color.
+ *           It may be NULL, which indicates default.
  */
-COLOR_PAIR *
-get_index_line_color(stream, searchset, pstate)
+int
+get_index_line_color(stream, searchset, pstate, returned_color)
     MAILSTREAM *stream;
     SEARCHSET  *searchset;
     PAT_STATE **pstate;
+    COLOR_PAIR **returned_color;
 {
     PAT_S           *pat = NULL;
     long             rflags = ROLE_INCOL;
     COLOR_PAIR      *color = NULL;
+    int              match = 0;
     static PAT_STATE localpstate;
 
-    dprint(4, (debugfile, "get_index_line_color\n"));
+    dprint(7, (debugfile, "get_index_line_color\n"));
+
+    if(returned_color)
+      *returned_color = NULL;
 
     if(*pstate)
       pat = next_pattern(*pstate);
@@ -3817,17 +5248,26 @@ get_index_line_color(stream, searchset, pstate)
     if(*pstate){
     
 	/* Go through the possible roles one at a time until we get a match. */
-	while(!color && pat){
+	while(!match && pat){
 	    if(match_pattern(pat->patgrp, stream, searchset, NULL,
-			     get_msg_score))
-	      color = new_color_pair(pat->action->incol->fg,
-				     pat->action->incol->bg);
+			     get_msg_score, 0)){
+		if(!pat->action || pat->action->bogus)
+		  break;
+
+		match++;
+		if(pat->action && pat->action->incol)
+		  color = new_color_pair(pat->action->incol->fg,
+				         pat->action->incol->bg);
+	    }
 	    else
 	      pat = next_pattern(*pstate);
 	}
     }
 
-    return(color);
+    if(match && returned_color)
+      *returned_color = color;
+
+    return(match);
 }
 
 
@@ -3836,22 +5276,28 @@ get_index_line_color(stream, searchset, pstate)
  * mail elts. Careful, this function uses patterns so if the caller is using
  * patterns then the caller will probably have to reset the pattern functions.
  * That is, will have to call first_pattern again with the correct type.
+ *
+ * Args:     stream
+ *        searchset -- calculate scores for this set of messages
+ *         no_fetch -- we're in a callback from c-client, don't call c-client
+ *
+ * Returns   1 -- ok
+ *           0 -- error, because of no_fetch
  */
-void
-calculate_some_scores(stream, searchset)
+int
+calculate_some_scores(stream, searchset, no_fetch)
     MAILSTREAM *stream;
     SEARCHSET  *searchset;
 {
     PAT_S         *pat = NULL;
     PAT_STATE      pstate;
     char          *savebits;
-    int            newscore, score;
+    int            newscore, score, error = 0;
     long           rflags = ROLE_SCORE;
     long           n, i;
-    HLINE_S       *h;
     SEARCHSET     *s;
 
-    dprint(4, (debugfile, "calculate_some_scores\n"));
+    dprint(7, (debugfile, "calculate_some_scores\n"));
 
     if(nonempty_patterns(rflags, &pstate)){
 
@@ -3873,13 +5319,19 @@ calculate_some_scores(stream, searchset)
 		set_msg_score(stream, n, score);
 
 	    for(pat = first_pattern(&pstate);
-		pat;
+		!error && pat;
 		pat = next_pattern(&pstate)){
 
-		if(match_pattern(pat->patgrp, stream, searchset, NULL, NULL)){
+		switch(match_pattern(pat->patgrp, stream, searchset, NULL, NULL,
+				     no_fetch)){
+		  case 1:
+		    if(!pat->action || pat->action->bogus)
+		      break;
+
 		    newscore = pat->action->scoreval;
+
 		    for(s = searchset; s; s = s->next)
-		      for(n = s->first; n <= s->last; n++){
+		      for(n = s->first; n <= s->last; n++)
 			if(mail_elt(stream, n)->searched){
 			    if((score = get_msg_score(stream,n)) == SCORE_UNDEF)
 			      score = 0;
@@ -3887,7 +5339,15 @@ calculate_some_scores(stream, searchset)
 			    score += newscore;
 			    set_msg_score(stream, n, score);
 			}
-		    }
+
+		    break;
+		
+		  case 0:
+		    break;
+
+		  case -1:
+		    error++;
+		    break;
 		}
 	    }
 
@@ -3895,8 +5355,20 @@ calculate_some_scores(stream, searchset)
 	      mail_elt(stream, i)->searched = savebits[i];
 
 	    fs_give((void **)&savebits);
+
+	    if(error){
+		/*
+		 * Revert to undefined scores.
+		 */
+		score = SCORE_UNDEF;
+		for(s = searchset; s; s = s->next)
+		  for(n = s->first; n <= s->last; n++)
+		    set_msg_score(stream, n, score);
+	    }
 	}
     }
+
+    return(error ? 0 : 1);
 }
 
 
@@ -3912,7 +5384,11 @@ index_in_overview(stream)
     if(!(stream->mailbox && IS_REMOTE(stream->mailbox)))
       return(FALSE);			/* no point! */
 
-    if(stream->dtb && !strcmp(stream->dtb->name, "nntp"))
+    if(stream->dtb && !strcmp(stream->dtb->name, "nntp")){
+
+      if(THRD_INDX())
+        return(TRUE);
+
       for(cdesc = ps_global->index_disp_format;
 	  cdesc->ctype != iNothing;
 	  cdesc++)
@@ -3926,6 +5402,7 @@ index_in_overview(stream)
 	  default :
 	    break;
 	}
+    }
 
     return(TRUE);
 }
@@ -4253,7 +5730,6 @@ load_overview(stream, uid, obuf)
 	 * in a single RTT.
 	 */
 	idata.stream  = stream;
-	idata.uid     = uid;
 	idata.rawno   = mail_msgno(stream, uid);
 	idata.msgno   = mn_raw2m(ps_global->msgmap, idata.rawno);
 	idata.size    = obuf->optional.octets;
@@ -4261,11 +5737,20 @@ load_overview(stream, uid, obuf)
 	idata.date    = obuf->date;
 	idata.subject = obuf->subject;
 
-	hline = format_index_line(&idata);
-	if(idata.bogus)
-	  hline->line[0] = '\0';
-	else if(F_OFF(F_QUELL_NEWS_ENV_CB, ps_global))
-	  paint_index_hline(stream, idata.msgno, hline);
+	hline = (*format_index_line)(&idata);
+	if(idata.bogus && hline){
+	    if(THRD_INDX()){
+		if(hline->tihl)
+		  hline->tihl->line[0] = '\0';
+	    }
+	    else
+	      hline->line[0] = '\0';
+	}
+	else if(F_OFF(F_QUELL_NEWS_ENV_CB, ps_global)){
+	    if((!THRD_INDX() || (hline && hline->tihl))
+	       && !msgline_hidden(stream, ps_global->msgmap, idata.msgno, 0))
+	      paint_index_hline(stream, idata.msgno, hline);
+	}
     }
 }
 
@@ -4286,7 +5771,7 @@ set_index_addr(idata, field, addr, prefix, width, s)
 
     for(atmp = addr; idata->stream && atmp; atmp = atmp->next)
       if(atmp->host && atmp->host[0] == '.'){
-	  char *p, *h, *fields[2];
+	  char *p, *pref, *h, *fields[2];
 	  
 	  if(idata->no_fetch){
 	      idata->bogus = 1;
@@ -4301,6 +5786,15 @@ set_index_addr(idata, field, addr, prefix, width, s)
 	      for(p = h + strlen(field) + 1;
 		  *p && isspace((unsigned char)*p); p++)
 		;
+
+	      /* add prefix */
+	      for(pref = prefix; pref && *pref; pref++)
+		if(width){
+		    *s++ = *pref;
+		    width--;
+		}
+		else
+		  break;
 
 	      while(width--)
 		if(*p == '\015' || *p == '\012')
@@ -4412,6 +5906,7 @@ date_str(datesrc, type, v, str)
     int		hr12;
     int         curtype;
     struct	date d;
+#define TODAYSTR "Today"
 
     curtype = (type == iCurDate ||
 	       type == iCurDateIso ||
@@ -4433,6 +5928,7 @@ date_str(datesrc, type, v, str)
 
     switch(type){
       case iSDate:
+      case iSDateTime:
       case iLDate:
       case iYear:
       case iRDate:
@@ -4573,6 +6069,12 @@ date_str(datesrc, type, v, str)
 		(d.wkday != -1) ? ", " : "",
 		day, monabb, year4);
 	break;
+      case iDayOfWeekAbb:
+	strcpy(str, (d.wkday >= 0 && d.wkday <= 6) ? week_abbrev(d.wkday) : "");
+	break;
+      case iDayOfWeek:
+	strcpy(str, (d.wkday >= 0 && d.wkday <= 6) ? day_name[d.wkday] : "");
+	break;
       case iYear:
 	strcpy(str, year4);
 	break;
@@ -4686,6 +6188,7 @@ date_str(datesrc, type, v, str)
 		    "  ");
 	break;
       case iSDate:
+      case iSDateTime:
 	{ struct date now, last_day;
 	  char        dbuf[200];
 	  int         msg_day_of_year, now_day_of_year, today;
@@ -4741,7 +6244,7 @@ date_str(datesrc, type, v, str)
 		    sprintf(str, "%3s %4s!", monabb, year4);
 	      }
 	      else if(diff == 0)
-		strcpy(str, "Today");
+		strcpy(str, TODAYSTR);
 	      else if(diff == 1)
 		strcpy(str, "Yesterday");
 	      else if(diff > 1 && diff < 6)
@@ -4800,21 +6303,516 @@ date_str(datesrc, type, v, str)
 		sprintf(str, "%3s %2s", monabb, day);
 	  }
 	}
+
+	break;
+    }
+    
+    if(type == iSTime ||
+       (type == iSDateTime && !strcmp(str, TODAYSTR))){
+	struct date now, last_day;
+	char        dbuf[200], *Ddd, *ampm;
+	int         daydiff;
+
+	str[0] = '\0';
+	rfc822_date(dbuf);
+	parse_date(dbuf, &now);
+
+	/* Figure out if message date lands in the past week */
+
+	/* (if message dated this month or last month...) */
+	if((d.year == now.year && d.month >= now.month - 1) ||
+	   (d.year == now.year - 1 && d.month == 12 && now.month == 1)){
+
+	    daydiff = day_of_year(&now) - day_of_year(&d);
+
+	    /*
+	     * If msg in end of last year (and we're in first bit of "this"
+	     * year), diff will be backwards; fix up by adding number of days
+	     * in last year (usually 365, but occasionally 366)...
+	     */
+	    if(d.year == now.year - 1){
+		last_day = d;
+		last_day.month = 12;
+		last_day.day   = 31;
+
+		daydiff += day_of_year(&last_day);
+	    }
+	}
+	else
+	  daydiff = -100;	/* comfortably out of range (of past week) */
+
+	/* Build 2-digit hour and am/pm indicator, used below */
+
+	if(d.hour >= 0 && d.hour < 24){
+	    sprintf(hour12, "%02d", (d.hour % 12 == 0) ? 12 : d.hour % 12);
+	    ampm = (d.hour < 12) ? "am" : "pm";
+	}
+	else{
+	    strcpy(hour12, "??");
+	    ampm = "__";
+	}
+
+	/* Build date/time in str, in format similar to that used by w(1) */
+
+	if(daydiff == 0){		    /* If date is today, "HH:MMap" */
+	    if(d.minute >= 0 && d.minute < 60)
+	      sprintf(minzero, "%02d", d.minute);
+	    else
+	      strcpy(minzero, "??");
+
+	    sprintf(str, "%s:%s%s", hour12, minzero, ampm);
+	}
+	else if(daydiff >= 1 && daydiff < 6){ /* If <1wk ago, "DddHHap" */
+
+	    if(d.month >= 1 && d.day >= 1 && d.year >= 0 &&
+	       d.month <= 12 && d.day <= 31 && d.year <= 9999)
+	      Ddd = week_abbrev(day_of_week(&d));
+	    else
+	      Ddd = "???";
+
+	    sprintf(str, "%s%s%s", Ddd, hour12, ampm);
+	}
+	else{		       /* date is old or future, "ddMmmyy" */
+	    strcpy(monabb, (d.month >= 1 && d.month <= 12)
+			     ? month_abbrev(d.month) : "???");
+
+	    if(d.day >= 1 && d.day <= 31)
+	      sprintf(dayzero, "%02d", d.day);
+	    else
+	      strcpy(dayzero, "??");
+
+	    if(d.year >= 0 && d.year <= 9999)
+	      sprintf(yearzero, "%02d", d.year % 100);
+	    else
+	      strcpy(yearzero, "??");
+
+	    sprintf(str, "%s%s%s", dayzero, monabb, yearzero);
+	}
+
+	if(str[0] == '0'){	/* leading 0 (date|hour) elided or blanked */
+	    if(v)
+	      memmove(str, str + 1, strlen(str));
+	    else
+	      str[0] = ' ';
+	}
     }
 }
 
 
-long
-line_hash(s)
-     char *s;
+/*
+ * fills subject in for painting index lines
+ */
+void
+subj_str(idata, width, str)
+    INDEXDATA_S *idata;
+    int          width;
+    char        *str;
 {
-    register long xsum = 0L;
+    char          *subject, *sptr = NULL;
+    char          *p, *border, *q = NULL;
+    unsigned char *tmp;
+    size_t         len;
+    int            depth = 0, mult = 2, collapsed;
+    PINETHRD_S    *thd, *thdorig;
+    HLINE_S       *hline;
+    unsigned long  rawno;
 
-    if(s)
-      while(*s)
-	xsum = ((((xsum << 4) & 0xffffffff)+(xsum >> 24)) & 0x0fffffff) + *s++;
+    memset(str, 0, (width+1) * sizeof(*str));
+    if(subject = fetch_subject(idata)){
+	if(THREADING()
+	   && (ps_global->thread_disp_style == THREAD_STRUCT
+	       || ps_global->thread_disp_style == THREAD_MUTTLIKE
+	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ1
+	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ2)){
+	    thdorig = thd = fetch_thread(idata->stream, idata->rawno);
+	    border = str + width;
+	    if(current_index_state->plus_col >= 0 && !THRD_INDX()){
+		collapsed = thd && thd->next &&
+			get_lflag(idata->stream, NULL, idata->rawno, MN_COLL);
+		hline = get_index_cache(idata->msgno);
+		hline->plus = collapsed ? ps_global->VAR_THREAD_MORE_CHAR[0]
+			: (thd && thd->next)
+			    ? ps_global->VAR_THREAD_EXP_CHAR[0] : ' ';
+		if(width > 0){
+		    *str++ = ' ';
+		    width--;
+		}
 
-    return(xsum ? xsum : 1L);
+		if(width > 0){
+		    *str++ = ' ';
+		    width--;
+		}
+	    }
+
+	    sptr = str;
+
+	    if(thd)
+	      while(thd->parent &&
+		    (thd = fetch_thread(idata->stream, thd->parent)))
+	        depth++;
+
+	    if(depth > 0){
+		if(ps_global->thread_disp_style == THREAD_INDENT_SUBJ1)
+		  mult = 1;
+
+		sptr += (mult*depth);
+		for(thd = thdorig, p = str + mult*depth - mult;
+		    thd && thd->parent && p >= str;
+		    thd = fetch_thread(idata->stream, thd->parent), p -= mult){
+		    if(p + 2 >= border && !q){
+			if(width >= 4 && depth < 100){
+			    sprintf(str, "%*s[%2d]", width-4, "", depth);
+			    q = str + width-4;
+			}
+			else if(width >= 5 && depth < 1000){
+			    sprintf(str, "%*s[%3d]", width-5, "", depth);
+			    q = str + width-5;
+			}
+			else{
+			    sprintf(str, "%s", repeat_char(width, '.'), width);
+			    q = str;
+			}
+
+			border = q;
+			sptr = NULL;
+		    }
+
+		    if(p + 1 < border){
+			p[0] = p[1] = ' ';
+			if(ps_global->thread_disp_style == THREAD_STRUCT
+			   || ps_global->thread_disp_style == THREAD_MUTTLIKE){
+			    if(thd == thdorig && !thd->branch)
+			      p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			    else if(thd == thdorig || thd->branch)
+			      p[0] = '|';
+
+			    if(thd == thdorig)
+			      p[1] = '-';
+			}
+		    }
+		    else if(p < border){
+			p[0] = ' ';
+			if(ps_global->thread_disp_style == THREAD_STRUCT
+			   || ps_global->thread_disp_style == THREAD_MUTTLIKE){
+			    if(thd == thdorig && !thd->branch)
+			      p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			    else if(thd == thdorig || thd->branch)
+			      p[0] = '|';
+			}
+		    }
+		}
+	    }
+
+	    if(sptr){
+		int do_subj = 0;
+
+		/*
+		 * Look to see if the subject is the same as the previous
+		 * message in the thread, if any. If it is the same, don't
+		 * reprint the subject.
+		 */
+		if(ps_global->thread_disp_style == THREAD_MUTTLIKE){
+		    if(depth == 0)
+		      do_subj++;
+		    else{
+			if(thdorig->parent &&
+			   (thd = fetch_thread(idata->stream, thdorig->parent))
+			   && thd->rawno){
+			    char       *s1 = NULL, *s2 = NULL, *free_s2 = NULL;
+			    ENVELOPE   *env;
+			    char       *prevsubj = NULL;
+			    mailcache_t mc;
+			    SORTCACHE  *sc = NULL;
+
+			    /* get the stripped subject of previous message */
+			    mc = (mailcache_t) mail_parameters(NIL, GET_CACHE,
+							       NIL);
+			    if(mc)
+			      sc = (*mc)(idata->stream, thd->rawno,
+					 CH_SORTCACHE);
+			    
+			    if(sc && sc->subject)
+			      s2 = sc->subject;
+			    else{
+				env = mail_fetchenvelope(idata->stream,
+						         thd->rawno);
+				if(env && env->subject)
+				  mail_strip_subject(env->subject, &s2);
+				
+				free_s2 = s2;
+			    }
+
+			    mail_strip_subject(subject, &s1);
+			    if(s1 && !s2 || s2 && !s1 || strucmp(s1, s2))
+			      do_subj++;
+			    
+			    if(s1)
+			      fs_give((void **) &s1);
+			    if(free_s2)
+			      fs_give((void **) &free_s2);
+			}
+			else
+			  do_subj++;
+		    }
+		}
+		else
+		  do_subj++;
+
+		if(do_subj){
+		    width = (str + width) - sptr;
+		    len = strlen(subject)+1;
+		    tmp = fs_get(len * sizeof(unsigned char));
+		    istrncpy(sptr, (char *) rfc1522_decode(tmp, len,
+							   subject, NULL),
+			     width);
+		    fs_give((void **) &tmp);
+		}
+		else if(ps_global->thread_disp_style == THREAD_MUTTLIKE)
+		  sptr[0] = '>';
+	    }
+	}
+	else{
+	    len = strlen(subject)+1;
+	    tmp = fs_get(len * sizeof(unsigned char));
+	    istrncpy(str,
+		     (char *) rfc1522_decode(tmp, len, subject, NULL),
+		     width);
+	    fs_give((void **) &tmp);
+	}
+    }
+    else{
+	hline = get_index_cache(idata->msgno);
+	hline->plus = ' ';
+    }
+}
+
+
+PINETHRD_S *
+fetch_thread(stream, rawno)
+    MAILSTREAM   *stream;
+    unsigned long rawno;
+{
+    MESSAGECACHE *mc;
+    PINELT_S     *pelt;
+    PINETHRD_S   *thrd = NULL;
+
+    if(stream && rawno > 0L && rawno <= stream->nmsgs
+       && !ps_global->need_to_rethread){
+	mc = mail_elt(stream, rawno);
+	if(pelt = (PINELT_S *)mc->sparep)
+	  thrd = pelt->pthrd;
+    }
+
+    return(thrd);
+}
+
+
+PINETHRD_S *
+fetch_head_thread(stream)
+    MAILSTREAM *stream;
+{
+    unsigned long rawno;
+    PINETHRD_S   *thrd = NULL;
+
+    if(stream){
+	/* first find any thread */
+	for(rawno = 1L; !thrd && rawno <= stream->nmsgs; rawno++)
+	  thrd = fetch_thread(stream, rawno);
+
+	if(thrd && thrd->head)
+	  thrd = fetch_thread(stream, thrd->head);
+    }
+
+    return(thrd);
+}
+
+
+void
+from_str(ctype, idata, width, str)
+    IndexColType ctype;
+    INDEXDATA_S *idata;
+    int          width;
+    char        *str;
+{
+    char       *field, *newsgroups, *border, *p, *fptr = NULL, *q = NULL;
+    ADDRESS    *addr;
+    int         depth = 0, mult = 2, collapsed;
+    PINETHRD_S *thd, *thdorig;
+    HLINE_S *   hline;
+
+    if(THREADING()
+       && (ps_global->thread_disp_style == THREAD_INDENT_FROM1
+           || ps_global->thread_disp_style == THREAD_INDENT_FROM2
+           || ps_global->thread_disp_style == THREAD_STRUCT_FROM)){
+	thdorig = thd = fetch_thread(idata->stream, idata->rawno);
+	border = str + width;
+	if(current_index_state->plus_col >= 0 && !THRD_INDX()){
+	    collapsed = thd && thd->next &&
+			get_lflag(idata->stream, NULL, idata->rawno, MN_COLL);
+	    hline = get_index_cache(idata->msgno);
+	    hline->plus = collapsed ? ps_global->VAR_THREAD_MORE_CHAR[0]
+			: (thd && thd->next)
+			    ? ps_global->VAR_THREAD_EXP_CHAR[0] : ' ';
+	    if(width > 0){
+		*str++ = ' ';
+		width--;
+	    }
+
+	    if(width > 0){
+		*str++ = ' ';
+		width--;
+	    }
+	}
+
+	fptr = str;
+
+	if(thd)
+	  while(thd->parent && (thd = fetch_thread(idata->stream, thd->parent)))
+	    depth++;
+
+	if(depth > 0){
+	    if(ps_global->thread_disp_style == THREAD_INDENT_FROM1)
+	      mult = 1;
+
+	    fptr += (mult*depth);
+	    for(thd = thdorig, p = str + mult*depth - mult;
+		thd && thd->parent && p >= str;
+		thd = fetch_thread(idata->stream, thd->parent), p -= mult){
+		if(p + 2 >= border && !q){
+		    if(width >= 4 && depth < 100){
+			sprintf(str, "%*s[%2d]", width-4, "", depth);
+			q = str + width-4;
+		    }
+		    else if(width >= 5 && depth < 1000){
+			sprintf(str, "%*s[%3d]", width-5, "", depth);
+			q = str + width-5;
+		    }
+		    else{
+			sprintf(str, "%s", repeat_char(width, '.'), width);
+			q = str;
+		    }
+
+		    border = q;
+		    fptr = NULL;
+		}
+
+		if(p + 1 < border){
+		    p[0] = p[1] = ' ';
+		    if(ps_global->thread_disp_style == THREAD_STRUCT_FROM){
+			if(thd == thdorig && !thd->branch)
+			  p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			else if(thd == thdorig || thd->branch)
+			  p[0] = '|';
+
+			if(thd == thdorig)
+			  p[1] = '-';
+		    }
+		}
+		else if(p < border){
+		    p[0] = ' ';
+		    if(ps_global->thread_disp_style == THREAD_STRUCT_FROM){
+			if(thd == thdorig && !thd->branch)
+			  p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			else if(thd == thdorig || thd->branch)
+			  p[0] = '|';
+		    }
+		}
+	    }
+	}
+    }
+    else
+      fptr = str;
+
+    if(fptr){
+	width = (str + width) - fptr;
+	switch(ctype){
+	  case iFromTo:
+	  case iFromToNotNews:
+	    if(!(addr = fetch_from(idata)) || address_is_us(addr, ps_global)){
+		if(width <= 4){
+		    strcpy(fptr, "To: ");
+		    fptr[width] = '\0';
+		    break;
+		}
+		else{
+		    if((field = ((addr = fetch_to(idata))
+				 ? "To"
+				 : (addr = fetch_cc(idata))
+				 ? "Cc"
+				 : NULL))
+		       && set_index_addr(idata, field, addr, "To: ",
+					 width, fptr))
+		      break;
+
+		    if(ctype == iFromTo &&
+		       (newsgroups = fetch_newsgroups(idata)) &&
+		       *newsgroups){
+			sprintf(fptr, "To: %-*.*s", width-4, width-4,
+				newsgroups);
+			break;
+		    }
+
+		    /* else fall thru to From: */
+		}
+	    }
+	    /* else fall thru to From: */
+
+	    if(idata->bogus)
+	      break;
+
+	  case iFrom:
+	    set_index_addr(idata, "From", fetch_from(idata),
+			   NULL, width, fptr);
+	    break;
+
+	  case iAddress:
+	  case iMailbox:
+	    if((addr = fetch_from(idata)) && addr->mailbox && addr->mailbox[0]){
+		char *mb = NULL, *hst = NULL, *at = NULL;
+		size_t len;
+
+		mb = addr->mailbox;
+		if(ctype == iAddress && addr->host && addr->host[0]
+		   && addr->host[0] != '.'){
+		    at = "@";
+		    hst = addr->host;
+		}
+
+		len = strlen(mb);
+		if(!at || width <= len)
+		  sprintf(fptr, "%-*.*s", width, width, mb);
+		else
+		  sprintf(fptr, "%s@%-*.*s", mb, width-len-1, width-len-1, hst);
+	    }
+
+	    break;
+	}
+    }
+}
+
+
+/*
+ * Simple hash function from K&R 2nd edition, p. 144.
+ *
+ * This one is modified to never return 0 so we can use that as a special
+ * value. Also, LINE_HASH_N fits in an unsigned long, so it too can be used
+ * as a special value that can't be returned by line_hash.
+ */
+unsigned long
+line_hash(s)
+    char *s;
+{
+    unsigned long hashval;
+
+    for(hashval = 0; *s != '\0'; s++)
+      hashval = *s + 31 * hashval;
+
+    hashval = hashval % LINE_HASH_N;
+
+    if(!hashval)
+      hashval++;
+
+    return(hashval);
 }
 
 
@@ -4834,12 +6832,12 @@ print_index(state, msgmap, agg)
 	if(agg && !get_lflag(state->mail_stream, msgmap, i, MN_SLCT))
 	  continue;
 	
-	if(!agg && get_lflag(state->mail_stream, msgmap, i, MN_HIDE))
+	if(!agg && msgline_hidden(state->mail_stream, msgmap, i, 0))
 	  continue;
 
 	if(!print_char((mn_is_cur(msgmap, i)) ? '>' : ' ')
 	   || !gf_puts(build_header_line(state, state->mail_stream,
-					 msgmap, i)->line + 1, print_char)
+					 msgmap, i, NULL)->line + 1, print_char)
 	   || !gf_puts(NEWLINE, print_char))
 	  return(0);
     }
@@ -4883,7 +6881,7 @@ index_search(state, stream, command_line, msgmap)
 	return;
     }
     else if(mn_total_cur(msgmap) > 1L){
-	q_status_message1(SM_ORDER, 0, 2, "%s msgs selected; Can't search",
+	q_status_message1(SM_ORDER, 0, 2, "%.200s msgs selected; Can't search",
 			  comatose(mn_total_cur(msgmap)));
 	return;
     }
@@ -4921,10 +6919,10 @@ index_search(state, stream, command_line, msgmap)
         }
 	else if(rc == 10){
 	    q_status_message(SM_ORDER, 0, 3, "Searched to First Message.");
-	    if(any_lflagged(msgmap, MN_HIDE)){
+	    if(any_lflagged(msgmap, MN_HIDE | MN_CHID)){
 		do{
 		    selected = sorted_msg;
-		    mn_dec_cur(stream, msgmap);
+		    mn_dec_cur(stream, msgmap, MH_NONE);
 		    sorted_msg = mn_get_cur(msgmap);
 		}
 		while(selected != sorted_msg);
@@ -4937,10 +6935,10 @@ index_search(state, stream, command_line, msgmap)
 	}
 	else if(rc == 11){
 	    q_status_message(SM_ORDER, 0, 3, "Searched to Last Message.");
-	    if(any_lflagged(msgmap, MN_HIDE)){
+	    if(any_lflagged(msgmap, MN_HIDE | MN_CHID)){
 		do{
 		    selected = sorted_msg;
-		    mn_inc_cur(stream, msgmap);
+		    mn_inc_cur(stream, msgmap, MH_NONE);
 		    sorted_msg = mn_get_cur(msgmap);
 		}
 		while(selected != sorted_msg);
@@ -4980,8 +6978,8 @@ index_search(state, stream, command_line, msgmap)
     for(i = sorted_msg + ((select_all)?0:1);
 	i <= mn_get_total(msgmap) && !ps_global->intr_pending;
 	i++)
-      if(!get_lflag(stream, msgmap, i, MN_HIDE) &&
-	 srchstr(build_header_line(state, stream, msgmap, i)->line,
+      if(!msgline_hidden(stream, msgmap, i, 0) &&
+	 srchstr(build_header_line(state, stream, msgmap, i, NULL)->line,
 		 search_string)){
 	  selected++;
 	  if(select_all)
@@ -4992,8 +6990,8 @@ index_search(state, stream, command_line, msgmap)
 
     if(i > mn_get_total(msgmap))
       for(i = 1; i < sorted_msg && !ps_global->intr_pending; i++)
-	if(!get_lflag(stream, msgmap, i, MN_HIDE) &&
-	   srchstr(build_header_line(state, stream, msgmap, i)->line,
+        if(!msgline_hidden(stream, msgmap, i, 0) &&
+	   srchstr(build_header_line(state, stream, msgmap, i, NULL)->line,
 		   search_string)){
 	    selected++;
 	    if(select_all)
@@ -5003,15 +7001,15 @@ index_search(state, stream, command_line, msgmap)
 	}
 
     if(ps_global->intr_pending){
-	q_status_message1(SM_ORDER, 0, 3, "Search cancelled.%s",
+	q_status_message1(SM_ORDER, 0, 3, "Search cancelled.%.200s",
 			  select_all ? " Selected set may be incomplete.":"");
     }
     else if(select_all){
-	q_status_message1(SM_ORDER, 0, 3, "%s messages found matching word",
+	q_status_message1(SM_ORDER, 0, 3, "%.200s messages found matching word",
 			  long2string(selected));
     }
     else if(selected){
-	q_status_message1(SM_ORDER, 0, 3, "Word found%s",
+	q_status_message1(SM_ORDER, 0, 3, "Word found%.200s",
 			  (i <= sorted_msg)
 			    ? ". Search wrapped to beginning" : "");
 	mn_set_cur(msgmap, i);
@@ -5086,7 +7084,6 @@ build_score_array(stream, msgmap)
     SEARCHSET *searchset;
     long       msgno, cnt, nmsgs, rawmsgno;
     int        score;
-    HLINE_S   *h;
 
     nmsgs = mn_get_total(msgmap);
     g_score_arr = (int *)fs_get((nmsgs+1) * sizeof(int));
@@ -5109,7 +7106,7 @@ build_score_array(stream, msgmap)
 
     if(cnt){
 	searchset = build_searchset(stream);
-	calculate_some_scores(stream, searchset);
+	(void)calculate_some_scores(stream, searchset, 0);
 	mail_free_searchset(&searchset);
     }
 
@@ -5162,22 +7159,41 @@ Args: msgmap --
     causes the sort to happen if it is still needed.
   ----*/
 void
-sort_folder(msgmap, new_sort, new_rev, verbose)
+sort_folder(msgmap, new_sort, new_rev, flags)
     MSGNO_S   *msgmap;
     SortOrder  new_sort;
-    int	       new_rev, verbose;
+    int	       new_rev;
+    unsigned   flags;
 {
     long	   raw_current, i, j;
     unsigned long *sort = NULL;
     int		   we_cancel = 0;
     char	   sort_msg[MAX_SCREEN_COLS+1];
+    SortOrder      current_sort;
+    int	           current_rev;
 
     dprint(2, (debugfile, "Sorting by %s%s\n",
 	       sort_name(new_sort), new_rev ? "/reverse" : ""));
 
-    if(mn_get_total(msgmap) <= 1L){
+    current_sort = mn_get_sort(msgmap);
+    current_rev = mn_get_revsort(msgmap);
+    /*
+     * If we were previously threading (spare == 1) and now we're switching
+     * sorts (other than just a rev switch) then erase the information
+     * about the threaded state (collapsed and so forth).
+     */
+    if(ps_global->mail_stream && ps_global->mail_stream->spare
+       && (current_sort != new_sort))
+      erase_threading_info(ps_global->mail_stream, msgmap);
+
+    if(mn_get_total(msgmap) <= 1L
+       && !(mn_get_total(msgmap) == 1L
+            && (new_sort == SortThread || new_sort == SortSubject2))){
 	mn_set_sort(msgmap, new_sort);
 	mn_set_revsort(msgmap, new_rev);
+	if(!mn_get_mansort(msgmap))
+	  mn_set_mansort(msgmap, (flags & SRT_MAN) ? 1 : 0);
+	  
 	return;
     }
 
@@ -5196,8 +7212,10 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	 *	 we're doing here.  That day this gets scrapped.
 	 */
 
-	if(mn_get_sort(msgmap) != new_sort ||
-	   mn_get_revsort(msgmap) != new_rev ||
+	mn_set_sort(msgmap, new_sort);
+	mn_set_revsort(msgmap, new_rev);
+
+	if(current_sort != new_sort || current_rev != new_rev ||
 	   any_lflagged(ps_global->msgmap, MN_EXLD))
 	  clear_index_cache();
 
@@ -5220,6 +7238,11 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	      for(i = 1L; i <= mn_get_total(msgmap); i++)
 		msgmap->sort[i] = i;
 	}
+
+	/* reset the inverse array */
+	msgno_reset_isort(msgmap);
+
+	ASSERT_ISORT(msgmap, "validity fail in sort_folder Arrival sort\n");
     }
     else if(new_sort == SortScore){
 
@@ -5227,12 +7250,15 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	 * We have to build a temporary array which maps raw msgno to
 	 * score. We use the index cache machinery to build the array.
 	 */
+
+	mn_set_sort(msgmap, new_sort);
+	mn_set_revsort(msgmap, new_rev);
 	
 #ifndef	DOS
 	intr_handling_on();
 #endif
 
-	if(verbose){
+	if(flags & SRT_VRB){
 	    sprintf(sort_msg, "Sorting \"%.*s\"",
 		    sizeof(sort_msg)-20,
 		    strsquish(tmp_20k_buf + 500, ps_global->cur_folder,
@@ -5250,6 +7276,9 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	      sizeof(long), pine_compare_scores);
 	free_score_array();
 	clear_index_cache();
+
+	if(we_cancel)
+	  cancel_busy_alarm(1);
 
 #ifndef	DOS
 	intr_handling_off();
@@ -5271,14 +7300,33 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	    while(ep > sp);
 	}
 
-	if(we_cancel)
-	  cancel_busy_alarm(1);
+	/* reset the inverse array */
+	msgno_reset_isort(msgmap);
+
+	ASSERT_ISORT(msgmap, "validity fail in sort_folder Score sort\n");
     }
     else{
 
+	mn_set_sort(msgmap, new_sort);
+	mn_set_revsort(msgmap, new_rev);
 	clear_index_cache();
 
-	if(verbose){
+#ifndef	DOS
+	/*
+	 * Because this draws a keymenu, which in turn may call malloc
+	 * and free in pico/osdep functions having to do with colors,
+	 * we don't want to call it when alarm handling is turned on.
+	 * The reason is because the alarm could interrupt us in a precarious
+	 * state. For example, we are drawing this keymenu and have just
+	 * freed _last_bg_color but haven't set it to NULL yet, then the
+	 * alarm happens, does some status line drawing which resets the
+	 * background color, bango, it tries to free the thing we just
+	 * freed. So move this before the busy_alarm call below.
+	 */
+	intr_handling_on();
+#endif
+
+	if(flags & SRT_VRB){
 	    int (*sort_func)() = NULL;
 
 	    /*
@@ -5301,17 +7349,55 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	}
 
 	/*
-	 * limit the sort/thread if messages are hidden from view 
+	 * Limit the sort/thread if messages are hidden from view 
 	 * by lighting searched bit of every interesting msg in 
-	 * the folder and call c-client thread/sort to do the dirty work...
+	 * the folder and call c-client thread/sort to do the dirty work.
+	 *
+	 * Unfortunately it isn't that easy. IMAP servers are not able to
+	 * handle medium to large sized sequence sets (more than 1000
+	 * characters in the command line breaks some) so we have to try
+	 * to handle it locally. By lighting the searched bits and
+	 * providing a NULL search program we get a special c-client
+	 * interface. This means that c-client will attempt to send the
+	 * sequence set with the SORT or THREAD but it may get back
+	 * a BAD response because of long command lines. In that case,
+	 * if it is a SORT call, c-client will issue the full SORT
+	 * without the sequence sets and will then filter the results
+	 * locally. So sort_sort_callback will see the correctly
+	 * filtered results. If it is a mail_thread call, a similar thing
+	 * will be done. If a BAD is received, then there is no way to
+	 * easily filter the results. C-client (in this special case where
+	 * we provide a NULL search program) will set tree->num to zero
+	 * for nodes of the thread tree which were supposed to be
+	 * filtered out of the thread. Then pine, in sort_thread_callback,
+	 * will treat those as dummy nodes (nodes which are part of the
+	 * tree logically but where we don't have access to the messages).
+	 * This will give us a different answer than we would have gotten
+	 * if the restricted thread would have worked, but it's something.
+	 *
+	 * It isn't in general possible to give some shorter search set
+	 * in place of the long sequence set because the long sequence set
+	 * may be the result of several filter rules or of excluded
+	 * messages in news (in this 2nd case maybe we could give
+	 * a shorter search set).
+	 *
+	 * We note also that the too-long commands in imap is a general
+	 * imap deficiency. It comes up in particular also in SEARCH
+	 * commands. Pine likes to exclude the hidden messages from the
+	 * SEARCH. SEARCH will be handled transparently by the local
+	 * c-client by first issuing the full SEARCH command, if that
+	 * comes back with a BAD and there is a pgm->msgno at the top
+	 * level of pgm, then c-client will re-issue the SEARCH command
+	 * but without the msgno sequence set in hopes that the resulting
+	 * command will now be short enough, and then it will filter out
+	 * the sequence set locally. If that doesn't work, it will
+	 * download the messages and do the SEARCH locally. That is
+	 * controllable by a flag bit.
 	 */
 	for(i = 1L; i <= ps_global->mail_stream->nmsgs; i++)
 	  mail_elt(ps_global->mail_stream, i)->searched
 			= !get_lflag(ps_global->mail_stream, NULL, i, MN_EXLD);
 	
-#ifndef	DOS
-	intr_handling_on();
-#endif
 	g_sort.msgmap = msgmap;
 	if(new_sort == SortThread || new_sort == SortSubject2){
 	    THREADNODE *thread;
@@ -5337,10 +7423,10 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	    mail_parameters(NULL, SET_THREADRESULTS, (void *) NULL);
 
 	    if(!thread || ps_global->intr_pending){
-		new_sort = mn_get_sort(msgmap);
-		new_rev  = mn_get_revsort(msgmap);
+		new_sort = current_sort;
+		new_rev  = current_rev;
 		q_status_message2(SM_ORDER, 3, 3,
-				  "Sort %s!  Restored %s sort.",
+				  "Sort %.200s!  Restored %.200s sort.",
 				  ps_global->intr_pending
 				    ? "Canceled" : "Failed",
 				  sort_name(new_sort));
@@ -5379,10 +7465,10 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	    mail_parameters(NULL, SET_SORTRESULTS, (void *) NULL);
 
 	    if(!sort || ps_global->intr_pending){
-		new_sort = mn_get_sort(msgmap);
-		new_rev  = mn_get_revsort(msgmap);
+		new_sort = current_sort;
+		new_rev  = current_rev;
 		q_status_message2(SM_ORDER, 3, 3,
-				  "Sort %s!  Restored %s sort.",
+				  "Sort %.200s!  Restored %.200s sort.",
 				  ps_global->intr_pending
 				    ? "Canceled" : "Failed",
 				  sort_name(new_sort));
@@ -5394,7 +7480,14 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 	    mail_free_sortpgm(&g_sort.prog);
 	}
 
+	if(we_cancel)
+	  cancel_busy_alarm(1);
+
 #ifndef	DOS
+	/*
+	 * Same here as intr_handling_on. We don't want the busy alarm
+	 * to be active when we call this.
+	 */
 	intr_handling_off();
 #endif
 
@@ -5412,18 +7505,118 @@ sort_folder(msgmap, new_sort, new_rev, verbose)
 		*ep-- = tmp;
 	    }
 	    while(ep > sp);
-	}
 
-	if(we_cancel)
-	  cancel_busy_alarm(1);
+	    /* reset the inverse array */
+	    msgno_reset_isort(msgmap);
+
+	    ASSERT_ISORT(msgmap, "validity fail in sort_folder Flip sort\n");
+
+	    /*
+	     * Flip the thread numbers around.
+	     * This puts us in a weird state that requires keeping track
+	     * of. The direction of the thread list hasn't changed, but the
+	     * thrdnos have and the display direction has.
+	     *
+	     * For Sort   thrdno 1       thread list head
+	     *            thrdno 2              |
+	     *            thrdno .              v  nextthd this direction
+	     *            thrdno .
+	     *            thrdno n       thread list tail
+	     *
+	     * Rev Sort   thrdno 1       thread list tail
+	     *            thrdno 2
+	     *            thrdno .              ^  nextthd this direction
+	     *            thrdno .              |
+	     *            thrdno n       thread list head
+	     */
+	    if(new_sort == SortThread || new_sort == SortSubject2){
+		PINETHRD_S *thrd;
+
+		thrd = fetch_head_thread(ps_global->mail_stream);
+		for(j = msgmap->max_thrdno; thrd && j >= 1L; j--){
+		    thrd->thrdno = j;
+
+		    if(thrd->nextthd)
+		      thrd = fetch_thread(ps_global->mail_stream,
+					  thrd->nextthd);
+		    else
+		      thrd = NULL;
+		}
+	    }
+	}
     }
 
     /* Fix up sort structure */
     mn_set_sort(msgmap, new_sort);
     mn_set_revsort(msgmap, new_rev);
-    mn_reset_cur(msgmap, mn_raw2m(msgmap, raw_current));
+    /*
+     * Once a folder has been sorted manually, we continue treating it
+     * as manually sorted until it is closed.
+     */
+    if(!mn_get_mansort(msgmap))
+      mn_set_mansort(msgmap, (flags & SRT_MAN) ? 1 : 0);
+    
+    /*
+     * If current is hidden, change current to visible parent.
+     * It can only be hidden if we are threading.
+     */
+    if(THREADING())
+      mn_reset_cur(msgmap, first_sorted_flagged(new_rev ? F_NONE : F_SRCHBACK,
+					        ps_global->mail_stream,
+					        mn_raw2m(msgmap, raw_current),
+					        FSF_SKIP_CHID));
+    else
+      mn_reset_cur(msgmap, mn_raw2m(msgmap, raw_current));
+    
+    msgmap->top = -1L;
+
     if(!ps_global->mail_box_changed)
       ps_global->unsorted_newmail = 0;
+
+    /*
+     * Turn off the MN_USOR flag. Don't bother going through the
+     * function call and the message number mappings.
+     */
+    if(THREADING())
+      for(i = 1L; i <= ps_global->mail_stream->nmsgs; i++)
+        mail_elt(ps_global->mail_stream, i)->spare7 = 0;
+}
+
+
+void
+erase_threading_info(stream, msgmap)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+{
+    unsigned long n;
+    MESSAGECACHE *mc;
+    PINELT_S     *peltp;
+
+    if(!(stream && stream->spare))
+      return;
+    
+    ps_global->view_skipped_index = 0;
+    ps_global->viewing_a_thread = 0;
+    if(ps_global->inbox_stream == stream)
+      ps_global->inbox_viewing_a_thread = 0;
+    
+    if(THRD_INDX())
+      setup_for_thread_index_screen();
+    else
+      setup_for_index_index_screen();
+
+    stream->spare = 0;
+
+    for(n = 1L; n <= stream->nmsgs; n++){
+	set_lflag(stream, msgmap, mn_raw2m(msgmap, n),
+		  MN_COLL | MN_CHID | MN_CHID2, 0);
+	mc = mail_elt(stream, n);
+	if(mc && mc->sparep){
+	    peltp = (PINELT_S *) mc->sparep;
+	    if(peltp->pthrd)
+	      fs_give((void **) &peltp->pthrd);
+	}
+    }
 }
 
 
@@ -5435,12 +7628,20 @@ sort_sort_callback(stream, list, nmsgs)
 {
     long i;
 
+    dprint(2, (debugfile, "sort_sort_callback\n"));
+
     if(mn_get_total(g_sort.msgmap) < nmsgs)
       panic("Message count shrank after sort!");
 
     /* copy ulongs to array of longs */
     for(i = nmsgs; i > 0; i--)
       g_sort.msgmap->sort[i] = (long) list[i-1];
+
+    /* reset the inverse array */
+    msgno_reset_isort(g_sort.msgmap);
+
+    ASSERT_ISORT(g_sort.msgmap, "validity fail in sort_sort_callback\n");
+    dprint(2, (debugfile, "sort_sort_callback done\n"));
 }
 
 
@@ -5449,41 +7650,504 @@ sort_thread_callback(stream, tree)
     MAILSTREAM *stream;
     THREADNODE *tree;
 {
+    THREADNODE *collapsed_tree = NULL;
+    long          i;
+    PINETHRD_S   *thrd = NULL, *nthrd, *top;
+    unsigned long msgno, rawno, set_in_thread, in_thread;
+    int           bail, this_is_vis;
+    int           un_view_thread = 0;
+    long          raw_current;
+
+
+    dprint(2, (debugfile, "sort_thread_callback\n"));
+
+    g_sort.msgmap->max_thrdno = 0L;
+
+    thrd_flatten_array =
+	(struct pass_along *) fs_get(mn_get_total(g_sort.msgmap) *
+						 sizeof(*thrd_flatten_array));
+
+    memset(thrd_flatten_array, 0,
+	   mn_get_total(g_sort.msgmap) * sizeof(*thrd_flatten_array));
+
+    /*
+     * Eliminate dummy nodes from tree and collapse the tree in a logical
+     * way. If the dummy node is at the top-level, then its children are
+     * promoted to the top-level as separate threads.
+     */
+    collapsed_tree = collapse_threadnode_tree(tree);
+    (void) sort_thread_flatten(collapsed_tree, stream, thrd_flatten_array,
+			       NULL, THD_TOP);
+    mail_free_threadnode(&collapsed_tree);
+
+    if(any_lflagged(g_sort.msgmap, MN_HIDE))
+      g_sort.msgmap->visible_threads = calculate_visible_threads(stream);
+    else
+      g_sort.msgmap->visible_threads = g_sort.msgmap->max_thrdno;
+
+    raw_current = mn_m2raw(g_sort.msgmap, mn_get_cur(g_sort.msgmap));
+
     memset(&g_sort.msgmap->sort[1], 0,
 	   mn_get_total(g_sort.msgmap) * sizeof(long));
 
-    /* For now, just flatten out the result */
-    (void) sort_thread_flatten(tree, &g_sort.msgmap->sort[1]);
+    /*
+     * Copy the results of the sort into the real sort array and
+     * create the inverse array.
+     */
+    for(i = 1L; i <= mn_get_total(g_sort.msgmap); i++)
+      g_sort.msgmap->sort[i] = thrd_flatten_array[i-1].rawno;
+
+    /* reset the inverse array */
+    msgno_reset_isort(g_sort.msgmap);
+
+    ASSERT_ISORT(g_sort.msgmap, "validity fail in sort_thread_callback\n");
+
+    ps_global->need_to_rethread = 0;
+
+    /*
+     * Set appropriate bits to start out collapsed if desired. We use the
+     * stream spare bit to tell us if we've done this before for this
+     * stream.
+     */
+    if(!stream->spare
+       && (COLL_THRDS() || SEP_THRDINDX())
+       && mn_get_total(g_sort.msgmap) > 1L){
+
+	collapse_threads(stream, g_sort.msgmap, NULL);
+    }
+    else if(stream->spare){
+	
+	/*
+	 * If we're doing auto collapse then new threads need to have
+	 * their collapse bit set. This happens below if we're in the
+	 * thread index, but if we're in the regular index with auto
+	 * collapse we have to look for these.
+	 */
+	if(any_lflagged(g_sort.msgmap, MN_USOR)){
+	    if(COLL_THRDS()){
+		for(msgno = 1L; msgno <= mn_get_total(g_sort.msgmap); msgno++){
+		    rawno = mn_m2raw(g_sort.msgmap, msgno);
+		    if(get_lflag(stream, NULL, rawno, MN_USOR)){
+			thrd = fetch_thread(stream, rawno);
+
+			/*
+			 * Node is new, unsorted, top-level thread,
+			 * and we're using auto collapse.
+			 */
+			if(thrd && !thrd->parent)
+			  set_lflag(stream, g_sort.msgmap, msgno, MN_COLL, 1);
+			
+			/*
+			 * If a parent is collapsed, clear that parent's
+			 * index cache entry. This is only necessary if
+			 * the parent's index display can depend on its
+			 * children, of course.
+			 */
+			if(thrd && thrd->parent){
+			    thrd = fetch_thread(stream, thrd->parent);
+			    while(thrd){
+				if(get_lflag(stream, NULL, thrd->rawno, MN_COLL))
+				  clear_index_cache_ent(mn_raw2m(g_sort.msgmap,
+								 (long) thrd->rawno));
+
+				if(thrd->parent)
+				  thrd = fetch_thread(stream, thrd->parent);
+				else
+				  thrd = NULL;
+			    }
+			}
+
+		    }
+		}
+	    }
+
+	    set_lflags(stream, g_sort.msgmap, MN_USOR, 0);
+	}
+
+	if(ps_global->viewing_a_thread){
+	    if(any_lflagged(g_sort.msgmap, MN_CHID2)){
+		/* current should be part of viewed thread */
+		if(get_lflag(stream, NULL, raw_current, MN_CHID2)){
+		    thrd = fetch_thread(stream, raw_current);
+		    if(thrd && thrd->top && thrd->top != thrd->rawno)
+		      thrd = fetch_thread(stream, thrd->top);
+		    
+		    if(thrd){
+			/*
+			 * For messages that are part of thread set MN_CHID2
+			 * and for messages that aren't part of the thread
+			 * clear MN_CHID2. Easiest is to just do it instead
+			 * of checking if it is true first.
+			 */
+			set_lflags(stream, g_sort.msgmap, MN_CHID2, 0);
+			set_thread_lflags(stream, thrd, g_sort.msgmap,
+					  MN_CHID2, 1);
+			
+			/*
+			 * Outside of the viewed thread everything else
+			 * should be collapsed at the top-levels.
+			 */
+			collapse_threads(stream, g_sort.msgmap, thrd);
+
+			/*
+			 * Inside of the thread, the top of the thread
+			 * can't be hidden, the rest are hidden if a
+			 * parent somewhere above them is collapsed.
+			 * There can be collapse points that are hidden
+			 * inside of the tree. They remain collapsed even
+			 * if the parent above them uncollapses.
+			 */
+			msgno = mn_raw2m(g_sort.msgmap, (long) thrd->rawno);
+			if(msgno)
+			  set_lflag(stream, g_sort.msgmap, msgno, MN_CHID, 0);
+
+			if(thrd->next){
+			    PINETHRD_S *nthrd;
+
+			    nthrd = fetch_thread(stream, thrd->next);
+			    if(nthrd)
+			      make_thrdflags_consistent(stream, g_sort.msgmap,
+							nthrd,
+							get_lflag(stream, NULL,
+								  thrd->rawno,
+								  MN_COLL));
+			}
+		    }
+		    else
+		      un_view_thread++;
+		}
+		else
+		  un_view_thread++;
+	    }
+	    else
+	      un_view_thread++;
+
+	    if(un_view_thread){
+		set_lflags(stream, g_sort.msgmap, MN_CHID2, 0);
+		unview_thread(ps_global, stream, g_sort.msgmap);
+	    }
+	    else{
+		mn_reset_cur(g_sort.msgmap,
+			     mn_raw2m(g_sort.msgmap, raw_current));
+		view_thread(ps_global, stream, g_sort.msgmap, 0);
+	    }
+	}
+	else if(SEP_THRDINDX()){
+	    set_lflags(stream, g_sort.msgmap, MN_CHID2, 0);
+	    collapse_threads(stream, g_sort.msgmap, NULL);
+	}
+	else{
+	    thrd = fetch_head_thread(stream);
+	    while(thrd){
+		/*
+		 * The top-level threads aren't hidden by collapse.
+		 */
+		msgno = mn_raw2m(g_sort.msgmap, thrd->rawno);
+		if(msgno)
+		  set_lflag(stream, g_sort.msgmap, msgno, MN_CHID, 0);
+
+		if(thrd->next){
+		    PINETHRD_S *nthrd;
+
+		    nthrd = fetch_thread(stream, thrd->next);
+		    if(nthrd)
+		      make_thrdflags_consistent(stream, g_sort.msgmap,
+						nthrd,
+						get_lflag(stream, NULL,
+							  thrd->rawno,
+							  MN_COLL));
+		}
+
+		if(thrd->nextthd)
+		  thrd = fetch_thread(stream, thrd->nextthd);
+		else
+		  thrd = NULL;
+	    }
+	}
+    }
+
+    stream->spare = 1;
+
+    fs_give((void **) &thrd_flatten_array);
+
+    dprint(2, (debugfile, "sort_thread_callback done\n"));
 }
 
 
-long *
-sort_thread_flatten(node, entry)
-    THREADNODE *node;
-    long       *entry;
+void
+collapse_threads(stream, msgmap, not_this_thread)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    PINETHRD_S *not_this_thread;
 {
+    PINETHRD_S   *thrd = NULL, *nthrd;
+    unsigned long msgno;
+
+    dprint(9, (debugfile, "collapse_threads\n"));
+
+    thrd = fetch_head_thread(stream);
+    while(thrd){
+	if(thrd != not_this_thread){
+	    msgno = mn_raw2m(g_sort.msgmap, thrd->rawno);
+
+	    /* set collapsed bit */
+	    if(msgno){
+		set_lflag(stream, g_sort.msgmap, msgno, MN_COLL, 1);
+		set_lflag(stream, g_sort.msgmap, msgno, MN_CHID, 0);
+	    }
+
+	    /* hide its children */
+	    if(thrd->next && (nthrd = fetch_thread(stream, thrd->next)))
+	      set_thread_subtree(stream, nthrd, msgmap, 1, MN_CHID);
+	}
+
+	if(thrd->nextthd)
+	  thrd = fetch_thread(stream, thrd->nextthd);
+	else
+	  thrd = NULL;
+    }
+
+    dprint(9, (debugfile, "collapse_threads done\n"));
+}
+
+
+void
+make_thrdflags_consistent(stream, msgmap, thrd, a_parent_is_collapsed)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    PINETHRD_S *thrd;
+    int         a_parent_is_collapsed;
+{
+    PINETHRD_S *nthrd, *bthrd;
+    unsigned long msgno;
+
+    if(!thrd)
+      return;
+
+    msgno = mn_raw2m(msgmap, thrd->rawno);
+
+    if(a_parent_is_collapsed){
+	/* if some parent is collapsed, we should be hidden */
+	if(msgno)
+	  set_lflag(stream, msgmap, msgno, MN_CHID, 1);
+    }
+    else{
+	/* no parent is collapsed so we are not hidden */
+	if(msgno)
+	  set_lflag(stream, msgmap, msgno, MN_CHID, 0);
+    }
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  make_thrdflags_consistent(stream, msgmap, nthrd,
+				    a_parent_is_collapsed
+				      ? a_parent_is_collapsed
+				      : get_lflag(stream, NULL, thrd->rawno,
+						  MN_COLL));
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  make_thrdflags_consistent(stream, msgmap, bthrd,
+				    a_parent_is_collapsed);
+    }
+}
+
+
+long
+calculate_visible_threads(stream)
+    MAILSTREAM *stream;
+{
+    PINETHRD_S   *thrd = NULL;
+    long          vis = 0L;
+
+    thrd = fetch_head_thread(stream);
+    while(thrd){
+	vis += (thread_has_some_visible(stream, thrd) ? 1 : 0);
+
+	if(thrd->nextthd)
+	  thrd = fetch_thread(stream, thrd->nextthd);
+	else
+	  thrd = NULL;
+    }
+
+    return(vis);
+}
+
+
+struct pass_along *
+sort_thread_flatten(node, stream, entry, thrd, flags)
+    THREADNODE *node;
+    MAILSTREAM *stream;
+    struct pass_along *entry;
+    PINETHRD_S *thrd;
+    unsigned    flags;
+{
+    long n = 0L;
+    PINETHRD_S *newthrd = NULL;
+
     if(node){
 	if(node->num){		/* holes happen */
-	    long n = (long) (entry - &g_sort.msgmap->sort[1]);
+	    n = (long) (entry - thrd_flatten_array);
 
 	    for(; n > 0; n--)
-	      if(g_sort.msgmap->sort[n] == node->num)
+	      if(thrd_flatten_array[n].rawno == node->num)
 		break;	/* duplicate */
 
 	    if(!n)
-	      *entry++ = node->num;
+	      entry->rawno = node->num;
 	}
 
-	if(node->next)
-	  entry = sort_thread_flatten(node->next, entry);
+	/*
+	 * Build a richer threading structure that will help us paint
+	 * and operate on threads and subthreads.
+	 */
+	if(!n && node->num){
+	    newthrd = msgno_thread_info(stream, node->num, thrd, flags);
+	    if(newthrd){
+		entry->thrd = newthrd;
+		entry++;
 
-	if(node->branch)
-	  entry = sort_thread_flatten(node->branch, entry);
+		if(node->next)
+		  entry = sort_thread_flatten(node->next, stream, entry,
+					      newthrd, THD_NEXT);
+
+		if(node->branch)
+		  entry = sort_thread_flatten(node->branch, stream, entry,
+					      newthrd,
+					      (flags == THD_TOP) ? THD_TOP
+								 : THD_BRANCH);
+	    }
+	}
     }
 
     return(entry);
 }
 
+
+/*
+ * Make a copy of c-client's THREAD tree while eliminating dummy nodes.
+ */
+THREADNODE *
+collapse_threadnode_tree(tree)
+    THREADNODE *tree;
+{
+    THREADNODE *newtree = NULL;
+
+    if(tree){
+	if(tree->num){
+	    newtree = mail_newthreadnode(NULL);
+	    newtree->num  = tree->num;
+	    if(tree->next)
+	      newtree->next = collapse_threadnode_tree(tree->next);
+
+	    if(tree->branch)
+	      newtree->branch = collapse_threadnode_tree(tree->branch);
+	}
+	else{
+	    if(tree->next)
+	      newtree = collapse_threadnode_tree(tree->next);
+	    
+	    if(tree->branch){
+		if(newtree){
+		    THREADNODE *last_branch = NULL;
+
+		    /*
+		     * Next moved up to replace "tree" in the tree.
+		     * If next has no branches, then we want to branch off
+		     * of next. If next has branches, we want to branch off
+		     * of the last of those branches instead.
+		     */
+		    last_branch = newtree;
+		    while(last_branch->branch)
+		      last_branch = last_branch->branch;
+		    
+		    last_branch->branch = collapse_threadnode_tree(tree->branch);
+		}
+		else
+		  newtree = collapse_threadnode_tree(tree->branch);
+	    }
+	}
+    }
+
+    return(newtree);
+}
+
+
+/*
+ * Args      stream -- the usual
+ *            rawno -- the raw msg num associated with this new node
+ * attached_to_thrd -- the PINETHRD_S node that this is either a next or branch
+ *                       off of
+ *            flags --
+ */
+PINETHRD_S *
+msgno_thread_info(stream, rawno, attached_to_thrd, flags)
+    MAILSTREAM   *stream;
+    unsigned long rawno;
+    PINETHRD_S   *attached_to_thrd;
+    unsigned      flags;
+{
+    PINELT_S   **peltp;
+
+    if(!stream || rawno < 1L || rawno > stream->nmsgs)
+      return NULL;
+
+    /*
+     * any private elt data yet?
+     */
+    if(*(peltp = (PINELT_S **) &mail_elt(stream, rawno)->sparep) == NULL){
+	*peltp = (PINELT_S *) fs_get(sizeof(PINELT_S));
+	memset(*peltp, 0, sizeof(PINELT_S));
+    }
+
+    if((*peltp)->pthrd == NULL)
+      (*peltp)->pthrd = (PINETHRD_S *) fs_get(sizeof(PINETHRD_S));
+
+    memset((*peltp)->pthrd, 0, sizeof(PINETHRD_S));
+
+    (*peltp)->pthrd->rawno = rawno;
+
+    if(attached_to_thrd)
+      (*peltp)->pthrd->head = attached_to_thrd->head;
+    else
+      (*peltp)->pthrd->head = (*peltp)->pthrd->rawno;	/* it's me */
+
+    if(flags == THD_TOP){
+	/*
+	 * We can tell this thread is a top-level thread because it doesn't
+	 * have a parent.
+	 */
+	(*peltp)->pthrd->top = (*peltp)->pthrd->rawno;	/* I am a top */
+	if(attached_to_thrd){
+	    attached_to_thrd->nextthd = (*peltp)->pthrd->rawno;
+	    (*peltp)->pthrd->prevthd  = attached_to_thrd->rawno;
+	    (*peltp)->pthrd->thrdno   = attached_to_thrd->thrdno + 1L;
+	}
+	else
+	    (*peltp)->pthrd->thrdno   = 1L;		/* 1st thread */
+
+	g_sort.msgmap->max_thrdno = (*peltp)->pthrd->thrdno;
+    }
+    else if(flags == THD_NEXT){
+	if(attached_to_thrd){
+	    attached_to_thrd->next  = (*peltp)->pthrd->rawno;
+	    (*peltp)->pthrd->parent = attached_to_thrd->rawno;
+	    (*peltp)->pthrd->top    = attached_to_thrd->top;
+	}
+    }
+    else if(flags == THD_BRANCH){
+	if(attached_to_thrd){
+	    attached_to_thrd->branch = (*peltp)->pthrd->rawno;
+	    (*peltp)->pthrd->parent  = attached_to_thrd->parent;
+	    (*peltp)->pthrd->top     = attached_to_thrd->top;
+	}
+    }
+
+    return((*peltp)->pthrd);
+}
 
 
 /*----------------------------------------------------------------------
@@ -5563,13 +8227,231 @@ msgno_init(msgs, tot)
     for(slop = 1L ; slop <= tot; slop++)	/* reusing "slop" */
       (*msgs)->sort[slop] = slop;
 
+    /*
+     * If there is filtering happening, isort will become larger than sort.
+     * Sort is a list of raw message numbers in their sorted order. There
+     * are missing raw numbers because some of the messages are excluded
+     * (MN_EXLD) from the view. Isort has one entry for every raw message
+     * number, which maps to the corresponding msgno (the row in the sort
+     * array). Some of the entries in isort are not used because those
+     * messages are excluded, but the entry is still there because we want
+     * to map from rawno to message number and the row number is the rawno.
+     */
+    (*msgs)->isort_size = (*msgs)->sort_size;
+    if((*msgs)->isort)
+      fs_resize((void **)&((*msgs)->isort), len);
+    else
+      (*msgs)->isort = (long *)fs_get(len);
+
     (*msgs)->max_msgno    = tot;
     (*msgs)->nmsgs	  = tot;
+
+    /* set the inverse array */
+    msgno_reset_isort(*msgs);
+
     (*msgs)->sort_order   = ps_global->def_sort;
     (*msgs)->reverse_sort = ps_global->def_sort_rev;
     (*msgs)->flagged_hid  = 0L;
     (*msgs)->flagged_exld = 0L;
+    (*msgs)->flagged_chid = 0L;
+    (*msgs)->flagged_chid2= 0L;
+    (*msgs)->flagged_coll = 0L;
+    (*msgs)->flagged_usor = 0L;
     (*msgs)->flagged_tmp  = 0L;
+    (*msgs)->flagged_stmp = 0L;
+
+    /*
+     * This one is the total number of messages which are flagged
+     * hid OR chid. It isn't the sum of those two because a
+     * message may be flagged both at the same time.
+     */
+    (*msgs)->flagged_invisible = 0L;
+
+    /*
+     * And this keeps track of visible threads in the THRD_INDX. This is
+     * weird because a thread is visible if any of its messages are
+     * not hidden, including those that are CHID hidden. You can't just
+     * count up all the messages that are hid or chid because you would
+     * miss a thread that has its top-level message hidden but some chid
+     * message not hidden.
+     */
+    (*msgs)->visible_threads = -1L;
+    ASSERT_ISORT(*msgs, "validity fail in init\n");
+}
+
+
+#if defined(ISORT_ASSERT)
+
+char *
+assert_isort_validity(msgs)
+    MSGNO_S *msgs;
+{
+    long *sort, *isort, i, nmsgs, max_msgno;
+    static char buf[500];
+    int   count_zeroes = 0;
+
+    if(!msgs)
+      return("isort: msgs = NULL");
+    
+    sort      = msgs->sort;
+    isort     = msgs->isort;
+    nmsgs     = msgs->nmsgs;
+    max_msgno = msgs->max_msgno;
+
+    if(!isort)
+      return("isort: isort = NULL");
+
+    if(max_msgno + 1 > msgs->sort_size){
+	dump_isort(msgs);
+	return("isort: sort_size too small");
+    }
+
+    if(nmsgs + 1 > msgs->isort_size){
+	dump_isort(msgs);
+	return("isort: isort_size too small");
+    }
+
+    for(i = 1L; i <= nmsgs; i++){
+	if(isort[i] < 0L || isort[i] > max_msgno){
+	    dump_isort(msgs);
+	    sprintf(buf, "isort: out of range: isort[%ld]=%ld",
+		    i, isort[i]);
+	    return(buf);
+	}
+
+	if(isort[i] == 0L)
+	  count_zeroes++;
+
+	if(i <= max_msgno){
+	    if(sort[i] < 1){
+		dump_isort(msgs);
+		sprintf(buf,
+		 "sort array out of range: sort[%ld]=%ld, which is less than 1",
+			i, sort[i]);
+		return(buf);
+	    }
+
+	    if(sort[i] > nmsgs){
+		dump_isort(msgs);
+		sprintf(buf,
+    "sort array out of range: sort[%ld]=%ld which is greater than nmsgs=%ld",
+			i, sort[i], nmsgs);
+		return(buf);
+	    }
+
+	    if(isort[sort[i]] != i){
+		dump_isort(msgs);
+		sprintf(buf,
+	   "isort inconsistent: sort[%ld]=%ld isort[%ld]=%ld which is not %ld",
+			i, sort[i], sort[i], isort[sort[i]], i);
+		return(buf);
+	    }
+	}
+    }
+
+    if(count_zeroes != any_lflagged(msgs, MN_EXLD)){
+	dump_isort(msgs);
+	sprintf(buf, "isort: undefineds off: isort zeroes=%d excluded=%ld",
+		count_zeroes, any_lflagged(msgs, MN_EXLD));
+	return(buf);
+    }
+
+    return(NULL);
+}
+
+void
+dump_isort(msgs)
+    MSGNO_S *msgs;
+{
+    long *sort, *isort, i, nmsgs, max_msgno;
+
+    sort      = msgs->sort;
+    isort     = msgs->isort;
+    nmsgs     = msgs->nmsgs;
+    max_msgno = msgs->max_msgno;
+
+    dprint(1, (debugfile, "\n\n ---- Isort Debug Info ----\n\n"));
+
+    dprint(1, (debugfile, "sort: %s%s\n",
+	    msgs->reverse_sort ? "Reverse " : "",
+	    sort_name(ps_global->sort_types[msgs->sort_order])));
+    dprint(1, (debugfile, "sort_order=%d\t\treverse_sort=%d\n",
+	    msgs->sort_order, (int) msgs->reverse_sort));
+    dprint(1, (debugfile, "manual_sort=%d\t\tflagged_hid=%ld\n",
+	    (int) msgs->manual_sort, msgs->flagged_hid));
+    dprint(1, (debugfile, "flagged_exld=%ld\t\tflagged_coll=%ld\n",
+	    msgs->flagged_exld, msgs->flagged_coll));
+    dprint(1, (debugfile, "flagged_chid=%ld\t\tflagged_chid2=%ld\n",
+	    msgs->flagged_chid, msgs->flagged_chid2));
+    dprint(1, (debugfile, "flagged_usor=%ld\t\tflagged_usor=%ld\n",
+	    msgs->flagged_exld, msgs->flagged_coll));
+    dprint(1, (debugfile, "flagged_tmp=%ld\t\tflagged_stmp=%ld\n",
+	    msgs->flagged_tmp, msgs->flagged_stmp));
+    dprint(1, (debugfile, "flagged_invisible=%ld\tvisible_threads=%ld\n",
+	    msgs->flagged_invisible, msgs->visible_threads));
+
+    dprint(1, (debugfile, "top=%ld\t\tmax_thrdno=%ld\n",
+	    msgs->top, msgs->max_thrdno));
+    dprint(1, (debugfile, "sort_size=%ld\tisort_size=%ld\tsel_size=%ld\n",
+	    msgs->sort_size, msgs->isort_size, msgs->sel_size));
+    dprint(1, (debugfile, "max_msgno=%ld\tnmsgs=%ld\n",
+	    msgs->max_msgno, msgs->nmsgs));
+
+    if(!msgs->sort)
+      dprint(1, (debugfile, "sort is NULL\n"));
+    if(!msgs->isort)
+      dprint(1, (debugfile, "isort is NULL\n"));
+    if(!msgs->select)
+      dprint(1, (debugfile, "select is NULL\n"));
+
+    if(msgs->select)
+      for(i = 0L; i < msgs->sel_cnt; i++){
+	  dprint(1, (debugfile, "select[%ld]=%ld\n", i, msgs->select[i]));
+      }
+
+    dprint(1, (debugfile, "row\tsort\tisort\n"));
+    for(i = 1L; i <= nmsgs; i++){
+	char buf1[100], buf2[100];
+
+	if(sort && i <= max_msgno)
+	  sprintf(buf1, "%ld", sort[i]);
+	else
+	  buf1[0] = '\0';
+
+	if(isort)
+	  sprintf(buf2, "%ld", isort[i]);
+	else
+	  buf2[0] = '\0';
+
+	dprint(1, (debugfile, "%ld\t%s\t%s\n", i, buf1, buf2));
+    }
+}
+
+#endif /* ISORT_ASSERT */
+
+
+/*
+ * Isort makes mn_raw2m fast. Alternatively, we could look through
+ * the sort array to do mn_raw2m.
+ */
+void
+msgno_reset_isort(msgs)
+    MSGNO_S *msgs;
+{
+    long i;
+
+    if(msgs){
+	/*
+	 * Zero isort so raw messages numbers which don't appear in the
+	 * sort array show up as undefined.
+	 */
+	memset((void *) msgs->isort, 0,
+	       (size_t) msgs->isort_size * sizeof(long));
+
+	/* fill in all the defined entries */
+	for(i = 1L; i <= mn_get_total(msgs); i++)
+	  msgs->isort[msgs->sort[i]] = i;
+    }
 }
 
 
@@ -5586,8 +8468,12 @@ msgno_give(msgs)
      MSGNO_S **msgs;
 {
     if(msgs && *msgs){
+	ASSERT_ISORT(*msgs, "validity fail in msgno_give\n");
 	if((*msgs)->sort)
 	  fs_give((void **) &((*msgs)->sort));
+
+	if((*msgs)->isort)
+	  fs_give((void **) &((*msgs)->isort));
 
 	if((*msgs)->select)
 	  fs_give((void **) &((*msgs)->select));
@@ -5596,6 +8482,19 @@ msgno_give(msgs)
     }
 }
 
+
+void
+free_pine_elt(peltp)
+    PINELT_S **peltp;
+{
+    if(peltp && *peltp){
+	msgno_free_exceptions(&(*peltp)->exceptions);
+	if((*peltp)->pthrd)
+	  fs_give((void **) &(*peltp)->pthrd);
+
+	fs_give((void **) peltp);
+    }
+}
 
 
 /*----------------------------------------------------------------------
@@ -5625,17 +8524,18 @@ msgno_free_exceptions(parts)
    Accepts: msgs - pointer to message manipulation struct
   ----*/
 void
-msgno_inc(stream, msgs)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgs;
+msgno_inc(stream, msgs, flags)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgs;
+    int         flags;
 {
     long i;
 
     if(!msgs || mn_get_total(msgs) < 1L)
       return;
-
+    
     for(i = msgs->select[msgs->sel_cur] + 1; i <= mn_get_total(msgs); i++){
-	if(!get_lflag(stream, msgs, i, MN_HIDE)){
+        if(!msgline_hidden(stream, msgs, i, flags)){
 	    (msgs)->select[((msgs)->sel_cur)] = i;
 	    break;
 	}
@@ -5650,9 +8550,10 @@ msgno_inc(stream, msgs)
    Accepts: msgs - pointer to message manipulation struct
   ----*/
 void
-msgno_dec(stream, msgs)
-     MAILSTREAM *stream;
-     MSGNO_S     *msgs;
+msgno_dec(stream, msgs, flags)
+    MAILSTREAM *stream;
+    MSGNO_S     *msgs;
+    int          flags;
 {
     long i;
 
@@ -5660,7 +8561,7 @@ msgno_dec(stream, msgs)
       return;
 
     for(i = (msgs)->select[((msgs)->sel_cur)] - 1L; i >= 1L; i--){
-	if(!get_lflag(stream, msgs, i, MN_HIDE)){
+        if(!msgline_hidden(stream, msgs, i, flags)){
 	    (msgs)->select[((msgs)->sel_cur)] = i;
 	    break;
 	}
@@ -5720,17 +8621,23 @@ msgno_exclude(stream, msgmap, msgno)
     long	msgno;
 {
     long i;
+    char b[100];
 
+    sprintf(b, "Isort validity: start of msgno_exclude: msgno=%ld\n", msgno);
+    ASSERT_ISORT(msgmap, b);
     /*--- clear all flags to keep our counts consistent  ---*/
-    set_lflag(stream, msgmap, msgno, (MN_HIDE|MN_SLCT), 0);
+    set_lflag(stream, msgmap, msgno, MN_HIDE | MN_CHID | MN_CHID2 | MN_SLCT, 0);
     set_lflag(stream, msgmap, msgno, MN_EXLD, 1); /* mark excluded */
 
-    /* --- erase knowledge in sort array (shift array down) --- */
-    for(i = msgno + 1; i <= msgmap->max_msgno; i++)
-      msgmap->sort[i-1] = msgmap->sort[i];
+    /* erase knowledge in sort array (shift array down) */
+    for(i = msgno + 1L; i <= msgmap->max_msgno; i++)
+      msgmap->sort[i-1L] = msgmap->sort[i];
 
     msgmap->max_msgno = max(0L, msgmap->max_msgno - 1L);
+    msgno_reset_isort(msgmap);
     msgno_flush_selected(msgmap, msgno);
+    sprintf(b, "Isort validity: end of msgno_exclude: msgno=%ld\n", msgno);
+    ASSERT_ISORT(msgmap, b);
 }
 
 
@@ -5773,6 +8680,7 @@ msgno_include(stream, msgs, filtered)
 	      msgs->sort = (long *)fs_get(len);
 
 	    msgs->sort[++msgs->max_msgno] = i;
+	    msgs->isort[i] = msgs->max_msgno;
 	    set_lflag(stream, msgs, msgs->max_msgno, MN_EXLD, 0);
 	    if(filtered){
 		exbits ^= MSG_EX_FILTERED;
@@ -5791,7 +8699,25 @@ msgno_include(stream, msgs, filtered)
 		msgs->select[0] = 1L;
 	    }
 	}
+	else if(filtered && (exbits & MSG_EX_FILTERED)
+		&& !(exbits & MSG_EX_FILED)
+		&& !(exbits & MSG_EX_MANFLAGGED)){
+	    /*
+	     * We get here if the message was filtered by a filter that
+	     * just changes status bits (it wasn't excluded). It has also
+	     * not been manually flagged. If it was manually flagged, we
+	     * don't want to reprocess the filter, undoing the user's
+	     * manual flagging. Of course, a new pine will re check this
+	     * message anyway, so the user had better be using this
+	     * manual flagging only to temporarily save him or herself
+	     * from an expunge before Saving or printing or something.
+	     */
+	    exbits ^= MSG_EX_FILTERED;
+	    msgno_exceptions(stream, i, "0", &exbits, TRUE);
+	}
     }
+
+    ASSERT_ISORT(msgs, "isort validity: end of msgno_include\n");
 }
 
 
@@ -5812,17 +8738,21 @@ msgno_add_raw(msgs, n)
      MSGNO_S *msgs;
      long     n;
 {
-    long   slop, old_total, old_size;
-    size_t len;
+    long   slop, islop, old_total, old_size, old_isize;
+    size_t len, ilen;
 
     if(!msgs || n <= 0L)
       return;
 
     old_total        = msgs->max_msgno;
     old_size         = msgs->sort_size;
-    slop             = (old_total + n + 1L) % 64;
-    msgs->sort_size  = (old_total + n + 1L) + (64 - slop);
+    old_isize        = msgs->isort_size;
+    slop             = (msgs->max_msgno + n + 1L) % 64;
+    islop            = (msgs->nmsgs + n + 1L) % 64;
+    msgs->sort_size  = (msgs->max_msgno + n + 1L) + (64 - slop);
+    msgs->isort_size = (msgs->nmsgs + n + 1L) + (64 - islop);
     len		     = (size_t) msgs->sort_size * sizeof(long);
+    ilen	     = (size_t) msgs->isort_size * sizeof(long);
     if(msgs->sort){
 	if(old_size != msgs->sort_size)
 	  fs_resize((void **) &(msgs->sort), len);
@@ -5830,8 +8760,17 @@ msgno_add_raw(msgs, n)
     else
       msgs->sort = (long *) fs_get(len);
 
-    while(n-- > 0)
-      msgs->sort[++msgs->max_msgno] = ++msgs->nmsgs;
+    if(msgs->isort){
+	if(old_isize != msgs->isort_size)
+	  fs_resize((void **) &(msgs->isort), ilen);
+    }
+    else
+      msgs->isort = (long *) fs_get(ilen);
+
+    while(n-- > 0){
+	msgs->sort[++msgs->max_msgno] = ++msgs->nmsgs;
+	msgs->isort[msgs->nmsgs] = msgs->max_msgno;
+    }
 
     if(old_total <= 0L){			/* if no previous messages, */
 	if(!msgs->select){			/* select the new message   */
@@ -5844,24 +8783,28 @@ msgno_add_raw(msgs, n)
 	msgs->sel_cur   = 0L;
 	msgs->select[0] = 1L;
     }
-}
 
+    {	char b[100];
+	sprintf(b, "isort validity: msgno_add_raw: n=%ld\n", n);
+	ASSERT_ISORT(msgs, b);
+    }
+}
 
 
 /*----------------------------------------------------------------------
   Remove all knowledge of the given raw message number
 
    Accepts: msgs - pointer to message manipulation struct
-	    n - number to remove
+	    rawno - number to remove
    Returns: with fixed up msgno struct
 
    After removing *all* references, adjust the sort array and
    various pointers accordingly...
   ----*/
 void
-msgno_flush_raw(msgs, n)
+msgno_flush_raw(msgs, rawno)
      MSGNO_S *msgs;
-     long     n;
+     long     rawno;
 {
     long i, old_sorted = 0L;
     int  shift = 0;
@@ -5869,17 +8812,17 @@ msgno_flush_raw(msgs, n)
     if(!msgs)
       return;
 
-    /*---- blast n from sort array ----*/
+    /* blast rawno from sort array */
     for(i = 1L; i <= msgs->max_msgno; i++){
-	if(msgs->sort[i] == n){
+	if(msgs->sort[i] == rawno){
 	    old_sorted = i;
 	    shift++;
 	}
 
-	if(shift)
+	if(shift && i < msgs->max_msgno)
 	  msgs->sort[i] = msgs->sort[i + 1L];
 
-	if(msgs->sort[i] > n)
+	if(msgs->sort[i] > rawno)
 	  msgs->sort[i] -= 1L;
     }
 
@@ -5893,8 +8836,15 @@ msgno_flush_raw(msgs, n)
 
 	msgno_flush_selected(msgs, old_sorted);
     }
-}
 
+    msgno_reset_isort(msgs);
+
+    {	char b[100];
+	sprintf(b,
+		"isort validity: end of msgno_flush_raw: rawno=%ld\n", rawno);
+	ASSERT_ISORT(msgs, b);
+    }
+}
 
 
 /*----------------------------------------------------------------------
@@ -5962,41 +8912,6 @@ msgno_in_select(msgs, n)
   return our index number for the given raw message number
 
    Accepts: msgs - pointer to message manipulation struct
-	    n - number to locate
-   Returns: our index number of given raw message
-
-  ----*/
-long
-msgno_in_sort(msgs, n)
-     MSGNO_S *msgs;
-     long     n;
-{
-    static long start;
-    long        i;
-
-    if(mn_get_total(msgs) >= 1L){
-      if(mn_get_sort(msgs) == SortArrival && !any_lflagged(msgs, MN_EXLD))
-	return((mn_get_revsort(msgs)) ? 1 + mn_get_total(msgs) - n  : n);
-
-      i = start = 1L;
-      do {
-	if(mn_m2raw(msgs, i) == n)
-	  return(start = i);
-
-	if(++i > mn_get_total(msgs))
-	  i = 1L;
-      }
-      while(i != start);
-    }
-
-    return(0L);
-}
-
-
-/*----------------------------------------------------------------------
-  return our index number for the given raw message number
-
-   Accepts: msgs - pointer to message manipulation struct
 	    msgno - number that's important
 	    part
    Returns: our index number of given raw message
@@ -6009,45 +8924,59 @@ msgno_exceptions(stream, rawno, part, bits, set)
     char       *part;
     int	       *bits, set;
 {
-    PARTEX_S **partp, *pdelp;
+    PINELT_S **peltp;
+    PARTEX_S **partp;
+
+    if(!stream || rawno < 1L || rawno > stream->nmsgs)
+      return FALSE;
 
     /*
      * Get pointer to exceptional part list, and scan down it
      * for the requested part...
      */
-    for(partp = (PARTEX_S **) &mail_elt(stream, rawno)->sparep;
-	*partp;
-	partp = &(*partp)->next)
-      if(part){
-	  if(!strcmp(part, (*partp)->partno)){
-	      if(bits){
-		  if(set)
-		    (*partp)->handling = *bits;
-		  else
-		    *bits = (*partp)->handling;
-	      }
+    if(*(peltp = (PINELT_S **) &mail_elt(stream, rawno)->sparep))
+      for(partp = &(*peltp)->exceptions; *partp; partp = &(*partp)->next){
+	  if(part){
+	      if(!strcmp(part, (*partp)->partno)){
+		  if(bits){
+		      if(set)
+			(*partp)->handling = *bits;
+		      else
+			*bits = (*partp)->handling;
+		  }
 
-	      return(TRUE);		/* bingo! */
+		  return(TRUE);		/* bingo! */
+	      }
 	  }
-      }
-      else if(bits){
-	  /*
-	   * The caller provided flags, but no part,
-	   * so we're to test for the existance of
-	   * any of the flags...
-	   */
-	  if((*bits & (*partp)->handling) == *bits)
+	  else if(bits){
+	      /*
+	       * The caller provided flags, but no part.
+	       * We are looking to see if the bits are set in any of the
+	       * parts. This doesn't count parts with non-digit partno's (like
+	       * scores) because those are used differently.
+	       * any of the flags...
+	       */
+	      if((*partp)->partno && *(*partp)->partno &&
+		 isdigit((unsigned char) *(*partp)->partno) &&
+		 (*bits & (*partp)->handling) == *bits)
+		return(TRUE);
+	  }
+	  else
+	    /*
+	     * The caller didn't specify a part, so
+	     * they must just be interested in whether
+	     * the msg had any exceptions at all...
+	     */
 	    return(TRUE);
       }
-      else
-	/*
-	 * The caller didn't specify a part, so
-	 * they must just be interested in whether
-	 * the msg had any exceptions at all...
-	 */
-	return(TRUE);
 
     if(set && part){
+	if(!*peltp){
+	    *peltp = (PINELT_S *) fs_get(sizeof(PINELT_S));
+	    memset(*peltp, 0, sizeof(PINELT_S));
+	    partp = &(*peltp)->exceptions;
+	}
+
 	(*partp)	   = (PARTEX_S *) fs_get(sizeof(PARTEX_S));
 	(*partp)->partno   = cpystr(part);
 	(*partp)->next	   = NULL;
@@ -6072,17 +9001,17 @@ msgno_any_deletedparts(stream, msgmap)
     MSGNO_S    *msgmap;
 {
     long n;
+    PINELT_S  *pelt;
     PARTEX_S **partp;
 
     for(n = mn_first_cur(msgmap); n > 0L; n = mn_next_cur(msgmap))
-      for(partp = (PARTEX_S **) &mail_elt(stream, mn_m2raw(msgmap, n))->sparep;
-	  *partp;
-	  partp = &(*partp)->next)
-	if(((*partp)->handling & MSG_EX_DELETE) &&
-	   (*partp)->partno &&
-	   *(*partp)->partno != '0' &&
-	   isdigit((unsigned char)*(*partp)->partno))
-	  return(1);
+      if(pelt = (PINELT_S *) mail_elt(stream, mn_m2raw(msgmap, n))->sparep)
+        for(partp = &pelt->exceptions; *partp; partp = &(*partp)->next)
+	  if(((*partp)->handling & MSG_EX_DELETE)
+	     && (*partp)->partno
+	     && *(*partp)->partno != '0'
+	     && isdigit((unsigned char) *(*partp)->partno))
+	    return(1);
 
     return(0);
 }
@@ -6128,13 +9057,16 @@ msgno_part_deleted(stream, rawno, part)
  * at some point, this could be made part of the pine_state struct.
  * the only changes here would be to pass the ps pointer around
  */
-static struct index_cache {
+struct index_cache {
    void	  *cache;				/* pointer to cache         */
-   char	  *name;				/* pointer to cache name    */
    long    num;					/* # of last index in cache */
    size_t  size;				/* size of each index line  */
    int     flags;
-} icache = { (void *) NULL, (char *) NULL, (long) 0, (size_t) 0, (int) 0 };
+};
+
+static struct index_cache
+    icache =  { (void *) NULL, (long) 0, (size_t) 0, (int) 0 },
+    ticache = { (void *) NULL, (long) 0, (size_t) 0, (int) 0 };
 
 #define IC_NEED_FORMAT_SETUP         0x01
 #define IC_FORMAT_INCLUDES_MSGNO     0x02
@@ -6144,25 +9076,7 @@ static struct index_cache {
  * cache size growth increment
  */
 
-#if defined(DOS) && !defined(_WINDOWS)
-/*
- * the idea is to have the cache increment be a multiple of the block
- * size (4K), for efficient swapping of blocks.  we can pretty much
- * assume 81 character lines.
- *
- * REMEMBER: number of lines in the incore cache has to be a multiple 
- *           of the cache growth increment!
- */
-#define	IC_SIZE		(50L)			/* cache growth increment  */
-#define	ICC_SIZE	(50L)			/* enties in incore cache  */
-#define FUDGE           (46L)			/* extra chars to make 4096*/
-
-static char	*incore_cache = NULL;		/* pointer to incore cache */
-static long      cache_block_s = 0L;		/* save recomputing time   */
-static long      cache_base = 0L;		/* index of line 0 in block*/
-#else
 #define	IC_SIZE		100
-#endif
 
 /*
  * important values for cache building
@@ -6198,7 +9112,7 @@ i_cache_size(indx)
       newsize += (sizeof(long) - (size_t)j);
 
     if(icache.size != newsize){
-	clear_index_cache();			/* clear cache, start over! */
+	clear_iindex_cache();			/* clear cache, start over! */
 	icache.size = newsize;
     }
 
@@ -6209,47 +9123,6 @@ i_cache_size(indx)
 	while(indx >= icache.num)
 	  icache.num += IC_SIZE;
 
-#if defined(DOS) && !defined(_WINDOWS)
-	tmpline = fs_get(tmplen);
-	memset(tmpline, 0, tmplen);
-	if(icache.cache == NULL){
-	    if(!icache.name)
-	      icache.name = temp_nam(NULL, "pi");
-
-	    if((icache.cache = (void *)fopen(icache.name,"w+b")) == NULL){
-		sprintf(tmp_20k_buf, "Can't open index cache: %s",icache.name);
-		fatal(tmp_20k_buf);
-	    }
-
-	    for(j = 0; j < icache.num; j++){
-	        if(fwrite(tmpline,tmplen,(size_t)1,(FILE *)icache.cache) != 1)
-		  fatal("Can't write index cache in resize");
-
-		if(j%ICC_SIZE == 0){
-		  if(fwrite(tmpline,(size_t)FUDGE,
-				(size_t)1,(FILE *)icache.cache) != 1)
-		    fatal("Can't write FUDGE factor in resize");
-	        }
-	    }
-	}
-	else{
-	    /* init new entries */
-	    fseek((FILE *)icache.cache, 0L, 2);		/* seek to end */
-
-	    for(;j < icache.num; j++){
-	        if(fwrite(tmpline,tmplen,(size_t)1,(FILE *)icache.cache) != 1)
-		  fatal("Can't write index cache in resize");
-
-		if(j%ICC_SIZE == 0){
-		  if(fwrite(tmpline,(size_t)FUDGE,
-				(size_t)1,(FILE *)icache.cache) != 1)
-		    fatal("Can't write FUDGE factor in resize");
-	        }
-	    }
-	}
-
-	fs_give((void **)&tmpline);
-#else
 	if(icache.cache == NULL){
 	    icache.cache = (void *)fs_get((icache.num+1)*tmplen);
 	    memset(icache.cache, 0, (icache.num+1)*tmplen);
@@ -6259,78 +9132,39 @@ i_cache_size(indx)
 	    tmpline = (char *)icache.cache + ((j+1) * tmplen);
 	    memset(tmpline, 0, (icache.num - j) * tmplen);
 	}
-#endif
+    }
+
+    if(SEP_THRDINDX()){
+	if(ps_global->msgmap->max_thrdno > 0L){
+	    if(ticache.size != newsize){
+		clear_tindex_cache();
+		ticache.size = newsize;
+	    }
+
+	    if(ps_global->msgmap->max_thrdno > ticache.num){
+		size_t  tmplen = ticache.size;
+		char   *tmpline;
+
+		ticache.num = ps_global->msgmap->max_thrdno;
+
+		if(ticache.cache == NULL){
+		    /* The +1 seems superflous, but I'm leaving it */
+		    ticache.cache = (void *)fs_get((ticache.num+1)*tmplen);
+		    memset(ticache.cache, 0, (ticache.num+1)*tmplen);
+		}
+		else{
+		    j = ticache.num - 1L;
+		    fs_resize((void **)&(ticache.cache),
+			      (size_t)(ticache.num+1)*tmplen);
+		    tmpline = (char *)ticache.cache + ((j+1) * tmplen);
+		    memset(tmpline, 0, (ticache.num - j) * tmplen);
+		}
+	    }
+	}
     }
 
     return(1);
 }
-
-#if defined(DOS) && !defined(_WINDOWS)
-/*
- * read a block into the incore cache
- */
-void
-icread()
-{
-    size_t n;
-
-    if(fseek((FILE *)icache.cache, (cache_base/ICC_SIZE) * cache_block_s, 0))
-      fatal("ran off end of index cache file in icread");
-
-    n = fread((void *)incore_cache, (size_t)cache_block_s, 
-		(size_t)1, (FILE *)icache.cache);
-
-    if(n != 1L)
-      fatal("Can't read index cache block in from disk");
-}
-
-
-/*
- * write the incore cache out to disk
- */
-void
-icwrite()
-{
-    size_t n;
-
-    if(fseek((FILE *)icache.cache, (cache_base/ICC_SIZE) * cache_block_s, 0))
-      fatal("ran off end of index cache file in icwrite");
-
-    n = fwrite((void *)incore_cache, (size_t)cache_block_s,
-		(size_t)1, (FILE *)icache.cache);
-
-    if(n != 1L)
-      fatal("Can't write index cache block in from disk");
-}
-
-
-/*
- * make sure the necessary block of index lines is in core
- */
-void
-i_cache_hit(indx)
-    long         indx;
-{
-    dprint(9, (debugfile, "i_cache_hit: %ld\n", indx));
-    /* no incore cache, create it */
-    if(!incore_cache){
-	cache_block_s = (((long)icache.size * ICC_SIZE) + FUDGE)*sizeof(char);
-	incore_cache  = (char *)fs_get((size_t)cache_block_s);
-	cache_base = (indx/ICC_SIZE) * ICC_SIZE;
-	icread();
-	return;
-    }
-
-    if(indx >= cache_base && indx < (cache_base + ICC_SIZE))
-	return;
-
-    icwrite();
-
-    cache_base = (indx/ICC_SIZE) * ICC_SIZE;
-    icread();
-}
-#endif
-
 
 
 /*
@@ -6340,22 +9174,30 @@ HLINE_S *
 get_index_cache(msgno)
     long         msgno;
 {
-    if(need_format_setup())
-      setup_header_widths();
+    if(need_format_setup() && setup_header_widths)
+      (*setup_header_widths)();
 
     if(!i_cache_size(--msgno)){
 	q_status_message(SM_ORDER, 0, 3, "get_index_cache failed!");
 	return(NULL);
     }
 
-#if defined(DOS) && !defined(_WINDOWS)
-    i_cache_hit(msgno);			/* get entry into core */
-    return((HLINE_S *)(incore_cache 
-	      + ((msgno%ICC_SIZE) * (long)max(icache.size,FUDGE))));
-#else
     return((HLINE_S *) ((char *)(icache.cache) 
 	   + (msgno * (long)icache.size * sizeof(char))));
-#endif
+}
+
+
+HLINE_S *
+get_tindex_cache(thrdno)
+    long         thrdno;
+{
+    if(thrdno > 0)		/* this should always be true */
+      --thrdno;
+    else
+      return NULL;
+
+    return((HLINE_S *) ((char *)(ticache.cache) 
+	   + (thrdno * (long)ticache.size * sizeof(char))));
 }
 
 
@@ -6370,7 +9212,7 @@ build_header_cache()
 
     if(mn_get_total(ps_global->msgmap) == 0 || ps_global->mail_stream == NULL
        || (bc_this_stream == ps_global->mail_stream && bc_done >= 2)
-       || any_lflagged(ps_global->msgmap, (MN_HIDE|MN_EXLD|MN_SLCT)))
+       || any_lflagged(ps_global->msgmap, (MN_HIDE|MN_CHID|MN_EXLD|MN_SLCT)))
       return;
 
     if(bc_this_stream != ps_global->mail_stream){ /* reset? */
@@ -6393,7 +9235,7 @@ build_header_cache()
       bc_done = 2;			/* really done! */
     else
       (void)build_header_line(ps_global, ps_global->mail_stream,
-			      ps_global->msgmap, bc_current++);
+			      ps_global->msgmap, bc_current++, NULL);
 }
 
 
@@ -6404,10 +9246,39 @@ void
 clear_index_cache_ent(indx)
     long indx;
 {
-    HLINE_S *tmp = get_index_cache(indx);
+    HLINE_S *hline = get_index_cache(indx);
 
-    if(tmp->id || tmp->color_lookup_done || *tmp->line)
-      memset((void *)tmp, 0, sizeof(*tmp));
+    if(SEP_THRDINDX()){
+	if(!hline->tihl){
+	    PINETHRD_S   *thrd;
+
+	    thrd = fetch_thread(ps_global->mail_stream,
+				mn_m2raw(ps_global->msgmap, indx));
+	    if(thrd && thrd->top && thrd->top != thrd->rawno
+	       && (thrd=fetch_thread(ps_global->mail_stream, thrd->top))){
+		hline->tihl = get_tindex_cache(thrd->thrdno);
+	    }
+	}
+
+	if(hline->tihl
+	   && (hline->tihl->id || hline->tihl->color_lookup_done
+	       || *hline->tihl->line))
+	  memset((void *)hline->tihl, 0, sizeof(*hline->tihl));
+    }
+
+    if(hline->id || hline->color_lookup_done || *hline->line)
+      memset((void *)hline, 0, sizeof(*hline));
+}
+
+
+/*
+ * clear the index caches associated with the current mailbox
+ */
+void
+clear_index_cache()
+{
+    clear_iindex_cache();
+    clear_tindex_cache();
 }
 
 
@@ -6415,30 +9286,40 @@ clear_index_cache_ent(indx)
  * clear the index cache associated with the current mailbox
  */
 void
-clear_index_cache()
+clear_iindex_cache()
 {
-#if defined(DOS) && !defined(_WINDOWS)
-    cache_base = 0L;
-    if(incore_cache)
-      fs_give((void **)&incore_cache);
-
-    if(icache.cache){
-	fclose((FILE *)icache.cache);
-	icache.cache = NULL;
-    }
-
-    if(icache.name){
-	unlink(icache.name);
-	fs_give((void **)&icache.name);
-    }
-#else
     if(icache.cache)
       fs_give((void **)&(icache.cache));
-#endif
+
     icache.num  = 0L;
     icache.size = 0;
     bc_this_stream = NULL;
     set_need_format_setup();
+}
+
+
+void
+clear_tindex_cache()
+{
+    int i;
+    HLINE_S *hline;
+
+    if(ticache.cache)
+      fs_give((void **)&(ticache.cache));
+
+    ticache.num  = 0L;
+    ticache.size = 0;
+    
+    /*
+     * Erase references to ticache.cache in icache.cache. Do it without
+     * calling get_index_cache which calls i_cache_size and does stuff
+     * we don't want, like re-calling clear_tindex_cache.
+     */
+    for(i = 0; i < icache.num; i++){
+	hline = (HLINE_S *) ((char *)(icache.cache)
+				+ (i * (long)icache.size * sizeof(char)));
+	hline->tihl = NULL;
+    }
 }
 
 
@@ -6483,24 +9364,6 @@ format_includes_smartdate()
 {
     return(icache.flags & IC_FORMAT_INCLUDES_SMARTDATE);
 }
-
-
-#if defined(DOS) && !defined(_WINDOWS)
-/*
- * flush the incore_cache, but not the whole enchilada
- */
-void
-flush_index_cache()
-{
-    if(incore_cache){
-	if(mn_get_total(ps_global->msgmap) > 0L)
-	  icwrite();			/* write this block out to disk */
-
-	fs_give((void **)&incore_cache);
-	cache_base = 0L;
-    }
-}
-#endif
 
 
 #ifdef _WINDOWS
@@ -6549,14 +9412,14 @@ long	scroll_pos;
 
       case MSWIN_KEY_SCROLLTO:
 	/* Normalize msgno in zoomed case */
-	if(any_lflagged(ps_global->msgmap, MN_HIDE)){
+	if(any_lflagged(ps_global->msgmap, MN_HIDE | MN_CHID)){
 	    long n, x;
 
 	    for(n = 1L, x = 0;
 		x < scroll_pos && n < mn_get_total(ps_global->msgmap);
 		n++)
-	      if(!get_lflag(ps_global->mail_stream,
-			    ps_global->msgmap, n, MN_HIDE))
+	      if(!msgline_hidden(ps_global->mail_stream, ps_global->msgmap,
+			         n, 0))
 		x++;
 
 	    scroll_pos = n - 1;	/* list-position --> message number  */
@@ -6612,7 +9475,7 @@ index_gettext_callback(title, text, l, style)
 				      &body))
 	   && format_message(mn_m2raw(ps_global->msgmap,
 				      mn_get_cur(ps_global->msgmap)),
-			     env, body, FM_NEW_MESS, pc)){
+			     env, body, NULL, FM_NEW_MESS, pc)){
 	    sprintf(title, "Folder %s  --  Message %ld of %ld",
 		    strsquish(tmp_20k_buf + 500, ps_global->cur_folder, 50),
 		    mn_get_cur(ps_global->msgmap),
@@ -6646,7 +9509,7 @@ index_sort_callback(set, order)
 
     if(set){
 	sort_folder(ps_global->msgmap, order & 0x000000ff,
-		    (order & 0x00000100) != 0, 1);
+		    (order & 0x00000100) != 0, SRT_VRB);
 	mswin_beginupdate();
 	update_titlebar_message();
 	update_titlebar_status();
@@ -6812,3 +9675,1013 @@ pcpine_resize_index()
     return(0);
 }
 #endif	/* _WINDOWS */
+
+
+void
+thread_command(state, stream, msgmap, preloadkeystroke, q_line)
+    struct pine *state;
+    MAILSTREAM	*stream;
+    MSGNO_S     *msgmap;
+    int	         preloadkeystroke;
+    int	         q_line;
+{
+    PINETHRD_S   *thrd = NULL;
+    unsigned long rawno, save_branch;
+    int           we_cancel = 0;
+    int           flags = AC_FROM_THREAD;
+
+    if(!(stream && msgmap))
+      return;
+
+    rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+    if(rawno)
+      thrd = fetch_thread(stream, rawno);
+
+    if(!thrd)
+      return;
+
+    save_branch = thrd->branch;
+    thrd->branch = 0L;		/* branch is a sibling, not part of thread */
+
+    if(!preloadkeystroke){
+	if(!THRD_INDX()){
+	    if(get_lflag(stream, NULL, rawno, MN_COLL) && thrd->next)
+	      flags |= AC_EXPN;
+	    else
+	      flags |= AC_COLL;
+	}
+
+	if(count_lflags_in_thread(stream, thrd, msgmap, MN_SLCT)
+	       == count_lflags_in_thread(stream, thrd, msgmap, MN_NONE))
+	  flags |= AC_UNSEL;
+    }
+
+    we_cancel = busy_alarm(1, NULL, NULL, 0);
+
+    /* save the SLCT flags in STMP for restoring at the bottom */
+    copy_lflags(stream, msgmap, MN_SLCT, MN_STMP);
+
+    /* clear the values from the SLCT flags */
+    set_lflags(stream, msgmap, MN_SLCT, 0);
+
+    /* set SLCT for thrd on down */
+    set_flags_for_thread(stream, msgmap, MN_SLCT, thrd, 1);
+    thrd->branch = save_branch;
+
+    if(we_cancel)
+      cancel_busy_alarm(0);
+
+    (void ) apply_command(state, stream, msgmap, preloadkeystroke, flags,
+			  q_line);
+
+    /* restore the original flags */
+    copy_lflags(stream, msgmap, MN_STMP, MN_SLCT);
+
+    if(any_lflagged(msgmap, MN_HIDE) > 0L){
+	long cur;
+
+	/* if nothing left selected, unhide all */
+	if(any_lflagged(msgmap, MN_SLCT) == 0L){
+	    (void) unzoom_index(ps_global, stream, msgmap);
+	    dprint(4, (debugfile, "\n\n ---- Exiting ZOOM mode ----\n"));
+	    q_status_message(SM_ORDER,0,2, "Index Zoom Mode is now off");
+	}
+
+	/* if current is hidden, adjust */
+	adjust_cur_to_visible(stream, msgmap);
+    }
+}
+
+
+/*
+ * Set flag f to v for all messages in thrd.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately.
+ * Ok to call it on top-level thread which has no branch already.
+ */
+void
+set_flags_for_thread(stream, msgmap, f, thrd, v)
+    MAILSTREAM  *stream;
+    MSGNO_S     *msgmap;
+    int          f;
+    PINETHRD_S  *thrd;
+    int          v;
+{
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!(stream && thrd && msgmap))
+      return;
+
+    set_lflag(stream, msgmap, mn_raw2m(msgmap, thrd->rawno), f, v);
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  set_flags_for_thread(stream, msgmap, f, nthrd, v);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  set_flags_for_thread(stream, msgmap, f, bthrd, v);
+    }
+}
+
+
+/*
+ * Set search bit for every message in a thread.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately. Top-level threads
+ * already have a branch equal to zero.
+ */
+void
+set_search_bit_for_thread(stream, thrd)
+    MAILSTREAM  *stream;
+    PINETHRD_S  *thrd;
+{
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!(stream && thrd))
+      return;
+
+    if(thrd->rawno > 0L && thrd->rawno <= stream->nmsgs)
+      mm_searched(stream, thrd->rawno);
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  set_search_bit_for_thread(stream, nthrd);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  set_search_bit_for_thread(stream, bthrd);
+    }
+}
+
+
+/*
+ * Copy value of flag from to flag to.
+ */
+void
+copy_lflags(stream, msgmap, from, to)
+    MAILSTREAM  *stream;
+    MSGNO_S     *msgmap;
+    int          from, to;
+{
+    unsigned long i;
+    int           hide;
+
+    hide = ((to == MN_SLCT) && (any_lflagged(msgmap, MN_HIDE) > 0L));
+
+    set_lflags(stream, msgmap, to, 0);
+
+    if(any_lflagged(msgmap, from))
+      for(i = 1L; i <= mn_get_total(msgmap); i++)
+	if(get_lflag(stream, msgmap, i, from))
+	  set_lflag(stream, msgmap, i, to, 1);
+	else if(hide)
+	  set_lflag(stream, msgmap, i, MN_HIDE, 1);
+}
+
+
+/*
+ * Set flag f to value v in all message.
+ */
+void
+set_lflags(stream, msgmap, f, v)
+    MAILSTREAM  *stream;
+    MSGNO_S     *msgmap;
+    int          f;
+    int          v;
+{
+    unsigned long i;
+
+    if((v == 0 && any_lflagged(msgmap, f)) || v )
+      for(i = 1L; i <= mn_get_total(msgmap); i++)
+	set_lflag(stream, msgmap, i, f, v);
+}
+
+
+/*
+ * Collapse or expand a threading subtree. Not called from separate thread
+ * index.
+ */
+void
+collapse_or_expand(state, stream, msgmap, msgno)
+    struct pine *state;
+    MAILSTREAM  *stream;
+    MSGNO_S     *msgmap;
+    unsigned long msgno;
+{
+    int           collapsed, adjust_current = 0;
+    PINETHRD_S   *thrd = NULL, *nthrd;
+    HLINE_S      *hline;
+    unsigned long rawno;
+
+    if(!stream)
+      return;
+
+    /*
+     * If msgno is a good msgno, then we collapse or expand the subthread
+     * which begins at msgno. If msgno is 0, we collapse or expand the
+     * entire current thread.
+     */
+
+    if(msgno > 0L && msgno <= mn_get_total(msgmap)){
+	rawno = mn_m2raw(msgmap, msgno);
+	if(rawno)
+	  thrd = fetch_thread(stream, rawno);
+    }
+    else if(msgno == 0L){
+	rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+	if(rawno)
+	  thrd = fetch_thread(stream, rawno);
+	
+	if(thrd && thrd->top != thrd->rawno){
+	    adjust_current++;
+	    thrd = fetch_thread(stream, thrd->top);
+	}
+    }
+
+
+    if(!thrd)
+      return;
+
+    collapsed = get_lflag(stream, NULL, thrd->rawno, MN_COLL) && thrd->next;
+
+    if(collapsed){
+	msgno = mn_raw2m(msgmap, thrd->rawno);
+	if(msgno > 0L && msgno <= mn_get_total(msgmap)){
+	    set_lflag(stream, msgmap, msgno, MN_COLL, 0);
+	    if(thrd->next){
+		if(nthrd = fetch_thread(stream, thrd->next))
+		  set_thread_subtree(stream, nthrd, msgmap, 0, MN_CHID);
+
+		clear_index_cache_ent(msgno);
+	    }
+	}
+    }
+    else if(thrd && thrd->next){
+	msgno = mn_raw2m(msgmap, thrd->rawno);
+	if(msgno > 0L && msgno <= mn_get_total(msgmap)){
+	    set_lflag(stream, msgmap, msgno, MN_COLL, 1);
+	    if(nthrd = fetch_thread(stream, thrd->next))
+	      set_thread_subtree(stream, nthrd, msgmap, 1, MN_CHID);
+
+	    clear_index_cache_ent(msgno);
+	}
+    }
+    else
+      q_status_message(SM_ORDER, 0, 1,
+		       "No thread to collapse or expand on this line");
+    
+    /* if current is hidden, adjust */
+    if(adjust_current)
+      adjust_cur_to_visible(stream, msgmap);
+}
+
+
+/*
+ * Select the messages in a subthread. If all of the messages are already
+ * selected, unselect them. This routine is a bit strange because it
+ * doesn't set the MN_SLCT bit. Instead, it sets MN_STMP in apply_command
+ * and then thread_command copies the MN_STMP messages back to MN_SLCT.
+ */
+void
+select_thread_stmp(state, stream, msgmap)
+    struct pine *state;
+    MAILSTREAM  *stream;
+    MSGNO_S     *msgmap;
+{
+    PINETHRD_S   *thrd;
+    unsigned long rawno, in_thread, set_in_thread, save_branch;
+
+    /* ugly bit means the same thing as return of 1 from individual_select */
+    state->ugly_consider_advancing_bit = 0;
+
+    if(!(stream && msgmap))
+      return;
+
+    rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+    if(rawno)
+      thrd = fetch_thread(stream, rawno);
+    
+    if(!thrd)
+      return;
+    
+    /* run through thrd to see if it is all selected */
+    save_branch = thrd->branch;
+    thrd->branch = 0L;
+    if((set_in_thread = count_lflags_in_thread(stream, thrd, msgmap, MN_STMP))
+       == (in_thread = count_lflags_in_thread(stream, thrd, msgmap, MN_NONE)))
+      set_thread_lflags(stream, thrd, msgmap, MN_STMP, 0);
+    else{
+	set_thread_lflags(stream, thrd, msgmap, MN_STMP, 1);
+	state->ugly_consider_advancing_bit = 1;
+    }
+
+    thrd->branch = save_branch;
+    
+    if(set_in_thread == in_thread)
+      q_status_message1(SM_ORDER, 0, 3, "Unselected %.200s messages in thread",
+			comatose((long) in_thread));
+    else if(set_in_thread == 0)
+      q_status_message1(SM_ORDER, 0, 3, "Selected %.200s messages in thread",
+			comatose((long) in_thread));
+    else
+      q_status_message1(SM_ORDER, 0, 3,
+			"Selected %.200s more messages in thread",
+			comatose((long) (in_thread-set_in_thread)));
+}
+
+
+/*
+ * Count how many of this system flag in this thread subtree.
+ * If flags == 0 count the messages in the thread.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately.
+ * Ok to call it on top-level thread which has no branch already.
+ */
+unsigned long
+count_flags_in_thread(stream, thrd, flags)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    long        flags;		/* flag to count */
+{
+    unsigned long rawno, count = 0;
+    PINETHRD_S *nthrd, *bthrd;
+    MESSAGECACHE *mc;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return count;
+    
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  count += count_flags_in_thread(stream, nthrd, flags);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  count += count_flags_in_thread(stream, bthrd, flags);
+    }
+
+    mc = mail_elt(stream, thrd->rawno);
+    if(mc && mc->valid && FLAG_MATCH(flags, mc))
+      count++;
+
+    return count;
+}
+
+
+/*
+ * Count how many of this local flag in this thread subtree.
+ * If flags == MN_NONE then we just count the messages instead of whether
+ * the messages have a flag set.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately.
+ * Ok to call it on top-level thread which has no branch already.
+ */
+unsigned long
+count_lflags_in_thread(stream, thrd, msgmap, flags)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    MSGNO_S    *msgmap;
+    int         flags;		/* flag to count */
+{
+    unsigned long rawno, count = 0;
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return count;
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  count += count_lflags_in_thread(stream, nthrd, msgmap, flags);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  count += count_lflags_in_thread(stream, bthrd, msgmap,flags);
+    }
+
+    if(flags == MN_NONE)
+      count++;
+    else
+      count += get_lflag(stream, msgmap, mn_raw2m(msgmap, thrd->rawno), flags);
+
+    return count;
+}
+
+
+/*
+ * Special-purpose for performance improvement.
+ */
+int
+thread_has_some_visible(stream, thrd)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+{
+    unsigned long rawno, count = 0;
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return 0;
+
+    if(get_lflag(stream, NULL, thrd->rawno, MN_HIDE) == 0)
+      return 1;
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd && thread_has_some_visible(stream, nthrd))
+	  return 1;
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd && thread_has_some_visible(stream, bthrd))
+	  return 1;
+    }
+
+    return 0;
+}
+
+
+/*
+ * Returns nonzero if considered hidden, 0 if not considered hidden.
+ */
+int
+msgline_hidden(stream, msgmap, msgno, flags)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    long        msgno;
+    int         flags;
+{
+    int ret;
+
+    if(flags & MH_ANYTHD){
+	ret = ((any_lflagged(msgmap, MN_HIDE) > 0)
+	       && get_lflag(stream, msgmap, msgno, MN_HIDE));
+    }
+    else if(flags & MH_THISTHD && THREADING() && ps_global->viewing_a_thread){
+	ret = (get_lflag(stream, msgmap, msgno, MN_HIDE)
+	       || !get_lflag(stream, msgmap, msgno, MN_CHID2));
+    }
+    else{
+	if(THREADING() && ps_global->viewing_a_thread){
+	    ret = (get_lflag(stream, msgmap, msgno, MN_HIDE)
+		   || !get_lflag(stream, msgmap, msgno, MN_CHID2)
+		   || get_lflag(stream, msgmap, msgno, MN_CHID));
+	}
+	else if(THRD_INDX()){
+	    /*
+	     * If this message is in the collapsed part of a thread,
+	     * it's hidden. It must be a top-level of a thread to be
+	     * considered visible. Even if it is top-level, it is only
+	     * visible if some message in the thread is not hidden.
+	     */
+	    if(get_lflag(stream, msgmap, msgno, MN_CHID))	/* not top */
+	      ret = 1;
+	    else{
+		unsigned long rawno;
+		PINETHRD_S   *thrd = NULL;
+
+		rawno = mn_m2raw(msgmap, msgno);
+		if(rawno)
+		  thrd = fetch_thread(stream, rawno);
+
+		ret = !thread_has_some_visible(stream, thrd);
+	    }
+	}
+	else{
+	    ret = ((any_lflagged(msgmap, MN_HIDE | MN_CHID) > 0)
+		   && get_lflag(stream, msgmap, msgno, MN_HIDE | MN_CHID));
+	}
+    }
+    
+    dprint(10,(debugfile,
+	       "msgline_hidden(%ld): %s\n", msgno, ret ? "HID" : "VIS"));
+
+    return(ret);
+}
+
+
+int
+mark_msgs_in_thread(stream, thrd, msgmap)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    MSGNO_S    *msgmap;
+{
+    int           count = 0;
+    long          n;
+    PINETHRD_S   *nthrd, *bthrd;
+    MESSAGECACHE *mc;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return count;
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  count += mark_msgs_in_thread(stream, nthrd, msgmap);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  count += mark_msgs_in_thread(stream, bthrd, msgmap);
+    }
+
+    n = mn_raw2m(msgmap, thrd->rawno);
+
+    if(thrd->rawno >= 1L && thrd->rawno <= stream->nmsgs &&
+       !(mc = mail_elt(stream,thrd->rawno))->private.msg.env){
+	mc->sequence = 1;
+	count++;
+    }
+
+    return count;
+}
+
+
+/*
+ * This sets or clears flags for the messages at this node and below in
+ * a tree.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately.
+ * Ok to call it on top-level thread which has no branch already.
+ */
+void
+set_thread_lflags(stream, thrd, msgmap, flags, v)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    MSGNO_S    *msgmap;
+    int         flags;		/* flags to set or clear */
+    int         v;		/* set or clear? */
+{
+    unsigned long rawno, msgno;
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return;
+
+    msgno = mn_raw2m(msgmap, thrd->rawno);
+
+    set_lflag(stream, msgmap, msgno, flags, v);
+
+    /*
+     * Careful, performance hack. This should logically be a separate
+     * operation on the thread but it is convenient to stick it in here.
+     * Line[0] won't be set if we haven't been in here before.
+     *
+     * When we back out of viewing a thread to the separate-thread-index
+     * we may leave behind some cached hlines that aren't quite right
+     * because they were collapsed. In particular, the plus_col character
+     * may be wrong. Instead of trying to figure out what it should be just
+     * clear the cache entries for the this thread when we come back in
+     * to view it again.
+     */
+    if(flags == MN_CHID2 && v == 1 && get_index_cache(msgno)->line[0])
+      clear_index_cache_ent(msgno);
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  set_thread_lflags(stream, nthrd, msgmap, flags, v);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  set_thread_lflags(stream, bthrd, msgmap, flags, v);
+    }
+}
+
+
+/*
+ * This is D if all of thread is deleted,
+ * else N if any unseen and not deleted,
+ * else blank.
+ */
+char
+status_symbol_for_thread(stream, thrd, type)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    IndexColType type;
+{
+    char        status = ' ';
+    PINETHRD_S *nthrd, *bthrd;
+    unsigned long save_branch, cnt, tot_in_thrd;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return status;
+
+    save_branch = thrd->branch;
+    thrd->branch = 0L;		/* branch is a sibling, not part of thread */
+    
+    if(type == iStatus){
+	/* all deleted */
+	if(count_flags_in_thread(stream, thrd, F_DEL) ==
+	   count_flags_in_thread(stream, thrd, F_NONE))
+	  status = 'D';
+	/* or any new and not deleted */
+	else if((!IS_NEWS(stream)
+		 || F_ON(F_FAKE_NEW_IN_NEWS, ps_global))
+		&& count_flags_in_thread(stream, thrd, F_UNDEL|F_UNSEEN))
+	  status = 'N';
+    }
+    else if(type == iFStatus){
+	if(!IS_NEWS(stream) || F_ON(F_FAKE_NEW_IN_NEWS, ps_global)){
+	    tot_in_thrd = count_flags_in_thread(stream, thrd, F_NONE);
+	    cnt = count_flags_in_thread(stream, thrd, F_UNSEEN);
+	    if(cnt)
+	      status = (cnt == tot_in_thrd) ? 'N' : 'n';
+	}
+    }
+    else if(type == iIStatus){
+	tot_in_thrd = count_flags_in_thread(stream, thrd, F_NONE);
+
+	/* unseen and recent */
+	cnt = count_flags_in_thread(stream, thrd, F_RECENT|F_UNSEEN);
+	if(cnt)
+	  status = (cnt == tot_in_thrd) ? 'N' : 'n';
+	else{
+	    /* unseen and !recent */
+	    cnt = count_flags_in_thread(stream, thrd, F_UNSEEN);
+	    if(cnt)
+	      status = (cnt == tot_in_thrd) ? 'U' : 'u';
+	    else{
+		/* seen and recent */
+		cnt = count_flags_in_thread(stream, thrd, F_RECENT|F_SEEN);
+		if(cnt)
+		  status = (cnt == tot_in_thrd) ? 'R' : 'r';
+	    }
+	}
+    }
+
+    thrd->branch = save_branch;
+
+    return status;
+}
+
+
+/*
+ * Symbol is * if some message in thread is important,
+ * + if some message is to us,
+ * - if mark-for-cc and some message is cc to us, else blank.
+ */
+char
+to_us_symbol_for_thread(stream, thrd, consider_flagged)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    int         consider_flagged;
+{
+    char        to_us = ' ';
+    PINETHRD_S *nthrd, *bthrd;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return to_us;
+
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  to_us = to_us_symbol_for_thread(stream, nthrd, consider_flagged);
+    }
+
+    if(to_us == ' ' && thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  to_us = to_us_symbol_for_thread(stream, bthrd, consider_flagged);
+    }
+
+    if(to_us != '*'){
+	if(consider_flagged && FLAG_MATCH(F_FLAG, mail_elt(stream,thrd->rawno)))
+	  to_us = '*';
+	else if(to_us != '+' && !IS_NEWS(stream)){
+	    INDEXDATA_S   idata;
+	    MESSAGECACHE *mc;
+	    ADDRESS      *addr;
+
+	    memset(&idata, 0, sizeof(INDEXDATA_S));
+	    idata.stream   = stream;
+	    idata.rawno    = thrd->rawno;
+	    idata.msgno    = mn_raw2m(current_index_state->msgmap, idata.rawno);
+	    if(mc = mail_elt(stream, idata.rawno)){
+		idata.size = mc->rfc822_size;
+		index_data_env(&idata, mail_fetchenvelope(stream, idata.rawno));
+	    }
+	    else
+	      idata.bogus = 2;
+
+	    for(addr = fetch_to(&idata); addr; addr = addr->next)
+	      if(address_is_us(addr, ps_global)){
+		  to_us = '+';
+		  break;
+	      }
+	    
+	    if(to_us != '+' && resent_to_us(&idata))
+	      to_us = '+';
+
+	    if(to_us == ' ' && F_ON(F_MARK_FOR_CC,ps_global))
+	      for(addr = fetch_cc(&idata); addr; addr = addr->next)
+		if(address_is_us(addr, ps_global)){
+		    to_us = '-';
+		    break;
+		}
+	}
+    }
+
+    return to_us;
+}
+
+
+/*
+ * This sets or clears flags for the messages at this node and below in
+ * a tree. It doesn't just blindly do it, perhaps it should. Instead,
+ * when un-hiding a subtree it leaves the sub-subtree hidden if a node
+ * is collapsed.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately.
+ * Ok to call it on top-level thread which has no branch already.
+ */
+void
+set_thread_subtree(stream, thrd, msgmap, v, flags)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    MSGNO_S    *msgmap;
+    int         v;		/* set or clear? */
+    int         flags;		/* flags to set or clear */
+{
+    int hiding;
+    unsigned long rawno, msgno;
+    PINETHRD_S *nthrd, *bthrd;
+
+    hiding = (flags == MN_CHID) && v;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return;
+
+    msgno = mn_raw2m(msgmap, thrd->rawno);
+
+    set_lflag(stream, msgmap, msgno, flags, v);
+
+    if(thrd->next && (hiding || !get_lflag(stream,NULL,thrd->rawno,MN_COLL))){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  set_thread_subtree(stream, nthrd, msgmap, v, flags);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  set_thread_subtree(stream, bthrd, msgmap, v, flags);
+    }
+}
+
+
+/*
+ * View a thread. Move from the thread index screen to a message index
+ * screen for the current thread.
+ *
+ *      set_lflags - Set the local flags appropriately to start viewing
+ *                   the thread. We would not want to set this if we are
+ *                   already viewing the thread (and expunge or new mail
+ *                   happened) and we want to preserve the collapsed state
+ *                   of the subthreads.
+ */
+int
+view_thread(state, stream, msgmap, set_lflags)
+    struct pine *state;
+    MAILSTREAM	*stream;
+    MSGNO_S     *msgmap;
+    int          set_lflags;
+{
+    PINETHRD_S   *thrd = NULL;
+    unsigned long rawno, cur;
+
+    if(!any_messages(msgmap, NULL, "to View"))
+      return 0;
+
+    if(!(stream && msgmap))
+      return 0;
+
+    rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+    if(rawno)
+      thrd = fetch_thread(stream, rawno);
+
+    if(thrd && thrd->top && thrd->top != thrd->rawno)
+      thrd = fetch_thread(stream, thrd->top);
+    
+    if(!thrd)
+      return 0;
+    
+    /*
+     * Clear hidden and collapsed flag for this thread.
+     * And set CHID2.
+     * Don't have to worry about there being a branch because
+     * this is a toplevel thread.
+     */
+    if(set_lflags){
+	set_thread_lflags(stream, thrd, msgmap, MN_COLL | MN_CHID, 0);
+	set_thread_lflags(stream, thrd, msgmap, MN_CHID2, 1);
+    }
+
+    if(current_index_state)
+      msgmap->top_after_thrd = current_index_state->msg_at_top;
+
+    /*
+     * If this is one of those wacky users who like to sort backwards
+     * they would probably prefer that the current message be the last
+     * one in the thread (the one highest up the screen).
+     */
+    if(mn_get_revsort(msgmap)){
+	cur = mn_get_cur(msgmap);
+	while(cur > 1L && get_lflag(stream, msgmap, cur-1L, MN_CHID2))
+	  cur--;
+
+	if(cur != mn_get_cur(msgmap))
+	  mn_set_cur(msgmap, cur);
+    }
+
+    /* first message in thread might be hidden if zoomed */
+    if(any_lflagged(msgmap, MN_HIDE)){
+	cur = mn_get_cur(msgmap);
+	while(get_lflag(stream, msgmap, cur, MN_HIDE))
+          cur++;
+	
+	if(cur != mn_get_cur(msgmap))
+	  mn_set_cur(msgmap, cur);
+    }
+
+    msgmap->top = mn_get_cur(msgmap);
+
+    state->next_screen = mail_index_screen;
+    state->viewing_a_thread = 1;
+
+    state->mangled_screen = 1;
+    setup_for_index_index_screen();
+
+    return 1;
+}
+
+
+int
+unview_thread(state, stream, msgmap)
+    struct pine *state;
+    MAILSTREAM	*stream;
+    MSGNO_S     *msgmap;
+{
+    PINETHRD_S   *thrd = NULL, *topthrd = NULL;
+    unsigned long rawno, i;
+
+    if(!(stream && msgmap))
+      return 0;
+
+    rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
+    if(rawno)
+      thrd = fetch_thread(stream, rawno);
+    
+    if(thrd && thrd->top)
+      topthrd = fetch_thread(stream, thrd->top);
+    
+    if(!topthrd)
+      return 0;
+
+    /* hide this thread */
+    set_thread_lflags(stream, topthrd, msgmap, MN_CHID, 1);
+
+    /* clear special CHID2 flags for this thread */
+    set_thread_lflags(stream, topthrd, msgmap, MN_CHID2, 0);
+
+    /* clear CHID for top-level message and set COLL */
+    set_lflag(stream, msgmap, mn_raw2m(msgmap, topthrd->rawno), MN_CHID, 0);
+    set_lflag(stream, msgmap, mn_raw2m(msgmap, topthrd->rawno), MN_COLL, 1);
+
+    mn_set_cur(msgmap, mn_raw2m(msgmap, topthrd->rawno));
+    state->next_screen = mail_index_screen;
+    state->viewing_a_thread = 0;
+    state->view_skipped_index = 0;
+    state->mangled_screen = 1;
+    setup_for_thread_index_screen();
+
+    return 1;
+}
+
+
+PINETHRD_S *
+find_thread_by_number(stream, msgmap, target, startthrd)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    long        target;
+    PINETHRD_S *startthrd;
+{
+    PINETHRD_S *thrd = NULL;
+
+    if(!(stream && msgmap))
+      return(thrd);
+
+    thrd = startthrd;
+    
+    if(!thrd || !(thrd->prevthd || thrd->nextthd))
+      thrd = fetch_thread(stream, mn_m2raw(msgmap, mn_get_cur(msgmap)));
+
+    if(thrd && !(thrd->prevthd || thrd->nextthd) && thrd->head)
+      thrd = fetch_thread(stream, thrd->head);
+
+    if(thrd){
+	/* go forward from here */
+	if(thrd->thrdno < target){
+	    while(thrd){
+		if(thrd->thrdno == target)
+		  break;
+
+		if(mn_get_revsort(msgmap) && thrd->prevthd)
+		  thrd = fetch_thread(stream, thrd->prevthd);
+		else if(!mn_get_revsort(msgmap) && thrd->nextthd)
+		  thrd = fetch_thread(stream, thrd->nextthd);
+		else
+		  thrd = NULL;
+	    }
+	}
+	/* back up from here */
+	else if(thrd->thrdno > target
+		&& (mn_get_revsort(msgmap)
+		    || (thrd->thrdno - target) < (target - 1L))){
+	    while(thrd){
+		if(thrd->thrdno == target)
+		  break;
+
+		if(mn_get_revsort(msgmap) && thrd->nextthd)
+		  thrd = fetch_thread(stream, thrd->nextthd);
+		else if(!mn_get_revsort(msgmap) && thrd->prevthd)
+		  thrd = fetch_thread(stream, thrd->prevthd);
+		else
+		  thrd = NULL;
+	    }
+	}
+	/* go forward from head */
+	else if(thrd->thrdno > target){
+	    if(thrd->head){
+		thrd = fetch_thread(stream, thrd->head);
+		while(thrd){
+		    if(thrd->thrdno == target)
+		      break;
+
+		    if(thrd->nextthd)
+		      thrd = fetch_thread(stream, thrd->nextthd);
+		    else
+		      thrd = NULL;
+		}
+	    }
+	}
+    }
+
+    return(thrd);
+}
+
+
+void
+adjust_cur_to_visible(stream, msgmap)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+{
+    long n, cur;
+
+    cur = mn_get_cur(msgmap);
+
+    /* if current is hidden, adjust backwards */
+    if(msgline_hidden(stream, msgmap, cur, 0)){
+	for(n = cur; n >= 1L && msgline_hidden(stream, msgmap, n, 0); n--)
+	  ;
+	
+	if(n >= 1L)
+	  mn_reset_cur(msgmap, n);
+	else{				/* no visible in that direction */
+	    for(n = cur;
+		n <= mn_get_total(msgmap) && msgline_hidden(stream, msgmap,n,0);
+		n++)
+	      ;
+
+	    if(n <= mn_get_total(msgmap))
+	      mn_reset_cur(msgmap, n);
+	    /* else trouble! */
+	}
+    }
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: os2,v 1.1.1.1 2001-02-19 07:06:01 ghudson Exp $
+ * $Id: os2,v 1.1.1.2 2003-02-12 08:02:03 ghudson Exp $
  *
  * Program:	Operating system dependent routines - OS/2 Text mode
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -389,6 +389,10 @@ GetKey()
 
   ch = (*term.t_getchar)(0, NULL, NULL);
   lch = (ch&0xff);
+
+  if(lch & 0x80 && Pmaster && Pmaster->hibit_entered)
+    *Pmaster->hibit_entered = 1;
+
   return((lch && (lch != 0xe0 || !(ch & 0xff00))) 
 		 ? (lch < ' ') ? (CTRL|(lch + '@')) 
 		 : (lch == ' ' && ctrlkey()) ? (CTRL|'@') : lch
@@ -659,6 +663,13 @@ alt_editor(f, n)
   }
 
   (*Pmaster->tty_fix)(1);
+
+  /*
+   * Editor may have set a hibit, we don't know. Assume it did.
+   */
+  if(!f && Pmaster && Pmaster->hibit_entered)
+   *Pmaster->hibit_entered = 1;
+
   dont_interrupt();
 
   if (rc==-1) {  /* Can't run it */
@@ -676,7 +687,7 @@ alt_editor(f, n)
   unlink(fn);				/* blast temp file */
 
   ttopen();				/* reset the signals */
-  refresh(0, 1);			/* redraw */
+  pico_refresh(0, 1);			/* redraw */
   return(rc);
 }
 
@@ -707,7 +718,7 @@ bktoshell()		/* suspend MicroEMACS and wait to wake up */
   interrupt_ok();
   if (system(shell) == -1)
     emlwrite("Error loading %s", shell);
-  else refresh(0, 1);			/* redraw */
+  else pico_refresh(0, 1);			/* redraw */
   enter_text_mode(NULL);
   dont_interrupt();
   return(1);
@@ -1152,6 +1163,7 @@ char *buf;
 /*
  * fixpath - make the given pathname into an absolute path
  */
+void
 fixpath(name, len)
     char  *name;
     size_t len;
@@ -1161,7 +1173,7 @@ fixpath(name, len)
   int  dr;
 
   if(!len)
-	return(0);
+	return;
 
   /* normalize: xlate any '/' into '\\' */
   while ((p=strchr(name,'/'))!=NULL)
@@ -1170,9 +1182,9 @@ fixpath(name, len)
   /* return the full path of given file */
   if(isalpha((unsigned char)name[0]) && name[1] == ':'){ /* have drive spec? */
 	if(name[2] == '\\')				 /* including path? */
-	  return 1;
+	  return;
 	if (!getcurdir(name[0], file))
-	  return 0;
+	  return;
 	name += 2;
   }
   else if(name[0] == '.' && (!name[1] || name[1] == '\\')) {
@@ -1209,7 +1221,6 @@ fixpath(name, len)
 
   strncpy(name, file, len-1);			/* copy back to real buffer */
   name[len-1] = '\0';				/* tie off just in case */
-  return(1);
 }
 
 
@@ -1609,8 +1620,10 @@ chkptinit(file, n)
 void
 set_collation()
 {
-    char *status = NULL;
     extern int collator();  /* strcoll isn't declared on all systems */
+#ifdef LC_COLLATE
+    char *status = NULL;
+#endif
 
     pcollator = strucmp;
 

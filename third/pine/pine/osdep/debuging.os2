@@ -39,9 +39,9 @@ init_debug()
 	time_t now = time((time_t *)0);
 	if(ps_global->debug_flush)
 	  setbuf(debugfile, NULL);
-	dprint(0, (debugfile,
-  "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s\n%s\n",
-	       debug, ps_global->debug_imap, pine_version, ctime(&now)));
+	dprint(0, (debugfile, "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s (%s)\n%s\n",
+	       debug, ps_global->debug_imap, pine_version, SYSTYPE,
+	       ctime(&now)));
     }
 }
 
@@ -106,7 +106,7 @@ FILE *debug_fp;
     }
 
     if(ok && ps_global->debug_timestamp)
-      fprintf(debug_fp, "\n%s\n", debug_time(0));
+      fprintf(debug_fp, "\n%s\n", debug_time(0, ps_global->debug_timestamp));
 
     return(ok);
 }
@@ -118,8 +118,9 @@ FILE *debug_fp;
  * If include_date is set the date is appended.
  */
 char *
-debug_time(include_date)
+debug_time(include_date, include_subseconds)
     int include_date;
+    int include_subseconds;
 {
     time_t          t;
     struct tm      *tm_now;

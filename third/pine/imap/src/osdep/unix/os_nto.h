@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	10 September 1993
- * Last Edited:	18 January 2001
+ * Last Edited:	10 April 2001
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 2001 University of Washington.
@@ -50,19 +50,12 @@
 #define L_XTND SEEK_END
 #endif
 
-/* For flock() emulation */
-
-#define flock bsd_flock
-
-#define LOCK_SH 1
-#define LOCK_EX 2
-#define LOCK_NB 4
-#define LOCK_UN 8
 
 #define utime portable_utime
 int portable_utime (char *file,time_t timep[2]);
 
 long gethostid (void);
+struct direct *Readdir (DIR *dirp);
 typedef int (*select_t) (struct direct *name);
 typedef int (*compar_t) (void *d1,void *d2);
 
@@ -71,5 +64,4 @@ typedef int (*compar_t) (void *d1,void *d2);
 #include "ftl.h"
 #include "nl.h"
 #include "tcp.h"
-
-struct direct *Readdir (DIR *dirp);
+#include "flocksim.h"

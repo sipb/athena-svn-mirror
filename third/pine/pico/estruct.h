@@ -1,5 +1,5 @@
 /*
- * $Id: estruct.h,v 1.1.1.1 2001-02-19 07:04:20 ghudson Exp $
+ * $Id: estruct.h,v 1.1.1.2 2003-02-12 08:11:02 ghudson Exp $
  *
  * Program:	Struct and preprocessor definitions
  *
@@ -322,6 +322,14 @@ typedef struct COLOR_PAIR {
 /* flags for color_options */
 #define COLOR_ANSI8_OPT		0x01
 #define COLOR_ANSI16_OPT	0x02
+
+/* styles for pico_apply_rev_color() */
+#define IND_COL_FLIP		0
+#define IND_COL_REV		1
+#define IND_COL_FG		2
+#define IND_COL_FG_NOAMBIG	3
+#define IND_COL_BG		4
+#define IND_COL_BG_NOAMBIG	5
 
 
 /*

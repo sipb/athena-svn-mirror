@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	1 August 1993
- * Last Edited:	2 January 2001
+ * Last Edited:	10 April 2001
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 2001 University of Washington.
@@ -46,8 +46,7 @@ extern int errno;		/* just in case */
 #include "gr_wait.c"
 #include "tz_sv4.c"
 #include "gethstid.c"
-#undef flock
-#include "flock.c"
+#include "flocksim.c"
 #include "utime.c"
 
 /* QNX local readdir()

@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	24 June 1992
- * Last Edited:	17 November 2000
+ * Last Edited:	9 April 2001
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2001 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -63,7 +63,7 @@ DRIVER bezerkdriver = {
   bezerk_create,		/* create mailbox */
   bezerk_delete,		/* delete mailbox */
   bezerk_rename,		/* rename mailbox */
-  NIL,				/* status of mailbox */
+  mail_status_default,		/* status of mailbox */
   bezerk_open,			/* open mailbox */
   bezerk_close,			/* close mailbox */
   NIL,				/* fetch message "fast" attributes */

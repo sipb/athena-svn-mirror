@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	24 June 1992
- * Last Edited:	17 November 2000
+ * Last Edited:	9 April 2001
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2001 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -53,7 +53,7 @@ DRIVER mtxdriver = {
   mtx_create,			/* create mailbox */
   mtx_delete,			/* delete mailbox */
   mtx_rename,			/* rename mailbox */
-  NIL,				/* status of mailbox */
+  mail_status_default,		/* status of mailbox */
   mtx_open,			/* open mailbox */
   mtx_close,			/* close mailbox */
   NIL,				/* fetch message "fast" attributes */
@@ -231,10 +231,10 @@ MAILSTREAM *mtx_open (MAILSTREAM *stream)
   if (stream->local) fatal ("mtx recycle stream");
   if (!mailboxfile (tmp,stream->mailbox))
     return (MAILSTREAM *) mtx_badname (tmp,stream->mailbox);
-  if (((fd = open (tmp,O_BINARY|(stream->rdonly ? O_RDONLY:O_RDWR),NIL)) < 0)
-      && (strcmp (ucase (stream->mailbox),"INBOX") ||
-	  ((fd = open (tmp,O_BINARY|O_RDWR|O_CREAT|O_EXCL,S_IREAD|S_IWRITE))
-	   < 0))) {		/* open, possibly creating INBOX */
+				/* open, possibly creating INBOX */
+  if (((fd = open (tmp,O_BINARY|(stream->rdonly ? O_RDONLY:O_RDWR),NIL)) < 0)&&
+      (compare_cstring (stream->mailbox,"INBOX") ||
+       ((fd = open (tmp,O_BINARY|O_RDWR|O_CREAT|O_EXCL,S_IREAD|S_IWRITE))<0))){
     sprintf (tmp,"Can't open mailbox: %s",strerror (errno));
     mm_log (tmp,ERROR);
     return NIL;

@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	24 May 1993
- * Last Edited:	19 December 2000
+ * Last Edited:	26 October 2001
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 2000 University of Washington.
@@ -50,7 +50,7 @@ DRIVER dummydriver = {
   dummy_create,			/* create mailbox */
   dummy_delete,			/* delete mailbox */
   dummy_rename,			/* rename mailbox */
-  NIL,				/* status of mailbox */
+  mail_status_default,		/* status of mailbox */
   dummy_open,			/* open mailbox */
   dummy_close,			/* close mailbox */
   NIL,				/* fetch message "fast" attributes */
@@ -333,9 +333,8 @@ long dummy_listed (MAILSTREAM *stream,char delimiter,char *name,
 long dummy_create (MAILSTREAM *stream,char *mailbox)
 {
   char tmp[MAILTMPLEN];
-  return (strcmp (ucase (strcpy (tmp,mailbox)),"INBOX") &&
-	  mailboxfile (tmp,mailbox)) ?
-	    dummy_create_path (stream,tmp,NIL) : dummy_badname (tmp,mailbox);
+  return (compare_cstring (mailbox,"INBOX") && mailboxfile (tmp,mailbox)) ?
+    dummy_create_path (stream,tmp,NIL) : dummy_badname (tmp,mailbox);
 }
 
 
@@ -449,7 +448,7 @@ MAILSTREAM *dummy_open (MAILSTREAM *stream)
   int fd = -1;
 				/* OP_PROTOTYPE call or silence */
   if (!stream || stream->silent) return NIL;
-  if (strcmp (ucase (strcpy (tmp,stream->mailbox)),"INBOX") &&
+  if (compare_cstring (stream->mailbox,"INBOX") &&
       ((fd = open (mailboxfile (tmp,stream->mailbox),O_RDONLY,NIL)) < 0))
     sprintf (tmp,"%s: %s",strerror (errno),stream->mailbox);
   else {
@@ -509,6 +508,8 @@ long dummy_ping (MAILSTREAM *stream)
 				/* swap the streams */
     memcpy (stream,test,sizeof (MAILSTREAM));
     fs_give ((void **) &test);	/* flush test now that copied */
+				/* make sure application knows */
+    mail_exists (stream,stream->recent = stream->nmsgs);
   }
   return T;
 }
@@ -565,8 +566,8 @@ long dummy_append (MAILSTREAM *stream,char *mailbox,append_t af,void *data)
   int e;
   char tmp[MAILTMPLEN];
   MAILSTREAM *ts = default_proto (T);
-  if ((strcmp (ucase (strcpy (tmp,mailbox)),"INBOX")) &&
-	   ((fd = open (mailboxfile (tmp,mailbox),O_RDONLY,NIL)) < 0)) {
+  if (compare_cstring (mailbox,"INBOX") &&
+      ((fd = open (mailboxfile (tmp,mailbox),O_RDONLY,NIL)) < 0)) {
     if ((e = errno) == ENOENT)	/* failed, was it no such file? */
       mm_notify (stream,"[TRYCREATE] Must create mailbox before append",
 		 (long) NIL);

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: ldap-setup,v 1.1.1.1 2001-02-19 07:04:31 ghudson Exp $
+# $Id: ldap-setup,v 1.1.1.2 2003-02-12 08:01:24 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -21,7 +21,7 @@
 #   permission of the University of Washington.
 #
 #   Pine, Pico, and Pilot software and its included text are Copyright
-#   1989-2000 by the University of Washington.
+#   1989-2001 by the University of Washington.
 #
 #   The full text of our legal notices is contained in the file called
 #   CPYRIGHT, included with this distribution.
@@ -41,7 +41,7 @@
 #
 #  Helper script for setting up LDAP
 #
-# Pine has been successfully compiled with OpenLDAP 2.0.4, OpenLDAP 1.x,
+# Pine has been successfully compiled with OpenLDAP 2.1.8, 2.0.27, and 1.2.13;
 # the University of Michigan LDAP source (ldap-3.3), and with the
 # Netscape Directory SDK 1.0.
 #
@@ -71,12 +71,15 @@
 # Michigan setup so no changes here for it. Set it up just like you
 # would set up umich.
 #
-# The build script is looking for an exit value of either 1 or 2 from this
-# script. 1 means this is a UMICH-style setup (with liblber.a) and 2 means
-# there is no liblber.a, just libldap.a. Anything else is an error. This
-# script won't be called unless there is an ldap directory next to the
-# build script.
+# And there is also the Solaris 8 setup.
 #
+# The build script is looking for an exit value of 1, 2, 3, or 4 from this
+# script. 1 means this is a UMICH-style setup (with liblber.a) and 2 means
+# there is no liblber.a, just libldap.a. 3 means that the library is in a
+# standard location and so can be accessed with -lldap. 11 is like 1 with
+# two libraries but they are in ldap/libldap/.libs/libldap.a and
+# ldap/liblber/.libs/liblber.a instead. 4 means don't attempt
+# to include LDAP support. Anything else is an error.
 
 exitval=0
 ptarget=xxx
@@ -92,7 +95,39 @@ btarget=$2
 
 if [ ! -d ldap ]
 then
-    exitval=5
+    # User didn't configure LDAP but
+    # attempt automatic LDAP inclusion on Solaris and MacOS X
+    set `uname -s -r`
+    exitval=6
+    if [ "$1" = "SunOS" ]; then
+      set `echo $2 | tr "." " "`
+      if [ "$1" = "5" -a "$2" -ge 8 ]; then
+        exitval=4
+        if [ -f /usr/lib/libldap.so ]; then
+	  if [ -f /usr/include/ldap.h ]; then
+	    exit 3				# EXIT successfull
+	  else
+	    echo "/usr/include/ldap.h not found"
+	  fi
+        else
+	  echo "/usr/lib/libldap.so not found"
+	fi
+      fi
+    elif [ "$1" = "Darwin" ]; then
+      set `echo $2 | tr "." " "`
+      if [ "$1" -ge "6" ]; then
+        exitval=4
+        if [ -f /usr/lib/libldap.dylib ]; then
+	  if [ -f /usr/include/ldap.h ]; then
+	    exit 3				# EXIT successfull
+	  else
+	    echo "/usr/include/ldap.h not found"
+	  fi
+        else
+	  echo "/usr/lib/libldap.dylib not found"
+	fi
+      fi
+    fi
 elif [ ! -d ldap/libraries ]
 then
     echo "Ldap-setup: Expected directory \"ldap/libraries\" is missing."
@@ -108,9 +143,12 @@ then
 fi
 
 
+
 # Figure out if this is the Umich ldap-3.3 tree or something else, like
 # the Netscape SDK. Style 1 is umich, style 2 is Netscape SDK, style 3 is
 # mozilla.org.
+# Style 11 is similar to 1 but the libraries are in a subdir. This is
+# getting ridiculous.
 style=2
 if [ $exitval -eq 0 -a -d ldap/libraries/liblber ]
 then
@@ -120,11 +158,14 @@ fi
 if [ $exitval -eq 0 -a \( $style -eq 2 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) ]
 then
     style=3
+elif [ $exitval -eq 0 -a \( $style -eq 1 -a -f ldap/libraries/liblber/.libs/liblber.a -a -f ldap/libraries/libldap/.libs/libldap.a \) ]
+then
+    style=11
 fi
 
 # This is a successful exit. The value of style tells build whether to include
 # the liblber.a library or not.
-if [ $exitval -eq 0 -a \( \( $style -eq 1 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) -o \( $style -eq 2 -a -f ldap/libraries/libldap.a \) -o \( $style -eq 3 \) \) ]
+if [ $exitval -eq 0 -a \( \( $style -eq 1 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) -o \( $style -eq 11 \) -o \( $style -eq 2 -a -f ldap/libraries/libldap.a \) -o \( $style -eq 3 \) \) ]
 then
     if [ $style -eq 3 ]
     then
@@ -134,10 +175,29 @@ then
     exit $style
 fi
 
+# Exitval = 6 just means there is no LDAP. Exit with 4. The only difference
+# between 6 and 4 is the stuff that gets printed out.
+if [ $exitval -eq 6 ]
+then
+    exit 4
+fi
+
+if [ $exitval -eq 4 ]
+then
+    echo ""
+    echo "You may be able to install the SUNWlldap package to include"
+    echo "LDAP support, continuing without LDAP. Read the file"
+    echo "contrib/ldap-setup for some help in setting up LDAP."
+    echo ""
+    exit 4
+fi
+
 if [ $exitval -eq 5 ]
 then
+    echo ""
     echo "Read the file contrib/ldap-setup for some help in setting"
     echo "up LDAP."
+    echo ""
     exit 5
 fi
 

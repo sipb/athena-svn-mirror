@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: signals.c,v 1.1.1.1 2001-02-19 07:05:46 ghudson Exp $";
+static char rcsid[] = "$Id: signals.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: signals.c,v 1.1.1.1 2001-02-19 07:05:46 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -225,9 +225,22 @@ Call panic which cleans up tty modes and then core dumps
 static SigType
 auger_in_signal SIG_PROTO ((int sig))
 {
+    char buf[100], *s;
+
     end_signals(1);			/* don't catch any more signals */
-    dprint(5, (debugfile, "auger_in_signal()\n"));
-    panic("Received abort signal");	/* clean up and get out */
+    imap_flush_passwd_cache();
+
+#if defined(SIGNALHASARG)
+    s = comatose(sig);
+#else
+    s = "?";
+#endif
+
+    dprint(5, (debugfile, "auger_in_signal(sig=%s)\n", s));
+
+    sprintf(buf, "Received abort signal(sig=%.9s)", s);
+    panic(buf);				/* clean up and get out */
+
     exit(-1);				/* in case panic doesn't kill us */
 }
 
@@ -280,6 +293,10 @@ hup_signal()
     end_signals(1);			/* don't catch any more signals */
     dprint(1, (debugfile, "\n\n** Received SIGHUP **\n\n\n\n"));
     fast_clean_up();
+#if	defined(DEBUG)
+    if(debugfile)
+      fclose(debugfile);
+#endif 
 #ifdef	_WINDOWS
     _exit(0);				/* cleaning up can crash */
 #else
@@ -307,13 +324,16 @@ user_input_timeout_exit(to_hours)
     sprintf(msg, "\n\nPine timed out (No user input for %d %s)\n", to_hours,
 	    to_hours > 1 ? "hours" : "hour");
     fast_clean_up();
-    completely_done_with_adrbks();
     end_screen(msg, 0);
     end_titlebar();
     end_keymenu();
     end_keyboard(F_ON(F_USE_FK,ps_global));
     end_tty_driver(ps_global);
     end_signals(0);
+#if	defined(DEBUG) && (!defined(DOS) || defined(_WINDOWS))
+    if(debugfile)
+      fclose(debugfile);
+#endif 
     exit(0);
 }
 
@@ -330,6 +350,10 @@ term_signal()
     end_signals(1);			/* don't catch any more signals */
     dprint(1, (debugfile, "\n\n** Received SIGTERM **\n\n\n\n"));
     fast_clean_up();
+#if	defined(DEBUG) && (!defined(DOS) || defined(_WINDOWS))
+    if(debugfile)
+      fclose(debugfile);
+#endif 
     printf("\n\nPine finished. Received terminate signal\n\n");
 #endif	/* !DOS */
     exit(0);
@@ -346,6 +370,8 @@ Also delete any remnant _DATAFILE_ from sending-filters.
 void
 fast_clean_up()
 {
+    dprint(1, (debugfile, "fast_clean_up()\n"));
+
     if(filter_data_file(0))
         unlink(filter_data_file(0));
     if(ps_global->expunge_in_progress){
@@ -353,26 +379,61 @@ fast_clean_up()
 	return;
     }
 
-#if !defined(DOS) && !defined(OS2)
-    if(ps_global->inbox_stream != NULL && !ps_global->inbox_stream->lock){
-	if(ps_global->inbox_stream == ps_global->mail_stream)
-	  ps_global->mail_stream = NULL; 
+    /*
+     * This gets rid of temporary cache files for remote addrbooks.
+     */
+    completely_done_with_adrbks();
 
-	pine_close_stream(ps_global->inbox_stream);
+    /*
+     * This flushes out deferred changes and gets rid of temporary cache
+     * files for remote config files.
+     */
+    if(ps_global->prc){
+	if(ps_global->prc->outstanding_pinerc_changes)
+	  write_pinerc(ps_global, Main);
+
+	if(ps_global->prc->rd)
+	  rd_close_remdata(&ps_global->prc->rd);
+	
+	free_pinerc_s(&ps_global->prc);
     }
 
-    if(ps_global->mail_stream != NULL
-       && ps_global->mail_stream != ps_global->inbox_stream
-       && !ps_global->mail_stream->lock)
-      pine_close_stream(ps_global->mail_stream);
+    /* as does this */
+    if(ps_global->post_prc){
+	if(ps_global->post_prc->outstanding_pinerc_changes)
+	  write_pinerc(ps_global, Post);
+
+	if(ps_global->post_prc->rd)
+	  rd_close_remdata(&ps_global->post_prc->rd);
+	
+	free_pinerc_s(&ps_global->post_prc);
+    }
+
+    /*
+     * Can't figure out why this section is inside the ifdef, but no
+     * harm leaving it that way.
+     */
+#if !defined(DOS) && !defined(OS2)
+    if(ps_global->inbox_stream){
+	int cur_is_inbox = (ps_global->inbox_stream == ps_global->mail_stream);
+
+	if(!ps_global->inbox_stream->lock)
+	  pine_mail_close(ps_global->inbox_stream);
+
+	if(cur_is_inbox)
+	  ps_global->mail_stream = NULL; 
+    }
+
+    if(ps_global->mail_stream && !ps_global->mail_stream->lock)
+      pine_mail_close(ps_global->mail_stream);
 
     PineRaw(0);
 
 #endif	/* !DOS */
-#if	defined(DEBUG) && (!defined(DOS) || defined(_WINDOWS))
-    if(debugfile)
-      fclose(debugfile);
-#endif 
+
+    imap_flush_passwd_cache();
+
+    dprint(1, (debugfile, "done with fast_clean_up\n"));
 }
 
 
@@ -396,7 +457,7 @@ usr2_signal SIG_PROTO((int sig))
 	ps_global->inbox_stream->rdonly = 1;	/* and become read-only */
 	mail_ping(ps_global->inbox_stream);
 	q_status_message(SM_ASYNC, 3, 7,
-		   "Another Pine is accessing Inbox.  Session now Read-Only.");
+	   "Another email program is accessing Inbox.  Session now Read-Only.");
 	dprint(1, (debugfile, "** INBOX went read-only **\n\n"));
     }
 
@@ -408,7 +469,7 @@ usr2_signal SIG_PROTO((int sig))
 	ps_global->mail_stream->rdonly = 1;	/* and become read-only */
 	mail_ping(ps_global->mail_stream);
 	q_status_message(SM_ASYNC, 3, 7,
-		  "Another Pine is accessing folder.  Session now Read-Only.");
+	  "Another email program is accessing folder.  Session now Read-Only.");
 	dprint(1, (debugfile, "** secondary folder went read-only **\n\n"));
     }
 }
@@ -503,14 +564,15 @@ child_signal()
 #endif
 
 
-#define MAX_BM	      80  /* max length of busy message */
 static unsigned       alarm_increment;
 static int            dotcount;
 static char           busy_message[MAX_BM + 1];
 static int            busy_alarm_outstanding;
 static int            busy_len;
 static int            final_message;
+#ifdef	DOS
 static int            callcount;
+#endif
 static percent_done_t percent_done_ptr;
 static char *display_chars[] = {
 	"<\\> ",
@@ -566,7 +628,9 @@ busy_alarm(seconds, msg, pc_func, init_msg)
 	alarm_increment = seconds;
 	dotcount = 0;
 	percent_done_ptr = pc_func;
+#ifdef	DOS
 	callcount = 0;
+#endif
 
 	if(msg){
 	    strncpy(busy_message, msg, MAX_BM);
@@ -707,24 +771,35 @@ resume_busy_alarm(pause)
 /*
  * Block our alarm signals when we enter sensitive code, and unblock when
  * we leave. These are called from a c-client callback.
+ *
+ * We use sigmask being defined to tell us if sigblock will work. This isn't
+ * perfect but we think that if it is defined, then it will work. We know
+ * of cases where it would still work even if it isn't defined (Solaris).
+ * Since we can't think of an easy way to detect that, we'll play it safe and
+ * use regular alarm(0) to turn off alarms in those cases.
  */
 #ifdef	sigmask
 static int alrm_depth = 0;
 static int alrm_mask = 0;
 #endif
 
-void
+void *
 alrm_signal_block()
 {
 #ifdef	sigmask
     if(!alrm_depth++)
       alrm_mask = sigblock(sigmask(SIGALRM));
+
+    return(NULL);
+#else
+    return((void *) alarm(0));
 #endif
 }
 
 
 void
-alrm_signal_unblock()
+alrm_signal_unblock(data)
+    void *data;
 {
 #ifdef	sigmask
     switch(alrm_depth){
@@ -739,6 +814,9 @@ alrm_signal_unblock()
 	alrm_depth--;
 	break;
     }
+#else
+    if((unsigned int) data)
+      alarm((unsigned int) data);
 #endif
 }
 
@@ -759,6 +837,18 @@ alarm_signal SIG_PROTO((int sig))
 	alarm_signal_reset();
 	return;
     }
+
+    /*
+     * Why do we need this? We can get alarm signals delivered to us
+     * even after we've turned off alarms with cancel_busy_alarm, because
+     * in pine_block_notify we block and unblock alarms, which can then
+     * be delivered after the unblock. If !busy_alarm_outstanding that means
+     * this alarm has already been canceled. So we don't want to print
+     * anything and we don't want to reset the alarm (alarm_signal_reset()
+     * checks and doesn't reset).
+     */
+    if(!busy_alarm_outstanding)
+      return;
 
     space_left = (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) -
 	busy_len - 2;  /* 2 is for [] */
@@ -841,7 +931,8 @@ alarm_signal_reset()
 #if	!defined(DOS) || defined(_WINDOWS)
     signal(SIGALRM, alarm_signal);
 #endif
-    alarm(alarm_increment);
+    if(busy_alarm_outstanding)
+      alarm(alarm_increment);
 }
 
 
@@ -987,8 +1078,10 @@ do_suspend()
 {
     struct pine *pine = ps_global;
     time_t now;
-    int   result, isremote, retval;
-    int   orig_cols, orig_rows;
+    int   isremote, retval;
+#if defined(DOS) || defined(OS2)
+    int   result, orig_cols, orig_rows;
+#endif
 #ifdef	DOS
     static char *shell = NULL;
 #define	STD_SHELL	"COMMAND.COM"
@@ -1068,21 +1161,25 @@ do_suspend()
     
     ttyfix(1);
 
+#if defined(DOS) || defined(OS2)
     orig_cols = pine->ttyo->screen_cols;
     orig_rows = pine->ttyo->screen_rows;
+#endif
+
     fix_windsize(pine);
+
 #if defined(DOS) || defined(OS2)
     if(orig_cols != pine->ttyo->screen_cols ||
        orig_rows != pine->ttyo->screen_rows)
 	retval = KEY_RESIZE;
     else
 #endif
-	retval = ctrl('L');;
+      retval = ctrl('L');;
  
 #if	defined(DOS) || defined(OS2)
     if(result == -1)
       q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			"Error loading \"%s\"", shell);
+			"Error loading \"%.200s\"", shell);
 #endif
 
     if(isremote && (char *)mail_ping(ps_global->mail_stream) == NULL)
@@ -1145,6 +1242,7 @@ SigType (*hold_term) SIG_PROTO((int));
 SigType (*hold_hup) SIG_PROTO((int));
 SigType (*hold_usr2) SIG_PROTO((int));
 #endif
+static int critical_depth = 0;
 
 /*----------------------------------------------------------------------
      Ignore signals when imap is running through critical code
@@ -1157,14 +1255,20 @@ mm_critical(stream)
      MAILSTREAM *stream;
 {
     stream = stream; /* For compiler complaints that this isn't used */
+
+    if(++critical_depth == 1){
+
 #if !defined(DOS) && !defined(OS2)
-    hold_hup  = signal(SIGHUP, SIG_IGN);
-    hold_usr2 = signal(SIGUSR2, SIG_IGN);
+	hold_hup  = signal(SIGHUP, SIG_IGN);
+	hold_usr2 = signal(SIGUSR2, SIG_IGN);
 #endif
-    hold_int  = signal(SIGINT, SIG_IGN);
-    hold_term = signal(SIGTERM, SIG_IGN);
-    dprint(9, (debugfile, "Done with IMAP critical on %s\n",
-              (stream && stream->mailbox) ? stream->mailbox : "<no folder>" ));
+	hold_int  = signal(SIGINT, SIG_IGN);
+	hold_term = signal(SIGTERM, SIG_IGN);
+    }
+
+    dprint(9, (debugfile, "IMAP critical (depth now %d) on %s\n",
+              critical_depth,
+	      (stream && stream->mailbox) ? stream->mailbox : "<no folder>" ));
 }
 
 
@@ -1178,14 +1282,21 @@ mm_nocritical(stream)
 { 
     stream = stream; /* For compiler complaints that this isn't used */
 
+    if(--critical_depth == 0){
+
 #if !defined(DOS) && !defined(OS2)
-    (void)signal(SIGHUP, hold_hup);
-    (void)signal(SIGUSR2, hold_usr2);
+	(void)signal(SIGHUP, hold_hup);
+	(void)signal(SIGUSR2, hold_usr2);
 #endif
-    (void)signal(SIGINT, hold_int);
-    (void)signal(SIGTERM, hold_term);
-    dprint(9, (debugfile, "Done with IMAP critical on %s\n",
-              (stream && stream->mailbox) ? stream->mailbox : "<no folder>" ));
+	(void)signal(SIGINT, hold_int);
+	(void)signal(SIGTERM, hold_term);
+    }
+
+    critical_depth = max(critical_depth, 0);
+
+    dprint(9, (debugfile, "Done with IMAP critical (depth now %d) on %s\n",
+              critical_depth,
+	      (stream && stream->mailbox) ? stream->mailbox : "<no folder>" ));
 }
 
 

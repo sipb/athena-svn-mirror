@@ -1,4 +1,4 @@
-# $Id: makefile.aux,v 1.1.1.1 2001-02-19 07:01:50 ghudson Exp $
+# $Id: makefile.aux,v 1.1.1.2 2003-02-12 07:58:25 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -42,7 +42,7 @@ LIBCMD=		ar
 LIBARGS=	-ru
 RANLIB=		/bin/true
 
-LIBS=		$(EXTRALIBES) -ltermcap -lposix
+LIBS=		$(EXTRALDFLAGS) -ltermcap -lposix
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \

@@ -244,7 +244,7 @@ MEANINGS OF MONTH NAMES
 . May		Maia, goddess of plant growth
 . June		Latin "juvenis" => "youth"
 . July		Julius Caesar
-. August	Augustus Ceasar
+. August	Augustus Caesar
 . September	Latin "septem" => "seven"
 . October	Latin "octo" => "eight"
 . November	Latin "novem" => "nine"

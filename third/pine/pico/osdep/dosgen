@@ -1,6 +1,6 @@
 #line 2 "osdep/dosgen"		/* So compiler knows orig name of this file.*/
 /*
- * $Id: dosgen,v 1.1.1.1 2001-02-19 07:06:02 ghudson Exp $
+ * $Id: dosgen,v 1.1.1.2 2003-02-12 08:00:49 ghudson Exp $
  *
  * Program:	Operating system dependent routines - MS DOS Generic
  *
@@ -21,7 +21,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -176,14 +176,19 @@ int *l;
     static short hlen = 0;
 
     if(home == NULL){
-	char buf[NLINE];
-	sprintf(buf, "%c:\\", _getdrive() + 'A' - 1);
-	hlen = strlen(buf);
+	char buf[NLINE], *p;
+	if(Pmaster && Pmaster->home_dir)
+	  p = Pmaster->home_dir;
+	else {
+	    sprintf(buf, "%c:\\", _getdrive() + 'A' - 1);
+	    p = buf;
+	}
+	hlen = strlen(p);
 	if((home=(char *)malloc(((size_t)hlen + 1) * sizeof(char))) == NULL){
 	    emlwrite("Problem allocating space for home dir", NULL);
 	    return(0);
 	}
-	strcpy(home, buf);
+	strcpy(home, p);
     }
 
     if(l)
@@ -398,6 +403,7 @@ char *pfnexpand(fn, len)
 /*
  * fixpath - make the given pathname into an absolute path
  */
+void
 fixpath(name, len)
     char  *name;
     size_t len;
@@ -406,7 +412,7 @@ fixpath(name, len)
     int  dr;
 
     if(!len)
-      return(0);
+      return;
     
     /* return the full path of given file, so drive spec? */
     if(name[1] == ':' && isalpha((unsigned char) name[0])){
@@ -420,16 +426,16 @@ fixpath(name, len)
 		strncat(file, &name[2], sizeof(file)-1-strlen(file));
 	    }
 	    else
-	      return(0);
+	      return;
 	}
 	else
-	  return(1);		/* fully qualified with drive and path! */
+	  return;		/* fully qualified with drive and path! */
     }
     else if(name[0] == '\\' && name[1] != '\\') {     /* no drive spec! */
 	sprintf(file, "%c:%.*s", _getdrive()+'A'-1, len-3, name);
     }
     else if(name[0] == '\\' && name[1] == '\\'){  /* Windows network drive */
-      return(1);
+      return;
     }
     else{
 	if(Pmaster && !(gmode & MDCURDIR)){
@@ -438,7 +444,7 @@ fixpath(name, len)
 	  file[sizeof(file)-1] = '\0';
 	}
 	else if(!_getcwd(file, sizeof(file)))	/* no qualification */
-	  return(0);
+	  return;
 
 	if(*name){				/* if name, append it */
 	    if(*file && file[strlen(file)-1] != '\\')
@@ -450,7 +456,6 @@ fixpath(name, len)
 
     strncpy(name, file, len-1);			/* copy back to real buffer */
     name[len-1] = '\0';				/* tie off just in case */
-    return(1);
 }
 
 
@@ -537,9 +542,10 @@ was_nonexistent_tmp_name(as, create_it, ext)
     char           treplace;
     struct stat    sbuf;
     unsigned       pid;
+    static unsigned n = 0;
     int            fd;
 
-    pid = (unsigned)getpid();
+    pid = ((unsigned)getpid() * 100) + n++;
 
     /* extra X's get set to 0's */
     for(trv = as; *trv; ++trv)
@@ -1180,8 +1186,10 @@ chkptinit(file, n)
 void
 set_collation()
 {
-    char *status = NULL;
     extern int collator();  /* strcoll isn't declared on all systems */
+#ifdef LC_COLLATE
+    char *status = NULL;
+#endif
 
     pcollator = strucmp;
 

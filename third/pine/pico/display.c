@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: display.c,v 1.1.1.1 2001-02-19 07:04:49 ghudson Exp $";
+static char rcsid[] = "$Id: display.c,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $";
 #endif
 /*
  * Program:	Display functions
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: display.c,v 1.1.1.1 2001-02-19 07:04:49 ghudson Exp 
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -981,8 +981,8 @@ WINDOW *wp;
 	register char *cp;
 	register int n;		/* cursor position count */
 	register BUFFER *bp;
-	register i;		/* loop index */
-	register lchar;		/* character to draw line in buffer with */
+	register int i;		/* loop index */
+	register int lchar;	/* character to draw line in buffer with */
 	char     tline[NLINE];	/* buffer for part of mode line */
 	CELL     c;
 
@@ -1392,7 +1392,7 @@ EXTRAKEYS *extras;
 
     (*term.t_rev)(1);
 
-    maxl = (nbuf < term.t_ncol - plen - 1) ? nbuf : term.t_ncol - plen - 1;
+    maxl = (nbuf-1 < term.t_ncol - plen - 1) ? nbuf-1 : term.t_ncol - plen - 1;
 
     pputs(buf, 1);
     b = &buf[(flg & QBOBUF) ? 0 : strlen(buf)];
@@ -1654,7 +1654,7 @@ void	*arg;
 	switch(ap[1]){
 	  case '%':
 	  case 'c':
-	    l += 1;
+	    l += arg ? 2 : 1;
 	    break;
 	  case 'd':
 	    l += (long)dumbroot((int)arg, 10);
@@ -1669,7 +1669,7 @@ void	*arg;
 	    l += (long)dumbroot((int)arg, 16);
 	    break;
 	  case 's':
-            l += strlen((char *)arg);
+            l += arg ? strlen((char *)arg) : 2;
 	    break;
 	}
     }
@@ -1687,7 +1687,11 @@ void	*arg;
 	else if(*bufp == '%'){
 	    switch(*++bufp){
 	      case 'c':
-		pputc((char)(int)arg, 0);
+		if(arg)
+		  pputc((char)(int)arg, 0);
+		else {
+		    pputs("%c", 0);
+		}
 		break;
 	      case 'd':
 		mlputi((int)arg, 10);
@@ -1702,7 +1706,7 @@ void	*arg;
 		mlputi((int)arg, 8);
 		break;
 	      case 's':
-		pputs((char *)arg, 0);
+		pputs(arg ? (char *)arg : "%s", 0);
 		break;
 	      case '%':
 	      default:
@@ -2091,7 +2095,7 @@ int  row, col;
 	}
 	else{
 	    curwp->w_flag |= (WFHARD | WFMODE);
-	    refresh(0, 1);                     /* redraw whole enchilada. */
+	    pico_refresh(0, 1);                /* redraw whole enchilada. */
 	    update();                          /* do it */
 	}
     }
@@ -2102,7 +2106,7 @@ int  row, col;
 void
 redraw_pico_for_callback()
 {
-    refresh(0, 1);
+    pico_refresh(0, 1);
     update();
 }
 
@@ -2195,11 +2199,18 @@ int   a;				/* and its attribute */
 {
     if((ttcol >= 0 && ttcol < term.t_ncol) 
        && (ttrow >= 0 && ttrow <= term.t_nrow)){
-/*	(*term.t_rev)(a);*/
-	(*term.t_putchar)(c);			/* write it */
-/*	(*term.t_rev)(!a);*/
-	pscreen[ttrow]->v_text[ttcol].c = c;	/* keep track of it */
-	pscreen[ttrow]->v_text[ttcol++].a = a;	/* keep track of it */
+       
+	/*
+	 * Some terminals scroll when you write in the lower right corner
+	 * of the screen, so don't write there.
+	 */
+	if(!(ttrow == term.t_nrow && ttcol == term.t_ncol -1)){
+	    (*term.t_putchar)(c);			/* write it */
+	    pscreen[ttrow]->v_text[ttcol].c = c;	/* keep track of it */
+	    pscreen[ttrow]->v_text[ttcol].a = a;	/* keep track of it */
+	}
+
+	ttcol++;
     }
 }
 
@@ -2411,11 +2422,16 @@ int      key;
     do{
 	if(*buf == key){
 	    buf++;
-	    kncp ? (void)pico_set_colorp(kncp, PSC_NONE)
-		 : (void)(*term.t_rev)(1);
+	    if(kncp)
+	      (void)pico_set_colorp(kncp, PSC_NONE);
+	    else
+	      (void)(*term.t_rev)(1);
+
 	    pputc(*buf, 1);
-	    kncp ? (void)pico_set_colorp(klcp, PSC_NONE)
-		 : (void)(*term.t_rev)(0);
+	    if(kncp)
+	      (void)pico_set_colorp(klcp, PSC_NONE);
+	    else
+	      (void)(*term.t_rev)(0);
 	}
 	else{
 	    pputc(*buf, 0);
@@ -2443,7 +2459,8 @@ void
 wkeyhelp(keymenu)
 KEYMENU *keymenu;
 {
-    char *obufp, *p, fkey[4], linebuf[NLINE];
+    char *obufp, *p, fkey[4];
+    char  linebuf[2*NLINE];	/* "2" is for space for invert tokens */
     int   row, slot, tspace, adjusted_tspace, nspace[6], index, n;
 #ifdef	MOUSE
     char  nbuf[NLINE];

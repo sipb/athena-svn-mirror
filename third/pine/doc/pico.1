@@ -1,4 +1,4 @@
-.TH pico 1 "Version 4.0"
+.TH pico 1 "Version 4.4"
 .SH Name
 pico \- simple text editor in the style of the Pine Composer
 .SH Syntax
@@ -111,12 +111,22 @@ for save on exit, and will not rename the buffer during the "Write Out"
 command.
 .IP \fB-v\fR
 View the file only, disallowing any editing.
+.IP \fB-version\fR
+Print Pico version and exit.
 .IP \fB-w\fR
 Disable word wrap (thus allow editing of long lines).
 .IP \fB-x\fR
 Disable keymenu at the bottom of the screen.
 .IP \fB-z\fR
 Enable ^Z suspension of \fIpico\fR.
+.IP \fB-p\fR
+Preserve the "start" and "stop" characters, typically Ctrl-Q and Ctrl-S,
+which are sometimes used in communications paths to control data flow
+between devices that operate at different speeds.
+.IP \fB-Q\ \fIquotestr\fB\fR
+Set the quote string.  Especially useful when composing email, setting this 
+allows the quote string to be checked for when Justifying paragraphs.
+A common quote string is "> ".
 .IP \fB-q\fR
 Termcap or terminfo definition for input escape sequences are used in
 preference to sequences defined by default.  This option is only available
@@ -148,7 +158,7 @@ Pico was originally derived from MicroEmacs 3.6, by Dave G. Conroy.
 .br
 Pico is a trademark of the University of Washington. 
 .br
-Copyright 1989-2001 by the University of Washington.
+Copyright 1989-2002 by the University of Washington.
 .SH "See Also"
 pine(1)
 .br
@@ -157,4 +167,4 @@ Source distribution (part of the Pine Message System):
    ftp://ftp.cac.washington.edu/mail/pine.tar.Z
 
 .nf
-$Date: 2001-02-19 07:05:51 $
+$Date: 2003-02-12 08:01:45 $

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: fileio.c,v 1.1.1.1 2001-02-19 07:02:15 ghudson Exp $";
+static char rcsid[] = "$Id: fileio.c,v 1.1.1.2 2003-02-12 07:59:15 ghudson Exp $";
 #endif
 /*
  * Program:	ASCII file reading routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: fileio.c,v 1.1.1.1 2001-02-19 07:02:15 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -95,13 +95,17 @@ ffputline(buf, nbuf)
  * at the end of the file that don't have a newline present. Check for I/O
  * errors too. Return status.
  */
-ffgetline(buf, nbuf, msg)
+ffgetline(buf, nbuf, charsreturned, msg)
   register char   buf[];
   int nbuf;
+  int *charsreturned;
   int msg;
 {
     register int    c;
     register int    i;
+
+    if(charsreturned)
+      *charsreturned = 0;
 
     i = 0;
 
@@ -122,6 +126,8 @@ ffgetline(buf, nbuf, msg)
         if (i >= nbuf-2) {
 	    buf[nbuf - 2] = c;	/* store last char read */
 	    buf[nbuf - 1] = 0;	/* and terminate it */
+	    if(charsreturned)
+	      *charsreturned = nbuf - 1;
 	    if (msg)
 	      emlwrite("File has long line", NULL);
             return (FIOLNG);
@@ -132,15 +138,22 @@ ffgetline(buf, nbuf, msg)
     if (c == EOF) {
         if (ferror(g_pico_fio.fp)) {
             emlwrite("File read error", NULL);
+	    if(charsreturned)
+	      *charsreturned = i;
             return (FIOERR);
         }
 
         if (i != 0)
 	  emlwrite("File doesn't end with newline.  Adding one.", NULL);
-	else
-	  return (FIOEOF);
+	else{
+	    if(charsreturned)
+	      *charsreturned = i;
+	    return (FIOEOF);
+	}
     }
 
     buf[i] = 0;
+    if(charsreturned)
+      *charsreturned = i;
     return (FIOSUC);
 }

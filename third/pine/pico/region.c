@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: region.c,v 1.1.1.1 2001-02-19 07:01:32 ghudson Exp $";
+static char rcsid[] = "$Id: region.c,v 1.1.1.2 2003-02-12 08:10:55 ghudson Exp $";
 #endif
 /*
  * Program:	Region management routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: region.c,v 1.1.1.1 2001-02-19 07:01:32 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -352,6 +352,7 @@ markregion(attr)
  * clear all the attributes of all the characters in the buffer?
  * this is real dumb.  Movement with mark set needs to be smarter!
  */
+void
 unmarkbuffer()
 {
     register LINE   *linep;
@@ -369,5 +370,4 @@ unmarkbuffer()
 
 	linep = lforw(linep);
     }
-    
 }

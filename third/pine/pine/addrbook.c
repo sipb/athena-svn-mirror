@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: addrbook.c,v 1.1.1.1 2001-02-19 07:12:00 ghudson Exp $";
+static char rcsid[] = "$Id: addrbook.c,v 1.1.1.2 2003-02-12 08:01:25 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: addrbook.c,v 1.1.1.1 2001-02-19 07:12:00 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -289,7 +289,7 @@ COL_S *disp_form;
 
 	    dprint(2, (debugfile, "parse_format: ignoring unrecognized word \"%s\" in address-book-formats\n", p));
 	    q_status_message1(SM_ORDER, warnings++==0 ? 1 : 0, 4,
-		"Ignoring unrecognized word \"%s\" in address-book-formats", p);
+		"Ignoring unrecognized word \"%.100s\" in address-book-formats", p);
 	    /* put back space */
 	    if(r)
 	      *r = SPACE;
@@ -2291,7 +2291,9 @@ addr_book(style, title, error_message)
 		     rdonly,         /* cur addrbook read only               */
 		     empty,          /* cur addrbook empty                   */
 		     are_selecting,  /* called as ^T selector                */
+#ifdef	ENABLE_LDAP
 		     directory_ok,   /* called from composer, not Lcc        */
+#endif
 		     from_composer,  /* from composer                        */
 		     listmode_ok,    /* ok to do ListMode with this style    */
 		     selecting_one_nick,
@@ -2346,7 +2348,11 @@ addr_book(style, title, error_message)
 		      || style == SelectManyNicks
 		      || style == SelectMultNoFull);
     as.config      = (style == AddrBookConfig);
-    directory_ok   = (style == SelectNicksCom || style == AddrBookScreen);
+#ifdef	ENABLE_LDAP
+    directory_ok   = (style == SelectNicksCom
+		      || style == AddrBookScreen
+		      || style == SelectManyNicks);
+#endif
 
     /* Coming in from the composer, may need to reset the window */
     if(from_composer){
@@ -2546,7 +2552,7 @@ addr_book(style, title, error_message)
             set_titlebar(bp, ps->mail_stream,
                          ps->context_current, ps->cur_folder,
                          ps->msgmap, 1,
-                         FolderName, 0, 0);
+                         FolderName, 0, 0, NULL);
 	    ps->mangled_header = 0;
 	}
 
@@ -3503,7 +3509,7 @@ select:
 		    fs_give((void **)&to);
 
 		  if(error){
-		      q_status_message1(SM_ORDER, 3, 4, "%s", error);
+		      q_status_message1(SM_ORDER, 3, 4, "%.200s", error);
 		      fs_give((void **)&error);
 		  }
 
@@ -3703,7 +3709,7 @@ change_abook:
 		    }
 		    else{
 			q_status_message1(SM_ORDER|SM_DING, 0, 4,
-					  "Missing \"}\" in config: %s", q);
+					  "Missing \"}\" in config: %.200s", q);
 			if(nick)
 			  fs_give((void **)&nick);
 			if(file)
@@ -4093,7 +4099,9 @@ change_abook:
 		    current_changed_flag++;
 		  }
 		  else if(mp.button == M_BUTTON_RIGHT){
-		      int need_redraw;
+#ifdef	_WINDOWS
+		    int need_redraw;
+#endif
 		    as.cur_row = mp.row;
 		    current_changed_flag++;
 
@@ -4608,6 +4616,7 @@ q_server:
 
 		if(dl->type == ListHead || dl->type == Simple){
 		    int do_init_disp = 0;
+		    long ll;
 
 		    current_changed_flag++;
 
@@ -4661,10 +4670,39 @@ q_server:
 				start_disp = 0;
 			    }
 			}
+			else if(F_OFF(F_UNSELECT_WONT_ADVANCE,ps_global)){
+
+			    r = next_selectable_line(as.cur_row+as.top_ent,
+						     &new_line);
+			    if(r){
+
+				for(ll = new_line;
+				    (dl=dlist(ll))->type != End;
+				    ll++)
+				  if(dl->type == ListHead || dl->type == Simple)
+				    break;
+
+				if(dl->type != End)
+				  new_line = ll;
+
+				as.cur_row = new_line - as.top_ent;
+				if(as.cur_row >= as.l_p_page){
+				    /*-- Changed pages --*/
+				    as.top_ent += as.l_p_page;
+				    as.cur_row -= as.l_p_page;
+				    /* if it is still off screen */
+				    if(as.cur_row >= as.l_p_page){
+					as.top_ent += (as.cur_row-as.l_p_page+1);
+					as.cur_row  = (as.l_p_page - 1);
+				    }
+
+				    start_disp       = 0;
+				    ps->mangled_body = 1;
+				}
+			    }
+			}
 		    }
 		    else{
-			long ll;
-
 			if(as.selections == 0)
 			  do_init_disp++;
 			
@@ -4797,9 +4835,6 @@ q_server:
 
             /*---------- Open specific new folder ----------*/
 	  case MC_GOTO:
-	    if(ps->nr_mode)
-              goto bleep;
-
 	    dprint(7, (debugfile, "Goto from addrbook\n"));
 	    ab_goto_folder(command_line);
             break;
@@ -4808,6 +4843,9 @@ q_server:
             /*--------- Index -----------*/
 	  case MC_INDEX:
 	    dprint(7, (debugfile, "Goto message index from addrbook\n"));
+	    if(THREADING() && ps->viewing_a_thread)
+	      unview_thread(ps, ps->mail_stream, ps->msgmap);
+
             ps->next_screen = mail_index_screen;
             break;
 
@@ -5056,7 +5094,7 @@ readonly_warning(bell, name)
     char      *name;
 {
     q_status_message2(SM_ORDER | (bell ? SM_DING : 0), 0, 4,
-		      "AddressBook%s%s is Read Only",
+		      "AddressBook%.200s%.200s is Read Only",
 		      name ? " " : "",
 		      name ? name : "");
 }
@@ -5509,7 +5547,7 @@ ab_select(ps, abook, cur_line, command_line, start_disp)
 			    comatose(as.selections));
 		    else
 		      q_status_message2(SM_ORDER, 0, 2,
-			"%s entries now selected, %s entries were UNselected",
+		"%.200s entries now selected, %.200s entries were UNselected",
 			comatose(as.selections),
 			comatose(prevsel-as.selections));
 		}
@@ -5524,7 +5562,7 @@ ab_select(ps, abook, cur_line, command_line, start_disp)
 				comatose(as.selections-prevsel));
 		    else
 		      q_status_message2(SM_ORDER, 0, 2,
-			    "%s new entries selected, %s entries now selected",
+		    "%.200s new entries selected, %.200s entries now selected",
 			    comatose(as.selections-prevsel),
 			    comatose(as.selections));
 		}
@@ -5935,7 +5973,7 @@ ab_goto_folder(command_line)
 #endif /* !DOS */
 
     if(go_folder != NULL)
-      visit_folder(ps_global, go_folder, tc);
+      visit_folder(ps_global, go_folder, tc, NULL);
 }
 
 
@@ -6742,12 +6780,12 @@ search_book(cur_line, command_line, new_line, wrapped, warped)
 	}
 
 	if(notdisplayed > 1 && *wrapped == 0)
-	  q_status_message3(SM_ORDER,0,4, "%s string in %s %sfields",
+	 q_status_message3(SM_ORDER,0,4, "%.200s string in %.200s %.200sfields",
 	      also ? "Also matched" : "Matched",
 	      comatose(notdisplayed),
 	      also ? "other " : "");
 	else if(notdisplayed == 1 && *wrapped == 0)
-	  q_status_message2(SM_ORDER,0,4, "%s string in %s",
+	  q_status_message2(SM_ORDER,0,4, "%.200s string in %.200s",
 	      also ? "Also matched" : "Matched",
 	      (find_result & MATCH_NICK && !pab->nick_is_displayed)     ?
 							    "Nickname field"

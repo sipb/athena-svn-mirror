@@ -1,4 +1,4 @@
-# $Id: makefile.os2,v 1.1.1.1 2001-02-19 07:05:34 ghudson Exp $
+# $Id: makefile.os2,v 1.1.1.2 2003-02-12 08:11:01 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -136,7 +136,7 @@ pine-use$E:	pine-use.c
 		$(CC) $(CFLAGS) -o pine-use.exe pine-use.c
 
 clean:
-		$(RM) *$O os.h os.c helptext.c helptext.h
+		$(RM) *$O os.h os.c helptext.c helptext.h rpdump rpload
 		( cd osdep && make clean )
 
 HEADERS=	headers.h pine.h os.h helptext.h context.h \
