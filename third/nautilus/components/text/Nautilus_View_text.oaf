@@ -1,0 +1,78 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21" type="exe" location="nautilus-text-view">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Text view factory"/>
+	<oaf_attribute name="name-es" type="string" value="Original para la vista de texto"/>
+	<oaf_attribute name="name-sv" type="string" value="Textvyfabrik"/>
+	<oaf_attribute name="name-de" type="string" value="Textansichten-Factory"/>
+	<oaf_attribute name="name-ja" type="string" value="&#165;&#198;&#165;&#173;&#165;&#185;&#165;&#200;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for tekstvisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Textov&#253; poh&#181;ad"/>
+
+	<oaf_attribute name="description" type="string" value="Factory for text view"/>
+	<oaf_attribute name="description-es" type="string" value="Original para la vista de texto"/>
+	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r textvy"/>
+	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r die Textansicht"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for tekstvisning"/>
+	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre textov&#253; poh&#181;ad"/>
+
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437" type="factory" location="OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Text view"/>
+	<oaf_attribute name="name-da" type="string" value="Tekst-visning"/>
+	<oaf_attribute name="name-es" type="string" value="Vista Texto"/>
+	<oaf_attribute name="name-sv" type="string" value="Textvy"/>
+	<oaf_attribute name="name-de" type="string" value="Textansicht"/>
+	<oaf_attribute name="name-ko" type="string" value="&#177;&#219;&#192;&#218; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-ja" type="string" value="&#165;&#198;&#165;&#173;&#165;&#185;&#165;&#200;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-no" type="string" value="Tekstvisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Textov&#253; poh&#181;ad"/>
+
+	<oaf_attribute name="description" type="string" value="Text view"/>
+	<oaf_attribute name="description-da" type="string" value="Tekst-visning"/>
+	<oaf_attribute name="description-es" type="string" value="Vista Texto"/>
+	<oaf_attribute name="description-sv" type="string" value="Textvy"/>
+	<oaf_attribute name="description-de" type="string" value="Textansicht"/>
+	<oaf_attribute name="description-ko" type="string" value="&#177;&#219;&#192;&#218; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#198;&#165;&#173;&#165;&#185;&#165;&#200;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="description-no" type="string" value="Tekstvisning"/>
+	<oaf_attribute name="description-sk" type="string" value="Textov&#253; poh&#181;ad"/>
+
+	<oaf_attribute name="bonobo:editable" type="boolean" value="true"/>
+	<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+		<item value="text/plain"/>
+		<item value="text/*"/>
+	</oaf_attribute>
+	<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+		<item value="file"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" value="Text"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#244;&#197;&#203;&#211;&#212;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Tekst"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Texto"/>
+	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Text"/>
+	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Text"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#177;&#219;&#192;&#218;"/>
+	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#198;&#165;&#173;&#165;&#185;&#165;&#200;"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Tekst"/>
+	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Text"/>
+
+</oaf_server>
+
+</oaf_info>
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+<oaf_info>
+
+
+<oaf_server iid="OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f" type="exe" location="nautilus-adapter">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Factory for Nautilus component adapter factories"/>
+	<oaf_attribute name="name-es" type="string" value="Fabrica para las f&#225;bricas de componente adaptador de Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Fabrik f&#246;r Nautilus-komponentadapterfabriker"/>
+	<oaf_attribute name="name-de" type="string" value="Factory f&#252;r Nautilus-Komponentenadapter-Factories"/>
+
+	<oaf_attribute name="description" type="string" value="Factory for Nautilus component adapter factories "/>
+	<oaf_attribute name="description-es" type="string" value="Fabrica para las f&#225;bricas de componente adaptador de Nautilus"/>
+	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r Nautilus-komponentadapterfabriker "/>
+	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r Nautilus-Komponentenadapter-Factories "/>
+
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4" type="factory" location="OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Nautilus/ComponentAdapterFactory:1.0"/>
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Nautilus component adapter factory"/>
+	<oaf_attribute name="name-es" type="string" value="Fabrica de componentes adaptador de Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus-komponentadapterfabriken"/>
+	<oaf_attribute name="name-de" type="string" value="Nautilus-Komponentenadapter-Factory"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus fabrik for komponentadapter"/>
+	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre komponentov&#233; adapt&#233;ry Nautilus"/>
+
+	<oaf_attribute name="description" type="string" value="Factory for objects that wrap ordinary Bonobo Controls or Embeddables to look like Nautilus Views"/>
+
+</oaf_server>
+
+</oaf_info>
