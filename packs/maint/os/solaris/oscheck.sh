@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: oscheck.sh,v 1.2 2000-06-21 20:51:00 ghudson Exp $
+# $Id: oscheck.sh,v 1.3 2000-06-26 22:11:17 ghudson Exp $
 
 # This script checks the integrity of the Solaris OS installation, by
 # running the os-checkfiles program against the appropriate set of
@@ -51,6 +51,11 @@ while getopts no:r:y opt; do
     ;;
   esac
 done
+
+if [ ! -f $libdir/stats.common ]; then
+  echo "$libdir/stats.common does not exist; not checking OS files." >&2
+  exit 1
+fi
 
 # Determine which hardware we're running on.
 platform=`uname -m`
