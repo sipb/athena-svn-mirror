@@ -80,9 +80,6 @@ chmod 755 /root/dev
 chmod 755 /root/devices
 cp /dev/null /root/reconfigure
 
-echo "Create config files for Athena software"
-chroot /root /srvd/install/athchanges
-
 cd /root
 echo "Creating other files/directories on the pack's root..."
 mkdir afs mit 
@@ -175,6 +172,9 @@ for i in  CellAlias CellServDB SuidCells
 	chmod a+r etc/$i
 done
 echo "Copied afs service files into var/usr/vice/etc"
+
+echo "Setting up initial system packs symlinks"
+(cd /tmp && tar cf - srvd os) | (cd /root && tar xf -)
 
 echo "turn fs slow"
 /util/fastfs /root slow

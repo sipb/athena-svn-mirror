@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2003-04-07 21:54:51 ghudson Exp $
+# $Id: Makefile,v 1.15 2003-09-12 01:52:02 ghudson Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -11,6 +11,8 @@ install:
 	mkdir -p ${DESTDIR}${INSTALL}
 	mkdir -p ${DESTDIR}${INSTALL_DEV}
 	install -c -m 0555 athchanges ${DESTDIR}${INSTALL}
+	install -c -m 0555 finish-install.sh \
+	  ${DESTDIR}${INSTALL}/finish-install
 	install -c -m 0444 format.input.SEAGATE-ST39173WC-6244 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST315320A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST320011A ${DESTDIR}${INSTALL}
