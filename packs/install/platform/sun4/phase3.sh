@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.11 1997-05-15 03:40:40 ghudson Exp $
+# $Id: phase3.sh,v 1.12 1997-05-16 02:23:20 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -41,6 +41,10 @@ mkdir /root/var/usr/vice
 echo "Copying file system from installation srvd to new filesys..."
 echo "Running 'track'..."
 /srvd/usr/athena/etc/track -d -F /os -T /root  -W /srvd/usr/athena/lib -s stats/os_rvd slists/os_rvd
+
+echo "Copying /os/var into /root/var"
+(cd /os/var; tar cf - .) | (cd /root/var; tar xf - .)
+
 echo "tracking the kernel"
 mkdir /root/kernel
 /srvd/usr/athena/etc/track -d -F /os/kernel -T /root/kernel  -W /srvd/usr/athena/lib -s stats/kernel_rvd slists/kernel_rvd
@@ -140,12 +144,10 @@ cp /dev/null etc/named.local
 
 
 
-echo "Updating var"
+echo "Making /var/tmp"
 cd /root/var
-cpio -idm </srvd/install/var.cpio
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
-cp -p /srvd/var/spool/cron/crontabs/root /var/spool/cron/crontabs/root
 
 cd /var/usr/vice
 for i in  CellServDB SuidCells 
@@ -158,6 +160,7 @@ cp /dev/null /root/var/adm/utmp
 cp /dev/null /root/var/adm/utmpx
 cp /dev/null /root/var/adm/wtmp
 cp /dev/null /root/var/adm/wtmpx
+cp /dev/null /root/var/adm/sulog
 cp /dev/null /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
