@@ -29,8 +29,23 @@
 #include "gdk.h"
 #include "gdkprivate.h"
 
+#if HAVE_CONFIG_H
+#  include <config.h>
+#  if STDC_HEADERS
+#    include <string.h>
+#  endif
+#endif
+
+#ifdef USE_NATIVE_LOCALE
+#include <stdlib.h>
+#endif
+
 static GHashTable *font_name_hash = NULL;
 static GHashTable *fontset_name_hash = NULL;
+
+#define FONT_XFONT(private)  ((XFontStruct *)(private)->xfont)
+#define FONT_IS_8BIT(private) ((FONT_XFONT(private)->min_byte1 == 0) && \
+			       (FONT_XFONT(private)->max_byte1 == 0))
 
 static void
 gdk_font_hash_insert (GdkFontType type, GdkFont *font, const gchar *font_name)
@@ -374,7 +389,6 @@ gdk_text_width_wc (GdkFont	  *font,
 {
   GdkFontPrivate *private;
   gint width;
-  XFontStruct *xfont;
   XFontSet fontset;
 
   g_return_val_if_fail (font != NULL, -1);
@@ -385,21 +399,19 @@ gdk_text_width_wc (GdkFont	  *font,
   switch (font->type)
     {
     case GDK_FONT_FONT:
-      xfont = (XFontStruct *) private->xfont;
-      if ((xfont->min_byte1 == 0) && (xfont->max_byte1 == 0))
-        {
-          gchar *text_8bit;
-          gint i;
-          text_8bit = g_new (gchar, text_length);
-          for (i=0; i<text_length; i++) text_8bit[i] = text[i];
-          width = XTextWidth (xfont, text_8bit, text_length);
-          g_free (text_8bit);
-        }
-      else
-        {
-          width = 0;
-        }
-      break;
+      {
+	gchar *glyphs;
+	int glyphs_len;
+
+	_gdk_font_wc_to_glyphs (font, text, text_length,
+				&glyphs, &glyphs_len);
+
+	width = gdk_text_width (font, glyphs, glyphs_len);
+
+	g_free (glyphs);
+
+	break;
+      }
     case GDK_FONT_FONTSET:
       if (sizeof(GdkWChar) == sizeof(wchar_t))
 	{
@@ -475,10 +487,7 @@ gdk_char_width_wc (GdkFont *font,
 		   GdkWChar character)
 {
   GdkFontPrivate *private;
-  XCharStruct *chars;
   gint width;
-  guint ch = character & 0xff;  /* get rid of sign-extension */
-  XFontStruct *xfont;
   XFontSet fontset;
 
   g_return_val_if_fail (font != NULL, -1);
@@ -488,25 +497,28 @@ gdk_char_width_wc (GdkFont *font,
   switch (font->type)
     {
     case GDK_FONT_FONT:
-      /* only 8 bits characters are considered here */
-      xfont = (XFontStruct *) private->xfont;
-      if ((xfont->min_byte1 == 0) &&
-          (xfont->max_byte1 == 0) &&
-          (ch >= xfont->min_char_or_byte2) &&
-          (ch <= xfont->max_char_or_byte2))
-        {
-          chars = xfont->per_char;
-          if (chars)
-            width = chars[ch - xfont->min_char_or_byte2].width;
-          else
-            width = xfont->min_bounds.width;
-        }
+#ifdef USE_NATIVE_LOCALE
+      if (MB_CUR_MAX == 1 && FONT_IS_8BIT(private))
+	{
+	  char c;
+	  g_assert (wctomb(&c,character) == 1);
+
+	  return gdk_char_width (font, c);
+	}
       else
-        {
-          char ch2 = character;
-          width = XTextWidth (xfont, &ch2, 1);
-        }
-      break;
+#endif /* USE_NATIVE_LOCALE */
+	{
+	  gchar *glyphs;
+	  int glyphs_len;
+	  
+	  _gdk_font_wc_to_glyphs (font, &character, 1, &glyphs, &glyphs_len);
+	  
+	  width = gdk_text_width (font, glyphs, glyphs_len);
+	  
+	  g_free (glyphs);
+	  
+	  break;
+	}
     case GDK_FONT_FONTSET:
       fontset = (XFontSet) private->xfont;
       {
@@ -610,13 +622,8 @@ gdk_text_extents_wc (GdkFont        *font,
 		     gint           *descent)
 {
   GdkFontPrivate *private;
-  XCharStruct overall;
-  XFontStruct *xfont;
   XFontSet    fontset;
   XRectangle  ink, logical;
-  int direction;
-  int font_ascent;
-  int font_descent;
 
   g_return_if_fail (font != NULL);
   g_return_if_fail (text != NULL);
@@ -627,31 +634,17 @@ gdk_text_extents_wc (GdkFont        *font,
     {
     case GDK_FONT_FONT:
       {
-	gchar *text_8bit;
-	gint i;
+	gchar *glyphs;
+	int glyphs_len;
 
-	xfont = (XFontStruct *) private->xfont;
-	g_return_if_fail ((xfont->min_byte1 == 0) && (xfont->max_byte1 == 0));
+	_gdk_font_wc_to_glyphs (font, text, text_length,
+				&glyphs, &glyphs_len);
 
-	text_8bit = g_new (gchar, text_length);
-	for (i=0; i<text_length; i++) 
-	  text_8bit[i] = text[i];
+	gdk_text_extents (font, glyphs, glyphs_len,
+			  lbearing, rbearing, width, ascent, descent);
 
-	XTextExtents (xfont, text_8bit, text_length,
-		      &direction, &font_ascent, &font_descent,
-		      &overall);
-	g_free (text_8bit);
-	
-	if (lbearing)
-	  *lbearing = overall.lbearing;
-	if (rbearing)
-	  *rbearing = overall.rbearing;
-	if (width)
-	  *width = overall.width;
-	if (ascent)
-	  *ascent = overall.ascent;
-	if (descent)
-	  *descent = overall.descent;
+	g_free (glyphs);
+
 	break;
       }
     case GDK_FONT_FONTSET:
@@ -826,4 +819,58 @@ gdk_char_height (GdkFont *font,
   g_return_val_if_fail (font != NULL, -1);
 
   return gdk_text_height (font, &character, 1);
+}
+
+void
+_gdk_font_wc_to_glyphs (GdkFont        *font,
+			const GdkWChar *text,
+			gint            text_length,
+			gchar         **result,
+			gint           *result_length)
+{
+  XFontStruct *xfont;
+  GdkFontPrivate *font_private = (GdkFontPrivate*) font;
+
+  g_return_if_fail (font != NULL);
+  g_return_if_fail (font->type == GDK_FONT_FONT);
+
+  xfont = (XFontStruct *) font_private->xfont;
+
+  if (FONT_IS_8BIT (font_private))
+    {
+      /* 8-bit font, assume that we are in a 8-bit locale,
+       * and convert to bytes using wcstombs.
+       */
+      char *mbstr = _gdk_wcstombs_len (text, text_length);
+
+      if (result_length)
+	*result_length = strlen (mbstr);
+
+      if (result)
+	*result = mbstr;
+      else
+	g_free (mbstr);
+    }
+  else
+    {
+      /* 16-bit font. Who knows what was intended? Make a random
+       * guess.
+       */
+      XChar2b *result2b = g_new (XChar2b, text_length + 1);
+      gint i;
+
+      for (i = 0; i < text_length; i++)
+	{
+	  result2b[i].byte1 = text[i] / 256;
+	  result2b[i].byte2 = text[i] % 256;
+	}
+
+      result2b[i].byte1 = result2b[i].byte2 = 0;
+
+      if (result)
+	*result = (gchar *)result2b;
+
+      if (result_length)
+	*result_length = text_length;
+    }
 }

@@ -742,8 +742,11 @@ gtk_widget_class_init (GtkWidgetClass *klass)
   klass->state_changed = NULL;
   klass->parent_set = NULL;
   klass->style_set = gtk_widget_style_set;
-  klass->add_accelerator = (void*) gtk_accel_group_handle_add;
-  klass->remove_accelerator = (void*) gtk_accel_group_handle_remove;
+  klass->add_accelerator = (gint (*) (GtkWidget *, guint, GtkAccelGroup *,
+				      guint, GdkModifierType,
+				      GtkAccelFlags)) gtk_accel_group_handle_add;
+  klass->remove_accelerator = (void (*) (GtkWidget *, GtkAccelGroup *,
+					 guint, GdkModifierType)) gtk_accel_group_handle_remove;
   klass->grab_focus = gtk_widget_real_grab_focus;
   klass->event = NULL;
   klass->button_press_event = NULL;
@@ -2814,9 +2817,7 @@ gtk_widget_event (GtkWidget *widget,
        * that have a full redraw pending (given that the event is !send_event,
        * otherwise we assume we can trust the event).
        */
-      if (event->any.send_event)
-	parent = NULL;
-      else if (event->any.window)
+      if (!event->any.send_event && event->any.window)
 	{
 	  parent = widget;
 	  while (parent)
@@ -2840,6 +2841,9 @@ gtk_widget_event (GtkWidget *widget,
 	    }
 	  /* </HACK> */
 	}
+      else
+	parent = NULL;
+      
       if (!event->any.window || parent)
 	{
 	  gtk_widget_unref (widget);
@@ -4160,7 +4164,7 @@ gtk_widget_get_pointer (GtkWidget *widget,
  *   results:
  *****************************************/
 
-gint
+gboolean
 gtk_widget_is_ancestor (GtkWidget *widget,
 			GtkWidget *ancestor)
 {
@@ -4681,9 +4685,12 @@ gtk_widget_propagate_state (GtkWidget           *widget,
 
   if (old_state != GTK_WIDGET_STATE (widget))
     {
+      if (!GTK_WIDGET_IS_SENSITIVE (widget) && GTK_WIDGET_HAS_GRAB (widget))
+	gtk_grab_remove (widget);
+      
       gtk_widget_ref (widget);
       gtk_signal_emit (GTK_OBJECT (widget), widget_signals[STATE_CHANGED], old_state);
-      
+
       if (GTK_IS_CONTAINER (widget))
 	{
 	  data->parent_sensitive = (GTK_WIDGET_IS_SENSITIVE (widget) != FALSE);

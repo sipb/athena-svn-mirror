@@ -401,7 +401,7 @@ gdk_window_new (GdkWindow     *parent,
     {
       depth = 0;
       class = InputOnly;
-      private->colormap = NULL;
+      private->colormap = gdk_colormap_get_system ();
     }
   
   private->xwindow = XCreateWindow (private->xdisplay, xparent,
@@ -2211,6 +2211,8 @@ gdk_window_get_toplevels (void)
   return new_list;
 }
 
+#ifdef HAVE_SHAPE_EXT
+
 /* 
  * propagate the shapes from all child windows of a GDK window to the parent 
  * window. Shamelessly ripped from Enlightenment's code
@@ -2523,6 +2525,8 @@ gdk_propagate_shapes (Display *disp,
     }
   g_free (spans);
 }
+
+#endif /* HAVE_SHAPE_EXT */
 
 void
 gdk_window_set_child_shapes (GdkWindow *window)

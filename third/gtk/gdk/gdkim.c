@@ -37,6 +37,9 @@
 #  endif
 #endif
 
+#ifdef USE_NATIVE_LOCALE
+#include <stdlib.h>
+#endif
 
 /* If this variable is FALSE, it indicates that we should
  * avoid trying to use multibyte conversion functions and
@@ -691,23 +694,23 @@ gdk_ic_destroy (GdkIC *ic)
   if (private->xic != NULL)
     XDestroyIC (private->xic);
 
-  if (private->mask & GDK_IC_CLIENT_WINDOW)
+  if (private->attr->client_window)
     gdk_window_unref (private->attr->client_window);
-  if (private->mask & GDK_IC_FOCUS_WINDOW)
+  if (private->attr->focus_window)
     gdk_window_unref (private->attr->focus_window);
 
-  if (private->mask & GDK_IC_PREEDIT_FONTSET)
+  if (private->attr->preedit_fontset)
     gdk_font_unref (private->attr->preedit_fontset);
-  if (private->mask & GDK_IC_PREEDIT_PIXMAP)
+  if (private->attr->preedit_pixmap)
     gdk_pixmap_unref (private->attr->preedit_pixmap);
-  if (private->mask & GDK_IC_PREEDIT_COLORMAP)
+  if (private->attr->preedit_colormap)
     gdk_colormap_unref (private->attr->preedit_colormap);
 
-  if (private->mask & GDK_IC_STATUS_FONTSET)
+  if (private->attr->status_fontset)
     gdk_font_unref (private->attr->status_fontset);
-  if (private->mask & GDK_IC_STATUS_PIXMAP)
+  if (private->attr->status_pixmap)
     gdk_pixmap_unref (private->attr->status_pixmap);
-  if (private->mask & GDK_IC_STATUS_COLORMAP)
+  if (private->attr->status_colormap)
     gdk_colormap_unref (private->attr->status_colormap);
 
   xim_ic_list = g_list_remove (xim_ic_list, private);
@@ -1480,6 +1483,117 @@ gdk_ic_get_events (GdkIC *ic)
 #endif /* USE_XIM */
 
 /*
+ * gdk_wcstombs_len
+ *
+ * Returns a multi-byte string converted from the specified array
+ * of wide characters. The string is newly allocated. The array of
+ * wide characters is nul-terminated, if len < 0
+ */
+
+#ifdef USE_NATIVE_LOCALE
+gchar *
+_gdk_wcstombs_len (const GdkWChar *src,
+		   int             src_len)
+{
+  int len = 0;
+  int i;
+  char *result;
+  char buf[16];
+  char *p;
+
+  if (MB_CUR_MAX <= 16)
+    p = buf;
+  else
+    p = g_malloc (MB_CUR_MAX);	/* Presumably never hit */
+
+  wctomb (NULL, 0);
+
+  for (i=0; (src_len < 0 || i < src_len) && src[i]; i++)
+    len += wctomb (p, src[i]);
+
+  result = g_malloc (len + 1);
+
+  wcstombs (result, (wchar_t *)src, len);
+  result[len] = '\0';
+
+  if (p != buf)
+    g_free (p);
+
+  return result;
+}
+#else /* !USE_NATIVE_LOCALE */
+
+gchar *
+_gdk_wcstombs_len (const GdkWChar *src,
+		   int             len)
+{
+  gchar *mbstr = NULL;
+  gint length;
+  
+  if (len < 0)
+    {
+      length = 0;
+
+      while (src[length] != 0)
+	length++;
+    }
+  else
+    length = len;
+
+  if (gdk_use_mb)
+    {
+      XTextProperty tpr;
+      wchar_t *src_wc;
+
+      /* The len < 0 part is to ensure nul termination
+       */
+      if (len < 0 && sizeof(wchar_t) == sizeof(GdkWChar))
+	{
+	  src_wc = (wchar_t *)src;
+	}
+      else
+	{
+	  gint i;
+
+	  src_wc = g_new (wchar_t, length + 1);
+
+	  for (i = 0; i < length; i++)
+	    src_wc[i] = src[i];
+
+	  src_wc[i] = 0;
+	}
+      
+      if (XwcTextListToTextProperty (gdk_display, &src_wc, 1,
+				     XTextStyle, &tpr) == Success)
+	{
+	  /*
+	   * We must copy the string into an area allocated by glib, because
+	   * the string 'tpr.value' must be freed by XFree().
+	   */
+	  mbstr = g_strdup(tpr.value);
+	  XFree (tpr.value);
+	}
+
+      if (src_wc != (wchar_t *)src)
+	g_free (src_wc);
+    }
+  else
+    {
+      gint i;
+
+      mbstr = g_new (gchar, length + 1);
+
+      for (i=0; i < length; i++)
+	mbstr[i] = src[i];
+
+      mbstr[i] = '\0';
+    }
+
+  return mbstr;
+}
+#endif /* !USE_NATIVE_LOCALE */
+  
+/*
  * gdk_wcstombs 
  *
  * Returns a multi-byte string converted from the specified array
@@ -1490,58 +1604,7 @@ gdk_ic_get_events (GdkIC *ic)
 gchar *
 gdk_wcstombs (const GdkWChar *src)
 {
-  gchar *mbstr;
-
-  if (gdk_use_mb)
-    {
-      XTextProperty tpr;
-
-      if (sizeof(wchar_t) != sizeof(GdkWChar))
-	{
-	  gint i;
-	  wchar_t *src_alt;
-	  for (i=0; src[i]; i++);
-	  src_alt = g_new (wchar_t, i+1);
-	  for (; i>=0; i--)
-	    src_alt[i] = src[i];
-	  if (XwcTextListToTextProperty (gdk_display, &src_alt, 1, XTextStyle, &tpr)
-	      != Success)
-	    {
-	      g_free (src_alt);
-	      return NULL;
-	    }
-	  g_free (src_alt);
-	}
-      else
-	{
-	  if (XwcTextListToTextProperty (gdk_display, (wchar_t**)&src, 1,
-					 XTextStyle, &tpr) != Success)
-	    {
-	      return NULL;
-	    }
-	}
-      /*
-       * We must copy the string into an area allocated by glib, because
-       * the string 'tpr.value' must be freed by XFree().
-       */
-      mbstr = g_strdup(tpr.value);
-      XFree (tpr.value);
-    }
-  else
-    {
-      gint length = 0;
-      gint i;
-
-      while (src[length] != 0)
-	length++;
-      
-      mbstr = g_new (gchar, length + 1);
-
-      for (i=0; i<length+1; i++)
-	mbstr[i] = src[i];
-    }
-
-  return mbstr;
+  return _gdk_wcstombs_len (src, -1);
 }
   
 /*
@@ -1554,6 +1617,9 @@ gdk_wcstombs (const GdkWChar *src)
 gint
 gdk_mbstowcs (GdkWChar *dest, const gchar *src, gint dest_max)
 {
+#ifdef USE_NATIVE_LOCALE
+  return mbstowcs ((wchar_t *)dest, src, dest_max);
+#else
   if (gdk_use_mb)
     {
       XTextProperty tpr;
@@ -1586,10 +1652,11 @@ gdk_mbstowcs (GdkWChar *dest, const gchar *src, gint dest_max)
   else
     {
       gint i;
-
+      
       for (i=0; i<dest_max && src[i]; i++)
 	dest[i] = (guchar)src[i];
-
+      
       return i;
     }
+#endif
 }

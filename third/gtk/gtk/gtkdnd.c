@@ -24,6 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <stdlib.h>
+
 #include "gdk/gdkx.h"
 #include "gdk/gdkkeysyms.h"
 
@@ -1270,16 +1272,30 @@ gtk_drag_find_widget (GtkWidget       *widget,
       if (GTK_IS_CONTAINER (widget))
 	{
 	  GtkDragFindData new_data = *data;
-	  
+	  GList *children = gtk_container_children (GTK_CONTAINER (widget));
+	  GList *tmp_list;
+
 	  new_data.x -= x_offset;
 	  new_data.y -= y_offset;
 	  new_data.found = FALSE;
 	  new_data.toplevel = FALSE;
-	  
-	  gtk_container_forall (GTK_CONTAINER (widget),
-				(GtkCallback)gtk_drag_find_widget,
-				&new_data);
-	  
+
+	  g_list_foreach (children, (GFunc)gtk_widget_ref, NULL);
+
+	  tmp_list = children;
+	  while (tmp_list)
+	    {
+	      GtkWidget *child = tmp_list->data;
+
+	      if (child->parent == widget)
+		gtk_drag_find_widget (child, &new_data);
+	      
+	      gtk_widget_unref (child);
+	      tmp_list = tmp_list->next;
+	    }
+
+	  g_list_free (children);
+
 	  data->found = new_data.found;
 	}
 
@@ -1292,8 +1308,8 @@ gtk_drag_find_widget (GtkWidget       *widget,
 	{
 	  data->found = data->callback (widget,
 					data->context,
-					data->x - new_allocation.x,
-					data->y - new_allocation.y,
+					data->x - x_offset,
+					data->y - y_offset,
 					data->time);
 	  /* If so, send a "drag_leave" to the last widget */
 	  if (data->found)
@@ -2056,7 +2072,7 @@ gtk_drag_set_default_icon (GdkColormap   *colormap,
   if (default_icon_pixmap)
     gdk_pixmap_unref (default_icon_pixmap);
   if (default_icon_mask)
-    gdk_pixmap_unref (default_icon_pixmap);
+    gdk_pixmap_unref (default_icon_mask);
 
   default_icon_colormap = colormap;
   gdk_colormap_ref (colormap);
@@ -2673,6 +2689,9 @@ gtk_drag_end (GtkDragSourceInfo *info, guint32 time)
 				 info);
   gtk_signal_disconnect_by_func (GTK_OBJECT (info->ipc_widget), 
 				 GTK_SIGNAL_FUNC (gtk_drag_motion_cb),
+				 info);
+  gtk_signal_disconnect_by_func (GTK_OBJECT (info->ipc_widget), 
+				 GTK_SIGNAL_FUNC (gtk_drag_key_cb),
 				 info);
 
   /* Send on a release pair to the the original 

@@ -25,9 +25,12 @@
  */
 
 #include <X11/Xlocale.h>	/* so we get the right setlocale */
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>		/* For getuid() and friends */
 #include <gmodule.h>
 #include "gtkbutton.h"
 #include "gtkdnd.h"
@@ -173,6 +176,48 @@ gtk_check_version (guint required_major,
   return NULL;
 }
 
+/* This checks to see if the process is running suid or sgid
+ * at the current time. If so, we don't allow GTK+ to be initialized.
+ * This is meant to be a mild check - we only error out if we
+ * can prove the programmer is doing something wrong, not if
+ * they could be doing something wrong. For this reason, we
+ * don't use issetugid() on BSD or prctl (PR_GET_DUMPABLE).
+ */
+static gboolean
+check_setugid (void)
+{
+  uid_t ruid, euid, suid; /* Real, effective and saved user ID's */
+  gid_t rgid, egid, sgid; /* Real, effective and saved group ID's */
+  
+#ifdef HAVE_GETRESUID
+  /* These aren't in the header files, so we prototype them here.
+   */
+  int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid);
+  int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid);
+
+  if (getresuid (&ruid, &euid, &suid) != 0 ||
+      getresgid (&rgid, &egid, &sgid) != 0)
+#endif /* HAVE_GETRESUID */
+    {
+      suid = ruid = getuid ();
+      sgid = rgid = getgid ();
+      euid = geteuid ();
+      egid = getegid ();
+    }
+
+  if (ruid != euid || ruid != suid ||
+      rgid != egid || rgid != sgid)
+    {
+      g_warning ("This process is currently running setuid or setgid.\n"
+		 "This is not a supported use of GTK+. You must create a helper\n"
+		 "program instead. For further details, see:\n\n"
+		 "    http://www.gtk.org/setuid.html\n\n"
+		 "Refusing to initialize GTK+.");
+      exit (1);
+    }
+
+  return TRUE;
+}
 
 gboolean
 gtk_init_check (int	 *argc,
@@ -186,6 +231,9 @@ gtk_init_check (int	 *argc,
   if (gtk_initialized)
     return TRUE;
 
+  if (!check_setugid ())
+    return FALSE;
+  
 #if	0
   g_set_error_handler (gtk_error);
   g_set_warning_handler (gtk_warning);
@@ -352,10 +400,10 @@ gtk_init_check (int	 *argc,
 	      g_module_symbol (module, "gtk_module_init", (gpointer*) &modinit_func) &&
 	      modinit_func)
 	    {
-	      if (!g_slist_find (gtk_modules, modinit_func))
+	      if (!g_slist_find (gtk_modules, (void *)modinit_func))
 		{
 		  g_module_make_resident (module);
-		  slist->data = modinit_func;
+		  slist->data = (void *)modinit_func;
 		}
 	      else
 		{
@@ -408,7 +456,7 @@ gtk_init_check (int	 *argc,
 	{
 	  GtkModuleInitFunc modinit;
 	  
-	  modinit = slist->data;
+	  modinit = (GtkModuleInitFunc)slist->data;
 	  modinit (argc, argv);
 	}
     }
@@ -823,7 +871,7 @@ gtk_grab_add (GtkWidget *widget)
 {
   g_return_if_fail (widget != NULL);
   
-  if (!GTK_WIDGET_HAS_GRAB (widget))
+  if (!GTK_WIDGET_HAS_GRAB (widget) && GTK_WIDGET_IS_SENSITIVE (widget))
     {
       GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_GRAB);
       
@@ -1281,6 +1329,8 @@ gtk_propagate_event (GtkWidget *widget,
   
   handled_event = FALSE;
 
+  gtk_widget_ref (widget);
+      
   if ((event->type == GDK_KEY_PRESS) ||
       (event->type == GDK_KEY_RELEASE))
     {
@@ -1292,29 +1342,53 @@ gtk_propagate_event (GtkWidget *widget,
       GtkWidget *window;
 
       window = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
-      if (window)
-        {
-	  if (GTK_WIDGET_IS_SENSITIVE (window))
-	    gtk_widget_event (window, event);
 
-          handled_event = TRUE; /* don't send to widget */
-        }
+      if (window)
+	{
+	  /* If there is a grab within the window, give the grab widget
+	   * a first crack at the key event
+	   */
+	  if (widget != window && GTK_WIDGET_HAS_GRAB (widget))
+	    handled_event = gtk_widget_event (widget, event);
+	  
+	  if (!handled_event)
+	    {
+	      window = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
+	      if (window)
+		{
+		  if (GTK_WIDGET_IS_SENSITIVE (window))
+		    gtk_widget_event (window, event);
+		}
+	    }
+		  
+	  handled_event = TRUE; /* don't send to widget */
+	}
     }
   
   /* Other events get propagated up the widget tree
    *  so that parents can see the button and motion
    *  events of the children.
    */
-  while (!handled_event && widget)
+  if (!handled_event)
     {
-      GtkWidget *tmp;
+      while (TRUE)
+	{
+	  GtkWidget *tmp;
+	  
+	  handled_event = !GTK_WIDGET_IS_SENSITIVE (widget) || gtk_widget_event (widget, event);
+	  tmp = widget->parent;
+	  gtk_widget_unref (widget);
 
-      gtk_widget_ref (widget);
-      handled_event = !GTK_WIDGET_IS_SENSITIVE (widget) || gtk_widget_event (widget, event);
-      tmp = widget->parent;
-      gtk_widget_unref (widget);
-      widget  = tmp;
+	  widget = tmp;
+	  
+	  if (!handled_event && widget)
+	    gtk_widget_ref (widget);
+	  else
+	    break;
+	}
     }
+  else
+    gtk_widget_unref (widget);
 }
 
 #if 0

@@ -3,7 +3,7 @@
 INCLUDES = @STRIP_BEGIN@ \
 	-DG_LOG_DOMAIN=\"Gtk\"				\
 	-DGTK_DISABLE_COMPAT_H				\
-	-DGTK_EXE_PREFIX=\"$(exec_prefix)\"		\
+	-DGTK_LIBDIR=\"$(libdir)\"	     	        \
 	-DGTK_DATA_PREFIX=\"$(prefix)\"			\
 	-DGTK_SYSCONFDIR=\"$(sysconfdir)\"		\
 	-DGTK_LOCALEDIR=\"$(gtklocaledir)\"		\
@@ -22,7 +22,7 @@ INCLUDES = @STRIP_BEGIN@ \
 lib_LTLIBRARIES = libgtk.la
 
 # libtool stuff: set version and export symbols for resolving
-libgtkincludedir = $(includedir)/gtk
+libgtkincludedir = $(includedir)/gtk-1.2/gtk
 libgtk_la_LDFLAGS = @STRIP_BEGIN@ \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
 	-release $(LT_RELEASE) 					\
@@ -72,7 +72,6 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkentry.h		\
 	gtkenums.h		\
 	gtkeventbox.h		\
-	gtkfeatures.h		\
 	gtkfilesel.h		\
 	gtkfixed.h		\
 	gtkfontsel.h		\
@@ -310,7 +309,7 @@ gdk_headers = @STRIP_BEGIN@ \
 #
 # setup GTK+ sources and their dependancies
 #
-libgtkinclude_HEADERS = $(gtk_public_h_sources) $(gtk_built_public_sources)
+libgtkinclude_HEADERS = $(gtk_public_h_sources) $(gtk_built_public_sources) gtkfeatures.h
 libgtk_la_SOURCES = $(gtk_c_sources)
 MAINTAINERCLEANFILES += $(gtk_built_public_sources) $(gtk_built_sources)
 EXTRA_HEADERS +=
@@ -341,7 +340,7 @@ $(srcdir)/stamp-gtk.defs: @REBUILD@ makeenums.pl gtk.defs gtk-boxed.defs $(gtk_p
 	&& (cmp -s xgen-gdef gtk.defs || cp xgen-gdef gtk.defs) \
 	&& rm -f xgen-gdef \
 	&& echo timestamp > $(@F)
-$(srcdir)/gtkmarshal.c: stamp-gtkmarshal.h
+$(srcdir)/gtkmarshal.c: @REBUILD@ stamp-gtkmarshal.h
 $(srcdir)/gtkmarshal.c $(srcdir)/stamp-gtkmarshal.h: @REBUILD@ genmarshal.pl gtkmarshal.list gtkmarshal.h
 	cd $(srcdir) \
 	&& $(PERL) genmarshal.pl gtkmarshal.list xgen-gmh xgen-gmc \
@@ -353,18 +352,18 @@ $(srcdir)/gtkmarshal.c $(srcdir)/stamp-gtkmarshal.h: @REBUILD@ genmarshal.pl gtk
 	&& echo timestamp > stamp-gtkmarshal.h
 $(srcdir)/stamp-gtktypebuiltins.h: @REBUILD@ maketypes.awk stamp-gtk.defs gtktypebuiltins.h
 	cd $(srcdir) \
-	&& $(AWK) -f maketypes.awk gtk.defs macros > xgen-gtbh \
+	&& LC_ALL=C $(AWK) -f maketypes.awk gtk.defs macros > xgen-gtbh \
 	&& (cmp -s xgen-gtbh gtktypebuiltins.h || cp xgen-gtbh gtktypebuiltins.h) \
 	&& rm -f xgen-gtbh \
 	&& echo timestamp > $(@F)
 $(srcdir)/gtktypebuiltins_vars.c: @REBUILD@ maketypes.awk stamp-gtk.defs
 	cd $(srcdir) \
-	&& $(AWK) -f maketypes.awk gtk.defs variables > xgen-gtbvc \
+	&& LC_ALL=C $(AWK) -f maketypes.awk gtk.defs variables > xgen-gtbvc \
 	&& cp xgen-gtbvc $(@F) \
 	&& rm -f xgen-gtbvc
 $(srcdir)/gtktypebuiltins_ids.c: @REBUILD@ maketypes.awk stamp-gtk.defs
 	cd $(srcdir) \
-	&& $(AWK) -f maketypes.awk gtk.defs entries > xgen-gtbic \
+	&& LC_ALL=C $(AWK) -f maketypes.awk gtk.defs entries > xgen-gtbic \
 	&& cp xgen-gtbic $(@F) \
 	&& rm -f xgen-gtbic
 $(srcdir)/gtktypebuiltins_evals.c: @REBUILD@ makeenums.pl $(gtk_public_h_sources) $(gdk_headers)
@@ -375,12 +374,12 @@ $(srcdir)/gtktypebuiltins_evals.c: @REBUILD@ makeenums.pl $(gtk_public_h_sources
 
 
 gtkconfdir = $(sysconfdir)/gtk
-gtkconf_DATA = gtkrc.bg gtkrc.el gtkrc.eo gtkrc.he gtkrc.hy gtkrc.ja \
+gtkconf_DATA = gtkrc.az gtkrc.el gtkrc.eo gtkrc.he gtkrc.hy gtkrc.ja \
 	gtkrc.ko gtkrc.ru gtkrc.tr gtkrc.th gtkrc.uk gtkrc.iso-8859-2 \
 	gtkrc.iso-8859-5 gtkrc.iso-8859-13 gtkrc.iso-8859-14 \
-	gtkrc.iso-8859-15 gtkrc.zh_CN gtkrc.zh_TW.Big5 \
+	gtkrc.iso-8859-15 gtkrc.zh_CN gtkrc.zh_TW.big5 \
 	gtkrc.ka_GE.georgianacademy gtkrc.ka_GE.georgianps \
-	gtkrc.vi_VN.tcvn gtkrc.vi_VN.viscii gtkrc.cp1255
+	gtkrc.vi_VN.tcvn gtkrc.vi_VN.viscii gtkrc.cp1251 gtkrc.cp1255
 
 # We create a dummy theme for the default GTK+ theme
 install-data-local:
@@ -402,16 +401,19 @@ install-data-local:
 	    ln -s gtkrc.cp1255 gtkrc.$$i ; \
 	  done ; \
 	rm -f gtkrc.lt gtkrc.lv gtkrc.cy gtkrc.ga gtkrc.et gtkrc.ka \
-	     gtkrc.vi_VN.viscii111 gtkrc.vi_VN.tcvn5712 gtkrc.vi ; \
+	     gtkrc.vi_VN.viscii111 gtkrc.vi_VN.tcvn5712 gtkrc.vi \
+	     gtkrc.be gtkrc.bg gtkrc.mi ; \
+	ln -s gtkrc.iso-8859-13 gtkrc.mi ; \
 	ln -s gtkrc.iso-8859-13 gtkrc.lt ; \
 	ln -s gtkrc.iso-8859-13 gtkrc.lv ; \
 	ln -s gtkrc.iso-8859-14 gtkrc.cy ; \
 	ln -s gtkrc.iso-8859-14 gtkrc.ga ; \
 	ln -s gtkrc.iso-8859-15 gtkrc.et ; \
-	ln -s gtkrc.ka_GE.georgianacademy gtkrc.ka ; \
+	ln -s gtkrc.ka_GE.georgianps gtkrc.ka ; \
 	ln -s gtkrc.vi_VN.viscii gtkrc.vi_VN.viscii111 ; \
-	ln -s gtkrc.vi_VN.tcvn gtkrc.vi_VN.tcvn5712 ; \
-	ln -s gtkrc.vi_VN.tcvn5712 gtkrc.vi
+	ln -s gtkrc.vi_VN.tcvn gtkrc.vi ; \
+	ln -s gtkrc.cp1251 gtkrc.be ; \
+	ln -s gtkrc.cp1251 gtkrc.bg
 
 uninstall-local:
 	rm -f $(DESTDIR)$(datadir)/themes/Default/gtkrc

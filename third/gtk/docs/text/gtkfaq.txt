@@ -11,7 +11,61 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   1. General Information
+
      1.1 Before anything else: the greetings
      1.2 Authors
      1.3 What is GTK+?
@@ -26,15 +80,17 @@
      1.12 I'm looking for an application to write in GTK+. How about an IRC client?
 
   2. How to find, configure, install, and troubleshoot GTK+
+
      2.1 What do I need to run GTK+?
      2.2 Where can I get GTK+?
      2.3 How do I configure/compile GTK+?
-     2.4 When compiling GTK+ I get an error like: make: file `Makefile' line 456: Syntax error
+     2.4 When compiling GTK+ I get an error like:
      2.5 I've compiled and installed GTK+, but I can't get any programs to link with it!
-     2.6 When compiling programs with GTK+, I get compiler error messages about not being able to find "glibconfig.h".
+     2.6 When compiling programs with GTK+, I get compiler error messages about not being able to find
      2.7 When installing a GTK+ application, configure reports that it can't find GTK.
 
   3. Development of GTK+
+
      3.1 Whats this CVS thing that everyone keeps talking about, and how do I access it?
      3.2 How can I contribute to GTK+?
      3.3 How do I know if my patch got applied, and if not, why not?
@@ -42,23 +98,25 @@
      3.5 Is anyone working on bindings for languages other than C?
 
   4. Development with GTK+: the begining
+
      4.1 How do I get started?
-     4.2 I tried to compile a small Hello World of mine, but it failed. Any clue?
-     4.3 What about using the make utility?
+     4.2 I tried to compile a small
+     4.3 What about using the
      4.4 I use the backquote stuff in my makefiles, but my make process failed.
      4.5 I want to add some configure stuff, how could I do this?
      4.6 I try to debug my GTK+ application with gdb, but it hangs my X server when I hit some breakpoint. Any Idea ?
 
   5. Development with GTK+: general questions
+
      5.1 What widgets are in GTK?
      5.2 Is GTK+ thread safe? How do I write multi-threaded GTK+ applications?
-     5.3 Why does this strange 'x io error' occur when I fork() in my GTK+ app?
+     5.3 Why does this strange 'x io error' occur when I
      5.4 Why don't the contents of a button move when the button is pressed? Here's a patch to make it work that way...
      5.5 How to I identifiy a widgets top level window or other ancestor?
      5.6 How do I get the Window ID of a GtkWindow?
      5.7 How do I catch a double click event (in a list widget, for example)?
      5.8 By the way, what are the differences between signals and events?
-     5.9 Data I pass to the delete_event (or other event) handler gets corrupted.
+     5.9 Data I pass to the
      5.10 I have my signal connected to the the (whatever) event, but it seems I don't catch it. What's wrong?
      5.11 I need to add a new signal to a GTK+ widget. Any idea?
      5.12 Is it possible to get some text displayed which is truncated to fit inside its allocation?
@@ -76,6 +134,7 @@
      5.24 How do I create a pixmap without having my window realized/shown?
 
   6. Development with GTK+: widget specific questions
+
      6.1 How do I find out about the selection of a GtkList?
      6.2 How do I stop the column headings of a GtkCList disappearing when the list is scrolled?
      6.3 I don't want the user of my applications to enter text into a GtkCombo. Any idea?
@@ -96,10 +155,12 @@
      6.18 How do I set the cursor position in a GtkText object?
 
   7. About gdk
+
      7.1 What is GDK?
      7.2 How do I use color allocation?
 
   8. About GLib
+
      8.1 What is GLib?
      8.2 How can I use the doubly linked lists?
      8.3 Memory does not seem to be released when I free the list nodes I've allocated
@@ -107,6 +168,7 @@
      8.5 What's a GScanner and how do I use one?
 
   9. GTK+ FAQ Contributions, Maintainers and Copyright
+
 
 
   ______________________________________________________________________
@@ -133,13 +195,13 @@
 
   +o  Federico Mena Quintero
 
+
   +o  Damon Chaplin
 
   +o  and all the members of the GTK+ lists
 
      If we forgot you, please email us !  Thanks again (I know, it's
      really short :)
-
 
 
   11..22..  AAuutthhoorrss
@@ -197,6 +259,9 @@
   GLib == G Libray
 
 
+
+
+
   11..66..  WWhheerree iiss tthhee ddooccuummeennttaattiioonn ffoorr GGTTKK++??
 
   In the GTK+ distribution's doc/ directory you will find the reference
@@ -206,7 +271,6 @@
   going to http://www.gtk.org/. A packaged version of the GTK Tutorial,
   with SGML, HTML, Postscript, DVI and text versions can be found in
   ftp://ftp.gtk.org/pub/gtk/tutorial
-
 
   There are now a couple of books available that deal with programming
   GTK+, GDK and GNOME:
@@ -264,7 +328,6 @@
 
   Then describe the bug. Include:
 
-
   +o  Information about your system. For instance:
 
   +o  What operating system and version
@@ -274,6 +337,7 @@
   +o  For Linux, what version of the C library
 
      And anything else you think is relevant.
+
   +o  How to reproduce the bug.
 
      If you can reproduce it with the testgtk program that is built in
@@ -340,6 +404,7 @@
      (http://www.ii.uib.no/~tomb/gck.html), miscellaneous functions
      intended to ease color handling, UI construction, vector
      operations, and math functions
+
   +o  GDK Imlib (http://www.labs.redhat.com/imlib/), a fast image loading
      and manipulation library for GDK
 
@@ -404,7 +469,6 @@
   +o  US - ftp://ftp.insync.net/pub/mirrors/ftp.gimp.org/
 
 
-
   22..33..  HHooww ddoo II ccoonnffiigguurree//ccoommppiillee GGTTKK++??
 
   Generally, all you will need to do is issue the commands:
@@ -462,7 +526,6 @@
   setenv LD_LIBRARY_PATH /usr/local/lib
 
 
-
   +o  Make sure the linker is finding the correct set of libraries. If
      you have a Linux distribution that installs GTK+ (e.g. RedHat 5.0)
      then this older version may be used. Now (assuming you have a
@@ -515,12 +578,14 @@
 
 
 
+
   for Bourne-compatible shells like bash, or for csh variants:
 
 
 
        setenv CPPFLAGS "-I/usr/local/include/glib/include"
        ./configure
+
 
 
 
@@ -593,13 +658,11 @@
 
   +o  Next, the first time the source tree is checked out, a cvs login is
      needed.
-
      cvs login
 
 
   This will ask you for a password. There is no password for
   cvs.gimp.org, so just enter a carriage return.
-
 
   +o  To get the tree and place it in a subdir of your current working
      directory, issue the command:
@@ -613,6 +676,7 @@
   that as well:
 
   cvs -z3 get glib
+
 
 
 
@@ -663,7 +727,6 @@
   Don't be put off if your patch didn't make it first time round.
 
 
-
   33..44..  WWhhaatt iiss tthhee ppoolliiccyy oonn iinnccoorrppoorraattiinngg nneeww wwiiddggeettss iinnttoo tthhee
   lliibbrraarryy??
 
@@ -697,6 +760,7 @@
 
 
 
+
   +o  There are three known Objective-c bindings currently in
      development:
 
@@ -717,6 +781,7 @@
 
 
 
+
   +o  Perl bindings ftp://ftp.gtk.org/pub/gtk/perl
 
 
@@ -724,8 +789,6 @@
      http://www.ping.de/sites/zagadka/guile-gtk.  By the way, Guile is
      the GNU Project's implemention of R4RS Scheme (the standard). If
      you like Scheme, you may want to take a look at this.
-
-
 
   +o  David Monniaux reports:
 
@@ -825,6 +888,7 @@
 
 
 
+
   For more information about the make utility, you should read either
   the related man page or the relevant info file.
 
@@ -878,6 +942,7 @@
 
 
 
+
   You must add a Makefile.am file:
 
 
@@ -891,6 +956,7 @@
 
 
 
+
   If your project contains more than one subdirectory, you'll have to
   create one Makefile.am in each directory plus a master Makefile.am
   which will look like:
@@ -898,6 +964,7 @@
 
 
        SUBDIRS         = mydir1 mydir2 mydir3
+
 
 
 
@@ -947,6 +1014,43 @@
   55..11..  WWhhaatt wwiiddggeettss aarree iinn GGTTKK??
 
   The GTK+ Tutorial lists the following widgets:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1031,6 +1135,7 @@
        `GtkSeparator
          +GtkHSeparator
          `GtkVSeparator
+
 
 
 
@@ -1220,6 +1325,9 @@
 
 
 
+
+
+
   55..33..  WWhhyy ddooeess tthhiiss ssttrraannggee ''xx iioo eerrrroorr'' ooccccuurr wwhheenn II ffoorrkk(())  iinn mmyy
   GGTTKK++ aapppp??
 
@@ -1235,6 +1343,44 @@
 
   Erik Mouw contributed the following code example to illustrate
   handling fork() and exit().
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1409,6 +1555,8 @@
 
 
 
+
+
   55..44..  WWhhyy ddoonn''tt tthhee ccoonntteennttss ooff aa bbuuttttoonn mmoovvee wwhheenn tthhee bbuuttttoonn iiss
   pprreesssseedd?? HHeerree''ss aa ppaattcchh ttoo mmaakkee iitt wwoorrkk tthhaatt wwaayy......
 
@@ -1433,6 +1581,7 @@
 
 
 
+
   55..55..  HHooww ttoo II iiddeennttiiffiiyy aa wwiiddggeettss ttoopp lleevveell wwiinnddooww oorr ootthheerr aanncceessttoorr??
 
   There are a couple of ways to find the top level parent of a widget.
@@ -1451,6 +1600,7 @@
 
 
 
+
   Since virtually all the GTK_TYPEs can be used as the second parameter
   of this function, you can get any parent widget of a particular
   widget. Suppose you have an hbox which contains a vbox, which in turn
@@ -1461,6 +1611,8 @@
 
              GtkWidget       *hbox;
              hbox = gtk_widget_get_ancestor(w, GTK_TYPE_HBOX);
+
+
 
 
 
@@ -1476,12 +1628,23 @@
 
 
 
+
   55..77..  HHooww ddoo II ccaattcchh aa ddoouubbllee cclliicckk eevveenntt ((iinn aa lliisstt wwiiddggeett,, ffoorr eexxaamm--
   ppllee))??
 
   Tim Janik wrote to gtk-list (slightly modified):
 
   Define a signal handler:
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1498,6 +1661,7 @@
 
     return FALSE;
   }
+
 
 
 
@@ -1522,6 +1686,7 @@
 
          /* something else */
        }
+
 
 
 
@@ -1584,6 +1749,8 @@
 
 
 
+
+
   55..1100..  II hhaavvee mmyy ssiiggnnaall ccoonnnneecctteedd ttoo tthhee tthhee ((wwhhaatteevveerr)) eevveenntt,, bbuutt iitt
   sseeeemmss II ddoonn''tt ccaattcchh iitt.. WWhhaatt''ss wwrroonngg??
 
@@ -1596,6 +1763,7 @@
 
 
          gtk_widget_add_events(window, GDK_KEY_RELEASE_MASK);
+
 
 
 
@@ -1641,6 +1809,7 @@
 
          gtk_signal_emit (GTK_OBJECT (widget), signal_user_action, act_data);
        }
+
 
 
 
@@ -1705,6 +1874,7 @@
 
 
 
+
   inside you're function that changes the widget.
 
   What the above snippet does is run all pending events and high
@@ -1732,7 +1902,13 @@
 
 
 
+
   Since a short example is better than any lengthy speech:
+
+
+
+
+
 
 
 
@@ -1743,6 +1919,7 @@
   gtk_object_set_data(GTK_OBJECT(w),"p2 data",(gpointer)&p2);
 
   result = gtk_object_get_data(GTK_OBJECT(w),"p1 data");
+
 
 
 
@@ -1782,6 +1959,7 @@
 
 
 
+
   But this is only a "should be" since this function does not correctly
   do its job on some specific widgets. The main goal of
   gtk_widget_reparent() is to avoid unrealizing widget if both widget
@@ -1796,10 +1974,16 @@
 
 
 
+
+
+
+
        gtk_widget_ref(widget);
        gtk_container_remove(GTK_CONTAINER(old_parent), widget);
        gtk_container_add(GTK_CONTAINER(new_parent), widget);
        gtk_widget_unref(widget);
+
+
 
 
 
@@ -1852,6 +2036,7 @@
 
 
 
+
   Auto_shrink will automatically shrink the window when the requested
   size of the child widgets goes below the current size of the window.
   Allow_shrink will give the user the authorisation to make the window
@@ -1862,6 +2047,7 @@
        allow_shrink = FALSE
        allow_grow   = TRUE
        auto_shrink  = FALSE
+
 
 
 
@@ -1876,6 +2062,7 @@
 
 
 
+
   Another way to set the size of and/or move a window is to use the
   gdk_window_move_resize() function which uses to work fine both to grow
   or to shrink the window:
@@ -1885,6 +2072,8 @@
             gdk_window_move_resize(window->window,
                                    x_pos, y_pos,
                                    x_size, y_size);
+
+
 
 
 
@@ -1910,6 +2099,8 @@
            /* Tell calling code that we have not handled this event; pass it on. */
            return FALSE;
        }
+
+
 
 
 
@@ -1972,6 +2163,19 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     char *pixfile = "foo.xpm";
     GtkWidget *top, *box, *pixw;
     GdkPixmap *pixmap, *pixmap_mask;
@@ -1989,6 +2193,8 @@
 
 
 
+
+
   66..  DDeevveellooppmmeenntt wwiitthh GGTTKK++:: wwiiddggeett ssppeecciiffiicc qquueessttiioonnss
 
   66..11..  HHooww ddoo II ffiinndd oouutt aabboouutt tthhee sseelleeccttiioonn ooff aa GGttkkLLiisstt??
@@ -1998,6 +2204,7 @@
 
        GList *sel;
        sel = GTK_LIST(list)->selection;
+
 
 
 
@@ -2015,6 +2222,7 @@
 
 
 
+
   A GList structure is just a simple structure for doubly linked lists.
   there exist several g_list_*() functions to modify a linked list in
   glib.h.  However the GTK_LIST(MyGtkList)->selection is maintained by
@@ -2023,6 +2231,14 @@
   The selection_mode of the GtkList determines the selection facilities
   of a GtkList and therefore the contents of
   GTK_LIST(AnyGtkList)->selection:
+
+
+
+
+
+
+
+
 
 
 
@@ -2084,7 +2300,11 @@
 
 
 
+
   To get known about the selection:
+
+
+
 
 
 
@@ -2105,8 +2325,10 @@
 
 
 
-  66..22..  HHooww ddoo II ssttoopp tthhee ccoolluummnn hheeaaddiinnggss ooff aa GGttkkCCLLiisstt ddiissaappppeeaarriinngg
-  wwhheenn tthhee lliisstt iiss ssccrroolllleedd??
+
+
+  66..22..  wwhheenn tthhee lliisstt iiss ssccrroolllleedd??  HHooww ddoo II ssttoopp tthhee ccoolluummnn hheeaaddiinnggss ooff
+  aa GGttkkCCLLiisstt ddiissaappppeeaarriinngg
 
   This happens when a GtkCList is packed into a GtkScrolledWindow using
   the function gtk_scroll_window_add_with_viewport(). The prefered
@@ -2125,6 +2347,9 @@
 
 
 
+
+
+
   66..33..  II ddoonn''tt wwaanntt tthhee uusseerr ooff mmyy aapppplliiccaattiioonnss ttoo eenntteerr tteexxtt iinnttoo aa
   GGttkkCCoommbboo.. AAnnyy iiddeeaa??
 
@@ -2137,6 +2362,7 @@
 
 
 
+
   If you don't want the user to be able to modify the content of this
   entry, you can use the gtk_entry_set_editable() function:
 
@@ -2144,6 +2370,7 @@
 
              void gtk_entry_set_editable(GtkEntry *entry,
                                          gboolean editable);
+
 
 
 
@@ -2170,6 +2397,8 @@
 
 
 
+
+
   66..55..  HHooww ccaann II ddeeffiinnee aa sseeppaarraattiioonn lliinnee iinn aa mmeennuu??
 
   See the Tutorial for information on how to create menus.  However, to
@@ -2180,6 +2409,8 @@
        menuitem = gtk_menu_item_new();
        gtk_menu_append(GTK_MENU(menu), menuitem);
        gtk_widget_show(menuitem);
+
+
 
 
 
@@ -2195,11 +2426,17 @@
 
 
 
+
   If you do not use the MenuFactory, you should simply use:
 
 
 
        gtk_menu_item_right_justify(my_menu_item);
+
+
+
+
+
 
 
 
@@ -2243,6 +2480,8 @@
 
 
 
+
+
   66..88..  HHooww ccaann II rreettrriieevvee tthhee tteexxtt ffrroomm aa GGttkkMMeennuuIItteemm??
 
   You can usually retrieve the label of a specific GtkMenuItem with:
@@ -2265,6 +2504,8 @@
 
 
 
+
+
   To get the active menu item from a GtkOptionMenu you can do:
 
 
@@ -2272,6 +2513,7 @@
        {
          GtkWidget *menu_item = GTK_OPTION_MENU (option_menu)->menu_item;
        }
+
 
 
 
@@ -2292,6 +2534,8 @@
 
 
 
+
+
   66..99..  HHooww ddoo II rriigghhtt ((oorr ootthheerrwwiissee)) jjuussttiiffyy aa GGttkkLLaabbeell??
 
   Are you sure you want to _j_u_s_t_i_f_y the labels?  The label class contains
@@ -2307,6 +2551,7 @@
        void gtk_misc_set_alignment (GtkMisc *misc,
                                     gfloat xalign,
                                     gfloat yalign);
+
 
 
 
@@ -2375,6 +2620,7 @@
 
 
 
+
   66..1122..  HHooww ddoo II ccoonnffiigguurree TToooollttiippss iinn aa RReessoouurrccee FFiillee??
 
   The tooltip's window is named "gtk-tooltips", GtkTooltips in itself is
@@ -2413,6 +2659,8 @@
 
 
 
+
+
   66..1144..  HHooww ddoo II mmaakkee aa GGttkkEEnnttrryy wwiiddggeett aaccttiivvaattee oonn pprreessssiinngg tthhee RReettuurrnn
   kkeeyy??
 
@@ -2429,6 +2677,8 @@
 
 
 
+
+
   66..1155..  HHooww ddoo II vvaalliiddaattee//lliimmiitt//ffiilltteerr tthhee iinnppuutt ttoo aa GGttkkEEnnttrryy??
 
   If you want to validate the text that a user enters into a GtkEntry
@@ -2437,6 +2687,20 @@
   all characters to uppercase, and limits the range of characters to A-
   Z. Note that the entry is cast to an object of type GtkEditable, from
   which GtkEntry is derived.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2502,6 +2766,10 @@
 
 
 
+
+
+
+
   66..1166..  HHooww ddoo II uussee hhoorriizzoonnttaall ssccrroollllbbaarrss wwiitthh aa GGttkkTTeexxtt wwiiddggeett??
 
   The short answer is that you can't. The current version of the GtkText
@@ -2525,6 +2793,7 @@
 
 
 
+
   Another way to do this is to load a font within your program, and then
   use this in the functions for adding text to the text widget. You can
   load a font using, for example:
@@ -2533,6 +2802,8 @@
 
          GdkFont *font;
          font = gdk_font_load("-adobe-helvetica-medium-r-normal--*-140-*-*-*-*-*-*");
+
+
 
 
 
@@ -2554,11 +2825,14 @@
 
 
 
+
   If you want the insertion point to follow the cursor at all time, you
   should probably catch the button press event, and then move the
   insertion point. Be careful : you'll have to catch it after the widget
   has changed the cursor position though. Thomas Mailund Jensen proposed
   the following code:
+
+
 
 
 
@@ -2597,6 +2871,7 @@
 
 
 
+
   Now, if you really want to change the cursor position, you should use
   the gtk_editable_set_position() function.
 
@@ -2620,6 +2895,10 @@
   this is also a problem, especially in the area of color management. If
   you want to use color in your program (drawing a rectangle or such,
   your code should look something like this:
+
+
+
+
 
 
 
@@ -2670,6 +2949,8 @@
 
 
 
+
+
   88..  AAbboouutt GGLLiibb
 
   88..11..  WWhhaatt iiss GGLLiibb??
@@ -2711,6 +2992,7 @@
 
 
 
+
   To use the GList objects, simply :
 
 
@@ -2741,12 +3023,14 @@
 
 
 
+
   The same code is usable with singly linked lists (GSList objects) by
   replacing g_list_* functions with the relevant g_slist_* ones
   (g_slist_append, g_slist_remove, ...). Just remember that since you
   can't go backward in a singly linked list, there is no g_slist_first
   function - you'll need to keep a reference on the first node of the
   list.
+
 
 
 
@@ -2767,6 +3051,7 @@
        quent glist operations private to that allocator's memory
        pool (and thus you have to take care to pop the allocator
        again, before making any external calls):
+
 
 
 
@@ -2799,6 +3084,8 @@
        /* and back out (while freeing all of the list nodes in our pool) */
        g_list_pop_allocator ();
        g_allocator_free (allocator);
+
+
 
 
 
@@ -2846,6 +3133,36 @@
 
 
   constructs, while skipping "#\n" and "/**/" style comments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3041,6 +3358,12 @@
 
 
 
+
+
+
+
+
+
   "hi i am 17"
    |  | |  |
    |  | |  v
@@ -3122,6 +3445,54 @@
   purpose.  This is simply provided as a free resource.  As such, the
   authors and maintainers of the information provided within can not
   make any guarentee that the information is even accurate.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

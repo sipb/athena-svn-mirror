@@ -1,3 +1,85 @@
+2001-03-02  Fatih Demir	<kabalak@gtranslator.org>
+
+	* tr.po: Added Turkish translation.
+
+2001-03-01  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-01  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-23  Stanislav  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Fixed spelling.
+
+Sun Feb 18 18:06:11 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* nl.po: Updated (applied gtk-pauls-990307-0.patch)
+
+2001-02-15  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2001-02-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-13  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Minor fixes to Greek translation.
+
+2001-02-12  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-02-12  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* lt.po: Fixed Lithuanian translation.
+
+2001-02-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated translation.
+	* nn.po: Updated translation.
+	
+2001-02-05  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-01-25 Szabolcs BAN <shooby@gnome.hu>
+
+	* hu.po: Fixed Hungarian translations.
+
+2001-01-06  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri translation
+
+2000-12-22  Christian Meyer  <cm@ggtt.de>
+
+	* de.po: Small fixes.
+	
+2000-12-06  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Added Azeri translation
+
+2000-11-06  Richard Hult  <rhult@codefactory.se>
+
+	* sv.po: Updated Swedish translation.
+
+2000-10-12  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* zh_CN.GB2312: Initial Chinese(GB2312) translation
+	                from Wu Yulun.
+
+2000-07-10  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* gl.po: Fixed some strings.
+
+2000-05-25 Pauli Virtanen <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Minor finnish update.
+	
 2000-05-20  Kenneth Christiansen <kenneth@gnome.org>
 
         * update.sh: update
