@@ -1,13 +1,39 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the Kerberos portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
  *
  */
 
-#include "include.h"
 
-#ifdef ATHENA
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
 #ifdef KERBEROS
+
 #include <krb.h>
 
+
+/*
+ * Function:    lu_kerberos()
+ * Description: Top level callback for kerberos. Not completed.
+ */
+ 
+int
 lu_kerberos(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -30,8 +56,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
 
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
-
-  repl->val.type = STR;  /* True of all the replies */
+  repl->val.type = STR;  
   
   switch(varnode->offset)
     {
@@ -48,13 +73,4 @@ lu_kerberos(varnode, repl, instptr, reqflg)
 }
 
 #endif KERBEROS
-#endif ATHENA
-
-
-krb_key(varnode, repl, instptr, reqflg)
-     struct snmp_tree_node *varnode;
-     varbind *repl;
-     objident *instptr;
-     int reqflg;
-{
-  
+#endif MIT
