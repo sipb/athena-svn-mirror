@@ -15,11 +15,12 @@
 
 /* This is attachandrun, used to attach a locker and run a program in it. */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.4 1999-04-09 21:50:30 danw Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.4.2.1 1999-11-08 23:03:23 ghudson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +40,7 @@ int attachandrun_main(int argc, char **argv)
   uid_t uid = getuid();
   char **found, *path, *mountpoint;
   int check = 0;
+  sigset_t mask;
 
   if (!strcmp(argv[1], "--check") || !strcmp(argv[1], "-c"))
     {
@@ -55,7 +57,9 @@ int attachandrun_main(int argc, char **argv)
   if (locker_init(&context, uid, NULL, NULL))
     exit(1);
 
-  if (locker_attach(context, argv[1], NULL, LOCKER_AUTH_DEFAULT, 0, NULL, &at))
+  if (!LOCKER_ATTACH_SUCCESS(locker_attach(context, argv[1], NULL,
+					   LOCKER_AUTH_DEFAULT, 0,
+					   NULL, &at)))
     exit(1);
   mountpoint = strdup(at->mountpoint);
   if (!mountpoint)
@@ -66,6 +70,10 @@ int attachandrun_main(int argc, char **argv)
   locker_free_attachent(context, at);
   locker_do_zsubs(context, LOCKER_ZEPHYR_SUBSCRIBE);
   locker_end(context);
+
+  /* Restore signal mask. */
+  sigemptyset(&mask);
+  sigprocmask(SIG_SETMASK, &mask, NULL);
 
   if (setuid(uid))
     {
