@@ -12,8 +12,8 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Id: getrealm.c,v 4.8 1994-08-21 19:35:38 cfields Exp $";
-#endif	lint
+"$Id: getrealm.c,v 4.9 1996-07-05 01:08:36 cfields Exp $";
+#endif	/* lint */
 
 #include <mit-copyright.h>
 #include <netdb.h>
