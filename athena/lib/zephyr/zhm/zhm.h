@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: jtkohl $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.6 1988-06-17 17:10:06 jtkohl Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.7 1988-06-23 14:39:32 jtkohl Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -20,6 +20,9 @@
 #include <sys/socket.h>
 #include <sys/param.h>
 #include <netdb.h>
+#ifdef lint
+#include <sys/uio.h>			/* make lint shut up */
+#endif /* lint */
 
 #ifdef DEBUG
 #define DPR(a) fprintf(stderr, a); fflush(stderr)

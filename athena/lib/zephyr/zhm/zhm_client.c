@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.5 1988-06-17 16:50:29 jtkohl Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.6 1988-06-23 14:39:29 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -75,7 +75,7 @@ transmission_tower(notice, packet, pak_len)
 		  Zperr(ret);
 		  com_err("hm", ret, "while sending raw notice");
 	    }
-	    if ((tleft = alarm(0)) > 0)
+	    if (tleft = alarm(0))
 	      (void)alarm(tleft);
 	    else {
 		  timeout_type = NOTICES;

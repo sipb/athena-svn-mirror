@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.6 1988-06-17 17:08:52 jtkohl Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.7 1988-06-23 14:39:23 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -187,8 +187,7 @@ ZNotice_t *notice;
      if (!strcmp(notice->z_opcode, SERVER_SHUTDOWN)) {
 	  if (notice->z_message_len) {
 	       addr = inet_addr(notice->z_message);
-	       if ((hp = gethostbyaddr(&addr,
-				       4,
+	       if ((hp = gethostbyaddr((char *)&addr, sizeof(addr),
 				       AF_INET)) != NULL) {
 		    (void)strcpy(suggested_server, hp->h_name);
 		    new_server(suggested_server);
