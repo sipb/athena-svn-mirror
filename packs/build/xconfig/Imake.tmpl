@@ -705,15 +705,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #endif
 #ifndef ExtraLibraries
-#if SystemV4
-#if HasSockets
-#define ExtraLibraries -lsocket -lnsl
-#else
-#define ExtraLibraries -lnsl
-#endif
-#else
 #define ExtraLibraries /**/
-#endif
 #endif
 #ifndef ExtraLoadOptions
 #define ExtraLoadOptions /**/
