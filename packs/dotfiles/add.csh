@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.27 1996-06-03 01:32:07 cfields Exp $
+# $Id: add.csh,v 1.28 1996-06-06 22:26:37 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -8,8 +8,7 @@
 #	-v0	verbose w/o debugging
 #	-d	debugging
 #	-n	specify new attach behavior
-#	-f	add lockers to the front of the path
-#	-m	move lockers in path if they're already in the path
+#	-f	add/move lockers to the front of the path
 #	-r	remove lockers from path
 #	-p	print path environment filtered
 #	-w	give warning for adds with no bindirs
@@ -24,10 +23,10 @@
 set add_vars=( add_vars add_usage add_verbose add_front add_warn add_env \
                add_opts add_attach add_dirs add_bin add_bindir \
                add_man add_mandir add_print add_path add_manpath \
-               add_new add_oldverbose add_move add_remove add_debug \
+               add_new add_oldverbose add_remove add_debug \
                add_arg add_newpath add_newmanpath add_i )
 
-set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-m] [-r] [-p] [-w] [-e] [-a attachflags]         [lockername] [lockername] ..."
+set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-r] [-p] [-w] [-e] [-a attachflags]              [lockername] [lockername] ..."
 
 #
 # Parse options
@@ -63,10 +62,6 @@ while ( $#add_opts > 0 )
 
     case -f:
       set add_front
-      breaksw
-
-    case -m:
-      set add_move
       breaksw
 
     case -r:
@@ -227,7 +222,7 @@ foreach add_i ($add_dirs)
 #
 # If we are supposed to move or remove path elements, do it.
 #
-  if ( ! $?add_env && ( $?add_move || $?add_remove ) ) then
+  if ( ! $?add_env && ( $?add_front || $?add_remove ) ) then
     if ( $?add_bin ) then
       if ( "$add_newpath" =~ *"$add_bin"* ) then
         set add_newpath = `echo $add_newpath | sed -e "s-:${add_bin}--g" | sed -e "s-${add_bin}:--g"`  
