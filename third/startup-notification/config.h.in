@@ -1,14 +1,4 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-#undef PACKAGE
-#undef VERSION
-#undef HAVE_CATGETS
-#undef HAVE_GETTEXT
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef ENABLE_NLS
-#undef HAVE_PTHREAD_H
-#undef GETTEXT_PACKAGE
-#undef SANE_MALLOC_PROTOS
 
 /* Define to 1 if you have the `backtrace' function. */
 #undef HAVE_BACKTRACE
@@ -66,6 +56,9 @@
 
 /* whether realloc (NULL,) works */
 #undef REALLOC_0_WORKS
+
+/* Define if you have correct malloc prototypes */
+#undef SANE_MALLOC_PROTOS
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
