@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.7 1988-06-17 16:53:43 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.8 1988-06-20 15:09:12 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.7 1988-06-17 16:53:43 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.8 1988-06-20 15:09:12 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -644,7 +644,6 @@ Z_AddField(ptr, field, end)
     return (0);
 }
 
-#ifdef notdef
 struct _Z_InputQ *Z_GetFirstComplete()
 {
     struct _Z_InputQ *qptr;
@@ -668,35 +667,6 @@ struct _Z_InputQ *Z_GetNextComplete(qptr)
 	if (qptr->complete)
 	    return (qptr);
 	qptr = qptr->next;
-    }
-
-    return (NULL);
-}
-#endif
-
-struct _Z_InputQ *Z_GetFirstComplete()
-{
-    struct _Z_InputQ *qptr;
-
-    qptr = __Q_Tail;
-
-    while (qptr) {
-	if (qptr->complete)
-	    return (qptr);
-	qptr = qptr->prev;
-    }
-
-    return (NULL);
-}
-
-struct _Z_InputQ *Z_GetNextComplete(qptr)
-    struct _Z_InputQ *qptr;
-{
-    qptr = qptr->prev;
-    while (qptr) {
-	if (qptr->complete)
-	    return (qptr);
-	qptr = qptr->prev;
     }
 
     return (NULL);
