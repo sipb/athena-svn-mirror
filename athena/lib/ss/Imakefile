@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Imakefile,v 1.1 1990-05-03 15:32:09 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Imakefile,v 1.2 1990-05-03 15:33:14 epeisach Exp $
 #	$Locker:  $
 
 DESTDIR=
@@ -73,7 +73,7 @@ install:: all
 	install -c -s mk_cmds ${DESTDIR}/usr/athena/mk_cmds
 	install -c libss.a ${DESTDIR}${ATHLIBDIR}/libss.a
 	ranlib ${DESTDIR}${ATHLIBDIR}/libss.a
-	install -c libss.a ${DESTDIR}${ATHLIBDIR}/libss_p.a
+	install -c libss_p.a ${DESTDIR}${ATHLIBDIR}/libss_p.a
 	ranlib ${DESTDIR}${ATHLIBDIR}/libss_p.a
 	@rm -rf ${DESTDIR}/usr/include/ss
 	@mkdir ${DESTDIR}/usr/include/ss
