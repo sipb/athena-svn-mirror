@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StripChart.c,v 1.2 1991-09-04 10:13:51 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StripChart.c,v 1.3 1993-07-01 23:56:31 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -59,19 +59,21 @@ static void initialize(), expose(), realize(), querySize(), move(),
 
 StripChartClassRec stripChartClassRec = {
   {
-    /* class name */	"StripChart",
-    /* jet size   */	sizeof(StripChartRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		NULL,
-    /* expose */	expose,
-    /* querySize */     querySize,
-    /* move */		move,
-    /* resize */        resize,
-    /* destroy */       destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"StripChart",
+    /* jet size   */		sizeof(StripChartRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			NULL,
+    /* expose */		expose,
+    /* querySize */     	querySize,
+    /* move */			move,
+    /* resize */        	resize,
+    /* destroy */       	destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
@@ -107,10 +109,10 @@ static void realize(me)
   values.graphics_exposures = False;
   valuemask = GCForeground | GCFunction | GCGraphicsExposures;
 
-  me->stripChart.gc = XCreateGC(me->core.display,
-				me->core.window,
-				valuemask,
-				&values);
+  me->stripChart.gc = XjCreateGC(me->core.display,
+				 me->core.window,
+				 valuemask,
+				 &values);
 
   if (me->stripChart.scaleColor == me->stripChart.foreground ||
       me->stripChart.reverseVideo)
@@ -118,10 +120,10 @@ static void realize(me)
   else
     {
       values.foreground = me->stripChart.scaleColor;
-      me->stripChart.scalegc = XCreateGC(me->core.display,
-					 me->core.window,
-					 valuemask,
-					 &values);
+      me->stripChart.scalegc = XjCreateGC(me->core.display,
+					  me->core.window,
+					  valuemask,
+					  &values);
     }
 
   me->stripChart.data = (int *)XjMalloc(sizeof(int) * me->core.width);
@@ -136,7 +138,7 @@ static void realize(me)
 static void destroy(me)
      StripChartJet me;
 {
-  XFreeGC(me->core.display, me->stripChart.gc);
+  XjFreeGC(me->core.display, me->stripChart.gc);
   XjFree(me->stripChart.data);
   /* missing... */
 }
