@@ -1,13 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v $
- *	$Author: builder $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.1 1985-04-08 11:25:33 builder Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.2 1998-11-16 16:48:03 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_dent_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.1 1985-04-08 11:25:33 builder Exp $";
-#endif	lint
+static char *rcsid_dent_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/dent/dent.c,v 1.2 1998-11-16 16:48:03 ghudson Exp $";
+#endif /* lint */
 
 #include <stdio.h>
 
