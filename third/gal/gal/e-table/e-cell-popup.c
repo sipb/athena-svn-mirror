@@ -147,6 +147,7 @@ static void
 e_cell_popup_init		(ECellPopup	*ecp)
 {
 	ecp->popup_shown = FALSE;
+	ecp->popup_model = NULL;
 }
 
 
@@ -271,7 +272,7 @@ ecp_draw (ECellView *ecv, GdkDrawable *drawable,
 		show_popup_arrow = TRUE;
 		ecp->popup_arrow_shown = TRUE;
 	} else if (ecp->popup_shown && ecp->popup_view_col == view_col
-		   && ecp->popup_row == row) {
+		   && ecp->popup_row == row && ecp->popup_model == ((ECellView *) ecp_view)->e_table_model) {
 		show_popup_arrow = TRUE;
 	}
 
@@ -502,6 +503,26 @@ e_cell_popup_do_popup			(ECellPopupView	*ecp_view,
 
 	ecp->popup_view_col = view_col;
 	ecp->popup_row = row;
+	ecp->popup_model = ((ECellView *) ecp_view)->e_table_model;
 
 	return popup_func ? popup_func (ecp, event, row, view_col) : FALSE;
+}
+
+/* This redraws the popup cell. Only use this if you know popup_view_col and
+   popup_row are valid. */
+void
+e_cell_popup_queue_cell_redraw (ECellPopup *ecp)
+{
+       ETableItem *eti = E_TABLE_ITEM (ecp->popup_cell_view->cell_view.e_table_item_view);
+
+       e_table_item_redraw_range (eti, ecp->popup_view_col, ecp->popup_row,
+                                  ecp->popup_view_col, ecp->popup_row);
+}
+
+void
+e_cell_popup_set_shown  (ECellPopup *ecp,
+			 gboolean    shown)
+{
+	ecp->popup_shown = shown;
+	e_cell_popup_queue_cell_redraw (ecp);
 }

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-07-30 00:03+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -488,19 +488,19 @@ msgstr "mørk purpur"
 msgid "sky blue"
 msgstr "himmelblå"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Legg til i global kategoriliste"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Legg til alle i global kategoriliste"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Fjern fra global kategoriliste"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Fjern alle fra global kategoriliste"
 

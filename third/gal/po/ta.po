@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.8.99.0\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-06-16 09:06+0300\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil GNOME <tamillinux.com>\n"
@@ -489,19 +489,19 @@ msgstr "¸Õò¾ °¾¡ ¿¢Èõ"
 msgid "sky blue"
 msgstr "Å¡ı ¿£Ä ¿¢Èõ"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "ÓÆ¨Á Å¨¸Â¢ı ÀğÊìÌî §º÷ì¸×õ"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "«¨Éò¨¾Ôõ ÓÆ¨Á Å¨¸Â¢ı ÀğÊìÌî §º÷ì¸×õ"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "ÓÆ¨Á Å¨¸Â¢ı ÀğÊÂ¢ø ­ÕóĞ ¸Æğ¼×õ"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "«¨Éò¨¾Ôõ ÓÆ¨Á Å¨¸Â¢ı ÀğÊÂ¢ø ­ÕóĞ ¸Æğ¼×õ"
 

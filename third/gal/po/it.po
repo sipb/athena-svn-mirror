@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-07-02 03:18+02:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@softwarelibero.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -489,19 +489,19 @@ msgstr "viola scuro"
 msgid "sky blue"
 msgstr "blue cielo"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Aggiungi alla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Aggiungi tutti alla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Rimuovi dalla lista globale delle categorie"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Rimuovi tutti dalla lista globale delle categorie"
 

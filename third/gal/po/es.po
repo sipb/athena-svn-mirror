@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.9\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-07-13 00:22+0200\n"
 "Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -489,19 +489,19 @@ msgstr "morado oscuro"
 msgid "sky blue"
 msgstr "azul cielo"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Añadir a la lista global de categorías"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Añadir todas a la lista global de categorías"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Quitar de la lista global de categorías"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Quitar todas de la lista global de categorías"
 

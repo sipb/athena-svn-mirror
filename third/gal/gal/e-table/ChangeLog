@@ -1,3 +1,28 @@
+2001-11-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-popup.c, e-cell-popup.h (e_cell_popup_set_shown,
+	e_cell_popup_queue_cell_redraw): New functions here.
+
+	* e-cell-combo.c: Use e_cell_popup_set_shown to set the
+	popup_shown variable so that ECellPopup can properly request a
+	redraw.
+
+2001-11-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-tree-memory.c (e_tree_memory_freeze): We should only
+	pre_change here if frozen = 0, otherwise we'll leak pre_changes.
+	Helps fix Ximian bug #14422.
+
+	* e-tree-sorted.c (ets_proxy_node_data_changed,
+	ets_proxy_node_col_changed): Send a no_change signal here if given
+	a NULL path.  Helps fix Ximian bug #14422.
+
+2001-11-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-popup.c, e-cell-popup.h (e_cell_popup_do_popup): Make
+	ECellPopup not display multiple arrows while the popup is up and
+	the table is in grouped mode.  Fixes Ximian bug #14207.
+
 2001-10-31  Christopher James Lahey  <clahey@ximian.com>
 
 	* e-tree-selection-model.c (etsm_node_deleted): Fixed the

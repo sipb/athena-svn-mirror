@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal VERSION\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-08-01 11:33+0200\n"
 "Last-Translator: Andras TIMAR <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -488,19 +488,19 @@ msgstr "sötétbordó"
 msgid "sky blue"
 msgstr "égszínkék"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Hozzáadás a globális kategórialistához"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Mindet hozzáadja a globális kategórialistához"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Eltávolítás a globális kategórialistából"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Mindet eltávolítja a globális kategórialistából"
 

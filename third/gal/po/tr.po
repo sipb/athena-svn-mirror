@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.10.99.4\n"
-"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"POT-Creation-Date: 2001-11-05 15:43-0500\n"
 "PO-Revision-Date: 2001-08-21 09:10+0300\n"
 "Last-Translator: KEMAL YILMAZ <kyilmaz@uekae.tubitak.gov.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -488,19 +488,19 @@ msgstr "koyu mor"
 msgid "sky blue"
 msgstr "gökyüzü mavisi"
 
-#: gal/widgets/e-categories.c:389
+#: gal/widgets/e-categories.c:395
 msgid "Add to global category list"
 msgstr "Global kategori listesine ekle"
 
-#: gal/widgets/e-categories.c:391
+#: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
 msgstr "Hepsini global kategori listesine ekle"
 
-#: gal/widgets/e-categories.c:393
+#: gal/widgets/e-categories.c:399
 msgid "Remove from global category list"
 msgstr "Global kategori listesinden sil"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
 msgstr "Hepsini global kategori listesinden sil"
 
