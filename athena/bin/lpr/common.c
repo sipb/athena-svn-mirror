@@ -21,6 +21,14 @@ static char sccsid[] = "@(#)common.c	5.2 (Berkeley) 5/6/86";
 #include <sys/param.h>
 #include <string.h>
 
+/* Linux dirents do not have a dd_fd field.  Linux and some other
+ * operating systems provide a dirfd function, sometimes as a macro,
+ * but not everyone has it.  For now, define it as a macro using dd_fd
+ * if it isn't already defined and we're not Linux.
+ */
+#if !defined(dirfd) && !defined(linux)
+#define dirfd(d) ((d)->dd_fd)
+#endif
 
 int	DU;		/* daeomon user-id */
 int	MX;		/* maximum number of blocks to copy */
@@ -107,7 +115,7 @@ scandir(dirname, namelist, select, dcomp)
 
 	if ((dirp = opendir(dirname)) == NULL)
 		return(-1);
-	if (fstat(dirp->dd_fd, &stb) < 0)
+	if (fstat(dirfd(dirp), &stb) < 0)
 		return(-1);
 
 	/*
@@ -138,7 +146,7 @@ scandir(dirname, namelist, select, dcomp)
 		 * realloc the maximum size.
 		 */
 		if (++nitems >= arraysz) {
-			if (fstat(dirp->dd_fd, &stb) < 0)
+			if (fstat(dirfd(dirp), &stb) < 0)
 				return(-1);	/* just might have grown */
 			arraysz = stb.st_size / 12;
 			names = (struct dirent **)realloc((char *)names,
@@ -349,7 +357,7 @@ getq_(namelist)
 	if ((dirp = opendir(SD)) == NULL) 
 		return(-1);
 
-	if (fstat(dirp->dd_fd, &stbuf) < 0) 
+	if (fstat(dirfd(dirp), &stbuf) < 0) 
 		goto errdone;
 
 	/*
