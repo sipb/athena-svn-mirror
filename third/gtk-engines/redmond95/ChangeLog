@@ -1,0 +1,38 @@
+2002-01-28  Anders Carlsson  <andersca@gnu.org>
+
+	* Theme/gtk-2.0/gtkrc: Set child displacement on GtkButtons.
+
+2002-01-24  Anders Carlsson  <andersca@gnu.org>
+
+	* redmond_style.c (draw_box): Use flat boxes when drawing menu items.
+
+Sat Jan 19 20:56:26 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* *.[ch]: Rework using code from Raleigh and the capabilities
+	of GTK+-2.0. Move code around. 
+
+2000-02-13  Tor Lillqvist  <tml@iki.fi>
+
+	* Theme/gtk/gtkrc: Use point size, not pixel size, in font spec.
+
+1998-11-09  Federico Mena Quintero  <federico@nuclecu.unam.mx>
+
+	* win95_theme_draw.c: #include <math.h>
+
+1998-11-07  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* configure.in: Removed.
+
+Fri Nov  6 11:20:21 1998  Owen Taylor  <otaylor@redhat.com>
+
+	* win95_theme_draw.c: Changed gap_side to GtkPositionType,
+	removed draw_entry.
+
+	* win95_theme_draw.c (draw_box): Don't hardcode the prelight
+	color to SELECTED - set using the gtkrc.
+
+Sat Oct 17 00:07:10 1998  Owen Taylor  <otaylor@redhat.com>
+
+	* win95_theme_draw.c (draw_shadow): Don't set GC's
+	for SHADOW_NONE.
+
