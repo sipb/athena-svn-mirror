@@ -15,7 +15,7 @@
 
 #include <gtk/gtkmain.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 static gint
 get_files (gpointer data)

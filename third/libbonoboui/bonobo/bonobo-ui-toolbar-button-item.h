@@ -66,6 +66,6 @@ GtkButton *bonobo_ui_toolbar_button_item_get_button_widget  (BonoboUIToolbarButt
 
 G_END_DECLS
 
-#endif
+#endif /* BONOBO_UI_DISABLE_DEPRECATED */
 
 #endif /* _BONOBO_UI_TOOLBAR_BUTTON_ITEM_H_ */

@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboSelectorPrivate">BonoboSelectorPrivate</link>;
-struct      <link linkend="BonoboSelector-struct">BonoboSelector</link>;
-struct      <link linkend="BonoboSelectorClass">BonoboSelectorClass</link>;
+            <link linkend="BonoboSelectorPrivate">BonoboSelectorPrivate</link>;
+            <link linkend="BonoboSelector-struct">BonoboSelector</link>;
+            <link linkend="BonoboSelectorClass">BonoboSelectorClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-selector-construct">bonobo_selector_construct</link>       (<link linkend="BonoboSelector">BonoboSelector</link> *sel,
                                              const <link linkend="gchar">gchar</link> *title,
                                              <link linkend="BonoboSelectorWidget">BonoboSelectorWidget</link> *selector);
@@ -112,28 +112,27 @@ the user to select.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboSelectorPrivate"/>struct BonoboSelectorPrivate</title>
-<indexterm><primary>BonoboSelectorPrivate</primary></indexterm><programlisting>struct BonoboSelectorPrivate;</programlisting>
+<title><anchor id="BonoboSelectorPrivate"/>BonoboSelectorPrivate</title>
+<indexterm><primary>BonoboSelectorPrivate</primary></indexterm><programlisting>typedef struct _BonoboSelectorPrivate BonoboSelectorPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboSelector-struct"/>struct BonoboSelector</title>
-<indexterm><primary>BonoboSelector</primary></indexterm><programlisting>struct BonoboSelector;</programlisting>
+<title><anchor id="BonoboSelector-struct"/>BonoboSelector</title>
+<indexterm><primary>BonoboSelector</primary></indexterm><programlisting>typedef struct _BonoboSelector BonoboSelector;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboSelectorClass"/>struct BonoboSelectorClass</title>
-<indexterm><primary>BonoboSelectorClass</primary></indexterm><programlisting>struct BonoboSelectorClass {
-
+<title><anchor id="BonoboSelectorClass"/>BonoboSelectorClass</title>
+<indexterm><primary>BonoboSelectorClass</primary></indexterm><programlisting>typedef struct {
 	GtkDialogClass parent_class;
 	
 	void (* ok)	(BonoboSelector *sel);
 	void (* cancel)	(BonoboSelector *sel);
 
 	gpointer dummy[2];
-};
+} BonoboSelectorClass;
 </programlisting>
 <para>
 
@@ -159,7 +158,7 @@ Constructs the innards of a bonobo selector window.</para>
 <varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
 <listitem><simpara> the component view widget to put inside it.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the constructed widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the constructed widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -183,7 +182,7 @@ BonoboSelector window.
 server must support in order to be listed in the selector.  Defaults
 to "IDL:Bonobo/Embeddable:1.0" if no interfaces are listed.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the newly-created BonoboSelector widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the newly-created BonoboSelector widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -197,7 +196,7 @@ to "IDL:Bonobo/Embeddable:1.0" if no interfaces are listed.
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelector widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the ID of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the ID of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this. It will give an oaf iid back.
@@ -215,7 +214,7 @@ responsible for freeing this. It will give an oaf iid back.
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelector widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the name of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the name of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this.
@@ -233,7 +232,7 @@ responsible for freeing this.
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelector widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the description of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the description of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this.
@@ -258,7 +257,7 @@ the user to make a selection.</para>
 <listitem><simpara> A list of required interfaces.  See
 <link linkend="bonobo-selector-new"><function>bonobo_selector_new()</function></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The Oaf IID of the selected server, or NULL if no server is
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The Oaf IID of the selected server, or NULL if no server is
 selected.  The ID string has been allocated with g_strdup.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>

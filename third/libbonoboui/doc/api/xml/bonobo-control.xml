@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboControl-struct">BonoboControl</link>;
-struct      <link linkend="BonoboControlPrivate">BonoboControlPrivate</link>;
-struct      <link linkend="BonoboControlClass">BonoboControlClass</link>;
+            <link linkend="BonoboControl-struct">BonoboControl</link>;
+            <link linkend="BonoboControlPrivate">BonoboControlPrivate</link>;
+            <link linkend="BonoboControlClass">BonoboControlClass</link>;
 <link linkend="BonoboControl">BonoboControl</link>* <link linkend="bonobo-control-new">bonobo_control_new</link>           (<link linkend="GtkWidget">GtkWidget</link> *widget);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-control-get-widget">bonobo_control_get_widget</link>       (<link linkend="BonoboControl">BonoboControl</link> *control);
 <link linkend="void">void</link>        <link linkend="bonobo-control-set-automerge">bonobo_control_set_automerge</link>    (<link linkend="BonoboControl">BonoboControl</link> *control,
@@ -71,9 +71,9 @@ struct      <link linkend="BonoboControlClass">BonoboControlClass</link>;
 <link linkend="guint32">guint32</link>     <link linkend="bonobo-control-x11-from-window-id">bonobo_control_x11_from_window_id</link>
                                             (const <link linkend="CORBA-char">CORBA_char</link> *id);
 #define     <link linkend="bonobo-control-windowid-from-x11">bonobo_control_windowid_from_x11</link>(a)
-#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON1-CAPS">BONOBO_CONTROL_POPUP_BUTTON1</link>
-#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON2-CAPS">BONOBO_CONTROL_POPUP_BUTTON2</link>
-#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON3-CAPS">BONOBO_CONTROL_POPUP_BUTTON3</link>
+#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON1:CAPS">BONOBO_CONTROL_POPUP_BUTTON1</link>
+#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON2:CAPS">BONOBO_CONTROL_POPUP_BUTTON2</link>
+#define     <link linkend="BONOBO-CONTROL-POPUP-BUTTON3:CAPS">BONOBO_CONTROL_POPUP_BUTTON3</link>
 <link linkend="BonoboUIContainer">BonoboUIContainer</link>* <link linkend="bonobo-control-get-popup-ui-container">bonobo_control_get_popup_ui_container</link>
                                             (<link linkend="BonoboControl">BonoboControl</link> *control);
 <link linkend="BonoboUIComponent">BonoboUIComponent</link>* <link linkend="bonobo-control-get-popup-ui-component">bonobo_control_get_popup_ui_component</link>
@@ -216,21 +216,20 @@ needs to be done every time the control is activated.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboControl-struct"/>struct BonoboControl</title>
-<indexterm><primary>BonoboControl</primary></indexterm><programlisting>struct BonoboControl;</programlisting>
+<title><anchor id="BonoboControl-struct"/>BonoboControl</title>
+<indexterm><primary>BonoboControl</primary></indexterm><programlisting>typedef struct _BonoboControl BonoboControl;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboControlPrivate"/>struct BonoboControlPrivate</title>
-<indexterm><primary>BonoboControlPrivate</primary></indexterm><programlisting>struct BonoboControlPrivate;</programlisting>
+<title><anchor id="BonoboControlPrivate"/>BonoboControlPrivate</title>
+<indexterm><primary>BonoboControlPrivate</primary></indexterm><programlisting>typedef struct _BonoboControlPrivate BonoboControlPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboControlClass"/>struct BonoboControlClass</title>
-<indexterm><primary>BonoboControlClass</primary></indexterm><programlisting>struct BonoboControlClass {
-
+<title><anchor id="BonoboControlClass"/>BonoboControlClass</title>
+<indexterm><primary>BonoboControlClass</primary></indexterm><programlisting>typedef struct {
 	BonoboObjectClass      parent_class;
 
 	POA_Bonobo_Control__epv epv;
@@ -242,7 +241,7 @@ needs to be done every time the control is activated.
 	void (*disconnected)   (BonoboControl *control);
 	void (*set_frame)      (BonoboControl *control);
 	void (*activate)       (BonoboControl *control, gboolean state);
-};
+} BonoboControlClass;
 </programlisting>
 <para>
 
@@ -259,7 +258,7 @@ This function creates a new BonoboControl object for <parameter>widget</paramete
 <listitem><simpara> a GTK widget that contains the control and will be passed to the
 container process.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a BonoboControl object that implements the Bonobo::Control CORBA
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a BonoboControl object that implements the Bonobo::Control CORBA
 service that will transfer the <parameter>widget</parameter> to the container process.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -274,7 +273,7 @@ Returns the GtkWidget associated with a BonoboControl.</para>
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara> a BonoboControl
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the BonoboControl's widget
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the BonoboControl's widget
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -308,7 +307,7 @@ automatically merged when the control is activated.
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="BonoboControl"><type>BonoboControl</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Whether or not the control is set to automerge its
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Whether or not the control is set to automerge its
 menus/toolbars.  See <link linkend="bonobo-control-set-automerge"><function>bonobo_control_set_automerge()</function></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -428,7 +427,7 @@ of any associated controlframe the BonoboControl may have.</para>
 <varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -443,7 +442,7 @@ of any associated controlframe the BonoboControl may have.</para>
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara> The control
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the associated UI component
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the associated UI component
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -479,7 +478,7 @@ ControlFrame.
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> an optional exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The Bonobo_UIContainer CORBA server for the remote BonoboControlFrame.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The Bonobo_UIContainer CORBA server for the remote BonoboControlFrame.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -520,7 +519,7 @@ being retrieved.
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> an optional exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The Bonobo_ControlFrame CORBA object associated with <parameter>control</parameter>, this is
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The Bonobo_ControlFrame CORBA object associated with <parameter>control</parameter>, this is
 a CORBA_Object_duplicated object.  You need to CORBA_Object_release it when you are
 done with it.
 </simpara></listitem></varlistentry>
@@ -558,7 +557,7 @@ for its property bag, <parameter>pb</parameter> will be used in the responses.</
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara> A <link linkend="BonoboControl"><type>BonoboControl</type></link> whose PropertyBag has already been set.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The <link linkend="Bonobo-PropertyBag"><type>Bonobo_PropertyBag</type></link> bound to <parameter>control</parameter>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The <link linkend="Bonobo-PropertyBag"><type>Bonobo_PropertyBag</type></link> bound to <parameter>control</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -578,7 +577,7 @@ for its property bag, <parameter>pb</parameter> will be used in the responses.</
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> an optional exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="Bonobo-PropertyBag"><type>Bonobo_PropertyBag</type></link> bound to the bag of ambient
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A <link linkend="Bonobo-PropertyBag"><type>Bonobo_PropertyBag</type></link> bound to the bag of ambient
 properties associated with this <link linkend="Control"><type>Control</type></link>'s <link linkend="ControlFrame"><type>ControlFrame</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -617,7 +616,7 @@ string format "X-id: ..."</para>
 <varlistentry><term><parameter>x11_id</parameter>&nbsp;:</term>
 <listitem><simpara> the x11 window id.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string; free after use.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the string; free after use.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -634,7 +633,7 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>id</parameter>&nbsp;:</term>
 <listitem><simpara> CORBA_char *
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the X11 window id.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the X11 window id.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -646,25 +645,25 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>a</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON1-CAPS"/>BONOBO_CONTROL_POPUP_BUTTON1</title>
+<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON1:CAPS"/>BONOBO_CONTROL_POPUP_BUTTON1</title>
 <indexterm><primary>BONOBO_CONTROL_POPUP_BUTTON1</primary></indexterm><programlisting>#define                     BONOBO_CONTROL_POPUP_BUTTON1           "/popups/button1"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON2-CAPS"/>BONOBO_CONTROL_POPUP_BUTTON2</title>
+<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON2:CAPS"/>BONOBO_CONTROL_POPUP_BUTTON2</title>
 <indexterm><primary>BONOBO_CONTROL_POPUP_BUTTON2</primary></indexterm><programlisting>#define                     BONOBO_CONTROL_POPUP_BUTTON2           "/popups/button2"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON3-CAPS"/>BONOBO_CONTROL_POPUP_BUTTON3</title>
+<title><anchor id="BONOBO-CONTROL-POPUP-BUTTON3:CAPS"/>BONOBO_CONTROL_POPUP_BUTTON3</title>
 <indexterm><primary>BONOBO_CONTROL_POPUP_BUTTON3</primary></indexterm><programlisting>#define                     BONOBO_CONTROL_POPUP_BUTTON3           "/popups/button3"
 </programlisting>
 <para>
@@ -680,7 +679,7 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -695,7 +694,7 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>control</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -734,7 +733,7 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>activate_time</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -772,7 +771,7 @@ currently only the first field is used.</para>
 <varlistentry><term><parameter>activate_time</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -835,7 +834,7 @@ calculates the number of live controls under management.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of live controls.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of live controls.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

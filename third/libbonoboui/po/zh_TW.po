@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
 "PO-Revision-Date: 2003-08-19 18:13+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -31,30 +31,31 @@ msgstr "corba 界面容器元件"
 msgid "The User interface container"
 msgstr "用戶界面容器元件"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "嵌入工具列"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "卸離工具列"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "陰影類別"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "方向"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "首選的寬度"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "首選的高度"
@@ -80,10 +81,11 @@ msgid "Whether X events should be forwarded"
 msgstr "輸入裝置發出的動作應否直接傳遞至 X"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "名稱"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "描述"
 
@@ -133,11 +135,11 @@ msgstr "工具列"
 msgid "toolbars"
 msgstr "工具列"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "外觀"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "圖示(_I)"
 
@@ -250,31 +252,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Bonobo 圖形界面支援"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "圖文(_O)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "文字(_E)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "隱藏提示(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "顯示提示(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "隱藏工具列(_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "自選(_Z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "自選工具列"
 
@@ -290,11 +292,11 @@ msgstr "工具列是否浮動"
 msgid "Style of bevel around the toolbar"
 msgstr "圍繞工具列周圍的斜邊款式"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "內容(_C)"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "瀏覽有關本程式的說明文件"
 
@@ -367,6 +369,7 @@ msgid "_Edit"
 msgstr "編輯(_E)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "檔案(_F)"
 
@@ -398,6 +401,83 @@ msgstr "無法初始化 libbonoboui 的原碼"
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "無法初始化 Bonobo 圖形界面"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr ""
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:1
+#, fuzzy
+msgid "About this program..."
+msgstr "關於本程式"
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:5
+#, fuzzy
+msgid "_Help"
+msgstr "隱藏(_H)"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr ""
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr ""
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr ""
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr ""
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr ""
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr ""
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr ""
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr ""
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr ""
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr ""
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr ""
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr ""
 
 #~ msgid "HOST"
 #~ msgstr "主機"

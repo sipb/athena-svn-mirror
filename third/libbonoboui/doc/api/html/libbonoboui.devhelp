@@ -31,9 +31,9 @@
     </sub>
   </chapters>
   <functions>
-    <function name="struct BonoboControl" link="libbonoboui-bonobo-control.html#BonoboControl-struct"/>
-    <function name="struct BonoboControlPrivate" link="libbonoboui-bonobo-control.html#BonoboControlPrivate"/>
-    <function name="struct BonoboControlClass" link="libbonoboui-bonobo-control.html#BonoboControlClass"/>
+    <function name="BonoboControl" link="libbonoboui-bonobo-control.html#BonoboControl-struct"/>
+    <function name="BonoboControlPrivate" link="libbonoboui-bonobo-control.html#BonoboControlPrivate"/>
+    <function name="BonoboControlClass" link="libbonoboui-bonobo-control.html#BonoboControlClass"/>
     <function name="bonobo_control_new ()" link="libbonoboui-bonobo-control.html#bonobo-control-new"/>
     <function name="bonobo_control_get_widget ()" link="libbonoboui-bonobo-control.html#bonobo-control-get-widget"/>
     <function name="bonobo_control_set_automerge ()" link="libbonoboui-bonobo-control.html#bonobo-control-set-automerge"/>
@@ -55,9 +55,9 @@
     <function name="bonobo_control_window_id_from_x11 ()" link="libbonoboui-bonobo-control.html#bonobo-control-window-id-from-x11"/>
     <function name="bonobo_control_x11_from_window_id ()" link="libbonoboui-bonobo-control.html#bonobo-control-x11-from-window-id"/>
     <function name="bonobo_control_windowid_from_x11()" link="libbonoboui-bonobo-control.html#bonobo-control-windowid-from-x11"/>
-    <function name="BONOBO_CONTROL_POPUP_BUTTON1" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON1-CAPS"/>
-    <function name="BONOBO_CONTROL_POPUP_BUTTON2" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON2-CAPS"/>
-    <function name="BONOBO_CONTROL_POPUP_BUTTON3" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON3-CAPS"/>
+    <function name="BONOBO_CONTROL_POPUP_BUTTON1" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON1:CAPS"/>
+    <function name="BONOBO_CONTROL_POPUP_BUTTON2" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON2:CAPS"/>
+    <function name="BONOBO_CONTROL_POPUP_BUTTON3" link="libbonoboui-bonobo-control.html#BONOBO-CONTROL-POPUP-BUTTON3:CAPS"/>
     <function name="bonobo_control_get_popup_ui_container ()" link="libbonoboui-bonobo-control.html#bonobo-control-get-popup-ui-container"/>
     <function name="bonobo_control_get_popup_ui_component ()" link="libbonoboui-bonobo-control.html#bonobo-control-get-popup-ui-component"/>
     <function name="bonobo_control_set_popup_ui_container ()" link="libbonoboui-bonobo-control.html#bonobo-control-set-popup-ui-container"/>
@@ -72,10 +72,10 @@
     <function name="The &quot;disconnected&quot; signal" link="libbonoboui-bonobo-control.html#BonoboControl-disconnected"/>
     <function name="The &quot;plug-created&quot; signal" link="libbonoboui-bonobo-control.html#BonoboControl-plug-created"/>
     <function name="The &quot;set-frame&quot; signal" link="libbonoboui-bonobo-control.html#BonoboControl-set-frame"/>
-    <function name="struct BonoboControlFrame" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrame-struct"/>
-    <function name="struct BonoboControlFramePrivate" link="libbonoboui-bonobo-control-frame.html#BonoboControlFramePrivate"/>
-    <function name="struct BonoboControlFrameClass" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrameClass"/>
-    <function name="BONOBO_CONTROL_FRAME_TOPLEVEL_PROP" link="libbonoboui-bonobo-control-frame.html#BONOBO-CONTROL-FRAME-TOPLEVEL-PROP-CAPS"/>
+    <function name="BonoboControlFrame" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrame-struct"/>
+    <function name="BonoboControlFramePrivate" link="libbonoboui-bonobo-control-frame.html#BonoboControlFramePrivate"/>
+    <function name="BonoboControlFrameClass" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrameClass"/>
+    <function name="BONOBO_CONTROL_FRAME_TOPLEVEL_PROP" link="libbonoboui-bonobo-control-frame.html#BONOBO-CONTROL-FRAME-TOPLEVEL-PROP:CAPS"/>
     <function name="bonobo_control_frame_construct ()" link="libbonoboui-bonobo-control-frame.html#bonobo-control-frame-construct"/>
     <function name="bonobo_control_frame_new ()" link="libbonoboui-bonobo-control-frame.html#bonobo-control-frame-new"/>
     <function name="bonobo_control_frame_get_widget ()" link="libbonoboui-bonobo-control-frame.html#bonobo-control-frame-get-widget"/>
@@ -96,20 +96,20 @@
     <function name="bonobo_control_frame_get_popup_component ()" link="libbonoboui-bonobo-control-frame.html#bonobo-control-frame-get-popup-component"/>
     <function name="The &quot;activate-uri&quot; signal" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrame-activate-uri"/>
     <function name="The &quot;activated&quot; signal" link="libbonoboui-bonobo-control-frame.html#BonoboControlFrame-activated"/>
-    <function name="struct BonoboPropertyControl" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControl-struct"/>
-    <function name="struct BonoboPropertyControlPrivate" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControlPrivate"/>
-    <function name="BONOBO_PROPERTY_CONTROL_CHANGED" link="libbonoboui-bonobo-property-control.html#BONOBO-PROPERTY-CONTROL-CHANGED-CAPS"/>
+    <function name="BonoboPropertyControl" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControl-struct"/>
+    <function name="BonoboPropertyControlPrivate" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControlPrivate"/>
+    <function name="BONOBO_PROPERTY_CONTROL_CHANGED" link="libbonoboui-bonobo-property-control.html#BONOBO-PROPERTY-CONTROL-CHANGED:CAPS"/>
     <function name="BonoboPropertyControlGetControlFn ()" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControlGetControlFn"/>
-    <function name="struct BonoboPropertyControlClass" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControlClass"/>
+    <function name="BonoboPropertyControlClass" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControlClass"/>
     <function name="bonobo_property_control_construct ()" link="libbonoboui-bonobo-property-control.html#bonobo-property-control-construct"/>
     <function name="bonobo_property_control_new_full ()" link="libbonoboui-bonobo-property-control.html#bonobo-property-control-new-full"/>
     <function name="bonobo_property_control_new ()" link="libbonoboui-bonobo-property-control.html#bonobo-property-control-new"/>
     <function name="bonobo_property_control_changed ()" link="libbonoboui-bonobo-property-control.html#bonobo-property-control-changed"/>
     <function name="bonobo_property_control_get_event_source ()" link="libbonoboui-bonobo-property-control.html#bonobo-property-control-get-event-source"/>
     <function name="The &quot;action&quot; signal" link="libbonoboui-bonobo-property-control.html#BonoboPropertyControl-action"/>
-    <function name="struct BonoboWidget" link="libbonoboui-bonobo-widget.html#BonoboWidget-struct"/>
-    <function name="struct BonoboWidgetPrivate" link="libbonoboui-bonobo-widget.html#BonoboWidgetPrivate"/>
-    <function name="struct BonoboWidgetClass" link="libbonoboui-bonobo-widget.html#BonoboWidgetClass"/>
+    <function name="BonoboWidget" link="libbonoboui-bonobo-widget.html#BonoboWidget-struct"/>
+    <function name="BonoboWidgetPrivate" link="libbonoboui-bonobo-widget.html#BonoboWidgetPrivate"/>
+    <function name="BonoboWidgetClass" link="libbonoboui-bonobo-widget.html#BonoboWidgetClass"/>
     <function name="bonobo_widget_get_objref ()" link="libbonoboui-bonobo-widget.html#bonobo-widget-get-objref"/>
     <function name="bonobo_widget_new_control ()" link="libbonoboui-bonobo-widget.html#bonobo-widget-new-control"/>
     <function name="bonobo_widget_new_control_from_objref ()" link="libbonoboui-bonobo-widget.html#bonobo-widget-new-control-from-objref"/>
@@ -122,9 +122,9 @@
     <function name="bonobo_widget_set_property ()" link="libbonoboui-bonobo-widget.html#bonobo-widget-set-property"/>
     <function name="bonobo_widget_get_property ()" link="libbonoboui-bonobo-widget.html#bonobo-widget-get-property"/>
     <function name="bonobo_widget_get_uih()" link="libbonoboui-bonobo-widget.html#bonobo-widget-get-uih"/>
-    <function name="struct BonoboWindowPrivate" link="libbonoboui-bonobo-window.html#BonoboWindowPrivate"/>
-    <function name="struct BonoboWindow" link="libbonoboui-bonobo-window.html#BonoboWindow-struct"/>
-    <function name="struct BonoboWindowClass" link="libbonoboui-bonobo-window.html#BonoboWindowClass"/>
+    <function name="BonoboWindowPrivate" link="libbonoboui-bonobo-window.html#BonoboWindowPrivate"/>
+    <function name="BonoboWindow" link="libbonoboui-bonobo-window.html#BonoboWindow-struct"/>
+    <function name="BonoboWindowClass" link="libbonoboui-bonobo-window.html#BonoboWindowClass"/>
     <function name="bonobo_window_construct ()" link="libbonoboui-bonobo-window.html#bonobo-window-construct"/>
     <function name="bonobo_window_new ()" link="libbonoboui-bonobo-window.html#bonobo-window-new"/>
     <function name="bonobo_window_set_contents ()" link="libbonoboui-bonobo-window.html#bonobo-window-set-contents"/>
@@ -137,11 +137,11 @@
     <function name="bonobo_window_add_popup ()" link="libbonoboui-bonobo-window.html#bonobo-window-add-popup"/>
     <function name="bonobo_window_remove_popup ()" link="libbonoboui-bonobo-window.html#bonobo-window-remove-popup"/>
     <function name="The &quot;win-name&quot; property" link="libbonoboui-bonobo-window.html#BonoboWindow--win-name"/>
-    <function name="struct BonoboUIComponent" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponent-struct"/>
-    <function name="struct BonoboUIComponentPrivate" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponentPrivate"/>
+    <function name="BonoboUIComponent" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponent-struct"/>
+    <function name="BonoboUIComponentPrivate" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponentPrivate"/>
     <function name="BonoboUIListenerFn ()" link="libbonoboui-bonobo-ui-component.html#BonoboUIListenerFn"/>
     <function name="BonoboUIVerbFn ()" link="libbonoboui-bonobo-ui-component.html#BonoboUIVerbFn"/>
-    <function name="struct BonoboUIComponentClass" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponentClass"/>
+    <function name="BonoboUIComponentClass" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponentClass"/>
     <function name="bonobo_ui_component_construct ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-construct"/>
     <function name="bonobo_ui_component_new ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-new"/>
     <function name="bonobo_ui_component_new_default ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-new-default"/>
@@ -173,19 +173,19 @@
     <function name="bonobo_ui_component_set_prop ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-set-prop"/>
     <function name="bonobo_ui_component_get_prop ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-get-prop"/>
     <function name="bonobo_ui_component_set_status ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-set-status"/>
-    <function name="struct BonoboUIVerb" link="libbonoboui-bonobo-ui-component.html#BonoboUIVerb"/>
-    <function name="BONOBO_UI_VERB()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB-CAPS"/>
-    <function name="BONOBO_UI_VERB_DATA()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB-DATA-CAPS"/>
-    <function name="BONOBO_UI_UNSAFE_VERB()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB-CAPS"/>
-    <function name="BONOBO_UI_UNSAFE_VERB_DATA()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB-DATA-CAPS"/>
-    <function name="BONOBO_UI_VERB_END" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB-END-CAPS"/>
+    <function name="BonoboUIVerb" link="libbonoboui-bonobo-ui-component.html#BonoboUIVerb"/>
+    <function name="BONOBO_UI_VERB()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB:CAPS"/>
+    <function name="BONOBO_UI_VERB_DATA()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB-DATA:CAPS"/>
+    <function name="BONOBO_UI_UNSAFE_VERB()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB:CAPS"/>
+    <function name="BONOBO_UI_UNSAFE_VERB_DATA()" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-UNSAFE-VERB-DATA:CAPS"/>
+    <function name="BONOBO_UI_VERB_END" link="libbonoboui-bonobo-ui-component.html#BONOBO-UI-VERB-END:CAPS"/>
     <function name="bonobo_ui_component_add_verb_list ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-add-verb-list"/>
     <function name="bonobo_ui_component_add_verb_list_with_data ()" link="libbonoboui-bonobo-ui-component.html#bonobo-ui-component-add-verb-list-with-data"/>
     <function name="The &quot;exec-verb&quot; signal" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponent-exec-verb"/>
     <function name="The &quot;ui-event&quot; signal" link="libbonoboui-bonobo-ui-component.html#BonoboUIComponent-ui-event"/>
-    <function name="struct BonoboUIContainer" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainer-struct"/>
-    <function name="struct BonoboUIContainerPrivate" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainerPrivate"/>
-    <function name="struct BonoboUIContainerClass" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainerClass"/>
+    <function name="BonoboUIContainer" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainer-struct"/>
+    <function name="BonoboUIContainerPrivate" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainerPrivate"/>
+    <function name="BonoboUIContainerClass" link="libbonoboui-bonobo-ui-container.html#BonoboUIContainerClass"/>
     <function name="bonobo_ui_container_new ()" link="libbonoboui-bonobo-ui-container.html#bonobo-ui-container-new"/>
     <function name="bonobo_ui_container_set_engine ()" link="libbonoboui-bonobo-ui-container.html#bonobo-ui-container-set-engine"/>
     <function name="bonobo_ui_container_get_engine ()" link="libbonoboui-bonobo-ui-container.html#bonobo-ui-container-get-engine"/>
@@ -205,7 +205,7 @@
     <function name="bonobo_ui_util_accel_parse ()" link="libbonoboui-bonobo-ui-util.html#bonobo-ui-util-accel-parse"/>
     <function name="bonobo_ui_util_decode_str()" link="libbonoboui-bonobo-ui-util.html#bonobo-ui-util-decode-str"/>
     <function name="bonobo_ui_util_encode_str()" link="libbonoboui-bonobo-ui-util.html#bonobo-ui-util-encode-str"/>
-    <function name="struct BonoboUINode" link="libbonoboui-bonobo-ui-node.html#BonoboUINode"/>
+    <function name="BonoboUINode" link="libbonoboui-bonobo-ui-node.html#BonoboUINode"/>
     <function name="bonobo_ui_node_new ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-new"/>
     <function name="bonobo_ui_node_new_child ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-new-child"/>
     <function name="bonobo_ui_node_copy ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-copy"/>
@@ -235,7 +235,7 @@
     <function name="bonobo_ui_node_to_string ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-to-string"/>
     <function name="bonobo_ui_node_from_string ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-from-string"/>
     <function name="bonobo_ui_node_from_file ()" link="libbonoboui-bonobo-ui-node.html#bonobo-ui-node-from-file"/>
-    <function name="struct BonoboUIEngine" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-struct"/>
+    <function name="BonoboUIEngine" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-struct"/>
     <function name="bonobo_ui_engine_deregister_dead_components ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-deregister-dead-components"/>
     <function name="bonobo_ui_engine_deregister_component_by_ref ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-deregister-component-by-ref"/>
     <function name="bonobo_ui_engine_deregister_component ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-deregister-component"/>
@@ -250,8 +250,8 @@
     <function name="bonobo_ui_engine_thaw ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-thaw"/>
     <function name="bonobo_ui_engine_update ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-update"/>
     <function name="enum BonoboUIError" link="libbonoboui-bonobo-ui-engine.html#BonoboUIError"/>
-    <function name="struct BonoboUIEnginePrivate" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEnginePrivate"/>
-    <function name="struct BonoboUIEngineClass" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngineClass"/>
+    <function name="BonoboUIEnginePrivate" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEnginePrivate"/>
+    <function name="BonoboUIEngineClass" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngineClass"/>
     <function name="bonobo_ui_engine_construct ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-construct"/>
     <function name="bonobo_ui_engine_new ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-new"/>
     <function name="bonobo_ui_engine_get_view ()" link="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-view"/>
@@ -300,9 +300,9 @@
     <function name="The &quot;emit-event-on&quot; signal" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-emit-event-on"/>
     <function name="The &quot;emit-verb-on&quot; signal" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-emit-verb-on"/>
     <function name="The &quot;remove-hint&quot; signal" link="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-remove-hint"/>
-    <function name="struct BonoboUIEngineConfigPrivate" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfigPrivate"/>
-    <function name="struct BonoboUIEngineConfig" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfig"/>
-    <function name="struct BonoboUIEngineConfigClass" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfigClass"/>
+    <function name="BonoboUIEngineConfigPrivate" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfigPrivate"/>
+    <function name="BonoboUIEngineConfig" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfig"/>
+    <function name="BonoboUIEngineConfigClass" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfigClass"/>
     <function name="bonobo_ui_engine_config_construct ()" link="libbonoboui-bonobo-ui-engine-config.html#bonobo-ui-engine-config-construct"/>
     <function name="bonobo_ui_engine_config_new ()" link="libbonoboui-bonobo-ui-engine-config.html#bonobo-ui-engine-config-new"/>
     <function name="BonoboUIEngineConfigFn ()" link="libbonoboui-bonobo-ui-engine-config.html#BonoboUIEngineConfigFn"/>
@@ -314,11 +314,11 @@
     <function name="bonobo_ui_engine_config_remove ()" link="libbonoboui-bonobo-ui-engine-config.html#bonobo-ui-engine-config-remove"/>
     <function name="bonobo_ui_engine_config_configure ()" link="libbonoboui-bonobo-ui-engine-config.html#bonobo-ui-engine-config-configure"/>
     <function name="bonobo_ui_engine_config_get_engine ()" link="libbonoboui-bonobo-ui-engine-config.html#bonobo-ui-engine-config-get-engine"/>
-    <function name="struct BonoboUISync" link="libbonoboui-bonobo-ui-sync.html#BonoboUISync-struct"/>
+    <function name="BonoboUISync" link="libbonoboui-bonobo-ui-sync.html#BonoboUISync-struct"/>
     <function name="BonoboUISyncStateFn ()" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncStateFn"/>
     <function name="BonoboUISyncBuildFn ()" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncBuildFn"/>
-    <function name="struct BonoboUISyncPrivate" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncPrivate"/>
-    <function name="struct BonoboUISyncClass" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncClass"/>
+    <function name="BonoboUISyncPrivate" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncPrivate"/>
+    <function name="BonoboUISyncClass" link="libbonoboui-bonobo-ui-sync.html#BonoboUISyncClass"/>
     <function name="bonobo_ui_sync_construct ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-construct"/>
     <function name="bonobo_ui_sync_is_recursive ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-is-recursive"/>
     <function name="bonobo_ui_sync_has_widgets ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-has-widgets"/>
@@ -340,9 +340,9 @@
     <function name="bonobo_ui_sync_menu_get_type ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-menu-get-type"/>
     <function name="bonobo_ui_sync_status_get_type ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-status-get-type"/>
     <function name="bonobo_ui_sync_toolbar_get_type ()" link="libbonoboui-bonobo-ui-sync.html#bonobo-ui-sync-toolbar-get-type"/>
-    <function name="BONOBO_UI_PAD" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-CAPS"/>
-    <function name="BONOBO_UI_PAD_SMALL" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-SMALL-CAPS"/>
-    <function name="BONOBO_UI_PAD_BIG" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-BIG-CAPS"/>
+    <function name="BONOBO_UI_PAD" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD:CAPS"/>
+    <function name="BONOBO_UI_PAD_SMALL" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-SMALL:CAPS"/>
+    <function name="BONOBO_UI_PAD_BIG" link="libbonoboui-bonobo-ui-preferences.html#BONOBO-UI-PAD-BIG:CAPS"/>
     <function name="bonobo_ui_preferences_add_engine ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-add-engine"/>
     <function name="bonobo_ui_preferences_remove_engine ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-remove-engine"/>
     <function name="bonobo_ui_preferences_get_toolbar_style ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-toolbar-style"/>
@@ -350,26 +350,26 @@
     <function name="bonobo_ui_preferences_get_menus_have_tearoff ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-menus-have-tearoff"/>
     <function name="bonobo_ui_preferences_get_menubar_detachable ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-menubar-detachable"/>
     <function name="bonobo_ui_preferences_get_toolbar_detachable ()" link="libbonoboui-bonobo-ui-preferences.html#bonobo-ui-preferences-get-toolbar-detachable"/>
-    <function name="struct BonoboPlug" link="libbonoboui-bonobo-plug.html#BonoboPlug-struct"/>
-    <function name="struct BonoboPlugPrivate" link="libbonoboui-bonobo-plug.html#BonoboPlugPrivate"/>
-    <function name="struct BonoboPlugClass" link="libbonoboui-bonobo-plug.html#BonoboPlugClass"/>
+    <function name="BonoboPlug" link="libbonoboui-bonobo-plug.html#BonoboPlug-struct"/>
+    <function name="BonoboPlugPrivate" link="libbonoboui-bonobo-plug.html#BonoboPlugPrivate"/>
+    <function name="BonoboPlugClass" link="libbonoboui-bonobo-plug.html#BonoboPlugClass"/>
     <function name="bonobo_plug_construct ()" link="libbonoboui-bonobo-plug.html#bonobo-plug-construct"/>
     <function name="bonobo_plug_new ()" link="libbonoboui-bonobo-plug.html#bonobo-plug-new"/>
     <function name="The &quot;event-forwarding&quot; property" link="libbonoboui-bonobo-plug.html#BonoboPlug--event-forwarding"/>
-    <function name="struct BonoboSocket" link="libbonoboui-bonobo-socket.html#BonoboSocket-struct"/>
-    <function name="struct BonoboSocketClass" link="libbonoboui-bonobo-socket.html#BonoboSocketClass"/>
+    <function name="BonoboSocket" link="libbonoboui-bonobo-socket.html#BonoboSocket-struct"/>
+    <function name="BonoboSocketClass" link="libbonoboui-bonobo-socket.html#BonoboSocketClass"/>
     <function name="bonobo_socket_new ()" link="libbonoboui-bonobo-socket.html#bonobo-socket-new"/>
-    <function name="struct BonoboWrapperPrivate" link="libbonoboui-bonobo-wrapper.html#BonoboWrapperPrivate"/>
-    <function name="struct BonoboWrapper" link="libbonoboui-bonobo-wrapper.html#BonoboWrapper"/>
-    <function name="struct BonoboWrapperClass" link="libbonoboui-bonobo-wrapper.html#BonoboWrapperClass"/>
+    <function name="BonoboWrapperPrivate" link="libbonoboui-bonobo-wrapper.html#BonoboWrapperPrivate"/>
+    <function name="BonoboWrapper" link="libbonoboui-bonobo-wrapper.html#BonoboWrapper"/>
+    <function name="BonoboWrapperClass" link="libbonoboui-bonobo-wrapper.html#BonoboWrapperClass"/>
     <function name="bonobo_wrapper_new ()" link="libbonoboui-bonobo-wrapper.html#bonobo-wrapper-new"/>
     <function name="bonobo_wrapper_set_covered ()" link="libbonoboui-bonobo-wrapper.html#bonobo-wrapper-set-covered"/>
     <function name="bonobo_wrapper_is_covered ()" link="libbonoboui-bonobo-wrapper.html#bonobo-wrapper-is-covered"/>
     <function name="bonobo_wrapper_get_visibility ()" link="libbonoboui-bonobo-wrapper.html#bonobo-wrapper-get-visibility"/>
     <function name="bonobo_wrapper_set_visibility ()" link="libbonoboui-bonobo-wrapper.html#bonobo-wrapper-set-visibility"/>
-    <function name="struct BonoboSelectorPrivate" link="libbonoboui-bonobo-selector.html#BonoboSelectorPrivate"/>
-    <function name="struct BonoboSelector" link="libbonoboui-bonobo-selector.html#BonoboSelector-struct"/>
-    <function name="struct BonoboSelectorClass" link="libbonoboui-bonobo-selector.html#BonoboSelectorClass"/>
+    <function name="BonoboSelectorPrivate" link="libbonoboui-bonobo-selector.html#BonoboSelectorPrivate"/>
+    <function name="BonoboSelector" link="libbonoboui-bonobo-selector.html#BonoboSelector-struct"/>
+    <function name="BonoboSelectorClass" link="libbonoboui-bonobo-selector.html#BonoboSelectorClass"/>
     <function name="bonobo_selector_construct ()" link="libbonoboui-bonobo-selector.html#bonobo-selector-construct"/>
     <function name="bonobo_selector_new ()" link="libbonoboui-bonobo-selector.html#bonobo-selector-new"/>
     <function name="bonobo_selector_get_selected_id ()" link="libbonoboui-bonobo-selector.html#bonobo-selector-get-selected-id"/>
@@ -379,9 +379,9 @@
     <function name="The &quot;interfaces-required&quot; property" link="libbonoboui-bonobo-selector.html#BonoboSelector--interfaces-required"/>
     <function name="The &quot;cancel&quot; signal" link="libbonoboui-bonobo-selector.html#BonoboSelector-cancel"/>
     <function name="The &quot;ok&quot; signal" link="libbonoboui-bonobo-selector.html#BonoboSelector-ok"/>
-    <function name="struct BonoboSelectorWidgetPrivate" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidgetPrivate"/>
-    <function name="struct BonoboSelectorWidget" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidget"/>
-    <function name="struct BonoboSelectorWidgetClass" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidgetClass"/>
+    <function name="BonoboSelectorWidgetPrivate" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidgetPrivate"/>
+    <function name="BonoboSelectorWidget" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidget"/>
+    <function name="BonoboSelectorWidgetClass" link="libbonoboui-bonobo-selector-widget.html#BonoboSelectorWidgetClass"/>
     <function name="bonobo_selector_widget_new ()" link="libbonoboui-bonobo-selector-widget.html#bonobo-selector-widget-new"/>
     <function name="bonobo_selector_widget_set_interfaces ()" link="libbonoboui-bonobo-selector-widget.html#bonobo-selector-widget-set-interfaces"/>
     <function name="bonobo_selector_widget_get_id ()" link="libbonoboui-bonobo-selector-widget.html#bonobo-selector-widget-get-id"/>

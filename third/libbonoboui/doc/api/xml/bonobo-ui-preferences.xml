@@ -15,9 +15,9 @@
 
 
 
-#define     <link linkend="BONOBO-UI-PAD-CAPS">BONOBO_UI_PAD</link>
-#define     <link linkend="BONOBO-UI-PAD-SMALL-CAPS">BONOBO_UI_PAD_SMALL</link>
-#define     <link linkend="BONOBO-UI-PAD-BIG-CAPS">BONOBO_UI_PAD_BIG</link>
+#define     <link linkend="BONOBO-UI-PAD:CAPS">BONOBO_UI_PAD</link>
+#define     <link linkend="BONOBO-UI-PAD-SMALL:CAPS">BONOBO_UI_PAD_SMALL</link>
+#define     <link linkend="BONOBO-UI-PAD-BIG:CAPS">BONOBO_UI_PAD_BIG</link>
 <link linkend="void">void</link>        <link linkend="bonobo-ui-preferences-add-engine">bonobo_ui_preferences_add_engine</link>
                                             (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine);
 <link linkend="void">void</link>        <link linkend="bonobo-ui-preferences-remove-engine">bonobo_ui_preferences_remove_engine</link>
@@ -53,21 +53,21 @@
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BONOBO-UI-PAD-CAPS"/>BONOBO_UI_PAD</title>
+<title><anchor id="BONOBO-UI-PAD:CAPS"/>BONOBO_UI_PAD</title>
 <indexterm><primary>BONOBO_UI_PAD</primary></indexterm><programlisting>#define BONOBO_UI_PAD          8
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-PAD-SMALL-CAPS"/>BONOBO_UI_PAD_SMALL</title>
+<title><anchor id="BONOBO-UI-PAD-SMALL:CAPS"/>BONOBO_UI_PAD_SMALL</title>
 <indexterm><primary>BONOBO_UI_PAD_SMALL</primary></indexterm><programlisting>#define BONOBO_UI_PAD_SMALL    4
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-PAD-BIG-CAPS"/>BONOBO_UI_PAD_BIG</title>
+<title><anchor id="BONOBO-UI-PAD-BIG:CAPS"/>BONOBO_UI_PAD_BIG</title>
 <indexterm><primary>BONOBO_UI_PAD_BIG</primary></indexterm><programlisting>#define BONOBO_UI_PAD_BIG      12
 </programlisting>
 <para>
@@ -106,7 +106,7 @@
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -118,7 +118,7 @@
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -130,7 +130,7 @@
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -142,7 +142,7 @@
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -154,7 +154,7 @@
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

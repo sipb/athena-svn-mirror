@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboUIEngineConfigPrivate">BonoboUIEngineConfigPrivate</link>;
-struct      <link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>;
-struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass</link>;
+            <link linkend="BonoboUIEngineConfigPrivate">BonoboUIEngineConfigPrivate</link>;
+            <link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>;
+            <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass</link>;
 <link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link>* <link linkend="bonobo-ui-engine-config-construct">bonobo_ui_engine_config_construct</link>
                                             (<link linkend="BonoboUIEngineConfig">BonoboUIEngineConfig</link> *config,
                                              <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
@@ -74,31 +74,29 @@ struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass<
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboUIEngineConfigPrivate"/>struct BonoboUIEngineConfigPrivate</title>
-<indexterm><primary>BonoboUIEngineConfigPrivate</primary></indexterm><programlisting>struct BonoboUIEngineConfigPrivate;</programlisting>
+<title><anchor id="BonoboUIEngineConfigPrivate"/>BonoboUIEngineConfigPrivate</title>
+<indexterm><primary>BonoboUIEngineConfigPrivate</primary></indexterm><programlisting>typedef struct _BonoboUIEngineConfigPrivate BonoboUIEngineConfigPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIEngineConfig"/>struct BonoboUIEngineConfig</title>
-<indexterm><primary>BonoboUIEngineConfig</primary></indexterm><programlisting>struct BonoboUIEngineConfig {
-
+<title><anchor id="BonoboUIEngineConfig"/>BonoboUIEngineConfig</title>
+<indexterm><primary>BonoboUIEngineConfig</primary></indexterm><programlisting>typedef struct {
 	GObject parent;
 
 	BonoboUIEngineConfigPrivate *priv;
-};
+} BonoboUIEngineConfig;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIEngineConfigClass"/>struct BonoboUIEngineConfigClass</title>
-<indexterm><primary>BonoboUIEngineConfigClass</primary></indexterm><programlisting>struct BonoboUIEngineConfigClass {
-
+<title><anchor id="BonoboUIEngineConfigClass"/>BonoboUIEngineConfigClass</title>
+<indexterm><primary>BonoboUIEngineConfigClass</primary></indexterm><programlisting>typedef struct {
 	GObjectClass parent_class;
 
 	gpointer       dummy;
-};
+} BonoboUIEngineConfigClass;
 </programlisting>
 <para>
 
@@ -121,7 +119,7 @@ struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass<
 <varlistentry><term><parameter>opt_parent</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -140,7 +138,7 @@ struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass<
 <varlistentry><term><parameter>opt_parent</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -162,7 +160,7 @@ struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass<
 <varlistentry><term><parameter>popup_engine</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -315,7 +313,7 @@ struct      <link linkend="BonoboUIEngineConfigClass">BonoboUIEngineConfigClass<
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

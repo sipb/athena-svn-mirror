@@ -17,7 +17,7 @@ server_DATA     = $(server_in_files:.server.in=.server)
 $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 
-EXTRA_DIST= flow.png CanvDemo.server \
+EXTRA_DIST= flow.png  \
 	CanvDemo.server.in.in CanvDemo.sgml CanvDemo.html
 
 CLEANFILES = $(server_in_files) $(server_DATA)

@@ -1,13 +1,13 @@
 # Oriya translation of libbonoboui.HEAD.pot.
 # Copyright (C) 2004 Free Software Foundation, Inc.
 # Dillip Rout<bol2dilip@yahoo.co.in> 2004.
-# $Id: or.po,v 1.1.1.1 2004-09-24 20:24:13 ghudson Exp $
+# $Id: or.po,v 1.1.1.2 2005-03-10 22:04:29 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui.HEAD.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
 "PO-Revision-Date: 2004-09-06 02:53+0530\n"
 "Last-Translator: Dillip Rout<bol2dilip@yahoo.co.in>\n"
 "Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
@@ -31,30 +31,31 @@ msgstr "କୋର୍ବା ୟୁ.ଆଇ. ଧାରକ"
 msgid "The User interface container"
 msgstr "ବ୍ଯବହାରକାରୀ ଅନ୍ତରାପ୍ରୁଷ୍ଠ ଧାରକ"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "ସାଧନ ପଟି ୟୋଗ କରନ୍ତୁ"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "ସାଧନ ପଟି ବିଯୋଗ କରନ୍ତୁ"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "ଛାଇ ପ୍ରକାର"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "ଅନୁସ୍ଥାପନ"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "ମାନ୍ଯ ଓସାର"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "ମାନ୍ଯ ଉଚ୍ଚତା"
@@ -80,10 +81,11 @@ msgid "Whether X events should be forwarded"
 msgstr "ଏକ୍ସ ଘଟଣାଗୁଡି଼କ ଅଗ୍ରସର କରାଯିବା ଉଚିତ କି"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "ନାମ"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "ବର୍ଣ୍ଣନା"
 
@@ -133,11 +135,11 @@ msgstr "ସାଧନପଟିଗୁଡି଼କ"
 msgid "toolbars"
 msgstr "ସାଧନପଟିଗୁଡି଼କ"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "େଦଖନ୍ତୁ"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "ଚିତ୍ରସଂେକତ (_I)"
 
@@ -250,31 +252,31 @@ msgstr "ଜିଟିକେ+"
 msgid "Bonobo GUI support"
 msgstr "ବନୋବା ଜି.ୟୁ.ଅାଇ. ସହାୟତା "
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "ଉଭୟ (_o)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "ପାଠ୍ଯ (_e)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "ତଥ୍ଯ ଲୁଚାନ୍ତୁ (_i) "
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "ତଥ୍ଯ ଦେଖାନ୍ତୁ (_i)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "ସାଧନ ପଟି  ଲୁଚାନ୍ତୁ (_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "ଇଚ୍ଛାରୂପଣ (_z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "ସାଧନ ପଟି ଇଚ୍ଛାରୂପଣ"
 
@@ -291,11 +293,11 @@ msgstr "ସାଧନ ପଟି ଭାସୁ ଅଛି କି"
 msgid "Style of bevel around the toolbar"
 msgstr "ସାଧନ ପଟି ଚାରିପାଖର ଶୈଳୀ ଢାଲୁ"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "ସୂଚୀପତ୍ର (_C)"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "ଏହି ପ୍ରୟୋଗ ପାଇଁ ସହାୟତା ଦେଖନ୍ତୁ"
 
@@ -368,6 +370,7 @@ msgid "_Edit"
 msgstr "ସଂପାଦନ କରନ୍ତୁ (_E)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "ଫାଇଲ (_F)"
 
@@ -399,6 +402,81 @@ msgstr "ଲିବବନୋବୋୟୁଅାଇ ସଂେକତ ପ୍ରାର�
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "ବନୋବା ୟୁଅାଇକୁ ପ୍ରାରମ୍ଭ କରିହେଲା ନାହିଁ"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "ବନୋବୋ ଯନ୍ତ୍ରାଂଶ ଖୋଜାଳି"
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "ଉପଲବ୍ଧ ବନୋବୋ ଯନ୍ତ୍ରାଂଶ ଦେଖାଏ"
+
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "ଏହି କାରିକା ବିଷୟରେ..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "ସାମ୍ପ୍ରତିକ ୱିଣ୍ଡୋ ବନ୍ଦ କରନ୍ତୁ"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "ନୂଆ ୱିଣ୍ଡୋ ଖୋଲନ୍ତୁ"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "ସାହାଯ୍ଯ (_H)"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "ସାଧାରଣ"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "ଆଇ.ଆଇ.ଡି."
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "ଅବସ୍ଥାନ"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "ବିସ୍ତୃତ ବିବରଣୀ"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "ବିସ୍ତୃତ ସୂଚନା"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "ସକ୍ରିୟ"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "ପ୍ରକାର"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "ଯନ୍ତ୍ରାଂଶର ବିସ୍ତୃତ ବିବରଣୀ"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "ବନୋବୋ ଖୋଜାଳି"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "ସ୍ବତ୍ତ୍ବାଧିକାର ୨୦୦୧, ନୋମ ସଂସ୍ଥା"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "ବନୋବୋ ଯନ୍ତ୍ରାଂଶ ଖୋଜାଳି"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "ଯନ୍ତ୍ରାଂଶ ଖୋଜାଳି"
 
 #~ msgid "HOST"
 #~ msgstr "ଅାଧାର"

@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="BonoboUINode">BonoboUINode</link>;
+            <link linkend="BonoboUINode">BonoboUINode</link>;
 <link linkend="BonoboUINode">BonoboUINode</link>* <link linkend="bonobo-ui-node-new">bonobo_ui_node_new</link>            (const <link linkend="char">char</link> *name);
 <link linkend="BonoboUINode">BonoboUINode</link>* <link linkend="bonobo-ui-node-new-child">bonobo_ui_node_new_child</link>      (<link linkend="BonoboUINode">BonoboUINode</link> *parent,
                                              const <link linkend="char">char</link> *name);
@@ -84,8 +84,8 @@ than libxml's at some later date.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboUINode"/>struct BonoboUINode</title>
-<indexterm><primary>BonoboUINode</primary></indexterm><programlisting>struct BonoboUINode;</programlisting>
+<title><anchor id="BonoboUINode"/>BonoboUINode</title>
+<indexterm><primary>BonoboUINode</primary></indexterm><programlisting>typedef struct _BonoboUINode BonoboUINode;</programlisting>
 <para>
 The BonoboUINode structure is fully opaque to stop any code
 depending on libxml inadvertantly.
@@ -101,7 +101,7 @@ Creates a new node with name <parameter>name</parameter></para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> The name for the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new node pointer
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new node pointer
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -119,7 +119,7 @@ Create a new node as a child of <parameter>parent</parameter> with name <paramet
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the new child
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> pointer to the new child
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> pointer to the new child
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -137,7 +137,7 @@ Copy an XML node, if <parameter>recursive</parameter> do a deep copy, otherwise 
 <varlistentry><term><parameter>recursive</parameter>&nbsp;:</term>
 <listitem><simpara> whether to dup children too.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a copy of the noce
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a copy of the noce
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -179,7 +179,7 @@ Gets user data associated with <parameter>node</parameter></para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the user data, see bonobo_ui_node_set_data
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the user data, see bonobo_ui_node_set_data
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -219,7 +219,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the attr to get
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the attr text.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the attr text.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -237,7 +237,7 @@ Determines whether the <parameter>node</parameter> has an attribute of name <par
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the attr to detect
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if the attr exists
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the attr exists
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -344,7 +344,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the content of <parameter>node</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the content of <parameter>node</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -358,7 +358,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the node after <parameter>node</parameter> in the list
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the node after <parameter>node</parameter> in the list
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -372,7 +372,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the node after <parameter>node</parameter> in the list
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the node after <parameter>node</parameter> in the list
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -386,7 +386,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the first child of <parameter>node</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the first child of <parameter>node</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -400,7 +400,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the parent node of <parameter>node</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the parent node of <parameter>node</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -414,7 +414,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the name of <parameter>node</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the name of <parameter>node</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -432,7 +432,7 @@ see also: bonobo_ui_node_free_string</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> a name the node might have
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if <parameter>node</parameter> has name == <parameter>name</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if <parameter>node</parameter> has name == <parameter>name</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -448,7 +448,7 @@ or a single 'name' attribute.</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if transparent
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if transparent
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -507,7 +507,7 @@ Convert the node to its XML string representation.</para>
 <varlistentry><term><parameter>recurse</parameter>&nbsp;:</term>
 <listitem><simpara> whether to dump its children as well
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string representation or NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the string representation or NULL on error
 Use g_free to free.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -522,7 +522,7 @@ Parses a string into an XML tree</para>
 <varlistentry><term><parameter>str</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the xml tree.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the xml tree.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -536,7 +536,7 @@ Loads and parses the filename into an XML tree</para>
 <varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the xml tree.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the xml tree.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -40,7 +40,6 @@ noinst_HEADERS = \
 	bonobo-ui-toolbar.h			\
 	bonobo-ui-toolbar-control-item.h  	\
 	bonobo-ui-toolbar-popup-item.h		\
-	bonobo-ui-toolbar-separator-item.h	\
 	bonobo-ui-xml.h
 
 libbonoboincludedir = $(includedir)/libbonoboui-2.0/bonobo
@@ -125,9 +124,9 @@ libbonoboui_2_la_SOURCES = \
 	bonobo-ui-toolbar-control-item.c  	\
 	bonobo-ui-toolbar-item.c		\
 	bonobo-ui-toolbar-popup-item.c		\
-	bonobo-ui-toolbar-separator-item.c	\
 	bonobo-ui-toolbar-toggle-button-item.c	\
 	bonobo-ui-toolbar.c			\
+	bonobo-ui-internal-toolbar.c		\
 	bonobo-ui-type-builtins.c		\
 	bonobo-ui-util.c			\
 	bonobo-ui-xml.c				\

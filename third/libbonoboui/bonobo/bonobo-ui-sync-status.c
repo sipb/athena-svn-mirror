@@ -23,8 +23,6 @@
 #include <bonobo/bonobo-ui-preferences.h>
 #include <bonobo/bonobo-ui-private.h>
 
-#include <bonobo/bonobo-ui-toolbar-separator-item.h>
-
 static GObjectClass *parent_class = NULL;
 
 #define PARENT_TYPE bonobo_ui_sync_get_type ()
@@ -122,7 +120,7 @@ impl_bonobo_ui_sync_status_state (BonoboUISync     *sync,
 			    !atoi (hidden))
 				has_grip = FALSE;
 		}
-		if (has_item_to_the_right (GTK_BOX(parent), widget))
+		if (has_item_to_the_right (GTK_BOX (parent), widget))
 			has_grip = FALSE;
 
 		gtk_statusbar_set_has_resize_grip (msync->main_status, has_grip);
@@ -257,9 +255,7 @@ impl_bonobo_ui_sync_status_build_placeholder (BonoboUISync     *sync,
 	GtkWidget *widget;
 	BonoboUISyncStatus *msync = BONOBO_UI_SYNC_STATUS (sync);
 
-	g_warning ("TESTME: status bar placeholders");
-
-	widget = bonobo_ui_toolbar_separator_item_new ();
+	widget = gtk_vseparator_new ();
 	gtk_widget_set_sensitive (widget, FALSE);
 
 	gtk_box_pack_end (GTK_BOX (parent), widget,

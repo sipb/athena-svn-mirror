@@ -15,11 +15,48 @@
 
 #include <bonobo/bonobo-ui-xml.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-ui-toolbar-button-item.h>
 #include <bonobo/bonobo-window.h>
 
 #include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-ui-main.h>
 #include <bonobo/bonobo-ui-preferences.h>
+
+static const char * tame_xpm[] = {
+"24 24 8 1",
+"       c None",
+".      c #FFFFFF",
+"+      c #9E9E9E",
+"@      c #484848",
+"#      c #131313",
+"$      c #CFCFCF",
+"%      c #363636",
+"&      c #000000",
+"                        ",
+"                        ",
+"                        ",
+"                        ",
+"         .....          ",
+"       .........        ",
+"      ...+@#@+...       ",
+"     ..$%&&&&&%$..      ",
+"     ..%&&&&&&&%..      ",
+"    ..+&&&&&&&&&+..     ",
+"    ..@&&&&&&&&&@..     ",
+"    ..#&&&&&&&&&#..     ",
+"    ..@&&&&&&&&&@..     ",
+"    ..+&&&&&&&&&+..     ",
+"     ..%&&&&&&&%..      ",
+"     ..$%&&&&&%$..      ",
+"      ...+@#@+...       ",
+"       .........        ",
+"         .....          ",
+"                        ",
+"                        ",
+"                        ",
+"                        ",
+"                        "
+};
 
 BonoboUIComponent *global_component;
 
@@ -249,7 +286,9 @@ main (int argc, char **argv)
 		"	<separator/>\n"
 		"	<toolitem name=\"baa\" pixtype=\"stock\" pixname=\"Open\" _label=\"baa\" _tip=\"My 2nd tooltip\" verb=\"testme\"/>\n"
 		"	<control name=\"AControl\" _tip=\"a tip on a control\" hidden=\"0\" vdisplay=\"button\"\n"
-		"	pixtype=\"stock\" pixname=\"Attach\"/>\n"
+		"	pixtype=\"stock\" pixname=\"gtk-italic\" _label=\"EntryControl\" verb=\"OpenEntry\"/>\n"
+		"	<control name=\"BControl\" _tip=\"another tip on a control\" hidden=\"0\"\n"
+		"	pixtype=\"stock\" pixname=\"gtk-stop\"/>\n"
 		"</dockitem>";
 	char toolb [] =
 		"<dockitem name=\"Toolbar\" look=\"icon\" relief=\"none\">\n"
@@ -318,7 +357,7 @@ main (int argc, char **argv)
 		gtk_box_pack_start_defaults (GTK_BOX (box), button);
 
 		path_entry = gtk_entry_new ();
-		gtk_entry_set_text (GTK_ENTRY (path_entry), "/menu/File/toggle");
+		gtk_entry_set_text (GTK_ENTRY (path_entry), "/commands/MyFoo");
 		gtk_widget_show (GTK_WIDGET (path_entry));
 		gtk_box_pack_start_defaults (GTK_BOX (box), path_entry);
 
@@ -427,21 +466,6 @@ main (int argc, char **argv)
 						widget, ev);
 	}
 
-#ifdef OLD_STUFF
-	{
-		GtkWidget *widget = gtk_entry_new ();
-		BonoboControl *control = bonobo_control_new (widget);
-		
-		gtk_entry_set_text (GTK_ENTRY (widget), "Example text");
-		gtk_widget_show (widget);
-		bonobo_ui_component_object_set (componenta,
-						"/Toolbar/AControl",
-						BONOBO_OBJREF (control),
-						ev);
-		bonobo_object_unref (BONOBO_OBJECT (control));
-		g_assert (!BONOBO_EX (ev));
-	}
-#else
 	{
 		GtkWidget *widget = gtk_entry_new ();
 		
@@ -452,7 +476,16 @@ main (int argc, char **argv)
 						widget, ev);
 		g_assert (!BONOBO_EX (ev));
 	}
-#endif
+	{
+		GtkWidget *widget;
+		GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data (tame_xpm);
+		widget = bonobo_ui_toolbar_button_item_new (pixbuf, "Test Control");
+		gtk_widget_show (widget);
+		bonobo_ui_component_widget_set (componenta,
+						"/Toolbar/BControl",
+						widget, ev);
+		g_assert (!BONOBO_EX (ev));
+	}
 
 	bonobo_ui_component_add_listener (componentb, "MyFoo", toggled_cb, ev);
 	g_assert (!BONOBO_EX (ev));

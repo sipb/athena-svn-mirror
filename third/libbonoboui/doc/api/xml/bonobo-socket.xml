@@ -15,8 +15,8 @@
 
 
 
-struct      <link linkend="BonoboSocket-struct">BonoboSocket</link>;
-struct      <link linkend="BonoboSocketClass">BonoboSocketClass</link>;
+            <link linkend="BonoboSocket-struct">BonoboSocket</link>;
+            <link linkend="BonoboSocketClass">BonoboSocketClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-socket-new">bonobo_socket_new</link>               (void);
 
 </synopsis>
@@ -69,7 +69,7 @@ inside the first applications window.
 
 <para>
 The XID of the socket's window is obtained by using
-the <link linkend="GTK-WINDOW-XWINDOW-CAPS"><function>GTK_WINDOW_XWINDOW()</function></link> macro from the header
+the <link linkend="GTK-WINDOW-XWINDOW:CAPS"><function>GTK_WINDOW_XWINDOW()</function></link> macro from the header
 file &lt;gdk/gdkx.h&gt;. Before using this macro,
 the socket must have been realized, and for hence,
 have been added to its parent.
@@ -127,8 +127,8 @@ as between a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> and a <li
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboSocket-struct"/>struct BonoboSocket</title>
-<indexterm><primary>BonoboSocket</primary></indexterm><programlisting>struct BonoboSocket;</programlisting>
+<title><anchor id="BonoboSocket-struct"/>BonoboSocket</title>
+<indexterm><primary>BonoboSocket</primary></indexterm><programlisting>typedef struct _BonoboSocket BonoboSocket;</programlisting>
 <para>
     The <link linkend="GtkEditable"><type>GtkEditable</type></link> structure contains the following field.
     (This field should be considered read-only. It should
@@ -148,13 +148,12 @@ as between a <link linkend="BonoboPlug"><type>BonoboPlug</type></link> and a <li
     </informaltable>
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboSocketClass"/>struct BonoboSocketClass</title>
-<indexterm><primary>BonoboSocketClass</primary></indexterm><programlisting>struct BonoboSocketClass {
-
+<title><anchor id="BonoboSocketClass"/>BonoboSocketClass</title>
+<indexterm><primary>BonoboSocketClass</primary></indexterm><programlisting>typedef struct {
 	GtkSocketClass parent_class;
 
 	gpointer dummy[4];
-};
+} BonoboSocketClass;
 </programlisting>
 <para>
 
@@ -167,7 +166,7 @@ Create a new empty <link linkend="BonoboSocket"><type>BonoboSocket</type></link>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A new <link linkend="BonoboSocket"><type>BonoboSocket</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

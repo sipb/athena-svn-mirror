@@ -23,6 +23,6 @@ server_DATA = $(server_in_files:.server.in=.server)
 
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = Bonobo_Sample_Controls.server.in.in $(server_in_files) $(server_DATA)
+EXTRA_DIST = Bonobo_Sample_Controls.server.in.in
 
 CLEANFILES = $(server_in_files) $(server_DATA)

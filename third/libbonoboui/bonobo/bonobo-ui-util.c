@@ -400,7 +400,8 @@ bonobo_ui_util_xml_set_image (GtkImage     *image,
 			g_warning ("Could not find GNOME pixmap file %s", text);
 		else {
  			int w, h;
- 			if (gtk_icon_size_lookup (icon_size, &w, &h))
+			GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (image));
+ 			if (gtk_icon_size_lookup_for_settings (settings, icon_size, &w, &h))
  				pixbuf = gdk_pixbuf_new_from_file_at_size (name, w, h, NULL);
  			else
  				pixbuf = gdk_pixbuf_new_from_file (name, NULL);

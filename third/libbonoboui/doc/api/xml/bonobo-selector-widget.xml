@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboSelectorWidgetPrivate">BonoboSelectorWidgetPrivate</link>;
-struct      <link linkend="BonoboSelectorWidget">BonoboSelectorWidget</link>;
-struct      <link linkend="BonoboSelectorWidgetClass">BonoboSelectorWidgetClass</link>;
+            <link linkend="BonoboSelectorWidgetPrivate">BonoboSelectorWidgetPrivate</link>;
+            <link linkend="BonoboSelectorWidget">BonoboSelectorWidget</link>;
+            <link linkend="BonoboSelectorWidgetClass">BonoboSelectorWidgetClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-selector-widget-new">bonobo_selector_widget_new</link>      (void);
 <link linkend="void">void</link>        <link linkend="bonobo-selector-widget-set-interfaces">bonobo_selector_widget_set_interfaces</link>
                                             (<link linkend="BonoboSelectorWidget">BonoboSelectorWidget</link> *sel,
@@ -48,27 +48,25 @@ struct      <link linkend="BonoboSelectorWidgetClass">BonoboSelectorWidgetClass<
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboSelectorWidgetPrivate"/>struct BonoboSelectorWidgetPrivate</title>
-<indexterm><primary>BonoboSelectorWidgetPrivate</primary></indexterm><programlisting>struct BonoboSelectorWidgetPrivate;</programlisting>
+<title><anchor id="BonoboSelectorWidgetPrivate"/>BonoboSelectorWidgetPrivate</title>
+<indexterm><primary>BonoboSelectorWidgetPrivate</primary></indexterm><programlisting>typedef struct _BonoboSelectorWidgetPrivate BonoboSelectorWidgetPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboSelectorWidget"/>struct BonoboSelectorWidget</title>
-<indexterm><primary>BonoboSelectorWidget</primary></indexterm><programlisting>struct BonoboSelectorWidget {
-
+<title><anchor id="BonoboSelectorWidget"/>BonoboSelectorWidget</title>
+<indexterm><primary>BonoboSelectorWidget</primary></indexterm><programlisting>typedef struct {
 	GtkVBox parent;
 
 	BonoboSelectorWidgetPrivate *priv;
-};
+} BonoboSelectorWidget;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboSelectorWidgetClass"/>struct BonoboSelectorWidgetClass</title>
-<indexterm><primary>BonoboSelectorWidgetClass</primary></indexterm><programlisting>struct BonoboSelectorWidgetClass {
-
+<title><anchor id="BonoboSelectorWidgetClass"/>BonoboSelectorWidgetClass</title>
+<indexterm><primary>BonoboSelectorWidgetClass</primary></indexterm><programlisting>typedef struct {
 	GtkVBoxClass parent_class;
 
 	/* Virtual methods */
@@ -82,7 +80,7 @@ struct      <link linkend="BonoboSelectorWidgetClass">BonoboSelectorWidgetClass<
 	void   (* final_select)    (BonoboSelectorWidget *sel);
 
 	gpointer dummy[2];
-};
+} BonoboSelectorWidgetClass;
 </programlisting>
 <para>
 
@@ -96,7 +94,7 @@ a list and a description pane for each component.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the newly-created BonoboSelectorWidget widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the newly-created BonoboSelectorWidget widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -127,7 +125,7 @@ a list and a description pane for each component.</para>
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelectorWidget widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the ID of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the ID of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this. It will give an oaf iid back.
@@ -144,7 +142,7 @@ responsible for freeing this. It will give an oaf iid back.
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelectorWidget widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the name of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the name of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this.
@@ -162,7 +160,7 @@ responsible for freeing this.
 <varlistentry><term><parameter>sel</parameter>&nbsp;:</term>
 <listitem><simpara> A BonoboSelectorWidget widget.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-allocated string containing the description of the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly-allocated string containing the description of the
 currently-selected CORBA server (i.e., the corba server whose name
 is highlighted in the list).  The user of this function is
 responsible for freeing this.

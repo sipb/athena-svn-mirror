@@ -15,7 +15,7 @@
 #include <bonobo/bonobo-dock.h>
 #include <bonobo/bonobo-window.h>
 #include <libbonobo.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 
 #include <bonobo/bonobo-ui-preferences.h>

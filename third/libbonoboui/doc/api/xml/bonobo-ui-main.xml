@@ -15,10 +15,10 @@
 
 
 
-#define     <link linkend="LIBBONOBOUI-MODULE-CAPS">LIBBONOBOUI_MODULE</link>
+#define     <link linkend="LIBBONOBOUI-MODULE:CAPS">LIBBONOBOUI_MODULE</link>
 const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="libbonobo-ui-module-info-get">libbonobo_ui_module_info_get</link>
                                             (void);
-#define     <link linkend="BONOBO-UI-GTK-MODULE-CAPS">BONOBO_UI_GTK_MODULE</link>
+#define     <link linkend="BONOBO-UI-GTK-MODULE:CAPS">BONOBO_UI_GTK_MODULE</link>
 const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bonobo-ui-gtk-module-info-get">bonobo_ui_gtk_module_info_get</link>
                                             (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="bonobo-ui-is-initialized">bonobo_ui_is_initialized</link>        (void);
@@ -31,7 +31,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
                                              const <link linkend="gchar">gchar</link> *app_version,
                                              <link linkend="int">int</link> *argc,
                                              <link linkend="char">char</link> **argv,
-                                             <link linkend="CORBA-ORB-CAPS">CORBA_ORB</link> orb,
+                                             <link linkend="CORBA-ORB:CAPS">CORBA_ORB</link> orb,
                                              <link linkend="PortableServer-POA">PortableServer_POA</link> poa,
                                              <link linkend="PortableServer-POAManager">PortableServer_POAManager</link> manager,
                                              <link linkend="gboolean">gboolean</link> full_init);
@@ -58,7 +58,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="LIBBONOBOUI-MODULE-CAPS"/>LIBBONOBOUI_MODULE</title>
+<title><anchor id="LIBBONOBOUI-MODULE:CAPS"/>LIBBONOBOUI_MODULE</title>
 <indexterm><primary>LIBBONOBOUI_MODULE</primary></indexterm><programlisting>#define LIBBONOBOUI_MODULE libbonobo_ui_module_info_get()
 </programlisting>
 <para>
@@ -71,13 +71,13 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-GTK-MODULE-CAPS"/>BONOBO_UI_GTK_MODULE</title>
+<title><anchor id="BONOBO-UI-GTK-MODULE:CAPS"/>BONOBO_UI_GTK_MODULE</title>
 <indexterm><primary>BONOBO_UI_GTK_MODULE</primary></indexterm><programlisting>#define BONOBO_UI_GTK_MODULE bonobo_ui_gtk_module_info_get()
 </programlisting>
 <para>
@@ -90,7 +90,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -101,7 +101,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -127,7 +127,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -144,7 +144,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
                                              const <link linkend="gchar">gchar</link> *app_version,
                                              <link linkend="int">int</link> *argc,
                                              <link linkend="char">char</link> **argv,
-                                             <link linkend="CORBA-ORB-CAPS">CORBA_ORB</link> orb,
+                                             <link linkend="CORBA-ORB:CAPS">CORBA_ORB</link> orb,
                                              <link linkend="PortableServer-POA">PortableServer_POA</link> poa,
                                              <link linkend="PortableServer-POAManager">PortableServer_POAManager</link> manager,
                                              <link linkend="gboolean">gboolean</link> full_init);</programlisting>
@@ -175,7 +175,7 @@ const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* <link linkend="bon
 <varlistentry><term><parameter>full_init</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -209,7 +209,7 @@ normally.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

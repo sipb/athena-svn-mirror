@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
 "PO-Revision-Date: 2003-10-02 10:07+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
@@ -30,30 +30,31 @@ msgstr "corba UI container"
 msgid "The User interface container"
 msgstr "Container UI"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Gắn thanh công cụ"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "Tháo rời thanh công cụ"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Kiểu bóng"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Hướng"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Độ rộng ưa thích"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Độ cao ưa thích"
@@ -79,10 +80,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Các sự kiện X có nên được chuyển đi hay không"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Tên"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Mô tả"
 
@@ -132,11 +134,11 @@ msgstr "Thanh công cụ"
 msgid "toolbars"
 msgstr "thanh công cụ"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Nhìn"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Biểu tượng"
 
@@ -249,31 +251,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Hỗ trợ Bonobo GUI"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "Cả _hai"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_ext"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Ẩn t_ip"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Hiện t_ip"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "Ẩ_n thanh công cụ"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "Tùy _biến"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Tùy biến thanh công cụ"
 
@@ -289,11 +291,11 @@ msgstr "thanh công cụ có trôi nổi hay không"
 msgid "Style of bevel around the toolbar"
 msgstr "Kiểu trang trí quanh thanh công cụ"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Nội dung"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Xem trợ giúp về ứng dụng này"
 
@@ -366,6 +368,7 @@ msgid "_Edit"
 msgstr "_Sửa chữa"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Tập tin"
 
@@ -397,6 +400,83 @@ msgstr "Không thể khởi động mã libbonoboui"
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "Không thể khởi động Bonobo UI"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr ""
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:1
+#, fuzzy
+msgid "About this program..."
+msgstr "Giới thiệu ứng dụng này"
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:5
+#, fuzzy
+msgid "_Help"
+msgstr "Ẩ_n"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr ""
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr ""
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr ""
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr ""
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr ""
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr ""
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr ""
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr ""
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr ""
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr ""
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr ""
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr ""
 
 #~ msgid "HOST"
 #~ msgstr "MÁY"

@@ -1,63 +1,105 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-a11y</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="previous" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><link rel="refentry" href="libbonoboui-faq.html" title="Common Questions"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="refentry" href="libbonoboui-bonobo-control.html" title="BonoboControl"><link rel="refentry" href="libbonoboui-bonobo-control-frame.html" title="BonoboControlFrame"><link rel="refentry" href="libbonoboui-bonobo-property-control.html" title="bonobo-property-control"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="refentry" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="refentry" href="libbonoboui-bonobo-window.html" title="bonobo-window"><link rel="refentry" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><link rel="refentry" href="libbonoboui-bonobo-ui-container.html" title="BonoboUIContainer"><link rel="refentry" href="libbonoboui-bonobo-ui-util.html" title="bonobo-ui-util"><link rel="refentry" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="refentry" href="libbonoboui-bonobo-ui-engine.html" title="BonoboUIEngine"><link rel="refentry" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><link rel="refentry" href="libbonoboui-bonobo-ui-sync.html" title="BonoboUISync"><link rel="refentry" href="libbonoboui-bonobo-ui-preferences.html" title="bonobo-ui-preferences"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="refentry" href="libbonoboui-bonobo-plug.html" title="BonoboPlug"><link rel="refentry" href="libbonoboui-bonobo-socket.html" title="BonoboSocket"><link rel="refentry" href="libbonoboui-bonobo-wrapper.html" title="bonobo-wrapper"><link rel="refentry" href="libbonoboui-bonobo-selector.html" title="BonoboSelector"><link rel="refentry" href="libbonoboui-bonobo-selector-widget.html" title="bonobo-selector-widget"><link rel="refentry" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><link rel="refentry" href="libbonoboui-bonobo-a11y.html" title="bonobo-a11y"><link rel="section" href="libbonoboui-bonobo-a11y.html#id2894133" title="Description"><link rel="section" href="libbonoboui-bonobo-a11y.html#id2894142" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-file-selector-util.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-support-utilities.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-a11y"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-a11y</span></h2><p>bonobo-a11y &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-a11y</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="prev" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><meta name="generator" content="GTK-Doc V1.3 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-file-selector-util.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-support-utilities.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-a11y"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">bonobo-a11y</span></h2><p>bonobo-a11y &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
 void        (<a href="libbonoboui-bonobo-a11y.html#BonoboA11YClassInitFn">*BonoboA11YClassInitFn</a>)        (AtkObjectClass *klass);
-AtkObject*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-get-atk-object">bonobo_a11y_get_atk_object</a>      (gpointer widget);
-AtkObject*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-set-atk-object-ret">bonobo_a11y_set_atk_object_ret</a>  (GtkWidget *widget,
-                                             AtkObject *object);
-GType       <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-get-derived-type-for">bonobo_a11y_get_derived_type_for</a>
-                                            (GType widget_type,
+<a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-get-atk-object">bonobo_a11y_get_atk_object</a>      (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> widget);
+<a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-set-atk-object-ret">bonobo_a11y_set_atk_object_ret</a>  (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
+                                             <a
+href="../atk/AtkObject.html"
+>AtkObject</a> *object);
+<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a>       <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-get-derived-type-for">bonobo_a11y_get_derived_type_for</a>
+                                            (<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> widget_type,
                                              const char *gail_parent_class,
                                              <a href="libbonoboui-bonobo-a11y.html#BonoboA11YClassInitFn">BonoboA11YClassInitFn</a> class_init);
-AtkObject*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-create-accessible-for">bonobo_a11y_create_accessible_for</a>
-                                            (GtkWidget *widget,
+<a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-create-accessible-for">bonobo_a11y_create_accessible_for</a>
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              const char *gail_parent_class,
                                              <a href="libbonoboui-bonobo-a11y.html#BonoboA11YClassInitFn">BonoboA11YClassInitFn</a> class_init,
-                                             GType first_interface_type,
+                                             <a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> first_interface_type,
                                              ...);
 void        <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-add-actions-interface">bonobo_a11y_add_actions_interface</a>
-                                            (GType a11y_object_type,
+                                            (<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> a11y_object_type,
                                              AtkActionIface *chain,
                                              int first_id,
                                              ...);
-</pre></div><div class="refsect1" lang="en"><a name="id2894133"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2615684"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2894142"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2894148"></a><h3><a name="BonoboA11YClassInitFn"></a>BonoboA11YClassInitFn ()</h3><a class="indexterm" name="id2894159"></a><pre class="programlisting">void        (*BonoboA11YClassInitFn)        (AtkObjectClass *klass);</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2615694"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2615699"></a><h3><a name="BonoboA11YClassInitFn"></a>BonoboA11YClassInitFn ()</h3><a class="indexterm" name="id2615710"></a><pre class="programlisting">void        (*BonoboA11YClassInitFn)        (AtkObjectClass *klass);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>klass</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2894205"></a><h3><a name="bonobo-a11y-get-atk-object"></a>bonobo_a11y_get_atk_object ()</h3><a class="indexterm" name="id2894218"></a><pre class="programlisting">AtkObject*  bonobo_a11y_get_atk_object      (gpointer widget);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2615757"></a><h3><a name="bonobo-a11y-get-atk-object"></a>bonobo_a11y_get_atk_object ()</h3><a class="indexterm" name="id2615769"></a><pre class="programlisting"><a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  bonobo_a11y_get_atk_object      (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> widget);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2894273"></a><h3><a name="bonobo-a11y-set-atk-object-ret"></a>bonobo_a11y_set_atk_object_ret ()</h3><a class="indexterm" name="id2894285"></a><pre class="programlisting">AtkObject*  bonobo_a11y_set_atk_object_ret  (GtkWidget *widget,
-                                             AtkObject *object);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2615825"></a><h3><a name="bonobo-a11y-set-atk-object-ret"></a>bonobo_a11y_set_atk_object_ret ()</h3><a class="indexterm" name="id2615837"></a><pre class="programlisting"><a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  bonobo_a11y_set_atk_object_ret  (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
+                                             <a
+href="../atk/AtkObject.html"
+>AtkObject</a> *object);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2894362"></a><h3><a name="bonobo-a11y-get-derived-type-for"></a>bonobo_a11y_get_derived_type_for ()</h3><a class="indexterm" name="id2894374"></a><pre class="programlisting">GType       bonobo_a11y_get_derived_type_for
-                                            (GType widget_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2615914"></a><h3><a name="bonobo-a11y-get-derived-type-for"></a>bonobo_a11y_get_derived_type_for ()</h3><a class="indexterm" name="id2615926"></a><pre class="programlisting"><a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a>       bonobo_a11y_get_derived_type_for
+                                            (<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> widget_type,
                                              const char *gail_parent_class,
                                              <a href="libbonoboui-bonobo-a11y.html#BonoboA11YClassInitFn">BonoboA11YClassInitFn</a> class_init);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget_type</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>gail_parent_class</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>class_init</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2894475"></a><h3><a name="bonobo-a11y-create-accessible-for"></a>bonobo_a11y_create_accessible_for ()</h3><a class="indexterm" name="id2894488"></a><pre class="programlisting">AtkObject*  bonobo_a11y_create_accessible_for
-                                            (GtkWidget *widget,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616027"></a><h3><a name="bonobo-a11y-create-accessible-for"></a>bonobo_a11y_create_accessible_for ()</h3><a class="indexterm" name="id2616040"></a><pre class="programlisting"><a
+href="../atk/AtkObject.html"
+>AtkObject</a>*  bonobo_a11y_create_accessible_for
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              const char *gail_parent_class,
                                              <a href="libbonoboui-bonobo-a11y.html#BonoboA11YClassInitFn">BonoboA11YClassInitFn</a> class_init,
-                                             GType first_interface_type,
+                                             <a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> first_interface_type,
                                              ...);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>
@@ -65,11 +107,13 @@ void        <a href="libbonoboui-bonobo-a11y.html#bonobo-a11y-add-actions-interf
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>class_init</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>first_interface_type</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2894623"></a><h3><a name="bonobo-a11y-add-actions-interface"></a>bonobo_a11y_add_actions_interface ()</h3><a class="indexterm" name="id2894636"></a><pre class="programlisting">void        bonobo_a11y_add_actions_interface
-                                            (GType a11y_object_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616176"></a><h3><a name="bonobo-a11y-add-actions-interface"></a>bonobo_a11y_add_actions_interface ()</h3><a class="indexterm" name="id2616189"></a><pre class="programlisting">void        bonobo_a11y_add_actions_interface
+                                            (<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a> a11y_object_type,
                                              AtkActionIface *chain,
                                              int first_id,
                                              ...);</pre><p>

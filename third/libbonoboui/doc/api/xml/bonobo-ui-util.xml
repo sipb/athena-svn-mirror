@@ -93,7 +93,7 @@ attribute = "pixbuf".</para>
 <varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
 <listitem><simpara> a GdkPixbuf
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the stringified pixbuf.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the stringified pixbuf.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -107,7 +107,7 @@ This converts a stringified pixbuf in <parameter>xml</parameter> into a GdkPixbu
 <varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
 <listitem><simpara> a string
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a handed reference to the created GdkPixbuf.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a handed reference to the created GdkPixbuf.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -130,7 +130,7 @@ Unused internally.</para>
 <varlistentry><term><parameter>icon_size</parameter>&nbsp;:</term>
 <listitem><simpara> the desired size of the icon
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -190,7 +190,7 @@ Builds a path to the xml file that stores the GUI.</para>
 <varlistentry><term><parameter>file_name</parameter>&nbsp;:</term>
 <listitem><simpara> the file name of the xml file.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the path to the file that describes the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the path to the file that describes the
 UI or NULL if it is not found.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -271,7 +271,7 @@ doc cruft from its nodes; and translates the nodes.</para>
 <varlistentry><term><parameter>app_name</parameter>&nbsp;:</term>
 <listitem><simpara> Application name ( for finding help )
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The translated tree ready to be merged.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The translated tree ready to be merged.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -350,7 +350,7 @@ it is the converse of bonobo_ui_util_accel_parse</para>
 <varlistentry><term><parameter>accelerator_mods</parameter>&nbsp;:</term>
 <listitem><simpara> the modifiers
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the stringified representation
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the stringified representation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -389,7 +389,7 @@ problems.</para>
 <varlistentry><term><parameter>e</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -402,7 +402,7 @@ problems.</para>
 <varlistentry><term><parameter>s</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

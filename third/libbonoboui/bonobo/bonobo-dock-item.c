@@ -2,7 +2,7 @@
  *
  * Copyright (C) 1998 Ettore Perazzoli
  * Copyright (C) 1998 Elliot Lee
- * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald 
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -47,8 +47,14 @@
 #include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 
-struct _BonoboDockItemPrivate {
-	GtkWidget *grip;
+struct _BonoboDockItemPrivate
+{
+  GtkWidget *child;
+  GtkWidget *grip;
+
+  GtkWidget *float_window;
+  GtkWidget *float_window_box;
+  gboolean  float_window_hidden;
 };
 
 GNOME_CLASS_BOILERPLATE (BonoboDockItem, bonobo_dock_item,
@@ -110,14 +116,19 @@ static void bonobo_dock_item_forall         (GtkContainer     *container,
 					     gpointer          callback_data);
 static void bonobo_dock_item_paint          (GtkWidget         *widget,
 					     GdkEventExpose    *event);
-static gint bonobo_dock_item_expose         (GtkWidget         *widget,
+static gboolean bonobo_dock_item_expose     (GtkWidget         *widget,
 					     GdkEventExpose    *event);
-static gint bonobo_dock_item_button_changed (GtkWidget         *widget,
-					     GdkEventButton    *event);
-static gint bonobo_dock_item_motion         (GtkWidget         *widget,
+static gboolean bonobo_dock_item_button_changed (GtkWidget         *widget,
+						 GdkEventButton    *event);
+static gboolean bonobo_dock_item_motion     (GtkWidget         *widget,
 					     GdkEventMotion    *event);
-static gint bonobo_dock_item_delete_event   (GtkWidget         *widget,
-					     GdkEventAny       *event);
+
+static void bonobo_dock_item_float_window_size_request (GtkWidget *widget, GtkRequisition *requisition, gpointer data);
+static void bonobo_dock_item_float_window_size_allocate (GtkWidget *widget, GtkAllocation *allocation, gpointer data);
+
+static gboolean bonobo_dock_item_float_window_expose (GtkWidget *widget, GdkEventExpose *event, gpointer data);
+static gboolean bonobo_dock_item_float_window_button_changed (GtkWidget *widget, GdkEventButton *event, gpointer data);
+static gboolean bonobo_dock_item_float_window_motion (GtkWidget *widget, GdkEventMotion *event, gpointer data);
 
 static guint        dock_item_signals[LAST_SIGNAL] = { 0 };
 
@@ -153,7 +164,7 @@ get_preferred_width (BonoboDockItem *dock_item)
   GtkWidget *child;
   guint preferred_width;
 
-  child = GTK_BIN (dock_item)->child;
+  child = dock_item->_priv->child;
 
   if (!child)
     return 0;
@@ -161,7 +172,7 @@ get_preferred_width (BonoboDockItem *dock_item)
   if (! check_guint_arg (G_OBJECT (child), "preferred_width", &preferred_width))
     {
       GtkRequisition child_requisition;
-  
+
       gtk_widget_get_child_requisition (child, &child_requisition);
       preferred_width = child_requisition.width;
     }
@@ -180,7 +191,7 @@ get_preferred_height (BonoboDockItem *dock_item)
   GtkWidget *child;
   guint preferred_height;
 
-  child = GTK_BIN (dock_item)->child;
+  child = dock_item->_priv->child;
 
   if (!child)
     return 0;
@@ -188,7 +199,7 @@ get_preferred_height (BonoboDockItem *dock_item)
   if (! check_guint_arg (G_OBJECT (child), "preferred_height", &preferred_height))
     {
       GtkRequisition child_requisition;
-  
+
       gtk_widget_get_child_requisition (child, &child_requisition);
       preferred_height = child_requisition.height;
     }
@@ -214,7 +225,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *klass)
 
   gobject_class->set_property = bonobo_dock_item_set_property;
   gobject_class->get_property = bonobo_dock_item_get_property;
-  
+
   g_object_class_install_property (
 	  gobject_class,
 	  PROP_SHADOW,
@@ -300,7 +311,7 @@ bonobo_dock_item_class_init (BonoboDockItemClass *klass)
 			NULL, NULL,
 			g_cclosure_marshal_VOID__ENUM,
 			G_TYPE_NONE, 1, GTK_TYPE_ORIENTATION);
-  
+
   gobject_class->finalize = bonobo_dock_item_finalize;
 
   widget_class->map = bonobo_dock_item_map;
@@ -314,7 +325,6 @@ bonobo_dock_item_class_init (BonoboDockItemClass *klass)
   widget_class->button_press_event = bonobo_dock_item_button_changed;
   widget_class->button_release_event = bonobo_dock_item_button_changed;
   widget_class->motion_notify_event = bonobo_dock_item_motion;
-  widget_class->delete_event = bonobo_dock_item_delete_event;
 
   container_class->add = bonobo_dock_item_add;
   container_class->remove = bonobo_dock_item_remove;
@@ -326,9 +336,12 @@ bonobo_dock_item_instance_init (BonoboDockItem *dock_item)
 {
   GTK_WIDGET_UNSET_FLAGS (dock_item, GTK_NO_WINDOW);
 
-  dock_item->_priv = g_new (BonoboDockItemPrivate, 1);
+  dock_item->_priv = g_new0 (BonoboDockItemPrivate, 1);
 
   dock_item->_priv->grip = bonobo_dock_item_grip_new (dock_item);
+  dock_item->_priv->float_window = NULL;
+  dock_item->_priv->float_window_hidden = FALSE;
+
   gtk_widget_set_parent (dock_item->_priv->grip, GTK_WIDGET (dock_item));
   gtk_widget_show (dock_item->_priv->grip);
 
@@ -476,8 +489,9 @@ bonobo_dock_item_unmap (GtkWidget *widget)
   gdk_window_hide (widget->window);
   if (di->float_window_mapped)
     {
-      gdk_window_hide (di->float_window);
+      gtk_widget_hide (GTK_WIDGET (di->_priv->float_window));
       di->float_window_mapped = FALSE;
+      di->_priv->float_window_hidden = TRUE;
     }
 
   if (di->_priv->grip)
@@ -488,7 +502,6 @@ static void
 bonobo_dock_item_realize (GtkWidget *widget)
 {
   GdkWindowAttr attributes;
-  GdkWindow *root_window;
   gint attributes_mask;
   BonoboDockItem *di;
 
@@ -532,36 +545,38 @@ bonobo_dock_item_realize (GtkWidget *widget)
   if (GTK_BIN (di)->child)
     gtk_widget_set_parent_window (GTK_BIN (di)->child, di->bin_window);
 
-  if (di->_priv->grip)
-    gtk_widget_set_parent_window (di->_priv->grip, di->bin_window);
+  gtk_widget_set_parent_window (di->_priv->grip, di->bin_window);
 
-  root_window = gdk_screen_get_root_window
-	  (gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
-  
-  attributes.x = 0;
-  attributes.y = 0;
-  attributes.width = widget->requisition.width;
-  attributes.height = widget->requisition.height;
-  attributes.window_type = GDK_WINDOW_TOPLEVEL;
-  attributes.wclass = GDK_INPUT_OUTPUT;
-  attributes.visual = gtk_widget_get_visual (widget);
-  attributes.colormap = gtk_widget_get_colormap (widget);
-  attributes.event_mask = (gtk_widget_get_events (widget) |
-			   GDK_KEY_PRESS_MASK |
-			   GDK_ENTER_NOTIFY_MASK |
-			   GDK_LEAVE_NOTIFY_MASK |
-			   GDK_FOCUS_CHANGE_MASK |
-			   GDK_STRUCTURE_MASK);
-  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-  di->float_window = gdk_window_new (root_window, &attributes, attributes_mask);
-  gdk_window_set_transient_for (di->float_window, gdk_window_get_toplevel (widget->window));
-  gdk_window_set_user_data (di->float_window, widget);
-  gdk_window_set_decorations (di->float_window, 0);
-  
+  di->_priv->float_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_screen (GTK_WINDOW (di->_priv->float_window), gtk_widget_get_screen (widget));
+  gtk_window_set_decorated (GTK_WINDOW (di->_priv->float_window), FALSE);
+
+  g_signal_connect (di->_priv->float_window, "size_allocate",
+		    G_CALLBACK (bonobo_dock_item_float_window_size_allocate),
+		    di);
+
+  g_signal_connect (di->_priv->float_window, "size_request",
+		    G_CALLBACK (bonobo_dock_item_float_window_size_request),
+		    di);
+  g_signal_connect (di->_priv->float_window, "expose_event",
+		    G_CALLBACK (bonobo_dock_item_float_window_expose),
+		    di);
+
+  g_signal_connect (di->_priv->float_window, "button_press_event",
+		    G_CALLBACK (bonobo_dock_item_float_window_button_changed),
+		    di);
+
+  g_signal_connect (di->_priv->float_window, "button_release_event",
+		    G_CALLBACK (bonobo_dock_item_float_window_button_changed),
+		    di);
+
+  g_signal_connect (di->_priv->float_window, "motion_notify_event",
+		    G_CALLBACK (bonobo_dock_item_float_window_motion),
+		    di);
+
   widget->style = gtk_style_attach (widget->style, widget->window);
   gtk_style_set_background (widget->style, widget->window, GTK_WIDGET_STATE (di));
   gtk_style_set_background (widget->style, di->bin_window, GTK_WIDGET_STATE (di));
-  gtk_style_set_background (widget->style, di->float_window, GTK_WIDGET_STATE (di));
   gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
 
   if (di->is_floating)
@@ -572,18 +587,26 @@ static void
 bonobo_dock_item_unrealize (GtkWidget *widget)
 {
   BonoboDockItem *di;
+  BonoboDockItemPrivate *priv;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (BONOBO_IS_DOCK_ITEM (widget));
 
   di = BONOBO_DOCK_ITEM (widget);
+  priv = di->_priv;
 
   gdk_window_set_user_data (di->bin_window, NULL);
   gdk_window_destroy (di->bin_window);
   di->bin_window = NULL;
-  gdk_window_set_user_data (di->float_window, NULL);
-  gdk_window_destroy (di->float_window);
-  di->float_window = NULL;
+
+  if (di->_priv->float_window_hidden)
+     di->float_window_mapped = TRUE;
+
+  if (di->float_window_mapped)
+    bonobo_dock_item_unfloat (di);
+
+  gtk_widget_destroy (GTK_WIDGET (di->_priv->float_window));
+  di->_priv->float_window = NULL;
 
   GNOME_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
@@ -605,26 +628,21 @@ bonobo_dock_item_style_set (GtkWidget *widget,
       gtk_style_set_background (widget->style, widget->window,
                                 widget->state);
       gtk_style_set_background (widget->style, di->bin_window, widget->state);
-      gtk_style_set_background (widget->style, di->float_window, widget->state);
       if (GTK_WIDGET_DRAWABLE (widget))
 	gdk_window_clear (widget->window);
     }
 }
 
 static void
-bonobo_dock_item_size_request (GtkWidget      *widget,
-                              GtkRequisition *requisition)
+size_request (GtkWidget      *widget,
+	      GtkRequisition *requisition,
+	      BonoboDockItem *dock_item)
 {
-  GtkBin *bin;
-  BonoboDockItem *dock_item;
+
+  GtkBin  *bin;
   GtkRequisition child_requisition;
 
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (BONOBO_IS_DOCK_ITEM (widget));
-  g_return_if_fail (requisition != NULL);
-
   bin = GTK_BIN (widget);
-  dock_item = BONOBO_DOCK_ITEM (widget);
 
   /* If our child is not visible, we still request its size, since
      we won't have any useful hint for our size otherwise.  */
@@ -638,7 +656,7 @@ bonobo_dock_item_size_request (GtkWidget      *widget,
 
   if (dock_item->orientation == GTK_ORIENTATION_HORIZONTAL)
     {
-      requisition->width = 
+      requisition->width =
         BONOBO_DOCK_ITEM_NOT_LOCKED (dock_item) ? DRAG_HANDLE_SIZE : 0;
       if (bin->child != NULL)
         {
@@ -650,7 +668,7 @@ bonobo_dock_item_size_request (GtkWidget      *widget,
     }
   else
     {
-      requisition->height = 
+      requisition->height =
         BONOBO_DOCK_ITEM_NOT_LOCKED (dock_item) ? DRAG_HANDLE_SIZE : 0;
       if (bin->child != NULL)
         {
@@ -666,16 +684,126 @@ bonobo_dock_item_size_request (GtkWidget      *widget,
 }
 
 static void
+bonobo_dock_item_size_request (GtkWidget *widget,
+			       GtkRequisition *requisition)
+{
+
+  BonoboDockItem *dock_item;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (BONOBO_IS_DOCK_ITEM (widget));
+  g_return_if_fail (requisition != NULL);
+
+  dock_item = BONOBO_DOCK_ITEM (widget);
+
+  size_request (widget, requisition, dock_item);
+
+}
+
+static void
+bonobo_dock_item_float_window_size_request (GtkWidget *widget,
+					    GtkRequisition *requisition,
+					    gpointer data)
+{
+  BonoboDockItem *dock_item;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (requisition != NULL);
+
+  dock_item = BONOBO_DOCK_ITEM (data);
+
+  size_request (widget, requisition, dock_item);
+
+}
+
+static void
+grip_size_allocate (GtkWidget *widget,
+                    GtkAllocation *allocation,
+		    GtkAllocation *child_allocation,
+		    GtkWidget *grip,
+		    BonoboDockItem *di)
+{
+  GtkWidget *child  = GTK_BIN (widget)->child;
+
+  GtkAllocation grip_alloc = *allocation;
+
+  grip_alloc.x = grip_alloc.y = 0;
+
+  if (di->orientation != GTK_ORIENTATION_HORIZONTAL) {
+
+     grip_alloc.height = DRAG_HANDLE_SIZE;
+     child_allocation->y += DRAG_HANDLE_SIZE;
+
+   } else {
+
+     grip_alloc.width = DRAG_HANDLE_SIZE;
+
+     if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
+        child_allocation->x += DRAG_HANDLE_SIZE;
+     else {
+        GtkRequisition child_requisition;
+
+         gtk_widget_get_child_requisition (child, &child_requisition);
+         grip_alloc.x = child_requisition.width;
+      }
+    }
+
+    gtk_widget_size_allocate (grip, &grip_alloc);
+}
+
+static void
+bonobo_dock_item_float_window_size_allocate (GtkWidget *widget,
+					     GtkAllocation *allocation,
+					     gpointer data)
+{
+  GtkBin *bin;
+  BonoboDockItem *di;
+  GtkRequisition child_requisition;
+  GtkAllocation child_allocation;
+  GtkWidget *child, *grip;
+  int border_width;
+  GList *list;
+
+  di = BONOBO_DOCK_ITEM (data);
+
+  bin = GTK_BIN(widget);
+  child = bin->child;
+  border_width = GTK_CONTAINER (widget)->border_width;
+
+  /* Grip and InternalToolbar are the children */
+  list = gtk_container_get_children (GTK_CONTAINER (child));
+
+  grip = list->data;
+
+  child_allocation.x = border_width;
+  child_allocation.y = border_width;
+
+  if (BONOBO_DOCK_ITEM_NOT_LOCKED(di))
+    grip_size_allocate (widget, allocation, &child_allocation, grip, di);
+
+  list = list->next;
+  child = list->data;
+
+  gtk_widget_get_child_requisition (child, &child_requisition);
+
+  child_allocation.width = child_requisition.width + 2 * border_width;
+  child_allocation.height = child_requisition.height + 2 * border_width;
+
+  gtk_widget_size_allocate (child, &child_allocation);
+
+}
+
+static void
 bonobo_dock_item_size_allocate (GtkWidget     *widget,
 				GtkAllocation *allocation)
 {
   GtkBin *bin;
   BonoboDockItem *di;
-  
+
   g_return_if_fail (widget != NULL);
   g_return_if_fail (BONOBO_IS_DOCK_ITEM (widget));
   g_return_if_fail (allocation != NULL);
-  
+
   bin = GTK_BIN (widget);
   di = BONOBO_DOCK_ITEM (widget);
 
@@ -701,97 +829,68 @@ bonobo_dock_item_size_allocate (GtkWidget     *widget,
       child_allocation.y = border_width;
 
       if (BONOBO_DOCK_ITEM_NOT_LOCKED(di))
+        grip_size_allocate (widget, allocation, &child_allocation,di->_priv->grip, di);
+
+      if (!di->is_floating)
         {
-          GtkAllocation grip_alloc = *allocation;
+           child_allocation.width = MAX (1, (int) widget->allocation.width - 2 * border_width);
+           child_allocation.height = MAX (1, (int) widget->allocation.height - 2 * border_width);
 
-	  grip_alloc.x = grip_alloc.y = 0;
+           if (BONOBO_DOCK_ITEM_NOT_LOCKED (di))
+             {
+               if (di->orientation == GTK_ORIENTATION_HORIZONTAL)
+		 child_allocation.width = MAX ((int) child_allocation.width - DRAG_HANDLE_SIZE, 1);
+               else
+		 child_allocation.height = MAX ((int) child_allocation.height - DRAG_HANDLE_SIZE, 1);
+             }
 
-          if (di->orientation != GTK_ORIENTATION_HORIZONTAL) {
-            grip_alloc.height = DRAG_HANDLE_SIZE;
-            child_allocation.y += DRAG_HANDLE_SIZE;
-          } else {
-            grip_alloc.width = DRAG_HANDLE_SIZE;
-	    if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR) {
-	      child_allocation.x += DRAG_HANDLE_SIZE;
-	    } else {
-	      GtkRequisition child_requisition;
-	      gtk_widget_get_child_requisition (child, &child_requisition);
-	      grip_alloc.x = child_requisition.width;
-	    }
-	  }
-
-	  gtk_widget_size_allocate (di->_priv->grip, &grip_alloc);
-        }
-
-      if (di->is_floating)
-	{
-          GtkRequisition child_requisition;
-	  guint float_width;
-	  guint float_height;
-
-	  gtk_widget_get_child_requisition (child, &child_requisition);
-
-          child_allocation.width = child_requisition.width;
-          child_allocation.height = child_requisition.height;
-
-	  float_width = child_allocation.width + 2 * border_width;
-	  float_height = child_allocation.height + 2 * border_width;
-	  
-	  if (di->orientation == GTK_ORIENTATION_HORIZONTAL)
-	    float_width += DRAG_HANDLE_SIZE;
-	  else
-	    float_height += DRAG_HANDLE_SIZE;
-
-	  if (GTK_WIDGET_REALIZED (di))
-	    {
-	      gdk_window_resize (di->float_window,
-				 float_width,
-				 float_height);
+	    if (GTK_WIDGET_REALIZED (di))
 	      gdk_window_move_resize (di->bin_window,
-				      0,
-				      0,
-				      float_width,
-				      float_height);
-	    }
-	}
-      else
-	{
-	  child_allocation.width = MAX (1, (int) widget->allocation.width - 2 * border_width);
-	  child_allocation.height = MAX (1, (int) widget->allocation.height - 2 * border_width);
-
-          if (BONOBO_DOCK_ITEM_NOT_LOCKED (di))
-            {
-              if (di->orientation == GTK_ORIENTATION_HORIZONTAL)
-		child_allocation.width = MAX ((int) child_allocation.width - DRAG_HANDLE_SIZE, 1);
-              else
-		child_allocation.height = MAX ((int) child_allocation.height - DRAG_HANDLE_SIZE, 1);
-            }
-
-	  if (GTK_WIDGET_REALIZED (di))
-	    gdk_window_move_resize (di->bin_window,
 				    0,
 				    0,
 				    widget->allocation.width,
 				    widget->allocation.height);
-	}
+          }
 
-      gtk_widget_size_allocate (bin->child, &child_allocation);
-    }
+        gtk_widget_size_allocate (bin->child, &child_allocation);
+
+       }
 }
 
 static void
-bonobo_dock_item_paint (GtkWidget      *widget,
-			GdkEventExpose *event)
+window_paint (GtkWidget *widget,
+	      GdkEventExpose *event,
+	      BonoboDockItem *di)
 {
-  GtkBin *bin;
-  BonoboDockItem *di;
 
-  bin = GTK_BIN (widget);
-  di = BONOBO_DOCK_ITEM (widget);
+   GdkWindow *window;
+   GtkWidget *grip;
+   GtkContainer  *container;
 
-  if (!event)
+   if (!di->is_floating) {
+
+      window = di->bin_window;
+      container = GTK_CONTAINER (di);
+      grip = di->_priv->grip;
+
+   } else {
+
+      GtkBin *bin;
+      GtkWidget *child;
+      GList *list;
+
+      bin = GTK_BIN (widget);
+      child = bin->child;
+      list = gtk_container_get_children (GTK_CONTAINER (child));
+
+      window = child->window;
+      grip = list->data;
+      container = GTK_CONTAINER (child);
+   }
+
+   if (!event)
     gtk_paint_box(widget->style,
-                  di->bin_window,
+                  window,
                   GTK_WIDGET_STATE (widget),
                   di->shadow_type,
                   NULL, widget,
@@ -799,7 +898,7 @@ bonobo_dock_item_paint (GtkWidget      *widget,
                   0, 0, -1, -1);
   else
     gtk_paint_box(widget->style,
-                  di->bin_window,
+                  window,
                   GTK_WIDGET_STATE (widget),
                   di->shadow_type,
                   &event->area, widget,
@@ -808,10 +907,55 @@ bonobo_dock_item_paint (GtkWidget      *widget,
 
   if (BONOBO_DOCK_ITEM_NOT_LOCKED (di))
       gtk_container_propagate_expose (
-	      GTK_CONTAINER (di), di->_priv->grip, event);
+              container, grip , event);
 }
 
-static gint
+static void
+bonobo_dock_item_float_window_paint (GtkWidget *widget,
+				     GdkEventExpose *event,
+				     gpointer data)
+{
+  BonoboDockItem *di;
+
+  di = BONOBO_DOCK_ITEM (data);
+
+  if (di->is_floating)
+    window_paint (widget, event, di);
+}
+
+static void
+bonobo_dock_item_paint (GtkWidget      *widget,
+			GdkEventExpose *event)
+{
+  BonoboDockItem *di;
+
+  di = BONOBO_DOCK_ITEM (widget);
+
+  if (!di->is_floating)
+    window_paint (widget, event, di);
+
+}
+
+static gboolean
+bonobo_dock_item_float_window_expose (GtkWidget *widget,
+				      GdkEventExpose *event,
+				      gpointer data)
+{
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  if (GTK_WIDGET_DRAWABLE (widget))
+    {
+      bonobo_dock_item_float_window_paint (widget, event, data);
+
+      if (GTK_WIDGET_CLASS (parent_class)->expose_event)
+              return GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
+    }
+
+  return FALSE;
+}
+
+static gboolean
 bonobo_dock_item_expose (GtkWidget      *widget,
 			 GdkEventExpose *event)
 {
@@ -842,34 +986,24 @@ bonobo_dock_item_drag_end (BonoboDockItem *di)
   g_signal_emit (di, dock_item_signals [DOCK_DRAG_END], 0);
 }
 
-static gint
-bonobo_dock_item_button_changed (GtkWidget      *widget,
-                                GdkEventButton *event)
+static gboolean
+button_changed (GtkWidget *widget,
+		GdkEventButton *event,
+		BonoboDockItem *di)
 {
-  BonoboDockItem *di;
-  gboolean event_handled;
-  
-  g_return_val_if_fail (widget != NULL, FALSE);
-  g_return_val_if_fail (BONOBO_IS_DOCK_ITEM (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
 
-  di = BONOBO_DOCK_ITEM (widget);
-
-  if (event->window != di->bin_window)
-    return FALSE;
-
-  if (!BONOBO_DOCK_ITEM_NOT_LOCKED(widget))
-    return FALSE;
-
-  event_handled = FALSE;
+  gboolean event_handled = FALSE;
 
   if (event->button == 1 && event->type == GDK_BUTTON_PRESS)
     {
       GtkWidget *child;
       gboolean in_handle;
-      
-      child = GTK_BIN (di)->child;
-      
+
+      if (!di->is_floating)
+        child = di->_priv->child;
+      else
+        child = GTK_WIDGET (bonobo_dock_item_get_child (di));
+
       switch (di->orientation)
 	{
 	case GTK_ORIENTATION_HORIZONTAL:
@@ -891,7 +1025,7 @@ bonobo_dock_item_button_changed (GtkWidget      *widget,
 	  in_handle = FALSE;
 	  event_handled = TRUE;
 	}
-      
+
       if (in_handle)
 	{
 	  di->dragoff_x = event->x;
@@ -899,7 +1033,7 @@ bonobo_dock_item_button_changed (GtkWidget      *widget,
 
           bonobo_dock_item_grab_pointer (di);
 
-          g_signal_emit (widget, dock_item_signals[DOCK_DRAG_BEGIN], 0);
+          g_signal_emit (di , dock_item_signals[DOCK_DRAG_BEGIN], 0);
 
 	  event_handled = TRUE;
 	}
@@ -913,53 +1047,139 @@ bonobo_dock_item_button_changed (GtkWidget      *widget,
   return event_handled;
 }
 
-static gint
-bonobo_dock_item_motion (GtkWidget      *widget,
-			 GdkEventMotion *event)
+static gboolean
+bonobo_dock_item_float_window_button_changed (GtkWidget *widget,
+					      GdkEventButton *event,
+					      gpointer data)
+{
+
+  BonoboDockItem *di;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  di = BONOBO_DOCK_ITEM (data);
+
+  if (!BONOBO_DOCK_ITEM_NOT_LOCKED(di))
+    return FALSE;
+
+  return button_changed (widget, event, di);
+
+}
+
+static gboolean
+bonobo_dock_item_button_changed (GtkWidget      *widget,
+                                GdkEventButton *event)
 {
   BonoboDockItem *di;
-  GdkWindow *root_window;
-  gint new_x, new_y;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (BONOBO_IS_DOCK_ITEM (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
 
   di = BONOBO_DOCK_ITEM (widget);
+
+  if (event->window != di->bin_window)
+    return FALSE;
+
+  if (!BONOBO_DOCK_ITEM_NOT_LOCKED(widget))
+    return FALSE;
+
+  return button_changed (widget, event, di);
+
+}
+
+static gboolean
+widget_motion (GtkWidget *widget,
+	       GdkEventMotion *event,
+	       BonoboDockItem *di)
+{
+  GdkWindow *root_window;
+  gint new_x, new_y;
+
+  root_window = gdk_screen_get_root_window
+	  (gdk_drawable_get_screen (GDK_DRAWABLE (event->window)));
+
+  gdk_window_get_pointer (root_window, &new_x, &new_y, NULL);
+
+  new_x -= di->dragoff_x;
+  new_y -= di->dragoff_y;
+
+  g_signal_emit (GTK_WIDGET (di), dock_item_signals[DOCK_DRAG_MOTION], 0,
+		 new_x, new_y);
+
+  return TRUE;
+}
+
+static gboolean
+bonobo_dock_item_float_window_motion (GtkWidget *widget,
+				      GdkEventMotion *event,
+				      gpointer data)
+{
+  BonoboDockItem *di;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  di = BONOBO_DOCK_ITEM (data);
+
+  if (!di->in_drag)
+    return FALSE;
+
+  return widget_motion (widget, event, di);
+}
+
+static gboolean
+bonobo_dock_item_motion (GtkWidget      *widget,
+			 GdkEventMotion *event)
+{
+  BonoboDockItem *di;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (BONOBO_IS_DOCK_ITEM (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  di = BONOBO_DOCK_ITEM (widget);
+
   if (!di->in_drag)
     return FALSE;
 
   if (event->window != di->bin_window)
     return FALSE;
 
-  root_window = gdk_screen_get_root_window
-	  (gdk_drawable_get_screen (GDK_DRAWABLE (event->window)));
-
-  gdk_window_get_pointer (root_window, &new_x, &new_y, NULL);
-  
-  new_x -= di->dragoff_x;
-  new_y -= di->dragoff_y;
-
-  g_signal_emit (widget, dock_item_signals[DOCK_DRAG_MOTION], 0,
-		 new_x, new_y);
-
-  return TRUE;
+  return widget_motion (widget, event, di);
 }
 
 static void
 bonobo_dock_item_add (GtkContainer *container,
-                     GtkWidget    *widget)
+		      GtkWidget    *widget)
 {
   BonoboDockItem *dock_item;
+  BonoboDockItemPrivate *priv;
   GParamSpec *pspec;
 
+  dock_item = BONOBO_DOCK_ITEM (container);
+  priv = dock_item->_priv;
+
   g_return_if_fail (BONOBO_IS_DOCK_ITEM (container));
+
+  /*  Is this needed ? We hit this assertion when
+      calling from bonobo_dock_item_unfloat()
+  */
+
   g_return_if_fail (GTK_BIN (container)->child == NULL);
+  g_assert (priv->child == NULL);
+
   g_return_if_fail (widget->parent == NULL);
 
-  dock_item = BONOBO_DOCK_ITEM (container);
+  /* Claim the base reference to the widget, so that it doesn't get owned by the
+   * floating window.
+   */
+  g_object_ref (widget);
+  gtk_object_sink (GTK_OBJECT (widget));
 
   gtk_widget_set_parent_window (widget, dock_item->bin_window);
+  dock_item->_priv->child = widget;
   GNOME_CALL_PARENT (GTK_CONTAINER_CLASS, add, (container, widget));
 
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (widget),
@@ -984,13 +1204,14 @@ bonobo_dock_item_set_floating (BonoboDockItem *item, gboolean val)
    */
   if (item->bin.child != NULL &&
       g_object_class_find_property (G_OBJECT_GET_CLASS (item->bin.child),
-				    "is_floating") != NULL) {
-    GValue value = { 0, };
-    g_value_init (&value, G_TYPE_BOOLEAN);
-    g_value_set_boolean (&value, val);
-    g_object_set_property (G_OBJECT (item->bin.child), "is_floating", &value);
-    g_value_unset (&value);
-  }
+				    "is_floating") != NULL)
+    {
+      GValue value = { 0, };
+      g_value_init (&value, G_TYPE_BOOLEAN);
+      g_value_set_boolean (&value, val);
+      g_object_set_property (G_OBJECT (item->bin.child), "is_floating", &value);
+      g_value_unset (&value);
+    }
 }
 
 static void
@@ -1003,37 +1224,29 @@ bonobo_dock_item_remove (GtkContainer *container,
 
   di = BONOBO_DOCK_ITEM (container);
 
-  if (widget == di->_priv->grip) {
-	  gboolean grip_was_visible;
-
-	  grip_was_visible = GTK_WIDGET_VISIBLE (widget);
-
-	  gtk_widget_unparent (widget);
-	  di->_priv->grip = NULL;
-
-	  if (grip_was_visible)
-		  gtk_widget_queue_resize (GTK_WIDGET (di));
-	  return;
-  }
-
-  g_return_if_fail (GTK_BIN (container)->child == widget);
-
-  if (di->is_floating)
+  if (widget == di->_priv->grip)
     {
-      bonobo_dock_item_set_floating (di, FALSE);
-      if (GTK_WIDGET_REALIZED (di))
-	{
-	  gdk_window_hide (di->float_window);
-	  gdk_window_reparent (di->bin_window, GTK_WIDGET (di)->window, 0, 0);
-          gdk_window_show (widget->window);
-	}
-      di->float_window_mapped = FALSE;
+      gboolean grip_was_visible;
+
+      grip_was_visible = GTK_WIDGET_VISIBLE (widget);
+
+      gtk_widget_unparent (widget);
+      di->_priv->grip = NULL;
+
+      if (grip_was_visible)
+	gtk_widget_queue_resize (GTK_WIDGET (di));
+
+      return;
     }
-  if (di->in_drag)
-    bonobo_dock_item_drag_end (di);
+
+  g_return_if_fail (di->_priv->child == widget);
+  g_assert (di->_priv->child == di->bin.child);
+  g_object_unref (di->_priv->child);
+  di->_priv->child = NULL;
 
   GNOME_CALL_PARENT (GTK_CONTAINER_CLASS,
 		     remove, (container, widget));
+  
 }
 
 static void
@@ -1047,6 +1260,9 @@ bonobo_dock_item_forall (GtkContainer *container,
 
   g_return_if_fail (callback != NULL);
 
+  if (di->float_window_mapped)
+    return; /* The owner of the widgets is the floating window, not the item */
+
   if (di->_priv->grip)
     callback (di->_priv->grip, callback_data);
 
@@ -1054,26 +1270,15 @@ bonobo_dock_item_forall (GtkContainer *container,
     callback (bin->child, callback_data);
 }
 
-static gint
-bonobo_dock_item_delete_event (GtkWidget *widget,
-                              GdkEventAny  *event)
-{
-  g_return_val_if_fail (widget != NULL, FALSE);
-  g_return_val_if_fail (BONOBO_IS_DOCK_ITEM (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
-
-  return TRUE;
-}
-
 /**
  * bonobo_dock_item_construct:
  * @new: a #BonoboDockItem.
  * @name: Name for the new item
  * @behavior: Behavior for the new item
- * 
+ *
  * Description: Constructs the @new BonoboDockItem named @name, with the
  * specified @behavior.
- * 
+ *
  * Returns: A new BonoboDockItem widget.
  **/
 void
@@ -1083,7 +1288,7 @@ bonobo_dock_item_construct (BonoboDockItem *new,
 {
   g_return_if_fail (new != NULL);
   g_return_if_fail (BONOBO_IS_DOCK_ITEM (new));
-	
+
   new->name = g_strdup (name);
   new->behavior = behavior;
 
@@ -1098,10 +1303,10 @@ bonobo_dock_item_construct (BonoboDockItem *new,
  * bonobo_dock_item_new:
  * @name: Name for the new item
  * @behavior: Behavior for the new item
- * 
+ *
  * Description: Create a new BonoboDockItem named @name, with the
  * specified @behavior.
- * 
+ *
  * Returns: A new BonoboDockItem widget.
  **/
 GtkWidget *
@@ -1120,23 +1325,45 @@ bonobo_dock_item_new (const gchar *name,
 /**
  * bonobo_dock_item_get_child:
  * @item: A BonoboDockItem widget
- * 
+ *
  * Description: Retrieve the child of @item.
- * 
+ *
  * Returns: The child of @item.
  **/
 GtkWidget *
 bonobo_dock_item_get_child (BonoboDockItem *item)
 {
-  return GTK_BIN (item)->child;
+    g_return_val_if_fail (BONOBO_IS_DOCK_ITEM (item), NULL);
+
+  if (item->is_floating)
+    {
+
+      GList *list;
+      GtkWidget *child = GTK_BIN (GTK_WIDGET (item->_priv->float_window))->child;
+
+      list = gtk_container_get_children (GTK_CONTAINER (child));
+
+      while (list)
+       {
+            GtkWidget *widget = list->data;
+
+            if (GTK_IS_TOOLBAR (widget))
+                return widget;
+
+            list = list->next;
+       }
+       g_assert_not_reached ();
+    }
+
+   return GTK_BIN (item)->child;
 }
 
 /**
  * bonobo_dock_item_get_name:
  * @item: A BonoboDockItem widget.
- * 
+ *
  * Description: Retrieve the name of @item.
- * 
+ *
  * Return value: The name of @item as a malloc()ed zero-terminated
  * string.
  **/
@@ -1150,7 +1377,7 @@ bonobo_dock_item_get_name (BonoboDockItem *item)
  * bonobo_dock_item_set_shadow_type:
  * @dock_item: A BonoboDockItem widget
  * @type: The shadow type for @dock_item
- * 
+ *
  * Description: Set the shadow type for @dock_item.
  **/
 void
@@ -1172,9 +1399,9 @@ bonobo_dock_item_set_shadow_type (BonoboDockItem *dock_item,
 /**
  * bonobo_dock_item_get_shadow_type:
  * @dock_item: A BonoboDockItem widget.
- * 
+ *
  * Description: Retrieve the shadow type of @dock_item.
- * 
+ *
  * Returns: @dock_item's shadow type.
  **/
 GtkShadowType
@@ -1190,9 +1417,9 @@ bonobo_dock_item_get_shadow_type (BonoboDockItem  *dock_item)
  * bonobo_dock_item_set_orientation:
  * @dock_item: A BonoboDockItem widget
  * @orientation: New orientation for @dock_item
- * 
+ *
  * Description: Set the orientation for @dock_item.
- * 
+ *
  * Returns: %TRUE if the operation succeeds, %FALSE if it fails.
  **/
 gboolean
@@ -1234,9 +1461,9 @@ bonobo_dock_item_set_orientation (BonoboDockItem *dock_item,
 /**
  * bonobo_dock_item_get_orientation:
  * @dock_item: A BonoboDockItem widget.
- * 
+ *
  * Description: Retrieve the orientation of @dock_item.
- * 
+ *
  * Returns: The current orientation of @dock_item.
  **/
 GtkOrientation
@@ -1287,9 +1514,9 @@ bonobo_dock_item_set_behavior (BonoboDockItem         *dock_item,
 /**
  * bonobo_dock_item_get_behavior:
  * @dock_item: A BonoboDockItem widget.
- * 
+ *
  * Description: Retrieve the behavior of @dock_item.
- * 
+ *
  * Returns: The behavior of @dock_item.
  **/
 BonoboDockItemBehavior
@@ -1331,6 +1558,7 @@ void
 bonobo_dock_item_grab_pointer (BonoboDockItem *item)
 {
   GdkCursor *fleur;
+  GdkWindow *gdk_window;
 
   g_assert (BONOBO_IS_DOCK_ITEM (item));
 
@@ -1340,8 +1568,19 @@ bonobo_dock_item_grab_pointer (BonoboDockItem *item)
 	  (gtk_widget_get_display (GTK_WIDGET (item)),
 	   GDK_FLEUR);
 
+  if (item->is_floating) {
+        /* This is not working well...can drag only
+           in the small region of the grip and the first button.
+           To be precise, it just sucks that we can't get a decent
+           grab on the grip itself
+        */
+
+        gdk_window = GTK_WIDGET (item->_priv->float_window)->window;
+  } else  {
+        gdk_window = item->bin_window;
+  }
   /* Hm, not sure this is the right thing to do, but it seems to work.  */
-  while (gdk_pointer_grab (item->bin_window,
+  while (gdk_pointer_grab (gdk_window,
                            FALSE,
                            (GDK_BUTTON1_MOTION_MASK |
                             GDK_POINTER_MOTION_HINT_MASK |
@@ -1350,14 +1589,17 @@ bonobo_dock_item_grab_pointer (BonoboDockItem *item)
                            fleur,
                            GDK_CURRENT_TIME) != 0);
 
+
   gdk_cursor_unref (fleur);
 }
 
 gboolean
 bonobo_dock_item_detach (BonoboDockItem *item, gint x, gint y)
 {
-  GtkAllocation allocation;
-  GtkRequisition requisition;
+  BonoboDockItemPrivate *priv;
+  GtkWidget *widget;
+
+  priv = item->_priv;
 
   if (item->behavior & BONOBO_DOCK_ITEM_BEH_NEVER_FLOATING)
     return FALSE;
@@ -1367,31 +1609,64 @@ bonobo_dock_item_detach (BonoboDockItem *item, gint x, gint y)
 
   bonobo_dock_item_set_floating (item, TRUE);
 
-  if (! GTK_WIDGET_REALIZED (item))
+  if (!GTK_WIDGET_REALIZED (item))
     return TRUE;
 
-  gtk_widget_size_request (GTK_WIDGET (item), &requisition);
+  g_assert (priv->child != NULL);
+  g_assert (priv->grip != NULL);
 
-  gdk_window_move_resize (item->float_window,
-                          x, y, requisition.width, requisition.height);
+  if (!priv->float_window_hidden)
+    {
+      if (item->orientation == GTK_ORIENTATION_HORIZONTAL)
+        priv->float_window_box = gtk_vbox_new (FALSE, 0);
+      else
+        priv->float_window_box = gtk_hbox_new (FALSE, 0);
 
-  gdk_window_reparent (item->bin_window, item->float_window, 0, 0);
-	  
-/*  gdk_window_set_hints (item->float_window, x, y, 0, 0, 0, 0, GDK_HINT_POS); */
+   /*
 
-  gdk_window_show (item->float_window);
+    <michael> the size allocate etc. stuff looked dubious to me
+    <michael> we shouldn't be overriding size_allocate really when
+              we re-parent the grip into the floating toolbar box
+    <michael> it should all just work in that case, since there's no
+              need to knobble the GTK_BIN stuff,
+    <arvind>  by not overriding, the grip is not allocated
+    <michael> hmm,
+    <michael> it should be a child of the container,
+    <michael> we should override,
+    <michael> but not do a signal connection for the float_window
+
+   */
+
+      gtk_container_add (GTK_CONTAINER (item->_priv->float_window), priv->float_window_box);
+
+      widget = priv->grip; /* container_remove() will make priv->grip NULL, so we save it here */
+      g_object_ref (priv->grip);
+      gtk_container_remove (GTK_CONTAINER (item), priv->grip);
+      priv->grip = widget;
+      gtk_box_pack_start (GTK_BOX (priv->float_window_box), priv->grip, FALSE, FALSE, 0);
+      g_object_unref (priv->grip);
+
+      widget = priv->child;
+      g_object_ref (priv->child);
+      gtk_container_remove (GTK_CONTAINER (item), priv->child);
+      priv->child = widget;
+      gtk_box_pack_start (GTK_BOX (priv->float_window_box), priv->child, FALSE, FALSE, 0);
+      g_object_unref (priv->child);
+    }
+
+  gtk_window_move (GTK_WINDOW (item->_priv->float_window), x, y);
+  gtk_widget_show_all (GTK_WIDGET (item->_priv->float_window));
+
   item->float_window_mapped = TRUE;
-
-  allocation.x = allocation.y = 0;
-  allocation.width = requisition.width;
-  allocation.height = requisition.height;
-  gtk_widget_size_allocate (GTK_WIDGET (item), &allocation);
+  item->_priv->float_window_hidden = FALSE;
 
   gdk_window_hide (GTK_WIDGET (item)->window);
   gtk_widget_queue_draw (GTK_WIDGET (item));
 
-  gdk_window_set_transient_for(item->float_window,
-                               gdk_window_get_toplevel(GTK_WIDGET (item)->window));
+  gtk_window_set_transient_for (GTK_WINDOW (item->_priv->float_window),
+                                (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (item)))));
+
+  g_signal_emit (item, dock_item_signals [DOCK_DETACH], 0);
 
   return TRUE;
 }
@@ -1399,16 +1674,58 @@ bonobo_dock_item_detach (BonoboDockItem *item, gint x, gint y)
 void
 bonobo_dock_item_unfloat (BonoboDockItem *item)
 {
-  gdk_window_move_resize (GTK_WIDGET (item)->window, -1, -1, 0, 0);
+  BonoboDockItemPrivate *priv;
+  gboolean is_realized;
+  GtkWidget *widget;
 
-  gdk_window_hide (item->float_window);
+  priv = item->_priv;
 
-  gdk_window_reparent (item->bin_window, GTK_WIDGET (item)->window, 0, 0);
+  g_assert (item->float_window_mapped);
+  g_assert (priv->child != NULL);
+  g_assert (priv->grip != NULL);
+
+  is_realized = GTK_WIDGET_REALIZED (item);
+
+  /* Grip */
+  g_object_ref (priv->grip);
+  gtk_container_remove (GTK_CONTAINER (priv->float_window_box), priv->grip);
+
+  if (is_realized)
+    gtk_widget_set_parent_window (priv->grip, item->bin_window);
+
+  gtk_widget_set_parent (priv->grip, GTK_WIDGET (item));
+  g_object_unref (priv->grip);
+
+  /* Child */  
+  widget = priv->child;
+  g_object_ref (widget);
+  g_assert (item->bin.child == NULL);
+  gtk_container_remove (GTK_CONTAINER (priv->float_window_box), widget);
+  priv->child = NULL;
+
+  if (is_realized)
+    gtk_widget_set_parent_window (widget, item->bin_window);
+
+  /* priv->child must be NULL at this point, or bonobo_dock_item_add() barfs */
+  gtk_container_add (GTK_CONTAINER (item), widget);
+  
+  g_assert (item->bin.child == widget);
+  g_assert (priv->child == widget);
+  g_object_unref (widget);
+
+  /* Window */
+
+  gtk_widget_destroy (priv->float_window_box);
+  priv->float_window_box = NULL;
+
+  gtk_widget_hide (GTK_WIDGET (item->_priv->float_window));
   gdk_window_show (GTK_WIDGET (item)->window);
-  
+
   item->float_window_mapped = FALSE;
+  item->_priv->float_window_hidden = FALSE;
+
   bonobo_dock_item_set_floating (item, FALSE);
-  
+
   gtk_widget_queue_resize (GTK_WIDGET (item));
 }
 
@@ -1420,8 +1737,14 @@ bonobo_dock_item_attach (BonoboDockItem *item,
   if (GTK_WIDGET (item)->parent != GTK_WIDGET (parent))
     {
       gdk_window_move_resize (GTK_WIDGET (item)->window, -1, -1, 0, 0);
-      gtk_widget_reparent (GTK_WIDGET (item), parent);
-      bonobo_dock_item_unfloat (item);
+      g_object_ref (item);
+      gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (item)->parent), GTK_WIDGET (item));
+      gtk_container_add (GTK_CONTAINER (parent), GTK_WIDGET (item));
+      g_object_unref (item);
+
+      if (item->is_floating)
+	bonobo_dock_item_unfloat (item);
+
       bonobo_dock_item_grab_pointer (item);
     }
 }
@@ -1431,8 +1754,7 @@ bonobo_dock_item_drag_floating (BonoboDockItem *item, gint x, gint y)
 {
   if (item->is_floating)
     {
-      gdk_window_move (item->float_window, x, y);
-      gdk_window_raise (item->float_window);
+      gtk_window_move (GTK_WINDOW (item->_priv->float_window), x, y);
 
       item->float_x = x;
       item->float_y = y;
@@ -1466,7 +1788,7 @@ bonobo_dock_item_get_floating_position (BonoboDockItem *item,
 					gint *x, gint *y)
 {
   if (GTK_WIDGET_REALIZED (item) && item->is_floating)
-    gdk_window_get_position (item->float_window, x, y);
+    gtk_window_get_position (GTK_WINDOW (item->_priv->float_window), x, y);
   else
     {
       *x = item->float_x;
@@ -1484,3 +1806,4 @@ bonobo_dock_item_get_grip (BonoboDockItem *item)
   else
     return item->_priv->grip;
 }
+

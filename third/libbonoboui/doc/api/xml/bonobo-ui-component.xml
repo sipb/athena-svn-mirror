@@ -15,8 +15,8 @@
 
 
 
-struct      <link linkend="BonoboUIComponent-struct">BonoboUIComponent</link>;
-struct      <link linkend="BonoboUIComponentPrivate">BonoboUIComponentPrivate</link>;
+            <link linkend="BonoboUIComponent-struct">BonoboUIComponent</link>;
+            <link linkend="BonoboUIComponentPrivate">BonoboUIComponentPrivate</link>;
 <link linkend="void">void</link>        (<link linkend="BonoboUIListenerFn">*BonoboUIListenerFn</link>)           (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
                                              const <link linkend="char">char</link> *path,
                                              <link linkend="Bonobo-UIComponent-EventType">Bonobo_UIComponent_EventType</link> type,
@@ -25,7 +25,7 @@ struct      <link linkend="BonoboUIComponentPrivate">BonoboUIComponentPrivate</l
 <link linkend="void">void</link>        (<link linkend="BonoboUIVerbFn">*BonoboUIVerbFn</link>)               (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
                                              <link linkend="gpointer">gpointer</link> user_data,
                                              const <link linkend="char">char</link> *cname);
-struct      <link linkend="BonoboUIComponentClass">BonoboUIComponentClass</link>;
+            <link linkend="BonoboUIComponentClass">BonoboUIComponentClass</link>;
 <link linkend="BonoboUIComponent">BonoboUIComponent</link>* <link linkend="bonobo-ui-component-construct">bonobo_ui_component_construct</link>
                                             (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
                                              const <link linkend="char">char</link> *name);
@@ -127,12 +127,12 @@ const <link linkend="char">char</link>* <link linkend="bonobo-ui-component-get-n
 <link linkend="void">void</link>        <link linkend="bonobo-ui-component-set-status">bonobo_ui_component_set_status</link>  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
                                              const <link linkend="char">char</link> *text,
                                              <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
-struct      <link linkend="BonoboUIVerb">BonoboUIVerb</link>;
-#define     <link linkend="BONOBO-UI-VERB-CAPS">BONOBO_UI_VERB</link>                  (name,cb)
-#define     <link linkend="BONOBO-UI-VERB-DATA-CAPS">BONOBO_UI_VERB_DATA</link>             (name,cb,data)
-#define     <link linkend="BONOBO-UI-UNSAFE-VERB-CAPS">BONOBO_UI_UNSAFE_VERB</link>           (name,cb)
-#define     <link linkend="BONOBO-UI-UNSAFE-VERB-DATA-CAPS">BONOBO_UI_UNSAFE_VERB_DATA</link>      (name,cb,data)
-#define     <link linkend="BONOBO-UI-VERB-END-CAPS">BONOBO_UI_VERB_END</link>
+            <link linkend="BonoboUIVerb">BonoboUIVerb</link>;
+#define     <link linkend="BONOBO-UI-VERB:CAPS">BONOBO_UI_VERB</link>                  (name,cb)
+#define     <link linkend="BONOBO-UI-VERB-DATA:CAPS">BONOBO_UI_VERB_DATA</link>             (name,cb,data)
+#define     <link linkend="BONOBO-UI-UNSAFE-VERB:CAPS">BONOBO_UI_UNSAFE_VERB</link>           (name,cb)
+#define     <link linkend="BONOBO-UI-UNSAFE-VERB-DATA:CAPS">BONOBO_UI_UNSAFE_VERB_DATA</link>      (name,cb,data)
+#define     <link linkend="BONOBO-UI-VERB-END:CAPS">BONOBO_UI_VERB_END</link>
 <link linkend="void">void</link>        <link linkend="bonobo-ui-component-add-verb-list">bonobo_ui_component_add_verb_list</link>
                                             (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
                                              const <link linkend="BonoboUIVerb">BonoboUIVerb</link> *list);
@@ -319,14 +319,14 @@ installed help files can be deduced.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboUIComponent-struct"/>struct BonoboUIComponent</title>
-<indexterm><primary>BonoboUIComponent</primary></indexterm><programlisting>struct BonoboUIComponent;</programlisting>
+<title><anchor id="BonoboUIComponent-struct"/>BonoboUIComponent</title>
+<indexterm><primary>BonoboUIComponent</primary></indexterm><programlisting>typedef struct _BonoboUIComponent BonoboUIComponent;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIComponentPrivate"/>struct BonoboUIComponentPrivate</title>
-<indexterm><primary>BonoboUIComponentPrivate</primary></indexterm><programlisting>struct BonoboUIComponentPrivate;</programlisting>
+<title><anchor id="BonoboUIComponentPrivate"/>BonoboUIComponentPrivate</title>
+<indexterm><primary>BonoboUIComponentPrivate</primary></indexterm><programlisting>typedef struct _BonoboUIComponentPrivate BonoboUIComponentPrivate;</programlisting>
 <para>
 
 </para></refsect2>
@@ -379,9 +379,8 @@ installed help files can be deduced.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIComponentClass"/>struct BonoboUIComponentClass</title>
-<indexterm><primary>BonoboUIComponentClass</primary></indexterm><programlisting>struct BonoboUIComponentClass {
-
+<title><anchor id="BonoboUIComponentClass"/>BonoboUIComponentClass</title>
+<indexterm><primary>BonoboUIComponentClass</primary></indexterm><programlisting>typedef struct {
 	BonoboObjectClass          parent_class;
 
 	POA_Bonobo_UIComponent__epv epv;
@@ -431,7 +430,7 @@ installed help files can be deduced.
 	gboolean (*exists) (BonoboUIComponent *component,
 			    const char        *path,
 			    CORBA_Environment *ev);
-};
+} BonoboUIComponentClass;
 </programlisting>
 <para>
 
@@ -452,7 +451,7 @@ Construct the UI component with name <parameter>name</parameter></para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the UI component
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a constructed UI component or NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a constructed UI component or NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -466,7 +465,7 @@ Create a new UI component with the specified name</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the UI component
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new UI component 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new UI component 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -479,7 +478,7 @@ constructed from various available system properties.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new UI component
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new UI component
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -509,7 +508,7 @@ Set the <parameter>name</parameter> of the UI <parameter>component</parameter></
 <varlistentry><term><parameter>component</parameter>&nbsp;:</term>
 <listitem><simpara> the UI component
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the name of the UI <parameter>component</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the name of the UI <parameter>component</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -568,7 +567,7 @@ This dis-associates the <parameter>component</parameter> from its associated
 <varlistentry><term><parameter>component</parameter>&nbsp;:</term>
 <listitem><simpara> the component.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the associated remote container
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the associated remote container
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -856,7 +855,7 @@ to by <parameter>path</parameter>.</para>
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara> the (optional) CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if the path exists in the container.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the path exists in the container.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -885,7 +884,7 @@ are returned too, otherwise they are not.</para>
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> the (optional) CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an XML string (CORBA allocated)
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an XML string (CORBA allocated)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -914,7 +913,7 @@ are returned too, otherwise they are not.</para>
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> the (optional) CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="BonoboUINode"><type>BonoboUINode</type></link> XML representation
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an <link linkend="BonoboUINode"><type>BonoboUINode</type></link> XML representation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -966,7 +965,7 @@ the specified <parameter>path</parameter>.</para>
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the associated remote CORBA object.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the associated remote CORBA object.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1099,7 +1098,7 @@ associated with <parameter>component</parameter></para>
 <varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
 <listitem><simpara> the (optional) CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the xml property value or NULL - free with g_free.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the xml property value or NULL - free with g_free.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1128,20 +1127,19 @@ node.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIVerb"/>struct BonoboUIVerb</title>
-<indexterm><primary>BonoboUIVerb</primary></indexterm><programlisting>struct BonoboUIVerb {
-
+<title><anchor id="BonoboUIVerb"/>BonoboUIVerb</title>
+<indexterm><primary>BonoboUIVerb</primary></indexterm><programlisting>typedef struct {
 	const char    *cname;
 	BonoboUIVerbFn cb;
 	gpointer       user_data;
 	gpointer       dummy;
-};
+} BonoboUIVerb;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-VERB-CAPS"/>BONOBO_UI_VERB()</title>
+<title><anchor id="BONOBO-UI-VERB:CAPS"/>BONOBO_UI_VERB()</title>
 <indexterm><primary>BONOBO_UI_VERB</primary></indexterm><programlisting>#define BONOBO_UI_VERB(name,cb)                  { (name), (cb), NULL   }
 </programlisting>
 <para>
@@ -1159,7 +1157,7 @@ bonobo_ui_component_add_verb_list_with_data.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-VERB-DATA-CAPS"/>BONOBO_UI_VERB_DATA()</title>
+<title><anchor id="BONOBO-UI-VERB-DATA:CAPS"/>BONOBO_UI_VERB_DATA()</title>
 <indexterm><primary>BONOBO_UI_VERB_DATA</primary></indexterm><programlisting>#define BONOBO_UI_VERB_DATA(name,cb,data)        { (name), (cb), (data) }
 </programlisting>
 <para>
@@ -1180,7 +1178,7 @@ bonobo_ui_component_add_verb_list.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-UNSAFE-VERB-CAPS"/>BONOBO_UI_UNSAFE_VERB()</title>
+<title><anchor id="BONOBO-UI-UNSAFE-VERB:CAPS"/>BONOBO_UI_UNSAFE_VERB()</title>
 <indexterm><primary>BONOBO_UI_UNSAFE_VERB</primary></indexterm><programlisting>#define BONOBO_UI_UNSAFE_VERB(name,cb)           { (name), ((BonoboUIVerbFn)(cb)), NULL   }
 </programlisting>
 <para>
@@ -1196,7 +1194,7 @@ As BONOBO_UI_VERB, but unsafely casts <parameter>cb</parameter> to the correct t
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-UNSAFE-VERB-DATA-CAPS"/>BONOBO_UI_UNSAFE_VERB_DATA()</title>
+<title><anchor id="BONOBO-UI-UNSAFE-VERB-DATA:CAPS"/>BONOBO_UI_UNSAFE_VERB_DATA()</title>
 <indexterm><primary>BONOBO_UI_UNSAFE_VERB_DATA</primary></indexterm><programlisting>#define BONOBO_UI_UNSAFE_VERB_DATA(name,cb,data) { (name), ((BonoboUIVerbFn)(cb)), (data) }
 </programlisting>
 <para>
@@ -1215,7 +1213,7 @@ As BONOBO_UI_VERB_DATA, but unsafely casts <parameter>cb</parameter> to the corr
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="BONOBO-UI-VERB-END-CAPS"/>BONOBO_UI_VERB_END</title>
+<title><anchor id="BONOBO-UI-VERB-END:CAPS"/>BONOBO_UI_VERB_END</title>
 <indexterm><primary>BONOBO_UI_VERB_END</primary></indexterm><programlisting>#define BONOBO_UI_VERB_END                       { NULL, NULL, NULL }
 </programlisting>
 <para>
@@ -1248,7 +1246,7 @@ want <link linkend="bonobo-ui-component-add-verb-list-with-data"><type>bonobo_ui
 <para>
 This is a helper function to save registering verbs individualy
 it allows registration of a great batch of verbs at one time
-in a list of <link linkend="BonoboUIVerb"><type>BonoboUIVerb</type></link> terminated by <link linkend="BONOBO-UI-VERB-END-CAPS"><type>BONOBO_UI_VERB_END</type></link></para>
+in a list of <link linkend="BonoboUIVerb"><type>BonoboUIVerb</type></link> terminated by <link linkend="BONOBO-UI-VERB-END:CAPS"><type>BONOBO_UI_VERB_END</type></link></para>
 <para>
 
 </para><variablelist role="params">
