@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.18 1994-03-25 15:57:14 miki Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.19 1997-06-02 07:41:19 ghudson Exp $";
 #endif
 
 #include "attach.h"
@@ -25,24 +25,16 @@ extern int mul_attach();
 attach(name)
     const char *name;
 {
-    struct _attachtab at, *atp;
-    char **hes;
-    int i;
+    struct _attachtab at, *atp, *filsys;
+    int i, count;
     int	print_wait;
     extern int caught_signal;
 	
-    hes = build_hesiod_line(name);
+    filsys = build_hesiod_line(name, &count);
 
-    if (!hes || !*hes) {
+    if (!filsys || count == 0) {
 	error_status = ERR_ATTACHBADFILSYS;
 	return (FAILURE);
-    }
-
-    if (lookup || debug_flag) {
-	printf("%s resolves to:\n", name);
-	for (i=0;hes[i];i++)
-	    printf("%s\n", hes[i]);
-	putchar('\n');
     }
 
     if (lookup)
@@ -163,9 +155,9 @@ retry:
     put_attachtab();
     unlock_attachtab();
 
-   for (i=0;hes[i];i++) {
+   for (i=0;i<count;i++) {
 	if (debug_flag)
-	    printf("Processing line %s\n", hes[i]);
+	    printf("Processing line %s\n", filsys[i].hesiodname);
 	if (caught_signal) {
 		if (debug_flag)
 			printf("Caught signal; cleaning up attachtab....\n");
@@ -182,7 +174,7 @@ retry:
 	 * Note try_attach will change attachtab appropriately if
 	 * successful.
 	 */
-	if (try_attach(name, hes[i], !hes[i+1]) == SUCCESS) {
+	if (try_attach(name, &filsys[i], (i == count - 1)) == SUCCESS) {
 		free_attachtab();
 		mark_in_use(NULL);
 		end_critical_code();
@@ -190,6 +182,7 @@ retry:
 	}
     }
     free_attachtab();
+    free(filsys);
 
     if (error_status == ERR_ATTACHNOTALLOWED)
 	    fprintf(stderr, "%s: You are not allowed to attach %s.\n",
@@ -220,11 +213,12 @@ retry:
  * successful, change the attachtab accordingly.
  */
 
-try_attach(name, hesline, errorout)
-    char *name, *hesline;
+try_attach(name, at, errorout)
+    char *name;
+    struct _attachtab *at;
     int errorout;
 {
-    struct _attachtab at, *atp;
+    struct _attachtab *atp;
     int status;
     int	attach_suid;
 #ifdef ZEPHYR
@@ -233,142 +227,139 @@ try_attach(name, hesline, errorout)
     struct mntopts	mopt;
     char	*default_options;
 
-    if (parse_hes(hesline, &at, name)) {
-	    error_status = ERR_BADFSDSC;
-	    return(FAILURE);
-    }
-    if (filsys_type && *filsys_type && strcasecmp(filsys_type, at.fs->name)) {
+    if (filsys_type && *filsys_type && strcasecmp(filsys_type, at->fs->name)) {
 	    error_status = ERR_ATTACHBADFILSYS;
 	    return FAILURE;
     }
-    if (!override && !allow_filsys(name, at.fs->type)) {
+    if (!override && !allow_filsys(name, at->fs->type)) {
 	    error_status = ERR_ATTACHNOTALLOWED;
 	    return(FAILURE);
     }
 
-    at.status = STATUS_ATTACHING;
-    at.explicit = explicit;
-    strcpy(at.hesiodname, name);
-    add_an_owner(&at, owner_uid);
+    at->status = STATUS_ATTACHING;
+    at->explicit = explicit;
+    strcpy(at->hesiodname, name);
+    add_an_owner(at, owner_uid);
 
     if (mntpt)
-	strcpy(at.mntpt, mntpt);
+	strcpy(at->mntpt, mntpt);
 
     /*
      * Note if a filesystem does nothave AT_FS_MNTPT_CANON as a property,
      * it must also somehow call check_mntpt, if it wants mountpoint
      * checking to happen at all.
      */
-    if (at.fs->flags & AT_FS_MNTPT_CANON) {
+    if (at->fs->flags & AT_FS_MNTPT_CANON) {
 	    char *path;
 
 	    /* Perform path canonicalization */
-	    if ((path = path_canon(at.mntpt)) == NULL) {
+	    if ((path = path_canon(at->mntpt)) == NULL) {
 		    fprintf(stderr, "%s: Cannot get information about the mountpoint %s\n",
-			    at.hesiodname, at.mntpt);
+			    at->hesiodname, at->mntpt);
 		    error_status = ERR_SOMETHING;
 		    return(FAILURE);
 	    }
-	    strcpy(at.mntpt, path);
+	    strcpy(at->mntpt, path);
 	    if (debug_flag)
-		    printf("Mountpoint canonicalized as: %s\n", at.mntpt);
-	    if (!override && !check_mountpt(at.mntpt, at.fs->type)) {
+		    printf("Mountpoint canonicalized as: %s\n", at->mntpt);
+	    if (!override && !check_mountpt(at->mntpt, at->fs->type)) {
 		    error_status = ERR_ATTACHBADMNTPT;
 		    return(FAILURE);
 	    }
     }
     
-    if (at.fs->flags & AT_FS_MNTPT && (atp=attachtab_lookup_mntpt(at.mntpt))) {
+    if (at->fs->flags & AT_FS_MNTPT
+	&& (atp=attachtab_lookup_mntpt(at->mntpt))) {
 	    fprintf(stderr,"%s: Filesystem %s is already mounted on %s\n",
-		    at.hesiodname, atp->hesiodname, at.mntpt);
+		    at->hesiodname, atp->hesiodname, at->mntpt);
 	    error_status = ERR_ATTACHDIRINUSE;
 	    return(FAILURE);
     }
 
     if (override_mode)
-	at.mode = override_mode;
+	at->mode = override_mode;
 	
     if (override_suid == -1)
-	    attach_suid = !nosetuid_filsys(name, at.fs->type);
+	    attach_suid = !nosetuid_filsys(name, at->fs->type);
     else
 	    attach_suid = override_suid;
-    at.flags = (attach_suid ? 0 : FLAG_NOSETUID) +
+    at->flags = (attach_suid ? 0 : FLAG_NOSETUID) +
 	    (lock_filesystem ? FLAG_LOCKED : 0);
 
     /* Prepare mount options structure */
     memset(&mopt, 0, sizeof(mopt));
-    mopt.type = at.fs->mount_type;
+    mopt.type = at->fs->mount_type;
     
     /* Read in default options */
-    default_options = filsys_options(at.hesiodname, at.fs->type);
+    default_options = filsys_options(at->hesiodname, at->fs->type);
     add_options(&mopt, "soft");		/* Soft by default */
     if (mount_options && *mount_options)
 	    add_options(&mopt, mount_options);
     if (default_options && *default_options)
 	    add_options(&mopt, default_options);
     
-    if (at.mode == 'r')
+    if (at->mode == 'r')
 	    add_options(&mopt, "ro");
-    if (at.flags & FLAG_NOSETUID)
+    if (at->flags & FLAG_NOSETUID)
 	    add_options(&mopt, "nosuid");
 	
-    if (at.fs->attach) {
-	    if (at.fs->flags & AT_FS_MNTPT) {
-		    if (make_mntpt(&at) == FAILURE) {
-			    rm_mntpt(&at);
+    if (at->fs->attach) {
+	    if (at->fs->flags & AT_FS_MNTPT) {
+		    if (make_mntpt(at) == FAILURE) {
+			    rm_mntpt(at);
 			    return (FAILURE);
 		    }
 	    }
-	    status = (at.fs->attach)(&at, &mopt, errorout);
+	    status = (at->fs->attach)(at, &mopt, errorout);
     } else {
 	    fprintf(stderr,
 		    "%s: Can't attach filesystem type \"%s\"\n", 
-		    progname, at.fs->name);
+		    progname, at->fs->name);
 	    status = ERR_FATAL;
 	    return(FAILURE);
     }
     
     if (status == SUCCESS) {
 	char	tmp[BUFSIZ];
-	if (at.fs->flags & AT_FS_REMOTE)
-		sprintf(tmp, "%s:%s", at.host, at.hostdir);
+	if (at->fs->flags & AT_FS_REMOTE)
+		sprintf(tmp, "%s:%s", at->host, at->hostdir);
 	else
-		strcpy(tmp, at.hostdir);
+		strcpy(tmp, at->hostdir);
 	if (verbose)
-		if(at.fs->type == TYPE_AFS)
+		if(at->fs->type == TYPE_AFS)
 		  printf("%s: %s linked to %s for filesystem %s\n", progname,
-			 tmp, at.mntpt, at.hesiodname);
+			 tmp, at->mntpt, at->hesiodname);
 		else
 		  printf("%s: filesystem %s (%s) mounted on %s (%s)\n",
-			 progname, at.hesiodname, tmp,
-			 at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
+			 progname, at->hesiodname, tmp,
+			 at->mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
 			 "read-write");
 	if (print_path)
-		printf("%s\n", at.mntpt);
-	at.status = STATUS_ATTACHED;
+		printf("%s\n", at->mntpt);
+	at->status = STATUS_ATTACHED;
 	lock_attachtab();
 	get_attachtab();
-	attachtab_replace(&at);
+	attachtab_replace(at);
 	put_attachtab();
 	unlock_attachtab();
 	/*
 	 * Do Zephyr stuff as necessary
 	 */
 #ifdef ZEPHYR
-	if (use_zephyr && at.fs->flags & AT_FS_REMOTE) {
-		if(at.fs->type == TYPE_AFS) {
-			afs_zinit(at.hesiodname, at.hostdir);
+	if (use_zephyr && at->fs->flags & AT_FS_REMOTE) {
+		if(at->fs->type == TYPE_AFS) {
+			afs_zinit(at->hesiodname, at->hostdir);
 		} else {
-			sprintf(instbfr, "%s:%s", at.host, at.hostdir);
+			sprintf(instbfr, "%s:%s", at->host, at->hostdir);
 			zephyr_addsub(instbfr);
-			zephyr_addsub(at.host);
+			zephyr_addsub(at->host);
 		}
 	}
 #endif
 	free_attachtab();
     } else
-	    if (at.fs->flags & AT_FS_MNTPT)
-		    rm_mntpt(&at);
+	    if (at->fs->flags & AT_FS_MNTPT)
+		    rm_mntpt(at);
     return (status);
 }
 
