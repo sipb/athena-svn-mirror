@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.20 1999-03-30 18:29:07 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.21 1999-04-20 20:06:09 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -64,7 +64,7 @@ int detach_main(int argc, char **argv)
   locker_context context;
   locker_attachent *at;
   int options = LOCKER_DETACH_DEFAULT_OPTIONS;
-  char *type = NULL;
+  char *type = "nfs";
   int mode = DETACH_FILESYSTEM, opt, gotname = 0;
   int status, estatus = 0;
 
