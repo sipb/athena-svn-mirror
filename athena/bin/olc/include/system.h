@@ -4,9 +4,9 @@
 # define P(s) ()
 #endif
 
+#include <sys/types.h>
 #ifdef KERBEROS
 #include <krb.h>
-#include <sys/types.h>
 
 char *krb_realmofhost P((char *host));
 int krb_mk_req P((KTEXT authent, char *service, char *instance, char *realm,
