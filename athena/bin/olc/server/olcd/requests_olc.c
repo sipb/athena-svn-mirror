@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.13 1990-02-15 18:51:15 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.14 1990-02-16 05:50:22 vanharen Exp $";
 #endif
 
 
@@ -598,13 +598,13 @@ olc_done(fd, request, auth)
 	      sprintf(target->question->title,"No consultant present.");
 	      log_daemon(target, "User is done with question.");
 	      terminate_log_answered(target);
-	      free((char *) target->question);
-	      target->question = (QUESTION *) NULL;
 	      free_new_messages(target);
 	      free_new_messages(target->connected);
 	      deactivate(target);
 	      deactivate(target->connected);
 	      disconnect_knuckles(target, target->connected);
+	      free((char *) target->question);
+	      target->question = (QUESTION *) NULL;
 	    }
           needs_backup = TRUE;
 	  return(send_response(fd, OK));
@@ -650,17 +650,12 @@ olc_done(fd, request, auth)
 /*  if(requester->instance > 0 && target->connected == requester)
     deactivate(requester);*/
   
-  if(is_connected(target))
-    {
-      target->connected->question  = (QUESTION *) NULL;
-      target->connected->connected = (KNUCKLE *) NULL;
-    }
-  free((char *) target->question);
-  target->question = (QUESTION *) NULL;
   free_new_messages(target);
   deactivate(target);
   deactivate(target->connected);
   disconnect_knuckles(target, target->connected);
+  free((char *) target->question);
+  target->question = (QUESTION *) NULL;
 
   send_response(fd, SIGNED_OFF);
 
@@ -773,13 +768,13 @@ olc_cancel(fd, request, auth)
 			    "Cancelled question/No consultant present.");
 	      log_daemon(target,"User cancelled question.");
 	      terminate_log_answered(target);
-	      free((char *) target->question);
-	      target->question = (QUESTION *) NULL;
 	      free_new_messages(target);
 	      free_new_messages(target->connected);
 	      deactivate(target);
 	      deactivate(target->connected);
 	      disconnect_knuckles(target, target->connected);
+	      free((char *) target->question);
+	      target->question = (QUESTION *) NULL;
 	    }
           needs_backup = TRUE;
 	  return(send_response(fd, SUCCESS));
@@ -821,12 +816,12 @@ olc_cancel(fd, request, auth)
 /*  if(requester->instance > 0 && target->connected == requester)
     deactivate(requester);*/
 
-  free((char *) target->question);
-  target->question = (QUESTION *) NULL;
   free_new_messages(target);
   deactivate(target);
   deactivate(target->connected);
   disconnect_knuckles(target, target->connected);
+  free((char *) target->question);
+  target->question = (QUESTION *) NULL;
 
   send_response(fd, SIGNED_OFF);
   
@@ -1082,12 +1077,12 @@ olc_forward(fd, request,auth)
 		     target->question->topic);
       (void) sprintf(target->question->topic, "oga");
       terminate_log_unanswered(target);
-      free((char *) target->question);
-      target->question = (QUESTION *) NULL;
       free_new_messages(target);
       free_new_messages(target->connected);
       deactivate(target);
       disconnect_knuckles(target, target->connected);
+      free((char *) target->question);
+      target->question = (QUESTION *) NULL;
       return(SUCCESS);
     }
   else
