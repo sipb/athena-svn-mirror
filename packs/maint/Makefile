@@ -1,8 +1,9 @@
-# $Id: Makefile,v 1.15 2003-03-29 23:08:59 rbasch Exp $
+# $Id: Makefile,v 1.16 2003-07-25 05:16:55 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
 ATHMANDIR=/usr/athena/man
+USRLIBDIR=/usr/lib
 
 all: os-checkfiles
 	cd os/${OS} && ${MAKE} $@
@@ -16,6 +17,7 @@ check:
 install:
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
+	mkdir -p ${DESTDIR}${USRLIBDIR}
 	install -c -m 0555 clean_tmp_areas.sh \
 		${DESTDIR}${ATHRETCDIR}/clean_tmp_areas
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs
@@ -29,6 +31,8 @@ install:
 	install -c -m 0555 save_cluster_info.sh \
 		${DESTDIR}${ATHRETCDIR}/save_cluster_info
 	install -c -m 0444 save_cluster_info.8 ${DESTDIR}${ATHMANDIR}/man8
+	install -c -m 0555 sendmail-relay-select ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0555 sendmail.sh ${DESTDIR}${USRLIBDIR}/sendmail
 	install -c -m 0555 shutdown_notify.sh \
 		${DESTDIR}${ATHRETCDIR}/shutdown_notify
 	install -c -m 0444 syncconf.8 ${DESTDIR}${ATHMANDIR}/man8

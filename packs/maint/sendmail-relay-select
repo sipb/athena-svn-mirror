@@ -1,0 +1,11 @@
+#!/bin/sh
+# $Id: sendmail-relay-select,v 1.1 2003-07-25 05:16:56 zacheiss Exp $
+
+if [ -n "$DIRECT_DELIVERY" ]; then
+  exit 0
+elif [ -f /etc/athena/sendmail.conf ]; then
+  awk '/relay/ {print $2}' /etc/athena/sendmail.conf
+  exit 0
+fi
+
+exit 0
