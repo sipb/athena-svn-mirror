@@ -1,17 +1,17 @@
-# GNOME KitabxanalarÄ± dosyesinin AzÉ™rbaycan tÃ¼rkÃ§É™sinÉ™ tÉ™rcÃ¼mÉ™si.
+# GNOME Kitabxanaları faylının Azærbaycan türkçæsinæ tærcümæsi.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnomelibs-stable\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2000-12-05 21:10+0200\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-12 21:10+0200\n"
 "Last-Translator: Vasif Ismailoglu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani turkish\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8 bit\n"
+"Content-Type: text/plain; charset=iso-8859-9e\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: libgnome/gconfigger.c:32
 msgid "get"
@@ -19,11 +19,11 @@ msgstr "al"
 
 #: libgnome/gconfigger.c:32
 msgid "Get config entry"
-msgstr "QuraÅŸdÄ±rma qeydlÉ™rini al"
+msgstr "Quraşdırma qeydlærini al"
 
 #: libgnome/gconfigger.c:32 libgnome/gconfigger.c:33
 msgid "CONFIG-PATH"
-msgstr "QURÇ¦U-YOLU"
+msgstr "QURĞU-YOLU"
 
 #: libgnome/gconfigger.c:33
 msgid "set"
@@ -31,7 +31,7 @@ msgstr "gir"
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
-msgstr "QuraÅŸdÄ±rma qeydlÉ™rini gir"
+msgstr "Quraşdırma qeydlærini gir"
 
 #: libgnome/gnome-popt.c:90
 #, c-format
@@ -39,99 +39,97 @@ msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"%s seÃ§É™nÉ™yindÉ™ xÉ™ta: %s. \n"
-"MÃ¶vcud olan É™mr seÃ§É™nÉ™klÉ™rini gÃ¶rmÉ™k Ã¼Ã§Ã¼n %s --help'  É™mrini "
-"iÅŸÉ™ salÄ±n.\n"
+"%s seçænæyindæ xæta: %s. \n"
+"Mövcud olan æmr seçænæklærini görmæk üçün %s --help'  æmrini işæ salın.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "SÉ™s vericisini passivlÉ™ÅŸdir"
+msgstr "Sæs vericisini passivlæşdir"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "SÉ™s vericisini aktivlÉ™ÅŸdir"
+msgstr "Sæs vericisini aktivlæşdir"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Eh sahibi:sÉ™s vericisinin iÅŸlÉ™diyi qapÄ±"
+msgstr "Eh sahibi:sæs vericisinin işlædiyi qapı"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "EV SAHÄ°BÄ°:QAPI"
+msgstr "EV SAHİBİ:QAPI"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME SeÃ§É™naklÉ™ri"
+msgstr "GNOME seçænæklæri"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
-msgstr "MÃ¼É™llif:"
+msgstr "Müællif:"
 
 #: libgnomeui/gnome-about.c:189 libgnomeui/gnome-about.c:191
 msgid "Authors:"
-msgstr "MÃ¼É™lliflÉ™r:"
+msgstr "Müælliflær:"
 
 #: libgnomeui/gnome-about.c:352
 msgid "Authors: "
-msgstr "MÃ¼É™lliflÉ™r:"
+msgstr "Müælliflær:"
 
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
 msgid "About"
-msgstr "HaqqÄ±nda"
+msgstr "Haqqında"
 
 #: libgnomeui/gnome-app-helper.c:78
 msgid "_File"
-msgstr "_Dosye"
+msgstr "_Fayl"
 
 #: libgnomeui/gnome-app-helper.c:79
 msgid "_File/"
-msgstr "_Dosye/"
+msgstr "_Fayl/"
 
 #: libgnomeui/gnome-app-helper.c:80
 msgid "_Edit"
-msgstr "_DÃ¼zÉ™lt"
+msgstr "_Düzælt"
 
 #: libgnomeui/gnome-app-helper.c:81
 msgid "_Edit/"
-msgstr "_DÃ¼zÉ™lt/"
+msgstr "_Düzælt/"
 
 #: libgnomeui/gnome-app-helper.c:82
 msgid "_View"
-msgstr "_GÃ¶stÉ™r"
+msgstr "_Göstær"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr "_GÃ¶stÉ™r/"
+msgstr "_Göstær/"
 
 #: libgnomeui/gnome-app-helper.c:84
 msgid "_Settings"
-msgstr "_QurÇ§ular"
+msgstr "_Qurğular"
 
 #: libgnomeui/gnome-app-helper.c:85
 msgid "_Settings/"
-msgstr "_QurÇ§ular/"
+msgstr "_Qurğular/"
 
 #: libgnomeui/gnome-app-helper.c:86
 msgid "_New"
-msgstr "_TÉ™zÉ™"
+msgstr "_Yeni"
 
 #: libgnomeui/gnome-app-helper.c:87
 msgid "_New/"
-msgstr "_TÉ™zÉ™/"
+msgstr "_Yeni/"
 
 #: libgnomeui/gnome-app-helper.c:88
 msgid "Fi_les"
-msgstr "Dos_yelÉ™r"
+msgstr "Dos_yelær"
 
 #: libgnomeui/gnome-app-helper.c:89
 msgid "Fi_les/"
-msgstr "Dos_yelÉ™r/"
+msgstr "Dos_yelær/"
 
 #: libgnomeui/gnome-app-helper.c:90
 msgid "_Windows"
-msgstr "_PÉ™ncÉ™rÉ™"
+msgstr "_Pæncæræ"
 
 #: libgnomeui/gnome-app-helper.c:91
 msgid "_Game"
@@ -139,63 +137,63 @@ msgstr "_Oyun"
 
 #: libgnomeui/gnome-app-helper.c:92
 msgid "_Help"
-msgstr "_KÃ¶mÉ™k"
+msgstr "_Kömæk"
 
 #: libgnomeui/gnome-app-helper.c:93
 msgid "_Windows/"
-msgstr "_PÉ™ncÉ™rÉ™/"
+msgstr "_Pæncæræ/"
 
 #: libgnomeui/gnome-app-helper.c:95 libgnomeui/stock_demo.c:184
 msgid "File"
-msgstr "Dosye"
+msgstr "Fayl"
 
 #: libgnomeui/gnome-app-helper.c:96
 msgid "File/"
-msgstr "Dosye/"
+msgstr "Fayl/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr "DÃ¼zÉ™lt"
+msgstr "Düzælt"
 
 #: libgnomeui/gnome-app-helper.c:98
 msgid "Edit/"
-msgstr "DÃ¼zÉ™lt/"
+msgstr "Düzælt/"
 
 #: libgnomeui/gnome-app-helper.c:99
 msgid "View"
-msgstr "GÃ¶stÉ™r"
+msgstr "Göstær"
 
 #: libgnomeui/gnome-app-helper.c:100
 msgid "View/"
-msgstr "GÃ¶stÉ™r/"
+msgstr "Göstær/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
-msgstr "SeÃ§É™nÉ™klÉ™r"
+msgstr "Seçænæklær"
 
 #: libgnomeui/gnome-app-helper.c:102
 msgid "Settings/"
-msgstr "SeÃ§É™nÉ™klÉ™r/"
+msgstr "Seçænæklær/"
 
 #: libgnomeui/gnome-app-helper.c:103
 msgid "New"
-msgstr "TÉ™zÉ™"
+msgstr "Yeni"
 
 #: libgnomeui/gnome-app-helper.c:104
 msgid "New/"
-msgstr "TÉ™zÉ™/"
+msgstr "Yeni/"
 
 #: libgnomeui/gnome-app-helper.c:105
 msgid "Files"
-msgstr "DosyelÉ™r"
+msgstr "Fayllar"
 
 #: libgnomeui/gnome-app-helper.c:106
 msgid "Files/"
-msgstr "DosyelÉ™r/"
+msgstr "Fayllar/"
 
 #: libgnomeui/gnome-app-helper.c:107
 msgid "Windows"
-msgstr "PÉ™ncÉ™rÉ™"
+msgstr "Pæncæræ"
 
 #: libgnomeui/gnome-app-helper.c:108
 msgid "Game"
@@ -204,20 +202,20 @@ msgstr "Oyun"
 #: libgnomeui/gnome-app-helper.c:109 libgnomeui/gnome-stock.c:843
 #: libgnomeui/stock_demo.c:290
 msgid "Help"
-msgstr "KÃ¶mÉ™k"
+msgstr "Kömæk"
 
 #: libgnomeui/gnome-app-helper.c:110
 msgid "Windows/"
-msgstr "PÉ™ncÉ™rÉ™/"
+msgstr "Pæncæræ/"
 
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
 msgid "_Open..."
-msgstr "_AÃ§..."
+msgstr "_Aç..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
-msgstr "Dosyeyi aÃ§"
+msgstr "Faylı aç"
 
 #. Save
 #: libgnomeui/gnome-app-helper.c:127
@@ -226,43 +224,43 @@ msgstr "_Qeyd et"
 
 #: libgnomeui/gnome-app-helper.c:127
 msgid "Save the current file"
-msgstr "HazÄ±rkÄ± dosyeyi qeyd et"
+msgstr "Hazırkı faylı qeyd et"
 
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
 msgid "Save _As..."
-msgstr "FÉ™rqli _Qeyd Et..."
+msgstr "Færqli _Qeyd Et..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
-msgstr "HazÄ±rkÄ± dosyeyi baÅŸqa adla qeyd et"
+msgstr "Hazırkı faylı başqa adla qeyd et"
 
 #. Revert
 #: libgnomeui/gnome-app-helper.c:138
 msgid "_Revert"
-msgstr "_Ã‡evir"
+msgstr "_Çevir"
 
 #: libgnomeui/gnome-app-helper.c:139
 msgid "Revert to a saved version of the file"
-msgstr "Dosyenin qeyd edilmiÅŸ halÄ±nÄ±n dÉ™yiÅŸdir"
+msgstr "Faylın qeyd edilmiş halının dæyişdir"
 
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
 msgid "_Print"
-msgstr "_Ã‡ap et"
+msgstr "_Çap et"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
-msgstr "HazÄ±rkÄ± dosyeyi Ã§ap et"
+msgstr "Hazırkı faylı çap et"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Q_uruluÅŸu Ã‡ap Et"
+msgstr "Q_uruluşu Çap Et"
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
-msgstr "HazÄ±rkÄ± yazÄ±Ã§Ä±nÄ±z Ã¼Ã§Ã¼n sÉ™hifÉ™ seÃ§É™naklÉ™rini quraÅŸdÄ±r"
+msgstr "Hazırkı yazıçınız üçün sæhifæ seçænaklærini quraşdır"
 
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
@@ -271,16 +269,16 @@ msgstr "_Qapat"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
-msgstr "HazÄ±rkÄ± dosyeyi qapat"
+msgstr "Hazırkı faylı qapat"
 
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
 msgid "E_xit"
-msgstr "Ã‡_Ä±x"
+msgstr "Ç_ıx"
 
 #: libgnomeui/gnome-app-helper.c:160
 msgid "Exit the program"
-msgstr "Proqramdan Ã§Ä±x"
+msgstr "Proqramdan çıx"
 
 #.
 #. * The "Edit" menu
@@ -288,39 +286,39 @@ msgstr "Proqramdan Ã§Ä±x"
 #. Cut
 #: libgnomeui/gnome-app-helper.c:168
 msgid "C_ut"
-msgstr "K_É™s"
+msgstr "K_æs"
 
 #: libgnomeui/gnome-app-helper.c:168
 msgid "Cut the selection"
-msgstr "SeÃ§kiyi kÉ™s"
+msgstr "Seçkiyi kæs"
 
 #. 10
 #. Copy
 #: libgnomeui/gnome-app-helper.c:174 libgnomeui/gnome-popup-help.c:60
 msgid "_Copy"
-msgstr "_KÃ¶Ã§Ã¼r"
+msgstr "_Köçür"
 
 #: libgnomeui/gnome-app-helper.c:174
 msgid "Copy the selection"
-msgstr "SeÃ§kiyi kÃ¶Ã§Ã¼rt"
+msgstr "Seçkiyi köçürt"
 
 #. Paste
 #: libgnomeui/gnome-app-helper.c:179 libgnomeui/gnome-popup-help.c:62
 msgid "_Paste"
-msgstr "_YapÄ±ÅŸdÄ±r"
+msgstr "_Yapışdır"
 
 #: libgnomeui/gnome-app-helper.c:179
 msgid "Paste the clipboard"
-msgstr "YazÄ± taxtasÄ±nÄ±(clipboard) yapÄ±ÅŸdÄ±r"
+msgstr "Yazı taxtasını(clipboard) yapışdır"
 
 #. Clear
 #: libgnomeui/gnome-app-helper.c:184
 msgid "C_lear"
-msgstr "T_É™mizlÉ™"
+msgstr "T_æmizlæ"
 
 #: libgnomeui/gnome-app-helper.c:184
 msgid "Clear the selection"
-msgstr "SeÃ§kiyi sil"
+msgstr "Seçkiyi sil"
 
 #. Undo
 #: libgnomeui/gnome-app-helper.c:189
@@ -329,16 +327,16 @@ msgstr "_Arxaya"
 
 #: libgnomeui/gnome-app-helper.c:189
 msgid "Undo the last action"
-msgstr "AxÄ±rÄ±ncÄ± É™mÉ™liyyatÄ±nÄ±zdan arxaya dÃ¶nÃ¼n"
+msgstr "Axırıncı æmæliyyatınızdan arxaya dönün"
 
 #. Redo
 #: libgnomeui/gnome-app-helper.c:194
 msgid "_Redo"
-msgstr "_TÉ™zÉ™dÉ™n Et"
+msgstr "_Yenidæn Et"
 
 #: libgnomeui/gnome-app-helper.c:194
 msgid "Redo the undone action"
-msgstr "Arxaya dÃ¶ndÃ¼yÃ¼nÃ¼z É™maliyatÄ± tÉ™zÉ™dÉ™n edin"
+msgstr "Arxaya döndüyünüz æmaliyatı yenidæn edin"
 
 #. Find
 #: libgnomeui/gnome-app-helper.c:199
@@ -347,34 +345,34 @@ msgstr "_Tap..."
 
 #: libgnomeui/gnome-app-helper.c:199
 msgid "Search for a string"
-msgstr "SÃ¶zÃ¼ axtar"
+msgstr "Sözü axtar"
 
 #. Find Again
 #: libgnomeui/gnome-app-helper.c:204
 msgid "Find _Again"
-msgstr "_TÉ™zÉ™dÉ™n Axtar"
+msgstr "_Yenidæn Axtar"
 
 #: libgnomeui/gnome-app-helper.c:205
 msgid "Search again for the same string"
-msgstr "Eyni sÃ¶zÃ¼ tÉ™zÉ™dÉ™n axtar"
+msgstr "Eyni sözü yenidæn axtar"
 
 #. Replace
 #: libgnomeui/gnome-app-helper.c:210
 msgid "_Replace..."
-msgstr "_DÉ™yiÅŸdir"
+msgstr "_Dæyişdir"
 
 #: libgnomeui/gnome-app-helper.c:210
 msgid "Replace a string"
-msgstr "SÃ¶zÃ¼ dÉ™yiÅŸdir"
+msgstr "Sözü dæyişdir"
 
 #. Properties
 #: libgnomeui/gnome-app-helper.c:215
 msgid "_Properties..."
-msgstr "_SeÃ§É™nÉ™klÉ™r..."
+msgstr "_Seçænæklær..."
 
 #: libgnomeui/gnome-app-helper.c:216
 msgid "Modify the file's properties"
-msgstr "Dosye seÃ§É™nÉ™klÉ™rini tÉ™kmillÉ™ÅŸdir"
+msgstr "Fayl seçænæklærini tækmillæşdir"
 
 #.
 #. * The Settings menu
@@ -382,11 +380,11 @@ msgstr "Dosye seÃ§É™nÉ™klÉ™rini tÉ™kmillÉ™ÅŸdir"
 #. Settings
 #: libgnomeui/gnome-app-helper.c:224
 msgid "_Preferences..."
-msgstr "_SeÃ§É™nÉ™klÉ™r..."
+msgstr "_Seçænæklær..."
 
 #: libgnomeui/gnome-app-helper.c:225
 msgid "Configure the application"
-msgstr "UyÇ§ulamayÄ± quraÅŸdÄ±r"
+msgstr "Uyğulamayı quraşdır"
 
 #. 20
 #.
@@ -395,89 +393,89 @@ msgstr "UyÇ§ulamayÄ± quraÅŸdÄ±r"
 #. About
 #: libgnomeui/gnome-app-helper.c:234
 msgid "_About..."
-msgstr "_HaqqÄ±nda..."
+msgstr "_Haqqında..."
 
 #: libgnomeui/gnome-app-helper.c:235
 msgid "About this application"
-msgstr "UyÇ§ulama haqqÄ±nda"
+msgstr "Uyğulama haqqında"
 
 #: libgnomeui/gnome-app-helper.c:238
 msgid "_Select All"
-msgstr "_HamÄ±sÄ±nÄ± SeÃ§"
+msgstr "_Hamısını Seç"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
-msgstr "HamÄ±sÄ±nÄ± seÃ§"
+msgstr "Hamısını seç"
 
 #.
 #. * Window menu
 #.
 #: libgnomeui/gnome-app-helper.c:247
 msgid "Create New _Window"
-msgstr "TÉ™zÉ™ _PÉ™ncÉ™rÉ™ yarat"
+msgstr "Yeni _Pæncæræ yarat"
 
 #: libgnomeui/gnome-app-helper.c:248
 msgid "Create a new window"
-msgstr "TÉ™zÉ™ pÉ™ncÉ™rÉ™ yarat"
+msgstr "Yeni pæncæræ yarat"
 
 #: libgnomeui/gnome-app-helper.c:252
 msgid "_Close This Window"
-msgstr "Bu pÉ™ncÉ™rÉ™yi _Qapat"
+msgstr "Bu pæncæræyi _Qapat"
 
 #: libgnomeui/gnome-app-helper.c:253
 msgid "Close the current window"
-msgstr "Bu pÉ™ncÉ™rÉ™yi qapat"
+msgstr "Bu pæncæræyi qapat"
 
 #.
 #. * The "Game" menu
 #.
 #: libgnomeui/gnome-app-helper.c:261
 msgid "_New game"
-msgstr "_TÉ™zÉ™ oyun"
+msgstr "_Yeni oyun"
 
 #: libgnomeui/gnome-app-helper.c:262
 msgid "Start a new game"
-msgstr "TÉ™zÉ™ oyun baÅŸlat"
+msgstr "Yeni oyun başlat"
 
 #: libgnomeui/gnome-app-helper.c:266
 msgid "_Pause game"
-msgstr "Oyuna _FasilÉ™ ver"
+msgstr "Oyuna _Fasilæ ver"
 
 #: libgnomeui/gnome-app-helper.c:267
 msgid "Pause the game"
-msgstr "Oyuna fasilÉ™ ver"
+msgstr "Oyuna fasilæ ver"
 
 #: libgnomeui/gnome-app-helper.c:271
 msgid "_Restart game"
-msgstr "Oyunu _TÉ™zÉ™dÉ™n baÅŸlat"
+msgstr "Oyunu _Yenidæn başlat"
 
 #: libgnomeui/gnome-app-helper.c:272
 msgid "Restart the game"
-msgstr "Oyunu tÉ™zÉ™dÉ™n baÅŸlat"
+msgstr "Oyunu yenidæn başlat"
 
 #: libgnomeui/gnome-app-helper.c:276
 msgid "_Undo move"
-msgstr "GediÅŸi _Arxaya al"
+msgstr "Gedişi _Arxaya al"
 
 #: libgnomeui/gnome-app-helper.c:277
 msgid "Undo the last move"
-msgstr "AxÄ±rÄ±ncÄ± gediÅŸinizi lÉ™Ç§v edin"
+msgstr "Axırıncı gedişinizi læğv edin"
 
 #: libgnomeui/gnome-app-helper.c:281
 msgid "_Redo move"
-msgstr "GediÅŸi _TÉ™zÉ™dÉ™n et"
+msgstr "Gedişi _Yenidæn et"
 
 #: libgnomeui/gnome-app-helper.c:282
 msgid "Redo the undone move"
-msgstr "GediÅŸi tÉ™zÉ™dÉ™n edin"
+msgstr "Gedişi yenidæn edin"
 
 #: libgnomeui/gnome-app-helper.c:286
 msgid "_Hint"
-msgstr "_Ä°pucu"
+msgstr "_İpucu"
 
 #: libgnomeui/gnome-app-helper.c:287
 msgid "Get a hint for your next move"
-msgstr "SonrakÄ± gediÅŸ Ã¼Ã§Ã¼n kÃ¶mÉ™k alÄ±n"
+msgstr "Sonrakı gediş üçün kömæk alın"
 
 #. 30
 #: libgnomeui/gnome-app-helper.c:292
@@ -486,7 +484,7 @@ msgstr "_Xallar..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
-msgstr "TopladÄ±Ç§Ä±nÄ±z xalÄ±nÄ±za baxÄ±n"
+msgstr "Topladığınız xalınıza baxın"
 
 #: libgnomeui/gnome-app-helper.c:297
 msgid "_End game"
@@ -494,19 +492,19 @@ msgstr "Oyunun _Sonu"
 
 #: libgnomeui/gnome-app-helper.c:298
 msgid "End the current game"
-msgstr "HazÄ±rkÄ± oyunda Ã§Ä±xÄ±n"
+msgstr "Hazırkı oyunda çıxın"
 
 #: libgnomeui/gnome-app-util.c:93
 msgid " (press return)"
-msgstr " (enterÉ™ basÄ±n)"
+msgstr " (enteræ basın)"
 
 #: libgnomeui/gnome-app-util.c:136
 msgid "ERROR: "
-msgstr "XÆTA: "
+msgstr "XÆTA: "
 
 #: libgnomeui/gnome-app-util.c:173
 msgid "Warning: "
-msgstr "XÉ™bÉ™rdarlÄ±q: "
+msgstr "Xæbærdarlıq: "
 
 #: libgnomeui/gnome-app-util.c:310
 msgid "y"
@@ -514,7 +512,7 @@ msgstr "b"
 
 #: libgnomeui/gnome-app-util.c:311
 msgid "yes"
-msgstr "bÉ™li"
+msgstr "bæli"
 
 #: libgnomeui/gnome-app-util.c:314
 msgid "n"
@@ -526,15 +524,15 @@ msgstr "xeyr"
 
 #: libgnomeui/gnome-app-util.c:354
 msgid " (yes or no)"
-msgstr " (bÉ™li vÉ™ ya xeyr)"
+msgstr " (bæli væ ya xeyr)"
 
 #: libgnomeui/gnome-app-util.c:355
 msgid "  - OK? (yes or no)"
-msgstr " - OLDU MU? (bÉ™li vÉ™ ya xeyr)"
+msgstr " - OLDU MU? (bæli væ ya xeyr)"
 
 #: libgnomeui/gnome-app-util.c:687
 msgid "Progress"
-msgstr "GediÅŸat"
+msgstr "Gedişat"
 
 #: libgnomeui/gnome-calculator.c:944 libgnomeui/gnome-calculator.c:1060
 msgid "DEG"
@@ -707,7 +705,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "GediÅŸat IDsini gÃ¶stÉ™r"
+msgstr "Gedişat IDsini göstær"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -715,7 +713,7 @@ msgstr "ID"
 
 #: libgnomeui/gnome-client.c:837
 msgid "Specify prefix of saved configuration"
-msgstr "Qeyd edilmiÅŸ qurÇ§ularÄ±n prefiksini gÃ¶stÉ™r"
+msgstr "Qeyd edilmiş qurğuların prefiksini göstær"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
@@ -723,25 +721,25 @@ msgstr "PREFIX"
 
 #: libgnomeui/gnome-client.c:839
 msgid "Disable connection to session manager"
-msgstr "GediÅŸat idarÉ™cisinÉ™ baÇ§lantÄ±ya mane ol"
+msgstr "Gedişat idaræcisinæ bağlantıya mane ol"
 
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
 msgid "Session management options"
-msgstr "GediÅŸat idarÉ™cisi seÃ§É™nÉ™klÉ™ri"
+msgstr "Gedişat idaræcisi seçænæklæri"
 
 #: libgnomeui/gnome-client.c:2348
 msgid "Cancel Logout"
-msgstr "Ã‡Ä±xÄ±ÅŸÄ± LÉ™Ç§v Et"
+msgstr "Çıxışı Læğv Et"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
-msgstr "RÉ™ng seÃ§"
+msgstr "Ræng seç"
 
 #. Calendar label, only shown if the date editor has a time field
 #: libgnomeui/gnome-dateedit.c:459
 msgid "Calendar"
-msgstr "TÉ™qvim"
+msgstr "Tæqvim"
 
 #: libgnomeui/gnome-dentry-edit.c:180
 msgid "Name:"
@@ -753,11 +751,11 @@ msgstr "Qeyd:"
 
 #: libgnomeui/gnome-dentry-edit.c:203
 msgid "Command:"
-msgstr "Æmr:"
+msgstr "Æmr:"
 
 #: libgnomeui/gnome-dentry-edit.c:213
 msgid "Type:"
-msgstr "NÃ¶v:"
+msgstr "Növ:"
 
 #: libgnomeui/gnome-dentry-edit.c:230
 msgid "Icon:"
@@ -765,23 +763,23 @@ msgstr "Timsal:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Timsal seÃ§"
+msgstr "Timsal seç"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
-msgstr "Terminalda iÅŸÉ™ sal"
+msgstr "Terminalda işæ sal"
 
 #: libgnomeui/gnome-dentry-edit.c:364
 msgid "Try this before using:"
-msgstr "Ä°stifadÉ™dÉ™n É™vval bunu sÄ±nayÄ±n:"
+msgstr "İstifadædæn ævval bunu sınayın:"
 
 #: libgnomeui/gnome-dentry-edit.c:374
 msgid "Documentation:"
-msgstr "SÉ™nÉ™dlÉ™r:"
+msgstr "Sænædlær:"
 
 #: libgnomeui/gnome-dentry-edit.c:384
 msgid "Name/Comment translations:"
-msgstr "Ad/Qeyd tÉ™rcÃ¼mÉ™lÉ™ri:"
+msgstr "Ad/Qeyd tærcümælæri:"
 
 #: libgnomeui/gnome-dentry-edit.c:387
 msgid "Language"
@@ -797,7 +795,7 @@ msgstr "Qeyd"
 
 #: libgnomeui/gnome-dentry-edit.c:417
 msgid "Add/Set"
-msgstr "ÆlavÉ™ et/SeÃ§"
+msgstr "Ælavæ et/Seç"
 
 #: libgnomeui/gnome-dentry-edit.c:422 libgnomeui/gnome-stock.c:828
 msgid "Remove"
@@ -805,11 +803,11 @@ msgstr "Sil"
 
 #: libgnomeui/gnome-dentry-edit.c:504
 msgid "Basic"
-msgstr "Æsas"
+msgstr "Æsas"
 
 #: libgnomeui/gnome-dentry-edit.c:508
 msgid "Advanced"
-msgstr "Ä°rÉ™li sÉ™viyyÉ™dÉ™"
+msgstr "İræli sæviyyædæ"
 
 #: libgnomeui/gnome-druid.c:129
 msgid "Back"
@@ -821,17 +819,17 @@ msgstr "Qurtar"
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
-msgstr "Dosye seÃ§"
+msgstr "Fayl seç"
 
 #. browse button ...
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr "GÉ™z..."
+msgstr "Gæz..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
-msgstr "YazÄ± Tipi seÃ§"
+msgstr "Yazı Tipi seç"
 
 #: libgnomeui/gnome-font-picker.c:710 libgnomeui/gnome-stock.c:848
 msgid "Font"
@@ -839,23 +837,23 @@ msgstr "Yaz Tipi"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr "TimsalsÄ±z"
+msgstr "Timsalsız"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "HeÃ§ birhbox tapÄ±lmadÄ±, sÄ±raci dosye seÃ§kisini istifadÉ™ edÉ™cÉ™m"
+msgstr "Heç birhbox tapılmadı, sıraci fayl seçkisini istifadæ edæcæm"
 
 #: libgnomeui/gnome-icon-entry.c:280 libgnomeui/gnome-pixmap-entry.c:278
 msgid "Preview"
-msgstr "GÃ¶z GÉ™zdirmÉ™"
+msgstr "Göz Gæzdirmæ"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
-msgstr "Timsallar YÃ¼klÉ™nir..."
+msgstr "Timsallar Yüklænir..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
-msgstr "SeÃ§ilÉ™cÉ™k Gdk xÉ™ta hÉ™lli bayraqlarÄ±"
+msgstr "Seçilæcæk Gdk xæta hælli bayraqları"
 
 #: libgnomeui/gnome-init.c:161 libgnomeui/gnome-init.c:163
 #: libgnomeui/gnome-init.c:183 libgnomeui/gnome-init.c:185
@@ -864,11 +862,11 @@ msgstr "BAYRAQLAR"
 
 #: libgnomeui/gnome-init.c:163
 msgid "Gdk debugging flags to unset"
-msgstr "SeÃ§ilmÉ™yÉ™cÉ™k Gdk xÉ™ta hÉ™lli bayraqlarÄ±"
+msgstr "Seçilmæyæcæk Gdk xæta hælli bayraqları"
 
 #: libgnomeui/gnome-init.c:165
 msgid "X display to use"
-msgstr "Ä°stifadÉ™ edilÉ™cÉ™k X ekranÄ±"
+msgstr "İstifadæ edilæcæk X ekranı"
 
 #: libgnomeui/gnome-init.c:165
 msgid "DISPLAY"
@@ -876,15 +874,15 @@ msgstr "EKRAN"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
-msgstr "X Ã§aÇ§rÄ±larÄ± sinxronizasiya et"
+msgstr "X çağrıları sinxronizasiya et"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "BÃ¶lÃ¼ÅŸÃ¼lmÃ¼ÅŸ X hafizÉ™si uzantÄ±larÄ±nÄ± istifadÉ™ etmÉ™"
+msgstr "Bölüşülmüş X hafizæsi uzantılarını istifadæ etmæ"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
-msgstr "PÉ™ncÉ™rÉ™ idarÉ™cisi tÉ™rÉ™findÉ™n istifadÉ™ edilÉ™n proqram adÄ±"
+msgstr "Pæncæræ idaræcisi tæræfindæn istifadæ edilæn proqram adı"
 
 #: libgnomeui/gnome-init.c:171
 msgid "NAME"
@@ -892,15 +890,15 @@ msgstr "AD"
 
 #: libgnomeui/gnome-init.c:173
 msgid "Program class as used by the window manager"
-msgstr "PÉ™ncÉ™rÉ™ idarÉ™cisi tÉ™rÉ™findÉ™n istifadÉ™ edilÉ™n proqram sinifi"
+msgstr "Pæncæræ idaræcisi tæræfindæn istifadæ edilæn proqram sinifi"
 
 #: libgnomeui/gnome-init.c:173
 msgid "CLASS"
-msgstr "SÄ°NÄ°F"
+msgstr "SİNİF"
 
 #: libgnomeui/gnome-init.c:175
 msgid "HOST"
-msgstr "EH SAHÄ°BÄ°"
+msgstr "EH SAHİBİ"
 
 #: libgnomeui/gnome-init.c:177
 msgid "PORT"
@@ -908,61 +906,59 @@ msgstr "QAPI"
 
 #: libgnomeui/gnome-init.c:179 libgnomeui/gnome-init.c:181
 msgid "STYLE"
-msgstr "TÆRZ"
+msgstr "TÆRZ"
 
 #: libgnomeui/gnome-init.c:183
 msgid "Gtk+ debugging flags to set"
-msgstr "SeÃ§ilÉ™cÉ™k Gdk+ xÉ™ta hÉ™lli bayraqlarÄ±"
+msgstr "Seçilæcæk Gdk+ xæta hælli bayraqları"
 
 #: libgnomeui/gnome-init.c:185
 msgid "Gtk+ debugging flags to unset"
-msgstr "SeÃ§ilmÉ™yÉ™cÉ™k Gdk+ xÉ™ta hÉ™lli bayraqlarÄ±"
+msgstr "Seçilmæyæcæk Gdk+ xæta hælli bayraqları"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
-msgstr "BÃ¼tÃ¼n xÉ™bÉ™rdarlÄ±qlarÄ± Ã¶lÃ¼mcÃ¼l et"
+msgstr "Bütün xæbærdarlıqları ölümcül et"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "ÆlavÉ™ Gtk modulu yÃ¼klÉ™"
+msgstr "Ælavæ Gtk modulu yüklæ"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
 msgstr "MODUL"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "GNOME SeÃ§É™naklÉ™ri"
+msgstr "GTK seçænæklæri"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "GNOME SeÃ§É™naklÉ™ri"
+msgstr "GNOME GUI seçænæklæri"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "GNOME SeÃ§É™naklÉ™ri"
+msgstr "%s seçænæklæri"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"Ã‡oxlu parÃ§alanma xÉ™talarÄ± meydana geldi: xÉ™ta gÃ¶stÉ™ricisini "
-"gÃ¶stÉ™rÉ™ bilmirÉ™m\n"
+"Çoxlu parçalanma xætaları meydana geldi: xæta göstæricisini göstæræ "
+"bilmiræm\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
 msgid "Information"
-msgstr "MÉ™'lumat"
+msgstr "Mæ'lumat"
 
 #: libgnomeui/gnome-messagebox.c:120 libgnomeui/gnome-messagebox.c:253
 msgid "Warning"
-msgstr "XÉ™bÉ™rdarlÄ±q"
+msgstr "Xæbærdarlıq"
 
 #: libgnomeui/gnome-messagebox.c:129 libgnomeui/gnome-messagebox.c:262
 msgid "Error"
-msgstr "XÉ™ta"
+msgstr "Xæta"
 
 #: libgnomeui/gnome-messagebox.c:138 libgnomeui/gnome-messagebox.c:271
 msgid "Question"
@@ -970,39 +966,39 @@ msgstr "Sual"
 
 #: libgnomeui/gnome-messagebox.c:147 libgnomeui/gnome-messagebox.c:280
 msgid "Message"
-msgstr "XÉ™bÉ™r"
+msgstr "Xæbær"
 
 #: libgnomeui/gnome-number-entry.c:151
 msgid "Calculator"
-msgstr "HesablayÄ±cÄ±"
+msgstr "Hesablayıcı"
 
 #: libgnomeui/gnome-number-entry.c:203
 msgid "Calculator..."
-msgstr "HesablayÄ±cÄ±..."
+msgstr "Hesablayıcı..."
 
 #: libgnomeui/gnome-pixmap-entry.c:106 libgnomeui/gnome-pixmap-entry.c:387
 msgid "No Image"
-msgstr "GÃ¶rÃ¼nÃ¼ÅŸ Yoxdur"
+msgstr "Görünüş Yoxdur"
 
 #: libgnomeui/gnome-popup-help.c:52
 msgid "_Help with this"
-msgstr "Buna _KÃ¶mÉ™k et"
+msgstr "Buna _Kömæk et"
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
-msgstr "K_É™s"
+msgstr "K_æs"
 
 #: libgnomeui/gnome-property-entries.c:254
 msgid "Select"
-msgstr "SeÃ§"
+msgstr "Seç"
 
 #: libgnomeui/gnome-scores.c:88
 msgid "Top Ten"
-msgstr "ÃœstdÉ™ki onluq"
+msgstr "Üstdæki onluq"
 
 #: libgnomeui/gnome-scores.c:99
 msgid "User"
-msgstr "Ä°stifadÉ™Ã§i"
+msgstr "İstifadæçi"
 
 #: libgnomeui/gnome-scores.c:102
 msgid "Score"
@@ -1025,7 +1021,7 @@ msgstr "%T %d %b %a %Y"
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"
-msgstr "LÃ¼Ç§É™t seÃ§"
+msgstr "Lüğæt seç"
 
 #: libgnomeui/gnome-spell.c:245
 #, c-format
@@ -1034,13 +1030,13 @@ msgid ""
 "is not in the dictionary.\n"
 "Proceed anyway?"
 msgstr ""
-"`%s' sÃ¶zÃ¼\n"
-"lÃ¼Ç§É™tdÉ™ yoxdur.\n"
+"`%s' sözü\n"
+"lüğætdæ yoxdur.\n"
 "Davam edim mi?"
 
 #: libgnomeui/gnome-spell.c:249
 msgid "Confirm"
-msgstr "QÉ™bul et"
+msgstr "Qæbul et"
 
 #: libgnomeui/gnome-spell.c:258 libgnomeui/gnome-stock.c:837
 msgid "OK"
@@ -1048,47 +1044,47 @@ msgstr "OLDU"
 
 #: libgnomeui/gnome-spell.c:265 libgnomeui/gnome-stock.c:839
 msgid "Cancel"
-msgstr "LÉ™Ç§v et"
+msgstr "Læğv et"
 
 #: libgnomeui/gnome-spell.c:527
 msgid "Word:"
-msgstr "SÃ¶z:"
+msgstr "Söz:"
 
 #: libgnomeui/gnome-spell.c:544
 msgid "Alternatives:"
-msgstr "YerinÉ™:"
+msgstr "Yerinæ:"
 
 #: libgnomeui/gnome-spell.c:563
 msgid "Accept"
-msgstr "QÉ™bul et"
+msgstr "Qæbul et"
 
 #: libgnomeui/gnome-spell.c:568
 msgid ""
 "Accept the word for\n"
 "this session only"
 msgstr ""
-"SÃ¶zÃ¼ sadÉ™cÉ™ olaraq bu\n"
-"dÉ™falik qÉ™bul et."
+"Sözü sadæcæ olaraq bu\n"
+"dæfælik qæbul et."
 
 #: libgnomeui/gnome-spell.c:570
 msgid "Skip"
-msgstr "KeÃ§"
+msgstr "Keç"
 
 #: libgnomeui/gnome-spell.c:575
 msgid ""
 "Ignore this word\n"
 "this time only"
 msgstr ""
-"SÃ¶zÃ¼ sadÉ™cÉ™ olaraq bu\n"
-"dÉ™fÉ™lik rÉ™dd et."
+"Sözü sadæcæ olaraq bu\n"
+"dæfælik rædd et."
 
 #: libgnomeui/gnome-spell.c:577
 msgid "Replace"
-msgstr "DÉ™yiÅŸdir"
+msgstr "Dæyişdir"
 
 #: libgnomeui/gnome-spell.c:582
 msgid "Replace the word"
-msgstr "SÃ¶zÃ¼ dÉ™yiÅŸdir"
+msgstr "Sözü dæyişdir"
 
 #: libgnomeui/gnome-spell.c:584
 msgid "Insert"
@@ -1099,12 +1095,12 @@ msgid ""
 "Insert the word\n"
 "in your personal dictionary"
 msgstr ""
-"SÃ¶zÃ¼ ÅŸÉ™xi lÃ¼Ç§É™tinÉ™\n"
+"Sözü şæxi lüğætinæ\n"
 "daxil et."
 
 #: libgnomeui/gnome-spell.c:591
 msgid "Insert with case"
-msgstr "HÉ™rf bÃ¶yÃ¼klÃ¼yÃ¼nÃ¼ qoruyaraq daxil et"
+msgstr "Hærf böyüklüyünü qoruyaraq daxil et"
 
 #: libgnomeui/gnome-spell.c:597
 msgid ""
@@ -1113,98 +1109,98 @@ msgid ""
 "(if mixed-case preserve\n"
 "case-sensitivity)"
 msgstr ""
-"SÃ¶zÃ¼ ÅŸÉ™xsi lÃ¼Ç§É™tinÉ™\n"
+"Sözü şæxsi lüğætinæ\n"
 "daxil et.\n"
-"(hÉ™rf bÃ¶yÃ¼klÃ¼klÉ™ri fÉ™rqli isÉ™\n"
-" ÅŸÉ™klini qoru)"
+"(hærf böyüklüklæri færqli isæ\n"
+" şæklini qoru)"
 
 #: libgnomeui/gnome-spell.c:612
 msgid "Ispell command:"
-msgstr "Ispell É™mri:"
+msgstr "Ispell æmri:"
 
 #: libgnomeui/gnome-spell.c:630
 msgid "Main dictionary:"
-msgstr "Æsas lÃ¼Ç§É™t:"
+msgstr "Æsas lüğæt:"
 
 #: libgnomeui/gnome-spell.c:647
 msgid "Personal dictionary:"
-msgstr "ÅÉ™xsi LÃ¼Ç§É™t:"
+msgstr "Şæxsi Lüğæt:"
 
 #: libgnomeui/gnome-spell.c:664
 msgid "Valid chars in words:"
-msgstr "SÃ¶zlÉ™rdÉ™ki dÃ¼zgÃ¼n xarakterlÉ™r:"
+msgstr "Sözlærdæki düzgün xarakterlær:"
 
 #: libgnomeui/gnome-spell.c:675
 msgid "Check words longer than:"
-msgstr "bundan uzun sÃ¶zlÉ™ri seÃ§:"
+msgstr "bundan uzun sözlæri seç:"
 
 #: libgnomeui/gnome-spell.c:686
 msgid "Sort by correctness"
-msgstr "DÃ¼zÉ™liÅŸlÉ™rÉ™ gÃ¶rÉ™ dÃ¼z:"
+msgstr "Düzælişlæræ göræ düz:"
 
 #: libgnomeui/gnome-spell.c:694
 msgid "Accept run-together words"
-msgstr "BitiÅŸik sÃ¶zlÉ™ri qÉ™bul et"
+msgstr "Bitişik sözlæri qæbul et"
 
 #: libgnomeui/gnome-spell.c:704
 msgid "Discard accepted words on kill"
-msgstr "QÉ™bul edilmiÅŸ sÃ¶zlÉ™ri xÉ™talarda qoru"
+msgstr "Qæbul edilmiş sözlæri xætalarda qoru"
 
 #: libgnomeui/gnome-spell.c:712
 msgid "Enable tooltips"
-msgstr "Ä°puclarÄ±nÄ± aktivlÉ™ÅŸdir"
+msgstr "İpuclarını aktivlæşdir"
 
 #: libgnomeui/gnome-spell.c:726
 msgid "Kill ispell process"
-msgstr "Ispell gediÅŸatÄ±nÄ± dayandÄ±r"
+msgstr "Ispell gedişatını dayandır"
 
 #: libgnomeui/gnome-spell.c:752
 msgid "Spell"
-msgstr "HecÉ™lÉ™"
+msgstr "Hecala"
 
 #: libgnomeui/gnome-spell.c:759
 msgid "Configure"
-msgstr "QuraÅŸdÄ±r"
+msgstr "Quraşdır"
 
 #: libgnomeui/gnome-stock.c:825
 msgid "Add"
-msgstr "ÆlavÉ™ et"
+msgstr "Ælavæ et"
 
 #: libgnomeui/gnome-stock.c:826
 msgid "Clear"
-msgstr "TÉ™mizlÉ™"
+msgstr "Tæmizlæ"
 
 #: libgnomeui/gnome-stock.c:827
 msgid "Select Color"
-msgstr "RÉ™ng SeÃ§"
+msgstr "Ræng Seç"
 
 #: libgnomeui/gnome-stock.c:829
 msgid "Table Borders"
-msgstr "CÉ™dvÉ™l KÉ™narlarÄ±"
+msgstr "Cædvæl Kænarları"
 
 #: libgnomeui/gnome-stock.c:830
 msgid "Table Fill"
-msgstr "CÉ™dvÉ™l DolduruÅŸlarÄ±"
+msgstr "Cædvæl Dolduruşları"
 
 #: libgnomeui/gnome-stock.c:831
 msgid "Bulleted List"
-msgstr "DÃ¼ymÉ™li siyahÄ±"
+msgstr "Düymæli siyahı"
 
 #: libgnomeui/gnome-stock.c:832
 msgid "Numbered List"
-msgstr "NÃ¶mrÉ™lÉ™nmiÅŸ siyahÄ±"
+msgstr "Nömrælænmiş siyahı"
 
 #: libgnomeui/gnome-stock.c:833
 msgid "Indent"
-msgstr "BaÅŸa gÉ™tir"
+msgstr "Başa gætir"
 
 #: libgnomeui/gnome-stock.c:834
 msgid "Un-Indent"
-msgstr "BaÅŸa gÉ™tirmÉ™"
+msgstr "Başa gætirmæ"
 
 #: libgnomeui/gnome-stock.c:838
 msgid "Apply"
-msgstr "ÆlavÉ™ et"
+msgstr "Ælavæ et"
 
 #: libgnomeui/gnome-stock.c:840 libgnomeui/stock_demo.c:144
 msgid "Close"
@@ -1212,7 +1208,7 @@ msgstr "Qapat"
 
 #: libgnomeui/gnome-stock.c:841
 msgid "Yes"
-msgstr "BÉ™li"
+msgstr "Bæli"
 
 #: libgnomeui/gnome-stock.c:842
 msgid "No"
@@ -1220,35 +1216,35 @@ msgstr "Xeyr"
 
 #: libgnomeui/gnome-stock.c:844
 msgid "Next"
-msgstr "SonrakÄ±"
+msgstr "Sonrakı"
 
 #: libgnomeui/gnome-stock.c:845
 msgid "Prev"
-msgstr "ÆvvÉ™lki"
+msgstr "Ævvælki"
 
 #: libgnomeui/gnome-stock.c:846
 msgid "Up"
-msgstr "YuxarÄ±"
+msgstr "Yuxarı"
 
 #: libgnomeui/gnome-stock.c:847
 msgid "Down"
-msgstr "AÅŸaÇ§Ä±"
+msgstr "Aşağı"
 
 #: libgnomeui/gnome-stock.c:1894
 msgid "Menu Accelerator Keys"
-msgstr "Menyu sÃ¼r'É™tlÉ™ndirmÉ™ aÃ§arlarÄ±"
+msgstr "Menyu sür'ætlændirmæ açarları"
 
 #: libgnomeui/gnome-stock.c:1896
 msgid "Global"
-msgstr "Ãœmumi"
+msgstr "Ümumi"
 
 #: libgnomeui/gnome-stock.c:1898
 msgid "Menu Item"
-msgstr "Menyu ÃœzvÃ¼"
+msgstr "Menyu Üzvü"
 
 #: libgnomeui/gnome-stock.c:1899
 msgid "Accelerator"
-msgstr "SÃ¼r'É™tlÉ™ndirici"
+msgstr "Sür'ætlændirici"
 
 #: libgnomeui/gnome_segv.c:62
 #, c-format
@@ -1259,11 +1255,11 @@ msgid ""
 "will exit.\n"
 "Please save all your files before closing this dialog."
 msgstr ""
-"GNOME gediÅŸat idarÉ™cisi (É™mÉ™liyyat %d) daÇ§Ä±ldÄ±.\n"
-"(%s) Ã¶lÃ¼mcÃ¼l xÉ™tasÄ±na baÇ§lÄ±dÄ±r.\n"
-"Bu xÉ™bÉ™r qutusunu qapatdÄ±Ç§Ä±nÄ±z vaxt bÃ¼tÃ¼n uyÇ§ulamalarÄ±nÄ±z "
-"qurtarÄ±lacaq vÉ™ gediÅŸatdan da Ã§Ä±xÄ±lacaq.\n"
-"LÃ¼tfÉ™n bu qutunu qapatrmadan É™vvÉ™l bÃ¼tÃ¼n dosyelÉ™rini qeyd edin."
+"GNOME gedişat idaræcisi (æmæliyyat %d) dağıldı.\n"
+"(%s) ölümcül xætasına bağlıdır.\n"
+"Bu xæbær qutusunu qapatdığınız vaxt bütün uyğulamalarınız qurtarılacaq væ "
+"gedişatdan da çıxılacaq.\n"
+"Lütfæn bu qutunu qapatrmadan ævvæl bütün fayllarını qeyd edin."
 
 #: libgnomeui/gnome_segv.c:72
 #, c-format
@@ -1272,21 +1268,21 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"\"%s\" UyÃ¼ulamasÄ± (É™mÉ™liyyat %d) daÇ§Ä±ldÄ±.\n"
-"Ã–lÃ¼mcÃ¼l xÉ™ta oldu.\n"
+"\"%s\" Uyüulaması (æmæliyyat %d) dağıldı.\n"
+"Ölümcül xæta oldu.\n"
 "(%s)"
 
 #: libgnomeui/gnome_segv.c:80
 msgid "Usage: gnome_segv appname signum\n"
-msgstr "Ä°stifadÉ™ qaydasÄ±:gnome_segv uyÇ§_adÄ± nÃ¶mrÉ™si\n"
+msgstr "İstifadæ qaydası:gnome_segv uyğ_adı nömræsi\n"
 
 #: libgnomeui/gnome_segv.c:94
 msgid "Submit a bug report"
-msgstr "XÉ™ta raportunu qÉ™bul et"
+msgstr "Xæta raportunu qæbul et"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr "XÉ™ta hÉ™lli"
+msgstr "Xæta hælli"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1295,16 +1291,15 @@ msgstr "http://www.gnome.org/application_crashed.shtml"
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
 msgstr ""
-"LÃ¼tfÉ™n É™traflÄ± mÉ™'lumat Ã¼Ã§Ã¼n GNOME UyÇ§ulama XÉ™tasÄ± sÉ™hifÉ™sini "
-"ziyarÉ™t edin"
+"Lütfæn ætraflı mæ'lumat üçün GNOME Uyğulama Xætası sæhifæsini ziyaræt edin"
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
-msgstr "TÉ™zÉ™..."
+msgstr "Yeni..."
 
 #: libgnomeui/stock_demo.c:120
 msgid "Open..."
-msgstr "AÃ§..."
+msgstr "Aç..."
 
 #: libgnomeui/stock_demo.c:128
 msgid "Save"
@@ -1312,19 +1307,19 @@ msgstr "Qeyd Et"
 
 #: libgnomeui/stock_demo.c:136
 msgid "Save as..."
-msgstr "FÉ™rqli Qeyd Et..."
+msgstr "Færqli Qeyd Et..."
 
 #: libgnomeui/stock_demo.c:156
 msgid "Print..."
-msgstr "Ã‡ap Et..."
+msgstr "Çap Et..."
 
 #: libgnomeui/stock_demo.c:164
 msgid "Setup Page..."
-msgstr "SÉ™hifÉ™ni QuraÅŸdÄ±r..."
+msgstr "Sæhifæni Quraşdır..."
 
 #: libgnomeui/stock_demo.c:173
 msgid "Quit"
-msgstr "Ã‡Ä±x"
+msgstr "Çıx"
 
 #: libgnomeui/stock_demo.c:191
 msgid "Undo"
@@ -1332,7 +1327,7 @@ msgstr "Arxaya Get"
 
 #: libgnomeui/stock_demo.c:199
 msgid "Redo"
-msgstr "TÉ™zÉ™dÉ™n Et"
+msgstr "Yenidæn Et"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
@@ -1340,23 +1335,23 @@ msgstr "Sil"
 
 #: libgnomeui/stock_demo.c:213
 msgid "Cut"
-msgstr "KÉ™s"
+msgstr "Kæs"
 
 #: libgnomeui/stock_demo.c:221
 msgid "Copy"
-msgstr "KÃ¶Ã§Ã¼rt"
+msgstr "Köçürt"
 
 #: libgnomeui/stock_demo.c:229
 msgid "Paste"
-msgstr "YapÄ±ÅŸdÄ±r"
+msgstr "Yapışdır"
 
 #: libgnomeui/stock_demo.c:241
 msgid "Properties..."
-msgstr "XÃ¼susiyyÉ™tlÉ™r..."
+msgstr "Xüsusiyyætlær..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
-msgstr "SeÃ§É™nÉ™klÉ™r..."
+msgstr "Seçænæklær..."
 
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
@@ -1376,59 +1371,59 @@ msgstr "Lay:"
 
 #: libgnomeui/winhints_demo.c:94
 msgid "Above Dock"
-msgstr "ArakÉ™smÉ™ ÃœstÃ¼ndÉ™"
+msgstr "Arakæsmæ Üstündæ"
 
 #: libgnomeui/winhints_demo.c:98
 msgid "Dock"
-msgstr "ArakÉ™smÉ™"
+msgstr "Arakæsmæ"
 
 #: libgnomeui/winhints_demo.c:102
 msgid "On Top"
-msgstr "ÃœstdÉ™"
+msgstr "Üstdæ"
 
 #: libgnomeui/winhints_demo.c:106
 msgid "Normal"
-msgstr "SÄ±ravi"
+msgstr "Sıravi"
 
 #: libgnomeui/winhints_demo.c:110
 msgid "Below"
-msgstr "AÅŸaÇ§Ä±"
+msgstr "Aşağı"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"
-msgstr "MasaÃ¼stÃ¼"
+msgstr "Masaüstü"
 
 #: libgnomeui/winhints_demo.c:122
 msgid "Set Layer"
-msgstr "Lay SeÃ§"
+msgstr "Lay Seç"
 
 #: libgnomeui/winhints_demo.c:129
 msgid "Workspaces:"
-msgstr "Ä°ÅŸ sahÉ™si:"
+msgstr "İş sahæsi:"
 
 #: libgnomeui/winhints_demo.c:151
 msgid "Sticky"
-msgstr "YapÄ±ÅŸqan"
+msgstr "Yapışqan"
 
 #: libgnomeui/winhints_demo.c:155
 msgid "Set Workspace"
-msgstr "Ä°ÅŸ sahÉ™si seÃ§"
+msgstr "İş sahæsi seç"
 
 #: libgnomeui/winhints_demo.c:165
 msgid "State Toggles:"
-msgstr "ToggllarÄ± GÃ¶stÉ™r:"
+msgstr "Togglları Göstær:"
 
 #: libgnomeui/winhints_demo.c:175
 msgid "Minimized"
-msgstr "BalacalaÅŸdÄ±r"
+msgstr "Balacalaşdır"
 
 #: libgnomeui/winhints_demo.c:179
 msgid "Maximized Vertical"
-msgstr "Åaguli BÃ¶yÃ¼dÃ¼lmÃ¼ÅŸ"
+msgstr "Şaguli Böyüdülmüş"
 
 #: libgnomeui/winhints_demo.c:183
 msgid "Maximized Horizontal"
-msgstr "ÃœfÃ¼qi BÃ¶yÃ¼dÃ¼lmÃ¼ÅŸ"
+msgstr "Üfüqi Böyüdülmüş"
 
 #: libgnomeui/winhints_demo.c:187
 msgid "Hidden"
@@ -1436,7 +1431,7 @@ msgstr "Gizli"
 
 #: libgnomeui/winhints_demo.c:191
 msgid "Shaded"
-msgstr "KÃ¶lgÉ™li"
+msgstr "Kölgæli"
 
 #: libgnomeui/winhints_demo.c:195
 msgid "Fixed Position"
@@ -1444,65 +1439,65 @@ msgstr "Sabit Yer"
 
 #: libgnomeui/winhints_demo.c:199
 msgid "Ignore on Arrange"
-msgstr "DÃ¼zÃ¼lÃ¼ÅŸdÉ™ rÉ™dd et"
+msgstr "Düzülüşdæ rædd et"
 
 #: libgnomeui/winhints_demo.c:203
 msgid "Set State"
-msgstr "Hal SeÃ§:"
+msgstr "Hal Seç:"
 
 #: libgnomeui/winhints_demo.c:209
 msgid "Skip Toggles:"
-msgstr "TooglelarÄ± KeÃ§:"
+msgstr "Toogleları Keç:"
 
 #: libgnomeui/winhints_demo.c:219
 msgid "Skip Focus"
-msgstr "FokuslamayÄ± keÃ§"
+msgstr "Fokuslamayı keç"
 
 #: libgnomeui/winhints_demo.c:223
 msgid "Skip Window Menu"
-msgstr "PÉ™ncÉ™rÉ™ Menyusunu KeÃ§"
+msgstr "Pæncæræ Menyusunu Keç"
 
 #: libgnomeui/winhints_demo.c:227
 msgid "Skip Taskbar / WinList"
-msgstr "TaskbarÄ± KeÃ§ / Winlist"
+msgstr "Taskbarı Keç / Winlist"
 
 #: libgnomeui/winhints_demo.c:231
 msgid "Set Skip"
-msgstr "KeÃ§iÅŸi SeÃ§"
+msgstr "Keçişi Seç"
 
 #: libgnomeui/winhints_demo.c:410
 msgid "WIN_HINTS Test"
-msgstr "WIN_HINTS SÄ±naÇ§Ä±"
+msgstr "WIN_HINTS Sınağı"
 
 #: libgnomeui/winhints_demo.c:411
 msgid "Copyright (C) 1998"
-msgstr "TÉ™lif haqqÄ± (C) 1998"
+msgstr "Tælif haqqı (C) 1998"
 
 #: libgnomeui/winhints_demo.c:413
 msgid ""
 "Simple test app to check how the WIN_HINTS work.\n"
 "And to test the gnome_win_hints_* functions for errors. :)"
 msgstr ""
-"ProqramlarÄ± WIN_HINTSin iÅŸlÉ™mÉ™ qaydasÄ±nÄ± sÄ±namaq Ã¼Ã§Ã¼n yoxla.\n"
-"VÉ™ gnome_win_hints_* functionu xÉ™talar Ã¼Ã§Ã¼n yoxla. :)"
+"Proqramları WIN_HINTSin işlæmæ qaydasını sınamaq üçün yoxla.\n"
+"Væ gnome_win_hints_* functionu xætalar üçün yoxla. :)"
 
 #: libgnorba/gnome-name-server.c:229
 #, c-format
 msgid "Creating '/GNOME' context %s %d"
-msgstr "'/GNOME' mÃ¶htÉ™viyyatÄ± %s %d yaradÄ±lÄ±r"
+msgstr "'/GNOME' möhtæviyyatı %s %d yaradılır"
 
 #: libgnorba/gnome-name-server.c:246
 #, c-format
 msgid "Creating '/GNOME/Servers' context %s %d"
-msgstr "'/GNOME/Servers' mÃ¶htÉ™viyyatÄ± %s %d yaradÄ±lÄ±r"
+msgstr "'/GNOME/Servers' möhtæviyyatı %s %d yaradılır"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
-msgstr "AktivlÉ™ÅŸdirilÉ™cÉ™k xidmÉ™tin GOAD IDsi"
+msgstr "Aktivlæşdirilæcæk xidmætin GOAD IDsi"
 
 #: libgnorba/goad-browser.c:28
 msgid "Repository ID of the server to activate"
-msgstr "AktivlÉ™ÅŸdirilÉ™cÉ™k xidmÉ™tin REPO IDsi"
+msgstr "Aktivlæşdirilæcæk xidmætin REPO IDsi"
 
 #: libgnorba/goad-browser.c:28
 msgid "REPO-ID"
@@ -1514,27 +1509,26 @@ msgid ""
 "any services installed or I don't know the path to find them.\n"
 "In either case, please check your GNOME installation."
 msgstr ""
-"QurulmuÅŸ heÃ§ bir xidmÉ™t tapa bilmÉ™dim. Ya heÃ§ qurmadÄ±nÄ±z\n"
-" ya da yolunu dÃ¼zgÃ¼n gÃ¶stÉ™rmÉ™diniz.\n"
-"Yoxsa qurduÇ§unuz GNOMEyi yoxlayÄ±n."
+"Qurulmuş heç bir xidmæt tapa bilmædim. Ya heç qurmadınız\n"
+" ya da yolunu düzgün göstærmædiniz.\n"
+"Yoxsa qurduğunuz GNOMEyi yoxlayın."
 
 #: libgnorba/goad.c:1361
 msgid "(Internal use only) GOAD server ID to activate"
 msgstr ""
-"(SadÉ™cÉ™ olaraq daxili istifadÉ™ Ã¼Ã§Ã¼n) AktivlÉ™ÅŸdirilÉ™cÉ™k GOAD verici "
-"IDsi"
+"(Sadæcæ olaraq daxili istifadæ üçün) Aktivlæşdirilæcæk GOAD verici IDsi"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(SadÉ™cÉ™ olaraq daxili istifadÉ™ Ã¼Ã§Ã¼n) GOAD dosye tÉ™"
+msgstr "(Sadæcæ olaraq daxili istifadæ üçün) GOAD fayl tæ"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Gnome Cism Fæallaşdırma Qovluğu"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
-msgstr "GOADÄ±n vericiyi tanÄ±dÄ±Ç§Ä± ID"
+msgstr "GOADın vericiyi tanıdığı ID"
 
 #: libgnorba/loadshlib.c:11
 msgid "GOAD_ID"
@@ -1542,7 +1536,7 @@ msgstr "GOAD_ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "Repository ID under which GOAD knows this server"
-msgstr "GOADÄ±n vericiyi tanÄ±dÄ±Ç§Ä± REPO IDsi"
+msgstr "GOADın vericiyi tanıdığı REPO IDsi"
 
 #: libgnorba/loadshlib.c:12
 msgid "REPO_ID"
@@ -1551,142 +1545,142 @@ msgstr "REPO_ID"
 #: libgnorba/orbitgtk.c:138
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr "CORBA (%s) kÃ¶kÉ™ dosyesi yazÄ±lmaq Ã¼Ã§Ã¼n aÃ§Ä±la bilmÉ™di: %s\n"
+msgstr "CORBA (%s) kökæ faylı yazılmaq üçün açıla bilmædi: %s\n"
 
 #: libgnorba/orbitgtk.c:145
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr "CORBA (%s) kÃ¶kÉ™ dosyesi yazÄ±lmasÄ± iflas etdi: %s\n"
+msgstr "CORBA (%s) kökæ faylı yazılması iflas etdi: %s\n"
 
 #: libgnorba/orbitgtk.c:171
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "CORBA kÃ¶kÉ™si `%s' yÉ™ yazÄ±la bilmÉ™di: %s\n"
+msgstr "CORBA kökæsi `%s' yæ yazıla bilmædi: %s\n"
 
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "CORBA `%s' kÃ¶kÉ™ dosyesi aÃ§Ä±la bilmÉ™di: %s\n"
+msgstr "CORBA `%s' kökæ faylı açıla bilmædi: %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "CORBA `%s' kÃ¶kÉ™ dosyesi oxuna bilmÉ™di: %s\n"
+msgstr "CORBA `%s' kökæ faylı oxuna bilmædi: %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
-msgstr "CORBA tanÄ±tma kÃ¶kÉ™si gÃ¶rÃ¼lmÉ™di, Ã§Ä±xÄ±lÄ±r\n"
+msgstr "CORBA tanıtma kökæsi görülmædi, çıxılır\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"
-msgstr "AdlandÄ±rma xidmÉ™ti alÄ±na bilmir!"
+msgstr "Adlandırma xidmæti alına bilmir!"
 
 #: support/error.c:109
 msgid "Unknown system error"
-msgstr "BilinmÉ™yan sistem xÉ™tasÄ±"
+msgstr "Bilinmæyan sistem xætası"
 
 #: support/getopt.c:669
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: seÃ§É™nÉ™yi `%s' cÃ¼tdÃ¼r\n"
+msgstr "%s: seçænæyi `%s' cütdür\n"
 
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: seÃ§É™nÉ™k `--%s' arqument almÄ±r\n"
+msgstr "%s: seçænæk `--%s' arqument almır\n"
 
 #: support/getopt.c:698
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: seÃ§É™nÉ™k `%c%s' arqument almÄ±r\n"
+msgstr "%s: seçænæk `%c%s' arqument almır\n"
 
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: seÃ§É™nÉ™k `%s' arqumente ehtiyaÃ§ duyar\n"
+msgstr "%s: seçænæk `%s' arqumente ehtiyaç duyar\n"
 
 #. --option
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: tanÄ±nmayan seÃ§É™nÉ™k `--%s'\n"
+msgstr "%s: tanınmayan seçænæk `--%s'\n"
 
 #. +option or -option
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: tanÄ±nmayan seÃ§É™nÉ™k `%c%s'\n"
+msgstr "%s: tanınmayan seçænæk `%c%s'\n"
 
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:774
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr "%s: qanunsuz seÃ§É™nÉ™k -- %c\n"
+msgstr "%s: qanunsuz seçænæk -- %c\n"
 
 #: support/getopt.c:777
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr "%s: qÉ™buledilmÉ™z seÃ§É™nÉ™k -- %c\n"
+msgstr "%s: qæbuledilmæz seçænæk -- %c\n"
 
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:807 support/getopt.c:937
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: seÃ§É™nÉ™k arqumentÉ™ ehtiyac duyar --%c\n"
+msgstr "%s: seçænæk arqumentæ ehtiyac duyar --%c\n"
 
 #: support/getopt.c:854
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: `-W %s'  seÃ§É™nÉ™yi cÃ¼tdÃ¼r\n"
+msgstr "%s: `-W %s'  seçænæyi cütdür\n"
 
 #: support/getopt.c:872
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: `-W %s' seÃ§É™nÉ™yi arqument qÉ™bul etmir\n"
+msgstr "%s: `-W %s' seçænæyi arqument qæbul etmir\n"
 
 #: support/popthelp.c:35
 msgid "Show this help message"
-msgstr "Bu kÃ¶mÉ™k mesajÄ±nÄ± gÃ¶stÉ™r"
+msgstr "Bu kömæk mesajını göstær"
 
 #: support/popthelp.c:36
 msgid "Display brief usage message"
-msgstr "QÄ±sa istifadÉ™ mesajÄ±nÄ± gÃ¶stÉ™r"
+msgstr "Qısa istifadæ mesajını göstær"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
 msgid "Default Pixmap"
-msgstr "Æsas Pixmap"
+msgstr "Æsas Pixmap"
 
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
 msgid "If you choose a font it will appear here"
-msgstr "YazÄ±tipi seÃ§diyiniz vaxt burda gÃ¶rÃ¼nÉ™r"
+msgstr "Yazıtipi seçdiyiniz vaxt burda görünær"
 
 #. Font_Info
 #: test-gnome/testgnome.c:807
 msgid "Font Info"
-msgstr "YazÄ±tipi MÉ™'lumatÄ±"
+msgstr "Yazıtipi Mæ'lumatı"
 
 #: test-gnome/testgnome.c:817
 msgid "Use Font in button with size"
-msgstr "DÃ¼ymÉ™dÉ™ki YazÄ±tipini bu bÃ¶yÃ¼klÃ¼kdÉ™ istifadÉ™ et"
+msgstr "Düymædæki Yazıtipini bu böyüklükdæ istifadæ et"
 
 #: test-gnome/testgnome.c:824
 msgid "Show font size"
-msgstr "Yazitipi bÃ¶yÃ¼klÃ¼yÃ¼nÃ¼ gÃ¶stÉ™r"
+msgstr "Yazitipi böyüklüyünü göstær"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"
-msgstr "Bu paxmap vÉ™ mÉ™tnli hboxdur"
+msgstr "Bu paxmap væ mætnli hboxdur"
 
 #: test-gnome/testgnome.c:1072
 msgid "The user chose Yes/OK with data:\n"
-msgstr "Ä°stifadÉ™Ã§i bu data ilÉ™ BÉ™li/OLDU seÃ§kisi:\n"
+msgstr "İstifadæçi bu data ilæ Bæli/OLDU seçkisi:\n"
 
 #: test-gnome/testgnome.c:1076
 msgid "The user chose No/Cancel with data:\n"
-msgstr "Ä°stifadÉ™Ã§i bu data ilÉ™ Xeyr/LÉ™Ç§v et seÃ§kisi:\n"
+msgstr "İstifadæçi bu data ilæ Xeyr/Læğv et seçkisi:\n"
 
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
-msgstr "Arxaya Ã§aÇ§Ä±rÄ±ÅŸda qÉ™ribÉ™ rÉ™qÉ™m"
+msgstr "Arxaya çağırışda qæribæ ræqæm"

@@ -2404,23 +2404,27 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
     }
     break;
   case GDK_Delete:
-    if (event->state & GDK_MOD1_MASK)
-      *p++ = '\033';
-    if (term->swap_del_key)
-      *p++ = 8;
-    else
-      *p++ = '\177';
+    if (term->del_is_del){
+      if (event->state & GDK_MOD1_MASK)
+	*p++ = '\033';
+      if (term->swap_del_key)
+	*p++ = 8;
+      else
+	*p++ = '\177';
+    } else {
+      p+=sprintf (p, "\033[3~");
+    }
     break;
   case GDK_KP_Delete:
     p+=sprintf (p, "\033[3~");
     break;
   case GDK_KP_Home:
   case GDK_Home:
-    p+=sprintf (p, "\033[1~");
+    p+=sprintf (p, "\033OH");
     break;
   case GDK_KP_End:
   case GDK_End:
-    p+=sprintf (p, "\033[4~");
+    p+=sprintf (p, "\033OF");
     break;
   case GDK_KP_Page_Up:
   case GDK_Page_Up:
@@ -2536,6 +2540,9 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
   case GDK_Tab:
     *p++ = event->keyval;
     break;
+  case GDK_Menu:
+    p+=sprintf (p, "\033[29~");
+    break;
   case ' ':
     /* maps single characters to correct control and alt versions */
     if (event->state & GDK_CONTROL_MASK)
@@ -2547,7 +2554,7 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
     break;
   default:
       if (event->length > 0){
-	if (event->state & GDK_MOD1_MASK){
+	if (event->state & (GDK_MOD1_MASK | GDK_MOD4_MASK)){
 	   *p++ = '\033';
         }
 	memcpy(p, event->string, event->length*sizeof(char));
@@ -3304,6 +3311,22 @@ zvt_term_set_del_key_swap (ZvtTerm *term, int state)
   g_return_if_fail (ZVT_IS_TERM (term));
   
   term->swap_del_key = state != 0;
+}
+
+/**
+ * zvt_term_set_del_is_del:
+ * @term:   A &ZvtTerm widget.
+ * @state:  If true it uses DEL/^H for Delete key
+ * 
+ * Sets Delete code to DEL/^H or Esc[3~ sequences.
+ **/
+void
+zvt_term_set_del_is_del (ZvtTerm *term, int state)
+{
+  g_return_if_fail (term != NULL);
+  g_return_if_fail (ZVT_IS_TERM (term));
+  
+  term->del_is_del = state != 0;
 }
 
 /*

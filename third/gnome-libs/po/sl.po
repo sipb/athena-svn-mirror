@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-07-28 13:59+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -60,7 +60,6 @@ msgid "HOSTNAME:PORT"
 msgstr "GOSTITELJ:VRATA"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Mo¾nosti GNOME"
 
@@ -320,7 +319,7 @@ msgstr "_Poèisti"
 
 #: libgnomeui/gnome-app-helper.c:184
 msgid "Clear the selection"
-msgstr "Bri¹i izbrano"
+msgstr "Poèisti izbrano"
 
 #. Undo
 #: libgnomeui/gnome-app-helper.c:189
@@ -849,7 +848,7 @@ msgstr "Ne najdem hbox-a, uporabljam obièajno izbiranje datotek"
 msgid "Preview"
 msgstr "Predogled"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Nalagam ione..."
 
@@ -880,7 +879,7 @@ msgstr "Naredi X klice sinhrone"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Ne uporabljal X dodatka za skupno rabo spomina"
+msgstr "Ne uporabljal X dodatka za skupno rabo pomnilnika"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
@@ -1291,7 +1290,7 @@ msgstr "http://www.gnome.org/application_crashed.shtml"
 
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
-msgstr "Za veè informacij prosimo obi¹èite stran GNOME Sesutje Programov"
+msgstr "Za veè informacij prosimo obi¹èite stran Sesutje programov GNOME"
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
@@ -1471,7 +1470,7 @@ msgstr "WIN_NAMIGI test"
 
 #: libgnomeui/winhints_demo.c:411
 msgid "Copyright (C) 1998"
-msgstr "Avtorsko za¹èiteno (C) 1998"
+msgstr "Avtorske pravice pridr¾ane (C) 1998"
 
 #: libgnomeui/winhints_demo.c:413
 msgid ""
@@ -1519,7 +1518,7 @@ msgstr "(Samo za notranjo uporabo) ID stre¾nika GOAD, ki naj se aktivira"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(Samo za notranjo uporabo) Deskriptor datoteke GOAD"
+msgstr "(Samo za notranjo uporabo) deskriptor datoteke GOAD"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
@@ -1544,31 +1543,31 @@ msgstr "REPO_ID"
 #: libgnorba/orbitgtk.c:138
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr "Nisem uspel nalo¾iti datoteke s CORBA pi¹koti (%s) za pisanje: %s\n"
+msgstr "Nisem uspel nalo¾iti datoteke s pi¹koti CORBA (%s) za pisanje: %s\n"
 
 #: libgnorba/orbitgtk.c:145
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr "Nisem uspel zapisati datoteke s CORBA pi¹koti (%s): %s\n"
+msgstr "Nisem uspel zapisati datoteke s pi¹koti CORBA (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:171
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "Nisem uspel zapisati CORBA pi¹kota v `%s': %s\n"
+msgstr "Nisem uspel zapisati pi¹kot CORBA v `%s': %s\n"
 
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Nisem uspel odpreti datoteke s CORBA pi¹koti `%s': %s\n"
+msgstr "Nisem uspel odpreti datoteke s pi¹koti CORBA `%s': %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Nisem uspel prebrati datoteke s CORBA pi¹koti `%s': %s\n"
+msgstr "Nisem uspel prebrati datoteke s pi¹koti CORBA `%s': %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
-msgstr "Nisem uspel dobiti CORBA avtentifikacijskega pi¹kota, konèujem\n"
+msgstr "Nisem uspel dobiti avtentifikacijskega pi¹kota CORBA, konèujem\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"

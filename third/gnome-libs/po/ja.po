@@ -1,14 +1,14 @@
 # gnome-libs ja.po.
-# Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
+# Copyright (C) 1998-2001 Free Software Foundation, Inc.
 # Yukihiro Nakai <Nakai@abricot.co.jp>, 1998.
 # Eiichiro ITANI <emu@ceres.dti.ne.jp>, 1999.
-# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 1999, 2000.
+# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 1999-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.8\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-01-21 22:02+09:00\n"
+"Project-Id-Version: gnome-libs 1.2.12\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-03 01:51+09:00\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -58,12 +58,11 @@ msgstr "使用する音サーバの作動している ホスト:ポート"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "ホスト名:ポート番号"
+msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOMEオプション"
+msgstr "GNOME オプション"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -708,7 +707,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "セッションマネージメントIDの指定"
+msgstr "セッションマネージメント ID の指定"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -720,7 +719,7 @@ msgstr "設定を保存する際のプレフィクスを指定する"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
-msgstr "プレフィクス"
+msgstr "PREFIX"
 
 #: libgnomeui/gnome-client.c:839
 msgid "Disable connection to session manager"
@@ -818,7 +817,7 @@ msgstr "戻る"
 
 #: libgnomeui/gnome-druid.c:136
 msgid "Finish"
-msgstr "終了"
+msgstr "完了"
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
@@ -850,13 +849,13 @@ msgstr "hboxが見つからないので、普通のファイル選択を使います"
 msgid "Preview"
 msgstr "プレビュー"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "アイコンを読み込み中..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
-msgstr "セットするGdkデバッグフラグ"
+msgstr "立てる GDK デバッグフラグ"
 
 #: libgnomeui/gnome-init.c:161 libgnomeui/gnome-init.c:163
 #: libgnomeui/gnome-init.c:183 libgnomeui/gnome-init.c:185
@@ -865,11 +864,11 @@ msgstr "フラグ"
 
 #: libgnomeui/gnome-init.c:163
 msgid "Gdk debugging flags to unset"
-msgstr "下ろすGdkデバッグフラグ"
+msgstr "下ろす GDK デバッグフラグ"
 
 #: libgnomeui/gnome-init.c:165
 msgid "X display to use"
-msgstr "使用するXディスプレイ"
+msgstr "使用する X ディスプレイ"
 
 #: libgnomeui/gnome-init.c:165
 msgid "DISPLAY"
@@ -877,11 +876,11 @@ msgstr "ディスプレイ"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
-msgstr "X呼出を同期モードで行なう"
+msgstr "X の呼出を同期モードで行なう"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "X共有メモリエクステンションを使用しない"
+msgstr "X 共有メモリ拡張を使用しない"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
@@ -913,11 +912,11 @@ msgstr "スタイル"
 
 #: libgnomeui/gnome-init.c:183
 msgid "Gtk+ debugging flags to set"
-msgstr "立てるGtk+デバッグフラグ"
+msgstr "立てる GTK+ デバッグフラグ"
 
 #: libgnomeui/gnome-init.c:185
 msgid "Gtk+ debugging flags to unset"
-msgstr "下ろすGtk+デバッグフラグ"
+msgstr "下ろす GTK+ デバッグフラグ"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
@@ -925,7 +924,7 @@ msgstr "すべての警告を致命的にする"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "追加Gtkモジュールの読み込み"
+msgstr "追加 GTK モジュールの読み込み"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
@@ -1020,7 +1019,7 @@ msgstr "日付"
 #.
 #: libgnomeui/gnome-scores.c:130
 msgid "%a %b %d %T %Y"
-msgstr "%Y年%b%d日%a %T"
+msgstr "%Y年%m月%d日(%a) %T"
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"

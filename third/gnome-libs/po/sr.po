@@ -6,13 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-06-09 12:40+0100\n"
 "Last-Translator: Tomislav_Jankovic<tomaja@net.yu>\n"
 "Language-Team: Serbian(latin) <tomy@linuxyu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
-"Content-Transfer-Encoding: 8 bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: libgnome/gconfigger.c:32
 msgid "get"
@@ -60,9 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME Opcije"
+msgstr "GNOME opcije"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -83,11 +82,11 @@ msgstr "O..."
 
 #: libgnomeui/gnome-app-helper.c:78
 msgid "_File"
-msgstr "_Fajl"
+msgstr "_Datoteka"
 
 #: libgnomeui/gnome-app-helper.c:79
 msgid "_File/"
-msgstr "_Fajl/"
+msgstr "_Datoteka/"
 
 #: libgnomeui/gnome-app-helper.c:80
 msgid "_Edit"
@@ -123,11 +122,11 @@ msgstr "_Novi"
 
 #: libgnomeui/gnome-app-helper.c:88
 msgid "Fi_les"
-msgstr "Fa_jlovi"
+msgstr "Da_toteke"
 
 #: libgnomeui/gnome-app-helper.c:89
 msgid "Fi_les/"
-msgstr "Fa_jlovi/"
+msgstr "Da_toteke/"
 
 #: libgnomeui/gnome-app-helper.c:90
 msgid "_Windows"
@@ -147,11 +146,11 @@ msgstr "_Prozori/"
 
 #: libgnomeui/gnome-app-helper.c:95 libgnomeui/stock_demo.c:184
 msgid "File"
-msgstr "Fajl"
+msgstr "Datoteka"
 
 #: libgnomeui/gnome-app-helper.c:96
 msgid "File/"
-msgstr "Fajl/"
+msgstr "Datoteka/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
@@ -187,11 +186,11 @@ msgstr "Novi/"
 
 #: libgnomeui/gnome-app-helper.c:105
 msgid "Files"
-msgstr "Fajlovi"
+msgstr "Datoteke"
 
 #: libgnomeui/gnome-app-helper.c:106
 msgid "Files/"
-msgstr "Fajlovi/"
+msgstr "Datoteke/"
 
 #: libgnomeui/gnome-app-helper.c:107
 msgid "Windows"
@@ -217,7 +216,7 @@ msgstr "_Otvori..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
-msgstr "Otvori fajl"
+msgstr "Otvori datoteku"
 
 #. Save
 #: libgnomeui/gnome-app-helper.c:127
@@ -226,7 +225,7 @@ msgstr "_Snimi"
 
 #: libgnomeui/gnome-app-helper.c:127
 msgid "Save the current file"
-msgstr "Snimi fajl"
+msgstr "Snimi datoteku"
 
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
@@ -235,7 +234,7 @@ msgstr "Snimi _Kao..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
-msgstr "Snimi fajl pod drugim imenom"
+msgstr "Snimi datoteku pod drugim imenom"
 
 #. Revert
 #: libgnomeui/gnome-app-helper.c:138
@@ -244,7 +243,7 @@ msgstr "_Vrati"
 
 #: libgnomeui/gnome-app-helper.c:139
 msgid "Revert to a saved version of the file"
-msgstr "Vrati na snimljenu verziju fajla"
+msgstr "Vrati na snimljenu verziju datoteke"
 
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
@@ -253,7 +252,7 @@ msgstr "_¹tampa"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
-msgstr "i¹tampaj fajl"
+msgstr "i¹tampaj datoteku"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
@@ -271,7 +270,7 @@ msgstr "_Zatvori"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
-msgstr "Zatvori fajl"
+msgstr "Zatvori datoteku"
 
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
@@ -506,7 +505,7 @@ msgstr "Gre¹ka:"
 
 #: libgnomeui/gnome-app-util.c:173
 msgid "Warning: "
-msgstr "Upozorenjñ "
+msgstr "Upozorenje "
 
 #: libgnomeui/gnome-app-util.c:310
 msgid "y"
@@ -849,7 +848,7 @@ msgstr "Ne mogu naæi hbox,koristim niormalni izbor fajlova"
 msgid "Preview"
 msgstr "Prvi pogled"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Unosim ikone..."
 
@@ -931,19 +930,17 @@ msgid "MODULE"
 msgstr "MODUL"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "GNOME Opcije"
+msgstr "GNOME opcije"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "GNOME Opcije"
+msgstr "GNOME GUI opcije"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "GNOME Opcije"
+msgstr "%s opcije"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
@@ -1521,11 +1518,11 @@ msgstr "(zamo za internu upotrebu) GOAD server ID za aktiviranje"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(zamo za internu upotrebu) GOAD opisnik fajla"
+msgstr "(zamo za internu upotrebu) GOAD opisnik daoteteke"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Gnome direktorijum za aktiviranje objekata"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1546,7 +1543,7 @@ msgstr "REPO_ID"
 #: libgnorba/orbitgtk.c:138
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr "Nije moguæe otvoriti CORBA cookie fajl  (%s) za upis: %s\n"
+msgstr "Nije moguæe otvoriti CORBA cookie datoteku (%s) za upis: %s\n"
 
 #: libgnorba/orbitgtk.c:145
 #, c-format
@@ -1561,12 +1558,12 @@ msgstr "Nije moguæe upisati CORBA cookie u `%s': %s\n"
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Nije moguæe otvoriti CORBA cookie fajl  (%s): %s\n"
+msgstr "Nije moguæe otvoriti CORBA cookie datoteku (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Nije moguæe proèitati CORBA cookie fajl  (%s): %s\n"
+msgstr "Nije moguæe proèitati CORBA cookie datoteku (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"

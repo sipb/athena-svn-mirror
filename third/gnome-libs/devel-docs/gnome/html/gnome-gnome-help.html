@@ -4,7 +4,7 @@
 >gnome-help</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Gnome Library Reference Manual"
 HREF="book1.html"><LINK
@@ -18,8 +18,12 @@ REL="NEXT"
 TITLE="gnome-history"
 HREF="gnome-gnome-history.html"></HEAD
 ><BODY
+CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -111,7 +115,10 @@ SIZE="3"
 ></TABLE
 ></DIV
 ><H1
->gnome-help</H1
+><A
+NAME="GNOME-GNOME-HELP"
+>gnome-help</A
+></H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
@@ -119,7 +126,7 @@ NAME="AEN1907"
 ></A
 ><H2
 >Name</H2
->gnome-help &#8212; Routines for displaying help</DIV
+>gnome-help&nbsp;--&nbsp;Routines for displaying help</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
@@ -341,6 +348,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -388,7 +396,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->a fully resolved file name for path.  Use needs to g_fee the path when
+>a fully resolved file name for path.  Use needs to g_free the path when
 done.  It looks in LANG, then unser C if LANG is not set
 
 I added this because I didnt want to break all apps using 
@@ -398,6 +406,7 @@ HREF="gnome-gnome-help.html#GNOME-HELP-FILE-PATH"
 >() currently. We need a good solution (if this isnt it)
 to handle case where locale file didnt exist</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -451,6 +460,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -498,9 +508,10 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->a fully resolved file name for path.  Use needs to g_fee the path when
+>a fully resolved file name for path.  Use needs to g_free the path when
 done.  It looks in LANG, then unser C if LANG is not set</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -553,6 +564,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -588,6 +600,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > A GnomeHelpMenuEntry.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -635,6 +648,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -669,6 +683,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > file to display in the help browser.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -725,6 +740,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -777,6 +793,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > A GnomeHelpMenuEntry</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -834,6 +851,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -885,6 +903,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 > A GnomeHelpMenuEntry</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -893,7 +912,8 @@ VALIGN="TOP"
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
-><BR><BR><TABLE
+><BR
+CLEAR="all"><BR><TABLE
 WIDTH="100%"
 BORDER="0"
 BGCOLOR="#000000"

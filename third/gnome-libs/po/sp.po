@@ -6,13 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-06-09 12:40+0100\n"
 "Last-Translator: Tomislav Jankovic<tomaja@net.yu>\n"
 "Language-Team: Serbian(Cyrillic) <tomy@linuxyu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-5\n"
-"Content-Transfer-Encoding: 8 bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: libgnome/gconfigger.c:32
 msgid "get"
@@ -60,9 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME Опциje"
+msgstr "GNOME опциje"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -83,11 +82,11 @@ msgstr "О..."
 
 #: libgnomeui/gnome-app-helper.c:78
 msgid "_File"
-msgstr "_Фаjл"
+msgstr "_Датотекa"
 
 #: libgnomeui/gnome-app-helper.c:79
 msgid "_File/"
-msgstr "_Фаjл/"
+msgstr "_Датотекa/"
 
 #: libgnomeui/gnome-app-helper.c:80
 msgid "_Edit"
@@ -123,11 +122,11 @@ msgstr "_Нови"
 
 #: libgnomeui/gnome-app-helper.c:88
 msgid "Fi_les"
-msgstr "Фа_jлови"
+msgstr "Да_тотекe"
 
 #: libgnomeui/gnome-app-helper.c:89
 msgid "Fi_les/"
-msgstr "Фа_jлови/"
+msgstr "Да_тотекe/"
 
 #: libgnomeui/gnome-app-helper.c:90
 msgid "_Windows"
@@ -147,11 +146,11 @@ msgstr "_Прозори/"
 
 #: libgnomeui/gnome-app-helper.c:95 libgnomeui/stock_demo.c:184
 msgid "File"
-msgstr "Фаjл"
+msgstr "Датотекa"
 
 #: libgnomeui/gnome-app-helper.c:96
 msgid "File/"
-msgstr "Фаjл/"
+msgstr "Датотекa/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
@@ -187,11 +186,11 @@ msgstr "Нови/"
 
 #: libgnomeui/gnome-app-helper.c:105
 msgid "Files"
-msgstr "Фаjлови"
+msgstr "Датотекe"
 
 #: libgnomeui/gnome-app-helper.c:106
 msgid "Files/"
-msgstr "Фаjлови/"
+msgstr "Датотекe/"
 
 #: libgnomeui/gnome-app-helper.c:107
 msgid "Windows"
@@ -217,7 +216,7 @@ msgstr "_Отвори..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
-msgstr "Отвори фаjл"
+msgstr "Отвори датотеку"
 
 #. Save
 #: libgnomeui/gnome-app-helper.c:127
@@ -226,7 +225,7 @@ msgstr "_Сними"
 
 #: libgnomeui/gnome-app-helper.c:127
 msgid "Save the current file"
-msgstr "Сними фаjл"
+msgstr "Сними датотеку"
 
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
@@ -235,7 +234,7 @@ msgstr "Сними _Као..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
-msgstr "Сними фаjл под другим именом"
+msgstr "Сними датотеку под другим именом"
 
 #. Revert
 #: libgnomeui/gnome-app-helper.c:138
@@ -244,7 +243,7 @@ msgstr "_Врати"
 
 #: libgnomeui/gnome-app-helper.c:139
 msgid "Revert to a saved version of the file"
-msgstr "Врати на снимљену верзиjу фаjлa"
+msgstr "Врати на снимљену верзиjу датотекe"
 
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
@@ -253,7 +252,7 @@ msgstr "_штампа"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
-msgstr "иштампаj фajл"
+msgstr "иштампаj датотеку"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
@@ -271,7 +270,7 @@ msgstr "_Затвори"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
-msgstr "Затвори фаjл"
+msgstr "Затвори датотеку"
 
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
@@ -506,7 +505,7 @@ msgstr "Грeшка:"
 
 #: libgnomeui/gnome-app-util.c:173
 msgid "Warning: "
-msgstr "Упозорeњё "
+msgstr "Упозорeњe "
 
 #: libgnomeui/gnome-app-util.c:310
 msgid "y"
@@ -849,7 +848,7 @@ msgstr "Не могу нaћи hbox,користим ниормални избор фаjловa"
 msgid "Preview"
 msgstr "Први поглед"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Уносим иконе..."
 
@@ -931,19 +930,17 @@ msgid "MODULE"
 msgstr "МОДУЛ"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "GNOME Опциje"
+msgstr "GNOME опциje"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "GNOME Опциje"
+msgstr "GNOME GUI опциje"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "GNOME Опциje"
+msgstr "%s опциje"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
@@ -989,7 +986,7 @@ msgstr "_Помоћ у вези овогa"
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
-msgstr "Иzрeж_и"
+msgstr "Изрeж_и"
 
 #: libgnomeui/gnome-property-entries.c:254
 msgid "Select"
@@ -1521,11 +1518,11 @@ msgstr "(замо за интерну употребу) GOAD server ID за активирaњe"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(замо за интерну употребу) GOAD описник фаjлa"
+msgstr "(замо за интерну употребу) GOAD описник даотетекe"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Gnome директориjум за активирaње обjекатa"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1546,7 +1543,7 @@ msgstr "REPO_ID"
 #: libgnorba/orbitgtk.c:138
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
-msgstr "Ниjе могуће отворити CORBA cookie фаjл  (%s) за упис: %s\n"
+msgstr "Ниjе могуће отворити CORBA cookie датотеку (%s) за упис: %s\n"
 
 #: libgnorba/orbitgtk.c:145
 #, c-format
@@ -1561,12 +1558,12 @@ msgstr "Ниjе могуће уписати CORBA cookie у `%s': %s\n"
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Ниjе могуће отворити CORBA cookie фаjл  (%s): %s\n"
+msgstr "Ниjе могуће отворити CORBA cookie датотеку (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Ниjе могуће прочитати CORBA cookie фаjл  (%s): %s\n"
+msgstr "Ниjе могуће прочитати CORBA cookie датотеку (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"

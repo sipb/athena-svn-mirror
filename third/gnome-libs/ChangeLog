@@ -1,3 +1,8 @@
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* gnome-config.in: Added dependence on gdk_imlib to zvt, since
+	libzvt depends on it, but not on libgnomeui.
+
 2001-02-15  Darin Adler  <darin@eazel.com>
 
 	* libgnome/gnomelib-init.c: (gnomelib_register_options): Fixed

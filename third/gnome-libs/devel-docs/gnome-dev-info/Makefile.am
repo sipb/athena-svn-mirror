@@ -1,10 +1,7 @@
 htmldir = $(datadir)/gnome/help/gnome-dev-info/C
-html_DATA = gnome-dev-info.html
+#html_DATA = gnome-dev-info.html
 
-gnome-dev-info.html: gnome-dev-info/book1.html
-	-mkdir gnome-dev-info
-	-cp $(srcdir)/gnome-dev-info/book1.html gnome-dev-info/index.html
-	-cp $(srcdir)/gnome-dev-info/book1.html gnome-dev-info/gnome-dev-info.html
+all-local: gnome-dev-info/book1.html
 
 gnome-dev-info/book1.html: gnome-dev-info.sgml libgnomeui.sgml libgnome.sgml
 	-(cd $(srcdir); db2html gnome-dev-info.sgml) > /dev/null
@@ -46,7 +43,6 @@ PIC_FILES= \
 EXTRA_DIST = \
 	gnome-app-helper.sgml		\
 	gnome-canvas.sgml		\
-	gnome-dev-info.html		\
 	gnome-dev-info.sgml		\
 	gnome-message-utils.sgml	\
 	x-concepts.sgml			\
@@ -58,20 +54,32 @@ EXTRA_DIST = \
 	$(TEXT_FILES)			\
 	$(PIC_FILES)
 
-
 dist-hook:
 	tar cvf - gnome-dev-info | (cd $(distdir); tar xf -)
-
-install-data-local: gnome-dev-info/gnome-dev-info.html
+	
+install-data-local: gnome-dev-info/book1.html
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	-for file in $(srcdir)/gnome-dev-info/*.html $(srcdir)/gnome-dev-info/*.css; do \
-          basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-          $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile; \
-	done
-	-for file in $(srcdir)/*.jpg; do \
-          basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-          $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile; \
-        done
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.html`;		    \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.html'; then \
+	  for file in $$installfiles; do				    \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			    \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	    \
+          done;								    \
+	else :; fi
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.css`;		   \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.css'; then \
+	  for file in $$installfiles; do				   \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			   \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	   \
+          done;								   \
+	else :; fi
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.jpg`;		   \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.jpg'; then \
+	  for file in $$installfiles; do				   \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			   \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	   \
+          done;								   \
+	else :; fi
 
 # devel-docs/gnome-dev-info/Makefile.am ends here
 

@@ -1,4 +1,4 @@
-<refentry id="GnomeIconList" revision="21 Jan 2001">
+<refentry id="GnomeIconList" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>GnomeIconList</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -118,14 +118,6 @@ int         <link linkend="gnome-icon-list-get-items-per-line">gnome_icon_list_g
 
 </refsect1>
 
-<refsect1>
-<title>Args</title>
-<synopsis>
-
-  &quot;<link linkend="GnomeIconList--hadjustment">hadjustment</link>&quot;          <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write
-  &quot;<link linkend="GnomeIconList--vadjustment">vadjustment</link>&quot;          <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write
-</synopsis>
-</refsect1>
 
 
 
@@ -981,33 +973,6 @@ position, -1 is returned.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Args</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomeIconList--hadjustment">&quot;<literal>hadjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write)</term>
-<listitem>
-  <para>
-    This is a <structname>GtkHAdjustment</structname> that is used
-    internally to support the
-    <structname>GtkScrolledWindow</structname> scrolling interface.
-  </para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeIconList--vadjustment">&quot;<literal>vadjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write)</term>
-<listitem>
-  <para>
-    This is a <structname>GtkVAdjustment</structname> that is used
-    internally to support the
-    <structname>GtkScrolledWindow</structname> scrolling interface.
-  </para>
-
-<!--
-Local variables:
-mode: sgml
-sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")
-End:
---></listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

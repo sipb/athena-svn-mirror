@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasRE" revision="21 Jan 2001">
+<refentry id="GnomeCanvasRE" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>GnomeCanvasRE</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -31,26 +31,6 @@ struct      <link linkend="GnomeCanvasRE-struct">GnomeCanvasRE</link>;
 
 </refsect1>
 
-<refsect1>
-<title>Args</title>
-<synopsis>
-
-  &quot;<link linkend="GnomeCanvasRE--x1">x1</link>&quot;                   <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--y1">y1</link>&quot;                   <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--x2">x2</link>&quot;                   <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--y2">y2</link>&quot;                   <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--fill-color">fill_color</link>&quot;           <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="GnomeCanvasRE--fill-color-gdk">fill_color_gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--fill-color-rgba">fill_color_rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--outline-color">outline_color</link>&quot;        <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="GnomeCanvasRE--outline-color-gdk">outline_color_gdk</link>&quot;    <link linkend="GdkColor">GdkColor</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--outline-color-rgba">outline_color_rgba</link>&quot;   <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--fill-stipple">fill_stipple</link>&quot;         <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--outline-stipple">outline_stipple</link>&quot;      <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
-  &quot;<link linkend="GnomeCanvasRE--width-pixels">width_pixels</link>&quot;         <link linkend="guint">guint</link>                : Write
-  &quot;<link linkend="GnomeCanvasRE--width-units">width_units</link>&quot;          <link linkend="gdouble">gdouble</link>              : Write
-</synopsis>
-</refsect1>
 
 
 
@@ -70,82 +50,6 @@ struct      <link linkend="GnomeCanvasRE-struct">GnomeCanvasRE</link>;
 
 </para></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Args</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomeCanvasRE--x1">&quot;<literal>x1</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--y1">&quot;<literal>y1</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--x2">&quot;<literal>x2</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--y2">&quot;<literal>y2</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--fill-color">&quot;<literal>fill_color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--fill-color-gdk">&quot;<literal>fill_color_gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--fill-color-rgba">&quot;<literal>fill_color_rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--outline-color">&quot;<literal>outline_color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--outline-color-gdk">&quot;<literal>outline_color_gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--outline-color-rgba">&quot;<literal>outline_color_rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--fill-stipple">&quot;<literal>fill_stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--outline-stipple">&quot;<literal>outline_stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--width-pixels">&quot;<literal>width_pixels</literal>&quot; (<link linkend="guint">guint</link> : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasRE--width-units">&quot;<literal>width_units</literal>&quot; (<link linkend="gdouble">gdouble</link> : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-mime-info" revision="16 Oct 1999">
+<refentry id="gnome-gnome-mime-info" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-mime-info</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -167,10 +167,13 @@ where the lookup would be too expensive). </para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>mime_type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -240,8 +243,10 @@ associated with the <parameter>mime_type</parameter>.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>mime_type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -300,7 +305,7 @@ the given mime_type
 <entry> the mime type
 </entry></row>
 <row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry> the key used to open the command.
+<entry> the key which stores the flags for a command
 </entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a boolean value, whether the mime_type open
 command will produce lots of output
@@ -323,7 +328,7 @@ command will produce lots of output
 <entry> the mime type
 </entry></row>
 <row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry> the key used to open the command.
+<entry> the key which stores the flags for a command
 </entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a boolean value, whether the mime_type open
 command will required a terminal.

@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-i18n" revision="16 Oct 1999">
+<refentry id="gnome-gnome-i18n" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-i18n</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,7 +16,7 @@
 
 
 #define     <link linkend="gettext-macro">_</link>                               (String)
-#define     <link linkend="N-">N_</link>                              (String)
+#define     <link linkend="N--CAPS">N_</link>                              (String)
 #define     <link linkend="textdomain">textdomain</link>                      (String)
 #define     <link linkend="gettext">gettext</link>                         (String)
 #define     <link linkend="dgettext">dgettext</link>                        (Domain,Message)
@@ -119,10 +119,11 @@ void print_hello (void)
 <row><entry align="right"><parameter>String</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="N-">N_()</title>
+<title><anchor id="N--CAPS">N_()</title>
 <programlisting>#define     N_(String)</programlisting>
 <para>
   This macro is just an identity macro, the only purpose of this macro
@@ -158,6 +159,7 @@ void print_days (void)
 <row><entry align="right"><parameter>String</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -173,6 +175,7 @@ void print_days (void)
 <tbody>
 <row><entry align="right"><parameter>String</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -190,6 +193,7 @@ void print_days (void)
 <row><entry align="right"><parameter>String</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -204,9 +208,11 @@ void print_days (void)
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Domain</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Message</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -222,11 +228,14 @@ void print_days (void)
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Domain</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Message</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Type</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -242,9 +251,11 @@ void print_days (void)
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Domain</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Directory</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

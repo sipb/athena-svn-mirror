@@ -1,3 +1,125 @@
+2001-03-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-03-14  Valek Filippov  <frob@df.ru>
+
+	* nl.po: updated Dutch translation from Dennis Smit.
+
+2001-03-13  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-13  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* vi.po: added Vietnamese file
+	* et.po: fixed charset line
+
+2001-03-13  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation once again. 
+
+2001-03-11  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation. 
+
+2001-03-09  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: converted to 8bit encoding, as requested for Gnome 1.4
+
+2001-03-09  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-07  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* gl.po: Updated Galician translation.
+
+2001-03-05  Anders Carlsson  <andersca@gnu.org>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	* nn.po: Updated Norwegian (nynorsk) translation.
+	
+2001-03-01  Carlos Perells Marmn <carlos@gnome-db.org>
+
+        * es.po: Updated Spanish translation by Lucas 'Basurero'
+          Vieites <basurero@jazzfree.com>
+
+2001-03-03  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Clean up popt related messages (GTK+/GDK).
+	Change format string of strftime in gnome_scores_new().
+
+2001-03-02  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Adjustments according to recent gnome-de discussions.
+
+2001-03-01  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* es.po: Updated Spanish translation by Lucas 'Basurero' Vieites
+	  <basurero@jazzfree.com>
+
+2001-03-01  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-01  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: s/E_rsetzen/Erset_zen/ to avoid clash with "_Rueckgaengig".
+
+2001-02-26  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Updated Hungarian translation 
+
+2001-02-26  Jarkko Ranta  <jjranta@cc.joensuu.fi>
+
+	* fi.po: Updated Finnish translation by Pauli Virtanen.
+
+2001-02-24  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Fix ja.po to avoid segfault of popt functions in
+	gnome-libs/support.
+
+2001-02-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* da.po: Updated Danish translation.
+
+2001-02-21  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-02-22  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-02-20  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-20  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Minor Update of the French translation.
+
+2001-02-18  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Change 3 accel keys.
+
+2001-02-16  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Update.
+
+2001-02-16  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-02-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+
 2001-02-15  Fatih Demir	<kabalak@gtranslator.org>
 
 	* tr.po: Committed updated Turkish translation by Enis.
@@ -8,7 +130,7 @@
 
 2001-02-14  Jarkko Ranta  <jjranta@cc.joensuu.fi>
 
-	fi.po: Updated Finnish translation by Pauli Virtanen
+	* fi.po: Updated Finnish translation by Pauli Virtanen.
 
 2001-02-14  Simos Xenitellis  <simos@hellug.gr>
 
@@ -133,7 +255,7 @@
 
 	* ta.po: Added Tamil translation, thanks to Dinesh Nadarajah 
 	<dindin2k@yahoo.com>.
-	
+
 2000-10-24  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
 
 	* it.po: Updated Italian translation
@@ -142,7 +264,7 @@
 
 	* no.po: Updated Norwegian (bokmel) translation.
 	* nn.po: Updated Norwegian (nynorsk) translation.
-	
+
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* pl.po: Updated Polish translation.
@@ -320,11 +442,11 @@
 2000-05-07  Kjartan Maraas  <kmaraas@online.no>
 
 	* no.po: Updated Norwegian translation.
-	
+
 2000-05-04  Kjartan Maraas  <kmaraas@online.no>
 
 	* no.po: Updated Norwegian translation.
-	
+
 2000-05-03  Valek Filippov  <frob@df.ru>
 
 	* ru.po: updated russian translation.
@@ -347,7 +469,7 @@
 	* sv.po: Updated Swedish translation.
 
 2000-04-29  Pablo Saratxaga <pablo@mandrakesoft.com>
- 
+
 	* wa.po: small fixes
 
 2000-04-05  Christopher R. Gabriel  <cgabriel@firenze.linux.it>

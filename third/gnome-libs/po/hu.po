@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs VERSION\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-01-25 16:24+01:00\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-02-26 14:04+01:00\n"
 "Last-Translator: Szabolcs BAN <shooby@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -59,9 +59,8 @@ msgid "HOSTNAME:PORT"
 msgstr "GÉPNÉV:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME-beállítások"
+msgstr "GNOME beállítások"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -850,7 +849,7 @@ msgstr "Nem találok hbox-ot, normális fájl kijelölés használata"
 msgid "Preview"
 msgstr "Elõnézet"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Ikonok töltõdnek..."
 

@@ -1,3 +1,25 @@
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* zvtterm.h, zvtterm.c: New bit del_is_del, new function
+	zvt_term_set_del_is_del. New default behavior of Delete. Main
+	purpose of new default behavior is to be in sync with XFree86 and
+	allow "Emacs-friendly" mode (make difference between Ctrl-H,
+	Delete and BackSpace). Delete now defaults to Esc[3~ (VT220's
+	kdch1) and del_is_del forced DEL/^H.
+
+        * zvtterm.c: Changed codes for Home and End keys from X11R5 ones
+        (Esc[1~ and Esc[4~) to X11R6 key_home/end ones (EscOH and EscOF).
+	If keys don't work with readline apps, you probably need to fix
+	terminfo entry.
+
+	* zvtterm.c: "Metafy" characters with MOD1 or MOD4. Fast solution
+	of fact, that XTerm metafies characters with MOD1 on 102 keyboards
+	and with MOD4 with 105 keyboards.
+
+	* zvtterm.c: Generate code for Menu key.
+
+	* TODO: Note about modifier remapping.
+
 2000-11-25  Not Zed  <NotZed@HelixCode.com>
 
 	* vt.c

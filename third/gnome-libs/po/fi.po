@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-11-23 22:57+02:00\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -64,9 +64,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORTTI"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOMEn asetukset"
+msgstr "GNOME-asetukset"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -853,7 +852,7 @@ msgstr "Hboxia ei löydy, käytetään tavallista tiedostonvalintaa"
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Lataa kuvakkeita..."
 

@@ -145,7 +145,6 @@ l = @l@
 need_gnome_support = @need_gnome_support@
 
 htmldir = $(datadir)/gnome/help/gnome-dev-info/C
-html_DATA = gnome-dev-info.html
 
 TEXT_FILES = 
 
@@ -155,13 +154,11 @@ PIC_FILES =  	gnome-hello-0-basic.jpg 	gnome-hello-1-menus.jpg 	gnome-hello-2-i1
 # automake does not yet dig .sgml files, so for now the DocBook
 # files must be extra_dist.  Also, distribute the `.html' file
 # so that people without DocBook can still use the docs.
-EXTRA_DIST =  	gnome-app-helper.sgml			gnome-canvas.sgml			gnome-dev-info.html			gnome-dev-info.sgml			gnome-message-utils.sgml		x-concepts.sgml				libgnorba.sgml				gnome-mdi.sgml				libgnomeui.sgml				libgnome.sgml				trailer.sgml				$(TEXT_FILES)				$(PIC_FILES)
+EXTRA_DIST =  	gnome-app-helper.sgml			gnome-canvas.sgml			gnome-dev-info.sgml			gnome-message-utils.sgml		x-concepts.sgml				libgnorba.sgml				gnome-mdi.sgml				libgnomeui.sgml				libgnome.sgml				trailer.sgml				$(TEXT_FILES)				$(PIC_FILES)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(html_DATA)
-
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
@@ -178,25 +175,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-
-install-htmlDATA: $(html_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	@list='$(html_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(htmldir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(htmldir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(htmldir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(htmldir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-htmlDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(html_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(htmldir)/$$p; \
-	done
 tags: TAGS
 TAGS:
 
@@ -228,20 +206,19 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-htmlDATA install-data-local
+install-data-am: install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-htmlDATA
+uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(DATA)
+all-am: Makefile all-local
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(htmldir)
 
 
 mostlyclean-generic:
@@ -272,18 +249,16 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-htmlDATA install-htmlDATA tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-local install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
+.PHONY: tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-local install-data-am install-data install-am install \
+uninstall-am uninstall all-local all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+#html_DATA = gnome-dev-info.html
 
-gnome-dev-info.html: gnome-dev-info/book1.html
-	-mkdir gnome-dev-info
-	-cp $(srcdir)/gnome-dev-info/book1.html gnome-dev-info/index.html
-	-cp $(srcdir)/gnome-dev-info/book1.html gnome-dev-info/gnome-dev-info.html
+all-local: gnome-dev-info/book1.html
 
 gnome-dev-info/book1.html: gnome-dev-info.sgml libgnomeui.sgml libgnome.sgml
 	-(cd $(srcdir); db2html gnome-dev-info.sgml) > /dev/null
@@ -311,16 +286,29 @@ libgnome.sgml:
 dist-hook:
 	tar cvf - gnome-dev-info | (cd $(distdir); tar xf -)
 
-install-data-local: gnome-dev-info/gnome-dev-info.html
+install-data-local: gnome-dev-info/book1.html
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	-for file in $(srcdir)/gnome-dev-info/*.html $(srcdir)/gnome-dev-info/*.css; do \
-          basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-          $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile; \
-	done
-	-for file in $(srcdir)/*.jpg; do \
-          basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-          $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile; \
-        done
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.html`;		    \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.html'; then \
+	  for file in $$installfiles; do				    \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			    \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	    \
+          done;								    \
+	else :; fi
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.css`;		   \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.css'; then \
+	  for file in $$installfiles; do				   \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			   \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	   \
+          done;								   \
+	else :; fi
+	installfiles=`echo $(srcdir)/gnome-dev-info/*.jpg`;		   \
+	if test "$$installfiles" != '$(srcdir)/gnome-dev-info/*.jpg'; then \
+	  for file in $$installfiles; do				   \
+            basefile=`echo $$file | sed -e 's,^.*/,,'`;			   \
+            $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$basefile;	   \
+          done;								   \
+	else :; fi
 
 # devel-docs/gnome-dev-info/Makefile.am ends here
 

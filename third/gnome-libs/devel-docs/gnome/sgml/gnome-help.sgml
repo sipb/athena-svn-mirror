@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-help" revision="16 Oct 1999">
+<refentry id="gnome-gnome-help" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-help</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -91,7 +91,7 @@ displayed</para></refsect2>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
 <entry> File that contains the help document
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a fully resolved file name for path.  Use needs to g_fee the path when
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a fully resolved file name for path.  Use needs to g_free the path when
 done.  It looks in LANG, then unser C if LANG is not set
 
 I added this because I didnt want to break all apps using 
@@ -118,7 +118,7 @@ to handle case where locale file didnt exist
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
 <entry> File that contains the help document
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a fully resolved file name for path.  Use needs to g_fee the path when
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a fully resolved file name for path.  Use needs to g_free the path when
 done.  It looks in LANG, then unser C if LANG is not set
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
