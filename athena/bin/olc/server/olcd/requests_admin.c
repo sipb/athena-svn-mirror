@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.20 1991-02-01 23:21:52 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.21 1991-03-28 13:27:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.20 1991-02-01 23:21:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.21 1991-03-28 13:27:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -329,7 +329,11 @@ olc_get_accesses(fd,request)
       if(status)
 	{
 	  strcpy(u.username, request->target.username);
+#ifdef KERBEROS
 	  strcpy(u.realm, request->target.realm);
+#else
+	  strcpy(u.realm, DFLT_SERVER_REALM);
+#endif	  
 	  user = &u;    
 	  init_dbinfo(user);
 	}
@@ -421,7 +425,11 @@ olc_change_dbinfo(fd,request)
       if(status)
 	{
 	  strcpy(u.username, request->target.username);
+#ifdef KERBEROS
 	  strcpy(u.realm, request->target.realm);
+#else
+	  strcpy(u.realm, DFLT_SERVER_REALM);
+#endif	  
 	  user = &u;    /* local init for now */
 	  init_dbinfo(user);
 	}
