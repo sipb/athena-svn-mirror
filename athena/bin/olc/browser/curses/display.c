@@ -1,14 +1,3 @@
-/*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
- *	$Author: treese $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.1 1986-01-18 18:09:18 treese Exp $
- */
-
-#ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.1 1986-01-18 18:09:18 treese Exp $";
-#endif	lint
-
 /* This file is part of the CREF finder.  It contains the display routines.
  *
  *	Win Treese
@@ -16,18 +5,19 @@ static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athe
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Log: not supported by cvs2svn $
- *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
+ *	$Author: treese $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.1 1986-01-18 18:09:18 treese Exp $";
-#endif
+static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.2 1986-01-22 18:02:45 treese Exp $";
+#endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 
 #include "cref.h"			/* Finder defs. */
+#include "globals.h"			/* Global variables. */
 
 /* Function:	init_display() initializes the CREF display.
  * Arguments:	None.
@@ -40,18 +30,11 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 ERRCODE
 init_display()
 {
-	if (initscr() == ERR)
-		err_abort("cref: Unable to initialize display.  Exiting...");
-/*	if (crmode() == ERR)
-		err_abort("cref: Unable to set up terminal.  Exiting...");
-*/
-	crmode();
-/*	if (echo() == ERR)
-		err_abort("cref: Unable to set terminal echo.  Exiting...");
-*/
-	echo();
-	clear();
-	refresh();
+  initscr();
+  crmode();
+  echo();
+  clear();
+  refresh();
 }
 
 /* Function:	center() centers a line on the display.  The line is
@@ -63,22 +46,22 @@ init_display()
  */
 
 center(row, text)
-int row;
-char *text;
+     int row;
+     char *text;
 {
-	int start_column;
-
-	start_column = (COLS/2) - (strlen(text)/2);
-	move(row, start_column);
-	addstr(text);
+  int start_column;
+  
+  start_column = (COLS/2) - (strlen(text)/2);
+  move(row, start_column);
+  addstr(text);
 }
 
 #ifdef TEST
 message(line, msg)
-int line;
-char *msg;
+     int line;
+     char *msg;
 {
-	fprintf(stderr, "%s\n", msg);
+  fprintf(stderr, "%s\n", msg);
 }
 #else
 /* Function:	message() prints a message in the area at the bottom of
@@ -90,28 +73,29 @@ char *msg;
  */
 
 message(line, text)
-int line;
-char *text;
+     int line;
+     char *text;
 {
-	int row;
-
-	move(LINES-1,0);
-	clrtoeol();
-	move(LINES-2,0);
-	clrtoeol();
-	refresh();
-
-	if (line == 1)
-		row = LINES - 2;
-	else if (line == 2)
-		row = LINES-1;
-	else	{
-		mvaddstr(LINES-1, 0, "message: invalid line number.");
-		refresh();
-		return;
-		}
-	mvaddstr(row, 0, text);
-	refresh();
+  int row;
+  
+  move(LINES-1,0);
+  clrtoeol();
+  move(LINES-2,0);
+  clrtoeol();
+  refresh();
+  
+  if (line == 1)
+    row = LINES - 2;
+  else if (line == 2)
+    row = LINES-1;
+  else
+    {
+      mvaddstr(LINES-1, 0, "message: invalid line number.");
+      refresh();
+      return;
+    }
+  mvaddstr(row, 0, text);
+  refresh();
 }
 #endif
 
@@ -124,41 +108,42 @@ char *text;
 
 make_display()
 {
-	ENTRY *curr_entry;			/* Current index entry. */
-	char current_dir[FILENAME_SIZE];	/* Current directory. */
-	char display_line[LINE_LENGTH];		/* Line to display. */
-	int max_index_lines;			/* Max # to display. */
-	int start_index;			/* Index to start with. */
-	int curr_line;				/* Current screen line. */
-	int curr_index;				/* Current index. */
-	int index_line;				/* Current index line. */
-
-	clear();
-	get_current_dir(current_dir);
-	center(0, CREF_HEADER);
-	center(1, current_dir);
-	
-	curr_index = get_index_start();
-	curr_line = 4;
-
-	for (index_line = 1; index_line < MAX_INDEX_LINES; index_line++)
-		{
-		curr_entry = get_entry(curr_index);
-		if (curr_entry == NULL)
-			break;
-		move(curr_line, 15);
-		sprintf(display_line, "%3d", curr_index);
-		if (curr_entry->type == CREF_DIR)
-			strcat(display_line, "* ");
-		else strcat(display_line, "  ");
-		strcat(display_line, curr_entry->title);
-		addstr(display_line);
-		curr_line++;
-		curr_index++;
-		}
-	if (curr_entry == NULL)
-		center(curr_line + 2, "** End of Index **");
-	else center(curr_line + 2, "** More **");
+  ENTRY *curr_entry;			/* Current index entry. */
+  char current_dir[FILENAME_SIZE];	/* Current directory. */
+  char display_line[LINE_LENGTH];	/* Line to display. */
+  int max_index_lines;			/* Max # to display. */
+  int start_index;			/* Index to start with. */
+  int curr_line;			/* Current screen line. */
+  int curr_index;			/* Current index. */
+  int index_line;			/* Current index line. */
+  
+  clear();
+  strcpy(current_dir, Current_Dir);
+  center(0, CREF_HEADER);
+  center(1, current_dir);
+  curr_index = Index_Start;
+  curr_line = 4;
+  
+  for (index_line = 1; index_line < MAX_INDEX_LINES; index_line++)
+    {
+      curr_entry = get_entry(curr_index);
+      if (curr_entry == NULL)
+	break;
+      move(curr_line, 15);
+      sprintf(display_line, "%3d", curr_index + 1);
+      if (curr_entry->type == CREF_DIR)
+	strcat(display_line, "* ");
+      else
+	strcat(display_line, "  ");
+      strcat(display_line, curr_entry->title);
+      addstr(display_line);
+      curr_line++;
+      curr_index++;
+    }
+  if (curr_index >= Entry_Count)
+    center(curr_line + 2, "** End of Index **");
+  else
+    center(curr_line + 2, "** More **");
 }
 
 /* Function:	display_entry() displays a CREF entry on the screen.
@@ -170,32 +155,33 @@ make_display()
  */
 
 display_entry(index)
-int index;
+     int index;
 {
-	ENTRY *entry;				/* Entry to be displayed. */
-
-	if ( (entry = get_entry(index)) == NULL)
-		{
-		message(1, "Invalid entry number.");
-		return;
-		}
-	set_current_index(index);
-	if (entry->type == CREF_FILE)
-		{
-		clear();
-		refresh();
-		call_program("more", entry->filename);
-		standout();
-		mvaddstr(LINES-1, 0, "Hit any key to continue");
-		standend();
-		refresh();
-		getch();
-		clear();
-		make_display();
-		}
-	else	{
-		set_current_dir(entry->filename);
-		make_display();
-		}
+  ENTRY *entry;				/* Entry to be displayed. */
+  
+  if ( (entry = get_entry(index)) == NULL)
+    {
+      message(1, "Invalid entry number.");
+      return;
+    }
+  Current_Index = index;
+  if (entry->type == CREF_FILE)
+    {
+      clear();
+      refresh();
+      call_program("more", entry->filename);
+      standout();
+      mvaddstr(LINES-1, 0, "Hit any key to continue");
+      standend();
+      refresh();
+      getch();
+      clear();
+      make_display();
+    }
+  else
+    {
+      Previous_Index = Current_Index;
+      set_current_dir(entry->filename);
+      make_display();
+    }
 }
-

@@ -1,14 +1,3 @@
-/*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: treese $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.1 1986-01-18 18:09:09 treese Exp $
- */
-
-#ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.1 1986-01-18 18:09:09 treese Exp $";
-#endif	lint
-
 /* This file is part of the CREF finder.  It contains miscellaneous useful
  *
  *
@@ -17,13 +6,13 @@ static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/a
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Log: not supported by cvs2svn $
- *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
+ *	$Author: treese $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.1 1986-01-18 18:09:09 treese Exp $";
-#endif
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.2 1986-01-22 18:02:34 treese Exp $";
+#endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
@@ -31,6 +20,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <grp.h>			/* System group defs. */
 
 #include "cref.h"			/* Finder defs. */
+#include "globals.h"			/* Global variable defs. */
 
 /* Function:	err_abort() prints an error message and exits.
  * Arguments:	message:	Message to print.
@@ -66,19 +56,16 @@ check_consultant()
 	if (getgroups(NGROUPS, group_ids) < 0)
 		err_abort("cref: Unable to get group ID list.");
 	if ( (consult_group = getgrnam(CONSULT_GROUP)) == NULL)
-		{
-		if ( (consult_group = getgrnam(ALT_GROUP)) == NULL)
-			err_abort("cref: Unable to get group entry.");
-		}
+		err_abort("cref: Unable to get group entry.");
 	for (i = 0; i < NGROUPS; i++)
 		{
 		if (group_ids[i] == consult_group->gr_gid)
 			{
-			set_consultant(TRUE);
+			Is_Consultant = TRUE;
 			return(TRUE);
 			}
 		}
-	set_consultant(FALSE);
+	Is_Consultant = FALSE;
 	return(FALSE);
 }
 	
@@ -125,3 +112,4 @@ char *argument;				/* Argument to be passed to program. */
 		return(SUCCESS);
 		}
 }
+	
