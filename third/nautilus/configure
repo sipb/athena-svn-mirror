@@ -8346,7 +8346,7 @@ echo "configure:8321: checking for additional GNOME modules" >&5
 	  
 	elif test -n "$module"; then
 	  if $GNOME_CONFIG $gnome_config_args --cflags $module >/dev/null 2>&1; then
-		tmp_bsnom=`echo $module | tr a-z A-Z`
+                tmp_bsnom=`echo $module | tr '[a-z]' '[A-Z]'`
 		eval $tmp_bsnom'_CFLAGS'=\"`$GNOME_CONFIG $gnome_config_args --cflags $module`\"
 		eval $tmp_bsnom'_LIBS'=\"`$GNOME_CONFIG $gnome_config_args --libs $module`\"
 	  else
