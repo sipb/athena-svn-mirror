@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.7 1991-07-23 15:58:59 probe Exp $
+# $Id: sendbug.sh,v 1.8 1991-07-30 19:09:36 epeisach Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@Athena.MIT.EDU
@@ -12,16 +12,16 @@ else
 	awk_cmd='\
 		{if ($5 == "Update") update++; \
 		else if ($5 == version) { same++; update=0; } \
-		else { version=$5; update=0; same=0; } } \
+		else { version=$5; update=0; same=0; } } ; \
 	END { printf "%s", version; \
-		close=0; \
-		if (update) { printf " (plus partial update"; close=1; }\
+		close1=0; \
+		if (update) { printf " (plus partial update"; close1=1; }\
 		else if (same) { \
-			if (close) printf "; "; \
+			if (close1) printf "; "; \
 			else printf " ("; \
 			printf "%d update(s) to same version", same; \
-			close=1; } \
-		if (close) printf ")"; \
+			close1=1; } \
+		if (close1) printf ")"; \
 	}'
 	version=`awk "$awk_cmd" < $version_file`
 fi
