@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.3 1993-07-02 00:41:22 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.4 1993-07-02 03:17:28 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -34,7 +34,10 @@ static char *rcsid =
 
 #include <sys/time.h>
 
-#if  defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(sun)
+#if  defined(UltrixArchitcture) \
+  || defined(AIXArchitecture) \
+  || defined(MacIIArchitecture) \
+  || defined(SunArchitecture)
 extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
