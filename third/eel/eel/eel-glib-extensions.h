@@ -128,4 +128,8 @@ char *      eel_get_operating_system_name               (void);
 void        eel_add_weak_pointer                        (gpointer               pointer_location);
 void        eel_remove_weak_pointer                     (gpointer               pointer_location);
 
+/* Get the filename encoding, returns TRUE if utf8 */
+gboolean    eel_get_filename_charset                    (const gchar **filename_charset);
+
+
 #endif /* EEL_GLIB_EXTENSIONS_H */

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"POT-Creation-Date: 2004-10-28 16:52+0200\n"
 "PO-Revision-Date: 2002-06-01 16:14+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <suso@trasno.net>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -140,17 +140,17 @@ msgstr "Erro de GConf"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1162
+#: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1164
+#: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1166
+#: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
@@ -271,7 +271,7 @@ msgstr "Erro"
 msgid "Question"
 msgstr "Cuestión"
 
-#: eel/eel-vfs-extensions.c:693
+#: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
 msgstr " (Unicode non válido)"
 

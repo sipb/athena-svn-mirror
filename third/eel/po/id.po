@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Indonesia translation of eel.
+# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Mohammad DAMT <mdamt@bisnisweb.com>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eel HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:25+0200\n"
-"PO-Revision-Date: 2003-02-06 10:27+0700\n"
+"POT-Creation-Date: 2004-10-28 16:52+0200\n"
+"PO-Revision-Date: 2004-10-22 21:00+0700\n"
 "Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
 "Language-Team: Indonesia <id@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,31 @@ msgstr ""
 
 #: eel/eel-alert-dialog.c:114
 msgid "Image/label border"
-msgstr ""
+msgstr "Gambar/batas label"
 
 #: eel/eel-alert-dialog.c:115
 msgid "Width of border around the label and image in the alert dialog"
-msgstr ""
+msgstr "Lebar batas disekeliling label dan gambar pada dialog peringatan"
 
 #: eel/eel-alert-dialog.c:124
 msgid "Alert Type"
-msgstr ""
+msgstr "Jenis Peringatan"
 
 #: eel/eel-alert-dialog.c:125
-#, fuzzy
 msgid "The type of alert"
-msgstr "Teks untuk label"
+msgstr "Jenis peringatan"
 
 #: eel/eel-alert-dialog.c:133
 msgid "Alert Buttons"
-msgstr ""
+msgstr "Tombol Peringatan"
 
 #: eel/eel-alert-dialog.c:134
 msgid "The buttons shown in the alert dialog"
-msgstr ""
+msgstr "Tombol yang ditampilkan pada dialog peringatan"
 
 #: eel/eel-alert-dialog.c:198
 msgid "Show more _details"
-msgstr ""
+msgstr "Tampilkan _detil"
 
 #: eel/eel-canvas.c:1226 eel/eel-canvas.c:1227
 msgid "X"
@@ -76,7 +75,7 @@ msgstr ""
 
 #: eel/eel-editable-label.c:381
 msgid "Line wrap"
-msgstr "potong baris"
+msgstr "Potong baris"
 
 #: eel/eel-editable-label.c:382
 msgid "If set, wrap lines if the text becomes too wide."
@@ -84,15 +83,15 @@ msgstr "Jika ini diset, baris akan dipotong bila terlalu lebar."
 
 #: eel/eel-editable-label.c:389
 msgid "Cursor Position"
-msgstr "Posisi kursor"
+msgstr "Posisi Kursor"
 
 #: eel/eel-editable-label.c:390
 msgid "The current position of the insertion cursor in chars."
-msgstr "Posisi kursor saat kursor dimasukkan ke dalam kalimat"
+msgstr "Posisi kursor saat kursor dimasukkan ke dalam kalimat."
 
 #: eel/eel-editable-label.c:399
 msgid "Selection Bound"
-msgstr "Batas seleksi"
+msgstr "Batas Seleksi"
 
 #: eel/eel-editable-label.c:400
 msgid ""
@@ -101,11 +100,11 @@ msgstr "Posisi ujung seleksi sejak dari kursor pada kalimat."
 
 #: eel/eel-editable-label.c:3069
 msgid "Select All"
-msgstr "Pilih semua"
+msgstr "Pilih Semua"
 
 #: eel/eel-editable-label.c:3080
 msgid "Input Methods"
-msgstr "Metode input"
+msgstr "Metode Input"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -117,19 +116,13 @@ msgstr ""
 " %s"
 
 #: eel/eel-gconf-extensions.c:87
-#, fuzzy, c-format
+#, c-format
 msgid "GConf error: %s"
-msgstr ""
-"Error GConf:\n"
-" %s"
+msgstr "Error GConf: %s"
 
 #: eel/eel-gconf-extensions.c:90
-#, fuzzy
 msgid "All further errors shown only on terminal."
-msgstr ""
-"Error GConf:\n"
-" %s\n"
-"Error yang lain berikutnya akan ditampilkan pada terminal saja."
+msgstr "Error yang lain berikutnya akan ditampilkan pada terminal saja."
 
 #: eel/eel-gconf-extensions.c:92
 msgid "GConf Error"
@@ -139,121 +132,117 @@ msgstr "Error GConf"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1162
+#: eel/eel-glib-extensions.c:1259
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1164
+#: eel/eel-glib-extensions.c:1261
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1166
+#: eel/eel-glib-extensions.c:1263
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00, 1:00"
 
 #: eel/eel-gnome-extensions.c:284
 msgid "No image was selected."
-msgstr ""
+msgstr "Gambar belum dipilih."
 
 #: eel/eel-gnome-extensions.c:285
-#, fuzzy
 msgid "You must click on an image to select it."
-msgstr ""
-"Tidak ada gambar yang dipilih. Anda harus mengklik pada gambar untuk "
-"memilihnya."
+msgstr "Anda harus mengklik pada gambar untuk memilihnya."
 
 #: eel/eel-gnome-extensions.c:286
-#, fuzzy
 msgid "No Selection Made"
-msgstr "Tidak ada yang dipilih"
+msgstr "Belum Ada yang Dipilih"
 
 #: eel/eel-mime-application-chooser.c:224
 msgid "Default"
-msgstr ""
+msgstr "Utama"
 
 #: eel/eel-mime-application-chooser.c:233
 msgid "Name"
-msgstr ""
+msgstr "Nama"
 
 #: eel/eel-mime-application-chooser.c:425
 msgid "<i>No applications selected</i>"
-msgstr ""
+msgstr "<i>Tidak ada aplikasi yang dipilih</i>"
 
 #: eel/eel-mime-application-chooser.c:469 eel/eel-open-with-dialog.c:581
 #, c-format
 msgid "%s document"
-msgstr ""
+msgstr "%s dokumen"
 
 #: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak diketahui"
 
 #: eel/eel-mime-application-chooser.c:485
 #, c-format
 msgid "Select an application to open <i>%s</i> and others of type \"%s\""
-msgstr ""
+msgstr "PIlih aplikasi untuk membuka <i>%s</i> file lainnya dari jenis \"%s\""
 
 #: eel/eel-open-with-dialog.c:125 eel/eel-open-with-dialog.c:127
 #: eel/eel-open-with-dialog.c:193 eel/eel-open-with-dialog.c:195
 msgid "Could not run application"
-msgstr ""
+msgstr "Aplikasi tidak dapat dijalankan"
 
 #: eel/eel-open-with-dialog.c:144
 #, c-format
 msgid "The application '%s' is not a valid executable"
-msgstr ""
+msgstr "Aplikasi '%s' bukan file yang dapat dijalankan"
 
 #: eel/eel-open-with-dialog.c:147 eel/eel-open-with-dialog.c:149
 msgid "Could not open application"
-msgstr ""
+msgstr "Aplikasi tidak dapat dibuka"
 
 #: eel/eel-open-with-dialog.c:161
 #, c-format
 msgid "Could not find '%s'"
-msgstr ""
+msgstr "'%s' tidak dapat ditemukan"
 
 #: eel/eel-open-with-dialog.c:164 eel/eel-open-with-dialog.c:166
 msgid "Could not find application"
-msgstr ""
+msgstr "Aplikasi tidak dapat ditemukan"
 
 #: eel/eel-open-with-dialog.c:251 eel/eel-open-with-dialog.c:253
 msgid "Could not add application"
-msgstr ""
+msgstr "Aplikasi tidak dapat ditambahkan"
 
 #: eel/eel-open-with-dialog.c:252
 msgid "Could not add application to the application database"
-msgstr ""
+msgstr "Aplikasi tidak dapat ditambahkan dalam basis data aplikasi"
 
 #: eel/eel-open-with-dialog.c:366
 msgid "Select an Application"
-msgstr ""
+msgstr "Pilih Aplikasi"
 
 #: eel/eel-open-with-dialog.c:438
 msgid "Open With"
-msgstr ""
+msgstr "Buka Dengan"
 
 #: eel/eel-open-with-dialog.c:481
 msgid "_Browse..."
-msgstr ""
+msgstr "_Cari..."
 
 #: eel/eel-open-with-dialog.c:600
 #, c-format
 msgid "Open <i>%s</i> and other files of type \"%s\" with:"
-msgstr ""
+msgstr "Buka <i>%s</i> dan file lainnya dari jenis \"%s\" dengan:"
 
 #: eel/eel-open-with-dialog.c:631
 msgid "_Add"
-msgstr ""
+msgstr "T_ambah"
 
 #: eel/eel-open-with-dialog.c:636
 msgid "Add Application"
-msgstr ""
+msgstr "Tambah Aplikasi"
 
 #: eel/eel-stock-dialogs.c:216
 msgid "You can stop this operation by clicking cancel."
-msgstr ""
+msgstr "Anda dapat menghentikan operasi ini dengan menekan tombol batal."
 
 #: eel/eel-stock-dialogs.c:462 eel/eel-stock-dialogs.c:482
 msgid "Info"
@@ -271,7 +260,7 @@ msgstr "Error"
 msgid "Question"
 msgstr "Pertanyaan"
 
-#: eel/eel-vfs-extensions.c:693
+#: eel/eel-vfs-extensions.c:694
 msgid " (invalid Unicode)"
 msgstr " (Unicode tidak valid)"
 

@@ -1,5 +1,14 @@
-This is eel 2.8.0 It is part of the Gnome 2 desktop and is used
+This is eel 2.8.2 It is part of the Gnome 2 desktop and is used
 mainly by Nautilus.
+
+Major changes since 2.8.1 were:
+* Translation updates
+* Function to find out filename encoding
+* Fix to eelcanvas that allows connecting to expose
+* Handle null mimetypes in property page
+
+Major changes since 2.8.0 were:
+* Translation updates
 
 Major changes since 2.7.92 were:
 * Refresh mime application chooser when mime db changes

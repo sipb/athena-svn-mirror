@@ -29,6 +29,7 @@
 #include <config.h>
 #include "eel-i18n.h"
 #include "eel-vfs-extensions.h"
+#include "eel-glib-extensions.h"
 #include "eel-lib-self-check-functions.h"
 
 #include "eel-string.h"
@@ -697,7 +698,8 @@ eel_make_valid_utf8 (const char *name)
 }
 
 static char *
-eel_format_uri_for_display_internal (const char *uri, gboolean filenames_are_locale_encoded)
+eel_format_uri_for_display_internal (const char *uri,
+				     gboolean filenames_are_utf8, const char *filename_charset)
 {
 	char *canonical_uri, *path, *utf8_path;
 
@@ -709,8 +711,8 @@ eel_format_uri_for_display_internal (const char *uri, gboolean filenames_are_loc
 	path = gnome_vfs_get_local_path_from_uri (canonical_uri);
 	
 	if (path != NULL) {
-		if (filenames_are_locale_encoded) {
-			utf8_path = g_locale_to_utf8 (path, -1, NULL, NULL, NULL);
+		if (!filenames_are_utf8) {
+			utf8_path = g_convert (path, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
 			if (utf8_path) {
 				g_free (canonical_uri);
 				g_free (path);
@@ -786,7 +788,8 @@ eel_escape_high_chars (const guchar *string)
  */
 static char *
 eel_make_uri_from_input_internal (const char *text,
-				  gboolean filenames_are_locale_encoded,
+				  gboolean filenames_are_utf8,
+				  const char *filename_charset,
 				  gboolean strip_trailing_whitespace)
 {
 	char *stripped, *path, *uri, *locale_path, *filesystem_path, *escaped;
@@ -808,9 +811,8 @@ eel_make_uri_from_input_internal (const char *text,
 		uri = g_strdup ("");
 		break;
 	case '/':
-		if (filenames_are_locale_encoded) {
-			GError *error = NULL;
-			locale_path = g_locale_from_utf8 (stripped, -1, NULL, NULL, &error);
+		if (!filenames_are_utf8) {
+			locale_path = g_convert (stripped, -1, filename_charset, "UTF-8", NULL, NULL, NULL);
 			if (locale_path != NULL) {
 				uri = gnome_vfs_get_uri_from_local_path (locale_path);
 				g_free (locale_path);
@@ -824,8 +826,8 @@ eel_make_uri_from_input_internal (const char *text,
 		}
 		break;
 	case '~':
-		if (filenames_are_locale_encoded) {
-			filesystem_path = g_locale_from_utf8 (stripped, -1, NULL, NULL, NULL);
+		if (!filenames_are_utf8) {
+			filesystem_path = g_convert (stripped, -1, filename_charset, "UTF-8", NULL, NULL, NULL);
 		} else {
 			filesystem_path = g_strdup (stripped);
 		}
@@ -876,11 +878,12 @@ eel_make_uri_from_input_internal (const char *text,
 char *
 eel_format_uri_for_display (const char *uri) 
 {
-	static gboolean broken_filenames;
-	
-	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+	gboolean utf8;
+	const char *charset;
 
-	return eel_format_uri_for_display_internal (uri, broken_filenames);
+	utf8 = eel_get_filename_charset (&charset);
+
+	return eel_format_uri_for_display_internal (uri, utf8, charset);
 }
 
 static gboolean
@@ -925,21 +928,23 @@ has_valid_scheme (const char *uri)
 char *
 eel_make_uri_from_input (const char *location)
 {
-	static gboolean broken_filenames;
+	gboolean utf8;
+	const char *charset;
 
-	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+	utf8 = eel_get_filename_charset (&charset);
 
-	return eel_make_uri_from_input_internal (location, broken_filenames, TRUE);
+	return eel_make_uri_from_input_internal (location, utf8, charset, TRUE);
 }
 
 char *
 eel_make_uri_from_input_with_trailing_ws (const char *location)
 {
-	static gboolean broken_filenames;
+	gboolean utf8;
+	const char *charset;
 
-	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+	utf8 = eel_get_filename_charset (&charset);
 
-	return eel_make_uri_from_input_internal (location, broken_filenames, FALSE);
+	return eel_make_uri_from_input_internal (location, utf8, charset, FALSE);
 }
 
 /* Note that NULL's and full paths are also handled by this function.
@@ -1763,20 +1768,15 @@ eel_self_check_vfs_extensions (void)
 
 
 	/* not G_BROKEN_FILENAMES: */
-	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 0, TRUE), "file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
-	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("http://www.google.com/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 0, TRUE), "http://www.google.com/%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 1, "UTF-8", TRUE), "file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("http://www.google.com/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 1, "UTF-8", TRUE), "http://www.google.com/%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
 
-	/* G_BROKEN_FILENAMES: */
-	/* This is somewhat broken, but we can't set the locale */
 	g_get_charset (&charset);
-	if (strcasecmp (charset, "ISO-8859-1") == 0) {
-		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 1, TRUE), "file:///%E5%E4%F6/test");
-		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 1, TRUE), "");
-	}
-	if (strcasecmp (charset, "EUC-JP") == 0) {
-		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 1, TRUE), "file:///%C6%FC%CB%DC%B8%EC/test");
-		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 1, TRUE), "file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test");
-	}
+	/* G_BROKEN_FILENAMES: */
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 0, "ISO-8859-1", TRUE), "file:///%E5%E4%F6/test");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 0, "ISO-8859-1", TRUE), "");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 0, "EUC-JP", TRUE), "file:///%C6%FC%CB%DC%B8%EC/test");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 0, "EUC-JP", TRUE), "file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test");
 
 	EEL_CHECK_STRING_RESULT (eel_uri_get_scheme ("file:///var/tmp"), "file");
 	EEL_CHECK_STRING_RESULT (eel_uri_get_scheme (""), NULL);
@@ -1976,18 +1976,12 @@ eel_self_check_vfs_extensions (void)
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
 
 	/* not G_BROKEN_FILENAMES: */
-	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6", 0), "/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266");
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6", 1, "UTF-8"), "/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266");
 
 	/* G_BROKEN_FILENAMES: */
-	/* This is somewhat broken, but we can't set the locale */
-	g_get_charset (&charset);
-	if (strcasecmp (charset, "ISO-8859-1") == 0) {
-		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E5%E4%F6/test", 1), "/\303\245\303\244\303\266/test");
-	}
-	if (strcasecmp (charset, "EUC-JP") == 0) {
-		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%C6%FC%CB%DC%B8%EC/test", 1), "/\346\227\245\346\234\254\350\252\236/test");
-		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test", 1), "/\303\245\303\244\303\266/test");
-	}
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E5%E4%F6/test", 0, "ISO-8859-1"), "/\303\245\303\244\303\266/test");
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%C6%FC%CB%DC%B8%EC/test", 0, "EUC-JP"), "/\346\227\245\346\234\254\350\252\236/test");
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test", 0, "EUC-JP"), "/\303\245\303\244\303\266/test");
 
 	EEL_CHECK_BOOLEAN_RESULT (eel_uris_match ("", ""), TRUE);
 	EEL_CHECK_BOOLEAN_RESULT (eel_uris_match (":", ":"), TRUE);

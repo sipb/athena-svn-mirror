@@ -711,8 +711,9 @@ eel-types.lo eel-types.o : eel-types.c ../config.h eel.h \
 	eel-type-builtins-ids.c
 eel-vfs-extensions.lo eel-vfs-extensions.o : eel-vfs-extensions.c \
 	../config.h eel-i18n.h eel-vfs-extensions.h \
-	eel-lib-self-check-functions.h eel-self-checks.h \
-	eel-art-extensions.h eel-string-list.h eel-string.h
+	eel-glib-extensions.h eel-lib-self-check-functions.h \
+	eel-self-checks.h eel-art-extensions.h eel-string-list.h \
+	eel-string.h
 eel-viewport.lo eel-viewport.o : eel-viewport.c ../config.h \
 	eel-viewport.h eel-smooth-widget.h eel-art-extensions.h \
 	eel-gdk-pixbuf-extensions.h eel-gtk-macros.h

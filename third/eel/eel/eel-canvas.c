@@ -1471,7 +1471,7 @@ eel_canvas_group_draw (EelCanvasItem *item, GdkDrawable *drawable,
 {
 	EelCanvasGroup *group;
 	GList *list;
-	EelCanvasItem *child = 0;
+	EelCanvasItem *child = NULL;
 
 	group = EEL_CANVAS_GROUP (item);
 
@@ -2890,7 +2890,7 @@ eel_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 	/* Chain up to get exposes on child widgets */
 	GTK_WIDGET_CLASS (canvas_parent_class)->expose_event (widget, event);
 
-	return TRUE;
+	return FALSE;
 }
 
 static void
