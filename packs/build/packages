@@ -1,4 +1,4 @@
-# $Id: packages,v 1.163 2002-03-15 19:31:33 amb Exp $
+# $Id: packages,v 1.164 2002-03-15 21:58:38 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -195,7 +195,7 @@ third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
 third/openafs			except irix
 third/openssh			requires krb5,tcp_wrappers,openssl
-third/openssl			
+third/openssl			requires perl
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
@@ -225,7 +225,7 @@ third/xmh
 third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
-third/zlib			except linux,irix
+third/zlib			except linux
 
 # Final packs stuff
 packs/config			late except linux
