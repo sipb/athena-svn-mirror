@@ -6,6 +6,13 @@ case "$1" in
 start)
 	state=`awk '{a=$5} END {print a}' /etc/athena/version`
 	case "$state" in
+	Install)
+		echo "Creating config files for Athena software"
+		sh /srvd/install/athchanges | tee -a /var/athena/install.log
+		vers=`awk '{a=$6} END {print a}' /etc/athena/version`
+		echo "Athena Workstation ($HOSTTYPE) Version $vers `date`" \
+		  >> /etc/athena/version
+		;;
 	Reboot)
 		method=`awk '{a=$6} END {print a}' /etc/athena/version`
 		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`

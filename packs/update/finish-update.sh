@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.18 2003-03-05 22:25:47 miki Exp $
+# $Id: finish-update.sh,v 1.19 2003-04-10 05:59:55 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -23,22 +23,8 @@ newvers="$1"
 
 . $CONFDIR/rc.conf
 
-# Do auxiliary device installs.
-if [ -s "$AUXDEVS" ]; then
-	drvrs=`cat "$AUXDEVS"`
-	for i in $drvrs; do
-		/srvd/install/aux.devs/$i
-	done
-fi
-
-# For a public workstation, remove old and new copies of
-# config files left behind by inst (Irix only).
-# Currently, these are hard-coded in the version script.
-if [ "$PUBLIC" = "true" -a -s "$CONFIGVERS" ]; then
-	for i in `cat "$CONFIGVERS"` ; do
-		rm -f $i
-	done
-fi
+echo "Creating config files for Athena software"
+sh /srvd/install/athchanges
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
