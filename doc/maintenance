@@ -11,6 +11,7 @@ The areas covered in this file are:
 	The wash process
 	Building the tree
 	Imake templates
+	Release notes
 	Release cycles
 	Cluster information
 
@@ -247,6 +248,25 @@ We don't like imake, but we maintain two sets of imake templates:
 		For these templates, you should define TOPDIR to "."
 		and SRCDIR to the top-level source directory.
 
+Release notes
+-------------
+
+There are two kinds of release notes, the system release notes and the
+user release notes.  The system release notes are more comprehensive
+and assume a higher level of technical knowledge, and are used in the
+construction of the user release notes.  It is the job of the release
+engineer to produce a set of system release notes for every release,
+with early versions towards the beginning of the release cycle.  The
+best way to make sure this happens is to maintain the system release
+notes throughout the entire development cycle.
+
+Thus, it is the job of the release engineer to watch the checkins to
+the source tree and enter a note about all user-visible changes in the
+system release notes, which live in /afs/dev.mit.edu/project/relnotes.
+Highly visible changes should appear near the beginning of the file,
+and less visible changes should appear towards the end.  Changes to
+particular subsystems should be grouped together when possible.
+
 Release cycles
 --------------
 
@@ -282,20 +302,19 @@ how they should be carried out:
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
 symlinks under the arch directories of various lockers.  All of the
-lockers listed in packs/glue/install-afs-glue.sh definitely need to be
-hit, and the popular software lockers need to be hit as well.  Here is
-a reasonable list of popular lockers to get in addition to the glue
-ones:
+lockers listed in packs/glue/specs definitely need to be hit, and the
+popular software lockers need to be hit as well.  Here is a reasonable
+list of popular lockers to get in addition to the glue ones:
 
 	consult
 	games
 	gnu
 	graphics
-	infoagents
 	outland
 	sipb
 	tcl
 	watchmaker
+	windowmanagers
 
 In addition, the third-party software lockers need to be updated; they
 keep their own list.
