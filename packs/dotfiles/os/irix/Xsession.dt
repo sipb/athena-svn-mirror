@@ -382,7 +382,7 @@ then
     dumpster=`gettxt uxsgiimd:223 'dumpster'`
     if [ "$firstlogin" = TRUE ]
     then
-	/usr/sbin/iconcatalog -geometry -50-10 &
+	# /usr/sbin/iconcatalog -geometry -50-10 &
         if [ ! -r $HOME/$dumpster ] 
         then
             (mkdir $HOME/$dumpster)
