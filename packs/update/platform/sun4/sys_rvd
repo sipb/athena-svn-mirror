@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.17 1996-05-02 19:32:54 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.18 1996-05-02 19:58:19 ghudson Exp $
 	.:::
 		etc
 		install
@@ -42,12 +42,8 @@ GLOBAL : *.CKP *.local *.pid :
 	/usr::: 
 		-> athena
 		-> gcc
-		 lib
+		lib
 		-> new
 		-> prototype_user
 		ucb
 		:
-	/usr/lib:::
-		-> lpdfilters
-		:
-
