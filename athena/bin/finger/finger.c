@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.37 1999-11-04 16:47:02 tb Exp $
+ * $Id: finger.c,v 1.38 2000-09-21 14:59:30 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.37 1999-11-04 16:47:02 tb Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.38 2000-09-21 14:59:30 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -133,10 +133,10 @@ struct person {			/* one for each person fingered */
 	char *name;		/* name */
 	char tty[BUFSIZ];	/* null terminated tty line */
 	char host[BUFSIZ];	/* null terminated remote host name */
+	char logintime[BUFSIZ];	/* null terminated login time */
 	int loginout;		/* 0 means login time, 1 logout */
 	time_t loginat;		/* time of (last) login/out */
 	time_t idletime;	/* how long idle (if logged in) */
-	char *logintime;	/* pointer to string showing logintime */
 	char *realname;		/* pointer to full name */
 	char *nickname;		/* pointer to nickname */
 	char *office;		/* pointer to office name */
@@ -314,7 +314,7 @@ doall()
 		p->pwd = 0;
 		p->loggedin = 1;
 		p->zlocation = 0;
-		p->logintime = NULL;
+		p->logintime[0] = '\0';
 		if (unquick && (pw = getpwnam(name))) {
 			p->pwd = pwdcopy(pw);
 			decode(p);
@@ -367,9 +367,9 @@ donames(argv)
 		p->name = q->name = *argv;
 		p->tty[0] = q->tty[0] = '\0';
 		p->host[0] = q->host[0] = '\0';
+		p->logintime[0] = q->logintime[0] = '\0';
 		p->loginout = q->loginout = 0;
 		p->loginat = q->loginat = 0;
-		p->logintime = q->logintime = (char *) NULL;
 		p->idletime = q->idletime = 0;
 		p->realname = q->realname = (char *) NULL;
 		p->nickname = q->nickname = (char *) NULL;
@@ -473,7 +473,7 @@ donames(argv)
 				memcpy(new->host, user.ut_host, HMAX);
 				new->host[HMAX] = 0;
 				new->loginat = UTTIME(user);
-				new->logintime = NULL;
+				new->logintime[0] = '\0';
 				new->pwd = p->pwd;
 				new->loggedin = 1;
 				new->original = 0;
@@ -510,10 +510,14 @@ ZLocateUser");
 				    != 0)
 					break;
 				else {
-					(void) strcpy(q->host, location.host);
-					q->logintime = location.time;
-					(void) strcpy(q->tty,
-						      location.tty);
+					(void) strncpy(q->host, location.host,
+						       sizeof(q->host));
+					(void) strncpy(q->logintime,
+						       location.time,
+						       sizeof(q->logintime));
+					(void) strncpy(q->tty,
+						       location.tty,
+						       sizeof(q->tty));
 					q->loggedin = 1;
 					/* if we can zlocate them, we can
 					 * zwrite them -- if they're
