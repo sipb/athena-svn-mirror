@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3 1999-03-03 06:29:48 ghudson Exp $
+# $Id: syncconf.sh,v 1.4 1999-11-08 22:20:39 danw Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -246,6 +246,28 @@ handle()
 		/sbin/nvram netaddr "$ADDR"
 		;;
 
+	MAILRELAY)
+		case $MAILRELAY in
+		none)
+			remove /etc/athena/sendmail.conf
+			;;
+		default)
+			case $HOST in
+			*.MIT.EDU|*.mit.edu)
+				put /etc/athena/sendmail.conf \
+					"relay ATHENA.MIT.EDU"
+				;;
+			*)
+				remove /etc/athena/sendmail.conf
+				;;
+			esac
+			;;
+		*)
+			put /etc/athena/sendmail.conf "relay $MAILRELAY"
+			;;
+		esac
+		;;
+
 	*)
 		$echo "syncconf: unknown variable $1"
 		;;
@@ -285,7 +307,7 @@ if [ -z "$all" -a -f "$rcsync" ]; then
 	. "$rcsync"
 else
 	changes="TIMECLIENT TIMEHUB TIMESRV AFSCLIENT NFS SENDMAIL SNMP"
-	changes="$changes SAVECORE ACCOUNT QUOTAS HOSTADDR"
+	changes="$changes SAVECORE ACCOUNT QUOTAS HOSTADDR MAILRELAY"
 fi
 
 if [ -z "$changes" ]; then
@@ -326,6 +348,7 @@ if [ \$ACCOUNT != $ACCOUNT ]; then changes="\$changes ACCOUNT"; fi
 if [ \$QUOTAS != $QUOTAS ]; then changes="\$changes QUOTAS"; fi
 if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR"; fi
+if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
 EOF
 
 if [ -n "$rc2added" ]; then

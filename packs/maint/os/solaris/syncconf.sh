@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2 1999-04-29 20:54:06 jweiss Exp $
+# $Id: syncconf.sh,v 1.3 1999-11-08 22:20:50 danw Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -144,6 +144,28 @@ handle()
 		fi
 		;;
 
+	MAILRELAY)
+		case $MAILRELAY in
+		none)
+			remove /etc/athena/sendmail.conf
+			;;
+		default)
+			case $HOST in
+			*.MIT.EDU|*.mit.edu)
+				put /etc/athena/sendmail.conf \
+					"relay ATHENA.MIT.EDU"
+				;;
+			*)
+				remove /etc/athena/sendmail.conf
+				;;
+			esac
+			;;
+		*)
+			put /etc/athena/sendmail.conf "relay $MAILRELAY"
+			;;
+		esac
+		;;
+
 	*)
 		$echo "syncconf: unknown variable $1"
 		;;
@@ -182,7 +204,7 @@ $echo "Synchronizing configuration... \c"
 if [ -z "$all" -a -f "$rcsync" ]; then
 	. "$rcsync"
 else
-	changes="NFSSRV NFSCLIENT HOSTADDR"
+	changes="NFSSRV NFSCLIENT HOSTADDR MAILRELAY"
 fi
 
 if [ -z "$changes" ]; then
@@ -214,6 +236,7 @@ if [ \$NFSSRV != $NFSSRV ]; then changes="\$changes NFSSRV"; fi
 if [ \$NFSCLIENT != $NFSCLIENT ]; then changes="\$changes NFSCLIENT"; fi
 if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR"; fi
+if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
 EOF
 
 if [ -n "$mustreboot" ]; then
