@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements detaching lockers. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.2 1999-03-29 17:33:21 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.3 1999-12-27 18:13:16 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -143,7 +143,6 @@ static int detach_attachent(locker_context context,
       return LOCKER_EPERM;
     }
 
-  del_owner(context, at, context->user);
   if (options & LOCKER_DETACH_OPT_CLEAN)
     {
       clean_owners(context, at);
@@ -153,6 +152,8 @@ static int detach_attachent(locker_context context,
 	  return LOCKER_SUCCESS;
 	}
     }
+  else
+    del_owner(context, at, context->user);
 
   if (at->nowners && (context->ownercheck ||
 		      (options & LOCKER_DETACH_OPT_OWNERCHECK)) &&
