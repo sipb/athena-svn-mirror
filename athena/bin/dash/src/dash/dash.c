@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v $
- * $Author: cfields $ 
+ * $Author: miki $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.8 1993-11-12 12:13:12 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.9 1994-03-25 16:19:29 miki Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -1749,7 +1749,11 @@ char **argv;
   int count, sign = 1;
   Status e;
   Jet handlejet;
-
+#ifdef POSIX
+  struct sigaction act;
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+#endif
   home = (char *) getenv("HOME");
   if (home != NULL)
     {
@@ -1942,7 +1946,12 @@ char **argv;
 
 
 
+#ifdef POSIX
+   act.sa_handler= (void (*)())checkChildren; 
+   (void) sigaction(SIGCHLD, &act, NULL);
+#else
   signal(SIGCHLD, checkChildren);
+#endif
 
 #ifdef KERBEROS
   if (parms.checkTickets)
