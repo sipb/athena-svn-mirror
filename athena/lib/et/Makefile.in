@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2002-02-04 17:08:12 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2002-02-11 22:56:10 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -36,7 +36,7 @@ libcom_err.la: ${LIBOBJS}
 	${LIBTOOL} ${CC} -rpath ${libdir} -version-info 1:0:0 -o $@ ${LIBOBJS}
 
 compile_et: ${BINOBJS}
-	${LIBTOOL} ${CC} ${LDFLAGS} -o compile_et ${BINOBJS} ${LIBS}
+	${CC} ${LDFLAGS} -o compile_et ${BINOBJS} ${LIBS}
 
 error_table.o: et_lex.lex.c
 
