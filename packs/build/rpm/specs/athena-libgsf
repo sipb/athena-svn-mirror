@@ -1,0 +1,7 @@
+Name: athena-libgsf
+Summary: GNOME Structured File library, for Athena
+License: LGPL
+Group: System Environment/Libraries
+
+%description
+A library for reading and writing structured files (eg MS OLE and Zip)

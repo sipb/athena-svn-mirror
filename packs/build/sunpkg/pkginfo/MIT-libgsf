@@ -1,0 +1,3 @@
+PKG=MIT-libgsf
+NAME=GNOME Structured File library, for Athena
+DESC=A library for reading and writing structured files (eg MS OLE and Zip)
