@@ -24,11 +24,11 @@ comfortable with the postit program before trying to use bulkpost.
 The concepts are similar, but bulkpost is oriented more to efficient
 bulk posting, and it provides less assistance to the new user.
 .PP
-The bulkpost command on Athena normally lives in /usr/athena.  To run 
+The bulkpost command on Athena normally lives in /usr/athena/bin.  To run 
 bulkpost, just issue the command:
 .PP
 .in +15
-/usr/athena/bulkpost datafile 
+bulkpost datafile 
 .in -15
 .PP
 where "datafile" is the name of the file containing the listings to be scanned.
@@ -86,7 +86,7 @@ THAT LIST.
 .SH MISCELLANY
 .PP
 Bulkpost looks for its GNU Emacs macros in the 
-file "/usr/athena/lib/postit.elc".  To override this default,
+file "/usr/athena/lib/elisp/postit.elc".  To override this default,
 set the environment variable POSTITEMACSMACROS to the fully qualified
 filename of the file containing the macros.  
 .SH CAVEATS
