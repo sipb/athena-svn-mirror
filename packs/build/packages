@@ -1,4 +1,4 @@
-# $Id: packages,v 1.13 1996-10-14 05:18:39 ghudson Exp $
+# $Id: packages,v 1.14 1996-10-26 02:34:01 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -27,7 +27,7 @@ athena/lib/Mu
 third/wcl
 third/tcsh
 third/emacs
-#third/tex
+third/tex
 third/top			sun4
 third/sysinfo
 third/rcs			sun4
