@@ -4,28 +4,35 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sgi/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sgi/sys_rvd,v 1.1 1996-05-08 03:40:43 cfields Exp $
-	.:::
-		auto_update
-		install
-		usr
-		etc
-		bin
-		.rvdinfo
-		patch
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sgi/sys_rvd,v 1.2 1996-05-23 07:00:03 cfields Exp $
+	/core::::
+	/etc:::
+		ftpusers
+		inetd.conf
+		group
+		passwd
+		passwd.fallback
+		sendmail.cf
+		services
+		shadow
+		shadow.fallback
+		srvtab
+		syslog.conf
+		shells
+		:
+	/etc/athena:::
+		attach.conf
+		inetd.conf
+		newsyslog.conf
+		rc.conf
+		version
+		-> zephyr.desc
+		-> zephyr.vars
+		-> shutdown_notify
 		:
 	/usr:::
 		->athena
-		->lib
 		:
-	/usr/bsd::::
-	/usr/etc::::
-	/etc:::
-		passwd
-		passwd.local
-		shadow
-		shadow.local
-		srvtab
-		:
-	/bin:::
+	/var:::
+		spool
 		:
