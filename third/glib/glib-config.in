@@ -88,7 +88,7 @@ if test "$echo_cflags" = "yes"; then
 	if test "$lib_gthread" = "yes"; then
 		cflags="$cflags @G_THREAD_CFLAGS@"
 	fi
-	echo -I$ATHTOOLROOT@includedir@/glib-1.2 -I$ATHTOOLROOT@libdir@/glib/include $includes $cflags
+	echo -I@includedir@/glib-1.2 -I@libdir@/glib/include $includes $cflags
 fi
 if test "$echo_libs" = "yes"; then
 	libsp=""
@@ -107,9 +107,7 @@ if test "$echo_libs" = "yes"; then
 
 	# Awful Athena hack to specify runtime path flags.  Without
 	# this hack, configure scripts fail to find our glib without
-	# environmental help, since the test program won't run.  Don't
-	# use $ATHTOOLROOT here, since the run path goes into
-	# binaries.
+	# environmental help, since the test program won't run.
 	case `uname` in
 	IRIX)
 	  athrlibdirs="-Wl,-rpath -Wl,@libdir@"
@@ -119,5 +117,5 @@ if test "$echo_libs" = "yes"; then
 	  ;;
 	esac
 
-	echo $athrlibdirs -L$ATHTOOLROOT@libdir@ $libsp $libsa
+	echo $athrlibdirs -L@libdir@ $libsp $libsa
 fi
