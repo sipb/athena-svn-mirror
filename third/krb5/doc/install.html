@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<!-- Created by texi2html 1.56k from install.texinfo on 28 November 2001 -->
+<!-- Created by texi2html 1.56k from install.texinfo on 27 February 2002 -->
 
 <TITLE>Kerberos V5 Installation Guide</TITLE>
 </HEAD>
@@ -375,7 +375,7 @@ Mapping hostnames onto Kerberos realms is done in one of two ways.
 <P>
 The first mechanism, which has been in use for years in MIT-based
 Kerberos distributions, works through a set of rules in
-the <CODE>krb5.conf</CODE> configuration file.  (See section <A HREF="install.html#SEC72">krb5.conf</A>.)  You can
+the <CODE>krb5.conf</CODE> configuration file.  (See section <A HREF="install.html#SEC73">krb5.conf</A>.)  You can
 specify mappings for an entire domain or subdomain, and/or on a
 hostname-by-hostname basis.  Since greater specificity takes precedence,
 you would do this by specifying the mappings for a given domain or
@@ -386,7 +386,7 @@ subdomain and listing the exceptions.
 The Kerberos V5 System Administrator's Guide contains a thorough
 description of the parts of the <CODE>krb5.conf</CODE> file and what may be
 specified in each.  A sample <CODE>krb5.conf</CODE> file appears in
-section <A HREF="install.html#SEC72">krb5.conf</A>.  You should be able to use this file, substituting the
+section <A HREF="install.html#SEC73">krb5.conf</A>.  You should be able to use this file, substituting the
 relevant information for your Kerberos installation for the samples.
 
 
@@ -949,7 +949,7 @@ clients.
 Allows for suppression of or replacement of network libraries. By
 default, Kerberos V5 configuration will look for <CODE>-lnsl</CODE> and
 <CODE>-lsocket</CODE>. If your operating system has a broken resolver library
-(see section <A HREF="install.html#SEC33">Solaris versions 2.0 through 2.3</A>) or fails to pass the tests in
+(see section <A HREF="install.html#SEC34">Solaris versions 2.0 through 2.3</A>) or fails to pass the tests in
 <TT>`src/tests/resolv'</TT> you will need to use this option.
 
 <DT><CODE>--with-vague-errors</CODE>
@@ -1148,12 +1148,23 @@ was never a problem in using GCC version 2.6.3.
 
 <P>
 In version 3.2 and beyond of the operating system, we have not seen any
-problems with the native compiler. 
+optimizer problems with the native compiler. 
 
 
 
 
-<H3><A NAME="SEC31" HREF="install_toc.html#TOC31">BSDI</A></H3>
+<H3><A NAME="SEC31" HREF="install_toc.html#TOC31">Alpha Tru64 4.0</A></H3>
+
+<P>
+Alpha Tru64 4.0 will have some trouble compiling the some stdarg
+prototypes, since it defaults to K&#38;R C.  Use the <SAMP>`-std'</SAMP> or
+<SAMP>`-std1'</SAMP> flags to force ANSI behavior (e.g. <SAMP>`./configure
+--with-cc='cc -std1''</SAMP>).
+
+
+
+
+<H3><A NAME="SEC32" HREF="install_toc.html#TOC32">BSDI</A></H3>
 
 <P>
 BSDI versions 1.0 and 1.1 reportedly has a bad <SAMP>`sed'</SAMP> which causes
@@ -1165,7 +1176,7 @@ NetBSD and FreeBSD.)
 
 
 
-<H3><A NAME="SEC32" HREF="install_toc.html#TOC32">HPUX</A></H3>
+<H3><A NAME="SEC33" HREF="install_toc.html#TOC33">HPUX</A></H3>
 
 <P>
 The native (bundled) compiler for HPUX currently will not work, because
@@ -1177,7 +1188,7 @@ been tested recently for HPUX 10.20.
 
 
 
-<H3><A NAME="SEC33" HREF="install_toc.html#TOC33">Solaris versions 2.0 through 2.3</A></H3>
+<H3><A NAME="SEC34" HREF="install_toc.html#TOC34">Solaris versions 2.0 through 2.3</A></H3>
 
 <P>
 The <CODE>gethostbyname()</CODE> routine is broken; it does not return a fully
@@ -1229,7 +1240,7 @@ environment to break or behave differently.
 
 
 
-<H3><A NAME="SEC34" HREF="install_toc.html#TOC34">Solaris 2.X</A></H3>
+<H3><A NAME="SEC35" HREF="install_toc.html#TOC35">Solaris 2.X</A></H3>
 
 <P>
 You <B>must</B> compile Kerberos V5 without the UCB compatibility
@@ -1241,7 +1252,7 @@ you can use the <CODE>-i</CODE> option to <SAMP>`cc'</SAMP>, by using the specif
 
 
 
-<H3><A NAME="SEC35" HREF="install_toc.html#TOC35">SGI Irix 5.X</A></H3>
+<H3><A NAME="SEC36" HREF="install_toc.html#TOC36">SGI Irix 5.X</A></H3>
 
 <P>
 If you are building in a tree separate from the source tree, the vendors
@@ -1264,7 +1275,7 @@ is no longer an issue.
 
 
 
-<H3><A NAME="SEC36" HREF="install_toc.html#TOC36">Ultrix 4.2/3</A></H3>
+<H3><A NAME="SEC37" HREF="install_toc.html#TOC37">Ultrix 4.2/3</A></H3>
 
 <P>
 The DEC MIPS platform currently will not support the native compiler,
@@ -1274,7 +1285,7 @@ GCC instead.
 
 
 
-<H2><A NAME="SEC37" HREF="install_toc.html#TOC37">Using <SAMP>`Autoconf'</SAMP></A></H2>
+<H2><A NAME="SEC38" HREF="install_toc.html#TOC38">Using <SAMP>`Autoconf'</SAMP></A></H2>
 
 <P>
 (If you are not a developer, you can skip this section.)
@@ -1349,7 +1360,7 @@ To install the binaries into a binary tree, do:
 
 
 
-<H1><A NAME="SEC38" HREF="install_toc.html#TOC38">Installing Kerberos V5</A></H1>
+<H1><A NAME="SEC39" HREF="install_toc.html#TOC39">Installing Kerberos V5</A></H1>
 
 <P>
 The sections of this chapter describe procedures for installing
@@ -1373,7 +1384,7 @@ UNIX Application Servers
 
 
 
-<H2><A NAME="SEC39" HREF="install_toc.html#TOC39">Installing KDCs</A></H2>
+<H2><A NAME="SEC40" HREF="install_toc.html#TOC40">Installing KDCs</A></H2>
 
 <P>
 The Key Distribution Centers (KDCs) issue Kerberos tickets.  Each KDC
@@ -1393,13 +1404,13 @@ the master KDC is unavailable.
 MIT recommends that you install all of your KDCs to be able
 to function as either the master or one of the slaves.  This will enable
 you to easily switch your master KDC with one of the slaves if
-necessary.  (See section <A HREF="install.html#SEC58">Switching Master and Slave KDCs</A>.)  This installation
+necessary.  (See section <A HREF="install.html#SEC59">Switching Master and Slave KDCs</A>.)  This installation
 procedure is based on that recommendation.
 
 
 
 
-<H3><A NAME="SEC40" HREF="install_toc.html#TOC40">Install the Master KDC</A></H3>
+<H3><A NAME="SEC41" HREF="install_toc.html#TOC41">Install the Master KDC</A></H3>
 
 <P>
 This installation procedure will require you to go back and forth a
@@ -1409,12 +1420,12 @@ first few steps must be done on the master KDC.
 
 
 
-<H4><A NAME="SEC41" HREF="install_toc.html#TOC41">Edit the Configuration Files</A></H4>
+<H4><A NAME="SEC42" HREF="install_toc.html#TOC42">Edit the Configuration Files</A></H4>
 
 <P>
 Modify the configuration files, <CODE>/etc/krb5.conf</CODE>
-(see section <A HREF="install.html#SEC72">krb5.conf</A>) and <CODE>/usr/local/var/krb5kdc/kdc.conf</CODE>
-(see section <A HREF="install.html#SEC73">kdc.conf</A>) to reflect the correct information (such as the
+(see section <A HREF="install.html#SEC73">krb5.conf</A>) and <CODE>/usr/local/var/krb5kdc/kdc.conf</CODE>
+(see section <A HREF="install.html#SEC74">kdc.conf</A>) to reflect the correct information (such as the
 hostnames and realm name) for your realm.  MIT recommends
 that you keep <CODE>krb5.conf</CODE> in <CODE>/etc</CODE>.
 
@@ -1435,7 +1446,7 @@ logging output.  For example:
 
 
 
-<H4><A NAME="SEC42" HREF="install_toc.html#TOC42">Create the Database</A></H4>
+<H4><A NAME="SEC43" HREF="install_toc.html#TOC43">Create the Database</A></H4>
 
 <P>
 You will use the <CODE>kdb5_util</CODE> command <EM>on the Master KDC</EM> to
@@ -1445,7 +1456,7 @@ encrypted form on the KDC's local disk.  The stash file is used to
 authenticate the KDC to itself automatically before starting the
 <CODE>kadmind</CODE> and <CODE>krb5kdc</CODE> daemons (<I>e.g.,</I> as part of the
 machine's boot sequence).  The stash file, like the keytab file
-(see See section <A HREF="install.html#SEC66">The Keytab File</A>, for more information) is a potential
+(see See section <A HREF="install.html#SEC67">The Keytab File</A>, for more information) is a potential
 point-of-entry for a break-in,
 and if compromised, would allow unrestricted access to the Kerberos
 database.  If you choose to install a stash file, it should be readable
@@ -1501,7 +1512,7 @@ want a stash file, run the above command without the <CODE>-s</CODE> option.
 
 
 
-<H4><A NAME="SEC43" HREF="install_toc.html#TOC43">Add Administrators to the Acl File</A></H4>
+<H4><A NAME="SEC44" HREF="install_toc.html#TOC44">Add Administrators to the Acl File</A></H4>
 
 <P>
 Next, you need create an Access Control List (acl) file, and put the
@@ -1612,13 +1623,13 @@ joeadmin@ATHENA.MIT.EDU  ali  */root@ATHENA.MIT.EDU
 
 
 
-<H4><A NAME="SEC44" HREF="install_toc.html#TOC44">Add Administrators to the Kerberos Database</A></H4>
+<H4><A NAME="SEC45" HREF="install_toc.html#TOC45">Add Administrators to the Kerberos Database</A></H4>
 
 <P>
 Next you need to add administrative principals to the Kerberos database.
 (You must add at least one now.)  To do this, use <CODE>kadmin.local</CODE>
 <EM>on the master KDC</EM>.  The administrative principals you create
-should be the ones you added to the ACL file.  (See See section <A HREF="install.html#SEC43">Add Administrators to the Acl File</A>.)  In the following example, the
+should be the ones you added to the ACL file.  (See See section <A HREF="install.html#SEC44">Add Administrators to the Acl File</A>.)  In the following example, the
 administration principal <CODE>admin/admin</CODE> is created:
 
 
@@ -1636,7 +1647,7 @@ kadmin.local:</B>
 
 
 
-<H4><A NAME="SEC45" HREF="install_toc.html#TOC45">Create a kadmind Keytab</A></H4>
+<H4><A NAME="SEC46" HREF="install_toc.html#TOC46">Create a kadmind Keytab</A></H4>
 
 <P>
 The kadmind keytab is the key that kadmind will use to decrypt
@@ -1674,7 +1685,7 @@ file.
 
 
 
-<H4><A NAME="SEC46" HREF="install_toc.html#TOC46">Start the Kerberos Daemons on the Master KDC</A></H4>
+<H4><A NAME="SEC47" HREF="install_toc.html#TOC47">Start the Kerberos Daemons on the Master KDC</A></H4>
 
 <P>
 At this point, you are ready to start the Kerberos daemons on the Master
@@ -1697,7 +1708,7 @@ have a stash file in order to do this.
 <P>
 You can verify that they started properly by checking for their startup
 messages in the logging locations you defined in <CODE>/etc/krb5.conf</CODE>.
-(See See section <A HREF="install.html#SEC41">Edit the Configuration Files</A>.)  For example:
+(See See section <A HREF="install.html#SEC42">Edit the Configuration Files</A>.)  For example:
 
 
 
@@ -1715,7 +1726,7 @@ the logging output.
 
 
 
-<H3><A NAME="SEC47" HREF="install_toc.html#TOC47">Install the Slave KDCs</A></H3>
+<H3><A NAME="SEC48" HREF="install_toc.html#TOC48">Install the Slave KDCs</A></H3>
 
 <P>
 You are now ready to start configuring the slave KDCs.  Assuming you are
@@ -1727,7 +1738,7 @@ otherwise.
 
 
 
-<H4><A NAME="SEC48" HREF="install_toc.html#TOC48">Create Host Keys for the Slave KDCs</A></H4>
+<H4><A NAME="SEC49" HREF="install_toc.html#TOC49">Create Host Keys for the Slave KDCs</A></H4>
 
 <P>
 Each KDC needs a host principal in the Kerberos database.  You can enter
@@ -1775,7 +1786,7 @@ necessary.
 
 
 
-<H4><A NAME="SEC49" HREF="install_toc.html#TOC49">Extract Host Keytabs for the KDCs</A></H4>
+<H4><A NAME="SEC50" HREF="install_toc.html#TOC50">Extract Host Keytabs for the KDCs</A></H4>
 
 <P>
 Each KDC (including the master) needs a keytab to decrypt tickets.
@@ -1802,7 +1813,7 @@ extract the keytab.
 
 
 
-<H4><A NAME="SEC50" HREF="install_toc.html#TOC50">Set Up the Slave KDCs for Database Propagation</A></H4>
+<H4><A NAME="SEC51" HREF="install_toc.html#TOC51">Set Up the Slave KDCs for Database Propagation</A></H4>
 
 <P>
 The database is propagated from the master KDC to the slave KDCs via the
@@ -1860,7 +1871,7 @@ eklogin         2105/tcp              # Kerberos encrypted rlogin
 
 
 
-<H3><A NAME="SEC51" HREF="install_toc.html#TOC51">Back on the Master KDC</A></H3>
+<H3><A NAME="SEC52" HREF="install_toc.html#TOC52">Back on the Master KDC</A></H3>
 
 <P>
 Now that the slave KDCs are able to accept database propagation, you'll
@@ -1869,7 +1880,7 @@ need to propagate the database to each of them.
 
 
 
-<H4><A NAME="SEC52" HREF="install_toc.html#TOC52">Propagate the Database to Each Slave KDC</A></H4>
+<H4><A NAME="SEC53" HREF="install_toc.html#TOC53">Propagate the Database to Each Slave KDC</A></H4>
 
 <P>
 First, create a dump of the database on the master KDC, as follows:
@@ -1925,7 +1936,7 @@ you decided on earlier (See section <A HREF="install.html#SEC13">Database Propag
 
 
 
-<H3><A NAME="SEC53" HREF="install_toc.html#TOC53">Finish Installing the Slave KDCs</A></H3>
+<H3><A NAME="SEC54" HREF="install_toc.html#TOC54">Finish Installing the Slave KDCs</A></H3>
 
 <P>
 Now that the slave KDCs have copies of the Kerberos database, you can
@@ -1934,7 +1945,7 @@ create stash files for them and start the <CODE>krb5kdc</CODE> daemon.
 
 
 
-<H4><A NAME="SEC54" HREF="install_toc.html#TOC54">Create Stash Files on the Slave KDCs</A></H4>
+<H4><A NAME="SEC55" HREF="install_toc.html#TOC55">Create Stash Files on the Slave KDCs</A></H4>
 
 <P>
 Create stash files, by issuing the following commands on each slave KDC:
@@ -1958,7 +1969,7 @@ Kerberos database master key by hand every time you start a KDC daemon.
 
 
 
-<H4><A NAME="SEC55" HREF="install_toc.html#TOC55">Start the krb5kdc Daemon on Each KDC</A></H4>
+<H4><A NAME="SEC56" HREF="install_toc.html#TOC56">Start the krb5kdc Daemon on Each KDC</A></H4>
 
 <P>
 The final step in configuing your slave KDCs is to run the KDC daemon:
@@ -1977,21 +1988,21 @@ start the krb5kdc daemon automatically at boot time.
 
 
 
-<H3><A NAME="SEC56" HREF="install_toc.html#TOC56">Add Kerberos Principals to the Database</A></H3>
+<H3><A NAME="SEC57" HREF="install_toc.html#TOC57">Add Kerberos Principals to the Database</A></H3>
 
 <P>
 Once your KDCs are set up and running, you are ready to use
 <CODE>kadmin</CODE> to load principals for your users, hosts, and other
 services into the Kerberos database.  This procedure is described fully in the
 "Adding or Modifying Principals" section of the Kerberos V5 System
-Administrator's Guide.  (See section <A HREF="install.html#SEC48">Create Host Keys for the Slave KDCs</A>, for a
+Administrator's Guide.  (See section <A HREF="install.html#SEC49">Create Host Keys for the Slave KDCs</A>, for a
 brief description.)  The keytab is generated by running <CODE>kadmin</CODE>
 and issuing the <CODE>ktadd</CODE> command.
 
 
 
 
-<H3><A NAME="SEC57" HREF="install_toc.html#TOC57">Limit Access to the KDCs</A></H3>
+<H3><A NAME="SEC58" HREF="install_toc.html#TOC58">Limit Access to the KDCs</A></H3>
 
 <P>
 To limit the possibility that your Kerberos database could be
@@ -2044,7 +2055,7 @@ eklogin   stream tcp nowait root /usr/local/sbin/klogind
 
 
 
-<H3><A NAME="SEC58" HREF="install_toc.html#TOC58">Switching Master and Slave KDCs</A></H3>
+<H3><A NAME="SEC59" HREF="install_toc.html#TOC59">Switching Master and Slave KDCs</A></H3>
 
 <P>
 You may occasionally want to use one of your slave KDCs as the master.
@@ -2076,7 +2087,7 @@ Disable the cron job that propagates the database.
 <LI>
 
 Run your database propagation script manually, to ensure that the slaves
-all have the latest copy of the database.  (See section <A HREF="install.html#SEC52">Propagate the Database to Each Slave KDC</A>.)  As of the 1.2.2 release, it is no longer necessary
+all have the latest copy of the database.  (See section <A HREF="install.html#SEC53">Propagate the Database to Each Slave KDC</A>.)  As of the 1.2.2 release, it is no longer necessary
 to use "kdb5_util dump -ov" in order to preserve per-principal policy
 information, as the default dump format now supports it.  Note you
 should update your slaves prior to your master, so that they will
@@ -2091,15 +2102,15 @@ On the <EM>new</EM> master KDC:
 <OL>
 <LI>
 
-Create a database keytab.  (See section <A HREF="install.html#SEC45">Create a kadmind Keytab</A>.)
+Create a database keytab.  (See section <A HREF="install.html#SEC46">Create a kadmind Keytab</A>.)
 
 <LI>
 
-Start the <CODE>kadmind</CODE> daemon.  (See section <A HREF="install.html#SEC46">Start the Kerberos Daemons on the Master KDC</A>.)
+Start the <CODE>kadmind</CODE> daemon.  (See section <A HREF="install.html#SEC47">Start the Kerberos Daemons on the Master KDC</A>.)
 
 <LI>
 
-Set up the cron job to propagate the database.  (See section <A HREF="install.html#SEC52">Propagate the Database to Each Slave KDC</A>.)
+Set up the cron job to propagate the database.  (See section <A HREF="install.html#SEC53">Propagate the Database to Each Slave KDC</A>.)
 
 <LI>
 
@@ -2111,7 +2122,7 @@ machine in your Kerberos realm.)
 
 
 
-<H2><A NAME="SEC59" HREF="install_toc.html#TOC59">Installing and Configuring UNIX Client Machines</A></H2>
+<H2><A NAME="SEC60" HREF="install_toc.html#TOC60">Installing and Configuring UNIX Client Machines</A></H2>
 
 <P>
 Client machine installation is much more straightforward than
@@ -2120,7 +2131,7 @@ installation of the KDCs.
 
 
 
-<H3><A NAME="SEC60" HREF="install_toc.html#TOC60">Client Programs</A></H3>
+<H3><A NAME="SEC61" HREF="install_toc.html#TOC61">Client Programs</A></H3>
 
 <P>
 The Kerberized client programs are <CODE>login.krb5</CODE>, <CODE>rlogin</CODE>,
@@ -2156,11 +2167,11 @@ counterparts
 
 
 
-<H3><A NAME="SEC61" HREF="install_toc.html#TOC61">Client Machine Configuration Files</A></H3>
+<H3><A NAME="SEC62" HREF="install_toc.html#TOC62">Client Machine Configuration Files</A></H3>
 
 <P>
 Each machine running Kerberos must have a <CODE>/etc/krb5.conf</CODE> file.
-(See section <A HREF="install.html#SEC72">krb5.conf</A>)
+(See section <A HREF="install.html#SEC73">krb5.conf</A>)
 
 
 <P>
@@ -2205,7 +2216,7 @@ V4 KDC(s) will continue to work properly.
 
 
 
-<H4><A NAME="SEC62" HREF="install_toc.html#TOC62">Mac OS X Configuration</A></H4>
+<H4><A NAME="SEC63" HREF="install_toc.html#TOC63">Mac OS X Configuration</A></H4>
 
 <P>
 To install Kerberos V5 on Mac OS X and Mac OS X Server, follow the 
@@ -2300,7 +2311,7 @@ server should be the same as for other UNIX-based systems.
 
 
 
-<H2><A NAME="SEC63" HREF="install_toc.html#TOC63">UNIX Application Servers</A></H2>
+<H2><A NAME="SEC64" HREF="install_toc.html#TOC64">UNIX Application Servers</A></H2>
 
 <P>
 An application server is a host that provides one or more services over
@@ -2321,7 +2332,7 @@ Kerberos V5's single sign-on on capability.
 
 
 
-<H3><A NAME="SEC64" HREF="install_toc.html#TOC64">Server Programs</A></H3>
+<H3><A NAME="SEC65" HREF="install_toc.html#TOC65">Server Programs</A></H3>
 
 <P>
 Just as Kerberos V5 provided its own Kerberos-enhanced versions of
@@ -2335,7 +2346,7 @@ root's path.
 
 
 
-<H3><A NAME="SEC65" HREF="install_toc.html#TOC65">Server Configuration Files</A></H3>
+<H3><A NAME="SEC66" HREF="install_toc.html#TOC66">Server Configuration Files</A></H3>
 
 <P>
 For a <EM>secure</EM> server, make the following changes to
@@ -2395,13 +2406,13 @@ telnet  stream  tcp  nowait  root  /usr/local/sbin/telnetd
 
 
 
-<H3><A NAME="SEC66" HREF="install_toc.html#TOC66">The Keytab File</A></H3>
+<H3><A NAME="SEC67" HREF="install_toc.html#TOC67">The Keytab File</A></H3>
 
 <P>
 All Kerberos server machines need a <EM>keytab</EM> file, called
 <CODE>/etc/krb5.keytab</CODE>, to authenticate to the KDC.  The keytab file is
 an encrypted, local, on-disk copy of the host's key.  The keytab file,
-like the stash file (section <A HREF="install.html#SEC42">Create the Database</A>) is a potential
+like the stash file (section <A HREF="install.html#SEC43">Create the Database</A>) is a potential
 point-of-entry for a break-in, and if compromised, would allow
 unrestricted access to its host.  The keytab file should be readable
 only by root, and should exist only on the machine's local disk.  The
@@ -2415,7 +2426,7 @@ In order to generate a keytab for a host, the host must have a principal
 in the Kerberos database.  The procedure for adding hosts to the
 database is described fully in the "Adding or Modifying Principals"
 section of the <CITE>Kerberos V5 System Administrator's Guide</CITE>.
-See section <A HREF="install.html#SEC48">Create Host Keys for the Slave KDCs</A> for a brief description.)
+See section <A HREF="install.html#SEC49">Create Host Keys for the Slave KDCs</A> for a brief description.)
 The keytab is generated by running <CODE>kadmin</CODE> and issuing the
 <CODE>ktadd</CODE> command.
 
@@ -2456,7 +2467,7 @@ encrypted <CODE>rcp</CODE>.
 
 
 
-<H3><A NAME="SEC67" HREF="install_toc.html#TOC67">Some Advice about Secure Hosts</A></H3>
+<H3><A NAME="SEC68" HREF="install_toc.html#TOC68">Some Advice about Secure Hosts</A></H3>
 
 <P>
 Kerberos V5 can protect your host from certain types of break-ins,
@@ -2493,7 +2504,7 @@ should be readable only by root.
 
 
 
-<H1><A NAME="SEC68" HREF="install_toc.html#TOC68">Upgrading Existing Kerberos V5 Installations</A></H1>
+<H1><A NAME="SEC69" HREF="install_toc.html#TOC69">Upgrading Existing Kerberos V5 Installations</A></H1>
 
 <P>
 If you already have an existing Kerberos database that you created with
@@ -2523,7 +2534,7 @@ server processes, if any.
 <B>shell%</B>
 </PRE>
 
-<LI>Create a new Master KDC installation (See section <A HREF="install.html#SEC40">Install the Master KDC</A>).  If you have a stash file for your current database, choose any
+<LI>Create a new Master KDC installation (See section <A HREF="install.html#SEC41">Install the Master KDC</A>).  If you have a stash file for your current database, choose any
 new master password but then copy your existing stash file to the
 location specified by your kdc.conf; if you do not have a stash file for
 your current database, you must choose the same master password.
@@ -2558,7 +2569,7 @@ dump file, and re-start the server processes.
 
 
 
-<H2><A NAME="SEC69" HREF="install_toc.html#TOC69">Upgrading to Triple-DES Encryption Keys</A></H2>
+<H2><A NAME="SEC70" HREF="install_toc.html#TOC70">Upgrading to Triple-DES Encryption Keys</A></H2>
 
 <P>
 Beginning with the 1.2 release from MIT, Kerberos includes a stronger
@@ -2602,7 +2613,7 @@ the default list.
 
 
 
-<H1><A NAME="SEC70" HREF="install_toc.html#TOC70">Bug Reports for Kerberos V5</A></H1>
+<H1><A NAME="SEC71" HREF="install_toc.html#TOC71">Bug Reports for Kerberos V5</A></H1>
 
 <P>
 In any complex software, there will be bugs.  If you have successfully
@@ -2764,11 +2775,11 @@ an example.
 
 
 
-<H1><A NAME="SEC71" HREF="install_toc.html#TOC71">Files</A></H1>
+<H1><A NAME="SEC72" HREF="install_toc.html#TOC72">Files</A></H1>
 
 
 
-<H2><A NAME="SEC72" HREF="install_toc.html#TOC72">krb5.conf</A></H2>
+<H2><A NAME="SEC73" HREF="install_toc.html#TOC73">krb5.conf</A></H2>
 
 <P>
 Here is an example <CODE>krb5.conf</CODE> file:
@@ -2816,7 +2827,7 @@ example:
 
 
 
-<H2><A NAME="SEC73" HREF="install_toc.html#TOC73">kdc.conf</A></H2>
+<H2><A NAME="SEC74" HREF="install_toc.html#TOC74">kdc.conf</A></H2>
 
 <P>
 Here's an example of a kdc.conf file:
@@ -2849,7 +2860,7 @@ To add Kerberos V4 support, add <CODE>des-cbc-crc:v4</CODE> to the
 
 
 
-<H3><A NAME="SEC74" HREF="install_toc.html#TOC74">Encryption Types and Salt Types</A></H3>
+<H3><A NAME="SEC75" HREF="install_toc.html#TOC75">Encryption Types and Salt Types</A></H3>
 
 <P>
 Currently, Kerberos V5 supports only DES and triple-DES encryption.
@@ -2880,7 +2891,7 @@ Support for additional encryption types is planned in the future.
 
 
 <P><HR><P>
-This document was generated on 28 November 2001 using
+This document was generated on 27 February 2002 using
 <A HREF="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k.
 </BODY>
 </HTML>

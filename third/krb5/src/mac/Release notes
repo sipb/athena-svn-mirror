@@ -289,3 +289,31 @@ Separated private and public krb5 APIs
 3.2b3
 from tag Mac_GSSKerberos5_3_2b3
 Fixed gssapi_generic.h Mac OS conditionals and synced with 1.2.3b2
+
+3.2b4
+from tag Mac_GSSKerberos5_3_2b4
+Removed the broken microsecond timing code
+Fixed prebinding on Mac OS X
+
+3.2b5
+from tag Mac_GSSKerberos5_3_2b5
+Removed version strings from the Mac OS X project
+
+3.2b6
+from tag Mac_GSSKerberos5_3_2b6
+Fixed resource fork handling in profile lib
+
+3.2b7
+from tag Mac_GSSKerberos5_3_2b7
+Fixed GSS FTP forwarding
+Fixed profile library handling unreadable files
+
+3.2fc1
+from tag Mac_GSSKerberos5_3_2fc1
+Moved to final candidate
+
+3.2fc2
+from tag Mac_GSSKerberos5_3_2fc2
+
+3.2
+from tag Mac_GSSKerberos5_3_2

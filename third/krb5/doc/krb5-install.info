@@ -4,7 +4,7 @@ from the input file install.texinfo.
 
 Indirect:
 krb5-install.info-1: 109
-krb5-install.info-2: 48881
+krb5-install.info-2: 49275
 
 Tag Table:
 (Indirect)
@@ -36,52 +36,53 @@ Node: Options to Configure30546
 Node: osconf.h35788
 Node: Shared Library Support36990
 Node: OS Incompatibilities38252
-Node: AIX38919
-Node: Alpha OSF/1 V1.339237
-Node: Alpha OSF/1 (Digital Unix) V2.0++39647
-Node: BSDI40304
-Node: HPUX40727
-Node: Solaris versions 2.0 through 2.341161
-Node: Solaris 2.X42328
-Node: SGI Irix 5.X42785
-Node: Ultrix 4.2/343515
-Node: Using Autoconf43795
-Node: Installing Kerberos V545806
-Node: Installing KDCs46268
-Node: Install the Master KDC47501
-Node: Edit the Configuration Files48085
-Node: Create the Database48881
-Node: Add Administrators to the Acl File51903
-Node: Add Administrators to the Kerberos Database54781
-Node: Create a kadmind Keytab55869
-Node: Start the Kerberos Daemons57357
-Node: Install the Slave KDCs58481
-Node: Create Host Keys for the Slave KDCs59101
-Node: Extract Host Keytabs for the KDCs60663
-Node: Set Up the Slave KDCs for Database Propagation61572
-Node: Back on the Master KDC63370
-Node: Propagate the Database to Each Slave KDC63745
-Node: Finish Installing the Slave KDCs65240
-Node: Create Stash Files on the Slave KDCs65699
-Node: Start the krb5kdc Daemon on Each KDC66573
-Node: Add Kerberos Principals to the Database67095
-Node: Limit Access to the KDCs67789
-Node: Switching Master and Slave KDCs69551
-Node: Installing and Configuring UNIX Client Machines71251
-Node: Client Programs71675
-Node: Client Machine Configuration Files72840
-Node: Mac OS X Configuration74771
-Node: UNIX Application Servers78043
-Node: Server Programs79068
-Node: Server Configuration Files79605
-Node: The Keytab File81176
-Node: Some Advice about Secure Hosts83549
-Node: Upgrading Existing Kerberos V5 Installations84986
-Node: Upgrading to Triple-DES Encryption Keys87158
-Node: Bug Reports for Kerberos V589191
-Node: Files94169
-Node: krb5.conf94306
-Node: kdc.conf95320
-Node: Encryption Types and Salt Types96236
+Node: AIX38939
+Node: Alpha OSF/1 V1.339257
+Node: Alpha OSF/1 (Digital Unix) V2.0++39667
+Node: Alpha Tru64 4.040345
+Node: BSDI40716
+Node: HPUX41121
+Node: Solaris versions 2.0 through 2.341555
+Node: Solaris 2.X42722
+Node: SGI Irix 5.X43179
+Node: Ultrix 4.2/343909
+Node: Using Autoconf44189
+Node: Installing Kerberos V546200
+Node: Installing KDCs46662
+Node: Install the Master KDC47895
+Node: Edit the Configuration Files48479
+Node: Create the Database49275
+Node: Add Administrators to the Acl File52297
+Node: Add Administrators to the Kerberos Database55175
+Node: Create a kadmind Keytab56263
+Node: Start the Kerberos Daemons57751
+Node: Install the Slave KDCs58875
+Node: Create Host Keys for the Slave KDCs59495
+Node: Extract Host Keytabs for the KDCs61057
+Node: Set Up the Slave KDCs for Database Propagation61966
+Node: Back on the Master KDC63764
+Node: Propagate the Database to Each Slave KDC64139
+Node: Finish Installing the Slave KDCs65634
+Node: Create Stash Files on the Slave KDCs66093
+Node: Start the krb5kdc Daemon on Each KDC66967
+Node: Add Kerberos Principals to the Database67489
+Node: Limit Access to the KDCs68183
+Node: Switching Master and Slave KDCs69945
+Node: Installing and Configuring UNIX Client Machines71645
+Node: Client Programs72069
+Node: Client Machine Configuration Files73234
+Node: Mac OS X Configuration75165
+Node: UNIX Application Servers78437
+Node: Server Programs79462
+Node: Server Configuration Files79999
+Node: The Keytab File81570
+Node: Some Advice about Secure Hosts83943
+Node: Upgrading Existing Kerberos V5 Installations85380
+Node: Upgrading to Triple-DES Encryption Keys87552
+Node: Bug Reports for Kerberos V589585
+Node: Files94563
+Node: krb5.conf94700
+Node: kdc.conf95714
+Node: Encryption Types and Salt Types96630
 
 End Tag Table

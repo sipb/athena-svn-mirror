@@ -1,3 +1,14 @@
+2001-12-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* ser_actx.c (krb5_auth_context_externalize): Pass address of a
+	size_t, not a krb5_int32, to krb5_c_block_size.
+
+2001-11-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* fwd_tgt.c (krb5_fwd_tgt_creds): If no session key has been set,
+	try getting credentials and use the session key type as a hint
+	for the enctype to use for the forwarded credentials.
+
  2001-11-24  Sam Hartman  <hartmans@mit.edu>
  
  	* fwd_tgt.c (krb5_fwd_tgt_creds): Get a session key for the

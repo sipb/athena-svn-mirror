@@ -926,6 +926,7 @@ problems, please send a report via the `krb5-send-pr' program.  Thanks!
 * AIX::
 * Alpha OSF/1 V1.3::
 * Alpha OSF/1 (Digital Unix) V2.0++::
+* Alpha Tru64 4.0::
 * BSDI::
 * HPUX::
 * Solaris versions 2.0 through 2.3::
@@ -956,7 +957,7 @@ Using GCC version 2.6.3 or later instead of the native compiler will
 also work fine, both with or without optimization.
 
 
-File: krb5-install.info,  Node: Alpha OSF/1 (Digital Unix) V2.0++,  Next: BSDI,  Prev: Alpha OSF/1 V1.3,  Up: OS Incompatibilities
+File: krb5-install.info,  Node: Alpha OSF/1 (Digital Unix) V2.0++,  Next: Alpha Tru64 4.0,  Prev: Alpha OSF/1 V1.3,  Up: OS Incompatibilities
 
 Alpha OSF/1 V2.0++
 ------------------
@@ -969,10 +970,20 @@ there. (We welcome feedback on this issue). There was never a problem
 in using GCC version 2.6.3.
 
 In version 3.2 and beyond of the operating system, we have not seen any
-problems with the native compiler.
+optimizer problems with the native compiler.
 
 
-File: krb5-install.info,  Node: BSDI,  Next: HPUX,  Prev: Alpha OSF/1 (Digital Unix) V2.0++,  Up: OS Incompatibilities
+File: krb5-install.info,  Node: Alpha Tru64 4.0,  Next: BSDI,  Prev: Alpha OSF/1 (Digital Unix) V2.0++,  Up: OS Incompatibilities
+
+Alpha Tru64 4.0
+---------------
+
+Alpha Tru64 4.0 will have some trouble compiling the some stdarg
+prototypes, since it defaults to K&R C.  Use the `-std' or `-std1'
+flags to force ANSI behavior (e.g. `./configure --with-cc='cc -std1'').
+
+
+File: krb5-install.info,  Node: BSDI,  Next: HPUX,  Prev: Alpha Tru64 4.0,  Up: OS Incompatibilities
 
 BSDI
 ----

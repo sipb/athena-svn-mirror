@@ -1,3 +1,15 @@
+2002-01-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* login.c (main): Fix fencepost error in last change.
+
+2001-12-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* loginpaths.h [_PATH_DEFPATH]: Undefine LPATH and RPATH before
+	redefining them.
+	* login.c (main): If the supplied name is longer than the utmp
+	buffer, don't bother trying it as a username.
+	(dolastlog): Don't assume lastlog.ll_time is a time_t.
+
 2001-01-13  Sam Hartman  <hartmans@mit.edu>
 
 	* configure.in: Force SunOS to not use termios.
