@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	touch /var/spool/mqueue/syslog
+	chmod 600 /var/spool/mqueue/syslog
+	;;
+esac
