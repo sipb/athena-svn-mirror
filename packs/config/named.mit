@@ -1,4 +1,4 @@
-; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.mit,v 1.4 1990-11-23 00:04:42 probe Exp $
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.mit,v 1.5 1994-06-14 11:36:33 vrt Exp $
 
 ; Hardwire the local domain so we can find it even if we can't talk to
 ; the root.  We use a small TTL in case this info ever accidentally
@@ -18,15 +18,12 @@ LOCALHOST.MIT.EDU. IN	A	127.0.0.1	; I know, it's a crock...
 MIT.EDU.	  	60	IN	NS	    BITSY.MIT.EDU.
 MIT.EDU.	  	60	IN	NS	    W20NS.MIT.EDU.
 MIT.EDU.	  	60	IN	NS	    STRAWB.MIT.EDU.
-MIT.EDU.	  	60	IN	NS	    LITHIUM.LCS.MIT.EDU.
 BITSY.MIT.EDU.		60	IN	A	    18.72.0.3
 W20NS.MIT.EDU.	  	60	IN	A	    18.70.0.160
 STRAWB.MIT.EDU.		60	IN	A	    18.71.0.151
-LITHIUM.LCS.MIT.EDU. 	60	IN	A	    18.26.0.121
 18.IN-ADDR.ARPA.  	60	IN	NS	    BITSY.MIT.EDU.
 18.IN-ADDR.ARPA.  	60	IN	NS	    W20NS.MIT.EDU.
 18.IN-ADDR.ARPA.  	60	IN	NS	    STRAWB.MIT.EDU.
-18.IN-ADDR.ARPA.  	60	IN	NS	    LITHIUM.LCS.MIT.EDU.
 
 ; get any local hacks
 $ORIGIN	.
