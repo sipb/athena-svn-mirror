@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.16 1998-10-29 21:39:57 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.17 1998-12-12 22:33:03 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -436,7 +436,7 @@ int input(fd, pfd)
   ctrl[0] = '^';
   l = read(*pfd, inputbuf, INPUTSIZE);
 
-  if (l < 0 && errno != EIO)
+  if (l < 0 && errno != EIO && errno != EINTR)
     {
       err = errno;
       syslog(LOG_ERR, "Error reading from fd %d: %m", *pfd);
