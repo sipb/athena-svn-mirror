@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.13 1991-11-05 14:01:51 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.14 1992-01-10 20:02:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -64,6 +64,13 @@ ERRCODE t_change_dbinfo P((REQUEST *Request ));
 /* t_describe.c */
 ERRCODE t_describe P((REQUEST *Request , char *file , char *note , int dochnote , int dochcomment ));
 int t_display_description P((LIST *list , char *file ));
+
+/* t_getline.c */
+void gl_init P((int scrn_wdth));
+void gl_cleanup P((void));
+void gl_char_cleanup P((void));
+void gl_char_init P((void));
+char *getline P((char *prompt, int add_to_hist));
 
 /* t_instance.c */
 ERRCODE t_instance P((REQUEST *Request , int instance ));
@@ -126,7 +133,8 @@ char get_key_input P((char *text ));
 int raw_mode P((void ));
 int cooked_mode P((void ));
 ERRCODE handle_response P((int response , REQUEST *req ));
-ERRCODE get_prompted_input P((char *prompt , char *buf ));
+ERRCODE get_prompted_input P((char *prompt , char *buf, int buflen,
+			      int add_to_history)); 
 int get_yn P((char *prompt ));
 ERRCODE what_now P((char *file , int edit_first , char *editor ));
 int edit_message P((char *file , char *editor ));
