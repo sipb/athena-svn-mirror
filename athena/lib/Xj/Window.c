@@ -1,5 +1,5 @@
 /*
- * $Id: Window.c,v 1.3 1999-08-13 00:20:59 danw Exp $
+ * $Id: Window.c,v 1.4 2004-08-03 01:19:08 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Window.c,v 1.3 1999-08-13 00:20:59 danw Exp $";
+"$Id: Window.c,v 1.4 2004-08-03 01:19:08 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -77,6 +77,8 @@ static XjResource resources[] = {
      offset(window.mapped), XjRBoolean, (caddr_t)True },
   { XjNiconic, XjCIconic, XjRBoolean, sizeof(Boolean),
      offset(window.iconic), XjRBoolean, (caddr_t)False },
+  { XjNinput, XjCInput, XjRBoolean, sizeof(Boolean),
+     offset(window.input), XjRBoolean, (caddr_t)True },
   { XjNforceNWGravity, XjCForceNWGravity, XjRBoolean, sizeof(Boolean),
       offset(window.forceNWGravity), XjRBoolean, (caddr_t) False },
   { XjNdeleteProc, XjCDeleteProc, XjRCallback, sizeof(XjCallback *),
@@ -332,7 +334,8 @@ static void realize(me)
   /*
    * WM hints
    */
-  wmHints.flags = StateHint;
+  wmHints.flags = InputHint | StateHint;
+  wmHints.input = me->window.input;
   if (me->window.iconic)
     wmHints.initial_state = IconicState;
   else
@@ -628,7 +631,8 @@ void MapWindow(me, raise)
   XWMHints wmHints;
 
   /* check for iconic and don't bother if so */
-  wmHints.flags = StateHint;
+  wmHints.flags = InputHint | StateHint;
+  wmHints.input = me->window.input;
   wmHints.initial_state = NormalState;
 
   if (me->window.iconWindow != NULL)

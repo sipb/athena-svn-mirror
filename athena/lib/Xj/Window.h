@@ -1,5 +1,5 @@
 /*
- * $Id: Window.h,v 1.2 1999-01-22 23:17:07 ghudson Exp $
+ * $Id: Window.h,v 1.3 2004-08-03 01:19:17 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -44,7 +44,7 @@ typedef struct {
   XjCallback *deleteProc;
   XjCallback *clientMessageProc;
   XjCallback *mapNotifyProc;
-  Boolean mapped, iconic;
+  Boolean mapped, iconic, input;
   Boolean forceNWGravity;
   Boolean reverseVideo;
   int visibility;
@@ -87,6 +87,8 @@ typedef struct _WindowInfo {
 #define XjNmapped "mapped"
 #define XjCIconic "Iconic"
 #define XjNiconic "iconic"
+#define XjCInput "Input"
+#define XjNinput "input"
 #define XjCForceNWGravity "ForceNWGravity"
 #define XjNforceNWGravity "forceNWGravity"
 #define XjNbackgroundPixmap "backgroundPixmap"
