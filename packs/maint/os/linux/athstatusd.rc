@@ -23,10 +23,12 @@ fi
 
 RETVAL=0
 
+PATH=/usr/athena/etc:$PATH
+
 start() {
         echo -n $"Starting up Athena Status daemon: "
 	rm -f /var/tmp/athstatusd.sock
-        daemon /etc/athena/athstatusd
+        daemon athstatusd
         RETVAL=$?
         [ $RETVAL -eq 0 ] && touch /var/lock/subsys/athstatusd
         echo
@@ -78,7 +80,7 @@ case "$1" in
         condrestart
         ;;
   *)
-        echo "Usage: rc.athstatusd {start|stop|status|restart|reload|condrestart}"
+        echo "Usage: athstatusd {start|stop|status|restart|reload|condrestart}"
         exit 1
 esac
 
