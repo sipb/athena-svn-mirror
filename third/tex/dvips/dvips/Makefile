@@ -194,11 +194,11 @@ install : afm2tfm dvips MakeTeXPK \
 	crop.pro hps.pro config.ps psfonts.map epsf.tex epsf.sty rotate.tex \
 	rotate.sty colordvi.tex colordvi.sty blackdvi.tex blackdvi.sty \
 	dvips.tex dvipsmac.tex dvips.1 afm2tfm.1
-	- mkdir ${DESTDIR}$(BINDIR)
-	- mkdir ${DESTDIR}$(CONFIGDIR)
-	- mkdir ${DESTDIR}$(HEADERDIR)
-	- mkdir ${DESTDIR}$(MANDIR)
-	- mkdir ${DESTDIR}$(TEXMACRODIR)
+	mkdir -p ${DESTDIR}$(BINDIR)
+	mkdir -p ${DESTDIR}$(CONFIGDIR)
+	mkdir -p ${DESTDIR}$(HEADERDIR)
+	mkdir -p ${DESTDIR}$(MANDIR)
+	mkdir -p ${DESTDIR}$(TEXMACRODIR)
 	$(INSTALL) -c -m 755 afm2tfm ${DESTDIR}$(BINDIR)/afm2tfm
 	$(INSTALL) -c -m 755 dvips ${DESTDIR}$(BINDIR)/dvips
 	$(INSTALL) -c -m 755 MakeTeXPK ${DESTDIR}$(BINDIR)/MakeTeXPK
