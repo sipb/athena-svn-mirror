@@ -3,7 +3,7 @@
  *  Copyright (c) 1995, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/athdir/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * For copying and distribution information, please see the file
  * <mit-copyright.h>. 
@@ -14,8 +14,6 @@
  *#include "mit-copyright.h"
  */
 
-ATHSYS=`fs sysname | awk -F\' '{ print $$2 }'`
-
 ATHDIR		=	athdir
 
 OBJS		=	athdir.o
@@ -24,7 +22,7 @@ CFILES		=	athdir.c
 
 LIBS		=
 
-DEFINES		=	-DATHSYS=\"${ATHSYS}\"
+DEFINES		=	-DATHSYS=\"${ATHENA_SYS}\"
 
 AnsiCC()
 
