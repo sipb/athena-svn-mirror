@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.41 1993-04-27 14:47:23 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.42 1993-05-14 17:00:25 miki Exp $
  */
 
 #include <stdio.h>
@@ -233,7 +233,7 @@ char *display;
     /* The terminal name on the Rios is likely to be something like pts/0; we */
     /* don't want any  /'s in the path name; replace them with _'s */
     strcpy(fixed_tty,tty);
-    while (p = index(fixed_tty,'/'))
+    while (p = (char *) index(fixed_tty,'/'))
       *p = '_';
     sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
     setenv("KRBTKFILE", tkt_file, 1);
@@ -1131,7 +1131,7 @@ char *dir;
 char *strsave(s)
 char *s;
 {
-    char *ret = malloc(strlen(s) + 1);
+    char *ret = (char *) malloc(strlen(s) + 1);
     strcpy(ret, s);
     return(ret);
 }
@@ -1412,7 +1412,7 @@ char *glist;
        the first group only has one) */
     cp = glist;
     ngroups = 1;
-    while (cp = index(cp, ':')) {
+    while (cp = (char *) index(cp, ':')) {
 	ngroups++;
 	cp++;
     }
@@ -1434,10 +1434,10 @@ char *glist;
     cp = glist;
     for (i = 0; i < ngroups; i++) {
 	gnames[i] = cp;
-	cp = index(cp, ':');
+	cp = (char *) index(cp, ':');
 	*cp++ = '\0';
 	gids[i] = cp;
-	if (cp = index(cp, ':'))
+	if (cp = (char *) index(cp, ':'))
 	  *cp++ = '\0';
     }
 
@@ -1450,9 +1450,9 @@ char *glist;
 
 	/* If a valid format line, check to see if the user belongs in
 	   the group.  Otherwise, just write it out as-is. */
-	if ((gpwd = index(data, ':')) &&
-	    (gid = index(++gpwd, ':')) &&
-	    (guserlist = index(++gid, ':'))) {
+	if ((gpwd = (char *) index(data, ':')) &&
+	    (gid = (char *) index(++gpwd, ':')) &&
+	    (guserlist = (char *) index(++gid, ':'))) {
 	    *guserlist = '\0';
 	    /* step through our groups */
 	    for (i = 0; i < ngroups; i++)
