@@ -27,8 +27,7 @@ Third-party stuff not under third
 		and fetching it out of the vendor X distribution at
 		build time is contrary to principles.
 
-	* packs/dotfiles/arch/sgi_53/cshrc
-	  packs/dotfiles/arch/sgi_56/cshrc
+	* packs/dotfiles/arch/sgi_*/cshrc
 
 		A line to set XUSERFILESEARCHPATH in .cshrc is derived
 		from a piece of the IRIX file /var/X11/xdm/Xsession.dt.
