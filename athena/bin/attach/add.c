@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.12 1999-04-05 18:23:17 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.13 1999-05-04 19:33:46 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -356,9 +356,9 @@ static void modify_path(char **pathp, char *elt)
 	  exit(1);
 	}
       if (add_to_front)
-	sprintf(p, "%s:%s", elt, *pathp);
+	sprintf(p, "%s%s%s", elt, **pathp ? ":" : "", *pathp);
       else
-	sprintf(p, "%s:%s", *pathp, elt);
+	sprintf(p, "%s%s%s", *pathp, **pathp ? ":" : "", elt);
       free(*pathp);
       *pathp = p;
     }
