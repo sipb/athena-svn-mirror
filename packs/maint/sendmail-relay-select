@@ -1,9 +1,11 @@
 #!/bin/sh
-# $Id: sendmail-relay-select,v 1.1 2003-07-25 05:16:56 zacheiss Exp $
+# $Id: sendmail-relay-select,v 1.2 2003-10-22 06:47:09 jweiss Exp $
 
 if [ -n "$DIRECT_DELIVERY" ]; then
   exit 0
-elif [ -f /etc/athena/sendmail.conf ]; then
+fi
+domain=`echo $2 | tr '[A-Z]' '[a-z]' | sed -e 's/.*@//'`
+if [ -f /etc/athena/sendmail.conf -a "mit.edu" = "$domain" ]; then
   awk '/relay/ {print $2}' /etc/athena/sendmail.conf
   exit 0
 fi
