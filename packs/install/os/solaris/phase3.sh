@@ -1,8 +1,10 @@
-# $Id: phase3.sh,v 1.2 1999-02-04 17:49:13 ghudson Exp $
+# $Id: phase3.sh,v 1.3 1999-03-31 15:08:25 ghudson Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
 # from the miniroot.
+
+umask 022
 
 CPUTYPE=`/sbin/machtype -c`; export HOSTTYPE
 if [ "$CPUTYPE" = SPARC/4 ]; then
