@@ -1,5 +1,5 @@
 /**/#
-/**/# $Id: Imakefile,v 1.2 1996-10-03 04:31:29 ghudson Exp $
+/**/# $Id: Imakefile,v 1.3 1996-10-08 14:16:29 ghudson Exp $
 /**/#
 /**/# Imakefile for for tcsh 6.03
 /**/# Marc Horowitz, MIT SIPB
@@ -40,15 +40,19 @@ ones.  Please send in your fixes and additions! */
 # if defined(SunArchitecture)
 #  if (OSMajorVersion == 3)
 #   define ConfigH sos3
-#  else /* OSMajorVersion == 4 */
-#   if (OSMinorVersion == 0)
-#    define ConfigH sos40
-#   else /* OSMinorVersion == 1 */
-#    if (OSTeenyVersion == 3)
-#     define ConfigH sos413
-#    else /* OsTeenyVersion in [0,1,2] */
-#     define ConfigH sos41
+#  else
+#   if (OSMajorVersion == 4)
+#    if (OSMinorVersion == 0)
+#     define ConfigH sos40
+#    else /* OSMinorVersion == 1 */
+#     if (OSTeenyVersion == 3)
+#      define ConfigH sos413
+#     else /* OsTeenyVersion in [0,1,2] */
+#      define ConfigH sos41
+#     endif
 #    endif
+#   else /* OsMajorVersion == 5 */
+#    define ConfigH sol2
 #   endif
 #  endif
 # endif
@@ -254,20 +258,6 @@ SYSLIBS = $(LIBPOSIX) $(LIBDIRECTENT) $(LIBTERMCAP) $(LIBCURSES) \
 /* Past here, nothing should need to be changed to compile on a different
 platform, unless you have a really weird architecture. */
 
-#ifdef MyCC
-CC = MyCC
-#else
-# if HasGcc || HasGCC
-#  ifdef HasGcc2
-CC = gcc 
-#  else
-CC = gcc -fcombine-regs -finline-functions -fstrength-reduce
-#  endif
-# else
-CC = cc
-# endif
-#endif
-
 #ifdef HESIOD
 HESLIB = -L/usr/athena/lib -lhesiod
 /* it seems to me that the -I shouldn't be necessary, but there seems
@@ -342,7 +332,6 @@ HTDEF =
 
 DEFINES = $(TCSHPATH) $(HESDEF) $(HTDEF) MyDefines MyCflags UStdc
 INCLUDES = -I. MyIncludes
-LDLIBS = MyLibs
 
 SUF = o
 VERSION = 6.03
