@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.14 1996-09-20 02:14:43 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.15 1997-04-30 17:41:46 ghudson Exp $
 # $Author: ghudson $
 #
 # For copying and distribution information,
@@ -22,9 +22,9 @@ OBJS=		main.o procs.o visual.o \
 		x_send.o x_topic.o x_utils.o Cursor.o converters.o
 
 #if DoUsageLog
-LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB) $(LOGGERLIB)
+LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB) $(CONFIGLIB) $(LOGGERLIB)
 #else
-LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
+LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB) $(CONFIGLIB)
 #endif
 
 INCLUDES       =  $(XIncludes) $(MotifIncludes)

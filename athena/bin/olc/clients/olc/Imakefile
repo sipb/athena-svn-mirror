@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.10 1991-05-07 22:19:43 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.11 1997-04-30 17:46:44 ghudson Exp $
 #
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.
@@ -14,8 +14,8 @@ EXTRA_LOAD_FLAGS=-pg
 
 SRCS=		olc.c olc_stock.c
 OBJS=		olc.o olc_stock.o
-LOCAL_LIBRARIES= $(PARSER) $(TTY) $(CLIENTLIB) $(COMMONLIB)
-SYS_LIBRARIES=	$(HesiodLib) $(KerberosLib)
+LOCAL_LIBRARIES= $(PARSER) $(TTY) $(CLIENTLIB) $(COMMONLIB) $(CONFIGLIB)
+SYS_LIBRARIES=	$(HesiodLib) $(KerberosLib) $(EXTRA_LIBRARIES)
 DEPLIBS= $(LOCAL_LIBRARIES)
 
 NormalProgramTarget(olc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
