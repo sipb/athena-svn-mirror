@@ -7,16 +7,20 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.1 1990-04-19 12:06:34 jfc Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.2 1990-04-19 12:06:39 jfc Exp $";
 #endif lint
 
 #include "attach.h"
 #include <signal.h>
-#include <pwd.h>
 
 int verbose = 1, debug_flag = 0, map_anyway = 1, do_nfsid = 1;
 int print_path = 0, explicit = 0, owner_check = 0, override = 0;
-int owner_list = 1, euid = 0, clean_detach = 0, exp_allow = 1, exp_mntpt = 1;
+int owner_list = 1, clean_detach = 0, exp_allow = 1, exp_mntpt = 1;
+
+/* real userid of proces, effective userid of process, userid used
+   for attachtab manipulation */
+int real_uid, effective_uid, owner_uid;
+
 int lock_filesystem = 0;
 int nfs_root_hack = 1;		/* By default, translate for the */
 				/* default mountpoint / as /root */
@@ -98,7 +102,8 @@ main(argc, argv)
     (void) signal (SIGTERM, sig_trap);
     (void) signal (SIGINT, sig_trap);
 
-    euid = getuid();		/* Effective uid for owner list code */
+    real_uid = owner_uid = getuid();
+    effective_uid = geteuid();
 
     progname = argv[0];
     ptr = rindex(progname, '/');
@@ -184,6 +189,7 @@ nfsidcmd(argc, argv)
 	{ "-all", "-a" },
 	{ "-filsys", "-f" },
 	{ "-spoofhost", "-s" },
+	{ "-user", "-U" },
 #ifdef AFS
 	{ "-cell", "-c" },
 #endif
@@ -229,6 +235,10 @@ nfsidcmd(argc, argv)
 		ops = "unmapped";
 		break;
 	    case 'p':
+		if (!trusted_user(real_uid)) {
+		    fprintf(stderr, "nfsid purge is a privileged operation\n");
+		    return ERR_NFSIDPERM;
+		}
 		op = MOUNTPROC_KUIDPURGE;
 		ops = "mappings purged";
 		break;
@@ -249,6 +259,15 @@ nfsidcmd(argc, argv)
 		get_attachtab();
 		unlock_attachtab();
 		break;
+	    case 'U':
+		if (trusted_user(real_uid)) {
+			if (argv[++i])
+				owner_uid = parse_username(argv[i]);
+		} else {
+			fprintf(stderr,
+		"Sorry, you're not authorized to use the -user option\n");
+		}
+		break;
 	    case 'a':
 		/*
 		 * Read the attachtab one entry at a time, and perform the
@@ -265,14 +284,14 @@ nfsidcmd(argc, argv)
 		while (atp) {
 			if (atp->fs->type == TYPE_NFS) {
 				if ((nfsid(atp->host, atp->hostaddr, op, 1,
-					   atp->hesiodname, 0) == SUCCESS) &&
-				    verbose)
+					   atp->hesiodname, 0, owner_uid)
+				     == SUCCESS) && verbose)
 					printf("%s: %s\n", atp->hesiodname,
 					       ops);
 			} else
 				printf("%s: Ignored (not NFS)\n",
 				       atp->hesiodname);
-			atp = atp ->next;
+			atp = atp->next;
 		}
 		free_attachtab();
 		gotname = 2;
@@ -294,7 +313,8 @@ nfsidcmd(argc, argv)
 	    if (atp = attachtab_lookup(argv[i])) {
 		    if (atp->fs->type == TYPE_NFS) {
 			    if ((nfsid(atp->host, atp->hostaddr, op, 1,
-				       argv[i], 0) == SUCCESS) && verbose)
+				       argv[i], 0, owner_uid) == SUCCESS) &&
+				verbose)
 				    printf("%s: %s\n", argv[i], ops);
 		    } else if (atp->fs->type == TYPE_AFS) {
 #ifdef AFS
@@ -321,7 +341,7 @@ nfsidcmd(argc, argv)
 		strcpy(hostname, hent->h_name);
 		bcopy(hent->h_addr_list[0], &addr, 4);
 		if ((nfsid(hostname, addr,
-			   op, 1, "nfsid", 0) == SUCCESS) && verbose)
+			   op, 1, "nfsid", 0, owner_uid) == SUCCESS) && verbose)
 		    printf("%s: %s\n", hostname, ops);
 	    }
 	} 
@@ -471,7 +491,7 @@ attachcmd(argc, argv)
 			fprintf(stderr, "No mount point specified\n");
 			return (ERR_BADARGS);
 		}
-		if (exp_mntpt || trusted_user(getuid())) {
+		if (exp_mntpt || trusted_user(real_uid)) {
 			mntpt = argv[++i];
 		} else {
 			fprintf(stderr,
@@ -506,7 +526,7 @@ attachcmd(argc, argv)
 		explicit = 0;
 		break;
 	    case 'e':
-		if (exp_allow || trusted_user(getuid()))
+		if (exp_allow || trusted_user(real_uid))
 			explicit = 1;
 		else
 			fprintf(stderr,
@@ -537,7 +557,7 @@ attachcmd(argc, argv)
 		override_suid = 0;
 		break;
 	    case 'S':
-		if (trusted_user(getuid()))
+		if (trusted_user(real_uid))
 			override_suid = 1;
 		else {
 			fprintf(stderr,
@@ -546,7 +566,7 @@ attachcmd(argc, argv)
 		}
 		break;
 	    case 'O':
-		if (trusted_user(getuid()))
+		if (trusted_user(real_uid))
 			override = 1;
 		else {
 			fprintf(stderr,
@@ -554,7 +574,7 @@ attachcmd(argc, argv)
 		}
 		break;
 	    case 'L':
-		if (trusted_user(getuid()))
+		if (trusted_user(real_uid))
 			lock_filesystem = 1;
 		else {
 			fprintf(stderr,
@@ -565,9 +585,9 @@ attachcmd(argc, argv)
 		skip_fsck = 1;
 		break;
    	    case 'U':
-		if (trusted_user(getuid())) {
+		if (trusted_user(real_uid)) {
 			if (argv[++i])
-				euid = parse_username(argv[i]);
+				owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
 		"Sorry, you're not authorized to use the -user option\n");
@@ -701,7 +721,7 @@ detachcmd(argc, argv)
 		spoofhost = argv[++i];
 		break;
 	    case 'O':
-		if (trusted_user(getuid()))
+		if (trusted_user(real_uid))
 			override = 1;
 		else {
 			fprintf(stderr,
@@ -709,16 +729,16 @@ detachcmd(argc, argv)
 		}
 		break;
    	    case 'U':
-		if (trusted_user(getuid())) {
+		if (trusted_user(real_uid)) {
 			if (argv[++i])
-				euid = parse_username(argv[i]);
+				owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
 		"Sorry, you're not authorized to use the -user option\n");
 		}
 		break;
 	case 'C':
-		if (trusted_user(getuid())) {
+		if (trusted_user(real_uid)) {
 			clean_detach++;
 		} else {
 			fprintf(stderr,
@@ -810,24 +830,3 @@ zinitcmd(argc, argv)
 	
 }
 #endif /* ZEPHYR */
-	
-parse_username(s)
-	char	*s;
-{
-	struct	passwd	*pw;
-	char	*os = s;
-       
-	pw = getpwnam(s);
-	if (pw)
-		return(pw->pw_uid);
-	else {
-		if (*s == '#')
-			s++;
-		if (isdigit(*s))
-			return(atoi(s));
-		fprintf(stderr, "Can't parse username/uid string: %s\n", os);
-		exit(1);
-		return(getuid());
-	}
-}
-
