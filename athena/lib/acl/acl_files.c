@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.4 1989-05-29 15:58:25 probe Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.5 1989-10-25 22:05:09 probe Exp $";
 #endif lint
 
 /*
@@ -386,7 +386,10 @@ char *name;
 	i = acl_cache_next;
 	acl_cache_next = (acl_cache_next + 1) % CACHED_ACLS;
 	close(acl_cache[i].fd);
-	if(acl_cache[i].acl) destroy_hash(acl_cache[i].acl);
+	if(acl_cache[i].acl) {
+	    destroy_hash(acl_cache[i].acl);
+	    acl_cache[i].acl = (struct hashtbl *) 0;
+	}
     }
 
     /* Set up the acl */
@@ -419,6 +422,7 @@ char *name;
 	       acl_canonicalize_principal(buf, canon);
 	       add_hash(acl_cache[i].acl, canon);
 	   }
+	   fclose(f);
 	   acl_cache[i].status = s;
        }
     return(i);
