@@ -1,6 +1,6 @@
 #!/bin/sh
 
-genacl="write:source write read:source read adm:source adm read:staff read"
+genacl="write:source write read:source read adm:source la read:staff read"
 genacl="$genacl system:anyuser read"
 fascist="system:anyuser l"
 lessfascist="system:anyuser l system:authuser read"
