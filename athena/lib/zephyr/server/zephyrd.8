@@ -1,13 +1,13 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v $
 .\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v 1.4 1988-07-01 15:49:43 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v 1.5 1988-07-11 20:02:37 jtkohl Exp $
 .\"
 .\" Copyright 1987 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
 .\" specifies the terms and conditions for redistribution.
 .\"
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v 1.4 1988-07-01 15:49:43 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zephyrd.8,v 1.5 1988-07-11 20:02:37 jtkohl Exp $
 .\"
 .TH ZEPHYRD 8 "July 1, 1988" "MIT Project Athena"
 .ds ]W MIT Project Athena
@@ -107,6 +107,10 @@ Current Kerberos tickets for exchange with other servers
 .TP
 .I /usr/tmp/zephyr.db:
 File containing an ASCII dump of the database.
+.SH BUGS
+The current implementation of the Zephyr server (\fIzephyrd(8)\fR) makes
+no distinction between realm-announced, net-visible and net-announced
+exposure levels.
 .SH SEE ALSO
 zephyr(1), zhm(8), kerberosintro(1), hesiod(3), access_control_lists(?),
 syslog(3)
