@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.2 1990-05-26 13:35:06 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.3 1992-04-18 19:19:57 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/05/26  13:35:06  tom
+ * release 7.0e
+ * 
  * Revision 1.1  90/04/26  15:33:45  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.2 1990-05-26 13:35:06 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.3 1992-04-18 19:19:57 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -66,7 +69,31 @@ parse_config(fd)
 	 *  They might be disabled later on if specified in the
 	 *  configuration file.
 	 */
+
+#ifdef MIT
+	/*
+         * we'll do things a bit differently. 
+	 */
+
+	bzero(gw_version_id, sizeof(gw_version_id));
+	strcpy(mail_q,            MAIL_Q);
+	strcpy(mail_alias_file,   MAIL_ALIAS_FILE);
+	strcpy(rc_file,           RC_FILE);
+	strcpy(rpc_cred_file,     RPC_CRED_FILE);
+	strcpy(afs_cache_file,    AFS_CACHE_FILE);
+	strcpy(afs_suid_file,     AFS_SUID_FILE);
+	strcpy(afs_cell_file,     AFS_CELL_FILE);
+	strcpy(afs_cellserv_file, AFS_CELLSRV_FILE);
+	strcpy(login_file,        LOGIN_FILE);
+	strcpy(version_file,      VERSION_FILE);
+	strcpy(srv_file,          SRV_FILE);
+	strcpy(dns_stat_file,     DNS_STAT_FILE);
+	strcpy(user,              USER);
+
+#else  MIT
 	(void) strcpy(gw_version_id, SYS_DESCR);
+#endif MIT
+
 	send_authen_traps = 1;
 	tcprtoalg = -1;
 	for (i = 0; i < MAXIFS; i++)
@@ -122,7 +149,8 @@ parse_config(fd)
 				error = TRUE;
 			}
 			else
-				(void) strcpy(gw_version_id, name);
+			  (void) strncpy(gw_version_id, name, 
+					 sizeof(gw_version_id));
 		}
 		else if (strcmp(keyword, "tcprtoalgorithm") == 0) {
 			if (sscanf(buf, "%*s %s", name) != 1) {
@@ -136,6 +164,136 @@ parse_config(fd)
 		else if (strcmp(keyword, "no_authen_traps") == 0) {
 			send_authen_traps = 0;
 		}
+#ifdef MIT
+		else if (strcmp(keyword, "suppsysdescr") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  strncpy(supp_sysdescr, name, sizeof(supp_sysdescr));
+	        }
+		else if (strcmp(keyword, "mailq") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  strncpy(mail_q, name, sizeof(mail_q));
+	        }
+		else if (strcmp(keyword, "rcfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  strncpy(rc_file, name, sizeof(rc_file));
+	        }
+		else if (strcmp(keyword, "rpccredfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  strncpy(rpc_cred_file, name, sizeof(rpc_cred_file));
+	        }
+		else if (strcmp(keyword, "afscachefile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			 strncpy(afs_cache_file, name, sizeof(afs_cache_file));
+	        }
+		else if (strcmp(keyword, "afssuidfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  strncpy(afs_suid_file, name, sizeof(afs_suid_file));
+	        }
+		else if (strcmp(keyword, "afscellfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			 strncpy(afs_cell_file, name, 
+				 sizeof(afs_cell_file) - 1);
+	        }
+		else if (strcmp(keyword, "afscellservfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(afs_cellserv_file, name, 
+			       sizeof(afs_cellserv_file));
+	        }
+		else if (strcmp(keyword, "versionfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(version_file, name, sizeof(version_file));
+	        }
+		else if (strcmp(keyword, "srvfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(srv_file, name, sizeof(srv_file));
+	        }
+		else if (strcmp(keyword, "dnsstatfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(dns_stat_file, name, sizeof(dns_stat_file));
+	        }
+		else if (strcmp(keyword, "group") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       add_group(name);
+	        }
+		else if (strcmp(keyword, "user") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(user, name, sizeof(user));
+	        }		
+		else if (strcmp(keyword, "logintrap") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+			  logintrap = atoi(name);
+	        }		
+#endif MIT
 	} /* end while */
 	(void) fclose(fd);
 	if (error == TRUE) {
@@ -356,3 +514,47 @@ add_sess(nam, saddr, flgs)
 	return(GEN_SUCCESS);
 }
 
+
+#ifdef MIT
+
+#include <grp.h>
+
+int
+add_group(name)
+     char *name;
+{
+  struct group *g;
+  int set[NGROUPS];
+  int gid;
+  int len;
+
+  if((len = getgroups(NGROUPS, set)) < 0)
+    {
+      syslog(LOG_ERR, "getgroups failed");
+      return(GEN_ERR);
+    }
+
+  if(len == NGROUPS)
+    {
+      syslog(LOG_ERR, "too many groups!");
+      return(GEN_ERR);
+    }
+
+  if((g = getgrnam(name)) == (struct group *) NULL)
+    {
+      syslog(LOG_ERR, "unknown group \"%s\".", name);
+      return(GEN_ERR);
+    }
+
+  gid = g->gr_gid;
+  set[len++] = gid;
+  if(setgroups(len, set) < 0)
+    {
+      syslog(LOG_ERR, "unable to set gid to \"%s\".", name);
+      return(GEN_ERR);
+    }
+  
+  return(GEN_SUCCESS);
+}
+
+#endif MIT
