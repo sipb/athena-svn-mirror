@@ -120,17 +120,27 @@ choose_client() {
 
 	set X `uname -v`; shift
 	case $2 in
-	SMP) MP=.mp ;;	# MP system
-	*)   MP= ;;	# SP system
+	SMP) MP=.mp
+	     KPKG=kernel-smp
+	     ;;
+	*)   MP=
+	     KPKG=kernel
+	     ;;
 	esac
 
 	# For now, just use uname -r to get the module version. 
-	VERSION=`uname -r`
+	VERSION=`uname -r | sed -e 's/smp$//'`
 
 	# Kernels compiled for different machine types may have
 	# different symbol versions.  Yay Linux.
-	MACHINE=`rpm -q --queryformat='%{ARCH}\n' kernel-$VERSION | tail -n 1`
-	: ${MACHINE:=`uname -m`}
+	MACHINE=`rpm -q --queryformat='%{ARCH}\n' $KPKG-$VERSION | tail -n 1`
+	case $MACHINE in
+	i?86)
+	      ;;
+	*)
+	      MACHINE=`uname -m`
+	      ;;
+	esac
 
 	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
