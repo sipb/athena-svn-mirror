@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.17 1992-04-10 20:27:39 probe Exp $
+ *   $Id: quota.c,v 1.18 1992-06-19 18:20:44 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -20,6 +20,7 @@
 #include <rpcsvc/rcquota.h>
 
 #ifdef _IBMR2
+#include <sys/id.h>
 #include <sys/select.h>
 #include <sys/mntctl.h>
 #include <sys/vmount.h>
@@ -78,7 +79,7 @@ char *fslist[MAXFS], *idlist[MAXID];
 int fsind = 0, idind = 0, heading_printed;
 
 main(argc, argv)
-     char *argv[];
+    char *argv[];
 {
     register char *cp;
     register int i;
@@ -191,7 +192,7 @@ main(argc, argv)
 }
 
 showid(id)
-     int id;
+    int id;
 {
     register struct passwd *pwd = getpwuid(id);
     register struct group  *grp = getgrgid(id);
@@ -213,7 +214,7 @@ showid(id)
 }
 
 showname(name)
-     char *name;
+    char *name;
 {
     register struct passwd *pwd = getpwnam(name);
     register struct group  *grp = getgrnam(name);
@@ -246,8 +247,8 @@ showname(name)
 
 /* Different enough that it's a mess to ifdef it all individually */
 showquotas(id,name)
-     int id;
-     char *name;
+    int id;
+    char *name;
 {
     int myuid, ngroups, gidset[NGROUPS];
     struct getcquota_rslt qvalues;
@@ -387,34 +388,37 @@ showquotas(id,name)
 	}
 
 #ifndef ultrix
-	if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0 &&
-	    hasmntopt(mntp, MNTOPT_QUOTA)){
+	if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0) {
+	    if (!hasmntopt(mntp, MNTOPT_QUOTA))
+		continue;
 #ifdef _I386
 	    ultlocalquotas++;
+	    continue;
 #else
-	    if (getlocalquota(mntp,id,&qvalues)) continue;
+	    if (getlocalquota(mntp,id,&qvalues) < 0)
+		continue;
 	}
-#endif						/* _I386 */
-#else						/* ultrix */
-	if (mntp->fd_fstype == GT_ULTRIX &&
-	    (mntp->fd_flags & M_QUOTA)) {
-	    ultlocalquotas++;
+#endif
+#else /* ultrix */
+	if (mntp->fd_fstype == GT_ULTRIX) {
+	    if (mntp->fd_flags & M_QUOTA)
+		ultlocalquotas++;
 	    continue;
 	}
 #endif						/* ultrix */
 
-	else if (!fsind && !aflag && !own(gflag?myuid:id, mntp->mnt_dir))
-	    continue;
-
 #ifndef ultrix
-	else if (!strcmp(mntp->mnt_type, MNTTYPE_NFS))
+	if (!strcmp(mntp->mnt_type, MNTTYPE_NFS))
 #else
-	else if (mntp->fd_fstype == GT_NFS)
+	if (mntp->fd_fstype == GT_NFS)
 #endif
 	{
 	    char host[128];
 	    char path[128];
 	    int i;
+
+	    if (!fsind && !aflag && !own(gflag?myuid:id, mntp->mnt_dir))
+		continue;
 
 	    i = (char *)index(mntp->mnt_fsname, ':') - mntp->mnt_fsname;
 	    bcopy(mntp->mnt_fsname, host, i);
@@ -423,7 +427,6 @@ showquotas(id,name)
 	    if (!getnfsquota(host, path, id, &qvalues))
 		continue;
 	}
-	else continue;
 
 	if (vflag) prquota(mntp->mnt_dir, &qvalues, id, name);      
 	if (user_and_groups || !vflag) warn(mntp->mnt_dir, &qvalues);
@@ -431,10 +434,12 @@ showquotas(id,name)
 #ifndef ultrix
     endmntent(mtab);
 #endif
+
 #if defined(ultrix) || defined(_I386)
     if (ultlocalquotas) 
 	ultprintquotas(id,name);
 #endif
+
 #endif /* !_IBMR2 */
   
     /* Check afs volumes */
@@ -469,12 +474,31 @@ showquotas(id,name)
     }
 }
 
+/*
+ * FUNCTION:
+ * 	own
+ * 
+ * ARGUMENTS:
+ * 	id	(int)	 Id of the person to check.
+ * 	dir	(char *) Name of the mountpoint to check.
+ *
+ * RETURN VALUES:
+ * 	0	User does not own/maintain the directory in question.
+ * 	1	User can modify/maintain the directory in question.
+ *
+ * This routine simply checks the attachtab to see if the id in question
+ * is one of the owners of the filesystem in question.  In addtion, it
+ * performs an access() call to verify the user has write access to the
+ * locker.  The access checks are done as the invoker, and not done as
+ * the passed id, for security reasons.
+ */
 int own(id, dir)
     int id;
     char *dir;
 {
     struct _attachtab *atp;
     int i;
+    int status;
 
     atp = attachtab_lookup_mntpt(dir);
     if (!atp)
@@ -482,7 +506,18 @@ int own(id, dir)
 
     for(i=0; i<atp->nowners; i++)
 	if (atp->owners[i] == id) {
-	    return (access(dir,W_OK) == 0);
+#ifdef _IBMR2
+	    setuidx(ID_EFFECTIVE, getuidx(ID_REAL));
+#else
+	    setreuid(geteuid(), getuid());
+#endif
+	    status = (access(dir, W_OK) == 0);
+#ifdef _IBMR2
+	    setuidx(ID_EFFECTIVE, getuidx(ID_SAVED));
+#else
+	    setreuid(geteuid(), getuid());
+#endif
+	    return status;
 	}
 
     return 0;
@@ -490,9 +525,9 @@ int own(id, dir)
 
 #ifdef QOTAB
 getlocalquota(mntp, uid, qvp)
-     struct mntent *mntp;
-     int uid;
-     struct getcquota_rslt *qvp;
+    struct mntent *mntp;
+    int uid;
+    struct getcquota_rslt *qvp;
 {
     struct qoent *qoent;
     FILE *qotab;
@@ -559,10 +594,10 @@ getlocalquota(mntp, uid, qvp)
 }
 #endif
 
-int
+void
 simpleheading(id,name)
-     int id;
-     char *name;
+    int id;
+    char *name;
 {
     printf("Disk quotas for %s %s (%s %d):\n",
 	   (gflag? "group":"user"), name,
@@ -582,8 +617,8 @@ simpleheading(id,name)
 }
 
 heading(id,name)
-     int id;
-     char *name;
+    int id;
+    char *name;
 {
     printf("Disk quotas for %s (uid %d):\n",name,id);
     printf("%-16s%-6s%-12s%6s%7s%7s  %7s%7s%7s\n"
@@ -846,23 +881,23 @@ usage()
 }
 
 alldigits(s)
-	register char *s;
+    register char *s;
 {
-	register int c;
-
-	c = *s++;
-	do {
-		if (!isdigit(c))
-			return (0);
-	} while (c = *s++);
-	return (1);
+    register int c;
+    
+    c = *s++;
+    do {
+	if (!isdigit(c))
+	    return (0);
+    } while (c = *s++);
+    return (1);
 }
 
 #if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2)
 dqblk2rcquota(dqblkp, rcquotap, uid)
-     struct dqblk *dqblkp;
-     struct rcquota *rcquotap;
-     int uid;
+    struct dqblk *dqblkp;
+    struct rcquota *rcquotap;
+    int uid;
 {
     rcquotap->rq_id = uid;
     rcquotap->rq_bhardlimit = dqblkp->dqb_bhardlimit;
@@ -877,8 +912,8 @@ dqblk2rcquota(dqblkp, rcquotap, uid)
 #endif
     
 getgroupname(id,buffer)
-     int id;
-     char *buffer;
+    int id;
+    char *buffer;
 {
     if (getgrgid(id))
 	strcpy(buffer, (getgrgid(id))->gr_name);
@@ -888,8 +923,8 @@ getgroupname(id,buffer)
 }
 
 getusername(id,buffer)
-     int id;
-     char *buffer;
+    int id;
+    char *buffer;
 {
     if (getpwuid(id))
 	strcpy(buffer, (getpwuid(id))->pw_name);
@@ -899,7 +934,7 @@ getusername(id,buffer)
 }
 
 putwarning(string)
-     char *string;
+    char *string;
 {
     static int warningmaxsize = 0;
   
@@ -918,8 +953,8 @@ putwarning(string)
 }
 
 fmttime(buf, time)
-	char *buf;
-	register long time;
+    char *buf;
+    register long time;
 {
     int i;
     static struct {
@@ -1058,147 +1093,147 @@ verify_filesystems()
 
 #if defined(_I386) || defined(ultrix)
 ultprintquotas(uid, name)
-	int uid;
-	char *name;
+    int uid;
+    char *name;
 {
-	register char c, *p;
-	register struct fstab *fs;
-	int myuid;
+    register char c, *p;
+    register struct fstab *fs;
+    int myuid;
 #ifdef _I386
-	FILE	*fptr;
-	struct	mntent 	*buf;
+    FILE	*fptr;
+    struct	mntent 	*buf;
 #endif
-
-	myuid = getuid();
-	if (uid != myuid && myuid != 0) {
-		printf("quota: %s (uid %d): permission denied\n", name, uid);
-		return;
-	}
-	done = 0;
+    
+    myuid = getuid();
+    if (uid != myuid && myuid != 0) {
+	printf("quota: %s (uid %d): permission denied\n", name, uid);
+	return;
+    }
+    done = 0;
 #ifdef ultrix
-	setfsent();
-	while (fs = getfsent()) {
+    setfsent();
+    while (fs = getfsent()) {
 #else
-	/* Deal with FSTAB */
-	fptr = setmntent("/etc/mtab","r");
-	while((buf = getmntent(fptr)) != NULL) {
-		dev_t 		qf_gfs;
+    /* Deal with FSTAB */
+    fptr = setmntent("/etc/mtab","r");
+    while((buf = getmntent(fptr)) != NULL) {
+	dev_t 		qf_gfs;
 #endif
-		register char *msgi = (char *)0, *msgb = (char *)0;
-		register int enab = 1;
-		dev_t	fsdev;
-		struct	stat statb;
-		struct	dqblk dqblk;
-		char qfilename[MAXPATHLEN + 1], iwarn[8], dwarn[8];
-		char		*vol;
-
+	register char *msgi = (char *)0, *msgb = (char *)0;
+	register int enab = 1;
+	dev_t	fsdev;
+	struct	stat statb;
+	struct	dqblk dqblk;
+	char qfilename[MAXPATHLEN + 1], iwarn[8], dwarn[8];
+	char		*vol;
+	
 #ifdef _I386
-		if (hasmntopt(buf, MNTOPT_QUOTA) == NULL)
-		    continue;
-		vol = buf->mnt_dir;
-		(void) sprintf(qfilename, "%s/%s", buf->mnt_dir, QFNAME);
-		if (stat(qfilename, &statb) < 0) 
-		         continue; 
-		qf_gfs = buf->mnt_gfs;
-		if (quota(Q_SYNC, 0, (gfs_t) qf_gfs, (caddr_t) 0) < 0 &&				 errno == EINVAL)
-			continue;
-		sync();
-		if (quota(Q_GETDLIM, uid, qf_gfs, (caddr_t) &dqblk) != 0)
+	if (hasmntopt(buf, MNTOPT_QUOTA) == NULL)
+	    continue;
+	vol = buf->mnt_dir;
+	(void) sprintf(qfilename, "%s/%s", buf->mnt_dir, QFNAME);
+	if (stat(qfilename, &statb) < 0) 
+	    continue; 
+	qf_gfs = buf->mnt_gfs;
+	if (quota(Q_SYNC, 0, (gfs_t) qf_gfs, (caddr_t) 0) < 0 &&				 errno == EINVAL)
+	    continue;
+	sync();
+	if (quota(Q_GETDLIM, uid, qf_gfs, (caddr_t) &dqblk) != 0)
 #else
-		if (stat(fs->fs_spec, &statb) < 0)
-			continue;
-		fsdev = statb.st_rdev;
-		vol = fs->fs_file;
-		(void) sprintf(qfilename, "%s/%s", fs->fs_file, QFNAME);
-		if (stat(qfilename, &statb) < 0 || statb.st_dev != fsdev)
-			continue;
-		if (quota(Q_GETDLIM, uid, fsdev, &dqblk) != 0)
+	if (stat(fs->fs_spec, &statb) < 0)
+	    continue;
+	fsdev = statb.st_rdev;
+	vol = fs->fs_file;
+	(void) sprintf(qfilename, "%s/%s", fs->fs_file, QFNAME);
+	if (stat(qfilename, &statb) < 0 || statb.st_dev != fsdev)
+	    continue;
+	if (quota(Q_GETDLIM, uid, fsdev, &dqblk) != 0)
 #endif
-		{
-		    register fd = open(qfilename, O_RDONLY);
+	{
+	    register fd = open(qfilename, O_RDONLY);
 
-		    if (fd < 0)
-			continue;
-		    lseek(fd, (long)(uid * sizeof (dqblk)), L_SET);
-		    if (read(fd, &dqblk, sizeof dqblk) != sizeof (dqblk)) {
-			close(fd);
-			continue;
-		    }
-		    close(fd);
-		    if (dqblk.dqb_isoftlimit == 0 &&
-			dqblk.dqb_bsoftlimit == 0)
-			continue;
-		    enab = 0;
-		}
-		if (dqblk.dqb_ihardlimit &&
-		    dqblk.dqb_curinodes >= dqblk.dqb_ihardlimit)
-			msgi = "File count limit reached on %s";
-		else if (enab && dqblk.dqb_iwarn == 0)
-			msgi = "Out of inode warnings on %s";
-		else if (dqblk.dqb_isoftlimit &&
-		    dqblk.dqb_curinodes >= dqblk.dqb_isoftlimit)
-			msgi = "Too many files on %s";
-		if (dqblk.dqb_bhardlimit &&
-		    dqblk.dqb_curblocks >= dqblk.dqb_bhardlimit)
-			msgb = "Block limit reached on %s";
-		else if (enab && dqblk.dqb_bwarn == 0)
-			msgb = "Out of block warnings on %s";
-		else if (dqblk.dqb_bsoftlimit &&
-		    dqblk.dqb_curblocks >= dqblk.dqb_bsoftlimit)
-			msgb = "Over disc quota on %s";
-		if (dqblk.dqb_iwarn < MAX_IQ_WARN)
-			sprintf(iwarn, "%d", dqblk.dqb_iwarn);
-		else
-			iwarn[0] = '\0';
-		if (dqblk.dqb_bwarn < MAX_DQ_WARN)
-			sprintf(dwarn, "%d", dqblk.dqb_bwarn);
-		else
-			dwarn[0] = '\0';
-		if (qflag) {
-			if (msgi != (char *)0 || msgb != (char *)0)
-				ultheading(uid, name);
-			if (msgi != (char *)0)
-				xprintf(msgi, vol);
-			if (msgb != (char *)0)
-				xprintf(msgb, vol);
-			continue;
-		}
-		if (vflag || dqblk.dqb_curblocks || dqblk.dqb_curinodes) {
-			ultheading(uid, name);
-			printf("%10s%8d%c%7d%8d%8s%8d%c%7d%8d%8s\n"
-				, vol
-				, (dqblk.dqb_curblocks / btodb(1024)) 
-				, (msgb == (char *)0) ? ' ' : '*'
-				, (dqblk.dqb_bsoftlimit / btodb(1024)) 
-				, (dqblk.dqb_bhardlimit / btodb(1024)) 
-				, dwarn
-				, dqblk.dqb_curinodes
-				, (msgi == (char *)0) ? ' ' : '*'
-				, dqblk.dqb_isoftlimit
-				, dqblk.dqb_ihardlimit
-				, iwarn
-			);
-		}
+	    if (fd < 0)
+		continue;
+	    lseek(fd, (long)(uid * sizeof (dqblk)), L_SET);
+	    if (read(fd, &dqblk, sizeof dqblk) != sizeof (dqblk)) {
+		close(fd);
+		continue;
+	    }
+	    close(fd);
+	    if (dqblk.dqb_isoftlimit == 0 &&
+		dqblk.dqb_bsoftlimit == 0)
+		continue;
+	    enab = 0;
 	}
+	if (dqblk.dqb_ihardlimit &&
+	    dqblk.dqb_curinodes >= dqblk.dqb_ihardlimit)
+	    msgi = "File count limit reached on %s";
+	else if (enab && dqblk.dqb_iwarn == 0)
+	    msgi = "Out of inode warnings on %s";
+	else if (dqblk.dqb_isoftlimit &&
+		 dqblk.dqb_curinodes >= dqblk.dqb_isoftlimit)
+	    msgi = "Too many files on %s";
+	if (dqblk.dqb_bhardlimit &&
+	    dqblk.dqb_curblocks >= dqblk.dqb_bhardlimit)
+	    msgb = "Block limit reached on %s";
+	else if (enab && dqblk.dqb_bwarn == 0)
+	    msgb = "Out of block warnings on %s";
+	else if (dqblk.dqb_bsoftlimit &&
+		 dqblk.dqb_curblocks >= dqblk.dqb_bsoftlimit)
+	    msgb = "Over disc quota on %s";
+	if (dqblk.dqb_iwarn < MAX_IQ_WARN)
+	    sprintf(iwarn, "%d", dqblk.dqb_iwarn);
+	else
+	    iwarn[0] = '\0';
+	if (dqblk.dqb_bwarn < MAX_DQ_WARN)
+	    sprintf(dwarn, "%d", dqblk.dqb_bwarn);
+	else
+	    dwarn[0] = '\0';
+	if (qflag) {
+	    if (msgi != (char *)0 || msgb != (char *)0)
+		ultheading(uid, name);
+	    if (msgi != (char *)0)
+		xprintf(msgi, vol);
+	    if (msgb != (char *)0)
+		xprintf(msgb, vol);
+	    continue;
+	}
+	if (vflag || dqblk.dqb_curblocks || dqblk.dqb_curinodes) {
+	    ultheading(uid, name);
+	    printf("%10s%8d%c%7d%8d%8s%8d%c%7d%8d%8s\n"
+		   , vol
+		   , (dqblk.dqb_curblocks / btodb(1024)) 
+		   , (msgb == (char *)0) ? ' ' : '*'
+		   , (dqblk.dqb_bsoftlimit / btodb(1024)) 
+		   , (dqblk.dqb_bhardlimit / btodb(1024)) 
+		   , dwarn
+		   , dqblk.dqb_curinodes
+		   , (msgi == (char *)0) ? ' ' : '*'
+		   , dqblk.dqb_isoftlimit
+		   , dqblk.dqb_ihardlimit
+		   , iwarn
+		   );
+	}
+    }
 #ifdef _I386
-	endmntent(fptr);
+    endmntent(fptr);
 #else
-	endfsent();
+    endfsent();
 #endif
-	if (!done && !qflag) {
-		if (idind)
-			putchar('\n');
-		xprintf("Disc quotas for %s (uid %d):", name, uid);
-		xprintf("none.");
-	}
-	xprintf(0);
+    if (!done && !qflag) {
+	if (idind)
+	    putchar('\n');
+	xprintf("Disc quotas for %s (uid %d):", name, uid);
+	xprintf("none.");
+    }
+    xprintf(0);
 }
 
 ultheading(uid, name)
-	int uid;
-	char *name;
+    int uid;
+    char *name;
 {
-
+    
     if (done++)
 	return;
     xprintf(0);
