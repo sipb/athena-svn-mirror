@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: epeisach $
+ * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.2 1992-04-27 13:24:17 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.3 1993-04-27 17:33:21 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,12 +18,15 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.2 1992-04-27 13:24:17 epeisach Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.3 1993-04-27 17:33:21 vrt Exp $";
 #endif /* lint */
 
 #include <com_err.h>
 #include <fxserver.h>
 #include <sys/file.h>
+#ifdef POSIX
+#include <unistd.h>
+#endif /* POSIX */
 
 static long rpc_ret_int = 0;
 
@@ -97,9 +100,15 @@ init_res *init_1(params, rqstp)
   /* 
    * Deal with Kerberos authentication
    */
+#ifndef SOLARIS
   if (krb_rd_req(&params->auth, KRB_SERVICE, my_hostname,
 		 svc_getcaller(rqstp->rq_xprt)->sin_addr.s_addr,
 		 &curconn->auth, "") != RD_AP_OK) {
+#else
+  if (krb_rd_req(&params->auth, KRB_SERVICE, my_hostname,
+		 svc_getrpccaller(rqstp->rq_xprt)->sin_addr.s_addr,
+		 &curconn->auth, "") != RD_AP_OK) {
+#endif /* SOLARIS */
     res.errno = ERR_WONT_BE_AUTHED;
     Debug(("ERROR init_1: %s\n", error_message(res.errno)));
     curconn->authed = 0;
