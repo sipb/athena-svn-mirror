@@ -1,9 +1,9 @@
 
 /* pngrtran.c - transforms the data in a row for PNG readers
  *
- * libpng 1.0.8 - July 24, 2000
+ * libpng 1.2.1 - December 12, 2001
  * For conditions of distribution and use, see copyright notice in png.h
- * Copyright (c) 1998, 1999, 2000 Glenn Randers-Pehrson
+ * Copyright (c) 1998-2001 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
  *
@@ -742,7 +742,7 @@ png_init_read_transformations(png_structp png_ptr)
    }
 #endif
 
-#if defined(PNG_READ_BACKGROUND_SUPPORTED)
+#if defined(PNG_READ_BACKGROUND_SUPPORTED) && defined(PNG_READ_GAMMA_SUPPORTED)
    png_ptr->background_1 = png_ptr->background;
 #endif
 #if defined(PNG_READ_GAMMA_SUPPORTED) && defined(PNG_FLOATING_POINT_SUPPORTED)
@@ -901,7 +901,7 @@ png_init_read_transformations(png_structp png_ptr)
       }
       else
       /* transformation does not include PNG_BACKGROUND */
-#endif
+#endif /* PNG_READ_BACKGROUND_SUPPORTED */
       if (color_type == PNG_COLOR_TYPE_PALETTE)
       {
          png_colorp palette = png_ptr->palette;
@@ -919,7 +919,7 @@ png_init_read_transformations(png_structp png_ptr)
 #if defined(PNG_READ_BACKGROUND_SUPPORTED)
    else
 #endif
-#endif
+#endif /* PNG_READ_GAMMA_SUPPORTED && PNG_FLOATING_POINT_SUPPORTED */
 #if defined(PNG_READ_BACKGROUND_SUPPORTED)
    /* No GAMMA transformation */
    if ((png_ptr->transformations & PNG_BACKGROUND) &&
@@ -952,7 +952,7 @@ png_init_read_transformations(png_structp png_ptr)
          }
       }
    }
-#endif
+#endif /* PNG_READ_BACKGROUND_SUPPORTED */
 
 #if defined(PNG_READ_SHIFT_SUPPORTED)
    if ((png_ptr->transformations & PNG_SHIFT) &&
@@ -977,7 +977,7 @@ png_init_read_transformations(png_structp png_ptr)
          png_ptr->palette[i].blue >>= sb;
       }
    }
-#endif
+#endif  /* PNG_READ_SHIFT_SUPPORTED */
  }
 #if !defined(PNG_READ_GAMMA_SUPPORTED) && !defined(PNG_READ_SHIFT_SUPPORTED) \
  && !defined(PNG_READ_BACKGROUND_SUPPORTED)
@@ -1090,7 +1090,12 @@ png_read_transform_info(png_structp png_ptr, png_infop info_ptr)
    if ((png_ptr->transformations & PNG_FILLER) &&
        ((info_ptr->color_type == PNG_COLOR_TYPE_RGB) ||
        (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)))
+   {
       info_ptr->channels++;
+#if 0 /* if adding a true alpha channel not just filler */
+      info_ptr->color_type |= PNG_COLOR_MASK_ALPHA;
+#endif
+   }
 #endif
 
 #if defined(PNG_USER_TRANSFORM_PTR_SUPPORTED) && \
@@ -1222,12 +1227,15 @@ From Andreas Dilger e-mail to png-implement, 26 March 1998:
       ((png_ptr->num_trans != 0 ) ||
       (png_ptr->color_type & PNG_COLOR_MASK_ALPHA)))
       png_do_background(&(png_ptr->row_info), png_ptr->row_buf + 1,
-         &(png_ptr->trans_values), &(png_ptr->background),
-         &(png_ptr->background_1),
+         &(png_ptr->trans_values), &(png_ptr->background)
+#if defined(PNG_READ_GAMMA_SUPPORTED)
+         , &(png_ptr->background_1),
          png_ptr->gamma_table, png_ptr->gamma_from_1,
          png_ptr->gamma_to_1, png_ptr->gamma_16_table,
          png_ptr->gamma_16_from_1, png_ptr->gamma_16_to_1,
-         png_ptr->gamma_shift);
+         png_ptr->gamma_shift
+#endif
+);
 #endif
 
 #if defined(PNG_READ_GAMMA_SUPPORTED)
@@ -2540,11 +2548,14 @@ png_correct_palette(png_structp png_ptr, png_colorp palette,
  */
 void /* PRIVATE */
 png_do_background(png_row_infop row_info, png_bytep row,
-   png_color_16p trans_values, png_color_16p background,
-   png_color_16p background_1,
+   png_color_16p trans_values, png_color_16p background
+#if defined(PNG_READ_GAMMA_SUPPORTED)
+   , png_color_16p background_1,
    png_bytep gamma_table, png_bytep gamma_from_1, png_bytep gamma_to_1,
    png_uint_16pp gamma_16, png_uint_16pp gamma_16_from_1,
-   png_uint_16pp gamma_16_to_1, int gamma_shift)
+   png_uint_16pp gamma_16_to_1, int gamma_shift
+#endif
+   )
 {
    png_bytep sp, dp;
    png_uint_32 i;
@@ -2927,6 +2938,7 @@ png_do_background(png_row_infop row_info, png_bytep row,
                      {
                         *dp = *sp;
                      }
+#if defined(PNG_READ_GAMMA_SUPPORTED)
                      else if (a == 0)
                      {
                         *dp = (png_byte)background->gray;
@@ -2935,6 +2947,9 @@ png_do_background(png_row_infop row_info, png_bytep row,
                      {
                         png_composite(*dp, *sp, a, background_1->gray);
                      }
+#else
+                     *dp = (png_byte)background->gray;
+#endif
                   }
                }
             }
@@ -2958,12 +2973,17 @@ png_do_background(png_row_infop row_info, png_bytep row,
                         *dp = (png_byte)((v >> 8) & 0xff);
                         *(dp + 1) = (png_byte)(v & 0xff);
                      }
+#if defined(PNG_READ_GAMMA_SUPPORTED)
                      else if (a == 0)
+#else
+                     else
+#endif
                      {
                         /* background is already in screen gamma */
                         *dp = (png_byte)((background->gray >> 8) & 0xff);
                         *(dp + 1) = (png_byte)(background->gray & 0xff);
                      }
+#if defined(PNG_READ_GAMMA_SUPPORTED)
                      else
                      {
                         png_uint_16 g, v, w;
@@ -2974,6 +2994,7 @@ png_do_background(png_row_infop row_info, png_bytep row,
                         *dp = (png_byte)((w >> 8) & 0xff);
                         *(dp + 1) = (png_byte)(w & 0xff);
                      }
+#endif
                   }
                }
                else
@@ -2988,11 +3009,16 @@ png_do_background(png_row_infop row_info, png_bytep row,
                      {
                         png_memcpy(dp, sp, 2);
                      }
+#if defined(PNG_READ_GAMMA_SUPPORTED)
                      else if (a == 0)
+#else
+                     else
+#endif
                      {
                         *dp = (png_byte)((background->gray >> 8) & 0xff);
                         *(dp + 1) = (png_byte)(background->gray & 0xff);
                      }
+#if defined(PNG_READ_GAMMA_SUPPORTED)
                      else
                      {
                         png_uint_16 g, v;
@@ -3002,6 +3028,7 @@ png_do_background(png_row_infop row_info, png_bytep row,
                         *dp = (png_byte)((v >> 8) & 0xff);
                         *(dp + 1) = (png_byte)(v & 0xff);
                      }
+#endif
                   }
                }
             }
@@ -4048,3 +4075,63 @@ png_build_gamma_table(png_structp png_ptr)
 /* To do: install integer version of png_build_gamma_table here */
 #endif
 
+#if defined(PNG_MNG_FEATURES_SUPPORTED)
+/* undoes intrapixel differencing  */
+void /* PRIVATE */
+png_do_read_intrapixel(png_row_infop row_info, png_bytep row)
+{
+   png_debug(1, "in png_do_read_intrapixel\n");
+   if (
+#if defined(PNG_USELESS_TESTS_SUPPORTED)
+       row != NULL && row_info != NULL &&
+#endif
+       (row_info->color_type & PNG_COLOR_MASK_COLOR))
+   {
+      int bytes_per_pixel;
+      png_uint_32 row_width = row_info->width;
+      if (row_info->bit_depth == 8)
+      {
+         png_bytep rp;
+         png_uint_32 i;
+
+         if (row_info->color_type == PNG_COLOR_TYPE_RGB)
+            bytes_per_pixel = 3;
+         else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            bytes_per_pixel = 4;
+         else
+            return;
+
+         for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel)
+         {
+            *(rp) = (png_byte)((256 + *rp + *(rp+1))&0xff);
+            *(rp+2) = (png_byte)((256 + *(rp+2) + *(rp+1))&0xff);
+         }
+      }
+      else if (row_info->bit_depth == 16)
+      {
+         png_bytep rp;
+         png_uint_32 i;
+
+         if (row_info->color_type == PNG_COLOR_TYPE_RGB)
+            bytes_per_pixel = 6;
+         else if (row_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            bytes_per_pixel = 8;
+         else
+            return;
+
+         for (i = 0, rp = row; i < row_width; i++, rp += bytes_per_pixel)
+         {
+            png_uint_32 s0=*(rp  )<<8 | *(rp+1);
+            png_uint_32 s1=*(rp+2)<<8 | *(rp+3);
+            png_uint_32 s2=*(rp+4)<<8 | *(rp+5);
+            png_uint_32 red=(65536+s0+s1)&0xffff;
+            png_uint_32 blue=(65536+s2+s1)&0xffff;
+            *(rp  ) = (png_byte)((red>>8)&0xff);
+            *(rp+1) = (png_byte)(red&0xff);
+            *(rp+4) = (png_byte)((blue>>8)&0xff);
+            *(rp+5) = (png_byte)(blue&0xff);
+         }
+      }
+   }
+}
+#endif /* PNG_MNG_FEATURES_SUPPORTED */

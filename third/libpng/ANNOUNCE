@@ -1,25 +1,29 @@
 
-Libpng 1.0.8 - July 24, 2000
+Libpng 1.2.1 - December 12, 2001
 
 This is a public release of libpng, intended for use in production codes.
 
-Changes since the last public release (1.0.7):
+Changes since the last public release (1.2.0):
 
-  Added png_free(png_ptr, key) two places in pngpread.c to stop memory leaks.
-  Changed PNG_NO_STDIO to PNG_NO_CONSOLE_IO, several places in pngrutil.c and
-     pngwutil.c.
-  Changed PNG_EXPORT_VAR to use PNG_IMPEXP, in pngconf.h.
-  Removed unused "#include <assert.h>" from png.c
-  Added WindowsCE support.
-  Revised pnggccrd.c to work with gcc-2.95.2 and in the Cygwin environment.
-  Only set the PNG_FLAG_FREE_TRNS or PNG_FREE_TRNS flag in png_handle_tRNS()
-     for indexed-color input files to avoid potential double-freeing trans array
-     under some unusual conditions; problem was introduced in version 1.0.7.
-  Added the files pngbar.png and pngbar.jpg to the distribution.
-  Added cygwin subdirectory, makefile.cygwin, and cygwin support in pngconf.h
-  Added PNG_NO_ZALLOC_ZERO macro (makes png_zalloc skip zeroing memory)
-  Revised png_debug() macros and statements to eliminate compiler warnings.
-  Updated makefile.hpux to build a shared library.
+  Revised makefile.std in contrib/pngminus
+  Include background_1 in png_struct regardless of gamma support.
+  Revised makefile.netbsd and makefile.macosx, added makefile.darwin.
+  Revised example.c to provide more details about using row_callback().
+  Added makefile.so9.
+  Removed type casts from all NULLs, except for those appearing in function
+    calls when PNG_NO_TYPECAST_NULL is defined.
+  Simplified png_create_info_struct() and png_creat_struct_2().
+  Added error message if png_write_info() was omitted.
+  Changed typecast of "size" argument to png_size_t in pngmem.c calls to
+    the user malloc_fn, to agree with the prototype in png.h
+  Added a pop/push operation to pnggccrd.c, to preserve Eflag (Maxim Sobolev)
+  Updated makefile.sgi to recognize LIBPATH and INCPATH.
+  Updated various makefiles so "make clean" does not remove previous major
+    version of the shared library.
+  Added a pop/push operation to pngvcrd.c, to preserve Eflag.
+  Always allocate 256-entry internal palette, hist, and trans arrays, to
+    avoid out-of-bounds memory reference caused by invalid PNG datastreams.
+  Added a check for prefix_length > data_length in iCCP chunk handler.
 
 Send comments/corrections/commendations to
 png-implement@ccrc.wustl.edu or to randeg@alum.rpi.edu
