@@ -26,6 +26,7 @@ static char sccsid[] = "@(#)pac.c	5.2 (Berkeley) 10/30/85";
  */
 
 #include <stdio.h>
+#include <strings.h>
 #include "lp.local.h"
 
 char	*printer;			/* printer name */
@@ -41,7 +42,6 @@ int	errs;
 int	mflag = 0;			/* disregard machine names */
 int	pflag = 0;			/* 1 if -p on cmd line */
 int	price100;			/* per-page cost in 100th of a cent */
-char	*index();
 int	pgetnum();
 #ifdef HESIOD_PAC
 char	alibuf[BUFSIZ/2];		/* buffer for printer alias */
