@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.3 1991-11-13 16:38:17 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.4 1991-11-13 16:39:13 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -155,7 +155,7 @@ unsigned int *SignatureLen;
     sin.sin_family = hp->h_addrtype;
     (void) bcopy((char *)hp->h_addr, (char *)&sin.sin_addr,
 		 sizeof(hp->h_addr));
-    sin.sin_port = htons(6969);	/* Should get this from services or Hesiod */
+    sin.sin_port = htons(7200);	/* Should get this from services or Hesiod */
     if (connect(s, &sin, sizeof(sin)) < 0) {
       status = -1;
       break;
