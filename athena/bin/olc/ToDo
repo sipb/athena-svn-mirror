@@ -13,6 +13,13 @@ Server:
      file at compile time.   This should be done by asking the daemon for
      a set of strings to use instead
 
+?   - Statistics generated as the questions are asked, instead of by
+?   groveling over the discuss logs at a later date.  By having the daemon
+?   keep these logs, they are up to date minute-by-minute, and require no
+?   human effort to collect (vs. the fair amount of effort that went into
+?   extracting them from the logs the last time I did it).  There is
+?   rudimentary support for this in the daemon already.
+
     - The number/names of queues and the rules for how questions get
     automatically moved between them should be parameterized in a file, instead
     of being hardcoded into the binary.
