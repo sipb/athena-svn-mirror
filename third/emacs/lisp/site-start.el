@@ -38,12 +38,13 @@
 ; Include PO server in rmail inbox list as well as obvious mbox files.
 (setq local-inbox
       (cond ((file-accessible-directory-p "/var/mail/")
-	     "/var/mail/$USER")
+	     (concat "/var/mail/" user-login-name))
 	    ((file-accessible-directory-p "/var/spool/mail/")
-	     "/var/spool/mail/$USER")
+	     (concat "/var/spool/mail/" user-login-name))
 	    ((file-accessible-directory-p "/usr/spool/mail/")
-	     "/usr/spool/mail/$USER")))
-(setq rmail-primary-inbox-list (list "~/mbox" local-inbox "po:$USER"))
+	     (concat "/usr/spool/mail/" user-login-name))))
+(setq rmail-primary-inbox-list (list "~/mbox" local-inbox 
+				     (concat "po:" user-login-name)))
 
 ; Some gnus settings.  We set gnus-mode-non-string-length to 27 to make room
 ; for line-number-mode; this seems to be an oversight in the defaults
