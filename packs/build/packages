@@ -1,4 +1,4 @@
-# $Id: packages,v 1.259 2004-03-02 17:03:26 ghudson Exp $
+# $Id: packages,v 1.260 2004-03-06 17:17:59 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -295,6 +295,7 @@ third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
 third/yelp			except linux requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
+third/zenity			requires gtk2,libglade2,GConf2,libgnomecanvas,scrollkeeper,gettext
 
 # Final packs stuff
 packs/config			late except linux
