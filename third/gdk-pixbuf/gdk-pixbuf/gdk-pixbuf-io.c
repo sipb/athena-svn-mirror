@@ -174,17 +174,22 @@ pixbuf_check_xbm (guchar *buffer, int size)
 	if (size < 20)
 		return FALSE;
 
-	if (buffer [0] != '#'
-	    || buffer [1] != 'd'
-	    || buffer [2] != 'e'
-	    || buffer [3] != 'f'
-	    || buffer [4] != 'i'
-	    || buffer [5] != 'n'
-	    || buffer [6] != 'e'
-	    || buffer [7] != ' ')
-		return FALSE;
+	if (buffer [0] == '#'
+	    && buffer [1] == 'd'
+	    && buffer [2] == 'e'
+	    && buffer [3] == 'f'
+	    && buffer [4] == 'i'
+	    && buffer [5] == 'n'
+	    && buffer [6] == 'e'
+	    && buffer [7] == ' ')
+		return TRUE;
 
-	return TRUE;
+	/* Note that this requires xpm to be checked before xbm. */
+	if (buffer [0] == '/'
+	    && buffer [1] != '*')
+		return TRUE;
+
+	return FALSE;
 }
 
 static GdkPixbufModule file_formats [] = {
@@ -196,9 +201,9 @@ static GdkPixbufModule file_formats [] = {
 	{ "xpm",  pixbuf_check_xpm, NULL,  NULL, NULL, NULL, NULL, NULL },
 	{ "pnm",  pixbuf_check_pnm, NULL,  NULL, NULL, NULL, NULL, NULL },
 	{ "ras",  pixbuf_check_sunras, NULL,  NULL, NULL, NULL, NULL, NULL },
-	{ "ico",  pixbuf_check_ico, NULL,  NULL, NULL, NULL, NULL, NULL },
 	{ "bmp",  pixbuf_check_bmp, NULL,  NULL, NULL, NULL, NULL, NULL },
 	{ "xbm",  pixbuf_check_xbm, NULL,  NULL, NULL, NULL, NULL, NULL },
+	{ "ico",  pixbuf_check_ico, NULL,  NULL, NULL, NULL, NULL, NULL },
 	{ NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 

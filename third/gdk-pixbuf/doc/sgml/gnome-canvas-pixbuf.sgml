@@ -33,7 +33,7 @@
 </refsect1>
 
 <refsect1>
-<title>Properties</title>
+<title>Args</title>
 <synopsis>
 
   &quot;<link linkend="GnomeCanvasPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="gpointer">gpointer</link>             : Read / Write
@@ -229,7 +229,7 @@
 <programlisting>#define     GNOME_CANVAS_PIXBUF(obj)</programlisting>
   <para>
     Casts a <link linkend="GtkOjbect">GtkOjbect</link> to a <link linkend="GnomeCanvasPixbuf">GnomeCanvasPixbuf</link>.
-  </para><informaltable pgwide="1" frame="none" role="params">
+  </para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -243,7 +243,7 @@
 
 </refsect1>
 <refsect1>
-<title>Properties</title>
+<title>Args</title>
 <variablelist>
 <varlistentry><term><anchor id="GnomeCanvasPixbuf--pixbuf">&quot;<literal>pixbuf</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
 <listitem>

@@ -862,10 +862,8 @@ gdk_pixbuf__pnm_image_load_increment (gpointer data, guchar *buf, guint size)
 							  context->width,
 							  context->height);
 			
-			if (context->pixbuf == NULL) {
-				/* Failed to allocate memory */
-				g_error ("Couldn't allocate gdkpixbuf");
-			}
+			if (context->pixbuf == NULL)
+				return FALSE;
 			
 			context->pixels = context->pixbuf->pixels;
 			context->rowstride = context->pixbuf->rowstride;

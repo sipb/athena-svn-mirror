@@ -493,13 +493,13 @@ composite_line_22_4a4 (int *weights, int n_x, int n_y,
       b += ta * q0[6];
       a += ta;
 
-      ta = w3 * q0[3];
-      r += ta * q0[0];
-      g += ta * q0[1];
-      b += ta * q0[2];
+      ta = w3 * q1[3];
+      r += ta * q1[0];
+      g += ta * q1[1];
+      b += ta * q1[2];
       a += ta;
 
-      ta += w4 * q1[7];
+      ta = w4 * q1[7];
       r += ta * q1[4];
       g += ta * q1[5];
       b += ta * q1[6];
@@ -881,16 +881,15 @@ scale_line_22_33 (int *weights, int n_x, int n_y,
       g += w3 * q1[1];
       b += w3 * q1[2];
 
-      r += w4 * q1[4];
-      g += w4 * q1[5];
-      b += w4 * q1[6];
+      r += w4 * q1[3];
+      g += w4 * q1[4];
+      b += w4 * q1[5];
 
       dest[0] = (r + 0x8000) >> 16;
       dest[1] = (g + 0x8000) >> 16;
       dest[2] = (b + 0x8000) >> 16;
       
       dest += 3;
-      
       x += x_step;
     }
   
@@ -1430,10 +1429,13 @@ pixops_composite_color (guchar         *dest_buf,
     return;
 
   if (!src_has_alpha && overall_alpha == 255)
+    {
     pixops_scale (dest_buf, render_x0, render_y0, render_x1, render_y1,
 		  dest_rowstride, dest_channels, dest_has_alpha,
 		  src_buf, src_width, src_height, src_rowstride, src_channels,
 		  src_has_alpha, scale_x, scale_y, interp_type);
+      return;
+    }
 
   switch (interp_type)
     {
@@ -1481,7 +1483,7 @@ pixops_composite_color (guchar         *dest_buf,
  * @render_x0: x0 of region of scaled source to store into @dest_buf
  * @render_y0: y0 of region of scaled source to store into @dest_buf
  * @render_x1: x1 of region of scaled source to store into @dest_buf
- * @render_y1: x1 of region of scaled source to store into @dest_buf
+ * @render_y1: y1 of region of scaled source to store into @dest_buf
  * @dest_rowstride: rowstride of @dest_buf
  * @dest_channels: number of channels in @dest_buf
  * @dest_has_alpha: whether @dest_buf has alpha
@@ -1533,10 +1535,13 @@ pixops_composite (guchar        *dest_buf,
     return;
 
   if (!src_has_alpha && overall_alpha == 255)
+    {
     pixops_scale (dest_buf, render_x0, render_y0, render_x1, render_y1,
 		  dest_rowstride, dest_channels, dest_has_alpha,
 		  src_buf, src_width, src_height, src_rowstride, src_channels,
 		  src_has_alpha, scale_x, scale_y, interp_type);
+      return;
+    }
 
   switch (interp_type)
     {

@@ -89,7 +89,7 @@ has an optimal rowstride.  Note that the buffer is not cleared; you will have
 to fill it completely yourself.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -129,7 +129,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> out of in-memory image 
 images with 8 bits per sample are supported.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -174,7 +174,7 @@ Creates a new pixbuf by parsing XPM data in memory.  This data is commonly
 the result of including an XPM file into a program's C source.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -193,7 +193,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> with a copy of the info
 <parameter>pixbuf</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -98,7 +98,7 @@ them to produce a bi-level alpha mask that can be used as a clipping mask for
 a drawable.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -163,7 +163,7 @@ for consistent visual results.  If you do not have any of these cases, the
 dither offsets can be both zero.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -235,7 +235,7 @@ the alpha channel yourself (possibly by caching it in your application) and
 using <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>() or GdkRGB directly instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -304,7 +304,7 @@ If the pixbuf does not have an alpha channel, then *<parameter>mask_return</para
 to None.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

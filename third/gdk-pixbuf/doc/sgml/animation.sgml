@@ -66,7 +66,7 @@ int         <link linkend="gdk-pixbuf-frame-get-x-offset">gdk_pixbuf_frame_get_x
     next frame is displayed.  The <link linkend="GdkPixbufFrameAction">GdkPixbufFrameAction</link> determines
     this.  These are essentially the overlay modes supported by GIF
     animations.
-  </para><informaltable pgwide="1" frame="none" role="enum">
+  </para><informaltable pgwide=1 frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -101,7 +101,7 @@ detected automatically.  If the file's format does not support multi-frame
 images, then an animation with a single frame will be created.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ Adds a reference to an animation.  It must be released afterwards using
 <link linkend="gdk-pixbuf-animation-unref">gdk_pixbuf_animation_unref</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -144,7 +144,7 @@ reference count drops to zero.  At that point, all the frames in the
 animation will be freed and their corresponding pixbufs will be unreferenced.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -160,7 +160,7 @@ animation will be freed and their corresponding pixbufs will be unreferenced.</p
 Queries the list of frames of an animation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -179,7 +179,7 @@ Queries the list of frames of an animation.</para>
 Queries the width of the bounding box of a pixbuf animation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -198,7 +198,7 @@ Queries the width of the bounding box of a pixbuf animation.</para>
 Queries the number of frames in a pixbuf animation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -216,7 +216,7 @@ Queries the number of frames in a pixbuf animation.</para>
 Queries the height of the bounding box of a pixbuf animation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -234,7 +234,7 @@ Queries the height of the bounding box of a pixbuf animation.</para>
 Queries the pixbuf of an animation frame.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -253,7 +253,7 @@ Queries the pixbuf of an animation frame.</para>
 Queries the overlay action of an animation frame.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -271,7 +271,7 @@ Queries the overlay action of an animation frame.</para>
 Queries the Y offset of an animation frame.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -289,7 +289,7 @@ Queries the Y offset of an animation frame.</para>
 Queries the delay time in milliseconds of an animation frame.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -307,7 +307,7 @@ Queries the delay time in milliseconds of an animation frame.</para>
 Queries the X offset of an animation frame.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

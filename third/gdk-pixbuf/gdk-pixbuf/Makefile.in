@@ -110,15 +110,18 @@ STRIP_END = @STRIP_END@
 VERSION = @VERSION@
 
 SUBDIRS = pixops
-@BUILD_CANVAS_ITEM_TRUE@CANVAS_PIXBUF_LIB = libgnomecanvaspixbuf.la
+@BUILD_CANVAS_ITEM_TRUE@CANVAS_PIXBUF_LIB = @BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf.la
 @BUILD_CANVAS_ITEM_FALSE@CANVAS_PIXBUF_LIB = 
-@BUILD_CANVAS_ITEM_TRUE@CANVAS_PIXBUF_HEADERFILES = gnome-canvas-pixbuf.h
+@BUILD_CANVAS_ITEM_TRUE@CANVAS_PIXBUF_HEADERFILES = @BUILD_CANVAS_ITEM_TRUE@gnome-canvas-pixbuf.h
 @BUILD_CANVAS_ITEM_FALSE@CANVAS_PIXBUF_HEADERFILES = 
-@BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf_la_SOURCES = gnome-canvas-pixbuf.c
-@BUILD_CANVAS_ITEM_TRUE@EXTRA_GNOME_LIBS = $(GNOME_LIBS)
+@BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf_la_SOURCES = @BUILD_CANVAS_ITEM_TRUE@gnome-canvas-pixbuf.c
+@BUILD_CANVAS_ITEM_TRUE@EXTRA_GNOME_LIBS = @BUILD_CANVAS_ITEM_TRUE@$(GNOME_LIBS)
 @BUILD_CANVAS_ITEM_FALSE@EXTRA_GNOME_LIBS = 
 
-lib_LTLIBRARIES =  	libgdk_pixbuf.la		libgdk_pixbuf_xlib.la		$(CANVAS_PIXBUF_LIB)
+lib_LTLIBRARIES = \
+	libgdk_pixbuf.la	\
+	libgdk_pixbuf_xlib.la	\
+	$(CANVAS_PIXBUF_LIB)
 
 
 libgnomecanvaspixbuf_la_LDFLAGS = -version-info 1:0:0 $(EXTRA_GNOME_LIBS)
@@ -129,75 +132,75 @@ libexecdir = $(libdir)/gdk-pixbuf/loaders
 # The PNG plugin.
 #
 libpixbufloader_png_la_SOURCES = io-png.c
-libpixbufloader_png_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_png_la_LDFLAGS = -module -avoid-version
 libpixbufloader_png_la_LIBADD = $(LIBPNG) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The JPEG loader
 #
 libpixbufloader_jpeg_la_SOURCES = io-jpeg.c
-libpixbufloader_jpeg_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_jpeg_la_LDFLAGS = -module -avoid-version
 libpixbufloader_jpeg_la_LIBADD = $(LIBJPEG) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The XPM loader
 #
 libpixbufloader_xpm_la_SOURCES = io-xpm.c
-libpixbufloader_xpm_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_xpm_la_LDFLAGS = -module -avoid-version
 libpixbufloader_xpm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The GIF loader
 #
 libpixbufloader_gif_la_SOURCES = io-gif.c
-libpixbufloader_gif_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_gif_la_LDFLAGS = -module -avoid-version
 libpixbufloader_gif_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The ICO loader
 #
 libpixbufloader_ico_la_SOURCES = io-ico.c
-libpixbufloader_ico_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_ico_la_LDFLAGS = -module -avoid-version
 libpixbufloader_ico_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The RAS loader
 #
 libpixbufloader_ras_la_SOURCES = io-ras.c
-libpixbufloader_ras_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_ras_la_LDFLAGS = -module -avoid-version
 libpixbufloader_ras_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The TIFF loader
 #
 libpixbufloader_tiff_la_SOURCES = io-tiff.c
-libpixbufloader_tiff_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_tiff_la_LDFLAGS = -module -avoid-version
 libpixbufloader_tiff_la_LIBADD = $(LIBTIFF) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The PNM loader
 #
 libpixbufloader_pnm_la_SOURCES = io-pnm.c
-libpixbufloader_pnm_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_pnm_la_LDFLAGS = -module -avoid-version
 libpixbufloader_pnm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The BMP loader
 #
 libpixbufloader_bmp_la_SOURCES = io-bmp.c
-libpixbufloader_bmp_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_bmp_la_LDFLAGS = -module -avoid-version
 libpixbufloader_bmp_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The XBM loader
 #
 libpixbufloader_xbm_la_SOURCES = io-xbm.c
-libpixbufloader_xbm_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_xbm_la_LDFLAGS = -module -avoid-version
 libpixbufloader_xbm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
-@HAVE_PNG_TRUE@PNG_LIB = libpixbufloader-png.la
+@HAVE_PNG_TRUE@PNG_LIB = @HAVE_PNG_TRUE@libpixbufloader-png.la
 
-@HAVE_JPEG_TRUE@JPEG_LIB = libpixbufloader-jpeg.la
+@HAVE_JPEG_TRUE@JPEG_LIB = @HAVE_JPEG_TRUE@libpixbufloader-jpeg.la
 
 GIF_LIB = libpixbufloader-gif.la
 
@@ -205,7 +208,7 @@ ICO_LIB = libpixbufloader-ico.la
 
 RAS_LIB = libpixbufloader-ras.la
 
-@HAVE_TIFF_TRUE@TIFF_LIB = libpixbufloader-tiff.la
+@HAVE_TIFF_TRUE@TIFF_LIB = @HAVE_TIFF_TRUE@libpixbufloader-tiff.la
 
 XPM_LIB = libpixbufloader-xpm.la
 
@@ -215,11 +218,30 @@ BMP_LIB = libpixbufloader-bmp.la
 
 XBM_LIB = libpixbufloader-xbm.la
 
-@BUILD_DYNAMIC_MODULES_TRUE@libexec_LTLIBRARIES = 	$(PNG_LIB)		$(JPEG_LIB)		$(GIF_LIB)		$(ICO_LIB)		$(RAS_LIB)		$(XPM_LIB)		$(TIFF_LIB)		$(PNM_LIB)		$(BMP_LIB)		$(XBM_LIB)
+@BUILD_DYNAMIC_MODULES_TRUE@libexec_LTLIBRARIES = @BUILD_DYNAMIC_MODULES_TRUE@\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(PNG_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(JPEG_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(GIF_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(ICO_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(RAS_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(XPM_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(TIFF_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(PNM_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(BMP_LIB)	\
+@BUILD_DYNAMIC_MODULES_TRUE@	$(XBM_LIB)
 @BUILD_DYNAMIC_MODULES_FALSE@libexec_LTLIBRARIES = 
 
 @BUILD_DYNAMIC_MODULES_TRUE@extra_sources = 
-@BUILD_DYNAMIC_MODULES_FALSE@extra_sources = $(libpixbufloader_png_la_SOURCES) 			$(libpixbufloader_jpeg_la_SOURCES) 			$(libpixbufloader_xpm_la_SOURCES) 			$(libpixbufloader_gif_la_SOURCES) 			$(libpixbufloader_ico_la_SOURCES) 			$(libpixbufloader_ras_la_SOURCES) 			$(libpixbufloader_tiff_la_SOURCES) 			$(libpixbufloader_pnm_la_SOURCES) 			$(libpixbufloader_bmp_la_SOURCES)			$(libpixbufloader_xbm_la_SOURCES)
+@BUILD_DYNAMIC_MODULES_FALSE@extra_sources = @BUILD_DYNAMIC_MODULES_FALSE@$(libpixbufloader_png_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_jpeg_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_xpm_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_gif_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_ico_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_ras_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_tiff_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_pnm_la_SOURCES) 	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_bmp_la_SOURCES)	\
+@BUILD_DYNAMIC_MODULES_FALSE@		$(libpixbufloader_xbm_la_SOURCES)
 
 @BUILD_DYNAMIC_MODULES_FALSE@builtin_libraries = 
 
@@ -227,7 +249,10 @@ noinst_PROGRAMS = test-gdk-pixbuf testpixbuf testpixbuf-drawable testanimation t
 TESTS = test-gdk-pixbuf
 
 DEPS = libgdk_pixbuf.la
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) 	-I$(top_srcdir)/gdk-pixbuf 	-I$(top_builddir)/gdk-pixbuf 	$(X11_CFLAGS) $(GLIB_CFLAGS) $(GTK_CFLAGS) $(GNOME_CFLAGS)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
+	-I$(top_srcdir)/gdk-pixbuf \
+	-I$(top_builddir)/gdk-pixbuf \
+	$(X11_CFLAGS) $(GLIB_CFLAGS) $(GTK_CFLAGS) $(GNOME_CFLAGS)
 
 
 AM_CPPFLAGS = "-DPIXBUF_LIBDIR=\"$(libexecdir)\""
@@ -248,7 +273,18 @@ GDK_PIXBUF_LIBS = $(GLIB_LIBS) $(GTK_LIBS)
 
 libgdk_pixbufincludedir = $(includedir)/gdk-pixbuf-1.0/gdk-pixbuf
 
-libgdk_pixbuf_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-drawable.c			gdk-pixbuf-io.c				gdk-pixbuf-loader.c			gdk-pixbuf-render.c			gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-parse-color.c		$(extra_sources)
+libgdk_pixbuf_la_SOURCES = \
+	gdk-pixbuf.c			\
+	gdk-pixbuf-animation.c		\
+	gdk-pixbuf-data.c		\
+	gdk-pixbuf-drawable.c		\
+	gdk-pixbuf-io.c			\
+	gdk-pixbuf-loader.c		\
+	gdk-pixbuf-render.c		\
+	gdk-pixbuf-scale.c		\
+	gdk-pixbuf-util.c		\
+	gdk-pixbuf-parse-color.c	\
+	$(extra_sources)
 
 
 libgdk_pixbuf_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(GTK_LIBS)
@@ -258,16 +294,37 @@ libgdk_pixbuf_la_LIBADD = pixops/libpixops.la
 # The GdkPixbufXlib library
 #
 
-libgdk_pixbuf_xlib_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-xlib.c			gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-io.c				gdk-pixbuf-xlib-render.c		gdk-pixbuf-xlib-drawable.c		gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-xlibrgb.c			gdk-pixbuf-parse-color.c		$(extra_sources)
+libgdk_pixbuf_xlib_la_SOURCES = \
+	gdk-pixbuf.c			\
+	gdk-pixbuf-xlib.c		\
+	gdk-pixbuf-animation.c		\
+	gdk-pixbuf-data.c		\
+	gdk-pixbuf-io.c			\
+	gdk-pixbuf-xlib-render.c	\
+	gdk-pixbuf-xlib-drawable.c	\
+	gdk-pixbuf-scale.c		\
+	gdk-pixbuf-util.c		\
+	gdk-pixbuf-xlibrgb.c		\
+	gdk-pixbuf-parse-color.c	\
+	$(extra_sources)
 
 
 libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(X11_LIBS)
 libgdk_pixbuf_xlib_la_LIBADD = pixops/libpixops.la libgdk_pixbuf.la $(GTK_LIBS)
 
-libgdk_pixbufinclude_HEADERS =  	gdk-pixbuf.h				gdk-pixbuf-loader.h			gdk-pixbuf-features.h			gdk-pixbuf-xlib.h			gdk-pixbuf-xlibrgb.h			$(CANVAS_PIXBUF_HEADERFILES)
+libgdk_pixbufinclude_HEADERS = \
+	gdk-pixbuf.h			\
+	gdk-pixbuf-loader.h		\
+	gdk-pixbuf-features.h		\
+	gdk-pixbuf-xlib.h		\
+	gdk-pixbuf-xlibrgb.h		\
+	$(CANVAS_PIXBUF_HEADERFILES)
 
 
-noinst_HEADERS =  	gdk-pixbuf-io.h				gdk-pixbuf-private.h			gdk-pixbuf-xlib-private.h
+noinst_HEADERS = \
+	gdk-pixbuf-io.h			\
+	gdk-pixbuf-private.h		\
+	gdk-pixbuf-xlib-private.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h

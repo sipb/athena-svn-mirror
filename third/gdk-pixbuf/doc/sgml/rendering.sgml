@@ -108,7 +108,7 @@ void        <link linkend="gdk-pixbuf-render-pixmap-and-mask">gdk_pixbuf_render_
     channel extension, it will be possible to do full alpha
     compositing onto arbitrary drawables.  For now both cases fall
     back to a bilevel clipping mask.
-  </para><informaltable pgwide="1" frame="none" role="enum">
+  </para><informaltable pgwide=1 frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -159,7 +159,7 @@ the alpha channel yourself (possibly by caching it in your application) and
 using <link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>() or GdkRGB directly instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ for consistent visual results.  If you do not have any of these cases, the
 dither offsets can be both zero.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -297,7 +297,7 @@ them to produce a bi-level alpha mask that can be used as a clipping mask for
 a drawable.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -351,7 +351,7 @@ If the pixbuf does not have an alpha channel, then *<parameter>mask_return</para
 to <literal>NULL</literal>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

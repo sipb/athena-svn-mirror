@@ -158,7 +158,7 @@ expose_cb (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 	interpolation is just as fast and results in higher quality.
       </para>
     </note>
-  </para><informaltable pgwide="1" frame="none" role="enum">
+  </para><informaltable pgwide=1 frame="none" role="enum">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -223,7 +223,7 @@ the industrial-strength power tool you can fall back to if
 <link linkend="gdk-pixbuf-scale-simple">gdk_pixbuf_scale_simple</link>() isn't powerful enough.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -283,7 +283,7 @@ then composites the rectangle (<parameter>dest_x</parameter>, <parameter>dest_y<
 <parameter>dest_height</parameter>) of the resulting image onto the destination image.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -357,7 +357,7 @@ See <link linkend="gdk-pixbuf-composite-color-simple">gdk_pixbuf_composite_color
 function suitable for many tasks.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -433,7 +433,7 @@ For more complicated scaling/compositing see <link linkend="gdk-pixbuf-scale">gd
 and <link linkend="gdk-pixbuf-composite">gdk_pixbuf_composite</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -471,7 +471,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> by scaling <parameter>s
 <parameter>color1</parameter> and <parameter>color2</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
+</para><informaltable pgwide=1 frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
