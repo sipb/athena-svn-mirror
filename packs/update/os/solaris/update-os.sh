@@ -13,6 +13,7 @@ if [ "$NEWOS" = "true" ]; then
   pks="`cat $OLDPKGS`"
   for i in $pks; do
     rm -rf $UPDATE_ROOT/var/sadm/pkg/$i
+    rm -rf $UPDATE_ROOT/var/sadm/pkg/$i.[2-9]
   done
   patches="`cat $OLDPTCHS`"
   for i in $patches; do
