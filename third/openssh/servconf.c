@@ -18,10 +18,6 @@ RCSID("$OpenBSD: servconf.c,v 1.89 2001/08/16 19:18:34 jakob Exp $");
 #if defined(KRB5)
 #ifdef HEIMDAL
 #include <krb.h>
-#else
-/* Bodge - but then, so is using the kerberos IV KEYFILE to get a Kerberos V
- * keytab */
-#define KEYFILE "/etc/krb5.keytab"
 #endif
 #endif
 #ifdef AFS
@@ -183,7 +179,7 @@ fill_default_server_options(ServerOptions *options)
 		options->pubkey_authentication = 1;
 #if defined(KRB4) || defined(KRB5)
 	if (options->kerberos_authentication == -1)
-		options->kerberos_authentication = (access(KEYFILE, R_OK) == 0);
+		options->kerberos_authentication = 1;
 	if (options->kerberos_or_local_passwd == -1)
 		options->kerberos_or_local_passwd = 1;
 	if (options->kerberos_ticket_cleanup == -1)
