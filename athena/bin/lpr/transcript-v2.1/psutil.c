@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.1 1990-08-25 16:50:09 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.2 1990-08-25 16:52:40 epeisach Exp $";
 #endif
 /* psutil.c
  *
@@ -15,6 +15,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/08/25  16:50:09  epeisach
+ * Initial revision
+ * 
  * Revision 2.2  87/11/17  16:52:49  byron
  * Release 2.1
  * 
@@ -44,6 +47,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <fcntl.h>
 #else
 #include <strings.h>
+#ifdef _AUX_SOURCE
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 #endif
 #include "transcript.h"

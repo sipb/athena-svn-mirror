@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.5 1990-07-13 13:41:22 ilham Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.6 1990-08-25 16:52:09 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/13  13:41:22  ilham
+ * Does the right thing for group quota account
+ * 
  * Revision 1.4  90/07/03  16:29:45  epeisach
  * Fixup for openlog
  * 
@@ -193,6 +196,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <strings.h>
 #include <errno.h>
 
+#ifdef _AUX_SOURCE
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
