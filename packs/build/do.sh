@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.2 1996-10-12 22:23:21 ghudson Exp $
+# $Id: do.sh,v 1.3 1996-10-12 22:44:15 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -42,17 +42,15 @@ IRIX*5.3*)
 	;;
 esac
 
+# Extract the compiler for this platform from config.site.
 compiler=`. $CONFIG_SITE; echo $CC`
-configdir="$source/packs/build/config"
-xconfigdir="$source/packs/build/xconfig"
 
 if [ -r Makefile.athena ]; then
-	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR
+	export SRVD SOURCE COMPILER XCONFIGDIR
 	SRVD="$srvd"
 	SOURCE="$source"
 	COMPILER="$compiler"
-	CONFIGDIR="$configdir"
-	XCONFIGDIR="$xconfigdir"
+	XCONFIGDIR="$source/packs/build/xconfig"
 	make -f Makefile.athena "$operation"
 elif [ -x ./configure ]; then
 	case "$operation" in
@@ -65,7 +63,8 @@ elif [ -x ./configure ]; then
 elif [ -r Imakefile ]; then
 	case "$operation" in
 		configure)
-			imake "-I$configdir" -DUseInstalled "-DTOPDIR=$source"
+			imake "-I$source/packs/build/config" -DUseInstalled \
+				"-DTOPDIR=$source"
 			make Makefiles
 			;;
 		clean)		make clean ;;
