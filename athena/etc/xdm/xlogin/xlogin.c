@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.57 1997-02-06 18:09:41 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.58 1997-02-19 17:41:04 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -984,7 +984,7 @@ Cardinal *n;
     }
 
     if (access(resources.srvdcheck, F_OK) != 0)
-      tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x1410, hotline@mit.edu.";
+      tb.ptr = "Workstation failed to activate successfully.  Please notify the Athena Hotline, x3-1410, hotline@mit.edu.";
     else {
 	setAutoRepeat(autorep);
 #ifndef sgi /* Fonts be local on the SGI. */
@@ -1149,7 +1149,7 @@ Cardinal *n;
       sigpause(0);
 #endif
     if (access(resources.srvdcheck, F_OK) != 0) {
-	fprintf(stderr, "Workstation failed to activate successfully.\nPlease notify the Athena Hotline, x1410, hotline@mit.edu.");
+	fprintf(stderr, "Workstation failed to activate successfully.\nPlease notify the Athena Hotline, x3-1410, hotline@mit.edu.");
 	return;
     }
     sigconsCB(NULL, "hide", NULL);
