@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.40 1995-01-27 04:10:18 cfields Exp $
+# $Id: xsession,v 1.41 1995-07-03 06:43:41 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -52,30 +52,10 @@ endif
 
 setenv XSESSION $$
 
-# Set the sleep time for waiting between launching large applications.
-# These are only set for "slow" machines.  They can be overridden in
-# the ~/.cshrc.mine or ~/.environment files. 
+# We set sleep_time to 0 for historical purposes, in case anyone has
+# code that depends on its value.
 
-set sleep_time=1
-switch ("`machtype -c`")
-    case VAXSTAR:
-	set sleep_time=10
-	breaksw
-    case CVAXSTAR:
-	set sleep_time=3
-	breaksw
-    case MVAX-II:
-	set sleep_time=10
-	breaksw
-    case RTPC-*:
-	set sleep_time=6
-	breaksw
-    case PS2-*:
-	set sleep_time=6
-	breaksw
-    default:
-	set sleep_time=0
-endsw
+set sleep_time=0
 
 # The ~/.cshrc file sets environment variables, attaches lockers, and sets
 # the command search path.
@@ -110,13 +90,8 @@ if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
 if ($?NOCALLS) then
 	(mwm -xrm "*configFile: /usr/athena/lib/X11/system.mwmrc" &)
-	sleep $sleep_time
-	sleep $sleep_time
 else
 	($WINDOW_MANAGER &)
-	sleep $sleep_time
-	# mwm takes twice as long to start
-	if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time	
 endif
 
 
@@ -146,17 +121,14 @@ if (! $?skip_dash) then
 		else
 			(dash -default -logout &)
 		endif
-		sleep $sleep_time
 	else
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		(dash &)
-		sleep $sleep_time
 	endif
 else
 	if (! $?skip_xlogout) then
 		if ($?verbose_login) echo "Creating logout button..."
 		(dash -logout &)
-		sleep $sleep_time
 	endif
 				
 endif
@@ -171,7 +143,6 @@ endif
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
 	(xterm -geometry 80x48+0+30 &)
-	sleep $sleep_time
 endif
 
 # Run default system startup activities.  To skip these, put the command
