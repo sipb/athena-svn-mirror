@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.9 1993-10-09 19:00:42 probe Exp $
+ * $Id: Imakefile,v 1.10 1993-10-14 12:47:23 probe Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -26,15 +26,30 @@ DEFINES=-DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
 LIBS= -lzephyr -lcom_err -lkrb -ldes $(OLIBS)
 
 create_dir($(PSLIBDIR))
-install_script(psif,,$(PSLIBDIR)/psif)
 
 SimpleProgram(psbanner,psbanner.o psutil.o config.o,,$(PSLIBDIR))
 SimpleProgram(pscomm,pscomm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
-
-SimpleProgram(lps40comm,lps40comm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
-
-SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
+SimpleProgram(pstext,pstext.o psutil.o config.o,,$(PSLIBDIR))
+SimpleProgram(psrv,psrv.o psutil.o config.o,,$(PSLIBDIR))
 SimpleProgram(duplex2,duplex2.o,,$(PSLIBDIR))
+
+/* Printer-specific filters */
+SimpleProgram(lps40comm,lps40comm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
+SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
+
+all install:: psif
+
+install_script(psif,,$(PSLIBDIR))
+install_script(psbad.sh,,$(PSLIBDIR)/psbad)
+install::
+	-for i in psof psgf psnf pstf psrf psvf pscf psdf; do \
+		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
+		ln -s psif $(DESTDIR)$(PSLIBDIR)/$$i; \
+		done
+	-for i in pstext.pro banner.pro lps40banner.pro; do \
+		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
+		$(INSTALL) -c -m 0444 $$i $(DESTDIR)$(PSLIBDIR)/$$i; \
+		done
 
 SpecialObject(hpcomm.o,hpcomm.c,-DBRIDGE -DHP)
 SpecialObject(hpquery.o,hpquery.c,-I./snmplib)
@@ -42,25 +57,18 @@ SpecialObject(hpquery.o,hpquery.c,-I./snmplib)
 hpcomm.c: pscomm.c
 	$(RM) hpcomm.c; ln -s pscomm.c hpcomm.c
 
-#if 0
-SimpleProgram(hpbanner,hpbanner.o psutil.o config.o,,$(PSLIBDIR))
-SimpleProgram(lps40banner,lps40banner.o psutil.o config.o,,$(PSLIBDIR))
-SpecialObject(hpbanner.o,hpbanner.c,-DBPRO_ENV=\"HPBANNERPRO\")
-SpecialObject(lps40banner.o,lps40banner.c,-DBPRO_ENV=\"LPS40BANNERPRO\")
-
-hpbanner.c: psbanner.c
-	$(RM) hpbanner.c; ln -s psbanner.c hpbanner.c
-lps40banner.c: psbanner.c
-	$(RM) lps40banner.c; ln -s psbanner.c lps40banner.c
-#endif
-
 config.c: config.proto Makefile
 	$(RM) config.c
 	sed	-e s,PSLIBDIR,$(PSLIBDIR),g \
 		-e s,TROFFFONTDIR,$(TROFFFONTDIR),g \
 		-e s,DITDIR,$(DITDIR),g \
 		-e s,PSTEMPDIR,$(PSTEMPDIR),g \
-		config.proto >config.c
+		config.proto > config.c
+
+psif: psif.proto Makefile
+	$(RM) psif
+	sed	-e s,XPSLIBDIRX,$(PSLIBDIR),g \
+		psif.proto > psif
 
 snmplib/libsnmp.a:: snmplib
 config.o: config.c
@@ -69,4 +77,4 @@ pscomm.o psutil.o: transcript.h
 pscat.o pscatmap.o: action.h 
 
 clean::
-	$(RM) config.c hpcomm.c hpbanner.c lps40banner.c
+	$(RM) config.c hpcomm.c hpbanner.c lps40banner.c psif
