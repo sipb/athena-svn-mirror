@@ -1,5 +1,5 @@
 /* stderr.c --- capturing stdout/stderr output onto the screensaver window.
- * xscreensaver, Copyright (c) 1991-1998 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1991-1998, 2001 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -114,11 +114,12 @@ print_stderr_1 (saver_screen_info *ssi, char *string)
   if (! ssi->stderr_font)
     {
       char *font_name = get_string_resource ("font", "Font");
-      if (!font_name) font_name = "fixed";
+      if (!font_name) font_name = strdup ("fixed");
       ssi->stderr_font = XLoadQueryFont (dpy, font_name);
       if (! ssi->stderr_font) ssi->stderr_font = XLoadQueryFont (dpy, "fixed");
       ssi->stderr_line_height = (ssi->stderr_font->ascent +
 				 ssi->stderr_font->descent);
+      free (font_name);
     }
 
   if (! ssi->stderr_gc)
@@ -478,6 +479,9 @@ initialize_stderr (saver_info *si)
 void
 shutdown_stderr (saver_info *si)
 {
+  fflush (stdout);
+  fflush (stderr);
+
   if (!real_stderr || stderr_stdout_read_fd < 0)
     return;
 
@@ -489,7 +493,16 @@ shutdown_stderr (saver_info *si)
     {
       *stderr_tail = 0;
       fprintf (real_stderr, "%s", stderr_buffer);
-      fflush (real_stderr);
       stderr_tail = stderr_buffer;
     }
+
+  if (real_stdout) fflush (real_stdout);
+  if (real_stderr) fflush (real_stderr);
+
+  if (stdout != real_stdout)
+    dup2 (fileno(real_stdout), fileno(stdout));
+  if (stderr != real_stderr)
+    dup2 (fileno(real_stderr), fileno(stderr));
+
+  stderr_stdout_read_fd = -1;
 }

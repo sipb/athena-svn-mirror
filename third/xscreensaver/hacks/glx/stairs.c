@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* stairs --- Infinite Stairs, and Escher-like scene. */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)stairs.c	4.07 97/11/24 xlockmore";
-
 #endif
 
 #undef DEBUG_LISTS
@@ -66,8 +65,7 @@ static const char sccsid[] = "@(#)stairs.c	4.07 97/11/24 xlockmore";
 # define HACK_DRAW			draw_stairs
 # define HACK_RESHAPE		reshape_stairs
 # define stairs_opts		xlockmore_opts
-# define DEFAULTS			"*cycles:		1       \n"			\
-							"*delay:		20000   \n"			\
+# define DEFAULTS			"*delay:		20000   \n"			\
 							"*showFPS:      False   \n"			\
 							"*wireframe:	False	\n"
 # include "xlockmore.h"		/* from the xscreensaver distribution */
@@ -441,6 +439,7 @@ reshape_stairs(ModeInfo * mi, int width, int height)
 static void
 pinit(void)
 {
+    int status;
 	glClearDepth(1.0);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -466,8 +465,21 @@ pinit(void)
 	glEnable(GL_CULL_FACE);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, WoodTextureWidth, WoodTextureHeight,
-			  GL_RGB, GL_UNSIGNED_BYTE, WoodTextureData);
+
+    clear_gl_error();
+    status = gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
+                               WoodTextureWidth, WoodTextureHeight,
+                               GL_RGB, GL_UNSIGNED_BYTE, WoodTextureData);
+    if (status)
+      {
+        const char *s = (char *) gluErrorString (status);
+        fprintf (stderr, "%s: error mipmapping %dx%d texture: %s\n",
+                 progname, WoodTextureWidth, WoodTextureHeight,
+                 (s ? s : "(unknown)"));
+        exit (1);
+      }
+    check_gl_error("mipmapping");
+
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* pipes --- 3D selfbuiding pipe system */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)pipes.c	4.07 97/11/24 xlockmore";
-
 #endif
 
 /*-
@@ -60,8 +59,11 @@ static const char sccsid[] = "@(#)pipes.c	4.07 97/11/24 xlockmore";
 					"*count:		2       \n"			\
 					"*cycles:		5       \n"			\
 					"*size:			500     \n"			\
+	               	"*showFPS:      False   \n"		    \
+	               	"*fpsSolid:     True    \n"		    \
 					"*fisheye:		True    \n"			\
 					"*tightturns:	False   \n"			\
+					"*doubleBuffer:	True    \n"			\
 					"*rotatepipes:	True    \n"
 # include "xlockmore.h"				/* from the xscreensaver distribution */
 #else  /* !STANDALONE */
@@ -77,10 +79,12 @@ static const char sccsid[] = "@(#)pipes.c	4.07 97/11/24 xlockmore";
 #define DEF_FISHEYE     "True"
 #define DEF_TIGHTTURNS  "False"
 #define DEF_ROTATEPIPES "True"
+#define DEF_DBUF        "False"
 #define NofSysTypes     3
 
 static int  factory;
 static Bool fisheye, tightturns, rotatepipes;
+static Bool dbuf_p;
 
 static XrmOptionDescRec opts[] =
 {
@@ -90,21 +94,25 @@ static XrmOptionDescRec opts[] =
 	{"-tightturns", ".pipes.tightturns", XrmoptionNoArg, (caddr_t) "on"},
 	{"+tightturns", ".pipes.tightturns", XrmoptionNoArg, (caddr_t) "off"},
       {"-rotatepipes", ".pipes.rotatepipes", XrmoptionNoArg, (caddr_t) "on"},
-      {"+rotatepipes", ".pipes.rotatepipes", XrmoptionNoArg, (caddr_t) "off"}
+      {"+rotatepipes", ".pipes.rotatepipes", XrmoptionNoArg, (caddr_t) "off"},
+      {"-db", ".pipes.doubleBuffer", XrmoptionNoArg, (caddr_t) "on"},
+      {"+db", ".pipes.doubleBuffer", XrmoptionNoArg, (caddr_t) "off"},
 };
 static argtype vars[] =
 {
 	{(caddr_t *) & factory, "factory", "Factory", DEF_FACTORY, t_Int},
 	{(caddr_t *) & fisheye, "fisheye", "Fisheye", DEF_FISHEYE, t_Bool},
 	{(caddr_t *) & tightturns, "tightturns", "Tightturns", DEF_TIGHTTURNS, t_Bool},
-	{(caddr_t *) & rotatepipes, "rotatepipes", "Rotatepipes", DEF_ROTATEPIPES, t_Bool}
+	{(caddr_t *) & rotatepipes, "rotatepipes", "Rotatepipes", DEF_ROTATEPIPES, t_Bool},
+	{(caddr_t *) & dbuf_p, "doubleBuffer", "DoubleBuffer", DEF_DBUF, t_Bool}
 };
 static OptionStruct desc[] =
 {
 	{"-factory num", "how much extra equipment in pipes (0 for none)"},
 	{"-/+fisheye", "turn on/off zoomed-in view of pipes"},
 	{"-/+tightturns", "turn on/off tight turns"},
-	{"-/+rotatepipes", "turn on/off pipe system rotation per screenful"}
+	{"-/+rotatepipes", "turn on/off pipe system rotation per screenful"},
+	{"-/+db", "turn on/off double buffering"}
 };
 
 ModeSpecOpt pipes_opts =
@@ -113,11 +121,7 @@ ModeSpecOpt pipes_opts =
 #ifdef USE_MODULES
 ModStruct   pipes_description =
 {"pipes", "init_pipes", "draw_pipes", "release_pipes",
-#if defined( MESA ) && defined( SLOW )
  "draw_pipes",
-#else
- "change_pipes",
-#endif
  "change_pipes", NULL, &pipes_opts,
  1000, 2, 5, 500, 4, 1.0, "",
  "Shows a selfbuilding pipe system", 0, NULL};
@@ -145,9 +149,8 @@ ModStruct   pipes_description =
 /*************************************************************************/
 
 typedef struct {
-#if defined( MESA ) && defined( SLOW )
 	int         flip;
-#endif
+
 	GLint       WindH, WindW;
 	int         Cells[HCELLS][VCELLS][HCELLS];
 	int         usedcolors[DEFINEDCOLORS];
@@ -502,6 +505,8 @@ reshape_pipes(ModeInfo * mi, int width, int height)
 	/*glFrustum(-1.0, 1.0, -1.0, 1.0, 5.0, 15.0); */
 	gluPerspective(65.0, (GLfloat) width / (GLfloat) height, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
+
+  glClear(GL_COLOR_BUFFER_BIT);
 }
 
 static void
@@ -535,7 +540,7 @@ pinit(ModeInfo * mi, int zera)
 
 	if (zera) {
 		pp->system_number = 1;
-		glDrawBuffer(GL_FRONT_AND_BACK);
+		glDrawBuffer(dbuf_p ? GL_BACK : GL_FRONT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		(void) memset(pp->Cells, 0, sizeof (pp->Cells));
 		for (X = 0; X < HCELLS; X++) {
@@ -696,13 +701,6 @@ draw_pipes(ModeInfo * mi)
 	if (!pp->glx_context)
 		return;
 
-	glXMakeCurrent(display, window, *(pp->glx_context));
-
-#if defined( MESA ) && defined( SLOW )
-	glDrawBuffer(GL_BACK);
-#else
-	glDrawBuffer(GL_FRONT);
-#endif
 	glPushMatrix();
 
 	glTranslatef(0.0, 0.0, fisheye ? -3.8 : -4.8);
@@ -733,15 +731,14 @@ draw_pipes(ModeInfo * mi)
 		glTranslatef((pp->PX - 16) / 3.0 * 4.0, (pp->PY - 12) / 3.0 * 4.0, (pp->PZ - 16) / 3.0 * 4.0);
 		/* Finish the system with another sphere */
 		mySphere(0.6);
-#if defined( MESA ) && defined( SLOW )
-		glXSwapBuffers(display, window);
-#endif
+
 		glPopMatrix();
 
 		/* If the maximum number of system was drawn, restart (clearing the screen), */
 		/* else start a new system. */
 		if (++pp->system_number > pp->number_of_systems) {
-			(void) sleep(1);
+          if (!mi->fps_p)
+            sleep(1);
 			pinit(mi, 1);
 		} else {
 			pinit(mi, 0);
@@ -971,11 +968,10 @@ draw_pipes(ModeInfo * mi)
 
 	glFlush();
 
-#if defined( MESA ) && defined( SLOW )
-	pp->flip = !pp->flip;
-	if (pp->flip)
-		glXSwapBuffers(display, window);
-#endif
+    if (dbuf_p)
+      glXSwapBuffers(display, window);
+
+    if (mi->fps_p) do_fps (mi);
 }
 
 void

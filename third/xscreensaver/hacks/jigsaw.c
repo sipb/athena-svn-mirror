@@ -1,4 +1,5 @@
-/* xscreensaver, Copyright (c) 1997, 1998 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1997, 1998, 2001, 2003
+ *  Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -143,20 +144,14 @@ read_screen (Display *dpy, Window window, int *widthP, int *heightP)
 {
   Pixmap p;
   XWindowAttributes xgwa;
-  XGCValues gcv;
-  GC gc;
   XGetWindowAttributes (dpy, window, &xgwa);
   *widthP = xgwa.width;
   *heightP = xgwa.height;
 
-  XClearWindow(dpy, window);
-  grab_screen_image(xgwa.screen, window);
   p = XCreatePixmap(dpy, window, *widthP, *heightP, xgwa.depth);
-  gcv.function = GXcopy;
-  gc = XCreateGC (dpy, window, GCFunction, &gcv);
-  XCopyArea (dpy, window, p, gc, 0, 0, *widthP, *heightP, 0, 0);
-
-  XFreeGC (dpy, gc);
+  XClearWindow(dpy, window);
+  load_random_image (xgwa.screen, window, p, NULL);
+  XClearWindow(dpy, window);
 
   return p;
 }
@@ -189,6 +184,14 @@ jigsaw_init(Display *dpy, Window window)
   height = xgwa.height / GRID_HEIGHT;
   x_border = (xgwa.width  - (width  * GRID_WIDTH)) / 2;
   y_border = (xgwa.height - (height * GRID_WIDTH)) / 2;
+
+  if (width < 4 || height < 4)
+    {
+      fprintf (stderr, "%s: window too small: %dx%d (need at least %dx%d)\n",
+               progname, xgwa.width, xgwa.height,
+               GRID_WIDTH * 4, GRID_HEIGHT * 4);
+      exit (1);
+    }
 
   if (!state)
     state = (XPoint *) malloc(width * height * sizeof(XPoint));
@@ -537,6 +540,9 @@ char *defaults [] = {
   ".foreground:		Gray40",
   "*delay:		70000",
   "*delay2:		5",
+#ifdef __sgi    /* really, HAVE_READ_DISPLAY_EXTENSION */
+  "*visualID:		Best",
+#endif
   0
 };
 

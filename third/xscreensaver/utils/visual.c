@@ -1,4 +1,5 @@
-/* xscreensaver, Copyright (c) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000
+/* xscreensaver, Copyright (c) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2003
+ * 
  *  by Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -19,6 +20,7 @@
 #include "resources.h"  /* for get_string_resource() */
 #include "visual.h"
 
+#include <string.h>
 #include <X11/Xutil.h>
 
 extern char *progname;
@@ -76,7 +78,7 @@ get_visual (Screen *screen, const char *string, Bool prefer_writable_cells,
   else if (!strcmp (v, "greyscale"))		  vclass = GrayScale;
   else if (!strcmp (v, "pseudocolor"))		  vclass = PseudoColor;
   else if (!strcmp (v, "directcolor"))		  vclass = DirectColor;
-  else if (1 == sscanf (v, " %ld %c", &id, &c))	  vclass = SPECIFIC_VISUAL;
+  else if (1 == sscanf (v, " %lu %c", &id, &c))	  vclass = SPECIFIC_VISUAL;
   else if (1 == sscanf (v, " 0x%lx %c", &id, &c)) vclass = SPECIFIC_VISUAL;
   else
     {
@@ -428,13 +430,12 @@ has_writable_cells (Screen *screen, Visual *visual)
     {
     case GrayScale:	/* Mappable grays. */
     case PseudoColor:	/* Mappable colors. */
+    case DirectColor:	/* Like TrueColor, but with three colormaps:
+                           one each for red, green, and blue. */
       return True;
     case StaticGray:	/* Fixed grays. */
     case TrueColor:	/* Fixed colors. */
-    case StaticColor:	/* (What's the difference again?) */
-    case DirectColor:	/* DirectColor visuals are like TrueColor, but have
-			   three colormaps - one for each component of RGB.
-			   Screw it. */
+    case StaticColor:	/* Like PseudoColor with an unmodifiable colormap. */
       return False;
     default:
       abort();

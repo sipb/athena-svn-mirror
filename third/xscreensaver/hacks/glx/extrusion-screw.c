@@ -19,7 +19,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <GL/gl.h>
-#include <GL/glut.h>
+/*#include <GL/glut.h>*/
 #ifdef HAVE_GLE3
 #include <GL/gle.h>
 #else
@@ -50,8 +50,8 @@
 
 #define NUM_PTS (25)
 
-double contour [NUM_PTS][2];
-double norms [NUM_PTS][2];
+static double contour [NUM_PTS][2];
+static double norms [NUM_PTS][2];
 
 static void init_contour (void)
 {

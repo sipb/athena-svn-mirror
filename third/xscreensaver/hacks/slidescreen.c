@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1992, 1993, 1994, 1996, 1997, 1998 
+/* xscreensaver, Copyright (c) 1992, 1993, 1994, 1996, 1997, 1998, 2001, 2003 
  * Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -36,9 +36,7 @@ init_slide (Display *dpy, Window window)
   Visual *visual;
 
   XGetWindowAttributes (dpy, window, &xgwa);
-  grab_screen_image (xgwa.screen, window);
-
-  XGetWindowAttributes (dpy, window, &xgwa);  /* re-retrieve colormap */
+  load_random_image (xgwa.screen, window, window, NULL);
   cmap = xgwa.colormap;
   visual = xgwa.visual;
   max_width = xgwa.width;
@@ -49,6 +47,12 @@ init_slide (Display *dpy, Window window)
   grid_size = get_integer_resource ("gridSize", "Integer");
   pix_inc = get_integer_resource ("pixelIncrement", "Integer");
   border = get_integer_resource ("internalBorderWidth", "InternalBorderWidth");
+
+  /* Don't let the grid be smaller than 3x3 */
+  if (grid_size > xgwa.width / 3)
+    grid_size = xgwa.width / 3;
+  if (grid_size > xgwa.height / 3)
+    grid_size = xgwa.height / 3;
 
   {
     XColor fgc, bgc;
@@ -94,7 +98,7 @@ init_slide (Display *dpy, Window window)
 	for(i = 0; i < max; i++)
 	  {
 	    long rd, gd, bd;
-	    unsigned long d;
+	    unsigned long dd;
 	    if (!fg_ok)
 	      {
 		rd = (all[i].red   >> 8) - (fgc.red   >> 8);
@@ -103,12 +107,12 @@ init_slide (Display *dpy, Window window)
 		if (rd < 0) rd = -rd;
 		if (gd < 0) gd = -gd;
 		if (bd < 0) bd = -bd;
-		d = (rd << 1) + (gd << 2) + bd;
-		if (d < fgd)
+		dd = (rd << 1) + (gd << 2) + bd;
+		if (dd < fgd)
 		  {
-		    fgd = d;
+		    fgd = dd;
 		    fg = all[i].pixel;
-		    if (d == 0)
+		    if (dd == 0)
 		      fg_ok = True;
 		  }
 	      }
@@ -121,12 +125,12 @@ init_slide (Display *dpy, Window window)
 		if (rd < 0) rd = -rd;
 		if (gd < 0) gd = -gd;
 		if (bd < 0) bd = -bd;
-		d = (rd << 1) + (gd << 2) + bd;
-		if (d < bgd)
+		dd = (rd << 1) + (gd << 2) + bd;
+		if (dd < bgd)
 		  {
-		    bgd = d;
+		    bgd = dd;
 		    bg = all[i].pixel;
-		    if (d == 0)
+		    if (dd == 0)
 		      bg_ok = True;
 		  }
 	      }

@@ -99,20 +99,21 @@ static void init_hack(Display *dpy, Window window)
     gcflags |= GCSubwindowMode;
   window_gc = XCreateGC(dpy, window, gcflags, &gcv);
 
-  grab_screen_image(xgwa.screen, window);
+
+  orig_map = NULL;
+  pm = XCreatePixmap(dpy, window, sizex, sizey, xgwa.depth);
+  load_random_image (xgwa.screen, window, pm, NULL);
+
+  if (!lenses) {
+    orig_map = XGetImage(dpy, pm, 0, 0, sizex, sizey, ~0L, ZPixmap);
+    XFreePixmap(dpy, pm);
+    pm = 0;
+  }
 
   /* We might have needed this to grab the image, but if we leave this set
      to GCSubwindowMode, then we'll *draw* right over subwindows too. */
   XSetSubwindowMode (dpy, window_gc, ClipByChildren);
 
-  if (lenses) {
-    orig_map = NULL;
-    pm = XCreatePixmap(dpy, window, sizex, sizey, xgwa.depth);
-    XCopyArea(dpy, window, pm, window_gc, 0, 0, sizex, sizey, 0, 0);
-  } else {
-    orig_map = XGetImage(dpy, window, 0, 0, sizex, sizey, ~0L, ZPixmap);
-    pm = 0;
-  }
 
   XFillRectangle(dpy, window, window_gc, 0, 0, sizex, sizey);
   XSetWindowBackground(dpy, window, bg);
@@ -186,7 +187,7 @@ XrmOptionDescRec options[] = {
   { "-pixwidth", ".pixwidth", XrmoptionSepArg, 0 },
   { "-pixheight", ".pixheight", XrmoptionSepArg, 0 },
   { "-pixspacex", ".pixspacex", XrmoptionSepArg, 0 },
-  { "-pixspacey", ".pixspacex", XrmoptionSepArg, 0 },
+  { "-pixspacey", ".pixspacey", XrmoptionSepArg, 0 },
   { "-lensoffsetx", ".lensoffsetx", XrmoptionSepArg, 0 },
   { "-lensoffsety", ".lensoffsety", XrmoptionSepArg, 0 },
   { 0, 0, 0, 0 }

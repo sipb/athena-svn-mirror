@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* Sierpinski3D --- 3D sierpinski gasket */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)sierpinski3D.c	00.01 99/11/04 xlockmore";
-
 #endif
 
 /*-
@@ -39,14 +38,24 @@ static const char sccsid[] = "@(#)sierpinski3D.c	00.01 99/11/04 xlockmore";
 # define HACK_INIT					init_gasket
 # define HACK_DRAW					draw_gasket
 # define HACK_RESHAPE				reshape_gasket
+# define HACK_HANDLE_EVENT			gasket_handle_event
+# define EVENT_MASK					PointerMotionMask
 # define gasket_opts				xlockmore_opts
-# define DEFAULTS					"*count:		1       \n"			\
-									"*cycles:		9999    \n"			\
-									"*delay:		20000   \n"			\
-									"*maxDepth:		5       \n"			\
-									"*speed:		150     \n"			\
+
+
+#define DEF_SPIN			        "True"
+#define DEF_WANDER			        "True"
+#define DEF_SPEED			        "150"
+#define DEF_MAXDEPTH		        "5"
+
+# define DEFAULTS					"*delay:		20000   \n"			\
 									"*showFPS:      False   \n"			\
-									"*wireframe:	False	\n"
+									"*wireframe:	False	\n"			\
+									"*maxDepth:	   " DEF_MAXDEPTH  "\n"	\
+									"*speed:	   " DEF_SPEED     "\n"	\
+									"*spin:        " DEF_SPIN      "\n" \
+									"*wander:      " DEF_WANDER    "\n" \
+
 # include "xlockmore.h"		/* from the xscreensaver distribution */
 #else  /* !STANDALONE */
 # include "xlock.h"			/* from the xlockmore distribution */
@@ -54,19 +63,32 @@ static const char sccsid[] = "@(#)sierpinski3D.c	00.01 99/11/04 xlockmore";
 
 #ifdef USE_GL
 
+#include <GL/glu.h>
+#include "rotator.h"
+#include "gltrackball.h"
+
 #undef countof
 #define countof(x) (sizeof((x))/sizeof((*x)))
 
 static int max_depth;
 static int speed;
+static Bool do_spin;
+static Bool do_wander;
+
 static XrmOptionDescRec opts[] = {
   {"-depth", ".sierpinski3d.maxDepth", XrmoptionSepArg, (caddr_t) 0 },
-  {"-speed", ".sierpinski3d.speed",    XrmoptionSepArg, (caddr_t) 0 }
+  {"-speed", ".sierpinski3d.speed",    XrmoptionSepArg, (caddr_t) 0 },
+  { "-spin",   ".spin",   XrmoptionNoArg, "True" },
+  { "+spin",   ".spin",   XrmoptionNoArg, "False" },
+  { "-wander", ".wander", XrmoptionNoArg, "True" },
+  { "+wander", ".wander", XrmoptionNoArg, "False" },
 };
 
 static argtype vars[] = {
-  {(caddr_t *) &max_depth, "maxDepth", "MaxDepth", "5", t_Int},
-  {(caddr_t *) &speed,     "speed",    "Speed",   "150", t_Int},
+  {(caddr_t *) &do_spin,   "spin",   "Spin",   DEF_SPIN,   t_Bool},
+  {(caddr_t *) &do_wander, "wander", "Wander", DEF_WANDER, t_Bool},
+  {(caddr_t *) &speed,     "speed",  "Speed",  DEF_SPEED,  t_Int},
+  {(caddr_t *) &max_depth, "maxDepth", "MaxDepth", DEF_MAXDEPTH, t_Int},
 };
 
 
@@ -88,115 +110,27 @@ typedef struct{
 } GL_VECTOR;
 
 typedef struct {
-  GLfloat rotx, roty, rotz;	   /* current object rotation */
-  GLfloat dx, dy, dz;		   /* current rotational velocity */
-  GLfloat ddx, ddy, ddz;	   /* current rotational acceleration */
-  GLfloat d_max;			   /* max velocity */
-
-  GLfloat     angle;
-  GLuint      gasket1;
+  GLuint      gasket0, gasket1, gasket2, gasket3;
   GLXContext *glx_context;
   Window      window;
+  rotator    *rot;
+  trackball_state *trackball;
+  Bool		  button_down_p;
 
   int current_depth;
 
   int ncolors;
   XColor *colors;
-  int ccolor;
+  int ccolor0;
+  int ccolor1;
+  int ccolor2;
+  int ccolor3;
 
 } gasketstruct;
 
 static gasketstruct *gasket = NULL;
 
-#include <GL/glu.h>
-
-/* static GLuint limit; */
-
-
-/* Computing normal vectors (thanks to Nat Friedman <ndf@mit.edu>)
- */
-
-typedef struct vector {
-  GLfloat x, y, z;
-} vector;
-
-typedef struct plane {
-  vector p1, p2, p3;
-} plane;
-
-static void
-vector_set(vector *v, GLfloat x, GLfloat y, GLfloat z)
-{
-  v->x = x;
-  v->y = y;
-  v->z = z;
-}
-
-static void
-vector_cross(vector v1, vector v2, vector *v3)
-{
-  v3->x = (v1.y * v2.z) - (v1.z * v2.y);
-  v3->y = (v1.z * v2.x) - (v1.x * v2.z);
-  v3->z = (v1.x * v2.y) - (v1.y * v2.x);
-}
-
-static void
-vector_subtract(vector v1, vector v2, vector *res)
-{
-  res->x = v1.x - v2.x;
-  res->y = v1.y - v2.y;
-  res->z = v1.z - v2.z;
-}
-
-static void
-plane_normal(plane p, vector *n)
-{
-  vector v1, v2;
-  vector_subtract(p.p1, p.p2, &v1);
-  vector_subtract(p.p1, p.p3, &v2);
-  vector_cross(v2, v1, n);
-}
-
-static void
-do_normal(GLfloat x1, GLfloat y1, GLfloat z1,
-	  GLfloat x2, GLfloat y2, GLfloat z2,
-	  GLfloat x3, GLfloat y3, GLfloat z3)
-{
-  plane plane;
-  vector n;
-  vector_set(&plane.p1, x1, y1, z1);
-  vector_set(&plane.p2, x2, y2, z2);
-  vector_set(&plane.p3, x3, y3, z3);
-  plane_normal(plane, &n);
-  n.x = -n.x; n.y = -n.y; n.z = -n.z;
-
-  glNormal3f(n.x, n.y, n.z);
-
-#ifdef DEBUG
-  /* Draw a line in the direction of this face's normal. */
-  {
-    GLfloat ax = n.x > 0 ? n.x : -n.x;
-    GLfloat ay = n.y > 0 ? n.y : -n.y;
-    GLfloat az = n.z > 0 ? n.z : -n.z;
-    GLfloat mx = (x1 + x2 + x3) / 3;
-    GLfloat my = (y1 + y2 + y3) / 3;
-    GLfloat mz = (z1 + z2 + z3) / 3;
-    GLfloat xx, yy, zz;
-
-    GLfloat max = ax > ay ? ax : ay;
-    if (az > max) max = az;
-    max *= 2;
-    xx = n.x / max;
-    yy = n.y / max;
-    zz = n.z / max;
-
-    glBegin(GL_LINE_LOOP);
-    glVertex3f(mx, my, mz);
-    glVertex3f(mx+xx, my+yy, mz+zz);
-    glEnd();
-  }
-#endif /* DEBUG */
-}
+static GLfloat normals[4][3];
 
 
 
@@ -209,10 +143,7 @@ triangle (GLfloat x1, GLfloat y1, GLfloat z1,
   if (wireframe_p)
     glBegin (GL_LINE_LOOP);
   else
-    {
-      do_normal (x1, y1, z1,  x2, y2, z2,  x3, y3, z3);
-      glBegin (GL_TRIANGLES);
-    }
+    glBegin (GL_TRIANGLES);
   glVertex3f (x1, y1, z1);
   glVertex3f (x2, y2, z2);
   glVertex3f (x3, y3, z3);
@@ -220,26 +151,44 @@ triangle (GLfloat x1, GLfloat y1, GLfloat z1,
 }
 
 static void
-four_tetras (GL_VECTOR *outer, Bool wireframe_p, int countdown)
+four_tetras (GL_VECTOR *outer, Bool wireframe_p, int countdown, int which,
+             int *countP)
 {
   if (countdown <= 0)
     {
-      triangle (outer[0].x, outer[0].y, outer[0].z,
-                outer[1].x, outer[1].y, outer[1].z,
-                outer[2].x, outer[2].y, outer[2].z,
-                wireframe_p);
-      triangle (outer[0].x, outer[0].y, outer[0].z,
-                outer[3].x, outer[3].y, outer[3].z,
-                outer[1].x, outer[1].y, outer[1].z,
-                wireframe_p);
-      triangle (outer[0].x, outer[0].y, outer[0].z,
-                outer[2].x, outer[2].y, outer[2].z,
-                outer[3].x, outer[3].y, outer[3].z,
-                wireframe_p);
-      triangle (outer[1].x, outer[1].y, outer[1].z,
-                outer[3].x, outer[3].y, outer[3].z,
-                outer[2].x, outer[2].y, outer[2].z,
-                wireframe_p);
+      (*countP)++;
+      if (which == 0)
+        {
+          glNormal3f (normals[0][0], normals[0][1], normals[0][2]);
+          triangle (outer[0].x, outer[0].y, outer[0].z,
+                    outer[1].x, outer[1].y, outer[1].z,
+                    outer[2].x, outer[2].y, outer[2].z,
+                    wireframe_p);
+        }
+      else if (which == 1)
+        {
+          glNormal3f (normals[1][0], normals[1][1], normals[1][2]);
+          triangle (outer[0].x, outer[0].y, outer[0].z,
+                    outer[3].x, outer[3].y, outer[3].z,
+                    outer[1].x, outer[1].y, outer[1].z,
+                    wireframe_p);
+        }
+      else if (which == 2)
+        {
+          glNormal3f (normals[2][0], normals[2][1], normals[2][2]);
+          triangle (outer[0].x, outer[0].y, outer[0].z,
+                    outer[2].x, outer[2].y, outer[2].z,
+                    outer[3].x, outer[3].y, outer[3].z,
+                    wireframe_p);
+        }
+      else
+        {
+          glNormal3f (normals[3][0], normals[3][1], normals[3][2]);
+          triangle (outer[1].x, outer[1].y, outer[1].z,
+                    outer[3].x, outer[3].y, outer[3].z,
+                    outer[2].x, outer[2].y, outer[2].z,
+                    wireframe_p);
+        }
     }
   else
     {
@@ -282,36 +231,54 @@ four_tetras (GL_VECTOR *outer, Bool wireframe_p, int countdown)
       corner[1] = inner[M01];
       corner[2] = inner[M02];
       corner[3] = inner[M03];
-      four_tetras (corner, wireframe_p, countdown);
+      four_tetras (corner, wireframe_p, countdown, which, countP);
 
       corner[0] = inner[M01];
       corner[1] = outer[1];
       corner[2] = inner[M12];
       corner[3] = inner[M13];
-      four_tetras (corner, wireframe_p, countdown);
+      four_tetras (corner, wireframe_p, countdown, which, countP);
 
       corner[0] = inner[M02];
       corner[1] = inner[M12];
       corner[2] = outer[2];
       corner[3] = inner[M23];
-      four_tetras (corner, wireframe_p, countdown);
+      four_tetras (corner, wireframe_p, countdown, which, countP);
 
       corner[0] = inner[M03];
       corner[1] = inner[M13];
       corner[2] = inner[M23];
       corner[3] = outer[3];
-      four_tetras (corner, wireframe_p, countdown);
+      four_tetras (corner, wireframe_p, countdown, which, countP);
     }
 }
 
 
 static void
-compile_gasket(ModeInfo *mi)
+compile_gasket(ModeInfo *mi, int which)
 {
   Bool wireframe_p = MI_IS_WIREFRAME(mi);
   gasketstruct *gp = &gasket[MI_SCREEN(mi)];
+  int count;
 
   GL_VECTOR   vertex[5];
+
+  normals[0][0] =  0;
+  normals[0][1] =  0;
+  normals[0][2] = -sqrt(2.0 / 3.0);
+
+  normals[1][0] =  0;
+  normals[1][1] = -sqrt(0.75);
+  normals[1][2] =  sqrt(2.0 / 3.0) / 3.0;
+
+  normals[2][0] =  sqrt (0.5);
+  normals[2][1] =  sqrt(0.75) / 2.0;
+  normals[2][2] =  normals[1][2];
+
+  normals[3][0] = -normals[2][0];
+  normals[3][1] =  normals[2][1];
+  normals[3][2] =  normals[1][2];
+
 
   /* define verticies */
   vertex[0].x =  0.5; 
@@ -334,9 +301,13 @@ compile_gasket(ModeInfo *mi)
   vertex[4].y = 0.0; 
   vertex[4].z = 0.0;
   
+  count = 0;
   four_tetras (vertex, wireframe_p,
                (gp->current_depth < 0
-                ? -gp->current_depth : gp->current_depth));
+                ? -gp->current_depth : gp->current_depth),
+               which,
+               &count);
+  mi->polygon_count = count;
 }
 
 static void
@@ -344,11 +315,14 @@ draw(ModeInfo *mi)
 {
   Bool wireframe_p = MI_IS_WIREFRAME(mi);
   gasketstruct *gp = &gasket[MI_SCREEN(mi)];
-  static int tick = 0;
+  static int tick = 999999;
   
   static GLfloat pos[4] = {-4.0, 3.0, 10.0, 1.0};
   static float white[]  = {1.0, 1.0, 1.0, 1.0};
-  static float color[]  = {0.0, 0.0, 0.0, 1.0};
+  static float color0[] = {0.0, 0.0, 0.0, 1.0};
+  static float color1[] = {0.0, 0.0, 0.0, 1.0};
+  static float color2[] = {0.0, 0.0, 0.0, 1.0};
+  static float color3[] = {0.0, 0.0, 0.0, 1.0};
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -358,13 +332,30 @@ draw(ModeInfo *mi)
 
       glLightfv(GL_LIGHT0, GL_POSITION,  pos);
 
-      color[0] = gp->colors[gp->ccolor].red   / 65536.0;
-      color[1] = gp->colors[gp->ccolor].green / 65536.0;
-      color[2] = gp->colors[gp->ccolor].blue  / 65536.0;
-      gp->ccolor++;
-      if (gp->ccolor >= gp->ncolors) gp->ccolor = 0;
+      color0[0] = gp->colors[gp->ccolor0].red   / 65536.0;
+      color0[1] = gp->colors[gp->ccolor0].green / 65536.0;
+      color0[2] = gp->colors[gp->ccolor0].blue  / 65536.0;
 
-      glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+      color1[0] = gp->colors[gp->ccolor1].red   / 65536.0;
+      color1[1] = gp->colors[gp->ccolor1].green / 65536.0;
+      color1[2] = gp->colors[gp->ccolor1].blue  / 65536.0;
+
+      color2[0] = gp->colors[gp->ccolor2].red   / 65536.0;
+      color2[1] = gp->colors[gp->ccolor2].green / 65536.0;
+      color2[2] = gp->colors[gp->ccolor2].blue  / 65536.0;
+
+      color3[0] = gp->colors[gp->ccolor3].red   / 65536.0;
+      color3[1] = gp->colors[gp->ccolor3].green / 65536.0;
+      color3[2] = gp->colors[gp->ccolor3].blue  / 65536.0;
+
+      gp->ccolor0++;
+      gp->ccolor1++;
+      gp->ccolor2++;
+      gp->ccolor3++;
+      if (gp->ccolor0 >= gp->ncolors) gp->ccolor0 = 0;
+      if (gp->ccolor1 >= gp->ncolors) gp->ccolor1 = 0;
+      if (gp->ccolor2 >= gp->ncolors) gp->ccolor2 = 0;
+      if (gp->ccolor3 >= gp->ncolors) gp->ccolor3 = 0;
 
       glShadeModel(GL_SMOOTH);
 
@@ -379,30 +370,30 @@ draw(ModeInfo *mi)
   glPushMatrix();
 
   {
-    static int frame = 0;
-    GLfloat x, y, z;
+    double x, y, z;
+    get_position (gp->rot, &x, &y, &z, !gp->button_down_p);
+    glTranslatef((x - 0.5) * 10,
+                 (y - 0.5) * 10,
+                 (z - 0.5) * 20);
 
-#   define SINOID(SCALE,SIZE) \
-      ((((1 + sin((frame * (SCALE)) / 2 * M_PI)) / 2.0) * (SIZE)) - (SIZE)/2)
-    x = SINOID(0.0071, 8.0);
-    y = SINOID(0.0053, 6.0);
-    z = SINOID(0.0037, 15.0);
-    frame++;
-    glTranslatef(x, y, z);
+    gltrackball_rotate (gp->trackball);
 
-    x = gp->rotx;
-    y = gp->roty;
-    z = gp->rotz;
-    if (x < 0) x = 1 - (x + 1);
-    if (y < 0) y = 1 - (y + 1);
-    if (z < 0) z = 1 - (z + 1);
-    glRotatef(x * 360, 1.0, 0.0, 0.0);
-    glRotatef(y * 360, 0.0, 1.0, 0.0);
-    glRotatef(z * 360, 0.0, 0.0, 1.0);
+    get_rotation (gp->rot, &x, &y, &z, !gp->button_down_p);
+    glRotatef (x * 360, 1.0, 0.0, 0.0);
+    glRotatef (y * 360, 0.0, 1.0, 0.0);
+    glRotatef (z * 360, 0.0, 0.0, 1.0);
   }
 
   glScalef( 8.0, 8.0, 8.0 );
+
+  glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color0);
+  glCallList(gp->gasket0);
+  glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color1);
   glCallList(gp->gasket1);
+  glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
+  glCallList(gp->gasket2);
+  glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color3);
+  glCallList(gp->gasket3);
 
   glPopMatrix();
 
@@ -414,10 +405,21 @@ draw(ModeInfo *mi)
         gp->current_depth = -max_depth;
       gp->current_depth++;
 
+      /* We make four different lists so that each face of the tetrahedrons
+         can have a different color (all triangles facing in the same
+         direction have the same color, which is different from all
+         triangles facing in other directions.)
+       */
+      glDeleteLists (gp->gasket0, 1);
       glDeleteLists (gp->gasket1, 1);
-      glNewList (gp->gasket1, GL_COMPILE);
-      compile_gasket (mi);
-      glEndList();
+      glDeleteLists (gp->gasket2, 1);
+      glDeleteLists (gp->gasket3, 1);
+
+      mi->polygon_count = 0;
+      glNewList (gp->gasket0, GL_COMPILE); compile_gasket (mi, 0); glEndList();
+      glNewList (gp->gasket1, GL_COMPILE); compile_gasket (mi, 1); glEndList();
+      glNewList (gp->gasket2, GL_COMPILE); compile_gasket (mi, 2); glEndList();
+      glNewList (gp->gasket3, GL_COMPILE); compile_gasket (mi, 3); glEndList();
 
     }
 }
@@ -432,14 +434,13 @@ reshape_gasket(ModeInfo *mi, int width, int height)
   glViewport(0, 0, (GLint) width, (GLint) height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
+  gluPerspective (30.0, 1/h, 1.0, 100.0);
 
-  gluPerspective( 30.0, 1/h, 1.0, 100.0 );
-  gluLookAt( 0.0, 0.0, 15.0,
-             0.0, 0.0, 0.0,
-             0.0, 1.0, 0.0);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(0.0, 0.0, -15.0);
+  gluLookAt( 0.0, 0.0, 30.0,
+             0.0, 0.0, 0.0,
+             0.0, 1.0, 0.0);
   
   glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -450,90 +451,50 @@ pinit(ModeInfo *mi)
   gasketstruct *gp = &gasket[MI_SCREEN(mi)];
 
   /* draw the gasket */
+  gp->gasket0 = glGenLists(1);
   gp->gasket1 = glGenLists(1);
+  gp->gasket2 = glGenLists(1);
+  gp->gasket3 = glGenLists(1);
   gp->current_depth = 1;       /* start out at level 1, not 0 */
-  glNewList(gp->gasket1, GL_COMPILE);
-    compile_gasket(mi);
-  glEndList();
 }
 
 
-
-/* lifted from lament.c */
-#define RAND(n) ((long) ((random() & 0x7fffffff) % ((long) (n))))
-#define RANDSIGN() ((random() & 1) ? 1 : -1)
-
-static void
-rotate(GLfloat *pos, GLfloat *v, GLfloat *dv, GLfloat max_v)
+Bool
+gasket_handle_event (ModeInfo *mi, XEvent *event)
 {
-  double ppos = *pos;
+  gasketstruct *gp = &gasket[MI_SCREEN(mi)];
 
-  /* tick position */
-  if (ppos < 0)
-    ppos = -(ppos + *v);
-  else
-    ppos += *v;
-
-  if (ppos > 1.0)
-    ppos -= 1.0;
-  else if (ppos < 0)
-    ppos += 1.0;
-
-  if (ppos < 0) abort();
-  if (ppos > 1.0) abort();
-  *pos = (*pos > 0 ? ppos : -ppos);
-
-  /* accelerate */
-  *v += *dv;
-
-  /* clamp velocity */
-  if (*v > max_v || *v < -max_v)
+  if (event->xany.type == ButtonPress &&
+      event->xbutton.button & Button1)
     {
-      *dv = -*dv;
+      gp->button_down_p = True;
+      gltrackball_start (gp->trackball,
+                         event->xbutton.x, event->xbutton.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
     }
-  /* If it stops, start it going in the other direction. */
-  else if (*v < 0)
+  else if (event->xany.type == ButtonRelease &&
+           event->xbutton.button & Button1)
     {
-      if (random() % 4)
-	{
-	  *v = 0;
-
-	  /* keep going in the same direction */
-	  if (random() % 2)
-	    *dv = 0;
-	  else if (*dv < 0)
-	    *dv = -*dv;
-	}
-      else
-	{
-	  /* reverse gears */
-	  *v = -*v;
-	  *dv = -*dv;
-	  *pos = -*pos;
-	}
+      gp->button_down_p = False;
+      return True;
+    }
+  else if (event->xany.type == MotionNotify &&
+           gp->button_down_p)
+    {
+      gltrackball_track (gp->trackball,
+                         event->xmotion.x, event->xmotion.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
     }
 
-  /* Alter direction of rotational acceleration randomly. */
-  if (! (random() % 120))
-    *dv = -*dv;
-
-  /* Change acceleration very occasionally. */
-  if (! (random() % 200))
-    {
-      if (*dv == 0)
-	*dv = 0.00001;
-      else if (random() & 1)
-	*dv *= 1.2;
-      else
-	*dv *= 0.8;
-    }
+  return False;
 }
 
 
 void
 init_gasket(ModeInfo *mi)
 {
-  Bool wireframe_p = MI_IS_WIREFRAME(mi);
   int           screen = MI_SCREEN(mi);
   gasketstruct *gp;
 
@@ -547,31 +508,27 @@ init_gasket(ModeInfo *mi)
 
   gp->window = MI_WINDOW(mi);
 
-  gp->rotx = frand(1.0) * RANDSIGN();
-  gp->roty = frand(1.0) * RANDSIGN();
-  gp->rotz = frand(1.0) * RANDSIGN();
-
-  /* bell curve from 0-1.5 degrees, avg 0.75 */
-  gp->dx = (frand(1) + frand(1) + frand(1)) / (360*2);
-  gp->dy = (frand(1) + frand(1) + frand(1)) / (360*2);
-  gp->dz = (frand(1) + frand(1) + frand(1)) / (360*2);
-
-  gp->d_max = gp->dx * 2;
-
-  gp->ddx = 0.00006 + frand(0.00003);
-  gp->ddy = 0.00006 + frand(0.00003);
-  gp->ddz = 0.00006 + frand(0.00003);
-
-  gp->ddx = 0.00001;
-  gp->ddy = 0.00001;
-  gp->ddz = 0.00001;
-
+  {
+    double spin_speed   = 1.0;
+    double wander_speed = 0.03;
+    gp->rot = make_rotator (do_spin ? spin_speed : 0,
+                            do_spin ? spin_speed : 0,
+                            do_spin ? spin_speed : 0,
+                            1.0,
+                            do_wander ? wander_speed : 0,
+                            True);
+    gp->trackball = gltrackball_init ();
+  }
 
   gp->ncolors = 255;
   gp->colors = (XColor *) calloc(gp->ncolors, sizeof(XColor));
   make_smooth_colormap (0, 0, 0,
                         gp->colors, &gp->ncolors,
                         False, 0, False);
+  gp->ccolor0 = 0;
+  gp->ccolor1 = gp->ncolors * 0.25;
+  gp->ccolor2 = gp->ncolors * 0.5;
+  gp->ccolor3 = gp->ncolors * 0.75;
 
   if ((gp->glx_context = init_GL(mi)) != NULL)
   {
@@ -590,7 +547,6 @@ draw_gasket(ModeInfo * mi)
   gasketstruct *gp = &gasket[MI_SCREEN(mi)];
   Display      *display = MI_DISPLAY(mi);
   Window        window = MI_WINDOW(mi);
-  int           angle_incr = 1;
 
   if (!gp->glx_context) return;
 
@@ -601,14 +557,6 @@ draw_gasket(ModeInfo * mi)
 
   glXMakeCurrent(display, window, *(gp->glx_context));
   draw(mi);
-
-  /* rotate */
-  gp->angle = (int) (gp->angle + angle_incr) % 360;
-
-  rotate(&gp->rotx, &gp->dx, &gp->ddx, gp->d_max);
-  rotate(&gp->roty, &gp->dy, &gp->ddy, gp->d_max);
-  rotate(&gp->rotz, &gp->dz, &gp->ddz, gp->d_max);
-
   if (mi->fps_p) do_fps (mi);
   glFinish();
   glXSwapBuffers(display, window);
@@ -630,7 +578,10 @@ release_gasket(ModeInfo * mi)
 	/* Display lists MUST be freed while their glXContext is current. */
         glXMakeCurrent(MI_DISPLAY(mi), gp->window, *(gp->glx_context));
 
+        if (glIsList(gp->gasket0)) glDeleteLists(gp->gasket0, 1);
         if (glIsList(gp->gasket1)) glDeleteLists(gp->gasket1, 1);
+        if (glIsList(gp->gasket2)) glDeleteLists(gp->gasket2, 1);
+        if (glIsList(gp->gasket3)) glDeleteLists(gp->gasket3, 1);
       }
     }
     (void) free((void *) gasket);

@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include <sys/time.h> /* for gettimeofday() */
 
 #include <X11/Xlib.h>
@@ -418,7 +419,7 @@ draw_map (Display *dpy, Window window)
 	      if (cycle_p)
 		{
 		  struct timeval now;
-		  static struct timeval then = { 0, };
+		  static struct timeval then = { 0, 0 };
 		  unsigned long diff;
 #ifdef GETTIMEOFDAY_TWO_ARGS
 		  struct timezone tzp;

@@ -1,14 +1,20 @@
-%define	name	xscreensaver
-%define	version	3.29
-%define	release	1
-%define	serial	1
-%define	prefix	/usr/X11R6
+%define	name		xscreensaver
+%define	version		4.14
+%define	release		1
+%define	serial		1
+%define	x11_prefix	/usr/X11R6
+%define	gnome_prefix	/usr
+%define	kde_prefix	/usr
+%define gnome_datadir	%{gnome_prefix}/share
 
 # By default, builds the basic, non-GL package.
 # To build both the basic and GL-add-on packages:
 #   rpm --define "USE_GL yes" ...
+# or uncomment the following line.
+# %define	USE_GL		yes
 
 Summary:	X screen saver and locker
+Summary(fr):	Economiseur d'écran et verrouillage de terminaux X
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
@@ -18,20 +24,33 @@ Copyright:	BSD
 URL:		http://www.jwz.org/xscreensaver
 Vendor:		Jamie Zawinski <jwz@jwz.org>
 Source:		%{name}-%{version}.tar.gz
-Buildroot:	/var/tmp/%{name}-%{version}-root
+Buildroot:	%{_tmppath}/%{name}-%{version}-root
+
+# This package really should be made to depend on
+# control-center >= 1.4.0.2 -OR- control-center >= 1.5.12
+# but there's no way to express that.
 
 %description
 A modular screen saver and locker for the X Window System.
 Highly customizable: allows the use of any program that
 can draw on the root window as a display mode.
-More than 100 display modes are included in this package.
+More than 175 display modes are included in this package.
 %{?USE_GL:See also the xscreensaver-gl package, which}
 %{?USE_GL:includes optional OpenGL display modes.}
+
+%description -l fr
+Un économiseur d'écran et verrouillage modulaire pour X-Window.
+Hautement configurable: permet l'utilisation de n'importe quel programme
+qui peut dessiner dans la fenêtre root.
+Plus de 175 modes d'affichage sont inclus dans ce paquet.
+%{?USE_GL:Voir aussi le paquet xscreensaver-gl, qui inclut}
+%{?USE_GL:des modules optionnels OpenGL.}
 
 %{?USE_GL:%package gl}
 %{?USE_GL:Group:	Amusements/Graphics}
 %{?USE_GL:Requires:	xscreensaver = %{version}}
 %{?USE_GL:Summary:	A set of GL screensavers}
+%{?USE_GL:Summary(fr):	Un ensemble d'économiseurs d'écran OpenGL}
 %{?USE_GL:%description gl}
 %{?USE_GL:The xscreensaver-gl package contains even more screensavers for your}
 %{?USE_GL:mind-numbing, ambition-eroding, time-wasting, hypnotized viewing}
@@ -40,17 +59,19 @@ More than 100 display modes are included in this package.
 %{?USE_GL:Install the xscreensaver-gl package if you need more screensavers}
 %{?USE_GL:for use with the X Window System and you have OpenGL or Mesa}
 %{?USE_GL:installed.}
+%{?USE_GL:%description -l fr gl}
+%{?USE_GL:Le paquet xscreensaver-gl contient encore plus d'économiseurs}
+%{?USE_GL:d'écran pour votre plaisir visuel.}
+%{?USE_GL: }
+%{?USE_GL:Ces économiseurs d'écran nécessitent OpenGL ou Mesa.}
+%{?USE_GL:Installez le paquet xscreensaver-gl si vous désirez plus}
+%{?USE_GL:d'économiseur d'écran et que vous avez OpenGL ou Mesa installé.}
 
 %prep
 %setup -q
 
 %build
 RPMOPTS=""
-
-# Is this really needed?  If so, why?
-# %ifarch alpha
-#  RPMOPTS="$RPMOPTS --without-xshm-ext"
-# %endif
 
 # On Solaris, build without PAM and with Shadow.
 # On other systems, build with PAM and without Shadow.
@@ -64,60 +85,71 @@ RPMOPTS=""
 %{?USE_GL:RPMOPTS="$RPMOPTS --with-gl"}
 %{!?USE_GL:RPMOPTS="$RPMOPTS --without-gl"}
 
+archdir=`./config.guess`
+mkdir $archdir
+cd $archdir
 CFLAGS="$RPM_OPT_FLAGS" \
- ./configure --prefix=%{prefix} \
-             --enable-subdir=../lib/xscreensaver \
-             $RPMOPTS
-
+ ../configure --prefix=%{x11_prefix} \
+              --with-setuid-hacks \
+              $RPMOPTS
 make
 
 %install
 
-# This is a directory that "make install" won't make as needed
-# (since Linux uses /etc/pam.d/* and Solaris uses /etc/pam.conf).
+archdir=`./config.guess`
+
+# We have to make sure these directories exist,
+# or nothing will be installed into them.
 #
+export KDEDIR=%{kde_prefix}
+mkdir -p $RPM_BUILD_ROOT$KDEDIR/bin
+mkdir -p $RPM_BUILD_ROOT%{gnome_datadir}
 mkdir -p $RPM_BUILD_ROOT/etc/pam.d
 
-# This is another (since "make install" doesn't try to install
-# the xscreensaver.kss file unless $KDEDIR is set.)
-#
-if [ -z "$KDEDIR" ]; then export KDEDIR=/usr; fi
-mkdir -p $RPM_BUILD_ROOT$KDEDIR/bin
-
-# And two more for Gnome (same reason...)
-#
-mkdir -p $RPM_BUILD_ROOT/usr/share/control-center/Desktop
-mkdir -p $RPM_BUILD_ROOT/usr/share/gnome/apps/Settings/Desktop
-
+cd $archdir
 make  install_prefix=$RPM_BUILD_ROOT \
-      AD_DIR=%{prefix}/lib/X11/app-defaults \
+      AD_DIR=%{x11_prefix}/lib/X11/app-defaults \
+      GNOME_BINDIR=%{gnome_prefix}/bin \
       install-strip
 
-# Make a pair of lists, of the GL and non-GL executable.
-# Do this by parsing the output of a dummy run of "make install"
-# in the driver/, hacks/ and hacks/glx/ directories.
+# This function prints a list of things that get installed.
+# It does this by parsing the output of a dummy run of "make install".
 #
 list_files() {
-  make -s install_prefix=$RPM_BUILD_ROOT INSTALL=true $1  |
-    sed -n -e 's@.* /\([^ ]*\)$@/\1@p'                    |
-    sed    -e "s@^$RPM_BUILD_ROOT@@"                      \
-           -e "s@/bin/\.\./@/@"                           |
-    sed    -e 's@\(.*/man/.*\)@\1\*@'                     |
+  make -s install_prefix=$RPM_BUILD_ROOT INSTALL=true           \
+          GNOME_BINDIR=%{gnome_prefix}/bin                      \
+          "$@"                                                  |
+    sed -n -e 's@.* \(/[^ ]*\)$@\1@p'                           |
+    sed    -e "s@^$RPM_BUILD_ROOT@@"                            \
+           -e "s@/[a-z][a-z]*/\.\./@/@"                         |
+    sed    -e 's@\(.*/man/.*\)@\1\*@'                           |
     sort
 }
 
-( cd hacks ; list_files install ; cd ../driver; list_files install-program ) \
-   > $RPM_BUILD_DIR/xscreensaver-%{version}/exes-non-gl
+# Collect the names of the non-GL executables and scripts...
+# (Including the names of all of the Gnome, KDE, and L10N-related files,
+# whereever they might have gotten installed...)
+# For the translation catalogs, prepend an appropriate %lang(..) tag.
+#
+(  cd    hacks ; list_files install ; \
+   cd ../driver; list_files install-program install-scripts \
+                            install-gnome install-kde ; \
+ ( cd ../po;     list_files install | grep '\.' \
+    | sed 's@^\(.*/\([^/]*\)/LC.*\)$@%lang(\2) \1@' ) \
+) > $RPM_BUILD_DIR/xscreensaver-%{version}/exes-non-gl
+
+
+# Collect the names of the GL-only executables...
+#
 ( cd hacks/glx ; list_files install ) \
+   | grep -v man1/xscreensaver-gl-helper \
    > $RPM_BUILD_DIR/xscreensaver-%{version}/exes-gl
-
-
 
 # This line is redundant, except that it causes the "xscreensaver"
 # executable to be installed unstripped (while all others are stripped.)
 # You should install it this way so that jwz gets useful bug reports.
 #
-install -m 4755 driver/xscreensaver $RPM_BUILD_ROOT%{prefix}/bin
+install -m 4755 driver/xscreensaver $RPM_BUILD_ROOT%{x11_prefix}/bin
 
 # Even if we weren't compiled with PAM support, make sure to include
 # the PAM module file in the RPM anyway, just in case.
@@ -129,25 +161,31 @@ install -m 4755 driver/xscreensaver $RPM_BUILD_ROOT%{prefix}/bin
 #
 chmod -R a+r,u+w,og-w $RPM_BUILD_ROOT
 
+%post
+# This part runs on the end user's system, when the RPM is installed.
+
+pids=`pidof xscreensaver`
+if [ -n "$pids" ]; then
+  echo "sending SIGHUP to running xscreensaver ($pids)..." >&2
+  kill -HUP $pids
+fi
+
 %clean
 if [ -d $RPM_BUILD_ROOT    ]; then rm -r $RPM_BUILD_ROOT    ; fi
 if [ -d $RPM_BUILD_ROOT-gl ]; then rm -r $RPM_BUILD_ROOT-gl ; fi
 
+# Files for the "xscreensaver" package:
+#
 %files -f exes-non-gl
 %defattr(-,root,root)
 
-# Files for the "xscreensaver" package:
-#
-%doc                README README.debugging
-%dir                %{prefix}/lib/xscreensaver
-%config             %{prefix}/lib/X11/app-defaults/*
-                    %{prefix}/man/man1/xscreensaver*
-                    /etc/pam.d/*
-%config(missingok)  /usr/bin/*.kss
-%config(missingok)  /usr/share/control-center/Desktop/screensaver-properties.desktop
-%config(missingok)  /usr/share/gnome/apps/Settings/Desktop/screensaver-properties.desktop
-%config(missingok)  /usr/share/pixmaps/*
+%doc    README README.debugging
+%dir    %{x11_prefix}/lib/xscreensaver
+%config %{x11_prefix}/lib/X11/app-defaults/*
+        %{x11_prefix}/man/man1/xscreensaver*
+%config /etc/pam.d/*
 
 # Files for the "xscreensaver-gl" package:
 #
 %{?USE_GL:%files -f exes-gl gl}
+%{?USE_GL:%defattr(-,root,root)}

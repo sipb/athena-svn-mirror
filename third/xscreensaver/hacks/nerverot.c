@@ -1,6 +1,6 @@
-/* nerverot, nervous rotation of random thingies, v1.2
+/* nerverot, nervous rotation of random thingies, v1.4
  * by Dan Bornstein, danfuzz@milk.com
- * Copyright (c) 2000 Dan Bornstein.
+ * Copyright (c) 2000-2001 Dan Bornstein. All rights reserved.
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -38,6 +38,9 @@ static int requestedBlotCount;
 
 /* delay (usec) between iterations */
 int delay;
+
+/* max iterations per model */
+int maxIters;
 
 /* variability of xoff/yoff per iteration (0..1) */
 static FLOAT nervousness;
@@ -159,7 +162,7 @@ static int itersTillNext;
 
 
 /*
- * blot setup stuff
+ * generic blot setup and manipulation
  */
 
 /* initialize a blot with the given coordinates and random display offsets */
@@ -228,6 +231,58 @@ static void randomlyReorderBlots (void)
     }
 }
 
+/* randomly rotate the blots around the origin */
+static void randomlyRotateBlots (void)
+{
+    int n;
+
+    /* random amounts to rotate about each axis */
+    FLOAT xRot = RAND_FLOAT_PM1 * M_PI;
+    FLOAT yRot = RAND_FLOAT_PM1 * M_PI;
+    FLOAT zRot = RAND_FLOAT_PM1 * M_PI;
+
+    /* rotation factors */
+    FLOAT sinX = sin (xRot);
+    FLOAT cosX = cos (xRot);
+    FLOAT sinY = sin (yRot);
+    FLOAT cosY = cos (yRot);
+    FLOAT sinZ = sin (zRot);
+    FLOAT cosZ = cos (zRot);
+
+    for (n = 0; n < blotCount; n++)
+    {
+	FLOAT x1 = blots[n].x;
+	FLOAT y1 = blots[n].y;
+	FLOAT z1 = blots[n].z;
+	FLOAT x2, y2, z2;
+
+	/* rotate on z axis */
+	x2 = x1 * cosZ - y1 * sinZ;
+	y2 = x1 * sinZ + y1 * cosZ;
+	z2 = z1;
+
+	/* rotate on x axis */
+	y1 = y2 * cosX - z2 * sinX;
+	z1 = y2 * sinX + z2 * cosX;
+	x1 = x2;
+
+	/* rotate on y axis */
+	z2 = z1 * cosY - x1 * sinY;
+	x2 = z1 * sinY + x1 * cosY;
+	y2 = y1;
+
+	blots[n].x = x2;
+	blots[n].y = y2;
+	blots[n].z = z2;
+    }
+}
+
+
+
+/*
+ * blot configurations
+ */
+
 /* set up the initial array of blots to be a at the edge of a sphere */
 static void setupBlotsSphere (void)
 {
@@ -262,8 +317,6 @@ static void setupBlotsSphere (void)
 	initBlot (&blots[n], x, y, z);
     }
 }
-
-
 
 /* set up the initial array of blots to be a simple cube */
 static void setupBlotsCube (void)
@@ -319,19 +372,25 @@ static void setupBlotsCube (void)
 
     scaleBlotsToRadius1 ();
     randomlyReorderBlots ();
+    randomlyRotateBlots ();
 }
-
-
 
 /* set up the initial array of blots to be a cylinder */
 static void setupBlotsCylinder (void)
 {
     int i, j, n;
-
-    /* derive blotsPerEdge from blotCount, but then do the reverse
-     * since roundoff may have changed blotCount */
-    int blotsPerEdge = requestedBlotCount / 32;
     FLOAT distBetween;
+
+    /* derive blotsPerEdge and blotsPerRing from blotCount, but then do the
+     * reverse since roundoff may have changed blotCount */
+    FLOAT reqRoot = sqrt ((FLOAT) requestedBlotCount);
+    int blotsPerRing = ceil (RAND_FLOAT_PM1 * reqRoot) / 2 + reqRoot;
+    int blotsPerEdge = requestedBlotCount / blotsPerRing;
+
+    if (blotsPerRing < 2)
+    {
+	blotsPerRing = 2;
+    }
 
     if (blotsPerEdge < 2)
     {
@@ -340,15 +399,15 @@ static void setupBlotsCylinder (void)
 
     distBetween = 2.0 / (blotsPerEdge - 1);
 
-    blotCount = blotsPerEdge * 32;
+    blotCount = blotsPerEdge * blotsPerRing;
     blots = calloc (sizeof (Blot), blotCount);
     n = 0;
 
     /* define the edges */
-    for (i = 0; i < 32; i++)
+    for (i = 0; i < blotsPerRing; i++)
     {
-	FLOAT x = sin (2 * M_PI / 32 * i);
-	FLOAT y = cos (2 * M_PI / 32 * i);
+	FLOAT x = sin (2 * M_PI / blotsPerRing * i);
+	FLOAT y = cos (2 * M_PI / blotsPerRing * i);
 	for (j = 0; j < blotsPerEdge; j++)
 	{
 	    initBlot (&blots[n], x, y, j * distBetween - 1);
@@ -358,18 +417,21 @@ static void setupBlotsCylinder (void)
 
     scaleBlotsToRadius1 ();
     randomlyReorderBlots ();
+    randomlyRotateBlots ();
 }
-
-
 
 /* set up the initial array of blots to be a squiggle */
 static void setupBlotsSquiggle (void)
 {
     FLOAT x, y, z, xv, yv, zv, len;
+    int minCoor, maxCoor;
     int n;
 
     blotCount = requestedBlotCount;
     blots = calloc (sizeof (Blot), blotCount);
+
+    maxCoor = (int) (RAND_FLOAT_01 * 5) + 1;
+    minCoor = -maxCoor;
 
     x = RAND_FLOAT_PM1;
     y = RAND_FLOAT_PM1;
@@ -402,9 +464,9 @@ static void setupBlotsSquiggle (void)
 	    newy = y + yv * 0.1;
 	    newz = z + zv * 0.1;
 
-	    if (   (newx >= -1) && (newx <= 1)
-		&& (newy >= -1) && (newy <= 1)
-		&& (newz >= -1) && (newz <= 1))
+	    if (   (newx >= minCoor) && (newx <= maxCoor)
+		&& (newy >= minCoor) && (newy <= maxCoor)
+		&& (newz >= minCoor) && (newz <= maxCoor))
 	    {
 		break;
 	    }
@@ -418,8 +480,6 @@ static void setupBlotsSquiggle (void)
     scaleBlotsToRadius1 ();
     randomlyReorderBlots ();
 }
-
-
 
 /* set up the initial array of blots to be near the corners of a
  * cube, distributed slightly */
@@ -444,9 +504,137 @@ static void setupBlotsCubeCorners (void)
     }
 
     scaleBlotsToRadius1 ();
+    randomlyRotateBlots ();
 }
 
+/* set up the initial array of blots to be randomly distributed
+ * on the surface of a tetrahedron */
+static void setupBlotsTetrahedron (void)
+{
+    /* table of corners of the tetrahedron */
+    static FLOAT cor[4][3] = { {  0.0,   1.0,  0.0 },
+			       { -0.75, -0.5, -0.433013 },
+			       {  0.0,  -0.5,  0.866025 },
+			       {  0.75, -0.5, -0.433013 } };
 
+    int n, c;
+
+    /* derive blotsPerSurface from blotCount, but then do the reverse
+     * since roundoff may have changed blotCount */
+    int blotsPerSurface = requestedBlotCount / 4;
+
+    blotCount = blotsPerSurface * 4;
+    blots = calloc (sizeof (Blot), blotCount);
+
+    for (n = 0; n < blotCount; n += 4)
+    {
+	/* pick a random point on a unit right triangle */
+	FLOAT rawx = RAND_FLOAT_01;
+	FLOAT rawy = RAND_FLOAT_01;
+
+	if ((rawx + rawy) > 1)
+	{
+	    /* swap coords into place */
+	    FLOAT t = 1.0 - rawx;
+	    rawx = 1.0 - rawy;
+	    rawy = t;
+	}
+
+	/* translate the point to be on each of the surfaces */
+	for (c = 0; c < 4; c++)
+	{
+	    FLOAT x, y, z;
+	    
+	    int c1 = (c + 1) % 4;
+	    int c2 = (c + 2) % 4;
+	    
+	    x = (cor[c1][0] - cor[c][0]) * rawx + 
+		(cor[c2][0] - cor[c][0]) * rawy + 
+		cor[c][0];
+
+	    y = (cor[c1][1] - cor[c][1]) * rawx + 
+		(cor[c2][1] - cor[c][1]) * rawy + 
+		cor[c][1];
+
+	    z = (cor[c1][2] - cor[c][2]) * rawx + 
+		(cor[c2][2] - cor[c][2]) * rawy + 
+		cor[c][2];
+
+	    initBlot (&blots[n + c], x, y, z);
+	}
+    }
+
+    randomlyRotateBlots ();
+}
+
+/* set up the initial array of blots to be an almost-evenly-distributed
+ * square sheet */
+static void setupBlotsSheet (void)
+{
+    int x, y;
+
+    int blotsPerDimension = floor (sqrt (requestedBlotCount));
+    FLOAT spaceBetween;
+
+    if (blotsPerDimension < 2)
+    {
+	blotsPerDimension = 2;
+    }
+
+    spaceBetween = 2.0 / (blotsPerDimension - 1);
+
+    blotCount = blotsPerDimension * blotsPerDimension;
+    blots = calloc (sizeof (Blot), blotCount);
+
+    for (x = 0; x < blotsPerDimension; x++)
+    {
+	for (y = 0; y < blotsPerDimension; y++)
+	{
+	    FLOAT x1 = x * spaceBetween - 1.0;
+	    FLOAT y1 = y * spaceBetween - 1.0;
+	    FLOAT z1 = 0.0;
+
+	    x1 += RAND_FLOAT_PM1 * spaceBetween / 3;
+	    y1 += RAND_FLOAT_PM1 * spaceBetween / 3;
+	    z1 += RAND_FLOAT_PM1 * spaceBetween / 2;
+
+	    initBlot (&blots[x + y * blotsPerDimension], x1, y1, z1);
+	}
+    }
+
+    scaleBlotsToRadius1 ();
+    randomlyReorderBlots ();
+    randomlyRotateBlots ();
+}
+
+/* set up the initial array of blots to be a swirlycone */
+static void setupBlotsSwirlyCone (void)
+{
+    FLOAT radSpace = 1.0 / (requestedBlotCount - 1);
+    FLOAT zSpace = radSpace * 2;
+    FLOAT rotAmt = RAND_FLOAT_PM1 * M_PI / 10;
+
+    int n;
+    FLOAT rot = 0.0;
+
+    blotCount = requestedBlotCount;
+    blots = calloc (sizeof (Blot), blotCount);
+
+    for (n = 0; n < blotCount; n++)
+    {
+	FLOAT radius = n * radSpace;
+	FLOAT x = cos (rot) * radius;
+	FLOAT y = sin (rot) * radius;
+	FLOAT z = n * zSpace - 1.0;
+
+	rot += rotAmt;
+	initBlot (&blots[n], x, y, z);
+    }
+
+    scaleBlotsToRadius1 ();
+    randomlyReorderBlots ();
+    randomlyRotateBlots ();
+}
 
 /* forward declaration for recursive use immediately below */
 static void setupBlots (void);
@@ -531,6 +719,10 @@ static void setupBlotsDuo (void)
 
 
 
+/*
+ * main blot setup
+ */
+
 /* free the blots, in preparation for a new shape */
 static void freeBlots (void)
 {
@@ -553,12 +745,10 @@ static void freeBlots (void)
     }
 }
 
-
-
 /* set up the initial arrays of blots */
 static void setupBlots (void)
 {
-    int which = RAND_FLOAT_01 * 7;
+    int which = RAND_FLOAT_01 * 11;
 
     freeBlots ();
 
@@ -580,13 +770,21 @@ static void setupBlots (void)
 	    setupBlotsCubeCorners ();
 	    break;
 	case 5:
+	    setupBlotsTetrahedron ();
+	    break;
 	case 6:
+	    setupBlotsSheet ();
+	    break;
+	case 7:
+	    setupBlotsSwirlyCone ();
+	    break;
+	case 8:
+	case 9:
+	case 10:
 	    setupBlotsDuo ();
 	    break;
     }
 }
-
-
 
 /* set up the segments arrays */
 static void setupSegs (void)
@@ -699,7 +897,7 @@ static void setup (void)
     lightY = lightYTarget = RAND_FLOAT_PM1;
     lightZ = lightZTarget = RAND_FLOAT_PM1;
 
-    itersTillNext = RAND_FLOAT_01 * 1234;
+    itersTillNext = RAND_FLOAT_01 * maxIters;
 }
 
 
@@ -801,7 +999,7 @@ static void updateWithFeeling (void)
     itersTillNext--;
     if (itersTillNext < 0)
     {
-	itersTillNext = RAND_FLOAT_01 * 1234;
+	itersTillNext = RAND_FLOAT_01 * maxIters;
 	setupBlots ();
 	setupSegs ();
 	renderSegs ();
@@ -983,6 +1181,7 @@ char *defaults [] = {
     "*count:		250",
     "*colors:		4",
     "*delay:		10000",
+    "*maxIters:		1200",
     "*doubleBuffer:	false",
     "*eventChance:      0.2",
     "*iterAmt:          0.01",
@@ -1000,6 +1199,7 @@ XrmOptionDescRec options [] = {
   { "-count",            ".count",          XrmoptionSepArg, 0 },
   { "-colors",           ".colors",         XrmoptionSepArg, 0 },
   { "-delay",            ".delay",          XrmoptionSepArg, 0 },
+  { "-max-iters",        ".maxIters",       XrmoptionSepArg, 0 },
   { "-db",               ".doubleBuffer",   XrmoptionNoArg,  "true" },
   { "-no-db",            ".doubleBuffer",   XrmoptionNoArg,  "false" },
   { "-event-chance",     ".eventChance",    XrmoptionSepArg, 0 },
@@ -1023,6 +1223,13 @@ static void initParams (void)
     if (delay < 0)
     {
 	fprintf (stderr, "error: delay must be at least 0\n");
+	problems = 1;
+    }
+    
+    maxIters = get_integer_resource ("maxIters", "Integer");
+    if (maxIters < 0)
+    {
+	fprintf (stderr, "error: maxIters must be at least 0\n");
 	problems = 1;
     }
     

@@ -19,12 +19,8 @@
  */
 #undef HAVE_READ_DISPLAY_EXTENSION
 
-/* Define this if you have the Iris Video Library (dmedia/vl.h on SGI.)
-   A few of the screenhacks will take advantage of this if it's available.
- */
-#undef HAVE_SGI_VIDEO
-
-/* Define this if you have the XHPDisableReset function (an HP only thing.)
+/* Define this if you have the XHPDisableReset function (an HP only thing
+   which allows the Ctrl-Sh-Reset key sequence to be temporarily disabled.)
  */
 #undef HAVE_XHPDISABLERESET
 
@@ -104,6 +100,33 @@
  */
 #undef HAVE_XF86VMODE
 
+/*  Define this if you have the functions XF86VidModeGetGamma() and
+ *  XF86VidModeSetGamma(), which allow clients to change the gamma
+ *  response of the monitor.  This is an XFree86 4.0.x thing, and
+ *  probably doesn't exist elsewhere.  (It's available if the file
+ *  /usr/include/X11/extensions/xf86vmode.h exists and has stuff about
+ *  gamma in it.)
+ */
+#undef HAVE_XF86VMODE_GAMMA
+
+/*  Define this if you have the functions XF86VidModeGetGammaRamp() and
+ *  XF86VidModeSetGammaRamp(), which provide finer-grained control than
+ *  XF86VidMode[GS]etGamma().  These appeared in XFree86 4.1.0.
+ */
+#undef HAVE_XF86VMODE_GAMMA_RAMP
+
+/*  Define this if you have the Xinerama extension.  This is standard on
+ *  sufficiently-recent XFree86 systems, and possibly elsewhere.  (It's
+ *  available if the file /usr/include/X11/extensions/Xinerama.h exists.)
+ */
+#undef HAVE_XINERAMA
+
+/* Define this if you have the XF86MiscSetGrabKeysState function (which allows
+   the Ctrl-Alt-KP_star and Ctrl-Alt-KP_slash key sequences to be temporarily
+   disabled.  Sadly, it doesn't affect Ctrl-Alt-BS or Ctrl-Alt-F1.)
+ */
+#undef HAVE_XF86MISCSETGRABKEYSSTATE
+
 /*  Define this if you have a Linux-like /proc/interrupts file which can be
  *  examined to determine when keyboard activity has occurred.
  */
@@ -123,19 +146,48 @@
  */
 #undef HAVE_XMCOMBOBOX
 
-/*  Define this if you have Gtk.
+/*  Define this if you have Gtk (any version.)
  */
 #undef HAVE_GTK
 
+/* Define this if you have Gtk 2.x.
+ */
+#undef HAVE_GTK2
+
 /*  Define this if you have Gnome and want to build support for the 
     xscreensaver control panel in the Gnome Control Center (gnomecc).
+    (This is needed only with Gtk 1.x.)
  */
 #undef HAVE_CRAPPLET
+
+/*  Define this if HAVE_CRAPPLET is defined, and the function
+    capplet_widget_changes_are_immediate() is available.
+ */
+#undef HAVE_CRAPPLET_IMMEDIATE
+
+/*  Define this if you have the XML library.
+ */
+#undef HAVE_XML
+
+/* Define this if you have the XML library headers in their old,
+ * non-namespaced location (you lack the gnome-xml/libxml symlink)
+ */
+#undef HAVE_OLD_XML_HEADERS
 
 /*  Define this if you have the XPM library installed.  Some of the demos can
  *  make use of this if it is available.
  */
 #undef HAVE_XPM
+
+/*  Define this if you have the GDK_Pixbuf library installed.  Some of the
+ *  demos can make use of this if it is available.
+ */
+#undef HAVE_GDK_PIXBUF
+
+/*  Define this if you have the Independent JPEG Group's JPEG library
+ *  installed.  Some of the demos can make use of this if it is available.
+ */
+#undef HAVE_JPEGLIB
 
 /*  Define this if you have the Xmu library.  This is standard part of X, and
  *  if your vendor doesn't ship it, you should report that as a bug.
@@ -175,11 +227,10 @@
 #undef HAVE_DOUBLE_BUFFER_EXTENSION
 
 /*  Some screenhacks like to run an external program to generate random pieces
-    of text; set this to the one you like ("yow" and "fortune" are the most
-    likely prospects.)  Note that this is just the default; X resources can
-    be used to override it.
+    of text; set this to the one you like.  Note that this is just the
+    default; X resources can be used to override it.
  */
-#define ZIPPY_PROGRAM "fortune"
+#define FORTUNE_PROGRAM "fortune"
 
 
 
@@ -337,6 +388,12 @@
 /* Define if you have the sigaction function.  */
 #undef HAVE_SIGACTION
 
+/* Define this if you have the setrlimit function. */
+#undef HAVE_SETRLIMIT
+
+/* Define if you have the sbrk function.  */
+#define HAVE_SBRK 1
+
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
@@ -346,11 +403,6 @@
 /* Define if you have <sys/select.h> that defines fd_set and FD_SET.  */
 #undef HAVE_SYS_SELECT_H
 
-/* Define to use sigaction() instead of signal() for SIGCHLD-related activity.
-   This is necessary at least on SCO OpenServer 5, due to a Unix kernel bug.
- */
-#undef USE_SIGACTION
-
 /* Define this if you do pings with a `struct icmp' and  a `icmp_id' slot.
  */
 #undef HAVE_ICMP
@@ -358,3 +410,16 @@
 /* Define this if you do pings with a `struct icmphdr' and a `un.echo.id' slot.
  */
 #undef HAVE_ICMPHDR
+
+/* This is the name of the gettext package to use.
+ */
+#undef GETTEXT_PACKAGE
+
+/* This is the same as GETTEXT_PACKAGE, but for the glade generated
+ * code.
+ */
+#undef PACKAGE
+
+/* Define this if you want to build with NLS support
+ */
+#undef ENABLE_NLS

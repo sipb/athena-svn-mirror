@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 4 -*-
  * swirl --- swirly color-cycling patterns.
  */
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)swirl.c	4.00 97/01/01 xlockmore";
 #endif
 
@@ -224,9 +224,7 @@ initialise_swirl(ModeInfo * mi, SWIRL_P swirl)
 #endif /* !STANDALONE */
 
 
-#ifdef STANDALONE
-# define MI_COLORMAP MI_WIN_COLORMAP
-#else /* !STANDALONE */
+#ifndef STANDALONE
 	swirl->fg = MI_FG_COLOR(mi);
 	swirl->bg = MI_BG_COLOR(mi);
 	swirl->fgcol.pixel = swirl->fg;
