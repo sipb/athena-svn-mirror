@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 1999-03-23 18:24:36 danw Exp $
+# $Id: Makefile.in,v 1.6 1999-04-17 02:32:59 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -70,8 +70,7 @@ install:
 	${INSTALL} -m 644 attachandrun.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 detach.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 fsid.1 ${DESTDIR}${mandir}/man1
-	rm -f ${DESTDIR}${mandir}/man1/nfsid.1
-	ln -s fsid.1 ${DESTDIR}${mandir}/man1/nfsid.1
+	${INSTALL} -m 644 nfsid.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 zinit.8 ${DESTDIR}${mandir}/man8
 
 clean:
