@@ -1,6 +1,6 @@
-#!/bin/athena/tcsh
+#!/bin/athena/tcsh -x
 
-# $Revision: 1.31 $
+# $Revision: 1.32 $
 
 umask 2
 
@@ -8,20 +8,23 @@ set machine=`machtype`
 
 #set the path to include the right xmkmf and imake
 if ($machine == "sun4") then
+	set comp=compiler-80
 	set AFS="sun4m_53"
+	attach -n $comp
+	setenv GCC_EXEC_PREFIX /mit/$comp/${machine}/lib/gcc-lib/
 else if ($machine == "decmips") then
 	set AFS="pmax_ul4"
 else if ($machine == "rsaix" ) then
-	setenv  GCC_EXEC_PREFIX /mit/cygnus-930630/rsaix/lib/gcc-lib/
+#	setenv  GCC_EXEC_PREFIX /mit/cygnus-930630/rsaix/lib/gcc-lib/
 	set AFS = "rs_aix32"
-	attach -n cygnus
+#	attach -n compiler-80
 endif
 if ($machine == "sun4") then
 setenv LD_LIBRARY_PATH /usr/openwin/lib
 endif
 
 if ( $machine == "sun4" ) then
-	set path=( /usr/ccs/bin /build/bin /build/supported/afs/$AFS/dest/bin $path /mit/sunsoft/sun4bin  /usr/gcc/bin /usr/gcc/lib)
+	set path=( /usr/ccs/bin /build/bin /build/supported/afs/$AFS/dest/bin $path /mit/sunsoft/sun4bin  /mit/$comp/sun4bin)
 else
 	set path=( /build/bin /build/supported/afs/$AFS/dest/bin $path)
 endif
@@ -31,7 +34,7 @@ echo $path
 #this script assumes that a dependency list has been generated from somewhere.
 #At the moment that just might be a hard coded list.
 
-set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 "
+set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod third/supported/kerberos5 athena/lib/kerberos1 "
 
 set tools="athena/etc/synctree"
 
@@ -49,15 +52,18 @@ switch ( $machine )
   case rsaix
     set machthird="third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
     breaksw
+
+  case sgi
+    set machthird="athena/ucb/look"
 endsw
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
 
 set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/viewscribe athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
 
-set end="athena/man config/dotfiles config/config"
+set end="athena/man athena/dotfiles athena/config"
 
 # athena/bin/inittty is not listed now. Hopefully we have a better
 # solution now.
@@ -97,7 +103,8 @@ while ( $#argv > 0 )
     endsw
 end
 
-echo starting `date` > $outfile
+echo ======== >>! $outfile
+echo starting `date` >> $outfile
 echo on a $machine >> $outfile
 
 #start by building and installing imake in /build/bin
@@ -106,19 +113,21 @@ echo on a $machine >> $outfile
 #I need to split kerberos up into phase 1 and phase 2 
 # need to add in motif. Once that is done I can proceed onto the bin directory
 
-if ($machine == "sun4") then
+switch ( $machine )
+  case sun4
+    set packages =(setup $machine $libs1 $tools $third $machthird $libs2 $etcs $bins)
+    breaksw
 
-set packages = setup $machine $libs1 $tools $third $machthird $libs2 $etcs $bins
+  case rsaix
+    set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins)
+    breaksw
 
-else if ($machine == "rsaix" ) then
+  case decmips
+    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc)
 
-set packages = setup $libs1 $tools $third $machthird $libs2 $etcs $bins
-
-else
-
-# if ($machine == "decmips") then...
-
-set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc)
+  case sgi
+    set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins)
+endsw
 
 # at the moment, lib/resolv gets built twice...
 
@@ -182,12 +191,26 @@ switch ($package)
 			(cp /source/xmkmf /build/bin >>& $outfile))
 		if ($status == 1 ) then
 			echo "We bombed in imake" >>& $outfile
+			exit -1
 		endif
 	if ($machine == "sun4" ) then
-		(cd /build/sun4/include; make install)
+		(cd /build/sun4/include; make install DESTDIR=$SRVD >>& $outfile)
 	endif
 
 	rehash
+
+	if ($machine == "sun4" ) then
+	cd /build/sun4/libresolv
+	echo "In sun4/libresolv" >>& $outfile
+		((make clean >>& $outfile) && \
+		(make >>& $outfile ) && \
+		(make install DESTDIR=$SRVD >>& $outfile ))
+		if ($status == 1 ) then
+			echo "We bombed in libresolv" >>& $outfile
+			exit -1
+		endif
+	endif
+
 	cd /build/support/install
 	((echo "In install" >>& $outfile) &&\
 	(xmkmf . >>& $outfile) &&\
@@ -197,6 +220,8 @@ switch ($package)
 	        echo "We bombed in install" >>& $outfile
 		exit -1
 	endif
+
+	source /source/support/scripts/X.csh
 
 # Mark, why don't we just do everything in build/support?
 #	cd /build/support/makedepend
@@ -216,8 +241,7 @@ switch ($package)
 # following used to be below...
 
 	# Probably want this in build/bin... change Imake.tmpl...
-	mkdir $SRVD/usr/athena
-	mkdir $SRVD/usr/athena/bin
+	mkdir -p $SRVD/usr/athena/bin
 	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 	# Hack...
 	if ($machine == "decmips") then
@@ -297,6 +321,19 @@ endif # installonly
 	endif
 	breaksw
 		
+	case third/supported/kerberos5
+	((echo In $package: configure >>& $outfile) && \
+	((cd /build/$package; ./configure --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
+	(echo In $package : make clean >>& $outfile ) && \
+	((cd /build/$package;make clean) >>& $outfile ) && \
+	(echo In $package : make all >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed in $package"  >>& $outfile
+		exit -1
+	endif
+	breaksw
+
 	case third/supported/tex
 	case third/supported/mh.6.8
 # Same as complex, no depend.
