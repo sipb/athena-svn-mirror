@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: signals.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp $";
+static char rcsid[] = "$Id: signals.c,v 1.1.1.3 2005-01-26 17:55:55 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: signals.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -76,6 +76,7 @@ static	SigType	alarm_signal SIG_PROTO((int));
 static	SigType	intr_signal SIG_PROTO((int));
 
 static  int now_handling_alarms;
+static  int cleanup_called_from_sig_handler;
 
 
 
@@ -227,6 +228,7 @@ auger_in_signal SIG_PROTO ((int sig))
 {
     char buf[100], *s;
 
+    panicking = 1;
     end_signals(1);			/* don't catch any more signals */
     imap_flush_passwd_cache();
 
@@ -235,8 +237,6 @@ auger_in_signal SIG_PROTO ((int sig))
 #else
     s = "?";
 #endif
-
-    dprint(5, (debugfile, "auger_in_signal(sig=%s)\n", s));
 
     sprintf(buf, "Received abort signal(sig=%.9s)", s);
     panic(buf);				/* clean up and get out */
@@ -289,21 +289,16 @@ Not much to do. Rely on periodic mail file check pointing.
 SigType
 hup_signal()
 {
-#if	!defined(DOS) || defined(_WINDOWS)
     end_signals(1);			/* don't catch any more signals */
     dprint(1, (debugfile, "\n\n** Received SIGHUP **\n\n\n\n"));
+    cleanup_called_from_sig_handler = 1;
     fast_clean_up();
 #if	defined(DEBUG)
     if(debugfile)
       fclose(debugfile);
 #endif 
-#ifdef	_WINDOWS
+
     _exit(0);				/* cleaning up can crash */
-#else
-    printf("\n\nPine finished. Received hang up signal\n\n");
-#endif
-#endif	/* !DOS */
-    exit(0);
 }
 
 
@@ -349,6 +344,7 @@ term_signal()
 #if !defined(DOS) && !defined(OS2)
     end_signals(1);			/* don't catch any more signals */
     dprint(1, (debugfile, "\n\n** Received SIGTERM **\n\n\n\n"));
+    cleanup_called_from_sig_handler = 1;
     fast_clean_up();
 #if	defined(DEBUG) && (!defined(DOS) || defined(_WINDOWS))
     if(debugfile)
@@ -370,6 +366,9 @@ Also delete any remnant _DATAFILE_ from sending-filters.
 void
 fast_clean_up()
 {
+    int         i;
+    MAILSTREAM *m;
+
     dprint(1, (debugfile, "fast_clean_up()\n"));
 
     if(filter_data_file(0))
@@ -390,7 +389,8 @@ fast_clean_up()
      */
     if(ps_global->prc){
 	if(ps_global->prc->outstanding_pinerc_changes)
-	  write_pinerc(ps_global, Main);
+	  write_pinerc(ps_global, Main,
+		       cleanup_called_from_sig_handler ? WRP_NOUSER : WRP_NONE);
 
 	if(ps_global->prc->rd)
 	  rd_close_remdata(&ps_global->prc->rd);
@@ -401,7 +401,8 @@ fast_clean_up()
     /* as does this */
     if(ps_global->post_prc){
 	if(ps_global->post_prc->outstanding_pinerc_changes)
-	  write_pinerc(ps_global, Post);
+	  write_pinerc(ps_global, Post,
+		       cleanup_called_from_sig_handler ? WRP_NOUSER : WRP_NONE);
 
 	if(ps_global->post_prc->rd)
 	  rd_close_remdata(&ps_global->post_prc->rd);
@@ -411,21 +412,14 @@ fast_clean_up()
 
     /*
      * Can't figure out why this section is inside the ifdef, but no
-     * harm leaving it that way.
+     * harm leaving it that way, I guess.
      */
 #if !defined(DOS) && !defined(OS2)
-    if(ps_global->inbox_stream){
-	int cur_is_inbox = (ps_global->inbox_stream == ps_global->mail_stream);
-
-	if(!ps_global->inbox_stream->lock)
-	  pine_mail_close(ps_global->inbox_stream);
-
-	if(cur_is_inbox)
-	  ps_global->mail_stream = NULL; 
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && !m->lock)
+	  pine_mail_actually_close(m);
     }
-
-    if(ps_global->mail_stream && !ps_global->mail_stream->lock)
-      pine_mail_close(ps_global->mail_stream);
 
     PineRaw(0);
 
@@ -446,31 +440,39 @@ Not much to do. Rely on periodic mail file check pointing.
 static SigType
 usr2_signal SIG_PROTO((int sig))
 {
-    char c;
-    dprint(1, (debugfile, "\n\n** Received SIGUSR2 **\n\n\n\n"));
+    char        c, *mbox, mboxbuf[20];
+    int         i;
+    MAILSTREAM *stream;
+    NETMBX      mb;
 
-    if(ps_global->inbox_stream
-       && !ps_global->inbox_stream->lock
-       && !ps_global->inbox_stream->rdonly
-       && (c = *ps_global->inbox_stream->mailbox) != '{' && c != '*'){
-	mail_check(ps_global->inbox_stream);	/* write latest state   */
-	ps_global->inbox_stream->rdonly = 1;	/* and become read-only */
-	mail_ping(ps_global->inbox_stream);
-	q_status_message(SM_ASYNC, 3, 7,
-	   "Another email program is accessing Inbox.  Session now Read-Only.");
-	dprint(1, (debugfile, "** INBOX went read-only **\n\n"));
-    }
-
-    if(ps_global->mail_stream
-       && !ps_global->mail_stream->lock
-       && !ps_global->mail_stream->rdonly
-       && (c = *ps_global->mail_stream->mailbox) != '{' && c != '*'){
-	mail_check(ps_global->mail_stream);	/* write latest state   */
-	ps_global->mail_stream->rdonly = 1;	/* and become read-only */
-	mail_ping(ps_global->mail_stream);
-	q_status_message(SM_ASYNC, 3, 7,
-	  "Another email program is accessing folder.  Session now Read-Only.");
-	dprint(1, (debugfile, "** secondary folder went read-only **\n\n"));
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	stream = ps_global->s_pool.streams[i];
+	if(stream
+	   && sp_flagged(stream, SP_LOCKED)
+	   && !sp_dead_stream(stream)
+	   && !stream->lock
+	   && !stream->rdonly
+	   && stream->mailbox
+	   && (c = *stream->mailbox) != '{' && c != '*'){
+	    pine_mail_check(stream);		/* write latest state   */
+	    stream->rdonly = 1;			/* and become read-only */
+	    (void) pine_mail_ping(stream);
+	    mbox = stream->mailbox;
+	    if(!strucmp(stream->mailbox, ps_global->inbox_name)
+	       || !strcmp(stream->mailbox, ps_global->VAR_INBOX_PATH)
+	       || !strucmp(stream->original_mailbox, ps_global->inbox_name)
+	       || !strcmp(stream->original_mailbox, ps_global->VAR_INBOX_PATH))
+	      mbox = "INBOX";
+	    else if(mail_valid_net_parse(stream->mailbox, &mb) && mb.mailbox)
+	      mbox = mb.mailbox;
+	    
+	    q_status_message1(SM_ASYNC, 3, 7,
+	     "Another email program is accessing %.20s. Session now Read-Only.",
+	     short_str((mbox && *mbox) ? mbox : "folder",
+		       mboxbuf, 19, FrontDots));
+	    dprint(1, (debugfile, "** folder %s went read-only **\n\n",
+			stream->mailbox));
+	}
     }
 }
 #endif
@@ -510,8 +512,6 @@ extern int      ready_for_winch, winch_occured;
 SigType
 static winch_signal SIG_PROTO((int sig))
 {
-    dprint(9,(debugfile, "SIGWINCH ready_for_winch: %d winch_occured:%d\n",
-               ready_for_winch, winch_occured));
     clear_cursor_pos();
     init_sigwinch();
     winch_cleanup();
@@ -550,8 +550,6 @@ extern jmp_buf  child_state;
 SigType
 child_signal()
 {
-    dprint(9,(debugfile, "SIGCHLD raised\n"));
-
 #ifdef	BACKGROUND_POST
     if(post_reap())
       return;
@@ -649,22 +647,34 @@ busy_alarm(seconds, msg, pc_func, init_msg)
 	    int space_left, slots_used;
 
 	    final_message = 1;
-	    if(!status_message_remaining()){
-		space_left = (ps_global->ttyo ? ps_global->ttyo->screen_cols
-					      : 80) -
-					      busy_len - 2;  /* 2 is for [] */
-		slots_used = max(0, min(space_left-3, 10));
+	    space_left = (ps_global->ttyo ? ps_global->ttyo->screen_cols
+					  : 80) -
+					  busy_len - 2;  /* 2 is for [] */
+	    slots_used = max(0, min(space_left-3, 10));
 
-		if(percent_done_ptr && slots_used >= 4){
-		    sprintf(progress, "%s |%*s|", busy_message, slots_used, "");
-		    q_status_message(SM_ORDER, 0, 1, progress);
-		}
-		else{
-		    dotcount++;
-		    sprintf(progress, "%s%*s", busy_message,
-			DISPLAY_CHARS_COLS + 1, "");
-		    q_status_message(SM_ORDER, 0, 1, progress);
-		}
+	    if(percent_done_ptr && slots_used >= 4)
+	      sprintf(progress, "%s |%*s|", busy_message, slots_used, "");
+	    else{
+		dotcount++;
+		sprintf(progress, "%s%*s", busy_message,
+		    DISPLAY_CHARS_COLS + 1, "");
+	    }
+
+
+	    if(status_message_remaining()){
+		char buf[sizeof(progress) + 30];
+		char  *append = " [not actually shown]";
+
+		strncpy(buf, progress, sizeof(buf)-1);
+		buf[sizeof(buf)-1] = '\0';
+
+		strncat(buf, append, sizeof(buf) - strlen(buf) - 1);
+		buf[sizeof(buf)-1] = '\0';
+
+		add_review_message(buf, -1);
+	    }
+	    else{
+		q_status_message(SM_ORDER, 0, 1, progress);
 
 		/*
 		 * We use display_message so that the initial message will
@@ -826,8 +836,6 @@ alarm_signal SIG_PROTO((int sig))
 {
     int space_left, slots_used;
     char dbuf[MAX_SCREEN_COLS+1];
-
-    dprint(9,(debugfile, "alarm_signal()\n"));
 
     /*
      * In case something was queue'd before this alarm's busy_handler
@@ -1142,7 +1150,7 @@ do_suspend()
 	    if(isremote)
 	      suspend_warning();
 #endif
-	    (void) close_system_pipe(&syspipe);
+	    (void) close_system_pipe(&syspipe, NULL, 0);
 	}
     }
     else{
@@ -1182,7 +1190,7 @@ do_suspend()
 			"Error loading \"%.200s\"", shell);
 #endif
 
-    if(isremote && (char *)mail_ping(ps_global->mail_stream) == NULL)
+    if(isremote && !pine_mail_ping(ps_global->mail_stream))
       q_status_message(SM_ORDER | SM_DING, 4, 9,
 		       "Suspended for too long, IMAP connection broken");
 

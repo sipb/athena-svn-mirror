@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: addrbook.c,v 1.1.1.3 2004-03-01 21:15:55 ghudson Exp $";
+static char rcsid[] = "$Id: addrbook.c,v 1.1.1.4 2005-01-26 17:56:08 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: addrbook.c,v 1.1.1.3 2004-03-01 21:15:55 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -148,7 +148,8 @@ void
 dump_some_debugging(message)
     char *message;
 {
-    dprint(1, (debugfile, "- dump_some_debugging(%s) -\n", message));
+    dprint(1, (debugfile, "- dump_some_debugging(%s) -\n",
+	   message ? message : "?"));
     dprint(1, (debugfile, "initialized %d n_addrbk %d cur_row %d\n",
 	as.initialized, as.n_addrbk, as.cur_row));
     dprint(1, (debugfile, "top_ent %ld ro_warning %d no_op_possbl %d\n",
@@ -175,7 +176,8 @@ int	     addrbook_num;
     char *last_one;
     int   column = 0;
 
-    dprint(9, (debugfile, "- init_disp_form(%s) -\n", pab->nickname));
+    dprint(9, (debugfile, "- init_disp_form(%s) -\n",
+	   (pab && pab->nickname) ? pab->nickname : "?"));
 
     memset((void *)pab->disp_form, 0, sizeof(COL_S));
     pab->disp_form[1].wtype = WeCalculate; /* so we don't get false AllAuto */
@@ -287,7 +289,7 @@ COL_S *disp_form;
 	    if((r=strindex(p, SPACE)) != NULL)
 	      *r = '\0';
 
-	    dprint(2, (debugfile, "parse_format: ignoring unrecognized word \"%s\" in address-book-formats\n", p));
+	    dprint(2, (debugfile, "parse_format: ignoring unrecognized word \"%s\" in address-book-formats\n", p ? p : "?"));
 	    q_status_message1(SM_ORDER, warnings++==0 ? 1 : 0, 4,
 		"Ignoring unrecognized word \"%.100s\" in address-book-formats", p);
 	    /* put back space */
@@ -2286,7 +2288,6 @@ addr_book(style, title, error_message)
 		     was_opened, is_opened,
 		     was_custom_title, is_custom_title,
 		     setall_changed,
-		     first_time_through,
 		     start_disp,     /* Paint from this line down (0 is top) */
 		     rdonly,         /* cur addrbook read only               */
 		     empty,          /* cur addrbook empty                   */
@@ -2394,6 +2395,12 @@ addr_book(style, title, error_message)
 			   "AddressBook not accessible, permission denied");
     }
 
+    if(as.l_p_page < 1){
+	q_status_message(SM_ORDER, 3, 3,
+			 "Screen too small to use Address book");
+	return NULL;
+    }
+
     erase_checks();
     as.selections = 0;
     as.zoomed = 0;
@@ -2419,7 +2426,6 @@ addr_book(style, title, error_message)
     is_custom_title		= 0;
     setall_changed		= 0;
     checkedn			= 0;
-    first_time_through		= 1;
 
 
     while(!quit){
@@ -2447,12 +2453,9 @@ addr_book(style, title, error_message)
 
 	ps->redrawer = redraw_addr_screen;
 
-        if(new_mail(0, first_time_through ? 0 : NM_TIMING(c),
-		    NM_STATUS_MSG | NM_DEFER_SORT) >= 0)
+        if(new_mail(0, NM_TIMING(c), NM_STATUS_MSG | NM_DEFER_SORT) >= 0)
 	  ps->mangled_header = 1;
 	
-	first_time_through = 0;
-
         if(streams_died())
           ps->mangled_header = 1;
 
@@ -3662,7 +3665,8 @@ add_abook:
 
 		as.top_ent = 0L - as.cur_row;
 		dprint(5, (debugfile, "addrbook added: %s\n",
-		       as.adrbks[new_abook_num].filename));
+		       as.adrbks[new_abook_num].filename
+		         ? as.adrbks[new_abook_num].filename : "?"));
 	    }
 
 	    ps->mangled_screen = 1;
@@ -3733,7 +3737,8 @@ change_abook:
 		    as.top_ent = old_top_ent;
 
 		    dprint(5, (debugfile, "addrbook config edited: %s\n",
-			   as.adrbks[dlc_restart.adrbk_num].filename));
+			   as.adrbks[dlc_restart.adrbk_num].filename
+			    ? as.adrbks[dlc_restart.adrbk_num].filename : "?"));
 		}
 
 		if(nick)
@@ -3828,7 +3833,8 @@ change_abook:
 	    else{
 		if(err){
 		    q_status_message(SM_ORDER, 0, 4, err);
-		    dprint(5, (debugfile, "addrbook delete failed: %s\n", err));
+		    dprint(5, (debugfile, "addrbook delete failed: %s\n",
+			   err ? err : "?"));
 		}
 	    }
 
@@ -4843,7 +4849,7 @@ q_server:
             /*--------- Index -----------*/
 	  case MC_INDEX:
 	    dprint(7, (debugfile, "Goto message index from addrbook\n"));
-	    if(THREADING() && ps->viewing_a_thread)
+	    if(THREADING() && sp_viewing_a_thread(ps->mail_stream))
 	      unview_thread(ps, ps->mail_stream, ps->msgmap);
 
             ps->next_screen = mail_index_screen;
@@ -5973,7 +5979,7 @@ ab_goto_folder(command_line)
 #endif /* !DOS */
 
     if(go_folder != NULL)
-      visit_folder(ps_global, go_folder, tc, NULL);
+      visit_folder(ps_global, go_folder, tc, NULL, 0L);
 }
 
 

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pilot.c,v 1.1.1.2 2003-05-01 01:13:23 ghudson Exp $";
+static char rcsid[] = "$Id: pilot.c,v 1.1.1.3 2005-01-26 17:54:54 ghudson Exp $";
 #endif
 /*
  * Program:	Main stand-alone Pine File Browser routines
@@ -18,7 +18,7 @@ static char rcsid[] = "$Id: pilot.c,v 1.1.1.2 2003-05-01 01:13:23 ghudson Exp $"
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -134,7 +134,7 @@ char    *argv[];
       emlwrite("Checking for new mail every %D seconds", (void *) timeo);
 
     set_browser_title(PILOT_VERSION);
-    FileBrowse(filedir, NSTRING, filename, NSTRING, NULL, 0);
+    FileBrowse(filedir, NSTRING, filename, NSTRING, NULL, 0, NULL);
     wquit(1, 0);
 }
 

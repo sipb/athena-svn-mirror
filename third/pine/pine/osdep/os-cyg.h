@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-cyg.h,v 1.1.1.3 2004-03-01 21:15:52 ghudson Exp $
+  $Id: os-cyg.h,v 1.1.1.4 2005-01-26 17:55:44 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -243,7 +243,7 @@
 #undef MAXPATH                  /* Sometimes defined in param.h differently */
 #define MAXPATH MAXPATHLEN      /* Longest pathname we ever expect */
 /* #define MAXPATH        (512) */ /* Longest pathname we ever expect */
-#define MAXFOLDER      (64)     /* Longest foldername we ever expect */  
+#define MAXFOLDER      (128)    /* Longest foldername we ever expect */  
 
 
 /*-- Max screen pine will display on. Used to define some array sizes --*/

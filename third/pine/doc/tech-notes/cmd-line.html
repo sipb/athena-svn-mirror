@@ -137,6 +137,9 @@ reset all of the variables in the remote pinerc folder.
 <EM>nickname</EM>, <EM>fullname</EM>, <EM>nickname-with-lists-last</EM>,
 or <EM>fullname-with-lists-last</EM>.
 Only useful when creating global or shared address books.
+The settings of the features
+disable-setlocale-collate and enable-setlocale-ctype have no
+effect when using the create_lu command.
 See <A HREF="low-level.html#addrbook-lu">Address Book Lookup File</A>
 for more information, especially the warning about copying the
 address book after creating the lookup file.
@@ -249,6 +252,12 @@ FOLDER INDEX screen with the current message being the specified
 message number.
 <P>
 
+<DT> -nowrite_passfile
+
+<DD> This tells <EM>Pine</EM> to use the passfile if there is one, but to
+never offer writing new passwords to the passfile.
+<P>
+
 <DT> -o <EM>folder</EM>
 
 <DD> Opens the INBOX (or a folder specified via the -f argument) ReadOnly. 
@@ -292,9 +301,11 @@ Save and export are limited.
 
 <DD> For <EM>PC-Pine</EM> only, this option affects the values of 
 <EM>Pine</EM>'s registry entries.
-Possible values for <EM>cmd</EM> are set, clear, clearsilent, and dump.
+Possible values for <EM>cmd</EM> are set, noset, clear, clearsilent, and dump.
 <EM>Set</EM> will always reset <EM>Pine</EM>'s registry 
 entries according to its current settings.
+<EM>NoSet</EM> will never set any values in the registry, but it will
+still use the values already set in the registry.
 <EM>Clear</EM> will clear the registry values.
 <EM>Clearsilent</EM> will silently clear the registry values.
 <EM>Dump</EM> will display the values of current registry settings.

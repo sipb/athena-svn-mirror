@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.3 2004-03-01 21:15:54 ghudson Exp $";
+static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.4 2005-01-26 17:55:27 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.3 2004-03-01 21:15:54 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -340,7 +340,8 @@ bootstrap_nocheck_policy:
 		else{
 		    dprint(7, (debugfile,
 			   "%s: copied remote to local (%ld)\n",
-			   ab->rd->rn, (long)ab->rd->last_use));
+			   ab->rd->rn ? ab->rd->rn : "?",
+			   (long)ab->rd->last_use));
 		}
 	    }
 
@@ -357,7 +358,8 @@ bootstrap_nocheck_policy:
 		 "Can't contact remote address book server, using cached copy");
 		dprint(2, (debugfile,
 	"Can't open remote addrbook %s, using local cached copy %s readonly\n",
-		       ab->rd->rn, ab->rd->lf));
+		       ab->rd->rn ? ab->rd->rn : "?",
+		       ab->rd->lf ? ab->rd->lf : "?"));
 	    }
 	    else
 	      goto bail_out;
@@ -655,7 +657,7 @@ copy_abook_to_tempfile(ab, just_create_lu, lu_not_valid, warning)
 	                  "Address book %.200s doesn't exist, creating",
 	                  (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	dprint(2, (debugfile, "Address book %s doesn't exist, creating\n",
-	       ab->filename));
+	       ab->filename ? ab->filename : "?"));
 
 	/*
 	 * Just use user's umask for permissions. Mode is "w" so the create
@@ -712,7 +714,7 @@ try_again:
 	    (lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 	display_message('x');
 	dprint(5, (debugfile, "Index file %s doesn't exist, creating\n",
-	    ab->hashfile));
+	    ab->hashfile ? ab->hashfile : "?"));
 	errno = 0;
 
 	/*
@@ -747,7 +749,7 @@ try_again:
 		     "filename too long, using \"%.200s\"",
 		     (lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 		 dprint(2, (debugfile, "name too long, trying %s\n",
-		     ab->hashfile));
+		     ab->hashfile ? ab->hashfile : "?"));
 		 goto try_again;
 	    }
 	    else{
@@ -803,7 +805,8 @@ try_tempfile:
 	if(!(ab->hashfile = temp_nam(NULL, "a5")))
 	  goto get_out;
 
-	dprint(2, (debugfile, "trying tmpfile %s\n", ab->hashfile));
+	dprint(2, (debugfile, "trying tmpfile %s\n",
+	       ab->hashfile ? ab->hashfile : "?"));
 
 	/*
 	 * We don't need a separate copy in this case since hashfile is
@@ -863,7 +866,7 @@ try_tempfile:
 
 		    if(ab->hashfile_access == ReadWrite){
 		        dprint(2, (debugfile, "ask if ok to blast %s\n",
-			    ab->hashfile));
+			    ab->hashfile ? ab->hashfile : "?"));
 			sprintf(prompt,
 			    "Pine needs to update index file %.100s, ok",
 			    ab->hashfile);
@@ -953,7 +956,7 @@ try_tempfile:
 		 "Error: can't stat addrbook \"%.200s\"",
 		 (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	    dprint(2, (debugfile, "Error: can't stat addrbook \"%s\"\n",
-		   ab->filename));
+		   ab->filename ? ab->filename : "?"));
 	}
 	else{
 	    valid_stat++;
@@ -972,7 +975,7 @@ try_tempfile:
 		 "Error: can't set mtime for \"%.200s\"",
 		 (lc=last_cmpnt(ab->filename)) ? lc : ab->our_filecopy);
 	    dprint(2, (debugfile, "Error: can't set mtime for \"%s\"\n",
-		   ab->our_filecopy));
+		   ab->our_filecopy ? ab->our_filecopy : "?"));
 	}
 
 	(void)fclose(fp_read);
@@ -1061,15 +1064,16 @@ try_tempfile:
 
     /* our_hashcopy needs to be (re)built from the abook file */
     if(!got_it){
+	char b[400];
+
 	dprint(5, (debugfile, "%s is not valid, rebuilding\n",
-	     ab->our_hashcopy));
-	q_status_message1(SM_INFO, 0,1,
-			"Updating address book index (%.200s)",
-			(lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
+	     ab->our_hashcopy ? ab->our_hashcopy : "?"));
+	sprintf(b, "Updating addrbook index file (%.200s)",
+		(lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 
 	if(!just_create_lu){
 	    display_message('x');
-	    we_cancel = busy_alarm(2, "still updating", NULL, 0);
+	    we_cancel = busy_alarm(1, b, NULL, 0);
 	}
 
 	if(build_ondisk_hash_from_abook(ab,
@@ -1451,7 +1455,7 @@ valid_hfile(fp)
 
     buf[SIZEOF_PMAGIC] = '\0';
     if(strcmp(buf, PMAGIC) != 0){
-	dprint(2, (debugfile, "lu not valid - PMAGIC is %s\n", buf));
+	dprint(2, (debugfile, "lu not valid - PMAGIC is %s\n", buf ? buf : "?"));
 	return 0;
     }
 
@@ -1470,7 +1474,8 @@ valid_hfile(fp)
     buf[SIZEOF_VERSION_NUM] = '\0';
     if(strcmp(buf, ADRHASH_FILE_VERSION_NUM) != 0){
 	dprint(2, (debugfile, "lu not valid - VERS_NUM is %s not %s\n",
-	    buf, ADRHASH_FILE_VERSION_NUM));
+	    buf ? buf : "?",
+	    ADRHASH_FILE_VERSION_NUM ? ADRHASH_FILE_VERSION_NUM : "?"));
 	return 0;
     }
 
@@ -1489,7 +1494,8 @@ valid_hfile(fp)
     buf[SIZEOF_HASH_SIZE] = '\0';
     hashsize = atol(buf);
     if(hashsize <= 10L || hashsize > MAX_HASHTABLE_SIZE){
-	dprint(2, (debugfile, "lu not valid - hashsize is %s\n", buf));
+	dprint(2, (debugfile, "lu not valid - hashsize is %s\n",
+	       buf ? buf : "?"));
 	return 0;
     }
 
@@ -1506,7 +1512,8 @@ valid_hfile(fp)
 
     buf[SIZEOF_PMAGIC] = '\0';
     if(strcmp(buf, PMAGIC) != 0){
-	dprint(2, (debugfile, "lu not valid - TRL_PMAGIC is %s\n", buf));
+	dprint(2, (debugfile, "lu not valid - TRL_PMAGIC is %s\n",
+	       buf ? buf : "?"));
 	return 0;
     }
 
@@ -1524,7 +1531,7 @@ valid_hfile(fp)
     buf[SIZEOF_COUNT] = '\0';
     num_elements = atol(buf);
     if(num_elements < 0L || num_elements > MAX_ADRBK_SIZE){
-	dprint(2, (debugfile, "lu not valid - COUNT is %s\n", buf));
+	dprint(2, (debugfile, "lu not valid - COUNT is %s\n", buf ? buf : "?"));
 	return 0;
     }
 
@@ -1842,7 +1849,7 @@ build_ondisk_hash_from_abook(ab, warning)
 	  (void)strncpy(warning, error_description(errno), 200);
 
 	dprint(1, (debugfile, "build_ondisk: open(%s): %s\n",
-	       temp_hashfile, error_description(errno)));
+	       temp_hashfile ? temp_hashfile : "?", error_description(errno)));
 
 	if(temp_hashfile){
 	    (void)unlink(temp_hashfile);
@@ -2007,7 +2014,9 @@ build_ondisk_hash_from_abook(ab, warning)
     if(rename_file(temp_hashfile, ab->our_hashcopy) < 0){
 	(void)unlink(temp_hashfile);
 	dprint(1, (debugfile, "build_ondisk: rename_file(%s,%s): %s\n",
-	       temp_hashfile, ab->our_hashcopy, error_description(errno)));
+	       temp_hashfile ? temp_hashfile : "?",
+	       ab->our_hashcopy ? ab->our_hashcopy : "?",
+	       error_description(errno)));
 	goto io_err;
     }
     
@@ -2032,7 +2041,8 @@ build_ondisk_hash_from_abook(ab, warning)
 	   || !(temp_hashfile=tempfile_in_same_dir(ab->hashfile,"a2",NULL))
 	   || (fd = open(temp_hashfile, OPEN_WRITE_MODE, 0600)) < 0){
 	    dprint(1, (debugfile, "build_ondisk: open2(%s): %s\n",
-		   temp_hashfile, error_description(errno)));
+		   temp_hashfile ? temp_hashfile : "?",
+		   error_description(errno)));
 	    err++;
 	}
 
@@ -2063,7 +2073,8 @@ build_ondisk_hash_from_abook(ab, warning)
 	    file_attrib_copy(temp_hashfile, ab->hashfile);
 	    if(rename_file(temp_hashfile, ab->hashfile) < 0){
 		dprint(1, (debugfile, "build_ondisk: rename_file(%s,%s): %s\n",
-		       temp_hashfile, ab->hashfile,
+		       temp_hashfile ? temp_hashfile : "?",
+		       ab->hashfile ? ab->hashfile : "?",
 		       error_description(errno)));
 		err++;
 	    }
@@ -2862,7 +2873,8 @@ init_ae_entry(ab, entry)
 	    dprint(2, (debugfile,
 	       "init_ae_entry: trouble: char before nick at %ld not CR or NL\n",
 		entry->offset));
-	    dprint(2, (debugfile, "             : buf = >%s<\n", buf));
+	    dprint(2, (debugfile, "             : buf = >%s<\n",
+		   buf ? buf : "?"));
 	    goto trouble;
 	}
 
@@ -2985,8 +2997,9 @@ init_ae_entry(ab, entry)
 		a->addr.list[0] = cpystr(addrfield);
 		a->addr.list[1] = NULL;
 		dprint(2,
-		    (debugfile, "parsing error reading addressbook: %s %s\n",
-			       "missing right paren", addrfield));
+		    (debugfile,
+		 "parsing error reading addressbook: missing right paren: %s\n",
+		    addrfield ? addrfield : "?"));
 	    }
 	}
 	else{  /* A plain, single address */
@@ -3314,7 +3327,7 @@ adrbk_get_ae(ab, entry_num, handling)
 #ifdef DEBUG
     if(ae == (AdrBk_Entry *)NULL){
 	dprint(2, (debugfile, "adrbk_get_ae (%s): returning NULL!\n",
-	    ab->filename));
+	    ab->filename ? ab->filename : "?"));
 	dprint(2, (debugfile, "   : count %ld l_c_w_k_a %ld cur_time %lu\n",
 	    (long)ab->count, (long)ab->last_change_we_know_about,
 	    (unsigned long)get_adj_time()));
@@ -3374,8 +3387,9 @@ adrbk_lookup_by_nick(ab, nickname, entry_num)
     EntryRef *entry, *last_one;
     AdrBk_Entry *ae;
 
-    dprint(5, (debugfile, "- adrbk_lookup_by_nick(%s) (in %s) -\n", nickname,
-	(ab && ab->filename) ? ab->filename : "?"));
+    dprint(5, (debugfile, "- adrbk_lookup_by_nick(%s) (in %s) -\n",
+	   nickname ? nickname : "?",
+	   (ab && ab->filename) ? ab->filename : "?"));
 
     if(!ab || !nickname || !nickname[0])
       return NULL;
@@ -3448,8 +3462,9 @@ adrbk_lookup_by_addr(ab, address, entry_num)
     adrbk_cntr_t ind, last_ind;
     EntryRef *entry, *last_one;
 
-    dprint(5, (debugfile, "- adrbk_lookup_by_addr(%s) (in %s) -\n", address,
-	(ab && ab->filename) ? ab->filename : "?"));
+    dprint(5, (debugfile, "- adrbk_lookup_by_addr(%s) (in %s) -\n",
+	   address ? address : "?",
+	   (ab && ab->filename) ? ab->filename : "?"));
 
     if(!ab || !address || !address[0])
       return NULL;
@@ -3818,7 +3833,7 @@ adrbk_add(ab, old_entry_num, nickname, fullname, address, fcc, extra, tag,
 	(void)adrbk_get_entryref(ab, (a_c_arg_t)old_enum, Lock);
 
         /*
-	 * Instead of just freeing and reallocating here we attempt to reuse
+	 * Instead of just freeing and reallocating here we attempt to re-use
 	 * the space that was already allocated if possible.
 	 */
 	if(ae->nickname != nickname
@@ -4439,7 +4454,7 @@ adrbk_check_local_validity(ab, do_it_now)
 
 	dprint(2,
 	    (debugfile, "adrbk_check_local_validity: addrbook %s has changed\n",
-			 ab->filename));
+			 ab->filename ? ab->filename : "?"));
 	ab->flags |= FILE_OUTOFDATE;
     }
 }
@@ -4468,7 +4483,11 @@ pab_from_ab(ab)
 
 
 /*
- * See if we can reuse an existing stream.
+ * See if we can re-use an existing stream.
+ * 
+ * [ We don't believe we need this anymore now that the stuff in pine.c ]
+ * [ is recycling streams for us, but we haven't thought it through all ]
+ * [ the way enough to get rid of this. Hubert 2003-07-09               ]
  *
  * Args  name     -- Name of folder we want a stream for.
  *
@@ -4482,13 +4501,9 @@ adrbk_handy_stream(name)
     MAILSTREAM *stat_stream = NULL;
     int         i;
 
-    dprint(9, (debugfile, "- adrbk_handy_stream(%s) -\n", name));
+    dprint(9, (debugfile, "- adrbk_handy_stream(%s) -\n", name ? name : "?"));
 
-    if(same_stream(name, ps_global->mail_stream))
-      stat_stream = ps_global->mail_stream;
-    else if(ps_global->mail_stream != ps_global->inbox_stream &&
-	    same_stream(name, ps_global->inbox_stream))
-      stat_stream = ps_global->inbox_stream;
+    stat_stream = sp_stream_get(name, SP_SAME);
     
     /*
      * Look through our imap streams to see if there is one we can use.
@@ -4507,7 +4522,8 @@ adrbk_handy_stream(name)
 	    pab->address_book->rd->last_use = get_adj_time();
 	    dprint(7, (debugfile,
 		   "%s: used other abook stream for status (%ld)\n",
-		   pab->address_book->orig_filename,
+		   pab->address_book->orig_filename
+		     ? pab->address_book->orig_filename : "?",
 		   (long)pab->address_book->rd->last_use));
 	}
     }
@@ -4619,6 +4635,37 @@ adrbk_partial_close(ab)
 }
 
 
+/*
+ * It has been noticed that this stream is dead and it is about to
+ * be removed from the stream pool. We may have a pointer to it for one
+ * of the remote address books. We have to note that the pointer is stale.
+ */
+void
+note_closed_adrbk_stream(stream)
+    MAILSTREAM *stream;
+{
+    PerAddrBook *pab;
+    int i;
+
+    if(!stream)
+      return;
+
+    for(i = 0; i < as.n_addrbk; i++){
+	pab = &as.adrbks[i];
+	if(pab->address_book
+	   && pab->address_book->type == Imap
+	   && pab->address_book->rd
+	   && pab->address_book->rd->type == RemImap
+	   && (stream == pab->address_book->rd->t.i.stream)){
+	    dprint(4, (debugfile, "- note_closed_adrbk_stream(%s) -\n",
+		   (pab->address_book && pab->address_book->orig_filename)
+		       ? pab->address_book->orig_filename : ""));
+	    pab->address_book->rd->t.i.stream = NULL;
+	}
+    }
+}
+
+
 void
 free_ab_entryref(entry)
     EntryRef *entry;
@@ -4707,7 +4754,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	dprint(1,
 	    (debugfile,
 "adrbk_write: addrbook %s changed while we had it open, aborting write\n",
-	    ab->filename));
+	    ab->filename ? ab->filename : "?"));
 	longjmp(addrbook_changed_unexpectedly, 1);
 	/*NOTREACHED*/
     }
@@ -4737,7 +4784,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 			    "Can't access remote addrbook, aborting change...");
 		dprint(1, (debugfile,
 			"adrbk_write: Can't write to remote addrbook %s, aborting write: open failed\n",
-			ab->rd->rn));
+			ab->rd->rn ? ab->rd->rn : "?"));
 	    }
 	    else if(ro == 2){
 		if(!(ab->rd->flags & NO_META_UPDATE)){
@@ -4769,7 +4816,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	     "Remote addrbook changed, aborting our change to avoid damage...");
 		dprint(1, (debugfile,
 			"adrbk_write: remote addrbook %s changed while we had it open, aborting write\n",
-			ab->orig_filename));
+			ab->orig_filename ? ab->orig_filename : "?"));
 	    }
 
 	    rd_close_remote(ab->rd);
@@ -4793,7 +4840,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	dprint(1,
 	    (debugfile,
 	    "adrbk_write(%s): failed opening temp file (%s)\n",
-	    ab->filename,
+	    ab->filename ? ab->filename : "?",
 	    temp_filename ? temp_filename : "NULL"));
         goto io_error;
     }
@@ -4802,7 +4849,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
     if(ab_stream == NULL){
 	dprint(1,
 	    (debugfile,
-	    "adrbk_write(%s): fdopen failed\n", temp_filename));
+	    "adrbk_write(%s): fdopen failed\n",
+	    temp_filename ? temp_filename : "?"));
         goto io_error;
     }
 
@@ -4813,7 +4861,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	dprint(1,
 	    (debugfile,
 	    "adrbk_write(%s): failed opening temp file (%s)\n",
-	    ab->filename,
+	    ab->filename ? ab->filename : "?",
 	    temp_hashfile ? temp_hashfile : "NULL"));
         goto io_error;
     }
@@ -4849,7 +4897,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
     if(write_hash_header(fp_for_hash, (a_c_arg_t)ab->htable_size)){
 	dprint(1,
 	    (debugfile,
-	    "adrbk_write(%s): write_hash_header failed\n", temp_hashfile));
+	    "adrbk_write(%s): write_hash_header failed\n",
+	    temp_hashfile ? temp_hashfile : "?"));
 	goto io_error;
     }
 
@@ -4874,7 +4923,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 		dprint(1,
 		    (debugfile,
 		    "adrbk_write(%s): failed writing deleted_aes\n",
-		    temp_filename));
+		    temp_filename ? temp_filename : "?"));
 		goto io_error;
 	    }
 
@@ -4896,7 +4945,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	fp_in = ab->fp;
 	if(!fp_in){
 	    dprint(1, (debugfile,
-		   "adrbk_write(%s): fp_in is NULL\n", ab->filename));
+		   "adrbk_write(%s): fp_in is NULL\n",
+		   ab->filename ? ab->filename : "?"));
 	    goto io_error;
 	}
 
@@ -4950,7 +5000,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 		    if(fseek(fp_in, offset, 0)){
 			dprint(1, (debugfile,
 			       "adrbk_write(%s): fseek on fp_in1 failed, cnt_down = %ld\n",
-			       ab->filename, cnt_down));
+			       ab->filename ? ab->filename : "?", cnt_down));
 			goto io_error;
 		    }
 
@@ -4958,14 +5008,14 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 		      if((c = getc(fp_in)) == EOF || putc(c, ab_stream) == EOF){
 			  dprint(1, (debugfile,
 	         "adrbk_write(%s): getc on fp_in or putc on ab_stream failed, cnt_down = %ld\n",
-			       ab->filename, cnt_down));
+			       ab->filename ? ab->filename : "?", cnt_down));
 			  goto io_error;
 		      }
 
 		    if(fseek(fp_in, save_offset, 0)){
 			dprint(1, (debugfile,
 			       "adrbk_write(%s): fseek on fp_in2 failed NULL, cnt_down = %ld\n",
-			       ab->filename, cnt_down));
+			       ab->filename ? ab->filename : "?", cnt_down));
 			goto io_error;
 		    }
 		}
@@ -4977,7 +5027,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	if(cnt_down != 0L)
 	  dprint(1, (debugfile,
 		"adrbk_write(%s): Can't find %d commented deleteds\n",
-		ab->filename, cnt_down));
+		ab->filename ? ab->filename : "?", cnt_down));
     }
 
     if(ab->deleted_cnt)
@@ -5015,7 +5065,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 		dprint(1,
 		    (debugfile,
 		    "adrbk_write(%s): can't find entry %ld in appended_aes while writing addrbook\n",
-		    ab->filename, (long)actual_enum));
+		    ab->filename ? ab->filename : "?", (long)actual_enum));
 		goto io_error;
 	    }
 
@@ -5027,7 +5077,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    if(entry == NULL || entry->uid_nick == NO_UID){
 		dprint(1, (debugfile,
 		"adrbk_write(%s): premature end while writing addrbook (%s)\n",
-		    ab->filename,
+		    ab->filename ? ab->filename : "?",
 		    (entry == NULL) ? "entry is NULL" : "uid_nick is NO_UID"));
 		goto io_error;
 	    }
@@ -5040,7 +5090,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    dprint(1,
 		(debugfile,
 		"adrbk_write(%s): can't find ae while writing addrbook, entry_num = %ld actual_enum = %ld\n",
-		ab->filename, (long)entry_num, (long)actual_enum));
+		ab->filename ? ab->filename : "?",
+		(long)entry_num, (long)actual_enum));
 	    goto io_error;
 	}
 
@@ -5077,7 +5128,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    dprint(1,
 		(debugfile,
 		"adrbk_write(%s): failed writing hash for entry %ld\n",
-		temp_hashfile,
+		temp_hashfile ? temp_hashfile : "?",
 		(long)entry_num));
 	    goto io_error;
 	}
@@ -5088,7 +5139,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    dprint(1,
 		(debugfile,
 		"adrbk_write(%s): failed writing for entry %ld\n",
-		temp_filename,
+		temp_filename ? temp_filename : "?",
 		(long)entry_num));
 	    goto io_error;
 	}
@@ -5158,7 +5209,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
     if(fclose(ab_stream) == EOF){
 	dprint(1, (debugfile, "adrbk_write: fclose for %s failed\n",
-	       temp_filename));
+	       temp_filename ? temp_filename : "?"));
 	goto io_error;
     }
 
@@ -5172,7 +5223,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
     if((i=rename_file(temp_filename, ab->our_filecopy)) < 0){
 	dprint(1, (debugfile, "adrbk_write: rename(%s, %s) failed\n",
-	       temp_filename, ab->our_filecopy));
+	       temp_filename ? temp_filename : "?",
+	       ab->our_filecopy ? ab->our_filecopy : "?"));
 #ifdef	_WINDOWS
 	if(i == -5){
 	    q_status_message2(SM_ORDER | SM_DING, 5, 7,
@@ -5189,7 +5241,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
     /* reopen fp to new file */
     if(!(ab->fp = fopen(ab->our_filecopy, READ_MODE))){
 	dprint(1, (debugfile, "adrbk_write: can't reopen %s\n",
-	       ab->our_filecopy));
+	       ab->our_filecopy ? ab->our_filecopy : "?"));
 	goto io_error;
     }
 
@@ -5211,7 +5263,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    dprint(1,
 		(debugfile,
 		"adrbk_write(%s): failed opening temp file (%s)\n",
-		ab->filename,
+		ab->filename ? ab->filename : "?",
 		temp_filename ? temp_filename : "NULL"));
 	    err++;
 	}
@@ -5222,7 +5274,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	if(ab_stream == NULL){
 	    dprint(1,
 		(debugfile,
-		"adrbk_write(%s): fdopen failed\n", temp_filename));
+		"adrbk_write(%s): fdopen failed\n",
+		temp_filename ? temp_filename : "?"));
 	    err++;
 	}
 
@@ -5273,7 +5326,10 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    q_status_message1(SM_ORDER | SM_DING, 5, 5,
 	       "Copy of addrbook to \"%.200s\" failed, changes NOT saved!",
 	       (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
-	    dprint(2, (debugfile, "adrbk_write: failed copying our_filecopy (%s)back to filename (%s): %s, continuing without a net\n", ab->our_filecopy, ab->filename, error_description(errno)));
+	    dprint(2, (debugfile, "adrbk_write: failed copying our_filecopy (%s)back to filename (%s): %s, continuing without a net\n",
+		   ab->our_filecopy ? ab->our_filecopy : "?",
+		   ab->filename ? ab->filename : "?",
+		   error_description(errno)));
 	}
     }
 
@@ -5304,7 +5360,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
     if(fclose(fp_for_hash) == EOF){
 	dprint(1, (debugfile, "adrbk_write: fclose for %s failed\n",
-	       temp_hashfile));
+	       temp_hashfile ? temp_hashfile : "?"));
 	goto io_error;
     }
 
@@ -5318,13 +5374,14 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
     if(rename_file(temp_hashfile, ab->our_hashcopy) < 0){
 	dprint(1, (debugfile, "adrbk_write: rename(%s, %s) failed\n",
-	       temp_hashfile, ab->our_hashcopy));
+	       temp_hashfile ? temp_hashfile : "?",
+	       ab->our_hashcopy ? ab->our_hashcopy : "?"));
 	goto io_error;
     }
 
     if(!(ab->fp_hash = fopen(ab->our_hashcopy, READ_MODE))){
 	dprint(1, (debugfile, "adrbk_write: fopen(our_hashcopy=%s) failed\n",
-	       ab->our_hashcopy));
+	       ab->our_hashcopy ? ab->our_hashcopy : "?"));
 	goto io_error;
     }
 
@@ -5345,7 +5402,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    dprint(1,
 		(debugfile,
 		"adrbk_write(%s): failed opening temp file (%s)\n",
-		ab->filename,
+		ab->filename ? ab->filename : "?",
 		temp_hashfile ? temp_hashfile : "NULL"));
 	    err++;
 	}
@@ -5372,7 +5429,10 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	}
 
 	if(err){
-	    dprint(2, (debugfile, "adrbk_write: failed copying our_hashcopy (%s)back to hashfile (%s): %s, continuing\n", ab->our_hashcopy, ab->hashfile, error_description(errno)));
+	    dprint(2, (debugfile, "adrbk_write: failed copying our_hashcopy (%s)back to hashfile (%s): %s, continuing\n",
+		   ab->our_hashcopy ? ab->our_hashcopy : "?",
+		   ab->hashfile ? ab->hashfile : "?",
+		   error_description(errno)));
 	}
     }
 
@@ -5413,7 +5473,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 				ab->rd->lf, error_description(errno));
 		dprint(1, (debugfile,
 		       "adrbk_write: error opening temp file %s\n",
-		       ab->rd->lf));
+		       ab->rd->lf ? ab->rd->lf : "?"));
 	    }
 	    else{
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
@@ -5421,7 +5481,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 				ab->rd->rn, error_description(errno));
 		dprint(1, (debugfile,
 		       "adrbk_write: error copying from %s to %s\n",
-		       ab->rd->lf, ab->rd->rn));
+		       ab->rd->lf ? ab->rd->lf : "?",
+		       ab->rd->rn ? ab->rd->rn : "?"));
 	    }
 	    
 	    q_status_message(SM_ORDER | SM_DING, 5, 5,
@@ -5432,7 +5493,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    ab->rd->read_status = 'W';
 	    dprint(7, (debugfile,
 		   "%s: copied local to remote in adrbk_write (%ld)\n",
-		   ab->rd->rn, (long)ab->rd->last_use));
+		   ab->rd->rn ? ab->rd->rn : "?",
+		   (long)ab->rd->last_use));
 	}
 
 	ab->rd->flags &= ~BELIEVE_CACHE;
@@ -5498,12 +5560,14 @@ io_error:
 	q_status_message(0, 1, 2, "Interrupt!  Reverting to previous version");
 	display_message('x');
 	dprint(1,
-	    (debugfile, "adrbk_write(%s): Interrupt\n", ab->filename));
+	    (debugfile, "adrbk_write(%s): Interrupt\n",
+	    ab->filename ? ab->filename : "?"));
     }
     else
       dprint(1,
 	(debugfile, "adrbk_write(%s) (%s): some sort of io_error\n",
-	ab->filename, ab->our_filecopy));
+	ab->filename ? ab->filename : "?",
+	ab->our_filecopy ? ab->our_filecopy : "?"));
 
     writing = 0;
 
@@ -5542,7 +5606,7 @@ io_error:
     if(progress & AB_RENAMED_HASH){
 	dprint(1,
 	(debugfile, "adrbk_write(%s): already renamed hashfile: %s\n",
-	ab->filename, error_description(errno)));
+	ab->filename ? ab->filename : "?", error_description(errno)));
     }
     /*
      * We're kind of in no man's land with this case.  The null fp_hash
@@ -6174,7 +6238,7 @@ adrbk_get_entryref(ab, elem_arg, handling)
 
     dprint(9, (debugfile,
 	"adrbk_get_entryref(%s) - elem=%lu (%s)\n",
-	ab->filename,
+	ab->filename ? ab->filename : "?",
 	(unsigned long)elem,
 	handling==Normal ? "Normal" :
 	 handling==Delete ? "Delete" :
@@ -6981,7 +7045,7 @@ exp_unset_expanded(exp_head, n)
     a_c_arg_t   n;
 {
     register EXPANDED_S *e;
-    EXPANDED_S *delete_this_one;
+    EXPANDED_S *delete_this_one = NULL;
     adrbk_cntr_t nn;
 
     nn = (adrbk_cntr_t)n;
@@ -6997,7 +7061,8 @@ exp_unset_expanded(exp_head, n)
 	e->next = e->next->next;
     }
 
-    fs_give((void **)&delete_this_one);
+    if(delete_this_one)
+      fs_give((void **)&delete_this_one);
 }
 
 

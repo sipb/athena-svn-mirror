@@ -100,6 +100,7 @@
 #define	IDM_OPT_CARETSMALLBLOCK		201
 #define	IDM_OPT_CARETHBAR		202
 #define	IDM_OPT_CARETVBAR		203
+#define	IDM_OPT_NEWMAILWIN		204
 #define PINEMENU                        300
 #define COMPOSERMENU                    301
 #define PINEICON                        400

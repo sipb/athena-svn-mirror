@@ -1,4 +1,4 @@
-# $Id: makefile.a41,v 1.1.1.2 2003-02-12 08:00:23 ghudson Exp $
+# $Id: makefile.a41,v 1.1.1.3 2005-01-26 17:53:37 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -66,9 +66,9 @@ LOCLIBS=     $(PICODIR)/libpico.a $(CCLIENTDIR)/c-client.a
 LIBS=        $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
              `cat $(CCLIENTDIR)/LDFLAGS`
 
-STDCFLAGS=   -DA41 -DSYSTYPE=\"A41\" -DMOUSE
+STDCFLAGS=   -DA41 -DSYSTYPE=\"A41\" -DMOUSE -qro -qroconst
 CFLAGS=      $(OPTIMIZE) $(PROFILE) $(DEBUG) $(EXTRACFLAGS) $(LDAPCFLAGS) \
-	     $(STDCFLAGS)
+	     $(LOCALPINECFLAGS) $(STDCFLAGS)
 
 OFILES=	addrbook.o adrbkcmd.o adrbklib.o args.o bldaddr.o context.o filter.o \
 	folder.o help.o helptext.o imap.o init.o mailcap.o mailcmd.o \

@@ -48,10 +48,11 @@ input_ready(time_out)
 	      * Anything less, and we're being told to cycle thru
 	      * the command loop because some task is pending...
 	      */
-             return(time_out < 15 ? NO_OP_COMMAND : NO_OP_IDLE);
+             return(time_out < IDLE_TIMEOUT ? NO_OP_COMMAND : NO_OP_IDLE);
          }
      }
 
+     time_of_last_input = time((time_t *) 0);
      return(READY_TO_READ);
 }
 

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: composer.c,v 1.1.1.3 2004-03-01 21:15:31 ghudson Exp $";
+static char rcsid[] = "$Id: composer.c,v 1.1.1.4 2005-01-26 17:55:26 ghudson Exp $";
 #endif
 /*
  * Program:	Pine composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: composer.c,v 1.1.1.3 2004-03-01 21:15:31 ghudson Exp
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2001 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -63,6 +63,7 @@ int              LineEdit PROTO((int));
 int              header_downline PROTO((int, int));
 int              header_upline PROTO((int));
 int              FormatLines PROTO((struct hdr_line *, char *, int, int, int));
+int              FormatSyncAttach PROTO((void));
 char            *strqchr PROTO((char *, int, int *, int));
 int              ComposerHelp PROTO((int));
 void             NewTop PROTO((int));
@@ -481,9 +482,6 @@ int f, n;
     int                 cur_e, mangled, retval = -1,
 		        hdr_only = (gmode & MDHDRONLY) ? 1 : 0;
     char               *errmss, *err;
-#ifdef	ATTACHMENTS
-    register  int	status;			/* return status of something*/
-#endif
 #ifdef MOUSE
     MOUSEPRESS		mp;
 #endif
@@ -662,7 +660,7 @@ int f, n;
 		/* verify the attachments, and pretty things up in case
 		 * we come back to the composer due to error...
 		 */
-		if((i = SyncAttach()) != 0){
+		if((i = FormatSyncAttach()) != 0){
 		    sleep(2);		/* give time for error to absorb */
 		    FormatLines(headents[ods.cur_e].hd_text, "",
 				term.t_ncol - headents[ods.cur_e].prlen,
@@ -724,7 +722,7 @@ int f, n;
 	    mangled = 0;
 	    err = NULL;
 	    if(headents[ods.cur_e].is_attach){
-		if(SyncAttach() < 0){
+		if(FormatSyncAttach() < 0){
 		    if(mlyesno("Problem with attachments. Postpone anyway?",
 			       FALSE) != TRUE){
 			if(FormatLines(headents[ods.cur_e].hd_text, "",
@@ -755,8 +753,11 @@ int f, n;
 	    if(Pmaster->pine_flags & MDHDRONLY)
 	      goto bleep;
 
-	    { char fn[NLINE], sz[32], cmt[NLINE];
+	    { char    cmt[NLINE];
+	      LMLIST *lm = NULL, *lmp;
+	      char buf[NLINE], *bfp;
 	      int saved_km_popped;
+	      size_t len;
 
 	      /*
 	       * Attachment questions mess with km_popped and assume
@@ -768,8 +769,38 @@ int f, n;
 	      saved_km_popped = km_popped;
 	      km_popped = 0;
 
-	      if(AskAttach(fn, sz, cmt)){
-		  status = !AppendAttachment(fn, sz, cmt);
+	      if(AskAttach(cmt, &lm)){
+
+		for(lmp = lm; lmp; lmp = lmp->next){
+		    len = lmp->dir ? strlen(lmp->dir)+1 : 0;
+		    len += lmp->fname ? strlen(lmp->fname) : 0;
+
+		    if(len+3 > sizeof(buf)){
+			bfp = malloc(len+3);
+			if((bfp=malloc(len+3)) == NULL){
+			    emlwrite("\007Can't malloc space for filename",
+				     NULL);
+			    continue;
+			}
+		    }
+		    else
+		      bfp = buf;
+
+		    if(lmp->dir && lmp->dir[0])
+		      sprintf(bfp, "%s%c%s", lmp->dir, C_FILESEP,
+			      lmp->fname ? lmp->fname : "");
+		    else
+		      sprintf(bfp, "%s", lmp->fname ? lmp->fname : "");
+
+		    (void) QuoteAttach(bfp);
+
+		    (void) AppendAttachment(bfp, lm->size, cmt);
+
+		    if(bfp != buf)
+		      free(bfp);
+		}
+
+		zotlmlist(lm);
 	      }
 
 	      km_popped = saved_km_popped;
@@ -983,26 +1014,61 @@ int f, n;
             if(headents[ods.cur_e].is_attach) {
                 /*--- selector for attachments ----*/
 		char dir[NLINE], fn[NLINE], sz[NLINE];
+		LMLIST *lm = NULL, *lmp;
 
 		strcpy(dir, (gmode & MDCURDIR)
-			      ? "."
-			      : ((gmode & MDTREE) || opertree[0])
-				   ? opertree : gethomedir(NULL));
+		       ? (browse_dir[0] ? browse_dir : ".")
+		       : ((gmode & MDTREE) || opertree[0])
+		       ? opertree
+		       : (browse_dir[0] ? browse_dir
+			  : gethomedir(NULL)));
 		fn[0] = '\0';
-		if(FileBrowse(dir, NLINE, fn, NLINE, sz, FB_READ | FB_ATTACH) == 1){ /* got a new file */
-		    char buf[NLINE];
+		if(FileBrowse(dir, NLINE, fn, NLINE, sz,
+			      FB_READ | FB_ATTACH | FB_LMODEPOS, &lm) == 1){
+		    char buf[NLINE], *bfp;
+		    size_t len;
 
-		    sprintf(buf, "%s%c%s", dir, C_FILESEP, fn);
-		    (void) QuoteAttach(buf);
-		    sprintf(buf + strlen(buf), " (%s) \"\"%s", sz,
+		    for(lmp = lm; lmp; lmp = lmp->next){
+			len = lmp->dir ? strlen(lmp->dir)+1 : 0;
+			len += lmp->fname ? strlen(lmp->fname) : 0;
+			len += 7;
+			len += strlen(lmp->size);
+
+			if(len+3 > sizeof(buf)){
+			    bfp = malloc(len+3);
+			    if((bfp=malloc(len+3)) == NULL){
+				emlwrite("\007Can't malloc space for filename",
+					 NULL);
+				continue;
+			    }
+			}
+			else
+			  bfp = buf;
+
+			if(lmp->dir && lmp->dir[0])
+			  sprintf(bfp, "%s%c%s", lmp->dir, C_FILESEP,
+				  lmp->fname ? lmp->fname : "");
+			else
+			  sprintf(bfp, "%s", lmp->fname ? lmp->fname : "");
+
+			(void) QuoteAttach(bfp);
+
+			sprintf(bfp + strlen(bfp), " (%s) \"\"%s", lmp->size,
 			    (!headents[ods.cur_e].hd_text->text[0]) ? "":",");
-		    if(FormatLines(headents[ods.cur_e].hd_text, buf,
-				   term.t_ncol - headents[ods.cur_e].prlen,
-				   headents[ods.cur_e].break_on_comma,0)==-1){
-			emlwrite("\007Format lines failed!", NULL);
+
+			if(FormatLines(headents[ods.cur_e].hd_text, bfp,
+				     term.t_ncol - headents[ods.cur_e].prlen,
+				     headents[ods.cur_e].break_on_comma,0)==-1){
+			    emlwrite("\007Format lines failed!", NULL);
+			}
+
+			if(bfp != buf)
+			  free(bfp);
+
+			UpdateHeader(0);
 		    }
 
-		    UpdateHeader(0);
+		    zotlmlist(lm);
 		}				/* else, nothing of interest */
             } else if (headents[ods.cur_e].selector != NULL) {
 		VARS_TO_SAVE *saved_state;
@@ -1274,7 +1340,7 @@ header_downline(beyond, gripe)
 	  InvertPrompt(ods.cur_e, FALSE);	/* turn off current entry   */
 
 	if(headents[ods.cur_e].is_attach) {	/* verify data ?	    */
-	    if(status = SyncAttach()){		/* fixup if 1 or -1	    */
+	    if(status = FormatSyncAttach()){	/* fixup if 1 or -1	    */
 		headents[ods.cur_e].rich_header = 0;
 		if(FormatLines(headents[ods.cur_e].hd_text, "",
 			       term.t_ncol-headents[new_e].prlen,
@@ -1375,7 +1441,7 @@ header_upline(gripe)
     if(new_e != ods.cur_e){			/* new field ! */
 	InvertPrompt(ods.cur_e, FALSE);
 	if(headents[ods.cur_e].is_attach){
-	    if(status = SyncAttach()){		/* non-zero ? reformat field */
+	    if(status = FormatSyncAttach()){   /* non-zero ? reformat field */
 		headents[ods.cur_e].rich_header = 0;
 		if(FormatLines(headents[ods.cur_e].hd_text, "",
 			       term.t_ncol - headents[ods.cur_e].prlen,
@@ -2257,6 +2323,19 @@ int	quoted;					/* this line inside quotes */
     }
 }
 
+/*
+ * Format the lines before parsing attachments so we
+ * don't expand a bunch of attachments that we don't
+ * have the buffer space for.
+ */
+int
+FormatSyncAttach ()
+{
+    FormatLines(headents[ods.cur_e].hd_text, "",
+		term.t_ncol - headents[ods.cur_e].prlen,
+		headents[ods.cur_e].break_on_comma, 0);
+    return(SyncAttach());
+}
 
 
 /*
@@ -3575,131 +3654,94 @@ SaveHeaderLines()
 	  break;
       }
 
-    if (gmode & MDDTKILL){
-	/* insert new text at the dot position */
-	buf_len      = strlen(buf);
-	tentative_p_off = ods.p_off + buf_len;
-	work_buf_len = strlen(ods.cur_l->text) + buf_len;
-	work_buf = (char *) malloc((work_buf_len + 1) * sizeof(char));
-	if (work_buf == NULL) {
-	    emlwrite("Can't malloc space for saved text", NULL);
-	    return(FALSE);
-	}
+    /* insert new text at the dot position */
+    buf_len      = strlen(buf);
+    tentative_p_off = ods.p_off + buf_len;
+    work_buf_len = strlen(ods.cur_l->text) + buf_len;
+    work_buf = (char *) malloc((work_buf_len + 1) * sizeof(char));
+    if (work_buf == NULL) {
+	emlwrite("Can't malloc space for saved text", NULL);
+	return(FALSE);
+    }
 
-	sprintf(work_buf_begin = work_buf, "%.*s%s%s", ods.p_off,
-		ods.cur_l->text, buf, &ods.cur_l->text[ods.p_off]);
-	empty[0]='\0';
-	ods.p_off = 0;
+    sprintf(work_buf_begin = work_buf, "%.*s%s%s", ods.p_off,
+	    ods.cur_l->text, buf, &ods.cur_l->text[ods.p_off]);
+    empty[0]='\0';
+    ods.p_off = 0;
 
-	/* insert text in 256-byte chuks */
-	while(work_buf_len + ods.p_off > 256) {
-	    strncpy(&ods.cur_l->text[ods.p_off], work_buf, 256-ods.p_off);
-	    work_buf += (256 - ods.p_off);
-	    work_buf_len -= (256 - ods.p_off);
+    /* insert text in 256-byte chuks */
+    while(work_buf_len + ods.p_off > 256) {
+	strncpy(&ods.cur_l->text[ods.p_off], work_buf, 256-ods.p_off);
+	work_buf += (256 - ods.p_off);
+	work_buf_len -= (256 - ods.p_off);
 
-	    if(FormatLines(ods.cur_l, empty, LINELEN(),
-			   headents[ods.cur_e].break_on_comma, 0) == -1) {
-	       i = FALSE;
-	       break;
-	    } else {
-	       i = TRUE;
-	      len = 0;
-	      travel = ods.cur_l;
-	      while (len < 256){
-		  len += strlen(travel->text);
-		  if (len >= 256)
-		    break;
+	if(FormatLines(ods.cur_l, empty, LINELEN(),
+		       headents[ods.cur_e].break_on_comma, 0) == -1) {
+	   i = FALSE;
+	   break;
+	} else {
+	   i = TRUE;
+	  len = 0;
+	  travel = ods.cur_l;
+	  while (len < 256){
+	      len += strlen(travel->text);
+	      if (len >= 256)
+		break;
 
-		  /*
-		   * This comes after the break above because it will
-		   * be accounted for in the while loop below.
-		   */
-		  if(!tentative_cur_l){
-		      if(tentative_p_off <= strlen(travel->text))
-			tentative_cur_l = travel;
-		      else
-			tentative_p_off -= strlen(travel->text);
-		  }
-
-		  travel = travel->next;
+	      /*
+	       * This comes after the break above because it will
+	       * be accounted for in the while loop below.
+	       */
+	      if(!tentative_cur_l){
+		  if(tentative_p_off <= strlen(travel->text))
+		    tentative_cur_l = travel;
+		  else
+		    tentative_p_off -= strlen(travel->text);
 	      }
 
-	      ods.cur_l = travel;
-	      ods.p_off = strlen(travel->text) - len + 256;
-	    }
+	      travel = travel->next;
+	  }
+
+	  ods.cur_l = travel;
+	  ods.p_off = strlen(travel->text) - len + 256;
 	}
+    }
 
-	/* insert the remainder of text */
-	if (i != FALSE && work_buf_len > 0) {
-	    strcpy(&ods.cur_l->text[ods.p_off], work_buf);
-	    work_buf = work_buf_begin;
-	    free(work_buf);
+    /* insert the remainder of text */
+    if (i != FALSE && work_buf_len > 0) {
+	strcpy(&ods.cur_l->text[ods.p_off], work_buf);
+	work_buf = work_buf_begin;
+	free(work_buf);
 
-	    if(FormatLines(ods.cur_l, empty, LINELEN(),
-			   headents[ods.cur_e].break_on_comma, 0) == -1) {
-	       i = FALSE;
-	    } else {  
-	      len = 0;
-	      travel = ods.cur_l;
-	      while (len < work_buf_len + ods.p_off){
-		  if(!tentative_cur_l){
-		      if(tentative_p_off <= strlen(travel->text))
-			tentative_cur_l = travel;
-		      else
-			tentative_p_off -= strlen(travel->text);
-		  }
-
-		  len += strlen(travel->text);
-		  if (len >= work_buf_len + ods.p_off)
-		    break;
-
-		  travel = travel->next;
+	if(FormatLines(ods.cur_l, empty, LINELEN(),
+		       headents[ods.cur_e].break_on_comma, 0) == -1) {
+	   i = FALSE;
+	} else {  
+	  len = 0;
+	  travel = ods.cur_l;
+	  while (len < work_buf_len + ods.p_off){
+	      if(!tentative_cur_l){
+		  if(tentative_p_off <= strlen(travel->text))
+		    tentative_cur_l = travel;
+		  else
+		    tentative_p_off -= strlen(travel->text);
 	      }
 
-	      ods.cur_l = travel;
-	      ods.p_off = strlen(travel->text) - len + work_buf_len + ods.p_off;
-	      if(tentative_cur_l
-	         && tentative_p_off >= 0
-		 && tentative_p_off <= strlen(tentative_cur_l->text)){
-		  ods.cur_l = tentative_cur_l;
-		  ods.p_off = tentative_p_off;
-	      }
-	    }
-	}
+	      len += strlen(travel->text);
+	      if (len >= work_buf_len + ods.p_off)
+		break;
 
-    }else{
-	if(FormatLines(ods.cur_l, buf, LINELEN(),
-		   headents[ods.cur_e].break_on_comma, 0) == -1)
-	  i = FALSE;
-	else{  
-	    i = TRUE;
-	    buf_len      = strlen(buf);
-	    tentative_p_off = buf_len;
-	    ods.p_off = 0;
-	    len = 0;
-	    /* put cursor after the new text */
-	    travel = ods.cur_l;
-	    while(len < buf_len){
-		if(!tentative_cur_l){
-		    if(tentative_p_off <= strlen(travel->text))
-		      tentative_cur_l = travel;
-		    else
-		      tentative_p_off -= strlen(travel->text);
-		}
+	      travel = travel->next;
+	  }
 
-		len += strlen(travel->text);
-		if(len >= buf_len)
-		  break;
-
-		travel = travel->next;
-	    }
-
-	    if(tentative_cur_l
-	       && tentative_p_off >= 0
-	       && tentative_p_off <= strlen(tentative_cur_l->text)){
-		ods.cur_l = tentative_cur_l;
-		ods.p_off = tentative_p_off;
-	    }
+	  ods.cur_l = travel;
+	  ods.p_off = strlen(travel->text) - len + work_buf_len + ods.p_off;
+	  if(tentative_cur_l
+	     && tentative_p_off >= 0
+	     && tentative_p_off <= strlen(tentative_cur_l->text)){
+	      ods.cur_l = tentative_cur_l;
+	      ods.p_off = tentative_p_off;
+	  }
 	}
     }
 

@@ -27,6 +27,7 @@
 
 #define  USE_DIRENT
 #include <sys/dir.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/
@@ -165,7 +166,7 @@ typedef unsigned short usign16_t;
 /*
  * Place where mail gets delivered (for pico's new mail checking)
  */
-#define MAILDIR		"/usr/spool/mail"
+#define MAILDIR		"/var/mail"
 
 /*
  * What and where the tool that checks spelling is located.  If this is

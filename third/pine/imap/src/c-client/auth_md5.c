@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	21 October 1998
- * Last Edited:	29 May 2002
+ * Last Edited:	4 January 2005
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2002 University of Washington.
+ * Copyright 1988-2005 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -133,7 +133,7 @@ long auth_md5_client (authchallenge_t challenger,authrespond_t responder,
  * the password data.
  */
 
-static int md5try = 3;
+static int md5try = MAXLOGINTRIALS;
 
 char *auth_md5_server (authresponse_t responder,int argc,char *argv[])
 {
@@ -153,7 +153,7 @@ char *auth_md5_server (authresponse_t responder,int argc,char *argv[])
 				/* get password */
       if (p = auth_md5_pwd ((authuser && *authuser) ? authuser : user)) {
 	pl = strlen (p);
-	u = (md5try && strcmp (hash,hmac_md5 (chal,cl,p,pl))) ? NIL : user;
+	u = (md5try && !strcmp (hash,hmac_md5 (chal,cl,p,pl))) ? user : NIL;
 	memset (p,0,pl);	/* erase sensitive information */
 	fs_give ((void **) &p);	/* flush erased password */
 				/* now log in for real */
@@ -179,7 +179,7 @@ char *auth_md5_pwd (char *user)
 {
   struct stat sbuf;
   int fd = open (MD5ENABLE,O_RDONLY,NIL);
-  char *s,*t,*buf,*lusr,*lret;
+  unsigned char *s,*t,*buf,*lusr,*lret;
   char *ret = NIL;
   if (fd >= 0) {		/* found the file? */
     fstat (fd,&sbuf);		/* yes, slurp it into memory */

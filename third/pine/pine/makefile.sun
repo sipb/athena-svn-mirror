@@ -1,4 +1,4 @@
-# $Id: makefile.sun,v 1.1.1.2 2003-02-12 08:01:19 ghudson Exp $
+# $Id: makefile.sun,v 1.1.1.3 2005-01-26 17:52:58 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -67,7 +67,7 @@ LIBS=        $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
 
 STDCFLAGS=   -Dconst= -DSUN -DSYSTYPE=\"SUN\" -DMOUSE
 CFLAGS=      $(OPTIMIZE) $(PROFILE) $(DEBUG) $(EXTRACFLAGS) $(LDAPCFLAGS) \
-	     $(STDCFLAGS)
+	     $(LOCALPINECFLAGS) $(STDCFLAGS)
 
 OFILES=	addrbook.o adrbkcmd.o adrbklib.o args.o bldaddr.o context.o filter.o \
 	folder.o help.o helptext.o imap.o init.o mailcap.o mailcmd.o \

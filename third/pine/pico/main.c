@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: main.c,v 1.1.1.3 2003-05-01 01:13:32 ghudson Exp $";
+static char rcsid[] = "$Id: main.c,v 1.1.1.4 2005-01-26 17:54:32 ghudson Exp $";
 #endif
 /*
  * Program:	Main stand-alone Pine Composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: main.c,v 1.1.1.3 2003-05-01 01:13:32 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1999 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -50,6 +50,9 @@ int	pico_file_drop PROTO((int, int, char *));
  * which we use for GetKey's timeout
  */
 int	timeoutset = 0;
+
+
+int	 my_timer_period = (300 * 1000);
 
 /*
  * function key mappings
@@ -151,6 +154,7 @@ char    *argv[];
     Pmaster = NULL;     		/* turn OFF composer functionality */
     km_popped = 0;
     opertree[0] = opertree[NLINE] = '\0';
+    browse_dir[0] = browse_dir[NLINE] = '\0';
 
     /*
      * Read command line flags before initializing, otherwise, we never

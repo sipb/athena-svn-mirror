@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.4 2004-03-01 21:15:46 ghudson Exp $";
+static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.5 2005-01-26 17:55:20 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.4 2004-03-01 21:15:46 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -59,7 +59,7 @@ int            expand_addrs_for_pico PROTO((struct headerentry *, char ***));
 char          *pico_cancel_for_adrbk_edit PROTO((void (*)()));
 char          *pico_cancel_for_adrbk_take PROTO((void (*)()));
 char          *pico_cancelexit_for_adrbk PROTO((char *, void (*)()));
-char          *pico_sendexit_for_adrbk PROTO((struct headerentry *, void(*)()));
+char          *pico_sendexit_for_adrbk PROTO((struct headerentry *, void(*)(), int));
 int            process_abook_view_cmd PROTO((int, MSGNO_S *, SCROLL_S *));
 void           set_act_list_member PROTO((ACTION_LIST_S *, a_c_arg_t,
 					PerAddrBook *, PerAddrBook *, char *));
@@ -74,7 +74,7 @@ int            verify_nick PROTO((char *, char **, char **, BUILDER_ARG *,
 				  int *));
 int            verify_server_name PROTO((char *,char **,char **,BUILDER_ARG *,
 					 int *));
-void           write_single_vcard_entry PROTO((struct pine *, gf_io_t, int,
+void           write_single_vcard_entry PROTO((struct pine *, gf_io_t,
 					       char **, VCARD_INFO_S *));
 VCARD_INFO_S  *prepare_abe_for_vcard PROTO((struct pine *, AdrBk_Entry *, int));
 void           free_vcard_info PROTO((VCARD_INFO_S **));
@@ -98,7 +98,7 @@ typedef struct _saved_query {
 
 char          *ldap_translate PROTO((char *, LDAP_SERV_S *));
 int            process_ldap_cmd PROTO((int, MSGNO_S *, SCROLL_S *));
-char          *pico_simpleexit PROTO((struct headerentry *, void (*)()));
+char          *pico_simpleexit PROTO((struct headerentry *, void (*)(), int));
 char          *pico_simplecancel PROTO((struct headerentry *, void (*)()));
 void           save_query_parameters PROTO((SAVED_QUERY_S *));
 SAVED_QUERY_S *copy_query_parameters PROTO((SAVED_QUERY_S *));
@@ -303,7 +303,7 @@ repaint_view:
 
 	gf_link_filter(gf_wrap, gf_wrap_filter_opt(ps->ttyo->screen_cols - 4,
 						   ps->ttyo->screen_cols,
-						   INDENT,
+						   NULL, INDENT,
 						   GFW_HANDLES));
 	gf_link_filter(gf_nvtnl_local, NULL);
 
@@ -1552,7 +1552,7 @@ verify_addr(to, full_to, error, fcc, mangled)
 
 	q_status_message(SM_ORDER, 3, 5, "Resetting address book...");
 	dprint(1, (debugfile,
-	    "RESETTING address book... verify_addr(%s)!\n", to));
+	    "RESETTING address book... verify_addr(%s)!\n", to ? to : "?"));
 	addrbook_reset();
 	ab_nesting_level = *save_nesting_level;
     }
@@ -1595,9 +1595,10 @@ verify_addr(to, full_to, error, fcc, mangled)
  *	 reason why the user declined.
  */      
 char *
-pico_sendexit_for_adrbk(he, redraw_pico)
+pico_sendexit_for_adrbk(he, redraw_pico, allow_flowed)
     struct headerentry *he;
     void (*redraw_pico)();
+    int allow_flowed;
 {
     char *rstr = NULL;
     void (*redraw)() = ps_global->redrawer;
@@ -2791,7 +2792,8 @@ ab_del_abook(cur_line, command_line, err)
 
     pab = &as.adrbks[abook_num];
 
-    dprint(2, (debugfile, "- ab_del_abook(%s) -\n", pab->nickname));
+    dprint(2, (debugfile, "- ab_del_abook(%s) -\n",
+	   pab->nickname ? pab->nickname : "?"));
 
     varnum = (pab->type & GLOBAL) ? V_GLOB_ADDRBOOK : V_ADDRESSBOOK;
 
@@ -3024,6 +3026,24 @@ ab_del_abook(cur_line, command_line, err)
 	    if(pab->type & REMOTE_VIA_IMAP)
 	      origfile = cpystr(pab->address_book->orig_filename);
 
+	    /*
+	     * In order to avoid locking problems when we delete the
+	     * remote folder, we need to actually close the remote stream
+	     * instead of just putting it back in the stream pool.
+	     * So we will remove this stream from the re-usable portion
+	     * of the stream pool by clearing the SP_USEPOOL flag.
+	     * Init_abook(pab, TotallyClosed) via rd_close_remdata is
+	     * going to pine_mail_close it.
+	     */
+	    if(pab->type && REMOTE_VIA_IMAP
+	       && pab->address_book
+	       && pab->address_book->type == Imap
+	       && pab->address_book->rd
+	       && rd_stream_exists(pab->address_book->rd)){
+
+		sp_unflag(pab->address_book->rd->t.i.stream, SP_USEPOOL);
+	    }
+
 	    /* This deletes the files because of DEL_ bits we set above. */
 	    init_abook(pab, TotallyClosed);
 
@@ -3031,18 +3051,13 @@ ab_del_abook(cur_line, command_line, err)
 	     * Delete the remote folder.
 	     */
 	    if(pab->type & REMOTE_VIA_IMAP){
-		MAILSTREAM *del_stream = NULL;
 		REMDATA_S  *rd;
 		int         exists;
 
-		del_stream = same_stream(origfile, ps_global->mail_stream);
-		if(!del_stream)
-		  del_stream = same_stream(origfile, ps_global->inbox_stream);
-		
 		ps_global->c_client_error[0] = '\0';
-		if(!pine_mail_delete(del_stream, origfile) &&
+		if(!pine_mail_delete(NULL, origfile) &&
 		   ps_global->c_client_error[0] != '\0'){
-		    dprint(1, (debugfile, "%s: %s\n", origfile,
+		    dprint(1, (debugfile, "%s: %s\n", origfile ? origfile : "?",
 			   ps_global->c_client_error));
 		}
 
@@ -3055,18 +3070,21 @@ ab_del_abook(cur_line, command_line, err)
 		if((exists=folder_exists(NULL, origfile)) &&
 		   (exists != FEX_ERROR)){
 		    o++;
-		    dprint(1, (debugfile, "Trouble deleting %s\n", origfile));
+		    dprint(1, (debugfile, "Trouble deleting %s\n",
+			   origfile ? origfile : "?"));
 		}
 	    }
 
 	    if(can_access(hashfile, ACCESS_EXISTS) == 0){
 		h++;
-		dprint(1, (debugfile, "Trouble deleting %s\n", hashfile));
+		dprint(1, (debugfile, "Trouble deleting %s\n",
+		       hashfile ? hashfile : "?"));
 	    }
 
 	    if(can_access(file, ACCESS_EXISTS) == 0){
 		f++;
-		dprint(1, (debugfile, "Trouble deleting %s\n", file));
+		dprint(1, (debugfile, "Trouble deleting %s\n",
+		       file ? file : "?"));
 	    }
 
 	    if(f || o || h)
@@ -3835,7 +3853,7 @@ ab_compose_internal(bldto, allow_role)
 
     if(allow_role){
 	/* Setup role */
-	if(role_select_screen(ps_global, &role, 1) < 0){
+	if(role_select_screen(ps_global, &role, MC_COMPOSE) < 0){
 	    cmd_cancelled("Composition");
 	    ps_global->next_screen = prev_screen;
 	    ps_global->redrawer = redraw;
@@ -3883,7 +3901,7 @@ ab_export(ps, cur_line, command_line, agg)
     int  command_line;
     int  agg;
 {
-    int		   ret = 0, i, over = 0;
+    int		   ret = 0, i, retflags = GER_NONE;
     int            r, orig_errno, failure = 0;
     struct variable *vars = ps->vars;
     char     filename[MAXPATH+1], full_filename[MAXPATH+1];
@@ -3954,10 +3972,10 @@ ab_export(ps, cur_line, command_line, agg)
 
     ab_export_opts[++r].ch = -1;
 
-    r = get_export_filename(ps, filename, full_filename, sizeof(filename),
+    r = get_export_filename(ps, filename, NULL, full_filename, sizeof(filename),
 			    plur ? "addresses" : "address",
 			    "EXPORT", ab_export_opts,
-			    &over, command_line, GE_IS_EXPORT);
+			    &retflags, command_line, GE_IS_EXPORT);
 
     if(r < 0){
 	switch(r){
@@ -3975,7 +3993,7 @@ ab_export(ps, cur_line, command_line, agg)
     }
 
     dprint(5, (debugfile, "Opening file \"%s\" for export\n",
-	   full_filename));
+	   full_filename ? full_filename : "?"));
 
     if(!(store = so_get(FileStar, full_filename, WRITE_ACCESS))){
 	q_status_message2(SM_ORDER | SM_DING, 3, 4,
@@ -3990,7 +4008,7 @@ ab_export(ps, cur_line, command_line, agg)
     if(vcard)
       gf_set_so_writec(&pc, store);
 
-    start_of_append = ftell((FILE *)so_text(store));
+    start_of_append = so_tell(store);
 
     if(agg){
 	for(i = 0; !failure && i < as.n_addrbk; i++){
@@ -4015,7 +4033,7 @@ ab_export(ps, cur_line, command_line, agg)
 		    if(!(vinfo=prepare_abe_for_vcard(ps, abe, 1)))
 		      failure++;
 		    else{
-			write_single_vcard_entry(ps, pc, 0, NULL, vinfo);
+			write_single_vcard_entry(ps, pc, NULL, vinfo);
 			free_vcard_info(&vinfo);
 		    }
 		}
@@ -4086,7 +4104,7 @@ ab_export(ps, cur_line, command_line, agg)
 	    if(!(vinfo=prepare_abe_for_vcard(ps, abe, 1)))
 	      failure++;
 	    else{
-		write_single_vcard_entry(ps, pc, 0, NULL, vinfo);
+		write_single_vcard_entry(ps, pc, NULL, vinfo);
 		free_vcard_info(&vinfo);
 	    }
 	}
@@ -4163,10 +4181,11 @@ ab_export(ps, cur_line, command_line, agg)
 
     if(failure){
 #ifndef	DOS
-	truncate(full_filename, start_of_append);
+	truncate(full_filename, (off_t)start_of_append);
 #endif
 	dprint(1, (debugfile, "FAILED Export: file \"%s\" : %s\n",
-	       full_filename,  error_description(orig_errno)));
+	       full_filename ? full_filename : "?",
+	       error_description(orig_errno)));
 	q_status_message2(SM_ORDER | SM_DING, 3, 4,
 		  "Error exporting to \"%.200s\" : %.200s",
 		  filename, error_description(orig_errno));
@@ -4177,8 +4196,9 @@ ab_export(ps, cur_line, command_line, agg)
 			  "%.200s %.200s to file \"%.200s\"",
 			  vcard ? (agg ? "Entries" : "Entry")
 			        : (plur ? "Addresses" : "Address"),
-			  over==0 ? "exported"
-				  : over==1 ? "overwritten" : "appended",
+			  retflags & GER_OVER
+			      ? "overwrittten"
+			      : retflags & GER_APPEND ? "appended" : "exported",
 			  filename);
     }
 
@@ -4414,7 +4434,7 @@ ab_forward(ps, cur_line, agg)
 			goto bomb;
 		    }
 		    else{
-			write_single_vcard_entry(ps, pc, 0, &csp, vinfo);
+			write_single_vcard_entry(ps, pc, &csp, vinfo);
 			free_vcard_info(&vinfo);
 		    }
 		    
@@ -4435,7 +4455,7 @@ ab_forward(ps, cur_line, agg)
 		goto bomb;
 	    }
 	    else{
-		write_single_vcard_entry(ps, pc, 0, &csp, vinfo);
+		write_single_vcard_entry(ps, pc, &csp, vinfo);
 		free_vcard_info(&vinfo);
 	    }
 
@@ -4679,10 +4699,9 @@ free_vcard_info(vinfo)
  *      cset_return -- an array of size at least 200+1
  */
 void
-write_single_vcard_entry(ps, pc, cr, cset_return, vinfo)
+write_single_vcard_entry(ps, pc, cset_return, vinfo)
     struct pine   *ps;
     gf_io_t        pc;
-    int            cr;
     char         **cset_return;
     VCARD_INFO_S  *vinfo;
 {
@@ -4691,11 +4710,18 @@ write_single_vcard_entry(ps, pc, cr, cset_return, vinfo)
     char   charset_used[200+1];
     int    multiple_charsets_used = 0;
     int    i, did_fn = 0, did_n = 0;
+    int    cr;
     char   eol[3];
 #define FOLD_BY 75
 
     if(!vinfo)
       return;
+
+#if defined(DOS) || defined(OS2)
+      cr = 1;
+#else
+      cr = 0;
+#endif
 
     if(cr)
       strcpy(eol, "\r\n");
@@ -4963,8 +4989,9 @@ ab_save(ps, abook, cur_line, command_line, agg)
 
     pab = &as.adrbks[as.cur];
 
-    dprint(2, (debugfile, "- ab_save: %s -> %s (agg=%d)-\n", pab->nickname,
-	       pab_dst->nickname, agg));
+    dprint(2, (debugfile, "- ab_save: %s -> %s (agg=%d)-\n",
+	   pab->nickname ? pab->nickname : "?",
+	   pab_dst->nickname ? pab_dst->nickname : "?", agg));
 
     if(agg)
       act_list_size = as.selections;
@@ -5900,7 +5927,8 @@ ab_agg_delete(ps, agg)
 						        : "address book",
 				      error_description(errno));
 		    dprint(1, (debugfile, "Error updating %s: %s\n",
-			   pab->filename, error_description(errno)));
+			   pab->filename ? pab->filename : "?",
+			   error_description(errno)));
 		}
 	    }
 
@@ -6154,7 +6182,9 @@ single_entry_delete(abook, cur_line, warped)
 		    error_description(errno));
 	    pab = &as.adrbks[as.cur];
             dprint(1, (debugfile, "Error deleting entry from %s (%s): %s\n",
-		pab->nickname, pab->filename, error_description(errno)));
+		   pab->nickname ? pab->nickname : "?",
+		   pab->filename ? pab->filename : "?",
+		   error_description(errno)));
         }
 
 	return 0;
@@ -7045,6 +7075,7 @@ static struct tl_table ldap_trans_table[]={
     {"l",				"Locality"},
     {"objectClass",			"Object Class"},
     {"title",				"Title"},
+    {"departmentNumber",		"Department"},
     {"postalAddress",			"Postal Address"},
     {"homePostalAddress",		"Home Address"},
     {"mailStop",			"Mail Stop"},
@@ -7052,6 +7083,8 @@ static struct tl_table ldap_trans_table[]={
     {"homePhone",			"Home Telephone"},
     {"officePhone",			"Office Telephone"},
     {"facsimileTelephoneNumber",	"FAX Telephone"},
+    {"mobile",				"Mobile Telephone"},
+    {"pager",				"Pager"},
     {"roomNumber",			"Room Number"},
     {"uid",				"User ID"},
     {NULL,				NULL}
@@ -7095,9 +7128,10 @@ ldap_translate(a, info_used)
 
 
 char *
-pico_simpleexit(he, redraw_pico)
+pico_simpleexit(he, redraw_pico, allow_flowed)
     struct headerentry *he;
     void (*redraw_pico)();
+    int allow_flowed;
 {
     return(NULL);
 }
@@ -7290,7 +7324,7 @@ url_local_ldap(url)
     LDAPURLDesc     *ldapurl = NULL;
     WP_ERR_S wp_err;
 
-    dprint(2, (debugfile, "url_local_ldap(%s)\n", url));
+    dprint(2, (debugfile, "url_local_ldap(%s)\n", url ? url : "?"));
 
     ld_err = ldap_url_parse(url, &ldapurl);
     if(ld_err || !ldapurl){

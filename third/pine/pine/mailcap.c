@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcap.c,v 1.1.1.3 2004-03-01 21:16:32 ghudson Exp $";
+static char rcsid[] = "$Id: mailcap.c,v 1.1.1.4 2005-01-26 17:55:54 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailcap.c,v 1.1.1.3 2004-03-01 21:16:32 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -167,10 +167,11 @@ int	  mc_comment PROTO((char **));
 int	  mc_token PROTO((char **, char **));
 void	  mc_build_entry PROTO((char **));
 char     *mc_bld_test_cmd PROTO((char *, int, char *, PARAMETER *));
-char     *mc_cmd_bldr PROTO((char *, int, char *, PARAMETER *, char *));
+char     *mc_cmd_bldr PROTO((char *, int, char *, PARAMETER *, char *,
+			     char **));
 int       mc_ctype_match PROTO((int, char *, char *));
 int	  mc_sane_command PROTO((char *));
-MailcapEntry *mc_get_command PROTO((int, char *, PARAMETER *, int));
+MailcapEntry *mc_get_command PROTO((int, char *, PARAMETER *, int, int *));
 void      mc_init PROTO((void));
 int       mc_passes_test PROTO((MailcapEntry *, int, char *, PARAMETER *));
 int	  mt_get_file_ext PROTO((char *, char **));
@@ -263,10 +264,11 @@ mc_init()
 	mc->contenttype		   = "image/*";
 	mc->label		   = "Pine Image Viewer";
 	dprint(5, (debugfile, "mailcap: using image-viewer=%s\n", 
-		   ps_global->VAR_IMAGE_VIEWER));
+		   ps_global->VAR_IMAGE_VIEWER
+		     ? ps_global->VAR_IMAGE_VIEWER : "?"));
     }
 
-    dprint(7, (debugfile, "mailcap: path: %s\n", path));
+    dprint(7, (debugfile, "mailcap: path: %s\n", path ? path : "?"));
     while(path){
 	s = strindex(path, MC_PATH_SEPARATOR);
 	if(s)
@@ -288,15 +290,19 @@ mc_init()
 
 	    dprint(11, (debugfile, "%d: ", i++));
 	    if(mc->label)
-	      dprint(11, (debugfile, "%s\n", mc->label));
+	      dprint(11, (debugfile, "%s\n", mc->label ? mc->label : "?"));
 	    if(mc->contenttype)
-	      dprint(11, (debugfile, "   %s", mc->contenttype));
+	      dprint(11, (debugfile, "   %s",
+		     mc->contenttype ? mc->contenttype : "?"));
 	    if(mc->command)
-	      dprint(11, (debugfile, "   command: %s\n", mc->command));
+	      dprint(11, (debugfile, "   command: %s\n",
+		     mc->command ? mc->command : "?"));
 	    if(mc->testcommand)
-	      dprint(11, (debugfile, "   testcommand: %s", mc->testcommand));
+	      dprint(11, (debugfile, "   testcommand: %s",
+		     mc->testcommand ? mc->testcommand : "?"));
 	    if(mc->printcommand)
-	      dprint(11, (debugfile, "   printcommand: %s", mc->printcommand));
+	      dprint(11, (debugfile, "   printcommand: %s",
+		     mc->printcommand ? mc->printcommand : "?"));
 	    dprint(11, (debugfile, "   needsterminal %d\n", mc->needsterminal));
 	}
     }
@@ -313,23 +319,23 @@ char *file;
 {
     char filebuf[MAXPATH+1], *file_data;
 
-    dprint(5, (debugfile, "mailcap: process_file: %s\n", file));
+    dprint(5, (debugfile, "mailcap: process_file: %s\n", file ? file : "?"));
 
     (void)strncpy(filebuf, file, MAXPATH);
     filebuf[MAXPATH] = '\0';
     file = fnexpand(filebuf, sizeof(filebuf));
-    dprint(7, (debugfile, "mailcap: processing file: %s\n", file));
+    dprint(7, (debugfile, "mailcap: processing file: %s\n", file ? file : "?"));
     switch(is_writable_dir(file)){
       case 0: case 1: /* is a directory */
 	dprint(1, (debugfile, "mailcap: %s is a directory, should be a file\n",
-	    file));
+	    file ? file : "?"));
 	return;
 
       case 2: /* ok */
 	break;
 
       case 3: /* doesn't exist */
-	dprint(5, (debugfile, "mailcap: %s doesn't exist\n", file));
+	dprint(5, (debugfile, "mailcap: %s doesn't exist\n", file ? file : "?"));
 	return;
 
       default:
@@ -353,7 +359,7 @@ char *file;
 	mc_parse_file(file_data);	/* the process mailcap data */
     }
     else
-      dprint(5, (debugfile, "mailcap: %s can't be read\n", file));
+      dprint(5, (debugfile, "mailcap: %s can't be read\n", file ? file : "?"));
 }
 
 
@@ -393,6 +399,11 @@ int
 mc_comment(line)
     char **line;
 {
+    if(**line == '\n'){		/* blank line is a comment, too */
+	(*line)++;
+	return(1);
+    }
+
     if(**line == '#'){
 	while(**line)			/* !EOF */
 	  if(*++(*line) == '\n'){	/* EOL? */
@@ -438,6 +449,19 @@ mc_token(token, line)
 	    *start = '\0';		/* if we have a token, tie it off  */
 
 	  (*line)++;			/* and get ready to parse next one */
+
+	  if(rv == 1){			/* ignore trailing semicolon */
+	      while(**line){
+		  if(**line == '\n')
+		    rv = 0;
+		  
+		  if(isspace((unsigned char) **line))
+		    (*line)++;
+		  else
+		    break;
+	      }
+	  }
+
 	case '\0' :			/* EOF */
 	  return(rv);
 
@@ -512,7 +536,8 @@ mc_build_entry(tokens)
     mc->command     = *tokens++;
 
     dprint(9, (debugfile, "mailcap: content type: %s\n   command: %s\n",
-	       mc->contenttype, mc->command));
+	       mc->contenttype ? mc->contenttype : "?",
+	       mc->command ? mc->command : "?"));
 
     /* grok options  */
     for( ; *tokens; tokens++){
@@ -548,41 +573,47 @@ mc_build_entry(tokens)
 	else if(arg && !strucmp(*tokens, "test")){
 	    mc->testcommand = arg;
 	    dprint(9, (debugfile, "mailcap: testcommand=%s\n",
-		       mc->testcommand));
+		       mc->testcommand ? mc->testcommand : "?"));
 	}
 	else if(arg && !strucmp(*tokens, "description")){
 	    mc->label = arg;
-	    dprint(9, (debugfile, "mailcap: label=%s\n", mc->label));
+	    dprint(9, (debugfile, "mailcap: label=%s\n",
+		   mc->label ? mc->label : "?"));
 	}
 	else if(arg && !strucmp(*tokens, "print")){
 	    mc->printcommand = arg;
 	    dprint(9, (debugfile, "mailcap: printcommand=%s\n",
-		       mc->printcommand));
+		       mc->printcommand ? mc->printcommand : "?"));
 	}
 	else if(arg && !strucmp(*tokens, "compose")){
 	    /* not used */
-	    dprint(9, (debugfile, "mailcap: not using compose=%s\n", arg));
+	    dprint(9, (debugfile, "mailcap: not using compose=%s\n",
+		   arg ? arg : "?"));
 	}
 	else if(arg && !strucmp(arg, "composetyped")){
 	    /* not used */
-	    dprint(9, (debugfile, "mailcap: not using composetyped=%s\n",arg));
+	    dprint(9, (debugfile, "mailcap: not using composetyped=%s\n",
+		   arg ? arg : "?"));
 	}
 	else if(arg && !strucmp(arg, "textualnewlines")){
 	    /* not used */
 	    dprint(9, (debugfile,
-		       "mailcap: not using texttualnewlines=%s\n", arg));
+		       "mailcap: not using texttualnewlines=%s\n",
+		       arg ? arg : "?"));
 	}
 	else if(arg && !strucmp(arg, "edit")){
 	    /* not used */
-	    dprint(9, (debugfile, "mailcap: not using edit=%s\n", arg));
+	    dprint(9, (debugfile, "mailcap: not using edit=%s\n",
+		   arg ? arg : "?"));
 	}
 	else if(arg && !strucmp(arg, "x11-bitmap")){
 	    /* not used */
-	    dprint(9, (debugfile, "mailcap: not using x11-bitmap=%s\n", arg));
+	    dprint(9, (debugfile, "mailcap: not using x11-bitmap=%s\n",
+		   arg ? arg : "?"));
 	}
 	else
 	  dprint(9, (debugfile, "mailcap: ignoring unknown flag: %s\n",
-		     arg));
+		     arg ? arg : "?"));
     }
 }
 
@@ -618,17 +649,18 @@ mc_sane_command(command)
  * mailcap entry, or NULL if none.  Command string still contains % stuff.
  */
 MailcapEntry *
-mc_get_command(type, subtype, params, check_extension)
+mc_get_command(type, subtype, params, check_extension, sp_handlingp)
     int        type;
     char      *subtype;
     PARAMETER *params;
-    int        check_extension;
+    int        check_extension, *sp_handlingp;
 {
     MailcapEntry *mc;
     char	  tmp_subtype[256], tmp_ext[16], *ext = NULL;
 
     dprint(5, (debugfile, "- mc_get_command(%s/%s) -\n",
-	       body_type_names(type), subtype));
+	       body_type_names(type),
+	       subtype ? subtype : "?"));
 
     if(type == TYPETEXT
        && (!subtype || !strucmp(subtype, "plain"))
@@ -646,9 +678,10 @@ mc_get_command(type, subtype, params, check_extension)
 	 * binary application data. Look for a file name extension
 	 * that we might use to hook a helper app to.
 	 *
-	 * NOTE: Current coding precludes an "app/o-s" mailcap entry
-	 *       since this takes precedence.  It's pretty unlikely,
-	 *       though, and allowing for it would mean two scans.
+	 * NOTE: This used to preclude an "app/o-s" mailcap entry
+	 *       since this took precedence.  Now that there are
+	 *       typically two scans through the check_extension
+	 *       mechanism, the mailcap entry now takes precedence.
 	 */
 	if(namep = rfc2231_get_param(params, "name", NULL, NULL)){
 	    if(namep[0] == '=' && namep[1] == '?'){
@@ -690,12 +723,13 @@ mc_get_command(type, subtype, params, check_extension)
 	 && mc_passes_test(mc, type, subtype, params)){
 	  dprint(9, (debugfile, 
 		     "mc_get_command: type=%s/%s, command=%s\n", 
-		     body_type_names(type), subtype, mc->command));
+		     body_type_names(type),
+		     subtype ? subtype : "?",
+		     mc->command ? mc->command : "?"));
 	  return(mc);
       }
 
-#ifdef	_WINDOWS
-    {
+    if(mime_os_specific_access()){
 	static MailcapEntry  fake_mc;
 	static char	     fake_cmd[1024];
 	char		     tmp_mime_type[256];
@@ -704,10 +738,10 @@ mc_get_command(type, subtype, params, check_extension)
 	fake_mc.command = fake_cmd;
 
 	sprintf(tmp_mime_type, "%.127s/%.127s", body_types[type], subtype);
-	if(mswin_reg_viewer(tmp_mime_type, ext, fake_cmd, 1024, check_extension))
+	if(mime_get_os_mimetype_command(tmp_mime_type, ext, fake_cmd,
+					1024, check_extension, sp_handlingp))
 	  return(&fake_mc);
     }
-#endif
 
     return(NULL);
 }
@@ -727,7 +761,9 @@ char *pat;
     int   len = strlen(type_name);
 
     dprint(5, (debugfile, "mc_ctype_match: %s == %s / %s ?\n",
-	       pat, type_name, subtype));
+	       pat ? pat : "?",
+	       type_name ? type_name : "?",
+	       subtype ? subtype : "?"));
 
     return(!struncmp(type_name, pat, len)
 	   && ((pat[len] == '/'
@@ -770,7 +806,7 @@ PARAMETER    *params;
 
     rv = exec_mailcap_test_cmd(cmd);
     dprint(7, (debugfile, "mc_passes_test: \"%s\" %s (rv=%d)\n",
-       cmd, rv ? "Failed" : "Passed", rv)) ;
+       cmd ? cmd : "?", rv ? "Failed" : "Passed", rv)) ;
 
     fs_give((void **)&cmd);
 
@@ -786,11 +822,12 @@ PARAMETER *params;
 {
     dprint(5, (debugfile, "- mailcap_can_display -\n"));
 
-    return(mc_get_command(type, subtype, params, check_extension) != NULL);
+    return(mc_get_command(type, subtype, params,
+			  check_extension, NULL) != NULL);
 }
 
 
-char *
+MCAP_CMD_S *
 mailcap_build_command(type, subtype, params, tmp_file, needsterm, chk_extension)
     int	       type;
     char      *subtype, *tmp_file;
@@ -799,28 +836,37 @@ mailcap_build_command(type, subtype, params, tmp_file, needsterm, chk_extension)
     int        chk_extension;
 {
     MailcapEntry *mc;
-    char         *command;
+    char         *command, *err = NULL;
+    MCAP_CMD_S   *mc_cmd = NULL;
+    int           sp_handling = 0;
 
     dprint(5, (debugfile, "- mailcap_build_command -\n"));
 
-    mc = mc_get_command(type, subtype, params, chk_extension);
+    mc = mc_get_command(type, subtype, params, chk_extension, &sp_handling);
     if(!mc){
 	q_status_message(SM_ORDER, 3, 4, "Error constructing viewer command");
 	dprint(1, (debugfile,
 		   "mailcap_build_command: no command string for %s/%s\n",
-		   body_type_names(type), subtype));
-	return((char *)NULL);
+		   body_type_names(type), subtype ? subtype : "?"));
+	return((MCAP_CMD_S *)NULL);
     }
 
     if(needsterm)
       *needsterm = mc->needsterminal;
 
-    if(!(command = mc_cmd_bldr(mc->command, type, subtype, params, tmp_file)))
-      command = cpystr("");
+    if(sp_handling)
+      command = cpystr(mc->command);
+    else if(!(command = mc_cmd_bldr(mc->command, type, subtype, params, tmp_file, &err)) && err && *err)
+      q_status_message(SM_ORDER, 5, 5, err);
 
-    dprint(5, (debugfile, "built command: %s\n", command));
+    dprint(5, (debugfile, "built command: %s\n", command ? command : "?"));
 
-    return(command);
+    if(command){
+	mc_cmd = (MCAP_CMD_S *)fs_get(sizeof(MCAP_CMD_S));
+	mc_cmd->command = command;
+	mc_cmd->special_handling = sp_handling;
+    }
+    return(mc_cmd);
 }
 
 
@@ -838,7 +884,7 @@ mc_bld_test_cmd(controlstring, type, subtype, params)
     char      *subtype;
     PARAMETER *params;
 {
-    return(mc_cmd_bldr(controlstring, type, subtype, params, NULL));
+    return(mc_cmd_bldr(controlstring, type, subtype, params, NULL, NULL));
 }
 
 
@@ -852,12 +898,13 @@ mc_bld_test_cmd(controlstring, type, subtype, params)
  *    The return value is an alloc'd copy of the command to be executed.
  */
 char *
-mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file)
+mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file, err)
     char *controlstring;
     int   type;
     char *subtype;
     PARAMETER *parameter;
     char *tmp_file;
+    char **err;
 {
     char        *from, *to, *s, *parm;
     int	         prefixed = 0, used_tmp_file = 0;
@@ -895,8 +942,21 @@ mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file)
 	      case '{':			/* insert requested MIME param */
 		if(F_OFF(F_DO_MAILCAP_PARAM_SUBST, ps_global)){
 		    dprint(2,
-			   (debugfile, "mc_cmd_bldr: param subs %s\n", from));
-		   return(NULL);
+			   (debugfile, "mc_cmd_bldr: param subs %s\n",
+			   from ? from : "?"));
+		    if(err){
+			if(s = strindex(from, '}'))
+			  *++s = '\0';
+
+			sprintf(tmp_20k_buf,
+			    "Mailcap: see hidden feature %.200s (%%%.200s)",
+			    feature_list_name(F_DO_MAILCAP_PARAM_SUBST), from);
+			*err = tmp_20k_buf;
+			if(s)
+			  *s = '}';
+		    }
+
+		    return(NULL);
 		}
 
 		s = strindex(from, '}');
@@ -913,7 +973,7 @@ mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file)
 
 		dprint(9, (debugfile,
 			   "mc_cmd_bldr: parameter %s = %s\n", 
-			   from, parm ? parm : "(not found)"));
+			   from ? from : "?", parm ? parm : "(not found)"));
 
 		/*
 		 * Quote parameter values for /bin/sh.
@@ -985,7 +1045,6 @@ mc_cmd_bldr(controlstring, type, subtype, parameter, tmp_file)
 
     return(cpystr(tmp_20k_buf));
 }
-
 
 /*
  *
@@ -1080,13 +1139,15 @@ mt_get_file_ext(filename, extension)
     char *filename;
     char **extension;
 {
-    dprint(5, (debugfile, "mt_get_file_ext : filename=\"%s\", ", filename));
+    dprint(5, (debugfile, "mt_get_file_ext : filename=\"%s\", ",
+	   filename ? filename : "?"));
 
     for(*extension = NULL; filename && *filename; filename++)
       if(*filename == '.')
 	*extension = filename + 1;
 
-    dprint(5, (debugfile, "extension=\"%s\"\n", *extension));
+    dprint(5, (debugfile, "extension=\"%s\"\n",
+	   (extension && *extension) ? *extension : "?"));
 
     return((int) *extension);
 }
@@ -1112,7 +1173,7 @@ mt_srch_mime_type(mt_operator, mt_map)
 
     path = pathcopy;			/* overloaded "path" */
 
-    dprint(7, (debugfile, "mime_types: path: %s\n", path));
+    dprint(7, (debugfile, "mime_types: path: %s\n", path ? path : "?"));
     while(path){
 	if(s = strindex(path, MT_PATH_SEPARATOR))
 	  *s++ = '\0';
@@ -1126,12 +1187,11 @@ mt_srch_mime_type(mt_operator, mt_map)
     if(pathcopy)
       fs_give((void **)&pathcopy);
 
-#ifdef	_WINDOWS
-    if(!rv){
+    if(!rv && mime_os_specific_access()){
 	if(mt_operator == mt_srch_by_ext){
 	    char buf[256];
 
-	    if(mswin_reg_mime_type(mt_map->from.ext, buf)){
+	    if(mime_get_os_mimetype_from_ext(mt_map->from.ext, buf, 256)){
 		if(s = strindex(buf, '/')){
 		    *s++ = '\0';
 		    mt_map->to.mime.type = mt_translate_type(buf);
@@ -1141,8 +1201,9 @@ mt_srch_mime_type(mt_operator, mt_map)
 	    }
 	}
 	else if(mt_operator == mt_srch_by_type){
-	    if(mswin_reg_mime_ext(mt_map->from.mime_type,
-				  mt_map->to.ext)){
+	    if(mime_get_os_ext_from_mimetype(mt_map->from.mime_type,
+				  mt_map->to.ext, 32)){
+		/* the 32 comes from var ext[] in display_attachment() */
 		if(*(s = mt_map->to.ext) == '.')
 		  while(*s = *(s+1))
 		    s++;
@@ -1153,7 +1214,6 @@ mt_srch_mime_type(mt_operator, mt_map)
 	else
 	  panic("Unhandled mime type search");
     }
-#endif
 
 
     return(rv);
@@ -1180,7 +1240,7 @@ mt_browse_types_file(mt_operator, mt_map, filename)
     }
     else
       dprint(1, (debugfile, "mt_browse: FAILED open(%s) : %s.\n",
-		 filename, error_description(errno)));
+		 filename ? filename : "?", error_description(errno)));
 
     return(rv);
 }
@@ -1227,7 +1287,7 @@ mt_srch_by_ext(e2b, file)
 	if(!typespec)
 	  continue;
 
-	dprint(5, (debugfile, "typespec=\"%s\"\n", typespec));
+	dprint(5, (debugfile, "typespec=\"%s\"\n", typespec ? typespec : "?"));
 	while((try_extension = strtok(NULL, " \t")) != NULL){
 	    /* compare the extensions, and assign the type if a match
 	     * is found.
@@ -1292,7 +1352,7 @@ mt_srch_by_type(t2e, file)
 	 */
 	dprint(5, (debugfile, "traverse: buffer=%s.\n", buffer));
 	typespec = strtok(buffer," \t");	/* extract type,subtype  */
-	dprint(5, (debugfile, "typespec=%s.\n", typespec));
+	dprint(5, (debugfile, "typespec=%s.\n", typespec ? typespec : "?"));
 	if (strucmp (typespec, t2e->from.mime_type) == 0) {
 	    while((try_extension = strtok(NULL, " \t")) != NULL) {
 		if (strlen (try_extension) <= MT_MAX_FILE_EXTENSION) {

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: random.c,v 1.1.1.2 2003-02-12 08:01:59 ghudson Exp $";
+static char rcsid[] = "$Id: random.c,v 1.1.1.3 2005-01-26 17:54:33 ghudson Exp $";
 #endif
 /*
  * Program:	Random routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: random.c,v 1.1.1.2 2003-02-12 08:01:59 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1999 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -169,6 +169,24 @@ newline(f, n)
     /* if we are in C mode and this is a default <NL> */
     /* pico's never in C mode */
 
+    if(Pmaster && Pmaster->allow_flowed_text && curwp->w_doto
+       && isspace(lgetc(curwp->w_dotp, curwp->w_doto - 1).c)
+       && !(curwp->w_doto == 3
+	    && lgetc(curwp->w_dotp, 0).c == '-'
+	    && lgetc(curwp->w_dotp, 1).c == '-'
+	    && lgetc(curwp->w_dotp, 2).c == ' ')){
+	/*
+	 * flowed mode, make the newline a hard one by
+	 * stripping trailing space.
+	 */
+	int i, dellen;
+	for(i = curwp->w_doto - 1;
+	    i && isspace(lgetc(curwp->w_dotp, i - 1).c);
+	    i--);
+	dellen = curwp->w_doto - i;
+	curwp->w_doto = i;
+	ldelete(dellen, NULL);
+    }
     /* insert some lines */
     while (n--) {
 	if ((s=lnewline()) != TRUE)
@@ -338,9 +356,16 @@ int f, n;
 	REGION region;
 	LINE *dotp;
 
-	backchar(FALSE, 1);
-	dotp = curwp->w_dotp;
-	gotobop(FALSE, 1);		/* then go to the top of the para */
+	if(lastflag & CFFLBF){
+	    gotoeob(FALSE, 1);
+	    dotp = curwp->w_dotp;
+	    gotobob(FALSE, 1);
+	}
+	else{
+	    backchar(FALSE, 1);
+	    dotp = curwp->w_dotp;
+	    gotobop(FALSE, 1);		/* then go to the top of the para */
+	}
 
 	curwp->w_doto = 0;
 	getregion(&region, dotp, llength(dotp));
@@ -350,7 +375,9 @@ int f, n;
 
     while (n--) {
 	i = 0;
-	while ((c = ((lastflag&CFFILL) ? fremove(i) : kremove(i))) >= 0) {
+	while ((c = ((lastflag&CFFILL)
+		     ? ((lastflag & CFFLBF) ? kremove(i) : fremove(i))
+		     : kremove(i))) >= 0) {
 	    if (c == '\n') {
 		if (lnewline() == FALSE)
 		  return (FALSE);

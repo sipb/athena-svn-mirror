@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: folder.c,v 1.1.1.4 2004-03-01 21:15:43 ghudson Exp $";
+static char rcsid[] = "$Id: folder.c,v 1.1.1.5 2005-01-26 17:56:23 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: folder.c,v 1.1.1.4 2004-03-01 21:15:43 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -232,6 +232,7 @@ int	   folder_processor PROTO((int, MSGNO_S *, SCROLL_S *));
 int	   folder_lister_choice PROTO((SCROLL_S *));
 int        folder_lister_clickclick PROTO((SCROLL_S *));
 int	   folder_lister_finish PROTO((SCROLL_S *, CONTEXT_S *, int));
+int	   folder_lister_addmanually PROTO((SCROLL_S *));
 void	   folder_lister_km_manager PROTO((SCROLL_S *, int));
 void	   folder_lister_km_sel_manager PROTO((SCROLL_S *, int));
 void	   folder_lister_km_sub_manager PROTO((SCROLL_S *, int));
@@ -239,11 +240,13 @@ int	   folder_lister_select PROTO((FSTATE_S *, CONTEXT_S *, int));
 int	   folder_lister_parent PROTO((FSTATE_S *, CONTEXT_S *, int, int));
 char	  *folder_lister_desc PROTO((CONTEXT_S *, FDIR_S *));
 char	  *folder_lister_fullname PROTO((FSTATE_S *, char *));
+void       folder_export PROTO((SCROLL_S *));
+int        folder_import PROTO((SCROLL_S *, char *, size_t));
 void	   folder_sublist_context PROTO((char *, CONTEXT_S *, CONTEXT_S *,
 					 FDIR_S **, int));
 int	   folder_selector PROTO((struct pine *, FSTATE_S *,
 				  char *, CONTEXT_S **));
-char	  *exit_collection_add PROTO((struct headerentry *, void (*)()));
+char	  *exit_collection_add PROTO((struct headerentry *, void (*)(), int));
 char	  *cancel_collection_add PROTO((char *, void (*)()));
 int	   build_namespace PROTO((char *, char **, char **,
 				  BUILDER_ARG *, int *));
@@ -440,7 +443,7 @@ INST_KEY_MENU(c_fcc_km, context_fcc_keys);
 static struct key folder_keys[] =
        {HELP_MENU,
   	OTHER_MENU,
-	{"<", NULL, {MC_EXIT,3,{0,'<',','}}, KS_NONE},
+	{"<", NULL, {MC_EXIT,3,{0, '<',','}}, KS_NONE},
         {">", NULL, {MC_CHOICE,2,{'>','.'}}, KS_NONE},
 	PREVF_MENU,
 	NEXTF_MENU,
@@ -472,8 +475,8 @@ static struct key folder_keys[] =
 	NULL_MENU,
 	{"$", "Shuffle", {MC_SHUFFLE,1,{'$'}},KS_NONE},
 	RCOMPOSE_MENU,
-	NULL_MENU,
-	NULL_MENU,
+	EXPORT_MENU,
+	{"U", "Import", {MC_IMPORT,1,{'u'}},KS_NONE},
 	NULL_MENU,
 	NULL_MENU};
 INST_KEY_MENU(folder_km, folder_keys);
@@ -486,6 +489,8 @@ INST_KEY_MENU(folder_km, folder_keys);
 #define	KM_SELCUR_KEY	23
 #define	KM_RECENT_KEY	28
 #define	KM_SHUFFLE_KEY	30
+#define	KM_EXPORT_KEY	32
+#define	KM_IMPORT_KEY	33
 
 
 static struct key folder_sel_keys[] =
@@ -502,6 +507,22 @@ static struct key folder_sel_keys[] =
 	NULL_MENU,
 	WHEREIS_MENU};
 INST_KEY_MENU(folder_sel_km, folder_sel_keys);
+
+/* add the AddNew command to folder_sel_km */
+static struct key folder_sela_keys[] =
+       {HELP_MENU,
+	{"E", "ExitSelect", {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+	NULL_MENU,
+	{NULL, NULL, {MC_CHOICE,0}, KS_NONE},
+	PREVF_MENU,
+	NEXTF_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"S", "Select", {MC_OPENFLDR,1,{'s'}}, KS_NONE},
+	NULL_MENU,
+	{"A", "AddNew", {MC_ADD,1,{'a'}}, KS_NONE},
+	WHEREIS_MENU};
+INST_KEY_MENU(folder_sela_km, folder_sela_keys);
 #define	FC_EXIT_KEY	1
 #define	FC_COL_KEY	2
 #define	FC_SEL_KEY	3
@@ -632,7 +653,7 @@ folder_screen(ps)
 	    if(do_broach_folder((char *) folders->name, 
 				fs.context, fs.cache_streamp 
 				&& *fs.cache_streamp ? fs.cache_streamp
-				: NULL) == 1){
+				: NULL, 0L) == 1){
 		reset_context_folders(ps->context_list);
 		ps->next_screen = mail_index_screen;
 	    }
@@ -789,7 +810,7 @@ folders_for_save(ps, cntxtp, folder, sublist)
     fs.f.title.style = MessageNumber;
     fs.f.help.text   = h_folder_save;
     fs.f.help.title  = "HELP FOR SAVING MESSAGES TO FOLDERS";
-    fs.km	     = &folder_sel_km;
+    fs.km	     = &folder_sela_km;
 
     /* If we were provided a string,
      * dummy up a context for a substring match
@@ -1013,7 +1034,7 @@ folders_for_fcc(errmsg)
     fs.f.title.style = FolderName;
     fs.f.help.text   = h_folder_fcc;
     fs.f.help.title  = "HELP FOR SELECTING THE FCC";
-    fs.km	     = &folder_sel_km;
+    fs.km	     = &folder_sela_km;
 
     /* start in the default save context */
     fs.context = default_save_context(ps_global->context_list);
@@ -1024,7 +1045,7 @@ folders_for_fcc(errmsg)
 
 	    /* replace nickname with full name */
 	    if(!(name = folder_is_nick((char *) folders->name,
-				       FOLDERS(fs.context))))
+				       FOLDERS(fs.context), 0)))
 	      name = (char *) folders->name;
 
 	    if(context_isambig(name) && !((fs.context->use) & CNTXT_SAVEDFLT)){
@@ -1086,7 +1107,7 @@ folders_for_roles(flags)
     fs.f.valid	     = fl_val_gen;
     fs.f.title.bar   = "SELECT FOLDER";
     fs.f.title.style = FolderName;
-    fs.km	     = &folder_sel_km;
+    fs.km	     = &folder_sela_km;
     if(flags & FOR_PATTERN){
 	fs.f.help.text   = h_folder_pattern_roles;
 	fs.f.help.title  = "HELP FOR SELECTING CURRENT FOLDER";
@@ -1106,14 +1127,14 @@ folders_for_roles(flags)
 	    /* replace nickname with full name */
 	    if(!(flags & FOR_PATTERN))
 	      name = folder_is_nick((char *) folders->name,
-				    FOLDERS(fs.context));
+				    FOLDERS(fs.context), 0);
 
 	    if(!name)
 	      name = (char *) folders->name;
 
 	    if(context_isambig(name) &&
 	       !(flags & FOR_PATTERN &&
-	         folder_is_nick(name, FOLDERS(fs.context)))){
+	         folder_is_nick(name, FOLDERS(fs.context), 0))){
 		char path_in_context[MAILTMPLEN];
 
 		context_apply(path_in_context, fs.context, name,
@@ -1400,11 +1421,12 @@ context_edit_screen(ps, func, def_nick, def_serv, def_path, def_view)
  *	 reason why the user declined.
  */      
 char *
-exit_collection_add(he, redraw_pico)
+exit_collection_add(he, redraw_pico, allow_flowed)
     struct headerentry *he;
     void (*redraw_pico)();
+    int allow_flowed;
 {
-    char     prompt[256], tmp[MAILTMPLEN], *server, *path,
+    char     prompt[256], tmp[MAILTMPLEN], tmpnodel[MAILTMPLEN], *server, *path,
 	     delim = '\0', *rstr = NULL, *p;
     int	     exists = 0, i;
     void   (*redraw)() = ps_global->redrawer;
@@ -1449,8 +1471,16 @@ exit_collection_add(he, redraw_pico)
 	 * second's to make sure the server (and any requested service)
 	 * name we were given exists.  It should be handled by the folder
 	 * existance test futher below, but it doesn't work with news...
+	 *
+	 * Update. Now we are stripping the delimiter in the tmpnodel version
+	 * so that we can pass that to folder_exists. Cyrus does not answer
+	 * that the folder exists if we leave the trailing delimiter.
+	 * Hubert 2004-12-17
 	 */
 	strncat(tmp, path, sizeof(tmp)-1-strlen(tmp));
+	tmp[sizeof(tmp)-1] = '\0';
+	strncpy(tmpnodel, tmp, sizeof(tmpnodel)-1);
+	tmpnodel[sizeof(tmpnodel)-1] = '\0';
 
 	if(he[AC_PATH].bldr_private != (void *) 0)
 	  fs_give(&he[AC_PATH].bldr_private);
@@ -1458,8 +1488,10 @@ exit_collection_add(he, redraw_pico)
 	ps_global->mm_log_error = 0;
 	if(delim = folder_delimiter(tmp)){
 	    if(*path){
-		if(tmp[(i = strlen(tmp)) - 1] != delim){
-		    tmp[i]	 = delim;
+		if(tmp[(i = strlen(tmp)) - 1] == delim)
+		  tmpnodel[i-1] = '\0';
+		else{
+		    tmp[i]   = delim;
 		    tmp[i+1] = '\0';
 		    he[AC_PATH].bldr_private = (void *) cpystr(&tmp[i]);
 		}
@@ -1481,10 +1513,10 @@ exit_collection_add(he, redraw_pico)
 	   || ((*(p = tmp) == '#'
 		|| (*tmp == '{' && (p = strchr(tmp, '}')) && *++p))
 	       && !struncmp(p, "#news.", 6))
-	    || (*tmp == '{' && (p = strchr(tmp, '}')) && !*++p)){
+	   || (*tmp == '{' && (p = strchr(tmp, '}')) && !*++p)){
 	    exists = 1;
 	}
-	else if((i = folder_exists(NULL, tmp)) & FEX_ERROR){
+	else if((i = folder_exists(NULL, tmpnodel)) & FEX_ERROR){
 	    if(!(rstr = ps_global->last_error))
 	      rstr = "Problem testing for directory existance";
 	}
@@ -1595,7 +1627,9 @@ build_namespace(server, server_too, error, barg, mangled)
 
     we_cancel = busy_alarm(1, "Fetching default directory", NULL, 0);
 
-    if(stream = pine_mail_open(NULL, name, OP_HALFOPEN | OP_SILENT)){
+    if(stream = pine_mail_open(NULL, name,
+			   OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE,
+			       NULL)){
 	if((namespace = mail_parameters(stream, GET_NAMESPACE, NULL))
 	   && *namespace && (*namespace)[0]
 	   && (*namespace)[0]->name && (*namespace)[0]->name[0]){
@@ -1739,7 +1773,7 @@ folder_lister(ps, fs)
 #ifdef	_WINDOWS
 		sargs.mouse.popup = folder_list_select_popup;
 #endif
-		if(fs->km == &folder_sel_km)
+		if(fs->km == &folder_sel_km || fs->km == &folder_sela_km)
 		  sargs.keys.each_cmd = folder_lister_km_sel_manager;
 		else if(fs->km == &folder_sub_km)
 		  sargs.keys.each_cmd = folder_lister_km_sub_manager;
@@ -1758,7 +1792,7 @@ folder_lister(ps, fs)
 
 		    fp = folder_entry(sargs.text.handles->h.f.index,
 				    FOLDERS(sargs.text.handles->h.f.context));
-		    if(strlen(fp->name) < MAXFOLDER -1)
+		    if(fp && strlen(fp->name) < MAXFOLDER -1)
 		      strcpy(fs->first_folder, fp->name);
 
 		    fs->context = sargs.text.handles->h.f.context;
@@ -2277,6 +2311,38 @@ folder_processor(cmd, msgmap, sparms)
 	break;
 
 
+	/*--------- Export the selected folder -----------*/
+      case MC_EXPORT :
+	folder_export(sparms);
+	break;
+
+
+	/*--------- Export the selected folder -----------*/
+      case MC_IMPORT :
+        {
+	    CONTEXT_S *cntxt = (sparms->text.handles)
+				 ? sparms->text.handles->h.f.context
+				 : FPROC(sparms)->fs->context;
+	    char       new_file[2*MAXFOLDER+10];
+	    int	       r;
+
+	    new_file[0] = '\0';
+
+	    r = folder_import(sparms, new_file, sizeof(new_file));
+
+	    if(r && (cntxt->use & CNTXT_INCMNG || context_isambig(new_file))){
+		rv = 1;			/* rebuild display! */
+		FPROC(sparms)->fs->context = cntxt;
+		if(strlen(new_file) < MAXFOLDER - 1)
+		  strcpy(FPROC(sparms)->fs->first_folder, new_file);
+	    }
+	    else
+	      ps_global->mangled_footer++;
+	}
+
+	break;
+
+
 	/*--------- Return to the Collections Screen -----------*/
       case MC_COLLECTIONS :
 	FPROC(sparms)->done = rv = 1;
@@ -2306,7 +2372,7 @@ folder_processor(cmd, msgmap, sparms)
 
             /*--------- Message Index -----------*/
       case MC_INDEX :
-	if(THREADING() && ps_global->viewing_a_thread)
+	if(THREADING() && sp_viewing_a_thread(ps_global->mail_stream))
 	  unview_thread(ps_global, ps_global->mail_stream, ps_global->msgmap);
 
 	ps_global->next_screen = mail_index_screen;
@@ -2342,7 +2408,13 @@ folder_processor(cmd, msgmap, sparms)
 	      ps_global->mangled_footer++;
 	}
 
-      break;
+        break;
+
+
+            /*------ Type in new folder name, e.g., for save ----*/
+      case MC_ADD :
+	rv = folder_lister_addmanually(sparms);
+        break;
 
 
             /*--------------- Rename folder ----------------*/
@@ -2452,7 +2524,7 @@ folder_processor(cmd, msgmap, sparms)
 			   : FPROC(sparms)->fs->context;
 	  char *new_fold = broach_folder(-FOOTER_ROWS(ps_global), 0, &c);
 
-	  if(new_fold && do_broach_folder(new_fold, c, NULL) > 0){
+	  if(new_fold && do_broach_folder(new_fold, c, NULL, 0L) > 0){
 	      ps_global->next_screen = mail_index_screen;
 	      FPROC(sparms)->done = rv = 1;
 	  }
@@ -2624,51 +2696,45 @@ folder_processor(cmd, msgmap, sparms)
 			      folder->name, MAXPATH+1);
 
 		/* do we already have it selected? */
-		if((strm = same_stream_and_mailbox(mailbox_name,
-						   ps_global->mail_stream))
-		   ||
-		   (strm = same_stream_and_mailbox(mailbox_name,
-						   ps_global->inbox_stream))){
+		if((strm = sp_stream_get(mailbox_name, SP_MATCH | SP_RO_OK))){
 		    MSGNO_S *msgmap;
 		    long     excluded;
 
-		    /*
-		     * Unfortunately, we have to worry about excluded
-		     * messages now. The user doesn't want to have
-		     * excluded messages count in the totals, especially
-		     * recent excluded messages.
-		     */
+		    gotit++;
+		    if(strm == ps_global->mail_stream){
+			/*
+			 * Unfortunately, we have to worry about excluded
+			 * messages now. The user doesn't want to have
+			 * excluded messages count in the totals, especially
+			 * recent excluded messages.
+			 */
 
-		    msgmap = (strm == ps_global->mail_stream)
-				? ps_global->msgmap
-				: ps_global->inbox_msgmap;
+			msgmap = sp_msgmap(strm);
 
-		    if((excluded = any_lflagged(msgmap, MN_EXLD))){
+			if((excluded = any_lflagged(msgmap, MN_EXLD))){
 
-			tot = strm->nmsgs - excluded;
-			if(tot)
-			  rec = count_flagged(strm, F_RECENT);
-			else
-			  rec = 0;
+			    tot = strm->nmsgs - excluded;
+			    if(tot)
+			      rec = count_flagged(strm, F_RECENT);
+			    else
+			      rec = 0;
+			}
+			else{
+			    tot = strm->nmsgs;
+			    rec = strm->recent;
+			}
 		    }
 		    else{
 			tot = strm->nmsgs;
-			rec = strm->recent;
+			rec = sp_recent_since_visited(strm);
 		    }
-
-		    gotit++;
 		}
 		/*
 		 * No, but how about another stream to same server which
 		 * could be used for a STATUS command?
 		 */
-		else if(((strm = same_stream(mailbox_name,
-					     ps_global->mail_stream))
-			 && modern_imap_stream(strm))
-			||
-		        ((strm = same_stream(mailbox_name,
-					     ps_global->inbox_stream))
-			 && modern_imap_stream(strm))){
+		else if((strm = sp_stream_get(mailbox_name, SP_SAME))
+			&& modern_imap_stream(strm)){
 
 		    extern MAILSTATUS mm_status_result;
 
@@ -2683,12 +2749,11 @@ folder_processor(cmd, msgmap, sparms)
 		    }
 		}
 
-		/*
-		 * Let's just Select it. Maybe later we can cache the
-		 * open stream somehow.
-		 */
+		/* Let's just Select it. */
 		if(!gotit){
-		    strm = pine_mail_open(NULL, mailbox_name, OP_READONLY);
+		    strm = pine_mail_open(NULL, mailbox_name,
+					  OP_READONLY | SP_USEPOOL | SP_TEMPUSE,
+					  NULL);
 		    if(strm){
 			tot = strm->nmsgs;
 			rec = strm->recent;
@@ -2832,6 +2897,74 @@ folder_lister_finish(sparms, cntxt, index)
 }
 
 
+/*
+ * This is so that when you Save and use ^T to go to the folder list, and
+ * you're in a directory with no folders, you have a way to add a new
+ * folder there. The add actually gets done by the caller. This is just a
+ * way to let the user type in the name.
+ */
+int
+folder_lister_addmanually(sparms)
+    SCROLL_S  *sparms;
+{
+    int        rc, flags = OE_APPEND_CURRENT, cnt = 0, rv = 0;
+    char       addname[MAXFOLDER+1];
+    HelpType   help;
+    CONTEXT_S *cntxt = (sparms->text.handles)
+			 ? sparms->text.handles->h.f.context
+			 : FPROC(sparms)->fs->context;
+
+    /*
+     * Get the foldername from the user.
+     */
+    addname[0] = '\0';
+    help = NO_HELP;
+    while(1){
+	rc = optionally_enter(addname, -FOOTER_ROWS(ps_global), 0,
+			      sizeof(addname), "Name of new folder : ",
+			      NULL, help, &flags);
+	removing_leading_and_trailing_white_space(addname);
+
+	if(rc == 3)
+	  help = (help == NO_HELP) ? h_save_addman : NO_HELP;
+	else if(rc == 1)
+	  return(rv);
+	else if(rc == 0){
+	    if(F_OFF(F_ENABLE_DOT_FOLDERS,ps_global) && *addname == '.'){
+		if(cnt++ <= 0)
+                  q_status_message(SM_ORDER,3,3,
+		    "Folder name can't begin with dot");
+		else
+		  q_status_message1(SM_ORDER,3,3,
+		   "Config feature \"%.200s\" enables names beginning with dot",
+		   feature_list_name(F_ENABLE_DOT_FOLDERS));
+
+                display_message(NO_OP_COMMAND);
+                continue;
+	    }
+	    else if(!strucmp(addname, ps_global->inbox_name)){
+		q_status_message1(SM_ORDER, 3, 3,
+				  "Can't add folder named %.200s",
+				  ps_global->inbox_name);
+		continue;
+	    }
+
+	    break;
+	}
+    }
+
+    if(*addname){
+	FPROC(sparms)->fs->context = cntxt;
+	FPROC(sparms)->rv = new_strlist();
+	FPROC(sparms)->rv->name = folder_lister_fullname(FPROC(sparms)->fs,
+							 addname);
+	FPROC(sparms)->done = rv = 1;
+    }
+
+    return(rv);
+}
+
+
 void
 folder_lister_km_manager(sparms, handle_hidden)
     SCROLL_S *sparms;
@@ -2843,14 +2976,17 @@ folder_lister_km_manager(sparms, handle_hidden)
     if((sparms->text.handles)
 	 ? sparms->text.handles->h.f.context->dir->prev
 	 : FPROC(sparms)->fs->context->dir->prev){
-	sparms->keys.menu->keys[KM_COL_KEY].bind.ch[0] = 'e';
+	sparms->keys.menu->keys[KM_COL_KEY].bind.ch[0] = '<';
 	sparms->keys.menu->keys[KM_COL_KEY].label      = "ParentDir";
 	sparms->keys.menu->keys[KM_COL_KEY].bind.cmd   = MC_PARENT;
     }
     else if((FPROC(sparms)->fs->context->next
 	     || FPROC(sparms)->fs->context->prev)
 	    && !FPROC(sparms)->fs->combined_view){
-	sparms->keys.menu->keys[KM_COL_KEY].bind.ch[0] = 'e';
+	sparms->keys.menu->keys[KM_COL_KEY].bind.ch[0] = 'l';
+	/* ch[0] was set to zero but that messes up mouse in xterm */
+	/* set to 'l' instead, but could also be set to '<' if we */
+	/* want to play it safe */
 	sparms->keys.menu->keys[KM_COL_KEY].label      = "ClctnList";
 	sparms->keys.menu->keys[KM_COL_KEY].bind.cmd   = MC_EXIT;
     }
@@ -2887,6 +3023,8 @@ folder_lister_km_manager(sparms, handle_hidden)
 		menu_add_binding(sparms->keys.menu, ctrl('M'), MC_OPENFLDR);
 		menu_add_binding(sparms->keys.menu, ctrl('J'), MC_OPENFLDR);
 		setbitn(KM_ALTVIEW_KEY, sparms->keys.bitmap);
+		setbitn(KM_EXPORT_KEY, sparms->keys.bitmap);
+		setbitn(KM_IMPORT_KEY, sparms->keys.bitmap);
 	    }
 	    else{
 		sparms->keys.menu->keys[KM_SEL_KEY].label = "[View Dir]";
@@ -2894,6 +3032,8 @@ folder_lister_km_manager(sparms, handle_hidden)
 		menu_add_binding(sparms->keys.menu, ctrl('M'), MC_CHOICE);
 		menu_add_binding(sparms->keys.menu, ctrl('J'), MC_CHOICE);
 		clrbitn(KM_ALTVIEW_KEY, sparms->keys.bitmap);
+		clrbitn(KM_EXPORT_KEY, sparms->keys.bitmap);
+		clrbitn(KM_IMPORT_KEY, sparms->keys.bitmap);
 	    }
 	}
 	else{
@@ -2902,6 +3042,8 @@ folder_lister_km_manager(sparms, handle_hidden)
 	    menu_add_binding(sparms->keys.menu, ctrl('M'), MC_CHOICE);
 	    menu_add_binding(sparms->keys.menu, ctrl('J'), MC_CHOICE);
 	    clrbitn(KM_ALTVIEW_KEY, sparms->keys.bitmap);
+	    setbitn(KM_EXPORT_KEY, sparms->keys.bitmap);
+	    setbitn(KM_IMPORT_KEY, sparms->keys.bitmap);
 	}
     }
     else if(FPROC(sparms)->fs->combined_view
@@ -2912,10 +3054,14 @@ folder_lister_km_manager(sparms, handle_hidden)
 	menu_add_binding(sparms->keys.menu, ctrl('M'), MC_CHOICE);
 	menu_add_binding(sparms->keys.menu, ctrl('J'), MC_CHOICE);
 	clrbitn(KM_ALTVIEW_KEY, sparms->keys.bitmap);
+	clrbitn(KM_EXPORT_KEY, sparms->keys.bitmap);
+	clrbitn(KM_IMPORT_KEY, sparms->keys.bitmap);
     }
     else{
 	clrbitn(KM_SEL_KEY, sparms->keys.bitmap);
 	clrbitn(KM_ALTVIEW_KEY, sparms->keys.bitmap);
+	clrbitn(KM_EXPORT_KEY, sparms->keys.bitmap);
+	clrbitn(KM_IMPORT_KEY, sparms->keys.bitmap);
     }
       
     if((sparms->text.handles &&
@@ -3247,8 +3393,14 @@ folder_select(ps, context, cur_index)
       if(folder_entry(i, FOLDERS(context))->scanned)
 	break;
     
-    if(i < n)					/* any matches at all? */
-      for(; i < n; i++)
+    /*
+     * Any matches at all? If not, the selected set remains the same.
+     * Note that when Narrowing, only matches in the intersection will
+     * show up as scanned. We need to reset i to 0 to erase any already
+     * selected messages which aren't in the intersection.
+     */
+    if(i < n)
+      for(i = 0; i < n; i++)
 	if(f = folder_entry(i, FOLDERS(context))){
 	    if(narrow){
 		if(f->selected){
@@ -3609,6 +3761,362 @@ folder_lister_fullname(fs, name)
 }
 
 
+/*
+ * Export a folder from pine space to user's space. It will still be a regular
+ * mail folder but it will be in the user's home directory or something like
+ * that.
+ */
+void
+folder_export(sparms)
+    SCROLL_S *sparms;
+{
+    FOLDER_S   *f;
+    MAILSTREAM *stream, *ourstream = NULL;
+    char        expanded_file[MAILTMPLEN], *p, cut[50],
+		tmp[MAILTMPLEN], *fname, *fullname = NULL,
+		filename[MAXPATH+1], full_filename[MAXPATH+1],
+		deefault[MAXPATH+1];
+    int	        open_inbox = 0, we_cancel = 0, width,
+		index = (sparms && sparms->text.handles)
+			 ? sparms->text.handles->h.f.index : 0;
+    CONTEXT_S  *savecntxt,
+	       *cntxt = (sparms && sparms->text.handles)
+			 ? sparms->text.handles->h.f.context : NULL;
+
+    dprint(4, (debugfile, "\n - folder export -\n"));
+
+    if(cntxt){
+	if(folder_total(FOLDERS(cntxt))){
+	    f = folder_entry(index, FOLDERS(cntxt));
+	    if((*FPROC(sparms)->fs->f.valid)(f, FPROC(sparms)->fs)){
+		savecntxt = FPROC(sparms)->fs->context;   /* necessary? */
+		FPROC(sparms)->fs->context = cntxt;
+		strncpy(deefault, FLDR_NAME(f), sizeof(deefault)-1);
+		deefault[sizeof(deefault)-1] = '\0';
+		fname = folder_lister_fullname(FPROC(sparms)->fs, FLDR_NAME(f));
+		FPROC(sparms)->fs->context = savecntxt;
+
+		/*
+		 * We have to allow for INBOX and nicknames in
+		 * the incoming collection. Mimic what happens in
+		 * do_broach_folder.
+		 */
+		strncpy(expanded_file, fname, sizeof(expanded_file));
+		expanded_file[sizeof(expanded_file)-1] = '\0';
+
+		if(strucmp(fname, ps_global->inbox_name) == 0
+		   || strucmp(fname, ps_global->VAR_INBOX_PATH) == 0)
+		  open_inbox++;
+
+		if(!open_inbox && cntxt && context_isambig(fname)){
+		    if(p=folder_is_nick(fname, FOLDERS(cntxt), 0)){
+			strncpy(expanded_file, p, sizeof(expanded_file));
+			expanded_file[sizeof(expanded_file)-1] = '\0';
+		    }
+		    else if ((cntxt->use & CNTXT_INCMNG)
+			     && (folder_index(fname, cntxt, FI_FOLDER) < 0)
+			     && !is_absolute_path(fname)){
+			q_status_message1(SM_ORDER, 3, 4,
+			    "Can't find Incoming Folder %.200s.", fname);
+			return;
+		    }
+		}
+
+		if(open_inbox)
+		  fullname = ps_global->VAR_INBOX_PATH;
+		else{
+		    /*
+		     * We don't want to interpret this name in the context
+		     * of the reference string, that was already done
+		     * above in folder_lister_fullname(), just in the
+		     * regular context. We also don't want to lose the
+		     * reference string because we will still be in the
+		     * subdirectory after this operation completes. So
+		     * temporarily zero out the reference.
+		     */
+		    FDIR_S *tmpdir;
+
+		    tmpdir = (cntxt ? cntxt->dir : NULL);
+		    cntxt->dir = NULL;
+		    fullname = context_apply(tmp, cntxt, expanded_file,
+					     sizeof(tmp));
+		    cntxt->dir = tmpdir;
+		}
+
+		width = max(20,
+			   ps_global->ttyo ? ps_global->ttyo->screen_cols : 80);
+		stream = sp_stream_get(fullname, SP_MATCH | SP_RO_OK);
+		if(!stream && fullname){
+		    /*
+		     * Just using filename and full_filename as convenient
+		     * temporary buffers here.
+		     */
+		    sprintf(filename, "Opening \"%.80s\"",
+			    short_str(fullname, full_filename,
+				      max(10, width-17),
+				      MidDots));
+		    we_cancel = busy_alarm(1, filename, NULL, 1);
+		    stream = pine_mail_open(NULL, fullname,
+					    OP_READONLY|SP_USEPOOL|SP_TEMPUSE,
+					    NULL);
+		    if(we_cancel)
+		      cancel_busy_alarm(0);
+
+		    ourstream = stream;
+		}
+
+		/*
+		 * We have a stream for the folder we want to
+		 * export.
+		 */
+		if(stream && stream->nmsgs > 0L){
+		    int r = 1;
+		    static ESCKEY_S eopts[] = {
+			{ctrl('T'), 10, "^T", "To Files"},
+			{-1, 0, NULL, NULL},
+			{-1, 0, NULL, NULL}};
+
+		    if(F_ON(F_ENABLE_TAB_COMPLETE,ps_global)){
+			eopts[r].ch    =  ctrl('I');
+			eopts[r].rval  = 11;
+			eopts[r].name  = "TAB";
+			eopts[r].label = "Complete";
+		    }
+
+		    eopts[++r].ch = -1;
+
+		    filename[0] = '\0';
+		    full_filename[0] = '\0';
+
+		    r = get_export_filename(ps_global, filename, deefault,
+					    full_filename,
+					    sizeof(filename)-20, fname, NULL,
+					    eopts, NULL,
+					    -FOOTER_ROWS(ps_global),
+					    GE_IS_EXPORT | GE_NO_APPEND);
+		    if(r < 0){
+			switch(r){
+			  default:
+			  case -1:
+			    cmd_cancelled("Export folder");
+			    break;
+
+			  case -2:
+			    q_status_message1(SM_ORDER, 0, 2,
+				      "Can't export to file outside of %.200s",
+					      ps_global->VAR_OPER_DIR);
+			    break;
+			}
+		    }
+		    else{
+			int ok;
+			char *ff;
+
+			ps_global->mm_log_error = 0;
+
+			/*
+			 * Do the creation in standard unix format, so it
+			 * is readable by all.
+			 */
+			rplstr(full_filename, 0, "#driver.unix/");
+			ok = pine_mail_create(NULL, full_filename) != 0L;
+			/*
+			 * ff points to the original filename, without the
+			 * driver prefix. Only mail_create knows how to
+			 * handle driver prefixes.
+			 */
+			ff = full_filename + strlen("#driver.unix/");
+
+			if(!ok){
+			    if(!ps_global->mm_log_error)
+			      q_status_message(SM_ORDER | SM_DING, 3, 3,
+					       "Error creating file");
+			}
+			else{
+			    long     l, snmsgs;
+			    MSGNO_S *tmpmap = NULL;
+
+			    snmsgs = stream->nmsgs;
+			    mn_init(&tmpmap, snmsgs);
+			    for(l = 1L; l <= snmsgs; l++)
+			      if(l == 1L)
+				mn_set_cur(tmpmap, l);
+			      else
+				mn_add_cur(tmpmap, l);
+			    
+			    blank_keymenu(ps_global->ttyo->screen_rows-2, 0);
+			    we_cancel = busy_alarm(1, "Copying folder",
+						   NULL, 1);
+			    l = save(ps_global, stream, NULL, ff, tmpmap, 0);
+			    if(we_cancel)
+			      cancel_busy_alarm(0);
+
+			    mn_give(&tmpmap);
+
+			    if(l == snmsgs)
+			      q_status_message2(SM_ORDER, 0, 3,
+					    "Folder %.200s exported to %.200s",
+					        fname, filename);
+			    else{
+				q_status_message1(SM_ORDER | SM_DING, 3, 3,
+						  "Error exporting to %.200s",
+						  filename);
+				dprint(2, (debugfile,
+		    "Error exporting to %s: expected %ld msgs, saved %ld\n",
+		    filename, snmsgs, l));
+			    }
+			}
+		    }
+		}
+		else if(stream)
+		  q_status_message1(SM_ORDER|SM_DING, 3, 3,
+				    "No messages in %.200s to export", fname);
+		else
+		  q_status_message(SM_ORDER|SM_DING, 3, 3,
+				   "Can't open folder for exporting");
+
+		if(fname)
+		  fs_give((void **) &fname);
+
+		if(ourstream)
+		  pine_mail_close(ourstream);
+	    }
+	}
+    }
+    else
+      q_status_message(SM_ORDER | SM_DING, 3, 3, "Empty folder list!");
+}
+
+
+/*
+ * Import a folder from user's space back to pine space.
+ * We're just importing a regular mail folder, and saving all the messages
+ * to another folder. It may seem more magical to the user but it isn't.
+ * The import folder is a local folder, the new one can be remote or whatever.
+ * Args  sparms
+ *       add_folder -- return new folder name here
+ *       len        -- length of add_folder
+ *
+ * Returns 1 if we may have to redraw screen, 0 otherwise
+ */
+int
+folder_import(sparms, add_folder, len)
+    SCROLL_S *sparms;
+    char     *add_folder;
+    size_t    len;
+{
+    MAILSTREAM *istream = NULL;
+    int         r = 1, rv = 0;
+    char        filename[MAXPATH+1], full_filename[MAXPATH+1];
+    static ESCKEY_S eopts[] = {
+	{ctrl('T'), 10, "^T", "To Files"},
+	{-1, 0, NULL, NULL},
+	{-1, 0, NULL, NULL}};
+
+    if(F_ON(F_ENABLE_TAB_COMPLETE,ps_global)){
+	eopts[r].ch    =  ctrl('I');
+	eopts[r].rval  = 11;
+	eopts[r].name  = "TAB";
+	eopts[r].label = "Complete";
+    }
+
+    eopts[++r].ch = -1;
+
+    filename[0] = '\0';
+    full_filename[0] = '\0';
+
+    /* get a folder to import */
+    r = get_export_filename(ps_global, filename, NULL, full_filename,
+			    sizeof(filename)-20, "messages", "IMPORT",
+			    eopts, NULL,
+			    -FOOTER_ROWS(ps_global), GE_IS_IMPORT);
+    if(r < 0){
+	switch(r){
+	  default:
+	  case -1:
+	    cmd_cancelled("Import folder");
+	    break;
+
+	  case -2:
+	    q_status_message1(SM_ORDER, 0, 2,
+		      "Can't import file outside of %.200s",
+			      ps_global->VAR_OPER_DIR);
+	    break;
+	}
+    }
+    else{
+	ps_global->mm_log_error = 0;
+	if(full_filename && full_filename[0])
+	  istream = pine_mail_open(NULL, full_filename,
+				   OP_READONLY | SP_TEMPUSE, NULL);
+
+	if(istream && istream->nmsgs > 0L){
+	    long       l;
+	    int        we_cancel = 0;
+	    char       newfolder[MAILTMPLEN], nmsgs[32];
+	    MSGNO_S   *tmpmap = NULL;
+	    CONTEXT_S *cntxt, *ourcntxt;
+
+	    cntxt = (sparms && sparms->text.handles)
+			 ? sparms->text.handles->h.f.context : NULL;
+	    ourcntxt = cntxt;
+	    newfolder[0] = '\0';
+	    sprintf(nmsgs, "%.10s msgs ", comatose(istream->nmsgs));
+
+	    /*
+	     * Select a folder to save the messages to.
+	     */
+	    if(save_prompt(ps_global, &cntxt, newfolder, sizeof(newfolder),
+			   nmsgs, NULL, 0L, NULL, NULL)){
+
+		if((cntxt == ourcntxt) && newfolder[0]){
+		    rv = 1;
+		    strncpy(add_folder, newfolder, len-1);
+		    add_folder[len-1] = '\0';
+		    free_folder_list(cntxt);
+		}
+
+		mn_init(&tmpmap, istream->nmsgs);
+		for(l = 1; l <= istream->nmsgs; l++)
+		  if(l == 1L)
+		    mn_set_cur(tmpmap, l);
+		  else
+		    mn_add_cur(tmpmap, l);
+		
+		blank_keymenu(ps_global->ttyo->screen_rows-2, 0);
+		we_cancel = busy_alarm(1, "Importing messages",
+				       NULL, 1);
+		l = save(ps_global, istream, cntxt, newfolder, tmpmap, 0);
+		if(we_cancel)
+		  cancel_busy_alarm(0);
+
+		mn_give(&tmpmap);
+
+		if(l == istream->nmsgs)
+		  q_status_message2(SM_ORDER, 0, 3,
+				    "Folder %.200s imported to %.200s",
+				    full_filename, newfolder);
+		else
+		  q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				    "Error importing to %.200s",
+				    newfolder);
+	    }
+	}
+	else if(istream)
+	  q_status_message1(SM_ORDER | SM_DING, 3, 3,
+			    "No messages in file %.200s",
+			    full_filename);
+	else if(!ps_global->mm_log_error)
+	  q_status_message1(SM_ORDER | SM_DING, 3, 3,
+			    "Can't open file %.200s for import", full_filename);
+    }
+
+    if(istream)
+      pine_mail_close(istream);
+    
+    return(rv);
+}
+
 
 /*
  *
@@ -3705,7 +4213,9 @@ mail_cmd_stream(context, closeit)
     *closeit = 1;
     (void) context_apply(tmp, context, "x", sizeof(tmp));
 
-    return(pine_mail_open(NULL, tmp, OP_HALFOPEN | OP_SILENT));
+    return(pine_mail_open(NULL, tmp,
+			  OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE,
+			  NULL));
 }
 
 /*
@@ -3772,7 +4282,7 @@ add_new_folder(context, which, varnum, add_folder, len, possible_stream, def)
 		*default_dstn_folder = NULL,
 		*copydef = NULL,
 	        *dstnmbox = NULL;
-    char         mdmbox[MAILTMPLEN];
+    char         mdmbox[MAILTMPLEN], ctmp[MAILTMPLEN];
     MAILSTREAM  *create_stream = NULL;
     FOLDER_S    *f;
     static ESCKEY_S add_key[] = {{ctrl('X'),12,"^X", NULL},
@@ -4009,6 +4519,14 @@ get_folder_name:
 		goto skip_over_folder_input;
 	    }
 
+	    /*
+	     * And check to see if they entered "INBOX".
+	     */
+	    if(!strucmp(add_folder, ps_global->inbox_name)){
+		offset = 0;
+		goto skip_over_folder_input;
+	    }
+
 	    /* remove surrounding braces */
 	    if(add_folder[0] == '{' && add_folder[1] != '\0'){
 		char *q;
@@ -4211,7 +4729,8 @@ get_folder_name:
 	}
 
         if(rc == 0 && add_folder[offset]){
-	    if(!ps_global->show_dot_names && add_folder[offset] == '.'){
+	    if(F_OFF(F_ENABLE_DOT_FOLDERS,ps_global)
+	       && add_folder[offset] == '.'){
 		if(cnt++ <= 0)
 		  q_status_message(SM_ORDER,3,3,
 				   "Folder name can't begin with dot");
@@ -4241,10 +4760,7 @@ get_folder_name:
 		continue;
 	    }
 
-	    if(strucmp(ps_global->inbox_name, nickname))
-	      break;
-	    else
-	      Writechar(BELL, 0);
+	    break;
 	}
 
 	if(rc == 12){
@@ -4287,12 +4803,9 @@ get_folder_name:
 
 skip_over_folder_input:
 
-    create_stream = context_same_stream(context, add_folder,
-					ps_global->mail_stream);
-    if(!create_stream 
-       && ps_global->mail_stream != ps_global->inbox_stream)
-      create_stream = context_same_stream(context, add_folder,
-					  ps_global->inbox_stream);
+    create_stream = sp_stream_get(context_apply(ctmp, context, add_folder,
+						sizeof(ctmp)),
+				  SP_SAME);
 
     if(!create_stream && possible_stream)
       create_stream = context_same_stream(context, add_folder, possible_stream);
@@ -4309,8 +4822,11 @@ skip_over_folder_input:
 	    if(rc == 0){
 		if(strucmp(ps_global->inbox_name, nickname))
 		  break;
-		else
-		  Writechar(BELL, 0);
+		else{
+		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				    "Nickname cannot be \"%.200s\"",
+				    nickname);
+		}
 	    }
 
 	    if(rc == 3){
@@ -4488,7 +5004,8 @@ skip_over_folder_input:
 		    maildropfolder, add_folder);
 		dprint(2, (debugfile,
 		    "Can't find delimiter for \"#move %.100s %.100s\"",
-		    maildropfolder, add_folder));
+		    maildropfolder ? maildropfolder : "?",
+		    add_folder ? add_folder : "?"));
 
 		if(maildroplongname)
 		  fs_give((void **) &maildroplongname);
@@ -4522,7 +5039,7 @@ skip_over_folder_input:
 	}
 
 	set_current_val(&ps_global->vars[varnum], TRUE, FALSE);
-	write_pinerc(ps_global, which);
+	write_pinerc(ps_global, which, WRP_NONE);
 
 	/*
 	 * Instead of inserting the new folder in the list of folders,
@@ -4912,13 +5429,13 @@ rename_folder(context, index, new_name, len, possible_stream)
     size_t      len;
     MAILSTREAM *possible_stream;
 {
-    char        *folder, prompt[64], *name_p = NULL;
+    char        *folder, prompt[64], *name_p = NULL, tmp[MAILTMPLEN];
     HelpType     help;
     FOLDER_S	*new_f;
     PINERC_S    *prc = NULL;
     int          rc, ren_cur, cnt = 0, isdir = 0, readonly = 0;
     EditWhich    ew;
-    MAILSTREAM  *ren_stream = NULL;
+    MAILSTREAM  *strm;
 
     dprint(4, (debugfile, "\n - rename folder -\n"));
 
@@ -5003,7 +5520,7 @@ rename_folder(context, index, new_name, len, possible_stream)
 
         if(rc == 0 && (*new_name || (context->use & CNTXT_INCMNG))) {
 	    /* verify characters */
-	    if(!ps_global->show_dot_names && *new_name == '.'){
+	    if(F_OFF(F_ENABLE_DOT_FOLDERS,ps_global) && *new_name == '.'){
 		if(cnt++ <= 0)
                   q_status_message(SM_ORDER,3,3,
 		    "Folder name can't begin with dot");
@@ -5097,21 +5614,20 @@ rename_folder(context, index, new_name, len, possible_stream)
 	return(1);
     }
 
-    if(ren_cur && ps_global->mail_stream) {
-        pine_mail_close(ps_global->mail_stream);
-	ps_global->mail_stream = NULL;
+    /* Can't rename open streams */
+    if((strm = context_already_open_stream(context, folder, AOS_NONE))
+       || (ren_cur && (strm=ps_global->mail_stream))){
+	if(possible_stream == strm)
+	  possible_stream = NULL;
+
+	pine_mail_actually_close(strm);
     }
 
-    ren_stream = context_same_stream(context, new_name,
-				     ps_global->mail_stream);
-
-    if(!ren_stream && ps_global->mail_stream != ps_global->inbox_stream)
-      ren_stream = context_same_stream(context, new_name,
-				       ps_global->inbox_stream);
-    if(!ren_stream && possible_stream)
-      ren_stream = context_same_stream(context, new_name, possible_stream);
+    if(possible_stream
+       && !context_same_stream(context, new_name, possible_stream))
+      possible_stream = NULL;
       
-    if(rc = context_rename(context, ren_stream, folder, new_name)){
+    if(rc = context_rename(context, possible_stream, folder, new_name)){
 	if(name_p && *name_p == context->dir->delim)
 	  *name_p = '\0';		/* blat trailing delim */
 
@@ -5141,7 +5657,8 @@ rename_folder(context, index, new_name, len, possible_stream)
 				  "Error creating new \"%.200s\"", folder);
 
 		dprint(1, (debugfile, "Error creating \"%s\" in %s context\n",
-			   folder, context->context));
+			   folder ? folder : "?",
+			   context->context ? context->context : "?"));
 	    }
 	}
 	else
@@ -5154,7 +5671,7 @@ rename_folder(context, index, new_name, len, possible_stream)
 
     if(ren_cur) {
         /* No reopen the folder we just had open */
-        do_broach_folder(new_name, context, NULL);
+        do_broach_folder(new_name, context, NULL, 0L);
     }
 
     return(rc);
@@ -5179,13 +5696,19 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     size_t       len;
     MAILSTREAM **possible_streamp;
 {
-    char       *folder, ques_buf[MAX_SCREEN_COLS+1],
-	       *fnamep, fname[MAILTMPLEN];
-    MAILSTREAM *del_stream, *sub_stream;
+    char       *folder, ques_buf[MAX_SCREEN_COLS+1], *target = NULL,
+	       *fnamep, fname[MAILTMPLEN], tmp[MAILTMPLEN];
+    MAILSTREAM *del_stream = NULL, *sub_stream, *strm = NULL;
     FOLDER_S   *fp;
     EditWhich   ew;
     PINERC_S   *prc = NULL;
-    int         ret, unsub_opened = 0, close_opened = 0, blast_folder = 1, readonly;
+    int         ret, unsub_opened = 0, close_opened = 0, blast_folder = 1,
+		readonly;
+
+    if(!context){
+	cmd_cancelled("Missing context in Delete");
+	return(0);
+    }
 
     if(NEWS_TEST(context)){
 	static char fmt[] = "Really unsubscribe from \"%.*s\"";
@@ -5205,13 +5728,14 @@ delete_folder(context, index, next_folder, len, possible_streamp)
         }
     
         dprint(2, (debugfile, "deleting folder \"%s\" in context \"%s\"\n",
-	       folder, context->context));
+	       folder ? folder : "?",
+	       context->context ? context->context : "?"));
 
 	if(sub_stream = mail_cmd_stream(context, &unsub_opened)){
 	    (void) context_apply(tmp_20k_buf, context, folder, SIZEOF_20KBUF);
 	    if(!mail_unsubscribe(sub_stream, tmp_20k_buf)){
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Error unsubscribing from \"%.200s\"", folder);
+				  "Error unsubscribing from \"%.200s\"",folder);
 		if(unsub_opened)
 		  pine_mail_close(sub_stream);
 		return(0);
@@ -5227,9 +5751,20 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 	return(1);
     }
 
-    fp     = folder_entry(index, FOLDERS(context));
+    fp = folder_entry(index, FOLDERS(context));
+    if(!fp){
+	cmd_cancelled("Can't find folder to Delete!");
+	return(0);
+    }
+
+    if(!((context->use & CNTXT_INCMNG) && fp->name
+         && check_for_move_mbox(fp->name, NULL, 0, &target))){
+	target = NULL;
+    }
+
     folder = FLDR_NAME(fp);
-    dprint(4, (debugfile, "=== delete_folder(%s) ===\n", folder));
+    dprint(4, (debugfile, "=== delete_folder(%s) ===\n",
+	   folder ? folder : "?"));
 
     ew = config_containing_inc_fldr(fp);
     if(ps_global->restricted)
@@ -5261,15 +5796,20 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     }
     else if(strucmp(folder, ps_global->inbox_name) == 0 || fp->parent) {
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
-		 "Can't delete special folder \"%.200s\".", ps_global->inbox_name);
+		 "Can't delete special folder \"%.200s\".",
+		 ps_global->inbox_name);
 	return(0);
     }
-    else if(context == ps_global->context_current
-	    && strcmp(folder, ps_global->cur_folder) == 0){
-	close_opened++;
+    else if((fp->name
+	     && (strm=context_already_open_stream(context,fp->name,AOS_NONE)))
+	    ||
+	    (target
+	     && (strm=context_already_open_stream(NULL,target,AOS_NONE)))){
+	if(strm == ps_global->mail_stream)
+	  close_opened++;
     }
     else if(fp->isdir){		/* NO DELETE if directory isn't EMPTY */
-	FDIR_S *fdirp = next_folder_dir(context, folder, TRUE, possible_streamp);
+	FDIR_S *fdirp = next_folder_dir(context,folder,TRUE,possible_streamp);
 
 	ret = folder_total(fdirp->folders) > 0;
 	free_fdir(&fdirp, 1);
@@ -5317,8 +5857,9 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     }
     else{
 	sprintf(ques_buf, "DELETE \"%.100s\"%s", folder, 
-		close_opened ? " (the currently open folder)"
-			     : fp->isdir ? " (a directory)" : "");
+		(!fp->isfolder || (fp->isdir && !close_opened))
+		  ? " (a directory)"
+		  : close_opened ? " (the currently open folder)" : "");
 
 	if((ret = want_to(ques_buf, 'n', 'x', NO_HELP, WT_NORM)) != 'y'){
 	    q_status_message(SM_ORDER,0,3, (ret == 'x') ? "Delete cancelled" 
@@ -5329,39 +5870,30 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 
     if(blast_folder){
 	dprint(2, (debugfile,"deleting folder \"%s\" (%s) in context \"%s\"\n",
-		   fp->name,fp->nickname ? fp->nickname : "",
-		   context->context));
+		   fp->name ? fp->name : "?",
+		   fp->nickname ? fp->nickname : "",
+		   context->context ? context->context : "?"));
+	if(strm){
+	    /*
+	     * Close it, NULL the pointer, and let do_broach_folder fixup
+	     * the rest...
+	     */
+	    pine_mail_actually_close(strm);
+	    if(close_opened){
+		ps_global->mangled_header = 1;
+		do_broach_folder(ps_global->inbox_name,
+				 ps_global->context_list, NULL, 0L);
+	    }
+	}
+
 	/*
 	 * Use fp->name since "folder" may be a nickname...
 	 */
-	if(close_opened){
-	    /*
-	     * There *better* be a stream, but check just in case.  Then
-	     * close it, NULL the pointer, and let do_broach_folder fixup
-	     * the rest...
-	     */
-	    if(ps_global->mail_stream){
-		pine_mail_close(ps_global->mail_stream);
-		ps_global->mail_stream = NULL;
-		ps_global->mangled_header = 1;
-		do_broach_folder(ps_global->inbox_name,
-				 ps_global->context_list, NULL);
-	    }
+	if(possible_streamp && *possible_streamp
+	   && context_same_stream(context, fp->name, *possible_streamp))
+	  del_stream = *possible_streamp;
 
-	    del_stream = NULL;
-	}
-	else
-	  del_stream = context_same_stream(context, fp->name,
-					   ps_global->mail_stream);
-
-	if(!del_stream && ps_global->mail_stream != ps_global->inbox_stream)
-	  del_stream = context_same_stream(context, fp->name,
-					   ps_global->inbox_stream);
-
-	if(!del_stream && possible_streamp && *possible_streamp)
-	  del_stream = context_same_stream(context, fp->name, *possible_streamp);
-
-	if(!fp->isfolder)
+	if(!fp->isfolder || (fp->isdir && !close_opened))
 	  sprintf(fnamep = fname, "%.*s%c", sizeof(fname)-3, fp->name,
 		  context->dir->delim);
 	else
@@ -5377,8 +5909,9 @@ delete_folder(context, index, next_folder, len, possible_streamp)
     }
 
     q_status_message2(SM_ORDER, 0, 3, "%.200s \"%.200s\" deleted.",
-		      blast_folder ? "Folder" : "Nickname", folder);
-
+	  blast_folder ? ((!fp->isfolder || (fp->isdir && !close_opened))
+			    ? "Directory" : "Folder")
+		       : "Nickname", folder);
 
     if(context->use & CNTXT_INCMNG){
 	char **new_list, **lp, ***alval;
@@ -5593,14 +6126,13 @@ folder_select_text(ps, context, selected)
 	args.context  = context;
 
 	if(type == 'c'){
-	    if(!(args.stream = same_stream(context_apply(tmp, context, "xxx",
-							 sizeof(tmp)),
-					   ps_global->mail_stream))
-	       && (ps_global->inbox_stream == ps_global->mail_stream
-		 ||
-		   !(args.stream = same_stream(tmp, ps_global->inbox_stream)))){
-		args.stream	   = pine_mail_open(NULL, tmp,
-						    OP_SILENT|OP_HALFOPEN);
+	    args.stream = sp_stream_get(context_apply(tmp, context,
+						      "xxx", sizeof(tmp)),
+					SP_SAME);
+	    if(!args.stream){
+		args.stream = pine_mail_open(NULL, tmp,
+				 OP_SILENT|OP_HALFOPEN|SP_USEPOOL|SP_TEMPUSE,
+					     NULL);
 		args.newstream = (args.stream != NULL);
 	    }
 	}
@@ -5748,7 +6280,7 @@ folder_select_props(ps, context, selected)
     }
 
     switch(radio_buttons(SEL_PROP_PMT, -FOOTER_ROWS(ps_global),
-			 prop_opts, 'n', 'x', NO_HELP, RB_NORM)){
+			 prop_opts, 'n', 'x', h_folder_prop, RB_NORM)){
       case 'c' :				/* message count */
 	if(folder_select_count(&count, &cmp))
 	  flags = SA_MESSAGES;
@@ -5779,13 +6311,13 @@ folder_select_props(ps, context, selected)
 	args.nmsgs    = count;
 	args.cmp      = cmp;
  
-	if(!(args.stream = same_stream(context_apply(tmp, context, "xxx",
-						     sizeof(tmp)),
-				       ps_global->mail_stream))
-	   && (ps_global->inbox_stream == ps_global->mail_stream
-	     ||
-	       !(args.stream = same_stream(tmp, ps_global->inbox_stream)))){
-	    args.stream	   = pine_mail_open(NULL, tmp, OP_SILENT|OP_HALFOPEN);
+	args.stream = sp_stream_get(context_apply(tmp, context,
+						  "xxx", sizeof(tmp)),
+				    SP_SAME);
+	if(!args.stream){
+	    args.stream = pine_mail_open(NULL, tmp,
+				 OP_SILENT|OP_HALFOPEN|SP_USEPOOL|SP_TEMPUSE,
+					 NULL);
 	    args.newstream = (args.stream != NULL);
 	}
 
@@ -6046,20 +6578,27 @@ compare_names(x, y)
     else if((UCMPI(b, ps_global->inbox_name)) == 0
        && strucmp(b, ps_global->inbox_name) == 0)
       return((CMPI(a, b) == 0 && strcmp(a, b) == 0) ? 0 : 1);
-    /*----- The sent-mail folder, is always next ---*/
-    else if(CMPI(a, ps_global->VAR_DEFAULT_FCC) == 0
+
+    /*----- The sent-mail folder, is always next unless... ---*/
+    else if(F_OFF(F_SORT_DEFAULT_FCC_ALPHA, ps_global)
+	    && CMPI(a, ps_global->VAR_DEFAULT_FCC) == 0
 	    && strcmp(a, ps_global->VAR_DEFAULT_FCC) == 0)
       return((CMPI(a, b) == 0 && strcmp(a, b) == 0) ? 0 : -1);
-    else if(CMPI(b, ps_global->VAR_DEFAULT_FCC) == 0
+    else if(F_OFF(F_SORT_DEFAULT_FCC_ALPHA, ps_global)
+	    && CMPI(b, ps_global->VAR_DEFAULT_FCC) == 0
 	    && strcmp(b, ps_global->VAR_DEFAULT_FCC) == 0)
       return((CMPI(a, b) == 0 && strcmp(a, b) == 0) ? 0 : 1);
-    /*----- The saved-messages folder, is always next ---*/
-    else if(CMPI(a, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0
+
+    /*----- The saved-messages folder, is always next unless... ---*/
+    else if(F_OFF(F_SORT_DEFAULT_SAVE_ALPHA, ps_global)
+	    && CMPI(a, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0
 	    && strcmp(a, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0)
       return((CMPI(a, b) == 0 && strcmp(a, b) == 0) ? 0 : -1);
-    else if(CMPI(b, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0
+    else if(F_OFF(F_SORT_DEFAULT_SAVE_ALPHA, ps_global)
+	    && CMPI(b, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0
 	    && strcmp(b, ps_global->VAR_DEFAULT_SAVE_FOLDER) == 0)
       return((CMPI(a, b) == 0 && strcmp(a, b) == 0) ? 0 : 1);
+
     else
       return((r = CMPI(a, b)) ? r : strcmp(a, b));
 }
@@ -6234,12 +6773,17 @@ folder_name_exists(cntxt, file, fullpath)
     }
 
     mm_list_info = &ldata;		/* tie down global reference */
+    memset(&ldata, 0, sizeof(ldata));
     ldata.filter = mail_list_exists;
 
-    if(!(ldata.stream = same_stream(context_apply(tmp,cntxt,file,sizeof(tmp)),
-				    ps_global->mail_stream))
-       && ps_global->inbox_stream != ps_global->mail_stream)
-      ldata.stream = same_stream(tmp, ps_global->inbox_stream);
+    ldata.stream = sp_stream_get(context_apply(tmp, cntxt, file, sizeof(tmp)),
+				 SP_MATCH);
+
+    /* it not only exists, we have it open! */
+    if(ldata.stream)
+      return(FEX_ISFILE);
+
+    ldata.stream = sp_stream_get(tmp, SP_SAME);
 
     memset(ldata.data = &parms, 0, sizeof(EXISTDATA_S));
 
@@ -6398,9 +6942,11 @@ folder_delimiter(folder)
     we_cancel = busy_alarm(1, NULL, NULL, 0);
 
     if(*folder == '{'
-       && !(ldata.stream = same_stream(folder, ps_global->mail_stream))
-       && !(ldata.stream = same_stream(folder, ps_global->inbox_stream))){
-	if(ldata.stream = pine_mail_open(NULL,folder,OP_HALFOPEN|OP_SILENT)){
+       && !(ldata.stream = sp_stream_get(folder, SP_MATCH))
+       && !(ldata.stream = sp_stream_get(folder, SP_SAME))){
+	if(ldata.stream = pine_mail_open(NULL,folder,
+				 OP_HALFOPEN|OP_SILENT|SP_USEPOOL|SP_TEMPUSE,
+					 NULL)){
 	    ourstream++;
 	}
 	else{
@@ -7030,8 +7576,8 @@ new_context(cntxt_string, prime)
 
     c->label = cpystr(tmp_20k_buf);
 
-    dprint(5, (debugfile, "Context %s: serv:%s, ref:%s, view: %s\n",
-	       c->context,
+    dprint(5, (debugfile, "Context: %s serv:%s ref: %s view: %s\n",
+	       c->context ? c->context : "?",
 	       (c->server) ? c->server : "\"\"",
 	       (c->dir->ref) ? c->dir->ref : "\"\"",
 	       (c->dir->view.user) ? c->dir->view.user : "\"\""));
@@ -7101,11 +7647,10 @@ build_folder_list(stream, context, pat, content, flags)
 	}
 
 	if(!ldata.stream)
-	  ldata.stream = same_stream(context->context, ps_global->mail_stream);
+	  ldata.stream = sp_stream_get(context->context, SP_MATCH);
 
-	if(!ldata.stream && ps_global->inbox_stream
-	   && ps_global->mail_stream != ps_global->inbox_stream)
-	  ldata.stream = same_stream(context->context,ps_global->inbox_stream);
+	if(!ldata.stream)
+	  ldata.stream = sp_stream_get(context->context, SP_SAME);
 
 	/* gotta open a new one? */
 	if(!ldata.stream){
@@ -7116,7 +7661,8 @@ build_folder_list(stream, context, pat, content, flags)
 
 	dprint(ldata.stream ? 7 : 1,
 	       (debugfile, "build_folder_list: mail_open(%s) %s.\n",
-		context->server, ldata.stream ? "OK" : "FAILED"));
+		context->server ? context->server : "?",
+		ldata.stream ? "OK" : "FAILED"));
 
 	if(!ldata.stream){
 	    context->use &= ~CNTXT_PARTFIND;	/* unset partial find bit */
@@ -7127,8 +7673,7 @@ build_folder_list(stream, context, pat, content, flags)
 	}
     }
     else if(stream && *stream){			/* no server, simple case */
-	if(*stream != ps_global->mail_stream
-	   && *stream != ps_global->inbox_stream)
+	if(!sp_flagged(*stream, SP_LOCKED))
 	  pine_mail_close(*stream);
 
 	*stream = NULL;
@@ -7828,14 +8373,18 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
     long	*find_recent;
     int         *did_cancel;
 {
-    int       index, recent = 0, failed_status = 0;
+    int       index, recent = 0, failed_status = 0, try_fast;
     char      prompt[128];
     FOLDER_S *f = NULL;
+    char      tmp[MAILTMPLEN];
+
 
     /* note: find_folders may assign "stream" */
     build_folder_list(streamp, cntxt, NULL, NULL,
 		      NEWS_TEST(cntxt) ? BFL_LSUB : BFL_NONE);
 
+    try_fast = (F_ON(F_ENABLE_FAST_RECENT, ps_global) &&
+	        F_OFF(F_TAB_USES_UNSEEN, ps_global));
     if(find_recent)
       *find_recent = 0L;
 
@@ -7847,13 +8396,46 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 	index++)
       if(find_recent){
 	  MAILSTREAM *stream = NULL;
-	  int         rv, we_cancel = 0, mlen;
+	  int         rv, we_cancel = 0, mlen, match;
 	  char        msg_buf[MAX_BM+1], mbuf[MAX_BM+1];
 
 	  /* must be a folder and it can't be the current one */
 	  if(ps_global->context_current == ps_global->context_list
 	     && !strcmp(ps_global->cur_folder, FLDR_NAME(f)))
 	    continue;
+
+	  /*
+	   * If we already have the folder open, short circuit all this
+	   * stuff.
+	   */
+	  match = 0;
+	  if((stream = sp_stream_get(context_apply(tmp, cntxt, f->name,
+						   sizeof(tmp)),
+				     SP_MATCH)) != NULL){
+	      (void) pine_mail_ping(stream);
+
+	      if(F_ON(F_TAB_USES_UNSEEN, ps_global)){
+		  /*
+		   * Just fall through and let the status call below handle
+		   * the already open stream. If we were doing this the
+		   * same as the else case, we would figure out how many
+		   * unseen are in this open stream by doing a search.
+		   * Instead of repeating that code that is already in
+		   * pine_mail_status_full, fall through and note the
+		   * special case by lighting the match variable.
+		   */
+		  match++;
+	      }
+	      else{
+		  *find_recent = sp_recent_since_visited(stream);
+		  if(*find_recent){
+		      recent++;
+		      break;
+		  }
+
+		  continue;
+	      }
+	  }
 
 	  /* 29 is length of constant strings and 7 is for busy_alarm */
 	  mlen = min(MAX_BM, ps_global->ttyo->screen_cols) - (29+7);
@@ -7864,7 +8446,7 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 	  we_cancel = busy_alarm(1, msg_buf, NULL, 1);
 
 	  /* First, get a stream for the test */
-	  if(streamp && *streamp){
+	  if(!stream && streamp && *streamp){
 	      if(context_same_stream(cntxt, f->name, *streamp)){
 		  stream = *streamp;
 	      }
@@ -7875,12 +8457,9 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 	  }
 
 	  if(!stream){
-	      if(context_same_stream(cntxt, f->name, ps_global->mail_stream))
-		stream = ps_global->mail_stream;
-	      else if(ps_global->mail_stream != ps_global->inbox_stream
-		      && context_same_stream(cntxt, f->name,
-					     ps_global->inbox_stream))
-		stream = ps_global->inbox_stream;
+	      stream = sp_stream_get(context_apply(tmp, cntxt, f->name,
+						   sizeof(tmp)),
+				     SP_SAME);
 	  }
 
 	  /*
@@ -7901,20 +8480,21 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 	   * SELECTable but not LISTable, but on some servers doing an
 	   * RLIST first tells the server that we support mailbox referrals.
 	   */
-	  if(F_OFF(F_ENABLE_FAST_RECENT, ps_global)
+	  if(!try_fast
 	     || !((rv = folder_exists(cntxt,f->name))
 					     & (FEX_ISMARKED | FEX_UNMARKED))){
 	      extern MAILSTATUS mm_status_result;
 
-	      if((F_ON(F_ENABLE_FAST_RECENT, ps_global) &&
-	          (rv == 0 || rv & FEX_ERROR))){
+	      if(try_fast && (rv == 0 || rv & FEX_ERROR)){
 		  failed_status = 1;
 		  mm_status_result.flags = 0L;
 	      }
 	      else{
 		  if(stream){
-		      if(!context_status_full(cntxt, stream,
-					      f->name, SA_RECENT,
+		      if(!context_status_full(cntxt, match ? NULL : stream,
+					      f->name,
+					      F_ON(F_TAB_USES_UNSEEN, ps_global)
+					        ? SA_UNSEEN : SA_RECENT,
 					      &f->uidvalidity,
 					      &f->uidnext)){
 			  failed_status = 1;
@@ -7924,7 +8504,8 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 		  else{
 		      /* so we can re-use the stream */
 		      if(!context_status_streamp_full(cntxt, streamp, f->name,
-						      SA_RECENT,
+					      F_ON(F_TAB_USES_UNSEEN, ps_global)
+					        ? SA_UNSEEN : SA_RECENT,
 						      &f->uidvalidity,
 						      &f->uidnext)){
 			  failed_status = 1;
@@ -7933,12 +8514,19 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 		  }
 	      }
 
-	      rv = ((mm_status_result.flags & SA_RECENT)
-		    && (*find_recent = mm_status_result.recent))
-		     ? FEX_ISMARKED : 0;
+	      if(F_ON(F_TAB_USES_UNSEEN, ps_global)){
+		  rv = ((mm_status_result.flags & SA_UNSEEN)
+			&& (*find_recent = mm_status_result.unseen))
+			 ? FEX_ISMARKED : 0;
+	      }
+	      else{
+		  rv = ((mm_status_result.flags & SA_RECENT)
+			&& (*find_recent = mm_status_result.recent))
+			 ? FEX_ISMARKED : 0;
+	      }
 
 	      /* we don't know how many in this case */
-	      if(F_ON(F_ENABLE_FAST_RECENT, ps_global))
+	      if(try_fast)
 		*find_recent = 0L;	/* consistency, boy! */
 	  }
 
@@ -7982,16 +8570,28 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
  *        nicknames can only be set by configuration...
  */
 char *
-folder_is_nick(nickname, flist)
+folder_is_nick(nickname, flist, flags)
     char *nickname;
     void *flist;
+    int   flags;
 {
     register  int  i = 0;
     FOLDER_S *f;
 
     while(f = folder_entry(i, flist)){
-	if(f->nickname && strcmp(nickname, f->nickname) == 0)
-	  return(f->name);
+	if(f->nickname && strcmp(nickname, f->nickname) == 0){
+	    char source[MAILTMPLEN], *target = NULL;
+
+	    /*
+	     * If f is a maildrop, then we want to return the
+	     * destination folder, not the whole #move thing.
+	     */
+	    if(!(flags & FN_WHOLE_NAME)
+	       && check_for_move_mbox(f->name, source, sizeof(source), &target))
+	      return(target);
+	    else
+	      return(f->name);
+	}
 	else
 	  i++;
     }
@@ -8295,7 +8895,7 @@ shuffle_incoming_folders(context, index)
 	(*alval)[new_index_within_var] = stmp;
 
 	set_current_val(&ps_global->vars[V_INCOMING_FOLDERS], TRUE, FALSE);
-	write_pinerc(ps_global, ew);
+	write_pinerc(ps_global, ew, WRP_NONE);
 
 	return(1);
     }
@@ -8463,7 +9063,8 @@ news_build(given_group, expanded_group, error, fcc, mangled)
 
 #ifdef	DEBUG
     for(ntmp = nglist; debug >= 9 && ntmp; ntmp = ntmp->next)
-      dprint(9, (debugfile, "Parsed group: --[%s]--\n", ntmp->groupname));
+      dprint(9, (debugfile, "Parsed group: --[%s]--\n",
+	     ntmp->groupname ? ntmp->groupname : "?"));
 #endif
 
     /* If we are doing validation */
@@ -8495,7 +9096,9 @@ news_build(given_group, expanded_group, error, fcc, mangled)
 		server++){
 		sprintf(ng_ref, "{%.*s/nntp}#news.",
 			sizeof(ng_ref)-30, *server);
-		if(stream = pine_mail_open(stream, ng_ref, OP_HALFOPEN))
+		if(stream = pine_mail_open(stream, ng_ref,
+					   OP_HALFOPEN|SP_USEPOOL|SP_TEMPUSE,
+					   NULL))
 		  break;
 	    }
 	    if(!server || !stream){
@@ -8538,7 +9141,9 @@ news_build(given_group, expanded_group, error, fcc, mangled)
 			  sizeof(ng_ref)/2 - 10, *server,
 			  sizeof(ng_ref)/2 - 10, ntmp->groupname);
 		  ps_global->noshow_error = 1;
-		  stream = pine_mail_open(stream, ng_ref, OP_SILENT);
+		  stream = pine_mail_open(stream, ng_ref,
+					  OP_SILENT|SP_USEPOOL|SP_TEMPUSE,
+					  NULL);
 		  ps_global->noshow_error = 0;
 		  if(stream)
 		    add_newsgrp_cache(ntmp->groupname, ntmp->found = Found);
@@ -8852,6 +9457,7 @@ pine_mail_list(stream, ref, pat, options)
     int   we_open = 0;
     char *halfopen_target;
     char  source[MAILTMPLEN], *target = NULL;
+    MAILSTREAM *ourstream = NULL;
 
     dprint(7, (debugfile, "pine_mail_list: ref=%s pat=%s%s\n", 
 	       ref ? ref : "(NULL)",
@@ -8883,25 +9489,38 @@ pine_mail_list(stream, ref, pat, options)
     }
 
     if(we_open){
-	long flags = (OP_HALFOPEN | OP_SILENT);
+	long flags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
 
-#ifdef	DEBUG
-	if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	  flags |= OP_DEBUG;
-#endif
-	/*
-	 * We don't have to worry about setting OP_TRYALT since
-	 * F_PREFER_ALT_AUTH feature handles it globally in pine.c.
-	 */
+	stream = sp_stream_get(halfopen_target, SP_MATCH);
+	if(!stream)
+	  stream = sp_stream_get(halfopen_target, SP_SAME);
 
-	if((stream = mail_open(NIL, halfopen_target, flags)) == NIL)
-	  return(FALSE);
+	if(!stream){
+	    DRIVER *d;
+
+	    /*
+	     * POP is a special case. We don't need to have a stream
+	     * to call mail_list for a POP name. The else part is the
+	     * POP part.
+	     */
+	    if((d = mail_valid(NIL, halfopen_target, (char *) NIL))
+	       && (d->flags & DR_HALFOPEN)){
+		stream = pine_mail_open(NIL, halfopen_target, flags, NULL);
+		ourstream = stream;
+		if(!stream)
+		  return(FALSE);
+	    }
+	    else
+	      stream = NULL;
+	}
 
 	mail_list(stream, ref, pat);
-	mail_close(stream);
     }
     else
       mail_list(stream, ref, pat);
+    
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(TRUE);
 }
@@ -8973,6 +9592,30 @@ folder_list_popup(sparms, in_handle)
 	    fldr_popup[n++].label.string = (fp && fp->isdir)
 					     ? "&Select Directory"
 					     : "&Select Folder";
+	}
+
+	if((i = menu_binding_index(sparms->keys.menu, MC_DELETE)) >= 0
+	   && bitnset(i, sparms->keys.bitmap)){
+	    fldr_popup[n].type	      = tQueue;
+	    fldr_popup[n].data.val    = sparms->keys.menu->keys[i].bind.ch[0];
+	    fldr_popup[n].label.style = lNormal;
+	    fldr_popup[n++].label.string = "Delete Folder";
+	}
+
+	if((i = menu_binding_index(sparms->keys.menu, MC_EXPORT)) >= 0
+	   && bitnset(i, sparms->keys.bitmap)){
+	    fldr_popup[n].type	      = tQueue;
+	    fldr_popup[n].data.val    = sparms->keys.menu->keys[i].bind.ch[0];
+	    fldr_popup[n].label.style = lNormal;
+	    fldr_popup[n++].label.string = "Export Folder";
+	}
+
+	if((i = menu_binding_index(sparms->keys.menu, MC_CHK_RECENT)) >= 0
+	   && bitnset(i, sparms->keys.bitmap)){
+	    fldr_popup[n].type	      = tQueue;
+	    fldr_popup[n].data.val    = sparms->keys.menu->keys[i].bind.ch[0];
+	    fldr_popup[n].label.style = lNormal;
+	    fldr_popup[n++].label.string = "Check New Messages";
 	}
 
 	if(n)
@@ -9064,7 +9707,7 @@ folder_popup_config(fs, km, popup)
 
     if(fs->km == &folder_km){
 	if((fs->context->next || fs->context->prev) && !fs->combined_view){
-	    FLDRPOPUP(popup, 'e', "Collection List");
+	    FLDRPOPUP(popup, '<', "Collection List");
 	    popup++;
 	}
     }

@@ -29,6 +29,7 @@ extern int errno;
 #include <string.h>
 #include <sys/types.h>
 #include <sys/dir.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/
@@ -37,6 +38,10 @@ extern int errno;
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h>
+
+/*------- Mac OS X specific includes -----------------------------------*/
+#include <Carbon/Carbon.h>
+#include <ApplicationServices/ApplicationServices.h>
 
 
 
@@ -183,5 +188,7 @@ typedef unsigned short usign16_t;
  */
 /* extern int   sys_nerr; */
 
+/* the following is so there won't be collisions is OSX */
+#define normal pico_normal
 
 #endif /* _PICO_OS_INCLUDED */

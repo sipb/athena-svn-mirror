@@ -125,7 +125,7 @@ mta_handoff(header, body, errbuf, len)
 
     *errbuf = '\0';
     if(cmd){
-	dprint(4, (debugfile, "call_mailer via cmd: %s\n", cmd));
+	dprint(4, (debugfile, "call_mailer via cmd: %s\n", cmd ? cmd : "?"));
 
 	(void) mta_parse_post(header, body, cmd, errbuf, len);
 	return(1);
@@ -202,7 +202,7 @@ mta_parse_post(header, body, cmd, errs, len)
     char   *result = NULL;
     PIPE_S *pipe;
 
-    dprint(1, (debugfile, "=== mta_parse_post(%s) ===\n", cmd));
+    dprint(1, (debugfile, "=== mta_parse_post(%s) ===\n", cmd ? cmd : "?"));
 
     if(pipe = open_system_pipe(cmd, &result, NULL,
 		 PIPE_STDERR|PIPE_WRITE|PIPE_PROT|PIPE_NOSHELL|PIPE_DESC, 0)){
@@ -210,7 +210,7 @@ mta_parse_post(header, body, cmd, errs, len)
 			       (TCPSTREAM *) pipe))
 	  strncpy(errs, "Error posting.", len-1);
 
-	if(close_system_pipe(&pipe) && !*errs){
+	if(close_system_pipe(&pipe, NULL, 0) && !*errs){
 	    sprintf(errs, "Posting program %.*s returned error", len-40, cmd);
 	    if(result)
 	      display_output_file(result, "POSTING ERRORS", errs, 1);

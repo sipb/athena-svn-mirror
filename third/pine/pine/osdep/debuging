@@ -90,23 +90,37 @@ FILE *dfile;
     struct stat dbuf, tbuf;
     time_t now = time((time_t *)0);
 
-    if(!(dfile && fstat(fileno(dfile), &dbuf) != 0))
+    if(!(dfile && fstat(fileno(dfile), &dbuf) == 0))
       return;
 
-    fprintf(dfile, "\nsave_debug_on_crash: Version %s: debug level %d\n",
-	pine_version, debug);
+    fprintf(dfile, "save_debug_on_crash: Version %s: debug level %d",
+	    pine_version, debug);
     fprintf(dfile, "\n                   : %s\n", ctime(&now));
 
     build_path(crashfile, ps_global->home_dir, ".pine-crash",sizeof(crashfile));
 
-    fprintf(dfile, "\nAttempting to save debug file to %s\n", crashfile);
+    fprintf(dfile, "Attempting to save debug file to %s\n\n", crashfile);
     fprintf(stderr,
 	"\n\n       Attempting to save debug file to %s\n\n", crashfile);
 
     /* Blat out last n keystrokes */
-    fputs("========== Latest keystrokes ==========\n", dfile);
+    fputs("========== Latest Keystrokes =========================\n", dfile);
     while((i = key_playback(0)) != -1)
       fprintf(dfile, "\t%s\t(0x%04.4x)\n", pretty_command(i), i);
+
+    fputs("========== Latest Keystrokes End =====================\n\n", dfile);
+
+#ifdef DEBUGJOURNAL
+    fputs("========== Append DebugJournal =======================\n", dfile);
+#else /* DEBUGJOURNAL */
+    fputs("========== Append Journal =======================\n", dfile);
+#endif /* DEBUGJOURNAL */
+    debugjournal_to_file(dfile);
+#ifdef DEBUGJOURNAL
+    fputs("========== Append DebugJournal End ===================\n", dfile);
+#else /* DEBUGJOURNAL */
+    fputs("========== Append Journal End ===================\n", dfile);
+#endif /* DEBUGJOURNAL */
 
     /* look for existing debug file */
     for(i = 1; i <= ps_global->debug_nfiles; i++){

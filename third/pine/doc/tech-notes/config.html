@@ -126,7 +126,10 @@ will be retained.
 References to environment variables may be included in the <EM>Pine</EM>
 configuration files.  The format is <CODE>$variable</CODE> or
 <CODE>${variable}.</CODE> The character <CODE>~</CODE> will be expanded to the
-<CODE>$HOME</CODE> environment variable.  <P>
+<CODE>$HOME</CODE> environment variable.
+For a more complete explanation of how environment variables work, see
+the section
+<A HREF="config-notes.html#env-variables">Using Environment Variables</A>.<P>
 
 When environment variables are used for <EM>Pine</EM> settings which take lists,
 you must have an environment variable set for each member of the list. 
@@ -443,6 +446,10 @@ you must add them to your
 otherwise they become part
 of the rich header set which you only see when you press the rich header
 command.
+(If you are looking for a way to change which headers are <EM>displayed</EM>
+when you view a message, take a look at the
+<A HREF="#viewer-hdrs"><EM>viewer-hdrs</EM></A>
+option instead.)
 Here's an example which shows how you might set your From address
 <P>
 <CENTER><SAMP>From: Full Name &lt;user@example.com&gt;</SAMP></CENTER>
@@ -502,14 +509,56 @@ Nor is there currently an &quot;escape&quot; mechanism provided
 to make this work.
 <P>
 
+<DT> <A NAME="dead-letter-files"><EM>dead-letter-files</EM></A>
+
+<DD> This option affects <EM>Pine</EM>'s behavior when you cancel a message being
+composed.  <EM>Pine</EM>'s usual behavior is to write the canceled message to
+a file named 
+&quot;dead.letter&quot; in your home directory, or
+&quot;DEADLETR&quot; when using <EM>PC-Pine</EM>,
+overwriting any previous message.
+<P>
+If you set this option to a value higher than one, then that many copies
+of dead letter files will be saved.
+For example, if you set this option to &quot;3&quot; then you may have
+files named
+&quot;DEADLETR&quot;,
+&quot;DEADLETR2&quot;, and
+&quot;DEADLETR3&quot;; or
+&quot;dead.letter&quot;,
+&quot;dead.letter2&quot;, and
+&quot;dead.letter3&quot;.
+In this example, the most recently cancelled message will be in
+&quot;dead.letter&quot;,
+and the third most recently cancelled message will be in
+&quot;dead.letter3&quot;.
+The fourth most recently cancelled message will no longer be saved.
+
+<P>
+If you set this option to zero, then NO record of canceled messages is
+maintained.
+<P>
+If the feature
+<A HREF="#quell-dead-letter-on-cancel">Quell-Dead-Letter-On-Cancel</A>
+is set, that overrides whatever you set for this option.
+If this option had existed at the time, then the Quell feature would not
+have been added, but it is still there for backwards compatibility.
+So, in order for this option to have the desired effect, make sure the
+Quell feature is turned off.
+<P>
+
 <DT> <A NAME="def-comp"><EM>default-composer-hdrs</EM></A>
 
-<DD> You can decide which headers you want visible when composing outgoing
-email using this option.  You can specify any of the regular set, any rich
-header or any custom header which you have already defined.  If you use
-this setting at all, you must specify all the headers you want to see, you
-can't just add to the regular header set.  The default set is To:, Cc:,
-Attchmnt:, and Subject:.<p>
+<DD> You can control which headers you want visible when composing outgoing
+email using this option.
+You can specify any of the regular set, any
+Rich Header,
+or any <A HREF="#cust-hdr"><EM>Customized-Hdrs</EM></A>
+which you have already defined.
+If you use this setting at all, you must specify all the
+headers you want to see, you can't just add to the regular header set.
+The default set is To:, Cc:, Attchmnt:, and Subject:.
+<P>
 
 Note that the "Newsgroups:" header will be abbreviated in the Composer
 display, but should be spelled out in full here.
@@ -758,6 +807,9 @@ The number is unique to the current <EM>Pine</EM> session
 and is only generated once per session.
 </DL>
 
+<P>
+The feature
+<A HREF="#disable-terminal-reset-for-display-filters"><EM>disable-terminal-reset-for-display-filters</EM></A> is related.
 <P>
 Performance caveat/considerations:
 <BR>
@@ -1399,6 +1451,136 @@ the main menu. <P>
 <DD> <A HREF="#keyname-color"><EM>KeyName Color</EM></A>.
 <P>
 
+<DT> <A NAME="keywords"><EM>keywords</EM></A>
+
+<DD> You may define your own set of keywords and optionally set them on a
+message by message basis.
+These are similar to the &quot;Important&quot; flag which the user
+may set using the Flag command.
+The difference is that the Important flag is always present for each folder.
+User-defined keywords are chosen by the user.
+You may set up the list of possible keywords here.
+Then you use the Flag command
+to set or clear the keywords in each message.
+
+<P>
+Keywords may be used when Selecting messages (Select Keyword).
+You will need to enable the
+<A HREF="#enable-aggregate-command-set">enable-aggregate-command-set</A>
+option to use Select.
+Keywords may also be used in the Patterns of Rules (Filters, Indexcolors, etc).
+Filter rules may be used to set keywords automatically.
+Keywords may be displayed as part of the Subject of a message by using
+the SUBJKEY or SUBJKEYINIT tokens in the
+<A HREF="#index-format">Index-Format</A> option.
+The <A HREF="#keyword-surrounding-chars"><EM>Keyword-Surrounding-Chars</EM></A>
+option may be used to modify the display of keywords using
+SUBJKEY and SUBJKEYINIT slightly.
+Keywords may also be displayed in a column of their own in the MESSAGE INDEX
+screen by using the KEY or KEYINIT tokens.
+It is also possible to color keywords in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+Keywords are not supported by all mail servers.
+<P>
+You may give keywords nicknames if you wish.
+If the keyword definition you type in contains a SPACE character, then the
+actual value of the keyword is everything after the last SPACE and the
+nickname for that keyword is everything before the last SPACE.
+For example, suppose you are trying to interoperate with another email program
+which uses a particular keyword with an unpleasant name.
+Maybe it uses a keyword called
+<P>
+<CENTER><SAMP>VendorName.SoftwareName.08</SAMP></CENTER>
+<P>
+but for you that keyword means that the message is work-related.
+You could define a keyword to have the value
+<P>
+<CENTER><SAMP>Work VendorName.SoftwareName.08</SAMP></CENTER>
+<P>
+and then you would use the name &quot;Work&quot; when dealing with
+that keyword in <EM>Pine</EM>.
+If you defined it as
+<P>
+<CENTER><SAMP>My Work VendorName.SoftwareName.08</SAMP></CENTER>
+<P>
+the nickname would be everything before the last SPACE, that is the nickname
+would be &quot;My Work&quot;.
+<P>
+Some commonly used keywords begin with dollar signs.
+This presents a slight complication, because the dollar sign is normally used
+to signify
+<A HREF="config-notes.html#env-variables">environment variable expansion</A>
+in the <EM>Pine</EM> configuration.
+In order to specify a keyword which begins with a dollar sign you must
+precede the dollar sign with a second dollar sign to escape its special
+meaning.
+For example, if you want to include the keyword
+<P>
+<CENTER><SAMP>$Label1</SAMP></CENTER>
+<P>
+as one of your possible keywords, you must enter the text
+<P>
+<CENTER><SAMP>$$Label1</SAMP></CENTER>
+<P>
+instead.
+<P>
+
+<DT> <A NAME="keyword-surrounding-chars"><EM>keyword-surrounding-chars</EM></A>
+
+<DD> This option controls a minor aspect of <EM>Pine</EM>'s MESSAGE INDEX and MESSAGE
+TEXT screens.
+If you have modified the
+<A HREF="#index-format"><EM>Index-Format</EM></A> option
+so that either the &quot;SUBJKEY&quot; or &quot;SUBJKEYINIT&quot; tokens
+are used to display keywords or their initials along with the Subject; then
+this option may be used to modify the resulting display slightly.
+By default, the keywords or initials displayed for these tokens will be
+surrounded with curly braces ({ and }) and a trailing space.
+For example, if keywords &quot;Work&quot; and &quot;Now&quot; are set for
+a message, the &quot;SUBJKEY&quot; token will normally look like
+<P>
+<CENTER><SAMP>{Work Now} actual subject</SAMP></CENTER>
+<P>
+and the SUBJKEYINIT token would look like
+<P>
+<CENTER><SAMP>{WN} actual subject</SAMP></CENTER>
+<P>
+The default character before the keywords is the left brace ({) and the
+default after the keywords is the right brace followed by a space (} ).
+<P>
+This option allows you to change that.
+You should set it to two values separated by a space.
+The values may be quoted if they include space characters.
+So, for example, the default value could be specified explicitly by setting this
+option to
+<P>
+<CENTER><SAMP>Keyword-Surrounding-chars="{" "} "</SAMP></CENTER>
+<P>
+The first part wouldn't need to be quoted (but it doesn't hurt).
+The second part does need the quotes because it includes a space character.
+If you wanted to change the braces to brackets you could use
+<P>
+<CENTER><SAMP>Keyword-Surrounding-chars="[" "] "</SAMP></CENTER>
+<P>
+Inside the quotes you can use backslash quote to mean quote, so
+<P>
+<CENTER><SAMP>Keyword-Surrounding-chars="&#92;"" "&#92;" "</SAMP></CENTER>
+<P>
+would produce
+<P>
+<CENTER><SAMP>"Work Now" actual subject</SAMP></CENTER>
+<P>
+It is also possible to color keywords in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+<P>
+It is not possible to change the fact that a space character is used to
+separate the keywords if more than one keyword is set for a message.
+It is also not possible to change the fact that there are no separators
+between the keyword initials if more than one keyword is set.
+<P>
+
 <DT> <A NAME="last-time"><EM>last-time-prune-questioned</EM></A>
 
 <DD> Personal configuration file only.  This variable records the month
@@ -1501,19 +1683,49 @@ SETUP CONFIGURATION window after you are done editing the signature.
 
 <DT> <A NAME="mail-check"><EM>mail-check-interval</EM></A>
 
-<DD> This option specifies, in seconds, how often <EM>Pine</EM> will check for new
-mail. If set to zero, new-mail checking is disabled. There is a minimum
-value, normally 15 seconds.
+<DD> This option specifies, in seconds,
+how often <EM>Pine</EM> will check for new mail.
+If set to zero, new-mail checking is disabled.
+(You can always manually force a new-mail check by typing ^L (Ctrl-L), which is also
+the command to refresh the screen, or by typing the Next command when the
+current message is the last message of the folder.)
+There is a minimum value for this option, normally 15 seconds.
 The default value is normally 150 seconds.
-his applies to the INBOX and to the currently open folder if that is
-different from the INBOX.
+The higher you set this option, the easier it is on the server.
 <P>
 There are some situations where automatic new-mail checking does not work.
 See the discussion about new-mail checking in <A HREF="#reopen-rule"><EM>folder-reopen-rule</EM></A>.
 <P>
-If the mailbox being check uses a
-<A HREF="config-notes.html#maildrop">Mail Drop</A>
-then there is a minimum time (<A HREF="#maildrop-check-minimum"><EM>maildrop-check-minimum</EM></A>) between new mail checks.
+The new-mail checking will not happen exactly at the frequency that you specify.
+For example, <EM>Pine</EM> may elect to defer a non-INBOX mail check if you
+are busy typing.
+Or, it may check more frequently than you have specified if that is
+thought to be necessary to keep the server from closing the connection
+to the folder due to inactivity.
+If <EM>Pine</EM> checks for new mail as a side effect of another command, it will reset
+the timer, so that new-mail checking may seem to happen irregularly instead of
+every X seconds like clockwork.
+<P>
+If you are anxious to know about new mail as soon as possible, set the check
+interval low, and you'll know about the new mail by approximately
+that amount of time after it arrives.
+If you aren't so worried about knowing right away, set this option to a
+higher value.
+That will save the server some processing time and may save you some of
+the time you spend waiting for new-mail checks to happen if you are
+dealing with a slow server or slow network connection.
+<P>
+If you suspect that new-mail checking is causing slow downs for you,
+you may want to look into the options
+<A HREF="#quell-mailchecks-composing-except"><EM>Quell-Mailchecks-Composing-Except-Inbox</EM></A>,
+<A HREF="#quell-mailchecks-composing-inbox"><EM>Quell-Mailchecks-Composing-Inbox</EM></A> and
+<A HREF="#mail-check-noncurr"><EM>Mail-Check-Interval-Noncurrent</EM></A>,
+which refine when mail checking is done.
+<P>
+If the mailbox being check uses a <A HREF="config-notes.html#maildrop">Mail Drop</A> then
+there is a minimum time
+(<A HREF="#maildrop-check-minimum"><EM>maildrop-check-minimum</EM></A>)
+between new-mail checks.
 Because of this minimum you may notice that new mail does not
 appear promptly when you expect it.
 The reason for this is to protect the server from over-zealous opening and
@@ -1524,6 +1736,35 @@ in which the user's IMAP connection will be broken due to inactivity timers
 on the server. Another side effect is that the
 <A HREF="#user-input"><EM>user-input-timeout</EM></A>
 option won't work.
+<P>
+
+<DT> <A NAME="mail-check-noncurr"><EM>mail-check-interval-noncurrent</EM></A>
+
+<DD> This option is closely related to the
+<A HREF="#mail-check"><EM>Mail-Check-Interval</EM></A>
+option, as well as the
+<A HREF="#quell-mailchecks-composing-except"><EM>Quell-Mailchecks-Composing-Except-Inbox</EM></A> and
+<A HREF="#quell-mailchecks-composing-inbox"><EM>Quell-Mailchecks-Composing-Inbox</EM></A> options.
+If the &quot;Mail-Check-Interval&quot; option is set to zero, then automatic
+new-mail checking is disabled and this option will have no effect.
+<P>
+Normally this option is set to zero, which means that the value used will be
+the same as the value for the &quot;Mail-Check-Interval&quot;.
+If you set this option to a value different from zero
+(usually larger than the value for &quot;Mail-Check-Interval&quot;)
+then that is the check interval that will be used
+for folders which are not the currently open folder or the INBOX.
+You may not even have any folders that are noncurrent and not the INBOX.
+If you do, it is likely that they are due to
+<A HREF="#stay-open-folders">Stay-Open-Folders</A>
+you have configured.
+This option also affects the rate of mail checking done on cached
+connections to folders you previously had open but are no longer actively
+using.
+You aren't expected to understand that last sentence, but if you are interested
+take a look at
+<A HREF="#max-remote-connections">Max-Remote-Connections</A>,
+and the related options.
 <P>
 
 <DT> <A NAME="mail-directory"><EM>mail-directory</EM></A>
@@ -1543,7 +1784,7 @@ which to look for mail capability data.  <P>
 
 <DT> <A NAME="maildrop-check-minimum"><EM>maildrop-check-minimum</EM></A>
 
-<DD> New mail checking for a
+<DD> New-mail checking for a
 <A HREF="config-notes.html#maildrop">Mail Drop</A>
 is a little different from new
 mail checking for a regular folder.
@@ -1553,29 +1794,115 @@ kept open and so the cost of checking
 Because of this additional cost we set a minimum time that
 must pass between checks.
 This minimum only applies to the automatic checking done by <EM>Pine</EM>.
-If you force a check by typing ^L or by typing the Next command when you are
+If you force a check by typing ^L (Ctrl-L) or by typing the Next command when you are
 at the end of a folder index, then the check is done right away.
 <P>
 This option specifies, in seconds, the <EM>minimum</EM> time between Mail Drop
-new mail checks.
+new-mail checks.
 You may want to set this minimum high in order to avoid experiencing some
 of the delays associated with the checks.
 Note that the time between checks is still controlled by the regular
 <A HREF="#mail-check"><EM>Mail-Check-Interval</EM></A> option.
 When <EM>Pine</EM> is about to do an automatic check for new mail (because
 the Mail-Check-Interval has expired) then if the time since the last
-new mail check
+new-mail check
 of any open Mail Drops has been greater than the MailDrop-Check-Minimum,
 the Mail Drop is checked for new mail as well.
 Therefore, it is only useful to set this option to a value that is higher
 than the Mail-Check-Interval.
 <P>
-If this option is set to zero, automatic Mail Drop new mail
+If this option is set to zero, automatic Mail Drop new-mail
 checking is disabled.
 There is a minimum value, normally 60 seconds.
 The default value is normally 60 seconds as well.
 This applies to the INBOX and to the currently open folder if that is
 different from the INBOX.
+<P>
+
+<DT> <A NAME="max-remote-connections"><EM>max-remote-connections</EM></A>
+
+<DD> This option affects low-level behavior of Pine.
+The default value for this option is <EM>2</EM>.
+If your INBOX is accessed using the IMAP protocol
+from an IMAP server, that connection is kept open throughout the
+duration of your <EM>Pine</EM> session, independent of the value of this option.
+The same is true of any 
+<A HREF="#stay-open-folders">Stay-Open-Folders</A>
+you have defined.
+This option controls <EM>Pine</EM>'s behavior when connecting to remote IMAP folders
+other than your INBOX or your Stay-Open-Folders.
+It specifies the maximum number of remote IMAP connections (other than
+those mentioned above) that <EM>Pine</EM> will use for accessing the rest of your
+folders.
+If you set this option to zero, you will turn off most remote connection
+re-use.
+It's difficult to understand exactly what this option does, and it is usually
+fine to leave it set to its default value.
+It is probably more likely that you will be interested in setting the
+<A HREF="#stay-open-folders">Stay-Open-Folders</A> option
+instead of changing the value of this option.
+A slightly longer explanation of what is going on with this option
+is given in the next paragraphs.
+
+<P>
+There are some time costs involved in opening and closing remote IMAP 
+folders, the main costs being the time you have to wait for the connection
+to the server and the time for the folder to open.
+Opening a folder may involve not only the time the server takes to do its
+processing but time that <EM>Pine</EM> uses to do filtering.
+These times can vary widely.
+They depend on how loaded the server is, how large
+the folder being opened is, and how you set up filtering, among other things.
+Once <EM>Pine</EM> has opened a connection to a particular folder, it will attempt
+to keep that connection open in case you use it again.
+In order to do this,
+<EM>Pine</EM> will attempt to use the Max-Remote-Connections (the value of
+this option) IMAP connections you have alloted for this purpose.
+<P>
+For example, suppose the value of this option is set to &quot;2&quot;.
+If your INBOX is accessed on a remote server using the IMAP protocol, that
+doesn't count as one of the remote connections but it is always kept open.
+If you then open another IMAP folder, that would be your first
+remote connection counted as one of the Max-Remote-Connections connections.
+If you open a third folder the second will be left open, in case you
+return to it.
+You won't be able to tell it has been left open.
+It will appear to be closed when you leave the folder but the connection
+will remain in the background.
+Now suppose you go back to the second folder (the first folder after the
+INBOX).
+A connection to that folder is still open so you won't have to wait
+for the startup time to open it.
+Meanwhile, the connection to the third folder will be left behind.
+Now, if you open a fourth folder, you will bump into the
+Max-Remote-Connections limit, because this will be the third folder other
+than INBOX and you have the option set to &quot;2&quot;.
+The connection that is being used for
+the third folder will be re-used for this new fourth folder.
+If you go back to the third folder after this, it is no longer already
+connected when you get there.
+You'll still save some time since <EM>Pine</EM> will re-use the connection to the
+fourth folder and you have already logged in on that connection,
+but the folder will have to be re-opened from scratch.
+<P>
+If a folder is large and the startup cost is dominated by the time it takes
+to open that folder or to run filters on it, then it will pay to make the
+value of this option large enough to keep it open.
+On the other hand, if you only revisit a handful of folders or if
+the folders are small, then it might
+make more sense to keep this number small so that the reconnect
+time (the time to start up a new connection and authenticate)
+is eliminated instead.
+<P>
+You may also need to consider the impact on the server.
+On the surface, a larger number here may cause a larger impact on the
+server, since you will have more connections open to the server.
+On the other hand, not only will <EM>you</EM> be avoiding the startup costs
+associated with reopening a folder, but the <EM>server</EM> will be
+avoiding those costs as well.
+<P>
+When twenty five minutes pass without any active use of an IMAP connection
+being saved for possible re-use, that connection will be shut down,
 <P>
 
 <DT> <A NAME="mimetype-search-path"><EM>mimetype-search-path</EM></A>
@@ -1595,6 +1922,71 @@ have previously run <EM>Pine</EM>.  It takes as its value a <EM>Pine</EM> versio
 number.  <EM>Pine</EM> versions less than the specified value will supress this
 special screen while versions equal to or greater than that specified
 will behave normally. <P>
+
+<DT> <A NAME="newmail-fifo-path"><EM>newmail-fifo-path</EM></A>
+
+<DD> This option is only available in UNIX <EM>Pine</EM>.
+However, there is a very similar feature built in to <EM>PC-Pine</EM>.
+In <EM>PC-Pine</EM>'s Config menu at the top of the screen
+is an option called &quot;New Mail Window&quot;.
+<P>
+You may have <EM>Pine</EM> create a FIFO special file (also called a named pipe, see mkfifo(3) and fifo(4)) where
+it will send a one-line message each time a new message is received in
+the current folder, the INBOX, or any open
+<A HREF="#stay-open-folders">Stay-Open-Folders</A>.
+To protect against two different <EM>Pine</EM>s both writing to the same FIFO, <EM>Pine</EM>
+will only create the FIFO and write to it if it doesn't already exist.
+<P>
+A possible way to use this option would be to have a separate window
+on your screen running the command
+<P>
+<CENTER><SAMP>cat filename</SAMP></CENTER>
+<P>
+where &quot;filename&quot; is the name of the file given for this option.
+Because the file won't exist until after you start <EM>Pine</EM>, you must <EM>first</EM>
+start <EM>Pine</EM> and <EM>then</EM> run the &quot;cat&quot; command.
+You may be tempted to use &quot;tail -f filename&quot; to view the new
+mail log.
+However, the common implementations of the tail command will not do what you
+are hoping.
+<P>
+The width of the messages produced for the FIFO may be altered with the
+<A HREF="#newmail-window-width">NewMail-Window-Width</A> option.
+<P>
+On some systems, fifos may only be created in a local filesystem.
+In other words, they may not be in NFS filesystems.
+This requirement is not universal.
+If the system you are using supports it, it should work.
+(It is often the case that your home directory is in an NFS filesystem.
+If that is the case, you might try using a file in the &quot;/tmp&quot;
+filesystem, which is usually a local filesytem.)
+Even when it is possible to use an NFS-mounted filesystem as a place to name
+the fifo (for example, your home directory), it will still be the case that
+the reader (probably the &quot;cat&quot; command) and the
+writer (<EM>Pine</EM>) of the fifo must be running on the same system. <P>
+
+<DT> <A NAME="newmail-window-width"><EM>newmail-window-width</EM></A>
+
+<DD> UNIX <EM>Pine</EM> only.
+<P>
+This option is only useful if you have turned on the
+<A HREF="#newmail-fifo-path">NewMail-FIFO-Path</A> option.
+That option causes new mail messages to be sent to a fifo file.
+Those messages will be 80 characters wide by default.
+You can change the width of the messages by changing this option.
+For example, if you are reading those messages in another window you might
+want to set this width to the width of that other window. <P>
+For UNIX <EM>Pine</EM>, this option is only useful if you have turned on the
+<A HREF="#newmail-fifo-path">NewMail-FIFO-Path</A> option.
+That option causes new mail messages to be sent to a fifo file.
+Those messages will be 80 characters wide by default.
+You can change the width of those messages by changing this option.
+For example, if you are reading those messages in another window you might
+want to set this width to the width of that other window.
+<P>
+If you are using <EM>PC-Pine</EM>, it has an option in the Config menu to turn
+on the &quot;New Mail Window&quot;.
+The present option also controls the width of that window.
 
 <DT> <A NAME="news-active"><EM>news-active-file-path</EM></A>
 
@@ -1674,7 +2066,7 @@ There is no way to set different values for different newsgroups or servers.
 <DT> <A NAME="nntp-server"><EM>nntp-server</EM></A>
 
 <DD> One or more NNTP servers (host name or IP address) which <EM>Pine</EM> will
-use for reading and sending news.
+use for reading and posting news.
 If you read and post news to and from a single
 NNTP server, you can get away with only setting the <EM>nntp-server</EM>
 variable and leaving the <EM>news-collections</EM> variable unset.
@@ -1684,6 +2076,31 @@ news collection for you, assuming that server as the news server
 and assuming that you will use the NNTP protocol and a local newsrc
 configuration file for reading news.
 See also <A HREF="#configuring-news">Configuring News</A>.
+<P>
+Your NNTP server may offer NNTP &quot;AUTHINFO SASL&quot;
+or &quot;AUTHINFO USER&quot; authentication.
+It may even require it.
+If your NNTP server does offer such authentication you may specify a user name
+parameter to cause <EM>Pine</EM> to attempt to authenticate.
+The same is true for the server name in a folder collection which uses NNTP.
+This parameter requires an associated value,
+the username identifier with which to establish the server connection.
+An example might be:
+
+<P>
+<CENTER><SAMP>nntpserver.example.com/user=katie</SAMP></CENTER>
+<P>
+
+If authentication is offered by the server, this will cause <EM>Pine</EM> to
+attempt to use it.
+If authentication is not offered by the server, this will cause <EM>Pine</EM>
+to fail with an error similar to:
+
+<P>
+<CENTER><SAMP>Error: NNTP authentication not available</SAMP></CENTER>
+<P>
+For more details about the server name possibilities see
+<A HREF="config-notes.html#server-name-syntax">Server Name Syntax</A>.
 <P>
 
 <DT> <A NAME="norm-back"><EM>normal-background-color</EM></A>
@@ -1699,7 +2116,7 @@ This names the root of the
 tree to which the user is restricted when reading and writing folders and
 files. It is usually used in the <EM>fixed</EM> configuration file. <P>
 
-<DT> <A NAME="patterns-filters"><EM>patterns-filters</EM></A>
+<DT> <A NAME="patterns-filters2"><EM>patterns-filters2</EM></A>
 
 <DD> Matching patterns and their corresponding actions are stored in
 this variable.
@@ -1774,7 +2191,7 @@ need this functionality.
 The purpose of role files is for sharing roles.
 <P>
 
-<DT> <A NAME="patterns-scores"><EM>patterns-scores</EM></A>
+<DT> <A NAME="patterns-scores2"><EM>patterns-scores2</EM></A>
 
 <DD> Matching patterns and their corresponding actions are stored in
 this variable.
@@ -1893,6 +2310,8 @@ in your default folder collection.
 
 <DD> By default, <EM>Pine</EM> will ask at the beginning of each month whether or not
 you want to rename your sent-mail folder to a name like sent-mail-month-year.
+(See the feature <A HREF="#prune-uses-yyyy-mm">prune-uses-yyyy-mm</A> to
+change the format of the folder to sent-mail-yyyy-mm.)
 It will also ask whether you would like to delete old sent-mail folders.
 If you have defined
 <A HREF="#read-msg-fold"><EM>read-message-folder</EM></A>
@@ -1910,6 +2329,91 @@ and you may tell <EM>Pine</EM> to not ask about deleting old folders.<P>
 <DT> <A NAME="quote3-foreground-color"><EM>quote3-foreground-color</EM></A>
 
 <DD> <A HREF="#quote-colors"><EM>Quote Colors</EM></A>.
+<P>
+
+<DT> <A NAME="quote-suppression-threshold"><EM>quote-suppression-threshold</EM></A>
+
+<DD> This option should be used with care.
+It will cause some of the quoted text to be eliminated from the
+display when viewing a message in the MESSAGE TEXT screen.
+For example, if you set the Quote-Suppression-Threshold to the
+value &quot;5&quot;,
+this will cause quoted text that is longer than five lines to be truncated.
+Quoted text of five or fewer consecutive lines will be displayed in its entirety.
+Quoted text of more than six lines will have the first five lines displayed
+followed by a line that looks something like
+<P>
+<CENTER><SAMP>[ 12 lines of quoted text hidden from view ]</SAMP></CENTER>
+<P>
+As a special case, if exactly one line of quoted text would be hidden, the
+entire quote will be shown instead.
+So for the above example, quoted text which is exactly six lines long will
+will be shown in its entirety.
+(In other words, instead of hiding a single line and adding a line
+that announces that one line was hidden, the line is just shown.)
+<P>
+If the sender of a message has carefully chosen the quotes that he or she
+includes, hiding those quotes may change the meaning of the message.
+For that reason, <EM>Pine</EM> requires that when you want to set the value of this
+variable to something less than four lines, you actually have to set it
+to the negative of that number.
+So if you want to set this option to &quot;3&quot;, you actually have to
+set it to &quot;-3&quot;.
+The only purpose of this is to get you to think about whether or not you
+really want to do this!
+If you want to delete all quoted text you set the value of this option
+to the special value &quot;-10&quot;.
+<P>
+The legal values for this option are
+<P>
+<TABLE>   
+<TR>
+  <TD> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+  <TD> Default, don't hide anything </TD>
+</TR>
+<TR>
+  <TD> &nbsp;-1,-2,-3&nbsp;&nbsp; </TD>
+  <TD> Suppress quote lines past 1, 2, or 3 lines </TD>
+</TR>
+<TR>
+  <TD> &nbsp;4,5,6,...&nbsp; </TD>
+  <TD> Suppress if more than that many lines </TD>
+</TR>
+<TR>
+  <TD> &nbsp;&nbsp;&nbsp;-10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+  <TD> Suppress all quoted lines </TD>
+</TR>
+</TABLE>
+<P>
+If you set this option to a non-default value you may sometimes wish to
+view the quoted text that is not shown.
+When this is the case, the HdrMode (Header Mode) command may be used to
+show the hidden text.
+Typing the &quot;H&quot; command once will show the hidden text.
+Typing a second &quot;H&quot; will also turn on Full Header mode.
+The presence or absence of the HdrMode command is determined by the
+<A HREF="#enable-full-header-cmd">&quot;Enable-Full-Header-Cmd&quot;</A>
+Feature-List option in your <EM>Pine</EM> configuration, so you will want to
+be sure to turn that on if you use quote suppression.
+<P>
+For the purposes of this option, a quote is a line that begins with the
+character &quot;&gt;&quot;.
+<P>
+Quote suppression happens after long line wrapping in <EM>Pine</EM>.
+It is done that way so that messages written in the style of one long line
+per paragraph don't count as a single line as far as quote suppression goes.
+Quote suppression line counting happens on the lines you see, not the raw
+lines of the message.
+For that reason, you may sometimes see unexpected results.
+For example, if a quoted line is long, it may wrap to the next line.
+If it isn't labeled <A HREF="#quell-flowed-text">flowed</A> that will
+cause the wrapped text to be on a line by itself.
+As far as the quote suppression algorithm is concerned, this is now
+a line that is not part of the quote, so it won't be suppressed.
+On the other hand,
+<A HREF="#quote-colors">quote coloring</A>
+happens before line wrapping.
+So a line may be colored like it is a quote even though it is not suppressed.
 <P>
 
 <DT> <A NAME="read-msg-fold"><EM>read-message-folder</EM></A>
@@ -1960,7 +2464,7 @@ opened.
 <P>
 No matter what the value, the validity check is always done when the
 address book is about to be changed by the user.
-The check can be initiated manually by typing <EM>^L</EM> (control-L)
+The check can be initiated manually by typing <EM>^L</EM> (Ctrl-L)
 while in the address book maintenance screen for the remote address book.
 <P>
 
@@ -2408,8 +2912,10 @@ use for outgoing mail.  If not set, <EM>Pine</EM> passes outgoing email to the
 this variable set in order to send mail as they have no <EM>sendmail</EM>
 program.
 <P>
-If the SMTP server offers SMTP AUTH authentication you may specify a
-user name parameter to cause <EM>Pine</EM> to attempt to authenticate.
+Your SMTP server may offer SMTP AUTH authentication.
+It may even require it.
+If your SMTP server offers SMTP AUTH authentication you may specify a
+user name parameter to cause Pine to attempt to authenticate.
 This parameter requires an associated value,
 the username identifier with which to establish the server
 connection.
@@ -2428,15 +2934,26 @@ to fail sending with an error similar to:
 <CENTER><SAMP>Error: SMTP authentication not available</SAMP></CENTER>
 <P>
 
+Another type of authentication that is used by some ISPs is called
+&quot;POP before SMTP&quot; or &quot;IMAP before SMTP&quot;,
+which means that you have to authenticate
+yourself to the POP or IMAP server by opening a mailbox before you
+can send mail.
+To do this, you usually only have to open your INBOX.
+<P>
+
 To use a non-standard port number on the SMTP server, follow the hostname
 with colon portnumber.
 
 <P>
 <CENTER><SAMP>smtpserver.example.com:12345</SAMP></CENTER>
 <P>
-See the <A
-HREF="config-notes.html#smtp-server">SMTP Servers</A> section for
-some more details.  <P>
+See the
+<A HREF="config-notes.html#smtp-server">SMTP Servers</A>
+section or the
+<A HREF="config-notes.html#server-name-syntax">Server Name Syntax</A>
+section for some more details.
+<P>
 
 <DT> <A NAME="sort-key"><EM>sort-key</EM></A>
 
@@ -2501,7 +3018,7 @@ will be completely disabled.
 <DT> <A NAME="ssh-path"><EM>ssh-path</EM></A>
 
 <DD> Sets the name of the command used to open a UNIX secure shell
-connection. The default is typically <CODE>/usr/local/bin/ssh</CODE>.
+connection. The default is typically <CODE>/usr/bin/ssh</CODE>.
 <P>
 
 <DT> <A NAME="standard-printer"><EM>standard-printer</EM></A>
@@ -2519,12 +3036,149 @@ section. This is not used by <EM>PC-Pine</EM>.
 
 <DT> <A NAME="status-message-delay"><EM>status-message-delay</EM></A>
 
-<DD> If this is set to a positive number, it causes the cursor to move to
-the status line whenever a status message is printed and pause there for
-this many seconds. It will probably only be useful if the
+<DD> This option has evolved over time, causing the possible values to be
+counter-intuitive.
+Read carefully before you set this option.
+First we explain what the option does, then there is a longer discussion
+following that.
+<P>
+If this is set to zero, the default value, it has <EM>no</EM> effect.
+Positive and negative values serve two similar, but different purposes.
+<P>
+If it is set to a positive number, it causes the cursor to move to the
+status line whenever a status message is printed and pause there for this
+many seconds.
+It will probably only be useful if the 
 <A HREF="#show-cursor"><EM>show-cursor</EM></A>
-feature is also turned on. Most users should leave this set to the
-default value of zero since its only effect is to slow things down.
+feature is
+also turned on.
+Setting this option to a postive number can only be used to
+<EM>increase</EM> the status message delay.
+This may be useful for Braille displays, or other non-traditional displays.
+<P>
+If it is set to a negative number the interpretation is a bit complicated.
+Negative numbers are used to <EM>decrease</EM> the amount of delay <EM>Pine</EM> uses to
+allow you to read important status messages.
+Of course, this may cause you to miss some important messages.
+If you see a message flash by but miss what it says you can use the
+Journal command from the Main menu to read it.
+If you set this option to a negative value, the delay will be
+no more than one second less than the absolute value
+of the value you set.
+So if you set it to -1, the delay will be no more than zero seconds, no
+delay at all.
+If you set it to -2, the delay will be no more than 1 second.
+And so on, -3 is 2 seconds, -4 is 3 seconds, ...
+If the delay that <EM>Pine</EM> would have used by default is less than this delay,
+then the smaller delay set by <EM>Pine</EM> will be used.
+Setting this option to a negative value can only reduce the amount of
+delay, never increase it.
+<P>
+Here is a more detailed explanation.
+Status messages are the messages which show up spontaneously in the
+status message line, the third line from the bottom of the screen.
+By default, <EM>Pine</EM> assigns each status message it produces a minimum
+display time.
+Some status messages have a minimum display time of zero.
+You can see an example of such a message by paging up in this help text
+until you reach the top of the screen.
+If you try to page past the top you will see the message
+<P>
+<CENTER><SAMP>[Already at start of help text]</SAMP></CENTER>
+<P>
+in the status line.
+If there is another more important use of the status message line this message
+might be replaced quickly, or it even might not be shown at all.
+However, if there is no reason to get rid of the message, it might stay
+there for several seconds while you read the help.
+An example where it is replaced immediately happens when you page up in
+the help text past the top of the screen, but then type the &quot;WhereIs&quot;
+command right after paging up.
+The message will disappear immediately without causing a delay (unless you
+have set this option to a positive value) to allow you to type input for
+the &quot;WhereIs&quot; command.
+Since it isn't a very important message, <EM>Pine</EM> has set its minimum display
+time to zero seconds.
+<P>
+Other messages have minimum display times of three or more seconds.
+These are usually error messages that <EM>Pine</EM> thinks you ought to see.
+For example, it might be a message about a failed Save or a failed folder open.
+It is often the case that this minimum display time won't delay you in
+any way because the status message line is not needed for another reason.
+However, there are times when <EM>Pine</EM> has to delay what it is doing in
+order to display a status message for the minimum display time.
+This happens when a message is being displayed and <EM>Pine</EM> wants to ask
+for input from the keyboard.
+For example, when you Save a message you use the status message line.
+You get a prompt there asking for the name of the folder to save to.
+If there is a status message being displayed that has not
+yet displayed for its minimum
+time <EM>Pine</EM> will display that status message surrounded with the characters
+&gt; and &lt; to show you that it is delaying.
+That might happen, for example, if you tried to save to a folder that
+caused an error, then followed that immediately with another Save command.
+You might find yourself waiting for a status message like
+<P>
+<CENTER><SAMP>[&gt;Can't get write access to mailbox, access is readonly&lt;]</SAMP></CENTER>
+<P>
+to finish displaying for three seconds.
+If that is something you find happening to you frequently, you may use
+negative values of this option to decrease or eliminate that delay, at
+the risk of missing the message.
+<P>
+
+<DT> <A NAME="stay-open-folders"><EM>stay-open-folders</EM></A>
+
+<DD> This option affects low-level behavior of <EM>Pine</EM>.
+There is no default value for this option.
+It is related to the options
+<A HREF="#preopen-stayopen-folders">Preopen-Stayopen-Folders</A>,
+<A HREF="#max-remote-connections">Max-Remote-Connections</A>,
+and <A HREF="#offer-expunge-on-stayopen-folders">Offer-Expunge-On-Stayopen-Folders</A>.
+
+<P>
+Note: changes made to this list take effect the next time you open a
+folder in the list.
+
+<P>
+This is a list of folders that will be permanently kept open once they
+are first opened.
+The names in this list may be either the nickname of an Incoming folder
+or the full technical specification of a folder.
+The folders in this list need not be remote IMAP folders, they could usefully
+be local folders, as well.
+If a folder in the list is a newsgroup or is not accessed either locally
+or via IMAP, then the entry will be ignored.
+For example, folders accessed via NNTP or POP3 will not be kept open, since
+the way that new mail is found with those protocols involves closing and
+reopening the connection.
+<P>
+Once a Stay Open folder has been opened, new-mail checking will continue
+to happen on that folder for the rest of the <EM>Pine</EM> session.
+Your INBOX is always implicitly included in this Stay-Open list and doesn't
+need to be added explicitly.
+<P>
+Another difference that you may notice between a Stay Open folder and a
+non-Stay Open folder is which message is selected as the current message
+when you enter the folder index.
+Normally, the starting position for an incoming folder (which most Stay Open
+folders will likely be) is controlled by the
+<A HREF="#incoming-startup-rule"><EM>Incoming-Startup-Rule</EM></A>.
+However, if a folder is a Stay Open folder, when you re-enter the folder
+after the first time the current message will be the same as it was when
+you left the folder.
+An exception is made if you use the TAB command to get to the folder.
+In that case, the message number will be incremented by one from what it
+was when you left the folder.
+<P>
+The above special behavior is thought to be useful.
+However, it is special and different from what you might at first expect.
+The feature
+<A HREF="#use-reg-start-rule"><EM>Use-Regular-Startup-Rule-for-Stayopen-Folders</EM></A>
+may be used to turn off this special treatment.
+<P>
+If the message that was current when you left the folder no longer exists,
+then the regular startup rule will be used instead.
 <P>
 
 <DT> <A NAME="tcp-open-timeout"><EM>tcp-open-timeout</EM></A>
@@ -2582,6 +3236,28 @@ the messages in a thread (a conversation).
 <DD>This is the same as the option above except that the Subject
 is suppressed (is blank) if it matches the previous Subject in the thread.
 The name comes from the email client <A HREF="http://www.mutt.org/">Mutt</A>.
+Here is an example of what a mutt-like index might look like.
+In this example, the first column represents the message number, the
+<A HREF="#threading-index-style"><EM>threading-index-style</EM></A>
+is set to &quot;regular-index-with-expanded-threads&quot;, and the
+<A HREF="#threading-lastreply-character"><EM>Threading-Lastreply-Character</EM></A>
+is set to a backslash:
+<PRE>
+    1    Some topic
+    2  . Subject           original message in thread
+    3    |->               reply to 2
+    4  . |->               another reply to 2
+    5  . | &#92;->             reply to 4
+    6  . |   &#92;->           reply to 5
+    7    |     &#92;->         reply to 6
+    8    |->               another reply to 2
+    9  . |->New subject    another reply to 2 but with a New subject
+   10    | |->             reply to 9
+   11    | &#92;->             another reply to 9
+   12    |   &#92;->           reply to 11
+   13    &#92;->               final reply to 2
+   14    Next topic
+</PRE>
 </DD>
 
 <DT><EM>indent-subject-1</EM></DT>
@@ -2752,7 +3428,8 @@ The value of this option is a single character.
 This character is used instead of the vertical line character when there are
 no more replies directly to the parent of the current message.
 It can be used to &quot;round-off&quot; the bottom of the vertical line
-by setting it to a character such as a backslash.
+by setting it to a character such as a backslash (&#92;) or
+a backquote (&#96;).
 By default, the value of this option is the vertical bar character (|).
 This option may not be set to the Empty Value.
 In that case, the default will be used instead.
@@ -2902,6 +3579,55 @@ is included as the first header in the <EM>viewer-hdrs</EM> list, then all
 headers in the message except those in the list will be shown. The values
 are all case insensitive.<P>
  
+<DT> <A NAME="viewer-margin-left"><EM>viewer-margin-left</EM></A>
+
+<DD> This variable controls the left-hand vertical margin's width in
+<EM>Pine</EM>'s Message Viewing screen.
+Its value is the number of space characters preceding each displayed line.
+For consistency with
+<A HREF="#viewer-margin-right">Viewer-Margin-Right</A>,
+you may specify the column number to start in
+(column numbering begins with number 1)
+instead of the width of the margin by appending a lower case letter
+&quot;c&quot; to the number.
+For example, a value of &quot;2c&quot; means to start the text in column two,
+which is entirely equivalent to a value of &quot;1&quot;, which means to
+leave a margin of 1 space.
+<P>
+The default is a left margin of 0 (zero).
+Misconfigurations (for example, negative values or values with starting
+left columns greater than the ending right column)
+are silently ignored.
+If the number of columns for text between the Viewer-Margin-Left and
+the Viewer-Margin-Right is fewer than 8, then margins of zero will be used
+instead.
+<P>
+
+<DT> <A NAME="viewer-margin-right"><EM>viewer-margin-right</EM></A>
+
+<DD> This variable controls the right-hand vertical margin's width in
+<EM>Pine</EM>'s Message Viewing screen.
+Its value is the number of space characters following each displayed line.
+You may specify the column number to end the text in
+(column numbering begins with number 1)
+instead of the width of the margin by appending a lower case letter
+&quot;c&quot; to the number.
+For example, a value of &quot;76c&quot; means to end the text in column 76.
+If the screen is 80 characters wide, this is equivalent to a value
+of &quot;4&quot;, which means to leave a margin of 4 spaces.
+However, if you use different size screens at different times, then these
+two values are not equivalent.
+<P>
+The default right margin is 4.
+Misconfigurations (for example, negative values or values with starting
+left columns greater than the ending right column)
+are silently ignored.
+If the number of columns for text between the
+<A HREF="#viewer-margin-left">Viewer-Margin-Left</A> and
+the Viewer-Margin-Right is fewer than 8, then margins of zero will be used
+instead.
+<P>
+
 <DT> <A NAME="overlap"><EM>viewer-overlap</EM></A>
 
 <DD> This option specifies an aspect of <EM>Pine</EM>'s Message Viewing screen. 
@@ -3024,6 +3750,28 @@ setRole, for selecting a role to apply to a composition.
 
 <P>
 
+<DT> <A NAME="alternate-role-menu"><EM>alternate-role-menu</EM></A>
+
+<DD> Normally the Role Command allows you to choose
+a role and compose a new message using that role.
+When this feature is set, the role command will first ask whether you want to
+Compose a new message, Forward the current message, Reply to the
+current message, or Bounce the current message.
+If you are not in the MESSAGE INDEX and are not viewing a message,
+then there is no current message and the question will be skipped.
+After you have chosen to Compose, Forward, Reply or Bounce you will
+then choose the role to be used.
+<P>
+When Bouncing the &quot;Set From&quot; address is used for the
+Resent-From header, the &quot;Set Fcc&quot; value is used for the Fcc
+provided that the option
+<A HREF="#fcc-on-bounce">&quot;Fcc-On-Bounce&quot;</A> is turned on,
+and the &quot;Use SMTP Server&quot; value is used for the SMTP server, if
+set.
+Other actions of the role are ignored when Bouncing.
+
+<P>
+
 <DT> <A NAME="assume-slow-link"><EM>assume-slow-link</EM></A>
 
 <DD> This feature affects <EM>Pine</EM>'s display routines.  If set, the normal
@@ -3059,6 +3807,10 @@ When the TAB (Next New) key is pressed, and there are no more unseen
 messages in the current (incoming message or news) folder, <EM>Pine</EM> will
 search the list of folders in the current collection for one containing
 New or Recent (new since the last time the folder was opened) messages.
+This behavior may be modified slightly with the
+<A HREF="#tab-uses-unseen-for-next-folder">Tab-Uses-Unseen-For-Next-Folder</A>
+feature which causes <EM>Pine</EM> to look for Unseen messages instead of Recent
+messages.
 By default, when such a folder is found,
 <EM>Pine</EM> will ask whether you wish to
 open the folder.
@@ -3255,10 +4007,10 @@ deleted.
 
 <DT> <A NAME="disable-2022-jp-conversions"><EM>disable-2022-jp-conversions</EM></A>
 
-<DD> By default, UNIX <EM>Pine</EM> will convert ISO-2022-JP data into EUC
-and <EM>PC-Pine</EM>
-will convert ISO-2022-JP data into Shift-JIS before displaying it.
-Conversely, when sending mail UNIX <EM>Pine</EM> will convert EUC into ISO-2022-JP
+<DD> By default, UNIX <EM>Pine</EM> will convert Japanese characters encoded as
+ISO-2022-JP data into EUC-JP and <EM>PC-Pine</EM>
+will convert the ISO-2022-JP data into Shift-JIS before displaying it.
+Conversely, when sending mail, UNIX <EM>Pine</EM> will convert EUC-JP into ISO-2022-JP
 and <EM>PC-Pine</EM> will convert Shift-JIS into ISO-2022-JP.
 If this feature is set, those conversions are turned off.
 <P>
@@ -3266,7 +4018,7 @@ Most of <EM>Pine</EM> is not set up to handle multi-byte characters or variable 
 From time to time, your display will be garbled because <EM>Pine</EM>'s word wrapping
 code, which is not aware of the possibility that characters may be
 multi-byte, may wrap a line in the middle of a character.
-<EM>Pico</EM> is also not able to edit Japanese data so you will need to use an
+<EM>Pico</EM> is also not able to edit Japanese data well so you may need to use an
 <A HREF="#enable-alt-ed"><EM>alternate editor</EM></A>
 when composing or replying to mail.
 <P>
@@ -3282,13 +4034,19 @@ are suspected of causing a problem.
 <DT> <A NAME="disable-charset-conversions"><EM>disable-charset-conversions</EM></A>
 
 <DD> By default, if your
-&quot;character-set&quot; configuration option
+<A HREF="#char-set">Character-Set</A>
+configuration option
 is different from the character set
 of the message you are viewing, then <EM>Pine</EM> will
-attempt to convert the characters to the character set you have set
-in the &quot;character-set&quot; configuration option before
+attempt to convert the characters in the message
+to the character set you have set
+in the
+<A HREF="#char-set">Character-Set</A>
+configuration option before
 sending them to your display.
-This does not work for multi-byte or variable width character sets.
+The currently supported conversions are between 8-bit character sets (e.g.
+between WINDOWS-1251 and KOI8-R), and from UTF-8 to any other character
+set.
 <P>
 If this feature is set, the conversions are turned off.
 <P>
@@ -3299,8 +4057,9 @@ In that case, <EM>Pine</EM> will not attempt any conversion.
 If there are some characters in common then <EM>Pine</EM> will attempt to convert
 those and will display the unknown characters as question marks.
 <P>
-Japanese character set conversions are controlled separately with the
-<A HREF="#disable-2022-jp-conversions"><EM>disable-2022-jp-conversions</EM></A>
+The conversion of Japanese character sets from one encoding to another
+is controlled separately by the
+<A HREF="#disable-2022-jp-conversions"><EM>Disable-2022-JP-Conversions</EM></A>
 feature.
 <P>
 
@@ -3418,6 +4177,41 @@ names above are searched for in the password file.
 <EM>Setup</EM> command will not be available.
 <P>
 
+<DT> <A NAME="disable-take-fullname"><EM>disable-take-fullname-in-addresses</EM></A>
+
+<DD> Normally, when TakeAddr is used to copy an address or addresses
+from a message into an address book entry, <EM>Pine</EM> will try to preserve
+the full name associated with each address in the list of addresses.
+The reason for this is so that if the entry is a list or later becomes a
+list, then information about the individual addresses in the list
+is preserved.
+If you would rather just have the simple addresses in the list of addresses,
+set this feature. For example, with the default setting you might
+see something like this in the ADDRESS BOOK editor after you type TakeAddr
+<P>
+<PRE>
+ Nickname  : nick
+ Fullname  : Bedrock Elders
+ Fcc       :
+ Comment   :
+ Addresses : Fred Flintstone &lt;flint@bedrock.org&gt;,
+             Barney Rubble &lt;rubble@bedrock.org&gt;
+</PRE>
+<P>
+but with this feature set it would look like
+<P>
+<PRE>
+ Nickname  : nick
+ Fullname  : Bedrock Elders
+ Fcc       :
+ Comment   :
+ Addresses : flint@bedrock.org,
+             rubble@bedrock.org
+</PRE>
+<P>
+instead. Note the difference in the Addresses field.
+<P>
+
 <DT> <A NAME="disable-take-last-comma-first"><EM>disable-take-last-comma-first</EM></A>
 
 <DD> Normally, when <EM>TakeAddr</EM> is used to copy an address
@@ -3437,6 +4231,43 @@ instead of
 It does this because many people find it useful to sort by Last name instead
 of First name. If this feature is set, then the <EM>TakeAddr</EM> command will
 not attempt to reverse the name in this manner.
+<P>
+
+<DT> <A NAME="disable-terminal-reset-for-display-filters"><EM>disable-terminal-reset-for-display-filters</EM></A>
+
+<DD> UNIX Pine only.
+<P>
+This feature affects <EM>Pine</EM>'s behavior when using
+<A HREF="#display-filters"><EM>Display-Filters</EM></A>.
+Normally, before the display filter is run, the terminal mode is reset
+to what it was before you started <EM>Pine</EM>.
+This may be necessary if the filter requires the use of the terminal.
+For example, it may need to interact with you.
+If you set this feature, then the terminal mode will not be reset.
+One thing that turning on this feature should fix is the coloring of
+quoted text in the message view, which
+breaks because the terminal reset resets the color state of the terminal
+(<A HREF="#color-config">Color Configuration</A>).
+<P>
+
+<DT> <A NAME="downgrade-multipart-to-text"><EM>downgrade-multipart-to-text</EM></A>
+
+<DD> This feature affects <EM>Pine</EM>'s behavior when sending mail.  Internet
+standards require <EM>Pine</EM> to translate all non-ASCII characters in
+messages that it sends using MIME encoding.  This encoding can be
+ostensibly broken for recipients if any agent between <EM>Pine</EM> and the
+recipient, such as an email list expander, appends text to the
+message, such as list information or advertising.  When sending such
+messages <EM>Pine</EM> attempts to protect such encoding by placing extra
+MIME boundaries around the message text.
+<P>
+These extra boundaries are invisible to recipients that 
+use MIME-aware email programs (the vast majority).  However, if
+you correspond with users of email programs that are not MIME-aware,
+or do not handle the extra boundaries gracefully, you can
+use this feature to prevent <EM>Pine</EM> from including the extra
+MIME information.  Of course, it will increase the likelihood
+that non-ASCII text you send may appear corrupt to the recipient.
 <P>
 
 <DT> <A NAME="enable-8bit-esmtp-negotiation"><EM>enable-8bit-esmtp-negotiation</EM></A>
@@ -3574,14 +4405,14 @@ the left and
 right arrow keys in the Folder List screen strictly track the commands
 bound to the <EM>&lt;</EM> and <EM>&gt;</EM> keys,
 and the up and down arrow keys move the
-hilite bar to the previous and next folder or directory name.
+highlite bar to the previous and next folder or directory name.
 <P>
 
 When enabled, this feature returns the left, right, up and down arrow
 key's functionality in the FOLDER LIST screen to what it was before
 enabling &quot;enable-arrow-navigation&quot;.
 In other words, left and right arrows
-move the hilite bar to the left or right, and the up and down arrows
+move the highlight bar to the left or right, and the up and down arrows
 move it up or down.
 <P>
 
@@ -3690,12 +4521,28 @@ the same function as the <EM>Exit</EM> command.
 
 <DT> <A NAME="enable-fast-recent-test"><EM>enable-fast-recent-test</EM></A>
 
-<DD> If set, the TAB key behavior in Incoming folders or News collections
-is modified. By default, the TAB will cause each folder in the Incoming
-folders collection (or in the news collection) to be examined to see how
-many new messages have been delivered since the last time it was viewed.
-If this feature is set, the check is for any recent messages instead of
-the count of recent messages. This is much faster in many cases.
+<DD> This feature controls the behavior of the TAB key when traversing folders
+in the optional 
+<A HREF="#enable-incoming-folders">Incoming-Folders</A>
+collection or in optional News-Collections.
+
+<P>
+When the TAB
+(NextNew)
+key is pressed, the default behavior is to
+explicitly examine the status of the folder for the number of recent
+messages (messages delivered since the last time it was viewed).
+Depending on the size and number of messages in the folder, this test
+can be time consuming.
+
+<P>
+Enabling this feature will cause <EM>Pine</EM> to only test for the existence of
+any recent messages rather than to obtain the count.  This is much faster
+in many cases.  The downside is that you're not given the number of recent
+messages when prompted to view the next folder.
+If the feature
+<A HREF="#tab-uses-unseen-for-next-folder">Tab-Uses-Unseen-For-Next-Folder</A>
+is turned on, then the present feature will have no effect.
 <P>
 
 <DT> <A NAME="enable-flag-cmd"><EM>enable-flag-cmd</EM></A>
@@ -3717,6 +4564,67 @@ By default, when the <EM>* Flag</EM> command is selected,
 option of entering the detailed flag manipulation screen via the <EM>^T</EM>
 key. Enabling this feature causes <EM>Pine</EM> to immediately enter the detailed
 flag screen rather than first offer the simple prompt.
+The
+<A HREF="#enable-flag-screen-keyword-shortcut">Enable-Flag-Screen-Keyword-Shortcut</A> option offers a slightly different way of setting keywords.
+<P>
+
+<DT> <A NAME="enable-flag-screen-keyword-shortcut"><EM>enable-flag-screen-keyword-shortcut</EM></A>
+
+<DD> This feature modifies the behavior of the
+Flag command (provided it too is
+<A HREF="#enable-flag-cmd">enabled</A>).
+By default, when the "* Flag" command is selected,
+<EM>Pine</EM> offers a prompt to set one of several flags and also offers the
+option of entering the detailed flag manipulation screen via the "^T"
+key.
+If you have
+<A HREF="#keywords">keywords</A>
+defined, then enabling this feature adds a shortcut way to set or unset
+keywords.
+You use &quot;*&quot; followed by the first letter of a keyword (or the nickname of
+a keyword if you've given it a nickname) and that will set the keyword.
+<P>
+An example is easier to understand than the explanation.
+The flag command can always be used to set the system flags.
+For example, to set the Answered flag you would type
+<P>
+<CENTER><SAMP>* A</SAMP></CENTER>
+<P>
+Now suppose you have defined a keyword &quot;Work&quot; using the Keywords
+option in the Config screen.
+By default, to set a keyword like &quot;Work&quot; you would usually
+have to go to the Flag Details screen using
+the &quot;^T To Flag Details&quot; command.
+Instead, if you have enabled this feature, you may type
+<P>
+<CENTER><SAMP>* W</SAMP></CENTER>
+<P>
+to set the Work flag, or
+<P>
+<CENTER><SAMP>* ! W</SAMP></CENTER>
+<P>
+to unset it.
+Just like for the other flag setting commands, the case of the letter does
+not matter, so &quot;w&quot; or &quot;W&quot; both set the &quot;Work&quot;
+keyword.
+<P>
+Notice that you can only use this trick for one keyword that begins
+with &quot;W&quot;.
+If you happen to have a &quot;Work&quot; keyword and another keyword that is
+&quot;WIFI&quot; the &quot;* W&quot; command will set the first one in
+your list of keywords.
+Also, there are five letters which are reserved for system
+flags and the NOT command.
+If you type &quot;* A&quot; it will always set the Answered flag, not
+your &quot;Aardvark&quot; keyword.
+In order to set the &quot;Aardvark&quot; keyword you'll still have to use
+the Flag Details screen.
+<P>
+Because enabling the
+<A HREF="#enable-flag-screen-implicitly">Enable-Flag-Screen-Implicitly</A>
+option causes <EM>Pine</EM> to skip directly to the Flag Details screen when the
+Flag command is used, 
+setting it will cause this feature to have no effect at all.
 <P>
 
 <DT> <A NAME="enable-full-header-cmd"><EM>enable-full-header-cmd</EM></A>
@@ -3730,6 +4638,25 @@ for <EM>Export</EM>, <EM>Pipe</EM>, <EM>Print</EM>, <EM>Forward</EM>,
 and <EM>Reply</EM> functions. (For <EM>Reply</EM>, the
 <EM>Full Header</EM> mode will respect
 the <EM>include-headers-in-reply</EM> feature setting.)
+<P>
+If Full Header mode has been turned on and you Forward a message, you will
+be asked if you'd like to forward the message as an attachment, as opposed
+to including the text of the message in the body of your new message.
+<P>
+If you have also turned on the
+<A HREF="#quote-suppression-threshold">&quot;Quote Suppression&quot;</A>
+option then the Full Headers command actually rotates through three states
+instead of just two.
+The first is the normal view with long quotes suppressed.
+The second is the normal view but with the long quotes included.
+The last enables the display of all headers in the message.
+When using Export, Pipe, Print, Forward, or Reply the quotes are
+never suppressed, so the first two states are identical.
+<P>
+Normally, the Header Mode will reset
+to the default behavior when moving to a new message.
+The mode can be made to persist from message to message by setting the feature
+<A HREF="#quell-full-header-auto-reset">Quell-Full-Header-Auto-Reset</A>.
 <P>
 
 <DT> <A NAME="enable-full-header-and-text"><EM>enable-full-header-and-text</EM></A>
@@ -3913,6 +4840,26 @@ Use the up and down arrow keys to change which of the hostnames displayed in
 boldface is the current selection.
 <P>
 
+<DT> <A NAME="enable-multiple-newsrcs"><EM>enable-multiple-newsrcs</EM></A>
+
+<DD> This feature makes it so Pine can use multiple newsrcs based on
+the news server being connected to, which allows for separate lists
+of subscribed-to newsgroups. When this feature is not set, there is only
+one list of newsgroups.
+<P>
+Under this feature, the name of a newsrc is based on the news server.
+For example, if your <a href="#newsrc-path">newsrc-path</a>
+is set to &quot;.newsrc&quot;, and the news server you are connecting to is
+news.example.com, then the newsrc to be used is .newsrc-news.example.com.
+Setting this feature for the first time will allow for the option of using
+your old newsrc the next time you read news.
+<P>
+If this feature is set, then the feature
+<A HREF="#mult-newsrc-hostnames-as-typed">Mult-Newsrc-Hostnames-As-Typed</A>
+also may affect the name of the newsrc file that is used.
+
+<P>
+
 <DT> <A NAME="enable-newmail-in-xterm-icon"><EM>enable-newmail-in-xterm-icon</EM></A>
 
 <DD> This feature controls whether or not <EM>Pine</EM> will attempt to announce new
@@ -3921,7 +4868,22 @@ is iconified.
 If set, and the <CODE>$DISPLAY</CODE> variable indicates that an X
 terminal is being used, <EM>Pine</EM> will send appropriate escape sequences to
 the X terminal to modify the label on <EM>Pine</EM>'s icon to indicate that new
-mail has arrived.
+mail has arrived. <EM>Pine</EM> will also modify the <EM>Pine</EM> window's title to
+indicate new mail.
+See also <A HREF="#enable-newmail-short-text-in-icon">Enable-Newmail-Short-Text-in-Icon</A>.
+<P>
+
+<DT> <A NAME="enable-newmail-short-text-in-icon"><EM>enable-newmail-short-text-in-icon</EM></A>
+
+<DD> This feature controls the text to be displayed in an icon in the event
+of a new message arrival.  Normally, the message will
+be the one that is displayed on the screen.  This feature shortens the
+message to a count of the number of new messages in brackets.  This may be
+more useful for those who use the window's title bar in the task bar as a
+new mail indicator.  This feature is only useful if the
+<A HREF="#enable-newmail-in-xterm-icon">Enable-Newmail-in-Xterm-Icon</A>
+is also set.  Like the Enable-Newmail-in-Xterm-Icon
+feature, this feature is only relevant when run in an xterm environment.
 <P>
 
 <DT> <A NAME="enable-partial-match-lists"><EM>enable-partial-match-lists</EM></A>
@@ -4216,6 +5178,21 @@ allows you to interactively set whether or not attachments are saved
 to the Fcc'd copy.
 <P>
 
+<DT> <A NAME="hide-nntp-path"><EM>hide-nntp-path</EM></A>
+
+<DD> Normally the Path header that <EM>Pine</EM> generates when posting to a newsgroup
+contains the name of the computer from which the message is being sent and
+the user name.
+Some believe that this information is used by spammers.
+If this feature is set, that information will be replaced with the text
+<P>
+<CENTER><SAMP>not-for-mail</SAMP></CENTER>
+<P>
+instead.
+<P>
+It should be noted that many servers being connected to will still reveal
+the information that this feature attempts to protect.
+<P>
 <DT> <A NAME="include-attachments-in-reply"><EM>include-attachments-in-reply</EM></A>
 
 <DD> If set, any MIME
@@ -4253,6 +5230,25 @@ composer you will automatically be prompted to add the result of the
 directory lookup to your address book.
 <P>
 
+<DT> <A NAME="maildrops-preserve-state"><EM>maildrops-preserve-state</EM></A>
+
+<DD>
+This feature affects the way
+<A HREF="config-notes.html#maildrop">Mail Drops</A> work.
+Normally, when mail is moved from a Mail Drop folder to a destination
+folder, the state changes that have taken place since the mail was originally
+delivered are lost.
+Any Seen/New, Answered, Important/Flagged state that has changed will be
+ignored.
+All of the mail will be considered unSeen, unAnswered, and unImportant after
+it is moved.
+<P>
+If this feature is set, then the state changes will not be lost.
+<P>
+In any case, messages which are already marked Deleted when the
+mail is to be copied from the Mail Drop will be ignored.
+<P>
+
 <DT> <A NAME="mark-fcc-seen"><EM>mark-fcc-seen</EM></A>
 
 <DD> This features controls the way FCCs (File Carbon Copies) are
@@ -4273,6 +5269,47 @@ message is addressed directly to you.
 When this feature is set and the message is not addressed to you, then a
 '-' character is displayed if the message is instead Cc'd directly
 to you.
+<P>
+
+<DT> <A NAME="mult-newsrc-hostnames-as-typed"><EM>mult-newsrc-hostnames-as-typed</EM></A>
+
+<DD> This feature will be of little use to most users.
+It has no effect unless the feature
+<A HREF="#enable-multiple-newsrcs">Enable-Multiple-Newsrcs</A>
+is set.
+
+When the Enable-Multiple-Newsrcs feature is set
+then the setting of this feature may have an effect on the names of the
+newsrc files used.
+Normally, the name of the news server will be canonicalized before it is
+used in the newsrc file name.
+For example, if you type the news server name
+
+<P>
+<CENTER><SAMP>servername</SAMP></CENTER>
+<P>
+
+it is likely that the canonical name will be something like
+
+<P>
+<CENTER><SAMP>servername.example.com</SAMP></CENTER>
+<P>
+
+Or it may be the case that
+
+<P>
+<CENTER><SAMP>servername.example.com</SAMP></CENTER>
+<P>
+
+is really an alias (a DNS CNAME) for
+
+<P>
+<CENTER><SAMP>othername.example.com</SAMP></CENTER>
+<P>
+
+If this feature is not set, then the canonicalized names will be used.
+If this feature is set, then the name you typed in (or put in your
+configuration) will be used.
 <P>
 
 <DT> <A NAME="news-approximates-new-status"><EM>news-approximates-new-status</EM></A>
@@ -4378,6 +5415,72 @@ Next command, you will be sent to the next thread without being asked,
 independent of the setting of this feature.
 <P>
 
+<DT> <A NAME="offer-expunge-on-inbox"><EM>offer-expunge-on-inbox</EM></A>
+
+<DD> The INBOX is normally treated differently from regular folders in several
+ways.
+One of the differences is that the normal &quot;close&quot; sequence of
+events is deferred until <EM>Pine</EM> is exited, instead of happening when you
+leave the INBOX to view another folder.
+The &quot;close&quot; sequence normally includes the Expunging
+of deleted messages
+(either automatically or after a prompt, controlled by the features
+<A HREF="#expunge-wo-confirm">Expunge-Without-Confirm</A>,
+<A HREF="#expunge-without-confirm-everywhere">Expunge-Without-Confirm-Everywhere</A>, and
+<A HREF="#expunge-only-manually">Expunge-Only-Manually</A>), and the
+handling of the
+<A HREF="#read-msg-fold">Read-Message-Folder</A>.
+
+<P>
+If this feature is set the &quot;close&quot; sequence handling will take
+place every time you leave the INBOX.
+The INBOX will still be kept open, but the offer to Expunge and the archiving
+to the Read-Message-Folder
+will take place each time you leave the INBOX instead of only once at the
+end of the session.
+<P>
+
+<DT> <A NAME="offer-expunge-on-stayopen-folders"><EM>offer-expunge-on-stayopen-folders</EM></A>
+
+<DD> This feature is related to the option
+<A HREF="#stay-open-folders">Stay-Open-Folders</A>.
+Stay Open folders are treated differently from regular folders in several
+ways.
+One of the differences is that the normal &quot;close&quot; sequence of
+events is deferred until <EM>Pine</EM> is exited, instead of happening when you
+leave the folder to view another folder.
+The &quot;close&quot; sequence normally includes the Expunging
+of deleted messages
+(either automatically or after a prompt, controlled by the features
+<A HREF="#expunge-wo-confirm">Expunge-Without-Confirm</A>,
+<A HREF="#expunge-without-confirm-everywhere">Expunge-Without-Confirm-Everywhere</A>, and
+<A HREF="#expunge-only-manually">Expunge-Only-Manually</A>), and the
+handling of
+<A HREF="#incoming-archive-folders">Incoming-Archive-Folders</A>.
+
+<P>
+If this feature is set the &quot;close&quot; sequence handling will take
+place when you leave the Stay Open folder.
+The folder will still be kept open, but the offer to Expunge and the archiving
+will take place each time you leave the folder instead of only once at the
+end of the session.
+This feature does not affect the INBOX, which will still only be processed
+when you exit <EM>Pine</EM>.
+<P>
+
+<DT> <A NAME="pass-c1-control-characters-as-is"><EM>pass-c1-control-characters-as-is</EM></A>
+
+<DD> UNIX <EM>Pine</EM> only.
+If the feature <A HREF="#pass-control-characters-as-is">pass-control-characters-as-is</A>
+is set, then this feature has no effect.
+However, if you wish to filter out regular control characters but pass the
+so-called C1 control characters (0x80 <= char < 0xA0) through unchanged, then
+you may leave <A HREF="#pass-control-characters-as-is">pass-control-characters-as-is</A>
+unset and set this feature.
+This feature is not available in PC-Pine where control characters
+are never suppressed.
+<P>
+
 <DT> <A NAME="pass-control-characters-as-is"><EM>pass-control-characters-as-is</EM></A>
 
 <DD> UNIX <EM>Pine</EM> only (this feature is automatically on with <EM>PC-Pine</EM>).
@@ -4386,14 +5489,42 @@ screen. Normally, control characters are automatically suppressed in
 order to avoid inadvertently changing terminal setup parameters.
 Control characters are usually displayed as two character sequences like
 <P><CENTER><SAMP> ^C </SAMP></CENTER><P>
-for Control-C or
+for Control-C,
 <P><CENTER><SAMP> ^[ </SAMP></CENTER><P>
-for ESCAPE (the three high-order bits are masked off of the control character to get the 2nd character to display).
+for ESCAPE,
+<P><CENTER><SAMP> ^? </SAMP></CENTER><P>
+for DELETE, and
+<P><CENTER><SAMP> ~E </SAMP></CENTER><P>
+for the character with value 133 (0x85).
+(The DEL character is displayed as ^?, regular control characters are displayed
+as the character ^ followed by the character obtained by adding the
+five low-order bits of the character to 0x40, and the C1
+control characters 0x80 - 0x9F are displayed as the character ~ followed by the
+character obtained by adding the
+five low-order bits of the character to 0x40.)
 Sometimes, in cases where changing a single control character into a
-two-character sequence would confuse <EM>Pine</EM>'s display routines,
+two-character sequence would confuse Pine's display routines,
 a question mark is substituted for the control character.
-This feature is not available in <EM>PC-Pine</EM> where control characters
+<P>
+If you wish to filter out regular control characters but pass the
+so-called C1 control characters (0x80 <= char < 0xA0) through unchanged, then
+you may leave this feature unset and set the feature <A HREF="#pass-c1-control-characters-as-is">pass-c1-control-characters-as-is</A> instead.
+This feature is not available in PC-Pine where control characters
 are never suppressed.
+<P>
+
+<DT> <A NAME="predict-nntp-server"><EM>predict-nntp-server</EM></A>
+
+<DD> This feature allows Pine to assume that the open NNTP server at the
+time of composition is the NNTP server to which the message should be
+posted.  This is especially recommended when there are multiple News
+collections.  If this feature is not set, Pine will try to post to the first server in
+the <a href="#nntp-server">nntp-server</a> variable.  Setting
+this feature also negates the need to add News collection servers to
+the nntp-server variable.
+<P>
+This feature can be especially handy when used in conjunction with
+<a href="#enable-multiple-newsrcs">enable-multiple-newsrcs</a>.
 <P>
 
 <DT> <A NAME="prefer-plain-text"><EM>prefer-plain-text</EM></A>
@@ -4409,6 +5540,17 @@ HTML version listed last as the most preferred.
 
 If this option is set, then any plain text version will be preferred to
 all other versions.
+<P>
+
+<DT> <A NAME="preopen-stayopen-folders"><EM>preopen-stayopen-folders</EM></A>
+
+<DD> This feature is related to the option
+<A HREF="#stay-open-folders">Stay-Open-Folders</A>.
+Normally, Stay Open folders are only opened on demand, when the user
+asks to open them.
+From then on they are kept open for the duration of the session.
+However, if this feature is set, then the Stay Open folders will all be
+opened at startup, at the same time that the INBOX is opened.
 <P>
 
 <DT> <A NAME="preserve-start-stop-characters"><EM>preserve-start-stop-characters</EM></A>
@@ -4476,6 +5618,39 @@ restricted to using those that have been previously configured in the
 <EM>Setup/Printer</EM> screen.
 <P>
 
+<DT> <A NAME="prune-uses-yyyy-mm"><EM>prune-uses-yyyy-mm</EM></A>
+
+<DD> By default, <EM>Pine</EM> asks monthly whether or not you would like to rename
+some folders to a new name containing the date.
+It also asks whether or not you would like to delete some old folders.
+See the <A HREF="#pruning-rule">pruning-rule</A> option for an
+explanation.
+
+<P>
+By default, the name used when renaming a folder looks like
+<P>
+<CENTER><SAMP>&lt;foldername&gt;-&lt;month&gt;-&lt;year&gt;</SAMP></CENTER>
+<P>
+For example, the first time you run <EM>Pine</EM> in May of 2004,
+the folder &quot;sent-mail&quot; might be renamed to
+<P>
+<CENTER><SAMP>sent-mail-apr-2004</SAMP></CENTER>
+<P>
+If this feature is set, the name used will be of the form
+<P>
+<CENTER><SAMP>&lt;foldername&gt;-&lt;yyyy&gt;-&lt;mm&gt;</SAMP></CENTER>
+<P>
+where &quot;yyyy&quot; is the year and &quot;mm&quot; is the two-digit
+month (01, 02, ..., 12).
+For the April, 2004 example above, it would instead be
+<P>
+<CENTER><SAMP>sent-mail-2004-04</SAMP></CENTER>
+<P>
+because April is the 4th month of the year.
+A reason you might want to set this feature is so that the folders
+will sort in chronological order.
+<P>
+
 <DT> <A NAME="quell-attachment-extra-prompt"><EM>quell-attachment-extra-prompt</EM></A>
 <DD> By default, when you attempt to view an attachment externally
 from the &quot;Attachment View&quot; screen, you are asked if you
@@ -4494,6 +5669,26 @@ behavior.
 Some versions of Berkeley mail have trouble with this, and don't recognize
 the line as a message delimiter.
 If this feature is set, the timezone will be left off the delimiter line.
+<P>
+
+<DT> <A NAME="quell-charset-warning"><EM>quell-charset-warning</EM></A>
+
+<DD> By default, if your
+<A HREF="#char-set">Character-Set</A>
+is different from the character set
+of the message you are viewing, then <EM>Pine</EM> will
+add a warning to the start of the displayed text.
+If this option is set, then that editorial message will be suppressed.
+<P>
+Setting this feature also suppresses the comment about the character set
+in header lines.
+For example, when viewing a message you might see
+<P>
+<CENTER><SAMP>From: &quot;[ISO-8859-2] Name&quot; &lt;address&gt;</SAMP></CENTER>
+<P>
+in the From header if your Character-Set is something other than ISO-8859-2.
+If you set this feature, the comment about the character set will
+no longer be there.
 <P>
 
 <DT> <A NAME="quell-content-id"><EM>quell-content-id</EM></A>
@@ -4542,6 +5737,11 @@ Under some conditions (some routine), this can introduce a noticeable delay.
 Setting this feature will cause <EM>Pine</EM> NOT to write canceled compositions
 into the file called <CODE>dead.letter</CODE>.
 <P>
+This feature affects the newer option
+<A HREF="#dead-letter-files">Dead-Letter-Files</A>, which specifies the
+number of dead letter files to keep around.
+If this feature is set, then the Dead-Letter-Files option has no effect.
+<P>
 
 <DT> <A NAME="quell-empty-directories"><EM>quell-empty-directories</EM></A>
 
@@ -4564,6 +5764,70 @@ may not be displayed next time you enter the folder list.
 posting a message which may go to thousands of readers when you
 are about to post to a newsgroup.
 
+<P>
+
+<DT> <A NAME="quell-filtering-done-message"><EM>quell-filtering-done-message</EM></A>
+
+<DD> This feature causes <EM>Pine</EM> to suppress the &quot;filtering done&quot; message.
+
+<P>
+
+<DT> <A NAME="quell-filtering-messages"><EM>quell-filtering-messages</EM></A>
+
+<DD> This feature causes <EM>Pine</EM> to suppress the messages about
+moving filtered messages and setting flags in messages, due to Filter Rules.
+
+<P>
+
+<DT> <A NAME="quell-flowed-text"><EM>quell-flowed-text</EM></A>
+
+<DD> Beginning with version 4.60, <EM>Pine</EM> generates flowed text where possible.
+The method for generating flowed text is defined by
+<A HREF="http://www.ietf.org/rfc/rfc3676.txt">RFC 3676</A>,
+the benefit of doing so is
+to send message text that can properly be viewed both on normal width displays
+and on displays with smaller or larger than normal screen widths.
+With flowed text, a space at the end of a line tells the receiving mail
+client that the following line belongs to the same paragraph.
+Quoted text will also be affected, with only the innermost
+level of &quot;&gt;&quot; quoting being followed by a space.
+However, if you have changed the
+<A HREF="#reply-ind-str">&quot;Reply-Indent-String&quot;</A>
+so that it is not equal to the default value of &quot;&gt;&nbsp;&quot;, then
+quoted text will not be flowed.
+For this reason, we recommend that you leave your
+&quot;Reply-Indent-String&quot; set to the default.
+<P>
+This feature turns off the generation of flowed text, as it might be
+desired to more tightly control how a message is displayed on the receiving end.
+<P>
+If this feature is <EM>not</EM> set, you can control on a message by message
+basis whether or not flowed text is generated.
+You do this by typing ^V at the Send confirmation prompt that you get
+after typing ^X to send a message.
+^V is a toggle which turns flowing off and back on if typed again.
+If for some reason flowing cannot be done on a particular message, then the
+^V command will not be available.
+This would be the case, for example, if this feature was set, or if your
+&quot;Reply-Indent-String&quot; was set to a non-default value.
+If the feature
+<A HREF="#send-without-confirm">Send-Without-Confirm</A> is set,
+then the opportunity to control on a message by message basis
+whether or not flowed text is generated is lost.
+<P>
+When this feature is not set and you have typed ^V to turn off flowing,
+the Send confirmation prompt will change to look like
+<P>
+<CENTER><SAMP>Send message (not flowed)?</SAMP></CENTER>
+<P>
+<A HREF="#strip-whitespace-before-send">Strip-Whitespace-Before-Send</A> will
+also turn off the sending of flowed text messages, but it differs in that
+it also trims all trailing white space from a message before sending it.
+<P>
+If alternate editors are used extensively, be aware that a message will still
+be sent flowed if this feature is unset.  In most cases this will be fine,
+but if the editor has a &quot;flowed text&quot; mode, it would be best to
+use that.
 <P>
 
 <DT> <A NAME="quell-folder-internal-msg"><EM>quell-folder-internal-msg</EM></A>
@@ -4596,6 +5860,22 @@ or ipopd servers.)
 This feature has no effect on folders that are not in
 standard Unix or MMDF format, as pseudo-messages are not needed in the
 other formats to record mailbox state information.
+<P>
+
+<DT> <A NAME="quell-full-header-auto-reset"><EM>quell-full-header-auto-reset</EM></A>
+
+<DD> The HdrMode Command
+normally resets to the default state when switching to a new message.
+For example, if you've used the &quot;H&quot; command to turn on Full
+Headers for a message you are viewing, and then you type the Next command
+to look at the next message, the full headers will no longer be shown.
+Setting this feature disables that reset.
+Instead, the Header Mode remains the same from message to message.
+
+<P>
+The presence or absence of the HdrMode command is determined by the
+<A HREF="#enable-full-header-cmd">&quot;Enable-Full-Header-Cmd&quot;</A>
+Feature-List option.
 <P>
 
 <DT> <A NAME="quell-imap-envelope-update"><EM>quell-imap-envelope-update</EM></A>
@@ -4635,6 +5915,74 @@ WARNING: systems that have been configured in a way that precludes locking
 introduce some risk of mail folder corruption when more than one program
 attempts to modify the mail folder.  This is most likely to occur to one's
 <EM>INBOX</EM> or other "Incoming Message Folder".
+<P>
+
+<DT> <A NAME="quell-mailchecks-composing-except"><EM>Quell-Mailchecks-Composing-Except-Inbox</EM></A>
+
+<DD> This option is closely related to the
+<A HREF="#mail-check"><EM>Mail-Check-Interval</EM></A>
+option, the
+<A HREF="#mail-check-noncurr"><EM>Mail-Check-Interval-Noncurrent</EM></A> option, and
+<A HREF="#quell-mailchecks-composing-inbox"><EM>Quell-Mailchecks-Composing-Inbox</EM></A>.
+<P>
+If this option is set, then the normal new-mail checking which happens
+while you are composing will not happen for folders other than your
+INBOX (which depends on the setting
+of &quot;Quell-Mailchecks-Composing-Inbox&quot;).
+<P>
+You might want to set this option if you are experiencing delays while
+composing which you think might be related to the speed of the new-mail
+checks.
+<P>
+Even with this option turned on, an occasional new-mail check may be done
+in order to keep the server from killing the connection to the folder.
+For example, IMAP servers may remove a connection to a folder if there
+has been no activity on the connection for 30 minutes or more.
+Instead of letting that happen, <EM>Pine</EM> will check for new mail before the
+30 minutes is up even though you have turned on this feature to quell
+those checks.
+<P>
+Besides new-mail checks, checkpoint operations on the folders
+will also be quelled when you set this option.
+The purpose of checkpointing is to write the changes to a folder out to
+disk periodically in order to avoid losing those changes when system or
+software problems occur.
+New-mail checking and checkpointing while you are not composing are not
+affected by this option.
+<P>
+
+<DT> <A NAME="quell-mailchecks-composing-inbox"><EM>Quell-Mailchecks-Composing-Inbox</EM></A>
+
+<DD> This option is closely related to the
+<A HREF="#mail-check"><EM>Mail-Check-Interval</EM></A>
+option, the
+<A HREF="#mail-check-noncurr"><EM>Mail-Check-Interval-Noncurrent</EM></A> option, and
+<A HREF="#quell-mailchecks-composing-except"><EM>Quell-Mailchecks-Composing-Except-Inbox</EM></A>.
+<P>
+If this option is set, then the normal new-mail checking which happens
+while you are composing will not happen for your INBOX.
+Checking of other folders is controlled in a similar way with the
+&quot;Quell-Mailchecks-Composing-Except-Inbox&quot; option.
+<P>
+You might want to set this option if you are experiencing delays while
+composing which you think might be related to the speed of the new-mail
+checks.
+<P>
+Even with this option turned on, an occasional new-mail check may be done
+in order to keep the server from killing the connection to the folder.
+For example, IMAP servers may remove a connection to a folder if there
+has been no activity on the connection for 30 minutes or more.
+Instead of letting that happen, <EM>Pine</EM> will check for new mail before the
+30 minutes is up even though you have turned on this feature to quell
+those checks.
+<P>
+Besides new-mail checks, checkpoint operations on the INBOX
+will also be quelled when you set this option.
+The purpose of checkpointing is to write the changes to a folder out to
+disk periodically in order to avoid losing those changes when system or
+software problems occur.
+New-mail checking and checkpointing while you are not composing are not
+affected by this option.
 <P>
 
 <DT> <A NAME="quell-maildomain-warning"><EM>quell-maildomain-warning</EM></A>
@@ -4826,6 +6174,17 @@ the folders are on different IMAP servers, or the folders are local and in
 different formats, <EM>Pine</EM> will copy each message individually.
 <P>
 
+<DT> <A NAME="save-partial-wo-confirm"><EM>save-partial-msg-without-confirm</EM></A>
+
+<DD> This feature controls an aspect of <EM>Pine</EM>'s Save command.
+By default, when you Save a message that has some deleted parts, you will
+be asked to confirm that you want to Save with a prompt that looks like:
+<P>
+<CENTER><SAMP>Saved copy will NOT include entire message!  Continue?</SAMP></CENTER>
+<P>
+If this feature is set, you will not be asked.
+<P>
+
 <DT> <A NAME="save-will-advance"><EM>save-will-advance</EM></A>
 
 <DD> If set, <EM>Save</EM> will
@@ -4919,8 +6278,8 @@ You will not be able to use
 <A HREF="#sending-filters">Sending Filters</A>,
 Verbose sending mode,
 <A HREF="#enable-background-sending">Background Sending</A>,
-or
-<A HREF="#enable-delivery-status-notification">Delivery Status Notifications</A>.
+<A HREF="#enable-delivery-status-notification">Delivery Status Notifications</A>,
+or ^V to turn off the generation of flowed text for this message.
 These options are normally available as suboptions in the Send prompt, but
 with no Send prompt the options are gone.
 
@@ -4950,8 +6309,8 @@ right-arrow descends into the directory, while hitting the Return key will
 cause the folder by that name to be opened.
 <P>
 
-With this feature set, the Return key will open the hilited folder, or
-enter the hilited directory.
+With this feature set, the Return key will open the highlighted folder, or
+enter the highlighted directory.
 <P>
 
 <DT> <A NAME="show-cursor"><EM>show-cursor</EM></A>
@@ -4994,6 +6353,48 @@ Whether this is preferable to the <EM>X</EM> will depend on personal
 taste and the type of terminal being used.
 <P>
 
+<DT> <A NAME="show-sort"><EM>show-sort</EM></A>
+
+<DD> If this feature is set and there is sufficient space on the screen,
+a short indication of the current sort order will be
+added in the titlebar (the top line on the screen), before the name
+of the folder.
+For example, with the default Arrival sort in effect,
+the display would have the characters
+
+<P><CENTER>[A]</CENTER><P>
+
+added between the title of the screen and the folder name.
+The letters are the same as the letters you may type to manually
+sort a folder with the SortIndex command ($).
+The letters in the table below are the ones that may show
+up in the titlebar line.
+<P>
+<TABLE>   
+<TR> <TD> A </TD> <TD> <EM>A</EM>rrival        </TD> </TR>
+<TR> <TD> S </TD> <TD> <EM>S</EM>ubject        </TD> </TR>
+<TR> <TD> F </TD> <TD> <EM>F</EM>rom          </TD> </TR>
+<TR> <TD> T </TD> <TD> <EM>T</EM>o             </TD> </TR>
+<TR> <TD> C </TD> <TD> <EM>C</EM>c             </TD> </TR>
+<TR> <TD> D </TD> <TD> <EM>D</EM>ate           </TD> </TR>
+<TR> <TD> Z </TD> <TD> si<EM>Z</EM>e           </TD> </TR>
+<TR> <TD> O </TD> <TD> <EM>O</EM>rderedsubject </TD> </TR>
+<TR> <TD> E </TD> <TD> scor<EM>E</EM>          </TD> </TR>
+<TR> <TD> H </TD> <TD> t<EM>H</EM>read         </TD> </TR>
+</TABLE>
+<P>
+If the sort order is Reversed, the letter above will be preceded by the letter
+&quot;R&quot;, for example
+
+<P><CENTER>[RS]</CENTER><P>
+
+means that a Reverse Subject sort is in effect.
+For the case where the sort is in Reverse Arrival order, the &quot;A&quot; is
+left out, and just an &quot;R&quot; is shown.
+
+<P><CENTER>[R]</CENTER>
+<P>
+
 <DT> <A NAME="sig-at-bot"><EM>signature-at-bottom</EM></A>
 
 <DD> If this feature
@@ -5016,6 +6417,20 @@ instead of several per line.
 starts at the currently highlighted message, if any.
 If this feature is set, then the slash command Collapses or Expands the
 <EM>entire</EM> current thread instead of just the subthread.
+<P>
+
+<DT> <A NAME="sort-default-fcc-alpha"><EM>sort-default-fcc-alpha</EM></A>
+
+<DD> This feature controls an aspect of <EM>Pine</EM>'s FOLDER LIST screen.
+If set, the default FCC folder will be sorted alphabetically with the other
+folders instead of appearing right after the INBOX.
+<P>
+
+<DT> <A NAME="sort-default-save-alpha"><EM>sort-default-save-alpha</EM></A>
+
+<DD> This feature controls an aspect of <EM>Pine</EM>'s FOLDER LIST screen.
+If set, the default save folder will be sorted alphabetically with the other
+folders instead of appearing right after the INBOX (and default FCC folder).
 <P>
 
 <DT> <A NAME="spell-check-before-sending"><EM>spell-check-before-sending</EM></A>
@@ -5051,6 +6466,22 @@ In other words, this is a way to turn on the signature stripping behavior
 without also turning on the dashes-adding behavior.
 <P>
 
+<DT> <A NAME="strip-whitespace-before-send"><EM>strip-whitespace-before=send</EM></A>
+
+<DD> Starting with Pine 4.60, trailing whitespace is no longer stripped from
+a message before sending.  Trailing whitespace should have no effect on an
+email message, and in flowed text can aid in delimiting paragraphs.
+However, the old behavior of stripping trailing whitespace was in place
+to better deal with older clients that couldn't handle certain types of
+text encodings.  This feature restores the old behavior
+<P>
+Trailing whitespace is of aid to flowed-text-formatted messages, which are
+generated by default but can be turned off via the
+<A HREF="#quell-flowed-text">quell-flowed-text</A> feature.
+strip-whitespace-before-send also has the effect of turning off sending
+of flowed text.
+<P>
+
 <DT> <A NAME="tab-checks-recent"><EM>tab-checks-recent</EM></A>
 
 <DD> In a FOLDER LIST screen, the TAB key usually just changes which
@@ -5058,6 +6489,42 @@ folder is highlighted.
 If this feature is set, then the TAB key will cause the number of
 recent messages and the total number of messages in the highlighted folder
 to be displayed instead.
+<P>
+
+<DT> <A NAME="tab-uses-unseen-for-next-folder"><EM>tab-uses-unseen-for-next-folder</EM></A>
+
+<DD> This feature affects <EM>Pine</EM>'s behavior when using the TAB
+NextNew Command
+to move from one folder to the next.
+<EM>Pine</EM>'s usual behavior is to search for folders
+with <EM>Recent</EM> messages in them.
+Recent messages are messages which have arrived since the last time the
+folder was opened.
+
+<P>
+Setting this feature causes <EM>Pine</EM> to search for <EM>Unseen</EM>
+messages instead of Recent messages.
+Unseen messages remain Unseen until you view them (or flag then as Seen with
+the Flag Command).
+Setting this feature allows you to locate messages you have not read
+instead of only recently received messages.
+When this feature is set, the feature
+<A HREF="#enable-fast-recent-test">Enable-Fast-Recent-Test</A>
+will have no effect, so the checking may be slower.
+
+<P>
+Another reason why you might want to use this feature is that <EM>Pine</EM> sometimes
+opens folders implicitly behind the scenes, and this clears the
+Recent status of all messages in the folder.
+One example where this happens is when Saving or filtering a
+message to another folder.
+If that message has some <A HREF="#keywords">keywords</A>
+set, then because of some shortcomings
+in the IMAP specification, the best way to ensure that those keywords are
+still set in the saved copy of the message is to open the folder and
+set the keywords explicitly.
+Because this clears the Recent status of all messages in that folder the
+folder will not be found by the NextNew command unless this feature is set.
 <P>
 
 <DT> <A NAME="tab-visits-next-new-message-only"><EM>tab-visits-next-new-message-only</EM></A>
@@ -5198,6 +6665,28 @@ bottom of each screen will show function key designations instead of the
 normal mnemonic key.
 <P>
 
+<DT> <A NAME="use-reg-start-rule"><EM>use-regular-startup-rule-for-stayopen-folders</EM></A>
+
+<DD> This feature affects which message is selected as the current message
+when you enter a
+<A HREF="#stay-open-folders">Stay Open</A> folder.
+<P>
+Normally, the starting position for an incoming folder (which most Stay Open
+folders will likely be) is controlled by the
+<A HREF="#incoming-startup-rule"><EM>Incoming-Startup-Rule</EM></A>.
+However, if a folder is a Stay Open folder, when you re-enter the folder
+after the first time the current message will be the same as it was when
+you left the folder.
+An exception is made if you use the TAB command to get to the folder.
+In that case, the message number will be incremented by one from what it
+was when you left the folder.
+<P>
+The above special behavior is thought to be useful.
+However, it is special and different from what you might at first expect.
+If this feature is set, then Stay Open folders will not be treated specially
+as far as the startup rule is concerned.
+<P>
+
 <DT> <A NAME="use-sender-not-x-sender"><EM>use-sender-not-x-sender</EM></A>
 
 <DD> Normally <EM>Pine</EM> on Unix adds a header line labeled <EM>X-X-Sender</EM>,
@@ -5330,10 +6819,10 @@ be no reason to edit them by hand.
 
 <UL>
 <LI> <A HREF="#last-version-used">last-version-used</A>
-<LI> <A HREF="#patterns-filters">patterns-filters</A>
+<LI> <A HREF="#patterns-filters2">patterns-filters2</A>
 <LI> <A HREF="#patterns-indexcolors">patterns-indexcolors</A>
 <LI> <A HREF="#patterns-roles">patterns-roles</A>
-<LI> <A HREF="#patterns-scores">patterns-scores</A>
+<LI> <A HREF="#patterns-scores2">patterns-scores2</A>
 <LI> <A HREF="#remote-abook-metafile">remote-abook-metafile</A>
 </UL>
 <P>
@@ -5464,6 +6953,9 @@ feature.
 <EM>patterns-filters</EM>,
 <EM>patterns-scores</EM>, and
 <EM>patterns-indexcolors</EM>.
+Since then, <EM>patterns-filters</EM> has also become obsolete and is replaced
+by <EM>patterns-filters2</EM>; <EM>patterns-scores</EM> is replaced by
+<EM>patterns-scores2</EM>.
 
 <DT> <EM>save-by-sender</EM>
 
@@ -5483,15 +6975,18 @@ This set of special tokens may be used in the
 <A HREF="#index-format"><EM>index-format</EM></A> option,
 in the <A HREF="#reply-leadin"><EM>reply-leadin</EM></A> option,
 in signature files,
-and in template files used in
-<A HREF="#role-config"><EM>roles</EM></A>.
+in template files used in
+<A HREF="#role-config"><EM>roles</EM></A>,
+and in the folder name that is the target of a Filter Rule.
+Some of them aren't available in all situations.
 <P>
 The tokens are used as they appear below for the <EM>Index-Format</EM>
 option, but they must be surrounded by underscores for the
-<EM>Reply-Leadin</EM> option, and in signature and template files.
+<EM>Reply-Leadin</EM> option, in signature and template files,
+and in the target of Filter Rules.
 <P>
 
-<H3><EM>Tokens Available for all Cases</EM></H3>
+<H3><EM>Tokens Available for all Cases (except Filter Rules)</EM></H3>
 
 <DL>
 <DT>SUBJECT</DT>
@@ -5965,6 +7460,68 @@ the &quot;Index-Format&quot; could slow down the
 display a little while <EM>Pine</EM> collects the necessary information.
 </DD>
 
+<DT>SUBJKEY</DT>
+<DD>
+This token is the same as the SUBJECT token unless keywords are set for
+the message.
+In that case, a list of keywords enclosed in braces will be prepended to
+the subject of the message.
+Having this set in the index-format will also cause the keywords to be
+prepended to the subject in the MESSAGE VIEW screen.
+If you have given a keyword a nickname
+(<A HREF="#keywords">Keywords</A>), that nickname is displayed
+instead of the actual keyword.
+The <A HREF="#keyword-surrounding-chars">Keyword-Surrounding-Chars</A>
+option may be used to modify this token slightly.
+It is also possible to color keywords in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+</DD>
+
+<DT>SUBJKEYINIT</DT>
+<DD>
+This token is the same as the SUBJKEY token except that instead of
+prepending a list of keywords to the subject, a list of first initials
+of keywords will be prepended instead.
+For example, if a message has the keywords <EM>Work</EM> and <EM>Now</EM>
+set (or Work and Now are the Pine nicknames of keywords which are set)
+then the SUBJKEY token would cause a result like
+<P>
+<CENTER><SAMP>{Work Now} actual subject</SAMP></CENTER>
+<P>
+whereas the SUBJKEYINIT token would give
+<P>
+<CENTER><SAMP>{WN} actual subject</SAMP></CENTER>
+<P>
+The <A HREF="#keyword-surrounding-chars"><EM>Keyword-Surrounding-Chars</EM></A>
+option may be used to modify this token slightly.
+It is also possible to color keywords in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+</DD>
+
+<DT>KEY</DT>
+<DD>
+This is a space-delimited list of keywords that are set for the message.
+If you have given a keyword a nickname
+(<A HREF="#keywords">Keywords</A>), that nickname is displayed
+instead of the actual keyword.
+It is also possible to color keywords in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+</DD>
+
+<DT>KEYINIT</DT>
+<DD>
+This is a list of keyword initials that are set for the message.
+If you have given a keyword a nickname
+(<A HREF="#keywords">Keywords</A>), the initial of that nickname
+is displayed instead of the initial of the actual keyword.
+It is also possible to color keyword initials in the index using the
+Setup/Kolor screen
+(<A HREF="#keyword-colors">Keyword Colors</A>).
+</DD>
+
 <DT>ATT</DT>
 <DD>
 This is a one column wide field which represents the number of attachments
@@ -6056,11 +7613,137 @@ It has the format HH:MMpm.
 For example, &quot;5:28pm&quot; or &quot;11:13am&quot;.
 </DD>
 
+<DT>CURDAY</DT>
+<DD>
+This token represents the current day of the month.
+For example, &quot;23&quot; or &quot;9&quot;.
+</DD>
+
+<DT>CURDAY2DIGIT</DT>
+<DD>
+This token represents the current day of the month.
+For example, &quot;23&quot; or &quot;09&quot;.
+It is always 2 digits.
+</DD>
+
+<DT>CURDAYOFWEEK</DT>
+<DD>
+This token represents the current day of the week.
+For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
+</DD>
+
+<DT>CURDAYOFWEEKABBREV</DT>
+<DD>
+This token represents the current day of the week.
+For example, &quot;Sun&quot; or &quot;Wed&quot;.
+</DD>
+
+<DT>CURMONTH</DT>
+<DD>
+This token represents the current month.
+For example, &quot;10&quot; or &quot;9&quot;.
+</DD>
+
+<DT>CURMONTH2DIGIT</DT>
+<DD>
+This token represents the current month.
+For example, &quot;10&quot; or &quot;09&quot;.
+It is always 2 digits.
+</DD>
+
+<DT>CURMONTHLONG</DT>
+<DD>
+This token represents the current month.
+For example, &quot;October&quot;.
+</DD>
+
+<DT>CURMONTHABBREV</DT>
+<DD>
+This token represents the current month.
+For example, &quot;Oct&quot;.
+</DD>
+
+<DT>CURYEAR</DT>
+<DD>
+This token represents the current year.
+For example, &quot;1998&quot; or &quot;2001&quot;.
+</DD>
+
+<DT>CURYEAR2DIGIT</DT>
+<DD>
+This token represents the current year.
+For example, &quot;98&quot; or &quot;01&quot;.
+It is always 2 digits.
+</DD>
+
+<DT>LASTMONTH</DT>
+<DD>
+This token represents last month.
+For example, if this is November (the 11th month),
+it is equal to &quot;10&quot; or if this is October (the 10th month),
+it is &quot;9&quot;.
+It is possible that this and the other tokens beginning with LASTMONTH
+below could be useful when used with a Filtering Rule that
+has the &quot;Beginning of Month&quot; option set.
+</DD>
+
+<DT>LASTMONTH2DIGIT</DT>
+<DD>
+This token represents last month.
+For example, if this is November (the 11th month),
+it is equal to &quot;10&quot; or if this is October (the 10th month),
+it is &quot;09&quot;.
+It is always 2 digits.
+</DD>
+
+<DT>LASTMONTHLONG</DT>
+<DD>
+This token represents last month.
+For example, if this is November the value is &quot;October&quot;.
+</DD>
+
+<DT>LASTMONTHABBREV</DT>
+<DD>
+This token represents last month.
+For example, if this is November the value is &quot;Oct&quot;.
+</DD>
+
+<DT>LASTMONTHYEAR</DT>
+<DD>
+This token represents what the year was a month ago.
+For example, if this is October, 1998, it is &quot;1998&quot;.
+If this is January, 1998, it is &quot;1997&quot;.
+</DD>
+
+<DT>LASTMONTHYEAR2DIGIT</DT>
+<DD>
+This token represents what the year was a month ago.
+For example, if this is October, 1998, it is &quot;98&quot;.
+If this is January, 1998, it is &quot;97&quot;.
+</DD>
+
+<DT>LASTYEAR</DT>
+<DD>
+This token represents last year.
+For example, if this is 1998, it equals &quot;1997&quot;.
+It is possible that this
+could be useful when used with a Filtering Rule that
+has the &quot;Beginning of Year&quot; option set.
+</DD>
+
+<DT>LASTYEAR2DIGIT</DT>
+<DD>
+This token represents last year.
+For example, if this is 1998, it equals &quot;97&quot;.
+It is always 2 digits.
+</DD>
+
 <DT>ROLENICK</DT>
 <DD>
 This token represents the nickname of the
 role currently being used.  If no role is being used,
 then no text will be printed for this token.
+This token does not work with Filter Rule folder names.
 </DD>
 </DL>
 
@@ -6822,6 +8505,10 @@ Besides coloring the message status symbols, you may also color the
 entire index line.
 This is done by using the
 <A HREF="#index-color-config">Index Line Color</A> configuration screen.
+It is also possible to color
+(<A HREF="#keywords">keywords</A>
+in the index using the
+Setup/Kolor screen (<A HREF="h_config_kw_color">Keyword Colors</A>).
 <P>
 
 <DL COMPACT>
@@ -6869,7 +8556,7 @@ part of the
 <DD> The color used for drawing the &quot;U&quot; symbol which signifies a
 message is Unseen (only visible if the &quot;IMAPSTATUS&quot; token is
 part of the
-<A HREF="#index-format"><EM>index-format</EM></A> option).
+<A HREF="#index-format"><EM>Index-Format</EM></A> option).
 <P>
 
 </DL>
@@ -6895,6 +8582,25 @@ addresses which match the pattern to be colored.
 <P>
 If the pattern you enter is a comma-separated list of patterns, then coloring
 happens if any of those patterns matches.
+<P>
+
+<H3><A NAME="keyword-colors"></A>Keyword Colors</H3>
+
+Sets the colors <EM>Pine</EM> uses for Keyword fields in the MESSAGE INDEX screen.
+Keywords may be displayed as part of the Subject of a message by using
+the &quot;SUBJKEY&quot; or &quot;SUBJKEYINIT&quot; tokens in the
+<A HREF="#index-format">Index-Format</A> option.
+Keywords may also be displayed in a column of their own in the MESSAGE INDEX
+screen by using the &quot;KEY&quot; or &quot;KEYINIT&quot; tokens.
+<P>
+For example, you might have set up a Keyword
+&quot;Work&quot; using the
+<A HREF="#keywords">Keywords</A>
+option in the Setup/Config screen.
+You could cause that Keyword to show up as a special color
+by setting up the Keyword Color using this option, and then including it
+in the MESSAGE INDEX screen using one of the tokens listed above in the
+Index-Format.
 <P>
 
 <H3><A NAME="index-line-colors"></A>Index Line Colors</H3>
@@ -7397,13 +9103,15 @@ You can set or clear the Important status, the New status, the Deleted
 status, and the Answered status.
 Of course, if the filter is going to delete the message,
 then there is no point in setting message status.
+You may also set or clear user-defined
+<A HREF="#keywords">keywords</A> for a message.
 <P>
 Second, the filter may delete or move the message.
 Deleting the message marks it Deleted and removes it from view.
 It is effectively gone forever (though it technically is still there until
 the next expunge command, which may happen implicitly).
 Moving the message moves it from the open folder into the folder
-listed on the &quot;to Folder&quot; line of the filter configuration.
+listed on the &quot;Folder List&quot; line of the filter configuration.
 If you list more than one folder name (separated by commas) then the message
 will be copied to each of those folders.
 In any case, if &quot;Delete&quot; or &quot;Move&quot; is set then the
@@ -7414,7 +9122,7 @@ the folder, then set the filter action to
 <P>
 (There is no way to do a Copy instead of a Move, due to the difficulties
 involved in keeping track of whether or not a message has
-already been copied.)
+already been copied by a previous <EM>Pine</EM> session.)
 
 <H4><A NAME="move-only-if-not-deleted"></A>Move-only-if-not-deleted option</H4>
 
@@ -7600,9 +9308,11 @@ being replied to;
 for Forward, the message used to compare the Pattern with is the message
 being forwarded;
 and for Compose, there is no message, so the parts of the Pattern which depend
-on a message (everything other than Current Folder Type)
+on a message (everything other than Current Folder Type and the
+Beginning of Month and Year)
 are not used.
-Only the Current Folder Type matters for Compose.
+Only the Current Folder Type matters for Compose (plus the Beginning of
+Month, which you wouldn't usually use for a Role).
 For Scoring, the message being scored is compared with all of the Score
 Patterns, and the Score Values from the ones that match are added together to 
 get the message's score.
@@ -7626,7 +9336,7 @@ with nothing other than Current Folder Type defined are ignored.
 If you really want a filtering Pattern to match all messages (subject to
 Current Folder Type) the best way to do it is to define a Score interval
 which includes all possible scores.
-This would be the score interval (-INF,INF).
+This would be the score interval <SAMP>(-INF,INF)</SAMP>.
 This can be used even if you haven't defined any rules to Set Scores.
 <P>
 There are six predefined header patterns called the To, From, Sender, Cc, News,
@@ -7654,16 +9364,38 @@ When the &quot;!&quot; is present, it reverses the meaning of the match.
 That is, if the pattern matches then it is considered to NOT be a match, and
 if it does not match it is considered to be a match.
 <P>
+Don't make the mistake of putting the &quot;!&quot; in the data field for
+a pattern.
+For example, if you type the characters &quot;!urgent&quot; into the Subject
+pattern, the pattern will look like:
+<P>
+<PRE>
+ Subject pattern = !urgent
+</PRE>
+<P>
+This means you want to match the 7 character sequence &quot;!urgent&quot;.
+In order to match messages which do not have &quot;urgent&quot; in
+their Subject field, first type the characters &quot;urgent&quot; followed
+by carriage return for the value of the Subject pattern, then negate it
+by typing the &quot;!&quot; command.
+It should look like
+<P>
+<PRE>
+ ! Subject pattern = urgent
+</PRE>
+<P>
 The contents of each of these header patterns (or the AllText or BodyText patterns) may
 be a complete email address, part of an address, or a random set of
 characters to match against.
-It may also be a comma-separated list of such patterns, which means you
+It may also be a list of such patterns, which means you
 are looking for a match against the first pattern in the list <EM>OR</EM>
 the second pattern <EM>OR</EM> the third and so on.
 For example, a Subject pattern equal to
 <P>
 <PRE>
- Subject pattern = urgent, emergency, alert
+ Subject pattern = urgent
+                   emergency
+                   alert
 </PRE>
 <P>
 would match all messages with a subject which contained at least one
@@ -7674,17 +9406,21 @@ It would also match subjects containing the words &quot;alerts&quot; or
 The same example with &quot;NOT&quot; turned on would be
 <P>
 <PRE>
- ! Subject pattern = urgent, emergency, alert
+ ! Subject pattern = urgent
+                     emergency
+                     alert
 </PRE>
 <P>
 which would match all messages with a subject which did NOT contain any of
 those words.
+You can use the &quot;Add Value&quot; command to add new words to the list,
+or you can enter them as a comma-separated list.
 <P>
 (It is not possible to specify two patterns which must <EM>BOTH</EM> be
 present for a match.
 It is only possible to specify that <EM>EITHER</EM> pattern1 <EM>OR</EM>
 pattern2 must be present,
-and that is exactly what the comma-separated list does.)
+and that is exactly what using a list does.)
 <P>
 The &quot;Current Folder Type&quot; and the &quot;Score Interval&quot; are
 also part of the Pattern, although the &quot;Score Interval&quot; is not used
@@ -7692,12 +9428,15 @@ when checking for matches for Scoring.
 There are five similar settings which relate to the status of the message.
 These settings rely on the message being New or not, Deleted or not,
 Answered or not, Important or not, and Recent or not.
-There are also three more specialized settings.
+There are also five more specialized settings.
 The first is the Age of the message in days.
-The second is a setting which detects whether or not the Subject of a
+The second is the Size of the message in bytes.
+The third is a setting which detects whether or not the Subject of a
 message contains raw 8-bit characters (unencoded characters with the most
-significant bit set) .
-And the third is a setting which detects whether or not the From address of a
+significant bit set).
+The fourth is a setting which detects whether or not this is the first time
+<EM>Pine</EM> has been run this month (doesn't depend on individual messages).
+And the fifth is a setting which detects whether or not the From address of a
 message appears in your address book.
 
 <H3>Parts of a Pattern</H3>
@@ -7731,6 +9470,12 @@ The meaning of a header pattern may be negated with the
 &quot;!&quot; &quot;toggle NOT&quot; command.
 You can tell that <EM>NOT</EM> has been turned on by looking for the character
 &quot;!&quot; at the beginning of the pattern line.
+It would look something like
+<P>
+<PRE>
+ ! From pattern = susan@example.com
+</PRE>
+<P>
 When the &quot;!&quot; is present, it reverses the meaning of the match.
 <P>
 If you want to check for the presence of a header field but don't care
@@ -7756,7 +9501,7 @@ contents of a particular header field.
 If there is more than one header pattern or AllText pattern or BodyText pattern
 for which you want to take the
 same action there is a shorthand notation which may be used.
-Any of these patterns may be a comma-separated list of patterns instead of
+Any of these patterns may be a list of patterns instead of
 just a single pattern.
 If any one of the patterns in the list matches the message
 then it is considered a match.
@@ -7764,7 +9509,10 @@ For example, if &quot;company1&quot; and &quot;company2&quot; both required
 you to use the same role when replying to messages, you might have
 a To pattern which looks like
 <P>
-<CENTER><SAMP>company1.com,company2.com</SAMP></CENTER>
+<PRE>
+ To pattern = company1.com
+              company2.com
+</PRE>
 <P>
 This means that if the mail you are replying to was addressed to
 either &quot;anything@company1.com&quot; or &quot;anything@company2.com&quot;,
@@ -7777,10 +9525,15 @@ You can tell that <EM>NOT</EM> has been turned on by looking for the character
 When the &quot;!&quot; is present, it reverses the meaning of the match.
 <P>
 A technicality: Since comma is the character used to separate multiple values
-in a header, AllText, or BodyText pattern field, you have to escape comma with a
+in any of the fields which may have multiple values (such as header patterns,
+AllText patterns, BodyText patterns, keywords, folder lists, and so on),
+you must escape comma with a
 backslash (&#92;) if you want to include a literal comma in one of those fields.
-The same is true for the backslash character itself, which must be escaped
-with another backslash to make it literal.
+In other words, if you type a backslash followed by a comma it will
+be interpreted as a comma by <EM>Pine</EM>, instead of as a separator between
+pattern values.
+All other backslashes (those not followed by a comma) are literal
+backslashes and should not be escaped.
 It's unlikely you'll ever need to enter a literal comma or backslash in
 any of the patterns.
 
@@ -7798,7 +9551,7 @@ then you must fill in a value for &quot;Folder&quot;, which is on the line
 below the &quot;Specific&quot; line.
 In this case you will only get a match if the currently open folder is
 the specific folder you list.
-You may give a comma-separated list of folders instead of just a single
+You may give a list of folders instead of just a single
 folder name, in which case the Pattern will match if the open folder is
 any one of the folders in the list.
 The name of each folder in the list may be either &quot;INBOX&quot;,
@@ -7873,6 +9626,31 @@ near the bottom of the rule definition.
 <P>
 A value of 0 is today, 1 is yesterday, 2 is the day before yesterday, and so on.
 
+<H3><A NAME="pattern_size_interval">Size Interval</A></H3>
+
+The &quot;Size Interval&quot; may be set to an interval of message
+sizes which should be considered a match.
+Like the other parts of the Pattern, if it is unset it will be ignored.
+The Size Interval looks like
+<P>
+<CENTER><SAMP>(min_size,max_size)</SAMP></CENTER>
+<P>
+where &quot;min_size&quot; and &quot;max_size&quot; are integers greater
+than or equal to zero.
+The special value &quot;INF&quot; may be used for
+the max value. It represents infinity.
+<P>
+Actually, this option may be defined as a list of intervals instead
+of just a single interval.
+The list is separated by commas.
+It can look like
+<P>
+<CENTER><SAMP>(min_size1,max_size1),(min_size2,max_size2),...</SAMP></CENTER>
+<P>
+When there is a Size Interval defined, it is a match if the size, in bytes, of
+the message is contained in any of the intervals.
+The intervals include both endpoints.
+
 <H4>Score Interval</H4>
 
 The &quot;Score Interval&quot; may be set to an interval of message
@@ -7926,6 +9704,18 @@ message.
 Recent means that the message was added to this folder since the last time
 you opened the folder.
 
+<H4>Message Keywords</H4>
+
+Keywords are similar to Message Status, but they are chosen by the user.
+Provided the mail server allows for it, you may add a set of possible keywords
+to a folder and then you may set those keywords or not for each message
+in the folder.
+The syntax of this part of the Pattern is similar to the header patterns.
+It is a list of keywords.
+The Keyword part of the Pattern is a match if the message has any of
+the keywords in the list set.
+Like other parts of the Pattern, if this is unset it will be ignored.
+
 <H4>Raw 8-bit in Subject</H4>
 
 It seems that lots of unwanted email contains unencoded 8-bit characters
@@ -7937,7 +9727,19 @@ contain unencoded 8-bit characters.
 Setting this option will affect performance in large folders because the
 subject of each message in the folder has to be checked.
 
-<H4>From or Reply-To address in Address Books</H3>
+<H4>Beginning of Month</H4>
+
+This option gives you a way to take some action once per month.
+The value &quot;Yes&quot; means that this must be the first time <EM>Pine</EM> has
+been run this month in order to count as a match,
+
+<H4>Beginning of Year</H4>
+
+This option gives you a way to take some action once per year.
+The value &quot;Yes&quot; means that this must be the first time <EM>Pine</EM> has
+been run this year in order to count as a match,
+
+<H4>From or Reply-To address in Address Books</H4>
 
 This option gives you a way to match messages which have a From or
 a Reply-To address
@@ -7946,6 +9748,35 @@ Only the simple entries in your address books are searched.
 Address book distribution lists are ignored!
 Setting this option will affect performance in large folders because the
 From and Reply-To of each message in the folder have to be checked.
+
+<H4>Categorizer Command</H4>
+
+This is a command that is run with its standard input set to the message
+being checked and its standard output discarded.
+The full directory path should be specified.
+The command will be run and then its exit status will be checked against
+the Exit Status Interval, which defaults to just the value zero.
+If the exit status of the command falls in the interval, it is considered
+a match, otherwise it is not a match.
+<P>
+
+This option may actually be a list of commands.
+The first one that exists and is executable is used.
+That makes it possible to use the same configuration with Unix <EM>Pine</EM> and
+<EM>PC-Pine</EM>.
+<P>
+
+If none of the commands in the list exists and is executable then the rule
+is <EM>not</EM> a match.
+If it is possible that the command may not exist, you should be careful
+to structure your rules so that nothing destructive
+happens when the command does not exist.
+For example, you might have a filter that filters away spam when there is
+a match but does nothing when there is not a match.
+That would continue to work correctly if the command didn't exist.
+However, if you have a filter which filters away spam when there is not
+a match and keeps it when there is a match, that would filter everything
+if the categorizer command didn't exist.
 
 <H3><A NAME="help-for-pattern-config"></A>Help Configuring Pattern Fields</H3>
 
@@ -7972,16 +9803,39 @@ the To line of the message being replied to or forwarded
 must match this pattern.
 In the case of the Compose command, this pattern and the other header
 patterns are ignored.
-If this pattern is a comma-separated list of patterns, then at least one of the
+If this pattern is a list of patterns, then at least one of the
 recipients must match at least one of the patterns.
 (Any other non-blank parts of the Pattern must match, too.)
+If the message being replied to or forwarded has a Resent-To header line,
+then that is used in place of the To line.
+(Note that this special Resent rule only applies to the To header. The
+Resent-From, Resent-Subject, and so on are not consulted.)
+<P>
 It is possible to add a <EM>NOT</EM> to the To Pattern meaning with the
 &quot;!&quot; &quot;toggle NOT&quot; command.
 This changes the meaning of the To pattern so that it has the opposite meaning.
 It will be considered a match if there are no matches between the
 addresses in the To: line and the list of To patterns.
-If the message being replied to or forwarded has a Resent-To header line,
-then that is used in place of the To line.
+<P>
+Don't make the mistake of putting the &quot;!&quot; in the data field for
+the pattern.
+For example, if you type the characters &quot;!frizzle&quot; into the To
+pattern, the pattern will look like:
+<P>
+<PRE>
+ To pattern = !frizzle
+</PRE>
+<P>
+This means you want to match the 8 character sequence &quot;!frizzle&quot;.
+In order to match messages which do not have &quot;frizzle&quot; in
+their To field, first type the characters &quot;frizzle&quot; followed
+by carriage return for the value of the To pattern, then negate it
+by typing the &quot;!&quot; command.
+It should end up looking like
+<P>
+<PRE>
+ ! To pattern = frizzle
+</PRE>
 <P>
 
 <DT> <A NAME="from-pattern"><EM>From pattern</EM></A>
@@ -8017,7 +9871,7 @@ of the addresses from the To header.
 <DD> If this pattern is non-blank, then for this role to be considered a
 match, at least one of the newsgroups from
 the Newsgroups line of the message must match this pattern.
-If this pattern is a comma-separated list of patterns, then at least one of the
+If this pattern is a list of patterns, then at least one of the
 newsgroups must match at least one of the patterns.
 (Any other non-blank parts of the Pattern must match, too.)
 <P>
@@ -8030,7 +9884,8 @@ the contents from the Subject of the message being replied to or forwarded.
 <P>
 If you enter non-ascii characters in this field then the search will be
 done using the character set you have defined with the
-&quot;character-set&quot; configuration variable.
+<A HREF="#char-set">Character-Set</A>
+configuration variable.
 (The truly sophisticated may use an alternate character set for a search
 by entering the MIME encoding of the header string here.)
 <P>
@@ -8053,7 +9908,8 @@ command on the highlighted extra header.
 <P>
 If you enter non-ascii characters in this field then the search will be
 done using the character set you have defined with the
-&quot;character-set&quot; configuration variable.
+<A HREF="#char-set">Character-Set</A>
+configuration variable.
 (The truly sophisticated may use an alternate character set for a search
 by entering the MIME encoding of the header string here.)
 <P>
@@ -8089,7 +9945,8 @@ all of the text in the message header and body.
 <P>
 If you enter non-ascii characters in this field then the search will be
 done using the character set you have defined with the
-&quot;character-set&quot; configuration variable.
+<A HREF="#char-set">Character-Set</A>
+configuration variable.
 (The truly sophisticated may use an alternate character set for a search
 by entering the MIME encoding of the header string here.)
 <P>
@@ -8102,7 +9959,8 @@ message, not the body and header.
 <P>
 If you enter non-ascii characters in this field then the search will be
 done using the character set you have defined with the
-&quot;character-set&quot; configuration variable.
+<A HREF="#char-set">Character-Set</A>
+configuration variable.
 (The truly sophisticated may use an alternate character set for a search
 by entering the MIME encoding of the header string here.)
 <P>
@@ -8190,6 +10048,58 @@ The score for a message is calculated by looking at every scoring rule
 defined and adding up the Score Values for the rules which match the message.
 <P>
 
+<DT> <A NAME="keyword-pattern"><EM>Keyword pattern</EM></A>
+
+<DD> A folder may have user-defined keywords.
+These are similar to the Important flag which the user may set using the
+Flag command.
+The difference is that the Important flag is always present for each folder.
+User-defined keywords are picked by the user.
+You may add new keywords by defining them in the
+<A HREF="#keywords">Keywords</A> option in the Setup/Config screen.
+After you have added a potential keyword with the Keywords option,
+the Flag command may be used to set or clear the keyword on individual messages.
+If you have given a keyword a nickname when configuring it,
+that nickname may be used instead of the actual keyword.
+
+<P>
+When filling in a value for this field, it may be easiest to use
+the &quot;T&quot; command, which presents you with a list of the keywords
+you have defined to choose from.
+
+<P>
+This part of the Pattern matches messages with certain keywords set.
+It will be considered a match if a message has any of the keywords in the
+list set.
+
+<P>
+It is possible to add a <EM>NOT</EM> to the Keyword Pattern meaning with the
+&quot;!&quot; &quot;toggle NOT&quot; command.
+This changes the meaning of the Keyword pattern so that it has the opposite meaning.
+It will be considered a match if none of the keywords in the list are set
+for a message.
+<P>
+Don't make the mistake of putting the &quot;!&quot; in the data field for
+the pattern.
+For example, if you type the characters &quot;!frizzle&quot; into the Keyword
+pattern, the pattern will look like:
+<P>
+<PRE>
+ Keyword pattern = !frizzle
+</PRE>
+<P>
+This means you want to match the 8 character sequence &quot;!frizzle&quot;.
+In order to match messages which do not have the keyword &quot;frizzle&quot;
+set, first type the characters &quot;frizzle&quot; followed
+by carriage return for the value of the Keyword pattern, then negate it
+by typing the &quot;!&quot; command.
+It should end up looking like
+<P>
+<PRE>
+ ! Keyword pattern = frizzle
+</PRE>
+<P>
+
 <DT> <A NAME="current-folder-type"><EM>Current Folder Type</EM></A>
 
 <DD> The Current Folder Type is part of the Pattern.
@@ -8209,7 +10119,7 @@ to a specific folder (not just a specific type of folder), or to a list of
 specific folders.
 In order to match a specific folder you must Select the &quot;Specific&quot;
 button <EM>AND</EM> you must fill in
-the name (or comma-separated list of names) of
+the name (or list of names) of
 the folder in the &quot;Folder&quot; field.
 If the current folder is any of the folders in the list, that is considered
 a match.
@@ -8334,6 +10244,40 @@ means the Subject must <EM>not</EM>
 contain unencoded 8-bit characters in order to be a match.
 <P>
 
+<DT> <A NAME="beginning-of-month"><EM>Beginning of Month</EM></A>
+
+<DD> This part of the Pattern may have one of three possible values.
+The default value is &quot;Don't care&quot;, which matches any message.
+The other two values are &quot;Yes&quot;, which means this is the first
+time <EM>Pine</EM> has been run this month;
+or &quot;No&quot;, which
+means this is <EM>not</EM> the first time <EM>Pine</EM> has been run this month.
+The way that <EM>Pine</EM> decides if it is the beginning of the month or not is
+to compare today's date with the date stored in the
+<A HREF="#last-time">Last-Time-Prune-Questioned</A>
+variable in the config file.
+If the month of today's date is later than the month stored in the variable,
+then this is considered to be the first time you have run Pine this month, and
+that turns the Beginning of the Month option on.
+<P>
+
+<DT> <A NAME="beginning-of-year"><EM>Beginning of Year</EM></A>
+
+<DD> This part of the Pattern may have one of three possible values.
+The default value is &quot;Don't care&quot;, which matches any message.
+The other two values are &quot;Yes&quot;, which means this is the first
+time <EM>Pine</EM> has been run this year;
+or &quot;No&quot;, which
+means this is <EM>not</EM> the first time <EM>Pine</EM> has been run this year.
+The way that <EM>Pine</EM> decides if it is the beginning of the year or not is
+to compare today's date with the date stored in the
+<A HREF="#last-time">Last-Time-Prune-Questioned</A>
+variable in the config file.
+If the year of today's date is later than the year stored in the variable,
+then this is considered to be the first time you have run Pine this year, and
+that turns the Beginning of the Year option on.
+<P>
+
 <DT> <A NAME="from-in-abook"><EM>From or Reply-To in Address Book</EM></A>
 
 <DD> This part of the Pattern may have one of five possible values.
@@ -8349,11 +10293,11 @@ The values &quot;Yes, in specific address books&quot; and
 &quot;No, not in any of specific address books&quot; are similar but instead
 of depending on all address books you are allowed to give a list of address
 books to look in.
-Usually this would be a single address book but it may be a comma-separated
+Usually this would be a single address book but it may be a
 list of address books as well.
 For each of these &quot;specific&quot; address book options you Select which
 of the Specific options you want (Yes or No) <EM>AND</EM> fill in the
-name (or comma-separated list of names) of the address book in the
+name (or list of names) of the address book in the
 &quot;Abook List&quot; field.
 The names to be used are those that appear in the ADDRESS BOOK LIST screen.
 The easiest way to fill in the Abook List field it to use
@@ -8361,6 +10305,78 @@ the &quot;T&quot; command which is available when the &quot;Abook List&quot;
 line is highlighted.
 Note that you won't be able to edit the &quot;Abook List&quot; line unless the
 option is set to one of the two &quot;Specific&quot;, values.
+<P>
+
+<DT> <A NAME="categorizer-cmd-explained"><EM>Categorizer Command</EM></A>
+
+<DD> This is a command that is run with its standard input set to the message
+being checked and its standard output discarded.
+The full directory path should be specified.
+The command will be run and then its exit status will be checked against
+the <EM>Exit Status Interval</EM>, which defaults to just the value zero.
+If the exit status of the command falls in the interval, it is considered
+a match, otherwise it is not a match.
+<P>
+
+This option may actually be a list of commands.
+The first one that exists and is executable is used.
+That makes it possible to use the same configuration with Unix <EM>Pine</EM> and
+<EM>PC-Pine</EM>.
+<P>
+
+If none of the commands in the list exists and is executable then the rule
+is <EM>not</EM> a match.
+If it is possible that the command may not exist, you should be careful
+to structure your rules so that nothing destructive
+happens when the command does not exist.
+For example, you might have a filter that filters away spam when there is
+a match but does nothing when there is not a match.
+That would continue to work correctly if the command didn't exist.
+However, if you have a filter which filters away spam when there is not
+a match and keeps it when there is a match, that would filter everything
+if the categorizer command didn't exist.
+<P>
+
+The categorizer command is run and the result is the exit status of
+that command.
+If that exit status falls in the <EM>Exit Status Interval</EM>
+then it is considered a match, otherwise it is not a match.
+Of course for the entire rule to match, it must also be checked against
+the other defined parts of the Pattern.
+<P>
+The <EM>Exit Status Interval</EM> defaults to the single value 0 (zero).
+If you define it, it should be set to something like:
+<P>
+<CENTER><SAMP>(min_exit_value,max_exit_value)</SAMP></CENTER>
+<P>
+where &quot;min_exit_value&quot; and &quot;max_exit_value&quot; are integers.
+The special values &quot;INF&quot; and &quot;-INF&quot; may be used for large
+positive and negative integers.
+<P>
+Actually, a list of intervals may be used if you wish.
+A list would look like
+<P>
+<CENTER><SAMP>(min_exit_value1,max_exit_value1),(min_exit_value2,max_exit_value2),...</SAMP></CENTER>
+<P>
+When there is an <EM>Exit Status Interval</EM> defined, it is a match if the exit status
+of the categorizer command is contained in any of the intervals.
+The intervals include both endpoints.
+<P>
+The default interval is
+<P>
+<CENTER><SAMP>(0,0)</SAMP></CENTER>
+<P>
+and it matches only if the command exits with exit status equal to zero.
+<P>
+It is also possible to set a <EM>Character Limit</EM> for the categorizer command.
+Setting this option makes it possible to limit how much of the message
+is made available to the categorizer command as input.
+The default value (-1) means that the entire message is fed to the
+command.
+A value of 0 (zero) means that only the headers of the message are
+made available.
+A positive integer means that the headers plus that many characters from
+the body of the message are passed to the categorizer.
 <P>
 
 </DL>

@@ -1,4 +1,5 @@
 int timeo = 0;
+time_t time_of_last_input;
 int (*pcollator)();
 
 #if	defined(sv3) || defined(ct)
@@ -114,8 +115,7 @@ ttopen()
 	xonxoff_proc(preserve_start_stop);
     }
 
-    if(!Pmaster || (gmode ^ MDEXTFB))
-      picosigs();
+    picosigs();
 
     return(1);
 }
@@ -363,7 +363,7 @@ GetKey()
 {
     int    ch, status, cc;
 
-    if(!ReadyForKey(timeo))
+    if(!ReadyForKey(FUDGE-5))
       return(NODATA);
 
     switch(status = kbseq(simple_ttgetc, NULL, bail, &ch)){
@@ -911,7 +911,7 @@ reset_attr_state()
 static void
 tinitcolor()
 {
-    if(_color_inited)
+    if(_color_inited || panicking)
       return;
 
     if(ANSI_COLOR() || (_colors > 0 && ((_setaf && _setab) || (_setf && _setb)
@@ -1540,7 +1540,9 @@ pico_toggle_color(on)
 	_using_color = 0;
 	if(_color_inited){
 	    _color_inited = 0;
-	    free_color_table(&color_tbl);
+	    if(!panicking)
+	      free_color_table(&color_tbl);
+
 	    if(ANSI_COLOR())
 	      putpad("\033[39;49m");
 	    else{
@@ -1573,6 +1575,8 @@ void
 pico_endcolor()
 {
     pico_toggle_color(0);
+    if(panicking)
+      return;
 
     if(_nfcolor){
 	free(_nfcolor);
@@ -1974,8 +1978,6 @@ alt_editor(f, n)
 {
     char   eb[NLINE];				/* buf holding edit command */
     char   *fn;					/* tmp holder for file name */
-    char   *cp;
-    char   *args[MAXARGS];			/* ptrs into edit command */
     char   result[128];				/* result string */
     char   prmpt[128];
     int	   child, pid, i, done = 0, ret = 0, rv;
@@ -2109,35 +2111,6 @@ alt_editor(f, n)
     strcat(eb, " ");
     strcat(eb, fn);
 
-    cp = eb;
-    for(i=0; *cp != '\0';i++){			/* build args array */
-	if(i < MAXARGS){
-	    args[i] = NULL;			/* in case we break out */
-	}
-	else{
-	    emlwrite("Too many args for command!", NULL);
-	    return(-1);
-	}
-
-	while(isspace((unsigned char)(*cp)))
-	  if(*cp != '\0')
-	    cp++;
-	  else
-	    break;
-
-	args[i] = cp;
-
-	while(!isspace((unsigned char)(*cp)))
-	  if(*cp != '\0')
-	    cp++;
-	  else
-	    break;
-
-	if(*cp != '\0')
-	  *cp++ = '\0';
-    }
-
-    args[i] = NULL;
 
     for(i = 0; i <= ((Pmaster) ? term.t_nrow : term.t_nrow - 1); i++){
 	movecursor(i, 0);
@@ -2225,7 +2198,7 @@ alt_editor(f, n)
 #ifdef	SIGCHLD
 	(void) signal(SIGCHLD,  SIG_DFL);
 #endif
-	if(execvp(args[0], args) < 0)
+	if(execl("/bin/sh", "sh", "-c", eb, 0) < 0)
 	  exit(-1);
     }
     else {				/* error! */
@@ -2649,12 +2622,19 @@ char *f;
  * errstr - return system error string corresponding to given errno
  *          Note: strerror() is not provided on all systems, so it's 
  *          done here once and for all.
+ *
+ *        Not anymore! There are now systems that won't let you use
+ *        sys_nerr and sys_errlist, so it is time to switch to using
+ *        strerror instead. If this doesn't work, uncomment the old stuff.
  */
 char *
 errstr(err)
 int err;
 {
+    return((err >= 0) ? (char *) strerror(err) : NULL);
+#ifdef OLDWAY
     return((err >= 0 && err < sys_nerr) ? (char *)sys_errlist[err] : NULL);
+#endif
 }
 
 
@@ -2709,7 +2689,9 @@ int  *n;
 	return(NULL);
     } 
     else{
+#ifndef MAX
 #define MAX(x,y)        ((x) > (y) ? (x) : (y))
+#endif
 	/*
 	 * We'd like to use 512 * st_blocks as an initial estimate but
 	 * some systems have a stat struct with no st_blocks in it.
@@ -3017,15 +2999,16 @@ static char sccsid[] = "@(#)mktemp.c	5.7 (Berkeley) 6/27/88";
 #endif /* LIBC_SCCS and not lint */
 
 static char *
-was_nonexistent_tmp_name(as, create_it)
+was_nonexistent_tmp_name(as, create_it, ext)
     char *as;
     int   create_it;
+    char *ext;
 {
     register char  *start, *trv;
     struct stat     sbuf;
     unsigned        pid;
     static unsigned n = 0;
-    int             fd;
+    int             fd, tries = 0;
 
     pid = ((unsigned)getpid() * 100) + n++;
 
@@ -3040,6 +3023,12 @@ was_nonexistent_tmp_name(as, create_it)
     while(*--trv == 'X'){
 	*trv = (pid % 10) + '0';
 	pid /= 10;
+    }
+
+    /* add the extension, enough room guaranteed by caller */
+    if(ext){
+	strcat(as, ".");
+	strcat(as, ext);
     }
 
     /*
@@ -3079,6 +3068,8 @@ was_nonexistent_tmp_name(as, create_it)
 		   ((fd=open(as, O_CREAT|O_EXCL|O_WRONLY,0600)) >= 0
 		    && close(fd) == 0))
 		  return(as);
+		else if(++tries > 3)		/* open failed unexpectedly */
+		  return((char *)NULL);
 	    }
 	    else				/* failed for unknown reason */
 	      return((char *)NULL);
@@ -3219,7 +3210,104 @@ done:
 	return((char *)NULL);
     }
 
-    return(was_nonexistent_tmp_name(name, 1));
+    return(was_nonexistent_tmp_name(name, 1, NULL));
+}
+
+/*----------------------------------------------------------------------
+
+     Like temp_nam but create a unique name with an extension.
+ 
+ Result: Malloc'd string equal to new name is returned.  It must be free'd
+	 by the caller.  Returns the string on success and NULL on failure.
+  ----*/
+char *
+temp_nam_ext(dir, prefix, ext)
+    char *dir, *prefix, *ext;
+{
+    struct stat buf;
+    size_t      l, ll;
+    char       *f, *name;
+
+    if(ext == NULL || *ext == '\0')
+      return(temp_nam(dir, prefix));
+    if(!(name = (char *)malloc((unsigned int)NFILEN)))
+        return((char *)NULL);
+
+    if(!dir && (f = getenv("TMPDIR")) && !stat(f, &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+			 !can_access(f, WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, f, NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+    if(!dir && (f = getenv("TMP")) && !stat(f, &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+			 !can_access(f, WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, f, NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+    if(!dir && (f = getenv("TEMP")) && !stat(f, &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+			 !can_access(f, WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, f, NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+    if(dir && !stat(dir, &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+	                 !can_access(dir, WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, dir, NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+#ifndef P_tmpdir
+#define	P_tmpdir	"/usr/tmp"
+#endif
+    if(!stat(P_tmpdir, &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+			 !can_access(P_tmpdir, WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, P_tmpdir, NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+    if(!stat("/tmp", &buf) &&
+                         (buf.st_mode&S_IFMT) == S_IFDIR &&
+			 !can_access("/tmp", WRITE_ACCESS|EXECUTE_ACCESS)){
+	strncpy(name, "/tmp", NFILEN-1);
+	name[NFILEN-1] = '\0';
+        goto done;
+    }
+
+    free((void *)name);
+    return((char *)NULL);
+
+done:
+    if(name[0] && *((f = &name[l=strlen(name)]) - 1) != '/' && l+1 < NFILEN){
+	*f++ = '/';
+	*f = '\0';
+	l++;
+    }
+
+    if(prefix && (ll = strlen(prefix)) && l+ll < NFILEN){
+	strcpy(f, prefix);
+	f += ll;
+	l += ll;
+    }
+
+    if(l+6+strlen(ext)+1 < NFILEN)
+      strcpy(f, "XXXXXX");
+    else{
+	free((void *)name);
+	return((char *)NULL);
+    }
+
+    return(was_nonexistent_tmp_name(name, 1, ext));
 }
 
 
@@ -3563,7 +3651,7 @@ pico_new_mail()
       sprintf(inbox, "%.*s", sizeof(inbox)-1, p);
     else
       sprintf(inbox,"%.*s/%.*s", sizeof(inbox)/3, MAILDIR, sizeof(inbox)/3,
-	      getlogin());
+	      (char *) getlogin());
 
     if(stat(inbox, &sbuf) == 0){
 	ret = sbuf.st_atime <= sbuf.st_mtime &&
@@ -3579,7 +3667,9 @@ pico_new_mail()
 
 /*
  * time_to_check - checks the current time against the last time called 
- *                 and returns true if the elapsed time is > timeo
+ *                 and returns true if the elapsed time is > below.
+ *                 Newmail won't necessarily check, but we want to give it
+ *                 a chance to check or do a keepalive.
  */
 time_to_check()
 {
@@ -3588,7 +3678,7 @@ time_to_check()
     if(!timeo)
       return(FALSE);
 
-    if(time((time_t *) 0) - lasttime > (time_t)timeo){
+    if(time((time_t *) 0) - lasttime > (Pmaster ? (time_t)(FUDGE-10) : timeo)){
 	lasttime = time((time_t *) 0);
 	return(TRUE);
     }

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: search.c,v 1.1.1.2 2003-02-12 08:01:41 ghudson Exp $";
+static char rcsid[] = "$Id: search.c,v 1.1.1.3 2005-01-26 17:55:11 ghudson Exp $";
 #endif
 /*
  * Program:	Searching routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: search.c,v 1.1.1.2 2003-02-12 08:01:41 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -227,6 +227,11 @@ forwsearch(f, n)
 		forwchar(0, 1);
 	    }
 
+	    mlerase();
+	    FWS_RETURN(TRUE);
+
+	  case (CTRL|'U'):
+	    fillbuf(0, 1);
 	    mlerase();
 	    FWS_RETURN(TRUE);
 
@@ -494,7 +499,7 @@ int   repl_mode;
 	register int s;
 	int	     i = 0;
 	char	     tpat[NPAT+20];
-	EXTRAKEYS    menu_pat[7];
+	EXTRAKEYS    menu_pat[8];
 
 	menu_pat[i = 0].name = "^Y";
 	menu_pat[i].label    = "FirstLine";
@@ -525,6 +530,11 @@ int   repl_mode;
 	    menu_pat[++i].name = "^O";
 	    menu_pat[i].label  = "End of Para";
 	    menu_pat[i].key    = (CTRL|'O');
+	    KS_OSDATASET(&menu_pat[i], KS_NONE);
+
+	    menu_pat[++i].name = "^U";
+	    menu_pat[i].label  = "FullJustify";
+	    menu_pat[i].key    = (CTRL|'U');
 	    KS_OSDATASET(&menu_pat[i], KS_NONE);
 	}
 
@@ -620,7 +630,7 @@ int   text_mode;
 	register int s;
 	int	     i;
 	char	     tpat[NPAT+20];
-	EXTRAKEYS    menu_pat[6];
+	EXTRAKEYS    menu_pat[7];
 
 	menu_pat[i = 0].name = "^Y";
 	menu_pat[i].label    = "FirstLine";
@@ -646,6 +656,11 @@ int   text_mode;
 	    menu_pat[++i].name = "^O";
 	    menu_pat[i].label  = "End of Para";
 	    menu_pat[i].key    = (CTRL|'O');
+	    KS_OSDATASET(&menu_pat[i], KS_NONE);
+
+	    menu_pat[++i].name = "^U";
+	    menu_pat[i].label  = "FullJustify";
+	    menu_pat[i].key    = (CTRL|'U');
 	    KS_OSDATASET(&menu_pat[i], KS_NONE);
 	}
 

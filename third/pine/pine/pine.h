@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: pine.h,v 1.1.1.4 2004-03-01 21:16:40 ghudson Exp $
+  $Id: pine.h,v 1.1.1.5 2005-01-26 17:56:48 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -20,7 +20,7 @@
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -63,7 +63,7 @@
 #ifndef _PINE_INCLUDED
 #define _PINE_INCLUDED
 
-#define PINE_VERSION		"4.58"
+#define PINE_VERSION		"4.62"
 #define	PHONE_HOME_VERSION	"-count"
 #define	PHONE_HOME_HOST		"docserver.cac.washington.edu"
 
@@ -101,6 +101,10 @@
 #define	FM_NEW_MESS	0x02		/* ditto		   */
 #define	FM_NOWRAP	0x08		/* ditto		   */
 #define	FM_NOCOLOR	0x10		/* ditto		   */
+#define	FM_NOINDENT	0x20		/* no effect if NOWRAP set */
+
+#define	AOS_NONE	0x00		/* alredy_open_stream: no flag  */
+#define	AOS_RW_ONLY	0x01		/* don't match readonly streams */
 
 #define	RS_NONE		0x00		/* no options set		*/
 #define	RS_RULES	0x01		/* include Rules as option	*/
@@ -114,16 +118,27 @@
 #define	RB_FLUSH_IN	0x02		/* discard pending input	 */
 #define	RB_NO_NEWMAIL	0x04		/* Quell new mail check		 */
 #define	RB_SEQ_SENSITIVE 0x08		/* Sensitive to seq # changes    */
+#define	RB_RET_HELP	0x10		/* Return when help key pressed  */
 
 #define	WT_NORM		RB_NORM		/* flags modifying want_to       */
 #define	WT_FLUSH_IN	RB_FLUSH_IN	/* discard pending input         */
 #define	WT_SEQ_SENSITIVE RB_SEQ_SENSITIVE /* Sensitive to seq # changes  */
+
+#define	EC_NONE		0x00		/* flags modifying expunge_and_close */
+#define	EC_NO_CLOSE	0x01		/* don't close at end                */
+
+#define	PL_NONE		0x00		/* flags modifying parse_list    */
+#define	PL_REMSURRQUOT	0x01		/* rm surrounding quotes         */
+#define	PL_COMMAQUOTE	0x02		/* backslash quotes comma        */
 
 #define	AC_NONE		0x00		/* flags modifying apply_command */
 #define	AC_FROM_THREAD	0x01		/* called from thread_command    */
 #define	AC_COLL		0x02		/* offer collapse command        */
 #define	AC_EXPN		0x04		/* offer expand command          */
 #define	AC_UNSEL	0x08		/* all selected, offer UnSelect  */
+
+#define	FN_NONE		0x00		/* flags modifying folder_is_nick */
+#define	FN_WHOLE_NAME	0x01		/* return long name if #move      */
 
 #define	GF_NOOP		0x01		/* flags used by generalized */
 #define GF_EOD		0x02		/* filters                   */
@@ -151,6 +166,14 @@
 #define GE_NONE			0x00	/* get_export_filename flags    */
 #define GE_IS_EXPORT		0x01	/* include EXPORT: in prompt    */
 #define GE_SEQ_SENSITIVE	0x02	/* Sensitive to seq # changes   */
+#define GE_NO_APPEND		0x04	/* No appending to file allowed */
+#define GE_IS_IMPORT		0x08	/* No writing of file           */
+#define GE_ALLPARTS		0x10	/* Add AllParts toggle to options */
+
+#define GER_NONE		0x00	/* get_export_filename return flags */
+#define GER_OVER		0x01	/* overwrite of existing file       */
+#define GER_APPEND		0x02	/* append of existing file          */
+#define GER_ALLPARTS		0x04	/* AllParts toggle is on            */
 
 #define GFHP_STRIPPED		0x01
 #define GFHP_HANDLES		0x02
@@ -158,6 +181,10 @@
 
 #define	GFW_HANDLES		0x01
 #define	GFW_ONCOMMA		0x02
+#define	GFW_FLOWED		0x04
+#define	GFW_DELSP		0x08
+#define GFW_FLOW_RESULT         0x10
+#define GFW_USECOLOR            0x20
 
 #define	PML_IS_MOVE_MBOX	0x01
 
@@ -227,11 +254,37 @@ typedef enum {ReadOnly, ReadWrite, MaybeRorW, NoAccess, NoExists} AccessType;
 #ifndef DF_MAILDROPCHECK
 #define DF_MAILDROPCHECK 	"60"
 #endif
+#ifndef DF_MAXREMSTREAM
+#define DF_MAXREMSTREAM 	"2"
+#endif
+#ifndef DF_VIEW_MARGIN_RIGHT
+#define DF_VIEW_MARGIN_RIGHT 	"4"
+#endif
+#ifndef DF_QUOTE_SUPPRESSION
+#define DF_QUOTE_SUPPRESSION 	"0"
+#endif
+#ifndef DF_DEADLETS
+#define DF_DEADLETS 		"1"
+#endif
+#ifndef DF_NMW_WIDTH
+#define DF_NMW_WIDTH 		"80"
+#endif
 
 #define SIGDASHES	"-- "
 #define START_SIG_BLOCK	2
 #define IN_SIG_BLOCK	1
 #define OUT_SIG_BLOCK	0
+
+
+/*
+ * This is a little dangerous. We're passing flags to match_pattern and
+ * peeling some of them off for our own use while passing the rest on
+ * to mail_search_full. So we need to define ours so they don't overlap
+ * with the c-client flags that can be passed to mail_search_full.
+ * We could formalize it with mrc.
+ */
+#define MP_IN_CCLIENT_CB	0x10000   /* we're in a c-client callback! */
+#define MP_NOT			0x20000   /* use ! of patgrp for search    */
 
 
 /*
@@ -263,7 +316,17 @@ typedef enum {ReadOnly, ReadWrite, MaybeRorW, NoAccess, NoExists} AccessType;
 #define MAXPROMPT	(ps_global->ttyo->screen_cols - 6)
 typedef enum {FrontDots, MidDots, EndDots} WhereDots;
 
-typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
+typedef enum {ListMode, SingleMode} ScreenMode;
+
+typedef enum {DontAsk, NoDel, Del, RetNoDel, RetDel} SaveDel;
+
+typedef enum {NoKW, KW, KWInit} SubjKW;
+
+typedef struct offsets {
+    int        offset;		/* the offset into the line */
+    int        len;		/* the length of the colored section */
+    COLOR_PAIR color;		/* color for this offset    */
+} OFFCOLOR_S;
 
 /*
  * Macro to simplify clearing body portion of pine's display
@@ -387,6 +450,7 @@ typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 
 #define	mn_give(P)		msgno_give(P)
 
+
 /*
  * This searchs for lines beginning with From<space> so that we can QP-encode
  * them.  It also searches for lines consisting of only a dot.  Some mailers
@@ -445,15 +509,21 @@ typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 			     }
 
 
+
 /*
  * Useful macro to test if current folder is a bboard type (meaning
  * netnews for now) collection...
  */
 #define	IS_NEWS(S)	((S) ? ns_test((S)->mailbox, "news") : 0)
 
-#define	READONLY_FOLDER  (ps_global->mail_stream 			     \
-			  && (ps_global->mail_stream->rdonly		     \
-			       && !IS_NEWS(ps_global->mail_stream)))
+#define	READONLY_FOLDER(S)  ((S) && (S)->rdonly && !IS_NEWS(S))
+
+#define STREAMNAME(S)	(((S) && sp_fldr(S) && sp_fldr(S)[0])        \
+			  ? sp_fldr(S)                               \
+			  : ((S) && (S)->mailbox && (S)->mailbox[0]) \
+			    ? (S)->mailbox                           \
+			    : "?")
+
 
 /*
  * Simple, handy macro to determine if folder name is remote 
@@ -463,11 +533,17 @@ typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 			 && strchr(((X) + 2), '}'))
 
 
-/* Is this a vCard attachment? */
+#define	MIME_MSG(t,s)	((t) == TYPEMESSAGE && (s) && !strucmp((s),"rfc822"))
+#define	MIME_DGST(t,s)	((t) == TYPEMULTIPART && (s) && !strucmp((s),"digest"))
+/* Is this a message attachment? */
+#define	MIME_MSG_A(a)	MIME_MSG((a)->body->type, (a)->body->subtype)
+/* Is this a digest attachment? */
+#define	MIME_DGST_A(a)	MIME_DGST((a)->body->type, (a)->body->subtype)
 #define	MIME_VCARD(t,s)	((((t) == TYPETEXT || (t) == TYPEAPPLICATION) \
 	                   && (s) && !strucmp((s),"DIRECTORY"))       \
 			 || ((t) == TYPETEXT                          \
 			   && (s) && !strucmp((s),"X-VCARD")))
+/* Is this a vCard attachment? */
 #define	MIME_VCARD_A(a)	MIME_VCARD((a)->body->type, (a)->body->subtype)
 
 #define STYLE_NAME(a)   ((a)->text.desc ? (a)->text.desc : "text")
@@ -476,17 +552,8 @@ typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 /*
  * Macros to help fetch specific fields
  */
-#define	pine_fetchheader_lines(S,N,M,F)		fetch_header(S,N,M,F,0L)
-#define	pine_fetchheader_lines_not(S,N,M,F)	fetch_header(S,N,M,F,FT_NOT)
-
-
-/*
- * Macro to help with new mail check timing...
- */
-#define	NM_TIMING(X)	(((X)==NO_OP_IDLE) ? 0 : ((X)==NO_OP_COMMAND) ? 1 : 2)
-#define	NM_NONE		0x00
-#define	NM_STATUS_MSG	0x01
-#define	NM_DEFER_SORT	0x02
+#define	pine_fetchheader_lines(S,N,M,F)	     pine_fetch_header(S,N,M,F,0L)
+#define	pine_fetchheader_lines_not(S,N,M,F)  pine_fetch_header(S,N,M,F,FT_NOT)
 
 
 /*
@@ -568,6 +635,9 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_COMP_HDRS
 		, V_CUSTOM_HDRS
 		, V_VIEW_HEADERS
+		, V_VIEW_MARGIN_LEFT
+		, V_VIEW_MARGIN_RIGHT
+		, V_QUOTE_SUPPRESSION
 		, V_SAVED_MSG_NAME_RULE
 		, V_FCC_RULE
 		, V_SORT_KEY
@@ -603,12 +673,15 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_DISPLAY_FILTERS
 		, V_SEND_FILTER
 		, V_ALT_ADDRS
+		, V_KEYWORDS
+		, V_KW_BRACES
 		, V_ABOOK_FORMATS
 		, V_INDEX_FORMAT
 		, V_OVERLAP
 		, V_MARGIN
 		, V_STATUS_MSG_DELAY
 		, V_MAILCHECK
+		, V_MAILCHECKNONCURR
 		, V_MAILDROPCHECK
 		, V_NNTPRANGE
 		, V_NEWSRC_PATH
@@ -621,6 +694,13 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_MAILCAP_PATH
 		, V_MIMETYPE_PATH
 		, V_BROWSER
+		, V_MAXREMSTREAM
+		, V_PERMLOCKED
+		, V_DEADLETS
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+		, V_FIFOPATH
+#endif
+		, V_NMW_WIDTH
     /*
      * Starting here, the rest of the variables are hidden by default in config
      * screen. They are exposed with expose-hidden-config feature.
@@ -638,7 +718,7 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_OPER_DIR
 		, V_USERINPUTTIMEO
 #ifdef DEBUGJOURNAL
-		, V_DEBUGMEM
+		, V_DEBUGMEM		/* obsolete */
 #endif
 		, V_TCPOPENTIMEO
 		, V_TCPREADWARNTIMEO
@@ -722,6 +802,7 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_IND_UNS_FORE_COLOR
 		, V_IND_UNS_BACK_COLOR
 		, V_VIEW_HDR_COLORS
+		, V_KW_COLORS
 #if defined(DOS) || defined(OS2)
 #ifdef	_WINDOWS
 		, V_FONT_NAME
@@ -762,7 +843,6 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_FOLDER_SPEC		     vars[V_FOLDER_SPEC].global_val.l
 #define VAR_NEWS_SPEC		     vars[V_NEWS_SPEC].current_val.l
 #define VAR_ARCHIVED_FOLDERS	     vars[V_ARCHIVED_FOLDERS].current_val.l
-#define GLO_ARCHIVED_FOLDERS	     vars[V_ARCHIVED_FOLDERS].global_val.l
 #define VAR_PRUNED_FOLDERS	     vars[V_PRUNED_FOLDERS].current_val.l
 #define GLO_PRUNED_FOLDERS	     vars[V_PRUNED_FOLDERS].global_val.l
 #define VAR_DEFAULT_FCC		     vars[V_DEFAULT_FCC].current_val.p
@@ -792,6 +872,12 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_COMP_HDRS		     vars[V_COMP_HDRS].global_val.l
 #define VAR_CUSTOM_HDRS		     vars[V_CUSTOM_HDRS].current_val.l
 #define VAR_VIEW_HEADERS	     vars[V_VIEW_HEADERS].current_val.l
+#define VAR_VIEW_MARGIN_LEFT	     vars[V_VIEW_MARGIN_LEFT].current_val.p
+#define GLO_VIEW_MARGIN_LEFT	     vars[V_VIEW_MARGIN_LEFT].global_val.p
+#define VAR_VIEW_MARGIN_RIGHT	     vars[V_VIEW_MARGIN_RIGHT].current_val.p
+#define GLO_VIEW_MARGIN_RIGHT	     vars[V_VIEW_MARGIN_RIGHT].global_val.p
+#define VAR_QUOTE_SUPPRESSION	     vars[V_QUOTE_SUPPRESSION].current_val.p
+#define GLO_QUOTE_SUPPRESSION	     vars[V_QUOTE_SUPPRESSION].global_val.p
 #ifndef	_WINDOWS
 #define VAR_COLOR_STYLE		     vars[V_COLOR_STYLE].current_val.p
 #define GLO_COLOR_STYLE		     vars[V_COLOR_STYLE].global_val.p
@@ -819,6 +905,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_SPELLER		     vars[V_SPELLER].global_val.p
 #define VAR_FILLCOL		     vars[V_FILLCOL].current_val.p
 #define GLO_FILLCOL		     vars[V_FILLCOL].global_val.p
+#define VAR_DEADLETS		     vars[V_DEADLETS].current_val.p
+#define GLO_DEADLETS		     vars[V_DEADLETS].global_val.p
 #define VAR_REPLY_STRING	     vars[V_REPLY_STRING].current_val.p
 #define GLO_REPLY_STRING	     vars[V_REPLY_STRING].global_val.p
 #define VAR_REPLY_INTRO		     vars[V_REPLY_INTRO].current_val.p
@@ -870,14 +958,23 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define VAR_SEND_FILTER		     vars[V_SEND_FILTER].current_val.l
 #define GLO_SEND_FILTER		     vars[V_SEND_FILTER].global_val.l
 #define VAR_ALT_ADDRS		     vars[V_ALT_ADDRS].current_val.l
+#define VAR_KEYWORDS		     vars[V_KEYWORDS].current_val.l
+#define VAR_KW_COLORS		     vars[V_KW_COLORS].current_val.l
+#define GLO_KW_BRACES		     vars[V_KW_BRACES].global_val.p
+#define VAR_KW_BRACES		     vars[V_KW_BRACES].current_val.p
 #define VAR_ABOOK_FORMATS	     vars[V_ABOOK_FORMATS].current_val.l
 #define VAR_INDEX_FORMAT	     vars[V_INDEX_FORMAT].current_val.p
 #define VAR_OVERLAP		     vars[V_OVERLAP].current_val.p
 #define GLO_OVERLAP		     vars[V_OVERLAP].global_val.p
+#define VAR_MAXREMSTREAM	     vars[V_MAXREMSTREAM].current_val.p
+#define GLO_MAXREMSTREAM	     vars[V_MAXREMSTREAM].global_val.p
+#define VAR_PERMLOCKED		     vars[V_PERMLOCKED].current_val.l
 #define VAR_MARGIN		     vars[V_MARGIN].current_val.p
 #define GLO_MARGIN		     vars[V_MARGIN].global_val.p
 #define VAR_MAILCHECK		     vars[V_MAILCHECK].current_val.p
 #define GLO_MAILCHECK		     vars[V_MAILCHECK].global_val.p
+#define VAR_MAILCHECKNONCURR	     vars[V_MAILCHECKNONCURR].current_val.p
+#define GLO_MAILCHECKNONCURR	     vars[V_MAILCHECKNONCURR].global_val.p
 #define VAR_MAILDROPCHECK	     vars[V_MAILDROPCHECK].current_val.p
 #define GLO_MAILDROPCHECK	     vars[V_MAILDROPCHECK].global_val.p
 #define VAR_NNTPRANGE     	     vars[V_NNTPRANGE].current_val.p
@@ -907,12 +1004,6 @@ typedef	enum {    V_PERSONAL_NAME = 0
   /* Old style reply is obsolete in Pine 3.83 (see feature list) */
 #define VAR_OLD_STYLE_REPLY          vars[V_OLD_STYLE_REPLY].current_val.p
 #define GLO_OLD_STYLE_REPLY          vars[V_OLD_STYLE_REPLY].global_val.p
-  /* Compose MIME is obsolete in Pine 3.81 */
-#define VAR_COMPOSE_MIME             vars[V_COMPOSE_MIME].current_val.p
-#define GLO_COMPOSE_MIME             vars[V_COMPOSE_MIME].global_val.p
-  /* Show all characters is obsolete in Pine 3.83 */
-#define VAR_SHOW_ALL_CHARACTERS      vars[V_SHOW_ALL_CHARACTERS].current_val.p
-#define GLO_SHOW_ALL_CHARACTERS      vars[V_SHOW_ALL_CHARACTERS].global_val.p
   /* Save by sender is obsolete in Pine 3.83 (see saved msg name rule) */
 #define VAR_SAVE_BY_SENDER           vars[V_SAVE_BY_SENDER].current_val.p
 #define GLO_SAVE_BY_SENDER           vars[V_SAVE_BY_SENDER].global_val.p
@@ -929,10 +1020,11 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_GOTO_DEFAULT_RULE	     vars[V_GOTO_DEFAULT_RULE].global_val.p
 #define VAR_MAILCAP_PATH	     vars[V_MAILCAP_PATH].current_val.p
 #define VAR_MIMETYPE_PATH	     vars[V_MIMETYPE_PATH].current_val.p
+#define VAR_FIFOPATH		     vars[V_FIFOPATH].current_val.p
+#define VAR_NMW_WIDTH		     vars[V_NMW_WIDTH].current_val.p
+#define GLO_NMW_WIDTH		     vars[V_NMW_WIDTH].global_val.p
 #define VAR_USERINPUTTIMEO     	     vars[V_USERINPUTTIMEO].current_val.p
 #define GLO_USERINPUTTIMEO     	     vars[V_USERINPUTTIMEO].global_val.p
-#define VAR_DEBUGMEM     	     vars[V_DEBUGMEM].current_val.p
-#define GLO_DEBUGMEM     	     vars[V_DEBUGMEM].global_val.p
 #define VAR_TCPOPENTIMEO	     vars[V_TCPOPENTIMEO].current_val.p
 #define VAR_TCPREADWARNTIMEO	     vars[V_TCPREADWARNTIMEO].current_val.p
 #define VAR_TCPWRITEWARNTIMEO	     vars[V_TCPWRITEWARNTIMEO].current_val.p
@@ -1054,12 +1146,15 @@ typedef enum {
 	F_AUTO_FCC_ONLY,
 	F_READ_IN_NEWSRC_ORDER,
 	F_SELECT_WO_CONFIRM,
+	F_SAVE_PARTIAL_WO_CONFIRM,
 	F_NEXT_THRD_WO_CONFIRM,
 	F_USE_CURRENT_DIR,
+	F_STARTUP_STAYOPEN,
 	F_SAVE_WONT_DELETE,
 	F_SAVE_ADVANCES,
 	F_UNSELECT_WONT_ADVANCE,
 	F_FORCE_LOW_SPEED,
+	F_PRUNE_USES_ISO,
 	F_ALT_ED_NOW,
 	F_SHOW_DELAY_CUE,
 	F_AUTO_OPEN_NEXT_UNREAD,
@@ -1082,6 +1177,8 @@ typedef enum {
 	F_NO_NEWS_VALIDATION,
 	F_QUELL_EXTRA_POST_PROMPT,
 	F_DISABLE_TAKE_LASTFIRST,
+	F_DISABLE_TAKE_FULLNAMES,
+	F_DISABLE_TERM_RESET_DISP,
 	F_DISABLE_SENDER,
 	F_ROT13_MESSAGE_ID,
 	F_QUELL_LOCAL_LOOKUP,
@@ -1096,6 +1193,7 @@ typedef enum {
 	F_ENABLE_MOUSE,
 	F_SHOW_CURSOR,
 	F_PASS_CONTROL_CHARS,
+	F_PASS_C1_CONTROL_CHARS,
 	F_SINGLE_FOLDER_LIST,
 	F_VERTICAL_FOLDER_LIST,
 	F_TAB_CHK_RECENT,
@@ -1125,8 +1223,10 @@ typedef enum {
 	F_QUELL_LOCK_FAILURE_MSGS,
 	F_ENABLE_SPACE_AS_TAB,
 	F_ENABLE_TAB_DELETES,
+	F_FLAG_SCREEN_KW_SHORTCUT,
 	F_FLAG_SCREEN_DFLT,
 	F_ENABLE_XTERM_NEWMAIL,
+	F_ENABLE_NEWMAIL_SHORT_TEXT,
 	F_EXPANDED_DISTLISTS,
 	F_AGG_SEQ_COPY,
 	F_DISABLE_ALARM,
@@ -1151,6 +1251,7 @@ typedef enum {
 	F_SCAN_ADDR,
 	F_FORCE_ARROWS,
 	F_PREFER_PLAIN_TEXT,
+	F_QUELL_CHARSET_WARNING,
 	F_ENABLE_EDIT_REPLY_INDENT,
 	F_ENABLE_PRYNT,
 	F_ALLOW_CHANGING_FROM,
@@ -1158,9 +1259,14 @@ typedef enum {
 	F_ENABLE_SUB_LISTS,
 	F_ENABLE_LESSTHAN_EXIT,
 	F_ENABLE_FAST_RECENT,
+	F_TAB_USES_UNSEEN,
 	F_ENABLE_ROLE_TAKE,
 	F_ENABLE_TAKE_EXPORT,
 	F_QUELL_ATTACH_EXTRA_PROMPT,
+	F_QUELL_ATTACH_EXT_WARN,
+	F_QUELL_FILTER_MSGS,
+	F_QUELL_FILTER_DONE_MSG,
+	F_SHOW_SORT,
 	F_FIX_BROKEN_LIST,
 	F_ENABLE_MULNEWSRCS,
 	F_PREDICT_NNTP_SERVER,
@@ -1181,24 +1287,39 @@ typedef enum {
 	F_TAB_NO_CONFIRM,
 	F_RET_INBOX_NO_CONFIRM,
 	F_CHECK_MAIL_ONQUIT,
+	F_PREOPEN_STAYOPENS,
+	F_EXPUNGE_STAYOPENS,
+	F_EXPUNGE_INBOX,
 	F_NO_FCC_ATTACH,
 	F_DO_MAILCAP_PARAM_SUBST,
 	F_PREFER_ALT_AUTH,
 	F_SLCTBL_ITEM_NOBOLD,
+	F_QUELL_PINGS_COMPOSING,
+	F_QUELL_PINGS_COMPOSING_INBOX,
 	F_QUELL_BEZERK_TIMEZONE,
 	F_QUELL_CONTENT_ID,
 	F_QUELL_MAILDOMAIN_WARNING,
 	F_DISABLE_SHARED_NAMESPACES,
+	F_HIDE_NNTP_PATH,
+	F_MAILDROPS_PRESERVE_STATE,
 	F_EXPOSE_HIDDEN_CONFIG,
 	F_ALT_COMPOSE_MENU,
+	F_ALT_ROLE_MENU,
 	F_ALWAYS_SPELL_CHECK,
 	F_QUELL_TIMEZONE,
 	F_COLOR_LINE_IMPORTANT,
 	F_SLASH_COLL_ENTIRE,
 	F_ENABLE_FULL_HDR_AND_TEXT,
+	F_QUELL_FULL_HDR_RESET,
 	F_DISABLE_2022_JP_CONVERSIONS,
 	F_DISABLE_CHARSET_CONVERSIONS,
 	F_MARK_FCC_SEEN,
+	F_MULNEWSRC_HOSTNAMES_AS_TYPED,
+	F_STRIP_WS_BEFORE_SEND,
+	F_QUELL_FLOWED_TEXT,
+	F_COMPOSE_ALWAYS_DOWNGRADE,
+	F_SORT_DEFAULT_FCC_ALPHA,
+	F_SORT_DEFAULT_SAVE_ALPHA,
 #ifdef	_WINDOWS
 	F_ENABLE_TRAYICON,
 	F_QUELL_SSL_LARGEBLOCKS,
@@ -1307,6 +1428,9 @@ typedef enum {
 #define	F_OR_UNANS	0x00800000
 #define	F_OR_RECENT	0x01000000
 #define	F_OR_UNRECENT	0x02000000
+
+#define	F_KEYWORD	0x04000000
+#define	F_UNKEYWORD	0x08000000
 
 
 /*
@@ -1470,15 +1594,29 @@ typedef enum {
 #define	TBAR_COLOR_INDEXLINE		1
 #define	TBAR_COLOR_REV_INDEXLINE	2
 
+/*
+ * PC-Pine update registry modes
+ */
+#ifdef _WINDOWS
+#define UREG_NORMAL       0
+#define UREG_ALWAYS_SET   1
+#define UREG_NEVER_SET    2
+#endif
+
+
+/* for select_from_list_screen */
+#define	SFL_NONE		0x000
+#define	SFL_ALLOW_LISTMODE	0x001
+
 
 /*
  * Some macros useful for threading
  */
 
 /* Sort is a threaded sort */
-#define SORT_IS_THREADED()						\
-	(mn_get_sort(ps_global->msgmap) == SortThread			\
-	 || mn_get_sort(ps_global->msgmap) == SortSubject2)
+#define SORT_IS_THREADED(msgmap)					\
+	(mn_get_sort(msgmap) == SortThread				\
+	 || mn_get_sort(msgmap) == SortSubject2)
 
 #define SEP_THRDINDX()							\
 	(ps_global->thread_index_style == THRDINDX_SEP 			\
@@ -1493,7 +1631,7 @@ typedef enum {
 /* We are threading now, pay attention to all the other variables */
 #define THREADING()							\
 	(!ps_global->turn_off_threading_temporarily			\
-	 && SORT_IS_THREADED()						\
+	 && SORT_IS_THREADED(ps_global->msgmap)				\
 	 && (SEP_THRDINDX()						\
 	     || ps_global->thread_disp_style != THREAD_NONE))
 
@@ -1505,7 +1643,7 @@ typedef enum {
 /* We are in the thread index (or would be if we weren't in an index menu) */
 #define THRD_INDX()							\
 	(THRD_INDX_ENABLED()						\
-	 && !ps_global->viewing_a_thread)
+	 && !sp_viewing_a_thread(ps_global->mail_stream))
 
 /* The thread command ought to work now */
 #define THRD_COLLAPSE_ENABLE()						\
@@ -1562,7 +1700,7 @@ typedef enum {
 /*
  * These are def's to help manage local, private flags pine uses
  * to maintain it's mapping table (see MSGNO_S def).  The local flags
- * are actually stored in spare bits in c-client's pre-message
+ * are actually stored in spare bits in c-client's per-message
  * MESSAGECACHE struct.  But they're private, you ask.  Since the flags
  * are tied to the actual message (independent of the mapping), storing
  * them in the c-client means we don't have to worry about them during
@@ -1628,58 +1766,73 @@ typedef enum {
  * allowed min and max values as well as the name of the var as it
  * should be displayed in error messages.
  */
+#define Q_SUPP_LIMIT (4)
+#define Q_DEL_ALL    (-10)
 #define	SVAR_OVERLAP(ps, n, e)	strtoval((ps)->VAR_OVERLAP,		  \
 					 &(n), 0, 20, 0, (e),		  \
-					 "Viewer-overlap")
+					 "Viewer-Overlap")
+#define	SVAR_MAXREMSTREAM(ps, n, e)	strtoval((ps)->VAR_MAXREMSTREAM,  \
+					 &(n), 0, 15, 0, (e),		  \
+					 "Max-Remote-Connections")
 #define	SVAR_MARGIN(ps, n, e)	strtoval((ps)->VAR_MARGIN,		  \
 					 &(n), 0, 20, 0, (e),		  \
-					 "Scroll-margin")
+					 "Scroll-Margin")
 #define	SVAR_FILLCOL(ps, n, e)	strtoval((ps)->VAR_FILLCOL,		  \
 					 &(n), 0, MAX_FILLCOL, 0, (e),	  \
-					 "Composer-wrap-column")
+					 "Composer-Wrap-Column")
+#define	SVAR_QUOTE_SUPPRESSION(ps, n, e) strtoval((ps)->VAR_QUOTE_SUPPRESSION, \
+					 &(n), -(Q_SUPP_LIMIT-1),	  \
+					 1000, Q_DEL_ALL, (e),		  \
+					 "Quote-Suppression-Threshold")
+#define	SVAR_DEADLETS(ps, n, e)	strtoval((ps)->VAR_DEADLETS,		  \
+					 &(n), 0, 9, 0, (e),		  \
+					 "Dead-Letter-Files")
 #define	SVAR_MSGDLAY(ps, n, e)	strtoval((ps)->VAR_STATUS_MSG_DELAY,	  \
-					 &(n), 0, 30, 0, (e),		  \
-					"Status-message-delay")
+					 &(n), -10, 30, 0, (e),		  \
+					"Status-Message-Delay")
 #define	SVAR_MAILCHK(ps, n, e)	strtoval((ps)->VAR_MAILCHECK,		  \
 					 &(n), 15, 30000, 0, (e),	  \
-					"Mail-check-interval")
+					"Mail-Check-Interval")
+#define	SVAR_MAILCHKNONCURR(ps, n, e)	strtoval((ps)->VAR_MAILCHECKNONCURR,  \
+					 &(n), 15, 30000, 0, (e),	  \
+					"Mail-Check-Interval-Noncurrent")
 #define	SVAR_AB_HIST(ps, n, e)	strtoval((ps)->VAR_REMOTE_ABOOK_HISTORY,  \
 					 &(n), 0, 100, 0, (e),		  \
-					"Remote-abook-history")
+					"Remote-Abook-History")
 #define	SVAR_AB_VALID(ps, n, e)	strtoval((ps)->VAR_REMOTE_ABOOK_VALIDITY, \
 					 &(n), -1, 30000, 0, (e),	  \
-					"Remote-abook-validity")
+					"Remote-Abook-Validity")
 #define	SVAR_USER_INPUT(ps, n, e) strtoval((ps)->VAR_USERINPUTTIMEO,	  \
 					 &(n), 0, 1000, 0, (e),		  \
-					"user-input-timeout")
+					"User-Input-Timeout")
 #define	SVAR_TCP_OPEN(ps, n, e)	strtoval((ps)->VAR_TCPOPENTIMEO, 	  \
 					 &(n), 5, 30000, 5, (e),	  \
-					"Tcp-open-timeout")
+					"Tcp-Open-Timeout")
 #define	SVAR_TCP_READWARN(ps, n, e) strtoval((ps)->VAR_TCPREADWARNTIMEO,  \
 					 &(n), 5, 30000, 5, (e),	  \
-					"Tcp-read-warning-timeout")
+					"Tcp-Read-Warning-Timeout")
 #define	SVAR_TCP_WRITEWARN(ps, n, e) strtoval((ps)->VAR_TCPWRITEWARNTIMEO, \
 					 &(n), 5, 30000, 0, (e),	  \
-					"Tcp-write-warning-timeout")
+					"Tcp-Write-Warning-Timeout")
 #define	SVAR_TCP_QUERY(ps, n, e) strtoval((ps)->VAR_TCPQUERYTIMEO, 	  \
 					 &(n), 5, 30000, 0, (e),	  \
-					"Tcp-query-timeout")
+					"Tcp-Query-Timeout")
 #define	SVAR_RSH_OPEN(ps, n, e)	strtoval((ps)->VAR_RSHOPENTIMEO, 	  \
 					 &(n), 5, 30000, 0, (e),	  \
-					"Rsh-open-timeout")
+					"Rsh-Open-Timeout")
 #define	SVAR_SSH_OPEN(ps, n, e)	strtoval((ps)->VAR_SSHOPENTIMEO, 	  \
 					 &(n), 5, 30000, 0, (e),	  \
-					"Ssh-open-timeout")
+					"Ssh-Open-Timeout")
 
-#define	SVAR_DEBUGMEM(ps, n, e) strtolval((ps)->VAR_DEBUGMEM,		  \
-					  &(n), 10000L, 10000000L, 0L, (e), \
-					  "Debug-mem")
 #define	SVAR_NNTPRANGE(ps, n, e) strtolval((ps)->VAR_NNTPRANGE,		  \
 					  &(n), 0L, 30000L, 0L, (e),	  \
-					  "Nntp-range")
+					  "Nntp-Range")
 #define	SVAR_MAILDCHK(ps, n, e)	strtolval((ps)->VAR_MAILDROPCHECK,	  \
 					  &(n), 60L, 30000L, 0L, (e),	  \
-					  "Maildrop-check-minimum")
+					  "Maildrop-Check-Minimum")
+#define	SVAR_NMW_WIDTH(ps, n, e) strtoval((ps)->VAR_NMW_WIDTH,		  \
+					 &(n), 20, 170, 0, (e),		  \
+					 "NewMail-Window-Width")
 
 
 /*======================================================================
@@ -1690,16 +1843,23 @@ typedef enum {
  * Keeps track of selected folders between instances of
  * the folder list screen.
  */
-typedef	struct _name_list {
+typedef	struct name_list {
     char		*name;
-    struct _name_list	*next;
+    struct name_list	*next;
 } STRLIST_S;
 
 
-typedef struct _init_err {
+typedef struct init_err {
     int   flags, min_time, max_time;
     char *message;
 } INIT_ERR_S;
+
+
+typedef	struct keywords {
+    char		*kw;
+    char		*nick;
+    struct keywords	*next;
+} KEYWORD_S;
 
 
 /*
@@ -1730,9 +1890,9 @@ typedef struct screen_position {
     int col;
 } Pos;
 
-typedef struct _screen_position_list {
+typedef struct screen_position_list {
     Pos				  where;
-    struct _screen_position_list *next;
+    struct screen_position_list  *next;
 } POSLIST_S;
 
 
@@ -1756,25 +1916,26 @@ typedef enum {SortSubject = 0, SortArrival, SortFrom, SortTo,
               SortCc, SortDate, SortSize,
 	      SortSubject2, SortScore, SortThread, EndofList}   SortOrder;
 
-#define	refresh_sort(M,S)	sort_folder((M), mn_get_sort(M), \
-					    mn_get_revsort(M), (S))
+#define	refresh_sort(S,M,F)	sort_folder((S), (M), mn_get_sort(M), \
+					    mn_get_revsort(M), (F))
 
 /*
  * The two structs below hold all knowledge regarding
  * messages requiring special handling
  */
-typedef	struct _part_exception_s {
+typedef	struct part_exception_s {
     char		     *partno;
     int			      handling;
-    struct _part_exception_s *next;
+    struct part_exception_s  *next;
 } PARTEX_S;
 
-#define	MSG_EX_DELETE	0x0001		/* part is deleted */
-#define	MSG_EX_RECENT	0x0002
-#define	MSG_EX_FILTERED	0x0004		/* part has been filtered */
-#define	MSG_EX_FILED	0x0008		/* part has been filed */
-#define	MSG_EX_FILTONCE	0x0010
-#define	MSG_EX_FILEONCE	0x0020		/* These last two mean that the
+#define	MSG_EX_DELETE	  0x0001	/* part is deleted */
+#define	MSG_EX_RECENT	  0x0002
+#define	MSG_EX_TESTED	  0x0004	/* filtering has been run on this msg */
+#define	MSG_EX_FILTERED	  0x0008	/* msg has actually been filtered away*/
+#define	MSG_EX_FILED	  0x0010	/* msg has been filed */
+#define	MSG_EX_FILTONCE	  0x0020
+#define	MSG_EX_FILEONCE	  0x0040	/* These last two mean that the
 					   message has been filtered or filed
 					   already but the filter rule was
 					   non-terminating so it is still
@@ -1782,14 +1943,22 @@ typedef	struct _part_exception_s {
 					   again. When we're done, we flip
 					   these two to EX_FILTERED and
 					   EX_FILED, the permanent versions. */
-#define	MSG_EX_MANFLAGGED 0x0040	/* has been flagged manually */
+#define	MSG_EX_PEND_EXLD  0x0080	/* pending exclusion */
+#define	MSG_EX_MANUNDEL   0x0100	/* has been manually undeleted */
+#define	MSG_EX_STATECHG	  0x0200	/* state change since filtering */
+
+/* msgno_include flags */
+#define	MI_NONE		0x00
+#define	MI_REFILTERING	0x01
+#define	MI_STATECHGONLY	0x02
+#define	MI_CLOSING	0x04
 
 
 #define	THD_TOP		0x0000		/* start of an individual thread */
 #define	THD_NEXT	0x0001
 #define	THD_BRANCH	0x0004
 
-typedef struct _pine_thrd {
+typedef struct pine_thrd {
     unsigned long rawno;	/* raw msgno of this message		*/
     unsigned long thrdno;	/* thread number			*/
     unsigned long flags;
@@ -1803,11 +1972,18 @@ typedef struct _pine_thrd {
 } PINETHRD_S;
 
 
+typedef struct list_selection {
+    char                  *item;		/* name of item */
+    int                    selected;	/* is item selected or not */
+    struct list_selection *next;
+} LIST_SEL_S;
+
+
 /*
  * Pine's private per-message data stored on the c-client's elt
  * spare pointer.
  */
-typedef struct _pine_elt {
+typedef struct pine_elt {
     PINETHRD_S  *pthrd;
     PARTEX_S    *exceptions;
 } PINELT_S;
@@ -1857,10 +2033,12 @@ typedef struct msg_nos {
 #define	SRT_VRB	0x1	/* Verbose			*/
 #define	SRT_MAN	0x2	/* Sorted manually since opened	*/
 
+
+
 /*
  * Used by pine_args to tell caller what was found;
  */
-typedef struct _argdata {
+typedef struct argdata {
     enum	{aaFolder = 0, aaMore, aaURL, aaMail,
 		 aaPrcCopy, aaAbookCopy} action;
     union {
@@ -1891,6 +2069,7 @@ typedef struct _argdata {
 #define	PIPE_RESET	0x0040			/* reset terminal mode     */
 #define	PIPE_DESC	0x0080			/* no stdio desc wrapping  */
 #define	PIPE_SILENT	0x0100			/* no screen clear, etc	   */
+#define PIPE_RUNNOW     0x0200           /* don't wait for child (PC-Pine) */
 
 /*
  * stucture required for the pipe commands...
@@ -1903,7 +2082,8 @@ typedef struct pipe_s {
     SigType  (*hsig)(),				/* previously installed...  */
 	     (*isig)(),				/* handlers		    */
 	     (*qsig)(),
-	     (*alrm)();
+	     (*alrm)(),
+	     (*chld)();
     union {
 	FILE *f;
 	int   d;
@@ -1916,7 +2096,11 @@ typedef struct pipe_s {
 	    *args,
 	    *tmp;				/* pointer to stuff	    */
 #ifdef	_WINDOWS
+    char    *infile;                            /* file containing pipe's stdin  */
+    char    *outfile;                           /* file containing pipe's stdout */
     char    *command;				/* command to execute */
+    int      exit_code;                         /* proc rv if run right away */
+    int      deloutfile;                        /* need to rm outfile at close */
 #endif
 } PIPE_S;
 
@@ -1969,11 +2153,369 @@ typedef struct context {
 		    *prev;			/* previous context struct */
 } CONTEXT_S;
 
+typedef struct mcap_cmd {
+    char *command;                              /* command to execute      */
+    int   special_handling;                     /* special os handling     */
+} MCAP_CMD_S;
+
+/*
+ * The stream pool is where we keep pointers to open streams. Some of them are
+ * actively being used, some are connected to a folder but aren't actively
+ * in use, some are random temporary use streams left open for possible
+ * re-use. Each open stream should be in the streams array, which is of
+ * size nstream altogether. Streams which are not to be re-used (don't have
+ * the flag SP_USEPOOL set) are in the array anyway.
+ */
+
+/*
+ * Structure holds global information about the stream pool. The per-stream
+ * information is stored in a PER_STREAM_S struct attached to each stream.
+ */
+typedef struct stream_pool {
+    int          max_remstream;	/* max implicitly cached remote streams	*/
+    int          nstream;	/* size of streams array 		*/
+    MAILSTREAM **streams;	/* the array of streams in stream pool	*/
+} SP_S;
+
+/*
+ * Pine's private per-stream data stored on the c-client's stream
+ * spare pointer.
+ */
+typedef struct pine_per_stream_data {
+    MSGNO_S      *msgmap;
+    CONTEXT_S    *context;		/* context fldr was interpreted in */
+    char         *fldr;			/* folder name, alloced copy   */
+    unsigned long flags;
+    int           ref_cnt;
+    long          new_mail_count;   /* new mail since the last new_mail check */
+    long          mail_since_cmd;   /* new mail since last key pressed */
+    long          expunge_count;
+    long          first_unseen;
+    long          recent_since_visited;
+    int           check_cnt;
+    time_t        first_status_change;
+    time_t        last_ping;		/* Keeps track of when the last    */
+					/* command was. The command wasn't */
+					/* necessarily a ping.             */
+    time_t        last_expunged_reaper;	/* Some IMAP commands defer the    */
+					/* return of EXPUNGE responses.    */
+					/* This is the time of the last    */
+					/* command which did not defer.    */
+    time_t        last_chkpnt_done;
+    time_t        last_use_time;
+    time_t        last_activity;
+    unsigned long saved_uid_validity;
+    unsigned long saved_uid_last;
+    char         *saved_cur_msg_id;
+    unsigned      unsorted_newmail:1;
+    unsigned      need_to_rethread:1;
+    unsigned      io_error_on_stream:1;
+    unsigned      mail_box_changed:1;
+    unsigned      viewing_a_thread:1;
+    unsigned      dead_stream:1;
+    unsigned      noticed_dead_stream:1;
+    unsigned      closing:1;
+} PER_STREAM_S;
+
+/*
+ * Complicated set of flags for stream pool cache.
+ * LOCKED, PERMLOCKED, TEMPUSE, and USEPOOL are flags stored in the stream
+ * flags of the PER_STREAM_S structure.
+ *
+ *     SP_LOCKED -- In use, don't re-use this.
+ * SP_PERMLOCKED -- Should always be kept open, like INBOX. Right now the
+ *                  only significance of this is that the expunge_and_close
+ *                  won't happen if this is set (like the way INBOX works).
+ *                  If a stream is PERMLOCKED it should no doubt be LOCKED
+ *                  as well (it isn't done implicitly in the tests).
+ *      SP_INBOX -- This stream is open on the INBOX.
+ *   SP_USERFLDR -- This stream was opened by the user explicitly, not
+ *                  implicitly like would happen with a save or a remote
+ *                  address book, etc.
+ *   SP_FILTERED -- This stream was opened by the user explicitly and
+ *                  filtered.
+ *    SP_TEMPUSE -- If a stream is not SP_LOCKED, that says we can re-use
+ *                  it if need be but we should prefer to use another unused
+ *                  slot if there is one. If a stream is marked TEMPUSE we
+ *                  should consider re-using it before we consider re-using
+ *                  a stream which is not LOCKED but not marked TEMPUSE.
+ *                  This flag is not only stored in the PER_STREAM_S flags,
+ *                  it is also an input argument to sp_stream_get.
+ *                  It may make sense to mark a stream both SP_LOCKED and
+ *                  SP_TEMPUSE. That way, when we close the stream it will
+ *                  be SP_TEMPUSE and more re-usable than if we didn't.
+ *    SP_USEPOOL -- Passed to pine_mail_open, it means to consider the
+ *                  stream pool when opening and to put it into the stream
+ *                  pool after we open it. If this is not set when we open,
+ *                  we do an honest open and an honest close when we close.
+ *
+ *  These flags are input flags to sp_stream_get.
+ *       SP_MATCH -- We're looking for a stream that is already open on
+ *                   this mailbox. This is good if we are reopening the
+ *                   same mailbox we already had opened.
+ *        SP_SAME -- We're looking for a stream that is open to the same
+ *                   server. For example, we might want to do a STATUS
+ *                   command or a DELETE. We could use any stream that
+ *                   is already open for this. Unless SP_MATCH is also
+ *                   set, this will not return exact matches. (For example,
+ *                   it is a bad idea to do a STATUS command on an already
+ *                   selected mailbox. There may be locking problems if you
+ *                   try to delete a folder that is selected...)
+ *     SP_TEMPUSE -- The checking for SP_SAME streams is controlled by these
+ *    SP_UNLOCKED    two flags. If SP_TEMPUSE is set then we will only match
+ *                   streams which are marked TEMPUSE and not LOCKED.
+ *                   If TEMPUSE is not set but UNLOCKED is, then we will
+ *                   match on any same stream that is not locked. We'll choose
+ *                   SP_TEMPUSE streams in preference to those that aren't
+ *                   SP_TEMPUSE. If neither SP_TEMPUSE or SP_UNLOCKED is set,
+ *                   then we'll consider any stream, even if it is locked.
+ *                   We'll still prefer TEMPUSE first, then UNLOCKED, then any.
+ *
+ * Careful with the values of these flags. Some of them should really be
+ * in separate name spaces, but we've combined all of them for convenience.
+ * In particular, SP_USERFLDR, SP_INBOX, SP_USEPOOL, and SP_TEMPUSE are
+ * all passed in the pine_mail_open flags argument, alongside OP_DEBUG and
+ * friends from c-client. So they have to have different values than
+ * those OP_ flags. SP_PERMLOCKED was passed at one time but isn't anymore.
+ * Still, include it in the careful set. C-client reserves the bits
+ * 0xff000000 for client flags.
+ */
+
+#define SP_USERFLDR	0x01000000
+#define SP_INBOX	0x02000000
+#define SP_USEPOOL	0x04000000
+#define SP_TEMPUSE	0x08000000
+
+#define SP_PERMLOCKED	0x10000000
+#define SP_LOCKED	0x20000000
+
+#define SP_MATCH	0x00100000
+#define SP_SAME		0x00200000
+#define SP_UNLOCKED	0x00400000
+#define SP_FILTERED	0x00800000
+#define SP_RO_OK	0x01000000	/* Readonly stream ok for SP_MATCH */
+
+
+/* access value of first_unseen, but don't set it with this */
+#define sp_first_unseen(stream)                                              \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->first_unseen : 0L)
+
+/* use this to set it */
+#define sp_set_first_unseen(stream,val) do{                                  \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->first_unseen = (val);}while(0)
+
+#define sp_flags(stream)                                                     \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->flags : 0L)
+
+#define sp_set_flags(stream,val) do{                                         \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->flags = (val);}while(0)
+
+#define sp_ref_cnt(stream)                                                   \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->ref_cnt : 0L)
+
+#define sp_set_ref_cnt(stream,val) do{                                       \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->ref_cnt = (val);}while(0)
+
+#define sp_expunge_count(stream)                                             \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->expunge_count : 0L)
+
+#define sp_set_expunge_count(stream,val) do{                                 \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->expunge_count = (val);}while(0)
+
+#define sp_new_mail_count(stream)                                            \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->new_mail_count : 0L)
+
+#define sp_set_new_mail_count(stream,val) do{                                \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->new_mail_count = (val);}while(0)
+
+#define sp_mail_since_cmd(stream)                                            \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->mail_since_cmd : 0L)
+
+#define sp_set_mail_since_cmd(stream,val) do{                                \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->mail_since_cmd = (val);}while(0)
+
+#define sp_recent_since_visited(stream)                                      \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->recent_since_visited : 0L)
+
+#define sp_set_recent_since_visited(stream,val) do{                          \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->recent_since_visited = (val);}while(0)
+
+#define sp_check_cnt(stream)                                                 \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->check_cnt : 0L)
+
+#define sp_set_check_cnt(stream,val) do{                                     \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->check_cnt = (val);}while(0)
+
+#define sp_first_status_change(stream)                                      \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->first_status_change : 0L)
+
+#define sp_set_first_status_change(stream,val) do{                          \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->first_status_change = (val);}while(0)
+
+#define sp_last_ping(stream)                                                \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->last_ping : 0L)
+
+#define sp_set_last_ping(stream,val) do{                                    \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->last_ping = (val);}while(0)
+
+#define sp_last_expunged_reaper(stream)                                     \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->last_expunged_reaper : 0L)
+
+#define sp_set_last_expunged_reaper(stream,val) do{                         \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->last_expunged_reaper = (val);}while(0)
+
+#define sp_last_chkpnt_done(stream)                                         \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->last_chkpnt_done : 0L)
+
+#define sp_set_last_chkpnt_done(stream,val) do{                             \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->last_chkpnt_done = (val);}while(0)
+
+#define sp_last_use_time(stream)                                            \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->last_use_time : 0L)
+
+#define sp_set_last_use_time(stream,val) do{                                \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->last_use_time = (val);}while(0)
+
+#define sp_last_activity(stream)                                            \
+			    ((sp_data(stream) && *sp_data(stream))          \
+			      ? (*sp_data(stream))->last_activity : 0L)
+
+#define sp_set_last_activity(stream,val) do{                                \
+		    if(sp_data(stream) && *sp_data(stream))                 \
+		      (*sp_data(stream))->last_activity = (val);}while(0)
+
+#define sp_saved_uid_validity(stream)                                        \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->saved_uid_validity : 0L)
+
+#define sp_set_saved_uid_validity(stream,val) do{                            \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		     (*sp_data(stream))->saved_uid_validity = (val);}while(0)
+
+#define sp_saved_uid_last(stream)                                            \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->saved_uid_last : 0L)
+
+#define sp_set_saved_uid_last(stream,val) do{                                \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		     (*sp_data(stream))->saved_uid_last = (val);}while(0)
+
+#define sp_mail_box_changed(stream)                                          \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->mail_box_changed : 0L)
+
+#define sp_set_mail_box_changed(stream,val) do{                              \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->mail_box_changed = (val);}while(0)
+
+#define sp_unsorted_newmail(stream)                                          \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->unsorted_newmail : 0L)
+
+#define sp_set_unsorted_newmail(stream,val) do{                              \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->unsorted_newmail = (val);}while(0)
+
+#define sp_need_to_rethread(stream)                                          \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->need_to_rethread : 0L)
+
+#define sp_set_need_to_rethread(stream,val) do{                              \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->need_to_rethread = (val);}while(0)
+
+#define sp_viewing_a_thread(stream)                                          \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->viewing_a_thread : 0L)
+
+#define sp_set_viewing_a_thread(stream,val) do{                              \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->viewing_a_thread = (val);}while(0)
+
+#define sp_dead_stream(stream)                                               \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->dead_stream : 0L)
+
+#define sp_set_dead_stream(stream,val) do{                                   \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->dead_stream = (val);}while(0)
+
+#define sp_noticed_dead_stream(stream)                                       \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->noticed_dead_stream : 0L)
+
+#define sp_set_noticed_dead_stream(stream,val) do{                           \
+		if(sp_data(stream) && *sp_data(stream))                      \
+		  (*sp_data(stream))->noticed_dead_stream = (val);}while(0)
+
+#define sp_closing(stream)                                                   \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->closing : 0L)
+
+#define sp_set_closing(stream,val) do{                                       \
+		    if(sp_data(stream) && *sp_data(stream))                  \
+		      (*sp_data(stream))->closing = (val);}while(0)
+
+#define sp_io_error_on_stream(stream)                                        \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->io_error_on_stream : 0L)
+
+#define sp_set_io_error_on_stream(stream,val) do{                            \
+		  if(sp_data(stream) && *sp_data(stream))                    \
+		    (*sp_data(stream))->io_error_on_stream = (val);}while(0)
+
+#define sp_fldr(stream)                                                      \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->fldr : (char *) NULL)
+
+#define sp_saved_cur_msg_id(stream)                                          \
+		    ((sp_data(stream) && *sp_data(stream))                   \
+		      ? (*sp_data(stream))->saved_cur_msg_id : (char *) NULL)
+
+#define sp_context(stream)                                                   \
+			    ((sp_data(stream) && *sp_data(stream))           \
+			      ? (*sp_data(stream))->context : 0L)
+
+#define sp_set_context(stream,val) do{                                       \
+		  if(sp_data(stream) && *sp_data(stream))                    \
+		    (*sp_data(stream))->context = (val);}while(0)
+
+
+/* do_broach_folder flags */
+#define DB_NOVISIT	0x01	/* this is a preopen, not a real visit */
+#define DB_FROMTAB	0x02	/* opening because of TAB command      */
+
 
 /*
  * struct to help manage mail_list calls/callbacks
  */
-typedef	struct _mm_list_s {
+typedef	struct mm_list_s {
     MAILSTREAM	*stream;
     unsigned     options;
     void       (*filter) PROTO((MAILSTREAM *, char *, int, long, void *,
@@ -2027,7 +2569,14 @@ typedef enum {iNothing, iStatus, iFStatus, iIStatus,
 	      iRDate, iTimezone,
 	      iTime24, iTime12,
 	      iCurDate, iCurDateIso, iCurDateIsoS, iCurTime24, iCurTime12,
+	      iCurDay, iCurDay2Digit, iCurDayOfWeek, iCurDayOfWeekAbb,
+	      iCurMon, iCurMon2Digit, iCurMonLong, iCurMonAbb,
+	      iCurYear, iCurYear2Digit,
+	      iLstMon, iLstMon2Digit, iLstMonLong, iLstMonAbb,
+	      iLstMonYear, iLstMonYear2Digit,
+	      iLstYear, iLstYear2Digit,
 	      iMessNo, iAtt, iMsgID, iSubject,
+	      iSubjKey, iSubjKeyInit, iKey, iKeyInit,
 	      iSize, iSizeComma, iSizeNarrow, iDescripSize,
 	      iNewsAndTo, iToAndNews, iNewsAndRecips, iRecipsAndNews,
 	      iFromTo, iFromToNotNews, iFrom, iTo, iSender, iCc, iNews, iRecips,
@@ -2053,6 +2602,7 @@ typedef struct index_parse_tokens {
 #define FOR_INDEX	0x01
 #define FOR_REPLY_INTRO	0x02
 #define FOR_TEMPLATE	0x04		/* or for signature */
+#define FOR_FILT	0x08
 #define DELIM_USCORE	0x10
 #define DELIM_PAREN	0x20
 
@@ -2063,28 +2613,9 @@ typedef struct col_description {
     WidthType    wtype;
     int		 req_width;
     int		 width;
-    char	*string;
     int		 actual_length;
     ColAdj	 adjustment;
 } INDEX_COL_S;
-
-typedef struct conversion_table {
-    char          *from_charset;
-    char          *to_charset;
-    int            quality;
-    unsigned char *table;
-} CONV_TABLE;
-
-
-/* Conversion table quality of tranlation */
-#define	CV_NO_TRANSLATE_POSSIBLE	1	/* We don't know how to      */
-						/* translate this pair       */
-#define	CV_NO_TRANSLATE_NEEDED		2	/* Not necessary, no-op      */
-#define	CV_LOSES_SPECIAL_CHARS		3	/* Letters will translate    */
-						/* ok but some special chars */
-						/* may be lost               */
-#define	CV_LOSES_SOME_LETTERS		4	/* Some special chars and    */
-						/* some letters may be lost  */
 
 
 
@@ -2102,7 +2633,7 @@ struct variable {
     unsigned  is_fixed:1;	/* sys mgr has fixed this variable          */
     unsigned  is_onlymain:1;	/* read and written from main_user_val	    */
     unsigned  is_outermost:1;	/* read and written from outermost pinerc   */
-    unsigned  del_list_quotes:1;/* list var only, remove double quotes      */
+    unsigned  del_quotes:1;	/* remove double quotes                     */
     char     *descrip;		/* description                              */
     union {
 	char *p;		/* pointer to single string value           */
@@ -2145,7 +2676,7 @@ typedef struct nameval {
 #define S_OR_L(v)	(((v) && (v)->shortname) ? (v)->shortname : \
 			  ((v) ? (v)->name : NULL))
 
-typedef struct _feature_entry {
+typedef struct feature_entry {
     char       *name;
     int		id;
     HelpType	help;
@@ -2153,11 +2684,11 @@ typedef struct _feature_entry {
 } FEATURE_S;
 
 
-typedef struct _lines_to_take {
+typedef struct lines_to_take {
     char *printval;
     char *exportval;
     int   flags;
-    struct _lines_to_take *next, *prev;
+    struct lines_to_take *next, *prev;
 } LINES_TO_TAKE;
 
 #define	LT_NONE		0x00
@@ -2190,6 +2721,8 @@ typedef	struct handle_s {
     int		     key;		/* tag number embedded in text */
     enum	     {URL, Attach, Folder, Function} type;
     unsigned	     force_display:1;	/* Don't ask before launching */
+    unsigned	     using_is_used:1;	/* bit below is being used     */
+    unsigned	     is_used:1;		/* if not, remove it from list */
     union {
 	struct {			/* URL corresponding to this handle */
 	    char *path,			/* Actual url string */
@@ -2310,6 +2843,8 @@ struct key_menu {
 #define	MC_PAGEUP	108
 #define	MC_PAGEDN	109
 #define	MC_MOUSE	110
+#define MC_HOMEKEY      111
+#define MC_ENDKEY       112
 
 /* New Screen Commands */
 #define	MC_HELP		500
@@ -2348,6 +2883,7 @@ struct key_menu {
 #define	MC_TAKE		713
 #define	MC_SAVE		714
 #define	MC_EXPORT	715
+#define	MC_IMPORT	716
 #define	MC_EXPUNGE	717
 #define	MC_UNEXCLUDE	718
 #define	MC_CHOICE	719
@@ -2408,28 +2944,30 @@ struct key_menu {
 #define	MC_DEFAULT	775
 #define	MC_TOGGLEB	776
 #define	MC_TOGGLEC	777
-#define	MC_RGB1		778
-#define	MC_RGB2		779
-#define MC_EXITQUERY    780
-#define	MC_ADDHDR	781
-#define	MC_DELHDR	782
-#define	MC_PRINTER	783
-#define	MC_PASSWD	784
-#define	MC_CONFIG	785
-#define	MC_SIG		786
-#define	MC_ABOOKS	787
-#define	MC_CLISTS	788
-#define	MC_RULES	789
-#define	MC_DIRECTORY	790
-#define	MC_KOLOR	791
-#define	MC_EXCEPT	792
-#define	MC_REMOTE	793
-#define	MC_NO_EXCEPT	794
-#define	MC_YES		795
-#define	MC_NO		796
-#define	MC_NOT		797
-#define	MC_COLLAPSE	798
-#define	MC_CHK_RECENT	799
+#define	MC_TOGGLED	778
+#define	MC_RGB1		779
+#define	MC_RGB2		780
+#define	MC_RGB3		781
+#define MC_EXITQUERY    782
+#define	MC_ADDHDR	783
+#define	MC_DELHDR	784
+#define	MC_PRINTER	785
+#define	MC_PASSWD	786
+#define	MC_CONFIG	787
+#define	MC_SIG		788
+#define	MC_ABOOKS	789
+#define	MC_CLISTS	790
+#define	MC_RULES	791
+#define	MC_DIRECTORY	792
+#define	MC_KOLOR	793
+#define	MC_EXCEPT	794
+#define	MC_REMOTE	795
+#define	MC_NO_EXCEPT	796
+#define	MC_YES		797
+#define	MC_NO		798
+#define	MC_NOT		799
+#define	MC_COLLAPSE	800
+#define	MC_CHK_RECENT	801
 
 
 /*
@@ -2457,6 +2995,12 @@ struct key_menu {
 #define	NEXTMSG_MENU	{"N", "NextMsg", \
 			 {MC_NEXTITEM, 1, {'n'}}, \
 			 KS_NEXTMSG}
+#define	HOMEKEY_MENU	{"Hme", "FirstPage", \
+			 {MC_HOMEKEY, 1, {KEY_HOME}}, \
+			 KS_NONE}
+#define	ENDKEY_MENU	{"End", "LastPage", \
+			 {MC_ENDKEY, 1, {KEY_END}}, \
+			 KS_NONE}
 #define	PREVPAGE_MENU	{"-", "PrevPage", \
 			 {MC_PAGEUP, 3, {'-',ctrl('Y'),KEY_PGUP}}, \
 			 KS_PREVPAGE}
@@ -2529,7 +3073,7 @@ struct key_menu {
 
 
 #define USER_INPUT_TIMEOUT(ps) ((ps->hours_to_timeout > 0) && \
-  ((time((time_t *)0) - ps->time_of_last_input) > 60*60*(ps->hours_to_timeout)))
+  ((time(0) - time_of_last_input) > 60*60*(ps->hours_to_timeout)))
 
 
 #ifdef	ENABLE_LDAP
@@ -2537,7 +3081,7 @@ struct key_menu {
  * This is used to consolidate related information about a server. This
  * information is all stored in the ldap-servers variable, per server.
  */
-typedef struct _ldap_serv {
+typedef struct ldap_serv {
     char	*serv,		/* Server name			*/
 		*base,		/* Search base			*/
 		*cust,		/* Custom search filter		*/
@@ -2562,15 +3106,15 @@ typedef struct _ldap_serv {
 /*
  * Structures to control the LDAP address selection screen
  */
-typedef struct _ldap_serv_results {
+typedef struct ldap_serv_results {
     LDAP                      *ld;		/* LDAP handle */
     LDAPMessage               *res;		/* LDAP search result */
     LDAP_SERV_S               *info_used;
     char                      *serv;
-    struct _ldap_serv_results *next;
+    struct ldap_serv_results  *next;
 } LDAP_SERV_RES_S;
 
-typedef struct _addr_choose {
+typedef struct addr_choose {
     LDAP_SERV_RES_S *res_head;
     char            *title;
     LDAP            *selected_ld;	/* from which ld was entry selected */
@@ -2652,7 +3196,7 @@ typedef struct print_ctrl {
 /*
  * Child posting control structure
  */
-typedef struct _post_s {
+typedef struct post_s {
     int		pid;		/* proc id of child doing posting */
     int		status;		/* child's exit status */
     char       *fcc;		/* fcc we may have copied */
@@ -2697,7 +3241,7 @@ typedef struct arbhdr_s {
  * A list of intervals of integers.
  */
 typedef struct intvl_s {
-    int             imin, imax;
+    long            imin, imax;
     struct intvl_s *next;
 } INTVL_S;
 
@@ -2718,7 +3262,8 @@ typedef struct patgrp_s {
 	      *news,
 	      *subj,
 	      *alltext,
-	      *bodytext;
+	      *bodytext,
+	      *keyword;
     ARBHDR_S  *arbhdr;		/* list of arbitrary hdrnames and patterns */
     int        fldr_type;	/* see FLDR_* below			*/
     PATTERN_S *folder;		/* folder if type FLDR_SPECIFIC		*/
@@ -2728,14 +3273,22 @@ typedef struct patgrp_s {
     INTVL_S   *score;
     int        do_age;
     INTVL_S   *age;		/* ages are in days			*/
+    int        do_size;
+    INTVL_S   *size;
     int        age_uses_sentdate; /* on or off				*/
+    int        do_cat;
+    char     **category_cmd;
+    INTVL_S   *cat;
+    long       cat_lim;		/* -1 no limit  0 only headers		*/
     int        bogus;		/* patgrp contains unknown stuff	*/
     int        stat_new,	/* msg status is New (Unseen)		*/
 	       stat_rec,	/* msg status is Recent			*/
 	       stat_del,	/* msg status is Deleted		*/
 	       stat_imp,	/* msg is flagged Important		*/
 	       stat_ans,	/* msg is flagged Answered		*/
-	       stat_8bitsubj;	/* subject contains 8bit chars		*/
+	       stat_8bitsubj,	/* subject contains 8bit chars		*/
+	       stat_bom,	/* this is first pine run of the month	*/
+	       stat_boy;	/* this is first pine run of the year	*/
 } PATGRP_S;
 
 #define	FLDR_ANY	0
@@ -2798,11 +3351,13 @@ typedef struct action_s {
 	    /* --- This is for indexcoloring --- */
     COLOR_PAIR  *incol;		/* colors for index line		*/
 	    /* --- This is for scoring --- */
-    int          scoreval;
+    long         scoreval;
 	    /* --- These are for filtering --- */
     int	 	 kill;
     long	 state_setting_bits;
-    PATTERN_S	*folder;	/* folder to recv. filtered mail	*/
+    PATTERN_S	*keyword_set;	/* set these keywords			*/
+    PATTERN_S	*keyword_clr;	/* clear these keywords			*/
+    PATTERN_S	*folder;	/* folders to recv. filtered mail	*/
     int          move_only_if_not_deleted;	/* on or off		*/
     int          non_terminating;		/* on or off		*/
 	    /* --- These are for other --- */
@@ -2858,10 +3413,11 @@ typedef struct action_s {
 #define	ROLE_COMP_DEFL		ROLE_COMP_NO	/* default compose value */
 #define	ROLE_NOTAROLE_DEFL	ROLE_COMP_NO
 
+#define INTVL_INF	  (2147483646L)
+#define INTVL_UNDEF	  (INTVL_INF + 1L)
+#define SCORE_UNDEF	  INTVL_UNDEF
 #define SCORE_MIN	  (-100)
 #define SCORE_MAX	  (100)
-#define SCORE_INF	  (32766)
-#define SCORE_UNDEF	  (SCORE_INF + 1)
 #define SCOREUSE_GET	  0x000
 #define SCOREUSE_INVALID  0x001	/* will recalculate scores_in_use next time */
 #define SCOREUSE_ROLES    0x010	/* scores are used for roles                */
@@ -2925,20 +3481,20 @@ typedef struct pat_state {
 #define PATTERN_FILE_VERS "01"
 
 
-typedef struct hdr_color_s {
+typedef struct spec_color_s {
     int   inherit;	/* this isn't a color, it is INHERIT */
-    char *hdr;
+    char *spec;
     char *fg;
     char *bg;
     PATTERN_S *val;
-    struct hdr_color_s *next;
-} HDR_COLOR_S;
+    struct spec_color_s *next;
+} SPEC_COLOR_S;
 
 
 /*
  * Message Reply control structure
  */
-typedef struct _reply_s {
+typedef struct reply_s {
     unsigned int   flags:4;	/* how to interpret handle field */
     char	  *mailbox;	/* mailbox handles are valid in */
     char	  *origmbox;	/* above is canonical name, this is orig */
@@ -2982,13 +3538,13 @@ typedef struct _reply_s {
 /*
  * Cursor position when resuming postponed message.
  */
-typedef struct _redraft_pos_s {
+typedef struct redraft_pos_s {
     char	  *hdrname;	/* header field name, : if in body */
     long	   offset;	/* offset into header or body */
 } REDRAFT_POS_S;
 
 typedef enum {CharStarStar, CharStar, FileStar,
-		TmpFileStar, PicoText} SourceType;
+		TmpFileStar, PicoText, PipeStar} SourceType;
 
 /*
  * typedef used by storage object routines
@@ -3064,7 +3620,7 @@ typedef struct remote_data {
     }t;
 } REMDATA_S;
 
-typedef struct _pinerc_line {
+typedef struct pinerc_line {
   char *line;
   struct variable *var;
   unsigned int  is_var:1;
@@ -3075,7 +3631,7 @@ typedef struct _pinerc_line {
 /*
  * Each pinerc has one of these.
  */
-typedef struct _pinerc_s {
+typedef struct pinerc_s {
     RemType           type;	/* type of pinerc, remote or local	*/
     char	     *name;	/* file name or remote name		*/
     REMDATA_S 	     *rd;	/* remote data structure		*/
@@ -3098,233 +3654,6 @@ typedef enum {ParsePers, ParsePersPost, ParseGlobal, ParseFixed} ParsePinerc;
 #define	HEX_CHAR2(C)	HEX_ARRAY[(C) & 0xf]
 
 
-
-
-
-/*----------------------------------------------------------------------
-   This structure sort of takes the place of global variables or perhaps
-is the global variable.  (It can be accessed globally as ps_global.  One
-advantage to this is that as soon as you see a reference to the structure
-you know it is a global variable. 
-   In general it is treated as global by the lower level and utility
-routines, but it is not treated so by the main screen driving routines.
-Each of them receives it as an argument and then sets ps_global to the
-argument they received.  This is sort of with the thought that things
-might be coupled more loosely one day and that Pine might run where there
-is more than one window and more than one instance.  But we haven't kept
-up with this convention very well.
- ----*/
-  
-struct pine {
-    void       (*next_screen)();	/* See loop at end of main() for how */
-    void       (*prev_screen)();	/* these are used...		     */
-    void       (*redrawer)();		/* NULL means stay in current screen */
-
-    CONTEXT_S   *context_list;		/* list of user defined contexts */
-    CONTEXT_S   *context_current;	/* default open context          */
-    CONTEXT_S   *context_last;		/* most recently open context    */
-
-    char         inbox_name[MAXFOLDER+1];
-    MAILSTREAM  *inbox_stream;		/* these used when current folder */
-    long         inbox_new_mail_count;	/* is *not* inbox...		  */
-    long         inbox_expunge_count;
-    int          inbox_changed;
-    MSGNO_S	*inbox_msgmap;		/* pointer to inbox mapping struct  */
-    
-    MAILSTREAM  *mail_stream;		/* c-client's current folder stream */
-
-    MSGNO_S	 *msgmap;		/* message num mapping into stream  */
-
-    long	 new_mail_count;
-    long	 expunge_count;
-    long	 first_unseen;
-
-    unsigned     read_predicted:1;
-
-    unsigned     mail_box_changed:1;
-    unsigned     unsorted_newmail:1;
-    unsigned     need_to_rethread:1;
-
-    char         cur_folder[MAXPATH+1];
-    char         last_unambig_folder[MAXPATH+1];
-    ATTACH_S    *atmts;
-    int          atmts_allocated;
-    int	         remote_abook_validity;	/* minutes, -1=never, 0=only on opens */
-
-    INDEX_COL_S *index_disp_format;
-
-    char        *folders_dir;
-
-    unsigned     mangled_footer:1; 	/* footer needs repainting */
-    unsigned     mangled_header:1;	/* header needs repainting */
-    unsigned     mangled_body:1;	/* body of screen needs repainting */
-    unsigned     mangled_screen:1;	/* whole screen needs repainting */
-    unsigned     in_init_seq:1;		/* executing initial cmd list */
-    unsigned     save_in_init_seq:1;
-    unsigned     dont_use_init_cmds:1;	/* use keyboard input when true */
-    unsigned     give_fixed_warning:1;	/* warn user about "fixed" vars */
-
-    unsigned     fix_fixed_warning:1;	/* offer to fix it              */
-    unsigned     unseen_in_view:1;
-    unsigned     start_in_context:1;	/* start fldr_scrn in current cntxt */
-    unsigned     io_error_on_stream:1;	/* last write on mail_stream failed */
-    unsigned     def_sort_rev:1;	/* true if reverse sort is default  */ 
-    unsigned     restricted:1;
-    unsigned	 show_dot_names:1;
-
-    unsigned	 save_msg_rule:5;
-    unsigned	 fcc_rule:3;
-
-    unsigned	 ab_sort_rule:3;
-    unsigned     color_style:3;
-    unsigned     index_color_style:3;
-    unsigned     titlebar_color_style:3;
-    unsigned	 fld_sort_rule:3;
-    unsigned	 inc_startup_rule:3;
-    unsigned	 pruning_rule:3;
-    unsigned	 reopen_rule:4;
-    unsigned	 goto_default_rule:3;
-    unsigned	 thread_disp_style:3;
-    unsigned	 thread_index_style:3;
-
-    unsigned     full_header:1;         /* display full headers */
-    unsigned     orig_use_fkeys:1;
-    unsigned     try_to_create:1;	/* Save should try mail_create */
-    unsigned     low_speed:1;		/* various opt's 4 low connect speed */
-    unsigned     dead_inbox:1;
-    unsigned     dead_stream:1;
-    unsigned     noticed_dead_inbox:1;
-    unsigned     noticed_dead_stream:1;
-
-    unsigned     mm_log_error:1;
-    unsigned     compose_mime:1;
-    unsigned     show_new_version:1;
-    unsigned     pre390:1;
-    unsigned     pre441:1;
-    unsigned     first_time_user:1;
-    unsigned	 intr_pending:1;	/* received SIGINT and haven't acted */
-    unsigned	 expunge_in_progress:1;	/* don't want to re-enter c-client   */
-    unsigned	 never_allow_changing_from:1;	/* not even for roles */
-
-    unsigned	 readonly_pinerc:1;
-    unsigned	 cache_remote_pinerc:1;
-    unsigned	 view_all_except:1;
-    unsigned     start_in_index:1;	/* cmd line flag modified on startup */
-    unsigned     noshow_error:1;	/* c-client error callback controls */
-    unsigned     noshow_warn:1;
-    unsigned	 noshow_timeout:1;
-    unsigned	 conceal_sensitive_debugging:1;
-    unsigned	 turn_off_threading_temporarily:1;
-    unsigned	 viewing_a_thread:1;
-    unsigned	 inbox_viewing_a_thread:1;
-    unsigned	 view_skipped_index:1;
-    unsigned	 a_format_contains_score:1;
-    unsigned	 ugly_consider_advancing_bit:1;
-
-    unsigned	 phone_home:1;
-    unsigned     painted_body_on_startup:1;
-    unsigned     painted_footer_on_startup:1;
-    unsigned     open_readonly_on_startup:1;
-    unsigned     exit_if_no_pinerc:1;
-    unsigned     pass_ctrl_chars:1;
-
-    unsigned 	 viewer_overlap:8;
-    unsigned	 scroll_margin:8;
-    unsigned 	 remote_abook_history:8;
-
-#if defined(DOS) || defined(OS2)
-    unsigned     blank_user_id:1;
-    unsigned     blank_personal_name:1;
-    unsigned     blank_user_domain:1;
-#ifdef	_WINDOWS
-    unsigned	 update_registry:1;
-    unsigned     install_flag:1;
-#endif
-#endif
-
-    unsigned 	 debug_malloc:6;
-    unsigned 	 debug_timestamp:1;
-    unsigned 	 debug_flush:1;
-    unsigned 	 debug_tcp:1;
-    unsigned 	 debug_imap:3;
-    unsigned 	 debug_nfiles:5;
-    int          dlevel;		/* hack to pass arg to debugjournal */
-    long	 debugmem;
-
-    unsigned     convert_sigs:1;
-    unsigned     dump_supported_options:1;
-
-    unsigned     start_entry;		/* cmd line arg: msg # to start on */
-
-    bitmap_t     feature_list;		/* a bitmap of all the features */
-    char       **feat_list_back_compat;
-
-    HDR_COLOR_S	*hdr_colors;		/* list of configed colors for view */
-
-    short	 init_context;
-
-    int         *initial_cmds;         /* cmds to execute on startup */
-    int         *free_initial_cmds;    /* used to free when done */
-
-    char         c_client_error[300];  /* when nowhow_error is set and PARSE */
-
-    struct ttyo *ttyo;
-
-    USER_S	 ui;		/* system derived user info */
-
-    POST_S      *post;
-
-    char	*home_dir,
-                *hostname,	/* Fully qualified hostname */
-                *localdomain,	/* The (DNS) domain this host resides in */
-                *userdomain,	/* The per user domain from .pinerc or */
-                *maildomain,	/* Domain name for most uses */
-#if defined(DOS) || defined(OS2)
-                *pine_dir,	/* argv[0] as provided by DOS */
-                *aux_files_dir,	/* User's auxiliary files directory */
-#endif
-#ifdef PASSFILE
-                *passfile,
-#endif /* PASSFILE */
-                *pinerc,	/* Location of user's pinerc */
-                *exceptions,	/* Location of user's exceptions */
-		*pine_name;	/* name we were invoked under */
-    PINERC_S    *prc,		/* structure for personal pinerc */
-		*post_prc,	/* structure for post-loaded pinerc */
-		*pconf;		/* structure for global pinerc */
-    
-    EditWhich	 ew_for_except_vars;
-    EditWhich	 ew_for_role_take;
-    EditWhich	 ew_for_score_take;
-    EditWhich	 ew_for_filter_take;
-    EditWhich	 ew_for_incol_take;
-    EditWhich	 ew_for_other_take;
-
-    SortOrder    def_sort,	/* Default sort type */
-		 sort_types[22];
-
-    int          last_expire_year, last_expire_month;
-
-    int		 printer_category;
-
-    int		 status_msg_delay;
-
-    int		 composer_fillcol;
-
-    time_t	 time_of_last_input;
-    int          hours_to_timeout;
-
-    int          tcp_query_timeout;
-
-    CONV_TABLE  *conv_table;
-
-    char	 last_error[500];
-    INIT_ERR_S  *init_errs;
-
-    PRINT_S	*print;
-
-    struct variable *vars;
-};
 
 
 /*------------------------------
@@ -3480,8 +3809,19 @@ typedef enum {MsgIndex, MultiMsgIndex, ZoomIndex, ThreadIndex} IndexType;
 typedef enum {TitleBarNone = 0, FolderName, MessageNumber, MsgTextPercent,
 		TextPercent, FileTextPercent, ThrdIndex,
 		ThrdMsgNum, ThrdMsgPercent} TitleBarType;
-typedef enum {GoodTime, BadTime, VeryBadTime, DoItNow} CheckPointTime;
+typedef enum {GoodTime = 0, BadTime, VeryBadTime, DoItNow} CheckPointTime;
 typedef enum {InLine, QStatus} DetachErrStyle;
+
+/*
+ * Macro to help with new mail check timing...
+ */
+#define	NM_TIMING(X)	(((X)==NO_OP_IDLE) ? GoodTime : \
+                                (((X)==NO_OP_COMMAND) ? BadTime : VeryBadTime))
+#define	NM_NONE		0x00
+#define	NM_STATUS_MSG	0x01
+#define	NM_DEFER_SORT	0x02
+#define	NM_FROM_COMPOSER 0x04
+
 
 /*
  * Flags to help manage help display
@@ -3493,12 +3833,19 @@ typedef enum {InLine, QStatus} DetachErrStyle;
 #define	HLPD_FROMHELP	0x08
 
 
+/*
+ * Flags for write_pinerc
+ */
+#define	WRP_NONE	   0
+#define	WRP_NOUSER	0x01
+
+
 
 /*
  * Struct defining scrolltool operating parameters.
  * 
  */
-typedef	struct _scrolltool_s {
+typedef	struct scrolltool_s {
     struct {			/* Data and its attributes to scroll	 */
 	void	   *text;	/* what to scroll			 */
 	SourceType  src;	/* it's form (char **,char *,FILE *)	 */
@@ -3514,20 +3861,20 @@ typedef	struct _scrolltool_s {
 	struct key_menu	 *menu;
 	bitmap_t	  bitmap;
 	OtherMenu	  what;
-	void		(*each_cmd) PROTO((struct _scrolltool_s *, int));
+	void		(*each_cmd) PROTO((struct scrolltool_s *, int));
     } keys;
     struct {			/* help for this attachment		 */
 	HelpType  text;		/* help text				 */
 	char	 *title;	/* title for help screen		 */
     } help;
     struct {
-	int (*click) PROTO((struct _scrolltool_s *));
-	int (*clickclick) PROTO((struct _scrolltool_s *));
+	int (*click) PROTO((struct scrolltool_s *));
+	int (*clickclick) PROTO((struct scrolltool_s *));
 #ifdef	_WINDOWS
 	/*
 	 * For systems that support it, allow caller to do popup menu
 	 */
-	int (*popup) PROTO((struct _scrolltool_s *, int));
+	int (*popup) PROTO((struct scrolltool_s *, int));
 #endif
     } mouse;
     struct {			/* where to start paging from		 */
@@ -3538,11 +3885,11 @@ typedef	struct _scrolltool_s {
 	} loc;
     } start;
     struct {			/* Non-default Command Processor	 */
-	int (*tool) PROTO((int, MSGNO_S *, struct _scrolltool_s *));
+	int (*tool) PROTO((int, MSGNO_S *, struct scrolltool_s *));
 	/* The union below is opaque as far as scrolltool itself is
 	 * concerned, but is provided as a container to pass data
 	 * between the scrolltool caller and the given "handler"
-	 * callback (or any other callback that takes a _scrolltool_s *).
+	 * callback (or any other callback that takes a scrolltool_s *).
 	 */
 	union {
 	    void *p;
@@ -3550,7 +3897,7 @@ typedef	struct _scrolltool_s {
 	} data;
     } proc;
 				/* End of page processing		 */
-    int	       (*end_scroll) PROTO((struct _scrolltool_s *));
+    int	       (*end_scroll) PROTO((struct scrolltool_s *));
 				/* Handler for invalid command input	 */
     int	       (*bogus_input) PROTO((int));
     unsigned	 resize_exit:1;	/* Return from scrolltool if resized	 */
@@ -3601,6 +3948,25 @@ typedef	struct filtlist_s {
     void     *data;
 } FILTLIST_S;
 
+
+typedef struct conversion_table {
+    char          *from_charset;
+    char          *to_charset;
+    int            quality;
+    void          *table;
+    filter_t       convert;
+} CONV_TABLE;
+
+
+/* Conversion table quality of tranlation */
+#define	CV_NO_TRANSLATE_POSSIBLE	1	/* We don't know how to      */
+						/* translate this pair       */
+#define	CV_NO_TRANSLATE_NEEDED		2	/* Not necessary, no-op      */
+#define	CV_LOSES_SPECIAL_CHARS		3	/* Letters will translate    */
+						/* ok but some special chars */
+						/* may be lost               */
+#define	CV_LOSES_SOME_LETTERS		4	/* Some special chars and    */
+						/* some letters may be lost  */
 
 
 /*
@@ -3653,11 +4019,13 @@ struct flag_table {
     long      flag;		/* flag tag (i.e., F_DEL above) */
     unsigned  set:2;		/* its state (set, unset, unknown) */
     unsigned  ukn:1;		/* allow unknown state */
+    char     *keyword;		/* if keyword is different from nickname */
+    char     *comment;		/* comment about the name */
 };
 
 struct flag_screen {
     char	      **explanation;
-    struct flag_table  *flag_table;
+    struct flag_table **flag_table;
 };
 
 /*
@@ -3671,7 +4039,7 @@ struct flag_screen {
 /*
  * Error handling argument for white pages lookups.
  */
-typedef struct _wp_err {
+typedef struct wp_err {
     char	*error;
     int		 wp_err_occurred;
     int		*mangled;
@@ -3682,7 +4050,7 @@ typedef struct _wp_err {
 /*
  * Structures to control the collection list screen
  */
-typedef struct _context_screen {
+typedef struct context_screen {
     unsigned	      edit:1;
     char	     *title, *print_string;
     CONTEXT_S	     *start,		/* for context_select_screen */
@@ -3726,7 +4094,7 @@ typedef struct header_s {
 /*
  * struct to help peruse a, possibly fragmented ala RFC 2231, parm list
  */
-typedef	struct _parmlist {
+typedef	struct parmlist {
     PARAMETER *list,
 	      *seen;
     char       attrib[32],
@@ -3735,10 +4103,16 @@ typedef	struct _parmlist {
 
 
 /*
- * Macro to help determine when we need to filter out naughty chars
+ * Macro to help determine when we need to filter out chars
  * from message index or headers...
  */
-#define	CAN_DISPLAY(c)	(iscntrl((c) & 0x7f)				\
+#define	FILTER_THIS(c)	(((((unsigned char) (c) < 0x20                  \
+                            || (unsigned char) (c) == 0x7f)             \
+                            && !ps_global->pass_ctrl_chars)             \
+                           || (((unsigned char) (c) >= 0x80             \
+                                && (unsigned char) (c) < 0xA0)          \
+                            && !ps_global->pass_ctrl_chars              \
+			    && !ps_global->pass_c1_ctrl_chars))         \
 			 && !(isspace((unsigned char) (c))		\
 			      || (c) == '\016'				\
 			      || (c) == '\017'))
@@ -3775,22 +4149,256 @@ typedef	struct _parmlist {
 #define	MLCMD_REASON	8192
 
 
-typedef	struct	_rfc2369_field_s {
+typedef	struct	rfc2369_field_s {
     char  *name,
 	  *description,
 	  *action;
 } RFC2369FIELD_S;
 
-typedef	struct _rfc2369_data_s {
+typedef	struct rfc2369_data_s {
     char *value,
 	 *comment,
 	 *error;
 } RFC2369DATA_S;
 
-typedef struct _rfc2369_s {
+typedef struct rfc2369_s {
     RFC2369FIELD_S  field;
     RFC2369DATA_S   data[MLCMD_MAXDATA];
 } RFC2369_S;
+
+
+
+/*----------------------------------------------------------------------
+   This structure sort of takes the place of global variables or perhaps
+is the global variable.  (It can be accessed globally as ps_global.  One
+advantage to this is that as soon as you see a reference to the structure
+you know it is a global variable. 
+   In general it is treated as global by the lower level and utility
+routines, but it is not treated so by the main screen driving routines.
+Each of them receives it as an argument and then sets ps_global to the
+argument they received.  This is sort of with the thought that things
+might be coupled more loosely one day and that Pine might run where there
+is more than one window and more than one instance.  But we haven't kept
+up with this convention very well.
+ ----*/
+  
+struct pine {
+    void       (*next_screen)();	/* See loop at end of main() for how */
+    void       (*prev_screen)();	/* these are used...		     */
+    void       (*redrawer)();		/* NULL means stay in current screen */
+
+    CONTEXT_S   *context_list;		/* list of user defined contexts */
+    CONTEXT_S   *context_current;	/* default open context          */
+    CONTEXT_S   *context_last;		/* most recently open context    */
+
+    SP_S         s_pool;		/* stream pool */
+
+    char         inbox_name[MAXFOLDER+1];
+    char         pine_pre_vers[10];	/* highest version previously run */
+    
+    MAILSTREAM  *mail_stream;		/* ptr to current folder stream */
+    MSGNO_S	*msgmap;		/* ptr to current message map   */
+
+    unsigned     read_predicted:1;
+
+    char         cur_folder[MAXPATH+1];
+    char         last_unambig_folder[MAXPATH+1];
+    ATTACH_S    *atmts;
+    int          atmts_allocated;
+    int	         remote_abook_validity;	/* minutes, -1=never, 0=only on opens */
+
+    INDEX_COL_S *index_disp_format;
+
+    char        *folders_dir;
+
+    unsigned     mangled_footer:1; 	/* footer needs repainting */
+    unsigned     mangled_header:1;	/* header needs repainting */
+    unsigned     mangled_body:1;	/* body of screen needs repainting */
+    unsigned     mangled_screen:1;	/* whole screen needs repainting */
+
+    unsigned     in_init_seq:1;		/* executing initial cmd list */
+    unsigned     save_in_init_seq:1;
+    unsigned     dont_use_init_cmds:1;	/* use keyboard input when true */
+
+    unsigned     give_fixed_warning:1;	/* warn user about "fixed" vars */
+    unsigned     fix_fixed_warning:1;	/* offer to fix it              */
+
+    unsigned     unseen_in_view:1;
+    unsigned     start_in_context:1;	/* start fldr_scrn in current cntxt */
+    unsigned     def_sort_rev:1;	/* true if reverse sort is default  */ 
+    unsigned     restricted:1;
+
+    unsigned	 save_msg_rule:5;
+    unsigned	 fcc_rule:3;
+    unsigned	 ab_sort_rule:3;
+    unsigned     color_style:3;
+    unsigned     index_color_style:3;
+    unsigned     titlebar_color_style:3;
+    unsigned	 fld_sort_rule:3;
+    unsigned	 inc_startup_rule:3;
+    unsigned	 pruning_rule:3;
+    unsigned	 reopen_rule:4;
+    unsigned	 goto_default_rule:3;
+    unsigned	 thread_disp_style:3;
+    unsigned	 thread_index_style:3;
+
+    unsigned     full_header:2;         /* display full headers		   */
+					/* 0 means normal		   */
+					/* 1 means display all quoted text */
+					/* 2 means full headers		   */
+    unsigned     some_quoting_was_suppressed:1;
+    unsigned     orig_use_fkeys:1;
+    unsigned     try_to_create:1;	/* Save should try mail_create */
+    unsigned     low_speed:1;	      /* various opt's 4 low connect speed */
+    unsigned     postpone_no_flow:1;  /* don't set flowed when we postpone */
+				      /* and don't reflow when we resume.  */
+    unsigned     mm_log_error:1;
+    unsigned     show_new_version:1;
+    unsigned     pre390:1;
+    unsigned     pre441:1;
+    unsigned     first_time_user:1;
+    unsigned	 intr_pending:1;	/* received SIGINT and haven't acted */
+    unsigned	 expunge_in_progress:1;	/* don't want to re-enter c-client   */
+    unsigned	 never_allow_changing_from:1;	/* not even for roles */
+
+    unsigned	 readonly_pinerc:1;
+    unsigned	 cache_remote_pinerc:1;
+    unsigned	 view_all_except:1;
+    unsigned     start_in_index:1;	/* cmd line flag modified on startup */
+    unsigned     noshow_error:1;	/* c-client error callback controls */
+    unsigned     noshow_warn:1;
+    unsigned	 noshow_timeout:1;
+    unsigned	 conceal_sensitive_debugging:1;
+    unsigned	 turn_off_threading_temporarily:1;
+    unsigned	 view_skipped_index:1;
+    unsigned	 a_format_contains_score:1;
+    unsigned	 ugly_consider_advancing_bit:1;
+    unsigned	 dont_count_flagchanges:1;
+
+    unsigned	 phone_home:1;
+    unsigned     painted_body_on_startup:1;
+    unsigned     painted_footer_on_startup:1;
+    unsigned     open_readonly_on_startup:1;
+    unsigned     exit_if_no_pinerc:1;
+    unsigned     pass_ctrl_chars:1;
+    unsigned     pass_c1_ctrl_chars:1;
+    unsigned     display_keywords_in_subject:1;
+    unsigned     display_keywordinits_in_subject:1;
+    unsigned     beginning_of_month:1;
+    unsigned     beginning_of_year:1;
+
+    unsigned 	 viewer_overlap:8;
+    unsigned	 scroll_margin:8;
+    unsigned 	 remote_abook_history:8;
+
+#if defined(DOS) || defined(OS2)
+    unsigned     blank_user_id:1;
+    unsigned     blank_personal_name:1;
+    unsigned     blank_user_domain:1;
+#ifdef	_WINDOWS
+    unsigned	 update_registry:2;
+    unsigned     install_flag:1;
+#endif
+#endif
+
+    unsigned 	 debug_malloc:6;
+    unsigned 	 debug_timestamp:1;
+    unsigned 	 debug_flush:1;
+    unsigned 	 debug_tcp:1;
+    unsigned 	 debug_imap:3;
+    unsigned 	 debug_nfiles:5;
+    unsigned     debugmem:1;
+    int          dlevel;		/* hack to pass arg to debugjournal */
+#ifdef PASSFILE
+    unsigned     nowrite_passfile:1;
+#endif
+
+    unsigned     convert_sigs:1;
+    unsigned     dump_supported_options:1;
+
+    unsigned     start_entry;		/* cmd line arg: msg # to start on */
+
+    bitmap_t     feature_list;		/* a bitmap of all the features */
+    char       **feat_list_back_compat;
+
+    SPEC_COLOR_S *hdr_colors;		/* list of configed colors for view */
+
+    short	 init_context;
+
+    int         *initial_cmds;         /* cmds to execute on startup */
+    int         *free_initial_cmds;    /* used to free when done */
+
+    char         c_client_error[300];  /* when nowhow_error is set and PARSE */
+
+    struct ttyo *ttyo;
+
+    USER_S	 ui;		/* system derived user info */
+
+    POST_S      *post;
+
+    char	*home_dir,
+                *hostname,	/* Fully qualified hostname */
+                *localdomain,	/* The (DNS) domain this host resides in */
+                *userdomain,	/* The per user domain from .pinerc or */
+                *maildomain,	/* Domain name for most uses */
+#if defined(DOS) || defined(OS2)
+                *pine_dir,	/* argv[0] as provided by DOS */
+                *aux_files_dir,	/* User's auxiliary files directory */
+#endif
+#ifdef PASSFILE
+                *passfile,
+#endif /* PASSFILE */
+                *pinerc,	/* Location of user's pinerc */
+                *exceptions,	/* Location of user's exceptions */
+		*pine_name;	/* name we were invoked under */
+    PINERC_S    *prc,		/* structure for personal pinerc */
+		*post_prc,	/* structure for post-loaded pinerc */
+		*pconf;		/* structure for global pinerc */
+    
+    EditWhich	 ew_for_except_vars;
+    EditWhich	 ew_for_role_take;
+    EditWhich	 ew_for_score_take;
+    EditWhich	 ew_for_filter_take;
+    EditWhich	 ew_for_incol_take;
+    EditWhich	 ew_for_other_take;
+
+    SortOrder    def_sort,	/* Default sort type */
+		 sort_types[22];
+
+    int          last_expire_year, last_expire_month;
+
+    int		 printer_category;
+
+    int		 status_msg_delay;
+
+    int		 composer_fillcol;
+
+    int		 nmw_width;
+
+    int          hours_to_timeout;
+
+    int          tcp_query_timeout;
+
+    time_t       check_interval_for_noncurr;
+
+    time_t       last_nextitem_forcechk;
+
+    int		 deadlets;
+
+    int		 quote_suppression_threshold;
+
+    CONV_TABLE  *conv_table;
+
+    KEYWORD_S   *keywords;
+    SPEC_COLOR_S *kw_colors;
+
+    char	 last_error[500];
+    INIT_ERR_S  *init_errs;
+
+    PRINT_S	*print;
+
+    struct variable *vars;
+};
 
 
 
@@ -3824,6 +4432,7 @@ void        compose_to_ldap_entry PROTO((struct pine *, LDAP_SERV_RES_S *,int));
 /*-- adrbklib.c --*/
 char	   *tempfile_in_same_dir PROTO((char *, char *, char **));
 MAILSTREAM *adrbk_handy_stream PROTO((char *));
+void        note_closed_adrbk_stream PROTO((MAILSTREAM *));
 
 /*-- args.c --*/
 void	    pine_args PROTO((struct pine *, int, char **, ARGDATA_S *));
@@ -3868,6 +4477,7 @@ STORE_S	   *so_get PROTO((SourceType, char *, int));
 int	    so_give PROTO((STORE_S **));
 int	    so_seek PROTO((STORE_S *, long, int));
 int	    so_truncate PROTO((STORE_S *, long));
+long	    so_tell PROTO((STORE_S *));
 int	    so_release PROTO((STORE_S *));
 int	    so_nputs PROTO((STORE_S *, char *, long));
 void	   *so_text PROTO((STORE_S *));
@@ -3876,7 +4486,7 @@ void	    gf_link_filter PROTO((filter_t, void *));
 char	   *gf_pipe PROTO((gf_io_t, gf_io_t));
 long	    gf_bytes_piped PROTO(());
 char	   *gf_filter PROTO((char *, char *, STORE_S *,
-			     gf_io_t, FILTLIST_S *));
+			     gf_io_t, FILTLIST_S *, int));
 void	    gf_set_so_readc PROTO((gf_io_t *, STORE_S *));
 void	    gf_clear_so_readc PROTO((STORE_S *));
 void	    gf_set_so_writec PROTO((gf_io_t *, STORE_S *));
@@ -3896,16 +4506,18 @@ void	   *gf_rich2plain_opt PROTO((int));
 void	    gf_enriched2plain PROTO((FILTER_S *, int));
 void	   *gf_enriched2plain_opt PROTO((int));
 void	    gf_html2plain PROTO((FILTER_S *, int));
-void	   *gf_html2plain_opt PROTO((char *, int, HANDLE_S **, int));
+void	   *gf_html2plain_opt PROTO((char *, int, int *, HANDLE_S **, int));
 void	    gf_2022_jp_to_euc PROTO((FILTER_S *, int));
 void	    gf_euc_to_2022_jp PROTO((FILTER_S *, int));
-void	    gf_convert_charset PROTO((FILTER_S *, int));
-void	   *gf_convert_charset_opt PROTO((unsigned char *));
+void	    gf_flow_text_post_compose PROTO((FILTER_S *, int));
+void	    gf_convert_8bit_charset PROTO((FILTER_S *, int));
+void	    gf_convert_utf8_charset PROTO((FILTER_S *, int));
 void	    gf_escape_filter PROTO((FILTER_S *, int));
 void	    gf_control_filter PROTO((FILTER_S *, int));
+void	   *gf_control_filter_opt PROTO((int *));
 void	    gf_tag_filter PROTO((FILTER_S *, int));
 void	    gf_wrap PROTO((FILTER_S *, int));
-void	   *gf_wrap_filter_opt PROTO((int, int, int, int));
+void	   *gf_wrap_filter_opt PROTO((int, int, int *, int, int));
 void	    gf_busy PROTO((FILTER_S *, int));
 void	    gf_nvtnl_local PROTO((FILTER_S *, int));
 void	    gf_local_nvtnl PROTO((FILTER_S *, int));
@@ -3942,7 +4554,7 @@ FOLDER_S   *folder_entry PROTO((int, void *));
 FOLDER_S   *new_folder PROTO((char *, unsigned long));
 int	    folder_insert PROTO((int, FOLDER_S *, void *));
 int	    folder_index PROTO((char *, CONTEXT_S *, int));
-char	   *folder_is_nick PROTO((char *, void *));
+char	   *folder_is_nick PROTO((char *, void *, int));
 char	   *next_folder PROTO((MAILSTREAM **, char *, char *,CONTEXT_S *,
 			       long *, int *));
 void	    init_inbox_mapping PROTO((char *, CONTEXT_S *));
@@ -3962,7 +4574,6 @@ int	    url_local_helper PROTO((char *));
 int	    url_local_config PROTO((char *));
 void	    review_messages PROTO((void));
 void	    add_review_message PROTO((char *, int));
-void	    end_status_review PROTO((void));
 int	    gripe_gripe_to PROTO((char *));
 void	    init_helper_getc PROTO((char **));
 int	    helper_getc PROTO((char *));
@@ -4002,7 +4613,7 @@ void        cur_rule_value PROTO((struct variable *, int, int));
 void	    quit_to_edit_msg PROTO((PINERC_S *));
 int	    init_username PROTO((struct pine *));
 int	    init_hostname PROTO((struct pine *));  
-int	    write_pinerc PROTO((struct pine *, EditWhich));
+int	    write_pinerc PROTO((struct pine *, EditWhich, int));
 int	    var_in_pinerc PROTO((char *));
 void	    free_pinerc_lines PROTO((PINERC_LINE **));
 int	    decode_sort PROTO((char *, SortOrder *, int *));
@@ -4011,11 +4622,13 @@ void	    dump_new_pinerc PROTO((char *));
 int	    set_variable PROTO((int, char *, int, int, EditWhich));
 int	    set_variable_list PROTO((int, char **, int, EditWhich));
 void        set_current_color_vals PROTO((struct pine *));
-void        set_custom_hdr_colors PROTO((struct pine *));
+void        set_custom_spec_colors PROTO((struct pine *));
 int	    init_mail_dir PROTO((struct pine *));
 void	    init_init_vars PROTO((struct pine *));
 void	    init_save_defaults PROTO(());
 int	    expire_sent_mail PROTO((void));
+int	    first_run_of_month PROTO((void));
+int	    first_run_of_year PROTO((void));
 char	  **parse_list PROTO((char *, int, int, char **));
 char      **copy_list_array PROTO((char **));
 void        free_list_array PROTO((char ***));
@@ -4068,7 +4681,7 @@ PINERC_S   *new_pinerc_s PROTO((char *));
 void        free_pinerc_s PROTO((PINERC_S **));
 
 /*---- mailcap.c ----*/
-char	   *mailcap_build_command PROTO((int, char *, PARAMETER *,
+MCAP_CMD_S *mailcap_build_command PROTO((int, char *, PARAMETER *,
 					 char *, int *, int));
 int	    mailcap_can_display PROTO((int, char *, PARAMETER *, int));
 void	    mailcap_free PROTO((void));
@@ -4086,30 +4699,38 @@ void	    menu_init_binding PROTO((struct key_menu *, int, int,
 void	    menu_add_binding PROTO((struct key_menu *, int, int));
 int	    menu_clear_binding PROTO((struct key_menu *, int));
 int	    menu_binding_index PROTO((struct key_menu *, int));
-int	    individual_select PROTO((struct pine *, MSGNO_S *, int, CmdWhere));
+int	    individual_select PROTO((struct pine *, MSGNO_S *, CmdWhere));
 void	    reset_index_format PROTO((void));
 void	    reset_sort_order PROTO((unsigned));
 void	    bogus_command PROTO((int, char *));
 void	    cmd_cancelled PROTO((char *));
 char	   *broach_folder PROTO((int, int, CONTEXT_S **));
-int	    do_broach_folder PROTO((char *, CONTEXT_S *, MAILSTREAM **));
+int	    do_broach_folder PROTO((char *, CONTEXT_S *, MAILSTREAM **,
+				    unsigned long));
 void	    visit_folder PROTO((struct pine *, char *, CONTEXT_S *,
-				MAILSTREAM *));
+				MAILSTREAM *, unsigned long));
 long	    jump_to PROTO((MSGNO_S *, int, int, SCROLL_S *, CmdWhere));
 long	    zoom_index PROTO((struct pine *, MAILSTREAM *, MSGNO_S *));
 int	    unzoom_index PROTO((struct pine *, MAILSTREAM *, MSGNO_S *));
 int	    save_prompt PROTO((struct pine *, CONTEXT_S **, char *, size_t,
-			       char *, ENVELOPE *, long, char *));
+			       char *, ENVELOPE *, long, char *, SaveDel *));
 int	    save_fetch_append PROTO((MAILSTREAM *, long, char *, MAILSTREAM *,
 				     char *, CONTEXT_S *, unsigned long,
 				     char *, char *, STORE_S *));
+int         raw_pipe_getc PROTO((unsigned char *));
+void	    prime_raw_pipe_getc PROTO((MAILSTREAM *, long, long, long));
+PIPE_S	   *cmd_pipe_open PROTO((char *, char **, int, gf_io_t *));
 void	    flag_string PROTO((MESSAGECACHE *, long, char *));
+int         user_flag_is_set PROTO((MAILSTREAM *, unsigned long, char *));
+int         user_flag_index PROTO((MAILSTREAM *, char *));
+int         keyword_check PROTO((char *, char **));
+char       *choose_a_keyword PROTO((void));
+char      **choose_list_of_keywords PROTO((void));
 void        advance_cur_after_delete PROTO((struct pine *, MAILSTREAM *,
 					    MSGNO_S *, CmdWhere));
-void	    expunge_and_close PROTO((MAILSTREAM *, CONTEXT_S *, char *,
-				     char **));
+void	    expunge_and_close PROTO((MAILSTREAM *, char **, unsigned long));
 void	    process_filter_patterns PROTO((MAILSTREAM *, MSGNO_S *, long));
-void	    reprocess_filter_patterns PROTO((MAILSTREAM *, MSGNO_S *));
+void	    reprocess_filter_patterns PROTO((MAILSTREAM *, MSGNO_S *, int));
 char	   *get_uname PROTO((char *, char *, int));
 char	   *build_updown_cmd PROTO((char *, char *, char *, char*));
 int	    file_lister PROTO((char *, char *, int, char *, int, int, int));
@@ -4122,11 +4743,12 @@ int	    pseudo_selected PROTO((MSGNO_S *));
 void	    restore_selected PROTO((MSGNO_S *));
 int         simple_export PROTO((struct pine *, void *, SourceType, char *,
 				       char *));
-int         get_export_filename PROTO((struct pine *, char *, char *, size_t,
-				       char *, char *, ESCKEY_S *,
+int         get_export_filename PROTO((struct pine *, char *, char *, char *,
+				       size_t, char *, char *, ESCKEY_S *,
 				       int *, int, int));
 char	   *build_sequence PROTO((MAILSTREAM *, MSGNO_S *, long *));
 int         trivial_patgrp PROTO((PATGRP_S *));
+int	    bezerk_delimiter PROTO((ENVELOPE *, MESSAGECACHE *, gf_io_t, int));
 #ifdef	_WINDOWS
 int	    header_mode_callback PROTO((int, long));
 int	    any_selected_callback PROTO((int, long));
@@ -4146,7 +4768,7 @@ void	    clear_tindex_cache PROTO((void));
 void	    clear_index_cache_ent PROTO((long));
 int	    build_index_cache PROTO((long));
 int         calculate_some_scores PROTO((MAILSTREAM *, SEARCHSET *, int));
-int         get_msg_score PROTO((MAILSTREAM *, long));
+long        get_msg_score PROTO((MAILSTREAM *, long));
 void        adjust_cur_to_visible PROTO((MAILSTREAM *, MSGNO_S *));
 void        clear_folder_scores PROTO((MAILSTREAM *));
 void        clear_msg_score PROTO((MAILSTREAM *, long));
@@ -4165,7 +4787,8 @@ struct key_menu *
 	    do_index_border PROTO((CONTEXT_S *, char *, MAILSTREAM *,
 				   MSGNO_S *, IndexType, int *, int));
 char	   *sort_name PROTO((SortOrder));
-void	    sort_folder PROTO((MSGNO_S *, SortOrder, int, unsigned));
+void	    sort_folder PROTO((MAILSTREAM *, MSGNO_S *,
+			       SortOrder, int, unsigned));
 int	    percent_sorted PROTO((void));
 void	    msgno_init PROTO((MSGNO_S **, long));
 void	    msgno_give PROTO((MSGNO_S **));
@@ -4175,15 +4798,17 @@ int	    msgno_in_select PROTO((MSGNO_S *, long));
 void	    msgno_inc PROTO((MAILSTREAM *, MSGNO_S *, int));
 void	    msgno_dec PROTO((MAILSTREAM *, MSGNO_S *, int));
 void	    msgno_include PROTO((MAILSTREAM *, MSGNO_S *, int));
-void	    msgno_exclude PROTO((MAILSTREAM *, MSGNO_S *, long));
+void	    msgno_exclude PROTO((MAILSTREAM *, MSGNO_S *, long, int));
 void	    msgno_exclude_deleted PROTO((MAILSTREAM *, MSGNO_S *));
 int	    msgno_exceptions PROTO((MAILSTREAM *, long, char *, int *, int));
 int	    msgno_any_deletedparts PROTO((MAILSTREAM *, MSGNO_S *));
 int	    msgno_part_deleted PROTO((MAILSTREAM *, long, char *));
 void	    msgno_free_exceptions PROTO((PARTEX_S **));
+char       *prepend_keyword_subject PROTO((MAILSTREAM *, long, char *, SubjKW,
+					   char *, OFFCOLOR_S *, int *));
 int         get_index_line_color PROTO((MAILSTREAM *, SEARCHSET *,
 					PAT_STATE **, COLOR_PAIR **));
-void	    free_pine_elt PROTO((PINELT_S **));
+void	    free_pine_elt PROTO((void **));
 SEARCHSET  *build_searchset PROTO((MAILSTREAM *));
 void	    collapse_or_expand PROTO((struct pine *, MAILSTREAM *, MSGNO_S *,
 				      unsigned long));
@@ -4193,7 +4818,6 @@ int         view_thread PROTO((struct pine *, MAILSTREAM *, MSGNO_S *, int));
 int         unview_thread PROTO((struct pine *, MAILSTREAM *, MSGNO_S *));
 void       *stop_threading_temporarily PROTO((void));
 void        restore_threading PROTO((void **));
-void        set_search_bit_for_thread PROTO((MAILSTREAM *, PINETHRD_S *));
 unsigned long count_lflags_in_thread PROTO((MAILSTREAM *, PINETHRD_S *,
 					    MSGNO_S *, int));
 void        set_thread_lflags PROTO((MAILSTREAM *, PINETHRD_S *,
@@ -4205,14 +4829,13 @@ int         thread_has_some_visible PROTO((MAILSTREAM *, PINETHRD_S *));
 void        erase_threading_info PROTO((MAILSTREAM *, MSGNO_S *));
 void        select_thread_stmp PROTO((struct pine *, MAILSTREAM *, MSGNO_S *));
 #ifdef	_WINDOWS
-int	    header_mode_callback PROTO((int, long));
 int	    index_sort_callback PROTO((int, long));
 #endif
 
 /*---- mailpart.c ----*/
 void	    attachment_screen PROTO((struct pine *));
 char	   *detach PROTO((MAILSTREAM *, long, char *,
-			  long *, gf_io_t, FILTLIST_S *));
+			  long *, gf_io_t, FILTLIST_S *, int));
 int	    display_attachment PROTO((long, ATTACH_S *, int));
 MAILSTREAM *save_msg_stream PROTO((CONTEXT_S *, char *, int *));
 int	    valid_filter_command PROTO((char **));
@@ -4226,6 +4849,14 @@ char	   *detach_raw PROTO((MAILSTREAM *, long, char *, gf_io_t, int));
 void        date_str PROTO((char *, IndexColType, int, char *));
 char       *pine_mail_fetch_text PROTO((MAILSTREAM *, unsigned long,
 					char *, unsigned long *, long));
+char       *pine_mail_fetch_body PROTO((MAILSTREAM *, unsigned long,
+					char *, unsigned long *, long));
+char       *pine_mail_partial_fetch_wrapper PROTO((MAILSTREAM *, unsigned long,
+						   char *, unsigned long *,
+						   long, unsigned long, char **,
+						   int));
+int         write_attachment_to_file PROTO((MAILSTREAM *, long, ATTACH_S *,
+					    int, char *));
 
 /*--- mailview.c ---*/
 void	    mail_view_screen PROTO((struct pine *));
@@ -4236,15 +4867,16 @@ char	   *part_desc PROTO((char *, BODY *, int, int, gf_io_t));
 int	    format_message PROTO((long, ENVELOPE *, BODY *, HANDLE_S **,
 				  int, gf_io_t));
 char	   *format_editorial PROTO((char *, int, gf_io_t));
-COLOR_PAIR *hdr_color PROTO((char *, char *));
-void	    free_hdr_colors PROTO((HDR_COLOR_S **));
+COLOR_PAIR *hdr_color PROTO((char *, char *, SPEC_COLOR_S *));
+void	    free_spec_colors PROTO((SPEC_COLOR_S **));
 int	    match_escapes PROTO((char *));
 long        fcc_size_guess PROTO((BODY *));
 int	    decode_text PROTO((ATTACH_S *, long, gf_io_t, HANDLE_S **,
 			      DetachErrStyle,int));
 char	   *display_parameters PROTO((PARAMETER *));
 void	    display_output_file PROTO((char *, char *, char *, int));
-char	   *fetch_header PROTO((MAILSTREAM *, long, char *, char **, long));
+char	   *pine_fetch_header PROTO((MAILSTREAM *, long, char *,
+				     char **, long));
 int	    format_header PROTO((MAILSTREAM *, long, char *, ENVELOPE *,
 				HEADER_S *, char *, HANDLE_S **, int, gf_io_t));
 void	    init_handles PROTO((HANDLE_S **));
@@ -4267,10 +4899,13 @@ STRINGLIST *new_strlst PROTO((char **));
 void	    free_strlst PROTO((STRINGLIST **));
 
 /*--newmail.c --*/
-long	    new_mail PROTO((int, int, int));
-void	    check_point_change PROTO(());
-void	    reset_check_point PROTO((void));
+long	    new_mail PROTO((int, CheckPointTime, int));
+void	    check_point_change PROTO((MAILSTREAM *));
+void	    reset_check_point PROTO((MAILSTREAM *));
 void	    zero_new_mail_count PROTO((void));
+int	    changes_to_checkpoint PROTO((MAILSTREAM *));
+void	    close_newmailfifo PROTO((void));
+void	    init_newmailfifo PROTO((char *));
 
 /*-- os.c --*/
 int	    can_access_in_path PROTO((char *, char *, int));
@@ -4304,15 +4939,22 @@ int	    mime_can_display PROTO((int, char *, PARAMETER *));
 int	    fget_pos PROTO((FILE *, fpos_t *));
 char	   *canonical_name PROTO((char *));
 PIPE_S	   *open_system_pipe PROTO((char *, char **, char **, int, int));
-int	    close_system_pipe PROTO((PIPE_S **));
+int	    close_system_pipe PROTO((PIPE_S **, int *, int));
+int         pipe_putc PROTO((int, PIPE_S *));
+int         pipe_puts PROTO((char *, PIPE_S *));
+char       *pipe_gets PROTO((char *, int, PIPE_S *));
+int         pipe_readc PROTO((unsigned char *, PIPE_S *));
+int         pipe_writec PROTO((int, PIPE_S *));
+int         pipe_close_write PROTO((PIPE_S *));
 char	   *smtp_command PROTO((char *));
 int	    mta_handoff PROTO((METAENV *, BODY *, char *, size_t));
 char	   *post_handoff PROTO((METAENV *, BODY *, char *, size_t));
-void	    exec_mailcap_cmd PROTO((char *, char *, int));
+void	    exec_mailcap_cmd PROTO((MCAP_CMD_S *, char *, int));
 int	    exec_mailcap_test_cmd PROTO((char *));
 #ifdef DEBUG
 void	    init_debug PROTO((void));
 void	    save_debug_on_crash PROTO((FILE *));
+void	    debugjournal_to_file PROTO((FILE *));
 int	    do_debug PROTO((FILE *));
 char	   *debug_time PROTO((int, int));
 #endif
@@ -4341,8 +4983,18 @@ void	    print_text2 PROTO((char *, char *, char *));
 void	    print_text3 PROTO((char *, char *, char *, char *));
 int	    get_time PROTO((TIMEVAL_S *));
 long        time_diff PROTO((TIMEVAL_S *, TIMEVAL_S *));
+int         mime_os_specific_access PROTO((void));
+int         mime_get_os_mimetype_command PROTO((char *, char *,
+					   char *, int, int, int *));
+int         mime_get_os_mimetype_from_ext PROTO((char *, char *, int));
+int         mime_get_os_ext_from_mimetype PROTO((char *, char *, int));
+char       *url_os_specified_browser PROTO((char *));
+char       *execview_pretty_command PROTO((MCAP_CMD_S *, int *));
 
 /*--- other.c ---*/
+int         select_from_list_screen PROTO((LIST_SEL_S *, unsigned long,
+					   char *, char *,
+					   HelpType, char *));
 int	    lock_keyboard PROTO((void));
 void	    redraw_kl_body PROTO(());
 void	    redraw_klocked_body PROTO(());
@@ -4400,21 +5052,49 @@ long	    any_lflagged PROTO((MSGNO_S *, int));
 int	    get_lflag PROTO((MAILSTREAM *, MSGNO_S *, long, int));
 int	    set_lflag PROTO((MAILSTREAM *, MSGNO_S *, long, int, int));
 void	    warn_other_cmds PROTO(());
-MAILSTREAM *pine_mail_open PROTO((MAILSTREAM *, char *, long));
+MAILSTREAM *pine_mail_open PROTO((MAILSTREAM *, char *, long, long *));
 long        pine_mail_create PROTO((MAILSTREAM *, char *));
 long        pine_mail_delete PROTO((MAILSTREAM *, char *));
 long        pine_mail_append_full PROTO((MAILSTREAM *, char *, char *, char *,
 					 STRING *));
 long        pine_mail_append_multiple PROTO((MAILSTREAM *, char *, append_t,
-					     void *));
+					     void *, MAILSTREAM *));
 long        pine_mail_copy_full PROTO((MAILSTREAM *, char *, char *, long));
 void	    pine_mail_close PROTO((MAILSTREAM *));
+void	    maybe_kill_old_stream PROTO((MAILSTREAM *));
+long        pine_mail_rename PROTO((MAILSTREAM *, char *, char *));
+long        pine_mail_search_full PROTO((MAILSTREAM *, char *, SEARCHPGM *,
+					 long));
+void        pine_mail_fetch_flags PROTO((MAILSTREAM *, char *, long));
+ENVELOPE   *pine_mail_fetchenvelope PROTO((MAILSTREAM *, unsigned long));
+ENVELOPE   *pine_mail_fetch_structure PROTO((MAILSTREAM *, unsigned long,
+					     BODY **, long));
+ENVELOPE   *pine_mail_fetchstructure PROTO((MAILSTREAM *, unsigned long,
+					    BODY **));
+long        pine_mail_ping PROTO((MAILSTREAM *));
+void        pine_mail_check PROTO((MAILSTREAM *));
+MAILSTREAM *already_open_stream PROTO((char *, int));
 unsigned long pine_gets_bytes PROTO((int));
 int	    is_imap_stream PROTO((MAILSTREAM *));
 int	    modern_imap_stream PROTO((MAILSTREAM *));
-     
+PER_STREAM_S **sp_data PROTO((MAILSTREAM *));
+MSGNO_S    *sp_msgmap PROTO((MAILSTREAM *));
+void        sp_set_fldr PROTO((MAILSTREAM *, char *));
+void        sp_set_saved_cur_msg_id PROTO((MAILSTREAM *, char *));
+void        sp_free_callback PROTO((void **));
+void        sp_flag PROTO((MAILSTREAM *, unsigned long));
+void        sp_unflag PROTO((MAILSTREAM *, unsigned long));
+int         sp_flagged PROTO((MAILSTREAM *, unsigned long));
+void        sp_mark_stream_dead PROTO((MAILSTREAM *));
+MAILSTREAM *sp_stream_get PROTO((char *, unsigned long));
+int         sp_a_locked_stream_is_dead PROTO((void));
+int         sp_a_locked_stream_changed PROTO((void));
+MAILSTREAM *sp_inbox_stream PROTO((void));
+void        sp_cleanup_dead_streams PROTO((void));
+int         sp_nremote_permlocked PROTO((void));
+
 /*-- reply.c --*/
-void	    reply PROTO((struct pine *));
+void	    reply PROTO((struct pine *, ACTION_S *));
 void	    reply_seed PROTO((struct pine *, ENVELOPE *, ENVELOPE *,
 			      ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *,
 			      BUILDER_ARG *, int));
@@ -4426,7 +5106,7 @@ int	    reply_text_query PROTO((struct pine *, long, char **));
 BODY	   *reply_body PROTO((MAILSTREAM *, ENVELOPE *, BODY *, long,
 			      char *, void *, char *, int, ACTION_S *, int,
 			      REDRAFT_POS_S **));
-char	   *reply_subject PROTO((char *, char *));
+char	   *reply_subject PROTO((char *, char *, size_t));
 void	    reply_delimiter PROTO((ENVELOPE *, ACTION_S *, gf_io_t));
 char	   *reply_in_reply_to PROTO((ENVELOPE *));
 char	   *reply_build_refs PROTO((ENVELOPE *));
@@ -4434,16 +5114,16 @@ char	   *reply_quote_str PROTO((ENVELOPE *));
 char       *reply_quote_initials PROTO((char *));
 ADDRESS    *reply_cp_addr PROTO((struct pine *, long, char *, char *,
 				 ADDRESS *, ADDRESS *, ADDRESS *, int));
-void	    forward PROTO((struct pine *));
+void	    forward PROTO((struct pine *, ACTION_S *));
 char	   *forward_subject PROTO((ENVELOPE *, int));
 BODY	   *forward_body PROTO((MAILSTREAM *, ENVELOPE *, BODY *, long,
 				char *, void *, int));
 int	    forward_mime_msg PROTO((MAILSTREAM *, long, char *,
 				    ENVELOPE *, PART **, void *));
 int	    fetch_contents PROTO((MAILSTREAM *, long, char *, BODY *));
-void	    bounce PROTO((struct pine *));
-char	   *bounce_msg PROTO((MAILSTREAM *, long, char *, char **, char *,
-			      char *, char *));
+void	    bounce PROTO((struct pine *, ACTION_S *));
+char	   *bounce_msg PROTO((MAILSTREAM *, long, char *, ACTION_S *,
+			      char **, char *, char *, char *));
 void	    forward_text PROTO((struct pine *, void *, SourceType));
 char	   *generate_message_id PROTO((void));
 ADDRESS    *first_addr PROTO((ADDRESS *));
@@ -4463,6 +5143,8 @@ ACTION_S   *set_role_from_msg PROTO((struct pine *, long, long, char *));
 int	    confirm_role PROTO((long, ACTION_S **));
 char	   *detoken PROTO((ACTION_S *, ENVELOPE *, int, int, int,
 			   REDRAFT_POS_S **, int *));
+char       *detoken_src PROTO((char *, int, ENVELOPE *, ACTION_S *,
+			      REDRAFT_POS_S **, int *));
 void	    free_redraft_pos PROTO((REDRAFT_POS_S **));
 void	    standard_picobuf_setup PROTO((PICO *));
 void	    standard_picobuf_teardown PROTO((PICO *));
@@ -4498,8 +5180,8 @@ void	    compose_mail PROTO((char *, char *, ACTION_S *, PATMT *, gf_io_t));
 void	    pine_send PROTO((ENVELOPE *, BODY **, char *, ACTION_S *,
 			     char *, REPLY_S *, REDRAFT_POS_S *, char *,
 			     PINEFIELD *, int));
-int	    pine_simple_send PROTO((ENVELOPE *, BODY **, char *, char *,
-				    char **, int));
+int	    pine_simple_send PROTO((ENVELOPE *, BODY **, ACTION_S *, char *,
+				    char *, char **, int));
 char	   *pine_send_status PROTO((int, char *, char *, int *));
 void	    phone_home PROTO((char *));
 void	    pine_free_body PROTO((BODY **));
@@ -4561,6 +5243,8 @@ void	    q_status_message4 PROTO((int, int, int, char *, void *, void *,
 				     void *, void *));
 void	    q_status_message5 PROTO((int, int, int, char *, void *, void *,
 				     void *, void *, void *));
+void	    q_status_message6 PROTO((int, int, int, char *, void *, void *,
+				     void *, void *, void *, void *));
 void	    q_status_message7 PROTO((int, int, int, char *, void *, void *,
 				     void *, void *, void *, void *, void *));
 void	    q_status_message8 PROTO((int, int, int, char *, void *, void *,
@@ -4630,7 +5314,7 @@ char	   *cstring_to_hexstring PROTO((char *));
 void	    cstring_to_string PROTO((char *, char *));
 char	   *add_backslash_escapes PROTO((char *));
 char	   *add_roletake_escapes PROTO((char *));
-char	   *add_folder_escapes PROTO((char *));
+char	   *add_comma_escapes PROTO((char *));
 char	   *add_viewerhdr_escapes PROTO((char *));
 char	   *remove_backslash_escapes PROTO((char *));
 char	   *vcard_escape PROTO((char *));
@@ -4639,6 +5323,9 @@ void	    vcard_unfold PROTO((char *));
 int	    isxpair PROTO((char *));
 STRLIST_S  *new_strlist PROTO((void));
 void	    free_strlist PROTO((STRLIST_S **));
+KEYWORD_S  *init_keyword_list PROTO((char **));
+void	    free_keyword_list PROTO((KEYWORD_S **));
+char       *nick_to_keyword PROTO((char *));
 unsigned char *rfc1522_decode PROTO((unsigned char *, size_t, char *, char **));
 char	   *rfc1522_encode PROTO((char *, size_t, unsigned char *, char *));
 char	   *rfc1738_scan PROTO((char *, int *));
@@ -4663,8 +5350,8 @@ void        close_every_pattern PROTO((void));
 void        close_patterns PROTO((long));
 int         match_pattern PROTO((PATGRP_S *, MAILSTREAM *,
 				 SEARCHSET *,char *,
-				 int (*) PROTO((MAILSTREAM *, long)),
-				 int));
+				 long (*) PROTO((MAILSTREAM *, long)),
+				 long));
 int	    match_pattern_folder PROTO((PATGRP_S *, MAILSTREAM *));
 int	    match_pattern_folder_specific PROTO((PATTERN_S *, MAILSTREAM *,
 						 int));
@@ -4681,7 +5368,10 @@ void        free_pattern PROTO((PATTERN_S **));
 void        free_action PROTO((ACTION_S **));
 char	   *pattern_to_string PROTO((PATTERN_S *));
 PATTERN_S  *string_to_pattern PROTO((char *));
+PATTERN_S  *editlist_to_pattern PROTO((char **));
+char      **pattern_to_editlist PROTO((PATTERN_S *));
 PAT_S      *copy_pat PROTO((PAT_S *));
+PATGRP_S   *copy_patgrp PROTO((PATGRP_S *));
 ACTION_S   *copy_action PROTO((ACTION_S *));
 ACTION_S   *combine_inherited_role PROTO((ACTION_S *));
 char       *stringform_of_intvl PROTO((INTVL_S *));
@@ -4693,10 +5383,14 @@ int         patgrp_depends_on_active_state PROTO((PATGRP_S *));
 void        calc_extra_hdrs PROTO((void));
 char       *get_extra_hdrs PROTO((void));
 void        free_extra_hdrs PROTO((void));
+char       *choose_item_from_list PROTO((char **, char *, char *, HelpType,
+					 char *));
+void        free_list_sel PROTO((LIST_SEL_S **));
 char	  **rfc2369_hdrs PROTO((char **));
 int	    rfc2369_parse_fields PROTO((char *, RFC2369_S *));
 unsigned char *trans_euc_to_2022_jp PROTO((unsigned char *));
 unsigned char *trans_2022_jp_to_euc PROTO((unsigned char *));
+char       *keyword_to_nick PROTO((char *));
 
 
 /*-- takeaddr.c --*/

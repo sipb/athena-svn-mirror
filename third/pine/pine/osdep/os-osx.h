@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-osx.h,v 1.1.1.4 2004-03-01 21:15:52 ghudson Exp $
+  $Id: os-osx.h,v 1.1.1.5 2005-01-26 17:53:07 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -310,5 +310,9 @@ void free();
 #define MAX_ADDR_EXPN   (1000)  /* Longest expanded addr                    */
 #define MAX_ADDR_FIELD (10000)  /* Longest fully-expanded addr field        */
 
+/* The following are changed to avoid OSX conflicts */
+#define Fixed      PineFixed
+#define Handle     PineHandle
+#define Comment    PineComment
 
 #endif /* _OS_INCLUDED */

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.4 2004-03-01 21:16:24 ghudson Exp $";
+static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.5 2005-01-26 17:54:36 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.4 2004-03-01 21:16:24 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -2710,7 +2710,8 @@ init_abook(pab, want_status)
 		    new_status  = Closed;
 
 		dprint(1, (debugfile, "Error opening address book %s: %s\n",
-			  pab->nickname, error_description(errno)));
+			  pab->nickname ? pab->nickname : "?",
+			  error_description(errno)));
 	    }
 	    else{
 		if(pab->access == NoExists)
@@ -2757,12 +2758,15 @@ init_abook(pab, want_status)
 		dprint(2,
 		      (debugfile,
 		      "Address book %s (%s) opened with %ld items\n",
-		       pab->nickname, pab->filename,
+		       pab->nickname ? pab->nickname : "?",
+		       pab->filename ? pab->filename : "?",
 		       (long)adrbk_count(pab->address_book)));
 		if(*warning){
 		    dprint(1, (debugfile,
 				 "Addressbook parse error in %s (%s): %s\n",
-				 pab->nickname, pab->filename, warning));
+				 pab->nickname ? pab->nickname : "?",
+				 pab->filename ? pab->filename : "?",
+				 warning));
 		    if(!pab->gave_parse_warnings && want_status == Open){
 			pab->gave_parse_warnings++;
 			q_status_message2(SM_ORDER, 3, 4, "%.200s: %.200s",
@@ -3029,7 +3033,8 @@ adrbk_maintenance()
 	   rd_stream_exists(pab->address_book->rd)){
 	    dprint(7, (debugfile,
 		   "adrbk_maint: %s: idle cntr %ld (%ld)\n",
-		   pab->address_book->orig_filename,
+		   pab->address_book->orig_filename
+		     ? pab->address_book->orig_filename : "?",
 		   (long)(now - pab->address_book->rd->last_use),
 		   (long)pab->address_book->rd->last_use));
 
@@ -3038,7 +3043,8 @@ adrbk_maintenance()
 		    "adrbk_maint %s: closing idle (%ld secs) connection: %s\n",
 		    debug_time(0,0),
 		    (long)(now - pab->address_book->rd->last_use),
-		    pab->address_book->orig_filename));
+		    pab->address_book->orig_filename
+		      ? pab->address_book->orig_filename : "?"));
 		rd_close_remote(pab->address_book->rd);
 	    }
 	    else{
@@ -3048,12 +3054,27 @@ adrbk_maintenance()
 		 * This shouldn't be necessary unless the server has a
 		 * really short timeout. If we got killed for some reason
 		 * we set imap.stream to NULL.
+		 * Instead of just pinging, we may as well check for
+		 * updates, too.
 		 */
-		if(!rd_ping_stream(pab->address_book->rd)){
+		if(ab_nesting_level == 0 &&
+		   ps_global->remote_abook_validity > 0){
+		    time_t save_last_use;
+
+		    /*
+		     * We shouldn't count this as a real last_use.
+		     */
+		    save_last_use = pab->address_book->rd->last_use;
+		    (void)adrbk_check_and_fix(pab, 1, 0, 1);
+		    pab->address_book->rd->last_use = save_last_use;
+		}
+		/* just ping it if not safe to fix it */
+		else if(!rd_ping_stream(pab->address_book->rd)){
 		    dprint(2, (debugfile,
 		      "adrbk_maint: %s: abook stream closed unexpectedly: %s\n",
 		      debug_time(0,0),
-		      pab->address_book->orig_filename));
+		      pab->address_book->orig_filename
+		        ? pab->address_book->orig_filename : "?"));
 		}
 	    }
 	}
@@ -3323,7 +3344,7 @@ build_addr_lcc(lcc, full_lcc, error, barg, mangled)
 
 	q_status_message(SM_ORDER, 3, 5, "Resetting address book...");
 	dprint(1, (debugfile,
-	    "RESETTING address book... build_address(%s)!\n", lcc));
+	    "RESETTING address book... build_address(%s)!\n", lcc ? lcc : "?"));
 	addrbook_reset();
 	ab_nesting_level = *save_nesting_level;
     }
@@ -3691,7 +3712,7 @@ build_address(to, full_to, error, barg, mangled)
 
 	q_status_message(SM_ORDER, 3, 5, "Resetting address book...");
 	dprint(1, (debugfile,
-	    "RESETTING address book... build_address(%s)!\n", to));
+	    "RESETTING address book... build_address(%s)!\n", to ? to : "?"));
 	addrbook_reset();
         ab_nesting_level = *save_nesting_level;
     }
@@ -4167,7 +4188,7 @@ start:
 
         dprint(2, (debugfile,
 	    "build_address_internal returning parse error: %s\n",
-                   ps_global->c_client_error));
+                  ps_global->c_client_error ? ps_global->c_client_error : "?"));
 	if(a)
 	  mail_free_address(&a);
 
@@ -5298,7 +5319,8 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
      * now, re-open them every time.
      */
 
-    dprint(2,(debugfile, "ldap_lookup(%s,%d)\n", serv, info->port));
+    dprint(2,(debugfile, "ldap_lookup(%s,%d)\n", serv ? serv : "?",
+	   info->port));
 
     sprintf(ebuf, "Searching%.100s%.100s%.100s on %.100s",
 	    (string && *string) ? " for \"" : "",
@@ -5570,7 +5592,7 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
 
 	(void)removing_double_quotes(base);
 	dprint(5, (debugfile, "about to ldap_search(\"%s\", %s)\n",
-	       base, filter));
+	       base ? base : "?", filter ? filter : "?"));
         if(ps_global->intr_pending)
 	  srch_res = LDAP_PROTOCOL_ERROR;
 	else{
@@ -5736,7 +5758,8 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
 	      display_message('x');
 	    }
 
-	    dprint(5, (debugfile, "Matched %d entries on %s\n", cnt, serv));
+	    dprint(5, (debugfile, "Matched %d entries on %s\n",
+	           cnt, serv ? serv : "?"));
 
 	    serv_res = (LDAP_SERV_RES_S *)fs_get(sizeof(LDAP_SERV_RES_S));
 	    memset((void *)serv_res, 0, sizeof(*serv_res));
@@ -5781,7 +5804,8 @@ ldap_lookup(info, string, cust, wp_err, name_in_error)
 	      dprint(2, (debugfile, "%s\n", ebuf));
 	    }
 
-	    dprint(5, (debugfile, "Matched 0 entries on %s\n", serv));
+	    dprint(5, (debugfile, "Matched 0 entries on %s\n",
+		   serv ? serv : "?"));
 	    if(res)
 	      ldap_msgfree(res);
 	    if(ld)
@@ -5926,13 +5950,14 @@ address_from_ldap(winning_e)
 	    char  *p;
 	    char **vals;
 
-	    dprint(9, (debugfile, "attribute: %s\n", a));
+	    dprint(9, (debugfile, "attribute: %s\n", a ? a : "?"));
 	    if(!ret_a->personal &&
 	       strcmp(a, winning_e->info_used->cnattr) == 0){
 		dprint(9, (debugfile, "Got cnattr:"));
 		vals = ldap_get_values(winning_e->ld, winning_e->res, a);
 		for(i = 0; vals[i] != NULL; i++)
-		  dprint(9, (debugfile, "       %s\n", vals[i]));
+		  dprint(9, (debugfile, "       %s\n",
+		         vals[i] ? vals[i] : "?"));
 	    
 		if(vals && vals[0])
 		  ret_a->personal = cpystr(vals[0]);
@@ -5944,7 +5969,8 @@ address_from_ldap(winning_e)
 		dprint(9, (debugfile, "Got mailattr:"));
 		vals = ldap_get_values(winning_e->ld, winning_e->res, a);
 		for(i = 0; vals[i] != NULL; i++)
-		  dprint(9, (debugfile, "         %s\n", vals[i]));
+		  dprint(9, (debugfile, "         %s\n",
+		         vals[i] ? vals[i] : "?"));
 		    
 		/* use first one */
 		if(vals && vals[0]){
@@ -6139,7 +6165,7 @@ break_up_ldap_server(serv_str)
 
 		err = strtoval(q, &i, 0, 500, 0, tmp_20k_buf, "ldap timelimit");
 		if(err){
-		  dprint(1, (debugfile, "%s\n", err));
+		  dprint(1, (debugfile, "%s\n", err ? err : "?"));
 		}
 		else
 		  info->time = i;
@@ -6161,7 +6187,7 @@ break_up_ldap_server(serv_str)
 
 		err = strtoval(q, &i, 0, 500, 0, tmp_20k_buf, "ldap sizelimit");
 		if(err){
-		  dprint(1, (debugfile, "%s\n", err));
+		  dprint(1, (debugfile, "%s\n", err ? err : "?"));
 		}
 		else
 		  info->size = i;
@@ -6755,8 +6781,10 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
     savebits = (char *) fs_get((stream->nmsgs+1) * sizeof(char));
 
     for(i = 1L; i <= stream->nmsgs; i++){
-	savebits[i] = (mc=mail_elt(stream, i))->sequence;
-	mc->sequence = 0;
+	if((mc = mail_elt(stream, i)) != NULL){
+	    savebits[i] = mc->sequence;
+	    mc->sequence = 0;
+	}
     }
 
     /*
@@ -6768,7 +6796,8 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 
     for(s = searchset; s; s = s->next)
       for(i = s->first; i <= s->last; i++)
-	if(i > 0L && i <= stream->nmsgs && (mc=mail_elt(stream, i))->searched)
+	if(i > 0L && i <= stream->nmsgs
+	   && (mc=mail_elt(stream, i)) && mc->searched)
 	  mc->sequence = 1;
 
     ss = build_searchset(stream);
@@ -6869,7 +6898,7 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 	    if(sset)
 	      *sset = s;
 
-	    e = mail_fetchenvelope(stream, i);
+	    e = pine_mail_fetchenvelope(stream, i);
 
 	    from = e ? e->from : NULL;
 	    reply_to = e ? e->reply_to : NULL;
@@ -6889,12 +6918,14 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 		 * isn't a match. If it is there, leave the searched bit
 		 * set.
 		 */
-		if(!is_there)
-		  mail_elt(stream,i)->searched = NIL;
+		if(!is_there && i > 0L && i <= stream->nmsgs
+		   && (mc = mail_elt(stream, i)))
+		  mc->searched = NIL;
 	    }
 	    else{
-		if(is_there)
-		  mail_elt(stream,i)->searched = NIL;
+		if(is_there && i > 0L && i <= stream->nmsgs
+		   && (mc = mail_elt(stream, i)))
+		  mc->searched = NIL;
 	    }
 	}
     }
@@ -6910,7 +6941,8 @@ from_or_replyto_in_abook(stream, searchset, abookfrom, abooks)
 
     /* restore sequence bits */
     for(i = 1L; i <= stream->nmsgs; i++)
-      mail_elt(stream, i)->sequence = savebits[i];
+      if((mc = mail_elt(stream, i)) != NULL)
+        mc->sequence = savebits[i];
 
     fs_give((void **) &savebits);
 
@@ -6996,8 +7028,7 @@ get_fcc(fcc_arg)
 	  fcc = cpystr(last_fcc_used);
 	else if(ps_global->fcc_rule == FCC_RULE_CURRENT
 		&& ps_global->mail_stream
-		&& !(ps_global->inbox_stream
-		    && ps_global->inbox_stream == ps_global->mail_stream)
+		&& !sp_flagged(ps_global->mail_stream, SP_INBOX)
 		&& !IS_NEWS(ps_global->mail_stream)
 		&& ps_global->cur_folder
 		&& ps_global->cur_folder[0]){
@@ -7130,7 +7161,7 @@ adrbk_lookup_with_opens_by_nick(nickname, clearrefs, which_addrbook, not_here)
     PerAddrBook *pab;
 
     dprint(5, (debugfile, "- adrbk_lookup_with_opens_by_nick(%s) -\n",
-	nickname));
+	nickname ? nickname : "?"));
 
     for(i = 0; i < as.n_addrbk; i++){
 
@@ -7768,7 +7799,8 @@ add_forced_entries(abook)
 
 	    if(!*end_of_full){
 		dprint(2, (debugfile,
-		    "missing | in forced-abook-entry \"%s\"\n", nickname));
+		    "missing | in forced-abook-entry \"%s\"\n",
+		    nickname ? nickname : "?"));
 		continue;
 	    }
 
@@ -7779,7 +7811,8 @@ add_forced_entries(abook)
 
 	    if(*address == '('){
 		dprint(2, (debugfile,
-		   "no lists allowed in forced-abook-entry \"%s\"\n", address));
+		   "no lists allowed in forced-abook-entry \"%s\"\n",
+		   address ? address : "?"));
 		continue;
 	    }
 

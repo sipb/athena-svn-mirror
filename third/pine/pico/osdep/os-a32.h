@@ -25,6 +25,7 @@
 #include <sys/dir.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/

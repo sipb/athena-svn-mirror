@@ -177,11 +177,4 @@ typedef unsigned short usign16_t;
  */
 #define	MODE_READONLY	(0600)
 
-/*
- * Make sys_errlist visible
- */
-extern char *sys_errlist[];
-extern int   sys_nerr;
-
-
 #endif /* _PICO_OS_INCLUDED */

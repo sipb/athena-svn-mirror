@@ -127,7 +127,7 @@ config_screen(tt)
           return(-4);
     }
 
-    dprint(1, (debugfile, "Terminal type: %s\n", term_name));
+    dprint(1, (debugfile, "Terminal type: %s\n", term_name ? term_name : "?"));
 
     /*------ Figure out scrolling mode -----*/
     if(_scrollregion != NULL && _scrollregion[0] != '\0' &&
@@ -238,7 +238,7 @@ struct ttyo *ttyo;
         dprint(2, (debugfile, "new win size -----<%d %d>------\n",
                    _lines, _columns));
     }
-    else
+    else{
       /* Depending on the OS, the ioctl() may have failed because
 	 of a 0 rows, 0 columns setting.  That happens on DYNIX/ptx 1.3
 	 (with a kernel patch that happens to involve the negotiation
@@ -246,6 +246,7 @@ struct ttyo *ttyo;
 	 the error is EINVARG.  Leave the default settings. */
       dprint(1, (debugfile, "ioctl(TIOCWINSZ) failed :%s\n",
 		 error_description(errno)));
+    }
 #endif
 
     ttyo->screen_cols = min(_columns, MAX_SCREEN_COLS);
@@ -266,17 +267,20 @@ end_screen(message, exit_val)
 {
     int footer_rows_was_one = 0;
 
-    dprint(9, (debugfile, "end_screen called\n"));
+    if(!panicking){
 
-    if(FOOTER_ROWS(ps_global) == 1){
-	footer_rows_was_one++;
-	FOOTER_ROWS(ps_global) = 3;
-	mark_status_unknown();
+	dprint(9, (debugfile, "end_screen called\n"));
+
+	if(FOOTER_ROWS(ps_global) == 1){
+	    footer_rows_was_one++;
+	    FOOTER_ROWS(ps_global) = 3;
+	    mark_status_unknown();
+	}
+
+	flush_status_messages(exit_val ? 0 : 1);
+	blank_keymenu(_lines - 2, 0);
+	MoveCursor(_lines - 2, 0);
     }
-
-    flush_status_messages(exit_val ? 0 : 1);
-    blank_keymenu(_lines - 2, 0);
-    MoveCursor(_lines - 2, 0);
 
     /* unset colors */
     if(pico_usingcolor())
@@ -285,18 +289,21 @@ end_screen(message, exit_val)
     if(_termcap_end != NULL)
       tputs(_termcap_end, 1, outchar);
 
-    if(message){
-	printf("%s\r\n", message);
-    }
+    if(!panicking){
 
-    if(F_ON(F_ENABLE_XTERM_NEWMAIL, ps_global) && getenv("DISPLAY"))
-      icon_text("xterm", IT_NEWMAIL);
+	if(message){
+	    printf("%s\r\n", message);
+	}
 
-    fflush(stdout);
+	if(F_ON(F_ENABLE_XTERM_NEWMAIL, ps_global) && getenv("DISPLAY"))
+	  icon_text("xterm", IT_NEWMAIL);
 
-    if(footer_rows_was_one){
-	FOOTER_ROWS(ps_global) = 1;
-	mark_status_unknown();
+	fflush(stdout);
+
+	if(footer_rows_was_one){
+	    FOOTER_ROWS(ps_global) = 1;
+	    mark_status_unknown();
+	}
     }
 }
     
@@ -746,14 +753,8 @@ Writechar(ch, new_esc_len)
 	   && _col + 1 == ps_global->ttyo->screen_cols))
       return;
 
-    if(!iscntrl(ch & 0x7f)){
-	putchar(ch);
-	if(esc_len > 0)
-	  esc_len--;
-	else
-	  _col++;
-    }
-    else{
+    if(ch == LINE_FEED || ch == RETURN || ch == BACKSPACE || ch == BELL
+       || ch == TAB || ch == ESCAPE){
 	switch(ch){
 	  case LINE_FEED:
 	    /*-- Don't have to watch out for auto wrap or newline glitch
@@ -798,21 +799,21 @@ Writechar(ch, new_esc_len)
 	    esc_len = new_esc_len - 1;
 	    putchar(ch);
 	    break;
-
-	  default :
-	    /* Change remaining control characters to ? */
-	    if(ps_global->pass_ctrl_chars)
-	      putchar(ch);
-	    else
-	      putchar('?');
-
-	    if(esc_len > 0)
-	      esc_len--;
-	    else
-	      _col++;
-
-	    break;
 	}
+    }
+    else{
+	if(((ch < 0x20 || ch == 0x7f)		/* C0 control characters */
+	    && !ps_global->pass_ctrl_chars)
+	   ||
+	   ((ch >= 0x80 && ch < 0xA0)		/* C1 control characters */
+	    && !ps_global->pass_ctrl_chars && !ps_global->pass_c1_ctrl_chars))
+	  ch = '?';
+
+	putchar(ch);
+	if(esc_len > 0)
+	  esc_len--;
+	else
+	  _col++;
     }
 
 
@@ -968,15 +969,17 @@ icon_text(s, type)
     char *s;
     int   type;
 {
-    static char *old_s;
     static enum {ukn, yes, no} xterm;
 
     if(xterm == ukn)
       xterm = (getenv("DISPLAY") != NULL) ? yes : no;
 
-    if(F_ON(F_ENABLE_XTERM_NEWMAIL,ps_global) && xterm == yes && (s || old_s)){
+    if(F_ON(F_ENABLE_XTERM_NEWMAIL,ps_global) && xterm == yes){
+	fputs("\033]0;", stdout);
+	fputs(s ? s : ps_global->pine_name, stdout);
+	fputs("\007", stdout);
 	fputs("\033]1;", stdout);
-	fputs((old_s = s) ? s : ps_global->pine_name, stdout);
+	fputs(s ? s : ps_global->pine_name, stdout);
 	fputs("\007", stdout);
 	fflush(stdout);
     }

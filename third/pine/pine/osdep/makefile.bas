@@ -41,3 +41,4 @@ os-s40.c: sunquota
 os-sgi.c: sunquota
 os-sun.c: sunquota
 os-sv4.c: sunquota
+os-s05.c: solquota

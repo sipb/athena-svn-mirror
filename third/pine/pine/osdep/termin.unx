@@ -276,8 +276,6 @@ read_char(time_out)
     if((ch = check_for_timeout(time_out)) != READY_TO_READ)
       goto done;
     
-    ps_global->time_of_last_input = time((time_t *)0);
-
     switch(status = kbseq(pine_simple_ttgetc, key_recorder, read_bail, &ch)){
       case KEY_DOUBLE_ESC:
 	/*
@@ -468,6 +466,9 @@ read_char(time_out)
 void
 read_bail()
 {
+    int         i;
+    MAILSTREAM *m;
+
     dprint(1, (debugfile, "read_bail: cleaning up\n"));
     end_signals(1);
 
@@ -482,7 +483,7 @@ read_bail()
      */
     if(ps_global->prc){
 	if(ps_global->prc->outstanding_pinerc_changes)
-	  write_pinerc(ps_global, Main);
+	  write_pinerc(ps_global, Main, WRP_NOUSER);
 
 	if(ps_global->prc->rd)
 	  rd_close_remdata(&ps_global->prc->rd);
@@ -493,7 +494,7 @@ read_bail()
     /* as does this */
     if(ps_global->post_prc){
 	if(ps_global->post_prc->outstanding_pinerc_changes)
-	  write_pinerc(ps_global, Post);
+	  write_pinerc(ps_global, Post, WRP_NOUSER);
 
 	if(ps_global->post_prc->rd)
 	  rd_close_remdata(&ps_global->post_prc->rd);
@@ -501,19 +502,7 @@ read_bail()
 	free_pinerc_s(&ps_global->post_prc);
     }
 
-    if(ps_global->inbox_stream){
-	int cur_is_inbox = (ps_global->inbox_stream == ps_global->mail_stream);
-
-	if(!ps_global->inbox_stream->lock)		/* shouldn't be... */
-	  pine_mail_close(ps_global->inbox_stream);
-
-	/* this comes after pine_mail_close because of stream caching */
-	if(cur_is_inbox)
-	  ps_global->mail_stream = NULL;
-    }
-
-    if(ps_global->mail_stream && !ps_global->mail_stream->lock)
-      pine_mail_close(ps_global->mail_stream);
+    sp_end();
 
     dprint(1, (debugfile, "done with read_bail clean up\n"));
 

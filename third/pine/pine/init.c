@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: init.c,v 1.1.1.4 2004-03-01 21:15:53 ghudson Exp $";
+static char rcsid[] = "$Id: init.c,v 1.1.1.5 2005-01-26 17:56:21 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: init.c,v 1.1.1.4 2004-03-01 21:15:53 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -194,6 +194,12 @@ CONF_TXT_T cf_text_customized_hdrs[] =	"Add these customized headers (and possib
 
 CONF_TXT_T cf_text_view_headers[] =	"When viewing messages, include this list of headers";
 
+CONF_TXT_T cf_text_view_margin_left[] =	"When viewing messages, number of blank spaces between left display edge and text";
+
+CONF_TXT_T cf_text_view_margin_right[] =	"When viewing messages, number of blank spaces between right display edge and text";
+
+CONF_TXT_T cf_text_quote_suppression[] =	"When viewing messages, number of lines of quote displayed before suppressing";
+
 CONF_TXT_T cf_text_color_style[] =	"Controls display of color";
 
 CONF_TXT_T cf_text_current_indexline_style[] =	"Controls display of color for current index line";
@@ -206,17 +212,19 @@ CONF_TXT_T cf_text_save_msg_name_rule[] =	"Determines default folder name for Sa
 
 CONF_TXT_T cf_text_fcc_name_rule[] =	"Determines default name for Fcc...\n# Choices: default-fcc, by-recipient, last-fcc-used.\n# Default: \"default-fcc\" (see also \"default-fcc=\" variable.)";
 
-CONF_TXT_T cf_text_sort_key[] =		"Sets presentation order of messages in Index. Choices:\n# subject, from, arrival, date, size. Default: \"arrival\".";
+CONF_TXT_T cf_text_sort_key[] =		"Sets presentation order of messages in Index. Choices:\n# Subject, From, Arrival, Date, Size, To, Cc, OrderedSubj, Score, and Thread.\n# Order may be reversed by appending /Reverse. Default: \"Arrival\".";
 
 CONF_TXT_T cf_text_addrbook_sort_rule[] =	"Sets presentation order of address book entries. Choices: dont-sort,\n# fullname-with-lists-last, fullname, nickname-with-lists-last, nickname\n# Default: \"fullname-with-lists-last\".";
 
-CONF_TXT_T cf_text_folder_sort_rule[] =	"Sets presentation order of folder list entries. Choices: ,\n# \n# Default: \"alpha-with-directories-last\".";
+CONF_TXT_T cf_text_folder_sort_rule[] =	"Sets presentation order of folder list entries. Choices: alphabetical,\n# alpha-with-dirs-last, alpha-with-dirs-first.\n# Default: \"alpha-with-directories-last\".";
 
 CONF_TXT_T cf_text_character_set[] =	"Reflects capabilities of the display you have. Default: US-ASCII.\n# Typical alternatives include ISO-8859-x, (x is a number between 1 and 9).";
 
 CONF_TXT_T cf_text_editor[] =		"Specifies the program invoked by ^_ in the Composer,\n# or the \"enable-alternate-editor-implicitly\" feature.";
 
 CONF_TXT_T cf_text_speller[] =		"Specifies the program invoked by ^T in the Composer.";
+
+CONF_TXT_T cf_text_deadlets[] =		"Specifies the number of dead letter files to keep when canceling.";
 
 CONF_TXT_T cf_text_fillcol[] =		"Specifies the column of the screen where the composer should wrap.";
 
@@ -278,15 +286,15 @@ CONF_TXT_T cf_text_remote_abook_history[] =	"How many extra copies of remote add
 
 CONF_TXT_T cf_text_remote_abook_validity[] =	"Minimum number of minutes between checks for remote address book changes.\n# 0 means never check except when opening a remote address book.\n# -1 means never check. Default: 5";
 
-CONF_TXT_T cf_text_bugs_fullname[] =	"Full name for bug report address used by \"Report Bug\" command.\n# Default: Pine Developers";
+CONF_TXT_T cf_text_bugs_fullname[] =	"Full name for bug report address used by \"Report Bug\" command";
 
-CONF_TXT_T cf_text_bugs_address[] =	"Email address used to send bug reports.\n# Default: pine-bugs@cac.washington.edu";
+CONF_TXT_T cf_text_bugs_address[] =	"Email address used to send bug reports";
 
 CONF_TXT_T cf_text_bugs_extras[] =		"Program/Script used by \"Report Bug\" command. No default.";
 
-CONF_TXT_T cf_text_suggest_fullname[] =	"Full name for suggestion address used by \"Report Bug\" command.\n# Default: Pine Developers";
+CONF_TXT_T cf_text_suggest_fullname[] =	"Full name for suggestion address used by \"Report Bug\" command";
 
-CONF_TXT_T cf_text_suggest_address[] =	"Email address used to send suggestions.\n# Default: pine-suggestions@cac.washington.edu";
+CONF_TXT_T cf_text_suggest_address[] =	"Email address used to send suggestions";
 
 CONF_TXT_T cf_text_local_fullname[] =	"Full name for \"local support\" address used by \"Report Bug\" command.\n# Default: Local Support";
 
@@ -306,17 +314,29 @@ CONF_TXT_T cf_text_out_fltr[] =		"This defines a program that message text is pi
 
 CONF_TXT_T cf_text_alt_addrs[] =	"A list of alternate addresses the user is known by";
 
+CONF_TXT_T cf_text_keywords[] =		"A list of keywords for use in categorizing messages";
+
+CONF_TXT_T cf_text_kw_colors[] =	"Colors used to display keywords in the index";
+
+CONF_TXT_T cf_text_kw_braces[] =	"Characters which surround keywords in SUBJKEY token.\n# Default is \"{\" \"} \"";
+
 CONF_TXT_T cf_text_abook_formats[] =	"This is a list of formats for address books.  Each entry in the list is made\n# up of space-delimited tokens telling which fields are displayed and in\n# which order.  See help text";
 
 CONF_TXT_T cf_text_index_format[] =	"This gives a format for displaying the index.  It is made\n# up of space-delimited tokens telling which fields are displayed and in\n# which order.  See help text";
 
 CONF_TXT_T cf_text_overlap[] =		"The number of lines of overlap when scrolling through message text";
 
+CONF_TXT_T cf_text_maxremstreams[] =	"The maximum number of non-stayopen remote connections that pine will use";
+
+CONF_TXT_T cf_text_permlocked[] =	"A list of folders that should be left open once opened (INBOX is implicit)";
+
 CONF_TXT_T cf_text_margin[] =		"Number of lines from top and bottom of screen where single\n# line scrolling occurs.";
 
 CONF_TXT_T cf_text_stat_msg_delay[] =	"The number of seconds to sleep after writing a status message";
 
 CONF_TXT_T cf_text_mailcheck[] =	"The approximate number of seconds between checks for new mail";
+
+CONF_TXT_T cf_text_mailchecknoncurr[] =	"The approximate number of seconds between checks for new mail in folders\n# other than the current folder and inbox.\n# Default is same as mail-check-interval";
 
 CONF_TXT_T cf_text_maildropcheck[] =	"The minimum number of seconds between checks for new mail in a Mail Drop.\n# This is always effectively at least as large as the mail-check-interval";
 
@@ -340,9 +360,13 @@ CONF_TXT_T cf_text_mailcap_path[] =	"Sets the search path for the mailcap config
 
 CONF_TXT_T cf_text_mimetype_path[] =	"Sets the search path for the mimetypes configuration file.\n# NOTE: colon delimited under UNIX, semi-colon delimited under DOS/Windows/OS2.";
 
+CONF_TXT_T cf_text_newmail_fifo_path[] = "Sets the filename for the newmail fifo (named pipe). Unix only.";
+
+CONF_TXT_T cf_text_nmw_width[] = "Sets the width for the NewMail screen.";
+
 CONF_TXT_T cf_text_user_input_timeo[] =	"If no user input for this many hours, Pine will exit if in an idle loop\n# waiting for a new command.  If set to zero (the default), then there will\n# be no timeout.";
 
-CONF_TXT_T cf_text_debug_mem[] =	"This many btyes of memory is used for holding recent status messages and\n# debugging output. Default is 500,000.";
+CONF_TXT_T cf_text_debug_mem[] =	"Debug-memory is obsolete";
 
 CONF_TXT_T cf_text_tcp_open_timeo[] =	"Sets the time in seconds that Pine will attempt to open a network\n# connection.  The default is 30, the minimum is 5, and the maximum is\n# system defined (typically 75).";
 
@@ -360,7 +384,7 @@ CONF_TXT_T cf_text_rsh_command[] =	"Sets the format of the command used to open 
 
 CONF_TXT_T cf_text_ssh_open_timeo[] =	"Sets the time in seconds that Pine will attempt to open a UNIX secure\n# shell connection.  The default is 15, min is 5, and max is unlimited.\n# Zero disables ssh altogether.";
 
-CONF_TXT_T cf_text_ssh_path[] =		"Sets the name of the command used to open a UNIX secure shell connection.\n# Tyically this is /usr/local/bin/ssh.";
+CONF_TXT_T cf_text_ssh_path[] =		"Sets the name of the command used to open a UNIX secure shell connection.\n# Tyically this is /usr/bin/ssh.";
 
 CONF_TXT_T cf_text_ssh_command[] =	"Sets the format of the command used to open a UNIX secure\n# shell connection.  The default is \"%s %s -l %s exec /etc/r%sd\"\n# NOTE: the 4 (four) \"%s\" entries MUST exist in the provided command\n# where the first is for the command's path, the second is for the\n# host to connnect to, the third is for the user to connect as, and the\n# fourth is for the connection method (typically \"imap\")";
 
@@ -428,40 +452,40 @@ The current value is the one that is actually in use.
                                 |       |  |  |  |  |  |  |  |  |  |
                                 |       |  |  |  |  |  |  |  |  |  |  */
 static struct variable variables[] = {
-{"personal-name",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"personal-name",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_personal_name},
 #if defined(DOS) || defined(OS2)
                         /* Have to have this on DOS, PC's, Macs, etc... */
-{"user-id",				0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+{"user-id",				0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
 #else			/* Don't allow on UNIX machines for some security */
-{"user-id",				0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+{"user-id",				0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
 #endif
 				cf_text_user_id},
-{"user-domain",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"user-domain",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_user_domain},
 {"smtp-server",				0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_smtp_server},
 {"nntp-server",				0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_nntp_server},
-{"inbox-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"inbox-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_inbox_path},
 {"incoming-archive-folders",		0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_archived_folders},
 {"pruned-folders",			0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_pruned_folders},
-{"default-fcc",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"default-fcc",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_default_fcc},
-{"default-saved-msg-folder",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"default-saved-msg-folder",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_default_saved},
-{"postponed-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"postponed-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_postponed_folder},
-{"read-message-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"read-message-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_read_message_folder},
-{"form-letter-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"form-letter-folder",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_form_letter_folder},
-{"literal-signature",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"literal-signature",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_literal_sig},
-{"signature-file",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"signature-file",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_signature_file},
 {"feature-list",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_feature_list},
@@ -473,69 +497,75 @@ static struct variable variables[] = {
 				cf_text_customized_hdrs},
 {"viewer-hdrs",				0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_view_headers},
-{"saved-msg-name-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"viewer-margin-left",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_view_margin_left},
+{"viewer-margin-right",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_view_margin_right},
+{"quote-suppression-threshold",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_quote_suppression},
+{"saved-msg-name-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_save_msg_name_rule},
-{"fcc-name-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"fcc-name-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_fcc_name_rule},
-{"sort-key",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"sort-key",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_sort_key},
-{"addrbook-sort-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"addrbook-sort-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_addrbook_sort_rule},
-{"folder-sort-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"folder-sort-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_folder_sort_rule},
-{"goto-default-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"goto-default-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_goto_default},
-{"incoming-startup-rule",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"incoming-startup-rule",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_inc_startup},
-{"pruning-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"pruning-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_pruning_rule},
-{"folder-reopen-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"folder-reopen-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_reopen_rule},
-{"threading-display-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"threading-display-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_thread_disp_style},
-{"threading-index-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"threading-index-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_thread_index_style},
-{"threading-indicator-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"threading-indicator-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_thread_more_char},
-{"threading-expanded-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"threading-expanded-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_thread_exp_char},
-{"threading-lastreply-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"threading-lastreply-character",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_thread_lastreply_char},
-{"character-set",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"character-set",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_character_set},
 {"editor",				0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_editor},
-{"speller",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"speller",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_speller},
-{"composer-wrap-column",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"composer-wrap-column",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_fillcol},
-{"reply-indent-string",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"reply-indent-string",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_replystr},
-{"reply-leadin",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"reply-leadin",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_replyintro},
-{"empty-header-message",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"empty-header-message",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_emptyhdr},
-{"image-viewer",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"image-viewer",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_image_viewer},
-{"use-only-domain-name",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"use-only-domain-name",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_use_only_domain_name},
-{"bugs-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"bugs-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_bugs_fullname},
-{"bugs-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"bugs-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_bugs_address},
-{"bugs-additional-data",		0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"bugs-additional-data",		0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_bugs_extras},
-{"suggest-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"suggest-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_suggest_fullname},
-{"suggest-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"suggest-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_suggest_address},
-{"local-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"local-fullname",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_local_fullname},
-{"local-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"local-address",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_local_address},
 {"forced-abook-entry",			0, 1, 0, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_forced_abook},
-{"kblock-passwd-count",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"kblock-passwd-count",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_kblock_passwd},
 {"display-filters",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_in_fltr},
@@ -543,49 +573,67 @@ static struct variable variables[] = {
 				cf_text_out_fltr},
 {"alt-addresses",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_alt_addrs},
+{"keywords",				0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+				cf_text_keywords},
+{"keyword-surrounding-chars",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+				cf_text_kw_braces},
 {"addressbook-formats",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_abook_formats},
-{"index-format",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"index-format",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_index_format},
-{"viewer-overlap",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"viewer-overlap",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_overlap},
-{"scroll-margin",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"scroll-margin",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_margin},
-{"status-message-delay",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"status-message-delay",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_stat_msg_delay},
-{"mail-check-interval",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
-				cf_text_maildropcheck},
-{"maildrop-check-minimum",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"mail-check-interval",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_mailcheck},
-{"nntp-range",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"mail-check-interval-noncurrent",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_mailchecknoncurr},
+{"maildrop-check-minimum",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_maildropcheck},
+{"nntp-range",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_nntprange},
-{"newsrc-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"newsrc-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_newsrc_path},
-{"news-active-file-path",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"news-active-file-path",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_news_active},
-{"news-spool-directory",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"news-spool-directory",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_news_spooldir},
-{"upload-command",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"upload-command",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_upload_cmd},
-{"upload-command-prefix",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"upload-command-prefix",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_upload_prefix},
-{"download-command",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"download-command",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_download_cmd},
-{"download-command-prefix",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"download-command-prefix",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_download_prefix},
-{"mailcap-search-path",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"mailcap-search-path",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_mailcap_path},
-{"mimetype-search-path",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"mimetype-search-path",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_mimetype_path},
 {"url-viewers",				0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_browser},
+{"max-remote-connections",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_maxremstreams},
+{"stay-open-folders",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+				cf_text_permlocked},
+{"dead-letter-files",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_deadlets},
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+{"newmail-fifo-path",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_newmail_fifo_path},
+#endif
+{"newmail-window-width",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+				cf_text_nmw_width},
 /*
  * Starting here, the variables are hidden in the Setup/Config screen.
  * They are exposed if feature expose-hidden-config is set.
  */
 {"incoming-folders",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_incoming_folders},
-{"mail-directory",			0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"mail-directory",			0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_mail_directory},
 {"folder-collections",			0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_folder_collections},
@@ -597,57 +645,59 @@ static struct variable variables[] = {
 				cf_text_global_address_book},
 {"standard-printer",			0, 1, 0, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_standard_printer},
-{"last-time-prune-questioned",		0, 1, 0, 1, 0, 0, 0, 1, 0, 0,
+{"last-time-prune-questioned",		0, 1, 0, 1, 0, 0, 0, 1, 0, 1,
 				cf_text_last_time_prune_quest},
-{"last-version-used",			0, 1, 0, 1, 0, 0, 0, 0, 1, 0,
+{"last-version-used",			0, 1, 0, 1, 0, 0, 0, 0, 1, 1,
 				cf_text_last_version_used},
-{"sendmail-path",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"sendmail-path",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_sendmail_path},
-{"operating-dir",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"operating-dir",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_oper_dir},
-{"user-input-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"user-input-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_user_input_timeo},
+/* OBSOLETE */
 #ifdef DEBUGJOURNAL
-{"debug-memory",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"debug-memory",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_debug_mem},
 #endif
-{"tcp-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+
+{"tcp-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_tcp_open_timeo},
-{"tcp-read-warning-timeout",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"tcp-read-warning-timeout",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_tcp_read_timeo},
-{"tcp-write-warning-timeout",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"tcp-write-warning-timeout",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_tcp_write_timeo},
-{"tcp-query-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"tcp-query-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_tcp_query_timeo},
-{"rsh-command",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"rsh-command",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_rsh_command},
-{"rsh-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"rsh-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_rsh_path},
-{"rsh-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"rsh-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_rsh_open_timeo},
-{"ssh-command",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"ssh-command",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_ssh_command},
-{"ssh-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"ssh-path",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_ssh_path},
-{"ssh-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"ssh-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_ssh_open_timeo},
-{"new-version-threshold",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"new-version-threshold",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_version_threshold},
 {"disable-these-drivers",		0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_disable_drivers},
 {"disable-these-authenticators",	0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_disable_auths},
-{"remote-abook-metafile",		0, 1, 0, 1, 0, 0, 0, 0, 1, 0,
+{"remote-abook-metafile",		0, 1, 0, 1, 0, 0, 0, 0, 1, 1,
 				cf_text_remote_abook_metafile},
-{"remote-abook-history",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"remote-abook-history",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_remote_abook_history},
-{"remote-abook-validity",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"remote-abook-validity",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_remote_abook_validity},
-{"printer",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"printer",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_printer},
 {"personal-print-command",		0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_personal_print_command},
-{"personal-print-category",		0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+{"personal-print-category",		0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
 				cf_text_personal_print_cat},
 {"patterns",				1, 1, 0, 1, 1, 1, 0, 0, 0, 0,
 				cf_text_old_patterns},
@@ -667,90 +717,92 @@ static struct variable variables[] = {
 				cf_text_patterns},
 
 /* OBSOLETE VARS */
-{"elm-style-save",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"elm-style-save",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_elm_style_save},
-{"header-in-reply",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"header-in-reply",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_header_in_reply},
-{"feature-level",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"feature-level",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_feature_level},
-{"old-style-reply",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"old-style-reply",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_old_style_reply},
-{"compose-mime",			1, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+{"compose-mime",			1, 1, 0, 0, 1, 0, 0, 0, 0, 1,
 				cf_text_compose_mime},
-{"show-all-characters",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"show-all-characters",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_show_all_characters},
-{"save-by-sender",			1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"save-by-sender",			1, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_save_by_sender},
 #if defined(DOS) || defined(OS2)
-{"file-directory",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"file-directory",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_file_dir},
-{"folder-extension",			1, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+{"folder-extension",			1, 0, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_folder_extension},
 #endif
 #ifndef	_WINDOWS
-{"color-style",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"color-style",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_color_style},
 #endif
-{"current-indexline-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"current-indexline-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_current_indexline_style},
-{"titlebar-color-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"titlebar-color-style",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_titlebar_color_style},
-{"normal-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"normal-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				cf_text_normal_foreground_color},
-{"normal-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"reverse-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"reverse-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"title-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"title-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"status-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"status-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"keylabel-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"keylabel-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"keyname-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"keyname-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"selectable-item-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"selectable-item-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote1-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote1-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote2-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote2-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote3-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"quote3-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"signature-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"signature-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"prompt-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"prompt-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-to-me-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-to-me-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-important-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-important-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-deleted-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-deleted-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-answered-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-answered-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-new-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-new-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-recent-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-recent-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-unseen-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"index-unseen-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
+{"normal-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"reverse-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"reverse-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"title-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"title-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"status-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"status-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"keylabel-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"keylabel-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"keyname-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"keyname-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"selectable-item-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"selectable-item-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote1-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote1-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote2-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote2-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote3-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"quote3-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"signature-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"signature-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"prompt-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"prompt-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-to-me-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-to-me-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-important-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-important-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-deleted-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-deleted-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-answered-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-answered-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-new-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-new-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-recent-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-recent-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-unseen-foreground-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"index-unseen-background-color",	0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
 {"viewer-hdr-colors",			0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
 				cf_text_view_hdr_color},
+{"keyword-colors",			0, 1, 0, 1, 1, 1, 0, 0, 0, 1,
+				cf_text_kw_colors},
 #if defined(DOS) || defined(OS2)
 #ifdef _WINDOWS
-{"font-name",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"font-name",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				"Name and size of font."},
-{"font-size",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"font-style",				0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"font-char-set",      			0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"print-font-name",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+{"font-size",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"font-style",				0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"font-char-set",      			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"print-font-name",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
 				"Name and size of printer font."},
-{"print-font-size",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"print-font-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"print-font-char-set",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
-{"window-position",			0, 1, 0, 1, 1, 0, 0, 0, 1, 0,
+{"print-font-size",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"print-font-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"print-font-char-set",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
+{"window-position",			0, 1, 0, 1, 1, 0, 0, 0, 1, 1,
 				cf_text_window_position},
-{"cursor-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, 0, NULL},
+{"cursor-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, NULL},
 #endif	/* _WINDOWS */
 #endif	/* DOS */
 #ifdef	ENABLE_LDAP
@@ -1141,8 +1193,8 @@ init_pinerc(ps, debug_out)
 #endif
 
 #ifdef	_WINDOWS
-    if(confregset)
-      mswin_reg(MSWR_OP_SET | (ps->update_registry
+    if(confregset && (ps->update_registry != UREG_NEVER_SET))
+      mswin_reg(MSWR_OP_SET | ((ps->update_registry == UREG_ALWAYS_SET)
 			       || confregset == 1 ? MSWR_OP_FORCE : 0),
 		MSWR_PINE_RC, 
 		(ps->prc && ps->prc->name) ?
@@ -1207,8 +1259,10 @@ init_pinerc(ps, debug_out)
       mprint(2, (db, "  no, there is no global config\n"));
     }
 #ifdef _WINDOWS
-    else if (ps->pconf && ps->pconf->name){
-	mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
+    else if (ps->pconf && ps->pconf->name && 
+	     (ps->update_registry != UREG_NEVER_SET)){
+	mswin_reg(MSWR_OP_SET | ((ps->update_registry == UREG_ALWAYS_SET)
+				 ? MSWR_OP_FORCE : 0),
 		  MSWR_PINE_CONF,
 		  ps->pconf->name, NULL);
     }
@@ -1454,21 +1508,25 @@ init_vars(ps)
     GLO_THREAD_MORE_CHAR	= cpystr(DF_THREAD_MORE_CHAR);
     GLO_THREAD_EXP_CHAR		= cpystr(DF_THREAD_EXP_CHAR);
     GLO_THREAD_LASTREPLY_CHAR	= cpystr(DF_THREAD_LASTREPLY_CHAR);
-    GLO_BUGS_FULLNAME		= cpystr(DF_BUGS_FULLNAME);
-    GLO_BUGS_ADDRESS		= cpystr(DF_BUGS_ADDRESS);
-    GLO_SUGGEST_FULLNAME	= cpystr(DF_SUGGEST_FULLNAME);
-    GLO_SUGGEST_ADDRESS		= cpystr(DF_SUGGEST_ADDRESS);
+    GLO_BUGS_FULLNAME		= cpystr("Sorry No Address");
+    GLO_BUGS_ADDRESS		= cpystr("nobody");
+    GLO_SUGGEST_FULLNAME	= cpystr("Sorry No Address");
+    GLO_SUGGEST_ADDRESS		= cpystr("nobody");
     GLO_LOCAL_FULLNAME		= cpystr(DF_LOCAL_FULLNAME);
     GLO_LOCAL_ADDRESS		= cpystr(DF_LOCAL_ADDRESS);
     GLO_OVERLAP			= cpystr(DF_OVERLAP);
+    GLO_MAXREMSTREAM		= cpystr(DF_MAXREMSTREAM);
     GLO_MARGIN			= cpystr(DF_MARGIN);
     GLO_FILLCOL			= cpystr(DF_FILLCOL);
+    GLO_DEADLETS		= cpystr(DF_DEADLETS);
+    GLO_NMW_WIDTH		= cpystr(DF_NMW_WIDTH);
     GLO_REPLY_STRING		= cpystr("> ");
     GLO_REPLY_INTRO		= cpystr(DEFAULT_REPLY_INTRO);
     GLO_EMPTY_HDR_MSG		= cpystr("undisclosed-recipients");
     GLO_STATUS_MSG_DELAY	= cpystr("0");
     GLO_USERINPUTTIMEO		= cpystr("0");
     GLO_MAILCHECK		= cpystr(DF_MAILCHECK);
+    GLO_MAILCHECKNONCURR	= cpystr("0");
     GLO_MAILDROPCHECK		= cpystr(DF_MAILDROPCHECK);
     GLO_NNTPRANGE		= cpystr("0");
     GLO_KBLOCK_PASSWD_COUNT	= cpystr(DF_KBLOCK_PASSWD_COUNT);
@@ -1478,13 +1536,18 @@ init_vars(ps)
     GLO_FOLDER_EXTENSION	= cpystr(DF_FOLDER_EXTENSION);
 #endif
 #ifdef	DF_SMTP_SERVER
-    GLO_SMTP_SERVER		= parse_list(DF_SMTP_SERVER, 1, 1, NULL);
+    GLO_SMTP_SERVER		= parse_list(DF_SMTP_SERVER, 1,
+					     PL_REMSURRQUOT, NULL);
 #endif
 #ifndef	_WINDOWS
     GLO_COLOR_STYLE		= cpystr("no-color");
     GLO_NORM_FORE_COLOR		= cpystr(colorx(DEFAULT_NORM_FORE));
     GLO_NORM_BACK_COLOR		= cpystr(colorx(DEFAULT_NORM_BACK));
 #endif
+    GLO_VIEW_MARGIN_LEFT	= cpystr("0");
+    GLO_VIEW_MARGIN_RIGHT	= cpystr(DF_VIEW_MARGIN_RIGHT);
+    GLO_QUOTE_SUPPRESSION	= cpystr(DF_QUOTE_SUPPRESSION);
+    GLO_KW_BRACES		= cpystr("\"{\" \"} \"");
 
     /*
      * Default first value for addrbook list if none set.
@@ -1526,27 +1589,30 @@ init_vars(ps)
        ps->cache_remote_pinerc){
 	dprint(7, (debugfile,
 	       "init_vars: preemptive halfopen of remote stream: %s\n",
-	       ps->pconf->name));
+	       ps->pconf->name ? ps->pconf->name : "?"));
 	ps->mail_stream = pine_mail_open(NULL, ps->pconf->name,
-					 OP_HALFOPEN|OP_SILENT);
+					 OP_HALFOPEN|OP_SILENT|SP_USEPOOL,
+					 NULL);
     }
 
     if(!ps->mail_stream && ps->prc &&
        ps->prc->type == RemImap && ps->cache_remote_pinerc){
 	dprint(7, (debugfile,
 	       "init_vars: preemptive halfopen of remote stream: %s\n",
-	       ps->prc->name));
+	       ps->prc->name ? ps->prc->name : "?"));
 	ps->mail_stream = pine_mail_open(NULL, ps->prc->name,
-					 OP_HALFOPEN|OP_SILENT);
+					 OP_HALFOPEN|OP_SILENT|SP_USEPOOL,
+					 NULL);
     }
 
     if(!ps->mail_stream && fixedprc && fixedprc->type == RemImap &&
        ps->cache_remote_pinerc){
 	dprint(7, (debugfile,
 	       "init_vars: preemptive halfopen of remote stream: %s\n",
-	       fixedprc->name));
+	       fixedprc->name ? fixedprc->name : "?"));
 	ps->mail_stream = pine_mail_open(NULL, fixedprc->name,
-						OP_HALFOPEN|OP_SILENT);
+					 OP_HALFOPEN|OP_SILENT|SP_USEPOOL,
+					 NULL);
     }
     /* end performance hack */
 
@@ -1795,6 +1861,10 @@ init_vars(ps)
     set_current_val(&vars[V_SEND_FILTER], TRUE, TRUE);
     set_current_val(&vars[V_ALT_ADDRS], TRUE, TRUE);
     set_current_val(&vars[V_ABOOK_FORMATS], TRUE, TRUE);
+    set_current_val(&vars[V_KW_BRACES], TRUE, TRUE);
+
+    set_current_val(&vars[V_KEYWORDS], TRUE, TRUE);
+    ps_global->keywords = init_keyword_list(VAR_KEYWORDS);
 
     set_current_val(&vars[V_OPER_DIR], TRUE, TRUE);
     if(VAR_OPER_DIR && !VAR_OPER_DIR[0]){
@@ -1874,6 +1944,32 @@ init_vars(ps)
       init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->composer_fillcol = i;
+
+    set_current_val(&vars[V_QUOTE_SUPPRESSION], TRUE, TRUE);
+    ps->quote_suppression_threshold = i = atoi(DF_QUOTE_SUPPRESSION);
+    if(SVAR_QUOTE_SUPPRESSION(ps, i, tmp_20k_buf))
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+    else{
+	if(i > 0 && i < Q_SUPP_LIMIT){
+	    sprintf(tmp_20k_buf,
+		"Ignoring Quote-Suppression-Threshold value of %.50s, see help",
+		VAR_QUOTE_SUPPRESSION);
+	    init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+	}
+	else{
+	    if(i < 0 && i != Q_DEL_ALL)
+	      ps->quote_suppression_threshold = -i;
+	    else
+	      ps->quote_suppression_threshold = i;
+	}
+    }
+    
+    set_current_val(&vars[V_DEADLETS], TRUE, TRUE);
+    ps->deadlets = i = atoi(DF_DEADLETS);
+    if(SVAR_DEADLETS(ps, i, tmp_20k_buf))
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+    else
+      ps->deadlets = i;
     
     set_current_val(&vars[V_STATUS_MSG_DELAY], TRUE, TRUE);
     ps->status_msg_delay = i = 0;
@@ -1911,15 +2007,17 @@ init_vars(ps)
     else
       timeo = i;
 
-    ps->debugmem = rvl = 0L;
-#ifdef DEBUGJOURNAL
-    GLO_DEBUGMEM = cpystr("500000");
-    set_current_val(&vars[V_DEBUGMEM], TRUE, TRUE);
-    ps->debugmem = rvl = 0L;
-    if(VAR_DEBUGMEM && SVAR_DEBUGMEM(ps, rvl, tmp_20k_buf))
+    set_current_val(&vars[V_MAILCHECKNONCURR], TRUE, TRUE);
+    ps->check_interval_for_noncurr = i = 0;
+    if(SVAR_MAILCHKNONCURR(ps, i, tmp_20k_buf))
       init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
-      ps->debugmem = rvl;
+      ps->check_interval_for_noncurr = i;
+
+#ifdef DEBUGJOURNAL
+    ps->debugmem = 1;
+#else
+    ps->debugmem = 0;
 #endif
 
     i = 30;
@@ -2019,7 +2117,6 @@ init_vars(ps)
     set_current_val(&vars[V_FORCED_ABOOK_ENTRY], TRUE, TRUE);
     set_current_val(&vars[V_DISABLE_DRIVERS], TRUE, TRUE);
     set_current_val(&vars[V_DISABLE_AUTHS], TRUE, TRUE);
-    set_current_pattern_vals(ps);
 
     set_current_val(&vars[V_VIEW_HEADERS], TRUE, TRUE);
     /* strip spaces and colons */
@@ -2038,12 +2135,17 @@ init_vars(ps)
 	}
     }
 
+    set_current_val(&vars[V_VIEW_MARGIN_LEFT], TRUE, TRUE);
+    set_current_val(&vars[V_VIEW_MARGIN_RIGHT], TRUE, TRUE);
     set_current_val(&vars[V_UPLOAD_CMD], TRUE, TRUE);
     set_current_val(&vars[V_UPLOAD_CMD_PREFIX], TRUE, TRUE);
     set_current_val(&vars[V_DOWNLOAD_CMD], TRUE, TRUE);
     set_current_val(&vars[V_DOWNLOAD_CMD_PREFIX], TRUE, TRUE);
     set_current_val(&vars[V_MAILCAP_PATH], TRUE, TRUE);
     set_current_val(&vars[V_MIMETYPE_PATH], TRUE, TRUE);
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+    set_current_val(&vars[V_FIFOPATH], TRUE, TRUE);
+#endif
 
     set_current_val(&vars[V_RSHPATH], TRUE, TRUE);
     if(VAR_RSHPATH
@@ -2089,8 +2191,11 @@ init_vars(ps)
 	    
 	    VAR_WINDOW_POSITION = cpystr(buf);
 	}
-	else if(VAR_WINDOW_POSITION){	/* otherwise, put it there */
-	    mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
+	else if(VAR_WINDOW_POSITION
+	    && (ps->update_registry != UREG_NEVER_SET)){
+	    /* otherwise, put it there */
+	    mswin_reg(MSWR_OP_SET | ((ps->update_registry == UREG_ALWAYS_SET)
+				     ? MSWR_OP_FORCE : 0),
 		      MSWR_PINE_POS, 
 		      VAR_WINDOW_POSITION, NULL);
 	}
@@ -2183,8 +2288,16 @@ init_vars(ps)
 #ifdef _WINDOWS
 	if(!ps_global->install_flag)
 #endif /* _WINDOWS */
+	{
+	if(VAR_LAST_VERS_USED){
+	    strncpy(ps_global->pine_pre_vers, VAR_LAST_VERS_USED,
+		    sizeof(ps_global->pine_pre_vers));
+	    ps_global->pine_pre_vers[sizeof(ps_global->pine_pre_vers)-1] = '\0';
+	}
+
 	set_variable(V_LAST_VERS_USED, pine_version, 1, 1,
 		     ps_global->ew_for_except_vars);
+	}
     }
 
     /* Obsolete, backwards compatibility */
@@ -2194,6 +2307,8 @@ init_vars(ps)
     if(!strucmp(VAR_ELM_STYLE_SAVE, "yes"))
       set_variable(V_SAVE_BY_SENDER, "yes", 1, 1, Main);
     obs_save_by_sender = !strucmp(VAR_SAVE_BY_SENDER, "yes");
+
+    set_current_pattern_vals(ps);
 
     /* this should come after pre441 is set or not */
     set_current_color_vals(ps);
@@ -2268,6 +2383,22 @@ init_vars(ps)
 	VAR_THREAD_LASTREPLY_CHAR[1] = '\0';
     }
 
+    set_current_val(&vars[V_MAXREMSTREAM], TRUE, TRUE);
+    ps->s_pool.max_remstream = i = atoi(DF_MAXREMSTREAM);
+    if(SVAR_MAXREMSTREAM(ps, i, tmp_20k_buf))
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+    else
+      ps->s_pool.max_remstream = i;
+    
+    set_current_val(&vars[V_PERMLOCKED], TRUE, TRUE);
+
+    set_current_val(&vars[V_NMW_WIDTH], TRUE, TRUE);
+    ps->nmw_width = i = atoi(DF_NMW_WIDTH);
+    if(SVAR_NMW_WIDTH(ps, i, tmp_20k_buf))
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+    else
+      ps->nmw_width = i;
+
     /* backwards compatibility */
     if(obs_save_by_sender){
         ps->save_msg_rule = MSG_RULE_FROM;
@@ -2282,10 +2413,16 @@ init_vars(ps)
 
 #ifdef	_WINDOWS
     mswin_set_quit_confirm (F_OFF(F_QUIT_WO_CONFIRM, ps_global));
-    mswin_reg(MSWR_OP_SET | (ps_global->update_registry ? MSWR_OP_FORCE : 0),
-	      MSWR_PINE_DIR, ps_global->pine_dir, NULL);
-    mswin_reg(MSWR_OP_SET | (ps_global->update_registry ? MSWR_OP_FORCE : 0),
-	      MSWR_PINE_EXE, ps_global->pine_name, NULL);
+    if(ps_global->update_registry != UREG_NEVER_SET){
+	mswin_reg(MSWR_OP_SET
+		  | ((ps_global->update_registry == UREG_ALWAYS_SET)
+		   ? MSWR_OP_FORCE : 0),
+		  MSWR_PINE_DIR, ps_global->pine_dir, NULL);
+	mswin_reg(MSWR_OP_SET
+		  | ((ps_global->update_registry == UREG_ALWAYS_SET)
+		     ? MSWR_OP_FORCE : 0),
+		  MSWR_PINE_EXE, ps_global->pine_name, NULL);
+    }
 #endif	/* _WINDOWS */
 
 #ifdef DEBUG
@@ -2425,6 +2562,8 @@ feature_list(index)
 /* Composer prefs */
 	{"alternate-compose-menu",
 	 F_ALT_COMPOSE_MENU, h_config_alt_compose_menu, PREF_COMP},
+	{"alternate-role-menu",
+	 F_ALT_ROLE_MENU, h_config_alt_role_menu, PREF_COMP},
 	{"compose-cut-from-cursor",
 	 F_DEL_FROM_DOT, h_config_del_from_dot, PREF_COMP},
 	{"compose-maps-delete-key-to-ctrl-d",
@@ -2443,11 +2582,20 @@ feature_list(index)
 	 F_ENABLE_SIGDASHES, h_config_sigdashes, PREF_COMP},
 	{"quell-dead-letter-on-cancel",
 	 F_QUELL_DEAD_LETTER, h_config_quell_dead_letter, PREF_COMP},
+	{"quell-flowed-text",
+	 F_QUELL_FLOWED_TEXT, h_config_quell_flowed_text, PREF_COMP},
+	{"quell-mailchecks-composing-except-inbox",
+	 F_QUELL_PINGS_COMPOSING, h_config_quell_checks_comp, PREF_COMP},
+	{"quell-mailchecks-composing-inbox",
+	 F_QUELL_PINGS_COMPOSING_INBOX, h_config_quell_checks_comp_inbox, PREF_COMP},
 	{"spell-check-before-sending",
 	 F_ALWAYS_SPELL_CHECK, h_config_always_spell_check, PREF_COMP},
+	{"strip-whitespace-before-send",
+	 F_STRIP_WS_BEFORE_SEND, h_config_strip_ws_before_send, PREF_COMP},
 	{"quell-user-lookup-in-passwd-file",
 	 F_QUELL_LOCAL_LOOKUP, h_config_quell_local_lookup, PREF_OS_LCLK},
-
+	{"downgrade-multipart-to-text",
+	 F_COMPOSE_ALWAYS_DOWNGRADE, h_downgrade_multipart_to_text, PREF_COMP},
 
 /* Reply Prefs */
 	{"enable-reply-indent-string-editing",
@@ -2514,6 +2662,10 @@ feature_list(index)
 	 F_SEPARATE_FLDR_AS_DIR, h_config_separate_fold_dir_view, PREF_FLDR},
 	{"single-column-folder-list",
 	 F_SINGLE_FOLDER_LIST, h_config_single_list, PREF_FLDR},
+	{"sort-default-fcc-alpha",
+	 F_SORT_DEFAULT_FCC_ALPHA, h_config_sort_fcc_alpha, PREF_FLDR},
+	{"sort-default-save-alpha",
+	 F_SORT_DEFAULT_SAVE_ALPHA, h_config_sort_save_alpha, PREF_FLDR},
 	{"vertical-folder-list",
 	 F_VERTICAL_FOLDER_LIST, h_config_vertical_list, PREF_FLDR},
 
@@ -2532,8 +2684,6 @@ feature_list(index)
 /* Index prefs */
 	{"auto-open-next-unread",
 	 F_AUTO_OPEN_NEXT_UNREAD, h_config_auto_open_unread, PREF_INDX},
-	{"thread-index-shows-important-color",
-	 F_COLOR_LINE_IMPORTANT, h_config_color_thrd_import, PREF_INDX},
 	{"continue-tab-without-confirm",
 	 F_TAB_NO_CONFIRM, h_config_tab_no_prompt, PREF_INDX},
 	{"delete-skips-deleted",
@@ -2548,27 +2698,37 @@ feature_list(index)
 	 F_NEXT_THRD_WO_CONFIRM, h_config_next_thrd_wo_confirm, PREF_INDX},
 	{"return-to-inbox-without-confirm",
 	 F_RET_INBOX_NO_CONFIRM, h_config_inbox_no_confirm, PREF_INDX},
+	{"show-sort",
+	 F_SHOW_SORT, h_config_show_sort, PREF_INDX},
+	{"tab-uses-unseen-for-next-folder",
+	 F_TAB_USES_UNSEEN, h_config_tab_uses_unseen, PREF_INDX},
 	{"tab-visits-next-new-message-only",
 	 F_TAB_TO_NEW, h_config_tab_new_only, PREF_INDX},
+	{"thread-index-shows-important-color",
+	 F_COLOR_LINE_IMPORTANT, h_config_color_thrd_import, PREF_INDX},
 
 /* Viewer prefs */
+	{"enable-msg-view-addresses",
+	 F_SCAN_ADDR, h_config_enable_view_addresses, PREF_VIEW},
 	{"enable-msg-view-attachments",
 	 F_VIEW_SEL_ATTACH, h_config_enable_view_attach, PREF_VIEW},
+	{"enable-msg-view-forced-arrows",
+	 F_FORCE_ARROWS, h_config_enable_view_arrows, PREF_VIEW},
 	{"enable-msg-view-urls",
 	 F_VIEW_SEL_URL, h_config_enable_view_url, PREF_VIEW},
 	{"enable-msg-view-web-hostnames",
 	 F_VIEW_SEL_URL_HOST, h_config_enable_view_web_host, PREF_VIEW},
-	{"enable-msg-view-addresses",
-	 F_SCAN_ADDR, h_config_enable_view_addresses, PREF_VIEW},
-	{"enable-msg-view-forced-arrows",
-	 F_FORCE_ARROWS, h_config_enable_view_arrows, PREF_VIEW},
 	{"prefer-plain-text",
 	 F_PREFER_PLAIN_TEXT, h_config_prefer_plain_text, PREF_VIEW},
 #ifndef	_WINDOWS
 	/* set to TRUE for windows */
+	{"pass-c1-control-characters-as-is",
+	 F_PASS_C1_CONTROL_CHARS, h_config_pass_c1_control, PREF_VIEW},
 	{"pass-control-characters-as-is",
 	 F_PASS_CONTROL_CHARS, h_config_pass_control, PREF_VIEW},
 #endif
+	{"quell-charset-warning",
+	 F_QUELL_CHARSET_WARNING, h_config_quell_charset_warning, PREF_VIEW},
 
 /* News */
 	{"compose-sets-newsgroup-without-confirm",
@@ -2577,6 +2737,10 @@ feature_list(index)
 	 F_ENABLE_8BIT_NNTP, h_config_8bit_nntp, PREF_NEWS},
 	{"enable-multiple-newsrcs",
 	 F_ENABLE_MULNEWSRCS, h_config_enable_mulnewsrcs, PREF_NEWS},
+	{"hide-nntp-path",
+	 F_HIDE_NNTP_PATH, h_config_hide_nntp_path, PREF_NEWS},
+	{"mult-newsrc-hostnames-as-typed",
+	 F_MULNEWSRC_HOSTNAMES_AS_TYPED, h_config_mulnews_as_typed, PREF_NEWS},
 	{"news-approximates-new-status",
 	 F_FAKE_NEW_IN_NEWS, h_config_news_uses_recent, PREF_NEWS},
 	{"news-deletes-across-groups",
@@ -2595,14 +2759,14 @@ feature_list(index)
 /* Print */
 	{"enable-print-via-y-command",
 	 F_ENABLE_PRYNT, h_config_enable_y_print, PREF_PRNT},
-	{"print-offers-custom-cmd-prompt",
-	 F_CUSTOM_PRINT, h_config_custom_print, PREF_PRNT},
+	{"print-formfeed-between-messages",
+	 F_AGG_PRINT_FF, h_config_ff_between_msgs, PREF_PRNT},
 	{"print-includes-from-line",
 	 F_FROM_DELIM_IN_PRINT, h_config_print_from, PREF_PRNT},
 	{"print-index-enabled",
 	 F_PRINT_INDEX, h_config_print_index, PREF_PRNT},
-	{"print-formfeed-between-messages",
-	 F_AGG_PRINT_FF, h_config_ff_between_msgs, PREF_PRNT},
+	{"print-offers-custom-cmd-prompt",
+	 F_CUSTOM_PRINT, h_config_custom_print, PREF_PRNT},
 
 /* adv cmd prefs */
 	{"enable-aggregate-command-set",
@@ -2619,10 +2783,12 @@ feature_list(index)
 	 F_ENABLE_FLAG, h_config_enable_flag, PREF_ACMD},
 	{"enable-flag-screen-implicitly",
 	 F_FLAG_SCREEN_DFLT, h_config_flag_screen_default, PREF_ACMD},
-	{"enable-full-header-cmd",
-	 F_ENABLE_FULL_HDR, h_config_enable_full_hdr, PREF_ACMD},
+	{"enable-flag-screen-keyword-shortcut",
+	 F_FLAG_SCREEN_KW_SHORTCUT, h_config_flag_screen_kw_shortcut,PREF_ACMD},
 	{"enable-full-header-and-text",
 	 F_ENABLE_FULL_HDR_AND_TEXT, h_config_enable_full_hdr_and_text, PREF_ACMD},
+	{"enable-full-header-cmd",
+	 F_ENABLE_FULL_HDR, h_config_enable_full_hdr, PREF_ACMD},
 	{"enable-goto-in-file-browser",
 	 F_ALLOW_GOTO, h_config_allow_goto, PREF_ACMD},
 	{"enable-jump-shortcut",
@@ -2633,6 +2799,8 @@ feature_list(index)
 	 F_ENABLE_TAB_COMPLETE, h_config_enable_tab_complete, PREF_ACMD},
 	{"enable-unix-pipe-cmd",
 	 F_ENABLE_PIPE, h_config_enable_pipe, PREF_ACMD},
+	{"quell-full-header-auto-reset",
+	 F_QUELL_FULL_HDR_RESET, h_config_quell_full_hdr_reset, PREF_ACMD},
 
 /* Adv user prefs */
 #if !defined(DOS) && !defined(OS2)
@@ -2658,8 +2826,12 @@ feature_list(index)
 	 F_DISABLE_CHARSET_CONVERSIONS, h_config_disable_cset_conv, PREF_MISC},
 	{"disable-keymenu",
 	 F_BLANK_KEYMENU, h_config_blank_keymenu, PREF_MISC},
+	{"disable-take-fullname-in-addresses",
+	 F_DISABLE_TAKE_FULLNAMES, h_config_take_fullname, PREF_MISC},
 	{"disable-take-last-comma-first",
 	 F_DISABLE_TAKE_LASTFIRST, h_config_take_lastfirst, PREF_MISC},
+	{"disable-terminal-reset-for-display-filters",
+	 F_DISABLE_TERM_RESET_DISP, h_config_disable_reset_disp, PREF_MISC},
 	{"enable-dot-files",
 	 F_ENABLE_DOT_FILES, h_config_enable_dot_files, PREF_MISC},
 	{"enable-fast-recent-test",
@@ -2670,6 +2842,8 @@ feature_list(index)
 	 F_ENABLE_MOUSE, h_config_enable_mouse, PREF_OS_MOUSE},
 	{"enable-newmail-in-xterm-icon",
 	 F_ENABLE_XTERM_NEWMAIL, h_config_enable_xterm_newmail, PREF_OS_XNML},
+	{"enable-newmail-short-text-in-icon",
+	 F_ENABLE_NEWMAIL_SHORT_TEXT, h_config_enable_newmail_short_text, PREF_OS_XNML},
 	{"enable-rules-under-take",
 	 F_ENABLE_ROLE_TAKE, h_config_enable_role_take, PREF_MISC},
 	{"enable-suspend",
@@ -2688,13 +2862,33 @@ feature_list(index)
 	 F_AUTO_EXPUNGE, h_config_auto_expunge, PREF_MISC},
 	{"expunge-without-confirm-everywhere",
 	 F_FULL_AUTO_EXPUNGE, h_config_full_auto_expunge, PREF_MISC},
+	{"maildrops-preserve-state",
+	 F_MAILDROPS_PRESERVE_STATE, h_config_maildrops_preserve_state,
+	 PREF_MISC},
+	{"offer-expunge-of-inbox",
+	 F_EXPUNGE_INBOX, h_config_expunge_inbox, PREF_MISC},
+	{"offer-expunge-of-stayopen-folders",
+	 F_EXPUNGE_STAYOPENS, h_config_expunge_stayopens, PREF_MISC},
+	{"preopen-stayopen-folders",
+	 F_PREOPEN_STAYOPENS, h_config_preopen_stayopens, PREF_MISC},
 	{"preserve-start-stop-characters",
 	 F_PRESERVE_START_STOP, h_config_preserve_start_stop, PREF_OS_STSP},
+	{"prune-uses-yyyy-mm",
+	 F_PRUNE_USES_ISO, h_config_prune_uses_iso, PREF_MISC},
+	{"quell-attachment-extension-warn",
+	 F_QUELL_ATTACH_EXT_WARN, h_config_quell_attach_ext_warn,
+	 PREF_MISC},
 	{"quell-attachment-extra-prompt",
 	 F_QUELL_ATTACH_EXTRA_PROMPT, h_config_quell_attach_extra_prompt,
 	 PREF_MISC},
 	{"quell-content-id",
 	 F_QUELL_CONTENT_ID, h_config_quell_content_id, PREF_MISC},
+	{"quell-filtering-done-message",
+	 F_QUELL_FILTER_DONE_MSG, h_config_quell_filtering_done_message,
+	 PREF_MISC},
+	{"quell-filtering-messages",
+	 F_QUELL_FILTER_MSGS, h_config_quell_filtering_messages,
+	 PREF_MISC},
 	{"quell-timezone-comment-when-sending",
 	 F_QUELL_TIMEZONE, h_config_quell_tz_comment, PREF_MISC},
 	{"quell-folder-internal-msg",
@@ -2710,6 +2904,8 @@ feature_list(index)
 	 F_QUELL_BEEPS, h_config_quell_beeps, PREF_MISC},
 	{"quit-without-confirm",
 	 F_QUIT_WO_CONFIRM, h_config_quit_wo_confirm, PREF_MISC},
+	{"save-partial-msg-without-confirm",
+	 F_SAVE_PARTIAL_WO_CONFIRM, h_config_save_part_wo_confirm, PREF_MISC},
 	{"save-will-advance",
 	 F_SAVE_ADVANCES, h_config_save_advances, PREF_MISC},
 	{"save-will-not-delete",
@@ -2740,10 +2936,12 @@ feature_list(index)
 	 F_UNSELECT_WONT_ADVANCE, h_config_unsel_wont_advance, PREF_MISC},
 	{"use-current-dir",
 	 F_USE_CURRENT_DIR, h_config_use_current_dir, PREF_MISC},
-	{"use-subshell-for-suspend",
-	 F_SUSPEND_SPAWNS, h_config_suspend_spawns, PREF_OS_SPWN},
 	{"use-function-keys",
 	 F_USE_FK, h_config_use_fk, PREF_OS_USFK},
+	{"use-regular-startup-rule-for-stayopen-folders",
+	 F_STARTUP_STAYOPEN, h_config_use_reg_start_for_stayopen, PREF_MISC},
+	{"use-subshell-for-suspend",
+	 F_SUSPEND_SPAWNS, h_config_suspend_spawns, PREF_OS_SPWN},
 
 /* Hidden Features */
 	{"old-growth",
@@ -2871,6 +3069,7 @@ process_feature_list(ps, list, old_growth, hir, osr)
                              *lvalue[BM_SIZE * 8];
     int                       i,
                               yorn;
+    long                      l;
     FEATURE_S		     *feat;
 
 
@@ -2914,7 +3113,7 @@ process_feature_list(ps, list, old_growth, hir, osr)
 	/* if it wasn't in that list */
 	if(feat == NULL)
           dprint(1, (debugfile,"Unrecognized feature in feature-list (%s%s)\n",
-		     (yorn ? "" : "no-"), q));
+		     (yorn ? "" : "no-"), q ? q : "?"));
       }
     }
 
@@ -2936,10 +3135,14 @@ process_feature_list(ps, list, old_growth, hir, osr)
     if(F_ON(F_QUELL_INTERNAL_MSG,ps_global))
       mail_parameters(NULL, SET_USERHASNOLIFE, (void *) 1);
 
+    l = F_ON(F_MULNEWSRC_HOSTNAMES_AS_TYPED,ps_global) ? 0L : 1L;
+    mail_parameters(NULL, SET_NEWSRCCANONHOST, (void *) l);
+
 #ifdef	_WINDOWS
     ps->pass_ctrl_chars = 1;
 #else
     ps->pass_ctrl_chars = F_ON(F_PASS_CONTROL_CHARS,ps_global) ? 1 : 0;
+    ps->pass_c1_ctrl_chars = F_ON(F_PASS_C1_CONTROL_CHARS,ps_global) ? 1 : 0;
 
     if(F_ON(F_QUELL_BEZERK_TIMEZONE,ps_global))
       mail_parameters(NULL, SET_NOTIMEZONES, (void *) 1);
@@ -3006,22 +3209,32 @@ set_current_pattern_vals(ps)
     set_current_val(&vars[V_PAT_OTHER], TRUE, TRUE);
 
     /*
-     * If old one (V_PATTERNS) is set and new ones aren't in config files,
-     * then convert the old data into the new variables.
-     * The reason we split patterns into separate variables is so that
-     * the user could decide with greater granularity how to use global,
-     * main, and exceptions patterns.
+     * If old pattern variable (V_PATTERNS) is set and the new ones aren't
+     * in the config file, then convert the old data into the new variables.
+     * It isn't quite that simple, though, because we don't store unset
+     * variables in remote pinercs. Check for the variables but if we
+     * don't find any of them, also check the version number. This change was
+     * made in version 4.30. We could just check that except that we're
+     * worried somebody will make an incompatible version number change in
+     * their local version, and will break this. So we check both the
+     * version # and the var_in_pinerc things to be safer.
      */
-    if(vars[V_PATTERNS].current_val.l && vars[V_PATTERNS].current_val.l[0]
+    if(vars[V_PATTERNS].current_val.l
+       && vars[V_PATTERNS].current_val.l[0]
        && !var_in_pinerc(vars[V_PAT_ROLES].name)
        && !var_in_pinerc(vars[V_PAT_FILTS].name)
        && !var_in_pinerc(vars[V_PAT_FILTS_OLD].name)
        && !var_in_pinerc(vars[V_PAT_SCORES].name)
        && !var_in_pinerc(vars[V_PAT_SCORES_OLD].name)
-       && !var_in_pinerc(vars[V_PAT_INCOLS].name)){
-
+       && !var_in_pinerc(vars[V_PAT_INCOLS].name)
+       && isdigit((unsigned char) ps->pine_pre_vers[0])
+       && ps->pine_pre_vers[1] == '.'
+       && isdigit((unsigned char) ps->pine_pre_vers[2])
+       && isdigit((unsigned char) ps->pine_pre_vers[3])
+       && strncmp(ps->pine_pre_vers, "4.30", 4) < 0){
 	convert_pattern_data();
     }
+
     /*
      * Otherwise, if FILTS_OLD is set and FILTS isn't in the config file,
      * convert FILTS_OLD to FILTS. Same for SCORES.
@@ -3037,19 +3250,30 @@ set_current_pattern_vals(ps)
      * because we were adding the 8bit thing and the old pines are still
      * out there. Filters and Scores can both be dangerous. Roles, Colors,
      * and Other seem less dangerous so not worth adding a new variable.
+     * This was changed in 4.50.
      */
     else{
 	if(vars[V_PAT_FILTS_OLD].current_val.l
 	   && vars[V_PAT_FILTS_OLD].current_val.l[0]
 	   && !var_in_pinerc(vars[V_PAT_FILTS].name)
-	   && !var_in_pinerc(vars[V_PAT_SCORES].name)){
+	   && !var_in_pinerc(vars[V_PAT_SCORES].name)
+	   && isdigit((unsigned char) ps->pine_pre_vers[0])
+	   && ps->pine_pre_vers[1] == '.'
+	   && isdigit((unsigned char) ps->pine_pre_vers[2])
+	   && isdigit((unsigned char) ps->pine_pre_vers[3])
+	   && strncmp(ps->pine_pre_vers, "4.50", 4) < 0){
 	    convert_filts_pattern_data();
 	}
 
 	if(vars[V_PAT_SCORES_OLD].current_val.l
 	   && vars[V_PAT_SCORES_OLD].current_val.l[0]
 	   && !var_in_pinerc(vars[V_PAT_FILTS].name)
-	   && !var_in_pinerc(vars[V_PAT_SCORES].name)){
+	   && !var_in_pinerc(vars[V_PAT_SCORES].name)
+	   && isdigit((unsigned char) ps->pine_pre_vers[0])
+	   && ps->pine_pre_vers[1] == '.'
+	   && isdigit((unsigned char) ps->pine_pre_vers[2])
+	   && isdigit((unsigned char) ps->pine_pre_vers[3])
+	   && strncmp(ps->pine_pre_vers, "4.50", 4) < 0){
 	    convert_scores_pattern_data();
 	}
     }
@@ -3673,27 +3897,66 @@ goto_rules(index)
  * if it is specifying an alternate value for one of the options that is
  * normally set in pinerc.  If so, we return 1 and set the appropriate
  * values in the variables array.
+ * The arg can be
+ *          varname=value
+ *          varname=value1,value2,value3
+ *          feature-list=featurename                 these are just a special
+ *          feature-list=featurename1,featurename2   case of above
+ *          featurename                            This is equivalent to above
+ *          no-featurename
  */
 int
 pinerc_cmdline_opt(arg)
     char *arg;
 {
     struct variable *v;
-    char            *p1,
+    char            *p1 = NULL,
                     *value,
+		   **oldlvalue = NULL,
                    **lvalue;
-    int              i;
+    int              i, count;
 
     if(!arg || !arg[0])
       return 0;
 
     for(v = variables; v->name != NULL; v++){
-      if(v->is_used && strncmp(v->name, arg, strlen(v->name)) == 0)
-        break;
+      if(v->is_used && struncmp(v->name, arg, strlen(v->name)) == 0){
+	  p1 = arg + strlen(v->name);
+
+	  /*----- Skip to '=' -----*/
+	  while(*p1 && (*p1 == '\t' || *p1 == ' '))
+	    p1++;
+
+	  if(*p1 != '='){
+	      fprintf(stderr, "Missing \"=\" after -%s\n", v->name);
+	      exit(-1);
+	  }
+
+	  p1++;
+          break;
+      }
     }
 
-    /* no match */
-    if(v->name == NULL)
+    /* no match, check for a feature name used directly */
+    if(v->name == NULL){
+	FEATURE_S *feat;
+	char      *featname;
+
+	if(struncmp(arg, "no-", 3) == 0)
+	  featname = arg+3;
+	else
+	  featname = arg;
+
+	for(i = 0; (feat = feature_list(i)) != NULL; i++){
+	    if(strucmp(featname, feat->name) == 0){
+		v = &variables[V_FEATURE_LIST];
+		p1 = arg;
+		break;
+	    }
+	}
+    }
+
+    if(!p1)
       return 0;
 
     if(v->is_obsolete || !v->is_user){
@@ -3703,23 +3966,13 @@ pinerc_cmdline_opt(arg)
       exit(-1);
     }
 
-    /*----- Skip to '=' -----*/
-    p1 = arg + strlen(v->name);
-    while(*p1 && (*p1 == '\t' || *p1 == ' '))
-      p1++;
-
-    if(*p1 != '='){
-      fprintf(stderr, "Missing \"=\" after -%s\n", v->name);
-      exit(-1);
-    }
-
     /* free mem */
-    if(v->is_list)
-      free_list_array(&v->cmdline_val.l);
+    if(v->is_list){
+	oldlvalue = v->cmdline_val.l;
+	v->cmdline_val.l = NULL;
+    }
     else if(v->cmdline_val.p)
       fs_give((void **) &(v->cmdline_val.p));
-
-    p1++;
 
     /*----- Matched a variable, get its value ----*/
     while(*p1 == ' ' || *p1 == '\t')
@@ -3735,6 +3988,9 @@ pinerc_cmdline_opt(arg)
 	 */
         v->cmdline_val.l[0] = cpystr("");
         v->cmdline_val.l[1] = NULL;
+	if(oldlvalue)
+	  free_list_array(&oldlvalue);
+
       }else{
         v->cmdline_val.p = cpystr("");
       }
@@ -3754,10 +4010,10 @@ pinerc_cmdline_opt(arg)
     }
 
     if(v->is_list){
-      int   was_quoted = 0,
-            count      = 1;
+      int   was_quoted = 0;
       char *error      = NULL;
 
+      count = 1;
       for(p1=value; *p1; p1++){		/* generous count of list elements */
         if(*p1 == '"')			/* ignore ',' if quoted   */
           was_quoted = (was_quoted) ? 0 : 1;
@@ -3782,13 +4038,41 @@ pinerc_cmdline_opt(arg)
 	   lvalue[i][1] == '"' &&
 	   lvalue[i][2] == '\0')
 	     lvalue[i][0] = '\0';
-	else if(!strcmp("cache-remote-pinerc", lvalue[i]))
+	else if(!strucmp("cache-remote-pinerc", lvalue[i]))
 	  ps_global->cache_remote_pinerc = 1;
 	  
     }
 
-    if(v->is_list)
-      v->cmdline_val.l = lvalue;
+    if(v->is_list){
+	if(oldlvalue){
+	    char **combinedlvalue;
+	    int    j;
+
+	    /* combine old and new cmdline lists */
+	    for(count = 0, i = 0; oldlvalue[i]; i++, count++)
+	      ;
+
+	    for(i = 0; lvalue && lvalue[i]; i++, count++)
+	      ;
+
+	    combinedlvalue = (char **) fs_get((count+1) * sizeof(char *));
+	    memset(combinedlvalue, 0, (count+1) * sizeof(*combinedlvalue));
+
+	    for(i = 0, j = 0; oldlvalue[i]; i++, j++)
+	      combinedlvalue[j] = cpystr(oldlvalue[i]);
+
+	    for(i = 0; lvalue && lvalue[i]; i++, j++)
+	      combinedlvalue[j] = cpystr(lvalue[i]);
+
+	    v->cmdline_val.l = combinedlvalue;
+
+	    fs_give((void **) &oldlvalue);
+	    if(lvalue)
+	      fs_give((void **) &lvalue);
+	}
+	else
+	  v->cmdline_val.l = lvalue;
+    }
     else
       v->cmdline_val.p = cpystr(value);
 
@@ -3935,13 +4219,15 @@ set_current_val(var, expand, cmdline)
     char  *p;
 
     dprint(9, (debugfile,
-	       "set_current_val(var num=%d, expand=%d, cmdline=%d)\n",
-	       var - ps_global->vars, expand, cmdline));
+	       "set_current_val(var=%s%s, expand=%d, cmdline=%d)\n",
+	       (var && var->name) ? var->name : "?",
+	       (var && var->is_list) ? " (list)" : "",
+	       expand, cmdline));
 
+    if(!var)
+      return;
 
     if(var->is_list){			  /* variable is a list */
-
-	dprint(9, (debugfile, "is_list: name=%s\n", var->name));
 
 	for(j = 0; j < 5; j++){
 	    t = j==0 ? var->global_val.l :
@@ -4324,17 +4610,16 @@ expand_variables(lineout, lineoutlen, linein, colon_path)
       return(NULL);
 
     while(*src ){			/* something in input string */
-#if defined(DOS) || defined(OS2)
         if(*src == '$' && *(src+1) == '$'){
 	    /*
-	     * backslash to escape chars we're interested in, else
+	     * $$ to escape chars we're interested in, else
 	     * it's up to the user of the variable to handle the 
 	     * backslash...
 	     */
 	    if(dest < limit)
               *dest++ = *++src;		/* copy next as is */
         }else
-#else
+#if !(defined(DOS) || defined(OS2))
         if(*src == '\\' && *(src+1) == '$'){
 	    /*
 	     * backslash to escape chars we're interested in, else
@@ -4471,7 +4756,7 @@ init_error(ps, flags, min_time, max_time, message)
 	  (ps->init_errs)[i].min_time = min_time;
 	  (ps->init_errs)[i].max_time = max_time;
 	  (ps->init_errs)[i].flags    = flags;
-	  dprint(2, (debugfile, "%s\n", message));
+	  dprint(2, (debugfile, "%s\n", message ? message : "?"));
 	  break;
       }
 }
@@ -4573,7 +4858,8 @@ init_username(ps)
     ps->folders_dir = cpystr(fld_dir);
 
     dprint(1, (debugfile, "Userid: %s\nFullname: \"%s\"\n",
-               ps->VAR_USER_ID, ps->VAR_PERSONAL_NAME));
+               ps->VAR_USER_ID ? ps->VAR_USER_ID : "?",
+	       ps->VAR_PERSONAL_NAME ? ps->VAR_PERSONAL_NAME : "?"));
     return(rv);
 }
 
@@ -4696,12 +4982,12 @@ init_hostname(ps)
     dprint(1, (debugfile,"User domain name being used \"%s\"\n",
                ps->userdomain == NULL ? "" : ps->userdomain));
     dprint(1, (debugfile,"Local Domain name being used \"%s\"\n",
-               ps->localdomain));
+               ps->localdomain ? ps->localdomain : "?"));
     dprint(1, (debugfile,"Host name being used \"%s\"\n",
-               ps->hostname));
+               ps->hostname ? ps->hostname : "?"));
     dprint(1, (debugfile,
-	       "Mail Domain name being used (by c-client too)\"%s\"\n",
-               ps->maildomain));
+	       "Mail Domain name being used (by c-client too) \"%s\"\n",
+               ps->maildomain ? ps->maildomain : "?"));
 
     if(!ps->maildomain || !ps->maildomain[0]){
 #if defined(DOS) || defined(OS2)
@@ -4873,7 +5159,7 @@ read_pinerc(prc, vars, which_vars)
 
         /*----- look up matching 'v' and leave "value" after '=' ----*/
         for(v = vars; *line && v->name; v++)
-	  if((i = strlen(v->name)) < strlen(line) && !strncmp(v->name,line,i)){
+	  if((i = strlen(v->name)) < strlen(line) && !struncmp(v->name,line,i)){
 	      int j;
 
 	      for(j = i; line[j] == ' ' || line[j] == '\t'; j++)
@@ -4976,7 +5262,7 @@ read_pinerc(prc, vars, which_vars)
         }
 
         /*--value is non-empty, store it handling quotes and trailing space--*/
-        if(*value == '"' && !v->is_list){
+        if(*value == '"' && !v->is_list && v->del_quotes){
             was_quoted = 1;
             value++;
             for(p1 = value; *p1 && *p1 != '"'; p1++);
@@ -5029,11 +5315,15 @@ read_pinerc(prc, vars, which_vars)
 	    }
 
 	    error  = NULL;
-	    lvalue = parse_list(value, line_count, v->del_list_quotes, &error);
+	    lvalue = parse_list(value, line_count,
+				v->del_quotes ? PL_REMSURRQUOT : PL_NONE,
+			        &error);
 	    if(error){
 		dprint(1, (debugfile,
 		       "read_pinerc: ERROR: %s in %s = \"%s\"\n", 
-			   error, v->name, value));
+			   error ? error : "?",
+			   v->name ? v->name : "?",
+			   value ? value : "?"));
 	    }
 	    /*
 	     * Special case: turn "" strings into empty strings.
@@ -5114,9 +5404,12 @@ read_pinerc(prc, vars, which_vars)
 	            (which_vars == ParseGlobal)   ? v->global_val.l :
 						     v->fixed_val.l;
 	    if(l && *l && **l){
-                dprint(5,(debugfile, " %20.20s : %s\n", v->name, *l));
+                dprint(5,(debugfile, " %20.20s : %s\n",
+		       v->name ? v->name : "?",
+		       *l ? *l : "?"));
 	        while(++l && *l && **l)
-                    dprint(5,(debugfile, " %20.20s : %s\n", "", *l));
+                    dprint(5,(debugfile, " %20.20s : %s\n", "",
+			   *l ? *l : "?"));
 	    }
 	}else{
 	    char *p;
@@ -5125,7 +5418,9 @@ read_pinerc(prc, vars, which_vars)
 	            (which_vars == ParseGlobal)   ? v->global_val.p :
 						     v->fixed_val.p;
 	    if(p && *p)
-                dprint(5,(debugfile, " %20.20s : %s\n", v->name, p));
+                dprint(5,(debugfile, " %20.20s : %s\n",
+		       v->name ? v->name : "?",
+		       p ? p : "?"));
 	}
 #endif /* DEBUG */
     }
@@ -5136,7 +5431,7 @@ read_pinerc(prc, vars, which_vars)
 	if(!prc->pinerc_written && prc->type == Loc){
 	    prc->pinerc_written = name_file_mtime(filename);
 	    dprint(5, (debugfile, "read_pinerc: time_pinerc_written = %ld\n",
-		       prc->pinerc_written));
+		       (long) prc->pinerc_written));
 	}
     }
 
@@ -5163,7 +5458,7 @@ var_is_in_rest_of_file(varname, begin)
 
     p = begin;
 
-    while(p = strstr(p, varname)){
+    while(p = srchstr(p, varname)){
 	/* beginning of a line? */
 	if(p > begin && (*(p-1) != '\n' && *(p-1) != '\r')){
 	    p++;
@@ -5353,7 +5648,8 @@ create_the_remote_folder:
 	    else{
 		dprint(7, (debugfile,
 		       "%s: copied remote to local (%ld)\n",
-		       prc->rd->rn, (long)prc->rd->last_use));
+		       prc->rd->rn ? prc->rd->rn : "?",
+		       (long)prc->rd->last_use));
 	    }
 	}
 
@@ -5370,7 +5666,8 @@ create_the_remote_folder:
 	     "Can't contact remote config server, using cached copy");
 	    dprint(2, (debugfile,
     "Can't open remote pinerc %s, using local cached copy %s readonly\n",
-		   prc->rd->rn, prc->rd->lf));
+		   prc->rd->rn ? prc->rd->rn : "?",
+		   prc->rd->lf ? prc->rd->lf : "?"));
 	}
 	else{
 	    prc->rd->flags &= ~DO_REMTRIM;
@@ -5411,13 +5708,17 @@ bail_out:
  *  NOTE: only recognizes escaped quotes
  */
 char **
-parse_list(list, count, remove_surrounding_double_quotes, error)
+parse_list(list, count, flags, error)
     char *list, **error;
-    int   remove_surrounding_double_quotes;
-    int   count;
+    int   count, flags;
 {
     char **lvalue, *p2, *p3, *p4;
     int    was_quoted = 0;
+    int    remove_surrounding_double_quotes;
+    int    commas_may_be_escaped;
+
+    remove_surrounding_double_quotes = (flags & PL_REMSURRQUOT);
+    commas_may_be_escaped = (flags & PL_COMMAQUOTE);
 
     lvalue = (char **) fs_get((count+1) * sizeof(char *));
     count  = 0;
@@ -5432,6 +5733,9 @@ parse_list(list, count, remove_surrounding_double_quotes, error)
 
 	    if((*p2 == ',' && !was_quoted) || *p2 == '\0')
 	      break;
+
+	    if(commas_may_be_escaped && *p2 == '\\' && *(p2+1) == ',')
+	      p2++;
 
 	    p2++;
 	}
@@ -5516,6 +5820,7 @@ copy_list_array(list)
 	  ;
 
 	p = ret_list = (char **)fs_get((cnt+1) * sizeof(char *));
+	memset((void *) ret_list, 0, (cnt+1) * sizeof(char *));
 
 	for(i=0; list[i]; i++, p++)
 	  *p = cpystr(list[i]);
@@ -5556,14 +5861,18 @@ static char quotes[3] = {'"', '"', '\0'};
     Write out the .pinerc state information
 
    Args: ps -- The pine structure to take state to be written from
+      which -- Which pinerc to write
+      flags -- If bit WRP_NOUSER is set, then assume that there is
+                not a user present to answer questions.
 
   This writes to a temporary file first, and then renames that to 
  be the new .pinerc file to protect against disk error.  This has the 
  problem of possibly messing up file protections, ownership and links.
   ----*/
-write_pinerc(ps, which)
+write_pinerc(ps, which, flags)
     struct pine *ps;
     EditWhich    which;
+    int          flags;
 {
     char               *p, *dir, *tmp = NULL, *pinrc;
     char               *pval, **lval;
@@ -5592,7 +5901,9 @@ write_pinerc(ps, which)
       return(-1);
     
     if(prc->quit_to_edit){
-	quit_to_edit_msg(prc);
+	if(!(flags & WRP_NOUSER))
+	  quit_to_edit_msg(prc);
+
 	return(-1);
     }
 
@@ -5606,12 +5917,14 @@ write_pinerc(ps, which)
 
 	if(rd->flags & REM_OUTOFDATE){
 	    Writechar(BELL, 0);
-	    if(want_to("Unexpected pinerc change! Overwrite with current config",
+	    if((flags & WRP_NOUSER) ||
+	      want_to("Unexpected pinerc change! Overwrite with current config",
 		       'n', 0, NO_HELP, WT_FLUSH_IN) == 'n'){
 		prc->outstanding_pinerc_changes = 1;
-		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Pinerc \"%.200s\" NOT saved",
-				  prc->name ? prc->name : "");
+		if(!(flags & WRP_NOUSER))
+		  q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				    "Pinerc \"%.200s\" NOT saved",
+				    prc->name ? prc->name : "");
 		dprint(2, (debugfile,
 			   "write_pinerc: remote pinerc changed\n"));
 		return(-1);
@@ -5627,11 +5940,12 @@ write_pinerc(ps, which)
 
 	    if((ro=rd_remote_is_readonly(rd)) || rd->flags & REM_OUTOFDATE){
 		if(ro == 1){
-		    q_status_message(SM_ORDER | SM_DING, 5, 15,
+		    if(!(flags & WRP_NOUSER))
+		      q_status_message(SM_ORDER | SM_DING, 5, 15,
 			     "Can't access remote config, changes NOT saved!");
 		    dprint(1, (debugfile,
 	    "write_pinerc: Can't write to remote pinerc %s, aborting write\n",
-			   rd->rn));
+			   rd->rn ? rd->rn : "?"));
 		}
 		else if(ro == 2){
 		    if(!(rd->flags & NO_META_UPDATE)){
@@ -5652,16 +5966,18 @@ write_pinerc(ps, which)
 			}
 		    }
 
-		    q_status_message1(SM_ORDER | SM_DING, 5, 15,
+		    if(!(flags & WRP_NOUSER))
+		      q_status_message1(SM_ORDER | SM_DING, 5, 15,
 	    "No write permission for remote config %.200s, changes NOT saved!",
 				    rd->rn);
 		}
 		else{
-		    q_status_message(SM_ORDER | SM_DING, 5, 15,
+		    if(!(flags & WRP_NOUSER))
+		      q_status_message(SM_ORDER | SM_DING, 5, 15,
 		 "Remote config changed, aborting our change to avoid damage...");
 		    dprint(1, (debugfile,
 			    "write_pinerc: remote config %s changed since we started pine, aborting write\n",
-			    prc->name));
+			    prc->name ? prc->name : "?"));
 		}
 
 		rd->flags &= ~DO_REMTRIM;
@@ -5685,14 +6001,17 @@ write_pinerc(ps, which)
 	mtime = name_file_mtime(filename);
 	if(prc->pinerc_written && prc->pinerc_written != mtime){
 	    Writechar(BELL, 0);
-	    if(want_to("Unexpected pinerc change!  Overwrite with current config",
+	    if((flags & WRP_NOUSER) ||
+	     want_to("Unexpected pinerc change!  Overwrite with current config",
 		       'n', 0, NO_HELP, WT_FLUSH_IN) == 'n'){
 		prc->outstanding_pinerc_changes = 1;
-		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Pinerc \"%.200s\" NOT saved", pinrc);
+		if(!(flags & WRP_NOUSER))
+		  q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				    "Pinerc \"%.200s\" NOT saved", pinrc);
 		dprint(2, (debugfile,
 			   "write_pinerc: mtime mismatch: \"%s\": %ld != %ld\n",
-			   filename, prc->pinerc_written, mtime));
+			   filename ? filename : "?",
+			   (long) prc->pinerc_written, (long) mtime));
 		return(-1);
 	    }
 	}
@@ -5707,9 +6026,10 @@ write_pinerc(ps, which)
 	if(prc == ps->prc)
 	  ps->readonly_pinerc = 1;
 
-	q_status_message1(SM_ORDER | SM_DING, 0, 5,
+	if(!(flags & WRP_NOUSER))
+	  q_status_message1(SM_ORDER | SM_DING, 0, 5,
 		      "Can't modify configuration file \"%.200s\": ReadOnly",
-			  pinrc);
+			    pinrc);
 	dprint(2,
 	    (debugfile,"write_pinerc: fail because can't access pinerc\n"));
 
@@ -5739,7 +6059,8 @@ write_pinerc(ps, which)
 	       mkdir(dir,0700) < 0))
 #endif
 	{
-	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
+	    if(!(flags & WRP_NOUSER))
+	      q_status_message2(SM_ORDER | SM_DING, 3, 5,
 			      "Error creating \"%.200s\" : %.200s", dir,
 			      error_description(errno));
 	    if(rd)
@@ -5949,17 +6270,21 @@ write_pinerc(ps, which)
 
 	datebuf[0] = '\0';
 
-	we_cancel = busy_alarm(1, "Copying to remote config", NULL, 0);
+	if(!(flags & WRP_NOUSER))
+	  we_cancel = busy_alarm(1, "Copying to remote config", NULL, 0);
+
 	if((e = rd_update_remote(rd, datebuf)) != 0){
-	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			    "Error copying to %.200s: %.200s",
-			    rd->rn, error_description(errno));
 	    dprint(1, (debugfile,
 		   "write_pinerc: error copying from %s to %s\n",
-		   rd->lf ? rd->lf : "<memory>", rd->rn));
-	    
-	    q_status_message(SM_ORDER | SM_DING, 5, 5,
-		   "Copy of config to remote folder failed, changes NOT saved remotely");
+		   rd->lf ? rd->lf : "<memory>", rd->rn ? rd->rn : "?"));
+	    if(!(flags & WRP_NOUSER)){
+		q_status_message2(SM_ORDER | SM_DING, 3, 5,
+				"Error copying to %.200s: %.200s",
+				rd->rn, error_description(errno));
+		
+		q_status_message(SM_ORDER | SM_DING, 5, 5,
+       "Copy of config to remote folder failed, changes NOT saved remotely");
+	    }
 	}
 	else{
 	    rd_update_metadata(rd, datebuf);
@@ -5977,10 +6302,10 @@ write_pinerc(ps, which)
     if(prc->type == Loc){
 	prc->pinerc_written = name_file_mtime(filename);
 	dprint(2, (debugfile, "wrote pinerc: %s: time_pinerc_written = %ld\n",
-		   pinrc, prc->pinerc_written));
+		   pinrc ? pinrc : "?", (long) prc->pinerc_written));
     }
     else{
-	dprint(2, (debugfile, "wrote pinerc: %s\n", pinrc));
+	dprint(2, (debugfile, "wrote pinerc: %s\n", pinrc ? pinrc : "?"));
     }
 
     if(tmp){
@@ -5991,10 +6316,12 @@ write_pinerc(ps, which)
     return(0);
 
   io_err:
-    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-		      "Error saving configuration in \"%.200s\": %.200s",
-		      pinrc, error_description(errno));
-    dprint(1, (debugfile, "Error writing %s : %s\n", pinrc,
+    if(!(flags & WRP_NOUSER))
+      q_status_message2(SM_ORDER | SM_DING, 3, 5,
+		        "Error saving configuration in \"%.200s\": %.200s",
+		        pinrc, error_description(errno));
+
+    dprint(1, (debugfile, "Error writing %s : %s\n", pinrc ? pinrc : "?",
 	       error_description(errno)));
     if(rd)
       rd->flags &= ~DO_REMTRIM;
@@ -6293,8 +6620,9 @@ char *filename;
 	goto io_err;
 
     for(var = variables; var->name != NULL; var++){
-	dprint(7,(debugfile,"write_pinerc: %s = %s\n", var->name,
-                   var->main_user_val.p ? var->main_user_val.p : "<not set>"));
+	dprint(7,(debugfile,"write_pinerc: %s = %s\n",
+	       var->name ? var->name : "?",
+	       var->main_user_val.p ? var->main_user_val.p : "<not set>"));
         if(!var->is_user || !var->is_used || var->is_obsolete)
 	    continue;
 
@@ -6457,6 +6785,9 @@ dump_pine_struct(ps, pc)
 {
     char *p;
     extern char term_name[];
+    int i;
+    MAILSTREAM *m;
+    MSGNO_S *msgmap;
 
     gf_puts("========== struct pine * ==========\n", pc);
     if(!ps){
@@ -6482,85 +6813,86 @@ dump_pine_struct(ps, pc)
     gf_puts("\nmaildom=\t", pc);
     gf_puts(ps->maildomain ? ps->maildomain : "NULL", pc);
 
-    if(ps->mail_stream){
-	gf_puts("\ncur_cntxt=\t", pc);
-	gf_puts((ps->context_current && ps->context_current->context)
-		? ps->context_current->context : "None", pc);
-	gf_puts("\ncur_fldr=\t", pc);
-	gf_puts(ps->cur_folder, pc);
+    gf_puts("\ncur_cntxt=\t", pc);
+    gf_puts((ps->context_current && ps->context_current->context)
+	    ? ps->context_current->context : "None", pc);
+    gf_puts("\ncur_fldr=\t", pc);
+    gf_puts(ps->cur_folder, pc);
+
+    gf_puts("\nnstream=\t", pc);
+    gf_puts(long2string((long) ps->s_pool.nstream), pc);
+
+    for(i = 0; i < ps->s_pool.nstream; i++){
+	m = ps->s_pool.streams[i];
+	gf_puts("\nstream slot ", pc);
+	gf_puts(long2string((long) i), pc);
+	if(!m){
+	    gf_puts(" empty", pc);
+	    continue;
+	}
+
+	if(ps->mail_stream == m)
+	  gf_puts("\nThis is the current mailstream", pc);
+	if(sp_flagged(m, SP_INBOX))
+	  gf_puts("\nThis is the inbox stream", pc);
+
 	gf_puts("\nactual mbox=\t", pc);
-	gf_puts(ps->mail_stream->mailbox ? ps->mail_stream->mailbox
-					 : "no mailbox!", pc);
-	if(ps->msgmap){
+	gf_puts(m->mailbox ? m->mailbox : "no mailbox!", pc);
+
+	gf_puts("\nflags=", pc);
+	gf_puts(long2string((long) sp_flags(m)), pc);
+	gf_puts("\nnew_mail_count=", pc);
+	gf_puts(long2string((long) sp_new_mail_count(m)), pc);
+	gf_puts("\nmail_since_cmd=", pc);
+	gf_puts(long2string((long) sp_mail_since_cmd(m)), pc);
+	gf_puts("\nmail_box_changed=", pc);
+	gf_puts(long2string((long) sp_mail_box_changed(m)), pc);
+	gf_puts("\nunsorted_newmail=", pc);
+	gf_puts(long2string((long) sp_unsorted_newmail(m)), pc);
+	gf_puts("\nneed_to_rethread=", pc);
+	gf_puts(long2string((long) sp_need_to_rethread(m)), pc);
+	gf_puts("\nviewing_a_thread=", pc);
+	gf_puts(long2string((long) sp_viewing_a_thread(m)), pc);
+	gf_puts("\ndead_stream=", pc);
+	gf_puts(long2string((long) sp_dead_stream(m)), pc);
+	gf_puts("\nnoticed_dead_stream=", pc);
+	gf_puts(long2string((long) sp_noticed_dead_stream(m)), pc);
+	gf_puts("\nio_error_on_stream=", pc);
+	gf_puts(long2string((long) sp_io_error_on_stream(m)), pc);
+
+	msgmap = sp_msgmap(m);
+	if(msgmap){
 	    gf_puts("\nmsgmap: tot=", pc);
-	    gf_puts(long2string(mn_get_total(ps->msgmap)), pc);
+	    gf_puts(long2string(mn_get_total(msgmap)), pc);
 	    gf_puts(", cur=", pc);
-	    gf_puts(long2string(mn_get_cur(ps->msgmap)), pc);
+	    gf_puts(long2string(mn_get_cur(msgmap)), pc);
 	    gf_puts(", del=", pc);
-	    gf_puts(long2string(count_flagged(ps->mail_stream, F_DEL)),pc);
+	    gf_puts(long2string(count_flagged(m, F_DEL)),pc);
 	    gf_puts(", hid=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_HIDE)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_HIDE)), pc);
 	    gf_puts(", exld=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_EXLD)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_EXLD)), pc);
 	    gf_puts(", slct=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_SLCT)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_SLCT)), pc);
 	    gf_puts(", chid=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_CHID)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_CHID)), pc);
 	    gf_puts(", coll=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_COLL)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_COLL)), pc);
 	    gf_puts(", usor=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_USOR)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_USOR)), pc);
 	    gf_puts(", stmp=", pc);
-	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_STMP)), pc);
+	    gf_puts(long2string(any_lflagged(msgmap, MN_STMP)), pc);
 	    gf_puts(", sort=", pc);
-	    if(mn_get_revsort(ps->msgmap))
+	    if(mn_get_revsort(msgmap))
 	      gf_puts("rev-", pc);
 
-	    gf_puts(sort_name(mn_get_sort(ps->msgmap)), pc);
+	    gf_puts(sort_name(mn_get_sort(msgmap)), pc);
 	}
 	else
 	  gf_puts("\nNo msgmap", pc);
     }
-    else
-      gf_puts("\nNo mail_stream", pc);
 
-    if(ps->inbox_stream && (ps->mail_stream != ps->inbox_stream)){
-	gf_puts("\nactual inbox=\t", pc);
-	gf_puts(ps->inbox_stream->mailbox ? ps->inbox_stream->mailbox
-					  : "no mailbox!", pc);
-	if(ps->inbox_msgmap){
-	    gf_puts("\ninbox map: tot=", pc);
-	    gf_puts(long2string(mn_get_total(ps->inbox_msgmap)), pc);
-	    gf_puts(", cur=", pc);
-	    gf_puts(long2string(mn_get_cur(ps->inbox_msgmap)), pc);
-	    gf_puts(", del=", pc);
-	    gf_puts(long2string(count_flagged(ps->inbox_stream,F_DEL)),pc);
-	    gf_puts(", hid=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_HIDE)), pc);
-	    gf_puts(", exld=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_EXLD)), pc);
-	    gf_puts(", slct=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_SLCT)), pc);
-	    gf_puts(", chid=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_CHID)), pc);
-	    gf_puts(", coll=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_COLL)), pc);
-	    gf_puts(", usor=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_USOR)), pc);
-	    gf_puts(", stmp=", pc);
-	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_STMP)), pc);
-	    gf_puts(", sort=", pc);
-	    if(mn_get_revsort(ps->inbox_msgmap))
-	      gf_puts("rev-", pc);
 
-	    gf_puts(sort_name(mn_get_sort(ps->inbox_msgmap)), pc);
-	}
-	else
-	  gf_puts("\nNo inbox_map", pc);
-    }
-    else
-      gf_puts(ps->inbox_stream ? "\ninbox is mail_stream"
-			       : "\nno inbox stream", pc);
     gf_puts("\nterm ", pc);
 #if !defined(DOS) && !defined(OS2)
     gf_puts("type=", pc);
@@ -6631,7 +6963,7 @@ set_variable(var, value, expand, commit, which)
     if(prc)
       prc->outstanding_pinerc_changes = 1;
 
-    return(commit ? write_pinerc(ps_global, which) : 1);
+    return(commit ? write_pinerc(ps_global, which, WRP_NONE) : 1);
 }
 
 
@@ -6698,7 +7030,7 @@ set_variable_list(var, lvalue, write_it, which)
     if(prc)
       prc->outstanding_pinerc_changes = 1;
 
-    return(write_it ? write_pinerc(ps_global, which) : 0);
+    return(write_it ? write_pinerc(ps_global, which, WRP_NONE) : 0);
 }
            
 
@@ -6964,7 +7296,7 @@ get_mail_list(list_cntxt, folder_base)
 #endif
             sm->month_num = month_num(sm->name + (size_t)folder_base_len + 1);
             sm++;
-            if(sm >= &sml[MAX_FILES])
+            if(sm >= &sml[MAX_FILES - 1])
                break; /* Too many files, ignore the rest ; shouldn't occur */
         }
     }
@@ -7083,6 +7415,42 @@ expire_sent_mail()
 }
 
 
+int
+first_run_of_month()
+{
+    time_t     now;
+    struct tm *tm_now;
+
+    now = time((time_t *) 0);
+    tm_now = localtime(&now);
+
+    if(ps_global->last_expire_year == -1 ||
+      (tm_now->tm_year <  ps_global->last_expire_year ||
+       (tm_now->tm_year == ps_global->last_expire_year &&
+        tm_now->tm_mon <= ps_global->last_expire_month)))
+      return(0); 
+
+    return(1);
+}
+
+
+int
+first_run_of_year()
+{
+    time_t     now;
+    struct tm *tm_now;
+
+    now = time((time_t *) 0);
+    tm_now = localtime(&now);
+
+    if(ps_global->last_expire_year == -1 ||
+      (tm_now->tm_year <=  ps_global->last_expire_year))
+      return(0); 
+
+    return(1);
+}
+
+
 /*----------------------------------------------------------------------
      Check pruned-folders for validity, making sure they are in the 
      same context as sent-mail.
@@ -7117,8 +7485,8 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
     unsigned   pr;
 {
     char         path[MAXPATH+1], path2[MAXPATH+1],  prompt[128], tmp[21];
+    char         ctmp[MAILTMPLEN];
     int          month_to_use, exists;
-    MAILSTREAM  *prune_stream;
     struct sm_folder *mail_list, *sm;
 
     mail_list = get_mail_list(prune_cntxt, folder_base);
@@ -7126,7 +7494,8 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
 
 #ifdef	DEBUG
     for(sm = mail_list; sm != NULL && sm->name[0] != '\0'; sm++)
-      dprint(5, (debugfile,"Old sent-mail: %5d  %s\n",sm->month_num,sm->name));
+      dprint(5, (debugfile,"Old sent-mail: %5d  %s\n", sm->month_num,
+	     sm->name ? sm->name : "?"));
 #endif
 
     for(sm = mail_list; sm != NULL && sm->name[0] != '\0'; sm++)
@@ -7142,33 +7511,40 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
 
     strncpy(path, folder_base, sizeof(path)-1);
     path[sizeof(path)-1] = '\0';
-/* BUG: how to check that a folder is zero_length via c-client?? */
     strncpy(path2, folder_base, sizeof(path2)-1);
     path2[sizeof(path2)-1] = '\0';
-    strncpy(tmp, month_abbrev((month_to_use % 12)+1), 20);
-    tmp[20] = '\0';
-    lcase(tmp);
-#ifdef	DOS
-    if(*prune_cntxt->context != '{'){
-      int i;
 
-      sprintf(path2 + (size_t)(((i = strlen(path2)) > 4) ? 4 : i),
-	      "%2.2d%2.2d", (month_to_use % 12) + 1,
-	      ((month_to_use / 12) - 1900) % 100);
+    if(F_ON(F_PRUNE_USES_ISO,ps_global)){             /* sent-mail-yyyy-mm */
+	sprintf(path2 + strlen(path2), "-%04.4d-%02.2d", month_to_use/12,
+		month_to_use % 12 + 1);
     }
-    else
+    else{
+	strncpy(tmp, month_abbrev((month_to_use % 12)+1), 20);
+	tmp[20] = '\0';
+	lcase((unsigned char *) tmp);
+#ifdef	DOS
+	if(*prune_cntxt->context != '{'){
+	  int i;
+
+	  sprintf(path2 + (size_t)(((i = strlen(path2)) > 4) ? 4 : i),
+		  "%2.2d%2.2d", (month_to_use % 12) + 1,
+		  ((month_to_use / 12) - 1900) % 100);
+	}
+	else
 #endif
-    sprintf(path2 + strlen(path2), "-%.20s-%d", tmp, month_to_use/12);
+	sprintf(path2 + strlen(path2), "-%.20s-%d", tmp, month_to_use/12);
+    }
 
     Writechar(BELL, 0);
     sprintf(prompt, "Move current \"%.50s\" to \"%.50s\"", path, path2);
     if((exists = folder_exists(prune_cntxt, folder_base)) == FEX_ERROR){
-        dprint(5, (debugfile, "prune_folders: Error testing existance\n"));
+        dprint(5, (debugfile, "prune_folders: Error testing existence\n"));
         return(0);
     }
     else if(exists == FEX_NOENT){	/* doesn't exist */
         dprint(5, (debugfile, "prune_folders: nothing to prune <%s %s>\n",
-		   prune_cntxt->context, folder_base));
+		   prune_cntxt->context ? prune_cntxt->context : "?",
+		   folder_base ? folder_base : "?"));
         goto delete_old;
     }
     else if(!(exists & FEX_ISFILE)
@@ -7176,35 +7552,30 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
 	    || ((pr == PRUNE_ASK_AND_ASK || pr == PRUNE_ASK_AND_NO) &&
 	        want_to(prompt, 'n', 0, h_wt_expire, WT_FLUSH_IN) == 'n')){
 	dprint(5, (debugfile, "User declines renaming %s\n",
-		   ps_global->VAR_DEFAULT_FCC));
+	       ps_global->VAR_DEFAULT_FCC ? ps_global->VAR_DEFAULT_FCC : "?"));
 	goto delete_old;
     }
 
     /*--- User says OK to rename ---*/
-    dprint(5, (debugfile, "rename \"%.100s\" to \"%.100s\"\n", path, path2));
+    dprint(5, (debugfile, "rename \"%.100s\" to \"%.100s\"\n",
+	   path ? path : "?", path2 ? path2 : "?"));
     q_status_message1(SM_ORDER, 1, 3,
 		      "Renaming \"%.200s\" at start of month",
 		      pretty_fn(folder_base));
-    prune_stream = context_same_stream(prune_cntxt, path2,
-				       ps_global->mail_stream);
 
-    if(!prune_stream && ps_global->mail_stream != ps_global->inbox_stream)
-      prune_stream = context_same_stream(prune_cntxt, path2,
-					 ps_global->inbox_stream);
-
-    if(!context_rename(prune_cntxt, prune_stream, path, path2)){
+    if(!context_rename(prune_cntxt, NULL, path, path2)){
         q_status_message2(SM_ORDER | SM_DING, 3, 4,
 			  "Error renaming \"%.200s\": %.200s",
                           pretty_fn(folder_base),
 			  error_description(errno));
         dprint(1, (debugfile, "Error renaming %.100s to %.100s: %.100s\n",
-                   path, path2, error_description(errno)));
+                   path ? path : "?", path2 ? path2 : "?",
+		   error_description(errno)));
         display_message('x');
         goto delete_old;
     }
 
-    context_create(prune_cntxt, prune_stream ? prune_stream : NULL,
-		   folder_base);
+    context_create(prune_cntxt, NULL, folder_base);
 
   delete_old:
     if(pr == PRUNE_ASK_AND_ASK || pr == PRUNE_YES_AND_ASK
@@ -7240,26 +7611,19 @@ delete_old_mail(sml, fcc_cntxt, type)
 {
     char  prompt[150];
     struct sm_folder *sm;
-    MAILSTREAM       *del_stream;
 
     for(sm = sml; sm != NULL && sm->name[0] != '\0'; sm++){
         sprintf(prompt,
 	       "To save disk space, delete old%.10s mail folder \"%.30s\" ",
 	       type, sm->name);
         if(want_to(prompt, 'n', 0, h_wt_delete_old, WT_FLUSH_IN) == 'y'){
-	    del_stream = context_same_stream(fcc_cntxt, sm->name,
-					     ps_global->mail_stream);
 
-	    if(!del_stream 
-	       && ps_global->mail_stream != ps_global->inbox_stream)
-	      del_stream = context_same_stream(fcc_cntxt, sm->name,
-					       ps_global->inbox_stream);
-
-	    if(!context_delete(fcc_cntxt, del_stream, sm->name)){
+	    if(!context_delete(fcc_cntxt, NULL, sm->name)){
 		q_status_message1(SM_ORDER,
 				  3, 3, "Error deleting \"%.200s\".", sm->name);
 		dprint(1, (debugfile, "Error context_deleting %s in %s\n",
-			   sm->name, (fcc_cntxt && fcc_cntxt->context)
+			   sm->name ? sm->name : "?",
+			   (fcc_cntxt && fcc_cntxt->context)
 				     ? fcc_cntxt->context : "<null>"));
             }
 	    else{
@@ -7703,7 +8067,7 @@ rd_read_metadata(rd)
 
 	    dprint(7, (debugfile,
 	       "in read_metadata, setting chk_date from metadata to ->%s<-\n",
-	       rd->t.i.chk_date));
+	       rd->t.i.chk_date ? rd->t.i.chk_date : "?"));
 	    rd->t.i.chk_nmsgs   = rab->nmsgs;
 	    rd->t.i.uidvalidity = rab->uidvalidity;
 	    rd->t.i.uidnext     = rab->uidnext;
@@ -7998,7 +8362,7 @@ rd_update_metadata(rd, date)
 		if(rd->t.i.stream->nmsgs < 2 ||
 		   (rd->t.i.shouldbe_nmsgs &&
 		    (rd->t.i.shouldbe_nmsgs != rd->t.i.stream->nmsgs))){
-		    mail_check(rd->t.i.stream);
+		    pine_mail_check(rd->t.i.stream);
 		    if(rd->t.i.stream->nmsgs < 2 ||
 		       (rd->t.i.shouldbe_nmsgs &&
 			(rd->t.i.shouldbe_nmsgs != rd->t.i.stream->nmsgs))){
@@ -8099,7 +8463,8 @@ rd_metadata_name()
 	    /* fill in the pinerc variable */
 	    q = p + strlen(pinerc_dir) + 1;
 	    set_variable(V_REMOTE_ABOOK_METADATA, q, 1, 0, Main);
-	    dprint(2, (debugfile, "creating name for metadata file: %s\n", q));
+	    dprint(2, (debugfile, "creating name for metadata file: %s\n",
+		   q ? q : "?"));
 
 	    /* something's broken, return NULL rab */
 	    if(!VAR_REMOTE_ABOOK_METADATA || !VAR_REMOTE_ABOOK_METADATA[0]){
@@ -8135,12 +8500,13 @@ rd_metadata_name()
 		       "can't create cache file %.200s, continuing (%.200s)",
 		       metafile, error_description(errno));
 	    dprint(2, (debugfile, "can't create metafile %s: %s\n",
-		       metafile, error_description(errno)));
+		       metafile ? metafile : "?", error_description(errno)));
 
 	    return(NULL);
 	}
 
-	dprint(2, (debugfile, "created metadata file: %s\n", metafile));
+	dprint(2, (debugfile, "created metadata file: %s\n",
+	       metafile ? metafile : "?"));
 
 	(void)close(fd);
     }
@@ -8179,7 +8545,7 @@ try_once_more:
 		   metafile, error_description(errno));
 	dprint(2, (debugfile,
 		   "can't open existing metadata file %s: %s\n",
-		   metafile, error_description(errno)));
+		   metafile ? metafile : "?", error_description(errno)));
 	if(flags)
 	  (*flags) |= NO_META_UPDATE;
 
@@ -8204,7 +8570,7 @@ try_once_more:
 
 	dprint(2, (debugfile,
 		   "metadata file is broken, creating new one: %s\n",
-		   metafile));
+		   metafile ? metafile : "?"));
 
 	/* Make it size zero so we won't copy any bad stuff */
 	if(fp_file_size(fp) != 0){
@@ -8219,7 +8585,7 @@ try_once_more:
 			 metafile, error_description(errno));
 		dprint(2, (debugfile,
 			   "can't create metadata file %s: %s\n",
-			   metafile,
+			   metafile ? metafile : "?",
 			   error_description(errno)));
 		fs_give((void **)&rab);
 		fs_give((void **)&metafile);
@@ -8370,7 +8736,7 @@ void
 rd_open_remote(rd)
     REMDATA_S *rd;
 {
-    long openmode = 0L;
+    long openmode = SP_USEPOOL | SP_TEMPUSE;
 
     dprint(7, (debugfile, "rd_open_remote \"%s\"\n",
 	   (rd && rd->rn) ? rd->rn : "?"));
@@ -8386,16 +8752,11 @@ rd_open_remote(rd)
     switch(rd->type){
       case RemImap:
 
-#ifdef DEBUG
-	if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	  openmode |= OP_DEBUG;
-#endif /* DEBUG */
-
 	if(rd->access == ReadOnly)
 	  openmode |= OP_READONLY;
 
 	ps_global->noshow_error = 1;
-	rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode);
+	rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode, NULL);
 	ps_global->noshow_error = 0;
 
         /* Don't try to reopen if there was a problem (auth failure, etc.) */
@@ -8476,13 +8837,39 @@ rd_ping_stream(rd)
     dprint(7, (debugfile, "rd_ping_stream \"%s\"\n",
 	   (rd && rd->rn) ? rd->rn : "?"));
 
-    if(!rd || !rd_stream_exists(rd))
+    if(!rd)
+      return(ret);
+
+    if(!rd_stream_exists(rd)){
+	switch(rd->type){
+	  case RemImap:
+	    /*
+	     * If this stream is already actually open, officially open
+	     * it and use it.
+	     */
+	    if(sp_stream_get(rd->rn, SP_MATCH)){
+		long openflags = SP_USEPOOL | SP_TEMPUSE;
+
+		if(rd->access == ReadOnly)
+		  openflags |= OP_READONLY;
+
+		rd->t.i.stream = pine_mail_open(NULL, rd->rn, openflags, NULL);
+	    }
+
+	    break;
+
+	  default:
+	    break;
+	}
+    }
+
+    if(!rd_stream_exists(rd))
       return(ret);
 
     switch(rd->type){
       case RemImap:
 	ps_global->noshow_error = 1;
-	if(mail_ping(rd->t.i.stream))
+	if(pine_mail_ping(rd->t.i.stream))
 	  ret = 1;
 	else
 	  rd->t.i.stream = NULL;
@@ -8577,7 +8964,8 @@ rd_init_remote(rd, add_only_first_msg)
       return err;
 
     dprint(7, (debugfile, " - rd_init_remote(%s): %s\n",
-	       rd->t.i.special_hdr, rd->rn));
+	   rd->t.i.special_hdr ? rd->t.i.special_hdr : "?",
+	   rd->rn ? rd->rn : "?"));
     
     /*
      * We want to protect the user who specifies an actual address book
@@ -8597,7 +8985,8 @@ rd_init_remote(rd, add_only_first_msg)
 	   "Choose a new, unused folder for the remote data");
 
 	dprint(1, (debugfile,
-	       "Can't initialize remote folder \"%s\"\n", rd->rn));
+	       "Can't initialize remote folder \"%s\"\n",
+	       rd->rn ? rd->rn : "?"));
 	dprint(1, (debugfile,
 	       "   No write permission for that remote folder.\n"));
 	dprint(1, (debugfile,
@@ -8623,7 +9012,7 @@ rd_init_remote(rd, add_only_first_msg)
 	    if(rd->t.i.stream->nmsgs == 0)
 	      rd_ping_stream(rd);
 	    if(rd->t.i.stream && rd->t.i.stream->nmsgs == 0)
-	      mail_check(rd->t.i.stream);
+	      pine_mail_check(rd->t.i.stream);
 
 	    if(we_cancel)
 	      cancel_busy_alarm(-1);
@@ -8637,11 +9026,12 @@ rd_init_remote(rd, add_only_first_msg)
 		     "\"%.200s\" has invalid format, can't initialize", rd->rn);
 
 		dprint(1, (debugfile,
-		       "Can't initialize remote data \"%s\"\n", rd->rn));
+		       "Can't initialize remote data \"%s\"\n",
+		       rd->rn ? rd->rn : "?"));
 
 		if(eptr){
 		    q_status_message1(SM_ORDER, 3, 5, "%.200s", eptr);
-		    dprint(1, (debugfile, "%s\n", eptr));
+		    dprint(1, (debugfile, "%s\n", eptr ? eptr : "?"));
 		    fs_give((void **)&eptr);
 		}
 	    }
@@ -8676,7 +9066,7 @@ rd_init_remote(rd, add_only_first_msg)
 				  tempfile, error_description(errno));
 		dprint(2, (debugfile,
 		       "init_remote: Error opening temporary file: %s: %s\n",
-		       tempfile, error_description(errno)));
+		       tempfile ? tempfile : "?", error_description(errno)));
 		(void)unlink(tempfile);
 		err = -1;
 	    }
@@ -8752,13 +9142,13 @@ try_again:
 	ret = -2;
 	dprint(1, (debugfile,
 		   "rd_chk_for_hdr_msg: stream has nmsgs=0, try a ping\n"));
-	if(!mail_ping(*streamp))
+	if(!pine_mail_ping(*streamp))
 	  *streamp = NULL;
 
 	if(*streamp && (*streamp)->nmsgs == 0){
 	    dprint(1, (debugfile,
 	       "rd_chk_for_hdr_msg: still looks like nmsgs=0, try a check\n"));
-	    mail_check(*streamp);
+	    pine_mail_check(*streamp);
 	}
 
 	if(*streamp && (*streamp)->nmsgs == 0){
@@ -8854,7 +9244,8 @@ try_again:
 	 * fail on this condition.
 	 */
 	dprint(1, (debugfile, "Unexpected value in \"%s\" header of \"%s\"\n",
-		   rd->t.i.special_hdr, rd->rn));
+	       rd->t.i.special_hdr ? rd->t.i.special_hdr : "?",
+	       rd->rn ? rd->rn : "?"));
 	ret = 0;
     }
     else if(ret == -6){
@@ -9032,7 +9423,7 @@ rd_store_fake_hdrs(rd, subject, subtype, date)
     memset(fake_from, 0, sizeof(ADDRESS));
 
     fake_env->subject = cpystr(subject);
-    fake_env->date = cpystr(date);
+    fake_env->date = (unsigned char *) cpystr(date);
     fake_from->personal = cpystr("Pine Remote Data");
     fake_from->mailbox = cpystr("nobody");
     fake_from->host = cpystr("nowhere");
@@ -9185,8 +9576,8 @@ rd_update_local(rd)
     }
 
     dprint(3, (debugfile, " - rd_update_local(%s): %s => %s\n",
-	   rd->type == RemImap ? "Imap" : "?", rd->rn,
-	   (rd->flags & NO_FILE) ? "<mem>": rd->lf));
+	   rd->type == RemImap ? "Imap" : "?", rd->rn ? rd->rn : "?",
+	   (rd->flags & NO_FILE) ? "<mem>" : (rd->lf ? rd->lf : "?")));
     
     switch(rd->type){
       case RemImap:
@@ -9238,7 +9629,8 @@ rd_update_local(rd)
 		}
 
 		dprint(1, (debugfile,
-		       "Can't initialize remote data \"%s\"\n", rd->rn));
+		       "Can't initialize remote data \"%s\"\n",
+		       rd->rn ? rd->rn : "?"));
 		return -1;
 	    }
 
@@ -9254,8 +9646,8 @@ rd_update_local(rd)
 				      "Error opening temporary file: %.200s",
 				      error_description(errno));
 		    dprint(2, (debugfile,
-			   "rd_update_local: Error opening temporary file: %s\n",
-			   error_description(errno)));
+			  "rd_update_local: Error opening temporary file: %s\n",
+			  error_description(errno)));
 		    return -1;
 		}
 
@@ -9267,7 +9659,8 @@ rd_update_local(rd)
 				      tempfile, error_description(errno));
 		    dprint(2, (debugfile,
 		      "rd_update_local: Error opening temporary file: %s: %s\n",
-		      tempfile, error_description(errno)));
+		      tempfile ? tempfile : "?",
+		      error_description(errno)));
 		    (void)unlink(tempfile);
 		    fs_give((void **)&tempfile);
 		    return -1;
@@ -9277,8 +9670,8 @@ rd_update_local(rd)
 	    /*
 	     * Copy from the last message in the folder.
 	     */
-	    if(!mail_fetchstructure(rd->t.i.stream, rd->t.i.stream->nmsgs,
-				    &body)){
+	    if(!pine_mail_fetchstructure(rd->t.i.stream, rd->t.i.stream->nmsgs,
+					 &body)){
 		q_status_message(SM_ORDER | SM_DING, 3, 4,
 				 "Can't access remote IMAP data");
 		dprint(2, (debugfile, "Can't access remote IMAP data\n"));
@@ -9318,8 +9711,8 @@ rd_update_local(rd)
 		return -1;
 	    }
 	    
-	    if(!(env = mail_fetchenvelope(rd->t.i.stream,
-					  rd->t.i.stream->nmsgs))){
+	    if(!(env = pine_mail_fetchenvelope(rd->t.i.stream,
+					       rd->t.i.stream->nmsgs))){
 		q_status_message(SM_ORDER | SM_DING, 3, 4,
 				 "Can't access check date in remote data");
 		dprint(2, (debugfile,
@@ -9381,7 +9774,7 @@ rd_update_local(rd)
 	    gf_set_so_writec(&pc, store);
 
 	    error = detach(rd->t.i.stream, rd->t.i.stream->nmsgs, "1",
-			   NULL, pc, NULL);
+			   NULL, pc, NULL, 0);
 
 	    gf_clear_so_writec(store);
 
@@ -9400,7 +9793,7 @@ rd_update_local(rd)
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
 			      "%.200s: Error copying remote IMAP data", error);
 		dprint(2, (debugfile, "rd_update_local: Error copying: %s\n",
-		       error));
+		       error ? error : "?"));
 		if(tempfile){
 		    (void)unlink(tempfile);
 		    fs_give((void **)&tempfile);
@@ -9417,7 +9810,11 @@ rd_update_local(rd)
 				      rd->lf, error_description(errno));
 		    q_status_message(SM_ORDER, 3, 4,
 				 "Perhaps another process has the file open?");
-		    dprint(2, (debugfile, "Rename_file(%s,%s): %s: returned -5, another process has file open?\n", tempfile, rd->lf, error_description(errno)));
+		    dprint(2, (debugfile,
+	"Rename_file(%s,%s): %s: returned -5, another process has file open?\n",
+			   tempfile ? tempfile : "?",
+			   rd->lf ? rd->lf : "?",
+			   error_description(errno)));
 		}
 		else
 #endif	/* _WINDOWS */
@@ -9427,7 +9824,9 @@ rd_update_local(rd)
 				  rd->lf, error_description(errno));
 		dprint(2, (debugfile,
 		       "Error updating cache file %s: rename(%s,%s): %s\n",
-		       tempfile, tempfile, rd->lf,
+		       tempfile ? tempfile : "?",
+		       tempfile ? tempfile : "?",
+		       rd->lf ? rd->lf : "?",
 		       error_description(errno)));
 		}
 
@@ -9438,7 +9837,7 @@ rd_update_local(rd)
 
 	    dprint(5, (debugfile,
 		   "in rd_update_local, setting chk_date to ->%s<-\n",
-		   env->date));
+		   env->date ? (char *)env->date : "?"));
 	    rd_update_metadata(rd, env->date);
 
 	    /* turn off out of date flag */
@@ -9453,7 +9852,8 @@ rd_update_local(rd)
 	    q_status_message1(SM_ORDER | SM_DING, 5, 5,
 		 "Can't open remote IMAP folder \"%.200s\"", rd->rn);
 	    dprint(1, (debugfile,
-		   "Can't open remote IMAP folder \"%s\"\n", rd->rn));
+		   "Can't open remote IMAP folder \"%s\"\n",
+		   rd->rn ? rd->rn : "?"));
 	    rd->access = ReadOnly;
 	    return -1;
 	}
@@ -9486,7 +9886,7 @@ rd_update_remote(rd, returndate)
 {
     STORE_S    *store;
     int         err = 0;
-    long        openmode = 0L;
+    long        openmode = SP_USEPOOL | SP_TEMPUSE;
     MAILSTREAM *st;
     char       *eptr = NULL;
 
@@ -9508,25 +9908,22 @@ rd_update_remote(rd, returndate)
     }
 
     dprint(7, (debugfile, " - rd_update_remote(%s): %s => %s\n",
-	   rd->t.i.special_hdr, rd->lf ? rd->lf : "<mem>", rd->rn));
-
-#ifdef DEBUG
-    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-      openmode |= OP_DEBUG;
-#endif /* DEBUG */
+	   rd->t.i.special_hdr ? rd->t.i.special_hdr : "?",
+	   rd->lf ? rd->lf : "<mem>",
+	   rd->rn ? rd->rn : "?"));
 
     if(!(st = rd->t.i.stream))
       st = adrbk_handy_stream(rd->rn);
 
     if(!st)
-      st = rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode);
+      st = rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode, NULL);
 
     if(!st){
 	q_status_message1(SM_ORDER | SM_DING, 5, 5,
 	     "Can't open \"%.200s\" for copying", rd->rn);
 	dprint(1, (debugfile,
 	  "rd_update_remote: Can't open remote folder \"%s\" for copying\n",
-	       rd->rn));
+	       rd->rn ? rd->rn : "?"));
 	return 1;
     }
 
@@ -9543,7 +9940,8 @@ rd_update_remote(rd, returndate)
 	}
 
 	dprint(1, (debugfile,
-	   "rd_update_remote: \"%s\" has invalid format\n", rd->rn));
+	   "rd_update_remote: \"%s\" has invalid format\n",
+	   rd->rn ? rd->rn : "?"));
 	return 1;
     }
 
@@ -9574,7 +9972,8 @@ rd_update_remote(rd, returndate)
 
 	rfc822_date(date);
 	dprint(7, (debugfile,
-	       "in rd_update_remote, storing date ->%s<-\n", date));
+	       "in rd_update_remote, storing date ->%s<-\n",
+	       date ? date : "?"));
 	if(!err && rd_store_fake_hdrs(rd, "Pine Remote Data Container",
 				      rd->t.i.special_hdr, date))
 	  err = 1;
@@ -9630,7 +10029,7 @@ rd_update_remote(rd, returndate)
 
     if(err)
 	dprint(2, (debugfile, "error in rd_update_remote for %s => %s\n",
-	       rd->lf ? rd->lf : "<mem>", rd->rn));
+	       rd->lf ? rd->lf : "<mem>", rd->rn ? rd->rn : "?"));
 
     return(err);
 }
@@ -9650,7 +10049,7 @@ rd_check_remvalid(rd, do_it_now)
     long       do_it_now;
 {
     time_t      chk_interval;
-    long        openmode = 0L;
+    long        openmode = SP_USEPOOL | SP_TEMPUSE;
     MAILSTREAM *stat_stream = NULL;
     int         we_cancel = 0, got_cmsgs = 0;
     extern MAILSTATUS mm_status_result;
@@ -9678,7 +10077,7 @@ rd_check_remvalid(rd, do_it_now)
     if(rd->t.i.chk_nmsgs <= 1){
 	dprint(2, (debugfile,
 	  "rd_check_remvalid: remote data %s changed (chk_nmsgs <= 1)\n",
-	       rd->rn));
+	       rd->rn ? rd->rn : "?"));
 	rd->flags |= REM_OUTOFDATE;
 	return;
     }
@@ -9696,11 +10095,6 @@ rd_check_remvalid(rd, do_it_now)
         get_adj_time() <= rd->last_valid_chk + chk_interval))
       return;
     
-#ifdef DEBUG
-    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-      openmode |= OP_DEBUG;
-#endif /* DEBUG */
-
     if(rd->access == ReadOnly)
       openmode |= OP_READONLY;
 
@@ -9710,8 +10104,9 @@ rd_check_remvalid(rd, do_it_now)
     /* make sure the cache file is still there */
     if(rd->lf && can_access(rd->lf, READ_ACCESS) != 0){
 	dprint(2, (debugfile,
-	   "rd_check_remvalid: %s: cache file %s disappeared\n",
-	       rd->rn, rd->lf));
+	       "rd_check_remvalid: %s: cache file %s disappeared\n",
+	       rd->rn ? rd->rn : "?",
+	       rd->lf ? rd->lf : "?"));
 	rd->flags |= REM_OUTOFDATE;
 	return;
     }
@@ -9759,7 +10154,7 @@ try_looking_in_stream:
 		rd->flags |= NO_STATUSCMD;
 		dprint(2, (debugfile,
    "rd_check_remvalid: remote data %s: server doesn't support status\n",
-		       rd->rn));
+		       rd->rn ? rd->rn : "?"));
 	    }
 	    else{
 		/*
@@ -9792,7 +10187,8 @@ try_looking_in_stream:
 			/* failed, mark it so we won't try again */
 			rd->flags |= NO_STATUSCMD;
 			dprint(2, (debugfile,
-	   "rd_check_remvalid: addrbook %s: status command failed\n", rd->rn));
+		   "rd_check_remvalid: addrbook %s: status command failed\n",
+		   rd->rn ? rd->rn : "?"));
 			mm_status_result.flags = 0L;
 		    }
 		}
@@ -9822,7 +10218,7 @@ try_looking_in_stream:
 	rd->flags |= REM_OUTOFDATE;
 	dprint(2, (debugfile,
 	       "rd_check_remvalid: remote data %s changed (current msgs (%ld) != chk_nmsgs (%ld))\n",
-	       rd->rn, current_nmsgs, rd->t.i.chk_nmsgs));
+	       rd->rn ? rd->rn : "?", current_nmsgs, rd->t.i.chk_nmsgs));
 	return;
     }
     
@@ -9841,7 +10237,7 @@ try_looking_in_stream:
 		rd->flags |= REM_OUTOFDATE;
 		dprint(2, (debugfile,
 		     "rd_check_remvalid: remote data %s changed (uid)\n",
-		     rd->rn));
+		     rd->rn ? rd->rn : "?"));
 	    }
 	    else{
 		dprint(7,(debugfile,"rd_check_remvalid: uids match\n"));
@@ -9857,7 +10253,7 @@ try_looking_in_stream:
 	    rd->flags |= NO_STATUSCMD;
 	    dprint(7, (debugfile,
        "rd_check_remvalid: remote data %s uidvalidity changed, don't use uid\n",
-		   rd->rn));
+		   rd->rn ? rd->rn : "?"));
 	}
     }
     else{			/* stream not open, use status results */
@@ -9890,7 +10286,8 @@ try_looking_in_stream:
 		 */
 		we_cancel = busy_alarm(1, NULL, NULL, 0);
 		ps_global->noshow_error = 1;
-		if(rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode)){
+		if(rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode,
+						 NULL)){
 		    unsigned long last_msg_uid;
 
 		    if(rd->t.i.stream->rdonly)
@@ -9902,12 +10299,13 @@ try_looking_in_stream:
 		    rd->last_use = get_adj_time();
 		    dprint(7, (debugfile,
 			   "%s: opened to check uid (%ld)\n",
-			   rd->rn, (long)rd->last_use));
+			   rd->rn ? rd->rn : "?", (long)rd->last_use));
 		    if(last_msg_uid != rd->t.i.uid){	/* really did change */
 			rd->flags |= REM_OUTOFDATE;
 			dprint(2, (debugfile,
  "rd_check_remvalid: remote data %s changed, our uid=%lu real uid=%lu\n",
-			       rd->rn, rd->t.i.uid, last_msg_uid));
+			       rd->rn ? rd->rn : "?",
+			       rd->t.i.uid, last_msg_uid));
 		    }
 		    else{				/* false hit */
 			/*
@@ -9920,7 +10318,8 @@ try_looking_in_stream:
 			 */
 			dprint(2, (debugfile,
 			       "rd_check_remvalid: remote data %s false change: adjusting uidnext from %lu to %lu\n",
-			       rd->rn, rd->t.i.uidnext,
+			       rd->rn ? rd->rn : "?",
+			       rd->t.i.uidnext,
 			       mm_status_result.uidnext));
 			rd->t.i.uidnext = mm_status_result.uidnext;
 			rd_write_metadata(rd, 0);
@@ -9935,7 +10334,7 @@ try_looking_in_stream:
 		    ps_global->noshow_error = 0;
 		    dprint(2, (debugfile,
 			   "rd_check_remvalid: couldn't open %s\n",
-			   rd->rn));
+			   rd->rn ? rd->rn : "?"));
 		}
 	    }
 	}
@@ -9956,14 +10355,15 @@ try_looking_in_stream:
 		rd->flags |= NO_STATUSCMD;
 		dprint(7, (debugfile,
 		  "rd_check_remvalid: remote data %s don't use status\n",
-		   rd->rn));
+		   rd->rn ? rd->rn : "?"));
 	    }
 
 	    dprint(7, (debugfile,
 		   "opening remote data stream for validity check\n"));
 	    we_cancel = busy_alarm(1, NULL, NULL, 0);
 	    ps_global->noshow_error = 1;
-	    rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode);
+	    rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode,
+					  NULL);
 	    ps_global->noshow_error = 0;
 	    if(we_cancel)
 	      cancel_busy_alarm(-1);
@@ -10001,7 +10401,7 @@ try_looking_in_stream:
 
     ps_global->noshow_error = 1;
     if(rd->t.i.stream ||
-       (rd->t.i.stream = context_open(NULL,NULL,rd->rn,openmode))){
+       (rd->t.i.stream = context_open(NULL,NULL,rd->rn,openmode,NULL))){
 	ENVELOPE *env = NULL;
 
 	if(rd->t.i.stream->rdonly)
@@ -10011,16 +10411,17 @@ try_looking_in_stream:
 	    rd->flags |= REM_OUTOFDATE;
 	    dprint(2, (debugfile,
    "rd_check_remvalid: remote data %s changed (expected nmsgs %ld, got %ld)\n",
-		   rd->rn, rd->t.i.chk_nmsgs, rd->t.i.stream->nmsgs));
+		   rd->rn ? rd->rn : "?",
+		   rd->t.i.chk_nmsgs, rd->t.i.stream->nmsgs));
 	}
 	else if(rd->t.i.stream->nmsgs > 1){
-	    env = mail_fetchenvelope(rd->t.i.stream, rd->t.i.stream->nmsgs);
+	    env = pine_mail_fetchenvelope(rd->t.i.stream,rd->t.i.stream->nmsgs);
 	
 	    if(!env || (env->date && strucmp(env->date, rd->t.i.chk_date))){
 		rd->flags |= REM_OUTOFDATE;
 		dprint(2, (debugfile,
 		      "rd_check_remvalid: remote data %s changed (%s)\n",
-		      rd->rn, env ? "date" : "not enough msgs"));
+		      rd->rn ? rd->rn : "?", env ? "date" : "not enough msgs"));
 	    }
 	}
 
@@ -10028,7 +10429,7 @@ try_looking_in_stream:
 	if(env)
 	  dprint(7, (debugfile,
 	         "%s: got envelope to check date (%ld)\n",
-	         rd->rn, (long)rd->last_use));
+	         rd->rn ? rd->rn : "?", (long)rd->last_use));
     }
     /* else, we give up and go with the cache copy */
 
@@ -10141,29 +10542,29 @@ rd_prompt_about_forged_remote_data(reason, rd, extra)
 
     dprint(1, (debugfile, "rd_check_out_forged_remote_data:\n"));
     dprint(1, (debugfile, " reason=%d\n", reason));
-    dprint(1, (debugfile, " folder_type=%s\n", foldertype));
-    dprint(1, (debugfile, " remotename=%s\n\n", foldername));
+    dprint(1, (debugfile, " folder_type=%s\n", foldertype ? foldertype : "?"));
+    dprint(1, (debugfile, " remotename=%s\n\n", foldername ? foldername : "?"));
 
     if(rd && rd->flags & USER_SAID_NO)
       return rv;
 
     if(reason == -2){
-	dprint(1, (debugfile, "The special header \"%.20s\" is missing from the last message in the folder.\nThis indicates that something is wrong.\nYou should probably answer \"No\"\nso that you don't use the corrupt data.\nThen you should investigate further.\n", special));
+	dprint(1, (debugfile, "The special header \"%.20s\" is missing from the last message in the folder.\nThis indicates that something is wrong.\nYou should probably answer \"No\"\nso that you don't use the corrupt data.\nThen you should investigate further.\n", special ? special : "?"));
     }
     else if(reason == -1){
 	dprint(1, (debugfile,  "The last message in the folder contains \"Received\" headers.\nThis usually indicates that the message was put there by the mail\ndelivery system. Pine does not add those Received headers.\nYou should probably answer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n"));
     }
     else if(reason == 0){
 	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (%.30s)\nafter it. This could indicate that something is wrong.\nThis value should not normally be put there by Pine.\nHowever, since there are no Received lines in the message we choose to\nbelieve that everything is ok and we will proceed.\n",
-		special, (extra && *extra) ? extra : "?"));
+		special ? special : "?", (extra && *extra) ? extra : "?"));
     }
     else if(reason == 1){
 	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (1)\nafter it. It appears that it may have been put there by a Pine\nwith a version number less than 4.50.\nSince there are no Received lines in the message we choose to believe that\nthe header was added by an old Pine and we will proceed.\n",
-		special));
+		special ? special : "?"));
     }
     else if(reason > 1){
 	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (%.30s)\nafter it. This is the right sort of value that Pine would normally put there,\nbut it doesn't match the value from the first message in the folder.\nThis may indicate that something is wrong.\nHowever, since there are no Received lines in the message we choose to\nbelieve that everything is ok and we will proceed.\n",
-		special, (extra && *extra) ? extra : "?"));
+		special ? special : "?", (extra && *extra) ? extra : "?"));
     }
 
     if(reason >= 0){
@@ -10239,8 +10640,8 @@ rd_prompt_about_forged_remote_data(reason, rd, extra)
 	gf_filter_init();
 	gf_link_filter(gf_html2plain,
 		       gf_html2plain_opt(NULL,
-			  ps_global->ttyo->screen_cols,
-			  &handles, GFHP_LOCAL_HANDLES));
+					 ps_global->ttyo->screen_cols, NULL,
+					 &handles, GFHP_LOCAL_HANDLES));
 	gf_set_so_readc(&gc, in_store);
 	gf_set_so_writec(&pc, out_store);
 	gf_pipe(gc, pc);
@@ -10884,7 +11285,7 @@ convert_pinerc_to_remote(ps, rem_pinerc_prefix)
 #endif
 
     if(ps->prc->outstanding_pinerc_changes)
-      write_pinerc(ps, Main);
+      write_pinerc(ps, Main, WRP_NONE);
 
 #ifndef	_WINDOWS
     ps->vars[V_USER_ID].is_used = 0;

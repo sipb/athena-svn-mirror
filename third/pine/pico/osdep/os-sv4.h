@@ -26,6 +26,7 @@ FILE *tmpfile();
 #include <string.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define  USE_DIRENT
 #include <dirent.h>
@@ -178,12 +179,5 @@ typedef unsigned short usign16_t;
 
 
 #define bcopy(a,b,s) memcpy (b, a, s)
-
-/*
- * Make sys_errlist visible
- */
-extern char *sys_errlist[];
-extern int   sys_nerr;
-
 
 #endif /* _PICO_OS_INCLUDED */

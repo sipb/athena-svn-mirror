@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: filter.c,v 1.1.1.3 2003-05-01 01:13:14 ghudson Exp $";
+static char rcsid[] = "$Id: filter.c,v 1.1.1.4 2005-01-26 17:56:42 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: filter.c,v 1.1.1.3 2003-05-01 01:13:14 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -76,6 +76,8 @@ int	gf_sreadc PROTO((unsigned char *));
 int	gf_swritec PROTO((int));
 int	gf_freadc PROTO((unsigned char *));
 int	gf_fwritec PROTO((int));
+int	gf_preadc PROTO((unsigned char *));
+int	gf_pwritec PROTO((int));
 void	gf_terminal PROTO((FILTER_S *, int));
 char   *gf_filter_puts PROTO((char *));
 void	gf_filter_eod PROTO((void));
@@ -107,9 +109,6 @@ int	so_file_puts PROTO((STORE_S *, char *));
 /*
  * System specific options
  */
-#ifdef	DOS
-#define	NO_PIPE
-#endif
 #if	defined(DOS) || defined(OS2)
 #define CRLF_NEWLINES
 #endif
@@ -200,8 +199,9 @@ so_get(source, name, rtype)
 	 */
 	if(so->name){
 	    if(!(so->txt = so_file_open(so))){
-		dprint(1, (debugfile, "so_get error: %s : %s", so->name,
-			   error_description(errno)));
+		dprint(1, (debugfile, "so_get error: %s : %s",
+		       so->name ? so->name : "?",
+		       error_description(errno)));
 		if(source == TmpFileStar)
 		  (void)unlink(so->name);
 
@@ -579,6 +579,27 @@ so_truncate(so, size)
 
 
 /*
+ * Report given storage object's position indicator.
+ * Returns 0 on failure.
+ */
+long
+so_tell(so)
+    STORE_S *so;
+{
+    if(so->src == CharStar){
+	return((long) (so->dp - (unsigned char *) so->txt));
+    }
+    else if(so->src == PicoText){
+	fatal("programmer botch: unsupported so_truncate call");
+	/*NOTREACHED*/
+	return(0); /* suppress dumb compiler warnings */
+    }
+    else			/* FileStar or TmpFileStar */
+      return(ftell((FILE *) so->txt));
+}
+
+
+/*
  * so_release - a rather misnamed function.  the idea is to release
  *              what system resources we can (e.g., open files).
  *              while maintaining a reference to it.
@@ -678,6 +699,11 @@ static	jmp_buf   gf_error_state;
 #define	ESCDOL	11
 #define	ESCPAR	12
 #define	EUC	13
+#define	BOL	14
+#define	FL_QLEV	15
+#define	FL_STF	16
+#define	FL_SIG	17
+#define	STOP_DECODING	18
 
 
 
@@ -693,17 +719,20 @@ static	jmp_buf   gf_error_state;
 #define	GF_QUE_END(F)	(&(F)->queue[GF_MAXBUF - 1])
 
 #define	GF_IP_INIT(F)	ip  = (F) ? &(F)->queue[(F)->queuein] : NULL
+#define	GF_IP_INIT_GLO(F)  (*ipp)  = (F) ? &(F)->queue[(F)->queuein] : NULL
 #define	GF_EIB_INIT(F)	eib = (F) ? GF_QUE_END(F) : NULL
+#define	GF_EIB_INIT_GLO(F)  (*eibp) = (F) ? GF_QUE_END(F) : NULL
 #define	GF_OP_INIT(F)	op  = (F) ? &(F)->queue[(F)->queueout] : NULL
 #define	GF_EOB_INIT(F)	eob = (F) ? &(F)->queue[(F)->queuein] : NULL
 
 #define	GF_IP_END(F)	(F)->queuein  = ip - GF_QUE_START(F)
+#define	GF_IP_END_GLO(F)  (F)->queuein  = (unsigned char *)(*ipp) - (unsigned char *)GF_QUE_START(F)
 #define	GF_OP_END(F)	(F)->queueout = op - GF_QUE_START(F)
 
-#define	GF_INIT(FI, FO)	register unsigned char *GF_OP_INIT(FI);	 \
-			register unsigned char *GF_EOB_INIT(FI); \
-			register unsigned char *GF_IP_INIT(FO);  \
-			register unsigned char *GF_EIB_INIT(FO);
+#define	GF_INIT(FI, FO)	unsigned char *GF_OP_INIT(FI);	 \
+			unsigned char *GF_EOB_INIT(FI); \
+			unsigned char *GF_IP_INIT(FO);  \
+			unsigned char *GF_EIB_INIT(FO);
 
 #define	GF_CH_RESET(F)	(op = eob = GF_QUE_START(F), \
 					    (F)->queueout = (F)->queuein = 0)
@@ -712,11 +741,36 @@ static	jmp_buf   gf_error_state;
 
 #define	GF_FLUSH(F)	((int)(GF_IP_END(F), (*(F)->f)((F), GF_DATA), \
 			       GF_IP_INIT(F), GF_EIB_INIT(F)))
+#define	GF_FLUSH_GLO(F)	((int)(GF_IP_END_GLO(F), (*(F)->f)((F), GF_DATA), \
+			       GF_IP_INIT_GLO(F), GF_EIB_INIT_GLO(F)))
 
 #define	GF_PUTC(F, C)	((int)(*ip++ = (C), (ip >= eib) ? GF_FLUSH(F) : 1))
+#define	GF_PUTC_GLO(F, C) ((int)(*(*ipp)++ = (C), ((*ipp) >= (*eibp)) ? GF_FLUSH_GLO(F) : 1))
+/*
+ * Introducing the *_GLO macros for use in splitting the big macros out
+ * into functions (wrap_flush, wrap_eol).  The reason we need a
+ * separate macro is because of the vars ip, eib, op, and eob, which are
+ * set up locally in a call to GF_INIT.  To preserve these variables
+ * in the new functions, we now pass pointers to these four vars.  Each
+ * of these new functions expects the presence of pointer vars
+ * ipp, eibp, opp, and eobp.  
+ */
 
 #define	GF_GETC(F, C)	((op < eob) ? (((C) = *op++), 1) : GF_CH_RESET(F))
 
+#define GF_COLOR_PUTC(F, C) {                                            \
+                              char *p;                                   \
+                              GF_PUTC_GLO((F)->next, TAG_EMBED);         \
+                              GF_PUTC_GLO((F)->next, TAG_FGCOLOR);       \
+                              p = color_to_asciirgb((C)->fg);            \
+                              for(; *p; p++)                             \
+                                GF_PUTC_GLO((F)->next, *p);              \
+                              GF_PUTC_GLO((F)->next, TAG_EMBED);         \
+                              GF_PUTC_GLO((F)->next, TAG_BGCOLOR);       \
+                              p = color_to_asciirgb((C)->bg);            \
+                              for(; *p; p++)                             \
+                                GF_PUTC_GLO((F)->next, *p);              \
+                            }
 
 /*
  * Generalized getc and putc routines.  provided here so they don't
@@ -729,10 +783,10 @@ static	jmp_buf   gf_error_state;
  */
 static struct gf_io_struct {
     FILE          *file;
+    PIPE_S        *pipe;
     char          *txtp;
     unsigned long  n;
 } gf_in, gf_out;
-
 
 #define	GF_SO_STACK	struct gf_so_stack
 static GF_SO_STACK {
@@ -776,6 +830,10 @@ gf_set_readc(gc, txt, len, src)
 	fseek(gf_in.file, 0L, 0);
 	*gc = gf_freadc;
     }
+    else if(src == PipeStar){
+	gf_in.pipe = (PIPE_S *)txt;
+	*gc = gf_preadc;
+    }
     else{
 	gf_in.txtp = (char *)txt;
 	*gc = gf_sreadc;
@@ -798,6 +856,10 @@ gf_set_writec(pc, txt, len, src)
     if(src == FileStar){
 	gf_out.file = (FILE *)txt;
 	*pc = gf_fwritec;
+    }
+    else if(src == PipeStar){
+	gf_out.pipe = (PIPE_S *)txt;
+	*pc = gf_pwritec;
     }
     else{
 	gf_out.txtp = (char *)txt;
@@ -936,6 +998,19 @@ gf_fwritec(c)
     return(rv);
 }
 
+int
+gf_preadc(c)
+unsigned char *c;
+{
+    return(pipe_readc(c, gf_in.pipe));
+}
+
+int
+gf_pwritec(c)
+    int c;
+{
+    return(pipe_writec(c, gf_out.pipe));
+}
 
 /* get a character from a string, return nonzero if things OK */
 /* assumes gf_out struct is filled in */
@@ -1210,18 +1285,19 @@ gf_bytes_piped()
  *  Returns: NULL on sucess, reason for failure (not alloc'd!) on error
  */
 char *
-gf_filter(cmd, prepend, source_so, pc, aux_filters)
+gf_filter(cmd, prepend, source_so, pc, aux_filters, disable_reset)
     char       *cmd, *prepend;
     STORE_S    *source_so;
     gf_io_t	pc;
     FILTLIST_S *aux_filters;
+    int         disable_reset;
 {
     unsigned char c;
     int	     flags;
-    char   *errstr = NULL, buf[MAILTMPLEN], *rfile = NULL;
+    char   *errstr = NULL, buf[MAILTMPLEN];
     PIPE_S *fpipe;
 
-    dprint(4, (debugfile, "so_filter: \"%s\"\n", cmd));
+    dprint(4, (debugfile, "so_filter: \"%s\"\n", cmd ? cmd : "?"));
 
     gf_filter_init();
     for( ; aux_filters && aux_filters->filter; aux_filters++)
@@ -1234,35 +1310,10 @@ gf_filter(cmd, prepend, source_so, pc, aux_filters)
      * Spawn filter feeding it data, and reading what it writes.
      */
     so_seek(source_so, 0L, 0);
-#ifdef	NO_PIPE
-    /*
-     * When there're no pipes for IPC, use an output file to collect
-     * the result...
-     */
-    flags = PIPE_WRITE | PIPE_NOSHELL | PIPE_RESET;
+    flags = PIPE_WRITE | PIPE_READ | PIPE_NOSHELL |
+			    (!disable_reset ? PIPE_RESET : 0);
 
-    /******
-       This has never worked. Take it out since it leaves temp file.
-    rfile = temp_nam(NULL, "pf");
-     ******/
-
-#else
-    flags = PIPE_WRITE | PIPE_READ | PIPE_NOSHELL | PIPE_RESET;
-#endif
-
-    if(fpipe = open_system_pipe(cmd, rfile ? &rfile : NULL, NULL, flags, 0)){
-#ifdef	NO_PIPE
-	if(prepend && (fputs(prepend, fpipe->out.f) == EOF
-		       || fputc('\n', fpipe->out.f) == EOF))
-	  errstr = error_description(errno);
-
-	/*
-	 * Write the output, and deal with the result later...
-	 */
-	while(!errstr && so_readc(&c, source_so))
-	  if(fputc(c, fpipe->out.f) == EOF)
-	    errstr = error_description(errno);
-#else
+    if(fpipe = open_system_pipe(cmd, NULL, NULL, flags, 0)){
 #ifdef	NON_BLOCKING_IO
 	int     n;
 
@@ -1307,8 +1358,8 @@ gf_filter(cmd, prepend, source_so, pc, aux_filters)
 	      clearerr(fpipe->in.f);
 	}
 #else
-	if(prepend && (fputs(prepend, fpipe->out.f) == EOF
-		       || fputc('\n', fpipe->out.f) == EOF))
+	if(prepend && (pipe_puts(prepend, fpipe) == EOF
+		       || pipe_putc('\n', fpipe) == EOF))
 	  errstr = error_description(errno);
 
 	/*
@@ -1316,40 +1367,22 @@ gf_filter(cmd, prepend, source_so, pc, aux_filters)
 	 * doesn't fill up before we start reading...
 	 */
 	while(!errstr && so_readc(&c, source_so))
-	  if(fputc(c, fpipe->out.f) == EOF)
+	  if(pipe_putc(c, fpipe) == EOF)
 	    errstr = error_description(errno);
 
-	fclose(fpipe->out.f);
-	fpipe->out.f = NULL;
-	while(!errstr && fgets(buf, sizeof(buf), fpipe->in.f))
+	if(pipe_close_write(fpipe))
+	  errstr = "Pipe command returned error.";
+	while(!errstr && pipe_gets(buf, sizeof(buf), fpipe))
 	  errstr = gf_filter_puts(buf);
 #endif /* NON_BLOCKING */
-#endif /* NO_PIPE */
 
-	gf_filter_eod();
-
-	if(close_system_pipe(&fpipe) && !errstr)
+	if(close_system_pipe(&fpipe, NULL, 0) && !errstr)
 	  errstr = "Pipe command returned error.";
 
-#ifdef	NO_PIPE
-	/*
-	 * retrieve filters result...
-	 */
-	{
-	    FILE *fp;
-
-	    if(rfile && (fp = fopen(rfile, STDIO_READ))){
-		while(!errstr && fgets(buf, sizeof(buf), fp))
-		  errstr = gf_filter_puts(buf);
-
-		fclose(fp);
-	    }
-
-	    if(rfile)
-	      fs_give((void **)&rfile);
-	}
-#endif
+	gf_filter_eod();
     }
+    else
+      errstr = "Error setting up pipe command.";
 
     return(errstr);
 }
@@ -1573,7 +1606,7 @@ gf_b64_binary(f, flg)
     static char v[] = {65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,
 		       65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,
 		       65,65,65,65,65,65,65,65,65,65,65,62,65,65,65,63,
-		       52,53,54,55,56,57,58,59,60,61,62,65,65,64,65,65,
+		       52,53,54,55,56,57,58,59,60,61,65,65,65,64,65,65,
 		       65, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,
 		       15,16,17,18,19,20,21,22,23,24,25,65,65,65,65,65,
 		       65,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
@@ -1690,6 +1723,7 @@ gf_qp_8bit(f, flg)
     FILTER_S *f;
     int       flg;
 {
+
     GF_INIT(f, f->next);
 
     if(flg == GF_DATA){
@@ -1725,15 +1759,45 @@ gf_qp_8bit(f, flg)
 		}
 
 		if(!isxdigit((unsigned char)c)){	/* must be hex! */
-		    fs_give((void **)&(f->line));
-		    gf_error("Non-hexadecimal character in QP encoding");
-		    /* NO RETURN */
+		    /*
+		     * First character after '=' not a hex digit.
+		     * This ain't right, but we're going to treat it as
+		     * plain old text instead of an '=' followed by hex.
+		     * In other words, they forgot to encode the '='.
+		     * Before 4.60 we just bailed with an error here, but now
+		     * we keep going as long as we are just displaying
+		     * the result (and not saving it or something).
+		     *
+		     * Wait! The users don't like that. They want to be able
+		     * to use it even if it might be wrong. So just plow
+		     * ahead even if displaying.
+		     *
+		     * Better have this be a constant string so that if we
+		     * get multiple instances of it in a single message we
+		     * can avoid the too many error messages problem. It
+		     * better be the same message as the one a few lines
+		     * below, as well.
+		     *
+		     * Turn off decoding after encountering such an error and
+		     * just dump the rest of the text as is.
+		     */
+		    state = STOP_DECODING;
+		    GF_PUTC(f->next, '=');
+		    GF_PUTC(f->next, c);
+		    q_status_message(SM_ORDER,3,3,
+			"Warning: Non-hexadecimal character in QP encoding!");
+
+		    dprint(2, (debugfile, "gf_qp_8bit: warning: non-hex char in QP encoding: char \"%c\" (%d) follows =\n", c, c));
+		    break;
 		}
 
 		if (isdigit ((unsigned char)c))
 		  f->t = c - '0';
 		else
 		  f->t = c - (isupper((unsigned char)c) ? 'A' - 10 : 'a' - 10);
+		
+		f->f2 = c;	/* store character in case we have to
+				   back out in !isxdigit below */
 
 		state = HEX;
 		break;
@@ -1741,9 +1805,15 @@ gf_qp_8bit(f, flg)
 	      case HEX :
 		state = DFL;
 		if(!isxdigit((unsigned char)c)){	/* must be hex! */
-		    fs_give((void **)&(f->line));
-		    gf_error("Non-hexadecimal character in QP encoding");
-		    /* NO RETURN */
+		    state = STOP_DECODING;
+		    GF_PUTC(f->next, '=');
+		    GF_PUTC(f->next, f->f2);
+		    GF_PUTC(f->next, c);
+		    q_status_message(SM_ORDER,3,3,
+			"Warning: Non-hexadecimal character in QP encoding!");
+
+		    dprint(2, (debugfile, "gf_qp_8bit: warning: non-hex char in QP encoding: char \"%c\" (%d) follows =%c\n", c, c, f->f2));
+		    break;
 		}
 
 		if (isdigit((unsigned char)c))
@@ -1774,6 +1844,10 @@ gf_qp_8bit(f, flg)
 		  GF_PUTC(f->next, ' ');
 
 		GF_QP_DEFAULT(f, c);	/* take care of 'c' in default way */
+		break;
+
+	      case STOP_DECODING :
+		GF_PUTC(f->next, c);
 		break;
 	    }
 	}
@@ -1994,16 +2068,15 @@ gf_2022_jp_to_euc(f, flg)
 	        break;
 
 	      case ESCPAR:			/* saw ESC ( */
-	        if(c == 'B' || c == 'J' || c == 'H'){
-		    state = DFL;
-		    f->t = 0;			/* done filtering */
-		}
-		else{
-		    GF_PUTC(f->next, '\033');	/* Don't set hibit for     */
-		    GF_PUTC(f->next, '(');	/* escape sequences, which */
-		    GF_PUTC(f->next, c);	/* this appears to be.     */
-		}
-
+		/*
+		 * Mark suggests that ESC ( anychar should be treated as an
+		 * end of the escape sequence (as opposed to just ESC ( B or
+		 * ESC ( @). So that's what we'll do. We know it's not quite
+		 * correct, but it shouldn't come up in real life.
+		 * Hubert 2004-12-07
+		 */
+		state = DFL;
+		f->t = 0;			/* done filtering */
 	        break;
 
 	      case EUC:				/* filtering into euc */
@@ -2164,14 +2237,12 @@ gf_euc_to_2022_jp(f, flg)
     }
 }
 
-
 /*
  * This filter converts characters in one character set (the character
  * set of a message, for example) to another (the user's character set).
- * The translation table is set using gf_convert_charset_opt().
  */
 void
-gf_convert_charset(f, flg)
+gf_convert_8bit_charset(f, flg)
     FILTER_S *f;
     int       flg;
 {
@@ -2192,7 +2263,7 @@ gf_convert_charset(f, flg)
 	 (*f->next->f)(f->next, GF_EOD);
     }
     else if(flg == GF_RESET){
-	 dprint(9, (debugfile, "-- gf_reset convert_charset\n"));
+	 dprint(9, (debugfile, "-- gf_reset convert_8bit_charset\n"));
 	 conv_table = (f->opt) ? (unsigned char *) (f->opt) : NULL;
 
     }
@@ -2200,15 +2271,107 @@ gf_convert_charset(f, flg)
 
 
 /*
- * Sets the translation table to be used by gf_convert_charset.
+ * This filter converts characters in UTF-8 to an 8-bit or 16-bit charset.
+ * Characters missing from the destination set, and invalid UTF-8 sequences,
+ * will be converted to "?".
  */
-void *
-gf_convert_charset_opt(conv_table)
-    unsigned char *conv_table;
+void
+gf_convert_utf8_charset(f, flg)
+    FILTER_S *f;
+    int       flg;
 {
-    return((void *) conv_table);
-}
+    static unsigned short *conv_table = NULL;
+    register int more = f->f2;
+    register long u = f->n;
 
+    /*
+     * "more" is the number of subsequent octets needed to complete a character,
+     * it is stored in f->f2.
+     * "u" is the accumulated Unicode character, it is stored in f->n
+     */
+
+    GF_INIT(f, f->next);
+
+    if(flg == GF_DATA){
+	register unsigned char c;
+
+	while(GF_GETC(f, c)) {
+	    if(!conv_table) {	/* can't do much if no conversion table */
+		GF_PUTC(f->next, c);
+	    }
+				/* UTF-8 continuation? */
+	    else if((c > 0x7f) && (c < 0xc0)) {
+		if (more) {
+		    u <<= 6;	/* shift current value by 6 bits */
+		    u |= c & 0x3f;
+		    if (!--more){ /* last octet? */
+			if (u < 0xffff){ /* translate if in the BMP */
+			    if((u = conv_table[u]) > 0xff) {
+				c = (unsigned char) (u >> 8);
+				GF_PUTC(f->next, c);
+			    }
+			    c = (unsigned char) u & 0xff;
+			}
+			else c = '?'; /* non-BMP character */
+			GF_PUTC(f->next, c);
+		    }
+		}
+		else {		/* continuation when not in progress */
+		    GF_PUTC(f->next, '?');
+		}
+	    }
+	    else{
+	        if(more) {	/* incomplete UTF-8 character */
+		    GF_PUTC(f->next, '?');
+		    more = 0;
+		}
+		if(c < 0x80){ /* U+0000 - U+007f */
+		    GF_PUTC(f->next, c);
+		}
+		else if(c < 0xe0){ /* U+0080 - U+07ff */
+		    u = c & 0x1f; /* first 5 bits of 12 */
+		    more = 1;
+		}
+		else if(c < 0xf0){ /* U+1000 - U+ffff */
+		    u = c & 0x0f; /* first 4 bits of 16 */
+		    more = 2;
+		}
+				/* in case we ever support non-BMP Unicode */
+		else if (c < 0xf8){ /* U+10000 - U+10ffff */
+		    u = c & 0x07; /* first 3 bits of 20.5 */
+		    more = 3;
+		}
+#if 0	/* ISO 10646 not in Unicode */
+		else if (c < 0xfc){ /* ISO 10646 20000 - 3ffffff */
+		    u = c & 0x03; /* first 2 bits of 26 */
+		    more = 4;
+		}
+		else if (c < 0xfe){ /* ISO 10646 4000000 - 7fffffff */
+		    u = c & 0x03; /* first 2 bits of 26 */
+		    more = 5;
+		}
+#endif
+		else{		/* not in Unicode */
+		    GF_PUTC(f->next, '?');
+		}
+	    }
+	}
+
+	f->f2 = more;
+	f->n = u;
+	GF_END(f, f->next);
+    }
+    else if(flg == GF_EOD){
+	 GF_FLUSH(f->next);
+	 (*f->next->f)(f->next, GF_EOD);
+    }
+    else if(flg == GF_RESET){
+	 dprint(9, (debugfile, "-- gf_reset convert_utf8_charset\n"));
+	 conv_table = f->opt;
+	 f->f2 = 0;
+	 f->n = 0L;
+    }
+}
 
 
 /*
@@ -2721,6 +2884,7 @@ typedef struct html_data {
     unsigned	bitbucket:1;		/* Ignore input */
     unsigned	head:1;			/* In doc's HEAD */
     unsigned	alt_entity:1;		/* use alternative entity values */
+    unsigned	wrote:1;		/* anything witten yet? */
 } HTML_DATA_S;
 
 
@@ -2729,10 +2893,12 @@ typedef struct html_data {
  */
 typedef	struct _html_opts {
     char      *base;			/* Base URL for this html file */
-    int	       columns;			/* Display columns */
+    int	       columns,			/* Display columns */
+	       indent;			/* Right margin */
     HANDLE_S **handlesp;		/* Head of handles */
     unsigned   strip:1;			/* Hilite TAGs allowed */
     unsigned   handles_loc:1;		/* Local handles requested? */
+    unsigned   outputted:1;		/* any */
 } HTML_OPT_S;
 
 
@@ -2740,6 +2906,8 @@ typedef	struct _html_opts {
  * Some macros to make life a little easier
  */
 #define	WRAP_COLS(X)	((X)->opt ? ((HTML_OPT_S *)(X)->opt)->columns : 80)
+#define	HTML_INDENT(X)	((X)->opt ? ((HTML_OPT_S *)(X)->opt)->indent : 0)
+#define	HTML_WROTE(X)	(HD(X)->wrote)
 #define	HTML_BASE(X)	((X)->opt ? ((HTML_OPT_S *)(X)->opt)->base : NULL)
 #define	STRIP(X)	((X)->opt && ((HTML_OPT_S *)(X)->opt)->strip)
 #define	HANDLESP(X)	(((HTML_OPT_S *)(X)->opt)->handlesp)
@@ -2878,7 +3046,8 @@ typedef	struct _html_opts {
 #ifdef	DEBUG
 #define	HTML_DEBUG_EL(S, D)   {						    \
 				 dprint(5, (debugfile, "-- html %s: %s\n",  \
-					    S, (D)->element		    \
+					    S ? S : "?",		    \
+					    (D)->element		    \
 						 ? (D)->element : "NULL")); \
 				 if(debug > 5){				    \
 				     PARAMETER *p;			    \
@@ -2897,6 +3066,11 @@ typedef	struct _html_opts {
 #define	HTML_DEBUG_EL(S, D)
 #endif
 
+#ifndef SYSTEM_PINE_INFO_PATH
+#define SYSTEM_PINE_INFO_PATH "/usr/local/lib/pine.info"
+#endif
+#define CHTML_VAR_EXPAND(S) (!strcmp(S, "PINE_INFO_PATH")   \
+			     ? SYSTEM_PINE_INFO_PATH : S)
 
 /*
  * Protos for Tag handlers
@@ -4919,7 +5093,7 @@ html_element_collector(fd, ch)
 	else if(ED(fd)->mkup_decl){
 	    if(ED(fd)->badform){
 		dprint(2, (debugfile, "-- html <!-- BAD: %.*s\n",
-			   ED(fd)->len, ED(fd)->buf));
+			   ED(fd)->len, ED(fd)->buf ? ED(fd)->buf : "?"));
 		/*
 		 * Invalid comment -- make some guesses as
 		 * to whether we should stop with this greater-than...
@@ -4933,7 +5107,7 @@ html_element_collector(fd, ch)
 	    }
 	    else{
 		dprint(5, (debugfile, "-- html <!-- OK: %.*s\n",
-			   ED(fd)->len, ED(fd)->buf));
+			   ED(fd)->len, ED(fd)->buf ? ED(fd)->buf : "?"));
 		if(ED(fd)->start_comment == ED(fd)->end_comment){
 		    if(ED(fd)->len > 10){
 			ED(fd)->buf[ED(fd)->len - 2] = '\0';
@@ -5106,14 +5280,14 @@ html_element_flush(el_data)
 	    else{
 		dprint(2, (debugfile,
 			   "** element: unexpected value: %.10s...\n",
-			   el_data->len ? el_data->buf : "\"\""));
+			   (el_data->len && el_data->buf) ? el_data->buf : "\"\""));
 		rv = 1;
 	    }
 	}
 	else{
 	    dprint(2, (debugfile,
 		       "** element: missing attribute name: %.10s...\n",
-		       el_data->len ? el_data->buf : "\"\""));
+		       (el_data->len && el_data->buf) ? el_data->buf : "\"\""));
 	    rv = 2;
 	}
 
@@ -5194,7 +5368,7 @@ html_element_comment(f, s)
 			  ;
 
 
-			HD(f)->bitbucket = (can_access(removing_quotes(s),
+			HD(f)->bitbucket = (can_access(CHTML_VAR_EXPAND(removing_quotes(s)),
 						       READ_ACCESS) != 0);
 		    }
 		}
@@ -5221,7 +5395,7 @@ html_element_comment(f, s)
 
 	    /* Include the named file */
 	    if(!struncmp(s += 9, "file=", 5)
-	       && (fp = fopen(removing_quotes(s+5), "r"))){
+	       && (fp = fopen(CHTML_VAR_EXPAND(removing_quotes(s+5)), "r"))){
 		html_element_output(f, HTML_NEWLINE);
 
 		while(fgets(buf, sizeof(buf), fp)){
@@ -5300,6 +5474,42 @@ html_element_comment(f, s)
 		else if(!strcmp(s, "HOME_DIR")){
 		    p = ps_global->home_dir;
 		}
+		else if(!strcmp(s, "PINE_CONF_PATH")){
+#if defined(_WINDOWS) || !defined(SYSTEM_PINERC)
+		    p = "/usr/local/lib/pine.conf";
+#else
+		    p = SYSTEM_PINERC;
+#endif
+		}
+		else if(!strcmp(s, "PINE_CONF_FIXED_PATH")){
+#ifdef SYSTEM_PINERC_FIXED
+		    p = SYSTEM_PINERC_FIXED;
+#else
+		    p = "/usr/local/lib/pine.conf.fixed";
+#endif
+		}
+		else if(!strcmp(s, "PINE_INFO_PATH")){
+		    p = SYSTEM_PINE_INFO_PATH;
+		}
+		else if(!strcmp(s, "MAIL_SPOOL_PATH")){
+		    p = sysinbox();
+		}
+		else if(!strcmp(s, "MAIL_SPOOL_LOCK_PATH")){
+		    /* Don't put the leading /tmp/. */
+		    int i, j;
+
+		    p = sysinbox();
+		    if(p){
+			for(j = 0, i = 0; p[i] && j < MAILTMPLEN - 1; i++){
+			    if(p[i] == '/')
+				buf[j++] = '\\';
+			    else
+			      buf[j++] = p[i];
+			}
+			buf[j++] = '\0';
+			p = buf;
+		    }
+		}
 		else
 		  p = NULL;
 
@@ -5369,6 +5579,7 @@ html_entity_collector(f, ch, alternate)
 	  case '#' :
 	    rv = atoi(&buf[1]);
 	    if(ps_global->pass_ctrl_chars
+	       || (ps_global->pass_c1_ctrl_chars && rv >= 0x80 && rv < 0xA0)
 	       || (rv == '\t' || rv == '\n' || rv == '\r'
 		   || (rv > 31 && rv < 127) || (rv > 159 && rv < 256)
 		   || (rv >= 0x2000 && rv <=0x2063)
@@ -5447,6 +5658,15 @@ gf_html2plain(f, flg)
     if(flg == GF_DATA){
 	register int c;
 	GF_INIT(f, f->next);
+
+	if(!HTML_WROTE(f)){
+	    int ii;
+
+	    for(ii = HTML_INDENT(f); ii > 0; ii--)
+	      html_putc(f, ' ');
+
+	    HTML_WROTE(f) = 1;
+	}
 
 	while(GF_GETC(f, c)){
 	    /*
@@ -6158,6 +6378,8 @@ void
 html_write_newline(f)
     FILTER_S *f;
 {
+    int i;
+
     if(! STRIP(f)){			/* First tie, off any embedded state */
 	if(HD(f)->in_anchor){
 	    html_putc(f, TAG_EMBED);
@@ -6174,7 +6396,7 @@ html_write_newline(f)
 	    html_putc(f, TAG_ULINEOFF);
 	}
 
-	if(HD(f)->color && HD(f)->color->fg[0] && HD(f)->color->bg[0]){
+	if(HD(f)->color && (HD(f)->color->fg[0] || HD(f)->color->bg[0])){
 	    char        *p;
 	    int          i;
 
@@ -6186,6 +6408,8 @@ html_write_newline(f)
     }
 
     html_write(f, "\015\012", 2);
+    for(i = HTML_INDENT(f); i > 0; i--)
+      html_putc(f, ' ');
 
     if(! STRIP(f)){			/* First tie, off any embedded state */
 	if(BOLD_BIT(f)){
@@ -6198,20 +6422,25 @@ html_write_newline(f)
 	    html_putc(f, TAG_ULINEON);
 	}
 
-	if(HD(f)->color && HD(f)->color->fg[0] && HD(f)->color->bg[0]){
-	    char        *p;
+	if(HD(f)->color && (HD(f)->color->fg[0] || HD(f)->color->bg[0])){
+	    char        *p, *tfg, *tbg;
 	    int          i;
 	    COLOR_PAIR  *tmp;
 
-	    tmp = new_color_pair(HD(f)->color->fg, HD(f)->color->bg);
+	    tfg = HD(f)->color->fg;
+	    tbg = HD(f)->color->bg;
+	    tmp = new_color_pair(tfg[0] ? tfg 
+	      : color_to_asciirgb(ps_global->VAR_NORM_FORE_COLOR),
+	      tbg[0] ? tbg
+	      : color_to_asciirgb(ps_global->VAR_NORM_BACK_COLOR));
 	    if(pico_is_good_colorpair(tmp)){
-		p = color_embed(HD(f)->color->fg, HD(f)->color->bg);
+		p = color_embed(tfg[0] ? tfg 
+				: ps_global->VAR_NORM_FORE_COLOR,
+				tbg[0] ? tbg 
+				: ps_global->VAR_NORM_BACK_COLOR);
 		for(i = 0; i < 2 * (RGBLEN + 2); i++)
 		  html_putc(f, p[i]);
 	    }
-
-	    HD(f)->color->fg[0] = '\0';
-	    HD(f)->color->bg[0] = '\0';
 
 	    if(tmp)
 	      free_color_pair(&tmp);
@@ -6221,7 +6450,7 @@ html_write_newline(f)
 
 
 /*
- * html_write - write given int array to the next filter.
+ * html_write - write given n-length string to next filter
  */
 void
 html_write(f, s, n)
@@ -6308,18 +6537,23 @@ html_putc(f, ch)
  * bound to a printer or composer.
  */
 void *
-gf_html2plain_opt(base, columns, handlesp, flags)
+gf_html2plain_opt(base, columns, margin, handlesp, flags)
     char      *base;
     int	       columns;
+    int	      *margin;
     HANDLE_S **handlesp;
     int	       flags;
 {
     HTML_OPT_S *op;
+    int		margin_l, margin_r;
 
     op = (HTML_OPT_S *) fs_get(sizeof(HTML_OPT_S));
 
     op->base	    = cpystr(base);
-    op->columns	    = columns;
+    margin_l	    = (margin) ? margin[0] : 0;
+    margin_r	    = (margin) ? margin[1] : 0;
+    op->indent	    = margin_l;
+    op->columns	    = columns - (margin_l + margin_r);
     op->strip	    = ((flags & GFHP_STRIPPED) == GFHP_STRIPPED);
     op->handlesp    = handlesp;
     op->handles_loc = ((flags & GFHP_LOCAL_HANDLES) == GFHP_LOCAL_HANDLES);
@@ -6433,14 +6667,18 @@ gf_control_filter(f, flg)
 
     if(flg == GF_DATA){
 	register unsigned char c;
+	register int filt_only_c0;
+
+	filt_only_c0 = f->opt ? (*(int *) f->opt) : 0;
 
 	while(GF_GETC(f, c)){
 
-	    if(iscntrl(c & 0x7f)
+	    if(((c < 0x20 || c == 0x7f)
+		|| (c >= 0x80 && c < 0xA0 && !filt_only_c0))
 	       && !(isspace((unsigned char) c)
 		    || c == '\016' || c == '\017' || c == '\033')){
-		GF_PUTC(f->next, '^');
-		GF_PUTC(f->next, c + '@');
+		GF_PUTC(f->next, c >= 0x80 ? '~' : '^');
+		GF_PUTC(f->next, (c == 0x7f) ? '?' : (c & 0x1f) + '@');
 	    }
 	    else
 	      GF_PUTC(f->next, c);
@@ -6504,25 +6742,49 @@ typedef struct wrap_col_s {
     unsigned	tags:1;
     unsigned	do_indent:1;
     unsigned	on_comma:1;
+    unsigned	flowed:1;
+    unsigned	delsp:1;
     unsigned	quoted:1;
+    unsigned	allwsp:1;
+    unsigned	hard_nl:1;
+    unsigned	leave_flowed:1;
+    unsigned    use_color:1;
     COLOR_PAIR *color;
+    STORE_S    *spaces;
     short	embedded,
 		space_len;
-    char       *lineendp,
-		space;
-    int		anchor;
-    int		wrap_col,
+    char       *lineendp;
+    int		anchor,
+		prefbrk,
+		prefbrkn,
+		quote_depth,
+		quote_count,
+		sig,
+		state,
+		wrap_col,
 		wrap_max,
+		margin_l,
+		margin_r,
 		indent;
     char	special[256];
 } WRAP_S;
 
-
-#define	WRAP_COL(F)	(((WRAP_S *)(F)->opt)->wrap_col)
-#define	WRAP_MAX_COL(F)	(((WRAP_S *)(F)->opt)->wrap_max)
+#define	WRAP_MARG_L(F)	(((WRAP_S *)(F)->opt)->margin_l)
+#define	WRAP_MARG_R(F)	(((WRAP_S *)(F)->opt)->margin_r)
+#define	WRAP_COL(F)	(((WRAP_S *)(F)->opt)->wrap_col - WRAP_MARG_R(F) - ((((WRAP_S *)(F)->opt)->leave_flowed) ? 1 : 0))
+#define	WRAP_MAX_COL(F)	(((WRAP_S *)(F)->opt)->wrap_max - WRAP_MARG_R(F) - ((((WRAP_S *)(F)->opt)->leave_flowed) ? 1 : 0))
 #define	WRAP_INDENT(F)	(((WRAP_S *)(F)->opt)->indent)
 #define	WRAP_DO_IND(F)	(((WRAP_S *)(F)->opt)->do_indent)
 #define	WRAP_COMMA(F)	(((WRAP_S *)(F)->opt)->on_comma)
+#define	WRAP_FLOW(F)	(((WRAP_S *)(F)->opt)->flowed)
+#define	WRAP_DELSP(F)	(((WRAP_S *)(F)->opt)->delsp)
+#define	WRAP_FL_QD(F)	(((WRAP_S *)(F)->opt)->quote_depth)
+#define	WRAP_FL_QC(F)	(((WRAP_S *)(F)->opt)->quote_count)
+#define	WRAP_FL_SIG(F)	(((WRAP_S *)(F)->opt)->sig)
+#define	WRAP_HARD(F)	(((WRAP_S *)(F)->opt)->hard_nl)
+#define	WRAP_LV_FLD(F)	(((WRAP_S *)(F)->opt)->leave_flowed)
+#define	WRAP_USE_CLR(F)	(((WRAP_S *)(F)->opt)->use_color)
+#define	WRAP_STATE(F)	(((WRAP_S *)(F)->opt)->state)
 #define	WRAP_QUOTED(F)	(((WRAP_S *)(F)->opt)->quoted)
 #define	WRAP_TAGS(F)	(((WRAP_S *)(F)->opt)->tags)
 #define	WRAP_BOLD(F)	(((WRAP_S *)(F)->opt)->bold)
@@ -6531,86 +6793,15 @@ typedef struct wrap_col_s {
 #define	WRAP_LASTC(F)	(((WRAP_S *)(F)->opt)->lineendp)
 #define	WRAP_EMBED(F)	(((WRAP_S *)(F)->opt)->embedded)
 #define	WRAP_ANCHOR(F)	(((WRAP_S *)(F)->opt)->anchor)
-#define	WRAP_SPACE(F)	(((WRAP_S *)(F)->opt)->space)
-#define	WRAP_SPACES(F)	(WRAP_SPACE(F) ? (((WRAP_S *)(F)->opt)->space_len): 0)
+#define	WRAP_PB_OFF(F)	(((WRAP_S *)(F)->opt)->prefbrk)
+#define	WRAP_PB_LEN(F)	(((WRAP_S *)(F)->opt)->prefbrkn)
+#define	WRAP_ALLWSP(F)	(((WRAP_S *)(F)->opt)->allwsp)
 #define	WRAP_SPC_LEN(F)	(((WRAP_S *)(F)->opt)->space_len)
-#define	WRAP_SPEC(S, C)	(S)[C]
+#define	WRAP_SPEC(F, C)	((WRAP_S *) (F)->opt)->special[C]
 #define	WRAP_COLOR(F)	(((WRAP_S *)(F)->opt)->color)
 #define	WRAP_COLOR_SET(F)  ((WRAP_COLOR(F)) && (WRAP_COLOR(F)->fg[0]))
-#define	WRAP_EOL(F)	{						\
-			    if(WRAP_BOLD(F)){				\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_BOLDOFF);	\
-			    }						\
-			    if(WRAP_ULINE(F)){				\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_ULINEOFF);	\
-			    }						\
-			    if(WRAP_INVERSE(F) || WRAP_ANCHOR(F)){	\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_INVOFF);		\
-			    }						\
-			    if(WRAP_COLOR_SET(F)){			\
-				char *p;				\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_FGCOLOR);	\
-				p = color_to_asciirgb(ps_global->VAR_NORM_FORE_COLOR);\
-				for(; *p; p++)				\
-				  GF_PUTC((F)->next, *p);		\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_BGCOLOR);	\
-				p = color_to_asciirgb(ps_global->VAR_NORM_BACK_COLOR);\
-				for(; *p; p++)				\
-				  GF_PUTC((F)->next, *p);		\
-			    }						\
-			    GF_PUTC((F)->next, '\015');			\
-			    GF_PUTC((F)->next, '\012');			\
-			    (F)->n = 0L;				\
-			    WRAP_SPACE(F) = 0;				\
-			}
-
-#define	WRAP_BOL(F)	{						\
-			    if(WRAP_BOLD(F)){				\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_BOLDON);		\
-			    }						\
-			    if(WRAP_ULINE(F)){				\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_ULINEON);	\
-			    }						\
-			    if(WRAP_INVERSE(F)){			\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_INVON);		\
-			    }						\
-			    if(WRAP_COLOR_SET(F)){			\
-				char *p;				\
-				if(WRAP_COLOR(F)->fg[0]){		\
-				  GF_PUTC((F)->next, TAG_EMBED);	\
-				  GF_PUTC((F)->next, TAG_FGCOLOR);	\
-				  p = color_to_asciirgb(WRAP_COLOR(F)->fg);\
-				  for(; *p; p++)			\
-				    GF_PUTC((F)->next, *p);		\
-				}					\
-				if(WRAP_COLOR(F)->bg[0]){		\
-				  GF_PUTC((F)->next, TAG_EMBED);	\
-				  GF_PUTC((F)->next, TAG_BGCOLOR);	\
-				  p = color_to_asciirgb(WRAP_COLOR(F)->bg);\
-				  for(; *p; p++)			\
-				    GF_PUTC((F)->next, *p);		\
-				}					\
-			    }						\
-			    if(WRAP_ANCHOR(F)){				\
-				char buf[64]; int i;			\
-				GF_PUTC((F)->next, TAG_EMBED);		\
-				GF_PUTC((F)->next, TAG_HANDLE);		\
-				sprintf(buf, "%d", WRAP_ANCHOR(F));	\
-				GF_PUTC((F)->next, (int) strlen(buf));	\
-				for(i = 0; buf[i]; i++)			\
-				  GF_PUTC((F)->next, buf[i]);		\
-			    }						\
-			}
-
-#define	WRAP_PUTC(F,C)	{						\
+#define	WRAP_SPACES(F)	(((WRAP_S *)(F)->opt)->spaces)
+#define	WRAP_PUTC(F,C,V) {						\
 			    if((F)->linep == WRAP_LASTC(F)){		\
 				size_t offset = (F)->linep - (F)->line;	\
 				fs_resize((void **) &(F)->line,		\
@@ -6619,7 +6810,16 @@ typedef struct wrap_col_s {
 				WRAP_LASTC(F) = &(F)->line[2*offset-1];	\
 			    }						\
 			    *(F)->linep++ = (C);			\
+			    if (V) (F)->f2++;				\
 			}
+
+#define	WRAP_EMBED_PUTC(F,C) {						\
+			    if((F)->f2){				\
+			        WRAP_PUTC((F), C, 0);			\
+			    }						\
+			    else					\
+			      so_writec(C, WRAP_SPACES(F));		\
+}
 
 #define	WRAP_COLOR_UNSET(F)	{					\
 			    if(WRAP_COLOR_SET(F)){			\
@@ -6627,138 +6827,27 @@ typedef struct wrap_col_s {
 			    }						\
 			}
 
-#define	WRAP_FLUSH(F)	{						\
-			    register char *s = f->line;			\
-			    register int   n;				\
-			    if(!f->n){					\
-				if(WRAP_DO_IND(F)){			\
-				    if(f->n = (long)(n = WRAP_INDENT(F))) \
-				      while(n-- > 0)			\
-					GF_PUTC((F)->next, ' ');	\
-				    WRAP_DO_IND(F) = 0;			\
-				}					\
-				WRAP_BOL(F);				\
-			    }						\
-			    if(WRAP_SPACE(F)){				\
-				GF_PUTC(f->next, WRAP_SPACE(F));	\
-				WRAP_SPACE(F) = 0;			\
-				f->n += WRAP_SPC_LEN(F);		\
-			    }						\
-			    for(n = f->linep - f->line; n > 0; n--){	\
-				if(*s == TAG_EMBED){			\
-				    if(n-- > 0){			\
-					GF_PUTC(f->next, TAG_EMBED);	\
-					switch(*++s){			\
-					  case TAG_BOLDON :		\
-					    WRAP_BOLD(f) = 1;		\
-					    break;			\
-					  case TAG_BOLDOFF :		\
-					    WRAP_BOLD(f) = 0;		\
-					    break;			\
-					  case TAG_ULINEON :		\
-					    WRAP_ULINE(f) = 1;		\
-					    break;			\
-					  case TAG_ULINEOFF :		\
-					    WRAP_ULINE(f) = 0;		\
-					    break;			\
-					  case TAG_INVOFF :		\
-					    WRAP_ANCHOR(f) = 0;		\
-					    break;			\
-					  case TAG_HANDLE :		\
-					    if(n-- > 0){		\
-						int i = *++s;		\
-						GF_PUTC(f->next, TAG_HANDLE); \
-						if(i <= n){		\
-						    n -= i;		\
-						    GF_PUTC(f->next, i); \
-						    WRAP_ANCHOR(f) = 0;	\
-						    while(1){		\
-							WRAP_ANCHOR(f)	\
-							  = (WRAP_ANCHOR(f) \
-							        * 10)	\
-								+ (*++s-'0');\
-							if(--i)		\
-							  GF_PUTC(f->next,*s);\
-							else		\
-							  break;	\
-						    }			\
-						}			\
-					    }				\
-					    break;			\
-					  case TAG_FGCOLOR :		\
-					    if(pico_usingcolor()	\
-					       && n >= RGBLEN){		\
-					      if(!WRAP_COLOR(f))	\
-						WRAP_COLOR(f)=new_color_pair(NULL,NULL); \
-					      strncpy(WRAP_COLOR(f)->fg, \
-						      s+1, RGBLEN);	\
-					      WRAP_COLOR(f)->fg[RGBLEN]='\0'; \
-					      i = RGBLEN;		\
-					      n -= i;			\
-					      while(i-- > 0)		\
-						GF_PUTC(f->next,	\
-							(*s++) & 0xff);	\
-					    }				\
-					    break;			\
-					  case TAG_BGCOLOR :		\
-					    if(pico_usingcolor()	\
-					       && n >= RGBLEN){		\
-					      if(!WRAP_COLOR(f))	\
-						WRAP_COLOR(f)=new_color_pair(NULL,NULL); \
-					      strncpy(WRAP_COLOR(f)->bg,\
-						      s+1, RGBLEN);	\
-					      WRAP_COLOR(f)->bg[RGBLEN]='\0'; \
-					      i = RGBLEN;		\
-					      n -= i;			\
-					      while(i-- > 0)		\
-						GF_PUTC(f->next,	\
-							(*s++) & 0xff);	\
-					    }				\
-					    break;			\
-					  default :			\
-					    break;			\
-					}				\
-				    }					\
-				}					\
-				else					\
-				  f->n++;				\
-				GF_PUTC(f->next, (*s++) & 0xff);	\
-			    }						\
-			    f->f2    = 0;				\
-			    f->linep = f->line;				\
-			}
-
-
-
+int     wrap_flush PROTO((FILTER_S *, unsigned char **, unsigned char **,
+			  unsigned char **, unsigned char **));
+int     wrap_flush_embed PROTO((FILTER_S *, unsigned char **, unsigned char **,
+				unsigned char **, unsigned char **));
+int     wrap_flush_s PROTO((FILTER_S *,char *, int, int, unsigned char **,
+			    unsigned char **,
+			    unsigned char **, unsigned char **));
+int     wrap_eol PROTO((FILTER_S *, int, unsigned char **, unsigned char **,
+			  unsigned char **, unsigned char **));
+int     wrap_bol PROTO((FILTER_S *, int, int, unsigned char **,
+			unsigned char **, unsigned char **, unsigned char **));
+int     wrap_quote_insert PROTO((FILTER_S *, unsigned char **,
+				 unsigned char **, unsigned char **, 
+				 unsigned char **));
 
 /*
- * the simple filter, breaks lines at end of white space nearest
+ * the no longer simple filter, breaks lines at end of white space nearest
  * to global "gf_wrap_width" in length
+ * It also supports margins, indents (inverse indenting, really) and
+ * flowed text (ala RFC 3676)
  *
- ***************************************************************************
- Things that seem broken with wrapping.
- Wrap_threshold is wrong the first time through because the indent only
-   applies to the 2nd and subsequent lines. So, header lines are getting
-   wrapped too soon on the first line. I think we could replace wrap_threshold
-   with the macro
-     WRAP_THRESHOLD(F) = WRAP_MAX_COL(F) - WRAP_DO_IND(F) * WRAP_INDENT(F)
- The test that wraps when f->n and ... >= WRAP_COL() seems like it ought to
-   be wrapping > WRAP_COL() instead so that we can put a word that fits
-   perfectly to the last column followed by a space in that last column.
-   Right now we're wrapping 80 column input at 79 columns when it would fit
-   just right in 80.
-   If we change that we probably want to also change the allocation of
-   f->line to be (WRAP_MAX_COL() + 1) chars so that we don't trigger the
-   fs_resize in WRAP_PUTC().
- The other comparison to wrap_threshold, when !f->n, should probably not
-   change to > instead of >=.
- In the GF_RESET code which sets special there is a WRAP_QUOTED() call which
-   shouldn't be there.
- I was going to make the above changes right before releasing 4.50, but
-   chickened out. For one thing, the WRAP_COMMA stuff is broken by the
-   above changes.
-       Hubert 2002-11-14
- ***************************************************************************
  */
 void
 gf_wrap(f, flg)
@@ -6771,195 +6860,572 @@ gf_wrap(f, flg)
     if(flg == GF_DATA){
 	register unsigned char c;
 	register int state = f->f1;
-	int	     wrap_threshold = WRAP_MAX_COL(f) - WRAP_INDENT(f);
-	char	    *special = ((WRAP_S *) f->opt)->special;
+	register int x;
 
 	while(GF_GETC(f, c)){
 
 	    switch(state){
-	      case CCR :
-		state = DFL;			/* CRLF or CR in text ? */
-		WRAP_FLUSH(f);			/* it's a newline to us */
-		WRAP_EOL(f);
-		WRAP_BOL(f);
-		/*
-		 * When we get to a real end of line, we don't need to
-		 * remember what the special color was anymore because
-		 * we aren't going to be changing back to it. We unset it
-		 * so that we don't keep resetting the color to normal.
-		 */
-		WRAP_COLOR_UNSET(f);
-		if(c == '\012')			/* process anything but LF */
-		  break;
+	      case CCR :				/* CRLF or CR in text ? */
+		state = BOL;				/* either way, handle start */
 
-	      case DFL :
-		if(WRAP_SPEC(special, c))
-		  switch(c){
-		    default :
-		      if(WRAP_QUOTED(f))
-			break;
+		if(WRAP_FLOW(f)){
+		    if(f->f2 == 0 && WRAP_SPC_LEN(f)){	/* wrapped line */
+			/*
+			 * whack trailing space char, but be aware
+			 * of embeds in space buffer.  grok them just
+			 * in case they contain a 0x20 value
+			 */
+			if(WRAP_DELSP(f)){
+			    char *sb, *sbp, *scp = NULL;
+			    int   x;
 
-		      /*
-		       * This WRAP_FLUSH() was flushing spaces even if they
-		       * went past the wrap column, causing us to go to the
-		       * next line and erase whatever is there. Perhaps
-		       * there is a smarter way to handle this. We'll just
-		       * stop putting out characters when we get to the
-		       * wrap column since they will make it to the end of
-		       * the line and be invisible anyway. If f->f2 then
-		       * there are some real characters that need to be
-		       * flushed. The problem being solved (by the addition
-		       * of the if() statement) only happens when
-		       * there is a string of more than one space that
-		       * overlaps the wrap column.
-		       */
-		      if(f->f2 || !(f->n + WRAP_SPACES(f) >= WRAP_COL(f)))
-		        WRAP_FLUSH(f);		/* flush buf */
-
-		      switch(WRAP_SPACE(f) = c){ /* remember separator */
-			case ' ' :
-			  WRAP_SPC_LEN(f) = 1;
-			  break;
-
-			case TAB :
-			{
-			    int i = (int) f->n;
-			    while(++i & 0x07)
-			      ;
-
-			    WRAP_SPC_LEN(f) = i - (int) f->n;
-			}
-
-			break;
-
-			default :		/* some control char? */
-			  WRAP_SPC_LEN(f) = 2;
-			  break;
-		      }
-
-		      continue;
-
-		    case '\"' :
-		      WRAP_QUOTED(f) = !WRAP_QUOTED(f);
-		      break;
-
-		    case '\015' :		/* already has newline? */
-		      state = CCR;
-		      continue;
-
-		    case '\012' :		/* bare LF in text? */
-		      WRAP_FLUSH(f);		/* they must've meant */
-		      WRAP_EOL(f);		/* newline... */
-		      WRAP_BOL(f);
-		      continue;
-
-		    case (unsigned char) TAG_EMBED :
-		      WRAP_PUTC(f, TAG_EMBED);
-		      state = TAG;
-		      continue;
-
-		    case ',' :
-		      if(!WRAP_QUOTED(f)){
-			  WRAP_PUTC(f, ',');
-			  WRAP_FLUSH(f);
-			  WRAP_SPACE(f) = 0;
-			  continue;
-		      }
-
-		      break;
-		  }
-
-		if(!f->n && (WRAP_SPACES(f) + f->f2 >= wrap_threshold)){
-		    char *ep, *space = NULL;
-		    int   cntr, new_f2;
-
-		    /* Flush the buf'd line up to last WS */
-		    if(WRAP_COMMA(f)){
-			char *p;
-
-			new_f2 = cntr = f->f2;
-			for(p = f->line; p < f->linep; p++){
-			    /*
-			     * Don't split at WS which is in the middle
-			     * of a tag.
-			     */
-			    switch((unsigned char)*p){
-			      case (unsigned char)TAG_EMBED:
-				if(++p >= f->linep)
-				  break;
-
-				switch(*p){
-				  case TAG_FGCOLOR:
-				  case TAG_BGCOLOR:
-				    p += RGBLEN;
+			    for(sb = sbp = (char *)so_text(WRAP_SPACES(f)); *sbp; sbp++){
+				switch(*sbp){
+				  case ' ' :
+				    scp = sbp;
 				    break;
 
-				  case TAG_HANDLE:
-				    if(++p >= f->linep)
-				      break;
-					
-				    p += (*p);
+				  case TAG_EMBED :
+				    sbp++;
+				    switch (*sbp++){
+				      case TAG_HANDLE :
+					x = (int) *sbp++;
+					if(strlen(sbp) >= x)
+					  sbp += (x - 1);
+
+					break;
+
+				      case TAG_FGCOLOR :
+				      case TAG_BGCOLOR :
+					if(strlen(sbp) >= RGBLEN)
+					  sbp += (RGBLEN - 1);
+
+					break;
+
+				      default :
+					break;
+				    }
+
 				    break;
 
-				  default:
+				  default :
 				    break;
 				}
-
-				continue;
-				break;
-				
-			      default:
-				break;
 			    }
-				
-			    cntr--;
 
-			    if(p < f->linep && isspace((unsigned char)*p)){
-				space = p;
-				new_f2 = cntr;
+			    /* replace space buf without trailing space char */
+			    if(scp){
+				STORE_S *ns = so_get(CharStar, NULL, EDIT_ACCESS);
+
+				*scp++ = '\0';
+				WRAP_SPC_LEN(f)--;
+
+				so_puts(ns, sb);
+				so_puts(ns, scp);
+
+				so_give(&WRAP_SPACES(f));
+				WRAP_SPACES(f) = ns;
+			    }
+			}
+		    }
+		    else{				/* fixed line */
+			WRAP_HARD(f) = 1;
+			wrap_flush(f, &ip, &eib, &op, &eob);
+			wrap_eol(f, 0, &ip, &eib, &op, &eob);
+
+			/*
+			 * When we get to a real end of line, we don't need to
+			 * remember what the special color was anymore because
+			 * we aren't going to be changing back to it. We unset it
+			 * so that we don't keep resetting the color to normal.
+			 */
+			WRAP_COLOR_UNSET(f);
+		    }
+
+		    if(c == '\012'){			/* get c following LF */
+		      break;
+		    }
+		    /* else c is first char of new line, fall thru */
+		}
+		else{
+		    wrap_flush(f, &ip, &eib, &op, &eob);
+		    wrap_eol(f, 0, &ip, &eib, &op, &eob);
+		    WRAP_COLOR_UNSET(f);		/* see note above */
+		    if(c == '\012'){
+			break;
+		    }
+		    /* else fall thru to deal with beginning of line */
+		}
+
+	      case BOL :
+		if(WRAP_FLOW(f)){
+		    if(c == '>'){
+			WRAP_FL_QC(f) = 1;		/* init it */
+			state = FL_QLEV;		/* go collect it */
+		    }
+		    else {
+			/* if EMBEDed, process it and return here */
+			if(c == (unsigned char) TAG_EMBED){
+			    WRAP_EMBED_PUTC(f, TAG_EMBED);
+			    WRAP_STATE(f) = state;
+			    state = TAG;
+			    continue;
+			}
+
+			/* quote level change implies new paragraph */
+			if(WRAP_FL_QD(f)){
+			    WRAP_FL_QD(f) = 0;
+			    if(WRAP_HARD(f) == 0){
+				WRAP_HARD(f) = 1;
+				wrap_flush(f, &ip, &eib, &op, &eob);
+				wrap_eol(f, 0, &ip, &eib, &op, &eob);
+				WRAP_COLOR_UNSET(f);	/* see note above */
 			    }
 			}
 
-			if(space){
-			    ep = f->linep;
-			    f->linep = space;
+			if(WRAP_HARD(f)){
+			    wrap_bol(f, 0, 1, &ip, &eib, &op,
+				     &eob);   /* write quoting prefix */
+			    WRAP_HARD(f) = 0;			    
+			}
+
+			switch (c) {
+			  case '\015' :			/* a blank line? */
+			    wrap_flush(f, &ip, &eib, &op, &eob);
+			    state = CCR;		/* go collect it */
+			    break;
+
+			  case ' ' :			/* space stuffed */
+			    state = FL_STF;		/* just eat it */
+			    break;
+
+			  case '-' :			/* possible sig-dash */
+			    WRAP_FL_SIG(f) = 1;	        /* init state */
+			    state = FL_SIG;		/* go collect it */
+			    break;
+
+			  default :
+			    state = DFL;		/* go back to normal */
+			    goto case_dfl;		/* handle c like DFL case */
 			}
 		    }
-
-		    WRAP_FLUSH(f);		/* write buffered */
-		    WRAP_EOL(f);		/* write end of line */
-		    WRAP_DO_IND(f) = 1;		/* indent next line */
-
-		    if(space){
-			f->linep = f->line;
-			while(++space < ep)
-			  *f->linep++ = *space;
-
-			f->f2 = new_f2;
+		}
+		else{
+		    state = DFL;
+		    if(WRAP_COMMA(f) && c == TAB){
+			wrap_bol(f, 1, 0, &ip, &eib, &op,
+				 &eob);    /* convert to normal indent */
+			break;
 		    }
-		}
 
-		WRAP_PUTC(f, c);
-
-		if(c == '\t' && WRAP_COMMA(f)){
-		    int i = (int) f->n;
-		    while(++i & 0x07)
-		      ;
-
-		    f->f2 += i - (int) f->n;
-		}
-		else
-		  f->f2++;
-
-		if(f->n && (f->n + f->f2 + WRAP_SPACES(f) >= WRAP_COL(f))){
-		    WRAP_EOL(f);		/* write end of line */
-		    WRAP_DO_IND(f) = 1;		/* indent next line */
+		    wrap_bol(f,0,0, &ip, &eib, &op, &eob);
+		    goto case_dfl;			/* handle c like DFL case */
 		}
 
 		break;
 
+	      case  FL_QLEV :
+		if(c == '>'){				/* another level */
+		    WRAP_FL_QC(f)++;
+		}
+		else {
+		    /* if EMBEDed, process it and return here */
+		    if(c == (unsigned char) TAG_EMBED){
+			WRAP_EMBED_PUTC(f, TAG_EMBED);
+			WRAP_STATE(f) = state;
+			state = TAG;
+			continue;
+		    }
+
+		    /* quote level change signals new paragraph */
+		    if(WRAP_FL_QC(f) != WRAP_FL_QD(f)){
+			WRAP_FL_QD(f) = WRAP_FL_QC(f);
+			if(WRAP_HARD(f) == 0){		/* add hard newline */ 
+			    WRAP_HARD(f) = 1;		/* hard newline */
+			    wrap_flush(f, &ip, &eib, &op, &eob);
+			    wrap_eol(f, 0, &ip, &eib, &op, &eob);
+			    WRAP_COLOR_UNSET(f);	/* see note above */
+			}
+		    }
+
+		    if(WRAP_HARD(f)){
+			wrap_bol(f,0,1, &ip, &eib, &op, &eob);
+			WRAP_HARD(f) = 0;
+		    }
+
+		    switch (c) {
+		      case '\015' :			/* a blank line? */
+			wrap_flush(f, &ip, &eib, &op, &eob);
+			state = CCR;			/* go collect it */
+			break;
+
+		      case ' ' :			/* space-stuffed! */
+			state = FL_STF;			/* just eat it */
+			break;
+
+		      case '-' :			/* sig dash? */
+			WRAP_FL_SIG(f) = 1;
+			state = FL_SIG;
+			break;
+
+		      default :				/* something else */
+			state = DFL;
+			goto case_dfl;			/* handle c like DFL */
+		    }
+		}
+
+		break;
+
+	      case FL_STF :				/* space stuffed */
+		switch (c) {
+		  case '\015' :				/* a blank line? */
+		    wrap_flush(f, &ip, &eib, &op, &eob);
+		    state = CCR;			/* go collect it */
+		    break;
+
+		  case (unsigned char) TAG_EMBED :	/* process TAG data */
+		    WRAP_EMBED_PUTC(f, TAG_EMBED);
+		    WRAP_STATE(f) = state;		/* and return */
+		    state = TAG;
+		    continue;
+
+		  case '-' :				/* sig dash? */
+		    WRAP_FL_SIG(f) = 1;
+		    WRAP_ALLWSP(f) = 0;
+		    state = FL_SIG;
+		    break;
+
+		  default :				/* something else */
+		    state = DFL;
+		    goto case_dfl;			/* handle c like DFL */
+		}
+
+		break;
+
+	      case FL_SIG :				/* sig-dash collector */
+		switch (WRAP_FL_SIG(f)){		/* possible sig-dash? */
+		  case 1 :
+		    if(c != '-'){			/* not a sigdash */
+			if((f->n + WRAP_SPC_LEN(f) + 1) > WRAP_COL(f)){
+			    wrap_flush_embed(f, &ip, &eib, &op,
+					     &eob);      /* note any embedded*/
+			    wrap_eol(f, 1, &ip, &eib,
+				     &op, &eob);       /* plunk down newline */
+			    wrap_bol(f, 1, 1, &ip, &eib,
+				     &op, &eob);         /* write any prefix */
+			}
+
+			WRAP_PUTC(f,'-', 1);		/* write what we got */
+
+			WRAP_FL_SIG(f) = 0;
+			state = DFL;
+			goto case_dfl;
+		    }
+
+		    /* don't put anything yet until we know to wrap or not */
+		    WRAP_FL_SIG(f) = 2;
+		    break;
+
+		  case 2 :
+		    if(c != ' '){			    /* not a sigdash */
+			WRAP_PUTC(f, '-', 1);
+			if((f->n + WRAP_SPC_LEN(f) + 2) > WRAP_COL(f)){
+			    wrap_flush_embed(f, &ip, &eib, &op,
+					     &eob);      /* note any embedded*/
+			    wrap_eol(f, 1, &ip, &eib,
+				     &op, &eob);       /* plunk down newline */
+			    wrap_bol(f, 1, 1, &ip, &eib, &op, 
+				     &eob);   	         /* write any prefix */
+			}
+
+			WRAP_PUTC(f,'-', 1);		/* write what we got */
+
+			WRAP_FL_SIG(f) = 0;
+			state = DFL;
+			goto case_dfl;
+		    }
+
+		    /* don't put anything yet until we know to wrap or not */
+		    WRAP_FL_SIG(f) = 3;
+		    break;
+
+		  case 3 :
+		    if(c == '\015'){			/* success! */
+			/* known sigdash, newline if soft nl */
+			if(WRAP_SPC_LEN(f)){
+			    wrap_flush(f, &ip, &eib, &op, &eob);
+			    wrap_eol(f, 0, &ip, &eib, &op, &eob);
+			    wrap_bol(f, 0, 1, &ip, &eib, &op, &eob);
+			}
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,' ',1);
+
+			state = CCR;
+			break;
+		    }
+		    else{
+			WRAP_FL_SIG(f) = 4;		/* possible success */
+		    }
+
+		  case 4 :
+		    switch(c){
+		      case (unsigned char) TAG_EMBED :
+			/*
+			 * At this point we're almost 100% sure that we've got
+			 * a sigdash.  Putc it (adding newline if previous
+			 * was a soft nl) so we get it the right color
+			 * before we store this new embedded stuff
+			 */
+			if(WRAP_SPC_LEN(f)){
+			    wrap_flush(f, &ip, &eib, &op, &eob);
+			    wrap_eol(f, 0, &ip, &eib, &op, &eob);
+			    wrap_bol(f, 0, 1, &ip, &eib, &op, &eob);
+			}
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,' ',1);
+
+			WRAP_FL_SIG(f) = 5;
+			break;
+
+		      case '\015' :			/* success! */
+			/* 
+			 * We shouldn't get here, but in case we do, we have
+			 * not yet put the sigdash
+			 */
+			if(WRAP_SPC_LEN(f)){
+			    wrap_flush(f, &ip, &eib, &op, &eob);
+			    wrap_eol(f, 0, &ip, &eib, &op, &eob);
+			    wrap_bol(f, 0, 1, &ip, &eib, &op, &eob);
+			}
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,'-',1);
+			WRAP_PUTC(f,' ',1);
+
+			state = CCR;
+			break;
+
+		      default :				/* that's no sigdash! */
+			/* write what we got but didn't put yet */
+			WRAP_PUTC(f,'-', 1);
+			WRAP_PUTC(f,'-', 1);
+			WRAP_PUTC(f,' ', 1);
+
+			WRAP_FL_SIG(f) = 0;
+			wrap_flush(f, &ip, &eib, &op, &eob);
+			WRAP_SPC_LEN(f) = 1;
+			state = DFL;			/* set normal state */
+			goto case_dfl;			/* and go do "c" */
+		    }
+
+		    break;
+
+		  case 5 :
+		    WRAP_STATE(f) = FL_SIG;		/* come back here */
+		    WRAP_FL_SIG(f) = 6;			/* and seek EOL */
+		    WRAP_EMBED_PUTC(f, TAG_EMBED);
+		    state = TAG;			/* process embed */
+		    goto case_tag;
+
+		  case 6 :
+		    /* 
+		     * at this point we've already putc the sigdash in case 4
+		     */
+		    switch(c){
+		      case (unsigned char) TAG_EMBED :
+			WRAP_FL_SIG(f) = 5;
+			break;
+
+		      case '\015' :			/* success! */
+			state = CCR;
+			break;
+
+		      default :				/* that's no sigdash! */
+			/* 
+			 * probably never reached (fake sigdash with embedded
+			 * stuff) but if this did get reached, then we
+			 * might have accidentally disobeyed a soft nl
+			 */
+			WRAP_FL_SIG(f) = 0;
+			wrap_flush(f, &ip, &eib, &op, &eob);
+			WRAP_SPC_LEN(f) = 1;
+			state = DFL;			/* set normal state */
+			goto case_dfl;			/* and go do "c" */
+		    }
+
+		    break;
+
+
+		  default :
+		    dprint(2, (debugfile, "-- gf_wrap: BROKEN FLOW STATE: %d\n",
+			       WRAP_FL_SIG(f)));
+		    WRAP_FL_SIG(f) = 0;
+		    state = DFL;			/* set normal state */
+		    goto case_dfl;			/* and go process "c" */
+		}
+
+		break;
+
+	      case_dfl :
+	      case DFL :
+		if(WRAP_SPEC(f, c)){
+		    switch(c){
+		      default :
+			if(WRAP_QUOTED(f))
+			  break;
+
+			if(f->f2){			/* any non-lwsp to flush? */
+			    if(WRAP_COMMA(f)){
+				/* remember our second best break point */
+				WRAP_PB_OFF(f) = f->linep - f->line;
+				WRAP_PB_LEN(f) = f->f2;
+				break;
+			    }
+			    else
+			      wrap_flush(f, &ip, &eib, &op, &eob);
+			}
+
+			switch(c){			/* remember separator */
+			  case ' ' :
+			    WRAP_SPC_LEN(f)++;
+			    so_writec(' ',WRAP_SPACES(f));
+			    break;
+
+			  case TAB :
+			  {
+			      int i = (int) f->n + WRAP_SPC_LEN(f);
+
+			      do
+				WRAP_SPC_LEN(f)++;
+			      while(++i & 0x07);
+
+			      so_writec(TAB,WRAP_SPACES(f));
+			  }
+
+			  break;
+
+			  default :			/* some control char? */
+			    WRAP_SPC_LEN(f) += 2;
+			    break;
+			}
+
+			continue;
+
+		      case '\"' :
+			WRAP_QUOTED(f) = !WRAP_QUOTED(f);
+			break;
+
+		      case '\015' :			/* already has newline? */
+			state = CCR;
+			continue;
+
+		      case '\012' :			 /* bare LF in text? */
+			wrap_flush(f, &ip, &eib, &op, &eob); /* they must've */
+			wrap_eol(f, 0, &ip, &eib, &op, &eob);       /* meant */
+			wrap_bol(f,1,1, &ip, &eib, &op, &eob); /* newline... */
+			continue;
+
+		      case (unsigned char) TAG_EMBED :
+			WRAP_EMBED_PUTC(f, TAG_EMBED);
+			WRAP_STATE(f) = state;
+			state = TAG;
+			continue;
+
+		      case ',' :
+			if(!WRAP_QUOTED(f)){
+			    if(f->n + WRAP_SPC_LEN(f) + f->f2 + 1 > WRAP_COL(f)){
+				if(WRAP_ALLWSP(f))    /* if anything visible */
+				  wrap_flush(f, &ip, &eib, &op,
+					     &eob);  /* ... blat buf'd chars */
+
+				wrap_eol(f, 1, &ip, &eib, &op,
+					 &eob);  /* plunk down newline */
+				wrap_bol(f, 1, 1, &ip, &eib, &op,
+					 &eob);    /* write any prefix */
+			    }
+
+			    WRAP_PUTC(f, ',', 1);	/* put out comma */
+			    wrap_flush(f, &ip, &eib, &op,
+				       &eob);       /* write buf'd chars */
+			    continue;
+			}
+
+			break;
+		    }
+		}
+
+		/* what do we have to write? */
+		if(c == TAB){
+		    int i = (int) f->n;
+
+		    while(i & 0x07)
+		      i++;
+
+		    x = i - f->n;
+		}
+		else if(iscntrl((unsigned char) c))
+		  x = 2;
+		else
+		  x = 1;
+
+		if(WRAP_ALLWSP(f)){			/* if anything visible */
+		    if(f->n + WRAP_SPC_LEN(f) + f->f2 + x > WRAP_MAX_COL(f)){
+			/*
+			 * a little reaching behind the curtain here.
+			 * if there's at least a preferable break point, use
+			 * it and stuff what's left back into the wrap buffer.
+			 * note, the "vis" variable is just a count, visibility
+			 * is only tied to a particular character in order to 
+			 * maintain the count to determine display length.
+			 * it's not a problem that we're arbitraily assigning
+			 * visibility in WRAP_PUTC below.
+			 * also, the "nwsp" latch is used to skip leading
+			 * whitespace
+			 */
+			if(WRAP_PB_OFF(f)){
+			    char *p1 = f->line + WRAP_PB_OFF(f);
+			    char *p2 = f->linep;
+			    int   nwsp = 0, vis = f->f2 - WRAP_PB_LEN(f);
+
+			    f->linep = p1;
+
+			    wrap_flush(f, &ip, &eib, &op,
+				       &eob); /* flush shortened buf */
+			    
+			    while(p1 < p2){
+				char c2 = *p1++;
+				if(c2 != ' ' || nwsp){
+				    WRAP_PUTC(f, c2, (vis > 0));
+				    nwsp = 1;
+				}
+
+				vis--;
+			    }
+			}
+			else
+			  wrap_flush(f, &ip, &eib, &op, &eob);
+
+			wrap_eol(f, 1, &ip, &eib, &op,
+				 &eob);     /* plunk down newline */
+			wrap_bol(f,1,1, &ip, &eib, &op,
+				 &eob);      /* write any prefix */
+		    }
+		}
+		else if((f->n + WRAP_SPC_LEN(f) + f->f2 + x) > WRAP_COL(f)){
+		    wrap_flush_embed(f, &ip, &eib, &op, &eob);
+		    wrap_eol(f, 1, &ip, &eib, &op,
+			     &eob);	    /* plunk down newline */
+		    wrap_bol(f,1,1, &ip, &eib, &op,
+			     &eob);	      /* write any prefix */
+		}
+
+		WRAP_PUTC(f, c, 1);
+		break;
+
+	      case_tag :
 	      case TAG :
-		WRAP_PUTC(f, c);
+		WRAP_EMBED_PUTC(f, c);
 		switch(c){
 		  case TAG_HANDLE :
 		    WRAP_EMBED(f) = -1;
@@ -6973,22 +7439,28 @@ gf_wrap(f, flg)
 		    break;
 
 		  default :
-		    state = DFL;
+		    state = WRAP_STATE(f);
 		    break;
 		}
 
 		break;
 
 	      case HANDLE :
-		WRAP_PUTC(f, c);
+		WRAP_EMBED_PUTC(f, c);
 		WRAP_EMBED(f) = c;
 		state = HDATA;
 		break;
 
 	      case HDATA :
-		WRAP_PUTC(f, c);
-		if(!(WRAP_EMBED(f) -= 1))
-		  state = DFL;
+		if(f->f2){
+		  WRAP_PUTC(f, c, 0);
+		}
+		else
+		  so_writec(c, WRAP_SPACES(f));
+
+		if(!(WRAP_EMBED(f) -= 1)){
+		    state = WRAP_STATE(f);
+		}
 
 		break;
 	    }
@@ -6998,22 +7470,24 @@ gf_wrap(f, flg)
 	GF_END(f, f->next);
     }
     else if(flg == GF_EOD){
-	WRAP_FLUSH(f);
+	wrap_flush(f, &ip, &eib, &op, &eob);
 	if(WRAP_COLOR(f))
 	  free_color_pair(&WRAP_COLOR(f));
 
 	fs_give((void **) &f->line);	/* free temp line buffer */
+	so_give(&WRAP_SPACES(f));
 	fs_give((void **) &f->opt);	/* free wrap widths struct */
 	GF_FLUSH(f->next);
 	(*f->next->f)(f->next, GF_EOD);
     }
     else if(flg == GF_RESET){
 	dprint(9, (debugfile, "-- gf_reset wrap\n"));
-	f->f1    = DFL;
+	f->f1    = BOL;
 	f->n     = 0L;		/* displayed length of line so far */
 	f->f2	 = 0;		/* displayed length of buffered chars */
+	WRAP_HARD(f) = 1;	/* starting at beginning of line */
 	if(! (WRAP_S *) f->opt)
-	  f->opt = gf_wrap_filter_opt(75, 80, 0, 0);
+	  f->opt = gf_wrap_filter_opt(75, 80, NULL, 0, 0);
 
 	while(WRAP_INDENT(f) >= WRAP_MAX_COL(f))
 	  WRAP_INDENT(f) /= 2;
@@ -7030,9 +7504,327 @@ gf_wrap(f, flg)
 						 && WRAP_TAGS(f))
 					     || (i == ',' && WRAP_COMMA(f)
 						 && !WRAP_QUOTED(f))
-					     || (!WRAP_COMMA(f)
-					      && isspace((unsigned char) i)));
+					     || isspace((unsigned char) i));
+	WRAP_SPACES(f) = so_get(CharStar, NULL, EDIT_ACCESS);
     }
+}
+
+int
+wrap_flush(f, ipp, eibp, opp, eobp)
+    FILTER_S *f;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+    register char *s;
+    register int   n;
+    s = (char *)so_text(WRAP_SPACES(f));
+    n = so_tell(WRAP_SPACES(f));
+    so_seek(WRAP_SPACES(f), 0L, 0);
+    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp);
+    so_truncate(WRAP_SPACES(f), 0L);
+    WRAP_SPC_LEN(f) = 0;
+    s = f->line;
+    n = f->linep - f->line;
+    wrap_flush_s(f, s, n, 1, ipp, eibp, opp, eobp);
+    f->f2    = 0;
+    f->linep = f->line;
+    WRAP_PB_OFF(f) = 0;
+    WRAP_PB_LEN(f) = 0;
+
+    return 0;
+}
+
+int
+wrap_flush_embed(f, ipp, eibp, opp, eobp)
+    FILTER_S    *f;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+  register char *s;
+  register int   n;
+  s = (char *)so_text(WRAP_SPACES(f));
+  n = so_tell(WRAP_SPACES(f));
+  so_seek(WRAP_SPACES(f), 0L, 0);
+  wrap_flush_s(f, s, n, 0, ipp, eibp, opp, eobp);
+  so_truncate(WRAP_SPACES(f), 0L);
+  WRAP_SPC_LEN(f) = 0;
+
+  return 0;
+}
+
+int
+wrap_flush_s(f, s, n, v, ipp, eibp, opp, eobp)
+    FILTER_S    *f;
+    char        *s;
+    int          n;
+    int          v;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+    for(; n > 0; n--,s++){
+	if(*s == TAG_EMBED){
+	    if(n-- > 0){
+		switch(*++s){
+		  case TAG_BOLDON :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    GF_PUTC_GLO(f->next,TAG_BOLDON);
+		    WRAP_BOLD(f) = 1;
+		    break;
+		  case TAG_BOLDOFF :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    GF_PUTC_GLO(f->next,TAG_BOLDOFF);
+		    WRAP_BOLD(f) = 0;
+		    break;
+		  case TAG_ULINEON :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    GF_PUTC_GLO(f->next,TAG_ULINEON);
+		    WRAP_ULINE(f) = 1;
+		    break;
+		  case TAG_ULINEOFF :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    GF_PUTC_GLO(f->next,TAG_ULINEOFF);
+		    WRAP_ULINE(f) = 0;
+		    break;
+		  case TAG_INVOFF :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    GF_PUTC_GLO(f->next,TAG_INVOFF);
+		    WRAP_ANCHOR(f) = 0;
+		    break;
+		  case TAG_HANDLE :
+		    GF_PUTC_GLO(f->next,TAG_EMBED);
+		    if(n-- > 0){
+			int i = *++s;
+			GF_PUTC_GLO(f->next, TAG_HANDLE);
+			if(i <= n){
+			    n -= i;
+			    GF_PUTC_GLO(f->next, i);
+			    WRAP_ANCHOR(f) = 0;
+			    while(i-- > 0){
+				WRAP_ANCHOR(f) = (WRAP_ANCHOR(f) * 10) + (*++s-'0');
+				GF_PUTC_GLO(f->next,*s);
+			    }
+			}
+		    }
+		    break;
+		  case TAG_FGCOLOR :
+		    if(pico_usingcolor() && n >= RGBLEN){
+			int i;
+			GF_PUTC_GLO(f->next,TAG_EMBED);
+			GF_PUTC_GLO(f->next,TAG_FGCOLOR);
+			if(!WRAP_COLOR(f))
+			  WRAP_COLOR(f)=new_color_pair(NULL,NULL);
+			strncpy(WRAP_COLOR(f)->fg, s+1, RGBLEN);
+			WRAP_COLOR(f)->fg[RGBLEN]='\0';
+			i = RGBLEN;
+			n -= i;
+			while(i-- > 0)
+			  GF_PUTC_GLO(f->next,
+				  (*++s) & 0xff);
+		    }
+		    break;
+		  case TAG_BGCOLOR :
+		    if(pico_usingcolor() && n >= RGBLEN){
+			int i;
+			GF_PUTC_GLO(f->next,TAG_EMBED);
+			GF_PUTC_GLO(f->next,TAG_BGCOLOR);
+			if(!WRAP_COLOR(f))
+			  WRAP_COLOR(f)=new_color_pair(NULL,NULL);
+			strncpy(WRAP_COLOR(f)->bg, s+1, RGBLEN);
+			WRAP_COLOR(f)->bg[RGBLEN]='\0';
+			i = RGBLEN;
+			n -= i;
+			while(i-- > 0)
+			  GF_PUTC_GLO(f->next,
+				  (*++s) & 0xff);
+		    }
+		    break;
+		  default :
+		    break;
+		}
+	    }
+	}
+	else if(v){
+	    if(*s == TAB)
+	      while(++f->n & 0x07) ;
+	    else
+	      f->n += (iscntrl((unsigned char) *s) ? 2 : 1);
+	    if(f->n <= WRAP_MAX_COL(f)){
+		GF_PUTC_GLO(f->next, (*s) & 0xff);
+	    }
+	    else{
+		dprint(2, (debugfile, "-- gf_wrap: OVERRUN: %c\n", (*s) & 0xff));
+	    }
+	    WRAP_ALLWSP(f) = 0;
+	}
+    }
+
+    return 0;
+}
+
+int
+wrap_eol(f, c, ipp, eibp, opp, eobp)
+    FILTER_S *f;
+    int c;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+    if(c && WRAP_LV_FLD(f))
+      GF_PUTC_GLO(f->next, ' ');
+    if(WRAP_BOLD(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_BOLDOFF);
+    }
+    if(WRAP_ULINE(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_ULINEOFF);
+    }
+    if(WRAP_INVERSE(f) || WRAP_ANCHOR(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_INVOFF);
+    }
+    if(WRAP_COLOR_SET(f)){
+	char *p;
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_FGCOLOR);
+	p = color_to_asciirgb(ps_global->VAR_NORM_FORE_COLOR);
+	for(; *p; p++)
+	  GF_PUTC_GLO(f->next, *p);
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_BGCOLOR);
+	p = color_to_asciirgb(ps_global->VAR_NORM_BACK_COLOR);
+	for(; *p; p++)
+	  GF_PUTC_GLO(f->next, *p);
+    }
+    GF_PUTC_GLO(f->next, '\015');
+    GF_PUTC_GLO(f->next, '\012');
+    f->n = 0L;
+    so_truncate(WRAP_SPACES(f), 0L);
+    WRAP_SPC_LEN(f) = 0;
+
+    return 0;
+}
+
+int
+wrap_bol(f,ivar,q, ipp, eibp, opp, eobp)
+    FILTER_S *f;
+    int ivar;
+    int q;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+    int n = WRAP_MARG_L(f) + (ivar ? WRAP_INDENT(f) : 0);
+    while(n-- > 0){
+	f->n++;
+	GF_PUTC_GLO(f->next, ' ');
+    }
+    WRAP_ALLWSP(f) = 1;
+    if(q)
+      wrap_quote_insert(f, ipp, eibp, opp, eobp);
+
+    if(WRAP_BOLD(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_BOLDON);
+    }
+    if(WRAP_ULINE(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_ULINEON);
+    }
+    if(WRAP_INVERSE(f)){
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_INVON);
+    }
+    if(WRAP_COLOR_SET(f)){
+	char *p;
+	if(WRAP_COLOR(f)->fg[0]){
+	    GF_PUTC_GLO(f->next, TAG_EMBED);
+	    GF_PUTC_GLO(f->next, TAG_FGCOLOR);
+	    p = color_to_asciirgb(WRAP_COLOR(f)->fg);
+	    for(; *p; p++)
+	      GF_PUTC_GLO(f->next, *p);
+	}
+	if(WRAP_COLOR(f)->bg[0]){
+	    GF_PUTC_GLO(f->next, TAG_EMBED);
+	    GF_PUTC_GLO(f->next, TAG_BGCOLOR);
+	    p = color_to_asciirgb(WRAP_COLOR(f)->bg);
+	    for(; *p; p++)
+	      GF_PUTC_GLO(f->next, *p);
+	}
+    }
+    if(WRAP_ANCHOR(f)){
+	char buf[64]; int i;
+	GF_PUTC_GLO(f->next, TAG_EMBED);
+	GF_PUTC_GLO(f->next, TAG_HANDLE);
+	sprintf(buf, "%d", WRAP_ANCHOR(f));
+	GF_PUTC_GLO(f->next, (int) strlen(buf));
+	for(i = 0; buf[i]; i++)
+	  GF_PUTC_GLO(f->next, buf[i]);
+    }
+
+    return 0;
+}
+
+int
+wrap_quote_insert(f, ipp, eibp, opp, eobp)
+    FILTER_S *f;
+    unsigned char **ipp;
+    unsigned char **eibp;
+    unsigned char **opp;
+    unsigned char **eobp;
+{
+    int j;
+    COLOR_PAIR *col = NULL;
+    for(j = 0; j < WRAP_FL_QD(f); j++){
+	f->n += (WRAP_LV_FLD(f) ? 1 : 2);
+	if(WRAP_USE_CLR(f)){
+	    if((j % 3) == 0
+	       && ps_global->VAR_QUOTE1_FORE_COLOR
+	       && ps_global->VAR_QUOTE1_BACK_COLOR
+	       && (col = new_color_pair(ps_global->VAR_QUOTE1_FORE_COLOR,
+					ps_global->VAR_QUOTE1_BACK_COLOR))
+	       && pico_is_good_colorpair(col)){
+                GF_COLOR_PUTC(f, col);
+            }
+	    else if((j % 3) == 1
+		    && ps_global->VAR_QUOTE2_FORE_COLOR
+		    && ps_global->VAR_QUOTE2_BACK_COLOR
+		    && (col = new_color_pair(ps_global->VAR_QUOTE2_FORE_COLOR,
+					     ps_global->VAR_QUOTE2_BACK_COLOR))
+		    && pico_is_good_colorpair(col)){
+	        GF_COLOR_PUTC(f, col);
+            }
+	    else if((j % 3) == 2
+		    && ps_global->VAR_QUOTE3_FORE_COLOR
+		    && ps_global->VAR_QUOTE3_BACK_COLOR
+		    && (col = new_color_pair(ps_global->VAR_QUOTE3_FORE_COLOR,
+					     ps_global->VAR_QUOTE3_BACK_COLOR))
+		    && pico_is_good_colorpair(col)){
+	        GF_COLOR_PUTC(f, col);
+            }
+	    if(col){
+		free_color_pair(&col);
+		col = NULL;
+	    }
+	}
+	GF_PUTC_GLO(f->next, '>');
+	if(!WRAP_LV_FLD(f))
+	  GF_PUTC_GLO(f->next, ' ');
+    }
+    if(j && WRAP_LV_FLD(f)){
+	GF_PUTC_GLO(f->next, ' ');
+	f->n++;
+    }
+
+    return 0;
 }
 
 
@@ -7041,18 +7833,28 @@ gf_wrap(f, flg)
  * wrap filter's width option
  */
 void *
-gf_wrap_filter_opt(width, width_max, indent, flags)
-    int width, width_max, indent, flags;
+gf_wrap_filter_opt(width, width_max, margin, indent, flags)
+    int width, width_max;
+    int *margin;
+    int indent, flags;
 {
     WRAP_S *wrap;
 
+    /* NOTE: variables MUST be sanity checked before they get here */
     wrap = (WRAP_S *) fs_get(sizeof(WRAP_S));
     memset(wrap, 0, sizeof(WRAP_S));
-    wrap->wrap_col = width;
-    wrap->wrap_max = width_max;
-    wrap->indent   = indent;
-    wrap->tags	   = (GFW_HANDLES & flags) == GFW_HANDLES;
-    wrap->on_comma = (GFW_ONCOMMA & flags) == GFW_ONCOMMA;
+    wrap->wrap_col     = width;
+    wrap->wrap_max     = width_max;
+    wrap->indent       = indent;
+    wrap->margin_l     = (margin) ? margin[0] : 0;
+    wrap->margin_r     = (margin) ? margin[1] : 0;
+    wrap->tags	       = (GFW_HANDLES & flags) == GFW_HANDLES;
+    wrap->on_comma     = (GFW_ONCOMMA & flags) == GFW_ONCOMMA;
+    wrap->flowed       = (GFW_FLOWED & flags) == GFW_FLOWED;
+    wrap->leave_flowed = (GFW_FLOW_RESULT & flags) == GFW_FLOW_RESULT;
+    wrap->delsp	       = (GFW_DELSP & flags) == GFW_DELSP;
+    wrap->use_color    = (GFW_USECOLOR & flags) == GFW_USECOLOR;
+
     return((void *) wrap);
 }
 
@@ -7142,6 +7944,20 @@ gf_prefix_opt(prefix)
 
 
 /*
+ * function called from the outside to set
+ * control filter's option, which says to filter C0 control characters
+ * but not C1 control chars. We don't call it at all if we don't want
+ * to filter C0 chars either.
+ */
+void *
+gf_control_filter_opt(filt_only_c0)
+    int *filt_only_c0;
+{
+    return((void *) filt_only_c0);
+}
+
+
+/*
  * LINE TEST FILTER - accumulate lines and offer each to the provided
  * test function.
  */
@@ -7182,15 +7998,23 @@ typedef struct _linetest_s {
 					   ((LINETEST_S *) (F)->opt)->local); \
 			    if((D) < 2){ \
 				for(insp = ins, cp = (F)->line; cp < p; ){ \
-				    while(insp && cp == insp->where){ \
+				  if(insp && cp == insp->where){ \
+				    if(insp->len > 0){ \
+				      while(insp && cp == insp->where){ \
 					for(l = 0; l < insp->len; l++){ \
-					    c = (unsigned char) insp->text[l];\
-					    GF_PUTC((F)->next, c); \
-					} \
+					  c = (unsigned char) insp->text[l]; \
+					  GF_PUTC((F)->next, c);  \
+					}  \
 					insp = insp->next; \
+				      } \
+				    } else if(insp->len < 0){ \
+					cp -= insp->len; \
+					insp = insp->next; \
+					continue; \
 				    } \
-				    GF_PUTC((F)->next, *cp); \
-				    cp++; \
+				  } \
+				  GF_PUTC((F)->next, *cp); \
+				  cp++; \
 				} \
 				while(insp){ \
 				    for(l = 0; l < insp->len; l++){ \
@@ -7334,8 +8158,10 @@ gf_line_test_new_ins(ins, p, s, n)
     int	       n;
 {
     *ins = (LT_INS_S *) fs_get(sizeof(LT_INS_S));
-    if((*ins)->len = n)
+    if(((*ins)->len = n) > 0)
       strncpy((*ins)->text = (char *) fs_get(n * sizeof(char)), s, n);
+    else
+      (*ins)->text = NULL;
 
     (*ins)->where = p;
     (*ins)->next  = NULL;

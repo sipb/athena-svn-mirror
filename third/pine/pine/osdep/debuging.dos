@@ -175,15 +175,34 @@ save_debug_on_crash(dfile)
 FILE *dfile;
 {
     char msg[256], filename[MAXPATH+1], crashname[MAXPATH+1];
-    int  status;
+    int  status, i;
 
     time_t now = time((time_t *)0);
 
     debug_file_name(crashname, 0);
-    fprintf(dfile, "\nsave_debug_on_crash: Version %s: debug level %d\n",
+    fprintf(dfile, "save_debug_on_crash: Version %s: debug level %d",
 	pine_version, debug);
     fprintf(dfile, "\n                   : %s\n", ctime(&now));
-    fprintf(dfile, "\nAttempting to save debug file to %s\n", crashname);
+    fprintf(dfile, "Attempting to save debug file to %s\n\n", crashname);
+
+    /* Blat out last n keystrokes */
+    fputs("========== Latest Keystrokes =========================\n", dfile);
+    while((i = key_playback(0)) != -1)
+      fprintf(dfile, "\t%s\t(0x%04.4x)\n", pretty_command(i), i);
+
+    fputs("========== Latest Keystrokes End =====================\n\n", dfile);
+
+#ifdef DEBUGJOURNAL
+    fputs("========== Append DebugJournal =======================\n", dfile);
+#else /* DEBUGJOURNAL */
+    fputs("========== Append Journal =======================\n", dfile);
+#endif /* DEBUGJOURNAL */
+    debugjournal_to_file(dfile);
+#ifdef DEBUGJOURNAL
+    fputs("========== Append DebugJournal End ===================\n", dfile);
+#else /* DEBUGJOURNAL */
+    fputs("========== Append Journal End ===================\n", dfile);
+#endif /* DEBUGJOURNAL */
 
     fclose(dfile);
 
@@ -249,20 +268,25 @@ debugjournal(FILE *debug_fp, char *fmt, ...)
 {
     va_list args;
 
-    va_start(args, fmt);
+    if(debug_fp && debug >= ps_global->dlevel && do_debug(debug_fp)){
+	va_start(args, fmt);
+	vfprintf(debug_fp, fmt, args);
+	va_end(args);
+    }
 
-    if(debug_fp && debug >= ps_global->dlevel && do_debug(debug_fp))
-      vfprintf(debug_fp, fmt, args);
+    if(panicking)
+      return;
 
     if(ps_global->dlevel <= 9 || ps_global->dlevel <= debug){
 	char    b[64000];
 
+	va_start(args, fmt);
 	_vsnprintf(b, sizeof(b), fmt, args);
+	va_end(args);
+
 	b[sizeof(b)-1] = '\0';
 	add_review_message(b, ps_global->dlevel);
     }
-
-    va_end(args);
 }
 #endif /* DEBUGJOURNAL */
 

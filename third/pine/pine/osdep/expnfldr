@@ -17,7 +17,8 @@ expand_foldername(filename, len)
 {
     char         temp_filename[MAXPATH+1];
 
-    dprint(5, (debugfile, "=== expand_foldername called (%s) ===\n",filename));
+    dprint(5, (debugfile, "=== expand_foldername called (%s) ===\n",
+	   filename ? filename : "?"));
 
     /*
      * We used to check for valid filename chars here if "filename"
@@ -68,7 +69,7 @@ expand_foldername(filename, len)
     } else {
 	build_path(filename, ps_global->home_dir, temp_filename, len);
     }
-    dprint(5, (debugfile, "returning \"%s\"\n", filename));    
+    dprint(5, (debugfile, "returning \"%s\"\n", filename ? filename : "?"));    
     return(1);
 }
 

@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define  USE_DIRENT
 #include <dirent.h>

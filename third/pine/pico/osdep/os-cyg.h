@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #define  USE_DIRENT
 #include <dirent.h>
@@ -183,12 +184,6 @@ typedef unsigned short usign16_t;
  * Mode passed chmod() to make tmp files exclusively user read/write-able
  */
 #define	MODE_READONLY	(0600)
-
-/*
- * Make sys_errlist visible
- * Now Cygwin includes this automatically, not needed
-extern char *sys_errlist[];
-extern int   sys_nerr; */
 
 /* If stat is strictly POSIX and stat'ing a directory returns a meaningless
    st_size value, define this. */

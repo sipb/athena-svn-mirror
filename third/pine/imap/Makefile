@@ -9,10 +9,10 @@
 #		Internet: MRC@CAC.Washington.EDU
 #
 # Date:		7 December 1989
-# Last Edited:	14 July 2003
+# Last Edited:	25 December 2004
 #
 # The IMAP toolkit provided in this Distribution is
-# Copyright 1988-2003 University of Washington.
+# Copyright 1988-2004 University of Washington.
 #
 # The full text of our legal notices is contained in the file called
 # CPYRIGHT, included with this Distribution.
@@ -20,7 +20,7 @@
 
 # Normal command to build IMAP toolkit:
 #  make <port> [EXTRAAUTHENTICATORS=xxx] [EXTRADRIVERS=xxx] [EXTRACFLAGS=xxx]
-#	       [PASSWDTYPE=xxx] [SSLTYPE=xxx]
+#	       [PASSWDTYPE=xxx] [SSLTYPE=xxx] [IP=n]
 
 
 # Port name.  These refer to the *standard* compiler on the given system.
@@ -57,7 +57,9 @@
 # drs	ICL DRS/NX
 # dyn	Dynix
 # epx	EP/IX
+# ga4	GCC AIX 4.x for RS/6000
 # gas	GCC Altos SVR4
+# gcs	GCC Solaris with Blastwave Community Open Source Software
 # gh9   GCC HP-UX 9.x
 # ghp	GCC HP-UX 10.x
 # ghs	GCC HP-UX 10.x with Trusted Computer Base
@@ -75,7 +77,8 @@
 # lnx	Linux with traditional passwords and crypt() in the C library
 #	 (see lnp, sl4, sl5, and slx)
 # lnp	Linux with Pluggable Authentication Modules (PAM)
-# lrh	RedHat Linux 7.2
+# lmd	Mankdrake Linux
+# lrh	RedHat Linux 7.2 and later
 # lsu	SuSE Linux
 # lyn	LynxOS
 # mct	MachTen
@@ -88,6 +91,7 @@
 # osf	OSF/1 (see sos, os4)
 # os4	OSF/1 (Digital UNIX) 4
 # osx	Mac OS X
+# oxp	Mac OS X with Pluggable Authentication Modules (PAM)
 # ptx	PTX
 # pyr	Pyramid
 # qnx	QNX 4
@@ -101,6 +105,7 @@
 # sl5	Linux with shadow passwords, no extra libraries
 # slx	Linux using -lcrypt to get the crypt() function
 # snx	Siemens Nixdorf SININX or Reliant UNIX
+# soc	Solaris with /opt/SUNWspro/bin/cc
 # sol	Solaris (won't work unless "ucbcc" works -- use gso instead)
 # sos	OSF/1 with SecureWare
 # ssn	SUN-OS with shadow password security
@@ -163,9 +168,19 @@ PASSWDTYPE=std
 # unix.nopwd	same as nopwd
 # sco.nopwd	same as nopwd, plaintext authentication in SSL/TLS only
 #
-# SSLTYPE=nopwd is now the default as required by the IESG.
+# SSLTYPE=nopwd is now the default as required by RFC 3501
 
 SSLTYPE=nopwd
+
+
+# IP protocol version
+#
+# The following IP protocol versions are defined:
+# o	IPv4 support, no DNS (truly ancient systems)
+# 4	(default) IPv4 support only
+# 6	IPv6 and IPv4 support
+
+IP=4
 
 
 # The following extra compilation flags are defined.  None of these flags are
@@ -251,7 +266,7 @@ BUILD=$(MAKE) build EXTRACFLAGS='$(EXTRACFLAGS)'\
  EXTRALDFLAGS='$(EXTRALDFLAGS)'\
  EXTRADRIVERS='$(EXTRADRIVERS)'\
  EXTRAAUTHENTICATORS='$(EXTRAAUTHENTICATORS)'\
- PASSWDTYPE=$(PASSWDTYPE) SSLTYPE=$(SSLTYPE)\
+ PASSWDTYPE=$(PASSWDTYPE) SSLTYPE=$(SSLTYPE) IP=$(IP)\
  EXTRASPECIALS='$(EXTRASPECIALS)'
 
 
@@ -270,7 +285,7 @@ SPECIALS:
 
 # Note on SCO you may have to set LN to "ln".
 
-a32 a41 aix bs3 bsf bsi bso d-g d54 do4 drs epx gas gh9 ghp ghs go5 gsc gsg gso gul hpp hpx lnp lyn mct mnt neb nec nto nxt nx3 osf os4 ptx qnx sc5 sco sgi sg6 shp sl4 sl5 slx snx sol sos uw2: an
+a32 a41 aix bs3 bsi d-g d54 do4 drs epx ga4 gas gh9 ghp ghs go5 gsc gsg gso gul hpp hpx lnp lyn mct mnt neb nec nto nxt nx3 osf os4 ptx qnx sc5 sco sgi sg6 shp sl4 sl5 slx snx soc sol sos uw2: an
 	$(BUILD) BUILDTYPE=$@
 
 # If you use sv4, you may find that it works to move it to use the an process.
@@ -282,25 +297,45 @@ aos art asv aux bsd cvx dpx dyn isc pyr sv4 ult vul vu2: ua
 
 # Knotheads moved Kerberos and SSL locations on these platforms
 
+
+bsf bso:	an
+	$(BUILD) BUILDTYPE=$@ \
+	SPECIALS="GSSDIR=/usr SSLDIR=/usr SSLINCLUDE=/usr/include/openssl SSLCERTS=/etc/ssl/certs SSLKEYS=/etc/ssl/private LOCKPGM=/usr/sbin/mlock"
+
 cyg:	an
 	$(BUILD) BUILDTYPE=cyg \
 	SPECIALS="SSLDIR=/usr/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
 
+gcs:	an
+	$(BUILD) BUILDTYPE=gso \
+	SPECIALS="SSLDIR=/opt/csw/ssl SSLINCLUDE=/opt/csw/include/openssl SSLLIB=/opt/csw/lib"
+
 ldb:	an
 	$(BUILD) BUILDTYPE=lnp \
-	SPECIALS="GSSDIR=/usr SSLDIR=/usr/lib/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib SSLCERTS=/etc/ssl/certs SSLKEYS=/etc/ssl/private"
+	SPECIALS="GSSDIR=/usr SSLDIR=/usr SSLINCLUDE=/usr/include/openssl SSLCERTS=/etc/ssl/certs SSLKEYS=/etc/ssl/private LOCKPGM=/usr/sbin/mlock"
+
+lmd:	an
+	$(BUILD) BUILDTYPE=lnp \
+	SPECIALS="SSLDIR=/usr/lib/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib LOCKPGM=/usr/sbin/mlock"
 
 lrh:	an
 	$(BUILD) BUILDTYPE=lnp \
-	SPECIALS="GSSDIR=/usr/kerberos SSLDIR=/usr/share/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
+	SPECIALS="GSSDIR=/usr/kerberos SSLDIR=/usr/share/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib LOCKPGM=/usr/sbin/mlock" \
+	EXTRACFLAGS="$(EXTRACFLAGS) -I/usr/kerberos/include"
 
 lsu:	an
 	$(BUILD) BUILDTYPE=lnp \
-	SPECIALS="SSLDIR=/usr/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
+	SPECIALS="SSLDIR=/usr/share/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
 
 osx:	an
 	$(BUILD) BUILDTYPE=osx \
 	SPECIALS="SSLDIR=/System/Library/OpenSSL SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
+
+oxp:	an
+	$(BUILD) BUILDTYPE=osx \
+	SPECIALS="SSLDIR=/System/Library/OpenSSL SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib PAMLDFLAGS=-lpam" \
+	PASSWDTYPE=pam \
+	EXTRACFLAGS="$(EXTRACFLAGS) -DMAC_OSX_KLUDGE=1"
 
 
 # Linux shadow password support doesn't build on traditional systems, but most
@@ -346,8 +381,8 @@ s40:	sunok ua
 sunok:
 	@echo You are building for the old BSD-based SUN-OS.  This is NOT
 	@echo the modern SVR4-based Solaris.  If you want to build for
-	@echo Solaris, you should use make gso or make sol.  Do you want
-	@echo to continue this build?  Type y or n please:
+	@echo Solaris, you should use make gso or make sol or make soc.  Do
+	@echo you want to continue this build?  Type y or n please:
 	@$(SH) -c 'read x; case "$$x" in y) exit 0;; *) exit 1;; esac'
 	@echo OK, I will remember that you really want to build for the old
 	@echo BSD-based SUN-OS.  You will not see this message again.
@@ -408,14 +443,16 @@ wce:
 
 sslnopwd sslunix.nopwd sslsco.nopwd:
 	@echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	@echo + Building in full compliance with IESG security requirements:
+	@echo + Building in full compliance with RFC 3501 security
+	@echo + requirements:
 	@echo ++ TLS/SSL encryption is supported
 	@echo ++ Unencrypted plaintext passwords are prohibited
 	@echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 sslunix sslsco:
 	@echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	@echo + Building in PARTIAL compliance with IESG security requirements:
+	@echo + Building in PARTIAL compliance with RFC 3501 security
+	@echo + requirements:
 	@echo + Compliant:
 	@echo ++ TLS/SSL encryption is supported
 	@echo + Non-compliant:
@@ -430,7 +467,7 @@ sslunix sslsco:
 
 sslnone:
 	@echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	@echo + Building in NON-COMPLIANCE with IESG security requirements:
+	@echo + Building in NON-COMPLIANCE with RFC 3501 security requirements:
 	@echo + Non-compliant:
 	@echo ++ TLS/SSL encryption is NOT supported
 	@echo ++ Unencrypted plaintext passwords are permitted
@@ -472,7 +509,7 @@ OSTYPE:
 	 EXTRALDFLAGS='$(EXTRALDFLAGS)'\
 	 EXTRADRIVERS='$(EXTRADRIVERS)'\
 	 EXTRAAUTHENTICATORS='$(EXTRAAUTHENTICATORS)'\
-	 PASSWDTYPE=$(PASSWDTYPE) SSLTYPE=$(SSLTYPE)\
+	 PASSWDTYPE=$(PASSWDTYPE) SSLTYPE=$(SSLTYPE) IP=$(IP)\
 	 $(SPECIALS) $(EXTRASPECIALS)
 	echo $(BUILDTYPE) > OSTYPE
 	$(TOUCH) rebuild

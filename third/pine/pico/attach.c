@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: attach.c,v 1.1.1.2 2003-02-12 08:01:38 ghudson Exp $";
+static char rcsid[] = "$Id: attach.c,v 1.1.1.3 2005-01-26 17:54:56 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support attachments in the Pine composer 
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: attach.c,v 1.1.1.2 2003-02-12 08:01:38 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -57,12 +57,16 @@ static char rcsid[] = "$Id: attach.c,v 1.1.1.2 2003-02-12 08:01:38 ghudson Exp $
  * AskAttach - ask for attachment fields and build resulting structure
  *             return pointer to that struct if OK, NULL otherwise
  */
-AskAttach(fn, sz, cmnt)
-char *fn, *sz, *cmnt;
+AskAttach(cmnt, lm)
+char    *cmnt;
+LMLIST **lm;
 {
     int	    i, status, fbrv, upload = 0;
+    int     fb_flags = FB_READ | FB_ATTACH;
     off_t   attsz = 0;
     char    bfn[NLINE];
+    char    fn[NLINE], sz[32];
+    LMLIST *new;
 
     i = 2;
     fn[0] = '\0';
@@ -190,21 +194,49 @@ char *fn, *sz, *cmnt;
 	    *bfn = '\0';
 	    if(*fn == '\0' || !isdir(fn, NULL, NULL))
 	      strcpy(fn, (gmode & MDCURDIR)
-			    ? "."
-			    : ((gmode & MDTREE) || opertree[0])
-				 ? opertree : gethomedir(NULL));
-	    if((fbrv = FileBrowse(fn, NLINE, bfn, NLINE, sz, FB_READ | FB_ATTACH)) == 1){
-	      if ((strlen(fn)+strlen(S_FILESEP)+strlen(bfn)) < NLINE){
+		     ? (browse_dir[0] ? browse_dir : ".")
+		     : ((gmode & MDTREE) || opertree[0])
+		     ? opertree 
+		     : (browse_dir[0] ? browse_dir
+			: gethomedir(NULL)));
+	    if((fbrv = FileBrowse(fn, NLINE, bfn, NLINE, sz,
+				  upload ? fb_flags
+				         : fb_flags|FB_LMODEPOS,
+				  upload ? NULL
+					 : lm)) == 1){
+	      if (upload && (strlen(fn)+strlen(S_FILESEP)+strlen(bfn)) < NLINE){
+
+		if((new=(LMLIST *)malloc(sizeof(*new))) == NULL
+		   || (new->fname=malloc(strlen(bfn)+1)) == NULL
+		   || (new->dir=malloc(strlen(fn)+1)) == NULL){
+		    emlwrite("\007Can't malloc space for filename", NULL);
+		    return(-1);
+		}
+
+		strcpy(new->fname, bfn);
+		strcpy(new->dir, fn);
+		strncpy(new->size, sz, sizeof(new->size)-1);
+		new->size[sizeof(new->size)-1] = '\0';
+		new->next = NULL;
+		*lm = new;
+
 		strcat(fn, S_FILESEP);
 		strcat(fn, bfn);
-		if(upload && !AttachUpload(fn, sz)){              
+		if(!AttachUpload(fn, sz)){              
 		  i = 2;                  /* keep prompting for file */
 		  sleep(3);                       /* problem, show error! */
 		}
 		else{
-		  (void) QuoteAttach(fn);
 		  i--;                    /* go prompt for comment */
 		}
+	      }
+	      else if(!upload){
+		  if(lm && *lm && !(*lm)->next)	/* get comment */
+		    i--;
+		  else{			/* no comments if multiple files */
+		      update();
+		      return(1);
+		  }
 	      }
 	      else{                           /* trouble */
 		*fn = '\0';
@@ -292,8 +324,17 @@ char *fn, *sz, *cmnt;
 			    return(0);
 			}
 
-			QuoteAttach(fn);
-			strcpy(sz, prettysz(attsz));
+			if((new=(LMLIST *)malloc(sizeof(*new))) == NULL
+			   || (new->fname=malloc(strlen(fn)+1)) == NULL){
+			    emlwrite("\007Can't malloc space for filename", NULL);
+			    return(-1);
+			}
+
+			new->dir = NULL;
+			strcpy(new->fname, fn);
+			strcpy(new->size, prettysz(attsz));
+			new->next = NULL;
+			*lm = new;
 		    }
 		    else
 		      return(AttachCancel((upload && i == 1) ? fn : NULL));
@@ -1203,20 +1244,34 @@ int   i;
  * prettysz - return pointer to string containing nice
  */
 char *prettysz(l)
-off_t l;
+    off_t l;
 {
     static char b[32];
+    long sz, left, right;
 
-    if(l < 1000)
-      sprintf(b, "%ld  B", (long)l);		/* xxx B */
-    else if(l < 10000)
-      sprintf(b, "%1.1f KB", (float)l/1000);    /* x.x KB */
-    else if(l < 1000000)
-      sprintf(b, "%ld KB", (long)l/1000L);	/* xxx KB */
-    else if(l < 10000000)
-      sprintf(b, "%1.1f MB", (float)l/1000000); /* x.x MB */
-    else
-      sprintf(b, "%ld MB", (long)l/1000000L);	/* xxx MB */
+    sz = (long) l;
+    b[0] = '\0';
+
+    if(sz < 1000L){
+	sprintf(b, "%ld B", sz);				/* xxx B */
+    }
+    else if(sz < 9950L){
+	left = (sz + 50L) / 1000L;
+	right = ((sz + 50L) - left * 1000L) / 100L;
+	sprintf(b, "%ld.%ld KB", left, right);			/* x.x KB */
+    }
+    else if(sz < 999500L){
+	sprintf(b, "%ld KB", (sz + 500L) / 1000L);		/* xxx KB */
+    }
+    else if(sz <  9950000L){
+	left = (sz + 50000L) / 1000000L;
+	right = ((sz + 50000L) - left * 1000000L) / 100000L;
+	sprintf(b, "%ld.%ld MB", left, right);			/* x.x MB */
+    }
+    else{
+	sprintf(b, "%ld MB", (sz + 500000L) / 1000000L);	/* xxx MB */
+    }
+
     return(b);
 }
 

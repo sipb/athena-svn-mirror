@@ -11,8 +11,10 @@ error_description(errnumber)
 {
     static char buffer[50+1];
 
-    if(errnumber >= 0 && errnumber < sys_nerr)
-      sprintf(buffer, "%.*s", 50, sys_errlist[errnumber]);
+    buffer[0] = '\0';
+
+    if(errnumber >= 0)
+      sprintf(buffer, "%.*s", 50, strerror(errnumber));
     else
       sprintf(buffer, "Unknown error #%d", errnumber);
 

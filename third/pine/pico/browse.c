@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: browse.c,v 1.1.1.3 2004-03-01 21:15:32 ghudson Exp $";
+static char rcsid[] = "$Id: browse.c,v 1.1.1.4 2005-01-26 17:54:55 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support file browser in pico and Pine composer
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: browse.c,v 1.1.1.3 2004-03-01 21:15:32 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2003 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -80,8 +80,10 @@ static struct bmaster {
     int    longest;				/* longest file name   */
     int	   fpl;					/* file names per line */
     int    cpf;					/* chars / file / line */
+    int    flags;
     char   dname[NLINE];			/* this dir's name     */
     char   *names;				/* malloc'd name array */
+    LMLIST *lm;
 } *gmp;						/* global master ptr   */
 
 
@@ -108,6 +110,9 @@ static	char	*browser_title = NULL;
     void   ClearBrowserScreen(void);
     void   BrowserRunChild(char *, char *);
     int    LikelyASCII(char *);
+    int    fcell_is_selected(struct fcell *, struct bmaster *);
+    void   add_cell_to_lmlist(struct fcell *, struct bmaster *);
+    void   del_cell_from_lmlist(struct fcell *, struct bmaster *);
 #else
     struct bmaster *getfcells();
     int    PaintCell();
@@ -125,6 +130,9 @@ static	char	*browser_title = NULL;
     void   ClearBrowserScreen();
     void   BrowserRunChild();
     int    LikelyASCII();
+    int    fcell_is_selected();
+    void   add_cell_to_lmlist();
+    void   del_cell_from_lmlist();
 #endif
 
 
@@ -290,7 +298,7 @@ pico_file_browse(pdata, dir, dirlen, fn, fnlen, sz, flags)
 
     sprintf(title_buf, "%s FILE", pdata->pine_anchor);
     set_browser_title(title_buf);
-    rv = FileBrowse(dir, dirlen, fn, fnlen, sz, flags);
+    rv = FileBrowse(dir, dirlen, fn, fnlen, sz, flags, NULL);
     set_browser_title(NULL);
     vttidy();			/* clean up tty handling */
     zotdisplay();		/* and display structures */
@@ -316,13 +324,20 @@ pico_file_browse(pdata, dir, dirlen, fn, fnlen, sz, flags)
  *                   sz  points to size of file if ptr passed was non-NULL
  *		     flags
  *
+ *                 Special dispensation for FB_LMODE. If the caller sets
+ *                 FB_LMODEPOS, and the caller passes a non-null lmreturn,
+ *                 then the return values will be in lmreturn instead of
+ *                 in dir and fn. The caller is responsible for freeing
+ *                 the contents of lmreturn.
+ *
  *                   1 if a file's been selected
- *                   0 if no files seleted
- *                  -1 if there where problems
+ *                   0 if no files selected
+ *                  -1 if there were problems
  */
-FileBrowse(dir, dirlen, fn, fnlen, sz, fb_flags)
+FileBrowse(dir, dirlen, fn, fnlen, sz, fb_flags, lmreturn)
 char *dir, *fn, *sz;			/* dir, name and optional size */
 int   dirlen, fnlen, fb_flags;
+LMLIST **lmreturn;
 {
     int status, i, j, c, new_c;
     int row, col, crow, ccol;
@@ -367,7 +382,14 @@ int   dirlen, fnlen, fb_flags;
 	    ccol = 0;
 	}
 
-	movecursor(crow, ccol);
+	if(gmp->flags & FB_LMODEPOS){
+	    if(gmp->flags & FB_LMODE && gmp->current->mode != FIODIR)
+	      movecursor(crow, ccol+1);
+	    else
+	      movecursor(crow, ccol+4);
+	}
+	else
+	  movecursor(crow, ccol);
 
 	if(km_popped){
 	    km_popped--;
@@ -418,7 +440,14 @@ int   dirlen, fnlen, fb_flags;
 		}
 
 		clearcursor();
-		movecursor(crow, ccol);
+		if(gmp->flags & FB_LMODEPOS){
+		    if(gmp->flags & FB_LMODE && gmp->current->mode != FIODIR)
+		      movecursor(crow, ccol+1);
+		    else
+		      movecursor(crow, ccol+4);
+		}
+		else
+		  movecursor(crow, ccol);
 	    }
 	}
 	else{
@@ -733,8 +762,50 @@ int   dirlen, fnlen, fb_flags;
 	    emlwrite("\007Unknown command '%c'", (void *)c);
 	    break;
 
+	  case 'x':				    /* toggle selection */
+	  case 'X':
+	    if(!(gmp->flags & FB_LMODE)){
+		if(gmp->flags & FB_LMODEPOS)
+		  emlwrite("\007Type L command to use ListMode", NULL);
+		else
+		  emlwrite("\007Unknown command '%c'", (void *)c);
+		
+		break;
+	    }
+
+	    if(gmp->current->mode == FIODIR){
+		emlwrite("\007Can't Set directories", NULL);
+		break;
+	    }
+
+	    if(fcell_is_selected(gmp->current, gmp))
+	      del_cell_from_lmlist(gmp->current, gmp);
+	    else
+	      add_cell_to_lmlist(gmp->current, gmp);
+
+	    PlaceCell(gmp, gmp->current, &row, &col);
+	    PaintCell(row, col, gmp->cpf, gmp->current, 1);
+	    break;
+
 	  case 'l':			            /* run Command */
-	  case 'L':
+	  case 'L':				    /* or ListMode */
+	    if(gmp->flags & FB_LMODEPOS){
+		if(gmp->flags & FB_LMODE){
+		    /*
+		     * Unless we make it so you can get out of ListMode
+		     * once you're in ListMode, this must be an error.
+		     */
+		    emlwrite("\007Already in ListMode", NULL);
+		    break;
+		}
+		else{
+		    gmp->flags |= FB_LMODE;
+		    PaintBrowser(gmp, 0, &crow, &ccol);
+		}
+
+		break;
+	    }
+
 	    if(!(gmode&MDBRONLY)){
 		emlwrite("\007Unknown command '%c'", (void *)c);
 		break;
@@ -1384,6 +1455,12 @@ int   dirlen, fnlen, fb_flags;
 		  /* getfcells should explain what happened */
 		  break;
 
+		if(gmp->flags & FB_LMODE){
+		    mp->flags |= FB_LMODE;
+		    mp->lm = gmp->lm;
+		    gmp->lm = NULL;
+		}
+
 		zotmaster(&gmp);
 		gmp = mp;
 		tp  = NULL;
@@ -1419,6 +1496,40 @@ int   dirlen, fnlen, fb_flags;
 		break;
 	    }
 	    else{				/* just return */
+	      if(gmp->flags & FB_LMODEPOS){
+
+		  if(!lmreturn){
+		      emlwrite("Programming error, called FileBrowse with LMODEPOS but no lmreturn", NULL);
+		      zotmaster(&gmp);
+		      return(-1);
+		  }
+
+		  /* user actually used ListMode, the list is finished */
+		  if(gmp->flags & FB_LMODE){
+		      *lmreturn = gmp->lm;
+		      gmp->lm = NULL;
+		  }
+		  else{		/* construct an lmreturn for user */
+		      LMLIST *new;
+
+		      if((new=(LMLIST *)malloc(sizeof(*new))) == NULL
+			 || (new->fname=malloc(gmp->current->fname ? strlen(gmp->current->fname)+1 : 1)) == NULL
+			 || (new->dir=malloc(strlen(gmp->dname)+1)) == NULL){
+			emlwrite("\007Can't malloc space for filename", NULL);
+			return(-1);
+		      }
+
+		      strcpy(new->fname,
+			     gmp->current->fname ? gmp->current->fname : "");
+		      strcpy(new->dir, gmp->dname);
+		      strcpy(new->size, gmp->current->size);
+		      new->next = NULL;
+		      *lmreturn = new;
+		  }
+
+		  return(1);
+	      }
+
 	      if ((strlen(gmp->dname) < dirlen) && 
 		  (strlen(gmp->current->fname) < fnlen)){
 		  strcpy(dir, gmp->dname);
@@ -1585,6 +1696,8 @@ getfcells(dname, fb_flags)
 	return(NULL);
     }
 
+    memset(mp, 0, sizeof(*mp));
+
     if(dname[0] == '.' && dname[1] == '\0'){		/* remember this dir */
 	if(!getcwd(mp->dname, 256))
 	  mp->dname[0] = '\0';
@@ -1604,6 +1717,7 @@ getfcells(dname, fb_flags)
     mp->head = mp->top = NULL;
     mp->cpf = mp->fpl = 0;
     mp->longest = 5;				/* .. must be labeled! */
+    mp->flags = fb_flags;
 
     emlwrite("Building file list of %s...", mp->dname);
 
@@ -1740,10 +1854,99 @@ getfcells(dname, fb_flags)
 
     percdircells(mp);
     layoutcells(mp);
-    p_chdir(mp);
+    if(strlen(mp->dname) < NLINE)
+      strcpy(browse_dir, mp->dname);
+    else
+      browse_dir[0] = '\0';
     return(mp);
 }
 
+
+
+int
+fcell_is_selected(cell, mp)
+struct fcell *cell;
+struct bmaster *mp;
+{
+    LMLIST *lm;
+
+    if(cell && cell->fname){
+	for(lm = mp ? mp->lm : NULL; lm; lm = lm->next){
+	    /* directory has to match */
+	    if(!((mp->dname[0] == '\0' && (!lm->dir || lm->dir[0] =='\0'))
+	         || (mp->dname[0] != '\0' && lm->dir && lm->dir[0] !='\0'
+	             && !strcmp(mp->dname, lm->dir))))
+	      continue;
+
+	    if(lm->fname && !strcmp(cell->fname, lm->fname))
+	      return(1);
+	}
+    }
+    
+    return(0);
+}
+
+
+/*
+ * Adds a new name to the head of the lmlist
+ */
+void
+add_cell_to_lmlist(cell, mp)
+struct fcell   *cell;
+struct bmaster *mp;
+{
+    LMLIST *new;
+
+    if(mp && cell && cell->fname && cell->fname[0]){
+	if((new=(LMLIST *)malloc(sizeof(*new))) == NULL ||
+	   (new->fname=malloc(sizeof(char)*(strlen(cell->fname)+1))) == NULL ||
+	   (new->dir=malloc(sizeof(char)*(strlen(mp->dname)+1))) == NULL){
+	    emlwrite("\007Can't malloc space for filename", NULL);
+	    return;
+	}
+
+	strcpy(new->fname, cell->fname);
+	strcpy(new->dir, mp->dname);
+	new->size[0] = '\0';
+	if(cell->size[0])
+	  strcpy(new->size, cell->size);
+
+	new->next = mp->lm;
+	mp->lm = new;
+    }
+}
+
+
+/*
+ * Deletes a name from the lmlist
+ */
+void
+del_cell_from_lmlist(cell, mp)
+struct fcell   *cell;
+struct bmaster *mp;
+{
+    LMLIST *lm, *lmprev = NULL;
+
+    if(mp && cell && cell->fname && cell->fname[0])
+      for(lm = mp ? mp->lm : NULL; lm; lm = lm->next){
+	  if(lm->fname && strcmp(cell->fname, lm->fname) == 0){
+	      free((char *) lm->fname);
+	      if(lm->dir)
+	        free((char *) lm->dir);
+
+	      if(lmprev)
+		lmprev->next = lm->next;
+	      else
+		mp->lm = lm->next;
+	    
+	      free((char *) lm);
+
+	      break;
+	  }
+
+	  lmprev = lm;
+      }
+}
 
 
 /*
@@ -1767,6 +1970,28 @@ int    x, y, l, inverted;
     sl = strlen(cell->size);
 
     movecursor(x, y);
+
+    if(gmp && gmp->flags & FB_LMODEPOS && l > 4){
+	if(gmp && gmp->flags & FB_LMODE && cell->mode != FIODIR){
+	    /*
+	     * We have to figure out here if it is selected or not
+	     * and use that to write the X or space.
+	     */
+	    pputc('[', 0);
+	    if(fcell_is_selected(cell, gmp))
+	      pputc('X', 0);
+	    else
+	      pputc(' ', 0);
+
+	    pputc(']', 0);
+	    pputc(' ', 0);
+	}
+	else
+	  pputs("    ", 0);
+	
+	l -= 4;
+    }
+
     if(inverted)
       (*term.t_rev)(1);
     
@@ -1882,6 +2107,21 @@ BrowserKeys()
 	menu_browse[SELECT_KEY].label = "[Select]";
 	menu_browse[PICO_KEY].name  = "A";
 	menu_browse[PICO_KEY].label = "Add";
+
+	if(gmp && gmp->flags & FB_LMODEPOS){
+	    if(gmp && gmp->flags & FB_LMODE){	/* ListMode is already on */
+		menu_browse[EXEC_KEY].name  = "X";
+		menu_browse[EXEC_KEY].label = "Set/Unset";
+	    }
+	    else{				/* ListMode is possible   */
+		menu_browse[EXEC_KEY].name  = "L";
+		menu_browse[EXEC_KEY].label = "ListMode";
+	    }
+	}
+	else{					/* No ListMode possible   */
+	    menu_browse[EXEC_KEY].name  = NULL;
+	    menu_browse[EXEC_KEY].label = NULL;
+	}
     }
 
     wkeyhelp(menu_browse);
@@ -1897,6 +2137,10 @@ layoutcells(mp)
 struct bmaster *mp;
 {
     mp->cpf = mp->longest + 12;			/* max chars / file */
+
+    if(mp->flags & FB_LMODEPOS)
+      mp->cpf += 4;
+
     if(gmode & MDONECOL){
 	mp->fpl = 1;
     }
@@ -2044,10 +2288,15 @@ void
 zotmaster(mp)
 struct bmaster **mp;
 {
-    zotfcells((*mp)->head);			/* free cells       */
-    free((char *)(*mp)->names);			/* free file names  */
-    free((char *)*mp);				/* free master      */
-    *mp = NULL;					/* make double sure */
+    if(mp && *mp){
+	zotfcells((*mp)->head);				/* free cells       */
+	zotlmlist((*mp)->lm);				/* free lmlist      */
+	if((*mp)->names)
+	  free((char *)(*mp)->names);			/* free file names  */
+
+	free((char *)*mp);				/* free master      */
+	*mp = NULL;					/* make double sure */
+    }
 }
 
 
@@ -2313,4 +2562,25 @@ LikelyASCII(file)
       emlwrite("Can't open file: %s", file);
 
     return(rv);
+}
+
+
+void
+zotlmlist(lm)
+LMLIST *lm;
+{
+    LMLIST *tp;
+
+    while(lm){
+	if(lm->fname)
+	  free(lm->fname);
+
+	if(lm->dir)
+	  free(lm->dir);
+
+	tp = lm;
+	lm = lm->next;
+	tp->next = NULL;
+	free((char *) tp);
+    }
 }

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: headers.h,v 1.1.1.1 2001-02-19 07:05:20 ghudson Exp $
+  $Id: headers.h,v 1.1.1.2 2005-01-26 17:56:24 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -62,6 +62,22 @@ is os-xxx.h. (Don't edit osdep.h; edit os-xxx.h instead.)
 #include "../c-client/mail.h"
 
 #include "os.h"
+
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+    /*
+     * If LEAVEOUTFIFO is set in os.h, then we leave it out.
+     * If it isn't set, we still might leave it out. We'll decide
+     * based on whether or not O_NONBLOCK is defined or not.
+     * It's just a guess. Safer would be to change the polarity of the
+     * test and define something like INCLUDEFIFO instead of LEAVEOUTFIFO
+     * and only define it where we know. Since we don't really know
+     * we'd rather run the risk of being wrong and finding out that
+     * way instead of just having people not know about it.
+     */
+#if !defined(O_NONBLOCK)
+#define LEAVEOUTFIFO 1
+#endif
+#endif
 
 #include "../c-client/rfc822.h"
 #include "../c-client/misc.h"

@@ -32,7 +32,7 @@ disk_quota(path, over)
                     Also Ultrix seems to give the wrong answer the second
                     time */
 
-    dprint(5, (debugfile, "quota_check path: %s\n", path));
+    dprint(5, (debugfile, "quota_check path: %s\n", path ? path : "?"));
     if(stat(path, &statx) < 0) {
         return(-1L);
     }

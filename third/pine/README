@@ -1,5 +1,5 @@
 pine.tar.z README
-Last changed: 09 Jan 2003
+Last changed: 18 January 2005
 
 -----------------------------------------------------------------------
                 Pine/Pico/Pilot/Imapd Distribution
@@ -10,7 +10,7 @@ No commercial use of these trademarks may be made without prior written
 permission of the University of Washington.
 
 Pine, Pico, and Pilot software and its included text are Copyright
-1989-2003 by the University of Washington.
+1989-2005 by the University of Washington.
 
 The full text of our legal notices is contained in the file called
 CPYRIGHT, included with this distribution.
@@ -29,6 +29,7 @@ contrib    - Contributed ports and additions
 doc        - Documentation directory. The main documentation is tech-notes.txt
 imap	   - Source tree containing C-Client IMAP implementation
 makefile   - In case make is tried to build Pine and Pico
+packages   - Scripts for building packages for various Linux distributions
 pico       - The Pico and Pilot source directory
 pine       - The Pine source directory
 
@@ -200,13 +201,17 @@ Note: The "nopwd" SSLTYPE is similar to "unix" except that it compiles
 the IMAP server (imapd) so that plaintext authentication is only permitted 
 if the session is encrypted via SSL or TLS.
 
+The short description here is not complete. The definitive text is part
+of the c-client distribution (which is included here). Take a look at the
+file imap/docs/SSLBUILD. In particular, look at STEP 3 to learn about
+setting up certificates.
+
 
 -----------------------------------------------------------------------
 EXTRAS
 -----------------------------------------------------------------------
 
-There are some other arguments which you may find useful. These four
-usually aren't set to anything
+There are some other arguments which you may find useful.
 
   EXTRACFLAGS=
   EXTRALDFLAGS=
@@ -219,6 +224,16 @@ to do this. With the AIX a41 port, you could pass the extra build argument
   EXTRACFLAGS=-qro
 
 to accomplish this.
+
+Another place where you might need to use EXTRACFLAGS is if the code that
+makes the NewMail-FIFO-Path work is causing problems. There is a define
+called LEAVEOUTFIFO which will do this. If the fifo code is causing trouble
+(for example, you don't have a mkfifo() function on your system) then
+adding
+
+  EXTRACFLAGS=-DLEAVEOUFIFO
+
+to the build command should fix it.
 
 DEBUG applies only to pico and pine sub-makes. It typically defaults to
 

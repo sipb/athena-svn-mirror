@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: other.c,v 1.1.1.4 2004-03-01 21:16:25 ghudson Exp $";
+static char rcsid[] = "$Id: other.c,v 1.1.1.5 2005-01-26 17:56:31 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: other.c,v 1.1.1.4 2004-03-01 21:16:25 ghudson Exp $"
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -71,6 +71,7 @@ static char nostr[]  = "No";
 #define NOTLEN		2
 
 #define ARB_HELP "HELP FOR ARBITRARY HEADER PATTERNS"
+#define ADDXHDRS "Add Extra Headers"
 
 /* another in a long line of hacks in this file */
 #define DSTRING "default ("
@@ -102,7 +103,10 @@ typedef struct conf_line {
     struct conf_line *headingp;		/* pointer to heading        */
     struct conf_line *next, *prev;
     union flag_or_context_data {
-	struct flag_table *fp;
+	struct flag_conf {
+	    struct flag_table **ftbl;	/* address of start of table */
+	    struct flag_table  *fp;	/* pointer into table for each row */
+	} f;
 	struct context_and_screen {
 	    CONTEXT_S  *ct;
 	    CONT_SCR_S *cs;
@@ -117,6 +121,10 @@ typedef struct conf_line {
 	    char  *abookname;
 	} b;
 	EARB_S **earb;
+	struct list_select {
+	    LIST_SEL_S *lsel;
+	    ScreenMode *listmode;
+	} l;
 #ifdef	ENABLE_LDAP
 	struct entry_and_screen {
 	    LDAP          *ld;
@@ -127,9 +135,9 @@ typedef struct conf_line {
 	} a;
 #endif
 	struct take_export_val {
-	    int                 selected;
-	    char               *exportval;
-	    TakeAddrScreenMode *listmode;
+	    int         selected;
+	    char       *exportval;
+	    ScreenMode *listmode;
 	} t;
     } d;
 } CONF_S;
@@ -164,6 +172,8 @@ typedef struct conf_line {
 #define SAMPEXC_LEN 11
 #define SBS 1	/* space between samples */
 #define HEADER_WORD "Header "
+#define KW_COLORS_HDR "KEYWORD COLORS"
+#define ADDHEADER_COMMENT "[ Use the AddHeader command to add colored headers in MESSAGE VIEW ]"
 #define COLOR_BLOB "<    >"
 #define COLOR_BLOB_LEN 6
 #define EQ_COL 37
@@ -207,6 +217,10 @@ static PAT_STATE *role_global_pstate;
 static struct variable	*score_act_global_ptr,
 			*scorei_pat_global_ptr,
 			*age_pat_global_ptr,
+			*size_pat_global_ptr,
+			*cati_global_ptr,
+			*cat_cmd_global_ptr,
+			*cat_lim_global_ptr,
 			*startup_ptr,
 			*role_forw_ptr,
 			*role_repl_ptr,
@@ -219,6 +233,8 @@ static struct variable	*score_act_global_ptr,
 			*role_status4_ptr,
 			*role_status5_ptr,
 			*role_status6_ptr,
+			*role_status7_ptr,
+			*role_status8_ptr,
 			*msg_state1_ptr,
 			*msg_state2_ptr,
 			*msg_state3_ptr,
@@ -235,7 +251,7 @@ static struct variable	*score_act_global_ptr,
  * The CONF_S's varmem field serves dual purposes.  The low two bytes
  * are reserved for the pre-defined color index (though only 8 are 
  * defined for the nonce, and the high order bits are for the index
- * of the particular HDR_COLOR_S this CONF_S is associated with.
+ * of the particular SPEC_COLOR_S this CONF_S is associated with.
  * Capiche?
  */
 #define	CFC_ICOLOR(V)		((V)->varmem & 0xff)
@@ -259,6 +275,7 @@ int	 conf_scroll_screen PROTO((struct pine *, OPT_SCREEN_S *, CONF_S *,
 				   char *, char *, int));
 HelpType config_help PROTO((int, int));
 int      text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
+int      text_toolit PROTO((struct pine *, int, CONF_S **, unsigned, int));
 int      litsig_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      inbox_path_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 void     exception_override_warning PROTO((struct variable *));
@@ -271,6 +288,7 @@ PTR_TO_RULEFUNC rulefunc_from_var PROTO((struct pine *, struct variable *));
 int      feature_gets_an_x PROTO((struct pine *, CONF_S *, char **));
 int      feature_in_list PROTO((char **, char *));
 int      take_export_tool PROTO((struct pine *, int, CONF_S **, unsigned));
+int      select_from_list_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 color_setting_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      color_edit_screen PROTO((struct pine *, CONF_S **));
 void	 color_update_selected PROTO((struct pine *, CONF_S *, char *,
@@ -283,10 +301,10 @@ void     add_color_setting_disp PROTO((struct pine *,
 				       struct key_menu *, struct key_menu *,
 				       HelpType, int, int,
 				       char *, char *, int));
-HDR_COLOR_S *hdr_color_from_var PROTO((char *));
-HDR_COLOR_S *hdr_colors_from_varlist PROTO((char **));
-char        *var_from_hdr_color PROTO((HDR_COLOR_S *));
-char       **varlist_from_hdr_colors PROTO((HDR_COLOR_S *));
+SPEC_COLOR_S *spec_color_from_var PROTO((char *, int));
+SPEC_COLOR_S *spec_colors_from_varlist PROTO((char **, int));
+char    *var_from_spec_color PROTO((SPEC_COLOR_S *));
+char   **varlist_from_spec_colors PROTO((SPEC_COLOR_S *));
 char	*new_color_line PROTO((char *, int, int, int));
 int	 is_rgb_color PROTO((char *));
 void     set_color_val PROTO((struct variable *, int));
@@ -427,6 +445,7 @@ int      role_litsig_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 role_filt_text_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int      role_text_tool_inick PROTO((struct pine *, int, CONF_S **, unsigned));
 int      role_text_tool_afrom PROTO((struct pine *, int, CONF_S **, unsigned));
+int      role_text_tool_kword PROTO((struct pine *, int, CONF_S **, unsigned));
 void     calculate_inick_stuff PROTO((struct pine *));
 int	 role_radiobutton_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 role_addhdr_tool PROTO((struct pine *, int, CONF_S **, unsigned));
@@ -435,13 +454,21 @@ int	 role_sort_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 int	 role_filt_radiobutton_tool PROTO((struct pine *, int, CONF_S **,
 					   unsigned));
 int	 role_filt_exitcheck PROTO((CONF_S **, unsigned));
-int      check_role_folders PROTO((char *, unsigned));
-char    *get_role_specific_folder PROTO((CONF_S **));
+int      check_role_folders PROTO((char **, unsigned));
+char   **get_role_specific_folder PROTO((CONF_S **));
 int      delete_user_vals PROTO((struct variable *));
 int	 feat_checkbox_tool PROTO((struct pine *, int, CONF_S **, unsigned));
 void	 toggle_feat_option_bit PROTO((struct pine *, int, struct variable *,
 				    char *));
 NAMEVAL_S *feat_feature_list PROTO((int));
+void     setup_dummy_pattern_var PROTO((struct variable *, char *,
+					PATTERN_S *));
+void     setup_role_pat PROTO((struct pine *, CONF_S **, struct variable *,
+			       HelpType, char *, struct key_menu *,
+			       int (*tool)(), EARB_S **, int));
+void     setup_role_pat_alt PROTO((struct pine *, CONF_S **, struct variable *,
+				   HelpType, char *, struct key_menu *,
+				   int (*tool)(), int, int));
 
 
 static char *klockin, *klockame;
@@ -617,6 +644,8 @@ draw_klocked_body(login, username)
 	{"X", "[Set/Unset]", {MC_TOGGLEB,3,{'x',ctrl('M'),ctrl('J')}}, KS_NONE}
 #define TOGGLEC_MENU \
 	{"X", "[Set/Unset]", {MC_TOGGLEC,3,{'x',ctrl('M'),ctrl('J')}}, KS_NONE}
+#define TOGGLED_MENU \
+	{"X", "[Set/Unset]", {MC_TOGGLED,3,{'x',ctrl('M'),ctrl('J')}}, KS_NONE}
 
 static struct key config_text_keys[] = 
        {HELP_MENU,
@@ -761,6 +790,62 @@ static struct key config_role_file_res_keys[] =
 	NULL_MENU,
 	NULL_MENU};
 INST_KEY_MENU(config_role_file_res_keymenu, config_role_file_res_keys);
+
+static struct key config_role_keyword_keys[] = 
+       {HELP_MENU,
+	OTHER_MENU,
+	EXIT_SETUP_MENU,
+	{"C", "[Change Val]", {MC_EDIT,3,{'c',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"A", "Add Value", {MC_ADD,1,{'a'}}, KS_NONE},
+	{"D", "Delete Val", {MC_DELETE,1,{'d'}}, KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU,
+
+        HELP_MENU,
+	OTHER_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	{"T", "ToKeywords", {MC_CHOICE, 2, {'t', ctrl('T')}}, KS_NONE},
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU};
+INST_KEY_MENU(config_role_keyword_keymenu, config_role_keyword_keys);
+
+static struct key config_role_keyword_keys_not[] = 
+       {HELP_MENU,
+	OTHER_MENU,
+	EXIT_SETUP_MENU,
+	{"C", "[Change Val]", {MC_EDIT,3,{'c',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"A", "Add Value", {MC_ADD,1,{'a'}}, KS_NONE},
+	{"D", "Delete Val", {MC_DELETE,1,{'d'}}, KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU,
+
+        HELP_MENU,
+	OTHER_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	{"T", "ToKeywords", {MC_CHOICE, 2, {'t', ctrl('T')}}, KS_NONE},
+	NULL_MENU,
+	{"!", "toggle NOT", {MC_NOT,1,{'!'}}, KS_NONE},
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU};
+INST_KEY_MENU(config_role_keyword_keymenu_not, config_role_keyword_keys_not);
 
 static struct key config_role_keys[] = 
        {HELP_MENU,
@@ -1046,11 +1131,26 @@ static struct key hdr_color_checkbox_keys[] =
 	WHEREIS_MENU};
 INST_KEY_MENU(hdr_color_checkbox_keymenu, hdr_color_checkbox_keys);
 
-static struct key selectable_bold_checkbox_keys[] = 
+static struct key kw_color_checkbox_keys[] = 
        {HELP_MENU,
 	NULL_MENU,
 	EXIT_SETUP_MENU,
 	TOGGLEC_MENU,
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(kw_color_checkbox_keymenu, kw_color_checkbox_keys);
+
+static struct key selectable_bold_checkbox_keys[] = 
+       {HELP_MENU,
+	NULL_MENU,
+	EXIT_SETUP_MENU,
+	TOGGLED_MENU,
 	PREV_MENU,
 	NEXT_MENU,
 	PREVPAGE_MENU,
@@ -1123,6 +1223,21 @@ static struct key custom_color_changing_keys[] =
 	WHEREIS_MENU};
 INST_KEY_MENU(custom_color_changing_keymenu, custom_color_changing_keys);
 
+static struct key kw_color_changing_keys[] = 
+       {HELP_MENU,
+	NULL_MENU,
+	{"E", "To Colors", {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+	{"*", "[Select]", {MC_CHOICEC,3,{'*',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(kw_color_changing_keymenu, kw_color_changing_keys);
+
 
 #ifdef	_WINDOWS
 
@@ -1156,6 +1271,21 @@ static struct key custom_rgb_changing_keys[] =
 	PRYNTTXT_MENU,
 	WHEREIS_MENU};
 INST_KEY_MENU(custom_rgb_keymenu, custom_rgb_changing_keys);
+
+static struct key kw_rgb_changing_keys[] = 
+       {HELP_MENU,
+	NULL_MENU,
+	{"E", "To Colors", {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+	{"*", "[Select]", {MC_CHOICEC,3,{'*',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"C", "Customize", {MC_RGB3,1,{'c'}},KS_NONE},
+	NULL_MENU,
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(kw_rgb_keymenu, kw_rgb_changing_keys);
 
 #endif
 
@@ -1217,6 +1347,21 @@ static struct key role_color_setting_keys[] =
 	PRYNTTXT_MENU,
 	WHEREIS_MENU};
 INST_KEY_MENU(role_color_setting_keymenu, role_color_setting_keys);
+
+static struct key kw_color_setting_keys[] = 
+       {HELP_MENU,
+	NULL_MENU,
+	EXIT_SETUP_MENU,
+	{"C", "[Change]", {MC_EDIT,3,{'c',ctrl('M'),ctrl('J')}}, KS_NONE},
+	PREV_MENU,
+	NEXT_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"A", "AddHeader", {MC_ADD,1,{'a'}}, KS_NONE},
+	{"R", "RestoreDefs", {MC_DEFAULT,1,{'r'}}, KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(kw_color_setting_keymenu, kw_color_setting_keys);
 
 
 
@@ -1485,15 +1630,17 @@ option_screen(ps, edit_exceptions)
 	}
 	else{
 	    if(vtmp == &ps->vars[V_FILLCOL]
+	       || vtmp == &ps->vars[V_QUOTE_SUPPRESSION]
 	       || vtmp == &ps->vars[V_OVERLAP]
+	       || vtmp == &ps->vars[V_MAXREMSTREAM]
 	       || vtmp == &ps->vars[V_MARGIN]
+	       || vtmp == &ps->vars[V_DEADLETS]
+	       || vtmp == &ps->vars[V_NMW_WIDTH]
 	       || vtmp == &ps->vars[V_STATUS_MSG_DELAY]
 	       || vtmp == &ps->vars[V_MAILCHECK]
+	       || vtmp == &ps->vars[V_MAILCHECKNONCURR]
 	       || vtmp == &ps->vars[V_MAILDROPCHECK]
 	       || vtmp == &ps->vars[V_NNTPRANGE]
-#ifdef DEBUGJOURNAL
-	       || vtmp == &ps->vars[V_DEBUGMEM]
-#endif
 	       || vtmp == &ps->vars[V_TCPOPENTIMEO]
 	       || vtmp == &ps->vars[V_TCPREADWARNTIMEO]
 	       || vtmp == &ps->vars[V_TCPWRITEWARNTIMEO]
@@ -1581,7 +1728,7 @@ option_screen(ps, edit_exceptions)
 	break;
 
       case 1:
-	write_pinerc(ps, ew);
+	write_pinerc(ps, ew, WRP_NONE);
 	break;
     
       case 10:
@@ -1819,9 +1966,6 @@ exclude_config_var(ps, var, allow_hard_to_config_remotely)
       case V_REMOTE_ABOOK_VALIDITY :
       case V_OPER_DIR :
       case V_USERINPUTTIMEO :
-#ifdef DEBUGJOURNAL
-      case V_DEBUGMEM :
-#endif
       case V_TCPOPENTIMEO :
       case V_TCPREADWARNTIMEO :
       case V_TCPWRITEWARNTIMEO :
@@ -2383,7 +2527,7 @@ select_printer(ps, edit_exceptions)
 	break;
     
       case 1:
-	write_pinerc(ps, ew);
+	write_pinerc(ps, ew, WRP_NONE);
 	break;
     
       case 10:
@@ -2447,6 +2591,7 @@ static struct key flag_keys[] =
 	WHEREIS_MENU};
 INST_KEY_MENU(flag_keymenu, flag_keys);
 
+
 /*----------------------------------------------------------------------
    Function to control flag set/clearing
 
@@ -2458,11 +2603,13 @@ flag_maintenance_screen(ps, flags)
     struct pine	       *ps;
     struct flag_screen *flags;
 {
-    int		  i, lv;
-    char	  tmp[256], **p;
+    int		  i, lv, lc, maxwidth, offset, need;
+    char	  tmp[256], **p, *spacer;
     CONF_S	 *ctmpa = NULL, *first_line = NULL;
     struct	  flag_table  *fp;
     OPT_SCREEN_S  screen;
+
+    maxwidth = max(min((ps->ttyo ? ps->ttyo->screen_cols : 80), 150), 30);
 
     for(p = flags->explanation; p && *p; p++){
 	new_confline(&ctmpa);
@@ -2475,13 +2622,66 @@ flag_maintenance_screen(ps, flags)
     }
 
     /* Now wire flags checkboxes together */
-    for(lv = 0, fp = flags->flag_table; fp->name; fp++)	/* longest name */
-      if(lv < (i = strlen(fp->name)))
-	lv = i;
+    for(lv = 0, lc = 0, fp = (flags->flag_table ? *flags->flag_table : NULL);
+	fp && fp->name; fp++){	/* longest name */
+	if(lv < (i = strlen(fp->name)))
+	  lv = i;
+	if(fp->comment && lc < (i = strlen(fp->comment)))
+	  lc = i;
+    }
     
-    lv = min(lv,200);
+    lv = min(lv,100);
+    lc = min(lc,100);
+    if(lc > 0)
+      spacer = "    ";
+    else
+      spacer = "";
 
-    for(fp = flags->flag_table; fp->name; fp++){	/* build the list */
+    offset = 12;
+    if((need = offset + 5 + lv + strlen(spacer) + lc) > maxwidth){
+	offset -= (need - maxwidth);
+	offset = max(0,offset);
+	if((need = offset + 5 + lv + strlen(spacer) + lc) > maxwidth){
+	    spacer = " ";
+	    if((need = offset + 5 + lv + strlen(spacer) + lc) > maxwidth){
+		lc -= (need - maxwidth);
+		lc = max(0,lc);
+		if(lc == 0)
+		  spacer = "";
+	    }
+	}
+    }
+
+    new_confline(&ctmpa);
+    ctmpa->keymenu   = &flag_keymenu;
+    ctmpa->help      = NO_HELP;
+    ctmpa->tool      = flag_checkbox_tool;
+    ctmpa->flags    |= CF_NOSELECT;
+    ctmpa->valoffset = 0;
+    ctmpa->value     = cpystr("");
+
+    new_confline(&ctmpa);
+    ctmpa->keymenu   = &flag_keymenu;
+    ctmpa->help      = NO_HELP;
+    ctmpa->tool      = flag_checkbox_tool;
+    ctmpa->flags    |= CF_NOSELECT;
+    ctmpa->valoffset = 0;
+    sprintf(tmp, "%*.*sSet  Flag Name", offset, offset, "");
+    ctmpa->value = cpystr(tmp);
+
+    new_confline(&ctmpa);
+    ctmpa->keymenu   = &flag_keymenu;
+    ctmpa->help      = NO_HELP;
+    ctmpa->tool      = flag_checkbox_tool;
+    ctmpa->flags    |= CF_NOSELECT;
+    ctmpa->valoffset = 0;
+    sprintf(tmp, "%*.*s---  %.*s",
+	    offset, offset, "",
+	    lv+lc+strlen(spacer), repeat_char(lv+lc+strlen(spacer), '-'));
+    ctmpa->value = cpystr(tmp);
+
+    for(fp = (flags->flag_table ? *flags->flag_table : NULL);
+	fp && fp->name; fp++){	/* build the list */
 	new_confline(&ctmpa);
 	if(!first_line)
 	  first_line = ctmpa;
@@ -2489,12 +2689,14 @@ flag_maintenance_screen(ps, flags)
 	ctmpa->keymenu		  = &flag_keymenu;
 	ctmpa->help		  = fp->help;
 	ctmpa->tool		  = flag_checkbox_tool;
-	ctmpa->d.fp		  = fp;
-	ctmpa->valoffset	  = 12;
+	ctmpa->d.f.ftbl		  = flags->flag_table;
+	ctmpa->d.f.fp		  = fp;
+	ctmpa->valoffset	  = offset;
 
-	sprintf(tmp, "[%c]  %-*.*s",
+	sprintf(tmp, "[%c]  %-*.*s%.10s%-*.*s",
 		(fp->set == 0) ? ' ' : (fp->set == 1) ? 'X' : '?',
-		lv, lv, fp->name);
+		lv, lv, fp->name,
+		spacer, lc, lc, fp->comment ? fp->comment : "");
 	ctmpa->value = cpystr(tmp);
     }
       
@@ -3437,7 +3639,7 @@ context_select_tool(ps, cmd, cl, flags)
 	break;
 
       case MC_INDEX :
-	if(THREADING() && ps_global->viewing_a_thread)
+	if(THREADING() && sp_viewing_a_thread(ps_global->mail_stream))
 	  unview_thread(ps_global, ps_global->mail_stream, ps_global->msgmap);
 
 	retval = simple_exit_cmd(flags);
@@ -3459,7 +3661,7 @@ context_select_tool(ps, cmd, cl, flags)
 	    CONTEXT_S *c = (*cl)->d.c.ct;
 	    char *new_fold = broach_folder(-FOOTER_ROWS(ps), 0, &c);
 
-	    if(new_fold && do_broach_folder(new_fold, c, NULL) > 0){
+	    if(new_fold && do_broach_folder(new_fold, c, NULL, 0L) > 0){
 		ps_global->next_screen = mail_index_screen;
 		retval = simple_exit_cmd(flags);
 	    }
@@ -3669,7 +3871,7 @@ ldap_addr_select(ps, ac, result, style, wp_err)
 		a != NULL;
 		a = ldap_next_attribute(res_list->ld, e, ber)){
 
-		dprint(9, (debugfile, " %s", a));
+		dprint(9, (debugfile, " %s", a ? a : "?"));
 		if(strcmp(a, res_list->info_used->cnattr) == 0){
 		    if(!cn)
 		      cn = ldap_get_values(res_list->ld, e, a);
@@ -4447,7 +4649,7 @@ dir_config_add(ps, cl)
 	    (*cl) = (*cl)->prev->prev;
 	    
 	    fix_side_effects(ps, (*cl)->var, 0);
-	    write_pinerc(ps, ew);
+	    write_pinerc(ps, ew, WRP_NONE);
 	}
 	else
 	  q_status_message(SM_ORDER, 0, 3, "Add cancelled, no server name");
@@ -4593,7 +4795,7 @@ dir_config_shuffle(ps, cl)
     a->prev = b->next->next;
 
     ps->mangled_body = 1;
-    write_pinerc(ps, ew);
+    write_pinerc(ps, ew, WRP_NONE);
 }
 
 
@@ -4676,7 +4878,7 @@ dir_config_edit(ps, cl)
 	    (*cl)->next->value = subtitle;
 
 	    fix_side_effects(ps, (*cl)->var, 0);
-	    write_pinerc(ps, ew);
+	    write_pinerc(ps, ew, WRP_NONE);
 	}
     }
 
@@ -5688,7 +5890,7 @@ dir_config_del(ps, cl)
     if(rv == 1){
 	set_current_val((*cl)->var, TRUE, FALSE);
 	fix_side_effects(ps, (*cl)->var, 0);
-	write_pinerc(ps, ew);
+	write_pinerc(ps, ew, WRP_NONE);
     }
 }
 
@@ -5995,7 +6197,7 @@ take_to_export(ps, lines_to_take)
     LINES_TO_TAKE *li;
     char          *help_title = "HELP FOR TAKE EXPORT SCREEN";
     char          *p;
-    TakeAddrScreenMode listmode = SingleMode;
+    ScreenMode     listmode = SingleMode;
 
     for(li = lines_to_take; li; li = li->next){
 
@@ -6239,6 +6441,11 @@ conf_scroll_screen(ps, screen, start_line, title, pdesc, multicol)
     void        (*prev_redrawer) ();
 
     dprint(7,(debugfile, "conf_scroll_screen()\n"));
+
+    if(BODY_LINES(ps) < 1){
+	q_status_message(SM_ORDER | SM_DING, 3, 3, "Screen too small");
+	return(0);
+    }
 
     if(screen && screen->ro_warning)
       q_status_message1(SM_ORDER, 1, 3,
@@ -7219,6 +7426,12 @@ config_help(var, feature)
 	return(h_config_custom_hdrs);
       case V_VIEW_HEADERS :
 	return(h_config_viewer_headers);
+      case V_VIEW_MARGIN_LEFT :
+	return(h_config_viewer_margin_left);
+      case V_VIEW_MARGIN_RIGHT :
+	return(h_config_viewer_margin_right);
+      case V_QUOTE_SUPPRESSION :
+	return(h_config_quote_suppression);
       case V_SAVED_MSG_NAME_RULE :
 	return(h_config_saved_msg_name_rule);
       case V_FCC_RULE :
@@ -7241,20 +7454,28 @@ config_help(var, feature)
 	return(h_config_sending_filter);
       case V_ALT_ADDRS :
 	return(h_config_alt_addresses);
+      case V_KEYWORDS :
+	return(h_config_keywords);
+      case V_KW_BRACES :
+	return(h_config_kw_braces);
+      case V_KW_COLORS :
+	return(h_config_kw_color);
       case V_ABOOK_FORMATS :
 	return(h_config_abook_formats);
       case V_INDEX_FORMAT :
 	return(h_config_index_format);
       case V_OVERLAP :
 	return(h_config_viewer_overlap);
+      case V_MAXREMSTREAM :
+	return(h_config_maxremstream);
+      case V_PERMLOCKED :
+	return(h_config_permlocked);
       case V_MARGIN :
 	return(h_config_scroll_margin);
+      case V_DEADLETS :
+	return(h_config_deadlets);
       case V_FILLCOL :
 	return(h_config_composer_wrap_column);
-#ifdef DEBUGJOURNAL
-      case V_DEBUGMEM :
-	return(h_config_debug_mem);
-#endif
       case V_TCPOPENTIMEO :
 	return(h_config_tcp_open_timeo);
       case V_TCPREADWARNTIMEO :
@@ -7315,6 +7536,8 @@ config_help(var, feature)
 	return(h_config_status_msg_delay);
       case V_MAILCHECK :
 	return(h_config_mailcheck);
+      case V_MAILCHECKNONCURR :
+	return(h_config_mailchecknoncurr);
       case V_MAILDROPCHECK :
 	return(h_config_maildropcheck);
       case V_NNTPRANGE :
@@ -7359,6 +7582,12 @@ config_help(var, feature)
 	return(h_config_mailcap_path);
       case V_MIMETYPE_PATH :
 	return(h_config_mimetype_path);
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+      case V_FIFOPATH :
+	return(h_config_fifopath);
+#endif
+      case V_NMW_WIDTH :
+	return(h_config_newmailwidth);
       case V_NEWSRC_PATH :
 	return(h_config_newsrc_path);
       case V_BROWSER :
@@ -7671,22 +7900,40 @@ inbox_path_text_tool(ps, cmd, cl, flags)
 }
 
 
-/*
- * simple text variable handler
- *
- * note, things get a little involved due to the
- *	 screen struct <--> variable mapping. (but, once its
- *       running it shouldn't need changing ;).
- * 
- * returns:  -1 on unrecognized cmd, 0 if no change, 1 if change
- *           returns what conf_exit_cmd returns for exit command.
- */
 int
 text_tool(ps, cmd, cl, flags)
     struct pine  *ps;
     int		  cmd;
     CONF_S      **cl;
     unsigned      flags;
+{
+    return(text_toolit(ps, cmd, cl, flags, 0));
+}
+
+
+/*
+ * simple text variable handler
+ *
+ * note, things get a little involved due to the
+ *	 screen struct <--> variable mapping. (but, once its
+ *       running it shouldn't need changing ;).
+ *
+ *    look_for_backslash == 1 means that backslash is an escape character.
+ *                In particular, \, can be used to put a literal comma
+ *                into a value. The value will still have the backslash
+ *                in it, but the comma after the backslash won't be treated
+ *                as an item separator.
+ * 
+ * returns:  -1 on unrecognized cmd, 0 if no change, 1 if change
+ *           returns what conf_exit_cmd returns for exit command.
+ */
+int
+text_toolit(ps, cmd, cl, flags, look_for_backslash)
+    struct pine  *ps;
+    int		  cmd;
+    CONF_S      **cl;
+    unsigned      flags;
+    int		  look_for_backslash;
 {
     char	     prompt[81], *sval, *tmp, *swap_val, **newval = NULL;
     char            *pval, **apval, **lval, ***alval;
@@ -7722,14 +7969,31 @@ text_tool(ps, cmd, cl, flags)
 	    lowrange = 0;
 	    hirange  = 20;
 	}
-	else if((*cl)->var == &ps->vars[V_STATUS_MSG_DELAY]){
+	else if((*cl)->var == &ps->vars[V_QUOTE_SUPPRESSION]){
+	    lowrange = -(Q_SUPP_LIMIT-1);
+	    hirange  = 1000;
+	}
+	else if((*cl)->var == &ps->vars[V_MAXREMSTREAM]){
 	    lowrange = 0;
+	    hirange  = 15;
+	}
+	else if((*cl)->var == &ps->vars[V_STATUS_MSG_DELAY]){
+	    lowrange = -10;
 	    hirange  = 30;
 	}
-	else if((*cl)->var == &ps->vars[V_MAILCHECK]){
+	else if((*cl)->var == &ps->vars[V_MAILCHECK]
+		|| (*cl)->var == &ps->vars[V_MAILCHECKNONCURR]){
 	    lowrange = 0;
 	    hirange  = 25000;
 	    incr     = 15;
+	}
+	else if((*cl)->var == &ps->vars[V_DEADLETS]){
+	    lowrange = 0;
+	    hirange  = 9;
+	}
+	else if((*cl)->var == &ps->vars[V_NMW_WIDTH]){
+	    lowrange = 20;
+	    hirange  = MAX_SCREEN_COLS;
 	}
 	else if((*cl)->var == score_act_global_ptr){
 	    lowrange = -100;
@@ -7758,13 +8022,6 @@ text_tool(ps, cmd, cl, flags)
 	    hirange  = 1000000;
 	    incr     = 100;
 	}
-#ifdef DEBUGJOURNAL
-	else if((*cl)->var == &ps->vars[V_DEBUGMEM]){
-	    lowrange = 10000;
-	    hirange  = 10000000;
-	    incr = 10000;
-	}
-#endif
 	else if((*cl)->var == &ps->vars[V_REMOTE_ABOOK_VALIDITY]){
 	    lowrange = -1;
 	    hirange  = 25000;
@@ -7772,6 +8029,10 @@ text_tool(ps, cmd, cl, flags)
 	else if((*cl)->var == &ps->vars[V_REMOTE_ABOOK_HISTORY]){
 	    lowrange = 0;
 	    hirange  = 100;
+	}
+	else if((*cl)->var == cat_lim_global_ptr){
+	    lowrange = -1;
+	    hirange  = 10000000;
 	}
 	else{
 	    lowrange = 0;
@@ -7948,7 +8209,10 @@ replace_text:
 				ltmp[1] = NULL;
 			    }
 			    else
-			      ltmp = parse_list(sval, i + 1, 0, NULL);
+			      ltmp = parse_list(sval, i + 1,
+					        look_for_backslash
+						  ? PL_COMMAQUOTE : 0,
+						NULL);
 
 			    if(ltmp[0]){
 				config_add_list(ps, cl, ltmp, &newval, after);
@@ -8288,7 +8552,10 @@ delete:
 			    i++;	/* conservative count of ,'s */
 
 			if(i)
-			  ltmp = parse_list(sval, i + 1, 0, NULL);
+			  ltmp = parse_list(sval, i + 1,
+					    look_for_backslash
+					      ? PL_COMMAQUOTE : 0,
+					    NULL);
 
 			if(ltmp && !ltmp[0])		/* only commas */
 			  goto delete;
@@ -8642,7 +8909,9 @@ config_add_list(ps, cl, ltmp, newval, after)
 	    *alval = (char **)fs_get((items+1)*sizeof(char *));
 	    memset((void *)(*alval), 0, (items+1)*sizeof(char *));
 	    (*alval)[0] = ltmp[0];
-	    *newval = &(*cl)->value;
+	    if(newval)
+	      *newval = &(*cl)->value;
+
 	    if((*cl)->value)
 	      fs_give((void **)&(*cl)->value);
 
@@ -8670,7 +8939,9 @@ config_add_list(ps, cl, ltmp, newval, after)
 	*alval = (char **)fs_get((items+1)*sizeof(char *));
 	memset((void *)(*alval), 0, (items+1) * sizeof(char *));
 	(*alval)[(*cl)->varmem=0] = ltmp[0];
-	*newval = &(*cl)->value;
+	if(newval)
+	  *newval = &(*cl)->value;
+
 	if((*cl)->value)
 	  fs_give((void **)&(*cl)->value);
 
@@ -8702,10 +8973,12 @@ config_add_list(ps, cl, ltmp, newval, after)
 	if(!after)
 	  (*cl)->value   = NULL;
 
-	if(after)
-	  *newval	 = &(*cl)->next->value;
-	else
-	  *newval	 = &(*cl)->value;
+	if(newval){
+	    if(after)
+	      *newval	 = &(*cl)->next->value;
+	    else
+	      *newval	 = &(*cl)->value;
+	}
     }
 
     /*
@@ -8839,14 +9112,14 @@ flag_checkbox_tool(ps, cmd, cl, flags)
     CONF_S	**cl;
     unsigned      flags;
 {
-    int  rv = 0, state;
+    int rv = 0, state;
 
     switch(cmd){
       case MC_TOGGLE:				/* mark/unmark feature */
-	state = (*cl)->d.fp->set;
-	state = (state == 1) ? 0 : (!state && ((*cl)->d.fp->ukn)) ? 2 : 1;
+	state = (*cl)->d.f.fp->set;
+	state = (state == 1) ? 0 : (!state && ((*cl)->d.f.fp->ukn)) ? 2 : 1;
 	(*cl)->value[1] = (state == 0) ? ' ' : ((state == 1) ? 'X': '?');
-	(*cl)->d.fp->set = state;
+	(*cl)->d.f.fp->set = state;
 	rv = 1;
 	break;
 
@@ -8928,18 +9201,25 @@ radiobutton_tool(ps, cmd, cl, flags)
 		clear_index_cache();
 	    }
 	    else if((*cl)->var == &ps->vars[V_THREAD_INDEX_STYLE]){
+		MAILSTREAM *m;
+		int         i;
+
 		clear_index_cache();
 		/* clear all hidden and collapsed flags */
 		set_lflags(ps->mail_stream, ps->msgmap, MN_COLL | MN_CHID, 0);
 
-		if(SEP_THRDINDX() && SORT_IS_THREADED())
+		if(SEP_THRDINDX() && SORT_IS_THREADED(ps->msgmap))
 		  unview_thread(ps, ps->mail_stream, ps->msgmap);
 
-		if(SORT_IS_THREADED() && (SEP_THRDINDX() || COLL_THRDS()))
+		if(SORT_IS_THREADED(ps->msgmap)
+		   && (SEP_THRDINDX() || COLL_THRDS()))
 		  collapse_threads(ps->mail_stream, ps->msgmap, NULL);
 
-		ps->viewing_a_thread = 0;
-		ps->inbox_viewing_a_thread = 0;
+		for(i = 0; i < ps_global->s_pool.nstream; i++){
+		    m = ps_global->s_pool.streams[i];
+		    if(m)
+		      sp_set_viewing_a_thread(m, 0);
+		}
 
 		adjust_cur_to_visible(ps->mail_stream, ps->msgmap);
 	    }
@@ -10181,17 +10461,13 @@ update_option_screen(ps, screen, cursor_pos)
 
 			    /* then the color sample */
 			    if(ctmp->var == &ps->vars[V_VIEW_HDR_COLORS]){
-				HDR_COLOR_S *hc, *hcolors;
+				SPEC_COLOR_S *hc, *hcolors;
 
 				lastc = newc = NULL;
 
-				/*
-				 * look for the header in the varname field
-				 * of the title for this color.
-				 */
-
 				hcolors =
-				  hdr_colors_from_varlist(LVAL(ctmp->var, ew));
+				  spec_colors_from_varlist(LVAL(ctmp->var, ew),
+							   0);
 				for(hc = hcolors, i=0; hc; hc = hc->next, i++)
 				  if(CFC_ICUST(ctmp) == i)
 				    break;
@@ -10207,7 +10483,62 @@ update_option_screen(ps, screen, cursor_pos)
 				}
 
 				if(hcolors)
-				  free_hdr_colors(&hcolors);
+				  free_spec_colors(&hcolors);
+
+				/* print out sample1 */
+				save = tmp_20k_buf[min(ps->ttyo->screen_cols -
+						         ctmp->valoffset,
+						       ptr - tmp_20k_buf + 
+							 (SAMPLE_LEN-2))];
+				tmp_20k_buf[min(ps->ttyo->screen_cols -
+						  ctmp->valoffset,
+					        ptr - tmp_20k_buf + 
+						  (SAMPLE_LEN-2))] = '\0';
+				PutLine0(dline+HEADER_ROWS(ps),
+					 ctmp->valoffset + ptr - tmp_20k_buf,
+					 ptr);
+				tmp_20k_buf[min(ps->ttyo->screen_cols -
+						  ctmp->valoffset,
+					        ptr - tmp_20k_buf + 
+						  (SAMPLE_LEN-2))] = save;
+				ptr += (SAMPLE_LEN-2);
+				if(lastc){
+				    (void)pico_set_colorp(lastc, PSC_NONE);
+				    free_color_pair(&lastc);
+				}
+			    }
+			    else if(ctmp->var == &ps->vars[V_KW_COLORS]){
+				KEYWORD_S    *kw;
+				SPEC_COLOR_S *kw_col = NULL;
+
+				lastc = newc = NULL;
+
+				/* find keyword associated with this line */
+				for(kw=ps->keywords, i=0; kw; kw=kw->next, i++)
+				  if(CFC_ICUST(ctmp) == i)
+				    break;
+
+				if(kw)
+				  kw_col =
+				   spec_colors_from_varlist(LVAL(ctmp->var,ew),
+							    0);
+
+				/* color for this keyword */
+				if(kw && kw_col
+				   && ((kw->nick && kw->nick[0]
+				        && (newc=hdr_color(kw->nick, NULL,
+							   kw_col)))
+				       ||
+				       (kw->kw && kw->kw[0]
+				        && (newc=hdr_color(kw->kw, NULL,
+							   kw_col))))){
+				    lastc = pico_get_cur_color();
+				    (void)pico_set_colorp(newc, PSC_NONE);
+				    free_color_pair(&newc);
+				}
+
+				if(kw_col)
+				  free_spec_colors(&kw_col);
 
 				/* print out sample1 */
 				save = tmp_20k_buf[min(ps->ttyo->screen_cols -
@@ -10983,7 +11314,7 @@ color_pretty_value(ps, cl)
     v = cl->var;
 
     if(v && color_holding_var(ps, v) &&
-       (p=strstr(v->name, "-foreground-color"))){
+       (p=srchstr(v->name, "-foreground-color"))){
 
 	is_index = !struncmp(v->name, "index-", 6);
 
@@ -10996,7 +11327,7 @@ color_pretty_value(ps, cl)
 		v->name+1,
 		is_index ? "Symbol " : "",
 		max(EQ_COL - COLOR_INDENT -1 - min(p-v->name-1,30)
-			    - 6 - (is_index ? 7 : 0),0), "",
+			    - 6 - (is_index ? 7 : 0) - 1,0), "",
 		sample_text(ps,v), *q ? SBS : 0, "", q,
 		color_parenthetical(v));
     }
@@ -11017,9 +11348,9 @@ sample_text(ps, v)
     pvalbg = PVAL(v+1, ew);
 
     if(v && v->name &&
-       (strstr(v->name, "-foreground-color") &&
+       (srchstr(v->name, "-foreground-color") &&
 	(pvalfg && pvalfg[0] && pvalbg && pvalbg[0])) ||
-       (v == &ps->vars[V_VIEW_HDR_COLORS]))
+       (v == &ps->vars[V_VIEW_HDR_COLORS] || v == &ps->vars[V_KW_COLORS]))
       ret = SAMP1;
 
     return(ret);
@@ -11040,7 +11371,7 @@ sample_color(ps, v)
     pvalmfg = PVAL(v, Main);
     pvalmbg = PVAL(v+1, Main);
     if(v && color_holding_var(ps, v) &&
-       strstr(v->name, "-foreground-color")){
+       srchstr(v->name, "-foreground-color")){
 	if(pvalefg && pvalefg[0] && pvalebg && pvalebg[0])
 	  cp = new_color_pair(pvalefg, pvalebg);
 	else if(ew == Post && pvalmfg && pvalmfg[0] && pvalmbg && pvalmbg[0])
@@ -11065,7 +11396,7 @@ sampleexc_color(ps, v)
     pvalfg = PVAL(v, Post);
     pvalbg = PVAL(v+1, Post);
     if(v && color_holding_var(ps, v) &&
-       strstr(v->name, "-foreground-color") &&
+       srchstr(v->name, "-foreground-color") &&
        pvalfg && pvalfg[0] && pvalbg && pvalbg[0])
 	cp = new_color_pair(pvalfg, pvalbg);
 
@@ -11084,7 +11415,7 @@ sampleexc_text(ps, v)
     pvalfg = PVAL(v, Post);
     pvalbg = PVAL(v+1, Post);
     if(v && color_holding_var(ps, v) &&
-       strstr(v->name, "-foreground-color")){
+       srchstr(v->name, "-foreground-color")){
 	if(ew == Main && pvalfg && pvalfg[0] && pvalbg && pvalbg[0])
 	  ret = SAMPEXC;
     }
@@ -11456,6 +11787,7 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
     FEATURE_S  *f;
     char      **vp, *p, **lval, ***alval;
     int		og, on_before, was_set;
+    long        l;
 
     f  = feature_list(index);
     og = test_old_growth_bits(ps, f->id);
@@ -11529,9 +11861,24 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
 
       case F_MARK_FOR_CC :
 	clear_index_cache();
-	if(THREADING() && ps->viewing_a_thread)
+	if(THREADING() && sp_viewing_a_thread(ps->mail_stream))
 	  unview_thread(ps, ps->mail_stream, ps->msgmap);
 
+	break;
+
+      case F_HIDE_NNTP_PATH :
+	mail_parameters(NULL, SET_NNTPHIDEPATH,
+			(void *)(F_ON(f->id, ps) ? 1 : 0));
+	break;
+
+      case F_MAILDROPS_PRESERVE_STATE :
+	mail_parameters(NULL, SET_SNARFPRESERVE,
+			(void *)(F_ON(f->id, ps) ? 1 : 0));
+	break;
+
+      case F_DISABLE_SHARED_NAMESPACES :
+	mail_parameters(NULL, SET_DISABLEAUTOSHAREDNS,
+			(void *)(F_ON(f->id, ps) ? 1 : 0));
 	break;
 
       case F_QUELL_LOCK_FAILURE_MSGS :
@@ -11539,8 +11886,13 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
 			(void *)(F_ON(f->id, ps) ? 1 : 0));
 	break;
 
+      case F_MULNEWSRC_HOSTNAMES_AS_TYPED :
+	l = F_ON(f->id, ps) ? 0L : 1L;
+	mail_parameters(NULL, SET_NEWSRCCANONHOST, (void *) l);
+	break;
+
       case F_QUELL_INTERNAL_MSG :
-	mail_parameters(NULL,SET_USERHASNOLIFE,
+	mail_parameters(NULL, SET_USERHASNOLIFE,
 			(void *)(F_ON(f->id, ps) ? 1 : 0));
 	break;
 
@@ -11554,6 +11906,10 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
 	/* toggle raw mode settings to make tty driver aware of new setting */
 	PineRaw(0);
 	PineRaw(1);
+	break;
+
+      case F_SHOW_SORT :
+	ps->mangled_header = 1;
 	break;
 
       case F_USE_FK :
@@ -11602,6 +11958,11 @@ toggle_feature_bit(ps, index, var, cl, just_flip_value)
 
       case F_PASS_CONTROL_CHARS :
 	ps->pass_ctrl_chars = F_ON(F_PASS_CONTROL_CHARS,ps_global) ? 1 : 0;
+	break;
+
+      case F_PASS_C1_CONTROL_CHARS :
+	ps->pass_c1_ctrl_chars = F_ON(F_PASS_C1_CONTROL_CHARS,ps_global)
+								    ? 1 : 0;
 	break;
 #endif
 #ifdef	MOUSE
@@ -11946,9 +12307,9 @@ offer_to_fix_pinerc(ps)
 
 
     if(write_main)
-      write_pinerc(ps, Main);
+      write_pinerc(ps, Main, WRP_NONE);
     if(write_post)
-      write_pinerc(ps, Post);
+      write_pinerc(ps, Post, WRP_NONE);
 
     return;
 }
@@ -12248,25 +12609,30 @@ int              revert;
 	   && strcmp(ps->VAR_INBOX_PATH, ps->mail_stream->mailbox)){
 	    /*
 	     * If we currently have "inbox" open and the mailbox name
-	     * doesn't match, reset the current folder's name...
+	     * doesn't match, reset the current folder's name and
+	     * remove the SP_INBOX flag.
 	     */
 	    strncpy(ps->cur_folder, ps->mail_stream->mailbox,
 		    sizeof(ps->cur_folder)-1);
 	    ps->cur_folder[sizeof(ps->cur_folder)-1] = '\0';
-	    ps->inbox_stream   = NULL;
+	    sp_set_fldr(ps->mail_stream, ps->cur_folder);
+	    sp_unflag(ps->mail_stream, SP_INBOX);
 	    ps->mangled_header = 1;
 	}
-	else if(ps->inbox_stream
-		&& strcmp(ps->VAR_INBOX_PATH, ps->inbox_stream->mailbox)){
+	else if(sp_inbox_stream()
+	    && strcmp(ps->VAR_INBOX_PATH, sp_inbox_stream()->original_mailbox)){
+	    MAILSTREAM *m = sp_inbox_stream();
+
 	    /*
 	     * if we don't have inbox directly open, but have it
 	     * open for new mail notification, close the stream like
 	     * any other ordinary folder, and clean up...
 	     */
-	    MAILSTREAM *s = ps->inbox_stream;
-	    ps->inbox_stream = NULL;
-	    mn_give(&ps->inbox_msgmap);
-	    expunge_and_close(s, NULL, s->mailbox, NULL);
+	    if(m){
+		sp_unflag(m, SP_PERMLOCKED | SP_INBOX);
+		sp_set_fldr(m, m->mailbox);
+		expunge_and_close(m, NULL, EC_NONE);
+	    }
 	}
     }
     else if(var == &ps->vars[V_ADDRESSBOOK] ||
@@ -12284,6 +12650,18 @@ int              revert;
     else if(var == &ps->vars[V_DEFAULT_FCC] ||
 	    var == &ps->vars[V_DEFAULT_SAVE_FOLDER]){
 	init_save_defaults();
+    }
+    else if(var == &ps->vars[V_KW_BRACES]){
+	clear_iindex_cache();
+    }
+    else if(var == &ps->vars[V_KEYWORDS]){
+	if(ps_global->keywords)
+	  free_keyword_list(&ps_global->keywords);
+	
+	if(var->current_val.l && var->current_val.l[0])
+	  ps_global->keywords = init_keyword_list(var->current_val.l);
+
+	clear_iindex_cache();
     }
     else if(var == &ps->vars[V_INIT_CMD_LIST]){
 	if(!revert)
@@ -12317,6 +12695,19 @@ int              revert;
 	else
 	  ps->viewer_overlap = old_value;
     }
+    else if(var == &ps->vars[V_MAXREMSTREAM]){
+	int old_value = ps->s_pool.max_remstream;
+
+	if(SVAR_MAXREMSTREAM(ps, old_value, tmp_20k_buf)){
+	    if(!revert )
+	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+	else
+	  ps->s_pool.max_remstream = old_value;
+
+	dprint(9, (debugfile, "max_remstream goes to %d\n",
+		ps->s_pool.max_remstream));
+    }
     else if(var == &ps->vars[V_MARGIN]){
 	int old_value = ps->scroll_margin;
 
@@ -12327,16 +12718,71 @@ int              revert;
 	else
 	  ps->scroll_margin = old_value;
     }
+    else if(var == &ps->vars[V_DEADLETS]){
+	int old_value = ps->deadlets;
+
+	if(SVAR_DEADLETS(ps, old_value, tmp_20k_buf)){
+	    if(!revert)
+	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+	else
+	  ps->deadlets = old_value;
+    }
     else if(var == &ps->vars[V_FILLCOL]){
 	if(SVAR_FILLCOL(ps, ps->composer_fillcol, tmp_20k_buf)){
 	    if(!revert)
 	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
 	}
     }
+    else if(var == &ps->vars[V_QUOTE_SUPPRESSION]){
+	val = ps->quote_suppression_threshold;
+	if(val < Q_SUPP_LIMIT && val > 0)
+	  val = -val;
+
+	if(ps->VAR_QUOTE_SUPPRESSION
+	   && SVAR_QUOTE_SUPPRESSION(ps, val, tmp_20k_buf)){
+	    if(!revert)
+	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+	else{
+	    if(val > 0 && val < Q_SUPP_LIMIT){
+		if(!revert){
+		    sprintf(tmp_20k_buf, "Ignoring Quote-Suppression-Threshold value of %.50s, see help", ps->VAR_QUOTE_SUPPRESSION);
+		    q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+		}
+	    }
+	    else{
+		if(val < 0 && val != Q_DEL_ALL)
+		  ps->quote_suppression_threshold = -val;
+		else
+		  ps->quote_suppression_threshold = val;
+	    }
+	}
+    }
     else if(var == &ps->vars[V_STATUS_MSG_DELAY]){
 	if(SVAR_MSGDLAY(ps, ps->status_msg_delay, tmp_20k_buf)){
 	    if(!revert)
 	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+    }
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+    else if(var == &ps->vars[V_FIFOPATH]){
+	init_newmailfifo(ps->VAR_FIFOPATH);
+    }
+#endif
+    else if(var == &ps->vars[V_NMW_WIDTH]){
+	int old_value = ps->nmw_width;
+
+	if(SVAR_NMW_WIDTH(ps, old_value, tmp_20k_buf)){
+	    if(!revert )
+	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+	else{
+#ifdef _WINDOWS
+	    if(old_value != ps->nmw_width)
+	      mswin_setnewmailwidth(old_value);	/* actually the new value */
+#endif
+	    ps->nmw_width = old_value;
 	}
     }
     else if(var == &ps->vars[V_TCPOPENTIMEO]){
@@ -12404,27 +12850,29 @@ int              revert;
 	      fs_give((void **)&ps->vars[V_OPER_DIR].main_user_val.p);
 	}
     }
-#ifdef DEBUGJOURNAL
-    else if(var == &ps->vars[V_DEBUGMEM]){
-	if(ps->VAR_DEBUGMEM && SVAR_DEBUGMEM(ps, ps->debugmem, tmp_20k_buf)){
-	    if(!revert)
-	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
-	}
-    }
-#endif
     else if(var == &ps->vars[V_MAILCHECK]){
 	timeo = 15;
 	if(SVAR_MAILCHK(ps, timeo, tmp_20k_buf)){
 	    if(!revert)
 	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
 	}
-	else if(timeo == 0L && !revert){
+	else if(timeo == 0 && !revert){
 	    q_status_message(SM_ORDER, 4, 6,
 "Warning: automatic new mail checking and mailbox checkpointing is disabled");
 	    if(ps->VAR_INBOX_PATH && ps->VAR_INBOX_PATH[0] == '{')
 	      q_status_message(SM_ASYNC, 3, 6,
-"Warning: mail-check-interval=0 may cause IMAP server connection to time out");
+"Warning: Mail-Check-Interval=0 may cause IMAP server connection to time out");
 	}
+    }
+    else if(var == &ps->vars[V_MAILCHECKNONCURR]){
+	val = (int) ps->check_interval_for_noncurr;
+	if(ps->VAR_MAILCHECKNONCURR
+	   && SVAR_MAILCHKNONCURR(ps, val, tmp_20k_buf)){
+	    if(!revert)
+	      q_status_message(SM_ORDER, 3, 5, tmp_20k_buf);
+	}
+	else
+	  ps->check_interval_for_noncurr = (time_t) val;
     }
     else if(var == &ps->vars[V_MAILDROPCHECK]){
 	long rvl;
@@ -12476,7 +12924,8 @@ int              revert;
 	    clear_index_cache();
 	    set_lflags(ps_global->mail_stream, ps_global->msgmap,
 		       MN_COLL | MN_CHID, 0);
-	    if(SORT_IS_THREADED() && (SEP_THRDINDX() || COLL_THRDS()))
+	    if(SORT_IS_THREADED(ps_global->msgmap)
+	       && (SEP_THRDINDX() || COLL_THRDS()))
 	      collapse_threads(ps_global->mail_stream, ps_global->msgmap, NULL);
 
 	    adjust_cur_to_visible(ps_global->mail_stream, ps_global->msgmap);
@@ -12572,7 +13021,8 @@ int              revert;
     else if(var == &ps->vars[V_USE_ONLY_DOMAIN_NAME]){
 	init_hostname(ps);
     }
-    else if(var == &ps->vars[V_IND_PLUS_FORE_COLOR] ||
+    else if(var == &ps->vars[V_KW_COLORS] ||
+	    var == &ps->vars[V_IND_PLUS_FORE_COLOR] ||
 	    var == &ps->vars[V_IND_IMP_FORE_COLOR]  ||
             var == &ps->vars[V_IND_DEL_FORE_COLOR]  ||
             var == &ps->vars[V_IND_ANS_FORE_COLOR]  ||
@@ -12603,7 +13053,8 @@ int              revert;
 	    set_current_val(var, FALSE, FALSE);
 	}
     }
-    else if(var == scorei_pat_global_ptr || var == age_pat_global_ptr){
+    else if(var == scorei_pat_global_ptr || var == age_pat_global_ptr
+	    || var == size_pat_global_ptr || var == cati_global_ptr){
 	apval = APVAL(var, ew);
 	if(*apval){
 	    INTVL_S *iv;
@@ -12930,6 +13381,245 @@ printer_name(input)
 }
 
 
+
+static struct key sel_from_list_keys[] = 
+       {HELP_MENU,
+	NULL_MENU,
+        {"E", "Exit",     {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+        {"S", "[Select]", {MC_SELECT,3,{'s',ctrl('J'),ctrl('M')}}, KS_NONE},
+	{"P", "Prev", {MC_PREVITEM, 1, {'p'}}, KS_NONE},
+	{"N", "Next", {MC_NEXTITEM, 2, {'n', TAB}}, KS_NONE},
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(sel_from_list, sel_from_list_keys);
+
+static struct key sel_from_list_keys_sm[] = 
+       {HELP_MENU,
+	NULL_MENU,
+        {"E", "Exit",     {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+        {"S", "[Select]", {MC_SELECT,3,{'s',ctrl('J'),ctrl('M')}}, KS_NONE},
+	{"P", "Prev", {MC_PREVITEM, 1, {'p'}}, KS_NONE},
+	{"N", "Next", {MC_NEXTITEM, 2, {'n', TAB}}, KS_NONE},
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	NULL_MENU,
+	{"L","ListMode",{MC_LISTMODE,1,{'l'}},KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(sel_from_list_sm, sel_from_list_keys_sm);
+
+static struct key sel_from_list_keys_lm[] = 
+       {HELP_MENU,
+	NULL_MENU,
+        {"E", "Exit",     {MC_EXIT,1,{'e'}}, KS_EXITMODE},
+        {"S", "Select", {MC_SELECT,1,{'s'}}, KS_NONE},
+	{"P", "Prev", {MC_PREVITEM, 1, {'p'}}, KS_NONE},
+	{"N", "Next", {MC_NEXTITEM, 2, {'n', TAB}}, KS_NONE},
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	{"X","[Set/Unset]", {MC_TOGGLE,3,{'x',ctrl('M'),ctrl('J')}}, KS_NONE},
+	{"1","SinglMode",{MC_LISTMODE,1,{'1'}},KS_NONE},
+	PRYNTTXT_MENU,
+	WHEREIS_MENU};
+INST_KEY_MENU(sel_from_list_lm, sel_from_list_keys_lm);
+
+/*
+ * This is intended to be a generic tool to select strings from a list
+ * of strings.
+ *
+ * Args     lsel -- the items as well as the answer are contained in this list
+ *         flags -- 
+ *         title -- passed to conf_scroll_screen
+ *         pdesc -- passed to conf_scroll_screen
+ *          help -- passed to conf_scroll_screen
+ *     helptitle -- passed to conf_scroll_screen
+ *
+ * Returns 0 on successful choice
+ *        -1 if cancelled
+ */
+int
+select_from_list_screen(lsel, flags, title, pdesc, help, htitle)
+    LIST_SEL_S   *lsel;
+    unsigned long flags;
+    char         *title;
+    char         *pdesc;
+    HelpType      help;
+    char         *htitle;
+{
+    CONF_S      *ctmp = NULL, *first_line = NULL;
+    OPT_SCREEN_S screen;
+    int          ret = -1;
+    LIST_SEL_S  *p;
+    ScreenMode   listmode = SingleMode;
+
+    if(!lsel)
+      return(ret);
+    
+    if(flags & SFL_ALLOW_LISTMODE){
+	/* turn the list into conf_scroll lines */
+	for(p = lsel; p; p = p->next){
+
+	    new_confline(&ctmp);
+	    if(!first_line)
+	      first_line = ctmp;
+
+	    ctmp->value        = (char *) fs_get((strlen(p->item ? p->item : "") + 4 + 1) * sizeof(char));
+	    sprintf(ctmp->value, "    %s", p->item ? p->item : "");
+	    ctmp->d.l.lsel     = p;
+	    ctmp->d.l.listmode = &listmode;
+	    ctmp->keymenu      = &sel_from_list_sm;
+	    ctmp->help         = help;
+	    ctmp->help_title   = htitle;
+	    ctmp->tool         = select_from_list_tool;
+	    ctmp->flags        = CF_STARTITEM;
+	}
+    }
+    else{
+	/* turn the list into conf_scroll lines */
+	for(p = lsel; p; p = p->next){
+
+	    new_confline(&ctmp);
+	    if(!first_line)
+	      first_line = ctmp;
+
+	    ctmp->value        = cpystr(p->item ? p->item : "");
+	    ctmp->d.l.lsel     = p;
+	    ctmp->d.l.listmode = &listmode;
+	    ctmp->keymenu      = &sel_from_list;
+	    ctmp->help         = help;
+	    ctmp->help_title   = htitle;
+	    ctmp->tool         = select_from_list_tool;
+	    ctmp->flags        = CF_STARTITEM;
+	    ctmp->valoffset    = 4;
+	}
+    }
+
+    memset(&screen, 0, sizeof(screen));
+    switch(conf_scroll_screen(ps_global, &screen, first_line, title, pdesc, 0)){
+      case 1:
+        ret = 0;
+	break;
+      
+      default:
+	break;
+    }
+
+    ps_global->mangled_screen = 1;
+    return(ret);
+}
+
+
+int
+select_from_list_tool(ps, cmd, cl, flags)
+    struct pine *ps;
+    int          cmd;
+    CONF_S     **cl;
+    unsigned     flags;
+{
+    CONF_S *ctmp;
+    int     retval = 0;
+
+    switch(cmd){
+      case MC_SELECT :
+	if(*(*cl)->d.l.listmode == SingleMode){
+	    (*cl)->d.l.lsel->selected = 1;
+	    retval = 3;
+	}
+	else{
+	    /* check if anything is selected */
+	    /* go to first line */
+	    for(ctmp = *cl; prev_confline(ctmp); ctmp = prev_confline(ctmp))
+	      ;
+	    
+	    for(; ctmp; ctmp = next_confline(ctmp))
+	      if(!(ctmp->flags & CF_NOSELECT) && ctmp->d.l.lsel->selected){
+		  retval = 3;
+		  break;
+	      }
+	    
+	    if(retval == 0){
+		q_status_message(SM_ORDER, 0, 3,
+		     "Nothing selected, use Exit to exit without a selection.");
+	    }
+	}
+
+	break;
+
+      case MC_LISTMODE :
+        if(*(*cl)->d.l.listmode == SingleMode){
+	    /*
+	     * UnHide the checkboxes
+	     */
+
+	    *(*cl)->d.l.listmode = ListMode;
+
+	    /* go to first line */
+	    for(ctmp = *cl; prev_confline(ctmp); ctmp = prev_confline(ctmp))
+	      ;
+	    
+	    for(; ctmp; ctmp = next_confline(ctmp))
+	      if(!(ctmp->flags & CF_NOSELECT) && ctmp->value){
+		  ctmp->value[0] = '[';
+		  ctmp->value[1] = ctmp->d.l.lsel->selected ? 'X' : SPACE;
+		  ctmp->value[2] = ']';
+		  ctmp->keymenu  = &sel_from_list_lm;
+	      }
+	}
+	else{
+	    /*
+	     * Hide the checkboxes
+	     */
+
+	    *(*cl)->d.l.listmode = SingleMode;
+
+	    /* go to first line */
+	    for(ctmp = *cl; prev_confline(ctmp); ctmp = prev_confline(ctmp))
+	      ;
+	    
+	    for(; ctmp; ctmp = next_confline(ctmp))
+	      if(!(ctmp->flags & CF_NOSELECT) && ctmp->value){
+		  ctmp->value[0] = ctmp->value[1] = ctmp->value[2] = SPACE;
+		  ctmp->keymenu  = &sel_from_list_sm;
+	      }
+	}
+
+	ps->mangled_body = ps->mangled_footer = 1;
+	break;
+
+      case MC_TOGGLE :
+	if((*cl)->value[1] == 'X'){
+	    (*cl)->d.l.lsel->selected = 0;
+	    (*cl)->value[1] = SPACE;
+	}
+	else{
+	    (*cl)->d.l.lsel->selected = 1;
+	    (*cl)->value[1] = 'X';
+	}
+
+	ps->mangled_body = 1;
+	break;
+
+      case MC_EXIT :
+        retval = simple_exit_cmd(flags);
+	break;
+
+      default:
+	retval = -1;
+	break;
+    }
+
+    if(retval > 0)
+      ps->mangled_body = 1;
+
+    return(retval);
+}
+
+
+
 static struct key role_select_keys[] = 
        {HELP_MENU,
 	NULL_MENU,
@@ -12950,7 +13640,7 @@ int
 role_select_screen(ps, role, alt_compose)
     struct pine    *ps;
     ACTION_S      **role;
-    int             alt_compose;
+    int            alt_compose;
 {
     CONF_S        *ctmp = NULL, *first_line = NULL;
     OPT_SCREEN_S   screen;
@@ -12975,8 +13665,13 @@ role_select_screen(ps, role, alt_compose)
 
 
     if(alt_compose){
-	menu_init_binding(&role_select_km, 'C', MC_CHOICE, "C", "[ComposeAs]",
-			  DEFAULT_KEY);
+	menu_init_binding(&role_select_km,
+	  alt_compose == MC_FORWARD ? 'F' : alt_compose == MC_REPLY ? 'R' : 'C',
+	  MC_CHOICE,
+	  alt_compose == MC_FORWARD ? "F" : alt_compose == MC_REPLY ? "R" : "C",
+	  alt_compose == MC_FORWARD ? "[ForwardAs]"
+	    : alt_compose == MC_REPLY ? "[ReplyAs]" : "[ComposeAs]",
+	  DEFAULT_KEY);
 	menu_add_binding(&role_select_km, ctrl('J'), MC_CHOICE);
 	menu_add_binding(&role_select_km, ctrl('M'), MC_CHOICE);
     }
@@ -13248,7 +13943,7 @@ uh_oh:
 	 "Perhaps a newer version of pine was used to set variable \"%.200s\"?",
 	    v ? v->name : "?");
 	dprint(1,(debugfile, "Unexpected problem: config file modified externally?\nPerhaps by a newer pine? Variable \"%s\" has unexpected contents.\n",
-	v ? v->name : "?"));
+	(v && v->name) ? v->name : "?"));
 	return;
     }
 
@@ -13274,15 +13969,20 @@ uh_oh:
 
 	  /* scores may have changed */
 	  if(rflags & ROLE_DO_SCORES){
+	      int         i;
+	      MAILSTREAM *m;
+
 	      clear_iindex_cache();
-	      if(ps_global->mail_stream &&
-	         ps_global->mail_stream != ps_global->inbox_stream)
-	        clear_folder_scores(ps_global->mail_stream);
-	      if(ps_global->inbox_stream)
-	        clear_folder_scores(ps_global->inbox_stream);
+
+	      for(i = 0; i < ps_global->s_pool.nstream; i++){
+		  m = ps_global->s_pool.streams[i];
+		  if(m)
+		    clear_folder_scores(m);
+	      }
 	      
-	      if(mn_get_sort(ps_global->msgmap) == SortScore)
-	        refresh_sort(ps_global->msgmap, SRT_VRB);
+	      if(mn_get_sort(sp_msgmap(ps_global->mail_stream)) == SortScore)
+	        refresh_sort(ps_global->mail_stream,
+			     sp_msgmap(ps_global->mail_stream), SRT_VRB);
 	  }
 
 	  /* recalculate need for scores */
@@ -13345,8 +14045,9 @@ role_take(ps, msgmap, rtype)
     dprint(4,(debugfile, "role_take()\n"));
 
     if(mn_get_cur(msgmap) > 0){
-	env = mail_fetchstructure(ps->mail_stream,
-				  mn_m2raw(msgmap, mn_get_cur(msgmap)), NULL);
+	env = pine_mail_fetchstructure(ps->mail_stream,
+				       mn_m2raw(msgmap, mn_get_cur(msgmap)),
+				       NULL);
     
 	if(!env){
 	    q_status_message(SM_ORDER, 3, 7,
@@ -13470,18 +14171,18 @@ role_take(ps, msgmap, rtype)
       defpat->patgrp->fldr_type = FLDR_EMAIL;
 
     specific_fldr[0] = specific_fldr[sizeof(specific_fldr)-1] = '\0';
-    if(ps->mail_stream == ps->inbox_stream)
+    if(sp_flagged(ps->mail_stream, SP_INBOX))
       strncpy(specific_fldr, ps_global->inbox_name, sizeof(specific_fldr)-1);
     else if(ps->context_current
 	    && ps->context_current->use & CNTXT_INCMNG &&
-	    folder_is_nick(ps->cur_folder, FOLDERS(ps->context_current)))
+	    folder_is_nick(ps->cur_folder, FOLDERS(ps->context_current), 0))
       strncpy(specific_fldr, ps->cur_folder, sizeof(specific_fldr)-1);
     else
       context_apply(specific_fldr, ps->context_current, ps->cur_folder,
 		    sizeof(specific_fldr));
     
     if(specific_fldr[0]){
-	s = add_folder_escapes(specific_fldr);
+	s = add_comma_escapes(specific_fldr);
 	if(s){
 	    if(rtype == 'f')
 	      defpat->patgrp->fldr_type = FLDR_SPECIFIC;
@@ -13492,6 +14193,18 @@ role_take(ps, msgmap, rtype)
     }
 
     role_type_print(title, "ADD NEW %sRULE", rflags);
+
+    /*
+     * Role_config_edit_screen is sometimes called as a tool or a sub
+     * routine called from a tool within conf_scroll_screen, but here it
+     * is going to be at the top-level (we're not inside conf_scrooll_screen
+     * right now). It uses opt_screen to set the ro_warning bit. We need
+     * to let it know that we're at the top, which we do by setting
+     * opt_screen to NULL. Otherwise, the thing that opt_screen is pointing
+     * to is just random stack stuff from some previous conf_scroll_screen
+     * call which has already exited.
+     */
+    opt_screen = NULL;
 
     if(role_config_edit_screen(ps, defpat, title, rflags,
 			       &newpat) == 1 && newpat){
@@ -13555,15 +14268,23 @@ role_take(ps, msgmap, rtype)
 
 	    /* scores may have changed */
 	    if(rflags & ROLE_DO_SCORES){
+		int         i;
+		MAILSTREAM *m;
+
 		clear_iindex_cache();
-	        if(ps_global->mail_stream &&
-	           ps_global->mail_stream != ps_global->inbox_stream)
-	          clear_folder_scores(ps_global->mail_stream);
-	        if(ps_global->inbox_stream)
-	          clear_folder_scores(ps_global->inbox_stream);
+
+		for(i = 0; i < ps_global->s_pool.nstream; i++){
+		    m = ps_global->s_pool.streams[i];
+		    if(m)
+		      clear_folder_scores(m);
+		}
 	      
+		/* We've already bound msgmap to global mail_stream
+		 * at the start of this function, but if we wanted to
+		 * we could clean this up.
+		 */
 		if(mn_get_sort(msgmap) == SortScore)
-	          refresh_sort(msgmap, SRT_VRB);
+	          refresh_sort(ps_global->mail_stream, msgmap, SRT_VRB);
 	    }
 
 	    if(rflags & ROLE_DO_FILTER)
@@ -13673,6 +14394,7 @@ role_config_init_disp(ps, first_line, rflags, pstate)
 {
     PAT_LINE_S    *patline;
     CONF_S        *ctmp = NULL;
+    int            inherit = 0, added_fake = 0;
 
     if(first_line)
       *first_line = NULL;
@@ -13689,12 +14411,35 @@ role_config_init_disp(ps, first_line, rflags, pstate)
 
     if(!patline){
 	add_fake_first_role(&ctmp, 0, rflags);
+	added_fake++;
 	if(first_line && !*first_line)
 	  (*first_line) = ctmp;
     }
 
     for(; patline; patline = patline->next)
       add_patline_to_display(ps, &ctmp, 0, first_line, NULL, patline, rflags);
+    
+    /*
+     * If there are no actual patterns so far, we need to have an Add line
+     * for the cursor to be on. This would happen if all of the patlines
+     * were File includes and none of the files contained patterns.
+     */
+    if(!first_pattern(role_global_pstate) ||
+       ((inherit=first_pattern(role_global_pstate)->inherit) &&
+	 !next_pattern(role_global_pstate))){
+
+	/*
+	 * Find the start and prepend the fake first role.
+	 */
+	while(ctmp && ctmp->prev)
+	  ctmp = ctmp->prev;
+
+	if(!added_fake){
+	    add_fake_first_role(&ctmp, inherit ? 0 : 1, rflags);
+	    if(first_line && !*first_line)
+	      (*first_line) = ctmp;
+	}
+    }
 }
 
 
@@ -15622,37 +16367,46 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		     subj_pat_var, inick_var, fldr_type_var, folder_pat_var,
 		     abook_type_var, abook_pat_var,
 		     alltext_pat_var, scorei_pat_var, partic_pat_var,
-		     bodytext_pat_var, age_pat_var,
+		     bodytext_pat_var, age_pat_var, size_pat_var,
+		     keyword_pat_var,
 		     stat_new_var, stat_del_var, stat_imp_var, stat_ans_var,
 		     stat_rec_var, stat_8bit_var,
+		     stat_bom_var, stat_boy_var,
+		     cat_cmd_var, cati_var, cat_lim_var,
 		     from_act_var, replyto_act_var, fcc_act_var,
 		     sig_act_var, litsig_act_var, templ_act_var,
                      cstm_act_var, smtp_act_var, nntp_act_var,
 		     sort_act_var, iform_act_var, startup_var,
 		     repl_type_var, forw_type_var, comp_type_var, score_act_var,
 		     rolecolor_vars[2], filter_type_var, folder_act_var,
+		     keyword_set_var, keyword_clr_var,
 		     filt_new_var, filt_del_var, filt_imp_var, filt_ans_var;
-    struct variable *v, *varlist[52], opt_var;
-    char            *nick = NULL, *to_pat = NULL, *from_pat = NULL,
-		    *sender_pat = NULL, *cc_pat = NULL, *news_pat = NULL,
-		    *recip_pat = NULL, *partic_pat = NULL,
-		    *subj_pat = NULL, *inick = NULL, *fldr_type_pat = NULL,
-		    *alltext_pat = NULL, *bodytext_pat = NULL,
-		    *folder_pat = NULL, *scorei_pat = NULL, *age_pat = NULL,
-		    *abook_pat = NULL, *abook_type_pat = NULL,
+    struct variable *v, *varlist[61], opt_var;
+    char            *nick = NULL, *inick = NULL, *fldr_type_pat = NULL,
+		    *scorei_pat = NULL, *age_pat = NULL, *size_pat = NULL,
+		    *abook_type_pat = NULL,
 		    *stat_new = NULL, *stat_del = NULL, *stat_imp = NULL,
 		    *stat_rec = NULL, *stat_ans = NULL, *stat_8bit = NULL,
+		    *stat_bom = NULL, *stat_boy = NULL,
 		    *filt_new = NULL, *filt_del = NULL, *filt_imp = NULL,
-		    *filt_ans = NULL,
+		    *filt_ans = NULL, *cati = NULL, *cat_lim = NULL,
 		    *from_act = NULL, *replyto_act = NULL, *fcc_act = NULL,
 		    *sig_act = NULL, *litsig_act = NULL, *sort_act = NULL,
 		    *templ_act = NULL, *repl_type = NULL, *forw_type = NULL,
 		    *comp_type = NULL, *rc_fg = NULL, *rc_bg = NULL,
-		    *score_act = NULL, *folder_act = NULL, *filter_type = NULL,
+		    *score_act = NULL, *filter_type = NULL,
 		    *iform_act = NULL, *startup_act = NULL,
-		    *old_fg = NULL, *old_bg = NULL, *spat;
-    char           **cstm_act = NULL, **smtp_act = NULL, **nntp_act = NULL;
-    char             tmp[MAXPATH+1], **apval, **lval, ***alval;
+		    *old_fg = NULL, *old_bg = NULL;
+    char           **to_pat = NULL, **from_pat = NULL, **sender_pat = NULL,
+		   **cc_pat = NULL, **news_pat = NULL, **recip_pat = NULL,
+		   **partic_pat = NULL, **subj_pat = NULL,
+		   **alltext_pat = NULL, **bodytext_pat = NULL,
+		   **keyword_pat = NULL, **folder_pat = NULL,
+		   **abook_pat = NULL, **folder_act = NULL,
+		   **keyword_set = NULL, **keyword_clr = NULL,
+		   **cat_cmd = NULL, **cstm_act = NULL, **smtp_act = NULL,
+		   **nntp_act = NULL, **spat;
+    char             tmp[MAXPATH+1], **apval, **lval, ***alval, *p;
     char            *fstr = " CURRENT FOLDER CONDITIONS BEGIN HERE ";
     char             mstr[50];
     char            *astr = " ACTIONS BEGIN HERE ";
@@ -15665,7 +16419,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     int              rv, i, j, lv, indent = 18, pindent,
 		     scoreval = 0, edit_role,
 		     edit_incol, edit_score, edit_filter, edit_other,
-		     dval, ival, nval, aval, fval,
+		     dval, ival, nval, aval, fval, noselect,
 		     per_folder_only, need_uses, need_options;
     int	        (*radio_tool) PROTO((struct pine *, int, CONF_S **, unsigned));
     int	        (*addhdr_tool) PROTO((struct pine *, int, CONF_S **, unsigned));
@@ -15705,7 +16459,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
     varlist[++j] = &subj_pat_var;
     varlist[++j] = &alltext_pat_var;
     varlist[++j] = &bodytext_pat_var;
+    varlist[++j] = &keyword_pat_var;
     varlist[++j] = &age_pat_var;
+    varlist[++j] = &size_pat_var;
     varlist[++j] = &scorei_pat_var;
     varlist[++j] = &stat_new_var;
     varlist[++j] = &stat_rec_var;
@@ -15713,6 +16469,11 @@ role_config_edit_screen(ps, def, title, rflags, result)
     varlist[++j] = &stat_imp_var;
     varlist[++j] = &stat_ans_var;
     varlist[++j] = &stat_8bit_var;
+    varlist[++j] = &stat_bom_var;
+    varlist[++j] = &stat_boy_var;
+    varlist[++j] = &cat_cmd_var;
+    varlist[++j] = &cati_var;
+    varlist[++j] = &cat_lim_var;
     varlist[++j] = &inick_var;
     varlist[++j] = &fldr_type_var;
     varlist[++j] = &folder_pat_var;
@@ -15738,6 +16499,8 @@ role_config_edit_screen(ps, def, title, rflags, result)
     varlist[++j] = &rolecolor_vars[1];
     varlist[++j] = &filter_type_var;
     varlist[++j] = &folder_act_var;
+    varlist[++j] = &keyword_set_var;
+    varlist[++j] = &keyword_clr_var;
     varlist[++j] = &filt_new_var;
     varlist[++j] = &filt_del_var;
     varlist[++j] = &filt_imp_var;
@@ -15762,6 +16525,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     role_forw_ptr = role_repl_ptr = role_fldr_ptr = role_filt_ptr = NULL;
     role_status1_ptr = role_status2_ptr = role_status3_ptr = NULL;
     role_status4_ptr = role_status5_ptr = role_status6_ptr = NULL;
+    role_status7_ptr = NULL; role_status8_ptr = NULL;
     msg_state1_ptr = msg_state2_ptr = NULL;
     msg_state3_ptr = msg_state4_ptr = NULL;
     role_afrom_ptr = startup_ptr = NULL;
@@ -15784,126 +16548,29 @@ role_config_edit_screen(ps, def, title, rflags, result)
 					     : "Filter Rule"))));
     set_current_val(&nick_var, FALSE, FALSE);
 
-    to_pat_var.name       = (char *)fs_get(strlen("To pattern")+NOTLEN+1);
-    sprintf(to_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->to && def->patgrp->to->not)
-		? NOT : "",
-	    "To pattern");
-    to_pat_var.is_used    = 1;
-    to_pat_var.is_user    = 1;
-    apval = APVAL(&to_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->to) : NULL;
-    set_current_val(&to_pat_var, FALSE, FALSE);
+    setup_dummy_pattern_var(&to_pat_var, "To pattern",
+			   (def && def->patgrp) ? def->patgrp->to : NULL);
+    setup_dummy_pattern_var(&from_pat_var, "From pattern",
+			   (def && def->patgrp) ? def->patgrp->from : NULL);
+    setup_dummy_pattern_var(&sender_pat_var, "Sender pattern",
+			   (def && def->patgrp) ? def->patgrp->sender : NULL);
+    setup_dummy_pattern_var(&cc_pat_var, "Cc pattern",
+			   (def && def->patgrp) ? def->patgrp->cc : NULL);
+    setup_dummy_pattern_var(&news_pat_var, "News pattern",
+			   (def && def->patgrp) ? def->patgrp->news : NULL);
+    setup_dummy_pattern_var(&subj_pat_var, "Subject pattern",
+			   (def && def->patgrp) ? def->patgrp->subj : NULL);
+    setup_dummy_pattern_var(&recip_pat_var, "Recip pattern",
+			   (def && def->patgrp) ? def->patgrp->recip : NULL);
+    setup_dummy_pattern_var(&partic_pat_var, "Partic pattern",
+			   (def && def->patgrp) ? def->patgrp->partic : NULL);
+    setup_dummy_pattern_var(&alltext_pat_var, "AllText pattern",
+			   (def && def->patgrp) ? def->patgrp->alltext : NULL);
+    setup_dummy_pattern_var(&bodytext_pat_var, "BdyText pattern",
+			   (def && def->patgrp) ? def->patgrp->bodytext : NULL);
 
-    from_pat_var.name       = (char *)fs_get(strlen("From pattern")+NOTLEN+1);
-    sprintf(from_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->from && def->patgrp->from->not)
-		? NOT : "",
-	    "From pattern"); 
-    from_pat_var.is_used    = 1;
-    from_pat_var.is_user    = 1;
-    apval = APVAL(&from_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->from)
-				  : NULL;
-    set_current_val(&from_pat_var, FALSE, FALSE);
-
-    sender_pat_var.name    = (char *)fs_get(strlen("Sender pattern")+NOTLEN+1);
-    sprintf(sender_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->sender &&
-	     def->patgrp->sender->not)
-		? NOT : "",
-	    "Sender pattern"); 
-    sender_pat_var.is_used    = 1;
-    sender_pat_var.is_user    = 1;
-    apval = APVAL(&sender_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->sender)
-				  : NULL;
-    set_current_val(&sender_pat_var, FALSE, FALSE);
-
-    cc_pat_var.name       = (char *)fs_get(strlen("Cc pattern")+NOTLEN+1);
-    sprintf(cc_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->cc && def->patgrp->cc->not)
-		? NOT : "",
-	    "Cc pattern"); 
-    cc_pat_var.is_used    = 1;
-    cc_pat_var.is_user    = 1;
-    apval = APVAL(&cc_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->cc) : NULL;
-    set_current_val(&cc_pat_var, FALSE, FALSE);
-
-    recip_pat_var.name       = (char *)fs_get(strlen("Recip pattern")+NOTLEN+1);
-    sprintf(recip_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->recip &&
-	     def->patgrp->recip->not)
-		? NOT : "",
-	    "Recip pattern"); 
-    recip_pat_var.is_used    = 1;
-    recip_pat_var.is_user    = 1;
-    apval = APVAL(&recip_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->recip)
-				  : NULL;
-    set_current_val(&recip_pat_var, FALSE, FALSE);
-
-    partic_pat_var.name    = (char *)fs_get(strlen("Partic pattern")+NOTLEN+1);
-    sprintf(partic_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->partic &&
-	     def->patgrp->partic->not)
-		? NOT : "",
-	    "Partic pattern"); 
-    partic_pat_var.is_used    = 1;
-    partic_pat_var.is_user    = 1;
-    apval = APVAL(&partic_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->partic)
-				  : NULL;
-    set_current_val(&partic_pat_var, FALSE, FALSE);
-
-    news_pat_var.name       = (char *)fs_get(strlen("News pattern")+NOTLEN+1);
-    sprintf(news_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->news && def->patgrp->news->not)
-		? NOT : "",
-	    "News pattern"); 
-    news_pat_var.is_used    = 1;
-    news_pat_var.is_user    = 1;
-    apval = APVAL(&news_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->news) : NULL;
-    set_current_val(&news_pat_var, FALSE, FALSE);
-
-    subj_pat_var.name     = (char *)fs_get(strlen("Subject pattern")+NOTLEN+1);
-    sprintf(subj_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->subj && def->patgrp->subj->not)
-		? NOT : "",
-	    "Subject pattern"); 
-    subj_pat_var.is_used    = 1;
-    subj_pat_var.is_user    = 1;
-    apval = APVAL(&subj_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->subj) : NULL;
-    set_current_val(&subj_pat_var, FALSE, FALSE);
-
-    alltext_pat_var.name  = (char *)fs_get(strlen("AllText pattern")+NOTLEN+1);
-    sprintf(alltext_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->alltext &&
-	     def->patgrp->alltext->not)
-		? NOT : "",
-	    "AllText pattern"); 
-    alltext_pat_var.is_used    = 1;
-    alltext_pat_var.is_user    = 1;
-    apval = APVAL(&alltext_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->alltext)
-				  : NULL;
-    set_current_val(&alltext_pat_var, FALSE, FALSE);
-
-    bodytext_pat_var.name = (char *)fs_get(strlen("BdyText pattern")+NOTLEN+1);
-    sprintf(bodytext_pat_var.name, "%s%s",
-	    (def && def->patgrp && def->patgrp->bodytext &&
-	     def->patgrp->bodytext->not)
-		? NOT : "",
-	    "BdyText pattern"); 
-    bodytext_pat_var.is_used    = 1;
-    bodytext_pat_var.is_user    = 1;
-    apval = APVAL(&bodytext_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->bodytext)
-				  : NULL;
-    set_current_val(&bodytext_pat_var, FALSE, FALSE);
+    setup_dummy_pattern_var(&keyword_pat_var, "Keyword pattern",
+			   (def && def->patgrp) ? def->patgrp->keyword : NULL);
 
     age_pat_global_ptr     = &age_pat_var;
     age_pat_var.name       = cpystr("Age interval");
@@ -15915,6 +16582,17 @@ role_config_edit_screen(ps, def, title, rflags, result)
     }
 
     set_current_val(&age_pat_var, FALSE, FALSE);
+
+    size_pat_global_ptr     = &size_pat_var;
+    size_pat_var.name       = cpystr("Size interval");
+    size_pat_var.is_used    = 1;
+    size_pat_var.is_user    = 1;
+    if(def && def->patgrp && def->patgrp->do_size){
+	apval = APVAL(&size_pat_var, ew);
+	*apval = stringform_of_intvl(def->patgrp->size);
+    }
+
+    set_current_val(&size_pat_var, FALSE, FALSE);
 
     scorei_pat_global_ptr     = &scorei_pat_var;
     scorei_pat_var.name       = cpystr("Score interval");
@@ -15929,7 +16607,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
     pindent = strlen(subj_pat_var.name);	/* the longest one */
     for(a = (def && def->patgrp) ? def->patgrp->arbhdr : NULL; a; a = a->next)
-      if((lv=strlen(a->field ? a->field : "")+9) > pindent)
+      if((lv=strlen(a->field ? a->field : "")+8) > pindent)
 	pindent = lv;
     
     pindent += NOTLEN;
@@ -15982,6 +16660,23 @@ role_config_edit_screen(ps, def, title, rflags, result)
     *apval = (f=role_status_types((def && def->patgrp) ? def->patgrp->stat_rec : -1)) ? cpystr(f->name) : NULL;
     set_current_val(&stat_rec_var, FALSE, FALSE);
 
+    role_status7_ptr = &stat_bom_var;		/* so radiobuttons can tell */
+    stat_bom_var.name       = cpystr("Beginning of Month?");
+    stat_bom_var.is_used    = 1;
+    stat_bom_var.is_user    = 1;
+    apval = APVAL(&stat_bom_var, ew);
+    *apval = (f=role_status_types((def && def->patgrp) ? def->patgrp->stat_bom : -1)) ? cpystr(f->name) : NULL;
+    set_current_val(&stat_bom_var, FALSE, FALSE);
+
+    role_status8_ptr = &stat_boy_var;		/* so radiobuttons can tell */
+    stat_boy_var.name       = cpystr("Beginning of Year?");
+    stat_boy_var.is_used    = 1;
+    stat_boy_var.is_user    = 1;
+    apval = APVAL(&stat_boy_var, ew);
+    *apval = (f=role_status_types((def && def->patgrp) ? def->patgrp->stat_boy : -1)) ? cpystr(f->name) : NULL;
+    set_current_val(&stat_boy_var, FALSE, FALSE);
+
+
 
     convert_statebits_to_vals((def && def->action) ? def->action->state_setting_bits : 0L, &dval, &aval, &ival, &nval);
     msg_state1_ptr = &filt_del_var;		/* so radiobuttons can tell */
@@ -16032,17 +16727,22 @@ role_config_edit_screen(ps, def, title, rflags, result)
     fldr_type_var.is_used    = 1;
     fldr_type_var.is_user    = 1;
     apval = APVAL(&fldr_type_var, ew);
-    *apval = (f=pat_fldr_types((def && def->patgrp) ? def->patgrp->fldr_type : (!def && edit_filter) ? FLDR_SPECIFIC : -1)) ? cpystr(f->name) : NULL;
+    *apval = (f=pat_fldr_types((def && def->patgrp) ? def->patgrp->fldr_type : (!def && edit_filter) ? FLDR_SPECIFIC : FLDR_DEFL)) ? cpystr(f->name) : NULL;
     set_current_val(&fldr_type_var, FALSE, FALSE);
 
-    folder_pat_var.name       = cpystr("Folder List");
-    folder_pat_var.is_used    = 1;
-    folder_pat_var.is_user    = 1;
-    apval = APVAL(&folder_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->folder) :
-				     (!def && edit_filter)
-				       ? cpystr(ps_global->inbox_name) : NULL;
-    set_current_val(&folder_pat_var, FALSE, FALSE);
+    setup_dummy_pattern_var(&folder_pat_var, "Folder List",
+			   (def && def->patgrp) ? def->patgrp->folder : NULL);
+    /* special default for folder_pat */
+    alval = ALVAL(&folder_pat_var, ew);
+    if(alval && !*alval && !def && edit_filter){
+	char **ltmp;
+
+	ltmp    = (char **) fs_get(2 * sizeof(*ltmp));
+	ltmp[0] = cpystr(ps_global->inbox_name);
+	ltmp[1] = NULL;
+	*alval  = ltmp;
+	set_current_val(&folder_pat_var, FALSE, FALSE);
+    }
 
     role_afrom_ptr = &abook_type_var;		/* so radiobuttons can tell */
     abook_type_var.name       = cpystr("From or ReplyTo is in address book?");
@@ -16052,12 +16752,49 @@ role_config_edit_screen(ps, def, title, rflags, result)
     *apval = (f=abookfrom_fldr_types((def && def->patgrp) ? def->patgrp->abookfrom : AFRM_EITHER)) ? cpystr(f->name) : NULL;
     set_current_val(&abook_type_var, FALSE, FALSE);
 
-    abook_pat_var.name       = cpystr("Abook List");
-    abook_pat_var.is_used    = 1;
-    abook_pat_var.is_user    = 1;
-    apval = APVAL(&abook_pat_var, ew);
-    *apval = (def && def->patgrp) ? pattern_to_string(def->patgrp->abooks) : NULL;
-    set_current_val(&abook_pat_var, FALSE, FALSE);
+    setup_dummy_pattern_var(&abook_pat_var, "Abook List",
+			   (def && def->patgrp) ? def->patgrp->abooks : NULL);
+
+    /*
+     * This is a little different from some of the other patterns. Tt is
+     * actually a char ** in the struct instead of a PATTERN_S.
+     */
+    cat_cmd_global_ptr     = &cat_cmd_var;
+    cat_cmd_var.name       = cpystr("External Categorizer Commands");
+    cat_cmd_var.is_used    = 1;
+    cat_cmd_var.is_user    = 1;
+    cat_cmd_var.is_list    = 1;
+    alval = ALVAL(&cat_cmd_var, ew);
+    *alval = (def && def->patgrp && def->patgrp->category_cmd &&
+	      def->patgrp->category_cmd[0])
+	       ? copy_list_array(def->patgrp->category_cmd) : NULL;
+    set_current_val(&cat_cmd_var, FALSE, FALSE);
+
+    cati_global_ptr     = &cati_var;
+    cati_var.name       = cpystr("Exit Status Interval");
+    cati_var.is_used    = 1;
+    cati_var.is_user    = 1;
+    if(def && def->patgrp && def->patgrp->do_cat && def->patgrp->category_cmd &&
+       def->patgrp->category_cmd[0]){
+	apval = APVAL(&cati_var, ew);
+	*apval = stringform_of_intvl(def->patgrp->cat);
+    }
+
+    set_current_val(&cati_var, FALSE, FALSE);
+
+    cat_lim_global_ptr     = &cat_lim_var;
+    cat_lim_var.name       = cpystr("Character Limit");
+    cat_lim_var.is_used    = 1;
+    cat_lim_var.is_user    = 1;
+    cat_lim_var.global_val.p = cpystr("-1");
+    apval = APVAL(&cat_lim_var, ew);
+    if(def && def->patgrp && def->patgrp->category_cmd &&
+       def->patgrp->category_cmd[0] && def->patgrp->cat_lim != -1){
+	*apval = (char *) fs_get(20 * sizeof(char));
+	sprintf(*apval, "%d", def->patgrp->cat_lim);
+    }
+
+    set_current_val(&cat_lim_var, FALSE, FALSE);
 
     from_act_var.name       = cpystr("Set From");
     from_act_var.is_used    = 1;
@@ -16193,7 +16930,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     score_act_var.global_val.p = cpystr("0");
     if(scoreval != 0){
 	apval = APVAL(&score_act_var, ew);
-	*apval = (char *)fs_get(5 * sizeof(char));
+	*apval = (char *)fs_get(20 * sizeof(char));
 	sprintf(*apval, "%d", scoreval);
     }
 
@@ -16324,6 +17061,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     
     lv = min(lv, 100);
 
+    fval = -1;
     for(i = 0; f = pat_fldr_types(i); i++){
 	new_confline(&ctmp);
 	ctmp->help_title= "HELP FOR CURRENT FOLDER TYPE";
@@ -16338,34 +17076,28 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	ctmp->varmem    = i;
 	ctmp->tool      = radio_tool;
 	ctmp->varnamep  = ctmpb;
+
+	if((PVAL(&fldr_type_var, ew) &&
+	    !strucmp(PVAL(&fldr_type_var, ew), f->name))
+	   || (!PVAL(&fldr_type_var, ew) && f->value == FLDR_DEFL))
+	  fval = f->value;
+
 	sprintf(tmp, "(%c)  %-*.*s",
-		((PVAL(&fldr_type_var, ew) &&
-		  !strucmp(PVAL(&fldr_type_var, ew), f->name)) ||
-		 (!PVAL(&fldr_type_var, ew) && f->value == FLDR_DEFL))
-		  ? R_SELD : ' ',
+		(fval == f->value) ? R_SELD : ' ',
 		lv, lv, f->name);
 	ctmp->value     = cpystr(tmp);
     }
 
     /* Folder */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR FOLDER LIST";
-    ctmp->var       = &folder_pat_var;
-    ctmp->varoffset = 12+5;
-    ctmp->valoffset = 12+5+strlen(folder_pat_var.name)+3;
-    ctmp->keymenu   = &config_role_patfolder_keymenu;
-    ctmp->help      = edit_role ? h_config_role_fldr_type :
-		       edit_incol ? h_config_incol_fldr_type :
-			edit_score ? h_config_score_fldr_type :
-			 edit_other ? h_config_other_fldr_type
-				        : h_config_filt_fldr_type;
-    ctmp->tool      = t_tool;
-    ctmp->varnamep  = ctmpb;
-    sprintf(tmp, "%s =", folder_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->value     = pretty_value(ps, ctmp);
-    if(def && def->patgrp && def->patgrp->fldr_type != FLDR_SPECIFIC)
-      ctmp->flags |= CF_NOSELECT;
+    setup_role_pat_alt(ps, &ctmp, &folder_pat_var,
+		       edit_role ? h_config_role_fldr_type :
+			edit_incol ? h_config_incol_fldr_type :
+			 edit_score ? h_config_score_fldr_type :
+			  edit_other ? h_config_other_fldr_type
+				     : h_config_filt_fldr_type,
+		       "HELP FOR FOLDER LIST",
+		       &config_role_patfolder_keymenu, t_tool, 12+5,
+		       !(fval == FLDR_SPECIFIC));
 
   if(!per_folder_only){		/* sorry about that indent */
     /* Blank line */
@@ -16388,129 +17120,42 @@ role_config_edit_screen(ps, def, title, rflags, result)
     new_confline(&ctmp);
     ctmp->flags    |= CF_NOSELECT | CF_B_LINE;
 
-    /* To Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR TO PATTERN";
-    ctmp->var       = &to_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = edit_role ? h_config_role_topat :
-		       edit_incol ? h_config_incol_topat :
-			edit_score ? h_config_score_topat :
-			 edit_other ? h_config_other_topat
-			            : h_config_filt_topat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, to_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &to_pat_var,
+		   edit_role ? h_config_role_topat :
+		    edit_incol ? h_config_incol_topat :
+		     edit_score ? h_config_score_topat :
+		      edit_other ? h_config_other_topat
+			         : h_config_filt_topat,
+		   "HELP FOR TO PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
-    /* From Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR FROM PATTERN";
-    ctmp->var       = &from_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = h_config_role_frompat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, from_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &from_pat_var, h_config_role_frompat,
+		   "HELP FOR FROM PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
-    /* Sender Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR SENDER PATTERN";
-    ctmp->var       = &sender_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = h_config_role_senderpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, sender_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &sender_pat_var, h_config_role_senderpat,
+		   "HELP FOR SENDER PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
-    /* Cc Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR CC PATTERN";
-    ctmp->var       = &cc_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = h_config_role_ccpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, cc_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &cc_pat_var, h_config_role_ccpat,
+		   "HELP FOR CC PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
-    /* News Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR NEWS PATTERN";
-    ctmp->var       = &news_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_keymenu_not;
-    ctmp->help      = h_config_role_newspat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, news_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &news_pat_var, h_config_role_newspat,
+		   "HELP FOR NEWS PATTERN",
+		   &config_role_keymenu_not, t_tool, &earb, pindent);
 
-    /* Subject Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR SUBJECT PATTERN";
-    ctmp->var       = &subj_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_keymenu_not;
-    ctmp->help      = h_config_role_subjpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, subj_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &subj_pat_var, h_config_role_subjpat,
+		   "HELP FOR SUBJECT PATTERN",
+		   &config_role_keymenu_not, t_tool, &earb, pindent);
 
-    /* Recip Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR RECIPIENT PATTERN";
-    ctmp->var       = &recip_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = h_config_role_recippat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, recip_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &recip_pat_var, h_config_role_recippat,
+		   "HELP FOR RECIPIENT PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
-    /* Participant Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR PARTICIPANT PATTERN";
-    ctmp->var       = &partic_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_addr_pat_keymenu;
-    ctmp->help      = h_config_role_particpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, partic_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &partic_pat_var, h_config_role_particpat,
+		   "HELP FOR PARTICIPANT PATTERN",
+		   &config_role_addr_pat_keymenu, t_tool, &earb, pindent);
 
     /* Arbitrary Patterns */
     ea = NULL;
@@ -16536,68 +17181,31 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 	ea->a->field = cpystr(fn);
 
-	new_confline(&ctmp);
-	ea->v->name = (char *)fs_get(strlen(fn) + strlen(" pattern")+NOTLEN+1);
-	sprintf(ea->v->name, "%s%s pattern",
-		(a->p && a->p->not) ? NOT : "", fn);
-	ea->v->is_used    = 1;
-	ea->v->is_user    = 1;
-	apval = APVAL(ea->v, ew);
-	*apval = pattern_to_string(a->p);
-	set_current_val(ea->v, FALSE, FALSE);
-
-	ctmp->help_title= ARB_HELP;
-	ctmp->var       = ea->v;
-	ctmp->valoffset = pindent;
-	ctmp->keymenu   = &config_role_xtrahdr_keymenu;
-	ctmp->help      = h_config_role_arbpat;
-	ctmp->tool      = t_tool;
-	sprintf(tmp, "%-*.100s =", pindent-3, ea->v->name);
-	ctmp->varname   = cpystr(tmp);
-	ctmp->varnamep  = ctmp;
-	ctmp->value     = pretty_value(ps, ctmp);
-	ctmp->d.earb    = &earb;
-	ctmp->varmem    = j;
+	p = (char *) fs_get(strlen(fn) + strlen(" pattern") + 1);
+	sprintf(p, "%s pattern", fn);
+	setup_dummy_pattern_var(ea->v, p, a->p);
+	fs_give((void **) &p);
+	setup_role_pat(ps, &ctmp, ea->v, h_config_role_arbpat,
+		       ARB_HELP, &config_role_xtrahdr_keymenu,
+		       t_tool, &earb, pindent);
     }
 
     new_confline(&ctmp);
     ctmp->help_title = "HELP FOR EXTRA HEADERS";
-    ctmp->value = cpystr("Add Extra Headers");
+    ctmp->value = cpystr(ADDXHDRS);
     ctmp->keymenu = &config_role_keymenu_extra;
     ctmp->help      = h_config_role_arbpat;
     ctmp->tool      = addhdr_tool;
     ctmp->d.earb    = &earb;
     ctmp->varmem    = -1;
 
-    /* AllText Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR ALL TEXT PATTERN";
-    ctmp->var       = &alltext_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_keymenu_not;
-    ctmp->help      = h_config_role_alltextpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, alltext_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &alltext_pat_var, h_config_role_alltextpat,
+		   "HELP FOR ALL TEXT PATTERN",
+		   &config_role_keymenu_not, t_tool, &earb, pindent);
 
-    /* BodyText Pattern */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR BODY TEXT PATTERN";
-    ctmp->var       = &bodytext_pat_var;
-    ctmp->valoffset = pindent;
-    ctmp->keymenu   = &config_role_keymenu_not;
-    ctmp->help      = h_config_role_bodytextpat;
-    ctmp->tool      = t_tool;
-    sprintf(tmp, "%-*.100s =", pindent-3, bodytext_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->varnamep  = ctmp;
-    ctmp->value     = pretty_value(ps, ctmp);
-    ctmp->d.earb    = &earb;
-    ctmp->varmem    = -1;
+    setup_role_pat(ps, &ctmp, &bodytext_pat_var, h_config_role_bodytextpat,
+		   "HELP FOR BODY TEXT PATTERN",
+		   &config_role_keymenu_not, t_tool, &earb, pindent);
 
     /* Age Interval */
     new_confline(&ctmp);
@@ -16608,6 +17216,19 @@ role_config_edit_screen(ps, def, title, rflags, result)
     ctmp->help      = h_config_role_age;
     ctmp->tool      = t_tool;
     sprintf(tmp, "%-*.100s =", pindent-3, age_pat_var.name);
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmp;
+    ctmp->value     = pretty_value(ps, ctmp);
+
+    /* Size Interval */
+    new_confline(&ctmp);
+    ctmp->help_title= "HELP FOR SIZE INTERVAL";
+    ctmp->var       = &size_pat_var;
+    ctmp->valoffset = pindent;
+    ctmp->keymenu   = &config_text_keymenu;
+    ctmp->help      = h_config_role_size;
+    ctmp->tool      = t_tool;
+    sprintf(tmp, "%-*.100s =", pindent-3, size_pat_var.name);
     ctmp->varname   = cpystr(tmp);
     ctmp->varnamep  = ctmp;
     ctmp->value     = pretty_value(ps, ctmp);
@@ -16627,6 +17248,12 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	ctmp->value     = pretty_value(ps, ctmp);
     }
 
+    /* Keyword Pattern */
+    setup_role_pat(ps, &ctmp, &keyword_pat_var, h_config_role_keywordpat,
+		   "HELP FOR KEYWORD PATTERN",
+		   &config_role_keyword_keymenu_not, role_text_tool_kword,
+		   NULL, pindent);
+
     /* Important Status */
     SETUP_PAT_STATUS(ctmp, stat_imp_var, def->patgrp->stat_imp,
 		     "HELP FOR IMPORTANT STATUS", h_config_role_stat_imp);
@@ -16645,6 +17272,12 @@ role_config_edit_screen(ps, def, title, rflags, result)
     /* 8-bit Subject */
     SETUP_PAT_STATUS(ctmp, stat_8bit_var, def->patgrp->stat_8bitsubj,
 		     "HELP FOR 8-BIT SUBJECT", h_config_role_stat_8bitsubj);
+    /* Beginning of month */
+    SETUP_PAT_STATUS(ctmp, stat_bom_var, def->patgrp->stat_bom,
+		     "HELP FOR BEGINNING OF MONTH", h_config_role_bom);
+    /* Beginning of year */
+    SETUP_PAT_STATUS(ctmp, stat_boy_var, def->patgrp->stat_boy,
+		     "HELP FOR BEGINNING OF YEAR", h_config_role_boy);
 
     /* Blank line */
     new_confline(&ctmp);
@@ -16689,6 +17322,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     
     lv = min(lv, 100);
 
+    fval = -1;
     for(i = 0; f = abookfrom_fldr_types(i); i++){
 	new_confline(&ctmp);
 	ctmp->help_title= "HELP FOR FROM IN ADDRESS BOOK";
@@ -16699,32 +17333,102 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	ctmp->varmem    = i;
 	ctmp->tool      = radio_tool;
 	ctmp->varnamep  = ctmpb;
+
+	if((PVAL(&abook_type_var, ew) &&
+	    !strucmp(PVAL(&abook_type_var, ew), f->name))
+	   || (!PVAL(&abook_type_var, ew) && f->value == AFRM_DEFL))
+	  fval = f->value;
+
 	sprintf(tmp, "(%c)  %-*.*s",
-		((PVAL(&abook_type_var, ew) &&
-		  !strucmp(PVAL(&abook_type_var, ew), f->name)) ||
-		 (!PVAL(&abook_type_var, ew) && f->value == AFRM_DEFL))
-		  ? R_SELD : ' ',
+		(fval == f->value) ? R_SELD : ' ',
 		lv, lv, f->name);
 	ctmp->value     = cpystr(tmp);
     }
 
     /* Specific list of abooks */
-    new_confline(&ctmp);
-    ctmp->help_title= "HELP FOR ABOOK LIST";
-    ctmp->var       = &abook_pat_var;
-    ctmp->varoffset = 12+5;
-    ctmp->valoffset = 12+5+strlen(abook_pat_var.name)+3;
-    ctmp->keymenu   = &config_role_afrom_keymenu;
-    ctmp->help      = h_config_role_abookfrom;
-    ctmp->tool      = role_text_tool_afrom;
-    ctmp->varnamep  = ctmpb;
-    sprintf(tmp, "%s =", abook_pat_var.name);
-    ctmp->varname   = cpystr(tmp);
-    ctmp->value     = pretty_value(ps, ctmp);
-    if(def && def->patgrp && !(def->patgrp->abookfrom == AFRM_SPEC_YES
-			      || def->patgrp->abookfrom == AFRM_SPEC_NO))
-      ctmp->flags |= CF_NOSELECT;
+    setup_role_pat_alt(ps, &ctmp, &abook_pat_var, h_config_role_abookfrom,
+		       "HELP FOR ABOOK LIST",
+		       &config_role_afrom_keymenu, role_text_tool_afrom, 12+5,
+		       !(fval == AFRM_SPEC_YES || fval == AFRM_SPEC_NO));
 
+    /* Blank line */
+    new_confline(&ctmp);
+    ctmp->flags    |= CF_NOSELECT | CF_B_LINE;
+
+    i = 4+strlen(cati_var.name)+3;
+
+    /* External Command Categorizer */
+    new_confline(&ctmp);
+    ctmp->var       = &cat_cmd_var;
+    ctmp->valoffset = i;
+    ctmp->keymenu   = &config_text_keymenu;
+    ctmp->help      = NO_HELP;
+    ctmp->tool      = NULL;
+    sprintf(tmp, "%-*.100s =", pindent-3, cat_cmd_var.name);
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmpb = ctmp;
+    ctmp->flags    |= (CF_NOSELECT | CF_STARTITEM);
+
+    /* Commands */
+    new_confline(&ctmp);
+    ctmp->help_title= "HELP FOR CATEGORIZER COMMAND";
+    ctmp->var       = &cat_cmd_var;
+    ctmp->varoffset = 4;
+    ctmp->valoffset = i;
+    ctmp->keymenu   = &config_text_wshuf_keymenu;
+    ctmp->help      = h_config_role_cat_cmd;
+    ctmp->tool      = t_tool;
+    sprintf(tmp, "%-*.100s =", i-4-3, "Command");
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmpb = ctmp;
+    ctmp->flags     = CF_STARTITEM;
+
+    if((lval = LVAL(&cat_cmd_var, ew)) != NULL && lval[0]){
+	for(j = 0; lval[j]; j++){
+	    if(j)
+	      (void) new_confline(&ctmp);
+	    
+	    ctmp->var       = &cat_cmd_var;
+	    ctmp->varmem    = j;
+	    ctmp->valoffset = i;
+	    ctmp->keymenu   = &config_text_wshuf_keymenu;
+	    ctmp->help      = h_config_role_cat_cmd;
+	    ctmp->tool      = t_tool;
+	    ctmp->varnamep  = ctmp;
+	    ctmp->value     = pretty_value(ps, ctmp);
+	}
+    }
+    else
+      ctmp->value = pretty_value(ps, ctmp);
+
+    /* Exit status interval */
+    new_confline(&ctmp);
+    ctmp->help_title= "HELP FOR CATEGORIZER EXIT STATUS";
+    ctmp->var       = &cati_var;
+    ctmp->varoffset = 4;
+    ctmp->valoffset = i;
+    ctmp->keymenu   = &config_text_keymenu;
+    ctmp->help      = h_config_role_cat_status;
+    ctmp->tool      = t_tool;
+    sprintf(tmp, "%-*.100s =", i-4-3, cati_var.name);
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmp;
+    ctmp->value     = pretty_value(ps, ctmp);
+
+    /* Character Limit */
+    new_confline(&ctmp);
+    ctmp->help_title= "HELP FOR CHARACTER LIMIT";
+    ctmp->var       = &cat_lim_var;
+    ctmp->varoffset = 4;
+    ctmp->valoffset = i;
+    ctmp->keymenu   = &config_text_keymenu;
+    ctmp->help      = h_config_role_cat_limit;
+    ctmp->tool      = t_tool;
+    sprintf(tmp, "%-*.100s =", i-4-3, cat_lim_var.name);
+    ctmp->varname   = cpystr(tmp);
+    ctmp->varnamep  = ctmp;
+    ctmp->value     = pretty_value(ps, ctmp);
+    ctmp->flags    |= CF_NUMBER;
   }
 
     /* Actions */
@@ -16969,10 +17673,10 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	 * values (FILTER_KILL, FILTER_STATE, FILTER_FOLDER) we infer
 	 * the value from other variables. (Perhaps it would still make
 	 * sense to change this.)
-	 * Action->kill is set iff the user checks Deleted.
+	 * Action->kill is set iff the user checks Delete.
 	 * If the user checks the box that says Just Set State, then kill
 	 * is not set and action->folder is not set (and vice versa).
-	 * And finally, Move is set if !kill and action->folder is set.
+	 * And finally, FILTER_FOLDER is set if !kill and action->folder is set.
 	 * (And it is set here as the default if there is no default
 	 * action and the user is required to fill in the Folder.)
 	 */
@@ -17050,31 +17754,15 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	    ctmp->value     = cpystr(tmp);
 	}
 
-	folder_act_var.name       = cpystr("Folder List");
-	folder_act_var.is_used    = 1;
-	folder_act_var.is_user    = 1;
-	apval = APVAL(&folder_act_var, ew);
-	*apval = (def && def->action) ? pattern_to_string(def->action->folder)
-				      : NULL;
-	set_current_val(&folder_act_var, FALSE, FALSE);
+	/* Specific list of folders to copy to */
+	setup_dummy_pattern_var(&folder_act_var, "Folder List",
+			        (def && def->action)
+				   ? def->action->folder : NULL);
 
-	/* Folder */
-	new_confline(&ctmp);
-	ctmp->help_title= "HELP FOR FILTER FOLDER NAME";
-	ctmp->var       = &folder_act_var;
-	ctmp->varoffset = 12+5;
-	ctmp->valoffset = 12+5+strlen(folder_act_var.name)+3;
-	ctmp->keymenu   = &config_role_actionfolder_keymenu;
-	ctmp->help      = h_config_filter_folder;
-	ctmp->tool      = t_tool;
-	ctmp->varnamep  = ctmpb;
-	sprintf(tmp, "%.100s =", folder_act_var.name);
-	ctmp->varname   = cpystr(tmp);
-	ctmp->varnamep  = ctmp;
-	ctmp->value     = pretty_value(ps, ctmp);
-	if(def && def->action && !def->action->folder)
-	  ctmp->flags |= CF_NOSELECT;
-
+	setup_role_pat_alt(ps, &ctmp, &folder_act_var, h_config_filter_folder,
+			   "HELP FOR FILTER FOLDER NAME",
+			   &config_role_actionfolder_keymenu, t_tool, 12+5,
+			   !(fval == FILTER_FOLDER));
 
 	SETUP_MSG_STATE(ctmp, filt_imp_var, ival,
 		      "HELP FOR SET IMPORTANT STATUS", h_config_filt_stat_imp);
@@ -17084,6 +17772,28 @@ role_config_edit_screen(ps, def, title, rflags, result)
 			"HELP FOR SET DELETED STATUS", h_config_filt_stat_del);
 	SETUP_MSG_STATE(ctmp, filt_ans_var, aval,
 			"HELP FOR SET ANSWERED STATUS", h_config_filt_stat_ans);
+
+	/* Blank line */
+	new_confline(&ctmp);
+	ctmp->flags    |= CF_NOSELECT | CF_B_LINE;
+
+	/* Keywords to be Set */
+	setup_dummy_pattern_var(&keyword_set_var, "Set These Keywords",
+			        (def && def->action)
+				  ? def->action->keyword_set : NULL);
+	setup_role_pat(ps, &ctmp, &keyword_set_var, h_config_filter_kw_set,
+		       "HELP FOR KEYWORDS TO BE SET",
+		       &config_role_keyword_keymenu, role_text_tool_kword,
+		       NULL, 23);
+
+	/* Keywords to be Cleared */
+	setup_dummy_pattern_var(&keyword_clr_var, "Clear These Keywords",
+			        (def && def->action)
+				  ? def->action->keyword_clr : NULL);
+	setup_role_pat(ps, &ctmp, &keyword_clr_var, h_config_filter_kw_clr,
+		       "HELP FOR KEYWORDS TO BE CLEARED",
+		       &config_role_keyword_keymenu, role_text_tool_kword,
+		       NULL, 23);
     }
 
     if(edit_other){
@@ -17167,7 +17877,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	ctmp->var       = &iform_act_var;
 	ctmp->valoffset = indent;
 	ctmp->keymenu   = &config_text_keymenu;
-	ctmp->help      = h_config_index_format;
+	ctmp->help      = h_config_set_index_format;
 	ctmp->tool      = text_tool;
 	sprintf(tmp, "%-*.100s =", indent-3, iform_act_var.name);
 	ctmp->varname   = cpystr(tmp);
@@ -17534,7 +18244,8 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
     memset(&screen, 0, sizeof(screen));
     screen.ro_warning = saved_screen ? saved_screen->deferred_ro_warning : 0;
-    rv = conf_scroll_screen(ps, &screen, first_line, title, "roles ", 1);
+    rv = conf_scroll_screen(ps, &screen, first_line, title, "roles ",
+			    (edit_incol && pico_usingcolor()) ? 1 : 0);
 
     /*
      * Now look at the fake variables and extract the information we
@@ -17551,60 +18262,59 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(nick);
 
-	apval = APVAL(&to_pat_var, ew);
-	to_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(to_pat);
+	alval = ALVAL(&to_pat_var, ew);
+	to_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&from_pat_var, ew);
-	from_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(from_pat);
+	alval = ALVAL(&from_pat_var, ew);
+	from_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&sender_pat_var, ew);
-	sender_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(sender_pat);
+	alval = ALVAL(&sender_pat_var, ew);
+	sender_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&cc_pat_var, ew);
-	cc_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(cc_pat);
+	alval = ALVAL(&cc_pat_var, ew);
+	cc_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&recip_pat_var, ew);
-	recip_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(recip_pat);
+	alval = ALVAL(&recip_pat_var, ew);
+	recip_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&partic_pat_var, ew);
-	partic_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(partic_pat);
+	alval = ALVAL(&partic_pat_var, ew);
+	partic_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&news_pat_var, ew);
-	news_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(news_pat);
+	alval = ALVAL(&news_pat_var, ew);
+	news_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&subj_pat_var, ew);
-	subj_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(subj_pat);
+	alval = ALVAL(&subj_pat_var, ew);
+	subj_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&alltext_pat_var, ew);
-	alltext_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(alltext_pat);
+	alval = ALVAL(&alltext_pat_var, ew);
+	alltext_pat = *alval;
+	*alval = NULL;
 
-	apval = APVAL(&bodytext_pat_var, ew);
-	bodytext_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(bodytext_pat);
+	alval = ALVAL(&bodytext_pat_var, ew);
+	bodytext_pat = *alval;
+	*alval = NULL;
+
+	alval = ALVAL(&keyword_pat_var, ew);
+	keyword_pat = *alval;
+	*alval = NULL;
 
 	apval = APVAL(&age_pat_var, ew);
 	age_pat = *apval;
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(age_pat);
+
+	apval = APVAL(&size_pat_var, ew);
+	size_pat = *apval;
+	*apval = NULL;
+	removing_leading_and_trailing_white_space(size_pat);
 
 	apval = APVAL(&scorei_pat_var, ew);
 	scorei_pat = *apval;
@@ -17641,25 +18351,43 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(stat_8bit);
 
+	apval = APVAL(&stat_bom_var, ew);
+	stat_bom = *apval;
+	*apval = NULL;
+	removing_leading_and_trailing_white_space(stat_bom);
+
+	apval = APVAL(&stat_boy_var, ew);
+	stat_boy = *apval;
+	*apval = NULL;
+	removing_leading_and_trailing_white_space(stat_boy);
+
 	apval = APVAL(&fldr_type_var, ew);
 	fldr_type_pat = *apval;
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(fldr_type_pat);
 
-	apval = APVAL(&folder_pat_var, ew);
-	folder_pat = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(folder_pat);
+	alval = ALVAL(&folder_pat_var, ew);
+	folder_pat = *alval;
+	*alval = NULL;
 
 	apval = APVAL(&abook_type_var, ew);
 	abook_type_pat = *apval;
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(abook_type_pat);
 
-	apval = APVAL(&abook_pat_var, ew);
-	abook_pat = *apval;
+	alval = ALVAL(&abook_pat_var, ew);
+	abook_pat = *alval;
+	*alval = NULL;
+
+	apval = APVAL(&cati_var, ew);
+	cati = *apval;
 	*apval = NULL;
-	removing_leading_and_trailing_white_space(abook_pat);
+	removing_leading_and_trailing_white_space(cati);
+
+	apval = APVAL(&cat_lim_var, ew);
+	cat_lim = *apval;
+	*apval = NULL;
+	removing_leading_and_trailing_white_space(cat_lim);
 
 	apval = APVAL(&inick_var, ew);
 	inick = *apval;
@@ -17746,10 +18474,17 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(filter_type);
 
-	apval = APVAL(&folder_act_var, ew);
-	folder_act = *apval;
-	*apval = NULL;
-	removing_leading_and_trailing_white_space(folder_act);
+	alval = ALVAL(&folder_act_var, ew);
+	folder_act = *alval;
+	*alval = NULL;
+
+	alval = ALVAL(&keyword_set_var, ew);
+	keyword_set = *alval;
+	*alval = NULL;
+
+	alval = ALVAL(&keyword_clr_var, ew);
+	keyword_clr = *alval;
+	*alval = NULL;
 
 	apval = APVAL(&filt_imp_var, ew);
 	filt_imp = *apval;
@@ -17771,6 +18506,10 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	*apval = NULL;
 	removing_leading_and_trailing_white_space(filt_ans);
 
+
+	alval = ALVAL(&cat_cmd_var, ew);
+	cat_cmd = *alval;
+	*alval = NULL;
 
 	alval = ALVAL(&cstm_act_var, ew);
 	cstm_act = *alval;
@@ -17800,13 +18539,15 @@ role_config_edit_screen(ps, def, title, rflags, result)
 			    ps->VAR_OPER_DIR);
 	}
 
-	if(ps->VAR_OPER_DIR && folder_act &&
-	   is_absolute_path(folder_act) &&
-	   !in_dir(ps->VAR_OPER_DIR, folder_act)){
-	    q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			      "Warning: Folder can't be outside of %.200s",
-			      ps->VAR_OPER_DIR);
-	}
+	if(ps->VAR_OPER_DIR)
+	  for(i = 0; folder_act[i]; i++){
+	    if(folder_act[i][0] && is_absolute_path(folder_act[i]) &&
+	       !in_dir(ps->VAR_OPER_DIR, folder_act[i])){
+		q_status_message1(SM_ORDER | SM_DING, 3, 4,
+				  "Warning: Folder can't be outside of %.200s",
+				  ps->VAR_OPER_DIR);
+	    }
+	  }
 
 	*result = (PAT_S *)fs_get(sizeof(**result));
 	memset((void *)(*result), 0, sizeof(**result));
@@ -17834,63 +18575,96 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	(*result)->action->is_a_filter = edit_filter ? 1 : 0;
 	(*result)->action->is_a_other  = edit_other ? 1 : 0;
 
-	(*result)->patgrp->to      = string_to_pattern(to_pat);
+	(*result)->patgrp->to      = editlist_to_pattern(to_pat);
 	if((*result)->patgrp->to && !strncmp(to_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->to->not = 1;
 
-	(*result)->patgrp->from    = string_to_pattern(from_pat);
+	(*result)->patgrp->from    = editlist_to_pattern(from_pat);
 	if((*result)->patgrp->from && !strncmp(from_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->from->not = 1;
 
-	(*result)->patgrp->sender  = string_to_pattern(sender_pat);
+	(*result)->patgrp->sender  = editlist_to_pattern(sender_pat);
 	if((*result)->patgrp->sender &&
 	   !strncmp(sender_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->sender->not = 1;
 
-	(*result)->patgrp->cc      = string_to_pattern(cc_pat);
+	(*result)->patgrp->cc      = editlist_to_pattern(cc_pat);
 	if((*result)->patgrp->cc && !strncmp(cc_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->cc->not = 1;
 
-	(*result)->patgrp->recip   = string_to_pattern(recip_pat);
+	(*result)->patgrp->recip   = editlist_to_pattern(recip_pat);
 	if((*result)->patgrp->recip &&
 	   !strncmp(recip_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->recip->not = 1;
 
-	(*result)->patgrp->partic  = string_to_pattern(partic_pat);
+	(*result)->patgrp->partic  = editlist_to_pattern(partic_pat);
 	if((*result)->patgrp->partic &&
 	   !strncmp(partic_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->partic->not = 1;
 
-	(*result)->patgrp->news    = string_to_pattern(news_pat);
+	(*result)->patgrp->news    = editlist_to_pattern(news_pat);
 	if((*result)->patgrp->news && !strncmp(news_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->news->not = 1;
 
-	(*result)->patgrp->subj    = string_to_pattern(subj_pat);
+	(*result)->patgrp->subj    = editlist_to_pattern(subj_pat);
 	if((*result)->patgrp->subj && !strncmp(subj_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->subj->not = 1;
 
-	(*result)->patgrp->alltext = string_to_pattern(alltext_pat);
+	(*result)->patgrp->alltext = editlist_to_pattern(alltext_pat);
 	if((*result)->patgrp->alltext &&
 	   !strncmp(alltext_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->alltext->not = 1;
 
-	(*result)->patgrp->bodytext = string_to_pattern(bodytext_pat);
+	(*result)->patgrp->bodytext = editlist_to_pattern(bodytext_pat);
 	if((*result)->patgrp->bodytext &&
 	   !strncmp(bodytext_pat_var.name, NOT, NOTLEN))
 	  (*result)->patgrp->bodytext->not = 1;
 
+	(*result)->patgrp->keyword = editlist_to_pattern(keyword_pat);
+	if((*result)->patgrp->keyword &&
+	   !strncmp(keyword_pat_var.name, NOT, NOTLEN))
+	  (*result)->patgrp->keyword->not = 1;
 
 	(*result)->patgrp->age_uses_sentdate =
 		bitnset(FEAT_SENTDATE, feat_option_list) ? 1 : 0;
 
 	if(age_pat){
-	    if(((*result)->patgrp->age = parse_intvl(age_pat)) != NULL)
-	      (*result)->patgrp->do_age  = 1;
+	    if(((*result)->patgrp->age  = parse_intvl(age_pat)) != NULL)
+	      (*result)->patgrp->do_age = 1;
+	}
+
+	if(size_pat){
+	    if(((*result)->patgrp->size  = parse_intvl(size_pat)) != NULL)
+	      (*result)->patgrp->do_size = 1;
 	}
 
 	if(scorei_pat){
 	    if(((*result)->patgrp->score = parse_intvl(scorei_pat)) != NULL)
 	      (*result)->patgrp->do_score  = 1;
+	}
+
+	(*result)->patgrp->cat_lim = -1L; /* default */
+	if(cat_cmd){
+	    if(!cat_cmd[0])
+	      fs_give((void **) &cat_cmd);
+
+	    /* quick check for absolute paths */
+	    if(cat_cmd)
+	      for(j = 0; cat_cmd[j]; j++)
+		if(!is_absolute_path(cat_cmd[j]))
+		  q_status_message1(SM_ORDER | SM_DING, 3, 4,
+			"Warning: command must be absolute path: \"%.200s\"",
+			cat_cmd[j]);
+
+	    (*result)->patgrp->category_cmd = cat_cmd;
+	    cat_cmd = NULL;
+
+	    if(cati){
+		if(((*result)->patgrp->cat = parse_intvl(cati)) != NULL)
+		  (*result)->patgrp->do_cat  = 1;
+	    }
+	    if(cat_lim && *cat_lim)
+	      (*result)->patgrp->cat_lim = atol(cat_lim);
 	}
 
 	if(stat_del && *stat_del){
@@ -17953,6 +18727,26 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	else
 	  (*result)->patgrp->stat_8bitsubj = PAT_STAT_EITHER;
 
+	if(stat_bom && *stat_bom){
+	    for(j = 0; f = role_status_types(j); j++)
+	      if(!strucmp(stat_bom, f->name)){
+		  (*result)->patgrp->stat_bom = f->value;
+		  break;
+	      }
+	}
+	else
+	  (*result)->patgrp->stat_bom = PAT_STAT_EITHER;
+
+	if(stat_boy && *stat_boy){
+	    for(j = 0; f = role_status_types(j); j++)
+	      if(!strucmp(stat_boy, f->name)){
+		  (*result)->patgrp->stat_boy = f->value;
+		  break;
+	      }
+	}
+	else
+	  (*result)->patgrp->stat_boy = PAT_STAT_EITHER;
+
 	if(sort_act){
 	    decode_sort(sort_act, &def_sort, &def_sort_rev);
 	    (*result)->action->sort_is_set = 1;
@@ -17996,10 +18790,10 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 	    aa->field = cpystr((ea->a && ea->a->field) ? ea->a->field : "");
 
-	    spat = PVAL(ea->v, ew);
-	    removing_leading_and_trailing_white_space(spat);
-	    (void)removing_double_quotes(spat);
-	    aa->p = string_to_pattern(spat);
+	    alval = ALVAL(ea->v, ew);
+	    spat = *alval;
+	    *alval = NULL;
+	    aa->p = editlist_to_pattern(spat);
 	    if(aa->p && ea->v && ea->v->name &&
 	       !strncmp(ea->v->name, NOT, NOTLEN))
 	      aa->p->not = 1;
@@ -18025,7 +18819,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	      (*result)->patgrp->fldr_type = f->value;
 	}
 
-	(*result)->patgrp->folder = string_to_pattern(folder_pat);
+	(*result)->patgrp->folder = editlist_to_pattern(folder_pat);
 
 	if(abook_type_pat && *abook_type_pat){
 	    for(j = 0; f = abookfrom_fldr_types(j); j++)
@@ -18040,7 +18834,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	      (*result)->patgrp->abookfrom = f->value;
 	}
 
-	(*result)->patgrp->abooks = string_to_pattern(abook_pat);
+	(*result)->patgrp->abooks = editlist_to_pattern(abook_pat);
 
 
 	(*result)->action->inherit_nick = inick;
@@ -18107,7 +18901,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	  for(i = 0; f = filter_types(i); i++){
 	    if(!strucmp(filter_type, f->name)){
 	      if(f->value == FILTER_FOLDER){
-		(*result)->action->folder = string_to_pattern(folder_act);
+		(*result)->action->folder = editlist_to_pattern(folder_act);
 		(*result)->action->move_only_if_not_deleted =
 			bitnset(FEAT_IFNOTDEL, feat_option_list) ? 1 : 0;
 	      }
@@ -18118,7 +18912,16 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	        (*result)->action->kill = 1;
 	      }
 
-	      if(f->value != FILTER_KILL){
+	      /*
+	       * This is indented an extra indent because we used to condition
+	       * this on !kill. We changed it so that you can set state bits
+	       * even if you're killing. This is marginally helpful if you
+	       * have another client running that doesn't know about this
+	       * filter, but you want to, for example, have the messages show
+	       * up now as deleted instead of having that deferred until we
+	       * exit. It is controlled by the user by setting the status
+	       * action bits along with the Delete.
+	       */
 		if(filt_imp && *filt_imp){
 		  for(j = 0; f = msg_state_types(j); j++){
 		    if(!strucmp(filt_imp, f->name)){
@@ -18190,24 +18993,15 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		    }
 		  }
 		}
-	      }
+
+		(*result)->action->keyword_set =
+					editlist_to_pattern(keyword_set);
+		(*result)->action->keyword_clr =
+					editlist_to_pattern(keyword_clr);
 
 	      break;
 	    }
 	  }
-	}
-
-	if(filter_type && *filter_type && folder_act && *folder_act){
-	    for(j = 0; f = filter_types(j); j++)
-	      if(!strucmp(filter_type, f->name)){
-		  if(f->value == FILTER_FOLDER){
-		      (*result)->action->folder = string_to_pattern(folder_act);
-		      (*result)->action->move_only_if_not_deleted =
-			    bitnset(FEAT_IFNOTDEL, feat_option_list) ? 1 : 0;
-		  }
-
-		  break;
-	      }
 	}
 
 	if(from_act && *from_act)
@@ -18219,7 +19013,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 			       ps->maildomain);
 
 	if(score_act && (j = atoi(score_act)) >= SCORE_MIN && j <= SCORE_MAX)
-	  (*result)->action->scoreval = j;
+	  (*result)->action->scoreval = (long) j;
 
 	if(repl_type && *repl_type){
 	    for(j = 0; f = role_repl_types(j); j++)
@@ -18292,29 +19086,37 @@ role_config_edit_screen(ps, def, title, rflags, result)
     if(nick)
       fs_give((void **)&nick);
     if(to_pat)
-      fs_give((void **)&to_pat);
+      free_list_array(&to_pat);
     if(from_pat)
-      fs_give((void **)&from_pat);
+      free_list_array(&from_pat);
     if(sender_pat)
-      fs_give((void **)&sender_pat);
+      free_list_array(&sender_pat);
     if(cc_pat)
-      fs_give((void **)&cc_pat);
+      free_list_array(&cc_pat);
     if(recip_pat)
-      fs_give((void **)&recip_pat);
+      free_list_array(&recip_pat);
     if(partic_pat)
-      fs_give((void **)&partic_pat);
+      free_list_array(&partic_pat);
     if(news_pat)
-      fs_give((void **)&news_pat);
+      free_list_array(&news_pat);
     if(subj_pat)
-      fs_give((void **)&subj_pat);
+      free_list_array(&subj_pat);
     if(alltext_pat)
-      fs_give((void **)&alltext_pat);
+      free_list_array(&alltext_pat);
     if(bodytext_pat)
-      fs_give((void **)&bodytext_pat);
+      free_list_array(&bodytext_pat);
+    if(keyword_pat)
+      free_list_array(&keyword_pat);
     if(age_pat)
       fs_give((void **)&age_pat);
+    if(size_pat)
+      fs_give((void **)&size_pat);
     if(scorei_pat)
       fs_give((void **)&scorei_pat);
+    if(cati)
+      fs_give((void **)&cati);
+    if(cat_lim)
+      fs_give((void **)&cat_lim);
     if(stat_del)
       fs_give((void **)&stat_del);
     if(stat_new)
@@ -18327,14 +19129,18 @@ role_config_edit_screen(ps, def, title, rflags, result)
       fs_give((void **)&stat_ans);
     if(stat_8bit)
       fs_give((void **)&stat_8bit);
+    if(stat_bom)
+      fs_give((void **)&stat_bom);
+    if(stat_boy)
+      fs_give((void **)&stat_boy);
     if(fldr_type_pat)
       fs_give((void **)&fldr_type_pat);
     if(folder_pat)
-      fs_give((void **)&folder_pat);
+      free_list_array(&folder_pat);
     if(abook_type_pat)
       fs_give((void **)&abook_type_pat);
     if(abook_pat)
-      fs_give((void **)&abook_pat);
+      free_list_array(&abook_pat);
     if(inick)
       fs_give((void **)&inick);
     if(from_act)
@@ -18349,6 +19155,10 @@ role_config_edit_screen(ps, def, title, rflags, result)
       fs_give((void **)&sort_act);
     if(iform_act)
       fs_give((void **)&iform_act);
+    if(keyword_set)
+      free_list_array(&keyword_set);
+    if(keyword_clr)
+      free_list_array(&keyword_clr);
     if(startup_act)
       fs_give((void **)&startup_act);
     if(sig_act)
@@ -18380,9 +19190,12 @@ role_config_edit_screen(ps, def, title, rflags, result)
     if(filt_imp)
       fs_give((void **)&filt_imp);
     if(folder_act)
-      fs_give((void **)&folder_act);
+      free_list_array(&folder_act);
     if(filter_type)
       fs_give((void **)&filter_type);
+
+    if(cat_cmd)
+      free_list_array(&cat_cmd);
 
     if(cstm_act)
       free_list_array(&cstm_act);
@@ -18400,28 +19213,164 @@ role_config_edit_screen(ps, def, title, rflags, result)
 
 
 void
+setup_dummy_pattern_var(v, name, defpat)
+    struct variable *v;
+    char            *name;
+    PATTERN_S       *defpat;
+{
+    char ***alval;
+    char   *s, *p;
+    int     cnt = 0;
+
+    if(!(v && name))
+      panic("setup_dummy_pattern_var");
+
+    v->name = (char *) fs_get(strlen(name)+NOTLEN+1);
+    sprintf(v->name, "%s%s", (defpat && defpat->not) ? NOT : "", name);
+    v->is_used    = 1;
+    v->is_user    = 1;
+    v->is_list    = 1;
+    alval = ALVAL(v, ew);
+    *alval = pattern_to_editlist(defpat);
+    set_current_val(v, FALSE, FALSE);
+}
+
+
+void
+setup_role_pat(ps, ctmp, v, help, help_title, keymenu, tool, earb, indent)
+    struct pine     *ps;
+    CONF_S         **ctmp;
+    struct variable *v;
+    HelpType         help;
+    char            *help_title;
+    struct key_menu *keymenu;
+    int            (*tool)();
+    EARB_S         **earb;
+    int              indent;
+{
+    char    tmp[MAXPATH+1];
+    char  **lval;
+    int     i;
+    CONF_S *ctmpb;
+
+    new_confline(ctmp);
+    (*ctmp)->help_title = help_title;
+    (*ctmp)->var        = v;
+    (*ctmp)->valoffset  = indent;
+    (*ctmp)->keymenu    = keymenu;
+    (*ctmp)->help       = help;
+    (*ctmp)->tool       = tool;
+    sprintf(tmp, "%-*.*s =", indent-3, indent-3, (v && v->name) ? v->name : "");
+    (*ctmp)->varname    = cpystr(tmp);
+    (*ctmp)->varnamep   = *ctmp;
+    (*ctmp)->value      = pretty_value(ps, *ctmp);
+    (*ctmp)->d.earb     = earb;
+    (*ctmp)->varmem     = 0;
+    (*ctmp)->flags      = CF_STARTITEM;
+
+    ctmpb = (*ctmp);
+
+    lval = LVAL(v, ew);
+    if(lval){
+	for(i = 0; lval[i]; i++){
+	    if(i)
+	      new_confline(ctmp);
+	    
+	    (*ctmp)->var       = v;
+	    (*ctmp)->varmem    = i;
+	    (*ctmp)->valoffset = indent;
+	    (*ctmp)->value     = pretty_value(ps, *ctmp);
+	    (*ctmp)->d.earb    = earb;
+	    (*ctmp)->keymenu   = keymenu;
+	    (*ctmp)->help      = help;
+	    (*ctmp)->tool      = tool;
+	    (*ctmp)->varnamep  = ctmpb;
+	}
+    }
+}
+
+
+/*
+ * Watch out for polarity of nosel flag. Setting it means to turn on
+ * the NOSELECT flag, which means to make that line unselectable.
+ */
+void
+setup_role_pat_alt(ps, ctmp, v, help, help_title, keymenu, tool, voff, nosel)
+    struct pine     *ps;
+    CONF_S         **ctmp;
+    struct variable *v;
+    HelpType         help;
+    char            *help_title;
+    struct key_menu *keymenu;
+    int            (*tool)();
+    int              voff;
+    int              nosel;
+{
+    char    tmp[MAXPATH+1];
+    char  **lval;
+    int     i, j;
+    CONF_S *ctmpb;
+
+    new_confline(ctmp);
+    (*ctmp)->help_title = help_title;
+    (*ctmp)->var        = v;
+
+    (*ctmp)->varoffset  = voff;
+    j                   = voff+strlen(v->name)+3;
+    (*ctmp)->valoffset  = j;
+
+    (*ctmp)->keymenu    = keymenu;
+    (*ctmp)->help       = help;
+    (*ctmp)->tool       = tool;
+
+    sprintf(tmp, "%.100s =", v->name);
+    (*ctmp)->varname    = cpystr(tmp);
+
+    (*ctmp)->varnamep   = *ctmp;
+    (*ctmp)->value      = pretty_value(ps, *ctmp);
+    (*ctmp)->varmem     = 0;
+
+    (*ctmp)->flags      = (nosel ? CF_NOSELECT : 0);
+
+    ctmpb = (*ctmp);
+
+    lval = LVAL(v, ew);
+    if(lval){
+	for(i = 0; lval[i]; i++){
+	    if(i)
+	      new_confline(ctmp);
+	    
+	    (*ctmp)->var       = v;
+	    (*ctmp)->varmem    = i;
+	    (*ctmp)->varoffset = voff;
+	    (*ctmp)->valoffset = j;
+	    (*ctmp)->value     = pretty_value(ps, *ctmp);
+	    (*ctmp)->keymenu   = keymenu;
+	    (*ctmp)->help      = help;
+	    (*ctmp)->tool      = tool;
+	    (*ctmp)->varnamep  = ctmpb;
+	    (*ctmp)->flags     = (nosel ? CF_NOSELECT : 0);
+	}
+    }
+}
+
+
+void
 free_earb(ea)
     EARB_S **ea;
 {
     if(ea && *ea){
 	free_earb(&(*ea)->next);
 	if((*ea)->v){
+	    free_variable_values((*ea)->v);
 	    if((*ea)->v->name)
-	      fs_give((void **)&(*ea)->v->name);
-	    if((*ea)->v->current_val.p)
-	      fs_give((void **)&(*ea)->v->current_val.p);
-	    if((*ea)->v->main_user_val.p)
-	      fs_give((void **)&(*ea)->v->main_user_val.p);
-	    if((*ea)->v->post_user_val.p)
-	      fs_give((void **)&(*ea)->v->post_user_val.p);
-	    if((*ea)->v->global_val.p)
-	      fs_give((void **)&(*ea)->v->global_val.p);
+	      fs_give((void **) &(*ea)->v->name);
 
-	    fs_give((void **)&(*ea)->v);;
+	    fs_give((void **) &(*ea)->v);;
 	}
 
 	free_arbhdr(&(*ea)->a);
-	fs_give((void **)ea);
+	fs_give((void **) ea);
     }
 }
 
@@ -18785,8 +19734,7 @@ msg_state_types(index)
 
 
 /* Arguments:
- *      str:  a list of folders, separated by commas (commas in folder names
- *   will have been backslash escaped.
+ *      lst:  a list of folders
  *      action: a 1 or 0 value which basically says that str is associated with
  *   the filter action if true or the Current Folder type if false.
  * Return:
@@ -18798,17 +19746,17 @@ msg_state_types(index)
  * With each of these prompts, the user can abort their desire to exit.
  */
 int
-check_role_folders(str, action)
-     char      *str;
-     unsigned   action;
+check_role_folders(lst, action)
+    char     **lst;
+    unsigned   action;
 {
     char       *cur_fn, wt_res, prompt[MAX_SCREEN_COLS];
-    int         i, j, slen, rv = 2;
+    int         i, rv = 2;
     CONTEXT_S  *cntxt = NULL;
     char        nbuf1[MAX_SCREEN_COLS], nbuf2[MAX_SCREEN_COLS];
     int         space, w1, w2, exists;
 
-    if(!str){
+    if(!(lst && *lst)){
       if(action)
 	q_status_message(SM_ORDER, 3, 5,
 			 "Set a valid Filter Action before Exiting");
@@ -18819,12 +19767,12 @@ check_role_folders(str, action)
       return rv;
     }
 
-    slen = strlen(str);
-    cur_fn = (char *)fs_get((slen + 1)*sizeof(char));
+    for(i = 0; lst[i]; i++){
+	if(action)
+	  cur_fn = detoken_src(lst[i], FOR_FILT, NULL, NULL, NULL, NULL);
+	else
+	  cur_fn = lst[i];
 
-    for(i = 0, j = 0; i <= slen; i++, j++){
-      if(str[i] == ',' || str[i] == '\0'){
-	cur_fn[j] = '\0';
 	removing_leading_and_trailing_white_space(cur_fn);
 	if(*cur_fn != '\0'){
 	  space = MAXPROMPT;
@@ -18834,7 +19782,7 @@ check_role_folders(str, action)
 	    cntxt = default_save_context(ps_global->context_list);
 
 	  if(!(exists=folder_exists(cntxt, cur_fn)) &&
-      (action || !folder_is_nick(cur_fn,FOLDERS(ps_global->context_current)))){
+    (action || !folder_is_nick(cur_fn,FOLDERS(ps_global->context_current), 0))){
 	    if(cntxt && (action == 1)){
 	      space -= 37;		/* for fixed part of prompt below */
 	      w1 = max(1,min(strlen(cur_fn),space/2));
@@ -18891,7 +19839,6 @@ check_role_folders(str, action)
 	      rv = 0;
 	      break;
 	    }
-	      
 	  }
 	  else{
 	      if(exists & FEX_ERROR){
@@ -18905,28 +19852,18 @@ check_role_folders(str, action)
 	  }
 	}
 	else{ /* blank item in list of folders */
-	  if(action && str[i] == ',')
-	    q_status_message(SM_ORDER,3,5,"Item in list of filter actions cannot be empty");
-	  else if(action && str[i] == '\0')
+	  if(action && lst[i+1] == '\0')
 	    q_status_message(SM_ORDER,3,5,"Set a valid Filter Action before Exiting");
-	  else if(!action && str[i] == ',')
-	    q_status_message(SM_ORDER,3,5,"Item in list of specific folders cannot be empty");
-	  else /* !action && str[i] == '\0' */
+	  else /* !action && lst[i+1] == '\0' */
 	    q_status_message(SM_ORDER,3,5,"Set a valid Specific Folder before Exiting");
 	  rv = 0;
 	  break;
 	}
-	j = -1; /* restart for next folder check */
-	*cur_fn = '\0';
-      }
-      else if(str[i] == '\\' && str[i+1] == ','){
-	cur_fn[j] = ',';
-	i++;
-      }
-      else
-	cur_fn[j] = str[i];
+
+	if(cur_fn && cur_fn != lst[i])
+	  fs_give((void **) &cur_fn);
     }
-    fs_give((void **)&cur_fn);
+
     return(rv);
 }
 
@@ -19051,7 +19988,7 @@ maybe_add_to_incoming(cntxt, cur_fn)
 	    (*alval)[i]   = pp;
 	    (*alval)[i+1] = NULL;
 	    set_current_val(&ps_global->vars[V_INCOMING_FOLDERS], TRUE, TRUE);
-	    write_pinerc(ps_global, ew);
+	    write_pinerc(ps_global, ew, WRP_NONE);
 	}
     }
 }
@@ -19063,7 +20000,7 @@ role_filt_exitcheck(cl, flags)
     unsigned      flags;
 {
     int             rv, j, action;
-    char           *to_folder = NULL, *spec_fldr = NULL;
+    char          **to_folder = NULL, **spec_fldr = NULL;
     CONF_S         *ctmp;
     NAMEVAL_S      *f;
 #define ACT_UNKNOWN		0
@@ -19124,10 +20061,9 @@ role_filt_exitcheck(cl, flags)
 	      ;
 	    
 	    /* ok, we're finally at the Folder line */
-	    if(ctmp && ctmp->var && PVAL(ctmp->var,ew)){
-		to_folder = cpystr(PVAL(ctmp->var,ew));
-		removing_leading_and_trailing_white_space(to_folder);
-		if(*to_folder)
+	    if(ctmp && ctmp->var && LVAL(ctmp->var,ew)){
+		to_folder = copy_list_array(LVAL(ctmp->var,ew));
+		if(to_folder && to_folder[0])
 		  action = ACT_MOVE;
 	    }
 
@@ -19136,7 +20072,7 @@ role_filt_exitcheck(cl, flags)
 	  default:
 	    dprint(1,(debugfile,
 		    "Can't happen, role_filt_ptr set to %s\n",
-		    PVAL(role_filt_ptr,ew)));
+		    PVAL(role_filt_ptr,ew) ? PVAL(role_filt_ptr,ew) : "?"));
 	    break;
 	}
     }
@@ -19150,7 +20086,7 @@ role_filt_exitcheck(cl, flags)
 	      case ACT_KILL:
 		if(spec_fldr = get_role_specific_folder(cl)){
 		  rv = check_role_folders(spec_fldr, 0);
-		  fs_give((void **)&spec_fldr);
+		  free_list_array(&spec_fldr);
 		  if(rv == 2)
 		    q_status_message(SM_ORDER,0,3,"Ok, messages matching that Pattern will be deleted");
 		}
@@ -19164,7 +20100,7 @@ role_filt_exitcheck(cl, flags)
 	      case ACT_MOVE:
 		if(spec_fldr = get_role_specific_folder(cl)){
 		  rv = check_role_folders(spec_fldr, 0);
-		  fs_give((void **)&spec_fldr);
+		  free_list_array(&spec_fldr);
 		  if(to_folder && rv == 2)
 		    rv = check_role_folders(to_folder, 1);  
 		}
@@ -19182,7 +20118,7 @@ role_filt_exitcheck(cl, flags)
 	      case ACT_STATE:
 		if(spec_fldr = get_role_specific_folder(cl)){
 		  rv = check_role_folders(spec_fldr, 0);
-		  fs_give((void **)&spec_fldr);
+		  free_list_array(&spec_fldr);
 		}
 		else
 		  rv = 2;
@@ -19214,7 +20150,7 @@ role_filt_exitcheck(cl, flags)
       rv = 2;
 
     if(to_folder)
-      fs_give((void **)&to_folder);
+      free_list_array(&to_folder);
 
     return(rv);
 }
@@ -19365,33 +20301,36 @@ role_radiobutton_tool(ps, cmd, cl, flags)
 	(*cl)->value[1] = R_SELD;
 
 	if((*cl)->var == role_fldr_ptr){
-	    if(spec_ctmp){
-		if((*cl)->varmem == FLDR_SPECIFIC)
-		  spec_ctmp->flags &= ~CF_NOSELECT;
-		else
-		  spec_ctmp->flags |= CF_NOSELECT;
-	    }
+	    for(ctmp = spec_ctmp;
+		ctmp && ctmp->varnamep == spec_ctmp;
+		ctmp = next_confline(ctmp))
+	      if((*cl)->varmem == FLDR_SPECIFIC)
+		ctmp->flags &= ~CF_NOSELECT;
+	      else
+		ctmp->flags |= CF_NOSELECT;
 
 	    rule = pat_fldr_types((*cl)->varmem);
 	}
 	else if((*cl)->var == role_afrom_ptr){
-	    if(spec_ctmp){
-		if(((*cl)->varmem == AFRM_SPEC_YES)
-		   || ((*cl)->varmem == AFRM_SPEC_NO))
-		  spec_ctmp->flags &= ~CF_NOSELECT;
-		else
-		  spec_ctmp->flags |= CF_NOSELECT;
-	    }
+	    for(ctmp = spec_ctmp;
+		ctmp && ctmp->varnamep == spec_ctmp;
+		ctmp = next_confline(ctmp))
+	      if(((*cl)->varmem == AFRM_SPEC_YES)
+	         || ((*cl)->varmem == AFRM_SPEC_NO))
+	        ctmp->flags &= ~CF_NOSELECT;
+	      else
+	        ctmp->flags |= CF_NOSELECT;
 
 	    rule = abookfrom_fldr_types((*cl)->varmem);
 	}
 	else if((*cl)->var == role_filt_ptr){
-	    if(spec_ctmp){
-		if((*cl)->varmem == FILTER_FOLDER)
-		  spec_ctmp->flags &= ~CF_NOSELECT;
-		else
-		  spec_ctmp->flags |= CF_NOSELECT;
-	    }
+	    for(ctmp = spec_ctmp;
+		ctmp && ctmp->varnamep == spec_ctmp;
+		ctmp = next_confline(ctmp))
+	      if((*cl)->varmem == FILTER_FOLDER)
+		ctmp->flags &= ~CF_NOSELECT;
+	      else
+		ctmp->flags |= CF_NOSELECT;
 
 	    rule = filter_types((*cl)->varmem);
 	}
@@ -19404,7 +20343,9 @@ role_radiobutton_tool(ps, cmd, cl, flags)
 	        (*cl)->var == role_status3_ptr ||
 	        (*cl)->var == role_status4_ptr ||
 	        (*cl)->var == role_status5_ptr ||
-	        (*cl)->var == role_status6_ptr)
+	        (*cl)->var == role_status6_ptr ||
+	        (*cl)->var == role_status7_ptr ||
+	        (*cl)->var == role_status8_ptr)
 	  rule = role_status_types((*cl)->varmem);
 	else if((*cl)->var == msg_state1_ptr ||
 	        (*cl)->var == msg_state2_ptr ||
@@ -19506,50 +20447,56 @@ role_sort_tool(ps, cmd, cl, flags)
 }
 
 /*
- * Return an allocated string of the Specific Folder list for 
+ * Return an allocated list of the Specific Folder list for 
  * roles, or NULL if Current Folder type is not set to 
  * to Specific Folder
  *
  * WARNING, the method used in obtaining the specific folder is
  * VERY dependent on the order in which it is presented on the 
  * screen.  If the Current Folder radio buttons were changed,
- * this function would probably need to be fixed accordingly
- * (especially if folders were to be presented line by line)
+ * this function would probably need to be fixed accordingly.
  */
-char *
+char **
 get_role_specific_folder(cl)
-     CONF_S     **cl;
+    CONF_S     **cl;
 {
-  CONF_S   *ctmp;
+    CONF_S   *ctmp;
 
-  /* go to the first line */
-  for(ctmp = *cl;
-      ctmp && ctmp->prev;
-      ctmp = prev_confline(ctmp))
-    ;
+    /* go to the first line */
+    for(ctmp = *cl;
+	ctmp && ctmp->prev;
+	ctmp = prev_confline(ctmp))
+      ;
   
-  /* go to the current folder radio button list */
-  while(ctmp && ctmp->var != role_fldr_ptr)
-    ctmp = next_confline(ctmp);
+    /* go to the current folder radio button list */
+    while(ctmp && ctmp->var != role_fldr_ptr)
+      ctmp = next_confline(ctmp);
 
-  /* go to the specific folder button (caution) */
-  while(ctmp && ctmp->varmem != FLDR_SPECIFIC)
-    ctmp = next_confline(ctmp);
+    /* go to the specific folder button (caution) */
+    while(ctmp && ctmp->varmem != FLDR_SPECIFIC)
+      ctmp = next_confline(ctmp);
 
-  /* check if selected (assumption of format "(*)" */
-  if(ctmp && ctmp->value[1] == R_SELD){
-    ctmp = next_confline(ctmp);
-    if(PVAL(ctmp->var, ew))
-      return cpystr(PVAL(ctmp->var, ew));
-    else  
-      /*
-       * Need to allocate empty string so as not to confuse it
-       * with the possibility that Specific Folder is not selected.
-       */
-      return cpystr("");
-  }
-  else
-    return NULL;
+    /* check if selected (assumption of format "(*)" */
+    if(ctmp && ctmp->value[1] == R_SELD){
+	/* go to next line, the start of the list */
+	ctmp = next_confline(ctmp);
+	if(LVAL(ctmp->var, ew))
+	  return copy_list_array(LVAL(ctmp->var, ew));
+	else{
+	    char **ltmp;
+
+	    /*
+	     * Need to allocate empty string so as not to confuse it
+	     * with the possibility that Specific Folder is not selected.
+	     */
+	    ltmp    = (char **) fs_get(2 * sizeof(char *));
+	    ltmp[0] = cpystr("");
+	    ltmp[1] = NULL;
+	    return(ltmp);
+	}
+    }
+    else
+      return NULL;
 }
 
 /*
@@ -19634,12 +20581,12 @@ role_text_tool(ps, cmd, cl, flags)
 {
     OPT_SCREEN_S *saved_screen;
     int   rv = -1, oeflags, len, sig, r, i, cancel = 0;
-    char *file, *err, title[20], *newfile, *lc, *addr, *fldr, *tmpfldr;
-    char  dir2[MAXPATH+1], pdir[MAXPATH+1];
+    char *file, *err, title[20], *newfile, *lc, *addr, *fldr = NULL, *tmpfldr;
+    char  dir2[MAXPATH+1], pdir[MAXPATH+1], *p;
     char  full_filename[MAXPATH+1], filename[MAXPATH+1];
-    char  tmp[MAXPATH+1], *spec_fldr, **apval;
+    char  tmp[MAXPATH+1], **spec_fldr, **apval;
     EARB_S *earb, *ea, *eaprev;
-    CONF_S *ctmp, *newcp;
+    CONF_S *ctmp, *ctmpb, *newcp, *ctend;
     HelpType help;
 
     switch(cmd){
@@ -19649,7 +20596,7 @@ role_text_tool(ps, cmd, cl, flags)
 	    case 'y':
 	      if(spec_fldr = get_role_specific_folder(cl)){
 		rv = check_role_folders(spec_fldr, 0);
-		fs_give((void **)&spec_fldr);
+		free_list_array(&spec_fldr);
 	      }
 	      else 
 		rv = 2;
@@ -19672,21 +20619,22 @@ role_text_tool(ps, cmd, cl, flags)
 	break;
 
       case MC_NOT :		/* toggle between !matching and matching */
-	if((*cl)->varname && (*cl)->var && (*cl)->var->name){
-	    if(!strncmp((*cl)->varname, NOT, NOTLEN) &&
-	       !strncmp((*cl)->var->name, NOT, NOTLEN)){
+	ctmp = (*cl)->varnamep;
+	if(ctmp->varname && ctmp->var && ctmp->var->name){
+	    if(!strncmp(ctmp->varname, NOT, NOTLEN) &&
+	       !strncmp(ctmp->var->name, NOT, NOTLEN)){
 		char *pp;
 
-		rplstr((*cl)->var->name, NOTLEN, "");
-		rplstr((*cl)->varname, NOTLEN, "");
-		strncpy((*cl)->varname+strlen((*cl)->varname)-1,
+		rplstr(ctmp->var->name, NOTLEN, "");
+		rplstr(ctmp->varname, NOTLEN, "");
+		strncpy(ctmp->varname+strlen(ctmp->varname)-1,
 		       repeat_char(NOTLEN, ' '), NOTLEN+1);
-		strncat((*cl)->varname, "=", 2);
+		strncat(ctmp->varname, "=", 2);
 	    }
 	    else{
-		rplstr((*cl)->var->name, 0, NOT);
-		strncpy((*cl)->varname+strlen((*cl)->varname)-1-NOTLEN, "=", 2);
-		rplstr((*cl)->varname, 0, NOT);
+		rplstr(ctmp->var->name, 0, NOT);
+		strncpy(ctmp->varname+strlen(ctmp->varname)-1-NOTLEN, "=", 2);
+		rplstr(ctmp->varname, 0, NOT);
 	    }
 
 	    rv = 1;
@@ -19712,7 +20660,7 @@ role_text_tool(ps, cmd, cl, flags)
 	    len = strlen(pdir);
 	}
 
-	strncpy(title, "SIGNATURE", 15);
+	strncpy(title, "CHOOSE A", 15);
 	strncpy(dir2, pdir, MAXPATH);
 
 	filename[0] = '\0';
@@ -19752,23 +20700,23 @@ role_text_tool(ps, cmd, cl, flags)
       case MC_CHOICEB :		/* Choose Addresses, no full names */
 	addr = addr_book_multaddr_nf();
 	ps->mangled_screen = 1;
-	if(addr){
-	    apval = APVAL((*cl)->var, ew);
-	    if(apval && *apval){		/* combine with current value */
-		size_t len;
-		char  *newval;
+	if(addr && (*cl)->var && (*cl)->var->is_list){
+	    char **ltmp, *tmp;
+	    int    i;
 
-		len = strlen(*apval) + strlen(addr) + 1 + 1;
-		newval = (char *)fs_get(len * sizeof(char));
-		sprintf(newval, "%s,%s", addr, *apval);
-		fs_give((void **)apval);
-		fs_give((void **)&addr);
-		*apval = newval;
-	    }
-	    else if(apval)
-	      *apval = addr;
-	    else				/* can't happen */
-	      fs_give((void **)&addr);
+	    i = 0;
+	    for(tmp = addr; *tmp; tmp++)
+	      if(*tmp == ',')
+		i++;	/* conservative count of ,'s */
+
+	    ltmp = parse_list(addr, i + 1, PL_COMMAQUOTE, NULL);
+	    fs_give((void **) &addr);
+
+	    if(ltmp && ltmp[0])
+	      config_add_list(ps, cl, ltmp, NULL, 0);
+
+	    if(ltmp)
+	      fs_give((void **) &ltmp);
 	    
 	    if((*cl)->value)
 	      fs_give((void **)&((*cl)->value));
@@ -19807,32 +20755,59 @@ role_text_tool(ps, cmd, cl, flags)
       case MC_CHOICEE :
 	saved_screen = opt_screen;
 	if(cmd == MC_CHOICED)
-	  tmpfldr = folders_for_roles(1);
+	  tmpfldr = folders_for_roles(FOR_PATTERN);
 	else
 	  tmpfldr = folders_for_roles(0);
 	
-	fldr = add_folder_escapes(tmpfldr);
-	fs_give((void**)&tmpfldr);
+	if(tmpfldr){
+	    fldr = add_comma_escapes(tmpfldr);
+	    fs_give((void**) &tmpfldr);
+	}
 
 	opt_screen = saved_screen;
 
 	ps->mangled_screen = 1;
-	if(fldr){
-	    apval = APVAL((*cl)->var, ew);
-	    if(apval && *apval)
-	      fs_give((void **)apval);
+	if(fldr && *fldr && (*cl)->var && (*cl)->var->is_list){
+	    char **ltmp;
+
+	    ltmp    = (char **) fs_get(2 * sizeof(char *));
+	    ltmp[0] = fldr;
+	    ltmp[1] = NULL;
+	    fldr    = NULL;
+
+	    if(ltmp && ltmp[0])
+	      config_add_list(ps, cl, ltmp, NULL, 0);
+
+	    if(ltmp)
+	      fs_give((void **) &ltmp);
 	    
-	    if(apval)
-	      *apval = fldr;
+	    if((*cl)->value)
+	      fs_give((void **) &((*cl)->value));
+
+	    (*cl)->value = pretty_value(ps, *cl);
+	    rv = 1;
+	}
+	else if(fldr && *fldr && (*cl)->var && !(*cl)->var->is_list){
+	    apval = APVAL((*cl)->var, ew);
+	    if(apval && *apval)			/* replace current value */
+	      fs_give((void **)apval);
+
+	    if(apval){
+		*apval = fldr;
+		fldr   = NULL;
+	    }
 
 	    if((*cl)->value)
-	      fs_give((void **)&((*cl)->value));
+	      fs_give((void **) &((*cl)->value));
 
 	    (*cl)->value = pretty_value(ps, *cl);
 	    rv = 1;
 	}
 	else
 	  rv = 0;
+
+	if(fldr)
+	  fs_give((void **) &fldr);
 
 	break;
 
@@ -19923,55 +20898,41 @@ role_text_tool(ps, cmd, cl, flags)
 	else
 	  *((*cl)->d.earb) = ea;
 
-	/*
-	 * Make ctmp point to BodyText line, the last line with
-	 * an earb attached.
-	 */
-	for(ctmp = *cl;
-	    ctmp && ctmp->next && ctmp->next->d.earb;
-	    ctmp = next_confline(ctmp))
+	/* go to first line */
+	for(ctmp = *cl; prev_confline(ctmp); ctmp = prev_confline(ctmp))
 	  ;
-	
-	/* 
-	 * Now we're on BodyText line, move back three 
-	 * to the line before Add Extra Headers.
-	 * This is yucky.
+
+	/*
+	 * Go to the Add Extra Headers line. We will put the
+	 * new header before this line.
 	 */
-	ctmp = prev_confline(ctmp);
-	ctmp = prev_confline(ctmp);
-	ctmp = prev_confline(ctmp);
+	for(; ctmp; ctmp = next_confline(ctmp))
+	  if(ctmp->value && !strcmp(ctmp->value, ADDXHDRS))
+	    break;
+
+	/* move back one */
+	if(ctmp)
+	  ctmp = prev_confline(ctmp);
 	
 	/*
 	 * Add a new line after this point, which is after the last
 	 * extra header (if any) or after the Participant pattern, and
 	 * before the Add Extra Headers placeholder line.
 	 */
-	new_confline(&ctmp);
+	p = (char *) fs_get(strlen(tmp) + strlen(" pattern") + 1);
+	sprintf(p, "%s pattern", tmp);
+	setup_dummy_pattern_var(ea->v, p, NULL);
+	fs_give((void **) &p);
 
-	ea->v->name = (char *) fs_get(strlen(tmp) + 9);
-	sprintf(ea->v->name, "%s pattern", tmp);
-	ea->v->is_used    = 1;
-	ea->v->is_user    = 1;
-	set_current_val(ea->v, FALSE, FALSE);
-
-	ctmp->help_title= ARB_HELP;
-	ctmp->var       = ea->v;
-	ctmp->valoffset = ctmp->prev->valoffset;
-	ctmp->keymenu   = &config_role_xtrahdr_keymenu;
-	ctmp->help      = h_config_role_arbpat;
-	ctmp->tool      = ctmp->prev->tool;
-	i = max(strlen(ctmp->prev->varname) - 2, 3);
-	i = min(i, 200);
-	sprintf(tmp, "%-*.*s =", i, i, ea->v->name);
-	ctmp->varname   = cpystr(tmp);
-	ctmp->varnamep  = ctmp;
-	ctmp->value     = pretty_value(ps, ctmp);
-	ctmp->d.earb    = ctmp->prev->d.earb;
-	/*
-	 * This works for the first one because the varmem for the
-	 * previous pattern (Participant) is unused and is set to -1.
-	 */
-	ctmp->varmem    = ctmp->prev->varmem + 1;
+	/* find what indent should be */
+	if(ctmp && ctmp->varnamep && ctmp->varnamep->varname)
+	  i = min(max(strlen(ctmp->varnamep->varname) + 1, 3), 200);
+	else
+	  i = 20;
+	
+	setup_role_pat(ps, &ctmp, ea->v, h_config_role_arbpat,
+		       ARB_HELP, &config_role_xtrahdr_keymenu,
+		       ctmp->prev->tool, ctmp->prev->d.earb, i);
 
 	/*
 	 * move current line to new line
@@ -19979,19 +20940,21 @@ role_text_tool(ps, cmd, cl, flags)
 
 	newcp = ctmp;
 
+	/* check if new line comes before the top of the screen */
+	ctmpb = (opt_screen && opt_screen->top_line)
+		    ? opt_screen->top_line->prev : NULL;
+	for(; ctmpb; ctmpb = prev_confline(ctmpb))
+	  if(ctmpb == newcp)
+	    break;
 	/*
 	 * Keep the right lines visible.
 	 * The if triggers if the new line is off the top of the screen, and
 	 * it makes the new line be the top line.
 	 * The else counts how many lines down the screen the new line is.
 	 */
+
 	i = 0;
-	if(opt_screen->top_line->prev == newcp
-	   || (opt_screen->top_line->prev
-	       && opt_screen->top_line->prev->prev == newcp)
-	   || (opt_screen->top_line->prev
-	       && opt_screen->top_line->prev->prev
-	       && opt_screen->top_line->prev->prev->prev == newcp))
+	if(ctmpb == newcp)
 	  opt_screen->top_line = newcp;
 	else{
 	    for(ctmp = opt_screen->top_line; ctmp && ctmp != newcp;
@@ -20018,13 +20981,19 @@ role_text_tool(ps, cmd, cl, flags)
 
       /* Delete an arbitrary header from this role */
       case MC_DELHDR :
-	/* find this one in earb list, using varmem */
+	/*
+	 * Find this one in earb list. We don't have a good way to locate
+	 * it so we match the ea->v->name with ctmp->varname.
+	 */
 	rv = 0;
 	eaprev = NULL;
-	for(i = 0, ea = *(*cl)->d.earb; ea; i++, ea = ea->next){
-	    if(i == (*cl)->varmem)
+	for(ea = *(*cl)->d.earb; ea; ea = ea->next){
+	    if((*cl)->varnamep && (*cl)->varnamep->varname
+	       && ea->v && ea->v->name
+	       && !strncmp((*cl)->varnamep->varname,
+			   ea->v->name, strlen(ea->v->name)))
 	      break;
-
+	    
 	    eaprev = ea;
 	}
 	
@@ -20042,54 +21011,56 @@ role_text_tool(ps, cmd, cl, flags)
 	    else
 	      *(*cl)->d.earb = ea->next;
 	    
-	    if(ea->v){
-		if(ea->v->current_val.p)
-		  fs_give((void **)&ea->v->current_val.p);
-		if(ea->v->global_val.p)
-		  fs_give((void **)&ea->v->global_val.p);
-		if(ea->v->main_user_val.p)
-		  fs_give((void **)&ea->v->main_user_val.p);
-		if(ea->v->post_user_val.p)
-		  fs_give((void **)&ea->v->post_user_val.p);
-		if(ea->v->name)
-		  fs_give((void **)&ea->v->name);
-		
-		fs_give((void **)&ea->v);
-	    }
-
-	    if(ea->a){
-		if(ea->a->field)
-		  fs_give((void **)&ea->a->field);
-		
-		fs_give((void **)&ea->a);
-	    }
-
-	    fs_give((void **)&ea);
+	    ea->next = NULL;
+	    free_earb(&ea);
 	}
 
-	/* adjust varmems in following lines */
-	for(ctmp = *cl;
-	    ctmp && ctmp->d.earb && ctmp->varmem > 0;
-	    ctmp = next_confline(ctmp))
-	  ctmp->varmem--;
+	/* remember start of deleted header */
+	ctmp = (*cl && (*cl)->varnamep) ? (*cl)->varnamep : NULL;
+
+	/* and end of deleted header */
+	for(ctend = *cl; ctend; ctend = next_confline(ctend))
+	  if(!ctend->next || ctend->next->varnamep != ctmp)
+	    break;
+
+	/* check if top line is one we're deleting */
+	for(ctmpb = ctmp; ctmpb; ctmpb = next_confline(ctmpb)){
+	    if(ctmpb == opt_screen->top_line)
+	      break;
+	    
+	    if(ctmpb == (*cl))
+	      break;
+	}
+
+	if(ctmpb == opt_screen->top_line)
+	  opt_screen->top_line = ctend ? ctend->next : NULL;
+
+	/* move current line after this header */
+	*cl = ctend ? ctend->next : NULL;
+
+	/* remove deleted header lines */
+	if(ctmp && ctend){
+	    /* remove from linked list */
+	    if(ctmp->prev)
+	      ctmp->prev->next = ctend->next;
+	    
+	    if(ctend->next)
+	      ctend->next->prev = ctmp->prev;
+	    
+	    /* free memory */
+	    ctmp->prev = ctend->next = NULL;
+	    free_conflines(&ctmp);
+	}
 	
-	/* keep top_line up-to-date */
-	if(*cl == opt_screen->top_line)
-	  opt_screen->top_line = (*cl)->next;
-
-	/* change the current line to next line */
-	ctmp = *cl;
-	*cl = (*cl)->next;
-
-	/* remove current line */
-	snip_confline(&ctmp);
 	ps->mangled_body = 1;
 	rv = 1;
 	break;
 
       default :
 	if(((*cl)->var == scorei_pat_global_ptr
-	    || (*cl)->var == age_pat_global_ptr)
+	    || (*cl)->var == age_pat_global_ptr
+	    || (*cl)->var == size_pat_global_ptr
+	    || (*cl)->var == cati_global_ptr)
 	   &&
 	   (cmd == MC_EDIT || (cmd == MC_ADD && !PVAL((*cl)->var, ew)))){
 	    char prompt[60];
@@ -20135,10 +21106,16 @@ role_text_tool(ps, cmd, cl, flags)
 	    }
 	}
 	else{
-	    if(cmd == MC_ADD)
+	    if(cmd == MC_ADD && (*cl)->var && !(*cl)->var->is_list)
 	      cmd = MC_EDIT;
 
-	    rv = text_tool(ps, cmd, cl, flags);
+	    rv = text_toolit(ps, cmd, cl, flags, 1);
+
+	    /* make sure the earb pointers are set */
+	    for(ctmp = (*cl)->varnamep;
+		ctmp->next && ctmp->next->var == ctmp->var;
+		ctmp = next_confline(ctmp))
+	      ctmp->next->d.earb = ctmp->d.earb;
 	}
 
 	break;
@@ -20234,6 +21211,80 @@ role_text_tool_inick(ps, cmd, cl, flags)
 
 
 /*
+ */
+int
+role_text_tool_kword(ps, cmd, cl, flags)
+    struct pine  *ps;
+    int		  cmd;
+    CONF_S      **cl;
+    unsigned      flags;
+{
+    int    i, rv = -1;
+    char **apval;
+
+    switch(cmd){
+      case MC_CHOICE :		/* Choose keywords from list and add them */
+	{void (*prev_screen)() = ps->prev_screen,
+	      (*redraw)() = ps->redrawer;
+	 OPT_SCREEN_S *saved_screen;
+	 char         *esc;
+	 char        **kw;
+	 char        **apval;
+
+	ps->redrawer = NULL;
+	ps->next_screen = SCREEN_FUN_NULL;
+
+	saved_screen = opt_screen;
+
+	if(kw=choose_list_of_keywords()){
+	    for(i = 0; kw[i]; i++){
+		esc = add_roletake_escapes(kw[i]);
+		fs_give((void **) &kw[i]);
+		kw[i] = esc;
+	    }
+
+	    if(kw[0])
+	      config_add_list(ps, cl, kw, NULL, 0);
+	    
+	    fs_give((void **) &kw);
+
+	    if((*cl)->value)
+	      fs_give((void **) &((*cl)->value));
+
+	    (*cl)->value = pretty_value(ps, *cl);
+	    rv = 1;
+	}
+	else{
+	    ps->next_screen = prev_screen;
+	    ps->redrawer = redraw;
+	    rv = 0;
+	}
+
+	opt_screen = saved_screen;
+	}
+
+	ps->mangled_screen = 1;
+	break;
+
+      case MC_EDIT :
+      case MC_ADD :
+      case MC_DELETE :
+      case MC_NOT :
+	rv = role_text_tool(ps, cmd, cl, flags);
+	ps->mangled_screen = 1;
+	break;
+
+      case MC_EXIT :
+      default :
+	rv = role_text_tool(ps, cmd, cl, flags);
+	break;
+    }
+
+    return(rv);
+}
+
+
+/*
  * Choose an address book nickname
  */
 int
@@ -20252,36 +21303,48 @@ role_text_tool_afrom(ps, cmd, cl, flags)
 	rv = role_text_tool(ps, cmd, cl, flags);
 	break;
 
-      case MC_CHOICE :		/* Choose a role nickname */
+      case MC_CHOICE :		/* Choose an addressbook */
 	{void (*prev_screen)() = ps->prev_screen,
 	      (*redraw)() = ps->redrawer;
 	 OPT_SCREEN_S *saved_screen;
-	 char *abook = NULL;
+	 char *abook = NULL, *abookesc = NULL;
 
 	ps->redrawer = NULL;
 	ps->next_screen = SCREEN_FUN_NULL;
-
 	saved_screen = opt_screen;
 
-	if((abook = abook_select_screen(ps)) != NULL){
-	    apval = APVAL((*cl)->var, ew);
-	    if(apval && *apval)
-	      fs_give((void **)apval);
-	    
-	    if(apval)
-	      *apval = abook ? cpystr(abook) : NULL;
+	abook = abook_select_screen(ps);
+	if(abook){
+	    abookesc = add_comma_escapes(abook);
+	    fs_give((void**) &abook);
+	}
 
+	ps->mangled_screen = 1;
+	if(abookesc && *abookesc && (*cl)->var && (*cl)->var->is_list){
+	    char **ltmp;
+
+	    ltmp     = (char **) fs_get(2 * sizeof(char *));
+	    ltmp[0]  = abookesc;
+	    ltmp[1]  = NULL;
+	    abookesc = NULL;
+
+	    if(ltmp && ltmp[0])
+	      config_add_list(ps, cl, ltmp, NULL, 0);
+
+	    if(ltmp)
+	      fs_give((void **) &ltmp);
+	    
 	    if((*cl)->value)
-	      fs_give((void **)&((*cl)->value));
+	      fs_give((void **) &((*cl)->value));
 
 	    (*cl)->value = pretty_value(ps, *cl);
 	    rv = 1;
 	}
-	else{
-	    ps->next_screen = prev_screen;
-	    ps->redrawer = redraw;
-	    rv = 0;
-	}
+	else
+	  rv = 0;
+
+	if(abookesc)
+	  fs_give((void **) &abookesc);
 
 	opt_screen = saved_screen;
 	}
@@ -20369,12 +21432,17 @@ role_type_print(buf, fmt, rflags)
 void
 role_process_filters()
 {
-    if(ps_global->mail_stream){
-	reprocess_filter_patterns(ps_global->mail_stream, ps_global->msgmap);
-	if(ps_global->inbox_stream
-	   && ps_global->inbox_stream != ps_global->mail_stream)
-	  reprocess_filter_patterns(ps_global->inbox_stream,
-				    ps_global->inbox_msgmap);
+    int         i;
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	stream = ps_global->s_pool.streams[i];
+	if(stream && pine_mail_ping(stream)){
+	    msgmap = sp_msgmap(stream);
+	    if(msgmap)
+	      reprocess_filter_patterns(stream, msgmap, MI_REFILTERING);
+	}
     }
 }
 
@@ -20500,12 +21568,12 @@ color_config_screen(ps, edit_exceptions)
     switch(conf_scroll_screen(ps, &screen, first_line,
 			      edit_exceptions ? "SETUP COLOR EXCEPTIONS"
 					      : "SETUP COLOR",
-			      "configuration ", 1)){
+			      "configuration ", 0)){
       case 0:
 	break;
 
       case 1:
-	write_pinerc(ps, ew);
+	write_pinerc(ps, ew, WRP_NONE);
 	break;
     
       case 10:
@@ -20611,7 +21679,7 @@ color_config_init_display(ps, ctmp, first_line)
 	  continue;
 
 	/* If not foreground, skip it */
-	if(!strstr(vtmp->name, "-foreground-color"))
+	if(!srchstr(vtmp->name, "-foreground-color"))
 	  continue;
 
 	if(!saw_first_index && !struncmp(vtmp->name, "index-", 6)){
@@ -20683,7 +21751,156 @@ color_config_init_display(ps, ctmp, first_line)
 	new_confline(ctmp);
 	(*ctmp)->help			 = NO_HELP;
 	(*ctmp)->flags			|= CF_NOSELECT;
-	(*ctmp)->value = cpystr("[ Use the AddHeader command to add colored headers in MESSAGE VIEW ]");
+	(*ctmp)->value = cpystr(ADDHEADER_COMMENT);
+	(*ctmp)->valoffset		 = COLOR_INDENT;
+    }
+
+
+    /*
+     * custom keyword colors
+     */
+    new_confline(ctmp);		/* Blank line */
+    (*ctmp)->flags |= CF_NOSELECT | CF_B_LINE;
+    new_confline(ctmp);
+    (*ctmp)->help			 = NO_HELP;
+    (*ctmp)->flags			|= CF_NOSELECT;
+    (*ctmp)->value = cpystr("----------------");
+    new_confline(ctmp);
+    (*ctmp)->help			 = NO_HELP;
+    (*ctmp)->flags			|= CF_NOSELECT;
+    (*ctmp)->value = cpystr(KW_COLORS_HDR);
+    new_confline(ctmp);
+    (*ctmp)->help			 = NO_HELP;
+    (*ctmp)->flags			|= CF_NOSELECT;
+    (*ctmp)->value = cpystr("----------------");
+
+
+    if(ps->keywords){
+	KEYWORD_S *kw;
+	char      *name, *comment;
+	int        j, lv = 0, lc = 0, ltot = 0, eq_col = EQ_COL;
+
+	vtmp = &ps->vars[V_KW_COLORS];
+
+	/* first figure out widths for display */
+	for(kw = ps->keywords; kw; kw = kw->next){
+	    i = 0;
+	    if(lv < (i = strlen(kw->nick ? kw->nick : kw->kw ? kw->kw : "")))
+	      lv = i;
+
+	    j = 0;
+	    if(kw->nick && kw->kw && kw->kw[0]){
+		if(lc < (j = strlen(kw->kw) + 2))
+		  lc = j;
+	    }
+
+	    if(ltot < (i + (j > 2 ? j : 0)))
+	      ltot = (i + (j > 2 ? j : 0));
+	}
+
+	lv = min(lv, 100);
+	lc = min(lc, 100);
+	ltot = min(ltot, 100);
+
+	/*
+	 * SC is length of " Color"
+	 * SS is space between nickname and keyword value
+	 * SW is space between words and Sample
+	 */
+#define SC 6
+#define SS 1
+#define SW 3
+	if(COLOR_INDENT + SC + ltot + (lc>0?SS:0) > eq_col - SW){
+	  eq_col = min(max(ps->ttyo->screen_cols - 10, 20),
+		       COLOR_INDENT + SC + ltot + (lc>0?SS:0) + SW);
+	  if(COLOR_INDENT + SC + ltot + (lc>0?SS:0) > eq_col - SW){
+	    eq_col = min(max(ps->ttyo->screen_cols - 10, 20),
+		         COLOR_INDENT + SC + lv + (lc>0?SS:0) + lc + SW);
+	    if(COLOR_INDENT + SC + lv + (lc>0?SS:0) + lc > eq_col - SW){
+	      lc = min(lc, max(eq_col - SW - COLOR_INDENT - SC - lv - SS, 7));
+	      if(COLOR_INDENT + SC + lv + (lc>0?SS:0) + lc > eq_col - SW){
+	        lc = 0;
+	        if(COLOR_INDENT + SC + lv > eq_col - SW){
+		  lv = max(eq_col - SW - COLOR_INDENT - SC, 7);
+		}
+	      }
+	    }
+	  }
+	}
+
+	lval = LVAL(vtmp, ew);
+	if(lval && lval[0] && !strcmp(lval[0], INHERIT)){
+	    new_confline(ctmp);
+	    (*ctmp)->flags		|= CF_NOSELECT | CF_B_LINE;
+
+	    new_confline(ctmp)->var	 = vtmp;
+	    (*ctmp)->varnamep		 = *ctmp;
+	    (*ctmp)->keymenu		 = &kw_color_setting_keymenu;
+	    (*ctmp)->help		 = config_help(vtmp - ps->vars, 0);
+	    (*ctmp)->tool		 = color_setting_tool;
+	    (*ctmp)->varmem		 = CFC_SET_COLOR(i, 0);
+	    (*ctmp)->valoffset		 = COLOR_INDENT;
+
+	    (*ctmp)->flags = (CF_NOSELECT | CF_INHERIT);
+	}
+
+	/* now create the config lines */
+	for(kw = ps->keywords, i = 0; kw; kw = kw->next, i++){
+	    char tmp[300];
+
+	    /* Blank line */
+	    new_confline(ctmp);
+	    (*ctmp)->flags		|= CF_NOSELECT | CF_B_LINE;
+
+	    new_confline(ctmp)->var	 = vtmp;
+	    (*ctmp)->varnamep		 = *ctmp;
+	    (*ctmp)->keymenu		 = &kw_color_setting_keymenu;
+	    (*ctmp)->help		 = config_help(vtmp - ps->vars, 0);
+	    (*ctmp)->tool		 = color_setting_tool;
+	    (*ctmp)->flags |= (CF_STARTITEM | CF_COLORSAMPLE | CF_POT_SLCTBL);
+	    if(!pico_usingcolor())
+	      (*ctmp)->flags |= CF_NOSELECT;
+
+	    /*
+	     * Not actually a color in this case, it is an index into
+	     * the keywords list.
+	     */
+	    (*ctmp)->varmem		 = CFC_SET_COLOR(i, 0);
+
+	    name = short_str(kw->nick ? kw->nick : kw->kw ? kw->kw : "",
+			     tmp_20k_buf+10000, lv, EndDots);
+	    if(lc > 0 && kw->nick && kw->kw && kw->kw[0])
+	      comment = short_str(kw->kw, tmp_20k_buf+11000, lc, EndDots);
+	    else
+	      comment = NULL;
+
+	    sprintf(tmp, "%.*s%*s%.1s%.*s%.1s Color%*s %.30s%.30s",
+		    lv, name,
+		    (lc > 0 && comment) ? SS : 0,
+		    "",
+		    (lc > 0 && comment) ? "(" : "",
+		    (lc > 0 && comment) ? lc : 0,
+		    (lc > 0 && comment) ? comment : "",
+		    (lc > 0 && comment) ? ")" : "",
+		    max(min(eq_col - COLOR_INDENT - min(lv,strlen(name))
+			- SC - 1
+			- ((lc > 0 && comment)
+			    ? (SS+2+min(lc,strlen(comment))) : 0), 100), 0),
+		    "",
+		    sample_text(ps,vtmp),
+		    color_parenthetical(vtmp));
+
+	    (*ctmp)->value		 = cpystr(tmp);
+	    (*ctmp)->valoffset		 = COLOR_INDENT;
+	}
+    }
+    else{
+	new_confline(ctmp);		/* Blank line */
+	(*ctmp)->flags |= CF_NOSELECT | CF_B_LINE;
+	new_confline(ctmp);
+	(*ctmp)->help			 = NO_HELP;
+	(*ctmp)->flags			|= CF_NOSELECT;
+	(*ctmp)->value = cpystr("[ Use Setup/Config command to add Keywords ]");
 	(*ctmp)->valoffset		 = COLOR_INDENT;
     }
 }
@@ -20696,7 +21913,8 @@ color_parenthetical(var)
     int    norm, exc, exc_inh;
     char **lval, *ret = "";
 
-    if(var == &ps_global->vars[V_VIEW_HDR_COLORS]){
+    if(var == &ps_global->vars[V_VIEW_HDR_COLORS]
+       || var == &ps_global->vars[V_KW_COLORS]){
 	norm    = (LVAL(var, Main) != NULL);
 	exc     = (LVAL(var, ps_global->ew_for_except_vars) != NULL);
 	exc_inh = ((lval=LVAL(var, ps_global->ew_for_except_vars)) &&
@@ -20729,7 +21947,7 @@ add_header_color_line(ps, ctmp, val, which)
     int          which;
 {
     struct variable *vtmp;
-    HDR_COLOR_S     *hc;
+    SPEC_COLOR_S     *hc;
     char	     tmp[100+1];
     int              l;
 
@@ -20749,22 +21967,23 @@ add_header_color_line(ps, ctmp, val, which)
     if(!pico_usingcolor())
       (*ctmp)->flags |= CF_NOSELECT;
 
+    /* which is an index into the variable list */
     (*ctmp)->varmem		 = CFC_SET_COLOR(which, 0);
 
-    hc = hdr_color_from_var(val);
+    hc = spec_color_from_var(val, 0);
     if(hc && hc->inherit)
       (*ctmp)->flags = (CF_NOSELECT | CF_INHERIT);
     else{
 	sprintf(tmp, "%s%c%.*s Color%*s %.30s%.30s",
 		HEADER_WORD,
-		(hc && hc->hdr) ? (islower((unsigned char)hc->hdr[0])
-					    ? toupper((unsigned char)hc->hdr[0])
-					    : hc->hdr[0]) : '?',
-		min(strlen((hc && hc->hdr && hc->hdr[0]) ? hc->hdr+1 : ""),30-l),
-		(hc && hc->hdr && hc->hdr[0]) ? hc->hdr+1 : "",
+		(hc && hc->spec) ? (islower((unsigned char)hc->spec[0])
+					    ? toupper((unsigned char)hc->spec[0])
+					    : hc->spec[0]) : '?',
+		min(strlen((hc && hc->spec && hc->spec[0]) ? hc->spec+1 : ""),30-l),
+		(hc && hc->spec && hc->spec[0]) ? hc->spec+1 : "",
 		max(EQ_COL - COLOR_INDENT -1 -
-		   min(strlen((hc && hc->hdr && hc->hdr[0]) ? hc->hdr+1 : ""),30-l)
-			    - l - 6, 0), "",
+		   min(strlen((hc && hc->spec && hc->spec[0]) ? hc->spec+1 : ""),30-l)
+			    - l - 6 - 1, 0), "",
 		sample_text(ps,vtmp),
 		color_parenthetical(vtmp));
 	(*ctmp)->value		 = cpystr(tmp);
@@ -20773,7 +21992,7 @@ add_header_color_line(ps, ctmp, val, which)
     (*ctmp)->valoffset		 = COLOR_INDENT;
 
     if(hc)
-      free_hdr_colors(&hc);
+      free_spec_colors(&hc);
 }
 
 
@@ -20851,7 +22070,7 @@ add_color_setting_disp(ps, ctmp, var, varnamep, km, cb_km, help, indent, which,
 						  fg &&
 			   !strucmp(color_to_canonical_name(fg), colorx(i)),
 						  bg &&
-			   !strucmp(color_to_canonical_name(bg), colorx(i)) ,
+			   !strucmp(color_to_canonical_name(bg), colorx(i)),
 						  lv);
     }
 
@@ -20859,8 +22078,9 @@ add_color_setting_disp(ps, ctmp, var, varnamep, km, cb_km, help, indent, which,
     new_confline(ctmp)->var  = var;
     (*ctmp)->varnamep	     = varnamep;
     (*ctmp)->keymenu	     = (km == &custom_color_changing_keymenu)
-				 ? &custom_rgb_keymenu
-				 : &color_rgb_keymenu;
+				 ? &custom_rgb_keymenu :
+				 (km == &kw_color_changing_keymenu)
+				   ? &kw_rgb_keymenu : &color_rgb_keymenu;
     (*ctmp)->help	     = help;
     (*ctmp)->help_title	     = title;
     (*ctmp)->tool	     = color_setting_tool;
@@ -20903,6 +22123,9 @@ add_color_setting_disp(ps, ctmp, var, varnamep, km, cb_km, help, indent, which,
     else if(var_defaults_to_rev(var))
       sprintf(tmp, "[%c]  %s", def ? 'X' : ' ',
 	  "Default (same as Reverse Color)");
+    else if(km == &kw_color_changing_keymenu)
+      sprintf(tmp, "[%c]  %s", def ? 'X' : ' ',
+	  "Default (same as Indexline Color)");
     else
       sprintf(tmp, "[%c]  %s", def ? 'X' : ' ',
 	  "Default (same as Normal Color)");
@@ -20981,8 +22204,8 @@ color_text_tool(ps, cmd, cl, flags)
     unsigned      flags;
 {
     int             rv = 0, i;
-    struct variable v;
-    HDR_COLOR_S    *hc, *hcolors;
+    struct variable v, *save_var;
+    SPEC_COLOR_S    *hc, *hcolors;
     char           *starting_val, *val, tmp[100], ***alval, **apval;
 
     if(cmd == MC_EXIT)
@@ -20992,7 +22215,7 @@ color_text_tool(ps, cmd, cl, flags)
     if(!alval || !*alval)
       return(rv);
 
-    hcolors = hdr_colors_from_varlist(*alval);
+    hcolors = spec_colors_from_varlist(*alval, 0);
 
     for(hc = hcolors, i=0; hc; hc = hc->next, i++)
       if(CFC_ICUST(*cl) == i)
@@ -21004,16 +22227,17 @@ color_text_tool(ps, cmd, cl, flags)
     v.is_used    = 1;
     v.is_user    = 1;
     sprintf(tmp, "\"%c%.30s Pattern\"",
-	    islower((unsigned char)hc->hdr[0])
-					? toupper((unsigned char)hc->hdr[0])
-					: hc->hdr[0],
-	    hc->hdr[1] ? hc->hdr + 1 : "");
+	    islower((unsigned char)hc->spec[0])
+					? toupper((unsigned char)hc->spec[0])
+					: hc->spec[0],
+	    hc->spec[1] ? hc->spec + 1 : "");
     v.name       = tmp;
     /* have to use right part of v so text_tool will work right */
     apval = APVAL(&v, ew);
     *apval = starting_val ? cpystr(starting_val) : NULL;
     set_current_val(&v, FALSE, FALSE);
 
+    save_var = (*cl)->var;
     (*cl)->var = &v;
     rv = text_tool(ps, cmd, cl, flags);
 
@@ -21027,16 +22251,21 @@ color_text_tool(ps, cmd, cl, flags)
 	  fs_give((void **)&hc->val);
 	
 	hc->val = string_to_pattern(val);
+
+	(*cl)->var = save_var;
+
 	if((*alval)[CFC_ICUST(*cl)])
 	  fs_give((void **)&(*alval)[CFC_ICUST(*cl)]);
 
-	(*alval)[CFC_ICUST(*cl)] = var_from_hdr_color(hc);
+	(*alval)[CFC_ICUST(*cl)] = var_from_spec_color(hc);
 	set_current_color_vals(ps);
 	ps->mangled_screen = 1;
     }
+    else
+      (*cl)->var = save_var;
     
     if(hcolors)
-      free_hdr_colors(&hcolors);
+      free_spec_colors(&hcolors);
     if(*apval)
       fs_give((void **)apval);
     if(v.current_val.p)
@@ -21063,9 +22292,10 @@ color_holding_var(ps, var)
       return(0);
     else
       return(var && var->name &&
-	     (strstr(var->name, "-foreground-color") ||
-	      strstr(var->name, "-background-color") ||
-	      var == &ps->vars[V_VIEW_HDR_COLORS]));
+	     (srchstr(var->name, "-foreground-color") ||
+	      srchstr(var->name, "-background-color") ||
+	      var == &ps->vars[V_VIEW_HDR_COLORS] ||
+	      var == &ps->vars[V_KW_COLORS]));
 }
 
 
@@ -21097,13 +22327,14 @@ color_setting_tool(ps, cmd, cl, flags)
     unsigned      flags;
 {
     int	             rv = 0, i, cancel = 0, deefault;
-    int              curcolor, prevcolor, nextcolor;
+    int              curcolor, prevcolor, nextcolor, another;
     CONF_S          *ctmp, *first_line, *beg = NULL, *end = NULL,
 		    *cur_beg, *cur_end, *prev_beg, *prev_end,
 		    *next_beg, *next_end;
     struct variable *v, *fgv, *bgv, *setv = NULL, *otherv;
-    HDR_COLOR_S     *hc = NULL, *new_hcolor;
-    HDR_COLOR_S     *hcolors = NULL;
+    SPEC_COLOR_S    *hc = NULL, *new_hcolor;
+    SPEC_COLOR_S    *hcolors = NULL;
+    KEYWORD_S       *kw;
     char            *old_val, *confline = NULL;
     char             prompt[100], sval[MAXPATH+1];
     char           **lval, **apval, ***alval, **t;
@@ -21210,10 +22441,10 @@ color_setting_tool(ps, cmd, cl, flags)
 
       case MC_CHOICEB :				/* set a custom hdr color */
 	/*
-	 * Find the HDR_COLOR_S for header.
+	 * Find the SPEC_COLOR_S for header.
 	 */
 	lval = LVAL((*cl)->var, ew);
-	hcolors = hdr_colors_from_varlist(lval);
+	hcolors = spec_colors_from_varlist(lval, 0);
 	for(hc = hcolors, i=0; hc; hc = hc->next, i++)
 	  if(CFC_ICUST(*cl) == i)
 	    break;
@@ -21266,7 +22497,6 @@ color_setting_tool(ps, cmd, cl, flags)
 		    hc->bg = cpystr(ps->VAR_NORM_BACK_COLOR);
 		}
 	    }
-
 	}
 
 	/*
@@ -21284,12 +22514,133 @@ color_setting_tool(ps, cmd, cl, flags)
 
 	if(hc && lval && lval[i]){
 	    fs_give((void **)&lval[i]);
-	    lval[i] = var_from_hdr_color(hc);
+	    lval[i] = var_from_spec_color(hc);
 	}
 	
 	if(hcolors)
-	  free_hdr_colors(&hcolors);
+	  free_spec_colors(&hcolors);
 
+	set_current_color_vals(ps);
+	ClearScreen();
+	rv = ps->mangled_screen = 1;
+	break;
+
+
+      case MC_CHOICEC :			/* set a custom keyword color */
+	/* find keyword associated with color we are editing */
+	for(kw=ps->keywords, i=0; kw; kw=kw->next, i++)
+	  if(CFC_ICUST(*cl) == i)
+	    break;
+
+	if(!kw){					/* can't happen */
+	    dprint(1,(debugfile,
+		"This can't happen, kw not set when setting keyword color\n"));
+	    break;
+	}
+
+	hcolors = spec_colors_from_varlist(LVAL((*cl)->var, ew), 0);
+
+	/*
+	 * Look through hcolors, derived from lval, to find this keyword
+	 * and its current color.
+	 */
+	for(hc = hcolors; hc; hc = hc->next)
+	  if(hc->spec && ((kw->nick && !strucmp(kw->nick, hc->spec))
+			  || (kw->kw && !strucmp(kw->kw, hc->spec))))
+	    break;
+
+	if(!hc){	/* this keyword didn't have a color set, add to list */
+	    SPEC_COLOR_S *new;
+
+	    new = (SPEC_COLOR_S *) fs_get(sizeof(*hc));
+	    memset((void *) new, 0, sizeof(*new));
+	    new->spec = cpystr(kw->kw);
+	    new->fg = cpystr(ps->VAR_NORM_FORE_COLOR);
+	    new->bg = cpystr(ps->VAR_NORM_BACK_COLOR);
+
+	    if(hcolors){
+		for(hc = hcolors; hc->next; hc = hc->next)
+		  ;
+
+		hc->next = new;
+	    }
+	    else
+	      hcolors = new;
+
+	    hc = new;
+	}
+
+	if(hc){
+	    if((*cl)->flags & CF_VAR2){
+		old_val = hc->bg;
+		if(CFC_ICOLOR(*cl) < pico_count_in_color_table())
+		  hc->bg = cpystr(colorx(CFC_ICOLOR(*cl)));
+		else if(old_val)
+		  hc->bg = cpystr(is_rgb_color(old_val)
+				    ? old_val
+				    : color_to_asciirgb(old_val));
+		else
+		  hc->bg = cpystr(color_to_asciirgb(colorx(COL_WHITE)));
+
+		if(old_val)
+		  fs_give((void **) &old_val);
+
+		/*
+		 * If the user sets one of foreground/background and the
+		 * other is not yet set, set it.
+		 */
+		if(!(hc->fg && hc->fg[0])){
+		    if(hc->fg)
+		      fs_give((void **)&hc->fg);
+
+		    hc->fg = cpystr(ps->VAR_NORM_FORE_COLOR);
+		}
+	    }
+	    else{
+		old_val = hc->fg;
+
+		if(CFC_ICOLOR(*cl) < pico_count_in_color_table())
+		  hc->fg = cpystr(colorx(CFC_ICOLOR(*cl)));
+		else if(old_val)
+		  hc->fg = cpystr(is_rgb_color(old_val)
+				    ? old_val
+				    : color_to_asciirgb(old_val));
+		else
+		  hc->fg = cpystr(color_to_asciirgb(colorx(COL_BLACK)));
+
+		if(old_val)
+		  fs_give((void **) &old_val);
+
+		if(!(hc->bg && hc->bg[0])){
+		    if(hc->bg)
+		      fs_give((void **)&hc->bg);
+
+		    hc->bg = cpystr(ps->VAR_NORM_BACK_COLOR);
+		}
+	    }
+	}
+
+	/*
+	 * Turn on selected *'s for default selections, if any, and
+	 * for ones we forced on.
+	 */
+	color_update_selected(ps, *cl, 
+			      (hc && hc->fg && hc->fg[0]
+			       && hc->bg && hc->bg[0])
+				  ? hc->fg : ps->VAR_NORM_FORE_COLOR,
+			      (hc && hc->fg && hc->fg[0]
+			       && hc->bg && hc->bg[0])
+				  ? hc->bg : ps->VAR_NORM_BACK_COLOR,
+			      TRUE);
+
+	alval = ALVAL((*cl)->var, ew);
+	free_list_array(alval);
+	*alval = varlist_from_spec_colors(hcolors);
+
+	if(hcolors)
+	  free_spec_colors(&hcolors);
+
+	fix_side_effects(ps, (*cl)->var, 0);
 	set_current_color_vals(ps);
 	ClearScreen();
 	rv = ps->mangled_screen = 1;
@@ -21410,11 +22761,11 @@ color_setting_tool(ps, cmd, cl, flags)
 
       case MC_TOGGLEB :		/* toggle default on or off, hdr color */
 	/*
-	 * Find the HDR_COLOR_S for header.
+	 * Find the SPEC_COLOR_S for header.
 	 */
 	rv = 1;
 	lval = LVAL((*cl)->var, ew);
-	hcolors = hdr_colors_from_varlist(lval);
+	hcolors = spec_colors_from_varlist(lval, 0);
 	for(hc = hcolors, i=0; hc; hc = hc->next, i++)
 	  if(CFC_ICUST(*cl) == i)
 	    break;
@@ -21441,7 +22792,7 @@ color_setting_tool(ps, cmd, cl, flags)
 
 		if(lval && lval[i]){
 		    fs_give((void **)&lval[i]);
-		    lval[i] = var_from_hdr_color(hc);
+		    lval[i] = var_from_spec_color(hc);
 		}
 	    }
 	}
@@ -21456,7 +22807,7 @@ color_setting_tool(ps, cmd, cl, flags)
 
 		if(lval && lval[i]){
 		    fs_give((void **)&lval[i]);
-		    lval[i] = var_from_hdr_color(hc);
+		    lval[i] = var_from_spec_color(hc);
 		}
 	    }
 
@@ -21467,7 +22818,7 @@ color_setting_tool(ps, cmd, cl, flags)
 	}
 
 	if(hcolors)
-	  free_hdr_colors(&hcolors);
+	  free_spec_colors(&hcolors);
 
 	/*
 	 * Turn on selected *'s for default selections.
@@ -21479,7 +22830,78 @@ color_setting_tool(ps, cmd, cl, flags)
 
 	break;
 
-      case MC_TOGGLEC :		/* toggle selectable item bold on or off */
+      case MC_TOGGLEC :		/* toggle default on or off, keyword color */
+	for(kw=ps->keywords, i=0; kw; kw=kw->next, i++)
+	  if(CFC_ICUST(*cl) == i)
+	    break;
+
+	if(!kw){					/* can't happen */
+	    dprint(1,(debugfile,
+		"This can't happen, kw not set when togglec keyword color\n"));
+	    break;
+	}
+
+	hcolors = spec_colors_from_varlist(LVAL((*cl)->var, ew), 0);
+
+	/*
+	 * Look through hcolors, derived from lval, to find this keyword
+	 * and its current color.
+	 */
+	for(hc = hcolors; hc; hc = hc->next)
+	  if(hc->spec && ((kw->nick && !strucmp(kw->nick, hc->spec))
+			  || (kw->kw && !strucmp(kw->kw, hc->spec))))
+	    break;
+
+	/* Remove this color from list */
+	if(hc){
+	    SPEC_COLOR_S *tmp;
+
+	    if(hc == hcolors){
+		hcolors = hc->next;
+		hc->next = NULL;
+		free_spec_colors(&hc);
+	    }
+	    else{
+		for(tmp = hcolors; tmp->next; tmp = tmp->next)
+		  if(tmp->next == hc)
+		    break;
+
+		if(tmp->next){
+		    tmp->next = hc->next;
+		    hc->next = NULL;
+		    free_spec_colors(&hc);
+		}
+	    }
+	}
+
+	if((*cl)->value[1] == 'X')
+	  (*cl)->value[1] = ' ';
+	else
+	  (*cl)->value[1] = 'X';
+
+	/*
+	 * Turn on selected *'s for default selections, if any, and
+	 * for ones we forced on.
+	 */
+	color_update_selected(ps, prev_confline(*cl), 
+			      ps->VAR_NORM_FORE_COLOR,
+			      ps->VAR_NORM_BACK_COLOR,
+			      FALSE);
+
+	alval = ALVAL((*cl)->var, ew);
+	free_list_array(alval);
+	*alval = varlist_from_spec_colors(hcolors);
+
+	if(hcolors)
+	  free_spec_colors(&hcolors);
+
+	fix_side_effects(ps, (*cl)->var, 0);
+	set_current_color_vals(ps);
+	ClearScreen();
+	rv = ps->mangled_screen = 1;
+	break;
+
+      case MC_TOGGLED :		/* toggle selectable item bold on or off */
 	toggle_feature_bit(ps, feature_list_index(F_SLCTBL_ITEM_NOBOLD),
 			   &ps->vars[V_FEATURE_LIST], *cl, 1);
 	ps->mangled_body = 1;		/* to fix Sample Text */
@@ -21497,7 +22919,9 @@ color_setting_tool(ps, cmd, cl, flags)
 
 	/* get rid of all user set colors */
 	for(v = ps->vars; v->name; v++){
-	    if(!color_holding_var(ps, v))
+	    if(!color_holding_var(ps, v)
+	       || v == &ps->vars[V_VIEW_HDR_COLORS]
+	       || v == &ps->vars[V_KW_COLORS])
 	      continue;
 
 	    apval = APVAL(v, ew);
@@ -21510,11 +22934,11 @@ color_setting_tool(ps, cmd, cl, flags)
 
 	/*
 	 * For custom header colors, we want to remove the color values
-	 * but leave the hdr value so that it is easy to reset.
+	 * but leave the spec value so that it is easy to reset.
 	 */
 	alval = ALVAL(&ps->vars[V_VIEW_HDR_COLORS], ew);
 	if(alval && *alval){
-	    hcolors = hdr_colors_from_varlist(*alval);
+	    hcolors = spec_colors_from_varlist(*alval, 0);
 	    for(hc = hcolors; hc; hc = hc->next){
 		if(hc->fg)
 		  fs_give((void **)&hc->fg);
@@ -21523,10 +22947,30 @@ color_setting_tool(ps, cmd, cl, flags)
 	    }
 
 	    free_list_array(alval);
-	    *alval = varlist_from_hdr_colors(hcolors);
+	    *alval = varlist_from_spec_colors(hcolors);
 
 	    if(hcolors)
-	      free_hdr_colors(&hcolors);
+	      free_spec_colors(&hcolors);
+	}
+
+	/*
+	 * Same for keyword colors.
+	 */
+	alval = ALVAL(&ps->vars[V_KW_COLORS], ew);
+	if(alval && *alval){
+	    hcolors = spec_colors_from_varlist(*alval, 0);
+	    for(hc = hcolors; hc; hc = hc->next){
+		if(hc->fg)
+		  fs_give((void **)&hc->fg);
+		if(hc->bg)
+		  fs_give((void **)&hc->bg);
+	    }
+
+	    free_list_array(alval);
+	    *alval = varlist_from_spec_colors(hcolors);
+
+	    if(hcolors)
+	      free_spec_colors(&hcolors);
 	}
 
 	/* set bold for selectable items */
@@ -21584,10 +23028,10 @@ color_setting_tool(ps, cmd, cl, flags)
 	if(cancel || !sval[0])
 	  break;
 
-	new_hcolor = (HDR_COLOR_S *)fs_get(sizeof(*new_hcolor));
+	new_hcolor = (SPEC_COLOR_S *)fs_get(sizeof(*new_hcolor));
 	memset((void *)new_hcolor, 0, sizeof(*new_hcolor));
-	new_hcolor->hdr = cpystr(sval);
-	confline = var_from_hdr_color(new_hcolor);
+	new_hcolor->spec = cpystr(sval);
+	confline = var_from_spec_color(new_hcolor);
 
 	/* add it to end of list */
 	alval = ALVAL(&ps->vars[V_VIEW_HDR_COLORS], ew);
@@ -21606,28 +23050,57 @@ color_setting_tool(ps, cmd, cl, flags)
 
 	set_current_color_vals(ps);
 
-	/*
-	 * add it to end of display, but first remove the comment line
-	 * if it's there.
-	 */
+	/* go to end of display */
 	for(ctmp = *cl; ctmp && ctmp->next; ctmp = next_confline(ctmp))
 	  ;
-	
-	if(ctmp->flags & CF_NOSELECT && ctmp->prev->flags & CF_INHERIT){
-	    ctmp = ctmp->prev->prev;
-	    free_conflines(&ctmp->next);
-	}
-	
-	*cl = ctmp;
-	add_header_color_line(ps, &ctmp, confline, i);
 
-	*cl = next_confline(*cl);
-
-	/* put current on selectable line */
-	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = next_confline(*cl))
+	/* back up to the KEYWORD COLORS title line */
+	for(; ctmp && (!ctmp->value || strcmp(ctmp->value, KW_COLORS_HDR))
+	      && ctmp->prev;
+	    ctmp = prev_confline(ctmp))
 	  ;
 
-	opt_screen->top_line = *cl;
+	/*
+	 * Back up to last header line, or comment line if no header lines.
+	 * One of many in a long line of dangerous moves in the config
+	 * screens.
+	 */
+	ctmp = prev_confline(ctmp);		/* ------- line */
+	ctmp = prev_confline(ctmp);		/* blank line */
+	ctmp = prev_confline(ctmp);		/* the line */
+	
+	*cl = ctmp;
+	
+	/* delete the comment line if there were no headers before this */
+	if(i == 0){
+	    beg = ctmp->prev;
+	    end = ctmp;
+
+	    *cl = beg ? beg->prev : NULL;
+
+	    if(beg && beg->prev)		/* this will always be true */
+	      beg->prev->next = end ? end->next : NULL;
+	    
+	    if(end && end->next)
+	      end->next->prev = beg ? beg->prev : NULL;
+	    
+	    if(end)
+	      end->next = NULL;
+	    
+	    if(beg == opt_screen->top_line || end == opt_screen->top_line)
+	      opt_screen->top_line = NULL;
+
+	    free_conflines(&beg);
+	}
+
+	add_header_color_line(ps, cl, confline, i);
+
+	/* be sure current is on selectable line */
+	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = next_confline(*cl))
+	  ;
+	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = prev_confline(*cl))
+	  ;
+
 	rv = ps->mangled_body = 1;
 	break;
 
@@ -21665,54 +23138,73 @@ color_setting_tool(ps, cmd, cl, flags)
 	set_current_color_vals(ps);
 
 	/*
-	 * Remove the conf lines that go with this header. That's the
+	 * Note the conf lines that go with this header. That's the
 	 * blank line before and the current line.
 	 */
-
 	beg = (*cl)->prev;
 	end = *cl;
-	/* handle deleting of top_line on screen */
-	if(beg == opt_screen->top_line || end == opt_screen->top_line)
-	  opt_screen->top_line = NULL;
 
+	another = 0;
 	/* reset current line */
-	if((*cl)->next && (*cl)->next->next)
-	  *cl = (*cl)->next->next;
-	else{
-	    for(ctmp = (*cl)->prev;
-		ctmp && ctmp->flags & CF_NOSELECT && ctmp->prev;
-		ctmp = prev_confline(ctmp))
-	      if(ctmp == opt_screen->top_line)
-		opt_screen->top_line = NULL;
-
-	    *cl = ctmp;
+	if(end && end->next && end->next->next && 
+	   end->next->next->var == &ps->vars[V_VIEW_HDR_COLORS]){
+	    *cl = end->next->next;		/* next Header Color */
+	    another++;
+	}
+	else if(beg && beg->prev &&
+	   beg->prev->var == &ps->vars[V_VIEW_HDR_COLORS]){
+	    *cl = beg->prev;			/* prev Header Color */
+	    another++;
 	}
 
-	/* put current on selectable line */
+	/* adjust SPEC_COLOR_S index (varmem) values */
+	for(ctmp = end; ctmp; ctmp = next_confline(ctmp))
+	  if(ctmp->var == &ps->vars[V_VIEW_HDR_COLORS])
+	    ctmp->varmem = CFC_ICUST_DEC(ctmp);
+	
+	/*
+	 * If that was the last header color line, add in the comment
+	 * line placeholder. If there is another, just delete the
+	 * old conf lines.
+	 */
+	if(another){
+	    if(beg && beg->prev)		/* this will always be true */
+	      beg->prev->next = end ? end->next : NULL;
+	    
+	    if(end && end->next)
+	      end->next->prev = beg ? beg->prev : NULL;
+	    
+	    if(end)
+	      end->next = NULL;
+	    
+	    if(beg == opt_screen->top_line || end == opt_screen->top_line)
+	      opt_screen->top_line = NULL;
+
+	    free_conflines(&beg);
+	}
+	else if(end){
+	    if(end->varname)
+	      fs_give((void **) &end->varname);
+
+	    if(end->value)
+	      fs_give((void **) &end->value);
+
+	    end->flags     = CF_NOSELECT;
+	    end->help      = NO_HELP;
+	    end->value     = cpystr(ADDHEADER_COMMENT);
+	    end->valoffset = COLOR_INDENT;
+	    end->varnamep  = NULL;
+	    end->varmem    = 0;
+	    end->keymenu   = NULL;
+	    end->tool      = NULL;
+	}
+
+	/* at least put current on some selectable line */
 	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = next_confline(*cl))
 	  ;
 	for(; *cl && ((*cl)->flags & CF_NOSELECT); *cl = prev_confline(*cl))
 	  ;
 
-	/* top line is deleted, reset */
-	if(opt_screen->top_line == NULL)
-	  opt_screen->top_line = *cl;
-
-	/* adjust HDR_COLOR_S index (varmem) values */
-	for(ctmp = end; ctmp; ctmp = next_confline(ctmp))
-	  ctmp->varmem = CFC_ICUST_DEC(ctmp);
-	
-	/* delete conf lines */
-	if(beg && beg->prev)			/* this will always be true */
-	  beg->prev->next = end ? end->next : NULL;
-	
-	if(end && end->next)
-	  end->next->prev = beg ? beg->prev : NULL;
-	
-	if(end)
-	  end->next = NULL;
-	
-	free_conflines(&beg);
 	rv = ps->mangled_body = 1;
 	q_status_message(SM_ORDER, 0, 3, "header color deleted");
 	break;
@@ -21819,7 +23311,7 @@ color_setting_tool(ps, cmd, cl, flags)
 	    next_beg->prev = cur_beg->prev;
 	    cur_beg->prev = next_end;
 
-	    /* adjust HDR_COLOR_S index values */
+	    /* adjust SPEC_COLOR_S index values */
 	    cur_beg->varmem	  = CFC_ICUST_INC(cur_beg);
 	    cur_beg->next->varmem = CFC_ICUST_INC(cur_beg->next);
 
@@ -21844,7 +23336,7 @@ color_setting_tool(ps, cmd, cl, flags)
 	    prev_end->next = cur_end->next;
 	    cur_end->next = prev_beg;
 
-	    /* adjust HDR_COLOR_S index values */
+	    /* adjust SPEC_COLOR_S index values */
 	    cur_beg->varmem	  = CFC_ICUST_DEC(cur_beg);
 	    cur_beg->next->varmem = CFC_ICUST_DEC(cur_beg->next);
 
@@ -21864,7 +23356,7 @@ color_setting_tool(ps, cmd, cl, flags)
       case MC_EDIT:
 	rv = color_edit_screen(ps, cl);
 	if((*cl)->value && (*cl)->var &&
-	   strstr((*cl)->var->name, "-foreground-color")){
+	   srchstr((*cl)->var->name, "-foreground-color")){
 	    fs_give((void **)&(*cl)->value);
 	    (*cl)->value = pretty_value(ps, *cl);
 	}
@@ -21873,12 +23365,15 @@ color_setting_tool(ps, cmd, cl, flags)
 
       case MC_EXIT:				/* exit */
 	if((*cl)->keymenu == &color_changing_keymenu ||
+	   (*cl)->keymenu == &kw_color_changing_keymenu ||
 	   (*cl)->keymenu == &custom_color_changing_keymenu ||
 	   ((*cl)->prev &&
 	    ((*cl)->prev->keymenu == &color_changing_keymenu ||
+	     (*cl)->prev->keymenu == &kw_color_changing_keymenu ||
 	     (*cl)->prev->keymenu == &custom_color_changing_keymenu)) ||
 	   ((*cl)->prev->prev &&
 	    ((*cl)->prev->prev->keymenu == &color_changing_keymenu ||
+	     (*cl)->prev->prev->keymenu == &kw_color_changing_keymenu ||
 	     (*cl)->prev->prev->keymenu == &custom_color_changing_keymenu)))
 	  rv = simple_exit_cmd(flags);
 	else
@@ -21888,6 +23383,8 @@ color_setting_tool(ps, cmd, cl, flags)
 
 #ifdef	_WINDOWS
       case MC_RGB1 :
+	fgv = (*cl)->var;
+	bgv = (*cl)->var+1;
 	v = (*cl)->var;
 	if((*cl)->flags & CF_VAR2)
 	  v += 1;
@@ -21902,6 +23399,7 @@ color_setting_tool(ps, cmd, cl, flags)
 	    set_current_val(v, TRUE, FALSE);
 	    fix_side_effects(ps, v, 0);
 	    set_current_color_vals(ps);
+	    color_update_selected(ps, *cl, PVAL(fgv, ew), PVAL(bgv, ew), TRUE);
 	    rv = ps->mangled_screen = 1;
 	}
 
@@ -21909,10 +23407,10 @@ color_setting_tool(ps, cmd, cl, flags)
 
       case MC_RGB2 :
 	/*
-	 * Find the HDR_COLOR_S for header.
+	 * Find the SPEC_COLOR_S for header.
 	 */
 	alval = ALVAL((*cl)->var, ew);
-	hcolors = hdr_colors_from_varlist(*alval);
+	hcolors = spec_colors_from_varlist(*alval, 0);
 
 	for(hc = hcolors, i = 0; hc; hc = hc->next, i++)
 	  if(CFC_ICUST(*cl) == i){
@@ -21932,11 +23430,11 @@ color_setting_tool(ps, cmd, cl, flags)
 
 		  if(hc && *alval && (*alval)[i]){
 		      fs_give((void **)&(*alval)[i]);
-		      (*alval)[i] = var_from_hdr_color(hc);
+		      (*alval)[i] = var_from_spec_color(hc);
 		  }
 	
 		  if(hcolors)
-		    free_hdr_colors(&hcolors);
+		    free_spec_colors(&hcolors);
 
 		  set_current_color_vals(ps);
 		  ClearScreen();
@@ -21946,6 +23444,88 @@ color_setting_tool(ps, cmd, cl, flags)
 	      break;
 	  }
 
+	break;
+
+      case MC_RGB3 :
+	/*
+	 * Custom colored keywords.
+	 */
+	for(kw=ps->keywords, i=0; kw; kw=kw->next, i++)
+	  if(CFC_ICUST(*cl) == i)
+	    break;
+
+	if(!kw){					/* can't happen */
+	    dprint(1,(debugfile,
+		"This can't happen, kw not set in MC_RGB3\n"));
+	    break;
+	}
+
+	hcolors = spec_colors_from_varlist(LVAL((*cl)->var, ew), 0);
+
+	/*
+	 * Look through hcolors, derived from lval, to find this keyword
+	 * and its current color.
+	 */
+	for(hc = hcolors; hc; hc = hc->next)
+	  if(hc->spec && ((kw->nick && !strucmp(kw->nick, hc->spec))
+			  || (kw->kw && !strucmp(kw->kw, hc->spec))))
+	    break;
+
+	if(!hc){	/* this keyword didn't have a color set, add to list */
+	    SPEC_COLOR_S *new;
+
+	    new = (SPEC_COLOR_S *) fs_get(sizeof(*hc));
+	    memset((void *) new, 0, sizeof(*new));
+	    new->spec = cpystr(kw->kw);
+	    new->fg = cpystr(ps->VAR_NORM_FORE_COLOR);
+	    new->bg = cpystr(ps->VAR_NORM_BACK_COLOR);
+
+	    if(hcolors){
+		for(hc = hcolors; hc->next; hc = hc->next)
+		  ;
+
+		hc->next = new;
+	    }
+	    else
+	      hcolors = new;
+
+	    hc = new;
+	}
+
+	if(hc){
+	    char **pc = ((*cl)->flags & CF_VAR2) ? &hc->bg : &hc->fg;
+
+	    if(old_val = mswin_rgbchoice(*pc)){
+		fs_give((void **) pc);
+		*pc = old_val;
+
+		/*
+		 * Turn on selected *'s for default selections, if any, and
+		 * for ones we forced on.
+		 */
+		color_update_selected(ps, *cl, 
+				      (hc && hc->fg && hc->fg[0]
+				       && hc->bg && hc->bg[0])
+					  ? hc->fg : ps->VAR_NORM_FORE_COLOR,
+				      (hc && hc->fg && hc->fg[0]
+				       && hc->bg && hc->bg[0])
+					  ? hc->bg : ps->VAR_NORM_BACK_COLOR,
+				      TRUE);
+
+		alval = ALVAL((*cl)->var, ew);
+		free_list_array(alval);
+		*alval = varlist_from_spec_colors(hcolors);
+		fix_side_effects(ps, (*cl)->var, 0);
+		set_current_color_vals(ps);
+		ClearScreen();
+		rv = 1;
+	    }
+	}
+
+	if(hcolors)
+	  free_spec_colors(&hcolors);
+
+	ps->mangled_screen = 1;
 	break;
 #endif
 
@@ -22024,15 +23604,19 @@ color_edit_screen(ps, cl)
     OPT_SCREEN_S     screen, *saved_screen;
     CONF_S          *ctmp = NULL, *first_line = NULL, *ctmpb;
     int              rv, is_index = 0, is_custom = 0, indent = 12;
-    int              is_normal = 0;
-    char             tmp[100+1], name[100], *p;
+    int              is_normal = 0, is_keywordcol = 0;
+    char             tmp[200+1], name[200], *p;
     struct variable *vtmp, v;
     int              i, def;
-    HDR_COLOR_S     *hc = NULL, *hcolors = NULL;
+    COLOR_PAIR      *color = NULL;
+    SPEC_COLOR_S    *hc = NULL, *hcolors = NULL;
+    KEYWORD_S       *kw;
 
     vtmp = (*cl)->var;
     if(vtmp == &ps->vars[V_VIEW_HDR_COLORS])
       is_custom++;
+    else if(vtmp == &ps->vars[V_KW_COLORS])
+      is_keywordcol++;
     else if(color_holding_var(ps, vtmp)){
 	if(!struncmp(vtmp->name, "index-", 6))
 	  is_index++;
@@ -22049,13 +23633,13 @@ color_edit_screen(ps, cl)
     new_confline(&ctmp)->var = vtmp;
 
     if(is_normal){
-	p = strstr(vtmp->name, "-foreground-color");
+	p = srchstr(vtmp->name, "-foreground-color");
 	sprintf(name, "%.*s", p ? min(p - vtmp->name, 30) : 30, vtmp->name);
 	if(islower((unsigned char)name[0]))
 	  name[0] = toupper((unsigned char)name[0]);
     }
     else if(is_index){
-	p = strstr(vtmp->name, "-foreground-color");
+	p = srchstr(vtmp->name, "-foreground-color");
 	sprintf(name, "%.*s Symbol",
 		p ? min(p - vtmp->name, 30) : 30, vtmp->name);
 	if(islower((unsigned char)name[0]))
@@ -22065,17 +23649,49 @@ color_edit_screen(ps, cl)
 	char **lval;
 	
 	lval = LVAL(vtmp, ew);
-	hcolors = hdr_colors_from_varlist(lval);
+	hcolors = spec_colors_from_varlist(lval, 0);
 
 	for(hc = hcolors, i = 0; hc; hc = hc->next, i++)
 	  if(CFC_ICUST(*cl) == i)
 	    break;
 	
 	if(hc){
-	    sprintf(name, "%s%.50s", HEADER_WORD, hc->hdr);
+	    sprintf(name, "%s%.50s", HEADER_WORD, hc->spec);
 	    i = sizeof(HEADER_WORD) - 1;
 	    if(islower((unsigned char) name[i]))
 	      name[i] = toupper((unsigned char) name[i]);
+	}
+    }
+    else if(is_keywordcol){
+	char **lval;
+
+	for(kw=ps->keywords, i=0; kw; kw=kw->next, i++)
+	  if(CFC_ICUST(*cl) == i)
+	    break;
+
+	if(kw){
+	    char *nm, *comment = NULL;
+
+	    nm = kw->nick ? kw->nick : kw->kw ? kw->kw : "";
+	    if(kw->nick && kw->kw && kw->kw[0])
+	      comment = kw->kw;
+
+	    if(strlen(nm) + (comment ? strlen(comment) : 0) < 60)
+	      sprintf(name, "%.50s%.2s%.50s%.1s",
+		      nm,
+		      comment ? " (" : "",
+		      comment ? comment : "",
+		      comment ? ")" : "");
+	    else
+	      sprintf(name, "%.60s", nm);
+
+	    lval = LVAL(vtmp, ew);
+	    hcolors = spec_colors_from_varlist(lval, 0);
+	    if(kw && hcolors)
+	      if(!(kw->nick && kw->nick[0]
+		   && (color=hdr_color(kw->nick, NULL, hcolors))))
+		if(kw->kw && kw->kw[0])
+		  color = hdr_color(kw->kw, NULL, hcolors);
 	}
     }
     else{
@@ -22136,7 +23752,26 @@ color_edit_screen(ps, cl)
 	  fs_give((void **)&v.current_val.p);
 
 	if(hcolors)
-	  free_hdr_colors(&hcolors);
+	  free_spec_colors(&hcolors);
+    }
+    else if(is_keywordcol){
+
+	def = !(color && color->fg && color->fg[0]
+		&& color->bg && color->bg[0]);
+	
+	add_color_setting_disp(ps, &ctmp, vtmp, ctmpb,
+			       &kw_color_changing_keymenu,
+			       &kw_color_checkbox_keymenu,
+			       config_help(vtmp - ps->vars, 0),
+			       indent, CFC_ICUST(*cl),
+			       def ? ps_global->VAR_NORM_FORE_COLOR
+				   : color->fg,
+			       def ? ps_global->VAR_NORM_BACK_COLOR
+				   : color->bg,
+			       def);
+
+	if(hcolors)
+	  free_spec_colors(&hcolors);
     }
     else{
 	char       *pvalfg, *pvalbg;
@@ -22226,7 +23861,8 @@ set_current_color_vals(ps)
     set_color_val(&vars[V_SIGNATURE_FORE_COLOR], 0);
 
     set_current_val(&ps->vars[V_VIEW_HDR_COLORS], TRUE, TRUE);
-    set_custom_hdr_colors(ps);
+    set_current_val(&ps->vars[V_KW_COLORS], TRUE, TRUE);
+    set_custom_spec_colors(ps);
 
     /*
      * Set up the quoting colors. If a later color is set but not an earlier
@@ -22300,10 +23936,10 @@ set_current_color_vals(ps)
 	
 	if(conv_main || conv_post){
 	    if(conv_main)
-	      write_pinerc(ps, Main);
+	      write_pinerc(ps, Main, WRP_NONE);
 
 	    if(conv_post)
-	      write_pinerc(ps, Post);
+	      write_pinerc(ps, Post, WRP_NONE);
 
 	    set_current_color_vals(ps);
 	}
@@ -22376,61 +24012,76 @@ var_defaults_to_rev(v)
  * it easier to deal with later.
  */
 void
-set_custom_hdr_colors(ps)
+set_custom_spec_colors(ps)
     struct pine *ps;
 {
     if(ps->hdr_colors)
-      free_hdr_colors(&ps->hdr_colors);
+      free_spec_colors(&ps->hdr_colors);
 
-    ps->hdr_colors = hdr_colors_from_varlist(ps->VAR_VIEW_HDR_COLORS);
+    ps->hdr_colors = spec_colors_from_varlist(ps->VAR_VIEW_HDR_COLORS, 1);
+
+    /* fit keyword colors into the same structures for code re-use */
+    if(ps->kw_colors)
+      free_spec_colors(&ps->kw_colors);
+
+    ps->kw_colors = spec_colors_from_varlist(ps->VAR_KW_COLORS, 1);
 }
 
 
 /*
  * Input is one item from config variable.
  *
- * Return value must be freed by caller. The return is a single HDR_COLOR_S,
+ * Return value must be freed by caller. The return is a single SPEC_COLOR_S,
  * not a list.
  */
-HDR_COLOR_S *
-hdr_color_from_var(t)
+SPEC_COLOR_S *
+spec_color_from_var(t, already_expanded)
     char *t;
+    int   already_expanded;
 {
-    char        *p, *hdr, *fg, *bg;
+    char        *p, *spec, *fg, *bg;
     PATTERN_S   *val;
-    HDR_COLOR_S *new_hcolor = NULL;
+    SPEC_COLOR_S *new_hcolor = NULL;
 
     if(t && t[0] && !strcmp(t, INHERIT)){
-	new_hcolor = (HDR_COLOR_S *)fs_get(sizeof(*new_hcolor));
+	new_hcolor = (SPEC_COLOR_S *)fs_get(sizeof(*new_hcolor));
 	memset((void *)new_hcolor, 0, sizeof(*new_hcolor));
 	new_hcolor->inherit = 1;
     }
     else if(t && t[0]){
-	hdr = fg = bg = NULL;
+	char tbuf[10000];
+
+	if(!already_expanded){
+	    tbuf[0] = '\0';
+	    if(expand_variables(tbuf, sizeof(tbuf), t, 0))
+	      t = tbuf;
+	}
+
+	spec = fg = bg = NULL;
 	val = NULL;
 	if((p = srchstr(t, "/HDR=")) != NULL)
-	  hdr = remove_backslash_escapes(p+5);
+	  spec = remove_backslash_escapes(p+5);
 	if((p = srchstr(t, "/FG=")) != NULL)
 	  fg = remove_backslash_escapes(p+4);
 	if((p = srchstr(t, "/BG=")) != NULL)
 	  bg = remove_backslash_escapes(p+4);
 	val = parse_pattern("VAL", t, 0);
 	
-	if(hdr && *hdr){
+	if(spec && *spec){
 	    /* remove colons */
-	    if((p = strindex(hdr, ':')) != NULL)
+	    if((p = strindex(spec, ':')) != NULL)
 	      *p = '\0';
 
-	    new_hcolor = (HDR_COLOR_S *)fs_get(sizeof(*new_hcolor));
+	    new_hcolor = (SPEC_COLOR_S *)fs_get(sizeof(*new_hcolor));
 	    memset((void *)new_hcolor, 0, sizeof(*new_hcolor));
-	    new_hcolor->hdr = hdr;
-	    new_hcolor->fg  = fg;
-	    new_hcolor->bg  = bg;
-	    new_hcolor->val = val;
+	    new_hcolor->spec = spec;
+	    new_hcolor->fg   = fg;
+	    new_hcolor->bg   = bg;
+	    new_hcolor->val  = val;
 	}
 	else{
-	    if(hdr)
-	      fs_give((void **)&hdr);
+	    if(spec)
+	      fs_give((void **)&spec);
 	    if(fg)
 	      fs_give((void **)&fg);
 	    if(bg)
@@ -22447,21 +24098,22 @@ hdr_color_from_var(t)
 /*
  * Input is a list from config file.
  *
- * Return value may be a list of HDR_COLOR_S and must be freed by caller.
+ * Return value may be a list of SPEC_COLOR_S and must be freed by caller.
  */
-HDR_COLOR_S *
-hdr_colors_from_varlist(varlist)
+SPEC_COLOR_S *
+spec_colors_from_varlist(varlist, already_expanded)
     char **varlist;
+    int    already_expanded;
 {
     char        **s, *t;
-    HDR_COLOR_S *new_hc = NULL;
-    HDR_COLOR_S *new_hcolor, **nexthc;
+    SPEC_COLOR_S *new_hc = NULL;
+    SPEC_COLOR_S *new_hcolor, **nexthc;
 
     nexthc = &new_hc;
     if(varlist){
 	for(s = varlist; (t = *s) != NULL; s++){
 	    if(t[0]){
-		new_hcolor = hdr_color_from_var(t);
+		new_hcolor = spec_color_from_var(t, already_expanded);
 		if(new_hcolor){
 		    *nexthc = new_hcolor;
 		    nexthc = &new_hcolor->next;
@@ -22476,21 +24128,21 @@ hdr_colors_from_varlist(varlist)
 
 /*
  * Returns allocated charstar suitable for config var for a single
- * HDR_COLOR_S.
+ * SPEC_COLOR_S.
  */
 char *
-var_from_hdr_color(hc)
-    HDR_COLOR_S *hc;
+var_from_spec_color(hc)
+    SPEC_COLOR_S *hc;
 {
     char *ret_val = NULL;
-    char *p, *hdr = NULL, *fg = NULL, *bg = NULL, *val = NULL;
-    char  conf_line[300];
+    char *p, *spec = NULL, *fg = NULL, *bg = NULL, *val = NULL;
+    size_t len;
 
     if(hc && hc->inherit)
       ret_val = cpystr(INHERIT);
     else if(hc){
-	if(hc->hdr)
-	  hdr = add_viewerhdr_escapes(hc->hdr);
+	if(hc->spec)
+	  spec = add_viewerhdr_escapes(hc->spec);
 	if(hc->fg)
 	  fg = add_viewerhdr_escapes(hc->fg);
 	if(hc->bg)
@@ -22503,20 +24155,22 @@ var_from_hdr_color(hc)
 	    }
 	}
 
-	sprintf(conf_line, "/HDR=%.50s/FG=%.50s/BG=%.50s%s%.100s",
-		hdr ? hdr : "", fg ? fg : "", bg ? bg : "",
+	len = strlen("/HDR=/FG=/BG=") + strlen(spec ? spec : "") +
+	      strlen(fg ? fg : "") + strlen(bg ? bg : "") +
+	      strlen(val ? "/VAL=" : "") + strlen(val ? val : "");
+	ret_val = (char *) fs_get(len + 1);
+	sprintf(ret_val, "/HDR=%s/FG=%s/BG=%s%s%s",
+		spec ? spec : "", fg ? fg : "", bg ? bg : "",
 		val ? "/VAL=" : "", val ? val : "");
 
-	if(hdr)
-	  fs_give((void **)&hdr);
+	if(spec)
+	  fs_give((void **)&spec);
 	if(fg)
 	  fs_give((void **)&fg);
 	if(bg)
 	  fs_give((void **)&bg);
 	if(val)
 	  fs_give((void **)&val);
-
-	ret_val = cpystr(conf_line);
     }
 
     return(ret_val);
@@ -22525,13 +24179,13 @@ var_from_hdr_color(hc)
 
 /*
  * Returns allocated charstar suitable for config var for a single
- * HDR_COLOR_S.
+ * SPEC_COLOR_S.
  */
 char **
-varlist_from_hdr_colors(hcolors)
-    HDR_COLOR_S *hcolors;
+varlist_from_spec_colors(hcolors)
+    SPEC_COLOR_S *hcolors;
 {
-    HDR_COLOR_S *hc;
+    SPEC_COLOR_S *hc;
     char       **ret_val = NULL;
     int          i;
 
@@ -22542,25 +24196,9 @@ varlist_from_hdr_colors(hcolors)
     ret_val = (char **)fs_get((i+1) * sizeof(*ret_val));
     memset((void *)ret_val, 0, (i+1) * sizeof(*ret_val));
     for(hc = hcolors, i = 0; hc; hc = hc->next, i++)
-      ret_val[i] = var_from_hdr_color(hc);
+      ret_val[i] = var_from_spec_color(hc);
     
     return(ret_val);
-}
-
-
-/*
- * Each item in the list looks like:
- *
- *  /HDR=<header>/FG=<foreground color>/BG=<background color>
- *
- * We separate the three pieces into an array of structures to make
- * it easier to deal with later.
- */
-void
-write_custom_hdr_colors(ps)
-    struct pine *ps;
-{
-    set_current_val(&ps->vars[V_VIEW_HDR_COLORS], TRUE, TRUE);
 }
 
 
@@ -22642,7 +24280,7 @@ convert_pc_gray_names(ps, prc, which)
     char           **s, *t, *p, *pstr, *new, *pval, **apval, **lval;
 
     for(v = ps->vars; v->name; v++){
-	if(!color_holding_var(ps, v))
+	if(!color_holding_var(ps, v) || v == &ps->vars[V_KW_COLORS])
 	  continue;
 	
 	if(v == &ps->vars[V_VIEW_HDR_COLORS]){

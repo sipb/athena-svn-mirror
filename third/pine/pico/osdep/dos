@@ -1,6 +1,6 @@
 #line 2 "osdep/dos"
 /*
- * $Id: dos,v 1.1.1.2 2003-02-12 08:02:02 ghudson Exp $
+ * $Id: dos,v 1.1.1.3 2005-01-26 17:53:00 ghudson Exp $
  *
  * Program:	Operating system dependent routines - MS DOS
  *
@@ -60,6 +60,7 @@ int   sleep PROTO((int));
  * Useful global def's
  */
 int timeo = 0;
+time_t time_of_last_input;
 int (*pcollator)();
 static int    enhncd = 0;		/* keyboard of enhanced variety? */
 union  REGS   rg;

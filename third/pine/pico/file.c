@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: file.c,v 1.1.1.3 2003-05-01 01:12:35 ghudson Exp $";
+static char rcsid[] = "$Id: file.c,v 1.1.1.4 2005-01-26 17:54:53 ghudson Exp $";
 #endif
 /*
  * Program:	High level file input and output routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: file.c,v 1.1.1.3 2003-05-01 01:12:35 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -44,7 +44,7 @@ static char rcsid[] = "$Id: file.c,v 1.1.1.3 2003-05-01 01:12:35 ghudson Exp $";
     int ifile();
     int insmsgchar();
 #endif
-
+char *file_split(char *, int *, char *, int);
 
 /*
  * Read a file into the current
@@ -212,38 +212,7 @@ int f, n;
 		    int   dirlen, l = NLINE;
 
 		    dir[0] = '\0';
-		    if(*fname && (p = strrchr(fname, C_FILESEP))){
-			fn = p + 1;
-			l -= fn - fname;
-			dirlen = p - fname;
-			if(p == fname)
-			  strcpy(dir, S_FILESEP);
-#ifdef	DOS
-			else if(fname[0] == C_FILESEP
-				 || (isalpha((unsigned char)fname[0])
-				     && fname[1] == ':')){
-			  if(fname[1] == ':' && p == fname+2)
-			  dirlen = fn - fname;
-#else
-			else if (fname[0] == C_FILESEP || fname[0] == '~') {
-#endif
-			    strncpy(dir, fname, dirlen);
-			    dir[dirlen] = '\0';
-			}
-			else
-			  sprintf(dir, "%s%c%.*s", 
-				  (gmode & MDCURDIR) ? "."
-					  : ((gmode & MDTREE) || opertree[0])
-					       ? opertree : gethomedir(NULL),
-				  C_FILESEP, p - fname, fname);
-		    }
-		    else{
-			fn = fname;
-			strcpy(dir, (gmode & MDCURDIR)
-				       ? "."
-				       : ((gmode & MDTREE) || opertree[0])
-					    ? opertree : gethomedir(NULL));
-		    }
+		    fn = file_split(dir, &l, fname, 0);
 
 		    if(!pico_fncomplete(dir, fn, l - 1))
 		      (*term.t_beep)();
@@ -258,17 +227,33 @@ int f, n;
 		    emlwrite("Can't select messages yet!", NULL);
 		}
 		else{
-		    if(*fname && isdir(fname, NULL, NULL))
-		      strcpy(dir, fname);
-		    else
+		    char *fn;
+		    int len = NLINE;
+
+		    fn = file_split(dir, &len, fname, 1);
+		    if(!isdir(dir, NULL, NULL))
 		      strcpy(dir, (gmode&MDCURDIR)
-				     ? "."
-				     : ((gmode & MDTREE) || opertree[0])
-					  ? opertree : gethomedir(NULL));
+			     ? (browse_dir[0] ? browse_dir : ".")
+			     : ((gmode & MDTREE) || opertree[0])
+			     ? opertree
+			     : (browse_dir[0] ? browse_dir
+				:gethomedir(NULL)));
+		    else{
+			if(*fn){
+			    int dirlen;
+
+			    dirlen = strlen(dir);
+			    if(dirlen && dir[dirlen - 1] != C_FILESEP)
+			      strcat(dir, S_FILESEP);
+			    strcat(dir, fn);
+			    if(!isdir(dir, NULL, NULL))
+			      dir[dirlen] = '\0';
+			}
+		    }
 
 		    fname[0] = '\0';
 		    if((s = FileBrowse(dir, NLINE, fname, NLINE, 
-				       NULL, FB_READ)) == 1){
+				       NULL, FB_READ, NULL)) == 1){
 			if(gmode&MDSCUR){
 			    emlwrite("Can't insert in restricted mode",
 				     NULL);
@@ -368,6 +353,67 @@ int f, n;
     return(retval);
 }
 
+/* 
+ * split out the file name from the path.
+ * Copy path into dirbuf, return filename,
+ * which is a pointer into orig_fname.
+ * lenp is the length of dirbuf.
+ *   is_for_browse - use browse dir if possible
+ *      don't want to use it for TAB-completion
+ */
+char *
+file_split(dirbuf, lenp, orig_fname, is_for_browse)
+    char *dirbuf;
+    int   *lenp;
+    char  *orig_fname;
+    int    is_for_browse;
+{
+    char *p, *fn;
+    int dirlen;
+
+    if(*orig_fname && (p = strrchr(orig_fname, C_FILESEP))){
+	fn = p + 1;
+	(*lenp) -= fn - orig_fname;
+	dirlen = p - orig_fname;
+	if(p == orig_fname)
+	  strcpy(dirbuf, S_FILESEP);
+#ifdef	DOS
+	else if(orig_fname[0] == C_FILESEP
+		|| (isalpha((unsigned char)orig_fname[0])
+		    && orig_fname[1] == ':')){
+	    if(orig_fname[1] == ':' && p == orig_fname+2)
+	      dirlen = fn - orig_fname;
+	    strncpy(dirbuf, orig_fname, dirlen);
+	    dirbuf[dirlen] = '\0';
+	}
+#else
+	else if (orig_fname[0] == C_FILESEP
+		 || orig_fname[0] == '~') {
+	    strncpy(dirbuf, orig_fname, dirlen);
+	    dirbuf[dirlen] = '\0';
+	}
+#endif
+	else
+	  sprintf(dirbuf, "%s%c%.*s", 
+		  (gmode & MDCURDIR)
+		  ? ((is_for_browse && browse_dir[0]) ? browse_dir : ".")
+		  : ((gmode & MDTREE) || opertree[0])
+		  ? opertree
+		  : ((is_for_browse && browse_dir[0])
+		     ? browse_dir : gethomedir(NULL)),
+		  C_FILESEP, p - orig_fname, orig_fname);
+    }
+    else{
+	fn = orig_fname;
+	strcpy(dirbuf, (gmode & MDCURDIR)
+	       ? ((is_for_browse && browse_dir[0]) ? browse_dir : ".")
+	       : ((gmode & MDTREE) || opertree[0])
+	       ? opertree
+	       : ((is_for_browse && browse_dir[0])
+		  ? browse_dir : gethomedir(NULL)));
+    }
+    return fn;
+}
 
 insmsgchar(c)
     int c;
@@ -589,10 +635,13 @@ int f, n;
 		/* If we did not end up with a valid directory, use home. */
 		if (!*shows || !isdir (shows, NULL, NULL))
 		  strcpy(shows, ((gmode & MDTREE) || opertree[0])
-				   ? opertree : gethomedir(NULL));
+			 ? opertree
+			 : (browse_dir[0] ? browse_dir
+			    : gethomedir(NULL)));
 
 		strcpy(origshows, shows);
-		if ((s = FileBrowse(shows, NLINE, fname, NFILEN, NULL, FB_SAVE)) == 1) {
+		if ((s = FileBrowse(shows, NLINE, fname, NFILEN, NULL,
+				    FB_SAVE, NULL)) == 1) {
 		  if (strlen(shows)+strlen(S_FILESEP)+strlen(fname) < NLINE){
 		    strcat(shows, S_FILESEP);
 		    strcat(shows, fname);
