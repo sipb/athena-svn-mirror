@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.18 1994-12-05 06:54:32 cfields Exp $
+# $Id: add.csh,v 1.19 1994-12-16 05:20:36 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -17,7 +17,7 @@
 #	-a	pass further options to attach
 #
 
-# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/add'
+# alias add 'set add_opts = (\!:*); source $initdir/add'
 
 set add_vars=( add_vars add_usage add_verbose add_front add_warn add_env \
                add_opts add_attach add_dirs add_bin add_bindir \
@@ -32,7 +32,7 @@ set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-p] [-w] [-e] [-a attachf
 
 if ( $#add_opts == 0 ) set add_print
 
-if ( $?add_flags) then
+if ( $?add_flags ) then
   set add_opts = ( $add_flags $add_opts )
 endif
 
@@ -110,16 +110,12 @@ if ( $?add_oldverbose && ! $?add_new ) set add_debug
 
 if ( ! $?ATHENA_SYS ) then
   setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
-  if ( $ATHENA_SYS == "" ) unsetenv ATHENA_SYS
+  if ( $ATHENA_SYS == "" ) setenv ATHENA_SYS "@sys"
 endif
 
 if ( ! $?bindir ) then
   set bindir = `machtype`bin
   if ( $bindir == "bin" ) unset bindir
-endif
-
-if ( ! $?ATHENA_SYS && ! $?bindir ) then
-  echo "add: neither ATHENA_SYS nor bindir is set; nothing will be added to bin path"
 endif
 
 if ( $?ATHENA_SYS ) then
@@ -145,11 +141,26 @@ endif
 # interesting output from attach.
 #
 
-if ( $?add_verbose ) then
-  attach -n -h $add_attach
+if ( $?add_new ) then
+#
+# New, sane behavior for cases with no authentication and
+# fascist lockers, and more reliable output.
+#
+  if ( $?add_verbose ) then
+    attach $attach_args
+    set add_dirs = `attach -h -p $attach_args`
+  else
+    set add_dirs = `attach -p $attach_args`
+  endif
+else
+#
+# Old behavior.
+#
+  if ( $?add_verbose ) then
+    attach -n -h $add_attach
+  endif
+  set add_dirs = `attach -p $add_attach`
 endif
-
-set add_dirs = `attach -p $add_attach`
 
 #
 # Loop through all of the lockers attach told us about.
