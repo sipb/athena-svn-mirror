@@ -1,6 +1,6 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v $
 #	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.1 1987-06-19 10:37:08 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.2 1987-07-07 17:30:33 jtkohl Exp $
 	et	zsrv
 
 ec ZSRV_BADASSOC,
@@ -13,10 +13,12 @@ ec ZSRV_NOCLASS,
 	"Class unkown"
 ec ZSRV_CLASSXISTS,
 	"Class already registered"
+ec ZSRV_CLASSRESTRICTED,
+	"Class already restricted"
 ec ZSRV_HNOTFOUND,
 	"Host manager unknown"
 ec ZSRV_WRONGSRV,
 	"Host not on this server"
 ec ZSRV_RCSID,
-	"$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.1 1987-06-19 10:37:08 jtkohl Exp $"
+	"$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.2 1987-07-07 17:30:33 jtkohl Exp $"
 	end
