@@ -11,8 +11,15 @@ and ssh has the necessary privileges.)
 */
 
 /*
- * $Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
+ * $Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/07/05 12:38:55  rbasch
+ * Don't use integer arithmetic to calculate the completion percentage
+ * in sink().
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:28  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.14  1998/07/08 01:14:25  kivinen
  * 	Changed scp to run ssh1 instead of ssh.
  *
@@ -122,7 +129,7 @@ and ssh has the necessary privileges.)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
+ *	$Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
  */
 
 #ifndef lint
@@ -1150,7 +1157,9 @@ bad:			run_err("%s: %s", np, strerror(errno));
 						stat_eta((int)
 							 ((size - statbytes)
 							  / ratebs)),
-						100 * statbytes / size);
+						(int) ((100.0 *
+							(double) statbytes) /
+						       size));
 				      if (all_statistics && (i + j) == size)
 					bwritten += fprintf(SOME_STATS_FILE, "\n");
 				      stats_fixlen(bwritten);
@@ -1330,7 +1339,7 @@ run_err(const char *fmt, ...)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.3 1999-03-08 17:43:28 danw Exp $
+ *	$Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
  */
 
 char *
