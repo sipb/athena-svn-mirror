@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.7 1997-11-17 19:19:31 danw Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.8 1997-11-20 22:16:26 ghudson Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -46,6 +46,24 @@ void zero_record(struct al_record *r)
   r->old_homedir = NULL;
   r->groups = NULL;
   r->pids = NULL;
+}
+
+/* Return true if the session record exists.  (Purely a tweak to avoid
+ * creating session files in al_acct_revert().) */
+int al__record_exists(const char *username)
+{
+  char *session_file;
+  int retval;
+
+  /* No POSIX limit on username size; allocate space for filename. */
+  session_file = malloc(strlen(al__session_dir) + strlen(username) + 2);
+  if (!session_file)
+    return 0;
+  sprintf(session_file, "%s/%s", al__session_dir, username);
+
+  retval = access(session_file, F_OK);
+  free(session_file);
+  return (retval == 0);
 }
 
 /* This is an internal function.  Its contract is to open the session
