@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.3 2000-04-26 19:57:40 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.4 2000-05-02 21:44:27 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,7 +69,7 @@ static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
 static void freerev(struct rev *rev);
 static void parse_line(const char *path, char **pkgname, int *epoch,
-		       char **version, char **release);
+		       char **version, char **release, char **filename);
 struct package *get_package(struct package **table, const char *pkgname);
 static unsigned int hash(const char *str);
 const char *find_back(const char *start, const char *end, char c);
@@ -146,7 +146,7 @@ static void read_old_list(struct package **pkgtab, const char *oldlistname)
 
   while (read_line(fp, &buf, &bufsize) == 0)
     {
-      parse_line(buf, &pkgname, &epoch, &version, &release);
+      parse_line(buf, &pkgname, &epoch, &version, &release, NULL);
       pkg = get_package(pkgtab, pkgname);
       pkg->oldlistrev.present = 1;
       pkg->oldlistrev.epoch = epoch;
@@ -160,7 +160,7 @@ static void read_old_list(struct package **pkgtab, const char *oldlistname)
 static void read_new_list(struct package **pkgtab, const char *newlistname)
 {
   FILE *fp;
-  char *buf = NULL, *pkgname, *version, *release;
+  char *buf = NULL, *pkgname, *version, *release, *filename;
   int bufsize, epoch;
   struct package *pkg;
 
@@ -170,9 +170,9 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
 
   while (read_line(fp, &buf, &bufsize) == 0)
     {
-      parse_line(buf, &pkgname, &epoch, &version, &release);
+      parse_line(buf, &pkgname, &epoch, &version, &release, &filename);
       pkg = get_package(pkgtab, pkgname);
-      pkg->filename = strdup(buf);
+      pkg->filename = filename;
       pkg->newlistrev.present = 1;
       pkg->newlistrev.epoch = epoch;
       pkg->newlistrev.version = version;
@@ -486,7 +486,7 @@ static void freerev(struct rev *rev)
  * become the responsibility of the caller.
  */
 static void parse_line(const char *line, char **pkgname, int *epoch,
-		       char **version, char **release)
+		       char **version, char **release, char **filename)
 {
   const char *end, *p;
   const char *pkgstart, *pkgend, *verstart, *verend, *relstart, *relend;
@@ -538,6 +538,8 @@ static void parse_line(const char *line, char **pkgname, int *epoch,
   *pkgname = estrndup(pkgstart, pkgend - pkgstart);
   *version = estrndup(verstart, verend - verstart);
   *release = estrndup(relstart, relend - relstart);
+  if (filename)
+    *filename = estrndup(line, end - line);
 }
 
 struct package *get_package(struct package **table, const char *pkgname)
