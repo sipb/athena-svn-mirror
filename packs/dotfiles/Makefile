@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1997-10-18 04:53:45 ghudson Exp $
+# $Id: Makefile,v 1.5 1998-03-17 04:06:04 cfields Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -22,8 +22,6 @@ install:
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTMP}
-	install -c -m 0644 add.csh ${DESTDIR}${SYSTEM}/add
-	install -c -m 0444 add.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTMP}/.cshrc
 	install -c -m 0644 dot.login ${DESTDIR}${PROTOTYPE}/.login
