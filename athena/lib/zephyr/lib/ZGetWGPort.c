@@ -4,21 +4,24 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.2 1988-05-13 18:23:28 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.3 1988-06-23 10:29:47 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.2 1988-05-13 18:23:28 rfrench Exp $";
+static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.3 1988-06-23 10:29:47 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
+
+extern char *getenv();
+extern uid_t getuid();
 
 int ZGetWGPort()
 {
@@ -26,15 +29,19 @@ int ZGetWGPort()
     FILE *fp;
     int wgport;
 	
-    envptr = (char *)getenv("WGFILE");
+    envptr = getenv("WGFILE");
     if (!envptr) {
-	sprintf(name, "/tmp/wg.%d", getuid());
+	(void) sprintf(name, "/tmp/wg.%d", getuid());
 	envptr = name;
     } 
     if (!(fp = fopen(envptr, "r")))
 	return (-1);
-    fscanf(fp, "%d", &wgport);
-    fclose(fp);
+
+    /* if fscanf fails, return -1 via wgport */
+    if (fscanf(fp, "%d", &wgport) != 1)
+	    wgport = -1;
+
+    (void) fclose(fp);
 
     return (wgport);
 }

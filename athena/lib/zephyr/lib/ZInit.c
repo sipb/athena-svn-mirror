@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.12 1988-06-15 16:55:13 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.13 1988-06-23 10:30:28 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.12 1988-06-15 16:55:13 rfrench Exp $";
+static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.13 1988-06-23 10:30:28 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -66,9 +66,9 @@ Code_t ZInitialize()
     if (gethostname(hostname, MAXHOSTNAMELEN))
 	return (errno);
     if (hent = gethostbyname(hostname))
-	strcpy(__Zephyr_realm, hent->h_name);
+	(void) strcpy(__Zephyr_realm, hent->h_name);
     else
-	strcpy(__Zephyr_realm, hostname);
+	(void) strcpy(__Zephyr_realm, hostname);
 #endif
 
     /* Get the sender so we can cache it */

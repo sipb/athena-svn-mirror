@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.18 1988-05-17 21:22:31 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.19 1988-06-23 10:31:37 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.18 1988-05-17 21:22:31 rfrench Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.19 1988-06-23 10:31:37 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -26,7 +26,7 @@ static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include <sys/param.h>
 #include <netdb.h>
 
-uid_t getuid();
+extern char *getenv();
 
 Code_t ZSetLocation(exposure)
     char *exposure;
@@ -86,8 +86,8 @@ Z_SendLocation(class, opcode, auth, format)
     bptr[1] = ctime(&ourtime);
     bptr[1][strlen(bptr[1])-1] = '\0';
 
-    if ((display = (char *)getenv("DISPLAY")) && *display) {
-	strcpy(mytty, display);
+    if ((display = getenv("DISPLAY")) && *display) {
+	(void) strcpy(mytty, display);
 	bptr[2] = mytty;
     }
     else {

@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.23 1988-06-15 16:56:04 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.24 1988-06-23 10:34:12 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.23 1988-06-15 16:56:04 rfrench Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.24 1988-06-23 10:34:12 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -46,7 +46,8 @@ Code_t ZSendPacket(packet, len, waitforack)
 
     dest = ZGetDestAddr();
 	
-    if (sendto(ZGetFD(), packet, len, 0, &dest, sizeof(dest)) < 0)
+    if (sendto(ZGetFD(), packet, len, 0, (struct sockaddr *)&dest,
+	       sizeof(dest)) < 0)
 	return (errno);
 
     if (!waitforack)

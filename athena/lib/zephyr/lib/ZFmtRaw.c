@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.5 1988-06-17 17:17:32 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.6 1988-06-23 10:29:22 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.5 1988-06-17 17:17:32 jtkohl Exp $";
+static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.6 1988-06-23 10:29:22 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -35,7 +35,7 @@ Code_t ZFormatRawNotice(notice, buffer, ret_len)
 
     *ret_len = hdrlen+notice->z_message_len;
 
-    if (!(*buffer = malloc(*ret_len)))
+    if (!(*buffer = malloc((unsigned) *ret_len)))
 	return (ENOMEM);
 
     bcopy(header, *buffer, hdrlen);

@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.7 1988-06-15 16:55:35 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.8 1988-06-23 10:32:11 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.7 1988-06-15 16:55:35 rfrench Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.8 1988-06-23 10:32:11 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -34,7 +34,7 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
     if ((retval = Z_WaitForComplete()) != ZERR_NONE)
 	return (retval);
     
-    qptr = (struct _Z_InputQ *) Z_GetFirstComplete();
+    qptr = Z_GetFirstComplete();
     
     for (;;) {
 	while (qptr) {
@@ -42,7 +42,7 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
 				       &tmpnotice)) != ZERR_NONE)
 		return (retval);
 	    if ((predicate)(&tmpnotice, args)) {
-		if (!(buffer = malloc(qptr->packet_len)))
+		if (!(buffer = malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
 		bcopy(qptr->packet, buffer, qptr->packet_len);
 		if (from)

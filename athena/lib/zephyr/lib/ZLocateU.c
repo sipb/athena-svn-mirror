@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.16 1988-06-17 17:23:42 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.17 1988-06-23 10:30:33 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.16 1988-06-17 17:23:42 jtkohl Exp $";
+static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.17 1988-06-23 10:30:33 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -54,7 +54,8 @@ Code_t ZLocateUser(user, nlocs)
     nrecv = ack = 0;
 
     while (!nrecv || !ack) {
-	    if ((retval = ZIfNotice(&retnotice, NULL, ZCompareMultiUIDPred,
+	    if ((retval = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
+				    ZCompareMultiUIDPred,
 				    (char *)&notice.z_multiuid)) != ZERR_NONE)
 		    return (retval);
 
