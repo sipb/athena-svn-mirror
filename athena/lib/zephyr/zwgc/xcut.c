@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xcut.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.3 1989-11-08 14:37:57 jtkohl Exp $";
+static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.4 1989-11-14 00:55:27 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -34,17 +34,11 @@ static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.3 1989-11-08 14:37:57 jtkohl Exp $
 #include "xselect.h"
 #include "xmark.h"
 #include "error.h"
+#include "xrevstack.h"
 
 /*
  *
  */
-
-#ifdef REVSTACK
-extern void pull_to_top();
-extern void push_to_bottom();
-extern void add_to_bottom();
-extern void unlink_gram();
-#endif
 
 extern char *xmarkGetText();
 
@@ -209,16 +203,16 @@ void xcut(dpy,event,desc_context)
 
       case ButtonRelease:
 	if (w == current_window_in && !((event->xbutton.state)&ShiftMask)) {
-#ifdef REVSTACK
-	   extern int reverse_stack;
-#endif /* REVSTACK */
-	   if (w == selecting_in) selecting_in = 0;
+	   if (w == selecting_in) {
+	      selecting_in = 0;
+	      xmarkClear();
+	   }
+	   if (reverse_stack && (gram == bottom_gram))
+	      bottom_gram = gram;
 	   XDeleteContext(dpy, w, desc_context);
 	   XDestroyWindow(dpy, w);
-#ifdef REVSTACK
 	   if (reverse_stack)
-	     unlink_gram(gram);
-#endif
+	     delete_gram(gram);
 	   free(gram->text);
 	   free(gram->blocks);
 	   free(gram);
@@ -242,7 +236,7 @@ void xcut(dpy,event,desc_context)
        }
        break;
 
-#ifdef REVSTACK
+#ifdef notdef
       case ConfigureNotify:
 #ifdef DEBUG
 	if (zwgc_debug)

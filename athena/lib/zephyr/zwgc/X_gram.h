@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v $
- *      $Author: jtkohl $
- *	$Id: X_gram.h,v 1.3 1989-11-08 14:35:24 jtkohl Exp $
+ *      $Author: marc $
+ *	$Id: X_gram.h,v 1.4 1989-11-14 00:55:19 marc Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -32,13 +32,11 @@ typedef struct _xblock {
 
 typedef struct _x_gram {
    unsigned long bgcolor;
-#ifdef REVSTACK
-   struct _x_gram *below,*above;
-   Window w;
-#endif
    int numblocks;
    xblock *blocks;
    char *text;
+   struct _x_gram *below,*above;
+   Window w;
 } x_gram;
 
 typedef struct _xauxblock {
