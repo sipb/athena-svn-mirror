@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.4 1991-06-24 15:18:02 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.5 1991-07-16 15:08:26 probe Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.4  91/06/24  15:18:02  epeisach
+ * POSIX dirent handling
+ * 
  * Revision 4.3  91/03/07  17:47:31  epeisach
  * Fixed typo.
  * 
@@ -49,7 +52,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.4 1991-06-24 15:18:02 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.5 1991-07-16 15:08:26 probe Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -310,17 +313,22 @@ unsigned int type;
 		do_gripe();
 		return(-1);
 	}
-	readdir( dirp); readdir( dirp); /* skip . & .. */
 
 	strcat( name,"/");		/* XXX: don't copy for recursive call */
 	leaf =  name + strlen( name);
 	for( next = readdir(dirp); next != NULL; next = readdir(dirp)) {
-	        if(!(strcmp(next->d_name, "")))
-		    continue;
+		if ((! next->d_name[0]) ||	/* "" */
+		    ((next->d_name[0] == '.') &&
+		     ((! next->d_name[1]) ||	/* "." */
+		      ((next->d_name[1] == '.') &&
+		       (! next->d_name[2])))))	/* ".." */
+			continue;
 		strcpy( leaf, next->d_name);	/* changes name[] */
 		removeit( name, 0);
 	}
 	leaf[-1] = '\0';	/* XXX: see strcat, above */
+
+	(void) closedir(dirp);
 
 	if ( rmdir( name) == -1) {
 		sprintf(errmsg, "can't remove directory %s",name);
