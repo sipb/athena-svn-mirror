@@ -15,7 +15,8 @@
 #define KILLALL "/etc/killall "
 
 #define CONSDEV "/dev/tport"
-
+#define XDM "axdm"
+#define XDMCMD "/etc/athena/" XDM " -config /etc/athena/login/xdm/xdm-config"
 extern int debug;
 
 #define USE_GETTY
@@ -103,15 +104,15 @@ int dpy_startX(dpy_state *dpy)
   if (run(CHKCONFIG WS "on"))
     return 1;
 
-  if (ret = run(KILLALL "-HUP xdm"))
+  if (ret = run(KILLALL "-HUP " XDM))
     {
       if (debug > 3)
-	syslog(LOG_ERR, "killall -hup xdm returned %d", ret);
+	syslog(LOG_ERR, "killall -hup " XDM " returned %d", ret);
 
-      if (ret = run("/usr/bin/X11/xdm"))
+      if (ret = run(XDMCMD))
 	{
 	  if (debug > 3)
-	    syslog(LOG_ERR, "xdm returned %d", ret);
+	    syslog(LOG_ERR, XDM " returned %d", ret);
 	  return 1;
 	}
     }
