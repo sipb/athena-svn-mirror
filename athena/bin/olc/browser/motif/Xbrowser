@@ -14,9 +14,17 @@
 *next.labelString:		Next answer
 *prev.labelString:		Prev answer
 *up.labelString:		Up Level
+*up.mnemonic:			U
+*up.accelerators:		#override  Meta <Key>u: ArmAndActivate()
 *save.labelString:		Save answer...
+*save.mnemonic:			S
+*save.accelerators:		#override  Meta <Key>s: ArmAndActivate()
 *quit.labelString:		Quit
+*quit.mnemonic:			Q
+*quit.accelerators:		#override  Meta <Key>q: ArmAndActivate()
 *help.labelString:		Help
+*help.mnemonic:			H
+*help.accelerators:		#override  Meta <Key>h: ArmAndActivate()
 *save_dlg.selectionLabelString:	Please enter the name of a file to save in:\n
 *help_dlg.messageString:	\
 This list in the top half of the window is a menu.\n\
@@ -30,14 +38,8 @@ answer may be saved out to a file by clicking on the\n\
 save button and supplying a filename.
 !
 *fontList:			fixed
-*XmFrame.shadowThickness:	0
-*XmForm.shadowThickness:	2
-*XmFrame.borderWidth:		0
-*XmForm.borderWidth:		0
 *XmForm.horizontalSpacing:	5
 *XmForm.verticalSpacing:	5
-*XmList.listMarginWidth:	5
-*XmList.listMarginHeight:	5
 *main.width:			530
 *main.height:			530
 !
@@ -45,37 +47,40 @@ Xbrowser.title:			OLC Stock Answer Browser
 Xbrowser.iconName:		Browser
 Xbrowser.minWidth:		290
 Xbrowser.minHeight:		380
+Xbrowser.borderWidth:		2
 !
 !  Widget Heirarchy
 !
 Xbrowser.wcChildren:		main
 *main.wcClassName:		XmForm
+*main.horizontalSpacing:	2
+*main.verticalSpacing:		2
+*main.shadowThickness:		2
 *main.wcChildren:		pane
 *pane.wcClassName:		XmPanedWindow
 *pane.wcChildren:		top_form, bottom_form
 *top_form.wcClassName:		XmForm
-*top_form.wcChildren:		top_lbl, up, list_frame
+*top_form.wcChildren:		top_lbl, up, list
 *bottom_form.wcClassName:	XmForm
 *bottom_form.wcChildren:	bottom_lbl
-*bottom_form.wcChildren:	bottom_lbl, save, help, quit, text_frame
+*bottom_form.wcChildren:	bottom_lbl, save, help, quit, text
 *top_lbl.wcClassName:		XmLabelGadget
 *up.wcClassName:		XmPushButton
-*list_frame.wcClassName:	XmFrame
-*list_frame.wcChildren:		list
 *list.wcConstructor:		XmCreateScrolledList
 *bottom_lbl.wcClassName:	XmLabelGadget
 *save.wcClassName:		XmPushButton
 *help.wcClassName:		XmPushButton
 *quit.wcClassName:		XmPushButton
-*text_frame.wcClassName:	XmFrame
-*text_frame.wcChildren:		text
 *text.wcConstructor:		XmCreateScrolledText
 *help_dlg.wcConstructor:	XmCreateInformationDialog
 *save_dlg.wcConstructor:	XmCreatePromptDialog
 !
 !  Widget Callbacks
 !
+*top_form.wcCallback:		createCB(top)
+*bottom_form.wcCallback:	createCB(bottom)
 *quit.activateCallback:		WcExitCB()
+*quit.wcCallback:		createCB(quit)
 *help.activateCallback:		WcSetInsensitiveCB(this), \
 					WcCreateChildrenCB(Xbrowser, help_dlg)
 *save.activateCallback:		WcSetInsensitiveCB(this), \
@@ -90,7 +95,8 @@ Xbrowser.wcChildren:		main
 *save_dlg.wcCallback:		createCB(save_dlg), setPromptCB()
 *save_dlg.okCallback:		saveCB(), WcSetSensitiveCB(*save)
 *save_dlg.cancelCallback:	WcSetSensitiveCB(*save)
-*help_dlg.wcCallback:		createCB(help)
+*help.wcCallback:		createCB(help)
+*help_dlg.wcCallback:		createCB(help_dlg)
 *help_dlg.okCallback:		WcSetSensitiveCB(*help)
 *list.wcCallback:		createCB(list)
 *text.wcCallback:		createCB(text)
@@ -124,23 +130,18 @@ Xbrowser.wcChildren:		main
 *next.bottomAttachment:		ATTACH_FORM
 !
 *prev.leftAttachment:		ATTACH_WIDGET
-*prev.leftWidget:		next
+*prev.leftWidget:		*next
 *prev.bottomAttachment:		ATTACH_FORM
 !
 *up.bottomAttachment:		ATTACH_FORM
 *up.rightAttachment:		ATTACH_FORM
 !
-*list_frame.topAttachment:	ATTACH_WIDGET
-*list_frame.topWidget:		top_lbl
-*list_frame.leftAttachment:	ATTACH_FORM
-*list_frame.rightAttachment:	ATTACH_FORM
-*list_frame.bottomAttachment:	ATTACH_WIDGET
-*list_frame.bottomWidget:	up
-!
-*list.topAttachment:		ATTACH_FORM
-*list.leftAttachment:		ATTACH_FORM
-*list.rightAttachment:		ATTACH_FORM
-*list.bottomAttachment:		ATTACH_FORM
+*listSW.topAttachment:		ATTACH_WIDGET
+*listSW.topWidget:		*top_lbl
+*listSW.leftAttachment:		ATTACH_FORM
+*listSW.rightAttachment:	ATTACH_FORM
+*listSW.bottomAttachment:	ATTACH_WIDGET
+*listSW.bottomWidget:		*up
 !
 *bottom_lbl.topAttachment:	ATTACH_FORM
 *bottom_lbl.leftAttachment:	ATTACH_FORM
@@ -154,14 +155,14 @@ Xbrowser.wcChildren:		main
 !
 *quit.bottomAttachment:		ATTACH_FORM
 *quit.rightAttachment:		ATTACH_WIDGET
-*quit.rightWidget:		help
+*quit.rightWidget:		*help
 !
-*text_frame.topAttachment:	ATTACH_WIDGET
-*text_frame.topWidget:		bottom_lbl
-*text_frame.leftAttachment:	ATTACH_FORM
-*text_frame.rightAttachment:	ATTACH_FORM
-*text_frame.bottomAttachment:	ATTACH_WIDGET
-*text_frame.bottomWidget:	save
+*textSW.topAttachment:		ATTACH_WIDGET
+*textSW.topWidget:		*bottom_lbl
+*textSW.leftAttachment:		ATTACH_FORM
+*textSW.rightAttachment:	ATTACH_FORM
+*textSW.bottomAttachment:	ATTACH_WIDGET
+*textSW.bottomWidget:		*save
 !
 *text.editable:			FALSE
 *text.editMode:			MULTI_LINE_EDIT
@@ -171,3 +172,13 @@ Xbrowser.wcChildren:		main
 !
 *help_dlg.dialogStyle:		DIALOG_MODELESS
 *error_dlg.dialogStyle:		DIALOG_APPLICATION_MODAL
+*help_dlg_popup.title:		Browser Help
+*save_dlg_popup.title:		Browser Save
+*error_dlg_popup.title:		Browser Error
+*help_dlg.shadowThickness:	2
+*save_dlg.shadowThickness:	2
+*error_dlg.shadowThickness:	2
+*help_dlg_popup.borderWidth:	2
+*save_dlg_popup.borderWidth:	2
+*error_dlg_popup.borderWidth:	2
+

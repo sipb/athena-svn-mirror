@@ -58,7 +58,6 @@
 #include <Xm/BulletinB.h>
 #include <Xm/DialogS.h>
 #include <Xm/Form.h>
-#include <Xm/Frame.h>
 #include <Xm/LabelG.h>
 #include <Xm/List.h>
 #include <Xm/MainW.h>
@@ -73,7 +72,6 @@ void MriRegisterMotif ( app )
 {
 #define RCO( name, func  )  WcRegisterConstructor ( app, name, func  )
 #define RCN( name, class )  WcRegisterClassName   ( app, name, class )
-#define RCP( name, class )  WcRegisterClassPtr    ( app, name, class )
 
 /* -- register all Motif constructors */
  RCO( "XmCreateInformationDialog",	XmCreateInformationDialog	);
@@ -82,20 +80,12 @@ void MriRegisterMotif ( app )
  RCO( "XmCreateScrolledText",		XmCreateScrolledText		);
 
 /* -- register Motif widget classes */
- RCP("xmFormWidgetClass",		xmFormWidgetClass		);
  RCN("XmForm",				xmFormWidgetClass		);
- RCP("xmFrameWidgetClass",		xmFrameWidgetClass		);
- RCN("XmFrame",				xmFrameWidgetClass		);
- RCP("xmLabelGadgetClass",		xmLabelGadgetClass		);
  RCN("XmLabelGadget",			xmLabelGadgetClass		);
- RCP("xmPanedWindowWidgetClass",	xmPanedWindowWidgetClass	);
  RCN("XmPanedWindow",			xmPanedWindowWidgetClass	);
- RCP("xmPushButtonWidgetClass",		xmPushButtonWidgetClass		);
  RCN("XmPushButton",			xmPushButtonWidgetClass		);
- RCP("xmTextWidgetClass",		xmTextWidgetClass		);
  RCN("XmText",				xmTextWidgetClass		);
 
 #undef RCO
 #undef RCN
-#undef RCP
 }

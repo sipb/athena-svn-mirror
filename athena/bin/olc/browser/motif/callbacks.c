@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.9 1992-02-04 22:04:48 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.10 1992-05-06 13:01:30 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -35,6 +35,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 
 extern int errno;
 extern char* program;			/* name of program */
+extern Widget toplevel;
 
 #define  ERROR		-1
 #define  SUCCESS	0
@@ -48,8 +49,11 @@ ENTRY new_entry_table[MAX_ENTRIES];	/* Entry table to hold new entries. */
 ENTRY EntryTable[MAX_ENTRIES];		/* Table of entries. */
 int Deep = 0;
 char buffer[BUFSIZ];
-Widget w_list, w_text, w_top_lbl, w_bottom_lbl, w_up, w_save;
-Widget w_list_frame, w_text_frame, w_dlg_save;
+
+Widget w_top_form, w_bottom_form;
+Widget w_list, w_text, w_top_lbl, w_bottom_lbl;
+Widget w_up, w_save, w_help, w_quit, w_dlg_save;
+
 /*
  *  Procedures
  *
@@ -259,6 +263,7 @@ void setPromptCB (w, tag, callback_data)
   TextBox = XmSelectionBoxGetChild(w, XmDIALOG_TEXT);
   XtSetArg(arg, XmNvalue, buffer);
   XtSetValues(TextBox, &arg, 1);
+  _XmGrabTheFocus(TextBox, NULL);
 }
 
 
@@ -270,7 +275,6 @@ void saveCB (w, tag, callback_data)
   int fd;
   char *text;
   char error[BUFSIZ];		/* Space for error message. */
-  Arg arg;
   char *new_buf;
   Widget TextBox;
 
@@ -375,8 +379,6 @@ void createCB (w, string, callback_data)
      char *string;
      XmAnyCallbackStruct *callback_data;
 {
-  Arg arg;
-
   if (!strcmp(string, "top_lbl"))
     {
       w_top_lbl = w;
@@ -409,40 +411,38 @@ void createCB (w, string, callback_data)
     return;
   }
 
+  if (!strcmp(string, "help")) {
+    w_help = w;
+    return;
+  }
+
+  if (!strcmp(string, "quit")) {
+    w_quit = w;
+    return;
+  }
+
+  if (!strcmp(string, "top")) {
+    w_top_form = w;
+    return;
+  }
+
+  if (!strcmp(string, "bottom")) {
+    w_bottom_form = w;
+    return;
+  }
+
   if (!strcmp(string, "save_dlg")) {
     w_dlg_save = w;
     XtDestroyWidget(XmSelectionBoxGetChild(w,XmDIALOG_HELP_BUTTON));
     return;
   }
 
-  if (!strcmp(string, "help")) {
+  if (!strcmp(string, "help_dlg")) {
     XtDestroyWidget(XmMessageBoxGetChild(w,XmDIALOG_HELP_BUTTON));
     XtDestroyWidget(XmMessageBoxGetChild(w,XmDIALOG_CANCEL_BUTTON));
     return;
   }
 
-  /* 
-    We want a bloody pointer to the list_frame and text_frame
-    to hardcode the XmATTACH_WIDGET.
-    */
-  if (!strcmp(string, "list_frame")) {
-    w_list_frame = w;
-    XtSetArg( arg, XmNtopWidget, w_top_lbl );
-    XtSetValues( w_list_frame, &arg, 1);
-    XtSetArg( arg, XmNbottomWidget, w_up );
-    XtSetValues( w_list_frame, &arg, 1 );
-    return;
-  }
-  
-  if (!strcmp(string, "text_frame")) {
-    w_text_frame = w;
-    XtSetArg( arg, XmNtopWidget, w_bottom_lbl );
-    XtSetValues( w_text_frame, &arg, 1);
-    XtSetArg( arg, XmNbottomWidget, w_save );
-    XtSetValues( w_text_frame, &arg, 1 );
-    return;
-  }
-  
   if (!strcmp(string, "list"))
     {
       char file[BUFSIZ];

@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.8 1991-06-30 12:28:10 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.9 1992-05-06 13:01:32 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -27,7 +27,12 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <signal.h>
 
 extern char Titles[MAX_TITLES][TITLE_SIZE];
+extern Widget w_top_form, w_bottom_form;
+extern Widget w_list, w_text, w_top_lbl, w_bottom_lbl;
+extern Widget w_up, w_save, w_help, w_quit, w_dlg_save;
+
 char *program;				/* name of program */
+Widget toplevel;
 
 /*
  *  Function:	main() is the startup for the browser.  It initializes
@@ -45,10 +50,8 @@ void main(argc, argv)
      char *argv[];
 {
   Arg arg;
-  int n;
   Display *dpy;
   XtAppContext app;
-  Widget toplevel;
   int spid;
 	
   program = "xbrowser";
@@ -73,7 +76,6 @@ void main(argc, argv)
   toplevel = XtInitialize(NULL, "Xbrowser", NULL, 0, &argc, argv);
   app = XtWidgetToApplicationContext(toplevel);
 
-  n=0;
   XtSetArg(arg, XtNallowShellResize, TRUE);
   XtSetValues(toplevel, &arg, 1);
 
@@ -87,6 +89,16 @@ void main(argc, argv)
   RegisterApplicationCallbacks(app);
   WcWidgetCreation(toplevel);
   XtRealizeWidget(toplevel);
+
+  XtInstallAllAccelerators(toplevel, toplevel);
+  XtInstallAllAccelerators(w_top_form, toplevel);
+  XtInstallAllAccelerators(w_bottom_form, toplevel);
+  XtInstallAllAccelerators(w_list, toplevel);
+  XtInstallAllAccelerators(w_text, toplevel);
+  XtInstallAllAccelerators(w_up, toplevel);
+  XtInstallAllAccelerators(w_save, toplevel);
+  XtInstallAllAccelerators(w_help, toplevel);
+  XtInstallAllAccelerators(w_quit, toplevel);
 
 /*
  *  Perform first-time initialization.
