@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.21 1990-06-07 23:23:14 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.22 1990-06-07 23:36:17 jik Exp $
 #
 
 DESTDIR=
@@ -62,7 +62,8 @@ ETSRCS=		delete_errs.et
 MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
 
-ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(MANS) 
+ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(MANS)\
+		$(ETSRCS)
 ARCHIVEDIRS= 	man1
 
 DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
