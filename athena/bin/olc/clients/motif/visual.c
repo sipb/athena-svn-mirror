@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.8 1992-03-16 15:31:56 lwvanels Exp $
+ *	$Id: visual.c,v 1.9 1992-04-23 21:37:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -19,7 +19,6 @@
 #include <Xm/PushBG.h>
 #include <Xm/SeparatoG.h>
 #include <Xm/LabelG.h>
-#include <Xm/Frame.h>
 #include <Xm/RowColumn.h>
 #include <Xm/MessageB.h>
 #include <Xm/Text.h>
@@ -52,21 +51,18 @@ Widget				/* Widget ID's */
   w_pane,
   w_top_form,
   w_top_lbl,
-  w_list_frame,
   w_list,
   w_bottom_form,
   w_bottom_lbl,
   w_newq_rowcol,
   w_send_newq_btn,
   w_clear_btn,
-  w_newq_frame,
   w_newq_scrl,
 
   w_contq_form,
   w_status_form,
   w_connect_lbl,
   w_topic_lbl,
-  w_replay_frame,
   w_replay_scrl,
   w_options_rowcol,
   w_send_btn,
@@ -79,7 +75,6 @@ Widget				/* Widget ID's */
   w_motd_form,
   w_welcome_lbl,
   w_copyright_lbl,
-  w_motd_frame,
   w_motd_scrl,
 
   w_motd_dlg,
@@ -92,7 +87,6 @@ Widget				/* Widget ID's */
   w_send_msg_btn,
   w_clear_msg_btn,
   w_close_msg_btn,
-  w_send_frame,
   w_send_scrl
 ;
 
@@ -135,7 +129,6 @@ MakeInterface()
 
   w = w_stock_btn = XmCreatePushButtonGadget(main_form, "stock_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_stock, NULL);
-  wl[n++] = w;
 
   w = w_help_btn = XmCreatePushButtonGadget(main_form, "help_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_help, NULL);
@@ -151,7 +144,6 @@ MakeInterface()
   wl[n++] = w;
 
   XtManageChildren(wl,(Cardinal) n);
-  XtManageChild(main_form);
 }
 
 void
@@ -168,7 +160,8 @@ MakeNewqForm()
  *  question.
  */
 
-  w_newq_form = XmCreateForm(main_form, "new_ques_form", NULL, 0);
+  w = w_newq_form = XmCreateForm(main_form, "new_ques_form", NULL, 0);
+  XtManageChild(w);
 
 /*
  *  Paned Window widget will hold scrolled list widget (on top) and
@@ -188,15 +181,10 @@ MakeNewqForm()
   w = w_top_lbl = XmCreateLabelGadget(w_top_form, "top_lbl", NULL, 0);
   XtManageChild(w);
 
-
-/*  Frame to hold scrolled list widget  */
-  w = w_list_frame = XmCreateFrame(w_top_form, "list_frame", NULL, 0);
-  XtManageChild(w);
-
 /*  List widget on top.  */
 
-  w = w_list = XmCreateScrolledList(w_list_frame, "topic_list", NULL, 0);
-  XtAddCallback(w, XmNsingleSelectionCallback, olc_topic_select, NULL);
+  w = w_list = XmCreateScrolledList(w_top_form, "topic_list", NULL, 0);
+  XtAddCallback(w, XmNbrowseSelectionCallback, olc_topic_select, NULL);
   XtAddCallback(w, XmNdefaultActionCallback, olc_topic_select, NULL);
   XtManageChild(w);
 
@@ -231,17 +219,13 @@ MakeNewqForm()
   XtManageChildren(wl, (Cardinal) n);
   n = 0;
 
-/*  Frame to hold scrolled text widget.  Scrolled text widget is for
- *   entering initial question.
+/*  Scrolled text widget is for entering initial question.
  */
 
-  w = w_newq_frame = XmCreateFrame(w_bottom_form, "newq_frame", NULL, 0);
-  XtManageChild(w);
-
-  w = w_newq_scrl = XmCreateScrolledText(w_newq_frame, "newq_scrl", NULL, 0);
+  w = w_newq_scrl = XmCreateScrolledText(w_bottom_form, "newq", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
-  XtSetKeyboardFocus(w_newq_form,w_newq_scrl);
+  _XmGrabTheFocus(w_newq_scrl, NULL);
 }
 
 
@@ -255,21 +239,17 @@ MakeContqForm()
  *  consultant and buttons for canceling, don'ing, and getting the MOTD.
  */
 
-  w_contq_form = XmCreateForm(main_form, "cont_ques_form", NULL, 0);
-
-/*  Status form contains connect_lbl, your_topic_lbl, topic_lbl  */
-
-  w = w_status_form = XmCreateForm(w_contq_form, "status_form", NULL, 0);
+  w = w_contq_form = XmCreateForm(main_form, "cont_ques_form", NULL, 0);
   XtManageChild(w);
 
-  w = w_connect_lbl = XmCreateLabelGadget(w_status_form, "connect_lbl",
+  w = w_connect_lbl = XmCreateLabelGadget(w_contq_form, "connect_lbl",
 					  NULL, 0);
   XtManageChild(w);
 
-  w = w_topic_lbl = XmCreateLabelGadget(w_status_form, "topic_lbl", NULL, 0);
+  w = w_topic_lbl = XmCreateLabelGadget(w_contq_form, "topic_lbl", NULL, 0);
   XtManageChild(w);
 
-  XtManageChild( XmCreateLabelGadget(w_status_form,
+  XtManageChild( XmCreateLabelGadget(w_contq_form,
 				     "your_topic_lbl",NULL, 0));
 
 /*  RowColumn containing buttons along bottom:
@@ -306,12 +286,9 @@ MakeContqForm()
   XtAddCallback(w, XmNactivateCallback, olc_update, NULL);
   XtManageChild(w);
   
-/*  Frame to hold scrolled text replay_frame  */
+/*  scrolled text replay  */
 
-  w = w_replay_frame = XmCreateFrame(w_contq_form, "replay_frame", NULL, 0);
-  XtManageChild(w);
-  w = w_replay_scrl = XmCreateScrolledText(w_replay_frame,
-					   "replay_scrl", NULL, 0);
+  w = w_replay_scrl = XmCreateScrolledText(w_contq_form, "replay", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
 }
@@ -319,9 +296,6 @@ MakeContqForm()
 void
 MakeMotdForm()
 {
-  Arg arg;
-
-
 /*
  * The "motd_form" will contain the motd at start up time.  The MOTD
  *  will be displayed initially until the user wants to do something else,
@@ -342,16 +316,11 @@ MakeMotdForm()
 					    "copyright_lbl", NULL,0);
   XtManageChild(w);
 
-/*  Frame to hold scrolled text motd_frame  */
+/*  scrolled text motd  */
 
-  w = w_motd_frame = XmCreateFrame(w_motd_form, "motd_frame", NULL, 0);
-  XtManageChild(w);
-
-  w = w_motd_scrl = XmCreateScrolledText(w_motd_frame, "motd_scrl", NULL, 0);
+  w = w_motd_scrl = XmCreateScrolledText(w_motd_form, "motd", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
-  XtSetArg(arg, XmNheight, 250);
-  XtSetValues(w, &arg, 1);
 }
 
 
@@ -409,16 +378,10 @@ MakeDialogs()
   XtAddCallback(w, XmNactivateCallback, olc_close_msg, NULL);
   XtManageChild(w);
 
-/*  Frame to hold scrolled text widget.  Scrolled text widget is for
- *   entering message.
+/*  Scrolled text widget is for entering message.
  */
 
-  w = w_send_frame = XmCreateFrame(w_send_form, "send_frame", NULL, 0);
-  XtManageChild(w);
-
-  w = w_send_scrl = XmCreateScrolledText(w_send_frame, "send_scrl", NULL, 0);
+  w = w_send_scrl = XmCreateScrolledText(w_send_form, "send", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
-
-  XtSetKeyboardFocus(w_send_form,w_send_scrl);
 }
