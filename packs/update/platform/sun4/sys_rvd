@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.21 1996-05-09 20:21:40 ghudson Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.22 1996-06-17 20:34:02 ghudson Exp $
 	/core::::
 	/etc:::			# These are specific to each machine.
 		crontab.root.add
@@ -35,7 +35,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> zephyr.vars
 		-> shutdown_notify
 		:
-	/kernel::::
 	/usr::: 
 		-> athena
 		-> gcc
