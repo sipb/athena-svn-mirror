@@ -4,20 +4,29 @@
 # activated.
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/save_cluster_info.sh,v $
-#	$Author: ens $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/save_cluster_info.sh,v 1.3 1987-07-22 16:45:24 ens Exp $
+#	$Author: treese $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/save_cluster_info.sh,v 1.4 1987-08-22 17:42:07 treese Exp $
 #
 # Errors from getcluster guarantee that stdout will be size 0,
 # therefore a size # 0 is a sufficient test.
 # Use old data from last session if getcluster fails.
 
-/bin/athena/getcluster -b > /tmp/clusterinfo.bsh
+HOSTNAME=`/bin/hostname`
+VERSION=`/bin/awk '{vers = $5} END {print vers}' /etc/version`
+
+if [ ${VERSION}x = Updatex ]; then
+	echo "This system is in the middle of an update."
+	echo "Please contact Athena Operations."
+	exit 1
+fi
+
+/bin/athena/getcluster -b $HOSTNAME $VERSION > /tmp/clusterinfo.bsh
 if [ -s /tmp/clusterinfo.bsh ]
 then
 	/bin/cp /tmp/clusterinfo.bsh /etc/clusterinfo.bsh
 	chmod 666 /etc/clusterinfo.bsh 2>/dev/null
 fi
-/bin/athena/getcluster > /tmp/clusterinfo
+/bin/athena/getcluster $HOSTNAME $VERSION > /tmp/clusterinfo
 if [ -s /tmp/clusterinfo ]
 then
 	/bin/cp /tmp/clusterinfo /etc/clusterinfo
