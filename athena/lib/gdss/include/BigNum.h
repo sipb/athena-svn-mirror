@@ -148,7 +148,7 @@ extern BigNumDigit	BnnDivideDigit			();
 /* the functions BnnIsZero and BnnCompareDigits are not macro procedures
 since they use parameters twice, and that can produce some bugs if
 you pass a parameter like x++, the increment will be executed twice ! */
-#define BnnSetToZero(nn,nl)             bzero (nn, (nl)*BN_DIGIT_SIZE/BN_BYTE_SIZE)
+#define BnnSetToZero(nn,nl)             memset (nn, 0, (nl)*BN_DIGIT_SIZE/BN_BYTE_SIZE)
 #define BnnSetDigit(nn,d) 		(*(nn) = (d))
 #define BnnGetDigit(nn)			((unsigned)(*(nn)))
 #define BnnDoesDigitFitInWord(d)	(BN_DIGIT_SIZE > BN_WORD_SIZE ? ((d) >= 1 << BN_WORD_SIZE ? FALSE : TRUE) : TRUE)
