@@ -2674,12 +2674,56 @@ EOF
 else
   echo "$ac_t""no" 1>&6
 fi
- echo $ac_n "checking setenv""... $ac_c" 1>&6
+ echo $ac_n "checking for -lutil""... $ac_c" 1>&6
+ac_lib_var=`echo util'_'logwtmp | tr './+\055' '__p_'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lutil  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 2686 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char logwtmp();
+
+int main() { return 0; }
+int t() {
+logwtmp()
+; return 0; }
+EOF
+if { (eval echo configure:2698: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+    ac_tr_lib=HAVE_LIB`echo util | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_lib 1
+EOF
+
+  LIBS="-lutil $LIBS"
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking setenv""... $ac_c" 1>&6
 if eval "test \"`echo '$''{'krb5_cv_setenv'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2683 "configure"
+#line 2727 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -2687,7 +2731,7 @@ int t() {
 setenv("PATH","/bin",0);
 ; return 0; }
 EOF
-if { (eval echo configure:2691: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2735: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_setenv=yes
 else
@@ -2710,7 +2754,7 @@ if eval "test \"`echo '$''{'krb5_cv_shadow_pwd'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2714 "configure"
+#line 2758 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <pwd.h>
@@ -2720,7 +2764,7 @@ int t() {
 struct spwd *sp = getspnam("root")
 ; return 0; }
 EOF
-if { (eval echo configure:2724: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2768: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   krb5_cv_shadow_pwd=yes
 else
@@ -2748,7 +2792,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lsecurity  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 2752 "configure"
+#line 2796 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -2760,7 +2804,7 @@ int t() {
 setluid()
 ; return 0; }
 EOF
-if { (eval echo configure:2764: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2808: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -2801,7 +2845,7 @@ if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2805 "configure"
+#line 2849 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -2825,7 +2869,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2829: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:2873: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else

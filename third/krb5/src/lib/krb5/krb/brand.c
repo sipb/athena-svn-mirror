@@ -12,4 +12,4 @@
 
 /* Format: "KRB5_BRAND: <cvs tag> <date>" */
 
-static char krb5_brand[] = "KRB5_BRAND: V1_0_BRANCH 1.0.6 19990324";
+static char krb5_brand[] = "KRB5_BRAND: V1_0_6_BETA5 1.0.6-beta5 19990502";

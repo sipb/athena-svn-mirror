@@ -1,3 +1,19 @@
+1999-04-13    <tytso@rsts-11.mit.edu>
+
+	* configure.in: Check to see if we need to pull in the util
+		library in order to find logwtmp().  (Needed for
+		Linux/glibc 2.1.)
+
+Tue Mar 30 22:30:40 1999  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (KLIB): -lcom_err, not $(COMERRLIB)
+
+Thu Mar 25 23:13:56 1999  Tom Yu  <tlyu@mit.edu>
+
+	* ftpd.c (login): Check that the luid is not the uid we want to
+	change to prior to calling setluid() so that we can run as
+	non-root.
+
 Wed Mar 24 17:11:32 1999  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Check for sys/sockio.h.

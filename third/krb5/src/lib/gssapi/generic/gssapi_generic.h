@@ -24,7 +24,7 @@
 #define _GSSAPI_GENERIC_H_
 
 /*
- * $Id: gssapi_generic.h,v 1.1.1.1 1996-09-12 04:44:06 ghudson Exp $
+ * $Id: gssapi_generic.h,v 1.1.1.2 1999-05-03 21:54:09 danw Exp $
  */
 
 #if defined(__MWERKS__) || defined(applec) || defined(THINK_C)
@@ -37,5 +37,7 @@ extern gss_OID gss_nt_user_name;
 extern gss_OID gss_nt_machine_uid_name;
 extern gss_OID gss_nt_string_uid_name;
 extern gss_OID gss_nt_service_name;
+extern gss_OID gss_nt_exported_name;
+extern gss_OID gss_nt_service_name_v2;
 
 #endif /* _GSSAPI_GENERIC_H_ */
