@@ -46,10 +46,17 @@ Display the membership of the target list.  This is the default if no
 other options are specified.
 .TP
 .B \fB-list\ \fIacl\ \fRor\ \fB-l\ \fIacl\fR:
-Changes the target access control list to
+Changes the target access control list (ACL) to
 .B acl,
-which may be one of maint, grader or turnin.  This option should
-appear before any -a or -d options it affects.
+which may be one of maint, grader, turnin or GOD.  This option should
+appear before any -a or -d options it affects.  The turnin ACL
+determines who is allowed to turn in assignments to a given course.  The
+grader ACL determines who is allowed to collect and return assignments
+for a given course.  The maint ACL determines who is allowed to add and
+delete users from the maint, grader and turnin ACLs for a given course.
+The GOD ACL for the special course . determines who is allowed to create
+and destroy courses.  Users in this ACL have all maint, grader and
+turnin privileges.
 .SH DIAGNOSTICS
 If you expect to see a full name and instead see ``(no hesiod info)'',
 then you have probably mistyped a username.
