@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.4 1989-08-04 11:09:16 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.5 1989-08-08 14:34:45 tjcoppet Exp $";
 #endif
 
 
@@ -108,28 +108,39 @@ do_olc_list(arguments)
 		}
 	  }
 	else
-	  if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+	  if(string_equiv(*arguments,"-user",max(strlen(*arguments),2)))
 	    {
 	      ++arguments;
-	      if(*arguments == (char *) NULL)
+	        if(*arguments == (char *) NULL)
 		{
 		  fprintf(stderr,
-			"You must specify a topic after the -topic option.\n");
+			"You must specify something after the -user option.\n");
 		  return(ERROR);
 		}
-	      
-	      for(i=0; *arguments != (char *) NULL; arguments++)
-		{
-		  if(strlen(*arguments) >= (NAME_LENGTH -i))
+	       strncpy(users,*arguments,NAME_LENGTH-1);
+	    }
+	  else
+	    if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+	      {
+		++arguments;
+		if(*arguments == (char *) NULL)
+		  {
 		    fprintf(stderr,
-			    "Too many topics specified. Continuing...\n");
-		  else
-		    {
-		      strncpy(topics,*arguments,NAME_LENGTH-1);
-		      break;
+			    "You must specify a topic after the -topic option.\n");
+		    return(ERROR);
+		  }
+		for(i=0; *arguments != (char *) NULL; arguments++)
+		  {
+		    if(strlen(*arguments) >= (NAME_LENGTH -i))
+		      fprintf(stderr,
+			      "Too many topics specified. Continuing...\n");
+		    else
+		      {
+			strncpy(topics,*arguments,NAME_LENGTH-1);
+			break;
 		    }
-		  if(*(arguments+1)[0] == '-')
-		    break;
+		    if(*(arguments+1)[0] == '-')
+		      break;
 		}
 	    }
       
@@ -160,6 +171,6 @@ do_olc_list(arguments)
 	break;
     }
 
-  status = t_list_queue(&Request,queues,topics,stati,comments);
+  status = t_list_queue(&Request,queues,topics,users,stati,comments);
   return(status);
 }
