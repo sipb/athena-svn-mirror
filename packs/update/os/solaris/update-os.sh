@@ -89,6 +89,7 @@ echo "Finished os installation"
 
 echo "Tracking the srvd"
 track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib
+rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 echo "Copying kernel modules from /srvd/kernel"
 cp -p /srvd/kernel/fs/* "$UPDATE_ROOT/kernel/fs"
