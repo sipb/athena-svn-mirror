@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: raek $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.18 1991-08-23 17:04:47 raek Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.19 1991-09-23 11:46:20 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -298,7 +298,6 @@ olc_replay()
   static init = 0;
 
   REQUEST Request;
-  char buf[BUFSIZ];
   ERRCODE status;
   int fd;
   int actlen;
