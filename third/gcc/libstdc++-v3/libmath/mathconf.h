@@ -34,7 +34,7 @@
 # include <endian.h>
 #else
 # ifdef HAVE_MACHINE_ENDIAN_H
-#  ifdef __OpenBSD__
+#  ifdef HAVE_SYS_TYPES_H
 #   include <sys/types.h>
 #  endif
 #  include <machine/endian.h>

@@ -24,10 +24,3 @@ public:
 private:
         ::A a;
 };
-
-
-
-
-
-
-

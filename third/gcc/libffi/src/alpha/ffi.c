@@ -3,8 +3,6 @@
    
    Alpha Foreign Function Interface 
 
-   $Id: ffi.c,v 1.1.1.1 2002-01-31 16:16:10 ghudson Exp $
-
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
    ``Software''), to deal in the Software without restriction, including

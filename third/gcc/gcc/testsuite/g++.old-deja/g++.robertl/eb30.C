@@ -14,6 +14,3 @@ void load_bin()
     if (!InFile)
         return;
 }
-
-
-

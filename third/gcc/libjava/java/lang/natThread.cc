@@ -1,6 +1,6 @@
 // natThread.cc - Native part of Thread class.
 
-/* Copyright (C) 1998, 1999, 2000  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2000, 2001  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -59,7 +59,7 @@ java::lang::Thread::initialize_native (void)
 {
   natThread *nt = (natThread *) _Jv_AllocBytes (sizeof (natThread));
   
-  // The native thread data is kept in a Object field, not a rawdata, so that
+  // The native thread data is kept in a Object field, not a RawData, so that
   // the GC allocator can be used and a finalizer run after the thread becomes
   // unreachable. Note that this relies on the GC's ability to finalize 
   // non-Java objects. FIXME?
@@ -87,7 +87,8 @@ jint
 java::lang::Thread::countStackFrames (void)
 {
   // NOTE: This is deprecated in JDK 1.2.
-  JvFail ("java::lang::Thread::countStackFrames unimplemented");
+  throw new UnsupportedOperationException
+    (JvNewStringLatin1 ("Thread.countStackFrames unimplemented"));
   return 0;
 }
 
@@ -102,7 +103,8 @@ java::lang::Thread::destroy (void)
 {
   // NOTE: This is marked as unimplemented in the JDK 1.2
   // documentation.
-  JvFail ("java::lang::Thread::destroy unimplemented");
+  throw new UnsupportedOperationException
+    (JvNewStringLatin1 ("Thread.destroy unimplemented"));
 }
 
 void
@@ -116,7 +118,7 @@ void
 java::lang::Thread::join (jlong millis, jint nanos)
 {
   if (millis < 0 || nanos < 0 || nanos > 999999)
-    _Jv_Throw (new IllegalArgumentException);
+    throw new IllegalArgumentException;
 
   Thread *current = currentThread ();
 
@@ -135,14 +137,15 @@ java::lang::Thread::join (jlong millis, jint nanos)
   _Jv_MutexUnlock (&nt->join_mutex);
 
   if (current->isInterrupted (true))
-    _Jv_Throw (new InterruptedException);
+    throw new InterruptedException;
 }
 
 void
 java::lang::Thread::resume (void)
 {
   checkAccess ();
-  JvFail ("java::lang::Thread::resume unimplemented");
+  throw new UnsupportedOperationException
+    (JvNewStringLatin1 ("Thread.resume unimplemented"));
 }
 
 void
@@ -150,7 +153,7 @@ java::lang::Thread::setPriority (jint newPriority)
 {
   checkAccess ();
   if (newPriority < MIN_PRIORITY || newPriority > MAX_PRIORITY)
-    _Jv_Throw (new IllegalArgumentException);
+    throw new IllegalArgumentException;
 
   jint gmax = group->getMaxPriority();
   if (newPriority > gmax)
@@ -165,7 +168,7 @@ void
 java::lang::Thread::sleep (jlong millis, jint nanos)
 {
   if (millis < 0 || nanos < 0 || nanos > 999999)
-    _Jv_Throw (new IllegalArgumentException);
+    throw new IllegalArgumentException;
 
   if (millis == 0 && nanos == 0)
     ++nanos;
@@ -180,7 +183,7 @@ java::lang::Thread::sleep (jlong millis, jint nanos)
   _Jv_MutexUnlock (&nt->join_mutex);
 
   if (current->isInterrupted (true))
-    _Jv_Throw (new InterruptedException);
+    throw new InterruptedException;
 }
 
 void
@@ -213,12 +216,11 @@ java::lang::Thread::finish_ ()
   _Jv_MutexUnlock (&nt->join_mutex);  
 }
 
-void
-java::lang::Thread::run_ (jobject obj)
+// Run once at thread startup, either when thread is attached or when 
+// _Jv_ThreadRun is called.
+static void
+_Jv_NotifyThreadStart (java::lang::Thread* thread)
 {
-  java::lang::Thread *thread = (java::lang::Thread *) obj;
-  try
-    {
 #ifdef ENABLE_JVMPI
       if (_Jv_JVMPI_Notify_THREAD_START)
 	{
@@ -272,7 +274,14 @@ java::lang::Thread::run_ (jobject obj)
 	  _Jv_EnableGC ();
 	}
 #endif
+}
 
+void
+_Jv_ThreadRun (java::lang::Thread* thread)
+{
+  try
+    {
+      _Jv_NotifyThreadStart (thread);
       thread->run ();
     }
   catch (java::lang::Throwable *t)
@@ -299,27 +308,55 @@ java::lang::Thread::start (void)
 
   // Its illegal to re-start() a thread, even if its dead.
   if (!startable_flag)
-    _Jv_Throw (new IllegalThreadStateException);
+    throw new IllegalThreadStateException;
 
   alive_flag = true;
   startable_flag = false;
   natThread *nt = (natThread *) data;
-  _Jv_ThreadStart (this, nt->thread, (_Jv_ThreadStartFunc *) &run_);
+  _Jv_ThreadStart (this, nt->thread, (_Jv_ThreadStartFunc *) &_Jv_ThreadRun);
 }
 
 void
 java::lang::Thread::stop (java::lang::Throwable *)
 {
-  _Jv_Throw (new UnsupportedOperationException
-	     (JvNewStringLatin1 ("java::lang::Thread::stop unimplemented")));
+  throw new UnsupportedOperationException
+    (JvNewStringLatin1 ("Thread.stop unimplemented"));
 }
 
 void
 java::lang::Thread::suspend (void)
 {
   checkAccess ();
-  _Jv_Throw (new UnsupportedOperationException 
-	     (JvNewStringLatin1 ("java::lang::Thread::suspend unimplemented")));
+  throw new UnsupportedOperationException 
+    (JvNewStringLatin1 ("Thread.suspend unimplemented"));
+}
+
+static int nextThreadNumber = 0;
+
+jstring
+java::lang::Thread::gen_name (void)
+{
+  jint i;
+  jclass sync = &java::lang::Thread::class$;
+  {
+    JvSynchronize dummy(sync); 
+    i = ++nextThreadNumber;
+  }
+
+  // Use an array large enough for "-2147483648"; i.e. 11 chars, + "Thread-".
+  jchar buffer[7+11];
+  jchar *bufend = (jchar *) ((char *) buffer + sizeof(buffer));
+  i = _Jv_FormatInt (bufend, i);
+  jchar *ptr = bufend - i;
+  // Prepend "Thread-".
+  *--ptr = '-';
+  *--ptr = 'd';
+  *--ptr = 'a';
+  *--ptr = 'e';
+  *--ptr = 'r';
+  *--ptr = 'h';
+  *--ptr = 'T';
+  return JvNewString (ptr, bufend - ptr);
 }
 
 void
@@ -343,4 +380,46 @@ _Jv_SetCurrentJNIEnv (JNIEnv *env)
   java::lang::Thread *t = _Jv_ThreadCurrent ();
   JvAssert (t != NULL);
   ((natThread *) t->data)->jni_env = env;
+}
+
+// Attach the current native thread to an existing (but unstarted) Thread 
+// object. Returns -1 on failure, 0 upon success.
+jint
+_Jv_AttachCurrentThread(java::lang::Thread* thread)
+{
+  if (thread == NULL || thread->startable_flag == false)
+    return -1;
+  thread->startable_flag = false;
+  thread->alive_flag = true;
+  natThread *nt = (natThread *) thread->data;
+  _Jv_ThreadRegister (nt->thread);
+  return 0;
+}
+
+java::lang::Thread*
+_Jv_AttachCurrentThread(jstring name, java::lang::ThreadGroup* group)
+{
+  java::lang::Thread *thread = _Jv_ThreadCurrent ();
+  if (thread != NULL)
+    return thread;
+  if (name == NULL)
+    name = java::lang::Thread::gen_name ();
+  thread = new java::lang::Thread (NULL, group, NULL, name);
+  _Jv_AttachCurrentThread (thread);
+  _Jv_NotifyThreadStart (thread);
+  return thread;
+}
+
+jint
+_Jv_DetachCurrentThread (void)
+{
+  java::lang::Thread *t = _Jv_ThreadCurrent ();
+  if (t == NULL)
+    return -1;
+
+  _Jv_ThreadUnRegister ();
+  // Release the monitors.
+  t->finish_ ();
+
+  return 0;
 }

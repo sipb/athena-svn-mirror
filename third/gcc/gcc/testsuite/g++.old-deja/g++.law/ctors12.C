@@ -27,7 +27,7 @@ int main()
         int i;                                           // page 289
 
         for(i=0; i<6; i++) ;
-	printf ("PASS\n");
+	std::printf ("PASS\n");
 
         return 0;
 }
