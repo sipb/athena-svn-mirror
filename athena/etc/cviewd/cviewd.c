@@ -17,7 +17,7 @@
  * according to a command line from stdin.
  */
 
-static const char rcsid[] = "$Id: cviewd.c,v 1.4 1999-10-19 20:23:11 danw Exp $";
+static const char rcsid[] = "$Id: cviewd.c,v 1.5 1999-11-01 19:51:08 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -25,6 +25,7 @@ static const char rcsid[] = "$Id: cviewd.c,v 1.4 1999-10-19 20:23:11 danw Exp $"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include "larvnet.h"
 
 struct outof {
