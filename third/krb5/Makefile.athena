@@ -1,8 +1,6 @@
-# $Id: Makefile.athena,v 1.15 1998-12-20 05:40:39 ghudson Exp $
+# $Id: Makefile.athena,v 1.16 1999-03-04 16:40:46 danw Exp $
 
 SHELL=/bin/sh
-ATHETCDIR=/usr/athena/etc
-ATHINCDIR=/usr/athena/include
 
 prepare:
 	rm -f src/config.cache
