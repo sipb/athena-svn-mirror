@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.6 1990-11-28 15:07:13 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.7 1990-11-30 16:49:39 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -382,11 +382,11 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
 *omenuEntry3.callback:		runCB(/usr/athena/lib/login/xcluster)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
-*omenuEntry4.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/athena/techinfo)
+*omenuEntry4.callback:		runCB(/usr/athena/lib/login/techinfo)
 *omenuEntry5.label:		Library Access
 *omenuEntry5.callback:		runCB(/usr/athena/lib/login/library)
 *omenuEntry6.label:		MIT Campus Map (xinfo)
-*omenuEntry6.callback:		runCB(/usr/athena/xinfo -inactive 180 -display :0.0)
+*omenuEntry6.callback:		runCB(/usr/athena/lib/login/xinfo)
 *omenuEntry6a.label:		Display Workstation Configuration
 *omenuEntry6a.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 60 /etc/athena/login/machine)
 *omenuEntry7.label:		Other
