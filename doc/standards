@@ -99,9 +99,10 @@ Begin each shell script with:
 followed by an MIT copyright if the shell script will be distributed
 outside of MIT.
 
-Use tabs for indentation.  Avoid putting the then or else clauses of
-an if statement on the same line.  Avoid creating lines longer than 79
-characters.  Write case statements according to the format:
+Use two spaces for indentation.  Avoid putting the result or
+alternative parts of an if statement on the same line as the "if" or
+"else".  Avoid creating lines longer than 79 characters.  Write case
+statements according to the format:
 
 	case expression in
 	pattern)
