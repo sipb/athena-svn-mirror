@@ -1,4 +1,4 @@
-# $Id: packages,v 1.1 1996-09-20 05:07:23 ghudson Exp $
+# $Id: packages,v 1.2 1996-09-22 00:04:24 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -40,7 +40,6 @@ third/wcl
 #third/mh
 #third/x3270
 #third/transcript
-#third/ditroff			sun4
 #third/talk			sun4
 #third/ansi			sun4
 #third/jove			sun4
@@ -83,7 +82,6 @@ athena/bin/dent
 athena/bin/attach
 athena/bin/dash
 athena/bin/xmore
-athena/bin/mkserv
 athena/bin/cal
 athena/bin/xdsc
 athena/bin/rkinit
