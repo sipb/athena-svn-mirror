@@ -63,7 +63,7 @@ print_help()
   wait_for_key();
   clear();
   refresh();
-  make_display();
+  make_display(Current_Index);
 }
 
 
@@ -76,7 +76,8 @@ print_help()
 top()
 {
   set_current_dir(Root_Dir);
-  make_display();
+  Current_Index=1;
+  make_display(Current_Index);
 }
 
 /* Function:	prev_entry() displays the previous CREF entry.
@@ -131,10 +132,12 @@ up_level()
 	{
 	  set_current_dir(new_dir);
 	  Current_Index = Previous_Index;
+	  Index_Start = Prev_Index_Start;
+	  Prev_Index_Start = 1;
 	  Previous_Index = 1;
 	}
     }
-  make_display();
+  make_display(Index_Start);
 }
 
 /* Function:	save_file() saves an entry in a file.
@@ -205,7 +208,7 @@ next_page()
     Index_Start = new_index;
   else
     Index_Start = Entry_Count - MAX_INDEX_LINES + 2;
-  make_display();
+  make_display(Index_Start);
 }
 
 /* Function:	prev_page() displays the previous page of the index.
@@ -219,7 +222,7 @@ prev_page()
   Index_Start = Index_Start - MAX_INDEX_LINES + 1;
   if (Index_Start < 1)
     Index_Start = 1;
-  make_display();
+  make_display(Index_Start);
 }
 
 
@@ -273,7 +276,8 @@ goto_entry()
 	  if (check_cref_dir(new_dir) == TRUE)
 	    {
 	      set_current_dir(new_dir);
-	      make_display();
+	      Current_Index=1;
+	      make_display(Current_Index);
 	      message(1,"");
 	      return;
 	    }
@@ -390,7 +394,7 @@ list_abbrevs()
     }
   wait_for_key();
   clear();
-  make_display();
+  make_display(Current_Index);
 }
 
 /* Function:	insert_entry() inserts a new entry into the current CREF
@@ -520,7 +524,7 @@ insert_entry()
   if (inbuf[0] != 'y')
     {
       clear();
-      make_display();
+      make_display(Current_Index);
       return;
     }
 
@@ -531,7 +535,7 @@ insert_entry()
 	{
 	  wait_for_key();
 	  clear();
-	  make_display();
+	  make_display(Current_Index);
 	  return;
 	}
     }
@@ -542,7 +546,7 @@ insert_entry()
 	{
 	  wait_for_key();
 	  clear();
-	  make_display();
+	  make_display(Current_Index);
 	  return;
 	}
     }
@@ -565,7 +569,7 @@ insert_entry()
 		sprintf(line2, "Unable to rmdir:%s",newdir);
 	    }
 	  messages(line1,line2);
-	  make_display();
+	  make_display(Current_Index);
 	  return;
 	}
       fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
@@ -588,7 +592,7 @@ else
 	      sprintf(line2, "Unable to rmdir:%s",newdir);
 	  }
 	messages(line1,line2);
-	make_display();
+	make_display(Current_Index);
 	return;
       }
     
@@ -633,7 +637,7 @@ else
     }
   set_current_dir(Current_Dir);
   clear();
-  make_display();
+  make_display(Current_Index);
 }
 
 /* Function:	remove_entry() removes an entry from the CREF
@@ -701,7 +705,7 @@ delete_entry()
   if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
     {
       message(1, "Unable to open contents file.");
-      make_display();
+      make_display(Current_Index);
       return;
     }
 
@@ -752,14 +756,14 @@ delete_entry()
   
   set_current_dir(Current_Dir);
   clear();
-  make_display();
+  make_display(Current_Index);
 }
 
 redisplay()
 {
   set_current_dir(Current_Dir);
   clear();
-  make_display();
+  make_display(Index_Start);
 }
 
 contents_file()
@@ -772,7 +776,7 @@ contents_file()
   call_program("more",contents_path);
   wait_for_key();
   clear();
-  make_display();
+  make_display(Current_Index);
 }
 
 dir_contents()
@@ -782,5 +786,5 @@ dir_contents()
   call_program("ls",Current_Dir);
   wait_for_key();
   clear();
-  make_display();
+  make_display(Current_Index);
 }
