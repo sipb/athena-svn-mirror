@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.10 1990-11-16 15:08:25 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.11 1991-01-23 13:20:54 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.10 1990-11-16 15:08:25 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.11 1991-01-23 13:20:54 epeisach Exp $";
 #endif lint
 
 /*
@@ -270,7 +270,11 @@ main(argc, argv)
 
 reapchild()
 {
+#if !defined(_IBMR2)
 	union wait status;
+#else
+	int status;
+#endif
 
 	while (wait3(&status, WNOHANG, 0) > 0)
 		;
