@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.19 1993-05-05 10:57:19 vrt Exp $
+ * $Id: finger.c,v 1.20 1994-05-10 09:38:24 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.19 1993-05-05 10:57:19 vrt Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.20 1994-05-10 09:38:24 miki Exp $";
 #endif lint
 
 /*
@@ -76,6 +76,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/stat.h>
 #ifdef SOLARIS
 #include <utmpx.h>
+#include <strings.h>
 #endif
 #include <utmp.h>
 #include <sys/signal.h>
@@ -1391,16 +1392,16 @@ netfinger(name)
 	struct servent *sp;
 	struct sockaddr_in sin;
 	int s;
-	char *rindex();
+
 	register FILE *f;
 	register int c;
 	register int lastc;
 
 	if (name == NULL)
 		return (0);
-	host = rindex(name, '@');
+	host = strrchr(name, '@');
 	if (host == NULL) {
-		host = rindex(name, '%');
+		host = strrchr(name, '%');
 		if (host != NULL)
 			*host = '@';
 		else
