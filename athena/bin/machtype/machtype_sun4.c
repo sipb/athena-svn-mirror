@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.19 1998-03-10 20:19:43 ghudson Exp $
+ *    $Id: machtype_sun4.c,v 1.20 1998-03-11 20:25:19 ghudson Exp $
  *    $Locker:  $
  */
 
@@ -334,92 +334,24 @@ do_dpy(kernel, mf)
 char *kernel;
 int mf;
 {
-  int fd, iret;
-  struct fbgattr attr;
-  char buf[1024];
+  int count;
+  char buf[1024], *p;
 
-  /* Open default frame buffer device. */
-  fd = open("/dev/fb", O_RDONLY);
-  if (fd < 0)
-    {
-      perror("Opening /dev/fb");
-      exit(1);
-    }
-
-  /* Get type info from device. */
-  iret = ioctl(fd, FBIOGATTR, &attr);
-  if (iret == -1)
-    {
-      /* ffb devices don't support this ioctl yet. */
-      if (errno == ENOTTY)
-	{
-	  /* readlink to check if it is type ffb. */
-	  iret = readlink("/dev/fb", buf, sizeof(buf));
-	  if (iret == 27 && !strncmp(buf, "/devices/SUNW,ffb@1e,0:ffb0", 27))
-	    puts(verbose ? "ffb frame buffer" : "ffb");
-	  else
-	    puts(verbose ? "unknown frame buffer" : "unknown");
-	  return;
-	}
-      else
-	perror("Ioctl on frame device");
-      exit(1);
-    }
-  close(fd);
-
-  switch (attr.fbtype.fb_type)
-    {
-    case FBTYPE_SUN1BW:
-      puts(verbose ? "bwone frame buffer" : "bwone");
-      break;
-    case FBTYPE_SUN1COLOR:
-      puts(verbose ? "cgone frame buffer" : "cgone");
-      break;
-    case FBTYPE_SUN2BW:
-      puts(verbose ? "bwtwo frame buffer" : "bwtwo");
-      break;
-    case FBTYPE_SUN2COLOR:
-      puts(verbose ? "cgtwo frame buffer" : "cgtwo");
-      break;
-    case FBTYPE_SUN2GP:
-      puts(verbose ? "cgtwelve frame buffer" : "cgtwelve");
-      break;
-    case FBTYPE_SUN5COLOR:
-      puts(verbose ? "cgsix frame buffer" : "cgsix");
-      break;
-    case FBTYPE_SUN3COLOR:
-      puts(verbose ? "cgthree frame buffer" : "cgthree");
-      break;
-    case FBTYPE_MEMCOLOR:
-      puts(verbose ? "bwtwo frame buffer" : "bwtwo");
-      break;
-    case FBTYPE_SUN4COLOR:
-      puts(verbose ? "cgfour frame buffer" : "cgfour");
-      break;
-    case FBTYPE_SUNFAST_COLOR:
-      puts(verbose ? "cgsix frame buffer" : "cgsix");
-      break;
-    case FBTYPE_SUNROP_COLOR:
-      puts(verbose ? "cgtwelve frame buffer" : "cgtwelve");
-      break;
-    case FBTYPE_SUNGP3:
-      puts(verbose ? "cgtwelve frame buffer" : "cgtwelve");
-      break;
-    case FBTYPE_SUNGT:
-      puts(verbose ? "gt frame buffer" : "gt");
-      break;
-    case FBTYPE_SUNLEO:
-      puts(verbose ? "zx frame buffer" : "zx");
-      break;
-    case FBTYPE_MDICOLOR:
-      puts(verbose ? "cgfourteen frame buffer" : "cgfourteen");
-      break;
-    default:
-      if (verbose)
-	printf("unknown type %d frame buffer\n", attr.fbtype.fb_type);
-      else
-	puts("unknown");
-    }
+  count = readlink("/dev/fb", buf, sizeof(buf) - 1);
+  if (count == -1) {
+    puts(verbose ? "unknown frame buffer" : "unknown");
+    return;
+  }
+  buf[count] = 0;
+  p = buf + count;
+  while (p > buf && isdigit(*(p - 1)))
+    *--p = 0;
+  p = strrchr(buf, ':');
+  if (!p) {
+    puts(verbose ? "unknown frame buffer" : "unknown");
+    return;
+  }
+  printf("%s%s\n", p + 1, verbose ? " frame buffer" : "");
 }
 
 do_disk(kernel, mf)
