@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10.2.1 1997-08-12 20:47:01 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10.2.1 1997-08-12 20:47:01 ghudson Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -36,7 +36,7 @@ char buffer[512];
 char *ctime();
 struct timeval tv;
 struct timezone tz;
-jmp_buf top_level;
+sigjmp_buf top_level;
 int hiccup();
 main(argc, argv)
 	int argc;
@@ -110,7 +110,7 @@ main(argc, argv)
 		perror ("gettime: connect");
 		exit (4);
 	}
-	setjmp(top_level);
+	sigsetjmp(top_level, 1);
 	if (attempts++ > 5) {
 		close (s);
 		fprintf (stderr, "Failed to get time from %s\n",
@@ -161,5 +161,5 @@ main(argc, argv)
 	exit (0);
 }
 hiccup() {
-	longjmp (top_level,0);
+	siglongjmp (top_level,0);
 }
