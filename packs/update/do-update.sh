@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.3 1997-01-11 19:27:00 ghudson Exp $
+# $Id: do-update.sh,v 1.4 1997-01-23 16:15:36 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -105,6 +105,38 @@ if [ -s "$CONFCHG" ]; then
 		rm -rf $i
 		cp -p /srvd/$i $i
 	done
+fi
+
+echo "Backing up $CONFDIR/rc.conf to $CONFDIR/rc.conf.old."
+rm -f "$CONFDIR/rc.conf.old"
+cp -p "$CONFDIR/rc.conf" "$CONFDIR/rc.conf.old"
+
+if [ "$PUBLIC" = true ]; then
+	# Just substitute who we are into the current rc.conf from the srvd.
+	echo "Updating $CONFDIR/rc.conf from /srvd$CONFDIR/rc.conf"
+	sed -n	-e "s/^HOST=[^;]*/HOST=${HOST}/" \
+		-e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
+		-e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
+		-e "s/^NETDEV=[^;]*/NETDEV=${NETDEV}/" \
+		-e p "/srvd$CONFDIR/rc.conf" > "$CONFDIR/rc.conf"
+else
+	# Add any new variables to rc.conf.
+	echo "Looking for new variables to add to $CONFDIR/rc.conf"
+	conf=`cat "/srvd$CONFDIR/rc.conf" | awk -F= '(NF>1){print $1}'`
+	vars=""
+	for i in $conf; do
+		if [ `grep -c "^$i=" "$CONFDIR/rc.conf"` = 0 ]; then 
+			vars="$vars $i"
+		fi
+	done
+	if [ -n "$vars" ]; then
+		echo "The following variables are being added to /etc/rc.conf:"
+		echo "	$vars"
+		for i in $vars; do
+			grep "^$i=" "/srvd$CONFDIR/rc.conf" \
+				>> "$CONFDIR/rc.conf"
+		done
+	fi
 fi
 
 # We could be more intelligent and shutdown everything, but...
