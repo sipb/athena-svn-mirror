@@ -1,6 +1,6 @@
-GLOBAL : *.CKP *.local *.pid :
+GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.30 1998-01-14 17:29:58 ghudson Exp $
+## $Id: sys_rvd,v 1.31 1998-04-16 22:32:44 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
