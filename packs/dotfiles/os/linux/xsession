@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.14 2001-05-15 23:19:19 ghudson Exp $
+# $Id: xsession,v 1.15 2001-06-19 18:26:12 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -101,6 +101,8 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 # *******************   ACTIVITY STARTUP   *******************
 
+if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
+
 # Run standard system/user startup activities
 
 if ( ! $?ATHENA_DASH_INTERFACE) then
@@ -138,7 +140,6 @@ endif
 # Start window manager.  To change your default window manager, set the 
 # WINDOW_MANAGER environment variable in your ~/.environment file.
 
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
 if ($?NOCALLS) then
