@@ -22,13 +22,13 @@
  *
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
- *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.8 1992-02-04 22:06:59 lwvanels Exp $
+ *	$Author: ghudson $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.9 1997-04-30 17:28:02 ghudson Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_display_c = "$Header: ";
+static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.9 1997-04-30 17:28:02 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -36,8 +36,8 @@ static char *rcsid_display_c = "$Header: ";
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 
-#include "cref.h"			/* Finder defs. */
-#include "globals.h"			/* Global variables. */
+#include <browser/cref.h>		/* Finder defs. */
+#include <browser/cur_globals.h>	/* Global variables. */
 
 /* Function:	init_display() initializes the CREF display.
  * Arguments:	None.
@@ -52,7 +52,7 @@ init_display()
 {
   if (! initscr())
     return(ERROR);
-  crmode();
+  cbreak();
   echo();
   clear();
   refresh();
@@ -165,7 +165,7 @@ make_display()
       clrtoeol();
     }
   strcpy(current_dir, Current_Dir);
-  center(0, (CREF) ? CREF_HEADER : STOCK_HEADER );
+  center(0, Header);
   center(1, current_dir);
   curr_ind = Ind_Start;
   curr_line = 3;
@@ -205,7 +205,8 @@ display_entry(ind)
 {
   ENTRY *entry;				/* Entry to be displayed. */
   
-  if ( (entry = get_entry(ind)) == NULL)
+  entry = get_entry(ind);
+  if (entry == NULL)
     {
       message(1, "Invalid entry number.");
       return;
@@ -218,7 +219,10 @@ display_entry(ind)
 #endif
       clear();
       refresh();
+      reset_shell_mode();
       call_program("more", entry->filename);
+      reset_prog_mode();
+      refresh();
       wait_for_key();
       clear();
       make_display();
