@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.9 1998-09-12 17:41:51 ghudson Exp $
+# $Id: Makefile.athena,v 1.10 2000-03-15 20:50:21 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -18,11 +18,11 @@ clean:
 all:
 	${MAKE} all LANGUAGES=c
 	${MAKE} stage1
-	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=c
+	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2
 
 check:
 
 install:
 	mkdir -p "$$SRVD/usr"
 	${MAKE} install "prefix=$$SRVD/usr/gcc" CC="stage1/xgcc -Bstage1/" \
-		CFLAGS=-O2 LANGUAGES=c
+		CFLAGS=-O2
