@@ -20,6 +20,10 @@ umask 022
 case $1 in 
 'start')
 
+# Let the log host know that we're booting.
+
+logger -p user.notice "Booting"
+
 $ECHO "MIT configuration..."
 
 # Read configuration variables
