@@ -17,6 +17,7 @@
 *window.mapNotifyProc:		mapnotify()
 *window.mapped:			False
 *window.cursorCode:		132
+*window.input:			False
 
 !
 ! console is specified here because we really only want this resource
