@@ -9,12 +9,17 @@
 create_mail_dir(dir)
     char *dir;
 {
+    char tmp[MAXPATH+128];
+
     if(mkdir(dir, 0700) < 0)
       return(-1);
 
     (void)chmod(dir, 0700);
     /* Some systems need this, on others we don't care if it fails */
     (void)chown(dir, getuid(), getgid());
+    sprintf(tmp, "fs sa %.*s system:anyuser none system:authuser none",
+	    (int) MAXPATH, dir);
+    system(tmp);
     return(0);
 }
 
