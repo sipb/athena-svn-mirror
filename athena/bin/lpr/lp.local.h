@@ -44,7 +44,7 @@
 #define DEFWIDTH	132
 #define DEFLENGTH	66
 #define DEFUID		1
-
+#define DEFPC		0	/* Default page cost */
 /*
  * When files are created in the spooling area, they are normally
  *   readable only by their owner and the spooling group.  If you
