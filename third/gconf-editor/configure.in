@@ -2,7 +2,7 @@
 AC_INIT(src/main.c)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gconf-editor,2.8.0)
+AM_INIT_AUTOMAKE(gconf-editor,2.8.2)
 AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL
@@ -31,7 +31,7 @@ fi
 AC_DEFINE_UNQUOTED(GNOMELOCALEDIR, "$GNOMELOCALEDIR", [Locate directory])
 
 PKG_CHECK_MODULES(GCONF_EDITOR,
-		  gconf-2.0 >= 1.1.10 		\
+		  gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4)

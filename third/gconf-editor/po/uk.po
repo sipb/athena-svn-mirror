@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
 "PO-Revision-Date: 2004-08-03 10:34+0200\n"
 "Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -395,7 +395,7 @@ msgstr "Створення ключа"
 
 #: src/gconf-key-editor.c:789
 msgid "Edit key"
-msgstr "правка ключ"
+msgstr "Правка ключа"
 
 #: src/gconf-search-dialog.c:61
 msgid "Pattern not found"

@@ -50,17 +50,27 @@ invalid_arg_error_dialog (GtkWindow  *parent,
 gint
 main (gint argc, gchar **argv)
 {
+	GnomeProgram *program;
+	GValue value = { 0 };
+	poptContext pctx;
 	GtkWidget *window;
+	const char *initial_key;
 
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 
-	gnome_program_init ("gconf-editor", VERSION, 
-			    LIBGNOMEUI_MODULE, argc, argv,
-			    GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
+	program = gnome_program_init ("gconf-editor", VERSION, 
+	                              LIBGNOMEUI_MODULE, argc, argv,
+	                              GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
 
+	g_value_init (&value, G_TYPE_POINTER);
+	g_object_get_property (G_OBJECT (program),
+	                       GNOME_PARAM_POPT_CONTEXT,
+	                       &value);
+	pctx = g_value_get_pointer (&value);
+	g_value_unset (&value);
 
 	/* Register our stock icons */
 	gconf_stock_icons_register ();
@@ -68,16 +78,21 @@ main (gint argc, gchar **argv)
 	window = gconf_editor_application_create_editor_window (GCONF_EDITOR_WINDOW_NORMAL);
 	gtk_widget_show_now (window);
 
-	if (argc > 1) {
+	initial_key = poptGetArg (pctx);
+
+	if (initial_key != NULL) {
 		char *reason;
 
-		if (gconf_valid_key (argv [1], &reason))
-			gconf_editor_window_go_to (GCONF_EDITOR_WINDOW (window), argv [1]);
+		if (gconf_valid_key (initial_key, &reason))
+			gconf_editor_window_go_to (GCONF_EDITOR_WINDOW (window),
+			                           initial_key);
 		else {
-			invalid_arg_error_dialog (GTK_WINDOW (window), argv [1], reason);
+			invalid_arg_error_dialog (GTK_WINDOW (window),
+			                          initial_key, reason);
 			g_free (reason);
 		}
 	}
+	poptFreeContext (pctx);
 
 	gtk_main ();
 	

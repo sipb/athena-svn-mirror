@@ -1,3 +1,17 @@
+2.8.2: "Huerto del loro"
+* Fixes:
+	- Fix for spewing warnings on startup (Fix bug #144833, Mark 
+	  McLoughlin)
+
+* Improvements:
+	- Updated German documentation (Keywan Najafi Tonekaboni)
+
+2.8.1: "Puerto Rico"
+* Fixes:
+	- Parse correctly gtk/gnome command line arguments (based on patch
+	  from Julio M. Merino Vidal. Fix bug #151829)
+	- Fix a crash when have_icons key is not present. Fix bug #151720.
+
 2.8,0: "Josha Bell"
 * Fixes:
 	- Fixes to docs (Shaun McCance)

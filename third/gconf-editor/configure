@@ -1700,7 +1700,7 @@ fi
 
 PACKAGE=gconf-editor
 
-VERSION=2.8.0
+VERSION=2.8.2
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -19102,16 +19102,16 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for gconf-2.0 >= 1.1.10 		\
+        echo "$as_me:$LINENO: checking for gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4" >&5
-echo $ECHO_N "checking for gconf-2.0 >= 1.1.10 		\
+echo $ECHO_N "checking for gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "gconf-2.0 >= 1.1.10 		\
+        if $PKG_CONFIG --exists "gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4" ; then
@@ -19121,7 +19121,7 @@ echo "${ECHO_T}yes" >&6
 
             echo "$as_me:$LINENO: checking GCONF_EDITOR_CFLAGS" >&5
 echo $ECHO_N "checking GCONF_EDITOR_CFLAGS... $ECHO_C" >&6
-            GCONF_EDITOR_CFLAGS=`$PKG_CONFIG --cflags "gconf-2.0 >= 1.1.10 		\
+            GCONF_EDITOR_CFLAGS=`$PKG_CONFIG --cflags "gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4"`
@@ -19130,7 +19130,7 @@ echo "${ECHO_T}$GCONF_EDITOR_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking GCONF_EDITOR_LIBS" >&5
 echo $ECHO_N "checking GCONF_EDITOR_LIBS... $ECHO_C" >&6
-            GCONF_EDITOR_LIBS=`$PKG_CONFIG --libs "gconf-2.0 >= 1.1.10 		\
+            GCONF_EDITOR_LIBS=`$PKG_CONFIG --libs "gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4"`
@@ -19141,7 +19141,7 @@ echo "${ECHO_T}$GCONF_EDITOR_LIBS" >&6
             GCONF_EDITOR_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            GCONF_EDITOR_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gconf-2.0 >= 1.1.10 		\
+            GCONF_EDITOR_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4"`
@@ -19159,11 +19159,11 @@ echo "${ECHO_T}$GCONF_EDITOR_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements (gconf-2.0 >= 1.1.10 		\
+     { { echo "$as_me:$LINENO: error: Library requirements (gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (gconf-2.0 >= 1.1.10 		\
+echo "$as_me: error: Library requirements (gconf-2.0 >= 2.8.1 		\
 		  gtk+-2.0 >= 2.0.2 		\
 		  libgnome-2.0 >= 1.96.0        \
 		  libgnomeui-2.0 >= 2.5.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}

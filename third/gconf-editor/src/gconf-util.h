@@ -32,7 +32,7 @@ GType gconf_value_get_type (void);
 gchar *gconf_get_key_name_from_path (const gchar *path);
 gchar *gconf_value_type_to_string (GConfValueType value_type);
 GConfSchema *gconf_client_get_schema_for_key (GConfClient *client, const char *key);
-gboolean gconf_client_can_edit_defaults (void);
-gboolean gconf_client_can_edit_mandatory (void);
+gboolean gconf_util_can_edit_defaults (void);
+gboolean gconf_util_can_edit_mandatory (void);
 
 #endif /* __GCONF_UTIL_H__ */

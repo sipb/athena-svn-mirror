@@ -1,7 +1,7 @@
 # Canadian English translation of gconf-editor 2.7.1.
 # Copyright (C) 2004 Adam Weinberger, Alexander Winston,
 # 	and the GNOME Foundation
-# This file is distributed under the same license as the gconf-editor package.
+# This file is distributed under the same licence as the gconf-editor package.
 # Alexander Winston <alexander.winston@comcast.net>, 2004.
 # Adam Weinberger <adamw@gnome.org>, 2004.
 #
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor 2.7.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
-"PO-Revision-Date: 2004-08-02 22:06-0400\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
+"PO-Revision-Date: 2004-09-24 22:06-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -224,7 +224,7 @@ msgstr "_About"
 
 #: src/gconf-editor-window.c:762
 msgid "Show the about dialog for the gconf editor"
-msgstr "Show the about dialog for the gconf editor"
+msgstr "Show the about dialogue for the gconf editor"
 
 #: src/gconf-editor-window.c:765
 msgid "_New Key..."
