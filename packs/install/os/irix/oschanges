@@ -123,4 +123,9 @@ if [ "${AIS_CPUBOARD}" = "IP32" ]; then
     fi
 fi
 
+# The SGI Netscape app-defaults file has some settings that we don't
+# want, e.g. for menu mnemonics.  Since any desired SGI-specific settings
+# should be in the infoagents file, just nuke it from the OS.
+rm -rf ${AIS_ROOT}/usr/lib/X11/app-defaults/Netscape
+
 exit 0

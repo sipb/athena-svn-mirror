@@ -1,5 +1,5 @@
 #ifndef lint
-  static char rcsid_module_c[] = "$Id: main.c,v 1.3 1999-01-22 23:15:44 ghudson Exp $";
+  static char rcsid_module_c[] = "$Id: main.c,v 1.3.2.1 1999-07-12 20:29:53 ghudson Exp $";
 #endif lint
 
 /*	This is the file main.c for the Xmore, a file browsing utility
@@ -10,7 +10,7 @@
  *	Created: 	October 22, 1987
  *	By:		Chris D. Peterson
  *
- *      $Id: main.c,v 1.3 1999-01-22 23:15:44 ghudson Exp $
+ *      $Id: main.c,v 1.3.2.1 1999-07-12 20:29:53 ghudson Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -41,7 +41,7 @@ static XtResource resources[] = {
      (Cardinal) &(help_file_name), XtRString, HELPFILE},
 };
 
-void 
+int 
 main(argc,argv)
 char ** argv;
 int argc;
@@ -51,7 +51,7 @@ int argc;
   FILE * file;
 
   top = XtInitialize(argv[0],"Topwidget",NULL,(unsigned int) 0,
-		     (Cardinal*) &argc,argv);
+		     &argc,argv);
 
   XtGetApplicationResources( (Widget) top, (caddr_t) NULL, 
 			    resources, XtNumber(resources),
@@ -152,7 +152,8 @@ Widget parent;
   Widget pane,form,quit,help;	/* Several widget names. */
   Arg arglist[3];		/* An arglist. */
   Cardinal num_args;	      /* The number of argument in the current list. */
-  int height, height_vert, border_width; /* The sizes of the quit widget. */
+  Dimension height, border_width; /* The sizes of the quit widget. */
+  int height_vert;
 
   num_args = (Cardinal) 0;
 /* TopLevel overrides but this gives it something to work with. */
