@@ -7,7 +7,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.7 1991-05-08 20:52:51 lwvanels Exp $
+ *	$Id: os.h,v 1.8 1992-01-07 16:48:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -17,6 +17,11 @@
 #include <sys/time.h>
 #ifndef DIRSIZ
 #include <sys/dir.h>
+#if defined(_IBMR2) && defined(ZEPHYR)
+/* Conflict in definitions between AIX's dir.h and zephyr.h for STAT; keep */
+/* the Zephyr one */
+#undef STAT
+#endif
 #endif
 #include <sys/resource.h>
 
