@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.10 1993-10-13 16:30:29 probe Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.11 1993-11-19 15:12:21 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -158,14 +158,14 @@ char *sugg_serv;
 	     break;
 	 }
      }
-     _BCOPY(hp->h_addr, (char *)&serv_sin.sin_addr, hp->h_length);
+     (void) memcpy((char *)&serv_sin.sin_addr, hp->h_addr, hp->h_length);
      nservchang++;
 }
 
 server_manager(notice)
 ZNotice_t *notice;
 {
-     if ((bcmp((char *)&serv_sin.sin_addr, (char *)&from.sin_addr, 4) != 0) ||
+     if (memcmp((char *)&serv_sin.sin_addr, (char *)&from.sin_addr, 4) ||
 	 (serv_sin.sin_port != from.sin_port)) {
 	  syslog (LOG_INFO, "Bad notice from port %u.", notice->z_port);
      } else {
