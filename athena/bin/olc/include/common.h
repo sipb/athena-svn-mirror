@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.7 1991-02-24 11:44:46 lwvanels Exp $
+ *	$Id: common.h,v 1.8 1991-02-25 11:14:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -23,7 +23,7 @@
 typedef struct tSTATUS
 {
   int status;
-  char label[LABEL_SIZE];
+  char label[TITLE_SIZE];
 } STATUS;
 
 #ifdef __STDC__
