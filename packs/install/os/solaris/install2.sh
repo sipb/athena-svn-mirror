@@ -74,7 +74,7 @@ echo "Installing Requested and Security patches for OS "
 
 
 echo "add/remove osfiles as needed\n"
-sh /util/oschanges 2>/dev/null
+sh /srvd/install/oschanges 2>/dev/null
 date >/tmp/end
 echo "the os part is installed"
 
