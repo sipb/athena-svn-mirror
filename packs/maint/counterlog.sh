@@ -23,10 +23,10 @@ fi
 
 if [ ! -f /var/athena/counter-id ]; then
   if [ -r /dev/urandom ]; then
-    dd if=/dev/urandom bs=100 count=1 2>/dev/null | sum | awk '{print $1}' \
-      > /var/athena/counter-id
+    dd if=/dev/urandom bs=8 count=1 2>/dev/null | od -x \
+      | awk '{print $2 $3 $4 $5; exit}' > /var/athena/counter-id
   else
-    echo "" | awk '{srand; printf "%05d\n", int(rand * 99999); }' \
+    echo "" | awk '{srand; printf "%09d\n", int(rand * 999999999); }' \
       > /var/athena/counter-id
   fi
   chmod 644 /var/athena/counter-id
