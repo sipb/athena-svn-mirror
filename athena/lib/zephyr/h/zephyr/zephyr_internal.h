@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.4 1987-06-10 13:33:50 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.5 1987-06-24 04:52:34 rfrench Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
@@ -21,18 +21,21 @@ struct _Z_InputQ {
 	struct		_Z_InputQ *next;
 	struct		_Z_InputQ *prev;
 	int		packet_len;
-	struct		sockaddr_in *from;
-	int		from_len;
+	struct		sockaddr_in from;
 	ZPacket_t	packet;
 };
 
 extern struct _Z_InputQ *__Q_Head, *__Q_Tail;
 extern int __Q_Length;
 
-extern int __HM_port;
-extern int __HM_length;
 extern int __Zephyr_open;
-extern char *__HM_addr;
+extern int __HM_set;
+extern int __Zephyr_server;
+extern char __Zephyr_realm[];
+
+extern char **__locate_list;
+extern int __locate_num;
+extern int __locate_next;
 
 #define Z_QLength() (__Q_Length)
 
