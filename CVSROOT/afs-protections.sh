@@ -1,13 +1,13 @@
 #!/bin/sh
 
-genacl="read:source read adm:source la"
+genacl="read:source read read:staff read adm:source la"
 
 case "$1" in
 	repository)
 		genacl="$genacl write:staff write"
 		;;
 	wd)
-		genacl="$genacl read:staff read write:update write"
+		genacl="$genacl write:update write"
 		;;
 	*)
 		echo "Usage: $0 {repository|wd}"
