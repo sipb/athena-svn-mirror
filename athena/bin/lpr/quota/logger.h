@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.4 1990-11-08 09:53:32 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.5 1991-02-09 16:43:43 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v $ */
 /* $Author: epeisach $ */
 
@@ -145,7 +145,7 @@ User_db *logger_find_user();
 
 int logger_journal_set_name(), logger_journal_write_line(), 
 	logger_journal_get_header(), logger_journal_put_header(),
-	logger_journal_add_entry();
+	logger_journal_add_entry(), logger_journal_set_sync();
 log_entity *logger_journal_get_line();
 
 int logger_parse_quota(), logger_cvt_line();
