@@ -1,4 +1,4 @@
-# $Id: configure.athena,v 1.5 1999-05-19 19:43:51 ghudson Exp $
+# $Id: configure.athena,v 1.6 2001-04-03 16:06:49 ghudson Exp $
 
 ./configure --enable-nmh-pop --enable-nmh-debug \
 	--with-krb4=$ATHTOOLROOT/usr/athena \
@@ -11,7 +11,7 @@
 rm -f configtmp
 cp config.h configtmp
 
-case $HOSTTYPE in
+case $ATHENA_HOSTTYPE in
 "sun4" | "sgi")
 	sed -e 's/\/\*.*SYS5.*/#define SYS5	1/' \
 	    -e 's/\/\*.*SVR4.*/#define SVR4	1/' \

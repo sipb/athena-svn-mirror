@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.63 2001-03-28 01:38:59 ghudson Exp $
+# $Id: do.sh,v 1.64 2001-04-03 16:06:43 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -65,7 +65,7 @@ esac
 
 # Set up the build environment.
 umask 022
-export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS PATH M4
+export ATHENA_SYS ATHENA_SYS_COMPAT ATHENA_HOSTTYPE OS PATH M4
 M4=$athtoolroot/usr/athena/bin/m4
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
@@ -119,13 +119,13 @@ esac
 # Determine platform name.
 case `uname -sm` in
 "SunOS sun4"*)
-  HOSTTYPE=sun4
+  ATHENA_HOSTTYPE=sun4
   ;;
 "IRIX "*)
-  HOSTTYPE=sgi
+  ATHENA_HOSTTYPE=sgi
   ;;
 "Linux "i?86)
-  HOSTTYPE=linux
+  ATHENA_HOSTTYPE=linux
   ;;
 esac
 

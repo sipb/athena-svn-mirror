@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 2000-03-29 19:55:07 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 2001-04-03 16:06:47 ghudson Exp $
 
 SHELL=/bin/sh
 IMAN=buildhash.1 findaffix.1 munchlist.1 tryaffix.1
@@ -12,7 +12,7 @@ dist:
 
 prepare:
 	rm -f local.h
-	sed -e "s,@COMPILER@,$$COMPILER," "local.h.$$HOSTTYPE" > local.h
+	sed -e "s,@COMPILER@,$$COMPILER," "local.h.$$ATHENA_HOSTTYPE" > local.h
 
 clean:
 	${MAKE} clean

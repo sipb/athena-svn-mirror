@@ -1,6 +1,6 @@
 #!/bin/sh
 
-case $HOSTTYPE in
+case $ATHENA_HOSTTYPE in
 sun4)
 	./configure "$@" --disable-shm
 	;;

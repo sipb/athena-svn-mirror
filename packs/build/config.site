@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.31 2001-04-02 19:05:13 ghudson Exp $
+# $Id: config.site,v 1.32 2001-04-03 16:06:43 ghudson Exp $
 #
 
 athena=true
@@ -23,7 +23,7 @@ esac
 [ -n "$CPPFLAGS" ] || CPPFLAGS=-I$ATHTOOLROOT/usr/athena/include
 
 # Set location of X and Motif includes and libraries.
-case "$HOSTTYPE" in
+case "$ATHENA_HOSTTYPE" in
 sun4)
   x_includes=/usr/openwin/include
   x_libraries=/usr/openwin/lib

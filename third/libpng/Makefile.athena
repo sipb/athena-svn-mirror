@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.1 2000-11-08 19:50:53 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2001-04-03 16:06:49 ghudson Exp $
 
 dist:
 
 prepare:
-	case "$$HOSTTYPE" in \
+	case "$$ATHENA_HOSTTYPE" in \
 	sun4) \
 		mfsuffix=solaris; \
 		;; \

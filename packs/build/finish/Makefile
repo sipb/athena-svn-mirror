@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2001-03-26 20:17:37 ghudson Exp $
+# $Id: Makefile,v 1.9 2001-04-03 16:06:50 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -13,9 +13,9 @@ fix_owners: fix_owners.o
 	${CC} -o $@ fix_owners.o
 
 rvdinfo:
-	version="$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION";
+	version="$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION"; \
 	version="$$version.$$ATHENA_PATCH_VERSION"; \
-	echo "Athena RVD ($$HOSTTYPE) Version $$version `date`" > $@
+	echo "Athena RVD ($$ATHENA_HOSTTYPE) Version $$version `date`" > $@
 
 check:
 	cd os/${OS} && ${MAKE} $@

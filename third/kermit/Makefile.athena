@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 2000-03-29 19:55:35 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 2001-04-03 16:06:48 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -10,7 +10,7 @@ clean:
 	${MAKE} clean
 
 all:
-	case "$${HOSTTYPE}" in \
+	case "$${ATHENA_HOSTTYPE}" in \
 	  linux) \
               target=linux \
 	      ;; \
