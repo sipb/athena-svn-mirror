@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.9 1997-09-14 22:13:31 ghudson Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.10 1997-09-23 06:01:28 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -76,7 +76,8 @@ void transmission_tower(notice, packet, pak_len)
 	    com_err("hm", ret, "while sending raw notice");
 	}
     }
-    add_notice_to_queue(notice, packet, &gsin, pak_len);
+    if (add_notice_to_queue(notice, packet, &gsin, pak_len) != ZERR_NONE)
+        syslog(LOG_INFO, "Hey! Insufficient memory to add notice to queue!");
 }
 
 Code_t

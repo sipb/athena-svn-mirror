@@ -11,7 +11,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.34 1997-09-14 21:53:05 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.35 1997-09-23 05:58:27 ghudson Exp $ */
 
 #include <internal.h>
 #include <arpa/inet.h>
@@ -20,7 +20,7 @@
 
 #ifndef lint
 static const char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.34 1997-09-14 21:53:05 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.35 1997-09-23 05:58:27 ghudson Exp $";
 static const char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -741,6 +741,9 @@ Code_t Z_FormatRawHeader(notice, buffer, buffer_len, len, cstart, cend)
 	    return (ZERR_HEADERLEN);
     }
     else {
+	if (strlen(notice->z_recipient) + strlen(__Zephyr_realm) + 2 >
+	    sizeof(newrecip))
+	    return (ZERR_HEADERLEN);
 	(void) sprintf(newrecip, "%s@%s", notice->z_recipient, __Zephyr_realm);
 	if (Z_AddField(&ptr, newrecip, end))
 	    return (ZERR_HEADERLEN);

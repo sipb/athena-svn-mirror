@@ -11,7 +11,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.34 1997-09-14 21:52:42 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.35 1997-09-23 05:58:26 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZLocations_c[] =
@@ -38,8 +38,10 @@ Code_t ZInitLocationInfo(hostname, tty)
 	if (gethostname(host, MAXHOSTNAMELEN) < 0)
 	    return (errno);
 	hent = gethostbyname(host);
-	if (hent)
-	   (void) strcpy(host, hent->h_name);
+	if (hent) {
+	   (void) strncpy(host, hent->h_name, sizeof(host));
+	   host[sizeof(host) - 1] = '\0';
+	}
     }
     if (tty) {
 	strcpy(mytty, tty);

@@ -199,6 +199,10 @@ send_to_kdc(pkt,rpkt,realm)
 #endif
         if (!farkedhost)
             continue;
+	if (farkedhost->h_length != sizeof(to.sin_addr)) {
+	    retval = /*errno */SKDC_CANT;
+	    goto rtn;
+	}
         no_host = 0;    /* found at least one */
         n_hosts++;
         /* preserve host network address to check later
