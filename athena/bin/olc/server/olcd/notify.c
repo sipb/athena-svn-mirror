@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.27 1990-12-09 16:53:28 lwvanels Exp $
+ *	$Id: notify.c,v 1.28 1990-12-12 15:30:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.27 1990-12-09 16:53:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.28 1990-12-12 15:30:00 lwvanels Exp $";
 #endif
 #endif
 
@@ -65,7 +65,7 @@ static long zpunt_time;
 
 static int notice_timeout P((int a ));
 static ERRCODE zwrite_message P((char *username , char *message ));
-static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message , int flags ));
+static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message ));
 static ERRCODE zsend P((ZNotice_t *notice ));
 
 #undef P
@@ -212,6 +212,9 @@ static int
 notice_timeout(a)
      int a;
 {
+#ifdef SABER
+  a = a;  /* Rand lives! :-) */
+#endif
     longjmp(env, 1);
 }
 
@@ -318,7 +321,7 @@ olc_broadcast_message(instance, message, code)
   if (punt_zephyr)
     return(ERROR);
 
-  if(zsend_message(DaemonInst, instance, code, "", message, 0) == ERROR)
+  if(zsend_message(DaemonInst, instance, code, "", message) == ERROR)
     return(ERROR);
 #endif
 
@@ -357,8 +360,8 @@ zwrite_message(username, message)
       return(ERROR);
     }
 
-  if(zsend_message(MESSAGE_CLASS,PERSONAL_INSTANCE,"olc hello",
-		   username,message,0) 
+  if(zsend_message(MESSAGE_CLASS,PERSONAL_INSTANCE,"olc hello", username,
+		   message)
      == ERROR)
     return(ERROR);
    
@@ -367,18 +370,13 @@ zwrite_message(username, message)
 
 
 static ERRCODE
-zsend_message(c_class, instance, opcode, username, message, flags)
+zsend_message(c_class, instance, opcode, username, message)
      char *c_class, *instance, *opcode, *username, *message;
-     int flags;
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value */
   char buf[BUF_SIZE];
   static char signature[100];	/* Zephyr Signature */
-
-#ifdef lint
-  flags = flags;
-#endif /* lint; */
 
   if (signature[0] == 0)
     sprintf(signature,"From: %s Service\n",DaemonInst);
