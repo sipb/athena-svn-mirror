@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $
+ * $Id: login.c,v 1.73 1995-01-20 08:22:28 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.73 1995-01-20 08:22:28 cfields Exp $";
 #endif
 
 /*
@@ -93,7 +93,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 
 #ifdef SOLARIS
 #define INITTAB
-#define NGROUPS NGROUPS_MAX
+/* #define NGROUPS NGROUPS_MAX; see below */
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -104,8 +104,17 @@ typedef struct in_addr inaddr_t;
 typedef int sigtype;
 #endif
 
-#ifndef SOLARIS
 #define SETPAG
+
+#undef NGROUPS
+#define NGROUPS 16
+
+#ifdef SETPAG
+/* Allow for primary gid and PAG identifier */
+#define MAX_GROUPS (NGROUPS-3)
+#else
+/* Allow for primary gid */
+#define MAX_GROUPS (NGROUPS-1)
 #endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
@@ -2187,8 +2196,8 @@ get_groups()
 
 	ngroups = (ngroups+1)/2;
 
-	if (ngroups > NGROUPS-1)
-		ngroups = NGROUPS-1;
+	if (ngroups > MAX_GROUPS)
+		ngroups = MAX_GROUPS;
 
 	grname = (char **)malloc(ngroups * sizeof(char *));
 	if (!grname) {
