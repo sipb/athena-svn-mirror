@@ -256,7 +256,7 @@ ALgetHomedir(ALsession session)
 	 to modify the passwd file.  As of 12/94, telnetd uses libAL
 	 but login.krb doesn't, so login.krb wouldn't get the right
 	 homedir and would log the user in with home="/" */
-      ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
+      ALmodifyLinesOfFile(session, "/etc/passwd", ALlockPASSWD,
 			  ALmodifyRemoveUser,
 			  ALmodifyAppendPasswd);
 
