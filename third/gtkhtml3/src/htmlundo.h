@@ -54,6 +54,8 @@ void      html_undo_level_begin      (HTMLUndo          *undo,
 				      const gchar       *redo_description);
 void      html_undo_level_end        (HTMLUndo          *undo);
 gint      html_undo_get_step_count   (HTMLUndo          *undo);
+void      html_undo_freeze           (HTMLUndo          *undo);
+void      html_undo_thaw             (HTMLUndo          *undo);
 /*
  *  Undo Data
  */

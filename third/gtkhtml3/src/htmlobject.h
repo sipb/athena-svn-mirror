@@ -594,4 +594,7 @@ HTMLObject *html_object_next_cursor_leaf    (HTMLObject *o,
 					     HTMLEngine *e);
 HTMLObject *html_object_prev_cursor_leaf    (HTMLObject *o,
 					     HTMLEngine *e);
+
+HTMLClueFlow * html_object_get_flow (HTMLObject *o);
+
 #endif /* _HTMLOBJECT_H_ */

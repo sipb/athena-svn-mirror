@@ -573,12 +573,26 @@ draw_normal (HTMLTextSlave *self,
 			glyphs = get_glyphs (self, p);
 
 		if (HTML_IS_PRINTER (p)) {
+			HTMLClueFlow *flow = NULL;
+			HTMLEngine *e = NULL;
+
 			gchar *text = html_text_slave_get_text (self);
 			gint start_index, end_index;
 
 			start_index = text - self->owner->text;
 			end_index = g_utf8_offset_to_pointer (text, self->posLen) - self->owner->text;
+
 			attrs = html_text_get_attr_list (self->owner, start_index, end_index);
+
+			if (p->widget && GTK_IS_HTML (p->widget))
+				e = GTK_HTML (p->widget)->engine;
+
+			if (HTML_OBJECT (self)->parent && HTML_IS_CLUEFLOW (HTML_OBJECT (self)->parent))
+				flow = HTML_CLUEFLOW (HTML_OBJECT (self)->parent);
+
+			if (flow && e)
+				html_text_change_attrs (attrs, html_clueflow_get_default_font_style (flow), GTK_HTML (p->widget)->engine,
+							start_index, end_index, TRUE);
 		}
 
 		html_painter_draw_text (p, obj->x + tx, obj->y + ty + get_ys (text, p),

@@ -31,6 +31,7 @@
 struct _GtkHTMLReplaceAskDialog {
 	GtkDialog  *dialog;
 	HTMLEngine *engine;
+	gboolean finished;
 };
 
 typedef struct _GtkHTMLReplaceAskDialog GtkHTMLReplaceAskDialog;
@@ -49,22 +50,21 @@ struct _GtkHTMLReplaceDialog {
 static void
 ask_dialog_response (GtkDialog *dialog, gint response_id, GtkHTMLReplaceAskDialog *d)
 {
+	HTMLReplaceQueryAnswer answer = RQA_Cancel;
+
 	switch (response_id) {
-	case GTK_RESPONSE_DELETE_EVENT:
-	case GTK_RESPONSE_CLOSE:
-	case GTK_RESPONSE_CANCEL:
-		html_engine_replace_do (d->engine, RQA_Cancel);
-		break;
 	case 0: /* Replace */
-		html_engine_replace_do (d->engine, RQA_Replace);
+		answer = RQA_Replace;
 		break;
 	case 1: /* Replace All */
-		html_engine_replace_do (d->engine, RQA_ReplaceAll);
+		answer = RQA_ReplaceAll;
 		break;
 	case 2: /* Next */
-		html_engine_replace_do (d->engine, RQA_Next);
+		answer = RQA_Next;
 		break;
 	}
+
+	d->finished = html_engine_replace_do (d->engine, answer);
 }
 
 static GtkHTMLReplaceAskDialog *
@@ -81,6 +81,7 @@ ask_dialog_new (HTMLEngine *e)
 							     _("_Replace"), 0,
 							     NULL));
 	d->engine = e;
+	d->finished = FALSE;
 
 	gnome_window_icon_set_from_file (GTK_WINDOW (d->dialog), ICONDIR "/search-and-replace-24.png");
 	g_signal_connect (d->dialog, "response", G_CALLBACK (ask_dialog_response), d);
@@ -94,7 +95,8 @@ ask (HTMLEngine *e, gpointer data)
 	GtkHTMLReplaceAskDialog *ask_dialog;
 
 	ask_dialog = ask_dialog_new (e);
-	gtk_dialog_run (ask_dialog->dialog);
+	while (!ask_dialog->finished)
+		gtk_dialog_run (ask_dialog->dialog);
 	gtk_widget_destroy (GTK_WIDGET (ask_dialog->dialog));
 	gtk_widget_grab_focus (GTK_WIDGET (ask_dialog->engine->widget));
 	g_free (ask_dialog);

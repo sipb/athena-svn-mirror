@@ -406,7 +406,7 @@ void      html_engine_replace                   (HTMLEngine *e,
 						 gboolean forward,
 						 gboolean regular,
 						 void (*ask)(HTMLEngine *, gpointer), gpointer ask_data);
-void      html_engine_replace_do                (HTMLEngine *e, HTMLReplaceQueryAnswer answer);
+gboolean  html_engine_replace_do                (HTMLEngine *e, HTMLReplaceQueryAnswer answer);
 gint      html_engine_replaced                  (void);
 
 /* Magic links */

@@ -1499,22 +1499,22 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 			     gint *col_percent, gint *max_size, gint left)
 {
 	gint added, part, c, pw, pixel_size = html_painter_get_pixel_size (painter);
-	gint total, total_fill, to_fill, min_col, min_fill, min_pw, processed_pw, border_extra = table->border ? 2 : 0;
+	gint total, total_pref, to_divide, min_col, min_fill, min_pw, processed_pw, border_extra = table->border ? 2 : 0;
 
 	/* printf ("cols: %d left: %d\n", table->totalCols, left); */
-	while (left > 0 && calc_lowest_fill (table, pref, max_size, col_percent, pixel_size, &min_col, &total_fill, &total)) {
+	while (left > 0 && calc_lowest_fill (table, pref, max_size, col_percent, pixel_size, &min_col, &total_pref, &total)) {
 		min_pw   = PREF (min_col + 1) - PREF (min_col)
 			- pixel_size * (table->spacing + border_extra);
 		/* printf ("min: %d left: %d\n", min_col, left); */
-		to_fill = MIN (total, left);
-		if (min_pw - max_size [min_col] < ((gdouble) min_pw * to_fill) / total_fill) {
+		to_divide = MIN (total_pref - total, left);
+		if (min_pw - max_size [min_col] < ((gdouble) min_pw * to_divide) / total_pref) {
 			added = min_pw - max_size [min_col];
 			left -= added;
-			min_fill = to_fill - added;
+			min_fill = to_divide - added;
 			max_size [min_col] += added;
-			total_fill -= min_pw;
+			total_pref -= min_pw;
 		} else {
-			min_fill = to_fill;
+			min_fill = to_divide;
 		}
 
 		/* printf ("min satisfied %d, (%d=%d) left: %d\n", min_fill, max_size [min_col], min_pw, left); */
@@ -1527,9 +1527,9 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 					- pixel_size * (table->spacing + border_extra);
 				if (max_size [c] < pw) {
 					processed_pw += pw;
-					part = (LL min_fill * processed_pw) / total_fill;
-					if (LL min_fill * processed_pw - LL part * total_fill
-					    > LL (part + 1) * total_fill - LL min_fill * processed_pw)
+					part = (LL min_fill * processed_pw) / total_pref;
+					if (LL min_fill * processed_pw - LL part * total_pref
+					    > LL (part + 1) * total_pref - LL min_fill * processed_pw)
 						part ++;
 					part         -= added;
 					if (max_size [c] + part > pw)

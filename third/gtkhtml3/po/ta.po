@@ -1,18 +1,22 @@
-# gtkhtml for Latvian.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# Artis Trops <hornet@navigators.lv>, 2001.
+# translation of ta.po to Tamil
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtkhtml\n"
+"Project-Id-Version: ta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-14 10:12-0500\n"
-"PO-Revision-Date: 2003-03-15 18:51+0200\n"
-"Last-Translator: Artis Trops  <hornet@navigator.lv>\n"
-"Language-Team: Latvian <ll10nt@os.lv>\n"
+"PO-Revision-Date: 2004-09-02 13:36+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -52,147 +56,147 @@ msgstr "-2"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:7
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:7
 msgid "A_ddress"
-msgstr "A_drese"
+msgstr "(_d)முகவரிகள்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:8
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:8
 #: components/html-editor/toolbar.c:53
 msgid "Alphabetical List"
-msgstr "Alfabētisks Saraksts"
+msgstr "அகர வரிசைப்பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:9
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:9
 msgid "Background Color"
-msgstr "Fona Krāsa"
+msgstr "பின்னனி வண்ணம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:10
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:10
 msgid "Blue"
-msgstr "Zils"
+msgstr "நீளம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:11
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:11
 #: components/html-editor/toolbar.c:50
 msgid "Bulleted List"
-msgstr "Lodveida Saraksts"
+msgstr "எண்ணிட்ட பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:12
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:12
 #: components/html-editor/toolbar.c:515
 msgid "Center justifies the paragraphs"
-msgstr "Rindkopas nolīdzina pret centru"
+msgstr "மைய சீராக்கப்பட்ட பத்தி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:13
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:13
 msgid "Check spelling of the document"
-msgstr "Pārbaudīt dokumenta pareizrakstību"
+msgstr "இந்த ஆவணத்தின் எழுத்துப்பிழையை சோதி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:14
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
 msgid "Copy"
-msgstr "Kopēt"
+msgstr "படியெடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:15
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:15
 msgid "Copy selection to clipboard"
-msgstr "Iekopēt izvēlēto starpliktuvē"
+msgstr "தேர்வுசெய்தவைகளை தற்காலிக நினைவகத்தில் படியெடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:16
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:16
 msgid "Copy the selection"
-msgstr "Kopēt izvēlēto"
+msgstr "தேர்வு செய்தவைகளை படியெடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:17
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
 msgid "Cr_ying"
-msgstr "Ra_udošs"
+msgstr "(_y)அழும்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:18
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
 msgid "Cu_t"
-msgstr "Iz_griezt"
+msgstr "(_t)வெட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:19
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:19
 msgid "Cut"
-msgstr "Izgriezt"
+msgstr "வெட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:20
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:20
 msgid "Cut selection to clipboard"
-msgstr "Izgriezt izvēlēto atarpiktuvē"
+msgstr "தேர்வு செய்தவைகளை  தற்காலிக நினைவகத்தில் படியெடுெ"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:21
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
 msgid "Cut the selection"
-msgstr "Izgriezt izvēlēto"
+msgstr "தேர்வுசெய்தவைகளை வெட்டு"
 
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:22
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:22
 #: components/html-editor/search.c:108 components/html-editor/search.c:166
 msgid "Find"
-msgstr "Atrast"
+msgstr "தேடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:23
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:23
 msgid "Find And Replace"
-msgstr "Atrast Un Aizvietot"
+msgstr "அனைத்தையும் தேடி மாற்று"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:24
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:24
 msgid "Find _Again"
-msgstr "Atrast _Vēlreiz"
+msgstr "(_A)மீண்டும் தேடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:25
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:25
 msgid "Find again"
-msgstr "Atrast vēlreiz"
+msgstr "மீண்டும் தேடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:26
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:26
 msgid "Find and Replace"
-msgstr "Atrast un Aizvietot"
+msgstr "தேடி மாற்று"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:27
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:27
 msgid "For_mat"
-msgstr "For_matēt"
+msgstr "(_m)அமைப்பு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:28
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:28
 msgid "Green"
-msgstr "Zaļš"
+msgstr "பச்சை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:29
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
 msgid "Header _1"
-msgstr "Galvene _1"
+msgstr "தலைப்பு _1"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:30
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:30
 msgid "Header _2"
-msgstr "Galvene _2"
+msgstr "தலைப்பு _2"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:31
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:31
 msgid "Header _3"
-msgstr "Galvene _3"
+msgstr "தலைப்பு _3"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:32
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:32
 msgid "Header _4"
-msgstr "Galvene _4"
+msgstr "தலைப்பு _4"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:33
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:33
 msgid "Header _5"
-msgstr "Galvene _5"
+msgstr "தலைப்பு _5"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:34
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:34
 msgid "Header _6"
-msgstr "Galvene _6"
+msgstr "தலைப்பு _6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:35
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:35
@@ -200,280 +204,279 @@ msgstr "Galvene _6"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:37
 #: components/html-editor/popup.c:207
 msgid "Image"
-msgstr "Attēls"
+msgstr "பிம்பம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:36
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 msgid "Insert Crying smiley into document..."
-msgstr "Ievietot Raudošu smaidiņu dokumentā..."
+msgstr "அழும் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:37
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:37
 msgid "Insert Frown smiley into document..."
-msgstr "Ievietot Bēdīgo smaidiņu dokumentā..."
+msgstr "முகம் சுளிக்கும் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:38
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
 msgid "Insert HTML file into document..."
-msgstr "Ievietot HTML failu dokumentā..."
+msgstr "HTML கோப்பை ஆவணத்தில் சொருகு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:39
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
 msgid "Insert HTML link into document..."
-msgstr "\"Ievietot HTML saiti dokumentā..."
+msgstr "HTML இணைப்பை ஆவணத்தில் சொருகு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:40
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:40
 msgid "Insert HTML template into document..."
-msgstr "\"Ievietot HTML veidni dokumentā..."
+msgstr "HTML அளவுருவை ஆவணத்தில் சொருகு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:41
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
 msgid "Insert Indifferent smiley into document..."
-msgstr "Ievietot Vienaldzīgo smaidiņu dokumentā..."
+msgstr "மாறுபட்ட சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:42
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:42
 msgid "Insert Laughing smiley into document..."
-msgstr "Ievietot Smejošo smaidiņu dokumentā..."
+msgstr "சிரிக்கும் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:43
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
 msgid "Insert Lick smiley into document..."
-msgstr "Ievietot Mēdošo smaidiņu dokumentā..."
+msgstr "நாவைநீட்டும் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:44
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
 msgid "Insert Oh no! smiley into document..."
-msgstr "Ievietot Ak, nē! smaidiņu dokumentā..."
+msgstr "ஓ ஹோ சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:45
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
 msgid "Insert Smile smiley into document..."
-msgstr "Ievietot Smaidošo smaidiņu dokumentā..."
+msgstr "சிரி சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:46
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:47
 msgid "Insert Surprised smiley into document..."
-msgstr "Ievietot Pārsteigto smaidiņu dokumentā..."
+msgstr "ஆச்சர்யம் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:47
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
 msgid "Insert Undecided smiley into document..."
-msgstr "Ievietot Neizlēmīgo smaidiņu dokumentā..."
+msgstr "முடிவெடுக்கா சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:48
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
 msgid "Insert Wink smiley into document..."
-msgstr "Ievietot Piemiedzošo smaidiņu dokumentā..."
+msgstr "அழும் சின்னத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:49
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
 msgid "Insert image into document..."
-msgstr "Ievietot attēlu dokumentā..."
+msgstr "பிம்பத்தை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:50
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:51
 msgid "Insert rule into document..."
-msgstr "Ievietot nosacījumu dokumentā..."
+msgstr "அளவுகோலை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:51
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:52
 msgid "Insert table into document..."
-msgstr "Ievietot tabulu dokumentā..."
+msgstr "அட்டவணையை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:52
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:53
 msgid "Insert text file into document..."
-msgstr "Ievietot teksta failudokumentā..."
+msgstr "உரை கோப்பை ஆவணத்தில் சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:53
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
 #: components/html-editor/toolbar.c:513
 msgid "Left justifies the paragraphs"
-msgstr "Rindkopas nolīdzina pa kreisi"
+msgstr "பத்தியை சீராக்கட்டும்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:54
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
 msgid "Li_ck"
-msgstr "Mē_dās"
+msgstr "(_c)நாவைநீட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:55
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
 #: components/html-editor/menubar.c:136 components/html-editor/popup.c:106
 #: components/html-editor/popup.c:201 components/html-editor/popup.c:267
 msgid "Link"
-msgstr "Saite"
+msgstr "இணை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:56
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:57
 msgid "Make the current Paragraph style Normal"
-msgstr "Padarīt pašreizējo Rindkopas stilu par Normālu"
+msgstr "இப்போதைய பத்தி பாணியை இயல்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:57
-#, fuzzy
 msgid "Make the current Paragraph style Preformat"
-msgstr "Padarīt pašreizējo Rindkopas stilu par Preformatētu"
+msgstr "இப்போதைய பத்தி பாணியை ஏற்கெனவே வடிவமைத்ததாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:58
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
 msgid "Make the current paragraph a bulleted list"
-msgstr "Padarīt pašreizējo rindkopu par lodveida sarakstu"
+msgstr "இப்போதைய பத்தி பாணியை எண்ணிட்ட பட்டியலாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:59
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:60
 msgid "Make the current paragraph a list with roman numerals"
-msgstr "Padarīt pašreizējo rindkopu par sarakstu ar romiešu cipariem"
+msgstr "இப்போதைய பத்தி பாணியை ரோமன் என்ணிட்ட பட்டியலாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:60
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:61
 msgid "Make the current paragraph a numbered list"
-msgstr "Padarīt pašreizējo rindkopu par numurētu sarakstu"
+msgstr "இப்போதைய பத்தி பாணியை எண்ணிட்ட பட்டியலாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:61
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
 msgid "Make the current paragraph an H1 header"
-msgstr "Padarīt pašreizējo rindkopu par H1 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H1 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:62
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:63
 msgid "Make the current paragraph an H2 header"
-msgstr "Padarīt pašreizējo rindkopu par H2 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H2 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:63
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:64
 msgid "Make the current paragraph an H3 header"
-msgstr "Padarīt pašreizējo rindkopu par H3 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H3 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:64
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:65
 msgid "Make the current paragraph an H4 header"
-msgstr "Padarīt pašreizējo rindkopu par H4 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H4 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:65
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:66
 msgid "Make the current paragraph an H5 header"
-msgstr "Padarīt pašreizējo rindkopu par H5 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H5 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:66
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:67
 msgid "Make the current paragraph an H6 header"
-msgstr "Padarīt pašreizējo rindkopu par H6 galveni"
+msgstr "இப்போதைய பத்தி பாணியை H6 தலைப்பாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:67
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:68
 msgid "Make the current paragraph an address"
-msgstr "Padarīt pašreizējo rindkopu par adresi"
+msgstr "தற்போதைய பத்தியை முகவரியாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:68
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:69
 msgid "Make the current paragraph an alphabetical list"
-msgstr "Padarīt pašreizējo rindkopu par alfabētisku sarakstu"
+msgstr "இப்போதைய பத்தியை அகரவரிசை பட்டியலாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:69
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:70
 #: components/html-editor/paragraph.c:83 components/html-editor/toolbar.c:48
 msgid "Normal"
-msgstr "Normāls"
+msgstr "இயல்பான"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:70
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:71
 #: components/html-editor/toolbar.c:51
 msgid "Numbered List"
-msgstr "Numurēts Saraksts"
+msgstr "எண்ணிட்ட பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:71
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:72
 msgid "Numbered _List"
-msgstr "Numurēts _Saraksts"
+msgstr "(_L)எண்ணிட்ட பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:72
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:73
 msgid "Oh _no!"
-msgstr "Ak, _nē!"
+msgstr "(_n)ஓ இல்லை!"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:73
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:74
 msgid "Orange"
-msgstr "Oranžs"
+msgstr "ஆரஞ்சு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:74
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 msgid "Other..."
-msgstr "Cits..."
+msgstr "மற்ற...."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:75
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:76
 msgid "Paste"
-msgstr "Ievietot"
+msgstr "ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:76
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:77
 msgid "Paste _Quotation"
-msgstr "Ievietot _Citātu"
+msgstr "(_Q)மேற்கோளை ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:77
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
 msgid "Paste from clipboard"
-msgstr "Ievietot no starpliktuves"
+msgstr "தற்காலிக்க நினைவிடத்திலிருந்து ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:78
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
 msgid "Paste the clipboard"
-msgstr "Ievietot starpliktuvi"
+msgstr "தற்காலிக்க நினைவிடத்திலிருந்து ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:79
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:80
 msgid "Paste the clipboard as a quotation"
-msgstr "Ievietot starpliktuvi kā citātu"
+msgstr "மேற்கோளாக தற்காலிக்க நினைவிடத்திலிருந்து ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:80
 #: components/html-editor/toolbar.c:49
 msgid "Preformat"
-msgstr "Preformatēt"
+msgstr "ஏற்கெனவே வடிவமைத்த"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:81
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:82
 msgid "Purple"
-msgstr "Purpura"
+msgstr "ஊதா"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:82
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 msgid "Red"
-msgstr "Sarkans"
+msgstr "சிவப்பு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:83
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:84
 msgid "Redo"
-msgstr "Pāratsaukt"
+msgstr "மீண்டும் செய்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:84
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:85
 msgid "Redo previously undone change"
-msgstr "Pāratcelt iepriekš atcelto izmaiņu"
+msgstr "ஏற்கெனவே தவிர்த்ததை மீண்டும் செய்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:85
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:86
 msgid "Redo the undone action"
-msgstr "Pāratcelt atcelto darbību"
+msgstr "தவிர்தத செயலை மறுபடி செய்"
 
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
 #: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
-msgstr "Aizvietot"
+msgstr "மாற்று"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:87
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:88
 #: components/html-editor/toolbar.c:517
 msgid "Right justifies the paragraphs"
-msgstr "Rindkopas nolīdzina pa labi"
+msgstr "பத்தியை வலது பக்கம் சீரமை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:88
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:89
 msgid "Roman Numeral List"
-msgstr "Romiešu Ciparu Saraksts"
+msgstr "ரோமன் எண்ணிட்ட பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:89
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:90
@@ -481,48 +484,48 @@ msgstr "Romiešu Ciparu Saraksts"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:48
 #: components/html-editor/menubar.c:155 components/html-editor/popup.c:225
 msgid "Rule"
-msgstr "Nosacījums"
+msgstr "விதி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:90
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:92
 msgid "Select _All"
-msgstr "Izvēlēties _Visu"
+msgstr "(_A)அனைத்தையும் தேர்வு செய்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:91
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:93
 msgid "Select the entire contents of the document"
-msgstr "Izvelēties visu dokumenta saturu"
+msgstr "ஆவணத்தின் அனைத்து உள்ளடக்கங்களையும் தேர்வு செய்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:92
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:94
 #: components/html-editor/toolbar.c:545
 msgid "Strikeout"
-msgstr "Pārsvītrot"
+msgstr "அடி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:93
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:95
 msgid "Su_perscript"
-msgstr "Ze_mraksts"
+msgstr "(_p)மேல் ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:94
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:96
 msgid "Su_rprised"
-msgstr "Pā_rsteigts"
+msgstr "(_r)ஆச்சர்யம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:95
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:97
 msgid "Subs_cript"
-msgstr "Au_gšraksts"
+msgstr "(_c)கீழொட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:96
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:98
 msgid "Subscript"
-msgstr "Augšraksts"
+msgstr "கீழொட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:97
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:99
 msgid "Superscript"
-msgstr "Zemraksts"
+msgstr "மேல் ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:98
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
@@ -530,356 +533,347 @@ msgstr "Zemraksts"
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:231
 #: components/html-editor/popup.c:501 components/html-editor/popup.c:513
 msgid "Table"
-msgstr "Tabula"
+msgstr "அட்டவணை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:99
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:101
 msgid "Te_mplate..."
-msgstr "Ve_idne..."
+msgstr "(_m)வார்ப்புரு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:100
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:102
 msgid "Te_xt file..."
-msgstr "Teks_ta fails..."
+msgstr "(_x)உரை கோப்பு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:101
 #: components/html-editor/gtkhtml-editor-properties.glade.h:53
 #: components/html-editor/menubar.c:198
 msgid "Template"
-msgstr "Veidne"
+msgstr "வார்ப்புரு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:102
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:103
 #: components/html-editor/toolbar.c:537
 msgid "Typewriter"
-msgstr "Mašīnrakstītāja"
+msgstr "தட்டச்சு இயந்திரம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:103
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:104
 msgid "Undo"
-msgstr "Atsaukt"
+msgstr "செய்யாதே"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:104
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:105
 msgid "Undo previous changes"
-msgstr "Atcelt iepriekšējo darbību"
+msgstr "முந்தைய மாற்றத்தை தவிர்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:105
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:106
 msgid "Undo the last action"
-msgstr "Atcelt pēdējo darbību"
+msgstr "கடைசி செயலை தவிர்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:106
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:107
 msgid "Yellow"
-msgstr "Dzeltens"
+msgstr "மஞ்சள்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:107
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:108
 msgid "_Alignment"
-msgstr "_Nolīdzinājums"
+msgstr "(_A)பொருத்தம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:108
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:109
 msgid "_Alphabetical List"
-msgstr "_Alfabētisks Saraksts"
+msgstr "(_A)அகர வரிசை பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:109
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:110
 #: components/html-editor/gtkhtml-editor-properties.glade.h:60
 msgid "_Bold"
-msgstr "_Trekni"
+msgstr "(_B)தடித்த"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:110
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:111
 msgid "_Bulleted List"
-msgstr "_Lodveida Saraksts"
+msgstr "(_B)எண்ணிட்ட பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:111
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:112
 msgid "_Center"
-msgstr "_Centrēt"
+msgstr "(_C)மையம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:112
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:113
 msgid "_Copy"
-msgstr "_Kopēt"
+msgstr "(_C)படியெடு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:113
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:114
 msgid "_Decrease Indent"
-msgstr "_Samazināt Atkāpi"
+msgstr "(_D)ஒதுக்கத்தை குறை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:114
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:115
 msgid "_Edit"
-msgstr "_Rediģēt"
+msgstr "(_E)திருத்து"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:115
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
 msgid "_Find..."
-msgstr "_Atrast..."
+msgstr "(_F)கண்டுபிடி.."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:116
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:117
 msgid "_Font Size"
-msgstr "_Fonta Lielums"
+msgstr "(_F)எழுத்துரு அளவு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:117
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:118
 msgid "_Frown"
-msgstr "_Bēdīgs"
+msgstr "(_F)முகம் சுளிக்கும்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:118
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:119
 msgid "_HTML file..."
-msgstr "_HTML fails..."
+msgstr "(_H)HTML கோப்பு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:119
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:120
 msgid "_Heading"
-msgstr "_Virsraksts"
+msgstr "(_H)தலைப்பு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:120
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:121
 msgid "_Image..."
-msgstr "_Attēls..."
+msgstr "(_I)பிம்பம்..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:121
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:122
 msgid "_Increase Indent"
-msgstr "_Palielināt Atkāpi"
+msgstr "(_I)ஒதுக்கத்தை அதிகரி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:122
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:123
 msgid "_Indifferent"
-msgstr "_Vienaldzīgs"
+msgstr "(_I)மாறுபட்ட"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:123
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
 msgid "_Insert"
-msgstr "_Ievietot"
+msgstr "(_I)சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:124
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
 #: components/html-editor/gtkhtml-editor-properties.glade.h:67
 msgid "_Italic"
-msgstr "_Ieslīpi"
+msgstr "(_I)சாய்ந்த"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:125
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:126
 msgid "_Laughing"
-msgstr "_Smejošs"
+msgstr "(_L)சிரிக்கும்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:126
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:127
 msgid "_Left"
-msgstr "_Pa Kreisi"
+msgstr "(_L)இடது"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:127
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:128
 msgid "_Link..."
-msgstr "_Saite..."
+msgstr "(_L)இணைப்பு..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:128
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:129
 msgid "_Normal"
-msgstr "_Normāls"
+msgstr "(_N)இயல்பான"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:129
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:130
 msgid "_Page..."
-msgstr "_Lapa..."
+msgstr "(_P)பக்கம்..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:130
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:131
 msgid "_Paragraph..."
-msgstr "_Rindkopa..."
+msgstr "(_P)பத்தி..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:131
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:132
 msgid "_Paste"
-msgstr "_Ievietot"
+msgstr "(_P)ஒட்டு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:132
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:133
 msgid "_Plain text"
-msgstr "_Vienkāršs teksts"
+msgstr "(_P)வெற்று உரை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:133
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:134
 msgid "_Preformat"
-msgstr "_Preformatēt"
+msgstr "(_P)முன்வடிவமைத்த"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:134
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:135
 msgid "_Redo"
-msgstr "_Pāratcet"
+msgstr "(_R)மீண்டும் செய்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:135
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:136
 msgid "_Replace..."
-msgstr "_Aizvietot..."
+msgstr "(_R)மாற்று..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:136
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:137
 msgid "_Right"
-msgstr "Pa _Labi"
+msgstr "(_R)வலது"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:137
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:138
 msgid "_Roman Numeral List"
-msgstr "_Romiešu Ciparu Saraksts"
+msgstr "(_R)ரோமன் எண்ணிடல் பட்டியல்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:138
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:139
 msgid "_Rule..."
-msgstr "_Nosacījums..."
+msgstr "(_R)விதி..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:139
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:140
 msgid "_Smile"
-msgstr "_Smaids"
+msgstr "(_S)சிரி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:140
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:141
 msgid "_Smiley"
-msgstr "_Smaidiņš"
+msgstr "(_S)சிரிக்கும் சின்னம்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:141
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:142
 msgid "_Spell Check Document..."
-msgstr "_Pārbaudīt Pareizrakstību Dokumentā..."
+msgstr "(_S)ஆவணத்தின் பிழையை சோதி..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:142
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:143
 #: components/html-editor/gtkhtml-editor-properties.glade.h:73
 msgid "_Strikeout"
-msgstr "_Pārsvītrot"
+msgstr "(_S)அடி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:143
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:144
 msgid "_Style"
-msgstr "_Stils"
+msgstr "(_S)பாணி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:144
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:145
 msgid "_Table..."
-msgstr "_Tabula..."
+msgstr "(_T)அட்டவணை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:145
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:146
 msgid "_Text..."
-msgstr "_Teksts..."
+msgstr "(_T)உரை..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:146
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:147
 msgid "_Undecided"
-msgstr "_Neizlēmīgs"
+msgstr "(_U)குழப்பமான"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:147
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
 #: components/html-editor/gtkhtml-editor-properties.glade.h:76
 msgid "_Underline"
-msgstr "_Pasvītrot"
+msgstr "(_U)அடிக்கோடிட்ட"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:148
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:149
 msgid "_Undo"
-msgstr "_Atcelt"
+msgstr "(_U)செய்ததை நீக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:149
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:150
 msgid "_Wink"
-msgstr "_Miedz ar aci"
+msgstr "(_W)விம்மச்"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:150
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
 msgid "etc..."
-msgstr "utt..."
+msgstr "etc..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:1
 msgid "GNOME HTML Editor"
-msgstr "GNOME HTML Redaktors"
+msgstr "க்னோம் HTML தொகுப்பி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:2
 msgid "GNOME HTML Editor Control"
-msgstr "GNOME HTML Redaktora Kontrole"
+msgstr "க்னோம் HTML தொகுப்பி கட்டுப்படுத்தி"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:3
 msgid "GNOME HTML Editor Factory"
-msgstr "GNOME HTML Redaktora Ražotne"
+msgstr "க்னோம் HTML தொகுப்பி தொழிற்சாலை"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
-#, fuzzy
 msgid "Insert Sick smiley into document..."
-msgstr "Ievietot Mēdošo smaidiņu dokumentā..."
+msgstr "ஆவணத்தில் சோக சின்னத்தை சொருகு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:58
-#, fuzzy
 msgid "Make the current Paragraph style Preformatted"
-msgstr "Padarīt pašreizējo Rindkopas stilu par Preformatētu"
+msgstr "தற்போதைய பத்தி பாணியை ஏற்கெனவே வடிவமைத்ததாக்கு"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
 #: components/html-editor/paragraph.c:102
-#, fuzzy
 msgid "Preformatted"
-msgstr "Preformatēt"
+msgstr "ஏற்கெனவே வடிவமைத்த"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:91
-#, fuzzy
 msgid "S_ick"
-msgstr "_Miedz ar aci"
+msgstr "(_i)சோகமான"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
-#, fuzzy
 msgid "_Wrap Lines"
-msgstr "Iekļaušana:"
+msgstr "(_W)வரிகளை மடக்கு"
 
 #: components/html-editor/body.c:59
 #: components/html-editor/gtkhtml-editor-properties.glade.h:42
 msgid "None"
-msgstr "Nekas"
+msgstr "எதுவுமில்லை"
 
 #: components/html-editor/body.c:67
 msgid "Perforated Paper"
-msgstr "Perforēts Papīrs"
+msgstr "துளையிட்ட தாள்"
 
 #: components/html-editor/body.c:75
 msgid "Blue Ink"
-msgstr "Zila Tinte"
+msgstr "நீள மை"
 
 #: components/html-editor/body.c:83
-#, fuzzy
 msgid "Paper"
-msgstr "Lapa"
+msgstr "தாள்"
 
 #: components/html-editor/body.c:91
 msgid "Ribbon"
-msgstr ""
+msgstr "ரிப்பன்"
 
 #: components/html-editor/body.c:99
-#, fuzzy
 msgid "Midnight"
-msgstr "Pa Labi"
+msgstr "நள்ளிரவு"
 
 #: components/html-editor/body.c:107
-#, fuzzy
 msgid "Confidential"
-msgstr "Ne-atkāpe"
+msgstr "நம்பகமான"
 
 #: components/html-editor/body.c:115
 msgid "Draft"
-msgstr ""
+msgstr "ஆவணம்"
 
 #: components/html-editor/body.c:123
 msgid "Graph paper"
-msgstr ""
+msgstr "க்ராப் தாள்"
 
 #: components/html-editor/body.c:246
-#, fuzzy
 msgid "T_emplate:"
-msgstr "Veidne"
+msgstr "(_e)வார்புரு:"
 
 #. data->entry_title = gtk_entry_new ();
 #. if (gtk_html_get_title (data->cd->html)) {
@@ -889,313 +883,287 @@ msgstr "Veidne"
 #. g_signal_connect (data->entry_title, "changed", G_CALLBACK (entry_changed), data);
 #. editor_hig_attach_row (t1, _("T_itle:"), data->entry_title, 1);
 #: components/html-editor/body.c:256 components/html-editor/paragraph.c:112
-#, fuzzy
 msgid "General"
-msgstr "Centrēt"
+msgstr "பொதுவான"
 
 #: components/html-editor/body.c:267 components/html-editor/text.c:162
 #: components/html-editor/toolbar.c:301
 msgid "Automatic"
-msgstr "Automātiski"
+msgstr "தானாக"
 
 #: components/html-editor/body.c:279
-#, fuzzy
 msgid "_Text:"
-msgstr "Teksts"
+msgstr "(_T)உரை:"
 
 #: components/html-editor/body.c:280
-#, fuzzy
 msgid "_Link:"
-msgstr "Saite"
+msgstr "(_L)இணைப்பு:"
 
 #: components/html-editor/body.c:281
-#, fuzzy
 msgid "_Background:"
-msgstr "Fons"
+msgstr "(_B)பின்னனி:"
 
 #: components/html-editor/body.c:283
 #: components/html-editor/gtkhtml-editor-properties.glade.h:30
 msgid "Colors"
-msgstr "Krāsas"
+msgstr "வண்ணங்கள்"
 
 #: components/html-editor/body.c:285 components/html-editor/body.c:300
 #: components/html-editor/gtkhtml-editor-properties.glade.h:23
 msgid "Background Image"
-msgstr "Fona Attēls"
+msgstr "பின்னனி பிம்பம்"
 
 #: components/html-editor/body.c:298
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 msgid "_Source:"
-msgstr ""
+msgstr "(_S)மூலம்:"
 
 #: components/html-editor/cell.c:333 components/html-editor/image.c:350
 #: components/html-editor/link.c:182 components/html-editor/rule.c:174
 #: components/html-editor/table.c:220 components/html-editor/template.c:271
 #: components/html-editor/text.c:159
 msgid "Could not load glade file."
-msgstr "Nevarēja ielādēt glade failu."
+msgstr "glade கோப்பை ஏற்ற முடியவில்லை"
 
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
-msgstr ""
+msgstr "ஒளிபுகும்தன்மை"
 
 #: components/html-editor/editor-control-factory.c:178
 #: components/html-editor/menubar.c:354 components/html-editor/menubar.c:372
 #: components/html-editor/menubar.c:390 components/html-editor/popup.c:186
 #: components/html-editor/popup.c:264
 msgid "Properties"
-msgstr "Rekvizīti"
+msgstr "பண்புகள்"
 
 #: components/html-editor/editor-control-factory.c:197
 #: components/html-editor/gtkhtml-editor-properties.glade.h:54
 #: components/html-editor/menubar.c:376 components/html-editor/popup.c:195
 msgid "Text"
-msgstr "Teksts"
+msgstr "உரை"
 
 #: components/html-editor/editor-control-factory.c:216
 #: components/html-editor/menubar.c:394 components/html-editor/popup.c:213
 msgid "Paragraph"
-msgstr "Rindkopa"
+msgstr "பத்தி"
 
 #: components/html-editor/editor-control-factory.c:220
 #: components/html-editor/gtkhtml-editor-properties.glade.h:43
 #: components/html-editor/menubar.c:358 components/html-editor/popup.c:219
 msgid "Page"
-msgstr "Lapa"
+msgstr "பக்கம்"
 
 #. This is the default custom color
 #: components/html-editor/gi-color-palette.c:395
 msgid "custom"
-msgstr ""
+msgstr "தனிப்பயன்"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
 #: components/html-editor/gi-color-palette.c:437
-#, fuzzy
 msgid "Custom Color:"
-msgstr "Krāsa:"
+msgstr "தனிப்பயன் நிறம்:"
 
 #: components/html-editor/gi-color-palette.c:445
 msgid "Choose Custom Color"
-msgstr ""
+msgstr "தனிப்பயன் நிறத்தை தேர்வுசெய்"
 
 #: components/html-editor/gi-color-palette.c:578
 msgid "black"
-msgstr ""
+msgstr "கருப்பு"
 
 #: components/html-editor/gi-color-palette.c:579
 msgid "light brown"
-msgstr ""
+msgstr "வெளிர் ப்ரௌன்"
 
 #: components/html-editor/gi-color-palette.c:580
 msgid "brown gold"
-msgstr ""
+msgstr "தங்க நிறம்"
 
 #: components/html-editor/gi-color-palette.c:581
 msgid "dark green #2"
-msgstr ""
+msgstr "கரும் பச்சை #2"
 
 #: components/html-editor/gi-color-palette.c:582
 msgid "navy"
-msgstr ""
+msgstr "நேவி"
 
 #: components/html-editor/gi-color-palette.c:583
 #: components/html-editor/gi-color-palette.c:639
 msgid "dark blue"
-msgstr ""
+msgstr "கரு நீளம்"
 
 #: components/html-editor/gi-color-palette.c:584
-#, fuzzy
 msgid "purple #2"
-msgstr "Purpura"
+msgstr "ஊதா #2"
 
 #: components/html-editor/gi-color-palette.c:585
 msgid "very dark gray"
-msgstr ""
+msgstr "மிக அதிக க்ரே"
 
 #: components/html-editor/gi-color-palette.c:588
 #: components/html-editor/gi-color-palette.c:644
-#, fuzzy
 msgid "dark red"
-msgstr "Tumša galvene"
+msgstr "கருஞ்சிவப்பு"
 
 #: components/html-editor/gi-color-palette.c:589
-#, fuzzy
 msgid "red-orange"
-msgstr "Oranžs"
+msgstr "சிவப்பு-ஆரஞ்சு"
 
 #: components/html-editor/gi-color-palette.c:590
-#, fuzzy
 msgid "gold"
-msgstr "Trekni"
+msgstr "தங்கம்"
 
 #: components/html-editor/gi-color-palette.c:591
 msgid "dark green"
-msgstr ""
+msgstr "கரும்பச்சை"
 
 #: components/html-editor/gi-color-palette.c:592
 #: components/html-editor/gi-color-palette.c:645
 msgid "dull blue"
-msgstr ""
+msgstr "மங்கிய நீளம்"
 
 #: components/html-editor/gi-color-palette.c:593
 #: components/html-editor/gi-color-palette.c:646
-#, fuzzy
 msgid "blue"
-msgstr "Zils"
+msgstr "நீளம்"
 
 #: components/html-editor/gi-color-palette.c:594
 msgid "dull purple"
-msgstr ""
+msgstr "மங்கிய ஊதா"
 
 #: components/html-editor/gi-color-palette.c:595
 msgid "dark grey"
-msgstr ""
+msgstr "மங்கிய க்ரே"
 
 #: components/html-editor/gi-color-palette.c:598
-#, fuzzy
 msgid "red"
-msgstr "Sarkans"
+msgstr "சிவப்பு"
 
 #: components/html-editor/gi-color-palette.c:599
-#, fuzzy
 msgid "orange"
-msgstr "Oranžs"
+msgstr "ஆரஞ்சு"
 
 #: components/html-editor/gi-color-palette.c:600
-#, fuzzy
 msgid "lime"
-msgstr "Nolīdzinājums"
+msgstr "எலுமிச்சை"
 
 #: components/html-editor/gi-color-palette.c:601
 msgid "dull green"
-msgstr ""
+msgstr "மங்கிய பச்சை"
 
 #: components/html-editor/gi-color-palette.c:602
 msgid "dull blue #2"
-msgstr ""
+msgstr "மங்கிய நீலம் #2"
 
 #: components/html-editor/gi-color-palette.c:603
 msgid "sky blue #2"
-msgstr ""
+msgstr "வான நீலம் #2"
 
 #: components/html-editor/gi-color-palette.c:604
 #: components/html-editor/gi-color-palette.c:643
-#, fuzzy
 msgid "purple"
-msgstr "Purpura"
+msgstr "ஊதா"
 
 #: components/html-editor/gi-color-palette.c:605
-#, fuzzy
 msgid "gray"
-msgstr "Pelēks"
+msgstr "க்ரே"
 
 #: components/html-editor/gi-color-palette.c:608
 #: components/html-editor/gi-color-palette.c:640
-#, fuzzy
 msgid "magenta"
-msgstr "Attēls"
+msgstr "மெஜன்தா"
 
 #: components/html-editor/gi-color-palette.c:609
 msgid "bright orange"
-msgstr ""
+msgstr "ஒளிரும் ஆரஞ்சு"
 
 #: components/html-editor/gi-color-palette.c:610
 #: components/html-editor/gi-color-palette.c:641
-#, fuzzy
 msgid "yellow"
-msgstr "Dzeltens"
+msgstr "மஞ்சள்"
 
 #: components/html-editor/gi-color-palette.c:611
-#, fuzzy
 msgid "green"
-msgstr "Zaļš"
+msgstr "பச்சை"
 
 #: components/html-editor/gi-color-palette.c:612
 #: components/html-editor/gi-color-palette.c:642
 msgid "cyan"
-msgstr ""
+msgstr "சியான்"
 
 #: components/html-editor/gi-color-palette.c:613
 msgid "bright blue"
-msgstr ""
+msgstr "ஒளிரும் நீலம்"
 
 #: components/html-editor/gi-color-palette.c:614
 #: components/html-editor/gi-color-palette.c:631
-#, fuzzy
 msgid "red purple"
-msgstr "Purpura"
+msgstr "சிவந்த ஊதா"
 
 #: components/html-editor/gi-color-palette.c:615
-#, fuzzy
 msgid "light grey"
-msgstr "Pelēks"
+msgstr "வெளிர் க்ரே"
 
 #: components/html-editor/gi-color-palette.c:618
 #: components/html-editor/gi-color-palette.c:635
-#, fuzzy
 msgid "pink"
-msgstr "Saite"
+msgstr "பிங்க்"
 
 #: components/html-editor/gi-color-palette.c:619
-#, fuzzy
 msgid "light orange"
-msgstr "Nolīdzināt pa labi"
+msgstr "வெளிர் ஆரஞ்சு"
 
 #: components/html-editor/gi-color-palette.c:620
 #: components/html-editor/gi-color-palette.c:632
 msgid "light yellow"
-msgstr ""
+msgstr "வெளிர் மஞ்சள்"
 
 #: components/html-editor/gi-color-palette.c:621
-#, fuzzy
 msgid "light green"
-msgstr "Nolīdzināt pa labi"
+msgstr "வெளிர் பச்சை"
 
 #: components/html-editor/gi-color-palette.c:622
-#, fuzzy
 msgid "light cyan"
-msgstr "Nolīdzināt pa labi"
+msgstr "வெளிர் சியான்"
 
 #: components/html-editor/gi-color-palette.c:623
 #: components/html-editor/gi-color-palette.c:633
 msgid "light blue"
-msgstr ""
+msgstr "வெளிர் நீலம்"
 
 #: components/html-editor/gi-color-palette.c:624
 #: components/html-editor/gi-color-palette.c:637
 msgid "light purple"
-msgstr ""
+msgstr "வெளிர் ஊதா"
 
 #: components/html-editor/gi-color-palette.c:625
-#, fuzzy
 msgid "white"
-msgstr "ar"
+msgstr "வெள்ளை"
 
 #: components/html-editor/gi-color-palette.c:630
 msgid "purplish blue"
-msgstr ""
+msgstr "ஊதா நீளம்"
 
 #: components/html-editor/gi-color-palette.c:634
 msgid "dark purple"
-msgstr ""
+msgstr "கரும் ஊதா"
 
 #: components/html-editor/gi-color-palette.c:636
 msgid "sky blue"
-msgstr ""
+msgstr "வான நீலம்"
 
 #: components/html-editor/gnome-gtkhtml-editor.c:68
-#, fuzzy
 msgid "GtkHTML Editor Control"
-msgstr "GNOME HTML Redaktora Kontrole"
+msgstr "GtkHTML தொகுப்பி கட்டுப்படுத்தி"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:3
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:4
 msgid "*"
@@ -1207,515 +1175,466 @@ msgstr "+4"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
 msgid "<b>Alignment &amp; Behaviour</b>"
-msgstr ""
+msgstr "<b>பொருத்தம் &amp; நடத்தை</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:12
-#, fuzzy
 msgid "<b>Background</b>"
-msgstr "Fons"
+msgstr "<b>பின்னனி</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:13
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>பொதுவான</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:14
 msgid "<b>Layout</b>"
-msgstr ""
+msgstr "<b>உருவரை</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:15
 msgid "<b>Scope</b>"
-msgstr ""
+msgstr "<b>நோக்கம்</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:16
 msgid "<span weight=\"bold\">General</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">பொதுவான</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:17
 msgid "<span weight=\"bold\">Layout</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">உருவரை</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:18
 msgid "<span weight=\"bold\">Link</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">இணைப்பு</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:19
 msgid "<span weight=\"bold\">Size</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">அளவு</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:20
 msgid "<span weight=\"bold\">Style</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">பாணி</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:21
 msgid "<span weight=\"bold\">Template</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">வார்புரு</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 #: components/html-editor/paragraph.c:131
 msgid "Alignment"
-msgstr "Nolīdzinājums"
+msgstr "பொருத்தம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:24
 msgid "Bottom"
-msgstr "Apakša"
+msgstr "கீழ்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#, fuzzy
 msgid "C_ell"
-msgstr "Šūna"
+msgstr "(_e)செல்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:26
-#, fuzzy
 msgid "C_olor:"
-msgstr "Krāsa:"
+msgstr "(_o)நிறம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:27
 #: components/html-editor/popup.c:237
 msgid "Cell"
-msgstr "Šūna"
+msgstr "செல்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:28
 #: components/html-editor/paragraph.c:128 components/html-editor/toolbar.c:515
 msgid "Center"
-msgstr "Centrēt"
+msgstr "மையம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:29
-#, fuzzy
 msgid "Col_umn"
-msgstr "Kolonna"
+msgstr "(_u)நெடுவரிசை"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:31
 msgid "Column span:"
-msgstr "Kolonnas attālums:"
+msgstr "நெடுவரிசை இடைவெளி"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:32
 msgid "Enable"
-msgstr "Aktivizēt"
+msgstr "செயல்படுத்து"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#, fuzzy
 msgid "Hea_der style"
-msgstr "Galvene 6"
+msgstr "(_d)தலைப்பு பாணி"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:34
 msgid "Horizontal alignment:"
-msgstr "Horizontālais izlīdzinājums:"
+msgstr "செங்குத்து பொருத்தம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:35
 msgid "Horizontal:"
-msgstr "Horizontāli:"
+msgstr "செங்குத்து:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#, fuzzy
 msgid "I_mage:"
-msgstr "Attēls"
+msgstr "(_m)பிம்பம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:38
 #: components/html-editor/paragraph.c:127
 msgid "Left"
-msgstr "Pa Kreisi"
+msgstr "இடது"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:39
 msgid "Length:"
-msgstr "Garums:"
+msgstr "நீளம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:40
 msgid "Link properties"
-msgstr "Saites rekvizīti"
+msgstr "இணைப்பு பண்புகள்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:41
 msgid "Middle"
-msgstr "Vidus"
+msgstr "மையம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
 msgid "Percent"
-msgstr "Procenti"
+msgstr "சதவிகிதம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:45
 msgid "Pixels"
-msgstr "Pikseļi"
+msgstr "பிம்செல்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 #: components/html-editor/paragraph.c:129
 msgid "Right"
-msgstr "Pa Labi"
+msgstr "வலது"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:47
 msgid "Row span:"
-msgstr "Rindas attālums:"
+msgstr "வரிசை இடைவெளி"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:49
 msgid "Shaded"
-msgstr "Ēnots"
+msgstr "நிழலிட்ட"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:50
-#, fuzzy
 msgid "Si_ze:"
-msgstr "Izmērs"
+msgstr "(_z)அளவு:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:51
 msgid "Standard"
-msgstr ""
+msgstr "நிலையான"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:55
 msgid "Thickness:"
-msgstr "Biezums:"
+msgstr "தடிமன்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:56
 msgid "Top"
-msgstr "Augša"
+msgstr "மேல்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:57
 msgid "Vertical:"
-msgstr "Horizontāli:"
+msgstr "கிடைமட்ட"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:58
 msgid "Width:"
-msgstr "Platums:"
+msgstr "அகலம்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#, fuzzy
 msgid "_Alignment:"
-msgstr "Nolīdzinājums:"
+msgstr "(_A)பொருத்தம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:61
-#, fuzzy
 msgid "_Border:"
-msgstr "Robeža:"
+msgstr "(_B)ஓரம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:62
-#, fuzzy
 msgid "_Color:"
-msgstr "Krāsa:"
+msgstr "(_C)நிறம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:63
-#, fuzzy
 msgid "_Columns:"
-msgstr "Kolonnas:"
+msgstr "(_C)நெடுவரிசை:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:64
-#, fuzzy
 msgid "_Description:"
-msgstr "Apraksts:"
+msgstr "(_D)விளக்கம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:65
-#, fuzzy
 msgid "_Height:"
-msgstr "Augstums:"
+msgstr "(_H)உயரம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:66
-#, fuzzy
 msgid "_Image:"
-msgstr "Attēls"
+msgstr "(_I)பிம்பம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:68
-#, fuzzy
 msgid "_Padding:"
-msgstr "Polsterējums:"
+msgstr "(_P)திணிப்பு:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:69
-#, fuzzy
 msgid "_Row"
-msgstr "Rinda"
+msgstr "(_R)வரிசை"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:70
-#, fuzzy
 msgid "_Rows:"
-msgstr "Rindas:"
+msgstr "(_R)வரிசைகள்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:72
-#, fuzzy
 msgid "_Spacing:"
-msgstr "Atstarpe:"
+msgstr "(_S)இடைவெளிகள்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:74
-#, fuzzy
 msgid "_Table"
-msgstr "Tabula"
+msgstr "(_T)அட்டவணை"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:75
 msgid "_URL:"
-msgstr ""
+msgstr "_URL:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:77
-#, fuzzy
 msgid "_Width:"
-msgstr "Platums:"
+msgstr "(_W)அகலம்:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:78
-#, fuzzy
 msgid "_Wrap Text"
-msgstr "Iekļaušana:"
+msgstr "(_W)உரை மடக்கல்"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:79
-#, fuzzy
 msgid "_X-Padding:"
-msgstr "Polsterējums:"
+msgstr "(_X)X--திணிப்பு:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:80
-#, fuzzy
 msgid "_Y-Padding:"
-msgstr "Polsterējums:"
+msgstr "(_Y)Y-திணிப்பு:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:81
-#, fuzzy
 msgid "follow"
-msgstr "Sekot"
+msgstr "பின்பற்று"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:82
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:83
 msgid "xxxxxxxxxxxxxx"
 msgstr "xxxxxxxxxxxxxx"
 
 #: components/html-editor/menubar.c:96 components/html-editor/menubar.c:104
-#, fuzzy
 msgid "Insert image"
-msgstr "Ievietot saiti"
+msgstr "படத்தை சொருகு"
 
 #: components/html-editor/menubar.c:133 components/html-editor/menubar.c:152
 #: components/html-editor/menubar.c:173 components/html-editor/menubar.c:195
 #: components/html-editor/popup.c:103
 msgid "Insert"
-msgstr "Ievietot"
+msgstr "கொருகு"
 
 #: components/html-editor/menubar.c:282
 #, c-format
 msgid "Error loading file '%s': %s"
-msgstr ""
+msgstr "கோப்பை ஏற்றும்போது பிழை '%s': %s"
 
 #: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
-#, fuzzy
 msgid "Insert: HTML File"
-msgstr "Ievietot HTML failu"
+msgstr "சொருகு: HTML கோப்பு"
 
 #: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
-#, fuzzy
 msgid "Insert: Text File"
-msgstr "Ievietot teksta faiu"
+msgstr "சொருகு: உரை கோப்பு"
 
 #: components/html-editor/paragraph.c:86 components/html-editor/toolbar.c:54
 msgid "Header 1"
-msgstr "Galvene 1"
+msgstr "தலைப்பு 1"
 
 #: components/html-editor/paragraph.c:87 components/html-editor/toolbar.c:55
 msgid "Header 2"
-msgstr "Galvene 2"
+msgstr "தலைப்பு 2"
 
 #: components/html-editor/paragraph.c:88 components/html-editor/toolbar.c:56
 msgid "Header 3"
-msgstr "Galvene 3"
+msgstr "தலைப்பு 3"
 
 #: components/html-editor/paragraph.c:89 components/html-editor/toolbar.c:57
 msgid "Header 4"
-msgstr "Galvene 4"
+msgstr "தலைப்பு 4"
 
 #: components/html-editor/paragraph.c:90 components/html-editor/toolbar.c:58
 msgid "Header 5"
-msgstr "Galvene 5"
+msgstr "தலைப்பு 5"
 
 #: components/html-editor/paragraph.c:91 components/html-editor/toolbar.c:59
 msgid "Header 6"
-msgstr "Galvene 6"
+msgstr "தலைப்பு 6"
 
 #: components/html-editor/paragraph.c:94
 msgid "Dot item"
-msgstr "Punkta vienība"
+msgstr "புள்ளி உருப்படி"
 
 #: components/html-editor/paragraph.c:95
 msgid "Number item"
-msgstr "Numura vienība"
+msgstr "எண் உருப்படி"
 
 #: components/html-editor/paragraph.c:96
 msgid "Roman item"
-msgstr "Romiešu vienība"
+msgstr "ரோமன் உருப்பட"
 
 #: components/html-editor/paragraph.c:97
 msgid "Alphabeta item"
-msgstr "Alfabēta vienība"
+msgstr "ஆல்பா பீட்டா உருப்படி"
 
 #: components/html-editor/paragraph.c:100 components/html-editor/toolbar.c:60
 msgid "Address"
-msgstr "Adrese"
+msgstr "முகவரிகள்"
 
 #: components/html-editor/paragraph.c:109
-#, fuzzy
 msgid "_Style:"
-msgstr "_Stils"
+msgstr "(_S)பாணி:"
 
 #: components/html-editor/popup.c:438
 msgid "Paste Quotation"
-msgstr "Ievietot Citātu"
+msgstr "மேற்கோளை ஒட்டு"
 
 #: components/html-editor/popup.c:442
-#, fuzzy
 msgid "Insert Link"
-msgstr "Ievietot saiti"
+msgstr "இணைப்பை சொருகு"
 
 #: components/html-editor/popup.c:449
-#, fuzzy
 msgid "Remove Link"
-msgstr "Izņemt saiti"
+msgstr "இணைப்பை நீக்கு"
 
 #: components/html-editor/popup.c:456
 msgid "Style"
-msgstr "Stils"
+msgstr "பாணி"
 
 #: components/html-editor/popup.c:459
-#, fuzzy
 msgid "Text Style..."
-msgstr "Teks_ta fails..."
+msgstr "உரை பாணி.."
 
 #: components/html-editor/popup.c:461 components/html-editor/popup.c:467
 #: components/html-editor/popup.c:477
-#, fuzzy
 msgid "Paragraph Style..."
-msgstr "Rindkopa..."
+msgstr "பத்தி பாணி...."
 
 #: components/html-editor/popup.c:465
-#, fuzzy
 msgid "Link Style..."
-msgstr "Saite..."
+msgstr "இணைப்பு பாணி...."
 
 #: components/html-editor/popup.c:471
-#, fuzzy
 msgid "Rule Style..."
-msgstr "Nosacījums..."
+msgstr "விதி பாணி..."
 
 #: components/html-editor/popup.c:475
-#, fuzzy
 msgid "Image Style..."
-msgstr "Attēls..."
+msgstr "பிம்ப பாணி...."
 
 #: components/html-editor/popup.c:486
-#, fuzzy
 msgid "Cell Style..."
-msgstr "Šūna..."
+msgstr "செல் பாணி...."
 
 #: components/html-editor/popup.c:489
-#, fuzzy
 msgid "Table Style..."
-msgstr "Tabula..."
+msgstr "அட்டவணை பாணி...."
 
 #: components/html-editor/popup.c:495
-#, fuzzy
 msgid "Page Style..."
-msgstr "Lapa..."
+msgstr "பக்க பாணி...."
 
 #: components/html-editor/popup.c:500
 msgid "Table insert"
-msgstr "Tabulas ievietošana"
+msgstr "அட்டவணையை சொருகு"
 
 #: components/html-editor/popup.c:503
 msgid "Row above"
-msgstr "Rinda virs"
+msgstr "வரிக்கு மேல்"
 
 #: components/html-editor/popup.c:504
 msgid "Row below"
-msgstr "Rinda zem"
+msgstr "வரிசைக்கு கீழ்"
 
 #: components/html-editor/popup.c:506
 msgid "Column before"
-msgstr "Kolonna pirms"
+msgstr "நெடுவரிசைக்கு முன்"
 
 #: components/html-editor/popup.c:507
 msgid "Column after"
-msgstr "Kolonna pēc"
+msgstr "செடுவரிசைக்கு பின்"
 
 #: components/html-editor/popup.c:512
 msgid "Table delete"
-msgstr "Tabulas dzēšana"
+msgstr "அட்டவணையை நீக்கு"
 
 #: components/html-editor/popup.c:514
 msgid "Row"
-msgstr "Rinda"
+msgstr "வரிசை"
 
 #: components/html-editor/popup.c:515
 msgid "Column"
-msgstr "Kolonna"
+msgstr "நெடுவரிசை"
 
 #: components/html-editor/popup.c:516
 msgid "Cell contents"
-msgstr "Šūnas saturs"
+msgstr "செல் உள்ளடக்கங்கள்"
 
 #: components/html-editor/popup.c:524
-#, fuzzy
 msgid "Check Word Spelling..."
-msgstr "Pārbaudīt '%s' pareizrakstību..."
+msgstr "வார்த்தை பிழைகளை சோதி..."
 
 #: components/html-editor/popup.c:529
 msgid "Add Word to"
-msgstr ""
+msgstr "வார்த்தையில் சேர்"
 
 #: components/html-editor/popup.c:533
-#, fuzzy, c-format
+#, c-format
 msgid "%s Dictionary"
-msgstr "Pievienot '%s' direktorijai"
+msgstr "%s அகராதி"
 
 #: components/html-editor/popup.c:542
-#, fuzzy
 msgid "Add Word to Dictionary"
-msgstr "Pievienot '%s' direktorijai"
+msgstr "அகராதியில் வார்த்தையை சேர்"
 
 #: components/html-editor/popup.c:545
 msgid "Ignore Misspelled Word"
-msgstr ""
+msgstr "தவறாக எழுதப்பட்ட வார்த்தைகளை தவிர்"
 
 #: components/html-editor/popup.c:549
 msgid "Input Methods"
-msgstr ""
+msgstr "உள்ளிடும் முறைகள்"
 
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/replace.c:77
 msgid "Replace confirmation"
-msgstr "Aizvietošanas pārjautāšana"
+msgstr "உறுதிப்படுத்தலை மாற்று"
 
 #: components/html-editor/replace.c:78
-#, fuzzy
 msgid "Replace _All"
-msgstr "Aizvietot visus"
+msgstr "(_A)அனைத்தையும் மாற்று"
 
 #: components/html-editor/replace.c:79
-#, fuzzy
 msgid "_Next"
-msgstr "Nākošais"
+msgstr "(_N)அடுத்து"
 
 #: components/html-editor/replace.c:81
-#, fuzzy
 msgid "_Replace"
-msgstr "Aizvietot"
+msgstr "(_R)மாற்று"
 
 #: components/html-editor/replace.c:171
-#, fuzzy
 msgid "Search _backward"
-msgstr "meklēt atpakaļ"
+msgstr "(_b)பின்னோக்கி தேடு"
 
 #: components/html-editor/replace.c:172 components/html-editor/search.c:114
-#, fuzzy
 msgid "Case _sensitive"
-msgstr "lielo/mazo burtu jūtīgs"
+msgstr "(_s)எழுத்த உணரக்கூடிய"
 
 #: components/html-editor/replace.c:182
-#, fuzzy
 msgid "Replace:"
-msgstr "Aizvietot"
+msgstr "மாற்று:"
 
 #: components/html-editor/replace.c:185
-#, fuzzy
 msgid "With:"
-msgstr "Platums:"
+msgstr "இதில்:"
 
 #: components/html-editor/search.c:113
-#, fuzzy
 msgid "_Backward"
-msgstr "atpakļ"
+msgstr "(_B)பின்னோக்கி"
 
 #: components/html-editor/search.c:115
-#, fuzzy
 msgid "_Regular Expression"
-msgstr "Atrast Parastu Izteiksmi"
+msgstr "(_R)இயல்பான கூற்று"
 
 #: components/html-editor/spellchecker.c:110
 msgid ""
@@ -1725,208 +1644,204 @@ msgstr ""
 
 #: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
-msgstr ""
+msgstr "தவறாக குறிப்பிட்ட வார்த்தைகள் எதுவுமில்லை"
 
 #: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
-msgstr "Pareizrakstības pārbaudītājs"
+msgstr "எழுத்துபிழை சோதிப்பான"
 
 #: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
-msgstr ""
+msgstr "(_L)தற்போதைய மொழி"
 
 #: components/html-editor/template.c:84
 msgid "Note"
-msgstr "Piezīme"
+msgstr "குறிப்பு"
 
 #: components/html-editor/template.c:94 components/html-editor/template.c:113
 msgid "Place your text here"
-msgstr "Jūsu teksts šeit"
+msgstr "உங்கள் உரைகளை இங்கே மாற்று"
 
 #: components/html-editor/template.c:97
 msgid "Image frame"
-msgstr "Attēla rāmis"
+msgstr "பிம்ப சட்டம்"
 
 #: components/html-editor/template.c:280
 msgid "Labels"
-msgstr ""
+msgstr "விளக்கச்சீட்டு"
 
 #: components/html-editor/test-html-editor-control.c:323
 msgid "Open file..."
-msgstr "Atvērt failu..."
+msgstr "கோப்பை திற.."
 
 #: components/html-editor/test-html-editor-control.c:325
 msgid "Save file as..."
-msgstr "Saglabāt failu kā..."
+msgstr "கோப்பை இவ்வாறு சேமி"
 
 #: components/html-editor/test-html-editor-control.c:557
-#, fuzzy
 msgid "GtkHTML Editor Test Container"
-msgstr "GtkHTML Redaktora Kontrole"
+msgstr "GtkHTML தொகுப்பி சோதனை உள்ளடக்கம்"
 
 #: components/html-editor/toolbar.c:52
 msgid "Roman List"
-msgstr "Romiešu Saraksts"
+msgstr "ரோமன் பட்டியல்"
 
 #: components/html-editor/toolbar.c:513
 msgid "Left align"
-msgstr "Nolīdzināt pa kreisi"
+msgstr "இடது பக்கம் பொருத்து"
 
 #: components/html-editor/toolbar.c:517
 msgid "Right align"
-msgstr "Nolīdzināt pa labi"
+msgstr "வலதுபக்கம் பொருத்து"
 
 #: components/html-editor/toolbar.c:537
 msgid "Toggle typewriter font style"
-msgstr "Slēgt mašīnrakstītājas fonta stilu"
+msgstr "தட்டச்சு எழுத்துரு பாணியில் நிலைமாறு"
 
 #: components/html-editor/toolbar.c:539
 msgid "Bold"
-msgstr "Trekni"
+msgstr "தடித்த"
 
 #: components/html-editor/toolbar.c:539
 msgid "Makes the text bold"
-msgstr "Treknina tekstu"
+msgstr "உரையை பெரியதாக்கு"
 
 #: components/html-editor/toolbar.c:541
 msgid "Italic"
-msgstr "Ieslīpi"
+msgstr "சாய்ந்த"
 
 #: components/html-editor/toolbar.c:541
 msgid "Makes the text italic"
-msgstr "Padara tekstu ieslīpu"
+msgstr "உரையை சாய்ந்த எழுத்தாக்கு"
 
 #: components/html-editor/toolbar.c:543
 msgid "Underline"
-msgstr "Pasvītrot"
+msgstr "அடிக்கோடிடு"
 
 #: components/html-editor/toolbar.c:543
 msgid "Underlines the text"
-msgstr "Pasvītro tekstu"
+msgstr "உரைக்கு அடிக்கோடிடு"
 
 #: components/html-editor/toolbar.c:545
 msgid "Strikes out the text"
-msgstr "Pārsvītro tekstu"
+msgstr "உரையை அடி"
 
 #: components/html-editor/toolbar.c:554
 msgid "Unindent"
-msgstr "Ne-atkāpe"
+msgstr "ஒதுக்காதே"
 
 #: components/html-editor/toolbar.c:554
 msgid "Indents the paragraphs less"
-msgstr "Atbīda rindkopu mazāk"
+msgstr "பத்திக்கு குறைவாக ஒதுக்கு"
 
 #: components/html-editor/toolbar.c:556
 msgid "Indent"
-msgstr "Atkāpe"
+msgstr "ஒதுக்கம்"
 
 #: components/html-editor/toolbar.c:556
 msgid "Indents the paragraphs more"
-msgstr "Atbīda rindkopu vairāk"
+msgstr "பத்தியில் ஒதுக்கம் அதிகமாக உள்ளது"
 
 #: components/html-editor/utils.c:119
 msgid "Sample"
-msgstr "Paraugs"
+msgstr "உதாரணம்"
 
 #: components/html-editor/utils.c:192
 msgid "_Visit..."
-msgstr ""
+msgstr "(_V)வருகை..."
 
 #: components/html-editor/utils.c:232
-#, fuzzy
 msgid ""
 "The editted object was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
-"Rediģētais teksts tika izņemts no dokumenta.\n"
-"Nevaru pielietot jūsu izmaiņas."
+"திருத்திய பொருள் ஆவணத்திலிருந்து நீக்கப்பட்டது\n"
+"உங்கள் மாற்றங்களை செயல்படுத்த முடியாது"
 
 #: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
-msgstr ""
+msgstr "மொசில்லா url தவறான வடிவத்தில் உள்ளது  (%d) அல்லது நீளம் தவறு (%d)\n"
 
 #: src/gtkhtml.c:2891
 msgid "Editable"
-msgstr "Rdiģējams"
+msgstr "திருத்தக்கூடிய"
 
 #: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
-msgstr "Vai html var tikt rediģēts"
+msgstr "html ஐ திருத்த முடியுமா"
 
 #: src/gtkhtml.c:2898
 msgid "Document Title"
-msgstr "Dokumenta Nosaukums"
+msgstr "ஆவண தலைப்பு"
 
 #: src/gtkhtml.c:2899
 msgid "The title of the current document"
-msgstr "Pašreizējā dokumenta nosaukums"
+msgstr "தற்போதைய ஆவணத்தின் தலைப்பு"
 
 #: src/gtkhtml.c:2905
 msgid "Document Base"
-msgstr "Dokumenta Bāze"
+msgstr "ஆவண அடிப்படை"
 
 #: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
-msgstr "Relatīvo atsauču bāzes URL"
+msgstr "அடிப்படை URL தொடர்புடைய குறிப்பு"
 
 #: src/gtkhtml.c:2912
 msgid "Target Base"
-msgstr "Mērķa Bāze"
+msgstr "இலக்கு அடிப்படை"
 
 #: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
-msgstr "Mērķa rāmja bāzes URL"
+msgstr "அடிப்படை URL இலக்கு சட்டம்"
 
 #: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
-msgstr "Fiksēta platuma Fonts"
+msgstr "நிலையான அகல எழுத்துரு"
 
 #: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
-msgstr "Vienādplatuma fonts, ko lietot rakstāmmašīnas tekstā"
+msgstr "தட்டச்சு உரைக்கு பயன்படும் சீரான இடைவெளி எழுத்துரு"
 
 #: src/gtkhtml.c:2929
 msgid "New Link Color"
-msgstr "Jaunās Saites Krāsa"
+msgstr "புதிய இணைப்பு நிறம்"
 
 #: src/gtkhtml.c:2930
 msgid "The color of new link elements"
-msgstr "Jaunās saites elementu krāsa"
+msgstr "புதிய இணைப்பு உறுப்பின் நிறம்"
 
 #: src/gtkhtml.c:2935
 msgid "Visited Link Color"
-msgstr "Apmeklētās Saites Krāsa"
+msgstr "பார்த்த இணைப்பின் நிறம்"
 
 #: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
-msgstr "Apmeklētās saites elementu krāsa"
+msgstr "பார்த்த இணைப்பின் நிறம்"
 
 #: src/gtkhtml.c:2941
 msgid "Active Link Color"
-msgstr "Aktivās Saites Krāsa"
+msgstr "செயலில் உள்ள இணைப்பின் வண்ணம்"
 
 #: src/gtkhtml.c:2942
 msgid "The color of active link elements"
-msgstr "Aktīvās saites elementu krāsa"
+msgstr "செயலில் உள்ள இணைப்பின் வண்ணம்"
 
 #: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
-msgstr "Pareizrakstības Kļūdu Krāsa"
+msgstr "நிறத்தில் எழுத்துப்பிழை"
 
 #: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
-msgstr "Pareizrakstības kļūdu marķiera krāsa"
+msgstr "எழுத்துப்பிழை நிறத்தின் வண்ணம்"
 
 #: src/gtkhtml.c:2953
-#, fuzzy
 msgid "Cite Quotation Color"
-msgstr "Ievietot Citātu"
+msgstr "மேற்கோள் நிறம்"
 
 #: src/gtkhtml.c:2954
-#, fuzzy
 msgid "The color of the cited text"
-msgstr "Aktīvās saites elementu krāsa"
+msgstr "மேற்கோள் உரையின் நிறம்"
 
 #: src/html-component.c:219
 msgid "Html"
@@ -1934,80 +1849,79 @@ msgstr "Html"
 
 #: src/html-component.c:220
 msgid "Html test"
-msgstr "Html tests"
+msgstr "Html சோதனை"
 
 #: src/html-component.c:226
 msgid "Test1"
-msgstr "Test1"
+msgstr "சோதனை1"
 
 #: src/html-component.c:233
 msgid "Test2"
-msgstr "Test2"
+msgstr "சோதனை2"
 
 #: src/html-component.c:239
 msgid "Test3"
-msgstr "Test3"
+msgstr "சோதனை3"
 
 #: src/html-component.c:245
 msgid "Test4"
-msgstr "Test4"
+msgstr "சோதனை4"
 
 #: src/html-component.c:251
 msgid "Test5"
-msgstr "Test5"
+msgstr "சோதனை5"
 
 #: src/html-component.c:257
 msgid "Test6"
-msgstr "Test6"
+msgstr "சோதனை6"
 
 #: src/html-component.c:263
 msgid "Test7"
-msgstr "Test7"
+msgstr "சோதனை7"
 
 #: src/html-component.c:612
 msgid "_Refresh"
-msgstr "_Atjaunināt"
+msgstr "(_R)புதுப்பி"
 
 #: src/html-component.c:613
 msgid "Reload the page"
-msgstr "Pārlādēt lapu"
+msgstr "பக்கத்தை மீண்டும் ஏற்று"
 
 #: src/html-component.c:660
 msgid "Could not initialize Bonobo!"
-msgstr "Nevarēju inicializēt Bonobo!"
+msgstr "போனபோவை துவக்க முடியவில்லை!"
 
 #: src/htmlbutton.c:142
 msgid "Submit Query"
-msgstr "Publicēt Pieprasījumu"
+msgstr "கேள்வியை சமர்ப்பி"
 
 #: src/htmlbutton.c:145
 msgid "Reset"
-msgstr "Pārstatīt"
+msgstr "மீட்டமை"
 
 #. TODO2 dialog instead of warning
 #: src/htmlengine-print.c:192
 msgid "Cannot allocate default font for printing\n"
-msgstr "Nevaru sameklēt noklusēto fontu drukāšanai\n"
+msgstr "அச்சடிப்பதற்காக இயல்பான எழுத்துருவை ஒதுக்க முடியவில்லை\n"
 
 #: src/test.c:191
 msgid "GtkHTML Test"
-msgstr "GtkHTML Tests"
+msgstr "GtkHTML சோதனை"
 
 #: src/testgtkhtml.c:117
 msgid "Print pre_view"
-msgstr "P_irmsdrukas apskate"
+msgstr "(_v)அச்சடி முன்னோட்டம்"
 
 #: src/testgtkhtml.c:117
 msgid "Print preview"
-msgstr "Pirmsdrukas apskate"
+msgstr "அச்சடி முன்னோட்டம்"
 
 #: src/testgtkhtml.c:987
-#, fuzzy
 msgid "GtkHTML Test Application"
-msgstr "GtkHTML Tests"
+msgstr "GtkHTML சோதனை பயன்பாடு"
 
 #~ msgid "<None>"
-#~ msgstr "<Nekas>"
+#~ msgstr "<எதுவுமில்லை>"
 
 #~ msgid "\n"
 #~ msgstr "\n"
@@ -2016,300 +1930,83 @@ msgstr "GtkHTML Tests"
 #~ msgstr "*********************"
 
 #~ msgid "Add Keyboard Shortcuts"
-#~ msgstr "Pievienot Tastatūras Saīsnes"
+#~ msgstr "விசைப்பலகை குறுக்குவிசைகளை சேர்"
 
 #~ msgid "Automatically detect links"
-#~ msgstr "Automātiski noteikt saites"
+#~ msgstr "இணைப்புகளை தானாக கண்டுபிடி"
 
 #~ msgid "Behavior"
-#~ msgstr "Uzvedība"
+#~ msgstr "நடத்தை"
 
 #~ msgid "Composer Properties"
-#~ msgstr "Sastādītāja Rekvizīti"
+#~ msgstr "பண்புகளை தொகு"
 
 #~ msgid "Composer Properties planned"
-#~ msgstr "Plānotie Sastādītāja Rekvizīti "
+#~ msgstr "திட்டமிட்டபடி பண்புகளை தொகு"
 
 #~ msgid "Configure spell checking"
-#~ msgstr "Konfigurēt pareizrakstības pārbaudi"
+#~ msgstr "பிழை திருத்தலை அமை"
 
 #~ msgid "Enable spell checking"
-#~ msgstr "Aktivizēt pareizrakstības pārbaudi"
+#~ msgstr "பிழை திருத்தலை செயல்படுத்து"
 
 #~ msgid "Fixed width"
-#~ msgstr "Fiksēts platums"
+#~ msgstr "நிலையான அகலம்"
 
 #~ msgid "Fonts"
-#~ msgstr "Fonti"
+#~ msgstr "எழுத்துருக்கள்"
 
 #~ msgid "For printing"
-#~ msgstr "Drukāšanai"
+#~ msgstr "அச்சடிப்பதற்காக"
 
 #~ msgid "Grab keys"
-#~ msgstr "Paķert taustiņus"
+#~ msgstr "கவர்தல் விசை"
 
 #~ msgid "Information"
-#~ msgstr "Informācija"
+#~ msgstr "தகவல்"
 
 #~ msgid "Keyboard Shortcuts"
-#~ msgstr "Tastatūras Saīsnes"
+#~ msgstr "விசைபலகை குறுக்குவிசைகள்"
 
 #~ msgid "Miscellaneous"
-#~ msgstr "Dažādi"
+#~ msgstr "இன்னபிற"
 
 #~ msgid "New shortcut:"
-#~ msgstr "Jauna saīsne:"
+#~ msgstr "புதிய குறுக்குவிசைகள்:"
 
 #~ msgid "On screen"
-#~ msgstr "Uz ekrāna"
+#~ msgstr "திரையில்"
 
 #~ msgid "Select HTML fixed width font"
-#~ msgstr "Izvēlies HTML fiksēta platuma fontu"
+#~ msgstr "HTML நிலையான அகல எழுத்துருவை தேர்வுசெய்"
 
 #~ msgid "Select HTML fixed width font for printing"
-#~ msgstr "Izvēlies HTML fiksēta platuma fontu drukāšanai"
+#~ msgstr "HTML நிலையான அகல எழுத்துருவை அச்சடிக்க தேர்வுசெய்"
 
 #~ msgid "Select HTML variable width font"
-#~ msgstr "Izvēlies HTML mainīga platuma fontu"
+#~ msgstr "HTML மாறும் அகல எழுத்துருவை தேர்வுசெய்"
 
 #~ msgid "Select HTML variable width font for printing"
-#~ msgstr "Izvēlies HTML mainīga platuma fontu drukāšanai"
+#~ msgstr "HTML மாறும் அகல எழுத்துருவை அச்சடிக்க தேர்வுசெய்"
 
 #~ msgid "Shortcuts _type:"
-#~ msgstr "Saīsnes _tips:"
+#~ msgstr "(_t)குறுக்குவிசை வகைகள்:"
 
 #~ msgid "Show animated images"
-#~ msgstr "Parādīt animētus attēlus"
+#~ msgstr "இயங்கு சித்திரங்களை காட்டு"
 
 #~ msgid "Variable width"
-#~ msgstr "Mainīgā platums"
+#~ msgstr "மாறும் அகலம்"
 
 #~ msgid "_Add"
-#~ msgstr "_Pievienot"
+#~ msgstr "(_A)சேர்"
 
 #~ msgid "_Delete"
-#~ msgstr "_Dzēst"
+#~ msgstr "(_D)நீக்கு"
 
 #~ msgid ""
 #~ "Cannot execute GNOME Spell control applet\n"
 #~ "Try to install GNOME Spell if you don't have it installed."
 #~ msgstr ""
-#~ "Nevaru izpildīt GNOME Pareizrakstibas konroles sīkprogrammu\n"
-#~ "Mēģiniet uzinstalēt GNOME Pareizrakstību, ja jums tā nav uzinstalēta."
-
-#~ msgid "Plain"
-#~ msgstr "Līdzens"
-
-#~ msgid ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
-#~ msgstr ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
-
-#~ msgid "Frame"
-#~ msgstr "Rāmis"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-
-#~ msgid "Caption"
-#~ msgstr "Titrs"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place "
-#~ "your comment here]</td></tr></table></td></tr></table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Jūsu "
-#~ "komentārs rakstāms šeit]</td></tr></table></td></tr></table></center>"
-
-#~ msgid "Find A Regular Expression"
-#~ msgstr "Atrast Parastu Izteiksmi"
-
-#~ msgid "Find Regular E_xpression..."
-#~ msgstr "Atrast Parastu I_zteiksmi..."
-
-#, fuzzy
-#~ msgid ""
-#~ "The quick brown <a href=\"mailto:fox\">fox</a> jumps over the lazy <a "
-#~ "href=\"mailto:dog\">dog</a>."
-#~ msgstr "Glāžšķūņa rūķīši čiepj koncertflīģeļa vāku."
-
-#~ msgid "The quick brown fox jumps over the lazy dog."
-#~ msgstr "Glāžšķūņa rūķīši čiepj koncertflīģeļa vāku."
-
-#~ msgid "Other"
-#~ msgstr "Cits"
-
-#~ msgid ""
-#~ "The editted cell was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētā šūna tika izņemta no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "************"
-#~ msgstr "************"
-
-#~ msgid "***text***"
-#~ msgstr "***teksts***"
-
-#~ msgid "Apply changes to:"
-#~ msgstr "Pielietot izmaiņas:"
-
-#~ msgid "Border"
-#~ msgstr "Robeža"
-
-#~ msgid "Click will follow this URL"
-#~ msgstr "Klikšķis sekos šim URL"
-
-#~ msgid "Click will follow this URL:"
-#~ msgstr "Klikšķis sekos šim URL:"
-
-#~ msgid "Don't wrap"
-#~ msgstr "Neiekļaut"
-
-#~ msgid "Font size"
-#~ msgstr "Fonta lielums"
-
-#~ msgid "Foreground color"
-#~ msgstr "Priekšpuses krāsa"
-
-#~ msgid "Header"
-#~ msgstr "Galvene"
-
-#~ msgid "Link insert"
-#~ msgstr "Saites ievietošana"
-
-#~ msgid "Location"
-#~ msgstr "Lokācija"
-
-#~ msgid "Padding"
-#~ msgstr "Polsterējums"
-
-#~ msgid "Percent %"
-#~ msgstr "Procenti %"
-
-#~ msgid "Pixmap:"
-#~ msgstr "Pikseļkarte:"
-
-#~ msgid "Points"
-#~ msgstr "Punkti"
-
-#~ msgid "Scope"
-#~ msgstr "Vēriens"
-
-#~ msgid "Spacing"
-#~ msgstr "Atstarpe"
-
-#~ msgid "Style:"
-#~ msgstr "Stils:"
-
-#~ msgid "Table Insert"
-#~ msgstr "Tabulas Ievietošana"
-
-#~ msgid "Test URL..."
-#~ msgstr "Testēt URL..."
-
-#~ msgid "Wrap"
-#~ msgstr "Iekļaut"
-
-#~ msgid "Wrapping:"
-#~ msgstr "Iekļaušana:"
-
-#~ msgid "xxxxxxxxx"
-#~ msgstr "xxxxxxxxx"
-
-#~ msgid ""
-#~ "The editted image was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētais attēls tika izņemts no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "Link text"
-#~ msgstr "Saites teksts"
-
-#~ msgid ""
-#~ "The editted link was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētā saite tika izņemta no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "Align"
-#~ msgstr "Nolīdzināt"
-
-#~ msgid ""
-#~ "The editted paragraph was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētais paragrāfs tika izņemts no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "Blue 3D"
-#~ msgstr "Zils 3D"
-
-#~ msgid "Yellow, flowers"
-#~ msgstr "Dzeltens, puķes"
-
-#~ msgid ""
-#~ "The editted rule was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētais nosacījums tika izņemts no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "Flat gray"
-#~ msgstr "Pelēks"
-
-#~ msgid "Dark header"
-#~ msgstr "Tumša galvene"
-
-#~ msgid ""
-#~ "The editted table was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "Rediģētā tabula tika izņemta no dokumenta.\n"
-#~ "Nevaru pielietot jūsu izmaiņas."
-
-#~ msgid "Color"
-#~ msgstr "Krāsa"
-
-#, fuzzy
-#~ msgid "The quick brown fox jumps over the lazy dog.</div>"
-#~ msgstr "Glāžšķūņa rūķīši čiepj koncertflīģeļa vāku."
-
-#~ msgid "Rectangles"
-#~ msgstr "Taisnstūri"
-
-#~ msgid "Pre"
-#~ msgstr "Pre"
-
-#~ msgid "The quick brown fox jumped over the lazy dog."
-#~ msgstr "Mazie rūķīši nočiepa koncertflīģeļa vāku."
-
-#~ msgid "Ignore '%s'"
-#~ msgstr "Ignorēt '%s'"
-
-#~ msgid "Suggest word"
-#~ msgstr "Ieteikt vārdu"
-
-#~ msgid "Text..."
-#~ msgstr "Teksts..."
+#~ "க்னோம் பிழை திருத்தி சிறு நிரலை இயக்க முடியவில்லை\n"
+#~ "க்னோம் பிழை திருத்தியை நிறுவ முயற்சி செய்யவும்."

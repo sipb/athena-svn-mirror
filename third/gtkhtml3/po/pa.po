@@ -8,149 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-08-02 12:50+0530\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-12-09 10:17+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
-"Language-Team: Punjabi <pa@li.org>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<ਕੋਈ ਨਹੀ>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "ਗਲੇਡ ਫਾਇਲ ਨੂੰ ਲੋਡ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ"
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "ਕੀ-ਬੋਰਡ ਸ਼ਾਰਟਕੱਟ ਜੋੜ੍ਹੋ"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "ਸੰਬੰਧ ਦੀ ਖੋਜ ਸਵੈ ਕਰੋ"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "ਵਿਵਹਾਰ"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "ਨਿਰਮਾਤਾ ਵਿਸ਼ੇਸਤਾ"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "ਨਿਰਮਾਤਾ ਵਿਸ਼ੇਸਤਾ ਵਿਚਾਰ-ਅਧੀਨ"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "ਸ਼ਬਦ-ਜੋਡ਼ ਜਾਂਚ ਦੀ ਸੰਰਚਨਾ"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "ਸ਼ਬਦ-ਜੋਡ਼ ਜਾਂਚ  ਯੋਗ"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "ਸਥਿਰ ਚੋਡ਼ਾਈ"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "ਫੋਟ"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "ਛਾਪਣ ਲਈ"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "ਸਵਿੱਚਾਂ ਨੂੰ ਪ੍ਰਾਪਤ ਕਰੋ"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "ਜਾਣਕਾਰੀ"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "ਕੀ-ਬੋਰਡ ਸ਼ਾਰਟਕੱਟ"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "ਫੁਟਕਲ"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "ਨਵਾਂ ਸ਼ਾਰਟ-ਕੱਟਃ"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "ਪਰਦੇ ਤੇ"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "HTML ਨਿਸ਼ਚਿਤ ਚੌੜਾਈ ਫੋਂਟ"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "ਛਾਪਣ ਲਈ HTML ਸਥਿਰ ਚੌੜਾਈ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "HTML ਅਸਥਿਰ ਚੌੜਾਈ ਫੋਟ ਵਰਤੋਂ"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "ਛਾਪਣ ਲਈ HTML ਅਸਥਿਰ ਚੌੜਾਈ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "ਸ਼ਾਰਟਕੱਟ ਕਿਸਮ(_t):"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "ਸਜੀਵ ਚਿੱਤਰ ਵੇਖਾਓ"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "ਅਸਥਿਰ ਚੌਡ਼ਾਈ"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "ਸ਼ਾਮਿਲ(_A)"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "ਹਟਾਉ"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"ਗਨੋਮ ਸ਼ਬਦ-ਜੋੜ ਕੰਟਰੋਲ ਐਪਲਿਟ ਚੱਲ ਨਹੀਂ ਸਕਿਆ ਹੈ\n"
-"ਕਿਰਪਾ ਕਰਕੇ ਇੰਸਟਾਲ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ ਕਰੋ, ਜੇਕਰ ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਗਨੋਮ ਸ਼ਬਦ-ਜੋੜ ਇੰਸਟਾਲ ਨਹੀਂ ਕੀਤਾ ਹੈ|"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -597,7 +464,7 @@ msgstr "ਵਾਪਿਸ ਕਾਰਵਾਈ ਮੁੜ ਕਰੋ"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "ਤਬਦੀਲ"
 
@@ -1052,6 +919,13 @@ msgstr "ਪਿੱਠਭੂਮੀ ਚਿੱਤਰ"
 msgid "_Source:"
 msgstr "ਸਰੋਤ(_S):"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "ਗਲੇਡ ਫਾਇਲ ਨੂੰ ਲੋਡ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ"
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "ਪਾਰਦਰਸ਼ੀ"
@@ -1292,6 +1166,10 @@ msgstr "    "
 msgid "%"
 msgstr "%"
 
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
+
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
 msgstr "+4"
@@ -1355,7 +1233,7 @@ msgstr "ਸੈਲ(_e)"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:26
 msgid "C_olor:"
-msgstr "ਰੰਗਃ"
+msgstr "ਰੰਗ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:27
 #: components/html-editor/popup.c:237
@@ -1373,7 +1251,7 @@ msgstr "ਕਾਲਮ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:31
 msgid "Column span:"
-msgstr "ਕਾਲਮ ਦੂਰੀਃ"
+msgstr "ਕਾਲਮ ਦੂਰੀ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:32
 msgid "Enable"
@@ -1385,11 +1263,11 @@ msgstr "ਸਿਰਲੇਖ ਸ਼ੈਲੀ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:34
 msgid "Horizontal alignment:"
-msgstr "ਖਿਤਿਜੀ ਇਕਸਾਰਃ"
+msgstr "ਖਿਤਿਜੀ ਇਕਸਾਰ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:35
 msgid "Horizontal:"
-msgstr "ਖਿਤਿਜੀਃ"
+msgstr "ਖਿਤਿਜੀ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
 msgid "I_mage:"
@@ -1402,7 +1280,7 @@ msgstr "ਖੱਬਾ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:39
 msgid "Length:"
-msgstr "ਲੰਬਾਈਃ"
+msgstr "ਲੰਬਾਈ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:40
 msgid "Link properties"
@@ -1427,7 +1305,7 @@ msgstr "ਸੱਜਾ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:47
 msgid "Row span:"
-msgstr "ਕਤਾਰ ਦੂਰੀਃ"
+msgstr "ਕਤਾਰ ਦੂਰੀ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:49
 msgid "Shaded"
@@ -1443,7 +1321,7 @@ msgstr "ਮਿਆਰੀ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:55
 msgid "Thickness:"
-msgstr "ਚੌੜਾਈਃ"
+msgstr "ਚੌੜਾਈ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:56
 msgid "Top"
@@ -1451,11 +1329,11 @@ msgstr "ਉੱਪਰ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:57
 msgid "Vertical:"
-msgstr "ਲੰਬਕਾਰੀਃ"
+msgstr "ਲੰਬਕਾਰੀ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:58
 msgid "Width:"
-msgstr "ਚੌਡ਼ਾਈਃ"
+msgstr "ਚੌਡ਼ਾਈ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
 msgid "_Alignment:"
@@ -1467,11 +1345,11 @@ msgstr "ਹਾਸ਼ੀਆ(_B:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:62
 msgid "_Color:"
-msgstr "ਰੰਗ(_C)ਃ"
+msgstr "ਰੰਗ(_C):"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:63
 msgid "_Columns:"
-msgstr "ਕਾਲਮ(_C)ਃ"
+msgstr "ਕਾਲਮ(_C):"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:64
 msgid "_Description:"
@@ -1479,7 +1357,7 @@ msgstr "ਵੇਰਵਾ(_D):"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:65
 msgid "_Height:"
-msgstr "ਉਚਾਈ(_H)ਃ"
+msgstr "ਉਚਾਈ(_H):"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:66
 msgid "_Image:"
@@ -1487,7 +1365,7 @@ msgstr "ਚਿੱਤਰ(_I):"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:68
 msgid "_Padding:"
-msgstr "ਚਿਣਿਆਃ"
+msgstr "ਚਿਣਿਆ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:69
 msgid "_Row"
@@ -1495,11 +1373,11 @@ msgstr "ਕਤਾਰ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:70
 msgid "_Rows:"
-msgstr "ਕਤਾਰਾਂਃ"
+msgstr "ਕਤਾਰਾਂ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:72
 msgid "_Spacing:"
-msgstr "ਖਾਲੀ ਥਾਂਃ"
+msgstr "ਖਾਲੀ ਥਾਂ:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:74
 msgid "_Table"
@@ -1511,7 +1389,7 @@ msgstr "_URL:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:77
 msgid "_Width:"
-msgstr "ਚੌਡ਼ਾਈਃ "
+msgstr "ਚੌਡ਼ਾਈ: "
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:78
 msgid "_Wrap Text"
@@ -1519,11 +1397,11 @@ msgstr "ਪਾਠ ਲਪੇਟੋ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:79
 msgid "_X-Padding:"
-msgstr "_X-ਚਿਣਿਆਃ:"
+msgstr "_X-ਚਿਣਿਆ::"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:80
 msgid "_Y-Padding:"
-msgstr "_Y-ਚਿਣਿਆਃ:"
+msgstr "_Y-ਚਿਣਿਆ::"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:81
 msgid "follow"
@@ -1729,27 +1607,27 @@ msgstr "ਸਭ ਤਬਦੀਲ(_A)"
 
 #: components/html-editor/replace.c:79
 msgid "_Next"
-msgstr "ਅੱਗੇ (_N)"
+msgstr "ਅੱਗੇ(_N)"
 
 #: components/html-editor/replace.c:81
 msgid "_Replace"
 msgstr "ਤਬਦੀਲ(_R)"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "ਪਿੱਛੇ ਖੋਜ"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "ਅੱਖਰ ਆਕਾਰ ਤੇ ਨਿਰਭਰ"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
-msgstr "ਤਬਦੀਲਃ"
+msgstr "ਤਬਦੀਲ:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
-msgstr "ਨਾਲਃ"
+msgstr "ਨਾਲ:"
 
 #: components/html-editor/search.c:113
 msgid "_Backward"
@@ -1759,21 +1637,29 @@ msgstr "ਪਿੱਠਭੂਮੀ(_B)"
 msgid "_Regular Expression"
 msgstr "ਨਿਯਮਿਤ ਸਮੀਕਰਨ(_R)"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+"ਸ਼ਬਦ-ਕੋਸ਼ ਵਿੱਚ ਸ਼ਬਦ ਸ਼ਾਮਿਲ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਹੈ,\n"
+"ਭਾਸ਼ਾ ਵਿਵਸਥਾ ਟੁੱਟੀ ਹੋਈ ਹੈ।\n"
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "ਕੋਈ ਗਲਤ ਸਬਦ-ਜੋੜ ਨਹੀਂ ਹੈ"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "ਸ਼ਬਦ ਜਾਂਚ"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "ਮੌਜੂਦਾ ਭਾਸ਼ਾਵਾਂ"
 
 #: components/html-editor/template.c:84
 msgid "Note"
-msgstr "ਟਿੱਪਣੀ "
+msgstr "ਸੂਚਨਾ"
 
 #: components/html-editor/template.c:94 components/html-editor/template.c:113
 msgid "Place your text here"
@@ -1817,11 +1703,11 @@ msgstr "ਟਾਈਪਰਾਇਟਰ ਫੋਂਟ ਸ਼ੈਲੀ ਤਬਦੀਲ"
 
 #: components/html-editor/toolbar.c:539
 msgid "Bold"
-msgstr "ਭਾਰਾ"
+msgstr "ਗੂੜੇ"
 
 #: components/html-editor/toolbar.c:539
 msgid "Makes the text bold"
-msgstr "ਅੱਖਰਾਂ ਨੂੰ ਭਾਰਾ ਬਣਾਓ"
+msgstr "ਅੱਖਰਾਂ ਨੂੰ ਗੂੜਾ ਬਣਾਓ"
 
 #: components/html-editor/toolbar.c:541
 msgid "Italic"
@@ -1873,91 +1759,91 @@ msgid ""
 "Cannot apply your changes."
 msgstr ""
 "ਸੋਧੀ ਇਕਾਈ ਇਸ ਦਸਤਾਵੇਜ਼ ਤੋਂ ਹਟਾਈ ਜਾ ਚੁੱਕੀ ਹੈ\n"
-"ਇਸ ਕਰਕੇ ਤੁਹਾਡੀਆਂ ਤਬਦੀਲੀਆਂ ਲਾਗੂ ਨਹੀਂ ਕੀਤੀਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ|"
+"ਇਸ ਕਰਕੇ ਤੁਹਾਡੀਆਂ ਤਬਦੀਲੀਆਂ ਲਾਗੂ ਨਹੀਂ ਕੀਤੀਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ।"
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
-"ਮੌਜੀਲਾ URL, ਜੋ ਕਿ ਨਿਰਮਾਤਾ ਤੇ ਸੁੱਟਿਆ ਗਿਆ ਹੈ, ਦਾ ਫਾਰਮਿਟ(%d) ਜਾਂ ਲੰਬਾਈ(%d) ਗਲਤ ਹੈ|\n"
+"ਮੌਜੀਲਾ URL, ਜੋ ਕਿ ਨਿਰਮਾਤਾ ਤੇ ਸੁੱਟਿਆ ਗਿਆ ਹੈ, ਦਾ ਫਾਰਮਿਟ(%d) ਜਾਂ ਲੰਬਾਈ(%d) ਗਲਤ ਹੈ।\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "ਸੋਧਯੋਗ"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "ਕੀ HTML ਨੂੰ ਸੋਧਿਆ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "ਦਸਤਾਵੇਜ਼ ਸਿਰਲੇਖ"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "ਮੌਜੂਦਾ ਦਸਤਾਵੇਜ਼ ਦਾ ਸਿਰਲੇਖ"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "ਦਸਤਾਵੇਜ਼ ਅਧਾਰ"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "ਅਨੁਸਾਰੀ ਹਵਾਲੇ ਲਈ ਮੂਲ URL"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "ਨਿਯਤ ਆਧਾਰ"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "ਨਿਯਤ ਫਰੇਮ ਲਈ ਮੂਲ URL"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "ਸਥਿਰ ਫੋਟ ਚੌਡ਼ਾਈ"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
-msgstr "ਟਾਈਪਰਾਈਟਰ ਪਾਠ ਲਈ ਇਕੋਥਾਂ ਵਾਲੇ ਫੋਂਟ ਵਰਤੋਂ"
+msgstr "ਟਾਈਪਰਾਈਟਰ ਪਾਠ ਲਈ ਇਕਸਾਰ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "ਨਵਾਂ ਸੰਬੰਧ ਰੰਗ"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "ਨਵੀਆਂ ਸੰਬੰਧ ਇਕਾਈਆਂ ਲਈ ਰੰਗ"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "ਜਾ ਚੁੱਕੇ ਸੰਬੰਧ ਦਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "ਜਾ ਚੁੱਕੀਆਂ ਇਕਾਈਆਂ ਦਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "ਸਰਗਰਮ ਸੰਬੰਧ ਦਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "ਸਰਗਰਮ ਸੰਬੰਧ ਇਕਾਈਆਂ ਦਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "ਸ਼ਬਦ-ਜੋੜ ਗਲਤੀ ਰੰਗ"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "ਸ਼ਬਦ-ਜੋੜ ਗਲਤੀ ਨਿਸ਼ਾਨ ਦਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "ਹਵਾਲਾ ਰੰਗ"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "ਪਾਠ ਦਾ ਰੰਗ"
 

@@ -1,152 +1,20 @@
 # translation of gtkhtml.po to Arabic
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Arafat Medini <lumina@silverpen.de>, 2002
+# Copyright (C) 2002, 2004 Free Software Foundation, Inc.
+# Arafat Medini <lumina@silverpen.de>, 2002.
+# Ayman Hourieh <aymanh@gmail.com>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2002-06-16 16:26+0200\n"
-"Last-Translator: Arafat Medini <lumina@silverpen.de>\n"
-"Language-Team: Arabic <doc@arabeyes.org>\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-09-15 02:40+0300\n"
+"Last-Translator: Ayman Hourieh <aymanh@gmail.com>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta1\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<بلا>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "لم أتمكن من تحميل ملف glade"
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "اضف إختصارات لوحة المفاتيح"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "تعرف على الوصلات تلقائيا"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "سلوك"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "خصائص الكاتب"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "خصائص الكاتب المخططة"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "عرّف مدقق الإملاء"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "تفعيل مدقق الإملاء"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "عرض ثابت"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "خطوط"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "لطباعة"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "مفاتيح السحب"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "معلومات"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "اختصارات لوحة المفاتيح"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "متفرقات"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "إختصار جديد:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "على الشاشة"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "اختر خط HTML ذو العرض الثابت"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "اختر خط HTML ذو العرض الثابت للطباعة"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "اختر خط HTML ذو العرض المتغيير"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "اختر خط HTML ذو العرض المتغيير للطباعة"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "_نوع الإختصارات :"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "أظهر الصور المتحركة"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "متغير العرض"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "أ_ضف"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "ا_حذف"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"لا يمكن تشغيل بريمج تحكم مدقق إملاء جينومحاول تثبيت مدقق إملاء جينوم أن لم "
-"يكن موجود لديك."
+"X-Generator: KBabel 1.3.1\n"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -239,7 +107,7 @@ msgstr "انسخ الاختيار"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:17
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
 msgid "Cr_ying"
-msgstr ""
+msgstr "_بكاء"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:18
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
@@ -338,9 +206,8 @@ msgstr "صورة"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:36
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
-#, fuzzy
 msgid "Insert Crying smiley into document..."
-msgstr "أدخل وجها غامزا في الوثيقة..."
+msgstr "أدخل وجها بكياً في الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:37
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:37
@@ -349,9 +216,8 @@ msgstr "أدخل وجه عابس الى المستند..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:38
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
-#, fuzzy
 msgid "Insert HTML file into document..."
-msgstr "أدخل HTML وصلة الى الوثيقة..."
+msgstr "أدخل ملف HTML إلى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:39
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
@@ -365,9 +231,8 @@ msgstr "أدخل قالب HTML الى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:41
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
-#, fuzzy
 msgid "Insert Indifferent smiley into document..."
-msgstr "أدخل وجها غامزا في الوثيقة..."
+msgstr "أدخل وجها غير مكترث في الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:42
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:42
@@ -376,9 +241,8 @@ msgstr "أدخل وجه ضاحك الى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:43
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
-#, fuzzy
 msgid "Insert Lick smiley into document..."
-msgstr "أدخل وجها غامزا في الوثيقة..."
+msgstr "أدخل وجها يمدّ لسانه في الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:44
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
@@ -397,9 +261,8 @@ msgstr "أدخل وجه متفاجئ الى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:47
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
-#, fuzzy
 msgid "Insert Undecided smiley into document..."
-msgstr "أدخل وجه مبتسم الى الوثيقة..."
+msgstr "أدخل وجها محتار الى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:48
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
@@ -423,9 +286,8 @@ msgstr "أدخل جدول الى الوثيقة"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:52
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:53
-#, fuzzy
 msgid "Insert text file into document..."
-msgstr "أدخل جدول الى الوثيقة"
+msgstr "أدخل ملف نصّي الى الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:53
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
@@ -435,9 +297,8 @@ msgstr "يسار  بعدل الفقرات"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:54
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
-#, fuzzy
 msgid "Li_ck"
-msgstr "رابط"
+msgstr "_مدّ لسان"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:55
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
@@ -452,7 +313,6 @@ msgid "Make the current Paragraph style Normal"
 msgstr "اجعل نمط الفقرة الحالي عادياَ"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:57
-#, fuzzy
 msgid "Make the current Paragraph style Preformat"
 msgstr "اجعل نمط الفقرة الحالي منسق مسبقا"
 
@@ -551,7 +411,7 @@ msgstr "لصق"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:76
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:77
 msgid "Paste _Quotation"
-msgstr ""
+msgstr "لصق الا_قتباس"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:77
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
@@ -565,9 +425,8 @@ msgstr "الصق محتويات الحافظة"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:79
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:80
-#, fuzzy
 msgid "Paste the clipboard as a quotation"
-msgstr "الصق محتويات الحافظة"
+msgstr "الصق محتويات الحافظة كاقتباس"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:80
 #: components/html-editor/toolbar.c:49
@@ -602,7 +461,7 @@ msgstr "كرّر الفعل المتراجع عنه"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "بدّل"
 
@@ -681,9 +540,8 @@ msgstr "قا_لب..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:100
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:102
-#, fuzzy
 msgid "Te_xt file..."
-msgstr "إفتح ملف..."
+msgstr "ملف _نصّي..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:101
 #: components/html-editor/gtkhtml-editor-properties.glade.h:53
@@ -775,9 +633,8 @@ msgstr "ا_عبس"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:118
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:119
-#, fuzzy
 msgid "_HTML file..."
-msgstr "إفتح ملف..."
+msgstr "ملف _HTML..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:119
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:120
@@ -796,9 +653,8 @@ msgstr "ز_د الإزاحة"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:122
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:123
-#, fuzzy
 msgid "_Indifferent"
-msgstr "إزاحة"
+msgstr "_غير مكترث"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:123
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
@@ -919,9 +775,8 @@ msgstr "ن_ص..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:146
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:147
-#, fuzzy
 msgid "_Undecided"
-msgstr "_تسطير"
+msgstr "_محتار"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:147
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
@@ -957,30 +812,25 @@ msgid "GNOME HTML Editor Factory"
 msgstr "مصنع محرر HTML لجينوم"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
-#, fuzzy
 msgid "Insert Sick smiley into document..."
-msgstr "أدخل وجها غامزا في الوثيقة..."
+msgstr "أدخل وجها مريضاً في الوثيقة..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:58
-#, fuzzy
 msgid "Make the current Paragraph style Preformatted"
 msgstr "اجعل نمط الفقرة الحالي منسق مسبقا"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
 #: components/html-editor/paragraph.c:102
-#, fuzzy
 msgid "Preformatted"
-msgstr "نسق مسبق"
+msgstr "منسّق مسبقاً"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:91
-#, fuzzy
 msgid "S_ick"
-msgstr "ا_غمز"
+msgstr "_مريض"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
-#, fuzzy
 msgid "_Wrap Lines"
-msgstr "الربط"
+msgstr "_لفّ الأسطر"
 
 #: components/html-editor/body.c:59
 #: components/html-editor/gtkhtml-editor-properties.glade.h:42
@@ -989,44 +839,39 @@ msgstr "لا يوجد"
 
 #: components/html-editor/body.c:67
 msgid "Perforated Paper"
-msgstr ""
+msgstr "روق مثقّب"
 
 #: components/html-editor/body.c:75
-#, fuzzy
 msgid "Blue Ink"
-msgstr "أزرق ثلاثي الأبعاد"
+msgstr "حبر أزرق"
 
 #: components/html-editor/body.c:83
-#, fuzzy
 msgid "Paper"
-msgstr "الصفحة"
+msgstr "الورقة"
 
 #: components/html-editor/body.c:91
 msgid "Ribbon"
-msgstr ""
+msgstr "شريط"
 
 #: components/html-editor/body.c:99
-#, fuzzy
 msgid "Midnight"
-msgstr "يمين"
+msgstr "منتصف الليل"
 
 #: components/html-editor/body.c:107
-#, fuzzy
 msgid "Confidential"
-msgstr "عدم ازاحة"
+msgstr "سرّي"
 
 #: components/html-editor/body.c:115
 msgid "Draft"
-msgstr ""
+msgstr "مسودة"
 
 #: components/html-editor/body.c:123
 msgid "Graph paper"
-msgstr ""
+msgstr "ورق بياني"
 
 #: components/html-editor/body.c:246
-#, fuzzy
 msgid "T_emplate:"
-msgstr "قالب"
+msgstr "_قالب:"
 
 #. data->entry_title = gtk_entry_new ();
 #. if (gtk_html_get_title (data->cd->html)) {
@@ -1036,9 +881,8 @@ msgstr "قالب"
 #. g_signal_connect (data->entry_title, "changed", G_CALLBACK (entry_changed), data);
 #. editor_hig_attach_row (t1, _("T_itle:"), data->entry_title, 1);
 #: components/html-editor/body.c:256 components/html-editor/paragraph.c:112
-#, fuzzy
 msgid "General"
-msgstr "وسط"
+msgstr "عام"
 
 #: components/html-editor/body.c:267 components/html-editor/text.c:162
 #: components/html-editor/toolbar.c:301
@@ -1046,19 +890,16 @@ msgid "Automatic"
 msgstr "آلي"
 
 #: components/html-editor/body.c:279
-#, fuzzy
 msgid "_Text:"
-msgstr "نص"
+msgstr "_نصّ:"
 
 #: components/html-editor/body.c:280
-#, fuzzy
 msgid "_Link:"
-msgstr "رابط"
+msgstr "_رابط:"
 
 #: components/html-editor/body.c:281
-#, fuzzy
 msgid "_Background:"
-msgstr "الخلفية"
+msgstr "ال_خلفية:"
 
 #: components/html-editor/body.c:283
 #: components/html-editor/gtkhtml-editor-properties.glade.h:30
@@ -1073,11 +914,18 @@ msgstr "صورة الخلفية"
 #: components/html-editor/body.c:298
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 msgid "_Source:"
-msgstr ""
+msgstr "ال_مصدر:"
+
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "لم أتمكن من تحميل ملف glade"
 
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
-msgstr ""
+msgstr "شفّاف"
 
 #: components/html-editor/editor-control-factory.c:178
 #: components/html-editor/menubar.c:354 components/html-editor/menubar.c:372
@@ -1106,236 +954,218 @@ msgstr "الصفحة"
 #. This is the default custom color
 #: components/html-editor/gi-color-palette.c:395
 msgid "custom"
-msgstr ""
+msgstr "مخصّص"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
 #: components/html-editor/gi-color-palette.c:437
-#, fuzzy
 msgid "Custom Color:"
-msgstr "اللون:"
+msgstr "اللون المخصّص:"
 
 #: components/html-editor/gi-color-palette.c:445
 msgid "Choose Custom Color"
-msgstr ""
+msgstr "اختيار لون مخصّص"
 
 #: components/html-editor/gi-color-palette.c:578
 msgid "black"
-msgstr ""
+msgstr "أسود"
 
 #: components/html-editor/gi-color-palette.c:579
 msgid "light brown"
-msgstr ""
+msgstr "بنّي فاتح"
 
 #: components/html-editor/gi-color-palette.c:580
 msgid "brown gold"
-msgstr ""
+msgstr "ذهبي بنّي"
 
 #: components/html-editor/gi-color-palette.c:581
 msgid "dark green #2"
-msgstr ""
+msgstr "أخضر غامق #2"
 
 #: components/html-editor/gi-color-palette.c:582
 msgid "navy"
-msgstr ""
+msgstr "كحلي"
 
 #: components/html-editor/gi-color-palette.c:583
 #: components/html-editor/gi-color-palette.c:639
 msgid "dark blue"
-msgstr ""
+msgstr "أزرق غامق"
 
 #: components/html-editor/gi-color-palette.c:584
-#, fuzzy
 msgid "purple #2"
-msgstr "بنفسجي"
+msgstr "بنفسجي #2"
 
 #: components/html-editor/gi-color-palette.c:585
 msgid "very dark gray"
-msgstr ""
+msgstr "رمادي غامق جدّاً"
 
 #: components/html-editor/gi-color-palette.c:588
 #: components/html-editor/gi-color-palette.c:644
-#, fuzzy
 msgid "dark red"
-msgstr "تريسة غامقة"
+msgstr "أحمر غامق"
 
 #: components/html-editor/gi-color-palette.c:589
-#, fuzzy
 msgid "red-orange"
-msgstr "برتقالي"
+msgstr "أحمر برتقالي"
 
 #: components/html-editor/gi-color-palette.c:590
-#, fuzzy
 msgid "gold"
-msgstr "عريض"
+msgstr "ذهبي"
 
 #: components/html-editor/gi-color-palette.c:591
 msgid "dark green"
-msgstr ""
+msgstr "أخضر غامق"
 
 #: components/html-editor/gi-color-palette.c:592
 #: components/html-editor/gi-color-palette.c:645
 msgid "dull blue"
-msgstr ""
+msgstr "أزرق معتم"
 
 #: components/html-editor/gi-color-palette.c:593
 #: components/html-editor/gi-color-palette.c:646
-#, fuzzy
 msgid "blue"
 msgstr "أزرق"
 
 #: components/html-editor/gi-color-palette.c:594
 msgid "dull purple"
-msgstr ""
+msgstr "بنفسجي معتم"
 
 #: components/html-editor/gi-color-palette.c:595
 msgid "dark grey"
-msgstr ""
+msgstr "رمادي غامق"
 
 #: components/html-editor/gi-color-palette.c:598
-#, fuzzy
 msgid "red"
 msgstr "أحمر"
 
 #: components/html-editor/gi-color-palette.c:599
-#, fuzzy
 msgid "orange"
 msgstr "برتقالي"
 
 #: components/html-editor/gi-color-palette.c:600
-#, fuzzy
 msgid "lime"
-msgstr "المحاذاة"
+msgstr "ليموني"
 
 #: components/html-editor/gi-color-palette.c:601
 msgid "dull green"
-msgstr ""
+msgstr "أخضر معتم"
 
 #: components/html-editor/gi-color-palette.c:602
 msgid "dull blue #2"
-msgstr ""
+msgstr "أزرق معتم #2"
 
 #: components/html-editor/gi-color-palette.c:603
 msgid "sky blue #2"
-msgstr ""
+msgstr "أزرق سماوي #2"
 
 #: components/html-editor/gi-color-palette.c:604
 #: components/html-editor/gi-color-palette.c:643
-#, fuzzy
 msgid "purple"
 msgstr "بنفسجي"
 
 #: components/html-editor/gi-color-palette.c:605
-#, fuzzy
 msgid "gray"
-msgstr "رمادي مسطح"
+msgstr "رمادي"
 
 #: components/html-editor/gi-color-palette.c:608
 #: components/html-editor/gi-color-palette.c:640
-#, fuzzy
 msgid "magenta"
-msgstr "صورة"
+msgstr "وردي"
 
 #: components/html-editor/gi-color-palette.c:609
 msgid "bright orange"
-msgstr ""
+msgstr "برتقالي فاتح"
 
 #: components/html-editor/gi-color-palette.c:610
 #: components/html-editor/gi-color-palette.c:641
-#, fuzzy
 msgid "yellow"
 msgstr "أصفر"
 
 #: components/html-editor/gi-color-palette.c:611
-#, fuzzy
 msgid "green"
 msgstr "أخضر"
 
 #: components/html-editor/gi-color-palette.c:612
 #: components/html-editor/gi-color-palette.c:642
 msgid "cyan"
-msgstr ""
+msgstr "فيروزي"
 
 #: components/html-editor/gi-color-palette.c:613
 msgid "bright blue"
-msgstr ""
+msgstr "أزرق فاتح"
 
 #: components/html-editor/gi-color-palette.c:614
 #: components/html-editor/gi-color-palette.c:631
-#, fuzzy
 msgid "red purple"
-msgstr "بنفسجي"
+msgstr "بنفسجي محمر"
 
 #: components/html-editor/gi-color-palette.c:615
-#, fuzzy
 msgid "light grey"
-msgstr "رمادي مسطح"
+msgstr "رمادي فاتح"
 
 #: components/html-editor/gi-color-palette.c:618
 #: components/html-editor/gi-color-palette.c:635
-#, fuzzy
 msgid "pink"
-msgstr "رابط"
+msgstr "زهري"
 
 #: components/html-editor/gi-color-palette.c:619
-#, fuzzy
 msgid "light orange"
-msgstr "محاذاة الى اليمين"
+msgstr "برتقالي فاتح"
 
 #: components/html-editor/gi-color-palette.c:620
 #: components/html-editor/gi-color-palette.c:632
 msgid "light yellow"
-msgstr ""
+msgstr "أصفر فاتح"
 
 #: components/html-editor/gi-color-palette.c:621
-#, fuzzy
 msgid "light green"
-msgstr "محاذاة الى اليمين"
+msgstr "أخضر فاتح"
 
 #: components/html-editor/gi-color-palette.c:622
-#, fuzzy
 msgid "light cyan"
-msgstr "محاذاة الى اليمين"
+msgstr "فيروزي فاتح"
 
 #: components/html-editor/gi-color-palette.c:623
 #: components/html-editor/gi-color-palette.c:633
 msgid "light blue"
-msgstr ""
+msgstr "أزرق فاتح"
 
 #: components/html-editor/gi-color-palette.c:624
 #: components/html-editor/gi-color-palette.c:637
 msgid "light purple"
-msgstr ""
+msgstr "بنفسجي فاتح"
 
 #: components/html-editor/gi-color-palette.c:625
-#, fuzzy
 msgid "white"
-msgstr "مع"
+msgstr "أبيض"
 
 #: components/html-editor/gi-color-palette.c:630
 msgid "purplish blue"
-msgstr ""
+msgstr "أزرق بنفسجي"
 
 #: components/html-editor/gi-color-palette.c:634
 msgid "dark purple"
-msgstr ""
+msgstr "بنفسجي غامق"
 
 #: components/html-editor/gi-color-palette.c:636
 msgid "sky blue"
-msgstr ""
+msgstr "أزرق سماوي"
 
 #: components/html-editor/gnome-gtkhtml-editor.c:68
-#, fuzzy
 msgid "GtkHTML Editor Control"
-msgstr "تحكم محرر HTML لجينوم"
+msgstr "تحكم محرر GtkHTML"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "...."
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:3
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1343,48 +1173,47 @@ msgstr "+4"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
 msgid "<b>Alignment &amp; Behaviour</b>"
-msgstr ""
+msgstr "<b>المحاذاة &amp; السلوك</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:12
-#, fuzzy
 msgid "<b>Background</b>"
-msgstr "الخلفية"
+msgstr "<b>الخلفية</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:13
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>عام</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:14
 msgid "<b>Layout</b>"
-msgstr ""
+msgstr "<b>التنسيق</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:15
 msgid "<b>Scope</b>"
-msgstr ""
+msgstr "<b>المدى</b>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:16
 msgid "<span weight=\"bold\">General</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">عام</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:17
 msgid "<span weight=\"bold\">Layout</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">التنسيق</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:18
 msgid "<span weight=\"bold\">Link</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">الارتباط</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:19
 msgid "<span weight=\"bold\">Size</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">الحجم</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:20
 msgid "<span weight=\"bold\">Style</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">الأسلوب</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:21
 msgid "<span weight=\"bold\">Template</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">القالب</span>"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:22
 #: components/html-editor/paragraph.c:131
@@ -1396,14 +1225,12 @@ msgid "Bottom"
 msgstr "الأسفل"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#, fuzzy
 msgid "C_ell"
-msgstr "خلية"
+msgstr "_خلية"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:26
-#, fuzzy
 msgid "C_olor:"
-msgstr "اللون:"
+msgstr "ال_لّون:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:27
 #: components/html-editor/popup.c:237
@@ -1416,9 +1243,8 @@ msgid "Center"
 msgstr "وسط"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:29
-#, fuzzy
 msgid "Col_umn"
-msgstr "العمود"
+msgstr "ال_عمود"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:31
 msgid "Column span:"
@@ -1429,9 +1255,8 @@ msgid "Enable"
 msgstr "تمكين"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#, fuzzy
 msgid "Hea_der style"
-msgstr "ترويسة 6"
+msgstr "أسلوب ال_تّرويسة"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:34
 msgid "Horizontal alignment:"
@@ -1442,9 +1267,8 @@ msgid "Horizontal:"
 msgstr "أفقي:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#, fuzzy
 msgid "I_mage:"
-msgstr "صورة"
+msgstr "_صورة:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:38
 #: components/html-editor/paragraph.c:127
@@ -1485,13 +1309,12 @@ msgid "Shaded"
 msgstr "مظلل"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:50
-#, fuzzy
 msgid "Si_ze:"
-msgstr "الحجم"
+msgstr "ال_حجم:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:51
 msgid "Standard"
-msgstr ""
+msgstr "القياسي"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:55
 msgid "Thickness:"
@@ -1510,106 +1333,88 @@ msgid "Width:"
 msgstr "العرض:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#, fuzzy
 msgid "_Alignment:"
-msgstr "المحاذاة:"
+msgstr "ال_محاذاة:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:61
-#, fuzzy
 msgid "_Border:"
-msgstr "الإطار:"
+msgstr "الإ_طار:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:62
-#, fuzzy
 msgid "_Color:"
-msgstr "اللون:"
+msgstr "ال_لّون:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:63
-#, fuzzy
 msgid "_Columns:"
-msgstr "الأعمدة:"
+msgstr "الأع_مدة:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:64
-#, fuzzy
 msgid "_Description:"
-msgstr "وصف"
+msgstr "ال_وصف:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:65
-#, fuzzy
 msgid "_Height:"
-msgstr "الارتفاع:"
+msgstr "الا_رتفاع:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:66
-#, fuzzy
 msgid "_Image:"
-msgstr "صورة"
+msgstr "ال_صّورة"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:68
-#, fuzzy
 msgid "_Padding:"
-msgstr "الإحاطة:"
+msgstr "الإ_حاطة:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:69
-#, fuzzy
 msgid "_Row"
-msgstr "صف"
+msgstr "_الصّف"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:70
-#, fuzzy
 msgid "_Rows:"
-msgstr "صفوف:"
+msgstr "الصّفوف:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:72
-#, fuzzy
 msgid "_Spacing:"
-msgstr "الفراغات:"
+msgstr "ال_فراغات:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:74
-#, fuzzy
 msgid "_Table"
-msgstr "جدول"
+msgstr "ال_جدول"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:75
 msgid "_URL:"
-msgstr ""
+msgstr "ال_عنوان:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:77
-#, fuzzy
 msgid "_Width:"
-msgstr "العرض:"
+msgstr "ال_عرض:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:78
-#, fuzzy
 msgid "_Wrap Text"
-msgstr "الربط"
+msgstr "_لفّ النّص"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:79
-#, fuzzy
 msgid "_X-Padding:"
-msgstr "الإحاطة:"
+msgstr "إحاطة _س:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:80
-#, fuzzy
 msgid "_Y-Padding:"
-msgstr "الإحاطة:"
+msgstr "إحاطة _ص:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:81
-#, fuzzy
 msgid "follow"
-msgstr "أتبع"
+msgstr "إتبع"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:82
 msgid "px"
-msgstr ""
+msgstr "بكسل"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:83
 msgid "xxxxxxxxxxxxxx"
 msgstr "xxxxxxxxxxxxxx"
 
 #: components/html-editor/menubar.c:96 components/html-editor/menubar.c:104
-#, fuzzy
 msgid "Insert image"
-msgstr "أدرج"
+msgstr "أدرج صورة"
 
 #: components/html-editor/menubar.c:133 components/html-editor/menubar.c:152
 #: components/html-editor/menubar.c:173 components/html-editor/menubar.c:195
@@ -1620,16 +1425,15 @@ msgstr "أدرج"
 #: components/html-editor/menubar.c:282
 #, c-format
 msgid "Error loading file '%s': %s"
-msgstr ""
+msgstr "خطأ في تحميل الملف '%s': %s"
 
 #: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
-#, fuzzy
 msgid "Insert: HTML File"
-msgstr "أدخل HTML وصلة الى الوثيقة..."
+msgstr "أدخل: ملف HTML"
 
 #: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
 msgid "Insert: Text File"
-msgstr ""
+msgstr "إدراج: ملف نصّي"
 
 #: components/html-editor/paragraph.c:86 components/html-editor/toolbar.c:54
 msgid "Header 1"
@@ -1676,21 +1480,18 @@ msgid "Address"
 msgstr "العنوان"
 
 #: components/html-editor/paragraph.c:109
-#, fuzzy
 msgid "_Style:"
-msgstr "ال_نمط"
+msgstr "ال_نمط:"
 
 #: components/html-editor/popup.c:438
 msgid "Paste Quotation"
-msgstr ""
+msgstr "لصق الاقتباس"
 
 #: components/html-editor/popup.c:442
-#, fuzzy
 msgid "Insert Link"
-msgstr "أدرج"
+msgstr "أدرج الرابط"
 
 #: components/html-editor/popup.c:449
-#, fuzzy
 msgid "Remove Link"
 msgstr "احذف الرابط"
 
@@ -1699,45 +1500,37 @@ msgid "Style"
 msgstr "النمط"
 
 #: components/html-editor/popup.c:459
-#, fuzzy
 msgid "Text Style..."
-msgstr "إفتح ملف..."
+msgstr "أسلوب النّص..."
 
 #: components/html-editor/popup.c:461 components/html-editor/popup.c:467
 #: components/html-editor/popup.c:477
-#, fuzzy
 msgid "Paragraph Style..."
-msgstr "فقرة..."
+msgstr "أسلوب الفقرة..."
 
 #: components/html-editor/popup.c:465
-#, fuzzy
 msgid "Link Style..."
-msgstr "رابط..."
+msgstr "أسلوب الرابط..."
 
 #: components/html-editor/popup.c:471
-#, fuzzy
 msgid "Rule Style..."
-msgstr "الدور..."
+msgstr "أسلوب الدور..."
 
 #: components/html-editor/popup.c:475
-#, fuzzy
 msgid "Image Style..."
-msgstr "صورة..."
+msgstr "أسلوب صورة..."
 
 #: components/html-editor/popup.c:486
-#, fuzzy
 msgid "Cell Style..."
-msgstr "خلية..."
+msgstr "أسلوب الخلية..."
 
 #: components/html-editor/popup.c:489
-#, fuzzy
 msgid "Table Style..."
-msgstr "جدول..."
+msgstr "أسلوب الجدول..."
 
 #: components/html-editor/popup.c:495
-#, fuzzy
 msgid "Page Style..."
-msgstr "صفحة..."
+msgstr "أسلوب الصفحة..."
 
 #: components/html-editor/popup.c:500
 msgid "Table insert"
@@ -1776,32 +1569,29 @@ msgid "Cell contents"
 msgstr "محتويات الخلية"
 
 #: components/html-editor/popup.c:524
-#, fuzzy
 msgid "Check Word Spelling..."
-msgstr "تحقق من إملاء '%s'..."
+msgstr "تحقق من إملاء الكلمات..."
 
 #: components/html-editor/popup.c:529
 msgid "Add Word to"
-msgstr ""
+msgstr "إضافة الكلمة إلى"
 
 #: components/html-editor/popup.c:533
-#, fuzzy, c-format
+#, c-format
 msgid "%s Dictionary"
-msgstr "اضف '%s' الى القاموس"
+msgstr "قاموس %s"
 
 #: components/html-editor/popup.c:542
-#, fuzzy
 msgid "Add Word to Dictionary"
-msgstr "اضف '%s' الى القاموس"
+msgstr "اضف الكلمة الى القاموس"
 
 #: components/html-editor/popup.c:545
-#, fuzzy
 msgid "Ignore Misspelled Word"
-msgstr "لا توجد كلمة مهجاة خطأ"
+msgstr "تجاهل الكلمة المهجّأة"
 
 #: components/html-editor/popup.c:549
 msgid "Input Methods"
-msgstr ""
+msgstr "طرق الدّخل"
 
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/replace.c:77
@@ -1809,63 +1599,58 @@ msgid "Replace confirmation"
 msgstr "تأكيد التبديل"
 
 #: components/html-editor/replace.c:78
-#, fuzzy
 msgid "Replace _All"
-msgstr "بدّل الكل"
+msgstr "بدّل ال_كل"
 
 #: components/html-editor/replace.c:79
-#, fuzzy
 msgid "_Next"
-msgstr "التالي"
+msgstr "ال_تّالي"
 
 #: components/html-editor/replace.c:81
-#, fuzzy
 msgid "_Replace"
-msgstr "بدّل"
+msgstr "_بدّل"
 
-#: components/html-editor/replace.c:169
-#, fuzzy
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
-msgstr "ابحث للخلف"
+msgstr "ابحث لل_خلف"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
-#, fuzzy
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
-msgstr "حساس لحالة الحرف"
+msgstr "_حساس لحالة الحرف"
 
-#: components/html-editor/replace.c:180
-#, fuzzy
+#: components/html-editor/replace.c:182
 msgid "Replace:"
-msgstr "بدّل"
+msgstr "بدّل:"
 
-#: components/html-editor/replace.c:183
-#, fuzzy
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "العرض:"
 
 #: components/html-editor/search.c:113
-#, fuzzy
 msgid "_Backward"
-msgstr "للخلف"
+msgstr "لل_خلف"
 
 #: components/html-editor/search.c:115
-#, fuzzy
 msgid "_Regular Expression"
-msgstr "أوجد معادلة عادية"
+msgstr "_تعبير نظامي"
 
-#: components/html-editor/spell.c:278
-#, fuzzy
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "لا توجد كلمة مهجاة خطأ"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "المدقق الإملائي"
 
-#: components/html-editor/spell.c:378
-#, fuzzy
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
-msgstr "لغات التدقيق الإملائي"
+msgstr "اللّغات الحاليّة"
 
 #: components/html-editor/template.c:84
 msgid "Note"
@@ -1873,7 +1658,7 @@ msgstr "ملاحظة"
 
 #: components/html-editor/template.c:94 components/html-editor/template.c:113
 msgid "Place your text here"
-msgstr ""
+msgstr "ضَع نصّك هنا"
 
 #: components/html-editor/template.c:97
 msgid "Image frame"
@@ -1881,7 +1666,7 @@ msgstr "إطار الصورة"
 
 #: components/html-editor/template.c:280
 msgid "Labels"
-msgstr ""
+msgstr "العلامات"
 
 #: components/html-editor/test-html-editor-control.c:323
 msgid "Open file..."
@@ -1892,9 +1677,8 @@ msgid "Save file as..."
 msgstr "احفظ الملف بإسم..."
 
 #: components/html-editor/test-html-editor-control.c:557
-#, fuzzy
 msgid "GtkHTML Editor Test Container"
-msgstr "تحكم محرر HTML لجينوم"
+msgstr "محتوي اختبار محرر GtkHTML"
 
 #: components/html-editor/toolbar.c:52
 msgid "Roman List"
@@ -1962,104 +1746,100 @@ msgstr "عينة"
 
 #: components/html-editor/utils.c:192
 msgid "_Visit..."
-msgstr ""
+msgstr "_زيارة..."
 
 #: components/html-editor/utils.c:232
 msgid ""
 "The editted object was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"أزيل الكائن المحرّر من المستند.\n"
+"لا أستطيع تطبيق تغييراتك."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
-msgstr ""
+msgstr "لعنوان موزيلا المسقط على المحرّر هيئة خاطئة (%d) أو طول (%d)\n"
 
-#: src/gtkhtml.c:2853
-#, fuzzy
+#: src/gtkhtml.c:2891
 msgid "Editable"
-msgstr "تمكين"
+msgstr "قابل للتّحرير"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
-msgstr ""
+msgstr "فيما إذا يمكن تحرير الـ html"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "عنوان المستند"
 
-#: src/gtkhtml.c:2861
-#, fuzzy
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
-msgstr "دقق الإملاء للوثيقة"
+msgstr "عنوان المستند الحالي"
 
-#: src/gtkhtml.c:2867
-#, fuzzy
+#: src/gtkhtml.c:2905
 msgid "Document Base"
-msgstr "عنوان المستند"
+msgstr "قاعدة المستند"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
-msgstr ""
+msgstr "العنوان القاعدة للمراجع النسبيّة"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
-msgstr ""
+msgstr "قاعدة الهدف"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
-msgstr ""
+msgstr "العنوان القاعدة للإطار الهدف"
 
-#: src/gtkhtml.c:2884
-#, fuzzy
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
-msgstr "عرض ثابت"
+msgstr "خط ذو عرض ثابت"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
-msgstr ""
+msgstr "الخط المحدّد الحجم للاستخدام في نصّ الآلة الكاتبة"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
-msgstr ""
+msgstr "لون الارتباط الجديد"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
-msgstr ""
+msgstr "لون عناصر الارتباط الجديد"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
-msgstr ""
+msgstr "لون الارتباط المُزار"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
-msgstr ""
+msgstr "لون عناصر الارتباط المُزار"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
-msgstr ""
+msgstr "لون الارتباط الفعّال"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
-msgstr ""
+msgstr "لون عناصر الارتباط الفعّال"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
-msgstr ""
+msgstr "لون الخطأ الإملائي"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
-msgstr ""
+msgstr "لون علامات الخطأ الإملائي"
 
-#: src/gtkhtml.c:2915
-#, fuzzy
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
-msgstr "اللون:"
+msgstr "لون استشهاد الاقتباس"
 
-#: src/gtkhtml.c:2916
-#, fuzzy
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
-msgstr "دقق الإملاء للوثيقة"
+msgstr "لون النّص المستشهد به"
 
 #: src/html-component.c:219
 msgid "Html"
@@ -2135,249 +1915,96 @@ msgid "Print preview"
 msgstr "معاينة الطباعة"
 
 #: src/testgtkhtml.c:987
-#, fuzzy
 msgid "GtkHTML Test Application"
-msgstr "اختبار GtkHTML"
+msgstr "تطبيق اختبار GtkHTML"
 
-#~ msgid "Plain"
-#~ msgstr "بسيط"
+#~ msgid "<None>"
+#~ msgstr "<بلا>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "اضف إختصارات لوحة المفاتيح"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "تعرف على الوصلات تلقائيا"
+
+#~ msgid "Behavior"
+#~ msgstr "سلوك"
+
+#~ msgid "Composer Properties"
+#~ msgstr "خصائص الكاتب"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "خصائص الكاتب المخططة"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "عرّف مدقق الإملاء"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "تفعيل مدقق الإملاء"
+
+#~ msgid "Fixed width"
+#~ msgstr "عرض ثابت"
+
+#~ msgid "Fonts"
+#~ msgstr "خطوط"
+
+#~ msgid "For printing"
+#~ msgstr "لطباعة"
+
+#~ msgid "Grab keys"
+#~ msgstr "مفاتيح السحب"
+
+#~ msgid "Information"
+#~ msgstr "معلومات"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "اختصارات لوحة المفاتيح"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "متفرقات"
+
+#~ msgid "New shortcut:"
+#~ msgstr "إختصار جديد:"
+
+#~ msgid "On screen"
+#~ msgstr "على الشاشة"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "اختر خط HTML ذو العرض الثابت"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "اختر خط HTML ذو العرض الثابت للطباعة"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "اختر خط HTML ذو العرض المتغيير"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "اختر خط HTML ذو العرض المتغيير للطباعة"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "_نوع الإختصارات :"
+
+#~ msgid "Show animated images"
+#~ msgstr "أظهر الصور المتحركة"
+
+#~ msgid "Variable width"
+#~ msgstr "متغير العرض"
+
+#~ msgid "_Add"
+#~ msgstr "أ_ضف"
+
+#~ msgid "_Delete"
+#~ msgstr "ا_حذف"
 
 #~ msgid ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
 #~ msgstr ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
-
-#~ msgid "Frame"
-#~ msgstr "الإطار"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-
-#~ msgid "Caption"
-#~ msgstr "التسمية التوضيحية"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place "
-#~ "your comment here]</td></tr></table></td></tr></table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place "
-#~ "your comment here]</td></tr></table></td></tr></table></center>"
-
-#~ msgid "Find A Regular Expression"
-#~ msgstr "ابحث عن تعبير أعتيادي"
-
-#~ msgid "Find Regular E_xpression..."
-#~ msgstr "ابحث عن ال_تعبير الإعتيادي"
-
-#, fuzzy
-#~ msgid ""
-#~ "The quick brown <a href=\"mailto:fox\">fox</a> jumps over the lazy <a "
-#~ "href=\"mailto:dog\">dog</a>."
-#~ msgstr "أبجد هوز حطي كلمن سعفص قرشت"
-
-#, fuzzy
-#~ msgid "The quick brown fox jumps over the lazy dog."
-#~ msgstr "أبجد هوز حطي كلمن سعفص قرشت"
-
-#, fuzzy
-#~ msgid "Other"
-#~ msgstr "أخرى..."
-
-#~ msgid "************"
-#~ msgstr "************"
-
-#~ msgid "***text***"
-#~ msgstr "***نص***"
-
-#~ msgid "Apply changes to:"
-#~ msgstr "طبق التغييرات الى:"
-
-#~ msgid "Border"
-#~ msgstr "الإطار"
-
-#~ msgid "Click will follow this URL"
-#~ msgstr "النقر سيتبع هذا العنوان"
-
-#~ msgid "Click will follow this URL:"
-#~ msgstr "النقر سيتبع هذا العنوان:"
-
-#~ msgid "Don't wrap"
-#~ msgstr "لا تربط"
-
-#~ msgid "Font size"
-#~ msgstr "حجم الخط"
-
-#~ msgid "Foreground color"
-#~ msgstr "لون الواجهة الواجهة الأمامية"
-
-#~ msgid "Header"
-#~ msgstr "الترويسة"
-
-#~ msgid "Link insert"
-#~ msgstr "أدخل رابط"
-
-#~ msgid "Location"
-#~ msgstr "المكان"
-
-#~ msgid "Padding"
-#~ msgstr "الإحاطة"
-
-#~ msgid "Percent %"
-#~ msgstr "بالمئة %"
-
-#~ msgid "Pixmap:"
-#~ msgstr "الرسمة البكسلية:"
-
-#~ msgid "Points"
-#~ msgstr "النقاط"
-
-#~ msgid "Scope"
-#~ msgstr "سكوب"
-
-#~ msgid "Spacing"
-#~ msgstr "الفراغات"
-
-#~ msgid "Style:"
-#~ msgstr "النمط:"
-
-#~ msgid "Table Insert"
-#~ msgstr "أدخل جدول"
-
-#~ msgid "Test URL..."
-#~ msgstr "اختبر العنوان..."
-
-#~ msgid "Wrap"
-#~ msgstr "الربط"
-
-#~ msgid "Wrapping:"
-#~ msgstr "الربط"
-
-#~ msgid "xxxxxxxxx"
-#~ msgstr "xxxxxxxxx"
-
-#~ msgid "Link text"
-#~ msgstr "نص الرابط"
-
-#~ msgid "Align"
-#~ msgstr "محاذاة"
-
-#~ msgid "Blue 3D"
-#~ msgstr "أزرق ثلاثي الأبعاد"
-
-#~ msgid "Yellow, flowers"
-#~ msgstr "أصفر, ورود"
-
-#~ msgid "Flat gray"
-#~ msgstr "رمادي مسطح"
-
-#~ msgid "Dark header"
-#~ msgstr "تريسة غامقة"
-
-#~ msgid "Color"
-#~ msgstr "اللون"
-
-#, fuzzy
-#~ msgid "The quick brown fox jumps over the lazy dog.</div>"
-#~ msgstr "أبجد هوز حطي كلمن سعفص قرشت"
-
-#~ msgid "Pre"
-#~ msgstr "مسبق"
-
-#~ msgid "The quick brown fox jumped over the lazy dog."
-#~ msgstr "أبجد هوز حطي كلمن سعفص قرشت"
-
-#~ msgid "Ignore '%s'"
-#~ msgstr "تجاهل '%s'"
-
-#~ msgid "Suggest word"
-#~ msgstr "اقترح كلمة"
-
-#~ msgid "Text..."
-#~ msgstr "نص..."
-
-#~ msgid "Insert Smiley 7 smiley into document..."
-#~ msgstr "أدخل وجه Smiley 7 الى الوثيقة..."
-
-#~ msgid "Modify the file's properties"
-#~ msgstr "عدل خصائص الملف"
-
-#~ msgid "Pr_operties..."
-#~ msgstr "خ_صائص.."
-
-#~ msgid "Smiley _7"
-#~ msgstr "Smiley _7"
-
-#~ msgid "Test"
-#~ msgstr "اختبار"
-
-#~ msgid "Test 1"
-#~ msgstr "اختبار 1"
-
-#~ msgid "I could not initialize Bonobo"
-#~ msgstr "لم استطع بدء بونوبو"
-
-#~ msgid "The quick brown fox jumped over the lazy dog. "
-#~ msgstr "أبجد هوز حطي كلمن سعفص قرشت"
-
-#~ msgid "Cannot execute gtkhtml properties"
-#~ msgstr "تعذر تنفيذ خصائص gtkhtml"
-
-#~ msgid ""
-#~ "<table cellspacing=0 cellpadding=1 bgcolor=\"#ccccc0"
-#~ "\"@width@@align@><tr><td><table bgcolor=\"#fffff0\" cellpadding=3 "
-#~ "cellspacing=0 width=\"100%\"><tr><td valign=top><img src=\"file://"
-#~ msgstr ""
-#~ "<table cellspacing=0 cellpadding=1 bgcolor=\"#ccccc0"
-#~ "\"@width@@align@><tr><td><table bgcolor=\"#fffff0\" cellpadding=3 "
-#~ "cellspacing=0 width=\"100%\"><tr><td valign=top><img src=\"file://"
-
-#~ msgid ""
-#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text here</td></"
-#~ "tr></table></td></tr></table>"
-#~ msgstr ""
-#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text here</td></"
-#~ "tr></table></td></tr></table>"
-
-#~ msgid ""
-#~ "<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "@width@@align@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img src="
-#~ "\"file://"
-#~ msgstr ""
-#~ "<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "@width@@align@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img src="
-#~ "\"file://"
-
-#~ msgid ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
-#~ "size=\"-1\">Image 1: <b>description</b></font></td></tr></table></td></"
-#~ "tr></table>"
-#~ msgstr ""
-#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
-#~ "size=\"-1\">Image 1: <b>description</b></font></td></tr></table></td></"
-#~ "tr></table>"
-
-#~ msgid "Sans"
-#~ msgstr "Sans"
-
-#~ msgid "Monospace"
-#~ msgstr "Monospace"
+#~ "لا يمكن تشغيل بريمج تحكم مدقق إملاء جينومحاول تثبيت مدقق إملاء جينوم أن "
+#~ "لم يكن موجود لديك."

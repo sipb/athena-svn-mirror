@@ -1,3 +1,134 @@
+2004-09-29  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_data_received): call gdk_window_get_pointer so
+	that we get window coordinates
+
+	Fixes #53368
+
+2004-10-15  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_replace_do): return true if replacing
+	is finished
+
+	Fixes #50646
+
+2004-11-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (html_image_real_calc_size): use
+	html_object_get_flow instead of using o->parent which might be
+	aligned clue
+	(draw_plain): ditto
+
+	* htmlobject.c (html_object_get_flow): new helper function,
+	returns object's flow parent
+
+	Fixes #67763
+
+2004-12-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_init): make sure text_bytes is initialized
+	correctly in case we call with str longer than requested len
+
+	Fixes #69634
+
+2004-11-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: make sure we free whole array from g_strsplit
+
+	* htmltext.c (html_text_pango_info_destroy): free entries as well
+
+2004-10-13  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-text.c (upper_lower): set text_len and
+	text_bytes to right values
+
+	Fixes #68092
+
+2004-10-11  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_size_request): make sure we keep layout in
+	the same state as before we were called (scrolled window may issue
+	additional size request after widget was already allocated)
+
+	Fixes #67707
+
+2004-10-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_remove_unwanted_line_breaks): added "$+?"
+	to nonbreaking characters (comon in urls)
+
+	Addition to #54852 fix
+
+2004-09-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (save_plain): do not let wi drop under clen. it
+	results into negative len value and outbounded memory
+	reads. (might help with #62597)
+
+2004-09-23  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (expand_relative): do not search for ":" in url, it
+	may be used in other parts than uri scheme delimiter. instead
+	parse beginning of url to see if it has url scheme (and thus is
+	absolute url)
+	(html_engine_set_base_cb): set base when received set_base from
+	engine
+	(url_is_absolute): new helper function to identify absolute url's
+
+	Fixes #48058
+
+2004-09-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_remove_unwanted_line_breaks): added '-' to
+	unwanted break characters
+	(html_text_remove_unwanted_line_breaks): fix braces breaking
+
+	Fixes #54852
+
+2004-09-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (process_attrs): get fixed style from pango family
+	attributes
+
+	* htmltextslave.c (draw_normal): add flow style when printing
+
+	* htmltext.c (html_text_change_attrs): make this method public so
+	that we can use it in htmltextslave.c
+	(html_text_calc_text_size): add flow style when printing
+
+	Fixes #63508
+
+2004-09-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (style_from_attrs): handle PANGO_ATTR_FAMILY, we use
+	that now only for FIXED style
+	(unset_style_filter): ditto
+
+2004-09-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (divide_upto_preferred_width): divide the less of
+	left width and total preferred minus already divided, renamed few
+	variables to make it more readable
+
+	Fixes #65840
+
+	* htmlundo.c: revert the freeze_counter test
+
+	* gtkhtml.c (gtk_html_im_commit_cb): use undo freeze/thaw (patch
+	from Yukihiro Nakai <ynakai@redhat.com>)
+
+	* htmlundo.c: added freeze/thaw API (patch from Yukihiro Nakai
+	<ynakai@redhat.com>)
+
+	Fixes #62637
+
+2004-09-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmlrule.c (fit_line): make sure the rule width doesn't exceed
+	max_width
+
+	Fixes #49601
+
 2004-08-16  Radek Doulik  <rodo@ximian.com>
 
 	* htmliframe.c (html_iframe_init): load empty iframe if depth > 10

@@ -2055,3 +2055,12 @@ html_object_prev_cursor_leaf (HTMLObject *o, HTMLEngine *e)
 
 	return o;
 }
+
+HTMLClueFlow *
+html_object_get_flow (HTMLObject *o)
+{
+	while (o && !HTML_IS_CLUEFLOW (o))
+		o = o->parent;
+
+	return HTML_CLUEFLOW (o);
+}

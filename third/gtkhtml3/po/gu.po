@@ -1,3 +1,4 @@
+# translation of gtkhtml.gnome-2-8.gu.po to Gujarati
 # translation of gtkhtml.HEAD.po to Gujarati
 # translation of gu.po to Gujarati
 # This file is distributed under the same license as the PACKAGE package.
@@ -6,149 +7,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtkhtml.HEAD\n"
+"Project-Id-Version: gtkhtml.gnome-2-8.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-07-26 16:08+0530\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-12-08 18:35+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
-"Language-Team: Gujarati\n"
+"Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<કંઈ નહિં>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "ગ્લેડ ફાઈલ લાવી શકાઈ નહિં."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "કીબોર્ડ ટુંકાણો ઉમેરો"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "કડીઓ આપોઆપ શોધો"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "વર્તણૂક"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "કમ્પોઝર ગુણધર્મો"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "કમ્પોઝર ગુણધર્મો નક્કી થઈ ગયા"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "જોડણી ચકાસવાનું રુપરેખાંકિત થઈ ગયું"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "જોડણી ચકાસવાનું સક્રિય કરો"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "ચોક્કસ પહોળાઈ"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "ફોન્ટ"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "છાપવા માટે"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "કી મેળવો"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "જાણકારી"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "કીબોર્ડ ટુંકાણો"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "મિશ્રિત"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "નવું ટુંકાણ:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "સ્ક્રીન પર"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "HTML ચોક્કસ પહોળાઈ ફોન્ટ પસંદ કરો"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "છાપન માટે HTML ચોક્કસ પહોળાઈ ફોન્ટ પસંદ કરો"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "HTML ચલિત પહોળાઈ ફોન્ટ પસંદ કરો"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "છાપન માટે HTML ચલિત પહોળાઈ ફોન્ટ પસંદ કરો"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "ટુંકાણો પ્રકાર (_t):"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "હાલતાંચાલતાં ચિત્રો બતાવો"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "ચલિત પહોળાઈ"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "ઉમેરો (_A)"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "કાઢી નાખો (_D)"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"જીનોમ જોડણી નિયંત્રક એપ્લેટ ચલાવી શકાતી નથી\n"
-"જો તમે જીનોમ જોડણી સ્થાપિત કર્યું નહિં હોય તો તેને સ્થાપિત કરવાનો પ્રયત્ન કરો."
+"X-Generator: KBabel 1.9\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -303,32 +173,32 @@ msgstr "લીલું"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:29
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
 msgid "Header _1"
-msgstr "હેડર ૧ (_1)"
+msgstr "હેડર _૧"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:30
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:30
 msgid "Header _2"
-msgstr "હેડર ૨ (_2)"
+msgstr "હેડર _૨"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:31
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:31
 msgid "Header _3"
-msgstr "હેડર ૩ (_3)"
+msgstr "હેડર _૩"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:32
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:32
 msgid "Header _4"
-msgstr "હેડર ૪ (_4)"
+msgstr "હેડર _૪"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:33
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:33
 msgid "Header _5"
-msgstr "હેડર ૫ (_5)"
+msgstr "હેડર _૫"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:34
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:34
 msgid "Header _6"
-msgstr "હેડર ૬ (_6)"
+msgstr "હેડર _૬"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:35
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:35
@@ -401,7 +271,7 @@ msgstr "દસ્તાવેજમાં અચોક્કસ મોં દા
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:48
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
 msgid "Insert Wink smiley into document..."
-msgstr "દસ્તાવેજમાં Wink smiley દાખલ કરો..."
+msgstr "દસ્તાવેજમાં રડતું મોં દાખલ કરો..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:49
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
@@ -525,7 +395,7 @@ msgstr "આકડાવાળી યાદી (_L)"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:72
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:73
 msgid "Oh _no!"
-msgstr "અરે નહિં! (_n)"
+msgstr "અરે નહિં (_n)!"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:73
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:74
@@ -595,7 +465,7 @@ msgstr "રદ કરેલ ક્રિયાઓ ફરીથી કરો"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "બદલો"
 
@@ -926,7 +796,7 @@ msgstr "છેલ્લુ રદ કરો (_U)"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:149
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:150
 msgid "_Wink"
-msgstr "_Wink"
+msgstr "રડવું (_W)"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:150
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
@@ -935,15 +805,15 @@ msgstr "વગેરે..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:1
 msgid "GNOME HTML Editor"
-msgstr "GNOME HTML સંપાદક"
+msgstr "જીનોમ HTML સંપાદક"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:2
 msgid "GNOME HTML Editor Control"
-msgstr "GNOME HTML સંપાદક નિયંત્રણ"
+msgstr "જીનોમ HTML સંપાદક નિયંત્રણ"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:3
 msgid "GNOME HTML Editor Factory"
-msgstr "GNOME HTML સંપાદક કારખાનું"
+msgstr "જીનોમ HTML સંપાદક કારખાનું"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
 msgid "Insert Sick smiley into document..."
@@ -973,7 +843,7 @@ msgstr "કંઈ નહિં"
 
 #: components/html-editor/body.c:67
 msgid "Perforated Paper"
-msgstr "Perforated Paper"
+msgstr "Perforated કાગળ"
 
 #: components/html-editor/body.c:75
 msgid "Blue Ink"
@@ -1049,6 +919,13 @@ msgstr "પાશ્વ ભાગનું ચિત્ર"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 msgid "_Source:"
 msgstr "સ્રોત (_S):"
+
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "ગ્લેડ ફાઈલ લાવી શકાઈ નહિં."
 
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
@@ -1289,6 +1166,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1645,7 +1526,7 @@ msgstr "ચિત્ર શૈલી..."
 
 #: components/html-editor/popup.c:486
 msgid "Cell Style..."
-msgstr "ખાનાં શેૈલી..."
+msgstr "ખાનાં શૈલી..."
 
 #: components/html-editor/popup.c:489
 msgid "Table Style..."
@@ -1733,19 +1614,19 @@ msgstr "આગળ વધો (_N)"
 msgid "_Replace"
 msgstr "બદલો (_R)"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "વિરુદ્ધ દિશામાં શોધો (_b)"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "કેસ પ્રત્યે સંવેદનશીલ (_s)"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "બદલો:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "સાથે:"
 
@@ -1757,15 +1638,23 @@ msgstr "વિરુદ્ધ દિશામાં (_B)"
 msgid "_Regular Expression"
 msgstr "નિયમિત સમીકરણ (_R)"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+"શબ્દને શબ્દકોષમાં ઉમેરવા માટે સમર્થ નથી,\n"
+"ભાષા સુયોજનો ભાંગેલા છે.\n"
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "ખોટી જોડણીવાળો કોઈ શબ્દ મળ્યો નહિં"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "જોડણી ચકાસનાર"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "વર્તમાન ભાષાઓ (_L)"
 
@@ -1870,91 +1759,91 @@ msgid ""
 "The editted object was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
-"ેફેરફાર કરાયેલ વસ્તુ દસ્તાવેજમાંથી કાઢી નાંખવામાં આવ્યું.\n"
+"ફેરફાર કરાયેલ વસ્તુ દસ્તાવેજમાંથી કાઢી નાંખવામાં આવ્યું.\n"
 "તમારા ફેરફારો અમલમાં મૂકી શકાતા નથી."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr "કમ્પોઝર મૂકાયેલ મોઝિલ્લા url ને ખોટું બંધારણ (%d) અથવા લંબાઈ છે (%d)\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "ફેરફાર કરી શકાય તેવું"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "શું html માં ફેરફાર કરી શકાશે"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "દસ્તાવેજનું શીર્ષક"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "વર્તમાન દસ્તાવેજનું શીર્ષક"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "દસ્તાવેજનો આધાર"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "સંબંધિત સંદર્ભો માટે આધારભૂત URL"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "લક્ષ્ય આધાર"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "લક્ષ્ય ચોકઢા માટે આધારભૂત URL"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "ચોક્કસ પહોળાઈના ફોન્ટ"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "ટાઈપરાઈટર લખાણ માટે વપરાતા મોનોસ્પેસ ફોન્ટ"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "નવી કડીનો રંગ"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "નવી કડીના ભાગોનો રંગ"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "મુલાકાત લીધેલ કડીનો રંગ"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "મુલાકાત લીધેલ કડીના ભાગોનો રંગ"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "સક્રિય કડીનો રંગ"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "સક્રિય કડીના ભાગોનો રંગ"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "જોડણી ભૂલનો રંગ"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "જોડણી ભૂલ દર્શાવનારનો રંગ"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "સાઈટ અવતરણ રંગ"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "સાઈટ થયેલ લખાણનો રંગ"
 

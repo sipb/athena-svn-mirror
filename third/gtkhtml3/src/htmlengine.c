@@ -287,18 +287,12 @@ html_element_new (HTMLEngine *e, const char *str) {
 
 			if (!g_hash_table_lookup (element->attributes, lower)) {
 				DE (g_print ("attrs (%s, %s)", attr[0], attr[1]));
-				g_hash_table_insert (element->attributes, lower, attr[1]);
-
-				/* just free the array */
-				g_free (attr[0]);
-				g_free (attr);				
-			} else {
-				/* free the whole vector */
-				g_strfreev (attr);
+				g_hash_table_insert (element->attributes, lower, g_strdup (attr[1]));
+			} else
 				g_free (lower);
-			}
 		}
 
+		g_strfreev (attr);
 	}
 	
 	return element;
@@ -5607,9 +5601,11 @@ replace (HTMLEngine *e)
 	html_search_push (e->search_info, e->cursor->object->parent);
 }
 
-void
+gboolean
 html_engine_replace_do (HTMLEngine *e, HTMLReplaceQueryAnswer answer)
 {
+	gboolean finished;
+
 	g_assert (e->replace_info);
 
 	switch (answer) {
@@ -5623,6 +5619,7 @@ html_engine_replace_do (HTMLEngine *e, HTMLReplaceQueryAnswer answer)
 		html_replace_destroy (e->replace_info);
 		e->replace_info = NULL;
 		html_engine_disable_selection (e);
+		finished = TRUE;
 		break;
 
 	case RQA_Replace:
@@ -5630,12 +5627,13 @@ html_engine_replace_do (HTMLEngine *e, HTMLReplaceQueryAnswer answer)
 		replace (e);
 		html_undo_level_end (e->undo);
 	case RQA_Next:
-		if (html_engine_search_next (e))
-			e->replace_info->ask (e, e->replace_info->ask_data);
-		else
+		finished = !html_engine_search_next (e);
+		if (finished)
 			html_engine_disable_selection (e);
 		break;
 	}
+
+	return finished;
 }
 
 /* spell checking */

@@ -539,16 +539,8 @@ font_style_cb (BonoboUIComponent *uic, GtkHTMLControlData *cd, const char *cname
                                                                               
         /* g_warning ("wowee %s :: %s", path, state); */
         for (i = 0; font_style_assoc[i].verb != NULL; i++) {
-                if (!strcmp (cname, font_style_assoc[i].verb)) {
-                        if (font_style_assoc[i].style > GTK_HTML_FONT_STYLE_MAX)
-                                gtk_html_set_font_style (cd->html, ~0,
-                                                         font_style_assoc[i].style);
-                        else
-                                gtk_html_set_font_style (cd->html,
-                                                         GTK_HTML_FONT_STYLE_MAX
-                                                         & ~GTK_HTML_FONT_STYLE_SIZE_MASK,
-                                                         font_style_assoc[i].style);
-                }
+                if (!strcmp (cname, font_style_assoc[i].verb))
+			gtk_html_toggle_font_style (cd->html, font_style_assoc[i].style);
         }
 }
 
