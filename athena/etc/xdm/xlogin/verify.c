@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.80 1997-04-21 06:46:52 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.81 1997-04-25 03:56:21 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -1607,12 +1607,12 @@ char *glist;
 	    break;
 	*cp++ = 0;
 	gids[ngroups] = cp;
+	ngroups++;
 	cp = strchr(cp, ':');
 	if (cp)
 	    *cp++ = 0;
 	else
 	    break;
-	ngroups++;
     }
 
     /* Make a pass over the group file to count the groups the user is

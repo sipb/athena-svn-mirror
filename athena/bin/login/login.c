@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.86 1997-04-21 06:47:13 ghudson Exp $
+ * $Id: login.c,v 1.87 1997-04-25 03:56:46 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.86 1997-04-21 06:47:13 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.87 1997-04-25 03:56:46 ghudson Exp $";
 #endif
 
 /*
@@ -2352,12 +2352,12 @@ get_groups()
 			break;
 		*ptr++ = 0;
 		grnum[ngroups] = ptr;
+		ngroups++;
 		ptr = strchr(ptr, ':');
 		if (ptr)
 			*ptr++ = 0;
 		else
 			break;
-		ngroups++;
 	}
 
 	/* Count the groups the user is currently in which aren't in our
