@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.30 1998-09-30 17:46:41 ghudson Exp $
+# $Id: phase3.sh,v 1.31 1998-11-02 15:11:59 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -126,20 +126,23 @@ echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
 cd /root/etc
 cd /root
 if [ -r /srvd/etc/passwd ]; then
-    cp -p /srvd/etc/passwd etc/passwd
-    chmod 644 etc/passwd
-    chown root etc/passwd
+    cp -p /srvd/etc/passwd etc/passwd.local
+    chmod 644 etc/passwd.local
+    chown root etc/passwd.local
 else
-    cp -p /srvd/etc/passwd.fallback etc/passwd
+    cp -p /srvd/etc/passwd.fallback etc/passwd.local
 fi
 if [ -r /srvd/etc/shadow ]; then
-    cp -p /srvd/etc/shadow etc/shadow
-    chown root etc/shadow
+    cp -p /srvd/etc/shadow etc/shadow.local
+    chown root etc/shadow.local
 else
-    cp -p /srvd/etc/shadow.fallback etc/shadow
+    cp -p /srvd/etc/shadow.fallback etc/shadow.local
 fi
+cp -p etc/passwd.local etc/passwd
+cp -p etc/shadow.local etc/shadow
 chmod 600 etc/shadow
 cp -p /srvd/etc/group etc/group
+cp -p /srvd/etc/athena/athinfo.access etc/athena/athinfo.access
 #ln -s ../var/adm/utmp etc/utmp
 #ln -s ../var/adm/utmpx etc/utmpx
 #ln -s ../var/adm/wtmp etc/wtmp
