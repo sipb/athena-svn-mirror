@@ -1,1 +1,0 @@
-SUBDIRS = xmbind mwm uil
