@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.9 1990-12-10 13:03:54 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.10 1990-12-12 13:49:44 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.9 1990-12-10 13:03:54 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.10 1990-12-12 13:49:44 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -337,7 +337,7 @@ int
 process() {
     char *down_servers[MAXPRINTERS];
     FILE *cache_fp;
-    int i, j, status;
+    int i, j, status, sdown;
     int down = 0;
     int mediacost, acctno, totalprinted;
     long timeprinted;
@@ -371,18 +371,17 @@ process() {
 	    p_stat[i].pos = 0L;
 	    syslog(LOG_INFO, "Account file turned over %s\n", p_stat[i].af);
 	}		
+	sdown=0;
 	if (p_stat[i].fp) {
 	    for (status=0, j=0; j<down; j++)
 		if (!strcasecmp(down_servers[j], p_stat[i].rq)) {
-		    status = 1;
+		    sdown = 1;
 		    break;
 		}
-	    if (status)
-		continue;
 
 	    /* Read any new data out of the file and send it... */
 	    status = 0;
-	    while (fgets(line, BUFSIZ, p_stat[i].fp)) {
+	    while (sdown==0 && fgets(line, BUFSIZ, p_stat[i].fp)) {
 		j = strlen(line);
 		if (line[j-1] != '\n') {
 		    if (j >= BUFSIZ-1) {
@@ -452,7 +451,7 @@ process() {
 
     }
     if (cache_fp) (void) fclose(cache_fp);
-    (void) rename(CACHEFILENEW, CACHEFILE);
+    if (cache_fp) (void) rename(CACHEFILENEW, CACHEFILE);
     for (i=0; i<MAXPRINTERS; i++) {
 	if(p_stat[i].af && p_stat[i].fp) {
 	    (void) fclose(p_stat[i].fp);
