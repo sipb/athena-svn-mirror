@@ -5,17 +5,20 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.15 1989-11-06 23:23:55 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.16 1989-11-07 18:51:28 jik Exp $
 #
 
 DESTDIR=
 TARGETS= 	delete undelete expunge purge lsdel
 INSTALLDIR= 	/bin/athena
+MANDIR=		/usr/man
+MANSECT=	1
 CC= 		cc
 COMPILE_ET= 	compile_et
 LINT= 		lint
 DEFINES=	-DAFS_MOUNTPOINTS
-INCLUDES=	-I/afs/athena.mit.edu/astaff/project/afsdev/$(MACHINE)
+INCLUDES=	-I/usr/include\
+		-I/afs/athena.mit.edu/astaff/project/afsdev/$(MACHINE)
 CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LDFLAGS=	-L/usr/athena/lib\
 		-L/afs/athena.mit.edu/astaff/project/afsdev/build/$(MACHINE)/lib/afs
@@ -70,13 +73,18 @@ lint_all: lint_delete lint_undelete lint_expunge lint_lsdel
 
 install: bin_install man_install
 
+# Errors are ignored on bin_install and man_install because make on
+# some platforms, in combination with the shell, does really stupid
+# things and detects an error where there is none.
+
 man_install:
-	for i in $(TARGETS) ; do\
-	  install -c man1/$$i.1 $(DESTDIR)/usr/man/man1 ; \
+	-for i in $(TARGETS) ; do\
+	  install -c man1/$$i.1\
+		$(DESTDIR)$(MANDIR)/man$(MANSECT)/$$i.$(MANSECT);\
 	done
 
 bin_install: $(TARGETS)
-	for i in $(TARGETS) ; do\
+	-for i in $(TARGETS) ; do\
           if [ -f $(DESTDIR)$(INSTALLDIR)/$$i ]; then\
             mv $(DESTDIR)$(INSTALLDIR)/$$i $(DESTDIR)$(INSTALLDIR)/.#$$i ; \
           fi; \
