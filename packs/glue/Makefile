@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.39 2000-03-25 05:38:50 zacheiss Exp $
+# $Id: Makefile,v 1.40 2000-06-08 18:49:33 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -89,6 +89,7 @@ install:
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 netscape.sh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olc_answers.sh ${DESTDIR}${ATHBINDIR}/olc_answers
 	install -c -m 555 olh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olh_ascii ${DESTDIR}${ATHBINDIR}
