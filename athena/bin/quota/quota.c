@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.21 1993-07-25 01:26:09 probe Exp $
+ *   $Id: quota.c,v 1.22 1995-08-23 19:00:08 cfields Exp $
  */
 
 #ifdef POSIX
@@ -36,7 +36,7 @@
 /* Sorry, we do not yet support UFS for Solaris */
 #else
 
-#if defined(ultrix) || defined(_I386)
+#if defined(ultrix) || defined(_I386) || defined(sgi)
 #include <sys/stat.h>
 #include <sys/quota.h>
 #else
@@ -288,6 +288,9 @@ showquotas(id,name)
 #endif
 
 #endif /* !_IBMR2 */
+#ifdef sgi
+#define MNTTYPE_42 MNTTYPE_EFS
+#endif
     
     myuid = getuid();
 
@@ -408,7 +411,7 @@ showquotas(id,name)
 	    ultlocalquotas++;
 	    continue;
 #else
-#ifndef sun
+#if !defined(sun) && !defined(sgi)
 	    if (getlocalquota(mntp,id,&qvalues) < 0)
 		continue;
 #else
@@ -899,7 +902,7 @@ alldigits(s)
     return (1);
 }
 
-#if !defined(ultrix) && !defined(_I386) && !defined(_IBMR2) && !defined(SOLARIS)
+#if 0
 dqblk2rcquota(dqblkp, rcquotap, uid)
     struct dqblk *dqblkp;
     struct rcquota *rcquotap;
