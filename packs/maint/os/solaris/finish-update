@@ -7,22 +7,25 @@ start)
 	state=`awk '{a=$5} END {print a}' /etc/athena/version`
 	case "$state" in
 	Install)
-		echo "Creating config files for Athena software"
-		sh /srvd/install/athchanges | tee -a /var/athena/install.log
-		vers=`awk '{a=$6} END {print a}' /etc/athena/version`
-		hosttype=`/bin/athena/machtype`
-		echo "Athena Workstation ($hosttype) Version $vers `date`" \
-		  >> /etc/athena/version
+		newvers=`awk '{a=$6} END {print a}' /etc/athena/version`
+		if [ ! -r /srvd/install/finish-install ]; then
+			echo "Cannot finish partially completed install."
+			echo "Please contact Athena Hotline at x3-1410.  Thank"
+			echo "you. -Athena Operations"
+			/bin/athena/tcsh
+		fi
+		sh /srvd/install/finish-install "$newvers" 2>&1 \
+			| tee -a /var/athena/install.log
 		;;
 	Reboot)
 		method=`awk '{a=$6} END {print a}' /etc/athena/version`
 		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
 
-		if [ ! -r /usr/athena/lib/update/finish-update ]; then
+		if [ ! -r /srvd/usr/athena/lib/update/finish-update ]; then
 			echo "Cannot finish partially completed update."
 			echo "Please contact Athena Hotline at x3-1410.  Thank"
 			echo "you. -Athena Operations"
-			exit 0
+			/bin/athena/tcsh
 		fi
 
 		# We get run before bind and inetsvc (since we don't want 
