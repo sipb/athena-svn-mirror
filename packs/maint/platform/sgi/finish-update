@@ -1,0 +1,22 @@
+#!/sbin/sh
+
+# If an update is in progress, complete it.
+
+case "$1" in
+start)
+	if [ `awk '{a=$5} END {print a}' /etc/athena/version` = Reboot ]; then
+		echo "Finishing partially completed update"
+		sh /usr/athena/lib/update/finish-update
+		echo "Update completed, rebooting in 15 seconds."
+		sync
+		sleep 15
+		killall rc2
+	fi
+	;;
+
+stop)
+	;;
+
+*)
+        echo "Usage: finish-update {start|stop}"
+esac

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:02:02 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-12-27 21:42:51 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
@@ -17,6 +17,7 @@ install:
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 axdm ${DESTDIR}${INITD}
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
+	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 network ${DESTDIR}${INITD}
 	rm -f ${DESTDIR}${RC0}/K02axdm
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02axdm
@@ -26,6 +27,8 @@ install:
 	ln -s ../init.d/athena.config ${DESTDIR}${RC2}/S13athena.config
 	rm -f ${DESTDIR}${RC2}/S24autoconfig.reboot
 	ln -s ../init.d/autoconfig.reboot ${DESTDIR}${RC2}/S24autoconfig.reboot
+	rm -f ${DESTDIR}${RC2}/S36finish-update
+	ln -s ../init.d/finish-update ${DESTDIR}${RC2}/S36finish-update
 	rm -f ${DESTDIR}${RC2}/S93athena
 	ln -s ../init.d/athena ${DESTDIR}${RC2}/S93athena
 	rm -f ${DESTDIR}${RC2}/S98axdm
