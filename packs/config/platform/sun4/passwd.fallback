@@ -1,14 +1,14 @@
-root:x:0:1:0000-Admin(0000):/:/bin/athena/tcsh
-daemon:x:1:1:0000-Admin(0000):/:
-bin:x:2:2:0000-Admin(0000):/usr/bin:
-sys:x:3:3:0000-Admin(0000):/:
-adm:x:4:4:0000-Admin(0000):/var/adm:
-lp:x:71:8:0000-lp(0000):/usr/spool/lp:
-smtp:x:0:0:mail daemon user:/:
-uucp:x:5:5:0000-uucp(0000):/usr/lib/uucp:
-nuucp:x:9:9:0000-uucp(0000):/var/spool/uucppublic:/usr/lib/uucp/uucico
+root:x:0:1:Super-User:/:/bin/athena/tcsh
+daemon:x:1:1::/:
+bin:x:2:2::/usr/bin:
+sys:x:3:3::/:
+adm:x:4:4:Admin:/var/adm:
+lp:x:71:8:Line Printer Admin:/usr/spool/lp:
+smtp:x:0:0:Mail Daemon User:/:
+uucp:x:5:5:uucp Admin:/usr/lib/uucp:
+nuucp:x:9:9:uucp Admin:/var/spool/uucppublic:/usr/lib/uucp/uucico
 listen:x:37:4:Network Admin:/usr/net/nls:
 pop:x:50:101:Post Office Protocol,,,,:/var/spool/pop:/dev/null
 discuss:x:32000:101:Discuss System,,,,:/var/spool/discuss:/dev/null
-nobody:x:60001:60001:uid no body:/:
-noaccess:x:60002:60002:uid no access:/:
+nobody:x:60001:60001:Nobody:/:
+noaccess:x:60002:60002:No Access User:/:
