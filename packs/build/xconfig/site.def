@@ -51,7 +51,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define SiteIncludes		-I/usr/openwin/include -I/usr/dt/include
 #define SiteLdLibs		-L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L/usr/dt/lib -Xlinker -R/usr/dt/lib
 #define BuildPex		NO
-#define	CcCmd			/usr/gcc/bin/gcc -traditional -DSOLARIS
+#define	CcCmd			/usr/gcc/bin/gcc -DSOLARIS
 #define DoRanlibCmd		No
 #define ExtraLibraries		-lsocket -lresolv -lnsl
 #define OptimizedCDebugFlags	-O2
