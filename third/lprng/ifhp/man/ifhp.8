@@ -1,0 +1,238 @@
+.TH IFHP 8 "ifhp-3.1.9"
+.SH NAME
+ifhp \- Almost Universal LPRng Print Filter
+.\" $Id: ifhp.8,v 1.1.1.1 1999-02-17 15:31:05 ghudson Exp $
+.SH SYNOPSIS
+.B ifhp
+.br
+[-F format]
+[-s statusfile]
+[-?value (other LPRng filter options)]
+.br
+.br
+[-Z[options[,options]*]*
+.br
+[-T[options[,options]*]*
+.br
+[accountingfile]
+.br
+.sp
+.BR ofhp "(symbolic link to ifhp)"
+.br
+.sp
+.BR banner_pr "(symbolic link to ifhp)"
+.SH DESCRIPTION
+.LP
+The
+.B ifhp
+is a general purpose filter for 
+allmost all PostScript, PJL, PCL, and text based line printers.
+.LP
+.B ifhp
+can be used as print spooler filter or as a banner page generator.
+The
+.BR -F o 
+option or 
+.B ofhp
+executable name selects the 
+.B OF
+operation,
+and the
+.B banner
+executable name or
+.BR -T banner_only
+option selects banner printing.
+.LP
+When used as a print filter,
+.B ifhp 
+resets and synchronizes  the printer,
+gets accounting information,
+and then checks the file to determine its format.
+Based on the format,
+it will do PCL, PostScript, or other initializations,
+and then transfer the file to the printer.
+Next,
+termination sequences are sent,
+followed by getting accounting information.
+.SH "OPTIONS AND CONFIGURATION"
+.LP
+Options controlling
+.B ifhp
+operations are specified by
+.BR -T option
+or
+.BR -Z option
+values.
+These options have the form:
+.nf
+Form          Same As
+flag          flag=1
+flag@         flag=0
+flag=str  
+flag#str
+.LP
+The complete set of options and their effect on operation are detailed
+in the IFHP-HOWTO document.
+The following is a brief list of the more important ones that will
+have a dramatic effect on printer operation.
+.sp .5v
+.TP
+.BR model	=modelid
+.br
+Specifies the printer modelid information.
+This is used to select an appropriate configuration from the ifhp configuration file.
+.TP
+.BR config=path,path,...
+.br
+pathnames of configuration files to read to obtain printer configuration information.
+.TP
+.BR banner_only
+.br
+Operate in banner only mode.
+This will generate a banner that can be used on other printers.
+.TP
+.BR banner =type
+.br
+The type of banner to generate.
+Type can be pcl, ps, or text.
+.TP
+.BR debug  =debuglevel
+Set the debugging level.
+A larger number causes more verbose error messages.
+You have been warned.
+.TP
+.BR trace_on_stderr
+.br
+Sends out debugging and tracing information on STDERR as well as to the status
+log file.
+.SH "STATUS AND ACCOUNTING"
+.LP
+The IFHP filter will generate status information and appends it to the status file
+specified by the
+.B -s
+command line
+flag or the
+configuration file
+.BR statusfile =/path
+entry.
+The
+.B trace_on_stderr
+flag will cause the information to be printed on STDERR.
+If the status file does not exist,  it will not be created.
+.LP
+During normal operation,
+accounting information will be put into the accounting file specified on the
+command line.
+If the accounting file does not exist,  it will not be created.
+.SH "Z OPTIONS"
+The PLP and LPRng software 
+.B lpr
+programs pass the -Z option to the filter.
+These are recognized when printing a non-binary file.
+For example if duplex printing and a font needs to be downloaded,
+this can be requested with the -Z option as:
+.sp .5v
+.B 	lpr -P<printer> -Z'duplex,font=/absolutepath' <file> 
+.sp .5v
+.LP
+For a complete list of the options recognized by LPRng,
+see the IFHP Documentation.
+
+.SH "BANNERS AND OF MODE"
+The
+.B ifhp
+filter can also be used as an OF printer.
+If invoked with the name
+.B ofhp
+or with the
+.B -Fo
+option,
+it will assume that it is being used as an OF filter
+and scan the input for a special stop sequence \e031\e011.
+When it finds the sequence it will suspend itself;
+the spooler will restart the filter when it has more output for it. 
+.LP
+When running in OF mode,
+the
+.B ifhp
+filter can also print banners.
+The first line sent to the OF filter will cause a banner to be printed.
+The banner information will be obtained from either the command line options
+or the first line sent to the printer.
+This line should have the format:
+.sp
+class:username option:value option:value value ... option:value ....
+.sp
+Example:
+.br
+host: hostname user: username  job: job information class: class
+.sp
+.LP
+In addition,
+the ifhp printer can be used as a banner page generator.
+By using the
+.BR -T banner_only
+option or invoking it with a command name of banner,
+only the command line information is used to produce a banner.
+.SH FILES
+.PD 0
+.TP
+.B "/etc/ifhp.conf, ./ifhp.conf"
+.br
+Configuration files
+.TP
+.B "/usr/local/lib/filters//ifhp, ofhp, banner"
+.TP
+.B /usr/local/lib/filters//accounting.sh
+.br
+Executables.
+.TP
+.B /usr/local/lib/filters//banner.ps
+PostScript banner file
+.B 
+.br
+.SH "SEE ALSO"
+.LP
+The IFHP-HOWTO document,
+which is included as part of the IFHP distribution.
+This is the principle reference for this filter.
+.sp
+.LP
+.BR lpd (8),
+.BR lpq (1),
+.BR lpr (1),
+.BR lprm (1),
+.BR hosts (5),
+.BR printcap (5),
+.BR lpc (8).
+.sp
+.LP
+.nf
+FTP sites: ftp://ftp.astart.com/pub/LPRng
+.sp
+.LP
+WEB sites: http://www.astart.com/pub/LPRng
+.sp
+.LP
+Mailing List.  Send email to lprng-request@iona.ie
+with the word 'subscribe' in the boyd.
+.SH "BUGS"
+.LP
+They are not bugs.  They are mis-documented features.
+.SH "AUTHOR"
+.LP
+The IFHP filter was inspired by the LPRng CTI-ifhp filter,
+which was a descendent of the print filters developed by the
+.B CTI-Print 
+project at the 
+.B Division of Computing Facilities 
+of the 
+.B Computer Technology Institute (CTI), Patras, Greece.
+.SH "AUTHORS"
+.nf
+.in +.5i
+.ti -.5i
+Patrick Powell,
+Astart Technologies,
+San Diego, CA
+<papowell@astart.com>

@@ -1,0 +1,81 @@
+# Generated automatically from Makefile.bsd.in by configure.
+###########################################################################
+# IFHP - An Extended Print Spooler System
+#
+# Copyright 1988-1997 Patrick Powell, San Diego, California
+#     papowell@sdsu.edu
+# See LICENSE for conditions of use.
+#
+###########################################################################
+# $Id: Makefile.bsd,v 1.1.1.1 1999-02-17 15:31:06 ghudson Exp $
+########################################################################## 
+
+# FAQ Makefile
+#
+SRC = .
+
+prefix = /usr/local
+MAN =		$(prefix)/man
+SHELL =		/bin/sh
+
+DOC=ifhp
+
+all: $(DOC).html $(DOC).ps $(DOC).txt purge
+#all: $(DOC).txt
+
+$(DOC).html: $(DOC).sgml Makefile
+	sgml2html $(DOC).sgml
+$(DOC).txt: $(DOC).sgml
+	sgml2txt $(DOC).sgml
+$(DOC).tex: $(DOC).sgml Makefile
+	sgml2latex -o tex $(DOC).sgml
+	mv $(DOC).tex $(DOC).Bex
+	sed -e '/tabular/s/{.|.}//g' $(DOC).Bex >$(DOC).tex 
+$(DOC).ps: $(DOC).tex Makefile
+	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
+		'\nonstopmode\input{$(DOC).tex}' >/dev/null
+	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
+		'\nonstopmode\input{$(DOC).tex}'
+	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
+		'\nonstopmode\input{$(DOC).tex}'
+	dvips -q -t a4 -o $(DOC).ps $(DOC).dvi
+purge:
+	rm -f *.Bex *.aux *.log *.toc
+fixman:
+	cp $(DOC).ps ../../IFHP_DOC
+	sed 's,$(DOC)\.,lprng/&,' IFHP.html >/tmp/IFHP.html
+	cp /tmp/IFHP.html ../..
+
+$(DOC).info: $(DOC).sgml
+	sgml2info $>
+
+clean:
+	rm -f *.Bex *.aux *.dvi IFHP-*.html *.log *.ps *.tex *.toc
+
+.PHONY: all clean install ci install.zman update purge
+
+update:
+	updateversion *.sgml
+	$(MAKE) all
+
+# 
+#
+install:
+#	cp *.ps *.dvi ../../LPRng_DOC
+
+	
+realclean mostlyclean distclean:: clean
+	rm -f Makefile
+
+CI=
+#CO=-kv
+CO=-l
+cifast ci:
+	checkin() { \
+		rcs -l $$1; \
+		ci $(CI) -mUpdate -t-Initial $$1; \
+		yes |co -l $(CO) $$1; \
+	}; \
+	for i in  *.sgml Makefile.in Makefile; do \
+		checkin $$i; \
+	done;

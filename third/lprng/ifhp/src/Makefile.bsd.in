@@ -1,0 +1,133 @@
+#**************************************************************************
+#* LPRng IFHP Filter
+#* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
+#*
+#* $Id: Makefile.bsd.in,v 1.1.1.1 1999-02-17 15:31:03 ghudson Exp $
+#
+
+
+prefix=@prefix@
+# where the filters are installed:
+INSTDIR=${prefix}/lib/filters
+FONTDIR=${prefix}/lib/filters/fonts
+
+# shell to use
+SHELL=@SHELL@
+
+#
+# the compiler optimisation/debugging flags you wish to use.
+# what C compiler to use.
+#
+CC=@CC@
+CCOPTFLAGS =  @CFLAGS@
+LDFLAGS    =  $(CCOPTFLAGS)
+# add additional definitions here
+DEFS=@DEFS@
+
+# use FLAGS for additional flags
+CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS)
+
+# libraries you will need (found by config), add more to end
+LIBS=@LIBS@
+
+INSTALLCMD=@INSTALL@
+SHELL = @SHELL@
+
+SRC=@srcdir@
+@SET_MAKE@
+RANLIB=@RANLIB@
+
+######### - no changes by configure after here #############
+
+
+# Accounting shell location
+# ACCNTSH= -DACCNTSH=\"$(INSTDIR)/accounting.sh\"
+
+SRCDIRS=${SRC}/.
+INCLUDE=.. ${SRC}/.
+.PATH: $(INCLUDE) $(SRCDIRS)
+INCS= $(INCLUDE:S/^/-I/g)
+
+# modify FLAGS for additional flags
+
+FLAGS=  $(QUIET) $(INCS)
+
+# commands
+INSTALL=ifhp textps psbanner.ps
+COMMANDS= ifhp textps accounting.sh monitor
+
+.SUFFIXES: .sh .sh_init
+
+.sh_init.sh:
+	sed -e 's:_INSTDIR_:$(INSTDIR):g' \
+		-e 's:_SHELL_:$(SHELL):g' \
+		$> >$@
+	chmod +x $@
+
+all: ${COMMANDS}
+
+.PHONY: all clean install lorder
+
+#
+# Object - Source  dependencies
+#
+
+OBJS= ifhp.o accounting.o vars.o errormsg.o plp_snprintf.o globmatch.o \
+	open_device.o stty.o checkcode.o linelist.o
+
+ifhp:	$(OBJS)
+	${CC} ${LDFLAGS} $> ${LIBS} -o $@
+
+monitor.o $(OBJS): debug.h errormsg.h ifhp.h portable.h \
+	patchlevel.h config.h configfile.h linelist.h
+
+monitor: monitor.o plp_snprintf.o
+	${CC} ${LDFLAGS} $> ${LIBS} -o $@
+
+textps: textps.o
+	${CC} ${LDFLAGS} $> ${LIBS} -o $@
+
+#
+# Installation of commands
+#
+install: all
+	${SRC}/mkinstalldirs $(INSTDIR)
+	for i in $(INSTALL) ; do \
+		$(INSTALLCMD) -m 755 $$i $(INSTDIR); \
+	done ;
+	cd $(INSTDIR); rm -f ofhp banner; \
+		ln -s ifhp ofhp; ln -s ifhp banner
+	@if test ! -f /etc/ifhp.conf; then \
+		echo "You do not have an /etc/ifhp.conf file"; \
+		echo "copy ifhp.conf to /etc/ifhp.conf file"; \
+	fi;
+#
+# Miscellaneous
+#
+
+clean:
+	-rm -f $(COMMANDS) *.o *.a *.core core ? tags banner ofhp
+
+lorder: $(LIB_OBJS)
+	lorder $(LIB_OBJS) | tsort
+
+CI=
+#CO=-kv
+CO=-l
+ci: 
+	if test ! -d RCS ; then mkdir RCS; fi;
+	checkin() { \
+		rcs -l $$1; \
+		ci $(CI) -mUpdate -t-Initial $$1; \
+		co $(CO) $$1; \
+	}; \
+	for i in *.[ch] Makefile* *.sh_init *.ps *.conf; \
+		do \
+		if [ -f $$i ]; then checkin $$i; fi; \
+	done;
+
+distclean:
+	-rm -f Makefile Makefile.bsd
+
+TAGS:
+	ctags *.c *.h

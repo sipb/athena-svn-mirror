@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE> IFHP-HOWTO: Banner Printing</TITLE>
+ <LINK HREF="ifhp-10.html" REL=next>
+ <LINK HREF="ifhp-8.html" REL=previous>
+ <LINK HREF="ifhp.html#toc9" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="ifhp-10.html">Next</A>
+<A HREF="ifhp-8.html">Previous</A>
+<A HREF="ifhp.html#toc9">Contents</A>
+<HR>
+<H2><A NAME="s9">9. Banner Printing</A></H2>
+
+<P>One of the more difficult administrative issues is whether to print
+banners (job separators) or to save the large amount of wasted
+paper, time and effort.
+The LPRng and
+<CODE>ifhp</CODE>
+combination provide a rather esoteric set of methods to generate banners,
+at least one of which should be suitable for your application.
+<P>You should be aware that some printers have the obnoxious habit of
+generating their own banner pages when jobs are transferred via
+the RFC1179 protocol.
+You should consult the manufacturers documentation and take the
+necessary steps to turn printer banner page generation off.
+<H2><A NAME="ss9.1">9.1 Banner Printing with LPRng</A>
+</H2>
+
+<P>The following steps need to be done to configure LPRng to print
+banners using
+<CODE>ifhp</CODE>.
+<OL>
+<LI>In order to print a banner,
+the LPRng print spooler will require a user name
+for the banner page to be present in the print job.
+However,
+since users can request
+<I>no banner</I>
+via various options on the print spooler interface,
+LPRng provides the handy
+<I>force_banner</I>
+option to always force a banner to be generated,
+even if the user has specifically requested that one
+<I>not</I>
+be generated.
+This is useful for preventing the
+<I>disappearing print job</I>
+syndrome in large installations.</LI>
+<LI>Next,
+LPRng must be configured to generate banners.
+The
+<CODE>sh</CODE>
+(suppress header)
+option must be off
+(<CODE>sh@</CODE>).</LI>
+<LI>At this point you need to decide if you want LPRng to generate
+the banner of the
+<CODE>ifhp</CODE>
+filter to generate the banner.
+If you want LPRng to generate the banner,
+you can specify a
+<CODE>banner</CODE>
+generation program,
+and inform
+<CODE>ifhp</CODE>
+<B>not</B>
+to generate a banner (the default).
+<BLOCKQUOTE><CODE>
+<PRE>
+Printcap:
+lp:
+&nbsp;&nbsp;:sh@
+&nbsp;&nbsp;:banner=/usr/local/filters/bannergen
+&nbsp;&nbsp;:if=ifhp&nbsp;-Tbanner
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI>If you want
+<CODE>ifhp</CODE>
+to generate a banner,
+you do not have LPRng generate a banner and
+enable banner printing by
+<CODE>ifhp</CODE>.
+You also can specify the
+<CODE>sb</CODE>
+or short banner option,
+which will cause a very short dummy banner to be generated.
+This will be ignored by the
+<CODE>ifhp</CODE>
+filter.
+<BLOCKQUOTE><CODE>
+<PRE>
+Printcap:
+lp:
+&nbsp;&nbsp;# short banner, save effort
+&nbsp;&nbsp;:sh@:sb
+&nbsp;&nbsp;:if=ifhp -Tbanner
+</PRE>
+</CODE></BLOCKQUOTE>
+</LI>
+<LI>Finally,
+you have your choice of PCL,
+PostScript and even Text banners.
+These can be specified using
+<CODE>banner=</CODE><B>language</B>:
+<BLOCKQUOTE><CODE>
+Printcap:
+lp: <BR>
+&nbsp;&nbsp;# short banner, save effort <BR>
+&nbsp;&nbsp;:sh@:sb <BR>
+&nbsp;&nbsp;:if=ifhp -Tbanner=<B>language</B> <BR>
+</CODE></BLOCKQUOTE>
+</LI>
+</OL>
+<H2><A NAME="ss9.2">9.2 Stand Alone Banner Program</A>
+</H2>
+
+<P>Occasionally it is useful to be able to generate a banner
+in
+<I>standalone</I>
+mode.
+For example,
+you might want to generate a banner
+when using an LPRng
+<I>bounce queue</I>
+to perform filtering operations before forwarding jobs to another
+printer.
+To do this requires a stand-alone banner printer.
+<CODE>ifhp</CODE> can be configured to do this by using:
+<BLOCKQUOTE><CODE>
+ifhp -Tbanner_only
+</CODE></BLOCKQUOTE>
+
+In addition,
+you can specify the type of banner you want using:
+<BLOCKQUOTE><CODE>
+ifhp -Tbanner_only=<B>language</B>
+</CODE></BLOCKQUOTE>
+<P>Lastly,
+in order to be <I>vintage software compatible</I>,
+if the ifhp program is invoked as the
+<CODE>banner</CODE>
+program,
+this is effectivly the same as
+<BLOCKQUOTE><CODE>
+ifhp -Tbanner_only
+</CODE></BLOCKQUOTE>
+<P>For example,
+to use this with a bounce queue to an
+<CODE>hp4</CODE> printer,
+the following printcap entry might be used:
+<BLOCKQUOTE><CODE>
+<PRE>
+# for clients, force spooling to server
+lp:lp=lp@server
+# server
+lp:server
+  :bq=raw@printer
+  :ifhp=model=hp4
+  :generate_banner
+  :banner=/usr/local/filters/ifhp -Tbanner_only
+  :if=/usrlocal/filters/ifhp
+  :of=/usrlocal/filters/ifhp
+</PRE>
+</CODE></BLOCKQUOTE>
+<HR>
+<A HREF="ifhp-10.html">Next</A>
+<A HREF="ifhp-8.html">Previous</A>
+<A HREF="ifhp.html#toc9">Contents</A>
+</BODY>
+</HTML>
