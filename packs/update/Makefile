@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 2002-04-06 23:16:53 ghudson Exp $
+# $Id: Makefile,v 1.16 2002-05-12 20:33:44 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -31,6 +31,7 @@ install:
 	rm -f ${DESTDIR}${ATHRETCDIR}/update_ws
 	ln -s /srvd/update_ws ${DESTDIR}${ATHRETCDIR}/update_ws
 	cd os/${OS} && ${MAKE} $@
+	install -c -m 0555 vers/noask ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris251-26 ${DESTDIR}${UPDATE}
