@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.5.2.1 2000-08-22 03:46:52 jweiss Exp $
+### $Id: phase2.sh,v 1.5.2.2 2000-08-22 04:47:13 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -88,9 +88,9 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 8.2"
-  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
+  echo "standard installation - 8.3"
+  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
   ;;
 
 Y)
@@ -112,10 +112,15 @@ Y)
        ln -s /afs/athena.mit.edu/system/sun4x_55/srvd-8.1 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_55/os /tmp/os 
        ;;
-   *)
+   8.2)
        echo "installing 8.2"
        ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
+       ;;
+    *)
+       echo "installing 8.3"
+       ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
        ;;
    esac
    echo "done choosing rev"
@@ -177,11 +182,11 @@ esac
 case $PARTITION in
 Y)
      echo "The rest of the installation assumes that
-     partition 0 is / and needs about 30MB;
+     partition 0 is / and needs about 200MB;
      partition 1 is swap;
      partition 3 is AFS cache;
-     partition 5 is /usr and needs 50MB;
-     partition 6 is /var and needs at least 120MB "
+     partition 5 is /usr and needs 350MB;
+     partition 6 is /var and needs at least 500MB "
      sleep 10
      format
      echo "Done asking questions for custom install."
@@ -228,6 +233,16 @@ Y)
        cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
+    ST38420A)
+       echo "formating ST38420A"
+       cat /util/format.input.ST38420A | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    ST39120A)
+       echo "formatting ST39120A"
+       cat /util/format.input.ST39120A | \
+		format ${drive} >/dev/null 2>&1
+       ;;
     ST39140A)
        echo "formatting ST39140A"
        cat /util/format.input.ST39140A | \
@@ -241,6 +256,11 @@ Y)
     SEAGATE*5660N)
        echo "formatting SEAGATE-ST5660N"
        cat /util/format.input.seagate.5660 | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    SEAGATE-ST39173WC-6244)
+       echo "formatting SEAGATE-ST39173WC-6244"
+       cat /util/format.input.SEAGATE-ST39173WC-6244 | \
 		format ${drive} >/dev/null 2>&1
        ;;
     *)
