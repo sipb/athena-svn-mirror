@@ -287,19 +287,23 @@ auth_krb5_password(Authctxt *authctxt, const char *password)
 #ifdef HEIMDAL	
 	problem = krb5_verify_user(authctxt->krb5_ctx, authctxt->krb5_user,
 	    authctxt->krb5_fwd_ccache, password, 1, NULL);
-	if (problem)
+	if (problem) {
+	        temporarily_use_uid(authctxt->pw);
 		goto out;
+	}
 #else
         problem = krb5_get_init_creds_password(authctxt->krb5_ctx, &creds, 
             authctxt->krb5_user, password, NULL, NULL, 0, NULL, NULL);
-        if (problem)
+        if (problem) {
+	        temporarily_use_uid(authctxt->pw);
         	goto out;
-
+	}
         problem = krb5_sname_to_principal(authctxt->krb5_ctx, NULL, NULL, 
             KRB5_NT_SRV_HST, &server);
-        if (problem)
+        if (problem) {
+		temporarily_use_uid(authctxt->pw);
         	goto out;
-
+	}
 	krb5_verify_init_creds_opt_init(&vopt);
 #if 0	/* This should be set in krb5.conf if at all */
         krb5_verify_init_creds_opt_set_ap_req_nofail(&vopt,1);
@@ -308,7 +312,7 @@ auth_krb5_password(Authctxt *authctxt, const char *password)
 
         problem = krb5_verify_init_creds(authctxt->krb5_ctx, &creds, server, NULL, NULL, 
             &vopt);
-                                                                                                                                                                                                                                                                                                                                                                                                         
+
         krb5_free_principal(authctxt->krb5_ctx, server);
         if (problem)
         	goto out;
