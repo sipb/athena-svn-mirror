@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.15 1990-11-13 19:06:32 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.16 1990-11-14 13:26:24 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -132,7 +132,7 @@ main(argc, argv)
 			    argc -= 2;
 		    } else {
 			    fprintf(stderr,
-				    "Must specify attach, detach or nfsid!\n");
+				    "Must specify attach, detach nfsid, fsid, or zinit!\n");
 			    exit(ERR_BADARGS);
 		    } 
 	    } 
@@ -158,7 +158,7 @@ main(argc, argv)
 	exit(zinitcmd(argc, argv));
 #endif
 
-    fprintf(stderr, "Not invoked with attach, detach, nfsid, or zinit!\n");
+    fprintf(stderr, "Not invoked with attach, detach, nfsid, fsid, or zinit!\n");
     exit(ERR_BADARGS);
 }
 
@@ -322,9 +322,12 @@ nfsidcmd(argc, argv)
 	    continue;
 	}
 	gotname++;
+#ifdef AFS
 	if (cell_sw) {
 		afs_auth_to_cell(argv[i]);
-	} else if (filsysp) {
+	} else
+#endif
+	if (filsysp) {
 	    /*
 	     * Lookup the specified filsys name and perform an nfsid
 	     * on the host associated with it.
