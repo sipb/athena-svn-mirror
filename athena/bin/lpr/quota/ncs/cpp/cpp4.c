@@ -189,7 +189,11 @@ dodefine()
 	    if ((old != NULL && dp->repl != NULL && !streq(old, dp->repl))
 	     || (old == NULL && dp->repl != NULL)
 	     || (old != NULL && dp->repl == NULL)) {
+#if 0
 		cerror("Redefining defined variable \"%s\"", dp->name);
+#else
+		cwarn("Redefining defined variable \"%s\"", dp->name);
+#endif
 	    }
 	    if (old != NULL)			/* We don't need the	*/
 		free(old);			/* old definition now.	*/
@@ -307,7 +311,7 @@ doundef()
 	else {
 	    scanid(c);				/* Get name to token[]	*/
 	    if (defendel(token, TRUE) == NULL) {
-		cwarn("Symbol \"%s\" not defined in #undef", token);
+/*		cwarn("Symbol \"%s\" not defined in #undef", token); */
 	    }
 	}
 }
