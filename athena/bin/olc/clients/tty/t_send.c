@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_send.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $
+ *	$Id: t_send.c,v 1.29 2000-01-08 04:25:35 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_send.c,v 1.28 1999-06-28 22:52:18 ghudson Exp $";
+static char rcsid[] ="$Id: t_send.c,v 1.29 2000-01-08 04:25:35 zacheiss Exp $";
 #endif
 #endif
 
@@ -244,8 +244,8 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	}
       else
 	{
-	  username = Request->target.username;
-	  realname = Request->target.realname;
+	  username = list.user.username;
+	  realname = list.user.realname;
 	}
 
       if(check)
