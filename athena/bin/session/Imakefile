@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.5 1995-12-05 01:27:16 epeisach Exp $
+# $Id: Imakefile,v 1.6 1996-05-15 19:08:42 ghudson Exp $
 #
 
 SCRIPT=  end_session 
@@ -19,10 +19,6 @@ install:: install.man
 
 /* Install */
 create_dir($(ATHBINDIR))
-
-install::
-	$(RM) $(DESTDIR)/usr/athena/session_gate
-	-ln -s $(ATHBINDIR)/session_gate $(DESTDIR)/usr/athena/session_gate
 
 install::
 	install -c -m 755 end_session.sh ${DESTDIR}${ATHBINDIR}/end_session
