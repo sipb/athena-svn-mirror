@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1 2002-10-22 20:14:15 zacheiss Exp $
+# $Id: lp.sh,v 1.1.2.1 2002-11-13 19:52:48 ghudson Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
