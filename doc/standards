@@ -3,6 +3,7 @@ incorporated into the Athena source tree.  Here are the areas covered:
 
 	Coding conventions
 	Software engineering practices
+	Symbol namespaces
 	Portability considerations for code we maintain
 	Portability considerations for code we release
 	Portability considerations for code we get from third parties
@@ -111,6 +112,35 @@ The following software engineering practices are discouraged:
 	  inside libraries or other "deep" interfaces.  Code that uses
 	  global process state tends to interact poorly with other
 	  code in large programs.
+
+Symbol namespaces
+-----------------
+
+If you are writing a library, you should pick a prefix for your
+library.  You should ensure that all symbols which interact with the
+application's namespace (both at link time and on inclusion of the
+header file) begin with your prefix (or the all-caps form of your
+prefix, in the case of preprocessor symbols and enumeration constants)
+followed by an underscore.  Symbols which are not intended for use by
+the application should begin with your preefix followed by two
+underscores.
+
+For instance, if your prefix is "hes", then functions exported to the
+user should begin with "hes_" (e.g. "hes_resolve").  Functions used
+internally by the library should begin with "hes__"
+(e.g. "hes__resolve" for the internal resolver function).
+Preprocessor symbols intended for use by the application should begin
+with "HES_" (e.g. "HES_ER_OK"); preprocessor symbols not intended for
+use by the application should begin with "HES__" (e.g.
+"HES__HESIOD_H", used to protect hesiod.h from multiple
+inclusion).
+
+Names of structures should begin with your prefix, but structure
+fields don't need to.  Strictly speaking, structure fields interact
+with the user's namespace because the user might have "#define"'d them
+to something before including your header file, but applications
+generally shouldn't be "#define"ing lots of lowercase symbols, so this
+is not a real worry.
 
 Portability considerations for code we maintain
 -----------------------------------------------
