@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.5 1990-07-04 14:46:57 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.6 1990-07-06 10:54:24 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -63,8 +63,8 @@ retry:
 			goto retry;
 		}
 		fprintf(stderr,
-			"%s: Already being attached by another process\n",
-			name);
+			"%s: Filesystem \"%s\" already being attached by another process\n",
+			progname, name);
 		error_status = ERR_ATTACHINUSE;
 		return (FAILURE);
 	    }
@@ -73,8 +73,8 @@ retry:
 	    break;
 	case STATUS_DETACHING:
 	    if (!force && really_in_use(name)) {
-		fprintf(stderr, "%s: Being detached by another process\n",
-			name);
+		fprintf(stderr, "%s: Filesystem \"%s\" is being detached by another process\n",
+			progname, name);
 		error_status = ERR_ATTACHINUSE;
 		unlock_attachtab();
 		free_attachtab();
@@ -96,12 +96,12 @@ retry:
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
 	    else if(verbose)
-		printf("%s: Already attached", name);
+		printf("%s: Filesystem \"%s\" is already attached", progname, name);
 #ifdef NFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_NFS) {
 		int ret;
 		if (verbose && !print_path)
-		    printf("...mapping\n");
+		    printf(" (mapping)\n");
 		
 		ret = nfsid(atp->host, atp->hostaddr,
 			    MOUNTPROC_KUIDMAP, 1, name, 1, real_uid);
@@ -115,14 +115,14 @@ retry:
 #ifdef AFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_AFS) {
 		    if (verbose && !print_path)
-			    printf("...authenticating\n");
+			    printf(" (authenticating)\n");
 		    return(afs_auth(atp->hesiodname, atp->hostdir,
 				    AFSAUTH_DOAUTH |
 				    (use_zephyr ? AFSAUTH_DOZEPHYR : 0)));
 	    }
 #endif
 	    if (!print_path)
-		printf("\n");
+		putchar('\n');
 	    /* No error code set on already attached */
 	    free_attachtab();
 	    return (FAILURE);
@@ -183,13 +183,13 @@ retry:
     }
 
     if (error_status == ERR_ATTACHNOTALLOWED)
-	    fprintf(stderr, "Sorry, you're not allowed to attach %s.\n",
-		    name);
+	    fprintf(stderr, "%s: You are not allowed to attach %s.\n",
+		    progname, name);
 
     if (error_status == ERR_ATTACHBADMNTPT)
 	    fprintf(stderr,
-		    "%s: You're not allowed to attach a filesystem here\n",
-		    name);
+		    "%s: You are not allowed to attach a filesystem here\n",
+		    progname);
     /*
      * We've failed -- delete the partial entry and unlock the in-use file.
      */
@@ -228,7 +228,10 @@ try_attach(name, hesline, errorout)
 	    error_status = ERR_BADFSDSC;
 	    return(FAILURE);
     }
-
+    if (filsys_type && *filsys_type && strcasecmp(filsys_type, at.fs->name)) {
+	    error_status = ERR_ATTACHBADFILSYS;
+	    return FAILURE;
+    }
     if (!override && !allow_filsys(name, at.fs->type)) {
 	    error_status = ERR_ATTACHNOTALLOWED;
 	    return(FAILURE);
@@ -295,8 +298,8 @@ try_attach(name, hesline, errorout)
 	    status = (at.fs->attach)(&at, &mopt, errorout);
     } else {
 	    fprintf(stderr,
-		    "Sorry, I don't know how to attach %s type filesystems\n",
-		    at.fs->name);
+		    "%s: Can't attach filesystem type \"%s\"\n", 
+		    progname, at.fs->name);
 	    status = ERR_FATAL;
 	    return(FAILURE);
     }
@@ -309,11 +312,11 @@ try_attach(name, hesline, errorout)
 		strcpy(tmp, at.hostdir);
 	if (verbose)
 		if(at.fs->type == TYPE_AFS)
-		  printf("%s: %s linked to %s\n", at.hesiodname,
-			 tmp, at.mntpt);
+		  printf("%s: %s linked to %s for filesystem %s\n", progname,
+			 tmp, at.mntpt, at.hesiodname);
 		else
-		  printf("%s: %s mounted %s on %s (%s)\n",
-			 at.hesiodname, at.fs->name, tmp,
+		  printf("%s: filesystem %s (%s) mounted on %s (%s)\n",
+			 progname, at.hesiodname, tmp,
 			 at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
 			 "read-write");
 	if (print_path)
