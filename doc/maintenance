@@ -271,57 +271,78 @@ particular subsystems should be grouped together when possible.
 Release cycles
 --------------
 
-We haven't had one yet with the current repository, but some notes on
-how they should be carried out:
+Release cycles have five phases: crash and burn, alpha, beta, early,
+and the public release.  The release team has a set of criteria for
+entering and exiting each phase, which won't be covered here.  The
+following guidelines should help the release go smoothly:
 
-	* Release cycles have a crash and burn phase, an alpha phase,
-	  a beta phase, an early phase, and then the public release,
-	  after which we have incremental patch releases until the
-	  next release cycle.  The crash and burn and alpha phases are
-	  strictly for internal testers, so not as much communication
-	  or quality control is required (e.g. the packs may be
-	  rebuilt from scratch).  Once the beta phase is reached,
-	  however, the release engineer needs to adhere strictly to
-	  the update system and avoid breaking things.
+	* Crash and burn
 
-	* Before the release cycle reaches the beta phase,
-	  doc/third-party should be checked to see if any pieces of
-	  third-party material need to be updated before a release
-	  cycle.
+	  This phase is for rel-eng internal testing.  The crash and
+	  burn machines should be identified and used to test the
+	  install and update.  System packs may be generated at will
+	  by taking snapshots from the wash machine.  The system packs
+	  volume does not need any replication.
 
-	* Also before the beta phase, a file listing of the new packs
-	  should be compared against a file listing of the old packs
-	  and any files which have disappeared should be accounted
-	  for.
+	  System release notes should be prepared during this phase.
 
-	* When the release cycle reaches beta, a branch should be made
-	  created of the form "athena-8_1".  Only the release
-	  engineer should make commits to the release branch, and each
-	  change needs to be tested carefully.
+	  Before the transition from crash and burn to alpha, the
+	  release engineer should do a sanity check on the new packs
+	  by comparing a file listing of the new packs to a file
+	  listing of the previous release's packs.
 
-	* A tag should be made on the release branch when the public
-	  release happens, of the form "athena-8_1-public".
+	* Alpha
 
-	* A checked-out tree should be made in /afs/dev.mit.edu/source
-	  for the release branch, of the form "src-8.1".
+	  The alpha phase is for internal testing by the release team.
+	  System packs may still be regenerated at will by taking
+	  snapshots, but the system packs volume (and os volume)
+	  should be read-only so it can be updated by a vos release.
+	  Changes to the packs do not need to be propagated in patch
+	  releases; testers are expected to be able to ensure
+	  consistency by forcing repeat updates or reinstalling their
+	  machines.
 
-	* During the crash and burn and alpha phases, up-to-date
-	  system packs may be constructed at any time by taking a
-	  snapshot from the wash machines.  When the beta phase is
-	  reached, a build machine should be set up for the new
-	  release, a final snapshot should be taken, and the packs
-	  should be updated incrementally from then on.  Remember to
-	  do an install in packs/build/finish after every incremental
-	  change.  Also, remember to move any modified binaries to a
-	  .deleted directory on the packs before updating them, or
-	  users running those binaries will experience a core dump
-	  when the volume is released.
+	  A draft of the system release notes should be ready by the
+	  beginning of this phase.  User release notes should be
+	  prepared during this phase.
 
-	* After the public release, the release engineer should copy
-	  the build tree into AFS, update the rel-eng "current-release
-	  build machines" to be build machines for the current
-	  release, and resurrect the wash process if the wash machines
-	  were used as new release build machines.
+	  Before the transition from alpha to beta, doc/third-party
+	  should be checked to see if miscellaneous third-party files
+	  (the ones not under the "third" hierarchy) should be
+	  updated.
+
+	  At the end of the alpha phase, a release branch should
+	  be created with a name of the form athena-8_1-public, and
+	  tagged with athena-8_1-beta.  A checked-out tree should be
+	  made in /afs/dev.mit.edu/source for the release branch, with
+	  a name of the form src-8.1.  A final snapshot of the system
+	  packs should be constructed from the release branch, and the
+	  build tree copied into /afs/dev.mit.edu/project/release.
+	  Build machines for the new release should be set up.
+
+	* Beta
+
+	  The beta phase involves outside testers.  System packs and
+	  os volumes should be replicated on multiple servers.
+	  Changes to the packs must be propagated by patch releases.
+
+	  User release notes should be essentially finished by the end
+	  of this phase.  System release notes may continue to be
+	  updated as bug fixes occur.
+
+	* Early
+
+	  The early release involves more outside testers and some
+	  cluster machines.  The release should be considered ready
+	  for public consumption.
+
+	  The release branch should be tagged with a name of the form
+	  athena-8_1-early.
+
+	* Release
+
+	  The release branch should be tagged with a name of the form
+	  athena-8_1-release.
 
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
@@ -339,9 +360,10 @@ list of popular lockers to get in addition to the glue ones:
 	tcl
 	watchmaker
 	windowmanagers
+	/afs/sipb/project/tcsh
 
-In addition, the third-party software lockers need to be updated; they
-keep their own list.
+In addition, the third-party software lockers need to be updated; the
+third-party software group keeps their own list.
 
 Rel-eng machines
 ----------------
