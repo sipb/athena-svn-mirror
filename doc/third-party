@@ -107,8 +107,10 @@ Distribution sites for software under third
 	traceroute	ftp.ee.lbl.gov (top level)
 	transcript	From Adobe
 	wcl		ftp.x.org:contrib/devel_tools
+			(seems to have disappeared; older versoins than
+			what we have are available in R5contrib)
 	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
-	x3270		ftp.x.org:contrib/applications/x3270
+	x3270		ftp.x.org:contrib/applications
 	xmh		From X11R5
 
 AFS Binaries
