@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include "gdk/gdkx.h"
 #include "gtkhandlebox.h"
+#include "gtkinvisible.h"
 #include "gtkmain.h"
 #include "gtksignal.h"
 #include "gtkwindow.h"
@@ -128,7 +129,8 @@ static gint gtk_handle_box_motion         (GtkWidget         *widget,
 static gint gtk_handle_box_delete_event   (GtkWidget         *widget,
 					   GdkEventAny       *event);
 static void gtk_handle_box_reattach       (GtkHandleBox      *hb);
-
+static void gtk_handle_box_end_drag       (GtkHandleBox      *hb,
+					   guint32            time);
 
 static GtkBinClass *parent_class;
 static guint        handle_box_signals[SIGNAL_LAST] = { 0 };
@@ -209,8 +211,6 @@ gtk_handle_box_class_init (GtkHandleBoxClass *class)
   widget_class->draw = gtk_handle_box_draw;
   widget_class->expose_event = gtk_handle_box_expose;
   widget_class->button_press_event = gtk_handle_box_button_changed;
-  widget_class->button_release_event = gtk_handle_box_button_changed;
-  widget_class->motion_notify_event = gtk_handle_box_motion;
   widget_class->delete_event = gtk_handle_box_delete_event;
 
   container_class->add = gtk_handle_box_add;
@@ -838,6 +838,7 @@ gtk_handle_box_draw (GtkWidget    *widget,
 		     GdkRectangle *area)
 {
   GtkHandleBox *hb;
+  GdkRectangle new_area;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_HANDLE_BOX (widget));
@@ -849,19 +850,22 @@ gtk_handle_box_draw (GtkWidget    *widget,
     {
       if (hb->child_detached)
 	{
+	  gint width, height;
+	  
 	  /* The area parameter does not make sense in this case, so we
 	   * repaint everything.
 	   */
 
 	  gtk_handle_box_draw_ghost (hb);
 
-	  area->x = 0;
-	  area->y = 0;
-	  area->width = 2 * GTK_CONTAINER (hb)->border_width + DRAG_HANDLE_SIZE;
-	  area->height = area->width + GTK_BIN (hb)->child->allocation.height;
-	  area->width += GTK_BIN (hb)->child->allocation.width;
+	  gdk_window_get_size (hb->bin_window, &width, &height);
 
-	  gtk_handle_box_paint (widget, NULL, area);
+	  new_area.x = 0;
+	  new_area.y = 0;
+	  new_area.width = width;
+	  new_area.height = height;
+
+	  gtk_handle_box_paint (widget, NULL, &new_area);
 	}
       else
 	gtk_handle_box_paint (widget, NULL, area);
@@ -894,6 +898,68 @@ gtk_handle_box_expose (GtkWidget      *widget,
   return FALSE;
 }
 
+static GtkWidget *
+gtk_handle_box_get_invisible (void)
+{
+  static GtkWidget *handle_box_invisible = NULL;
+
+  if (!handle_box_invisible)
+    {
+      handle_box_invisible = gtk_invisible_new ();
+      gtk_widget_show (handle_box_invisible);
+    }
+  
+  return handle_box_invisible;
+}
+
+static gboolean
+window_is_viewable (GdkWindow *window)
+{
+  GdkWindowPrivate *window_private = (GdkWindowPrivate *)window;
+  XWindowAttributes xwa;
+
+  while (window_private->parent)
+    {
+      GdkWindowPrivate *parent_private = (GdkWindowPrivate *)window_private->parent;
+
+      if (parent_private->window_type == GDK_WINDOW_ROOT ||
+	  parent_private->window_type == GDK_WINDOW_FOREIGN)
+	break;
+
+      window_private = parent_private;
+    }
+
+  XGetWindowAttributes (window_private->xdisplay, window_private->xwindow, &xwa);
+
+  return xwa.map_state == IsViewable;
+}
+
+static gboolean
+gtk_handle_box_grab_event (GtkWidget    *widget,
+			   GdkEvent     *event,
+			   GtkHandleBox *hb)
+{
+  switch (event->type)
+    {
+    case GDK_BUTTON_RELEASE:
+      if (hb->in_drag)		/* sanity check */
+	{
+	  gtk_handle_box_end_drag (hb, event->button.time);
+	  return TRUE;
+	}
+      break;
+
+    case GDK_MOTION_NOTIFY:
+      return gtk_handle_box_motion (GTK_WIDGET (hb), (GdkEventMotion *)event);
+      break;
+
+    default:
+      break;
+    }
+
+  return FALSE;
+}
+
 static gint
 gtk_handle_box_button_changed (GtkWidget      *widget,
 			       GdkEventButton *event)
@@ -919,27 +985,29 @@ gtk_handle_box_button_changed (GtkWidget      *widget,
 	return FALSE;
 
       child = GTK_BIN (hb)->child;
-      
-      switch (hb->handle_position)
-	{
-	case GTK_POS_LEFT:
-	  in_handle = event->x < DRAG_HANDLE_SIZE;
-	  break;
-	case GTK_POS_TOP:
-	  in_handle = event->y < DRAG_HANDLE_SIZE;
-	  break;
-	case GTK_POS_RIGHT:
-	  in_handle = event->x > 2 * GTK_CONTAINER (hb)->border_width + child->allocation.width;
-	  break;
-	case GTK_POS_BOTTOM:
-	  in_handle = event->y > 2 * GTK_CONTAINER (hb)->border_width + child->allocation.height;
-	  break;
-	default:
-	  in_handle = FALSE;
-	  break;
-	}
 
-      if (!child)
+      if (child)
+	{
+	  switch (hb->handle_position)
+	    {
+	    case GTK_POS_LEFT:
+	      in_handle = event->x < DRAG_HANDLE_SIZE;
+	      break;
+	    case GTK_POS_TOP:
+	      in_handle = event->y < DRAG_HANDLE_SIZE;
+	      break;
+	    case GTK_POS_RIGHT:
+	      in_handle = event->x > 2 * GTK_CONTAINER (hb)->border_width + child->allocation.width;
+	      break;
+	    case GTK_POS_BOTTOM:
+	      in_handle = event->y > 2 * GTK_CONTAINER (hb)->border_width + child->allocation.height;
+	      break;
+	    default:
+	      in_handle = FALSE;
+	      break;
+	    }
+	}
+      else
 	{
 	  in_handle = FALSE;
 	  event_handled = TRUE;
@@ -949,6 +1017,8 @@ gtk_handle_box_button_changed (GtkWidget      *widget,
 	{
 	  if (event->type == GDK_BUTTON_PRESS) /* Start a drag */
 	    {
+	      GtkWidget *invisible = gtk_handle_box_get_invisible ();
+		
 	      gint desk_x, desk_y;
 	      gint root_x, root_y;
 	      gint width, height;
@@ -964,28 +1034,41 @@ gtk_handle_box_button_changed (GtkWidget      *widget,
 	      
 	      hb->deskoff_x = desk_x - root_x;
 	      hb->deskoff_y = desk_y - root_y;
-	      
-	      gdk_window_get_origin (widget->window, &root_x, &root_y);
-	      gdk_window_get_size (widget->window, &width, &height);
-	      
-	      hb->attach_allocation.x = root_x;
-	      hb->attach_allocation.y = root_y;
-	      hb->attach_allocation.width = width;
-	      hb->attach_allocation.height = height;
+
+	      if (window_is_viewable (widget->window))
+		{
+		  gdk_window_get_origin (widget->window, &root_x, &root_y);
+		  gdk_window_get_size (widget->window, &width, &height);
+
+		  hb->attach_allocation.x = root_x;
+		  hb->attach_allocation.y = root_y;
+		  hb->attach_allocation.width = width;
+		  hb->attach_allocation.height = height;
+		}
+	      else
+		{
+		  hb->attach_allocation.x = -1;
+		  hb->attach_allocation.y = -1;
+		  hb->attach_allocation.width = 0;
+		  hb->attach_allocation.height = 0;
+		}
 
 	      hb->in_drag = TRUE;
 	      fleur = gdk_cursor_new (GDK_FLEUR);
-	      if (gdk_pointer_grab (widget->window,
+	      if (gdk_pointer_grab (invisible->window,
 				    FALSE,
 				    (GDK_BUTTON1_MOTION_MASK |
 				     GDK_POINTER_MOTION_HINT_MASK |
 				     GDK_BUTTON_RELEASE_MASK),
 				    NULL,
 				    fleur,
-				    GDK_CURRENT_TIME) != 0)
+				    event->time) != 0)
 		{
 		  hb->in_drag = FALSE;
 		}
+	      else
+		gtk_signal_connect (GTK_OBJECT (invisible), "event",
+				    GTK_SIGNAL_FUNC (gtk_handle_box_grab_event), hb);
 	      
 	      gdk_cursor_destroy (fleur);
 	      event_handled = TRUE;
@@ -996,16 +1079,6 @@ gtk_handle_box_button_changed (GtkWidget      *widget,
 	    }
 	}
     }
-  else if (event->type == GDK_BUTTON_RELEASE &&
-	   hb->in_drag)
-    {
-      if (event->window != widget->window)
-	return FALSE;
-      
-      gdk_pointer_ungrab (GDK_CURRENT_TIME);
-      hb->in_drag = FALSE;
-      event_handled = TRUE;
-    }
   
   return event_handled;
 }
@@ -1014,20 +1087,12 @@ static gint
 gtk_handle_box_motion (GtkWidget      *widget,
 		       GdkEventMotion *event)
 {
-  GtkHandleBox *hb;
+  GtkHandleBox *hb = GTK_HANDLE_BOX (widget);
   gint new_x, new_y;
   gint snap_edge;
   gboolean is_snapped = FALSE;
 
-  g_return_val_if_fail (widget != NULL, FALSE);
-  g_return_val_if_fail (GTK_IS_HANDLE_BOX (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
-
-  hb = GTK_HANDLE_BOX (widget);
   if (!hb->in_drag)
-    return FALSE;
-
-  if (!hb->in_drag || (event->window != widget->window))
     return FALSE;
   
   /* Calculate the attachment point on the float, if the float
@@ -1253,11 +1318,23 @@ gtk_handle_box_reattach (GtkHandleBox *hb)
 	}
       hb->float_window_mapped = FALSE;
     }
+  
   if (hb->in_drag)
-    {
-      gdk_pointer_ungrab (GDK_CURRENT_TIME);
-      hb->in_drag = FALSE;
-    }
+    gtk_handle_box_end_drag (hb, GDK_CURRENT_TIME);
 
   gtk_widget_queue_resize (GTK_WIDGET (hb));
+}
+
+static void
+gtk_handle_box_end_drag (GtkHandleBox *hb,
+			 guint32       time)
+{
+  GtkWidget *invisible = gtk_handle_box_get_invisible ();
+		
+  hb->in_drag = FALSE;
+
+  gdk_pointer_ungrab (time);
+  gtk_signal_disconnect_by_func (GTK_OBJECT (invisible),
+				 GTK_SIGNAL_FUNC (gtk_handle_box_grab_event),
+				 hb);
 }

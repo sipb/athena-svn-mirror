@@ -10,8 +10,64 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   1. Introduction
+
   2. Getting Started
+
      2.1 Hello World in GTK
      2.2 Compiling Hello World
      2.3 Theory of Signals and Callbacks
@@ -19,11 +75,13 @@
      2.5 Stepping Through Hello World
 
   3. Moving On
+
      3.1 Data Types
      3.2 More on Signal Handlers
      3.3 An Upgraded Hello World
 
   4. Packing Widgets
+
      4.1 Theory of Packing Boxes
      4.2 Details of Boxes
      4.3 Packing Demonstration Program
@@ -31,22 +89,26 @@
      4.5 Table Packing Example
 
   5. Widget Overview
+
      5.1 Casting
      5.2 Widget Hierarchy
      5.3 Widgets Without Windows
 
   6. The Button Widget
+
      6.1 Normal Buttons
      6.2 Toggle Buttons
      6.3 Check Buttons
      6.4 Radio Buttons
 
   7. Adjustments
+
      7.1 Creating an Adjustment
      7.2 Using Adjustments the Easy Way
      7.3 Adjustment Internals
 
   8. Range Widgets
+
      8.1 Scrollbar Widgets
      8.2 Scale Widgets
         8.2.1 Creating a Scale Widget
@@ -60,6 +122,7 @@
      8.5 Example
 
   9. Miscellaneous Widgets
+
      9.1 Labels
      9.2 Arrows
      9.3 The Tooltips Object
@@ -76,6 +139,7 @@
      9.14 File Selections
 
   10. Container Widgets
+
      10.1 The EventBox
      10.2 The Alignment widget
      10.3 Fixed Container
@@ -90,6 +154,7 @@
      10.12 Notebooks
 
   11. CList Widget
+
      11.1 Creating a CList widget
      11.2 Modes of operation
      11.3 Working with titles
@@ -102,6 +167,7 @@
      11.10 A CList example
 
   12. Tree Widget
+
      12.1 Creating a Tree
      12.2 Adding a Subtree
      12.3 Handling the Selection List
@@ -114,12 +180,14 @@
      12.6 Tree Example
 
   13. Menu Widget
+
      13.1 Manual Menu Creation
      13.2 Manual Menu Example
      13.3 Using ItemFactory
      13.4 Item Factory Example
 
   14. Text Widget
+
      14.1 Creating and Configuring a Text box
      14.2 Text Manipulation
      14.3 Keyboard Shortcuts
@@ -129,6 +197,7 @@
      14.4 A GtkText Example
 
   15. Undocumented Widgets
+
      15.1 CTree
      15.2 Curves
      15.3 Drawing Area
@@ -140,12 +209,15 @@
      15.9 Preview
 
   16. Setting Widget Attributes
+
   17. Timeouts, IO and Idle Functions
+
      17.1 Timeouts
      17.2 Monitoring IO
      17.3 Idle Functions
 
   18. Advanced Event and Signal Handling
+
      18.1 Signal Functions
         18.1.1 Connecting and Disconnecting Signal Handlers
         18.1.2 Blocking and Unblocking Signal Handlers
@@ -153,11 +225,13 @@
      18.2 Signal Emission and Propagation
 
   19. Managing Selections
+
      19.1 Overview
      19.2 Retrieving the selection
      19.3 Supplying the selection
 
   20. GLib
+
      20.1 Definitions
      20.2 Doubly Linked Lists
      20.3 Singly Linked Lists
@@ -167,34 +241,37 @@
      20.7 Utility and Error Functions
 
   21. GTK's rc Files
+
      21.1 Functions For rc Files
      21.2 GTK's rc File Format
      21.3 Example rc file
 
   22. Writing Your Own Widgets
+
      22.1 Overview
      22.2 The Anatomy Of A Widget
      22.3 Creating a Composite widget
         22.3.1 Introduction
         22.3.2 Choosing a parent class
         22.3.3 The header file
-        22.3.4 The _get_type() function.
-        22.3.5 The _class_init() function
-        22.3.6 The _init() function.
+        22.3.4 The
+        22.3.5 The
+        22.3.6 The
         22.3.7 And the rest...
      22.4 Creating a widget from scratch.
         22.4.1 Introduction
         22.4.2 Displaying a widget on the screen
         22.4.3 The origins of the Dial Widget
         22.4.4 The Basics
-        22.4.5 gtk_dial_realize()
+        22.4.5 (TT
         22.4.6 Size negotiation
-        22.4.7 gtk_dial_expose()
+        22.4.7 (TT
         22.4.8 Event handling
         22.4.9 Possible Enhancements
      22.5 Learning More
 
   23. Scribble, A Simple Example Drawing Program
+
      23.1 Overview
      23.2 Event Handling
      23.3 The DrawingArea Widget, And Drawing
@@ -205,61 +282,69 @@
         23.4.4 Further sophistications
 
   24. Tips For Writing GTK Applications
+
   25. Contributing
+
   26. Credits
+
   27. Tutorial Copyright and Permissions Notice
-  A. GTK Signals
-     A.1 GtkObject
-     A.2 GtkWidget
-     A.3 GtkData
-     A.4 GtkContainer
-     A.5 GtkCalendar
-     A.6 GtkEditable
-     A.7 GtkTipsQuery
-     A.8 GtkCList
-     A.9 GtkNotebook
-     A.10 GtkList
-     A.11 GtkMenuShell
-     A.12 GtkToolbar
-     A.13 GtkTree
-     A.14 GtkButton
-     A.15 GtkItem
-     A.16 GtkWindow
-     A.17 GtkHandleBox
-     A.18 GtkToggleButton
-     A.19 GtkMenuItem
-     A.20 GtkListItem
-     A.21 GtkTreeItem
-     A.22 GtkCheckMenuItem
-     A.23 GtkInputDialog
-     A.24 GtkColorSelection
-     A.25 GtkStatusBar
-     A.26 GtkCTree
-     A.27 GtkCurve
-     A.28 GtkAdjustment
 
-  B. GDK Event Types
-  C. Code Examples
-     C.1 Tictactoe
-        C.1.1 tictactoe.h
-        C.1.2 tictactoe.c
-        C.1.3 ttt_test.c
-     C.2 GtkDial
-        C.2.1 gtkdial.h
-        C.2.2 gtkdial.c
-        C.2.3 dial_test.c
-     C.3 Scribble
-        C.3.1 scribble-simple.c
-        C.3.2 scribble-xinput.c
+  28. GTK Signals
 
-  D. List Widget
-     D.1 Signals
-     D.2 Functions
-     D.3 Example
-     D.4 List Item Widget
-     D.5 Signals
-     D.6 Functions
-     D.7 Example
+     28.1 GtkObject
+     28.2 GtkWidget
+     28.3 GtkData
+     28.4 GtkContainer
+     28.5 GtkCalendar
+     28.6 GtkEditable
+     28.7 GtkTipsQuery
+     28.8 GtkCList
+     28.9 GtkNotebook
+     28.10 GtkList
+     28.11 GtkMenuShell
+     28.12 GtkToolbar
+     28.13 GtkTree
+     28.14 GtkButton
+     28.15 GtkItem
+     28.16 GtkWindow
+     28.17 GtkHandleBox
+     28.18 GtkToggleButton
+     28.19 GtkMenuItem
+     28.20 GtkListItem
+     28.21 GtkTreeItem
+     28.22 GtkCheckMenuItem
+     28.23 GtkInputDialog
+     28.24 GtkColorSelection
+     28.25 GtkStatusBar
+     28.26 GtkCTree
+     28.27 GtkCurve
+     28.28 GtkAdjustment
+
+  29. GDK Event Types
+
+  30. Code Examples
+
+     30.1 Tictactoe
+        30.1.1 tictactoe.h
+        30.1.2 tictactoe.c
+        30.1.3 ttt_test.c
+     30.2 GtkDial
+        30.2.1 gtkdial.h
+        30.2.2 gtkdial.c
+        30.2.3 dial_test.c
+     30.3 Scribble
+        30.3.1 scribble-simple.c
+        30.3.2 scribble-xinput.c
+
+  31. List Widget
+
+     31.1 Signals
+     31.2 Functions
+     31.3 Example
+     31.4 List Item Widget
+     31.5 Signals
+     31.6 Functions
+     31.7 Example
 
 
   ______________________________________________________________________
@@ -361,25 +446,40 @@
 
 
 
-       /* example-start base base.c */
 
-       #include <gtk/gtk.h>
 
-       int main( int   argc,
-                 char *argv[] )
-       {
-           GtkWidget *window;
 
-           gtk_init (&argc, &argv);
 
-           window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-           gtk_widget_show  (window);
 
-           gtk_main ();
 
-           return(0);
-       }
-       /* example-end */
+
+
+
+
+
+
+
+
+  /* example-start base base.c */
+
+  #include <gtk/gtk.h>
+
+  int main( int   argc,
+            char *argv[] )
+  {
+      GtkWidget *window;
+
+      gtk_init (&argc, &argv);
+
+      window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_widget_show  (window);
+
+      gtk_main ();
+
+      return(0);
+  }
+  /* example-end */
+
 
 
 
@@ -387,6 +487,7 @@
 
 
        gcc base.c -o base `gtk-config --cflags --libs`
+
 
 
 
@@ -402,6 +503,8 @@
 
 
        gtk_init (&argc, &argv);
+
+
 
 
   calls the function gtk_init(gint *argc, gchar ***argv) which will be
@@ -448,6 +551,7 @@
 
 
 
+
   The GTK_WINDOW_TOPLEVEL argument specifies that we want the window to
   undergo window manager decoration and placement. Rather than create a
   window of 0x0 size, a window without children is set to 200x200 by
@@ -464,14 +568,27 @@
 
 
 
+
   gtk_main() is another call you will see in every GTK application.
   When control reaches this point, GTK will sleep waiting for X events
   (such as button or key presses), timeouts, or file IO notifications to
   occur. In our simple example, however, events are ignored.
+
+
   22..11..  HHeelllloo WWoorrlldd iinn GGTTKK
 
   Now for a program with a widget (a button).  It's the classic hello
   world a la GTK.
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -579,6 +696,8 @@
 
 
 
+
+
   22..22..  CCoommppiilliinngg HHeelllloo WWoorrlldd
 
   To compile use:
@@ -587,6 +706,7 @@
 
        gcc -Wall -g helloworld.c -o helloworld `gtk-config --cflags` \
            `gtk-config --libs`
+
 
 
 
@@ -654,6 +774,7 @@
 
 
 
+
   where the first argument is the widget which will be emitting the
   signal, and the second the name of the signal you wish to catch. The
   third is the function you wish to be called when it is caught, and the
@@ -689,6 +810,7 @@
 
 
 
+
   gtk_signal_connect_object() is the same as gtk_signal_connect() except
   that the callback function only uses one argument, a pointer to a GTK
   object. So when using this function to connect signals, the callback
@@ -697,6 +819,7 @@
 
 
        void callback_func( GtkObject *object );
+
 
 
 
@@ -792,6 +915,7 @@
 
 
 
+
   GdkEvent is a C union structure whose type will depend upon which of
   the above events has occurred. In order for us to tell which event has
   been issued each of the possible alternatives has a type parameter
@@ -833,6 +957,7 @@
 
 
 
+
   So, to connect a callback function to one of these events we would use
   something like:
 
@@ -841,6 +966,7 @@
        gtk_signal_connect( GTK_OBJECT(button), "button_press_event",
                            GTK_SIGNAL_FUNC(button_press_callback),
                            NULL);
+
 
 
 
@@ -854,6 +980,7 @@
        static gint button_press_callback( GtkWidget      *widget,
                                           GdkEventButton *event,
                                           gpointer        data );
+
 
 
 
@@ -892,6 +1019,7 @@
 
 
 
+
   The next callback is a bit special. The "delete_event" occurs when the
   window manager sends this event to the application. We have a choice
   here as to what to do about these events. We can ignore them, make
@@ -916,9 +1044,13 @@
 
 
 
+
   Here is another callback function which causes the program to quit by
   calling gtk_main_quit(). This function tells GTK that it is to exit
   from gtk_main when control is returned to it.
+
+
+
 
 
 
@@ -927,6 +1059,7 @@
   {
       gtk_main_quit ();
   }
+
 
 
 
@@ -941,6 +1074,7 @@
 
 
 
+
   This next part declares pointers to a structure of type GtkWidget.
   These are used below to create a window and a button.
 
@@ -948,6 +1082,7 @@
 
            GtkWidget *window;
            GtkWidget *button;
+
 
 
 
@@ -963,6 +1098,7 @@
 
 
 
+
   Create a new window. This is fairly straightforward. Memory is
   allocated for the GtkWidget *window structure so it now points to a
   valid structure. It sets up a new window, but it is not displayed
@@ -971,6 +1107,7 @@
 
 
            window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
 
 
 
@@ -994,6 +1131,7 @@
 
 
 
+
   This next function is used to set an attribute of a container object.
   This just sets the window so it has a blank area along the inside of
   it 10 pixels wide where no widgets will go. There are other similar
@@ -1008,6 +1146,7 @@
 
 
 
+
   This call creates a new button. It allocates space for a new GtkWidget
   structure in memory, initializes it, and makes the button pointer
   point to it. It will have the label "Hello World" on it when
@@ -1016,6 +1155,7 @@
 
 
            button = gtk_button_new_with_label ("Hello World");
+
 
 
 
@@ -1032,6 +1172,7 @@
 
 
 
+
   We are also going to use this button to exit our program. This will
   illustrate how the "destroy" signal may come from either the window
   manager, or our program. When the button is "clicked", same as above,
@@ -1044,9 +1185,11 @@
 
 
 
+
       gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
                                  GTK_SIGNAL_FUNC (gtk_widget_destroy),
                                  GTK_OBJECT (window));
+
 
 
 
@@ -1060,6 +1203,7 @@
 
 
            gtk_container_add (GTK_CONTAINER (window), button);
+
 
 
 
@@ -1078,6 +1222,7 @@
 
 
 
+
   And of course, we call gtk_main() which waits for events to come from
   the X server and will call on the widgets to emit signals when these
   events come.
@@ -1088,11 +1233,13 @@
 
 
 
+
   And the final return. Control returns here after gtk_quit() is called.
 
 
 
            return (0);
+
 
 
 
@@ -1148,6 +1295,7 @@
 
 
 
+
   Notice the gint return value? This is a tag that identifies your
   callback function. As stated above, you may have as many callbacks per
   signal and per object as you need, and each will be executed in turn,
@@ -1159,6 +1307,7 @@
 
        void gtk_signal_disconnect( GtkObject *object,
                                    gint id );
+
 
 
 
@@ -1191,11 +1340,47 @@
 
 
 
+
+
   33..33..  AAnn UUppggrraaddeedd HHeelllloo WWoorrlldd
 
   Let's take a look at a slightly improved _h_e_l_l_o_w_o_r_l_d with better
   examples of callbacks. This will also introduce us to our next topic,
   packing widgets.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1298,6 +1483,7 @@
 
 
 
+
   Compile this program using the same linking arguments as our first
   example.  You'll notice this time there is no easy way to exit the
   program, you have to use your window manager or command line to kill
@@ -1379,6 +1565,7 @@
 
 
 
+
   The first argument is the box you are packing the object into, the
   second is the object. The objects will all be buttons for now, so
   we'll be packing buttons into boxes.
@@ -1406,6 +1593,7 @@
 
 
 
+
   The homogeneous argument to gtk_hbox_new (and the same for
   gtk_vbox_new) controls whether each object in the box has the same
   size (i.e., the same width in an hbox, or the same height in a vbox).
@@ -1427,6 +1615,36 @@
 
 
   44..33..  PPaacckkiinngg DDeemmoonnssttrraattiioonn PPrrooggrraamm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1726,6 +1944,8 @@
 
 
 
+
+
   44..44..  PPaacckkiinngg UUssiinngg TTaabblleess
 
   Let's take a look at another way of packing - Tables. These can be
@@ -1741,6 +1961,7 @@
        GtkWidget *gtk_table_new( gint rows,
                                  gint columns,
                                  gint homogeneous );
+
 
 
 
@@ -1766,6 +1987,7 @@
 
 
 
+
   Note that the coordinate system starts in the upper left hand corner.
   To place a widget into a box, use the following function:
 
@@ -1781,6 +2003,8 @@
                               gint       yoptions,
                               gint       xpadding,
                               gint       ypadding );
+
+
 
 
 
@@ -1829,6 +2053,7 @@
 
 
 
+
   The X and Y options default to GTK_FILL | GTK_EXPAND, and X and Y
   padding are set to 0. The rest of the arguments are identical to the
   previous function.
@@ -1845,6 +2070,7 @@
 
 
 
+
   and
 
 
@@ -1852,6 +2078,7 @@
        void gtk_table_set_col_spacing ( GtkTable *table,
                                         gint      column,
                                         gint      spacing );
+
 
 
 
@@ -1867,12 +2094,14 @@
 
 
 
+
   And,
 
 
 
        void gtk_table_set_col_spacings( GtkTable *table,
                                         gint      spacing );
+
 
 
 
@@ -1893,6 +2122,57 @@
   >
 
   Here's the source code:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1998,6 +2278,8 @@
 
 
 
+
+
   55..  WWiiddggeett OOvveerrvviieeww
 
   The general steps to creating a widget in GTK are:
@@ -2043,6 +2325,7 @@
 
 
 
+
   These are all used to cast arguments in functions. You'll see them in
   the examples, and can usually tell when to use them simply by looking
   at the function's declaration.
@@ -2058,6 +2341,8 @@
 
        gtk_signal_connect( GTK_OBJECT(button), "clicked",
                            GTK_SIGNAL_FUNC(callback_function), callback_data);
+
+
 
 
 
@@ -2079,6 +2364,13 @@
 
   For your reference, here is the class hierarchy tree used to implement
   widgets.
+
+
+
+
+
+
+
 
 
 
@@ -2178,6 +2470,8 @@
 
 
 
+
+
   55..33..  WWiiddggeettss WWiitthhoouutt WWiinnddoowwss
 
   The following widgets do not have an associated window. If you want to
@@ -2206,6 +2500,7 @@
 
 
 
+
   We'll further our exploration of GTK by examining each widget in turn,
   creating a few simple functions to display them. Another good source
   is the testgtk.c program that comes with GTK. It can be found in
@@ -2228,6 +2523,52 @@
   picture and a label in it. I've broken up the code to create a box
   from the rest so you can use it in your programs. There are further
   examples of using pixmaps later in the tutorial.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2342,6 +2683,7 @@
 
 
 
+
   The xpm_label_box function could be used to pack xpm's and labels into
   any widget that can be a container.
 
@@ -2400,6 +2742,7 @@
 
 
 
+
   As you can imagine, these work identically to the normal button widget
   calls. The first creates a blank toggle button, and the second, a
   button with a label widget already packed into it.
@@ -2417,6 +2760,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
   void toggle_button_callback (GtkWidget *widget, gpointer data)
   {
       if (GTK_TOGGLE_BUTTON (widget)->active)
@@ -2431,6 +2784,7 @@
 
 
 
+
   To force the state of a toggle button, and its children, the radio and
   check buttons, use this function:
 
@@ -2438,6 +2792,7 @@
 
        void gtk_toggle_button_set_active( GtkToggleButton *toggle_button,
                                          gint             state );
+
 
 
 
@@ -2454,6 +2809,7 @@
 
 
        void gtk_toggle_button_toggled (GtkToggleButton *toggle_button);
+
 
 
 
@@ -2475,6 +2831,8 @@
        GtkWidget *gtk_check_button_new( void );
 
        GtkWidget *gtk_check_button_new_with_label ( gchar *label );
+
+
 
 
 
@@ -2503,6 +2861,7 @@
 
 
 
+
   You'll notice the extra argument to these calls. They require a group
   to perform their duty properly. The first call to
   gtk_radio_button_new_with_label or gtk_radio_button_new_with_label
@@ -2511,6 +2870,7 @@
 
 
        GSList *gtk_radio_button_group( GtkRadioButton *radio_button );
+
 
 
 
@@ -2533,6 +2893,7 @@
 
 
 
+
   It is also a good idea to explicitly set which button should be the
   default depressed button with:
 
@@ -2549,6 +2910,61 @@
   the second will emit its "toggled" signal (to report becoming active).
 
   The following example creates a radio button group with three buttons.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2638,6 +3054,9 @@
 
 
 
+
+
+
   77..  AAddjjuussttmmeennttss
 
   GTK has various widgets that can be visually adjusted by the user
@@ -2687,6 +3106,7 @@
                                       gfloat step_increment,
                                       gfloat page_increment,
                                       gfloat page_size );
+
 
 
 
@@ -2744,6 +3164,8 @@
 
 
 
+
+
   77..33..  AAddjjuussttmmeenntt IInntteerrnnaallss
 
   Ok, you say, that's nice, but what if I want to create my own handlers
@@ -2768,6 +3190,7 @@
 
 
 
+
   The first thing you should know is that there aren't any handy-dandy
   macros or accessor functions for getting the value out of an
   Adjustment, so you'll have to (horror of horrors) do it like a _r_e_a_l C
@@ -2785,6 +3208,7 @@
 
 
 
+
   As mentioned earlier, Adjustment is a subclass of Object just like all
   the various widgets, and thus it is able to emit signals.  This is, of
   course, why updates happen automagically when you share an adjustment
@@ -2796,6 +3220,7 @@
 
 
          void (* value_changed) (GtkAdjustment *adjustment);
+
 
 
 
@@ -2814,12 +3239,14 @@
 
 
 
+
   and connect it to the scale widget's adjustment like this:
 
 
 
        gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
                            GTK_SIGNAL_FUNC (cb_rotate_picture), picture);
+
 
 
 
@@ -2830,6 +3257,7 @@
 
 
          void (* changed)       (GtkAdjustment *adjustment);
+
 
 
 
@@ -2848,6 +3276,7 @@
 
 
        gtk_signal_emit_by_name (GTK_OBJECT (adjustment), "changed");
+
 
 
 
@@ -2895,6 +3324,7 @@
 
 
 
+
   and that's about it (if you don't believe me, look in the header
   files!).  The adjustment argument can either be a pointer to an
   existing Adjustment, or NULL, in which case one will be created for
@@ -2930,6 +3360,7 @@
 
 
 
+
   The adjustment argument can either be an adjustment which has already
   been created with gtk_adjustment_new(), or NULL, in which case, an
   anonymous Adjustment is created with all of its values set to 0.0
@@ -2954,6 +3385,7 @@
 
 
 
+
   As you might have guessed, draw_value is either TRUE or FALSE, with
   predictable consequences for either one.
 
@@ -2965,6 +3397,7 @@
 
        void gtk_scale_set_digits( GtkScale *scale,
                                    gint     digits );
+
 
 
 
@@ -2982,6 +3415,7 @@
 
 
 
+
   The argument pos is of type GtkPositionType, which is defined in
   <gtk/gtkenums.h>, and can take one of the following values:
 
@@ -2991,6 +3425,8 @@
          GTK_POS_RIGHT
          GTK_POS_TOP
          GTK_POS_BOTTOM
+
+
 
 
 
@@ -3044,6 +3480,8 @@
 
 
 
+
+
   88..33..22..  GGeettttiinngg aanndd SSeettttiinngg AAddjjuussttmmeennttss
 
   Getting and setting the adjustment for a range widget "on the fly" is
@@ -3078,6 +3516,7 @@
 
 
 
+
   88..44..  KKeeyy aanndd MMoouussee bbiinnddiinnggss
 
   All of the GTK range widgets react to mouse clicks in more or less the
@@ -3096,6 +3535,7 @@
 
 
        GTK_WIDGET_UNSET_FLAGS (scrollbar, GTK_CAN_FOCUS);
+
 
 
 
@@ -3139,6 +3579,52 @@
   for adjusting some of the parameters mentioned above and in the
   section on adjustments, so you can see how they affect the way these
   widgets work for the user.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3436,6 +3922,7 @@
 
 
 
+
   You will notice that the program does not call gtk_signal_connect for
   the "delete_event", but only for the "destroy" signal. This will still
   perform the desired function, because an unhandled "delete_event" will
@@ -3456,6 +3943,7 @@
 
 
        GtkWidget *gtk_label_new( char *str );
+
 
 
 
@@ -3486,6 +3974,7 @@
 
 
 
+
   The first argument is the label you've created, and the second, the
   return for the string. Do not free the return string, as it is used
   internally by GTK.
@@ -3499,6 +3988,7 @@
 
 
 
+
   Values for jtype are:
 
 
@@ -3506,6 +3996,7 @@
          GTK_JUSTIFY_RIGHT
          GTK_JUSTIFY_CENTER (the default)
          GTK_JUSTIFY_FILL
+
 
 
 
@@ -3519,6 +4010,7 @@
 
 
 
+
   The wrap argument takes a TRUE or FALSE value.
 
   If you want your label underlined, then you can set a pattern on the
@@ -3528,6 +4020,7 @@
 
        void       gtk_label_set_pattern   (GtkLabel          *label,
                                            const gchar       *pattern);
+
 
 
 
@@ -3545,6 +4038,55 @@
   makes use of the Frame widget to better demonstrate the label styles.
   You can ignore this for now as the ``Frame'' widget is explained later
   on.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3653,6 +4195,8 @@
 
 
 
+
+
   99..22..  AArrrroowwss
 
   The Arrow widget draws an arrowhead, facing in a number of possible
@@ -3673,6 +4217,7 @@
 
 
 
+
   The first creates a new arrow widget with the indicated type and
   appearance. The second allows these values to be altered
   retrospectively. The arrow_type argument may take one of the following
@@ -3681,6 +4226,7 @@
          GTK_ARROW_DOWN
          GTK_ARROW_LEFT
          GTK_ARROW_RIGHT
+
 
 
 
@@ -3696,7 +4242,49 @@
 
 
 
+
   Here's a brief example to illustrate their use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3777,6 +4365,8 @@
 
 
 
+
+
   99..33..  TThhee TToooollttiippss OObbjjeecctt
 
   These are the little text strings that pop up when you leave your
@@ -3798,6 +4388,7 @@
 
 
 
+
   Once you have created a new tooltip, and the widget you wish to use it
   on, simply use this call to set it:
 
@@ -3810,6 +4401,7 @@
 
 
 
+
   The first argument is the tooltip you've already created, followed by
   the widget you wish to have this tooltip pop up for, and the text you
   wish it to say. The last argument is a text string that can be used as
@@ -3818,6 +4410,13 @@
 
 
   Here's a short example:
+
+
+
+
+
+
+
 
 
 
@@ -3835,12 +4434,14 @@
 
 
 
+
   There are other calls that can be used with tooltips. I will just list
   them with a brief description of what they do.
 
 
 
        void gtk_tooltips_enable( GtkTooltips *tooltips );
+
 
 
 
@@ -3852,12 +4453,14 @@
 
 
 
+
   Disable an enabled set of tooltips.
 
 
 
        void gtk_tooltips_set_delay( GtkTooltips *tooltips,
                                     gint         delay );
+
 
 
 
@@ -3873,10 +4476,13 @@
 
 
 
+
   Set the foreground and background color of the tooltips.
 
   And that's all the functions associated with tooltips. More than
   you'll ever want to know :-)
+
+
 
 
 
@@ -3899,6 +4505,7 @@
 
 
 
+
   The second method has the advantage that we can use the adjustment
   object to specify our own range parameters for the progress bar.
 
@@ -3911,12 +4518,14 @@
 
 
 
+
   Now that the progress bar has been created we can use it.
 
 
 
        void gtk_progress_bar_update( GtkProgressBar *pbar,
                                      gfloat          percentage );
+
 
 
 
@@ -3939,6 +4548,7 @@
 
 
 
+
   The orientation argument may take one of the following values to
   indicate the direction in which the progress bar moves:
 
@@ -3946,6 +4556,7 @@
          GTK_PROGRESS_RIGHT_TO_LEFT
          GTK_PROGRESS_BOTTOM_TO_TOP
          GTK_PROGRESS_TOP_TO_BOTTOM
+
 
 
 
@@ -3964,6 +4575,7 @@
 
 
 
+
   The style parameter can take one of two values:
 
 
@@ -3973,12 +4585,14 @@
 
 
 
+
   The number of discrete blocks can be set by calling
 
 
 
        void gtk_progress_bar_set_discrete_blocks( GtkProgressBar *pbar,
                                                   guint           blocks );
+
 
 
 
@@ -3996,8 +4610,11 @@
 
 
 
+
   The step size of the activity indicator, and the number of blocks are
   set using the following functions.
+
+
 
 
 
@@ -4009,6 +4626,7 @@
 
 
 
+
   When in continuous mode, the progress bar can also display a
   configurable text string within its trough, using the following
   function.
@@ -4017,6 +4635,7 @@
 
        void gtk_progress_set_format_string( GtkProgress *progress,
                                             gchar       *format);
+
 
 
 
@@ -4042,6 +4661,7 @@
 
 
 
+
   The show_text argument is a boolean TRUE/FALSE value. The appearance
   of the text can be modified further using:
 
@@ -4050,6 +4670,7 @@
        void gtk_progress_set_text_alignment( GtkProgress   *progress,
                                              gfloat         x_align,
                                              gfloat         y_align );
+
 
 
 
@@ -4075,6 +4696,7 @@
 
 
 
+
   There is yet another way to change the range and value of a progress
   object using the following function:
 
@@ -4084,6 +4706,7 @@
                                     gfloat        value,
                                     gfloat        min,
                                     gfloat        max );
+
 
 
 
@@ -4110,6 +4733,7 @@
 
 
 
+
   These functions are pretty self explanatory. The last function uses
   the the adjustment of the specified progess object to compute the
   percentage value of the given range value.
@@ -4121,6 +4745,8 @@
 
   Here is an example of the progress bar, updated using timeouts. This
   code also shows you how to reset the Progress Bar.
+
+
 
 
 
@@ -4347,6 +4973,8 @@
 
 
 
+
+
   99..55..  DDiiaallooggss
 
   The Dialog widget is very simple, and is actually just a window with a
@@ -4364,6 +4992,7 @@
 
 
 
+
   So you see, it simply creates a window, and then packs a vbox into the
   top, which contains a separator and then an hbox called the
   "action_area".
@@ -4378,12 +5007,16 @@
 
 
 
+
   So to create a new dialog box, use,
+
+
 
 
 
       GtkWidget *window;
       window = gtk_dialog_new ();
+
 
 
 
@@ -4400,6 +5033,7 @@
 
 
 
+
   And you could add to the vbox area by packing, for instance, a label
   in it, try something like this:
 
@@ -4409,6 +5043,7 @@
            gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
                                label, TRUE, TRUE, 0);
            gtk_widget_show (label);
+
 
 
 
@@ -4463,6 +5098,7 @@
 
 
 
+
   This routine is used to create a single-plane pixmap (2 colors) from
   data in memory. Each bit of the data represents whether that pixel is
   off or on. Width and height are in pixels. The GdkWindow pointer is to
@@ -4481,6 +5117,7 @@
 
 
 
+
   This is used to create a pixmap of the given depth (number of colors)
   from the bitmap data specified. fg and bg are the foreground and
   background color to use.
@@ -4494,6 +5131,7 @@
 
 
 
+
   XPM format is a readable pixmap representation for the X Window
   System. It is widely used and many different utilities are available
   for creating image files in this format. The file specified by
@@ -4504,10 +5142,15 @@
 
 
 
+
+
+
+
   GdkPixmap *gdk_pixmap_create_from_xpm_d( GdkWindow  *window,
                                            GdkBitmap **mask,
                                            GdkColor   *transparent_color,
                                            gchar     **data );
+
 
 
 
@@ -4542,6 +5185,7 @@
 
 
 
+
   When we're done using a pixmap and not likely to reuse it again soon,
   it is a good idea to release the resource using gdk_pixmap_unref().
   Pixmaps should be considered a precious resource, because they take up
@@ -4560,7 +5204,11 @@
 
 
 
+
   The other pixmap widget calls are
+
+
+
 
 
 
@@ -4576,10 +5224,57 @@
 
 
 
+
   gtk_pixmap_set is used to change the pixmap that the widget is
   currently managing. Val is the pixmap created using GDK.
 
   The following is an example of using a pixmap in a button.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4676,6 +5371,7 @@
 
 
 
+
   To load a file from an XPM data file called icon0.xpm in the current
   directory, we would have created the pixmap thus
 
@@ -4691,6 +5387,7 @@
 
 
 
+
   A disadvantage of using pixmaps is that the displayed object is always
   rectangular, regardless of the image. We would like to create desktops
   and applications with icons that have more natural shapes. For
@@ -4702,6 +5399,14 @@
   don't overwrite it with a rectangular, non-matching border around our
   icon. The following example displays a full wheelbarrow image on the
   desktop.
+
+
+
+
+
+
+
+
 
 
 
@@ -4884,6 +5589,7 @@
 
 
 
+
   To make the wheelbarrow image sensitive, we could attach the button
   press event signal to make it do something. The following few lines
   would make the picture sensitive to a mouse button being pressed which
@@ -4897,6 +5603,8 @@
 
           gtk_signal_connect( GTK_OBJECT(window), "button_press_event",
                               GTK_SIGNAL_FUNC(close_application), NULL );
+
+
 
 
 
@@ -4919,6 +5627,7 @@
 
 
 
+
   Once a ruler is created, we can define the unit of measurement. Units
   of measure for rulers can beGTK_PIXELS, GTK_INCHES or GTK_CENTIMETERS.
   This is set using
@@ -4930,11 +5639,13 @@
 
 
 
+
   The default measure is GTK_PIXELS.
 
 
 
            gtk_ruler_set_metric( GTK_RULER(ruler), GTK_PIXELS );
+
 
 
 
@@ -4952,6 +5663,7 @@
 
 
 
+
   The lower and upper arguments define the extent of the ruler, and
   max_size is the largest possible number that will be displayed.
   Position defines the initial position of the pointer indicator within
@@ -4961,7 +5673,9 @@
 
 
 
+
       gtk_ruler_set_range( GTK_RULER(vruler), 0, 800, 0, 800);
+
 
 
 
@@ -4972,6 +5686,7 @@
 
 
            gtk_ruler_set_range( GTK_RULER(vruler), 7, 16, 0, 20);
+
 
 
 
@@ -4991,12 +5706,37 @@
 
 
 
+
   The following example creates a drawing area with a horizontal ruler
   above it and a vertical ruler to the left of it. The size of the
   drawing area is 600 pixels wide by 400 pixels high. The horizontal
   ruler spans from 7 to 13 with a mark every 100 pixels, while the
   vertical ruler spans from 0 to 400 with a mark every 100 pixels.
   Placement of the drawing area and the rulers is done using a table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5084,6 +5824,8 @@
 
 
 
+
+
   99..88..  SSttaattuussbbaarrss
 
   Statusbars are simple widgets used to display a text message. They
@@ -5105,6 +5847,7 @@
 
 
 
+
   A new Context Identifier is requested using a call to the following
   function with a short textual description of the context:
 
@@ -5115,7 +5858,17 @@
 
 
 
+
   There are three functions that can operate on statusbars:
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5132,6 +5885,7 @@
 
 
 
+
   The first, gtk_statusbar_push, is used to add a new message to the
   statusbar.  It returns a Message Identifier, which can be passed later
   to the function gtk_statusbar_remove to remove the message with the
@@ -5143,6 +5897,44 @@
   The following example creates a statusbar and two buttons, one for
   pushing items onto the statusbar, and one for popping the last item
   back off.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5226,6 +6018,8 @@
 
 
 
+
+
   99..99..  TTeexxtt EEnnttrriieess
 
   The Entry widget allows text to be typed and displayed in a single
@@ -5240,6 +6034,7 @@
        GtkWidget *gtk_entry_new( void );
 
        GtkWidget *gtk_entry_new_with_max_length( guint16 max );
+
 
 
 
@@ -5259,6 +6054,7 @@
 
        void gtk_entry_prepend_text( GtkEntry    *entry,
                                     const gchar *text );
+
 
 
 
@@ -5284,6 +6080,7 @@
 
 
 
+
   The value returned by this function is used internally, and must not
   be freed using either free() or g_free()
 
@@ -5294,6 +6091,7 @@
 
        void gtk_entry_set_editable( GtkEntry *entry,
                                     gboolean  editable );
+
 
 
 
@@ -5311,6 +6109,7 @@
 
 
 
+
   A region of the text may be set as selected by using the following
   function. This would most often be used after setting some default
   text in an Entry, making it easy for the user to remove it.
@@ -5323,12 +6122,17 @@
 
 
 
+
   If we want to catch when the user has entered text, we can connect to
   the activate or changed signal. Activate is raised when the user hits
   the enter key within the Entry widget. Changed is raised when the text
   changes at all, e.g., for every character entered or removed.
 
   The following code is an example of using an Entry widget.
+
+
+
+
 
 
 
@@ -5429,6 +6233,8 @@
 
 
 
+
+
   99..1100..  SSppiinn BBuuttttoonnss
 
   The Spin Button widget is generally used to allow the user to select a
@@ -5492,6 +6298,7 @@
 
 
 
+
   The climb_rate argument take a value between 0.0 and 1.0 and indicates
   the amount of acceleration that the Spin Button has. The digits
   argument specifies the number of decimal places to which the value
@@ -5506,6 +6313,7 @@
                                        GtkAdjustment *adjustment,
                                        gfloat         climb_rate,
                                        guint          digits );
+
 
 
 
@@ -5524,12 +6332,15 @@
 
 
 
+
+
   The number of decimal places can also be altered using:
 
 
 
        void gtk_spin_button_set_digits( GtkSpinButton *spin_button,
                                         guint          digits) ;
+
 
 
 
@@ -5540,6 +6351,7 @@
 
        void gtk_spin_button_set_value( GtkSpinButton *spin_button,
                                        gfloat         value );
+
 
 
 
@@ -5554,6 +6366,7 @@
 
 
 
+
   If you want to alter the value of a Spin Value relative to its current
   value, then the following function can be used:
 
@@ -5562,6 +6375,7 @@
        void gtk_spin_button_spin( GtkSpinButton *spin_button,
                                   GtkSpinType    direction,
                                   gfloat         increment );
+
 
 
 
@@ -5576,6 +6390,7 @@
          GTK_SPIN_HOME
          GTK_SPIN_END
          GTK_SPIN_USER_DEFINED
+
 
 
 
@@ -5616,6 +6431,7 @@
 
 
 
+
   You can set whether a Spin Button will wrap around between the upper
   and lower range values with the following function:
 
@@ -5623,6 +6439,7 @@
 
        void gtk_spin_button_set_wrap( GtkSpinButton *spin_button,
                                       gboolean       wrap );
+
 
 
 
@@ -5637,6 +6454,7 @@
 
 
 
+
   The update policy of a Spin Button can be changed with the following
   function:
 
@@ -5644,6 +6462,7 @@
 
        void gtk_spin_button_set_update_policy( GtkSpinButton  *spin_button,
                                            GtkSpinButtonUpdatePolicy policy );
+
 
 
 
@@ -5671,6 +6490,7 @@
 
 
 
+
   As usual, the shadow_type can be one of:
 
 
@@ -5682,6 +6502,7 @@
 
 
 
+
   Finally, you can explicitly request that a Spin Button update itself:
 
 
@@ -5690,7 +6511,24 @@
 
 
 
+
   It's example time again.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5922,6 +6760,8 @@
 
 
 
+
+
   99..1111..  CCoommbboo BBooxx
 
   The combo box is another fairly simple widget that is really just a
@@ -5946,6 +6786,7 @@
 
 
 
+
   As you can see, the Combo Box has two principal parts that you really
   care about: an entry and a list.
 
@@ -5964,12 +6805,14 @@
 
 
 
+
   To set the values in the popdown list, one uses the function:
 
 
 
        void gtk_combo_set_popdown_strings( GtkCombo *combo,
                                            GList    *strings );
+
 
 
 
@@ -5983,6 +6826,7 @@
 
        GList *g_list_append( GList *glist,
                              gpointer data );
+
 
 
 
@@ -6005,6 +6849,7 @@
 
 
 
+
   The combo widget makes a copy of the strings passed to it in the glist
   structure. As a result, you need to make sure you free the memory used
   by the list if that is appropriate for your application.
@@ -6012,6 +6857,8 @@
   At this point you have a working combo box that has been set up.
   There are a few aspects of its behavior that you can change. These are
   accomplished with the functions:
+
+
 
 
 
@@ -6023,6 +6870,7 @@
 
   void gtk_combo_set_case_sensitive( GtkCombo *combo,
                                      gint      val );
+
 
 
 
@@ -6073,12 +6921,15 @@
 
 
 
+
   Getting the text at any arbitrary time is accomplished by simply using
   the entry function:
 
 
 
+
   gchar *gtk_entry_get_text(GtkEntry *entry);
+
 
 
 
@@ -6092,11 +6943,13 @@
 
 
 
+
   That's about all there is to it. There is a function
 
 
 
        void gtk_combo_disable_activate(GtkCombo *combo);
+
 
 
 
@@ -6120,6 +6973,7 @@
 
 
 
+
   There might be times where you need to change a lot of information
   within this widget and the following functions allow you to make
   multiple change to a Calendar widget without the user seeing multiple
@@ -6133,6 +6987,7 @@
 
 
 
+
   They work just like the freeze/thaw functions of every other widget.
 
   The Calendar widget has a few options that allow you to change the way
@@ -6141,6 +6996,7 @@
 
        void gtk_calendar_display_options( GtkCalendar               *calendar,
                                           GtkCalendarDisplayOptions  flags );
+
 
 
 
@@ -6182,6 +7038,7 @@
 
 
 
+
   The return value from gtk_calendar_select_month() is a boolean value
   indicating whether the selection was successful.
 
@@ -6196,6 +7053,13 @@
 
 
 
+
+
+
+
+
+
+
   gint gtk_calendar_mark_day( GtkCalendar *calendar,
                               guint        day);
 
@@ -6203,6 +7067,7 @@
                                 guint        day);
 
   void gtk_calendar_clear_marks( GtkCalendar *calendar);
+
 
 
 
@@ -6225,6 +7090,7 @@
 
 
 
+
   Note that marks are persistent across month and year changes.
 
   The final Calendar widget function is used to retrieve the currently
@@ -6236,6 +7102,7 @@
                                    guint       *year,
                                    guint       *month,
                                    guint       *day );
+
 
 
 
@@ -6265,6 +7132,63 @@
 
   That just leaves us with the need to put all of this together into
   example code.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6695,6 +7619,10 @@
 
 
 
+
+
+
+
   99..1133..  CCoolloorr SSeelleeccttiioonn
 
   The color selection widget is, not surprisingly, a widget for
@@ -6720,12 +7648,14 @@
 
 
 
+
   You'll probably not be using this constructor directly. It creates an
   orphan ColorSelection widget which you'll have to parent yourself. The
   ColorSelection widget inherits from the VBox widget.
 
 
        GtkWidget *gtk_color_selection_dialog_new( const gchar *title );
+
 
 
 
@@ -6744,6 +7674,7 @@
 
 
 
+
   This function sets the update policy. The default policy is
   GTK_UPDATE_CONTINUOUS which means that the current color is updated
   continuously when the user drags the sliders or presses the mouse and
@@ -6758,6 +7689,7 @@
 
 
 
+
   The color selection widget supports adjusting the opacity of a color
   (also known as the alpha channel). This is disabled by default.
   Calling this function with use_opacity set to TRUE enables opacity.
@@ -6767,6 +7699,7 @@
 
        void gtk_color_selection_set_color( GtkColorSelection *colorsel,
                                            gdouble           *color );
+
 
 
 
@@ -6784,6 +7717,7 @@
 
 
 
+
   When you need to query the current color, typically when you've
   received a "color_changed" signal, you use this function. Color is a
   pointer to the array of colors to fill in. See the
@@ -6796,6 +7730,59 @@
   drawing area. Clicking on it opens a color selection dialog, and
   changing the color in the color selection dialog changes the
   background color.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6945,6 +7932,8 @@
 
 
 
+
+
   99..1144..  FFiillee SSeelleeccttiioonnss
 
   The file selection widget is a quick and simple way to display a File
@@ -6959,6 +7948,7 @@
 
 
 
+
   To set the filename, for example to bring up a specific directory, or
   give a default filename, use this function:
 
@@ -6969,12 +7959,14 @@
 
 
 
+
   To grab the text that the user has entered or clicked on, use this
   function:
 
 
 
        gchar *gtk_file_selection_get_filename( GtkFileSelection *filesel );
+
 
 
 
@@ -7054,6 +8046,10 @@
 
 
 
+
+
+
+
   1100..  CCoonnttaaiinneerr WWiiddggeettss
 
   1100..11..  TThhee EEvveennttBBooxx
@@ -7084,6 +8080,7 @@
 
 
 
+
   A child widget can then be added to this EventBox:
 
 
@@ -7092,10 +8089,30 @@
 
 
 
+
   The following example demonstrates both uses of an EventBox - a label
   is created that is clipped to a small box, and set up so that a mouse-
   click on the label causes the program to exit. Resizing the window
   reveals varying amounts of the label.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7156,6 +8173,9 @@
 
 
 
+
+
+
   1100..22..  TThhee AAlliiggnnmmeenntt wwiiddggeett
 
   The alignment widget allows you to place a widget within its window at
@@ -7179,6 +8199,7 @@
 
 
 
+
   The first function creates a new Alignment widget with the specified
   parameters. The second function allows the alignment paramters of an
   exisiting Alignment widget to be altered.
@@ -7194,6 +8215,7 @@
 
 
            gtk_container_add( GTK_CONTAINER(alignment), child_widget );
+
 
 
 
@@ -7225,6 +8247,7 @@
 
 
 
+
   The function gtk_fixed_new allows you to create a new Fixed container.
 
   gtk_fixed_put places widget in the container fixed at the position
@@ -7234,6 +8257,60 @@
   position.
 
   The following example illustrates how to use the Fixed Container.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7314,6 +8391,8 @@
 
 
 
+
+
   1100..44..  LLaayyoouutt CCoonnttaaiinneerr
 
   The Layout container is similar to the Fixed container except that it
@@ -7330,6 +8409,7 @@
 
        GtkWidget *gtk_layout_new( GtkAdjustment *hadjustment,
                                   GtkAdjustment *vadjustment );
+
 
 
 
@@ -7353,6 +8433,7 @@
 
 
 
+
   The size of the Layout container can be set using the next function:
 
 
@@ -7360,6 +8441,8 @@
        void gtk_layout_set_size( GtkLayout *layout,
                                  guint      width,
                                  guint      height );
+
+
 
 
 
@@ -7381,6 +8464,7 @@
 
 
 
+
   The final four functions for use with Layout widgets are for
   manipulating the horizontal and vertical adjustment widgets:
 
@@ -7398,6 +8482,8 @@
 
 
 
+
+
   1100..55..  FFrraammeess
 
   Frames can be used to enclose one or a group of widgets with a box
@@ -7409,6 +8495,7 @@
 
 
        GtkWidget *gtk_frame_new( const gchar *label );
+
 
 
 
@@ -7424,6 +8511,7 @@
 
 
 
+
   The position of the label can be changed using this function:
 
 
@@ -7431,6 +8519,7 @@
        void gtk_frame_set_label_align( GtkFrame *frame,
                                        gfloat    xalign,
                                        gfloat    yalign );
+
 
 
 
@@ -7449,6 +8538,7 @@
 
 
 
+
   The type argument can take one of the following values:
 
 
@@ -7460,7 +8550,31 @@
 
 
 
+
   The following code example illustrates the use of the Frame widget.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7519,6 +8633,9 @@
 
 
 
+
+
+
   1100..66..  AAssppeecctt FFrraammeess
 
   The aspect frame widget is like a frame widget, except that it also
@@ -7541,6 +8658,7 @@
 
 
 
+
   xalign and yalign specify alignment as with Alignment widgets. If
   obey_child is true, the aspect ratio of a child widget will match the
   aspect ratio of the ideal size it requests.  Otherwise, it is given by
@@ -7558,9 +8676,37 @@
 
 
 
+
   As an example, the following program uses an AspectFrame to present a
   drawing area whose aspect ratio will always be 2:1, no matter how the
   user resizes the top-level window.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7611,6 +8757,9 @@
 
 
 
+
+
+
   1100..77..  PPaanneedd WWiinnddooww WWiiddggeettss
 
   The paned window widgets are useful when you want to divide an area
@@ -7638,6 +8787,7 @@
 
 
 
+
   gtk_paned_add1() adds the child widget to the left or top half of the
   paned window. gtk_paned_add2() adds the child widget to the right or
   bottom half of the paned window.
@@ -7652,6 +8802,7 @@
 
        void gtk_paned_set_gutter_size( GtkPaned *paned,
                                        guint16   size);
+
 
 
 
@@ -7670,6 +8821,24 @@
   in the table containing the text window and its scrollbars, so that
   when the bottom portion is made smaller, the correct portions shrink
   instead of being pushed off the bottom of the window.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7818,6 +8987,8 @@
 
 
 
+
+
   1100..88..  VViieewwppoorrttss
 
   It is unlikely that you will ever need to use the Viewport widget
@@ -7834,6 +9005,7 @@
 
        GtkWidget *gtk_viewport_new( GtkAdjustment *hadjustment,
                                     GtkAdjustment *vadjustment );
+
 
 
 
@@ -7858,6 +9030,7 @@
 
 
 
+
   The only other viewport function is used to alter its appearance:
 
 
@@ -7878,6 +9051,8 @@
 
 
 
+
+
   1100..99..  SSccrroolllleedd WWiinnddoowwss
 
   Scrolled windows are used to create a scrollable area with another
@@ -7894,6 +9069,7 @@
 
 
 
+
   Where the first argument is the adjustment for the horizontal
   direction, and the second, the adjustment for the vertical direction.
   These are almost always set to NULL.
@@ -7903,6 +9079,7 @@
        void gtk_scrolled_window_set_policy( GtkScrolledWindow *scrolled_window,
                                             GtkPolicyType      hscrollbar_policy,
                                             GtkPolicyType      vscrollbar_policy );
+
 
 
 
@@ -7926,9 +9103,72 @@
 
 
 
+
   Here is a simple example that packs a table eith 100 toggle buttons
   into a scrolled window. I've only commented on the parts that may be
   new to you.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8030,6 +9270,7 @@
 
 
 
+
   Try playing with resizing the window. You'll notice how the scrollbars
   react. You may also wish to use the gtk_widget_set_usize() call to set
   the default size of the window or other widgets.
@@ -8048,6 +9289,7 @@
        GtkWidget *gtk_hbutton_box_new( void );
 
        GtkWidget *gtk_vbutton_box_new( void );
+
 
 
 
@@ -8072,6 +9314,7 @@
 
 
 
+
   The second attribute that we can access effects the layout of the
   buttons within the box. It is set using one of:
 
@@ -8080,6 +9323,7 @@
        void gtk_hbutton_box_set_layout_default( GtkButtonBoxStyle layout );
 
        void gtk_vbutton_box_set_layout_default( GtkButtonBoxStyle layout );
+
 
 
 
@@ -8095,6 +9339,7 @@
 
 
 
+
   The current layout setting can be retrieved using:
 
 
@@ -8102,6 +9347,7 @@
        GtkButtonBoxStyle gtk_hbutton_box_get_layout_default( void );
 
        GtkButtonBoxStyle gtk_vbutton_box_get_layout_default( void );
+
 
 
 
@@ -8113,8 +9359,14 @@
 
 
 
+
   Here's an example that illustrates all the different layout settings
   for Button Boxes.
+
+
+
+
+
 
 
 
@@ -8243,6 +9495,9 @@
 
 
 
+
+
+
   1100..1111..  TToooollbbaarr
 
   Toolbars are usually used to group some number of widgets in order to
@@ -8262,12 +9517,14 @@
 
 
 
+
   where orientation may be one of:
 
 
 
          GTK_ORIENTATION_HORIZONTAL
          GTK_ORIENTATION_VERTICAL
+
 
 
 
@@ -8278,6 +9535,7 @@
          GTK_TOOLBAR_TEXT
          GTK_TOOLBAR_ICONS
          GTK_TOOLBAR_BOTH
+
 
 
 
@@ -8327,6 +9585,7 @@
 
 
 
+
   To simplify adding spaces between toolbar items, you may use the
   following functions:
 
@@ -8341,6 +9600,8 @@
 
 
 
+
+
   While the size of the added space can be set globally for a whole
   toolbar with the function:
 
@@ -8348,6 +9609,7 @@
 
        void gtk_toolbar_set_space_size( GtkToolbar *toolbar,
                                         gint        space_size) ;
+
 
 
 
@@ -8364,6 +9626,7 @@
 
        void gtk_toolbar_set_tooltips( GtkToolbar *toolbar,
                                       gint        enable );
+
 
 
 
@@ -8391,6 +9654,7 @@
 
 
 
+
   The above beginning seems for sure familiar to you if it's not your
   first GTK program. There is one additional thing though, we include a
   nice XPM picture to serve as an icon for all of the buttons.
@@ -8405,6 +9669,7 @@
                 * both_button; /* radio buttons for toolbar style */
        GtkWidget* entry; /* a text entry to show packing any widget into
                           * toolbar */
+
 
 
 
@@ -8481,6 +9746,7 @@
 
 
 
+
   The above should be similar to any other GTK application. Just
   initialization of GTK, creating the window, etc. There is only one
   thing that probably needs some explanation: a handle box. A handle box
@@ -8491,6 +9757,12 @@
   contents are reparented to a new freely floating window). It is
   usually nice to have a detachable toolbar, so these two widgets occur
   together quite often.
+
+
+
+
+
+
 
 
 
@@ -8507,6 +9779,7 @@
      * icon widgets for toolbar items */
     icon = gdk_pixmap_create_from_xpm_d ( dialog->window, &mask,
         &dialog->style->white, gtk_xpm );
+
 
 
 
@@ -8528,6 +9801,7 @@
                                      GTK_SIGNAL_FUNC (delete_event), /* a signal */
                                       NULL );
          gtk_toolbar_append_space ( GTK_TOOLBAR ( toolbar ) ); /* space after item */
+
 
 
 
@@ -8554,6 +9828,7 @@
                            GTK_SIGNAL_FUNC (radio_event), /* signal */
                            toolbar);                      /* data for signal */
          gtk_toolbar_append_space ( GTK_TOOLBAR ( toolbar ) );
+
 
 
 
@@ -8598,6 +9873,7 @@
 
 
 
+
   In the end we have to set the state of one of the buttons manually
   (otherwise they all stay in active state, preventing us from switching
   between them).
@@ -8621,6 +9897,7 @@
 
 
 
+
   A toggle button can be created in the obvious way (if one knows how to
   create radio buttons already).
 
@@ -8636,6 +9913,7 @@
 
          /* well, it isn't created within thetoolbar, so we must still show it */
          gtk_widget_show ( entry );
+
 
 
 
@@ -8659,8 +9937,30 @@
 
 
 
+
   So, here we are at the end of toolbar tutorial. Of course, to
   appreciate it in full you need also this nice XPM icon, so here it is:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8714,6 +10014,8 @@
 
 
 
+
+
   1100..1122..  NNootteebbooookkss
 
   The NoteBook Widget is a collection of "pages" that overlap each
@@ -8727,7 +10029,9 @@
 
 
 
+
   GtkWidget *gtk_notebook_new( void );
+
 
 
 
@@ -8745,6 +10049,7 @@
 
 
 
+
   GtkPositionType will be one of the following, which are pretty self
   explanatory:
 
@@ -8753,6 +10058,7 @@
          GTK_POS_RIGHT
          GTK_POS_TOP
          GTK_POS_BOTTOM
+
 
 
 
@@ -8774,6 +10080,7 @@
 
 
 
+
   These functions add pages to the notebook by inserting them from the
   back of the notebook (append), or the front of the notebook (prepend).
   child is the widget that is placed within the notebook page, and
@@ -8787,10 +10094,13 @@
 
 
 
+
+
   void gtk_notebook_insert_page( GtkNotebook *notebook,
                                  GtkWidget   *child,
                                  GtkWidget   *tab_label,
                                  gint         position );
+
 
 
 
@@ -8809,6 +10119,7 @@
 
 
 
+
   This function takes the page specified by page_num and removes it from
   the widget pointed to by notebook.
 
@@ -8817,6 +10128,7 @@
 
 
        gint gtk_notebook_get_current_page( GtkNotebook *notebook );
+
 
 
 
@@ -8836,6 +10148,7 @@
 
 
 
+
   This next function sets the "active" page. If you wish the notebook to
   be opened to page 5 for example, you would use this function.  Without
   using this function, the notebook defaults to the first page.
@@ -8844,6 +10157,8 @@
 
        void gtk_notebook_set_page( GtkNotebook *notebook,
                                    gint         page_num );
+
+
 
 
 
@@ -8860,6 +10175,7 @@
 
 
 
+
   The next function is useful when the you have a large number of pages,
   and the tabs don't fit on the page. It allows the tabs to be scrolled
   through using two arrow buttons.
@@ -8868,6 +10184,7 @@
 
        void gtk_notebook_set_scrollable( GtkNotebook *notebook,
                                          gboolean     scrollable );
+
 
 
 
@@ -8880,6 +10197,34 @@
   prepended. The buttons allow you rotate the tab positions, add/remove
   the tabs and border, remove a page, change pages in both a forward and
   backward manner, and exit the program.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9063,6 +10408,7 @@
 
 
 
+
   I hope this helps you on your way with creating notebooks for your GTK
   applications.
 
@@ -9076,6 +10422,7 @@
   handling literally thousands of rows of information. Each column can
   optionally have a title, which itself is optionally active, allowing
   us to bind a function to its selection.
+
 
 
 
@@ -9096,6 +10443,7 @@
 
        GtkWidget *gtk_clist_new_with_titles( gint   columns,
                                              gchar *titles[] );
+
 
 
 
@@ -9121,6 +10469,7 @@
 
        void gtk_clist_set_selection_mode( GtkCList         *clist,
                                           GtkSelectionMode  mode );
+
 
 
 
@@ -9157,6 +10506,7 @@
 
 
 
+
   The possible values for the second argument are
 
 
@@ -9166,6 +10516,8 @@
          GTK_SHADOW_OUT
          GTK_SHADOW_ETCHED_IN
          GTK_SHADOW_ETCHED_OUT
+
+
 
 
 
@@ -9192,6 +10544,7 @@
 
 
 
+
   An active title is one which acts as a normal button, a passive one is
   just a label. The first two calls above will activate/deactivate the
   title button above the specific column, while the last two calls
@@ -9203,9 +10556,12 @@
 
 
 
+
+
   void gtk_clist_column_titles_show( GtkCList *clist );
 
   void gtk_clist_column_titles_hide( GtkCList *clist );
+
 
 
 
@@ -9217,6 +10573,7 @@
        void gtk_clist_set_column_title( GtkCList *clist,
                                         gint      column,
                                         gchar    *title );
+
 
 
 
@@ -9237,6 +10594,7 @@
 
 
 
+
   which should require no special explanation.
 
 
@@ -9250,6 +10608,7 @@
        void gtk_clist_set_column_justification( GtkCList         *clist,
                                                 gint              column,
                                                 GtkJustification  justification );
+
 
 
 
@@ -9283,6 +10642,7 @@
 
 
 
+
   Note that the width is given in pixels and not letters. The same goes
   for the height of the cells in the columns, but as the default value
   is the height of the current font this isn't as critical to the
@@ -9292,6 +10652,7 @@
 
        void gtk_clist_set_row_height( GtkCList *clist,
                                       gint      height );
+
 
 
 
@@ -9308,6 +10669,7 @@
                               gint      column,
                               gfloat    row_align,
                               gfloat    col_align );
+
 
 
 
@@ -9338,6 +10700,7 @@
 
 
 
+
   Note that it will only tell us if a row is visible. Currently there is
   no way to determine this for a column. We can get partial information
   though, because if the return is GTK_VISIBILITY_PARTIAL, then some of
@@ -9361,6 +10724,7 @@
 
 
 
+
   Please note that the colors must have been previously allocated.
 
 
@@ -9379,6 +10743,7 @@
 
 
 
+
   The return value of these two functions indicate the index of the row
   that was just added. We can insert a row at a given place using
 
@@ -9387,6 +10752,7 @@
        void gtk_clist_insert( GtkCList *clist,
                               gint      row,
                               gchar    *text[] );
+
 
 
 
@@ -9409,6 +10775,7 @@
 
 
 
+
   There is also a call that removes all rows in the list. This is a lot
   faster than calling gtk_clist_remove once for each row, which is the
   only alternative.
@@ -9416,6 +10783,7 @@
 
 
        void gtk_clist_clear( GtkCList *clist );
+
 
 
 
@@ -9434,10 +10802,23 @@
 
 
 
+
+
   1111..66..  SSeettttiinngg tteexxtt aanndd ppiixxmmaappss iinn tthhee cceellllss
 
   A cell can contain a pixmap, text or both. To set them the following
   functions are used.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9459,6 +10840,7 @@
                               guint8     spacing,
                               GdkPixmap *pixmap,
                               GdkBitmap *mask );
+
 
 
 
@@ -9493,6 +10875,7 @@
 
 
 
+
   The returned pointers are all pointers to the data stored within the
   widget, so the referenced data should not be modified or released. It
   isn't necessary to read it all back in case you aren't interested. Any
@@ -9503,9 +10886,12 @@
 
 
 
+
+
   gchar *mytext;
 
   gtk_clist_get_pixtext(clist, row, column, &mytext, NULL, NULL, NULL);
+
 
 
 
@@ -9520,6 +10906,7 @@
 
 
 
+
   which returns the type of data in a cell. The return value is one of
 
 
@@ -9529,6 +10916,7 @@
          GTK_CELL_PIXMAP
          GTK_CELL_PIXTEXT
          GTK_CELL_WIDGET
+
 
 
 
@@ -9546,6 +10934,8 @@
 
 
 
+
+
   1111..77..  SSttoorriinngg ddaattaa ppooiinntteerrss
 
   With a CList it is possible to set a data pointer for a row. This
@@ -9554,6 +10944,13 @@
   additional data.
 
   The functions should be fairly self-explanatory by now.
+
+
+
+
+
+
+
 
 
 
@@ -9574,6 +10971,8 @@
 
 
 
+
+
   1111..88..  WWoorrkkiinngg wwiitthh sseelleeccttiioonnss
 
   There are also functions available that let us force the (un)selection
@@ -9591,6 +10990,7 @@
 
 
 
+
   And also a function that will take x and y coordinates (for example,
   read from the mousepointer), and map that onto the list, returning the
   corresponding row and column.
@@ -9602,6 +11002,7 @@
                                           gint      y,
                                           gint     *row,
                                           gint     *column );
+
 
 
 
@@ -9641,6 +11042,7 @@
 
 
 
+
   The callback is connected as usual with
 
 
@@ -9652,7 +11054,35 @@
 
 
 
+
+
   1111..1100..  AA CCLLiisstt eexxaammppllee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9833,6 +11263,8 @@
 
 
 
+
+
   1122..  TTrreeee WWiiddggeett
 
   The purpose of tree widgets is to display hierarchically-organized
@@ -9850,6 +11282,8 @@
 
 
 
+
+
   1122..11..  CCrreeaattiinngg aa TTrreeee
 
   A Tree is created in the usual way, using:
@@ -9857,6 +11291,7 @@
 
 
        GtkWidget *gtk_tree_new( void );
+
 
 
 
@@ -9877,6 +11312,7 @@
 
 
 
+
   You can then add it to the tree using one of the following (see
   ``Functions and Macros'' below for more options):
 
@@ -9887,6 +11323,7 @@
 
        void gtk_tree_prepend( GtkTree   *tree,
                               GtkWidget *tree_item );
+
 
 
 
@@ -9903,6 +11340,7 @@
 
        void gtk_tree_item_set_subtree( GtkTreeItem *tree_item,
                                        GtkWidget   *subtree );
+
 
 
 
@@ -9929,6 +11367,7 @@
 
        void gtk_tree_set_selection_mode( GtkTree          *tree,
                                          GtkSelectionMode  mode );
+
 
 
 
@@ -9970,6 +11409,13 @@
 
 
 
+
+
+
+
+
+
+
   struct _GtkTree
   {
     GtkContainer container;
@@ -9986,6 +11432,7 @@
     guint view_mode : 1;
     guint view_line : 1;
   };
+
 
 
 
@@ -10015,6 +11462,7 @@
 
 
 
+
   The tree_owner field is defined only in subtrees, where it points to
   the TreeItem widget which holds the tree in question.  The level field
   indicates how deeply nested a particular tree is; root trees have
@@ -10031,6 +11479,7 @@
 
 
 
+
   This signal will be emitted whenever the selection field of a Tree has
   changed. This happens when a child of the Tree is selected or
   deselected.
@@ -10039,6 +11488,7 @@
 
        void select_child( GtkTree   *tree,
                           GtkWidget *child );
+
 
 
 
@@ -10053,6 +11503,7 @@
 
        void unselect_child (GtkTree   *tree,
                             GtkWidget *child);
+
 
 
 
@@ -10071,11 +11522,13 @@
 
 
 
+
   Returns the "GtkTree" type identifier.
 
 
 
        GtkWidget* gtk_tree_new( void );
+
 
 
 
@@ -10089,12 +11542,15 @@
 
 
 
+
   Append a tree item to a Tree.
+
 
 
 
   void gtk_tree_prepend( GtkTree   *tree,
                          GtkWidget *tree_item );
+
 
 
 
@@ -10108,6 +11564,7 @@
 
 
 
+
   Insert a tree item into a Tree at the position in the list specified
   by position.
 
@@ -10115,6 +11572,7 @@
 
        void gtk_tree_remove_items( GtkTree *tree,
                                    GList   *items );
+
 
 
 
@@ -10132,6 +11590,7 @@
 
 
 
+
   Remove the items from position start to position end from a Tree. The
   same warning about dereferencing applies here, as
   gtk_tree_clear_items() simply constructs a list and passes it to
@@ -10141,6 +11600,7 @@
 
        void gtk_tree_select_item( GtkTree *tree,
                                   gint     item );
+
 
 
 
@@ -10164,6 +11624,7 @@
 
 
 
+
   Emits the "select_item" signal for the child tree_item, thus selecting
   it.
 
@@ -10171,6 +11632,7 @@
 
        void gtk_tree_unselect_child( GtkTree   *tree,
                                      GtkWidget *tree_item );
+
 
 
 
@@ -10184,6 +11646,7 @@
 
 
 
+
   Returns the position in the tree of child, unless child is not in the
   tree, in which case it returns -1.
 
@@ -10191,6 +11654,7 @@
 
        void gtk_tree_set_selection_mode( GtkTree          *tree,
                                          GtkSelectionMode  mode );
+
 
 
 
@@ -10204,6 +11668,7 @@
 
        void gtk_tree_set_view_mode( GtkTree         *tree,
                                     GtkTreeViewMode  mode );
+
 
 
 
@@ -10225,6 +11690,7 @@
 
 
 
+
   Controls whether connecting lines between tree items are drawn.  flag
   is either TRUE, in which case they are, or FALSE, in which case they
   aren't.
@@ -10232,6 +11698,7 @@
 
 
        GtkTree *GTK_TREE (gpointer obj);
+
 
 
 
@@ -10243,6 +11710,7 @@
 
 
 
+
   Cast a generic pointer to "GtkTreeClass *".
 
 
@@ -10251,11 +11719,13 @@
 
 
 
+
   Determine if a generic pointer refers to a "GtkTree" object.
 
 
 
        gint GTK_IS_ROOT_TREE (gpointer obj)
+
 
 
 
@@ -10270,12 +11740,14 @@
 
 
 
+
   Return the root tree of a pointer to a "GtkTree" object. The above
   warning applies.
 
 
 
   GList *GTK_TREE_SELECTION( gpointer obj)
+
 
 
 
@@ -10310,6 +11782,7 @@
 
 
 
+
   The pixmaps_box field is an EventBox which catches clicks on the
   plus/minus symbol which controls expansion and collapsing. The pixmaps
   field points to an internal data structure. Since you can always
@@ -10336,6 +11809,7 @@
 
 
 
+
   As one is not forced to add a Label to a TreeItem, you could also add
   an HBox or an Arrow, or even a Notebook (though your app will likely
   be quite unpopular in this case) to the TreeItem.
@@ -10359,6 +11833,7 @@
 
 
 
+
   Finally, drag-n-drop _d_o_e_s work with TreeItems. You just have to make
   sure that the TreeItem you want to make into a drag item or a drop
   site has not only been added to a Tree, but that each successive
@@ -10379,6 +11854,7 @@
 
 
 
+
   This signal is emitted when an item is about to be selected, either
   after it has been clicked on by the user, or when the program calls
   gtk_tree_item_select(), gtk_item_select(), or gtk_tree_select_child().
@@ -10386,6 +11862,7 @@
 
 
        void deselect( GtkItem *tree_item );
+
 
 
 
@@ -10413,6 +11890,7 @@
 
 
 
+
   This signal is emitted when the tree item's subtree is about to be
   expanded, that is, when the user clicks on the plus sign next to the
   item, or when the program calls gtk_tree_item_expand().
@@ -10420,6 +11898,7 @@
 
 
        void collapse( GtkTreeItem *tree_item );
+
 
 
 
@@ -10436,11 +11915,13 @@
 
 
 
+
   Returns the "GtkTreeItem" type identifier.
 
 
 
        GtkWidget* gtk_tree_item_new( void );
+
 
 
 
@@ -10450,6 +11931,7 @@
 
 
        GtkWidget* gtk_tree_item_new_with_label (gchar       *label);
+
 
 
 
@@ -10471,6 +11953,7 @@
 
 
 
+
   This function is basically a wrapper around a call to
   gtk_item_deselect (GTK_ITEM (tree_item)) which will emit the deselect
   signal.
@@ -10479,6 +11962,7 @@
 
        void gtk_tree_item_set_subtree( GtkTreeItem *tree_item,
                                        GtkWidget   *subtree );
+
 
 
 
@@ -10492,6 +11976,7 @@
 
 
 
+
   This removes all of tree_item's subtree's children (thus unreferencing
   and destroying it, any of its children's subtrees, and so on...), then
   removes the subtree itself, and hides the plus/minus sign.
@@ -10499,6 +11984,7 @@
 
 
        void gtk_tree_item_expand( GtkTreeItem *tree_item );
+
 
 
 
@@ -10510,11 +11996,13 @@
 
 
 
+
   This emits the "collapse" signal on tree_item, which collapses it.
 
 
 
        GtkTreeItem *GTK_TREE_ITEM (gpointer obj)
+
 
 
 
@@ -10526,6 +12014,7 @@
 
 
 
+
   Cast a generic pointer to "GtkTreeItemClass".
 
 
@@ -10534,11 +12023,13 @@
 
 
 
+
   Determine if a generic pointer refers to a "GtkTreeItem" object.
 
 
 
        GtkWidget GTK_TREE_ITEM_SUBTREE (gpointer obj)
+
 
 
 
@@ -10552,6 +12043,36 @@
   complete (although much better commented).  It puts up a window with a
   tree, and connects all the signals for the relevant objects, so you
   can see when they are emitted.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10740,6 +12261,8 @@
 
 
 
+
+
   1133..  MMeennuu WWiiddggeett
 
   There are two ways to create menus: there's the easy way, and there's
@@ -10783,6 +12306,7 @@
 
 
 
+
   This rather self explanatory function creates a new menubar. You use
   gtk_container_add to pack this into a window, or the box_pack
   functions to pack it into a box - the same as buttons.
@@ -10790,6 +12314,7 @@
 
 
        GtkWidget *gtk_menu_new( void );
+
 
 
 
@@ -10804,6 +12329,7 @@
 
 
        GtkWidget *gtk_menu_item_new( void );
+
 
 
 
@@ -10866,6 +12392,7 @@
 
 
 
+
   At this point we have our menu. Now we need to create a menubar and a
   menu item for the File entry, to which we add our menu. The code looks
   like this:
@@ -10895,6 +12422,7 @@
 
 
 
+
   All that is left to do is to add the menu to the menubar, which is
   accomplished using the function
 
@@ -10911,6 +12439,7 @@
 
 
 
+
   If we wanted the menu right justified on the menubar, such as help
   menus often are, we can use the following function (again on file_item
   in the current example) before attaching it to the menubar.
@@ -10918,6 +12447,7 @@
 
 
        void gtk_menu_item_right_justify( GtkMenuItem *menu_item );
+
 
 
 
@@ -10975,6 +12505,36 @@
 
   That should about do it. Let's take a look at an example to help
   clarify.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11114,6 +12674,7 @@
 
 
 
+
   You may also set a menu item to be insensitive and, using an
   accelerator table, bind keys to menu functions.
 
@@ -11127,6 +12688,51 @@
   1133..44..  IItteemm FFaaccttoorryy EExxaammppllee
 
   Here is an example using the GTK item factory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11246,6 +12852,8 @@
 
 
 
+
+
   For now, there's only this example. An explanation and lots 'o'
   comments will follow later.
 
@@ -11271,6 +12879,7 @@
 
 
 
+
   The arguments allow us to give the Text widget pointers to Adjustments
   that can be used to track the viewing position of the widget. Passing
   NULL values to either or both of these arguments will cause the
@@ -11281,6 +12890,7 @@
        void gtk_text_set_adjustments( GtkText       *text,
                                       GtkAdjustment *hadj,
                                       GtkAdjustment *vadj );
+
 
 
 
@@ -11300,6 +12910,7 @@
 
 
 
+
   The above code snippet creates a new vertical scrollbar, and attaches
   it to the vertical adjustment of the text widget, text. It then packs
   it into a box in the normal way.
@@ -11316,6 +12927,7 @@
 
        void gtk_text_set_editable( GtkText *text,
                                    gint     editable );
+
 
 
 
@@ -11339,6 +12951,7 @@
 
 
 
+
   Using this function allows us to specify that the text widget should
   wrap long lines on word boundaries. The word_wrap argument is a TRUE
   or FALSE value.
@@ -11354,6 +12967,7 @@
 
 
 
+
   where index is the position to set the insertion point.
 
   Analogous to this is the function for getting the current insertion
@@ -11365,12 +12979,14 @@
 
 
 
+
   A function that is useful in combination with the above two functions
   is
 
 
 
        guint gtk_text_get_length( GtkText *text );
+
 
 
 
@@ -11390,6 +13006,7 @@
                         GdkColor   *back,
                         const char *chars,
                         gint        length );
+
 
 
 
@@ -11418,6 +13035,7 @@
 
 
 
+
   Text is deleted from the text widget relative to the current insertion
   point by the following two functions. The return value is a TRUE or
   FALSE indicator of whether the operation was successful.
@@ -11432,6 +13050,7 @@
 
 
 
+
   If you want to retrieve the contents of the text widget, then the
   macro GTK_TEXT_INDEX(t, index) allows you to retrieve the character at
   position index within the text widget t.
@@ -11443,6 +13062,7 @@
        gchar *gtk_editable_get_chars( GtkEditable *editable,
                                       gint         start_pos,
                                       gint         end_pos );
+
 
 
 
@@ -11513,6 +13133,68 @@
   +o  Ctrl-V   Paste from clipboard
 
   1144..44..  AA GGttkkTTeexxtt EExxaammppllee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11703,6 +13385,9 @@
 
 
 
+
+
+
   1155..  UUnnddooccuummeenntteedd WWiiddggeettss
 
   These all require authors! :) Please consider contributing to our
@@ -11749,12 +13434,31 @@
 
 
 
+
   1166..  SSeettttiinngg WWiiddggeett AAttttrriibbuutteess
 
   This describes the functions used to operate on widgets. These can be
   used to set style, padding, size, etc.
 
   (Maybe I should make a whole section on accelerators.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11801,6 +13505,8 @@
 
 
 
+
+
   1177..  TTiimmeeoouuttss,, IIOO aanndd IIddllee FFuunnccttiioonnss
 
   1177..11..  TTiimmeeoouuttss
@@ -11818,6 +13524,7 @@
 
 
 
+
   The first argument is the number of milliseconds between calls to your
   function. The second argument is the function you wish to have called,
   and the third, the data passed to this callback function. The return
@@ -11827,6 +13534,7 @@
 
 
        void gtk_timeout_remove( gint tag );
+
 
 
 
@@ -11843,6 +13551,8 @@
 
 
 
+
+
   1177..22..  MMoonniittoorriinngg IIOO
 
   A nifty feature of GDK (the library that underlies GTK), is the
@@ -11856,6 +13566,7 @@
                            GdkInputCondition condition,
                            GdkInputFunction  function,
                            gpointer          data );
+
 
 
 
@@ -11893,6 +13604,7 @@
 
 
 
+
   Where source and condition are as specified above.
 
 
@@ -11908,12 +13620,14 @@
 
 
 
+
   This causes GTK to call the specified function whenever nothing else
   is happening.
 
 
 
        void gtk_idle_remove( gint tag );
+
 
 
 
@@ -11929,6 +13643,20 @@
   1188..11..  SSiiggnnaall FFuunnccttiioonnss
 
   1188..11..11..  CCoonnnneeccttiinngg aanndd DDiissccoonnnneeccttiinngg SSiiggnnaall HHaannddlleerrss
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11988,7 +13716,13 @@
 
 
 
+
+
   1188..11..22..  BBlloocckkiinngg aanndd UUnnbblloocckkiinngg SSiiggnnaall HHaannddlleerrss
+
+
+
+
 
 
 
@@ -12011,6 +13745,8 @@
 
   void gtk_signal_handler_unblock_by_data( GtkObject *object,
                                            gpointer   data );
+
+
 
 
 
@@ -12045,6 +13781,8 @@
 
        void gtk_signal_emit_stop_by_name( GtkObject   *object,
                                           const gchar *name );
+
+
 
 
 
@@ -12137,6 +13875,7 @@
 
 
 
+
   This _c_o_n_v_e_r_t_s the selection into the form specified by target. If at
   all possible, the time field should be the time from the event that
   triggered the selection. This helps make sure that events occur in the
@@ -12160,6 +13899,7 @@
          guchar *data;
          gint    length;
        };
+
 
 
 
@@ -12284,6 +14024,8 @@
 
 
 
+
+
   1199..33..  SSuuppppllyyiinngg tthhee sseelleeccttiioonn
 
   Supplying the selection is a bit more complicated. You must register
@@ -12299,6 +14041,7 @@
 
 
 
+
   widget, selection, and target identify the requests this handler will
   manage. When a request for a selection is received, the
   "selection_get" signal will be called. info can be used as an
@@ -12309,10 +14052,15 @@
 
 
 
+
+
+
+
   void  "selection_get" (GtkWidget          *widget,
                          GtkSelectionData   *selection_data,
                          guint               info,
                          guint               time);
+
 
 
 
@@ -12333,6 +14081,7 @@
 
 
 
+
   This function takes care of properly making a copy of the data so that
   you don't have to worry about keeping it around. (You should not fill
   in the fields of the GtkSelectionData structure by hand.)
@@ -12348,6 +14097,7 @@
 
 
 
+
   If another application claims ownership of the selection, you will
   receive a "selection_clear_event".
 
@@ -12357,6 +14107,18 @@
   supported (aside from certain targets like "TARGETS" supplied by GTK
   itself), is the "STRING" target. When this target is requested, a
   string representation of the time is returned.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12471,6 +14233,9 @@
 
 
 
+
+
+
   2200..  GGLLiibb
 
   GLib is a lower-level library that provides many useful definitions
@@ -12518,6 +14283,7 @@
 
 
 
+
   Also, the following typedefs. The ones left unspecified are
   dynamically set depending on the architecture. Remember to avoid
   counting on the size of a pointer if you want to be portable! E.g., a
@@ -12551,6 +14317,9 @@
 
 
 
+
+
+
   2200..22..  DDoouubbllyy LLiinnkkeedd LLiissttss
 
   The following functions are used to create, manage, and destroy
@@ -12581,7 +14350,9 @@
 
 
 
+
   This adds a new element (with value data) onto the end of the list.
+
 
 
 
@@ -12590,14 +14361,17 @@
 
 
 
+
   This adds a new element (with value data) to the beginning of the
   list.
+
 
 
 
        GList *g_list_insert( GList    *list,
                              gpointer  data,
                              gint      position );
+
 
 
 
@@ -12621,6 +14395,7 @@
 
 
 
+
   This frees all of the memory used by a GList. If the list elements
   refer to dynamically-allocated memory, then they should be freed
   first.
@@ -12628,6 +14403,7 @@
   There are many other GLib functions that support doubly linked lists;
   see the glib documentation for more information.  Here are a few of
   the more useful functions' signatures:
+
 
 
 
@@ -12654,10 +14430,25 @@
 
 
 
+
+
+
   2200..33..  SSiinnggllyy LLiinnkkeedd LLiissttss
 
   Many of the above functions for singly linked lists are identical to
   the above. Here is a list of some of their operations:
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12695,11 +14486,15 @@
 
 
 
+
+
+
   2200..44..  MMeemmoorryy MMaannaaggeemmeenntt
 
 
 
        gpointer g_malloc( gulong size );
+
 
 
 
@@ -12711,6 +14506,7 @@
 
 
        gpointer g_malloc0( gulong size );
+
 
 
 
@@ -12731,11 +14527,13 @@
 
 
 
+
   Frees memory. Easy one. If mem is NULL it simply returns.
 
 
 
        void g_mem_profile( void );
+
 
 
 
@@ -12745,6 +14543,7 @@
 
 
        void g_mem_check( gpointer mem );
+
 
 
 
@@ -12777,6 +14576,9 @@
 
 
 
+
+
+
   2200..66..  SSttrriinngg HHaannddlliinngg
 
   GLib defines a new type called a GString, which is similar to a
@@ -12796,6 +14598,7 @@
 
 
 
+
   As you might expect, there are a number of operations you can do with
   a GString.
 
@@ -12805,9 +14608,11 @@
 
 
 
+
   This constructs a GString, copying the string value of init into the
   GString and returning a pointer to it. NULL may be given as the
   argument for an initially empty GString.
+
 
 
 
@@ -12816,13 +14621,16 @@
 
 
 
+
   This frees the memory for the given GString. If free_segment is TRUE,
   then this also frees its character data.
 
 
 
+
        GString *g_string_assign( GString     *lval,
                                  const gchar *rval );
+
 
 
 
@@ -12833,6 +14641,12 @@
 
   The rest of these functions should be relatively obvious (the _c
   versions accept a character instead of a string):
+
+
+
+
+
+
 
 
 
@@ -12861,11 +14675,15 @@
 
 
 
+
+
+
   2200..77..  UUttiilliittyy aanndd EErrrroorr FFuunnccttiioonnss
 
 
 
        gchar *g_strdup( const gchar *str );
+
 
 
 
@@ -12878,6 +14696,7 @@
 
 
 
+
   I recommend using this for all error messages.  It's much nicer, and
   more portable than perror() or others.  The output is usually of the
   form:
@@ -12885,6 +14704,7 @@
 
 
        program name:function that failed:file or further description:strerror
+
 
 
 
@@ -12900,6 +14720,7 @@
 
 
 
+
   Prints an error message. The format is just like printf, but it
   prepends "** ERROR **: " to your message, and exits the program.  Use
   only for fatal errors.
@@ -12907,6 +14728,7 @@
 
 
        void g_warning( gchar *format, ... );
+
 
 
 
@@ -12919,11 +14741,13 @@
 
 
 
+
   Prints "message: " prepended to the string you pass in.
 
 
 
        void g_print( gchar *format, ... );
+
 
 
 
@@ -12934,6 +14758,7 @@
 
 
        gchar *g_strsignal( gint signum );
+
 
 
 
@@ -12961,6 +14786,7 @@
 
 
 
+
   Passing in the filename of your rc file. This will cause GTK to parse
   this file, and use the style settings for the widget types defined
   there.
@@ -12976,6 +14802,7 @@
 
 
 
+
   Passing your newly created widget as the first argument, and the name
   you wish to give it as the second. This will allow you to change the
   attributes of this widget by name through the rc file.
@@ -12986,6 +14813,7 @@
 
        button = gtk_button_new_with_label ("Special Button");
        gtk_widget_set_name (button, "special button");
+
 
 
 
@@ -13004,11 +14832,13 @@
 
 
 
+
   And then the style is defined in the rc file using:
 
 
 
        widget "main window.*GtkButton*" style "main_button"
+
 
 
 
@@ -13064,6 +14894,7 @@
 
 
 
+
   Where STATE is one of the above states (PRELIGHT, ACTIVE, etc), and
   the Red, Green and Blue are values in the range of 0 - 1.0,  { 1.0,
   1.0, 1.0 } being white. They must be in float form, or they will
@@ -13113,6 +14944,7 @@
 
 
 
+
   This example takes the "button" style, and creates a new "main_button"
   style simply by changing the font and prelight background color of the
   "button" style.
@@ -13123,6 +14955,28 @@
 
 
   2211..33..  EExxaammppllee rrcc ffiillee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13254,6 +15108,10 @@
 
 
 
+
+
+
+
   2222..  WWrriittiinngg YYoouurr OOwwnn WWiiddggeettss
 
   2222..11..  OOvveerrvviieeww
@@ -13312,6 +15170,7 @@
 
 
 
+
   When a button is treated as a container (for instance, when it is
   resized), its class structure can be cast to GtkContainerClass, and
   the relevant fields used to handle the signals.
@@ -13332,6 +15191,7 @@
          guint in_button : 1;
          guint button_down : 1;
        };
+
 
 
 
@@ -13393,6 +15253,7 @@
 
 
 
+
   And to keep C++ programs that include the header file happy, in:
 
 
@@ -13409,6 +15270,7 @@
 
 
 
+
   Along with the functions and structures, we declare three standard
   macros in our header file, TICTACTOE(obj), TICTACTOE_CLASS(klass), and
   IS_TICTACTOE(obj), which cast a pointer into a pointer to the object
@@ -13416,6 +15278,35 @@
   respectively.
 
   Here is the complete header file:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13465,6 +15356,8 @@
 
 
 
+
+
   2222..33..44..  TThhee __ggeett__ttyyppee(())  ffuunnccttiioonn..
 
   We now continue on to the implementation of our widget. A core
@@ -13472,6 +15365,14 @@
   function, when first called, tells GTK about the widget class, and
   gets an ID that uniquely identifies the widget class. Upon subsequent
   calls, it just returns the ID.
+
+
+
+
+
+
+
+
 
 
 
@@ -13501,6 +15402,7 @@
 
 
 
+
   The GtkTypeInfo structure has the following definition:
 
 
@@ -13518,6 +15420,7 @@
 
 
 
+
   The fields of this structure are pretty self-explanatory. We'll ignore
   the arg_set_func and arg_get_func fields here: they have an important,
   but as yet largely unimplemented, role in allowing widget options to
@@ -13531,6 +15434,11 @@
   The WIDGETNAME_class_init() function initializes the fields of the
   widget's class structure, and sets up any signals for the class. For
   our Tictactoe widget it looks like:
+
+
+
+
+
 
 
 
@@ -13562,6 +15470,7 @@
 
 
 
+
   Our widget has just one signal, the tictactoe signal that is invoked
   when a row, column, or diagonal is completely filled in. Not every
   composite widget needs signals, so if you are reading this for the
@@ -13580,6 +15489,7 @@
                             GtkType              return_val,
                             guint                nparams,
                             ...);
+
 
 
 
@@ -13646,6 +15556,7 @@
 
 
 
+
   gtk_signal_new() returns a unique integer identifier for the signal,
   that we store in the tictactoe_signals array, which we index using an
   enumeration. (Conventionally, the enumeration elements are the signal
@@ -13693,6 +15604,8 @@
 
 
 
+
+
   2222..33..77..  AAnndd tthhee rreesstt......
 
   There is one more function that every widget (except for base widget
@@ -13712,6 +15625,18 @@
   clicks on a button. It checks to see if there are any winning
   combinations that involve the toggled button, and if so, emits the
   "tictactoe" signal.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13774,7 +15699,10 @@
 
 
 
+
   And finally, an example program using our Tictactoe widget:
+
+
 
 
 
@@ -13821,6 +15749,8 @@
 
     return 0;
   }
+
+
 
 
 
@@ -13999,6 +15929,7 @@
 
 
 
+
   Since there is quite a bit more going on in this widget than the last
   one, we have more fields in the data structure, but otherwise things
   are pretty similar.
@@ -14006,6 +15937,36 @@
   Next, after including header files and declaring a few constants, we
   have some functions to provide information about the widget and
   initialize it:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14122,6 +16083,7 @@
 
 
 
+
   Note that this init() function does less than for the Tictactoe
   widget, since this is not a composite widget, and the new() function
   does more, since it now has an argument. Also, note that when we store
@@ -14131,6 +16093,12 @@
 
 
   Also, there are a few function to manipulate the widget's options:
+
+
+
+
+
+
 
 
 
@@ -14182,6 +16150,8 @@
 
     gtk_dial_update (dial);
   }
+
+
 
 
 
@@ -14240,6 +16210,8 @@
 
          gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
        }
+
+
 
 
 
@@ -14310,6 +16282,21 @@
   the use of the function gtk_draw_polygon to draw the pointer with
   three dimensional shading according to the colors stored in the
   widget's style.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14384,6 +16371,8 @@
 
 
 
+
+
   2222..44..88..  EEvveenntt hhaannddlliinngg
 
   The rest of the widget's code handles various types of events, and
@@ -14402,6 +16391,44 @@
   (GTK_UPDATE_CONTINUOUS), after a delay in a timer added with
   gtk_timeout_add() (GTK_UPDATE_DELAYED), or only when the button is
   released (GTK_UPDATE_DISCONTINUOUS).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14587,11 +16614,19 @@
 
 
 
+
   Changes to the Adjustment by external means are communicated to our
   widget by the "changed" and "value_changed" signals. The handlers for
   these functions call gtk_dial_update() to validate the arguments,
   compute the new pointer angle, and redraw the widget (by calling
   gtk_widget_draw()).
+
+
+
+
+
+
+
 
 
 
@@ -14667,6 +16702,8 @@
 
 
 
+
+
   2222..44..99..  PPoossssiibbllee EEnnhhaanncceemmeennttss
 
   The Dial widget as we've described it so far runs about 670 lines of
@@ -14724,6 +16761,7 @@
 
 
 
+
   2233..22..  EEvveenntt HHaannddlliinngg
 
   The GTK signals we have already discussed are for high-level actions,
@@ -14751,6 +16789,7 @@
 
 
 
+
   type will be set to the event type, in this case GDK_MOTION_NOTIFY,
   window is the window in which the event occurred. x and y give the
   coordinates of the event.  state specifies the modifier state when the
@@ -14775,6 +16814,7 @@
 
 
 
+
   As for other signals, to determine what happens when an event occurs
   we call gtk_signal_connect(). But we also need let GTK know which
   events we want to be notified about. To do this, we call the function:
@@ -14783,6 +16823,8 @@
 
        void gtk_widget_set_events (GtkWidget *widget,
                                    gint      events);
+
+
 
 
 
@@ -14813,6 +16855,7 @@
 
 
 
+
   There are a few subtle points that have to be observed when calling
   gtk_widget_set_events(). First, it must be called before the X window
   for a GTK widget is created. In practical terms, this means you should
@@ -14840,6 +16883,7 @@
        GtkHBox
        GtkVSeparator
        GtkHSeparator
+
 
 
 
@@ -14881,6 +16925,7 @@
 
 
 
+
   (There is another function, gtk_widget_get_pointer() which has a
   simpler interface, but turns out not to be very useful, since it only
   retrieves the position of the mouse, not whether the buttons are
@@ -14907,9 +16952,11 @@
 
 
 
+
   We'll save the "expose_event" and "configure_event" handlers for
   later. The "motion_notify_event" and "button_press_event" handlers are
   pretty simple:
+
 
 
 
@@ -14945,6 +16992,8 @@
 
 
 
+
+
   2233..33..  TThhee DDrraawwiinnggAArreeaa WWiiddggeett,, AAnndd DDrraawwiinngg
 
   We now turn to the process of drawing on the screen. The widget we use
@@ -14959,6 +17008,7 @@
 
 
 
+
   A default size for the widget can be specified by calling:
 
 
@@ -14966,6 +17016,7 @@
        void       gtk_drawing_area_size       (GtkDrawingArea      *darea,
                                                gint                 width,
                                                gint                 height);
+
 
 
 
@@ -14997,6 +17048,7 @@
                                                 gint        width,
                                                 gint        height,
                                                 gint        depth);
+
 
 
 
@@ -15038,6 +17090,8 @@
 
 
 
+
+
   The call to gdk_draw_rectangle() clears the pixmap initially to white.
   We'll say more about that in a moment.
 
@@ -15060,6 +17114,7 @@
 
          return FALSE;
        }
+
 
 
 
@@ -15087,6 +17142,7 @@
 
 
 
+
   See the reference documentation or the header file <gdk/gdk.h> for
   further details on these functions.  These functions all share the
   same first two arguments. The first argument is the drawable to draw
@@ -15109,6 +17165,7 @@
 
 
 
+
   The fields fg_gc, bg_gc, dark_gc, and light_gc are indexed by a
   parameter of type GtkStateType which can take on the values:
 
@@ -15119,6 +17176,7 @@
        GTK_STATE_PRELIGHT,
        GTK_STATE_SELECTED,
        GTK_STATE_INSENSITIVE
+
 
 
 
@@ -15150,6 +17208,7 @@
 
 
 
+
   After we draw the rectangle representing the brush onto the pixmap, we
   call the function:
 
@@ -15157,6 +17216,7 @@
 
        void       gtk_widget_draw                (GtkWidget           *widget,
                                                   GdkRectangle        *area);
+
 
 
 
@@ -15213,6 +17273,7 @@
 
 
 
+
   pressure gives the pressure as a floating point number between 0 and
   1. xtilt and ytilt can take on values between -1 and 1, corresponding
   to the degree of tilt in each direction.  source and deviceid specify
@@ -15247,6 +17308,7 @@
 
 
 
+
   By giving the value GDK_EXTENSION_EVENTS_CURSOR we say that we are
   interested in extension events, but only if we don't have to draw our
   own cursor. See the section ``Further Sophistications'' below for more
@@ -15260,6 +17322,37 @@
   InputDialog widget to automate this process. The following procedure
   manages an InputDialog widget. It creates the dialog if it isn't
   present, and raises it to the top otherwise.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15299,6 +17392,7 @@
 
 
 
+
   (You might want to take note of the way we handle this dialog.  By
   connecting to the "destroy" signal, we make sure that we don't keep a
   pointer to dialog around after it is destroyed - that could lead to a
@@ -15324,6 +17418,10 @@
 
 
 
+
+
+
+
   void gdk_input_window_get_pointer( GdkWindow       *window,
                                      guint32         deviceid,
                                      gdouble         *x,
@@ -15332,6 +17430,7 @@
                                      gdouble         *xtilt,
                                      gdouble         *ytilt,
                                      GdkModifierType *mask);
+
 
 
 
@@ -15384,6 +17483,7 @@
 
 
 
+
   We also need to do something with the new information. Our new
   draw_brush() function draws with a different color for each
   event->source and changes the brush size depending on the pressure.
@@ -15424,6 +17524,8 @@
 
 
 
+
+
   2233..44..33..  FFiinnddiinngg oouutt mmoorree aabboouutt aa ddeevviiccee
 
   As an example of how to find out more about a device, our program will
@@ -15436,8 +17538,19 @@
 
 
 
+
   which returns a GList (a linked list type from the GLib library) of
   GdkDeviceInfo structures. The GdkDeviceInfo structure is defined as:
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15453,6 +17566,7 @@
     gint num_keys;
     GdkDeviceKey *keys;
   };
+
 
 
 
@@ -15494,6 +17608,7 @@
 
 
 
+
   That completes the changes to "XInputize" our program.
 
 
@@ -15515,6 +17630,7 @@
        gdk_input_set_mode()
        gdk_input_set_axes()
        gdk_input_set_key()
+
 
 
 
@@ -15568,6 +17684,8 @@
 
 
 
+
+
   2255..  CCoonnttrriibbuuttiinngg
 
   This document, like so much other great software out there, was
@@ -15615,8 +17733,8 @@
      Notebook, Progress Bar, Dialogs, and File selection widgets.
      Thanks a lot Mark!  You've been a great help.
 
-  +o  Tim Janik timj@psynet.net for his great job on the Lists Widget.
-     His excellent work on automatically extracting the widget tree and
+  +o  Tim Janik timj@gtk.org for his great job on the Lists Widget. His
+     excellent work on automatically extracting the widget tree and
      signal information from GTK. Thanks Tim :)
 
   +o  Rajat Datta rajat@ix.netcom.com for the excellent job on the Pixmap
@@ -15671,7 +17789,7 @@
   make any guarantee that the information is even accurate.
 
 
-  AA..  GGTTKK SSiiggnnaallss
+  AABB..  GGTTKK SSiiggnnaallss
 
   As GTK is an object oriented widget set, it has a hierarchy of
   inheritance. This inheritance mechanism applies for signals.
@@ -15679,7 +17797,7 @@
   the signals listed in this section.
 
 
-  AA..11..  GGttkkOObbjjeecctt
+  AABB..11..  GGttkkOObbjjeecctt
 
 
 
@@ -15688,7 +17806,15 @@
 
 
 
-  AA..22..  GGttkkWWiiddggeett
+
+
+  AABB..22..  GGttkkWWiiddggeett
+
+
+
+
+
+
 
 
 
@@ -15866,7 +17992,9 @@
 
 
 
-  AA..33..  GGttkkDDaattaa
+
+
+  AABB..33..  GGttkkDDaattaa
 
 
 
@@ -15875,7 +18003,16 @@
 
 
 
-  AA..44..  GGttkkCCoonnttaaiinneerr
+
+
+  AABB..44..  GGttkkCCoonnttaaiinneerr
+
+
+
+
+
+
+
 
 
 
@@ -15896,7 +18033,9 @@
 
 
 
-  AA..55..  GGttkkCCaalleennddaarr
+
+
+  AABB..55..  GGttkkCCaalleennddaarr
 
 
 
@@ -15917,7 +18056,29 @@
 
 
 
-  AA..66..  GGttkkEEddiittaabbllee
+
+
+  AABB..66..  GGttkkEEddiittaabbllee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15972,7 +18133,18 @@
 
 
 
-  AA..77..  GGttkkTTiippssQQuueerryy
+
+
+  AABB..77..  GGttkkTTiippssQQuueerryy
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15994,7 +18166,51 @@
 
 
 
-  AA..88..  GGttkkCCLLiisstt
+
+
+  AABB..88..  GGttkkCCLLiisstt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16051,7 +18267,9 @@
 
 
 
-  AA..99..  GGttkkNNootteebbooookk
+
+
+  AABB..99..  GGttkkNNootteebbooookk
 
 
 
@@ -16062,7 +18280,7 @@
 
 
 
-  AA..1100..  GGttkkLLiisstt
+  AABB..1100..  GGttkkLLiisstt
 
 
 
@@ -16077,7 +18295,9 @@
 
 
 
-  AA..1111..  GGttkkMMeennuuSShheellll
+
+
+  AABB..1111..  GGttkkMMeennuuSShheellll
 
 
 
@@ -16096,7 +18316,9 @@
 
 
 
-  AA..1122..  GGttkkTToooollbbaarr
+
+
+  AABB..1122..  GGttkkTToooollbbaarr
 
 
 
@@ -16109,7 +18331,9 @@
 
 
 
-  AA..1133..  GGttkkTTrreeee
+
+
+  AABB..1133..  GGttkkTTrreeee
 
 
 
@@ -16122,7 +18346,7 @@
                                         GtkWidget *,
                                         gpointer);
 
-  AA..1144..  GGttkkBBuuttttoonn
+  AABB..1144..  GGttkkBBuuttttoonn
 
 
 
@@ -16139,7 +18363,9 @@
 
 
 
-  AA..1155..  GGttkkIItteemm
+
+
+  AABB..1155..  GGttkkIItteemm
 
 
 
@@ -16152,7 +18378,9 @@
 
 
 
-  AA..1166..  GGttkkWWiinnddooww
+
+
+  AABB..1166..  GGttkkWWiinnddooww
 
 
 
@@ -16162,7 +18390,9 @@
 
 
 
-  AA..1177..  GGttkkHHaannddlleeBBooxx
+
+
+  AABB..1177..  GGttkkHHaannddlleeBBooxx
 
 
 
@@ -16175,7 +18405,10 @@
 
 
 
-  AA..1188..  GGttkkTToogggglleeBBuuttttoonn
+
+
+  AABB..1188..  GGttkkTToogggglleeBBuuttttoonn
+
 
 
 
@@ -16184,7 +18417,9 @@
 
 
 
-  AA..1199..  GGttkkMMeennuuIItteemm
+
+
+  AABB..1199..  GGttkkMMeennuuIItteemm
 
 
 
@@ -16195,7 +18430,9 @@
 
 
 
-  AA..2200..  GGttkkLLiissttIItteemm
+
+
+  AABB..2200..  GGttkkLLiissttIItteemm
 
 
 
@@ -16229,7 +18466,9 @@
 
 
 
-  AA..2211..  GGttkkTTrreeeeIItteemm
+
+
+  AABB..2211..  GGttkkTTrreeeeIItteemm
 
 
 
@@ -16239,7 +18478,7 @@
                                         gpointer);
 
 
-  AA..2222..  GGttkkCChheecckkMMeennuuIItteemm
+  AABB..2222..  GGttkkCChheecckkMMeennuuIItteemm
 
 
 
@@ -16248,7 +18487,9 @@
 
 
 
-  AA..2233..  GGttkkIInnppuuttDDiiaalloogg
+
+
+  AABB..2233..  GGttkkIInnppuuttDDiiaalloogg
 
 
 
@@ -16261,7 +18502,9 @@
 
 
 
-  AA..2244..  GGttkkCCoolloorrSSeelleeccttiioonn
+
+
+  AABB..2244..  GGttkkCCoolloorrSSeelleeccttiioonn
 
 
 
@@ -16270,7 +18513,9 @@
 
 
 
-  AA..2255..  GGttkkSSttaattuussBBaarr
+
+
+  AABB..2255..  GGttkkSSttaattuussBBaarr
 
 
 
@@ -16285,7 +18530,17 @@
 
 
 
-  AA..2266..  GGttkkCCTTrreeee
+
+
+  AABB..2266..  GGttkkCCTTrreeee
+
+
+
+
+
+
+
+
 
 
 
@@ -16314,7 +18569,9 @@
 
 
 
-  AA..2277..  GGttkkCCuurrvvee
+
+
+  AABB..2277..  GGttkkCCuurrvvee
 
 
 
@@ -16323,7 +18580,9 @@
 
 
 
-  AA..2288..  GGttkkAAddjjuussttmmeenntt
+
+
+  AABB..2288..  GGttkkAAddjjuussttmmeenntt
 
 
 
@@ -16334,7 +18593,9 @@
 
 
 
-  BB..  GGDDKK EEvveenntt TTyyppeess
+
+
+  AACC..  GGDDKK EEvveenntt TTyyppeess
 
   The following data types are passed into event handlers by GTK+. For
   each data type listed, the signals that use this data type are listed.
@@ -16471,6 +18732,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
   typedef enum
   {
     GDK_NOTHING           = -1,
@@ -16509,11 +18780,31 @@
 
 
 
+
   The other event type that is different from the others is GdkEvent
   itself. This is a union of all the other data types, which allows it
   to be cast to a specific event data type within a signal handler.
 
   So, the event data types are defined as follows:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16777,15 +19068,73 @@
 
 
 
-  CC..  CCooddee EExxaammpplleess
+
+
+
+
+  AADD..  CCooddee EExxaammpplleess
 
   Below are the code examples that are used in the above text which are
   not included in complete form elsewhere.
 
 
-  CC..11..  TTiiccttaaccttooee
+  AADD..11..  TTiiccttaaccttooee
 
-  CC..11..11..  ttiiccttaaccttooee..hh
+  AADD..11..11..  ttiiccttaaccttooee..hh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16855,7 +19204,69 @@
 
   /* example-end */
 
-  CC..11..22..  ttiiccttaaccttooee..cc
+  AADD..11..22..  ttiiccttaaccttooee..cc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17023,7 +19434,37 @@
 
 
 
-  CC..11..33..  tttttt__tteesstt..cc
+
+
+  AADD..11..33..  tttttt__tteesstt..cc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17075,9 +19516,21 @@
 
 
 
-  CC..22..  GGttkkDDiiaall
 
-  CC..22..11..  ggttkkddiiaall..hh
+
+  AADD..22..  GGttkkDDiiaall
+
+  AADD..22..11..  ggttkkddiiaall..hh
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17177,7 +19630,39 @@
 
 
 
-  CC..22..22..  ggttkkddiiaall..cc
+
+
+  AADD..22..22..  ggttkkddiiaall..cc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17838,7 +20323,72 @@
 
 
 
-  CC..22..33..  ddiiaall__tteesstt..cc
+
+
+
+  AADD..22..33..  ddiiaall__tteesstt..cc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17908,10 +20458,69 @@
     return 0;
   }
 
-  CC..33..  SSccrriibbbbllee
+  AADD..33..  SSccrriibbbbllee
 
 
-  CC..33..11..  ssccrriibbbbllee--ssiimmppllee..cc
+  AADD..33..11..  ssccrriibbbbllee--ssiimmppllee..cc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18097,7 +20706,19 @@
 
 
 
-  CC..33..22..  ssccrriibbbbllee--xxiinnppuutt..cc
+
+
+  AADD..33..22..  ssccrriibbbbllee--xxiinnppuutt..cc
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18373,7 +20994,9 @@
 
 
 
-  DD..  LLiisstt WWiiddggeett
+
+
+  AAEE..  LLiisstt WWiiddggeett
 
   NOTE: The List widget has been superseded by the CList widget. It is
   detailed here just for completeness.
@@ -18401,6 +21024,7 @@
          guint selection_mode;
          ...
        };
+
 
 
 
@@ -18433,11 +21057,12 @@
   The default is GTK_SELECTION_MULTIPLE.
 
 
-  DD..11..  SSiiggnnaallss
+  AAEE..11..  SSiiggnnaallss
 
 
 
        void selection_changed( GtkList *list );
+
 
 
 
@@ -18449,6 +21074,7 @@
 
        void select_child( GtkList   *list,
                           GtkWidget *child);
+
 
 
 
@@ -18465,6 +21091,7 @@
 
 
 
+
   This signal is invoked when a child of the List is about to get
   deselected. This happens mainly on calls to gtk_list_unselect_item(),
   gtk_list_unselect_child(), button presses and sometimes indirectly
@@ -18472,11 +21099,12 @@
   removed from the List.
 
 
-  DD..22..  FFuunnccttiioonnss
+  AAEE..22..  FFuunnccttiioonnss
 
 
 
        guint gtk_list_get_type( void );
+
 
 
 
@@ -18488,6 +21116,8 @@
 
 
 
+
+
   Create a new List object. The new widget is returned as a pointer to a
   GtkWidget object. NULL is returned on failure.
 
@@ -18496,6 +21126,7 @@
        void gtk_list_insert_items( GtkList *list,
                                    GList   *items,
                                    gint     position );
+
 
 
 
@@ -18511,6 +21142,7 @@
 
 
 
+
   Insert list items just like gtk_list_insert_items() at the end of the
   list. The GList nodes of items are taken over by the list.
 
@@ -18518,6 +21150,7 @@
 
        void gtk_list_prepend_items( GtkList *list,
                                     GList   *items);
+
 
 
 
@@ -18529,6 +21162,7 @@
 
        void gtk_list_remove_items( GtkList *list,
                                    GList   *items);
+
 
 
 
@@ -18546,11 +21180,13 @@
 
 
 
+
   Remove and destroy list items from the list. A widget is affected if
   its current position within the list is in the range specified by
   start and end.
        void gtk_list_select_item( GtkList *list,
                                   gint     item );
+
 
 
 
@@ -18564,6 +21200,7 @@
 
 
 
+
   Invoke the unselect_child signal for a list item specified through its
   current position within the list.
 
@@ -18571,6 +21208,7 @@
 
        void gtk_list_select_child( GtkList *list,
                                    GtkWidget *child);
+
 
 
 
@@ -18583,12 +21221,14 @@
 
 
 
+
   Invoke the unselect_child signal for the specified child.
 
 
 
        gint gtk_list_child_position( GtkList *list,
                                      GtkWidget *child);
+
 
 
 
@@ -18602,13 +21242,16 @@
 
 
 
+
   Set the selection mode MODE which can be of GTK_SELECTION_SINGLE,
   GTK_SELECTION_BROWSE, GTK_SELECTION_MULTIPLE or
   GTK_SELECTION_EXTENDED.
 
 
 
+
   GtkList *GTK_LIST( gpointer obj );
+
 
 
 
@@ -18620,6 +21263,7 @@
 
 
 
+
   Cast a generic pointer to "GtkListClass *".
 
 
@@ -18628,14 +21272,47 @@
 
 
 
+
   Determine if a generic pointer refers to a "GtkList" object.
 
 
-  DD..33..  EExxaammppllee
+  AAEE..33..  EExxaammppllee
 
   Following is an example program that will print out the changes of the
   selection of a List, and lets you "arrest" list items into a prison by
   selecting them with the rightmost mouse button.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18919,7 +21596,9 @@
 
 
 
-  DD..44..  LLiisstt IItteemm WWiiddggeett
+
+
+  AAEE..44..  LLiisstt IItteemm WWiiddggeett
 
   The ListItem widget is designed to act as a container holding up to
   one child, providing functions for selection/deselection just like the
@@ -18941,17 +21620,18 @@
   also add a GtkVBox or a GtkArrow etc. to the GtkListItem.
 
 
-  DD..55..  SSiiggnnaallss
+  AAEE..55..  SSiiggnnaallss
 
   AkListItem does not create new signals on its own, but inherits the
   signals of a Item.
 
 
-  DD..66..  FFuunnccttiioonnss
+  AAEE..66..  FFuunnccttiioonnss
 
 
 
        guint gtk_list_item_get_type( void );
+
 
 
 
@@ -18963,9 +21643,11 @@
 
 
 
+
   Create a new ListItem object. The new widget is returned as a pointer
   to a GtkWidget object. NULL is returned on failure.
        GtkWidget *gtk_list_item_new_with_label( gchar *label );
+
 
 
 
@@ -18979,6 +21661,7 @@
 
 
 
+
   This function is basically a wrapper around a call to gtk_item_select
   (GTK_ITEM (list_item)) which will emit the select signal.  *Note
   GtkItem::, for more info.
@@ -18986,6 +21669,7 @@
 
 
        void gtk_list_item_deselect( GtkListItem *list_item );
+
 
 
 
@@ -18999,11 +21683,13 @@
 
 
 
+
   Cast a generic pointer to "GtkListItem *".
 
 
 
        GtkListItemClass *GTK_LIST_ITEM_CLASS( gpointer class );
+
 
 
 
@@ -19016,14 +21702,79 @@
 
 
 
+
   Determine if a generic pointer refers to a `GtkListItem' object.
   *Note Standard Macros::, for more info.
 
 
-  DD..77..  EExxaammppllee
+  AAEE..77..  EExxaammppllee
 
   Please see the List example on this, which covers the usage of a
   ListItem as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

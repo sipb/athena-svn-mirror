@@ -1111,17 +1111,35 @@ gtk_entry_key_press (GtkWidget   *widget,
       break;
     case GDK_Left:
       return_val = TRUE;
-      if (event->state & GDK_CONTROL_MASK)
-	gtk_move_backward_word (entry);
+      if (!extend_selection &&
+	  editable->selection_start_pos != editable->selection_end_pos)
+	{
+	  editable->current_pos = MIN (editable->selection_start_pos, editable->selection_end_pos);
+	  initial_pos = (guint)-1; /* Force redraw below */
+	}
       else
-	gtk_move_backward_character (entry);
+	{
+	  if (event->state & GDK_CONTROL_MASK)
+	    gtk_move_backward_word (entry);
+	  else
+	    gtk_move_backward_character (entry);
+	}
       break;
     case GDK_Right:
       return_val = TRUE;
-      if (event->state & GDK_CONTROL_MASK)
-	gtk_move_forward_word (entry);
+      if (!extend_selection &&
+	  editable->selection_start_pos != editable->selection_end_pos)
+	{
+	  editable->current_pos = MAX (editable->selection_start_pos, editable->selection_end_pos);
+	  initial_pos = (guint)-1; /* Force redraw below */
+	}
       else
-	gtk_move_forward_character (entry);
+	{
+	  if (event->state & GDK_CONTROL_MASK)
+	    gtk_move_forward_word (entry);
+	  else
+	    gtk_move_forward_character (entry);
+	}
       break;
     case GDK_Return:
       return_val = TRUE;
@@ -1957,10 +1975,16 @@ static void
 gtk_entry_move_word (GtkEditable *editable,
 		     gint         n)
 {
-  while (n-- > 0)
-    gtk_move_forward_word (GTK_ENTRY (editable));
-  while (n++ < 0)
-    gtk_move_backward_word (GTK_ENTRY (editable));
+  while (n > 0)
+    {
+      gtk_move_forward_word (GTK_ENTRY (editable));
+      n--;
+    }
+  while (n < 0)
+    {
+      gtk_move_backward_word (GTK_ENTRY (editable));
+      n++;
+    }
 }
 
 static void
@@ -2207,14 +2231,16 @@ gtk_entry_set_selection (GtkEditable       *editable,
 			 gint               start,
 			 gint               end)
 {
+  gint length = GTK_ENTRY (editable)->text_length;
+  
   g_return_if_fail (editable != NULL);
   g_return_if_fail (GTK_IS_ENTRY (editable));
 
   if (end < 0)
-    end = GTK_ENTRY (editable)->text_length;
+    end = length;
   
-  editable->selection_start_pos = start;
-  editable->selection_end_pos = end;
+  editable->selection_start_pos = CLAMP (start, 0, length);
+  editable->selection_end_pos = MIN (end, length);
 
   gtk_entry_queue_draw (GTK_ENTRY (editable));
 }

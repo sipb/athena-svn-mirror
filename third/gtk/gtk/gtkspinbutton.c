@@ -492,35 +492,52 @@ gtk_spin_button_size_allocate (GtkWidget     *widget,
     }
 }
 
+static GtkShadowType
+gtk_spin_button_get_shadow_type (GtkSpinButton *spin_button)
+{
+  GtkWidget *widget = GTK_WIDGET (spin_button);
+  
+  GtkShadowType shadow_type =
+    gtk_style_get_prop_experimental (widget->style,
+				     "GtkSpinButton::shadow_type", -1);
+
+  if (shadow_type != (GtkShadowType)-1)
+    return shadow_type;
+  else
+    return spin_button->shadow_type;
+}
+
 static void
 gtk_spin_button_paint (GtkWidget    *widget,
 		       GdkRectangle *area)
 {
   GtkSpinButton *spin;
+  GtkShadowType shadow_type;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_SPIN_BUTTON (widget));
 
   spin = GTK_SPIN_BUTTON (widget);
+  shadow_type = gtk_spin_button_get_shadow_type (spin);
 
   if (GTK_WIDGET_DRAWABLE (widget))
     {
-      if (spin->shadow_type != GTK_SHADOW_NONE)
+      if (shadow_type != GTK_SHADOW_NONE)
 	gtk_paint_box (widget->style, spin->panel,
-		       GTK_STATE_NORMAL, spin->shadow_type,
+		       GTK_STATE_NORMAL, shadow_type,
 		       area, widget, "spinbutton",
 		       0, 0, 
 		       ARROW_SIZE + 2 * widget->style->klass->xthickness,
 		       widget->requisition.height); 
       else
-	 {
-	    gdk_window_set_back_pixmap (spin->panel, NULL, TRUE);
-	    gdk_window_clear_area (spin->panel, area->x, area->y, area->width, area->height);
-	 }
-       gtk_spin_button_draw_arrow (spin, GTK_ARROW_UP);
-       gtk_spin_button_draw_arrow (spin, GTK_ARROW_DOWN);
-
-       GTK_WIDGET_CLASS (parent_class)->draw (widget, area);
+	{
+	  gdk_window_set_back_pixmap (spin->panel, NULL, TRUE);
+	  gdk_window_clear_area (spin->panel, area->x, area->y, area->width, area->height);
+	}
+      gtk_spin_button_draw_arrow (spin, GTK_ARROW_UP);
+      gtk_spin_button_draw_arrow (spin, GTK_ARROW_DOWN);
+      
+      GTK_WIDGET_CLASS (parent_class)->draw (widget, area);
     }
 }
 
@@ -556,6 +573,7 @@ gtk_spin_button_draw_arrow (GtkSpinButton *spin_button,
 {
   GtkStateType state_type;
   GtkShadowType shadow_type;
+  GtkShadowType spin_shadow_type;
   GtkWidget *widget;
   gint x;
   gint y;
@@ -564,6 +582,8 @@ gtk_spin_button_draw_arrow (GtkSpinButton *spin_button,
   g_return_if_fail (GTK_IS_SPIN_BUTTON (spin_button));
   
   widget = GTK_WIDGET (spin_button);
+
+  spin_shadow_type = gtk_spin_button_get_shadow_type (spin_button);
 
   if (GTK_WIDGET_DRAWABLE (spin_button))
     {
@@ -597,7 +617,7 @@ gtk_spin_button_draw_arrow (GtkSpinButton *spin_button,
 	}
       if (arrow == GTK_ARROW_UP)
 	{
-	  if (spin_button->shadow_type != GTK_SHADOW_NONE)
+	  if (spin_shadow_type != GTK_SHADOW_NONE)
 	    {
 	      x = widget->style->klass->xthickness;
 	      y = widget->style->klass->ythickness;
@@ -616,7 +636,7 @@ gtk_spin_button_draw_arrow (GtkSpinButton *spin_button,
 	}
       else
 	{
-	  if (spin_button->shadow_type != GTK_SHADOW_NONE)
+	  if (spin_shadow_type != GTK_SHADOW_NONE)
 	    {
 	      x = widget->style->klass->xthickness;
 	      y = widget->requisition.height / 2;
@@ -965,6 +985,9 @@ gtk_spin_button_value_changed (GtkAdjustment *adjustment,
 
   sprintf (buf, "%0.*f", spin_button->digits, adjustment->value);
   gtk_entry_set_text (GTK_ENTRY (spin_button), buf);
+
+  gtk_spin_button_draw_arrow (spin_button, GTK_ARROW_UP);
+  gtk_spin_button_draw_arrow (spin_button, GTK_ARROW_DOWN);
 }
 
 static gint
@@ -1200,7 +1223,7 @@ gtk_spin_button_insert_text (GtkEditable *editable,
       gint i;
       GdkWChar pos_sign;
       GdkWChar neg_sign;
-      guint entry_length;
+      gint entry_length;
 
       entry_length = entry->text_length;
 
@@ -1235,7 +1258,7 @@ gtk_spin_button_insert_text (GtkEditable *editable,
 	  }
 
       if (dotpos > -1 && *position > dotpos &&
-	  spin->digits - entry_length
+	  (gint)spin->digits - entry_length
 	    + dotpos - new_text_length + 1 < 0)
 	return;
 
@@ -1251,7 +1274,7 @@ gtk_spin_button_insert_text (GtkEditable *editable,
 	    {
 	      if (!spin->digits || dotpos > -1 || 
  		  (new_text_length - 1 - i + entry_length
-		    - *position > spin->digits)) 
+		    - *position > (gint)spin->digits)) 
 		return;
 	      dotpos = *position + i;
 	    }
@@ -1353,6 +1376,20 @@ gtk_spin_button_new (GtkAdjustment *adjustment,
   return GTK_WIDGET (spin);
 }
 
+/* Callback used when the spin button's adjustment changes.  We need to redraw
+ * the arrows when the adjustment's range changes.
+ */
+static void
+adjustment_changed_cb (GtkAdjustment *adjustment, gpointer data)
+{
+  GtkSpinButton *spin_button;
+
+  spin_button = GTK_SPIN_BUTTON (data);
+
+  gtk_spin_button_draw_arrow (spin_button, GTK_ARROW_UP);
+  gtk_spin_button_draw_arrow (spin_button, GTK_ARROW_DOWN);
+}
+
 void
 gtk_spin_button_set_adjustment (GtkSpinButton *spin_button,
 				GtkAdjustment *adjustment)
@@ -1375,6 +1412,9 @@ gtk_spin_button_set_adjustment (GtkSpinButton *spin_button,
 	  gtk_object_sink (GTK_OBJECT (adjustment));
           gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed",
 			      (GtkSignalFunc) gtk_spin_button_value_changed,
+			      (gpointer) spin_button);
+	  gtk_signal_connect (GTK_OBJECT (adjustment), "changed",
+			      (GtkSignalFunc) adjustment_changed_cb,
 			      (gpointer) spin_button);
         }
     }

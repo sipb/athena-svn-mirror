@@ -10,6 +10,9 @@
    This function is required for alloca.c support on those systems.  */
 #undef CRAY_STACKSEG_END
 
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef gid_t
+
 /* Define if you have alloca, as a function or macro.  */
 #undef HAVE_ALLOCA
 
@@ -46,6 +49,9 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef uid_t
+
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
@@ -68,6 +74,10 @@
 
 /* Define to use X11R6 additions to XIM */
 #undef USE_X11R6_XIM
+
+/* Define if we should use mbstowcs and friends directly
+ */
+#undef USE_NATIVE_LOCALE
 
 #undef XINPUT_NONE
 #undef XINPUT_GXI
@@ -93,6 +103,9 @@
 
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
+
+/* Define if you have the getresuid function.  */
+#undef HAVE_GETRESUID
 
 /* Define if you have the munmap function.  */
 #undef HAVE_MUNMAP

@@ -32,6 +32,7 @@
 #include "gtkclist.h"
 #include "gtkbindings.h"
 #include "gtkdnd.h"
+#include "gtkwindow.h"
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -354,10 +355,13 @@ static void cell_size_request         (GtkCList       *clist,
 				       GtkRequisition *requisition);
 
 /* Buttons */
-static void column_button_create      (GtkCList       *clist,
-				       gint            column);
-static void column_button_clicked     (GtkWidget      *widget,
-				       gpointer        data);
+static void set_column_title_active (GtkCList  *clist,
+				     gint       column,
+				     gboolean   active);
+static void column_button_create    (GtkCList  *clist,
+				     gint       column);
+static void column_button_clicked   (GtkWidget *widget,
+				     gpointer   data);
 
 /* Adjustments */
 static void adjust_adjustments        (GtkCList       *clist,
@@ -1320,21 +1324,13 @@ gtk_clist_column_title_active (GtkCList *clist,
 
   clist->column[column].button_passive = FALSE;
 
-  gtk_signal_disconnect_by_func (GTK_OBJECT (clist->column[column].button),
-				 (GtkSignalFunc) column_title_passive_func,
-				 NULL);
-
-  GTK_WIDGET_SET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
-  if (GTK_WIDGET_VISIBLE (clist))
-    gtk_widget_queue_draw (clist->column[column].button);
+  set_column_title_active (clist, column, TRUE);
 }
 
 void
 gtk_clist_column_title_passive (GtkCList *clist,
 				gint      column)
 {
-  GtkButton *button;
-
   g_return_if_fail (clist != NULL);
   g_return_if_fail (GTK_IS_CLIST (clist));
 
@@ -1343,21 +1339,9 @@ gtk_clist_column_title_passive (GtkCList *clist,
   if (!clist->column[column].button || clist->column[column].button_passive)
     return;
 
-  button = GTK_BUTTON (clist->column[column].button);
-
   clist->column[column].button_passive = TRUE;
 
-  if (button->button_down)
-    gtk_button_released (button);
-  if (button->in_button)
-    gtk_button_leave (button);
-
-  gtk_signal_connect (GTK_OBJECT (clist->column[column].button), "event",
-		      (GtkSignalFunc) column_title_passive_func, NULL);
-
-  GTK_WIDGET_UNSET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
-  if (GTK_WIDGET_VISIBLE (clist))
-    gtk_widget_queue_draw (clist->column[column].button);
+  set_column_title_active (clist, column, FALSE);
 }
 
 void
@@ -1700,7 +1684,7 @@ gtk_clist_optimal_column_width (GtkCList *clist,
   g_return_val_if_fail (clist != NULL, 0);
   g_return_val_if_fail (GTK_CLIST (clist), 0);
 
-  if (column < 0 || column > clist->columns)
+  if (column < 0 || column >= clist->columns)
     return 0;
 
   if (GTK_CLIST_SHOW_TITLES(clist) && clist->column[column].button)
@@ -1791,6 +1775,7 @@ gtk_clist_set_column_max_width (GtkCList *clist,
  *   size_allocate_columns
  *   list_requisition_width
  *   new_column_width
+ *   set_column_title_active
  *   column_button_create
  *   column_button_clicked
  *   column_title_passive_func
@@ -2092,6 +2077,48 @@ new_column_width (GtkCList *clist,
 }
 
 static void
+set_column_title_active (GtkCList *clist,
+			 gint      column,
+			 gboolean  active)
+{
+  if (active)
+    {
+      gtk_signal_disconnect_by_func (GTK_OBJECT (clist->column[column].button),
+				     (GtkSignalFunc) column_title_passive_func,
+				     NULL);
+      
+      GTK_WIDGET_SET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
+    }
+  else
+    {
+      GtkButton *button = GTK_BUTTON (clist->column[column].button);
+      
+      if (button->button_down)
+	gtk_button_released (button);
+      if (button->in_button)
+	gtk_button_leave (button);
+      
+      gtk_signal_connect (GTK_OBJECT (clist->column[column].button), "event",
+			  (GtkSignalFunc) column_title_passive_func, NULL);
+      
+      if (GTK_WIDGET_HAS_FOCUS (clist->column[column].button))
+	{
+	  GtkWidget *window;
+
+	  window = gtk_widget_get_ancestor (clist->column[column].button,
+					    GTK_TYPE_WINDOW);
+	  if (window)
+	    gtk_window_set_focus (GTK_WINDOW (window), NULL);
+	}
+
+      GTK_WIDGET_UNSET_FLAGS (clist->column[column].button, GTK_CAN_FOCUS);
+    }
+  
+  if (GTK_WIDGET_VISIBLE (clist))
+    gtk_widget_queue_draw (clist->column[column].button);
+}
+
+static void
 column_button_create (GtkCList *clist,
 		      gint      column)
 {
@@ -2109,6 +2136,10 @@ column_button_create (GtkCList *clist,
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      (GtkSignalFunc) column_button_clicked,
 		      (gpointer) clist);
+
+  if (clist->column[column].button_passive)
+    set_column_title_active (clist, column, FALSE);
+  
   gtk_widget_show (button);
 }
 
@@ -2375,7 +2406,8 @@ gtk_clist_get_pixtext (GtkCList   *clist,
     *pixmap = GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap;
 
   /* mask can be NULL */
-  *mask = GTK_CELL_PIXTEXT (clist_row->cell[column])->mask;
+  if (mask)
+    *mask = GTK_CELL_PIXTEXT (clist_row->cell[column])->mask;
 
   return 1;
 }
@@ -2429,7 +2461,10 @@ set_cell_contents (GtkCList    *clist,
 		   GdkBitmap   *mask)
 {
   GtkRequisition requisition;
-
+  gchar *old_text = NULL;
+  GdkPixmap *old_pixmap = NULL;
+  GdkBitmap *old_mask = NULL;
+  
   g_return_if_fail (clist != NULL);
   g_return_if_fail (GTK_IS_CLIST (clist));
   g_return_if_fail (clist_row != NULL);
@@ -2444,18 +2479,16 @@ set_cell_contents (GtkCList    *clist,
     case GTK_CELL_EMPTY:
       break;
     case GTK_CELL_TEXT:
-      g_free (GTK_CELL_TEXT (clist_row->cell[column])->text);
+      old_text = GTK_CELL_TEXT (clist_row->cell[column])->text;
       break;
     case GTK_CELL_PIXMAP:
-      gdk_pixmap_unref (GTK_CELL_PIXMAP (clist_row->cell[column])->pixmap);
-      if (GTK_CELL_PIXMAP (clist_row->cell[column])->mask)
-	gdk_bitmap_unref (GTK_CELL_PIXMAP (clist_row->cell[column])->mask);
+      old_pixmap = GTK_CELL_PIXMAP (clist_row->cell[column])->pixmap;
+      old_mask = GTK_CELL_PIXMAP (clist_row->cell[column])->mask;
       break;
     case GTK_CELL_PIXTEXT:
-      g_free (GTK_CELL_PIXTEXT (clist_row->cell[column])->text);
-      gdk_pixmap_unref (GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap);
-      if (GTK_CELL_PIXTEXT (clist_row->cell[column])->mask)
-	gdk_bitmap_unref (GTK_CELL_PIXTEXT (clist_row->cell[column])->mask);
+      old_text = GTK_CELL_PIXTEXT (clist_row->cell[column])->text;
+      old_pixmap = GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap;
+      old_mask = GTK_CELL_PIXTEXT (clist_row->cell[column])->mask;
       break;
     case GTK_CELL_WIDGET:
       /* unimplimented */
@@ -2466,6 +2499,8 @@ set_cell_contents (GtkCList    *clist,
 
   clist_row->cell[column].type = GTK_CELL_EMPTY;
 
+  /* Note that pixmap and mask were already ref'ed by the caller
+   */
   switch (type)
     {
     case GTK_CELL_TEXT:
@@ -2501,6 +2536,13 @@ set_cell_contents (GtkCList    *clist,
   if (clist->column[column].auto_resize &&
       !GTK_CLIST_AUTO_RESIZE_BLOCKED(clist))
     column_auto_resize (clist, clist_row, column, requisition.width);
+
+  if (old_text)
+    g_free (old_text);
+  if (old_pixmap)
+    gdk_pixmap_unref (old_pixmap);
+  if (old_mask)
+    gdk_pixmap_unref (old_mask);
 }
 
 static void
@@ -2748,6 +2790,8 @@ real_remove_row (GtkCList *clist,
     gtk_signal_emit (GTK_OBJECT (clist), clist_signals[UNSELECT_ROW],
 		     row, -1, NULL);
 
+  sync_selection (clist, row, SYNC_REMOVE);
+
   /* reset the row end pointer if we're removing at the end of the list */
   clist->rows--;
   if (clist->row_list == list)
@@ -2762,8 +2806,6 @@ real_remove_row (GtkCList *clist,
 
   if (row < ROW_FROM_YPIXEL (clist, 0))
     clist->voffset += clist->row_height + CELL_SPACING;
-
-  sync_selection (clist, row, SYNC_REMOVE);
 
   if (clist->selection_mode == GTK_SELECTION_BROWSE && !clist->selection &&
       clist->focus_row >= 0)
@@ -7384,6 +7426,7 @@ gtk_clist_merge (GtkCList *clist,
 	}
     }
 
+  z.next->prev = NULL;
   return z.next;
 }
 

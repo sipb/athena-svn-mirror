@@ -141,7 +141,7 @@ TUTORIAL_IT_FILES = html/gtk_tut_it.html     		html/gtk_tut_it-1.html   		html/g
 FAQ_FILES = html/gtkfaq.html			html/gtkfaq-1.html       		html/gtkfaq-2.html       		html/gtkfaq-3.html       		html/gtkfaq-4.html       		html/gtkfaq-5.html       		html/gtkfaq-6.html       		html/gtkfaq-7.html			text/gtkfaq.txt
 
 
-EXTRA_DIST =  	Changes-1.2.txt				debugging.txt				developers.txt				refcounting.txt				styles.txt				text_widget.txt 			widget_system.txt 			generation.txt			        gtk-config.txt  	        	gtk-config.1.in				texinfo.tex 				macros.texi				gtkdocs_fix				gtkfaq.sgml				gtk_tut.sgml				gtk_tut_it.sgml				gtk_tut_fr.sgml				gtk_tut_packbox1.gif 			gtk_tut_packbox2.gif 			html/gtk_tut_table.gif			html/gtk_tut_packbox1.gif 		html/gtk_tut_packbox2.gif 		gtk_tut_table.gif			html/gdk.html            		html/gdk_toc.html        		html/gtk.html            		html/gtk_toc.html        		$(TUTORIAL_FILES)			$(TUTORIAL_FR_FILES)			$(TUTORIAL_IT_FILES)			$(FAQ_FILES)
+EXTRA_DIST =  	Changes-1.2.txt				debugging.txt				developers.txt				refcounting.txt				styles.txt				text_widget.txt 			widget_system.txt 			generation.txt			        gtk-config.txt  	        	gtk-config.1.in				texinfo.tex 				macros.texi				gtkdocs_fix				gtkfaq.sgml				gtk_tut.sgml				gtk_tut_it.sgml				gtk_tut_fr.sgml				gtk_tut_packbox1.gif 			gtk_tut_packbox2.gif 			html/gtk_tut_table.gif			html/gtk_tut_packbox1.gif 		html/gtk_tut_packbox2.gif 		gtk_tut_table.gif			$(TUTORIAL_FILES)			$(TUTORIAL_FR_FILES)			$(TUTORIAL_IT_FILES)			$(FAQ_FILES)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -159,7 +159,7 @@ DIST_COMMON =  Makefile.am Makefile.in gtk-config.1.in texinfo.tex
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -433,17 +433,20 @@ htmldir:
 textdir:
 	mkdir -p $(srcdir)/text
 
-gdk.html gdk_toc.html: gdk.texi
-	(cd $(srcdir); texi2html gdk.texi)
-
-gtk.html gtk_toc.html: gtk.texi
-	(cd $(srcdir); texi2html gtk.texi)
-
-html/gdk.html html/gdk_toc.html: htmldir gdk.html gdk_toc.html
-	(cd $(srcdir); cp gdk.html gdk_toc.html html/)
-
-html/gtk.html html/gtk_toc.html: htmldir gtk.html gtk_toc.html
-	(cd $(srcdir); cp gtk.html gtk_toc.html html/)
+#
+# The content is useless and the texi makes texi2html unhappy 
+#
+#gdk.html gdk_toc.html: gdk.texi
+#	(cd $(srcdir); texi2html gdk.texi)
+#
+#gtk.html gtk_toc.html: gtk.texi
+#	(cd $(srcdir); texi2html gtk.texi)
+#
+#html/gdk.html html/gdk_toc.html: htmldir gdk.html gdk_toc.html
+#	(cd $(srcdir); cp gdk.html gdk_toc.html html/)
+#
+#html/gtk.html html/gtk_toc.html: htmldir gtk.html gtk_toc.html
+#	(cd $(srcdir); cp gtk.html gtk_toc.html html/)
 
 $(FAQ_FILES): faq
 

@@ -194,7 +194,7 @@ gtk_marshal_NONE__POINTER (GtkObject * object,
 }
 
 typedef void (*GtkSignal_NONE__C_CALLBACK) (GtkObject * object,
-					    gpointer arg1a,
+					    GtkFunction arg1a,
 					    gpointer arg1b,
 					    gpointer user_data);
 void
@@ -210,9 +210,9 @@ gtk_marshal_NONE__C_CALLBACK (GtkObject * object,
 }
 
 typedef void (*GtkSignal_NONE__C_CALLBACK_C_CALLBACK) (GtkObject * object,
-						       gpointer arg1a,
+						       GtkFunction arg1a,
 						       gpointer arg1b,
-						       gpointer arg2a,
+						       GtkFunction arg2a,
 						       gpointer arg2b,
 						       gpointer user_data);
 void

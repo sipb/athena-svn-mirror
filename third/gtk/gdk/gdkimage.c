@@ -26,14 +26,7 @@
 
 #include <config.h>
 
-/* gcc -ansi -pedantic on GNU/Linux causes warnings and errors
- * unless this is defined:
- * warning: #warning "Files using this header must be compiled with _SVID_SOURCE or _XOPEN_SOURCE"
- */
-#ifndef _XOPEN_SOURCE
-#  define _XOPEN_SOURCE 1
-#endif
-
+#include <errno.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -224,13 +217,21 @@ gdk_image_new (GdkImageType  type,
 
 	      if (x_shm_info->shmid == -1)
 		{
-		  g_warning ("shmget failed!");
+		  /* EINVAL indicates, most likely, that the segment we asked for
+		   * is bigger than SHMMAX, so we don't treat it as a permanent
+		   * error. ENOSPC and ENOMEM may also indicate this, but
+		   * more likely are permanent errors.
+		   */
+		  if (errno != EINVAL)
+		    {
+		      g_warning ("shmget failed: error %d (%s)", errno, g_strerror (errno));
+		      gdk_use_xshm = False;
+		    }
 
 		  XDestroyImage (private->ximage);
 		  g_free (private->x_shm_info);
 		  g_free (image);
 
-		  gdk_use_xshm = False;
 		  return NULL;
 		}
 
@@ -240,14 +241,20 @@ gdk_image_new (GdkImageType  type,
 
 	      if (x_shm_info->shmaddr == (char*) -1)
 		{
-		  g_warning ("shmat failed!");
+		  g_warning ("shmat failed: error %d (%s)", errno, g_strerror (errno));
 
 		  XDestroyImage (private->ximage);
 		  shmctl (x_shm_info->shmid, IPC_RMID, 0);
-		  
+
 		  g_free (private->x_shm_info);
 		  g_free (image);
 
+		  /* Failure in shmat is almost certainly permanent. Most likely error is
+		   * EMFILE, which would mean that we've exceeded the per-process
+		   * Shm segment limit.
+		   */
+		  gdk_use_xshm = False;
+		  
 		  return NULL;
 		}
 
@@ -331,6 +338,7 @@ gdk_image_get (GdkWindow *window,
   GdkImage *image;
   GdkImagePrivate *private;
   GdkWindowPrivate *win_private;
+  XImage *ximage;
 
   g_return_val_if_fail (window != NULL, NULL);
 
@@ -338,16 +346,20 @@ gdk_image_get (GdkWindow *window,
   if (win_private->destroyed)
     return NULL;
 
+  ximage = XGetImage (gdk_display,
+		      win_private->xwindow,
+		      x, y, width, height,
+		      AllPlanes, ZPixmap);
+  
+  if (ximage == NULL)
+    return NULL;
+  
   private = g_new (GdkImagePrivate, 1);
   image = (GdkImage*) private;
 
   private->xdisplay = gdk_display;
   private->image_put = gdk_image_put_normal;
-  private->ximage = XGetImage (private->xdisplay,
-			       win_private->xwindow,
-			       x, y, width, height,
-			       AllPlanes, ZPixmap);
-
+  private->ximage = ximage;
   image->type = GDK_IMAGE_NORMAL;
   image->visual = gdk_window_get_visual (window);
   image->width = width;

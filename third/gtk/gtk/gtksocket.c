@@ -75,8 +75,9 @@ gtk_socket_get_type ()
 	sizeof (GtkSocketClass),
 	(GtkClassInitFunc) gtk_socket_class_init,
 	(GtkObjectInitFunc) gtk_socket_init,
-	(GtkArgSetFunc) NULL,
-	(GtkArgGetFunc) NULL
+        /* reserved_1 */ NULL,
+	/* reserved_2 */ NULL,
+	(GtkClassInitFunc) NULL,
       };
 
       socket_type = gtk_type_unique (gtk_container_get_type (), &socket_info);
@@ -596,6 +597,8 @@ gtk_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	if (!socket->plug_window)
 	  {
 	    gtk_socket_add_window (socket, xcwe->window);
+	    if (!socket->plug_window)
+	      break;
 
 	    gdk_error_trap_push ();
 	    gdk_window_move_resize(socket->plug_window,
@@ -628,6 +631,9 @@ gtk_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	
 	if (!socket->plug_window)
 	  gtk_socket_add_window (socket, xcre->window);
+
+	if (!socket->plug_window)
+	  break;
 	
 	if (xcre->window == GDK_WINDOW_XWINDOW (socket->plug_window))
 	  {
@@ -708,6 +714,9 @@ gtk_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
       if (!socket->plug_window)
 	gtk_socket_add_window (socket, xevent->xmaprequest.window);
 	
+      if (!socket->plug_window)
+	break;
+	
       if (xevent->xmaprequest.window ==
 	  GDK_WINDOW_XWINDOW (socket->plug_window))
 	{
@@ -723,6 +732,9 @@ gtk_socket_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	}
       break;
     case PropertyNotify:
+      if (!socket->plug_window)
+	break;
+	
       if (xevent->xproperty.window ==
 	  GDK_WINDOW_XWINDOW (socket->plug_window))
 	{
