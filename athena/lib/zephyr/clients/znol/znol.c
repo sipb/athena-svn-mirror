@@ -19,7 +19,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.6 1989-10-25 14:17:51 jtkohl Exp $";
+static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.7 1989-10-30 09:47:10 jtkohl Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -46,19 +46,6 @@ main(argc,argv)
 		com_err(argv[0],retval,"initializing");
 		exit (1);
 	}
-
-	envptr = getenv("HOME");
-	if (envptr)
-		(void) strcpy(anyonename,envptr);
-	else {
-		if (!(pwd = getpwuid((int) getuid()))) {
-			fprintf(stderr,"Who are you?\n");
-			exit (1);
-		}
-
-		(void) strcpy(anyonename,pwd->pw_dir);
-	} 
-	(void) strcat(anyonename,"/.anyone");
 
 	for (arg=1;arg<argc;arg++) {
 		if (!strcmp(argv[arg],"on")) {
@@ -114,10 +101,29 @@ main(argc,argv)
 			exit(1);
 		}
 	
+	if (!useronly) {
+		/* If no filename specified, get the default */
+		if (!filenamed) {
+			envptr = getenv("HOME");
+			if (envptr)
+			    (void) strcpy(anyonename,envptr);
+			else {
+				if (!(pwd = getpwuid((int) getuid()))) {
+					fprintf(stderr,"You are not listed in the password file.\n");
+					exit (1);
+				}
+				(void) strcpy(anyonename,pwd->pw_dir);
+			}
+			(void) strcat(anyonename,"/.anyone");
+		}
 
-	if (!useronly && !(fp = fopen(anyonename,"r"))) {
-		fprintf(stderr,"Can't open %s for input\n",anyonename);
-		exit (1);
+		/* if the filename is "-", read stdin */
+		if (strcmp(anyonename,"-") == 0) {
+			fp = stdin;
+		} else if (!(fp = fopen(anyonename,"r"))) {
+			fprintf(stderr,"Can't open %s for input\n",anyonename);
+			exit (1);
+		}
 	}
 
 	ind = 0;
