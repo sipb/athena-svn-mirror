@@ -205,6 +205,7 @@ struct cache_ent {
 #define ATTACH_CMD	"attach"
 #define DETACH_CMD	"detach"
 #define NFSID_CMD	"nfsid"
+#define FSID_CMD	"fsid"
 #ifdef ZEPHYR
 #define ZINIT_CMD	"zinit"
 #endif /* ZEPHYR */
@@ -334,7 +335,7 @@ extern int	read_config_file(const char *);
 extern int	parse_username(const char *);
 extern int	trusted_user(int);
 extern void	lock_attachtab(void), unlock_attachtab(void);
-extern void	get_attachtab(void), free_attachtab(void);
+extern void	lint_attachtab(void), get_attachtab(void), free_attachtab(void);
 #ifdef AFS
 extern int	afs_auth(const char *, const char *, int);
 #endif
@@ -361,3 +362,5 @@ extern	int	zephyr_sub(), zephyr_unsub();
 extern	void	zephyr_addsub();
 #endif
 #endif
+
+extern	char	*progname;
