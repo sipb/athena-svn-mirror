@@ -10,7 +10,11 @@
    #
 */
 
+#ifdef _IBMR2
+LIBDIR=$(ATHLIBDIR)/lpdfilters
+#else
 LIBDIR=	/usr/lib/lpdfilters
+#endif
 CXREF=	/usr/ucb/ctags -x
 SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c \
