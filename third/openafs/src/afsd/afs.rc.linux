@@ -290,6 +290,8 @@ case "$1" in
 		if [ -x /usr/vice/etc/killafs ] ; then
 			runcmd "Sending all processes using /afs the TERM signal ..." /usr/vice/etc/killafs TERM
 			runcmd "Sending all processes using /afs the KILL signal ..." /usr/vice/etc/killafs KILL
+		else
+		        /usr/vice/etc/afsd -shutdown
 		fi
 		umount /afs
 	fi
