@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.11 1991-03-04 14:32:09 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.12 1991-03-04 16:59:56 mar Exp $
  */
 
 #include <stdio.h>
@@ -110,7 +110,7 @@ char *display;
 	    bzero(passwd, strlen(passwd));
 	    cleanup(NULL);
 	    if (hes_error() == HES_ER_NOTFOUND) {
-		sprintf(errbuf, "User \"%s\" does not have an active account (no hesiod information)", user);
+		sprintf(errbuf, "Unknown user name entered (no hesiod information for \"%s\")", user);
 		return(errbuf);
 	    } else
 	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
@@ -540,9 +540,13 @@ struct passwd *pwd;
     case -1:
 	return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
     case 0:
+ 	if (setuid(pwd->pw_uid) != 0) {
+ 	    fprintf(stderr, "Could not execute attach command as user %s,\n",
+ 		    pwd->pw_name);
+ 	    fprintf(stderr, "Filesystem mappings may be incorrect.\n");
+ 	}
 	/* don't do zephyr here since user doesn't have zwgc started anyway */
-	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", "-user", pwd->pw_name,
-	      pwd->pw_name, NULL);
+	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", pwd->pw_name, NULL);
 	_exit(-1);
     default:
 	break;
