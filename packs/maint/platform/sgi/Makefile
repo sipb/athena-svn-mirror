@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-01-21 20:08:40 ghudson Exp $
+# $Id: Makefile,v 1.4 1997-02-11 18:27:10 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -26,6 +26,8 @@ install:
 	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02axdm
 	rm -f ${DESTDIR}${RC0}/K07athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K07athena
+	rm -f ${DESTDIR}${RC0}/K80athena.config
+	ln -s ../init.d/athena.config ${DESTDIR}${RC0}/K80athena.config
 	rm -f ${DESTDIR}${RC2}/S13athena.config
 	ln -s ../init.d/athena.config ${DESTDIR}${RC2}/S13athena.config
 	rm -f ${DESTDIR}${RC2}/S24autoconfig.reboot
