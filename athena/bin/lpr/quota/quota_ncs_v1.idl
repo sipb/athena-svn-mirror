@@ -16,59 +16,10 @@ interface print_quota {
     import "nbase.idl";
     import "base.idl";
 /*    import "uuid.idl";*/
+    %import "nidl_structs.idl";
 
 #include "quota_limits.h"
 
-    /* Error return */
-    typedef long quota_error_code;
-
-    /* For authentication */
-    typedef struct {
-	int length;
-	[last_is (length)] char dat[1250];
-	unsigned long mbz;
-    } krb_ktext;
-
-    /* For quota_identfier */
-    typedef long quota_account;
-    typedef string0 [MAX_K_NAME_SZ] quota_username;
-    typedef string0 [SERV_SZ] quota_service;
-
-    /* For quota_report */
-    typedef long printed_pages;
-    typedef long media_cost;
-    typedef string0 [PNAME_SZ] printer_name;
-    typedef long print_time;
-
-    /* For quota_return */
-    typedef long quota_value;
-    typedef string0 [CURRENCY_SZ] quota_currency;
-    typedef string0 [MESSAGE_SZ]  quota_message;
-    typedef long billing_time;
-
-    /* For QuotaModifyUser */
-    typedef enum { U_NEW, U_SET, U_ADD, U_SUBTRACT, U_DELETE, U_ALLOW_PRINT, 
-		       U_DISALLOW_PRINT, U_ADJUST } modify_user_type;
-
-    /* For QuotaModifyAccount */
-    typedef enum { A_NEW, A_SET, A_ADD, A_SUBTRACT, A_DELETE, 
-		       A_ALLOW_PRINT, A_DISALLOW_PRINT, A_ADJUST, 
-		       A_SET_ADMIN, A_ADD_ADMIN, A_DELETE_ADMIN,
-		       A_ADD_USER, A_DELETE_USER } modify_account_type;
-
-    typedef struct {
-	quota_username	username;
-	quota_service	service;
-	quota_account	account;
-    } quota_identifier;
-
-    typedef struct {
-	printed_pages	pages;
-	media_cost	pcost;
-	printer_name	pname;
-	print_time	ptime;
-    } quota_report;
-    
     typedef struct {
 	quota_value	usage;
 	quota_value	limit;
@@ -79,19 +30,7 @@ interface print_quota {
 	quota_value	pending_charge; /* How much is pending billing */
 	quota_value	last_amount; 	/* Usage at time of last bill */
 	quota_value	ytd_billed;
-    } quota_return;
-
-    typedef struct {
-	quota_value	usage;
-	quota_value	limit;
-	quota_currency	currency;
-	quota_message	message;
-	billing_time	last_bill;
-	quota_value	last_charge;
-	quota_value	pending_charge;
-	quota_value	last_amount;
-	quota_value	ytd_charge;
-    } quota_account_return;
+    } quota_return_v1;
 
     /* QuotaReport	
      *
@@ -115,14 +54,14 @@ interface print_quota {
      * krb_text
      * quota_identifier
      * -->
-     * quota_return
+     * quota_return_v1
      */
 
     quota_error_code QuotaQuery (
 				 handle_t [in] h,
 				 krb_ktext [in] *auth,
 				 quota_identifier [in] *qid,
-				 quota_return [out] *qreturn);
+				 quota_return_v1 [out] *qreturn);
 
     /* QuotaModifyUser
      *
