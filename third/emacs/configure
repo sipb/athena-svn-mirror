@@ -4408,14 +4408,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  echo $ac_n "checking for mit_des_cbc_encrypt in -lcrypto""... $ac_c" 1>&6
-echo "configure:4413: checking for mit_des_cbc_encrypt in -lcrypto" >&5
-ac_lib_var=`echo crypto'_'mit_des_cbc_encrypt | sed 'y%./+-%__p_%'`
+  echo $ac_n "checking for mit_des_cbc_encrypt in -lk5crypto""... $ac_c" 1>&6
+echo "configure:4413: checking for mit_des_cbc_encrypt in -lk5crypto" >&5
+ac_lib_var=`echo k5crypto'_'mit_des_cbc_encrypt | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lcrypto  $LIBS"
+LIBS="-lk5crypto  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4421 "configure"
 #include "confdefs.h"
@@ -4443,13 +4443,13 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo crypto | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+    ac_tr_lib=HAVE_LIB`echo k5crypto | sed -e 's/[^a-zA-Z0-9_]/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_lib 1
 EOF
 
-  LIBS="-lcrypto $LIBS"
+  LIBS="-lk5crypto $LIBS"
 
 else
   echo "$ac_t""no" 1>&6

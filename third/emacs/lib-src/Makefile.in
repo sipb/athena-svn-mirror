@@ -201,8 +201,8 @@ DESLIB = -ldes425
 # ifdef HAVE_LIBKRB5
 KRB5LIB = -lkrb5
 # endif
-# ifdef HAVE_LIBCRYPTO
-CRYPTOLIB = -lcrypto
+# ifdef HAVE_LIBK5CRYPTO
+CRYPTOLIB = -lk5crypto
 # endif
 # ifdef HAVE_LIBCOM_ERR
 COM_ERRLIB = -lcom_err
