@@ -30,6 +30,8 @@
 static char *rcsid_cref_c = "$Header: ";
 #endif	lint
 
+#include <mit-copyright.h>
+
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */

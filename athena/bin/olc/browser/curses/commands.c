@@ -25,10 +25,11 @@
  *      $Header:
  */
 
-
 #ifndef lint
 static char *rcsid_commands_c = "$Header: ";
 #endif	lint
+
+#include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
