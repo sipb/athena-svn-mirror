@@ -12,18 +12,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.19 1990-07-16 10:14:09 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: data_utils.c,v 1.20 1990-08-20 04:47:46 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.19 1990-07-16 10:14:09 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.20 1990-08-20 04:47:46 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -70,8 +71,6 @@ static int was_connected ();
 void disconnect_knuckles ();
 #endif /* STDC */
 
-
-extern void bzero OPrototype ((void *, unsigned int));
 
 /*
  * Function:    create_user() 
@@ -695,7 +694,9 @@ get_knuckle(name,instance,knuckle,active)
 {
   KNUCKLE **k_ptr;  
   int status = 0;
+#ifdef TEST
   char mesg[BUF_SIZE];
+#endif TEST
 
 #ifdef TEST
   printf("get_knuckle: %s %d...\n",name,instance);
