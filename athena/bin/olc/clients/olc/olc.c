@@ -26,12 +26,12 @@
  * Copyright (C) 1989-1999 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.c,v 1.42 1999-06-28 22:52:02 ghudson Exp $
+ *	$Id: olc.c,v 1.42.8.1 2003-08-20 16:52:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc.c,v 1.42 1999-06-28 22:52:02 ghudson Exp $";
+static char rcsid[] ="$Id: olc.c,v 1.42.8.1 2003-08-20 16:52:50 ghudson Exp $";
 #endif
 #endif
 
@@ -115,6 +115,7 @@ COMMAND_TMPL Command_Table_Template[] = {
  {HOURS,   {"hours",    do_olc_hours,     "Print hours when staffed"}},
  {CONSULT, {"instance", do_olc_instance,  "Show/Change default instance"}},
  {CONSULT, {"list",     do_olc_list,      "List the world"}},
+ {CONSULT, {"ls",       do_olc_list,      "List the world (alias for list)"}},
  {CONSULT, {"mail",     do_olc_mail,      "Mail a message"}},
  {0,       {"motd",     do_olc_motd,      "See the message of the day"}},
  {CONSULT, {"off",      do_olc_off,       "Sign off"}},
