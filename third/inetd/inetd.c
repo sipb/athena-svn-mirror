@@ -970,6 +970,7 @@ access_switch(signo)
 	int on;
 
 	on = signo == SIGUSR1;
+	syslog(LOG_NOTICE, "access_on = %d -> %d", access_on, on);
 	if (on == access_on)
 		return;
 
@@ -985,6 +986,7 @@ access_switch(signo)
 		else
 			close_sep(sep);
 	}
+	syslog(LOG_NOTICE, "Done with access_switch");
 	sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
