@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.4 1991-02-26 10:26:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.5 1991-03-28 13:31:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -114,43 +114,4 @@ swrite(fd, buf, nbytes)
   if (n_wrote != nbytes) 
     fprintf(stderr, "swrite: %d wrote of %d\n", n_wrote, nbytes);
   return(n_wrote);
-}
-
-
-void
-expand_hostname(hostname, instance, realm)
-     char *hostname;
-     char *instance;
-     char *realm;
-{
-  char *p;
-  int i;
-
-  realm[0] = '\0';
-  p = index(hostname, '.');
-  
-  if(p == NULL)
-    {
-      (void) strcpy(instance, hostname);
-
-#ifdef KERBEROS
-      krb_get_lrealm(realm,1);
-#endif /* KERBEROS */
-
-    }
-  else
-    {
-      i = p-hostname;
-      (void) strncpy(instance,hostname,i);
-      instance[i] = '\0';
-      p = krb_realmofhost(hostname);
-      strcpy(realm,p);
-    }
-
-  for(i=0; instance[i] != '\0'; i++)
-    if(isupper(instance[i]))
-      instance[i] = tolower(instance[i]);
-
-  
-  return;
 }
