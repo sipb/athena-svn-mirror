@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.17 1987-11-01 17:49:00 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.18 1987-11-03 13:20:38 rfrench Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -27,7 +27,7 @@
 
 #define ZVERSIONHDR	"ZEPH"
 #define ZVERSIONMAJOR	0
-#define ZVERSIONMINOR	0
+#define ZVERSIONMINOR	1
 
 /* Types */
 
