@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2000-04-28 15:21:24 ghudson Exp $
+# $Id: Makefile,v 1.9 2000-07-05 20:08:32 ghudson Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -23,8 +23,8 @@ install:
 	install -c -m 0444 format.input.label ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.seagate.5660 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.Seagate.medalist ${DESTDIR}${INSTALL}
-	install -c -m 0444 phase2.sh ${DESTDIR}${INSTALL}
-	install -c -m 0444 phase3.sh ${DESTDIR}${INSTALL}
+	install -c -m 0444 install1.sh ${DESTDIR}${INSTALL}
+	install -c -m 0444 install2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 update2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 oschanges ${DESTDIR}${INSTALL}
 	install -c -m 0444 os-link-2.6 ${DESTDIR}${INSTALL}

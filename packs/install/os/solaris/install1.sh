@@ -4,13 +4,14 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.12 2000-05-10 22:54:31 zacheiss Exp $
+### $Id: install1.sh,v 1.1 2000-07-05 20:08:32 ghudson Exp $
 
 echo "Set some variables"
-PATH=/sbin:/usr/bin:/usr/sbin
+PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
 export PATH
 umask 2
 
+bootdevice="disk"; export bootdevice
 # Use format to get information about the available drives.
 format < /dev/null | awk '/^[ 	]*[0-9]\./ { print; }' > /tmp/disks
 
@@ -88,9 +89,11 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 8.3"
-  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
+  echo "standard installation - 8.4"
+  ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
+  ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
+  ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+  ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
   ;;
 
 Y)
@@ -117,10 +120,24 @@ Y)
        ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
        ;;
-    *)
+   8.3)
        echo "installing 8.3"
        ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
+       ;;
+   8.4)
+       echo "installing 8.4"
+       ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
+       ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
+       ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+       ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
+       ;;
+    *)
+       echo "installing 8.4"
+       ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
+       ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
+       ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+       ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
        ;;
    esac
    echo "done choosing rev"
@@ -188,7 +205,10 @@ Y)
      partition 5 is /usr and needs 350MB;
      partition 6 is /var and needs at least 500MB "
      sleep 10
-     format
+     format 
+     echo "boot device you want to boot from ?"
+     read bootdevice
+     export bootdevice
      echo "Done asking questions for custom install."
      ;;
 *)
@@ -233,16 +253,6 @@ Y)
        cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
-    ST38420A)
-       echo "formating ST38420A"
-       cat /util/format.input.ST38420A | \
-		format ${drive} >/dev/null 2>&1
-       ;;
-    ST39120A)
-       echo "formatting ST39120A"
-       cat /util/format.input.ST39120A | \
-		format ${drive} >/dev/null 2>&1
-       ;;
     ST39140A)
        echo "formatting ST39140A"
        cat /util/format.input.ST39140A | \
@@ -258,11 +268,6 @@ Y)
        cat /util/format.input.seagate.5660 | \
 		format ${drive} >/dev/null 2>&1
        ;;
-    SEAGATE-ST39173WC-6244)
-       echo "formatting SEAGATE-ST39173WC-6244"
-       cat /util/format.input.SEAGATE-ST39173WC-6244 | \
-		format ${drive} >/dev/null 2>&1
-       ;;
     *)
        echo "can't format the disks - type unknown"
        echo "Call an expert !"
@@ -271,8 +276,6 @@ Y)
        while :; do sleep 10; done
        esac
 esac
-
-
 
 echo "Making the filesystems..."
 echo ""
@@ -303,7 +306,7 @@ cd etc
 mv CellServDB CellServDB.public
 ln -s CellServDB.public CellServDB
 cp -p SuidCells SuidCells.public
-
+# !!
 echo "Making an /afs repository"
 mkdir /tmp/afs
 echo "Loading afs in the kernel"
@@ -311,5 +314,12 @@ modload /kernel/misc/nfssrv
 modload /kernel/fs/afs
 echo "Starting afsd "
 /etc/afsd -nosettime -daemons 4
-
-sh /srvd/install/phase3.sh
+type=install; export type
+date >/tmp/install.log
+sh /util/install2.sh | tee -a /tmp/install.log
+#sh /srvd/install/install2.sh | tee -a /tmp/install.log
+echo "Some unexpected error occured"
+echo "Please contact Athena Hotline at x3-1410."
+echo "Thank you. -Athena Operations"
+/sbin/sh
+halt
