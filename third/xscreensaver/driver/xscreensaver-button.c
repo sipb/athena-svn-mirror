@@ -137,9 +137,12 @@ static XrmOptionDescRec options[] =
   { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL             },
   { "-logoWidth",  "*xrogerWidth",     XrmoptionSepArg, NULL             },
   { "-logoHeight", "*xrogerHeight",    XrmoptionSepArg, NULL             },
+  { "-logo-width", "*xrogerWidth",     XrmoptionSepArg, NULL             },
+  { "-logo-height","*xrogerHeight",    XrmoptionSepArg, NULL             },
   { "-redirect",   "*redirect",        XrmoptionNoArg,  (XtPointer)True  },
   { "-noredirect", "*redirect",        XrmoptionNoArg,  (XtPointer)False },
   { "-logFile",    "*logFile",         XrmoptionSepArg, NULL             },
+  { "-log-file",   "*logFile",         XrmoptionSepArg, NULL             },
 };
 
 static XtActionsRec actions[] =
