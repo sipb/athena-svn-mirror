@@ -26,7 +26,7 @@ extern "C"
 #define TC_IMPL_TC_Empty_2 'p'
 #define TC_IMPL_TC_Empty_3 't'
 #define TC_IMPL_TC_Empty_4 'y'
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
    static
 #else
    extern
@@ -76,18 +76,16 @@ extern "C"
 
 /** stub prototypes **/
    void Empty_doNothing(Empty _obj, CORBA_Environment * ev);
-
-/** more internals **/
 #include <orbit/orb-core/orbit-interface.h>
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
    static
 #else
    extern
 #endif
    ORBit_IInterface Empty__iinterface;
 #define Empty_IMETHODS_LEN 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
    static
 #else
    extern

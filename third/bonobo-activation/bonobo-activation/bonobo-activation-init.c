@@ -167,7 +167,7 @@ bonobo_activation_session_name_get (void)
 const char *
 bonobo_activation_domain_get (void)
 {
-	return "session";
+	return NULL;
 }
 
 CORBA_Object
@@ -178,7 +178,6 @@ bonobo_activation_internal_activation_context_get_extended (gboolean           e
 
 	base_service.name = "IDL:Bonobo/ActivationContext:1.0";
 	base_service.session_name = bonobo_activation_session_name_get ();
-	base_service.domain = "session";
 
 	return bonobo_activation_internal_service_get_extended (&base_service, existing_only,
                                                    ev);
@@ -191,7 +190,6 @@ bonobo_activation_activation_context_get (void)
 
 	base_service.name = "IDL:Bonobo/ActivationContext:1.0";
 	base_service.session_name = bonobo_activation_session_name_get ();
-	base_service.domain = "session";
 
 	return bonobo_activation_service_get (&base_service);
 }
@@ -200,8 +198,7 @@ static Bonobo_ObjectDirectory object_directory = CORBA_OBJECT_NIL;
 
 CORBA_Object
 bonobo_activation_object_directory_get (const char *username,
-                                        const char *hostname,
-                                        const char *domain)
+                                        const char *hostname)
 {
         CORBA_Environment ev;
         Bonobo_ActivationContext new_ac;
@@ -310,9 +307,9 @@ do_barrier (int signum)
 /**
  * bonobo_activation_is_initialized:
  *
- * Tells you whether or not OAF is initialized.
+ * Tells you whether or not bonobo-activation is initialized.
  *
- * Return value: whether OAF is initialized or not.
+ * Return value: whether bonobo-activation is initialized or not.
  */
 gboolean
 bonobo_activation_is_initialized (void)
@@ -322,12 +319,12 @@ bonobo_activation_is_initialized (void)
 
 
 /**
- * bonobo_activation_init:
+ * bonobo_activation_get_popt_table_name:
  *
  * Get the table name to use for the oaf popt options table when
  * registering with libgnome
  * 
- * Return value: A localized copy of the string "OAF options"
+ * Return value: A localized copy of the string "bonobo activation options"
  */
 
 char *
@@ -393,9 +390,6 @@ bonobo_activation_orb_init (int *argc, char **argv)
         CORBA_Context def_ctx;
 	CORBA_Environment ev;
 	const char *hostname;
-        const char *display;
-	const char *audiodev;
-	const char *session_manager;
 
 #ifndef ORBIT_USES_GLIB_MAIN_LOOP
 	IIOPAddConnectionHandler = orb_add_connection;
@@ -407,6 +401,8 @@ bonobo_activation_orb_init (int *argc, char **argv)
 	bonobo_activation_orb = CORBA_ORB_init (argc, argv, "orbit-local-orb", &ev);
 	g_assert (ev._major == CORBA_NO_EXCEPTION);
 
+	bonobo_activation_init_activation_env ();
+
 	/* Set values in default context */
 	CORBA_ORB_get_default_context (bonobo_activation_orb, &def_ctx, &ev);
         CORBA_Context_create_child (def_ctx, "activation", &bonobo_activation_context, &ev);
@@ -417,25 +413,8 @@ bonobo_activation_orb_init (int *argc, char **argv)
 	hostname = bonobo_activation_hostname_get ();
 	CORBA_Context_set_one_value (bonobo_activation_context, "hostname",
 				     (char *) hostname, &ev);
-	CORBA_Context_set_one_value (bonobo_activation_context, "domain", "user", &ev);
 	CORBA_Context_set_one_value (bonobo_activation_context, "username",
 				     (char *) g_get_user_name (), &ev);
-        
-        
-        display = g_getenv ("DISPLAY");
-        
-        if (display != NULL) {
-                CORBA_Context_set_one_value (bonobo_activation_context, "display",
-                                             (char *) display, &ev);
-        }
-
-	if ((session_manager = g_getenv ("SESSION_MANAGER")))
-		CORBA_Context_set_one_value (bonobo_activation_context, "session_manager",
-					     (char *) session_manager, &ev);
-
-	if ((audiodev = g_getenv ("AUDIODEV")))
-		CORBA_Context_set_one_value (bonobo_activation_context, "audiodev",
-					     (char *) audiodev, &ev);
 
 	CORBA_exception_free (&ev);
 
@@ -457,7 +436,6 @@ bonobo_activation_orb_init (int *argc, char **argv)
 
 /**
  * bonobo_activation_debug_shutdown:
- * @void: 
  * 
  *   A debugging function to shutdown the ORB and process
  * any reference count leaks that may have occured.

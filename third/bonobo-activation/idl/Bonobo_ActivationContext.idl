@@ -51,52 +51,39 @@ module Bonobo {
                 oneway void resetCache ();
         };
 
-        interface ActivationCallback : Bonobo::Unknown {
-                oneway void report_activation_failed (in string reason);
-                oneway void report_activation_succeeded (in ActivationResult result);
-        };
-
         typedef sequence<ObjectDirectory> ObjectDirectoryList;
 
         interface ActivationContext : Bonobo::Unknown {
-                oneway void addClient (in ActivationClient client, in string locales);
                 readonly attribute ObjectDirectoryList directories;
-                void add_directory (in ObjectDirectory dir) raises (Bonobo::Activation::AlreadyListed);
-                void remove_directory (in ObjectDirectory dir) raises (Bonobo::Activation::NotListed);
+                readonly attribute ServerInfoList      servers;
 
-                ActivationResult activate (in string requirements,
-                                           in Bonobo::StringList selection_order,
-                                           in ActivationFlags flags)
-                        raises (Bonobo::Activation::ParseFailed, Bonobo::Activation::IncompleteContext, Bonobo::GeneralError)
-                        context ("username", "hostname", "domain",
-                                 "display", "session_manager", "audiodev");
+                oneway void addClient (in ActivationClient client,
+                                       in string           locales);
 
-                oneway void activate_async (in string requirements,
-                                            in Bonobo::StringList selection_order,
-                                            in ActivationFlags flags,
-                                            in ActivationCallback callback_object)
-                        context ("username", "hostname", "domain",
-                                 "display", "session_manager", "audiodev");
+                void addDirectory    (in ObjectDirectory dir) raises (Bonobo::Activation::AlreadyListed);
+                void removeDirectory (in ObjectDirectory dir) raises (Bonobo::Activation::NotListed);
 
-
-
-                readonly attribute ServerInfoList servers;
-                ServerInfoList query (in string requirements,
+                ServerInfoList query (in string             requirements,
                                       in Bonobo::StringList selection_order)
-                        raises (Bonobo::Activation::ParseFailed, Bonobo::Activation::IncompleteContext)
-                        context ("username", "hostname", "domain");
+                        raises (Bonobo::Activation::ParseFailed,
+                                Bonobo::Activation::IncompleteContext)
+                        context ("username", "hostname");
 
-                ActivationResult activate_from_id (in ActivationID aid, in ActivationFlags flags)
-                        raises (Bonobo::Activation::ParseFailed, Bonobo::Activation::IncompleteContext, Bonobo::GeneralError)
-                        context ("username", "hostname", "domain",
-                                 "display", "session_manager", "audiodev");
+                ActivationResult activateMatching (in string                        requirements,
+                                                   in Bonobo::StringList            selection_order,
+                                                   in Bonobo::ActivationEnvironment environment,
+                                                   in ActivationFlags               flags)
+                        raises (Bonobo::Activation::ParseFailed,
+                                Bonobo::Activation::IncompleteContext,
+                                Bonobo::GeneralError)
+                        context ("username", "hostname");
 
-                oneway void activate_from_id_async (in ActivationID aid, 
-                                                    in ActivationFlags flags,
-                                                    in ActivationCallback callback_object)
-                        context ("username", "hostname", "domain",
-                                 "display", "session_manager", "audiodev");
-
+                ActivationResult activateFromAid (in ActivationID    aid,
+                                                  in ActivationFlags flags)
+                        raises (Bonobo::Activation::ParseFailed,
+                                Bonobo::Activation::IncompleteContext,
+                                Bonobo::GeneralError)
+                        context ("username", "hostname");
         };
 };
 

@@ -39,19 +39,28 @@
 #include "activation-server-corba-extensions.h"
 
 static CORBA_Object
-od_server_activate_factory (Bonobo_ServerInfo *si,
-                            ODActivationInfo  *actinfo,
-			    CORBA_Environment *ev)
+od_server_activate_factory (Bonobo_ServerInfo                  *si,
+			    ODActivationInfo                   *actinfo,
+			    const Bonobo_ActivationEnvironment *environment,
+			    CORBA_Environment                  *ev)
 {
-	CORBA_Object retval = CORBA_OBJECT_NIL, factory = CORBA_OBJECT_NIL;
 	Bonobo_ActivationResult *res;
+	Bonobo_StringList        selorder;
+	Bonobo_ActivationFlags   flags;
+	CORBA_Object             retval = CORBA_OBJECT_NIL;
+	CORBA_Object             factory = CORBA_OBJECT_NIL;
+	char                    *requirements;
 
-	res = Bonobo_ActivationContext_activate_from_id (
-                actinfo->ac, si->location_info,
-                ((actinfo->flags |
-                  Bonobo_ACTIVATION_FLAG_NO_LOCAL) &
-                 (~Bonobo_ACTIVATION_FLAG_PRIVATE)),
-                actinfo->ctx, ev);
+	memset (&selorder, 0, sizeof (Bonobo_StringList));
+
+	requirements = g_alloca (strlen (si->location_info) + sizeof ("iid == ''"));
+	sprintf (requirements, "iid == '%s'", si->location_info);
+
+	flags = ((actinfo->flags | Bonobo_ACTIVATION_FLAG_NO_LOCAL) & (~Bonobo_ACTIVATION_FLAG_PRIVATE));
+
+	res = Bonobo_ActivationContext_activateMatching (
+			actinfo->ac, requirements, &selorder,
+			environment, flags, actinfo->ctx, ev);
 
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		goto out;
@@ -81,10 +90,11 @@ od_server_activate_factory (Bonobo_ServerInfo *si,
 
 /* Copied largely from goad.c, goad_server_activate_exe() */
 static CORBA_Object
-od_server_activate_exe (Bonobo_ServerInfo *si,
-                        ODActivationInfo  *actinfo,
-			CORBA_Object       od_obj,
-                        CORBA_Environment *ev)
+od_server_activate_exe (Bonobo_ServerInfo                  *si,
+			ODActivationInfo                   *actinfo,
+			CORBA_Object                        od_obj,
+			const Bonobo_ActivationEnvironment *environment,
+			CORBA_Environment                  *ev)
 {
 	char **args;
 	char *extra_arg, *ctmp, *ctmp2;
@@ -147,7 +157,7 @@ od_server_activate_exe (Bonobo_ServerInfo *si,
          * if necessary
          */
 	retval = bonobo_activation_server_by_forking (
-                (const char **) args, TRUE, fd_arg, actinfo->ctx, iorstr,
+                (const char **) args, TRUE, fd_arg, environment, iorstr,
                 si->iid, bonobo_object_directory_re_check_fn, actinfo, ev);
         
 	CORBA_free (iorstr);
@@ -156,19 +166,20 @@ od_server_activate_exe (Bonobo_ServerInfo *si,
 }
 
 CORBA_Object
-od_server_activate (Bonobo_ServerInfo *si,
-                    ODActivationInfo  *actinfo,
-		    CORBA_Object       od_obj,
-                    CORBA_Environment *ev)
+od_server_activate (Bonobo_ServerInfo                  *si,
+		    ODActivationInfo                   *actinfo,
+		    CORBA_Object                        od_obj,
+		    const Bonobo_ActivationEnvironment *environment,
+		    CORBA_Environment                  *ev)
 {
         g_return_val_if_fail (ev->_major == CORBA_NO_EXCEPTION,
                               CORBA_OBJECT_NIL);
 
 	if (!strcmp (si->server_type, "exe"))
-		return od_server_activate_exe (si, actinfo, od_obj, ev);
+		return od_server_activate_exe (si, actinfo, od_obj, environment, ev);
 
 	else if (!strcmp (si->server_type, "factory"))
-		return od_server_activate_factory (si, actinfo, ev);
+		return od_server_activate_factory (si, actinfo, environment, ev);
 
 	else if (!strcmp (si->server_type, "shlib"))
 		g_warning (_("We don't handle activating shlib objects in a remote process yet"));

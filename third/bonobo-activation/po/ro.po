@@ -6,72 +6,68 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.6.3\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
 "PO-Revision-Date: 2001-01-23 11:22+0200\n"
 "Last-Translator: Dan Damian <dand@dnttm.ro>\n"
 "Language-Team: Romanian <gnome-ro@pelican.level7.ro>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Nici un server nu corespunde cererii dvs."
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr ""
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr ""
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Nu s-a putut face fork la un proces nou"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Copilul a primit semnalul %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
-msgstr "Eroare necunoscutã (statusul este %u)"
+msgstr "Eroare necunoscutÄƒ (statusul este %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr ""
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr ""
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
-msgstr "Descriptor fiºier la care sã listez IOR"
+msgstr "Descriptor fiÅŸier la care sÄƒ listez IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID de activat"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
-msgstr "Previne înregistrarea serverului cu OAF"
+msgstr "Previne Ã®nregistrarea serverului cu OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 #, fuzzy
 msgid "Bonobo activation options"
-msgstr "Fiºierul de configurare OAF conþine:\n"
+msgstr "FiÅŸierul de configurare OAF conÅ£ine:\n"
 
 #: bonobo-activation/bonobo-activation-shlib.c:101
 #, c-format
@@ -94,60 +90,40 @@ msgstr ""
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr ""
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
-msgstr "Nu s-a putut gãsi care în care copil serverul era listat"
+msgstr "Nu s-a putut gÄƒsi care Ã®n care copil serverul era listat"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Cererea a eºuat:"
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Activarea a eºuat:"
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Nu s-a putut parsa AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Nu s-a putut parsa contextul: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Nu s-a putut activa serverul: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 #, fuzzy
 msgid "Directory to read .server files from"
-msgstr "Directorul de unde se vor citi fiºiere .oafinfo"
+msgstr "Directorul de unde se vor citi fiÅŸiere .oafinfo"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "DIRECTORY"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Domeniul lui ObjectDirectory"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "DOMAIN"
+#: server/activation-server-main.c:69
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "ServeÅŸte ca ActivationContext (implicit este numai ObjectDirectory)"
 
 #: server/activation-server-main.c:73
-msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
-msgstr "Serveºte ca ActivationContext (implicit este numai ObjectDirectory)"
-
-#: server/activation-server-main.c:77
 msgid "File descriptor to write IOR to"
-msgstr "Descriptor fiºier la care sã scriu IOR"
+msgstr "Descriptor fiÅŸier la care sÄƒ scriu IOR"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
-msgstr "Expresia cerere pentru a fi evaluatã"
+msgstr "Expresia cerere pentru a fi evaluatÄƒ"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "EXPRESSION"
 
@@ -159,9 +135,9 @@ msgstr ""
 msgid "Name service"
 msgstr ""
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
-msgstr "Nu gestionãm încã obiecte shlib activante într-un proces remote"
+msgstr "Nu gestionÄƒm Ã®ncÄƒ obiecte shlib activante Ã®ntr-un proces remote"
 
 #: server/object-directory-config-file.c:47
 #, fuzzy, c-format
@@ -169,8 +145,8 @@ msgid ""
 "The Bonobo Activation configuration file was not read successfully. Please, "
 "check it is valid in: %s"
 msgstr ""
-"Fiºierul configuraþie OAF nu a fost citit cu succes. Vã rog, verificaþi dacã "
-"este valid în: %s"
+"FiÅŸierul configuraÅ£ie OAF nu a fost citit cu succes. VÄƒ rog, verificaÅ£i dacÄƒ "
+"este valid Ã®n: %s"
 
 #: server/object-directory-load.c:94
 msgid "a NULL iid is not valid"
@@ -184,14 +160,14 @@ msgstr "iid-ul %s are un tip NULL"
 #: server/object-directory-load.c:102
 #, c-format
 msgid "iid %s has a NULL location"
-msgstr "iid-ul %s are o locaþie NULL"
+msgstr "iid-ul %s are o locaÅ£ie NULL"
 
 #: server/object-directory-load.c:111
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "caracter invalid '%c' în iid-ul '%s'"
+msgstr "caracter invalid '%c' Ã®n iid-ul '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Proprietatea '%s' nu are nici o valoare"
@@ -203,7 +179,7 @@ msgstr "Proprietatea '%s' nu are nici o valoare"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr ""
@@ -211,19 +187,19 @@ msgstr ""
 #: utils/bonobo-activation-sysconf.c:62
 #, fuzzy
 msgid "Could not save configuration file.\n"
-msgstr "Nu s-a putut salva fiºierul configuraþie OAF.\n"
+msgstr "Nu s-a putut salva fiÅŸierul configuraÅ£ie OAF.\n"
 
 #: utils/bonobo-activation-sysconf.c:63
 #, fuzzy, c-format
 msgid "Please, make sure you have permissions to write to '%s'.\n"
 msgstr ""
-"Vã rog sã vã asiguraþi cã aveþi permisii de scriere asupra fiºierului de "
+"VÄƒ rog sÄƒ vÄƒ asiguraÅ£i cÄƒ aveÅ£i permisii de scriere asupra fiÅŸierului de "
 "configurare OAF.\n"
 
 #: utils/bonobo-activation-sysconf.c:66
 #, fuzzy
 msgid "Successfully wrote configuration file.\n"
-msgstr "S-a scris cu succes fiºierul de configurare OAF.\n"
+msgstr "S-a scris cu succes fiÅŸierul de configurare OAF.\n"
 
 #: utils/bonobo-activation-sysconf.c:80
 #, fuzzy, c-format
@@ -231,28 +207,28 @@ msgid ""
 "configuration file is:\n"
 "    %s\n"
 msgstr ""
-"Fiºierul de configurare OAF este:\n"
+"FiÅŸierul de configurare OAF este:\n"
 "    %s\n"
 
 #: utils/bonobo-activation-sysconf.c:118
 #, fuzzy, c-format
 msgid "%s already in configuration file\n"
-msgstr "%s deja în fiºierul de configurare OAF\n"
+msgstr "%s deja Ã®n fiÅŸierul de configurare OAF\n"
 
 #: utils/bonobo-activation-sysconf.c:138
 #, fuzzy
 msgid "there is not a properly structured configuration file\n"
-msgstr "Aratã directoarele în fiºierul de configurare OAF"
+msgstr "AratÄƒ directoarele Ã®n fiÅŸierul de configurare OAF"
 
 #: utils/bonobo-activation-sysconf.c:201
 #, fuzzy
 msgid "Bonobo-activation configuration file contains:\n"
-msgstr "Fiºierul de configurare OAF conþine:\n"
+msgstr "FiÅŸierul de configurare OAF conÅ£ine:\n"
 
 #: utils/bonobo-activation-sysconf.c:233
 #, fuzzy
 msgid "Directory to remove from configuration file"
-msgstr "Directorul de eliminat din fiºierul de configurare OAF"
+msgstr "Directorul de eliminat din fiÅŸierul de configurare OAF"
 
 #: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
 msgid "directory path"
@@ -261,27 +237,51 @@ msgstr "cale director"
 #: utils/bonobo-activation-sysconf.c:236
 #, fuzzy
 msgid "Directory to add to configuration file"
-msgstr "Directorul de adãugat la fiºierul de configurare OAF"
+msgstr "Directorul de adÄƒugat la fiÅŸierul de configurare OAF"
 
 #: utils/bonobo-activation-sysconf.c:239
 #, fuzzy
 msgid "Display directories in configuration file"
-msgstr "Aratã directoarele în fiºierul de configurare OAF"
+msgstr "AratÄƒ directoarele Ã®n fiÅŸierul de configurare OAF"
 
 #: utils/bonobo-activation-sysconf.c:242
 #, fuzzy
 msgid "Display path to configuration file"
-msgstr "Cale director cãtre fiºierul de configurare OAF"
+msgstr "Cale director cÄƒtre fiÅŸierul de configurare OAF"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Nici un server nu corespunde cererii dvs."
+
+#~ msgid "Query failed: "
+#~ msgstr "Cererea a eÅŸuat:"
+
+#~ msgid "Activation failed: "
+#~ msgstr "Activarea a eÅŸuat:"
+
+#~ msgid "Could not parse AID"
+#~ msgstr "Nu s-a putut parsa AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Nu s-a putut parsa contextul: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Nu s-a putut activa serverul: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "Domeniul lui ObjectDirectory"
+
+#~ msgid "DOMAIN"
+#~ msgstr "DOMAIN"
 
 #~ msgid "Object directory to use when registering servers"
-#~ msgstr "Directorul obiecte folosit când înregistrez serverele"
+#~ msgstr "Directorul obiecte folosit cÃ¢nd Ã®nregistrez serverele"
 
 #, fuzzy
 #~ msgid "OAF options"
-#~ msgstr "Opþiuni OAF"
+#~ msgstr "OpÅ£iuni OAF"
 
 #~ msgid "Exec failed: %d (%s)\n"
-#~ msgstr "Exec a eºuat: %d (%s)\n"
+#~ msgstr "Exec a eÅŸuat: %d (%s)\n"
 
 #~ msgid "Trying dir %s\n"
-#~ msgstr "Încerc directorul %s\n"
+#~ msgstr "ÃŽncerc directorul %s\n"

@@ -107,6 +107,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -129,6 +130,8 @@ PERL_PATH = @PERL_PATH@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
 SERVER_CFLAGS = @SERVER_CFLAGS@
@@ -185,6 +188,7 @@ bonobo_activationinclude_HEADERS = \
 
 libbonobo_activation_la_SOURCES = \
 	$(BUILT_SOURCES)			\
+	bonobo-activation-get-language-list.c	\
 	bonobo-activation-client.c		\
 	bonobo-activation-client.h		\
 	bonobo-activation-id.c			\
@@ -196,9 +200,6 @@ libbonobo_activation_la_SOURCES = \
 	bonobo-activation-register.c		\
 	bonobo-activation-server-info.c		\
 	bonobo-activation-i18n.h		\
-	bonobo-activation-async.c		\
-	bonobo-activation-async-callback.h	\
-	bonobo-activation-async-callback.c	\
 	bonobo-activation-fork-server.c		\
 	bonobo-activation-init.c		\
 	$(NULL)
@@ -249,12 +250,11 @@ Bonobo_Activation_types-skels.lo Bonobo_ObjectDirectory-skels.lo \
 Bonobo_ActivationContext-skels.lo Bonobo_Unknown-stubs.lo \
 Bonobo_GenericFactory-stubs.lo Bonobo_Activation_types-stubs.lo \
 Bonobo_ObjectDirectory-stubs.lo Bonobo_ActivationContext-stubs.lo \
-bonobo-activation-client.lo bonobo-activation-id.lo \
-bonobo-activation-shlib.lo bonobo-activation-activate.lo \
-bonobo-activation-base-service.lo bonobo-activation-register.lo \
-bonobo-activation-server-info.lo bonobo-activation-async.lo \
-bonobo-activation-async-callback.lo bonobo-activation-fork-server.lo \
-bonobo-activation-init.lo
+bonobo-activation-get-language-list.lo bonobo-activation-client.lo \
+bonobo-activation-id.lo bonobo-activation-shlib.lo \
+bonobo-activation-activate.lo bonobo-activation-base-service.lo \
+bonobo-activation-register.lo bonobo-activation-server-info.lo \
+bonobo-activation-fork-server.lo bonobo-activation-init.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -420,13 +420,13 @@ distdir: $(DISTFILES)
 bonobo-activation-activate.lo bonobo-activation-activate.o : \
 	bonobo-activation-activate.c ../config.h \
 	bonobo-activation-activate.h Bonobo_Activation_types.h \
-	bonobo-activation-activate-private.h Bonobo_GenericFactory.h \
-	Bonobo_Unknown.h bonobo-activation-id.h \
-	bonobo-activation-init.h bonobo-activation-server-info.h \
-	bonobo-activation-private.h bonobo-activation-base-service.h \
-	Bonobo_ActivationContext.h Bonobo_ObjectDirectory.h \
+	bonobo-activation-id.h bonobo-activation-init.h \
+	bonobo-activation-server-info.h bonobo-activation-private.h \
+	bonobo-activation-base-service.h Bonobo_ActivationContext.h \
+	Bonobo_Unknown.h Bonobo_ObjectDirectory.h \
 	bonobo-activation-shlib.h bonobo-activation-client.h \
-	bonobo-activation-private.h
+	bonobo-activation-private.h bonobo-activation-async.h \
+	bonobo-activation-i18n.h
 bonobo-activation-async-callback.lo bonobo-activation-async-callback.o : \
 	bonobo-activation-async-callback.c ../config.h \
 	bonobo-activation-async.h Bonobo_Activation_types.h \
@@ -458,14 +458,21 @@ bonobo-activation-client.lo bonobo-activation-client.o : \
 	bonobo-activation-init.h bonobo-activation-base-service.h \
 	bonobo-activation-id.h bonobo-activation-shlib.h \
 	bonobo-activation-register.h bonobo-activation-async.h \
-	bonobo-activation-client.h bonobo-activation-private.h \
-	Bonobo_ActivationContext.h Bonobo_ObjectDirectory.h
+	bonobo-activation-private.h Bonobo_ActivationContext.h \
+	Bonobo_ObjectDirectory.h bonobo-activation-client.h \
+	bonobo-activation-private.h
 bonobo-activation-fork-server.lo bonobo-activation-fork-server.o : \
 	bonobo-activation-fork-server.c ../config.h \
 	bonobo-activation-private.h bonobo-activation-base-service.h \
 	Bonobo_ActivationContext.h Bonobo_Unknown.h \
 	Bonobo_Activation_types.h Bonobo_ObjectDirectory.h \
 	bonobo-activation-i18n.h bonobo-activation-init.h
+bonobo-activation-get-language-list.lo bonobo-activation-get-language-list.o : \
+	bonobo-activation-get-language-list.c ../config.h \
+	bonobo-activation-private.h bonobo-activation-base-service.h \
+	Bonobo_ActivationContext.h Bonobo_Unknown.h \
+	Bonobo_Activation_types.h Bonobo_ObjectDirectory.h \
+	bonobo-activation-i18n.h
 bonobo-activation-id.lo bonobo-activation-id.o : bonobo-activation-id.c \
 	../config.h bonobo-activation-id.h Bonobo_Activation_types.h \
 	bonobo-activation-private.h bonobo-activation-base-service.h \
@@ -520,9 +527,6 @@ Bonobo_ActivationContext-stubs.c Bonobo_ActivationContext-skels.c Bonobo_Activat
 	../idl/Bonobo_ActivationContext.idl \
 	../idl/Bonobo_Activation_types.idl \
 	../idl/Bonobo_ActivationContext.idl \
-	../idl/Bonobo_ObjectDirectory.idl ../idl/Bonobo_Unknown.idl \
-	../idl/Bonobo_ObjectDirectory.idl \
-	../idl/Bonobo_Activation_types.idl \
 	../idl/Bonobo_ObjectDirectory.idl \
 	../idl/Bonobo_ActivationContext.idl \
 	../idl/Bonobo_ObjectDirectory.idl \
@@ -558,9 +562,6 @@ Bonobo_ObjectDirectory-stubs.c Bonobo_ObjectDirectory-skels.c Bonobo_ObjectDirec
 	../idl/Bonobo_ObjectDirectory.idl \
 	../idl/Bonobo_Activation_types.idl \
 	../idl/Bonobo_ObjectDirectory.idl \
-	../idl/Bonobo_ActivationContext.idl ../idl/Bonobo_Unknown.idl \
-	../idl/Bonobo_ActivationContext.idl \
-	../idl/Bonobo_Activation_types.idl \
 	../idl/Bonobo_ActivationContext.idl \
 	../idl/Bonobo_ObjectDirectory.idl \
 	../idl/Bonobo_ActivationContext.idl \

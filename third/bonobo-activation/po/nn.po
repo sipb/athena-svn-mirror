@@ -6,146 +6,122 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation 0.6.5\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
 "PO-Revision-Date: 2002-01-27 03:25+0100\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: Norwegian/Nynorsk <nn@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Ingen tenar svarer på di spørjing"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Barnprosess ga ikkje frå seg ei feilmelding, ein ukjent feil oppstod"
+msgstr "Barnprosess ga ikkje frÃ¥ seg ei feilmelding, ein ukjent feil oppstod"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
-msgstr "Klarte ikkje å lese frå barnprosess: %s\n"
+msgstr "Klarte ikkje Ã¥ lese frÃ¥ barnprosess: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Kunne ikkje starta underprosess"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Barn mottok signal %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Ukjent ikkje-eksisterande feil (status er %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
-msgstr "bonobo-activation klarte ikkje å sette prosessgruppe på %s: %s\n"
+msgstr "bonobo-activation klarte ikkje Ã¥ sette prosessgruppe pÃ¥ %s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
-msgstr "Klarte ikkje å køyre %s: %d (%s)\n"
+msgstr "Klarte ikkje Ã¥ kÃ¸yre %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
-msgstr "Fildeskriptor å skrive IOR på"
+msgstr "Fildeskriptor Ã¥ skrive IOR pÃ¥"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID som skal aktiverast"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Forhindre registrering av tenarar i OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Bonobo aktiviseringsval"
 
 #: bonobo-activation/bonobo-activation-shlib.c:101
 #, c-format
 msgid "g_module_open of `%s' failed with `%s'"
-msgstr "g_module_open i «%s» feila med «%s»"
+msgstr "g_module_open i Â«%sÂ» feila med Â«%sÂ»"
 
 #: bonobo-activation/bonobo-activation-shlib.c:119
 #: bonobo-activation/bonobo-activation-shlib.c:155
 #, c-format
 msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
-msgstr "Klarar ikkje å finne symbol Bonobo_Plugin_info i «%s»"
+msgstr "Klarar ikkje Ã¥ finne symbol Bonobo_Plugin_info i Â«%sÂ»"
 
 #: bonobo-activation/bonobo-activation-shlib.c:203
 #, c-format
 msgid "Factory `%s' returned NIL for `%s'"
-msgstr "Fabrikken «%s» returnerte NIL for «%s»"
+msgstr "Fabrikken Â«%sÂ» returnerte NIL for Â«%sÂ»"
 
 #: bonobo-activation/bonobo-activation-shlib.c:220
 #, c-format
 msgid "Shlib `%s' didn't contain `%s'"
-msgstr "Shlib «%s» innheldt ikkje «%s»"
+msgstr "Shlib Â«%sÂ» innheldt ikkje Â«%sÂ»"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
-msgstr "Kunne ikkje finne kva barn tenarar var oppført i"
+msgstr "Kunne ikkje finne kva barn tenarar var oppfÃ¸rt i"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Spørjing feila:"
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Aktivering feila:"
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Klarte ikkje å tolke AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Klarter ikkje å tolke konteksten:"
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Klarte ikkje å aktivere tenar:"
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
-msgstr "Katalog å lese .server filer frå"
+msgstr "Katalog Ã¥ lese .server filer frÃ¥"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "DIRECTORY"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "ObjectDirectory domene"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "DOMAIN"
+#: server/activation-server-main.c:69
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "FungÃ©r som ActivationContext (vanleg er kun ObjectDirectory)"
 
 #: server/activation-server-main.c:73
-msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
-msgstr "Fungér som ActivationContext (vanleg er kun ObjectDirectory)"
-
-#: server/activation-server-main.c:77
 msgid "File descriptor to write IOR to"
-msgstr "Fildeskriptor å skrive IOR til"
+msgstr "Fildeskriptor Ã¥ skrive IOR til"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
-msgstr "Spørjingsuttrykk som skal evaluerast"
+msgstr "SpÃ¸rjingsuttrykk som skal evaluerast"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "EXPRESSION"
 
@@ -157,7 +133,7 @@ msgstr "CORBA CosNaming-teneste."
 msgid "Name service"
 msgstr "Namneteneste"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Vi handterar ikkje avtivering av shlib-objekt i ein fjernprosess enno"
 
@@ -167,8 +143,8 @@ msgid ""
 "The Bonobo Activation configuration file was not read successfully. Please, "
 "check it is valid in: %s"
 msgstr ""
-"OAF konfigurasjonsfila vart ikkje skikkeleg lest. Sjekk at den er gyldig i: %"
-"s"
+"Bonobo Activation-konfigurasjonsfila vart ikkje skikkeleg lest. Sjekk at den "
+"er gyldig i: %s"
 
 #: server/object-directory-load.c:94
 msgid "a NULL iid is not valid"
@@ -187,12 +163,12 @@ msgstr "iid %s har ein NULL plassering"
 #: server/object-directory-load.c:111
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "ugyldig teikn «%c» i iid «%s»"
+msgstr "ugyldig teikn Â«%cÂ» i iid Â«%sÂ»"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
-msgstr "Eigenskap «%s» har ingen verdi"
+msgstr "Eigenskap Â«%sÂ» har ingen verdi"
 
 #.
 #. * If this exception blows ( which it will only do with a multi-object )
@@ -201,19 +177,19 @@ msgstr "Eigenskap «%s» har ingen verdi"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr ""
 
 #: utils/bonobo-activation-sysconf.c:62
 msgid "Could not save configuration file.\n"
-msgstr "Klarte ikkje å lagre oppsettsfil.\n"
+msgstr "Klarte ikkje Ã¥ lagre oppsettsfil.\n"
 
 #: utils/bonobo-activation-sysconf.c:63
 #, c-format
 msgid "Please, make sure you have permissions to write to '%s'.\n"
-msgstr "Sjekk at du har løyve til å skrive til denne fila «%s».\n"
+msgstr "Sjekk at du har lÃ¸yve til Ã¥ skrive til denne fila Â«%sÂ».\n"
 
 #: utils/bonobo-activation-sysconf.c:66
 msgid "Successfully wrote configuration file.\n"
@@ -243,7 +219,7 @@ msgstr "Bonobo-aktivering oppsettfila inneheld:\n"
 
 #: utils/bonobo-activation-sysconf.c:233
 msgid "Directory to remove from configuration file"
-msgstr "Katalog som skal fjernast frå oppsettsfil"
+msgstr "Katalog som skal fjernast frÃ¥ oppsettsfil"
 
 #: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
 msgid "directory path"
@@ -261,8 +237,32 @@ msgstr "Vis katalogar i oppsettsfil"
 msgid "Display path to configuration file"
 msgstr "Vis sti til oppsettsfil"
 
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Ingen tenar svarer pÃ¥ di spÃ¸rjing"
+
+#~ msgid "Query failed: "
+#~ msgstr "SpÃ¸rjing feila:"
+
+#~ msgid "Activation failed: "
+#~ msgstr "Aktivering feila:"
+
+#~ msgid "Could not parse AID"
+#~ msgstr "Klarte ikkje Ã¥ tolke AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Klarter ikkje Ã¥ tolke konteksten:"
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Klarte ikkje Ã¥ aktivere tenar:"
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "ObjectDirectory domene"
+
+#~ msgid "DOMAIN"
+#~ msgstr "DOMAIN"
+
 #~ msgid "Object directory to use when registering servers"
-#~ msgstr "Objektkatalog som skal brukast når du registerar tenarar"
+#~ msgstr "Objektkatalog som skal brukast nÃ¥r du registerar tenarar"
 
 #, fuzzy
 #~ msgid "OAF options"

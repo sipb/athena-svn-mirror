@@ -29,13 +29,35 @@
 
 G_BEGIN_DECLS
 
-Bonobo_RegistrationResult bonobo_activation_active_server_register (const char  *iid,
-                                                                 CORBA_Object obj);
-void        bonobo_activation_active_server_unregister (const char  *iid, 
-                                                        CORBA_Object obj);
+Bonobo_RegistrationResult
+	bonobo_activation_register_active_server      (const char   *iid,
+						       CORBA_Object  obj,
+						       GSList       *reg_env);
+void    bonobo_activation_unregister_active_server    (const char   *iid, 
+						       CORBA_Object  obj);
 
-char       *bonobo_activation_make_registration_id     (const char *iid, 
-                                                        const char *display);
+GSList *bonobo_activation_registration_env_set        (GSList       *reg_env,
+						       const char   *name,
+						       const char   *value);
+void    bonobo_activation_registration_env_free       (GSList       *reg_env);
+
+void    bonobo_activation_registration_env_set_global (GSList       *reg_env,
+						       gboolean      append_if_existing);
+GSList *bonobo_activation_registration_env_get_global (void);
+
+
+#ifndef BONOBO_DISABLE_DEPRECATED
+
+Bonobo_RegistrationResult
+	bonobo_activation_active_server_register   (const char   *registration_id,
+						    CORBA_Object  obj);
+
+void    bonobo_activation_active_server_unregister (const char   *iid, 
+						    CORBA_Object  obj);
+
+char       *bonobo_activation_make_registration_id (const char *iid, 
+						    const char *display);
+#endif /* BONOBO_DISABLE_DEPRECATED */
 
 
 const char *bonobo_activation_iid_get       (void);

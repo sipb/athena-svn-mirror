@@ -2,73 +2,72 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Dennis Smit <synap@area101.penguin.nl>, 2000.
 # Almer S. Tigelaar <almer1@dds.nl>, 2000.
+# Tino Meinen <a.t.meinen@chello.nl>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-04-18 01:03+0100\n"
-"Last-Translator: Ronald Hummelink <ronald@hummelink.xs4all.nl>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2003-01-03 16:18+0100\n"
+"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Geen enkele server beantwoordt uw query"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Kindproces gaf geen foutmelding, er is een onbekende fout opgetreden"
+msgstr ""
+"Dochterproces gaf geen foutmelding, er is een onbekende fout opgetreden"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
-msgstr "Lezen van kindproces is mislukt: %s\n"
+msgstr "Lezen van dochterproces is mislukt: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
-msgstr "Kon geen nieuw proces starten"
+msgstr "Kon geen nieuw proces afsplitsen"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
-msgstr "Kind ontving signaal %u (%s)"
+msgstr "Dochter ontving signaal %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
-msgstr "Onbekende, niet stop gerelateerde, fout (status is %u)"
+msgstr "Onbekende, non-exit gerelateerde, fout (status is %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
-msgstr "Zetten van de procesgroep van %s mislukt: %s\n"
+msgstr "bonobo-activation kon de procesgroep van %s niet instellen: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Uitvoeren van %s mislukt: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+# File descriptor om de afkorting duidelijk te laten. Normale gebruikers weten waarschijnlijk niet wat een bestandsbeschrijver is.
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
-msgstr "Bestandsdescriptor voor afdrukken van de IOR"
+msgstr "File descriptor voor afdrukken van de IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "Te activeren IID"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Voorkom het registreren van de server met OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "bonobo-activation opties"
 
@@ -86,80 +85,61 @@ msgstr "Kan symbool 'Bonobo_Plugin_info' niet vinden in '%s'"
 #: bonobo-activation/bonobo-activation-shlib.c:203
 #, c-format
 msgid "Factory `%s' returned NIL for `%s'"
-msgstr "Factory '%s' retourneerde NIL voor '%s'"
+msgstr "Fabriek '%s' retourneerde NIL voor '%s'"
 
 #: bonobo-activation/bonobo-activation-shlib.c:220
 #, c-format
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Bibliotheek '%s' bevatte geen '%s'"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+"Te veel alias-niveaus voor een locale, mogelijk een aanwijzing voor een lus"
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
-msgstr "Kon niet vinden in welk kind de server werd genoemd"
+msgstr "Kon niet vinden in welke dochter de server werd genoemd"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Query mislukt: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "Geen geldige Activation-ID"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Activatering mislukt: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Kon AID niet ontleden"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Kon context niet ontleden: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Kon server niet activeren: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
-msgstr "Directory om .server bestanden uit te lezen"
+msgstr "Map om .server bestanden uit te lezen"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "DIRECTORY"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Domein van ObjectDirectory"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "DOMAIN"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Doe dienst als een ActivationContext (standaardwaarde is alleen als "
 "ObjectDirectory)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
-msgstr "Bestandsdescriptor om IOR naar te schrijven"
+msgstr "File descriptor om IOR naar te schrijven"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Te evalueren query-expressie"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "EXPRESSIE"
 
 #: server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
 msgid "CORBA CosNaming service."
-msgstr "CORBA CosNaam service"
+msgstr "CORBA CosNaming service"
 
 #: server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
 msgid "Name service"
 msgstr "Naam service"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "We ondersteunen het activeren van bibliotheekobjecten in een ander proces "
@@ -191,9 +171,9 @@ msgstr "iid %s heeft een NULL locatie"
 #: server/object-directory-load.c:111
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "ongeldig karakter '%c' in iid '%s'"
+msgstr "ongeldig teken '%c' in iid '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Eigenschap '%s' heeft geen waarde"
@@ -205,10 +185,10 @@ msgstr "Eigenschap '%s' heeft geen waarde"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
-msgstr "Raceconditie bij activereb van server '%s'"
+msgstr "Race-conditie bij activeren van server '%s'"
 
 #: utils/bonobo-activation-sysconf.c:62
 msgid "Could not save configuration file.\n"
@@ -247,11 +227,11 @@ msgstr "bonobo-activation configuratiebestand bevat:\n"
 
 #: utils/bonobo-activation-sysconf.c:233
 msgid "Directory to remove from configuration file"
-msgstr "Directory om uit het configuratiebestand te verwijderen"
+msgstr "Map om uit het configuratiebestand te verwijderen"
 
 #: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
 msgid "directory path"
-msgstr "directorypad"
+msgstr "Map-pad"
 
 #: utils/bonobo-activation-sysconf.c:236
 msgid "Directory to add to configuration file"
@@ -259,11 +239,8 @@ msgstr "Map om toe te voegen aan het configuratiebestand"
 
 #: utils/bonobo-activation-sysconf.c:239
 msgid "Display directories in configuration file"
-msgstr "Toon mappen in het configuratiebestand zien"
+msgstr "Mappen tonen in het configuratiebestand"
 
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
-msgstr "Toon pad naar configuratiebestand"
-
-#~ msgid "Object directory to use when registering servers"
-#~ msgstr "Te gebruiken objectdirectory bij het registreren van servers"
+msgstr "Pad tonen naar het configuratiebestand"

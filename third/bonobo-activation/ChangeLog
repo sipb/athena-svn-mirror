@@ -1,43 +1,409 @@
-2002-10-29  Michael Meeks  <michael@ximian.com>
+2003-01-20  Michael Meeks  <michael@ximian.com>
 
-	* Version 1.0.4
+	* Version 2.2.0
+
+2003-01-15  Paolo Maggi  <maggi@athena.polito.it>
+
+	* bonobo-activation/bonobo-activation-client.c
+	(get_lang_list): fix memory leak.
+
+2003-01-11  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), Farsi (fa), Macedonian (mk)
+	 and Walloon (wa) to ALL_LINGUAS
+
+2003-01-01  Jochen Voss  <voss@localhost>
+
+	* bonobo-activation/bonobo-activation-init.c, api-docs/server-xml-reference.sgml:
+	minor spelling fixes
+
+2002-12-17  Hidetoshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* server/object-directory-load.c (add_initial_locales): upd.
+
+	* bonobo-activation/bonobo-activation-get-language-list.c:
+	cut and paste from libgnome - this sucks, it needs to move
+	to glib soon.
+
+	* bonobo-activation/bonobo-activation-client.c
+	(get_lang_list): upd.
+
+	* bonobo-activation/bonobo-activation-server-info.c
+	(bonobo_server_info_prop_lookup): improve i18n compare.
+
+2002-12-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_activate_from_id_async): prune
+	bogus return causing forte grief.
+
+2002-12-02  Martin H.  <textshell@neutronstar.dyndns.org>
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_registration_env_free): free the
+	full env name/value pair list.
+
+2002-11-28  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.1
+
+2002-11-21  Dan Mills  <thunder@ximian.com>
+
+	* configure.in: replace gtk-doc version check with an all-sh
+	version that works better.
+
+2002-11-16  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	Janitorial work to clean up the documentation building.
+
+	* api-docs/Makefile.am: Exclude some private files from the docs
+	scan.
+
+	* api-docs/bonobo-activation-sections.txt: Move all the
+	functions from *-unused.txt to here and group them very
+	roughly into sections.
+
+	* bonobo-activation/bonobo-activation-init.c,
+	* bonobo-activation/bonobo-activation-register.c,
+	* bonobo-activation/bonobo-activation-server-info.c:
+	Rename some parameters in the doc comments to match the function
+	declaration. Remove blank lines from program listing comments,
+	since they confused gtk-doc.
+
+	* api-docs/tmpl/base.sgml,
+	* api-docs/tmpl/types.sgml,
+	* api-docs/tmpl/debugging.sgml,
+	* api-docs/tmpl/initialization.sgml,
+	* api-docs/tmpl/query.sgml,
+	* api-docs/tmpl/registration.sgml,
+	* api-docs/tmpl/utilities.sgml: Updated template files.
+
+	* api-docs/bonobo-activation-decl.txt: Removed.
+
+	* api-docs/.cvsignore, api-docs/tmpl/.cvsignore: Sssh.
+
+2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-04  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_query): only insert the query
+	if we didn't get an exception, return NULL on
+	exception.
 
 2002-10-29  Michael Meeks  <michael@ximian.com>
 
 	* bonobo-activation-2.0.pc.in: remove bogus
 	  libxml2 requirement; that's in the server.
 
-2002-10-17  Mark McLoughlin  <mark@skynet.ie>
+2002-10-28  Michael Meeks  <michael@ximian.com>
 
-	Fixes #84107 and #86016 in a rather hacky way. The 
-	real fix will be going into HEAD. Based on a patch
-	from Bala - balamurali.viswanathan@wipro.com.
+	* server/object-directory-corba.c
+	 (remove_active_server): don't assert fail on
+	 removing a non-registered server.
 
-	* bonobo-activation/bonobo-activation-fork-server.c,
-	  bonobo-activation/bonobo-activation-private.h:
-	(get_one_context_value): impl.
-	(bonobo_activation_server_by_forking): set the DISPLAY,
-	SESSION_MANAGER and AUDIODEV variables from the CORBA
-	invocation context.
+2002-10-22  Julio Merino  <jmmv@hispabsd.org>
+
+	* bonobo-activation/bonobo-activation-activate.c:
+	  include locale.h
+
+2002-10-18  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.0
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo-activation/bonobo-activation-fork-server.c: use
+	g_warnings for debugging so we see the pid.
+
+	* bonobo-activation/bonobo-activation-private.h,
+	  bonobo-activation/bonobo-activation-register.c:
+	(Bonobo_ActivationEnvironment_match): rename this from
+	_equal and just require that the intersection of the
+	sets of variables match.
+
+	* server/activation-context-corba.c: (ac_do_activation),
+	(impl_Bonobo_ActivationContext_activateMatching),
+	(impl_Bonobo_ActivationContext_activateFromAid): pass
+	the activation environment around in a few more places.
+
+	* server/object-directory-corba.c:
+	(od_get_active_server): update.
+
+	* test/empty-server.c: (main): fix silly registering the
+	same iid twice.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo-activation/bonobo-activation-register.[ch]:
+	(bonobo_activation_active_server_unregister): don't
+	#define this as unregister_active_server. That's no
+	good for ABI compat. duh.
+
+2002-10-18 Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo-activation/bonobo-activation-base-service.c:
+	(local_re_check_fn): update.
 
 	* bonobo-activation/bonobo-activation-init.c:
-	(bonobo_activation_orb_init): set SESSION_MANAGER and
-	AUDIODEV in the invocation context.
+	(bonobo_activation_orb_init): don't set display
+	context value.
 
-	* idl/Bonobo_ActivationContext.idl:
-	* idl/Bonobo_ObjectDirectory.idl: pass audiodev and
-	session_manager around in the invocation contexts.
+	* idl/Bonobo_ActivationContext.idl: remove display
+	from context.
 
-	* server/activation-server-main.c: kill unset
-	SESSION_MANAGER.
+	* server/activation-server-main.c: (main): don't
+	unset SESSION_MANAGER.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo-activation/bonobo-activation-activate.c:
+	(activation_async_callback): munge the GeneralError
+	description into the error reason for extra info.
+	(bonobo_activation_init_activation_env): fix silly.
+
+	* bonobo-activation/bonobo-activation-fork-server.[ch]:
+	(scan_list): compare environments, not just display.
+	(setenv_activation_environment): set all the env
+	valriables in the child.
+	(bonobo_activation_server_by_forking): pass environment,
+	not just display.
+
+	* bonobo-activation/bonobo-activation-register.c:
+	(Bonobo_ActivationEnvironment_equal): impl.
+	(Bonobo_ActivationEnvValue_copy): fix silly.
+	(registration_result_to_string): impl for debugging.
+	(bonobo_activation_register_active_server): use it.
 
 	* server/object-directory-activate.c:
-	(od_server_activate_exe): pass the entire invocation
-	context to server_by_forking() instead of just the
-	display.
+	(od_server_activate_factory), (od_server_activate_exe),
+	(od_server_activate): pass around the activation environment.
 
-	* server/test-performance.c: (test_server_info_load):
-	loop 10 times, instead of 1000.
+	* server/object-directory-corba.c: major overhaul of object
+	tracking so we can match on the environment without munging
+	it into the iid and also to be able to look up an object reference.
+
+	* server/server.h: update.
+
+	* test/bonobo-activation-test.c: make it a little easier
+	to follow what's going on by giving decent PASSED/FAILED
+	messages and printing which async activation returned.
+
+	* test/empty-server.c: (main): register both empties
+	with the same environment.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo-activation/bonobo-activation-activate.[ch]:
+	(bonobo_activation_activate),
+	(bonobo_activation_activate_async): use the global
+	activation environment.
+	(bonobo_activation_init_activation_env): implement
+	initialising the default activation environment set.
+	(bonobo_activation_set_activation_env_value): allow
+	setting extra values.
+
+	* bonobo-activation/bonobo-activation-init.c:
+	(bonobo_activation_orb_init): init the activation env.
+
+	* bonobo-activation/bonobo-activation-private.h,
+	  bonobo-activation/bonobo-activation-register.c:
+	(Bonobo_ActivationEnvValue_copy),
+	(Bonobo_ActivationEnvValue_set): implement.
+	(copy_env_list_to_sequence):
+	(bonobo_activation_registration_env_set_global): update.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	Add some rather ugly API to allow a list of environmental
+	variables to be specified when registering the server.
+	This replaces the old make_registration_id() hack. New
+	registration methods are added and the old ones are
+	deprecated.
+
+	* bonobo-activation/bonobo-activation-register.[ch]:
+	(bonobo_activation_register_active_server): allow
+	a enviroment list to be used when registering 
+	server.
+	(bonobo_activation_active_server_register): compatibility
+	wrapper around register_active_server(). Retains support
+	for registration ids generated with make_registration_id().
+	Deprecated in favour of register_active_server().
+	(bonobo_activation_unregister_active_server): rename to
+	match new registration function.
+	(bonobo_activation_registration_env_set): method for easy
+	construction of an environment list.
+	(bonobo_activation_registration_env_free): free the list.
+	(bonobo_activation_registration_env_set_global): allow
+	setting a global list which will be used for registration
+	if another one isn't specified. Basically just a hack to
+	so we don't have to break ABI compat in bonobo.
+
+	* idl/Bonobo_Activation_types.idl: add an "unset" flag to
+	ActivationEnvValue so we can tell the difference between
+	an empty variable and an unset one.
+
+	* idl/Bonobo_ObjectDirectory.idl: remove the environment
+	list from unregister().
+
+	* server/object-directory-corba.c:
+	(impl_Bonobo_ObjectDirectory_unregister): update.
+
+	* test/empty-server.c: (main): add some simple testing
+	of the above functionality.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* idl/Bonobo_ActivationContext.idl: kill activateFromIid.
+ 
+	* bonobo-activation/bonobo-activation-activate.c:
+	(bonobo_activation_activate_from_id),
+	(bonobo_activation_activate_from_id_async): if the id is an iid
+	then just construct a query to match against that iid and
+	call bonobo_activation_activate.
+
+	* server/activation-context-corba.c: kill activateFromIid.
+
+	* server/object-directory-activate.c:
+	(od_server_activate_factory): construct a query matching against
+	the factories IID and call activateMatching.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* idl/Bonobo_ObjectDirectory.idl: add activation environment
+	parameters to activate, register_new and unregister.
+
+	* bonobo-activation/bonobo-activation-register.c:
+	(bonobo_activation_active_server_register),
+	(bonobo_activation_active_server_unregister): pass dummy
+	environments.
+
+	* server/activation-context-corba.c: (ac_do_activation):
+	* server/activation-server-main.c: (main): ditto.
+
+	* server/object-directory-corba.c:
+	(impl_Bonobo_ObjectDirectory__get_servers),
+	(impl_Bonobo_ObjectDirectory_get_active_servers),
+	(od_get_active_server), (impl_Bonobo_ObjectDirectory_activate),
+	(impl_Bonobo_ObjectDirectory_register_new),
+	(impl_Bonobo_ObjectDirectory_unregister),
+	(impl_Bonobo_ObjectDirectory__get_hostID),
+	(impl_Bonobo_ObjectDirectory__get_username): update for IDL
+	changes, don't discard any hope of type safety when populating
+	the epv and fixup skel signatures to match what is expected.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* idl/Bonobo_ActivationContext.idl: put back the "display"
+	context for all activate methods.
+
+	* idl/Bonobo_Activation_types.idl: put back "domain" to
+	Bonobo_ServerInfo. This struct is very much part of our ABI.
+
+	* bonobo-activation/bonobo-activation-server-info.c:
+	(Bonobo_ServerInfo_copy): copy the domain.
+
+	* server/object-directory-load.c:
+	(parse_oaf_server_attrs): set a dummy domain. CORBA doesn't
+	allow NULL strings.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* idl/Bonobo_ActivationContext.idl: rename
+	Bonobo::ActivationContext::activate() to activateMatching(),
+	activate_from_id to activateFromAid and add activateFromIid.
+	Rename other methods to use studlyCaps as is convetional.
+	Remove "display" and "domain" context properties from the
+	various methods.
+	
+	* idl/Bonobo_Activation_types.idl: add ActivationEnvValue and
+	ActivationEnvironment. Remove domain element from ServerInfo.
+
+	* idl/Bonobo_ObjectDirectory.idl: Remove "display" and "domain"
+	context properties from the various methods.
+
+	* bonobo-activation/bonobo-activation-activate.c: update for idl
+	re-structuring and re-naming.
+
+	* bonobo-activation/bonobo-activation-base-service.[ch]:
+	  bonobo-activation/bonobo-activation-id.[ch]:
+	  bonobo-activation/bonobo-activation-init.c:
+	  bonobo-activation/bonobo-activation-private.h:
+	  bonobo-activation/bonobo-activation-register.c:
+	  bonobo-activation/bonobo-activation-server-info.c:
+	Remove all references to "domain".
+
+	* server/activation-context-corba.c:
+	(child_od_info_new), (child_od_info_free): remove references to
+	"domain".
+	(impl_Bonobo_ActivationContext_addDirectory):
+	rename from add_directory().
+	(impl_Bonobo_ActivationContext_removeDirectory):
+	rename from remove_directory().
+	(ac_do_activation): remove references to "domain".
+	(impl_Bonobo_ActivationContext_activateMatching):
+	rename from activate().
+	(ac_aid_to_query_string): don't convert from and IID to AID
+	here anymore.
+	(ac_context_to_string_array): kill "domain".
+	(impl_Bonobo_ActivationContext_activateFromAid):
+	rename from activate_from_id().
+	(impl_Bonobo_ActivationContext_activateFromIid): convert
+	the iid to an iid and call activateFromAid().
+
+	* server/activation-context-query.c:
+	* server/activation-server-main.c: more "domain" killing.
+
+	* server/client.c: (main): use activateMatching().
+
+	* server/object-directory-activate.c:
+	(od_server_activate_factory): use activateFromIid().
+
+	* server/object-directory-corba.c:
+	* server/object-directory-load.c:
+	* server/server.h:
+	* server/test-performance.c:
+	* test/bonobo-activation-test.c: yet more "domain" killing.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	Re-implements the async activation methods using
+	ORBit2's async method invocation interface.
+
+	* bonobo-activation/Makefile.am:
+	remove bonobo-activation-async.c, bonobo-activation-async-callback.h,
+	and bonobo-activation-async-callback.c from the build.
+
+	* bonobo-activation/bonobo-activation-async-callback.c:
+	* bonobo-activation/bonobo-activation-async-callback.h:
+	* bonobo-activation/bonobo-activation-async.c: remove.
+
+	* bonobo-activation/bonobo-activation-activate.c:
+	(bonobo_activation_set_test_components_enabled),
+	(bonobo_activation_get_test_components_enabled): make these empty
+	stubs for ABI compat only.
+	(copy_strv_to_sequence): rename from 
+	bonobo_activation_copy_string_array_to_Bonobo_StringList and make
+	static.
+	(bonobo_activation_query): clean up.
+	(handle_activation_result): split the result handling out for re-use.
+	(bonobo_activation_activate): clean up and use handle_activation_result().
+	(bonobo_activation_activate_from_id): ditto and don't explicitly start
+	an ObjectDirectory. That should be handled by the ActivationContext when
+	we actually start using multiple ObjectDirectories.
+	(setup_methods): initialise the ORBit_IMethods here.
+	(activation_async_callback): async reply callback.
+	(bonobo_activation_activate_async),
+	(bonobo_activation_activate_from_id_async): re-implement the sync
+	activation methods using ORBit2 async interface.
+
+	* idl/Bonobo_ActivationContext.idl: remove the ActivationCallback
+	interface, ActivationContext::activate_async() and
+	ActivationContext::activate_from_id_async().
+
+	* server/activation-context-corba.c: remove all async code.
 
 2002-10-15  Michael Meeks  <michael@ximian.com>
 
@@ -76,7 +442,7 @@
 
 2002-08-27  Thomas Vander Stichele <thomas@apestaart.org>
 
-        * configure.in: make not finding flex fatal 
+	* configure.in: make not finding flex fatal 
 
 2002-08-22  Stanislav Brabec  <utx@penguin.cz>
 

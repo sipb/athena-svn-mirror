@@ -1,7 +1,7 @@
-bonobo-activation/bonobo-activation-async-callback.c
 bonobo-activation/bonobo-activation-fork-server.c
 bonobo-activation/bonobo-activation-init.c
 bonobo-activation/bonobo-activation-shlib.c
+bonobo-activation/bonobo-activation-get-language-list.c
 server/activation-context-corba.c
 server/activation-server-main.c
 server/Bonobo_CosNaming_NamingContext.server.in.in

@@ -40,6 +40,15 @@ servers are started.
 </para>
 
 
+<!-- ##### ENUM Bonobo_ActivationResultType ##### -->
+<para>
+
+</para>
+
+@Bonobo_ACTIVATION_RESULT_OBJECT: 
+@Bonobo_ACTIVATION_RESULT_SHLIB: 
+@Bonobo_ACTIVATION_RESULT_NONE: 
+
 <!-- ##### FUNCTION bonobo_activation_query ##### -->
 <para>
 
@@ -110,5 +119,14 @@ as a callback to the asynchrounous activation functions.
 @callback: 
 @user_data: 
 @ev: 
+
+
+<!-- ##### FUNCTION bonobo_activation_set_activation_env_value ##### -->
+<para>
+
+</para>
+
+@name: 
+@value: 
 
 

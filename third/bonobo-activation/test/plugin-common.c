@@ -18,7 +18,7 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 && (TC_IMPL_TC_Plugin_5 == 'n') \
 ) && !defined(TC_DEF_TC_Plugin)
 #define TC_DEF_TC_Plugin 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
 static
 #endif
 const struct CORBA_TypeCode_struct TC_Plugin_struct = {
@@ -26,7 +26,7 @@ const struct CORBA_TypeCode_struct TC_Plugin_struct = {
    CORBA_tk_objref,
    0,
    0,
-   4,
+   ORBIT_ALIGNOF_CORBA_POINTER,
    0,
    0,
    NULL,
@@ -41,13 +41,13 @@ const struct CORBA_TypeCode_struct TC_Plugin_struct = {
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_plugin
 CORBA_unsigned_long Plugin__classid = 0;
 #endif
 
 /* Interface type data */
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
 static
 #endif
 ORBit_IMethod Plugin__imethods[] = {
@@ -55,14 +55,14 @@ ORBit_IMethod Plugin__imethods[] = {
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "doPluginTest", 12,
+    TC_void, "doPluginTest", 12,
     0}
 };
 static CORBA_string Plugin__base_itypes[] = {
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
 static
 #endif
 ORBit_IInterface Plugin__iinterface = {

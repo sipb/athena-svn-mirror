@@ -1,3 +1,31 @@
+bonobo-activation-2.2.0
+
+	* bug fixes
+		+ i18n memory leak (Paolo Maggi)
+		+ docs spelling fixes (Jochen Voss)
+		+ i18n re-hash (Hidetoshi Tajima)
+		+ portability fix (Michael)
+		+ registration env leak (Martin H)
+
+bonobo-activation-2.1.0
+
+	* bug fixes
+		+ leak fixes (Michael)
+		+ .server polling (Michael)
+		+ bison 1.50 (Benoit Plessis)
+		+ shutdown fix (Padraig O'Briain)
+		+ build fixes (Padraig O'Briain)
+		+ flex loving (Thomas Vander Stichele)
+		+ thinko fix (Alex Graveley)
+		+ massive AUDIODEV hydra grappling (Mark)
+	* featurelets
+		+ large IDL cleans (Mark)
+		+ i18n cleans (Michael)
+		+ performance regression test (Michael)
+		+ new environment var API (Mark)
+		+ improved error reporting (Mark)
+		+ async activation uses ORBit2 async code (Mark)
+
 bonobo-activation-1.0.3
 
 	* Bug fixes

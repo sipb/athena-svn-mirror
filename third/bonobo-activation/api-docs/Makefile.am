@@ -25,7 +25,12 @@ HFILE_GLOB=$(top_srcdir)/bonobo-activation/*.h
 CFILE_GLOB=$(top_srcdir)/bonobo-activation/*.c
 
 # Headers to ignore
-IGNORE_HFILES=
+IGNORE_HFILES=				\
+	Bonobo_ObjectDirectory.h	\
+	Bonobo_ActivationContext.h	\
+	bonobo-activation-i18n.h	\
+	bonobo-activation-private.h	\
+	bonobo-activation-activate-private.h
 
 # Extra files to add when scanning
 EXTRA_HFILES=

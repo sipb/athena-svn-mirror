@@ -37,6 +37,7 @@
 #include <libxml/xmlmemory.h>
 
 #include "bonobo-activation/bonobo-activation-i18n.h"
+#include "bonobo-activation/bonobo-activation-private.h"
 #include "server.h"
 
 /* SAX Parser */
@@ -56,7 +57,6 @@ typedef struct {
         int unknown_depth;
         
         const char *host;
-        const char *domain;
         GSList **entries;
         
         Bonobo_ServerInfo *cur_server;
@@ -165,8 +165,8 @@ parse_oaf_server_attrs (ParseInfo      *info,
         info->cur_server->server_type = CORBA_string_dup (type);
         info->cur_server->location_info = CORBA_string_dup (location);
         info->cur_server->hostname = CORBA_string_dup (info->host);
-        info->cur_server->domain = CORBA_string_dup (info->domain);
         info->cur_server->username = CORBA_string_dup (g_get_user_name ());
+        info->cur_server->domain = CORBA_string_dup ("unused");
 }
 
 static GHashTable *interesting_locales = NULL;
@@ -174,56 +174,17 @@ static GHashTable *interesting_locales = NULL;
 void
 add_initial_locales (void)
 {
-        const char *tmp;
-        char *tmp2, *lang, *lang_with_locale, *equal_char;
+        const GList *l;
 
-        if (!interesting_locales) {
+        if (!interesting_locales)
                 interesting_locales = g_hash_table_new (
                         g_str_hash, g_str_equal);
-        }
-        lang_with_locale = NULL;
-        
-        tmp = g_getenv ("LANGUAGE");
 
-        if (!tmp)
-                tmp = g_getenv ("LANG");
-        
-        lang = g_strdup (tmp);
-        tmp2 = lang;
-
-        if (lang) {
-                /* envs can be in NAME=VALUE form */
-		equal_char = strchr (lang, '=');
-		if (equal_char)
-			lang = equal_char + 1;
-
-                /* check if the locale has a _ */
-                equal_char = strchr (lang, '_');
-                if (equal_char != NULL) {
-                        lang_with_locale = g_strdup (lang);
-                        *equal_char = 0;
-                }
-
-                if (lang_with_locale && strcmp (lang_with_locale, "")) {
-                        g_hash_table_insert (interesting_locales,
-                                             lang_with_locale,
-                                             GUINT_TO_POINTER (1));
-#ifdef LOCALE_DEBUG
-                        g_warning ("Init lang '%s'", lang_with_locale);
-#endif
-                }
-
-                if (lang && strcmp (lang, "")) {
-                        g_hash_table_insert (interesting_locales,
-                                             g_strdup (lang),
-                                             GUINT_TO_POINTER (1));
-#ifdef LOCALE_DEBUG
-                        g_warning ("Init lang(2) '%s'", lang);
-#endif
-                }
-        }
-
-        g_free (tmp2);
+	for (l = bonobo_activation_i18n_get_language_list (NULL);
+             l; l = l->next)
+		g_hash_table_insert (interesting_locales,
+                                     g_strdup ((char *) l->data),
+                                     GUINT_TO_POINTER (1));
 }
 
 gboolean
@@ -592,8 +553,7 @@ static xmlSAXHandler od_SAXParser = {
 static void
 od_load_file (const char *file,
               GSList    **entries,
-              const char *host, 
-              const char *domain)
+              const char *host)
 {
         ParseInfo *info;
 	xmlSAXHandlerPtr oldsax;
@@ -602,7 +562,6 @@ od_load_file (const char *file,
         
         info = parse_info_new ();
         info->host = host;
-        info->domain = domain;
         info->entries = entries;
 
         ctxt = xmlCreateFileParserCtxt (file);
@@ -647,8 +606,7 @@ od_filename_has_extension (const char *filename,
 static void
 od_load_directory (const char *directory,
                    GSList    **entries,
-                   const char *host, 
-                   const char *domain)
+                   const char *host)
 {
 	DIR *directory_handle;
 	struct dirent *directory_entry;
@@ -671,7 +629,7 @@ od_load_directory (const char *directory,
                 pathname = g_strdup_printf ("%s/%s", directory, directory_entry->d_name);
 
                 if (od_filename_has_extension (pathname, ".server")) {
-                        od_load_file (pathname, entries, host, domain);
+                        od_load_file (pathname, entries, host);
                 }
 
 		g_free (pathname);
@@ -685,7 +643,7 @@ void
 bonobo_server_info_load (char **directories,
                          Bonobo_ServerInfoList   *servers,
                          GHashTable **iid_to_server_info_map,
-                         const char *host, const char *domain)
+                         const char *host)
 {
 	GSList *entries;
         int length;
@@ -705,7 +663,7 @@ bonobo_server_info_load (char **directories,
 
         /* Load each directory */
 	for (i = 0; directories[i] != NULL; i++)
-                od_load_directory (directories[i], &entries, host, domain);
+                od_load_directory (directories[i], &entries, host);
 
 	/* Now convert 'entries' into something that the server can store and pass back */
 	length = g_slist_length (entries);

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation CVS\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
 "PO-Revision-Date: 2002-04-02 22:12+0900\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -15,61 +15,57 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "問い合わせに対応するサーバがありません"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr "子プロセスがエラーメッセージを出力しませんでした。不明なエラーが発生"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "子プロセスからの読み出しに失敗: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "新規プロセスを fork できませんでした。"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "子プロセスがシグナル %u (%s) を受け取りました。"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "不明な未終了エラー (状態 = %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "bonobo-activation が %s のプロセスグループの設定に失敗しました: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "%s の実行に失敗: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "IOR の出力先のファイルディスクリプタ"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID の活性化"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "OAF でサーバーの登録を禁止"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Bonobo activation オプション"
 
@@ -94,59 +90,39 @@ msgstr "Factory `%s' が `%s' に NIL を返しました"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' は `%s' を含んでいませんでした"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "サーバーがどの子プロセスで登録されたか分かりませんでした。"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "クエリーに失敗しました: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "活性化に失敗しました: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "AIDをパースできません"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "コンテクストをパースできません: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "サーバを活性化できません: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr ".server ファイルを読み込むディレクトリ"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "ディレクトリ"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "ObjectDirectoryのドメイン"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "ドメイン"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "ActivationContextとして振る舞う(デフォルトではObjectDirectoryのみ)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "IORを書き込むファイルディスクリプタ"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "評価するクエリー表現"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "表現"
 
@@ -158,7 +134,7 @@ msgstr "CORBA CosNaming サービス"
 msgid "Name service"
 msgstr "ネームサービス"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "リモートプロセスの shlib オブジェクトの活性化は未だ実装されていません。"
@@ -191,7 +167,7 @@ msgstr "iid %s の場所が NULL です。"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "不正な文字 '%c' が iid '%s' の中にあります。"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "プロパティ %s は値を持っていません。"
@@ -203,7 +179,7 @@ msgstr "プロパティ %s は値を持っていません。"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "サーバ '%s' を活性化する際に競合発生"
@@ -262,6 +238,30 @@ msgstr "設定ファイル中のディレクトリの表示"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "設定ファイルのパスを表示"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "問い合わせに対応するサーバがありません"
+
+#~ msgid "Query failed: "
+#~ msgstr "クエリーに失敗しました: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "活性化に失敗しました: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "AIDをパースできません"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "コンテクストをパースできません: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "サーバを活性化できません: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "ObjectDirectoryのドメイン"
+
+#~ msgid "DOMAIN"
+#~ msgstr "ドメイン"
 
 #~ msgid "Object directory to use when registering servers"
 #~ msgstr "サーバー登録時に使用するオブジェクトディレクトリ"

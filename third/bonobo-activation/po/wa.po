@@ -1,0 +1,239 @@
+# translation of bonobo-activation.po to Walon
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Pablo Saratxaga <srtxg@chanae.alphanet.ch>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bonobo-activation\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2003-01-12 15:28+0100\n"
+"Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
+"Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Dji n' a savou lere a pårti do process efant: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:296
+msgid "Couldn't fork a new process"
+msgstr "Dji n' a savou fé on fork() d' on novea process"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:319
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "L' efant a rçuvou li signå %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:324
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-fork-server.c:387
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr ""
+"bonobo-activation n' a nén savou mete li groupe li groupe do process di %s: %"
+"s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:399
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "L' enondaedje di %s a fwait berwete: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-init.c:243
+msgid "File descriptor to print IOR on"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
+msgid "FD"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-init.c:245
+msgid "IID to activate"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-init.c:247
+msgid "Prevent registering of server with OAF"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-init.c:334
+msgid "Bonobo activation options"
+msgstr "Tchuzes d' activaedje di bonobo"
+
+#: bonobo-activation/bonobo-activation-shlib.c:101
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "Li drovaedje pa g_module_open di «%s» a fwait berwete avou «%s»"
+
+#: bonobo-activation/bonobo-activation-shlib.c:119
+#: bonobo-activation/bonobo-activation-shlib.c:155
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Dji n' a savou trover li simbole Bonobo_Plugin_info dins «%s»"
+
+#: bonobo-activation/bonobo-activation-shlib.c:203
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr ""
+
+#: bonobo-activation/bonobo-activation-shlib.c:220
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Li pårteye livreye «%s» n' a nén «%s» å dvins"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
+msgid "Couldn't find which child the server was listed in"
+msgstr ""
+
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
+
+#: server/activation-server-main.c:66
+msgid "Directory to read .server files from"
+msgstr "Ridant k' on lejhe les fitchîs «.server»"
+
+#: server/activation-server-main.c:66
+msgid "DIRECTORY"
+msgstr "RIDANT"
+
+#: server/activation-server-main.c:69
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Siervi come èn ActivationContext (li prémetowe valixhance c' est del fé "
+"seulmint come èn ObjectDirectory)"
+
+#: server/activation-server-main.c:73
+msgid "File descriptor to write IOR to"
+msgstr ""
+
+#: server/activation-server-main.c:81
+msgid "Query expression to evaluate"
+msgstr "Ratourneure di cweraedje a-z evaluwer"
+
+#: server/activation-server-main.c:81
+msgid "EXPRESSION"
+msgstr "RATOURNEURE"
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr ""
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "No do siervice"
+
+#: server/object-directory-activate.c:185
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+
+#: server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+
+#: server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr ""
+
+#: server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr ""
+
+#: server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr ""
+
+#: server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "caractere «%c» nén valide dins l' iid «%s»"
+
+#: server/object-directory-load.c:306
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Li prôpieté «%s» n' a nole valixhance"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: server/object-directory-corba.c:886
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Dji n' a savou schaper l' fitchî d' apontiaedje.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Acertinez vs ki vos avoz l' permissions po scrire e «%s».\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Li schapaedje do fitchî d' apontiaedje a stî comufåt.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"li fitchî d' apontiaedje est:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s est ddja el fitchî d' apontiaedje\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "i gn a pont di fitchî d' apontiaedje sitructuré comufåt\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Li fitchî d' apontiaedje di bonobo-activation a-st å dvins:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Ridant a oister foû pol fitchî d' apontiaedje"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "tchimin do ridant"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Ridant a radjouter pol fitchî d' apontiaedje"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Håyner les ridants do fitchî d' apontiaedje"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Håyner li tchmin do fitchî d' apontiaedje"

@@ -4,8 +4,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"Project-Id-Version: bonobo-activation VERSION\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
 "PO-Revision-Date: 2002-05-05 23:07GMT\n"
 "Last-Translator: \n"
 "Language-Team:  <C@li.org>\n"
@@ -14,61 +14,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "لا خادم مقابل لاستعلامك"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr "لم تعط العملية الإبنة رسالة خطأ, فشل غير معروف ظهر."
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "فشلت القراءة من العملية الإبنة: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "لم يمكن تفريق عملية جديدة"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "اتلم الإبن الإشارة %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Unknown non-exit error (status is %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "فشل bonobo-activation في تعيين مجموعة العمليات لـ%s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "فشل تنفيذ %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "File descriptor to print IOR on"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID المطلوب تنشيطها"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "تمنع تسجيل خادم مع OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "خيارات تنشيط Bonobo"
 
@@ -93,59 +89,39 @@ msgstr "Factory `%s' returned NIL for `%s'"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' لم يحتوي `%s'"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "لم يمكن ايجاد أي ابن كان الخادم موجودا عليه"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "فشل الاستعلام:"
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "فشل التنشيط: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "لم يمكن تحليل AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "لم يمكن تحليل السياق: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "لم يمكن تنشيط الخادم: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "الدليل المطلوب قراءة ملف .server منه"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "الدليل"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "نطاق دليل الكائنات"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "النطاق"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "File descriptor to write IOR to"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "تعبير الاستعلام المطلوب تقييمه"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "التعبير"
 
@@ -157,7 +133,7 @@ msgstr "حدمة CORBA CosNaming."
 msgid "Name service"
 msgstr "خدمة الأسماء"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "We don't handle activating shlib objects in a remote process yet"
 
@@ -187,7 +163,7 @@ msgstr "iid %s له موقع NULL"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "حرف غير موجود '%c' في iid '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "الخاصية '%s' ليس لها قيمة"
@@ -199,7 +175,7 @@ msgstr "الخاصية '%s' ليس لها قيمة"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "حالة تسابق لتغعيل الخادم '%s'"
@@ -258,6 +234,30 @@ msgstr "اعرض الدلائل في ملف التهيئة"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "اعرض المسار الى ملف التهيئة"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "لا خادم مقابل لاستعلامك"
+
+#~ msgid "Query failed: "
+#~ msgstr "فشل الاستعلام:"
+
+#~ msgid "Activation failed: "
+#~ msgstr "فشل التنشيط: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "لم يمكن تحليل AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "لم يمكن تحليل السياق: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "لم يمكن تنشيط الخادم: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "نطاق دليل الكائنات"
+
+#~ msgid "DOMAIN"
+#~ msgstr "النطاق"
 
 #~ msgid "Object directory to use when registering servers"
 #~ msgstr "دليل الكائنات الذي سيستخدم عند تسجيل أجهزة الخادم"

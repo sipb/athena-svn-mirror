@@ -175,10 +175,13 @@ main (int argc, char *argv[])
 			break;
 		}
 	} else {
-		Bonobo_ActivationResult *res;
+		Bonobo_ActivationEnvironment  environment;
+		Bonobo_ActivationResult      *res;
 
-		res = Bonobo_ActivationContext_activate (
-                        ac, specs, &reqs, 0,
+		memset (&environment, 0, sizeof (Bonobo_ActivationEnvironment));
+
+		res = Bonobo_ActivationContext_activateMatching (
+                        ac, specs, &reqs, &environment, 0,
                         bonobo_activation_context_get (), &ev);
 		switch (ev._major) {
 		case CORBA_NO_EXCEPTION:

@@ -4,71 +4,67 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bonobo-activation-0.9.2\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-06-01 12:43+0200\n"
+"Project-Id-Version: bonobo-activation-2.1.0\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2002-12-19 08:12--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <linux@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Немає серверів, що відповідають вашому запиту"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr ""
 "Спадкоємний процес не дав повідомлення про помилку, стався невідомий збій"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Не вдалося зчитати з спадкоємного процесу: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Не вдалося розгалудити процес"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Нащадок отримав сиґнал %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Невідома нефатальна помилка (код стану - %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "bonobo-activation не вдалося встановити групу процесу %s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Збій виконання %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "Дескриптор файлу для друку IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "ФД"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID до активації"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
-msgstr "Попередити реґістрацію сервера з OAF"
+msgstr "Попередити реєстрацію сервера з OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Параметри активації Bonobo"
 
@@ -93,59 +89,41 @@ msgstr "Фабрика \"%s\" повернула NIL для \"%s\""
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib \"%s\" не містить \"%s\""
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+"Надто багато рівнів псевдонімів для локалі, це може свідчити про циклічні "
+"посилання"
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "Не вдалося знайти нащадка, в якому вказано сервер"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Збій запиту: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "Неправильний ідентифікатор активації"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Збій активації: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Не вдалося розпізнати AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Не вдалося розпізнати вміст: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Не вдалося активувати сервер: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "Каталог для зчитування файлів .server"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "КАТАЛОГ"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Домен ObjectDirectory"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "ДОМЕН"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Слугувати ActivationContext (типовим є лише ObjectDirectory)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "Дескриптор файлу для запису IOR у"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Вираз запиту для перетворення"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "ВИРАЗ"
 
@@ -157,7 +135,7 @@ msgstr "Сервіс CORBA CosNaming."
 msgid "Name service"
 msgstr "Сервіс назв"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Ми ще не обробляємо активацію об'єктів shlib у віддаленому процесі"
 
@@ -189,7 +167,7 @@ msgstr "iid %s має розміщення NULL"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "невірний символ  \"%c\" в iid \"%s\""
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Властивість \"%s\" не має значення"
@@ -201,14 +179,14 @@ msgstr "Властивість \"%s\" не має значення"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Стан синхронізації сервера, що активується \"%s\""
 
 #: utils/bonobo-activation-sysconf.c:62
 msgid "Could not save configuration file.\n"
-msgstr "Неможливо зберегти файл конфіґурації.\n"
+msgstr "Неможливо зберегти файл налаштувань.\n"
 
 #: utils/bonobo-activation-sysconf.c:63
 #, c-format
@@ -217,7 +195,7 @@ msgstr "Переконайтесь, що ви маєте права на зап�
 
 #: utils/bonobo-activation-sysconf.c:66
 msgid "Successfully wrote configuration file.\n"
-msgstr "Файл конфіґурації успішно збережено.\n"
+msgstr "Файл налаштувань успішно збережено.\n"
 
 #: utils/bonobo-activation-sysconf.c:80
 #, c-format
@@ -225,25 +203,25 @@ msgid ""
 "configuration file is:\n"
 "    %s\n"
 msgstr ""
-"конфіґураційним файлом є:\n"
+"файлом налаштувань є:\n"
 "    %s\n"
 
 #: utils/bonobo-activation-sysconf.c:118
 #, c-format
 msgid "%s already in configuration file\n"
-msgstr "%s вже є в конфіґураційному файлі\n"
+msgstr "%s вже є у файлі налаштувань\n"
 
 #: utils/bonobo-activation-sysconf.c:138
 msgid "there is not a properly structured configuration file\n"
-msgstr "невірно складено конфіґураційний файл\n"
+msgstr "невірно складено файл налаштувань\n"
 
 #: utils/bonobo-activation-sysconf.c:201
 msgid "Bonobo-activation configuration file contains:\n"
-msgstr "Файл конфіґурації Bonobo-activation містить:\n"
+msgstr "Файл налаштувань Bonobo-activation містить:\n"
 
 #: utils/bonobo-activation-sysconf.c:233
 msgid "Directory to remove from configuration file"
-msgstr "Каталог для вилучення з конфіґураційного файлу"
+msgstr "Каталог для вилучення з файла налаштувань"
 
 #: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
 msgid "directory path"
@@ -251,15 +229,12 @@ msgstr "каталог"
 
 #: utils/bonobo-activation-sysconf.c:236
 msgid "Directory to add to configuration file"
-msgstr "Каталог для додавання у конфіґураційний файл"
+msgstr "Каталог для додавання у файл нашатувань"
 
 #: utils/bonobo-activation-sysconf.c:239
 msgid "Display directories in configuration file"
-msgstr "Показати каталоги у конфіґураційному файлі"
+msgstr "Показати каталоги у файлі налаштувань"
 
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
-msgstr "Показати шлях до конфіґураційного файлу"
-
-#~ msgid "Object directory to use when registering servers"
-#~ msgstr "Каталог об'єкта, що використовується під час реєстрації серверів"
+msgstr "Показати шлях до файла налаштувань"

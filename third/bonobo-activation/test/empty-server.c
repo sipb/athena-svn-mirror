@@ -39,6 +39,7 @@ main (int argc, char *argv[])
 
 	CORBA_Environment ev;
 	CORBA_ORB orb;
+	GSList *reg_env = NULL;
 
 	signal (SIGINT, do_exit);
 	signal (SIGTERM, do_exit);
@@ -65,13 +66,24 @@ main (int argc, char *argv[])
 		return 1;
 	}
 
+	reg_env = bonobo_activation_registration_env_set (
+			reg_env, "DISPLAY", getenv ("DISPLAY"));
+	reg_env = bonobo_activation_registration_env_set (
+			reg_env, "SESSION_MANAGER", getenv ("SESSION_MANAGER"));
+	reg_env = bonobo_activation_registration_env_set (
+			reg_env, "LANG", getenv ("LANG"));
+	reg_env = bonobo_activation_registration_env_set (
+			reg_env, "AUDIODEV", getenv ("AUDIODEV"));
+
         /*
          * NB. It is imperative to register the server that is being
          * requested last - or we can still race in the activation daemon.
          */
-	bonobo_activation_active_server_register ("OAFIID:Empty2:19991025", empty_client);
+	bonobo_activation_register_active_server ("OAFIID:Empty2:19991025", empty_client, reg_env);
         g_usleep (500000); /* 1/2 sec */
-	bonobo_activation_active_server_register ("OAFIID:Empty:19991025", empty_client);
+	bonobo_activation_register_active_server ("OAFIID:Empty:19991025", empty_client, reg_env);
+
+	bonobo_activation_registration_env_free (reg_env);
 
 	PortableServer_POAManager_activate
 		(PortableServer_POA__get_the_POAManager (poa, &ev), &ev);

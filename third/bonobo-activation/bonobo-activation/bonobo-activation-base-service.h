@@ -47,7 +47,7 @@ typedef struct {
 	const char *session_name;
 	const char *username;
         const char *hostname;
-        const char *domain;
+        const char *domain; /* FIXME: unused - remove ? */
 } BonoboActivationBaseService;
 
 typedef struct _BonoboActivationBaseServiceRegistry BonoboActivationBaseServiceRegistry;

@@ -32,7 +32,7 @@
 ## Release information
 my $PROGRAM      = "intltool-extract";
 my $PACKAGE      = "intltool";
-my $VERSION      = "0.22";
+my $VERSION      = "0.25";
 
 ## Loaded modules
 use strict; 
@@ -183,6 +183,7 @@ sub convert($) {
     &type_glade if $gettext_type eq "glade";
     &type_scheme if $gettext_type eq "scheme";
     &type_schemas  if $gettext_type eq "schemas";
+    &type_rfc822deb  if $gettext_type eq "rfc822deb";
 }
 
 sub entity_decode_minimal
@@ -245,11 +246,13 @@ sub type_xml {
         $messages{entity_decode_minimal($1)} = [];
     }
 
-    while ($input =~ /<_($w+)>(.+?)<\/_\1>/sg) {
-        $_ = $2;
-        s/\s+/ /g;
-	s/^ //;
-	s/ $//;
+    while ($input =~ /<_($w+)(?: xml:space="($w+)")?>(.+?)<\/_\1>/sg) {
+        $_ = $3;
+        if (!defined($2) || $2 ne "preserve") {
+            s/\s+/ /g;
+            s/^ //;
+            s/ $//;
+        }
         $messages{entity_decode_minimal($_)} = [];
     }
 }
@@ -258,13 +261,74 @@ sub type_schemas {
     ### For schemas XML files ###
          
     # FIXME: We should handle escaped < (less than)
-    while ($input =~ /<(short|long)>([^<]+)<\/\1>/sg) {
-        $_ = $2;
+    while ($input =~ /
+                      <locale\ name="C">\s*
+                          (<default>\s*(.*?)\s*<\/default>\s*)?
+                          (<short>\s*(.*?)\s*<\/short>\s*)?
+                          (<long>\s*(.*?)\s*<\/long>\s*)?
+                      <\/locale>
+                     /sgx) {
+        my @totranslate = ($2,$4,$6);
+        foreach (@totranslate) {
+            next if !$_;
         s/\s+/ /g;
-	s/^ //;
-	s/ $//;
         $messages{entity_decode_minimal($_)} = [];
+        }
     }
+}
+
+sub type_rfc822deb {
+    ### For rfc822-style Debian configuration files ###
+
+    while ($input =~ /(?:^|\n)_[^:]+:\s*(.*?)(?=\n\S|$)/sg) {
+        my @str_list = rfc822deb_split($1);
+        for my $str (@str_list) {
+            #   As rfc822deb is for configuration files, duplicates
+            #   should never happen.  Developers must use the
+            #   [] construct to make msgid unique, see also intltool-merge
+            print STDERR "Warning: msgid multiply defined:\n  $str\n"
+                if defined($messages{$str});
+            $messages{$str} = [];
+        }
+    }
+}
+
+sub rfc822deb_split {
+    # Debian defines a special way to deal with rfc822-style files:
+    # when a value contain newlines, it consists of
+    #   1.  a short form (first line)
+    #   2.  a long description, all lines begin with a space,
+    #       and paragraphs are separated by a single dot on a line
+    # This routine returns an array of all paragraphs, and reformat
+    # them.
+    my $text = shift;
+    $text =~ s/^ //mg;
+    return ($text) if $text !~ /\n/;
+
+    $text =~ s/([^\n]*)\n//;
+    my @list = ($1);
+    my $str = '';
+    for my $line (split (/\n/, $text)) {
+        chomp $line;
+        $line =~ /\s+$/;
+        if ($line =~ /^\.$/) {
+            #  New paragraph
+            $str =~ s/\s*$//;
+            push(@list, $str);
+            $str = '';
+        } elsif ($line =~ /^\s/) {
+            #  Line which must not be reformatted
+            $str .= "\n" if length ($str) && $str !~ /\n$/;
+            $str .= $line."\n";
+        } else {
+            #  Continuation line, remove newline
+            $str .= " " if length ($str) && $str !~ /[\n ]$/;
+            $str .= $line;
+        }
+    }
+    $str =~ s/\s*$//;
+    push(@list, $str) if length ($str);
+    return @list;
 }
 
 sub type_glade {
@@ -304,7 +368,7 @@ sub msg_write {
     for my $message (sort keys %messages) { 
    	print OUT "/* xgettext:no-c-format */\n" if $message =~ /%/;
         
-    	my @lines = split (/\n/, $message);
+    	my @lines = split (/\n/, $message, -1);
     	for (my $n = 0; $n < @lines; $n++) {
             if ($n == 0) { 
  		print OUT "char *s = N_(\""; 

@@ -11,7 +11,7 @@ interfaces they support.
 <title>The &lt;oaf_server> tag</title>
 
 <para>
-Here follows a simple example of a minimalist .oafinfo file.
+Here follows a simple example of a minimalist <filename>.server</filename> file.
 <programlisting>
 &lt;oaf_info>
 &lt;oaf_server iid="OAFIID:oaf_naming_service:7e2b90ef-eaf0-4239-bb7c-812606fcd80d" 

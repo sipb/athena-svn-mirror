@@ -58,16 +58,12 @@ static char *od_source_dir = NULL;
 static char *ac_evaluate = NULL;
 static gboolean server_reg = FALSE;
 #endif
-static char *od_domain = "session";
 static int server_ac = 0, ior_fd = -1;
 
 static struct poptOption options[] = {
 
 	{"od-source-dir", '\0', POPT_ARG_STRING, &od_source_dir, 0,
 	 N_("Directory to read .server files from"), N_("DIRECTORY")},
-
-	{"od-domain", '\0', POPT_ARG_STRING, &od_domain, 0,
-	 N_("Domain of ObjectDirectory"), N_("DOMAIN")},
 
 	{"ac-activate", '\0', POPT_ARG_NONE, &server_ac, 0,
 	 N_("Serve as an ActivationContext (default is as an ObjectDirectory only)"),
@@ -179,18 +175,19 @@ nameserver_destroy (PortableServer_POA  poa,
 int
 main (int argc, char *argv[])
 {
-	CORBA_ORB orb;
-	PortableServer_POA root_poa;
-	PortableServer_POAManager poa_manager;
-	CORBA_Environment real_ev, *ev;
-        CORBA_Object naming_service;
-	Bonobo_ObjectDirectory od;
-	poptContext ctx;
-        int dev_null_fd;
-	char *ior;
-	FILE *fh;
-	struct sigaction sa;
-        GString *src_dir;
+        PortableServer_POAManager     poa_manager;
+        PortableServer_POA            root_poa;
+        CORBA_ORB                     orb;
+        CORBA_Environment             real_ev, *ev;
+        CORBA_Object                  naming_service;
+        Bonobo_ActivationEnvironment  environment;
+        Bonobo_ObjectDirectory        od;
+        poptContext                   ctx;
+        int                           dev_null_fd;
+        char                         *ior;
+        FILE                         *fh;
+        struct sigaction              sa;
+        GString                      *src_dir;
 
         /*
          *    Become process group leader, detach from controlling
@@ -234,16 +231,18 @@ main (int argc, char *argv[])
 		CORBA_ORB_resolve_initial_references (orb, "RootPOA", ev);
 
         src_dir = build_src_dir ();
-        bonobo_object_directory_init (root_poa, od_domain, src_dir->str, ev);
+        bonobo_object_directory_init (root_poa, src_dir->str, ev);
         g_string_free (src_dir, TRUE);
 
         od = bonobo_object_directory_get ();
+
+	memset (&environment, 0, sizeof (Bonobo_ActivationEnvironment));
 
         naming_service = impl_CosNaming_NamingContext__create (root_poa, ev);
         if (naming_service == NULL)
                 g_warning ("Failed to create naming service");
         Bonobo_ObjectDirectory_register_new 
-                (od, NAMING_CONTEXT_IID, naming_service, ev);
+                (od, NAMING_CONTEXT_IID, &environment, naming_service, ev);
 
         if (ior_fd < 0 && !server_ac)
                 g_error ("\n\n-- \nThe bonobo-activation-server must be forked by\n"

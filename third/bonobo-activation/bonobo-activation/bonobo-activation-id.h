@@ -37,7 +37,7 @@ typedef struct
 	char *iid;		/* Implementation ID */
 	char *user;		/* user name */
 	char *host;		/* DNS name or IP address */
-	char *domain;		/* This is not a DNS domain, but an activation domain */
+	char *domain;		/* FIXME: unused - remove ? */
 }
 BonoboActivationInfo;
 

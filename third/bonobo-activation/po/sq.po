@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OAF\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-10-05 21:29+0200\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2003-01-09 16:09+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian < gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,64 +14,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Asnjë server i korrispondon kërkesës suaj"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr ""
 "Procesi bir nuk ka dhënë asnjë mesazh gabimi, është verifikuar një difekt i "
 "panjohur"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "E pamundur të lexosh nga procesi bir: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Nuk mund të kryhet fork i një procesi të ri"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Procesi bir ka marrë sinjalin %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Gabim jo i daljes i panjohur (gjëndja është %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr ""
 "bonobo-activation dështoi gjatë caktimit të grupit të procesit %s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "I pamundur ekzekutimi i %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "Përshkruesi i file ku të stampohet IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID për t'u aktivuar"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Ndalo regjistrimin e server me OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Opcione për Bonobo activation"
 
@@ -96,60 +92,40 @@ msgstr "Fabrika `%s' ka kthyer NIL për `%s'"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' nuk përmban `%s'"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Shumë alias nivelesh për një lokale, mund të tregojë një loop"
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "E pamundur të gjesh në çfarë procesi bir ishte rrjeshtuar serveri"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Kërkesa dështoi: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "ID Aktivimi e pavlefshme"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Aktivim i dështuar: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "I pamundur analizimi i AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "I pamundur analizimi i përmbajtjes: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "I pamundur aktivimi i server: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "Directory nga e cila të lexosh files .server"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "DIRECTORY"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Domain i ObjectDirectory"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "DOMAIN"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Sjellje si ActivationContext (e përcaktuara është vetëm ObjectDirectory)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "Përshkruesi i file ku do të shkruhet IOR"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Ekspresioni i kërkesës që duhet vlerësuar"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "EKSPRESION"
 
@@ -161,7 +137,7 @@ msgstr "Shërbimi CORBA CosNaming."
 msgid "Name service"
 msgstr "Shërbimi i Emrave"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Aktivimi i shlib objects në një proces remot nuk mund të kryhet akoma"
 
@@ -193,7 +169,7 @@ msgstr "iid %s ka një pozicion NULL"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "karakter i pavlefshëm '%c' tek iid '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Pronësia '%s' nuk ka një vlerë"
@@ -205,7 +181,7 @@ msgstr "Pronësia '%s' nuk ka një vlerë"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Race condition gjatë aktivimit të server '%s'"
@@ -264,3 +240,27 @@ msgstr "Vizualizo directories tek file i konfigurimit"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "Vizualizo pozicionin e file të konfigurimit"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Asnjë server i korrispondon kërkesës suaj"
+
+#~ msgid "Query failed: "
+#~ msgstr "Kërkesa dështoi: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Aktivim i dështuar: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "I pamundur analizimi i AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "I pamundur analizimi i përmbajtjes: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "I pamundur aktivimi i server: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "Domain i ObjectDirectory"
+
+#~ msgid "DOMAIN"
+#~ msgstr "DOMAIN"

@@ -65,18 +65,19 @@ module Bonobo {
                 ServerInfoListCache get_servers        (in CacheTime only_if_newer);
                 ServerStateCache    get_active_servers (in CacheTime only_if_newer);
                 
-                readonly attribute string username, hostname, domain;
+                readonly attribute string username, hostname;
 
-                Object activate (in ImplementationID  iid,
-                                 in ActivationContext ac,
-                                 in ActivationFlags   flags)
-                        context ("username", "hostname", "domain",
-                                 "display", "session_manager", "audiodev");
+                Object activate (in ImplementationID              iid,
+                                 in ActivationContext             ac,
+                                 in Bonobo::ActivationEnvironment environment,
+                                 in ActivationFlags               flags)
+                        context ("username", "hostname");
 
-                RegistrationResult register_new (in ImplementationID iid,
-                                                 in Object           obj);
-                void               unregister   (in ImplementationID iid,
-                                                 in Object           obj)
+                RegistrationResult register_new (in ImplementationID              iid,
+                                                 in Bonobo::ActivationEnvironment environment,
+                                                 in Object                        obj);
+                void               unregister   (in ImplementationID              iid,
+                                                 in Object                        obj)
                         raises (NotRegistered);
         };
 
