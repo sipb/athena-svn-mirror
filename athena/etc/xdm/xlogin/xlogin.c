@@ -1,8 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.37 1994-03-03 20:03:57 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.38 1994-04-26 11:07:47 root Exp $ */
 
 #ifdef POSIX
 #include <unistd.h>
 #endif
+#include <strings.h>
 #include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -29,6 +30,10 @@
 #include <X11/Xmu/Converters.h>
 #include "owl.h"
 
+#ifdef SYSV
+#define random	lrand48
+#define srandom	srand48
+#endif
 /* Define the following if restarting the X server does not restore
  * auto-repeat properly
  */
@@ -238,7 +243,9 @@ char login[128], passwd[128];
  * Local Globals
  */
 static int autorep;
-
+#ifdef POSIX
+static struct sigaction sigact, osigact;
+#endif
 
 /******************************************************************************
 *   MAIN function
@@ -259,7 +266,15 @@ main(argc, argv)
 #ifdef SOLARIS
    static char buf[1024];
 #endif
+
+#ifdef POSIX
+  sigemptyset(&sigact.sa_mask);
+  sigact.sa_flags = 0;
+  sigact.sa_handler = catch_child;
+  sigaction(SIGCHLD, &sigact, NULL);
+#else
   signal(SIGCHLD, catch_child);
+#endif
 
   /* Have to find this argument before initializing the toolkit.
    * We set both XAPPLRESDIR and XENVIRONMENT.  The effect is that
@@ -370,6 +385,7 @@ main(argc, argv)
     start_reactivate(NULL, NULL);
   else
     activation_state = ACTIVATED;
+ 
 
   /* Make another connection to the X server so that there won't be a
    * period where there are no connections to the server, causing it
@@ -398,7 +414,6 @@ main(argc, argv)
       int this_screen = XScreenNumberOfScreen(XtScreen(saver));
       char *orig_dpy, *ptr;
       Cardinal zero = (Cardinal) 0;
-
       num_screens = MIN(ScreenCount(dpy), 10);
       orig_dpy = XtNewString(DisplayString(dpy));
 
@@ -441,9 +456,17 @@ main(argc, argv)
 
 
   /* tell display manager we're ready, just like X server handshake */
+#ifdef POSIX
+    sigemptyset(&sigact.sa_mask);
+    sigact.sa_flags = 0;
+    sigact.sa_handler = SIG_IGN;
+    sigaction(SIGUSR1, &sigact, &osigact);
+    if (osigact.sa_handler == SIG_IGN)
+      kill(getppid(), SIGUSR1);
+#else
   if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
     kill(getppid(), SIGUSR1);
-
+#endif
   XtMainLoop ( );
 }
 
@@ -479,6 +502,7 @@ move_instructions(data, timerid)
   x = random() % x_max;
   y = random() % y_max;
   XtMoveWidget(ins, x, y);
+
   if (activation_state != REACTIVATING) {
       XRaiseWindow(XtDisplay(ins), XtWindow(ins));
       wins[0] = XtWindow(ins);
@@ -499,6 +523,7 @@ start_reactivate(data, timerid)
     int file;
     struct utmp utmp;
     struct timeval now;
+
 
 #ifdef SOLARIS
     gettimeofday(&now);
@@ -534,7 +559,7 @@ start_reactivate(data, timerid)
     }
 
     /* clear console */
-    sigconsCB(NULL, "clear", NULL);
+  sigconsCB(NULL, "clear", NULL);
 
     activation_state = REACTIVATING;
     activation_pid = fork();
@@ -555,7 +580,6 @@ start_reactivate(data, timerid)
     default:
 	break;
     }
-
     activate_count++;
     react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
 				 start_reactivate, NULL);
@@ -820,7 +844,7 @@ Cardinal *n;
      * the timers.
      */
     if (activation_state != ACTIVATED) {
-#if (defined POSIX || defined sun)
+#if defined (POSIX) || defined (sun)
 	void (*oldsig)();
 #else
 	int (*oldsig)();
@@ -828,12 +852,23 @@ Cardinal *n;
 
 	fprintf(stderr, "Waiting for workstation to finish activating...");
 	fflush(stderr);
-	oldsig = signal(SIGALRM, stop_activate);
-	alarm(resources.activate_timeout);
+#ifdef POSIX
+	sigemptyset(&sigact.sa_mask);
+	sigact.sa_flags = 0;
+	sigact.sa_handler = stop_activate;
+	sigaction(SIGALRM, &sigact, &osigact);
+#else
+	oldsig = signal(SIGALRM, stop_activate); 
+#endif
+ 	alarm(resources.activate_timeout); 
 	while (activation_state != ACTIVATED)
 	  sigpause(0);
-	alarm(0);
+        alarm(0);
+#ifdef POSIX
+ 	sigaction(SIGALRM, &osigact, NULL);
+#else
 	signal(SIGALRM, oldsig);
+#endif
 	fprintf(stderr, "done.\n");
     }
 
@@ -1524,9 +1559,7 @@ static void catch_child()
 #endif
     char *number();
 
-    /* Necessary on the rios- it sets the signal handler to SIG_DFL */
-    /* during the execution of a signal handler */
-    signal(SIGCHLD,catch_child);
+
 #ifdef SOLARIS
     pid = waitpid(-1, &status, WNOHANG);
 #else
