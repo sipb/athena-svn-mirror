@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: ambar $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.2 1987-08-18 14:29:50 ambar Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.3 1987-08-20 16:03:29 ambar Exp $
+ *	$Log: not supported by cvs2svn $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.2 1987-08-18 14:29:50 ambar Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.3 1987-08-20 16:03:29 ambar Exp $";
 #endif lint
 
 /*
@@ -26,24 +26,26 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #endif not lint
 
 /*
- * This is a finger program.  It prints out useful information about users
- * by digging it up from various system files.  It is not very portable
- * because the most useful parts of the information (the full user name,
- * office, and phone numbers) are all stored in the VAX-unused gecos field
- * of /etc/passwd, which, unfortunately, other UNIXes use for other things.
+ * This is a finger program.  It prints out useful information about
+ * users by digging it up from various system files.  It is not very
+ * portable because the most useful parts of the information (the full
+ * user name, office, and phone numbers) are all stored in the
+ * VAX-unused gecos field of /etc/passwd, which, unfortunately, other
+ * UNIXes use for other things.
  *
- * There are three output formats, all of which give login name, teletype
- * line number, and login time.  The short output format is reminiscent
- * of finger on ITS, and gives one line of information per user containing
- * in addition to the minimum basic requirements (MBR), the full name of
- * the user, his idle time and office location and phone number.  The
- * quick style output is UNIX who-like, giving only name, teletype and
- * login time.  Finally, the long style output give the same information
- * as the short (in more legible format), the home directory and shell
- * of the user, and, if it exits, a copy of the file .plan in the users
- * home directory.  Finger may be called with or without a list of people
- * to finger -- if no list is given, all the people currently logged in
- * are fingered.
+ * There are three output formats, all of which give login name,
+ * teletype line number, and login time.  The short output format is
+ * reminiscent of finger on ITS, and gives one line of information per
+ * user containing in addition to the minimum basic requirements
+ * (MBR), the full name of the user, his idle time and office location
+ * and phone number.  The quick style output is UNIX who-like, giving
+ * only name, teletype and login time.  Finally, the long style output
+ * give the same information as the short (in more legible format),
+ * the home directory and shell of the user, and, if it exists, copies
+ * of the files .plan and .project in the user's home directory.
+ * Finger may be called with or without a list of people to finger --
+ * if no list is given, all the people currently logged in are
+ * fingered.
  *
  * The program is validly called by one of the following:
  *
@@ -76,7 +78,8 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
+#include <hesiod.h>
+	
 #define MAXTTYS 256
 #define MAXSEARCH 750
 
@@ -137,7 +140,9 @@ int wide = 1;				/* -w option default */
 int unshort;
 int lf;					/* LASTLOG file descriptor */
 int lw;					/* ACCTLOG file descriptor */
-struct person *person1;			/* list of people */
+/* !#$%!@#$! Bezerkeley non-initializations !!! */
+struct person *person1 = (struct person *)NULL;	/* list of people */
+struct person *person2 = (struct person *)NULL;	/* 2nd list of people */
 long tloc;				/* current time */
 
 char ttnames[MAXTTYS][LMAX];		/* TTY names */
@@ -278,7 +283,10 @@ donames(argv)
 	char **argv;
 {
 	register struct person *p;
+	register struct person *q;	/* A second chain for
+					 * athena-wide finger */
 	register struct passwd *pw;
+	struct passwd *hesgetpwnam();
 	int uf;
 
 	/*
@@ -289,23 +297,29 @@ donames(argv)
 	for (; *argv != 0; argv++) {
 		if (netfinger(*argv))
 			continue;
-		if (person1 == 0)
+		if (person1 == 0) {
 			p = person1 = (struct person *) malloc(sizeof *p);
+			q = person2 = (struct person *) malloc(sizeof *q);
+		} 
 		else {
 			p->link = (struct person *) malloc(sizeof *p);
 			p = p->link;
+			q->link = (struct person *) malloc(sizeof *q);
+			q = q->link;
 		}
-		p->name = *argv;
-		p->loginout = 0;
-		p->loggedin = 0;
-		p->original = 1;
-		p->pwd = 0;
+		p->name = q->name = *argv;
+		p->loginout = q->loginout = 0;
+		p->loggedin = q->loggedin = 0;
+		p->original = q->original = 1;
+		p->pwd = q->pwd = 0;
+
 	}
 	if (person1 == 0)
 		return;
-	p->link = 0;
+	p->link = q->link = 0;
 	/*
 	 * if we are doing it, read /etc/passwd for the useful info
+	 * for p* -- ask hesiod for the entries for q*.
 	 */
 	if (unquick) {
 		setpwent();
@@ -316,17 +330,20 @@ donames(argv)
 			for (p = person1; p != 0; p = p->link)
 				if (pw = getpwnam(p->name))
 					p->pwd = pwdcopy(pw);
-		} else while ((pw = getpwent()) != 0) {
+			
+		}
+		else while ((pw = getpwent()) != 0) {
 			for (p = person1; p != 0; p = p->link) {
 				if (!p->original)
 					continue;
 				if (strcmp(p->name, pw->pw_name) != 0 &&
 				    !matchcmp(pw->pw_gecos, pw->pw_name, p->name))
 					continue;
-				if (p->pwd == 0)
+				if (p->pwd == 0) {
 					p->pwd = pwdcopy(pw);
+				} 
 				else {
-					struct person *new;
+					struct person *new, *new2;
 					/*
 					 * handle multiple login names, insert
 					 * new "duplicate" entry behind
@@ -341,11 +358,61 @@ donames(argv)
 					p->original = 0;
 					p->link = new;
 					p = new;
+					/*
+					 * add one to the hesiod chain
+					 * as well.
+					 */
+					new2 = (struct person *)
+						malloc(sizeof *new2);
+					new2->pwd = pwdcopy(pw);
+					new2->name = q->name;
+					new2->original = 1;
+					new2->loggedin = 0;
+					new2->link = q->link;
+					q->original = 0;
+					q->link = new2;
+					q = new2;
+					
 				}
 			}
 		}
+		/* now do the hesiod chain */
+		for (q = person2; q != 0; q = q->link) {
+			pw = hesgetpwnam(q->name);
+			if (!q->original)
+				continue;
+			if (strcmp(q->name, pw->pw_name) != 0 &&
+			    !matchcmp(pw->pw_gecos, pw->pw_name, q->name))
+				continue;
+			if (q->pwd == 0)
+				q->pwd = pwdcopy(pw);
+			/* we won't handle multiple returns from
+			 * hesiod just yet -- in theory, since we're
+			 * only matching against login names (and not
+			 * the name in the gcos field), we won't get
+			 * any -- but this may change in the future.
+			else {
+				struct person *new;
+
+				 * handle multiple login names, insert
+				 * new "duplicate" entry behind
+
+				new = (struct person *)
+					malloc(sizeof *new);
+				new->pwd = pwdcopy(pw);
+				new->name = p->name;
+				new->original = 1;
+				new->loggedin = 0;
+				new->link = p->link;
+				p->original = 0;
+				p->link = new;
+				p = new;
+			} 
+			*
+			*/
+		}
 		endpwent();
-	}
+	} 
 	/* Now get login information */
 	if ((uf = open(USERLOG, 0)) < 0) {
 		fprintf(stderr, "finger: error opening %s\n", USERLOG);
@@ -517,7 +584,7 @@ pwdcopy(pfrom)
 	register struct passwd *pto;
 
 	pto = (struct passwd *) malloc((unsigned)(sizeof *pto));
-#define savestr(s) (void) strcpy(malloc((unsigned)(strlen(s) + 1)), s)
+#define savestr(s) strcpy(malloc((unsigned)(strlen(s) + 1)), s)
 	pto->pw_name = savestr(pfrom->pw_name);
 	pto->pw_uid = pfrom->pw_uid;
 	pto->pw_gecos = savestr(pfrom->pw_gecos);
@@ -1073,6 +1140,7 @@ ltimeprint(before, dt, after)
 					delta->tm_sec,
 					delta->tm_sec == 1 ? "" : "s");
 	printf("%s", after);
+	return(0);
 }
 
 matchcmp(gname, login, given)
