@@ -1,111 +1,19 @@
-/*
- * BSD 4.3
- */
-#if (defined(vax) && !defined(ultrix)) || defined(ibm032)
-#define LintCFlag -C
-#define ProfCcFlags -pg
-#endif
-
-#if defined(vax) && !defined(ultrix)
-#define AnsiCcCmd gcc -pipe
-#define AnsiLdCmd gcc -pipe
-#endif
-
-#ifdef ibm032
-#define AnsiCcCmd cc -Hon=read_only_strings
-#endif
-
-
-/*
- * DEC ULTRIX
- */
-#if defined(ultrix) && defined(mips)
-#define LintFlags -DPOSIX
+#ifdef SOLARIS
 #define NOLINT
-#define CcFlags LintFlags
-#endif
-
-
-/*
- * IBM AIX
- */
-#if defined(_AIX) && defined(_IBMR2)
-
-#ifdef _AIX32
-#define ARBinDir /usr/bin/athena
-#endif
-#define CDebugFlags 
-#define BsdLibs -lbsd
-#define BsdFlags -D_BSD
-#define LdLibs BsdLibs
-#define LintFlags BsdFlags -DAIXV=AIXV -DPOSIX
-#define NOLINT
-#define CcFlags LintFlags
-#define AnsiCcCmd	xlc -qro -D_ALL_SOURCE
-#define CcCmd		xlc -qlanglvl=extended -D_ALL_SOURCE
-
-#if !defined(UseInstalled) || defined(UseSharedLibs)
-#define LdPath -L$(ATHLIBDIR)/shared -L$(ATHLIBDIR)
-
-#define static_program(prog,objs,ldflags,libs)				@@\
-all::	prog								@@\
-prog::	objs								@@\
-	$(LD) ldflags $(LDFLAGS) -o prog objs -L$(ATHLIBDIR) libs $(LDLIBS) @@\
-clean::									@@\
-	$(RM) prog
-#endif
-
-#endif	/* _AIX */
-
-/* 
- * Alpha running OSF
- */
-#if defined(__alpha)
-#define RanlibCmd		ar -tsl
-#define LintLibFlag    	        -o
-#define LintOpts       	        -ax
-#define LintFlags -DPOSIX -xv -std
-#define CcFlags -DPOSIX -std1
-/* Until I can install somewhere useful */
-#define NOLINT
-#endif
-
-/*
- * MAC A/UX
- */
-#ifdef _AUX_SOURCE
-#define NOLINT
-#define RanLibCmd \:
-
-/* We do not use -ZP as this undefines all other symbols which can
- * cause the system header files to break.
- */
-#define LintFlags -DPOSIX -D_POSIX_SOURCE -D_BSD_SOURCE
-#define CcFlags LintFlags
-#define LdLibs -lposix
-#endif
-
-/*
- * Sun SUNOS
- */
-
-#if defined(sun) && defined(sparc)
-#define NOLINT
-#define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK
+#define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
 #define ProfCcFlags -pg
 #define CDebugFlags -O2
-#define CcFlags LintFlags -I/usr/openwin/include
-#define LdPath -L/usr/openwin/lib -L$(ATHLIBDIR)
+#define CcFlags LintFlags
+#define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L$(ATHLIBDIR)
 #define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
 #define CcCmd /usr/gcc/bin/gcc -traditional
 #define LdCmd /usr/gcc/bin/gcc
 #define AnsiCcCmd /usr/gcc/bin/gcc
 #define AnsiLdCmd /usr/gcc/bin/gcc
 #define RanLibCmd \:
-#define AfsDir /build/transarc
 #endif
 
-#if defined(mips) && defined(sgi)
+#ifdef sgi
 #define NOLINT
 #define LintFlags -DSYSV -DPOSIX -DPOSIX_FLOCK
 #define ProfCcFlags -p1
@@ -118,16 +26,8 @@ clean::									@@\
 #define AnsiCcCmd cc
 #define AnsiLdCmd cc
 #define RanLibCmd \:
-#define AfsDir /build/transarc
 #endif
 
-
-/*
- * AFS configuration
- */
-#if !defined(AfsDir) && !defined(NoAFS)
-#define AfsDir /build/transarc
+#ifndef NoAFS
+#define AfsDir /usr/afsws
 #endif
-
-#define Krb5Dir /build/third/supported/kerberos5/src
-#define WclDir /build/third/supported/wcl
