@@ -167,37 +167,24 @@ HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
 
 
 #ifdef SOLARIS
+XInclude	=	-I/usr/openwin/include
+XLibDir		=	-L/usr/openwin/lib -Xlinker -R/usr/openwin/lib
+MotifInclude	=	-I/usr/dt/include
 MotifLibDir	=	-L/usr/dt/lib -Xlinker -R/usr/dt/lib
-#else
-MotifLibDir	=	-L/mit/motif/$(MACHINE)lib
-XLibDir		=	-L/usr/athena/lib
 #endif
 /* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
    depending on what you have installed.  */
 
-#if 1
-MotifWCLLib	=	/build/third/supported/wcl/Wc/libWc$(LIBSUFFIX).a
+MotifWCLLib	=	-lWc
 MotifUtilLib	=	-lMu
-RandomIncludes	=	-I/build/third/supported/wcl
-#else
-#if HaveSysWCL
-MotifWCLLib	=	$(MotifLibDir) -lWcm
-#else
-MotifWCLLib	=	$(TOP)/wcl/libWcm$(LIBSUFFIX).a
-#endif
-
-#if HaveSysLibMu
-MotifUtilLib	=	$(MotifLibDir) -lMu
-#else
-MotifUtilLib	=	$(TOP)/libMu/libMu$(LIBSUFFIX).a
-#endif
-#endif /* 1 */
 
 CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
-ComErrLib	=	$(XLibDir) -lcom_err$(LIBSUFFIX)
+ComErrLib	=	-lcom_err$(LIBSUFFIX)
+MotifIncludes   =	$(MotifInclude)
 MotifResLib	=	$(MotifLibDir) -lMrm
 MotifLib	=	$(MotifLibDir) -lXm
 MotifToolLib	=	 -lXt
+XIncludes	=	$(XInclude)
 XUtilLib	=	$(XLibDir) -lXmu$(LIBSUFFIX)
 XtoolLib	=	$(XLibDir) -lXt$(LIBSUFFIX)
 XLib		=	$(XLibDir) -lX11$(LIBSUFFIX)
