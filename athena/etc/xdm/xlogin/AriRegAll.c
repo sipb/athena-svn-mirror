@@ -51,24 +51,20 @@
 #include <X11/StringDefs.h>
 
 #include <X11/Xaw/AsciiText.h>
-#include <X11/Xaw/Box.h>
 #include <X11/Xaw/Clock.h>
 #include <X11/Xaw/Command.h>
 #include <X11/Xaw/Dialog.h>
 #include <X11/Xaw/Form.h>
-#include <X11/Xaw/Grip.h>
 #include <X11/Xaw/Label.h>
-#include <X11/Xaw/List.h>
-#include <X11/Xaw/Logo.h>
 #include <X11/Xaw/MenuButton.h>
-#include <X11/Xaw/Scrollbar.h>
 #include <X11/Xaw/SimpleMenu.h>
 #include <X11/Xaw/SmeBSB.h>
 #include <X11/Xaw/SmeLine.h>
-#include <X11/Xaw/StripChart.h>
-#include <X11/Xaw/Paned.h>
-#include <X11/Xaw/Toggle.h>
-#include <X11/Xaw/Viewport.h>
+
+#ifdef Use_AtLabel		/* djf's formatted text stuff... */
+#include "Label.h"
+#endif
+
 
 #include <X11/Xaw/Cardinals.h>
 
@@ -77,81 +73,32 @@ void AriRegisterAthena ( app )
 {
 
 #define RCN( name, class ) WcRegisterClassName ( app, name, class );
-#define RCP( name, class ) WcRegisterClassPtr  ( app, name, class );
 
     /* -- register all Athena widget classes */
     /* Simple Widgets (Chapt 3) */
     RCN("Command",			commandWidgetClass	);
-    RCP("commandWidgetClass",		commandWidgetClass	);
-#ifdef notdef
-    RCN("Grip",				gripWidgetClass		);
-    RCP("gripWidgetClass",		gripWidgetClass		);
-#endif
     RCN("Label",			labelWidgetClass	);
-    RCP("labelWidgetClass",		labelWidgetClass	);
-#ifdef notdef
-    RCN("List",				listWidgetClass		);
-    RCP("listWidgetClass",		listWidgetClass		);
-    RCN("Scrollbar",			scrollbarWidgetClass	);
-    RCP("scrollbarWidgetClass",		scrollbarWidgetClass	);
-    RCN("Simple",			simpleWidgetClass	);
-    RCP("simpleWidgetClass",		simpleWidgetClass	);
-    RCN("StripChart",			stripChartWidgetClass	);
-    RCP("stripChartWidgetClass",	stripChartWidgetClass	);
-    RCN("Toggle",			toggleWidgetClass	);
-    RCP("toggleWidgetClass",		toggleWidgetClass	);
-#endif
 
     /* Menus (Chapt 4) */
     RCN("SimpleMenu",			simpleMenuWidgetClass	);
-    RCP("simpleMenuWidgetClass",	simpleMenuWidgetClass	);
     RCN("SmeBSB",			smeBSBObjectClass	);
-    RCP("smeBSBObjectClass",		smeBSBObjectClass	);
     RCN("SmeLine",			smeLineObjectClass	);
-    RCP("smeLineObjectClass",		smeLineObjectClass	);
-#ifdef notdef
-    RCN("Sme",				smeObjectClass		);
-    RCP("smeObjectClass",		smeObjectClass		);
-#endif
     RCN("MenuButton",			menuButtonWidgetClass	);
-    RCP("menuButtonWidgetClass",	menuButtonWidgetClass	);
 
     /* Text Widgets (Chapt 5) */
-    RCN("AsciiText",			asciiTextWidgetClass	); /* NB name */
-    RCP("asciiTextWidgetClass",		asciiTextWidgetClass	);
-#ifdef notdef
-    RCN("AsciiSrc",			asciiSrcObjectClass	);
-    RCP("asciiSrcObjectClass",		asciiSrcObjectClass	);
-    RCN("AsciiSink",			asciiSinkObjectClass	);
-    RCP("asciiSinkObjectClass",		asciiSinkObjectClass	);
-#endif
+    RCN("AsciiText",			asciiTextWidgetClass	);
     RCN("Text",				textWidgetClass		);
-    RCP("textWidgetClass",		textWidgetClass		);
 
     /* Composite and Constraint Widgets (Chapt 6) */
-#ifdef notdef
-    RCN("Box",				boxWidgetClass		);
-    RCP("boxWidgetClass",		boxWidgetClass		);
-#endif
     RCN("Dialog",			dialogWidgetClass	);
-    RCP("dialogWidgetClass",		dialogWidgetClass	);
     RCN("Form",				formWidgetClass		);
-    RCP("formWidgetClass",		formWidgetClass		);
-#ifdef notdef
-    RCN("Paned",			panedWidgetClass	);
-    RCP("panedWidgetClass",		panedWidgetClass	);
-    RCN("Viewport",			viewportWidgetClass	);
-    RCP("viewportWidgetClass",		viewportWidgetClass	);
-#endif
 
     /* Other Interestng Widgets (not in ref manual) */
-    RCN("ClockWidget",			clockWidgetClass	);
-    RCP("clockWidgetClass",		clockWidgetClass	);
-#ifdef notdef
-    RCN("LogoWidget",			logoWidgetClass		);
-    RCP("logoWidgetClass",		logoWidgetClass		);
+    RCN("Clock",			clockWidgetClass	);
+
+#ifdef Use_AtLabel		/* djf's formatted text stuff... */
+    RCN("AtLabel",			atLabelWidgetClass	);
 #endif
 
 #undef RCN
-#undef RCP
 }
