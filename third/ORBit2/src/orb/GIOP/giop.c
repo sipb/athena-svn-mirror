@@ -117,6 +117,10 @@ giop_tmpdir_init (void)
 	long iteration = 0;
 	static gboolean inited = FALSE;
 
+	if (inited)
+		return;
+	inited = TRUE;
+
 	/* Athena modification: Use the per-session temporary directory. */
 	{
 		char *session_dir;
@@ -124,15 +128,11 @@ giop_tmpdir_init (void)
 		session_dir = getenv ("ATHENA_SESSION_TMPDIR");
 		if (session_dir) {
 			dirname = g_strconcat (session_dir, "/orbit", NULL);
-			linc_set_tmpdir (dirname);
+			link_set_tmpdir (dirname);
 			g_free (dirname);
 			return;
 		}
 	}
-
-	if (inited)
-		return;
-	inited = TRUE;
 
 	tmp_root = g_get_tmp_dir ();
 	dirname = g_strdup_printf ("orbit-%s",
