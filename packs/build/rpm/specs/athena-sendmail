@@ -18,7 +18,7 @@ rm -f $RPM_BUILD_ROOT/etc/sendmail.st
 mkdir -p $RPM_BUILD_ROOT/etc/athena
 mkdir -p $RPM_BUILD_ROOT/etc/mail
 mkdir -p $RPM_BUILD_ROOT/usr/lib
-cp aliases $RPM_BUILD_ROOT/etc/aliases
+cp aliases $RPM_BUILD_ROOT/etc/aliases.athena
 cp authinfo $RPM_BUILD_ROOT/etc/mail/authinfo
 cp sendmail.cf $RPM_BUILD_ROOT/etc/mail/sendmail.cf
 cp sendmail-relay-select $RPM_BUILD_ROOT/etc/athena/sendmail-relay-select
@@ -51,12 +51,13 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/75sendmail
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/etc/aliases$|%config \0|" \
       -e "s|^/etc/sendmail.cf$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /var/spool/mqueue" >> rpm.filelist
 
 
+%triggerin -- setup
+cp /etc/aliases.athena /etc/aliases
 
 %post
 grep -q ^SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
