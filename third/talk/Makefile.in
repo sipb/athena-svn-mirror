@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1996-10-13 07:01:58 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1997-01-11 19:08:53 ghudson Exp $
 
 SHELL=/bin/sh
 SUBDIRS=talk talkd
@@ -17,3 +17,4 @@ clean:
 
 distclean:
 	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+	rm -f config.cache config.log config.status Makefile config.h
