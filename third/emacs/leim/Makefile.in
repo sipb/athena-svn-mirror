@@ -162,13 +162,13 @@ install: all
 	  echo "Copying leim files to ${INSTALLDIR} ..." ; \
 	  if [ x`(cd ${srcdir}; /bin/pwd)` = x`(/bin/pwd)` ] ; then \
 	    tar -cf - leim-list.el quail skk \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	  else \
 	    tar -cf - leim-list.el quail \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	    cd ${srcdir}; \
 	    tar -cf - quail/* skk \
-		| (cd ${INSTALLDIR}; umask 0; tar -xvf - && cat > /dev/null) ;\
+		| (cd ${INSTALLDIR}; tar -xvf - && cat > /dev/null) ;\
 	  fi; \
 	else true; fi
 	-chmod -R a+r ${INSTALLDIR}
