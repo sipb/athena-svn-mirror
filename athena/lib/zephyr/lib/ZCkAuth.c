@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.7 1988-06-15 16:20:46 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.8 1988-06-17 17:17:57 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.7 1988-06-15 16:20:46 jtkohl Exp $";
+static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.8 1988-06-17 17:17:57 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -46,13 +46,16 @@ int ZCheckAuthentication(notice, from)
 	result = krb_rd_req(&authent, SERVER_SERVICE, 
 			    SERVER_INSTANCE, from->sin_addr.s_addr, 
 			    &dat, SERVER_SRVTAB);
-	bcopy((char *)dat.session, (char *)__Zephyr_session, 
-	      sizeof(C_Block));
-	(void) sprintf(srcprincipal, "%s%s%s@%s", dat.pname, 
-		       dat.pinst[0]?".":"", dat.pinst, dat.prealm);
-	if (strcmp(srcprincipal, notice->z_sender))
-	    return (0);
-	return (result == RD_AP_OK);
+	if (result == RD_AP_OK) {
+		bcopy((char *)dat.session, (char *)__Zephyr_session, 
+		      sizeof(C_Block));
+		(void) sprintf(srcprincipal, "%s%s%s@%s", dat.pname, 
+			       dat.pinst[0]?".":"", dat.pinst, dat.prealm);
+		if (strcmp(srcprincipal, notice->z_sender))
+			return (0);
+		return(1);
+	} else
+		return (0);		/* didn't decode */
     }
 
     if (result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE, 
