@@ -86,6 +86,10 @@ varies per platform.
 You must do "cvs admin -ko" on binary files so that they won't get
 trashed by RCS ID mangling.
 
+For the sgi_53 and sun4m_54 platforms, we did not do an import of the
+"include" and "lib" directories, so you should just update the files
+with normal checkins.
+
 TeX
 ---
 
