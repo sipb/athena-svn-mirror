@@ -17,12 +17,12 @@
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
- *      $Id: x_utils.c,v 1.9 1999-06-28 22:51:58 ghudson Exp $
+ *      $Id: x_utils.c,v 1.9.6.1 2002-07-18 18:03:58 ghudson Exp $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Id: x_utils.c,v 1.9 1999-06-28 22:51:58 ghudson Exp $";
+static char rcsid[]= "$Id: x_utils.c,v 1.9.6.1 2002-07-18 18:03:58 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -176,7 +176,8 @@ handle_response(response, req)
       return(status);
 
     case TKT_FIL_ACC:
-      strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        setenv   KRBTKFILE  /tmp/random\n        renew");
+      strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        "
+	     "setenv   KRBTKFILE  /tmp/random\n        setenv   KRB5CCNAME  /tmp/krb5cc_random\n        renew");
       if(client_is_user_client())
 	strcat(message, kmessage);
       status = popup_option(message);
