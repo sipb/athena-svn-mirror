@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.3 1990-12-17 08:31:47 lwvanels Exp $
+ *	$Id: motd.c,v 1.4 1991-01-01 14:00:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.3 1990-12-17 08:31:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.4 1991-01-01 14:00:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,6 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 # define P(s) ()
 #endif
 
+static void write_motd_times P((void));
 static int gethm P((char *cp , long *hp , long *mp ));
 static long parse_time P((char *buf ));
 
@@ -60,6 +61,7 @@ void
       log_error("check_motd_timeout: Couldn't open motd timeout file");
       expire_time = 0;
       in_time = 0;
+      write_motd_times();
       return;
     }
     read(fd,buf,128);
@@ -95,6 +97,7 @@ void
 
   if ((now.tv_sec > in_time) && (in_time != 0)) {
     in_time = 0;
+    write_motd_times();
     if (rename(MOTD_HOLD_FILE,MOTD_FILE) < 0) {
       log_error("check_motd_timeout:rename %m");
       return;
@@ -109,10 +112,10 @@ void
     close(fd);
     log_status("MOTD expired");
     expire_time = 0;
+    write_motd_times();
     fd = open(MOTD_TIMEOUT_FILE,O_WRONLY|O_CREAT|O_TRUNC,0644);
     if (fd < 0) {
       log_error("check_motd_timeout: Couldn't open motd timeout file");
-      expire_time = 0;
       return;
     }
     sprintf(buf,"0\n%ld\n",in_time);
@@ -176,7 +179,7 @@ KNUCKLE *requester;
     strcat(msgbuf,"Never");
   else
     strcat(msgbuf,ctime(&expire_time));
-  strcat(msgbuf,"            start at   : ");
+  strcat(msgbuf,"\n            start at   : ");
   if (in_time == 0)
     strcat(msgbuf,"Immediately");
   else
@@ -194,15 +197,22 @@ KNUCKLE *requester;
     if (rename("/tmp/new_motd",MOTD_HOLD_FILE) != 0)
       log_error("change_motd_timeout: rename: %m");
   }  
+  write_motd_times();
+}
+
+static void
+  write_motd_times()
+{
+  FILE *motd_times;
 
   /* write new timeout to timeout file */
-  new_motd = fopen(MOTD_TIMEOUT_FILE,"w+");
-  if (new_motd == NULL) {
-    log_error("change_motd_timeout: couldn't create/open timeout file: %m");
+  motd_times = fopen(MOTD_TIMEOUT_FILE,"w+");
+  if (motd_times == NULL) {
+    log_error("write_motd_times: couldn't create/open timeout file: %m");
     return;
   }
-  fprintf(new_motd,"%ld\n%ld\n",expire_time,in_time);
-  fclose(new_motd);
+  fprintf(motd_times,"%ld\n%ld\n",expire_time,in_time);
+  fclose(motd_times);
 }
 
 static int
