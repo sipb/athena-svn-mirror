@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.26.2.1 2003-07-03 15:45:24 ghudson Exp $
+/* $Id: dm.c,v 1.26.2.2 2003-09-15 19:51:23 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -13,7 +13,7 @@
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#include <sys/time.h>
+#include <time.h>
 #ifdef HAVE_SYS_STRREDIR_H
 #include <sys/strredir.h>
 #endif
@@ -59,13 +59,16 @@
 #ifdef HAVE_PTY_H
 #include <pty.h>
 #endif
+#ifdef HAVE_LOGIN_TTY
+#include <utmp.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xauth.h>
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.26.2.1 2003-07-03 15:45:24 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.26.2.2 2003-09-15 19:51:23 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -325,11 +328,17 @@ int main(int argc, char **argv)
       console_login(conf, "Cannot open tty.\n");
     }
 
-  login_tty(fd);
-
-  /* Set the console characteristics so we don't lose later */
-  setpgid(0, pgrp = getpid());	/* Reset the tty pgrp  */
-  tcsetpgrp(0, pgrp);
+  if (login_tty(fd) == -1)
+    syslog(LOG_ERR, "Cannot set the console as a login terminal (%s)",
+	   strerror(errno));
+  else
+    {
+      /* Set the console characteristics so we don't lose later */
+      setpgid(0, pgrp = getpid());	/* Reset the tty pgrp  */
+      if (tcsetpgrp(0, pgrp) == -1)
+	syslog(LOG_ERR, "tcsetpgrp failed for console terminal (%s)",
+	       strerror(errno));
+    }
 
   /* save our pid file */
   writepid(dmpidf, getpid());
@@ -623,7 +632,7 @@ int main(int argc, char **argv)
 
 static void console_login(char *conf, char *msg)
 {
-  int i, cfirst = TRUE, pgrp;
+  int i, cfirst = TRUE;
   char *nl = "\r\n";
   struct termios ttybuf;
   char *p, **cargv;
@@ -656,8 +665,10 @@ static void console_login(char *conf, char *msg)
     }
   cargv = parseargs(p, NULL, NULL, NULL);
 
-  setpgid(0, pgrp = 0);		/* We have to reset the tty pgrp */
-  tcsetpgrp(0, pgrp);
+  setpgid(0, 0);		/* We have to reset the tty pgrp */
+  if (tcsetpgrp(0, getpgrp()) == -1)
+    syslog(LOG_ERR, "tcsetpgrp failed in console login (%s)",
+	   strerror(errno));
   tcflush(0, TCIOFLUSH);
 
   (void) tcgetattr(0, &ttybuf);
@@ -737,7 +748,6 @@ static void start_console(int fd, char **argv, int redir)
 
 static void shutdown(int signo)
 {
-  int pgrp;
   struct termios tc;
 
   if (login_running == RUNNING)
@@ -747,8 +757,8 @@ static void shutdown(int signo)
   if (x_running == RUNNING)
     kill(xpid, SIGTERM);
 
-  setpgid(0, pgrp = 0);		/* We have to reset the tty pgrp */
-  tcsetpgrp(0, pgrp);
+  setpgid(0, 0);		/* We have to reset the tty pgrp */
+  tcsetpgrp(0, getpgrp());
   tcflush(0, TCIOFLUSH);
 
   (void) tcgetattr(0, &tc);
@@ -1125,7 +1135,7 @@ static int login_tty(int fd)
   ttyfd = fd;
 #else
   name = ttyname(fd);
-  if (ttyname == NULL)
+  if (name == NULL)
     return(-1);
   close(fd);
   ttyfd = open(name, O_RDWR);
@@ -1317,4 +1327,5 @@ static int handle_xioerror(Display *dpy)
 {
   console_login(conf, "\nXIOError failure opening display...  "
 		"Starting console login.\n");
+  return 0;			/* We should not reach here. */
 }
