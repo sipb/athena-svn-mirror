@@ -2,15 +2,16 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.4 1990-11-30 11:27:21 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.5 1990-12-10 16:12:46 probe Exp $
  *	$Author: probe $
  */
 
 #include <signal.h>
 #include <strings.h>
-#include <sys/file.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 #define BUFSIZ 1024
 #define MINUTE 60
@@ -22,6 +23,7 @@ void main( );
 int itoa( );
 void cleanup( );
 void logout( );
+void clean_child( );
 time_t check_pid_file( );
 time_t create_pid_file( );
 time_t update_pid_file( );
@@ -57,6 +59,7 @@ char **argv;
 	signal(SIGQUIT, cleanup);
 	signal(SIGTERM, cleanup);
     }
+    signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
 
     /*  Figure out the filename  */
 
@@ -78,6 +81,7 @@ char **argv;
     while (1)
       {
 	  sleep(MINUTE);
+	  clean_child();	/* In case there are any zombied children */
 	  if (parentpid != getppid())
 	    cleanup();
 	  mtime = check_pid_file(filename, pid, mtime);
@@ -124,7 +128,15 @@ void logout( )
     exit(0);
 }
 
-
+/*
+ * clean_child() --
+ * 	Clean up any zombied children that are awaiting this process's
+ * 	acknowledgement of the child's death.
+ */
+void clean_child( )
+{
+    wait3(0, WNOHANG, 0);
+}
 
 time_t check_pid_file(filename, pid, mtime)
 char* filename;
