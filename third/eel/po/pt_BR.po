@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel 1.0.2\n"
-"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"POT-Creation-Date: 2003-03-10 18:08+0100\n"
 "PO-Revision-Date: 2003-01-16 23:30-0300\n"
 "Last-Translator: Alexandre Folle de Menezes <afmenez@terra.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
 msgstr "X"
 
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
 msgid "Y"
 msgstr "X"
 
@@ -72,11 +72,11 @@ msgstr ""
 "A posição em relação ao cursor da outra extremidade da seleção, em "
 "caracteres."
 
-#: eel/eel-editable-label.c:3030
+#: eel/eel-editable-label.c:3069
 msgid "Select All"
 msgstr "Selecionar Tudo"
 
-#: eel/eel-editable-label.c:3041
+#: eel/eel-editable-label.c:3080
 msgid "Input Methods"
 msgstr "Métodos de Entrada"
 

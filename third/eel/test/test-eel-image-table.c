@@ -181,7 +181,7 @@ image_table_size_allocate (GtkWidget *image_table,
 
 	recursion_count++;
 
-	if (0) gtk_timeout_add (0, foo_timeout, callback_data);
+	if (0) g_timeout_add (0, foo_timeout, callback_data);
 
 	//gtk_widget_queue_resize (GTK_WIDGET (callback_data));
 

@@ -593,34 +593,16 @@ eel_gdk_pixbuf_draw_to_drawable (const GdkPixbuf *pixbuf,
 	target.x1 = target.x0 + MIN (target_width, source_width);
 	target.y1 = target.y0 + MIN (target_height, source_height);
 
-	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		gdk_pixbuf_render_to_drawable_alpha ((GdkPixbuf *) pixbuf,
-						     drawable,
-						     source.x0,
-						     source.y0,
-						     target.x0,
-						     target.y0,
-						     target.x1 - target.x0,
-						     target.y1 - target.y0,
-						     alpha_compositing_mode,
-						     alpha_threshold,
-						     dither,
-						     0,
-						     0);
-	} else {
-		gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
-					       drawable,
-					       gc,
-					       source.x0,
-					       source.y0,
-					       target.x0,
-					       target.y0,
-					       target.x1 - target.x0,
-					       target.y1 - target.y0,
-					       dither,
-					       0,
-					       0);
-	}
+	gdk_draw_pixbuf (drawable, gc, (GdkPixbuf *) pixbuf,
+			 source.x0,
+			 source.y0,
+			 target.x0,
+			 target.y0,
+			 target.x1 - target.x0,
+			 target.y1 - target.y0,
+			 dither,
+			 0,
+			 0);
 }
 
 /**

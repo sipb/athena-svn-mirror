@@ -69,6 +69,8 @@
 #include <gdk/gdkprivate.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkaccessible.h>
+#include <gtk/gtkwindow.h>
 #include "eel-canvas.h"
 #include "eel-i18n.h"
 
@@ -81,8 +83,6 @@ static void group_add                   (EelCanvasGroup *group,
 					 EelCanvasItem  *item);
 static void group_remove                (EelCanvasGroup *group,
 					 EelCanvasItem  *item);
-static void
-eel_canvas_group_child_bounds (EelCanvasGroup *group, EelCanvasItem *item);
 
 
 /*** EelCanvasItem ***/
@@ -108,6 +108,9 @@ static int  emit_event                       (EelCanvas *canvas, GdkEvent *event
 static guint item_signals[ITEM_LAST_SIGNAL];
 
 static GtkObjectClass *item_parent_class;
+
+static gpointer accessible_item_parent_class;
+static gpointer accessible_parent_class;
 
 
 /**
@@ -1218,28 +1221,45 @@ eel_canvas_group_init (EelCanvasGroup *group)
 /* Set_property handler for canvas groups */
 static void
 eel_canvas_group_set_property (GObject *gobject, guint param_id,
-				 const GValue *value, GParamSpec *pspec)
+			       const GValue *value, GParamSpec *pspec)
 {
 	EelCanvasItem *item;
 	EelCanvasGroup *group;
+	double old;
+	gboolean moved;
 
 	g_return_if_fail (EEL_IS_CANVAS_GROUP (gobject));
 
 	item = EEL_CANVAS_ITEM (gobject);
 	group = EEL_CANVAS_GROUP (gobject);
 
+	moved = FALSE;
 	switch (param_id) {
 	case GROUP_PROP_X:
+		old = group->xpos;
 		group->xpos = g_value_get_double (value);
+		if (old != group->xpos)
+			moved = TRUE;
 		break;
 
 	case GROUP_PROP_Y:
+		old = group->ypos;
 		group->ypos = g_value_get_double (value);
+		if (old != group->ypos)
+			moved = TRUE;
 		break;
 
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, param_id, pspec);
 		break;
+	}
+
+	if (moved) {
+		item->object.flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;
+		if (item->parent != NULL)
+			eel_canvas_item_request_update (item->parent);
+		else
+			eel_canvas_request_update (item->canvas);
 	}
 }
 
@@ -1250,36 +1270,24 @@ eel_canvas_group_get_property (GObject *gobject, guint param_id,
 {
 	EelCanvasItem *item;
 	EelCanvasGroup *group;
-	int recalc;
 
 	g_return_if_fail (EEL_IS_CANVAS_GROUP (gobject));
 
 	item = EEL_CANVAS_ITEM (gobject);
 	group = EEL_CANVAS_GROUP (gobject);
 
-	recalc = FALSE;
-	
 	switch (param_id) {
 	case GROUP_PROP_X:
 		g_value_set_double (value, group->xpos);
-		recalc = TRUE;
 		break;
 
 	case GROUP_PROP_Y:
 		g_value_set_double (value, group->ypos);
-		recalc = TRUE;
 		break;
 
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, param_id, pspec);
 		break;
-	}
-	
-	if (recalc) {
-		eel_canvas_group_child_bounds (group, NULL);
-
-		if (item->parent)
-			eel_canvas_group_child_bounds (EEL_CANVAS_GROUP (item->parent), item);
 	}
 }
 
@@ -1654,76 +1662,6 @@ group_remove (EelCanvasGroup *group, EelCanvasItem *item)
 		}
 }
 
-static void
-eel_canvas_group_child_bounds (EelCanvasGroup *group, EelCanvasItem *item)
-{
-#if 0
-	EelCanvasItem *gitem;
-	GList *list;
-	int first;
-
-	g_return_if_fail (group != NULL);
-	g_return_if_fail (EEL_IS_CANVAS_GROUP (group));
-	g_return_if_fail (!item || EEL_IS_CANVAS_ITEM (item));
-
-	gitem = EEL_CANVAS_ITEM (group);
-
-	if (item) {
-		/* Just add the child's bounds to whatever we have now */
-
-		if ((item->x1 == item->x2) || (item->y1 == item->y2))
-			return; /* empty bounding box */
-
-		if (item->x1 < gitem->x1)
-			gitem->x1 = item->x1;
-
-		if (item->y1 < gitem->y1)
-			gitem->y1 = item->y1;
-
-		if (item->x2 > gitem->x2)
-			gitem->x2 = item->x2;
-
-		if (item->y2 > gitem->y2)
-			gitem->y2 = item->y2;
-
-		/* Propagate upwards */
-
-		if (gitem->parent)
-			eel_canvas_group_child_bounds (EEL_CANVAS_GROUP (gitem->parent), gitem);
-	} else {
-		/* Rebuild every sub-group's bounds and reconstruct our own bounds */
-
-		for (list = group->item_list, first = TRUE; list; list = list->next, first = FALSE) {
-			item = list->data;
-
-			if (EEL_IS_CANVAS_GROUP (item))
-				eel_canvas_group_child_bounds (EEL_CANVAS_GROUP (item), NULL);
-			else if (EEL_CANVAS_ITEM_CLASS (item->object.klass)->reconfigure)
-					(* EEL_CANVAS_ITEM_CLASS (item->object.klass)->reconfigure) (item);
-
-			if (first) {
-				gitem->x1 = item->x1;
-				gitem->y1 = item->y1;
-				gitem->x2 = item->x2;
-				gitem->y2 = item->y2;
-			} else {
-				if (item->x1 < gitem->x1)
-					gitem->x1 = item->x1;
-
-				if (item->y1 < gitem->y1)
-					gitem->y1 = item->y1;
-
-				if (item->x2 > gitem->x2)
-					gitem->x2 = item->x2;
-
-				if (item->y2 > gitem->y2)
-					gitem->y2 = item->y2;
-			}
-		}
-	}
-#endif
-}
-
 
 /*** EelCanvas ***/
 
@@ -1829,6 +1767,209 @@ eel_canvas_set_property (GObject      *object,
 	}
 }
 
+static void
+eel_canvas_accessible_adjustment_changed (GtkAdjustment *adjustment,
+					  gpointer       data)
+{
+	AtkObject *atk_obj;
+
+	/* The scrollbars have changed */
+	atk_obj = ATK_OBJECT (data);
+
+	g_signal_emit_by_name (atk_obj, "visible_data_changed");
+}
+
+static void
+eel_canvas_accessible_initialize (AtkObject *obj, 
+				  gpointer   data)
+{
+	EelCanvas *canvas;
+
+	if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize != NULL) 
+		ATK_OBJECT_CLASS (accessible_parent_class)->initialize (obj, data);
+
+	canvas = EEL_CANVAS (data);
+	g_signal_connect (canvas->layout.hadjustment,
+			  "value_changed",
+			  G_CALLBACK (eel_canvas_accessible_adjustment_changed),
+			  obj);
+	g_signal_connect (canvas->layout.vadjustment,
+			  "value_changed",
+			  G_CALLBACK (eel_canvas_accessible_adjustment_changed),
+			  obj);
+	
+	obj->role = ATK_ROLE_LAYERED_PANE;
+}
+
+static gint
+eel_canvas_accessible_get_n_children (AtkObject* obj)
+{
+ 	GtkAccessible *accessible;
+	GtkWidget *widget;
+	EelCanvas *canvas;
+	EelCanvasGroup *root_group;
+
+	accessible = GTK_ACCESSIBLE (obj);
+	widget = accessible->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return 0;
+	}
+
+	g_return_val_if_fail (EEL_IS_CANVAS (widget), 0);
+
+	canvas = EEL_CANVAS (widget);
+	root_group = eel_canvas_root (canvas);
+	g_return_val_if_fail (root_group, 0);
+	return 1;
+}
+
+static AtkObject*
+eel_canvas_accessible_ref_child (AtkObject *obj,
+                                 gint       i)
+{
+	GtkAccessible *accessible;
+	GtkWidget *widget;
+	EelCanvas *canvas;
+	EelCanvasGroup *root_group;
+	AtkObject *atk_object;
+
+	/* Canvas only has one child, so return NULL if index is non zero */
+	if (i != 0) {
+        	return NULL;
+	}
+
+	accessible = GTK_ACCESSIBLE (obj);
+	widget = accessible->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return NULL;
+	}
+
+	canvas = EEL_CANVAS (widget);
+	root_group = eel_canvas_root (canvas);
+	g_return_val_if_fail (root_group, NULL);
+	atk_object = atk_gobject_accessible_for_object (G_OBJECT (root_group));
+	g_object_ref (atk_object);
+	
+	g_warning ("Accessible support for FooGroup needs to be implemented");
+	
+	return atk_object;
+}
+
+static void
+eel_canvas_accessible_class_init (AtkObjectClass *klass)
+{
+ 	accessible_parent_class = g_type_class_peek_parent (klass);
+
+	klass->initialize = eel_canvas_accessible_initialize;
+	klass->get_n_children = eel_canvas_accessible_get_n_children;
+	klass->ref_child = eel_canvas_accessible_ref_child;
+}
+
+static GType
+eel_canvas_accessible_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		AtkObjectFactory *factory;
+		GType parent_atk_type;
+		GTypeQuery query;
+		GTypeInfo tinfo = { 0 };
+
+		factory = atk_registry_get_factory (atk_get_default_registry(),
+						    GTK_TYPE_WIDGET);
+		if (!factory) {
+			return G_TYPE_INVALID;
+		}
+		parent_atk_type = atk_object_factory_get_accessible_type (factory);
+		if (!parent_atk_type) {
+			return G_TYPE_INVALID;
+		}
+		g_type_query (parent_atk_type, &query);
+		tinfo.class_init = (GClassInitFunc) eel_canvas_accessible_class_init;
+		tinfo.class_size = query.class_size;
+		tinfo.instance_size = query.instance_size;
+		type = g_type_register_static (parent_atk_type,
+					       "EelCanvasAccessibility",
+					       &tinfo, 0);
+	}
+	return type;
+}
+
+static AtkObject *
+eel_canvas_accessible_create (GObject *for_object)
+{
+	GType type;
+	AtkObject *accessible;
+	EelCanvas *canvas;
+
+	canvas = EEL_CANVAS (for_object);
+	g_return_val_if_fail (canvas != NULL, NULL);
+
+	type = eel_canvas_accessible_get_type ();
+
+	if (type == G_TYPE_INVALID) {
+		return atk_no_op_object_new (for_object);
+	}
+
+	accessible = g_object_new (type, NULL);
+	atk_object_initialize (accessible, for_object);
+	return accessible;
+}
+
+static GType
+eel_canvas_accessible_factory_get_accessible_type (void)
+{
+	return eel_canvas_accessible_get_type ();
+}
+
+static AtkObject*
+eel_canvas_accessible_factory_create_accessible (GObject *obj)
+{
+	AtkObject *accessible;
+
+	g_return_val_if_fail (G_IS_OBJECT (obj), NULL);
+
+	accessible = eel_canvas_accessible_create (obj);
+
+	return accessible;
+}
+
+static void
+eel_canvas_accessible_factory_class_init (AtkObjectFactoryClass *klass)
+{
+	klass->create_accessible = eel_canvas_accessible_factory_create_accessible;
+	klass->get_accessible_type = eel_canvas_accessible_factory_get_accessible_type;
+}
+ 
+static GType
+eel_canvas_accessible_factory_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		static const GTypeInfo tinfo = {
+			sizeof (AtkObjectFactoryClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) eel_canvas_accessible_factory_class_init,
+			NULL,		/* class_finalize */
+			NULL,		/* class_data */
+			sizeof (AtkObjectFactory),
+			0,		/* n_preallocs */
+			NULL
+		};
+		type = g_type_register_static (ATK_TYPE_OBJECT_FACTORY,
+					       "EelCanvasAccessibilityFactory",
+					       &tinfo, 0);
+	}
+
+	return type;
+}
+
+
 /* Class initialization function for EelCanvasClass */
 static void
 eel_canvas_class_init (EelCanvasClass *klass)
@@ -1876,6 +2017,10 @@ eel_canvas_class_init (EelCanvasClass *klass)
 			      eel_marshal_VOID__INT_INT_INT_INT,
 			      G_TYPE_NONE, 4, 
 			      G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+				       EEL_TYPE_CANVAS,
+				       eel_canvas_accessible_factory_get_type ());
 }
 
 /* Callback used when the root item of a canvas is destroyed.  The user should
@@ -1931,7 +2076,7 @@ remove_idle (EelCanvas *canvas)
 	if (canvas->idle_id == 0)
 		return;
 
-	gtk_idle_remove (canvas->idle_id);
+	g_source_remove (canvas->idle_id);
 	canvas->idle_id = 0;
 }
 
@@ -2238,7 +2383,6 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
 
 	if (canvas->grabbed_item &&
 	    !is_descendant (canvas->current_item, canvas->grabbed_item)) {
-                g_warning ("emit_event() returning FALSE!\n");
 		return FALSE;
         }
 
@@ -3312,6 +3456,376 @@ boolean_handled_accumulator (GSignalInvocationHint *ihint,
 	return continue_emission;
 }
 
+static guint
+eel_canvas_item_accessible_add_focus_handler (AtkComponent    *component,
+                                              AtkFocusHandler handler)
+{
+ 	GSignalMatchType match_type;
+	guint signal_id;
+
+	match_type = G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC;
+	signal_id = g_signal_lookup ("focus-event", ATK_TYPE_OBJECT);
+
+	if (!g_signal_handler_find (component, match_type, signal_id, 0, NULL,
+                                    (gpointer) handler, NULL)) {
+		return g_signal_connect_closure_by_id (component,
+                                                       signal_id, 0,
+                                                       g_cclosure_new (
+                                                       G_CALLBACK (handler), NULL,
+                                                       (GClosureNotify) NULL),
+                                                       FALSE);
+	} 
+	return 0;
+}
+
+static void
+eel_canvas_item_accessible_get_item_extents (EelCanvasItem *item,
+                                             GdkRectangle  *rect)
+{
+ 	double bx1, bx2, by1, by2;
+	gint scroll_x, scroll_y;
+	gint x1, x2, y1, y2;
+
+	eel_canvas_item_get_bounds (item, &bx1, &by1, &bx2, &by2);
+	eel_canvas_w2c_rect_d (item->canvas, &bx1, &by1, &bx2, &by2);
+	eel_canvas_get_scroll_offsets (item->canvas, &scroll_x, &scroll_y);
+	x1 = floor (bx1);
+	y1 = floor (by1);
+	x2 = ceil (bx2);
+	y2 = ceil (by2);
+	rect->x = x1 - scroll_x;
+	rect->y = y1 - scroll_y;
+	rect->width = x2 - x1;
+	rect->height = y2 - y1;
+}
+
+static gboolean
+eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
+                                              GdkRectangle  *rect)
+{
+ 	GtkWidget *widget;
+	gboolean retval;
+
+	widget = GTK_WIDGET (item->canvas);
+	if (widget->window) {
+		int window_width, window_height;
+
+		gdk_window_get_geometry (widget->window, NULL, NULL,
+                                         &window_width, &window_height, NULL);
+		/*
+                 * Check whether rectangles intersect
+		 */
+                if (rect->x + rect->width < 0 ||
+                    rect->y + rect->height < 0 ||
+                    rect->x > window_width  ||
+                    rect->y > window_height) {
+			retval = FALSE;
+		} else {
+                        retval = TRUE;
+		}
+	} else {
+                retval = FALSE;
+	}
+        return retval;
+}
+
+
+static void
+eel_canvas_item_accessible_get_extents (AtkComponent *component,
+                                        gint		*x,
+                                        gint		*y,
+                                        gint		*width,
+                                        gint		*height,
+                                        AtkCoordType coord_type)
+{
+ 	AtkGObjectAccessible *atk_gobj;
+	GObject *obj;
+	EelCanvasItem *item;
+	gint window_x, window_y;
+	gint toplevel_x, toplevel_y;
+	GdkRectangle rect;
+	GdkWindow *window;
+	GtkWidget *canvas;
+
+	atk_gobj = ATK_GOBJECT_ACCESSIBLE (component);
+	obj = atk_gobject_accessible_get_object (atk_gobj);
+
+	if (obj == NULL) {
+		/* item is defunct */
+		return;
+	}
+
+        /* Get the CanvasItem */
+	item = EEL_CANVAS_ITEM (obj);
+
+	/* If this item has no parent canvas, something's broken */
+	g_return_if_fail (GTK_IS_WIDGET (item->canvas));
+
+	eel_canvas_item_accessible_get_item_extents (item, &rect);
+	*width = rect.width;
+	*height = rect.height;
+	if (!eel_canvas_item_accessible_is_item_in_window (item, &rect)) {
+		*x = G_MININT;
+		*y = G_MININT;
+		return;
+	}
+
+        canvas = GTK_WIDGET (item->canvas);
+	window = gtk_widget_get_parent_window (canvas);
+	gdk_window_get_origin (window, &window_x, &window_y);
+	*x = rect.x + window_x;
+	*y = rect.y + window_y;
+	if (coord_type == ATK_XY_WINDOW) {
+		window = gdk_window_get_toplevel (canvas->window);
+		gdk_window_get_origin (window, &toplevel_x, &toplevel_y);
+		*x -= toplevel_x;
+		*y -= toplevel_y;
+	}
+        return;
+}
+
+static gint
+eel_canvas_item_accessible_get_mdi_zorder (AtkComponent *component)
+{
+	AtkGObjectAccessible *atk_gobj;
+	GObject *g_obj;
+	EelCanvasItem *item;
+
+	atk_gobj = ATK_GOBJECT_ACCESSIBLE (component);
+	g_obj = atk_gobject_accessible_get_object (atk_gobj);
+	if (g_obj == NULL) {
+		/* Object is defunct */
+		return -1;
+	}
+
+	item = EEL_CANVAS_ITEM (g_obj);
+	if (item->parent) {
+       		return g_list_index (EEL_CANVAS_GROUP (item->parent)->item_list, item);
+	} else {
+		g_return_val_if_fail (item->canvas->root == item, -1);
+		return 0;
+	}
+}
+
+static gboolean
+eel_canvas_item_accessible_grab_focus (AtkComponent *component)
+{
+ 	AtkGObjectAccessible *atk_gobj;
+	GObject *obj;
+	EelCanvasItem *item;
+	GtkWidget *toplevel;
+
+	atk_gobj = ATK_GOBJECT_ACCESSIBLE (component);
+	obj = atk_gobject_accessible_get_object (atk_gobj);
+
+	item = EEL_CANVAS_ITEM (obj);
+	if (item == NULL) {
+		/* item is defunct */
+		return FALSE;
+	}
+
+        eel_canvas_item_grab_focus (item);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
+	if (GTK_WIDGET_TOPLEVEL (toplevel)) {
+		gtk_window_present (GTK_WINDOW (toplevel));
+	}
+
+	return TRUE;
+}
+
+static void
+eel_canvas_item_accessible_remove_focus_handler (AtkComponent *component,
+                                                 guint		handler_id)
+{
+ 	g_signal_handler_disconnect (component, handler_id);
+}
+
+static void
+eel_canvas_item_accessible_component_interface_init (AtkComponentIface *iface)
+{
+	g_return_if_fail (iface != NULL);
+
+	iface->add_focus_handler = eel_canvas_item_accessible_add_focus_handler;
+	iface->get_extents = eel_canvas_item_accessible_get_extents;
+	iface->get_mdi_zorder = eel_canvas_item_accessible_get_mdi_zorder;
+	iface->grab_focus = eel_canvas_item_accessible_grab_focus;
+      	iface->remove_focus_handler = eel_canvas_item_accessible_remove_focus_handler;
+}
+
+static gboolean
+eel_canvas_item_accessible_is_item_on_screen (EelCanvasItem *item)
+{
+	GdkRectangle rect;
+
+	eel_canvas_item_accessible_get_item_extents (item, &rect);
+	return eel_canvas_item_accessible_is_item_in_window (item, &rect);
+}
+
+static void
+eel_canvas_item_accessible_initialize (AtkObject *obj, gpointer data)
+{
+	if (ATK_OBJECT_CLASS (accessible_item_parent_class)->initialize != NULL)
+		ATK_OBJECT_CLASS (accessible_item_parent_class)->initialize (obj, data);
+	g_object_set_data (G_OBJECT (obj), "atk-component-layer",
+			   GINT_TO_POINTER (ATK_LAYER_MDI));
+}
+
+static AtkStateSet*
+eel_canvas_item_accessible_ref_state_set (AtkObject *accessible)
+{
+ 	AtkGObjectAccessible *atk_gobj;
+	GObject *obj;
+ 	EelCanvasItem *item;
+	AtkStateSet *state_set;
+
+	state_set = ATK_OBJECT_CLASS (accessible_item_parent_class)->ref_state_set (accessible);
+	atk_gobj = ATK_GOBJECT_ACCESSIBLE (accessible);
+	obj = atk_gobject_accessible_get_object (atk_gobj);
+
+	item = EEL_CANVAS_ITEM (obj);
+	if (item == NULL) {
+		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
+	} else {
+                if (item->object.flags & EEL_CANVAS_ITEM_VISIBLE) {
+			atk_state_set_add_state (state_set, ATK_STATE_VISIBLE);
+			
+			if (eel_canvas_item_accessible_is_item_on_screen (item)) {
+  				atk_state_set_add_state (state_set, ATK_STATE_SHOWING);
+       			}
+		}
+
+	}
+        if (GTK_WIDGET_CAN_FOCUS (GTK_WIDGET (item->canvas))) {
+		atk_state_set_add_state (state_set, ATK_STATE_FOCUSABLE);
+
+		if (item->canvas->focused_item == item) {
+			atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
+		}
+	}
+
+        return state_set;
+}
+
+static void
+eel_canvas_item_accessible_class_init (AtkObjectClass *klass)
+{
+ 	accessible_item_parent_class = g_type_class_peek_parent (klass);
+
+	klass->initialize = eel_canvas_item_accessible_initialize;
+	klass->ref_state_set = eel_canvas_item_accessible_ref_state_set;
+}
+
+static GType
+eel_canvas_item_accessible_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		static const GInterfaceInfo atk_component_info = {
+			(GInterfaceInitFunc) eel_canvas_item_accessible_component_interface_init,
+                 	(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+		AtkObjectFactory *factory;
+		GType parent_atk_type;
+		GTypeQuery query;
+		GTypeInfo tinfo = { 0 };
+
+		factory = atk_registry_get_factory (atk_get_default_registry(),
+						    GTK_TYPE_OBJECT);
+		if (!factory) {
+			return G_TYPE_INVALID;
+		}
+		parent_atk_type = atk_object_factory_get_accessible_type (factory);
+		if (!parent_atk_type) {
+			return G_TYPE_INVALID;
+		}
+		g_type_query (parent_atk_type, &query);
+		tinfo.class_init = (GClassInitFunc) eel_canvas_item_accessible_class_init;
+		tinfo.class_size = query.class_size;
+		tinfo.instance_size = query.instance_size;
+		type = g_type_register_static (parent_atk_type,
+					       "EelCanvasItemAccessibility",
+					       &tinfo, 0);
+
+		g_type_add_interface_static (type, ATK_TYPE_COMPONENT,
+					     &atk_component_info);
+
+	}
+
+	return type;
+}
+
+static AtkObject *
+eel_canvas_item_accessible_create (GObject *for_object)
+{
+	GType type;
+	AtkObject *accessible;
+	EelCanvasItem *item;
+
+	item = EEL_CANVAS_ITEM (for_object);
+	g_return_val_if_fail (item != NULL, NULL);
+
+	type = eel_canvas_item_accessible_get_type ();
+	if (type == G_TYPE_INVALID) {
+		return atk_no_op_object_new (for_object);
+	}
+
+        accessible = g_object_new (type, NULL);
+	atk_object_initialize (accessible, for_object);
+	return accessible;
+}
+
+static GType
+eel_canvas_item_accessible_factory_get_accessible_type (void)
+{
+	return eel_canvas_item_accessible_get_type ();
+}
+
+static AtkObject*
+eel_canvas_item_accessible_factory_create_accessible (GObject *obj)
+{
+	AtkObject *accessible;
+
+	g_return_val_if_fail (G_IS_OBJECT (obj), NULL);
+
+	accessible = eel_canvas_item_accessible_create (obj);
+
+	return accessible;
+}
+
+static void
+eel_canvas_item_accessible_factory_class_init (AtkObjectFactoryClass *klass)
+{
+	klass->create_accessible = eel_canvas_item_accessible_factory_create_accessible;
+	klass->get_accessible_type = eel_canvas_item_accessible_factory_get_accessible_type;
+}
+ 
+static GType
+eel_canvas_item_accessible_factory_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		static const GTypeInfo tinfo = {
+			sizeof (AtkObjectFactoryClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) eel_canvas_item_accessible_factory_class_init,
+			NULL,		/* class_finalize */
+			NULL,		/* class_data */
+			sizeof (AtkObjectFactory),
+			0,		/* n_preallocs */
+			NULL
+		};
+		type = g_type_register_static (ATK_TYPE_OBJECT_FACTORY,
+					       "EelCanvasItemAccessibilityFactory",
+					       &tinfo, 0);
+	}
+
+	return type;
+}
+
 /* Class initialization function for EelCanvasItemClass */
 static void
 eel_canvas_item_class_init (EelCanvasItemClass *class)
@@ -3348,4 +3862,8 @@ eel_canvas_item_class_init (EelCanvasItemClass *class)
 	class->map = eel_canvas_item_map;
 	class->unmap = eel_canvas_item_unmap;
 	class->update = eel_canvas_item_update;
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+                                       EEL_TYPE_CANVAS_ITEM,
+                                       eel_canvas_item_accessible_factory_get_type ());
 }

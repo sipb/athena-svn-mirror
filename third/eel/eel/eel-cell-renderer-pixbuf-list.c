@@ -239,17 +239,14 @@ eel_cell_renderer_pixbuf_list_render (GtkCellRenderer *cell,
 		if (pix_rect.x + pix_rect.width + cell->xpad > background_area->width + background_area->x)
 			break;
 
-		gdk_pixbuf_render_to_drawable_alpha (pixbuf,
-						     window,
-						     0, 0,
-						     pix_rect.x,
-						     pix_rect.y,
-						     pix_rect.width,
-						     pix_rect.height,
-						     GDK_PIXBUF_ALPHA_FULL,
-						     0,
-						     GDK_RGB_DITHER_NORMAL,
-						     0, 0);
+		gdk_draw_pixbuf (window, NULL, pixbuf,
+				 0, 0,
+				 pix_rect.x,
+				 pix_rect.y,
+				 pix_rect.width,
+				 pix_rect.height,
+				 GDK_RGB_DITHER_NORMAL,
+				 0, 0);
 
 		x_offset += gdk_pixbuf_get_width (pixbuf);
 	}

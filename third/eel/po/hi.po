@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel VERSION\n"
-"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"POT-Creation-Date: 2003-03-10 18:08+0100\n"
 "PO-Revision-Date: 2003-01-10 20:47+0530\n"
 "Last-Translator: G Karunakar <karunakar@freedomink.org>\n"
 "Language-Team: Hindi <indlinux-hindi-gnome@lists.sourceforge.net>\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
 msgstr "X"
 
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
 msgid "Y"
 msgstr "Y"
 
@@ -68,11 +68,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "अक्षरों मे कर्सर से चयन के विपरीत सिरे की स्थिति"
 
-#: eel/eel-editable-label.c:3030
+#: eel/eel-editable-label.c:3069
 msgid "Select All"
 msgstr "सभी का चयन"
 
-#: eel/eel-editable-label.c:3041
+#: eel/eel-editable-label.c:3080
 msgid "Input Methods"
 msgstr "ईनपुट विधी"
 

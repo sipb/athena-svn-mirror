@@ -107,7 +107,7 @@ eel_unsetenv (const char *name)
 	 */
 	for (i = 0; environ[i] != NULL; i++) {
 		if (strncmp (environ[i], name, len) == 0
-		    && environ[i][len + 1] == '=') {
+		    && environ[i][len] == '=') {
 			break;
 		}
 	}

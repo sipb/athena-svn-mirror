@@ -409,6 +409,620 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+dumb-box.o: dumb-box.c ../config.h dumb-box.h ../eel/eel-gtk-macros.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-gdk-extensions.h
+test-eel-background.o: test-eel-background.c ../eel/eel-background.h
+test-eel-canvas-items.o: test-eel-canvas-items.c ../config.h \
+	../eel/eel-canvas-rect.h
+test-eel-clickable-image.o: test-eel-clickable-image.c test.h \
+	../config.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-editable-label.o: test-eel-editable-label.c ../config.h \
+	../eel/eel-editable-label.h
+test-eel-ellipsizing.o: test-eel-ellipsizing.c ../config.h \
+	../eel/eel-ellipsizing-label.h
+test-eel-font-manager.o: test-eel-font-manager.c ../config.h test.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-font-picker.o: test-eel-font-picker.c test.h \
+	../eel/eel-text-caption.h ../eel/eel-caption.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-dateedit-extensions.h \
+	../eel/eel-ellipsizing-label.h ../eel/eel-enumeration.h \
+	../eel/eel-string-list.h ../eel/eel-features.h \
+	../eel/eel-font-picker.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences-box.h \
+	../eel/eel-preferences-pane.h ../eel/eel-preferences-group.h \
+	../eel/eel-preferences.h ../eel/eel-preferences-item.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-font-simple.o: test-eel-font-simple.c test.h ../config.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-font.o: test-eel-font.c test.h ../config.h ../eel/eel.h \
+	../eel/eel-art-extensions.h ../eel/eel-art-gtk-extensions.h \
+	../eel/eel-gdk-extensions.h ../eel/eel-gtk-extensions.h \
+	../eel/eel-background.h ../eel/eel-caption-table.h \
+	../eel/eel-caption.h ../eel/eel-clickable-image.h \
+	../eel/eel-labeled-image.h ../eel/eel-label.h \
+	../eel/eel-scalable-font.h ../eel/eel-string-list.h \
+	../eel/eel-smooth-widget.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-image.h ../eel/eel-clist.h ../eel/eel-ctree.h \
+	../eel/eel-list.h ../eel/eel-dateedit-extensions.h \
+	../eel/eel-ellipsizing-label.h ../eel/eel-enumeration.h \
+	../eel/eel-features.h ../eel/eel-font-manager.h \
+	../eel/eel-font-picker.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-font-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-glyph.h \
+	../eel/eel-gnome-extensions.h ../eel/eel-graphic-effects.h \
+	../eel/eel-gtk-container.h ../eel/eel-gtk-macros.h \
+	../eel/eel-image-chooser.h ../eel/eel-image-table.h \
+	../eel/eel-wrap-table.h ../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-glyph-simple.o: test-eel-glyph-simple.c test.h ../config.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-glyph.o: test-eel-glyph.c test.h ../config.h ../eel/eel.h \
+	../eel/eel-art-extensions.h ../eel/eel-art-gtk-extensions.h \
+	../eel/eel-gdk-extensions.h ../eel/eel-gtk-extensions.h \
+	../eel/eel-background.h ../eel/eel-caption-table.h \
+	../eel/eel-caption.h ../eel/eel-clickable-image.h \
+	../eel/eel-labeled-image.h ../eel/eel-label.h \
+	../eel/eel-scalable-font.h ../eel/eel-string-list.h \
+	../eel/eel-smooth-widget.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-image.h ../eel/eel-clist.h ../eel/eel-ctree.h \
+	../eel/eel-list.h ../eel/eel-dateedit-extensions.h \
+	../eel/eel-ellipsizing-label.h ../eel/eel-enumeration.h \
+	../eel/eel-features.h ../eel/eel-font-manager.h \
+	../eel/eel-font-picker.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-font-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-glyph.h \
+	../eel/eel-gnome-extensions.h ../eel/eel-graphic-effects.h \
+	../eel/eel-gtk-container.h ../eel/eel-gtk-macros.h \
+	../eel/eel-image-chooser.h ../eel/eel-image-table.h \
+	../eel/eel-wrap-table.h ../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-gtk-style.o: test-eel-gtk-style.c test.h ../eel/eel-debug.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h ../eel/eel-debug-drawing.h
+test-eel-image-background.o: test-eel-image-background.c test.h \
+	../eel/eel-text-caption.h ../eel/eel-caption.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-clist.h \
+	../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-smooth-widget.h \
+	../eel/eel-image-with-background.h ../eel/eel-image.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h
+test-eel-image-chooser.o: test-eel-image-chooser.c test.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-image-scrolled.o: test-eel-image-scrolled.c test.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-image-simple.o: test-eel-image-simple.c ../config.h \
+	../eel/eel-image.h ../eel/eel-smooth-widget.h \
+	../eel/eel-art-extensions.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-gdk-extensions.h
+test-eel-image-table.o: test-eel-image-table.c test.h ../eel/eel-debug.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-label-background.o: test-eel-label-background.c test.h \
+	../config.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-label-flavorful.o: test-eel-label-flavorful.c ../config.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-art-extensions.h \
+	../eel/eel-smooth-widget.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-string.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-gdk-extensions.h
+test-eel-label-offset.o: test-eel-label-offset.c ../config.h test.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-label-scrolled.o: test-eel-label-scrolled.c test.h ../config.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-label-simple.o: test-eel-label-simple.c test.h ../config.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-label-wrapped.o: test-eel-label-wrapped.c ../config.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-art-extensions.h \
+	../eel/eel-smooth-widget.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-gdk-extensions.h ../eel/eel-gtk-extensions.h
+test-eel-label.o: test-eel-label.c ../config.h ../eel/eel-background.h \
+	../eel/eel-font-picker.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-art-extensions.h \
+	../eel/eel-caption.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gtk-extensions.h \
+	../eel/eel-label.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-text-caption.h
+test-eel-labeled-image.o: test-eel-labeled-image.c test.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-password-dialog.o: test-eel-password-dialog.c ../config.h \
+	../eel/eel-password-dialog.h
+test-eel-pixbuf-scale.o: test-eel-pixbuf-scale.c test.h \
+	../eel/eel-debug.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
+test-eel-pixbuf-tile.o: test-eel-pixbuf-tile.c test.h ../eel/eel-debug.h \
+	../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-string-list.h \
+	../eel/eel-features.h ../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h ../eel/eel-debug-drawing.h
+test-eel-smooth-text-layout.o: test-eel-smooth-text-layout.c test.h \
+	../config.h ../eel/eel.h ../eel/eel-art-extensions.h \
+	../eel/eel-art-gtk-extensions.h ../eel/eel-gdk-extensions.h \
+	../eel/eel-gtk-extensions.h ../eel/eel-background.h \
+	../eel/eel-caption-table.h ../eel/eel-caption.h \
+	../eel/eel-clickable-image.h ../eel/eel-labeled-image.h \
+	../eel/eel-label.h ../eel/eel-scalable-font.h \
+	../eel/eel-string-list.h ../eel/eel-smooth-widget.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-image.h \
+	../eel/eel-clist.h ../eel/eel-ctree.h ../eel/eel-list.h \
+	../eel/eel-dateedit-extensions.h ../eel/eel-ellipsizing-label.h \
+	../eel/eel-enumeration.h ../eel/eel-features.h \
+	../eel/eel-font-manager.h ../eel/eel-font-picker.h \
+	../eel/eel-gconf-extensions.h ../eel/eel-gdk-font-extensions.h \
+	../eel/eel-generous-bin.h ../eel/eel-glib-extensions.h \
+	../eel/eel-glyph.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-image-with-background.h \
+	../eel/eel-label-with-background.h \
+	../eel/eel-list-column-title.h ../eel/eel-password-dialog.h \
+	../eel/eel-preferences-box.h ../eel/eel-preferences-pane.h \
+	../eel/eel-preferences-group.h ../eel/eel-preferences.h \
+	../eel/eel-preferences-item.h ../eel/eel-radio-button-group.h \
+	../eel/eel-region.h ../eel/eel-scalable-font-private.h \
+	../eel/eel-self-checks.h ../eel/eel-smooth-text-layout-cache.h \
+	../eel/eel-smooth-text-layout.h ../eel/eel-stock-dialogs.h \
+	../eel/eel-string-picker.h ../eel/eel-string.h \
+	../eel/eel-text-caption.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-viewport.h ../eel/eel-xml-extensions.h \
+	../eel/eel-debug.h ../eel/eel-debug-drawing.h
+test-eel-viewport-constraint.o: test-eel-viewport-constraint.c \
+	../config.h ../eel/eel-viewport.h ../eel/eel-smooth-widget.h \
+	../eel/eel-art-extensions.h ../eel/eel-gdk-pixbuf-extensions.h \
+	../eel/eel-background.h ../eel/eel-gtk-extensions.h \
+	../eel/eel-gdk-extensions.h
+test-eel-widgets.o: test-eel-widgets.c ../config.h \
+	../eel/eel-caption-table.h ../eel/eel-radio-button-group.h \
+	../eel/eel-string-picker.h ../eel/eel-caption.h \
+	../eel/eel-string-list.h ../eel/eel-stock-dialogs.h
+test.o: test.c test.h ../eel/eel-debug.h ../eel/eel.h \
+	../eel/eel-art-extensions.h ../eel/eel-art-gtk-extensions.h \
+	../eel/eel-gdk-extensions.h ../eel/eel-gtk-extensions.h \
+	../eel/eel-background.h ../eel/eel-caption-table.h \
+	../eel/eel-caption.h ../eel/eel-dateedit-extensions.h \
+	../eel/eel-ellipsizing-label.h ../eel/eel-enumeration.h \
+	../eel/eel-string-list.h ../eel/eel-features.h \
+	../eel/eel-gconf-extensions.h \
+	../eel/eel-gdk-pixbuf-extensions.h ../eel/eel-generous-bin.h \
+	../eel/eel-glib-extensions.h ../eel/eel-gnome-extensions.h \
+	../eel/eel-graphic-effects.h ../eel/eel-gtk-container.h \
+	../eel/eel-gtk-macros.h ../eel/eel-image-chooser.h \
+	../eel/eel-image-table.h ../eel/eel-wrap-table.h \
+	../eel/eel-labeled-image.h ../eel/eel-pango-extensions.h \
+	../eel/eel-password-dialog.h ../eel/eel-preferences.h \
+	../eel/eel-radio-button-group.h ../eel/eel-self-checks.h \
+	../eel/eel-stock-dialogs.h ../eel/eel-string-picker.h \
+	../eel/eel-string.h ../eel/eel-types.h \
+	../eel/eel-type-builtins.h ../eel/eel-vfs-extensions.h \
+	../eel/eel-xml-extensions.h
 
 info-am:
 info: info-am

@@ -1,23 +1,24 @@
 # eel ko.po
 # Young-ho, Cha <ganadist@dacome.co.kr>, 2000, 2001.
 # Changwoo Ryu <cwryu@debian.org>, 2002.
+# Young-Ho, Cha <ganadist@mizi.com>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eel $VERSION\n"
-"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"POT-Creation-Date: 2003-03-10 18:08+0100\n"
 "PO-Revision-Date: 2003-01-15 22:04+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Last-Translator: Kang Jeong-Hee <Keizi@mail.co.kr>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
 msgstr "X"
 
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
 msgid "Y"
 msgstr "Y"
 
@@ -39,6 +40,8 @@ msgid ""
 "This does NOT affect the alignment of the label within its allocation. See "
 "GtkMisc::xalign for that."
 msgstr ""
+"라벨의 글자들은 서로 영향을 끼치면서 정렬됩니다.이는 이미 배치된 라벨 자체의 "
+"위치에는 영향을 주지 않습니다.이 부분에 대해서는 GtkMisc::xalign을 보세요."
 
 #: eel/eel-editable-label.c:376
 msgid "Line wrap"
@@ -65,11 +68,11 @@ msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr "글자에 있는 커서에서 선택 반대방향 끝의 위치."
 
-#: eel/eel-editable-label.c:3030
+#: eel/eel-editable-label.c:3069
 msgid "Select All"
 msgstr "모두 선택"
 
-#: eel/eel-editable-label.c:3041
+#: eel/eel-editable-label.c:3080
 msgid "Input Methods"
 msgstr "입력기"
 

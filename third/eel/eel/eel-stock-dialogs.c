@@ -112,7 +112,7 @@ add_label_to_dialog (GtkDialog *dialog, const char *message)
 static void
 timed_wait_delayed_close_destroy_dialog_callback (GtkObject *object, gpointer callback_data)
 {
-	gtk_timeout_remove (GPOINTER_TO_UINT (callback_data));
+	g_source_remove (GPOINTER_TO_UINT (callback_data));
 }
 
 static gboolean
@@ -148,7 +148,7 @@ timed_wait_free (TimedWait *wait)
 		gtk_widget_unref (GTK_WIDGET (wait->parent_window));
 	}
 	if (wait->timeout_handler_id != 0) {
-		gtk_timeout_remove (wait->timeout_handler_id);
+		g_source_remove (wait->timeout_handler_id);
 	}
 	if (wait->dialog != NULL) {
 		/* Make sure to detach from the "destroy" signal, or we'll
@@ -162,7 +162,7 @@ timed_wait_free (TimedWait *wait)
 		time_up = (eel_get_system_time () - wait->dialog_creation_time) / 1000;
 		
 		if (time_up < TIMED_WAIT_MIN_TIME_UP) {
-			delayed_close_handler_id = gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up,
+			delayed_close_handler_id = g_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up,
 			                                            timed_wait_delayed_close_timeout_callback,
 			                                            wait->dialog);
 			g_object_set_data (G_OBJECT (wait->dialog),
@@ -277,7 +277,7 @@ eel_timed_wait_start_with_duration (int duration,
 	}
 
 	/* Start the timer. */
-	wait->timeout_handler_id = gtk_timeout_add (duration, timed_wait_callback, wait);
+	wait->timeout_handler_id = g_timeout_add (duration, timed_wait_callback, wait);
 
 	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {

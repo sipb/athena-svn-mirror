@@ -257,7 +257,7 @@ get_simple_text (gpointer object)
 	return NULL;
 }
 
-static char *
+char *
 eel_accessibility_text_get_text (AtkText *text,
 				 gint     start_pos,
 				 gint     end_pos)
@@ -268,7 +268,7 @@ eel_accessibility_text_get_text (AtkText *text,
 	return gail_text_util_get_substring (util, start_pos, end_pos);
 }
 
-static gunichar 
+gunichar 
 eel_accessibility_text_get_character_at_offset (AtkText *text,
 						gint     offset)
 {
@@ -287,7 +287,7 @@ eel_accessibility_text_get_character_at_offset (AtkText *text,
 	return c;
 }
 
-static char *
+char *
 eel_accessibility_text_get_text_before_offset (AtkText	      *text,
 					       gint            offset,
 					       AtkTextBoundary boundary_type,
@@ -302,7 +302,7 @@ eel_accessibility_text_get_text_before_offset (AtkText	      *text,
 		boundary_type, offset, start_offset, end_offset);
 }
 
-static char *
+char *
 eel_accessibility_text_get_text_at_offset (AtkText        *text,
 					   gint            offset,
 					   AtkTextBoundary boundary_type,
@@ -317,7 +317,7 @@ eel_accessibility_text_get_text_at_offset (AtkText        *text,
 		boundary_type, offset, start_offset, end_offset);
 }
 
-static gchar*
+gchar*
 eel_accessibility_text_get_text_after_offset  (AtkText	      *text,
 					       gint            offset,
 					       AtkTextBoundary boundary_type,
@@ -332,7 +332,7 @@ eel_accessibility_text_get_text_after_offset  (AtkText	      *text,
 		boundary_type, offset, start_offset, end_offset);
 }
 
-static gint
+gint
 eel_accessibility_text_get_character_count (AtkText *text)
 {
 	GailTextUtil *util = get_simple_text (text);

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel VERSION\n"
-"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"POT-Creation-Date: 2003-03-10 18:08+0100\n"
 "PO-Revision-Date: 2002-12-29 14:25+0100\n"
 "Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
 msgstr "X"
 
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
 msgid "Y"
 msgstr "1"
 
@@ -70,11 +70,11 @@ msgstr ""
 "L' eplaeçmint di l' ôte costé del tchuze di tecse, a pårti do cursoe, e "
 "caracteres."
 
-#: eel/eel-editable-label.c:3030
+#: eel/eel-editable-label.c:3069
 msgid "Select All"
 msgstr "Tchoezi totafwait"
 
-#: eel/eel-editable-label.c:3041
+#: eel/eel-editable-label.c:3080
 msgid "Input Methods"
 msgstr "Metôdes d' intrêye"
 
