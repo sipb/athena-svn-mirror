@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.60 2002-08-05 14:46:44 ghudson Exp $
+# $Id: update_ws.sh,v 1.61 2002-08-05 14:55:45 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -232,6 +232,18 @@ failupdate() {
   exit 1
 }
 
+# This check needs to be updated for each full release.  It verifies
+# that people aren't updating across two full releases, which
+# generally doesn't work.
+case "$version" in
+9.0.*|9.1.*)
+  ;;
+*)
+  echo "You must update by only one full release at a time."
+  failupdate
+  ;;
+esac
+
 case "$HOSTTYPE" in
 sun4)
 
@@ -288,6 +300,7 @@ sun4)
 	echo "The / partition must have 204800K free for this update."
 	echo "Please clean local files."
 	logger -t "$HOST" -p user.notice / too full to take 9.1.14 update
+	failupdate
       fi
       ;;
     esac
