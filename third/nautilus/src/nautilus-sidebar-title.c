@@ -30,33 +30,29 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-window.h"
 
-#include <ctype.h>
-#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-property-bag-client.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-pango-extensions.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-font-factory.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
-#include <eel/eel-image-with-background.h>
-#include <eel/eel-label-with-background.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-search-uri.h>
-#include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
 #include <string.h>
@@ -68,12 +64,12 @@
 
 #define MORE_INFO_FONT_SIZE 	 12
 #define MIN_TITLE_FONT_SIZE 	 12
-#define MAX_TITLE_FONT_SIZE 	 20
+#define MAX_TITLE_FONT_SIZE 	 18
 #define TITLE_PADDING		  4
 
-static void                nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
+static void                nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *klass);
 static void                nautilus_sidebar_title_destroy          (GtkObject                 *object);
-static void                nautilus_sidebar_title_initialize       (NautilusSidebarTitle      *pixmap);
+static void                nautilus_sidebar_title_init       (NautilusSidebarTitle      *pixmap);
 static void                nautilus_sidebar_title_size_allocate    (GtkWidget                 *widget,
 								    GtkAllocation             *allocation);
 static void                nautilus_sidebar_title_theme_changed    (gpointer                   user_data);
@@ -82,9 +78,8 @@ static GtkWidget *         sidebar_title_create_title_label        (void);
 static GtkWidget *         sidebar_title_create_more_info_label    (void);
 static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
 static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
-static EelBackground 	  *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
-
-static const char *non_smooth_font_name;
+static void                style_set                               (GtkWidget                 *widget,
+								    GtkStyle                  *previous_style);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -102,10 +97,10 @@ struct NautilusSidebarTitleDetails {
 	gboolean		 determined_icon;
 };
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
+EEL_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
 
 static void
-nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
+nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -115,99 +110,46 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 	
 	object_class->destroy = nautilus_sidebar_title_destroy;
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
+	widget_class->style_set = style_set;
 
-	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-					 &non_smooth_font_name);
 }
 
 static void
-appearance_changed_callback (EelBackground *background, NautilusSidebarTitle *sidebar_title)
-{
-	nautilus_sidebar_title_select_text_color (sidebar_title);
-}		
-
-static void
-realize_callback (NautilusSidebarTitle *sidebar_title)
-{
-	EelBackground *background;
-	
-	background = nautilus_sidebar_title_background (sidebar_title);
-
-	g_return_if_fail (background != NULL);
-
-	gtk_signal_connect_while_alive (GTK_OBJECT (background),
-					"appearance_changed",
-					appearance_changed_callback,
-					sidebar_title,
-					GTK_OBJECT (sidebar_title));
-}
-
-static void
-smooth_font_changed_callback (gpointer callback_data)
-{
-	EelScalableFont *new_font;
-	EelScalableFont *new_bold_font;
-	NautilusSidebarTitle *sidebar_title;
-
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
-
-	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
-	
-	new_font = nautilus_global_preferences_get_default_smooth_font ();
-	new_bold_font = nautilus_global_preferences_get_default_smooth_bold_font ();
-
-	eel_label_set_smooth_font (EEL_LABEL (sidebar_title->details->title_label), new_bold_font);
-	eel_label_set_smooth_font (EEL_LABEL (sidebar_title->details->more_info_label), new_font);
-
-	gtk_object_unref (GTK_OBJECT (new_font));
-	gtk_object_unref (GTK_OBJECT (new_bold_font));
-}
-
-static GdkFont *
-get_non_smooth_font (int font_size)
-{
-	GdkFont *result;
-
-	result = nautilus_font_factory_get_font_by_family (non_smooth_font_name, font_size);
-	g_assert (result != NULL);
-
-	return result;
-}
-
-static void
-non_smooth_font_changed_callback (gpointer callback_data)
+style_set (GtkWidget *widget,
+	   GtkStyle  *previous_style)
 {
 	NautilusSidebarTitle *sidebar_title;
-	GdkFont *new_font;
+	PangoFontDescription *font_desc;
+	GtkStyle *style;
 
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (widget));
 
-	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);
 
 	/* Update the dynamically-sized title font */
 	update_title_font (sidebar_title);
 
 	/* Update the fixed-size "more info" font */
-	new_font = get_non_smooth_font (MORE_INFO_FONT_SIZE);
-	eel_gtk_widget_set_font (sidebar_title->details->more_info_label,
-				 new_font);	
-	gdk_font_unref (new_font);
+	style = gtk_widget_get_style (widget);
+	font_desc = pango_font_description_copy (style->font_desc);
+	pango_font_description_set_size (font_desc, MORE_INFO_FONT_SIZE * PANGO_SCALE);
+	
+	gtk_widget_modify_font (sidebar_title->details->more_info_label,
+				font_desc);
+	pango_font_description_free (font_desc);
 }
 
 static void
-nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
-{ 
+nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
+{
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
-
+	
 	/* Register to find out about icon theme changes */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "icons_changed",
-					       update_icon,
-					       GTK_OBJECT (sidebar_title));
-	gtk_signal_connect (GTK_OBJECT (sidebar_title), "realize", realize_callback, NULL);
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (update_icon), sidebar_title, G_CONNECT_SWAPPED);
 
 	/* Create the icon */
-	sidebar_title->details->icon = eel_image_new_with_background (NULL);
+	sidebar_title->details->icon = gtk_image_new ();
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
 	gtk_widget_show (sidebar_title->details->icon);
 
@@ -225,11 +167,6 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	gtk_widget_show (sidebar_title->details->emblem_box);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
 
-	/* FIXME: This should use EelLabel like the other displayed text.
-	 * But I don't think this feature is ever used? Someone should consult
-	 * with Andy about this. (This is not the same as the info in the Notes
-	 * sidebar panel.)
-	 */
 	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
 	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);
 	gtk_widget_show (sidebar_title->details->notes);
@@ -237,23 +174,15 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						       non_smooth_font_changed_callback,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-						       smooth_font_changed_callback,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
+
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
-						       nautilus_sidebar_title_theme_changed,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
+						  nautilus_sidebar_title_theme_changed,
+						  sidebar_title,
+						  G_OBJECT (sidebar_title));
 
 	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
-	smooth_font_changed_callback (sidebar_title);
-	non_smooth_font_changed_callback (sidebar_title);
+	style_set (GTK_WIDGET (sidebar_title), NULL);
 }
 
 /* destroy by throwing away private storage */
@@ -261,8 +190,8 @@ static void
 release_file (NautilusSidebarTitle *sidebar_title)
 {
 	if (sidebar_title->details->file_changed_connection != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (sidebar_title->details->file),
-				       sidebar_title->details->file_changed_connection);
+		g_signal_handler_disconnect (sidebar_title->details->file,
+					     sidebar_title->details->file_changed_connection);
 		sidebar_title->details->file_changed_connection = 0;
 	}
 
@@ -280,10 +209,13 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (object);
 
-	release_file (sidebar_title);
-	
-	g_free (sidebar_title->details->title_text);
-	g_free (sidebar_title->details);
+	if (sidebar_title->details) {
+		release_file (sidebar_title);
+
+		g_free (sidebar_title->details->title_text);
+		g_free (sidebar_title->details);
+		sidebar_title->details = NULL;
+	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -295,125 +227,71 @@ nautilus_sidebar_title_new (void)
 	return gtk_widget_new (nautilus_sidebar_title_get_type (), NULL);
 }
 
-static EelBackground *
-nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title)
-{
-	GtkWidget *widget;
-	GtkWidget *sidebar;
-	EelBackground *background;
-
-	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (sidebar_title), NULL);
-	
-	widget = GTK_WIDGET (sidebar_title)->parent;
-
-	 
-	if (widget != NULL) {
-		sidebar = widget->parent;
-		g_return_val_if_fail (NAUTILUS_IS_SIDEBAR (sidebar), NULL);
-		background = eel_get_widget_background (sidebar);
-		g_return_val_if_fail (EEL_IS_BACKGROUND (background), NULL);
-		return background;
-	} else {
-		/* FIXME bugzilla.gnome.org 45042
-		 * It would be preferable to assert widget != NULL and not have
-		 * this else case. Doing this would require us to be carful when
-		 * nautilus_sidebar_title_select_text_color is called - which would
-		 * probably involve doing more of the sidebar_title initialization
-		 * at realize time.
-		 */
-		return NULL;
-	}
-}
-
-/* utility to determine if the sidebar is using the default theme */
-static gboolean
-nautilus_sidebar_title_background_is_default (NautilusSidebarTitle *sidebar_title)
-{
-	char *background_color, *background_image;
-	gboolean is_default;
-	
-	background_color = nautilus_file_get_metadata (sidebar_title->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-						       NULL);
-	background_image = nautilus_file_get_metadata (sidebar_title->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-						       NULL);
-	
-	is_default = background_color == NULL && background_image == NULL;
-	g_free (background_color);
-	g_free (background_image);
-	
-	return is_default;
-}
-
-/* utility that returns true if the title is over a dark background.  We do this by finding the
-   sidebar and asking its background */
 void
-nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
+nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title,
+					  EelBackground        *background,
+					  gboolean              is_default)
 {
-	EelBackground *background;
 	char *sidebar_title_color;
 	char *sidebar_info_title_color;
 	char *sidebar_title_shadow_color;
+
+	g_return_if_fail (background != NULL);
 	
-	/* if the background is set to the default, the theme can explicitly define the title colors.  Check if
-	 * the background has been customized and if the theme specified any colors
+	/* if the background is set to the default, the theme can explicitly
+	 * define the title colors.  Check if the background has been customized
+	 * and if the theme specified any colors
 	 */
 	sidebar_title_color = NULL;
 	sidebar_info_title_color = NULL;
 	sidebar_title_shadow_color = NULL;
 	
-	background = nautilus_sidebar_title_background (sidebar_title);
-	if (background != NULL) {
-		if (nautilus_sidebar_title_background_is_default (sidebar_title)) {
-			sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "title_color");
-			sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "title_info_color");
-			sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "title_shadow_color"); 
-		}
-		
-		if (sidebar_title_color == NULL) {
-			/* FIXME bugzilla.gnome.org 42496: for now, both the title and info colors are the same */
-			if (eel_background_is_dark (background)) {
-				sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-				sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-				sidebar_title_shadow_color = g_strdup("rgb:0000/0000/0000");
-				
-			} else {
-				sidebar_title_color = g_strdup("rgb:0000/0000/0000");
-				sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
-				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-			}
-		} else {
-			if (sidebar_info_title_color == NULL) {
-				sidebar_info_title_color = g_strdup (sidebar_title_color);
-			}
-			if (sidebar_title_shadow_color == NULL) {
-				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-			}
-		}
-
-		eel_label_set_text_color (EEL_LABEL (sidebar_title->details->title_label),
-						       eel_parse_rgb_with_white_default (sidebar_title_color));
-		
-		eel_label_set_smooth_drop_shadow_color (EEL_LABEL (sidebar_title->details->title_label),
-							      eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
-		
-		eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (sidebar_title->details->title_label),
-							       sidebar_title->details->shadow_offset);
-		
-		eel_label_set_text_color (EEL_LABEL (sidebar_title->details->more_info_label),
-						       eel_parse_rgb_with_white_default (sidebar_info_title_color));
-		
-		eel_label_set_smooth_drop_shadow_color (EEL_LABEL (sidebar_title->details->more_info_label),
-							      eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
-		
-		eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (sidebar_title->details->more_info_label),
-							       sidebar_title->details->shadow_offset);
-		
-		g_free (sidebar_title_color);	
-		g_free (sidebar_info_title_color);	
-		g_free (sidebar_title_shadow_color);
+	if (is_default) {
+		sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "title_color");
+		sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "title_info_color");
+		sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "title_shadow_color"); 
 	}
+		
+	if (sidebar_title_color == NULL) {
+		/* FIXME bugzilla.gnome.org 42496: for now, both the title and info
+		 * colors are the same - and hard coded */
+		if (eel_background_is_dark (background)) {
+			sidebar_title_color = g_strdup ("#FFFFFF");
+			sidebar_info_title_color = g_strdup ("#FFFFFF");
+			sidebar_title_shadow_color = g_strdup ("#000000");
+				
+		} else {
+			sidebar_title_color = g_strdup ("#000000");
+			sidebar_info_title_color = g_strdup ("#000000");
+			sidebar_title_shadow_color = g_strdup ("#FFFFFF");
+		}
+	} else {
+		if (sidebar_info_title_color == NULL) {
+			sidebar_info_title_color = g_strdup (sidebar_title_color);
+		}
+		if (sidebar_title_shadow_color == NULL) {
+			sidebar_title_shadow_color = g_strdup ("#FFFFFF");
+		}
+	}
+
+	eel_gtk_widget_set_foreground_color (sidebar_title->details->title_label,
+					     sidebar_title_color);
+	eel_gtk_widget_set_foreground_color (sidebar_title->details->more_info_label,
+					     sidebar_info_title_color);
+
+	eel_gtk_label_set_drop_shadow_color (GTK_LABEL (sidebar_title->details->title_label),
+					     eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
+	eel_gtk_label_set_drop_shadow_color (GTK_LABEL (sidebar_title->details->more_info_label),
+					     eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
+
+	eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->title_label),
+					      sidebar_title->details->shadow_offset);
+	eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->more_info_label),
+					      sidebar_title->details->shadow_offset);
+		
+	g_free (sidebar_title_color);	
+	g_free (sidebar_info_title_color);	
+	g_free (sidebar_title_shadow_color);
 }
 
 /* handle theme changes by setting up the color of the labels */
@@ -432,8 +310,6 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 	} else {
 		sidebar_title->details->shadow_offset = 1;	
 	}
-	
-	nautilus_sidebar_title_select_text_color (sidebar_title);
 }
 
 /* get a property from the current content view's property bag if we can */
@@ -481,28 +357,21 @@ static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
-	char *uri;
 	char *icon_name;
 	gboolean leave_pixbuf_unchanged;
 	
 	leave_pixbuf_unchanged = FALSE;
-	uri = NULL;
-	icon_name = NULL;
-	if (sidebar_title->details->file) {
-		uri = nautilus_file_get_uri (sidebar_title->details->file);
-	}	
 
 	/* see if the current content view is specifying an icon */
 	icon_name = get_property_from_component (sidebar_title, "icon_name");
 
 	pixbuf = NULL;
-	if (icon_name != NULL && strlen (icon_name) > 0) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
+	if (icon_name != NULL && icon_name[0] != '\0') {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
-								    NAUTILUS_ICON_SIZE_LARGE,
-								    TRUE);
+								    NAUTILUS_ICON_SIZE_LARGE);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
@@ -513,7 +382,6 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 		 leave_pixbuf_unchanged = TRUE;
 	}
 	
-	g_free (uri);	
 	g_free (icon_name);
 	
 	if (pixbuf != NULL) {
@@ -521,7 +389,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 
 	if (!leave_pixbuf_unchanged) {
-		eel_image_set_pixbuf (EEL_IMAGE (sidebar_title->details->icon), pixbuf);
+		gtk_image_set_from_pixbuf (GTK_IMAGE (sidebar_title->details->icon), pixbuf);
 	}
 }
 
@@ -529,11 +397,9 @@ static void
 update_title_font (NautilusSidebarTitle *sidebar_title)
 {
 	int available_width;
-	GdkFont *template_font;
-	GdkFont *bold_template_font;
-	GdkFont *largest_fitting_font;
-	int largest_fitting_smooth_font_size;
-	EelScalableFont *smooth_font;
+	PangoFontDescription *title_font;
+	int largest_fitting_font_size;
+	GtkStyle *style;
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
@@ -546,52 +412,38 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	if (available_width <= 0) {
 		return;
 	}
-	
-	/* Update the smooth font */
-	smooth_font = eel_label_get_smooth_font (EEL_LABEL (sidebar_title->details->title_label));
-	largest_fitting_smooth_font_size = eel_scalable_font_largest_fitting_font_size
-		(smooth_font,
-		 sidebar_title->details->title_text,
-		 available_width,
-		 MIN_TITLE_FONT_SIZE,
-		 MAX_TITLE_FONT_SIZE);
-	
-	eel_label_set_smooth_font_size (EEL_LABEL (sidebar_title->details->title_label), 
-					largest_fitting_smooth_font_size);
-	
-	gtk_object_unref (GTK_OBJECT (smooth_font));
 
-	/* Update the regular font */
-	template_font = get_non_smooth_font (MAX_TITLE_FONT_SIZE);
-	bold_template_font = eel_gdk_font_get_bold (template_font);
+	style = gtk_widget_get_style (GTK_WIDGET (sidebar_title));
+	title_font = pango_font_description_copy (style->font_desc);
+	largest_fitting_font_size = eel_pango_font_description_get_largest_fitting_font_size (
+		title_font,
+		gtk_widget_get_pango_context (sidebar_title->details->title_label),
+		sidebar_title->details->title_text,
+		available_width,
+		MIN_TITLE_FONT_SIZE,
+		MAX_TITLE_FONT_SIZE);
+	pango_font_description_set_size (title_font, largest_fitting_font_size * PANGO_SCALE);
+	pango_font_description_set_weight (title_font, PANGO_WEIGHT_BOLD);
 	
-	largest_fitting_font = eel_gdk_font_get_largest_fitting
-		(bold_template_font,
-		 sidebar_title->details->title_text,
-		 available_width,
-		 MIN_TITLE_FONT_SIZE,
-		 MAX_TITLE_FONT_SIZE);
-	
-	if (largest_fitting_font == NULL) {
-		largest_fitting_font = eel_gdk_font_get_fixed ();
-	}
-	
-	eel_gtk_widget_set_font (sidebar_title->details->title_label,
-				      largest_fitting_font);
-	
-	gdk_font_unref (largest_fitting_font);
-	gdk_font_unref (bold_template_font);
-	gdk_font_unref (template_font);
+	gtk_widget_modify_font (sidebar_title->details->title_label,
+				title_font);
+	pango_font_description_free (title_font);
 }
 
 static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing the title until the icon is ready. */
-	if (eel_label_set_text (EEL_LABEL (sidebar_title->details->title_label),
-				     sidebar_title->details->title_text)) {
-		update_title_font (sidebar_title);
+	GtkLabel *label;
+	const char *text;
+
+	label = GTK_LABEL (sidebar_title->details->title_label);
+	text = sidebar_title->details->title_text;
+
+	if (eel_strcmp (text, gtk_label_get_text (label)) == 0) {
+		return;
 	}
+	gtk_label_set_text (label, text);
+	update_title_font (sidebar_title);
 }
 
 static void
@@ -621,16 +473,15 @@ file_is_search_location (NautilusFile *file)
 }
 
 static int
-measure_width_callback (const char *string, void *context)
+measure_width_callback (const char *string, gpointer callback_data)
 {
-	EelLabel *label;
-	EelScalableFont *smooth_font;
-	int smooth_font_size;
-	
-	label = (EelLabel*) context;
-	smooth_font = eel_label_get_smooth_font (label); 
-	smooth_font_size = eel_label_get_smooth_font_size (label);
-	return eel_scalable_font_text_width (smooth_font, smooth_font_size, string, strlen (string));
+	PangoLayout *layout;
+	int width;
+
+	layout = PANGO_LAYOUT (callback_data);
+	pango_layout_set_text (layout, string, -1);
+	pango_layout_get_pixel_size (layout, &width, NULL);
+	return width;
 }
 
 static void
@@ -642,6 +493,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	char *search_string, *search_uri;
 	char *date_modified_str;
 	int sidebar_width;
+	PangoLayout *layout;
 	
 	file = sidebar_title->details->file;
 
@@ -651,7 +503,6 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		info_string = g_string_new (component_info);
 		g_free (component_info);
 	} else {
-		/* FIXME bugzilla.gnome.org 42500: We could defer showing info until the icon is ready. */
 		/* Adding this special case for search results to 
 		   correspond to the fix for bug 2341.  */
 		if (file != NULL && file_is_search_location (file)) {
@@ -676,15 +527,16 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 			
 			sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
 			if (sidebar_width > MINIMUM_INFO_WIDTH) {
-				date_modified_str = nautilus_file_fit_modified_date_as_string (file, sidebar_width,
-											measure_width_callback, NULL,
-											sidebar_title->details->more_info_label);
+				layout = pango_layout_copy (gtk_label_get_layout (GTK_LABEL (sidebar_title->details->more_info_label)));
+				pango_layout_set_width (layout, -1);
+				date_modified_str = nautilus_file_fit_modified_date_as_string
+					(file, sidebar_width, measure_width_callback, NULL, layout);
+				g_object_unref (layout);
 				append_and_eat (info_string, "\n", date_modified_str);
-				g_string_append_c (info_string, '\0');
 			}
 		}
 	}
-	eel_label_set_text (EEL_LABEL (sidebar_title->details->more_info_label),
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->more_info_label),
 			    info_string->str);
 
 	g_string_free (info_string, TRUE);
@@ -696,8 +548,7 @@ add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 {
 	GtkWidget *image_widget;
 
-	image_widget = eel_image_new_with_background (NULL);
-	eel_image_set_pixbuf (EEL_IMAGE (image_widget), pixbuf);	
+	image_widget = gtk_image_new_from_pixbuf (pixbuf);
   	gtk_widget_show (image_widget);
 	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), image_widget);	
 }
@@ -708,7 +559,6 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GList *icons, *p;
 	GdkPixbuf *pixbuf;
 
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing emblems until the icon is ready. */
 	/* exit if we don't have the file yet */
 	if (sidebar_title->details->file == NULL) {
 		return;
@@ -728,10 +578,10 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			(p->data,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 FALSE, NULL, FALSE);
+			 NULL, FALSE);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (pixbuf);
 		}
 	}
 	
@@ -743,8 +593,6 @@ update_notes (NautilusSidebarTitle *sidebar_title)
 {
 	char *text;
 	
-	/* FIXME bugzilla.gnome.org 42500: We could defer showing notes until the icon is ready. */
-
 	text = nautilus_file_get_metadata (sidebar_title->details->file,
 					   NAUTILUS_METADATA_KEY_NOTES,
 					   NULL);
@@ -821,7 +669,6 @@ update_all (NautilusSidebarTitle *sidebar_title)
 	
 	update_title (sidebar_title);
 	update_more_info (sidebar_title);
-	nautilus_sidebar_title_select_text_color (sidebar_title);
 	
 	update_emblems (sidebar_title);
 	update_notes (sidebar_title);
@@ -835,8 +682,8 @@ update_all (NautilusSidebarTitle *sidebar_title)
 
 void
 nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
-				 NautilusFile *file,
-				 const char *initial_text)
+				 NautilusFile         *file,
+				 const char           *initial_text)
 {
 	if (file != sidebar_title->details->file) {
 		release_file (sidebar_title);
@@ -847,10 +694,9 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 		/* attach file */
 		if (file != NULL) {
 			sidebar_title->details->file_changed_connection =
-				gtk_signal_connect_object (GTK_OBJECT (file),
-							   "changed",
-							   update_all,
-							   GTK_OBJECT (sidebar_title));
+				g_signal_connect_object
+					(sidebar_title->details->file, "changed",
+					 G_CALLBACK (update_all), sidebar_title, G_CONNECT_SWAPPED);
 			monitor_add (sidebar_title);
 		}
 	}
@@ -891,10 +737,10 @@ sidebar_title_create_title_label (void)
 { 
 	GtkWidget *title_label;
 
-	title_label = eel_label_new_with_background ("");
-	eel_label_make_bold (EEL_LABEL (title_label));
-	eel_label_set_wrap (EEL_LABEL (title_label), TRUE);
-	eel_label_set_justify (EEL_LABEL (title_label), GTK_JUSTIFY_CENTER);
+	title_label = gtk_label_new ("");
+	eel_gtk_label_make_bold (GTK_LABEL (title_label));
+	gtk_label_set_line_wrap (GTK_LABEL (title_label), TRUE);
+	gtk_label_set_justify (GTK_LABEL (title_label), GTK_JUSTIFY_CENTER);
 
 	return title_label;
 }
@@ -904,10 +750,9 @@ sidebar_title_create_more_info_label (void)
 {
 	GtkWidget *more_info_label;
 
-	more_info_label = eel_label_new_with_background ("");
-	eel_label_make_smaller (EEL_LABEL (more_info_label), 2);
-	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
-	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
+	more_info_label = gtk_label_new ("");
+	eel_gtk_label_set_scale (GTK_LABEL (more_info_label), PANGO_SCALE_SMALL);
+	gtk_label_set_justify (GTK_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	
 	return more_info_label;
 }

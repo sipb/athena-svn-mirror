@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2000, 2001 Eazel, Inc
+ * Copyright (C) 2002 Anders Carlsson
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak <mjs@eazel.com>
+ * Authors: Maciej Stachowiak <mjs@eazel.com>
+ *          Anders Carlsson <andersca@gnu.org> 
  */
 
 /* nautilus-tree-view.h - tree view. */
@@ -29,9 +31,6 @@
 
 #include <libnautilus/nautilus-view.h>
 
-typedef struct NautilusTreeView NautilusTreeView;
-typedef struct NautilusTreeViewClass NautilusTreeViewClass;
-
 #define NAUTILUS_TYPE_TREE_VIEW	           (nautilus_tree_view_get_type ())
 #define NAUTILUS_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeView))
 #define NAUTILUS_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeViewClass))
@@ -40,15 +39,15 @@ typedef struct NautilusTreeViewClass NautilusTreeViewClass;
 
 typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
 
-struct NautilusTreeView {
+typedef struct {
 	NautilusView parent;
 	NautilusTreeViewDetails *details;
-};
+} NautilusTreeView;
 
-struct NautilusTreeViewClass {
+typedef struct {
 	NautilusViewClass parent_class;
-};
+} NautilusTreeViewClass;
 
-GtkType nautilus_tree_view_get_type (void);
+GType nautilus_tree_view_get_type (void);
 
 #endif /* NAUTILUS_TREE_VIEW_H */

@@ -28,14 +28,18 @@
 
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
+#include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-desktop-item.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -86,7 +90,7 @@ choose_application_destroy (ChooseApplicationCallbackData *choose_data)
 {
 	nautilus_file_unref (choose_data->file);
 	if (choose_data->parent_window != NULL) {
-		gtk_object_unref (GTK_OBJECT (choose_data->parent_window));
+		g_object_unref (choose_data->parent_window);
 	}
 	g_free (choose_data);
 }
@@ -120,7 +124,7 @@ choose_component_destroy (ChooseComponentCallbackData *choose_data)
 {
 	nautilus_file_unref (choose_data->file);
 	if (choose_data->parent_window != NULL) {
-		gtk_object_unref (GTK_OBJECT (choose_data->parent_window));
+		g_object_unref (choose_data->parent_window);
 	}
 	g_free (choose_data);
 }
@@ -137,25 +141,19 @@ choose_component_destroy (ChooseComponentCallbackData *choose_data)
  * 
  * Return value: The program-choosing dialog, ready to be run.
  */
-static GnomeDialog *
+static GtkWidget *
 set_up_program_chooser (NautilusFile *file, 
 			GnomeVFSMimeActionType type, 
 			GtkWindow *parent)
 {
-	GnomeDialog *dialog;
+	GtkWidget *dialog;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	dialog = nautilus_program_chooser_new (type, file);
 	if (parent != NULL) {
-		gnome_dialog_set_parent (dialog, parent);
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
 	}
-
-	/* Don't destroy on close because callers will need 
-	 * to extract some information from the dialog after 
-	 * it closes.
-	 */
-	gnome_dialog_close_hides (dialog, TRUE);
 
 	return dialog;	
 }
@@ -178,7 +176,7 @@ choose_component_callback (NautilusFile *file,
 {
 	ChooseComponentCallbackData *choose_data;
 	NautilusViewIdentifier *identifier;
-	GnomeDialog *dialog;
+	GtkWidget *dialog;
 
 	choose_data = callback_data;
 
@@ -197,8 +195,8 @@ choose_component_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_components_for_file (file)) {
 		dialog = set_up_program_chooser (file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
 						 choose_data->parent_window);
-		if (gnome_dialog_run (dialog) == GNOME_OK) {
-			identifier = nautilus_program_chooser_get_component (dialog);
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			identifier = nautilus_program_chooser_get_component (NAUTILUS_PROGRAM_CHOOSER (dialog));
 		}
 	} else {
 		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
@@ -240,7 +238,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	 */
 	nautilus_file_ref (file);
 	if (parent_window != NULL) {
-		gtk_object_ref (GTK_OBJECT (parent_window));
+		g_object_ref (parent_window);
 	}
 
 	/* Create data to pass through. */
@@ -317,7 +315,7 @@ choose_application_callback (NautilusFile *file,
 			     gpointer callback_data)
 {
 	ChooseApplicationCallbackData *choose_data;
-	GnomeDialog *dialog;
+	GtkWidget *dialog;
 	GnomeVFSMimeApplication *application;
 
 	choose_data = callback_data;
@@ -337,8 +335,8 @@ choose_application_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
-		if (gnome_dialog_run (dialog) == GNOME_OK) {
-			application = nautilus_program_chooser_get_application (dialog);
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			application = nautilus_program_chooser_get_application (NAUTILUS_PROGRAM_CHOOSER (dialog));
 		}
 	} else {
 		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
@@ -380,7 +378,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	 */
 	nautilus_file_ref (file);
 	if (parent_window != NULL) {
-		gtk_object_ref (GTK_OBJECT (parent_window));
+		g_object_ref (parent_window);
 	}
 
 	/* Create data to pass through. */
@@ -424,7 +422,7 @@ launch_parameters_new (NautilusFile *file,
 	launch_parameters = g_new0 (LaunchParameters, 1);
 	nautilus_file_ref (file);
 	launch_parameters->file = file;
-	gtk_widget_ref (GTK_WIDGET (parent_window));
+	g_object_ref (parent_window);
 	launch_parameters->parent_window = parent_window;
 
 	return launch_parameters;
@@ -436,7 +434,7 @@ launch_parameters_free (LaunchParameters *launch_parameters)
 	g_assert (launch_parameters != NULL);
 
 	nautilus_file_unref (launch_parameters->file);
-	gtk_widget_unref (GTK_WIDGET (launch_parameters->parent_window));
+	g_object_unref (launch_parameters->parent_window);
 	
 	g_free (launch_parameters);
 }
@@ -483,10 +481,11 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				  const char *uri_scheme,
 				  GtkWindow *parent_window)
 {
-	GnomeDialog *message_dialog;
+	GtkDialog *message_dialog;
 	LaunchParameters *launch_parameters;
 	char *message;
 	char *file_name;
+	int response;
 
 	file_name = nautilus_file_get_display_name (file);
 
@@ -496,11 +495,13 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 					   application->name, file_name, 
 					   application->name, uri_scheme);
 		message_dialog = eel_show_yes_no_dialog (message, 
-							       _("Can't Open Location"), 
-							       GNOME_STOCK_BUTTON_OK, 
-							       GNOME_STOCK_BUTTON_CANCEL,
-							       parent_window);
-		if (gnome_dialog_run (message_dialog) == GNOME_OK) {
+							 _("Can't Open Location"), 
+							 GTK_STOCK_OK,
+							 GTK_STOCK_CANCEL,
+							 parent_window);
+		response = gtk_dialog_run (message_dialog);
+		gtk_object_destroy (GTK_OBJECT (message_dialog));
+		if (response == GTK_RESPONSE_YES) {
 			launch_parameters = launch_parameters_new (file, parent_window);
 			nautilus_choose_application_for_file 
 				(file,
@@ -509,7 +510,6 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				 launch_parameters);
 				 
 		}
-		
 	}
 	else {
 		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -594,59 +594,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	g_free (parameter);
 }
 
-static char *
-get_xalf_prefix (const char *name)
-{
-	char *xalf_executable;
-	GString *s;
-	int argc, i;
-	char **argv;
-	char *quoted;
-	char *prefix;
 
-	/* FIXME bugzilla.gnome.org 48206: At time I am writing this,
-	 * xalf is still pretty buggy, and Nautilus uses it a lot more
-	 * than the Panel does with no way to turn it off for
-	 * individual programs the way you can in the Panel. Sadly,
-	 * Ximian GNOME 1.4 ships with xalf on by default. So we did
-	 * this lame thing and turned it off unless you define this
-	 * environment variable. Some day we can remove this.
-	 */
-	if (g_getenv ("NAUTILUS_USE_XALF") == NULL) {
-		return g_strdup ("");
-	}
-	if (!gnome_config_get_bool ("/xalf/settings/enabled=true")) {
-		return g_strdup ("");
-	}
-	xalf_executable = gnome_is_program_in_path ("xalf");
-	if (xalf_executable == NULL) {
-		return g_strdup ("");
-	}
-
-	s = g_string_new (xalf_executable);
-	g_string_append (s, " --title ");
-	quoted = eel_shell_quote (name);
-	g_string_append (s, quoted);
-	g_free (quoted);
-	g_string_append_c (s, ' ');
-
-	gnome_config_get_vector ("/xalf/settings/options",
-				 &argc, &argv);
-	for (i = 0; i < argc; i++) {
-		quoted = eel_shell_quote (argv[i]);
-		g_free (argv[i]);
-
-		g_string_append (s, quoted);
-		g_string_append_c (s, ' ');
-
-		g_free (quoted);
-	}
-	g_free (argv);
-
-	prefix = s->str;
-	g_string_free (s, FALSE);
-	return prefix;
-}
 
 /**
  * nautilus_launch_application_from_command:
@@ -666,28 +614,137 @@ nautilus_launch_application_from_command (const char *name,
 {
 	char *full_command;
 	char *quoted_parameter; 
-	char *final_command;
-	char *xalf_prefix;
 
 	if (parameter != NULL) {
-		quoted_parameter = eel_shell_quote (parameter);
+		quoted_parameter = g_shell_quote (parameter);
 		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
 		g_free (quoted_parameter);
 	} else {
 		full_command = g_strdup (command_string);
 	}
 
-	xalf_prefix = get_xalf_prefix (name);
-
 	if (use_terminal) {
-		final_command = g_strconcat (xalf_prefix, full_command, NULL);
-		eel_gnome_open_terminal (final_command);
+		eel_gnome_open_terminal (full_command);
 	} else {
-		final_command = g_strconcat (xalf_prefix, full_command, " &", NULL);
-		system (final_command);
+	    	eel_gnome_shell_execute (full_command);
 	}
 
-	g_free (final_command);
 	g_free (full_command);
-	g_free (xalf_prefix);
+}
+
+void
+nautilus_launch_desktop_file (const char	*desktop_file_uri,
+				const GList	*parameter_uris,
+				GtkWindow	*parent_window)
+{
+	GError *error;
+	GnomeDesktopItem *ditem;
+	GnomeDesktopItemLaunchFlags flags;
+	const char *command_string;
+	char *local_path, *message;
+	const GList *p;
+	int total, count;
+
+	/* strip the leading command specifier */
+	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+		desktop_file_uri += strlen (NAUTILUS_DESKTOP_COMMAND_SPECIFIER);
+	}
+
+	/* Don't allow command execution from remote locations where the
+	 * uri scheme isn't file:// (This is because files on for example
+	 * nfs are treated as remote) to partially mitigate the security
+	 * risk of executing arbitrary commands.
+	 */
+	if (!eel_vfs_has_capability (desktop_file_uri,
+				     EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE)) {
+		eel_show_error_dialog
+			(_("Sorry, but you can't execute commands from "
+			   "a remote site due to security considerations."), 
+			 _("Can't execute remote links"),
+			 parent_window);
+			 
+		return;
+	}
+	
+	error = NULL;
+	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri, 0,
+						&error);	
+	if (error != NULL) {
+		message = g_strconcat (_("There was an error launching the application.\n\n"
+					 "Details: "), error->message, NULL);
+		eel_show_error_dialog
+			(message,
+			 _("Error launching application"),
+			 parent_window);			
+			 
+		g_error_free (error);
+		g_free (message);
+		return;
+	}
+	
+	/* count the number of uris with local paths */
+	count = 0;
+	total = g_list_length ((GList *) parameter_uris);
+	for (p = parameter_uris; p != NULL; p = p->next) {
+		local_path = gnome_vfs_get_local_path_from_uri ((const char *) p->data);
+		if (local_path != NULL) {
+			g_free (local_path);
+			count++;
+		}
+	}
+
+	/* check if this app only supports local files */
+	command_string = gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC);
+	if ((strstr (command_string, "%F") || strstr (command_string, "%f"))
+		&& !(strstr (command_string, "%U") || strstr (command_string, "%u"))
+		&& parameter_uris != NULL) {
+	
+		if (count == 0) {
+			/* all files are non-local */
+			eel_show_error_dialog
+				(_("This drop target only supports local files.\n\n"
+				   "To open non-local files copy them to a local folder and then"
+				   " drop them again."),
+				 _("Drop target only supports local files"),
+				 parent_window);
+			
+			gnome_desktop_item_unref (ditem);
+			return;
+
+		} else if (count != total) {
+			/* some files were non-local */
+			eel_show_warning_dialog
+				(_("This drop target only supports local files.\n\n"
+				   "To open non-local files copy them to a local folder and then"
+				   " drop them again. The local files you dropped have already been opened."),
+				 _("Drop target only supports local files"),
+				 parent_window);
+		}		
+	}
+	
+	/* we append local paths only if all parameters are local */
+	if (count == total) {
+		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_PATHS;
+	} else {
+		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS;
+	}
+
+	error = NULL;
+	gnome_desktop_item_launch (ditem, (GList *) parameter_uris,
+				   flags,
+				   &error);
+
+	if (error != NULL) {
+		message = g_strconcat (_("There was an error launching the application.\n\n"
+					 "Details: "), error->message, NULL);
+		eel_show_error_dialog
+			(message,
+			 _("Error launching application"),
+			 parent_window);			
+			 
+		g_error_free (error);
+		g_free (message);
+	}
+	
+	gnome_desktop_item_unref (ditem);
 }

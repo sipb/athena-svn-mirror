@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,177 +60,134 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-APPLETS_CFLAGS = @APPLETS_CFLAGS@
-APPLETS_LIBS = @APPLETS_LIBS@
 AS = @AS@
-BONOBOX_CFLAGS = @BONOBOX_CFLAGS@
-BONOBOX_LIBS = @BONOBOX_LIBS@
-BONOBO_CFLAGS = @BONOBO_CFLAGS@
-BONOBO_LIBS = @BONOBO_LIBS@
-BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
-BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
-BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+COMPONENT_CFLAGS = @COMPONENT_CFLAGS@
+COMPONENT_LIBS = @COMPONENT_LIBS@
+CORE_CFLAGS = @CORE_CFLAGS@
+CORE_IDL_INCLUDES = @CORE_IDL_INCLUDES@
+CORE_LIBS = @CORE_LIBS@
 CPP = @CPP@
-CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
+DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
-EEL_CFLAGS = @EEL_CFLAGS@
-EEL_LIBS = @EEL_LIBS@
 EEL_REQUIRED = @EEL_REQUIRED@
 ENABLE_PROFILER = @ENABLE_PROFILER@
-ESD_CFLAGS = @ESD_CFLAGS@
-ESD_CONFIG = @ESD_CONFIG@
-ESD_LIBS = @ESD_LIBS@
-ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
-FAM_LIBS = @FAM_LIBS@
-FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
-FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
-FREETYPE2_LIBS = @FREETYPE2_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
-GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
-GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
-GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_CONFIG = @GLIB_CONFIG@
-GLIB_LIBS = @GLIB_LIBS@
-GLIB_REQUIRED = @GLIB_REQUIRED@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIMPHWRAPBOX_CFLAGS = @GIMPHWRAPBOX_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_CFLAGS = @GNOMECANVASPIXBUF_CFLAGS@
-GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
-GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_CFLAGS = @GNOME_CFLAGS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DB2HTML3_FLAG = @GNOME_DB2HTML3_FLAG@
-GNOME_LIBS = @GNOME_LIBS@
-GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GTK_REQUIRED = @GTK_REQUIRED@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-HAVE_APPLETS = @HAVE_APPLETS@
 HAVE_JW = @HAVE_JW@
-ICONV_LIBS = @ICONV_LIBS@
-IDL_CFLAGS = @IDL_CFLAGS@
-IMLIB_REQUIRED = @IMLIB_REQUIRED@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-LIBART_CFLAGS = @LIBART_CFLAGS@
-LIBART_CONFIG = @LIBART_CONFIG@
-LIBART_LIBS = @LIBART_LIBS@
 LIBJPEG = @LIBJPEG@
-LIBPNG = @LIBPNG@
-LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
-LIBRSVG_LIBS = @LIBRSVG_LIBS@
-LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
+LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
+LIBNAUTILUS_IDL_INCLUDES = @LIBNAUTILUS_IDL_INCLUDES@
+LIBNAUTILUS_LIBS = @LIBNAUTILUS_LIBS@
 LIBTOOL = @LIBTOOL@
-LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-MEDUSA_CFLAGS = @MEDUSA_CFLAGS@
-MEDUSA_LIBS = @MEDUSA_LIBS@
 MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MOZILLA_COMPONENT_CFLAGS = @MOZILLA_COMPONENT_CFLAGS@
-MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
-MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
-MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
-MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
-MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
-NAUTILUS_DEPENDENCY_CFLAGS = @NAUTILUS_DEPENDENCY_CFLAGS@
-NAUTILUS_DEPENDENCY_LIBS = @NAUTILUS_DEPENDENCY_LIBS@
-NAUTILUS_INCLUDEDIR = @NAUTILUS_INCLUDEDIR@
-NAUTILUS_LIBDIR = @NAUTILUS_LIBDIR@
-NAUTILUS_LIBS = @NAUTILUS_LIBS@
-NAUTILUS_PRIVATE_CFLAGS = @NAUTILUS_PRIVATE_CFLAGS@
-NAUTILUS_PRIVATE_LIBS = @NAUTILUS_PRIVATE_LIBS@
-OAF_CFLAGS = @OAF_CFLAGS@
-OAF_CONFIG = @OAF_CONFIG@
-OAF_LIBS = @OAF_LIBS@
-OAF_REQUIRED = @OAF_REQUIRED@
+MUSIC_COMPONENT_CFLAGS = @MUSIC_COMPONENT_CFLAGS@
+MUSIC_COMPONENT_LIBS = @MUSIC_COMPONENT_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
-ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
-POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+RSVG_REQUIRED = @RSVG_REQUIRED@
 STRIP = @STRIP@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-VFS_CFLAGS = @VFS_CFLAGS@
-VFS_LIBS = @VFS_LIBS@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_CONFIG = @XML2_CONFIG@
-XML2_LIBS = @XML2_LIBS@
-XML_CFLAGS = @XML_CFLAGS@
-XML_CONFIG = @XML_CONFIG@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XML_LIBS = @XML_LIBS@
-XSLT_CFLAGS = @XSLT_CFLAGS@
-XSLT_CONFIG = @XSLT_CONFIG@
-XSLT_LIBS = @XSLT_LIBS@
-ZVT_LIBS = @ZVT_LIBS@
-Z_LIBS = @Z_LIBS@
-gnomelocaledir = @gnomelocaledir@
-l = @l@
+XML_REQUIRED = @XML_REQUIRED@
 
 NULL = 
 
 noinst_LTLIBRARIES = libnautilus-file-manager.la
 
-INCLUDES =  	-I$(top_srcdir) 				$(NAUTILUS_PRIVATE_CFLAGS)			$(MEDUSA_CFLAGS)				-DVERSION="\"$(VERSION)\"" 			-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	-DDATADIR=\""$(datadir)"\"			$(NULL)	
+INCLUDES = \
+	-I$(top_srcdir) 			\
+	$(CORE_CFLAGS)				\
+	-DVERSION="\"$(VERSION)\""		\
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	-DDATADIR=\""$(datadir)"\"		\
+	-DG_DISABLE_DEPRECATED \
+	-DGDK_DISABLE_DEPRECATED \
+	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+	-DGTK_DISABLE_DEPRECATED \
+	-DGNOME_DISABLE_DEPRECATED \
+	$(NULL)	
 
 
-libnautilus_file_manager_la_SOURCES =  	fm-desktop-icon-view.c			fm-directory-view.c			fm-error-reporting.c			fm-icon-view.c				fm-list-view.c				fm-properties-window.c			fm-search-list-view.c			nautilus-indexing-info.c		fm-desktop-icon-view.h 			fm-directory-view.h 			fm-error-reporting.h 			fm-icon-view.h 				fm-list-view-private.h 			fm-list-view.h 				fm-properties-window.h 			fm-search-list-view.h 			nautilus-indexing-info.h 		$(NULL)
+libnautilus_file_manager_la_SOURCES = \
+	fm-desktop-icon-view.c		\
+	fm-directory-view.c		\
+	fm-error-reporting.c		\
+	fm-icon-container.c		\
+	fm-icon-view.c			\
+	fm-list-model.c			\
+	fm-list-view.c			\
+	fm-properties-window.c		\
+	fm-search-list-view.c		\
+	nautilus-indexing-info.c	\
+	fm-desktop-icon-view.h 		\
+	fm-directory-view.h 		\
+	fm-error-reporting.h 		\
+	fm-icon-container.h		\
+	fm-icon-view.h 			\
+	fm-list-model.h			\
+	fm-list-view-private.h 		\
+	fm-list-view.h 			\
+	fm-properties-window.h 		\
+	fm-search-list-view.h 		\
+	nautilus-indexing-info.h 	\
+	$(NULL)
 
 
-uidir = $(datadir)/gnome/ui
-ui_DATA =  	nautilus-desktop-icon-view-ui.xml		nautilus-directory-view-ui.xml			nautilus-icon-view-ui.xml			nautilus-search-list-view-ui.xml		$(NULL)
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = \
+	nautilus-desktop-icon-view-ui.xml	\
+	nautilus-directory-view-ui.xml		\
+	nautilus-icon-view-ui.xml		\
+	nautilus-search-list-view-ui.xml	\
+	$(NULL)
 
 
 EXTRA_DIST = $(ui_DATA)
@@ -244,11 +201,16 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 libnautilus_file_manager_la_LDFLAGS = 
 libnautilus_file_manager_la_LIBADD = 
 libnautilus_file_manager_la_OBJECTS =  fm-desktop-icon-view.lo \
-fm-directory-view.lo fm-error-reporting.lo fm-icon-view.lo \
-fm-list-view.lo fm-properties-window.lo fm-search-list-view.lo \
+fm-directory-view.lo fm-error-reporting.lo fm-icon-container.lo \
+fm-icon-view.lo fm-list-model.lo fm-list-view.lo \
+fm-properties-window.lo fm-search-list-view.lo \
 nautilus-indexing-info.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -397,142 +359,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-fm-desktop-icon-view.lo fm-desktop-icon-view.o : fm-desktop-icon-view.c \
-	../../config.h fm-desktop-icon-view.h fm-icon-view.h \
-	fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-directory-notify.h \
-	../../libnautilus-private/nautilus-file-changes-queue.h \
-	../../libnautilus-private/nautilus-file-operations.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-monitor.h \
-	../../libnautilus-private/nautilus-program-choosing.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../../libnautilus-private/nautilus-trash-monitor.h \
-	../../libnautilus-private/nautilus-volume-monitor.h
-fm-directory-view.lo fm-directory-view.o : fm-directory-view.c \
-	../../config.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-desktop-icon-view.h fm-icon-view.h fm-error-reporting.h \
-	fm-properties-window.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-file-dnd.h \
-	../../libnautilus-private/nautilus-file-operations.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-mime-actions.h \
-	../../libnautilus-private/nautilus-program-choosing.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../../libnautilus-private/nautilus-trash-directory.h \
-	../../libnautilus-private/nautilus-merged-directory.h \
-	../../libnautilus-private/nautilus-trash-monitor.h \
-	../../libnautilus-private/nautilus-volume-monitor.h \
-	../../libnautilus/nautilus-bonobo-ui.h
-fm-error-reporting.lo fm-error-reporting.o : fm-error-reporting.c \
-	../../config.h fm-error-reporting.h \
-	../../libnautilus-private/nautilus-file.h
-fm-icon-view.lo fm-icon-view.o : fm-icon-view.c ../../config.h \
-	fm-icon-view.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-desktop-icon-view.h fm-error-reporting.h \
-	../../libnautilus-private/nautilus-audio-player.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-font-factory.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-sound.h \
-	../../libnautilus/nautilus-bonobo-ui.h \
-	../../libnautilus/nautilus-clipboard.h
-fm-list-view.lo fm-list-view.o : fm-list-view.c ../../config.h \
-	fm-list-view.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-list-view-private.h fm-properties-window.h \
-	../../libnautilus-private/nautilus-directory-background.h \
-	../../libnautilus-private/nautilus-file-dnd.h \
-	../../libnautilus-private/nautilus-font-factory.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h
-fm-properties-window.lo fm-properties-window.o : fm-properties-window.c \
-	../../config.h fm-properties-window.h fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-error-reporting.h \
-	../../libnautilus-private/nautilus-customization-data.h \
-	../../libnautilus-private/nautilus-entry.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../../libnautilus-private/nautilus-metadata.h \
-	../../libnautilus-private/nautilus-undo-signal-handlers.h \
-	../../libnautilus/nautilus-undo.h
-fm-search-list-view.lo fm-search-list-view.o : fm-search-list-view.c \
-	../../config.h fm-search-list-view.h fm-list-view.h \
-	fm-directory-view.h \
-	../../libnautilus-private/nautilus-directory.h \
-	../../libnautilus-private/nautilus-file.h \
-	../../libnautilus-private/nautilus-icon-container.h \
-	../../libnautilus-private/nautilus-icon-factory.h \
-	../../libnautilus-private/nautilus-link.h \
-	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
-	fm-list-view-private.h nautilus-indexing-info.h \
-	../../libnautilus-private/nautilus-bonobo-extensions.h \
-	../../libnautilus-private/nautilus-file-attributes.h \
-	../../libnautilus-private/nautilus-file-utilities.h \
-	../../libnautilus-private/nautilus-medusa-support.h \
-	../../libnautilus-private/nautilus-search-uri.h \
-	../nautilus-search-bar-criterion.h \
-	../nautilus-complex-search-bar.h \
-	../../libnautilus-private/nautilus-entry.h \
-	../nautilus-search-bar.h ../nautilus-navigation-bar.h \
-	../../libnautilus-private/nautilus-global-preferences.h \
-	../nautilus-window.h \
-	../../libnautilus-private/nautilus-bookmark.h \
-	../../libnautilus-private/nautilus-view-identifier.h \
-	../nautilus-applicable-views.h ../nautilus-view-frame.h \
-	../../libnautilus-private/nautilus-undo-manager.h \
-	../nautilus-sidebar.h ../nautilus-application.h
-nautilus-indexing-info.lo nautilus-indexing-info.o : \
-	nautilus-indexing-info.c ../../config.h \
-	nautilus-indexing-info.h \
-	../../libnautilus-private/nautilus-medusa-support.h
 
 info-am:
 info: info-am

@@ -26,10 +26,13 @@
 #ifndef NAUTILUS_PROGRAM_CHOOSING_H
 #define NAUTILUS_PROGRAM_CHOOSING_H
 
-#include "nautilus-file.h"
-#include "nautilus-view-identifier.h"
 #include <gtk/gtkwindow.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
+
+#define NAUTILUS_COMMAND_SPECIFIER "command:"
+#define NAUTILUS_DESKTOP_COMMAND_SPECIFIER "desktop-file:"
 
 typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
 						   gpointer			  callback_data);
@@ -57,5 +60,8 @@ void nautilus_launch_application_from_command    (const char                    
 						  const char                        *command_string,
 						  const char                        *parameter,
 						  gboolean                           use_terminal);
+void nautilus_launch_desktop_file		 (const char			    *desktop_file_uri,
+						  const GList			    *parameter_uris,
+						  GtkWindow			    *parent_window);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */

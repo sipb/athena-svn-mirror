@@ -30,9 +30,8 @@
 
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkwindow.h>
-#include <libgnome/gnome-defs.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_THEME_SELECTOR (nautilus_theme_selector_get_type ())
 #define NAUTILUS_THEME_SELECTOR(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_THEME_SELECTOR, NautilusThemeSelector))
@@ -55,15 +54,16 @@ struct NautilusThemeSelectorClass
 	GtkVBoxClass parent_class;
 };
 
-GtkType    nautilus_theme_selector_get_type           (void);
+GType      nautilus_theme_selector_get_type           (void);
 GtkWidget *nautilus_theme_selector_new                (void);
-char *     nautilus_theme_selector_get_selected_theme (const NautilusThemeSelector *theme_selector);
-void       nautilus_theme_selector_set_selected_theme (NautilusThemeSelector       *theme_selector,
-						       char                        *theme_name);
-/* Parent window for transient dialogs (file selector and error dialogs) */
-void       nautilus_theme_selector_set_parent_window  (NautilusThemeSelector       *theme_selector,
-						       GtkWindow                   *parent_window);
+char *     nautilus_theme_selector_get_selected_theme (NautilusThemeSelector *theme_selector);
+void       nautilus_theme_selector_set_selected_theme (NautilusThemeSelector *theme_selector,
+						       const char            *theme_name);
 
-END_GNOME_DECLS
+/* Parent window for transient dialogs (file selector and error dialogs) */
+void       nautilus_theme_selector_set_parent_window  (NautilusThemeSelector *theme_selector,
+						       GtkWindow             *parent_window);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_THEME_SELECTOR_H */

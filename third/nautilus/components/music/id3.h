@@ -8,7 +8,7 @@
  * Author:        Espen Skoglund <espensk@stud.cs.uit.no>
  * Created at:    Thu Nov  5 15:55:10 1998
  *                
- * $Id: id3.h,v 1.1.1.1 2001-02-03 22:47:49 ghudson Exp $
+ * $Id: id3.h,v 1.1.1.2 2003-01-04 21:26:55 ghudson Exp $
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 #ifndef ID3_H
 #define ID3_H
 
-#include <glib.h>
+#include <glib/gtypes.h>
 
 /*
  * Option flags to id3_open_*().

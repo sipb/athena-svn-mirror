@@ -29,12 +29,12 @@
 #include "nautilus-content-loser.h"
 
 #include <bonobo/bonobo-control.h>
-#include <gtk/gtksignal.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
 #include <eel/eel-gtk-macros.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock-icons.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,11 +43,11 @@ struct NautilusContentLoserDetails {
 	NautilusView *nautilus_view;
 };
 
-static void nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass);
-static void nautilus_content_loser_initialize       (NautilusContentLoser      *view);
+static void nautilus_content_loser_class_init (NautilusContentLoserClass *klass);
+static void nautilus_content_loser_init       (NautilusContentLoser      *view);
 static void nautilus_content_loser_destroy          (GtkObject                 *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
+EEL_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
      
 static void loser_load_location_callback      (NautilusView         *nautilus_view,
 					       const char           *location,
@@ -59,7 +59,7 @@ static void nautilus_content_loser_fail       (void);
 static void ensure_fail_env                   (void);
 
 static void
-nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass)
+nautilus_content_loser_class_init (NautilusContentLoserClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -69,7 +69,7 @@ nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass)
 }
 
 static void
-nautilus_content_loser_initialize (NautilusContentLoser *view)
+nautilus_content_loser_init (NautilusContentLoser *view)
 {
 	view->details = g_new0 (NautilusContentLoserDetails, 1);
 	
@@ -77,19 +77,15 @@ nautilus_content_loser_initialize (NautilusContentLoser *view)
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "load_location",
-			    GTK_SIGNAL_FUNC (loser_load_location_callback), 
-			    view);
+	g_signal_connect_object (view->details->nautilus_view, "load_location",
+				 G_CALLBACK (loser_load_location_callback), view, 0);
 
 	/* Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(view->details->nautilus_view)),
-                            "activate",
-                            loser_merge_bonobo_items_callback,
-                            view);
+        g_signal_connect_object (nautilus_view_get_bonobo_control (view->details->nautilus_view),
+				 "activate",
+				 G_CALLBACK (loser_merge_bonobo_items_callback), view, 0);
 	
 	gtk_widget_show (GTK_WIDGET (view));
 }
@@ -227,8 +223,8 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
          */
 }
 
-static char *failure_mode = NULL;
-static char *failure_point = NULL;
+static const char *failure_mode = NULL;
+static const char *failure_point = NULL;
 static gboolean env_checked = FALSE;
 
 void
@@ -236,7 +232,7 @@ nautilus_content_loser_maybe_fail (const char *location)
 {
 	ensure_fail_env ();
 	
-	if (strcasecmp (location, failure_point) == 0) {
+	if (g_ascii_strcasecmp (location, failure_point) == 0) {
 		nautilus_content_loser_fail ();
 	}
 }
@@ -248,14 +244,14 @@ nautilus_content_loser_fail (void)
 {
 	ensure_fail_env ();
 	
-	if (strcasecmp (failure_mode, "hang") == 0) {
+	if (g_ascii_strcasecmp (failure_mode, "hang") == 0) {
 		while (1) {
 		}
-	} else if (strcasecmp (failure_mode, "exit") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "exit") == 0) {
 		exit (0);
-	} else if (strcasecmp (failure_mode, "error-exit") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "error-exit") == 0) {
 		exit (-1);
-	} else if (strcasecmp (failure_mode, "crash") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "crash") == 0) {
 		abort ();
 	} else {
 		puts ("XXX - would fail now, if NAUTILUS_CONTENT_LOSER_MODE were set properly.");

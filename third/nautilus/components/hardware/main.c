@@ -22,94 +22,40 @@
 
 /* main.c - main function and object activation function for the hardware view component. */
 
+#define FACTORY_IID "OAFIID:Nautilus_Hardware_View_Factory" 
+#define VIEW_IID    "OAFIID:Nautilus_Hardware_View"
+
 #include <config.h>
 
 #include "nautilus-hardware-view.h"
-
-#include <bonobo.h>
+#include <libnautilus/nautilus-view-standard-main.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <liboaf/liboaf.h>
-
-static int object_count = 0;
-
-static void
-hardware_view_object_destroyed(GtkObject *obj)
-{
-	object_count--;
-	if (object_count <= 0) {
-		gtk_main_quit ();
-	}
-}
 
 static BonoboObject *
-hardware_view_make_object (BonoboGenericFactory *factory, 
-			   const char *oaf_iid, 
-			   void *closure)
+cb_create_hardware_view (const char *ignore0, void *ignore1)
 {
-	NautilusView *view;
+	NautilusHardwareView *hardware_view =
+		g_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL);
+	return nautilus_hardware_view_get_nautilus_view (hardware_view);
 
-	if (strcmp (oaf_iid, "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
-		return NULL;
-	}
-	
-	view = nautilus_hardware_view_get_nautilus_view (NAUTILUS_HARDWARE_VIEW (gtk_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL)));
-
-	object_count++;
-
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", hardware_view_object_destroyed, NULL);
-
-	return BONOBO_OBJECT (view);
 }
-
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
-	CORBA_Environment ev;
-	char *registration_id;
-
-	
-	/* Initialize gettext support */
-#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
-	
-	CORBA_exception_init(&ev);
-	
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
 
-        gnome_init ("nautilus-hardware-view", VERSION, 
-		    argc, argv); 
-
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
-	/* initialize gnome-vfs, etc */
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce", 
-						    getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    hardware_view_make_object,
-						    NULL);
-	g_free (registration_id);
-
-	
-	do {
-		bonobo_main ();
-	} while (object_count > 0);
-	
-        gnome_vfs_shutdown ();
-	return 0;
+	return nautilus_view_standard_main ("nautilus-hardware-view",
+					    VERSION,
+					    GETTEXT_PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
+					    cb_create_hardware_view,
+					    nautilus_global_preferences_init,
+					    NULL);
 }

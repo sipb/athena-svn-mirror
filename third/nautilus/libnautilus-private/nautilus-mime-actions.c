@@ -24,18 +24,17 @@
 
 #include <config.h>
 #include "nautilus-mime-actions.h"
-
+ 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-metadata.h"
+#include <bonobo-activation/bonobo-activation-activate.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <stdio.h>
- 
+
 static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
 								  const char               *id);
 static int         gnome_vfs_mime_id_matches_application         (const char               *id,
@@ -46,7 +45,7 @@ static gboolean    string_not_in_list                            (const char    
 								  GList                    *list);
 static char       *mime_type_get_supertype                       (const char               *mime_type);
 static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
-static gboolean    server_has_content_requirements               (OAF_ServerInfo           *server);
+static gboolean    server_has_content_requirements               (Bonobo_ServerInfo           *server);
 static gboolean   application_supports_uri_scheme                (gpointer                 data,
 								  gpointer                 uri_scheme);
 static GList      *nautilus_do_component_query                   (const char               *mime_type,
@@ -64,15 +63,7 @@ static char      **strv_concat                                   (char          
 static gboolean
 is_known_mime_type (const char *mime_type)
 {
-	if (mime_type == NULL) {
-		return FALSE;
-	}
-	
-	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0) {
-		return FALSE;
-	}
-	
-	return TRUE;
+	return eel_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) != 0;
 }
 
 static gboolean
@@ -147,16 +138,18 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 		mime_type = nautilus_file_get_mime_type (file);
 		action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 		g_free (mime_type);
-		return action_type;
 	} else {
-		if (g_strcasecmp (action_type_string, "application") == 0) {
-			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
-		} else if (g_strcasecmp (action_type_string, "component") == 0) {
-			return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+		if (g_ascii_strcasecmp (action_type_string, "application") == 0) {
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+		} else if (g_ascii_strcasecmp (action_type_string, "component") == 0) {
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		} else {
-			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_NONE;
 		}
+		g_free (action_type_string);
 	}
+
+	return action_type;
 }
 
 GnomeVFSMimeAction *
@@ -234,6 +227,8 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 		*user_chosen = used_user_chosen_info;
 	}
 
+	g_free (default_application_string);
+
 	return result;
 }
 
@@ -297,10 +292,10 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 			prev = sort_conditions[1];
 			
 			if (p->next != NULL) {
-				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+				sort_conditions[1] = g_strconcat (prev, ((Bonobo_ServerInfo *) (p->data))->iid, 
 								  "','", NULL);
 			} else {
-				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+				sort_conditions[1] = g_strconcat (prev, ((Bonobo_ServerInfo *) (p->data))->iid, 
 								  "'])", NULL);
 			}
 			g_free (prev);
@@ -334,18 +329,18 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 	return sort_conditions;
 }	
 
-static OAF_ServerInfo *
+static Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 						       gboolean     *user_chosen)
 {
 	GList *info_list;
-	OAF_ServerInfo *mime_default; 
+	Bonobo_ServerInfo *mime_default; 
 	char *default_component_string;
 	char *mime_type;
 	char *uri_scheme;
 	GList *item_mime_types;
 	GList *explicit_iids;
-	OAF_ServerInfo *server;
+	Bonobo_ServerInfo *server;
 	char **sort_conditions;
 	char *extra_requirements;
 	gboolean used_user_chosen_info;
@@ -408,7 +403,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	}
 
 	if (info_list != NULL) {
-		server = OAF_ServerInfo_duplicate (info_list->data);
+		server = Bonobo_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
 
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
@@ -419,6 +414,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	}
 	
 	eel_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (explicit_iids);
 	g_strfreev (sort_conditions);
 
 	g_free (uri_scheme);
@@ -433,7 +429,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 }
 
 
-OAF_ServerInfo *
+Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file (NautilusFile      *file)
 {
 	return nautilus_mime_get_default_component_for_file_internal (file, NULL);
@@ -442,7 +438,7 @@ nautilus_mime_get_default_component_for_file (NautilusFile      *file)
 gboolean
 nautilus_mime_is_default_component_for_file_user_chosen (NautilusFile      *file)
 {
-	OAF_ServerInfo *component;
+	Bonobo_ServerInfo *component;
 	gboolean user_chosen;
 
 	component = nautilus_mime_get_default_component_for_file_internal (file, &user_chosen);
@@ -519,6 +515,9 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	}
 	result = g_list_reverse (result);
 
+	eel_g_list_free_deep (metadata_application_add_ids);
+	eel_g_list_free_deep (metadata_application_remove_ids);
+
 	return result;
 }
 
@@ -557,7 +556,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	GList *metadata_component_add_ids;
 	GList *metadata_component_remove_ids;
 	GList *p;
-	OAF_ServerInfo *component;
+	Bonobo_ServerInfo *component;
 	GList *explicit_iids;
 	char *extra_sort_conditions[2];
 	char *extra_requirements;
@@ -589,7 +588,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	iids = NULL;
 
 	for (p = servers; p != NULL; p = p->next) {
-		component = (OAF_ServerInfo *) p->data;
+		component = (Bonobo_ServerInfo *) p->data;
 
 		iids = g_list_prepend (iids, component->iid);
 	}
@@ -631,6 +630,9 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	}
 
 	eel_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (explicit_iids);
+	eel_g_list_free_deep (metadata_component_add_ids);
+	eel_g_list_free_deep (metadata_component_remove_ids);	
 	gnome_vfs_mime_component_list_free (servers);
 	g_list_free (iids);
 	g_free (uri_scheme);
@@ -673,6 +675,7 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 		}
 	}
 
+	eel_g_list_free_deep (metadata_application_ids);
 	g_free (mime_type);
 	return result;
 }
@@ -751,7 +754,7 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	needs_full_attributes = FALSE;
 
 	for (p = info_list; p != NULL; p = p->next) {
-		needs_full_attributes |= server_has_content_requirements ((OAF_ServerInfo *) (p->data));
+		needs_full_attributes |= server_has_content_requirements ((Bonobo_ServerInfo *) (p->data));
 	}
 	
 	gnome_vfs_mime_component_list_free (info_list);
@@ -929,6 +932,9 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 	add_list = str_list_difference (applications, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, applications);
 
+	gnome_vfs_mime_application_list_free (normal_short_list);
+	g_list_free (normal_short_list_ids);
+
 	nautilus_file_set_metadata_list 
 		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
@@ -940,9 +946,8 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 remove_list);
 
-	/* FIXME bugzilla.gnome.org 41269: 
-	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
-	 */
+	eel_g_list_free_deep (add_list);
+	eel_g_list_free_deep (remove_list);
 
 	return GNOME_VFS_OK;
 }
@@ -962,19 +967,23 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 			      GNOME_VFS_ERROR_GENERIC);
 
 	/* get per-mime short list */
+
 	mime_type = nautilus_file_get_mime_type (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
 	g_free (mime_type);
 	
 	normal_short_list_ids = NULL;
 	for (p = normal_short_list; p != NULL; p = p->next) {
-		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((OAF_ServerInfo *) p->data)->iid);
+		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((Bonobo_ServerInfo *) p->data)->iid);
 	}
 
 	/* compute delta */
 
 	add_list = str_list_difference (components, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, components);
+
+	gnome_vfs_mime_component_list_free (normal_short_list);
+	g_list_free (normal_short_list_ids);
 
 	nautilus_file_set_metadata_list 
 		(file,
@@ -987,9 +996,8 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 remove_list);
 
-	/* FIXME bugzilla.gnome.org 41269: 
-	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
-	 */
+	eel_g_list_free_deep (add_list);
+	eel_g_list_free_deep (remove_list);
 
 	return GNOME_VFS_OK;
 }
@@ -1128,6 +1136,10 @@ nautilus_mime_extend_all_applications_for_file (NautilusFile *file,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
 
+	eel_g_list_free_deep (metadata_application_ids);
+	eel_g_list_free_deep (extras);
+	g_list_free (final_applications);
+
 	return GNOME_VFS_OK;
 }
 
@@ -1153,6 +1165,9 @@ nautilus_mime_remove_from_all_applications_for_file (NautilusFile *file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
+
+	eel_g_list_free_deep (metadata_application_ids);
+	eel_g_list_free_deep (final_applications);
 	
 	return GNOME_VFS_OK;
 }
@@ -1241,7 +1256,7 @@ get_explicit_content_view_iids_from_metafile (NautilusFile *file)
 }
 
 static char *
-make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
+make_bonobo_activation_query_for_explicit_content_view_iids (GList *view_iids)
 {
         GList *p;
         char  *iid;
@@ -1278,7 +1293,7 @@ make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
 }
 
 static char *
-make_oaf_query_with_known_mime_type (const char *mime_type, 
+make_bonobo_activation_query_with_known_mime_type (const char *mime_type, 
 				     const char *uri_scheme, 
 				     GList      *explicit_iids, 
 				     const char *extra_requirements)
@@ -1289,7 +1304,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type,
 
         mime_supertype = mime_type_get_supertype (mime_type);
 
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -1380,14 +1395,14 @@ make_oaf_query_with_known_mime_type (const char *mime_type,
 }
 
 static char *
-make_oaf_query_with_uri_scheme_only (const char *uri_scheme, 
+make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme, 
 				     GList      *explicit_iids, 
 				     const char *extra_requirements)
 {
         char *result;
         char *explicit_iid_query;
         
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -1495,13 +1510,13 @@ mime_type_hash_table_destroy (GHashTable *table)
 
 
 static gboolean
-server_has_content_requirements (OAF_ServerInfo *server)
+server_has_content_requirements (Bonobo_ServerInfo *server)
 {
-        OAF_Property *prop;
+        Bonobo_ActivationProperty *prop;
 	
-        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        prop = bonobo_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
-        if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
+        if (prop == NULL || prop->v._d != Bonobo_ACTIVATION_P_STRINGV) {
                 return FALSE;
         } else {
 		return TRUE;
@@ -1509,12 +1524,12 @@ server_has_content_requirements (OAF_ServerInfo *server)
 }
 
 static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, 
+server_matches_content_requirements (Bonobo_ServerInfo *server, 
 				     GHashTable     *type_table, 
 				     GList          *explicit_iids)
 {
-        OAF_Property *prop;
-        GNOME_stringlist types;
+        Bonobo_ActivationProperty *prop;
+        Bonobo_StringList types;
         guint i;
 
         /* Components explicitly requested in the metafile are not capability tested. */
@@ -1525,7 +1540,7 @@ server_matches_content_requirements (OAF_ServerInfo *server,
         if (!server_has_content_requirements (server)) {
                 return TRUE;
         } else {
-        	prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        	prop = bonobo_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
                 types = prop->v._u.value_stringv;
 
@@ -1540,16 +1555,18 @@ server_matches_content_requirements (OAF_ServerInfo *server,
 }
 
 
+/* FIXME: do we actually need this it would seem to me that the
+ * test_only attribute handles this
+ */
 static char *nautilus_sort_criteria[] = {
         /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
+        "iid != 'OAFIID:Nautilus_Content_Loser'",
         /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
+        "iid != 'OAFIID:Nautilus_Sample_Content_View'",
 	/* Sort alphabetically */
 	"name",
-        NULL};
-
-
+        NULL
+};
 
 static GList *
 nautilus_do_component_query (const char        *mime_type, 
@@ -1560,52 +1577,49 @@ nautilus_do_component_query (const char        *mime_type,
 			     char             **extra_sort_criteria,
 			     char              *extra_requirements)
 { 
-	OAF_ServerInfoList *oaf_result;
+	Bonobo_ServerInfoList *bonobo_activation_result;
 	char *query;
 	GList *retval;
 	char **all_sort_criteria;
 	CORBA_Environment ev;
 
-        oaf_result = NULL;
+        bonobo_activation_result = NULL;
         query = NULL;
 
         if (is_known_mime_type (mime_type)) {
-                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
         } else {
-                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
         }
 
 	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
 
 	CORBA_exception_init (&ev);
 
-	oaf_result = oaf_query (query, all_sort_criteria, &ev);
+	bonobo_activation_result = bonobo_activation_query (query, all_sort_criteria, &ev);
 	
 	g_free (all_sort_criteria);
 	g_free (query);
 
 	retval = NULL;
 
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+        if (ev._major == CORBA_NO_EXCEPTION && bonobo_activation_result != NULL && bonobo_activation_result->_length > 0) {
                 GHashTable *content_types;
                 guint i;
            
                 content_types = mime_type_list_to_hash_table (item_mime_types);
                 
-                for (i = 0; i < oaf_result->_length; i++) {
-                        OAF_ServerInfo *server;
+                for (i = 0; i < bonobo_activation_result->_length; i++) {
+                        Bonobo_ServerInfo *server;
 
-                        server = &oaf_result->_buffer[i];
+                        server = &bonobo_activation_result->_buffer[i];
 
                         if (ignore_content_mime_types || 
 			    server_matches_content_requirements (server, content_types, explicit_iids)) {
-                                /* Hack to suppress the Bonobo_Sample_Text component, since the Nautilus text
-                                 * view is a superset and it's confusing for the user to be presented with both
-                                 */
-                                if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
+                                if (server->iid != NULL) {
                                 	retval = g_list_prepend
                                         	(retval, 
-						 OAF_ServerInfo_duplicate (server));
+						 Bonobo_ServerInfo_duplicate (server));
                         	}
                         }
                 }
@@ -1613,7 +1627,7 @@ nautilus_do_component_query (const char        *mime_type,
                 mime_type_hash_table_destroy (content_types);
         }
 
-	CORBA_free (oaf_result);
+	CORBA_free (bonobo_activation_result);
 
 	CORBA_exception_free (&ev);
 	
@@ -1632,7 +1646,7 @@ str_list_difference (GList *a,
 
 	for (p = a; p != NULL; p = p->next) {
 		if (g_list_find_custom (b, p->data, (GCompareFunc) strcmp) == NULL) {
-			retval = g_list_prepend (retval, p->data);
+			retval = g_list_prepend (retval, g_strdup (p->data));
 		}
 	}
 
@@ -1696,7 +1710,7 @@ application_supports_uri_scheme (gpointer data,
 
 	/* The default supported uri scheme is "file" */
 	if (application->supported_uri_schemes == NULL
-	    && g_strcasecmp ((const char *) uri_scheme, "file") == 0) {
+	    && g_ascii_strcasecmp ((const char *) uri_scheme, "file") == 0) {
 		return TRUE;
 	}
 	return g_list_find_custom (application->supported_uri_schemes,

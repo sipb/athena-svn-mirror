@@ -29,14 +29,24 @@
    representing a data view frame. */
 
 #include <config.h>
-
 #include "nautilus-view-frame-private.h"
+
 #include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
-#include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
-#include <libnautilus/nautilus-view.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-view.h>
+
+typedef struct {
+	BonoboObject parent;
+	NautilusViewFrame *widget;
+} NautilusViewFrameCorbaPart;
+
+typedef struct {
+	BonoboObjectClass parent;
+	POA_Nautilus_ViewFrame__epv epv;
+} NautilusViewFrameCorbaPartClass;
 
 typedef struct {
 	char *from_location;
@@ -44,118 +54,6 @@ typedef struct {
 	GList *selection;
 	char *title;
 } LocationPlus;
-
-static void impl_Nautilus_ViewFrame_open_location_in_this_window         (PortableServer_Servant  servant,
-									  Nautilus_URI            location,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant  servant,
-									  Nautilus_URI            location,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_open_location_force_new_window       (PortableServer_Servant  servant,
-									  Nautilus_URI            location,
-									  const Nautilus_URIList *selection,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_location_change               (PortableServer_Servant  servant,
-									  Nautilus_URI            location,
-									  const Nautilus_URIList *selection,
-									  const CORBA_char       *title,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_redirect                      (PortableServer_Servant  servant,
-									  Nautilus_URI            from_location,
-									  Nautilus_URI            to_location,
-									  const Nautilus_URIList *selection,
-									  const CORBA_char       *title,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_selection_change              (PortableServer_Servant  servant,
-									  const Nautilus_URIList *selection,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_status                        (PortableServer_Servant  servant,
-									  const CORBA_char       *status,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_underway                 (PortableServer_Servant  servant,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_progress                 (PortableServer_Servant  servant,
-									  CORBA_float             fraction_done,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_complete                 (PortableServer_Servant  servant,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_report_load_failed                   (PortableServer_Servant  servant,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_set_title                            (PortableServer_Servant  servant,
-									  const CORBA_char       *title,
-									  CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_go_back                              (PortableServer_Servant  servant,
-									  CORBA_Environment      *ev);
-
-POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
-{
-	NULL,
-	&impl_Nautilus_ViewFrame_open_location_in_this_window,
-	&impl_Nautilus_ViewFrame_open_location_prefer_existing_window,
-	&impl_Nautilus_ViewFrame_open_location_force_new_window,
-	&impl_Nautilus_ViewFrame_report_location_change,
-	&impl_Nautilus_ViewFrame_report_redirect,
-	&impl_Nautilus_ViewFrame_report_selection_change,
-	&impl_Nautilus_ViewFrame_report_status,
-	&impl_Nautilus_ViewFrame_report_load_underway,
-	&impl_Nautilus_ViewFrame_report_load_progress,
-	&impl_Nautilus_ViewFrame_report_load_complete,
-	&impl_Nautilus_ViewFrame_report_load_failed,
-	&impl_Nautilus_ViewFrame_set_title,
-	&impl_Nautilus_ViewFrame_go_back,
-};
-
-static PortableServer_ServantBase__epv base_epv;
-POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
-{
-	&base_epv,
-	NULL,
-	&impl_Nautilus_ViewFrame_epv
-};
-
-static void
-impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
-				  impl_POA_Nautilus_ViewFrame *servant)
-{
-	PortableServer_ObjectId *object_id;
-	CORBA_Environment ev;
-	
-	CORBA_exception_init (&ev);
-
-	eel_nullify_cancel (&servant->view);
-	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-	CORBA_free (object_id);
-	object->servant = NULL;
-	
-	POA_Nautilus_ViewFrame__fini ((PortableServer_Servant) servant, &ev);
-
-	g_free (servant);
-	CORBA_exception_free (&ev);
-}
-
-BonoboObject *
-impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
-{
-	BonoboObject *bonobo_object;
-	impl_POA_Nautilus_ViewFrame *servant;
-
-	impl_Nautilus_ViewFrame_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-
-	servant = g_new0 (impl_POA_Nautilus_ViewFrame, 1);
-	servant->servant.vepv = &impl_Nautilus_ViewFrame_vepv;
-	servant->view = view;
-	POA_Nautilus_ViewFrame__init ((PortableServer_Servant) servant, ev);
-  
-	bonobo_object = bonobo_object_new_from_servant (servant);
-  
-	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
-			    GTK_SIGNAL_FUNC (impl_Nautilus_ViewFrame__destroy), servant);
-
-	eel_nullify_when_destroyed (&servant->view);
-  
-	return bonobo_object;
-}
 
 static void
 list_free_deep_callback (gpointer callback_data)
@@ -289,8 +187,15 @@ go_back (NautilusViewFrame *view,
 }
 
 static void
+close_window (NautilusViewFrame *view,
+	      gpointer callback_data)
+{
+	nautilus_view_frame_close_window (view);
+}
+
+static void
 impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
-						      Nautilus_URI location,
+						      const CORBA_char *location,
 						      CORBA_Environment *ev)
 {
 	nautilus_view_frame_queue_incoming_call
@@ -302,7 +207,7 @@ impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant ser
 
 static void
 impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant servant,
-							      Nautilus_URI location,
+							      const CORBA_char *location,
 							      CORBA_Environment *ev)
 {
 	nautilus_view_frame_queue_incoming_call
@@ -314,7 +219,7 @@ impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Ser
 
 static void
 impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant servant,
-							Nautilus_URI location,
+							const CORBA_char *location,
 							const Nautilus_URIList *selection,
 							CORBA_Environment *ev)
 {
@@ -333,7 +238,7 @@ impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant s
 
 static void
 impl_Nautilus_ViewFrame_report_location_change (PortableServer_Servant servant,
-						Nautilus_URI location,
+						const CORBA_char *location,
 						const Nautilus_URIList *selection,
 						const CORBA_char *title,
 						CORBA_Environment *ev)
@@ -354,8 +259,8 @@ impl_Nautilus_ViewFrame_report_location_change (PortableServer_Servant servant,
 
 static void
 impl_Nautilus_ViewFrame_report_redirect (PortableServer_Servant servant,
-					 Nautilus_URI from_location,
-					 Nautilus_URI to_location,
+					 const CORBA_char *from_location,
+					 const CORBA_char *to_location,
 					 const Nautilus_URIList *selection,
 					 const CORBA_char *title,
 					 CORBA_Environment *ev)
@@ -466,4 +371,61 @@ impl_Nautilus_ViewFrame_go_back (PortableServer_Servant servant,
 {
 	nautilus_view_frame_queue_incoming_call
 		(servant, go_back, NULL, NULL);
+}
+
+static void
+impl_Nautilus_ViewFrame_close_window (PortableServer_Servant servant,
+				      CORBA_Environment *ev)
+{
+	nautilus_view_frame_queue_incoming_call
+		(servant, close_window, NULL, NULL);
+}
+
+static GType nautilus_view_frame_corba_part_get_type (void);
+
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusViewFrameCorbaPart, nautilus_view_frame_corba_part,
+			       Nautilus_ViewFrame,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
+
+#define NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART nautilus_view_frame_corba_part_get_type ()
+#define NAUTILUS_VIEW_FRAME_CORBA_PART(object) G_TYPE_CHECK_INSTANCE_CAST ((object), NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NautilusViewFrameCorbaPart)
+
+static void
+nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
+{
+	class->epv.open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
+	class->epv.open_location_prefer_existing_window = impl_Nautilus_ViewFrame_open_location_prefer_existing_window;
+	class->epv.open_location_force_new_window = impl_Nautilus_ViewFrame_open_location_force_new_window;
+	class->epv.report_location_change = impl_Nautilus_ViewFrame_report_location_change;
+	class->epv.report_redirect = impl_Nautilus_ViewFrame_report_redirect;
+	class->epv.report_selection_change = impl_Nautilus_ViewFrame_report_selection_change;
+	class->epv.report_status = impl_Nautilus_ViewFrame_report_status;
+	class->epv.report_load_underway = impl_Nautilus_ViewFrame_report_load_underway;
+	class->epv.report_load_progress = impl_Nautilus_ViewFrame_report_load_progress;
+	class->epv.report_load_complete = impl_Nautilus_ViewFrame_report_load_complete;
+	class->epv.report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
+	class->epv.set_title = impl_Nautilus_ViewFrame_set_title;
+	class->epv.go_back = impl_Nautilus_ViewFrame_go_back;
+	class->epv.close_window = impl_Nautilus_ViewFrame_close_window;
+}
+
+static void
+nautilus_view_frame_corba_part_instance_init (NautilusViewFrameCorbaPart *frame)
+{
+}
+
+BonoboObject *
+nautilus_view_frame_create_corba_part (NautilusViewFrame *widget)
+{
+	NautilusViewFrameCorbaPart *part;
+
+	part = NAUTILUS_VIEW_FRAME_CORBA_PART (g_object_new (NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NULL));
+	part->widget = widget;
+	return BONOBO_OBJECT (part);
+}
+
+NautilusViewFrame *
+nautilus_view_frame_from_servant (PortableServer_Servant servant)
+{
+	return NAUTILUS_VIEW_FRAME_CORBA_PART (bonobo_object_from_servant (servant))->widget;
 }

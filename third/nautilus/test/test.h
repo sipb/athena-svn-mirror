@@ -1,4 +1,3 @@
-
 #ifndef TEST_H
 #define TEST_H
 
@@ -17,10 +16,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-image-with-background.h>
-#include <eel/eel-image.h>
-#include <eel/eel-label-with-background.h>
-#include <eel/eel-label.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -42,12 +37,7 @@ void       test_gtk_widget_set_background_color (GtkWidget                   *wi
 						 const char                  *color_spec);
 GdkPixbuf *test_pixbuf_new_named                (const char                  *name,
 						 float                        scale);
-GtkWidget *test_image_new                       (const char                  *pixbuf_name,
-						 const char                  *tile_name,
-						 float                        scale,
-						 gboolean                     with_background);
 GtkWidget *test_label_new                       (const char                  *text,
-						 const char                  *tile_name,
 						 gboolean                     with_background,
 						 int                          num_sizes_larger);
 void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf                   *pixbuf,

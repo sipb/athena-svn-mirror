@@ -30,18 +30,21 @@
 #include <config.h>
 #include "nautilus-view-standard-main.h"
 
+#include <X11/Xlib.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-ui-main.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <liboaf/liboaf.h>
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
+#include <eel/eel-gnome-extensions.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define N_IDLE_SECONDS_BEFORE_QUIT  5
 
@@ -61,21 +64,124 @@ delayed_quit_timeout_callback (gpointer data)
 	callback_data = (CallbackData *) data;
 	callback_data->delayed_quit_timeout_id = 0;
 	gtk_main_quit ();
+
 	return FALSE;
 }
 
 static void
-object_destroyed (GtkObject     *object,
-		  CallbackData  *callback_data)
+view_object_destroy (GObject      *object,
+		     CallbackData *callback_data)
 {
-	g_assert (GTK_IS_OBJECT (object));
+	g_assert (G_IS_OBJECT (object));
 
-	callback_data->object_count--;
-	if (callback_data->object_count <= 0 && callback_data->delayed_quit_timeout_id == 0) {
-		callback_data->delayed_quit_timeout_id = g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
-		                                                        delayed_quit_timeout_callback,
-		                                                        callback_data);
+	if (!g_object_get_data (object, "standard_main_destroy_accounted")) {
+		g_object_set_data (object, "standard_main_destroy_accounted",
+				   GUINT_TO_POINTER (TRUE));
+
+		callback_data->object_count--;
+
+		if (callback_data->object_count <= 0 &&
+		    callback_data->delayed_quit_timeout_id == 0) {
+			/*    Connect a handler that will get us out of the
+			 * main loop when there are no more objects outstanding.
+			 */
+			callback_data->delayed_quit_timeout_id = 
+				g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
+					       delayed_quit_timeout_callback,
+					       callback_data);
+		}
 	}
+}
+
+/*
+ *   Time we're prepared to wait without a ControlFrame
+ * before terminating the Control. This can happen if the
+ * container activates us but crashes before the set_frame.
+ *
+ * NB. if we don't get a frame in 30 seconds, something
+ * is badly wrong, or Gnome performance needs improving
+ * markedly !
+ */
+#define NAUTILUS_VIEW_NEVER_GOT_FRAME_TIMEOUT (30 * 1000)
+#define CALLBACK_DATA_KEY "standard_main_callback_data_key"
+
+static void
+nautilus_view_cnx_broken_callback (GObject *control)
+{
+	view_object_destroy (control,
+			     g_object_get_data (G_OBJECT (control),
+						CALLBACK_DATA_KEY));
+}
+
+static gboolean
+nautilus_view_never_got_frame_timeout (gpointer user_data)
+{
+	g_warning ("Never got frame, container died - abnormal exit condition");
+
+	nautilus_view_cnx_broken_callback (user_data);
+	
+	return FALSE;
+}
+
+static void
+nautilus_view_set_frame_callback (BonoboControl *control,
+				  gpointer       user_data)
+{
+	Bonobo_ControlFrame remote_frame;
+
+	remote_frame = bonobo_control_get_control_frame (control, NULL);
+
+	if (remote_frame != CORBA_OBJECT_NIL) {
+		ORBitConnectionStatus status;
+
+		g_source_remove (GPOINTER_TO_UINT (user_data));
+
+		status = ORBit_small_get_connection_status (remote_frame);
+
+		/* Only track out of proc controls */
+		if (status != ORBIT_CONNECTION_IN_PROC) {
+			g_signal_connect_closure (
+				ORBit_small_get_connection (remote_frame),
+				"broken",
+				g_cclosure_new_object_swap (
+					G_CALLBACK (nautilus_view_cnx_broken_callback),
+					G_OBJECT (control)),
+				FALSE);
+			g_signal_connect (
+				control, "destroy",
+				G_CALLBACK (nautilus_view_cnx_broken_callback),
+				NULL);
+		}
+	}
+}
+
+/*
+ *   This code is somewhat duplicated in gnome-panel/libpanel-applet
+ * and is ripe for abstracting in an intermediate library.
+ */
+static void
+nautilus_view_instrument_for_failure (BonoboObject *control,
+				      CallbackData *callback_data)
+{
+	guint no_frame_timeout_id;
+
+	g_object_set_data (G_OBJECT (control),
+			   CALLBACK_DATA_KEY, callback_data);
+
+	no_frame_timeout_id = g_timeout_add (
+		NAUTILUS_VIEW_NEVER_GOT_FRAME_TIMEOUT,
+		nautilus_view_never_got_frame_timeout,
+		control);
+	g_signal_connect_closure (
+		control, "destroy",
+		g_cclosure_new_swap (
+			G_CALLBACK (g_source_remove_by_user_data),
+			control, NULL),
+		0);
+	g_signal_connect (
+		control, "set_frame",
+		G_CALLBACK (nautilus_view_set_frame_callback),
+		GUINT_TO_POINTER (no_frame_timeout_id));
 }
 
 static BonoboObject *
@@ -83,8 +189,9 @@ make_object (BonoboGenericFactory *factory,
 	     const char           *iid, 
 	     gpointer              data)
 {
+	BonoboObject *view;
+	BonoboObject *control;
 	CallbackData *callback_data;
-	NautilusView *view;
 
 	callback_data = (CallbackData *) data;
 
@@ -92,10 +199,7 @@ make_object (BonoboGenericFactory *factory,
 	g_assert (iid != NULL);
 	g_assert (callback_data != NULL);
 
-	/* Check that this is one of the types of object we know how to
-	 * create.
-	 */
-
+	/* Check that this is one of the types of object we know how to create. */
 	if (g_list_find_custom (callback_data->view_iids,
 				(gpointer) iid, (GCompareFunc) strcmp) == NULL) {
 		return NULL;
@@ -103,16 +207,20 @@ make_object (BonoboGenericFactory *factory,
 	
 	view = callback_data->create_function (iid, callback_data->user_data);
 
-	/* Connect a handler that will get us out of the main loop
-         * when there are no more objects outstanding.
-	 */
 	callback_data->object_count++;
 	if (callback_data->delayed_quit_timeout_id != 0) {
 		g_source_remove (callback_data->delayed_quit_timeout_id);
 		callback_data->delayed_quit_timeout_id = 0;
 	}
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    object_destroyed, callback_data);
+	g_signal_connect (view, "destroy",
+			  G_CALLBACK (view_object_destroy),
+			  callback_data);
+
+	/* We can do some more agressive tracking of controls */
+	if ((control = bonobo_object_query_local_interface
+	             (view, "IDL:Bonobo/Control:1.0"))) {
+		nautilus_view_instrument_for_failure (control, callback_data);
+	}
 
 	return BONOBO_OBJECT (view);
 }
@@ -157,7 +265,6 @@ nautilus_view_standard_main_multi (const char *executable_name,
 				   GVoidFunc post_initialize_callback,
 				   void *user_data)
 {
-	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 	CallbackData callback_data;
 	char *registration_id;
@@ -179,26 +286,24 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	}
 
 	/* Initialize gettext support if needed  */
-#ifdef ENABLE_NLS
 	if (gettext_package_name != NULL
 	    && gettext_locale_directory != NULL) {
 		bindtextdomain (gettext_package_name, gettext_locale_directory);
+		bind_textdomain_codeset (gettext_package_name, "UTF-8");
 		textdomain (gettext_package_name);
 	}
-#endif
-
-	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
-
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
 
 	/* Initialize libraries. */
-        gnome_init (executable_name, version, argc, argv); 
-	gdk_rgb_init ();
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	gnome_program_init (executable_name, version,
+			    LIBGNOMEUI_MODULE,
+			    argc, argv,
+			    NULL);
+	
+	bonobo_ui_init (executable_name, version, &argc, argv);
+
+	/* Disable session manager connection */
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	if (post_initialize_callback != NULL) {
 		(* post_initialize_callback) ();
@@ -212,20 +317,21 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-        registration_id = oaf_make_registration_id (factory_iid, 
-						    DisplayString (GDK_DISPLAY ()));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    make_object,
-						    &callback_data);
+        registration_id = eel_bonobo_make_registration_id (factory_iid);
+	factory = bonobo_generic_factory_new (registration_id, 
+					      make_object,
+					      &callback_data);
 	g_free (registration_id);
 
-	/* Loop until we have no more objects. */
-	do {
-		bonobo_main ();
-	} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
-
-	/* Let the factory go. */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
+	if (factory != NULL) {
+		/* Loop until we have no more objects. */
+		bonobo_activate ();
+		do {
+			gtk_main ();
+		} while (callback_data.object_count > 0 ||
+			 callback_data.delayed_quit_timeout_id != 0);
+		bonobo_object_unref (factory);
+	}
 
 	gnome_vfs_shutdown ();
 
@@ -310,9 +416,8 @@ nautilus_view_standard_main (const char *executable_name,
 
 typedef GtkType (* TypeFunc) (void);
 
-NautilusView *
+BonoboObject *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)
 {
-	return NAUTILUS_VIEW (gtk_object_new (((TypeFunc) (user_data)) (), NULL));
+	return BONOBO_OBJECT (g_object_new (((TypeFunc) (user_data)) (), NULL));
 }
-

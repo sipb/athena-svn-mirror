@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /* nautilus-metafile.h - server side of Nautilus::Metafile
  *
@@ -23,14 +23,10 @@
 #ifndef NAUTILUS_METAFILE_H
 #define NAUTILUS_METAFILE_H
 
-#include "nautilus-metafile-server.h"
-
 #include <bonobo/bonobo-object.h>
-#include <bonobo/bonobo-xobject.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
 #include <libxml/tree.h>
-
-#include "nautilus-directory.h"
-#include "nautilus-file-utilities.h"
 
 #define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
 #define NAUTILUS_METAFILE(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))
@@ -41,20 +37,17 @@
 typedef struct NautilusMetafileDetails NautilusMetafileDetails;
 
 typedef struct {
-	BonoboXObject parent_slot;
+	BonoboObject parent_slot;
 	NautilusMetafileDetails *details;
 } NautilusMetafile;
 
 typedef struct {
-	BonoboXObjectClass parent_slot;
+	BonoboObjectClass parent_slot;
 	POA_Nautilus_Metafile__epv epv;
 } NautilusMetafileClass;
 
 GtkType nautilus_metafile_get_type (void);
 
 NautilusMetafile *nautilus_metafile_get (const char *directory_uri);
-
-/* Specifications for in-directory metafile. */
-#define NAUTILUS_METAFILE_NAME_SUFFIX ".nautilus-metafile.xml"
 
 #endif /* NAUTILUS_METAFILE_H */

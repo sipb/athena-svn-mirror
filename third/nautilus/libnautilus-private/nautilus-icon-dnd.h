@@ -28,26 +28,29 @@
 #ifndef NAUTILUS_ICON_DND_H
 #define NAUTILUS_ICON_DND_H
 
-#include "nautilus-icon-container.h"
-#include <eel/eel-dnd.h>
+#include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-dnd.h>
 
 /* DnD-related information. */
 typedef struct {
 	/* inherited drag info context */
-	EelDragInfo drag_info;
+	NautilusDragInfo drag_info;
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;
 } NautilusIconDndInfo;
 
 
-void nautilus_icon_dnd_init       (NautilusIconContainer *container,
-				   GdkBitmap             *stipple);
-void nautilus_icon_dnd_fini       (NautilusIconContainer *container);
-void nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
-				   GdkDragAction          actions,
-				   gint                   button,
-				   GdkEventMotion        *event);
-void nautilus_icon_dnd_end_drag   (NautilusIconContainer *container);
+void   nautilus_icon_dnd_init                  (NautilusIconContainer *container,
+						GdkBitmap             *stipple);
+void   nautilus_icon_dnd_fini                  (NautilusIconContainer *container);
+void   nautilus_icon_dnd_begin_drag            (NautilusIconContainer *container,
+						GdkDragAction          actions,
+						gint                   button,
+						GdkEventMotion        *event);
+void   nautilus_icon_dnd_end_drag              (NautilusIconContainer *container);
+
+GList *nautilus_icon_dnd_uri_list_extract_uris (const char            *uri_list);
+void   nautilus_icon_dnd_uri_list_free_strings (GList                 *list);
 
 #endif /* NAUTILUS_ICON_DND_H */

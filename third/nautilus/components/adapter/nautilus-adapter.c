@@ -21,7 +21,7 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter.c - Class for adapting bonobo controls/embeddables
+/* nautilus-adapter.c - Class for adapting bonobo Control/ControlFactory
  * to look like Nautilus views.
  */
 
@@ -33,14 +33,12 @@
 #include "nautilus-adapter-load-strategy.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-item-container.h>
-#include <bonobo/bonobo-object-client.h>
-#include <bonobo/bonobo-view-frame.h>
 #include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
@@ -48,10 +46,6 @@ struct NautilusAdapterDetails {
 	NautilusView *nautilus_view;
 	NautilusAdapterEmbedStrategy *embed_strategy;
 	NautilusAdapterLoadStrategy *load_strategy;
-	guint report_load_underway_id;
-	guint report_load_progress_id;
-	guint report_load_complete_id;
-        guint report_load_failed_id;
 };
 
 
@@ -71,18 +65,18 @@ static void nautilus_adapter_load_progress_callback (NautilusAdapter            
 						     double                        fraction_complete);
 static void nautilus_adapter_load_complete_callback (NautilusAdapter              *adapter);
 static void nautilus_adapter_load_failed_callback   (NautilusAdapter              *adapter);
-static void nautilus_adapter_initialize_class       (NautilusAdapterClass         *klass);
-static void nautilus_adapter_initialize             (NautilusAdapter              *server);
+static void nautilus_adapter_class_init       (NautilusAdapterClass         *klass);
+static void nautilus_adapter_init             (NautilusAdapter              *server);
 static void nautilus_adapter_destroy                (GtkObject                    *object);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
+EEL_CLASS_BOILERPLATE (NautilusAdapter,
 			      nautilus_adapter,
 			      GTK_TYPE_OBJECT)
 
      
 static void
-nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
+nautilus_adapter_class_init (NautilusAdapterClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -92,10 +86,10 @@ nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
 }
 
 static void
-nautilus_adapter_initialize (NautilusAdapter *adapter)
+nautilus_adapter_init (NautilusAdapter *adapter)
 {
 	adapter->details = g_new0 (NautilusAdapterDetails, 1);
-	gtk_object_ref (GTK_OBJECT (adapter));
+	g_object_ref (adapter);
 	gtk_object_sink (GTK_OBJECT (adapter));
 }
 
@@ -106,26 +100,17 @@ nautilus_adapter_destroy (GtkObject *object)
 	
 	adapter = NAUTILUS_ADAPTER (object);
 
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_underway_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_progress_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_complete_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_failed_id);
-
 	if (adapter->details->embed_strategy != NULL) {
 		nautilus_adapter_embed_strategy_deactivate (adapter->details->embed_strategy);
 	}
 
 	if (adapter->details->load_strategy != NULL) {
 		nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
-		gtk_object_unref (GTK_OBJECT (adapter->details->load_strategy));
+		g_object_unref (adapter->details->load_strategy);
 	}
 
 	if (adapter->details->embed_strategy != NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter->details->embed_strategy));
+		g_object_unref (adapter->details->embed_strategy);
 	}
 
 	g_free (adapter->details);
@@ -145,7 +130,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	 * construct args 
 	 */
 
-	adapter = NAUTILUS_ADAPTER (gtk_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
+	adapter = NAUTILUS_ADAPTER (g_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
 
 	/* Set up a few wrapper framework details */
 	bin = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
@@ -153,15 +138,13 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
-	gtk_signal_connect_object (GTK_OBJECT (adapter->details->nautilus_view),
-				   "destroy",
-				   gtk_object_unref,
-				   GTK_OBJECT (adapter));
+	g_object_weak_ref (G_OBJECT (adapter->details->nautilus_view),
+			   (GWeakNotify)g_object_unref, adapter);
 
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get (component);
 	if (adapter->details->embed_strategy == NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter));
+		g_object_unref (adapter);
 		return NULL;
 	}
 
@@ -170,56 +153,41 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	if (zoomable != NULL)
 		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
-	gtk_signal_connect (GTK_OBJECT (control), "activate",
-			    GTK_SIGNAL_FUNC (nautilus_adapter_activate_callback),
-			    adapter);
-
-	gtk_signal_connect (GTK_OBJECT (adapter->details->embed_strategy), "open_location", 
-			    nautilus_adapter_open_location_callback, adapter);
-
+	g_signal_connect_object (control, "activate",
+				 G_CALLBACK (nautilus_adapter_activate_callback), adapter, 0);
+	g_signal_connect_object (adapter->details->embed_strategy, "open_location",
+				 G_CALLBACK (nautilus_adapter_open_location_callback), adapter, 0);
 
 	/* Get the class to handle loading this kind of component. */
 	adapter->details->load_strategy = nautilus_adapter_load_strategy_get (component);
 	if (adapter->details->load_strategy == NULL) {
-		gtk_object_unref (GTK_OBJECT (adapter));
+		g_object_unref (adapter);
 		return NULL;
 	}
 
 	/* hook up load strategy signals */
-	adapter->details->report_load_underway_id =
-		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
-					   "report_load_underway",
-					   nautilus_adapter_load_underway_callback,
-					   GTK_OBJECT (adapter));
-	adapter->details->report_load_progress_id =
-		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
-					   "report_load_progress",
-					   nautilus_adapter_load_progress_callback,
-					   GTK_OBJECT (adapter));
-	adapter->details->report_load_complete_id =
-		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
-					   "report_load_complete",
-					   nautilus_adapter_load_complete_callback,
-					   GTK_OBJECT (adapter));
-	adapter->details->report_load_failed_id =
-		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
-					   "report_load_failed",
-					   nautilus_adapter_load_failed_callback,
-					   GTK_OBJECT (adapter));
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_underway",
+				 G_CALLBACK (nautilus_adapter_load_underway_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_progress",
+				 G_CALLBACK (nautilus_adapter_load_progress_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_complete",
+				 G_CALLBACK (nautilus_adapter_load_complete_callback),
+				 adapter, G_CONNECT_SWAPPED);
+	g_signal_connect_object (adapter->details->load_strategy, "report_load_failed",
+				 G_CALLBACK (nautilus_adapter_load_failed_callback),
+				 adapter, G_CONNECT_SWAPPED);
 
 	/* complete the embedding */
 	gtk_container_add (GTK_CONTAINER (bin), 
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
 			   
 	/* hook up view signals. */
-	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
-			    "load_location",
-			    nautilus_adapter_load_location_callback,
-			    adapter);
-	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
-			    "stop_loading",
-			    nautilus_adapter_stop_loading_callback,
-			    adapter);
+	g_signal_connect_object (adapter->details->nautilus_view, "load_location",
+				 G_CALLBACK (nautilus_adapter_load_location_callback), adapter, 0);
+	g_signal_connect_object (adapter->details->nautilus_view, "stop_loading",
+				 G_CALLBACK (nautilus_adapter_stop_loading_callback), adapter, 0);
 
 	return adapter;
 }
@@ -271,7 +239,7 @@ nautilus_adapter_activate_callback (BonoboControl   *control,
 	if (state) {
 		Bonobo_UIContainer corba_container;
 
-		corba_container = bonobo_control_get_remote_ui_container (control);
+		corba_container = bonobo_control_get_remote_ui_container (control, NULL);
 		nautilus_adapter_embed_strategy_activate (adapter->details->embed_strategy,
 							  corba_container);
 	} else

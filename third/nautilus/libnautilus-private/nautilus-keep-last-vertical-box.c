@@ -28,16 +28,16 @@
 
 #include <eel/eel-gtk-macros.h>
 
-static void     nautilus_keep_last_vertical_box_initialize_class  (NautilusKeepLastVerticalBoxClass *class);
-static void     nautilus_keep_last_vertical_box_initialize        (NautilusKeepLastVerticalBox      *box);
+static void     nautilus_keep_last_vertical_box_class_init  (NautilusKeepLastVerticalBoxClass *class);
+static void     nautilus_keep_last_vertical_box_init        (NautilusKeepLastVerticalBox      *box);
 static void	nautilus_keep_last_vertical_box_size_allocate 	  (GtkWidget 			    *widget, 
 								   GtkAllocation 		    *allocation);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
+EEL_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
 
 /* Standard class initialization function */
 static void
-nautilus_keep_last_vertical_box_initialize_class (NautilusKeepLastVerticalBoxClass *klass)
+nautilus_keep_last_vertical_box_class_init (NautilusKeepLastVerticalBoxClass *klass)
 {
 	GtkWidgetClass *widget_class;
 
@@ -48,7 +48,7 @@ nautilus_keep_last_vertical_box_initialize_class (NautilusKeepLastVerticalBoxCla
 
 /* Standard object initialization function */
 static void
-nautilus_keep_last_vertical_box_initialize (NautilusKeepLastVerticalBox *box)
+nautilus_keep_last_vertical_box_init (NautilusKeepLastVerticalBox *box)
 {
 }
 

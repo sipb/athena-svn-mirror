@@ -25,16 +25,15 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
+#include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include <bonobo/bonobo-ui-util.h>
-#include <ctype.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-dnd.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <errno.h>
@@ -47,20 +46,22 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-mime.h>
+#include <libgnome/gnome-desktop-item.h>
+#include <libgnome/gnome-macros.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libnautilus-private/nautilus-audio-player.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -75,21 +76,20 @@
 #include <unistd.h>
 
 #define USE_OLD_AUDIO_PREVIEW 1
+#define READ_CHUNK_SIZE 16384
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
-#define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Lay Out"
-#define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Manual Layout"
-#define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Tighter Layout"
-#define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
+#define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Arrange Items"
+#define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Arrange Items/Manual Layout"
+#define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Arrange Items/Tighter Layout"
+#define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Arrange Items/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
-#define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Lay Out"
+#define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Arrange Items"
 
 #define COMMAND_PREFIX                          "/commands/"
-#define COMMAND_RENAME 				"/commands/Rename"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
@@ -99,9 +99,6 @@
 #define ID_MANUAL_LAYOUT                        "Manual Layout"
 #define ID_TIGHTER_LAYOUT                       "Tighter Layout"
 #define ID_SORT_REVERSED                        "Reversed Order"
-
-#define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
-#define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
 typedef struct {
 	NautilusFileSortType sort_type;
@@ -118,61 +115,25 @@ typedef enum {
 	MENU_ITEM_TYPE_TREE
 } MenuItemType;
 
-/* forward declarations */
-static void                 create_icon_container                              (FMIconView            *icon_view);
-static void                 fm_icon_view_initialize                            (FMIconView            *icon_view);
-static void                 fm_icon_view_initialize_class                      (FMIconViewClass       *klass);
-static void                 fm_icon_view_set_directory_sort_by                 (FMIconView            *icon_view,
-										NautilusFile          *file,
-										const char            *sort_by);
-static void                 fm_icon_view_set_zoom_level                        (FMIconView            *view,
-										NautilusZoomLevel      new_level,
-										gboolean               always_set_level);
-gboolean                    fm_icon_view_supports_auto_layout                  (FMIconView            *view);
-static void                 fm_icon_view_update_icon_container_fonts           (FMIconView            *icon_view);
-static void                 fm_icon_view_update_icon_container_smooth_font     (FMIconView            *icon_view);
-static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView            *icon_view);
-static void                 fm_icon_view_update_click_mode                     (FMIconView            *icon_view);
-static void                 fm_icon_view_update_smooth_graphics_mode           (FMIconView            *icon_view);
-static gboolean             fm_icon_view_using_tighter_layout                  (FMIconView            *icon_view);
-static gboolean             fm_icon_view_get_directory_tighter_layout          (FMIconView            *icon_view,
-										NautilusFile          *file);
-static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView            *icon_view,
-										NautilusFile          *file,
-										gboolean               tighter_layout);
-static gboolean             real_supports_auto_layout                          (FMIconView            *view);
-static const SortCriterion *get_sort_criterion_by_id                           (const char            *id);
-static const SortCriterion *get_sort_criterion_by_sort_type                    (NautilusFileSortType   sort_type);
-static void                 set_sort_criterion_by_id                           (FMIconView            *icon_view,
-										const char            *id);
-static gboolean             set_sort_reversed                                  (FMIconView            *icon_view,
-										gboolean               new_value);
-static void                 switch_to_manual_layout                            (FMIconView            *view);
-static void                 preview_audio                                      (FMIconView            *icon_view,
-										NautilusFile          *file,
-										gboolean               start_flag);
-static void                 update_layout_menus                                (FMIconView            *view);
-static void                 default_sort_in_reverse_order_changed_callback     (gpointer               callback_data);
-static void                 default_sort_order_changed_callback                (gpointer               callback_data);
-static void                 default_use_tighter_layout_changed_callback        (gpointer               callback_data);
-static void                 default_use_manual_layout_changed_callback         (gpointer               callback_data);
-static void                 default_zoom_level_changed_callback                (gpointer               callback_data);
-static void                 default_zoom_level_font_size_changed_callback      (gpointer               callback_data);
-static void                 font_changed_callback                              (gpointer               callback_data);
-static void                 smooth_font_changed_callback                       (gpointer               callback_data);
-static void                 icon_view_handle_uri_list                          (NautilusIconContainer *container,
-										const char            *item_uris,
-										GdkDragAction          action,
-										int                    x,
-										int                    y,
-										FMIconView            *view);
+struct FMIconViewDetails
+{
+	GList *icons_not_positioned;
 
+	guint react_to_icon_change_idle_id;
+	gboolean menus_ready;
 
-static int preview_sound_auto_value;
+	gboolean loading;
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMIconView,
-			      fm_icon_view,
-			      FM_TYPE_DIRECTORY_VIEW)
+	const SortCriterion *sort;
+	gboolean sort_reversed;
+
+	BonoboUIComponent *ui;
+	
+	NautilusAudioPlayerData *audio_player_data;
+	int audio_preview_timeout;
+	NautilusFile *audio_preview_file;
+};
+
 
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
@@ -216,27 +177,37 @@ static const SortCriterion sort_criteria[] = {
 	}
 };
 
-struct FMIconViewDetails
-{
-	GList *icons_not_positioned;
+static gboolean default_sort_in_reverse_order = FALSE;
+static int preview_sound_auto_value;
+static gboolean gnome_esd_enabled_auto_value;
 
-	guint react_to_icon_change_idle_id;
-	gboolean menus_ready;
+static void                 fm_icon_view_set_directory_sort_by                 (FMIconView           *icon_view,
+										NautilusFile         *file,
+										const char           *sort_by);
+static void                 fm_icon_view_set_zoom_level                        (FMIconView           *view,
+										NautilusZoomLevel     new_level,
+										gboolean              always_set_level);
+static void                 fm_icon_view_update_click_mode                     (FMIconView           *icon_view);
+static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView           *icon_view,
+										NautilusFile         *file,
+										gboolean              tighter_layout);
+static const SortCriterion *get_sort_criterion_by_id                           (const char           *id);
+static const SortCriterion *get_sort_criterion_by_sort_type                    (NautilusFileSortType  sort_type);
+static void                 set_sort_criterion_by_id                           (FMIconView           *icon_view,
+										const char           *id);
+static gboolean             set_sort_reversed                                  (FMIconView           *icon_view,
+										gboolean              new_value);
+static void                 switch_to_manual_layout                            (FMIconView           *view);
+static void                 preview_audio                                      (FMIconView           *icon_view,
+										NautilusFile         *file,
+										gboolean              start_flag);
+static void                 update_layout_menus                                (FMIconView           *view);
 
-	gboolean loading;
-
-	const SortCriterion *sort;
-	gboolean sort_reversed;
-
-	BonoboUIComponent *ui;
-	
-	NautilusAudioPlayerData *audio_player_data;
-	int audio_preview_timeout;
-	NautilusFile *audio_preview_file;
-};
+GNOME_CLASS_BOILERPLATE (FMIconView, fm_icon_view,
+			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
 
 static void
-fm_icon_view_destroy (GtkObject *object)
+fm_icon_view_finalize (GObject *object)
 {
 	FMIconView *icon_view;
 
@@ -246,8 +217,8 @@ fm_icon_view_destroy (GtkObject *object)
 	icon_view->details->menus_ready = FALSE;
 
 	if (icon_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (icon_view->details->ui);
-		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
+		bonobo_object_unref (icon_view->details->ui);
 	}
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
@@ -258,18 +229,27 @@ fm_icon_view_destroy (GtkObject *object)
 	preview_audio (icon_view, NULL, FALSE);
 
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
+
 	g_free (icon_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static NautilusIconContainer *
 get_icon_container (FMIconView *icon_view)
 {
-	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
+	GtkBin *bin;
 
-	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
+
+	bin = GTK_BIN (icon_view);
+	if (bin->child) {
+		g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
+		
+		return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	} else {
+		return NULL;
+	}
 }
 
 static gboolean
@@ -403,19 +383,6 @@ clean_up_callback (BonoboUIComponent *component, gpointer callback_data, const c
 	fm_icon_view_clean_up (FM_ICON_VIEW (callback_data));
 }
 
-	
-
-static void
-rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
-{
-	g_assert (FM_IS_ICON_VIEW (callback_data));
-  		
-	nautilus_icon_container_start_renaming_selected_item
-		(get_icon_container (FM_ICON_VIEW (callback_data)));
-
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
-}
-
 static void
 set_tighter_layout (FMIconView *icon_view, gboolean new_value)
 {
@@ -488,6 +455,8 @@ fm_icon_view_clear (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
+	if (!icon_container)
+		return;
 
 	/* Clear away the existing icons. */
 	nautilus_icon_container_for_each (icon_container, unref_cover, NULL);
@@ -528,6 +497,16 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	nautilus_icon_container_request_update
 		(get_icon_container (FM_ICON_VIEW (view)),
 		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+}
+
+static gboolean
+fm_icon_view_supports_auto_layout (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, view,
+		 supports_auto_layout, (view));
 }
 
 static void
@@ -595,8 +574,8 @@ get_default_sort_order (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-						       (int *) &default_sort_order);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+					       (int *) &default_sort_order);
 	}
 
 	return CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, NAUTILUS_FILE_SORT_BY_EMBLEMS);
@@ -656,8 +635,6 @@ fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
 		 get_directory_sort_reversed, (icon_view, file));
 }
 
-static gboolean default_sort_in_reverse_order = FALSE;
-
 static gboolean
 get_default_sort_in_reverse_order (void)
 {
@@ -666,7 +643,7 @@ get_default_sort_in_reverse_order (void)
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
 		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-						       &default_sort_in_reverse_order);
+						  &default_sort_in_reverse_order);
 	}
 
 	return default_sort_in_reverse_order;
@@ -736,7 +713,6 @@ fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_auto_layout, (icon_view, file));
 }
-
 
 static gboolean
 fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
@@ -826,16 +802,6 @@ fm_icon_view_real_set_directory_tighter_layout (FMIconView *icon_view,
 		 tighter_layout);
 }
 
-gboolean
-fm_icon_view_supports_auto_layout (FMIconView *view)
-{
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
-
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_ICON_VIEW_CLASS, view,
-		 supports_auto_layout, (view));
-}
-
 static gboolean
 real_supports_auto_layout (FMIconView *view)
 {
@@ -867,7 +833,7 @@ get_sort_criterion_by_metadata_text (const char *metadata_text)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].metadata_text, metadata_text) == 0) {
 			return &sort_criteria[i];
 		}
@@ -881,7 +847,7 @@ get_sort_criterion_by_id (const char *id)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].id, id) == 0) {
 			return &sort_criteria[i];
 		}
@@ -895,7 +861,7 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (sort_type == sort_criteria[i].sort_type) {
 			return &sort_criteria[i];
 		}
@@ -913,8 +879,8 @@ get_default_zoom_level (void)
 
 	if (!auto_storage_added) {
 		auto_storage_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-						       (int *) &default_zoom_level);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					       (int *) &default_zoom_level);
 	}
 
 	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
@@ -939,7 +905,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
-	
+
 	/* FIXME bugzilla.gnome.org 45060: Should use methods instead
 	 * of hardcoding desktop knowledge in here.
 	 */
@@ -948,6 +914,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	} else {
 		nautilus_connect_background_to_file_metadata (icon_container, file);
 	}
+
 	
 	/* Set up the zoom level from the metadata. */
 	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (icon_view))) {
@@ -990,6 +957,95 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 
 	icon_view->details->loading = FALSE;
+}
+
+static void
+fm_icon_view_update_font_size_table (FMIconView *view)
+{
+	NautilusIconContainer *container;
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+
+	container = get_icon_container (view);
+	g_assert (container != NULL);
+
+	switch (get_default_zoom_level ())
+	{
+	case NAUTILUS_ZOOM_LEVEL_LARGEST:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  0 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_LARGER:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  2 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_LARGE:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_STANDARD:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALL:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  6 * PANGO_SCALE;
+		break;
+	default:
+		g_warning ("invalid default list-view zoom level");
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	}
+
+	nautilus_icon_container_set_font_size_table (container, font_size_table);
 }
 
 static NautilusZoomLevel
@@ -1096,93 +1152,6 @@ fm_icon_view_get_background_widget (FMDirectoryView *view)
 	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
 }
 
-/*
- * Get the preference for which caption text should appear
- * beneath icons.
- */
-static EelStringList *
-fm_icon_view_get_icon_text_attributes_from_preferences (void)
-{
-	static const EelStringList *attributes;
-
-	if (attributes == NULL) {
-		eel_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-							   &attributes);
-	}
-
-	/* A simple check that the attributes list matches the expected length */
-	g_return_val_if_fail (eel_string_list_get_length (attributes) == ICON_TEXT_ATTRIBUTES_NUM_ITEMS,
-			      eel_string_list_new_from_tokens (ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS, ",", TRUE));
-
-
-	/* We don't need to sanity check the attributes list even though it came
-	 * from preferences.
-	 *
-	 * There are 2 ways that the values in the list could be bad.
-	 *
-	 * 1) The user picks "bad" values.  "bad" values are those that result in 
-	 *    there being duplicate attributes in the list.
-	 *
-	 * 2) Value stored in GConf are tampered with.  Its possible physically do
-	 *    this by pulling the rug underneath GConf and manually editing its
-	 *    config files.  Its also possible to use a third party GConf key 
-	 *    editor and store garbage for the keys in question.
-	 *
-	 * Thankfully, the Nautilus preferences machinery deals with both of 
-	 * these cases.
-	 *
-	 * In the first case, the preferences dialog widgetry prevents
-	 * duplicate attributes by making "bad" choices insensitive.
-	 *
-	 * In the second case, the preferences getter (and also the auto storage) for
-	 * string_list values are always valid members of the enumeration associated
-	 * with the preference.
-	 *
-	 * So, no more error checking on attributes is needed here and we can return
-	 * a copy of the auto stored value.
-	 */
-	return eel_string_list_copy (attributes);
-}
-
-/**
- * fm_icon_view_get_icon_text_attribute_names:
- *
- * Get a string representing which text attributes should be displayed
- * beneath an icon. The result is dependent on zoom level and possibly
- * user configuration. Use g_free to free the result.
- * @view: FMIconView to query.
- * 
- * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
- * 
- **/
-static char *
-fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
-{
-	EelStringList *attributes;
-	char *result;
-	int piece_count;
-
-	const int pieces_by_level[] = {
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
-		1,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGER */
-		3	/* NAUTILUS_ZOOM_LEVEL_LARGEST */
-	};
-
-	piece_count = pieces_by_level[fm_icon_view_get_zoom_level (view)];
-	
-	attributes = fm_icon_view_get_icon_text_attributes_from_preferences ();
-	g_return_val_if_fail ((guint)piece_count <= eel_string_list_get_length (attributes), NULL);
-	
-	result = eel_string_list_as_string (attributes, "|", piece_count);
-	eel_string_list_free (attributes);
-
-	return result;
-}
-
 static gboolean
 fm_icon_view_is_empty (FMDirectoryView *view)
 {
@@ -1286,11 +1255,23 @@ layout_changed_callback (NautilusIconContainer *container,
 	update_layout_menus (icon_view);
 }
 
+static gboolean
+fm_icon_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
+{
+	if (!(fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) > NAUTILUS_ZOOM_LEVEL_SMALLEST)) {
+		return FALSE;
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE (
+		FM_DIRECTORY_VIEW_CLASS, can_rename_file, (view, file));
+}
+
 static void
-fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
+fm_icon_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 {
 	/* call parent class to make sure the right icon is selected */
-	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_file, (view, file));
+	
 	/* start renaming */
 	nautilus_icon_container_start_renaming_selected_item
 		(get_icon_container (FM_ICON_VIEW (view)));
@@ -1313,8 +1294,8 @@ static void
 fm_icon_view_merge_menus (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Rename", rename_icon_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
 		BONOBO_UI_VERB ("Clean Up", clean_up_callback),
@@ -1328,14 +1309,16 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 
 	icon_view->details->ui = bonobo_ui_component_new ("Icon View");
-	gtk_signal_connect (GTK_OBJECT (icon_view->details->ui),
-			    "ui_event", handle_ui_event, icon_view);
+	g_signal_connect_object (icon_view->details->ui,
+				 "ui_event", G_CALLBACK (handle_ui_event), icon_view, 0);
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (icon_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (icon_view->details->ui,
 			       DATADIR,
 			       "nautilus-icon-view-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (icon_view->details->ui, verbs, view);
 	
@@ -1372,8 +1355,14 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	if (!icon_view->details->menus_ready) {
 		return;
 	}
-	
+
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+	/* don't update if we have no remote BonoboUIContainer */
+	if (bonobo_ui_component_get_container (icon_view->details->ui)
+	    == CORBA_OBJECT_NIL) {
+		return;
+	}
 
         selection = fm_directory_view_get_selection (view);
         selection_count = g_list_length (selection);
@@ -1387,24 +1376,17 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				       && icon_container != NULL
 			    	       && !nautilus_icon_container_has_stretch_handles (icon_container));
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(icon_view->details->ui,
-		 MENU_PATH_UNSTRETCH_ICONS,
 		 COMMAND_UNSTRETCH_ICONS,
 		 eel_g_list_more_than_one_item (selection)
-		 	? _("_Restore Icons' Original Sizes")
-		 	: _("_Restore Icon's Original Size"));
+		 	? _("Restore Icons' Original Si_zes")
+		 	: _("Restore Icon's Original Si_ze"));
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_UNSTRETCH_ICONS,
 				       icon_container != NULL
 			    	       && nautilus_icon_container_is_stretched (icon_container));
 
-	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
-				       COMMAND_RENAME,
-				       selection_count == 1
-				       && fm_icon_view_get_zoom_level (icon_view) > NAUTILUS_ZOOM_LEVEL_SMALLEST
-				       && nautilus_file_can_rename (selection->data));
-				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
 	nautilus_file_list_free (selection);
@@ -1521,50 +1503,102 @@ band_select_ended_callback (NautilusIconContainer *container,
 
 /* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
 
-/* here's the timer task that actually plays the file using mpg123. */
+/* here's the timer task that actually plays the file using mpg123, ogg123 or play. */
 /* FIXME bugzilla.gnome.org 41258: we should get the application from our mime-type stuff */
 static gboolean
 play_file (gpointer callback_data)
 {
 #if USE_OLD_AUDIO_PREVIEW	
 	NautilusFile *file;
+	FMIconView *icon_view;
+	FILE *sound_process;
 	char *file_uri;
-	char *file_path, *mime_type;
+	char *suffix;
+	char *mime_type;
+	const char *command_str;
 	gboolean is_mp3;
 	gboolean is_ogg;
 	pid_t mp3_pid;
 	
-	file = NAUTILUS_FILE (callback_data);
+	GnomeVFSResult result;
+	GnomeVFSHandle *handle;
+	char *buffer;
+	GnomeVFSFileSize bytes_read;
+
+	icon_view = FM_ICON_VIEW (callback_data);
+	
+	file = icon_view->details->audio_preview_file;
 	file_uri = nautilus_file_get_uri (file);
-	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
 	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
 
-	if (file_path != NULL) {
-		mp3_pid = fork ();
-		if (mp3_pid == (pid_t) 0) {
-			/* Set the group (session) id to this process for future killing. */
-			setsid();
-			if (is_mp3) {
-				execlp ("mpg123", "mpg123", "-y", "-q", file_path, NULL);
-			} else if (is_ogg) {
-				execlp ("ogg123", "ogg123", "-q", file_path, NULL);
-			} else {
-				execlp ("play", "play", file_path, NULL);
-			}
-			
-			_exit (0);
+	mp3_pid = fork ();
+	if (mp3_pid == (pid_t) 0) {
+		/* Set the group (session) id to this process for future killing. */
+		setsid();
+		if (is_mp3) {
+			command_str = "mpg123 -y -q -";
+		} else if (is_ogg) {
+			command_str = "ogg123 -q -";
 		} else {
-			nautilus_sound_register_sound (mp3_pid);
+			suffix = strrchr(file_uri, '.');
+			if (suffix == NULL) {
+				suffix = "wav";
+			} else {
+				suffix += 1; /* skip the period */
+			}
+			command_str = g_strdup_printf("play -t %s -", suffix);
 		}
-	}
+			
+		/* since the uri could be local or remote, we launch the sound player with popen and feed it
+		 * the data by fetching it with gnome_vfs
+		 */
+		sound_process = popen(command_str, "w");
+		if (sound_process == 0) {
+			return FALSE;
+		}
+			
+		/* read the file with gnome-vfs, feeding it to the sound player's standard input */
+		/* First, open the file. */
+		result = gnome_vfs_open (&handle, file_uri, GNOME_VFS_OPEN_READ);
+		if (result != GNOME_VFS_OK) {
+			return FALSE;
+		}
 
-	g_free (file_path);
+		/* allocate a buffer. */
+		buffer = g_malloc(READ_CHUNK_SIZE);
+			
+		/* read and write a chunk at a time, until we're done */
+		do {
+			result = gnome_vfs_read (handle,
+					buffer,
+					READ_CHUNK_SIZE,
+					&bytes_read);
+			if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
+				g_free (buffer);
+				gnome_vfs_close (handle);
+				break;
+			}
+
+			/* pass the data the buffer to the sound process by writing to it */
+			fwrite(buffer, 1, bytes_read, sound_process);
+
+		} while (result == GNOME_VFS_OK);
+
+		/* Close the file. */
+		result = gnome_vfs_close (handle);			
+		g_free(buffer);
+		pclose(sound_process);
+		_exit (0);
+	} else {
+		nautilus_sound_register_sound (mp3_pid);
+	}
+		
 	g_free (file_uri);
 	g_free (mime_type);
 
-	/* FIXME: Need to zero out the timeout. */
+	icon_view->details->audio_preview_timeout = 0;
 #else
 	char *file_path, *file_uri, *mime_type;
 	gboolean is_mp3;
@@ -1621,7 +1655,7 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 	if (start_flag) {
 		icon_view->details->audio_preview_file = file;
 #if USE_OLD_AUDIO_PREVIEW			
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, file);
+		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
 #else
 		/* FIXME: Need to kill the existing timeout if there is one? */
 		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
@@ -1630,10 +1664,10 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 }
 
 static gboolean
-should_preview_sound (NautilusFile *file) {
-
+should_preview_sound (NautilusFile *file)
+{
 	/* Check gnome config sound preference */
-	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
+	if (!gnome_esd_enabled_auto_value) {
 		return FALSE;
 	}
 
@@ -1642,12 +1676,9 @@ should_preview_sound (NautilusFile *file) {
 		return FALSE;
 	}
 		
-	/* the following is disabled until we can preview remote sounds, which we currently can't do */
-	/*
-	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
-	*/
 	
 	return nautilus_file_is_local (file);
 }
@@ -1701,25 +1732,25 @@ icon_container_preview_callback (NautilusIconContainer *container,
 
 static void
 renaming_icon_callback (NautilusIconContainer *container,
-			GtkEditable *editable,
+			GtkWidget *widget,
 			gpointer callback_data)
 {
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
-
 	nautilus_clipboard_set_up_editable_in_control
-		(editable,
+		(GTK_EDITABLE (widget),
 		 fm_directory_view_get_bonobo_control (directory_view),
 		 TRUE);
 }
 
-static int
-compare_files (FMIconView *icon_view,
-	       NautilusFile *a,
-	       NautilusFile *b)
+int
+fm_icon_view_compare_files (FMIconView   *icon_view,
+			    NautilusFile *a,
+			    NautilusFile *b)
 {
 	g_assert (FM_IS_ICON_VIEW (icon_view));
+
 	return nautilus_file_compare_for_sort
 		(a, b, icon_view->details->sort->sort_type,
 		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)),
@@ -1729,7 +1760,9 @@ compare_files (FMIconView *icon_view,
 static int
 compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
 {
-	return compare_files (callback_data, NAUTILUS_FILE (a), NAUTILUS_FILE (b));
+	return fm_icon_view_compare_files (callback_data,
+					   NAUTILUS_FILE (a),
+					   NAUTILUS_FILE (b));
 }
 
 static void
@@ -1741,38 +1774,7 @@ fm_icon_view_sort_files (FMDirectoryView *view, GList **files)
 	if (!fm_icon_view_using_auto_layout (icon_view)) {
 		return;
 	}
-	*files = eel_g_list_sort_custom (*files, compare_files_cover, icon_view);
-}
-
-static int
-icon_container_compare_icons_callback (NautilusIconContainer *container,
-				       NautilusFile *a,
-				       NautilusFile *b,
-				       FMIconView *icon_view)
-{
-	return compare_files (icon_view, a, b);
-}
-
-/* This is used by type-to-select code. It deliberately ignores the
- * folders-first and reversed-sort settings.
- */
-static int
-icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
-					       NautilusFile *file_a,
-					       NautilusFile *file_b,
-					       FMIconView *icon_view)
-{
-	int result;
-
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-	g_assert (container == get_icon_container (icon_view));
-	g_assert (NAUTILUS_IS_FILE (file_a));
-	g_assert (NAUTILUS_IS_FILE (file_b));
-
-	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-		 				 FALSE, FALSE);
-
-	return result;
+	*files = g_list_sort_with_data (*files, compare_files_cover, icon_view);
 }
 
 static void
@@ -1914,28 +1916,6 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	fm_rename_file (file, new_name);
 }
 
-static NautilusScalableIcon *
-get_icon_images_callback (NautilusIconContainer *container,
-			  NautilusFile *file,
-			  const char *modifier,
-			  GList **emblem_icons,
-			  FMIconView *icon_view)
-{
-	EelStringList *emblems_to_ignore;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
-	if (emblem_icons != NULL) {
-		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
-			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
-		eel_string_list_free (emblems_to_ignore);
-	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier);
-}
-
 static char *
 get_icon_uri_callback (NautilusIconContainer *container,
 		       NautilusFile *file,
@@ -1953,113 +1933,11 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 		       		   NautilusFile *file,
 		       		   FMIconView *icon_view)
 {
-	char *uri, *path, *target_uri;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
 
-	uri = nautilus_file_get_uri (file);
-
-	/* Check for Nautilus link */
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL) {
-			target_uri = nautilus_link_local_get_link_uri (path);
-			if (target_uri != NULL) {
-				g_free (uri);
-				uri = target_uri;
-			}
-			g_free (path);
-		}
-	}
-
-	return uri;
-}
-
-/* This callback returns the text, both the editable part, and the
- * part below that is not editable.
- */
-static void
-get_icon_text_callback (NautilusIconContainer *container,
-			NautilusFile *file,
-			char **editable_text,
-			char **additional_text,
-			FMIconView *icon_view)
-{
-	char *actual_uri, *path;
-	gchar *description;
-	char *attribute_names;
-	char **text_array;
-	int i , slot_index;
-	char *attribute_string;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (editable_text != NULL);
-	g_assert (additional_text != NULL);
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
-	/* In the smallest zoom mode, no text is drawn. */
-	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
-		*editable_text = NULL;
-	} else {
-		/* Strip the suffix for nautilus object xml files. */
-		*editable_text = nautilus_file_get_display_name (file);
-	}
-	
-	/* Handle link files specially. */
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
-		actual_uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (actual_uri);
-		g_free (actual_uri);
- 		*additional_text = NULL;
-		if (path != NULL) {
-			description = nautilus_link_local_get_additional_text (path);
-			if (description)
-				*additional_text = g_strdup_printf (" \n%s\n ", description);
-			g_free (description);
-			return;
-		}
-	}
-	
-	/* Find out what attributes go below each icon. */
-	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);
-	text_array = g_strsplit (attribute_names, "|", 0);
-	g_free (attribute_names);
-
-	/* Get the attributes. */
-	for (i = 0; text_array[i] != NULL; i++)	{
-		/* if the attribute is "none", delete the array slot */
-		while (eel_strcmp (text_array[i], "none") == 0) {
-			g_free (text_array[i]);
-			text_array[i] = NULL;
-			slot_index = i + 1;			
-			while (text_array[slot_index] != NULL) {
-				text_array[slot_index - 1] = text_array[slot_index];
-				text_array[slot_index++] = NULL;
-			}
-			if (text_array[i] == NULL)
-				break;
-		} 
-		
-		if (text_array[i] == NULL)
-			break;
-			
-		attribute_string = nautilus_file_get_string_attribute_with_default
-			(file, text_array[i]);
-				
-		/* Replace each attribute name in the array with its string value */
-		g_free (text_array[i]);
-		text_array[i] = attribute_string;
-	}
-
-	/* Return them. */
-	*additional_text = g_strjoinv ("\n", text_array);
-
-	g_strfreev (text_array);
+	return nautilus_file_get_drop_target_uri (file);
 }
 
 /* Preferences changed callbacks */
@@ -2068,7 +1946,7 @@ fm_icon_view_text_attribute_names_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2076,7 +1954,7 @@ fm_icon_view_embedded_text_policy_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2084,31 +1962,7 @@ fm_icon_view_image_display_policy_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
-}
-
-static void
-font_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (callback_data));
-}
-
-static void
-smooth_font_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_smooth_font (FM_ICON_VIEW (callback_data));
-}
-
-static void
-default_zoom_level_font_size_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_font_size_table (FM_ICON_VIEW (callback_data));
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2117,14 +1971,6 @@ fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
 	fm_icon_view_update_click_mode (FM_ICON_VIEW (directory_view));
-}
-
-static void
-fm_icon_view_smooth_graphics_mode_changed (FMDirectoryView *directory_view)
-{
-	g_assert (FM_IS_ICON_VIEW (directory_view));
-
-	fm_icon_view_update_smooth_graphics_mode (FM_ICON_VIEW (directory_view));
 }
 
 static void
@@ -2238,10 +2084,9 @@ default_zoom_level_changed_callback (gpointer callback_data)
 		level = nautilus_file_get_integer_metadata (file, 
 							    NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 							    get_default_zoom_level ());
+		fm_icon_view_update_font_size_table (icon_view);
 		fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 	}
-
-	fm_icon_view_update_icon_container_font_size_table (icon_view);
 }
 
 static void
@@ -2289,119 +2134,6 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 }
 
 static void
-fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
-{
- 	/* font size table - this isn't exactly proportional, but it looks better than computed */
-	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		8, 8, 10, 12, 14, 18, 18 };
-	NautilusIconContainer *icon_container;
-	GdkFont *font;
-	guint i;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		font = nautilus_font_factory_get_font_from_preferences (font_size_table[i]);
-		g_assert (font != NULL);
-		nautilus_icon_container_set_label_font_for_zoom_level (icon_container, i, font);
-		gdk_font_unref (font);
-	}
-
-	nautilus_icon_container_request_update_all (icon_container);
-}
-
-static int default_zoom_level_font_size = 12;
-
-static int
-get_default_zoom_level_font_size (void)
-{
-	static gboolean auto_storaged_added = FALSE;
-
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						       &default_zoom_level_font_size);
-	}
-
-	return default_zoom_level_font_size;
-}
-
-static void
-fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
-{
-	/* Deltas in points from the default zoom level.  The actual font size table
-	 * is computed by taking the default_zoom level and assigning the default
-	 * zoom level font size for that.  Then all values above the default zoom
-	 * level are computed by using the positive deltas.  The values below the 
-	 * default zoom level as respectively computed by using the negative deltas
-	 */
-	static int positive_font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		0, +2, +4, +4, +6, +6, +8 };
-	static int negative_font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		0, -2, -3, -3, -4, -4, -5 };
-
-	const int min_font_size = 5;
-	const int max_font_size = 30;
-
-	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
-	NautilusIconContainer *icon_container;
-	int default_zoom_level_font_size;
-	int i;
- 	int j;
-	NautilusZoomLevel default_level;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	default_zoom_level_font_size = get_default_zoom_level_font_size ();
-	default_level = get_default_zoom_level ();
-
-	g_return_if_fail (default_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
-	g_return_if_fail (default_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
-
-	for (i = default_level, j = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++,j++) {
-		font_size_table[i] = CLAMP (default_zoom_level_font_size + positive_font_size_delta_table[j],
-					    min_font_size,
-					    max_font_size);
-	}
-
-	for (i = default_level - 1, j = 0; i >= NAUTILUS_ZOOM_LEVEL_SMALLEST; i--,j++) {
-		font_size_table[i] = CLAMP (default_zoom_level_font_size + negative_font_size_delta_table[j],
-					    min_font_size,
-					    max_font_size);
-
-	}
-
-	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		g_assert (font_size_table[i] >= min_font_size);
-		g_assert (font_size_table[i] <= max_font_size);
-	}
-
-	nautilus_icon_container_set_font_size_table (icon_container, font_size_table);
-	nautilus_icon_container_request_update_all (icon_container);
-}
-
-static void
-fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
-{
-	NautilusIconContainer *icon_container;
-	EelScalableFont *scalable_font;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-	
-	scalable_font = nautilus_global_preferences_get_icon_view_smooth_font ();
-	g_assert (EEL_IS_SCALABLE_FONT (scalable_font));
-
-	nautilus_icon_container_set_smooth_label_font (icon_container,
-						       scalable_font);
-	gtk_object_unref (GTK_OBJECT (scalable_font));
-	
-	nautilus_icon_container_request_update_all (icon_container);
-}
-
-static void
 fm_icon_view_update_click_mode (FMIconView *icon_view)
 {
 	NautilusIconContainer	*icon_container;
@@ -2410,139 +2142,68 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	click_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
-
+	click_mode = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 static void
-fm_icon_view_update_smooth_graphics_mode (FMIconView *icon_view)
-{
-	NautilusIconContainer	*icon_container;
-	gboolean		smooth_graphics_mode;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	smooth_graphics_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-	
-	nautilus_icon_container_set_anti_aliased_mode (icon_container, smooth_graphics_mode);
-}
-
-static void
 create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
-	FMDirectoryView *directory_view;
 
-	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
-	directory_view = FM_DIRECTORY_VIEW (icon_view);
+	icon_container = fm_icon_container_new (icon_view);
 
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "activate",
-			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "band_select_started",
-			    GTK_SIGNAL_FUNC (band_select_started_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "band_select_ended",
-			    GTK_SIGNAL_FUNC (band_select_ended_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "compare_icons",
-			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "compare_icons_by_name",
-			    GTK_SIGNAL_FUNC (icon_container_compare_icons_by_name_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "context_click_selection",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "context_click_background",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_background_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "icon_position_changed",
-			    GTK_SIGNAL_FUNC (icon_position_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "icon_text_changed",
-			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "selection_changed",
-			    GTK_SIGNAL_FUNC (selection_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_images",
-			    GTK_SIGNAL_FUNC (get_icon_images_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_uri",
-			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_drop_target_uri",
-			    GTK_SIGNAL_FUNC (get_icon_drop_target_uri_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_text",
-			    GTK_SIGNAL_FUNC (get_icon_text_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "move_copy_items",
-			    GTK_SIGNAL_FUNC (icon_view_move_copy_items),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_container_uri",
-			    GTK_SIGNAL_FUNC (icon_view_get_container_uri),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "can_accept_item",
-			    GTK_SIGNAL_FUNC (icon_view_can_accept_item),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_stored_icon_position",
-			    GTK_SIGNAL_FUNC (get_stored_icon_position_callback),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "layout_changed",
-			    GTK_SIGNAL_FUNC (layout_changed_callback),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "preview",
-			    GTK_SIGNAL_FUNC (icon_container_preview_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "renaming_icon",
-			    renaming_icon_callback,
-			    directory_view);
-	gtk_signal_connect_object (GTK_OBJECT (icon_container),
-			           "icon_stretch_started",
-			           fm_directory_view_update_menus,
-			           GTK_OBJECT (directory_view));
-	gtk_signal_connect_object (GTK_OBJECT (icon_container),
-			           "icon_stretch_ended",
-			           fm_directory_view_update_menus,
-			           GTK_OBJECT (directory_view));
+	g_signal_connect_object (icon_container, "activate",	
+			 G_CALLBACK (icon_container_activate_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "band_select_started",
+				 G_CALLBACK (band_select_started_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "band_select_ended",
+				 G_CALLBACK (band_select_ended_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "context_click_selection",
+				 G_CALLBACK (icon_container_context_click_selection_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "context_click_background",
+				 G_CALLBACK (icon_container_context_click_background_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_position_changed",
+				 G_CALLBACK (icon_position_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_text_changed",
+				 G_CALLBACK (fm_icon_view_icon_text_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "selection_changed",
+				 G_CALLBACK (selection_changed_callback), icon_view, 0);
+	/* FIXME: many of these should move into fm-icon-container as virtual methods */
+	g_signal_connect_object (icon_container, "get_icon_uri",
+				 G_CALLBACK (get_icon_uri_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_icon_drop_target_uri",
+				 G_CALLBACK (get_icon_drop_target_uri_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "move_copy_items",
+				 G_CALLBACK (icon_view_move_copy_items), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_container_uri",
+				 G_CALLBACK (icon_view_get_container_uri), icon_view, 0);
+	g_signal_connect_object (icon_container, "can_accept_item",
+				 G_CALLBACK (icon_view_can_accept_item), icon_view, 0);
+	g_signal_connect_object (icon_container, "get_stored_icon_position",
+				 G_CALLBACK (get_stored_icon_position_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "layout_changed",
+				 G_CALLBACK (layout_changed_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "preview",
+				 G_CALLBACK (icon_container_preview_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "renaming_icon",
+				 G_CALLBACK (renaming_icon_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "icon_stretch_started",
+				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CONNECT_SWAPPED);
+	g_signal_connect_object (icon_container, "icon_stretch_ended",
+				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
+				 G_CONNECT_SWAPPED);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));
 
-	fm_icon_view_update_icon_container_fonts (icon_view);
-	fm_icon_view_update_icon_container_smooth_font (icon_view);
-	fm_icon_view_update_icon_container_font_size_table (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
-	fm_icon_view_update_smooth_graphics_mode (icon_view);
+	fm_icon_view_update_font_size_table (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }
@@ -2552,14 +2213,14 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
 
-	GList *uri_list, *node, *real_uri_list = NULL;
-	GnomeVFSURI *container_uri;
-	GnomeDesktopEntry *entry;
+	GList *uri_list;
+	GList *node, *real_uri_list = NULL;
+	GnomeDesktopItem *entry;
 	GdkPoint point;
-	char *local_path;
+	char *uri;
+	char *path;
 	char *stripped_uri;
-	char *container_uri_string;
-	char *container_path;
+	char *container_uri;
 	const char *last_slash, *link_name;
 	int n_uris;
 	gboolean all_local;
@@ -2569,21 +2230,20 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		return;
 	}
 
-	container_uri_string = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
-	container_uri = gnome_vfs_uri_new (container_uri_string);
+	container_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
 	g_return_if_fail (container_uri != NULL);
 
-	if (!gnome_vfs_uri_is_local (container_uri)) {
+	if (eel_vfs_has_capability (container_uri,
+				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		gnome_vfs_uri_unref (container_uri);
-		g_free (container_uri_string);
+		g_free (container_uri);
 		return;
 	}
 
 	if (action == GDK_ACTION_ASK) {
-		action = eel_drag_drop_action_ask 
+		action = nautilus_drag_drop_action_ask 
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 	
@@ -2597,7 +2257,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
 		g_free (container_uri);
-		gnome_vfs_uri_unref (container_uri);
 		return;
 	}
 
@@ -2611,7 +2270,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	 */
 	all_local = TRUE;
 	n_uris = 0;
-	uri_list = gnome_uri_list_extract_uris (item_uris);
+	uri_list = nautilus_icon_dnd_uri_list_extract_uris (item_uris);
 	for (node = uri_list; node != NULL; node = node->next) {
 		gchar *sanitized_uri;
 
@@ -2619,11 +2278,13 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		if (sanitized_uri == NULL)
 			continue;
 		real_uri_list = g_list_append (real_uri_list, sanitized_uri);
-		if (strncmp (sanitized_uri, "file", 4) != 0)
+		if (eel_vfs_has_capability (sanitized_uri,
+					    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 			all_local = FALSE;
+		}
 		n_uris++;
 	}
-	gnome_uri_list_free_strings (uri_list);
+	nautilus_icon_dnd_uri_list_free_strings (uri_list);
 
 	if (all_local == TRUE &&
 	    (action == GDK_ACTION_COPY ||
@@ -2639,28 +2300,32 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			points = NULL;
 		}
 		fm_directory_view_move_copy_items (real_uri_list, points,
-						   container_uri_string,
+						   container_uri,
 						   action, x, y, FM_DIRECTORY_VIEW (view));
 		
 		if (points)
 			g_array_free (points, TRUE);
 	} else {
-		container_path = gnome_vfs_get_local_path_from_uri (container_uri_string);
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
-			local_path = gnome_vfs_get_local_path_from_uri (node->data);
-			if (local_path != NULL) {
-				entry = gnome_desktop_entry_load (local_path);
-				if (entry != NULL) {
-					
-					/* FIXME: Handle name conflicts? */
-					nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
-					gnome_desktop_entry_free (entry);
-				}
-				g_free (local_path);
-				if (entry != NULL) {
-					continue;
-				}
+			uri = node->data;
+			path = gnome_vfs_get_local_path_from_uri (uri);
+			
+			if (path != NULL) {
+				entry = gnome_desktop_item_new_from_file (path,
+									  GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+									  NULL);
+				g_free (path);
+			} else {
+				entry = NULL;
+			}
+
+			if (entry != NULL) {
+				/* FIXME: Handle name conflicts? */
+				nautilus_link_local_create_from_gnome_entry (entry, container_uri, &point);
+
+				gnome_desktop_item_unref (entry);
+				continue;
 			}
 
 			/* Make a link from the URI alone. Generate the file
@@ -2669,45 +2334,41 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			/* FIXME: This should be using eel_uri_get_basename
 			 * instead of a "roll our own" solution.
 			 */
-			stripped_uri = eel_str_strip_trailing_chr ((char *)node->data, '/');
-			g_print ("local_path:%s\nstripped_uri:%s\n", (char *)node->data, stripped_uri);
+			stripped_uri = eel_str_strip_trailing_chr (uri, '/');
 			last_slash = strrchr (stripped_uri, '/');
 			link_name = last_slash == NULL ? NULL : last_slash + 1;
 			
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_path, link_name,
-							    "gnome-http-url", local_path,
+				nautilus_link_local_create (container_uri, link_name,
+							    NULL, uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
 			
 			g_free (stripped_uri);
-
 			break;
 		}
-		g_free (container_path);
 	}
 	
-	gnome_uri_list_free_strings (real_uri_list);
-	gnome_vfs_uri_unref (container_uri);
-	g_free (container_uri_string);
+	nautilus_icon_dnd_uri_list_free_strings (real_uri_list);
+
+	g_free (container_uri);
 	
 }
 
 static void
-fm_icon_view_initialize_class (FMIconViewClass *klass)
+fm_icon_view_class_init (FMIconViewClass *klass)
 {
-	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
-	object_class->destroy = fm_icon_view_destroy;
+	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
+	fm_directory_view_class->can_rename_file = fm_icon_view_can_rename_file;
 	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_icon_view_clear;
@@ -2729,10 +2390,9 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
-        fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
         fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;
         fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
-        fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
+        fm_directory_view_class->start_renaming_file = fm_icon_view_start_renaming_file;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
 
@@ -2746,15 +2406,12 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         klass->set_directory_sort_by = fm_icon_view_real_set_directory_sort_by;
         klass->set_directory_sort_reversed = fm_icon_view_real_set_directory_sort_reversed;
         klass->set_directory_tighter_layout = fm_icon_view_real_set_directory_tighter_layout;
-
-	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-					       &preview_sound_auto_value);
 }
 
 static void
-fm_icon_view_initialize (FMIconView *icon_view)
+fm_icon_view_instance_init (FMIconView *icon_view)
 {
-	NautilusIconContainer *icon_container;
+	static gboolean setup_sound_preview = FALSE;
 
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
@@ -2763,43 +2420,34 @@ fm_icon_view_initialize (FMIconView *icon_view)
 
 	create_icon_container (icon_view);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-						  font_changed_callback, 
-						  icon_view,
-						  GTK_OBJECT (icon_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-						  smooth_font_changed_callback, 
-						  icon_view,
-						  GTK_OBJECT (icon_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						  default_zoom_level_font_size_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+	if (!setup_sound_preview) {
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+					       &preview_sound_auto_value);
+
+		eel_preferences_monitor_directory ("/desktop/gnome/sound");
+		eel_preferences_add_auto_boolean ("/desktop/gnome/sound/enable_esd",
+						  &gnome_esd_enabled_auto_value);
+		
+		setup_sound_preview = TRUE;
+	}
+
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						  default_sort_in_reverse_order_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						  default_use_tighter_layout_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 						  default_use_manual_layout_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						  default_zoom_level_changed_callback,
-						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  icon_view, G_OBJECT (icon_view));
 
-	icon_container = get_icon_container (icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "handle_uri_list",
-			    GTK_SIGNAL_FUNC (icon_view_handle_uri_list),
-			    icon_view);
+	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
+				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
 
 }

@@ -6,14 +6,23 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
-	-DVERSION="\"$(VERSION)\"" \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
-	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
+	-I$(top_builddir)/libnautilus-private \
+	$(CORE_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	-DLIBDIR=\""$(libdir)"\" \
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" \
+	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
+	-DPREFIX=\""$(prefix)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DVERSION="\"$(VERSION)\"" \
+	-DG_DISABLE_DEPRECATED \
+	-DGDK_DISABLE_DEPRECATED \
+	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+	-DGTK_DISABLE_DEPRECATED \
+	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)
 
 LDADD =\
@@ -21,7 +30,7 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(CORE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
@@ -30,14 +39,8 @@ nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface.h		\
 	nautilus-shell-interface-common.c
 
-if ENABLE_PROFILER
-profiler_headers = nautilus-profiler.h
-profiler_sources = nautilus-profiler.c
-endif
-
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
-	nautilus-about.c			\
 	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
@@ -47,11 +50,11 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
-	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-preferences-dialog.c		\
+	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
@@ -72,8 +75,6 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
-	$(profiler_sources)			\
-	nautilus-about.h			\
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
 	nautilus-bookmark-list.h		\
@@ -83,11 +84,11 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
-	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h \
+	nautilus-preferences-dialog.h		\
+	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
 	nautilus-search-bar-criterion.h		\
@@ -109,28 +110,30 @@ nautilus_SOURCES = \
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
-	$(profiler_headers)			\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL) $(top_srcdir)/libnautilus/nautilus-view-component.idl
+	$(ORBIT_IDL) $(CORE_IDL_INCLUDES) -I$(top_srcdir) $<
 	touch $@
 
 $(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
 
 TESTS=check-nautilus
 
-oafdir = $(datadir)/oaf
-oaf_in_files = Nautilus_shell.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+serverdir = $(libdir)/bonobo/servers
+server_in_files = Nautilus_shell.server.in
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	$(NULL)
+
+gladedir = $(datadir)/nautilus/glade
+glade_DATA = nautilus-bookmarks-window.glade
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -138,26 +141,17 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST =					\
-	$(oaf_in_files)				\
-	$(oaf_DATA)				\
+	$(server_in_files)			\
+	$(server_DATA)				\
+	$(glade_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
-	run-nautilus				\
 	$(NULL)
 
 BUILT_SOURCES = \
 	$(nautilus_shell_interface_idl_sources) \
 	$(NULL)
-
-install-data-hook: run-nautilus
-	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
-	@list='run-nautilus'; for p in $$list; do\
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
-	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
-	  else :; fi; \
-	done
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)

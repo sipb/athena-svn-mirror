@@ -29,127 +29,71 @@
 
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <gtk/gtkclist.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-preferences.h>
+#include <gtk/gtkcellrendererpixbuf.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtktreeselection.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-view-standard-main.h>
 
-#define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"
-#define VIEW_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
+#include "nautilus-history-view.h"
 
-#define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
-#define NAUTILUS_HISTORY_VIEW(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryView))
+#define FACTORY_IID "OAFIID:Nautilus_History_View_Factory"
+
 #define NAUTILUS_HISTORY_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryViewClass))
 #define NAUTILUS_IS_HISTORY_VIEW(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_HISTORY_VIEW))
 #define NAUTILUS_IS_HISTORY_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_HISTORY_VIEW))
 
 typedef struct {
-	NautilusView parent;
-	GtkCList *list;
-	gboolean updating_history;
-	int press_row;
-	gboolean *external_destroyed_flag;
-} NautilusHistoryView;
-
-typedef struct {
 	NautilusViewClass parent;
 } NautilusHistoryViewClass;
 
-#define HISTORY_VIEW_COLUMN_ICON	0
-#define HISTORY_VIEW_COLUMN_NAME	1
-#define HISTORY_VIEW_COLUMN_COUNT	2
+enum {
+	HISTORY_VIEW_COLUMN_ICON,
+	HISTORY_VIEW_COLUMN_NAME,
+	HISTORY_VIEW_COLUMN_BOOKMARK,
+	HISTORY_VIEW_COLUMN_COUNT,
+};
 
-static GtkType nautilus_history_view_get_type         (void);
-static void    nautilus_history_view_initialize_class (NautilusHistoryViewClass *klass);
-static void    nautilus_history_view_initialize       (NautilusHistoryView      *view);
-static void    nautilus_history_view_destroy          (GtkObject                *object);
-
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
-				   nautilus_history_view,
-				   NAUTILUS_TYPE_VIEW)
-
-static NautilusBookmark *
-get_bookmark_from_row (GtkCList *list, int row)
-{
-	return NAUTILUS_BOOKMARK (gtk_clist_get_row_data (list, row));
-}
-
-static char *
-get_uri_from_row (GtkCList *list, int row)
-{
-	return nautilus_bookmark_get_uri (get_bookmark_from_row (list, row));
-}
+BONOBO_CLASS_BOILERPLATE (NautilusHistoryView, nautilus_history_view,
+			  NautilusView, NAUTILUS_TYPE_VIEW)
 
 static void
-install_icon (GtkCList *list, int row, GdkPixbuf *pixbuf)
+update_history (NautilusHistoryView    *view,
+		const Nautilus_History *history)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	NautilusBookmark *bookmark;
-
-	if (pixbuf != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 
-						   EEL_STANDARD_ALPHA_THRESHHOLD);
-	} else {
-		bookmark = get_bookmark_from_row (list, row);
-		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER,
-							    &pixmap, &mask)) {
-			return;
-		}
-	}
-	
-	gtk_clist_set_pixmap (list, row, HISTORY_VIEW_COLUMN_ICON, pixmap, mask);
-
-	gdk_pixmap_unref (pixmap);
-	if (mask != NULL) {
-		gdk_pixmap_unref (mask);
-	}
-}
-
-static void
-update_history (NautilusHistoryView *view,
-		Nautilus_History *history)
-{
-	char *cols[HISTORY_VIEW_COLUMN_COUNT];
-	int new_row;
-	GtkCList *list;
-	NautilusBookmark *bookmark;
+	GtkListStore         *store;
+	GtkTreeSelection     *selection;
+	NautilusBookmark     *bookmark;
 	Nautilus_HistoryItem *item;
-	GdkPixbuf *pixbuf;
-	guint i;
-	gboolean destroyed_flag;
-
-	/* FIXME: We'll end up with old history if this happens. */
-	if (view->updating_history) {
-		return;
-	}
-
-	list = view->list;
-
-	if (GTK_OBJECT_DESTROYED (list)) {
-		return;
-	}
-
+	GdkPixbuf            *pixbuf;
+	guint                 i;
+	gboolean              stop_updating_history;
+	GtkTreeIter           iter;
+	
 	/* Set up a local boolean so we can detect that the view has
 	 * been destroyed. We can't ask the view itself because once
 	 * it's destroyed it's pointer is a pointer to freed storage.
 	 */
 	/* FIXME: We can't just keep an extra ref to the view as we
 	 * normally would because of a bug in Bonobo that means a
-	 * BonoboControl must not outlast its BonoboFrame
+	 * BonoboControl must not outlast its BonoboControlFrame
 	 * (NautilusHistoryView is a BonoboControl).
 	 */
-	destroyed_flag = FALSE;
-	view->external_destroyed_flag = &destroyed_flag;
+	if (view->stop_updating_history != NULL) {
+		*view->stop_updating_history = TRUE;
+	}
+	stop_updating_history = FALSE;
+	view->stop_updating_history = &stop_updating_history;
 
-	view->updating_history = TRUE;
+	store = GTK_LIST_STORE (gtk_tree_view_get_model (view->tree_view));
 
-	gtk_clist_freeze (list);
-
-	gtk_clist_clear (list);
+	gtk_list_store_clear (store);
 
 	for (i = 0; i < history->_length; i++) {
 		item = &history->_buffer[i];
@@ -163,193 +107,204 @@ update_history (NautilusHistoryView *view,
 		 * in practice, none of the other calls used here have
 		 * that problem.
 		 */
-		if (destroyed_flag) {
+		if (stop_updating_history) {
 			return;
 		}
-		
-		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
-		cols[HISTORY_VIEW_COLUMN_NAME] = item->title;
 
-		new_row = gtk_clist_append (list, cols);
-		
-		gtk_clist_set_row_data_full (list, new_row, bookmark,
-					     (GtkDestroyNotify) gtk_object_unref);
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
 
-		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
-		install_icon (list, new_row, pixbuf);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    HISTORY_VIEW_COLUMN_ICON, pixbuf,
+				    HISTORY_VIEW_COLUMN_NAME, item->title,
+				    HISTORY_VIEW_COLUMN_BOOKMARK, bookmark,
+				    -1);
+
 		if (pixbuf != NULL) {
-			gdk_pixbuf_unref (pixbuf);
-		}
-		
-		gtk_clist_columns_autosize (list);
-		
-		if (gtk_clist_row_is_visible (list, new_row) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto (list, new_row, -1, 0.5, 0.0);
+			g_object_unref (pixbuf);
 		}
 	}
 
-	gtk_clist_select_row (list, 0, 0);
-	
-	gtk_clist_thaw (list);
-	
-  	view->updating_history = FALSE;
+	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (view->tree_view));
 
-	view->external_destroyed_flag = NULL;
+	if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
+		gtk_tree_selection_select_iter (selection, &iter);
+	}
+	
+  	view->stop_updating_history = NULL;
 }
 
 static void
-button_press_callback (GtkCList *list,
-		       GdkEventButton *event,
-		       NautilusHistoryView *view)
-{
-	int row, column;
-
-	if (event->button != 1) {
-		return;
-	}
-
-	gtk_clist_get_selection_info (list, event->x, event->y, &row, &column);
-
-	view->press_row = row;
-}
-
-static void
-button_release_callback (GtkCList *list,
-			 GdkEventButton *event,
-			 NautilusHistoryView *view)
-{
-	char *uri;
-	int row, column;
-	
-	/* FIXME: Is it really a good idea to just ignore button presses when we are updating? */
-	if (view->updating_history) {
-		return;
-	}
-	
-	if (event->button != 1) {
-		return;
-	}
-	
-	gtk_clist_get_selection_info (list, event->x, event->y, &row, &column);
-	
-	/* Do nothing if row is zero. A click either in the top list
-	 * item or in the history content view is ignored.
-	 */
-	if (row <= 0) {
-		return;
-	}
-	
- 	/* Do nothing if the row does not match the row we stashed on
-	 * the mouse down. This means that dragging will not cause
-	 * navigation.
-	 */
-	if (row != view->press_row) {
-		return;
-	}
-	
-	/* Navigate to the clicked location. */
-	uri = get_uri_from_row (list, row);
-	nautilus_view_open_location_in_this_window
-		(NAUTILUS_VIEW (view), uri);
-	g_free (uri);
-}
-
-static void
-history_changed_callback (NautilusHistoryView *view,
-			  Nautilus_History *list,
-			  gpointer callback_data)
+history_changed_callback (NautilusHistoryView    *view,
+			  const Nautilus_History *history,
+			  gpointer                callback_data)
 {
 	g_assert (view == callback_data);
 
-	update_history (view, list);
+	update_history (view, history);
 }
 
 static void
-nautilus_history_view_initialize_class (NautilusHistoryViewClass *klass)
+row_activated_callback (GtkTreeView *tree_view,
+			GtkTreePath *path,
+			GtkTreeViewColumn *column,
+			gpointer user_data)
 {
-	GtkObjectClass *object_class;
+	NautilusHistoryView *view;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	NautilusBookmark *bookmark;
+	char *uri;
 	
-	object_class = GTK_OBJECT_CLASS (klass);
+	view = NAUTILUS_HISTORY_VIEW (user_data);
+	model = gtk_tree_view_get_model (tree_view);
 	
-	object_class->destroy = nautilus_history_view_destroy;
+	if (!gtk_tree_model_get_iter (model, &iter, path)) {
+		return;
+	}
+	
+	gtk_tree_model_get 
+		(model, &iter, HISTORY_VIEW_COLUMN_BOOKMARK, &bookmark, -1);
+	
+	/* Navigate to the clicked location. */
+	uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (bookmark));
+	nautilus_view_open_location_in_this_window
+		(NAUTILUS_VIEW (view), uri);
+	g_free (uri);	
 }
 
 static void
-nautilus_history_view_initialize (NautilusHistoryView *view)
+update_click_policy (NautilusHistoryView *view)
 {
-	GtkCList *list;
-	GtkWidget *window;
-
-  	list = GTK_CLIST (gtk_clist_new (HISTORY_VIEW_COLUMN_COUNT));
-  	gtk_clist_column_titles_hide (list);
-	gtk_clist_set_row_height (list, NAUTILUS_ICON_SIZE_SMALLER);
-	gtk_clist_set_selection_mode (list, GTK_SELECTION_BROWSE);
-	gtk_clist_columns_autosize (list);
-	gtk_widget_show (GTK_WIDGET (list));
+	int policy;
 	
-	window = gtk_scrolled_window_new (gtk_clist_get_hadjustment (list),
-					  gtk_clist_get_vadjustment (list));
+	policy = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
+	
+	eel_gtk_tree_view_set_activate_on_single_click
+		(view->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
+static void
+click_policy_changed_callback (gpointer user_data)
+{
+	NautilusHistoryView *view;
+	
+	view = NAUTILUS_HISTORY_VIEW (user_data);
+
+	update_click_policy (view);
+}
+
+static void
+nautilus_history_view_instance_init (NautilusHistoryView *view)
+{
+	GtkTreeView       *tree_view;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer   *cell;
+	GtkListStore      *store;
+	GtkTreeSelection  *selection;
+	GtkWidget         *window;
+	
+	tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+	gtk_tree_view_set_headers_visible (tree_view, FALSE);
+	gtk_widget_show (GTK_WIDGET (tree_view));
+
+	col = GTK_TREE_VIEW_COLUMN (gtk_tree_view_column_new ());
+	
+	cell = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start (col, cell, FALSE);
+	gtk_tree_view_column_set_attributes (col, cell,
+					     "pixbuf", HISTORY_VIEW_COLUMN_ICON,
+					     NULL);
+	
+	cell = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (col, cell, TRUE);
+	gtk_tree_view_column_set_attributes (col, cell,
+					     "text", HISTORY_VIEW_COLUMN_NAME,
+					     NULL);
+
+	gtk_tree_view_column_set_fixed_width (col, NAUTILUS_ICON_SIZE_SMALLER);
+	gtk_tree_view_append_column (tree_view, col);
+	
+	store = gtk_list_store_new (HISTORY_VIEW_COLUMN_COUNT,
+				    GDK_TYPE_PIXBUF,
+				    G_TYPE_STRING,
+				    NAUTILUS_TYPE_BOOKMARK);
+
+	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (store));
+	
+	window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (window),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (list));
+	gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (tree_view));
 	gtk_widget_show (window);
 	
 	nautilus_view_construct (NAUTILUS_VIEW (view), window);
 
-	gtk_object_ref (GTK_OBJECT (list));
-	view->list = list;
+	g_object_ref (tree_view);
+	view->tree_view = tree_view;
+		
+	nautilus_view_set_listener_mask (NAUTILUS_VIEW (view),
+					 NAUTILUS_VIEW_LISTEN_HISTORY);
 
-	gtk_signal_connect (GTK_OBJECT (list),
-			    "button-press-event",
-			    button_press_callback,
-			    view);
-	gtk_signal_connect (GTK_OBJECT (list),
-			    "button-release-event",
-			    button_release_callback,
-			    view);
+	selection = gtk_tree_view_get_selection (tree_view);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);	
 
-	gtk_signal_connect (GTK_OBJECT (view),
-			    "history_changed", 
-			    history_changed_callback,
-			    view);
+	g_signal_connect_object
+		(tree_view, "row_activated", 
+		 G_CALLBACK (row_activated_callback), view, 0);
+	
+	g_signal_connect_object (view, "history_changed",
+				 G_CALLBACK (history_changed_callback), view, 0);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				      click_policy_changed_callback,
+				      view);
+	update_click_policy (view);
 }
 
 static void
-nautilus_history_view_destroy (GtkObject *object)
+nautilus_history_view_finalize (GObject *object)
 {
 	NautilusHistoryView *view;
 	
 	view = NAUTILUS_HISTORY_VIEW (object);
 
-	if (view->external_destroyed_flag != NULL) {
-		*view->external_destroyed_flag = TRUE;
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					 click_policy_changed_callback,
+					 view);
+
+	if (view->stop_updating_history != NULL) {
+		*view->stop_updating_history = TRUE;
 	}
 
-	gtk_object_unref (GTK_OBJECT (view->list));
+	g_object_unref (view->tree_view);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_history_view_class_init (NautilusHistoryViewClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_history_view_finalize;
 }
 
 int
 main (int argc, char *argv[])
 {
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
 	return nautilus_view_standard_main ("nautilus_history-view",
 					    VERSION,
-					    PACKAGE,
+					    GETTEXT_PACKAGE,
 					    GNOMELOCALEDIR,
 					    argc,
 					    argv,
 					    FACTORY_IID,
 					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    nautilus_global_preferences_initialize,
+					    NULL,
 					    nautilus_history_view_get_type);
 }

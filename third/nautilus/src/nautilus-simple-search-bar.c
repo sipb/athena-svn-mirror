@@ -54,19 +54,18 @@ static void   nautilus_simple_search_bar_set_location            (NautilusNaviga
 static char * nautilus_search_uri_to_simple_search_criteria      (const char                   *location);
 static char * nautilus_simple_search_criteria_to_search_uri      (const char                   *search_criteria);
 
-static void  nautilus_simple_search_bar_initialize_class         (NautilusSimpleSearchBarClass *class);
-static void  nautilus_simple_search_bar_initialize               (NautilusSimpleSearchBar      *bar);
-static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
+static void  nautilus_simple_search_bar_class_init         (NautilusSimpleSearchBarClass *class);
+static void  nautilus_simple_search_bar_init               (NautilusSimpleSearchBar      *bar);
+static void  nautilus_simple_search_bar_finalize 	 	 (GObject 		       *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
-				   nautilus_simple_search_bar,
-				   NAUTILUS_TYPE_SEARCH_BAR)
+EEL_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
+		       nautilus_simple_search_bar,
+		       NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
-nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass)
+nautilus_simple_search_bar_class_init (NautilusSimpleSearchBarClass *klass)
 {
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_simple_search_bar_destroy;
-
+	G_OBJECT_CLASS (klass)->finalize = nautilus_simple_search_bar_finalize;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_simple_search_bar_get_location;  
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_simple_search_bar_set_location;  
@@ -93,24 +92,21 @@ update_simple_find_button_state (NautilusSimpleSearchBar *bar)
 }
 
 static void
-nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
+nautilus_simple_search_bar_init (NautilusSimpleSearchBar *bar)
 {
 	bar->details = g_new0 (NautilusSimpleSearchBarDetails, 1);
 }
 
 static void
-nautilus_simple_search_bar_destroy (GtkObject *object)
+nautilus_simple_search_bar_finalize (GObject *object)
 {
 	NautilusSimpleSearchBar *bar;
 
 	bar = NAUTILUS_SIMPLE_SEARCH_BAR (object);
 	
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), FALSE);
-	nautilus_undo_tear_down_nautilus_entry_for_undo (bar->details->entry);
-
 	g_free (bar->details);
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 GtkWidget *
@@ -136,17 +132,15 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 nautilus_window_get_ui_container (window),
 		 TRUE);
 	
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   eel_gtk_button_auto_click, 
-				   GTK_OBJECT (bar->details->find_button));
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
-				   update_simple_find_button_state, GTK_OBJECT (bar));
+	g_signal_connect_object (bar->details->entry, "activate",
+				 G_CALLBACK (gtk_widget_activate), bar->details->find_button, G_CONNECT_SWAPPED);
+	g_signal_connect_object (bar->details->entry, "changed",
+				 G_CALLBACK (update_simple_find_button_state), bar, G_CONNECT_SWAPPED);
 
 	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
 
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
-				   nautilus_navigation_bar_location_changed,
-				   GTK_OBJECT (bar));
+	g_signal_connect_object (bar->details->find_button, "clicked",
+				 G_CALLBACK (nautilus_navigation_bar_location_changed), bar, G_CONNECT_SWAPPED);
 	gtk_box_pack_start (GTK_BOX (hbox), bar->details->find_button, FALSE, TRUE, 1);
 	update_simple_find_button_state (bar);
 	
@@ -190,7 +184,7 @@ static char *
 nautilus_simple_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 {
 	NautilusSimpleSearchBar *bar;
-	char *search_entry_text;
+	const char *search_entry_text;
 
 	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
 	search_entry_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));

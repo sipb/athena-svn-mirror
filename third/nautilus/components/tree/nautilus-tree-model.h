@@ -1,7 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2002 Anders Carlsson
+ * Copyright (C) 2002 Bent Spoon Software
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +19,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak <mjs@eazel.com>
+ * Author: Anders Carlsson <andersca@gnu.org>
  */
 
 /* nautilus-tree-model.h - Model for the tree view */
@@ -26,11 +27,9 @@
 #ifndef NAUTILUS_TREE_MODEL_H
 #define NAUTILUS_TREE_MODEL_H
 
-#include <gtk/gtkobject.h>
-#include "nautilus-tree-node.h"
-
-typedef struct NautilusTreeModel NautilusTreeModel;
-typedef struct NautilusTreeModelClass NautilusTreeModelClass;
+#include <glib-object.h>
+#include <gtk/gtktreemodel.h>
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_TREE_MODEL	    (nautilus_tree_model_get_type ())
 #define NAUTILUS_TREE_MODEL(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_MODEL, NautilusTreeModel))
@@ -38,83 +37,36 @@ typedef struct NautilusTreeModelClass NautilusTreeModelClass;
 #define NAUTILUS_IS_TREE_MODEL(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TREE_MODEL))
 #define NAUTILUS_IS_TREE_MODEL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TREE_MODEL))
 
+enum {
+	NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN,
+	NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
+	NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN,
+	NAUTILUS_TREE_MODEL_FONT_STYLE_COLUMN,
+	NAUTILUS_TREE_MODEL_NUM_COLUMNS
+};
+
 typedef struct NautilusTreeModelDetails NautilusTreeModelDetails;
 
-
-struct NautilusTreeModel {
-	GtkObject parent;
+typedef struct {
+	GObject parent;
 	NautilusTreeModelDetails *details;
-};
+} NautilusTreeModel;
 
-struct NautilusTreeModelClass {
-	GtkObjectClass parent_class;
+typedef struct {
+	GObjectClass parent_class;
+} NautilusTreeModelClass;
 
-	void         (*node_changed)          (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
-
-	void         (*node_removed)          (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
-
-	void         (*node_being_renamed)    (NautilusTreeModel *model,
-					       const char *old_uri,
-					       const char *new_uri);
-
-	void         (*done_loading_children) (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
-};
-
-typedef void (*NautilusTreeModelCallback) (NautilusTreeModel *model,
-					   NautilusTreeNode  *node,
-					   gpointer           callback_data);
-
-
-GtkType            nautilus_tree_model_get_type                 (void);
-
-NautilusTreeModel *nautilus_tree_model_new                      (const char *root_uri);
-
-
-void               nautilus_tree_model_monitor_add              (NautilusTreeModel         *model,
-								 gconstpointer              client,
-								 NautilusTreeModelCallback  initial_nodes_callback,
-								 gpointer                   callback_data);
-
-void               nautilus_tree_model_monitor_remove           (NautilusTreeModel         *model,
-								 gconstpointer              client);
-
-void               nautilus_tree_model_monitor_node             (NautilusTreeModel         *model,
-								 NautilusTreeNode          *node,
-								 gconstpointer              client,
-								 gboolean                   force_reload); 
-
-void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel         *model,
-								 NautilusTreeNode          *node,
-								 gconstpointer              client);
-
-void               nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
-								       NautilusTreeNode  *node,
-								       gconstpointer      client);
-
-NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
-								 const char        *uri);
-
-
-NautilusTreeNode  *nautilus_tree_model_get_node_from_file       (NautilusTreeModel *model,
-								 NautilusFile      *file);
-
-#if 0
-NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
-								 NautilusFile      *file);
-
-
-NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
-#endif
-
-void               nautilus_tree_model_set_defer_notifications  (NautilusTreeModel *model,
-								 gboolean           defer);
-
-/* Debugging */
-void		   nautilus_tree_model_dump_files		(NautilusTreeModel *model);
-
+GType              nautilus_tree_model_get_type                  (void);
+NautilusTreeModel *nautilus_tree_model_new                       (const char        *opt_root_uri);
+void               nautilus_tree_model_set_show_hidden_files     (NautilusTreeModel *model,
+								  gboolean           show_hidden_files);
+void               nautilus_tree_model_set_show_backup_files     (NautilusTreeModel *model,
+								  gboolean           show_backup_files);
+void               nautilus_tree_model_set_show_only_directories (NautilusTreeModel *model,
+								  gboolean           show_only_directories);
+NautilusFile *     nautilus_tree_model_iter_get_file             (NautilusTreeModel *model,
+								  GtkTreeIter       *iter);
+void               nautilus_tree_model_set_root_uri              (NautilusTreeModel *model,
+								  const char        *root_uri);
 
 #endif /* NAUTILUS_TREE_MODEL_H */
-

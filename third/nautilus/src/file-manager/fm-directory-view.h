@@ -261,8 +261,10 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
 
-	void	 (* start_renaming_item)        (FMDirectoryView *view,
-					  	 const char *uri);
+	gboolean (* can_rename_file)            (FMDirectoryView *view,
+						 NautilusFile *file);
+	void	 (* start_renaming_file)        (FMDirectoryView *view,
+					  	 NautilusFile *file);
 
 	gboolean (* file_still_belongs)		(FMDirectoryView *view,
 						 NautilusFile	 *file);
@@ -275,7 +277,6 @@ struct FMDirectoryViewClass {
 	void	(* embedded_text_policy_changed)   (FMDirectoryView *view);
 	void	(* image_display_policy_changed)   (FMDirectoryView *view);
 	void	(* click_policy_changed)	   (FMDirectoryView *view);
-	void	(* smooth_graphics_mode_changed)   (FMDirectoryView *view);
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
 
 	void	(* emblems_changed)                (FMDirectoryView *view);
@@ -309,7 +310,7 @@ void                fm_directory_view_reset_to_defaults                (FMDirect
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
 void                fm_directory_view_set_selection                    (FMDirectoryView  *view,
 									GList            *selection);
-GArray *            fm_directory_get_selected_icon_locations           (FMDirectoryView  *view);
+GArray *            fm_directory_view_get_selected_icon_locations      (FMDirectoryView  *view);
 void                fm_directory_view_reveal_selection                 (FMDirectoryView  *view);
 gboolean            fm_directory_view_is_empty                         (FMDirectoryView  *view);
 gboolean            fm_directory_view_is_read_only                     (FMDirectoryView  *view);

@@ -26,33 +26,28 @@
    names and imges */
 
 #include <config.h>
-#include <ctype.h>
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
-#include <libgnome/gnome-i18n.h>
-
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-
-#include <glib.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <string.h>
-#include <libgnome/gnome-defs.h>
-#include <stdlib.h>
-
 #include "nautilus-customization-data.h"
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
+
 #include "nautilus-file-utilities.h"
 #include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-pango-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-scalable-font.h>
-#include <eel/eel-xml-extensions.h>
 #include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libxml/parser.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef enum {
 	READ_PUBLIC_CUSTOMIZATIONS,
@@ -110,7 +105,7 @@ nautilus_customization_data_new (const char *customization_name,
 		public_result = gnome_vfs_directory_list_load (&data->public_file_list,
 							       public_directory_uri,
 							       GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
+							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 		g_free (public_directory_uri);
 	}
 
@@ -118,7 +113,7 @@ nautilus_customization_data_new (const char *customization_name,
 	private_result = gnome_vfs_directory_list_load (&data->private_file_list,
 							private_directory_uri,
 							GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
+							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	g_free (private_directory_uri);
 	if (public_result != GNOME_VFS_OK && 
 	    private_result != GNOME_VFS_OK) {
@@ -136,9 +131,9 @@ nautilus_customization_data_new (const char *customization_name,
 	}
 
 	/* load the frame if necessary */
-	if (!strcmp(customization_name, "patterns")) {
+	if (strcmp (customization_name, "patterns") == 0) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str);
+		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);
 		g_free (temp_str);
 	} else {
 		data->pattern_frame = NULL;
@@ -208,20 +203,34 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	image_file_name = get_file_path_for_mode (data,
 						  current_file_info->name);
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);	
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
+
+	if (orig_pixbuf == NULL) {
+		orig_pixbuf = rsvg_pixbuf_from_file_at_max_size (image_file_name,
+								 data->maximum_icon_width, 
+								 data->maximum_icon_height,
+								 NULL);
+	}
 	g_free (image_file_name);
+
+	if (orig_pixbuf == NULL) {
+		return nautilus_customization_data_get_next_element_for_display (data,
+										 emblem_name,
+										 pixbuf_out,
+										 label_out);
+	}
 
 	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
 
 	*emblem_name = g_strdup (current_file_info->name);
 	
-	if (!strcmp(data->customization_name, "patterns")) {
+	if (strcmp (data->customization_name, "patterns") == 0) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE, is_reset_image);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
-								data->maximum_icon_width, 
-								data->maximum_icon_height);
-		gdk_pixbuf_unref (orig_pixbuf);
+							   data->maximum_icon_width, 
+							   data->maximum_icon_height);
+		g_object_unref (orig_pixbuf);
 	}
 	
 	*pixbuf_out = pixbuf;
@@ -259,14 +268,14 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		  data->private_file_list != NULL);
 
 	if (data->pattern_frame != NULL) {
-		gdk_pixbuf_unref (data->pattern_frame);
+		g_object_unref (data->pattern_frame);
 	}
 
 	gnome_vfs_file_info_list_free (data->public_file_list);
 	gnome_vfs_file_info_list_free (data->private_file_list);
 
 	if (data->name_map_hash != NULL) {
-		eel_g_hash_table_destroy_deep (data->name_map_hash);	
+		g_hash_table_destroy (data->name_map_hash);	
 	}
 	
 	g_free (data->customization_name);
@@ -286,8 +295,9 @@ get_global_customization_uri (const char *customization_name)
 {
 	char *directory_path, *directory_uri;
 	
-	directory_path = nautilus_make_path (NAUTILUS_DATADIR,
-					     customization_name);
+	directory_path = g_build_filename (NAUTILUS_DATADIR,
+					   customization_name,
+					   NULL);
 	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 	
 	g_free (directory_path);
@@ -311,8 +321,9 @@ get_private_customization_uri (const char *customization_name)
 	char *directory_path, *directory_uri;
 
 	user_directory = nautilus_get_user_directory ();
-	directory_path = nautilus_make_path (user_directory,
-					     customization_name);
+	directory_path = g_build_filename (user_directory,
+					   customization_name,
+					   NULL);
 	g_free (user_directory);
 	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 	g_free (directory_path);
@@ -333,7 +344,7 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 		directory_uri = get_private_customization_uri (data->customization_name);
 	}
 	
-	uri = nautilus_make_path (directory_uri, file_name);
+	uri = g_build_filename (directory_uri, file_name, NULL);
 	g_free (directory_uri);
 	directory_name = gnome_vfs_get_local_path_from_uri (uri);
 	g_free (uri);
@@ -345,36 +356,38 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 static void
 add_reset_text (GdkPixbuf *pixbuf)
 {
-	char *reset_text;
-	EelScalableFont *font;
-	EelDimensions title_dimensions;
 	int width, height;
-	int font_size, text_len;
 	int h_offset, v_offset;
-	
-	font = eel_scalable_font_get_default_font ();
-	reset_text = _("reset");
-	text_len = strlen (reset_text);
+	PangoContext *context;
+	PangoLayout *layout;
+	PangoRectangle text_extent;
+	PangoFontDescription *font_desc;
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
+
+	font_desc = pango_font_description_from_string ("Mono");
+
+	context = eel_pango_ft2_get_context ();
+	layout = pango_layout_new (context);
+	g_object_unref (context);
+	pango_layout_set_text (layout, _("reset"), -1);
+	pango_layout_set_font_description (layout, font_desc);
+	pango_font_description_free (font_desc);
 	
-	font_size = eel_scalable_font_largest_fitting_font_size (font, reset_text, width - 12, 12, 36);
-	title_dimensions = eel_scalable_font_measure_text (font, font_size, reset_text, text_len);
+	text_extent = eel_pango_layout_fit_to_dimensions (
+		layout, width - 12, -1);
 	
 	/* compute text position, correcting for the imbalanced shadow, etc. */
-	h_offset = ((width - title_dimensions.width) / 2) - 2;
-	v_offset = (((height - 8)/ 2) - title_dimensions.height) / 2;
-	
-	eel_scalable_font_draw_text (font, pixbuf, 
-					  h_offset, v_offset,
-					  eel_gdk_pixbuf_whole_pixbuf,
-					  font_size,
-					  reset_text, text_len,
-					  EEL_RGBA_COLOR_OPAQUE_WHITE,
-					  EEL_OPACITY_FULLY_OPAQUE);
-	
-	gtk_object_unref (GTK_OBJECT (font));
+	h_offset = ((width - text_extent.width) / 2) - 2;
+	v_offset = (((height - 8)/ 2) - text_extent.height) / 2;
+
+	eel_gdk_pixbuf_draw_layout (pixbuf,
+				    h_offset, v_offset,
+				    EEL_RGBA_COLOR_OPAQUE_WHITE,
+				    layout);
+
+	g_object_unref (layout);
 }
 
 /* utility to make an attractive pattern image by compositing with a frame */
@@ -399,11 +412,11 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 	if (dragging) {
 		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 6, frame_height - 6);
 		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 6, frame_height - 6, temp_pixbuf, 0, 0);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		pixbuf = temp_pixbuf;
 	}
 			      
-	gdk_pixbuf_unref (pattern_tile);
+	g_object_unref (pattern_tile);
 
 	if (is_reset) {
 		add_reset_text (pixbuf);
@@ -454,10 +467,10 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 	xmlNodePtr category_node, current_node;
 	
 	/* allocate the hash table */
-	data->name_map_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	data->name_map_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	
 	/* build the path name to the browser.xml file and load it */
-	xml_path = nautilus_make_path (NAUTILUS_DATADIR, "browser.xml");
+	xml_path = g_build_filename (NAUTILUS_DATADIR, "browser.xml", NULL);
 	if (xml_path) {
 		browser_data = xmlParseFile (xml_path);
 		g_free (xml_path);
@@ -465,14 +478,14 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 		if (browser_data) {
 			/* get the category node */
 			category_node = eel_xml_get_root_child_by_name_and_property (browser_data, "category", "name", data->customization_name);
-			current_node = category_node->childs;	
+			current_node = category_node->children;	
 			
 			/* loop through the entries, adding a mapping to the hash table */
 			while (current_node != NULL) {
 				display_name = eel_xml_get_property_translated (current_node, "display_name");
 				filename = xmlGetProp (current_node, "filename");
 				if (display_name && filename) {
-					g_hash_table_insert (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
+					g_hash_table_replace (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
 				}
 				xmlFree (filename);		
 				xmlFree (display_name);

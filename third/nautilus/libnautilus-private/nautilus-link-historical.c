@@ -23,27 +23,27 @@
 */
 
 #include <config.h>
-#include "nautilus-link.h"
 #include "nautilus-link-historical.h"
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include "nautilus-metadata.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
+#include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
+#include <libxml/parser.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <stdlib.h>
 
 
@@ -94,7 +94,7 @@ get_link_type (const char *tag)
 }
 
 gboolean
-nautilus_link_historical_local_create (const char       *directory_path,
+nautilus_link_historical_local_create (const char       *directory_uri,
 				       const char       *name,
 				       const char       *image,
 				       const char       *target_uri,
@@ -103,14 +103,14 @@ nautilus_link_historical_local_create (const char       *directory_path,
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
-	char *path;
+	char *directory_path, *path;
 	int result;
 	char *uri;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
 
 	
-	g_return_val_if_fail (directory_path != NULL, FALSE);
+	g_return_val_if_fail (directory_uri != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (image != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
@@ -131,7 +131,15 @@ nautilus_link_historical_local_create (const char       *directory_path,
 	xmlSetProp (root_node, "link", target_uri);
 	
 	/* all done, so save the xml document as a link file */
-	path = nautilus_make_path (directory_path, name);
+	directory_path = gnome_vfs_get_local_path_from_uri (directory_uri);
+	if (directory_uri == NULL) {
+		xmlFreeDoc (output_document);
+		return FALSE;
+	}
+
+	path = g_build_filename (directory_path, name, NULL);
+	g_free (directory_path);
+
 	result = xmlSaveFile (path, output_document);
 	
 	xmlFreeDoc (output_document);
@@ -183,27 +191,48 @@ xml_get_root_property (xmlDoc *doc,
 }
 
 static char *
-local_get_root_property (const char *path,
+local_get_root_property (const char *uri,
 			 const char *key)
 {
+	GnomeVFSFileInfo *info;
+	char *path;
+	GnomeVFSResult result;
+	gboolean is_link;
 	xmlDoc *document;
 	char *property;
-	const char *mime_type;
 	
-	property = NULL;
-
 	/* Check mime type. Exit if it is not a nautilus link */
-	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
-	if (strcmp (mime_type, "application/x-nautilus-link") != 0) {
+
+	info = gnome_vfs_file_info_new ();
+
+	result = gnome_vfs_get_file_info (uri, info,
+					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+					  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+	is_link = result == GNOME_VFS_OK
+		&& (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+		&& g_ascii_strcasecmp (info->mime_type, "application/x-nautilus-link") == 0;
+
+	gnome_vfs_file_info_unref (info);
+
+	if (!is_link) {
 		return NULL;
 	}
 	
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return NULL;
+	}
+		
 	document = xmlParseFile (path);
-	if (document != NULL) {
-		property = xml_get_root_property (document, key);
-		xmlFreeDoc (document);
+	g_free (path);
+
+	if (document == NULL) {
+		return NULL;
 	}
 
+	property = xml_get_root_property (document, key);
+	xmlFreeDoc (document);
 	return property;
 }
 
@@ -220,21 +249,27 @@ local_set_root_property (const char *uri,
 	NautilusFile *file;
 
 	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return FALSE;
+	}
 	document = xmlParseFile (path);
 	if (document == NULL) {
+		g_free (path);
 		return FALSE;
 	}
 	root = xmlDocGetRootElement (document);
 	if (root == NULL) {
 		xmlFreeDoc (document);
+		g_free (path);
 		return FALSE;
 	}
 
 	/* Check if the property value is already correct. */
 	old_value = xmlGetProp (root, key);
 	if (old_value != NULL && strcmp (old_value, value) == 0) {
-		xmlFreeDoc (document);
 		xmlFree (old_value);
+		xmlFreeDoc (document);
+		g_free (path);
 		return TRUE;
 	}
 
@@ -264,9 +299,9 @@ local_set_root_property (const char *uri,
  * paths, and only on files known to be link files.
  */
 gboolean
-nautilus_link_historical_local_set_icon (const char *path, const char *icon_name)
+nautilus_link_historical_local_set_icon (const char *uri, const char *icon_name)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 					icon_name,
 					NULL);
@@ -277,19 +312,18 @@ nautilus_link_historical_local_set_icon (const char *path, const char *icon_name
  * paths, and only on files known to be link files.
  */
 gboolean
-nautilus_link_historical_local_set_link_uri (const char *path, const char *link_uri)
+nautilus_link_historical_local_set_link_uri (const char *uri, const char *link_uri)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					"link",
 					link_uri,
 					NULL);
 }
 
 gboolean
-nautilus_link_historical_local_set_type (const char *path,
-				   NautilusLinkType type)
+nautilus_link_historical_local_set_type (const char *uri, NautilusLinkType type)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					"nautilus_link",
 					get_tag (type),
 					NULL);
@@ -297,28 +331,28 @@ nautilus_link_historical_local_set_type (const char *path,
 
 /* returns additional text to display under the name, NULL if none */
 char *
-nautilus_link_historical_local_get_additional_text (const char *path)
+nautilus_link_historical_local_get_additional_text (const char *uri)
 {
 	return local_get_root_property
-		(path, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
+		(uri, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
 
 
 /* Returns the link uri associated with a link file. */
 char *
-nautilus_link_historical_local_get_link_uri (const char *path)
+nautilus_link_historical_local_get_link_uri (const char *uri)
 {
-	return local_get_root_property (path, "link");
+	return local_get_root_property (uri, "link");
 }
 
 /* Returns the link type of the link file. */
 NautilusLinkType
-nautilus_link_historical_local_get_link_type (const char *path)
+nautilus_link_historical_local_get_link_type (const char *uri)
 {
 	char *property;
 	NautilusLinkType type;
 	
-	property = local_get_root_property (path, "nautilus_link");
+	property = local_get_root_property (uri, "nautilus_link");
 	type = get_link_type (property);
 	g_free (property);
 
@@ -355,81 +389,52 @@ nautilus_link_historical_get_link_icon_given_file_contents (const char *file_con
 	return property;
 }
 
-
-gboolean
-nautilus_link_historical_local_is_volume_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_MOUNT;
-}
-
-gboolean
-nautilus_link_historical_local_is_home_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_HOME;
-}
-
-gboolean
-nautilus_link_historical_local_is_trash_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
-}
-
-
 void
-nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
+nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry, const char *dest_uri, const GdkPoint *position)
 {
-	char *icon_name;
+	char *icon_name, *icon;
 	char *launch_string, *terminal_command;
-	char *quoted, *arguments, *temp_str;
-	int i;
+	const char *name, *arguments;
 
-	if (entry == NULL || dest_path == NULL) {
+	if (entry == NULL || dest_uri == NULL) {
 		return;
 	}
 	
-	/* Extract arguments from exec array */
-	arguments = NULL;
-	for (i = 0; i < entry->exec_length; ++i) {
-		quoted = eel_shell_quote (entry->exec[i]);
-		if (arguments == NULL) {
-			arguments = quoted;
-		} else {
-			temp_str = arguments;
-			arguments = g_strconcat (arguments, " ", quoted, NULL);
-			g_free (temp_str);
-			g_free (quoted);
-		}
-	}
+	name      = gnome_desktop_item_get_string (entry, GNOME_DESKTOP_ITEM_NAME);
+	arguments = gnome_desktop_item_get_string (entry, GNOME_DESKTOP_ITEM_EXEC);
 
-	if (strcmp (entry->type, "Application") == 0) {
-		if (entry->terminal) {
+	switch (gnome_desktop_item_get_entry_type (entry)) {
+	case GNOME_DESKTOP_ITEM_TYPE_APPLICATION:
+		if (gnome_desktop_item_get_boolean (entry, GNOME_DESKTOP_ITEM_TERMINAL)) {
 			terminal_command = eel_gnome_make_terminal_command (arguments);
-			launch_string = g_strconcat ("command:", terminal_command, NULL);
+			launch_string = g_strconcat (NAUTILUS_COMMAND_SPECIFIER, terminal_command, NULL);
 			g_free (terminal_command);
 		} else {
-			launch_string = g_strconcat ("command:", arguments, NULL);
-		}		
-	} else if (strcmp (entry->type, "URL") == 0) {
+			launch_string = g_strconcat (NAUTILUS_COMMAND_SPECIFIER, arguments, NULL);
+		}
+		break;
+	case GNOME_DESKTOP_ITEM_TYPE_LINK:
 		launch_string = g_strdup (arguments);
-	} else {
+		break;
+	default:
 		/* Unknown .desktop file type */
 		launch_string = NULL;
 	}
 	
-	if (entry->icon != NULL) {
-		icon_name = eel_make_uri_from_half_baked_uri (entry->icon);
+
+	icon = gnome_desktop_item_get_icon (entry, NULL);
+	if (icon != NULL) {
+		icon_name = eel_make_uri_from_half_baked_uri (icon);
+		g_free (icon);
 	} else {
 		icon_name = g_strdup ("gnome-unknown.png");
 	}
 	
 	if (launch_string != NULL) {
-		nautilus_link_historical_local_create (dest_path, entry->name, icon_name, 
+		nautilus_link_historical_local_create (dest_uri, name, icon_name,
 						       launch_string, position, NAUTILUS_LINK_GENERIC);
 	}
 	
 	g_free (icon_name);
 	g_free (launch_string);
-	g_free (arguments);
 }
-
-

@@ -4,34 +4,37 @@ SUBDIRS=icons
 
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-I$(top_srcdir)					\
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
-oafdir = $(datadir)/oaf
+server_in_files = Nautilus_View_hardware.server.in.in
 
-oaf_in_files =					\
-	Nautilus_View_hardware.oaf.in		\
-	$(NULL)
+serverdir = $(libdir)/bonobo/servers
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
-
-@XML_I18N_MERGE_OAF_RULE@
-
-bin_PROGRAMS =					\
-	nautilus-hardware-view
+if ENABLE_HARDWARE_VIEW
+libexec_PROGRAMS=nautilus-hardware-view
+server_DATA = $(server_in_files:.server.in.in=.server)
+endif
 
 nautilus_hardware_view_SOURCES =		        \
 	nautilus-hardware-view.c			\
 	nautilus-hardware-view.h			\
 	main.c
 
-nautilus_hardware_view_LDADD =			\
+nautilus_hardware_view_LDADD =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) 				\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(oaf_in_files)
+EXTRA_DIST = $(server_in_files) $(nautilus_hardware_view_SOURCES)
 
+if ENABLE_HARDWARE_VIEW
+CLEANFILES = $(server_DATA) $(server_DATA).in
+endif

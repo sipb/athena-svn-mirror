@@ -28,12 +28,7 @@
 #ifndef NAUTILUS_ZOOM_CONTROL_H
 #define NAUTILUS_ZOOM_CONTROL_H
 
-#include <gdk/gdk.h>
 #include <gtk/gtkeventbox.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 #define NAUTILUS_TYPE_ZOOM_CONTROL	      (nautilus_zoom_control_get_type ())
 #define NAUTILUS_ZOOM_CONTROL(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControl))
@@ -55,32 +50,33 @@ struct NautilusZoomControlClass {
 	
 	void (*zoom_in)		(NautilusZoomControl *control);
 	void (*zoom_out) 	(NautilusZoomControl *control);
-	void (*zoom_to_level) 	(NautilusZoomControl *control);
+	void (*zoom_to_level) 	(NautilusZoomControl *control,
+				 float zoom_level);
 	void (*zoom_to_fit) 	(NautilusZoomControl *control);
+
+	/* Action signal for keybindings, do not connect to this */
+	void (*change_value)    (NautilusZoomControl *control,
+				 GtkScrollType scroll);
 };
 
 GtkType    nautilus_zoom_control_get_type           (void);
 GtkWidget *nautilus_zoom_control_new                (void);
 
 void       nautilus_zoom_control_set_zoom_level     (NautilusZoomControl *zoom_control,
-						     double               zoom_level);
+						     float                zoom_level);
 void       nautilus_zoom_control_set_parameters     (NautilusZoomControl *zoom_control,
-						     double               min_zoom_level,
-						     double               max_zoom_level,
+						     float                min_zoom_level,
+						     float                max_zoom_level,
 						     gboolean             has_min_zoom_level,
 						     gboolean             has_max_zoom_level,
  						     GList               *zoom_levels);
 
-double     nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
-double     nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);
-double     nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control);
+float      nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
+float      nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);
+float      nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_has_min_zoom_level (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_has_max_zoom_level (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_can_zoom_in        (NautilusZoomControl *zoom_control);
 gboolean   nautilus_zoom_control_can_zoom_out       (NautilusZoomControl *zoom_control);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* NAUTILUS_ZOOM_CONTROL_H */

@@ -40,7 +40,6 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dateedit.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -162,70 +161,66 @@ static char *owner_relations [] = {
 };
 
 
-static GtkWidget *                  nautilus_search_bar_criterion_new              (void);
-static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_values  (NautilusSearchBarCriterionType type,
-										    char *operator_options[],
-										    gboolean use_value_entry,
-										    gboolean use_value_menu,
-										    char *value_options[],
-										    gboolean use_value_suffix,
-										    char *value_suffix,
-										    NautilusComplexSearchBar *bar);
+static GtkWidget *                    nautilus_search_bar_criterion_new             (void);
+static NautilusSearchBarCriterion *   nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType   type,
+										     char                            *operator_options[],
+										     gboolean                         use_value_entry,
+										     gboolean                         use_value_menu,
+										     char                            *value_options[],
+										     gboolean                         use_value_suffix,
+										     char                            *value_suffix,
+										     NautilusComplexSearchBar        *bar);
+NautilusSearchBarCriterionType        get_next_default_search_criterion_type        (NautilusSearchBarCriterionType   type);
+static void                           nautilus_search_bar_criterion_class_init      (NautilusSearchBarCriterionClass *klass);
+static void                           nautilus_search_bar_criterion_init            (NautilusSearchBarCriterion      *criterion);
+static gboolean                       modified_relation_should_show_value           (int                              relation_index);
+static void                           hide_date_widget                              (GtkObject                       *object,
+										     gpointer                         data);
+static void                           show_date_widget                              (GtkObject                       *object,
+										     gpointer                         data);
+static char *                         get_name_location_for                         (int                              relation_number,
+										     const char                      *name_text);
+static char *                         get_content_location_for                      (int                              relation_number,
+										     const char                      *name_text);
+static char *                         get_file_type_location_for                    (int                              relation_number,
+										     int                              value_number);
+static char *                         get_size_location_for                         (int                              relation_number,
+										     const char                      *size_text);
+static char *                         get_emblem_location_for                       (int                              relation_number,
+										     GtkWidget                       *menu_item);
+static char *                         get_date_modified_location_for                (int                              relation_number,
+										     const char                      *date);
+static char *                         get_owner_location_for                        (int                              relation_number,
+										     const char                      *owner_number);
+static void                           make_emblem_value_menu                        (NautilusSearchBarCriterion      *criterion);
+static void                           criterion_type_changed_callback               (GtkObject                       *object,
+										     gpointer                         data);
+static void                           emblems_changed_callback                      (GObject                         *signaller,
+										     gpointer                         data);
+static gboolean                       criterion_type_already_is_displayed           (GSList                          *criteria,
+										     NautilusSearchBarCriterionType   criterion_number);
+static NautilusSearchBarCriterionType get_next_criterion_type                       (NautilusSearchBarCriterionType   current_type,
+										     GSList                          *displayed_criteria);
+static void                           nautilus_search_bar_criterion_destroy         (GtkObject                       *object);
 
-
-NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
-static void                         nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass);
-static void                         nautilus_search_bar_criterion_initialize       (NautilusSearchBarCriterion *criterion);
-static gboolean                     modified_relation_should_show_value            (int relation_index);
-static void                         hide_date_widget                               (GtkObject *object,
-										    gpointer data);
-static void                         show_date_widget                               (GtkObject *object,
-										    gpointer data);
-static char *                              get_name_location_for                  (int relation_number,
-										   char *name_text);
-static char *                              get_content_location_for               (int relation_number,
-										   char *name_text);
-static char *                              get_file_type_location_for             (int relation_number,
-										   int value_number);
-static char *                              get_size_location_for                  (int relation_number,
-										   char *size_text);
-static char *                              get_emblem_location_for                (int relation_number,
-										   GtkWidget *menu_item);
-static char *                              get_date_modified_location_for         (int relation_number,
-										   char *date);
-static char *                              get_owner_location_for                 (int relation_number,
-										   char *owner_number);
-static void                                make_emblem_value_menu                 (NautilusSearchBarCriterion *criterion);
-
-static void                                criterion_type_changed_callback        (GtkObject *object,
-										   gpointer data);
-static void                                emblems_changed_callback               (GtkObject *signaller,
-										   gpointer data);
-static gboolean                            criterion_type_already_is_displayed         (GSList *criteria,
-											NautilusSearchBarCriterionType criterion_number);
-static NautilusSearchBarCriterionType      get_next_criterion_type                (NautilusSearchBarCriterionType current_type,
-										   GSList *displayed_criteria);
-static void                                nautilus_search_bar_criterion_destroy  (GtkObject *object);
-
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
 
      static void
-nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass)
+nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	object_class->destroy = nautilus_search_bar_criterion_destroy;
 	
-	signals[CRITERION_TYPE_CHANGED] = gtk_signal_new
+	signals[CRITERION_TYPE_CHANGED] = g_signal_new
 		("criterion_type_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
 		 0,
-		 gtk_marshal_NONE__NONE,
-		 GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
 				
 }
 
@@ -238,8 +233,6 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (object);
 
 	/* FIXME bugzilla.gnome.org 42437: need more freeage */
-	gtk_signal_disconnect_by_data (nautilus_signaller_get_current (),
-				       criterion);
 	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
 		nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
 	*/
@@ -257,7 +250,7 @@ nautilus_search_bar_criterion_new (void)
 
 
 static void
-nautilus_search_bar_criterion_initialize (NautilusSearchBarCriterion *criterion)
+nautilus_search_bar_criterion_init (NautilusSearchBarCriterion *criterion)
 {
 	criterion->details = g_new0 (NautilusSearchBarCriterionDetails, 1);
 }
@@ -302,14 +295,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	details->bar = bar;
 	details->box = gtk_hwrap_box_new (FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (details->box),
-			    "need_reallocation",
-			    queue_bar_resize_callback,
-			    bar);
-	gtk_signal_connect (nautilus_signaller_get_current (),
-			    "emblems_changed",
-			    emblems_changed_callback,
-			    (gpointer) criterion);
+	g_signal_connect_object (details->box, "need_reallocation",
+				 G_CALLBACK (queue_bar_resize_callback), bar, 0);
+	g_signal_connect_object (nautilus_signaller_get_current (), "emblems_changed",
+				 G_CALLBACK (emblems_changed_callback), criterion, 0);
 	
 
 	search_criteria_option_menu = gtk_option_menu_new ();
@@ -321,12 +310,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
 		g_free (context_stripped_criteria_title);
 
-		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-		gtk_signal_connect (GTK_OBJECT (item),
-				    "activate",
-				    criterion_type_changed_callback,
-				    (gpointer) criterion);
-		gtk_menu_append (GTK_MENU (search_criteria_menu),
+		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
+		g_signal_connect_object (item, "activate",
+					 G_CALLBACK (criterion_type_changed_callback), criterion, 0);
+		gtk_menu_shell_append (GTK_MENU_SHELL (search_criteria_menu),
 				 item);
 		gtk_widget_show (item);
 	}
@@ -355,23 +342,21 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			g_free (context_stripped_relation);
 		}
 		gtk_widget_show (item);
-		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
+		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		/* Callback to desensitize the date widget for menu items that
 		   don't need a date, like "yesterday" */
 		if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 			if (modified_relation_should_show_value (i)) {
-				gtk_signal_connect (GTK_OBJECT (item), "activate",
-						    show_date_widget,
-						    criterion);
+				g_signal_connect_object (item, "activate",
+							 G_CALLBACK (show_date_widget), criterion, 0);
 			}
 			else {
-				gtk_signal_connect (GTK_OBJECT (item), "activate",
-						    hide_date_widget,
-						    criterion);
+				g_signal_connect_object (item, "activate",
+							 G_CALLBACK (hide_date_widget), criterion, 0);
 			}
 		}
-		gtk_menu_append (GTK_MENU (relation_menu),
-				 item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (relation_menu),
+				       item);
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (relation_option_menu),
 				  relation_menu);
@@ -410,9 +395,9 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			item = gtk_menu_item_new_with_label (context_stripped_value);
 			g_free (context_stripped_value);
 			gtk_widget_show (item);
-			gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-			gtk_menu_append (GTK_MENU (value_menu),
-					 item);
+			g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
+			gtk_menu_shell_append (GTK_MENU_SHELL (value_menu),
+					       item);
 		}
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
 					  value_menu);
@@ -588,7 +573,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	GtkWidget *menu;
 	GtkWidget *menu_item;
 	int name_number, relation_number, value_number;
-	char *value_text;
+	const char *value_text;
 
 	value_number = 0;
 	value_text = NULL;
@@ -599,20 +584,20 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	   - call 
 	   option_menu = gtk_option_menu_get_menu (criterion->details->some_menu)
 	   menu_item = gtk_menu_get_active (option_menu)
-	   number = gtk_object_get_data (menu_item, "type")
+	   number = g_object_get_data (menu_item, "type")
 	*/
 	menu = gtk_option_menu_get_menu (criterion->details->available_criteria);
 	menu_item = gtk_menu_get_active (GTK_MENU (menu));
-	name_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
+	name_number = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "type"));
 
 	menu = gtk_option_menu_get_menu (criterion->details->relation_menu);
 	menu_item = gtk_menu_get_active (GTK_MENU (menu));
-	relation_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
+	relation_number = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "type"));
 
 	if (criterion->details->use_value_menu) {
 		menu = gtk_option_menu_get_menu (criterion->details->value_menu);
 		menu_item = gtk_menu_get_active (GTK_MENU (menu));
-		value_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
+		value_number = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "type"));
 	} else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
 	} else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
@@ -623,27 +608,20 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
 		g_assert (criterion->details->use_value_entry
 			  || criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
-		return get_name_location_for (relation_number,
-					      value_text);
+		return get_name_location_for (relation_number, value_text);
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
-		return get_content_location_for (relation_number,
-						 value_text);
+		return get_content_location_for (relation_number, value_text);
 	case NAUTILUS_FILE_TYPE_SEARCH_CRITERION:
 		g_assert (criterion->details->use_value_menu);
-		return get_file_type_location_for (relation_number,
-						   value_number);
+		return get_file_type_location_for (relation_number, value_number);
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
-		return get_size_location_for (relation_number,
-					      value_text);
+		return get_size_location_for (relation_number, value_text);
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
-		return get_emblem_location_for (relation_number,
-						menu_item);
+		return get_emblem_location_for (relation_number, menu_item);
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
-		return get_date_modified_location_for (relation_number,
-						       value_text);
+		return get_date_modified_location_for (relation_number, value_text);
 	case NAUTILUS_OWNER_SEARCH_CRITERION:
-		return get_owner_location_for (relation_number,
-					       value_text);
+		return get_owner_location_for (relation_number, value_text);
 	default:
 		break;
 	}
@@ -728,14 +706,12 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
 		g_free (context_stripped_criteria_title);
 		
-		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
+		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		
-		gtk_signal_connect (GTK_OBJECT (item),
-				    "activate",
-				    criterion_type_changed_callback,
-				    (gpointer) criterion);
-		gtk_menu_append (GTK_MENU (new_menu),
-				 item);
+		g_signal_connect_object (item, "activate",
+					 G_CALLBACK (criterion_type_changed_callback), criterion, 0);
+		gtk_menu_shell_append (GTK_MENU_SHELL (new_menu),
+				       item);
 		gtk_widget_show (item);
 		if (i == criterion->details->type) {
 			gtk_menu_set_active (GTK_MENU (new_menu), i);
@@ -824,8 +800,8 @@ show_date_widget (GtkObject *object,
 }
 
 
-static char *                              
-get_name_location_for (int relation_number, char *name_text)
+static char *
+get_name_location_for (int relation_number, const char *name_text)
 {
 	const char *possible_relations[] = { "contains",
 					     "begins_with",
@@ -844,7 +820,7 @@ get_name_location_for (int relation_number, char *name_text)
 }
 
 static char *                              
-get_content_location_for (int relation_number, char *name_text)
+get_content_location_for (int relation_number, const char *name_text)
 {
 	const char *possible_relations[] = { "includes_all_of",
 					     "includes_any_of",
@@ -880,7 +856,7 @@ get_file_type_location_for (int relation_number,
 
 static char *                              
 get_size_location_for (int relation_number,
-		       char *size_text)
+		       const char *size_text)
 {
 	const char *possible_relations[] = { "larger_than", "smaller_than" };
 	int entered_size;
@@ -914,7 +890,7 @@ get_emblem_location_for  (int relation_number,
 	
 	g_assert (relation_number == 0 ||
 		  relation_number == 1);
-	emblem_text = gtk_object_get_data (GTK_OBJECT (menu_item),
+	emblem_text = g_object_get_data (G_OBJECT (menu_item),
 					   "emblem name");
 	printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS, possible_relations[relation_number], emblem_text);
         return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS,
@@ -924,7 +900,7 @@ get_emblem_location_for  (int relation_number,
 
 static char *                              
 get_date_modified_location_for (int relation_number,
-				char *date_string)
+				const char *date_string)
 {
 	const char *possible_relations[] = { "is", 
 					     "is_not", 
@@ -970,7 +946,7 @@ get_date_modified_location_for (int relation_number,
 
 static char *                              
 get_owner_location_for (int relation_number,
-			char *owner_text)
+			const char *owner_text)
 {
 	const char *possible_relations[] = { "is", "is_not" };
 	g_assert (relation_number == 0 || relation_number == 1);
@@ -1010,15 +986,15 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (pixbuf);
 			g_free (label);
 			g_free (emblem_name);
 			continue;
 		}
 		menu_item = gtk_menu_item_new ();
 		
-		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name",
-					  g_strdup (emblem_name), (GtkDestroyNotify) g_free);
+		g_object_set_data_full (G_OBJECT (menu_item), "emblem name",
+					g_strdup (emblem_name), g_free);
 
 		
 		image = eel_labeled_image_new (label, pixbuf);
@@ -1028,9 +1004,9 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 
 		gtk_container_add (GTK_CONTAINER (menu_item), image);
 		gtk_widget_show_all (menu_item);
-		gtk_menu_append (GTK_MENU (value_menu), menu_item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (value_menu), menu_item);
 
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		g_free (label);
 		g_free (emblem_name);
 	}
@@ -1056,21 +1032,20 @@ criterion_type_changed_callback (GtkObject *object,
 	menu_item = GTK_WIDGET (object);
 
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (criterion->details->bar));
-	gtk_object_set_data (GTK_OBJECT (criterion), "type", 
-			     gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
-	gtk_signal_emit (GTK_OBJECT (criterion),
-			 signals[CRITERION_TYPE_CHANGED]);
+	g_object_set_data (G_OBJECT (criterion), "type", 
+			     g_object_get_data (G_OBJECT (menu_item), "type"));
+	g_signal_emit (criterion,
+			 signals[CRITERION_TYPE_CHANGED], 0);
 	
 }
 
 static void
-emblems_changed_callback (GtkObject *signaller,
+emblems_changed_callback (GObject *signaller,
 			  gpointer data)
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *menu_widget;
 
-	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (data));
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
 
 	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
@@ -1089,8 +1064,6 @@ criterion_is_of_type (gconstpointer a,
 	NautilusSearchBarCriterion *criterion;
 	NautilusSearchBarCriterionType type;
 
-	g_return_val_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (a), 
-			      NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (a);
 	type = (NautilusSearchBarCriterionType) b;
 	

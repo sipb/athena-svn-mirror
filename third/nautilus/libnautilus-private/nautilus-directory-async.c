@@ -24,25 +24,25 @@
 
 #include <config.h>
 
-#include "nautilus-metafile.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
-#include <eel/eel-glib-extensions.h>
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
+#include "nautilus-metafile.h"
 #include "nautilus-search-uri.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <ctype.h>
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#include <libgnome/gnome-metadata.h>
-#include <libgnome/gnome-mime-info.h>
 #include <gtk/gtkmain.h>
-#include <stdlib.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libxml/parser.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* turn this on to see messages about each load_directory call: */
 #if 0
@@ -133,7 +133,7 @@ static void     move_file_to_low_priority_queue    (NautilusDirectory *directory
 static gboolean
 istr_equal (gconstpointer v, gconstpointer v2)
 {
-	return g_strcasecmp (v, v2) == 0;
+	return g_ascii_strcasecmp (v, v2) == 0;
 }
 
 static guint
@@ -144,7 +144,7 @@ istr_hash (gconstpointer key)
 
 	h = 0;
 	for (p = key; *p != '\0'; p++) {
-		h = (h << 5) - h + tolower ((guchar) *p);
+		h = (h << 5) - h + g_ascii_tolower (*p);
 	}
 	
 	return h;
@@ -153,7 +153,7 @@ istr_hash (gconstpointer key)
 static GHashTable *
 istr_set_new (void)
 {
-	return g_hash_table_new (istr_hash, istr_equal);
+	return g_hash_table_new_full (istr_hash, istr_equal, g_free, NULL);
 }
 
 static void
@@ -161,10 +161,8 @@ istr_set_insert (GHashTable *table, const char *istr)
 {
 	char *key;
 
-	if (g_hash_table_lookup (table, istr) == NULL) {
-		key = g_strdup (istr);
-		g_hash_table_insert (table, key, key);
-	}
+	key = g_strdup (istr);
+	g_hash_table_replace (table, key, key);
 }
 
 static void
@@ -189,7 +187,7 @@ istr_set_get_as_list (GHashTable *table)
 static void
 istr_set_destroy (GHashTable *table)
 {
-	eel_g_hash_table_destroy_deep (table);
+	g_hash_table_destroy (table);
 }
 
 /* Start a job. This is really just a way of limiting the number of
@@ -587,6 +585,51 @@ nautilus_directory_set_up_request (Request *request,
 
 }
 
+static void
+mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
+{
+	const Monitor *monitor;
+	GList *ptr, *attrs;
+	GList *file_list;
+
+	g_return_if_fail (dir != NULL);
+	g_return_if_fail (dir->details != NULL);
+
+	attrs = NULL;
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
+
+	file_list = NULL;
+	for (ptr = dir->details->monitor_list ; ptr != NULL ; ptr = ptr->next) {
+		monitor = ptr->data;
+		if (monitor->request.file_info && monitor->file != NULL) {
+			if (nautilus_file_is_self_owned (monitor->file)) {
+				nautilus_file_emit_changed (monitor->file);
+				nautilus_file_invalidate_attributes (monitor->file, attrs);
+			} else {
+				file_list = g_list_prepend (file_list, 
+							    monitor->file);
+			}
+			
+		}
+	}
+	
+	if (file_list) {
+		nautilus_directory_emit_change_signals (dir, file_list);
+
+		for (ptr = file_list; ptr != NULL; ptr = ptr->next) {
+			nautilus_file_invalidate_attributes (ptr->data, attrs);
+		}
+		g_list_free (file_list);
+	}
+	g_list_free (attrs);
+}
+
 void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
@@ -644,6 +687,13 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
 
+	if (monitor->request.file_info && directory->details->mime_db_monitor == 0) {
+		directory->details->mime_db_monitor = g_signal_connect_object (
+			gnome_vfs_mime_monitor_get (),
+			"data_changed",
+			G_CALLBACK (mime_db_changed_callback), directory, 0);			  
+	}
+
 	/* Put the monitor file or all the files on the work queue. */
 	if (file != NULL) {
 		nautilus_directory_add_file_to_work_queue (directory, file);
@@ -691,15 +741,29 @@ show_backup_files_changed_callback (gpointer callback_data)
 	show_backup_files = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 }
 
-static GnomeVFSDirectoryFilterOptions
-get_filter_options_for_directory_count (void)
+static gboolean
+is_dot_or_dot_dot (const char *name)
+{
+	if (name[0] != '.') {
+		return FALSE;
+	}
+	if (name[1] == '\0') {
+		return TRUE;
+	}
+	if (name[1] != '.') {
+		return FALSE;
+	}
+	if (name[2] == '\0') {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
+should_skip_file (GnomeVFSFileInfo *info)
 {
 	static gboolean show_hidden_files_changed_callback_installed = FALSE;
 	static gboolean show_backup_files_changed_callback_installed = FALSE;
-	GnomeVFSDirectoryFilterOptions filter_options;
-	
-	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
-		| GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
 
 	/* Add the callback once for the life of our process */
 	if (!show_hidden_files_changed_callback_installed) {
@@ -722,15 +786,23 @@ get_filter_options_for_directory_count (void)
 		/* Peek for the first time */
 		show_backup_files_changed_callback (NULL);
 	}
-	
-	if (!show_hidden_files) {
-		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
-	}
-	if (!show_backup_files) {
-		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
+
+	if (info == NULL || info->name == NULL) {
+		return TRUE;
 	}
 
-	return filter_options;
+	if (is_dot_or_dot_dot (info->name)) {
+		return TRUE;
+	}
+
+	if (!show_hidden_files && nautilus_file_name_matches_hidden_pattern (info->name)) {
+		return TRUE;
+	}
+	if (!show_backup_files && nautilus_file_name_matches_backup_pattern (info->name)) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -754,9 +826,6 @@ load_directory_state_destroy (NautilusDirectory *directory)
 		
 		nautilus_file_unref (file);
 	}
-
-	gnome_vfs_directory_filter_destroy (directory->details->load_file_count_filter);
-	directory->details->load_file_count_filter = NULL;
 }
 
 static void
@@ -806,16 +875,15 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		 * moving this into the actual callback instead of
 		 * waiting for the idle function.
 		 */
-		if (gnome_vfs_directory_filter_apply (directory->details->load_file_count_filter,
-						      file_info)) {
+		if (!should_skip_file (file_info)) {
 			directory->details->load_file_count += 1;
-		}
 
-		/* Add the MIME type to the set. */
-		if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
-			&& directory->details->load_mime_list_hash != NULL) {
-			istr_set_insert (directory->details->load_mime_list_hash,
-					 file_info->mime_type);
+			/* Add the MIME type to the set. */
+			if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+			    && directory->details->load_mime_list_hash != NULL) {
+				istr_set_insert (directory->details->load_mime_list_hash,
+						 file_info->mime_type);
+			}
 		}
 		
 		/* check if the file already exists */
@@ -910,7 +978,7 @@ static void
 directory_load_one (NautilusDirectory *directory,
 		    GnomeVFSFileInfo *info)
 {
-	if (info == NULL) {
+	if (info == NULL || is_dot_or_dot_dot (info->name)) {
 		return;
 	}
 
@@ -1345,6 +1413,21 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 	}
 }
 
+static guint
+count_non_skipped_files (GList *list)
+{
+	guint count;
+	GList *node;
+
+	count = 0;
+	for (node = list; node != NULL; node = node->next) {
+		if (!should_skip_file (node->data)) {
+			count += 1;
+		}
+	}
+	return count;
+}
+
 static void
 directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSResult result,
@@ -1377,7 +1460,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	} else {
 		count_file->details->directory_count_failed = FALSE;
 		count_file->details->got_directory_count = TRUE;
-		count_file->details->directory_count = entries_read;
+		count_file->details->directory_count = count_non_skipped_files (list);
 	}
 	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
@@ -1434,6 +1517,7 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 		 vfs_uri_list,
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 new_files_callback,
 		 directory);
 
@@ -1600,14 +1684,49 @@ wants_mime_list (const Request *request)
 }
 
 static gboolean
+should_look_for_dot_directory_file (NautilusFile *file)
+{
+	char *uri;
+	guint i;
+
+	const char *schemes [] = {
+		"preferences:",
+		"all-preferences:",
+		"system-settings:",
+		"server-settings:",
+		"favorites:",
+		"start-here:",
+		"applications:",
+		"all-applications:"
+	};
+
+	uri = file->details->directory->details->uri;
+
+	/* We special-case the file shcme so we won't have
+	 * to go through the list every time
+	 */
+	if (eel_str_has_prefix (uri, "file:")) {
+		return FALSE;
+	}
+
+	for (i = 0; i < G_N_ELEMENTS (schemes); i++) {
+		if (eel_str_has_prefix (uri, schemes[i])) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
 lacks_link_info (NautilusFile *file)
 {
 	if (file->details->file_info_is_up_to_date && 
 	    !file->details->link_info_is_up_to_date) {
-		if ((nautilus_file_is_mime_type (file, "application/x-gmc-link") &&
-		     nautilus_file_is_in_desktop (file)) ||
-		    nautilus_file_is_nautilus_link (file) ||
-		    nautilus_file_is_directory (file)) {
+		if (nautilus_file_is_nautilus_link (file)) {
+			return TRUE;
+		} else if (nautilus_file_is_directory (file) &&
+			should_look_for_dot_directory_file (file)) {
 			return TRUE;
 		} else {
 			link_info_done (file->details->directory, file, NULL, NULL, NULL);
@@ -1779,6 +1898,8 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 	}
 }
 
+#if GNOME2_HAS_MEDUSA
+
 static gboolean
 should_display_file_name (const char *name,
 			  GnomeVFSDirectoryFilterOptions options)
@@ -1842,6 +1963,8 @@ get_file_count_filter (NautilusDirectory *directory)
 		 NULL);
 }
 
+#endif
+
 /* Start monitoring the file list if it isn't already. */
 static void
 start_monitoring_file_list (NautilusDirectory *directory)
@@ -1869,7 +1992,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
-	directory->details->load_file_count_filter = get_file_count_filter (directory);
 	directory->details->load_mime_list_hash = istr_set_new ();
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
@@ -1879,11 +2001,8 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		 directory->details->uri,                         /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-		 NULL,                                            /* filter_pattern */
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 directory_load_callback,                         /* callback */
 		 directory);
 }
@@ -2102,10 +2221,8 @@ directory_count_start (NautilusDirectory *directory,
 		(&directory->details->count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 get_filter_options_for_directory_count (),
-		 NULL,
 		 G_MAXINT,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 directory_count_callback,
 		 directory);
 	g_free (uri);
@@ -2117,6 +2234,9 @@ deep_count_one (NautilusDirectory *directory,
 {
 	NautilusFile *file;
 	char *escaped_name, *uri;
+	
+	if (should_skip_file (info))
+		return;
 
 	file = directory->details->deep_count_file;
 
@@ -2127,7 +2247,7 @@ deep_count_one (NautilusDirectory *directory,
 
 		/* Record the fact that we have to descend into this directory. */
 		escaped_name = gnome_vfs_escape_string (info->name);
-		uri = nautilus_make_path (directory->details->deep_count_uri, escaped_name);
+		uri = g_build_filename (directory->details->deep_count_uri, escaped_name, NULL);
 		g_free (escaped_name);
 		directory->details->deep_count_subdirectories = g_list_prepend
 			(directory->details->deep_count_subdirectories, uri);
@@ -2213,11 +2333,8 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->deep_count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-		 NULL,
 		 G_MAXINT,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 deep_count_callback,
 		 directory);
 }
@@ -2287,6 +2404,10 @@ static void
 mime_list_one (NautilusDirectory *directory,
 	       GnomeVFSFileInfo *info)
 {
+	if (should_skip_file (info)) {
+		return;
+	}
+
 	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
 		istr_set_insert (directory->details->mime_list_hash, info->mime_type);
 	}
@@ -2360,11 +2481,8 @@ mime_list_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->mime_list_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
-		 GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-		 NULL,
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 mime_list_callback,
 		 directory);
 }
@@ -2413,7 +2531,7 @@ mime_list_start (NautilusDirectory *directory,
 	if (!nautilus_file_is_directory (file)) {
 		g_list_free (file->details->mime_list);
 		file->details->mime_list_failed = FALSE;
-		file->details->got_directory_count = FALSE;
+		file->details->got_mime_list = FALSE;
 		file->details->mime_list_is_up_to_date = TRUE;
 
 		nautilus_directory_async_state_changed (directory);
@@ -2462,23 +2580,22 @@ top_left_read_callback (GnomeVFSResult result,
 			gpointer callback_data)
 {
 	NautilusDirectory *directory;
-	NautilusFile *changed_file;
+	NautilusFileDetails *file_details;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	directory->details->top_left_read_state->handle = NULL;
-	directory->details->top_left_read_state->file->details->top_left_text_is_up_to_date = TRUE;
 
-	changed_file = NULL;
+	file_details = directory->details->top_left_read_state->file->details;
+
+	file_details->top_left_text_is_up_to_date = TRUE;
+	g_free (file_details->top_left_text);
 	if (result == GNOME_VFS_OK) {
-		g_free (directory->details->top_left_read_state->file->details->top_left_text);
-		directory->details->top_left_read_state->file->details->top_left_text =
-			nautilus_extract_top_left_text (file_contents, bytes_read);
-		
-		directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
+		file_details->top_left_text = nautilus_extract_top_left_text (file_contents, bytes_read);
+		file_details->got_top_left_text = TRUE;
 	} else {
-		g_free (directory->details->top_left_read_state->file->details->top_left_text);
-		directory->details->top_left_read_state->file->details->got_top_left_text = FALSE;
+		file_details->top_left_text = NULL;
+		file_details->got_top_left_text = FALSE;
 	}
 
 	g_free (file_contents);
@@ -2541,6 +2658,7 @@ top_left_start (NautilusDirectory *directory,
 
 	if (!nautilus_file_contains_text (file)) {
 		g_free (file->details->top_left_text);
+		file->details->top_left_text = NULL;
 		file->details->got_top_left_text = FALSE;
 		file->details->top_left_text_is_up_to_date = TRUE;
 
@@ -2558,6 +2676,7 @@ top_left_start (NautilusDirectory *directory,
 	uri = nautilus_file_get_uri (file);
 	directory->details->top_left_read_state->handle = eel_read_file_async
 		(uri,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 top_left_read_callback,
 		 top_left_read_more_callback,
 		 directory);
@@ -2687,6 +2806,7 @@ file_info_start (NautilusDirectory *directory,
 		 &fake_list,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 get_info_callback,
 		 directory);
 	gnome_vfs_uri_unref (vfs_uri);
@@ -2709,10 +2829,17 @@ link_info_done (NautilusDirectory *directory,
 	file->details->activation_uri = g_strdup (uri);
 	file->details->display_name = g_strdup (name);
 	file->details->custom_icon_uri = g_strdup (icon);
+ 	nautilus_file_clear_cached_display_name (file);
 
 	nautilus_directory_async_state_changed (directory);
 }
 
+static gboolean
+should_read_link_info_sync (NautilusFile *file)
+{
+	return (nautilus_file_is_local (file) &&
+		!nautilus_file_is_directory (file));
+}
 
 static void
 link_info_read_done (NautilusDirectory *directory,
@@ -2729,8 +2856,12 @@ link_info_read_done (NautilusDirectory *directory,
 	nautilus_file_ref (file);
 	link_info_done (directory, file, uri, name, icon);
 	nautilus_file_changed (file);
+
+	if (!should_read_link_info_sync (file)) {
+		async_job_end (directory, "link info");
+	}
+
 	nautilus_file_unref (file);
-	async_job_end (directory, "link info");
 }
 
 
@@ -2755,12 +2886,12 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 		name = NULL;
 		icon = NULL;
 	} else {
-		/* The gnome-xml parser requires a zero-terminated array. */
+		/* The libxml parser requires a zero-terminated array. */
 		buffer = g_realloc (file_contents, bytes_read + 1);
 		buffer[bytes_read] = '\0';
-		uri = nautilus_link_get_link_uri_given_file_contents (buffer, bytes_read);
-                name = nautilus_link_get_link_name_given_file_contents (buffer, bytes_read);
-                icon = nautilus_link_get_link_icon_given_file_contents (buffer, bytes_read);
+		uri = nautilus_link_get_link_uri_given_file_contents (NULL, buffer, bytes_read);
+                name = nautilus_link_get_link_name_given_file_contents (NULL, buffer, bytes_read);
+                icon = nautilus_link_get_link_icon_given_file_contents (NULL, buffer, bytes_read);
 		g_free (buffer);
 	}
 
@@ -2773,100 +2904,13 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 }
 
 
-
-
-static void
-link_info_gmc_link_read_callback (GnomeVFSResult result,
-				  GnomeVFSFileSize bytes_read,
-				  char *file_contents,
-				  gpointer callback_data)
-{
-	NautilusDirectory *directory;
-	char *end_of_line, *uri, *name, *path, *icon, *icon_path;
-	int size, res;
-	
-	directory = NAUTILUS_DIRECTORY (callback_data);
-
-	nautilus_directory_ref (directory);
-
-	/* Handle the case where we read the GMC link. */
-	if (result != GNOME_VFS_OK || !eel_str_has_prefix (file_contents, "URL: ")) {
-		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
-		uri = NULL;
-		name = NULL;
-		icon = NULL;
-	} else {
-		/* Make sure we don't run off the end of the buffer. */
-		end_of_line = memchr (file_contents, '\n', bytes_read);
-		if (end_of_line == NULL) {
-			end_of_line = file_contents + bytes_read;
-		}
-		uri = file_contents + strlen("URL: ");
-		uri = g_strndup (uri, end_of_line - uri);
-
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		
-		if (path != NULL) {
-			/* FIXME: this gnome_metata_get call is synchronous, but better to
-			 * have it here where the results will at least be cached than in
-			 * nautilus_file_get_display_name. 
-			 */
-			res = gnome_metadata_get (path, "icon-name", &size, &name);
-		} else {
-		        res = -1;
-		}
-		
-		if (res != 0) {
-		        name = NULL;
-		}
-
-		if (path != NULL) {
-			/* FIXME: this gnome_metata_get call is synchronous, but better to
-			 * have it here where the results will at least be cached than in
-			 * nautilus_file_get_display_name. 
-			 */
-			res = gnome_metadata_get (path, "icon-filename", &size, &icon_path);
-		} else {
-			res = -1;
-		}
-
-		if (res == 0 && icon_path != NULL) {
-			icon = gnome_vfs_get_uri_from_local_path (icon_path);
-			g_free (icon_path);
-		} else {
-			icon = NULL;
-		}
-
-		g_free (path);
-	}
-
-	g_free (file_contents);
-	link_info_read_done (directory, uri, name, icon);
-	g_free (uri);
-	g_free (name);
-	g_free (icon);
-
-	nautilus_directory_unref (directory);
-}
-
-static gboolean
-link_info_gmc_link_read_more_callback (GnomeVFSFileSize bytes_read,
-				       const char *file_contents,
-				       gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
-
-	/* We need the first 512 bytes to see if something is a gmc link. */
-	return bytes_read < 512;
-}
-
 static char *
 make_dot_directory_uri (const char *uri)
 {
 	char *dot_directory_uri;
 	GnomeVFSURI *vfs_uri;
 	GnomeVFSURI *dot_dir_vfs_uri;
-	
+
 	/* FIXME: what we really need is a uri_append_file_name call
 	 * that works on strings, so we can avoid the VFS parsing step.
 	 */
@@ -2877,7 +2921,17 @@ make_dot_directory_uri (const char *uri)
 	}
 	
 	dot_dir_vfs_uri = gnome_vfs_uri_append_file_name (vfs_uri, ".directory");
-	dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+
+	/* This does sync I/O but is allowed here since otherwise nautilus won't start showing the
+	 * directory's contents before all the scheduled calls of "look for .directory file" have been
+	 * finished. 
+	 */
+	if (gnome_vfs_uri_is_local (dot_dir_vfs_uri)) {
+		dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	}
+	else {
+		dot_directory_uri = NULL;
+	}
 	
 	gnome_vfs_uri_unref (vfs_uri);
 	gnome_vfs_uri_unref (dot_dir_vfs_uri);
@@ -2915,8 +2969,11 @@ link_info_start (NautilusDirectory *directory,
 		 NautilusFile *file)
 {
 	char *uri, *dot_directory_uri = NULL;
-	gboolean gmc_style_link, nautilus_style_link, is_directory;
-
+	gboolean nautilus_style_link, is_directory;
+	int file_size;
+	char *file_contents;
+	GnomeVFSResult result;
+	
 	if (directory->details->link_info_read_state != NULL) {
 		return;
 	}
@@ -2928,8 +2985,6 @@ link_info_start (NautilusDirectory *directory,
 	}
 
 	/* Figure out if it is a link. */
-	gmc_style_link = nautilus_file_is_mime_type (file, "application/x-gmc-link")
-		&& nautilus_file_is_in_desktop (file);
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
         is_directory = nautilus_file_is_directory (file);
 
@@ -2940,8 +2995,18 @@ link_info_start (NautilusDirectory *directory,
 	}
 	
 	/* If it's not a link we are done. If it is, we need to read it. */
-	if (!(gmc_style_link || nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
+	if (!(nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
 		link_info_done (directory, file, NULL, NULL, NULL);
+	} else if (should_read_link_info_sync (file)) {
+		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
+		directory->details->link_info_read_state->file = file;
+
+		result = eel_read_entire_file (uri, &file_size, &file_contents);
+		link_info_nautilus_link_read_callback (result, file_size, file_contents, directory);
+
+		/* We don't have to free file_contents here
+		 * because it's done in the callback function
+		 */
 	} else {
 		if (!async_job_start (directory, "link info")) {
 			g_free (dot_directory_uri);
@@ -2951,21 +3016,17 @@ link_info_start (NautilusDirectory *directory,
 
 		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
 		directory->details->link_info_read_state->file = file;
-		if (gmc_style_link) {
-			directory->details->link_info_read_state->handle = eel_read_file_async
-				(uri,
-				 link_info_gmc_link_read_callback,
-				 link_info_gmc_link_read_more_callback,
-				 directory);
-		}  else if (is_directory) {
+		if (is_directory) {
 			directory->details->link_info_read_state->handle = eel_read_entire_file_async
 				(dot_directory_uri,
+				 GNOME_VFS_PRIORITY_DEFAULT,
 				 link_info_nautilus_link_read_callback,
 				 directory);
 			g_free (dot_directory_uri);
 		} else {
 			directory->details->link_info_read_state->handle = eel_read_entire_file_async
 				(uri,
+				 GNOME_VFS_PRIORITY_DEFAULT,
 				 link_info_nautilus_link_read_callback,
 				 directory);
 		}
@@ -3035,9 +3096,6 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	 * is not longer needed once the callbacks are satisfied.
 	 */
 
-	if (GTK_OBJECT_DESTROYED (directory)) {
-		return;
-	}
 	if (directory->details->in_async_service_loop) {
 		directory->details->state_changed = TRUE;
 		return;
@@ -3177,6 +3235,8 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 {
 	Request request;
 	
+	nautilus_directory_remove_file_from_work_queue (directory, file);
+
 	nautilus_directory_set_up_request (&request,
 					   file_attributes);
 
@@ -3258,6 +3318,8 @@ void
 nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
 					   NautilusFile *file)
 {
+	g_return_if_fail (file->details->directory == directory);
+
 	if (!file_needs_work_done (directory, file)) {
 		return;
 	}

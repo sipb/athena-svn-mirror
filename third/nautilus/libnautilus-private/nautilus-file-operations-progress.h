@@ -29,17 +29,17 @@
 #ifndef NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 #define NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 
 typedef struct NautilusFileOperationsProgressDetails NautilusFileOperationsProgressDetails;
 
 typedef struct {
-	GnomeDialog dialog;
+	GtkDialog dialog;
 	NautilusFileOperationsProgressDetails *details;
 } NautilusFileOperationsProgress;
 
 typedef struct {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 } NautilusFileOperationsProgressClass;
 
 #define NAUTILUS_FILE_OPERATIONS_PROGRESS(obj) \
@@ -49,13 +49,14 @@ typedef struct {
 #define NAUTILUS_IS_FILE_OPERATIONS_PROGRESS(obj) \
   GTK_CHECK_TYPE (obj, nautilus_file_operations_progress_get_type ())
 
-guint                           nautilus_file_operations_progress_get_type             (void);
+GType                           nautilus_file_operations_progress_get_type             (void);
 NautilusFileOperationsProgress *nautilus_file_operations_progress_new                  (const char                     *title,
 											const char                     *operation_string,
 											const char                     *from_prefix,
 											const char                     *to_prefix,
 											gulong                          files_total,
-											gulong                          bytes_total);
+											gulong                          bytes_total,
+											gboolean			use_timeout);
 void                            nautilus_file_operations_progress_done                 (NautilusFileOperationsProgress *dialog);
 void                            nautilus_file_operations_progress_set_progress_title   (NautilusFileOperationsProgress *dialog,
 											const char                     *progress_title);
@@ -77,5 +78,7 @@ void                            nautilus_file_operations_progress_new_file      
 void                            nautilus_file_operations_progress_update_sizes         (NautilusFileOperationsProgress *dialog,
 											gulong                          bytes_done_in_file,
 											gulong                          bytes_done);
+void				nautilus_file_operations_progress_pause_timeout	       (NautilusFileOperationsProgress *progress);
+void				nautilus_file_operations_progress_resume_timeout       (NautilusFileOperationsProgress *progress);
 
 #endif /* NAUTILUS_FILE_OPERATIONS_PROGRESS_H */

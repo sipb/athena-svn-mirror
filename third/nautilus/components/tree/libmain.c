@@ -25,20 +25,11 @@
    version of tree view. */
 
 #include <config.h>
-
+#include <string.h>
 #include "nautilus-tree-view-iids.h"
 #include "nautilus-tree-view.h"
 #include <bonobo.h>
-#include <liboaf/liboaf.h>
-
-/* FIXME bugzilla.gnome.org 42736: oaf_plugin_unuse can't possibly work! this sucks */
-#if 0
-static void
-tree_shlib_object_destroyed (GtkObject *object)
-{
-	oaf_plugin_unuse (gtk_object_get_user_data (object));
-}
-#endif
+#include <bonobo-activation/bonobo-activation.h>
 
 static CORBA_Object
 tree_shlib_make_object (PortableServer_POA poa,
@@ -52,24 +43,19 @@ tree_shlib_make_object (PortableServer_POA poa,
 		return CORBA_OBJECT_NIL;
 	}
 
-	view = NAUTILUS_TREE_VIEW (gtk_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
+	view = NAUTILUS_TREE_VIEW (g_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
-#if 0
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
-#endif
+	bonobo_activation_plugin_use (poa, impl_ptr);
 
-	oaf_plugin_use (poa, impl_ptr);
-
-	return CORBA_Object_duplicate (bonobo_object_corba_objref 
-				       (BONOBO_OBJECT (view)), ev);
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), ev);
 }
 
-static const OAFPluginObject tree_plugin_list[] = {
+static const BonoboActivationPluginObject tree_plugin_list[] = {
 	{ TREE_VIEW_IID, tree_shlib_make_object },
 	{ NULL }
 };
 
-const OAFPlugin OAF_Plugin_info = {
+const BonoboActivationPlugin Bonobo_Plugin_info = {
 	tree_plugin_list,
 	"Nautilus Tree Sidebar Panel"
 };

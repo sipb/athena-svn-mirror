@@ -4,6 +4,7 @@
                                 a program from a list
 
    Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2001, 2002 Anders Carlsson <andersca@gnu.org>
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -20,24 +21,45 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: John Sullivan <sullivan@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>
+            Anders Carlsson <andersca@gnu.org>
 */
 
 #ifndef NAUTILUS_PROGRAM_CHOOSER_H
 #define NAUTILUS_PROGRAM_CHOOSER_H
 
-#include <gtk/gtkwindow.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
-#include "nautilus-file.h"
-#include "nautilus-view-identifier.h"
+#define NAUTILUS_TYPE_PROGRAM_CHOOSER            (nautilus_program_chooser_get_type ())
+#define NAUTILUS_PROGRAM_CHOOSER(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PROGRAM_CHOOSER, NautilusProgramChooser))
+#define NAUTILUS_PROGRAM_CHOOSER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PROGRAM_CHOOSER, NautilusProgramChooserClass))
+#define NAUTILUS_IS_PROGRAM_CHOOSER(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PROGRAM_CHOOSER))
 
-GnomeDialog 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
+typedef struct NautilusProgramChooser NautilusProgramChooser;
+typedef struct NautilusProgramChooserClass NautilusProgramChooserClass;
+typedef struct NautilusProgramChooserDetails NautilusProgramChooserDetails;
+
+struct NautilusProgramChooser
+{
+	GtkDialog parent_instance;
+
+	NautilusProgramChooserDetails *details;
+};
+
+struct NautilusProgramChooserClass
+{
+	GtkDialogClass parent_class;
+};
+
+GtkType                  nautilus_program_chooser_get_type                (void);
+GtkWidget 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
 					   			   	   NautilusFile 	  *file);
 
-GnomeVFSMimeApplication *nautilus_program_chooser_get_application 	  (GnomeDialog 		  *program_chooser);
-NautilusViewIdentifier  *nautilus_program_chooser_get_component   	  (GnomeDialog 		  *program_chooser);
+GnomeVFSMimeApplication *nautilus_program_chooser_get_application 	  (NautilusProgramChooser *program_chooser);
+NautilusViewIdentifier  *nautilus_program_chooser_get_component   	  (NautilusProgramChooser *program_chooser);
 
 void			 nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_type,
 									   NautilusFile	  	  *file,

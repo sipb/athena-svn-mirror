@@ -1,7 +1,5 @@
 #include "test.h"
 
-#include <eel/eel-image.h>
-#include <eel/eel-image-with-background.h>
 #include <eel/eel-text-caption.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
@@ -18,33 +16,6 @@ text_caption_update (EelTextCaption *text_caption,
 		 eel_preferences_get_integer (name));
 
 	test_text_caption_set_text_for_int_preferences (text_caption, name);
-}
-
-static void
-user_level_caption_update (EelTextCaption *text_caption)
-{
-	char *old_text;
-	char *new_text;
-
-	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
-	
-	old_text = eel_text_caption_get_text (text_caption);
-	new_text = eel_preferences_get ("user_level");
-	
-	g_print ("'%s' changed from '%s' to '%s'\n",
-		 "user_level",
-		 old_text, new_text);
-
-	g_free (old_text);
-	g_free (new_text);
-
-	test_text_caption_set_text_for_string_preferences (text_caption, "user_level");
-}
-
-static void
-user_level_changed_callback (gpointer callback_data)
-{
-	user_level_caption_update (EEL_TEXT_CAPTION (callback_data));
 }
 
 static void
@@ -111,28 +82,6 @@ entry_new (const char *name,
 	gtk_widget_show (*default_caption_out);
 
 	return hbox;
-}
-
-static GtkWidget *
-user_level_frame_new (void)
-{
-	GtkWidget *user_level_caption;
-	GtkWidget *user_level_default_caption;
-	GtkWidget *user_level_hbox;
-	GtkWidget *frame;
-
-	frame = gtk_frame_new ("user_level");
-	
-	user_level_hbox = entry_new ("user_level", &user_level_caption, &user_level_default_caption);
-	test_text_caption_set_text_for_string_preferences (EEL_TEXT_CAPTION (user_level_caption), "user_level");
-	test_text_caption_set_text_for_default_string_preferences (EEL_TEXT_CAPTION (user_level_default_caption), "user_level");
-	eel_preferences_add_callback ("user_level", user_level_changed_callback, user_level_caption);
-
-	gtk_container_add (GTK_CONTAINER (frame), user_level_hbox);
-
-	gtk_widget_show_all (frame);
-
-	return frame;
 }
 
 static GtkWidget *
@@ -237,13 +186,12 @@ main (int argc, char *argv[])
 	GtkWidget *window;
 	GtkWidget *vbox;
 
-	GtkWidget *user_level_frame;
 	GtkWidget *colors_frame;
 	GtkWidget *fruits_frame;
 
 	test_init (&argc, &argv);
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	window = test_window_new (NULL, 4);
 	test_window_set_title_with_pid (GTK_WINDOW (window), "Preferences Display");
@@ -251,11 +199,9 @@ main (int argc, char *argv[])
 	vbox = gtk_vbox_new (FALSE, 2);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	user_level_frame = user_level_frame_new ();
 	colors_frame = colors_frame_new ();
 	fruits_frame = fruits_frame_new ();
 
-	gtk_box_pack_start (GTK_BOX (vbox), user_level_frame, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), colors_frame, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), fruits_frame, TRUE, TRUE, 0);
 

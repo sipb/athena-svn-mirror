@@ -32,6 +32,12 @@
 #include <setjmp.h>
 
 #include <stdio.h>
+
+/* Workaround broken libjpeg defining these that may
+ * collide w/ the ones in config.h
+ */
+#undef HAVE_STDDEF_H
+#undef HAVE_STDLIB_H
 #include <jpeglib.h>
 
 #include <libgnomevfs/gnome-vfs-types.h>
@@ -83,7 +89,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	src = (Source *) cinfo->src;
 	result = gnome_vfs_read (src->handle,
 				 src->buffer,
-				 EEL_N_ELEMENTS (src->buffer),
+				 G_N_ELEMENTS (src->buffer),
 				 &nbytes);
 	
 	if (result != GNOME_VFS_OK || nbytes == 0) {

@@ -22,80 +22,41 @@
  * Authors: Darin Adler <darin@bentspoon.com>
  */
 
-/* nautilus-desktop-window.c
- */
-
 #include <config.h>
 #include "nautilus-desktop-window.h"
 
-#include <libgnome/gnome-i18n.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomeui/gnome-winhints.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-link.h>
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtklayout.h>
+#include <libgnome/gnome-macros.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 
 struct NautilusDesktopWindowDetails {
-	GList *unref_list;
+	int dummy;
 };
 
-static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass);
-static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
-static void destroy                                  (GtkObject                  *object);
-static void realize                                  (GtkWidget                  *widget);
-static void map                                      (GtkWidget                  *widget);
-static void real_add_current_location_to_history_list (NautilusWindow		 *window);
+static void set_wmspec_desktop_hint (GdkWindow *window);
 
-
-static void set_wmspec_desktop_hint                   (GdkWindow *window);
-
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
+GNOME_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window,
+			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
 
 static void
-nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-	GTK_WIDGET_CLASS (klass)->realize = realize;
-	GTK_WIDGET_CLASS (klass)->map = map;
-	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
-		= real_add_current_location_to_history_list;
-}
-
-static void
-nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
+nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
-	/* FIXME bugzilla.gnome.org 41251: 
-	 * Although Havoc had this call to set_default_size in
-	 * his code, it seems to have no effect for me. But the
-	 * set_usize below does seem to work.
-	 */
-	gtk_window_set_default_size (GTK_WINDOW (window),
+	gtk_widget_set_size_request (GTK_WIDGET (window),
 				     gdk_screen_width (),
 				     gdk_screen_height ());
 
-	/* These calls seem to have some effect, but it's not clear if
-	 * they are the right thing to do.
-	 */
-	gtk_widget_set_uposition (GTK_WIDGET (window), 0, 0);
-	gtk_widget_set_usize (GTK_WIDGET (window),
-			      gdk_screen_width (),
-			      gdk_screen_height ());
+	gtk_window_move (GTK_WINDOW (window), 0, 0);
 
-	/* Tell the window manager to never resize this. This is not
-	 * known to have any specific beneficial effect with any
-	 * particular window manager for the case of the desktop
-	 * window, but it doesn't seem to do any harm.
+	/* shouldn't really be needed given our semantic type
+	 * of _NET_WM_TYPE_DESKTOP, but why not
 	 */
-	gtk_window_set_policy (GTK_WINDOW (window),
-			       FALSE, FALSE, FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (window),
+				  FALSE);
 }
 
 static void
@@ -106,7 +67,8 @@ nautilus_desktop_window_realized (NautilusDesktopWindow *window)
 	Window window_xid;
 	window_xid = GDK_WINDOW_XWINDOW (GTK_WIDGET (window)->window);
 	gdk_property_change (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
-			     XA_WINDOW, 32, PropModeReplace, (guchar *) &window_xid, 1);
+			     gdk_x11_xatom_to_atom (XA_WINDOW), 32,
+			     PropModeReplace, (guchar *) &window_xid, 1);
 }
 
 static gint
@@ -147,34 +109,40 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 
-	gtk_signal_connect (GTK_OBJECT (window), "realize", GTK_SIGNAL_FUNC (nautilus_desktop_window_realized), NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (nautilus_desktop_window_delete_event), NULL);
+	g_signal_connect (window, "realize", G_CALLBACK (nautilus_desktop_window_realized), NULL);
+	g_signal_connect (window, "delete_event", G_CALLBACK (nautilus_desktop_window_delete_event), NULL);
 
 	/* Point window at the desktop folder.
-	 * Note that nautilus_desktop_window_initialize is too early to do this.
+	 * Note that nautilus_desktop_window_init is too early to do this.
 	 */
 	nautilus_desktop_window_update_directory (window);
-
-	gtk_widget_show (GTK_WIDGET (window));
 
 	return window;
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusDesktopWindow *window;
 
 	window = NAUTILUS_DESKTOP_WINDOW (object);
 
 	gdk_property_delete (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
-
-	eel_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+/* Disable this code for the time being, since its:
+ * a) not working
+ * b) crashes nautilus if the root window has a different
+ *    depth than the nautilus window
+ *
+ * The idea behind the code is to grab the old background pixmap
+ * and temporarily set it as the background for the nautilus window
+ * to avoid flashing before the correct background has been set.
+ */
+#if 0
 static void
 set_gdk_window_background (GdkWindow *window,
 			   gboolean   have_pixel,
@@ -204,7 +172,7 @@ set_window_background (GtkWidget *widget,
 		       Pixmap     pixmap,
 		       gulong     pixel)
 {
-	GdkAtom type;
+	Atom type;
 	gulong nitems, bytes_after;
 	gint format;
 	guchar *data;
@@ -226,7 +194,7 @@ set_window_background (GtkWidget *widget,
 		 */
 		
 		XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-				    gdk_atom_intern ("_XROOTPMAP_ID", FALSE),
+				    gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"),
 				    0L, 1L, False, XA_PIXMAP,
 				    &type, &format, &nitems, &bytes_after,
 				    &data);
@@ -241,7 +209,7 @@ set_window_background (GtkWidget *widget,
 
 		if (pixmap == None) {
 			XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-					    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
+					    gdk_x11_get_xatom_by_name ("_XROOTCOLOR_PIXEL"),
 					    0L, 1L, False, AnyPropertyType,
 					    &type, &format, &nitems, &bytes_after,
 					    &data);
@@ -273,93 +241,25 @@ set_window_background (GtkWidget *widget,
 	/* For both parent and child, if it's a layout then set on the
 	 * bin window as well.
 	 */
-	if (GTK_IS_LAYOUT (widget))
+	if (GTK_IS_LAYOUT (widget)) {
 		set_gdk_window_background (GTK_LAYOUT (widget)->bin_window,
 					   have_pixel,
 					   pixmap, pixel);
+	}
 }
-
-static void
-realize (GtkWidget *widget)
-{
-	NautilusDesktopWindow *window;
-
-	window = NAUTILUS_DESKTOP_WINDOW (widget);
-
-	/* Make sure we get keyboard events */
-	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
-			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
-			      
-	/* Do the work of realizing. */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
-
-	/* This is the new way to set up the desktop window */
-	set_wmspec_desktop_hint (widget->window);
-	
-	/* FIXME all this gnome_win_hints stuff is legacy cruft */
-	
-	/* Put this window behind all the others. */
-	gnome_win_hints_set_layer (widget, WIN_LAYER_DESKTOP);
-	
-	/* Make things like the task list ignore this window and make
-	 * it clear that it it's at its full size.
-	 *
-	 * We originally included WIN_STATE_HIDDEN here, but IceWM
-	 * interprets that (wrongly, imho) as meaning `don't display
-	 * this window'. Not including this bit seems to make
-	 * no difference though, so..
-	 */
-	gnome_win_hints_set_state (widget,
-				   WIN_STATE_STICKY
-				   | WIN_STATE_MAXIMIZED_VERT
-				   | WIN_STATE_MAXIMIZED_HORIZ
-				   | WIN_STATE_FIXED_POSITION
-				   | WIN_STATE_ARRANGE_IGNORE);
-
-	/* Make sure that focus, and any window lists or task bars also
-	 * skip the window.
-	 */
-	gnome_win_hints_set_hints (widget,
-				   WIN_HINTS_SKIP_WINLIST
-				   | WIN_HINTS_SKIP_TASKBAR
-				   | WIN_HINTS_SKIP_FOCUS);
-
-	/* FIXME bugzilla.gnome.org 41255: 
-	 * Should we do a gdk_window_move_resize here, in addition to
-	 * the calls in initialize above that set the size?
-	 */
-	gdk_window_move_resize (widget->window,
-				0, 0,
-				gdk_screen_width (),
-				gdk_screen_height ());
-
-	/* Get rid of the things that window managers add to resize
-	 * and otherwise manipulate the window.
-	 */
-        gdk_window_set_decorations (widget->window, 0);
-        gdk_window_set_functions (widget->window, 0);
-}
-
+#endif
 static void
 map (GtkWidget *widget)
 {
-	NautilusDesktopWindow *window;
-
-	window = NAUTILUS_DESKTOP_WINDOW (widget);
-	
+	/* Disable for now, see above for comments */
+#if 0
 	set_window_background (widget, FALSE, FALSE, None, 0);
-	
+#endif	
 	/* Chain up to realize our children */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
+	GTK_WIDGET_CLASS (parent_class)->map (widget);
+	gdk_window_lower (widget->window);
 }
 
-static void
-real_add_current_location_to_history_list (NautilusWindow *window)
-{
-	/* Do nothing. The desktop window's location should not
-	 * show up in the history list.
-	 */
-}
 
 static void
 set_wmspec_desktop_hint (GdkWindow *window)
@@ -376,5 +276,45 @@ set_wmspec_desktop_hint (GdkWindow *window)
                                       "_NET_WM_WINDOW_TYPE",
                                       False),
                          XA_ATOM, 32, PropModeReplace,
-                         (guchar *)&atom, 1);
+                         (guchar *) &atom, 1);
+}
+
+
+static void
+realize (GtkWidget *widget)
+{
+	NautilusDesktopWindow *window;
+
+	window = NAUTILUS_DESKTOP_WINDOW (widget);
+
+	/* Make sure we get keyboard events */
+	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
+			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
+			      
+	/* Do the work of realizing. */
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+
+	/* This is the new way to set up the desktop window */
+	set_wmspec_desktop_hint (widget->window);
+}
+
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	/* Do nothing. The desktop window's location should not
+	 * show up in the history list.
+	 */
+}
+
+static void
+nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = finalize;
+	GTK_WIDGET_CLASS (class)->realize = realize;
+
+
+	GTK_WIDGET_CLASS (class)->map = map;
+
+	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
+		= real_add_current_location_to_history_list;
 }

@@ -1,8 +1,12 @@
 [Desktop Entry]
-_Name=Nautilus
-_Comment=Nautilus File Manager and Graphic Shell
-TryExec=run-nautilus
-Exec=run-nautilus
-Icon=nautilus-launch-icon.png
+_Name=Home Folder
+_Comment=View your home folder in the Nautilus file manager
+TryExec=nautilus
+Exec=nautilus
+Icon=gnome-home.png
 Terminal=0
 Type=Application
+Categories=Application;Core;
+
+
+

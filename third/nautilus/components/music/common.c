@@ -1,12 +1,11 @@
-#include <ctype.h>
+#include "config.h"
+
 #include <stdlib.h>
 #include <signal.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#include "config.h"
 
 /*  #ifdef HAVE_MMAP */
 #if 0
@@ -19,6 +18,8 @@
 #include "mpg123.h"
 #include "id3.h"
 #include "id3_header.h"
+
+#include <glib/gmem.h>
 
 /* max = 1728 */
 #define MAXFRAMESIZE 1792

@@ -3,14 +3,15 @@ include $(top_srcdir)/Makefile.shared
 lib_LTLIBRARIES=libnautilus.la
 
 INCLUDES=\
-	-I$(builddir) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	$(NAUTILUS_DEPENDENCY_CFLAGS) \
+	$(LIBNAUTILUS_CFLAGS) \
+	$(DISABLE_DEPRECATED_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
 libnautilus_la_LDFLAGS=\
+	-version-info 2:0:0 \
 	$(NULL)
 
 nautilus_view_component_idl_sources =		\
@@ -30,7 +31,6 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	libnautilus.h				\
 	nautilus-bonobo-ui.h			\
-	nautilus-bonobo-workarounds.h		\
 	nautilus-clipboard.h			\
 	nautilus-distributed-undo.h		\
 	nautilus-idle-queue.h			\
@@ -44,7 +44,6 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=					\
 	$(nautilus_view_component_idl_sources)		\
 	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus-bonobo-workarounds.c			\
 	nautilus-clipboard.c				\
 	nautilus-idle-queue.c				\
 	nautilus-undo-transaction.c			\
@@ -55,18 +54,18 @@ libnautilus_la_SOURCES=					\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
-nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
-	touch nautilus_view_component_idl_stamp
+nautilus_view_component_idl_stamp: nautilus-view-component.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) --define=__nautilus_view_component_COMPILATION $<
+	touch $@
 
 $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
-nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-distributed-undo.idl
-	touch nautilus_distributed_undo_idl_stamp
+nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) $<
+	touch $@
 
 $(libnautilus_la_OBJECTS): nautilus_view_component_idl_stamp nautilus_distributed_undo_idl_stamp
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
@@ -77,9 +76,13 @@ idl_DATA = \
 	nautilus-distributed-undo.idl	\
 	$(NULL)
 
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA=libnautilus.pc
+
 EXTRA_DIST = \
 	$(ui_DATA)			\
 	$(idl_DATA)			\
+	libnautilus.pc.in		\
 	$(NULL)
 
 BUILT_SOURCES = \

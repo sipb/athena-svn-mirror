@@ -1,10 +1,9 @@
 NULL=
 
-@XML_I18N_MERGE_DESKTOP_RULE@
-@XML_I18N_MERGE_DIRECTORY_RULE@
+@INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_DIRECTORY_RULE@
 
-DESKTOP_IN_FILES=	favorites.desktop.in		\
-			programs.desktop.in		\
+DESKTOP_IN_FILES=	applications.desktop.in		\
 			starthere.desktop.in		\
 			sysconfig.desktop.in		\
 			preferences.desktop.in		\
@@ -21,8 +20,7 @@ DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 DIRECTORY_FILES=$(DIRECTORY_IN_FILES:.directory.in=.directory)
 
 startheredir= $(sysconfdir)/X11/starthere
-starthere_DATA= 	favorites.desktop	\
-			programs.desktop	\
+starthere_DATA= 	applications.desktop	\
 			sysconfig.desktop	\
 			preferences.desktop	\
 			serverconfig.desktop	\
@@ -50,7 +48,6 @@ EXTRA_DIST = $(nautilusdata_DATA) \
 
 SUBDIRS = \
 	emblems \
-	linksets \
 	patterns \
 	$(NULL)
 

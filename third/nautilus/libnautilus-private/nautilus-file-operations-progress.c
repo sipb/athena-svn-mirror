@@ -30,35 +30,41 @@
 #include "nautilus-file-operations-progress.h"
 
 #include <eel/eel-ellipsizing-label.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include "nautilus-file-operations-progress-icons.h"
 
-/* The width of the progress bar determines the minimum width of the
- * window. It will be wider only if the font is really huge and the
- * fixed labels don't fit in the window otherwise.
+/* The default width of the progress dialog. It will be wider
+ * only if the font is really huge and the fixed labels don't
+ * fit in the window otherwise.
  */
-#define PROGRESS_BAR_WIDTH 350
+#define PROGRESS_DIALOG_WIDTH 400
 
 #define OUTER_BORDER       5
+#define VERTICAL_SPACING   8
 #define HORIZONTAL_SPACING 3
 
 #define MINIMUM_TIME_UP    1000
 
-static void nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass);
-static void nautilus_file_operations_progress_initialize       (NautilusFileOperationsProgress      *dialog);
+#define SHOW_TIMEOUT	   1200
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
-				   nautilus_file_operations_progress,
-				   GNOME_TYPE_DIALOG);
+static GdkPixbuf *empty_jar_pixbuf, *full_jar_pixbuf;
+
+static void nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass);
+static void nautilus_file_operations_progress_init       (NautilusFileOperationsProgress      *dialog);
+
+EEL_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
+		       nautilus_file_operations_progress,
+		       GTK_TYPE_DIALOG)
 
 struct NautilusFileOperationsProgressDetails {
 	GtkWidget *progress_title_label;
@@ -79,17 +85,55 @@ struct NautilusFileOperationsProgressDetails {
 	gulong files_total;
 	gulong bytes_total;
 
-	/* system time (microseconds) when dialog was mapped */
+	/* system time (microseconds) when show timeout was started */
 	gint64 start_time;
 
+	/* system time (microseconds) when dialog was mapped */
+	gint64 show_time;
+	
+	/* time remaining in show timeout if it's paused and resumed */
+	guint remaining_time;
+
 	guint delayed_close_timeout_id;
+	guint delayed_show_timeout_id;
+
+	int progress_jar_position;
 };
 
 /* Private functions. */
 
 static void
+nautilus_file_operations_progress_update_icon (NautilusFileOperationsProgress *progress,
+					       double fraction)
+{
+	GdkPixbuf *pixbuf;
+	int position;
+
+	position = gdk_pixbuf_get_height (empty_jar_pixbuf) * (1 - fraction);
+
+	if (position == progress->details->progress_jar_position) {
+		return;
+	}
+
+	progress->details->progress_jar_position = position;
+	
+	pixbuf = gdk_pixbuf_copy (empty_jar_pixbuf);
+	gdk_pixbuf_copy_area (full_jar_pixbuf,
+			      0, position,
+			      gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf) - position,
+			      pixbuf,
+			      0, position);
+
+	gtk_window_set_icon (GTK_WINDOW (progress), pixbuf);
+	g_object_unref (pixbuf);
+}
+
+
+static void
 nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progress)
 {
+	double fraction;
+
 	if (progress->details->bytes_total == 0) {
 		/* We haven't set up the file count yet, do not update
 		 * the progress bar until we do.
@@ -97,10 +141,13 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 		return;
 	}
 
-	gtk_progress_configure (GTK_PROGRESS (progress->details->progress_bar),
-				progress->details->bytes_copied,
-				0.0,
-				progress->details->bytes_total);
+	fraction = (double)progress->details->bytes_copied /
+		progress->details->bytes_total;
+	
+	gtk_progress_bar_set_fraction
+		(GTK_PROGRESS_BAR (progress->details->progress_bar),
+		 fraction);
+	nautilus_file_operations_progress_update_icon (progress, fraction);
 }
 
 static void
@@ -121,10 +168,22 @@ set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 /* This is just to make sure the dialog is not closed without explicit
  * intervention.
  */
-static gboolean
-close_callback (GnomeDialog *dialog)
+static void
+close_callback (GtkDialog *dialog)
 {
-	return FALSE;
+}
+
+/* GObject methods. */
+static void
+nautilus_file_operations_progress_finalize (GObject *object)
+{
+	NautilusFileOperationsProgress *progress;
+
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (object);
+
+	g_free (progress->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* GtkObject methods.  */
@@ -138,10 +197,14 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 
 	if (progress->details->delayed_close_timeout_id != 0) {
 		g_source_remove (progress->details->delayed_close_timeout_id);
+		progress->details->delayed_close_timeout_id = 0;
 	}
-
-	g_free (progress->details);
-
+	
+	if (progress->details->delayed_show_timeout_id != 0) {
+		g_source_remove (progress->details->delayed_show_timeout_id);
+		progress->details->delayed_show_timeout_id = 0;
+	}
+	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -179,7 +242,7 @@ map_callback (GtkWidget *widget)
 
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 
-	progress->details->start_time = eel_get_system_time ();
+	progress->details->show_time = eel_get_system_time ();
 }
 
 static gboolean
@@ -193,29 +256,25 @@ delete_event_callback (GtkWidget *widget,
 }
 
 static void
-nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *progress)
+nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress)
 {
-	GtkBox *vbox;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *vbox;
 	GtkTable *titled_label_table;
 
 	progress->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
-	vbox = GTK_BOX (GNOME_DIALOG (progress)->vbox);
-
-	/* This is evil but makes the dialog look less cramped. */
+	vbox = gtk_vbox_new (FALSE, VERTICAL_SPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), OUTER_BORDER);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (progress)->vbox), vbox, TRUE, TRUE, VERTICAL_SPACING);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, HORIZONTAL_SPACING);
-	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, HORIZONTAL_SPACING);
 
 	/* label- */
 	/* Files remaining to be copied: */
 	progress->details->progress_title_label = gtk_label_new ("");
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_title_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (hbox), progress->details->progress_title_label, FALSE, FALSE, 0);
-	gtk_widget_show (progress->details->progress_title_label);
 	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_title_label));
 
 
@@ -224,23 +283,16 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *pr
 	progress->details->progress_count_label = gtk_label_new ("");
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_count_label), GTK_JUSTIFY_RIGHT);
 	gtk_box_pack_end (GTK_BOX (hbox), progress->details->progress_count_label, FALSE, FALSE, 0);
-	gtk_widget_show (progress->details->progress_count_label);
 	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_count_label));
 
 	/* progress bar */
 	progress->details->progress_bar = gtk_progress_bar_new ();
-	gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (progress->details->progress_bar),
-					GTK_PROGRESS_CONTINUOUS);
-	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (progress->details->progress_bar),
-					  GTK_PROGRESS_LEFT_TO_RIGHT);
-	gtk_widget_set_usize (progress->details->progress_bar, PROGRESS_BAR_WIDTH, -1);
-	gtk_box_pack_start (vbox, progress->details->progress_bar, FALSE, TRUE, 0);
-	gtk_widget_show (progress->details->progress_bar);
+	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (vbox), progress->details->progress_bar, FALSE, TRUE, 0);
 
 	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	gtk_table_set_row_spacings (titled_label_table, 4);
 	gtk_table_set_col_spacings (titled_label_table, 4);
-	gtk_widget_show (GTK_WIDGET (titled_label_table));
 
 	create_titled_label (titled_label_table, 0,
 			     &progress->details->operation_name_label, 
@@ -252,20 +304,33 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *pr
 			     &progress->details->to_label, 
 			     &progress->details->to_path_label);
 
-	gtk_box_pack_start (vbox, GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
+
+	/* Set window icon */
+	gtk_window_set_icon (GTK_WINDOW (progress), empty_jar_pixbuf);
+
+	/* Set progress jar position */
+	progress->details->progress_jar_position = gdk_pixbuf_get_height (empty_jar_pixbuf);
+
+	gtk_widget_show_all (vbox);
 }
 
 static void
-nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass)
+nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass)
 {
+	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
-	GnomeDialogClass *dialog_class;
+	GtkDialogClass *dialog_class;
 
+	gobject_class = G_OBJECT_CLASS (klass);
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
-	dialog_class = GNOME_DIALOG_CLASS (klass);
+	dialog_class = GTK_DIALOG_CLASS (klass);
 
+
+	gobject_class->finalize = nautilus_file_operations_progress_finalize;
+	
 	object_class->destroy = nautilus_file_operations_progress_destroy;
 
 	/* The progress dialog should not have a title and a close box.
@@ -277,6 +342,25 @@ nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgre
 	widget_class->map = map_callback;
 
 	dialog_class->close = close_callback;
+
+	/* Load the jar pixbufs */
+	empty_jar_pixbuf = gdk_pixbuf_new_from_inline (-1, progress_jar_empty_icon, FALSE, NULL);
+	full_jar_pixbuf = gdk_pixbuf_new_from_inline (-1, progress_jar_full_icon, FALSE, NULL);
+	
+}
+
+static gboolean
+delayed_show_callback (gpointer callback_data)
+{
+	NautilusFileOperationsProgress *progress;
+	
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (callback_data);
+	
+	progress->details->delayed_show_timeout_id = 0;
+	
+	gtk_widget_show (GTK_WIDGET (progress));
+	
+	return FALSE;
 }
 
 NautilusFileOperationsProgress *
@@ -285,7 +369,8 @@ nautilus_file_operations_progress_new (const char *title,
 				       const char *from_prefix,
 				       const char *to_prefix,
 				       gulong total_files,
-				       gulong total_bytes)
+				       gulong total_bytes,
+				       gboolean use_timeout)
 {
 	GtkWidget *widget;
 	NautilusFileOperationsProgress *progress;
@@ -299,11 +384,16 @@ nautilus_file_operations_progress_new (const char *title,
 	gtk_window_set_title (GTK_WINDOW (widget), title);
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "file_progress", "Nautilus");
 
-	gnome_dialog_append_button (GNOME_DIALOG (widget),
-				    GNOME_STOCK_BUTTON_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (widget), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
+
+	if (use_timeout) {
+		progress->details->start_time = eel_get_system_time ();	
+		progress->details->delayed_show_timeout_id =
+			g_timeout_add (SHOW_TIMEOUT, delayed_show_callback, progress);
+	}
 	
 	return progress;
 }
@@ -345,7 +435,6 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 	char *progress_count;
 
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
-	g_return_if_fail (GTK_WIDGET_REALIZED (progress));
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
@@ -430,17 +519,61 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 	g_assert (progress->details->start_time != 0);
 
 	/* compute time up in milliseconds */
-	time_up = (eel_get_system_time () - progress->details->start_time) / 1000;
+	time_up = (eel_get_system_time () - progress->details->show_time) / 1000;
 	if (time_up >= MINIMUM_TIME_UP) {
 		gtk_object_destroy (GTK_OBJECT (progress));
 		return;
 	}
 	
 	/* No cancel button once the operation is done. */
-	gnome_dialog_set_sensitive (GNOME_DIALOG (progress), 0, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (progress), GTK_RESPONSE_CANCEL, FALSE);
 
 	progress->details->delayed_close_timeout_id = gtk_timeout_add
 		(MINIMUM_TIME_UP - time_up,
 		 delayed_close_callback,
 		 progress);
+}
+
+void
+nautilus_file_operations_progress_pause_timeout (NautilusFileOperationsProgress *progress)
+{
+	guint time_up;
+
+	if (progress->details->delayed_show_timeout_id == 0) {
+		progress->details->remaining_time = 0;
+		return;
+	}
+	
+	time_up = (eel_get_system_time () - progress->details->start_time) / 1000;
+	
+	if (time_up >= SHOW_TIMEOUT) {
+		progress->details->remaining_time = 0;
+		return;
+	}
+	
+	g_source_remove (progress->details->delayed_show_timeout_id);
+	progress->details->delayed_show_timeout_id = 0;
+	progress->details->remaining_time = SHOW_TIMEOUT - time_up;
+}
+
+void
+nautilus_file_operations_progress_resume_timeout (NautilusFileOperationsProgress *progress)
+{
+	if (progress->details->delayed_show_timeout_id != 0) {
+		return;
+	}
+	
+	if (progress->details->remaining_time <= 0) {
+		return;
+	}
+	
+	progress->details->delayed_show_timeout_id =
+		g_timeout_add (progress->details->remaining_time,
+			       delayed_show_callback,
+			       progress);
+			       
+	progress->details->start_time = eel_get_system_time () - 
+			1000 * (SHOW_TIMEOUT - progress->details->remaining_time);
+					
+	progress->details->remaining_time = 0;
 }

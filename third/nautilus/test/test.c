@@ -1,6 +1,5 @@
 #include "test.h"
 
-#include <libart_lgpl/art_rgb.h>
 #include <eel/eel-preferences.h>
 
 void
@@ -11,20 +10,7 @@ test_init (int *argc,
 	gdk_rgb_init ();
 	gnome_vfs_init ();
 
-	eel_make_warnings_and_criticals_stop_in_debugger
-		(G_LOG_DOMAIN, g_log_domain_glib,
-		 "Bonobo",
-		 "Gdk",
-		 "GnomeUI",
-		 "GnomeVFS",
-		 "GnomeVFS-CORBA",
-		 "GnomeVFS-pthread",
-		 "Gtk",
-		 "Nautilus",
-		 "Nautilus-Authenticate",
-		 "Nautilus-Tree",
-		 "ORBit",
-		 NULL);
+	eel_make_warnings_and_criticals_stop_in_debugger ();
 }
 
 int
@@ -58,12 +44,9 @@ test_window_new (const char *title, guint border_width)
 		gtk_window_set_title (GTK_WINDOW (window), title);
 	}
 
-	gtk_signal_connect (GTK_OBJECT (window),
-			    "delete_event",
-			    GTK_SIGNAL_FUNC (test_delete_event),
-			    NULL);
+	g_signal_connect (window, "delete_event",
+                          G_CALLBACK (test_delete_event), NULL);
 	
-	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), border_width);
 	
 	return window;
@@ -117,7 +100,7 @@ test_pixbuf_new_named (const char *name, float scale)
 		path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, name);
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (path);
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 
 	g_free (path);
 
@@ -130,7 +113,7 @@ test_pixbuf_new_named (const char *name, float scale)
 
 		scaled = gdk_pixbuf_scale_simple (pixbuf, width, height, GDK_INTERP_BILINEAR);
 
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 
 		g_return_val_if_fail (scaled != NULL, NULL);
 
@@ -141,47 +124,7 @@ test_pixbuf_new_named (const char *name, float scale)
 }
 
 GtkWidget *
-test_image_new (const char *pixbuf_name,
-		const char *tile_name,
-		float scale,
-		gboolean with_background)
-{
-	GtkWidget *image;
-
-	if (with_background) {
-		image = eel_image_new_with_background (NULL);
-	} else {
-		image = eel_image_new (NULL);
-	}
-
-	if (pixbuf_name != NULL) {
-		GdkPixbuf *pixbuf;
-
-		pixbuf = test_pixbuf_new_named (pixbuf_name, scale);
-
-		if (pixbuf != NULL) {
-			eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
-			gdk_pixbuf_unref (pixbuf);
-		}
-	}
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_image_set_tile_pixbuf (EEL_IMAGE (image), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
-		}
-	}
-
-	return image;
-}
-
-GtkWidget *
 test_label_new (const char *text,
-		const char *tile_name,
 		gboolean with_background,
 		int num_sizes_larger)
 {
@@ -191,28 +134,7 @@ test_label_new (const char *text,
 		text = "Foo";
 	}
 	
-	if (with_background) {
-		label = eel_label_new_with_background (text);
-	} else {
-		label = eel_label_new (text);
-	}
-
-	if (num_sizes_larger < 0) {
-		eel_label_make_smaller (EEL_LABEL (label), ABS (num_sizes_larger));
-	} else if (num_sizes_larger > 0) {
-		eel_label_make_larger (EEL_LABEL (label), num_sizes_larger);
-	}
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_label_set_tile_pixbuf (EEL_LABEL (label), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
-		}
-	}
+	label = gtk_label_new (text);
 
 	return label;
 }
@@ -298,7 +220,9 @@ test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 
 	text = eel_text_caption_get_text (text_caption);
 
-	eel_eat_str_to_int (text, &result);
+	eel_str_to_int (text, &result);
+
+	g_free (text);
 
 	return result;
 }
@@ -363,5 +287,5 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 					     opacity,
 					     GDK_INTERP_NEAREST);
 
-	gdk_pixbuf_unref (tile_pixbuf);
+	g_object_unref (tile_pixbuf);
 }

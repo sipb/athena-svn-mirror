@@ -28,11 +28,17 @@
 #include "libnautilus-private/nautilus-global-preferences.h"
 #include "libnautilus-private/nautilus-sidebar-functions.h"
 #include "nautilus-theme-selector.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences-box.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-help.h>
+#include <eel/eel-string.h>
 
 /* 
  * This file contains the description of the preferences dialog in
@@ -49,22 +55,7 @@ static void preferences_dialog_populate_themes_group       (EelPreferencesGroup 
 static GtkWidget *preferences_dialog;
 
 static EelPreferencesItemDescription appearance_items[] = {
-	{ N_("Smoother Graphics"),
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  N_("Use smoother (but slower) graphics"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-	  N_("Default smooth font:"),
-	  EEL_PREFERENCE_ITEM_SMOOTH_FONT,
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
-	  N_("Default non-smooth font:"),
-	  EEL_PREFERENCE_ITEM_FONT,
-	},
-	{ N_("Nautilus Themes"),
+	{ N_("Themes"),
 	  NULL,
 	  NULL,
 	  0,
@@ -76,59 +67,54 @@ static EelPreferencesItemDescription appearance_items[] = {
 	{ NULL }
 };
 
-static EelPreferencesItemDescription windows_and_desktop_items[] = {
+static EelPreferencesItemDescription windows_items[] = {
+	{ N_("New Window Behavior"),
+	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	  N_("_Open each file or folder in a new window"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("New Window Display"),
+	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
+	  N_("Display _side pane"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("New Window Display"),
+	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
+	  N_("Display _toolbar"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("New Window Display"),
+	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
+	  N_("Display location _bar"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("New Window Display"),
+	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
+	  N_("Display st_atusbar"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ NULL }
+};
+
+static EelPreferencesItemDescription desktop_and_trash_items[] = {
 	{ N_("Desktop"),
 	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-	  N_("Use Nautilus to draw the desktop"),
+	  N_("_Use Nautilus to draw the desktop"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
         { N_("Desktop"),
 	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-	  N_("Use your home folder as the desktop"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-	  N_("Open each file or folder in a separate window"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
-	  N_("Display toolbar in new windows"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-	  N_("Display location bar in new windows"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-	  N_("Display status bar in new windows"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  N_("Display sidebar in new windows"),
+	  N_("Use your _home folder as the desktop"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-	  N_("Ask before emptying the Trash or deleting files"),
+	  N_("_Ask before emptying the Trash or deleting files"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_ENABLE_DELETE,
-	  N_("Include a Delete command that bypasses Trash"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	/* FIXME: This group clearly doesn't belong in Windows &
-	 * Desktop, but there's no obviously-better place for it and
-	 * it probably doesn't deserve a pane of its own.
-	 */
-	{ N_("Keyboard Shortcuts"),
-	  NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-	  N_("Use Emacs-style keyboard shortcuts in text fields"),
+	  N_("_Include a Delete command that bypasses Trash"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -145,24 +131,24 @@ static EelPreferencesItemDescription directory_views_items[] = {
 	  N_("Executable Text Files"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-	  N_("Show hidden files (file names start with \".\")"),
+	  N_("_Hidden files (filenames starting with \".\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-	  N_("Show backup files (file names end with \"~\")"),
+	  N_("_Backup files (filenames ending with \"~\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-	  N_("Show special flags in Properties window"),
+	  N_("Special flags in _Properties dialog"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Sorting Order"),
+	{ N_("Sort"),
 	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-	  N_("Always list folders before files"),
+	  N_("Fo_lders before files"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -186,73 +172,48 @@ static EelPreferencesItemDescription icon_captions_items[] = {
 static EelPreferencesItemDescription view_preferences_items[] = {
 	{ N_("Default View"),
 	  NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-	  N_("View new folders using:"),
+	  N_("_View new folders using:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 
 	/* Icon View Defaults */
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  N_("Lay Out Items:"),
+	  N_("_Arrange items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
+	  N_("_Sort in reverse"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  EEL_PREFERENCE_ITEM_HIDE
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_SMOOTH_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  EEL_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
+	  N_("_Default zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-	  N_("Use tighter layout"),
+	  N_("Use co_mpact layout"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN,
-	  NULL, 0, 1
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
 
 	/* List View Defaults */
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Lay Out Items:"),
+	  N_("Arrange _items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
+	  N_("Sort in _reverse"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_FONT
-	},
-	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
+	  N_("Default _zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
@@ -262,80 +223,35 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	  EEL_PREFERENCE_ITEM_PADDING,
 	  NULL, 0, 1
 	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
-	  NULL, 0, 1
-	},
 	{ NULL }
 };
 
-static EelPreferencesItemDescription search_items[] = {
 #ifdef HAVE_MEDUSA
+static EelPreferencesItemDescription search_items[] = {
 	{ N_("Search Complexity Options"),
 	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  N_("search type to do by default"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
-#endif
-	{ N_("Search Engines"),
-	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-	  N_("Search Engine Location"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_STRING
-	},
 	{ NULL }
 };
+#endif
 
+#ifdef WEB_NAVIGATION_ENABLED
 static EelPreferencesItemDescription navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
-	  N_("Location:"),
+	  N_("_Location:"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_STRING
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  N_("Use HTTP Proxy"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_HOST,
-	  N_("Location:"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_STRING
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
-	  N_("Port:"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_INTEGER
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
-	  N_("Proxy requires a username and password:"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  EEL_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME,
-	  N_("Username:"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  EEL_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD,
-	  N_("Password:"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  EEL_PREFERENCE_ITEM_SHOW
 	},
 	{ N_("Built-in Bookmarks"),
 	  NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-	  N_("Don't include the built-in bookmarks in the Bookmarks menu"),
+	  N_("_Don't include the built-in bookmarks in the Bookmarks menu"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
 };
+#endif
 
 static EelPreferencesItemDescription tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
@@ -343,7 +259,7 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
-	{ N_("Show Count of Items in Folders"),
+	{ N_("Show Number of Items in Folders"),
 	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
@@ -355,18 +271,11 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  N_("Don't make thumbnails for files larger than:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
+	  N_("_Do not make thumbnails for files larger than:"),
+	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER
 	},
 	{ N_("Preview Sound Files"),
 	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-
-	/* FIXME bugzilla.gnome.org 42560: This title phrase needs improvement. */
-	{ N_("Make Folder Appearance Details Public"),
-	  NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
@@ -385,58 +294,129 @@ static EelPreferencesItemDescription sidebar_items[] = {
 	},
 	{ N_("Tree"),
 	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-	  N_("Show only folders (no files) in the tree"),
+	  N_("_Show folders only"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
 };
 
+#ifdef NEWS_SIDEBAR_ENABLED
 static EelPreferencesItemDescription news_panel_items[] = {
 	{ N_("Maximum items per site"),
 	  NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
-	  N_("Maximum number of items displayed per site"),
+	  N_("_Maximum number of items displayed per site"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_INTEGER
 	},
 	{ N_("Update Minutes"),
 	  NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
-	  N_("Update frequency in minutes"),
+	  N_("_Update frequency in minutes"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_INTEGER
 
 	},
 	{ NULL }
 };
+#endif
 
 
 static EelPreferencesPaneDescription panes[] = {
-	{ N_("View Preferences"),	  view_preferences_items },
+	{ N_("Views"),			  view_preferences_items },
 	{ N_("Appearance"),		  appearance_items },
-	{ N_("Windows & Desktop"),	  windows_and_desktop_items },
+	{ N_("Windows"),	  	  windows_items },
+	{ N_("Desktop & Trash"),	  desktop_and_trash_items },
 	{ N_("Icon & List Views"),	  directory_views_items },
 	{ N_("Icon Captions"),		  icon_captions_items },
-	{ N_("Sidebar Panels"),		  sidebar_items },
+	{ N_("Side Panes"),		  sidebar_items },
+#ifdef HAVE_MEDUSA
 	{ N_("Search"),			  search_items },
+#endif
+#ifdef WEB_NAVIGATION_ENABLED
 	{ N_("Navigation"),		  navigation_items },
-	{ N_("Speed Tradeoffs"),	  tradeoffs_items },
+#endif
+	{ N_("Performance"),		  tradeoffs_items },
+#ifdef NEWS_SIDEBAR_ENABLED
 	{ N_("News Panel"),		  news_panel_items },
+#endif
 	{ NULL }
 };
 
-static void
-dialog_button_clicked_callback (GnomeDialog *dialog,
-				gint n,
-				gpointer callback_data)
+static gboolean
+dialog_delete_event_callback (GtkWidget   *widget,
+			      GdkEventAny *event,
+			      gpointer     user_data)
 {
-	g_return_if_fail (GNOME_IS_DIALOG (dialog));
-	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_hide (widget);
+	return TRUE;
 }
 
-static gboolean
-dialog_close_callback (GtkWidget *dialog,
-		       gpointer user_data)
+static void
+preferences_show_help (GtkWindow *parent,
+		       char const *helpfile,
+		       char const *sect_id)
 {
-	g_return_val_if_fail (GNOME_IS_DIALOG (dialog), TRUE);
-	gtk_widget_hide (dialog);
-	return TRUE;
+	GError *error = NULL;
+	GtkWidget *dialog;
+
+	g_return_if_fail (helpfile != NULL);
+	g_return_if_fail (sect_id != NULL);
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    helpfile, sect_id, &error);
+
+	if (error) {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_CLOSE,
+						 _("There was an error displaying help: \n%s"),
+						 error->message);
+
+		g_signal_connect (G_OBJECT (dialog),
+				  "response", G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
+}
+
+
+
+static void
+dialog_button_response_callback (GtkDialog *dialog,
+				 int response_id,
+				 gpointer callback_data)
+{
+	EelPreferencesBox *preferences_box;
+	char *active_pane;
+
+	if (response_id == GTK_RESPONSE_HELP) {
+		preferences_box = eel_preferences_dialog_get_box (GTK_WINDOW (dialog));
+		active_pane = eel_preferences_box_get_active_pane (preferences_box);
+
+		if  (eel_str_is_equal (active_pane, "Views"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-438");
+		else if (eel_str_is_equal (active_pane, "Appearance"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-54");
+		else if (eel_str_is_equal (active_pane, "Windows"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-55");
+		else if (eel_str_is_equal (active_pane, "Desktop & Trash"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-448");
+		else if (eel_str_is_equal (active_pane, "Icon & List Views"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-56");
+		else if (eel_str_is_equal (active_pane, "Icon Captions"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-439");
+		else if (eel_str_is_equal (active_pane, "Side Panes"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-57");
+		else if (eel_str_is_equal (active_pane,"Navigation"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-59");
+		else if (eel_str_is_equal (active_pane, "Performance"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-60");
+
+		g_free (active_pane);
+	} else {
+		gtk_widget_hide (GTK_WIDGET (dialog));
+	}
 }
 
 static GtkWidget *
@@ -445,18 +425,18 @@ preferences_dialog_create (void)
 	GtkWidget *dialog;
 
 	dialog = eel_preferences_dialog_new (_("Preferences"), panes);
+	g_assert (GTK_IS_DIALOG (dialog));
 
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
 
-	gtk_signal_connect (GTK_OBJECT (dialog),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (dialog_button_clicked_callback),
-			    dialog);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_HELP,
+			       GTK_RESPONSE_HELP);
 
-	gtk_signal_connect (GTK_OBJECT (dialog),
-			    "close",
-			    GTK_SIGNAL_FUNC (dialog_close_callback),
-			    NULL);
+	g_signal_connect (dialog, "delete_event",
+			  G_CALLBACK (dialog_delete_event_callback), dialog);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (dialog_button_response_callback), dialog);
+
 	return dialog;
 }
 
@@ -466,23 +446,17 @@ global_preferences_populate_sidebar_panels_callback (const char *name,
 						     const char *preference_key,
 						     gpointer callback_data) 
 {
-	char *description;
-
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (iid != NULL);
 	g_return_if_fail (preference_key != NULL);
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (callback_data));
 	
-	description = g_strdup_printf (_("Display %s tab in sidebar"), name);
-	
-	eel_preferences_set_description (preference_key, description);
+	eel_preferences_set_description (preference_key, name);
 
 	eel_preferences_group_add_item (EEL_PREFERENCES_GROUP (callback_data),
 					preference_key,
 					EEL_PREFERENCE_ITEM_BOOLEAN,
 					0);
-
-	g_free (description);
 }
 
 static void
@@ -503,7 +477,11 @@ theme_changed_callback (NautilusThemeSelector *theme_selector,
 	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
 
 	selected_theme = nautilus_theme_selector_get_selected_theme (NAUTILUS_THEME_SELECTOR (theme_selector));
-	g_return_if_fail (selected_theme != NULL);
+
+	/* We ignore a NULL selected theme, which can happen when the dialog
+	   is being destroyed. */
+	if (selected_theme == NULL)
+		return;
 
 	eel_preferences_set (NAUTILUS_PREFERENCES_THEME, selected_theme);
 
@@ -540,6 +518,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (group));
 
 	child = nautilus_theme_selector_new ();
+	gtk_widget_set_size_request (child, -1, 300);
 
 	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (group), GTK_TYPE_WINDOW);
 
@@ -554,18 +533,14 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 						      "theme_changed",
 						      0);
 	/* Keep track of theme chooser changes */
-	gtk_signal_connect (GTK_OBJECT (child),
-			    "theme_changed",
-			    GTK_SIGNAL_FUNC (theme_changed_callback),
-			    NULL);
+	g_signal_connect (child, "theme_changed",
+			  G_CALLBACK (theme_changed_callback), NULL);
 
 	/* Have the custom preferences item tell us when its time to update the displayed
 	 * with with the one stored in preferences
 	 */
-	gtk_signal_connect (GTK_OBJECT (item),
-			    "custom_update_displayed_value",
-			    GTK_SIGNAL_FUNC (update_theme_selector_displayed_value_callback),
-			    child);
+	g_signal_connect_object (item, "custom_update_displayed_value",
+				 G_CALLBACK (update_theme_selector_displayed_value_callback), child, 0);
 	update_theme_selector_displayed_value_callback (EEL_PREFERENCES_ITEM (item), child);
 }
 
@@ -584,24 +559,19 @@ preferences_dialog_destroy (void)
 static GtkWidget *
 global_preferences_get_dialog (void)
 {
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 	
 	if (preferences_dialog == NULL) {
 		preferences_dialog = preferences_dialog_create ();
-		g_atexit (preferences_dialog_destroy);
+		eel_debug_call_at_shutdown (preferences_dialog_destroy);
 	}
 
-	g_return_val_if_fail (GNOME_IS_DIALOG (preferences_dialog), NULL);
+	g_assert (GTK_IS_DIALOG (preferences_dialog));
 	return preferences_dialog;
 }
 
 void
 nautilus_preferences_dialog_show (void)
 {
-	GtkWidget *dialog;
-
-	dialog = global_preferences_get_dialog ();
-	g_return_if_fail (GNOME_IS_DIALOG (dialog));
-
-	eel_gtk_window_present (GTK_WINDOW (dialog));
+	gtk_window_present (GTK_WINDOW (global_preferences_get_dialog ()));
 }

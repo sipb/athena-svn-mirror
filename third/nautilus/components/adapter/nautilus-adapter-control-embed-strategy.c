@@ -38,6 +38,7 @@
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-control-frame.h>
 
 
 struct NautilusAdapterControlEmbedStrategyDetails {
@@ -47,8 +48,8 @@ struct NautilusAdapterControlEmbedStrategyDetails {
 };
 
 
-static void nautilus_adapter_control_embed_strategy_initialize_class (NautilusAdapterControlEmbedStrategyClass *klass);
-static void nautilus_adapter_control_embed_strategy_initialize       (NautilusAdapterControlEmbedStrategy      *strategy);
+static void nautilus_adapter_control_embed_strategy_class_init (NautilusAdapterControlEmbedStrategyClass *klass);
+static void nautilus_adapter_control_embed_strategy_init       (NautilusAdapterControlEmbedStrategy      *strategy);
 static void nautilus_adapter_control_embed_strategy_activate         (NautilusAdapterEmbedStrategy           *object,
 								      gpointer                                ui_container);
 static void nautilus_adapter_control_embed_strategy_deactivate       (NautilusAdapterEmbedStrategy           *object);
@@ -58,11 +59,11 @@ static GtkWidget *nautilus_adapter_control_embed_strategy_get_widget (NautilusAd
 static BonoboObject *nautilus_adapter_control_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void
-nautilus_adapter_control_embed_strategy_initialize_class (NautilusAdapterControlEmbedStrategyClass *klass)
+nautilus_adapter_control_embed_strategy_class_init (NautilusAdapterControlEmbedStrategyClass *klass)
 {
 	GtkObjectClass                    *object_class;
 	NautilusAdapterEmbedStrategyClass *adapter_embed_strategy_class;
@@ -80,7 +81,7 @@ nautilus_adapter_control_embed_strategy_initialize_class (NautilusAdapterControl
 }
 
 static void
-nautilus_adapter_control_embed_strategy_initialize (NautilusAdapterControlEmbedStrategy *strategy)
+nautilus_adapter_control_embed_strategy_init (NautilusAdapterControlEmbedStrategy *strategy)
 {
 	strategy->details = g_new0 (NautilusAdapterControlEmbedStrategyDetails, 1);
 }
@@ -92,10 +93,7 @@ nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
 
-	if (strategy->details->control_frame != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (strategy->details->control_frame));
-	}
-
+	bonobo_object_unref (strategy->details->control_frame);
 	g_free (strategy->details);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -114,7 +112,7 @@ nautilus_adapter_control_embed_strategy_activate (NautilusAdapterEmbedStrategy *
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
 
 	bonobo_control_frame_set_ui_container (strategy->details->control_frame,
-					       corba_container);
+					       corba_container, NULL);
 
 	bonobo_control_frame_control_activate (strategy->details->control_frame);
 }
@@ -156,18 +154,18 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	Bonobo_Zoomable corba_zoomable;
 	CORBA_Environment ev;
 
-	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY, NULL));
-	gtk_object_ref (GTK_OBJECT (strategy));
+	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY, NULL));
+	g_object_ref (strategy);
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
 
-	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control);
+	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control, NULL);
 
 	strategy->details->widget = bonobo_control_frame_get_widget (strategy->details->control_frame);
   
-	gtk_signal_connect (GTK_OBJECT (strategy->details->control_frame),
-			    "activate_uri", GTK_SIGNAL_FUNC (activate_uri_callback), strategy);
+	g_signal_connect_object (strategy->details->control_frame, "activate_uri",
+				 G_CALLBACK (activate_uri_callback), strategy, 0);
 
 	CORBA_exception_init (&ev);
 	corba_zoomable = Bonobo_Unknown_queryInterface (control,

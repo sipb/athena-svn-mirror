@@ -58,25 +58,24 @@ struct NautilusDragWindowDetails {
  */
 #define NAUTILUS_DRAG_WINDOW_DETAILS_KEY "nautilus-drag-window-details"
 
-static Atom sawfish_wm_raise_window = 0;
-
 /* Return the nearest ancestor of WIDGET that has type WIDGET_TYPE. But only
  * if there's no widget between the two with type BLOCKING_TYPE.
  */
 static GtkWidget *
 get_ancestor_blocked_by (GtkWidget *widget,
-			 GtkType widget_type,
-			 GtkType blocking_type)
+			 GType      widget_type,
+			 GType      blocking_type)
 {
-	g_return_val_if_fail (widget != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
 	while (widget != NULL)
 	{
-		if (gtk_type_is_a (GTK_WIDGET_TYPE (widget), widget_type))
+		if (g_type_is_a (GTK_WIDGET_TYPE (widget), widget_type))
 			return widget;
-		else if (gtk_type_is_a (GTK_WIDGET_TYPE (widget), blocking_type))
+
+		else if (g_type_is_a (GTK_WIDGET_TYPE (widget), blocking_type))
 			return NULL;
+
 		widget = widget->parent;
 	}
 
@@ -91,7 +90,7 @@ get_details (GtkWindow *window)
 {
 	NautilusDragWindowDetails *details;
 
-	details = gtk_object_get_data (GTK_OBJECT (window),
+	details = g_object_get_data (G_OBJECT (window),
 				       NAUTILUS_DRAG_WINDOW_DETAILS_KEY);
 	return details;
 }
@@ -137,6 +136,7 @@ focus_timeout_callback (gpointer data)
 	return FALSE;
 }
 
+
 static void
 remove_focus_timeout (GtkWindow *window)
 {
@@ -167,8 +167,8 @@ set_focus_timeout (GtkWindow *window)
 
 /* Called for all button-press events; sets the `in_button_press' flag */
 static gboolean
-button_press_emission_callback (GtkObject *object, guint signal_id,
-				guint n_params, GtkArg *params,
+button_press_emission_callback (GSignalInvocationHint *ihint,
+				guint n_params, const GValue *params,
 				gpointer data)
 {
 	GtkWidget *window;
@@ -178,7 +178,7 @@ button_press_emission_callback (GtkObject *object, guint signal_id,
 	 * otherwise we can get duped into counting unbalanced
 	 * press/release events, which isn't healthy
 	 */
-	window = get_ancestor_blocked_by (GTK_WIDGET (object),
+        window = get_ancestor_blocked_by (GTK_WIDGET (g_value_get_object (&params[0])),
 					  GTK_TYPE_WINDOW,
 					  GTK_TYPE_MENU_SHELL);
 	if (window != NULL) {
@@ -204,14 +204,14 @@ button_press_emission_callback (GtkObject *object, guint signal_id,
 
 /* Called for button-release events; commits any pending focus/raise */
 static gboolean
-button_release_emission_callback (GtkObject *object, guint signal_id,
-				  guint n_params, GtkArg *params,
+button_release_emission_callback (GSignalInvocationHint *ihint,
+				  guint n_params, const GValue *params,
 				  gpointer data)
 {
 	GtkWidget *window;
 	NautilusDragWindowDetails *details;
 
-	window = get_ancestor_blocked_by (GTK_WIDGET (object),
+	window = get_ancestor_blocked_by (GTK_WIDGET (g_value_get_object (&params[0])),
 					  GTK_TYPE_WINDOW,
 					  GTK_TYPE_MENU_SHELL);
 	if (window != NULL) {
@@ -230,18 +230,19 @@ button_release_emission_callback (GtkObject *object, guint signal_id,
  * widget emitting the signal, cancel any pending focus/raise requests
  */
 static gboolean
-drag_begin_emission_callback (GtkObject *object, guint signal_id,
-			      guint n_params, GtkArg *params,
+drag_begin_emission_callback (GSignalInvocationHint *ihint,
+			      guint n_params, const GValue *params,
 			      gpointer data)
 {
 	GtkWidget *window;
 	NautilusDragWindowDetails *details;
 
-	window = gtk_widget_get_ancestor (GTK_WIDGET (object),
-					  GTK_TYPE_WINDOW);
+        window = gtk_widget_get_toplevel (GTK_WIDGET (g_value_get_object (&params[0])));
+
 	if (window != NULL) {
 		details = get_details (GTK_WINDOW (window));
 		if (details != NULL) {
+
 			details->pending_focus = FALSE;
 			details->pending_raise = FALSE;
 		}
@@ -267,7 +268,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		details = NULL;
 	}
 
-	if ((Atom) xevent->xclient.data.l[0] == gdk_wm_delete_window) {
+	if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("WM_DELETE_WINDOW")) {
 
 		/* (copied from gdkevents.c) */
 
@@ -283,7 +284,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		event->any.type = GDK_DELETE;
 		return GDK_FILTER_TRANSLATE;
 
-	} else if ((Atom) xevent->xclient.data.l[0] == gdk_wm_take_focus) {
+	} else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("WM_TAKE_FOCUS")) {
 
 		if (details != NULL) {
 			details->pending_focus = TRUE;
@@ -296,7 +297,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		}
 		return GDK_FILTER_REMOVE;
 
-	} else if ((Atom) xevent->xclient.data.l[0] == sawfish_wm_raise_window) {
+	} else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("_SAWFISH_WM_RAISE_WINDOW")) {
 
 		if (details != NULL) {
 			details->pending_raise = TRUE;
@@ -316,13 +317,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 static void
 nautilus_drag_window_destroy (GtkObject *object, gpointer data)
 {
-	NautilusDragWindowDetails *details;
-
-	details = get_details (GTK_WINDOW (object));
-	
 	remove_focus_timeout (GTK_WINDOW (object));
-
-	/* The `details' will be freed automatically */
 }
 
 static void
@@ -338,13 +333,12 @@ nautilus_drag_window_realize (GtkWidget *widget, gpointer data)
 	 * the window. (This won't work with other wm's, but it won't
 	 * break anything either.)
 	 */
-	protocols[0] = gdk_wm_delete_window;
-	protocols[1] = gdk_wm_take_focus;
-	protocols[2] = sawfish_wm_raise_window;
+        protocols[0] = gdk_atom_intern ("WM_DELETE_WINDOW", FALSE);
+        protocols[1] = gdk_atom_intern ("WM_TAKE_FOCUS", FALSE);
+        protocols[2] = gdk_atom_intern ("_NET_WM_PING", FALSE);
 	eel_gdk_window_set_wm_protocols (widget->window, protocols, 3);
 }
 
-
 /* Public entry point */
 
 /* initialize the instance's fields */
@@ -356,35 +350,31 @@ nautilus_drag_window_register (GtkWindow *window)
 	NautilusDragWindowDetails *details;
 	guint signal_id;
 
+        /* FIXME: This is disabled until we come up with a better
+         * way to do this. Havoc had some ideas.
+         */
+        return;
+        
 	if (!initialized) {
 		/* Add emission hooks for the signals we need to monitor
 		 */
-		signal_id = gtk_signal_lookup ("button_press_event",
-					       GTK_TYPE_WIDGET);
-		gtk_signal_add_emission_hook (signal_id,
-					      button_press_emission_callback,
-					      NULL);
-		signal_id = gtk_signal_lookup ("button_release_event",
-					       GTK_TYPE_WIDGET);
-		gtk_signal_add_emission_hook (signal_id,
-					      button_release_emission_callback,
-					      NULL);
-		signal_id = gtk_signal_lookup ("drag_begin",
-					       GTK_TYPE_WIDGET);
-		gtk_signal_add_emission_hook (signal_id,
-					      drag_begin_emission_callback,
-					      NULL);
-
-		/* Intern the necessary X atoms
-		 */
-		sawfish_wm_raise_window = XInternAtom (GDK_DISPLAY (),
-						       "_SAWFISH_WM_RAISE_WINDOW",
-						       False);
+		signal_id = g_signal_lookup ("button_press_event",
+                                             GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (signal_id, 0,
+                                            button_press_emission_callback, NULL, NULL);
+		signal_id = g_signal_lookup ("button_release_event",
+                                             GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (signal_id, 0,
+                                            button_release_emission_callback, NULL, NULL);
+		signal_id = g_signal_lookup ("drag_begin",
+                                             GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (signal_id, 0,
+                                            drag_begin_emission_callback, NULL, NULL);
 
 		/* Override the standard GTK filter for handling WM_PROTOCOLS
 		 * client messages
 		 */
-		gdk_add_client_message_filter (gdk_wm_protocols,
+		gdk_add_client_message_filter (gdk_atom_intern ("WM_PROTOCOLS", FALSE), 
 					       wm_protocols_filter, NULL);
 
 		initialized = TRUE;
@@ -392,12 +382,12 @@ nautilus_drag_window_register (GtkWindow *window)
 
 	details = g_new0 (NautilusDragWindowDetails, 1);
 
-	gtk_object_set_data_full (GTK_OBJECT (window),
-				  NAUTILUS_DRAG_WINDOW_DETAILS_KEY,
-				  details, g_free);
+	g_object_set_data_full (G_OBJECT (window),
+                                NAUTILUS_DRAG_WINDOW_DETAILS_KEY,
+                                details, g_free);
 
-	gtk_signal_connect (GTK_OBJECT (window), "realize",
-			    nautilus_drag_window_realize, NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "destroy",
-			    nautilus_drag_window_destroy, NULL);
+	g_signal_connect (window, "realize",
+                          G_CALLBACK (nautilus_drag_window_realize), NULL);
+	g_signal_connect (window, "destroy",
+                          G_CALLBACK (nautilus_drag_window_destroy), NULL);
 }

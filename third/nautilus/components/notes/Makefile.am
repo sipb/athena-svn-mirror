@@ -1,31 +1,33 @@
 NULL =
 
-bin_PROGRAMS=nautilus-notes
-
 INCLUDES=\
 	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
-	$(NULL)
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	$(COMPONENT_CFLAGS) \
+	$(NULL)	\
+	-DGTK_ENABLE_BROKEN
 
-LDADD=\
+bonobodir = $(libdir)/bonobo
+bonobo_LTLIBRARIES = libnautilus-notes-view.la
+
+libnautilus_notes_view_la_SOURCES = nautilus-notes.c
+
+libnautilus_notes_view_la_LIBADD =               \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS) \
 	$(NULL)
 
-nautilus_notes_SOURCES=nautilus-notes.c
+libnautilus_notes_view_la_LDFLAGS = -module -avoid-version
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_View_notes.oaf.in		\
-	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_in_files = Nautilus_View_notes.server.in.in
 
-@XML_I18N_MERGE_OAF_RULE@
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@BONOBODIR\@|$(bonobodir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST= \
-	$(oaf_DATA)\
-	$(oaf_in_files) \
-	$(NULL)
+EXTRA_DIST= $(server_in_files)
+CLEANFILES = $(server_DATA) $(server_DATA).in

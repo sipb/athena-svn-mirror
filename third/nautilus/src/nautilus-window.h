@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-window.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
@@ -62,6 +62,12 @@ typedef struct {
         void (* add_current_location_to_history_list) (NautilusWindow *window);
 } NautilusWindowClass;
 
+typedef enum {
+        NAUTILUS_WINDOW_NOT_SHOWN,
+        NAUTILUS_WINDOW_POSITION_SET,
+        NAUTILUS_WINDOW_SHOULD_SHOW
+} NautilusWindowShowState;
+
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
@@ -75,8 +81,11 @@ struct NautilusWindow {
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
         
+	char *last_geometry;
+	
         guint status_bar_clear_id;
-        
+        guint save_geometry_timeout_id;
+	  
         /** CORBA-related elements **/
         NautilusApplication *application;
         
@@ -98,10 +107,12 @@ struct NautilusWindow {
         
         /* Widgets to keep track of (for state changes, etc) */      
         GtkWidget *zoom_control;
-        Bonobo_Unknown throbber;
         
         /* Pending changes */
         NautilusViewFrame *new_content_view;
+
+        /* Window showed state (for saved_window_positions) */
+        NautilusWindowShowState show_state;
 };
 
 GtkType          nautilus_window_get_type             (void);
@@ -115,7 +126,6 @@ gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);
 void             nautilus_window_go_home              (NautilusWindow    *window);
-void		 nautilus_window_go_web_search	      (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
 void             nautilus_window_allow_back           (NautilusWindow    *window,
@@ -146,5 +156,6 @@ gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);
 void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
 void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
 gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
+void		 nautilus_window_save_geometry	      (NautilusWindow 	 *window);
 
 #endif
