@@ -38,9 +38,11 @@ static char sccsid[] = "@(#)gethostnamadr.c	6.36 (Berkeley) 10/7/88";
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <string.h>
-    
-#define	MAXALIASES	35
-#define	MAXADDRS	35
+
+#undef MAXALIASES
+#undef MAXADDRS
+#define	MAXALIASES	140
+#define	MAXADDRS	140
 
 static char *h_addr_ptrs[MAXADDRS + 1];
 
@@ -216,8 +218,10 @@ getanswer(answer, anslen, iquery, info)
 #endif
 			break;
 		}
+		if (hap >= &h_addr_ptrs[MAXADDRS])
+			break;
 #ifdef POSIX
-               memmove(*hap++ = bp, cp, n);
+		memmove(*hap++ = bp, cp, n);
 #else
 		bcopy(cp, *hap++ = bp, n);
 #endif
