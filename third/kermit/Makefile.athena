@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2001-04-03 16:06:48 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2002-03-21 04:53:15 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -29,7 +29,7 @@ all:
 	      esac \
 	      ;; \
 	  sun4) \
-              target=solaris2x \
+              target=solaris2xg \
 	      ;; \
 	  *) \
 	      target=posix \
