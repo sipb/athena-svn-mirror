@@ -378,7 +378,7 @@ doinclude()
 	 * Read to end of line. Should be empty or comment.
 	 */
 	while ((c = get()) != EOF_CHAR && c != '\n') {
-		if (c != ' ')
+		if (c != ' ' && c != '\t')
 			goto incerr;
 	}
 	unget();			/* Force nl after includee	*/
