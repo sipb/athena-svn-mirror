@@ -11,7 +11,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.10 1987-07-07 22:25:33 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.11 1987-07-29 14:59:37 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -67,7 +67,7 @@ Z_SendLocation(class,opcode,auth)
 	long ourtime;
 	ZNotice_t notice,retnotice;
 	ZPacket_t buffer;
-	char *bptr[2],host[MAXHOSTNAMELEN];
+	char *bptr[3],host[MAXHOSTNAMELEN],mytty[100];
 	struct hostent *hent;
 
 	notice.z_kind = ACKED;
@@ -92,6 +92,13 @@ Z_SendLocation(class,opcode,auth)
 	ourtime = time((long *)0);
 	bptr[1] = ctime(&ourtime);
 	bptr[1][strlen(bptr[1])-1] = '\0';
+
+	strcpy(mytty,ttyname(0));
+	bptr[2] = rindex(mytty,'/');
+	if (bptr[2])
+		bptr[2]++;
+	else
+		bptr[2] = mytty;
 	
 	if ((retval = ZSendList(&notice,bptr,2,auth)) != ZERR_NONE)
 		return (retval);
