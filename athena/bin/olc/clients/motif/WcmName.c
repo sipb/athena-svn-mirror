@@ -120,7 +120,9 @@
 ** so the message does not get garbled.
 */
 
+#ifdef DEBUG
 static char     msg[MAX_ERRMSG];
+#endif
 static char     cleanName[MAX_PATHNAME];
 
 /* Private Data involving the root widget list
@@ -826,7 +828,8 @@ char* WcGetResourceType( w, res_name )
     char*  res_name;
 {
     XtResource* res_list;
-    int         i, num;
+    int         i;
+    Cardinal    num;
     char*	retstr;
 
     XtGetResourceList( w->core.widget_class, &res_list, &num );
