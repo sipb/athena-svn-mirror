@@ -1,0 +1,412 @@
+# GNOME yn Gymraeg.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libbonobo package.
+# Dafydd Harries <daf@parnassus.ath.cx>, 2003
+#
+# Created through msgmerge on the HEAD translation, hence the
+# POT creation date is more recent than the PO revision -- Telsa
+msgid ""
+msgstr ""
+"Project-Id-Version: libbonobo\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-05-19 18:05+0100\n"
+"Last-Translator: Dafydd Harries <daf@parnassus.ath.cx>\n"
+"Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/bonobo-exception.c:154
+msgid "An unsupported action was attempted"
+msgstr "Ceisiwyd gweithred ni gynhelir"
+
+# EFALLAI (IO?)
+#: bonobo/bonobo-exception.c:157
+msgid "IO Error"
+msgstr "Gwall IO"
+
+#: bonobo/bonobo-exception.c:160
+msgid "Invalid argument value"
+msgstr "Gwerth ymresymiad annilys"
+
+#: bonobo/bonobo-exception.c:164
+msgid "Object not found"
+msgstr "Heb ganfod y gwrthrych"
+
+#: bonobo/bonobo-exception.c:167
+msgid "Syntax error in object description"
+msgstr "Gwall cystrawen yn nisgridiad gwrthrych"
+
+#: bonobo/bonobo-exception.c:172
+msgid "Cannot activate object from factory"
+msgstr "Methu gweithredu gwrthrych o ffatri"
+
+#: bonobo/bonobo-exception.c:177
+msgid "No permission to access stream"
+msgstr "Dim caniatad i gael mynediad i'r llif"
+
+#: bonobo/bonobo-exception.c:180
+msgid "An unsupported stream action was attempted"
+msgstr "Ceisiwyd gweithred llif ni gynhelir"
+
+# EFALLAI (IO?)
+#: bonobo/bonobo-exception.c:183
+msgid "IO Error on stream"
+msgstr "Gwall IO ar y llif"
+
+# EFALLAI (IO?)
+#: bonobo/bonobo-exception.c:187
+msgid "IO Error on storage"
+msgstr "Gwall IO ar storfa"
+
+#: bonobo/bonobo-exception.c:190
+msgid "Name already exists in storage"
+msgstr "Mae'r enw yn bodoli eisioes yn y storfa"
+
+#: bonobo/bonobo-exception.c:193
+msgid "Object not found in storage"
+msgstr "Ni canfodwyd y gwrthrych yn y storfa"
+
+#: bonobo/bonobo-exception.c:196
+msgid "No permission to do operation on storage"
+msgstr "Dim caniatad I weneud y weithred ar y storfa"
+
+#: bonobo/bonobo-exception.c:198
+msgid "An unsupported storage action was attempted"
+msgstr "Ceisiwyd gweithred storfa ni gynhelir"
+
+#: bonobo/bonobo-exception.c:200
+msgid "Object is not a stream"
+msgstr "Nid yw'r gwrthrych yn llif"
+
+#: bonobo/bonobo-exception.c:203
+msgid "Object is not a storage"
+msgstr "Nid yw'r gwrthrych yn storfa"
+
+#: bonobo/bonobo-exception.c:206
+msgid "Storage is not empty"
+msgstr "Nid yw'r storfa yn wag"
+
+#: bonobo/bonobo-exception.c:210
+msgid "malformed user interface XML description"
+msgstr "disgrifiad rhyngwyneb defnyddiwr XML annilys"
+
+#: bonobo/bonobo-exception.c:213
+msgid "invalid path to XML user interface element"
+msgstr "llwybr annilys at elfen XML rhyngwyneb defnyddiwr"
+
+#: bonobo/bonobo-exception.c:216
+msgid "the requested UI attribute didn't exist"
+msgstr "nid yw'r priodoledd rhyngwyneb defnyddiwr gofynnwyd amdani'n bodoli"
+
+#: bonobo/bonobo-exception.c:219
+msgid "Unknown command or verb"
+msgstr "Berf neu orchymyn anhybys"
+
+# EFALLAI (ansensitif?)
+#: bonobo/bonobo-exception.c:222
+msgid "Command is insensitive"
+msgstr "Mae'r gorchymyn yn ansensitif"
+
+#: bonobo/bonobo-exception.c:226
+msgid "incorrect data type"
+msgstr "math data anghywir"
+
+#: bonobo/bonobo-exception.c:229
+msgid "stream not found"
+msgstr "methu canfod y llif"
+
+#: bonobo/bonobo-exception.c:233
+msgid "property not found"
+msgstr "methu canfod y priodoledd"
+
+#: bonobo/bonobo-exception.c:236
+msgid "property has invalid type"
+msgstr "mae gan y priodoledd fath annilys"
+
+#: bonobo/bonobo-exception.c:239
+msgid "property is read only"
+msgstr "gellir darllen y priodoledd yn unig"
+
+# EFALLAI (ochr gefn?)
+#: bonobo/bonobo-exception.c:242
+msgid "config database backend failed "
+msgstr "methodd yr ochr gefn cronfa data "
+
+#: bonobo/bonobo-exception.c:246
+msgid "Moniker interface cannot be found"
+msgstr "Methu canfod y rhyngwyneb moniker"
+
+#: bonobo/bonobo-exception.c:249
+msgid "Moniker activation timed out"
+msgstr "Rhedodd gweithrediad y moniker allan o amser"
+
+#: bonobo/bonobo-exception.c:252
+msgid "Syntax error within moniker"
+msgstr "Gwall cystrawen o fewn moniker"
+
+#: bonobo/bonobo-exception.c:255
+msgid "Moniker has an unknown moniker prefix"
+msgstr "Mae gan y moniker flaenosodiad moniker anhysbys"
+
+# EFALLAI (huh?!)
+#: bonobo/bonobo-exception.c:279
+msgid "Error checking error; no exception"
+msgstr "Gwall gwirio gwallau; dim eithriad"
+
+#: bonobo/bonobo-exception.c:288
+msgid "General activation error with no description"
+msgstr "Gwall gweithrediad cyffredinol gyda dim disgrifiad"
+
+# EFALLAI (cychwyn?)
+#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+msgid "Could not initialize Bonobo"
+msgstr "Methu cychwyn Bonobo"
+
+#: bonobo/bonobo-moniker.c:353
+#, c-format
+msgid "Failed to resolve, or extend '%s"
+msgstr "Methu datrys, neu estyn '%s'"
+
+#: bonobo/bonobo-moniker-util.c:246
+msgid "Failed to activate object"
+msgstr "Methu gweithredu'r gwrthrych"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:1
+msgid "HTTP Moniker"
+msgstr "Moniker HTTP"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:2
+msgid "ORB IOR handling moniker"
+msgstr "moniker trin IOR ORB"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:3
+msgid "Standard Moniker factory"
+msgstr "ffatri Moniker Safonnol"
+
+# EFALLAI (generig?)
+#: monikers/Bonobo_Moniker_std.server.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr "moniker gweithrediad Oaf generig"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr "moniker ymholiad Oaf generig"
+
+# EFALLAI (huh?!)
+#: monikers/Bonobo_Moniker_std.server.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr "moniker 'newydd' ffatri generig"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:7
+msgid "generic item moniker"
+msgstr "moniker eitem generig"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:8
+msgid "stream MonikerExtender"
+msgstr "MonikerExtender llif"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "Eithriad wrth weithredu '%s'"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "Methu gweithredu '%s'"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
+msgid "Bonobo Echo server factory"
+msgstr "ffatri gweinydd Echo Bonobo"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
+msgid "Bonobo Echo server sample program"
+msgstr "rhaglen sampl gweinydd Echo Bonobo"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
+msgid "Echo component"
+msgstr "cydran Echo"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
+msgid "Echo component factory"
+msgstr "ffatri cydran Echo"
+
+#: samples/echo/echo-client.c:22
+msgid "I could not initialize Bonobo"
+msgstr "Methais gychwyn Bonobo"
+
+# TRWSIO
+#: samples/echo/echo-client.c:33
+msgid "Could not create an instance of the sample echo component"
+msgstr "Methu creu ... o'r cydran echo sampl"
+
+#: samples/echo/echo-client.c:45
+#, c-format
+msgid "An exception occured '%s'"
+msgstr "Digwyddodd eithriad '%s'"
+
+#~ msgid "Couldn't find which child the server was listed in"
+#~ msgstr "Methu canfod pa blentyn rhestrwyd y gweinydd ynddi"
+
+# EFALLAI (gweithredu?)
+#~ msgid "Not a valid Activation ID"
+#~ msgstr "Nid yw'n ID Gweithredu dilys"
+
+#~ msgid "Directory to read .server files from"
+#~ msgstr "Y cyfieiriadur i ddarllen ffeiliau .server ohoni"
+
+#~ msgid "DIRECTORY"
+#~ msgstr "CYFEIRIADUR"
+
+#~ msgid ""
+#~ "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+#~ msgstr ""
+#~ "Gweinu fel ActicationContext (fel ObjectDirectory yn unig yn rhagosodedig)"
+
+#~ msgid "File descriptor to write IOR to"
+#~ msgstr "Disgrifiwr ffeil i ysgifennu'r IOR iddi"
+
+# EFALLAI
+#~ msgid "FD"
+#~ msgstr "FD"
+
+#~ msgid "Query expression to evaluate"
+#~ msgstr "Mynegiant ymholiad i'w werthuso"
+
+#~ msgid "EXPRESSION"
+#~ msgstr "MYNEGIANT"
+
+#~ msgid "CORBA CosNaming service."
+#~ msgstr "Gwasanaeth CosNaming CORBA."
+
+#~ msgid "Name service"
+#~ msgstr "Gwasanaeth enw"
+
+#~ msgid "We don't handle activating shlib objects in a remote process yet"
+#~ msgstr "Dydym ni ddim yn ymdrin a gwrthrychau shlib mewn proses bell eto"
+
+#~ msgid ""
+#~ "The Bonobo Activation configuration file was not read successfully. "
+#~ "Please, check it is valid in: %s"
+#~ msgstr ""
+#~ "Ni ddarllenwyd y ffeil ffurfweddi Gweithrediad Bonobo yn llwyddianus. "
+#~ "Gwiriwch ei fod yn ddilys yn %s os gwelwch yn dda"
+
+#~ msgid "Race condition activating server '%s'"
+#~ msgstr "Amod râs tran's gweitredu gweinydd '%s'"
+
+#~ msgid "a NULL iid is not valid"
+#~ msgstr "nid yw iid NULL yn ddilys"
+
+#~ msgid "iid %s has a NULL type"
+#~ msgstr "mae gan yr iid %s fath NULL"
+
+#~ msgid "iid %s has a NULL location"
+#~ msgstr "mae gan yr iid %s lleoliad NULL"
+
+#~ msgid "invalid character '%c' in iid '%s'"
+#~ msgstr "nod annilyd '%c' yn yr iid '%s'"
+
+#~ msgid "Property '%s' has no value"
+#~ msgstr "Does dim gwerth gan y priodoledd '%s'"
+
+#~ msgid ""
+#~ "Child process did not give an error message, unknown failure occurred"
+#~ msgstr ""
+#~ "Ni roddod y proses plentyn neges gwall, digwyddodd methiant anhysbys"
+
+#~ msgid "Failed to read from child process: %s\n"
+#~ msgstr "Methwyd darllen o broses plentyn: %s\n"
+
+# EFALLAI (forcio?)
+#~ msgid "Couldn't fork a new process"
+#~ msgstr "Methu forcio proses newydd"
+
+#~ msgid "Child received signal %u (%s)"
+#~ msgstr "Derbynnodd blentyn arwydd %u (%s)"
+
+# EFALLAI
+#~ msgid "Unknown non-exit error (status is %u)"
+#~ msgstr "Gwall anhysbys (nid yw'n defynnol, %u yw'r statws)"
+
+#~ msgid "bonobo-activation failed to set process group of %s: %s\n"
+#~ msgstr "methodd bonobo-activation osod grŵp proses %s: %s\n"
+
+#~ msgid "Failed to execute %s: %d (%s)\n"
+#~ msgstr "Methu gweithredu %s: %d (%s)\n"
+
+#~ msgid "Too many alias levels for a locale, may indicate a loop"
+#~ msgstr "Gormod o lefelau arall-enwi ar gyfer locale, efallai mae cylch"
+
+#~ msgid "File descriptor to print IOR on"
+#~ msgstr "Disgrifiwr ffeil i argraffu'r IOD iddi"
+
+#~ msgid "IID to activate"
+#~ msgstr "Yr IID i'w weithredu"
+
+#~ msgid "Prevent registering of server with OAF"
+#~ msgstr "Rhwystro cofrestru'r gweinydd gyda OAF"
+
+#~ msgid "Bonobo activation options"
+#~ msgstr "Opsiynnau gweithredu Bonobo"
+
+#~ msgid "g_module_open of `%s' failed with `%s'"
+#~ msgstr "methwyd g_module_open efo `%s' gyda `%s'"
+
+#~ msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+#~ msgstr "Mechu canfod y symbol Bonobo_Plugin_info yn `%s'"
+
+#~ msgid "Factory `%s' returned NIL for `%s'"
+#~ msgstr "Dychwelodd y ffatri `%s' NIL ar gyfer `%s'"
+
+#~ msgid "Shlib `%s' didn't contain `%s'"
+#~ msgstr "Nid oeddd y shlib `%s' yn cynnwys `%s'"
+
+# EFALLAI
+#~ msgid "POA"
+#~ msgstr "POA"
+
+#~ msgid "Custom CORBA POA"
+#~ msgstr "POA CORBA Addasiedig"
+
+#~ msgid "Could not save configuration file.\n"
+#~ msgstr "Methu cadw y ffeil ffurfweddiad.\n"
+
+#~ msgid "Please, make sure you have permissions to write to '%s'.\n"
+#~ msgstr ""
+#~ "Os gwelwch yn dda, gwiriwch fod gennych ganiatad ysgrifennu at '%s'\n"
+
+#~ msgid "Successfully wrote configuration file.\n"
+#~ msgstr "Ysgrifennwyd y ffeil ffurfweddiad yn llwyddiannus.\n"
+
+#~ msgid ""
+#~ "configuration file is:\n"
+#~ "    %s\n"
+#~ msgstr ""
+#~ "y ffeil ffurfweddiad yw:\n"
+#~ "    %s\n"
+
+#~ msgid "%s already in configuration file\n"
+#~ msgstr "mae %s yn y ffeil ffurfweddiad yn barod\n"
+
+#~ msgid "there is not a properly structured configuration file\n"
+#~ msgstr "nid oes ffeil ffurfeddiad wedi ei strwythuro'n gywir\n"
+
+#~ msgid "Bonobo-activation configuration file contains:\n"
+#~ msgstr "Mae'r ffeil ffurfweddiad bonobo-actication yn cynnwys:\n"
+
+#~ msgid "Directory to remove from configuration file"
+#~ msgstr "Cyfeiriadur i'w dynnu o'r ffeil ffurfweddiad"
+
+#~ msgid "directory path"
+#~ msgstr "llwybr cyfeiriadur"
+
+#~ msgid "Directory to add to configuration file"
+#~ msgstr "Cyfeiriadur i'w ychwannegu i'r ffeil ffurfweddiad"
+
+#~ msgid "Display directories in configuration file"
+#~ msgstr "Dangos cyfeiriaduron yn y ffeil ffurfweddiad"
+
+#~ msgid "Display path to configuration file"
+#~ msgstr "Dangos y llwybr i'r ffeil ffurfweddiad"
