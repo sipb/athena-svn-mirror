@@ -23,20 +23,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.27 1991-04-02 13:58:47 lwvanels Exp $
+ *	$Id: olc.c,v 1.28 1991-04-08 20:51:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.27 1991-04-02 13:58:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.28 1991-04-08 20:51:59 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
-#include "olc.h"
 
 #include <signal.h>
 #include <sys/file.h>
@@ -69,7 +68,7 @@ extern int krb_ap_req_debug;
 COMMAND OLC_Command_Table[] = {
   "?",		do_olc_list_cmds,	"List available commands",
   "help",	do_olc_help,		"Describe the various commands.",
-#ifndef LAVIN
+#ifndef OLTA
   "answers",	do_olc_stock,		"Read answers to common questions",
 #endif
   "ask",	do_olc_ask,		"Ask a question",
@@ -93,7 +92,7 @@ COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,	"List available commands",
   "help",	do_olc_help,		"Describe the various commands",
   "acl",	do_olc_acl,		"Display/Change accesses.",
-#ifndef LAVIN
+#ifndef OLTA
   "answers",	do_olc_stock,		"Read answers to common questions",
 #endif
   "ask",	do_olc_ask,		"Ask a question",
@@ -118,7 +117,7 @@ COMMAND OLCR_Command_Table[] = {
   "send",	do_olc_send,		"Send a message",		       
   "show",	do_olc_show,		"Show any new messages",
   "status",	do_olc_status,		"Find your status",
-#ifndef LAVIN
+#ifndef OLTA
   "stock",	do_olc_stock,		"Browse thru stock answers",
 #endif
   "topic",	do_olc_topic,		"Show/Change question topic",
@@ -131,6 +130,10 @@ COMMAND OLCR_Command_Table[] = {
 COMMAND *Command_Table;
 char *program;
 int OLC=0;
+char *HELP_FILE;
+char *HELP_EXT;
+char *HELP_DIR;
+
 int select_timeout = 300;
 
 /*
@@ -204,7 +207,7 @@ main(argc, argv)
 	   * this is a kludge, but the other interface is already
 	   * there
 	   */
-#ifdef sun
+#ifdef PUTENV
 	  sprintf(buf,"OLCD_HOST=%s",argv[1]);
 	  putenv(buf);
 #else
@@ -213,7 +216,7 @@ main(argc, argv)
 	  ++argv, --argc;
       }
       else if (!strcmp (argv[0], "-port")) {
-#ifdef sun
+#ifdef PUTENV
 	  sprintf(buf,"OLCD_PORT=%s",argv[1]);
 	  putenv(buf);
 #else
@@ -229,27 +232,6 @@ main(argc, argv)
       ++argv;
       --argc;
   }
-
-  if ((tty = ttyname(fileno(stdin))) == (char *)NULL) 
-    goto no_tty;
-
-#ifdef TERMINAL 
-  if (stat(tty, &statbuf) < 0) 
-    {
-      printf("Unable to get terminal status. Please check your TERM variable.\n");
-      exit(1);
-    }
-  if (!(statbuf.st_mode & 020)) 
-    {
-      printf("Your terminal is not set to receive messages.  To");
-      printf(" do so, type 'mesg y'\n");
-      printf("at the shell prompt, and then type 'olc' again.\n");
-      exit(1);
-    }
-#endif /* TERMINAL */
-
- no_tty:
-
 
   signal(SIGPIPE, SIG_IGN);
   if (argc)
@@ -290,14 +272,6 @@ do_olc_init()
   char topic[TOPIC_SIZE];
   int status;
 
-#ifdef LAVIN
-  printf("Welcome to OLTA, ");
-  printf("Project Athena's On-Line Consulting system. (v %s)\n",
-	 VERSION_STRING);
-  printf("Copyright (c) 1989 by ");
-  printf("the Massachusetts Institute of Technology.\n\n");
-#endif /* LAVIN */
-  
   OInitialize();
 
   fill_request(&Request);
@@ -320,13 +294,11 @@ do_olc_init()
   switch(status) 
     {
     case USER_NOT_FOUND:
-#ifndef LAVIN
-      printf("Welcome to OLC, ");
+      printf("Welcome to %s, ",OLC_SERVICE_NAME);
       printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
-#endif /* LAVIN */
       first = 1;
 	
       break;
@@ -334,13 +306,11 @@ do_olc_init()
     case CONNECTED:
     case SUCCESS:
       read_int_from_fd(fd, &n);
-#ifndef LAVIN
-      printf("Welcome back to OLC. ");
+      printf("Welcome back to %s. ",OLC_SERVICE_NAME);
       printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
-#endif /* LAVIN */
 
       if(t_set_default_instance(&Request) != SUCCESS)
 	fprintf(stderr,"Error setting default instance... continuing.\n");
@@ -350,7 +320,7 @@ do_olc_init()
 
       break; 
    case PERMISSION_DENIED:
-      printf("You are not allowed to use OLC.\n");
+      printf("You are not allowed to use %s.\n",OLC_SERVICE_NAME);
       exit(1);
     default:
       if(handle_response(status, &Request) == ERROR)
@@ -366,18 +336,13 @@ do_olc_init()
 
   if(OLC)
     {
-#ifndef LAVIN
       printf("\nTo see answers to common questions, type:      answers\n");
-      printf("To see the hours OLC is staffed, type:         hours\n");
-#endif
+      printf("To see the hours %s is staffed, type:         hours\n",
+	     OLC_SERVICE_NAME);
       if (first)
 	{
 	  topic[0]='\0';
-#ifdef LAVIN
-	  printf("To ask a TA a question, type:        ask\n");
-#else
-	  printf("To ask a consultant a question, type:          ask\n");
-#endif
+	  printf("To ask a question, type:          ask\n");
 	}
     }
 
