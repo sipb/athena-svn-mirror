@@ -1,11 +1,8 @@
 #!/bin/sh 
 
-#	Top level Xsession file for all users
+# Top level Xsession file for all users
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Xsession,v 1.7 1991-07-18 14:58:16 epeisach Exp $
-#	$Source: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Xsession,v $
-#	$Author: epeisach $
-#
+# $Id: Xsession,v 1.8 1991-07-22 01:11:11 probe Exp $
 
 trap 'kdestroy; exit 0' 1 2 15
 
@@ -35,7 +32,7 @@ esac
 
 # Set the tty characteristics of the parent (console window)
 # Redirect stdin since some versions of stty use it instead of stdout.
-stty dec 0<&1 
+stty dec 0<&1 2>/dev/null
 $session
 
 status=$?
