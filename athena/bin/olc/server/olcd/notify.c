@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.9 1990-01-16 05:46:38 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.10 1990-01-17 05:42:28 vanharen Exp $";
 #endif
 
 
@@ -106,8 +106,8 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 {
 	FILE *tf = NULL;	/* Temporary file. */
 	int fds;		/* Socket descriptor. */
-	char buf[BUFSIZE];	/* Message buffer. */
-	char error[ERRSIZE];	/* Error message. */
+	char buf[BUF_SIZE];	/* Message buffer. */
+	char error[ERROR_SIZE];	/* Error message. */
 	struct hostent *host;	/* Host entry for receiver. */
 	struct sockaddr_in sin;	/* Socket address. */
 	int flag = 0;
@@ -232,7 +232,7 @@ write_message_to_user(k, message, flags)
 #endif
 {
   int result;		/* Result of writing the message. */
-  char msgbuf[BUFSIZE];	/* Message buffer. */
+  char msgbuf[BUF_SIZE];	/* Message buffer. */
   int status;
 
   if (k == (KNUCKLE *) NULL)
@@ -254,7 +254,7 @@ write_message_to_user(k, message, flags)
     {
     case ERROR:
       set_status(k->user, UNKNOWN_STATUS);
-      (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.", 
+      (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.\n",
 	      k->title, k->user->username);
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
@@ -264,7 +264,7 @@ write_message_to_user(k, message, flags)
 
     case MACHINE_DOWN:
       set_status(k->user, UNKNOWN_STATUS);
-      (void) sprintf(msgbuf,"Unable to contact %s %s. Host machine down.", 
+      (void) sprintf(msgbuf,"Unable to contact %s %s. Host machine down.\n",
 	      k->title, k->user->username);
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
@@ -274,7 +274,7 @@ write_message_to_user(k, message, flags)
 
     case LOGGED_OUT:
       set_status(k->user, LOGGED_OUT);
-      (void) sprintf(msgbuf,"Unable to contact %s %s. User logged out.", 
+      (void) sprintf(msgbuf,"Unable to contact %s %s. User logged out.\n",
 	      k->title, k->user->username);
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
@@ -344,7 +344,7 @@ zwrite_message(username, message)
      char *username, *message;
 #endif
 {
-   char error[ERRSIZE];
+   char error[ERROR_SIZE];
 
     /* Sanity check the username. */
   if (username == NULL)
@@ -380,8 +380,8 @@ zsend_message(c_class, instance, opcode, username, message, flags)
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value, length */
-  char error[ERRSIZE];
-  char buf[BUFSIZ];
+  char error[ERROR_SIZE];
+  char buf[BUF_SIZE];
   char *signature = "From: OLC Service \n";
 
 #ifdef lint
