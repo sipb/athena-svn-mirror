@@ -41,6 +41,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#undef OAF_DEBUG
 
 /* Whacked from gnome-libs/libgnorba/orbitns.c */
 
@@ -54,6 +55,13 @@ typedef struct
 	char *do_srv_output;
 #endif
 	FILE *fh;
+
+        /* For list compares */
+        const char *display;
+        const char *act_iid;
+        const char *exename;
+        OAFForkReCheckFn re_check;
+        gpointer         user_data;
 }
 EXEActivateInfo;
 
@@ -68,9 +76,8 @@ handle_exepipe (GIOChannel * source,
          * once with G_IO_IN and once G_IO_HUP, of course we need to handle
          * other cases.
          */
-        
         if (data->iorbuf[0] == '\0' &&
-            (condition & G_IO_IN)) {
+            (condition & (G_IO_IN | G_IO_PRI))) {
                 if (!fgets (data->iorbuf, sizeof (data->iorbuf), data->fh)) {
                         g_snprintf (data->iorbuf, IORBUFSIZE,
                                     _("Failed to read from child process: %s\n"),
@@ -96,6 +103,89 @@ handle_exepipe (GIOChannel * source,
 		g_main_quit (data->mloop);
 
 	return retval;
+}
+
+static CORBA_Object
+exe_activate_info_to_retval (EXEActivateInfo *ai, CORBA_Environment *ev)
+{
+        CORBA_Object retval;
+
+        g_strstrip (ai->iorbuf);
+        if (!strncmp (ai->iorbuf, "IOR:", 4)) {
+                retval = CORBA_ORB_string_to_object (oaf_orb_get (),
+                                                     ai->iorbuf, ev);
+                if (ev->_major != CORBA_NO_EXCEPTION)
+                        retval = CORBA_OBJECT_NIL;
+#ifdef OAF_DEBUG
+                if (ai->do_srv_output)
+                        g_message ("Did string_to_object on %s = '%p' (%s)",
+                                   ai->iorbuf, retval,
+                                   ev->_major == CORBA_NO_EXCEPTION?
+                                   "no-exception" : ev->_repo_id);
+#endif
+        } else {
+                OAF_GeneralError *errval;
+
+#ifdef OAF_DEBUG
+                if (ai->do_srv_output)
+                        g_message ("string doesn't match IOR:");
+#endif
+
+                errval = OAF_GeneralError__alloc ();
+
+                if (*ai->iorbuf == '\0')
+                        errval->description =
+                                CORBA_string_dup (_("Child process did not give an error message, unknown failure occurred"));
+                else
+                        errval->description = CORBA_string_dup (ai->iorbuf);
+                CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+                                     ex_OAF_GeneralError, errval);
+                retval = CORBA_OBJECT_NIL;
+        }
+
+        return retval;
+}
+
+static CORBA_Object
+scan_list (GSList *l, EXEActivateInfo *seek_ai, CORBA_Environment *ev)
+{
+        CORBA_Object retval = CORBA_OBJECT_NIL;
+
+        for (; l; l = l->next) {
+                EXEActivateInfo *ai = l->data;
+
+                if (strcmp (seek_ai->exename, ai->exename))
+                        continue;
+
+                if (seek_ai->display && ai->display) {
+                        if (strcmp (seek_ai->display, ai->display))
+                                continue;
+
+                } else if (seek_ai->display || ai->display)
+                        continue;
+
+                /* We run the loop too ... */
+                g_main_run (ai->mloop);
+
+                if (!strcmp (seek_ai->act_iid, ai->act_iid)) {
+#ifdef OAF_DEBUG
+                        g_warning ("Hit the jackpot '%s' '%s'",
+                                   seek_ai->act_iid, ai->act_iid);
+#endif
+                        retval = exe_activate_info_to_retval (ai, ev);
+                } else if (seek_ai->re_check) {
+                        /* It might have just registered the IID */
+#ifdef OAF_DEBUG
+                        g_warning ("Re-check the thing ... '%s' '%s'",
+                                   seek_ai->act_iid, ai->act_iid);
+#endif
+                        retval = seek_ai->re_check (
+                                seek_ai->display, seek_ai->act_iid,
+                                seek_ai->user_data, ev);
+                }
+        }
+
+        return retval;
 }
 
 #ifdef OAF_DEBUG
@@ -125,24 +215,15 @@ void oaf_setenv (const char *name, const char *value)
 }
 
 CORBA_Object
-oaf_server_by_forking (const char **cmd, 
+oaf_server_by_forking (const char **cmd,
+                       gboolean set_process_group,
                        int fd_arg, 
                        const char *display,
-		       const char *od_iorstr,
-                       CORBA_Environment * ev)
-{
-        return oaf_internal_server_by_forking_extended (cmd, FALSE, fd_arg,
-                                                        display, od_iorstr,
-                                                        ev);
-}
-
-CORBA_Object
-oaf_internal_server_by_forking_extended (const char **cmd,
-                                         gboolean set_process_group,
-                                         int fd_arg, 
-                                         const char *display,
-                                         const char *od_iorstr,
-                                         CORBA_Environment * ev)
+                       const char *od_iorstr,
+                       const char *act_iid,
+                       OAFForkReCheckFn re_check,
+                       gpointer         user_data,
+                       CORBA_Environment *ev)
 {
 	gint iopipes[2];
 	CORBA_Object retval = CORBA_OBJECT_NIL;
@@ -156,6 +237,20 @@ oaf_internal_server_by_forking_extended (const char **cmd,
         struct sigaction sa;
         sigset_t mask, omask;
         int parent_pid;
+        static GSList *running_activations = NULL;
+
+        g_return_val_if_fail (cmd != NULL, CORBA_OBJECT_NIL);
+        g_return_val_if_fail (cmd [0] != NULL, CORBA_OBJECT_NIL);
+        g_return_val_if_fail (act_iid != NULL, CORBA_OBJECT_NIL);
+
+        ai.display = display;
+        ai.act_iid = act_iid;
+        ai.exename = cmd [0];
+        ai.re_check = re_check;
+        ai.user_data = user_data;
+
+        if ((retval = scan_list (running_activations, &ai, ev)) != CORBA_OBJECT_NIL)
+                return retval;
         
      	pipe (iopipes);
 
@@ -219,6 +314,9 @@ oaf_internal_server_by_forking_extended (const char **cmd,
                 
 		ai.iorbuf[0] = '\0';
 		ai.mloop = g_main_new (FALSE);
+
+                running_activations = g_slist_prepend (running_activations, &ai);
+
 		gioc = g_io_channel_unix_new (iopipes[0]);
 		watchid = g_io_add_watch (gioc,
                                           G_IO_IN | G_IO_HUP | G_IO_NVAL |
@@ -229,38 +327,9 @@ oaf_internal_server_by_forking_extended (const char **cmd,
 		g_main_destroy (ai.mloop);
 		fclose (iorfh);
 
-		g_strstrip (ai.iorbuf);
-		if (!strncmp (ai.iorbuf, "IOR:", 4)) {
-			retval = CORBA_ORB_string_to_object (oaf_orb_get (),
-                                                             ai.iorbuf, ev);
-			if (ev->_major != CORBA_NO_EXCEPTION)
-				retval = CORBA_OBJECT_NIL;
-#ifdef OAF_DEBUG
-			if (ai.do_srv_output)
-				g_message ("Did string_to_object on %s = '%p' (%s)",
-					   ai.iorbuf, retval,
-                                           ev->_major == CORBA_NO_EXCEPTION?
-                                           "no-exception" : ev->_id);
-#endif
-		} else {
-			OAF_GeneralError *errval;
+                running_activations = g_slist_remove (running_activations, &ai);
 
-#ifdef OAF_DEBUG
-			if (ai.do_srv_output)
-				g_message ("string doesn't match IOR:");
-#endif
-
-			errval = OAF_GeneralError__alloc ();
-
-                        if (*ai.iorbuf == '\0')
-                                errval->description =
-                                        CORBA_string_dup (_("Child process did not give an error message, unknown failure occurred"));
-                        else
-                                errval->description = CORBA_string_dup (ai.iorbuf);
-			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-					     ex_OAF_GeneralError, errval);
-			retval = CORBA_OBJECT_NIL;
-		}
+                retval = exe_activate_info_to_retval (&ai, ev);
 	} else if ((childpid = fork ())) {
 		_exit (0);	/* de-zombifier process, just exit */
 	} else {

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.6.7\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Josu Waliño <josu@elhuyar.com>\n"
 "Language-Team: Euskara\n"
@@ -15,49 +15,49 @@ msgstr ""
 
 #: liboaf/oaf-async-corba.c:186
 msgid "No server corresponding to your query"
-msgstr "Ez dago zure kontsultari dagokion zerbitzaririk  "
+msgstr "Ez dago zure kontsultari dagokion zerbitzaririk"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Huts egin du ondorengo prozesu umea irakurtzean: %s\n"
 
-#: liboaf/oaf-fork-server.c:175
-msgid "Couldn't fork a new process"
-msgstr "Ezin izan da prozesu berria bikoiztu"
-
-#: liboaf/oaf-fork-server.c:196
-#, c-format
-msgid "Child received signal %u (%s)"
-msgstr "Umeak %u (%s) seinalea jaso du"
-
-#: liboaf/oaf-fork-server.c:202
-#, c-format
-msgid "Unknown non-exit error (status is %u)"
-msgstr "Irten ezineko errore ezezaguna (egoera %u da)"
-
-#: liboaf/oaf-fork-server.c:257
+#: liboaf/oaf-fork-server.c:138
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr ""
 "Prozesu umeak ez du errore-mezurik eman, hutsegite ezezaguna gertatu da"
 
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:270
+msgid "Couldn't fork a new process"
+msgstr "Ezin izan da prozesu berria bikoiztu"
+
+#: liboaf/oaf-fork-server.c:291
 #, c-format
-msgid "OAF failed to set process group of %s: %s\n"
-msgstr "OAF-ek huts egin du %s(r)en prozesu-taldea ezartzean: %s\n"
+msgid "Child received signal %u (%s)"
+msgstr "Umeak %u seinalea jaso du (%s)"
 
 #: liboaf/oaf-fork-server.c:297
 #, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Irteera-errore ezezaguna (egoera %u da)"
+
+#: liboaf/oaf-fork-server.c:355
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr "OAFek huts egin du %s(r)en prozesu-taldea ezartzean: %s\n"
+
+#: liboaf/oaf-fork-server.c:366
+#, c-format
 msgid "Failed to execute %s: %d (%s)\n"
-msgstr "Huts egin du %s exekutatzean. %d (%s)\n"
+msgstr "Huts egin du %s exekutatzean: %d (%s) \n"
 
 #: liboaf/oaf-mainloop.c:221
 msgid "Object directory to use when registering servers"
-msgstr "Zerbitzaria erregistratzerakoan erabili beharreko objektu-direktorioa"
+msgstr "Zerbitzariak erregistratzerakoan erabili beharreko objektu-direktorioa"
 
 #: liboaf/oaf-mainloop.c:223
 msgid "File descriptor to print IOR on"
-msgstr "Fitxategi-deskriptorea IOR inprimatzeko "
+msgstr "IOR inprimatzeko fitxategi-deskriptorea "
 
 #: liboaf/oaf-mainloop.c:223 oafd/main.c:72
 msgid "FD"
@@ -71,29 +71,29 @@ msgstr "IID aktibatu "
 msgid "Prevent registering of server with OAF"
 msgstr "OAF duen zerbitzaria erregistratzea eragozten du"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "OAF aukerak"
 
 #: liboaf/oaf-plugin.c:99
-#, fuzzy, c-format
+#, c-format
 msgid "g_module_open of `%s' failed with `%s'"
-msgstr "'%s'(r)en g_module_open-ek huts egin du"
+msgstr "`%s'(r)en g_module_open-ek huts egin du `%s'(r)ekin"
 
 #: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find symbol OAF_Plugin_info in `%s'"
 msgstr "Ezin da OAF_Plugin_info ikurra '%s'(e)n aurkitu"
 
 #: liboaf/oaf-plugin.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Factory '%s' returned NIL for `%s'"
-msgstr "'%s' fabrikak '%s'(r)en NILa bidali du "
+msgstr "'%s' fabrikak '%s'(r)en NIL itzuli du "
 
 #: liboaf/oaf-plugin.c:220
-#, fuzzy, c-format
+#, c-format
 msgid "Shlib '%s' didn't contain `%s'"
-msgstr "'%s' shlib-ak ez du '%s'"
+msgstr "'%s' shlib-ak ez du `%s'"
 
 #: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
@@ -101,7 +101,7 @@ msgstr "Ezin da aurkitu zerbitzaria zer umetan zegoen zerrendatuta"
 
 #: oafd/ac-corba.c:606
 msgid "Nothing matched the requirements."
-msgstr ""
+msgstr "Ez dago baldintza horiek betetzen dituenik."
 
 #: oafd/ac-corba.c:664
 msgid "Query failed: "
@@ -124,9 +124,8 @@ msgid "Could not activate server: "
 msgstr "Ezin izan da zerbitzari hau aktibatu: "
 
 #: oafd/main.c:62
-#, fuzzy
 msgid "Directory to read .oaf files from"
-msgstr ".oafinfo fitxategiak irakurtzeko direktorioa"
+msgstr ".oaf fitxategiak irakurtzeko direktorioa "
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -148,7 +147,7 @@ msgstr ""
 
 #: oafd/main.c:72
 msgid "File descriptor to write IOR to"
-msgstr "Fitxategi-deskriptorea IOR idazteko"
+msgstr "IOR idazteko fitxategi-deskriptorea "
 
 #: oafd/main.c:77
 msgid "Query expression to evaluate"
@@ -160,14 +159,29 @@ msgstr "ADIERAZPENA"
 
 #: oafd/od-activate.c:62
 msgid "We don't handle activating shlib objects in a remote process yet"
-msgstr "Oraindik ez dugu shlib objekturik aktibatu urruneko prozesuetan"
+msgstr "Oraindik ez dugu urruneko prozesuetan shlib objekturik aktibatu "
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "
 "missing or incorrectly installed .oaf file."
 msgstr ""
+"Ezin izan da `%s' zerbitzariarentzat aktibazio-erregistrorik aurkitu. Horren "
+"arrazoia .oaf fitxategirik ez egotea edo gaizki instalatuta egotea izan "
+"daiteke."
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
@@ -199,16 +213,16 @@ msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
 msgstr ""
-"OAF konfigurazio-fitxategia ez da behar bezala irakurri. Egiaztatu baliozkoa "
-"dela hemen:  %s"
+"OAF konfigurazio-fitxategia ez da behar bezala irakurri. Egiaztatu hemen  "
+"baliozkoa dela:  %s"
 
 #: oafd/OAF_naming-service.oaf.in.h:1
 msgid "CORBA CosNaming service."
-msgstr ""
+msgstr "CORBA CosNaming zerbitzua."
 
 #: oafd/OAF_naming-service.oaf.in.h:2
 msgid "Name service"
-msgstr ""
+msgstr "Izen-zerbitzua"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
@@ -230,12 +244,12 @@ msgid ""
 "    %s\n"
 msgstr ""
 "OAF konfigurazio-fitxategia:\n"
-"\t%s\n"
+"    %s\n"
 
 #: utils/oaf-sysconf.c:108
 #, c-format
 msgid "%s already in OAF configuration file\n"
-msgstr "%s jadanik OAF konfigurazio-fitxategian dago\n"
+msgstr "%s badago lehendik OAF konfigurazio-fitxategian\n"
 
 #: utils/oaf-sysconf.c:184
 msgid "OAF configuration file contains:\n"

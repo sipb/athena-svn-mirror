@@ -43,4 +43,10 @@ CORBA_Object od_server_activate (OAF_ServerInfo * si,
 OAF_ActivationContext
 OAF_ActivationContext_create (PortableServer_POA poa, CORBA_Environment * ev);
 
+CORBA_Object
+oaf_object_directory_re_check_fn (const char        *display,
+                                  const char        *act_iid,
+                                  gpointer           user_data,
+                                  CORBA_Environment *ev);
+
 #endif

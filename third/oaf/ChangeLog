@@ -1,3 +1,74 @@
+2002-04-16  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.6.10
+
+2002-04-16  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-fork-server.c: turn off debug.
+
+2002-04-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 0.6.9
+
+Thu Apr 11 15:23:01 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* oaf-config.in: Strip out /usr/include from the
+	--cflags output.
+
+2002-03-12  Miles Lane <miles@megapathdsl.net>
+
+	* configure.in:  Added oafd/OAF_naming-service.oaf
+	  to AC_OUTPUT to fix the build.
+
+2002-03-12  Michael Meeks  <michael@ximian.com>
+
+	* test/oaf-test-client.c
+	(race_base_init, idle_base_activation),
+	(race_empty, empty_activation_cb): impl.
+	(main): add more tests.
+
+	* oafd/qsort_ex.c: fix HAVE_ALLOCA_H
+	thanks to:
+		nino@nforced.com.
+
+	* oafd/od-corba.c (update_registry): remove 'break'
+	so we don't multiply parse the files if we have our
+	GNOME_PATH setup.
+	(split_path_unique): back-port.
+	(OAF_ObjectDirectory_create): use it to save parsing
+	lots of stuff twice, using the slow DOM parser.
+
+	* oafd/od-activate.c (od_server_activate_exe): pass
+	the recheck arg. to ..._by_forking_extended.
+
+	* liboaf/oaf-fork-server.c
+	(oaf_internal_server_by_forking_extended): rename to
+	(oaf_server_by_forking): this & add the duplicate
+	activation handling, handle G_IO_PRI, split out
+	(exe_activate_info_to_retval): this
+	(EXEActivateInfo): beef up to include the iid & 
+	(scan_list): impl.
+	(handle_exepipe): handle G_IO_PRI
+
+	* liboaf/oaf-mainloop.c (local_activator): pass the
+	re_check information & the repoid as the act_id, to
+	ensure we uniquify on that.
+	(local_re_check_fn): impl.
+
+	* oafd/od-corba.c
+	(OAF_ObjectDirectory_create): setup main_dir
+	(oaf_object_directory_re_check_fn): impl.
+	(impl_OAF_ObjectDirectory_activate): beef up the
+	failed activation check, we can get NIL back as well
+	as an exception.
+
+	* test/empty-server.c (main): register this
+	server under two IIDs so we can test some more
+	racing action ...
+
+	* liboaf/oaf-mainloop.c
+	(cmdline_check): bomb out if people try to scupper us.
+
 2002-01-18  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* NEWS, configure.in: Updated for 0.6.8.

@@ -2,12 +2,12 @@
 # Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 #
-# $Id: sv.po,v 1.1.1.5 2002-01-28 22:19:43 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5.2.1 2003-01-03 18:40:38 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-10-24 15:13+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -19,35 +19,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "Ingen server motsvarar din fråga"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Misslyckades med att läsa från barnprocess: %s\n"
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Barnprocessen gav inte något felmeddelande, okänt fel inträffade"
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Kunde inte grena en ny process"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Barnet tog emot signalen %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Okänd icke-slutstatus (status är %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Barnprocessen gav inte något felmeddelande, okänt fel inträffade"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "OAF misslyckades med att ställa in processgrupp på %s: %s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Misslyckades med att köra %s: %d (%s)\n"
@@ -72,7 +72,7 @@ msgstr "IID för att aktivera"
 msgid "Prevent registering of server with OAF"
 msgstr "Förhindra registrering av server med OAF"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "OAF-alternativ"
 
@@ -160,7 +160,19 @@ msgstr "UTTRYCK"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Vi hanterar inte aktivering av shlib-objekt i en fjärrprocess än"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

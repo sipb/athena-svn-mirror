@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OAF 0.6.x\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-12-06 01:03+0100\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -18,36 +18,36 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "Kein zutreffender Server für Ihre Anfrage"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Es konnte nicht vom Kindprozess gelesen werden: %s\n"
 
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Kindprozess gabe keine Fehlermeldung aus. Unbekannter Fehler trat auf"
+
 #  liboaf/oaf-fork-server.c:175
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Neuer Prozess konnte nicht abgespalten werden"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Kindprozess erhielt Signal %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Unbekannter `non-exit'-Fehler (Status ist %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Kindprozess gabe keine Fehlermeldung aus. Unbekannter Fehler trat auf"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "Prozessgruppe von %s konnte von OAF nicht festgelegt werden: %s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Ausführung von %s fehlgeschlagen: %d (%s)\n"
@@ -72,7 +72,7 @@ msgstr "Zu aktivierende IID"
 msgid "Prevent registering of server with OAF"
 msgstr "Registrieren von Servern mit OAF vermeiden"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "OAF-Optionen"
 
@@ -161,7 +161,19 @@ msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Es können noch keine shlib-Objekte in einem fernen Prozess aktiviert werden"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

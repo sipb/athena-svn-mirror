@@ -1,6 +1,6 @@
 Name:		oaf
 Summary:	Object activation framework for GNOME
-Version: 	0.6.8
+Version: 	0.6.10
 Release: 	1
 License: 	LGPL and GPL
 Group:		System Environment/Libraries

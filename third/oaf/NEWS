@@ -1,3 +1,16 @@
+oaf-0.6.9
+
+	* Bugs fixed (Michael)
+		+ evil activation races
+		+ alloca issue
+		+ handle IO_PRI
+
+	* Featurelets (Michael)
+		+ more regression tests
+		+ don't multiply parse oafinfo files
+		+ racing activations far more efficient
+		+ remove multiple directory capability
+
 ===================================
 oaf-0.6.8
 ---------

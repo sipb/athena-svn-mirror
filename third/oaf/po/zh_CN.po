@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
-"PO-Revision-Date: 2001-11-09 16:49+0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
+"PO-Revision-Date: 2002-02-17 23:54+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -17,35 +17,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "服务器没有响应您的请求"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "无法从子进程读取：%s\n"
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "子进程没有给出错误信息，发生未知错误"
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "无法创建新的进程"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "子进程接收到信号 %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "未知的非退出错误(状态是 %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "子进程没有给出错误信息，发生未知错误"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "OAF 无法设置 %s 的进程组：%s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "无法执行 %s：%d (%s)\n"
@@ -70,7 +70,7 @@ msgstr "要激活的 IID"
 msgid "Prevent registering of server with OAF"
 msgstr "防止服务器在 OAF 上注册"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "OAF 选项"
 
@@ -85,7 +85,7 @@ msgid "Can't find symbol OAF_Plugin_info in `%s'"
 msgstr "无法在“%s”中找到符号 OAF_Plugin_info"
 
 #: liboaf/oaf-plugin.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Factory '%s' returned NIL for `%s'"
 msgstr "工厂“%s”为“%s”返回 NIL"
 
@@ -100,7 +100,7 @@ msgstr "无法找到服务器在那个子进程中被列出"
 
 #: oafd/ac-corba.c:606
 msgid "Nothing matched the requirements."
-msgstr ""
+msgstr "没有符合要求的项。"
 
 #: oafd/ac-corba.c:664
 msgid "Query failed: "
@@ -158,7 +158,19 @@ msgstr "表达式"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "目前无法处理激活远程进程的 shlib 对象"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

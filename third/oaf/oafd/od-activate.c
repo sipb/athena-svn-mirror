@@ -178,10 +178,10 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
          * this allows people to destroy all OAF servers along with oafd
          * if necessary
          */
-	retval = oaf_internal_server_by_forking_extended ((const char **) args,
-                                                          TRUE,
-                                                          fd_arg, display,
-                                                          iorstr, ev);
+	retval = oaf_server_by_forking (
+                (const char **) args, TRUE, fd_arg, display, iorstr,
+                si->iid, oaf_object_directory_re_check_fn, (gpointer)
+                actinfo, ev);
         
         g_free (display);
 	CORBA_free (iorstr);

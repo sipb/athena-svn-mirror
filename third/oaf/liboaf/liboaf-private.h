@@ -44,13 +44,22 @@
 
 #define OAF_FACTORY_TIMEOUT 1000
 
+typedef CORBA_Object (*OAFForkReCheckFn) (const char        *display,
+                                          const char        *act_iid,
+                                          gpointer           user_data,
+                                          CORBA_Environment *ev);
+
 void         oaf_timeout_reg_check_set  (gboolean on);
 gboolean     oaf_timeout_reg_check      (gpointer data);
 CORBA_Object oaf_server_by_forking      (const char **cmd, 
+                                         gboolean set_process_group,
                                          int fd_Arg,
                                          const char *display,
 					 const char *od_iorstr,
-                                         CORBA_Environment * ev);
+                                         const char *act_iid,
+                                         OAFForkReCheckFn re_check,
+                                         gpointer         user_data,
+                                         CORBA_Environment *ev);
 void         oaf_rloc_file_register     (void);
 int          oaf_ior_fd_get             (void);
 CORBA_Object oaf_activation_context_get (void);
@@ -67,14 +76,6 @@ CORBA_Object oaf_internal_service_get_extended  (const OAFBaseService         *b
                                                  CORBA_Environment          *ev);
 CORBA_Object oaf_internal_activation_context_get_extended (gboolean           existing_only,
                                                            CORBA_Environment *ev);
-
-
-CORBA_Object oaf_internal_server_by_forking_extended (const char **cmd,
-                                                      gboolean set_process_group,
-                                                      int fd_arg, 
-                                                      const char *display,
-                                                      const char *od_iorstr,
-                                                      CORBA_Environment * ev);
 
 #endif
 
