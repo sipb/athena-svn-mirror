@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.46 1991-09-22 11:59:50 lwvanels Exp $
+ *	$Id: olcd.c,v 1.47 1991-11-05 13:50:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.46 1991-09-22 11:59:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.47 1991-11-05 13:50:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -41,6 +41,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/ioctl.h>		/* For handling TTY. */
 #if defined(_AIX) && defined(_IBMR2)
 #include <sys/select.h>
+#include <mon.h>
 #endif
 #include <netinet/in.h>		/* More IPC definitions. */
 #include <sys/wait.h>		/* Wait defs. */
@@ -80,7 +81,7 @@ struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 int request_count = 0;
 int request_counts[OLC_NUM_REQUESTS];
 long start_time;
-int select_timeout = 10;
+int select_timeout = 60;
 char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
 
 #ifdef KERBEROS
@@ -107,8 +108,13 @@ static int reap_child P((int sig ));
 static int punt P((int sig ));
 #endif
 #ifdef PROFILE
+#ifdef VOID_SIGRET
+static void dump_profile P((int sig ));
+static void start_profile P((int sig ));
+#else
 static int dump_profile P((int sig ));
 static int start_profile P((int sig ));
+#endif /* VOID_SIGRET */
 #endif /* PROFILE */
 #undef P
 
@@ -143,7 +149,7 @@ main (argc, argv)
     struct servent *service;		/* Network service entry. */
     struct hostent *this_host_entry;	/* Host entry for this host. */
     struct hostent *daemon_host_entry;	/* Entry for daemon host.*/
-    char hostname[LINE_SIZE];		/* Name of this host. */
+    char hostname[MAXHOSTNAMELEN];	/* Name of this host. */
     char buf[BUFSIZ];			/* for constructing erorr messages */
     int fd;				/* Socket fd. */
     int onoff;				/* Value variable for setsockopt. */
@@ -152,14 +158,18 @@ main (argc, argv)
     int hostset = 0;			/* Flag if host was passed as arg */
     int nofork = 0;			/* Flag if you don't want to fork */
     int port_num = 0;			/* Port number explicitly requested */
+    int i;
 #ifdef ZEPHYR
     int ret;				/* return value from ZInitialize. */
 #endif
 #ifdef HESIOD
     char **hp;				/* return value of Hesiod resolver */
 #endif
+#ifdef _POSIX_SOURCE
+    struct sigaction action;
+#endif
 
-#ifdef PROFILE
+#if defined(PROFILE)
     /* Turn off profiling on startup; that way, we collect "steady state" */
     /* statistics, not the initial flurry of startup activity */
     moncontrol(0);
@@ -287,6 +297,35 @@ main (argc, argv)
      * allocate lists
      */
 
+    if ((Knuckle_free = (KNUCKLE *) calloc(KNUC_ALLOC_SZ,sizeof(KNUCKLE)))
+	== NULL) {
+      log_error("olcd: can't allocate initial Knucles");
+      exit(ERROR);
+    }
+    /* Link up allocated knuckles into a free list */
+    for(i=0;i<KNUC_ALLOC_SZ-1;i++)
+      Knuckle_free[i].next = &Knuckle_free[i+1];
+    Knuckle_free[KNUC_ALLOC_SZ-1].next = NULL;
+
+    if ((User_free = (USER *) calloc(USER_ALLOC_SZ,sizeof(USER)))
+	== NULL) {
+      log_error("olcd: can't allocate initial User list");
+      exit(ERROR);
+    }
+    for(i=0;i<USER_ALLOC_SZ-1;i++)
+      User_free[i].next = &User_free[i+1];
+    User_free[KNUC_ALLOC_SZ-1].next = NULL;
+
+    if ((Question_free = (QUESTION *) calloc(QUES_ALLOC_SZ,sizeof(QUESTION)))
+	== NULL) {
+      log_error("olcd: can't allocate initial Knucles");
+      exit(ERROR);
+    }
+    for(i=0;i<QUES_ALLOC_SZ-1;i++)
+      Question_free[i].next = &Question_free[i+1];
+    Question_free[KNUC_ALLOC_SZ-1].next = NULL;
+
+
     Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
     if (Knuckle_List == (KNUCKLE **) NULL)
     {
@@ -307,7 +346,7 @@ main (argc, argv)
      * find out who we are and what we are doing here
      */
 
-    if (gethostname(hostname, LINE_SIZE) != 0)
+    if (gethostname(hostname, sizeof(hostname)) != 0)
     {
 	log_error("olcd: can't get hostname: %m");
 	exit(ERROR);
@@ -340,19 +379,25 @@ main (argc, argv)
     }
 
     if (port_num == 0) {
+      service = (struct servent *) NULL;
+#ifdef HESIOD
+      service = hes_getservbyname(OLC_SERVICE, OLC_PROTOCOL);
+#endif
+      if (service == (struct servent *) NULL) {
 	if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
 	    (struct servent *)NULL)
-	{
+	  {
 	    log_error("olcd: olc/tcp: unknown service...exiting");
 	    exit(ERROR);
-	}
-	port_num = service->s_port;
+	  }
+      }
+      port_num = service->s_port;
     }
     sin.sin_port = port_num;
 
 
     /*
-     * Open up a sock and put our mouth in it
+     * Open up a socket
      */
 
 restart:
@@ -428,6 +473,33 @@ restart:
     processing_request = 0;
     got_signal = 0;
 
+#ifdef _POSIX_SOURCE
+    /* Set up sigaction structure */
+    /* This is all done because the RS/6000 emulation of signal sets the */
+    /* signal action back to the default action when the signal handler is */
+    /* called, instead of leaving well enough alone.. */
+    action.sa_flags = 0;
+    sigemptyset(&action.sa_mask);
+    action.sa_handler = punt;
+
+    sigaction(SIGINT, &action, NULL);/* ^C on control tty (for test mode) */
+    sigaction(SIGHUP, &action, NULL);	/* kill -1 $$ */
+    sigaction(SIGTERM, &action, NULL);	/* kill $$ */
+
+    action.sa_handler = reap_child;
+    sigaction(SIGCHLD, &action, NULL); /* When a child dies, reap it. */
+
+    action.sa_handler = SIG_IGN;
+    sigaction(SIGPIPE, &action, NULL);
+
+#ifdef PROFILE
+    action.sa_handler = dump_profile;
+    sigaction(SIGUSR1, &action, NULL); /* Dump profiling information */
+    					  /* and stop profiling */
+    action.sa_handler = start_profile;
+    sigaction(SIGUSR2, &action, NULL); /* Start profiling */
+#endif /* PROFILE */
+#else
     signal(SIGINT, punt);	/* ^C on control tty (for test mode) */
     signal(SIGHUP, punt);	/* kill -1 $$ */
     signal(SIGTERM, punt);	/* kill $$ */
@@ -438,6 +510,7 @@ restart:
 				   /* profiling */
     signal(SIGUSR2, start_profile); /* Start profiling */
 #endif /* PROFILE */
+#endif
 #ifdef KERBEROS
     get_kerberos_ticket ();
 #endif
@@ -755,27 +828,35 @@ reap_child(sig)
 }
 
 #ifdef PROFILE
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 dump_profile(sig)
      int sig;
 {
   char buf[BUFSIZ];
 
-  sprintf(buf,"%s Daemon dumping profiling stats.", DaemonInst)
+  sprintf(buf,"%s Daemon dumping profiling stats.", DaemonInst);
   olc_broadcast_message("syslog", buf ,"system");
   log_status("Dumping profile..");
   monitor(0);
   moncontrol(0);
 }
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 start_profile(sig)
      int sig;
 {
   char buf[BUFSIZ];
 
   sprintf(buf,"%s Daemon starting profiling.", DaemonInst);
-  olc_broadcast_message("syslog", buf, ,"system");
+  olc_broadcast_message("syslog", buf, "system");
   log_status("Starting profile..");
   moncontrol(1);
 }
