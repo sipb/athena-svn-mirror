@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.5 1989-11-15 23:49:08 marc Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.6 1989-11-28 16:51:29 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -44,6 +44,7 @@ int internal_border_width = 2;
 unsigned long default_fgcolor;
 unsigned long default_bgcolor;
 unsigned long default_bordercolor;
+static int reset_saver;
 static int border_width = 1;
 static int cursor_code = XC_sailboat;
 static char *title_name,*icon_name;
@@ -114,6 +115,7 @@ void x_gram_init(dpy)
       default_bordercolor = x_string_to_color(temp,default_bordercolor);
 
     reverse_stack = get_bool_resource("reverseStack", "ReverseStack", 0);
+    reset_saver =  get_bool_resource("resetSaver", "ResetSaver", 1);
 
     temp = get_string_resource("borderWidth", "BorderWidth");
     /* <<<>>> */
@@ -231,6 +233,9 @@ void x_gram_create(dpy, gram, xalign, yalign, xpos, ypos, xsize, ysize,
 
     while (beepcount--)
 	XBell(dpy, 0);
+
+   if (reset_saver)
+       XResetScreenSaver(dpy);
 
    if (reverse_stack) {
       if (bottom_gram) {
