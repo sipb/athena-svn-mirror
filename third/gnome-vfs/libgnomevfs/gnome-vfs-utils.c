@@ -1,9 +1,10 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* gnome-vfs-utils.c - Private utility functions for the GNOME Virtual
    File System.
 
    Copyright (C) 1999 Free Software Foundation
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -22,6 +23,7 @@
 
    Authors: Ettore Perazzoli <ettore@comm2000.it>
    	    John Sullivan <sullivan@eazel.com> 
+            Darin Adler <darin@eazel.com>
 */
 
 #ifdef HAVE_CONFIG_H
@@ -41,6 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <sys/types.h>
 #if HAVE_SYS_STATVFS_H
 #include <sys/statvfs.h>
@@ -426,6 +429,11 @@ gnome_vfs_unescape_string (const gchar *escaped, const gchar *illegal_characters
  * 
  * Return value: A pointer to a g_malloc'd string with all characters
  *               replacing their escaped hex values
+ *
+ * WARNING: You should never use this function on a whole URI!  It
+ * unescapes reserved characters, and can result in a mangled URI
+ * that can not be re-entered.  For example, it unescapes "#" "&" and "?",
+ * which have special meanings in URI strings.
  **/
 gchar *
 gnome_vfs_unescape_string_for_display (const gchar *escaped)
@@ -611,73 +619,33 @@ gnome_vfs_list_deep_free (GList *list)
 	g_list_free (list);
 }
 
-/* Stolen from Nautilus. This belongs in glib. */
-static gboolean
-istr_has_prefix (const char *haystack, const char *needle)
-{
-	const char *h, *n;
-	char hc, nc;
-
-	/* Eat one character at a time. */
-	h = haystack == NULL ? "" : haystack;
-	n = needle == NULL ? "" : needle;
-	do {
-		if (*n == '\0') {
-			return TRUE;
-		}
-		if (*h == '\0') {
-			return FALSE;
-		}
-		hc = *h++;
-		nc = *n++;
-		if (isupper ((guchar)hc)) {
-			hc = tolower ((guchar)hc);
-		}
-		if (isupper ((guchar)nc)) {
-			nc = tolower ((guchar)nc);
-		}
-	} while (hc == nc);
-	return FALSE;
-}
-
 /**
  * gnome_vfs_get_local_path_from_uri:
  * 
- * Return a local path for a file:// URI.
+ * Return a local path for a file:/// URI.
  *
- * Return value: the local path or NULL on error.
+ * Return value: the local path 
+ * NULL is returned on error or if the uri isn't a file: URI
+ * without a fragment identifier (or chained URI).
  **/
 char *
 gnome_vfs_get_local_path_from_uri (const char *uri)
 {
-	char *result, *unescaped_uri;
-
-	if (uri == NULL) {
+	if (!gnome_vfs_istr_has_prefix (uri, "file:///")) {
 		return NULL;
 	}
-
-	unescaped_uri = gnome_vfs_unescape_string (uri, "/");
-	if (unescaped_uri == NULL) {
+	
+	if (strchr (uri, '#') != NULL) {
 		return NULL;
 	}
-
-	if (istr_has_prefix (unescaped_uri, "file://")) {
-		result = g_strdup (unescaped_uri + 7);
-	} else if (unescaped_uri[0] == '/') {
-		result = g_strdup (unescaped_uri);
-	} else {
-		result = NULL;
-	}
-
-	g_free (unescaped_uri);
-
-	return result;
+	
+	return gnome_vfs_unescape_string (uri + 7, "/");
 }
 
 /**
  * gnome_vfs_get_uri_from_local_path:
  * 
- * Return a file:// URI for a local path.
+ * Return a file:/// URI for a local path.
  *
  * Return value: the URI (NULL for some bad errors).
  **/
@@ -698,25 +666,6 @@ gnome_vfs_get_uri_from_local_path (const char *local_path)
 	return result;
 }
 
-static gboolean
-str_has_prefix (const char *haystack, const char *needle)
-{
-	const char *h, *n;
-
-	/* Eat one character at a time. */
-	h = haystack == NULL ? "" : haystack;
-	n = needle == NULL ? "" : needle;
-	do {
-		if (*n == '\0') {
-			return TRUE;
-		}
-		if (*h == '\0') {
-			return FALSE;
-		}
-	} while (*h++ == *n++);
-	return FALSE;
-}
-
 /* gnome_vfs_get_volume_free_space
  * 
  * Return total amount of free space on a volume.
@@ -726,9 +675,11 @@ str_has_prefix (const char *haystack, const char *needle)
 GnomeVFSResult
 gnome_vfs_get_volume_free_space (const GnomeVFSURI *vfs_uri, GnomeVFSFileSize *size)
 {	
-	size_t total_blocks, block_size;
+	GnomeVFSFileSize free_blocks, block_size;
        	int statfs_result;
 	const char *path, *scheme;
+	char *unescaped_path;
+	GnomeVFSResult ret;
 #if HAVE_STATVFS
 	struct statvfs statfs_buffer;
 #else
@@ -743,26 +694,37 @@ gnome_vfs_get_volume_free_space (const GnomeVFSURI *vfs_uri, GnomeVFSFileSize *s
 	}
 
 	path = gnome_vfs_uri_get_path (vfs_uri);
+
+	unescaped_path = gnome_vfs_unescape_string (path, G_DIR_SEPARATOR_S);
+	
 	scheme = gnome_vfs_uri_get_scheme (vfs_uri);
 	
-        /* We only handle the file: scheme for now */
-	if (!str_has_prefix (scheme, "file") || !str_has_prefix (path, "/")) {
+        /* We only handle the file scheme for now */
+	if (g_strcasecmp (scheme, "file") != 0 || !gnome_vfs_istr_has_prefix (path, "/")) {
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 
 #if HAVE_STATVFS
-	statfs_result = statvfs ("/", &statfs_buffer);
+	statfs_result = statvfs (unescaped_path, &statfs_buffer);
 #else
-	statfs_result = statfs ("/", &statfs_buffer);   
+	statfs_result = statfs (unescaped_path, &statfs_buffer);   
 #endif  
 
+	if (statfs_result == 0) {
+		ret = GNOME_VFS_OK;
+	} else {
+		ret = gnome_vfs_result_from_errno ();
+	}
+	
 	g_return_val_if_fail (statfs_result == 0, FALSE);
 	block_size = statfs_buffer.f_bsize; 
-	total_blocks = statfs_buffer.f_blocks;
+	free_blocks = statfs_buffer.f_bavail;
 
-	*size = block_size * total_blocks;
+	*size = block_size * free_blocks;
 
-	return GNOME_VFS_OK;
+	g_free (unescaped_path);
+	
+	return ret;
 }
 
 /**
@@ -770,6 +732,10 @@ gnome_vfs_get_volume_free_space (const GnomeVFSURI *vfs_uri, GnomeVFSFileSize *s
  * @filename: pathname to test for existance.
  *
  * Returns true if filename exists
+ */
+/* FIXME: Why is this here? Why not use g_file_exists in libgnome/gnome-util.h?
+ * (I tried to simply replace but there were strange include dependencies, maybe
+ * that's why this function exists.)
  */
 static int
 hack_file_exists (const char *filename)
@@ -812,3 +778,124 @@ gnome_vfs_icon_path_from_filename (const char *relative_filename)
 }
 
 
+static char *
+strdup_to (const char *string, const char *end)
+{
+	if (end == NULL) {
+		return g_strdup (string);
+	}
+	return g_strndup (string, end - string);
+}
+
+static gboolean
+is_executable_file (const char *path)
+{
+	struct stat stat_buffer;
+
+	/* Check that it exists. */
+	if (stat (path, &stat_buffer) != 0) {
+		return FALSE;
+	}
+
+	/* Check that it is a file. */
+	if (!S_ISREG (stat_buffer.st_mode)) {
+		return FALSE;
+	}
+
+	/* Check that it's executable. */
+	if (access (path, X_OK) != 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
+static gboolean
+executable_in_path (const char *executable_name)
+{
+	const char *path_list, *piece_start, *piece_end;
+	char *piece, *raw_path, *expanded_path;
+	gboolean is_good;
+
+	path_list = g_getenv ("PATH");
+
+	for (piece_start = path_list; ; piece_start = piece_end + 1) {
+		/* Find the next piece of PATH. */
+		piece_end = strchr (piece_start, ':');
+		piece = strdup_to (piece_start, piece_end);
+		g_strstrip (piece);
+		
+		if (piece[0] == '\0') {
+			is_good = FALSE;
+		} else {
+			/* Try out this path with the executable. */
+			raw_path = g_strconcat (piece, "/", executable_name, NULL);
+			expanded_path = gnome_vfs_expand_initial_tilde (raw_path);
+			g_free (raw_path);
+			
+			is_good = is_executable_file (expanded_path);
+			g_free (expanded_path);
+		}
+		
+		g_free (piece);
+		
+		if (is_good) {
+			return TRUE;
+		}
+
+		if (piece_end == NULL) {
+			return FALSE;
+		}
+	}
+}
+
+static char *
+get_executable_name_from_command_string (const char *command_string)
+{
+	/* FIXME bugzilla.eazel.com 2757: 
+	 * We need to handle quoting here for the full-path case */
+	return g_strstrip (strdup_to (command_string, strchr (command_string, ' ')));
+}
+
+/* Returns TRUE if commmand_string starts with the full path for an executable
+ * file, or starts with a command for an executable in $PATH.
+ */
+gboolean
+gnome_vfs_is_executable_command_string (const char *command_string)
+{
+	char *executable_name;
+	char *executable_path;
+	gboolean found;
+
+	/* Check whether command_string is a full path for an executable. */
+	if (command_string[0] == '/') {
+
+		/* FIXME bugzilla.eazel.com 2757:
+		 * Because we don't handle quoting, we can check for full
+		 * path including spaces, but no parameters, and full path
+		 * with no spaces with or without parameters. But this will
+		 * fail for quoted full path with spaces, and parameters.
+		 */
+
+		/* This works if command_string contains a space, but not
+		 * if command_string has parameters.
+		 */
+		if (is_executable_file (command_string)) {
+			return TRUE;
+		}
+
+		/* This works if full path has no spaces, with or without parameters */
+		executable_path = get_executable_name_from_command_string (command_string);
+		found = is_executable_file (executable_path);
+		g_free (executable_path);
+
+		return found;
+	}
+	
+	executable_name = get_executable_name_from_command_string (command_string);
+	found = executable_in_path (executable_name);
+	g_free (executable_name);
+
+	return found;
+}

@@ -1,31 +1,38 @@
-# Copyright (C) Eazel, Inc. 2000
+# Copyright (C) Eazel, Inc. 2000, 2001
 #
-# MIME magic patterns as used by the GnomeVFS library
+# MIME magic patterns as used by the Gnome VFS library
 #
 # The format of magic entries is:
 #
-# offsetStart[:offsetEnd] type pattern [&patternMask] type
+#     offset_start[:offset_end] pattern_type pattern [&pattern_mask] type
 #
-# offsetStart and offsetEnd are decimal numbers
+# <offset_start> and <offset_end> are decimal numbers (file offsets).
 #
-# type is: (byte | short | long | string | date | beshort | belong | bedate | leshort | lelong | ledate")
+# <pattern_type> is (byte | short | long | string | date | beshort |
+#                    belong | bedate | leshort | lelong | ledate).
 #
-# pattern is an ascii string with non-printable characters escaped as hex or octal numbers,
-# spaces and other important whitespace escaped with '\'
+# <pattern> is an ASCII string with non-printable characters escaped
+# as hex or octal escape sequences, and spaces and other important
+# whitespace escaped with '\'.
 #
-# pattern mask is a string of hex digits; pattern mask must be the same length as the pattern
+# <pattern_mask> is a string of hex digits. The mask must be the same
+# length as the pattern.
 #
-# type is a valid MIME type
+# <type> is a valid MIME type.
 #
-# Order magic patterns such that ambiguous ones (such as application/x-ms-dos-executable) are
-# at the end of the list and therefore get applied last.
-# Avoid rules that require a seek deep into the examined file. If you must, locate such rules
-# at the end of the list so that they get applied last
+# Order magic patterns such that ambiguous ones (such as
+# application/x-ms-dos-executable) are at the end of the list and
+# therefore get applied last.
 #
-# When designing new document formats, make them easily recognizable by defining a sufficiently unique
-# magic pattern near the end of the document start. A good pattern is at least four bytes long and
-# contains one or two non-printable characters.
+# Avoid rules that require a seek deep into the examined file. If you
+# must, locate such rules at the end of the list so that they get
+# applied last
 #
+# When designing new document formats, make them easily recognizable
+# by defining a sufficiently unique magic pattern near the document
+# start. A good pattern is at least four bytes long and contains one
+# or two non-printable characters so that text files won't be
+# misidentified.
 
 0	string		%PDF-					application/pdf
 0	string		\177ELF					application/x-executable-binary
@@ -34,6 +41,7 @@
 0	string		\000\000\001\272			video/mpeg
 0	string		\000\000\001\263			video/mpeg
 0	string		\377\330\377				image/jpeg
+# The below ignores the details available (architecture, type, version)
 0	string		\xed\xab\xee\xdb			application/x-rpm
 0	string		Rar!					application/x-rar
 0	string		GIF8					image/gif
@@ -65,7 +73,7 @@
 0	string		8BPS\ \ \000\000\000\000 &0xffffffff0000ffffffff image/x-psd
 
 # special Nautilus link type
-0:32	string		\<NAUTILUS_OBJECT\ NAUTILUS_LINK	application/x-nautilus-link
+0:32	string		\<nautilus_object\ nautilus_link	application/x-nautilus-link
 
 # special GMC link type
 0:32	string		\URL:					application/x-gmc-link
@@ -103,8 +111,7 @@
 0	string		RIFF					audio/x-riff
 8	string		WAVE					audio/x-wav
 8	string		WAV\ 					audio/x-wav
-# The below is set to 'application/x-ogg' at the request of Ogg Vorbis
-# developers
+# The below is set to 'application/x-ogg' at the request of Ogg Vorbis developers
 0	string		OggS					application/x-ogg
 0	string		SIT! 					application/x-stuffit
 0	string		\312\376\272\276			application/x-java-byte-code
@@ -113,6 +120,11 @@
 4       string		\x12\xAF				video/x-flc
 0	string		\x31\xbe\x00\x00			application/msword
 0       string  	PO^Q`           			application/msword
+0:64	string		gmr:Workbook				application/x-gnumeric
+0:64	string		\<abiword				text/abiword
+0	string		*BEGIN\ SPREADSHEETS			application/x-applix-spreadsheet
+0	string		\x00\x00\x02\x00			application/vnd.lotus-1-2-3
+31      string		Oleo					application/x-oleo
 0	string		FFIL					application/x-font-ttf
 65	string		FFIL					application/x-font-ttf
 0	string		LWFN					application/x-font-type1
@@ -120,8 +132,8 @@
 0	string		StartFont				application/x-font-sunos-news
 0	string		\x13\x7A\x29				application/x-font-sunos-news
 8	string		\x13\x7A\x2B				application/x-font-sunos-news
-0	string		%!PS-AdobeFont-1.0			application/x-font-type1
-6	string		%!PS-AdobeFont-1.0			application/x-font-type1
+0	string		%!PS-AdobeFont-1.			application/x-font-type1
+6	string		%!PS-AdobeFont-1.			application/x-font-type1
 0	string		STARTFONT\040				application/x-font-bdf
 0	string		\001fcp					application/x-font-pcf
 0	string		D1.0\015				application/x-font-speedo
@@ -132,14 +144,18 @@
 0	string		\<MakerScreenFont			application/x-font-framemaker
 0	string		\000\001\000\000\000			application/x-font-ttf
 1       string          WPC        				application/x-wordperfect
+0	string		ID;					text/spreadsheet
 0	string		MZ					application/x-ms-dos-executable
 0	string		%!					application/postscript
 0	string		/*					text/x-c
 0	string		//					text/x-c++
-0       string		\037\213				application/x-gzip
+0       string          BZh                                     application/x-bzip
 0	string		\037\235				application/x-compress
+0	string		\367\002				application/x-dvi
 0	string		\367\203				application/x-font-tex
 0	string		\367\131				application/x-font-tex
 0	string		\367\312				application/x-font-tex
 2	string		\000\022				application/x-font-tex-tfm
 0	string		\x36\x04				application/x-font-linux-psf
+0	string		FWS					application/x-shockwave-flash
+0	string		BMxxxx\000\000 &0xffff00000000ffff	image/bmp

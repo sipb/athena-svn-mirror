@@ -389,116 +389,6 @@ extern "C"
 							 gpointer dat,
 							 CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
-#if !defined(_GNOME_VFS_Slave_DirectorySortRule_defined)
-#define _GNOME_VFS_Slave_DirectorySortRule_defined 1
-   typedef CORBA_unsigned_short GNOME_VFS_Slave_DirectorySortRule;
-#if !defined(TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_0)
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_0 'g'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_1 'n'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_2 'o'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_3 'm'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_4 'e'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_5 '_'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_6 'v'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_7 'f'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_8 's'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_9 '_'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_10 's'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_11 'l'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_12 'a'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_13 'v'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_14 'e'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_VFS_Slave_DirectorySortRule_struct;
-#define TC_GNOME_VFS_Slave_DirectorySortRule ((CORBA_TypeCode)&TC_GNOME_VFS_Slave_DirectorySortRule_struct)
-#endif
-#endif
-#if !defined(ORBIT_DECL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule) && !defined(_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_defined)
-#define ORBIT_DECL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule 1
-#define _CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_defined 1
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0 'g'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_1 'n'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_2 'o'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_3 'm'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_4 'e'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_5 '_'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_6 'v'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_7 'f'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_8 's'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_9 '_'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_10 's'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_11 'l'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_12 'a'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_13 'v'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_14 'e'
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      GNOME_VFS_Slave_DirectorySortRule *_buffer;
-      CORBA_boolean _release;
-   }
-   CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule;
-#if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0)
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0 'g'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_1 'n'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_2 'o'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_3 'm'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_4 'e'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_5 '_'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_6 'v'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_7 'f'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_8 's'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_9 '_'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_10 's'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_11 'l'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_12 'a'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_13 'v'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_14 'e'
-   extern const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_struct;
-#define TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_struct)
-#endif
-   extern CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule
-      *CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__alloc(void);
-   extern gpointer
-      CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__free(gpointer mem,
-							     gpointer dat,
-							     CORBA_boolean free_strings);	/* ORBit internal use */
-   GNOME_VFS_Slave_DirectorySortRule
-      *CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_allocbuf
-      (CORBA_unsigned_long len);
-#endif
-#if !defined(_GNOME_VFS_Slave_DirectorySortRuleList_defined)
-#define _GNOME_VFS_Slave_DirectorySortRuleList_defined 1
-   typedef CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule
-      GNOME_VFS_Slave_DirectorySortRuleList;
-#if !defined(TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_0)
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_0 'g'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_1 'n'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_2 'o'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_3 'm'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_4 'e'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_5 '_'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_6 'v'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_7 'f'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_8 's'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_9 '_'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_10 's'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_11 'l'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_12 'a'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_13 'v'
-#define TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_14 'e'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_VFS_Slave_DirectorySortRuleList_struct;
-#define TC_GNOME_VFS_Slave_DirectorySortRuleList ((CORBA_TypeCode)&TC_GNOME_VFS_Slave_DirectorySortRuleList_struct)
-#endif
-   extern GNOME_VFS_Slave_DirectorySortRuleList
-      *GNOME_VFS_Slave_DirectorySortRuleList__alloc(void);
-   extern gpointer GNOME_VFS_Slave_DirectorySortRuleList__free(gpointer mem,
-							       gpointer dat,
-							       CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
 #if !defined(_GNOME_VFS_Slave_XferPhase_defined)
 #define _GNOME_VFS_Slave_XferPhase_defined 1
    typedef CORBA_unsigned_short GNOME_VFS_Slave_XferPhase;
@@ -1045,8 +935,6 @@ extern "C"
 			      const GNOME_VFS_Slave_FileInfoOptions
 			      info_options,
 			      const GNOME_VFS_Slave_DirectoryFilter * filter,
-			      const GNOME_VFS_Slave_DirectorySortRuleList *
-			      sort_rules, const CORBA_boolean reverse_order,
 			      const CORBA_unsigned_long
 			      items_per_notification, CORBA_Environment * ev);
       void (*xfer) (PortableServer_Servant _servant,
@@ -1239,11 +1127,6 @@ extern "C"
 					       const
 					       GNOME_VFS_Slave_DirectoryFilter
 					       * filter,
-					       const
-					       GNOME_VFS_Slave_DirectorySortRuleList
-					       * sort_rules,
-					       const CORBA_boolean
-					       reverse_order,
 					       const CORBA_unsigned_long
 					       items_per_notification,
 					       CORBA_Environment * ev);
@@ -1423,10 +1306,6 @@ extern "C"
 				     info_options,
 				     const GNOME_VFS_Slave_DirectoryFilter *
 				     filter,
-				     const
-				     GNOME_VFS_Slave_DirectorySortRuleList *
-				     sort_rules,
-				     const CORBA_boolean reverse_order,
 				     const CORBA_unsigned_long
 				     items_per_notification,
 				     CORBA_Environment * ev));

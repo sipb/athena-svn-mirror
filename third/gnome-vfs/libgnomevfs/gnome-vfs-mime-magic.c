@@ -23,6 +23,7 @@
 
 #include "gnome-vfs-mime-sniff-buffer-private.h"
 #include "gnome-vfs-mime.h"
+#include "gnome-vfs-private-utils.h"
 
 #include <ctype.h>
 #include <unistd.h>
@@ -223,7 +224,7 @@ read_num_val(const char **offset, int bsize, int *result)
 		break;
 	}
 
-	while (**offset && !isspace ((unsigned char)**offset)) {
+	while (**offset && !isspace ((guchar)**offset)) {
 		(*offset)++;
 	}
 
@@ -233,7 +234,7 @@ read_num_val(const char **offset, int bsize, int *result)
 static const char *
 eat_white_space (const char *scanner)
 {
-	while (*scanner && isspace ((unsigned char)*scanner)) {
+	while (*scanner && isspace ((guchar)*scanner)) {
 		scanner++;
 	}
 	return scanner;
@@ -285,7 +286,7 @@ gnome_vfs_mime_magic_parse (const gchar *filename, gint *nents)
 			continue;
 		}
 
-		if (!isdigit ((unsigned char)*scanner)) {
+		if (!isdigit ((guchar)*scanner)) {
 			continue;
 		}
 
@@ -294,7 +295,7 @@ gnome_vfs_mime_magic_parse (const gchar *filename, gint *nents)
 		}
 		newent.range_end = newent.range_start;
 
-		while (*scanner && isdigit ((unsigned char)*scanner)) {
+		while (*scanner && isdigit ((guchar)*scanner)) {
 			scanner++; /* eat the offset */
 		}
 
@@ -306,7 +307,7 @@ gnome_vfs_mime_magic_parse (const gchar *filename, gint *nents)
 			}
 		}
 
-		while (*scanner && !isspace ((unsigned char)*scanner)) {
+		while (*scanner && !isspace ((guchar)*scanner)) {
 			scanner++; /* eat the offset */
 		}
 
@@ -415,7 +416,7 @@ gnome_vfs_mime_magic_parse (const gchar *filename, gint *nents)
 
 		g_snprintf (newent.mimetype, sizeof (newent.mimetype), "%s", scanner);
 		bsize = strlen (newent.mimetype) - 1;
-		while (newent.mimetype [bsize] && isspace ((unsigned char)(newent.mimetype [bsize]))) {
+		while (newent.mimetype [bsize] && isspace ((guchar)(newent.mimetype [bsize]))) {
 			newent.mimetype [bsize--] = '\0';
 		}
 
@@ -567,6 +568,24 @@ gnome_vfs_mime_get_magic_table (void)
 	return mime_magic_table;
 }
 
+const char *
+gnome_vfs_mime_get_type_from_magic_table (GnomeVFSMimeSniffBuffer *buffer)
+{
+	GnomeMagicEntry *magic_table;
+	
+	magic_table = gnome_vfs_mime_get_magic_table ();
+	if (magic_table == NULL) {
+		return NULL;
+	}
+	
+	for (; magic_table->type != T_END; magic_table++) {
+		if (gnome_vfs_mime_try_one_magic_pattern (buffer, magic_table)) {
+  			return magic_table->mimetype;
+  		}
+	}
+	return NULL;
+}
+
 
 GnomeMagicEntry *
 gnome_vfs_mime_test_get_magic_table (const char *table_path)
@@ -691,27 +710,7 @@ gnome_vfs_mime_clear_magic_table (void)
 const char *
 gnome_vfs_get_mime_type_for_buffer (GnomeVFSMimeSniffBuffer *buffer)
 {
-	GnomeMagicEntry *magic_table;
-
-	/* load the magic table if needed */
-	magic_table = gnome_vfs_mime_get_magic_table ();
-	if (magic_table == NULL) {
-		return NULL;
-	}
-	
-	for (; magic_table->type != T_END; magic_table++) {
-		if (gnome_vfs_mime_try_one_magic_pattern (buffer, magic_table)) {
-  			return (magic_table->type == T_END) 
-  				? NULL : magic_table->mimetype;
-  		}
-	}
-
-	/* if no match, try the algorithmic sniffers */
-	if (gnome_vfs_sniff_buffer_looks_like_mp3 (buffer)) {
-		return "audio/x-mp3";
-	}
-
-	return NULL;
+	return gnome_vfs_get_mime_type_internal (buffer, NULL);
 }
 
 enum {
@@ -772,47 +771,172 @@ gnome_vfs_sniff_buffer_looks_like_text (GnomeVFSMimeSniffBuffer *sniff_buffer)
 	return TRUE;
 }
 
+static int bitrates[2][15] = {
+	{ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320},
+	{ 0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160 }
+};	
+
+static int frequencies[2][3] = {
+	{ 44100, 48000, 32000 },
+	{ 22050, 24000, 16000 }	
+};	
+
+/*
+ * Return length of an MP3 frame using potential 32-bit header value.  See
+ * "http://www.dv.co.yu/mpgscript/mpeghdr.htm" for details on the header
+ * format.
+ *
+ * NOTE: As an optimization and because they are rare, this returns 0 for
+ * version 2.5 or free format MP3s.
+ */
+static size_t
+get_mp3_frame_length (unsigned long mp3_header)
+{
+	int ver = 4 - ((mp3_header >> 19) & 3u);
+	int br = (mp3_header >> 12) & 0xfu;
+	int srf = (mp3_header >> 10) & 3u;
+
+	/* are frame sync and layer 3 bits set? */
+	if (((mp3_header & 0xffe20000ul) == 0xffe20000ul)
+		/* good version? */
+		&& ((ver == 1) || (ver == 2))
+		/* good bitrate index (not free or invalid)? */
+		&& (br > 0) && (br < 15)
+		/* good sampling rate frequency index? */
+		&& (srf != 3)
+		/* not using reserved emphasis value? */
+		&& ((mp3_header & 3u) != 2)) {
+		/* then this is most likely the beginning of a valid frame */
+
+		size_t length = (size_t) bitrates[ver - 1][br] * 144000;
+		length /= frequencies[ver - 1][srf];
+		return length += ((mp3_header >> 9) & 1u) - 4;
+	}
+	return 0;
+}
+
+static unsigned long
+get_4_byte_value (const unsigned char *bytes)
+{
+	unsigned long value = 0;
+	int count;
+
+	for (count = 0; count < 4; ++count) {
+		value <<= 8;
+		value |= *bytes++;
+	}
+	return value;
+}
+
+enum {
+	GNOME_VFS_MP3_SNIFF_LENGTH = 256
+};
+
 gboolean
 gnome_vfs_sniff_buffer_looks_like_mp3 (GnomeVFSMimeSniffBuffer *sniff_buffer)
 {
+	unsigned long mp3_header;
 	int offset;
-	guchar ch;
 	
-	if (gnome_vfs_mime_sniff_buffer_get (sniff_buffer, 256) != GNOME_VFS_OK) {
+	if (gnome_vfs_mime_sniff_buffer_get (sniff_buffer, GNOME_VFS_MP3_SNIFF_LENGTH) != GNOME_VFS_OK) {
 		return FALSE;
 	}
 
-	for (offset = 0; offset < 256; offset++) {
-		/* run through the first 256 bytes looking for a MP3 header */
-		gnome_vfs_mime_sniff_buffer_get (sniff_buffer, 3);
-
-		/* sync field */
-		if (sniff_buffer->buffer[offset] != 0xff) {
-			continue;
-		}
-
-		ch = sniff_buffer->buffer[offset + 1] & 0xf6;
-		/* layer 2 or layer 3 */
-		if (ch != 0xf2 && ch != 0xf4) {
-			continue;
-		}
-
-		ch = sniff_buffer->buffer[offset + 2];
-
-		/* bitrate */
-		if ((ch & 0xf0) == 0xf0)
-			continue;
-
-		/* sampling rate index */
-		if ((ch & 0x0c) == 0x0c)
-			continue;
-
-		/* emphasis */
-		if ((sniff_buffer->buffer[offset + 3] & 3) == 2)
-			continue;
-		
+	/*
+	 * Use algorithm described in "ID3 tag version 2.3.0 Informal Standard"
+	 * at "http://www.id3.org/id3v2.3.0.html" to detect a valid header, "An
+	 * ID3v2 tag can be detected with the following pattern:
+	 *      $49 44 33 yy yy xx zz zz zz zz
+	 * Where yy is less than $FF, xx is the 'flags' byte and zz is less than
+	 * $80."
+	 *
+	 * The informal standard also says, "The ID3v2 tag size is encoded with
+	 * four bytes where the most significant bit (bit 7) is set to zero in
+	 * every byte, making a total of 28 bits.  The zeroed bits are ignored,
+	 * so a 257 bytes long tag is represented as $00 00 02 01."
+	 */
+	if (strncmp ((char *) sniff_buffer->buffer, "ID3", 3) == 0
+		&& (sniff_buffer->buffer[3] != 0xffu)
+		&& (sniff_buffer->buffer[4] != 0xffu)
+		&& (sniff_buffer->buffer[6] < 0x80u)
+		&& (sniff_buffer->buffer[7] < 0x80u)
+		&& (sniff_buffer->buffer[8] < 0x80u)
+		&& (sniff_buffer->buffer[9] < 0x80u)) {
 		return TRUE;
+	}
+
+	/*
+	 * Scan through the first "GNOME_VFS_MP3_SNIFF_LENGTH" bytes of the
+	 * buffer to find a potential 32-bit MP3 frame header.
+	 */
+	mp3_header = 0;
+	for (offset = 0; offset < GNOME_VFS_MP3_SNIFF_LENGTH; offset++) {
+		size_t length;
+
+		mp3_header <<= 8;
+		mp3_header |= sniff_buffer->buffer[offset];
+		mp3_header &= 0xfffffffful;
+
+		length = get_mp3_frame_length (mp3_header);
+
+		if (length != 0) {
+			/*
+			 * Since one frame is available, is there another frame
+			 * just to be sure this is more likely to be a real MP3
+			 * buffer?
+			 */
+			offset += 1 + length;
+
+			if (gnome_vfs_mime_sniff_buffer_get (sniff_buffer, offset + 4) != GNOME_VFS_OK) {
+				return FALSE;
+			}
+			mp3_header = get_4_byte_value (&sniff_buffer->buffer[offset]);
+			length = get_mp3_frame_length (mp3_header);
+
+			if (length != 0) {
+				return TRUE;
+			}
+			break;
+		}
 	}
 
 	return FALSE;
 }
+
+gboolean
+gnome_vfs_sniff_buffer_looks_like_gzip (GnomeVFSMimeSniffBuffer *sniff_buffer,
+	const char *file_name)
+{
+	if (sniff_buffer == NULL) {
+		return FALSE;
+	}
+	
+	if (gnome_vfs_mime_sniff_buffer_get (sniff_buffer, 2) != GNOME_VFS_OK) {
+		return FALSE;
+	}
+	
+	if (sniff_buffer->buffer[0] != 0x1F || sniff_buffer->buffer[1] != 0x8B) {
+		/* not a gzipped file */
+		return FALSE;
+	}
+	
+	if (file_name == NULL) {
+		return TRUE;
+	}
+	
+	if (gnome_vfs_istr_has_suffix (file_name, ".gnumeric")
+		|| gnome_vfs_istr_has_suffix (file_name, ".abw")
+		|| gnome_vfs_istr_has_suffix (file_name, ".dia")
+		|| gnome_vfs_istr_has_suffix (file_name, ".pdf")) {
+		/* Have the suffix matching deal with figuring out the actual
+		 * MIME type.
+		 * FIXME bugzilla.eazel.com 6867:
+		 * Get rid of the hardcoded list and have a way to adjust it in the
+		 * mime magic, etc. files.
+		 */
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+

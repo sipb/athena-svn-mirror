@@ -24,7 +24,6 @@
 #define GNOME_VFS_CONTEXT_H
 
 #include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
 
 GnomeVFSContext* gnome_vfs_context_new                   (void);
 void             gnome_vfs_context_ref                   (GnomeVFSContext *ctx);

@@ -29,9 +29,6 @@ module Slave {
 		string pattern;
 	};
 
-	typedef unsigned short DirectorySortRule;
-	typedef sequence<DirectorySortRule> DirectorySortRuleList;
-
 	typedef unsigned short XferPhase;
 	typedef unsigned long XferOptions;
 	typedef unsigned short XferErrorMode;
@@ -81,8 +78,6 @@ module Slave {
 		oneway void load_directory (in string uri,
 					    in FileInfoOptions info_options,
 					    in DirectoryFilter filter,
-					    in DirectorySortRuleList sort_rules,
-					    in boolean reverse_order,
 					    in unsigned long items_per_notification);
 
 		/* Transfer files from a directory to another.  */

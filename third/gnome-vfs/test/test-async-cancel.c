@@ -326,22 +326,21 @@ static gboolean directory_load_flag;
 static void
 directory_load_callback (GnomeVFSAsyncHandle *handle,
 			 GnomeVFSResult result,
-			 GnomeVFSDirectoryList *list,
+			 GList *list,
 			 guint entries_read,
 			 gpointer callback_data)
 {
-	GnomeVFSFileInfo *element;
+	GList *element;
+	GnomeVFSFileInfo *info;
 
-	for (element = gnome_vfs_directory_list_first (list);
-		element != NULL;
-		element = gnome_vfs_directory_list_next (list)) {
-		gnome_vfs_file_info_ref (element);
+	for (element = list; element != NULL; element = element->next) {
+		info = element->data;
+		gnome_vfs_file_info_ref (info);
 	}
 	
-	for (element = gnome_vfs_directory_list_first (list);
-		element != NULL;
-		element = gnome_vfs_directory_list_next (list)) {
-		gnome_vfs_file_info_unref (element);
+	for (element = list; element != NULL; element = element->next) {
+		info = element->data;
+		gnome_vfs_file_info_unref (info);
 	}
 	
 	directory_load_flag = TRUE;
@@ -352,7 +351,7 @@ static gboolean directory_load_failed_flag;
 static void
 directory_load_failed_callback (GnomeVFSAsyncHandle *handle,
 				GnomeVFSResult result,
-				GnomeVFSDirectoryList *list,
+				GList *list,
 				guint entries_read,
 				gpointer callback_data)
 {
@@ -531,8 +530,6 @@ test_load_directory_cancel (int delay_till_cancel, int chunk_count)
 					GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-					NULL,
-					FALSE,
 					GNOME_VFS_DIRECTORY_FILTER_NONE,
 					0,
 					NULL,
@@ -552,8 +549,6 @@ test_load_directory_cancel (int delay_till_cancel, int chunk_count)
 					GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-					NULL,
-					FALSE,
 					GNOME_VFS_DIRECTORY_FILTER_NONE,
 					0,
 					NULL,
@@ -581,8 +576,6 @@ test_load_directory_fail (void)
 					GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE
 		 			 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-					NULL,
-					FALSE,
 					GNOME_VFS_DIRECTORY_FILTER_NONE,
 					0,
 					NULL,

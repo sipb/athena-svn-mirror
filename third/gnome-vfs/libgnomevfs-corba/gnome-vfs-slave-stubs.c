@@ -486,10 +486,6 @@ GNOME_VFS_Slave_Request_load_directory(GNOME_VFS_Slave_Request _obj,
 				       info_options,
 				       const GNOME_VFS_Slave_DirectoryFilter *
 				       filter,
-				       const
-				       GNOME_VFS_Slave_DirectorySortRuleList *
-				       sort_rules,
-				       const CORBA_boolean reverse_order,
 				       const CORBA_unsigned_long
 				       items_per_notification,
 				       CORBA_Environment * ev)
@@ -508,8 +504,6 @@ GNOME_VFS_Slave_Request_load_directory(GNOME_VFS_Slave_Request _obj,
 							       uri,
 							       info_options,
 							       filter,
-							       sort_rules,
-							       reverse_order,
 							       items_per_notification,
 							       ev);
       return;
@@ -534,7 +528,6 @@ GNOME_VFS_Slave_Request_load_directory(GNOME_VFS_Slave_Request _obj,
       CORBA_unsigned_long _ORBIT_tmpvar_1;
       register CORBA_unsigned_long _ORBIT_tmpvar_2;
       CORBA_unsigned_long _ORBIT_tmpvar_3;
-      register CORBA_unsigned_long _ORBIT_tmpvar_4;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -589,35 +582,6 @@ GNOME_VFS_Slave_Request_load_directory(GNOME_VFS_Slave_Request _obj,
 				     sizeof((*filter).
 					    pattern[_ORBIT_tmpvar_2]) *
 				     _ORBIT_tmpvar_3);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t = alloca(sizeof((*sort_rules)._length));
-	 memcpy(_ORBIT_t, &((*sort_rules)._length),
-		sizeof((*sort_rules)._length));
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof((*sort_rules)._length));
-      }
-      {
-	 guchar *_ORBIT_t;
-
-	 _ORBIT_t =
-	    alloca(sizeof((*sort_rules)._buffer[_ORBIT_tmpvar_4]) *
-		   (*sort_rules)._length);
-	    memcpy(_ORBIT_t, ((*sort_rules)._buffer),
-		   sizeof((*sort_rules)._buffer[_ORBIT_tmpvar_4]) *
-		   (*sort_rules)._length);
-	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof((*sort_rules).
-					       _buffer[_ORBIT_tmpvar_4]) *
-					(*sort_rules)._length);
-      }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &(reverse_order), sizeof(reverse_order));
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),

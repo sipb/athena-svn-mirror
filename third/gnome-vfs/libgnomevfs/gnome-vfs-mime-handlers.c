@@ -26,19 +26,18 @@
 
 #include "gnome-vfs-application-registry.h"
 #include "gnome-vfs-mime-info.h"
+#include "gnome-vfs-mime.h"
 #include "gnome-vfs-result.h"
 #include "gnome-vfs-utils.h"
 #include <gconf/gconf.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 static GConfEngine *gconf_engine = NULL;
 
 static char *         get_user_level                          (void);
-static char *         mime_type_get_supertype                 (const char         *mime_type);
 static GList *        OAF_ServerInfoList_to_ServerInfo_g_list (OAF_ServerInfoList *info_list);
+static GList *        copy_str_list                           (GList *string_list);
 static GList *        comma_separated_str_to_str_list         (const char         *str);
 static GList *        str_list_difference                     (GList              *a,
 							       GList              *b);
@@ -62,7 +61,12 @@ gnome_vfs_mime_get_description (const char *mime_type)
 	return gnome_vfs_mime_get_value (mime_type, "description");
 }
 
-
+GnomeVFSResult
+gnome_vfs_mime_set_description (const char *mime_type, const char *description)
+{
+	return gnome_vfs_mime_edit_user_file
+		(mime_type, "description", description);
+}
 
 GnomeVFSMimeActionType
 gnome_vfs_mime_get_default_action_type (const char *mime_type)
@@ -218,30 +222,16 @@ gnome_vfs_mime_get_default_component (const char *mime_type)
 
 	CORBA_exception_init (&ev);
 
-	supertype = mime_type_get_supertype (mime_type);
+	supertype = gnome_vfs_get_supertype_from_mime_type (mime_type);
 
 	/* Find a component that supports either the exact mime type,
            the supertype, or all mime types. */
 
-	/* First try the component specified in the mime database, if available. */
+	/* First try the component specified in the mime database, if available. 
+	   gnome_vfs_mime_get_value looks up the value for the mime type and the supertype.  */
 	default_component_iid = gnome_vfs_mime_get_value
 		(mime_type, "default_component_iid");
-	if (default_component_iid == NULL || default_component_iid[0] == '\0') {
-		/* Fall back to the supertype. */
-		/* Check if already a supertype */
-		if (strcmp (supertype, mime_type) != 0) {
-			default_component = gnome_vfs_mime_get_default_component (supertype);
-			if (default_component != NULL) {
-				default_component_iid = g_strdup (default_component->iid);
-				CORBA_free (default_component);
-			}
-		}
-	}
 
-	/* FIXME bugzilla.eazel.com 1142: should probably check for
-           the right interfaces too. Also slightly semantically
-           different from nautilus in other tiny ways.
-	*/
 	query = g_strconcat ("bonobo:supported_mime_types.has_one (['", mime_type, 
 			     "', '", supertype,
 			     "', '*'])", NULL);
@@ -254,9 +244,10 @@ gnome_vfs_mime_get_default_component (const char *mime_type)
 	}
 
 	short_list = gnome_vfs_mime_get_short_list_components (mime_type);
-
+	short_list = g_list_concat (short_list,
+				    gnome_vfs_mime_get_short_list_components (supertype));
 	if (short_list != NULL) {
-		sort[1] = g_strdup ("has (['");
+		sort[1] = g_strdup ("prefer_by_list_order(iid, ['");
 
 		for (p = short_list; p != NULL; p = p->next) {
  			prev = sort[1];
@@ -266,10 +257,11 @@ gnome_vfs_mime_get_default_component (const char *mime_type)
 								    "','", NULL);
 			} else {
 				sort[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
-								    "'], iid)", NULL);
+								    "'])", NULL);
 			}
 			g_free (prev);
 		}
+		gnome_vfs_mime_component_list_free (short_list);
 	} else {
 		sort[1] = g_strdup ("true");
 	}
@@ -282,9 +274,7 @@ gnome_vfs_mime_get_default_component (const char *mime_type)
 	/* Prefer something that matches the supertype to something that matches `*' */
 	sort[3] = g_strconcat ("bonobo:supported_mime_types.has ('", supertype, "')", NULL);
 
-	/* At lowest priority, alphebetize by name, for the sake of consistency */
 	sort[4] = g_strdup ("name");
-
 	sort[5] = NULL;
 
 	info_list = oaf_query (query, sort, &ev);
@@ -454,15 +444,16 @@ gnome_vfs_mime_get_short_list_applications (const char *mime_type)
 	short_list_additions = comma_separated_str_to_str_list (gnome_vfs_mime_get_value
 								(mime_type,
 								 "short_list_application_user_additions"));
+	short_list_additions = prune_ids_for_nonexistent_applications (short_list_additions);
 	short_list_removals = comma_separated_str_to_str_list (gnome_vfs_mime_get_value
 							       (mime_type,
 								"short_list_application_user_removals"));
 
 	/* Only include the supertype in the short list if we came up empty with
 	   the specific types */
-	supertype = mime_type_get_supertype (mime_type);
+	supertype = gnome_vfs_get_supertype_from_mime_type (mime_type);
 
-	if ((strcmp (supertype, mime_type) != 0) && (system_short_list == NULL)) {
+	if (!gnome_vfs_mime_type_is_supertype (mime_type) && system_short_list == NULL) {
 		supertype_short_list = comma_separated_str_to_str_list 
 			(gnome_vfs_mime_get_value_for_user_level 
 			 (supertype, 
@@ -524,6 +515,7 @@ gnome_vfs_mime_get_short_list_applications (const char *mime_type)
 }
 
 
+
 static char *
 join_str_list (const char *separator, GList *list)
 {
@@ -550,22 +542,6 @@ join_str_list (const char *separator, GList *list)
 	return retval;
 }
 
-
-/* sort_component_list
- *
- * Sort list alphabetically by component name
- */
- 
-static int
-sort_component_list (gconstpointer a, gconstpointer b)
-{
-	OAF_ServerInfo *component1, *component2;
-		
-	component1 = (OAF_ServerInfo *) a;
-	component2 = (OAF_ServerInfo *) b;
-
-	return g_strcasecmp (component1->iid, component2->iid);
-}
 
 GList *
 gnome_vfs_mime_get_short_list_components (const char *mime_type)
@@ -606,7 +582,7 @@ gnome_vfs_mime_get_short_list_components (const char *mime_type)
 								"short_list_component_user_removals"));
 
 
-	supertype = mime_type_get_supertype (mime_type);
+	supertype = gnome_vfs_get_supertype_from_mime_type (mime_type);
 	
 	if (strcmp (supertype, mime_type) != 0) {
 		supertype_short_list = comma_separated_str_to_str_list 
@@ -650,17 +626,12 @@ gnome_vfs_mime_get_short_list_components (const char *mime_type)
 
 		iids_delimited = join_str_list ("','", iid_list);
 
-		/* FIXME bugzilla.eazel.com 1142: should probably check for
-		   the right interfaces too. Also slightly semantically
-		   different from nautilus in other tiny ways.
-		*/
 		query = g_strconcat ("bonobo:supported_mime_types.has_one (['", mime_type, 
 				     "', '", supertype,
 				     "', '*'])",
 				     " AND has(['", iids_delimited, "'], iid)", NULL);
 		
-		/* Alphebetize by name, for the sake of consistency */
-		sort[0] = g_strdup ("name");
+		sort[0] = g_strconcat ("prefer_by_list_order(iid, ['", iids_delimited, "'])", NULL);
 		sort[1] = NULL;
 		
 		info_list = oaf_query (query, sort, &ev);
@@ -685,9 +656,6 @@ gnome_vfs_mime_get_short_list_components (const char *mime_type)
 	g_list_free_deep (supertype_additions);
 	g_list_free_deep (supertype_removals);
 	g_list_free (iid_list);
-
-	/* Sort list alphabetically by component name */
-	preferred_components = g_list_sort (preferred_components, sort_component_list);
 
 	return preferred_components;
 }
@@ -759,7 +727,7 @@ gnome_vfs_mime_get_all_components (const char *mime_type)
            the right interfaces too. Also slightly semantically
            different from nautilus in other tiny ways.
 	*/
-	supertype = mime_type_get_supertype (mime_type);
+	supertype = gnome_vfs_get_supertype_from_mime_type (mime_type);
 	query = g_strconcat ("bonobo:supported_mime_types.has_one (['", mime_type, 
 			     "', '", supertype,
 			     "', '*'])", NULL);
@@ -1474,6 +1442,8 @@ gnome_vfs_mime_remove_from_all_applications (const char *mime_type,
 	return gnome_vfs_application_registry_sync ();
 }
 
+
+
 GnomeVFSMimeApplication *
 gnome_vfs_mime_application_copy (GnomeVFSMimeApplication *application)
 {
@@ -1488,7 +1458,8 @@ gnome_vfs_mime_application_copy (GnomeVFSMimeApplication *application)
 	result->name = g_strdup (application->name);
 	result->command = g_strdup (application->command);
 	result->can_open_multiple_files = application->can_open_multiple_files;
-	result->can_open_uris = application->can_open_uris;
+	result->expects_uris = application->expects_uris;
+	result->supported_uri_schemes = copy_str_list (application->supported_uri_schemes);
 	result->requires_terminal = application->requires_terminal;
 
 	return result;
@@ -1500,6 +1471,10 @@ gnome_vfs_mime_application_free (GnomeVFSMimeApplication *application)
 	if (application != NULL) {
 		g_free (application->name);
 		g_free (application->command);
+		g_list_foreach (application->supported_uri_schemes,
+				(GFunc) g_free,
+				NULL);
+		g_list_free (application->supported_uri_schemes);
 		g_free (application->id);
 		g_free (application);
 	}
@@ -1537,37 +1512,6 @@ gnome_vfs_mime_component_list_free (GList *list)
 	g_list_free (list);
 }
 
-static char *
-extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
-{
-        const char *separator_position;
-        int prefix_length;
-        char *result;
-
-        separator_position = strstr (string, separator);
-        prefix_length = separator_position == NULL
-                ? strlen (string)
-                : separator_position - string;
-
-        result = g_malloc (prefix_length + strlen(suffix) + 1);
-        
-        strncpy (result, string, prefix_length);
-        result[prefix_length] = '\0';
-
-        strcat (result, suffix);
-
-        return result;
-}
-
-static char *
-mime_type_get_supertype (const char *mime_type)
-{
-	if (mime_type == NULL) {
-		return NULL;
-	}
-        return extract_prefix_add_suffix (mime_type, "/", "/*");
-}
-
 
 GnomeVFSMimeApplication *
 gnome_vfs_mime_application_new_from_id (const char *id)
@@ -1575,91 +1519,10 @@ gnome_vfs_mime_application_new_from_id (const char *id)
 	return gnome_vfs_application_registry_get_mime_application (id);
 }
 
-static char *
-strdup_to (const char *string, const char *end)
-{
-	if (end == NULL) {
-		return g_strdup (string);
-	}
-	return g_strndup (string, end - string);
-}
-
-static gboolean
-is_executable_file (const char *path)
-{
-	struct stat stat_buffer;
-
-	/* Check that it exists. */
-	if (stat (path, &stat_buffer) != 0) {
-		return FALSE;
-	}
-
-	/* Check that it is a file. */
-	if (!S_ISREG (stat_buffer.st_mode)) {
-		return FALSE;
-	}
-
-	/* Check that it's executable. */
-	if (access (path, X_OK) != 0) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-
-static gboolean
-executable_in_path (const char *executable_name)
-{
-	const char *path_list, *piece_start, *piece_end;
-	char *piece, *raw_path, *expanded_path;
-	gboolean is_good;
-
-	path_list = g_getenv ("PATH");
-
-	for (piece_start = path_list; ; piece_start = piece_end + 1) {
-		/* Find the next piece of PATH. */
-		piece_end = strchr (piece_start, ':');
-		piece = strdup_to (piece_start, piece_end);
-		g_strstrip (piece);
-		
-		if (piece[0] == '\0') {
-			is_good = FALSE;
-		} else {
-			/* Try out this path with the executable. */
-			raw_path = g_strconcat (piece, "/", executable_name, NULL);
-			expanded_path = gnome_vfs_expand_initial_tilde (raw_path);
-			g_free (raw_path);
-			
-			is_good = is_executable_file (expanded_path);
-			g_free (expanded_path);
-		}
-		
-		g_free (piece);
-		
-		if (is_good) {
-			return TRUE;
-		}
-
-		if (piece_end == NULL) {
-			return FALSE;
-		}
-	}
-}
-
-static char *
-get_executable_name_from_command_string (const char *command)
-{
-	/* FIXME bugzilla.eazel.com 2757: Do we need to handle quoting? */
-	return strdup_to (command, strchr (command, ' '));
-}
-
 static gboolean
 application_known_to_be_nonexistent (const char *application_id)
 {
 	const char *command;
-	char *executable_name;
-	gboolean found;
 
 	g_return_val_if_fail (application_id != NULL, FALSE);
 
@@ -1671,12 +1534,7 @@ application_known_to_be_nonexistent (const char *application_id)
 		return TRUE;
 	}
 
-	executable_name = get_executable_name_from_command_string (command);
-	g_strstrip (executable_name);
-	found = executable_in_path (executable_name);
-	g_free (executable_name);
-
-	return !found;
+	return !gnome_vfs_is_executable_command_string (command);
 }
 
 static GList *
@@ -1752,7 +1610,7 @@ get_user_level (void)
 	/* If value is invalid, assume "novice". */
 	if (strcmp (user_level, "novice") != 0 &&
 	    strcmp (user_level, "intermediate") != 0 &&
-	    strcmp (user_level, "hacker") != 0) {
+	    strcmp (user_level, "advanced") != 0) {
 		g_free (user_level);
 		user_level = g_strdup ("novice");
 	}
@@ -1840,4 +1698,17 @@ str_list_difference (GList *a, GList *b)
 	}
 
 	return g_list_reverse (result);
+}
+
+static GList *
+copy_str_list (GList *string_list)
+{
+	GList *copy, *node;
+       
+	copy = NULL;
+	for (node = string_list; node != NULL; node = node->next) {
+		copy = g_list_prepend (copy, 
+				       g_strdup ((char *) node->data));
+				       }
+	return g_list_reverse (copy);
 }

@@ -61,9 +61,6 @@ host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
 AWK = @AWK@
-CAPPLET_INCLUDEDIR = @CAPPLET_INCLUDEDIR@
-CAPPLET_LIBDIR = @CAPPLET_LIBDIR@
-CAPPLET_LIBS = @CAPPLET_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -75,10 +72,12 @@ ENABLE_PROFILER = @ENABLE_PROFILER@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -160,6 +159,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
@@ -168,6 +168,7 @@ cxxflags_set = @cxxflags_set@
 l = @l@
 need_gnome_support = @need_gnome_support@
 
+NULL = 
 SUBDIRS = extfs
 
 INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/libgnomevfs			-I$(top_builddir)/libgnomevfs			-I$(top_srcdir)/intl				-I$(top_builddir)/intl				$(GLIB_CFLAGS)					$(XML_CFLAGS)	 				$(LIBEFS_CFLAGS)				$(GCONF_CFLAGS)					$(GTK_CFLAGS)					$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DPREFIX=\"$(prefix)\"
@@ -181,8 +182,12 @@ EXTRA_DIST =  	default-modules.conf				efs-method.c                            	
 module_flags = -export_dynamic -avoid-version
 modulesdir = $(libdir)/vfs/modules
 
-modules_LTLIBRARIES =  	libextfs.la					libfile.la					libvfs-test.la					libhttp.la					libbzip2.la					libgzip.la					libftp.la					libvfs-pipe.la					libvfs-translate.la				libnfs.la
+modules_LTLIBRARIES =  	libextfs.la					libfile.la					libvfs-test.la					libhttp.la					libbzip2.la					libgzip.la					libftp.la					libvfs-pipe.la					libvfs-translate.la				$(NULL)
 
+
+# Not currently supported
+#	libnfs.la				\
+#	libcdda-method.la			\
 
 modulesconfdir = $(sysconfdir)/vfs/modules
 modulesconf_DATA =  	default-modules.conf
@@ -249,10 +254,15 @@ libgconf_la_LIBADD = $(GCONF_LIBS) $(GTK_LIBS)
 libgconf_la_LDFLAGS = $(module_flags)
 
 ### `nfs' method
-libnfs_la_SOURCES =  	nfs-method.c					nfs-method.h					nfs-method_mount_xdr.c				nfs-method_nfs_prot_xdr.c			nfs-method_mount.h				nfs-method_nfs_prot.h
+#libnfs_la_SOURCES = 				\
+#	nfs-method.c				\
+#	nfs-method.h				\
+#	nfs-method_mount_xdr.c			\
+#	nfs-method_nfs_prot_xdr.c		\
+#	nfs-method_mount.h			\
+#	nfs-method_nfs_prot.h
 
-
-libnfs_la_LDFLAGS = $(module_flags)
+#libnfs_la_LDFLAGS = $(module_flags)
 
 ### `http' method
 
@@ -300,9 +310,6 @@ libvfs_pipe_la_DEPENDENCIES =
 libvfs_pipe_la_OBJECTS =  pipe-method.lo
 libvfs_translate_la_DEPENDENCIES = 
 libvfs_translate_la_OBJECTS =  translate-method.lo
-libnfs_la_LIBADD = 
-libnfs_la_OBJECTS =  nfs-method.lo nfs-method_mount_xdr.lo \
-nfs-method_nfs_prot_xdr.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -316,8 +323,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgconf_la_SOURCES) $(libextfs_la_SOURCES) $(libfile_la_SOURCES) $(libvfs_test_la_SOURCES) $(libhttp_la_SOURCES) $(libbzip2_la_SOURCES) $(libgzip_la_SOURCES) $(libftp_la_SOURCES) $(libvfs_pipe_la_SOURCES) $(libvfs_translate_la_SOURCES) $(libnfs_la_SOURCES)
-OBJECTS = $(libgconf_la_OBJECTS) $(libextfs_la_OBJECTS) $(libfile_la_OBJECTS) $(libvfs_test_la_OBJECTS) $(libhttp_la_OBJECTS) $(libbzip2_la_OBJECTS) $(libgzip_la_OBJECTS) $(libftp_la_OBJECTS) $(libvfs_pipe_la_OBJECTS) $(libvfs_translate_la_OBJECTS) $(libnfs_la_OBJECTS)
+SOURCES = $(libgconf_la_SOURCES) $(libextfs_la_SOURCES) $(libfile_la_SOURCES) $(libvfs_test_la_SOURCES) $(libhttp_la_SOURCES) $(libbzip2_la_SOURCES) $(libgzip_la_SOURCES) $(libftp_la_SOURCES) $(libvfs_pipe_la_SOURCES) $(libvfs_translate_la_SOURCES)
+OBJECTS = $(libgconf_la_OBJECTS) $(libextfs_la_OBJECTS) $(libfile_la_OBJECTS) $(libvfs_test_la_OBJECTS) $(libhttp_la_OBJECTS) $(libbzip2_la_OBJECTS) $(libgzip_la_OBJECTS) $(libftp_la_OBJECTS) $(libvfs_pipe_la_OBJECTS) $(libvfs_translate_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -447,9 +454,6 @@ libvfs-pipe.la: $(libvfs_pipe_la_OBJECTS) $(libvfs_pipe_la_DEPENDENCIES)
 
 libvfs-translate.la: $(libvfs_translate_la_OBJECTS) $(libvfs_translate_la_DEPENDENCIES)
 	$(LINK) -rpath $(modulesdir) $(libvfs_translate_la_LDFLAGS) $(libvfs_translate_la_OBJECTS) $(libvfs_translate_la_LIBADD) $(LIBS)
-
-libnfs.la: $(libnfs_la_OBJECTS) $(libnfs_la_DEPENDENCIES)
-	$(LINK) -rpath $(modulesdir) $(libnfs_la_LDFLAGS) $(libnfs_la_OBJECTS) $(libnfs_la_LIBADD) $(LIBS)
 
 install-modulesconfDATA: $(modulesconf_DATA)
 	@$(NORMAL_INSTALL)

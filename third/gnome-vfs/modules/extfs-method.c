@@ -62,7 +62,7 @@ typedef struct _ExtfsHandle ExtfsHandle;
 #define VFS_HANDLE(method_handle) \
 	((ExtfsHandle *) method_handle)->vfs_handle
 
-/* List of current handles, for cleaning up in `vfs_module_shutdown()'.  */
+/* List of current handles, for cleaning up in `vfs_module_shutdown_2()'.  */
 static GList *handle_list;
 G_LOCK_DEFINE_STATIC (handle_list);
 
@@ -844,6 +844,7 @@ do_check_same_fs (GnomeVFSMethod *method,
 
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
 	do_open,
 	do_create,
 	do_close,

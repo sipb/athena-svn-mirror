@@ -105,6 +105,7 @@ gnome_vfs_mime_sniff_buffer_new_from_existing_data (const guchar *buffer,
 	result->owning = FALSE;
 	result->buffer = (guchar *)buffer;
 	result->buffer_length = buffer_length;
+	result->read_whole_file = TRUE;
 
 	return result;
 }

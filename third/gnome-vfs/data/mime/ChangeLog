@@ -1,3 +1,165 @@
+2001-03-01  Aaron Brick  <aaron@eazel.com>
+
+	* added application/x-rar to the list of guitar's supported types
+	in addition to its ambiguous alter-ego, /x-rar-compressed.
+
+2001-02-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 7043, java files execute by default now.
+
+	* gnome-vfs.keys.in: Removed the lines that make compiled java
+	execute java by default. We can return to this issue later, along
+	with the general issue of how to handle "execute-like" entries in
+	this file. Most of the applications have "edit-like"
+	behavior. Also removed the line that made the default for opening
+	Java source code be the Java compiler. We don't invoke a C
+	compiler when you open a C source file and we don't want to do it
+	for Java either. Also removed an icon name that doesn't correspond
+	to an actual icon.
+
+2001-02-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	Fixed bug 5570, bmp file sometimes appears as an mp3 file
+	
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.mime:
+	Add image/bmp rule. There was already information
+	about this mime type in .keys
+
+2001-02-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	Fixed bug 7148, Flash files identified as mp3
+	
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+	Add application/x-shockwave-flash information.
+	
+2001-02-28  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Aaron Brick <aaron@eazel.com>
+
+	Fix bugzilla.eazel.com bug 7093
+
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	Remove gnorpm from the list of applications,
+	since it doesn't actually open rpm files when
+	they are passed as arguments.
+
+2001-02-27  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7095 (wrong icon used for HTML files in
+	bookmarks & icon views)
+
+	* gnome-vfs.keys.in: Removed icon for text/html. Nautilus has its
+	own logic for dealing with html files that gets broken by a
+	hard-wired icon here.  Maybe we should change the logic in
+	Nautilus someday, but this is the safe right-before-release
+	change.
+
+2001-02-26  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	Fix bugs 7033-7038 and 7050. Also fix unreported bug found last night
+	wherein DVI files are recognized as MP3 by adding magic-mime numbers
+	for DVI.
+
+2001-02-26  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	More fixes after adding more checks to check-mime.pl.
+
+	* gnome-vfs.applications: Fixed a typo where it said
+	"expect_uirs".
+	* gnome-vfs.keys.in: Fixed a couple of places that said
+	"default_action" instead of "default_action_type". Got
+	rid of some duplicate icon_filename entries. Fixed a few
+	places that said "icon-filename".
+	* gnome-vfs.mime: Fixed a place that said "regex.2"
+	instead of "regex,2". Got rid of some stray "icon_filename".
+
+2001-02-26  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+	Ran check-mime.pl and fixed some of the problems it reported,
+	including a bad pattern for application/x-applix-spreadsheet,
+	non-translated description for application/qif, and many
+	entries that were not in sorted order. Wrote bug reports for
+	other problems it detected.
+
+2001-02-25  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime:
+
+	Added four bazillion applications and MIME types so we
+	support all the GNOME 1.4 and extras applications and KOffice
+	and lots of other random various applications and types.
+
+2001-02-16  Aaron Brick  <aaron@eazel.com>
+
+	* added pico (jpico)
+
+2001-02-07  Aaron Brick  <aaron@eazel.com>
+
+	* combed mc.keys for missed types, adding:
+
+		application/x-slp
+		application/x-tex (a duplicate)
+
+		and dismissing the rest.
+
+	* added a comment to the RPM-detecting magic.
+
+2001-01-31  Rebecca Schulman  <rebecka@eazel.com>
+
+	* gnome-vfs.keys.in:
+	Fixed a typo in this file that was making 
+	the vault unviewable by anything except mozilla.
+
+2001-01-31  Darin Adler  <darin@eazel.com>
+
+	* gnome-vfs.applications: Made check-mime happy by using a tab,
+	not spaces, on the realplay line.
+
+2001-01-30  Kenneth Christiansen  <kenneth@gnu.org>
+
+	* gnome-vfs.mime: add abiword abw files.
+
+2001-01-26  Aaron Brick  <aaron@eazel.com>
+
+	* renamed realplayer executable "realplay"
+	* added duplicate realplayer type application/vnd.rn-realmedia
+
+2001-01-24  Aaron Brick  <aaron@eazel.com>
+
+	* renamed "acrobat" "acroread" per the executable's name
+	* prioritized xpdf above gv/ggv because its PDF handling is superior
+
 2001-01-22  Darin Adler  <darin@eazel.com>
 
 	* gnome-vfs-mime-magic:

@@ -60,8 +60,11 @@
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
 #include "gnome-vfs-mime.h"
+#include "gnome-vfs-mime-sniff-buffer.h"
 
 #include "http-method.h"
+
+#define EAZEL_XML_NS "http://services.eazel.com/namespaces"
 
 /* (this typedef is all the way up here so that  my_debug_printf can use it) */
 typedef gint64 utime_t;
@@ -111,15 +114,7 @@ static int nothing;
 #define US_CACHE_DIRECTORY (1000 * 500)
 
 /* Mutex for cache data structures */
-/* The GLib mutex abstraction doesn't allow recursive mutexs */
-
-/* For Solaris and other systems that don't have this define */
-#ifndef PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
-#define  PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP  \
-             {0, 0, 0, PTHREAD_MUTEX_RECURSIVE, {0, 0}}
-#endif
-
-static pthread_mutex_t cache_rlock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+static pthread_mutex_t cache_rlock;
 
 /* Hash maps char * URI ---> FileInfoCacheEntry */
 GHashTable * gl_file_info_cache = NULL;
@@ -359,7 +354,7 @@ cache_check_directory (const gchar * uri_string, GList **p_child_file_info_list)
 {
 	FileInfoCacheEntry *entry;
 	utime_t utime_expire;
-GnomeVFSFileInfo *ret;
+	GnomeVFSFileInfo *ret;
 	GList *child_file_info_list = NULL;
 	gboolean cache_incomplete;
 
@@ -1739,13 +1734,35 @@ do_close (GnomeVFSMethod *method,
 	if (old_handle->to_be_written != NULL) {
 		GnomeVFSURI *uri = old_handle->uri;
 		GByteArray *bytes = old_handle->to_be_written;
+		GnomeVFSMimeSniffBuffer *sniff_buffer;
+		gchar *extraheader = NULL;
+		const gchar *mime_type = NULL;
+
+		sniff_buffer = 
+			gnome_vfs_mime_sniff_buffer_new_from_existing_data (
+					bytes->data, bytes->len);
+
+		if (sniff_buffer != NULL) {
+			mime_type = 
+				gnome_vfs_get_mime_type_for_buffer (
+						sniff_buffer);
+			if (mime_type != NULL) {
+				extraheader = g_strdup_printf(
+						"Content-type: %s\r\n", 
+						mime_type);
+			}
+			gnome_vfs_mime_sniff_buffer_free (sniff_buffer);
+
+		}
 
 #ifndef DAV_NO_CACHE
 		cache_invalidate_uri (uri);
 #endif /* DAV_NO_CACHE */
 
 		ANALYZE_HTTP ("==> doing PUT");
-		result = make_request (&new_handle, uri, "PUT", bytes, NULL, context);
+		result = make_request (&new_handle, uri, "PUT", bytes, 
+				extraheader, context);
+		g_free (extraheader);
 		http_handle_close (new_handle, context);
 	} else {
 		result = GNOME_VFS_OK;
@@ -1856,6 +1873,9 @@ static void
 process_propfind_propstat(xmlNodePtr node, GnomeVFSFileInfo *file_info)
 {
 	xmlNodePtr l;
+	gboolean treat_as_directory;
+
+	treat_as_directory = FALSE;
 
 	while (node != NULL) {
 		if (strcmp((char *)node->name, "prop") != 0) {
@@ -1886,6 +1906,11 @@ process_propfind_propstat(xmlNodePtr node, GnomeVFSFileInfo *file_info)
 							GNOME_VFS_FILE_INFO_FIELDS_MTIME 
 							| GNOME_VFS_FILE_INFO_FIELDS_CTIME;
 					}
+				} else if (strcmp((char *)l->name, "nautilus-treat-as-directory") == 0
+					   && l->ns != NULL && l->ns->href != NULL
+					   && strcmp (l->ns->href, EAZEL_XML_NS) == 0
+					   && strcasecmp (node_content_xml, "TRUE") == 0) {
+					treat_as_directory = TRUE;
 				}
 				/* Unfortunately, we don't have a mapping for "creationdate" */
 
@@ -1900,15 +1925,28 @@ process_propfind_propstat(xmlNodePtr node, GnomeVFSFileInfo *file_info)
 				if (l->xmlChildrenNode && l->xmlChildrenNode->name 
 					&& strcmp((char *)l->xmlChildrenNode->name, "collection") == 0) {
 					file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
-					g_free(file_info->mime_type);
-					file_info->mime_type = g_strdup("x-directory/webdav");
-					file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
 				}
 			}
 			l = l->next;
 		}
 		node = node->next;
 	}
+
+	/* If this is a DAV collection, do we tell nautilus to treat it
+	 * as a directory or as a web page?
+	 */
+	if (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE
+	    && file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		g_free(file_info->mime_type);
+		if (treat_as_directory) {
+			file_info->mime_type = g_strdup("x-directory/webdav-prefer-directory");
+			file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
+		} else {
+			file_info->mime_type = g_strdup("x-directory/webdav");
+			file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
+		}
+	}
+
 
 	if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) == 0) {
 		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
@@ -2022,11 +2060,48 @@ unescape_unreserved_chars (const char *in_string)
 
 #endif /* 0 */
 
+static xmlNodePtr
+find_child_node_named (xmlNodePtr node, const char *child_node_name)
+{
+	xmlNodePtr child;
+
+	child = node->xmlChildrenNode;
+
+	for (child = node->xmlChildrenNode; child != NULL ; child = child->next) {
+		if (0 == strcmp (child->name, child_node_name)) {
+			return child;
+		}
+	}
+
+	return NULL;
+}
+
+static guint
+get_propstat_status (xmlNodePtr propstat_node, guint *p_status_code)
+{
+	xmlNodePtr status_node;
+	char *status_string;
+	gboolean ret;
+
+	status_node = find_child_node_named (propstat_node, "status");
+
+	if (status_node != NULL) {
+		status_string =	xmlNodeGetContent (status_node);
+		ret = parse_status (status_string, p_status_code);
+		xmlFree (status_string);
+	} else {
+		ret = FALSE;
+	}
+			
+	return ret;
+}
+
 static GnomeVFSFileInfo *
 process_propfind_response(xmlNodePtr n, GnomeVFSURI *base_uri)
 {
 	GnomeVFSFileInfo *file_info = defaults_file_info_new();
 	GnomeVFSURI *second_base = gnome_vfs_uri_append_path(base_uri, "/");
+	guint status_code;
 
 	file_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_NONE;
 
@@ -2065,7 +2140,9 @@ process_propfind_response(xmlNodePtr n, GnomeVFSURI *base_uri)
 
 			xmlFree (nodecontent);
 		} else if (strcmp ((char *)n->name, "propstat") == 0) {
-			process_propfind_propstat (n->xmlChildrenNode, file_info);
+			if (get_propstat_status (n, &status_code) && status_code == 200) {
+				process_propfind_propstat (n->xmlChildrenNode, file_info);
+			}
 		}
 		n = n->next;
 	}
@@ -2094,15 +2171,16 @@ make_propfind_request (HttpFileHandle **handle_return,
 
 	GByteArray *request = g_byte_array_new();
 	gchar *request_str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-		"<D:propfind xmlns:D=\"DAV:\">"
+		"<D:propfind xmlns:D=\"DAV:\" xmlns:ns1000=\"" EAZEL_XML_NS "\">"
 		"<D:prop>"
                 "<D:creationdate/>"
                 "<D:getcontentlength/>"
                 "<D:getcontenttype/>"
                 "<D:getlastmodified/>"
                 "<D:resourcetype/>"
-		"</D:prop>"
+                "<ns1000:nautilus-treat-as-directory/>"
 		/*"<D:allprop/>"*/
+		"</D:prop>"
 		"</D:propfind>";
 
 	ANALYZE_HTTP ("==> +make_propfind_request");
@@ -2408,17 +2486,7 @@ do_get_file_info (GnomeVFSMethod *method,
 		 * Start off by making a PROPFIND request.  Fall back to a HEAD if it fails
 		 */
 
-		/* FIXME: This is a temporary hack to treat all root
-		 * URIs as not-WebDAV. See bug 4287 for why we did
-		 * this, but, hey, you reading this! Get rid of this
-		 * hack and fix the problem in a good way.
-		 */
-		if (!gnome_vfs_uri_has_parent (uri)) {
-			result = GNOME_VFS_ERROR_NOT_FOUND; /* Any error code will do. */
-			handle = NULL;
-		} else {
-			result = make_propfind_request (&handle, uri, 0, context);
-		}
+		result = make_propfind_request (&handle, uri, 0, context);
 
 		/* Note that theoretically we could not bother with this request if we get a 404 back,
 		 * but since some servers seem to return wierd things on PROPFIND (mostly 200 OK's...)
@@ -2714,6 +2782,7 @@ do_set_file_info (GnomeVFSMethod *method,
 }
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
 	do_open,
 	do_create,
 	do_close,
@@ -2746,6 +2815,7 @@ vfs_module_init (const char *method_name, const char *args)
 	int argc = 1;
 	GError *gconf_error = NULL;
 	GConfValue *proxy_value;
+	pthread_mutexattr_t attr;
 
 	LIBXML_TEST_VERSION
 
@@ -2776,11 +2846,20 @@ vfs_module_init (const char *method_name, const char *args)
         }
 #endif
 
+	/* Initialize cache_rlock to be a recursive mutex. (Not using the static
+	 * recursive mutex initializer macro here because it is not too portable.
+	 */
+	pthread_mutexattr_init (&attr);
+	pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutex_init (&cache_rlock, &attr);
+	pthread_mutexattr_destroy (&attr);
+	
 	gconf_client_add_dir (gl_client, PATH_GCONF_GNOME_VFS, GCONF_CLIENT_PRELOAD_NONE, &gconf_error);
 
 	if (gconf_error) {
 		DEBUG_HTTP (("GConf error during client_add_dir '%s'", gconf_error->message));
 		g_error_free (gconf_error);
+		gconf_error = NULL;
 	}
 
 	gtk_signal_connect (GTK_OBJECT (gl_client), "value_changed", (GtkSignalFunc) sig_gconf_value_changed, NULL);
@@ -2791,6 +2870,7 @@ vfs_module_init (const char *method_name, const char *args)
 	if (gconf_error != NULL) {
 		DEBUG_HTTP (("GConf error during client_get '%s'", gconf_error->message));
 		g_error_free (gconf_error);
+		gconf_error = NULL;
 	} else if (proxy_value != NULL) {
 		sig_gconf_value_changed (gl_client, KEY_GCONF_USE_HTTP_PROXY, proxy_value);
 		gconf_value_free (proxy_value);
@@ -2820,6 +2900,9 @@ vfs_module_shutdown (GnomeVFSMethod *method)
 		g_mutex_free (gl_mutex);
 	}
 #endif
+
+	pthread_mutex_destroy (&cache_rlock);
+
 	gl_client = NULL;
 }
 

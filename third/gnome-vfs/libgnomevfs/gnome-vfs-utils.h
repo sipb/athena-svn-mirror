@@ -96,6 +96,9 @@ char *gnome_vfs_get_local_path_from_uri      (const char      *uri);
 /* Turn a path into a "file://" URI. */
 char *gnome_vfs_get_uri_from_local_path      (const char      *local_full_path);
 
+/* Check whether a string starts with an executable command */ 
+gboolean gnome_vfs_is_executable_command_string (const char *command_string);
+
 /* Free the list, freeing each item data with a g_free */
 void   gnome_vfs_list_deep_free               (GList            *list);
 

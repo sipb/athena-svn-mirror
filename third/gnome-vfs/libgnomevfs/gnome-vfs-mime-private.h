@@ -32,6 +32,14 @@ extern "C" {
 void gnome_vfs_mime_info_shutdown 	      (void);
 void gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor);
 
+typedef struct FileDateTracker FileDateTracker;
+
+FileDateTracker	*gnome_vfs_file_date_tracker_new			(void);
+void		 gnome_vfs_file_date_tracker_free			(FileDateTracker *tracker);
+void		 gnome_vfs_file_date_tracker_start_tracking_file	(FileDateTracker *tracker, 
+							 		 const char *local_file_path);
+gboolean	 gnome_vfs_file_date_tracker_date_has_changed 		(FileDateTracker *tracker);
+
 #ifdef __cplusplus
 }
 #endif /*__cplusplus*/

@@ -461,134 +461,6 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_DirectoryFilter_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_0 == 'g') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_1 == 'n') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_2 == 'o') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_3 == 'm') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_4 == 'e') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_5 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_6 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_7 == 'f') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_8 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_9 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_10 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_11 == 'l') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_12 == 'a') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_13 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRule_14 == 'e') \
-) && !defined(TC_DEF_TC_GNOME_VFS_Slave_DirectorySortRule)
-#define TC_DEF_TC_GNOME_VFS_Slave_DirectorySortRule 1
-static const CORBA_TypeCode anon_subtypes_array103[] =
-   { (CORBA_TypeCode) & TC_CORBA_unsigned_short_struct };
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_DirectorySortRule_struct
-   = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_alias, "DirectorySortRule",
-      "IDL:GNOME/VFS/Slave/DirectorySortRule:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array103,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0 == 'g') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_1 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_3 == 'm') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_4 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_5 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_6 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_7 == 'f') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_8 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_10 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_11 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_12 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_13 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_14 == 'e') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule)
-#define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule 1
-static const CORBA_TypeCode anon_subtypes_array107[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Slave_DirectorySortRule_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array107,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0 == 'g') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_1 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_3 == 'm') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_4 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_5 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_6 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_7 == 'f') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_8 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_10 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_11 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_12 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_13 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_14 == 'e') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule)
-#define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule 1
-static const CORBA_TypeCode anon_subtypes_array116[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Slave_DirectorySortRule_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array116,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_0 == 'g') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_1 == 'n') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_2 == 'o') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_3 == 'm') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_4 == 'e') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_5 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_6 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_7 == 'f') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_8 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_9 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_10 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_11 == 'l') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_12 == 'a') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_13 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_DirectorySortRuleList_14 == 'e') \
-) && !defined(TC_DEF_TC_GNOME_VFS_Slave_DirectorySortRuleList)
-#define TC_DEF_TC_GNOME_VFS_Slave_DirectorySortRuleList 1
-static const CORBA_TypeCode anon_subtypes_array120[] =
-   { (CORBA_TypeCode) &
-
-TC_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_struct };
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_Slave_DirectorySortRuleList_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_alias, "DirectorySortRuleList",
-      "IDL:GNOME/VFS/Slave/DirectorySortRuleList:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array120,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Slave_XferPhase_0 == 'g') \
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferPhase_1 == 'n') \
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferPhase_2 == 'o') \
@@ -606,7 +478,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferPhase_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_XferPhase)
 #define TC_DEF_TC_GNOME_VFS_Slave_XferPhase 1
-static const CORBA_TypeCode anon_subtypes_array129[] =
+static const CORBA_TypeCode anon_subtypes_array103[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_short_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferPhase_struct = {
    
@@ -616,7 +488,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferPhase_struct = {
    CORBA_tk_alias, "XferPhase", "IDL:GNOME/VFS/Slave/XferPhase:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array129,
+   (CORBA_TypeCode *) anon_subtypes_array103,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -638,7 +510,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferPhase_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferOptions_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_XferOptions)
 #define TC_DEF_TC_GNOME_VFS_Slave_XferOptions 1
-static const CORBA_TypeCode anon_subtypes_array138[] =
+static const CORBA_TypeCode anon_subtypes_array112[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferOptions_struct = {
    
@@ -648,7 +520,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferOptions_struct = {
    CORBA_tk_alias, "XferOptions", "IDL:GNOME/VFS/Slave/XferOptions:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array138,
+   (CORBA_TypeCode *) anon_subtypes_array112,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -670,7 +542,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferOptions_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferErrorMode_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_XferErrorMode)
 #define TC_DEF_TC_GNOME_VFS_Slave_XferErrorMode 1
-static const CORBA_TypeCode anon_subtypes_array147[] =
+static const CORBA_TypeCode anon_subtypes_array121[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_short_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferErrorMode_struct = {
    
@@ -680,7 +552,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferErrorMode_struct = {
    CORBA_tk_alias, "XferErrorMode", "IDL:GNOME/VFS/Slave/XferErrorMode:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array147,
+   (CORBA_TypeCode *) anon_subtypes_array121,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -702,7 +574,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferErrorMode_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Slave_XferOverwriteMode_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_XferOverwriteMode)
 #define TC_DEF_TC_GNOME_VFS_Slave_XferOverwriteMode 1
-static const CORBA_TypeCode anon_subtypes_array156[] =
+static const CORBA_TypeCode anon_subtypes_array130[] =
    { (CORBA_TypeCode) & TC_CORBA_unsigned_short_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferOverwriteMode_struct
    = {
@@ -712,7 +584,135 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_XferOverwriteMode_struct
       "IDL:GNOME/VFS/Slave/XferOverwriteMode:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array156,
+   (CORBA_TypeCode *) anon_subtypes_array130,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array134[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array134,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array143[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array143,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_0 == 'g') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_1 == 'n') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_3 == 'm') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_4 == 'e') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_5 == '_') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_6 == 'v') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_7 == 'f') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_8 == 's') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_9 == '_') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_10 == 's') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_11 == 'l') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_12 == 'a') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_13 == 'v') \
+&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_14 == 'e') \
+) && !defined(TC_DEF_TC_GNOME_VFS_Slave_FileNameList)
+#define TC_DEF_TC_GNOME_VFS_Slave_FileNameList 1
+static const CORBA_TypeCode anon_subtypes_array147[] =
+   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_FileNameList_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_alias, "FileNameList", "IDL:GNOME/VFS/Slave/FileNameList:1.0",
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array147,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array151[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array151,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -749,134 +749,6 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
-) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
-#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array169[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array169,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_0 == 'g') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_1 == 'n') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_2 == 'o') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_3 == 'm') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_4 == 'e') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_5 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_6 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_7 == 'f') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_8 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_9 == '_') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_10 == 's') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_11 == 'l') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_12 == 'a') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_13 == 'v') \
-&& (TC_IMPL_TC_GNOME_VFS_Slave_FileNameList_14 == 'e') \
-) && !defined(TC_DEF_TC_GNOME_VFS_Slave_FileNameList)
-#define TC_DEF_TC_GNOME_VFS_Slave_FileNameList 1
-static const CORBA_TypeCode anon_subtypes_array173[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_FileNameList_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_alias, "FileNameList", "IDL:GNOME/VFS/Slave/FileNameList:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array173,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
-) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
-#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array177[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array177,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'g') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'n') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'o') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'm') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 'f') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 's') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'a') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'v') \
-&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'e') \
-) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
-#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array186[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct };
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   
-      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array186,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Slave_URIList_0 == 'g') \
 && (TC_IMPL_TC_GNOME_VFS_Slave_URIList_1 == 'n') \
 && (TC_IMPL_TC_GNOME_VFS_Slave_URIList_2 == 'o') \
@@ -894,7 +766,7 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Slave_URIList_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_URIList)
 #define TC_DEF_TC_GNOME_VFS_Slave_URIList 1
-static const CORBA_TypeCode anon_subtypes_array190[] =
+static const CORBA_TypeCode anon_subtypes_array164[] =
    { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_URIList_struct = {
    
@@ -904,7 +776,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_URIList_struct = {
    CORBA_tk_alias, "URIList", "IDL:GNOME/VFS/Slave/URIList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array190,
+   (CORBA_TypeCode *) anon_subtypes_array164,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -926,10 +798,10 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_URIList_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Slave_GetFileInfoResult_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_GetFileInfoResult)
 #define TC_DEF_TC_GNOME_VFS_Slave_GetFileInfoResult 1
-static const char *anon_subnames_array193[] =
+static const char *anon_subnames_array167[] =
 
    { "uri", "result", "file_info" };
-static const CORBA_TypeCode anon_subtypes_array194[] =
+static const CORBA_TypeCode anon_subtypes_array168[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_GNOME_VFS_Result_struct,
       (CORBA_TypeCode) & TC_GNOME_VFS_Slave_FileInfo_struct };
@@ -940,8 +812,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_GetFileInfoResult_struct
    CORBA_tk_struct, "GetFileInfoResult",
       "IDL:GNOME/VFS/Slave/GetFileInfoResult:1.0",
    0, 3,
-   (const char **) anon_subnames_array193,
-   (CORBA_TypeCode *) anon_subtypes_array194,
+   (const char **) anon_subnames_array167,
+   (CORBA_TypeCode *) anon_subtypes_array168,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -963,7 +835,7 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Slave_GetFileInfoResult_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult_14 == 'e') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult 1
-static const CORBA_TypeCode anon_subtypes_array198[] =
+static const CORBA_TypeCode anon_subtypes_array172[] =
    { (CORBA_TypeCode) & TC_GNOME_VFS_Slave_GetFileInfoResult_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult_struct = {
@@ -972,7 +844,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array198,
+   (CORBA_TypeCode *) anon_subtypes_array172,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -994,7 +866,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult_14 == 'e') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult 1
-static const CORBA_TypeCode anon_subtypes_array207[] =
+static const CORBA_TypeCode anon_subtypes_array181[] =
    { (CORBA_TypeCode) & TC_GNOME_VFS_Slave_GetFileInfoResult_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult_struct = {
@@ -1003,7 +875,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array207,
+   (CORBA_TypeCode *) anon_subtypes_array181,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1025,7 +897,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_Slave_GetFileInfoResultList_14 == 'e') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Slave_GetFileInfoResultList)
 #define TC_DEF_TC_GNOME_VFS_Slave_GetFileInfoResultList 1
-static const CORBA_TypeCode anon_subtypes_array211[] =
+static const CORBA_TypeCode anon_subtypes_array185[] =
    { (CORBA_TypeCode) &
 
 TC_CORBA_sequence_GNOME_VFS_Slave_GetFileInfoResult_struct };
@@ -1037,7 +909,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/VFS/Slave/GetFileInfoResultList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array211,
+   (CORBA_TypeCode *) anon_subtypes_array185,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -1389,80 +1261,6 @@ GNOME_VFS_Slave_DirectoryFilter__alloc(void)
 		  GNOME_VFS_Slave_DirectoryFilter__free, GUINT_TO_POINTER(1));
    memset(&(retval->pattern), '\0', sizeof(retval->pattern));
    return retval;
-}
-
-#if ( (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_0 == 'g') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_1 == 'n') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_2 == 'o') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_3 == 'm') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_4 == 'e') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_5 == '_') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_6 == 'v') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_7 == 'f') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_8 == 's') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_9 == '_') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_10 == 's') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_11 == 'l') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_12 == 'a') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_13 == 'v') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_14 == 'e') \
-) && !defined(ORBIT_DEF_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule)
-#define ORBIT_DEF_CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule 1
-
-gpointer
-CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__free(gpointer mem,
-						       gpointer dat,
-						       CORBA_boolean
-						       free_strings)
-{
-   CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule *val = mem;
-
-   if (val->_release)
-      ORBit_free(val->_buffer, free_strings);
-   return (gpointer) (val + 1);
-}
-
-CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule *
-CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__alloc(void)
-{
-   CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule *retval;
-
-   retval =
-      ORBit_alloc(sizeof(CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule),
-		  (ORBit_free_childvals)
-		  CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__free,
-		  GUINT_TO_POINTER(1));
-   retval->_maximum = 0;
-   retval->_length = 0;
-   retval->_buffer = NULL;
-   retval->_release = CORBA_FALSE;
-   return retval;
-}
-
-GNOME_VFS_Slave_DirectorySortRule *
-CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule_allocbuf(CORBA_unsigned_long
-							  len)
-{
-   GNOME_VFS_Slave_DirectorySortRule *retval =
-      ORBit_alloc(sizeof(GNOME_VFS_Slave_DirectorySortRule) * len,
-		  (ORBit_free_childvals) NULL, GUINT_TO_POINTER(len));
-
-   return retval;
-}
-#endif
-
-gpointer
-GNOME_VFS_Slave_DirectorySortRuleList__free(gpointer mem, gpointer dat,
-					    CORBA_boolean free_strings)
-{
-   return CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__free(mem, dat,
-								 free_strings);
-}
-
-GNOME_VFS_Slave_DirectorySortRuleList *
-GNOME_VFS_Slave_DirectorySortRuleList__alloc(void)
-{
-   return CORBA_sequence_GNOME_VFS_Slave_DirectorySortRule__alloc();
 }
 
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'g') \

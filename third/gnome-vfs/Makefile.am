@@ -7,7 +7,7 @@ endif
 if PLATFORM_GNOME_2
 SUBDIRS_GNOME=
 else
-SUBDIRS_GNOME=test mime-type-capplet
+SUBDIRS_GNOME=test
 endif
 
 SUBDIRS =					\
@@ -20,7 +20,8 @@ SUBDIRS =					\
 	man					\
 	devel-docs				\
 	$(SUBDIRS_GNOME)			\
-	po
+	po					\
+	macros
 
 
 EXTRA_DIST =					\
@@ -31,9 +32,9 @@ EXTRA_DIST =					\
 	vfsConf.sh.in				\
 	vfscorbaConf.sh.in			\
 	vfspthreadConf.sh.in			\
-	xml-i18n-extract			\
-	xml-i18n-merge				\
-	xml-i18n-update				\
+	xml-i18n-extract.in			\
+	xml-i18n-merge.in			\
+	xml-i18n-update.in			\
 	gnome-vfs-config.in
 
 bin_SCRIPTS = $(top_builddir)/gnome-vfs-config

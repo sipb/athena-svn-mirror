@@ -60,14 +60,14 @@ thread_routine (void *data)
 	}
 	
 	JOB_DEBUG (("locking access_lock %u", GPOINTER_TO_UINT (job->job_handle)));
-	g_mutex_lock (job->access_lock);
+	sem_wait (&job->access_lock);
 	gnome_vfs_async_job_map_unlock ();
 
 	gnome_vfs_job_execute (job);
 	complete = gnome_vfs_job_complete (job);
 	
 	JOB_DEBUG (("Unlocking access lock %u", GPOINTER_TO_UINT (job->job_handle)));
-	g_mutex_unlock (job->access_lock);
+	sem_post (&job->access_lock);
 
 	if (complete) {
 		JOB_DEBUG (("job %u done, removing from map and destroying",

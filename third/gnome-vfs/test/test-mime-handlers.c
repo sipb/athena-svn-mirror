@@ -31,6 +31,50 @@
 #include <stdio.h>
 #include <string.h>
 
+static void
+append_comma_and_scheme (gpointer scheme,
+			 gpointer user_data)
+{
+	char **string;
+
+	string = (char **) user_data;
+	if (strlen (*string) > 0) {
+		*string = g_strconcat (*string, ", ", scheme, NULL);
+	}
+	else {
+		*string = g_strdup (scheme);
+	}
+}
+
+
+static char *
+format_supported_uri_schemes_for_display (GList *supported_uri_schemes)
+{
+	char *string;
+
+	string = g_strdup ("");
+	g_list_foreach (supported_uri_schemes,
+			append_comma_and_scheme,
+			&string);
+	return string;
+}
+
+static const char *
+format_mime_application_argument_type_for_display (GnomeVFSMimeApplicationArgumentType argument_type)
+{
+	switch (argument_type) {
+	case GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS:
+		return "Always";
+		break;
+	case GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS:
+		return "No";
+	case GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES:
+		return "For non-files";
+	default:
+		g_assert_not_reached ();
+	}
+	return NULL;
+}
 
 static void
 print_application (GnomeVFSMimeApplication *application)
@@ -38,10 +82,11 @@ print_application (GnomeVFSMimeApplication *application)
         if (application == NULL) {
 	        puts ("(none)");
 	} else {
-	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\ncan_open_uris: %s\nrequires_terminal: %s\n", 
+	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\nexpects_uris: %s\nsupported_uri_schemes: %s\nrequires_terminal: %s\n", 
 			application->name, application->command, 
 			(application->can_open_multiple_files ? "TRUE" : "FALSE"),
-			(application->can_open_uris ? "TRUE" : "FALSE"),
+			format_mime_application_argument_type_for_display (application->expects_uris),
+			format_supported_uri_schemes_for_display (application->supported_uri_schemes),
 			(application->requires_terminal ? "TRUE" : "FALSE"));
 	}
 }
@@ -111,6 +156,7 @@ main (int argc, char **argv)
 	GnomeVFSMimeApplication *default_application;
 	OAF_ServerInfo *default_component;
 	GnomeVFSMimeAction *default_action;
+	const char *description;
 	GList *all_components;
 	GList *all_applications;
 	GList *short_list_components;
@@ -126,6 +172,10 @@ main (int argc, char **argv)
 
 	type = argv[1];
 	
+	description = gnome_vfs_mime_get_description (type);
+	printf ("Description: %s\n", description);
+
+
 	default_action = gnome_vfs_mime_get_default_action (type);
 	puts ("Default Action");
 	print_action (default_action);

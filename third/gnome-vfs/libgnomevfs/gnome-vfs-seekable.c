@@ -82,7 +82,7 @@ static GnomeVFSResult	do_truncate_handle 	(GnomeVFSMethod *method,
 typedef struct  {
 	/* Child chaining info */
 	GnomeVFSMethodHandle *child_handle;
-	GnomeVFSMethod       *child_method;
+	GnomeVFSMethod      *child_method;
 
 	/* Housekeeping info */
 	GnomeVFSHandle       *tmp_file;
@@ -91,12 +91,12 @@ typedef struct  {
 	gboolean              dirty;
 
 	/* Each SeekableMethodHandle has a unique wrapper method */
-	GnomeVFSMethod       *wrapper_method;
+	GnomeVFSMethod      *wrapper_method;
 } SeekableMethodHandle;
 
 #define CHECK_IF_SUPPORTED(method, what)		\
 G_STMT_START{						\
-	if (method->what == NULL)			\
+	if (!VFS_METHOD_HAS_FUNC(method, what))	\
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;	\
 }G_STMT_END
 
@@ -215,7 +215,7 @@ GnomeVFSMethodHandle *
 gnome_vfs_seek_emulate (GnomeVFSURI *uri, GnomeVFSMethodHandle *child_handle,
 			GnomeVFSOpenMode open_mode)
 {
-	GnomeVFSMethod       *m  = g_new (GnomeVFSMethod, 1);
+	GnomeVFSMethod      *m  = g_new (GnomeVFSMethod, 1);
 	SeekableMethodHandle *mh = g_new (SeekableMethodHandle, 1);
 
 	g_return_val_if_fail (m != NULL, NULL);
@@ -223,7 +223,7 @@ gnome_vfs_seek_emulate (GnomeVFSURI *uri, GnomeVFSMethodHandle *child_handle,
 	g_return_val_if_fail (uri != NULL, NULL);
 	g_return_val_if_fail (uri->method != NULL, NULL);
 
-	memcpy (m, uri->method, sizeof(GnomeVFSMethod));
+	memcpy (m, uri->method, uri->method->method_table_size);
 
         /*
 	 *  This subset of method contains those operations that we need

@@ -83,4 +83,10 @@ GnomeVFSResult	gnome_vfs_directory_visit_files_at_uri
 					 GnomeVFSDirectoryVisitFunc callback,
 					 gpointer data);
 
+GnomeVFSResult gnome_vfs_directory_list_load
+					(GList **list,
+				         const gchar *text_uri,
+				         GnomeVFSFileInfoOptions options,
+				         const GnomeVFSDirectoryFilter *filter);
+
 #endif

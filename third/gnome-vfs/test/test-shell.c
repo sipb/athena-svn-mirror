@@ -135,9 +135,9 @@ close_files (void)
 static void
 do_ls (void)
 {
-	GnomeVFSResult         result;
-	GnomeVFSDirectoryList *list;
-	GnomeVFSFileInfo      *info;
+	GnomeVFSResult result;
+	GList *list, *node;
+	GnomeVFSFileInfo *info;
 
 	result = gnome_vfs_directory_list_load (
 		&list, cur_dir, GNOME_VFS_FILE_INFO_DEFAULT,
@@ -145,9 +145,9 @@ do_ls (void)
 	if (show_if_error (result, "open directory ", cur_dir))
 		return;
 
-	for (info = gnome_vfs_directory_list_first (list);
-	     info; info = gnome_vfs_directory_list_next (list)) {
+	for (node = list; node != NULL; node = node->next) {
 		char prechar = '\0', postchar = '\0';
+		info = node->data;
 
 		if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) {
 			switch (info->type) {
@@ -196,7 +196,7 @@ do_ls (void)
 		printf ("\n");
 	}
 	
-	gnome_vfs_directory_list_destroy (list);
+	gnome_vfs_file_info_list_free (list);
 }
 
 static void
@@ -267,16 +267,18 @@ simple_regexp (const char *regexp, const char *fname)
 static gboolean
 validate_path (const char *path)
 {
-	GnomeVFSResult         result;
-	GnomeVFSDirectoryList *list;
+	GnomeVFSResult result;
+	GList *list;
 
 	result = gnome_vfs_directory_list_load (
 		&list, path, GNOME_VFS_FILE_INFO_DEFAULT,
 		NULL);
-	if (show_if_error (result, "open directory ", path))
-		return FALSE;
 
-	gnome_vfs_directory_list_destroy (list);
+	if (show_if_error (result, "open directory ", path)) {
+		return FALSE;
+	}
+
+	gnome_vfs_file_info_list_free (list);
 
 	return TRUE;
 }
@@ -284,19 +286,20 @@ validate_path (const char *path)
 static char *
 get_regexp_name (const char *regexp, const char *path, gboolean dir)
 {
-	GnomeVFSResult         result;
-	GnomeVFSDirectoryList *list;
-	GnomeVFSFileInfo      *info;
-	char                  *res = NULL;
+	GnomeVFSResult result;
+	GList *list, *node;
+	GnomeVFSFileInfo *info;
+	char *res = NULL;
 
 	result = gnome_vfs_directory_list_load (
 		&list, path, GNOME_VFS_FILE_INFO_DEFAULT,
 		NULL);
+
 	if (show_if_error (result, "open directory ", path))
 		return NULL;
 
-	for (info = gnome_vfs_directory_list_first (list);
-	     info; info = gnome_vfs_directory_list_next (list)) {
+	for (node = list; node != NULL; node = node->next) {
+		info = node->data;
 
 		if (simple_regexp (regexp, info->name)) {
 			if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) {
@@ -312,7 +315,7 @@ get_regexp_name (const char *regexp, const char *path, gboolean dir)
 			}
 		}
 	}
-	gnome_vfs_directory_list_destroy (list);
+	gnome_vfs_file_info_list_free (list);
 
 	return res;
 }

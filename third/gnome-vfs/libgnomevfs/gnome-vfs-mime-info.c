@@ -1021,14 +1021,37 @@ gnome_vfs_mime_set_value (const char *mime_type, const char *key, const char *va
 }
 
 
+static gboolean
+is_mime_type_deleted (const char *mime_type)
+{
+	const char *deleted_key;
+
+	deleted_key = gnome_vfs_mime_get_registered_mime_type_key (mime_type, DELETED_KEY);
+	return deleted_key != NULL && strcmp (deleted_key, DELETED_VALUE) == 0;
+}
+
+static const char *
+get_value_from_hash_table (GHashTable *hash_table, const char *mime_type, const char *key)
+{
+	GnomeMimeContext *context;
+	char *value;
+
+	value = NULL;
+	context = g_hash_table_lookup (hash_table, mime_type);
+	if (context != NULL) {
+		value = g_hash_table_lookup (context->keys, key);
+	}
+	return value;
+}
+
 static const char *
 get_value_real (const char *mime_type, 
 		const char *key, 
 		GHashTable *user_hash_table, 
 		GHashTable *system_hash_table)
 {
-	char *value, *generic_type, *p;
-	GnomeMimeContext *context;
+	const char *value;
+	char *generic_type, *p;
 	
 	g_return_val_if_fail (key != NULL, NULL);
 	g_assert (user_hash_table != NULL);
@@ -1037,50 +1060,41 @@ get_value_real (const char *mime_type,
 	if (mime_type == NULL) {
 		return NULL;
 	}
+	
 	g_return_val_if_fail (!does_string_contains_caps (mime_type), 
 			      NULL);
 
 	reload_if_needed ();
+
+	if (strcmp (key, DELETED_KEY) != 0 && is_mime_type_deleted (mime_type)) {
+		return NULL;
+	}
+
+	value = get_value_from_hash_table (user_hash_table, mime_type, key);
+	if (value != NULL) {
+		return value;
+	}
 	
-	context = g_hash_table_lookup (user_hash_table, mime_type);
-	if (context != NULL) {
-		value = g_hash_table_lookup (context->keys, key);
-		if (value != NULL) {
-			return value;
-		}
+	value = get_value_from_hash_table (system_hash_table, mime_type, key);
+	if (value != NULL) {
+		return value;
 	}
-
-	context = g_hash_table_lookup (system_hash_table, mime_type);
-	if (context != NULL) {
-		value = g_hash_table_lookup (context->keys, key);
-		if (value != NULL) {
-			return value;
-		}
-	}
-
+	
 	generic_type = g_strdup (mime_type);
 	p = strchr (generic_type, '/');
 	if (p != NULL)
 		*(p+1) = '\0';
 	
-	context = g_hash_table_lookup (user_hash_table, generic_type);
-	if (context != NULL) {
-		value = g_hash_table_lookup (context->keys, key);
-		if (value != NULL) {
-			g_free (generic_type);
-			return value;
-		}
+	value = get_value_from_hash_table (user_hash_table, generic_type, key);
+	if (value != NULL) {
+		return value;
 	}
-
-	context = g_hash_table_lookup (system_hash_table, generic_type);
-	if (context != NULL) {
-		value = g_hash_table_lookup (context->keys, key);
-		if (value != NULL) {
-			g_free (generic_type);
-			return value;
-		}
+	
+	value = get_value_from_hash_table (system_hash_table, generic_type, key);
+	if (value != NULL) {
+		return value;
 	}
-
+	
 	g_free (generic_type);
 
 	return NULL;
@@ -1468,7 +1482,6 @@ get_key_name (gpointer key, gpointer value, gpointer user_data)
 	char *name;
 	GList **list = user_data;
 	GList *duplicate;
-	const char *deleted;
 	
 	if (value == NULL || key == NULL) {
 		return;
@@ -1480,9 +1493,7 @@ get_key_name (gpointer key, gpointer value, gpointer user_data)
 		return;
 	}
 
-	deleted = gnome_vfs_mime_get_registered_mime_type_key (context->mime_type,
-							       DELETED_KEY);
-	if (deleted != NULL && strcmp (deleted, DELETED_VALUE) == 0) {
+	if (is_mime_type_deleted (context->mime_type)) {
 		return;
 	}
 

@@ -49,8 +49,8 @@
 
    This function implements the following regexp: (whitespace for clarity)
 
-   ( ( ([^:@]*) (:[^@]*)? @ )? ([^/:]+) (:([0-9]*)?) )?  (/.*)?
-   ( ( ( user ) (  pw  )?   )?   (host)    (port)?   )? (path <return value>)?
+   ( ( ([^:@/]*) (:[^@/]*)? @ )? ([^/:]*) (:([0-9]*)?) )?  (/.*)?
+   ( ( ( user  ) (  pw  )?   )?   (host)    (port)?   )? (path <return value>)?
 
   It returns NULL if neither <host> nor <path> could be matched.
 
@@ -93,7 +93,7 @@ typedef struct {
 
 UriStrspnSet uri_strspn_sets[] = {
 	{":@" GNOME_VFS_URI_PATH_STR, FALSE, ""},
-	{"@", FALSE, ""},
+	{"@" GNOME_VFS_URI_PATH_STR, FALSE, ""},
 	{":" GNOME_VFS_URI_PATH_STR, FALSE, ""}
 };
 
@@ -140,6 +140,7 @@ split_toplevel_uri (const gchar *path, guint path_len,
 	const char *path_end;
 	const char *cur_tok_start;
 	const char *cur;
+	const char *next_delimiter;
 	char *ret;
 	gboolean success;
 
@@ -166,10 +167,17 @@ split_toplevel_uri (const gchar *path, guint path_len,
 	cur_tok_start = path;
 	cur = uri_strspn_to (cur_tok_start, URI_DELIMITER_ALL_SET, path_end);
 
+	if (cur != NULL) {
+		next_delimiter = uri_strspn_to (cur, URI_DELIMITER_USER_SET, path_end);
+	} else {
+		next_delimiter = NULL;
+	}
+	
 	if (cur != NULL
 		&& (*cur == '@'
-		    || uri_strspn_to (cur, URI_DELIMITER_USER_SET, path_end) != NULL)) {
-		/* *cur == ':' or '@' and string contains @ */
+		    || (next_delimiter != NULL && *next_delimiter != '/' ))) {
+
+		/* *cur == ':' or '@' and string contains a @ before a / */
 
 		if (uri_strlen_to (cur_tok_start, cur) > 0) {
 			*user_return = uri_strdup_to (cur_tok_start,cur);
@@ -227,7 +235,7 @@ split_toplevel_uri (const gchar *path, guint path_len,
 
 		port = 0;
 
-		for ( ; cur < path_end && '\0' != *cur && isdigit (*cur); cur++) {
+		for ( ; cur < path_end && '\0' != *cur && isdigit ((guchar) *cur); cur++) {
 			port *= 10;
 			port += *cur - '0'; 
 		}
@@ -252,10 +260,6 @@ split_toplevel_uri (const gchar *path, guint path_len,
 
 		if (uri_strlen_to (cur_tok_start, cur) > 0) {
 			*host_return = uri_strdup_to (cur_tok_start, cur);
-		} else if (*user_return != NULL || *password_return != NULL ) {
-			/* If we got a user / password but no host, that's an error */
-			success = FALSE;
-			goto done;	
 		}
 
 		cur_tok_start = cur;
@@ -269,11 +273,12 @@ split_toplevel_uri (const gchar *path, guint path_len,
 
 	success = TRUE;
 
+done:
 	if (*host_return != NULL) {
 		g_strdown (*host_return);
 
 	}
-done:
+
 	/* If we didn't complete our mission, discard all the partials */
 	if (!success) {
 		g_free (*host_return);
@@ -844,7 +849,7 @@ gnome_vfs_uri_is_local (const GnomeVFSURI *uri)
 	 * That's why we fail here. If we decide that it's legal,
 	 * then we can change this into an if statement.
 	 */
-	g_return_val_if_fail (uri->method->is_local != NULL, FALSE);
+	g_return_val_if_fail (VFS_METHOD_HAS_FUNC (uri->method, is_local), FALSE);
 
 	return uri->method->is_local (uri->method, uri);
 }
@@ -922,6 +927,10 @@ gnome_vfs_uri_get_parent (const GnomeVFSURI *uri)
 			new_uri = gnome_vfs_uri_dup (uri);
 			g_free (new_uri->text);
 			new_uri->text = new_uri_text;
+
+			/* The parent doesn't have the child's fragment */
+			g_free (new_uri->fragment_id);
+			new_uri->fragment_id = NULL;
 			
 			return new_uri;
 		}

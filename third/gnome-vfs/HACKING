@@ -1,7 +1,7 @@
 Please send patches to gnome-vfs@helixcode.com with detailed
 ChangeLog entires for review before committing, and get approval from
 Pavel or Ettore. Please send to the list and not to anyone directly so
-everyone has the opportunity to comment. 
+all Gnome VFS hackers have the opportunity to comment. 
 
 Please do not check in changes with an approval.
 
@@ -20,9 +20,11 @@ Gnome VFS uses the GNOME Programming Guidelines with 8-space tabs and a
 
 Make sure all of your new code compiles without any warnings.
 
-Do not turn any warnings off, do not turn -Werror of in configure.in. If you have
+Do not turn any warnings off, do not turn -Werror off in configure.in. If you have
 problems with the existing warnings building on your environment, please contact the
 maintainers.
+
+Make sure your changes are properly tested, ammong other things run a "make check".
 
 Use "FIXME" to augument code that needs more work, that is missing functionality or
 in general needs attention. Include a comprehensive comment explaining what is 

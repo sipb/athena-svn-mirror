@@ -205,46 +205,61 @@ AC_DEFUN(AM_MAINTAINER_MODE,
 # serial 1 AC_PROG_XML_I18N_TOOLS
 AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
 [
-# Always use our own xml-i18n-tools.
-
-XML_I18N_EXTRACT='$(top_srcdir)/xml-i18n-extract'
-AC_SUBST(XML_I18N_EXTRACT)dnl
-
-XML_I18N_MERGE='$(top_srcdir)/xml-i18n-merge'
-AC_SUBST(XML_I18N_MERGE)dnl
-
-XML_I18N_UPDATE='$(top_srcdir)/xml-i18n-update'
-AC_SUBST(XML_I18N_UPDATE)dnl
 
 dnl This is a hack - we use the expansion of AC_SUBST instead of
 dnl AC_SUBST itself to avoid automake putting 
 dnl XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
 dnl in all the Makefile.in's
-XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
+XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_OAF_RULE@%[$]XML_I18N_MERGE_OAF_RULE%g
 AC_DIVERT_POP()dnl
 
-dnl This is a hack - we use the expansion of AC_SUBST instead of
-dnl AC_SUBST itself to avoid automake putting
-dnl XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-dnl in all the Makefile.in's
-XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
+dnl same deal
+XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_KEYS_RULE@%[$]XML_I18N_MERGE_KEYS_RULE%g
 AC_DIVERT_POP()dnl
 
-dnl This is a hack - we use the expansion of AC_SUBST instead of   
-dnl AC_SUBST itself to avoid automake putting
-dnl XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-dnl in all the Makefile.in's
-XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
+dnl same deal
+XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_DESKTOP_RULE@%[$]XML_I18N_MERGE_DESKTOP_RULE%g
 AC_DIVERT_POP()dnl
+
+# Always use our own xml-i18n-tools.
+XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
+AC_SUBST(XML_I18N_EXTRACT)dnl
+
+XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
+AC_SUBST(XML_I18N_MERGE)dnl
+
+XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
+AC_SUBST(XML_I18N_UPDATE)dnl
+
+AC_PATH_PROG(XML_I18N_TOOLS_PERL, perl)
+if test -z "$XML_I18N_TOOLS_PERL"; then
+   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
+fi
+if test -z "`$XML_I18N_TOOLS_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
+fi
+
+dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
+dnl  AC_OUTPUT
+AC_OUTPUT_COMMANDS([
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-extract.in > xml-i18n-extract;
+chmod ugo+x xml-i18n-extract;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-merge.in > xml-i18n-merge;
+chmod ugo+x xml-i18n-merge;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-update.in > xml-i18n-update;
+chmod ugo+x xml-i18n-update;
+], XML_I18N_TOOLS_PERL=${XML_I18N_TOOLS_PERL})
 
 # Redirect the config.log output again, so that the ltconfig log is not
 # clobbered by the next message.
@@ -1458,7 +1473,7 @@ AC_DEFUN(AM_FUNC_ERROR_AT_LINE,
 
 dnl See whether we need a declaration for a function.
 dnl GCC_NEED_DECLARATION(FUNCTION [, EXTRA-HEADER-FILES])
-AC_DEFUN(GCC_NEED_DECLARATION,
+AC_DEFUN([GCC_NEED_DECLARATION],
 [AC_MSG_CHECKING([whether $1 must be declared])
 AC_CACHE_VAL(gcc_cv_decl_needed_$1,
 [AC_TRY_COMPILE([
@@ -1491,7 +1506,7 @@ fi
 
 dnl Check multiple functions to see whether each needs a declaration.
 dnl GCC_NEED_DECLARATIONS(FUNCTION... [, EXTRA-HEADER-FILES])
-AC_DEFUN(GCC_NEED_DECLARATIONS,
+AC_DEFUN([GCC_NEED_DECLARATIONS],
 [for ac_func in $1
 do
 GCC_NEED_DECLARATION($ac_func, $2)
@@ -1530,7 +1545,7 @@ AC_DEFUN([GNOME_PTHREAD_CHECK],[
 
 # serial 5
 
-AC_DEFUN(AM_GNOME_WITH_NLS,
+AC_DEFUN([AM_GNOME_WITH_NLS],
   [AC_MSG_CHECKING([whether NLS is requested])
     dnl Default is enabled NLS
     AC_ARG_ENABLE(nls,
@@ -1728,7 +1743,7 @@ AC_DEFUN(AM_GNOME_WITH_NLS,
     AC_SUBST(POSUB)
   ])
 
-AC_DEFUN(AM_GNOME_GETTEXT,
+AC_DEFUN([AM_GNOME_GETTEXT],
   [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
    AC_REQUIRE([AC_PROG_CC])dnl
    AC_REQUIRE([AC_PROG_RANLIB])dnl
@@ -1991,7 +2006,7 @@ AC_ARG_ENABLE(gconftest, [  --disable-gconftest       Do not try to compile and 
 dnl
 dnl Check for struct linger
 dnl
-AC_DEFUN(AC_STRUCT_LINGER, [
+AC_DEFUN([AC_STRUCT_LINGER], [
 av_struct_linger=no
 AC_MSG_CHECKING(struct linger is available)
 AC_TRY_RUN([

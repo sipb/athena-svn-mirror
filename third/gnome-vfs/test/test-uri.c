@@ -3,6 +3,7 @@
 /* test-mime.c - Test program for the GNOME Virtual File System.
 
    Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -337,6 +338,15 @@ test_uri_host_port (const char *input,
 }
 
 
+#define VERIFY_STRING_RESULT(function, expected) \
+	G_STMT_START {											\
+		char *result = function; 								\
+		if (!((result == NULL && expected == NULL)						\
+		      || (result != NULL && expected != NULL && strcmp (result, (char *)expected) == 0))) {	\
+			test_failed ("%s: returned '%s' expected '%s'", #function, result, expected);	\
+		}											\
+	} G_STMT_END
+
 int
 main (int argc, char **argv)
 {
@@ -388,6 +398,7 @@ main (int argc, char **argv)
 	test_make_canonical_path ("a/../../d", "../d");
 	test_make_canonical_path ("a/b/.././.././c", "c");
 	test_make_canonical_path ("a/.././.././b/c", "../b/c");
+	test_make_canonical_path ("\\", "\\");
 
 	test_uri_to_string ("", "NULL", GNOME_VFS_URI_HIDE_NONE);
 
@@ -432,6 +443,13 @@ main (int argc, char **argv)
 	test_uri_host_port ("http://yakk:womble@www.eazel.com:42/blah/", 42);
 	test_uri_part ("http://yakk:womble@www.eazel.com:42/blah/", "/blah/", gnome_vfs_uri_get_path );
 
+	test_uri_part ("http://foo.com/query?email=user@host", "/query?email=user@host", gnome_vfs_uri_get_path);
+	test_uri_part ("http://user@host:42/query?email=user@host", "host", gnome_vfs_uri_get_host_name);
+	test_uri_part ("http://@:/path", "NULL", gnome_vfs_uri_get_host_name);
+	test_uri_part ("http://@::/path", "NULL", gnome_vfs_uri_get_host_name);
+	test_uri_part ("http://::/path", "NULL", gnome_vfs_uri_get_host_name);
+	test_uri_part ("http://@pass/path", "pass", gnome_vfs_uri_get_host_name);
+
 	test_uri_parent ("", "URI NULL");
 	test_uri_parent ("http://www.eazel.com", "NULL");
 	test_uri_parent ("http://www.eazel.com/", "NULL");
@@ -444,6 +462,7 @@ main (int argc, char **argv)
 	test_uri_parent ("FILE://", "NULL");
 	test_uri_parent ("man:as", "NULL");
 	test_uri_parent ("pipe:gnome-info2html2 as", "NULL");
+	test_uri_parent ("file:///my/document.html#fragment", "file:///my");
 
 	test_uri_has_parent ("", "URI NULL");
 	test_uri_has_parent ("http://www.eazel.com", "FALSE");
@@ -497,7 +516,15 @@ main (int argc, char **argv)
 	test_make_canonical ("eazel-services:///&", "eazel-services:///&");
 	test_make_canonical ("eazel-services:///x", "eazel-services:///x");
 
+	test_make_canonical ("eazel-install://anonymous@/product_name=gnucash", "eazel-install://anonymous@/product_name%3Dgnucash");
+	test_make_canonical ("eazel-install://:password@/product_name=gnucash", "eazel-install://:password@/product_name%3Dgnucash");
+
+	test_make_canonical ("http://www.eazel.com/query?email=email@eazel.com", "http://www.eazel.com/query?email=email@eazel.com");
+
 	/* test proper case-sensitivity handling */
+	test_make_canonical ("HTTP://WWW.ZOO.COM", "http://www.zoo.com");
+	test_make_canonical ("HTTP://WWW.ZOO.COM/", "http://www.zoo.com/");
+	test_make_canonical ("HTTP://WWW.ZOO.COM/ED", "http://www.zoo.com/ED");
 	test_uri_match ("http://www.zoo.com/ed", "HTTP://WWW.ZOO.COM/ed", TRUE);
 	test_uri_match ("http://www.zoo.com/ed", "http://www.zoo.com/ED", FALSE);
 
@@ -559,9 +586,13 @@ main (int argc, char **argv)
 	test_uri_to_string ("http:", "http:", GNOME_VFS_URI_HIDE_NONE);
 	test_uri_to_string ("file:/", "file:///", GNOME_VFS_URI_HIDE_NONE);
 
-	/* FIXME bugzilla.eazel.com 2803: Do we really want to add the
-         * "//" in this case?
+	/* FIXME bugzilla.eazel.com 6022: At least for http, we don't
+         * want to do canonicalizing after the ?. All these results
+         * are presumably wrong because of that.
 	 */
+	test_uri_to_string ("http://www.eazel.com?///xxx", "http://www.eazel.com?/xxx", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_parent ("http://www.eazel.com?///xxx", "http://www.eazel.com?/");
+	test_uri_parent ("http://www.eazel.com/dir?xxx/yyy", "http://www.eazel.com/dir?xxx");
 
 	test_uri_to_path ("pipe:gnome-db2html2%20'%2Fgnome%2Fshare%2Fgnome%2Fhelp"
 			  "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml", 
@@ -574,6 +605,16 @@ main (int argc, char **argv)
 			    "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml",
 			    GNOME_VFS_URI_HIDE_NONE);
 
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri (""), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/#"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:/path"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html"), "/my/document.html");
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html#fragment"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path"), "/my/docu ment#/path");
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path/foo.html.gz#gunzip:///#fragment"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/my/document.html"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("http://my/document.html"), NULL);
+	
 	/* Report to "make check" on whether it all worked or not. */
 	return at_least_one_test_failed ? EXIT_FAILURE : EXIT_SUCCESS;
 }

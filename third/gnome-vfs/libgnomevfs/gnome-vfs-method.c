@@ -33,6 +33,8 @@
 #include <glib.h>
 #include <gmodule.h>
 
+#include "gnome-vfs-types.h"
+#include "gnome-vfs-private.h"
 #include "gnome-vfs-module.h"
 
 
@@ -185,7 +187,7 @@ load_module (const gchar *module_name, const char *method_name, const char *args
 	
 	if ((init_function == NULL || shutdown_function == NULL) &&
 	    (transform_function == NULL)) {
-		g_warning ("module '%s' has no init function", module_name);
+		g_warning ("module '%s' has no init function; may be an out-of-date module", module_name);
 		return;
 	}
 
@@ -199,27 +201,38 @@ load_module (const gchar *module_name, const char *method_name, const char *args
 
 	if (temp_method != NULL) {
 		/* Some basic checks */
-		if (temp_method->open == NULL) {
+		if (temp_method->method_table_size == 0) {
+			g_warning ("module '%s' has 0 table size", module_name);
+			return;
+		} else if (temp_method->method_table_size > (0x100 * sizeof (GnomeVFSMethod))) {
+			g_warning ("module '%s' has unreasonable table size, perhaps it is using the old GnomeVFSMethod struct?", module_name);
+			return;
+		} else if (!VFS_METHOD_HAS_FUNC(temp_method, open)) {
 			g_warning ("module '%s' has no open fn", module_name);
 			return;
 #if 0
-		} else if (temp_method->create == NULL) {
+		} else if (!VFS_METHOD_HAS_FUNC(temp_method, create)) {
 			g_warning ("module '%s' has no create fn", module_name);
 			return;
 #endif
-		} else if (temp_method->is_local == NULL) {
+		} else if (!VFS_METHOD_HAS_FUNC(temp_method, is_local)) {
 			g_warning ("module '%s' has no is-local fn", module_name);
 			return;
 		}
 #if 0
-		else if (temp_method->get_file_info == NULL) {
+		else if (!VFS_METHOD_HAS_FUNC(temp_method, get_file_info) {
 			g_warning ("module '%s' has no get-file-info fn", module_name);
 			return;
 		}
 #endif
 
 		/* More advanced assumptions.  */
-		if (temp_method->tell != NULL && temp_method->seek == NULL) {
+		if (VFS_METHOD_HAS_FUNC(temp_method, tell) && !VFS_METHOD_HAS_FUNC(temp_method, seek)) {
+			g_warning ("module '%s' has tell and no seek", module_name);
+			return;
+		}
+
+		if (VFS_METHOD_HAS_FUNC(temp_method, seek) && !VFS_METHOD_HAS_FUNC(temp_method, tell)) {
 			g_warning ("module '%s' has seek and no tell", module_name);
 			return;
 		}
