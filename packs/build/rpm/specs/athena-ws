@@ -248,6 +248,14 @@ if [ -f /etc/X11/XF86Config ]; then
   mv /etc/X11/XF86Config.new /etc/X11/XF86Config
 fi
 
+# Enable loading of freetype and type1 font handlers in the X configuration.
+if [ -f /etc/X11/XF86Config-4 ]; then
+  sed -e 's/#[[:space:]]*\(Load[[:space:]]\+"freetype"\)/\1/' \
+      -e 's/#[[:space:]]*\(Load[[:space:]]\+"type1"\)/\1/' \
+      /etc/X11/XF86Config-4 > /etc/X11/XF86Config-4.new
+  mv /etc/X11/XF86Config-4.new /etc/X11/XF86Config-4
+fi
+
 # kernel-headers-2.2.16-3 from Red Hat moved /usr/include/{linux,asm}
 # from the file list so the post script.  Since new versions of RPMs
 # are installed before old ones are uninstalled, the uninstallation of
