@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.23 1993-05-10 13:36:38 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.24 1993-06-29 15:10:48 vrt Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.23 1993-05-10 13:36:38 vrt Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.24 1993-06-29 15:10:48 vrt Exp $";
 #endif
 
 /*
@@ -1537,8 +1537,8 @@ setty()
 		exit(1);
 	}
 #else
-	if (ioctl(pfd, TCGETA, (char *)&ttybuf) < 0) {
-		syslog(LOG_ERR, "%s: ioctl(TCGETA): %m", printer);
+	if (tcgetattr(pfd, &ttybuf) < 0) {
+		syslog(LOG_ERR, "%s: tcgetattr: %m", printer);
 		exit(1);
 	}
 #endif
@@ -1570,9 +1570,9 @@ setty()
 #else
 	ttybuf.c_cflag &= ~FC;
 	ttybuf.c_cflag |= FS;
-	if (ioctl(pfd, TCSETA, (char *)&ttybuf) < 0) {
-	        syslog(LOG_INFO, "SETA failed..");
-		syslog(LOG_ERR, "%s: ioctl(TCSETA): %m", printer);
+	if (tcsetattr(pfd, TCSANOW,&ttybuf) < 0) {
+	        syslog(LOG_INFO, "tcsetattr failed..");
+		syslog(LOG_ERR, "%s: tcsetattr: %m", printer);
 		exit(1);
 	}
 #endif /* POSIX */
