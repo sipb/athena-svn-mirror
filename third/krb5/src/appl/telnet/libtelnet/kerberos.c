@@ -426,7 +426,7 @@ kerberos4_is(ap, data, cnt)
 
 			if (!al_local_acct) {
 				status = al_acct_create(UserNameRequested,
-							NULL, getpid(), 0, 0,
+							getpid(), 0, 0,
 							&warnings);
 				if (status == AL_WARNINGS) {
 					int i;

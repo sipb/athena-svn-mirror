@@ -1259,7 +1259,7 @@ do_krb_login(host_addr, hostname)
 	fatal(netf, "You are not authorized to log in here remotely");
 
     if (!local_acct)
-	al_acct_create(lusername, NULL, getpid(), 0, 0, NULL);
+	al_acct_create(lusername, getpid(), 0, 0, NULL);
 
 #if (defined(ALWAYS_V5_KUSEROK) || !defined(KRB5_KRB4_COMPAT))
 	/* krb5_kuserok returns 1 if OK */

@@ -298,9 +298,9 @@ extern int setenv(char *, char *, int);
 int	timeout = 300;
 
 #if 0
-char term[64], *hostname, *username, *namep = NULL;
+char term[64], *hostname, *username;
 #else
-char term[64], *username, *namep = NULL;
+char term[64], *username;
 #endif
 
 
@@ -476,7 +476,7 @@ static int unix_needs_passwd ()
 static int unix_passwd_okay (pass)
     char *pass;
 {
-    char user_pwcopy[9];
+    char user_pwcopy[9], *namep;
     char *crypt ();
 
     assert (pwd != 0);
@@ -1300,7 +1300,7 @@ int main(argc, argv)
 
 	/* Tentatively create the account prior to authentication. */
 	if (!local_acct)
-	    al_acct_create(username, NULL, getpid(), 0, 0, NULL);
+	    al_acct_create(username, getpid(), 0, 0, NULL);
 
 	lookup_user(username);	/* sets pwd */
 
@@ -1502,7 +1502,7 @@ int main(argc, argv)
 #endif
 
 	if (!local_acct) {
-		retval = al_acct_create(username, namep, getpid(),
+		retval = al_acct_create(username, getpid(),
 					got_v4_tickets, 1, &warnings);
 		if (retval != AL_SUCCESS && retval != AL_WARNINGS) {
 			printf("%s!\n", al_strerror(retval, &errmem));

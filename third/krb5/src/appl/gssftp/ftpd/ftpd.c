@@ -754,7 +754,7 @@ user(name)
 		return;
 	}
 	if (!al_local_acct) {
-		status = al_acct_create(name, NULL, getpid(), 0, 0, NULL);
+		status = al_acct_create(name, getpid(), 0, 0, NULL);
 		if (status != AL_SUCCESS && status != AL_WARNINGS) {
 		    reply(530, "User %s access denied: %s", name,
 			  al_strerror(status, &errmem));
@@ -1151,7 +1151,7 @@ login(passwd, logincode)
 	char *errmem;
 
 	try_afscall(setpag);
-	status = al_acct_create(pw->pw_name, NULL, getpid(), 1, 0, &warnings);
+	status = al_acct_create(pw->pw_name, getpid(), 1, 0, &warnings);
 	if (status != AL_SUCCESS) {
 		if (status == AL_WARNINGS) {
 			int i;

@@ -2016,7 +2016,7 @@ recvauth(netfd, peersin, valid_checksum)
 
     if (!local_acct) {
 	acctpid = getpid();
-	al_acct_create(locuser, NULL, acctpid, 0, 0, NULL);
+	al_acct_create(locuser, acctpid, 0, 0, NULL);
     }
 
     if (inbuf.length) { /* Forwarding being done, read creds */

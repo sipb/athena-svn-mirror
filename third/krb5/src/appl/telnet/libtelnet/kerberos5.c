@@ -751,7 +751,7 @@ kerberos5_status(ap, name, level)
 		if (!al_local_acct) {
 			if (k5_haveauth)
 				try_afscall(setpag);
-			status = al_acct_create(UserNameRequested, NULL,
+			status = al_acct_create(UserNameRequested,
 						getpid(), k5_haveauth, 0,
 						&warnings);
 			if (status == AL_WARNINGS) {

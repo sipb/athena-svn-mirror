@@ -778,8 +778,8 @@ do_exec(Session *s, const char *command)
 	  {
 	    struct passwd *pw;
 
-	    status = al_acct_create(s->authctxt->user, NULL, getpid(),
-				    havecred, 1, &session_warnings);
+	    status = al_acct_create(s->authctxt->user, getpid(), havecred, 1,
+				    &session_warnings);
 	    if (status != AL_SUCCESS && status != AL_WARNINGS)
 	      packet_disconnect("%s\n", al_strerror(status, &errmem));
 	    /*

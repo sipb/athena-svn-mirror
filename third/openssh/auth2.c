@@ -205,8 +205,7 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 		  }
 		if (!is_local_acct)
 		  {
-		    status = al_acct_create(user, NULL, getpid(), 0, 0, 
-					    NULL);
+		    status = al_acct_create(user, getpid(), 0, 0, NULL);
 		    if (status != AL_SUCCESS && debug_flag)
 		      {
 			err = al_strerror(status, &errmem);

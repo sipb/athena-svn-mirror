@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.14 2003-10-08 12:15:27 zacheiss Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.15 2004-05-16 21:30:19 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -182,7 +182,6 @@ char *dologin(char *user, char *passwd, int option, char *script,
   struct utimbuf times;
   long salt;
   char saltc[2], c;
-  char encrypt[PASSWORD_LEN + 1];
   char **environment;
   char fixed_tty[16], *p;
 #ifdef NANNY
@@ -303,24 +302,6 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	psetenv("KRB5CCNAME", tkt5_file, 1);
 #endif
 
-	/* Save encrypted password to put in local password file. We do
-	 * this ahead of time so that we can be sure of zeroing the
-	 * password below.
-	 */
-	salt = 9 * getpid();
-	saltc[0] = salt & 077;
-	saltc[1] = (salt>>6) & 077;
-	for (i = 0; i < 2 ; i++)
-	  {
-	    c = saltc[i] + '.';
-	    if (c > '9')
-	      c += 7;
-	    if (c > 'Z')
-	      c += 6;
-	    saltc[i] = c;
-	  }
-	strcpy(encrypt, crypt(passwd, saltc));	
-
 	msg = get_tickets(user, passwd);
 	memset(passwd, 0, strlen(passwd));
 
@@ -386,7 +367,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
 
   if (!local_acct)
     {
-      status = al_acct_create(user, encrypt, al_pid, !msg, 1, &warnings);
+      status = al_acct_create(user, al_pid, !msg, 1, &warnings);
       if (status != AL_SUCCESS)
 	{
 	  switch(status)
