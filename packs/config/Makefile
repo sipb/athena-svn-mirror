@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.24 1999-04-12 20:26:59 ghudson Exp $
+# $Id: Makefile,v 1.25 1999-05-20 21:14:28 mwhitson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -21,6 +21,7 @@ install:
 	install -c -m 0644 Dash.fallback ${DESTDIR}${ATHLIBDIR}
 	install -c -m 0644 athinfo.access ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 ftpusers ${DESTDIR}${ETCDIR}
+	install -c -m 0644 ifhp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 krb.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb.realms ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb5.conf ${DESTDIR}${ETCDIR}
