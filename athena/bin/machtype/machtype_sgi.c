@@ -2,13 +2,11 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.14 1999-01-22 23:11:36 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.15 1999-04-30 19:24:28 ghudson Exp $
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <strings.h>
-#include <nlist.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -17,151 +15,202 @@
 #include "machtype.h"
 
 #ifdef sgi
-#include <sys/cpu.h>
 #include <invent.h>
+#include <sys/sbd.h>
 void do_INV_SCSI(inventory_t *, int);
 void do_INV_SCSICONTROL(inventory_t *, int);
 void do_INV_DISK(inventory_t *, int);
 void do_INV_PROCESSOR(inventory_t *,int);
 void do_INV_GRAPHICS(inventory_t *, int);
 void do_INV_CAM(inventory_t *, int);
+void do_INV_CPUCHIP(inventory_t *, int);
 #endif
-
-
-
-#define NL_NF(nl) ((nl).n_type == 0)
-
-#define KERNEL "/unix"
-#define MEMORY "/dev/kmem"
-
-struct nlist nl[] = {
-#define X_cpu 0
-	{ "cputype" },
-#define X_maxmem 1
-	{ "maxmem" },
-#define X_physmem 2
-	{ "physmem" },
-#define X_nscsi 3
-	{ "_nscsi_devices" },
-	{ "" },
-};
-
 
 void do_machtype(void)
 {
-    puts("sgi");
+  puts("sgi");
 }
 
 void do_cpu(int verbose)
 {
-inventory_t *inv;
-int done=0;
-	(void)setinvent();
-        inv = getinvent();
-        while ((inv != NULL) && !done) {
-		if ( inv->inv_class == 1) {
-			do_INV_PROCESSOR(inv,verbose);
-		}
-                inv = getinvent();
-        }
+  inventory_t *inv;
+  setinvent();
+  inv = getinvent();
+  while (inv) {
+    if (inv->inv_class == INV_PROCESSOR) {
+      do_INV_PROCESSOR(inv, verbose);
+    }
+    inv = getinvent();
+  }
+}
+
+void do_INV_CPUCHIP(inventory_t* i, int verbose)
+{
+  char* pu_short = (i->inv_type == INV_CPUCHIP)?"CPU":"FPU";
+  char* pu_long = (i->inv_type == INV_CPUCHIP)?
+    "Processor Chip":"Floating Point Coprocessor";
+  int chip = (i->inv_state & C0_IMPMASK) >> C0_IMPSHIFT;
+  int major = (i->inv_state & C0_MAJREVMASK) >> C0_MAJREVSHIFT;
+  int minor = (i->inv_state & C0_MINREVMASK) >> C0_MINREVSHIFT;
+  char* s_chip = 0;
+  switch(chip)
+    {
+    case C0_IMP_R2000:
+      if (major >= C0_MAJREVMIN_R2000A)
+	s_chip = "R2000A";
+      else
+	s_chip = "R2000";
+      break;
+    case C0_IMP_R2000A:
+      if (major >= C0_MAJREVMIN_R3000A)
+	s_chip = "R3000A";
+      else if (major >= C0_MAJREVMIN_R3000)
+	s_chip = "R3000";
+      else
+	s_chip = "R2000A";
+      break;
+    case C0_IMP_R6000:
+      s_chip = "R6000";
+      break;
+    case C0_IMP_R4000:
+      if (major >= C0_MAJREVMIN_R4400)
+	s_chip = "R4400";
+      else
+	s_chip = "R4000";
+      break;
+    case C0_IMP_R6000A:
+      s_chip = "R6000A";
+      break;
+    case C0_IMP_R10000:
+      s_chip = "R10000";
+      break;
+    case C0_IMP_R8000:
+      s_chip = "R8000";
+      break;
+    case C0_IMP_R4600:
+      s_chip = "R4600";
+      break;
+    case C0_IMP_R4700:
+      s_chip = "R4700";
+      break;
+    case C0_IMP_R4650:
+      s_chip = "R4650";
+      break;
+    case C0_IMP_R5000:
+      s_chip = "R5000";
+      break;
+    default:
+      s_chip = 0;
+      break;
+    }
+  if (s_chip)
+    printf("%s: MIPS %s %s Revision: %d.%d\n", 
+	   pu_short, s_chip, pu_long, major, minor);
+  else
+    printf("%s: unknown (0x%x) %s Revision: %d.%d\n", 
+	   pu_short, chip, pu_long, major, minor);
 }
 
 void do_INV_PROCESSOR(inventory_t *i,int verbose)
 {
-if (i->inv_type == INV_CPUBOARD )  {
-	switch (i->inv_state) {
-	case INV_IP19BOARD:
-		puts(verbose ? "SGI IP19": "IP19");
-		break;
-	case INV_IP20BOARD:
-		puts(verbose ? "SGI IP20": "IP20");
-		break;
-	case INV_IP21BOARD:
-		puts(verbose ? "SGI IP21": "IP21");
-		break;
-	case INV_IP22BOARD:
-		puts(verbose ? "SGI IP22": "IP22");
-		break;
-	case INV_IP25BOARD:
-		puts(verbose ? "SGI IP25": "IP25");
-		break;
-	case INV_IP26BOARD:
-		puts(verbose ? "SGI IP26": "IP26");
-		break;
-	case INV_IP27BOARD:
-		puts(verbose ? "SGI IP27": "IP27");
-		break;
-	case INV_IP28BOARD:
-		puts(verbose ? "SGI IP28": "IP28");
-		break;
-	case INV_IP30BOARD:
-		puts(verbose ? "SGI IP30": "IP30");
-		break;
-	case INV_IP32BOARD:
-		puts(verbose ? "SGI IP32": "IP32");
-		break;
-	case INV_IP33BOARD:
-		puts(verbose ? "SGI IP33": "IP33");
-		break;
-	case INV_IPMHSIMBOARD:
-		puts(verbose ? "SGI IPMHSIM": "IPMHSIM");
-		break;
-	default:
-		if(verbose)
-			printf("Unknown SGI type %d\n", i->inv_state);
-		else
-			puts("SGI???");
-	}
-	} else if (verbose) {
-		if (i->inv_type == INV_CPUCHIP) {
-			fprintf(stdout,"CPU: MIPS R4600\n");
-	} else {
-			fprintf(stdout,"FPU:MIPS R4610\n");
-	}
+  if (i->inv_type == INV_CPUBOARD )  {
+    switch (i->inv_state) {
+    case INV_IP19BOARD:
+      puts(verbose ? "SGI IP19": "IP19");
+      break;
+    case INV_IP20BOARD:
+      puts(verbose ? "SGI IP20": "IP20");
+      break;
+    case INV_IP21BOARD:
+      puts(verbose ? "SGI IP21": "IP21");
+      break;
+    case INV_IP22BOARD:
+      puts(verbose ? "SGI IP22": "IP22");
+      break;
+    case INV_IP25BOARD:
+      puts(verbose ? "SGI IP25": "IP25");
+      break;
+    case INV_IP26BOARD:
+      puts(verbose ? "SGI IP26": "IP26");
+      break;
+#ifdef INV_IP27BOARD
+    case INV_IP27BOARD:
+      puts(verbose ? "SGI IP27": "IP27");
+      break;
+#endif
+    case INV_IP28BOARD:
+      puts(verbose ? "SGI IP28": "IP28");
+      break;
+    case INV_IP30BOARD:
+      puts(verbose ? "SGI IP30": "IP30");
+      break;
+    case INV_IP32BOARD:
+      puts(verbose ? "SGI IP32": "IP32");
+      break;
+#ifdef INV_IP33BOARD
+    case INV_IP33BOARD:
+      puts(verbose ? "SGI IP33": "IP33");
+      break;
+#endif
+    case INV_IPMHSIMBOARD:
+      puts(verbose ? "SGI IPMHSIM": "IPMHSIM");
+      break;
+    default:
+      if(verbose)
+	printf("Unknown SGI type %d\n", i->inv_state);
+      else
+	puts("SGI???");
+    }
+  } else if (verbose) {
+    switch(i->inv_type) {
+    case INV_CPUCHIP:
+    case INV_FPUCHIP:
+      do_INV_CPUCHIP(i, verbose);
+    }
+  }
 }
-}
-
 
 void do_dpy(int verbose)
 {
-int status;
-inventory_t *inv;
-int done=0;
+  int status;
+  inventory_t *inv;
+  int done = 0;
 
-    if (verbose) {
-	switch(fork()) {
-		case -1:
-			fprintf (stderr,
-			"Don't know how to determine display type for this machine.\n");
-			return;
-		case 0:
-			if ((execlp("/usr/gfx/gfxinfo","gfxinfo",NULL) ) == -1 ) {
-				fprintf (stderr,
-				"Don't know how to determine display type for this machine.\n");
-				return;
-			}	
-		default:
-			wait(&status);
-		break;
-	} /* switch */
-	(void) setinvent();
-	inv = getinvent();
-        while ((inv != NULL) && !done) {
-		if ( inv->inv_class == INV_VIDEO) {
-			do_INV_CAM(inv, verbose);
-		}
-                inv = getinvent();
-        }
-    } else { /* not verbose */
-	(void) setinvent();
-	inv = getinvent();
-        while ((inv != NULL) && !done) {
-		if ( inv->inv_class == INV_GRAPHICS) {
-			do_INV_GRAPHICS(inv, verbose);
-		}
-                inv = getinvent();
-        }
-     } /* verbose */
+  if (verbose) {
+    switch(fork()) {
+    case -1:
+      fprintf (stderr,
+	       "Don't know how to determine display type for this machine.\n");
+      return;
+    case 0:
+      if ((execlp("/usr/gfx/gfxinfo","gfxinfo",NULL) ) == -1 ) {
+	fprintf (stderr, 
+		 "Don't know how to determine display "
+		 "type for this machine.\n");
+	return;
+      }	
+    default:
+      wait(&status);
+      break;
+    } /* switch */
+    (void) setinvent();
+    inv = getinvent();
+    while ((inv != NULL) && !done) {
+      if ( inv->inv_class == INV_VIDEO) {
+	do_INV_CAM(inv, verbose);
+      }
+      inv = getinvent();
+    }
+  } else { /* not verbose */
+    (void) setinvent();
+    inv = getinvent();
+    while ((inv != NULL) && !done) {
+      if ( inv->inv_class == INV_GRAPHICS) {
+	do_INV_GRAPHICS(inv, verbose);
+      }
+      inv = getinvent();
+    }
+  } /* verbose */
 }
 
 void do_INV_GRAPHICS(inventory_t *i, int verbose)
@@ -202,38 +251,41 @@ void do_INV_GRAPHICS(inventory_t *i, int verbose)
 
 void do_INV_CAM(inventory_t *i, int verbose)
 {
-	if (i->inv_type == INV_VIDEO_VINO ) {
-		if (i->inv_state == INV_VINO_INDY_CAM ) {
-			fprintf(stdout,"\tIndy cam connected\n");
-		}
-	}
+  if (i->inv_type == INV_VIDEO_VINO ) {
+    if (i->inv_state == INV_VINO_INDY_CAM ) {
+      fprintf(stdout,"\tIndy cam connected\n");
+    }
+  }
 }
 
 
 
 void do_disk(int verbose)
 {
-inventory_t *inv;
-int t;
-int done=0;
-	(void) setinvent();
-        inv = getinvent();
-        t = 0;
-        while ((inv != NULL) && !done) {
-		if (inv->inv_class == INV_DISK) 
-		  do_INV_DISK(inv, verbose);
-		else if (inv->inv_class == INV_SCSI)
-		  do_INV_SCSI(inv, verbose);
-		inv = getinvent();
-        }
+  inventory_t *inv;
+  int t;
+  int done=0;
+  (void) setinvent();
+  inv = getinvent();
+  t = 0;
+  while ((inv != NULL) && !done) {
+    if (inv->inv_class == INV_DISK) 
+      do_INV_DISK(inv, verbose);
+    else if (inv->inv_class == INV_SCSI)
+      do_INV_SCSI(inv, verbose);
+    inv = getinvent();
+  }
 }
+
 void do_INV_SCSI(inventory_t *i, int verbose)
 {
-if (i->inv_type == INV_CDROM) {
-        fprintf(stdout,"CDROM: unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
-} else {
-        fprintf(stdout,"Unknown type %i:unit %i, on SCSI controller %i\n",i->inv_type,i->inv_unit,i->inv_controller);
-}
+  if (i->inv_type == INV_CDROM) {
+    fprintf(stdout, "CDROM: unit %i, on SCSI controller %i\n",
+	    i->inv_unit,i->inv_controller);
+  } else {
+    fprintf(stdout, "Unknown type %i:unit %i, on SCSI controller %i\n",
+	    i->inv_type,i->inv_unit,i->inv_controller);
+  }
 }
 
 void do_INV_DISK(inventory_t *i, int verbose)
@@ -335,45 +387,31 @@ void do_INV_SCSICONTROL(inventory_t *i, int verbose)
 
 void do_memory(int verbose)
 {
-  int mf, pos, mem, nbpp;
-
-  if (nlist(KERNEL, nl) < 0) {
-      fprintf(stderr,"can't get namelist\n");
-      exit(2);
+  inventory_t *inv;
+  int mem = 0;
+  int mem_mb = 0;
+  setinvent();
+  inv = getinvent();
+  while (inv) {
+    if (inv->inv_class == INV_MEMORY) {
+      switch(inv->inv_type) {
+      case INV_MAIN:
+	mem = inv->inv_state;
+	break;
+      case INV_MAIN_MB:
+	mem_mb = inv->inv_state;
+	break;
+      }
+    }
+    inv = getinvent();
   }
-  if ((mf = open(MEMORY, O_RDONLY)) == -1) {
-      perror("can't open memory");
-      exit(2);
+  if (!mem && !mem_mb) {
+    fprintf(stderr, "can't find main memory in inventory\n");
+    exit(2);
   }
-  nbpp = getpagesize() / 1024;
-  pos = nl[X_maxmem].n_value;
-  if(pos == 0) {
-      fprintf(stderr, "can't find maxmem\n");
-      exit(3);
-  }
-  lseek(mf,pos,L_SET);	/* Error checking ? */
-  if(read(mf,&mem,4) == -1) {
-      perror("read (kmem)");
-      exit(4);
-  } else {
-    if(verbose)
-      printf("%d user, ",mem * nbpp);
-  }
-  pos = nl[X_physmem].n_value;
-  if(pos == 0) {
-      fprintf(stderr, "can't find physmem\n");
-      exit(3);
-  }
-  lseek(mf,pos,L_SET);
-  if(read(mf,&mem,4) == -1) {
-      perror("read (kmem)");
-      exit(4);
-  } else {
-    if(verbose)
-      printf("%d (%d M) total\n",mem * nbpp,(mem * getpagesize() + MEG/2)/MEG);
-    else
-      printf("%d\n", mem * nbpp);
-  }
-  return; 
+  if (verbose)
+    printf("%d (%d M) total\n", mem?mem:(mem_mb * MEG), 
+	   mem_mb?mem_mb:(mem/MEG));
+  else
+    printf("%d\n", mem);
 }
-
