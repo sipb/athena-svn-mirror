@@ -51,7 +51,7 @@ case "$1" in
 	;;
 
   stop)
-	echo -n "Stopping Athena NTP: "
+	echo -n "Stopping Athena sendmail: "
 	killproc sendmail
 	RETVAL=$?
 
