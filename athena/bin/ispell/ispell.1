@@ -1,172 +1,344 @@
-.\" 
-.\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ispell/ispell.1,v $
-.\"	$Author: epeisach $
-.\"	$Locker:  $
-.\"	$Log: not supported by cvs2svn $
-.\"Revision 1.1  84/08/15  23:33:19  wjmadden
-.\"Initial revision
-.\"
-.\"Revision 1.2  84/07/06  13:17:09  root
-.\"Corrected revision date
-.\"
-.\"
-.\"Revision 1.1  84/06/26  15:24:43  root
-.\"Initial revision
-.\"
-.\" 
-.\" 
-.TH ISPELL 1 "Revision B--July 1984"
-.FM mit 1.1
+.TH ISPELL 1
+.FM MIT
 .SH NAME
-ispell \- spelling correction for a file
+ispell \- Correct spelling for a file
 .SH SYNOPSIS
-ispell file ...
-.br
-ispell [
-.B \-l
+.HP .25i 
+.B ispell
+[
+.B \-d 
+.I file 
+] [ 
+.B \-p 
+.I file 
 ] [
-.B \-a
-]
+.B \-w 
+.I chars 
+] [ 
+.B \-t 
+| 
+.B \-n 
+] [ 
+.B \-x 
+] [ 
+.B \-S 
+] 
+.I file ...
+.HP .25i
+.B ispell 
+[ 
+.B \-d 
+.I file 
+] [ 
+.B \-p 
+.I file 
+] [ 
+.B \-w 
+.I chars 
+] [ 
+.B \-t
+| 
+.B \-n 
+] 
+.B \-l 
+.HP .25i 
+.B ispell 
+[ 
+.B \-d 
+.I file 
+] [ 
+.B \-p 
+.I file 
+] [ 
+.B \-w 
+.I chars 
+] [ 
+.B \-f 
+.I file 
+] [ 
+.B \-s 
+] 
+.B \-a 
+.HP .25i 
+.B ispell
+[ 
+.B \-d 
+.I file 
+] [ 
+.B \-p 
+.I file 
+] [ 
+.B \-w 
+.I chars 
+] 
+.B \-c
 .SH DESCRIPTION
 .PP
 .I Ispell
-is a spelling correction program.  It checks the spelling of the words
-in a file against the words in its own dictionary, and also against the
-words in your own private dictionary, if you have one.
+is a program used to check the spelling of words in a text file.  The
+most common use is interactive mode, when the names of files to check are
+specified on the command line, e.g. ``ispell filename''.  In this case,
+.I ispell
+will display each word which does not appear in the dictionary, and
+allow the user to change it or to specify that it is correct.  If
+there are ``near misses'' in the 
+dictionary (words which differ by only a single letter, a missing or
+extra letter, or a pair of transposed letters), then they are also
+displayed.  At the bottom of the screen, the context in which the word
+is found is displayed, and (if the user's terminal can display reverse
+video) the misspelled word is highlighted.  The following commands can
+be used while checking the spelling of a file in interactive mode:
+.TP
+.B ?
+Display a help screen.
+.TP 
+.B num
+Where
+.I num
+is the number of an alternate spelling currently displayed,
+substitutes the alternate spelling for the misspelled word in the
+file.
+.TP
+.B <space>
+Accept the word this one time only. 
+.TP
+.BR a " or " A
+Accept the word for the rest of this file. 
+.TP
+.BR i " or " I
+Accept the word and put it into the user's private dictionary. 
+.TP
+.BR r " or " R
+Replace the misspelled word completely (the user is prompted for a
+replacement). 
+.TP
+.BR q " or " Q
+Write the rest of this file, ignoring misspellings, and start the next
+file. 
+.TP
+.BR x " or " ^C
+Exit immediately.  Asks for confirmation, and leaves the file
+unchanged if confirmed. 
+.TP
+.B ^L
+Redraw the screen. 
+.TP
+.B ^Z
+Suspend the ispell process. 
+.TP
+.B ! 
+Shell escape.  Type ``!command <RETURN>'' to execute ``command''. 
+.TP
+.BR l " or " L
+Look up a word in the system dictionary (usually
+.IR /usr/dict/words ).
 .PP
-The most common way to use
+When
 .I ispell
-is: ispell filename.
+checks the spelling of a file, it first saves a copy of the
+pre-corrected file in the file \fIfilename.bak\fR; this can be
+suppressed with the \fB\-x\fR option (see below).
+.SH OPTIONS
+.PP
 .I Ispell
-peruses the file, displaying each word that does not appear in 
-its dictionary, as well as a list of "near misses."
-.I Ispell
-types each misspelled word at the top of the screen.  A misspelled word
-is any word not contained in
-.I ispell's
-dictionary or in your own private dictionary.
-.I Ispell
-also lists near misses, if any, on the following lines.
-Near misses are words contained in the dictionary that differ from the
-displayed word by a single letter, a missing or extra letter,
-or a pair of transposed, or interchanged letters.  Finally,
-.I ispell
-displays the two lines that contain the misspelled word at the bottom of
-the screen, so that you can recognize the context of the word within the
-file.  Reverse-video terminals highlight the displayed word.
-
-You may respond with one of the following commands:
-
-.nf
-?        Display help
-0-9      Replace with one of the suggested words
-<space>  Accept the word this time only
-a        Accept the word for the rest of this file
-i        Accept the word, and put it in your private dictionary
-r        Replace the misspelled word completely
-q        Write the rest of this file, ignoring misspellings and
-         start next file
-x or ^C  Exit immediately.  Asks for confirmation, leaves file
-         unchanged
-^L       Redraw screen
-^Z       Stop execution and return to shell
-!        Shell escape
-.fi
-
-The other way to use
-.I ispell
-is to pick one of these options:
-
-.TP 10
+accepts the following command-line options:
+.TP
 .B \-l
-the "list" option, produces a list of misspelled words from
-standard input to standard output.
-.TP 10
+Causes
+.I ispell
+to read text from the standard input and produce a list of misspelled
+words on the standard output.
+
+This option cannot be used if \fB-a\fR is specified
+or if filenames for input are listed on the command line.
+.TP
 .B \-a
-allows the user access from other programs, using a "pipe."  Interactive
-users can use this mode to correct spelling of single words.  Exit from
-this mode using
-.B ^C
-or
-.B ^D.
-In this mode,
+This option is intended to facilitate the use of 
 .I ispell
-expects the input to consist of single words.
+by other programs through a pipe.
 .I Ispell
-reads each word, checks it against its own dictionary, and your private
-dictionary, if present, then delivers a single line to standard output.
-The output lines may be:
-.RS 15
-.TP 5
-.B *
-\fIispell\fR found the word in the supplied dictionary (spelling OK)
-.TP 5
-.B + <word>
-\fIispell\fR found the word, with any of various suffixes removed
-.TP 5
-.B & <list of near misses>
-\fIispell\fR cannot find the word, but found near misses.  The list of
-near misses is separated by spaces.  \fIIspell\fR capitalizes each near
-miss if the input word appears in capitals.
-.TP 5
-.B #
-\fIispell\fR found neither the input word, nor any near misses, in
-either dictionary.
-.RE
-.SH COMMENTS
-.I Ispell
-provides interactive spelling correction, an improvement from the older
-.I spell(1)
-program.
-.I Spell(1)
-merely lists misspelled words out of context;
+expects the standard input to consist of lines containing single words. 
+For each word read, one line is written to the standard output, as follows.  If
+the word was found in the main dictionary or in the user's personal
+dictionary, then the 
+line contains only `*'.  If the word was found through suffix removal,
+then the line contains `+', a space, and the root word.  If the word
+is not in the dictionary, but there are near misses, then the line
+contains `&', a space, and a list of the near misses, capitalized
+the same as the input word and separated by
+spaces.  Finally, if the word does not appear in the dictionary and
+there are no near misses, then the line contains `#'.  This option
+is also useful for quick interactive use to figure out the
+spelling of one or a few words.
+
+When in \fB\-a\fR mode,
 .I ispell
-lets you correct them in context.
-
-.I Ispell
-uses raw mode input.  It executes single-letter commands immediately as
-you type them, without waiting for a RETURN.
-
-.I Ispell
-doesn't confirm individual spelling corrections and returns to the shell
-without any indication of completion when finished perusing the file.
-
-.I Ispell
-provides no way to back up and fix unintended or unwanted changes.
-
-.I Ispell
-now requires about five seconds, varying with system load, to read in
-the hash table.
-
-Perhaps
+will also accept lines of single words prefixed with either `*' or
+`@'.  A word prefixed by `*' is added to the user's personal
+dictionary, similar to the `\fBI\fP' command in interactive mode.  A line
+starting with `@' is accepted for this
 .I ispell
-should allow more than ten choices for near misses.
+run only, like the `\fBA\fP' command in interactive mode.
 
+This option cannot be used if \fB\-l\fR or \fB\-c\fR is specified or
+if filenames for input are listed on the command line.
+.TP
+.B \-c
+This mode will not be used by the average 
+.I ispell
+user;
+it is an aid to constructing hashed dictionary files.  When it is
+specified,
+.I ispell
+reads words, one per line, from the standard input.  For each word,
+.I ispell
+identifies any
+suffixes which it knows how to find, and prints the word out several
+times with the suffixes replaced with
+.I ispell
+dictionary suffix codes.  Only words which are not found in the
+default dictionary or the user's personal dictionary are printed.
+
+This option cannot be used if \fB-a\fR is 
+specified or if filenames for input are listed on the command line.
+.TP
+.B \-t
+(interactive or \fB\-l\fR mode only) Specifies LaTeX/TeX mode.  When
+.I ispell
+encounters a backslash (`\e') character in this mode, it will skip
+to the next whitespace.  Thus, for example, if
+.I ispell
+is given the text ``\echapter{This is a Ckapter}'' and
+``\ecite{SCH86}'' when in
+\fB\-t\fR mode, it will find the misspelled ``Ckapter'' but will not
+look for ``SCH''.  The \fB\-t\fR option does not recognize the TeX
+comment character `%'.  This option cannot be used with \fB\-n\fR
+(described below).
+.TP
+.B \-n
+(interactive or \fB\-l\fR mode only) Specifies nroff/troff mode.  In
+this mode,
+.I ispell
+tries to ignore roff commands.
+.TP
+.B \-x
+(interactive mode only) Causes
+.I ispell
+to remove the \fB.bak\fR file, which contains the pre-corrected
+text of input files, when it exits normally.  Note that certain
+abnormal exit
+conditions will prevent the \fB.bak\fR file from being removed, even
+when \fB\-x\fR is specified.
+.TP
+.B \-S
+(interactive mode only) Suppresses
+.IR ispell "'s"
+normal behavior of sorting the list of possible replacement words.
+Some people prefer this, since it somewhat enhances the probability
+that the correct word will be low-numbered.
+.TP
+.B \-s
+(\fB\-a\fR mode only) causes
+.I ispell
+to automatically suspend itself after each word is looked up.  Used in
+conjunction with the \fB\-f\fR option, this option can be used by a
+program to look up one word at a time and to place the results of each
+word look-up in a status file.
+.TP
+.B \-d \fIfile\fB
+Specifies an alternate hashed dictionary file, other than the default.
+If 
+.I file
+does not begin with `/', the library directory
+for the default dictionary file is added to the beginning of it.
+This is useful to allow dictionaries which prefer alternate British
+spellings (``centre'', ``tyre'', etc.), or to add lists of
+special-purpose jargon and acronyms for subclasses of documents.
+There are some shortcomings in attempting to provide foreign-language
+dictionaries, but something like ``\fB-d \fIfrench\fR'' could be made
+to work somewhat.
+.TP
+.B \-p \fIfile\fB
+Specifies an alternate personal dictionary file. 
+If 
+.I file
+does not begin with `/', \fB$HOME\fR is added to the beginning of it.  The
+environment variable \fBWORDLIST\fR may also be used to specify an alternate
+personal dictionary filename.  The command line overrides any \fBWORDLIST\fR
+setting.  If neither \fB\-p\fR nor \fBWORDLIST\fR is present,
+``$HOME/.ispell.words'' is used.
+.TP
+.B \-f \fIfile\fB
+Only applicable when \fB\-a\fR is also specified, this option
+specifies a file to which output should be sent instead of the
+standard output.  This file is cleared before each word is looked up,
+so the status of only one word look-up is stored in
+.I file
+at any given time.
+.TP
+.B \-w \fIchars\fB
+Specifies characters other than alphabetics which may appear in words.
+For instance, \fB-w \fI"&"\fR
+will allow ``AT&T'' to be treated as one word; also, underscores are useful
+in many technical documents.  There is an admittedly crude provision
+in this option for 8-bit international characters.  If `n' appears
+in the character string, the three characters following are a
+.I decimal
+code (in the range 1 to 255), for the character.  There must be 
+three digits in all cases, so you have to pad with 0's any ASCII codes
+that are less than 100.  For instance, to include bells and form-feeds
+in your words, you could use \fB\-w \fIn007n012\fR.
+Numeric digits other than the three following `n' are simply numeric
+characters.  Use of `n' does not conflict with anything because actual
+alphabetics have no meaning -- alphabetics are already accepted. 
+.SH ADDITIONAL NOTES
+.PP
+The \fIemacs\fR text editor has facilities for using \fIispell\fR
+directly inside \fIemacs\fR.  See the \fIGNU Emacs Manual\fR for more
+information.
+.PP
 .I Ispell
-stores the hash table as a quarter-megabyte array.
+will typically be used with input from a file, meaning that preserving
+parity for possible 8 bit characters from the input text is OK.  If you
+specify the \fB\-l\fR option, and actually type text from the terminal, this may
+create problems if your stty settings preserve parity. 
+.PP
+It is possible to install
+.I ispell
+in such a way as to only support ASCII range text if desired. 
+.SH SEE ALSO
+.PP
+spell(1), \fIThe GNU Emacs Manual\fR, emacs(1)
 
+.SH FILES
+.TP \w'/usr/athena/lib/ispell/ispell.hash'u+4n
+/usr/athena/lib/ispell/ispell.hash	
+The hashed version of the stored dictionary.
+.TP
+$HOME/.ispell.words
+The user's private dictionary.
+.SH BUGS
+It takes about five seconds for
+.I ispell
+to read in the hash table.
+.sp
+Perhaps more than ten choices should be allowed for near misses.
+.sp
 .I Ispell
 should understand more
 .I troff
 and
 .I scribe
-syntax, and handle contractions more intelligently.
-.SH FILES
-.nf
-$HOME/.ispell.words           Your private dictionary.
-/usr/dict/ispell.hash         The hashed version of the
-                              stored directory.
-/usr/athena/ispell/*          Other related files.
-.fi
-.SH BUGS
-.I Ispell
-will clog your tty line if you ask for the help screen when using the
-IBM 3101 terminal emulator on an IBM PC XT.
-.SH SEE ALSO
-spell(1)
+syntax, and deal more intelligently with contractions.
+.sp
+While alternate dictionaries for foreign languages could be defined, and
+the international characters included in words, rules concerning
+word endings / pluralization accommodate English only.
 .SH AUTHOR
-Pace Willisson (pace@mit-vax), with slight modifications by Tony Della
-Fera, DEC/Project Athena
+Pace Willisson (pace@vx.lcs.mit.edu).
+
+Various bug-fixes by Robert McQueer, Geoff Kuenning, Greg Schaffer,
+and Jonathan Kamens (jik@athena.mit.edu).
 
 .I Ispell
 is a modification of an already existing program.  Similar versions of
