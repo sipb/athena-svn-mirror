@@ -4,7 +4,7 @@
 #define ISUBDIRS lib server man
 
 install::
-	$(INSTALL) -m 0444 etc/snmpd.conf $(DESTDIR)/etc/athena/snmpd.conf
+	install -m 0444 etc/snmpd.conf $(DESTDIR)/etc/athena/snmpd.conf
 
 instman:
 	@-mkdir ${DESTDIR}/include/arpa/snmp
