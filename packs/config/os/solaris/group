@@ -13,3 +13,4 @@ daemon::12:root,daemon
 sysadmin::14:
 nobody::60001:
 noaccess::60002:
+nogroup::65534:
