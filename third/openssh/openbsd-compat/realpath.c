@@ -32,7 +32,7 @@
 #if !defined(HAVE_REALPATH) || defined(BROKEN_REALPATH)
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char *rcsid = "$OpenBSD: realpath.c,v 1.5 2001/06/27 00:58:56 lebel Exp $";
+static char *rcsid = "$OpenBSD: realpath.c,v 1.7 2002/05/24 21:22:37 deraadt Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -69,10 +69,14 @@ realpath(const char *path, char *resolved)
 	/* Save the starting point. */
 	getcwd(start,MAXPATHLEN);	
 	if ((fd = open(".", O_RDONLY)) < 0) {
-		(void)strcpy(resolved, ".");
+		(void)strlcpy(resolved, ".", MAXPATHLEN);
 		return (NULL);
 	}
 	close(fd);
+
+	/* Convert "." -> "" to optimize away a needless lstat() and chdir() */
+	if (path[0] == '.' && path[1] == '\0')
+		path = "";
 
 	/*
 	 * Find the dirname and basename from the path to be resolved.
@@ -102,7 +106,7 @@ loop:
 		p = resolved;
 
 	/* Deal with the last component. */
-	if (lstat(p, &sb) == 0) {
+	if (*p != '\0' && lstat(p, &sb) == 0) {
 		if (S_ISLNK(sb.st_mode)) {
 			if (++symlinks > MAXSYMLINKS) {
 				serrno = ELOOP;
@@ -125,7 +129,7 @@ loop:
 	 * Save the last component name and get the full pathname of
 	 * the current directory.
 	 */
-	(void)strcpy(wbuf, p);
+	(void)strlcpy(wbuf, p, sizeof wbuf);
 	if (getcwd(resolved, MAXPATHLEN) == 0)
 		goto err1;
 

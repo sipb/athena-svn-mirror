@@ -1,59 +1,7 @@
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
-/* $Id: defines.h,v 1.1.1.2 2002-02-13 00:08:00 zacheiss Exp $ */
-
-/* Necessary headers */
-
-#include <sys/types.h> /* For [u]intxx_t */
-#include <sys/socket.h> /* For SHUT_XXXX */
-#include <sys/param.h> /* For MAXPATHLEN and roundup() */
-#include <netinet/in_systm.h> /* For typedefs */
-#include <netinet/in.h> /* For IPv6 macros */
-#include <netinet/ip.h> /* For IPTOS macros */
-#ifdef HAVE_SYS_UN_H
-# include <sys/un.h> /* For sockaddr_un */
-#endif
-#ifdef HAVE_SYS_BITYPES_H
-# include <sys/bitypes.h> /* For u_intXX_t */
-#endif
-#ifdef HAVE_PATHS_H
-# include <paths.h> /* For _PATH_XXX */
-#endif
-#ifdef HAVE_LIMITS_H
-# include <limits.h> /* For PATH_MAX */
-#endif
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h> /* For timersub */
-#endif
-#ifdef HAVE_MAILLOCK_H
-# include <maillock.h> /* For _PATH_MAILDIR */
-#endif
-#ifdef HAVE_SYS_CDEFS_H
-# include <sys/cdefs.h> /* For __P() */
-#endif
-#ifdef HAVE_SYS_SYSMACROS_H
-# include <sys/sysmacros.h> /* For MIN, MAX, etc */
-#endif
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h> /* For S_* constants and macros */
-#endif
-#ifdef HAVE_NEXT
-#  include <libc.h>
-#endif
-
-#include <unistd.h> /* For STDIN_FILENO, etc */
-#include <termios.h> /* Struct winsize */
-#include <fcntl.h> /* For O_NONBLOCK */
-#include <openssl/opensslv.h> /* For OPENSSL_VERSION_NUMBER */
-
-/* *-*-nto-qnx needs these headers for strcasecmp and LASTLOG_FILE respectively */
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#ifdef HAVE_LOGIN_H
-# include <login.h>
-#endif
+/* $Id: defines.h,v 1.1.1.3 2003-02-05 19:04:32 zacheiss Exp $ */
 
 
 /* Constants */
@@ -136,9 +84,25 @@ enum
 # define S_IRWXO			0000007	/* read, write, execute */
 #endif /* S_IXUSR */
 
+#if !defined(MAP_ANON) && defined(MAP_ANONYMOUS)
+#define MAP_ANON MAP_ANONYMOUS
+#endif
+
+#ifndef MAP_FAILED
+# define MAP_FAILED ((void *)-1)
+#endif
+
 /* *-*-nto-qnx doesn't define this constant in the system headers */
 #ifdef MISSING_NFDBITS
 # define	NFDBITS (8 * sizeof(unsigned long))
+#endif
+
+/*
+SCO Open Server 3 has INADDR_LOOPBACK defined in rpc/rpc.h but
+including rpc/rpc.h breaks Solaris 6
+*/
+#ifndef INADDR_LOOPBACK
+#define INADDR_LOOPBACK ((u_long)0x7f000001)
 #endif
 
 /* Types */
@@ -160,20 +124,24 @@ typedef char int8_t;
 # if (SIZEOF_SHORT_INT == 2)
 typedef short int int16_t;
 # else
-#  ifdef _CRAY
+#  ifdef _UNICOS
+#   if (SIZEOF_SHORT_INT == 4)
+typedef short int16_t;
+#   else
 typedef long  int16_t;
+#   endif
 #  else
 #   error "16 bit int type not found."
-#  endif /* _CRAY */
+#  endif /* _UNICOS */
 # endif
 # if (SIZEOF_INT == 4)
 typedef int int32_t;
 # else
-#  ifdef _CRAY
+#  ifdef _UNICOS
 typedef long  int32_t;
 #  else
 #   error "32 bit int type not found."
-#  endif /* _CRAY */
+#  endif /* _UNICOS */
 # endif
 #endif
 
@@ -193,8 +161,12 @@ typedef unsigned char u_int8_t;
 #  if (SIZEOF_SHORT_INT == 2)
 typedef unsigned short int u_int16_t;
 #  else
-#   ifdef _CRAY
+#   ifdef _UNICOS
+#    if (SIZEOF_SHORT_INT == 4)
+typedef unsigned short u_int16_t;
+#    else
 typedef unsigned long  u_int16_t;
+#    endif
 #   else
 #    error "16 bit int type not found."
 #   endif
@@ -202,7 +174,7 @@ typedef unsigned long  u_int16_t;
 #  if (SIZEOF_INT == 4)
 typedef unsigned int u_int32_t;
 #  else
-#   ifdef _CRAY
+#   ifdef _UNICOS
 typedef unsigned long  u_int32_t;
 #   else
 #    error "32 bit int type not found."
@@ -244,6 +216,10 @@ typedef unsigned char u_char;
 # define HAVE_U_CHAR
 #endif /* HAVE_U_CHAR */
 
+#ifndef SIZE_T_MAX
+#define SIZE_T_MAX ULONG_MAX
+#endif /* SIZE_T_MAX */
+
 #ifndef HAVE_SIZE_T
 typedef unsigned int size_t;
 # define HAVE_SIZE_T
@@ -268,6 +244,11 @@ typedef int sa_family_t;
 typedef int pid_t;
 # define HAVE_PID_T
 #endif /* HAVE_PID_T */
+
+#ifndef HAVE_SIG_ATOMIC_T
+typedef int sig_atomic_t;
+# define HAVE_SIG_ATOMIC_T
+#endif /* HAVE_SIG_ATOMIC_T */
 
 #ifndef HAVE_MODE_T
 typedef int mode_t;
@@ -339,14 +320,6 @@ struct winsize {
 # define _PATH_MAILDIR MAILDIR
 #endif /* !defined(_PATH_MAILDIR) && defined(MAILDIR) */
 
-#ifndef _PATH_RSH
-# ifdef RSH_PATH
-#  define _PATH_RSH RSH_PATH
-# else /* RSH_PATH */
-#  define _PATH_RSH "/usr/bin/rsh"
-# endif /* RSH_PATH */
-#endif /* _PATH_RSH */
-
 #ifndef _PATH_NOLOGIN
 # define _PATH_NOLOGIN "/etc/nologin"
 #endif
@@ -355,6 +328,16 @@ struct winsize {
 #ifdef XAUTH_PATH
 #define _PATH_XAUTH XAUTH_PATH
 #endif /* XAUTH_PATH */
+
+/* derived from XF4/xc/lib/dps/Xlibnet.h */
+#ifndef X_UNIX_PATH
+#  ifdef __hpux
+#    define X_UNIX_PATH "/var/spool/sockets/X11/%u"
+#  else
+#    define X_UNIX_PATH "/tmp/.X11-unix/X%u"
+#  endif
+#endif /* X_UNIX_PATH */
+#define _PATH_UNIX_X X_UNIX_PATH
 
 #ifndef _PATH_TTY
 # define _PATH_TTY "/dev/tty"
@@ -406,7 +389,43 @@ struct winsize {
 # define howmany(x,y)	(((x)+((y)-1))/(y))
 #endif
 
+#ifndef OSSH_ALIGNBYTES
+#define OSSH_ALIGNBYTES	(sizeof(int) - 1)
+#endif
+#ifndef __CMSG_ALIGN
+#define	__CMSG_ALIGN(p) (((u_int)(p) + OSSH_ALIGNBYTES) &~ OSSH_ALIGNBYTES)
+#endif
+
+/* Length of the contents of a control message of length len */
+#ifndef CMSG_LEN
+#define	CMSG_LEN(len)	(__CMSG_ALIGN(sizeof(struct cmsghdr)) + (len))
+#endif
+
+/* Length of the space taken up by a padded control message of length len */
+#ifndef CMSG_SPACE
+#define	CMSG_SPACE(len)	(__CMSG_ALIGN(sizeof(struct cmsghdr)) + __CMSG_ALIGN(len))
+#endif
+
 /* Function replacement / compatibility hacks */
+
+#if !defined(HAVE_GETADDRINFO) && (defined(HAVE_OGETADDRINFO) || defined(HAVE_NGETADDRINFO))
+# define HAVE_GETADDRINFO
+#endif
+
+#ifndef HAVE_GETOPT_OPTRESET
+# undef getopt
+# undef opterr
+# undef optind
+# undef optopt
+# undef optreset
+# undef optarg
+# define getopt(ac, av, o)  BSDgetopt(ac, av, o)
+# define opterr             BSDopterr
+# define optind             BSDoptind
+# define optopt             BSDoptopt
+# define optreset           BSDoptreset
+# define optarg             BSDoptarg
+#endif
 
 /* In older versions of libpam, pam_strerror takes a single argument */
 #ifdef HAVE_OLD_PAM
@@ -435,14 +454,6 @@ struct winsize {
 # define memmove(s1, s2, n) bcopy((s2), (s1), (n))
 #endif /* !defined(HAVE_MEMMOVE) && defined(HAVE_BCOPY) */
 
-#if !defined(HAVE_ATEXIT) && defined(HAVE_ON_EXIT)
-# define atexit(a, NULL) on_exit(a, NULL)
-#else
-# if defined(HAVE_XATEXIT)
-#  define atexit(a) xatexit(a)
-# endif /* defined(HAVE_XATEXIT) */
-#endif /* !defined(HAVE_ATEXIT) && defined(HAVE_ON_EXIT) */
-
 #if defined(HAVE_VHANGUP) && !defined(HAVE_DEV_PTMX)
 #  define USE_VHANGUP
 #endif /* defined(HAVE_VHANGUP) && !defined(HAVE_DEV_PTMX) */
@@ -454,6 +465,12 @@ struct winsize {
 /* OPENSSL_free() is Free() in versions before OpenSSL 0.9.6 */
 #if !defined(OPENSSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER < 0x0090600f)
 # define OPENSSL_free(x) Free(x)
+#endif
+
+#if !defined(HAVE___func__) && defined(HAVE___FUNCTION__)
+#  define __func__ __FUNCTION__
+#elif !defined(HAVE___func__)
+#  define __func__ ""
 #endif
 
 /*
@@ -468,27 +485,6 @@ struct winsize {
 /**
  ** login recorder definitions
  **/
-
-/* preprocess */
-
-#ifdef HAVE_UTMP_H
-#  ifdef HAVE_TIME_IN_UTMP
-#    include <time.h>
-#  endif
-#  include <utmp.h>
-#endif
-#ifdef HAVE_UTMPX_H
-#  ifdef HAVE_TV_IN_UTMPX
-#    include <sys/time.h>
-#  endif
-#  include <utmpx.h>
-#endif
-#ifdef HAVE_LASTLOG_H
-#  include <lastlog.h>
-#endif
-#ifdef HAVE_PATHS_H
-#  include <paths.h>
-#endif
 
 /* FIXME: put default paths back in */
 #ifndef UTMP_FILE
@@ -546,11 +542,6 @@ struct winsize {
 /* I hope that the presence of LASTLOG_FILE is enough to detect this */
 #if defined(LASTLOG_FILE) && !defined(DISABLE_LASTLOG)
 #  define USE_LASTLOG
-#endif
-
-/* which type of time to use? (api.c) */
-#ifdef HAVE_SYS_TIME_H
-#  define USE_TIMEVAL
 #endif
 
 /** end of login recorder definitions */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Damien Miller.  All rights reserved.
+ * Copyright (c) 2001,2002 Damien Miller.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: sftp-glob.c,v 1.8 2001/07/14 15:10:17 stevesk Exp $");
+RCSID("$OpenBSD: sftp-glob.c,v 1.13 2002/09/11 22:41:50 djm Exp $");
 
 #include "buffer.h"
 #include "bufaux.h"
@@ -41,23 +41,24 @@ struct SFTP_OPENDIR {
 };
 
 static struct {
-	int fd_in;
-	int fd_out;
+	struct sftp_conn *conn;
 } cur;
 
 static void *
 fudge_opendir(const char *path)
 {
 	struct SFTP_OPENDIR *r;
-	
+
 	r = xmalloc(sizeof(*r));
-	
-	if (do_readdir(cur.fd_in, cur.fd_out, (char*)path, &r->dir))
+
+	if (do_readdir(cur.conn, (char *)path, &r->dir)) {
+		xfree(r);
 		return(NULL);
+	}
 
 	r->offset = 0;
 
-	return((void*)r);
+	return((void *)r);
 }
 
 static struct dirent *
@@ -106,35 +107,16 @@ fudge_closedir(struct SFTP_OPENDIR *od)
 	xfree(od);
 }
 
-static void
-attrib_to_stat(Attrib *a, struct stat *st)
-{
-	memset(st, 0, sizeof(*st));
-	
-	if (a->flags & SSH2_FILEXFER_ATTR_SIZE)
-		st->st_size = a->size;
-	if (a->flags & SSH2_FILEXFER_ATTR_UIDGID) {
-		st->st_uid = a->uid;
-		st->st_gid = a->gid;
-	}
-	if (a->flags & SSH2_FILEXFER_ATTR_PERMISSIONS)
-		st->st_mode = a->perm;
-	if (a->flags & SSH2_FILEXFER_ATTR_ACMODTIME) {
-		st->st_atime = a->atime;
-		st->st_mtime = a->mtime;
-	}
-}
-
 static int
 fudge_lstat(const char *path, struct stat *st)
 {
 	Attrib *a;
-	
-	if (!(a = do_lstat(cur.fd_in, cur.fd_out, (char*)path, 0)))
+
+	if (!(a = do_lstat(cur.conn, (char *)path, 0)))
 		return(-1);
-	
+
 	attrib_to_stat(a, st);
-	
+
 	return(0);
 }
 
@@ -142,17 +124,17 @@ static int
 fudge_stat(const char *path, struct stat *st)
 {
 	Attrib *a;
-	
-	if (!(a = do_stat(cur.fd_in, cur.fd_out, (char*)path, 0)))
+
+	if (!(a = do_stat(cur.conn, (char *)path, 0)))
 		return(-1);
-	
+
 	attrib_to_stat(a, st);
-	
+
 	return(0);
 }
 
 int
-remote_glob(int fd_in, int fd_out, const char *pattern, int flags,
+remote_glob(struct sftp_conn *conn, const char *pattern, int flags,
     int (*errfunc)(const char *, int), glob_t *pglob)
 {
 	pglob->gl_opendir = fudge_opendir;
@@ -160,11 +142,9 @@ remote_glob(int fd_in, int fd_out, const char *pattern, int flags,
 	pglob->gl_closedir = (void (*)(void *))fudge_closedir;
 	pglob->gl_lstat = fudge_lstat;
 	pglob->gl_stat = fudge_stat;
-	
-	memset(&cur, 0, sizeof(cur));
-	cur.fd_in = fd_in;
-	cur.fd_out = fd_out;
 
-	return(glob(pattern, flags | GLOB_ALTDIRFUNC, errfunc,
-	    pglob));
+	memset(&cur, 0, sizeof(cur));
+	cur.conn = conn;
+
+	return(glob(pattern, flags | GLOB_ALTDIRFUNC, errfunc, pglob));
 }

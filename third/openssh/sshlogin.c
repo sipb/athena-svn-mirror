@@ -39,7 +39,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: sshlogin.c,v 1.2 2001/03/24 16:43:27 stevesk Exp $");
+RCSID("$OpenBSD: sshlogin.c,v 1.5 2002/08/29 15:57:25 stevesk Exp $");
 
 #include "loginrec.h"
 
@@ -48,10 +48,9 @@ RCSID("$OpenBSD: sshlogin.c,v 1.2 2001/03/24 16:43:27 stevesk Exp $");
  * information is not available.  This must be called before record_login.
  * The host the user logged in from will be returned in buf.
  */
-
 u_long
 get_last_login_time(uid_t uid, const char *logname,
-		    char *buf, u_int bufsize)
+    char *buf, u_int bufsize)
 {
   struct logininfo li;
 
@@ -64,10 +63,9 @@ get_last_login_time(uid_t uid, const char *logname,
  * Records that the user has logged in.  I these parts of operating systems
  * were more standardized.
  */
-
 void
 record_login(pid_t pid, const char *ttyname, const char *user, uid_t uid,
-	     const char *host, struct sockaddr * addr)
+    const char *host, struct sockaddr * addr, socklen_t addrlen)
 {
   struct logininfo *li;
 
@@ -92,13 +90,12 @@ record_utmp_only(pid_t pid, const char *ttyname, const char *user,
 #endif
 
 /* Records that the user has logged out. */
-
 void
-record_logout(pid_t pid, const char *ttyname)
+record_logout(pid_t pid, const char *ttyname, const char *user)
 {
   struct logininfo *li;
 
-  li = login_alloc_entry(pid, NULL, NULL, ttyname);
+  li = login_alloc_entry(pid, user, NULL, ttyname);
   login_logout(li);
   login_free_entry(li);
 }

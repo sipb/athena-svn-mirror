@@ -10,9 +10,8 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth-options.c,v 1.20 2001/08/30 20:36:34 stevesk Exp $");
+RCSID("$OpenBSD: auth-options.c,v 1.26 2002/07/30 17:03:55 markus Exp $");
 
-#include "packet.h"
 #include "xmalloc.h"
 #include "match.h"
 #include "log.h"
@@ -21,6 +20,8 @@ RCSID("$OpenBSD: auth-options.c,v 1.20 2001/08/30 20:36:34 stevesk Exp $");
 #include "auth-options.h"
 #include "servconf.h"
 #include "misc.h"
+#include "monitor_wrap.h"
+#include "auth.h"
 
 /* Flags set authorized_keys flags */
 int no_port_forwarding_flag = 0;
@@ -54,6 +55,7 @@ auth_clear_options(void)
 		forced_command = NULL;
 	}
 	channel_clear_permitted_opens();
+	auth_debug_reset();
 }
 
 /*
@@ -75,28 +77,28 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 	while (*opts && *opts != ' ' && *opts != '\t') {
 		cp = "no-port-forwarding";
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
-			packet_send_debug("Port forwarding disabled.");
+			auth_debug_add("Port forwarding disabled.");
 			no_port_forwarding_flag = 1;
 			opts += strlen(cp);
 			goto next_option;
 		}
 		cp = "no-agent-forwarding";
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
-			packet_send_debug("Agent forwarding disabled.");
+			auth_debug_add("Agent forwarding disabled.");
 			no_agent_forwarding_flag = 1;
 			opts += strlen(cp);
 			goto next_option;
 		}
 		cp = "no-X11-forwarding";
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
-			packet_send_debug("X11 forwarding disabled.");
+			auth_debug_add("X11 forwarding disabled.");
 			no_x11_forwarding_flag = 1;
 			opts += strlen(cp);
 			goto next_option;
 		}
 		cp = "no-pty";
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
-			packet_send_debug("Pty allocation disabled.");
+			auth_debug_add("Pty allocation disabled.");
 			no_pty_flag = 1;
 			opts += strlen(cp);
 			goto next_option;
@@ -119,19 +121,20 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (!*opts) {
 				debug("%.100s, line %lu: missing end quote",
 				    file, linenum);
-				packet_send_debug("%.100s, line %lu: missing end quote",
+				auth_debug_add("%.100s, line %lu: missing end quote",
 				    file, linenum);
 				xfree(forced_command);
 				forced_command = NULL;
 				goto bad_option;
 			}
 			forced_command[i] = 0;
-			packet_send_debug("Forced command: %.900s", forced_command);
+			auth_debug_add("Forced command: %.900s", forced_command);
 			opts++;
 			goto next_option;
 		}
 		cp = "environment=\"";
-		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
+		if (options.permit_user_env &&
+		    strncasecmp(opts, cp, strlen(cp)) == 0) {
 			char *s;
 			struct envstring *new_envstring;
 
@@ -151,13 +154,13 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (!*opts) {
 				debug("%.100s, line %lu: missing end quote",
 				    file, linenum);
-				packet_send_debug("%.100s, line %lu: missing end quote",
+				auth_debug_add("%.100s, line %lu: missing end quote",
 				    file, linenum);
 				xfree(s);
 				goto bad_option;
 			}
 			s[i] = 0;
-			packet_send_debug("Adding to environment: %.900s", s);
+			auth_debug_add("Adding to environment: %.900s", s);
 			debug("Adding to environment: %.900s", s);
 			opts++;
 			new_envstring = xmalloc(sizeof(struct envstring));
@@ -170,7 +173,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 		if (strncasecmp(opts, cp, strlen(cp)) == 0) {
 			const char *remote_ip = get_remote_ipaddr();
 			const char *remote_host = get_canonical_hostname(
-			    options.reverse_mapping_check);
+			    options.verify_reverse_mapping);
 			char *patterns = xmalloc(strlen(opts) + 1);
 
 			opts += strlen(cp);
@@ -188,7 +191,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (!*opts) {
 				debug("%.100s, line %lu: missing end quote",
 				    file, linenum);
-				packet_send_debug("%.100s, line %lu: missing end quote",
+				auth_debug_add("%.100s, line %lu: missing end quote",
 				    file, linenum);
 				xfree(patterns);
 				goto bad_option;
@@ -202,7 +205,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 				    "correct key but not from a permitted "
 				    "host (host=%.200s, ip=%.200s).",
 				    pw->pw_name, remote_host, remote_ip);
-				packet_send_debug("Your host '%.200s' is not "
+				auth_debug_add("Your host '%.200s' is not "
 				    "permitted to use this key for login.",
 				    remote_host);
 				/* deny access */
@@ -233,7 +236,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if (!*opts) {
 				debug("%.100s, line %lu: missing end quote",
 				    file, linenum);
-				packet_send_debug("%.100s, line %lu: missing end quote",
+				auth_debug_add("%.100s, line %lu: missing end quote",
 				    file, linenum);
 				xfree(patterns);
 				goto bad_option;
@@ -244,7 +247,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			    sscanf(patterns, "%255[^/]/%5[0-9]", host, sport) != 2) {
 				debug("%.100s, line %lu: Bad permitopen specification "
 				    "<%.100s>", file, linenum, patterns);
-				packet_send_debug("%.100s, line %lu: "
+				auth_debug_add("%.100s, line %lu: "
 				    "Bad permitopen specification", file, linenum);
 				xfree(patterns);
 				goto bad_option;
@@ -252,7 +255,7 @@ auth_parse_options(struct passwd *pw, char *opts, char *file, u_long linenum)
 			if ((port = a2port(sport)) == 0) {
 				debug("%.100s, line %lu: Bad permitopen port <%.100s>",
 				    file, linenum, sport);
-				packet_send_debug("%.100s, line %lu: "
+				auth_debug_add("%.100s, line %lu: "
 				    "Bad permitopen port", file, linenum);
 				xfree(patterns);
 				goto bad_option;
@@ -276,14 +279,22 @@ next_option:
 		opts++;
 		/* Process the next option. */
 	}
+
+	if (!use_privsep)
+		auth_debug_send();
+
 	/* grant access */
 	return 1;
 
 bad_option:
 	log("Bad options in %.100s file, line %lu: %.50s",
 	    file, linenum, opts);
-	packet_send_debug("Bad options in %.100s file, line %lu: %.50s",
+	auth_debug_add("Bad options in %.100s file, line %lu: %.50s",
 	    file, linenum, opts);
+
+	if (!use_privsep)
+		auth_debug_send();
+
 	/* deny access */
 	return 0;
 }

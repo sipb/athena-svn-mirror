@@ -1,5 +1,7 @@
+/*	$OpenBSD: readpassphrase.c,v 1.14 2002/06/28 01:43:58 millert Exp $	*/
+
 /*
- * Copyright (c) 2000 Todd C. Miller <Todd.Miller@courtesan.com>
+ * Copyright (c) 2000-2002 Todd C. Miller <Todd.Miller@courtesan.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +28,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char rcsid[] = "$OpenBSD: readpassphrase.c,v 1.5 2001/06/27 13:23:30 djm Exp $";
+static const char rcsid[] = "$OpenBSD: readpassphrase.c,v 1.14 2002/06/28 01:43:58 millert Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "includes.h"
@@ -47,20 +49,19 @@ static char rcsid[] = "$OpenBSD: readpassphrase.c,v 1.5 2001/06/27 13:23:30 djm 
 #  define _POSIX_VDISABLE       VDISABLE
 #endif
 
+static volatile sig_atomic_t signo;
+
+static void handler(int);
+
 char *
-readpassphrase(prompt, buf, bufsiz, flags)
-	const char *prompt;
-	char *buf;
-	size_t bufsiz;
-	int flags;
+readpassphrase(const char *prompt, char *buf, size_t bufsiz, int flags)
 {
-	struct termios term;
+	ssize_t nr;
+	int input, output, save_errno;
 	char ch, *p, *end;
-#ifdef _POSIX_VDISABLE
-	u_char status;
-#endif
-	int echo, input, output;
-	sigset_t oset, nset;
+	struct termios term, oterm;
+	struct sigaction sa, savealrm, saveint, savehup, savequit, saveterm;
+	struct sigaction savetstp, savettin, savettou, savepipe;
 
 	/* I suppose we could alloc on demand in this case (XXX). */
 	if (bufsiz == 0) {
@@ -68,11 +69,14 @@ readpassphrase(prompt, buf, bufsiz, flags)
 		return(NULL);
 	}
 
+restart:
+	signo = 0;
 	/*
 	 * Read and write to /dev/tty if available.  If not, read from
 	 * stdin and write to stderr unless a tty is required.
 	 */
-	if ((input = output = open(_PATH_TTY, O_RDWR)) == -1) {
+	if ((flags & RPP_STDIN) ||
+	    (input = output = open(_PATH_TTY, O_RDWR)) == -1) {
 		if (flags & RPP_REQUIRE_TTY) {
 			errno = ENOTTY;
 			return(NULL);
@@ -82,44 +86,44 @@ readpassphrase(prompt, buf, bufsiz, flags)
 	}
 
 	/*
-	 * We block SIGINT and SIGTSTP so the terminal is not left
-	 * in an inconsistent state (ie: no echo).  It would probably
-	 * be better to simply catch these though.
+	 * Catch signals that would otherwise cause the user to end
+	 * up with echo turned off in the shell.  Don't worry about
+	 * things like SIGXCPU and SIGVTALRM for now.
 	 */
-	sigemptyset(&nset);
-	sigaddset(&nset, SIGINT);
-	sigaddset(&nset, SIGTSTP);
-	(void)sigprocmask(SIG_BLOCK, &nset, &oset);
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;		/* don't restart system calls */
+	sa.sa_handler = handler;
+	(void)sigaction(SIGALRM, &sa, &savealrm);
+	(void)sigaction(SIGHUP, &sa, &savehup);
+	(void)sigaction(SIGINT, &sa, &saveint);
+	(void)sigaction(SIGPIPE, &sa, &savepipe);
+	(void)sigaction(SIGQUIT, &sa, &savequit);
+	(void)sigaction(SIGTERM, &sa, &saveterm);
+	(void)sigaction(SIGTSTP, &sa, &savetstp);
+	(void)sigaction(SIGTTIN, &sa, &savettin);
+	(void)sigaction(SIGTTOU, &sa, &savettou);
 
 	/* Turn off echo if possible. */
-	echo = 0;
-#ifdef _POSIX_VDISABLE
-	status = _POSIX_VDISABLE;
-#endif
-	if (tcgetattr(input, &term) == 0) {
-		if (!(flags & RPP_ECHO_ON) && (term.c_lflag & ECHO)) {
-			echo = 1;
-			term.c_lflag &= ~ECHO;
-		}
+	if (input != STDIN_FILENO && tcgetattr(input, &oterm) == 0) {
+		memcpy(&term, &oterm, sizeof(term));
+		if (!(flags & RPP_ECHO_ON))
+			term.c_lflag &= ~(ECHO | ECHONL);
 #ifdef VSTATUS
-		if (term.c_cc[VSTATUS] != _POSIX_VDISABLE) {
-			status = term.c_cc[VSTATUS];
+		if (term.c_cc[VSTATUS] != _POSIX_VDISABLE)
 			term.c_cc[VSTATUS] = _POSIX_VDISABLE;
-		}
 #endif
 		(void)tcsetattr(input, _T_FLUSH, &term);
-	}
-	if (!(flags & RPP_ECHO_ON)) {
-		if (tcgetattr(input, &term) == 0 && (term.c_lflag & ECHO)) {
-			echo = 1;
-			term.c_lflag &= ~ECHO;
-			(void)tcsetattr(input, _T_FLUSH, &term);
-		}
+	} else {
+		memset(&term, 0, sizeof(term));
+		term.c_lflag |= ECHO;
+		memset(&oterm, 0, sizeof(oterm));
+		oterm.c_lflag |= ECHO;
 	}
 
-	(void)write(output, prompt, strlen(prompt));
+	if (!(flags & RPP_STDIN))
+		(void)write(output, prompt, strlen(prompt));
 	end = buf + bufsiz - 1;
-	for (p = buf; read(input, &ch, 1) == 1 && ch != '\n' && ch != '\r';) {
+	for (p = buf; (nr = read(input, &ch, 1)) == 1 && ch != '\n' && ch != '\r';) {
 		if (p < end) {
 			if ((flags & RPP_SEVENBIT))
 				ch &= 0x7f;
@@ -133,35 +137,54 @@ readpassphrase(prompt, buf, bufsiz, flags)
 		}
 	}
 	*p = '\0';
-#ifdef _POSIX_VDISABLE
-	if (echo || status != _POSIX_VDISABLE) {
-#else
-	if (echo) {
-#endif
-		if (echo) {
-			(void)write(output, "\n", 1);
-			term.c_lflag |= ECHO;
-		}
-#ifdef VSTATUS
-		if (status != _POSIX_VDISABLE)
-			term.c_cc[VSTATUS] = status;
-#endif
-		(void)tcsetattr(input, _T_FLUSH, &term);
-	}
-	(void)sigprocmask(SIG_SETMASK, &oset, NULL);
+	save_errno = errno;
+	if (!(term.c_lflag & ECHO))
+		(void)write(output, "\n", 1);
+
+	/* Restore old terminal settings and signals. */
+	if (memcmp(&term, &oterm, sizeof(term)) != 0)
+		(void)tcsetattr(input, _T_FLUSH, &oterm);
+	(void)sigaction(SIGALRM, &savealrm, NULL);
+	(void)sigaction(SIGHUP, &savehup, NULL);
+	(void)sigaction(SIGINT, &saveint, NULL);
+	(void)sigaction(SIGQUIT, &savequit, NULL);
+	(void)sigaction(SIGPIPE, &savepipe, NULL);
+	(void)sigaction(SIGTERM, &saveterm, NULL);
+	(void)sigaction(SIGTSTP, &savetstp, NULL);
+	(void)sigaction(SIGTTIN, &savettin, NULL);
 	if (input != STDIN_FILENO)
 		(void)close(input);
-	return(buf);
-}
-#endif /* HAVE_READPASSPHRASE */
 
+	/*
+	 * If we were interrupted by a signal, resend it to ourselves
+	 * now that we have restored the signal handlers.
+	 */
+	if (signo) {
+		kill(getpid(), signo);
+		switch (signo) {
+		case SIGTSTP:
+		case SIGTTIN:
+		case SIGTTOU:
+			goto restart;
+		}
+	}
+
+	errno = save_errno;
+	return(nr == -1 ? NULL : buf);
+}
+  
 #if 0
 char *
-getpass(prompt)
-        const char *prompt;
+getpass(const char *prompt)
 {
 	static char buf[_PASSWORD_LEN + 1];
 
 	return(readpassphrase(prompt, buf, sizeof(buf), RPP_ECHO_OFF));
 }
 #endif
+
+static void handler(int s)
+{
+	signo = s;
+}
+#endif /* HAVE_READPASSPHRASE */

@@ -1,6 +1,38 @@
 This package is the actual port of OpenSSH to Cygwin 1.3.
 
 ===========================================================================
+Important change since 3.4p1-2:
+
+This version adds privilege separation as default setting, see
+/usr/doc/openssh/README.privsep.  According to that document the
+privsep feature requires a non-privileged account called 'sshd'.
+
+The new ssh-host-config file which is part of this version asks
+to create 'sshd' as local user if you want to use privilege
+separation.  If you confirm, it creates that NT user and adds
+the necessary entry to /etc/passwd.
+
+On 9x/Me systems the script just sets UsePrivilegeSeparation to "no"
+since that feature doesn't make any sense on a system which doesn't
+differ between privileged and unprivileged users.
+
+The new ssh-host-config script also adds the /var/empty directory
+needed by privilege separation.  When creating the /var/empty directory
+by yourself, please note that in contrast to the README.privsep document
+the owner sshould not be "root" but the user which is running sshd.  So,
+in the standard configuration this is SYSTEM.  The ssh-host-config script
+chowns /var/empty accordingly.
+===========================================================================
+
+===========================================================================
+Important change since 3.0.1p1-2:
+
+This version introduces the ability to register sshd as service on
+Windows 9x/Me systems.  This is done only when the options -D and/or
+-d are not given.
+===========================================================================
+
+===========================================================================
 Important change since 2.9p2:
 
 Since Cygwin is able to switch user context without password beginning
@@ -75,12 +107,12 @@ If you start sshd as deamon via cygrunsrv.exe you MUST give the
 If starting via inetd, copy sshd to eg. /usr/sbin/in.sshd and add the
 following line to your inetd.conf file:
 
-sshd stream tcp nowait root /usr/sbin/in.sshd sshd -i
+ssh stream tcp nowait root /usr/sbin/in.sshd sshd -i
 
 Moreover you'll have to add the following line to your
 ${SYSTEMROOT}/system32/drivers/etc/services file:
 
-   sshd         22/tcp          #SSH daemon
+   ssh         22/tcp          #SSH daemon
 
 ===========================================================================
 The following restrictions only apply to Cygwin versions up to 1.3.1
@@ -162,12 +194,10 @@ configure are used for the Cygwin binary distribution:
 
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	--libexecdir='${exec_prefix}/sbin \
-	--with-pcre
+	--libexecdir='${exec_prefix}/sbin'
 
-You must have installed the zlib, openssl and regex packages to
-be able to build OpenSSH! The `--with-pcre' option requires
-the installation of the pcre package.
+You must have installed the zlib and openssl packages to be able to
+build OpenSSH!
 
 Please send requests, error reports etc. to cygwin@cygwin.com.
 
