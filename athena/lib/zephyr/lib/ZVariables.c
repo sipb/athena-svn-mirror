@@ -11,21 +11,17 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.12 1993-09-24 16:22:09 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.13 1993-11-21 04:45:47 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.12 1993-09-24 16:22:09 probe Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.13 1993-11-21 04:45:47 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
-
 #include <zephyr/zephyr_internal.h>
 
 #include <ctype.h>
 #include <pwd.h>
-
-extern char *getenv();
-extern uid_t getuid();
 
 static int get_localvarfile();
 static char *get_varval();
