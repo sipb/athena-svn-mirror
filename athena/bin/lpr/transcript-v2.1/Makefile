@@ -2,7 +2,7 @@
 #
 # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.5 1990-07-22 15:27:48 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.6 1990-08-25 17:54:31 epeisach Exp $
 
 
 LPROGS = pscomm #lps40comm
@@ -23,8 +23,13 @@ CFLAGS = -O -DBSD -DSYSLOG -DZEPHYR
 programs all:	${LPROGS} ${BPROGS}
 
 pscomm: pscomm.o psutil.o config.o
-	cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
-		-lcom_err -lkrb -ldes
+	if [ `/bin/athena/machtype` = "mac" ]; then \
+		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
+			-lcom_err -lkrb -ldes -lposix ; \
+	else \
+		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o -lzephyr \
+			-lcom_err -lkrb -ldes ; \
+	fi
 
 lps40comm: lps40comm.o psutil.o config.o
 	cc ${CFLAGS} -o lps40comm lps40comm.o psutil.o config.o
@@ -35,12 +40,12 @@ pscomm.o psbanner.o pscat.o: psspool.h
 pscat.o pscatmap.o: action.h 
 
 config.c: config.proto config Makefile
-	-rm -f - config.c
+	-rm -f config.c
 	sed	-e s,PSLIBDIR,$(PSLIBDIR),g \
 		-e s,TROFFFONTDIR,$(TROFFFONTDIR),g \
 		-e s,DITDIR,$(DITDIR),g \
 		-e s,PSTEMPDIR,$(PSTEMPDIR),g \
-		config.proto >config.c"
+		config.proto >config.c
 
 install: ${LPROGS} ${BPROGS}
 	-cd $$PSLIBDIR; rm -f ${LPROGS} ${BPROGS}
