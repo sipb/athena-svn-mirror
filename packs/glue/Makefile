@@ -1,12 +1,14 @@
-# $Id: Makefile,v 1.4 1996-12-09 18:59:32 ghudson Exp $
+# $Id: Makefile,v 1.5 1997-01-28 11:16:58 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
+ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint kermit listmaint mkserv \
 	mailmaint moira mrcheck namespace olc_answers olh sis techinfo \
 	usermaint userreg xinfo xtechinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
+MOIRA=/afs/athena.mit.edu/system/moira
 
 all: ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -27,6 +29,7 @@ check:
 install:
 	-mkdir -p ${DESTDIR}/usr
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
+	-mkdir -p ${DESTDIR}${ATHETCDIR}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
@@ -54,6 +57,9 @@ install:
 	install -c -m 444 sis.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 444 xtechinfo.1 ${DESTDIR}${ATHMANDIR}/man1
+	rm -f ${DESTDIR}${ATHETCDIR}/update_server
+	ln -s `athdir -c -p ${MOIRA} -t bin`/update_server \
+		${DESTDIR}${ATHETCDIR}/update_server
 	rm -f ${DESTDIR}${ATHBINDIR}/help
 	ln -s olh ${DESTDIR}${ATHBINDIR}/help
 	rm -f ${DESTDIR}/usr/andrew
