@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.47 1996-04-19 02:27:43 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.48 1996-05-25 22:39:31 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -84,6 +84,7 @@ int xdmfd;
 #define REACTIVATING 2
 
 #define DAEMON 1	/* UID for scripts to run as */
+#define N_DAEMON "daemon"
 
 gid_t def_grplist[] = { 101 };			/* default group list */
 
@@ -1134,6 +1135,9 @@ Cardinal *n;
 {
     char **argv;
     int i;
+#ifdef sgi
+    extern char **environ;
+#endif
 
     unfocusACT(w, event, p, n);
     argv = (char **)malloc(sizeof(char *) * (*n + 3));
@@ -1191,6 +1195,20 @@ Cardinal *n;
     setenv("USER", "daemon", 1);
     setenv("SHELL", "/bin/sh", 1);
     setenv("DISPLAY", ":0", 1);
+
+#ifdef sgi
+    setenv("PRELOGIN", "true", 1);
+    if (nanny_setupUser(N_DAEMON, 0, environ, argv))
+      {
+	fprintf(stderr, "Unable set up for daemon app\n");
+	return;
+      }
+
+    fprintf(xdmstream, "%s", N_DAEMON);
+    fputc(0, xdmstream);
+
+    exit(0);
+#else
     setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
 #if defined(_AIX) && defined(_IBMR2)
@@ -1204,6 +1222,7 @@ Cardinal *n;
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
     _exit(3);
+#endif
 }
 
 

@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
@@ -27,6 +28,7 @@ main(int argc, char **argv)
 {
   char **env, **args, *tty;
   char **ptr, *name;
+  char *prelogin;
   int c;
 
   if (argv[0])
@@ -55,7 +57,15 @@ main(int argc, char **argv)
       c = fork();
       if (c == 0)
 	{
-	  execl(session, "sh", args[0], args[1], NULL);
+	  prelogin = getenv("PRELOGIN");
+	  if (prelogin && !strcmp(prelogin, "true"))
+	    {
+	      execv("/bin/sh", args);
+	    }
+	  else
+	    {
+	      execl(session, "sh", args[0], args[1], NULL);
+	    }
 	  fprintf(stderr, "%s: Xsession exec failed\n", name);
 	  sleep(DELAY);
 	  exit(1);
