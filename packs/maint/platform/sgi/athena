@@ -1,4 +1,4 @@
-# $Id: athena,v 1.42 1998-04-25 20:42:48 rbasch Exp $
+# $Id: athena,v 1.43 1998-05-01 16:59:49 rbasch Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -190,6 +190,10 @@ if [ "$TIMECLIENT" = true ]; then
 	$ECHO "xntpd... \c"
 	/etc/athena/xntpd &
 fi
+
+# Tell inetd to reread its config file, now that all
+# filesystems are available.
+killall -HUP inetd
 
 # Start Athena's inetd.  Make sure the time zone is set in its environment.
 . /etc/TIMEZONE
