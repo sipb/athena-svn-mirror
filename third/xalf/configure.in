@@ -52,7 +52,7 @@ if test "$enable_capplet" = "yes"; then
 fi   
 AM_CONDITIONAL(COMPILE_CAPPLET, test x$enable_capplet = xyes)
 
-AC_DEFINE(DEFAULT_TIMEOUT, 20)
+AC_DEFINE(DEFAULT_TIMEOUT, 240)
 
 AC_OUTPUT(
 Makefile
