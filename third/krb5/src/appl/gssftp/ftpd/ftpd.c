@@ -198,6 +198,7 @@ char	tmpline[FTP_BUFSIZ];
 char	hostname[MAXHOSTNAMELEN];
 char	remotehost[MAXHOSTNAMELEN];
 int	al_local_acct;
+int	encrypted_passwords;
 
 /*
  * Timeout intervals for retrying connections
@@ -263,6 +264,10 @@ main(argc, argv, envp)
 
 		case 'd':
 			debug = 1;
+			break;
+
+		case 'E':
+			encrypted_passwords = 1;
 			break;
 
 		case 'l':
@@ -692,8 +697,18 @@ user(name)
 			return;
 		} else
 			reply(331, "Password required for %s.", name);
-	} else
+	} else if (!encrypted_passwords || level == PROT_P)
 		reply(331, "Password required for %s.", name);
+	else {
+		reply(530, "Password required for %s, but you must encrypt the connection first.",
+		      name);
+		if (logging)
+			syslog(LOG_NOTICE,
+			       "FTP UNENCRYPTED LOGIN REFUSED FROM %s, %s",
+			       remotehost, name);
+		pw = (struct passwd *) NULL;
+		return;
+	}
 
 	askpasswd = 1;
 	/*
