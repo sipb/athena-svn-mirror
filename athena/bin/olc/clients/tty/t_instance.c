@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.7 1989-11-17 14:10:58 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.8 1990-01-16 11:37:19 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -63,6 +63,7 @@ take:
       if((status == SUCCESS) || (status == OK))
 	{
 	  User.instance = instance;
+	  Request->requester.instance = instance;
 	  printf("You are now %s (%d).\n",User.username, User.instance);
 	  t_who(Request);
 	  return(SUCCESS);
