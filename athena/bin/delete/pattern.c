@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.8 1989-03-27 12:07:48 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.9 1989-05-04 14:21:39 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -207,12 +207,12 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-     
      strcpy(first, reg_firstpart(expression, rest));
      re_comp(first);
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name)) /* skip dot files */
+	       continue;
 	  if (re_exec(dp->d_name) && *rest) {
 	       strcpy(new, append(base, dp->d_name));
 	       next = find_deleted_matches(new, rest, &num_next);
@@ -265,6 +265,8 @@ int *num_found;
      strcpy(first, reg_firstpart(expression, rest));
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
 	  re_comp(first);
 	  if (re_exec(dp->d_name)) {
 	       if (*rest) {
@@ -321,9 +323,9 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
 	  strcpy(newname, append(base, dp->d_name));
 	  found = add_str(found, found_num, newname);
 	  found_num++;
@@ -362,9 +364,10 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
+
 	  strcpy(newname, append(base, dp->d_name));
 	  
 	  if (is_deleted(dp->d_name)) {
@@ -408,9 +411,9 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
 	  found = add_str(found, num, append(base, dp->d_name));
 	  num += 1;
      }
@@ -440,9 +443,9 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
 	  if (is_deleted(dp->d_name)) {
 	       found = add_str(found, num, append(base, dp->d_name));
 	       num += 1;
@@ -479,9 +482,9 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  if (is_dotfile(dp->d_name))
+	       continue;
 	  if (is_deleted(dp->d_name)) {
 	       strcpy(newname, append(base, dp->d_name));
 	       found = add_str(found, num, newname);
