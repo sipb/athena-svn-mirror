@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.4 1988-01-29 18:24:02 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.5 1988-02-23 19:21:36 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.4  88/01/29  18:24:02  don
+ * bug fixes. also, now track can update the root.
+ * 
  * Revision 2.3  87/12/03  19:50:02  don
  * moved SIGN macro to track.h.
  * 
@@ -30,7 +33,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.4 1988-01-29 18:24:02 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.5 1988-02-23 19:21:36 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -417,19 +420,20 @@ pushpath( p, name) char **p; char *name; {
 			"use -S option, with value >", stackmax);
 		do_panic();
 	}
-	*p[ COUNT( p)]++ = '/';
+	if ( *name) *p[ COUNT( p)]++ = '/';
 	top = p[ COUNT( p)];
 	strcpy( top, name);
 	p[ COUNT( p) + 1] = top + strlen( top);
 	return( COUNT( p));
 }
 poppath( p) char **p; {
-	if ( ! p);
-	else if ( 1 <  COUNT( p)) /* remove element's initial slash */
-		*--p[  COUNT( p)--] = '\0';
-	else {
+	if ( ! p) return;
+	else if ( 1 >= COUNT( p)) {
 		sprintf(errmsg,"can't pop root from path-stack");
 		do_panic();
 	}
+	else if ( *p[ COUNT( p)]) p[ COUNT( p)]--;
+		/* non-null last elt; remove its initial slash */
+	*p[  COUNT( p)--] = '\0';
 	return;
 }
