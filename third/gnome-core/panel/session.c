@@ -823,41 +823,28 @@ static void
 load_default_applets1(PanelWidget *panel)
 {
 	char *def_launchers[] =
-	      { "gnome/apps/gnome-help.desktop",
-		"gnome/apps/System/gnome-terminal.desktop",
-		"gnome/apps/Settings/gnomecc.desktop",
-		"gnome/apps/Internet/Netscape.desktop",
+	      { "gnome/athena/mail.desktop",
+		"gnome/athena/browser.desktop",
+		"gnome/athena/terminal.desktop",
+		"gnome/athena/editor.desktop",
 		NULL };
 	int i;
 	char *p;
 	int sz;
 
-	if(gdk_screen_width() <= 320)
-		sz = SIZE_ULTRA_TINY;
-	else if(gdk_screen_width() < 800)
-		sz = SIZE_TINY;
-	else if(gdk_screen_width() < 1024)
-		sz = SIZE_SMALL;
-	else
-		sz = SIZE_STANDARD;
+	sz = SIZE_STANDARD;
 
 	/* load up the foot menu */
-	load_menu_applet(NULL, get_default_menu_flags (),
-			 TRUE, FALSE, NULL, panel, 0, TRUE);
+	load_menu_applet(NULL,
+			 MAIN_MENU_USER_SUB|MAIN_MENU_SYSTEM|MAIN_MENU_DESKTOP,
+			 FALSE, FALSE, NULL, panel, 0, TRUE);
 
-	/*load up some buttons, but only if screen larger then 639*/
-	if(gdk_screen_width() >= 640) {
-		load_logout_applet(panel, sz, TRUE);
-		load_lock_applet(panel, sz*2, TRUE);
-
-		for(i=0;def_launchers[i]!=NULL;i++) {
-			p = gnome_datadir_file (def_launchers[i]);
-			/*int center = gdk_screen_width()/2;*/
-			if(p) {
-				load_launcher_applet(p, panel,
-						     sz*4+i*sz, TRUE);
-				g_free(p);
-			}
+	for(i=0;def_launchers[i]!=NULL;i++) {
+		p = gnome_datadir_file (def_launchers[i]);
+		if(p) {
+			load_launcher_applet(p, panel,
+					     sz+i*sz, TRUE);
+			g_free(p);
 		}
 	}
 
@@ -865,7 +852,11 @@ load_default_applets1(PanelWidget *panel)
 			   panel, G_MAXINT/2 /*flush right*/,
 			   TRUE, TRUE);
 
-	load_status_applet(panel,
+	load_extern_applet("gen_util_clock", NULL,
+			   panel, G_MAXINT/2 + 4000 /*flush right*/,
+			   TRUE, TRUE);
+
+	load_logout_applet(panel,
 			   G_MAXINT/2 + 4000/*flush right*/, TRUE);
 }
 
@@ -1120,29 +1111,12 @@ init_user_panels(void)
 	  to work, so this is the way we find out if there was no
 	  config from last time*/
 	if(count <= 0)  {
-		int sz;
-		gboolean hidebutton_pixmaps;
-
-		if(gdk_screen_width() <= 320) {
-			sz = SIZE_ULTRA_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_width() < 800) {
-			sz = SIZE_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_width() < 1024) {
-			sz = SIZE_SMALL;
-			hidebutton_pixmaps = TRUE;
-		} else {
-			sz = SIZE_STANDARD;
-			hidebutton_pixmaps = TRUE;
-		}
-
 		panel = edge_widget_new(BORDER_BOTTOM,
 					BASEP_EXPLICIT_HIDE,
 					BASEP_SHOWN,
-					sz,
+					SIZE_STANDARD,
 					TRUE,
-					hidebutton_pixmaps,
+					TRUE,
 					PANEL_BACK_NONE,
 					NULL,
 					TRUE,
@@ -1154,48 +1128,6 @@ init_user_panels(void)
 
 		/*load up default applets on the default panel*/
 		load_default_applets1(PANEL_WIDGET(BASEP_WIDGET(panel)->panel));
-
-		/*
-		if(gdk_screen_height() <= 240) {
-			sz = SIZE_ULTRA_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_height() < 600) {
-			sz = SIZE_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_height() < 768) {
-			sz = SIZE_SMALL;
-			hidebutton_pixmaps = TRUE;
-		} else {
-			sz = SIZE_STANDARD;
-			hidebutton_pixmaps = TRUE;
-		}
-
-		panel = aligned_widget_new(ALIGNED_LEFT,
-					   BORDER_RIGHT,
-					   BASEP_EXPLICIT_HIDE,
-					   BASEP_SHOWN,
-					   sz,
-					   TRUE,
-					   hidebutton_pixmaps,
-					   PANEL_BACK_NONE,
-					   NULL,
-					   TRUE,
-					   FALSE,
-					   TRUE,
-					   NULL);*/
-		panel = foobar_widget_new();
-
-		/* Don't translate the first part of this string */
-		s = gnome_config_get_string (_("/panel/Config/clock_format=%I:%M:%S %p"));
-		if (s != NULL)
-			foobar_widget_set_clock_format (FOOBAR_WIDGET (panel), s);
-		g_free (s);
-
-		panel_setup(panel);
-		gtk_widget_show(panel);	       
-
-		/*load up default applets on the second default panel*/
-		load_default_applets2(PANEL_WIDGET(FOOBAR_WIDGET(panel)->panel));
 
 		/*we laoded default applets, so we didn't find the config
 		  or something else was wrong, so do complete save when
@@ -1429,12 +1361,10 @@ load_up_globals(void)
 		gnome_config_get_bool("show_dot_buttons=FALSE");
 
 	global_config.hungry_menus =
-		gnome_config_get_bool("memory_hungry_menus=FALSE");
+		gnome_config_get_bool("memory_hungry_menus=TRUE");
 
 	global_config.use_large_icons =
-		gnome_config_get_bool(gdk_screen_height () > 768 
-				      ? "use_large_icons=TRUE"
-				      : "use_large_icons=FALSE");
+		gnome_config_get_bool("use_large_icons=FALSE");
 
 	global_config.merge_menus =
 		gnome_config_get_bool("merge_menus=TRUE");
@@ -1494,7 +1424,7 @@ load_up_globals(void)
 	global_config.confirm_panel_remove = gnome_config_get_bool("confirm_panel_remove=TRUE");
 	global_config.fast_button_scaling = gnome_config_get_bool("fast_button_scaling=FALSE");
 	
-	g_string_sprintf (buf, "menu_flags=%d", get_default_menu_flags ());
+	g_string_sprintf (buf, "menu_flags=%d", MAIN_MENU_PANEL);
 	global_config.menu_flags = gnome_config_get_int (buf->str);
 
 	for(i=0;i<LAST_TILE;i++) {
@@ -1502,7 +1432,9 @@ load_up_globals(void)
 		global_config.tiles_enabled[i] =
 			gnome_config_get_bool(buf->str);
 
-		g_string_sprintf(buf,"text_labels_enabled_%d=FALSE",i);
+		g_string_sprintf(buf,"text_labels_enabled_%d=%s",i,
+				 (i == LAUNCHER_TILE || i == MISC_TILE)
+				 ? "TRUE" : "FALSE");
 		global_config.text_enabled[i] =
 			gnome_config_get_bool(buf->str);
  
