@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.37 1993-02-08 13:56:34 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.38 1993-02-08 13:59:13 probe Exp $
  */
 
 #include <stdio.h>
@@ -164,7 +164,10 @@ char *display;
  	}
 	if (strcmp(pwd->pw_name, user))
 	  return("Unable to find account information (incorrect hesiod name found).");
-#ifdef _AIX
+	if (getpwuid(pwd->pw_uid))
+	    return("This account conflicts with a locally defined account... aborting.");
+
+#if defined(_AIX)
 	/*
 	 * Because the default shell is /bin/csh, and we wish to provide
 	 * users with the line-editing of tcsh, we will reset their shell.
@@ -199,13 +202,13 @@ char *display;
     setrgid(pwd->pw_gid);
 #endif
 
-    if ((msg = get_tickets(user, passwd)) != NULL &&
-	(pwd->pw_uid || local_passwd)) {
+    if (msg = get_tickets(user, passwd)) {
 	if (!local_ok) {
 	    cleanup(NULL);
 	    return(msg);
 	} else {
-	    prompt_user("Unable to get full authentication, you will have local access only during this login session (failed to get kerberos tickets).  Continue anyway?", abort_verify);
+	    if (pwd->pw_uid != ROOT)
+		prompt_user("Unable to get full authentication, you will have local access only during this login session (failed to get kerberos tickets).  Continue anyway?", abort_verify);
 	}
     }
 
