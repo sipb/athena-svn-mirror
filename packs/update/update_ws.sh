@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.32 1998-03-27 19:10:23 ghudson Exp $
+# $Id: update_ws.sh,v 1.33 1998-04-08 17:08:43 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -20,6 +20,16 @@
 # Check that an update is needed, and make sure the conditions necessary
 # for a successful update are met. Then prepare the machine for update,
 # and run do-update.
+
+# "tee" doesn't work reliably across OS versions (since it's not local on
+# Solaris), so emulate it in the shell.
+shelltee() {
+	exec 3>$1
+	while IFS="" read line; do
+		echo "$line"
+		echo "$line" 1>&3
+	done
+}
 
 trap "" 1 15
 
@@ -54,10 +64,14 @@ done
 shift `expr $OPTIND - 1`
 why="$1"
 
-if [ "`whoami`" != "root" ];  then
+case `id` in
+"uid=0("*)
+	;;
+*)
 	echo "You are not root.  This update script must be run as root."
 	exit 1
-fi
+	;;
+esac
 
 # If /srvd is not mounted, quit.
 if [ ! -d /srvd/bin ]; then
@@ -291,8 +305,8 @@ if [ "$method" = Auto ]; then
 	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
 	echo
 	exec sh "$LIBDIR/do-update" "$method" "$version" "$newvers" \
-		< /dev/null 2>&1 | tee /var/athena/update.log
+		< /dev/null 2>&1 | shelltee /var/athena/update.log
 else
 	exec sh "$LIBDIR/do-update" "$method" "$version" "$newvers" \
-		2>&1 | tee /var/athena/update.log
+		2>&1 | shelltee /var/athena/update.log
 fi
