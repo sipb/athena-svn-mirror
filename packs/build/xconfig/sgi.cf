@@ -4,7 +4,7 @@ XCOMM platform:  $XConsortium: sgi.cf,v 1.19 91/07/28 22:39:45 rws Exp $
 XCOMM operating system:		OSName
 
 #ifndef OSMajorVersion
-#define OSMajorVersion 5
+#define OSMajorVersion 6
 #endif
 #ifndef OSMinorVersion
 #define OSMinorVersion 0
