@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.5 1987-07-29 15:18:56 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.6 1987-08-01 15:31:06 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.5 1987-07-29 15:18:56 rfrench Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.6 1987-08-01 15:31:06 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -66,6 +66,7 @@ Z_Subscriptions(sublist,nitems,port,opcode)
 	notice.z_opcode = opcode;
 	notice.z_sender = 0;
 	notice.z_recipient = "";
+	notice.z_default_format = "";
 	notice.z_message_len = 0;
 
 	for (i=0;i<nitems;i++) {
@@ -85,7 +86,8 @@ Z_Subscriptions(sublist,nitems,port,opcode)
 	if (retval != ZERR_NONE)
 		return (retval);
 
-	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,(int *)0,
+	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,
+				(struct sockaddr_in *)0,
 			        ZCompareUIDPred,(char *)&notice.z_uid)) !=
 	    ZERR_NONE)
 		return (retval);

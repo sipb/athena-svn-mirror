@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.14 1987-07-30 19:49:00 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.15 1987-08-01 15:29:10 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.14 1987-07-30 19:49:00 rfrench Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.15 1987-08-01 15:29:10 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -42,28 +42,31 @@ Code_t ZSetLocation()
 	} 
 
 	return (Z_SendLocation(LOGIN_CLASS,quiet?LOGIN_QUIET_LOGIN:
-			       LOGIN_USER_LOGIN,ZAUTH));
+			       LOGIN_USER_LOGIN,ZAUTH,
+			       "$sender logged in to $1 on $3 at $2"));
 }
 
 Code_t ZUnsetLocation()
 {
-	return (Z_SendLocation(LOGIN_CLASS,LOGIN_USER_LOGOUT,ZNOAUTH));
+	return (Z_SendLocation(LOGIN_CLASS,LOGIN_USER_LOGOUT,ZNOAUTH,
+			       "$sender logged out of $1 on $3 at $2"));
 }
 
 Code_t ZHideLocation()
 {
-	return (Z_SendLocation(LOCATE_CLASS,LOCATE_HIDE,ZAUTH));
+	return (Z_SendLocation(LOCATE_CLASS,LOCATE_HIDE,ZAUTH,(char *)0));
 }
 
 Code_t ZUnhideLocation()
 {
-	return (Z_SendLocation(LOCATE_CLASS,LOCATE_UNHIDE,ZAUTH));
+	return (Z_SendLocation(LOCATE_CLASS,LOCATE_UNHIDE,ZAUTH,(char *)0));
 }
 
-Z_SendLocation(class,opcode,auth)
+Z_SendLocation(class,opcode,auth,format)
 	char *class;
 	char *opcode;
 	int (*auth)();
+	char *format;
 {
 	char *ttyname(),*ctime();
 
@@ -81,6 +84,7 @@ Z_SendLocation(class,opcode,auth)
 	notice.z_opcode = opcode;
 	notice.z_sender = 0;
 	notice.z_recipient = "";
+	notice.z_default_format = format;
 
 	if (gethostname(host,MAXHOSTNAMELEN) < 0)
 		return (errno);
@@ -107,7 +111,8 @@ Z_SendLocation(class,opcode,auth)
 	if ((retval = ZSendList(&notice,bptr,3,auth)) != ZERR_NONE)
 		return (retval);
 
-	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,(int *)0,
+	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,
+				(struct sockaddr_in *)0,
 			        ZCompareUIDPred,(char *)&notice.z_uid)) !=
 	    ZERR_NONE)
 		return (retval);
