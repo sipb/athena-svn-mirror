@@ -5,12 +5,12 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
  *	$Author: raeburn $
+ *	$Id: zephyr.h,v 1.35 1990-11-15 16:45:23 raeburn Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h".
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.34 1990-11-14 23:41:37 raeburn Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -218,7 +218,7 @@ extern "C" {
 #define ZERR_NONE		0
 
     /* Hostmanager wait time (in secs) */
-#define HM_TIMEOUT		30
+#define HM_TIMEOUT		5
 
 #define ZAUTH (ZMakeAuthentication)
 #define ZNOAUTH ((Z_AuthProc)0)
@@ -237,7 +237,7 @@ extern "C" {
 
     const int ZERR_NONE = 0;
 
-    const int HM_TIMEOUT = 30;
+    const int HM_TIMEOUT = 5;
 
     const Z_AuthProc ZAUTH = &ZMakeAuthentication;
     const Z_AuthProc ZNOAUTH = 0;
