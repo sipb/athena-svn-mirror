@@ -1,17 +1,32 @@
-/* This file is part of the CREF finder.  It contains miscellaneous useful
- *
- *
- *	Win Treese
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
  *	MIT Project Athena
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: treese $
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+/* This file is part of the CREF finder.  It contains miscellaneous useful
+ * utilities.
+ *
+ *	$Source:
+ *	$Author:
+ *      $Header:
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.5 1986-01-29 14:45:40 treese Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.6 1987-03-15 19:38:22 cref Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -21,6 +36,7 @@ static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/a
 #include <sys/param.h>			/* System parameters file. */
 #include <sgtty.h>			/* TTY definitions. */
 #include <grp.h>			/* System group defs. */
+#include <sys/time.h>
 
 #include "cref.h"			/* Finder defs. */
 #include "globals.h"			/* Global variable defs. */
@@ -60,35 +76,7 @@ err_exit(message, string)
   exit(ERROR);
 }
 
-/* Function:	check_consultant() checks to see if the user is a
- *			consultant and sets the consultant flag.
- * Arguments:	None.
- * Returns:	TRUE if consultant, FALSE otherwise.
- * Notes:
- */
 
-int
-check_consultant()
-{
-  int group_ids[NGROUPS];			/* Array of group ID's. */
-  struct group *consult_group;		/* Consult group entry. */
-  int i;					/* Index variable. */
-  
-  if (getgroups(NGROUPS, group_ids) < 0)
-    err_abort("cref: Unable to get group ID list.");
-  if ( (consult_group = getgrnam(CONSULT_GROUP)) == NULL)
-    err_abort("cref: Unable to get group entry.");
-  for (i = 0; i < NGROUPS; i++)
-    {
-      if (group_ids[i] == consult_group->gr_gid)
-	{
-	  Is_Consultant = TRUE;
-	  return(TRUE);
-	}
-    }
-  Is_Consultant = FALSE;
-  return(FALSE);
-}
 
 /* Function:	call_program() executes the named program by forking the
  *			main process.
@@ -275,13 +263,13 @@ copy_file(src_file, dest_file)
     {
       sprintf(error, "Unable to open input file %s\n", src_file);
       message(1, error);
-      return;
+      return(ERROR);
     }
-  if ((out_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, FILE_PROT)) < 0)
+  if ((out_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, CLOSED_FILE)) < 0)
     {
       sprintf(error, "Unable to open output file %s\n", dest_file);
       message(1, error);
-      return;
+      return(ERROR);
     }
   while ( (nbytes = read(in_fd, inbuf, LINE_LENGTH)) == LINE_LENGTH)
     write(out_fd, inbuf, LINE_LENGTH);
@@ -300,7 +288,7 @@ copy_file(src_file, dest_file)
 wait_for_key()
 {
   standout();
-  mvaddstr(LINES-1, 0, "Hit any key to continue");
+  mvaddstr(LINES-1, 3, "Hit any key to continue");
   standend();
   refresh();
   getch();
@@ -320,7 +308,7 @@ create_cref_dir(dir)
   char contents[FILENAME_SIZE];		/* Name of contents file. */
       
   make_path(dir, CONTENTS, contents);
-  if (mkdir(dir, DIR_PROT) < 0)
+  if (mkdir(dir, CLOSED_DIR) < 0)
     {
       printf("\nUnable to create directory %s.\n", dir);
       return(ERROR);
@@ -335,4 +323,23 @@ create_cref_dir(dir)
     fclose(fp);
     return(SUCCESS);
   }
+}
+
+log_status(logfile,logstring)
+     char *logfile[];
+     char *logstring[];
+{
+	FILE *fp;
+	long current_time;
+
+        fp = fopen(logfile,"a");
+
+		
+	time(&current_time);
+
+	fprintf(fp,"%.24s\n %s\n",ctime(&current_time),logstring);
+	
+	fclose(fp);
+	
+	return(SUCCESS);
 }

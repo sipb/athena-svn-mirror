@@ -1,16 +1,34 @@
-/* This file is part of the CREF finder.  It contains the display routines.
- *
- *	Win Treese
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
  *	MIT Project Athena
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
- *	$Author: treese $
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+
+/* This file is part of the CREF finder.  It contains the display routines.
+ *
+ *
+ *	$Source:
+ *	$Author:
+ *      $Header:
  */
 
+
 #ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.4 1986-01-29 14:45:48 treese Exp $";
+static char *rcsid_display_c = "$Header: ";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -78,6 +96,7 @@ message(line, text)
 {
   int row;
   
+  standout();
   move(LINES-1,0);
   clrtoeol();
   move(LINES-2,0);
@@ -94,10 +113,30 @@ message(line, text)
       refresh();
       return;
     }
-  mvaddstr(row, 0, text);
+  mvaddstr(row, 3, text);
+  refresh();
+  standend();
+  move(row,strlen(text) + 4);
   refresh();
 }
 #endif
+
+messages(first_line,second_line)
+     char *first_line;
+     char *second_line;
+{
+  move(LINES-2,0);
+  clrtoeol();
+  move(LINES-1,0);
+  clrtoeol();
+  refresh();
+  standout();
+  mvaddstr(LINES-2,3,first_line);
+  mvaddstr(LINES-1,3,second_line);
+  standend();
+  refresh();
+}
+
 
 /* Function:	make_display() creates a menu display for the current
  *			directory.
@@ -115,7 +154,7 @@ make_display()
   int curr_index;			/* Current index. */
   int index_line;			/* Current index line. */
   
-  for (curr_line = 0; curr_line < LINES - 2; curr_line++)
+  for (curr_line = 0; curr_line < LINES - 2 ; curr_line++)
     {
       move(curr_line, 0);
       clrtoeol();
@@ -183,9 +222,10 @@ display_entry(index)
   else if (entry->type == CREF_DIR)
     {
       Previous_Index = Current_Index;
-      Current_Index = 1;
       set_current_dir(entry->filename);
+      Current_Index=1;
       make_display();
+
     }
   else
     message(1, "Invalid CREF contents.");

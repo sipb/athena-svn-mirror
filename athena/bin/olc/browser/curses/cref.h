@@ -1,13 +1,29 @@
-/* This file is part of the CREF finder.  It contains general definitions.
- *
- *	Win Treese
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
  *	MIT Project Athena
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v $
- *	$Author: treese $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.4 1986-01-29 14:48:37 treese Exp $
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+
+/* This file is part of the CREF finder.  It contains global variable
+ * definitions.
+ *
+ *	$Source:
+ *	$Author:
+ *	$Header:
  */
 
 
@@ -23,9 +39,10 @@ typedef int ERRCODE;				/* An error code. */
 #define	MAX_ENTRIES	100		/* Maximum number of entries.*/
 #define	MAX_ABBREVS	100		/* Maximum number of abbreviations. */
 #define LINE_LENGTH	200		/* Length of a line of text. */
+#define LOG_LENGTH      500             /* Length of log string*/
 #define	ERRSIZE		200		/* Size of an error message. */
 #define MAX_INDEX_LINES	(LINES - 12)	/* Number of index lines. */
-
+#define LOGIN_NAMESIZE  20              /* Maximum size of login name. */
 /* Structure describing a CREF entry. */
 
 typedef struct tENTRY {
@@ -33,7 +50,7 @@ typedef struct tENTRY {
 	char title[TITLE_SIZE];		/* Title of entry. */
 	char filename[FILENAME_SIZE];	/* Filename for entry. */
 	char formatter[LINE_LENGTH];	/* Text formatter to use. */
-	char spare[FILENAME_SIZE];	/* Extra space. */
+	char maintainer[FILENAME_SIZE];	/* Maintainer of file. */
 	} ENTRY;
 
 /* Structure describing a CREF command. */
@@ -54,13 +71,13 @@ typedef struct tABBREV {
 /* Where things are. */
 
 #define	CREF_ROOT	"/mit/c/r/cref/Ref"
-#define	CONTENTS	"Contents.index"
+#define	CONTENTS	".index"
 #define GLOBAL_ABBREV	"cref_abbrevs"
 #define USER_ABBREV	".crefrc"
 
 /* Other important definitions. */
 
-#define	CREF_HEADER	"Consultant's On-line Reference System"
+#define	CREF_HEADER	"Consultants' On-line Reference System"
 #define	CREF_PROMPT	"cref> "	/* Prompt string. */
 
 #define	CREF_ENTRY	"entry"		/* String for a file entry. */
@@ -71,9 +88,11 @@ typedef struct tABBREV {
 #define	COMMENT_CHAR	'#'		/* Comment char in contents. */
 #define CONTENTS_DELIM	':'		/* Delimiter in contents. */
 
-#define	CONSULT_GROUP	"consult"	/* Consultants group. */
-#define FILE_PROT	0644		/* Default file protection. */
-#define DIR_PROT	0755		/* Default directory protection. */
+#define CLOSED_FILE	0640		/* Limited access file */
+#define CLOSED_DIR	0751		/* Limited access directory */
+#define OPEN_FILE       0644            /* Open access file */
+#define OPEN_DIR        0755            /* Open access directory */
+
 
 /* Error Codes. */
 
