@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -70,12 +70,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -158,11 +158,16 @@ HTML_DIR = $(datadir)/gnome/html
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 
-tmpl_sources =  	tmpl/gnorba-unused.sgml			tmpl/goad.sgml				tmpl/gnorba.sgml
+tmpl_sources = \
+	tmpl/gnorba-unused.sgml		\
+	tmpl/goad.sgml			\
+	tmpl/gnorba.sgml
 
 
 gnorba_docdir = $(HTML_DIR)
-gnorba_doc_DATA =  	gnorba-decl.txt				gnorba-sections.txt
+gnorba_doc_DATA = \
+	gnorba-decl.txt			\
+	gnorba-sections.txt
 
 
 EXTRA_DIST = $(gnorba_doc_DATA) gnorba-docs.sgml

@@ -2,7 +2,7 @@ sbin_PROGRAMS    = gnome-pty-helper
 lib_LTLIBRARIES  = libzvt.la
 noinst_PROGRAMS  = zterm test-utmp
 
-libzvtincludedir = $(includedir)/zvt
+libzvtincludedir = $(includedir)/gnome-1.0/zvt
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS)		\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
@@ -29,6 +29,8 @@ libzvtinclude_HEADERS =		\
 	vtx.h			\
 	zvtterm.h
 
+man_MANS = gnome-pty-helper.1
+
 #gnome_pty_helper_SOURCES = 	\
 #	gnome-pty.h		\
 #	gnome-pty-helper.c	\
@@ -45,7 +47,7 @@ gnome-pty-helper: gnome-pty-helper.o gnome-login-support.o gnome-utmp.o
 
 # Since we do gnome-pty-helper manually, include the relevant sources here
 EXTRA_DIST = TODO BUGS README	\
-	gnome-pty.h gnome-pty-helper.c gnome-utmp.c
+	gnome-pty.h gnome-pty-helper.c gnome-utmp.c $(man_MANS)
 
 zterm_SOURCES	= zterm.c
 

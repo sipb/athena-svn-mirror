@@ -1,10 +1,10 @@
 /*****
 * layout.c : XmHTML layout computation routines
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Thu Nov  6 01:35:46 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:38 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -33,6 +33,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.6.6.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.6  1999/07/29 01:26:29  sopwith
 *
 *
@@ -447,7 +452,7 @@ _XmHTMLComputeLayout(XmHTMLWidget html)
 	*****/
 	for(i = 0 ; i < html->html.anchor_words; i++)
 			html->html.anchors[i].x = html->html.anchors[i].self->x;
-	for(i = 0 ; i < html->html.anchor_words; i++)
+	for(i = 0 ; i < html->html.anchor_words - 1; i++)
 	{
 		if((html->html.anchors[i].owner == html->html.anchors[i+1].owner) &&
 			(html->html.anchors[i].line == html->html.anchors[i+1].line))
@@ -1173,19 +1178,30 @@ ComputeTextLayout(XmHTMLWidget html, PositionBox *box, XmHTMLWord **words,
 		* which *does* have a trailing space. We then use the total width
 		* of this word to check against available line width.
 		*****/
-		if(!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
-			i+1 < *nwords && !(words[i+1]->spacing & TEXT_SPACE_LEAD))
+		if(
+			!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
+			!(words[i]->spacing & TEXT_SPACE_TRAIL_ZEROWIDTH) && 
+			i+1 < *nwords &&
+			!(words[i+1]->spacing & TEXT_SPACE_LEAD) &&
+			!(words[i+1]->spacing & TEXT_SPACE_LEAD_ZEROWIDTH)
+		)
 		{
 			int j = i+1;
 			word_width = words[i]->width;
 			while(j < *nwords)
 			{
-				if(!(words[j]->spacing & TEXT_SPACE_LEAD))
+				if(!(words[j]->spacing & TEXT_SPACE_LEAD) &&
+					!(words[j]->spacing & TEXT_SPACE_LEAD_ZEROWIDTH))
 					word_width += words[j]->width;
 
 				/* see if this word has a trail space and the next a leading */
-				if(!(words[j]->spacing & TEXT_SPACE_TRAIL) && 
-					j+1 < *nwords && !(words[j+1]->spacing & TEXT_SPACE_LEAD))
+				if(
+					!(words[j]->spacing & TEXT_SPACE_TRAIL) && 
+					!(words[j]->spacing & TEXT_SPACE_TRAIL_ZEROWIDTH) && 
+					j+1 < *nwords &&
+					!(words[j+1]->spacing & TEXT_SPACE_LEAD) &&
+					!(words[j+1]->spacing & TEXT_SPACE_LEAD_ZEROWIDTH)
+				)
 					j++;
 				else
 					break;
@@ -1395,8 +1411,13 @@ ComputeTextLayout(XmHTMLWidget html, PositionBox *box, XmHTMLWord **words,
 		* save linenumber, x and y positions for this word or for
 		* multiple words needing to be ``glued'' together.
 		*****/
-		if(!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
-			i+1 < *nwords && !(words[i+1]->spacing & TEXT_SPACE_LEAD))
+		if(
+			!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
+			!(words[i]->spacing & TEXT_SPACE_TRAIL_ZEROWIDTH) && 
+			i+1 < *nwords &&
+			!(words[i+1]->spacing & TEXT_SPACE_LEAD) &&
+			!(words[i+1]->spacing & TEXT_SPACE_LEAD_ZEROWIDTH)
+		)
 		{
 			/* first word must take spacing into account */
 			UPDATE_WORD(words[i]);
@@ -1413,8 +1434,13 @@ ComputeTextLayout(XmHTMLWidget html, PositionBox *box, XmHTMLWord **words,
 					UPDATE_WORD(words[i])
 
 				/* this word has a trailing and the next a leading space? */
-				if(!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
-					i+1 < *nwords && !(words[i+1]->spacing & TEXT_SPACE_LEAD))
+				if(
+					!(words[i]->spacing & TEXT_SPACE_TRAIL) && 
+					!(words[i]->spacing & TEXT_SPACE_TRAIL_ZEROWIDTH) && 
+					i+1 < *nwords &&
+					!(words[i+1]->spacing & TEXT_SPACE_LEAD) &&
+					!(words[i+1]->spacing & TEXT_SPACE_LEAD_ZEROWIDTH)
+				)
 					i++;
 				else
 					break;
@@ -2972,8 +2998,7 @@ SetTable(XmHTMLWidget html, PositionBox *box, XmHTMLObjectTableElement data)
 
 	/* store return dimensions, box->x is not touched */
 	box->y += max_theight;
-	table->end->height = box->height = max_theight;
-	box->width = box->min_width = full_max_twidth;
+	table->end->height = max_theight;
 
 	/*****
 	* update x position of owning object, it might have shifted due to

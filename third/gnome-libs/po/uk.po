@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
 "PO-Revision-Date: 2000-11-01 10:59+0200\n"
 "Last-Translator: Yuri Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <ua@li.org>\n"
@@ -78,7 +78,8 @@ msgstr "Автори: "
 msgid "About"
 msgstr "Про"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Файл"
 
@@ -86,7 +87,7 @@ msgstr "_Файл"
 msgid "_File/"
 msgstr "_Файл/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Редагування"
 
@@ -94,7 +95,7 @@ msgstr "_Редагування"
 msgid "_Edit/"
 msgstr "_Редагування/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "Ви_гляд"
 
@@ -102,15 +103,16 @@ msgstr "Ви_гляд"
 msgid "_View/"
 msgstr "Ви_гляд/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
-msgstr "_Настройки"
+msgstr "_Установки"
 
 #: libgnomeui/gnome-app-helper.c:85
 msgid "_Settings/"
-msgstr "_Настройки/"
+msgstr "_Установки/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Новий"
 
@@ -118,7 +120,7 @@ msgstr "_Новий"
 msgid "_New/"
 msgstr "_Новий/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "Файли"
 
@@ -126,15 +128,15 @@ msgstr "Файли"
 msgid "Fi_les/"
 msgstr "Файли/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_В╕кна"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Гра"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Дов╕дка"
 
@@ -168,11 +170,11 @@ msgstr "Вигляд/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
-msgstr "Налаштування"
+msgstr "Установки"
 
 #: libgnomeui/gnome-app-helper.c:102
 msgid "Settings/"
-msgstr "Налаштування/"
+msgstr "Установки/"
 
 #: libgnomeui/gnome-app-helper.c:103
 msgid "New"
@@ -259,7 +261,7 @@ msgstr "На_стро╖ти друк..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
-msgstr "Встановлення настройок стор╕нки для вашого поточного принтера"
+msgstr "Встановлення параметр╕в стор╕нки для вашого поточного принтера"
 
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
@@ -379,11 +381,11 @@ msgstr "Зм╕на властивостей файлу"
 #. Settings
 #: libgnomeui/gnome-app-helper.c:224
 msgid "_Preferences..."
-msgstr "_Настройки..."
+msgstr "_Параметри..."
 
 #: libgnomeui/gnome-app-helper.c:225
 msgid "Configure the application"
-msgstr "Конф╕╜урування програми"
+msgstr "Налаштування програми"
 
 #. 20
 #.
@@ -702,32 +704,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Вказати ID сес╕╖"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
-msgstr "Вказати преф╕кс збережено╖ конф╕╜урац╕╖"
+msgstr "Вказати преф╕кс збереженого налаштування"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PREFIX"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Заборонити з'╓днання з менеджером сес╕й"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Параметри менеджера сес╕й"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "В╕дм╕нити вих╕д ╕з системи"
 
@@ -935,13 +937,13 @@ msgstr "Параметри GTK"
 msgid "GNOME GUI options"
 msgstr "Параметри ╕нтерфейсу GNOME"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr "Параметри %s"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Чисельн╕ системн╕ помилки; неможливо показати д╕алог з помилками\n"
 
@@ -1006,13 +1008,9 @@ msgid "Date"
 msgstr "Дата"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%H:%M %a %d %b %Y"
 
@@ -1157,7 +1155,7 @@ msgstr "Правопис"
 
 #: libgnomeui/gnome-spell.c:759
 msgid "Configure"
-msgstr "Зм╕нити конф╕╜урацию"
+msgstr "Зм╕нити налаштування"
 
 #: libgnomeui/gnome-stock.c:825
 msgid "Add"
@@ -1319,11 +1317,11 @@ msgstr "Завершити"
 
 #: libgnomeui/stock_demo.c:191
 msgid "Undo"
-msgstr "В╕дкат"
+msgstr "В╕дм╕нити"
 
 #: libgnomeui/stock_demo.c:199
 msgid "Redo"
-msgstr "Повернення"
+msgstr "Повторити"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
@@ -1347,7 +1345,7 @@ msgstr "Властивост╕..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
-msgstr "Настройки..."
+msgstr "Параметри..."
 
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
@@ -1499,7 +1497,7 @@ msgstr "Арх╕вний ID сервера що активу╓ться"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1537,32 +1535,37 @@ msgstr "Арх╕вний ID п╕д яким цей сервер в╕домий GOAD"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr "Неможливо в╕дкрити файл CORBA cookie (%s) для записування: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Неможливо записати у файл CORBA cookie (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Неможливо записати CORBA cookie у \"%s\": %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Неможливо в╕дкрити файл CORBA cookie \"%s\": %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Неможливо зчитати файл CORBA cookie \"%s\": %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "Неможливо отримати CORBA authentication cookie, завершення\n"
 
@@ -1633,11 +1636,11 @@ msgstr "%s: параметр `-W %s' ╓ не однозначним\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: параметр `-W %s' не ма╓ параметр╕в\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Показати це дов╕дкове пов╕домлення"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Показати коротку дов╕дку про використання"
 
@@ -1666,7 +1669,7 @@ msgstr "Показати розм╕р шрифту"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"
-msgstr "Це hbox ╕з п╕ктограмою та текстом"
+msgstr "Це горизонтальний блок ╕з п╕ктограмою та текстом"
 
 #: test-gnome/testgnome.c:1072
 msgid "The user chose Yes/OK with data:\n"

@@ -1,10 +1,10 @@
 /*****
 * escapes.h : HTML iso escape code table
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Nov 19 05:13:58 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:46:07 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -35,6 +35,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.1.14.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.1  1997/11/28 03:38:56  gnomecvs
 * Work in progress port of XmHTML;  No, it does not compile, don't even try -mig
 *
@@ -62,7 +67,7 @@ typedef struct{
 * The first part of this table contains the hash escapes, the second part
 * contains the named entity escapes.
 */
-#define NUM_ESCAPES	198
+#define NUM_ESCAPES	202
 static escape_data escapes[NUM_ESCAPES] = {
 	{"#160;",		'\240', 5},
 	{"#161;",		'\241', 5},
@@ -160,6 +165,9 @@ static escape_data escapes[NUM_ESCAPES] = {
 	{"#253;",		'\375', 5},
 	{"#254;",		'\376', 5},
 	{"#255;",		'\377', 5},
+	{"#8211;",		'-',    6}, /* EN DASH */
+	{"#8212;",		'-',    6}, /* EM DASH */
+	{"#8230;",		'-',    6}, /* HORIZONTAL ELLIPSIS */
 	{"AElig;",		'\306', 6},
 	{"Aacute;",		'\301', 7},
 	{"Acirc;",		'\302', 6},
@@ -226,6 +234,7 @@ static escape_data escapes[NUM_ESCAPES] = {
 	{"laquo;",		'\253', 6},
 	{"lt;",			'<',	3},
 	{"macr;",		'\257', 5},
+	{"mdash;",		'-',    6},
 	{"micro;",		'\265', 6},
 	{"middot;",		'\267', 7},
 	{"nbsp;",		'\240', 5},

@@ -380,7 +380,8 @@ gnome_util_user_shell (void)
 		"/bin/csh", "/bin/sh", 0
 	};
 
-	if ((shell = getenv ("SHELL"))){
+	shell = getenv ("SHELL");
+	if ((shell) && (strlen(shell) > 0)) {
 		return g_strdup (shell);
 	}
 	pw = getpwuid(getuid());

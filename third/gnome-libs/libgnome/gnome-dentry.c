@@ -636,7 +636,7 @@ gnome_desktop_entry_launch_with_args (GnomeDesktopEntry *item, int the_argc, cha
  	g_ptr_array_add (uarray, (gpointer) "-c");
 	if (no_xalf)
 		/* Skip over "NO_XALF " (8 chars) in the string */
-		g_ptr_array_add (uarray, (gpointer) exec_str+8);
+		g_ptr_array_add (uarray, (gpointer) (exec_str+8));
 	else 
 		g_ptr_array_add (uarray, (gpointer) exec_str);
 

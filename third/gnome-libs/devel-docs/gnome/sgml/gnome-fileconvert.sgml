@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-fileconvert" revision="16 Mar 2001">
+<refentry id="gnome-gnome-fileconvert">
 <refmeta>
 <refentrytitle>gnome-fileconvert</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -72,7 +72,7 @@ image/gif image/x-portable-pixmap giftopnm
 Converts the file opened by <parameter>fd</parameter> to the <parameter>totype</parameter> format.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -99,7 +99,7 @@ file.
 Converts <parameter>filename</parameter> to the <parameter>totype</parameter> format.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

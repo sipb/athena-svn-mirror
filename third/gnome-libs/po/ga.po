@@ -1,13 +1,13 @@
 # gnome-libs  ga.po
 # Copyright (C) 1998 Free Software Foundation, Inc.
-# Alastair McKinstry <alastair@ilo.dec.com>, 1998.
+# Alastair McKinstry <mckinstry@computer.org>, 1998.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 1998-05-07 18:00+0000\n"
-"Last-Translator: Alastair McKinstry <alastair@ilo.dec.com>\n"
+"Project-Id-Version: gnome-libs1 1.4.1.2\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 1998-05-08 09:00+0000\n"
+"Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <ga@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -26,9 +26,8 @@ msgid "CONFIG-PATH"
 msgstr ""
 
 #: libgnome/gconfigger.c:33
-#, fuzzy
 msgid "set"
-msgstr "Zsaiditheoir"
+msgstr ""
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
@@ -63,175 +62,170 @@ msgstr ""
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
-msgstr "Zdar:"
+msgstr "Údar:"
 
 #: libgnomeui/gnome-about.c:189 libgnomeui/gnome-about.c:191
 msgid "Authors:"
-msgstr "Zdair:"
+msgstr "Údair:"
 
 #: libgnomeui/gnome-about.c:352
 msgid "Authors: "
-msgstr "Zdair: "
+msgstr "Údair: "
 
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
 msgid "About"
 msgstr "Faoi"
 
-# , fuzzy
-#: libgnomeui/gnome-app-helper.c:78
-#, fuzzy
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
-msgstr "Comhad/Ealu as"
+msgstr "_Comhad"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:79
-#, fuzzy
 msgid "_File/"
-msgstr "Comhad/Ealu as"
+msgstr "_Comhad/"
 
-# , fuzzy
-#: libgnomeui/gnome-app-helper.c:80
-#, fuzzy
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
-msgstr "Comhad/Ealu as"
+msgstr "_Eagar"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:81
-#, fuzzy
 msgid "_Edit/"
-msgstr "Comhad/Ealu as"
+msgstr "_Eagar/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
-msgstr ""
+msgstr " _Radharc"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr ""
+msgstr "_Radharc/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
+#, fuzzy
 msgid "_Settings"
-msgstr ""
+msgstr "_Alblachtaí/"
 
 #: libgnomeui/gnome-app-helper.c:85
 msgid "_Settings/"
-msgstr ""
+msgstr "_Alblachtaí/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
-msgstr ""
+msgstr "_Nua"
 
 #: libgnomeui/gnome-app-helper.c:87
 msgid "_New/"
-msgstr ""
+msgstr "_Nua/"
 
-# , fuzzy
-#: libgnomeui/gnome-app-helper.c:88
-#, fuzzy
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
-msgstr "Comhad/Ealu as"
+msgstr "Comha_id"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:89
-#, fuzzy
 msgid "Fi_les/"
-msgstr "Comhad/Ealu as"
+msgstr "Comha_id/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
-msgstr ""
+msgstr "_Fuineogaí"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
-msgstr ""
+msgstr "_Cluiche"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
-msgstr ""
+msgstr "C_abhair"
 
 #: libgnomeui/gnome-app-helper.c:93
 msgid "_Windows/"
-msgstr ""
+msgstr "_Fuinneoigaí/"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:95 libgnomeui/stock_demo.c:184
 msgid "File"
-msgstr "Comhad/Ealu as"
+msgstr "Comhad"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:96
 #, fuzzy
 msgid "File/"
-msgstr "Comhad/Ealu as"
+msgstr "_Comhad/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr ""
+msgstr "Eagar"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:98
 #, fuzzy
 msgid "Edit/"
-msgstr "Comhad/Ealu as"
+msgstr "_Eagar/"
 
 #: libgnomeui/gnome-app-helper.c:99
+#, fuzzy
 msgid "View"
-msgstr ""
+msgstr " _Radharc"
 
 #: libgnomeui/gnome-app-helper.c:100
+#, fuzzy
 msgid "View/"
-msgstr ""
+msgstr "_Radharc/"
 
 #: libgnomeui/gnome-app-helper.c:101
+#, fuzzy
 msgid "Settings"
-msgstr ""
+msgstr "Albachtaí"
 
 #: libgnomeui/gnome-app-helper.c:102
+#, fuzzy
 msgid "Settings/"
-msgstr ""
+msgstr "_Alblachtaí/"
 
 #: libgnomeui/gnome-app-helper.c:103
+#, fuzzy
 msgid "New"
-msgstr ""
+msgstr "_Nua"
 
 #: libgnomeui/gnome-app-helper.c:104
+#, fuzzy
 msgid "New/"
-msgstr ""
+msgstr "_Nua/"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:105
 #, fuzzy
 msgid "Files"
-msgstr "Comhad/Ealu as"
+msgstr "Comha_id"
 
-# , fuzzy
 #: libgnomeui/gnome-app-helper.c:106
 #, fuzzy
 msgid "Files/"
-msgstr "Comhad/Ealu as"
+msgstr "Comha_id/"
 
 #: libgnomeui/gnome-app-helper.c:107
+#, fuzzy
 msgid "Windows"
-msgstr ""
+msgstr "_Fuineogaí"
 
 #: libgnomeui/gnome-app-helper.c:108
+#, fuzzy
 msgid "Game"
-msgstr ""
+msgstr "_Cluiche"
 
 #: libgnomeui/gnome-app-helper.c:109 libgnomeui/gnome-stock.c:843
 #: libgnomeui/stock_demo.c:290
 msgid "Help"
-msgstr ""
+msgstr "Cúidiú"
 
 #: libgnomeui/gnome-app-helper.c:110
+#, fuzzy
 msgid "Windows/"
-msgstr ""
+msgstr "_Fuinneoigaí/"
 
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
 msgid "_Open..."
-msgstr ""
+msgstr "_Oscáil..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
@@ -240,18 +234,16 @@ msgstr ""
 #. Save
 #: libgnomeui/gnome-app-helper.c:127
 msgid "_Save"
-msgstr ""
+msgstr "_Sábháil."
 
 #: libgnomeui/gnome-app-helper.c:127
 msgid "Save the current file"
 msgstr ""
 
-# , fuzzy
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
-#, fuzzy
 msgid "Save _As..."
-msgstr "Scsr"
+msgstr "Sábháil _le..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
@@ -269,7 +261,7 @@ msgstr ""
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
 msgid "_Print"
-msgstr ""
+msgstr "_Priontáil"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
@@ -278,7 +270,7 @@ msgstr ""
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr ""
+msgstr "Cuardaigh Priontéir"
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -287,22 +279,20 @@ msgstr ""
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
 msgid "_Close"
-msgstr ""
+msgstr "Dún"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
 msgstr ""
 
-# , fuzzy
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
-#, fuzzy
 msgid "E_xit"
-msgstr "Comhad/Ealu as"
+msgstr "_Ealu"
 
 #: libgnomeui/gnome-app-helper.c:160
 msgid "Exit the program"
-msgstr ""
+msgstr "Éirigh as an ríomhchlar"
 
 #.
 #. * The "Edit" menu
@@ -310,7 +300,7 @@ msgstr ""
 #. Cut
 #: libgnomeui/gnome-app-helper.c:168
 msgid "C_ut"
-msgstr ""
+msgstr "_Gearr"
 
 #: libgnomeui/gnome-app-helper.c:168
 msgid "Cut the selection"
@@ -320,18 +310,16 @@ msgstr ""
 #. Copy
 #: libgnomeui/gnome-app-helper.c:174 libgnomeui/gnome-popup-help.c:60
 msgid "_Copy"
-msgstr ""
+msgstr "_Cóip"
 
 #: libgnomeui/gnome-app-helper.c:174
 msgid "Copy the selection"
 msgstr ""
 
-# , fuzzy
 #. Paste
 #: libgnomeui/gnome-app-helper.c:179 libgnomeui/gnome-popup-help.c:62
-#, fuzzy
 msgid "_Paste"
-msgstr "Data"
+msgstr "_Greamaigh"
 
 #: libgnomeui/gnome-app-helper.c:179
 msgid "Paste the clipboard"
@@ -342,7 +330,7 @@ msgstr ""
 #: libgnomeui/gnome-app-helper.c:184
 #, fuzzy
 msgid "C_lear"
-msgstr "Glan"
+msgstr "_Glan"
 
 #: libgnomeui/gnome-app-helper.c:184
 msgid "Clear the selection"
@@ -351,7 +339,7 @@ msgstr ""
 #. Undo
 #: libgnomeui/gnome-app-helper.c:189
 msgid "_Undo"
-msgstr ""
+msgstr "_Leasú"
 
 #: libgnomeui/gnome-app-helper.c:189
 msgid "Undo the last action"
@@ -393,12 +381,10 @@ msgstr ""
 msgid "Replace a string"
 msgstr ""
 
-# , fuzzy
 #. Properties
 #: libgnomeui/gnome-app-helper.c:215
-#, fuzzy
 msgid "_Properties..."
-msgstr "Scsr"
+msgstr "_Alblachtaí..."
 
 #: libgnomeui/gnome-app-helper.c:216
 msgid "Modify the file's properties"
@@ -410,22 +396,20 @@ msgstr ""
 #. Settings
 #: libgnomeui/gnome-app-helper.c:224
 msgid "_Preferences..."
-msgstr ""
+msgstr "_Roghnachair..."
 
 #: libgnomeui/gnome-app-helper.c:225
 msgid "Configure the application"
 msgstr ""
 
-# , fuzzy
 #. 20
 #.
 #. * And the "Help" menu
 #.
 #. About
 #: libgnomeui/gnome-app-helper.c:234
-#, fuzzy
 msgid "_About..."
-msgstr "Faoi"
+msgstr "_Faoi..."
 
 #: libgnomeui/gnome-app-helper.c:235
 msgid "About this application"
@@ -433,11 +417,11 @@ msgstr ""
 
 #: libgnomeui/gnome-app-helper.c:238
 msgid "_Select All"
-msgstr ""
+msgstr "_Tóg gach rud"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
-msgstr ""
+msgstr "Tóg gach rud"
 
 #.
 #. * Window menu
@@ -448,11 +432,11 @@ msgstr ""
 
 #: libgnomeui/gnome-app-helper.c:248
 msgid "Create a new window"
-msgstr ""
+msgstr "Cruthaigh fuinneog nua"
 
 #: libgnomeui/gnome-app-helper.c:252
 msgid "_Close This Window"
-msgstr ""
+msgstr "Dún an fhuinneog seo"
 
 #: libgnomeui/gnome-app-helper.c:253
 msgid "Close the current window"
@@ -463,11 +447,11 @@ msgstr ""
 #.
 #: libgnomeui/gnome-app-helper.c:261
 msgid "_New game"
-msgstr ""
+msgstr "Cluiche _Nua"
 
 #: libgnomeui/gnome-app-helper.c:262
 msgid "Start a new game"
-msgstr ""
+msgstr "Tosaigh an cluiche nua"
 
 #: libgnomeui/gnome-app-helper.c:266
 msgid "_Pause game"
@@ -503,18 +487,16 @@ msgstr ""
 
 #: libgnomeui/gnome-app-helper.c:286
 msgid "_Hint"
-msgstr ""
+msgstr "_leathfhocal"
 
 #: libgnomeui/gnome-app-helper.c:287
 msgid "Get a hint for your next move"
 msgstr ""
 
-# , fuzzy
 #. 30
 #: libgnomeui/gnome-app-helper.c:292
-#, fuzzy
 msgid "_Scores..."
-msgstr "Scsr"
+msgstr "_Scóraí..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
@@ -534,36 +516,35 @@ msgstr ""
 
 #: libgnomeui/gnome-app-util.c:136
 msgid "ERROR: "
-msgstr ""
+msgstr "EARRÁID: "
 
-# , fuzzy
 #: libgnomeui/gnome-app-util.c:173
 msgid "Warning: "
-msgstr "Cogar"
+msgstr "Rabhadh: "
 
 #: libgnomeui/gnome-app-util.c:310
 msgid "y"
-msgstr ""
+msgstr "c"
 
 #: libgnomeui/gnome-app-util.c:311
 msgid "yes"
-msgstr ""
+msgstr "Ceart"
 
 #: libgnomeui/gnome-app-util.c:314
 msgid "n"
-msgstr ""
+msgstr "n"
 
 #: libgnomeui/gnome-app-util.c:315
 msgid "no"
-msgstr ""
+msgstr "Ní Ceart"
 
 #: libgnomeui/gnome-app-util.c:354
 msgid " (yes or no)"
-msgstr ""
+msgstr " (Ceart nó Ní Ceart)"
 
 #: libgnomeui/gnome-app-util.c:355
 msgid "  - OK? (yes or no)"
-msgstr ""
+msgstr " - Ok ? (Ceart nó Ní Ceart) "
 
 #: libgnomeui/gnome-app-util.c:687
 msgid "Progress"
@@ -571,235 +552,234 @@ msgstr ""
 
 #: libgnomeui/gnome-calculator.c:944 libgnomeui/gnome-calculator.c:1060
 msgid "DEG"
-msgstr ""
+msgstr "DEG"
 
 #: libgnomeui/gnome-calculator.c:946
 msgid "RAD"
-msgstr ""
+msgstr "RAD"
 
 #: libgnomeui/gnome-calculator.c:948
 msgid "GRAD"
-msgstr ""
+msgstr "GRAD"
 
 #: libgnomeui/gnome-calculator.c:1050
 msgid "1/x"
-msgstr ""
+msgstr "1/x"
 
 #: libgnomeui/gnome-calculator.c:1051
 msgid "x^2"
-msgstr ""
+msgstr "X^2"
 
 #: libgnomeui/gnome-calculator.c:1052
 msgid "SQRT"
-msgstr ""
+msgstr "SQRT"
 
 #: libgnomeui/gnome-calculator.c:1053
 msgid "CE/C"
-msgstr ""
+msgstr "CE/C"
 
 #: libgnomeui/gnome-calculator.c:1054
 msgid "AC"
-msgstr ""
+msgstr "AC"
 
 #. inverse button
 #: libgnomeui/gnome-calculator.c:1057
 msgid "sin"
-msgstr ""
+msgstr "sin"
 
 #: libgnomeui/gnome-calculator.c:1058
 msgid "cos"
-msgstr ""
+msgstr "cos"
 
 #: libgnomeui/gnome-calculator.c:1059
 msgid "tan"
-msgstr ""
+msgstr "tan"
 
 #: libgnomeui/gnome-calculator.c:1062
 msgid "e"
-msgstr ""
+msgstr "e"
 
 #: libgnomeui/gnome-calculator.c:1063
 msgid "EE"
-msgstr ""
+msgstr "EE"
 
 #: libgnomeui/gnome-calculator.c:1064
 msgid "log"
-msgstr ""
+msgstr "log"
 
 #: libgnomeui/gnome-calculator.c:1065
 msgid "ln"
-msgstr ""
+msgstr "ln"
 
 #: libgnomeui/gnome-calculator.c:1066
 msgid "x^y"
-msgstr ""
+msgstr "x^y"
 
 #: libgnomeui/gnome-calculator.c:1068
 msgid "PI"
-msgstr ""
+msgstr "PI"
 
 #: libgnomeui/gnome-calculator.c:1069
 msgid "x!"
-msgstr ""
+msgstr "x!"
 
 #: libgnomeui/gnome-calculator.c:1070
 msgid "("
-msgstr ""
+msgstr "("
 
 #: libgnomeui/gnome-calculator.c:1071
 msgid ")"
-msgstr ""
+msgstr ")"
 
 #: libgnomeui/gnome-calculator.c:1072
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: libgnomeui/gnome-calculator.c:1074
 msgid "STO"
-msgstr ""
+msgstr "STO"
 
 #: libgnomeui/gnome-calculator.c:1075
 msgid "7"
-msgstr ""
+msgstr "7"
 
 #: libgnomeui/gnome-calculator.c:1076
 msgid "8"
-msgstr ""
+msgstr "8"
 
 #: libgnomeui/gnome-calculator.c:1077
 msgid "9"
-msgstr ""
+msgstr "9"
 
 #: libgnomeui/gnome-calculator.c:1078
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: libgnomeui/gnome-calculator.c:1080
 msgid "RCL"
-msgstr ""
+msgstr "RCL"
 
 #: libgnomeui/gnome-calculator.c:1081
 msgid "4"
-msgstr ""
+msgstr "4"
 
 #: libgnomeui/gnome-calculator.c:1082
 msgid "5"
-msgstr ""
+msgstr "5"
 
 #: libgnomeui/gnome-calculator.c:1083
 msgid "6"
-msgstr ""
+msgstr "6"
 
 #: libgnomeui/gnome-calculator.c:1084
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: libgnomeui/gnome-calculator.c:1086
 msgid "SUM"
-msgstr ""
+msgstr "SUM"
 
 #: libgnomeui/gnome-calculator.c:1087
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: libgnomeui/gnome-calculator.c:1088
 msgid "2"
-msgstr ""
+msgstr "2"
 
 #: libgnomeui/gnome-calculator.c:1089
 msgid "3"
-msgstr ""
+msgstr "3"
 
 #: libgnomeui/gnome-calculator.c:1090
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #: libgnomeui/gnome-calculator.c:1092
 msgid "EXC"
-msgstr ""
+msgstr "EXC"
 
 #: libgnomeui/gnome-calculator.c:1093
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: libgnomeui/gnome-calculator.c:1094
 msgid "."
-msgstr ""
+msgstr "."
 
 #: libgnomeui/gnome-calculator.c:1095
 msgid "+/-"
-msgstr ""
+msgstr "+/-"
 
 #: libgnomeui/gnome-calculator.c:1096
 msgid "="
-msgstr ""
+msgstr "="
 
 #: libgnomeui/gnome-calculator.c:1315
 msgid "INV"
-msgstr ""
+msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr ""
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr ""
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
-msgstr ""
+msgstr "Cealaigh logout"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
-msgstr ""
+msgstr "Tóg dath"
 
-# , fuzzy
 #. Calendar label, only shown if the date editor has a time field
 #: libgnomeui/gnome-dateedit.c:459
 msgid "Calendar"
-msgstr "Glan"
+msgstr "Féilire"
 
 #: libgnomeui/gnome-dentry-edit.c:180
 msgid "Name:"
-msgstr ""
+msgstr "Ainm:"
 
 #: libgnomeui/gnome-dentry-edit.c:193
 msgid "Comment:"
-msgstr ""
+msgstr "Trácht:"
 
 #: libgnomeui/gnome-dentry-edit.c:203
 msgid "Command:"
-msgstr ""
+msgstr "Ordu:"
 
 #: libgnomeui/gnome-dentry-edit.c:213
 msgid "Type:"
-msgstr ""
+msgstr "Saghas:"
 
 #: libgnomeui/gnome-dentry-edit.c:230
 msgid "Icon:"
-msgstr ""
+msgstr "Dealbh:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr ""
+msgstr "Tóg dealbh"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -811,19 +791,19 @@ msgstr ""
 
 #: libgnomeui/gnome-dentry-edit.c:374
 msgid "Documentation:"
-msgstr ""
+msgstr "Cáipéis:"
 
 #: libgnomeui/gnome-dentry-edit.c:384
 msgid "Name/Comment translations:"
-msgstr ""
+msgstr "Ainm/Comment translations:"
 
 #: libgnomeui/gnome-dentry-edit.c:387
 msgid "Language"
-msgstr ""
+msgstr "Teanga"
 
 #: libgnomeui/gnome-dentry-edit.c:388
 msgid "Name"
-msgstr ""
+msgstr "Ainm"
 
 #: libgnomeui/gnome-dentry-edit.c:389
 msgid "Comment"
@@ -835,7 +815,7 @@ msgstr ""
 
 #: libgnomeui/gnome-dentry-edit.c:422 libgnomeui/gnome-stock.c:828
 msgid "Remove"
-msgstr ""
+msgstr "Scrios"
 
 #: libgnomeui/gnome-dentry-edit.c:504
 msgid "Basic"
@@ -843,7 +823,7 @@ msgstr ""
 
 #: libgnomeui/gnome-dentry-edit.c:508
 msgid "Advanced"
-msgstr ""
+msgstr "Buntáisteach"
 
 #: libgnomeui/gnome-druid.c:129
 msgid "Back"
@@ -855,13 +835,13 @@ msgstr ""
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
-msgstr ""
+msgstr "Tóg Comhad"
 
 #. browse button ...
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr ""
+msgstr "Dearcadh..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
@@ -869,11 +849,11 @@ msgstr ""
 
 #: libgnomeui/gnome-font-picker.c:710 libgnomeui/gnome-stock.c:848
 msgid "Font"
-msgstr ""
+msgstr "Cló"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr ""
+msgstr "Gan Dealbh"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -894,7 +874,7 @@ msgstr ""
 #: libgnomeui/gnome-init.c:161 libgnomeui/gnome-init.c:163
 #: libgnomeui/gnome-init.c:183 libgnomeui/gnome-init.c:185
 msgid "FLAGS"
-msgstr ""
+msgstr "FLAGS"
 
 #: libgnomeui/gnome-init.c:163
 msgid "Gdk debugging flags to unset"
@@ -906,7 +886,7 @@ msgstr ""
 
 #: libgnomeui/gnome-init.c:165
 msgid "DISPLAY"
-msgstr ""
+msgstr "RADHARC"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
@@ -922,7 +902,7 @@ msgstr ""
 
 #: libgnomeui/gnome-init.c:171
 msgid "NAME"
-msgstr ""
+msgstr "AINM"
 
 #: libgnomeui/gnome-init.c:173
 msgid "Program class as used by the window manager"
@@ -930,11 +910,11 @@ msgstr ""
 
 #: libgnomeui/gnome-init.c:173
 msgid "CLASS"
-msgstr ""
+msgstr "RANGÚ"
 
 #: libgnomeui/gnome-init.c:175
 msgid "HOST"
-msgstr ""
+msgstr "OST"
 
 #: libgnomeui/gnome-init.c:177
 msgid "PORT"
@@ -942,7 +922,7 @@ msgstr ""
 
 #: libgnomeui/gnome-init.c:179 libgnomeui/gnome-init.c:181
 msgid "STYLE"
-msgstr ""
+msgstr "STÍL"
 
 #: libgnomeui/gnome-init.c:183
 msgid "Gtk+ debugging flags to set"
@@ -962,7 +942,7 @@ msgstr ""
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
-msgstr ""
+msgstr "MODÚL"
 
 #: libgnomeui/gnome-init.c:297
 msgid "GTK options"
@@ -972,13 +952,13 @@ msgstr ""
 msgid "GNOME GUI options"
 msgstr ""
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
 msgstr ""
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -992,7 +972,7 @@ msgstr "Cogar"
 
 #: libgnomeui/gnome-messagebox.c:129 libgnomeui/gnome-messagebox.c:262
 msgid "Error"
-msgstr ""
+msgstr "Botún"
 
 #: libgnomeui/gnome-messagebox.c:138 libgnomeui/gnome-messagebox.c:271
 msgid "Question"
@@ -1000,19 +980,19 @@ msgstr "Ceist"
 
 #: libgnomeui/gnome-messagebox.c:147 libgnomeui/gnome-messagebox.c:280
 msgid "Message"
-msgstr ""
+msgstr "Sceála"
 
 #: libgnomeui/gnome-number-entry.c:151
 msgid "Calculator"
-msgstr ""
+msgstr "Aireamháin"
 
 #: libgnomeui/gnome-number-entry.c:203
 msgid "Calculator..."
-msgstr ""
+msgstr "Aireamháin..."
 
 #: libgnomeui/gnome-pixmap-entry.c:106 libgnomeui/gnome-pixmap-entry.c:387
 msgid "No Image"
-msgstr ""
+msgstr "Gan íomha"
 
 #: libgnomeui/gnome-popup-help.c:52
 msgid "_Help with this"
@@ -1020,11 +1000,11 @@ msgstr ""
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
-msgstr ""
+msgstr "_Gearr"
 
 #: libgnomeui/gnome-property-entries.c:254
 msgid "Select"
-msgstr ""
+msgstr "Tóg"
 
 #: libgnomeui/gnome-scores.c:88
 msgid "Top Ten"
@@ -1032,30 +1012,26 @@ msgstr "Deich is airde"
 
 #: libgnomeui/gnome-scores.c:99
 msgid "User"
-msgstr "Zsaiditheoir"
+msgstr "Úsáiditheoir"
 
 #: libgnomeui/gnome-scores.c:102
 msgid "Score"
-msgstr "Scsr"
+msgstr "Scór"
 
 #: libgnomeui/gnome-scores.c:105
 msgid "Date"
-msgstr "Data"
+msgstr "Dáta"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr ""
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"
-msgstr ""
+msgstr "Tóg foclóir"
 
 #: libgnomeui/gnome-spell.c:245
 #, c-format
@@ -1071,15 +1047,15 @@ msgstr ""
 
 #: libgnomeui/gnome-spell.c:258 libgnomeui/gnome-stock.c:837
 msgid "OK"
-msgstr ""
+msgstr "Cealaigh"
 
 #: libgnomeui/gnome-spell.c:265 libgnomeui/gnome-stock.c:839
 msgid "Cancel"
-msgstr ""
+msgstr "Ceallaigh"
 
 #: libgnomeui/gnome-spell.c:527
 msgid "Word:"
-msgstr ""
+msgstr "Focal:"
 
 #: libgnomeui/gnome-spell.c:544
 msgid "Alternatives:"
@@ -1114,9 +1090,8 @@ msgid "Replace the word"
 msgstr ""
 
 #: libgnomeui/gnome-spell.c:584
-#, fuzzy
 msgid "Insert"
-msgstr "Zsaiditheoir"
+msgstr ""
 
 #: libgnomeui/gnome-spell.c:589
 msgid ""
@@ -1138,11 +1113,11 @@ msgstr ""
 
 #: libgnomeui/gnome-spell.c:612
 msgid "Ispell command:"
-msgstr ""
+msgstr "Ordú íspell'"
 
 #: libgnomeui/gnome-spell.c:630
 msgid "Main dictionary:"
-msgstr ""
+msgstr "Príomhfhoclóir"
 
 #: libgnomeui/gnome-spell.c:647
 msgid "Personal dictionary:"
@@ -1182,21 +1157,19 @@ msgstr ""
 
 #: libgnomeui/gnome-spell.c:759
 msgid "Configure"
-msgstr ""
+msgstr "Cuardaigh"
 
 #: libgnomeui/gnome-stock.c:825
 msgid "Add"
-msgstr ""
+msgstr "Suim"
 
-# , fuzzy
 #: libgnomeui/gnome-stock.c:826
-#, fuzzy
 msgid "Clear"
 msgstr "Glan"
 
 #: libgnomeui/gnome-stock.c:827
 msgid "Select Color"
-msgstr ""
+msgstr "Tóg Dath"
 
 #: libgnomeui/gnome-stock.c:829
 msgid "Table Borders"
@@ -1215,9 +1188,8 @@ msgid "Numbered List"
 msgstr ""
 
 #: libgnomeui/gnome-stock.c:833
-#, fuzzy
 msgid "Indent"
-msgstr "Zsaiditheoir"
+msgstr ""
 
 #: libgnomeui/gnome-stock.c:834
 msgid "Un-Indent"
@@ -1225,19 +1197,19 @@ msgstr ""
 
 #: libgnomeui/gnome-stock.c:838
 msgid "Apply"
-msgstr ""
+msgstr "Déan"
 
 #: libgnomeui/gnome-stock.c:840 libgnomeui/stock_demo.c:144
 msgid "Close"
-msgstr ""
+msgstr "Dún"
 
 #: libgnomeui/gnome-stock.c:841
 msgid "Yes"
-msgstr ""
+msgstr "Ceart"
 
 #: libgnomeui/gnome-stock.c:842
 msgid "No"
-msgstr ""
+msgstr "Ní Ceart"
 
 #: libgnomeui/gnome-stock.c:844
 msgid "Next"
@@ -1249,27 +1221,27 @@ msgstr ""
 
 #: libgnomeui/gnome-stock.c:846
 msgid "Up"
-msgstr ""
+msgstr "Suas"
 
 #: libgnomeui/gnome-stock.c:847
 msgid "Down"
-msgstr ""
+msgstr "Síos"
 
 #: libgnomeui/gnome-stock.c:1894
 msgid "Menu Accelerator Keys"
-msgstr ""
+msgstr "Eochair Luasaire Chlar"
 
 #: libgnomeui/gnome-stock.c:1896
 msgid "Global"
-msgstr ""
+msgstr "Domhanda"
 
 #: libgnomeui/gnome-stock.c:1898
 msgid "Menu Item"
-msgstr ""
+msgstr "Pointe Chár"
 
 #: libgnomeui/gnome-stock.c:1899
 msgid "Accelerator"
-msgstr ""
+msgstr "Luasaire"
 
 #: libgnomeui/gnome_segv.c:62
 #, c-format
@@ -1291,7 +1263,7 @@ msgstr ""
 
 #: libgnomeui/gnome_segv.c:80
 msgid "Usage: gnome_segv appname signum\n"
-msgstr ""
+msgstr "Úsáid: gnome_segv ainm_ríomhchlar signal\n"
 
 #: libgnomeui/gnome_segv.c:94
 msgid "Submit a bug report"
@@ -1303,7 +1275,7 @@ msgstr ""
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
-msgstr ""
+msgstr "http://www.gnome.org/application_crashed.shtml"
 
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
@@ -1311,105 +1283,103 @@ msgstr ""
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
-msgstr ""
+msgstr "Nua..."
 
 #: libgnomeui/stock_demo.c:120
 msgid "Open..."
-msgstr ""
+msgstr "Oscail..."
 
 #: libgnomeui/stock_demo.c:128
 msgid "Save"
-msgstr ""
+msgstr "Sabháil"
 
 #: libgnomeui/stock_demo.c:136
 msgid "Save as..."
-msgstr ""
+msgstr "Sabháil le..."
 
 #: libgnomeui/stock_demo.c:156
 msgid "Print..."
-msgstr ""
+msgstr "Priontáil..."
 
 #: libgnomeui/stock_demo.c:164
 msgid "Setup Page..."
-msgstr ""
+msgstr "Leathanach a Socrú..."
 
 #: libgnomeui/stock_demo.c:173
 msgid "Quit"
-msgstr ""
+msgstr "Ealu"
 
 #: libgnomeui/stock_demo.c:191
 msgid "Undo"
-msgstr ""
+msgstr "Leasú"
 
 #: libgnomeui/stock_demo.c:199
 msgid "Redo"
-msgstr ""
+msgstr "Athdeán"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
-msgstr ""
+msgstr "Scrios"
 
 #: libgnomeui/stock_demo.c:213
 msgid "Cut"
-msgstr ""
+msgstr "Gearr"
 
 #: libgnomeui/stock_demo.c:221
 msgid "Copy"
-msgstr ""
+msgstr "Cóip"
 
-# , fuzzy
 #: libgnomeui/stock_demo.c:229
 msgid "Paste"
-msgstr "Data"
+msgstr "Greamhaigh"
 
 #: libgnomeui/stock_demo.c:241
 msgid "Properties..."
-msgstr ""
+msgstr "Roghnachais..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
-msgstr ""
+msgstr "Ábaltachtaí..."
 
-# , fuzzy
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
-msgstr "Scsr"
+msgstr "Scóraí..."
 
 #: libgnomeui/winhints_demo.c:46
 msgid "wmhints-test"
-msgstr ""
+msgstr "wmhints-test"
 
 #: libgnomeui/winhints_demo.c:46
 msgid "winhints-test"
-msgstr ""
+msgstr "winhints-test"
 
 #: libgnomeui/winhints_demo.c:71
 msgid "Layer:"
-msgstr ""
+msgstr "Brat:"
 
 #: libgnomeui/winhints_demo.c:94
 msgid "Above Dock"
-msgstr ""
+msgstr "Os cionn na duga"
 
 #: libgnomeui/winhints_demo.c:98
 msgid "Dock"
-msgstr ""
+msgstr "Duga"
 
 #: libgnomeui/winhints_demo.c:102
 msgid "On Top"
-msgstr ""
+msgstr "Thar lár"
 
 #: libgnomeui/winhints_demo.c:106
 msgid "Normal"
-msgstr ""
+msgstr "Gnáth"
 
 #: libgnomeui/winhints_demo.c:110
 msgid "Below"
-msgstr ""
+msgstr "Bun"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"
-msgstr ""
+msgstr "Deasc"
 
 #: libgnomeui/winhints_demo.c:122
 msgid "Set Layer"
@@ -1445,11 +1415,11 @@ msgstr ""
 
 #: libgnomeui/winhints_demo.c:187
 msgid "Hidden"
-msgstr ""
+msgstr "Folaitheach"
 
 #: libgnomeui/winhints_demo.c:191
 msgid "Shaded"
-msgstr ""
+msgstr "Scáthach"
 
 #: libgnomeui/winhints_demo.c:195
 msgid "Fixed Position"
@@ -1485,11 +1455,11 @@ msgstr ""
 
 #: libgnomeui/winhints_demo.c:410
 msgid "WIN_HINTS Test"
-msgstr ""
+msgstr "Tástála WIN_HINTS"
 
 #: libgnomeui/winhints_demo.c:411
 msgid "Copyright (C) 1998"
-msgstr ""
+msgstr "Cóipcheart © 1998"
 
 #: libgnomeui/winhints_demo.c:413
 msgid ""
@@ -1519,7 +1489,7 @@ msgstr ""
 msgid "REPO-ID"
 msgstr ""
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1554,32 +1524,37 @@ msgstr ""
 msgid "REPO_ID"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr ""
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr ""
 
@@ -1589,7 +1564,7 @@ msgstr ""
 
 #: support/error.c:109
 msgid "Unknown system error"
-msgstr ""
+msgstr "Earraod coráis anathnid"
 
 # , c-format
 # , c-format
@@ -1625,7 +1600,7 @@ msgstr ""
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr ""
+msgstr "%s: rogha anathnid `--%s'\n"
 
 # , c-format
 # , c-format
@@ -1633,7 +1608,7 @@ msgstr ""
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr ""
+msgstr "%s: rogha anathnid `%c%s'\n"
 
 # , c-format
 # , c-format
@@ -1641,14 +1616,14 @@ msgstr ""
 #: support/getopt.c:774
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr ""
+msgstr "%s: droch rogha -- %c\n"
 
 # , c-format
 # , c-format
 #: support/getopt.c:777
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: droch rogha -- %c\n"
 
 # , c-format
 # , c-format
@@ -1672,18 +1647,18 @@ msgstr ""
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr ""
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr ""
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr ""
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
 msgid "Default Pixmap"
-msgstr ""
+msgstr "Dealbh Gnáth"
 
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
@@ -1693,7 +1668,7 @@ msgstr ""
 #. Font_Info
 #: test-gnome/testgnome.c:807
 msgid "Font Info"
-msgstr ""
+msgstr "Eolais Cló"
 
 #: test-gnome/testgnome.c:817
 msgid "Use Font in button with size"
@@ -1719,6 +1694,12 @@ msgstr ""
 msgid "Weird number in reply callback"
 msgstr ""
 
+#~ msgid "_About"
+#~ msgstr "_Faoi"
+
+#~ msgid "Test GNOME"
+#~ msgstr "Tastáil GNOME"
+
 #~ msgid "Hello GNOME\n"
 #~ msgstr "Dia dhuit GNOME\n"
 
@@ -1731,19 +1712,14 @@ msgstr ""
 #~ "Is uirlis sibhialta e GNOME agus mar sin, ta riomhchlar \"Dia dhaoibh a "
 #~ "dhomhain\" againn."
 
-# , fuzzy
 #~ msgid "Exit"
-#~ msgstr "Comhad/Ealu as"
+#~ msgstr "Ealu"
 
 #~ msgid "Hello World Gnomified"
 #~ msgstr "Dia Dhaoibh a dhomain gnomaithe!"
 
-#~ msgid "Hello GNOME"
-#~ msgstr "Dia dhuit GNOME"
-
-# , fuzzy
 #~ msgid "About..."
-#~ msgstr "Faoi"
+#~ msgstr "Faoi..."
 
 #~ msgid "File/Exit"
 #~ msgstr "Comhad/Ealu as"
@@ -1752,12 +1728,10 @@ msgstr ""
 #~ msgstr "<control>E"
 
 #~ msgid "Help/About..."
-#~ msgstr "Cznamh/Faoi..."
+#~ msgstr "Cúidiú/Faoi..."
 
 #~ msgid "<control>A"
 #~ msgstr "<control>A"
 
-# , fuzzy
-# , fuzzy
 #~ msgid " Warning "
-#~ msgstr "Cogar"
+#~ msgstr "Rabhadh"

@@ -1,4 +1,4 @@
-<refentry id="GnomeCalculator" revision="16 Mar 2001">
+<refentry id="GnomeCalculator">
 <refmeta>
 <refentrytitle>GnomeCalculator</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -222,7 +222,7 @@ Creates a calculator widget, a window with all the common buttons and
 functions found on a standard pocket calculator.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -240,7 +240,7 @@ Resets the calculator back to zero.  If <parameter>reset</parameter> is <literal
 stored in memory and the calculator mode are cleared also.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -261,7 +261,7 @@ Sets the value stored in the calculator's result buffer to the given
 <parameter>result</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -280,7 +280,7 @@ Sets the value stored in the calculator's result buffer to the given
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

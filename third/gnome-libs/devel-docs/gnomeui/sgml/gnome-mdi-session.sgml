@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-mdi-session" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-mdi-session">
 <refmeta>
 <refentrytitle>gnome-mdi-session</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -47,7 +47,7 @@ void        <link linkend="gnome-mdi-save-state">gnome_mdi_save_state</link>    
 <programlisting><link linkend="GnomeMDIChild">GnomeMDIChild</link>* (*GnomeMDIChildCreator)      (const <link linkend="gchar">gchar</link>*);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -71,7 +71,7 @@ restores information about a child from a config string that was provided
 during saving state by the child.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -97,7 +97,7 @@ TRUE if state was successfully restored, FALSE otherwise.
 Saves MDI state to the application's config file in section <parameter>section</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

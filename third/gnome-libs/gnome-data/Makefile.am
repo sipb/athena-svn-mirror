@@ -18,7 +18,7 @@ EXTRA_DIST = 			\
 	postscript.convert	\
 	gnome-make-postscript-mimes
 
-scoredir=$(DESTDIR)$(localstatedir)/games
+scoredir=$(localstatedir)/games
 sysconf_DATA=paper.config mime-magic
 
 soundlistdir = $(sysconfdir)/sound/events
@@ -29,5 +29,5 @@ postscript.convert: gnome-make-postscript-mimes
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(scoredir)
-	-chgrp $(GAMES_GROUP) $(scoredir) && chmod g=rwXs $(DESTDIR)$(scoredir)
+	-chgrp $(GAMES_GROUP) $(DESTDIR)$(scoredir) && chmod g=rwXs $(DESTDIR)$(scoredir)
 	$(top_builddir)/libgnome/gnome-gen-mimedb $(DESTDIR)$(sysconfdir)/mime-magic

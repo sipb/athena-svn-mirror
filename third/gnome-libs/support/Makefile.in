@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -156,11 +156,13 @@ supportexecinclude_DATA = gnomesupport.h
 
 # These are internal headers: they are used only when compiling and
 # should not be installed
-noinst_HEADERS = gnomesupport-fake.h 		 findme.h poptint.h
+noinst_HEADERS = gnomesupport-fake.h \
+		 findme.h poptint.h
 
 
 # Hmm... should we move `error.h' here.
-include_HEADERS = popt-gnome.h
+gnomeincludedir = $(includedir)/gnome-1.0
+gnomeinclude_HEADERS = popt-gnome.h
 
 popt_sources = findme.c poptconfig.c poptparse.c popt.c popthelp.c
 
@@ -170,7 +172,14 @@ libgnomesupport_la_LDFLAGS = -version-info 0:0:0
 
 BUILT_SOURCES = gnomesupport.h
 
-EXTRA_DIST = gnomesupport.awk README-gnome 	canonicalize.c easy-vsnprintf.c error.c error.h 	findme.c findme.h getopt.c getopt.h getopt1.c 	gnome-argp.c gnome-argp.h gnomesupport-fake.h 	memmove.c mkstemp.c popt-gnome.h popt.c poptconfig.c 	popthelp.c poptint.h poptparse.c scandir.c strcasecmp.c 	strerror.c strndup.c strnlen.c strtod.c strtok_r.c strtol.c 	strtoul.c vasprintf.c vsnprintf.c
+EXTRA_DIST = gnomesupport.awk README-gnome \
+	canonicalize.c easy-vsnprintf.c error.c error.h \
+	findme.c findme.h getopt.c getopt.h getopt1.c \
+	gnome-argp.c gnome-argp.h gnomesupport-fake.h \
+	memmove.c mkstemp.c popt-gnome.h popt.c poptconfig.c \
+	popthelp.c poptint.h poptparse.c scandir.c strcasecmp.c \
+	strerror.c strndup.c strnlen.c strtod.c strtok_r.c strtol.c \
+	strtoul.c vasprintf.c vsnprintf.c
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -196,7 +205,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(supportexecinclude_DATA)
 
-HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
+HEADERS =  $(gnomeinclude_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in canonicalize.c error.c \
 error.h getopt.c getopt1.c memmove.c mkstemp.c scandir.c strcasecmp.c \
@@ -307,19 +316,19 @@ uninstall-supportexecincludeDATA:
 	  rm -f $(DESTDIR)$(supportexecincludedir)/$$p; \
 	done
 
-install-includeHEADERS: $(include_HEADERS)
+install-gnomeincludeHEADERS: $(gnomeinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(gnomeincludedir)
+	@list='$(gnomeinclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(gnomeincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(gnomeincludedir)/$$p; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-gnomeincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	list='$(gnomeinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gnomeincludedir)/$$p; \
 	done
 
 tags: TAGS
@@ -368,11 +377,11 @@ distdir: $(DISTFILES)
 	done
 findme.lo findme.o : findme.c ../config.h getopt.h findme.h
 gnome-argp.lo gnome-argp.o : gnome-argp.c ../config.h
+popt.lo popt.o : popt.c ../config.h getopt.h findme.h popt-gnome.h \
+	poptint.h
 poptconfig.lo poptconfig.o : poptconfig.c ../config.h getopt.h \
 	popt-gnome.h poptint.h
 popthelp.lo popthelp.o : popthelp.c ../config.h popt-gnome.h poptint.h
-popt.lo popt.o : popt.c ../config.h getopt.h findme.h popt-gnome.h \
-	poptint.h
 poptparse.lo poptparse.o : poptparse.c ../config.h popt-gnome.h
 
 info-am:
@@ -386,14 +395,14 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES install-supportexecincludeDATA
 install-exec: install-exec-am
 
-install-data-am: install-includeHEADERS
+install-data-am: install-gnomeincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES uninstall-supportexecincludeDATA \
-		uninstall-includeHEADERS
+		uninstall-gnomeincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 all-redirect: all-am
@@ -402,7 +411,7 @@ install-strip:
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
 		$(DESTDIR)$(supportexecincludedir) \
-		$(DESTDIR)$(includedir)
+		$(DESTDIR)$(gnomeincludedir)
 
 
 mostlyclean-generic:
@@ -448,10 +457,10 @@ uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-supportexecincludeDATA \
-install-supportexecincludeDATA uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
+install-supportexecincludeDATA uninstall-gnomeincludeHEADERS \
+install-gnomeincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \

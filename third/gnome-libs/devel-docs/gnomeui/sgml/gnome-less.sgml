@@ -1,4 +1,4 @@
-<refentry id="GnomeLess" revision="16 Mar 2001">
+<refentry id="GnomeLess">
 <refmeta>
 <refentrytitle>GnomeLess</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -108,7 +108,7 @@ font = gdk_font_load("-adobe-helvetica-bold-o-normal-*-*-140-*-*-p-*-iso8859-1")
 Creates a new GnomeLess widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ Creates a new GnomeLess widget.</para>
 Clears all text from GnomeLess widget <parameter>gl</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -142,7 +142,7 @@ Displays a file in a GnomeLess widget. Replaces any text already being displayed
 in the widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -167,7 +167,7 @@ in the GnomeLess widget specified by <parameter>gl</parameter>. Replaces any tex
 widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -191,7 +191,7 @@ Displays a string in the GnomeLess widget <parameter>gl</parameter>. Replaces an
 already being displayed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -212,7 +212,7 @@ Reads all of the text from filestream <parameter>f</parameter>, and places it in
 already being displayed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -236,7 +236,7 @@ Reads all of the text from file descriptor <parameter>file_descriptor</parameter
 Replaces any text already being displayed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -259,7 +259,7 @@ Replaces any text already being displayed.</para>
 Writes the text displayed in the GnomeLess widget <parameter>gl</parameter> to the file specified by <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -281,7 +281,7 @@ Writes the text displayed in the GnomeLess widget <parameter>gl</parameter> to t
 Writes the text displayed in the GnomeLess widget <parameter>gl</parameter> to file descriptor <parameter>fd</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -308,7 +308,7 @@ If you use this function after adding text to the widget, you must show it again
 by using <link linkend="gnome-less-reshow">gnome_less_reshow</link> or one of the gnome_less_show commands.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -334,7 +334,7 @@ If you use this function after adding text to the widget, you must show it again
 by using <link linkend="gnome-less-reshow">gnome_less_reshow</link> or one of the gnome_less_show commands.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -354,7 +354,7 @@ Re-displays all of the text in the GnomeLess widget <parameter>gl</parameter>. I
 the last show/reshow of text, it will update the current text to the new font.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -370,7 +370,7 @@ the last show/reshow of text, it will update the current text to the new font.</
 This function is obsolete. Please use <link linkend="gnome-less-set-fixed-font">gnome_less_set_fixed_font</link> instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

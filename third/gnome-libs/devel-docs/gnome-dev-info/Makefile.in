@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -148,13 +148,28 @@ htmldir = $(datadir)/gnome/help/gnome-dev-info/C
 
 TEXT_FILES = 
 
-PIC_FILES =  	gnome-hello-0-basic.jpg 	gnome-hello-1-menus.jpg 	gnome-hello-2-i18n.jpg
+PIC_FILES = \
+	gnome-hello-0-basic.jpg \
+	gnome-hello-1-menus.jpg \
+	gnome-hello-2-i18n.jpg
 
 
 # automake does not yet dig .sgml files, so for now the DocBook
 # files must be extra_dist.  Also, distribute the `.html' file
 # so that people without DocBook can still use the docs.
-EXTRA_DIST =  	gnome-app-helper.sgml			gnome-canvas.sgml			gnome-dev-info.sgml			gnome-message-utils.sgml		x-concepts.sgml				libgnorba.sgml				gnome-mdi.sgml				libgnomeui.sgml				libgnome.sgml				trailer.sgml				$(TEXT_FILES)				$(PIC_FILES)
+EXTRA_DIST = \
+	gnome-app-helper.sgml		\
+	gnome-canvas.sgml		\
+	gnome-dev-info.sgml		\
+	gnome-message-utils.sgml	\
+	x-concepts.sgml			\
+	libgnorba.sgml			\
+	gnome-mdi.sgml			\
+	libgnomeui.sgml			\
+	libgnome.sgml			\
+	trailer.sgml			\
+	$(TEXT_FILES)			\
+	$(PIC_FILES)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

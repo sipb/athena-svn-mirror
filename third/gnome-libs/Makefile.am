@@ -19,7 +19,8 @@ SUBDIRS = po intl support macros \
 	libgnome libgnomeui gtk-xmhtml zvt \
 	libgnorba idl $(test_gnome) devel-docs gnome-data man
 
-include_HEADERS = gnome.h
+gnomeincludedir=$(includedir)/gnome-1.0
+gnomeinclude_HEADERS = gnome.h
 
 EXTRA_DIST =	HACKING gnomeConf.sh.in gnome-bug.in gnome-config.in \
 		gnome-libs.spec.in

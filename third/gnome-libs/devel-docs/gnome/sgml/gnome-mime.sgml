@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-mime" revision="16 Mar 2001">
+<refentry id="gnome-gnome-mime">
 <refmeta>
 <refentrytitle>gnome-mime</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -93,7 +93,7 @@ pre-processed, easily readable format in
 Determined the mime type for <parameter>filename</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -113,7 +113,7 @@ This routine tries to determine the mime-type of the filename
 only by looking at the filename from the GNOME database of mime-types.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -137,7 +137,7 @@ to figure this out by looking at the contents of the file, if this
 fails it will use the filename to figure out a name.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -159,7 +159,7 @@ by trying to guess the content of the file.  If this fails, it will
 return the mime-type based only on the filename.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -183,7 +183,7 @@ files into their mime-type (so our modified magic database contains mime-types
 rather than textual descriptions of the files).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -202,7 +202,7 @@ rather than textual descriptions of the files).</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -224,7 +224,7 @@ will discard any non-file uri from the result value.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -243,7 +243,7 @@ that have been splitted from <parameter>uri</parameter>-list.
 Releases all of the resources allocated by <parameter>list</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

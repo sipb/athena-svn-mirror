@@ -1,4 +1,4 @@
-<refentry id="GnomePropertyBox" revision="16 Mar 2001">
+<refentry id="GnomePropertyBox">
 <refmeta>
 <refentrytitle>GnomePropertyBox</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -227,7 +227,7 @@ your program needs to invoke the gnome_property_box_changed to signal
 a change (this will enable the Ok/Apply buttons).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -243,7 +243,7 @@ When a setting has changed, the code needs to invoke this routine
 to make the Ok/Apply buttons sensitive.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -258,7 +258,7 @@ to make the Ok/Apply buttons sensitive.</para>
                                              <link linkend="gboolean">gboolean</link> state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -281,7 +281,7 @@ to make the Ok/Apply buttons sensitive.</para>
 Appends a new page to the GnomePropertyBox.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

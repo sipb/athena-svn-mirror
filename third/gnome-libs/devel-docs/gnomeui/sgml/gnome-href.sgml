@@ -1,4 +1,4 @@
-<refentry id="GnomeHRef" revision="16 Mar 2001">
+<refentry id="GnomeHRef">
 <refmeta>
 <refentrytitle>GnomeHRef</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -84,7 +84,7 @@ and an associated URL.  If <parameter>label</parameter> is set to <literal>NULL<
 the label.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -106,7 +106,7 @@ the label.</para>
 Sets the internal URL value within <parameter>self</parameter> to the value of <parameter>url</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -125,7 +125,7 @@ Sets the internal URL value within <parameter>self</parameter> to the value of <
 Returns the pointer to the URL associated with the <parameter>self</parameter> href object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -145,7 +145,7 @@ Sets the internal label widget text (used to display a URL's link
 text) to the value given in <parameter>label</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -165,7 +165,7 @@ Returns the contents of the label widget used to display the link
 text.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

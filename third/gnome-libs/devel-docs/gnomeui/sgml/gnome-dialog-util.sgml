@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-dialog-util" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-dialog-util">
 <refmeta>
 <refentrytitle>gnome-dialog-util</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -104,7 +104,7 @@ these functions automatically show the dialog before they return.
 Creates and shows a simple message dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -123,7 +123,7 @@ Creates and shows a simple message dialog.</para>
 Creates and shows a simple message dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -145,7 +145,7 @@ Creates and shows a error dialog.  This is an OK
 dialog to display on fatally failed operations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -165,7 +165,7 @@ Creates and shows a error dialog.  This is an OK
 dialog to display on fatally failed operations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -187,7 +187,7 @@ Creates and shows a warning dialog.  For non-fatal
 warnings.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -207,7 +207,7 @@ Creates and shows a warning dialog.  For non-fatal
 warnings.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -235,7 +235,7 @@ when user answers the button number is passed onto 'reply'.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -267,7 +267,7 @@ when user answers the button number is passed onto 'reply'.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -302,7 +302,7 @@ dialog and the user will have to answer this before proceeding.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -336,7 +336,7 @@ dialog and the user will have to answer this before proceeding.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -370,7 +370,7 @@ when user answers the button number is passed onto 'reply'.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -402,7 +402,7 @@ when user answers the button number is passed onto 'reply'.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -437,7 +437,7 @@ dialog and the user will have to answer this before proceeding.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -471,7 +471,7 @@ dialog and the user will have to answer this before proceeding.
 void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -500,7 +500,7 @@ void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
 Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -530,7 +530,7 @@ Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link>
 Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -561,7 +561,7 @@ Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link>
 Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -591,7 +591,7 @@ Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link>
 Deprecated, use <link linkend="gnome-request-dialog">gnome_request_dialog</link></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -631,7 +631,7 @@ input or <literal>NULL</literal> if the user cancelled.  <parameter>callback</pa
 void (* GnomeStringCallback)(gchar * string, gpointer data);</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

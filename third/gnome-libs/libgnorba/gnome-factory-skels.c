@@ -33,8 +33,7 @@ _ORBIT_skel_GNOME_GenericFactory_supports(POA_GNOME_GenericFactory *
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 obj_goad_id = (void *) _ORBIT_curptr;
@@ -107,25 +106,22 @@ _ORBIT_skel_GNOME_GenericFactory_create_object(POA_GNOME_GenericFactory *
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_6))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_6))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 goad_id = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(goad_id[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (params._length))) =
+	 (*((guint32 *) & (params._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
+	 _ORBIT_curptr += 4;
 	 params._buffer =
 	    alloca(sizeof(params._buffer[_ORBIT_tmpvar_7]) * params._length);
 	 params._release = CORBA_FALSE;
 	 for (_ORBIT_tmpvar_7 = 0; _ORBIT_tmpvar_7 < params._length;
 	      _ORBIT_tmpvar_7++) {
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_9))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_9))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    params._buffer[_ORBIT_tmpvar_7] = (void *) _ORBIT_curptr;
@@ -174,12 +170,12 @@ _ORBIT_skel_GNOME_GenericFactory_create_object(POA_GNOME_GenericFactory *
 	    ORBit_marshal_object(_ORBIT_send_buffer, _ORBIT_retval);
 	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
 	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       = { {(const CORBA_TypeCode)
-		    &TC_GNOME_GenericFactory_CannotActivate_struct,
-		    (gpointer)
-		    _ORBIT_GNOME_GenericFactory_CannotActivate_marshal},
+	       =
+	       { {(const CORBA_TypeCode)
+		  &TC_GNOME_GenericFactory_CannotActivate_struct,
+		  (gpointer)
+		  _ORBIT_GNOME_GenericFactory_CannotActivate_marshal},
 	       {CORBA_OBJECT_NIL, NULL} };
-
 	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
 				      _ORBIT_user_exceptions);
 	 } else
@@ -232,9 +228,7 @@ POA_GNOME_GenericFactory__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_GenericFactory,
-	 "IDL:GNOME/GenericFactory:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_GenericFactory };
-
+"IDL:GNOME/GenericFactory:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_GenericFactory };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->

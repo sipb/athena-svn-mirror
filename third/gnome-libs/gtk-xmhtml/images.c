@@ -1,10 +1,10 @@
 /*****
 * images.c : XmHTML image loading/manipulation routines.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Dec 24 04:08:22 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:52:30 $
+* Last modification: 	$Date: 2002-02-13 00:12:36 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -40,6 +40,14 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.13.6.2  2002/01/08 22:33:11  kmaraas
+* 2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *: Fix compiler warnings.
+* 	* images.c: Fix missing X color context ref that was causing lots
+* 	of crashes. Fixes #60237, #61638, #63439, #65040, #66913 and more.
+* 	* test.c: do not use %s for a boolean use %d instead.
+*
 * Revision 1.13.6.1  2000/06/21 19:26:01  kmaraas
 * 2000-06-21  Kjartan Maraas  <kmaraas@gnome.org>
 *
@@ -2390,7 +2398,7 @@ _XmHTMLInfoToPixmap(XmHTMLWidget html, XmHTMLImage *image,
 		{
 			if(!html->html.xcc)
 				_XmHTMLCheckXCC(html);
-			image->xcc = html->html.xcc;
+			xcc = image->xcc = html->html.xcc;
 		}
 	}
 

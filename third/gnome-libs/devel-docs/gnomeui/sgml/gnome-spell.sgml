@@ -1,4 +1,4 @@
-<refentry id="GnomeSpell" revision="16 Mar 2001">
+<refentry id="GnomeSpell">
 <refmeta>
 <refentrytitle>GnomeSpell</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -84,7 +84,7 @@ Deprecated spell-checker widget.
 Create a new GNOME spell checker object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -107,7 +107,7 @@ because ispell checked it before...
 The easiest solution is to spell-check a word at a time (but it's slow).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -130,7 +130,7 @@ Adds a single word to the runtime list of words that the spelling
 checker should ignore.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ checker should ignore.</para>
 Adds a single word to the spelling checker's private dictionary.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -174,7 +174,7 @@ Adds a single word to the runtime list of words that the spelling
 checker should ignore.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -192,7 +192,7 @@ checker should ignore.</para>
 Terminates the external spelling checker process, if present.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

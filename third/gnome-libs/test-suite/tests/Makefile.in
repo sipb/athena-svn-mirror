@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -146,10 +146,18 @@ need_gnome_support = @need_gnome_support@
 
 noinst_PROGRAMS = fileconvert metadata parse-path skel split trigs
 
-INCLUDES =  	-I$(top_builddir) -I$(top_srcdir)		$(SUPPORTINCS)					$(GDK_IMLIB_CFLAGS)				-I$(includedir)					@GTK_CFLAGS@
+INCLUDES = \
+	-I$(top_builddir) -I$(top_srcdir)	\
+	$(SUPPORTINCS)				\
+	$(GDK_IMLIB_CFLAGS)			\
+	-I$(includedir)				\
+	@GTK_CFLAGS@
 
 
-LDADD = $(top_builddir)/libgnomeui/libgnomeui.la		$(top_builddir)/libgnome/libgnome.la			$(top_builddir)/libart_lgpl/libart_lgpl.la		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) $(INTLLIBS)
+LDADD = $(top_builddir)/libgnomeui/libgnomeui.la	\
+	$(top_builddir)/libgnome/libgnome.la		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) $(INTLLIBS)
 
 
 EXTRA_DIST = fileconvert.in lynxdump.sh types.cvt trigs.in

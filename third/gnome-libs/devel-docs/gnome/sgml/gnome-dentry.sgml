@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-dentry" revision="16 Mar 2001">
+<refentry id="gnome-gnome-dentry">
 <refmeta>
 <refentrytitle>gnome-dentry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -86,7 +86,7 @@ definitions.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -107,7 +107,7 @@ if the file does not exist or contains stale data.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -135,7 +135,7 @@ process is discarded after loading the desktop entry.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -168,7 +168,7 @@ process is discarded after loading the desktop entry.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -188,7 +188,7 @@ if the file does not exist.
 Saves the desktop entry to disk</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -204,7 +204,7 @@ Saves the desktop entry to disk</para>
 Releases the information used by <parameter>item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -221,7 +221,7 @@ Erases the file that represents <parameter>item</parameter> and releases the
 memory used by <parameter>item</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ memory used by <parameter>item</parameter>.</para>
 Launchs the program associated to the <parameter>item</parameter> desktop entry.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -257,7 +257,7 @@ Launches the program associated with <parameter>item</parameter> with <parameter
 arguments.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -279,7 +279,7 @@ arguments.</para>
 Makes a copy of a <parameter>source</parameter> GnomeDesktopEntry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -298,7 +298,7 @@ Looks for program in the PATH, if it is found, a g_strduped
 string with the full path name is returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

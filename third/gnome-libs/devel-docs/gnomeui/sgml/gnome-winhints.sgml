@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-winhints" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-winhints">
 <refmeta>
 <refentrytitle>gnome-winhints</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -305,7 +305,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="GnomeWinLayer">GnomeWinLayer</link> layer);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -324,7 +324,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <programlisting><link linkend="GnomeWinLayer">GnomeWinLayer</link> gnome_win_hints_get_layer     (<link linkend="GtkWidget">GtkWidget</link> *window);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -343,7 +343,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="GnomeWinState">GnomeWinState</link> state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -362,7 +362,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <programlisting><link linkend="GnomeWinState">GnomeWinState</link> gnome_win_hints_get_state     (<link linkend="GtkWidget">GtkWidget</link> *window);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -381,7 +381,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="GnomeWinHints">GnomeWinHints</link> skip);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -400,7 +400,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <programlisting><link linkend="GnomeWinHints">GnomeWinHints</link> gnome_win_hints_get_hints     (<link linkend="GtkWidget">GtkWidget</link> *window);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -419,7 +419,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="gint">gint</link> workspace);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -438,7 +438,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <programlisting><link linkend="gint">gint</link>        gnome_win_hints_get_workspace   (<link linkend="GtkWidget">GtkWidget</link> *window);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -457,7 +457,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (<link linkend="gint">gint</link> workspace);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -474,7 +474,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -490,7 +490,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -506,7 +506,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -526,7 +526,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="gint">gint</link> height);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -559,7 +559,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="gint">gint</link> *height);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -590,7 +590,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="gboolean">gboolean</link> moving);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -610,7 +610,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                              <link linkend="GnomeWinAppState">GnomeWinAppState</link> state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -630,7 +630,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (<link linkend="GtkWidget">GtkWidget</link> *window);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -648,7 +648,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_win_hints_wm_exists       (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -664,7 +664,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
                                             (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

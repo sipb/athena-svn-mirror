@@ -15,8 +15,10 @@ description[no]=Hendelser angående brukergrensesnittet
 description[pl]=Zdarzenia interfejsu u¿ytkownika
 description[pt]=Eventos da interface de utilizador
 description[sk]=Udalosti pou¾ívateµského rozhrania
-description[tr]=Kullanıcı yüzü eylemleri
+description[tr]=Kullanıcı arayüzü eylemleri
+description[uk]=ğÏÄ¦§ ¦ÎÔÅÒÆÅÊÓÕ ËÏÒÉÓÔÕ×ÁŞÁ
 description[wa]=Evenmints di l' eterface avou l' ûzeu
+description[zh_TW]=¨Ï¥ÎªÌ¤¶­±¨Æ¥ó
 
 [clicked]
 file=gtk-events/clicked.wav
@@ -36,8 +38,10 @@ description[no]=Hendelse - knappeklikk
 description[pl]=Wci¶niêcie przycisku
 description[pt]=Pressionar um botão de acção
 description[sk]=Kliknutie na tlaèidle
-description[tr]=Basma basılması
+description[tr]=Düğme basılması
+description[uk]=îÁÔÉÓÎÅÎÎÑ ËÌÁ×¦Û¦
 description[wa]=Clic avou l' sori so on boton d' accion
+description[zh_TW]=«ö¤U¦æ°Ê«ö¶s
 
 [activate]
 file=gtk-events/activate.wav
@@ -57,8 +61,10 @@ description[no]=Aktivering av menyoppføring
 description[pl]=Wybór elementu menu
 description[pt]=Activação de um item de menu
 description[sk]=Aktivácia polo¾ky menu
-description[tr]=Mönü birimi işlemesi
+description[tr]=Menü öğesi seçimi
+description[uk]=áËÔÉ×ÁÃ¦Ñ ÅÌÅÍÅÎÔÕ ÍÅÎÀ
 description[wa]=Activaedje d' ene intreye di menu
+description[zh_TW]=±Ò¥Î¿ï³æ¶µ¥Ø
 
 [toggled]
 file=gtk-events/toggled.wav
@@ -78,5 +84,7 @@ description[no]=Slå av/på avkrysningsboks
 description[pl]=Prze³±czenie przycisku wyboru
 description[pt]=Mudança de uma "check box"
 description[sk]=Prepnutie za¹krtávacieho poµa
-description[tr]=Değit basmasının basılması
+description[tr]=Seçenek düğmesinin durum değiştirmesi
+description[uk]=÷ÓÔÁÎÏ×ÌÅÎÎÑ ×¦ÄÍ¦ÔËÉ
 description[wa]=Candjmint di l' etat d' ene "checkbox"
+description[zh_TW]=¤Á´«¤è¶ô¿ï¶µ

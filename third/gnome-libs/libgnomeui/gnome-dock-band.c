@@ -20,6 +20,7 @@
    Author: Ettore Perazzoli <ettore@ximian.com>
 */
 
+#include <string.h>
 #include <gtk/gtk.h>
 
 #include "gnome-dock.h"

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -156,26 +156,198 @@ lib_LTLIBRARIES = libgnomeui.la
 #
 # Install location for header files
 #
-libgnomeuiincludedir = $(includedir)/libgnomeui
+libgnomeuiincludedir = $(includedir)/gnome-1.0/libgnomeui
 
-INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl 	-I$(includedir) $(GDK_IMLIB_CFLAGS) 	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS)         -DGNOMELIBDIR=\""$(libdir)"\"         -DGNOMEDATADIR=\""$(datadir)"\"         -DGNOMEBINDIR=\""$(bindir)"\"         -DGNOMELOCALSTATEDIR=\""$(localstatedir)"\"         -DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" 	-DG_LOG_DOMAIN=\"GnomeUI\"
+INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) \
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl \
+	-I$(includedir) $(GDK_IMLIB_CFLAGS) \
+	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS) \
+        -DGNOMELIBDIR=\""$(libdir)"\" \
+        -DGNOMEDATADIR=\""$(datadir)"\" \
+        -DGNOMEBINDIR=\""$(bindir)"\" \
+        -DGNOMELOCALSTATEDIR=\""$(localstatedir)"\" \
+        -DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" \
+	-DG_LOG_DOMAIN=\"GnomeUI\"
 
 
 EXTRA_HEADERS = 
 
-libgnomeui_la_SOURCES =  	gnome-about.c				gnome-animator.c			gnome-app.c				gnome-appbar.c				gnome-app-helper.c			gnome-app-util.c			gnome-calculator.c              	gnome-canvas.c				gnome-canvas-image.c			gnome-canvas-load.c			gnome-canvas-line.c			gnome-canvas-rect-ellipse.c		gnome-canvas-polygon.c			gnome-canvas-text.c			gnome-canvas-util.c			gnome-canvas-widget.c			gnome-client.c				gnome-color-picker.c			gnome-dateedit.c			gnome-dentry-edit.c			gnome-dialog.c                  	gnome-dialog-util.c			gnome-dns.c				gnome-dock.c				gnome-dock-band.c			gnome-dock-item.c			gnome-dock-layout.c			gnome-druid.c				gnome-druid-page.c			gnome-druid-page-start.c		gnome-druid-page-standard.c		gnome-druid-page-finish.c		gnome-geometry.c			gnome-guru.c				gnome-entry.c				gnome-file-entry.c		        gnome-font-picker.c			gnome-font-selector.c 			gnome-href.c				gnome-ice.c				gnome-icon-list.c			gnome-icon-item.c			gnome-icon-sel.c			gnome-icon-text.c			gnome-icon-entry.c			gnome-init.c				gnome-less.c				gnome-mdi.c				gnome-mdi-child.c			gnome-mdi-generic-child.c       	gnome-mdi-session.c			gnome-messagebox.c			gnome-number-entry.c			gnome-pixmap.c				gnome-pixmap-entry.c			gnome-popup-menu.c			gnome-popup-help.c			gnome-preferences.c			gnome-propertybox.c			gnome-properties.c			gnome-property-entries.c		gnome-scores.c				gnome-spell.c				gnome-startup.c				gnome-stock.c			        gnome-winhints.c		        gnome-paper-selector.c			gnome-procbar.c				gnome-window.c				gnome-window-icon.c			gnometypes.c				gtkcauldron.c				gtk-clock.c				gtk-ted.c				gtkdial.c				gtkpixmapmenuitem.c
+libgnomeui_la_SOURCES = \
+	gnome-about.c			\
+	gnome-animator.c		\
+	gnome-app.c			\
+	gnome-appbar.c			\
+	gnome-app-helper.c		\
+	gnome-app-util.c		\
+	gnome-calculator.c              \
+	gnome-canvas.c			\
+	gnome-canvas-image.c		\
+	gnome-canvas-load.c		\
+	gnome-canvas-line.c		\
+	gnome-canvas-rect-ellipse.c	\
+	gnome-canvas-polygon.c		\
+	gnome-canvas-text.c		\
+	gnome-canvas-util.c		\
+	gnome-canvas-widget.c		\
+	gnome-client.c			\
+	gnome-color-picker.c		\
+	gnome-dateedit.c		\
+	gnome-dentry-edit.c		\
+	gnome-dialog.c                  \
+	gnome-dialog-util.c		\
+	gnome-dns.c			\
+	gnome-dock.c			\
+	gnome-dock-band.c		\
+	gnome-dock-item.c		\
+	gnome-dock-layout.c		\
+	gnome-druid.c			\
+	gnome-druid-page.c		\
+	gnome-druid-page-start.c	\
+	gnome-druid-page-standard.c	\
+	gnome-druid-page-finish.c	\
+	gnome-geometry.c		\
+	gnome-guru.c			\
+	gnome-entry.c			\
+	gnome-file-entry.c		\
+        gnome-font-picker.c		\
+	gnome-font-selector.c 		\
+	gnome-href.c			\
+	gnome-ice.c			\
+	gnome-icon-list.c		\
+	gnome-icon-item.c		\
+	gnome-icon-sel.c		\
+	gnome-icon-text.c		\
+	gnome-icon-entry.c		\
+	gnome-init.c			\
+	gnome-less.c			\
+	gnome-mdi.c			\
+	gnome-mdi-child.c		\
+	gnome-mdi-generic-child.c       \
+	gnome-mdi-session.c		\
+	gnome-messagebox.c		\
+	gnome-number-entry.c		\
+	gnome-pixmap.c			\
+	gnome-pixmap-entry.c		\
+	gnome-popup-menu.c		\
+	gnome-popup-help.c		\
+	gnome-preferences.c		\
+	gnome-propertybox.c		\
+	gnome-properties.c		\
+	gnome-property-entries.c	\
+	gnome-scores.c			\
+	gnome-spell.c			\
+	gnome-startup.c			\
+	gnome-stock.c			\
+        gnome-winhints.c		\
+        gnome-paper-selector.c		\
+	gnome-procbar.c			\
+	gnome-window.c			\
+	gnome-window-icon.c		\
+	gnometypes.c			\
+	gtkcauldron.c			\
+	gtk-clock.c			\
+	gtk-ted.c			\
+	gtkdial.c			\
+	gtkpixmapmenuitem.c
 
 
-gnome_headers =  	gnome-about.h			        gnome-animator.h			gnome-app.h				gnome-appbar.h				gnome-app-helper.h			gnome-app-util.h			gnome-calculator.h              	gnome-canvas.h				gnome-canvas-image.h			gnome-canvas-line.h			gnome-canvas-load.h			gnome-canvas-rect-ellipse.h		gnome-canvas-polygon.h			gnome-canvas-text.h			gnome-canvas-util.h			gnome-canvas-widget.h			gnome-client.h				gnome-color-picker.h			gnome-compat.h				gnome-dateedit.h			gnome-dentry-edit.h			gnome-dialog.h                  	gnome-dialog-util.h			gnome-dns.h				gnome-dock.h				gnome-dock-band.h			gnome-dock-item.h			gnome-dock-layout.h			gnome-druid.h				gnome-druid-page.h			gnome-druid-page-start.h		gnome-druid-page-standard.h		gnome-druid-page-finish.h		gnome-entry.h				gnome-file-entry.h		        gnome-font-picker.h			gnome-font-selector.h 			gnome-geometry.h			gnome-guru.h				gnome-href.h				gnome-ice.h				gnome-icon-list.h			gnome-icon-item.h			gnome-icon-sel.h			gnome-icon-text.h			gnome-icon-entry.h			gnome-init.h				gnome-less.h				gnome-messagebox.h			gnome-mdi.h				gnome-mdi-child.h			gnome-mdi-generic-child.h		gnome-mdi-session.h			gnome-number-entry.h			gnome-popup-menu.h			gnome-popup-help.h			gnome-preferences.h			gnome-propertybox.h			gnome-properties.h     			gnome-property-entries.h		gnome-pixmap.h				gnome-pixmap-entry.h			gnome-scores.h				gnome-spell.h				gnome-startup.h				gnome-stock.h				gnome-types.h				gnome-uidefs.h			        gnome-winhints.h		        gnome-paper-selector.h			gnome-procbar.h				gnome-window.h				gnome-window-icon.h			gtkcauldron.h				gtkdial.h				gtk-clock.h				gtk-ted.h				gtkpixmapmenuitem.h			libgnomeui.h
+gnome_headers = \
+	gnome-about.h			\
+        gnome-animator.h		\
+	gnome-app.h			\
+	gnome-appbar.h			\
+	gnome-app-helper.h		\
+	gnome-app-util.h		\
+	gnome-calculator.h              \
+	gnome-canvas.h			\
+	gnome-canvas-image.h		\
+	gnome-canvas-line.h		\
+	gnome-canvas-load.h		\
+	gnome-canvas-rect-ellipse.h	\
+	gnome-canvas-polygon.h		\
+	gnome-canvas-text.h		\
+	gnome-canvas-util.h		\
+	gnome-canvas-widget.h		\
+	gnome-client.h			\
+	gnome-color-picker.h		\
+	gnome-compat.h			\
+	gnome-dateedit.h		\
+	gnome-dentry-edit.h		\
+	gnome-dialog.h                  \
+	gnome-dialog-util.h		\
+	gnome-dns.h			\
+	gnome-dock.h			\
+	gnome-dock-band.h		\
+	gnome-dock-item.h		\
+	gnome-dock-layout.h		\
+	gnome-druid.h			\
+	gnome-druid-page.h		\
+	gnome-druid-page-start.h	\
+	gnome-druid-page-standard.h	\
+	gnome-druid-page-finish.h	\
+	gnome-entry.h			\
+	gnome-file-entry.h		\
+        gnome-font-picker.h		\
+	gnome-font-selector.h 		\
+	gnome-geometry.h		\
+	gnome-guru.h			\
+	gnome-href.h			\
+	gnome-ice.h			\
+	gnome-icon-list.h		\
+	gnome-icon-item.h		\
+	gnome-icon-sel.h		\
+	gnome-icon-text.h		\
+	gnome-icon-entry.h		\
+	gnome-init.h			\
+	gnome-less.h			\
+	gnome-messagebox.h		\
+	gnome-mdi.h			\
+	gnome-mdi-child.h		\
+	gnome-mdi-generic-child.h	\
+	gnome-mdi-session.h		\
+	gnome-number-entry.h		\
+	gnome-popup-menu.h		\
+	gnome-popup-help.h		\
+	gnome-preferences.h		\
+	gnome-propertybox.h		\
+	gnome-properties.h     		\
+	gnome-property-entries.h	\
+	gnome-pixmap.h			\
+	gnome-pixmap-entry.h		\
+	gnome-scores.h			\
+	gnome-spell.h			\
+	gnome-startup.h			\
+	gnome-stock.h			\
+	gnome-types.h			\
+	gnome-uidefs.h			\
+        gnome-winhints.h		\
+        gnome-paper-selector.h		\
+	gnome-procbar.h			\
+	gnome-window.h			\
+	gnome-window-icon.h		\
+	gtkcauldron.h			\
+	gtkdial.h			\
+	gtk-clock.h			\
+	gtk-ted.h			\
+	gtkpixmapmenuitem.h		\
+	libgnomeui.h
 
 
-libgnomeuiinclude_HEADERS =  	$(gnome_headers)		gnometypebuiltins.h
+libgnomeuiinclude_HEADERS = \
+	$(gnome_headers)	\
+	gnometypebuiltins.h
 
 
-BUILT_SOURCES =  	gnometypebuiltins.h			gnometypebuiltins_evals.c		gnometypebuiltins_ids.c			gnometypebuiltins_vars.c
+BUILT_SOURCES = \
+	gnometypebuiltins.h		\
+	gnometypebuiltins_evals.c	\
+	gnometypebuiltins_ids.c		\
+	gnometypebuiltins_vars.c
 
 
 #######################
+
+man_MANS = gnome_segv.1
 
 gnome_segv_SOURCES = gnome_segv.c
 
@@ -189,35 +361,81 @@ animator_demo_SOURCES = animator_demo.c
 
 dock_demo_SOURCES = dock_demo.c
 
-SGML =  	gtk-ted.sgml
+SGML = \
+	gtk-ted.sgml
 
 
 gtkrcdir = $(datadir)
-gtkrc_DATA = gtkrc gtkrc.el gtkrc.eo gtkrc.he gtkrc.hy gtkrc.ja 	gtkrc.ko gtkrc.ru gtkrc.tr gtkrc.th gtkrc.uk 	gtkrc.iso88592 gtkrc.iso88595 gtkrc.zh_CN gtkrc.zh_TW.Big5 	gtkrc.ka_GE.georgianacademy gtkrc.ka_GE.georgianps 	gtkrc.vi_VN.tcvn gtkrc.vi_VN.viscii
+gtkrc_DATA = gtkrc gtkrc.el gtkrc.eo gtkrc.he gtkrc.hy gtkrc.ja \
+	gtkrc.ko gtkrc.ru gtkrc.tr gtkrc.th gtkrc.uk \
+	gtkrc.iso88592 gtkrc.iso88595 gtkrc.zh_CN gtkrc.zh_TW.Big5 \
+	gtkrc.ka_GE.georgianacademy gtkrc.ka_GE.georgianps \
+	gtkrc.vi_VN.tcvn gtkrc.vi_VN.viscii
 
 
-EXTRA_DIST =  	$(SGML)						$(gtkrc_DATA)					AUTHORS						gnome.defs 					maketypes.awk					makeenums.pl					gnome-boxed.defs				gnometypebuiltins_vars.c			gnometypebuiltins_ids.c				gnometypebuiltins_evals.c
+EXTRA_DIST = \
+	$(SGML)					\
+	$(gtkrc_DATA)				\
+	AUTHORS					\
+	gnome.defs 				\
+	maketypes.awk				\
+	makeenums.pl				\
+	gnome-boxed.defs			\
+	gnometypebuiltins_vars.c		\
+	gnometypebuiltins_ids.c			\
+	gnometypebuiltins_evals.c		\
+	$(man_MANS)
 
 
 libgnomeui_la_LDFLAGS = -version-info 46:1:14 -rpath $(libdir)
 libgnomeui_la_LIBADD = $(LIBGNOMEUI_LIBS)
 
-gnome_segv_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+gnome_segv_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 
-ted_demo_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+ted_demo_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 
-stock_demo_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+stock_demo_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 
-winhints_demo_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+winhints_demo_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 
-animator_demo_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+animator_demo_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 
-dock_demo_LDADD =  	libgnomeui.la 						$(top_builddir)/libgnome/libgnome.la 			$(top_builddir)/libart_lgpl/libart_lgpl.la 		@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) 	$(INTLLIBS)
+dock_demo_LDADD = \
+	libgnomeui.la 					\
+	$(top_builddir)/libgnome/libgnome.la 		\
+	$(top_builddir)/libart_lgpl/libart_lgpl.la 	\
+	@LIBSUPPORT@ $(LIBGNOMEUI_LIBS) \
+	$(INTLLIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -295,6 +513,10 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+man1dir = $(mandir)/man1
+MANS = $(man_MANS)
+
+NROFF = nroff
 DATA =  $(gtkrc_DATA)
 
 HEADERS =  $(libgnomeuiinclude_HEADERS)
@@ -444,6 +666,45 @@ dock_demo: $(dock_demo_OBJECTS) $(dock_demo_DEPENDENCIES)
 	@rm -f dock_demo
 	$(LINK) $(dock_demo_LDFLAGS) $(dock_demo_OBJECTS) $(dock_demo_LDADD) $(LIBS)
 
+install-man1:
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+uninstall-man1:
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
+install-man: $(MANS)
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-man1
+uninstall-man:
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1
+
 install-gtkrcDATA: $(gtkrc_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(gtkrcdir)
@@ -514,7 +775,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -684,12 +945,6 @@ gnome-about.lo gnome-about.o : gnome-about.c ../config.h gnome-about.h \
 	gnome-stock.h gnome-pixmap.h
 gnome-animator.lo gnome-animator.o : gnome-animator.c ../config.h \
 	gnome-animator.h ../libgnome/gnome-defs.h gnome-pixmap.h
-gnome-appbar.lo gnome-appbar.o : gnome-appbar.c gnome-appbar.h \
-	../libgnome/gnome-defs.h gnome-types.h ../libgnome/gnome-util.h \
-	gnome-preferences.h gnome-mdi.h gnome-app.h gnome-dock.h \
-	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
-	gnome-app-helper.h gnome-appbar.h gnome-mdi-child.h \
-	gnome-uidefs.h
 gnome-app-helper.lo gnome-app-helper.o : gnome-app-helper.c ../config.h \
 	../libgnome/libgnome.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
@@ -706,13 +961,6 @@ gnome-app-helper.lo gnome-app-helper.o : gnome-app-helper.c ../config.h \
 	gnome-stock.h gnome-pixmap.h gnome-preferences.h gnome-mdi.h \
 	gnome-mdi-child.h gnome-app.h gnome-app-helper.h \
 	gtkpixmapmenuitem.h
-gnome-app.lo gnome-app.o : gnome-app.c ../config.h \
-	../libgnome/gnome-defs.h ../libgnome/gnome-i18nP.h \
-	../libgnome/gnome-util.h ../libgnome/gnome-config.h \
-	gnome-uidefs.h gnome-preferences.h gnome-mdi.h gnome-app.h \
-	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
-	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
-	gnome-types.h gnome-mdi-child.h gnome-window-icon.h gnome-app.h
 gnome-app-util.lo gnome-app-util.o : gnome-app-util.c ../config.h \
 	gnome-app-util.h ../libgnome/gnome-defs.h gnome-app.h \
 	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
@@ -721,6 +969,19 @@ gnome-app-util.lo gnome-app-util.o : gnome-app-util.c ../config.h \
 	gnome-dialog-util.h gnome-dialog.h gnome-uidefs.h \
 	gnome-preferences.h gnome-mdi.h gnome-app-helper.h \
 	gnome-appbar.h gnome-mdi-child.h gnome-app.h gnome-app-helper.h
+gnome-app.lo gnome-app.o : gnome-app.c ../config.h \
+	../libgnome/gnome-defs.h ../libgnome/gnome-i18nP.h \
+	../libgnome/gnome-util.h ../libgnome/gnome-config.h \
+	gnome-uidefs.h gnome-preferences.h gnome-mdi.h gnome-app.h \
+	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
+	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
+	gnome-types.h gnome-mdi-child.h gnome-window-icon.h gnome-app.h
+gnome-appbar.lo gnome-appbar.o : gnome-appbar.c gnome-appbar.h \
+	../libgnome/gnome-defs.h gnome-types.h ../libgnome/gnome-util.h \
+	gnome-preferences.h gnome-mdi.h gnome-app.h gnome-dock.h \
+	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
+	gnome-app-helper.h gnome-appbar.h gnome-mdi-child.h \
+	gnome-uidefs.h
 gnome-calculator.lo gnome-calculator.o : gnome-calculator.c ../config.h \
 	../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
@@ -760,13 +1021,6 @@ gnome-canvas-load.lo gnome-canvas-load.o : gnome-canvas-load.c \
 	../libart_lgpl/art_rect.h ../libart_lgpl/art_svp.h \
 	../libart_lgpl/art_point.h ../libart_lgpl/art_uta.h \
 	../libart_lgpl/art_affine.h gnome-canvas-load.h
-gnome-canvas.lo gnome-canvas.o : gnome-canvas.c ../config.h \
-	gnome-canvas.h ../libgnome/gnome-defs.h \
-	../libart_lgpl/art_misc.h ../libart_lgpl/art_config.h \
-	../libart_lgpl/art_rect.h ../libart_lgpl/art_svp.h \
-	../libart_lgpl/art_point.h ../libart_lgpl/art_uta.h \
-	../libart_lgpl/art_affine.h ../libart_lgpl/art_rect_uta.h \
-	../libart_lgpl/art_uta_rect.h ../libart_lgpl/art_uta_ops.h
 gnome-canvas-polygon.lo gnome-canvas-polygon.o : gnome-canvas-polygon.c \
 	../config.h ../libart_lgpl/art_vpath.h \
 	../libart_lgpl/art_rect.h ../libart_lgpl/art_pathcode.h \
@@ -817,6 +1071,13 @@ gnome-canvas-widget.lo gnome-canvas-widget.o : gnome-canvas-widget.c \
 	../libart_lgpl/art_config.h ../libart_lgpl/art_rect.h \
 	../libart_lgpl/art_svp.h ../libart_lgpl/art_point.h \
 	../libart_lgpl/art_uta.h ../libart_lgpl/art_affine.h
+gnome-canvas.lo gnome-canvas.o : gnome-canvas.c ../config.h \
+	gnome-canvas.h ../libgnome/gnome-defs.h \
+	../libart_lgpl/art_misc.h ../libart_lgpl/art_config.h \
+	../libart_lgpl/art_rect.h ../libart_lgpl/art_svp.h \
+	../libart_lgpl/art_point.h ../libart_lgpl/art_uta.h \
+	../libart_lgpl/art_affine.h ../libart_lgpl/art_rect_uta.h \
+	../libart_lgpl/art_uta_rect.h ../libart_lgpl/art_uta_ops.h
 gnome-client.lo gnome-client.o : gnome-client.c ../config.h \
 	../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
@@ -851,6 +1112,10 @@ gnome-dentry-edit.lo gnome-dentry-edit.o : gnome-dentry-edit.c \
 	../libgnome/gnome-url.h gnome-stock.h gnome-pixmap.h \
 	gnome-dialog.h gnome-uidefs.h gnome-icon-entry.h \
 	gnome-file-entry.h gnome-entry.h
+gnome-dialog-util.lo gnome-dialog-util.o : gnome-dialog-util.c \
+	../config.h gnome-stock.h ../libgnome/gnome-defs.h \
+	gnome-pixmap.h gnome-messagebox.h gnome-dialog.h gnome-types.h \
+	gnome-uidefs.h gnome-dialog-util.h
 gnome-dialog.lo gnome-dialog.o : gnome-dialog.c ../config.h \
 	gnome-dialog.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-util.h ../libgnome/gnome-i18nP.h \
@@ -859,10 +1124,6 @@ gnome-dialog.lo gnome-dialog.o : gnome-dialog.c ../config.h \
 	gnome-dock-item.h gnome-dock-layout.h gnome-app-helper.h \
 	gnome-appbar.h gnome-types.h gnome-mdi-child.h gnome-app.h \
 	gnome-app-helper.h gnome-dialog-util.h gnome-window-icon.h
-gnome-dialog-util.lo gnome-dialog-util.o : gnome-dialog-util.c \
-	../config.h gnome-stock.h ../libgnome/gnome-defs.h \
-	gnome-pixmap.h gnome-messagebox.h gnome-dialog.h gnome-types.h \
-	gnome-uidefs.h gnome-dialog-util.h
 gnome-dns.lo gnome-dns.o : gnome-dns.c ../support/getopt.h \
 	../libgnome/gnome-defs.h gnome-dns.h
 gnome-dock-band.lo gnome-dock-band.o : gnome-dock-band.c gnome-dock.h \
@@ -876,49 +1137,6 @@ gnome-dock-layout.lo gnome-dock-layout.o : gnome-dock-layout.c \
 gnome-dock.lo gnome-dock.o : gnome-dock.c gnome-dock.h \
 	../libgnome/gnome-defs.h gnome-dock-band.h gnome-dock-item.h \
 	gnome-dock-layout.h
-gnome-druid.lo gnome-druid.o : gnome-druid.c ../config.h ../gnome.h \
-	../support/gnomesupport.h ../libgnome/libgnome.h \
-	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
-	../libgnome/gnome-dentry.h ../libgnome/gnome-exec.h \
-	../libgnome/gnome-help.h ../libgnome/gnome-i18n.h \
-	../libgnome/gnome-metadata.h ../libgnome/gnome-mime.h \
-	../libgnome/gnome-mime-info.h ../libgnome/gnome-paper.h \
-	../libgnome/gnome-popt.h ../support/popt-gnome.h \
-	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
-	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
-	../libgnome/gnome-util.h ../libgnome/gnome-url.h libgnomeui.h \
-	gnome-compat.h gnome-uidefs.h gnome-about.h gnome-dialog.h \
-	gnome-animator.h gnome-pixmap.h gnome-app.h gnome-dock.h \
-	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
-	gnome-appbar.h gnome-types.h gnome-app-helper.h \
-	gnome-app-util.h gnome-canvas.h ../libart_lgpl/art_misc.h \
-	../libart_lgpl/art_config.h ../libart_lgpl/art_rect.h \
-	../libart_lgpl/art_svp.h ../libart_lgpl/art_point.h \
-	../libart_lgpl/art_uta.h ../libart_lgpl/art_affine.h \
-	gnome-canvas-image.h ../libart_lgpl/art_pixbuf.h \
-	gnome-canvas-line.h gnome-canvas-load.h \
-	gnome-canvas-rect-ellipse.h gnome-canvas-polygon.h \
-	gnome-canvas-text.h gnome-canvas-util.h \
-	../libart_lgpl/art_vpath.h ../libart_lgpl/art_pathcode.h \
-	../libart_lgpl/art_svp_vpath_stroke.h gnome-canvas-widget.h \
-	gnome-color-picker.h gnome-dentry-edit.h gnome-dialog-util.h \
-	gnome-dns.h gnome-entry.h gnome-file-entry.h \
-	gnome-font-picker.h gnome-font-selector.h gnome-geometry.h \
-	gnome-guru.h gnome-icon-list.h gnome-icon-item.h \
-	gnome-icon-text.h gnome-icon-sel.h gnome-icon-entry.h \
-	gnome-init.h gnome-less.h gnome-messagebox.h \
-	gnome-number-entry.h gnome-paper-selector.h gnome-popup-menu.h \
-	gnome-popup-help.h gnome-pixmap-entry.h gnome-preferences.h \
-	gnome-mdi.h gnome-mdi-child.h gnome-propertybox.h \
-	gnome-properties.h gnome-property-entries.h gnome-scores.h \
-	gnome-spell.h ../support/getopt.h gnome-startup.h gnome-stock.h \
-	gnome-client.h gtkcauldron.h gtk-clock.h gtkdial.h gtk-ted.h \
-	gtkpixmapmenuitem.h gnome-dateedit.h gnome-calculator.h \
-	gnome-mdi-generic-child.h gnome-mdi-session.h \
-	gnometypebuiltins.h gnome-winhints.h gnome-href.h \
-	gnome-procbar.h gnome-druid.h gnome-druid-page.h \
-	gnome-druid-page-start.h gnome-druid-page-standard.h \
-	gnome-druid-page-finish.h gnome-druid.h
 gnome-druid-page-finish.lo gnome-druid-page-finish.o : \
 	gnome-druid-page-finish.c ../config.h ../gnome.h \
 	../support/gnomesupport.h ../libgnome/libgnome.h \
@@ -964,49 +1182,6 @@ gnome-druid-page-finish.lo gnome-druid-page-finish.o : \
 	gnome-druid-page-start.h gnome-druid-page-standard.h \
 	gnome-druid-page-finish.h gnome-druid-page-finish.h \
 	gnome-druid.h
-gnome-druid-page.lo gnome-druid-page.o : gnome-druid-page.c ../config.h \
-	../gnome.h ../support/gnomesupport.h ../libgnome/libgnome.h \
-	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
-	../libgnome/gnome-dentry.h ../libgnome/gnome-exec.h \
-	../libgnome/gnome-help.h ../libgnome/gnome-i18n.h \
-	../libgnome/gnome-metadata.h ../libgnome/gnome-mime.h \
-	../libgnome/gnome-mime-info.h ../libgnome/gnome-paper.h \
-	../libgnome/gnome-popt.h ../support/popt-gnome.h \
-	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
-	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
-	../libgnome/gnome-util.h ../libgnome/gnome-url.h libgnomeui.h \
-	gnome-compat.h gnome-uidefs.h gnome-about.h gnome-dialog.h \
-	gnome-animator.h gnome-pixmap.h gnome-app.h gnome-dock.h \
-	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
-	gnome-appbar.h gnome-types.h gnome-app-helper.h \
-	gnome-app-util.h gnome-canvas.h ../libart_lgpl/art_misc.h \
-	../libart_lgpl/art_config.h ../libart_lgpl/art_rect.h \
-	../libart_lgpl/art_svp.h ../libart_lgpl/art_point.h \
-	../libart_lgpl/art_uta.h ../libart_lgpl/art_affine.h \
-	gnome-canvas-image.h ../libart_lgpl/art_pixbuf.h \
-	gnome-canvas-line.h gnome-canvas-load.h \
-	gnome-canvas-rect-ellipse.h gnome-canvas-polygon.h \
-	gnome-canvas-text.h gnome-canvas-util.h \
-	../libart_lgpl/art_vpath.h ../libart_lgpl/art_pathcode.h \
-	../libart_lgpl/art_svp_vpath_stroke.h gnome-canvas-widget.h \
-	gnome-color-picker.h gnome-dentry-edit.h gnome-dialog-util.h \
-	gnome-dns.h gnome-entry.h gnome-file-entry.h \
-	gnome-font-picker.h gnome-font-selector.h gnome-geometry.h \
-	gnome-guru.h gnome-icon-list.h gnome-icon-item.h \
-	gnome-icon-text.h gnome-icon-sel.h gnome-icon-entry.h \
-	gnome-init.h gnome-less.h gnome-messagebox.h \
-	gnome-number-entry.h gnome-paper-selector.h gnome-popup-menu.h \
-	gnome-popup-help.h gnome-pixmap-entry.h gnome-preferences.h \
-	gnome-mdi.h gnome-mdi-child.h gnome-propertybox.h \
-	gnome-properties.h gnome-property-entries.h gnome-scores.h \
-	gnome-spell.h ../support/getopt.h gnome-startup.h gnome-stock.h \
-	gnome-client.h gtkcauldron.h gtk-clock.h gtkdial.h gtk-ted.h \
-	gtkpixmapmenuitem.h gnome-dateedit.h gnome-calculator.h \
-	gnome-mdi-generic-child.h gnome-mdi-session.h \
-	gnometypebuiltins.h gnome-winhints.h gnome-href.h \
-	gnome-procbar.h gnome-druid.h gnome-druid-page.h \
-	gnome-druid-page-start.h gnome-druid-page-standard.h \
-	gnome-druid-page-finish.h gnome-druid-page.h
 gnome-druid-page-standard.lo gnome-druid-page-standard.o : \
 	gnome-druid-page-standard.c ../config.h ../gnome.h \
 	../support/gnomesupport.h ../libgnome/libgnome.h \
@@ -1097,6 +1272,92 @@ gnome-druid-page-start.lo gnome-druid-page-start.o : \
 	gnome-druid-page-start.h gnome-druid-page-standard.h \
 	gnome-druid-page-finish.h gnome-druid-page-start.h \
 	gnome-druid.h
+gnome-druid-page.lo gnome-druid-page.o : gnome-druid-page.c ../config.h \
+	../gnome.h ../support/gnomesupport.h ../libgnome/libgnome.h \
+	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
+	../libgnome/gnome-dentry.h ../libgnome/gnome-exec.h \
+	../libgnome/gnome-help.h ../libgnome/gnome-i18n.h \
+	../libgnome/gnome-metadata.h ../libgnome/gnome-mime.h \
+	../libgnome/gnome-mime-info.h ../libgnome/gnome-paper.h \
+	../libgnome/gnome-popt.h ../support/popt-gnome.h \
+	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
+	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
+	../libgnome/gnome-util.h ../libgnome/gnome-url.h libgnomeui.h \
+	gnome-compat.h gnome-uidefs.h gnome-about.h gnome-dialog.h \
+	gnome-animator.h gnome-pixmap.h gnome-app.h gnome-dock.h \
+	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
+	gnome-appbar.h gnome-types.h gnome-app-helper.h \
+	gnome-app-util.h gnome-canvas.h ../libart_lgpl/art_misc.h \
+	../libart_lgpl/art_config.h ../libart_lgpl/art_rect.h \
+	../libart_lgpl/art_svp.h ../libart_lgpl/art_point.h \
+	../libart_lgpl/art_uta.h ../libart_lgpl/art_affine.h \
+	gnome-canvas-image.h ../libart_lgpl/art_pixbuf.h \
+	gnome-canvas-line.h gnome-canvas-load.h \
+	gnome-canvas-rect-ellipse.h gnome-canvas-polygon.h \
+	gnome-canvas-text.h gnome-canvas-util.h \
+	../libart_lgpl/art_vpath.h ../libart_lgpl/art_pathcode.h \
+	../libart_lgpl/art_svp_vpath_stroke.h gnome-canvas-widget.h \
+	gnome-color-picker.h gnome-dentry-edit.h gnome-dialog-util.h \
+	gnome-dns.h gnome-entry.h gnome-file-entry.h \
+	gnome-font-picker.h gnome-font-selector.h gnome-geometry.h \
+	gnome-guru.h gnome-icon-list.h gnome-icon-item.h \
+	gnome-icon-text.h gnome-icon-sel.h gnome-icon-entry.h \
+	gnome-init.h gnome-less.h gnome-messagebox.h \
+	gnome-number-entry.h gnome-paper-selector.h gnome-popup-menu.h \
+	gnome-popup-help.h gnome-pixmap-entry.h gnome-preferences.h \
+	gnome-mdi.h gnome-mdi-child.h gnome-propertybox.h \
+	gnome-properties.h gnome-property-entries.h gnome-scores.h \
+	gnome-spell.h ../support/getopt.h gnome-startup.h gnome-stock.h \
+	gnome-client.h gtkcauldron.h gtk-clock.h gtkdial.h gtk-ted.h \
+	gtkpixmapmenuitem.h gnome-dateedit.h gnome-calculator.h \
+	gnome-mdi-generic-child.h gnome-mdi-session.h \
+	gnometypebuiltins.h gnome-winhints.h gnome-href.h \
+	gnome-procbar.h gnome-druid.h gnome-druid-page.h \
+	gnome-druid-page-start.h gnome-druid-page-standard.h \
+	gnome-druid-page-finish.h gnome-druid-page.h
+gnome-druid.lo gnome-druid.o : gnome-druid.c ../config.h ../gnome.h \
+	../support/gnomesupport.h ../libgnome/libgnome.h \
+	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
+	../libgnome/gnome-dentry.h ../libgnome/gnome-exec.h \
+	../libgnome/gnome-help.h ../libgnome/gnome-i18n.h \
+	../libgnome/gnome-metadata.h ../libgnome/gnome-mime.h \
+	../libgnome/gnome-mime-info.h ../libgnome/gnome-paper.h \
+	../libgnome/gnome-popt.h ../support/popt-gnome.h \
+	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
+	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
+	../libgnome/gnome-util.h ../libgnome/gnome-url.h libgnomeui.h \
+	gnome-compat.h gnome-uidefs.h gnome-about.h gnome-dialog.h \
+	gnome-animator.h gnome-pixmap.h gnome-app.h gnome-dock.h \
+	gnome-dock-band.h gnome-dock-item.h gnome-dock-layout.h \
+	gnome-appbar.h gnome-types.h gnome-app-helper.h \
+	gnome-app-util.h gnome-canvas.h ../libart_lgpl/art_misc.h \
+	../libart_lgpl/art_config.h ../libart_lgpl/art_rect.h \
+	../libart_lgpl/art_svp.h ../libart_lgpl/art_point.h \
+	../libart_lgpl/art_uta.h ../libart_lgpl/art_affine.h \
+	gnome-canvas-image.h ../libart_lgpl/art_pixbuf.h \
+	gnome-canvas-line.h gnome-canvas-load.h \
+	gnome-canvas-rect-ellipse.h gnome-canvas-polygon.h \
+	gnome-canvas-text.h gnome-canvas-util.h \
+	../libart_lgpl/art_vpath.h ../libart_lgpl/art_pathcode.h \
+	../libart_lgpl/art_svp_vpath_stroke.h gnome-canvas-widget.h \
+	gnome-color-picker.h gnome-dentry-edit.h gnome-dialog-util.h \
+	gnome-dns.h gnome-entry.h gnome-file-entry.h \
+	gnome-font-picker.h gnome-font-selector.h gnome-geometry.h \
+	gnome-guru.h gnome-icon-list.h gnome-icon-item.h \
+	gnome-icon-text.h gnome-icon-sel.h gnome-icon-entry.h \
+	gnome-init.h gnome-less.h gnome-messagebox.h \
+	gnome-number-entry.h gnome-paper-selector.h gnome-popup-menu.h \
+	gnome-popup-help.h gnome-pixmap-entry.h gnome-preferences.h \
+	gnome-mdi.h gnome-mdi-child.h gnome-propertybox.h \
+	gnome-properties.h gnome-property-entries.h gnome-scores.h \
+	gnome-spell.h ../support/getopt.h gnome-startup.h gnome-stock.h \
+	gnome-client.h gtkcauldron.h gtk-clock.h gtkdial.h gtk-ted.h \
+	gtkpixmapmenuitem.h gnome-dateedit.h gnome-calculator.h \
+	gnome-mdi-generic-child.h gnome-mdi-session.h \
+	gnometypebuiltins.h gnome-winhints.h gnome-href.h \
+	gnome-procbar.h gnome-druid.h gnome-druid-page.h \
+	gnome-druid-page-start.h gnome-druid-page-standard.h \
+	gnome-druid-page-finish.h gnome-druid.h
 gnome-entry.lo gnome-entry.o : gnome-entry.c ../config.h \
 	../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
@@ -1217,14 +1478,6 @@ gnome-mdi-generic-child.lo gnome-mdi-generic-child.o : \
 	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
 	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
 	gnome-types.h gnome-mdi.h gnome-app.h gnome-app-helper.h
-gnome-mdi.lo gnome-mdi.o : gnome-mdi.c ../config.h \
-	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
-	../libgnome/gnome-i18nP.h ../libgnome/gnome-util.h gnome-app.h \
-	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
-	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
-	gnome-types.h gnome-stock.h gnome-pixmap.h gnome-preferences.h \
-	gnome-mdi.h gnome-mdi-child.h gnome-app.h gnome-app-helper.h \
-	../support/getopt.h
 gnome-mdi-session.lo gnome-mdi-session.o : gnome-mdi-session.c \
 	../config.h ../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
@@ -1239,6 +1492,14 @@ gnome-mdi-session.lo gnome-mdi-session.o : gnome-mdi-session.c \
 	gnome-dock-band.h gnome-dock-item.h gnome-mdi-session.h \
 	gnome-mdi.h gnome-app.h gnome-dock.h gnome-app-helper.h \
 	gnome-appbar.h gnome-types.h gnome-mdi-child.h
+gnome-mdi.lo gnome-mdi.o : gnome-mdi.c ../config.h \
+	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
+	../libgnome/gnome-i18nP.h ../libgnome/gnome-util.h gnome-app.h \
+	gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
+	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
+	gnome-types.h gnome-stock.h gnome-pixmap.h gnome-preferences.h \
+	gnome-mdi.h gnome-mdi-child.h gnome-app.h gnome-app-helper.h \
+	../support/getopt.h
 gnome-messagebox.lo gnome-messagebox.o : gnome-messagebox.c ../config.h \
 	gnome-messagebox.h gnome-dialog.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-triggers.h ../libgnome/gnome-util.h \
@@ -1307,6 +1568,11 @@ gnome-properties.lo gnome-properties.o : gnome-properties.c ../config.h \
 	gnome-properties.h ../libgnome/gnome-defs.h gnome-dialog.h \
 	gnome-propertybox.h ../libgnome/gnome-config.h \
 	../libgnome/gnome-i18nP.h
+gnome-property-entries.lo gnome-property-entries.o : \
+	gnome-property-entries.c ../config.h gnome-properties.h \
+	../libgnome/gnome-defs.h gnome-dialog.h gnome-propertybox.h \
+	gnome-property-entries.h gnome-properties.h \
+	../libgnome/gnome-i18nP.h gnome-uidefs.h gnome-color-picker.h
 gnome-propertybox.lo gnome-propertybox.o : gnome-propertybox.c \
 	../config.h gnome-propertybox.h gnome-dialog.h \
 	../libgnome/gnome-defs.h ../libgnome/gnome-util.h \
@@ -1315,16 +1581,41 @@ gnome-propertybox.lo gnome-propertybox.o : gnome-propertybox.c \
 	gnome-app.h gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
 	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
 	gnome-types.h gnome-mdi-child.h gnome-app.h gnome-app-helper.h
-gnome-property-entries.lo gnome-property-entries.o : \
-	gnome-property-entries.c ../config.h gnome-properties.h \
-	../libgnome/gnome-defs.h gnome-dialog.h gnome-propertybox.h \
-	gnome-property-entries.h gnome-properties.h \
-	../libgnome/gnome-i18nP.h gnome-uidefs.h gnome-color-picker.h
 gnome-scores.lo gnome-scores.o : gnome-scores.c ../config.h \
 	gnome-scores.h gnome-dialog.h ../libgnome/gnome-defs.h \
 	../libgnome/gnome-util.h ../libgnome/gnome-config.h \
 	../libgnome/gnome-score.h ../libgnome/gnome-i18nP.h \
 	gnome-stock.h gnome-pixmap.h
+gnome-spell.lo gnome-spell.o : gnome-spell.c ../config.h gnome-spell.h \
+	../libgnome/gnome-defs.h ../support/getopt.h \
+	../libgnome/gnome-i18nP.h gnome-window-icon.h
+gnome-startup.lo gnome-startup.o : gnome-startup.c ../config.h \
+	../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
+	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
+	../libgnome/gnome-exec.h ../libgnome/gnome-help.h \
+	../libgnome/gnome-i18nP.h ../libgnome/gnome-metadata.h \
+	../libgnome/gnome-mime.h ../libgnome/gnome-paper.h \
+	../libgnome/gnome-popt.h ../support/popt-gnome.h \
+	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
+	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
+	../libgnome/gnome-triggersP.h ../libgnome/gnome-util.h \
+	../libgnome/gnome-url.h gnome-startup.h
+gnome-stock.lo gnome-stock.o : gnome-stock.c ../config.h \
+	../libgnome/gnome-defs.h ../libgnome/gnome-util.h \
+	../libgnome/gnome-i18nP.h ../libgnome/gnome-config.h \
+	gnome-stock.h gnome-pixmap.h gnome-uidefs.h gnome-preferences.h \
+	gnome-mdi.h gnome-app.h gnome-dock.h gnome-dock-band.h \
+	gnome-dock-item.h gnome-dock-layout.h gnome-app-helper.h \
+	gnome-appbar.h gnome-types.h gnome-mdi-child.h gnome-app.h \
+	gnome-app-helper.h pixmaps/gnome-stock-imlib.h \
+	gnome-messagebox.h gnome-dialog.h gnome-propertybox.h
+gnome-window-icon.lo gnome-window-icon.o : gnome-window-icon.c \
+	../config.h gnome-client.h ../support/getopt.h \
+	../libgnome/gnome-defs.h gnome-dialog.h gnome-window-icon.h
+gnome-window.lo gnome-window.o : gnome-window.c ../config.h \
+	../libgnome/gnome-defs.h gnome-window.h
+gnome-winhints.lo gnome-winhints.o : gnome-winhints.c ../config.h \
+	gnome-winhints.h ../libgnome/gnome-defs.h
 gnome_segv.o: gnome_segv.c ../config.h ../gnome.h \
 	../support/gnomesupport.h ../libgnome/libgnome.h \
 	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
@@ -1368,29 +1659,6 @@ gnome_segv.o: gnome_segv.c ../config.h ../gnome.h \
 	gnome-procbar.h gnome-druid.h gnome-druid-page.h \
 	gnome-druid-page-start.h gnome-druid-page-standard.h \
 	gnome-druid-page-finish.h
-gnome-spell.lo gnome-spell.o : gnome-spell.c ../config.h gnome-spell.h \
-	../libgnome/gnome-defs.h ../support/getopt.h \
-	../libgnome/gnome-i18nP.h gnome-window-icon.h
-gnome-startup.lo gnome-startup.o : gnome-startup.c ../config.h \
-	../libgnome/libgnomeP.h ../libgnome/gnome-defs.h \
-	../libgnome/gnome-config.h ../libgnome/gnome-dentry.h \
-	../libgnome/gnome-exec.h ../libgnome/gnome-help.h \
-	../libgnome/gnome-i18nP.h ../libgnome/gnome-metadata.h \
-	../libgnome/gnome-mime.h ../libgnome/gnome-paper.h \
-	../libgnome/gnome-popt.h ../support/popt-gnome.h \
-	../libgnome/gnome-remote.h ../libgnome/gnome-score.h \
-	../libgnome/gnome-sound.h ../libgnome/gnome-triggers.h \
-	../libgnome/gnome-triggersP.h ../libgnome/gnome-util.h \
-	../libgnome/gnome-url.h gnome-startup.h
-gnome-stock.lo gnome-stock.o : gnome-stock.c ../config.h \
-	../libgnome/gnome-defs.h ../libgnome/gnome-util.h \
-	../libgnome/gnome-i18nP.h ../libgnome/gnome-config.h \
-	gnome-stock.h gnome-pixmap.h gnome-uidefs.h gnome-preferences.h \
-	gnome-mdi.h gnome-app.h gnome-dock.h gnome-dock-band.h \
-	gnome-dock-item.h gnome-dock-layout.h gnome-app-helper.h \
-	gnome-appbar.h gnome-types.h gnome-mdi-child.h gnome-app.h \
-	gnome-app-helper.h pixmaps/gnome-stock-imlib.h \
-	gnome-messagebox.h gnome-dialog.h gnome-propertybox.h
 gnometypes.lo gnometypes.o : gnometypes.c ../config.h libgnomeui.h \
 	gnome-compat.h ../libgnome/gnome-defs.h gnome-uidefs.h \
 	gnome-about.h gnome-dialog.h gnome-animator.h gnome-pixmap.h \
@@ -1426,25 +1694,8 @@ gnometypes.lo gnometypes.o : gnometypes.c ../config.h libgnomeui.h \
 	gnome-druid-page-start.h gnome-druid-page-standard.h \
 	gnome-druid-page-finish.h gnometypebuiltins_vars.c \
 	gnometypebuiltins_evals.c gnometypebuiltins_ids.c
-gnome-window-icon.lo gnome-window-icon.o : gnome-window-icon.c \
-	../config.h gnome-client.h ../support/getopt.h \
-	../libgnome/gnome-defs.h gnome-dialog.h gnome-window-icon.h
-gnome-window.lo gnome-window.o : gnome-window.c ../config.h \
-	../libgnome/gnome-defs.h gnome-window.h
-gnome-winhints.lo gnome-winhints.o : gnome-winhints.c ../config.h \
-	gnome-winhints.h ../libgnome/gnome-defs.h
-gtkcauldron.lo gtkcauldron.o : gtkcauldron.c gtkcauldron.h \
-	../libgnome/gnome-defs.h gnome-preferences.h gnome-mdi.h \
-	gnome-app.h gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
-	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
-	gnome-types.h gnome-mdi-child.h gnome-file-entry.h \
-	gnome-entry.h gnome-dateedit.h gnome-number-entry.h \
-	gnome-stock.h gnome-pixmap.h
 gtk-clock.lo gtk-clock.o : gtk-clock.c gtk-clock.h \
 	../libgnome/gnome-defs.h
-gtkdial.lo gtkdial.o : gtkdial.c gtkdial.h ../libgnome/gnome-defs.h
-gtkpixmapmenuitem.lo gtkpixmapmenuitem.o : gtkpixmapmenuitem.c \
-	gtkpixmapmenuitem.h ../libgnome/gnome-defs.h
 gtk-ted.lo gtk-ted.o : gtk-ted.c ../config.h ../libgnome/libgnomeP.h \
 	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
 	../libgnome/gnome-dentry.h ../libgnome/gnome-exec.h \
@@ -1455,6 +1706,16 @@ gtk-ted.lo gtk-ted.o : gtk-ted.c ../config.h ../libgnome/libgnomeP.h \
 	../libgnome/gnome-score.h ../libgnome/gnome-sound.h \
 	../libgnome/gnome-triggers.h ../libgnome/gnome-triggersP.h \
 	../libgnome/gnome-util.h ../libgnome/gnome-url.h gtk-ted.h
+gtkcauldron.lo gtkcauldron.o : gtkcauldron.c gtkcauldron.h \
+	../libgnome/gnome-defs.h gnome-preferences.h gnome-mdi.h \
+	gnome-app.h gnome-dock.h gnome-dock-band.h gnome-dock-item.h \
+	gnome-dock-layout.h gnome-app-helper.h gnome-appbar.h \
+	gnome-types.h gnome-mdi-child.h gnome-file-entry.h \
+	gnome-entry.h gnome-dateedit.h gnome-number-entry.h \
+	gnome-stock.h gnome-pixmap.h
+gtkdial.lo gtkdial.o : gtkdial.c gtkdial.h ../libgnome/gnome-defs.h
+gtkpixmapmenuitem.lo gtkpixmapmenuitem.o : gtkpixmapmenuitem.c \
+	gtkpixmapmenuitem.h ../libgnome/gnome-defs.h
 stock_demo.o: stock_demo.c ../config.h ../gnome.h \
 	../support/gnomesupport.h ../libgnome/libgnome.h \
 	../libgnome/gnome-defs.h ../libgnome/gnome-config.h \
@@ -1596,23 +1857,26 @@ installcheck: installcheck-recursive
 install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-gtkrcDATA install-libgnomeuiincludeHEADERS
+install-data-am: install-man install-gtkrcDATA \
+		install-libgnomeuiincludeHEADERS
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-gtkrcDATA uninstall-libgnomeuiincludeHEADERS
+		uninstall-man uninstall-gtkrcDATA \
+		uninstall-libgnomeuiincludeHEADERS
 uninstall: uninstall-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(MANS) $(DATA) $(HEADERS)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(gtkrcdir) $(DESTDIR)$(libgnomeuiincludedir)
+		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(gtkrcdir) \
+		$(DESTDIR)$(libgnomeuiincludedir)
 
 
 mostlyclean-generic:
@@ -1664,10 +1928,11 @@ mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
-clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
-uninstall-gtkrcDATA install-gtkrcDATA \
-uninstall-libgnomeuiincludeHEADERS install-libgnomeuiincludeHEADERS \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS install-man1 \
+uninstall-man1 install-man uninstall-man uninstall-gtkrcDATA \
+install-gtkrcDATA uninstall-libgnomeuiincludeHEADERS \
+install-libgnomeuiincludeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

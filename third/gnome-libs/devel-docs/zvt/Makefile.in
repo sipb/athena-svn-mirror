@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -70,12 +70,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -154,17 +154,27 @@ DOC_MAIN_SGML_FILE = zvt-docs.sgml
 # The directory containing the source code (if it contains documentation).
 DOC_SOURCE_DIR = $(GNOME_LIBS_DIR)/zvt
 
-GNOME_DOC = ${GNOME_LIBS_DIR}/tools/gnome-doc/gnome-doc
-
-CFLAGS = `gnome-config --cflags gnome`
-LDFLAGS = "`gnome-config --libs zvt` -lgdk_imlib"
-
 HTML_DIR = $(datadir)/gnome/html
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
+
+tmpl_sources = \
+	tmpl/zvtterm.sgml
+
+
+gnome_docdir = $(HTML_DIR)
+gnome_doc_DATA = \
+	zvtterm.html			\
+	zvt-decl.txt			\
+	zvt-sections.txt
+
+
+EXTRA_DIST = $(gnome_doc_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+DATA =  $(gnome_doc_DATA)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -181,6 +191,25 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+
+install-gnome_docDATA: $(gnome_doc_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gnome_docdir)
+	@list='$(gnome_doc_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnome_docdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnome_docdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gnome_docdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gnome_docdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gnome_docDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(gnome_doc_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gnome_docdir)/$$p; \
+	done
 tags: TAGS
 TAGS:
 
@@ -212,19 +241,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-data-local
+install-data-am: install-gnome_docDATA install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am:
+uninstall-am: uninstall-gnome_docDATA
 uninstall: uninstall-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(gnome_docdir)
 
 
 mostlyclean-generic:
@@ -256,44 +286,48 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-local install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: uninstall-gnome_docDATA install-gnome_docDATA tags distdir \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-local install-data-am \
+install-data install-am install uninstall-am uninstall all-redirect \
+all-am all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
+
+@ENABLE_GTK_DOC_TRUE@zvtterm.html: html/book1.html
+@ENABLE_GTK_DOC_TRUE@	-cd $(srcdir) && cp html/book1.html zvtterm.html
+@ENABLE_GTK_DOC_FALSE@zvtterm.html:
+
+html/book1.html: sgml/zvtterm.sgml
+	$(MAKE) html
+
+sgml/zvtterm.sgml: $(tmpl_sources)
+	$(MAKE) sgml	
 
 scan:
-	-CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS) gtkdoc-scanobj --module=$(DOC_MODULE)
-	gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR)
+	cd $(srcdir) \
+	&& gtkdoc-scan --module=$(DOC_MODULE) \
+		       --source-dir=$(DOC_SOURCE_DIR)
 
 templates: scan
-	gtkdoc-mktmpl --module=$(DOC_MODULE)
+	cd $(srcdir) && gtkdoc-mktmpl --module=$(DOC_MODULE)
 
 sgml:
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR)
+	cd $(srcdir) \
+	&& gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR)
 
 html:
-	if ! test -d html ; then mkdir html ; fi
-	if ! test -d sgml ; then mkdir sgml ; fi
-	-cd html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
-
-# MPZ: My doco make target (dont really like the other one much)
-html_z:
-	if ! test -d html ; then mkdir html ; fi
-	if ! test -d sgml ; then mkdir sgml ; fi
-	${GNOME_DOC} -module zvtterm -gnome \
-		${DOC_SOURCE_DIR}/zvtterm.c > sgml/zvtterm.sgml
-	-cd html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
+	test -d $(srcdir)/html || mkdir $(srcdir)/html
+	-cd $(srcdir)/html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
 
 clean-local:
 	rm -f *~ *.bak *.hierarchy *.signals *-unused.txt
 
 maintainer-clean-local: clean
-	rm -rf sgml html $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt 
+	cd $(srcdir) && rm -rf sgml html $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt 
 
-install-data-local: html
+install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR)
 	(installfiles=`echo $(srcdir)/html/*.html`; \
 	if test "$$installfiles" = '$(srcdir)/html/*.html'; \
@@ -303,8 +337,8 @@ install-data-local: html
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
 	  done; \
-	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
-	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
+	  echo '-- Installing $(srcdir)/html/book1.html' ; \
+	  $(INSTALL_DATA) $(srcdir)/html/book1.html $(DESTDIR)$(TARGET_DIR); \
 	  echo '-- Fixing Crossreferences' ; \
 	  gtkdoc-fixxref --module=$(DOC_MODULE) --html-dir=$(HTML_DIR)|| true; \
 	fi)
@@ -316,7 +350,6 @@ dist-hook:
 	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
-	-cp $(srcdir)/sgml/*.bottom $(srcdir)/sgml/*.top $(distdir)/sgml
 
 .PHONY : html sgml templates scan
 

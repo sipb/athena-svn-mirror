@@ -5,11 +5,15 @@
 # Keld Simonsen <keld@dkuug.dk>, 2000.
 # Ole Laursen <olau@hardworking.dk>, 2001.
 #
+# Konventioner:
+#
+# options -> tilvalg (om kommandolinjetilvalg)
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.95.0\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2001-03-13 00:06+01:00\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-07-11 17:48+02:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -42,8 +46,8 @@ msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Fejl ved tilvalg %s: %s.\n"
-"Kør '%s --help' for at se listen over tilgængelige kommandolinjetilvalg.\n"
+"Fejl ved tilvalget %s: %s.\n"
+"Prøv '%s --help' for at se listen over kommandolinjetilvalg.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
@@ -82,7 +86,8 @@ msgstr "Forfattere: "
 msgid "About"
 msgstr "Om..."
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Filer"
 
@@ -90,7 +95,7 @@ msgstr "_Filer"
 msgid "_File/"
 msgstr "_Filer/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
 msgstr "_Redigér"
 
@@ -98,7 +103,7 @@ msgstr "_Redigér"
 msgid "_Edit/"
 msgstr "_Redigér/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
 msgstr "_Vis"
 
@@ -106,7 +111,7 @@ msgstr "_Vis"
 msgid "_View/"
 msgstr "_Vis/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
 msgstr "_Opsætning"
 
@@ -114,7 +119,8 @@ msgstr "_Opsætning"
 msgid "_Settings/"
 msgstr "_Opsætning/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Ny"
 
@@ -122,7 +128,7 @@ msgstr "_Ny"
 msgid "_New/"
 msgstr "_Ny/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "Fi_ler"
 
@@ -130,15 +136,15 @@ msgstr "Fi_ler"
 msgid "Fi_les/"
 msgstr "Fi_ler/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Vinduer"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
 msgstr "_Spil"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Hjælp"
 
@@ -531,7 +537,7 @@ msgstr " (ja eller nej)"
 
 #: libgnomeui/gnome-app-util.c:355
 msgid "  - OK? (yes or no)"
-msgstr "  - OK? (ja eller nej)"
+msgstr "  - i orden? (ja eller nej)"
 
 #: libgnomeui/gnome-app-util.c:687
 msgid "Progress"
@@ -706,32 +712,32 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Angiv id for sessionskontrol"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Angiv præfiks på gemt konfiguration"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PRÆFIKS"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Afbryd forbindelsen til sessionhåndteringen"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Sessionshåndteringstilvalg"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Annullér logud"
 
@@ -806,7 +812,7 @@ msgstr "Fjern"
 
 #: libgnomeui/gnome-dentry-edit.c:504
 msgid "Basic"
-msgstr "Basal"
+msgstr "Grundlæggende"
 
 #: libgnomeui/gnome-dentry-edit.c:508
 msgid "Advanced"
@@ -838,10 +844,12 @@ msgstr "Vælg en skrifttype"
 msgid "Font"
 msgstr "Skrifttype"
 
-# This text mustn't be too long, it has to fit inside a gnome-icon
+# en delt linje er tilladt og passer fint
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr "Intet ikon"
+msgstr ""
+"Intet\n"
+"ikon"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -857,7 +865,7 @@ msgstr "Henter ikoner..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
-msgstr "Gdk-aflusningsflag at sætte"
+msgstr "Gdk-fejlretningsflag at sætte"
 
 #: libgnomeui/gnome-init.c:161 libgnomeui/gnome-init.c:163
 #: libgnomeui/gnome-init.c:183 libgnomeui/gnome-init.c:185
@@ -866,7 +874,7 @@ msgstr "FLAG"
 
 #: libgnomeui/gnome-init.c:163
 msgid "Gdk debugging flags to unset"
-msgstr "Gdk-aflusningsflag at fjerne"
+msgstr "Gdk-fejlretningsflag at fjerne"
 
 #: libgnomeui/gnome-init.c:165
 msgid "X display to use"
@@ -882,7 +890,7 @@ msgstr "Gør X-kald synkrone"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Brug ikke X-udvidelsen for delt hukommelse"
+msgstr "Brug ikke X-udvidelsen til delt hukommelse"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
@@ -914,11 +922,11 @@ msgstr "STIL"
 
 #: libgnomeui/gnome-init.c:183
 msgid "Gtk+ debugging flags to set"
-msgstr "Gtk+-aflusningsflag at sætte"
+msgstr "Gtk+-fejlretningsflag at sætte"
 
 #: libgnomeui/gnome-init.c:185
 msgid "Gtk+ debugging flags to unset"
-msgstr "Gtk+-aflusningsflag at fjerne"
+msgstr "Gtk+-fejlretningsflag at fjerne"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
@@ -934,21 +942,21 @@ msgstr "MODUL"
 
 #: libgnomeui/gnome-init.c:297
 msgid "GTK options"
-msgstr "Gtk-valgmuligheder"
+msgstr "Gtk-tilvalg"
 
 #: libgnomeui/gnome-init.c:298
 msgid "GNOME GUI options"
-msgstr "Gnome GUI-valgmuligheder"
+msgstr "Grafisk relaterede Gnome-tilvalg"
 
-#: libgnomeui/gnome-init.c:452
+#: libgnomeui/gnome-init.c:453
 #, c-format
 msgid "%s options"
-msgstr "%s-valgmuligheder"
+msgstr "%s-tilvalg"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Indtil flere segmentationsfejl opstod; kan ikke vise fejldialogboks\n"
+msgstr "Flere segmentationsfejl opstod; kan ikke vise fejldialogboks\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
 msgid "Information"
@@ -1011,13 +1019,9 @@ msgid "Date"
 msgstr "Dato"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
 msgstr "%a %_d. %b %Y kl. %T"
 
@@ -1042,7 +1046,7 @@ msgstr "Godkend"
 
 #: libgnomeui/gnome-spell.c:258 libgnomeui/gnome-stock.c:837
 msgid "OK"
-msgstr "Ok"
+msgstr "O.k."
 
 #: libgnomeui/gnome-spell.c:265 libgnomeui/gnome-stock.c:839
 msgid "Cancel"
@@ -1285,7 +1289,7 @@ msgstr "Indsend en fejlrapport"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr "Fejlfindning"
+msgstr "Find fejl"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1505,7 +1509,7 @@ msgstr "Repository-id af tjeneren der skal aktiveres"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1543,32 +1547,37 @@ msgstr "Repository-id som GOAD kender denne tjener som"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr "Det mislykkedes at åbne CORBA-infokagefilen (%s) til skrivning: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Det mislykkedes at skrive CORBA-infokagefilen '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Det mislykkedes at skrive CORBA-infokage til '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Det mislykkedes at åbne CORBA-infokagefilen '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Det mislykkedes at læse CORBA-infokagefilen '%s': %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "Det mislykkedes at skaffe CORBA-godkendelsesinfokage, afslutter\n"
 
@@ -1584,13 +1593,13 @@ msgstr "Ukendt systemfejl"
 #: support/getopt.c:669
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: flaget '%s' er tvetydigt\n"
+msgstr "%s: tilvalget '%s' er flertydigt\n"
 
 # , c-format
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: flaget '--%s' tillader ikke et argument\n"
+msgstr "%s: tilvalget '--%s' tillader ikke en parameter\n"
 
 # , c-format
 #: support/getopt.c:698
@@ -1602,59 +1611,59 @@ msgstr "%s: flaget '%c%s' tillader ikke et argument\n"
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: flaget '%s' kræver et argument\n"
+msgstr "%s: tilvalget '%s' kræver en parameter\n"
 
 # , c-format
 #. --option
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: ukendt flag '--%s'\n"
+msgstr "%s: ukendt tilvalg '--%s'\n"
 
 # , c-format
 #. +option or -option
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: ukendt flag '%c%s'\n"
+msgstr "%s: ukendt tilvalg '%c%s'\n"
 
 # , c-format
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:774
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr "%s: ulovligt flag -- %c\n"
+msgstr "%s: ulovligt tilvalg - %c\n"
 
 # , c-format
 #: support/getopt.c:777
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr "%s: ugyldigt flag -- %c\n"
+msgstr "%s: ugyldigt tilvalg - %c\n"
 
 # , c-format
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:807 support/getopt.c:937
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: flaget kræver et argument -- %c\n"
+msgstr "%s: tilvalget kræver en parameter - %c\n"
 
 # , c-format
 #: support/getopt.c:854
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: flaget '-W %s' er tvetydigt\n"
+msgstr "%s: tilvalget '-W %s' er flertydigt\n"
 
 # , c-format
 #: support/getopt.c:872
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: flaget '-W %s' tillader ikke et argument\n"
+msgstr "%s: tilvalget '-W %s' tillader ikke en parameter\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Vis denne hjælpetekst"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Giv en kort brugsbeskrivelse"
 
@@ -1687,7 +1696,7 @@ msgstr "Dette er en hbox med billede og tekst"
 
 #: test-gnome/testgnome.c:1072
 msgid "The user chose Yes/OK with data:\n"
-msgstr "Brugeren valgte Ja/Ok med data:\n"
+msgstr "Brugeren valgte Ja/O.k. med data:\n"
 
 #: test-gnome/testgnome.c:1076
 msgid "The user chose No/Cancel with data:\n"
@@ -1696,221 +1705,6 @@ msgstr "Brugeren valgte Nej/Annullér med data:\n"
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
 msgstr "Mærkeligt tal i tilbagekald"
-
-#~ msgid "Unknown desktop file format %d"
-#~ msgstr "Ukendt skrivebordsfilformat %d"
-
-#~ msgid "Attempting to launch a non-application"
-#~ msgstr "Forsøg på at starte noget som ikke var et program"
-
-#~ msgid "Trying to execute an item with no 'Exec'"
-#~ msgstr "Prøver at køre noget uden 'Exec'-felt"
-
-#~ msgid "No exec field for this drop"
-#~ msgstr "Intet exec-felt i denne slipning"
-
-#~ msgid "Nothing to replace with a file in the exec string"
-#~ msgstr "Der er intet at erstatte med en fil i exec-strengen"
-
-#~ msgid "There was no argument to replace with dropped files"
-#~ msgstr "Der er ingen parameter at erstatte med sluppede filer"
-
-#~ msgid "Dropped URLs on an app that can only take files"
-#~ msgstr "Adresser blev sluppet på et program som kun kan modtage filer"
-
-#~ msgid "Specify X display to use."
-#~ msgstr "Angiv X-skærm som skal bruges."
-
-#~ msgid "Put the X connection in synchronous mode."
-#~ msgstr "Sæt X-forbindelsen i synkron tilstand."
-
-#~ msgid "Specify the X window ID of Netscape."
-#~ msgstr "Angiv id for Netscapes X-vindue."
-
-#~ msgid "Don't raise the Netscape window."
-#~ msgstr "Hæv ikke Netscape-vindue."
-
-#~ msgid "Show the given URL in a new window."
-#~ msgstr "Vis den angivne adresse i et nyt vindue."
-
-#~ msgid "Close the specified window."
-#~ msgstr "Luk angivet vindue."
-
-#~ msgid "Print the X window ID of the utilized window."
-#~ msgstr "Udskriv id for det benyttede X-vindue."
-
-#~ msgid "Error parsing '%s' (empty result)"
-#~ msgstr "Fejl ved tolking af '%s' (tomt resultat)"
-
-#~ msgid "Cannot open a pipe: %s"
-#~ msgstr "Kan ikke åbne en ledning: %s"
-
-#~ msgid "Cannot parse handler template: %s"
-#~ msgstr "Kan ikke fortolke håndteringsskabelon: %s"
-
-#~ msgid "Cannot execute command '%s'!"
-#~ msgstr "Kan ikke køre kommando '%s'!"
-
-#~ msgid "Command '%s' did not return an ID!"
-#~ msgstr "Kommandoen '%s' returnerede ikke en id!"
-
-#~ msgid "Help options"
-#~ msgstr "Valgmuligheder for hjælp"
-
-#~ msgid "Dynamic modules to load"
-#~ msgstr "Dynamiske moduler som skal indlæses"
-
-#~ msgid "MODULE1,MODULE2,..."
-#~ msgstr "MODUL1,MODUL2,..."
-
-#~ msgid "Simple drag and drop"
-#~ msgstr "Simpel træk-og-slip"
-
-#~ msgid ""
-#~ "In the following commands you should use %s in the spot where the\n"
-#~ "filename/URL should be substituted.  If you leave the field blank\n"
-#~ "drops will not be accepted.  If this application can accept\n"
-#~ "multiple files or URLs as arguments after its command name check the box "
-#~ "above."
-#~ msgstr ""
-#~ "I de følgende kommandoer bør du bruge %s på den plads hvor\n"
-#~ "filnavnet/adressen skal indsættes. Hvis du lader feltet være blankt\n"
-#~ "vil slipninger ikke blive accepterede. Hvis dette program kan\n"
-#~ "acceptere flere filer eller adresser som parametre efter\n"
-#~ "kommandonavnet, så afkryds den ovenstående boks."
-
-#~ msgid "Command for file drops:"
-#~ msgstr "Kommando for slip af filer:"
-
-#~ msgid "Drop one file at a time only."
-#~ msgstr "Slip kun én fil ad gangen."
-
-#~ msgid "Command for URL drops:"
-#~ msgstr "Kommando for slip af URL'er:"
-
-#~ msgid "Drop one URL at a time only."
-#~ msgstr "Slip kun én URL ad gangen."
-
-#~ msgid "Window titles to wait for (comma separated):"
-#~ msgstr "Vinduestitler der skal ventes på (kommasepareret):"
-
-#~ msgid "Drag and Drop"
-#~ msgstr "Træk-og-slip"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "File Name:"
-#~ msgstr "Filnavn:"
-
-#~ msgid "Location:"
-#~ msgstr "Placering:"
-
-#~ msgid "Save As Type:"
-#~ msgstr "Gem som type:"
-
-#~ msgid "GNOME GConf Support"
-#~ msgstr "Gnome GConf understøttelse"
-
-#~ msgid ""
-#~ "You attempted to change an aspect of your configuration that your system "
-#~ "administrator or operating system vendor does not allow you to change. Some "
-#~ "of the settings you have selected may not take effect, or may not be "
-#~ "restored next time you use this application (%s)."
-#~ msgstr ""
-#~ "Du forsøgte at ændre et aspekt af din konfiguration, som din "
-#~ "systemadministrator eller styresystemsleverandør ikke tillader dig at ændre. "
-#~ "Nogle af indstillingerne du har valgt kan muligvis ikke udføres, eller vil "
-#~ "ikke blive brugt næste gang du bruger dette program (%s)."
-
-#~ msgid ""
-#~ "An error occurred while loading or saving configuration information for %s. "
-#~ "Some of your configuration settings may not work properly."
-#~ msgstr ""
-#~ "En fejl skete ved indlæsning eller gemning af konfigureringsinformation for "
-#~ "%s. Nogen af dine konfigurationsindstillinger virker muligvis ikke korrekt."
-
-#~ msgid "GConf error details: %s\n"
-#~ msgstr "Detaljer om GConf fejl: %s\n"
-
-#~ msgid "_Popup"
-#~ msgstr "_Pop-op"
-
-#~ msgid "Show help in temporary popup windows"
-#~ msgstr "Vis hjælp i midlertidigt vindue"
-
-#~ msgid "_Embedded"
-#~ msgstr "_Indbygget"
-
-#~ msgid "Show help inside the application window"
-#~ msgstr "Vis hjælp inde i programvinduet"
-
-#~ msgid "_Browser"
-#~ msgstr "_Hjælpesystem"
-
-#~ msgid "Show help in a help browser window"
-#~ msgstr "Vis hjælp i et hjælpesystemsvindue"
-
-#~ msgid "App style"
-#~ msgstr "Programstil"
-
-#~ msgid "The style of GnomeHelpView"
-#~ msgstr "GnomeHelpView-stil"
-
-#~ msgid "App style priority"
-#~ msgstr "Prioritet for programstil"
-
-#~ msgid "The priority of style of GnomeHelpView"
-#~ msgstr "Prioriteten for GnomeHelpView-stilen"
-
-#~ msgid "Orientation"
-#~ msgstr "Orientering"
-
-#~ msgid "Toplevel"
-#~ msgstr "Topniveau"
-
-#~ msgid "The toplevel widget"
-#~ msgstr "Den øverste kontrol"
-
-#~ msgid "Show help for a specific region of the application"
-#~ msgstr "Vis hjælp for en specifik del af programmet"
-
-#~ msgid "Style"
-#~ msgstr "Stil"
-
-#~ msgid "Change the way help is displayed"
-#~ msgstr "Ændr måden hjælpen vises på"
-
-#~ msgid "No help is available for the selected portion of the application."
-#~ msgstr "Ingen hjælp er tilgængelig for den valgte del af dette program."
-
-#~ msgid "Cought GnomeURL error: %s"
-#~ msgstr "Opfangede GnomeURL-fejl: %s"
-
-#~ msgid "URL"
-#~ msgstr "URL"
-
-#~ msgid "The URL that GnomeHRef activates"
-#~ msgstr "Den adresse som GnomeHRef aktiverer"
-
-#~ msgid "Text"
-#~ msgstr "Tekst"
-
-#~ msgid "The text on the button"
-#~ msgstr "Teksten på knappen"
-
-#~ msgid "End World Hunger"
-#~ msgstr "Udryd verdenshungersnød"
-
-#~ msgid ""
-#~ "Error occured while trying to launch the URL handler.\n"
-#~ "Please check the settings in the Control Center if they are correct."
-#~ msgstr ""
-#~ "En fejl opstod under forsøg på at opstarte URL-håndtereren.\n"
-#~ "Tjek venligst om indstillingerne i kontrolcenteret er korrekte."
 
 #~ msgid "Paper Size"
 #~ msgstr "Papirstørrelse"
@@ -2015,8 +1809,8 @@ msgstr "Mærkeligt tal i tilbagekald"
 #~ "Could not set mode 0700 on private per-user gnome configuration directory "
 #~ "`%s': %s\n"
 #~ msgstr ""
-#~ "Kunne ikke sætte 0700 rettigheder på privat brugers "
-#~ "Gnome-konfigurationsmappe `%s': %s\n"
+#~ "Kunne ikke sætte 0700 rettigheder på privat brugers Gnome-"
+#~ "konfigurationsmappe `%s': %s\n"
 
 #~ msgid "Could not create gnome accelerators directory `%s': %s\n"
 #~ msgstr "Kunne ikke oprette Gnome tastaturgenvejsmappen `%s': %s\n"
@@ -2032,66 +1826,6 @@ msgstr "Mærkeligt tal i tilbagekald"
 
 #~ msgid "Time"
 #~ msgstr "Tid"
-
-#~ msgid "The time currentlyselected"
-#~ msgstr "Valgt tid"
-
-#~ msgid "DateEdit Flags"
-#~ msgstr "DateEdit-tilvalg"
-
-#~ msgid "Flags for how DateEdit looks"
-#~ msgstr "Indstillinger for hvordan DateEdit ser ud"
-
-#~ msgid "Lower Hour"
-#~ msgstr "Forstør time"
-
-#~ msgid "Lower hour in the time popup selector"
-#~ msgstr "Formindsk timetallet i tidsvælgeren"
-
-#~ msgid "Upper Hour"
-#~ msgstr "Formindsk time"
-
-#~ msgid "Upper hour in the time popup selector"
-#~ msgstr "Forstør time i tidsvælgeren"
-
-#~ msgid "Initial Time"
-#~ msgstr "Begyndelsestid"
-
-#~ msgid "The initial time"
-#~ msgstr "Start-tiden"
-
-#~ msgid "gnome_date_edit_get_date deprecated, use gnome_date_edit_get_time"
-#~ msgstr "gnome_date_edit_get_date er forældet, brug gnome_date_edit_get_time"
-
-#~ msgid "GnomeIconSelection: '%s' does not exist or is not a directory"
-#~ msgstr "GnomeIconSelection: '%s' eksisterer ikke eller er ikke et katalog"
-
-#~ msgid "GnomeIconSelection: couldn't open directory '%s'"
-#~ msgstr "GnomeIconSelection: kunne ikke åbne katalog '%s'"
-
-#~ msgid "-freefont-garamond-*-*-*-*-30-170-*-*-*-*-*-*,*-r-*"
-#~ msgstr "-freefont-garamond-*-*-*-*-30-170-*-*-*-*-*-*,*-r-*"
-
-#~ msgid "Test GNOME"
-#~ msgstr "Test Gnome"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
-
-#~ msgid "Child Item 1"
-#~ msgstr "Afkom-opføring 1"
-
-#~ msgid "Hint for item 1"
-#~ msgstr "Tip for opføring 1"
-
-#~ msgid "Child Item 2"
-#~ msgstr "Afkom-opføring 2"
-
-#~ msgid "Hint for item 2"
-#~ msgstr "Tip for opføring 2"
 
 #~ msgid "Browse"
 #~ msgstr "Gennemse"

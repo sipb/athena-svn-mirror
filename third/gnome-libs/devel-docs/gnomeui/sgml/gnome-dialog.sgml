@@ -1,4 +1,4 @@
-<refentry id="GnomeDialog" revision="16 Mar 2001">
+<refentry id="GnomeDialog">
 <refmeta>
 <refentrytitle>GnomeDialog</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -215,7 +215,7 @@ then button 1, etc.  These numbers are used throughout the
 <link linkend="GnomeDialog">GnomeDialog</link> API.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -238,7 +238,7 @@ See <link linkend="gnome-dialog-new">gnome_dialog_new</link>(), this function is
 varargs.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -265,7 +265,7 @@ request dialog placement above the parent window (vs. at the mouse position,
 or at a default window manger location).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -287,7 +287,7 @@ or at a default window manger location).</para>
 Simply <link linkend="gtk-signal-connect">gtk_signal_connect</link>() to the "clicked" signal of the specified button.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -316,7 +316,7 @@ Simply <link linkend="gtk-signal-connect">gtk_signal_connect</link>() to the "cl
 <link linkend="gtk-signal-connect-object">gtk_signal_connect_object</link>() to the "clicked" signal of the given button.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -358,7 +358,7 @@ change the <link linkend="gnome-dialog-close">gnome_dialog_close</link>() behavi
 destroy. You can do this with <link linkend="gnome-dialog-close-hides">gnome_dialog_close_hides</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -377,7 +377,7 @@ See <link linkend="gnome-dialog-run">gnome_dialog_run</link>(). The only differe
 <link linkend="gnome-dialog-close">gnome_dialog_close</link>() before returning, if the dialog was not already closed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -398,7 +398,7 @@ Usually you should make the least-destructive button the default.
 Otherwise, the most commonly-used button.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -419,7 +419,7 @@ Otherwise, the most commonly-used button.</para>
 Calls <link linkend="gtk-widget-set-sensitive">gtk_widget_set_sensitive</link>() on the specified button number.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -444,7 +444,7 @@ Calls <link linkend="gtk-widget-set-sensitive">gtk_widget_set_sensitive</link>()
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -480,7 +480,7 @@ dialog closure, including delete_event and button clicks, and
 handle them in a central location.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -501,7 +501,7 @@ they're closed. Other dialogs are expensive to keep around, so you want to
 will need to make for each dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -526,7 +526,7 @@ such as <link linkend="GnomeMessageBox">GnomeMessageBox</link> and <link linkend
 TRUE by default.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -550,7 +550,7 @@ type something in and then press enter to close the dialog. This
 function enables that behavior.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -573,7 +573,7 @@ This function is mostly for internal library use. You should use
 the button arguments.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -598,7 +598,7 @@ This function is mostly for internal library use. You should use
 the button argument.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -620,7 +620,7 @@ the button argument.</para>
 For internal use, language bindings, etc. Use <link linkend="gnome-dialog-new">gnome_dialog_new</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -643,7 +643,7 @@ For internal use, language bindings, etc. Use <link linkend="gnome-dialog-new">g
 want one of those you need to use this function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -670,7 +670,7 @@ want one of those you need to use this function.</para>
 Simply calls <link linkend="gnome-dialog-append-button-with-pixmap">gnome_dialog_append_button_with_pixmap</link>() repeatedly.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -694,7 +694,7 @@ Simply calls <link linkend="gnome-dialog-append-button-with-pixmap">gnome_dialog
 See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -718,7 +718,7 @@ See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
 See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,4 +1,4 @@
-<refentry id="GnomeEntry" revision="16 Mar 2001">
+<refentry id="GnomeEntry">
 <refmeta>
 <refentrytitle>GnomeEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -106,7 +106,7 @@ not <literal>NULL</literal>, then the history list will be saved and restored be
 uses under the given id.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ uses under the given id.</para>
 Obtain pointer to GnomeEntry's internal text entry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -145,7 +145,7 @@ Set or clear the history id of the GnomeEntry widget.  If
 the given id replaces the previous widget history id.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -169,7 +169,7 @@ item will be saved in the config file (assuming that <parameter>gentry</paramete
 history id is not <literal>NULL</literal>).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -196,7 +196,7 @@ history item will be saved in the config file (assuming that
 <parameter>gentry</parameter>'s history id is not <literal>NULL</literal>).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -220,7 +220,7 @@ if one is available.  If the history id of <parameter>gentry</parameter> is <lit
 nothing occurs.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -238,7 +238,7 @@ in a configuration file.  If the history id of <parameter>gentry</parameter> is 
 nothing occurs.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

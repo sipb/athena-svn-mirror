@@ -1,4 +1,4 @@
-<refentry id="GnomeNumberEntry" revision="16 Mar 2001">
+<refentry id="GnomeNumberEntry">
 <refmeta>
 <refentrytitle>GnomeNumberEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -71,7 +71,7 @@ Creates a new number entry widget, with a history id
 and title for the calculator dialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -93,7 +93,7 @@ Get the GnomeEntry component of the
 GnomeNumberEntry for lower-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -112,7 +112,7 @@ Get the GtkEntry component of the
 GnomeNumberEntry for Gtk+-level manipulation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -132,7 +132,7 @@ Set the title of the calculator dialog to <parameter>calc_dialog_title</paramete
 Takes effect the next time the calculator button is pressed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -151,7 +151,7 @@ Takes effect the next time the calculator button is pressed.</para>
 Get the current number from the entry</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -82,7 +82,13 @@ add_to_key (char *mime_type, char *def)
 		s = p = g_strdup (def);
 
 		while ((ext = strtok_r (s, " \t\n\r,", &tokp)) != NULL){
+			gpointer res = g_hash_table_lookup (mime_extensions [priority], ext);
+			if (res == NULL)
 			g_hash_table_insert (mime_extensions [priority], g_strdup (ext), g_strdup (mime_type));
+#if 0
+			else if (strcmp (mime_type, res))
+				printf ("%s = %s while inserting %s\n", ext, (char *)res, mime_type);
+#endif
 			s = NULL;
 		}
 		g_free (p);

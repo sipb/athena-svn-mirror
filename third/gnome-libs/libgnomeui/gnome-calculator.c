@@ -1308,7 +1308,7 @@ gnome_calculator_init (GnomeCalculator *gc)
 						 x,x+1,y,y+1,
 						 GTK_FILL | GTK_EXPAND |
 						 	GTK_SHRINK,
-						 0, 2, 2);
+						 GTK_FILL | GTK_EXPAND, 2, 2);
 			}
 		}
 	}

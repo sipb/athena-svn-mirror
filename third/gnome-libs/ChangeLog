@@ -1,3 +1,77 @@
+2002-01-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnorba/orbitgtk.c: Fix bogus g_assert and print info instead
+	when we fail to get user details from the pwentry. Richard Kinder
+	<r_kinder@yahoo.com>
+	
+2002-01-21  Wayne Schuller  <k_wayne@linuxpower.org>
+
+	* libgnorba/goad-browser.c: (gb_create_main_window),
+	(gb_create_server_list): Don't dynamically resize the goad-browser window, just set some nice defaults. Fixes: http://bugzilla.gnome.org/show_bug.cgi?id=54882
+
+2002-01-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Bump version post release.
+	
+2002-01-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Release 1.4.1.3.
+	
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (gnomeincludedir): move gnome.h to includedir/gnome-1.0
+
+	* libgnorba/Makefile.am (libgnorbaincludedir): move to
+	includedir/gnome-1.0
+
+	* configure.in (GNOME_INCLUDEDIR): change to includedir/gnome-1.0
+
+2001-09-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Fix typo. s/$LDFLAGBS/$LDFLAGS in gmodule check.
+	Patch from <markd@kermodei.com>.
+	
+2000-08-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Rename zh_TW.Big5 to zh_TW in ALL_LINGUAS.
+	* gnome-data/*.soundlist: Added traditional Chinese strings.
+
+2001-08-02  Abel Cheung  <maddog@linux.org.hk>
+
+	* README: Update several URLs.
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-data/Makefile.am (install-data-local): Do not apply
+	DESTDIR more than once.  From frodol@dds.nl (Frodo Looijaard) 
+
+2001-06-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Remove gnome-faq/Makefile from here since it's not
+	disted in Makefile.am.
+	
+2001-04-18  Dan Winship  <danw@ximian.com>
+
+	* configure.in: Check g_module_supported() rather than looking for
+	specific kinds of dynamic loading implementations.
+
+2001-04-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* gnome-data/gtk-events.soundlist & gnome-data/gnome.soundlist:
+		Small update of the Turkish entries.
+
+2001-03-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libgnomeui/gnome-init.c (gnome_add_gtk_arg_callback,
+	gnome_init_cb, gnome_init_with_popt_table, gnome_init): Just
+	return silently if GNOME is already initialized, rather than
+	g_return_if_fail()ing. This is needed because there is no way to
+	even know if GNOME is already initialized, and there are times
+	when two pieces of code may both have valid reasons for wanting
+	GNOME initialized, for example if a GNOME app has embedded Python
+	and wants the embedded python scripts to be able to use the
+	Python/GNOME bindings.
+
 2001-03-05  Stanislav Brabec  <utx@penguin.cz>
 
 	* gnome-config.in: Added dependence on gdk_imlib to zvt, since

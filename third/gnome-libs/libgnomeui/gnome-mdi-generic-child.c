@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* gnome-mdi-generic-child.c - implementation of a generic MDI child class.
 
-   Copyright (C) 1997, 1998 Free Software Foundation
+   Copyright (C) 1997 - 2001 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,7 +18,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Jaka Mocnik <jaka.mocnik@kiss.uni-lj.si>
+   Author: Jaka Mocnik <jaka@gnu.org>
 */
 
 #include <gtk/gtk.h>
@@ -356,7 +356,7 @@ static GList *gnome_mdi_generic_child_create_menus(GnomeMDIGenericChild *child, 
 		GTK_VALUE_OBJECT(args[0]) = GTK_OBJECT(child);
 		args[1].name = NULL;
 		args[1].type = gtk_widget_get_type();
-		GTK_VALUE_OBJECT(args[0]) = GTK_OBJECT(view);
+		GTK_VALUE_OBJECT(args[1]) = GTK_OBJECT(view);
 		args[2].name = NULL;
 		args[2].type = GTK_TYPE_POINTER; /* should we have a boxed type? */
 		GTK_VALUE_POINTER(args[2]) = &ret;
@@ -406,7 +406,7 @@ static GtkWidget *gnome_mdi_generic_child_set_label (GnomeMDIGenericChild *child
 		GTK_VALUE_OBJECT(args[0]) = GTK_OBJECT(child);
 		args[1].name = NULL;
 		args[1].type = gtk_widget_get_type();
-		GTK_VALUE_OBJECT(args[0]) = GTK_OBJECT(old_label);
+		GTK_VALUE_OBJECT(args[1]) = GTK_OBJECT(old_label);
 		args[2].name = NULL;
 		args[2].type = gtk_widget_get_type();
 		GTK_VALUE_POINTER(args[2]) = &ret;

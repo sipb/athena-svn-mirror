@@ -50,17 +50,17 @@ To compile the GNOME libraries, as a minimum you must install:
 
 	- Graphics libraries: libpng, libxpm, libtiff, libgif or libungif
   	    libpng               1.0.3           ; ls -l /usr/lib/libpng.so.2.*
-  	       http://www.cdrom.com/pub/png
+  	       http://www.libpng.org/pub/png/
   	       ftp://swrinde.nde.swri.edu/pub/png/src
   	    zlib                 1.1.3           ; ls -l /usr/lib/libz.so.*
-  	       http://www.cdrom.com/pub/infozip/zlib
+  	       http://www.gzip.org/zlib/
   	       ftp://swrinde.nde.swri.edu/pub/png/src
   	    libjpeg              v6b             ; ls -l /usr/lib/libjpeg.so.6*
   	       http://www.ijg.org/
   	       ftp://ftp.uu.net/graphics/jpeg/
   	    libtiff              v3.4            ; ls -l /usr/lib/libtiff.so.*
-  	       http://www.sgi.com/fun/freeware/graphics.html
-  	       ftp://ftp.sgi.com/graphics/tiff/
+  	       http://www.libtiff.org/
+  	       ftp://ftp.remotesensing.org/pub/libtiff/
   	    libungif             4.1.0           ; ls -l /usr/lib/libungif.so.*
 	    (Preferred. Not needed if giflib is installed)
   	       http://prtr-13.ucsc.edu/~badger/software/libungif.shtml
@@ -81,7 +81,7 @@ To compile the GNOME libraries, as a minimum you must install:
 
 	  ftp://ftp.gnome.org/pub/GNOME/sources/latest/imlib
 
-	- ORBit 0.4.xxx                          ; ls -l /usr/lib/libORBit.so.*
+	- ORBit 0.5.xx                           ; ls -l /usr/lib/libORBit.so.*
 
 	  ftp://ftp.gnome.org/pub/GNOME/sources/ORBit
 
@@ -130,6 +130,6 @@ DocBook packages
 or malfunctions in the code, please do use the "gnome-bug" program
 (distributed in this package).
 
-   You can keep track of your bug, by checking the http://bugs.gnome.org
+   You can keep track of your bug, by checking the http://bugzilla.gnome.org/
 web site.
 

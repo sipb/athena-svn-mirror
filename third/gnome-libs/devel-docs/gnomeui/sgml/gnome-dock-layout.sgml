@@ -1,4 +1,4 @@
-<refentry id="GnomeDockLayout" revision="16 Mar 2001">
+<refentry id="GnomeDockLayout">
 <refmeta>
 <refentrytitle>GnomeDockLayout</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -137,7 +137,7 @@ user-specific configuration file, and finally apply it to it
 Create a new <link linkend="GnomeDockLayout">GnomeDockLayout</link> widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -157,7 +157,7 @@ Create a new <link linkend="GnomeDockLayout">GnomeDockLayout</link> widget.</par
 Add <parameter>item</parameter> to <parameter>layout</parameter> with the specified parameters.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -196,7 +196,7 @@ Add <parameter>item</parameter> to <parameter>layout</parameter> as a floating i
 specified (<parameter>x</parameter>, <parameter>y</parameter>) position and <parameter>orientation</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -228,7 +228,7 @@ specified (<parameter>x</parameter>, <parameter>y</parameter>) position and <par
 Retrieve a layout item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -251,7 +251,7 @@ Retrieve a layout item.</para>
 Retrieve the dock item named <parameter>name</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -273,7 +273,7 @@ Retrieve the dock item named <parameter>name</parameter>.</para>
 Remove the specified <parameter>item</parameter> from <parameter>layout</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -296,7 +296,7 @@ Remove the specified <parameter>item</parameter> from <parameter>layout</paramet
 Remove the item named <parameter>name</parameter> from <parameter>layout</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -317,7 +317,7 @@ Remove the item named <parameter>name</parameter> from <parameter>layout</parame
 Generate a string describing the layout in <parameter>layout</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -337,7 +337,7 @@ Parse the layout string <parameter>string</parameter>, and move around the
 items in <parameter>layout</parameter> accordingly.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -359,7 +359,7 @@ items in <parameter>layout</parameter> accordingly.</para>
 Add all the items in <parameter>layout</parameter> to the specified <parameter>dock</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -37,6 +37,8 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 get(_obj->servant, col, row, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -54,7 +56,6 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
       4, "get"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 8 };
-
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
 				      CORBA_TRUE,
@@ -85,13 +86,13 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_retval = GNOME_Table_Value__alloc();
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 2);
-	 
-	    (*((guint16 *) & ((*_ORBIT_retval)._d))) =
+	 (*((guint16 *) & ((*_ORBIT_retval)._d))) =
 	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 2;
 	 switch ((*_ORBIT_retval)._d) {
@@ -102,8 +103,7 @@ GNOME_Table_get(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	      break;
 	   case 0:
 	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	      
-		 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	      (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
 	      (*_ORBIT_retval)._u.str = CORBA_string_alloc(_ORBIT_tmpvar_3);
@@ -190,6 +190,8 @@ GNOME_Table_set(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 set(_obj->servant, col, row, val, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -274,13 +276,14 @@ GNOME_Table_set(GNOME_Table _obj, const CORBA_long col, const CORBA_long row,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION)
+	 goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_retval))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	 (*((guint32 *) & (_ORBIT_retval))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 _ORBIT_retval = *((CORBA_long *) _ORBIT_curptr);
       }

@@ -1,4 +1,4 @@
-<refentry id="GnomeIconTextItem" revision="16 Mar 2001">
+<refentry id="GnomeIconTextItem">
 <refmeta>
 <refentrytitle>GnomeIconTextItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -107,7 +107,7 @@ by the caller and it will not be deallocated during the lifetime of this
 item).  This is an optimization to reduce memory usage for large icon sets.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -149,7 +149,7 @@ Sets the coordinates at which the icon text item should be placed.
 See also: <link linkend="gnome-icon-text-item-configure">gnome_icon_text_item_configure</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -175,7 +175,7 @@ when the user clicks on a selected icon text item, it will start the text
 editing process.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -194,7 +194,7 @@ editing process.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -217,7 +217,7 @@ controls whether the item's current text should be accepted or discarded.  If
 it is discarded, then the icon's original text will be restored.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

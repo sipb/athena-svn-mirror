@@ -2990,7 +2990,9 @@ gnome_canvas_button (GtkWidget *widget, GdkEventButton *event)
 
 	canvas = GNOME_CANVAS (widget);
 
-	if (event->window != canvas->layout.bin_window)
+	/* dispatch normally regardless of the event's window if an item has
+	   has a pointer grab in effect */
+	if (!canvas->grabbed_item && event->window != canvas->layout.bin_window)
 		return retval;
 
 	switch (event->button) {
@@ -3158,7 +3160,9 @@ gnome_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 
 	canvas = GNOME_CANVAS (widget);
 
+#if 0
 	gdk_im_end ();
+#endif
 
 	if (canvas->focused_item)
 		return emit_event (canvas, (GdkEvent *) event);
@@ -3793,6 +3797,9 @@ gnome_canvas_request_redraw_uta (GnomeCanvas *canvas,
 	g_return_if_fail (canvas != NULL);
 	g_return_if_fail (GNOME_IS_CANVAS (canvas));
 	g_return_if_fail (uta != NULL);
+
+	if (!GTK_WIDGET_DRAWABLE (canvas))
+		return;
 
 	visible.x0 = DISPLAY_X1 (canvas) - canvas->zoom_xofs;
 	visible.y0 = DISPLAY_Y1 (canvas) - canvas->zoom_yofs;

@@ -1,4 +1,4 @@
-<refentry id="GnomeMessageBox" revision="16 Mar 2001">
+<refentry id="GnomeMessageBox">
 <refmeta>
 <refentrytitle>GnomeMessageBox</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -197,7 +197,7 @@ of buttons are inserted on it.  You can use the GNOME stock identifiers
 to create gnome-stock-buttons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -225,7 +225,7 @@ of buttons are inserted on it, the messages come from the <parameter>buttons</pa
 You can use the GNOME stock identifiers to create gnome-stock-buttons.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -247,7 +247,7 @@ You can use the GNOME stock identifiers to create gnome-stock-buttons.</para>
 <programlisting>void        gnome_message_box_set_modal     (<link linkend="GnomeMessageBox">GnomeMessageBox</link> *messagebox);</programlisting>
 <para>
 Deprecated. Use <function><link linkend="gtk-window-set-modal">gtk_window_set_modal</link>()</function>.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -264,7 +264,7 @@ Deprecated. Use <function><link linkend="gtk-window-set-modal">gtk_window_set_mo
                                              <link linkend="gint">gint</link> button);</programlisting>
 <para>
 Deprecated. Use <function><link linkend="gnome-dialog-set-modal">gnome_dialog_set_modal</link>()</function>.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

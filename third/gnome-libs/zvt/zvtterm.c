@@ -39,6 +39,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkselection.h>
+#include <gtk/gtkwindow.h>
 
 #include "zvtterm.h"
 
@@ -49,12 +50,15 @@
 #include <X11/Xatom.h>
 #include <X11/Xos.h>
 
-
 /* define to 'x' to enable copious debug output */
 #define d(x)
 
 /* default font */
+#ifndef ZVT_MB
 #define DEFAULT_FONT "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1"
+#else
+#define DEFAULT_FONT "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-1"
+#endif
 
 #define PADDING 2
 
@@ -88,6 +92,8 @@ static void zvt_term_selection_get (GtkWidget *widget,
 static void zvt_term_child_died (ZvtTerm *term);
 static void zvt_term_title_changed (ZvtTerm *term, VTTITLE_TYPE type, char *str);
 static void zvt_term_title_changed_raise (void *user_data, VTTITLE_TYPE type, char *str);
+static void zvt_term_dtterm_seq (void *term);
+static void zvt_term_dtterm_seq_event (ZvtTerm *term);
 static gint zvt_term_cursor_blink (gpointer data);
 static void zvt_term_scrollbar_moved (GtkAdjustment *adj, GtkWidget *widget);
 static void zvt_term_readdata (gpointer data, gint fd, GdkInputCondition condition);
@@ -115,6 +121,12 @@ static gint       safe_strcmp(gchar *a, gchar *b);
 /* load the "current" background, from file or from system */
 static void       load_background (ZvtTerm *term);
 
+#ifdef ZVT_IM_ON_THE_SPOT
+static void zvt_im_preedit_set_spot(ZvtTerm *term, int col, int row, int offx, int offy);
+static void zvt_im_preedit_set_foreground(ZvtTerm *term, GdkColor *color);
+static void zvt_im_preedit_set_background(ZvtTerm *term, GdkColor *color);
+static void zvt_im_preedit_set_font(ZvtTerm *term, GdkFont *font);
+#endif
 
 /* static data */
 
@@ -142,10 +154,18 @@ enum
 {
   CHILD_DIED,
   TITLE_CHANGED,
+  DTTERM_SEQ,
   LAST_SIGNAL
 };
 static guint term_signals[LAST_SIGNAL] = { 0 };
 
+/* values for selection info */
+enum {
+  TARGET_STRING,
+  TARGET_UTF8,
+  TARGET_TEXT,
+  TARGET_COMPOUND_TEXT
+};
 
 /* GTK parent class */
 static GtkWidgetClass *parent_class = NULL;
@@ -205,6 +225,14 @@ zvt_term_class_init (ZvtTermClass *class)
 		    GTK_TYPE_INT,
 		    GTK_TYPE_STRING);
 
+  term_signals[DTTERM_SEQ] =
+    gtk_signal_new ("dtterm_seq",
+		    GTK_RUN_FIRST,
+		    object_class->type,
+		    GTK_SIGNAL_OFFSET (ZvtTermClass, child_died),
+		    gtk_signal_default_marshaller,
+		    GTK_TYPE_NONE, 0);
+
   gtk_object_class_add_signals (object_class, term_signals, LAST_SIGNAL);
 
   object_class->destroy = zvt_term_destroy;
@@ -237,6 +265,17 @@ static void
 zvt_term_init (ZvtTerm *term)
 {
   struct _zvtprivate *zp;
+  static const GtkTargetEntry targets[] = {
+    { "STRING", 0, TARGET_STRING },
+#ifdef ZVT_UTF
+    { "UTF-8",  0, TARGET_UTF8 }, 
+#endif
+#ifdef ZVT_MB
+    { "TEXT",   0, TARGET_TEXT }, 
+    { "COMPOUND_TEXT", 0, TARGET_COMPOUND_TEXT }
+#endif
+  };
+  static const gint n_targets = sizeof(targets) / sizeof(targets[0]);
 
   GTK_WIDGET_SET_FLAGS (term, GTK_CAN_FOCUS);
 
@@ -244,6 +283,7 @@ zvt_term_init (ZvtTerm *term)
   term->vx = vtx_new (80, 24, term);
   term->vx->vt.ring_my_bell = zvt_term_bell;
   term->vx->vt.change_my_name = zvt_term_title_changed_raise;
+  term->vx->vt.dtterm_seq     = zvt_term_dtterm_seq;
 
   /* set rendering callbacks */
   term->vx->draw_text = vt_draw_text;
@@ -284,7 +324,7 @@ zvt_term_init (ZvtTerm *term)
 
   /* bitfield flags */
   term->cursor_on = 0;
-  term->cursor_filled = 1;
+  term->cursor_filled = 0;
   term->cursor_blink_state = 0;
   term->scroll_on_keystroke = 0;
   term->scroll_on_output = 0;
@@ -304,7 +344,6 @@ zvt_term_init (ZvtTerm *term)
     zp->fonttype=0;
     zp->default_char=0;
     zp->bold_save = 0;
-    zp->transpix = 0;
     zp->paste_id = -1;
     zp->paste = 0;
     zp->queue_red= 0;
@@ -328,20 +367,16 @@ zvt_term_init (ZvtTerm *term)
       GTK_SIGNAL_FUNC (zvt_term_scrollbar_moved),
       term);
 
-  /* selection received */
-  gtk_selection_add_target (
-      GTK_WIDGET (term),
-      GDK_SELECTION_PRIMARY,
-      GDK_SELECTION_TYPE_STRING, 
-      0);
-#ifdef ZVT_UTF
-  gtk_selection_add_target (
-      GTK_WIDGET (term),
-      GDK_SELECTION_PRIMARY,
-      gdk_atom_intern ("UTF-8", FALSE),
-      1);
-#endif
+  gtk_signal_connect (
+      GTK_OBJECT (term),
+      "dtterm_seq",
+      GTK_SIGNAL_FUNC (zvt_term_dtterm_seq_event),
+      NULL);
 
+  /* selection received */
+  gtk_selection_add_targets (GTK_WIDGET (term),
+			     GDK_SELECTION_PRIMARY,
+			     targets, n_targets);
 }
 
 /**
@@ -432,7 +467,6 @@ void zvt_term_set_wordclass(ZvtTerm *term, unsigned char *class)
 static void
 term_force_size(ZvtTerm *term)
 {
-  struct _zvtprivate *zp = _ZVT_PRIVATE(term);
   if (GTK_WIDGET_REALIZED (term)) {
 
     /* ok, if we update the window hints ourselves, then we
@@ -496,23 +530,6 @@ zvt_term_new (void)
   return GTK_WIDGET (term);
 }
 
-/* free's the tranparenxy pixmap */
-/* make special care any call to this also overrides or
-   clears the background gc to which the transparency pixmap
-   has been set as the tile */
-static void
-free_transpix(ZvtTerm *term)
-{
-  struct _zvtprivate *zp;
-  zp = gtk_object_get_data (GTK_OBJECT (term), "_zvtprivate");
-  if (zp && zp->transpix) {
-    gdk_xid_table_remove (GDK_WINDOW_XWINDOW(zp->transpix));
-    g_dataset_destroy (zp->transpix);
-    g_free (zp->transpix);
-    zp->transpix = 0;
-  }
-}
-
 
 static void
 zvt_term_destroy (GtkObject *object)
@@ -560,7 +577,6 @@ zvt_term_destroy (GtkObject *object)
       g_free(zp->text_expand);
     if (zp->bold_save)
       gdk_pixmap_unref(zp->bold_save);
-    free_transpix(term);
     if (zp->paste)
       g_free(zp->paste);
     if (zp->paste_id != -1)
@@ -666,6 +682,11 @@ zvt_term_set_color_scheme (ZvtTerm *term, gushort *red, gushort *grn, gushort *b
   clone_col(&zp->queue_red, 0);
   clone_col(&zp->queue_green, 0);
   clone_col(&zp->queue_blue, 0);
+#ifdef ZVT_IM_ON_THE_SPOT
+  zvt_im_preedit_set_background(term, &c);
+  c.pixel = term->colors [16];
+  zvt_im_preedit_set_foreground(term, &c);
+#endif /* ZVT_IM_ON_THE_SPOT */
 }
 
 /**
@@ -771,10 +792,6 @@ zvt_term_realize (GtkWidget *widget)
   zp->cursor_hand = gdk_cursor_new(GDK_HAND2);
   term->cursor_current = term->cursor_bar;
 
-  /* setup blinking cursor */
-  if (term->blink_enabled)
-    term->timeout_id = gtk_timeout_add(500, zvt_term_cursor_blink, term);
-
   /* setup scrolling gc */
   term->scroll_gc = gdk_gc_new (widget->window);
   gdk_gc_set_exposures (term->scroll_gc, TRUE);
@@ -801,6 +818,9 @@ zvt_term_realize (GtkWidget *widget)
   term_force_size(term);
 
   /* input context */
+#ifdef ZVT_IM_ON_THE_SPOT
+  zvt_term_set_open_im (term, True);
+#else
   if (gdk_im_ready () && !term->ic) {
     GdkICAttr attr;
     
@@ -813,6 +833,7 @@ zvt_term_realize (GtkWidget *widget)
       g_warning("Can't create input context.");
     }
   }
+#endif
 }
 
 static void
@@ -1280,7 +1301,11 @@ zvt_term_set_fonts_internal(ZvtTerm *term, GdkFont *font, GdkFont *font_bold)
   case GDK_FONT_FONTSET: {
     XFontSet fontset = (XFontSet) ((GdkFontPrivate *)font)->xfont;
     XFontSetExtents *extents = XExtentsOfFontSet(fontset);
+#ifdef ZVT_MB /* This is look bug..., isn't it? */
+    term->charwidth = gdk_string_width (font, "M");
+#else
     term->charwidth = extents->max_logical_extent.width;
+#endif
     term->charheight = extents->max_logical_extent.height;
     zp->fonttype = ZVT_FONT_FONTSET;
   }
@@ -1295,6 +1320,9 @@ zvt_term_set_fonts_internal(ZvtTerm *term, GdkFont *font, GdkFont *font_bold)
   if (term->font)
     gdk_font_unref (term->font);
   term->font = font;
+#ifdef ZVT_IM_ON_THE_SPOT
+  zvt_im_preedit_set_font(term, font);
+#endif
 
   if (term->font_bold)
     gdk_font_unref (term->font_bold);
@@ -1395,16 +1423,28 @@ zvt_term_set_font_name (ZvtTerm *term, char *name)
 
   if (rest) {
     g_string_sprintf (outname, "%s-medium-r%s", newname->str, rest);
+#ifndef ZVT_MB
     font = gdk_font_load (outname->str);
+#else
+    font = gdk_fontset_load (outname->str);
+#endif
     d( printf("loading normal font %s\n", outname->str) );
     
     g_string_sprintf (outname, "%s-bold-r%s", newname->str, rest); 
+#ifndef ZVT_MB
     font_bold = gdk_font_load (outname->str);
+#else
+    font_bold = gdk_fontset_load (outname->str);
+#endif
     d( printf("loading bold font %s\n", outname->str) );
     
     zvt_term_set_fonts_internal (term, font, font_bold);
   } else {
+#ifndef ZVT_MB
     font = gdk_font_load (name);
+#else
+    font = gdk_fontset_load (name);
+#endif
     zvt_term_set_fonts_internal (term, font, 0);
   }
 
@@ -1444,7 +1484,11 @@ request_paste (GtkWidget *widget, int type, gint32 time)
 {
   GdkAtom string_atom;
 #ifdef ZVT_UTF
+#ifdef ZVT_MB
+  char *types[] = {"UTF-8", "COMPOUND_TEXT"};
+#else
   char *types[] = {"UTF-8", "STRING"};
+#endif /* ZVT_MB */
   int index;
   struct _zvtprivate *zp = _ZVT_PRIVATE(widget);
 
@@ -1464,7 +1508,11 @@ request_paste (GtkWidget *widget, int type, gint32 time)
   d(printf(" %s atom = %d\n", types[index], (int)string_atom));
 #else
   /* Get the atom corresonding to the target "STRING" */
+#ifdef ZVT_MB
+  string_atom = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
+#else
   string_atom = gdk_atom_intern ("STRING", FALSE);
+#endif /* ZVT_MB */
 #endif
 
   if (string_atom == GDK_NONE) {
@@ -1890,10 +1938,15 @@ zvt_term_convert_selection(ZvtTerm *term, int type, int *outlen)
 
   switch (type) {
   default:
-  case 0: {			/* this is ascii/isolatin1 */
+
+#ifdef ZVT_MB
+  case TARGET_COMPOUND_TEXT:
+  case TARGET_TEXT:
+#endif
+  case TARGET_STRING: {               /* this is ascii/isolatin1 */
     unsigned char *o;
     d(printf("converting selection to ISOLATIN1\n"));
-    out = g_malloc(term->vx->selection_size);
+    out = g_malloc(term->vx->selection_size+1);
     o = out;
     for(i=0;i<term->vx->selection_size;i++) {
       c = term->vx->selection_data[i];
@@ -1902,7 +1955,7 @@ zvt_term_convert_selection(ZvtTerm *term, int type, int *outlen)
     *outlen = term->vx->selection_size;
     break;
   }
-  case 1: {			/* this is utf-8, basically a local implementation of wcstombs() */
+  case TARGET_UTF8: {         /* this is utf-8, basically a local implementation of wcstombs() */
     unsigned char *o;
     unsigned int len=0;
     d(printf("converting selection to UTF-8\n"));
@@ -1991,10 +2044,34 @@ zvt_term_selection_get (GtkWidget        *widget,
   term = ZVT_TERM (widget);
   vx = term->vx;
 
+#ifdef ZVT_MB
+  if (info == TARGET_COMPOUND_TEXT||info == TARGET_TEXT) {
+      GdkAtom encoding;
+      gint    format;
+      guchar *str, *new_str;
+      gint    new_len;
+#ifdef ZVT_UTF
+      str = zvt_term_convert_selection(term, info, &len);
+#else
+      int len = vx->selection_size;
+      str = (guchar*)vx->selection_data;
+#endif
+      str[len] = '\0';
+      gdk_string_to_compound_text (str, &encoding, &format, &new_str, &new_len);
+      gtk_selection_data_set (selection_data_ptr, encoding, format,
+                            new_str, new_len);
+      gdk_free_compound_text (new_str);
+#if ZVT_UTF
+      g_free(str);
+#endif
+      return;
+  }
+#endif /* ZVT_MB */
+
 #ifdef ZVT_UTF
   /* convert selection based on info */
   /* the selection is actually stored in 32 bit chars */
-  if (info==1)
+  if (info==TARGET_UTF8)
     atom = gdk_atom_intern ("UTF-8", FALSE);
   else
     atom = GDK_SELECTION_TYPE_STRING;
@@ -2045,6 +2122,7 @@ zvt_term_selection_received (GtkWidget *widget, GtkSelectionData *selection_data
 
   /* Make sure we got the data in the expected form */
   if (selection_data->type != GDK_SELECTION_TYPE_STRING
+      && selection_data->type != gdk_atom_intern("COMPOUND_TEXT", FALSE)
       && selection_data->type != gdk_atom_intern("UTF-8", FALSE)) {
     g_print ("Selection \"STRING\" was not returned as strings!\n");
     return;
@@ -2055,13 +2133,40 @@ zvt_term_selection_received (GtkWidget *widget, GtkSelectionData *selection_data
     {
       int i;
       char *ctmp = selection_data->data;
+      gint length = selection_data->length;
 
-      for(i = 0; i < selection_data->length; i++)
-	if(ctmp[i] == '\n') ctmp[i] = '\r';
+      if (selection_data->type == gdk_atom_intern("COMPOUND_TEXT",FALSE)) {
+        gchar **list;
+        gint    count;
 
-      if (term->scroll_on_keystroke)
-	zvt_term_scroll (term, 0);
-      zvt_term_writechild(term, selection_data->data, selection_data->length);
+        count = gdk_text_property_to_text_list (selection_data->type,
+                                                selection_data->format,
+                                                selection_data->data,
+                                                selection_data->length,
+                                                &list);
+        if (count > 0) {
+            gint n;
+            length = 0;
+            for (n=0; n<count; n++)  {
+                ctmp = list[n];
+                length = strlen (list[n]);
+                for(i = 0; i < length; i++)
+                    if(ctmp[i] == '\n') ctmp[i] = '\r';
+
+                if (term->scroll_on_keystroke)
+                    zvt_term_scroll (term, 0);
+                vt_writechild(&vx->vt, ctmp, length);
+            }
+            gdk_free_text_list (list);
+        }
+      } else  {
+        for (i = 0; i < length; i++)
+            if(ctmp[i] == '\n') ctmp[i] = '\r';
+
+        if (term->scroll_on_keystroke)
+            zvt_term_scroll (term, 0);
+        vt_writechild(&vx->vt, ctmp, length);
+      }
     }
 }  
 
@@ -2112,6 +2217,141 @@ zvt_term_writechild(ZvtTerm *term, char *data, int len)
   }
   return length;
 }
+
+#ifdef ZVT_IM_ON_THE_SPOT
+/**
+ * zvt_term_set_open_im:
+ * @term: A &ZvtTerm widget.
+ * @state: if True, open IM, else close.
+ **/
+void
+zvt_term_set_open_im (ZvtTerm *term, int state)
+{
+  if(!state)
+    {
+      if (term->ic) 
+	{
+	  gdk_ic_destroy(term->ic);
+	  term->ic = NULL;
+	}
+      return;
+    }
+
+  if (gdk_im_ready () && !term->ic)
+    {
+      gint       width, height;
+      GdkICAttr  attr;
+      GdkColormap *colormap;
+      GdkICAttributesType attrmask = GDK_IC_ALL_REQ;
+      GdkIMStyle style;
+      GdkIMStyle supported_style = GDK_IM_PREEDIT_NONE |
+				   GDK_IM_PREEDIT_NOTHING |
+			           GDK_IM_PREEDIT_POSITION |
+			           GDK_IM_STATUS_NONE |
+				   GDK_IM_STATUS_NOTHING;
+      
+      if (GTK_WIDGET (term)->style &&
+	  GTK_WIDGET (term)->style->font->type != GDK_FONT_FONTSET)
+	supported_style &= ~GDK_IM_PREEDIT_POSITION;
+
+      attr.style = style = gdk_im_decide_style (supported_style);
+      attr.client_window = attr.focus_window = term->term_window;
+
+      if ((colormap = gtk_widget_get_colormap (GTK_WIDGET (term)))
+	  != gtk_widget_get_default_colormap ())
+	{
+	  attrmask |= GDK_IC_PREEDIT_COLORMAP;
+	  attr.preedit_colormap = colormap;
+	}
+
+      switch (style & GDK_IM_PREEDIT_MASK)
+	{
+	  case GDK_IM_PREEDIT_POSITION:
+	    if (term->font && term->font->type != GDK_FONT_FONTSET)
+	      {
+		g_warning ("over-the-spot style requires fontset");
+		break;
+	      }
+#if 0
+	    gdk_window_get_size (term->term_window, &width, &height);
+#else
+	    width  = term->vx->vt.width* term->charwidth;
+	    height = term->vx->vt.height* term->charheight;
+#endif
+	    attrmask |= GDK_IC_PREEDIT_POSITION_REQ|GDK_IC_PREEDIT_FONTSET;
+	    attr.spot_location.x = 0;
+	    attr.spot_location.y = 0;
+	    attr.preedit_area.x = 0;
+	    attr.preedit_area.y = 0;
+	    attr.preedit_area.width = width;
+	    attr.preedit_area.height = height;
+	    attr.preedit_fontset = term->font;
+	    break;
+	}
+
+      term->ic = gdk_ic_new(&attr, attrmask);
+
+      if (!term->ic) 
+	{
+	  g_warning("Can't create input context.");
+	}
+    }
+}
+
+
+static void
+zvt_im_preedit_set_spot(ZvtTerm *term, int col, int row, int offx, int offy)
+{
+  if (term->ic && 
+      (gdk_ic_get_style (term->ic) & GDK_IM_PREEDIT_POSITION))
+    {
+      GdkICAttr          attr;
+      attr.spot_location.x = col * term->charwidth + offx;
+      attr.spot_location.y = row * term->charheight
+	  + term->font->ascent + offy;
+      gdk_ic_set_attr (term->ic, &attr, GDK_IC_SPOT_LOCATION);
+    }
+}
+
+static void
+zvt_im_preedit_set_foreground(ZvtTerm *term, GdkColor *color)
+{
+  if (term->ic && 
+      (gdk_ic_get_style (term->ic) & GDK_IM_PREEDIT_POSITION))
+    {
+      GdkICAttr       attr;
+      attr.preedit_foreground = *color;
+      gdk_ic_set_attr (term->ic, &attr, GDK_IC_PREEDIT_FOREGROUND);
+    }
+}
+
+static void
+zvt_im_preedit_set_background(ZvtTerm *term, GdkColor *color)
+{
+  if (term->ic && 
+      (gdk_ic_get_style (term->ic) & GDK_IM_PREEDIT_POSITION))
+    {
+      GdkICAttr       attr;
+      attr.preedit_background = *color;
+      gdk_ic_set_attr (term->ic, &attr, GDK_IC_PREEDIT_BACKGROUND);
+    }
+}
+
+
+static void
+zvt_im_preedit_set_font(ZvtTerm *term, GdkFont *font)
+{
+  if (term->ic && 
+      (gdk_ic_get_style (term->ic) & GDK_IM_PREEDIT_POSITION))
+    {
+      GdkICAttr       attr;
+      if (font && font->type != GDK_FONT_FONTSET)
+	  g_warning ("over-the-spot style requires fontset");
+      attr.preedit_fontset = font;
+      gdk_ic_set_attr (term->ic, &attr, GDK_IC_PREEDIT_FONTSET);
+    }
+}
+#endif /* ZVT_IM_ON_THE_SPOT */
 
 static void
 zvt_term_writemore (gpointer data, gint fd, GdkInputCondition condition)
@@ -2170,6 +2410,151 @@ zvt_term_updated(ZvtTerm *term, int mode)
   /* whenever we update, clear the match table and indicator */
   if (term->vx->magic_matched)
     vt_free_match_blocks(term->vx);
+}
+
+/**
+ * zvt_term_dtterm_seq_event:
+ * @term:   An initialised &ZvtTerm widget
+ *          the term->vx->vt.arg.num.intargs member should be an
+ *          &int pointing to an array consisting of the 'Ps' parameters
+ *          from the CSI sequence (translated into ints, that is)
+ * @report: integer. (The 1st Ps from the CSI Ps [; Ps [; Ps ]] t sequence)
+ *
+ * handle a dtterm escape sequence: generate a report
+ * and write it back to the child's pty if necessary.
+ **/
+static void
+zvt_term_dtterm_seq_event (ZvtTerm *term)
+{
+#define DTTERM_2ITEM_REPORT() \
+  g_snprintf(rbuf, bufs, "%s%d;%d;%dt", CSI, (seqn - 10), ps[0], ps[1])
+#define DTTERM_TITLE_REPORT(c) \
+  g_snprintf(rbuf, bufs, "%s%c%s%s", OSC, c, ZVT_GTK_WINDOW(term)->title, ST)
+
+  static const char * CSI = "\x1b[";
+  static const char * OSC = "\x1b]";
+  static const char * ST  = "\x1b\\";
+  
+  char rbuf[128];
+  const int bufs = sizeof(rbuf); 
+
+  int   ps[2] = { 0, 0 }; /* 'Ps' parameters from/for dtterm sequence */
+  int   seqn  = *(term->vx->vt.arg.num.intargs);
+  int * arg   = term->vx->vt.arg.num.intargs + 1;
+  
+  d(printf("signal received and handed over\n"));
+
+  memset(rbuf, 0, sizeof(rbuf));
+
+  switch( seqn ) {
+#if GTK_MAJOR_VERSION < 2    
+  case 1:
+    /* de-iconify */
+    {
+      GdkWindow *g = ZVT_GDK_TOPWIN(term);
+      gdk_window_show (g);
+      gdk_window_raise(g);
+    }
+    break;
+  case 2:
+    /* iconify */
+    {
+      GdkWindow *g = ZVT_GDK_TOPWIN(term);
+      Window     w = GDK_WINDOW_XWINDOW (g);
+      Display   *d = GDK_WINDOW_XDISPLAY(g);
+      XWindowAttributes xwa;
+      XGetWindowAttributes(d, w, &xwa);
+      XIconifyWindow(d, w, XScreenNumberOfScreen(xwa.screen));
+    }
+    break;
+#else
+  case 1:
+    gtk_deiconify_window(ZVT_GTK_WINDOW(term));
+    break;    
+  case 2:
+    gtk_iconify_window(ZVT_GTK_WINDOW(term));
+    break;
+#endif
+    break;
+  case 3:
+    /* move to x, y */
+    ps[0] = *arg++;
+    ps[1] = *arg;
+    gdk_window_move(ZVT_GDK_TOPWIN(term), ps[0], ps[1]);
+    break;
+  case 4:
+    /* resize to h x w pixels (actually nearest possible char x char size) */
+    /* as this is what xterm appears to do. */
+    ps[0] = *arg++ / term->charheight;
+    ps[1] = *arg   / term->charwidth;
+    zvt_term_set_size(term, ps[1], ps[0]);
+    break;
+  case 5:
+    gdk_window_raise(ZVT_GDK_TOPWIN(term));
+    break;
+  case 6:
+    gdk_window_lower(ZVT_GDK_TOPWIN(term));
+    break;
+  case 7:
+    /* refresh */
+    vt_update(term->vx, UPDATE_REFRESH);
+    break;
+  case 8:
+    /* resize to h x w chars */
+    ps[0] = *arg++;
+    ps[1] = *arg;
+    zvt_term_set_size(term, ps[1], ps[0]);
+    break;
+  case 9:
+    /* (*arg == 0) ? unmaximise : maximise */
+    break;
+  case 11:
+    d(printf("determine if term is iconified, echo appropriate sequence\n"));
+    /* IMPLEMENTME : iconifiedp ? (CSI 2 t) : (CSI 1 t) */
+    break;
+  case 13:
+    /* report window position (pixels x,y) */
+    gdk_window_get_position(ZVT_GDK_TOPWIN(term), &ps[0], &ps[1]);
+    DTTERM_2ITEM_REPORT();
+    break;
+  case 14:
+    /* report window sixe (pixels h,w) */
+    gdk_window_get_size(ZVT_GDK_WINDOW(term), &ps[1], &ps[0]);
+    DTTERM_2ITEM_REPORT();
+    break;
+  case 18:
+    /* report window size (chars h,w) */
+    ps[1] = term->vx->vt.width;
+    ps[0] = term->vx->vt.height;
+    DTTERM_2ITEM_REPORT();
+    break;
+  case 19:
+    /* report screen size (chars h,w) */
+    ps[1] = gdk_screen_width()  / term->charwidth;
+    ps[0] = gdk_screen_height() / term->charheight;
+    DTTERM_2ITEM_REPORT();
+    break;
+  case 20:
+    /* report icon label */
+    DTTERM_TITLE_REPORT('L');
+    break;
+  case 21:
+    /* report window title */
+    DTTERM_TITLE_REPORT('l');
+    break;
+  default:
+    /* DECSLPP - resize to #seqn lines: */
+    if(seqn >= 24)
+      zvt_term_set_size(term, term->vx->vt.width, seqn);
+    else
+      d(printf("Unknown dtterm sequence %d\n", seqn));
+  }
+
+  /* have we collected a report? if so, write it back out... */
+  if(rbuf[0]) {
+    rbuf[sizeof(rbuf) - 1] = 0;
+    vt_writechild( &(term->vx->vt), rbuf, strlen(rbuf) );
+  }
 }
 
 /*
@@ -2337,13 +2722,13 @@ zvt_term_scroll (ZvtTerm *term, int n)
  */
 
 /* remapping table for function keys 5-20 */
-static unsigned char f5_f20_remap[] =
-   {15,17,18,19,20,21,23,24,25,26,28,29,31,32,33,34};
+static unsigned char f1_f20_remap[] =
+   {11,12,13,14,15,17,18,19,20,21,23,24,25,26,28,29,31,32,33,34};
 
 static gint
 zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
 {
-  char buffer[64];
+  char buffer[128];
   char *p=buffer;
   struct _vtx *vx;
   ZvtTerm *term;
@@ -2420,11 +2805,11 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
     break;
   case GDK_KP_Home:
   case GDK_Home:
-    p+=sprintf (p, "\033OH");
+    p+=sprintf (p, "\033[1~");
     break;
   case GDK_KP_End:
   case GDK_End:
-    p+=sprintf (p, "\033OF");
+    p+=sprintf (p, "\033[4~");
     break;
   case GDK_KP_Page_Up:
   case GDK_Page_Up:
@@ -2441,27 +2826,29 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
       p+=sprintf (p, "\033[6~");
     break;
 
-  case GDK_KP_F1:
-  case GDK_F1:
-    p+=sprintf (p, "\033OP");
+  case GDK_KP_F1:  case GDK_KP_F2:  case GDK_KP_F3:  case GDK_KP_F4:
+    if (event->state & GDK_SHIFT_MASK){
+       p+=sprintf (p, "\033[%d~", f1_f20_remap[10+event->keyval-GDK_KP_F1]);
+    } else
+       p+=sprintf (p, "\033[%d~", f1_f20_remap[event->keyval-GDK_KP_F1]);
     break;
-  case GDK_KP_F2:
-  case GDK_F2:
-    p+=sprintf (p, "\033OQ");
+
+  case GDK_F1:  case GDK_F2:  case GDK_F3:  case GDK_F4:
+    if (event->state & GDK_SHIFT_MASK){
+       p+=sprintf (p, "\033[%d~", f1_f20_remap[10+event->keyval-GDK_F1]);
+    } else
+       p+=sprintf (p, "\033O%c", 'P' + (event->keyval-GDK_F1));
     break;
-  case GDK_KP_F3:
-  case GDK_F3:
-    p+=sprintf (p, "\033OR");
-    break;
-  case GDK_KP_F4:
-  case GDK_F4:
-    p+=sprintf (p, "\033OS");
-    break;
+      
   case GDK_F5:  case GDK_F6:  case GDK_F7:  case GDK_F8:
   case GDK_F9:  case GDK_F10:  case GDK_F11:  case GDK_F12:
   case GDK_F13:  case GDK_F14:  case GDK_F15:  case GDK_F16:
   case GDK_F17:  case GDK_F18:  case GDK_F19:  case GDK_F20:
-    p+=sprintf (p, "\033[%d~", f5_f20_remap[event->keyval-GDK_F5]);
+    if ( (event->state & GDK_SHIFT_MASK) &&
+         ((event->keyval-GDK_F1) < 10) ){
+       p+=sprintf (p, "\033[%d~", f1_f20_remap[10+event->keyval-GDK_F1]);
+    } else
+       p+=sprintf (p, "\033[%d~", f1_f20_remap[event->keyval-GDK_F1]);
     break;
 
   case GDK_KP_0:  case GDK_KP_1:  case GDK_KP_2:  case GDK_KP_3:
@@ -2492,6 +2879,20 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
       p+=sprintf (p, "\033Om");
     } else {
       *p++ = '-';
+    }
+    break;
+  case GDK_KP_Multiply:
+    if (appl_keypad) {
+      p+=sprintf (p, "\033Oj");
+    } else {
+      *p++ = '*';
+    }
+    break;
+  case GDK_KP_Divide:
+    if (appl_keypad) {
+      p+=sprintf (p, "\033Oo");
+    } else {
+      *p++ = '/';
     }
     break;
   case GDK_KP_Separator:  /* aka KP Comma */
@@ -2590,6 +2991,26 @@ zvt_term_title_changed (ZvtTerm *term, VTTITLE_TYPE type, char *str)
   g_return_if_fail (ZVT_IS_TERM (term));
 
   /* perhaps we should do something here? */
+  gtk_window_set_title(ZVT_GTK_WINDOW(term), str);
+}
+
+/**
+ * zvt_term_dtterm_seq:
+ * @term: An initialised &ZvtTerm.
+ * @report: integer (The 1st Ps from the CSI Ps [; Ps [; Ps ]] t sequence)
+ *
+ * Catches a request for a report and dispatches it to the connected
+ * signal handler (default: zvt_term_dtterm_seq_event)
+ **/
+static void
+zvt_term_dtterm_seq (void *term)
+{
+  ZvtTerm *TERM = term;
+
+  g_return_if_fail (TERM != NULL);
+  g_return_if_fail (ZVT_IS_TERM (TERM));
+
+  gtk_signal_emit(GTK_OBJECT(TERM), term_signals[DTTERM_SEQ]);
 }
 
 /**
@@ -2893,11 +3314,11 @@ zvt_term_set_background (ZvtTerm *terminal, char *pixmap_file,
     terminal->vx->scroll_type=VT_SCROLL_NEVER;
   else if (terminal->pixmap_filename) {
     if (flags & ZVT_BACKGROUND_SCROLL)
-      terminal->vx->scroll_type=VT_SCROLL_SOMETIMES;
+      terminal->vx->scroll_type=VT_SCROLL_NEVER;
     else
       terminal->vx->scroll_type=VT_SCROLL_NEVER;
   } else
-    terminal->vx->scroll_type=VT_SCROLL_ALWAYS;
+    terminal->vx->scroll_type=VT_SCROLL_NEVER;
 }
 
 /*
@@ -3168,24 +3589,24 @@ vt_draw_text(void *user_data, struct vt_line *line, int row, int col, int len, i
   break;
   /* this is limited to 65535 characters! */
   case ZVT_FONT_FONTSET: {
-    wchar_t *expandwc = zp->text_expand;
+    char *expand = zp->text_expand;
     XFontSet fontset = (XFontSet) font_private->xfont;
 
     for (i=0;i<len;i++) {
-      expandwc[i] = VT_ASCII(line->data[i+col]);
+      expand[i] = VT_ASCII(line->data[i+col]) & 0xff;
     }
 
     /* render wide characters, with fill if we can */
     if (dofill) {
-      XwcDrawImageString(drawable_private->xdisplay, drawable_private->xwindow,
-			 fontset, gc_private->xgc, offx + x, offy + y, expandwc, len);
+      XmbDrawImageString(drawable_private->xdisplay, drawable_private->xwindow,
+                       fontset, gc_private->xgc, offx + x, offy + y, expand, len);
     } else {
-      XwcDrawString(drawable_private->xdisplay, drawable_private->xwindow,
-		    fontset, gc_private->xgc, offx + x, offy + y, expandwc, len);
+      XmbDrawString(drawable_private->xdisplay, drawable_private->xwindow,
+                    fontset, gc_private->xgc, offx + x, offy + y, expand, len);
     }
     if (overstrike)
-      XwcDrawString(drawable_private->xdisplay, drawable_private->xwindow,
-		    fontset, gc_private->xgc, offx + x + 1, offy + y, expandwc, len);
+      XmbDrawString(drawable_private->xdisplay, drawable_private->xwindow,
+                  fontset, gc_private->xgc, offx + x + 1, offy + y, expand, len);
   }
   }
 
@@ -3193,9 +3614,9 @@ vt_draw_text(void *user_data, struct vt_line *line, int row, int col, int len, i
   if (attr&VTATTR_UNDERLINE) {
     gdk_draw_line(widget->window, fgc,
 		  offx + x,
-		  offy + y + 1,
+		  offy + y,
 		  offx + (col + len) * term->charwidth - 1,
-		  offy + y + 1);
+		  offy + y);
   }
   
   if (overstrike && zp && zp->bold_save) {
@@ -3206,6 +3627,10 @@ vt_draw_text(void *user_data, struct vt_line *line, int row, int col, int len, i
 		    x + offx + len*term->charwidth, offy + row*term->charheight,
 		    1, term->charheight);
   }
+#ifdef ZVT_IM_ON_THE_SPOT
+  if (len <= MB_CUR_MAX)
+      zvt_im_preedit_set_spot(term, col, row, offx, offy);
+#endif
 }
 
 
@@ -3767,8 +4192,7 @@ load_background (ZvtTerm *widget)
     } else if (term->background.pix) {
       GdkWindowPrivate *wp = (GdkWindowPrivate *)term->background.pix;
 
-      /* free the transparency pixmap, if it exists */
-      free_transpix(term);
+      zp->transpix = FALSE;
 
       term->background.w = wp->width;
       term->background.h = wp->height;
@@ -3789,14 +4213,8 @@ load_background (ZvtTerm *widget)
   }
   
   p = get_pixmap_prop (GDK_WINDOW_XWINDOW(GTK_WIDGET(widget)->window), "_XROOTPMAP_ID");
-  if (p == None) {
-    GdkColor pen;
-    term->transparent = 0;
-    gdk_gc_set_fill (bgc, GDK_SOLID);
-    pen.pixel = term->colors[17];
-    gdk_gc_set_foreground (term->back_gc, &pen);
-    return;
-  }
+  if (p == None)
+    goto failure;
   
   XTranslateCoordinates (
       GDK_WINDOW_XDISPLAY (GTK_WIDGET(widget)->window),
@@ -3815,7 +4233,7 @@ load_background (ZvtTerm *widget)
   }
 
   if ((term->background.pix == NULL && term->shaded)
-      || (zp->transpix == NULL && !term->shaded)
+      || (zp->transpix == FALSE && !term->shaded) /* FIXFIX */
       || term->background.x != x
       || term->background.y != y
       || term->background.w != width
@@ -3831,31 +4249,58 @@ load_background (ZvtTerm *widget)
       gdk_pixmap_unref(term->background.pix);
       term->background.pix = 0;
     }
-    free_transpix(term);
 
     if (term->shaded) {
 
+      /* In theory, gdk_imlib_create_image_from_drawable should
+       * catch most errors, but it doesn't look 100% reliable
+       */
+      gdk_error_trap_push();
       term->background.pix = create_shaded_pixmap (p, x, y, width, height);
+      if (gdk_error_trap_pop() || !term->background.pix)
+	goto failure;
+      
       gdk_gc_set_ts_origin (term->back_gc, 0, 0);
       gdk_gc_set_tile (bgc, term->background.pix);
 
       gdk_gc_set_fill (bgc, GDK_TILED);
     } else {
-      GdkPixmap *pp;
-      
       d(printf("loading background at %d,%d\n", x, y));
 
-      /*non-shaded is simple?*/
-      pp = gdk_pixmap_foreign_new(p);
+      /* We unconditionally set this TRUE, instead of setting
+       * it after the operation succeeds so we don't waste
+       * too much effort trying to access unaccessable pixmaps
+       */
+      zp->transpix = TRUE;
       
-      gdk_gc_set_tile (bgc, pp);
-      gdk_gc_set_ts_origin(bgc,-x,-y);
-      zp->transpix = pp;
+      /*non-shaded is simple?*/
+      /* Luckily XSetTile always flushes the GC Cache, so if
+       * this and the following XSync() succeed, we are safe.
+       */
+      gdk_error_trap_push();
+      XSetTile (GDK_DISPLAY(), GDK_GC_XGC (bgc), p);
+      XSync (GDK_DISPLAY(), False);
+      if (gdk_error_trap_pop())
+	goto failure;
+
+      gdk_gc_set_ts_origin (bgc,-x,-y);
       gdk_gc_set_fill (bgc, GDK_TILED);
     }
   } else {
     d(printf("background hasn't moved, leaving\n"));
   }
+  return;
+  
+ failure:
+  {
+    GdkColor pen;
+    term->transparent = 0;
+    gdk_gc_set_fill (bgc, GDK_SOLID);
+    pen.pixel = term->colors[17];
+    gdk_gc_set_foreground (term->back_gc, &pen);
+    return;
+  }
+
 }
 
 static gint

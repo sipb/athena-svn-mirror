@@ -31,12 +31,12 @@ _ORBIT_skel_GNOME_Table_get(POA_GNOME_Table * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (col))) =
+	 (*((guint32 *) & (col))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
+	 _ORBIT_curptr += 4;
 	 (*((guint32 *) & (row))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+      } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 col = *((CORBA_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
@@ -101,10 +101,10 @@ _ORBIT_skel_GNOME_Table_get(POA_GNOME_Table * _ORBIT_servant,
 	    }
 	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
 	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       = { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
-		    (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
+	       =
+	       { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
+		  (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
 	       {CORBA_OBJECT_NIL, NULL} };
-
 	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
 				      _ORBIT_user_exceptions);
 	 } else
@@ -141,16 +141,15 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (col))) =
+	 (*((guint32 *) & (col))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
+	 _ORBIT_curptr += 4;
 	 (*((guint32 *) & (row))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 4;
+	 _ORBIT_curptr += 4;
 	 (*((guint16 *) & (val._d))) =
 	    GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
+	 _ORBIT_curptr += 2;
 	 switch (val._d) {
 	   case 2:
 	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 8);
@@ -158,8 +157,7 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
 	      break;
 	   case 0:
 	      _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	      
-		 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	      (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
 	      val._u.str = (void *) _ORBIT_curptr;
@@ -220,10 +218,10 @@ _ORBIT_skel_GNOME_Table_set(POA_GNOME_Table * _ORBIT_servant,
 	    }
 	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
 	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       = { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
-		    (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
+	       =
+	       { {(const CORBA_TypeCode) &TC_GNOME_Table_OutOfRange_struct,
+		  (gpointer) _ORBIT_GNOME_Table_OutOfRange_marshal},
 	       {CORBA_OBJECT_NIL, NULL} };
-
 	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
 				      _ORBIT_user_exceptions);
 	 } else
@@ -269,8 +267,7 @@ POA_GNOME_Table__init(PortableServer_Servant servant, CORBA_Environment * env)
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Table, "IDL:GNOME/Table:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_Table };
-
+(ORBit_local_objref_init) & init_local_objref_GNOME_Table };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->

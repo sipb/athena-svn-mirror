@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-geometry" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-geometry">
 <refmeta>
 <refentrytitle>gnome-geometry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -55,7 +55,7 @@ If the parse fails, it should be assumed that <parameter>xpos</parameter>, <para
 and <parameter>height</parameter> contain undefined values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -88,7 +88,7 @@ dialog), and returns that information as an X geometry string.
 Geometry strings are in the form of WIDTHxHEIGHT+X+Y.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

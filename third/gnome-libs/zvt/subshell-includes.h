@@ -3,7 +3,9 @@
 
 #include <stdio.h>      
 #include <fcntl.h>	/* for close-on-exec stuff	      */
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE 1
+#endif
 #define __EXTENSIONS__ 1	/* needed for winsize struct
 				   on Solaris (?) */
 

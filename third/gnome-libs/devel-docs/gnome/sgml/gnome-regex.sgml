@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-regex" revision="16 Mar 2001">
+<refentry id="gnome-gnome-regex">
 <refmeta>
 <refentrytitle>gnome-regex</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -67,7 +67,7 @@ required).
 Creates a new regular expression cache object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -82,7 +82,7 @@ Creates a new regular expression cache object.</para>
 Destroys a regular expression cache object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -101,7 +101,7 @@ hold.  If this is less than the number of currently cached
 expressions, then the oldest expressions are deleted.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ the previously computed value is returned.  Otherwise, the
 expression is compiled, cached, and then returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,3 +1,160 @@
+2002-01-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.1, Makefile.am: Add man page.
+	
+2002-01-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* art_vpath_svp.c (art_vpath_from_svp): Initialize j to 0 to 
+	avoid warning.
+	
+2001-09-24  Darin Adler  <darin@bentspoon.com>
+
+	* libart-config.in: Oops. Typo in my last change.
+
+2001-09-20  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Set LIBART_INCLUDEDIR to match Makefile.am.
+	Also put the -lm in here too.
+	* libart-config.in: Use LIBART_INCLUDEDIR instead of includedir
+	and use LIBART_LIBDIR and LIBART_LIBS instead of hard-coding the
+	list of libraries.
+
+2001-09-13  Havoc Pennington  <hp@redhat.com>
+
+	* Makefile.am (libart_lgplincdir): move to includedir/gnome-1.0
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* Makefile.am: add -lm to the link line, so applications get this
+	without specifying it.
+
+2001-08-08  Mathieu Lacage <mathieu@gnu.org>
+
+	Rewrote a bunch of it, fixed a number of XXXs
+	
+	* doc/libart.sgml: fix number of stuff.
+	* doc/dia/art-coverage-calculus.dia,
+	  doc/art-coverage-calculus.png:
+	  add new diagram.
+
+2001-08-05  Mathieu Lacage <mathieu@gnu.org>
+
+	Vacations are cool :)
+	
+	* doc/libart.sgml: add documentation on the renderer internals.
+	* doc/tmpl/*.sgml: fix misc typos.
+	* doc/dia/art-oversampling.dia
+	  doc/dia/art-winding-number.dia
+	  doc/dia/art-svp-vpath.dia
+	  doc/art-oversampling.png
+	  doc/art-svp-vpath.png
+	  doc/art-winding-number.png:
+	  add new diagrams and png versions for the internals of the
+	  renderer.
+	
+2001-07-16  Mathieu Lacage <mathieu@gnu.org>
+
+	Is anyone going to review it ?
+	
+	* doc/tmpl/art_render.sgml: write documentation.
+	* doc/libart-sections.txt: tweak.
+	
+2001-07-14  Mathieu Lacage <mathieu@gnu.org>
+
+	I just need to finish the section on rendering API and
+	I'll have finished the most important.
+	Proofreaders, where are you ? I hate everyone anyway.
+
+	* doc/libart.sgml: add sections on known problems and 
+	libart internals.
+	
+	
+2001-07-14  Mathieu Lacage <mathieu@gnu.org>
+
+	National Day in .fr. I got 23 two days ago :)
+
+	* doc/libart-sections.txt: remove art_svp_minus since it
+	is not implemented.
+	* cleanup doc/dia/art-svp-ops.dia add doc/art-svp-ops.png.
+	* add new files to Makefile.am.
+
+2001-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* art_uta_svp.h: Rename __ART_UTA_VPATH_H__ to __ART_UTA_SVP_H__,
+	as this is what the symbol was supposed to be.
+
+2001-05-27  Mathieu Lacage <mathieu@gnu.org>
+
+	Mother's day!!! Back in south france (4 hours of train hacking :).
+
+	* doc/tmpl/art_memory.sgml: document.
+	* doc/tmpl/art_core_construction.sgml: document.
+	* doc/dia/art-2d-space.dia: add for above doc.
+	* doc/art-2d-space.png: add for above doc.
+	* doc/tmpl/art_construction_extended.sgml: document.
+	* doc/dia/art-dash-style.dia: add for above doc.
+	* doc/art-dash-style.png: add for above doc.
+	* doc/tmpl/art_construction_trans.sgml: document.
+	* doc/Makefile.am: add image files in there.
+	* doc/libart-sections.txt: remove some functions we
+	  do not want to document.
+
+Fri May 25 12:45:56 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* doc/Makefile.am (DOC_MODULE): Fix to the point of actually building.
+
+2001-05-22  Darin Adler  <darin@eazel.com>
+
+        * libart_lgpl/configure.in:
+	Added HTML_DIR part needed for gtk-doc build.
+
+2001-05-22  Darin Adler  <darin@eazel.com>
+
+        * art_affine.c: (art_affine_invert):
+        Fix code that would't compile do to parameter name changes for
+        documentation purposes.
+
+        * doc/libart-decl.txt:
+        * doc/tmpl/.cvsignore:
+        Quiet cvs a little bit.
+
+2001-05-20  Mathieu Lacage <mathieu@gnu.org>
+
+	* .cvsignore: chuuut.
+	* art_affine.c: (art_affine_invert): fix the documentation comments.
+	* doc/Makefile.am: add image files for affine transforms:
+	  art-affines.png
+	  art-affine-matrix.png
+	  art-affine-libart.png
+	  dia/art-affine-matrix.dia
+	  dia/art-affine-libart.dia
+	  dia/art-affines.dia
+	* doc/tmpl/art_affine.sgml: document.
+	* doc/tmpl/art_gamma.sgml: nothing.
+	* doc/tmpl/art_memory.sgml: nothing.
+
+2001-05-17  Mathieu Lacage  <mathieu@gnu.org>
+
+	* Makefile.am: add gtk-doc test.
+	* configure.in: add doc subdir.
+
+	adds draft doc for libart.
+	* doc/Makefile.am:
+	* doc/fdl.sgml:
+	* doc/libart-decl.txt:
+	* doc/libart-sections.txt:
+	* doc/libart.sgml:
+	* doc/tmpl/art_affine.sgml:
+	* doc/tmpl/art_buffer_affine.sgml:
+	* doc/tmpl/art_construction_core.sgml:
+	* doc/tmpl/art_construction_extended.sgml:
+	* doc/tmpl/art_construction_trans.sgml:
+	* doc/tmpl/art_gamma.sgml:
+	* doc/tmpl/art_memory.sgml:
+	* doc/tmpl/art_pixbuf.sgml:
+	* doc/tmpl/art_render.sgml:
+	* doc/tmpl/art_svp.sgml:
+
 2000-10-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* art_svp_wind.c: (x_order), (x_order_2):

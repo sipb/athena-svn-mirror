@@ -1,4 +1,4 @@
-<refentry id="GnomeDruidPage" revision="16 Mar 2001">
+<refentry id="GnomeDruidPage">
 <refmeta>
 <refentrytitle>GnomeDruidPage</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -60,7 +60,7 @@ is called by gnome-druid exclusively.  It is expected that non-linear Druid's
 will override this signal and return TRUE if it handles changing pages.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -79,7 +79,7 @@ This emits the "prepare" signal for the page.  It is called by
 gnome-druid exclusively.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -97,7 +97,7 @@ is called by gnome-druid exclusively.  It is expected that non-linear Druid's
 will override this signal and return TRUE if it handles changing pages.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -117,7 +117,7 @@ is called by gnome-druid exclusively.  It is expected that a Druid will
 override this signal and return TRUE if it does not want to exit.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -136,7 +136,7 @@ This emits the "finish" signal for the page.  It is called by
 gnome-druid exclusively.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

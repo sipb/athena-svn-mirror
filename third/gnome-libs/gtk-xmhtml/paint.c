@@ -1,10 +1,10 @@
 /*****
 * paint.c : XmHTML rendering routines
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Fri Dec  6 19:50:20 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:49:38 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -32,6 +32,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.11.6.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.11  1999/07/29 01:26:29  sopwith
 *
 *
@@ -1604,13 +1609,8 @@ DrawRule(XmHTMLWidget html, XmHTMLObjectTableElement data)
 	xs = data->x - html->html.scroll_x;
 
 	/* vertical offset */
-#if 0
 	dy = (int)(0.75*(html->html.default_font->height));
-#else
-	dy = 0;
-#endif	
 	ys = data->y - html->html.scroll_y;
-
 	if(data->height)
 	{
 		if(data->y_offset)	/* noshade */

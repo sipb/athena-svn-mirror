@@ -1,3 +1,13 @@
+2002-01-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* zvt/Makefile.am: Try to fix stuff so you don't need gtk-doc
+	installed to build the tarball.
+	
+2001-09-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* zvt/Makefile.am: Only build docs during 'make', not both 'make'
+	and 'make install'.
+	
 Mon Feb  5 21:33:00 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* gnomeui/Makefile.am (gnomeui_doc_DATA): Remove gnomeui-scan.c, 

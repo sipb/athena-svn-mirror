@@ -1,4 +1,4 @@
-<refentry id="GtkClock" revision="16 Mar 2001">
+<refentry id="GtkClock">
 <refmeta>
 <refentrytitle>GtkClock</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -85,7 +85,7 @@ Three modes are supported - realtime (GTK_CLOCK_REALTIME), count-up (GTK_CLOCK_I
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_clock_new                   (<link linkend="GtkClockType">GtkClockType</link> type);</programlisting>
 <para>
 Creates a new <type>GtkClock</type> widget.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -104,7 +104,7 @@ Creates a new <type>GtkClock</type> widget.
                                              <link linkend="gchar">gchar</link> *fmt);</programlisting>
 <para>
 Set the format of a <type>GtkClock</type> widget. The syntax of the format string is identical to that of the function strftime(3). Further information about time format strings can be found on this man page. The widget defaults to a format string of "%<literal>H</literal>:%<literal>M</literal>" in realtime mode, or "%<literal>H</literal>:%<literal>M</literal>:%<literal>S</literal>" in count-up or count-down modes.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -124,7 +124,7 @@ Set the format of a <type>GtkClock</type> widget. The syntax of the format strin
                                              <link linkend="time-t">time_t</link> seconds);</programlisting>
 <para>
 Set the current time as displayed by the clock in count-up and count-down modes. This function has no effect in realtime mode, as the clock time is determined by the system clock in realtime mode.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -144,7 +144,7 @@ Set the current time as displayed by the clock in count-up and count-down modes.
                                              <link linkend="gint">gint</link> seconds);</programlisting>
 <para>
 Set the interval at which the <type>GtkClock</type> widget is updated. The seconds parameter is used to determine how often the time shown on the widget is updated. The default value is to update every second, but you may wish to increase this value. If you set the update interval to 0, the clock is never updated.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -163,7 +163,7 @@ Set the interval at which the <type>GtkClock</type> widget is updated. The secon
 <programlisting>void        gtk_clock_start                 (<link linkend="GtkClock">GtkClock</link> *gclock);</programlisting>
 <para>
 Start the clock counting in count-up or count-down modes. The clock will begin counting up or down from the time when this function is called, until gtk_clock_stop is called. This function has no effect in the realtime mode (you can't start and stop real time! :-).
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -179,7 +179,7 @@ Start the clock counting in count-up or count-down modes. The clock will begin c
 <programlisting>void        gtk_clock_stop                  (<link linkend="GtkClock">GtkClock</link> *gclock);</programlisting>
 <para>
 Stop the clock counting in count-up or count-down modes. The clock ceases counting up or down, and the last time reached remains on the display. This function has no effect in the realtime mode (you can't start and stop real time! :-).
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

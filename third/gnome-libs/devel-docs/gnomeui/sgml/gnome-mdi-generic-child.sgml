@@ -1,4 +1,4 @@
-<refentry id="GnomeMDIGenericChild" revision="16 Mar 2001">
+<refentry id="GnomeMDIGenericChild">
 <refmeta>
 <refentrytitle>GnomeMDIGenericChild</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -116,7 +116,7 @@ After creation, you will need to set, at a minimum, the view creator
 function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -142,7 +142,7 @@ widget (the view).
 A &amp;GnomeMDIGenericChild must have a view creator.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -176,7 +176,7 @@ element will be <parameter>child</parameter>, and the second is the return value
 a &amp;GtkWidget).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -211,7 +211,7 @@ should return a &amp;GList of the menus created.
 A &amp;GnomeMDIGenericChild doesn't require a menu creator.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -245,7 +245,7 @@ will be <parameter>child</parameter>, the second will be a view of <parameter>ch
 return value (a pointer to the returned GList).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -279,7 +279,7 @@ Sets the function used to get the config key used for session saves.
 A &amp;GnomeMDIGenericChild doesn't require a config func.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -311,7 +311,7 @@ The &amp;GtkArg array passed to <parameter>marshal</parameter> is of length 2.  
 <parameter>child</parameter>, and the second is the return value (a pointer to a string).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -348,7 +348,7 @@ function should return the modified label.
 A &amp;GnomeMDIGenericChild doesn't require a label function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -381,7 +381,7 @@ is <parameter>child</parameter>, the second is the old widget (or <literal>NULL<
 return value (a pointer to a &amp;GtkWidget).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

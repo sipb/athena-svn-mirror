@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-dns" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-dns">
 <refmeta>
 <refentrytitle>gnome-dns</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -63,7 +63,7 @@ Side effects:
 The library is initialized.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -91,7 +91,7 @@ A new dns server may be spawned if all the current servers
 are in use.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -117,7 +117,7 @@ Aborts a previous call to <link linkend="gnome-dns-lookup">gnome_dns_lookup</lin
 DNS callback function is not called.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

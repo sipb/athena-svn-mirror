@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gnome-libs
-%define ver      1.2.13
+%define ver      1.4.1.4
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
@@ -10,6 +10,7 @@ Summary: The libraries needed to run the GNOME GUI desktop environment.
 Name: %name
 Version: %ver
 Release: %rel
+Epoch:	 1
 Copyright: LGPL
 Group: System Environment/Libraries
 Source: ftp://ftp.gnome.org/pub/GNOME/sources/gnome-libs/%name-%{ver}.tar.gz

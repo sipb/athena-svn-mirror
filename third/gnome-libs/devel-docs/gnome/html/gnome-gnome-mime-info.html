@@ -4,7 +4,7 @@
 >gnome-mime-info</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.74b"><LINK
 REL="HOME"
 TITLE="Gnome Library Reference Manual"
 HREF="book1.html"><LINK
@@ -250,6 +250,9 @@ CLASS="FILENAME"
 > files have the following format:</P
 ><DIV
 CLASS="EXAMPLE"
+><A
+NAME="AEN2862"
+></A
 ><P
 ><B
 >Example 1. Format of a .keys file</B
@@ -294,17 +297,26 @@ specified, then the definition will only be valid if LANG matches the
 setting of the environment variable LANG.  The LANG setting is used to
 provide keys which can be displayed to the user in a localized way.</P
 ><P
->This is an example to bind the key <I
+>This is an example to bind the key <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >open</I
+></SPAN
 > to all of
-the MIME types matching <I
+the MIME types matching <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >image/*</I
+></SPAN
 > and the
-<I
+<SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >icon-filename</I
+></SPAN
 > key is bound to the
 <TT
 CLASS="FILENAME"
@@ -312,6 +324,9 @@ CLASS="FILENAME"
 > value:</P
 ><DIV
 CLASS="EXAMPLE"
+><A
+NAME="AEN2874"
+></A
 ><P
 ><B
 >Example 2. Sample gimp.keys file</B
@@ -368,46 +383,64 @@ desktop:</P
 ><UL
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >open</I
+></SPAN
 >: Open the file with this
     command.</P
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >icon-filename</I
+></SPAN
 >: The filename
     with the icon that should be used to represent files of this type.</P
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >view</I
+></SPAN
 >: Command to view the file
     contents.</P
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >ascii-view</I
+></SPAN
 >: A command that
    should be used to do an ascii-rendering of the file.  Used as a
-   fallback by the filemanager if a <I
+   fallback by the filemanager if a <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >view</I
+></SPAN
 > action
    does not exist.</P
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >fm-open</I
+></SPAN
 >:file-manager open.  If
    present, the file manager will use this action instead of the value
    in open to perform this action (the filemanager for example will
@@ -415,9 +448,12 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >fm-view</I
+></SPAN
 >: file-manager view.  If
     present, invoking the view opertion on the file manager will use
     the value defined here instead of the value in "view".
@@ -425,9 +461,12 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >fm-ascii-view</I
+></SPAN
 >:Fallback
     operation for the file manager as well.</P
 ></LI
@@ -471,6 +510,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2917"
+></A
 ><P
 ></P
 ><TABLE
@@ -520,9 +562,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -568,6 +613,9 @@ HREF="GLIST"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2941"
+></A
 ><P
 ></P
 ><TABLE
@@ -600,9 +648,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -651,6 +702,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2961"
+></A
 ><P
 ></P
 ><TABLE
@@ -683,9 +737,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -728,6 +785,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2980"
+></A
 ><P
 ></P
 ><TABLE
@@ -760,9 +820,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -803,6 +866,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2998"
+></A
 ><P
 ></P
 ><TABLE
@@ -835,9 +901,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -880,6 +949,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN3017"
+></A
 ><P
 ></P
 ><TABLE
@@ -912,9 +984,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -958,6 +1033,9 @@ CLASS="PROGRAMLISTING"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN3036"
+></A
 ><P
 ></P
 ><TABLE
@@ -990,9 +1068,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1040,6 +1121,9 @@ HREF="GBOOLEAN"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN3056"
+></A
 ><P
 ></P
 ><TABLE
@@ -1089,9 +1173,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"
@@ -1139,6 +1226,9 @@ HREF="GBOOLEAN"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN3080"
+></A
 ><P
 ></P
 ><TABLE
@@ -1188,9 +1278,12 @@ VALIGN="TOP"
 WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
+></SPAN
 > :</TD
 ><TD
 WIDTH="80%"

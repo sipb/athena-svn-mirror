@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -144,16 +144,29 @@ gnomelocaledir = @gnomelocaledir@
 l = @l@
 need_gnome_support = @need_gnome_support@
 
-SUBDIRS = gnome gnome-dev-info gnomeui zvt 	templates ui-guide gnorba gnome-libs-tutorial
+SUBDIRS = gnome gnome-dev-info gnomeui zvt \
+	templates ui-guide gnorba gnome-libs-tutorial
 
 
-TEXT_FILES =  	README.gtkcauldron				README.gtkcauldron_for_python			adding-file-manager-new-items.txt		adding-sounds.txt				api-comment-style.txt				gtk_dialog_cauldron.3				suggestions.txt					session-management.txt				mime-type-handling.txt
+TEXT_FILES = \
+	README.gtkcauldron			\
+	README.gtkcauldron_for_python		\
+	adding-file-manager-new-items.txt	\
+	adding-sounds.txt			\
+	api-comment-style.txt			\
+	gtk_dialog_cauldron.3			\
+	suggestions.txt				\
+	session-management.txt			\
+	mime-type-handling.txt
 
 
 # automake does not yet dig .sgml files, so for now the DocBook
 # files must be extra_dist.  Also, distribute the `.html' file
 # so that people without DocBook can still use the docs.
-EXTRA_DIST =  	TODO.sgml				gnome-doc-framework.txt			$(TEXT_FILES)
+EXTRA_DIST = \
+	TODO.sgml			\
+	gnome-doc-framework.txt		\
+	$(TEXT_FILES)
 
 
 docdir = $(prefix)/doc
@@ -235,7 +248,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \

@@ -1,13 +1,13 @@
 # Lithuanian translation of gnome-libs.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000-2001 Free Software Foundation, Inc.
 # Kæstutis Kruþikas <DrKestas@takas.lt>, 2000
-# Gediminas Paulauskas <menesis@delfi.lt>, 2000
-#
+# Gediminas Paulauskas <menesis@delfi.lt>, 2000-2001
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.5\n"
-"POT-Creation-Date: 2001-02-23 13:45-0500\n"
-"PO-Revision-Date: 2000-10-13 03:37+0300\n"
+"Project-Id-Version: gnome-libs 1.2.12\n"
+"POT-Creation-Date: 2002-01-25 00:29+0100\n"
+"PO-Revision-Date: 2001-05-20 22:11+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -28,11 +28,11 @@ msgstr "PARINKT-KELIAS"
 
 #: libgnome/gconfigger.c:33
 msgid "set"
-msgstr "nustatyti"
+msgstr "nurodyti"
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
-msgstr "Nustatyti parinktá"
+msgstr "Nurodyti parinktá"
 
 #: libgnome/gnome-popt.c:90
 #, c-format
@@ -53,16 +53,15 @@ msgstr "Naudoti garsø serverá"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Hostas:prievadas, kurá naudos paleistas garsø serveris"
+msgstr "Hostas:prievadas, ant kurio veikia naudotinas garsø serveris"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
 msgstr "HOSTAS:PRIEV"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME Nuostatos"
+msgstr "GNOME nuostatos"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -74,14 +73,15 @@ msgstr "Autoriai:"
 
 #: libgnomeui/gnome-about.c:352
 msgid "Authors: "
-msgstr "Autoriai:"
+msgstr "Autoriai: "
 
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
 msgid "About"
 msgstr "Apie"
 
-#: libgnomeui/gnome-app-helper.c:78
+#. Some standard menus
+#: libgnomeui/gnome-app-helper.c:78 libgnomeui/gnome-app-helper.h:484
 msgid "_File"
 msgstr "_Byla"
 
@@ -89,31 +89,32 @@ msgstr "_Byla"
 msgid "_File/"
 msgstr "_Byla/"
 
-#: libgnomeui/gnome-app-helper.c:80
+#: libgnomeui/gnome-app-helper.c:80 libgnomeui/gnome-app-helper.h:487
 msgid "_Edit"
-msgstr "_Taisa"
+msgstr "K_eisti"
 
 #: libgnomeui/gnome-app-helper.c:81
 msgid "_Edit/"
-msgstr "_Taisa/"
+msgstr "K_eisti/"
 
-#: libgnomeui/gnome-app-helper.c:82
+#: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:490
 msgid "_View"
-msgstr "_Rodinys"
+msgstr "_Rodyti"
 
 #: libgnomeui/gnome-app-helper.c:83
 msgid "_View/"
-msgstr "_Rodinys/"
+msgstr "_Rodyti/"
 
-#: libgnomeui/gnome-app-helper.c:84
+#: libgnomeui/gnome-app-helper.c:84 libgnomeui/gnome-app-helper.h:493
 msgid "_Settings"
-msgstr "_Nuostatos"
+msgstr "Nuo_statos"
 
 #: libgnomeui/gnome-app-helper.c:85
 msgid "_Settings/"
 msgstr "Nuo_statos/"
 
-#: libgnomeui/gnome-app-helper.c:86
+#. If you have more then one New type, use this tree
+#: libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:266
 msgid "_New"
 msgstr "_Nauja"
 
@@ -121,7 +122,7 @@ msgstr "_Nauja"
 msgid "_New/"
 msgstr "_Nauja/"
 
-#: libgnomeui/gnome-app-helper.c:88
+#: libgnomeui/gnome-app-helper.c:88 libgnomeui/gnome-app-helper.h:496
 msgid "Fi_les"
 msgstr "By_los"
 
@@ -129,15 +130,15 @@ msgstr "By_los"
 msgid "Fi_les/"
 msgstr "By_los/"
 
-#: libgnomeui/gnome-app-helper.c:90
+#: libgnomeui/gnome-app-helper.c:90 libgnomeui/gnome-app-helper.h:499
 msgid "_Windows"
 msgstr "_Langai"
 
-#: libgnomeui/gnome-app-helper.c:91
+#: libgnomeui/gnome-app-helper.c:91 libgnomeui/gnome-app-helper.h:505
 msgid "_Game"
-msgstr "_Þaidimas"
+msgstr "Þai_dimas"
 
-#: libgnomeui/gnome-app-helper.c:92
+#: libgnomeui/gnome-app-helper.c:92 libgnomeui/gnome-app-helper.h:502
 msgid "_Help"
 msgstr "_Pagalba"
 
@@ -155,19 +156,19 @@ msgstr "Byla/"
 
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
 msgid "Edit"
-msgstr "Taisa"
+msgstr "Keisti"
 
 #: libgnomeui/gnome-app-helper.c:98
 msgid "Edit/"
-msgstr "Taisa/"
+msgstr "Keisti/"
 
 #: libgnomeui/gnome-app-helper.c:99
 msgid "View"
-msgstr "Rodinys"
+msgstr "Rodyti"
 
 #: libgnomeui/gnome-app-helper.c:100
 msgid "View/"
-msgstr "Rodinys/"
+msgstr "Rodyti/"
 
 #: libgnomeui/gnome-app-helper.c:101
 msgid "Settings"
@@ -213,7 +214,7 @@ msgstr "Langai/"
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
 msgid "_Open..."
-msgstr "Ati_daryti..."
+msgstr "_Atidaryti..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
@@ -226,7 +227,7 @@ msgstr "Ið_saugoti"
 
 #: libgnomeui/gnome-app-helper.c:127
 msgid "Save the current file"
-msgstr "Iðsaugoti ðià bylà"
+msgstr "Iðsaugoti esamà bylà"
 
 #. Save As
 #: libgnomeui/gnome-app-helper.c:132
@@ -235,7 +236,7 @@ msgstr "Iðsaugoti k_aip..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
-msgstr "Iðsaugoti ðià bylà kitu vardu"
+msgstr "Iðsaugoti esamà bylà kitu vardu"
 
 #. Revert
 #: libgnomeui/gnome-app-helper.c:138
@@ -253,12 +254,12 @@ msgstr "S_pausdinti"
 
 #: libgnomeui/gnome-app-helper.c:144
 msgid "Print the current file"
-msgstr "Spausdinti ðià bylà"
+msgstr "Spausdinti esamà bylà"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Puslapio nu_ostatos..."
+msgstr "Spausdinimo nu_ostatos..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -271,7 +272,7 @@ msgstr "_Uþdaryti"
 
 #: libgnomeui/gnome-app-helper.c:155
 msgid "Close the current file"
-msgstr "Uþdaryti ðià bylà"
+msgstr "Uþdaryti esamà bylà"
 
 #. Exit
 #: libgnomeui/gnome-app-helper.c:160
@@ -352,7 +353,7 @@ msgstr "Ieðkoti eilutës"
 #. Find Again
 #: libgnomeui/gnome-app-helper.c:204
 msgid "Find _Again"
-msgstr "R_asti vël"
+msgstr "Rasti _vël"
 
 #: libgnomeui/gnome-app-helper.c:205
 msgid "Search again for the same string"
@@ -403,7 +404,7 @@ msgstr "Apie ðià programà"
 
 #: libgnomeui/gnome-app-helper.c:238
 msgid "_Select All"
-msgstr "Paþymëti _viskà"
+msgstr "Paþymëti _visà"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
@@ -426,7 +427,7 @@ msgstr "_Uþdaryti ðá langà"
 
 #: libgnomeui/gnome-app-helper.c:253
 msgid "Close the current window"
-msgstr "Uþdaryti aktyvø langà"
+msgstr "Uþdaryti esamà langà"
 
 #.
 #. * The "Game" menu
@@ -457,7 +458,7 @@ msgstr "Paleisti þaidimà ið naujo"
 
 #: libgnomeui/gnome-app-helper.c:276
 msgid "_Undo move"
-msgstr "_Atðaukti judesá"
+msgstr "Atða_ukti judesá"
 
 #: libgnomeui/gnome-app-helper.c:277
 msgid "Undo the last move"
@@ -465,7 +466,7 @@ msgstr "Atðaukti paskutiná judesá"
 
 #: libgnomeui/gnome-app-helper.c:281
 msgid "_Redo move"
-msgstr "_Pakartoti judesá"
+msgstr "Paka_rtoti judesá"
 
 #: libgnomeui/gnome-app-helper.c:282
 msgid "Redo the undone move"
@@ -473,7 +474,7 @@ msgstr "Pakartoti atðauktà judesá"
 
 #: libgnomeui/gnome-app-helper.c:286
 msgid "_Hint"
-msgstr "Pa_tarimas"
+msgstr "Patar_imas"
 
 #: libgnomeui/gnome-app-helper.c:287
 msgid "Get a hint for your next move"
@@ -482,11 +483,11 @@ msgstr "Gauti patarimà kitam judesiui"
 #. 30
 #: libgnomeui/gnome-app-helper.c:292
 msgid "_Scores..."
-msgstr "_Rekordai..."
+msgstr "_Taðkai..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
-msgstr "Perþiûrëti rekordus"
+msgstr "Perþiûrëti taðkus"
 
 #: libgnomeui/gnome-app-helper.c:297
 msgid "_End game"
@@ -494,7 +495,7 @@ msgstr "_Baigti þaidimà"
 
 #: libgnomeui/gnome-app-helper.c:298
 msgid "End the current game"
-msgstr "Baigti aktyvø þaidimà"
+msgstr "Baigti esamà þaidimà"
 
 #: libgnomeui/gnome-app-util.c:93
 msgid " (press return)"
@@ -506,7 +507,7 @@ msgstr "KLAIDA: "
 
 #: libgnomeui/gnome-app-util.c:173
 msgid "Warning: "
-msgstr "Dëmesio: "
+msgstr "Perspëjimas: "
 
 #: libgnomeui/gnome-app-util.c:310
 msgid "y"
@@ -705,38 +706,38 @@ msgstr "="
 msgid "INV"
 msgstr "INV"
 
-#: libgnomeui/gnome-client.c:835
+#: libgnomeui/gnome-client.c:842
 msgid "Specify session management ID"
 msgstr "Nurodyti sesijos tvarkymo ID"
 
-#: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
+#: libgnomeui/gnome-client.c:842 libgnorba/goad-browser.c:27
 msgid "ID"
 msgstr "ID"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "Specify prefix of saved configuration"
 msgstr "Nurodyti iðsaugotø nuostatø prieðdëlá"
 
-#: libgnomeui/gnome-client.c:837
+#: libgnomeui/gnome-client.c:844
 msgid "PREFIX"
 msgstr "PRIEÐD"
 
-#: libgnomeui/gnome-client.c:839
+#: libgnomeui/gnome-client.c:846
 msgid "Disable connection to session manager"
 msgstr "Uþdrausti prisijungimà prie sesijos tvarkyklës"
 
 #. Register commandline options.
-#: libgnomeui/gnome-client.c:968
+#: libgnomeui/gnome-client.c:977
 msgid "Session management options"
 msgstr "Sesijos tvarkymo nuostatos"
 
-#: libgnomeui/gnome-client.c:2348
+#: libgnomeui/gnome-client.c:2357
 msgid "Cancel Logout"
 msgstr "Atðaukti atsisveikinimà"
 
 #: libgnomeui/gnome-color-picker.c:313
 msgid "Pick a color"
-msgstr "Pasirinkti spalvà"
+msgstr "Pasirink spalvà"
 
 #. Calendar label, only shown if the date editor has a time field
 #: libgnomeui/gnome-dateedit.c:459
@@ -757,7 +758,7 @@ msgstr "Komanda:"
 
 #: libgnomeui/gnome-dentry-edit.c:213
 msgid "Type:"
-msgstr "Rûðis:"
+msgstr "Tipas:"
 
 #: libgnomeui/gnome-dentry-edit.c:230
 msgid "Icon:"
@@ -765,7 +766,7 @@ msgstr "Ikona:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Pasirinkite ikonà"
+msgstr "Pasirink ikonà"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -805,11 +806,11 @@ msgstr "Paðalinti"
 
 #: libgnomeui/gnome-dentry-edit.c:504
 msgid "Basic"
-msgstr "Pagrindai"
+msgstr "Paprastai"
 
 #: libgnomeui/gnome-dentry-edit.c:508
 msgid "Advanced"
-msgstr "Papildymai"
+msgstr "Iðsamiai"
 
 #: libgnomeui/gnome-druid.c:129
 msgid "Back"
@@ -878,7 +879,7 @@ msgstr "EKRANAS"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
-msgstr "Padaryti X iðkvietimus sinchroniðkus"
+msgstr "Padaryti X kreiptis sinchroniðkas"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
@@ -886,11 +887,11 @@ msgstr "Nenaudoti X bendrosios atminties iðplëtimo"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
-msgstr "Programos vardas, naudojamas langø tvarkyklës"
+msgstr "Programos pavadinimas, naudojamas langø tvarkyklës"
 
 #: libgnomeui/gnome-init.c:171
 msgid "NAME"
-msgstr "VARDAS"
+msgstr "PAVAD"
 
 #: libgnomeui/gnome-init.c:173
 msgid "Program class as used by the window manager"
@@ -926,29 +927,27 @@ msgstr "Padaryti visus perspëjimus lemtingais"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "Uþkrauti papildomà Gtk modulá"
+msgstr "Ákelti papildomà Gtk modulá"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
 msgstr "MODULIS"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "GNOME Nuostatos"
+msgstr "GTK nuostatos"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "GNOME Nuostatos"
+msgstr "GNOME GUI nuostatos"
 
-#: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#: libgnomeui/gnome-init.c:453
+#, c-format
 msgid "%s options"
-msgstr "GNOME Nuostatos"
+msgstr "%s nuostatos"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:642
+#: libgnomeui/gnome-init.c:647
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Ávyko keletas segmentacijos klaidø; negaliu parodyti klaidos dialogo\n"
 
@@ -958,7 +957,7 @@ msgstr "Informacija"
 
 #: libgnomeui/gnome-messagebox.c:120 libgnomeui/gnome-messagebox.c:253
 msgid "Warning"
-msgstr "Dëmesio"
+msgstr "Perspëjimas"
 
 #: libgnomeui/gnome-messagebox.c:129 libgnomeui/gnome-messagebox.c:262
 msgid "Error"
@@ -986,7 +985,7 @@ msgstr "Jokio paveikslëlio"
 
 #: libgnomeui/gnome-popup-help.c:52
 msgid "_Help with this"
-msgstr "_Pagalba apie ðá..."
+msgstr "_Pagalba apie ðá"
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
@@ -1013,19 +1012,15 @@ msgid "Date"
 msgstr "Data"
 
 #. the localized string should fit (after replacing the %a %b
-#. etc) in ~18 chars.
-#. %a is abbreviated weekday, %A is full weekday,
-#. %b %B are abbreviated and full monthname, %Y is year,
-#. %d is day of month, %m is month number, %T full hour,
-#. %H hours, %M minutes, %S seconds
+#. * etc) in ~18 chars. Please consult strftime(3) manpage.
 #.
-#: libgnomeui/gnome-scores.c:130
+#: libgnomeui/gnome-scores.c:126
 msgid "%a %b %d %T %Y"
-msgstr "%a %b %d %T %Y"
+msgstr "%a, %Y %b %d, %T"
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"
-msgstr "Pasirinkti þodynà"
+msgstr "Pasirink þodynà"
 
 #: libgnomeui/gnome-spell.c:245
 #, c-format
@@ -1060,15 +1055,15 @@ msgstr "Alternatyvos:"
 
 #: libgnomeui/gnome-spell.c:563
 msgid "Accept"
-msgstr "Pritarti"
+msgstr "Priimti"
 
 #: libgnomeui/gnome-spell.c:568
 msgid ""
 "Accept the word for\n"
 "this session only"
 msgstr ""
-"Pritarti þodþiui\n"
-"tik ðioje sesijoje"
+"Priimti þodá\n"
+"ðioje sesijoje"
 
 #: libgnomeui/gnome-spell.c:570
 msgid "Skip"
@@ -1144,11 +1139,11 @@ msgstr "Rûðiuoti pagal teisingumà"
 
 #: libgnomeui/gnome-spell.c:694
 msgid "Accept run-together words"
-msgstr "Pritarti sudëtiniams þodþiams"
+msgstr "Priimti sudëtinius þodþius"
 
 #: libgnomeui/gnome-spell.c:704
 msgid "Discard accepted words on kill"
-msgstr "Panaikinti pritartus þodþius iðeinant"
+msgstr "Pamirðti priimtus þodþius iðeinant"
 
 #: libgnomeui/gnome-spell.c:712
 msgid "Enable tooltips"
@@ -1176,7 +1171,7 @@ msgstr "Iðvalyti"
 
 #: libgnomeui/gnome-stock.c:827
 msgid "Select Color"
-msgstr "Parinkti spalvà"
+msgstr "Pasirink spalvà"
 
 #: libgnomeui/gnome-stock.c:829
 msgid "Table Borders"
@@ -1184,7 +1179,7 @@ msgstr "Lentelës rëmeliai"
 
 #: libgnomeui/gnome-stock.c:830
 msgid "Table Fill"
-msgstr "Lentelës uþpildymas"
+msgstr "Lentelës uþpildas"
 
 #: libgnomeui/gnome-stock.c:831
 msgid "Bulleted List"
@@ -1196,11 +1191,11 @@ msgstr "Numeruotas sàraðas"
 
 #: libgnomeui/gnome-stock.c:833
 msgid "Indent"
-msgstr "Atitraukti"
+msgstr "Átraukti"
 
 #: libgnomeui/gnome-stock.c:834
 msgid "Un-Indent"
-msgstr "Pritraukti"
+msgstr "Atitraukti"
 
 #: libgnomeui/gnome-stock.c:838
 msgid "Apply"
@@ -1228,11 +1223,11 @@ msgstr "Atgal"
 
 #: libgnomeui/gnome-stock.c:846
 msgid "Up"
-msgstr "Virðun"
+msgstr "Aukðtyn"
 
 #: libgnomeui/gnome-stock.c:847
 msgid "Down"
-msgstr "Apaèion"
+msgstr "Þemyn"
 
 #: libgnomeui/gnome-stock.c:1894
 msgid "Menu Accelerator Keys"
@@ -1248,7 +1243,7 @@ msgstr "Meniu punktas"
 
 #: libgnomeui/gnome-stock.c:1899
 msgid "Accelerator"
-msgstr "Spartintuvas"
+msgstr "Spartusis klaviðas"
 
 #: libgnomeui/gnome_segv.c:62
 #, c-format
@@ -1357,7 +1352,7 @@ msgstr "Nuostatos..."
 
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
-msgstr "Rekordai..."
+msgstr "Taðkai..."
 
 #: libgnomeui/winhints_demo.c:46
 msgid "wmhints-test"
@@ -1369,7 +1364,7 @@ msgstr "winhints-test"
 
 #: libgnomeui/winhints_demo.c:71
 msgid "Layer:"
-msgstr "Sluoksnis:"
+msgstr "Lygmuo:"
 
 #: libgnomeui/winhints_demo.c:94
 msgid "Above Dock"
@@ -1385,11 +1380,11 @@ msgstr "Virðuje"
 
 #: libgnomeui/winhints_demo.c:106
 msgid "Normal"
-msgstr "Paprastai"
+msgstr "Paprastas"
 
 #: libgnomeui/winhints_demo.c:110
 msgid "Below"
-msgstr "Apaèioje"
+msgstr "Þemiau"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"
@@ -1397,7 +1392,7 @@ msgstr "Darbalaukis"
 
 #: libgnomeui/winhints_demo.c:122
 msgid "Set Layer"
-msgstr "Nustatyti sluoksná"
+msgstr "Nustatyti lygmená"
 
 #: libgnomeui/winhints_demo.c:129
 msgid "Workspaces:"
@@ -1413,7 +1408,7 @@ msgstr "Nustatyti darbo erdvæ"
 
 #: libgnomeui/winhints_demo.c:165
 msgid "State Toggles:"
-msgstr "Bûsenos jungikliai"
+msgstr "Bûsenos jungikliai:"
 
 #: libgnomeui/winhints_demo.c:175
 msgid "Minimized"
@@ -1505,7 +1500,7 @@ msgstr "Aktyvuojamo serverio Repository ID"
 msgid "REPO-ID"
 msgstr "REPO-ID"
 
-#: libgnorba/goad-browser.c:171
+#: libgnorba/goad-browser.c:182
 msgid ""
 "I couldn't find any installed services.  Either you don't have\n"
 "any services installed or I don't know the path to find them.\n"
@@ -1525,7 +1520,7 @@ msgstr "(Tik vidiniam naudojimui) Aktyvuojamo serverio GOAD bylos apraðiklis"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Gnome Object Activation Directory"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1543,32 +1538,37 @@ msgstr "Repository ID, pagal kurá GOAD paþásta ðá serverá"
 msgid "REPO_ID"
 msgstr "REPO_ID"
 
-#: libgnorba/orbitgtk.c:138
+#: libgnorba/orbitgtk.c:129
+#, c-format
+msgid "Failed to get user details for UID %d (%s)\n"
+msgstr ""
+
+#: libgnorba/orbitgtk.c:141
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr "Negaliu atidaryti CORBA slapukø bylos (%s) áraðymui: %s\n"
 
-#: libgnorba/orbitgtk.c:145
+#: libgnorba/orbitgtk.c:148
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
 msgstr "Negaliu raðyti á CORBA slapukø bylà (%s): %s\n"
 
-#: libgnorba/orbitgtk.c:171
+#: libgnorba/orbitgtk.c:174
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
 msgstr "Negaliu áraðyti CORBA slapuko á ¥%s´: %s\n"
 
-#: libgnorba/orbitgtk.c:181
+#: libgnorba/orbitgtk.c:184
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
 msgstr "Negaliu atidaryti CORBA slapukø bylos ¥%s´: %s\n"
 
-#: libgnorba/orbitgtk.c:187
+#: libgnorba/orbitgtk.c:190
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
 msgstr "Negaliu skaityti CORBA slapukø bylos ¥%s´: %s\n"
 
-#: libgnorba/orbitgtk.c:213
+#: libgnorba/orbitgtk.c:216
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr "Negaliu gauti CORBA autentifikacijos slapuko, iðeinu\n"
 
@@ -1639,11 +1639,11 @@ msgstr "%s: parinktis ¥-W %s´ nevienareikðmë\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: parinktis ¥-W %s´ neleidþia nurodyti argumento\n"
 
-#: support/popthelp.c:35
+#: support/popthelp.c:36
 msgid "Show this help message"
 msgstr "Parodyti ðià pagalbos þinutæ"
 
-#: support/popthelp.c:36
+#: support/popthelp.c:37
 msgid "Display brief usage message"
 msgstr "Parodyti trumpà vartojimo þinutæ"
 

@@ -1,4 +1,4 @@
-<refentry id="GnomeDockBand" revision="16 Mar 2001">
+<refentry id="GnomeDockBand">
 <refmeta>
 <refentrytitle>GnomeDockBand</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -136,7 +136,7 @@ the documentation for the <type>GnomeDock</type> widget.
 Create a new GnomeDockBand widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -152,7 +152,7 @@ Create a new GnomeDockBand widget.</para>
 Set the orientation for <parameter>band</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -172,7 +172,7 @@ Set the orientation for <parameter>band</parameter>.</para>
 Retrieve the orientation of the specified <parameter>band</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -195,7 +195,7 @@ the specified <parameter>offset</parameter> from the previous item (or from the 
 of the band, if this is the first item).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -225,7 +225,7 @@ Add <parameter>child</parameter> to <parameter>band</parameter> with the specifi
 first element.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -252,7 +252,7 @@ Add <parameter>child</parameter> to <parameter>band</parameter> with the specifi
 last element.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -279,7 +279,7 @@ last element.</para>
 Set the offset for the specified <parameter>child</parameter> of <parameter>band</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -303,7 +303,7 @@ Set the offset for the specified <parameter>child</parameter> of <parameter>band
 Retrieve the offset of <parameter>child</parameter> in <parameter>band</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -324,7 +324,7 @@ Retrieve the offset of <parameter>child</parameter> in <parameter>band</paramete
                                              <link linkend="guint">guint</link> new_num);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -349,7 +349,7 @@ Retrieve the offset of <parameter>child</parameter> in <parameter>band</paramete
 Retrieve the number of children in <parameter>band</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -366,7 +366,7 @@ Retrieve the number of children in <parameter>band</parameter>.</para>
                                              <link linkend="GnomeDockItem">GnomeDockItem</link> *item);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -388,7 +388,7 @@ Retrieve the number of children in <parameter>band</parameter>.</para>
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -416,7 +416,7 @@ Retrieve the number of children in <parameter>band</parameter>.</para>
                                              <link linkend="GnomeDockItem">GnomeDockItem</link> *item);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -442,7 +442,7 @@ Retrieve a named item from <parameter>band</parameter>, and return its
 position and offset in *<parameter>position_return</parameter> and <parameter>offset_return</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -473,7 +473,7 @@ of <parameter>band</parameter> has such name.
                                              <link linkend="guint">guint</link> band_num);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

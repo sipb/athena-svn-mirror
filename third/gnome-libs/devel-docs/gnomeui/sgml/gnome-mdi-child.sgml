@@ -1,4 +1,4 @@
-<refentry id="GnomeMDIChild" revision="16 Mar 2001">
+<refentry id="GnomeMDIChild">
 <refmeta>
 <refentrytitle>GnomeMDIChild</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -111,7 +111,7 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -134,7 +134,7 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -159,7 +159,7 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -182,7 +182,7 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -211,7 +211,7 @@ that has to be specified for classes derived from GnomeMDIChild
 is used to create the new view.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -232,7 +232,7 @@ Removes view <parameter>view</parameter> from the list of <parameter>mdi_child</
 unrefs it.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -254,7 +254,7 @@ in <parameter>mdi_child</parameter>. If <parameter>mdi_child</parameter> has alr
 it also takes care of updating it.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -280,7 +280,7 @@ GList of menu items). If no such function is specified, the menubar will
 be unchanged by MDI children.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

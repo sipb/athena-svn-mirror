@@ -12,7 +12,7 @@ lib_LTLIBRARIES = libgnomeui.la
 #
 # Install location for header files
 #
-libgnomeuiincludedir = $(includedir)/libgnomeui
+libgnomeuiincludedir = $(includedir)/gnome-1.0/libgnomeui
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl \
@@ -230,6 +230,8 @@ gnometypebuiltins_evals.c: @REBUILD@ makeenums.pl gnome.defs
 
 #######################
 
+man_MANS = gnome_segv.1
+
 gnome_segv_SOURCES = gnome_segv.c
 
 ted_demo_SOURCES = ted_demo.c
@@ -262,7 +264,8 @@ EXTRA_DIST =					\
 	gnome-boxed.defs			\
 	gnometypebuiltins_vars.c		\
 	gnometypebuiltins_ids.c			\
-	gnometypebuiltins_evals.c
+	gnometypebuiltins_evals.c		\
+	$(man_MANS)
 
 libgnomeui_la_LDFLAGS = -version-info 46:1:14 -rpath $(libdir)
 libgnomeui_la_LIBADD = $(LIBGNOMEUI_LIBS)

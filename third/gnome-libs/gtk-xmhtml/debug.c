@@ -1,13 +1,13 @@
 #ifndef lint
-static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-libs/gtk-xmhtml/debug.c,v 1.1.1.1 2000-11-12 01:48:33 ghudson Exp $";
+static char rcsId[]="$Header: /afs/dev.mit.edu/source/repository/third/gnome-libs/gtk-xmhtml/debug.c,v 1.1.1.2 2002-02-13 00:18:27 ghudson Exp $";
 #endif
 /*****
 * debug.c : debug initialization routines.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Fri Oct 18 23:57:23 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:48:33 $
+* Last modification: 	$Date: 2002-02-13 00:18:27 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *

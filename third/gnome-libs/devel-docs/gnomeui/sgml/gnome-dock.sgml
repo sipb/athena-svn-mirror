@@ -1,4 +1,4 @@
-<refentry id="GnomeDock" revision="16 Mar 2001">
+<refentry id="GnomeDock">
 <refmeta>
 <refentrytitle>GnomeDock</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -143,7 +143,7 @@ dock widget.
 Creates a new <link linkend="GnomeDock">GnomeDock</link> widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -160,7 +160,7 @@ Enable or disable floating items on <parameter>dock</parameter>, according
 to <parameter>enable</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -190,7 +190,7 @@ created at the position specified by <parameter>band_num</parameter>; otherwise,
 is added to the <parameter>band_num</parameter>'th band.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -230,7 +230,7 @@ specified (<parameter>x</parameter>, <parameter>y</parameter>) coordinates (rela
 screen).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -259,7 +259,7 @@ screen).</para>
 Specify a widget for the dock's client area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -279,7 +279,7 @@ Retrieve the widget being used as the client area in
 <parameter>dock</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -306,7 +306,7 @@ the placement is <literal>GNOME_DOCK_FLOATING</literal> *<parameter>num_band_ret
 *<parameter>band_position_return</parameter> and *<parameter>offset_return</parameter> are not set.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -342,7 +342,7 @@ such name exists.
 Retrieve the layout of <parameter>dock</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -361,7 +361,7 @@ Retrieve the layout of <parameter>dock</parameter>.</para>
 Add all the items in <parameter>layout</parameter> to the specified <parameter>dock</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -1,4 +1,4 @@
-<refentry id="gnome-libgnome" revision="16 Mar 2001">
+<refentry id="gnome-libgnome">
 <refmeta>
 <refentrytitle>libgnome</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -48,7 +48,7 @@ link against libgnomeui.  Note that libgnomeui will call gnomelib_init
 internally at initialization time.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

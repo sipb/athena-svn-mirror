@@ -41,7 +41,7 @@
 #include "vt.h"
 #include "subshell.h"
 
-/* define to 'x' to enable copius debug of this module */
+/* define to 'x' to enable copious debug of this module */
 #define d(x)
 
 /* this one will check nodes aren't 'past' the end of list */
@@ -109,6 +109,62 @@ vt_dump(struct vt_em *vt)
 
 #endif
 
+#ifdef ZVT_MB
+/*
+  return multibyte character length in vt line
+*/
+int vt_line_mblen(int x, struct vt_line *l)
+{
+  unsigned char ctmp[MB_CUR_MAX];
+  int len = 1, i;
+
+  /* arranged selection columns (sx and ex) for multibyte character */
+  if (MB_CUR_MAX >= 2) {
+      for (i = 0; i < MB_CUR_MAX; i++)
+	  if (x+i <= l->width)
+	      ctmp[i] = l->data[x+i] & 0xff;
+	  else
+	      ctmp[i] = 0;
+      len = mblen(ctmp, MB_CUR_MAX);
+      if (len <= 0) len = 1;
+  }
+
+  return(len);
+}
+
+int vt_query_line_mbchar(int x, struct vt_line *l)
+{
+  unsigned char ctmp[MB_CUR_MAX];
+  int xx = x, len = 1, i;
+
+  if (x == 0 || x == l->width) return(x);
+
+  /* arranged selection columns (sx and ex) for multibyte character */
+  if (MB_CUR_MAX >= 2) {
+      if (x > l->width) x = l->width;
+      if (x < 0) x = 0;
+      for (xx = 0; xx < x; xx += len) {
+	  if ((l->data[xx] & VTATTR_DATAMASK) <= 0x1f)
+	      len = 1; 	    /* control code character */
+	  else {
+	      for (i = 0; i < MB_CUR_MAX && xx+i < x; i++)
+		  ctmp[i] = l->data[xx+i] & VTATTR_DATAMASK;
+	      for (     ; i < MB_CUR_MAX; i++)
+		  ctmp[i] = 0;
+	      len = mblen(ctmp, MB_CUR_MAX);
+	      if (len <= 0) {
+		  if (xx + 1 != x)
+		      len = 1;
+		  else
+		      break;
+	      }
+	  }
+      }
+  }
+  return(xx);
+}
+#endif
+ 
 /***********************************************************************
  * Update functions
  */
@@ -163,8 +219,8 @@ static void vt_set_screen(struct vt_em *vt, int screen)
     }
 
     d({
-      ah = &vt->lines.head;
-      lh = &vt->lines_alt.head;
+      ah = (struct vt_line *)&vt->lines.head;
+      lh = (struct vt_line *)&vt->lines_alt.head;
       while (ah) {
 	printf("%p: %p %p   %p: %p %p\n", ah, ah->next, ah->prev, lh, lh->next, lh->prev);
 	ah = ah->next;
@@ -1373,6 +1429,69 @@ vt_set_text(struct vt_em *vt)
   }
 }
 
+/**
+ * vt_dtterm_seq:
+ * @vt: an initialised &vt_em
+ *
+ * Handle a CSI Ps [; Ps [; Ps]] t request, passing on a request for a report
+ * if a handler has been defined for those sequences requiring a pty response
+ **/
+static void
+vt_dtterm_seq(struct vt_em *vt)
+{
+  int cmd = 0;
+
+  /* fixup: the Ps; Ps; Ps parameters aren't quite loaded the way we expect: *
+   * this makes sure they're all loaded into intargs in order:               *
+   * Note that intargs[0] will be the command number, 1  and 2 are potential *
+   * parameters, which may or may not be used                                */
+  vt->arg.num.intargs[vt->argcnt++] = vt->arg.num.intarg & 0x7fffffff;
+  vt->arg.num.intarg = 0;
+
+  cmd = vt->arg.num.intargs[0];
+  
+  d({
+    int x =  0;
+    printf( "CSI <argcnt:%d state:%d intarg:%d> ", vt->argcnt, vt->state, vt->arg.num.intarg );
+    for(x = 0; x < MIN(VTPARAM_INTARGS,vt->argcnt); x++ )
+      printf("[%d]", vt->arg.num.intargs[x] );
+    printf("t\n");
+   });
+  
+  switch (cmd) {
+  /* These manipulate the window */
+  case 1: /* deiconify */
+  case 2: /* iconify */
+  case 3: /* move-to */
+  case 4: /* resize (pixels) */
+  case 5: /* raise */
+  case 6: /* lower */
+  case 7: /* refresh */
+  case 8: /* resize (chars) */
+  case 9: /* (un)maximise based on parameter */
+  /* These require report-responses: */
+  case 11: /* 11: report iconifiedness as CS1 1|2 t */
+  case 13: /* 13: report position as CSI 3; x; y t (pixels) */
+  case 14: /* 14: report size as CSI 4 ; h ; w t pixels */
+  case 18: /* 18: report size as CSI 8 ; h ; w t chars */
+  case 19: /* 19: report screen size as CSI 9 ; h ; w t chars */
+  case 20: /* 20: report icon label as OSC L label ST */
+  case 21: /* 21: report window title as OSC l title ST */
+    d(printf("vt->dtterm_seq<%p>(<%p>, %d)\n",
+             vt->dtterm_seq,
+             vt->user_data, cmd));
+    if(vt->dtterm_seq) { vt->dtterm_seq(vt->user_data); }
+    break;
+  default:
+    if (cmd >= 24) {
+      d(printf("CSI %d: resize to %d lines\n", cmd, cmd));
+      if(vt->dtterm_seq) { vt->dtterm_seq(vt->user_data); }  
+    } else {
+      d(printf("Unknown dtterm (CSI %d [; Ps [; Ps ]]t) sequence\n", cmd));
+    }
+  }
+}
+
 struct vt_jump {
   void (*process)(struct vt_em *vt);	/* process function */
   int modes;			/* modes appropriate */
@@ -1420,7 +1539,7 @@ struct vt_jump vtjumps[] = {
   {vt_modeh,VT_EBL}, {0,VT_LIT}, {0,VT_LIT}, {vt_modek,VT_EBL},	/* hijk */
   {vt_model,VT_EBL}, {vt_mode,VT_EBL}, {vt_dsr,VT_EBL}, {0,VT_LIT},	/* lmno */
   {vt_reset,VT_EBL}, {0,VT_LIT}, {vt_scroll,VT_EBL}, {0,VT_LIT},	/* pqrs */
-  {0,VT_LIT}, {0,VT_LIT}, {0,VT_LIT}, {0,VT_LIT},	/* tuvw */
+  {vt_dtterm_seq,VT_LIT}, {0,VT_LIT}, {0,VT_LIT}, {0,VT_LIT},	/* tuvw */
   {0,VT_LIT}, {0,VT_LIT}, {0,VT_LIT}, {0,VT_LIT},	/* xyz{ */
   {0,VT_LIT}, {vt_decic,VT_EBL}, {vt_func,VT_EBL}, {0,VT_LIT},	/* |}~? */
 };
@@ -1444,7 +1563,13 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
   struct vt_jump *modes = vtjumps;
   char *ptr_end;
   void (*process)(struct vt_em *vt);	/* process function */
+#ifdef ZVT_MB
+  unsigned char ctmp[MB_CUR_MAX];
+  int ctmp_num;
+#endif
 
+#define IS_ST(C,P,E) ( ((C) == 0x1b) && ((P)<(E)) && (*((P)++) == 0x5c) )
+  
   /* states:
    *   0: normal escape mode
    *   1: escape mode.  switch on next character.
@@ -1521,7 +1646,26 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
     
     switch (state) {
       
+#if defined(ZVT_JIS) && defined(ZVT_MB)
+    case 100:                /* enter JIS mode */
+      state = (c == 'B')? 101: 0;
+      break;
+    case 110:                /* exit JIS mode */
+      state = 0;
+      break;
+    case 101:
+	if (c > 0x1f && c < 0x80 && MB_CUR_MAX >= 2)
+	    c += 0x80;
+#endif
     case 0:
+#ifdef ZVT_MB
+      /* prevent to be into alt mode for half katakana character in EUC-JP */
+      if ((mode & VT_CON) && process == vt_alt_start && (*ptr & 0xff) >= 0xa0) {
+	  mode = VT_LIT;
+	  process = NULL;
+      }
+#endif
+
       if (mode & VT_LIT) {
 	/* remap character? */
 	if (vt->remaptable && c<=0xff)
@@ -1531,17 +1675,43 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
 	if (vt->mode & VTMODE_INSERT)
 	  vt_insert_chars(vt, 1);
 	
+#ifdef ZVT_MB
+	ctmp_num = 0;
+#endif
 	/* need to wrap? */
 	if (vt->cursorx>=vt->width) {
 	  if (vt->mode&VTMODE_WRAPOFF)
 	    vt->cursorx = vt->width-1;
 	  else {
+#ifdef ZVT_MB
+	      /* check of a boundary of multi byte character */
+	      int x = vt_query_line_mbchar(vt->width+1, vt->this_line);
+	      if (x < vt->width && vt->width - x < sizeof(ctmp) ) {
+		for(ctmp_num=0; ctmp_num < vt->width - x; ctmp_num++) {
+		  int i = vt->width - 1 - ctmp_num;
+		  ctmp[ctmp_num] = vt->this_line->data[i] & 0xff;
+		  vt->this_line->data[i] =
+		    ((vt->attr) & VTATTR_CLEARMASK) |VTATTR_MULTIBYTE;
+		  vt->this_line->modcount++;
+		}
+	      }
+#endif
 	    vt_lf(vt);
 	    vt->cursorx=0;
 	  }
 	}
 	
 	/* output character */
+#ifdef ZVT_MB
+	if (ctmp_num) {
+	    while(ctmp_num) {
+		vt->this_line->data[vt->cursorx++] =
+		    ((vt->attr) & VTATTR_MASK) | ctmp[ctmp_num-1];
+		ctmp_num--;
+		vt->this_line->modcount++;
+	    }
+	}
+#endif
 	vt->this_line->data[vt->cursorx] = ((vt->attr) & VTATTR_MASK) | c;
 	vt->this_line->modcount++;
 	/* d(printf("literal %c\n", c)); */
@@ -1571,6 +1741,12 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
       } else if (c==']') {	/* set text parameters, read parameters */
 	state = 4;
 	vt->arg.txt.outptr = vt->arg.txt.args_mem;
+#if defined(ZVT_JIS) && defined(ZVT_MB)
+      } else if (c=='$') {	/* in JIS code */
+	state = 100;
+      } else if (c=='(') {	/* out JIS mode */
+	state = 110;
+#endif
       } else if (mode & VT_EXA) {
 	vt->arg.num.intargs[0] = c & 0x7f;
 	state = 5;
@@ -1591,12 +1767,20 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
 	state = 8;
 	continue;
       }
+      d(printf("FALLTHROUGH 2: VT_ARG: %d, VT_EXB: %d, VT_CON: %d, c: %c\n",
+               ((mode & VT_ARG) ? 1 : 0  ),
+               ((mode & VT_EXB) ? 1 : 0  ),
+               ((mode & VT_CON) ? 1 : 0  ),
+               ( isprint(c)     ? c : '_')
+              )
+       );
       /* note -> falls through */
     case 6:
     case 7:
     case 8:
     case 9:
     case 10:
+      d(printf("mode '%c' -> #%d", c, c & 0x7f));
       if (mode & VT_ARG) {
 	/* accumulate subtotal */
 	vt->arg.num.intarg = vt->arg.num.intarg*10+(c-'0');
@@ -1616,6 +1800,9 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
 	state = 7;		/* any other chars should be numbers anyway */
       } else if (c=='\'') {
 	state = 9;
+      } else if (c=='t')  {     /* dtterm window manipulation sequence */
+        process(vt);
+	state = 0;
       } else {
 	d(printf("unknown option '%c'\n", c));
 	state=0;		/* unexpected escape sequence - ignore */
@@ -1633,9 +1820,9 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
       break;
       
       
-      /* \E]..;...BEL */
+      /* '\E]..;...BEL' OR '\E]..;...ST' */
     case 4:
-      if (c==0x07) {
+      if (c==0x07 || IS_ST(c,ptr,ptr_end)) {
 	/* handle output */
 	*(vt->arg.txt.outptr)=0;
 	vt_set_text(vt);
@@ -2188,6 +2375,7 @@ int vt_report_button(struct vt_em *vt, int down, int button, int qual, int x, in
 {
   char mouse_info[16];
   int mode = vt->mode & VTMODE_SEND_MOUSE_MASK;
+  static char buttonchar[] = " !\"`abc";
 
   if (y>=0) {
     mouse_info[0]=0;
@@ -2195,13 +2383,13 @@ int vt_report_button(struct vt_em *vt, int down, int button, int qual, int x, in
     case VTMODE_SEND_MOUSE_PRESS: /* press only */
       if (down)
 	g_snprintf(mouse_info, sizeof(mouse_info), "\033[M%c%c%c",
-		   ' ' + ((button - 1)&3),
+		   buttonchar[(button - 1)&7],
 		   x+' '+1,
 		   y+' '+1);
       break;
     case VTMODE_SEND_MOUSE_BOTH:
       g_snprintf(mouse_info, sizeof(mouse_info), "\033[M%c%c%c",
-		 (down?(' ' + ((button - 1)&3)):(' '+3)) | /* 0 = lmb, 1 = mid, 2 = rmb, 3 = up */
+		 (down?(buttonchar[(button - 1)&7]):(' '+3)) | /* ' ' = lmb, '!' = mid, '"' = rmb, '#' = up, '`' = wheel-down, 'a' = wheel-up */
 		 ((qual&1)?4:0) | /* shift */
 		 ((qual&8)?8:0) | /* meta */
 		 ((qual&4)?16:0), /* control */

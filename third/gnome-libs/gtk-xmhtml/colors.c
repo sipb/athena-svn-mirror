@@ -1,10 +1,10 @@
 /*****
 * colors.c : XmHTML color allocation routines
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Mon Dec 16 13:57:41 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:49:35 $
+* Last modification: 	$Date: 2002-02-13 00:13:53 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -32,6 +32,18 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.13.6.2  2002/01/24 22:00:57  kmaraas
+* 2002-01-24  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* colors.c: Fix up earlier fix so things compile.
+*
+* Revision 1.13.6.1  2002/01/23 18:32:13  kmaraas
+* 2002-01-23  Wayne Schuller  <k_wayne@linuxpower.org>
+*
+* 	* colors.c: (my_get_colors), (set_widget_colors): Just some error
+* 	checking for NULL parameters. Helps to avoid
+* 	http://bugzilla.gnome.org/show_bug.cgi?id=12493
+*
 * Revision 1.13  1999/07/29 01:26:28  sopwith
 *
 *
@@ -775,6 +787,9 @@ my_get_colors(GdkColormap *colormap, gulong background, gulong *top, gulong *bot
 	GdkColor cbackground;
 	GdkColor ctop, cbottom, chighlight;
 
+	if (colormap == NULL)
+		return;
+
 	/* I think this should use a ColorContext instead of allocating colors itself... - Federico */
 
 	/* FIXME: The colors that are allocated here are never freed.
@@ -808,7 +823,10 @@ static void
 set_widget_colors(GtkXmHTML *html, gulong *top, gulong *bottom, gulong *highlight)
 {
 	GdkColor c;
-	
+
+	if (html == NULL)
+		return;
+
 	if (top) {
 		c.pixel = *top;
 		gdk_gc_set_foreground(html->top_shadow_gc, &c);

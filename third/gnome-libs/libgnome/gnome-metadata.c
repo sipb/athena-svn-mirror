@@ -66,10 +66,10 @@ char *alloca ();
 #ifdef HAVE_DB_185_H
 # include <db_185.h>
 #else
-# ifdef HAVE_DB_H
-#  include <db.h>
-# else
+# ifdef HAVE_DB1_DB_H
 #  include <db1/db.h>
+# else
+#  include <db.h>
 # endif
 #endif
 #endif
@@ -1158,9 +1158,13 @@ gnome_metadata_get (const char *file, const char *name,
 {
 	int r;
 	G_LOCK (database_mu);
-	lock ();
-	r = get_worker (file, name, size, buffer, 0);
-	unlock ();
+	if (! database && init ())
+		r = GNOME_METADATA_IO_ERROR;
+	else {
+		lock ();
+		r = get_worker (file, name, size, buffer, 0);
+		unlock ();
+	}
 	G_UNLOCK (database_mu);
 	return r;
 }
@@ -1184,9 +1188,13 @@ gnome_metadata_get_fast (const char *file, const char *name,
 {
 	int r;
 	G_LOCK (database_mu);
-	lock ();
-	r = get_worker (file, name, size, buffer, 1);
-	unlock ();
+	if (! database && init ())
+		r = GNOME_METADATA_IO_ERROR;
+	else {
+		lock ();
+		r = get_worker (file, name, size, buffer, 1);
+		unlock ();
+	}
 	G_UNLOCK (database_mu);
 	return r;
 }

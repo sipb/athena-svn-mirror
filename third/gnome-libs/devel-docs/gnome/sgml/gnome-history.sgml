@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-history" revision="16 Mar 2001">
+<refentry id="gnome-gnome-history">
 <refmeta>
 <refentrytitle>gnome-history</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -111,7 +111,7 @@ GNOME desktop.  <parameter>filename</parameter> is the file that was recently us
 just created.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -136,7 +136,7 @@ just created.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -153,7 +153,7 @@ all of the recently used documents.
 Releases the list of recently used documents</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

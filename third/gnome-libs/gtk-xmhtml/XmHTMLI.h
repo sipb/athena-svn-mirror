@@ -5,10 +5,10 @@
 *             AFTER XmHTMLP.h as it references a number of structures defined
 *             in that header.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Aug 19 16:03:22 GMT+0100 1997
-* Last modification: 	$Date: 2000-11-12 01:49:34 $
+* Last modification: 	$Date: 2002-02-13 00:19:24 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *

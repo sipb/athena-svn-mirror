@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-sound" revision="16 Mar 2001">
+<refentry id="gnome-gnome-sound">
 <refmeta>
 <refentrytitle>gnome-sound</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -48,7 +48,7 @@ system's sound server.
 <para>
 The application can expect this to be automatically called if the
 user has requested GNOME sound support.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -73,7 +73,7 @@ Loads the audio on <parameter>filename</parameter> and XXXX</para>
 <para>
 Loads a sound file into esound sample with the given name. Returns the
 esound numeric ID of the sample.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -94,7 +94,7 @@ esound numeric ID of the sample.
 Plays the audio stored in <parameter>filename</parameter></para>
 <para>
 Convenience routine to play a sound file. Fire and forget.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

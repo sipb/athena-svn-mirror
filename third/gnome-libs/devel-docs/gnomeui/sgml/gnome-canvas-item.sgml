@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasItem" revision="16 Mar 2001">
+<refentry id="GnomeCanvasItem">
 <refmeta>
 <refentrytitle>GnomeCanvasItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -140,7 +140,7 @@ is of the specified <parameter>type</parameter>, for example, it can be
 used to configure the item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -176,7 +176,7 @@ is of the specified <parameter>type</parameter>, for example, it can be
 configure the item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -206,7 +206,7 @@ configure the item.</para>
 Constructs a canvas item; meant for use only by item implementations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -234,7 +234,7 @@ Constructs a canvas item; meant for use only by item implementations.</para>
 Constructs a canvas item; meant for use only by item implementations.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -262,7 +262,7 @@ Configures a canvas item.  The arguments in the item are set to the specified
 values, and the item is repainted as appropriate.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -287,7 +287,7 @@ Configures a canvas item.  The arguments in the item are set to the specified
 values, and the item is repainted as appropriate.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -312,7 +312,7 @@ Configures a canvas item.  The arguments in the item are set to the specified
 values, and the item is repainted as appropriate.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -339,7 +339,7 @@ Moves a canvas item by creating an affine transformation matrix for
 translation by using the specified values.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -364,7 +364,7 @@ Combines the specified affine transformation matrix with the item's current
 transformation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -386,7 +386,7 @@ Makes the item's affine transformation matrix be equal to the specified
 matrix.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -407,7 +407,7 @@ matrix.</para>
                                              <link linkend="double">double</link> scale_y);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -438,7 +438,7 @@ matrix.</para>
                                              <link linkend="double">double</link> angle);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -468,7 +468,7 @@ If the number of positions is greater than the distance to the top of the
 stack, then the item is put at the top.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -490,7 +490,7 @@ If the number of positions is greater than the distance to the bottom of the
 stack, then the item is put at the bottom.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -509,7 +509,7 @@ stack, then the item is put at the bottom.</para>
 Raises an item to the top of its parent's stack.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -526,7 +526,7 @@ Raises an item to the top of its parent's stack.</para>
 Lowers an item to the bottom of its parent's stack.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -542,7 +542,7 @@ Lowers an item to the bottom of its parent's stack.</para>
 Shows a canvas item.  If the item was already shown, then no action is taken.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -559,7 +559,7 @@ Hides a canvas item.  If the item was already hidden, then no action is
 taken.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -586,7 +586,7 @@ Return value: If an item was already grabbed, it returns <literal>AlreadyGrabbed
 the specified item was hidden by calling <link linkend="gnome-canvas-item-hide">gnome_canvas_item_hide</link>(), then it</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -616,7 +616,7 @@ Ungrabs the item, which must have been grabbed in the canvas, and ungrabs the
 mouse.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -638,7 +638,7 @@ Converts a coordinate pair from world coordinates to item-relative
 coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -663,7 +663,7 @@ Converts a coordinate pair from item-relative coordinates to world
 coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -687,7 +687,7 @@ Gets the affine transform that converts from the item's coordinate system to
 world coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -708,7 +708,7 @@ Gets the affine transform that converts from item-relative coordinates to
 canvas pixel coordinates.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -730,7 +730,7 @@ its group-relative coordinates as for its old parent, so the item may change
 its absolute position within the canvas.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -751,7 +751,7 @@ be sent to it.  If the canvas widget itself did not have the focus, it grabs
 it as well.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -772,7 +772,7 @@ Queries the bounding box of a canvas item.  The bounds are returned in the
 coordinate system of the item's parent.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -802,7 +802,7 @@ To be used only by item implementations.  Requests that the canvas queue an
 update for the specified item.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

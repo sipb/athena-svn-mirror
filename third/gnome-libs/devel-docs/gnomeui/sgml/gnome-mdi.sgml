@@ -1,4 +1,4 @@
-<refentry id="GnomeMDI" revision="16 Mar 2001">
+<refentry id="GnomeMDI">
 <refmeta>
 <refentrytitle>GnomeMDI</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -162,7 +162,7 @@ Creates a new MDI object. <parameter>appname</parameter> and <parameter>title</p
 MDI's calling <link linkend="gnome-app-new">gnome_app_new</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -186,7 +186,7 @@ Sets the MDI mode to mode. Possible values are <literal>GNOME_MDI_TOPLEVEL</lite
 <literal>GNOME_MDI_NOTEBOOK</literal>, <literal>GNOME_MDI_MODAL</literal> and <literal>GNOME_MDI_DEFAULT</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -212,7 +212,7 @@ toplevel window (a GnomeApp widget) and can be obtained by calling
 &amp;gnome_mdi_get_menubar_info.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -238,7 +238,7 @@ window (a GnomeApp widget) and can be retrieved with a call to
 &amp;gnome_mdi_get_toolbar_info.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -260,7 +260,7 @@ removed from the main menus as views of different children are activated).
 See gnome_app_find_menu_pos for details on menu paths.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -285,7 +285,7 @@ you want all menu items to be inserted in their own submenu, you have to
 create that submenu (and leave it empty, of course).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -312,7 +312,7 @@ the signal handler (if it exists) returns <literal>TRUE</literal>. If the handle
 <literal>FALSE</literal>, the created view is destroyed and not added to the MDI.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -338,7 +338,7 @@ modes, but in <literal>GNOME_MDI_NOTEBOOK</literal> mode, the view is added in a
 toplevel window unless the active one has no views in it.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -365,7 +365,7 @@ view. The view is removed only if the signal handler (if it exists and
 the <parameter>force</parameter> is set to <literal>FALSE</literal>) returns <literal>TRUE</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -390,7 +390,7 @@ the <parameter>force</parameter> is set to <literal>FALSE</literal>) returns <li
 Returns a pointer to the active view (the one with the focus).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -411,7 +411,7 @@ Sets the active view to <parameter>view</parameter>. It also raises the window c
 and gives it focus.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -436,7 +436,7 @@ handler (if it exists) returns <literal>TRUE</literal>. If the handler returns <
 child is not added to the MDI.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -463,7 +463,7 @@ before actually removing the child. The child is removed only if the signal
 handler (if it exists and the <parameter>force</parameter> is set to <literal>FALSE</literal>) returns <literal>TRUE</literal>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -493,7 +493,7 @@ they exist and the <parameter>force</parameter> is set to <literal>FALSE</litera
 and their views are removed and none otherwise.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -519,7 +519,7 @@ windows were open because a session was restored or children were added
 because of command line args).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -538,7 +538,7 @@ after its name changes. It is not required if <link linkend="gnome-mdi-child-set
 is used for setting the child's name.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -557,7 +557,7 @@ is used for setting the child's name.</para>
 Returns a pointer to the active GnomeMDIChild object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -577,7 +577,7 @@ A pointer to the active GnomeMDIChild object. <literal>NULL</literal>, if there 
 Finds a child named <parameter>name</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -600,7 +600,7 @@ otherwise.
 Returns a pointer to the toplevel window containing the active view.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -627,7 +627,7 @@ is closed. If no objects are registered, closing the last MDI window
 results in MDI being destroyed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -647,7 +647,7 @@ results in MDI being destroyed.</para>
 Removes GtkObject <parameter>object</parameter> from the list of registered objects.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -666,7 +666,7 @@ Removes GtkObject <parameter>object</parameter> from the list of registered obje
 Returns the toplevel window for this view.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -686,7 +686,7 @@ A pointer to the GnomeApp containg the specified view.
 Returns a child that <parameter>view</parameter> is a view of.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -708,7 +708,7 @@ If the mode is set to <literal>GNOME_MDI_NOTEBOOK</literal>, the view in the cur
 page is returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -730,7 +730,7 @@ A pointer to a view.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -750,7 +750,7 @@ A GnomeUIInfo array used for menubar in <parameter>app</parameter> if the menuba
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -770,7 +770,7 @@ A GnomeUIInfo array used for toolbar in <parameter>app</parameter> if the toolba
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -31,10 +31,10 @@
 #define DEFAULT_HANDLER "gnome-moz-remote --newwin \"%s\""
 
 static gchar *
-gnome_url_default_handler ()
+gnome_url_default_handler (const char *protocol)
 {
 	static gchar *default_handler = 0;
-	
+
 	if (!default_handler) {
 		gchar *str, *app;
 		gboolean def;
@@ -62,10 +62,18 @@ gnome_url_default_handler ()
 				gnome_config_set_string ("/Gnome/URL Handlers/man-show", app);
 			g_free (gnome_config_get_string_with_default(
 				"/Gnome/URL Handlers/ghelp-show", &def));
-			if (def)
+			if (def) 
 				gnome_config_set_string ("/Gnome/URL Handlers/ghelp-show", app);
 
 			gnome_config_sync_file ("/Gnome/");
+
+			if (protocol &&
+			    (strcmp (protocol, "ghelp") == 0 ||
+			      strcmp (protocol, "info") == 0 ||
+			      strcmp (protocol, "man") == 0)) {
+				return app;
+			}
+			
 		} else
 			default_handler = str;
 	}
@@ -120,12 +128,12 @@ gnome_url_show(const gchar *url)
 		template = gnome_config_get_string_with_default (path, &def);
 		g_free (path);
 		if (def)
-			template = gnome_url_default_handler ();
+			template = gnome_url_default_handler (protocol);
 		else
 			free_template = TRUE;
 		g_free (protocol);
 	} else /* no : ? -- this shouldn't happen.  Use default handler */
-		template = gnome_url_default_handler ();
+		template = gnome_url_default_handler (NULL);
 
 	/* we use a popt function as it does exactly what we want to do and
 	   gnome already uses popt */

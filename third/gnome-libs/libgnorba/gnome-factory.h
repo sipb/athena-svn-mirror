@@ -38,6 +38,8 @@ extern "C"
       CORBA_boolean _release;
    }
    CORBA_sequence_CORBA_string;
+   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
+#endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'g'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_1 'n'
@@ -58,11 +60,7 @@ extern "C"
 #endif
    extern CORBA_sequence_CORBA_string
       *CORBA_sequence_CORBA_string__alloc(void);
-   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem,
-						     gpointer dat,
-						     CORBA_boolean free_strings);	/* ORBit internal use */
-   CORBA_char **CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len);
-#endif
+   extern gpointer CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #if !defined(_GNOME_stringlist_defined)
 #define _GNOME_stringlist_defined 1
    typedef CORBA_sequence_CORBA_string GNOME_stringlist;
@@ -84,8 +82,7 @@ extern "C"
 #define TC_GNOME_stringlist ((CORBA_TypeCode)&TC_GNOME_stringlist_struct)
 #endif
    extern GNOME_stringlist *GNOME_stringlist__alloc(void);
-   extern gpointer GNOME_stringlist__free(gpointer mem, gpointer dat,
-					  CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_stringlist__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_GenericFactory) && !defined(_GNOME_GenericFactory_defined)
 #define ORBIT_DECL_GNOME_GenericFactory 1
@@ -147,19 +144,16 @@ extern "C"
 #define TC_GNOME_GenericFactory_CannotActivate ((CORBA_TypeCode)&TC_GNOME_GenericFactory_CannotActivate_struct)
 #endif
 #define GNOME_GenericFactory_CannotActivate__alloc() NULL
-   extern gpointer GNOME_GenericFactory_CannotActivate__free(gpointer mem,
-							     gpointer dat,
-							     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_GenericFactory_CannotActivate__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 
 /** POA structures **/
    typedef struct
    {
       void *_private;
-      
-	 CORBA_boolean(*supports) (PortableServer_Servant _servant,
-				   const CORBA_char * obj_goad_id,
-				   CORBA_Environment * ev);
+       CORBA_boolean(*supports) (PortableServer_Servant _servant,
+				 const CORBA_char * obj_goad_id,
+				 CORBA_Environment * ev);
        CORBA_Object(*create_object) (PortableServer_Servant _servant,
 				     const CORBA_char * goad_id,
 				     const GNOME_stringlist * params,

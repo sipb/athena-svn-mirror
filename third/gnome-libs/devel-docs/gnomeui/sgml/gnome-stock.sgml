@@ -1,4 +1,4 @@
-<refentry id="GnomeStock" revision="16 Mar 2001">
+<refentry id="GnomeStock">
 <refmeta>
 <refentrytitle>GnomeStock</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -1029,7 +1029,7 @@ application-wide, such as display colors or default servers.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1044,7 +1044,7 @@ application-wide, such as display colors or default servers.
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1064,7 +1064,7 @@ set to <parameter>icon</parameter>.
 Sets the <parameter>stock</parameter> object icon to be the one whose code is <parameter>icon</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1085,7 +1085,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              const char *subtype);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1110,7 +1110,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              const char *icon);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1135,7 +1135,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              <link linkend="guint">guint</link> height);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1164,7 +1164,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              const char *icon);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1185,7 +1185,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              <link linkend="GnomeStockPixmapEntry">GnomeStockPixmapEntry</link> *entry);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1211,7 +1211,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              <link linkend="GnomeStockPixmapEntry">GnomeStockPixmapEntry</link> *entry);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1237,7 +1237,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              const char *subtype);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1259,7 +1259,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              const char *text);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1281,7 +1281,7 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
                                              <link linkend="gboolean">gboolean</link> can_default);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1387,7 +1387,7 @@ Constructs a new <link linkend="GtkButton">GtkButton</link> which contains a sto
 whose type is <parameter>type</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1412,7 +1412,7 @@ The use of this routine is discouraged, given that on international
 setups it might break subtly.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1898,7 +1898,7 @@ setups it might break subtly.</para>
                                              const char *text);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1921,7 +1921,7 @@ setups it might break subtly.</para>
                                              <link linkend="guint8">guint8</link> *mod);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1945,7 +1945,7 @@ setups it might break subtly.</para>
 <programlisting>void        gnome_stock_menu_accel_parse    (const char *section);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1962,7 +1962,7 @@ setups it might break subtly.</para>
                                              const char *subtype);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1986,7 +1986,7 @@ setups it might break subtly.</para>
                                              <link linkend="GdkPixmap">GdkPixmap</link> **mask);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

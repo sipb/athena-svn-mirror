@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-config" revision="16 Mar 2001">
+<refentry id="gnome-gnome-config">
 <refmeta>
 <refentrytitle>gnome-config</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -216,7 +216,7 @@ Retrieves &amp; returns the value of a configuration item as a string.
 The returned value should be <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,7 +237,7 @@ Retrieves &amp; returns the value of a configuration item as a string appropriat
 <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -257,7 +257,7 @@ is returned.
 Retrieves &amp; returns the value of a configuration item as an integer.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -277,7 +277,7 @@ is returned.
 Retrieves &amp; returns the value of a configuration item as a floating-point number.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -297,7 +297,7 @@ is returned.
 Retrieves &amp; returns the value of a configuration item as a boolean.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -318,7 +318,7 @@ Retrieves &amp; returns the value of a configuration item as a string array.
 The returned value should be <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -347,7 +347,7 @@ item is retrieved from the user's private configuration storage
 area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -369,7 +369,7 @@ Retrieves &amp; returns the value of a configuration item as a string appropriat
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -390,7 +390,7 @@ Retrieves &amp; returns the value of a configuration item as an integer.
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -411,7 +411,7 @@ Retrieves &amp; returns the value of a configuration item as a floating-point nu
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -432,7 +432,7 @@ Retrieves &amp; returns the value of a configuration item as a boolean.
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -455,7 +455,7 @@ item is retrieved from the user's private configuration storage
 area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -483,7 +483,7 @@ The returned value should be
 <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -501,7 +501,7 @@ appropriate for the current language. The returned value should be
 <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -517,7 +517,7 @@ appropriate for the current language. The returned value should be
 Retrieves &amp; returns the value of a configuration item as an integer.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -534,7 +534,7 @@ Retrieves &amp; returns the value of a configuration item as a floating-point
 number.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -550,7 +550,7 @@ number.</para>
 Retrieves &amp; returns the value of a configuration item as a boolean.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -568,7 +568,7 @@ The returned value should be
 <link linkend="g-free">g_free</link>()'d when no longer needed.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -593,7 +593,7 @@ needed.  The item is retrieved from the user's private
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -611,7 +611,7 @@ Retrieves &amp; returns the value of a configuration item as a string appropriat
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -628,7 +628,7 @@ Retrieves &amp; returns the value of a configuration item as an integer.
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -645,7 +645,7 @@ Retrieves &amp; returns the value of a configuration item as a floating-point nu
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -662,7 +662,7 @@ Retrieves &amp; returns the value of a configuration item as a boolean.
 The item is retrieved from the user's private configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -681,7 +681,7 @@ needed.  The item is retrieved from the user's private
 configuration storage area.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -704,7 +704,7 @@ Stores the string value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -725,7 +725,7 @@ by the <parameter>path</parameter> on the proper section for the current languag
 by the user.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -745,7 +745,7 @@ Stores the integer value <parameter>new_value</parameter> in the file/section/ke
 defined by the <parameter>path</parameter></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -765,7 +765,7 @@ Stores the double value <parameter>new_value</parameter> in the file/section/key
 defined by the <parameter>path</parameter></para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -785,7 +785,7 @@ Stores boolean value <parameter>new_value</parameter> in the file/section/key de
 <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -805,7 +805,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -825,7 +825,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_string(path,new_value)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -842,7 +842,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_translated_string(path,new_value)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -859,7 +859,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_int(path,new_value)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -876,7 +876,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_float(path,new_value)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -893,7 +893,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_bool(path,new_value)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -910,7 +910,7 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <programlisting>#define     gnome_config_private_set_vector(path,argc,argv)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -935,7 +935,7 @@ Queries the gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -952,7 +952,7 @@ Queries the private gnome configuration file for the presence
 of the section specified in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -971,7 +971,7 @@ file.  <parameter>path</parameter> must refer to a section.  The returned value
 can be used as an iterator for #<link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -990,7 +990,7 @@ file.  <parameter>path</parameter> must refer to a section.  The returned value
 can be used as an iterator for #<link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1009,7 +1009,7 @@ gnome configuration file.  The returned value can be used as an
 iterator for #<link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1028,7 +1028,7 @@ gnome configuration file.  The returned value can be used as an
 iterator for #<link linkend="gnome-config-iterator-next">gnome_config_iterator_next</link>().</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1046,7 +1046,7 @@ iterator for #<link linkend="gnome-config-iterator-next">gnome_config_iterator_n
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1098,7 +1098,7 @@ configuration files until this routine or gnome_config_sync
 is actually invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1120,7 +1120,7 @@ configuration files until this routine or gnome_config_sync
 is actually invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1138,7 +1138,7 @@ the configuration file in <parameter>path</parameter>.  Changes will take place 
 <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1155,7 +1155,7 @@ Releases any memory resources that were allocated from accessing the
 private configuration file in <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1175,7 +1175,7 @@ configuration information.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1195,7 +1195,7 @@ any configuration information.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1213,7 +1213,7 @@ configuration information.  Changes will only take place
 after <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1231,7 +1231,7 @@ configuration information.  Changes will only take place after
 <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1250,7 +1250,7 @@ Removes the definition for the key on a gnome configuration file.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1270,7 +1270,7 @@ file.
 Changes will take place after <link linkend="gnome-config-sync">gnome_config_sync</link> has been invoked.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1284,7 +1284,7 @@ Changes will take place after <link linkend="gnome-config-sync">gnome_config_syn
 <programlisting>#define     gnome_config_get_real_path(path)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1300,7 +1300,7 @@ Changes will take place after <link linkend="gnome-config-sync">gnome_config_syn
 <programlisting>#define     gnome_config_private_get_real_path(path)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1327,7 +1327,7 @@ any gnome-configuration access, since the application might
 be using their own prefix.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1355,7 +1355,7 @@ breaks the string on spaces except if the space is escaped with a
 backslash.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1379,7 +1379,7 @@ This routine returns the the strings in the array contactenated by
 spaces.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1401,7 +1401,7 @@ spaces.</para>
 Internal Obsolete.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1421,7 +1421,7 @@ Internal Obsolete.</para>
 Internal routine</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

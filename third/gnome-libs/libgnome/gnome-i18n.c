@@ -19,7 +19,7 @@ read_aliases (char *file)
   fp = fopen (file,"r");
   if (!fp)
     return;
-  while (fgets (buf,256,fp))
+  while (fgets (buf,sizeof (buf),fp))
     {
       char *p;
       g_strstrip(buf);

@@ -121,12 +121,8 @@ gnome_scores_new (  guint n_scores,
 		gtk_table_attach_defaults ( table, gs->label_scores[i], 1, 2, i+1, i+2);
 
 		/* the localized string should fit (after replacing the %a %b
-		   etc) in ~18 chars.
-		   %a is abbreviated weekday, %A is full weekday,
-		   %b %B are abbreviated and full monthname, %Y is year,
-		   %d is day of month, %m is month number, %T full hour,
-		   %H hours, %M minutes, %S seconds
-		*/
+		 * etc) in ~18 chars. Please consult strftime(3) manpage.
+		 */
 		if(strftime(tmp2, sizeof(tmp2), _("%a %b %d %T %Y"),
 			    localtime( &(times[i]) )) == 0) {
 			/* according to docs, if the string does not fit, the

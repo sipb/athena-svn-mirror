@@ -12,7 +12,7 @@
  */
 #include <config.h>
 #include <gdk_imlib.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "gnome-canvas.h"
 #include "gnome-canvas-load.h"
 

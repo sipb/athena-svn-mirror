@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-types" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-types">
 <refmeta>
 <refentrytitle>gnome-types</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -42,7 +42,7 @@ enum        <link linkend="GnomePreferencesType">GnomePreferencesType</link>;
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -62,7 +62,7 @@ enum        <link linkend="GnomePreferencesType">GnomePreferencesType</link>;
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

@@ -170,6 +170,11 @@ static void vt_line_update(struct _vtx *vx, struct vt_line *l, struct vt_line *b
 	  run++;
 	} else {
 	  /* render 'run so far' */
+#ifdef ZVT_MB
+	  run = vt_query_line_mbchar(runstart + run, bl);
+	  runstart = vt_query_line_mbchar(runstart, bl);
+	  run -= runstart;
+#endif
 	  vx->draw_text(vx->vt.user_data, bl,
 			line, runstart, run, attr);
 	  vx->back_match = always?0:
@@ -197,6 +202,11 @@ static void vt_line_update(struct _vtx *vx, struct vt_line *l, struct vt_line *b
 	/* check for runs of common characters, if they are short, then
 	   use them */
 	if (commonrun>VT_THRESHHOLD || (newattr!=attr)) {
+#ifdef ZVT_MB
+	  run = vt_query_line_mbchar(runstart + run, bl);
+	  runstart = vt_query_line_mbchar(runstart, bl);
+	  run -= runstart;
+#endif
 	  vx->draw_text(vx->vt.user_data, bl,
 			line, runstart, run, attr);
 	  run=0;
@@ -205,6 +215,11 @@ static void vt_line_update(struct _vtx *vx, struct vt_line *l, struct vt_line *b
 	  commonrun++;
 	}
 #else
+#ifdef ZVT_MB
+	run = vt_query_line_mbchar(runstart + run, bl);
+	runstart = vt_query_line_mbchar(runstart, bl);
+	run -= runstart;
+#endif
 	vx->draw_text(vx->vt.user_data, bl,
 		      line, runstart, run, attr);
 	run=0;
@@ -215,6 +230,11 @@ static void vt_line_update(struct _vtx *vx, struct vt_line *l, struct vt_line *b
   }
 
   if (run) {
+#ifdef ZVT_MB
+      run = vt_query_line_mbchar(runstart + run, bl);
+      runstart = vt_query_line_mbchar(runstart, bl);
+      run -= runstart;
+#endif
     vx->draw_text(vx->vt.user_data, bl,
 		  line, runstart, run, attr);
   }
@@ -677,7 +697,14 @@ void vt_update(struct _vtx *vx, int update_state)
   while (nn && line<vx->vt.height) {
     d(printf("%p: scanning line %d, was %d\n", wn, line, wn->line));
     if (wn->line==-1) {
+#ifdef ZVT_MB
+      /* FIXME:
+	 Current vt_line_update() have a problem for multibyte character,
+	 so, we must update with a force argument. */
+      vt_line_update(vx, wn, bl, line, 1, 0, bl->width);
+#else
       vt_line_update(vx, wn, bl, line, 0, 0, bl->width);
+#endif
       d(printf("manual: updating line %d\n", line));
     } else if (wn->modcount || update_state) {
       vt_line_update(vx, wn, bl, line, force, 0, bl->width);
@@ -772,6 +799,12 @@ void vt_update_rect(struct _vtx *vx, int fill, int csx, int csy, int cex, int ce
 
   if (wn) {
     nn = wn->next;
+#ifdef ZVT_MB
+    /* query start/end range for multibyte */
+    csx = vt_query_line_mbchar(csx, wn);
+    cex = vt_query_line_mbchar(cex, wn);
+#endif
+
     while ((csy<=cey) && nn) {
       d(printf("updating line %d\n", csy));
 
@@ -965,6 +998,12 @@ void vt_fix_selection(struct _vtx *vx)
 	ex++;
   }
 
+#ifdef ZVT_MB
+  /* arranged selection columns (sx and ex) for multibyte character */
+  sx = vt_query_line_mbchar(sx,s);
+  ex = vt_query_line_mbchar(ex,e);
+#endif
+
   if ( ((vx->selstarty == vx->selendy) && (vx->selstartx > vx->selendx)) ||
        (vx->selstarty > vx->selendy) ) {
     vx->selstartx = ex;		/* swap end/start values */
@@ -998,6 +1037,9 @@ static char *vt_expand_line(struct vt_line *l, int size, int start, int end, cha
     }
   }
 
+#ifdef ZVT_MB
+  if (!(l->data[dataend] & VTATTR_MULTIBYTE))
+#endif
   if (end>dataend) {
     lf = 1;			/* we selected past the end of the line */
     end = dataend;
@@ -1011,6 +1053,9 @@ static char *vt_expand_line(struct vt_line *l, int size, int start, int end, cha
   case 2: {
     unsigned short *o = (unsigned short *)out;
     for (i=start;i<end;i++) {
+#ifdef ZVT_MB
+      if ((l->data[i] & VTATTR_MULTIBYTE)) continue;
+#endif
       c = l->data[i] & VTATTR_DATAMASK;
       if (state==0) {
 	if (c==0x09)
@@ -1037,6 +1082,9 @@ static char *vt_expand_line(struct vt_line *l, int size, int start, int end, cha
   case 4: {
     unsigned int *o = (unsigned int *)out;
     for (i=start;i<end;i++) {
+#ifdef ZVT_MB
+      if ((l->data[i] & VTATTR_MULTIBYTE)) continue;
+#endif
       c = l->data[i] & VTATTR_DATAMASK;
       if (state==0) {
 	if (c==0x09)
@@ -1062,6 +1110,9 @@ static char *vt_expand_line(struct vt_line *l, int size, int start, int end, cha
   default: {
     unsigned char *o = out;
     for (i=start;i<end;i++) {
+#ifdef ZVT_MB
+      if ((l->data[i] & VTATTR_MULTIBYTE)) continue;
+#endif
       c = l->data[i] & VTATTR_DATAMASK;
       if (state==0) {
 	if (c==0x09)
@@ -1288,9 +1339,13 @@ void vt_draw_selection(struct _vtx *vx)
 void vt_draw_cursor(struct _vtx *vx, int state)
 {
   uint32 attr;
+  gint len = 1;
 
   if (vx->vt.scrollbackold == 0 && vx->vt.cursorx<vx->vt.width) {
     attr = vx->vt.this_line->data[vx->vt.cursorx];
+#ifdef ZVT_MB
+    len = vt_line_mblen(vx->vt.cursorx, vx->vt.this_line);
+#endif /* ZVT_MB */
     if (state && (vx->vt.mode & VTMODE_BLANK_CURSOR)==0) {			/* must swap fore/background colour */
       attr = (((attr & VTATTR_FORECOLOURM) >> VTATTR_FORECOLOURB) << VTATTR_BACKCOLOURB)
 	| (((attr & VTATTR_BACKCOLOURM) >> VTATTR_BACKCOLOURB) << VTATTR_FORECOLOURB)
@@ -1299,7 +1354,7 @@ void vt_draw_cursor(struct _vtx *vx, int state)
     vx->back_match=0;		/* forces re-draw? */
     vx->draw_text(vx->vt.user_data,
 		  vx->vt.this_line,
-		  vx->vt.cursory, vx->vt.cursorx, 1, attr);
+		  vx->vt.cursory, vx->vt.cursorx, len, attr);
   }
 }
 
@@ -1439,7 +1494,7 @@ void vt_getmatches(struct _vtx *vx)
   struct vt_line *wn, *nn, *sol, *ssol;
   int lineno=0, lineskip=0, solineno;
   int c;
-  int matchoffset, smatchoffset;		/* for lines which span multiple lines */
+  int matchoffset;		/* for lines which span multiple lines */
   struct vt_magic_match *mw, *mn;
 
   /* blow away the current 'magic blocks' */

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,12 +68,12 @@ AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
 AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -153,10 +153,18 @@ convert_SCRIPTS = gnome-make-postscript-mimes
 
 GAMES_GROUP = games
 
-EXTRA_DIST =  	gnome.soundlist 		gtk-events.soundlist		mime-magic 			gnome.mime 			paper.config			type.convert			postscript.convert		gnome-make-postscript-mimes
+EXTRA_DIST = \
+	gnome.soundlist 	\
+	gtk-events.soundlist	\
+	mime-magic 		\
+	gnome.mime 		\
+	paper.config		\
+	type.convert		\
+	postscript.convert	\
+	gnome-make-postscript-mimes
 
 
-scoredir = $(DESTDIR)$(localstatedir)/games
+scoredir = $(localstatedir)/games
 sysconf_DATA = paper.config mime-magic
 
 soundlistdir = $(sysconfdir)/sound/events
@@ -375,7 +383,7 @@ postscript.convert: gnome-make-postscript-mimes
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(scoredir)
-	-chgrp $(GAMES_GROUP) $(scoredir) && chmod g=rwXs $(DESTDIR)$(scoredir)
+	-chgrp $(GAMES_GROUP) $(DESTDIR)$(scoredir) && chmod g=rwXs $(DESTDIR)$(scoredir)
 	$(top_builddir)/libgnome/gnome-gen-mimedb $(DESTDIR)$(sysconfdir)/mime-magic
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

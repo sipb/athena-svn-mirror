@@ -1,10 +1,10 @@
 /*****
 * XmHTMLfuncs.h : widely used functions and overall configuration settings.
 *
-* This file Version	$Revision: 1.1.1.1 $
+* This file Version	$Revision: 1.1.1.2 $
 *
 * Creation date:		Tue Dec  3 15:00:14 GMT+0100 1996
-* Last modification: 	$Date: 2000-11-12 01:47:23 $
+* Last modification: 	$Date: 2002-02-13 00:12:08 $
 * By:					$Author: ghudson $
 * Current State:		$State: Exp $
 *
@@ -35,6 +35,11 @@
 /*****
 * ChangeLog 
 * $Log: not supported by cvs2svn $
+* Revision 1.6.10.1  2001/10/20 06:52:12  kmaraas
+* 2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+*
+* 	* *.*: Apply all the Red Hat patches.
+*
 * Revision 1.6  1998/12/01 21:10:06  harinath
 * * XmHTMLfuncs.h: Avoid ordering problems by including stdlib.h and
 * string.h.  #undef before #define to avoid warnings.
@@ -190,8 +195,8 @@ typedef unsigned char Byte;
 * Scalable size array: default,sub/superscript,h1,h2,h3,h4,h5,h6
 * Fixed size array   : default,sub/superscript
 *****/
-#define XmHTML_DEFAULT_FONT_SCALABLE_SIZES	"14,8,24,18,14,12,10,8"
-#define XmHTML_DEFAULT_FONT_FIXED_SIZES		"12,8"
+#define XmHTML_DEFAULT_FONT_SCALABLE_SIZES	"14,8,24,16,16,14,14,8"
+#define XmHTML_DEFAULT_FONT_FIXED_SIZES		"14,8"
 
 /*****
 * Default Table boder width, cell & row spacing.

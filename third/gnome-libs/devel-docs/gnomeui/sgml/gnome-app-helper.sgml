@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-app-helper" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-app-helper">
 <refmeta>
 <refentrytitle>gnome-app-helper</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -614,7 +614,7 @@ Use this macro to include a separator in your menu.
 <para>
 Generic menu or toolbar item which includes a label, a tooltip and an
 optional pixmap (in xpm format) to be displayed next to the entry. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -640,7 +640,7 @@ optional pixmap (in xpm format) to be displayed next to the entry.
 <para>
 Use this macro to include an item in your menu that includes a
 GNOME-stock image.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -666,7 +666,7 @@ GNOME-stock image.
 <para>
 Use this macro to add an item to the menu that has no pixmap
 associated with it. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -689,7 +689,7 @@ associated with it.
 <para>
 Use this macro to create a menu item and keep some information in the
 structure.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -718,7 +718,7 @@ structure.
 <para>
 Creates a toggle-item (a checkbox) in a menu, this includes an xpm
 graphic. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -745,7 +745,7 @@ graphic.
 Creates a toggle-item (a checkbox) in a menu, this includes an xpm
 graphic.  Allows you to specify the data to be passed around to your
 callback routine.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -778,7 +778,7 @@ from the information stored in the file associated with the <parameter>app_name<
 you provide.  The information is usually taken from
 <filename>$(datadir)/help/<parameter>app_name</parameter>/$LANG/topic.dat</filename>.  Where
 $LANG is the language chosen when running the application.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -795,7 +795,7 @@ $LANG is the language chosen when running the application.
 <para>
 Creates a submenu or a sub-tree in the menu structure.  The argument
 passed is an array of <structname>GnomeUIInfo</structname>.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -816,7 +816,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 Creates a submenu or a sub-tree in the menu structure with a stock
 pixmap displayed.  The argument
 passed is an array of <structname>GnomeUIInfo</structname>.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -838,7 +838,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <programlisting>#define     GNOMEUIINFO_RADIOLIST(list)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -854,7 +854,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <programlisting>#define     GNOMEUIINFO_RADIOITEM(label, tooltip, callback, xpm_data)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -879,7 +879,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <programlisting>#define     GNOMEUIINFO_RADIOITEM_DATA(label, tooltip, callback, user_data, xpm_data)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -908,7 +908,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <para>
 Use this macro inside a GnomeUIInfo structure to include an "About"
 menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -928,7 +928,7 @@ menu entry.
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Clear"
 option.  This is used typically in the Edit menu. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -949,7 +949,7 @@ option.  This is used typically in the Edit menu.
 Use this macro inside a GnomeUIInfo structure to include a "Close"
 menu entry.  This is used typically in the File menu or the Game menu
 to close the toplevel window.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -970,7 +970,7 @@ to close the toplevel window.
 Use this macro inside a GnomeUIInfo structure to include a "Close"
 option.  This is used typically in the Window menu if your application
 includes one.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -990,7 +990,7 @@ includes one.
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Copy"
 option.  This is used typically in the Edit menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1010,7 +1010,7 @@ option.  This is used typically in the Edit menu.
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Cut"
 option.  This is used typically in the Edit menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1031,7 +1031,7 @@ option.  This is used typically in the Edit menu.
 Inserts a top-level "Edit" menu.  The argument is a pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1048,7 +1048,7 @@ the submenu.
 <programlisting>#define     GNOMEUIINFO_MENU_END_GAME_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "End game" menu item.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1068,7 +1068,7 @@ Use this macro to include an "End game" menu item.
 <para>
 Use this macro to include an "Exit" menu entry.  To be included in the
 "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1089,7 +1089,7 @@ Use this macro to include an "Exit" menu entry.  To be included in the
 Inserts a top-level "Files" menu.  The argument is pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1108,7 +1108,7 @@ the submenu.
 Inserts a top-level "File" menu.  The argument is pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1126,7 +1126,7 @@ the submenu.
 <para>
 Use this macro to include a "Find again" menu entry.  To be included
 in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1147,7 +1147,7 @@ in the "Edit" menu.
 Use this macro to include a "Find" menu entry.  To be included in the
 "Edit" menu.
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1168,7 +1168,7 @@ Use this macro to include a "Find" menu entry.  To be included in the
 Inserts a top-level "Game" menu.  The argument is a pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1187,7 +1187,7 @@ the submenu.
 Inserts a top-level "Game" menu.  The argument is pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1204,7 +1204,7 @@ the submenu.
 <programlisting>#define     GNOMEUIINFO_MENU_HINT_ITEM(cb, data)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1224,7 +1224,7 @@ the submenu.
 <para>
 Use this macro to include an "New game" menu entry.  To be included in the
 "Game" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1244,7 +1244,7 @@ Use this macro to include an "New game" menu entry.  To be included in the
 <para>
 Use this macro to include a "New" menu entry.  To be included in the
 "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1269,7 +1269,7 @@ Use this macro to include a "New" menu entry.  To be included in the
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_SUBTREE(tree)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1286,7 +1286,7 @@ the submenu.
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_WINDOW_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "New window" menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1306,7 +1306,7 @@ Use this macro to include a "New window" menu entry.
 <para>
 Use this macro to include an "Open" menu entry.  To be used in the
 "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1326,7 +1326,7 @@ Use this macro to include an "Open" menu entry.  To be used in the
 <para>
 Use this macro to include a "Paste" menu entry.  To be used in the
 "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1346,7 +1346,7 @@ Use this macro to include a "Paste" menu entry.  To be used in the
 <para>
 Use this macro to include a "Pause game" menu entry.  To be used in the
 "Game" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1365,7 +1365,7 @@ Use this macro to include a "Pause game" menu entry.  To be used in the
 <programlisting>#define     GNOMEUIINFO_MENU_PREFERENCES_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Preferences" menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1385,7 +1385,7 @@ Use this macro to include a "Preferences" menu entry.
 <para>
 Use this macro to include a "Print" menu entry.  To be used in the
 "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1405,7 +1405,7 @@ Use this macro to include a "Print" menu entry.  To be used in the
 <para>
 Use this macro to include a "Print setup" menu entry.  To be used in the
 "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1424,7 +1424,7 @@ Use this macro to include a "Print setup" menu entry.  To be used in the
 <programlisting>#define     GNOMEUIINFO_MENU_PROPERTIES_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Properties" menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1444,7 +1444,7 @@ Use this macro to include a "Properties" menu entry.
 <para>
 Use this macro to include a "Redo" menu entry.  Most likely to be put
 in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1464,7 +1464,7 @@ in the "Edit" menu.
 <para>
 Use this macro to include a "Redo move" menu entry.  Most likely to be put
 in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1483,7 +1483,7 @@ in the "Edit" menu.
 <programlisting>#define     GNOMEUIINFO_MENU_REPLACE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Replace" menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1503,7 +1503,7 @@ Use this macro to include a "Replace" menu entry.
 <para>
 Use this macro to include a "Restart game" menu entry.  To be used in
 the "Game" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1522,7 +1522,7 @@ the "Game" menu.
 <programlisting>#define     GNOMEUIINFO_MENU_REVERT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Revert" menu entry.  
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1542,7 +1542,7 @@ Use this macro to include a "Revert" menu entry.
 <para>
 Use this macro to include a "Save as" menu entry.  To be used in
 the "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1562,7 +1562,7 @@ the "File" menu.
 <para>
 Use this macro to include a "Save" menu entry.  To be used in
 the "File" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1582,7 +1582,7 @@ the "File" menu.
 <para>
 Use this macro to include a "Scores" menu entry.  To be used in
 the "Game" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1602,7 +1602,7 @@ the "Game" menu.
 <para>
 Use this macro to include a "Select all" menu entry.  Most likely to
 be used in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1623,7 +1623,7 @@ be used in the "Edit" menu.
 Inserts a top-level "Settings" menu.  The argument is a pointer to
 <structname>GnomeUIInfo</structname> that will contain the submenu to
 insert. 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1641,7 +1641,7 @@ the submenu.
 <para>
 Use this macro to include an "Undo" menu entry.  Most likely to
 be used in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1661,7 +1661,7 @@ be used in the "Edit" menu.
 <para>
 Use this macro to include an "Undo move" menu entry.  Most likely to
 be used in the "Edit" menu.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1680,7 +1680,7 @@ be used in the "Edit" menu.
 <programlisting>#define     GNOMEUIINFO_MENU_VIEW_TREE(tree)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1697,7 +1697,7 @@ the submenu.
 <programlisting>#define     GNOMEUIINFO_MENU_WINDOWS_TREE(tree)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1714,7 +1714,7 @@ the submenu.
 <programlisting>#define     GNOMEUIINFO_SUBTREE_HINT(label, hint, tree)</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1836,7 +1836,7 @@ the submenu.
                                              <link linkend="GnomeUIBuilderData">GnomeUIBuilderData</link> *uibdata);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1870,7 +1870,7 @@ The uline_accels argument determines whether underline accelerators
 will be featured from the menu item labels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1910,7 +1910,7 @@ The uline_accels argument determines whether underline accelerators
 will be featured from the menu item labels.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1944,7 +1944,7 @@ structure.  This includes loading and setting previously-set options from
 GNOME config files.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1962,7 +1962,7 @@ Constructs a menu bar and attaches it to the specified application
 window.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -1985,7 +1985,7 @@ window.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2016,7 +2016,7 @@ window.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2040,7 +2040,7 @@ window.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2064,7 +2064,7 @@ window.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2089,7 +2089,7 @@ window.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2116,7 +2116,7 @@ Constructs a toolbar and attaches it to the specified application
 window.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2140,7 +2140,7 @@ Constructs a toolbar and attaches it to the specified application
 window -- this version is intended for language bindings.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2172,7 +2172,7 @@ Constructs a toolbar, sets all the user data pointers to
 <parameter>user_data</parameter>, and attaches it to <parameter>app</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2197,7 +2197,7 @@ Constructs a toolbar and attaches it to the <parameter>app</parameter> window,
 using <parameter>uibdata</parameter> builder data -- intended for language bindings.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2225,7 +2225,7 @@ would then insert widget w in GtkMenuShell p right after the menu item
 described by path.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2254,7 +2254,7 @@ removes num items from the existing app's menu structure
 beginning with item described by path</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2282,7 +2282,7 @@ by path, plus the number specified by <parameter>start</parameter> - very useful
 removing Recent document items in the File menu.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2311,7 +2311,7 @@ inserts menus described by <parameter>uiinfo</parameter> in existing app's menu
 structure right after the item described by <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2338,7 +2338,7 @@ structure right after the item described by <parameter>path</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2364,7 +2364,7 @@ structure right after the item described by <parameter>path</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2394,7 +2394,7 @@ structure right after the item described by <parameter>path</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2427,7 +2427,7 @@ structure right after the item described by <parameter>path</parameter>.</para>
 Install menu hints for the given GNOME app bar object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2448,7 +2448,7 @@ Install menu hints for the given GNOME app bar object.</para>
 Install menu hints for the given status bar.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -2468,7 +2468,7 @@ Install menu hints for the given status bar.</para>
 Set menu hints for the GNOME app object's attached status bar.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

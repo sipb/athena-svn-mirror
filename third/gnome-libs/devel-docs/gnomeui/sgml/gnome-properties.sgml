@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-properties" revision="16 Mar 2001">
+<refentry id="gnomeui-gnome-properties">
 <refmeta>
 <refentrytitle>gnome-properties</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -106,7 +106,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                              <link linkend="gpointer">gpointer</link> property_data_ptr);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -128,7 +128,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                              <link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -148,7 +148,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                              <link linkend="GnomePropertyAction">GnomePropertyAction</link> action);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -167,7 +167,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_apply     (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -183,7 +183,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_update    (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -199,7 +199,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_load      (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -215,7 +215,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_save      (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -231,7 +231,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_load_temp (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -247,7 +247,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_save_temp (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -264,7 +264,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
                                             (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -280,7 +280,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <programlisting>void        gnome_property_object_changed   (<link linkend="GnomePropertyObject">GnomePropertyObject</link> *object);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
