@@ -1,0 +1,76 @@
+# traditional Chinese translation of libwnck.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Abel Cheung <maddog@linux.org.hk>, 2001-2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libwnck 0.13\n"
+"POT-Creation-Date: 2002-10-31 11:15-0500\n"
+"PO-Revision-Date: 2002-06-04 05:24+0800\n"
+"Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
+"Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libwnck/application.c:25
+msgid "untitled application"
+msgstr "無標題的應用程式"
+
+#: libwnck/pager-accessible.c:317
+msgid "Workspace Switcher"
+msgstr "工作區切換程式"
+
+#: libwnck/pager-accessible.c:328
+msgid "Tool to switch between workspaces"
+msgstr "用來在不同工作區之間切換的工具"
+
+#: libwnck/pager-accessible.c:432
+#, c-format
+msgid "Click this to switch to workspace %s"
+msgstr "按下此處可切換至工作區 %s"
+
+#: libwnck/window-action-menu.c:155
+msgid "Un_minimize"
+msgstr "還原最小化(_M)"
+
+#: libwnck/window-action-menu.c:161
+msgid "_Minimize"
+msgstr "最小化(_M)"
+
+#: libwnck/window-action-menu.c:168
+msgid "_Unmaximize"
+msgstr "還原最大化(_U)"
+
+#: libwnck/window-action-menu.c:174
+msgid "Ma_ximize"
+msgstr "最大化(_X)"
+
+#: libwnck/window-action-menu.c:181
+msgid "U_nshade"
+msgstr "放下(_N)"
+
+#: libwnck/window-action-menu.c:187
+msgid "_Shade"
+msgstr "捲起(_S)"
+
+#: libwnck/window-action-menu.c:298
+msgid "_Close"
+msgstr "關閉(_C)"
+
+#: libwnck/window-action-menu.c:319
+msgid "Mo_ve"
+msgstr "移動(_V)"
+
+#: libwnck/window-action-menu.c:325
+msgid "_Resize"
+msgstr "重設大小(_R)"
+
+#: libwnck/window.c:29
+msgid "untitled window"
+msgstr "無標題的視窗"
+
+#: libwnck/workspace.c:202
+#, c-format
+msgid "Workspace %d"
+msgstr "工作區 %d"
