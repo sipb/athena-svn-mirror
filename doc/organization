@@ -20,8 +20,8 @@ directory.
 
 This hierarchy is divided up into "bin", "etc", and "lib" directories
 according to where the software lives.  At the current time, this
-division is very rough; programs under "lib" such as Zephyr contain
-programs as well as libraries.
+division is very rough; for instance, packages under "lib" generally
+contain programs as well as libraries.
 
 third
 -----
@@ -55,11 +55,6 @@ The packs hirearchy has the following subdirectories:
 		Shell scripts sourced when the user logs in, and
 		their subsidiaries.
 
-	maint
-		Workstation maintenance software, including boot-time
-		scripts, reactivate, scripts for cleaning temporary
-		areas, etc..
-
 	glue
 		Shell scripts and symlink generation for making the
 		packs refer to software which is not built as part
@@ -68,5 +63,20 @@ The packs hirearchy has the following subdirectories:
 	install
 		The workstation installation system.
 
+	maint
+		Workstation maintenance software, including boot-time
+		scripts, reactivate, scripts for cleaning temporary
+		areas, etc..
+
 	update
 		The workstation update system.
+
+Platform-dependent information in each of these directories lives
+under a platform/${HOSTTYPE}, which the Makefile can traverse.
+
+There are a couple of small C source flies in the packs hierarchy, too
+closely tailored to the Athena environment to be moved to the athena
+hierarchy.  No particular autoconfiguration needs to be done for these
+programs, but the correct C compiler needs to be selected; thus the
+build system sets the environment variable CC while building the packs
+directory.
