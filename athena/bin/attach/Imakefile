@@ -1,86 +1,44 @@
-#ifdef ibm032
-CCFLG=-Hon=read_only_strings
-CC=/bin/hc
-#endif
 #ifdef vax
-CCFLG=
 CC=cc
-#endif
-#if defined(AIX) && defined(i386)
-CCFLG=-q
-CC=cc
-XLIBS=-L/usr/athena/lib -lbsd
 #endif
 #ifdef _AUX_SOURCE
 XSRCS = emul_re.c
 XOBJS = emul_re.o
 #endif
 
-AFSINC=
-AFSFIL=afs.c
-AFSOBJ=afs.o
-
-DEBUG=-O
-DEFINES=
-
-INCLUDES= $(AFSINC) $(XINCLUDES)
+BINDIR=/bin/athena
 
 #if defined(ultrix)
-LIBS = -lhesiod -lkrb -ldes -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
+LIBS = -lhesiod -lkrb -ldes -lzephyr -lcom_err $(XLIBS)
 #else
-LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
+LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS)
 #endif
 
-CFLAGS=$(CCFLG) $(DEFINES) $(INCLUDES) $(DEBUG)
-LDFLAGS= $(DEBUG) $(LDOPTS)
+SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
+	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
+	rvdutil.c pathcan.c config.c strtok.c $(XSRCS)
+OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
+	afs.o ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
+	rvdutil.o pathcan.o config.o strtok.o $(XOBJS)
 
-SRCS = main.c util.c attachtab.c attach.c detach.c nfs.c rvd.c\
-	ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
-	rvdutil.c pathcan.c config.c strtok.c $(AFSFIL) $(XSRCS)
-OBJS = 	main.o util.o attachtab.o attach.o detach.o nfs.o rvd.o\
-	ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
-	rvdutil.o pathcan.o config.o strtok.o $(AFSOBJ) $(XOBJS)
 
-all:: attach
+build_program(attach,$(OBJS),,$(LIBS))
+install_program(attach,-m 4755 -o root,$(BINDIR)/)
 
-clean::
-	rm -f *.bak *~ *.o core \#* attach
+install_man(attach.1,attach.1)
+install_man(detach.1,detach.1)
+install_man(fsid.1,fsid.1)
+install_man(nfsid.1,nfsid.1)
+install_man(attach.conf.5,attach.conf.5)
+install_man(attachtab.5,attachtab.5)
+install_man(zinit.8,zinit.8)
 
-attach:: $(OBJS)
-	$(CC) $(LDFLAGS) -o attach $(OBJS) $(LIBS)
-
-depend::
-	@-rm -f Make.depend
-	@-touch Make.depend
-	makedepend $(SRCS) $(CFLAGS) -fMake.depend
-
-Makefile:: Imakefile
-	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile
-
-install:: attach
-	rm -f ${DESTDIR}/bin/athena/attach
-	rm -f ${DESTDIR}/bin/athena/detach
-	rm -f ${DESTDIR}/bin/athena/fsid
-	rm -f ${DESTDIR}/bin/athena/nfsid
+install::
+	rm -f $(DESTDIR)$(BINDIR)/detach
+	rm -f $(DESTDIR)$(BINDIR)/fsid
+	rm -f $(DESTDIR)$(BINDIR)/nfsid
 	rm -f $(DESTDIR)/etc/athena/zinit
-	rm -f ${DESTDIR}/usr/man/man1/attach.1
-	rm -f ${DESTDIR}/usr/man/man1/detach.1
-	rm -f ${DESTDIR}/usr/man/man1/nfsid.1
-	rm -f ${DESTDIR}/usr/man/man5/attach.conf.5
-	rm -f ${DESTDIR}/usr/man/man5/attachtab.5
-	rm -f ${DESTDIR}/usr/man/man8/zinit.8
-	install -c -m 0444 attach.1 ${DESTDIR}/usr/man/man1
-	install -c -m 0444 detach.1 ${DESTDIR}/usr/man/man1
-	install -c -m 0444 fsid.1 ${DESTDIR}/usr/man/man1
-	install -c -m 0444 nfsid.1 ${DESTDIR}/usr/man/man1
-	install -c -m 0444 attach.conf.5 ${DESTDIR}/usr/man/man5
-	install -c -m 0444 attachtab.5 ${DESTDIR}/usr/man/man5
-	install -c -m 0444 zinit.8 ${DESTDIR}/usr/man/man8
-	install -c -s -m 4755 -o root attach ${DESTDIR}/bin/athena/attach
-	ln -s attach ${DESTDIR}/bin/athena/detach
-	ln -s attach ${DESTDIR}/bin/athena/fsid
-	ln -s attach ${DESTDIR}/bin/athena/nfsid
-	ln -s /bin/athena/attach $(DESTDIR)/etc/athena/zinit
-
-Makefiles::
+	ln -s attach $(DESTDIR)$(BINDIR)/detach
+	ln -s attach $(DESTDIR)$(BINDIR)/fsid
+	ln -s attach $(DESTDIR)$(BINDIR)/nfsid
+	ln -s $(BINDIR)/attach $(DESTDIR)/etc/athena/zinit
