@@ -2956,7 +2956,12 @@ special_link_in_selection (FMDirectoryView *view)
 		uri = nautilus_file_get_uri (file);
 
 		/* FIXME: This reads the link file every single time. */
-		saw_link = nautilus_file_is_local (file)
+		/* Athena local change:  Allow any "file:" link, to
+		 * support the case where the desktop (i.e. home)
+		 * directory is in AFS.
+		 */
+		saw_link = (eel_str_has_prefix (uri, "file:")
+			    || nautilus_file_is_local (file))
 			&& nautilus_file_is_nautilus_link (file)
 			&& nautilus_link_local_is_special_link (uri);
 		
