@@ -1,0 +1,164 @@
+This document describes guidelines for code which is to be
+incorporated into the Athena source tree.  Here are the areas covered:
+
+	Portability considerations for code we maintain
+	Portability considerations for code we release
+	Portability considerations for code we get from third parties
+	Software engineering practices
+	Indentation and naming
+
+Portability considerations for code we maintain
+-----------------------------------------------
+
+Your code should assume a POSIX-compliant and ANSI C-compliant
+development environment unless given evience to the contrary.  Do not,
+for instance, put sigaction() calls inside "#ifdef SOLARIS" or "#ifdef
+POSIX" and have the code compile with signal() calls by default; have
+your code use sigaction() on all platforms.  If for some reason the
+code needs to compile on a platform which does not have sigaction(),
+you can #ifdef for that platform or use a feature test (see below).
+Under no circumstances should code use non-POSIX interfaces by
+default.
+
+Some of our platforms have bugs in POSIX interfaces but not in BSD
+interfaces (e.g. under Ultrix 4.2, setpgid() works but setsid() does
+not).  See the file "lossage" in this directory for descriptions of
+particular bugs and incompatibilities and how to handle them.
+
+Some important operations (especially in code in the Athena
+environment) are not covered by the ANSI C or POSIX specifications.
+See the file "nonstd" in this directory for descriptions of how to
+handle some of them.
+
+When you are dealing with operations not covered by the ANSI C or
+POSIX specification or with operating system bugs, there are two ways
+to provide portability:
+
+	1. Perform an operating system test by #ifdef'ing some symbols
+	   defined by the preprocessor on the operating systems which
+	   need special consideration.
+
+	2. Perform a "feature test" at build time to determine how to
+	   perform the operation in question.
+
+The second method is always preferrable when possible.  Currently, the
+only good way to perform feature tests is to use Autoconf.  See the
+section on build procedure requirements for how to set up Autoconf in
+a source tree.
+
+If you must perform an operating system test (because the source tree
+you're working on doesn't use Autoconf and you don't have the time to
+make it do so), do it in two steps; for instance:
+
+	#define HAVE_STRERROR
+	#if defined(sun) && !defined(__svr4__)
+	/* SunOS 4.1.3_U1 doesn't have strerror().  Use sys_errlist
+	 * instead. */
+	#undef HAVE_STRERROR
+	#endif
+
+	#ifndef HAVE_STRERROR
+	extern const char *const sys_errlist[];
+	#define strerror(x) (sys_errlist[x])
+	#endif
+
+This way, if the source tree is ever converted to use feature tests,
+the person porting the code will know exactly what needs to be tested
+for.  If you can anticipate the preprocessor symbol which would be
+used with Autoconf (as in this example), that's even better.  Note
+particularly the comment instead the operating system test; it should
+note:
+
+	* What special consideration is needed for that operating
+	  system.
+
+	* The version number of the operating system for which this
+	  approach was determined to be necessary and valid.
+
+This will help future maintainers determine if one can eliminate the
+special consideration altogether when an OS upgrade has happened.
+
+Following is a list of appropriate preprocessor symbols to use to
+detect platforms we care about:
+
+	Solaris:	#ifdef SOLARIS
+	IRIX		#ifdef sgi
+	Linux:		#ifdef linux
+	NetBSD:		#ifdef __NetBSD__
+			or #include <sys/param.h> and #ifdef BSD4_4
+			if applicable to all BSD 4.4 systems.
+
+SOLARIS is not automatically defined by the compiler on Solaris
+systems; we make sure it's defined when we set the compiler on Solaris
+systems.  There are no reliable automatically defined constants for
+Solaris systems.
+
+Portability considerations for code we release
+----------------------------------------------
+
+Code we release to the outside world should definitely use Autoconf
+and feature tests rather than imake and operating system tests.  All
+of the standards in the previous section apply; however, we generally
+care about more platforms for code we release to the outside works.
+It is discouraged, but acceptable, to care about platforms which are
+not POSIX-compliant.  Code that cares about such platforms should
+determine whether the platform supports POSIX interfaces by using
+AC_CHECK_HEADERS(unistd.h) to determine whether it can #include
+<unistd.h>, and then checking whether _POSIX_VERSION is defined.
+
+Portability considerations for code we get from third parties
+-------------------------------------------------------------
+
+The overriding concern for code obtained from third parties is: make
+as few changes as possible.  A lot of third-party code has a very bad
+approach to portability, or cares about a lot of platforms we don't
+care about.  You should attempt to follow the portability approach
+used by the rest of the program, such as it may be.  Ideally, any
+changes you make should be made in such a manner that they can be
+incorporated into the source tree maintained by the third party.
+
+Software engineering practices
+------------------------------
+
+The following software engineering practices are strongly encouraged:
+
+	* Restricting the operations which can access a given type of
+	  data object, and grouping them together.
+
+	* Documenting data invariants and the meaning of data values.
+
+	* Documenting non-obvious requirements and effects of
+	  procedures.
+
+	* Use of prototypes for all functions.
+
+	* Automated testing of both program components and whole
+	  programs.
+
+The following software engineering practices are discouraged:
+
+	* Use of global variables.  Remember that the complexity of
+	  any function's interface is increased by the global
+	  variables it uses.  Global variables are marginally
+	  acceptable to represent configuration parameters determined
+	  by command-line arguments or a configuration file, but even
+	  then it is preferrable to find an alternative.
+
+	* Use of global kernel process state.  You should avoid using
+	  alarm(), and you should avoid using getuid() inside
+	  libraries or other "deep" interfaces.  Code that uses global
+	  kernel process state tends to interact poorly with other
+	  code in large programs.
+
+Indentation and naming
+----------------------
+
+Don't be sloppy.  Don't use inconsistent indentation, don't rely on a
+nonstandard tab width, don't leave whitespace at the end of lines,
+don't use studlycaps identifiers in a program that uses undescores or
+vice versa, etc..
+
+Identation and naming schemes should be consistent across a package;
+do not start using a new indentation or naming scheme because you're
+writing a new module.  However, there is no standard indentation or
+naming scheme for the entire Athena source tree.
