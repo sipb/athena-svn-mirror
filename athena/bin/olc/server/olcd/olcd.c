@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.45 1991-04-14 17:33:45 lwvanels Exp $
+ *	$Id: olcd.c,v 1.46 1991-09-22 11:59:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.45 1991-04-14 17:33:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.46 1991-09-22 11:59:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -39,6 +39,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/socket.h>		/* IPC definitions. */
 #include <sys/file.h>		/* File I/O definitions. */
 #include <sys/ioctl.h>		/* For handling TTY. */
+#if defined(_AIX) && defined(_IBMR2)
+#include <sys/select.h>
+#endif
 #include <netinet/in.h>		/* More IPC definitions. */
 #include <sys/wait.h>		/* Wait defs. */
 #include <errno.h>		/* Standard error numbers. */
@@ -96,7 +99,13 @@ extern int krb_ap_req_debug;
 
 static void process_request P((int fd , struct sockaddr_in *from ));
 static void flush_olc_userlogs P((void ));
+#ifdef VOID_SIGRET
+static void reap_child P((int sig ));
+static void punt P((int sig ));
+#else
 static int reap_child P((int sig ));
+static int punt P((int sig ));
+#endif
 #ifdef PROFILE
 static int dump_profile P((int sig ));
 static int start_profile P((int sig ));
@@ -639,7 +648,11 @@ flush_olc_userlogs()
      */
 
     DIR *dirp;
+#ifdef _POSIX_SOURCE
+    struct dirent *dp;
+#else
     struct direct *dp;
+#endif
     dirp = opendir(LOG_DIR);
 
     if (dirp == (DIR *)NULL)
@@ -648,7 +661,11 @@ flush_olc_userlogs()
 	return;
     }
 
+#ifdef _POSIX_SOURCE
+    for (dp = readdir(dirp); dp != (struct dirent *)NULL; dp = readdir(dirp))
+#else
     for (dp = readdir(dirp); dp != (struct direct *)NULL; dp = readdir(dirp))
+#endif
     {
 	if (!strcmp(dp->d_name+dp->d_namlen-4, ".log"))
 	{
@@ -673,7 +690,11 @@ flush_olc_userlogs()
  *	processing the current request.
  */
 
-int
+#ifdef VOID_SIGRET
+static void
+#else
+static int
+#endif
 punt(sig)
     int sig;
 {
@@ -704,11 +725,19 @@ punt(sig)
  *		loop while there are any children waiting to report status.
  */
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 reap_child(sig)
      int sig;
 {
+#ifdef _POSIX_SOURCE
+  int status;
+#else
   union wait status;
+#endif
   int pid;
 
 #ifdef SABER
@@ -718,7 +747,11 @@ reap_child(sig)
   pid = wait3(&status,WNOHANG,0);
   while(pid > 0)
     pid = wait3(&status,WNOHANG,0);
+#ifdef VOID_SIGRET
   return;
+#else
+  return(0);
+#endif
 }
 
 #ifdef PROFILE
