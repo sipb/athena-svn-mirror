@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.4 1988-01-29 18:22:53 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 3.0 1988-03-09 13:53:42 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.4  88/01/29  18:22:53  don
+ * bug fixes. also, now track can update the root.
+ * 
  * Revision 2.3  87/12/03  20:36:59  don
  * fixed a portability bug in FASTEQ macro, and made yacc sort each
  * exceptions-list, so that goodname can run faster.
@@ -34,7 +37,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.4 1988-01-29 18:22:53 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 3.0 1988-03-09 13:53:42 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
