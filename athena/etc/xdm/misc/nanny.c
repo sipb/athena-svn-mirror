@@ -634,8 +634,9 @@ typedef struct _cinfo {
   int status;
 } cinfo;
 
+#define MAXCSTACK 10
 int numc = 0;
-cinfo cstack[10];
+cinfo cstack[MAXCSTACK];
 
 void children(int sig, int code, struct sigcontext *sc)
 {
@@ -647,7 +648,7 @@ void children(int sig, int code, struct sigcontext *sc)
       if (ret == -1)
 	return;
 
-      if (numc < sizeof(cstack))
+      if (numc < MAXCSTACK)
 	{
 	  cstack[numc].pid = ret;
 	  cstack[numc++].status = status;
