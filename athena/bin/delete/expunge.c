@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.5 1989-03-08 09:58:52 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.6 1989-03-09 16:01:36 jik Exp $";
 #endif
 
 /*
@@ -376,12 +376,12 @@ top_level()
      if (interactive) {
 printf("The above files, which have been marked for deletion, are about to be\n");
 printf("expunged forever!  You will be asked for confirmation before each file is\n");
-printf("deleted.  Do you wish to continue? ");
+printf("deleted.  Do you wish to continue [return = no]? ");
      }
      else {
 printf("The above files, which have been marked for deletion, are about to be\n");
 printf("expunged forever!  Make sure you don't need any of them before continuing.\n");
-printf("Do you wish to continue? ");
+printf("Do you wish to continue [return = no]? ");
      }
      return (yes());
 }
