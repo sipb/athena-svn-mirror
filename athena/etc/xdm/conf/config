@@ -1,7 +1,3 @@
-# Display Manager Configuration File
-
-#prog	command line
-
 #ifdef vax
 #if defined(QV) || defined(SM)
 X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
