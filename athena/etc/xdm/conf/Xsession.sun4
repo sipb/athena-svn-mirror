@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sun4,v 1.4 1993-08-13 22:18:41 cfields Exp $
+# $Id: Xsession.sun4,v 1.5 1994-06-23 18:10:17 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -32,6 +32,14 @@ esac
 # Set the tty characteristics of the parent (console window)
 # Redirect stdin since some versions of stty use it instead of stdout.
 stty sane 0<&1 2>/dev/null
+
+# As of Solaris 2.3, our good friends at Sun seem to have broken
+# something in the parsing of /usr/openwin/share/etc/keytables so
+# that only the first two entries on a modifier can work. The following
+# hack should be removed as soon as it's no longer required.
+
+xmodmap -e "add mod1 = Alt_L Multi_key" 
+
 $session
 
 status=$?
