@@ -28,7 +28,7 @@
 #include "htmlfontmanager.h"
 
 #define DEFAULT_FONT_SIZE   12
-#define DEFAULT_FONT_SIZE_S "12"
+#define DEFAULT_FONT_SIZE_PRINT   10
 
 #define STRINGIZE(x) #x
 
@@ -51,10 +51,10 @@ gtk_html_class_properties_new (void)
 	p->font_fix_size           = DEFAULT_FONT_SIZE;
 	p->font_var_points         = FALSE;
 	p->font_fix_points         = FALSE;
-	p->font_var_print          = g_strdup ("-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
-	p->font_fix_print          = g_strdup ("-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
-	p->font_var_size_print     = DEFAULT_FONT_SIZE;
-	p->font_fix_size_print     = DEFAULT_FONT_SIZE;
+	p->font_var_print          = g_strdup ("-*-helvetica-*-*-*-*-10-*-*-*-*-*-*-*");
+	p->font_fix_print          = g_strdup ("-*-courier-*-*-*-*-10-*-*-*-*-*-*-*");
+	p->font_var_size_print     = DEFAULT_FONT_SIZE_PRINT;
+	p->font_fix_size_print     = DEFAULT_FONT_SIZE_PRINT;
 	p->font_var_print_points   = FALSE;
 	p->font_fix_print_points   = FALSE;
 	p->animations              = TRUE;
@@ -198,8 +198,8 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 	GETS (keybindings_theme, "keybindings_theme=ms");
 	GETS (font_var, var_default);
 	GETS (font_fix, fix_default);
-	GETS (font_var_print, "font_variable_print=-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
-	GETS (font_fix_print, "font_fixed_print=-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
+	GETS (font_var_print, "font_variable_print=-*-helvetica-*-*-*-*-10-*-*-*-*-*-*-*");
+	GETS (font_fix_print, "font_fixed_print=-*-courier-*-*-*-*-10-*-*-*-*-*-*-*");
 
 	g_free (var_default);
 	g_free (fix_default);
@@ -212,11 +212,11 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 	GET  (int, font_fix_size, s);
 	g_free (s);
 
-	s = g_strdup_printf ("font_variable_size_print=%d", DEFAULT_FONT_SIZE);
+	s = g_strdup_printf ("font_variable_size_print=%d", DEFAULT_FONT_SIZE_PRINT);
 	GET  (int, font_var_size_print, s);
 	g_free (s);
 
-	s = g_strdup_printf ("font_fixed_size_print=%d", DEFAULT_FONT_SIZE);
+	s = g_strdup_printf ("font_fixed_size_print=%d", DEFAULT_FONT_SIZE_PRINT);
 	GET  (int, font_fix_size_print, s);
 	g_free (s);
 

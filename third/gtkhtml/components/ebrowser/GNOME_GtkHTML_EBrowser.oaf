@@ -13,6 +13,7 @@
   <oaf_attribute name="name-it" type="string" value="Fabbrica di EBrowser"/>
   <oaf_attribute name="name-ja" type="string" value="E&#165;&#214;&#165;&#233;&#165;&#166;&#165;&#182;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
   <oaf_attribute name="name-lt" type="string" value="EBrowser gamykla"/>
+  <oaf_attribute name="name-lv" type="string" value="EP&#226;rl&#251;ka fabrika"/>
   <oaf_attribute name="name-nn" type="string" value="EBrowser fabrikk"/>
   <oaf_attribute name="name-pl" type="string" value="Generator EBrowser"/>
   <oaf_attribute name="name-pt" type="string" value="F&#225;brica EBrowser"/>
@@ -32,6 +33,7 @@
   <oaf_attribute name="description-hu" type="string" value="Factory az EBrowser controlhoz"/>
   <oaf_attribute name="description-it" type="string" value="Fabbrica del controllo EBrowser"/>
   <oaf_attribute name="description-ja" type="string" value="E&#165;&#214;&#165;&#233;&#165;&#166;&#165;&#182;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+  <oaf_attribute name="description-lv" type="string" value="Fabrika EP&#226;rl&#251;ka kontrolei"/>
   <oaf_attribute name="description-nn" type="string" value="Fabrikk for EBrowser-kontroll"/>
   <oaf_attribute name="description-no" type="string" value="Factory for EBrowser kontroll"/>
   <oaf_attribute name="description-pl" type="string" value="Generator komponent&#243;&#179; EBrowser"/>
@@ -63,6 +65,7 @@
 <oaf_attribute name="name-fr" type="string" value="Contr&#244;le EBrowser"/>
 <oaf_attribute name="name-it" type="string" value="Controllo EBrowser"/>
 <oaf_attribute name="name-ja" type="string" value="E&#165;&#214;&#165;&#233;&#165;&#166;&#165;&#182;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
+<oaf_attribute name="name-lv" type="string" value="EP&#226;rl&#251;ka kontrole"/>
 <oaf_attribute name="name-nn" type="string" value="EBrowser kontroll"/>
 <oaf_attribute name="name-no" type="string" value="EBrowser kontroll"/>
 <oaf_attribute name="name-pl" type="string" value="Komponent EBrowser"/>
@@ -82,6 +85,7 @@
 <oaf_attribute name="description-fr" type="string" value="Contr&#244;le Navigateur HTML"/>
 <oaf_attribute name="description-it" type="string" value="Controllo Browser HTML"/>
 <oaf_attribute name="description-ja" type="string" value="HTML &#165;&#214;&#165;&#233;&#165;&#166;&#165;&#182;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
+<oaf_attribute name="description-lv" type="string" value="HTML P&#226;rl&#251;ka kontrole"/>
 <oaf_attribute name="description-nn" type="string" value="HTML-lesar kontroll"/>
 <oaf_attribute name="description-no" type="string" value="HTML-leser kontroll"/>
 <oaf_attribute name="description-pl" type="string" value="Komponent przegl&#177;darki HTML-a"/>

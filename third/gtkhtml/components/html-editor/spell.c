@@ -29,6 +29,7 @@
 #include "htmlclueflow.h"
 #include "htmlcursor.h"
 #include "htmlengine.h"
+#include "htmlengine-edit.h"
 #include "htmlengine-edit-cursor.h"
 #include "htmlengine-edit-movement.h"
 #include "htmlengine-edit-selection-updater.h"
@@ -68,7 +69,7 @@ destroy (GtkWidget *w, SpellPopup *sp)
 
 			gtk_clist_get_text (GTK_CLIST (sp->clist),
 					    GPOINTER_TO_INT (GTK_CLIST (sp->clist)->selection->data), 0, &replacement);
-			html_engine_replace_word_with (sp->cd->html->engine, replacement);
+			html_engine_replace_spell_word_with (sp->cd->html->engine, replacement);
 
 			/* printf ("replace: %s with: %s\n", sp->misspeled_word, replacement); */
 		}
@@ -205,6 +206,7 @@ spell_check_word (GtkHTML *html, const gchar *word, gpointer data)
 	if (!cd->dict)
 		return TRUE;
 
+	/* printf ("check word: %s\n", word); */
 	CORBA_exception_init (&ev);
 	rv = GNOME_Spell_Dictionary_checkWord (cd->dict, word, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION)
@@ -280,9 +282,9 @@ set_word (GtkHTMLControlData *cd)
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
-	gtk_html_select_word (cd->html);
+	html_engine_select_spell_word_editable (cd->html->engine);
 	bonobo_property_bag_client_set_value_string (cd->spell_control_pb, "word",
-						     html_engine_get_word (cd->html->engine), &ev);
+						     html_engine_get_spell_word (cd->html->engine), &ev);
 	CORBA_exception_free (&ev);
 }
 
@@ -290,7 +292,8 @@ static gboolean
 next_word (GtkHTMLControlData *cd)
 {
 	gboolean rv = TRUE;
-	while (html_engine_forward_word (cd->html->engine) && (rv = html_engine_word_is_valid (cd->html->engine)))
+	while (html_engine_forward_word (cd->html->engine)
+	       && (rv = html_engine_spell_word_is_valid (cd->html->engine)))
 		;
 
 	return rv;
@@ -323,7 +326,7 @@ replace_cb (BonoboListener    *listener,
 
 	/* printf ("replace '%s'\n", BONOBO_ARG_GET_STRING (arg)); */
 
-	html_engine_replace_word_with (cd->html->engine, BONOBO_ARG_GET_STRING (arg));
+	html_engine_replace_spell_word_with (cd->html->engine, BONOBO_ARG_GET_STRING (arg));
 	check_next_word (cd, FALSE);
 }
 
@@ -347,7 +350,7 @@ add_cb (BonoboListener    *listener,
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
 	gchar *word;
 
-	word = html_engine_get_word (cd->html->engine);
+	word = html_engine_get_spell_word (cd->html->engine);
 	g_return_if_fail (word);
 
 	GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, ev);
@@ -365,7 +368,7 @@ ignore_cb (BonoboListener    *listener,
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
 	gchar *word;
 
-	word = html_engine_get_word (cd->html->engine);
+	word = html_engine_get_spell_word (cd->html->engine);
 	g_return_if_fail (word);
 
 	GNOME_Spell_Dictionary_addWordToSession (cd->dict, word, ev);
@@ -402,7 +405,7 @@ spell_check_dialog (GtkHTMLControlData *cd, gboolean whole_document)
 		html_engine_beginning_of_document (cd->html->engine);
 	}
 
-	if (html_engine_word_is_valid (cd->html->engine))
+	if (html_engine_spell_word_is_valid (cd->html->engine))
 		if (next_word (cd)) {
 			html_engine_hide_cursor (cd->html->engine);
 			html_cursor_jump_to_position (cd->html->engine->cursor, cd->html->engine, position);

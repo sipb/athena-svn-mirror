@@ -27,6 +27,7 @@
 #include "gtkhtml-compat.h"
 
 #include <gal/unicode/gunicode.h>
+#include "htmlcolor.h"
 #include "htmlcolorset.h"
 #include "htmlentity.h"
 #include "htmlpainter.h"
@@ -658,4 +659,10 @@ guint
 html_painter_get_page_height (HTMLPainter *painter, HTMLEngine *e)
 {
 	return 	(* HP_CLASS (painter)->get_page_height) (painter, e);
+}
+
+void
+html_painter_set_focus (HTMLPainter *p, gboolean focus)
+{
+	p->focus = focus;
 }

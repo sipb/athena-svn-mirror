@@ -147,8 +147,8 @@ gtk_html_replace_dialog_new (GtkHTML *html)
 								 GNOME_STOCK_BUTTON_CANCEL, NULL));
 
 	table = gtk_table_new (2, 2, FALSE);
-	dialog->entry_search   = gtk_entry_new_with_max_length (20);
-	dialog->entry_replace  = gtk_entry_new_with_max_length (20);
+	dialog->entry_search   = gtk_entry_new ();
+	dialog->entry_replace  = gtk_entry_new ();
 	dialog->backward       = gtk_check_button_new_with_label (_("search backward"));
 	dialog->case_sensitive = gtk_check_button_new_with_label (_("case sensitive"));
 	dialog->html           = html;

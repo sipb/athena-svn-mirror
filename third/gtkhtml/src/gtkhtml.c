@@ -1239,6 +1239,8 @@ focus_out_event (GtkWidget *widget,
 {
 	GtkHTML *html = GTK_HTML (widget);
 
+	html_painter_set_focus (html->engine->painter, FALSE);
+	html_engine_redraw_selection (html->engine);
 	/* printf ("focus out\n"); */
 	if (!html->iframe_parent) {
 		GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
@@ -1524,8 +1526,10 @@ selection_clear_event (GtkWidget *widget,
 
 	html = GTK_HTML (widget);
 
-	html_engine_disable_selection (html->engine);
-	html->in_selection = FALSE;
+	if (!html_engine_get_editable (html->engine)) {
+		html_engine_disable_selection (html->engine);
+		html->in_selection = FALSE;
+	}
 
 	return TRUE;
 }
@@ -2833,31 +2837,19 @@ scroll (GtkHTML *html,
 		return;
 	}
 
-	adj->value = CLAMP (adj->value + delta, adj->lower, adj->upper - adj->page_size);
-	gtk_adjustment_value_changed (adj);
+	gtk_adjustment_set_value (adj, CLAMP (adj->value + delta, adj->lower, MAX (0.0, adj->upper - adj->page_size)));
 
 	html->binding_handled = TRUE;
 }
 
 static void
-scroll_by_amount (GtkHTML *html,
-		  gint amount)
+scroll_by_amount (GtkHTML *html, gint amount)
 {
-	GtkLayout *layout;
 	GtkAdjustment *adj;
-	gfloat new_value;
-	gfloat max;
 
-	layout = GTK_LAYOUT (html);
-	adj = layout->vadjustment;
-
-	new_value = adj->value + (gfloat) amount;
-
-	max = MAX (0.0, adj->upper - adj->page_size);
-
-	new_value = CLAMP (new_value, adj->lower, max);
-
-	gtk_adjustment_set_value (adj, new_value);
+	adj = GTK_LAYOUT (html)->vadjustment;
+	gtk_adjustment_set_value (adj,
+				  CLAMP (adj->value + (gfloat) amount, adj->lower, MAX (0.0, adj->upper - adj->page_size)));
 }
 
 static void
@@ -3391,13 +3383,13 @@ command (GtkHTML *html, GtkHTMLCommandType com_type)
 		html_engine_upcase_downcase_word (e, FALSE);
 		break;
 	case GTK_HTML_COMMAND_SPELL_SUGGEST:
-		if (html->editor_api && !html_engine_word_is_valid (e))
-			(*html->editor_api->suggestion_request) (html, html_engine_get_word (e), html->editor_data);
+		if (html->editor_api && !html_engine_spell_word_is_valid (e))
+			(*html->editor_api->suggestion_request) (html, html_engine_get_spell_word (e), html->editor_data);
 		break;
 	case GTK_HTML_COMMAND_SPELL_PERSONAL_DICTIONARY_ADD:
 	case GTK_HTML_COMMAND_SPELL_SESSION_DICTIONARY_ADD: {
 		gchar *word;
-		word = html_engine_get_word (e);
+		word = html_engine_get_spell_word (e);
 
 		if (word && html->editor_api) {
 			if (com_type == GTK_HTML_COMMAND_SPELL_PERSONAL_DICTIONARY_ADD)
@@ -3999,3 +3991,8 @@ gtk_html_get_allow_frameset (GtkHTML *html)
 	return html->engine->allow_frameset;	
 }
 
+void
+gtk_html_print_set_master (GtkHTML *html, GnomePrintMaster *print_master)
+{
+	html->priv->print_master = print_master;
+}

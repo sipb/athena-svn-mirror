@@ -1,3 +1,184 @@
+2001-12-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-clueflowstyle.c (set_clueflow_style_in_region):
+	avoid skipping end and continuing to the end of document
+
+2001-12-14  Larry Ewing  <lewing@ximian.com>
+
+	* htmliframe.c (html_iframe_init): dup the url.
+	(destroy): free the url.
+
+2001-12-13  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-im.h (gtk_html_im_position_update): add prototype for
+	html_engine_draw_cursor_in_area.
+
+	* htmlengine-edit-cursor.c (html_engine_draw_cursor_in_area):
+	update the preedit posistion.
+
+	* gtkhtml-im.c (gtk_html_im_position_update): update the posistion
+	of the XIM preedit block (This XIM patch is based on the patch by
+	ynakai@redhat.com and fixes
+	http://bugzilla.ximian.com/show_bug.cgi?id=9526)
+	
+2001-12-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-print.c (html_engine_print_with_header_footer):
+	minimal scale 0.5, so we stop on scale, which is still readable
+
+2001-12-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmlselect.c (html_select_set_text): make it safe when
+	select->strings == NULL
+
+2001-12-06  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (split): removed old obsolete forgotten code
+
+2001-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (insure_paper): use _("US-Letter") as fallback,
+	add printer parameter to be able to get paper from master
+	(html_printer_new): add master parameter, to be remembered, needed
+	for paper
+	half margins as they are too wide in gnome-paper
+
+	* gtkhtml.c (gtk_html_print_set_master): new helper function
+ 
+	* gtkhtml-properties.c: set default print size back to 10
+
+	* htmlprinter.c (insure_paper): use print master to get its paper
+
+	* gtkhtml-private.h: added print_master
+
+	* htmlprinter.c (html_printer_get_page_height): use top and bottom
+	margins
+
+	* gtkhtml-properties.c: change default size for printing fonts to
+	9
+
+2001-11-27  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_magic_link): use
+	html_cursor_jump_to_position_no_spell instead of
+	html_cursor_jump_to_position to avoid unwanted spell checker calls
+	which are performance expensive
+
+	* gtkhtml.c: updated for spell checking changes
+
+	* htmlengine.c (html_engine_get_spell_word): renamed from
+	html_engine_get_word and updated
+	(html_engine_spell_word_is_valid): likewise
+	(html_engine_replace_spell_word_with): likewise
+
+	* htmlengine-edit.c (html_engine_spell_check_range): updated
+
+	* htmlclueflow.c (begin_of_word): update for spell word selection
+	(end_of_word): ditto
+
+	* htmlselection.c (html_selection_spell_word): new helper
+	function used for word selection for spell checking
+
+	* htmlengine-edit.c (html_engine_select_spell_word_editable): new
+	function, selects word for spell checking, it differs from word
+	selection by 2xclick
+
+2001-11-26  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (scroll): use MAX (0, upper) to avoid negative values
+	(scroll_by_amount): refactored - remove redundant local variables
+
+2001-11-21  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (calc_size): place check for changed size before
+	html_object_calc_size
+	(merge): set change size to head of self and tail of with
+	(split): set change size aroud and child object 
+
+2001-11-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-search.c (display_search_results): use move_to_found
+	only for non editable widget
+
+	* htmlclueflow.c (search_set_info): use strlen instead of
+	Text::text_len because of utf8
+	(search_set_info): use g_utf8_pointer_to_offset
+	(search_text): use strlen
+	(search_set_info): added text parameter
+
+2001-11-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-search.c (display_search_results): hide/show cursor
+
+	* htmlselection.c (html_engine_select_interval): wrap in hide/show
+	cursor
+	(html_engine_unselect_all): ditto
+	(html_engine_disable_selection): ditto
+
+	* htmlengine-search.c (html_engine_search_next): if engine is
+	editable, use html_engine_search rather than
+	html_engine_search_next to respect cursor position 
+
+	* htmlengine.c (replace): don't replace with empty text's, just
+	delete selection in such case
+
+2001-12-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (draw): use new colors
+
+	* htmltextslave.c (draw_highlighted): use new colors
+
+	* htmlpainter.c: remove html_painter_get_highlight_color, it's now
+	obsolete
+
+	* htmlcolorset.c: added entries for highlight colors in non-focus
+	state
+
+	* htmlframe.c (html_frame_init): as below, BTW, iframe and frame
+	has so much shared code, that I believe they should be inherit
+	from generic frame parent which should hold shared code
+
+	* htmliframe.c (html_iframe_init): set focus by parent
+
+2001-11-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (set_focus): new helper function
+	(html_engine_set_focus): foreach frame/iframe set painter focus,
+	uses set_focus helper
+
+2001-11-21  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (selection_clear_event): unselect only when widget is
+	non editable, otherwise keep selection valid
+
+	* htmlimage.c (draw): use html_painter_set_focus
+
+	* htmltextslave.c (draw_highlighted): use html_painter_set_focus
+
+	* gtkhtml.c (focus_in_event): set painter focus, redraw selection
+	(focus_out_event): ditto
+
+	* htmlpainter.c (html_painter_set_focus): remember focus in
+	painter
+	(html_painter_get_highlight_color): get highlight color depending
+	on focus
+
+	* htmlengine.c (html_engine_redraw_selection): new helper function
+
+2001-11-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (insert_empty_paragraph): check
+	if original paragraph is empty link and in such case replace link
+	with empty text
+
+	* htmllinktext.c (html_link_text_to_text): changed return value,
+	now this method return newly created object with the same text as
+	link and same text attributes as font style/face and with default
+	text color
+
+	* htmlengine-edit.c (html_engine_new_text): don't ever create
+	links here
+
 2001-11-15  Radek Doulik  <rodo@ximian.com>
  
  	* htmlcluev.c (do_layout): test if it's new flow by old_y and not

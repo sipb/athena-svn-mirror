@@ -348,21 +348,20 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 
 		gtk_widget_set_usize ( w, HTML_OBJECT(select)->width, -2);
 	} else {
-		item = g_list_length (select->strings) - 1;
 		w = HTML_EMBEDDED (select)->widget;
-		g_list_last (select->strings)->data = g_strdup (text);
-		gtk_combo_set_popdown_strings (GTK_COMBO(w), select->strings);
+		item = g_list_length (select->strings) - 1;
+		if (select->strings) {
+			g_list_last (select->strings)->data = g_strdup (text);
+			gtk_combo_set_popdown_strings (GTK_COMBO(w), select->strings);
 
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(w)->entry), 
-				   g_list_nth(select->strings, select->default_selected)->data);
-
-		HTML_OBJECT(select)->width = gdk_string_width(w->style->font, 
-							      longest_string(select)) + 30;
-
-		gtk_widget_set_usize (GTK_WIDGET (w), 
-				      HTML_OBJECT(select)->width, -2);
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(w)->entry), 
+					   g_list_nth(select->strings, select->default_selected)->data);
+			HTML_OBJECT(select)->width = gdk_string_width(w->style->font, 
+								      longest_string(select)) + 30;
+		}
+		gtk_widget_set_usize (GTK_WIDGET (w), HTML_OBJECT (select)->width, -2);
 	}
 
-	if (g_list_nth (select->values, item)->data == NULL)
+	if (item >= 0 && g_list_nth (select->values, item)->data == NULL)
 		g_list_nth (select->values, item)->data = g_strdup(text);
 }

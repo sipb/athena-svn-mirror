@@ -151,6 +151,8 @@ destroy (PageData *pd, GtkHTMLEditPropertiesDialog *d)
 void
 gtk_html_edit_properties_dialog_destroy (GtkHTMLEditPropertiesDialog *d)
 {
+	if (d->dialog)
+		gtk_widget_destroy (d->dialog);
 	g_list_foreach (d->page_data, (GFunc) destroy, d);
 	g_list_free    (d->page_data);
 	g_list_free    (d->control_data->properties_types);

@@ -1,3 +1,20 @@
+2001-11-20  Radek Doulik  <rodo@ximian.com>
+
+	* search.c (gtk_html_search_dialog_new): as below
+
+	* replace.c (gtk_html_replace_dialog_new): don't limit entries to
+	20 characters
+
+	* properties.c (gtk_html_edit_properties_dialog_destroy): destroy
+	dialog, if it wasn't yet
+
+	* control-data.c (gtk_html_control_data_destroy): destroy
+	properties_dialog
+
+	* popup.c (property_dialog_show): set items to 0 before preparing
+	dialog
+	(show_prop_dialog): destroy properties_dialog before creating new one
+
 2001-11-05  Radek Doulik  <rodo@ximian.com>
 
 	* popup.c (remove_link): use html_engine_select_word_editable

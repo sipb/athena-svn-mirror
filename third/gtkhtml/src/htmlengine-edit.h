@@ -32,6 +32,7 @@
 void                       html_engine_undo                       (HTMLEngine                *e);
 void                       html_engine_redo                       (HTMLEngine                *e);
 void                       html_engine_set_mark                   (HTMLEngine                *e);
+void                       html_engine_select_spell_word_editable (HTMLEngine                *e);
 void                       html_engine_select_word_editable       (HTMLEngine                *e);
 void                       html_engine_select_line_editable       (HTMLEngine                *e);
 void                       html_engine_select_paragraph_editable  (HTMLEngine                *e);

@@ -1,0 +1,519 @@
+<refentry id="GtkHTML">
+<refmeta>
+<refentrytitle>GtkHTML widget</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKHTML Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkHTML widget</refname><refpurpose>widget for rendering HTML</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-html-new">gtk_html_new</link>                    (void);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-html-new-from-string">gtk_html_new_from_string</link>        (const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> len);
+void        <link linkend="gtk-html-construct">gtk_html_construct</link>              (<link linkend="GtkWidget">GtkWidget</link> *html);
+
+void        <link linkend="gtk-html-load-from-string">gtk_html_load_from_string</link>       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> len);
+<link linkend="GtkHTMLStream">GtkHTMLStream</link>* <link linkend="gtk-html-begin">gtk_html_begin</link>               (<link linkend="GtkHTML">GtkHTML</link> *html);
+<link linkend="GtkHTMLStream">GtkHTMLStream</link>* <link linkend="gtk-html-begin-content">gtk_html_begin_content</link>       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gchar">gchar</link> *content_type);
+void        <link linkend="gtk-html-write">gtk_html_write</link>                  (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle,
+                                             const <link linkend="gchar">gchar</link> *buffer,
+                                             <link linkend="size-t">size_t</link> size);
+void        <link linkend="gtk-html-end">gtk_html_end</link>                    (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle,
+                                             <link linkend="GtkHTMLStreamStatus">GtkHTMLStreamStatus</link> status);
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gtk-html-save">gtk_html_save</link>                   (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLSaveReceiverFn">GtkHTMLSaveReceiverFn</link> receiver,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gtk-html-export">gtk_html_export</link>                 (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const char *type,
+                                             <link linkend="GtkHTMLSaveReceiverFn">GtkHTMLSaveReceiverFn</link> receiver,
+                                             <link linkend="gpointer">gpointer</link> data);
+
+void        <link linkend="gtk-html-print">gtk_html_print</link>                  (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *print_context);
+void        <link linkend="gtk-html-print-with-header-footer">gtk_html_print_with_header_footer</link>
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *print_context,
+                                             <link linkend="gdouble">gdouble</link> header_height,
+                                             <link linkend="gdouble">gdouble</link> footer_height,
+                                             <link linkend="GtkHTMLPrintCallback">GtkHTMLPrintCallback</link> header_print,
+                                             <link linkend="GtkHTMLPrintCallback">GtkHTMLPrintCallback</link> footer_print,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+
+const <link linkend="gchar">gchar</link>* <link linkend="gtk-html-get-title">gtk_html_get_title</link>             (<link linkend="GtkHTML">GtkHTML</link> *html);
+<link linkend="gboolean">gboolean</link>    <link linkend="gtk-html-jump-to-anchor">gtk_html_jump_to_anchor</link>         (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *anchor);
+void        <link linkend="gtk-html-set-default-background-color">gtk_html_set_default_background_color</link>
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GdkColor">GdkColor</link> *c);
+void        <link linkend="gtk-html-set-default-content-type">gtk_html_set_default_content_type</link>
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gchar">gchar</link> *content_type);
+void        <link linkend="gtk-html-allow-selection">gtk_html_allow_selection</link>        (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gboolean">gboolean</link> allow);
+<link linkend="gpointer">gpointer</link>    <link linkend="gtk-html-get-object-by-id">gtk_html_get_object_by_id</link>       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *id);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkLayout">GtkLayout</link>
+                     +----GtkHTML
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+GtkHTML widget is lightweight HTML viewer / container. It provides an easy way for
+viewing HTML documents in your application and for layout UI of your
+application throught HTML.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gtk-html-new">gtk_html_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_html_new                    (void);</programlisting>
+<para>
+GtkHTML widget contructor. It creates an empty GtkHTML widget.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A GtkHTML widget, newly created and empty.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-new-from-string">gtk_html_new_from_string ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_html_new_from_string        (const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> len);</programlisting>
+<para>
+GtkHTML widget constructor. It creates an new GtkHTML widget and loads HTML source from <parameter>str</parameter>.
+It is intended for simple creation. For more complicated loading you probably want to use
+<link linkend="GtkHTMLStream">GtkHTMLStream</link>. See <link linkend="gtk-html-begin">gtk_html_begin</link>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>str</parameter>&nbsp;:</entry>
+<entry> A string containing HTML source.
+</entry></row>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry> A length of <parameter>str</parameter>, if <parameter>len</parameter> == -1 then it will be computed using strlen.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A GtkHTML widget, newly created, containing document loaded from input <parameter>str</parameter>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-construct">gtk_html_construct ()</title>
+<programlisting>void        gtk_html_construct              (<link linkend="GtkWidget">GtkWidget</link> *html);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-load-from-string">gtk_html_load_from_string ()</title>
+<programlisting>void        gtk_html_load_from_string       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gint">gint</link> len);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>str</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-begin">gtk_html_begin ()</title>
+<programlisting><link linkend="GtkHTMLStream">GtkHTMLStream</link>* gtk_html_begin               (<link linkend="GtkHTML">GtkHTML</link> *html);</programlisting>
+<para>
+Opens a new stream to load new content into the GtkHTML widget <parameter>html</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the html widget to operate on.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new GtkHTMLStream to store new content.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-begin-content">gtk_html_begin_content ()</title>
+<programlisting><link linkend="GtkHTMLStream">GtkHTMLStream</link>* gtk_html_begin_content       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gchar">gchar</link> *content_type);</programlisting>
+<para>
+Opens a new stream to load new content of type <parameter>content_type</parameter> into 
+the GtkHTML widget given in <parameter>html</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the html widget to operate on.
+</entry></row>
+<row><entry align="right"><parameter>content_type</parameter>&nbsp;:</entry>
+<entry> a string listing the type of content to expect on the stream.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new GtkHTMLStream to store new content.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-write">gtk_html_write ()</title>
+<programlisting>void        gtk_html_write                  (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle,
+                                             const <link linkend="gchar">gchar</link> *buffer,
+                                             <link linkend="size-t">size_t</link> size);</programlisting>
+<para>
+Writes <parameter>size</parameter> bytes of <parameter>buffer</parameter> to the stream pointed to by <parameter>stream</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the GtkHTML widget the stream belongs to (unused)
+</entry></row>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry> the GkHTMLStream to write to.
+</entry></row>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry> the data to write to the stream.
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry> the length of data to read from <parameter>buffer</parameter>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-end">gtk_html_end ()</title>
+<programlisting>void        gtk_html_end                    (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle,
+                                             <link linkend="GtkHTMLStreamStatus">GtkHTMLStreamStatus</link> status);</programlisting>
+<para>
+Close the GtkHTMLStream represented by <parameter>stream</parameter> and notify <parameter>html</parameter> that is 
+should not expect any more content from that stream.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the GtkHTML widget the stream belongs to.
+</entry></row>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry> the GtkHTMLStream to close.
+</entry></row>
+<row><entry align="right"><parameter>status</parameter>&nbsp;:</entry>
+<entry> the GtkHTMLStreamStatus representing the state of the stream when closed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-save">gtk_html_save ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gtk_html_save                   (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLSaveReceiverFn">GtkHTMLSaveReceiverFn</link> receiver,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>receiver</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-export">gtk_html_export ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gtk_html_export                 (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const char *type,
+                                             <link linkend="GtkHTMLSaveReceiverFn">GtkHTMLSaveReceiverFn</link> receiver,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Export the current document into the content type given by <parameter>content_type</parameter>,
+by calling the function listed in <parameter>receiver</parameter> data becomes avaiable.  When <parameter>receiver</parameter> is 
+called <parameter>user_data</parameter> is passed in as the user_data parameter.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the GtkHTML widget
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>receiver</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the export was successfull, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-print">gtk_html_print ()</title>
+<programlisting>void        gtk_html_print                  (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *print_context);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>print_context</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-print-with-header-footer">gtk_html_print_with_header_footer ()</title>
+<programlisting>void        gtk_html_print_with_header_footer
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *print_context,
+                                             <link linkend="gdouble">gdouble</link> header_height,
+                                             <link linkend="gdouble">gdouble</link> footer_height,
+                                             <link linkend="GtkHTMLPrintCallback">GtkHTMLPrintCallback</link> header_print,
+                                             <link linkend="GtkHTMLPrintCallback">GtkHTMLPrintCallback</link> footer_print,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>print_context</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>header_height</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>footer_height</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>header_print</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>footer_print</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-get-title">gtk_html_get_title ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* gtk_html_get_title             (<link linkend="GtkHTML">GtkHTML</link> *html);</programlisting>
+<para>
+Retrieve the title of the document currently loaded in the GtkHTML widget.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> The GtkHTML widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the title of the current document
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-jump-to-anchor">gtk_html_jump_to_anchor ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gtk_html_jump_to_anchor         (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *anchor);</programlisting>
+<para>
+Scroll the document display to show the HTML anchor listed in <parameter>anchor</parameter></para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry> the GtkHTML widget.
+</entry></row>
+<row><entry align="right"><parameter>anchor</parameter>&nbsp;:</entry>
+<entry> a string containing the name of the anchor.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the anchor is found, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-set-default-background-color">gtk_html_set_default_background_color ()</title>
+<programlisting>void        gtk_html_set_default_background_color
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GdkColor">GdkColor</link> *c);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>c</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-set-default-content-type">gtk_html_set_default_content_type ()</title>
+<programlisting>void        gtk_html_set_default_content_type
+                                            (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gchar">gchar</link> *content_type);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>content_type</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-allow-selection">gtk_html_allow_selection ()</title>
+<programlisting>void        gtk_html_allow_selection        (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="gboolean">gboolean</link> allow);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>allow</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-get-object-by-id">gtk_html_get_object_by_id ()</title>
+<programlisting><link linkend="gpointer">gpointer</link>    gtk_html_get_object_by_id       (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             const <link linkend="gchar">gchar</link> *id);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -22,6 +22,9 @@
 #ifndef _GTKHTML_PRIVATE_H
 #define _GTKHTML_PRIVATE_H
 
+#include <libgnome/gnome-paper.h>
+#include <libgnomeprint/gnome-print.h>
+#include <libgnomeprint/gnome-print-master.h>
 #include <gtk/gtkwidget.h>
 #include "gtkhtml-types.h"
 #include "htmltypes.h"
@@ -49,6 +52,8 @@ struct _GtkHTMLPrivate {
 	char  *base_url;
 
 	GtkWidget *search_input_line;
+
+	GnomePrintMaster *print_master;
 
 #ifdef GTKHTML_HAVE_GCONF
 	guint set_font_id;

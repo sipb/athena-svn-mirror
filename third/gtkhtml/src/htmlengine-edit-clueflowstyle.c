@@ -303,9 +303,12 @@ set_clueflow_style_in_region (HTMLEngine *engine,
 		if (p == end)
 			break;
 
-		do
+		do {
 			p = html_object_next_leaf (p);
-		while (p != NULL && HTML_CLUEFLOW (p->parent) == clueflow);
+		} while (p != NULL && p != end && HTML_CLUEFLOW (p->parent) == clueflow);
+
+		if (p == end && HTML_CLUEFLOW (p->parent) == clueflow)
+			break;
 	}
 
 	if (! do_undo)

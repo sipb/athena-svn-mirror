@@ -318,7 +318,8 @@ print_preview_cb (GtkWidget *widget,
 	GtkWidget *preview;
 
 	print_master = gnome_print_master_new ();
-	/*  gnome_print_master_set_paper (master, gnome_paper_with_name ("A4")); */
+	gnome_print_master_set_paper (print_master, gnome_paper_with_name ("US-Letter"));
+	gtk_html_print_set_master (html, print_master);
 
 	print_context = gnome_print_master_get_context (print_master);
 

@@ -25,6 +25,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include "gtkhtml.h"
+#include "gtkhtml-private.h"
 #include "gtkhtml-properties.h"
 #include "htmlprinter.h"
 #include "htmlengine-print.h"
@@ -162,7 +163,7 @@ html_engine_print_with_header_footer (HTMLEngine *engine,
 
 	g_return_if_fail (engine->clue != NULL);
 
-	printer = html_printer_new (print_context);
+	printer = html_printer_new (print_context, GTK_HTML (engine->widget)->priv->print_master);
 	html_font_manager_set_default (&printer->font_manager,
 				       prop->font_var_print,      prop->font_fix_print,
 				       prop->font_var_size_print, prop->font_var_print_points,
@@ -180,7 +181,7 @@ html_engine_print_with_header_footer (HTMLEngine *engine,
 		page_width = html_painter_get_page_width (engine->painter, engine);
 		/* printf ("min_width %d page %d\n", min_width, page_width); */
 		if (min_width > page_width) {
-			HTML_PRINTER (printer)->scale = ((gdouble) page_width) / min_width;
+			HTML_PRINTER (printer)->scale = MAX (0.5, ((gdouble) page_width) / min_width);
 			html_font_manager_clear_font_cache (&printer->font_manager);
 			html_object_change_set_down (engine->clue, HTML_CHANGE_ALL);
 			html_engine_calc_size (engine, NULL);

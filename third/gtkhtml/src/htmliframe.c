@@ -414,6 +414,8 @@ destroy (HTMLObject *o)
 
 	iframe_set_gdk_painter (iframe, NULL);
 
+	g_free (iframe->url);
+
 	if (iframe->html) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (iframe->html), o);
 		iframe->html = NULL;
@@ -473,7 +475,7 @@ html_iframe_init (HTMLIFrame *iframe,
 	gtk_container_add (GTK_CONTAINER (scrolled_window), new_widget);
 	gtk_widget_show (new_widget);
 
-	iframe->url = src;
+	iframe->url = g_strdup (src);
 	iframe->width = width;
 	iframe->height = height;
 	iframe->gdk_painter = NULL;
@@ -517,6 +519,7 @@ html_iframe_init (HTMLIFrame *iframe,
 				     parent_html->engine->settings->color_set);
 	html_colorset_set_unchanged (new_html->engine->settings->color_set,
 				     parent_html->engine->settings->color_set);
+	html_painter_set_focus (new_html->engine->painter, parent_html->engine->have_focus);
 	/*
 	gtk_signal_connect (GTK_OBJECT (html), "title_changed",
 			    GTK_SIGNAL_FUNC (title_changed_cb), (gpointer)app);

@@ -146,6 +146,8 @@ show_prop_dialog (GtkHTMLControlData *cd, GtkHTMLEditPropertyType start)
 	GtkHTMLEditPropertyType t;
 	GList *cur;
 
+	if (cd->properties_dialog)
+		gtk_html_edit_properties_dialog_destroy (cd->properties_dialog);
 	cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"));
 
 	cur = cd->properties_types;
@@ -232,7 +234,7 @@ spell_suggest (GtkWidget *mi, GtkHTMLControlData *cd)
 
 	/* gtk_signal_emit_by_name (GTK_OBJECT (cd->html), "spell_suggestion_request",
 	   e->spell_checker, html_engine_get_word (e)); */
-	spell_suggestion_request (cd->html, html_engine_get_word (e), cd);
+	spell_suggestion_request (cd->html, html_engine_get_spell_word (e), cd);
 }
 
 static void
@@ -247,7 +249,7 @@ spell_add (GtkWidget *mi, GtkHTMLControlData *cd)
 	HTMLEngine *e = cd->html->engine;
 	gchar *word;
 
-	word = html_engine_get_word (e);
+	word = html_engine_get_spell_word (e);
 	if (word) {
 		spell_add_to_personal (cd->html, word, cd);
 		g_free (word);
@@ -261,7 +263,7 @@ spell_ignore (GtkWidget *mi, GtkHTMLControlData *cd)
 	HTMLEngine *e = cd->html->engine;
 	gchar *word;
 
-	word = html_engine_get_word (e);
+	word = html_engine_get_spell_word (e);
 	if (word) {
 		spell_add_to_session (cd->html, word, cd);
 		g_free (word);
@@ -354,10 +356,11 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items)
 	ADD_SEP;
 #endif
 
-	if (!html_engine_is_selection_active (e) && obj && html_object_is_text (obj) && !html_engine_word_is_valid (e)) {
+	if (!html_engine_is_selection_active (e) && obj && html_object_is_text (obj)
+	    && !html_engine_spell_word_is_valid (e)) {
 		gchar *spell, *word, *check_utf8, *add_utf8, *ignore_utf8, *ignore, *add;
 
-		word   = html_engine_get_word (e);
+		word   = html_engine_get_spell_word (e);
 		check_utf8 = e_utf8_from_locale_string (_("Check '%s' spelling..."));
 		spell  = g_strdup_printf (check_utf8, word);
 		g_free (check_utf8);
@@ -501,7 +504,7 @@ popup_show (GtkHTMLControlData *cd, GdkEventButton *event)
 void
 property_dialog_show (GtkHTMLControlData *cd)
 {
-	guint items;
+	guint items = 0;
 
 	gtk_widget_unref (prepare_properties_and_menu (cd, &items));
 	if (items)

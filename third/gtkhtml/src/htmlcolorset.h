@@ -61,6 +61,3 @@ void              html_colorset_set_unchanged         (HTMLColorSet *s, HTMLColo
 void              html_colorset_set_style             (HTMLColorSet *s, GtkStyle *style);
 
 #endif
-
-
-

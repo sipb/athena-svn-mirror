@@ -46,6 +46,8 @@ struct _HTMLPainter {
 	HTMLColorSet       *color_set;
 	HTMLFontFace       *font_face;
 	GtkHTMLFontStyle    font_style;
+
+	gboolean focus;
 };
 
 struct _HTMLPainterClass {
@@ -244,5 +246,6 @@ guint             html_painter_get_page_width                          (HTMLPain
 								        HTMLEngine        *e);
 guint             html_painter_get_page_height                         (HTMLPainter       *painter,
 								        HTMLEngine        *e);
-
+void              html_painter_set_focus                               (HTMLPainter       *painter,
+									gboolean           focus);
 #endif /* _HTMLPAINTER_H_ */

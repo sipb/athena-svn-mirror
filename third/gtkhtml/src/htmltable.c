@@ -398,88 +398,59 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 	printf ("-- child end --\n");
 #endif
 
-	if (dup_cell->row == t->totalRows - 1 && dup_cell->col == t->totalCols - 1 && cell_is_empty (dup_cell)) {
-		html_object_destroy (HTML_OBJECT (dup_cell));
-		g_list_free (*right);
-		*right = NULL;
-		dup = html_engine_new_text_empty (e);
-		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
-		e->cursor->position --;
-	} else if (cell->col == 0 && cell->row == 0 && cell_is_empty (cell)) {
-		gint r, c;
+	dup = HTML_OBJECT (g_new0 (HTMLTable, 1));
+	dup_table = HTML_TABLE (dup);
+	copy_sized (self, dup, t->totalRows, t->totalCols);
+	for (r = 0; r < t->totalRows; r ++) {
+		for (c = 0; c < t->totalCols; c ++) {
+			HTMLTableCell *cc;
 
-		r = cell->row;
-		c = cell->col;
-		remove_cell (t, cell);
-		html_object_destroy (HTML_OBJECT (cell));
-		html_table_set_cell (t, r, c, dup_cell);
-		html_table_cell_set_position (t->cells [r][c], r, c);
+			cc = t->cells [r][c];
+			if (cc && cc->row == r && cc->col == c) {
+				if ((r == cell->row && c < cell->col) || r < cell->row) {
+					/* empty cell in dup table */
+					html_table_set_cell (dup_table, r, c, html_engine_new_cell (e, dup_table));
+					html_table_cell_set_position (dup_table->cells [r][c], r, c);
+				} else if ((r == dup_cell->row && c > dup_cell->col) || r > dup_cell->row) {
+					/* move cc to dup table */
+					remove_cell (t, cc);
+					html_table_set_cell (dup_table, r, c, cc);
+					html_table_cell_set_position (dup_table->cells [r][c], r, c);
+					/* place empty cell in t table */
+					html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
+					html_table_cell_set_position (t->cells [r][c], r, c);
 
-		g_list_free (*left);
-		*left = NULL;
-		dup = self;
-		self = html_engine_new_text_empty (e);
-		html_clue_append_after (HTML_CLUE (self->parent), self, dup);
-		html_clue_remove (HTML_CLUE (self->parent), dup);
-		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
-		e->cursor->object = self;
-		e->cursor->offset = 0;
-		e->cursor->position --;
-	} else {
-		dup = HTML_OBJECT (g_new0 (HTMLTable, 1));
-		dup_table = HTML_TABLE (dup);
-		copy_sized (self, dup, t->totalRows, t->totalCols);
-		for (r = 0; r < t->totalRows; r ++) {
-			for (c = 0; c < t->totalCols; c ++) {
-				HTMLTableCell *cc;
-
-				cc = t->cells [r][c];
-				if (cc && cc->row == r && cc->col == c) {
-					if ((r == cell->row && c < cell->col) || r < cell->row) {
-						/* empty cell in dup table */
-						html_table_set_cell (dup_table, r, c, html_engine_new_cell (e, dup_table));
-						html_table_cell_set_position (dup_table->cells [r][c], r, c);
-					} else if ((r == dup_cell->row && c > dup_cell->col) || r > dup_cell->row) {
-						/* move cc to dup table */
-						remove_cell (t, cc);
-						html_table_set_cell (dup_table, r, c, cc);
-						html_table_cell_set_position (dup_table->cells [r][c], r, c);
-						/* place empty cell in t table */
-						html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
-						html_table_cell_set_position (t->cells [r][c], r, c);
-
-					} else {
-						if (r == cell->row && c == cell->col) {
-							if (r != dup_cell->row || c != dup_cell->col) {
-								/* empty cell in dup table */
-								html_table_set_cell (dup_table, r, c,
-										     html_engine_new_cell (e, dup_table));
-								html_table_cell_set_position (dup_table->cells [r][c], r, c);
-							}
-
-						}
-						if (r == dup_cell->row && c == dup_cell->col) {
-							/* dup_cell to dup table */
-							if ((r != cell->row || c != cell->col)
-							    && HTML_OBJECT (dup_cell)->parent == self)
-								remove_cell (t, cell);
-
-							html_table_set_cell (dup_table, r, c, dup_cell);
+				} else {
+					if (r == cell->row && c == cell->col) {
+						if (r != dup_cell->row || c != dup_cell->col) {
+							/* empty cell in dup table */
+							html_table_set_cell (dup_table, r, c,
+									     html_engine_new_cell (e, dup_table));
 							html_table_cell_set_position (dup_table->cells [r][c], r, c);
+						}
 
-							if (r != cell->row || c != cell->col) {
-								/* empty cell in orig table */
-								html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
-								html_table_cell_set_position (t->cells [r][c], r, c);
-							}
+					}
+					if (r == dup_cell->row && c == dup_cell->col) {
+						/* dup_cell to dup table */
+						if ((r != cell->row || c != cell->col)
+						    && HTML_OBJECT (dup_cell)->parent == self)
+							remove_cell (t, cell);
+
+						html_table_set_cell (dup_table, r, c, dup_cell);
+						html_table_cell_set_position (dup_table->cells [r][c], r, c);
+
+						if (r != cell->row || c != cell->col) {
+							/* empty cell in orig table */
+							html_table_set_cell (t, r, c, html_engine_new_cell (e, t));
+							html_table_cell_set_position (t->cells [r][c], r, c);
 						}
 					}
 				}
 			}
 		}
-
-		html_clue_append_after (HTML_CLUE (self->parent), dup, self);
 	}
+
+	html_clue_append_after (HTML_CLUE (self->parent), dup, self);
 
 	*left  = g_list_prepend (*left, self);
 	*right = g_list_prepend (*right, dup);

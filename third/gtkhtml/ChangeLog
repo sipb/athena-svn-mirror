@@ -1,3 +1,20 @@
+2001-12-18  Larry Ewing  <lewing@ximian.com>
+        
+	* Make 1.0.1 release.
+	
+2001-12-17  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump version to 1.0.1 
+
+2001-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in (GTKHTML_CURRENT): raised to 21 as I've added
+	gtk_html_print_set_master
+
+2001-12-04  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump version to 1.0.0.99
+
 2001-11-21  Larry Ewing  <lewing@ximian.com>
 
 	* Make 1.0 release.

@@ -45,11 +45,12 @@
 #include "htmllinktext.h"
 #include "htmlpainter.h"
 #include "htmlplainpainter.h"
+#include "htmlsearch.h"
+#include "htmlselection.h"
 #include "htmltable.h"
 #include "htmltablecell.h"
 #include "htmltext.h"
 #include "htmltextslave.h"	/* FIXME */
-#include "htmlsearch.h"
 #include "htmlvspace.h"
 
 
@@ -213,8 +214,35 @@ op_cut (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left, GL
 }
 
 static void
+set_head_size (HTMLObject *o)
+{
+	if (o && HTML_CLUE (o)->head)
+		HTML_CLUE (o)->head->change |= HTML_CHANGE_SIZE;
+}
+
+static void
+set_tail_size (HTMLObject *o)
+{
+	if (o && HTML_CLUE (o)->tail) {
+		HTML_CLUE (o)->tail->change |= HTML_CHANGE_SIZE;
+	}
+}
+
+static void
+set_around_size (HTMLObject *o) {
+	if (o) {
+		o->change |= HTML_CHANGE_SIZE;
+		if (o->next)
+			o->next->change |= HTML_CHANGE_SIZE;
+		if (o->prev)
+			o->prev->change |= HTML_CHANGE_SIZE;
+	}
+}
+
+static void
 split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint level, GList **left, GList **right)
 {
+	set_around_size (child);
 	html_clueflow_remove_text_slaves (HTML_CLUEFLOW (self));
 	(*HTML_OBJECT_CLASS (parent_class)->split) (self, e, child, offset, level, left, right);
 
@@ -232,6 +260,9 @@ merge (HTMLObject *self, HTMLObject *with, HTMLEngine *e, GList **left, GList **
 
 	html_clueflow_remove_text_slaves (cf1);
 	html_clueflow_remove_text_slaves (cf2);
+
+	set_tail_size (self);
+	set_head_size (with);
 
 	/* printf ("merge flows\n"); */
 
@@ -683,6 +714,9 @@ calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 			if (lmargin >= rmargin) {
 				gint new_y;
 
+				if (run && run->change & HTML_CHANGE_SIZE
+				    && HTML_OBJECT_TYPE (run) != HTML_TYPE_TEXTSLAVE && !html_object_is_container (run))
+					leaf_childs_changed_size = TRUE;
 				html_object_calc_size (run, painter, changed_objs);
 				html_clue_find_free_area (HTML_CLUE (o->parent), o->y, run->min_width,
 							  run->ascent + run->descent, indent, &new_y,
@@ -1890,7 +1924,7 @@ get_default_font_style (const HTMLClueFlow *self)
 }
 
 static void
-search_set_info (HTMLObject *cur, HTMLSearch *info, guint pos, guint len)
+search_set_info (HTMLObject *cur, HTMLSearch *info, guchar *text, guint pos, guint len)
 {
 	guint text_len = 0;
 	guint cur_len;
@@ -1904,16 +1938,17 @@ search_set_info (HTMLObject *cur, HTMLSearch *info, guint pos, guint len)
 
 	while (cur) {
 		if (html_object_is_text (cur)) {
-			cur_len = HTML_TEXT (cur)->text_len;
+			cur_len = strlen (HTML_TEXT (cur)->text);
 			if (text_len + cur_len > pos) {
 				if (!info->found) {
-					info->start_pos = pos - text_len;
+					info->start_pos = g_utf8_pointer_to_offset (text + text_len,
+										    text + pos);
 				}
 				info->found = g_list_append (info->found, cur);
 			}
 			text_len += cur_len;
 			if (text_len >= pos+info->found_len) {
-				info->stop_pos = cur_len - (text_len - pos - info->found_len);
+				info->stop_pos = info->start_pos + info->found_len;
 				info->last     = HTML_OBJECT (cur);
 				return;
 			}
@@ -1945,7 +1980,7 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 	text_len = 0;
 	while (cur) {
 		if (html_object_is_text (cur)) {
-			text_len += HTML_TEXT (cur)->text_len;
+			text_len += strlen (HTML_TEXT (cur)->text);
 			end = cur;
 		} else if (HTML_OBJECT_TYPE (cur) != HTML_TYPE_TEXTSLAVE) {
 			break;
@@ -1965,11 +2000,11 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 		while (cur) {
 			if (html_object_is_text (cur)) {
 				if (!info->forward) {
-					pp -= HTML_TEXT (cur)->text_len;
+					pp -= strlen (HTML_TEXT (cur)->text);
 				}
-				strncpy (pp, HTML_TEXT (cur)->text, HTML_TEXT (cur)->text_len);
+				strncpy (pp, HTML_TEXT (cur)->text, strlen (HTML_TEXT (cur)->text));
 				if (info->forward) {
-					pp += HTML_TEXT (cur)->text_len;
+					pp += strlen (HTML_TEXT (cur)->text);
 				}
 			} else if (HTML_OBJECT_TYPE (cur) != HTML_TYPE_TEXTSLAVE) {
 				break;
@@ -1998,13 +2033,14 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 				regmatch_t match;
 				guchar *p=par+pos;
 
-				/* replace &nbsp;'s with spaces */
+				/* FIXME UTF8
+				   replace &nbsp;'s with spaces
 				while (*p) {
 					if (*p == ENTITY_NBSP) {
 						*p = ' ';
 					}
 					p += (info->forward) ? 1 : -1;
-				}
+					} */
 
 				while ((info->forward && pos < text_len)
 				       || (!info->forward && pos >= 0)) {
@@ -2012,7 +2048,8 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 						      par + pos,
 						      1, &match, 0);
 					if (rv == 0) {
-						search_set_info (head, info, pos + match.rm_so, match.rm_eo - match.rm_so);
+						search_set_info (head, info, par,
+								 pos + match.rm_so, match.rm_eo - match.rm_so);
 						retval = TRUE;
 						break;
 					}
@@ -2027,7 +2064,7 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 					if (rv < 0) {
 						g_warning ("re_match (...) error");
 					}
-					search_set_info (head, info, found_pos, rv);
+					search_set_info (head, info, par, found_pos, rv);
 					retval = TRUE;
 				} else {
 					if (rv < -1) {
@@ -2044,8 +2081,9 @@ search_text (HTMLObject **beg, HTMLSearch *info)
 					    == info->trans [par [pos]]) {
 						eq_len++;
 						if (eq_len == info->text_len) {
-							search_set_info (head, info, pos - ((info->forward)
-											    ? eq_len-1 : 0), info->text_len);
+							search_set_info (head, info, par,
+									 pos - (info->forward ? eq_len-1 : 0),
+									 info->text_len);
 							retval=TRUE;
 							break;
 						}
@@ -2641,25 +2679,31 @@ spell_check_word_mark (HTMLObject *obj, const gchar *text, const gchar *word, gu
 }
 
 static gchar *
-begin_of_word (gchar *text, gchar *ct)
+begin_of_word (gchar *text, gchar *ct, gboolean *cited)
 {
 	gunichar uc;
 
+	*cited = FALSE;
 	do
 		uc = g_utf8_get_char (ct);
-	while (!html_is_in_word (uc) && (ct = g_utf8_next_char (ct)) && *ct);
+	while (!html_selection_spell_word (uc, cited) && (ct = g_utf8_next_char (ct)) && *ct);
 
 	return ct;
 }
 
 static gchar *
-end_of_word (gchar *ct)
+end_of_word (gchar *ct, gboolean cited)
 {
 	gunichar uc;
 	gchar *cn;
+	gboolean cited2;
 
-	while (*ct && (cn = e_unicode_get_utf8 (ct, &uc)) && html_is_in_word (uc))
+	cited2 = FALSE;
+	while (*ct && (cn = e_unicode_get_utf8 (ct, &uc))
+	       && (html_selection_spell_word (uc, &cited2) || (!cited && cited2))) {
 		ct = cn;
+		cited2 = FALSE;
+	}
 
 	return ct;
 }
@@ -2707,8 +2751,10 @@ html_clueflow_spell_check (HTMLClueFlow *flow, HTMLEngine *e, HTMLInterval *inte
 	if (text) {
 		ct = text;
 		while (*ct) {
-			word = ct = begin_of_word (text, ct);
-			ct        =   end_of_word (ct);
+			gboolean cited;
+
+			word = ct = begin_of_word (text, ct, &cited);
+			ct        =   end_of_word (ct, cited);
 
 			/* test if we have found word */
 			if (word != ct) {
