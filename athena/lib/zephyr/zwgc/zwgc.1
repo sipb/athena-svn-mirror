@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
-.\"	$Author: jtkohl $
-.\"	$Id: zwgc.1,v 1.11 1989-12-22 14:41:14 jtkohl Exp $
+.\"	$Author: marc $
+.\"	$Id: zwgc.1,v 1.12 1990-01-02 17:53:23 marc Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -375,7 +375,7 @@ Exits the innermost if, case, or while block.
 Evaluates \fIexpr1\fR.  Then, each of the match expressions is
 evaluated in order.  The first time an expression matches \fIexpr1\fR,
 then the body of commands under it is executed, and the rest of the case
-statement is skipped.  default always
+statement is skipped.  This compare is case-insensitive.  default always
 matches, so it should always appear as the last set of commands.  See
 the default description file for an example of use.
 .TP
