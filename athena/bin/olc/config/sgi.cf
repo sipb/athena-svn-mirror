@@ -1,17 +1,17 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/sgi.cf,v 1.1 1995-08-23 20:22:54 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/sgi.cf,v 1.2 1996-08-10 21:32:25 cfields Exp $ */
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
 
-#define HaveGcc         0
-#define HasSaberC       0
+#define HaveGcc		0
+#define HasSaberC	0
 #define HasPutenv	1
 #define HaveDefErrno	0
-#define HaveNoProto     1
-#define SystemV               1
-#define Posix   1
+#define HaveNoProto	1
+#define SystemV		1
+#define Posix		1
 #define ArCmd ar cq
-#define HaveTermIO    1
-#define CppCmd          /lib/cpp
+#define HaveTermIO	1
+#define CppCmd		/lib/cpp
 #define MachSpecDef -DSGI
 #define ExtraLibraries -lhesiod
-#define HaveSysLibMu	0
+#define HaveAnsiIncludes	1
