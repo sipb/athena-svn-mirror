@@ -13,14 +13,14 @@ xolc*XmForm.horizontalSpacing:		5
 xolc*XmForm.verticalSpacing:		5
 xolc*XmList.listMarginWidth:		5
 xolc*XmList.listMarginHeight:		5
-!xolc*XmList.listSpacing:		5
 xolc*fontList:				fixed
 xolc*title:				On-Line Consulting
 xolc*iconName:				OLC
-xolc*main.width:			530
-xolc*main.height:			400
-xolc*main.minWidth:			530
-xolc*main.minHeight:			355
+!
+*main.width:			530
+*main.height:			400
+*main.minWidth:			530
+*main.minHeight:			355
 !
 *main.topAttachment:			ATTACH_FORM
 *main.leftAttachment:			ATTACH_FORM

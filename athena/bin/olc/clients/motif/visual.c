@@ -271,39 +271,33 @@ MakeContqForm()
 					   "optionsRowCol", args, n);
   XtManageChild(w);
 
-  n=0;
   w = w_send_btn = XmCreatePushButton(w_options_rowcol, "send_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_send, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, SEND_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_done_btn = XmCreatePushButton(w_options_rowcol, "done_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_done, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, DONE_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_cancel_btn = XmCreatePushButton(w_options_rowcol,
 					"cancel_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_cancel, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, CANCEL_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_savelog_btn = XmCreatePushButton(w_options_rowcol,
 					 "savelog_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_savelog, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, SAVELOG_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_motd_btn = XmCreatePushButton(w_options_rowcol, "motd_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_motd, NULL);
   XtAddCallback(w, XmNhelpCallback, Help, MOTD_BTN);
   XtManageChild(w);
 
-  n=0;
   w = w_update_btn = XmCreatePushButton(w_options_rowcol,
 					  "update_btn", args, n);
   XtAddCallback(w, XmNactivateCallback, olc_update, NULL);
