@@ -1977,6 +1977,13 @@ fi
 fi
 if test -n "$krb5_cv_staticlibs_enabled" ; then
         
+cat>>append.out<<\PUSHEOF
+
+install:: libcom_err.$(STEXT)
+	$(INSTALL_DATA) libcom_err.$(STEXT) $(DESTDIR)$(KRB5_LIBDIR)$(S)libcom_err.$(STEXT)
+	$(RANLIB) $(DESTDIR)$(KRB5_LIBDIR)$(S)libcom_err.$(STEXT)
+
+PUSHEOF
 
         
 
