@@ -4,7 +4,7 @@ Welcome to Athena
 - Project Athena was an eight-year experiment (1983-1991) to explore the use
   of computers in university educational programs.  The Project focused on
   developing computers as useful tools, rather than as objects of study, in
-  the education of students at MIT. 
+  the education of students at MIT.
 
 - The Athena system, one of the fruits of Project Athena, is a campus-wide
   distributed computer service consisting of hundreds of networked
@@ -13,13 +13,13 @@ Welcome to Athena
   goals and learn about computers while at the Institute.
 
 - For help about any aspect of Athena, type:   help   followed by a carriage
-  return.  This calls the On-Line Help system (OLH), a menu browser that 
-  helps you find information about many Athena topics.  (If a topic is not 
-  described in detail, OLH usually provides information on where to find out
-  more about the topic.)  OLH includes:
+  return.  This starts a web browser displaying the home page of the On-Line
+  Help system (OLH), which helps you find information about many Athena
+  topics.  (If a topic is not described in detail, OLH usually provides
+  information on where to find out more about the topic.)  OLH includes:
 
     - guides to all aspects of the supported Athena environment, including
-      how to get an account, how to login and logout, how to work with the 
+      how to get an account, how to login and logout, how to work with the
       UNIX operating system, and how to use some of the most popular
       software on Athena (including software that can help you use Athena
       to write papers or analyze data)
@@ -33,6 +33,6 @@ Welcome to Athena
 
 - If you have trouble, you can contact an Athena User Consultant.  To get a
   consultant on-line, just type:  olc   followed by a carriage return.  To
-  talk to a consultant in person, call X3-4435 (if there is no consultant on 
+  talk to a consultant in person, call X3-4435 (if there is no consultant on
   duty, you will get a recording informing you of the consulting schedule).
 
