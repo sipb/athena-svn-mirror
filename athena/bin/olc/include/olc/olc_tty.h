@@ -12,14 +12,15 @@
  *
  *      Tom Coppeto
  *      Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.12 1991-08-23 13:39:02 raek Exp $
- *	$Author: raek $
+ *	$Id: olc_tty.h,v 1.13 1991-11-05 14:01:51 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -41,6 +42,9 @@ ERRCODE t_get_accesses P((REQUEST *Request , char *file ));
 
 /* t_ask.c */
 ERRCODE t_ask P((REQUEST *Request , char *topic , char *q_file));
+
+/* t_admin.c */
+ERRCODE t_toggle_zephyr P((REQUEST *Request, int what, int how_long));
 
 /* t_connect.c */
 ERRCODE t_grab P((REQUEST *Request , int flag , int hold ));
@@ -104,7 +108,6 @@ ERRCODE t_input_status P((REQUEST *Request , char *string ));
 int get_user_status_string P((int status , char *string ));
 int get_status_string P((int status , char *string ));
 int t_pp_stati P((void ));
-ERRCODE t_version P((REQUEST *Request ));
 
 /* t_topic.c */
 ERRCODE t_input_topic P((REQUEST *Request , char *topic , int flags ));
@@ -130,6 +133,9 @@ int edit_message P((char *file , char *editor ));
 ERRCODE mail_message P((char *user , char *consultant , char *msgfile , char **args ));
 char *happy_message P((void ));
 char *article P((char *word ));
+
+/* t_version.c */
+ERRCODE t_version P((REQUEST *Request ));
 
 #undef P
 
