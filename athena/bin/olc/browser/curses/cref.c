@@ -22,15 +22,15 @@
 /* This file is part of the CREF finder.  It contains the primary command
  * loop.
  *
- *	$Source:
- *	$Author:
- *      $Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v $
+ *	$Author: ghudson $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 2.13 1997-04-30 17:26:37 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_commands_c = "$Header: ";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 2.13 1997-04-30 17:26:37 ghudson Exp $";
 #endif
 #endif
 
@@ -42,11 +42,11 @@ static char *rcsid_commands_c = "$Header: ";
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <string.h>
-#include "cref.h"			/* CREF finder defs. */
-#include "globals.h"			/* Global variable defs. */
+#include <browser/cref.h>		/* CREF finder defs. */
+#include <browser/cur_globals.h>	/* Global variable defs. */
 
 char *Prog_Name;			/* Name this program was invoked as */
-int CREF;				/*  Are we running as CREF or not? */
+static char *Cfg_Path = NULL;		/* Path to search for the conf. file */
 
 #define DELETE	'\177'
 #define CTRL_L	'\f'
@@ -62,16 +62,11 @@ main(argc, argv)
      int argc;
      char *argv[];
 {
-  Prog_Name = strrchr(*argv,'/');
+  Prog_Name = strrchr(argv[0],'/');
   if(Prog_Name == (char *) NULL)
-     Prog_Name = *argv;
+     Prog_Name = argv[0];
   if(*Prog_Name == '/')
      ++Prog_Name;
-
-  if(!strcmp(Prog_Name,"cref"))
-    CREF = 1;
-  else
-    CREF = 0;
 
   if (init_display() != SUCCESS)
     {
@@ -82,6 +77,7 @@ main(argc, argv)
   init_globals();
   init_signals();
   parse_args(argc, argv);
+  read_config(Prog_Name, Cfg_Path);
   set_current_dir(Current_Dir);
   make_abbrev_table();
   make_display();
@@ -108,14 +104,14 @@ command_loop()
   while (1)
     {
       move(LINES - 3, 3);
-      addstr((CREF) ? CREF_PROMPT : STOCK_PROMPT);
+      addstr(Prompt);
       clrtoeol();
       refresh();
       noecho();
       command = getch();
       if (isdigit(command))
 	{
-	  move(LINES - 3, strlen((CREF) ? CREF_PROMPT : STOCK_PROMPT) + 3);
+	  move(LINES - 3, strlen(Prompt) + 3);
 	  echo();
 	  clrtoeol();
 	  message(1, "Read section:");
@@ -186,7 +182,7 @@ parse_args(argc, argv)
   int c;				/* Option character. */
   char filename[MAXPATHLEN];		/* Option filename directory. */
 
-  while ( (c = getopt(argc, argv, "r:s:f:a:c:")) != EOF)
+  while ( (c = getopt(argc, argv, "r:s:f:a:c:C:N:")) != EOF)
     switch (c)
       {
       case 'r':
@@ -208,11 +204,8 @@ parse_args(argc, argv)
 	strcpy(filename, optarg);
 	if (filename[0] == '-' || filename[0] == '/')
 	  err_abort("Pathname should be relative to root dir:\n", filename);
-	strcpy(Current_Dir, Root_Dir);
-	strcat(Current_Dir, "/");
-	strcat(Current_Dir, filename);
-	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_abort("No CREF index file in this directory:\n", Current_Dir);
+	/* Root_Dir may be unset; keep arg around until config file is read. */
+	Subdir_Arg = optarg;
 	break;
       case 'a':
 	strcpy(filename, optarg);
@@ -228,6 +221,12 @@ parse_args(argc, argv)
 	strcpy(Current_Dir, Root_Dir);
 	if (create_cref_dir(Current_Dir) != SUCCESS)
 	  err_abort("Cannot create new root.", "");
+	break;
+      case 'C':    /* Specify search path for the config file. */
+	Cfg_Path = optarg;
+	break;
+      case 'N':    /* Specify name for the config file. */
+	Prog_Name = optarg;
 	break;
       case '?':
       default:
