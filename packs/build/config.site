@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.22 1999-02-02 15:39:08 danw Exp $
+# $Id: config.site,v 1.23 1999-02-08 22:30:52 ghudson Exp $
 #
 
 athena=true
@@ -60,9 +60,9 @@ esac
 [ -n "$with_zephyr" ]	|| with_zephyr=yes
 [ -n "$with_ares" ]	|| with_ares=yes
 
-prefix=/usr/athena
-datadir='${exec_prefix}/lib'
-sbindir='${exec_prefix}/etc'
-sysconfdir=/etc/athena
-lbindir=/bin/athena
-lsbindir=/etc/athena
+[ -n "$prefix" ]	|| prefix=/usr/athena
+[ -n "$datadir" ]	|| datadir='${exec_prefix}/lib'
+[ -n "$sbindir" ]	|| sbindir='${exec_prefix}/etc'
+[ -n "$sysconfdir" ]	|| sysconfdir=/etc/athena
+[ -n "$lbindir" ]	|| lbindir=/bin/athena
+[ -n "$lsbindir" ]	|| lsbindir=/etc/athena
