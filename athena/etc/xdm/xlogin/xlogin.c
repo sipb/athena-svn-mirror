@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.72 1998-05-03 22:40:07 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.73 1998-06-23 20:54:05 danw Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -15,6 +15,7 @@
 #include <X11/Intrinsic.h>
 #include <ctype.h>
 #include <errno.h>
+#include <pwd.h>
 #include <X11/Wc/WcCreate.h>
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
@@ -62,9 +63,6 @@ int xdmfd;
 
 #define ACTIVATED 1
 #define REACTIVATING 2
-
-#define DAEMON 1			/* UID for scripts to run as */
-#define N_DAEMON "daemon"
 
 gid_t def_grplist[] = { 101 };		/* default group list */
 
@@ -1063,6 +1061,7 @@ void runACT(w, event, p, n)
 #ifdef sgi
   extern char **environ;
 #endif
+  struct passwd *pw;
 
   unfocusACT(w, event, p, n);
   argv = (char **)malloc(sizeof(char *) * (*n + 3));
@@ -1111,27 +1110,33 @@ void runACT(w, event, p, n)
   punsetenv("XENVIRONMENT");
 
   psetenv("PATH", defaultpath, 1);
-  psetenv("USER", "daemon", 1);
+  psetenv("USER", "nobody", 1);
   psetenv("SHELL", "/bin/sh", 1);
   psetenv("DISPLAY", ":0", 1);
 
 #ifdef sgi
   psetenv("PRELOGIN", "true", 1);
-  if (nanny_setupUser(N_DAEMON, environ, argv))
+  if (nanny_setupUser("nobody", environ, argv))
     {
-      fprintf(stderr, "Unable to set up for daemon app\n");
+      fprintf(stderr, "Unable to set up for 'nobody' app\n");
       return;
     }
 
-  fprintf(xdmstream, "%s", N_DAEMON);
+  fprintf(xdmstream, "%s", "nobody");
   fputc(0, xdmstream);
 
   exit(0);
 #else
+  pw = getpwnam("nobody");
+  if (!pw)
+    {
+      fprintf(stderr, "Unable to find 'nobody' account\n");
+      return;
+    }
   setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
   setgid(def_grplist[0]);
-  if (setuid(DAEMON))
+  if (setuid(pw->pw_uid))
     {
       fprintf(stderr, "Unable to set user id.\n");
       return;
