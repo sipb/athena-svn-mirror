@@ -500,7 +500,6 @@ main(int argc, char **argv)
 
 	/* add some timeouts */
 	gtk_timeout_add (10*1000, menu_age_timeout, NULL);
-	gtk_timeout_add (10*60*1000, check_screen_timeout, NULL);
 	
 	/*load these as the last thing to prevent some races any races from
 	  starting multiple goad_id's at once are libgnorba's problem*/
