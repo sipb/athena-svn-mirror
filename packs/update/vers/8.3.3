@@ -1,3 +1,13 @@
 #!/bin/sh
 
+case "$HOSTTYPE" in
+sun4)
+	echo "/etc/.login"				>> "$DEADFILES"
+	echo "/etc/profile"				>> "$DEADFILES"
+	;;
+
+sgi)
+	;;
+esac
+
 echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
