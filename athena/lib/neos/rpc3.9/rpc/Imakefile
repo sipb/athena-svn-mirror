@@ -4,7 +4,7 @@
  *
  * Copyright (c) 1987 by Sun Microsystems, Inc.
  *
-*/ 
+ */ 
 
 #if defined(_IBMR2) || defined(sun)
 
@@ -14,6 +14,7 @@ OBJS = vers_ctl.o
 HDRS = 
 
 #else
+#define BUILD_RPC
 
 DEFINES = -I../usr/include -I.. 
 
@@ -49,7 +50,7 @@ all:: $(HDRS) libfxrpc.a
 	-mkdir ../usr/include/rpc && \
 		/etc/chown bin ../usr/include/rpc && \
 		chmod 755 ../usr/include/rpc
-#if !defined(_IBMR2) && !defined(sun)
+#ifdef BUILD_RPC
 	@echo "Installing RPC header files"
 	-set -x;for i in $(HDRS) ; do \
 		($(INSTALL) -m 644 $$i ../usr/include/rpc) done
@@ -68,7 +69,7 @@ ref: tags
 lint: $(SRCS) $(HDRS)
 	$(LINT.c) $(SRCS)
 
-#if (!defined (_IBMR2) || !defined(sun))
+#ifdef BUILD_RPC
 create_dir(${ATHINCDIR}/fx/rpc)
 
 install::
