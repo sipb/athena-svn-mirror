@@ -122,6 +122,7 @@
 "*Dialog.shadowThickness:	4",
 "*passwd.heading.label:		XScreenSaver %s",
 "*passwd.body.label:		This display is locked.",
+"*passwd.body.idleLabel:		This display is locked due to idle time.",
 "*passwd.user.label:		User:",
 "*passwd.passwd.label:		Password:",
 "*passwd.idle.label:		Idle time:",

@@ -168,8 +168,13 @@ make_passwd_window (saver_info *si)
 
   pw->heading_label = get_string_resource ("passwd.heading.label",
 					   "Dialog.Label.Label");
-  pw->body_label = get_string_resource ("passwd.body.label",
-					"Dialog.Label.Label");
+  pw->body_label = NULL;
+  if (si->locked_due_to_idle_p)
+    pw->body_label = get_string_resource ("passwd.body.idleLabel",
+					  "Dialog.Label.Label");
+  if (pw->body_label == NULL)
+    pw->body_label = get_string_resource ("passwd.body.label",
+					  "Dialog.Label.Label");
   pw->user_label = get_string_resource ("passwd.user.label",
 					"Dialog.Label.Label");
   pw->passwd_label = get_string_resource ("passwd.passwd.label",
@@ -905,6 +910,9 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
     case '\014':					/* Control-L */
       if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
       {
+	syslog(LOG_NOTICE|LOG_AUTH, "%s forcibly logged out, %d seconds idle",
+	       si->orig_uid, (int) pw->idle_time);
+
         update_passwd_window (si, "Logging out...", pw->ratio);
         XSync (si->dpy, False);
 
