@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.13 1991-01-01 14:46:14 lwvanels Exp $
+ *	$Id: requests.h,v 1.14 1991-01-03 15:24:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -103,8 +103,9 @@ typedef struct tIO_REQUEST
 #define OLC_GET_ACCESSES     244
 #define OLC_CHANGE_TOPICS    245
 
-#define OLC_SET_USER_STATUS  246      /* for future use */
-#define OLC_PRIVATE_COMMENT  247
+#define OLC_SET_USER_STATUS  246
+#define OLC_GET_HOURS	     247
+#define OLC_CHANGE_HOURS     248
 
 #define OLC_DUMP_REQ_STATS   250      /* debug server */
 #define OLC_DUMP_QUES_STATS  251      /* debug server */
@@ -178,6 +179,8 @@ typedef struct tIO_REQUEST
 #define STATUS_UNSEEN      1<<22
 #define STATUS_PICKUP      1<<23
 #define STATUS_REFERRED    1<<24
+
+#define PRIV_COMMENT_OPT   1<<24
 #define CHANGE_COMMENT_OPT 1<<25
 #define CHANGE_NOTE_OPT    1<<26
 
