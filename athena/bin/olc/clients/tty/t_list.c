@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.15 1990-11-14 14:56:53 lwvanels Exp $
+ *	$Id: t_list.c,v 1.16 1990-11-16 06:14:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.15 1990-11-14 14:56:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.16 1990-11-16 06:14:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -74,8 +74,10 @@ t_list_queue(Request,sort,queues,topics,users,stati,comments,file,display)
     case EMPTY_LIST:
 	if (Request->options)
 	    printf ("No questions match given status.\n");
-	else if (topics)
+	else if (topics[0] != '\0')
 	    printf ("No questions match requested topic.\n");
+	else if (stati != 0)
+	  printf ("No questions match requested status.\n");
 	else
 	    printf ("The queue is empty.\n");
 	status = SUCCESS;
