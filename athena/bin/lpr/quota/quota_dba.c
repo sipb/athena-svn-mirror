@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.4 1990-07-11 09:22:09 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.5 1990-11-14 16:11:34 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.4 1990-07-11 09:22:09 epeisach Exp $";
+static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.5 1990-11-14 16:11:34 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -82,10 +82,10 @@ encode_princ_key(key, name, instance, service, realm)
     static char keystring[ANAME_SZ + INST_SZ + SERV_SZ + REALM_SZ];
 
     bzero(keystring, ANAME_SZ + INST_SZ + REALM_SZ);
-    strncpy(keystring, name, ANAME_SZ);
-    strncpy(&keystring[ANAME_SZ], instance, INST_SZ);
-    strncpy(&keystring[ANAME_SZ + INST_SZ], service, SERV_SZ);
-    strncpy(&keystring[ANAME_SZ + INST_SZ + SERV_SZ], realm, REALM_SZ);
+    (void) strncpy(keystring, name, ANAME_SZ);
+    (void) strncpy(&keystring[ANAME_SZ], instance, INST_SZ);
+    (void) strncpy(&keystring[ANAME_SZ + INST_SZ], service, SERV_SZ);
+    (void) strncpy(&keystring[ANAME_SZ + INST_SZ + SERV_SZ], realm, REALM_SZ);
     key->dsize = ANAME_SZ + INST_SZ + SERV_SZ + REALM_SZ;
 
     key->dptr = keystring;
@@ -96,10 +96,10 @@ decode_princ_key(key, name, instance, service, realm)
     datum  *key;
     char   *name, *instance, *service, *realm;
 {
-    strncpy(name, key->dptr, ANAME_SZ);
-    strncpy(instance, key->dptr + ANAME_SZ, INST_SZ);
-    strncpy(service, key->dptr + ANAME_SZ + INST_SZ, SERV_SZ);
-    strncpy(realm, key->dptr + ANAME_SZ + INST_SZ + SERV_SZ, REALM_SZ);
+    (void) strncpy(name, key->dptr, ANAME_SZ);
+    (void) strncpy(instance, key->dptr + ANAME_SZ, INST_SZ);
+    (void) strncpy(service, key->dptr + ANAME_SZ + INST_SZ, SERV_SZ);
+    (void) strncpy(realm, key->dptr + ANAME_SZ + INST_SZ + SERV_SZ, REALM_SZ);
     
     name[ANAME_SZ - 1] = '\0';
     instance[INST_SZ - 1] = '\0';
@@ -137,9 +137,9 @@ static char *gen_dbsuffix(db_name, sfx)
     if (sfx == NULL)
 	sfx = ".ok";
 
-    dbsuffix = malloc (strlen(db_name) + strlen(sfx) + 1);
-    strcpy(dbsuffix, db_name);
-    strcat(dbsuffix, sfx);
+    dbsuffix = malloc ((unsigned) strlen(db_name) + strlen(sfx) + 1);
+    (void) strcpy(dbsuffix, db_name);
+    (void) strcat(dbsuffix, sfx);
     return dbsuffix;
 }
 
@@ -251,10 +251,12 @@ static long quota_end_update(db_name, age)
 	    tv[1].tv_sec = age;
 	    tv[1].tv_usec = 0;
 	    /* set times.. */
-	    utimes (new_okname, tv);
-	    fsync(fd);
+	    if(utimes (new_okname, tv)) 
+		syslog(LOG_INFO, "quota_dba: utimes() failed");
+	    if(fsync(fd)) 
+		syslog(LOG_INFO, "quota_dba: fsync() failed");
 	}
-	close(fd);
+	(void) close(fd);
 	if (rename (new_okname, okname) < 0)
 	    retval = errno;
     }
@@ -305,12 +307,12 @@ quota_db_create(db_name)
     if (fd < 0)
 	ret = errno;
     else {
-	close(fd);
+	(void) close(fd);
 	fd = open (pagname, O_RDWR|O_CREAT|O_EXCL, 0600);
 	if (fd < 0)
 	    ret = errno;
 	else
-	    close(fd);
+	    (void) close(fd);
     }
     if (dbminit(db_name) < 0)
 	ret = errno;
@@ -319,7 +321,7 @@ quota_db_create(db_name)
 	fd = open (okname, O_CREAT|O_RDWR|O_TRUNC, 0600);
 	if (fd < 0)
 	    ret = errno;
-	close(fd);
+	(void) close(fd);
     }
     return ret;
 }
@@ -389,13 +391,15 @@ quota_db_get_principal(name, inst, serv, realm, qrec, max, more)
     DBM    *db;
 
     if (!init)
-	quota_db_init();		/* initialize database routines */
+	(void) quota_db_init();		/* initialize database routines */
 
     for (try = 0; try < QUOTA_DB_MAX_RETRY; try++) {
 	trans = quota_start_read();
+	quota_dbl_fini(); 	/* Attempt to fix the problem of old locks */
+	if (quota_dbl_lock(QUOTA_DBL_SHARED) != 0) {
 
-	if (quota_dbl_lock(QUOTA_DBL_SHARED) != 0)
 	    return -1;
+	}
 
 	db = dbm_open(current_db_name, O_RDONLY, 0600);
 
@@ -471,7 +475,7 @@ quota_db_get_principal(name, inst, serv, realm, qrec, max, more)
 	dbm_close(db);
 	if (quota_end_read(trans) == 0)
 	    break;
-	found = -1;
+	found = -2;
 	if (!non_blocking)
 	    sleep(1);
     }
@@ -495,10 +499,10 @@ quota_db_put_principal(qrec, max)
     datum   key, contents;
     DBM    *db;
 
-    gettimeofday(&timestamp, NULL);
+    (void) gettimeofday(&timestamp, (struct timezone *) NULL);
 
     if (!init)
-	quota_db_init();
+	(void) quota_db_init();
 
     if (quota_dbl_lock(QUOTA_DBL_EXCLUSIVE) != 0)
 	return -1;
@@ -516,7 +520,8 @@ quota_db_put_principal(qrec, max)
 	encode_princ_contents(&contents, qrec);
 	encode_princ_key(&key, qrec->name, qrec->instance,
 			 qrec->service, qrec->realm);
-	dbm_store(db, key, contents, DBM_REPLACE);
+	if(dbm_store(db, key, contents, DBM_REPLACE)) 
+	    syslog(LOG_ERR, "quota_dba_put_principal: dbm_store failed");
 #ifdef DEBUG
 	if (quota_debug & 1) {
 	    fprintf(stderr, "\n put %s %s %s %s\n",
@@ -544,7 +549,7 @@ quota_db_iterate (func, arg)
     int code;
     DBM *db;
     
-    quota_db_init();		/* initialize and open the database */
+    (void) quota_db_init();		/* initialize and open the database */
     if ((code = quota_dbl_lock(QUOTA_DBL_SHARED)) != 0)
 	return code;
 
@@ -572,7 +577,7 @@ static quota_dbl_init()
 	char *filename = gen_dbsuffix (current_db_name, ".ok");
 	if ((dblfd = open(filename, 0)) < 0) {
 	    fprintf(stderr, "quota_dbl_init: couldn't open %s\n", filename);
-	    fflush(stderr);
+	    (void) fflush(stderr);
 	    perror("open");
 	    exit(1);
 	}
@@ -584,7 +589,7 @@ static quota_dbl_init()
 
 static void quota_dbl_fini()
 {
-    close(dblfd);
+    if(dblfd != -1) (void) close(dblfd);
     dblfd = -1;
     inited = 0;
     mylock = 0;
@@ -596,11 +601,11 @@ static int quota_dbl_lock(mode)
     int flock_mode=0;
     
     if (!inited)
-	quota_dbl_init();
+	(void) quota_dbl_init();
     if (mylock) {		/* Detect lock call when lock already
 				 * locked */
 	fprintf(stderr, "quota locking error (mylock)\n");
-	fflush(stderr);
+	(void) fflush(stderr);
 	exit(1);
     }
     switch (mode) {
@@ -627,12 +632,12 @@ static void quota_dbl_unlock()
 {
     if (!mylock) {		/* lock already unlocked */
 	fprintf(stderr, "quota database lock not locked when unlocking.\n");
-	fflush(stderr);
+	(void) fflush(stderr);
 	exit(1);
     }
     if (flock(dblfd, LOCK_UN) < 0) {
 	fprintf(stderr, "quota database lock error. (unlocking)\n");
-	fflush(stderr);
+	(void) fflush(stderr);
 	perror("flock");
 	exit(1);
     }
