@@ -23,7 +23,7 @@ libgdk_la_LDFLAGS = @STRIP_BEGIN@ \
 	-export-dynamic \
 	@GLIB_DEPLIBS@	\
 	@x_ldflags@	\
-	@x_libs@	\
+	@x_libs@ -lXi	\
 	-lm		\
 @STRIP_END@
 
