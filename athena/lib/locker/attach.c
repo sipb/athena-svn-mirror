@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.3 1999-05-11 21:13:50 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.4 1999-06-25 21:22:58 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -304,7 +304,7 @@ static int check_mountoptions(locker_context context, locker_attachent *at,
     strcat(mo, "rw,");
   p = mo + strlen(mo);
   if (*mountoptions)
-    strcpy(p, *mountoptions);
+    sprintf(p, "%s,", *mountoptions);
 
   /* Interlude: check user-specified mountoptions */
   while (p && *p)
@@ -353,10 +353,9 @@ static int check_mountoptions(locker_context context, locker_attachent *at,
     mo[len - 1] = '\0';
 
   /* Finally, go back through and remove duplicates and contradictions. */
-  p = mo - 1;
+  p = mo;
   while (p)
     {
-      p++;
       len = strcspn(p, "=,");
       q = strchr(p, ',');
 
@@ -385,7 +384,11 @@ static int check_mountoptions(locker_context context, locker_attachent *at,
 	      memmove(p, q + 1, strlen(q + 1) + 1);
 	    }
 	  else
-	    p = strchr(p, ',');
+	    {
+	      p = strchr(p, ',');
+	      if (p)
+		p++;
+	    }
 	}
       else
 	break;
