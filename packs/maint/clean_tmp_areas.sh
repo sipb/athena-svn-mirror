@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: clean_tmp_areas.sh,v 1.13 1998-10-21 19:59:51 danw Exp $
+# $Id: clean_tmp_areas.sh,v 1.14 1999-04-21 16:43:45 kcr Exp $
 # Script to clean up some temporary areas in a vaguely general manner.
 
 PATH=/bin/athena:/bin:/usr/bin
@@ -7,15 +7,15 @@ export PATH
 
 dirs=/tmp:"-atime +1":/var/tmp:"-atime +2":/var/preserve:"-mtime +3"
 xdev=-mount
-exceptions="! -type b ! -type c"
+exceptions="! -type b ! -type c ! -type p ! -type s"
 args=
 
 case `machtype` in
 sun4)
-	exceptions="$exceptions ! -type p ! -name ps_data"
+	exceptions="$exceptions ! -name ps_data"
 	;;
 sgi)
-	exceptions="$exceptions ! -type p ! -type s ! -user root"
+	exceptions="$exceptions ! -user root"
 	;;
 esac
 
