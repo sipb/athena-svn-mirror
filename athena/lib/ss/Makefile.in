@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2002-02-18 19:43:29 ghudson Exp $
+# $Id: Makefile.in,v 1.6 2005-04-06 19:35:14 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -36,7 +36,7 @@ all: libss.la mk_cmds
 
 libss.la: ${LIBOBJS}
 	${LIBTOOL} ${CC} ${LDFLAGS} -rpath ${libdir} -version-info 1:0:0 \
-	  -o $@ ${LIBOBJS} -lcom_err -lreadline
+	  -o $@ ${LIBOBJS} -lcom_err -lreadline -lcurses
 
 mk_cmds: ${BINOBJS}
 	${CC} ${LDFLAGS} -o mk_cmds ${BINOBJS} ${LIBS}
@@ -83,8 +83,8 @@ install:
 	${INSTALL} -m 444 mit-sipb-copyright.h ${DESTDIR}${includedir}/ss
 
 clean:
-	${LIBTOOL} rm -f ${LIBOBJS}
-	rm -f ${BINOBJS} compile_et libcom_err.a et_lex.lex.c y.tab.c y.tab.h
+	${LIBTOOL} rm -f ${LIBOBJS} libss.la mk_cmd
+	rm -f ${BINOBJS} y.tab.c y.tab.c ss_err.c ss_err.h ss-symlink-stamp
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile

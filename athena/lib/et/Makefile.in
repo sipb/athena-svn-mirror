@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2002-02-11 22:56:10 ghudson Exp $
+# $Id: Makefile.in,v 1.6 2005-04-06 19:34:56 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -62,8 +62,8 @@ install:
 	${INSTALL} -m 444 ${srcdir}/com_err.3 ${DESTDIR}${mandir}/man3
 
 clean:
-	${LIBTOOL} rm -f ${LIBOBJS}
-	rm -f ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
+	${LIBTOOL} rm -f ${LIBOBJS} libcom_err.la compile_et
+	rm -f ${BINOBJS} et_lex.lex.c
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
