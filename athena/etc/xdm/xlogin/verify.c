@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.97 1998-10-13 16:31:29 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.98 1998-11-06 18:48:54 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -819,6 +819,10 @@ add_utmp(user, tty, display)
   ut_entry.ut_host[sizeof(ut_entry.ut_host) - 1] = '\0';
 
   time(&(ut_entry.ut_time));
+#ifdef USER_PROCESS
+  ut_entry.ut_pid = getppid();
+  ut_entry.ut_type = USER_PROCESS;
+#endif
 
   f = open(UTMP, O_RDWR);
   if (f >= 0)
