@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.2 1990-11-18 21:55:32 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.3 1990-11-30 10:32:37 probe Exp $
  *	$Author: probe $
  */
 
@@ -85,7 +85,7 @@ char **argv;
 }
 
 
-static powers[] = {100000, 10000,1000,100,10,1};
+static powers[] = {10000,1000,100,10,1};
 
 int itoa(x, buf)
 int x;
@@ -119,8 +119,7 @@ void logout( )
     unlink(filename);
     f = open(".logout", O_RDONLY, 0);
     if (f >= 0) {
-	close(0);
-	dup(f, 0);
+	dup2(f, 0);
 	execl("/bin/csh", "logout", 0);
     }
     exit(0);
