@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -336,89 +336,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gal-define-views-dialog.lo gal-define-views-dialog.o : \
-	gal-define-views-dialog.c ../../config.h \
-	gal-define-views-dialog.h ../../gal/e-table/e-table-model.h \
-	gal-view-collection.h gal-view-factory.h gal-view.h \
-	gal-define-views-model.h gal-view-new-dialog.h \
-	gal-view-collection.h ../../gal/e-table/e-table-scrolled.h \
-	../../gal/widgets/e-scroll-frame.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h ../../gal/util/e-util.h \
-	../../gal/widgets/e-printable.h \
-	../../gal/e-table/e-table-item.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	../../gal/widgets/e-selection-model-array.h \
-	../../gal/util/e-bit-array.h ../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h
-gal-define-views-model.lo gal-define-views-model.o : \
-	gal-define-views-model.c ../../config.h \
-	gal-define-views-model.h ../../gal/e-table/e-table-model.h \
-	gal-view.h gal-view-collection.h gal-view-factory.h
-gal-view-collection.lo gal-view-collection.o : gal-view-collection.c \
-	../../config.h ../../gal/util/e-i18n.h ../../gal/util/e-util.h \
-	../../gal/util/e-xml-utils.h ../../gal/widgets/e-unicode.h \
-	../../gal/unicode/gunicode.h gal-view-collection.h \
-	gal-view-factory.h gal-view.h
-gal-view-etable.lo gal-view-etable.o : gal-view-etable.c ../../config.h \
-	gal-view-etable.h gal-view.h ../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-defines.h \
-	../../gal/e-table/e-table-config.h \
-	../../gal/widgets/gtk-combo-text.h \
-	../../gal/widgets/gtk-combo-box.h
-gal-view-factory-etable.lo gal-view-factory-etable.o : \
-	gal-view-factory-etable.c ../../config.h \
-	../../gal/util/e-i18n.h gal-view-factory-etable.h \
-	gal-view-factory.h gal-view.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-defines.h gal-view-etable.h
-gal-view-factory.lo gal-view-factory.o : gal-view-factory.c \
-	../../config.h gal-view-factory.h gal-view.h
-gal-view-new-dialog.lo gal-view-new-dialog.o : gal-view-new-dialog.c \
-	../../config.h gal-view-new-dialog.h gal-view-collection.h \
-	gal-view-factory.h gal-view.h gal-define-views-model.h \
-	../../gal/e-table/e-table-model.h gal-view-collection.h \
-	../../gal/widgets/e-unicode.h ../../gal/unicode/gunicode.h \
-	../../gal/e-table/e-table-scrolled.h \
-	../../gal/widgets/e-scroll-frame.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h ../../gal/util/e-util.h \
-	../../gal/widgets/e-printable.h \
-	../../gal/e-table/e-table-item.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	../../gal/widgets/e-selection-model-array.h \
-	../../gal/util/e-bit-array.h ../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h
-gal-view.lo gal-view.o : gal-view.c ../../config.h gal-view.h \
-	../../gal/util/e-util.h
 
 info-am:
 info: info-am

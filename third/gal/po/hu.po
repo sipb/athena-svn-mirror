@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal VERSION\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-08-01 11:33+0200\n"
 "Last-Translator: Andras TIMAR <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -186,26 +186,6 @@ msgstr "Rendelkezésre álló mezõk"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Megjelenítési sorrend"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d elem)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d elem)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d elem)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d elem)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -647,6 +627,18 @@ msgstr "_Módosítandó kategória:"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Mezõk..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d elem)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d elem)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d elem)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d elem)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Nézet beállításai: FIXME"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.8.99.0\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-06-16 09:06+0300\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil GNOME <tamillinux.com>\n"
@@ -187,26 +187,6 @@ msgstr "¦ÅüÈ¡É ÒÄí¸û"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "­ó¾ ÅÃ¢¨ºôÀÊ ¸¡ñÀ¢¸×õ"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d ¯ÕôÀÊ)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d ¯ÕôÀÊ¸û)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d ¯ÕôÀÊ)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d ¯ÕôÀÊ¸û)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -648,6 +628,18 @@ msgstr ""
 
 #~ msgid "_Fields..."
 #~ msgstr "_ÒÄí¸û..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d ¯ÕôÀÊ)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d ¯ÕôÀÊ¸û)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d ¯ÕôÀÊ)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d ¯ÕôÀÊ¸û)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "¸¡ğº¢¨Â «¨ÁÅÊì¸¢ıÈĞ: FIXME"

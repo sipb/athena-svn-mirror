@@ -1,3 +1,17 @@
+2002-02-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-sorter.c: Connect to the model_rows_inserted,
+	model_rows_deleted, and group_info_changed here.
+
+2002-02-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table-item.c (eti_unrealize): Cancel tooltip timeouts here.
+
+2002-02-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-table.c (et_unrealize), e-tree.c (et_unrealize): Call
+	scroll_off and in e-tree.c hover_off.
+
 2001-12-17  Christopher James Lahey  <clahey@ximian.com>
 
 	* e-cell-toggle.c (etog_set_value): Don't queue a redraw here.
