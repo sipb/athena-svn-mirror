@@ -63,6 +63,9 @@ else
 	V4RCPO=v4rcp.o
 fi
 dnl
+AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
+	      [LOGINLIBS="$LOGINLIBS -lresolv"]))
+dnl
 dnl
 AC_SUBST(LOGINLIBS)
 AC_SUBST(V4RCP)
