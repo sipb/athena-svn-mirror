@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: cfields $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.14 1995-11-28 23:05:55 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.15 1996-09-20 02:06:39 ghudson Exp $
  */
 
 /*
@@ -53,7 +53,7 @@
 #endif
 #include <ctype.h>
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include "lp.local.h"
 
 

@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
- *	$Author: cfields $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.9 1994-06-17 11:14:16 cfields Exp $
+ *	$Author: ghudson $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.10 1996-09-20 02:07:23 ghudson Exp $
  */
 
 /*
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <syslog.h>
-#include <strings.h>
+#include <string.h>
 
 #define UDPPROTOCOL	1
 #define RETRY_COUNT	2
