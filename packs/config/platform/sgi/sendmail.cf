@@ -2,9 +2,9 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.2 1996-06-25 20:56:26 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.3 1997-01-09 20:07:04 jweiss Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v $
-#	$Author: cfields $
+#	$Author: jweiss $
 #
 # This sendmail configuration file is for Project Athena
 # Client machines. Go ahead... run it elsewhere and find
@@ -86,8 +86,6 @@ OS/usr/lib/sendmail.st
 Os
 # default timeout interval
 OT3d
-# time zone names (V6 only)
-OtEST,EDT
 # default UID
 Ou1
 # wizard's password
