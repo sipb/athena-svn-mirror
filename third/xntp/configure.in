@@ -2268,6 +2268,12 @@ case "$host" in
     ;;
 esac
 
+# Set lbindir and lsbindir if not already set by Athena config.site
+test -z "$lbindir" && lbindir='${bindir}'
+test -z "$lsbindir" && lsbindir='${sbindir}'
+AC_SUBST(lbindir)
+AC_SUBST(lsbindir)
+
 AC_OUTPUT(Makefile adjtimed/Makefile authstuff/Makefile clockstuff/Makefile \
 include/Makefile kernel/Makefile kernel/sys/Makefile libntp/Makefile \
 libparse/Makefile ntpdate/Makefile ntpq/Makefile ntptrace/Makefile \
