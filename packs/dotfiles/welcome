@@ -1,3 +1,4 @@
+
 Welcome to Project Athena
 --------------------------
 - Project Athena is an eight-year experiment to explore the use of
@@ -9,13 +10,25 @@ Welcome to Project Athena
   population as possible in a campus-wide distributed service networked 
   workstation environment.
 
+- The Project has prepared a set of files, containing information on many
+  Athena topics.  The files provide up to date status information on the
+  Athena system, summaries of Athena features, as well as instructions
+  for learning more about them.  This set of files is kept in a directory
+  named `info'.
+
+  Type the following lines (where [CR] means `Hit the RETURN key') to
+  learn more about what these files contain and how to read them:
+
+      attach info [CR]
+      more /mit/info/README [CR]
+
 - If you have trouble, call X3-4435 to talk to an Athena User Consultant. 
   If there is no consultant on duty, you will get a recording informing you
   of the consulting schedule.
 
 - Documentation is available on line.  In addition, there are reference copies
   in the clusters and copies can be purchased at the Graphic Arts Quick Copy
-  Centers: 11-004 and W20-XXX.  Start with the "Essential" series and the
+  Centers: 11-004 and W20-028.  Start with the "Essential" series and the
   documentation catalog.
 
 - To access on-line documentation, first attach the athenadoc locker by
@@ -24,8 +37,9 @@ Welcome to Project Athena
   typing: more /mit/athenadoc/README 
  
 - Type:  man <program name>  followed by a carriage return to view online
-  manual pages for commands.  For example, type:  man passwd to find out 
-  how to change your password.  Use man to see the manual pages for other
-  useful commands like:  emacs, apropos, more, ls and mh.
+  manual pages for commands.  For example, type:    man ls   to find out 
+  how to list your files.  Use man to see the manual pages for other
+  useful commands like:  emacs, apropos, and more.
 
+----------
 
