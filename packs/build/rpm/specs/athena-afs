@@ -28,6 +28,7 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
 
 %post
 chkconfig --add afs
+[ -d /afs ] || mkdir -p /afs
 
 %files
 /bin/athena
@@ -38,7 +39,6 @@ chkconfig --add afs
 /usr/vice/etc/afsd
 /usr/vice/etc/modload
 %dir /usr/vice/cache
-%dir /afs
 %config /usr/vice/etc/CellServDB
 %config /usr/vice/etc/ThisCell
 %config /usr/vice/etc/cacheinfo
