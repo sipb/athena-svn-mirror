@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.78 2003-03-18 21:16:18 ghudson Exp $
+# $Id: do.sh,v 1.79 2003-03-26 16:32:35 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -161,6 +161,11 @@ export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
 # make install rules.
 GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+
+# On Linux, we use the native pkg-config, which needs to be able to
+# find our libraries.
+PKG_CONFIG_PATH=/usr/athena/lib/pkgconfig
+export PKG_CONFIG_PATH
 
 if [ -r Makefile.athena ]; then
   export SRVD SOURCE COMPILER
