@@ -1,3 +1,79 @@
+Thu Jan 11 11:12:16 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: releasing 1.8.11
+
+Sun Dec 24 20:10:11 2000  Ali Abdin <aliabdin@aucegypt.edu>
+
+	* parser.c: in xmlParseReference, do not split up an entity into the
+	  '&' and the rest of it (e.g. 'gt;'). This throws off the SAX parser
+	  in a certain case and makes it do SAX.characters ('&') and then
+	  SAX.characters ('gt;'). The code is only #if 0'd out. I ran 'make
+	  tests' and no errors were generated.
+
+Sun Nov 12 12:12:22 2000  George Lebl <jirka@5z.com>
+
+	* tree.c: xmlAddPrevSibling and xmlAddNextSibling had reverse
+	  semantics from those documented.  And the only use on gnome-cvs
+	  I could find was bonobo-ui which used the documented semantics
+	  apparently.  Thus I switched the bodies of these two functions.
+
+Sun Nov 12 21:17:19 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HACKING: updated instructions for v1
+
+Sat Nov 04 18:36:52 2000  George Lebl <jirka@5z.com>
+
+	* tree.c: When messing with the child list by adding children,
+	  don't just update the last pointer, but set the parent pointers
+	  as well for all the children, during the traversal.  Also in
+	  xmlUnlinkNode, if the node is the doc->root node, set doc->root
+	  to NULL.
+
+Sat Sep 30 16:35:54 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in xml-config.in: patch from "Ben Taylor"
+	  <sol7x86@hotmail.com> for solaris shared libs lookup
+
+2000-09-30  Martin Baulig  <baulig@suse.de>
+
+	* libxml.pc.in: Provide pkg-config script.
+
+	* configure.in: Create the libxml.pc script from the
+	libxml.pc.in templates.
+	* Makefile.am (pkgconfig_DATA): Install the libxml.pc
+	script in `$(libdir)/pkgconfig'.
+
+Fri Sep  8 20:44:05 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.c:  handling of doc == NULL in xmlGetDocEntity()
+	  was not proper ... refixed ...
+
+Thu Sep  7 16:12:35 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* Makefile.in: aplied old patch from Sopwith
+	* tree.c: fix Windows bug reported by Marcus Lankenau
+	  <marcus.lankenau@socon.de>
+
+Thu Sep  7 01:27:42 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: released 1.8.10
+
+Sat Sep  2 10:26:36 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* entities.c: added missing tests for doc == NULL as pointed by
+	  Michael.
+
+Mon Aug  7 11:19:00 PDT 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.c : return content from CDATA sections when asking for
+	           node content
+
+Mon Jul 10 16:08:05 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in: 1.8.9
+	* config.spec.in: more spec and dependances fixes
+	* nanoftp.c: fixed a the way the control connection was handled
+
 Sun Jul  2 20:27:34 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* config.spec.in: fixed bug #7419, devel with same %ver
@@ -5,6 +81,7 @@ Sun Jul  2 20:27:34 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 Thu Jun 29 11:37:38 CEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* parser.c: fixed &#38; parsing bug
+	* released 1.8.8
 
 Thu Jun 29 01:27:19 MEST 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 

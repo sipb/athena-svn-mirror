@@ -44,12 +44,16 @@ extern int xmlKeepBlanksDefaultValue;
 #define IS_BLANK(c)							\
   (((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == ' '))
 
-#define UPDATE_LAST_CHILD(n) if ((n) != NULL) {				\
+#define UPDATE_LAST_CHILD_AND_PARENT(n) if ((n) != NULL) {		\
     xmlNodePtr ulccur = (n)->childs;					\
     if (ulccur == NULL) {						\
         (n)->last = NULL;						\
     } else {								\
-        while (ulccur->next != NULL) ulccur = ulccur->next;		\
+        while (ulccur->next != NULL) {					\
+	       	ulccur->parent = (n);					\
+		ulccur = ulccur->next;					\
+	}								\
+	ulccur->parent = (n);						\
 	(n)->last = ulccur;						\
 }}
 
@@ -768,7 +772,8 @@ xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int inLine) {
     if (list == NULL) return(NULL);
 
     while (node != NULL) {
-        if (node->type == XML_TEXT_NODE) {
+        if ((node->type == XML_TEXT_NODE) ||
+	    (node->type == XML_CDATA_SECTION_NODE)) {
 	    if (inLine) {
 #ifndef XML_USE_BUFFER_CONTENT
 		ret = xmlStrcat(ret, node->content);
@@ -1215,7 +1220,7 @@ xmlNewDocNode(xmlDocPtr doc, xmlNsPtr ns,
         cur->doc = doc;
 	if (content != NULL) {
 	    cur->childs = xmlStringGetNodeList(doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	}
     }
     return(cur);
@@ -1244,7 +1249,7 @@ xmlNewDocRawNode(xmlDocPtr doc, xmlNsPtr ns,
         cur->doc = doc;
 	if (content != NULL) {
 	    cur->childs = xmlNewDocText(doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	}
     }
     return(cur);
@@ -1766,13 +1771,13 @@ xmlAddNextSibling(xmlNodePtr cur, xmlNodePtr elem) {
     xmlUnlinkNode(elem);
     elem->doc = cur->doc;
     elem->parent = cur->parent;
-    elem->next = cur;
-    elem->prev = cur->prev;
-    cur->prev = elem;
-    if (elem->prev != NULL)
-	elem->prev->next = elem;
-    if ((elem->parent != NULL) && (elem->parent->childs == cur))
-	elem->parent->childs = elem;
+    elem->prev = cur;
+    elem->next = cur->next;
+    cur->next = elem;
+    if (elem->next != NULL)
+	elem->next->prev = elem;
+    if ((elem->parent != NULL) && (elem->parent->last == cur))
+	elem->parent->last = elem;
     return(elem);
 }
 
@@ -1805,13 +1810,13 @@ xmlAddPrevSibling(xmlNodePtr cur, xmlNodePtr elem) {
     xmlUnlinkNode(elem);
     elem->doc = cur->doc;
     elem->parent = cur->parent;
-    elem->prev = cur;
-    elem->next = cur->next;
-    cur->next = elem;
-    if (elem->next != NULL)
-	elem->next->prev = elem;
-    if ((elem->parent != NULL) && (elem->parent->last == cur))
-	elem->parent->last = elem;
+    elem->next = cur;
+    elem->prev = cur->prev;
+    cur->prev = elem;
+    if (elem->prev != NULL)
+	elem->prev->next = elem;
+    if ((elem->parent != NULL) && (elem->parent->childs == cur))
+	elem->parent->childs = elem;
     return(elem);
 }
 
@@ -1928,7 +1933,7 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
 	    if (text->next != NULL)
 		text->next->prev = text;
 	    parent->childs = text;
-	    UPDATE_LAST_CHILD(parent)
+	    UPDATE_LAST_CHILD_AND_PARENT(parent)
 #ifndef XML_USE_BUFFER_CONTENT
 	    xmlFree(parent->content);
 #else
@@ -2037,6 +2042,8 @@ xmlUnlinkNode(xmlNodePtr cur) {
 #endif
 	return;
     }
+    if ((cur->doc != NULL) && (cur->doc->root == cur))
+        cur->doc->root = NULL;
     if ((cur->parent != NULL) && (cur->parent->childs == cur))
         cur->parent->childs = cur->next;
     if ((cur->parent != NULL) && (cur->parent->last == cur))
@@ -2312,7 +2319,7 @@ xmlStaticCopyNode(xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
         ret->properties = xmlCopyPropList(ret, node->properties);
     if (node->childs != NULL)
         ret->childs = xmlStaticCopyNodeList(node->childs, doc, ret);
-    UPDATE_LAST_CHILD(ret)
+    UPDATE_LAST_CHILD_AND_PARENT(ret)
     return(ret);
 }
 
@@ -2751,7 +2758,7 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
 	    }
 	    if (cur->childs != NULL) xmlFreeNodeList(cur->childs);
 	    cur->childs = xmlStringGetNodeList(cur->doc, content);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	    break;
         case XML_ATTRIBUTE_NODE:
 	    break;
@@ -2820,7 +2827,7 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 	    }
 	    if (cur->childs != NULL) xmlFreeNodeList(cur->childs);
 	    cur->childs = xmlStringLenGetNodeList(cur->doc, content, len);
-	    UPDATE_LAST_CHILD(cur)
+	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	    break;
         case XML_ATTRIBUTE_NODE:
 	    break;
@@ -2891,7 +2898,7 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 		    cur->childs = xmlStringGetNodeList(cur->doc,
 			                       xmlBufferContent(cur->content));
 #endif
-		    UPDATE_LAST_CHILD(cur)
+		    UPDATE_LAST_CHILD_AND_PARENT(cur)
 #ifndef XML_USE_BUFFER_CONTENT
 		    xmlFree(cur->content);
 #else
@@ -4594,7 +4601,11 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
     }
     if (zoutput == NULL) {
 #endif
+#ifdef WIN32
+        output = fopen(filename, "wb");
+#else
         output = fopen(filename, "w");
+#endif
 	if (output == NULL) {
 	    xmlBufferFree(buf);
 	    return(-1);
