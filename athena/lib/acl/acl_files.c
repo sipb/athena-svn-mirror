@@ -1,9 +1,9 @@
 /*
- *	$Id: acl_files.c,v 1.13 1999-01-22 23:17:14 ghudson Exp $
+ *	$Id: acl_files.c,v 1.14 1999-08-13 00:16:20 danw Exp $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.13 1999-01-22 23:17:14 ghudson Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.14 1999-08-13 00:16:20 danw Exp $";
 #endif /* lint */
 
 /*
@@ -76,7 +76,7 @@ static int acl_abort();
 /* If realm is missing, it becomes the local realm */
 /* Canonicalized form is put in canon, which must be big enough to hold
    MAX_PRINCIPAL_SIZE characters */
-acl_canonicalize_principal(principal, canon)
+void acl_canonicalize_principal(principal, canon)
 char *principal;
 char *canon;
 {
@@ -264,7 +264,7 @@ int perm;
 
 /* Eliminate all whitespace character in buf */
 /* Modifies its argument */
-static nuke_whitespace(buf)
+static void nuke_whitespace(buf)
 char *buf;
 {
     register char *pin, *pout;
@@ -297,7 +297,7 @@ int size;
 }
 
 /* Destroy a hash table */
-static destroy_hash(h)
+static void destroy_hash(h)
 struct hashtbl *h;
 {
     int i;
@@ -322,7 +322,7 @@ register char *s;
 }
 
 /* Add an element to a hash table */
-static add_hash(h, el)
+static void add_hash(h, el)
 struct hashtbl *h;
 char *el;
 {
