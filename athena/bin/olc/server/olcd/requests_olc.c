@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.49 1992-02-04 20:22:55 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.50 1992-02-14 20:52:08 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.49 1992-02-04 20:22:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.50 1992-02-14 20:52:08 lwvanels Exp $";
 #endif
 #endif
 
@@ -1752,17 +1752,15 @@ olc_list(fd, request)
   if(status)
     return(send_response(fd,status));
   
-  if(!isme(request))
-    {
-      status = match_knuckle(request->target.username, 
-			     request->target.instance,
-			     &target);
-      
-      if(is_option(request->options,LIST_PERSONAL))
-	if(status)
-	  return(send_response(fd,status));
-    }
-  else
+  if (!isme(request)) {
+    status = match_knuckle(request->target.username, 
+			   request->target.instance,
+			   &target);
+  
+    if(is_option(request->options,LIST_PERSONAL))
+      if(status)
+	return(send_response(fd,status));
+  } else
     target = requester;
 
   if(!(is_allowed(requester->user,MONITOR_ACL)) && 
@@ -1786,9 +1784,11 @@ olc_list(fd, request)
       read_int_from_fd(fd,&stati);
       send_response(fd,SUCCESS);
 
-      if(*name == '\0')
-	if(requester != target)
+      if(*name == '\0') {
+	if ((request->requester.instance != request->target.instance) ||
+	    (strcmp(request->requester.username, request->target.username)))
 	  strcpy(name,request->target.username);
+      }
 
       topicP = (int *) NULL;      
       if(*topics != '\0')
