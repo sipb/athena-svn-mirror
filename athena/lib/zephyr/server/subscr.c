@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.30 1988-06-24 22:57:18 jtkohl Exp $";
+static char rcsid_subscr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.31 1988-07-08 14:32:28 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -331,13 +331,10 @@ char *person;
 	for (subs2 = subs->q_forw; subs2 != subs; subs2 = subs2->q_forw)
 		/* if not a wildcard, replace it with person */
 		if (strcmp(subs2->zst_recipient, "*")) {
-			xfree(subs2->zst_recipient);
-			subs2->zst_recipient = strsave(person);
+			subs2->zst_recipient = person;
 		} else {		/* replace with null recipient */
-			xfree(subs2->zst_recipient);
-			subs2->zst_recipient = strsave("");
+			subs2->zst_recipient = "";
 		}
-			
 	return(subs);
 }
 
