@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/standard_ports.c,v $
- *      $Author: raeburn $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.10 1990-10-19 08:27:35 raeburn Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.11 1991-07-01 00:27:48 lwvanels Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -280,11 +280,7 @@ void init_standard_ports(pargc, argv)
 	else { /* no suitable default has been found */
 	    if (fallback == -1)		/* complain, since indeterminate */
 		ERROR2(
-"\7\7\7There is no X display available, so zwgc cannot run.\n\
-THIS MEANS THAT YOU WILL NOT RECEIVE ANY ZEPHYR MESSAGES.\n\
-If you wish to receive Zephyr messages, you should start zwgc\n\
-with the -ttymode option (type `%s -ttymode').\n\
-Read the zwgc(1) manual page for details on the fallback variable.\n\n",
+"To receive Zephyrgrams, (type `%s -ttymode').\n",
 		      ZWGCPATH);
 	    exit(1);
 	}
