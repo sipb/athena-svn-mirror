@@ -216,3 +216,5 @@ deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
 
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
+
+applet-widget.o applet.o extern.o panel.o status-docklet.o status.o xstuff.o applet-widget.lo applet.lo extern.lo panel.lo status-docklet.lo status.lo xstuff.lo: gnome-panel.h
