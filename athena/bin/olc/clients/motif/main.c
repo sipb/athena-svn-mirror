@@ -25,7 +25,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.4 1989-07-31 16:01:46 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.5 1989-08-09 16:15:15 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -42,6 +42,31 @@ static Window root;
 static int screen;
 
 static char *vec[] = {"olc.uid"};	/* There is 1 uid file to fetch.  */
+
+Widget				/* Widget ID's */
+  w_newq_btn,
+  w_contq_btn,
+  w_stock_btn,
+  w_quit_btn,
+  w_help_btn,
+  w_contq_form,
+  w_connect_lbl,
+  w_topic_lbl,
+  w_replay_scrl,
+  w_send_btn,
+  w_done_btn,
+  w_cancel_btn,
+  w_savelog_btn,
+  w_motd_btn,
+  w_update_btn,
+  w_motd_dlg,
+  w_help_dlg,
+  w_quit_dlg,
+  w_error_dlg,
+  w_motd_form,
+  w_motd_scrl,
+  toplevel,
+  main_form;
 
 /*
  *  Callbacks that are attached to the buttons and widgets in the
@@ -198,6 +223,7 @@ printf("main: starting for %s/%s (%d)  on %s\n",User.realname, User.username,
  *  interface, etc.
  */
   toplevel = XtInitialize(NULL, "OLC", NULL, 0, &argc, argv);
+  MuInitialize(toplevel);
   XtSetArg (arglist[0], XtNallowShellResize, TRUE);
   XtSetValues (toplevel, arglist, 1);
   display = XtDisplay(toplevel); 
@@ -212,6 +238,7 @@ printf("main: starting for %s/%s (%d)  on %s\n",User.realname, User.username,
       fprintf(stderr, "%s: Unable to OPEN heirarchy file that contains layout of interface.\n\tTry using the text-based interface instead.  Type:\n\n\t\tolc\n\n", program);
       exit(ERROR);
     }
+  MuRegisterNames();
       
   if (MrmRegisterNames (reg_vec, reg_num) != MrmSUCCESS)
     {
