@@ -1,4 +1,4 @@
-# $Id: packages,v 1.27 1997-10-29 22:29:30 ghudson Exp $
+# $Id: packages,v 1.28 1997-10-29 22:31:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -46,7 +46,6 @@ third/look			sgi
 third/whois			sgi
 third/appletalk			sun4
 third/ispell
-athena/lib/AL
 athena/lib/acl
 athena/lib/gdb
 athena/lib/zephyr
@@ -54,7 +53,6 @@ athena/lib/neos
 athena/etc/track
 athena/etc/newsyslog
 athena/etc/cleanup
-athena/etc/ftpd			all,-sgi
 athena/etc/inetd
 athena/etc/listsuidcells
 athena/etc/gettime
@@ -94,7 +92,6 @@ athena/bin/write
 athena/bin/athdir
 athena/bin/lpr
 athena/bin/quota
-athena/bin/telnet
 athena/bin/xdpr
 athena/bin/xquota		sun4
 third/perl			sun4
