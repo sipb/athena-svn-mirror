@@ -1,4 +1,4 @@
-/* $Id: smp.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: smp.c,v 1.1.1.2 2003-01-27 03:24:10 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,6 +22,7 @@
 */
 
 #include <locale.h>
+#include <math.h>
 
 #include <glibtop.h>
 #include <glibtop/cpu.h>
@@ -42,6 +43,8 @@ main (int argc, char *argv [])
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 	
+	glibtop_init();
+
 	glibtop_get_cpu (&cpu);
 
 	ncpu = glibtop_global_server->ncpu ? glibtop_global_server->ncpu : 1;

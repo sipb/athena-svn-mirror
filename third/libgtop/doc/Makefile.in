@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -148,7 +147,9 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 
 info_TEXINFOS = libgtop2.texi
 
-libgtop2_TEXINFOS = libgtop2.texi about.texi reference.texi 			  auto-macros.texi version.texi main.texi 			  white-paper.texi
+libgtop2_TEXINFOS = libgtop2.texi about.texi reference.texi \
+			  auto-macros.texi version.texi main.texi \
+			  white-paper.texi
 
 
 MAKEINFO = @MAKEINFO@ -I @libgtop_top_builddir@/doc

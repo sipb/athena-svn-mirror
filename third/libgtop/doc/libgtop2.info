@@ -1,8 +1,8 @@
-This is libgtop2.info, produced by makeinfo version 4.0 from
+This is libgtop2.info, produced by makeinfo version 4.2 from
 libgtop2.texi.
 
    This is the LibGTop Reference Manual version 2.0.0 (last modified
-10 June 2002).
+26 November 2001).
 
    Copyright 1999 Free Software Foundation, Inc.
 
@@ -1982,42 +1982,42 @@ you may not set all parameters since some of them are read-only.
 
 
 Tag Table:
-Node: Top1203
-Node: About3356
-Node: Availability4233
-Node: Supported Platforms4848
-Node: Mailing List6453
-Node: Thanks7220
-Node: White Paper7932
-Node: Introduction8161
-Node: Overview9869
-Node: Interface Design10231
-Node: Server Implementation11246
-Node: Reference Manual11953
-Node: System Dependent12253
-Node: glibtop_cpu13320
-Node: glibtop_mem15505
-Node: glibtop_swap16665
-Node: glibtop_uptime17894
-Node: glibtop_loadavg19188
-Node: glibtop_proclist20194
-Node: glibtop_proc_state23429
-Node: glibtop_proc_uid26219
-Node: glibtop_proc_mem27806
-Node: glibtop_proc_time31506
-Node: glibtop_proc_signal33189
-Node: glibtop_proc_kernel34240
-Node: glibtop_proc_segment37146
-Node: glibtop_proc_args38603
-Node: glibtop_proc_map39666
-Node: glibtop_netload41657
-Node: glibtop_ppp44178
-Node: Common Functions45240
-Node: glibtop_mountlist45660
-Node: glibtop_fsusage47600
-Node: Library Functions48555
-Node: glibtop_init48977
-Node: glibtop_sysdeps51722
-Node: Library Parameters54337
+Node: Top1207
+Node: About3360
+Node: Availability4237
+Node: Supported Platforms4852
+Node: Mailing List6457
+Node: Thanks7224
+Node: White Paper7936
+Node: Introduction8165
+Node: Overview9873
+Node: Interface Design10235
+Node: Server Implementation11250
+Node: Reference Manual11957
+Node: System Dependent12257
+Node: glibtop_cpu13324
+Node: glibtop_mem15509
+Node: glibtop_swap16669
+Node: glibtop_uptime17898
+Node: glibtop_loadavg19192
+Node: glibtop_proclist20198
+Node: glibtop_proc_state23433
+Node: glibtop_proc_uid26223
+Node: glibtop_proc_mem27810
+Node: glibtop_proc_time31510
+Node: glibtop_proc_signal33193
+Node: glibtop_proc_kernel34244
+Node: glibtop_proc_segment37150
+Node: glibtop_proc_args38607
+Node: glibtop_proc_map39670
+Node: glibtop_netload41661
+Node: glibtop_ppp44182
+Node: Common Functions45244
+Node: glibtop_mountlist45664
+Node: glibtop_fsusage47604
+Node: Library Functions48559
+Node: glibtop_init48981
+Node: glibtop_sysdeps51726
+Node: Library Parameters54341
 
 End Tag Table

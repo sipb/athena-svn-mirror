@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -152,7 +151,13 @@ INCLUDES = @INCLUDES@
 
 lib_LTLIBRARIES = libgtop_names-2.0.la
 
-libgtop_names_2_0_la_SOURCES = cpu.c mem.c swap.c uptime.c loadavg.c 				  shm_limits.c msg_limits.c sem_limits.c 				  proclist.c sysdeps.c procstate.c procuid.c 				  proctime.c procmem.c procsignal.c 				  prockernel.c procsegment.c fsusage.c 				  mountlist.c procargs.c procmap.c netload.c 				  ppp.c
+libgtop_names_2_0_la_SOURCES = cpu.c mem.c swap.c uptime.c loadavg.c \
+				  shm_limits.c msg_limits.c sem_limits.c \
+				  proclist.c sysdeps.c procstate.c procuid.c \
+				  proctime.c procmem.c procsignal.c \
+				  prockernel.c procsegment.c fsusage.c \
+				  mountlist.c procargs.c procmap.c netload.c \
+				  ppp.c
 
 
 libgtop_names_2_0_la_LDFLAGS = $(LT_VERSION_INFO)

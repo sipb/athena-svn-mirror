@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -150,10 +149,16 @@ bin_PROGRAMS = mkinodedb2 file_by_inode2
 
 INCLUDES = @INCLUDES@
 
-mkinodedb2_LDADD = $(top_builddir)/lib/libgtop-2.0.la 			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la 			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la 			  @LIBSUPPORT@ @INTLLIBS@
+mkinodedb2_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
+			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
+			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
+			  @LIBSUPPORT@ @INTLLIBS@
 
 
-file_by_inode2_LDADD = $(top_builddir)/lib/libgtop-2.0.la 			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la 			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la 			  @LIBSUPPORT@ @INTLLIBS@
+file_by_inode2_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
+			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
+			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
+			  @LIBSUPPORT@ @INTLLIBS@
 
 
 EXTRA_DIST = README.inodedb

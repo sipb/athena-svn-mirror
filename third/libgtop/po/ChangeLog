@@ -1,3 +1,74 @@
+2003-01-03  Andras Timar  <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-12-14  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation and converted to UTF-8.
+
+2002-11-25  Yanko Kaneti  <yaneti@declera.com>
+
+	* *.po: Convert all to UTF-8.
+
+2002-11-07  Simos Xenitellis  <simos74@gmx.net>
+
+	* el.po: Updated Greek translation.
+
+2002-11-04  Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+
+	* nl.po: Jeroen van der Vegt updated Dutch translation.
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* be.po: Added Belarusian translation
+	* from Belarusian team <i18n@infonet.by>.
+
+2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* cs.po: Added Czech translation from Miloslav Trmac
+	<mitr@volny.cz>.
+
+2002-09-19  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Ömer.
+
+2002-09-02  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* lv.po: Updated Latvian translation.
+
+2002-08-22  Andras Timar  <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-08-20  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* lv.po (added): Latvian translation.
+
+2002-08-07  Christian Neumair  <christian-neumair@web.de>
+
+	* de.po: Updated German translation.
+
+2002-07-13  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2002-06-25  Yanko Kaneti <yaneti@declera.com>
+
+	* bg.po (added): Bulgarian translation by
+	Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>.
+
+2002-06-22  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ca.po: Updated Catalan file
+
+2002-06-17  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* vi.po: Updated Vietnamese file
+
+2002-06-13  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
 2002-06-10  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* vi.po: Updated Vientamese file
@@ -221,7 +292,7 @@
 	* fi.po: Reverted Jarkko Ranta's change; please do
 	not commit any compressed files in future.
 
-2001-02-10  Christophe Merlet  <redfox@eikonex.org>
+2001-02-10  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -237,7 +308,7 @@
 
 	* ru.po: Updated russian translation.
 
-2001-02-05  Christophe Merlet  <redfox@eikonex.org>
+2001-02-05  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 

@@ -1,3 +1,45 @@
+2003-01-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 2.0.1
+
+2002-12-30  Bastien Nocera <hadess@hadess.net>
+
+	* Added sysdeps/aix directory that was missing
+
+2002-10-08  Laurent Vivier <Laurent.Vivier@bull.net>
+
+	* Framework for AIX support
+
+2002-08-07  Vincent Berger <Vincent.Berger@ext.bull.net> 
+
+	* support/: Add alloca management for AIX
+	* configure.in: correct checking for nm
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* configure.in: Added cs to ALL_LINGUAS.
+
+2002-09-26  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (ALL_LINGUAS): remove cs until the file actually
+	gets added
+
+2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* configure.in: Added cs to ALL_LINGUAS.
+
+2002-08-20  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* configure.in: (ALL_LINGUAS) Added Latvian (lv).
+
+2002-06-25  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
 2002-05-10  Kevin Vandersloot <kfv101@psu.edu>
 
 	* configure.in: release 2.0.0

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -152,10 +151,13 @@ INCLUDES = @INCLUDES@
 
 lib_LTLIBRARIES = libgtop-2.0.la
 
-libgtop_2_0_la_SOURCES = init.c open.c close.c command.c read.c 				  read_data.c write.c lib.c parameter.c 				  sysdeps.c
+libgtop_2_0_la_SOURCES = init.c open.c close.c command.c read.c \
+				  read_data.c write.c lib.c parameter.c \
+				  sysdeps.c
 
 
 libgtop_2_0_la_LDFLAGS = $(LT_VERSION_INFO)
+libgtop_2_0_la_LIBADD = $(top_builddir)/sysdeps/common/libgtop_common-2.0.la $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la $(sysdeps_suid_lib) $(INTLLIBS)
 
 BUILT_SOURCES = lib.c
 
@@ -176,7 +178,9 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-libgtop_2_0_la_LIBADD = 
+libgtop_2_0_la_DEPENDENCIES =  \
+$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
+$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
 libgtop_2_0_la_OBJECTS =  init.lo open.lo close.lo command.lo read.lo \
 read_data.lo write.lo lib.lo parameter.lo sysdeps.lo
 CFLAGS = @CFLAGS@
