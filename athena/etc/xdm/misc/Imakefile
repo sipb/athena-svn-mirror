@@ -43,14 +43,16 @@ DEFINES		=	-I/build/athena/lib
 
 AnsiCC()
 
+create_dir(${ATHRETCDIR}/login)
+
 build_library(nanny, ${LIBOBJS})
 build_program(testtty, testtty.o,, ${LIBS})
 build_program(testsetUser, testsetUser.o,, ${LIBS})
 build_program(testloginUser, testloginUser.o,, ${LIBS})
 build_program(testlogoutUser, testlogoutUser.o,, ${LIBS})
 
-SimpleProgram(${NANNY},${NANNYOBJS},${LIBS},${ATHRETCDIR}/${NANNY})
+SimpleProgram(${NANNY},${NANNYOBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/${NANNY})
 SimpleProgram(${ELMER},${ELMEROBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/login/${ELMER})
-install_man(${NANNY}.man,${NANNY}.1)
+/* install_man(${NANNY}.man,${NANNY}.1) */
 
 create_depend(${CFILES})
