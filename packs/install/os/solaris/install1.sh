@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.6 2000-09-08 22:47:59 zacheiss Exp $
+### $Id: install1.sh,v 1.7 2000-11-02 18:51:28 miki Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -90,6 +90,7 @@ echo "Installing on ${drive}."
 case $CUSTOM in
 N)
   echo "standard installation - 8.4"
+  REV=8.4    
   ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
   ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
   ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
@@ -103,30 +104,36 @@ Y)
    case "$buff" in
    7.7)
        echo "installing 7.7"
+       REV=7.7
        ln -s /afs/athena.mit.edu/system/sun4m_53/srvd.77 /tmp/srvd
        ;;
    8.0)
        echo "installing 8.0"
+       REV=8.0
        ln -s /afs/athena.mit.edu/system/sun4m_54/srvd.80 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4m_54/os /tmp/os 
        ;;
    8.1)
        echo "installing 8.1"
+       REV=8.1
        ln -s /afs/athena.mit.edu/system/sun4x_55/srvd-8.1 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_55/os /tmp/os 
        ;;
    8.2)
        echo "installing 8.2"
+       REV=8.2
        ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
        ;;
    8.3)
        echo "installing 8.3"
+       REV=8.3
        ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
        ;;
    8.4)
        echo "installing 8.4"
+       REV=8.4
        ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
        ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
@@ -134,6 +141,7 @@ Y)
        ;;
     *)
        echo "installing 8.4"
+       REV=8.4
        ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
        ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
        ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
@@ -334,8 +342,15 @@ echo "Starting afsd "
 /etc/afsd -nosettime -daemons 4
 type=install; export type
 date >/tmp/install.log
-sh /util/install2.sh | tee -a /tmp/install.log
-#sh /srvd/install/install2.sh | tee -a /tmp/install.log
+
+case $REV in
+ 8.4)
+    sh /srvd/install/install2.sh | tee -a /tmp/install.log
+    ;;
+ *)
+    sh /srvd/install/phase3.sh 
+    ;;
+esac
 echo "Some unexpected error occured"
 echo "Please contact Athena Hotline at x3-1410."
 echo "Thank you. -Athena Operations"
