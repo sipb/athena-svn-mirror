@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: main.c,v 1.36 1999-01-22 23:20:22 ghudson Exp $
+ *      $Id: main.c,v 1.37 2000-08-10 15:11:58 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #endif
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_main_c[] = "$Id: main.c,v 1.36 1999-01-22 23:20:22 ghudson Exp $";
+static const char rcsid_main_c[] = "$Id: main.c,v 1.37 2000-08-10 15:11:58 ghudson Exp $";
 #endif
 
 #include <netdb.h>
@@ -325,8 +325,21 @@ void notice_handler(notice)
      ZNotice_t *notice;
 {
     struct hostent *fromhost = NULL;
+    char *resolved_addresses;
+    int bool_result;
 
-    if (notice->z_sender_addr.s_addr) {
+    resolved_addresses = ZGetVariable("resolved_addresses");
+    if (!resolved_addresses)
+        bool_result = 0;
+    else if (!strcmp(resolved_addresses, "all"))
+        bool_result = 1;
+    else if (!strcmp(resolved_addresses, "none"))
+        bool_result = 0;
+    else
+        bool_result = ed_regexp_match_p(inet_ntoa(notice->z_sender_addr),
+					resolved_addresses);
+
+    if (notice->z_sender_addr.s_addr && bool_result) {
 #ifdef HAVE_ARES
 	ares_gethostbyaddr(achannel, &(notice->z_sender_addr),
 			   sizeof(notice->z_sender_addr), AF_INET,
