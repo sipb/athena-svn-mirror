@@ -1,8 +1,8 @@
 /* 
  * Imakefile for turnin and related clients; Athena release
  *
- * $Author: epeisach $
- * $Id: Imakefile,v 1.4 1992-04-27 12:37:46 epeisach Exp $
+ * $Author: vrt $
+ * $Id: Imakefile,v 1.5 1993-05-06 16:41:52 vrt Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  *
@@ -12,5 +12,9 @@
 FXTEST=fxtest
 #endif
 
+#ifndef SOLARIS
 #define ISUBDIRS rpc3.9 ets include protocol lib clients server ${FXTEST} man
+#else
+#define ISUBDIRS rpc3.9 ets include protocol lib clients ${FXTEST} man
+#endif
 
