@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.28 1989-12-28 16:10:35 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.29 1990-07-12 12:42:23 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.28 1989-12-28 16:10:35 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.29 1990-07-12 12:42:23 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -58,7 +58,14 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <grp.h>
+
 typedef struct in_addr inaddr_t;
+
+#ifdef POSIX
+#define sigtype void
+#else
+typedef sigtype int;
+#endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
@@ -69,8 +76,10 @@ typedef struct in_addr inaddr_t;
 #define NMAX	sizeof(utmp.ut_name)
 #define HMAX	sizeof(utmp.ut_host)
 
+#ifndef FALSE
 #define	FALSE	0
 #define	TRUE	-1
+#endif
 
 #ifdef VFS
 #define QUOTAWARN	"/usr/ucb/quota"	/* warn user about quotas */
@@ -104,10 +113,36 @@ char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"/bin/athena/get_message";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
+#ifdef POSIX
+struct  passwd nouser = {"",
+                             "nope",
+                             -2,
+                             0,
+                             -2,
+                             0,
+                             0,
+                             "",
+                             "",
+                             "",
+                             "" };
+
+struct  passwd newuser = {"\0\0\0\0\0\0\0\0",
+                              "*",
+                              START_UID,
+                              0,
+                              MIT_GID,
+                              0,
+                              0,
+                              NULL,
+                              NULL,
+                              "/mit/\0\0\0\0\0\0\0\0",
+                              NULL };
+#else
 struct	passwd nouser = {"", "nope", -2, -2, -2, "", "", "", "" };
 
 struct	passwd newuser = {"\0\0\0\0\0\0\0\0", "*", START_UID, MIT_GID, 0,
 			  NULL, NULL, "/mit/\0\0\0\0\0\0\0\0", NULL };
+#endif POSIX
 
 struct	sgttyb ttyb;
 struct	utmp utmp;
@@ -275,8 +310,9 @@ main(argc, argv)
 	tty = ttyn;
     else
 	tty++;
+#ifndef SYSLOG42
     openlog("login", LOG_ODELAY, LOG_AUTH);
-
+#endif
     /* destroy environment unless user has asked to preserve it */
     /* (Moved before passwd stuff by asp) */
     if (!pflag)
@@ -544,6 +580,9 @@ leavethis:
 		    (void) dest_tkt();
 	    exit(0);
 	}
+#ifdef SYSLOG42
+    openlog("login", 0);
+#endif
 	/*
 	 * If valid so far and root is logging in,
 	 * see if root logins on this terminal are permitted.
@@ -577,7 +616,7 @@ leavethis:
 		exit(1);
 	    }
 	}
-	if (*pwd->pw_shell == '\0')
+	if (!invalid && pwd->pw_shell && *pwd->pw_shell == '\0')
 	    pwd->pw_shell = "/bin/sh";
 
 	/* 
@@ -585,7 +624,7 @@ leavethis:
 	  NFS uses euid and uid for access checking
 	 */
 	setreuid(geteuid(),pwd->pw_uid);
-	if (chdir(pwd->pw_dir) < 0 && !invalid ) {
+	if (!invalid && chdir(pwd->pw_dir) < 0) {
 	    if (chdir("/") < 0) {
 		printf("No directory!\n");
 		invalid = TRUE;
@@ -1020,6 +1059,7 @@ done:
 }
 /* END TRASH */
 
+#ifndef ultrix
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
@@ -1060,7 +1100,7 @@ setenv(var, value, clobber)
 	strcat(environ[index], value);
 	environ[++index] = NULL;
 }
-
+#endif ultrix
 
 /*
  * This routine handles cleanup stuff, notification service, and the like.
@@ -1150,8 +1190,8 @@ char *prompt;
 	register c;
 	FILE *fi;
 	static char pbuf[MAXPWSIZE+1];
-	int (*signal())();
-	int (*sig)();
+	sigtype (*signal())();
+	sigtype (*sig)();
 
 	if ((fi = fdopen(open("/dev/tty", 2), "r")) == NULL)
 		fi = stdin;
@@ -1659,8 +1699,10 @@ int verify_krb_tgt (realm)
     }
     else if (krbval != KSUCCESS) {
 	printf ("Unable to verify Kerberos TGT: %s\n", krb_err_txt[krbval]);
+#ifndef SYSLOG42
 	syslog (LOG_NOTICE|LOG_AUTH, "Kerberos TGT bad: %s",
 		krb_err_txt[krbval]);
+#endif
 	return -1;
     }
     /* got ticket, try to use it */
@@ -1673,11 +1715,13 @@ int verify_krb_tgt (realm)
 	    printf ("Unable to verify `rcmd' ticket: %s\n",
 		    krb_err_txt[krbval]);
 	}
+#ifndef SYSLOG42
 	syslog (LOG_NOTICE|LOG_AUTH, "can't verify rcmd ticket: %s;%s\n",
 		krb_err_txt[krbval],
 		retval
 		? "srvtab found, assuming failure"
 		: "no srvtab found, assuming success");
+#endif
 	goto EGRESS;
     }
     /*
