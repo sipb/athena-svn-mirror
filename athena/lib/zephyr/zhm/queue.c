@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.15 1997-03-22 00:06:32 ghudson Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.15.2.1 1997-06-09 20:17:54 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -259,10 +259,10 @@ struct sockaddr_in *sin;
 		    }
 		    srch->q_data->timeout = time((time_t *)0) +
 			rexmit_times[srch->q_data->retries];
-		    srch = srch->q_forw;
 	       }
+	       srch = srch->q_forw;
 	  }
      } while (srch != &hm_queue);
-     timeout_type = NOTICES;
-     (void)alarm(rexmit_times[0]);
+     if (timeout_type == NOTICES)
+	  (void)alarm(rexmit_times[0]);
 }
