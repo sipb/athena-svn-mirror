@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.21 1991-07-26 17:13:36 probe Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.22 1991-08-09 09:22:44 lwvanels Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -53,7 +53,7 @@ xlogin*left:			ChainLeft
 !		General Resources.
 ! ------------------------------------------------------------
 
-xlogin.Geometry: 		580x325+205+75
+xlogin.Geometry: 		580x325+205+105
 *bitmapFilePath:		/etc/athena/login
 *BorderWidth:			0
 *Background:			white
@@ -475,7 +475,7 @@ xlogin.Geometry: 		580x325+205+75
 ! 		Option Shell Widget specifications.
 ! ------------------------------------------------------------
 
-*getSessionShell.geometry:	+200+450
+*getSessionShell.geometry:	+200+480
 
 *getsession.wcClass:		dialogWidgetClass
 *getsession.icon:		question
@@ -553,7 +553,7 @@ xlogin.Geometry: 		580x325+205+75
 				WcSetValueCB(*selection.label: )
 
 
-*queryShell.geometry:		400x300+290+210
+*queryShell.geometry:		400x300+290+240
 *queryShell.borderWidth:	3
 *queryShell.borderColor:	black
 
@@ -580,7 +580,7 @@ xlogin.Geometry: 		580x325+205+75
 *query*value.displayCaret:	False
 *query*value.translations:	#replace
 
-*warningShell.geometry:		400x300+290+210
+*warningShell.geometry:		400x300+290+240
 *warningShell.borderWidth:	3
 *warningShell.borderColor:	black
 
