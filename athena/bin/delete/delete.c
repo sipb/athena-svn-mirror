@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.11 1989-01-26 10:47:48 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.12 1989-01-26 12:02:57 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -128,6 +128,9 @@ char *argv[];
 		    exit(1);
 	       }
 	       break;
+	  default:
+	       usage();
+	       exit(1);
 	  }
      }
      if (optind == argc) {
