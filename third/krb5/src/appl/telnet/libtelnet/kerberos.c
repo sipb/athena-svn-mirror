@@ -147,6 +147,7 @@ Data(ap, type, d, c)
 {
         unsigned char *p = str_data + 4;
 	unsigned char *cd = (unsigned char *)d;
+	size_t spaceleft = sizeof(str_data) - 4;
 
 	if (c == -1)
 		c = strlen((char *)cd);
@@ -162,9 +163,16 @@ Data(ap, type, d, c)
 	*p++ = ap->type;
 	*p++ = ap->way;
 	*p++ = type;
+	spaceleft -= 3;
         while (c-- > 0) {
-                if ((*p++ = *cd++) == IAC)
-                        *p++ = IAC;
+		if ((*p++ = *cd++) == IAC) {
+			*p++ = IAC;
+			spaceleft--;
+		}
+		if ((--spaceleft < 4) && c) {
+			errno = ENOMEM;
+			return -1;
+		}
         }
         *p++ = IAC;
         *p++ = SE;
