@@ -577,7 +577,6 @@ XCOMM X Window System make variables; this need to be coordinated with rules
             FONTC = bdftopcf		/* assume BINDIR in path */
 #endif
         MKFONTDIR = mkfontdir		/* assume BINDIR in path */
-        MKDIRHIER = BourneShell $(BINDIR)/mkdirhier
 #else
             IMAKE = $(IMAKESRC)/imake
            DEPEND = DependCmd
@@ -588,8 +587,8 @@ XCOMM X Window System make variables; this need to be coordinated with rules
             FONTC = $(BDFTOPCFSRC)/bdftopcf
 #endif
         MKFONTDIR = $(MKFONTDIRSRC)/mkfontdir
-        MKDIRHIER = BourneShell $(SCRIPTSRC)/mkdirhier.sh
 #endif
+        MKDIRHIER = BourneShell $(CONFIGDIR)/mkdirhier.sh
 
         CONFIGSRC = $(TOP)/config
        DOCUTILSRC = $(TOP)/doc/util
