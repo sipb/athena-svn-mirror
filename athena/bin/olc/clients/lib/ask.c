@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.16 1991-08-23 13:01:05 raek Exp $
- *	$Author: raek $
+ *	$Id: ask.c,v 1.17 1991-10-31 14:55:56 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.16 1991-08-23 13:01:05 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.17 1991-10-31 14:55:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,16 +33,31 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 
 ERRCODE
-OAsk(Request,topic,file)
+OAsk_buffer(Request,topic,buf)
      REQUEST *Request;
      char *topic;
-     char *file;
+     char *buf;
 {
   int fd;
   int status;
   FILE *f;
   char s[BUF_SIZE], machinfo[BUF_SIZE];
  
+  /* Start this early so that things aren't blocked on it later */
+
+  if (! (is_option(Request->options,VERIFY))) {
+#ifdef ATHENA
+  /* This should be gotten rid of when the Mac gets machtype compiled for it */
+#ifdef _AUX_SOURCE
+    strcpy(machinfo,"Macintosh AUX, 8M");
+#else
+#ifdef _IBMR2
+    f = popen("/bin/athena/machtype -c -d -M", "r");
+#else
+    f = popen("/bin/athena/machtype -c -d -M -v", "r");
+#endif
+  }
+
   Request->request_type = OLC_ASK;
   status = open_connection_to_daemon(Request, &fd);
   if(status)
@@ -52,6 +67,7 @@ OAsk(Request,topic,file)
   if(status)
     {
       close(fd);
+      fclose(f);
       return(status);
     }
 
@@ -69,7 +85,7 @@ OAsk(Request,topic,file)
       return(status);
     }
 
-  write_file_to_fd(fd,file);
+  write_text_to_fd(fd,buf);
   read_response(fd,&status);
 
   if (status != SUCCESS)
@@ -78,16 +94,6 @@ OAsk(Request,topic,file)
       return(status);
     }
 
-#ifdef ATHENA
-  /* This should be gotten rid of when the Mac gets machtype compiled for it */
-#ifdef _AUX_SOURCE
-  strcpy(machinfo,"Macintosh AUX, 8M");
-#else
-#ifdef _IBMR2
-  f = popen("/bin/athena/machtype -c -d -M", "r");
-#else
-  f = popen("/bin/athena/machtype -c -d -M -v", "r");
-#endif
   machinfo[0] = '\0';
   while (fgets(s, BUF_SIZE, f) != NULL)
     {
@@ -108,5 +114,27 @@ OAsk(Request,topic,file)
   if ((status == CONNECTED) || (status == NOT_CONNECTED))
     read_int_from_fd(fd,&(Request->requester.instance));
   close(fd);
+  fclose(f);
+  return(status);
+}
+
+ERRCODE
+OAsk_file(Request,topic,file)
+     REQUEST *Request;
+     char *topic;
+     char *file;
+{
+  char *buf = NULL;
+  ERRCODE status;
+
+  if (! (is_option(Request->options,VERIFY))) {
+    if ((status = read_file_into_text(file,&buf)) != SUCCESS)
+      return(status);
+  }
+
+  status = OAsk_buffer(Request,topic,buf);
+  if (buf != NULL) {
+    free(buf);
+  }
   return(status);
 }
