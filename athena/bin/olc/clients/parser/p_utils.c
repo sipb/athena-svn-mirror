@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v $
- *	$Id: p_utils.c,v 1.11 1990-11-14 12:27:28 lwvanels Exp $
+ *	$Id: p_utils.c,v 1.12 1990-12-14 11:59:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.11 1990-11-14 12:27:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.12 1990-12-14 11:59:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -54,6 +54,7 @@ handle_argument(args, req, status)
 	if(isnumber(*args) != SUCCESS)
 	  {
 	    printf("Specified instance id \"%s\" is not a number.\n", *args);
+	    *status = ERROR;
 	    return((char **) NULL);
 	  }
 	num_of_args++;
@@ -72,6 +73,7 @@ handle_argument(args, req, status)
 	if(isnumber(*args) != SUCCESS)
 	  {
 	    printf("Specified instance id \"%s\" is not a number.\n", *args);
+	    *status = ERROR;
 	    return((char **) NULL);
 	  }
 	num_of_args++;
@@ -87,6 +89,7 @@ handle_argument(args, req, status)
   else if (*args[0] == '-')
     {
       fprintf(stderr, "The argument, \"%s\", is invalid.\n", *args);
+      *status = ERROR;
       return((char **) NULL);
     }
   else if(string_equiv(args[0],"-help",max(strlen(args[0]),2)))
@@ -104,6 +107,7 @@ handle_argument(args, req, status)
 		{
 		  printf("Specified instance id \"%s\" is not a number.\n", 
 			 *args);
+		  *status = ERROR;
 		  return((char **) NULL);
 		}
 	      req->target.instance = atoi(*args); 	 
