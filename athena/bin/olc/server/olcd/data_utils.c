@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.26 1991-01-06 01:14:46 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.27 1991-01-08 16:37:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.26 1991-01-06 01:14:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.27 1991-01-08 16:37:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -109,6 +109,7 @@ create_user(person)
    * create knuckle
    */
 
+  (void) strncpy(user->username,person->username,LOGIN_SIZE);
   if ((knuckle = create_knuckle(user)) == (KNUCKLE *) NULL)
     {
       log_error("add_user: could not create knuckle");
