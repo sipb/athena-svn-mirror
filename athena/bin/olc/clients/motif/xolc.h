@@ -24,6 +24,7 @@
 extern Widget			/* Widget ID's */
   toplevel,
   main_form,
+  w,
 
   w_newq_btn,
   w_contq_btn,
@@ -100,15 +101,22 @@ extern void
   olc_update(),
   dlg_ok(),
   dlg_cancel(),
-  Help(),	
-  MakeInterface(),
-  t_set_default_instance(),
   olc_topic_select(),
   olc_clear_newq(),
   olc_send_newq(),
   olc_send_msg(),
   olc_clear_msg(),
-  olc_close_msg()
+  olc_close_msg(),
+
+  Help(),	
+
+  MakeInterface(),
+  MakeContqForm(),
+  MakeNewqForm(),
+  MakeMotdForm(),
+  MakeDialogs(),
+
+  t_set_default_instance()
 ;
 
 extern ERRCODE x_done(),
@@ -132,8 +140,6 @@ typedef struct tTOPIC {
 } TOPIC;
 
 extern TOPIC TopicTable[256];
-
-extern Display *display;
 
 extern int has_question,
   init_screen,
