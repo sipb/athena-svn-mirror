@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.11 1998-03-01 22:58:34 rbasch Exp $
+# $Id: Makefile,v 1.12 1998-06-08 14:10:20 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRLIBDIR=/usr/lib
-ATTACHRUN=cc f77
+ATTACHRUN=cc f77 f90 pc CC
 ATTRUNTEMPLATE=../../template.sh
 
 all: ${ATTACHRUN}
@@ -22,9 +22,14 @@ install:
 	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 f90 ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 pc ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 CC ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${ATHBINDIR}/otalk
 	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
+	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
+	ln -s /usr/openwin/bin/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
 	rm -f ${DESTDIR}${USRLIBDIR}/cpp
 	ln -s /usr/ccs/lib/cpp ${DESTDIR}${USRLIBDIR}/cpp
 
