@@ -22,12 +22,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.26 1990-08-20 04:43:07 lwvanels Exp $
+ *	$Id: olcd.c,v 1.27 1990-08-24 03:25:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.26 1990-08-20 04:43:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.27 1990-08-24 03:25:58 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -105,11 +105,17 @@ static int listening_fd;
 #if __STDC__
 int punt(int sig);
 int reap_child(int sig);
+#ifdef PROFILE
 int dump_profile(int sig);
+int start_profile(int sig);
+#endif /* PROFILE */
 #else
 int punt();
 int reap_child();
+#ifdef PROFILE
 int dump_profile();
+int start_profile();
+#endif /* PROFILE */
 #endif
 
 static char ME[60] =
@@ -438,7 +444,9 @@ restart:
     signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
     signal(SIGPIPE, SIG_IGN);
 #ifdef PROFILE
-    signal(SIGUSR1, dump_profile); /* Dump profiling information */
+    signal(SIGUSR1, dump_profile); /* Dump profiling information and stop */
+				   /* profiling */
+    signal(SIGUSR2, start_profile); /* Start profiling */
 #endif /* PROFILE */
     get_kerberos_ticket ();
 
@@ -693,6 +701,7 @@ reap_child(sig)
     pid = wait3(&status,WNOHANG,0);
 }
 
+#ifdef PROFILE
 int
 #if __STDC__
 dump_profile(int sig)
@@ -701,13 +710,28 @@ dump_profile(sig)
      int sig;
 #endif
 {
-#ifdef PROFILE
   olc_broadcast_message("syslog", fmt("%s dumping profiling stats.",
 				      ME),"system");
   log_status("Dumping profile..");
   monitor(0);
-#endif PROFILE
+  moncontrol(0);
 }
+
+int
+#if __STDC__
+start_profile(int sig)
+#else
+start_profile(sig)
+     int sig;
+#endif /* __STDC__ */
+{
+  olc_broadcast_message("syslog", fmt("%s starting profiling.",
+				      ME),"system");
+  log_status("Starting profile..");
+  moncontrol(1);
+}
+#endif /* PROFILE */
+
 
 
 /*
