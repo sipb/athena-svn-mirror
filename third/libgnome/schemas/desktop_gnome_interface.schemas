@@ -124,7 +124,7 @@
 
       <locale name="hu">
         <short>Kisegítő lehetőségek bekapcsolása</short>
-        
+        <long>Az alkalmazások támogassák-e a kisegítő lehetőségeket?</long>
       </locale>
 
       <locale name="id">
@@ -273,8 +273,8 @@
       </locale>
 
       <locale name="th">
-        <short>ใช้ระบบช่วยเหลือผู้พิการ</short>
-        <long>ว่าโปรแกรมควรจะใช้ระบบช่วยเหลือผู้พิการหรือไม่</long>
+        <short>ใช้ระบบอำนวยการใช้งาน</short>
+        <long>ว่าโปรแกรมควรจะใช้ระบบอำนวยการใช้งานหรือไม่</long>
       </locale>
 
       <locale name="tr">
@@ -407,7 +407,7 @@
 
       <locale name="gu">
         <short>એનીમેશન કાર્યરત કરો</short>
-	<long>શુ એનિમેશનો દર્શાવવાના કે નહિ. નાેંધ: આ ગ્લોબલ કી છે, તે વિન્ડો વ્યવસ્થાપકની વર્તણૂક બદલી શકે છે, પેનલ વગેરે.</long>
+	<long>શુ એનિમેશનો દર્શાવવાના કે નહિ. નોંધ: આ ગ્લોબલ કી છે, તે વિન્ડો વ્યવસ્થાપકની વર્તણૂક બદલી શકે છે, પેનલ વગેરે.</long>
       </locale>
 
       <locale name="he">
@@ -727,8 +727,8 @@
       </locale>
 
       <locale name="hu">
-        
-        <long>A menük leválaszthatóak-e</long>
+        <short>A menükben van leválasztó</short>
+        <long>A menükben legyen-e leválasztó?</long>
       </locale>
 
       <locale name="id">
@@ -891,6 +891,11 @@
         <long>Чи може користувач відривати меню від панелі</long>
       </locale>
 
+      <locale name="vi">
+        <short>Menu tách rời được</short>
+        <long>Có tách rời menu được không</long>
+      </locale>
+
       <locale name="zh_CN">
         <short>菜单具有分离条</short>
         <long>菜单是否应该有分离条</long>
@@ -1005,7 +1010,7 @@
 
       <locale name="gu">
         <short>એક્સેલો બદલી શકે છે</short>
-        <long>શું વપરાશકર્તા ગતિશીલ રીતે નવો પ્રવેગક લખી શકે જ્યારે મેનુ પાેપઅપ થયેલ હોય</long>
+        <long>શું વપરાશકર્તા ગતિશીલ રીતે નવો પ્રવેગક લખી શકે જ્યારે મેનુ પોપઅપ થયેલ હોય</long>
       </locale>
 
       <locale name="he">
@@ -1021,6 +1026,11 @@
       <locale name="hr">
         <short>Možete promijeniti Accele</short>
         <long>Koji korisnik može dinamički upisati novu kraticu kad je izbornik prikazan</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Megváltoztathatja a gyorsbillentyűket</short>
+        <long>A felhasználó beüthet-e egy új gyorsbillentyűt egy menü felbukkanásakor?</long>
       </locale>
 
       <locale name="id">
@@ -1185,7 +1195,7 @@
 
       <locale name="vi">
         <short>Có thể đổi phím tắt</short>
-        
+        <long>Người dùng có thể gõ động phím tắt mới khi menu đang bật không</long>
       </locale>
 
       <locale name="wa">
@@ -1332,7 +1342,7 @@
 
       <locale name="hu">
         <short>Eszköztár stílusa</short>
-        <long>Eszköztár stílusa. Lehetséges értékek: &quot;both&quot;, &quot;both_horiz&quot;, &quot;icon&quot;, és &quot;text&quot;</long>
+        <long>Eszköztár stílusa. Lehetséges értékek: &quot;both&quot; (mindkettő), &quot;both_horiz&quot; (mindkettő vízszintesen), &quot;icon&quot; (ikon), és &quot;text&quot; (szöveg).</long>
       </locale>
 
       <locale name="id">
@@ -1502,7 +1512,7 @@
 
       <locale name="vi">
         <short>Kiểu thanh công cụ</short>
-        
+        <long>Kiểu thanh công cụ. Giá trị hợp lệ là &quot;both&quot;, &quot;both_horiz&quot;, &quot;icon&quot;, và &quot;text&quot;</long>
       </locale>
 
       <locale name="wa">
@@ -1652,7 +1662,7 @@
       </locale>
 
       <locale name="hu">
-        
+        <short>A menükben vannak ikonok</short>
         <long>A menükben megjelenjenek-e ikonok a menüelemek mellett</long>
       </locale>
 
@@ -3055,7 +3065,7 @@
       </locale>
 
       <locale name="vi">
-	<short>Nháy con trỏ</short>
+	<short>Con trỏ chớp</short>
 	<long>Con trỏ có nên chớp không</long>
       </locale>
 
@@ -3206,7 +3216,7 @@
       </locale>
 
       <locale name="hu">
-	
+	<short>Kurzor villogásának ideje</short>
 	<long>A villogó kurzor ciklusának hossza ezredmásodpercben</long>
       </locale>
 
@@ -3376,8 +3386,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Thời gian nháy con trỏ</short>
-	
+	<short>Thời gian chớp con trỏ</short>
+	<long>Độ dài chu kỳ nháy con trỏ, theo mili giây</long>
       </locale>
 
       <locale name="wa">
@@ -3533,7 +3543,7 @@
 
       <locale name="hu">
         <short>Ikontéma</short>
-        
+        <long>A panel, nautilus, stb által használandó ikontéma.</long>
       </locale>
 
       <locale name="id">
@@ -3697,8 +3707,8 @@
       </locale>
 
       <locale name="vi">
-        <short>Theme biểu tượng</short>
-        <long>Theme biểu tượng dùng cho Panel, Nautilus ...</long>
+        <short>Sắc thái Biểu tượng</short>
+        <long>Sắc thái Biểu tượng dùng cho Bảng điều khiển, Nautilus ...</long>
       </locale>
 
       <locale name="wa">
@@ -3849,7 +3859,7 @@
 
       <locale name="hu">
 	<short>Gtk+ téma</short>
-	
+	<long>A gtk+ által használt alapértelmezett téma neve.</long>
       </locale>
 
       <locale name="id">
@@ -4013,8 +4023,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Theme Gtk+</short>
-	<long>Tên cơ sở  của theme mặc định được dùng bởi Gtk+</long>
+	<short>Sắc thái Gtk+</short>
+	<long>Tên cơ sở của sắc thái mặc định được dùng bởi Gtk+</long>
       </locale>
 
       <locale name="wa">
@@ -4165,7 +4175,7 @@
 
       <locale name="hu">
 	<short>Gtk+ téma</short>
-	
+	<long>A gtk+ által használt alapértelmezett téma neve.</long>
       </locale>
 
       <locale name="id">
@@ -4329,8 +4339,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Theme Gtk+</short>
-	<long>Tên cơ sở  của theme mặc định được dùng bởi Gtk+</long>
+	<short>Sắc thái Gtk+</short>
+	<long>Tên cơ sở của sắc thái mặc định được dùng bởi Gtk+</long>
       </locale>
 
       <locale name="wa">
@@ -4645,8 +4655,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Font mặc định</short>
-	<long>Tên font mặc định dùng bởi GTK+.</long>
+	<short>Phông mặc định</short>
+	<long>Tên phông mặc định dùng bởi GTK+.</long>
       </locale>
 
       <locale name="wa">
@@ -4795,6 +4805,11 @@
       <locale name="hr">
 	<short>GTK IM Preedit stil</short>
 	<long>Ime GTK+ ulaznih metode Preedit stil koju koristi gtk+.</long>
+      </locale>
+
+      <locale name="hu">
+	<short>GTK beviteli mód előszerkesztési stílus</short>
+	<long>A gtk+ által használt GTK+ beviteli mód előszerkesztési stílus neve.</long>
       </locale>
 
       <locale name="id">
@@ -5088,6 +5103,11 @@
 	<long>Ime GTK+ ulaznih metode Status stil koju koristi gtk+.</long>
       </locale>
 
+      <locale name="hu">
+	<short>GTK beviteli mód állapot stílus</short>
+	<long>A gtk+ által használt GTK+ beviteli mód állapotstílus neve.</long>
+      </locale>
+
       <locale name="id">
 	<short>Gaya status metode input GTK</short>
 	<long>Nama gaya status metode input GTK+ yang digunakan oleh gtk+</long>
@@ -5245,7 +5265,7 @@
 
       <locale name="vi">
 	<short>Kiểu Trạng thái GTK IM</short>
-	
+	<long>Tên Gtk+ Input Method Status Style dùng bởi Gtk.</long>
       </locale>
 
       <locale name="zh_CN">
@@ -5538,6 +5558,11 @@
       <locale name="uk">
 	<short>Моноширинний шрифт</short>
 	<long>Назва моноширинного шрифту (як у друкарської машинки), що використовується у програмах терміналу</long>
+      </locale>
+
+      <locale name="vi">
+	<short>Phông khối đều</short>
+	<long>Tên phông monospace (bề rộng cố định) để dùng ở những nơi như terminal.</long>
       </locale>
 
       <locale name="zh_CN">
@@ -5837,8 +5862,8 @@
       </locale>
 
       <locale name="vi">
-	<short>Dùng Font tự chọn</short>
-	<long>Có dùng font tự chọn trong ứng dụng GTK+ không</long>
+	<short>Dùng Phông tự chọn</short>
+	<long>Có dùng phông tự chọn trong ứng dụng GTK+ không</long>
       </locale>
 
       <locale name="wa">
@@ -5979,7 +6004,7 @@
 
       <locale name="hu">
 	<short>Állapotsor a jobb oldalon</short>
-	
+	<long>Megjelenítsen-e egy állapotsort a jobb oldalon?</long>
       </locale>
 
       <locale name="id">
@@ -6245,6 +6270,11 @@
 	<long>Moduuli, jota käytetään tiedostojärjestelmän mallina GtkFileChooser-säätimessä. Mahdolliset arvot ovat &quot;gnome-vfs&quot; ja &quot;gtk+&quot;.</long>
       </locale>
 
+      <locale name="fr">
+	<short>Module pour GtkFileChooser</short>
+	<long>Module à utiliser en tant que modèle de système de fichiers pour le composant graphique GtkFileChooser. Les valeurs possibles sont « gnome-vfs » et « gtk+ ».</long>
+      </locale>
+
       <locale name="gu">
 	<short>GtkFileChooser માટે મોડ્યુલ</short>
 	<long>GtkFileChooser વિજેટ માટે ફાઈલ સિસ્ટમ મોડેલ તરીકે વાપરવાનું મોડ્યુલ. &quot;gnome-vfs&quot; અને &quot;gtk+&quot; શક્ય કિંમતો છે.</long>
@@ -6265,6 +6295,11 @@
 	<long>Modul koji se koristi kao model datotečnog sustava za komponentu GtkFileChooser. Moguće vrijednosti su &quot;gnome-vfs&quot; i &quot;gtk+&quot;.</long>
       </locale>
 
+      <locale name="hu">
+	<short>Modul a GtkFileChooser-hez</short>
+	<long>A GtkFileChooser elemhez fájlrendszermodellként használandó modul. Lehetséges értékek: &quot;gnome-vfs&quot; és &quot;gtk+&quot;.</long>
+      </locale>
+
       <locale name="id">
 	<short>Modul untuk GtkFileChooser</short>
 	<long>Modul yang digunakan sebagai model sistem file untuk widget GtkFileChooser. Bisa diset dengan &quot;gnome-vfs&quot; dan &quot;gtk+&quot;.</long>
@@ -6283,8 +6318,7 @@ I valori possibili sono &quot;gnome-vfs&quot; e &quot;gtk+&quot;.</long>
 
       <locale name="ko">
 	<short>GtkFileChooser용 모듈</short>
-	<long>GtkFileChooser 위젯의 파일시스템 모델로 사용할 모듈.
-가능한 값은 &quot;gnome-vfs&quot;와 &quot;gtk+&quot;입니다.</long>
+	<long>GtkFileChooser 위젯의 파일시스템 모델로 사용할 모듈. 가능한 값은 &quot;gnome-vfs&quot;와 &quot;gtk+&quot;입니다.</long>
       </locale>
 
       <locale name="lt">
@@ -6400,6 +6434,11 @@ I valori possibili sono &quot;gnome-vfs&quot; e &quot;gtk+&quot;.</long>
       <locale name="uk">
 	<short>Модуль для GtkFileChooser</short>
 	<long>Модуль, що використовуватиметься в якості моделі файлової системи для віджета GtkFileChooser. Можливими значеннями є &quot;gnome-vfs&quot; і &quot;gtk+&quot;.</long>
+      </locale>
+
+      <locale name="vi">
+	<short>Module cho GtkFileChooser</short>
+	<long>Module được dùng cho mô hình hệ thống tập tin cho Widget GtkFileChooser. Giá trị có thể là &quot;gnome-vfs&quot; và &quot;gtk+&quot;.</long>
       </locale>
 
       <locale name="zh_CN">
