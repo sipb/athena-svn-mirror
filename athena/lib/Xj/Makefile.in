@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1998-12-27 15:43:58 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1999-02-27 17:06:50 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -11,8 +11,10 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+datadir=@datadir@
 libdir=@libdir@
 includedir=@includedir@
+appdefdir=${datadir}/X11/app-defaults
 
 CC=@CC@
 DEFS=@DEFS@
@@ -22,7 +24,7 @@ X_CFLAGS=@X_CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${X_CFLAGS} ${DEFS} -DSHAPE \
-	-DHOSTTYPE=\"${HOSTTYPE}\"
+	-DHOSTTYPE=\"${HOSTTYPE}\" -DAPPDEFDIR=\"${appdefdir}\"
 
 OBJS=	AClock.o Arrow.o Button.o DClock.o Drawing.o Form.o Jets.o \
 	Label.o Menu.o ScrollBar.o StrToBool.o StrToDirect.o \
