@@ -1,0 +1,1088 @@
+<HTML>
+<TITLE>x3270 - IBM host access tool</TITLE>
+<H1><IMG SRC="x3270.xbm" ALIGN=MIDDLE>  x3270 - IBM host access tool</H1>
+<H2>SYNOPSIS</H2>
+<B>x3270</B> [<I>options</I>] [[<I>prefix:</I>]<I>hostname</I> [<I>port</I>]]
+<BR>
+<H2>DESCRIPTION</H2>
+<B>x3270</B> opens a telnet connection to an IBM host in an X window.
+The window created by <B>x3270</B>
+can use its own font for displaying characters, so it is a fairly accurate
+representation of an IBM 3278 or 3279.
+It is similar to <I>tn3270</I>(1) except that it is X-based, not curses-based.
+<P>Prepending a <B>p:</B> onto <I>hostname</I> causes the connection to go
+through the <I>telnet-passthru</I> service rather than directly to the host.
+See <A HREF="#PASSTHRU">PASSTHRU</A> below.
+<P>
+Prepending an <B>s:</B> onto <I>hostname</I> removes the "extended
+data stream" option reported to the host.
+See <A HREF="#-tn"><B>-tn</B></A> for further information.
+<P>
+The port to connect to defaults to <B>telnet</B>.
+This can be overridden with the <A HREF="#-port"><B>-port</B></A> option, or
+by specifying a
+<I>port</I> on the command line.
+<H2>OPTIONS</H2>
+<B>x3270</B> is a toolkit based program, so it understands standard options
+and resources.
+It also understands the following options:
+<DL>
+<DT><B>-activeicon</B>
+<DD>Specifies that the icon should be a miniature version of the screen image.
+See <A HREF="#ICONS">ICONS</A>.
+<DT><B>-apl</B>
+<DD>Sets up APL mode.
+This is actually an abbreviation for several options.
+See <A HREF="#APL SUPPORT">APL SUPPORT</A>.
+<DT><B>-cc</B> <I>range</I>:<I>value</I>[,...]
+<DD>Sets character classes.
+See <A HREF="#CHARACTER CLASSES">CHARACTER CLASSES</A>, below.
+<DT><B>-charset</B> <I>name</I>
+<DD>Specifies an EBCDIC national character set.
+See <A HREF="#CHARACTER SETS">CHARACTER SETS</A>.
+<DT><B>-clear</B> <I>toggle</I>
+<DD>Sets the initial value of <I>toggle</I> to <B>false</B>.
+The list of <A HREF="#toggle names">toggle names</A> is under
+<A HREF="#MENUS">MENUS</A> below.
+<DT><B>-efont</B> <I>name</I>
+<DD>Specifies a font for the emulator window.
+See <A HREF="#FONTS">FONTS</A>.
+<DT><B>-iconname</B> <I>name</I>
+<DD>Specifies an alternate title for the program icon.
+<DT><B>-iconx</B> <I>x</I>
+<DD>Specifies the initial x coordinate for the program icon.
+<DT><B>-icony</B> <I>y</I>
+<DD>Specifies the initial y coordinate for the program icon.
+<DT><B>-keymap</B> <I>name</I>
+<DD>Specifies a keymap name and optional modifiers.
+See <A HREF="#KEYMAPS">KEYMAPS</A>.
+<DT><B>-keypad</B>
+<DD>Turns on the keypad as soon as <B>x3270</B> starts.
+<DT><B>-model</B> <I>name</I>
+<DD>The model of 3270 display to be emulated.
+The model name is in three parts, any of which may be omitted:
+<P>
+The first part is the <B>base model</B>, which is either <B>3278</B>
+or <B>3279</B>. <B>3278</B> specifies a monochrome 3270 display;
+<B>3279</B> specifies a color 3270 display.
+When 3278 emulation is specified for a color X display, fields are displayed
+using pseudo-colors; see <A HREF="#PSEUDO-COLOR"><B>PSEUDO-COLOR</B></A> below.
+<P>The second part is the <B>model number</B>, which specifies the
+number of rows and columns.
+Model 4 is the default.
+<PRE>
+    Model Number  Columns   Rows
+    ----------------------------
+          2         80       24
+          3         80       30
+          4         80       43
+          5         132      27
+</PRE>
+<B>Note</B>: Technically, there is no such 3270 display as a 3279-4
+or 3279-5, but most hosts seem to work with them anyway.
+<P>The third part specifies the Extended 3270 Data Stream, and is
+given as <B>-E</B>.
+It signals the host that the 3270 display is capable of displaying
+extended field attributes, and supports structured fields and query replies.
+A 3279 always uses the Extended Data Stream (whether or not <B>-E</B>
+is specified); for a 3278 it is optional.
+<P>The default model for a color X display is <B>3279-4-E</B>.
+For a monochrome X display, it is <B>3278-4-E</B>.
+(The behavior of previous versions of x3270 on color X displays can be
+specified as <B>3278-4</B>).
+<DT><B>-mono</B>
+<DD>Forces <B>x3270</B> to believe it is running on a monochrome X display.
+<DT><B>-once</B>
+<DD>Causes <B>x3270</B> to exit after a host disconnects.
+This option has effect only if a hostname is specified on the command line.
+<DT><B>-oversize</B> <I>cols</I><B>x</B><I>rows</I>
+<DD>Makes the screen larger than the default for the chosen model number.
+This option has effect only in combination with extended data stream support
+(the <B>-E</B> suffix on the model),
+and only if the host supports the Query Reply structured field.
+The number of columns multiplied by the number of rows must not exceed
+16383 (3fff hex), the limit of 14-bit 3270 buffer addressing.
+<DT><A NAME="-port"><B>-port</B></A> <I>n</I>
+<DD>Specifies a different TCP port to connect to.
+<I>n</I> can be a name from <B>/etc/services</B> like <B>telnet</B>,
+or a number.
+This option changes the default port number used for all connections.
+(The positional parameter affects only the initial connection.)
+<DT><B>-reconnect</B>
+<DD>Causes <B>x3270</B> to automatically reconnect to the host if it ever
+disconnects.
+This option has effect only if a hostname is specified on the command line.
+<DT><B>-sb</B>
+<DD>Turns on the scrollbar.
+<B>+sb</B> turns the scrollbar off.
+<DT><B>-scheme</B>  <I>name</I>
+<DD>Specifes a color scheme to use in 3279 mode.
+This option has effect only in combination with 3279 emulation.
+See <A HREF="#COLOR SCHEMES">COLOR SCHEMES</A> below.
+<DT><B>-script</B>
+<DD>Causes <B>x3270</B> to read commands from standard input, with the
+results written to standard output.
+The protocol for these commands is documented in
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>.
+<DT><B>-sl</B> <I>n</I>
+<DD>Specifies that <I>n</I> lines should be saved for scrolling back.
+The default is 64.
+<DT><B>-set</B> <I>toggle</I>
+<DD>Sets the initial value of <I>toggle</I> to <B>true.</B>
+The list of <A HREF="#toggle names">toggle names</A> is under
+<A HREF="#MENUS">MENUS</A> below.
+<DT><A NAME="-tn"><B>-tn</B></A> <I>name</B>
+<DD>Specifies the terminal name to be transmitted over the telnet connection.
+The default name is <B>IBM-</B><I>model_name</I>, for example,
+<B>IBM-3279-4-E</B> for a color X display, or <B>IBM-3278-4-E</B> for
+monochrome X display.
+<P>
+Some hosts are confused by the <B>-E</B> suffix on the terminal name, and will
+ignore the extra screen area on models 3, 4 and 5.
+Prepending an <B>:s</B> on the hostname removes the <B>-E</B> from the
+terminal name when connecting to such hosts.
+<P>
+The name can also be specified with the "x3270.termName" resource.
+<DT><B>-trace</B>
+<DD>Turns on data stream tracing at startup.
+Unlike turning it on from a menu option, there is no pop-up to confirm the
+file name, which defaults to <B>/tmp/x3trc.</B><I>process_id</I>.
+</DL>
+<H2><A NAME="FONTS">FONTS</A></H2>
+By default,
+<B> x3270</B>
+does not use the "*font" resource for its main window.
+Instead, it uses a custom 14-point font called <B>3270</B>, which is a close
+approximation of a real 3270 display and allows <B>x3270</B>
+to display a complete EBCDIC character set and special status-line symbols.
+A more compact font, <B>3270-12</B>, is also supported, as are the various
+sized fonts <B>3270gt8</B>, <B>3270gt12</B>, <B>3270gt16</B>, <B>3270-20</B>,
+<B>3270gt24</B>, and <B>3270gt32</B>.
+The font <B>3270h</B> is also included to allow display of Hebrew text.
+<P>
+The font may be specified with the <B>-efont</B> option or the
+"x3270.emulatorFont" resource.
+<P>
+<B>x3270</B> can also use any constant-spaced X font, but unless the font
+implements the entire ISO 8859-1 (Latin-1) character set, <B>x3270</B>
+may not properly display several EBCDIC graphics that do not have ASCII
+equivalents.
+<P>
+One additional font, <B>3270d</B>, is supplied.
+This font is identical to the default <B>3270</B>
+font, except that it has bitmaps defined for field attribute characters.
+This means that field attributes, which are normally displayed as blanks,
+are now visible on the screen.
+The characters displayed are hexadecimal codes, which can be translated
+using a document provided with the <B>x3270</B> sources.
+<P>
+The font can be changed at any time through a menu option.
+It can also be implicitly changed by changing the size of the <B>x3270</B>
+window with the mouse: if the window is made larger, x3270 will try to
+change to a larger font, and vice-versa.
+<H2><A NAME="CHARACTER SETS">CHARACTER SETS</A></H2>
+The <B>-charset</B> option or the "x3270.charset" resource controls the
+EBCDIC national character set used by <B>x3270.</B>
+Available sets include:
+<PRE>
+    Charset Name    Q121 Code
+    -------------------------
+       bracket          -
+       us-intl          01
+       german           03
+       finnish          09
+       uk               22
+       norwegian        23
+       french           30
+       hebrew*          -
+
+    (*) requires a special font, <B>3270h</B>
+</PRE>
+The default character set is <B>bracket</B>, which useful for common
+IBM hosts which use EBCDIC
+codes 0xAD and 0xBD for the `[' and `]' characters, respectively.
+<P>
+You can also specify national-language translations for your keyboard; see
+<A HREF="#KEYMAPS">KEYMAPS</A>.
+<H2><A NAME="CHARACTER CLASSES">CHARACTER CLASSES</A></H2>
+<B>x3270</B> supports character classes (groupings of characters chosen with
+a double mouse click) in the same manner as <I>xterm</I>(1).
+The "x3270.charClass" resource or the <B>-cc</B>
+option can be used to alter the character class table.
+The default table is the same as <I>xterm</I>'s;
+It groups letters together, and puts most punctuation characters in individual
+classes.
+To put all non-whitespace characters together in the same class (and
+duplicate the behavior of some early versions of <B>x3270</B>,
+use the following value:
+<PRE>
+    33-127:48,161-255:48
+</PRE>
+<P>
+See <I>xterm</I>(1) for further syntax details.
+<H2>KEYPAD</H2>
+A keypad may optionally be displayed, with a mouse-clickable button for each
+3270 function key (these functions are also available from the keyboard).
+The keypad can be turned on and off by clicking on the "keypad" button in the
+upper-right-hand corner of the window.
+The "x3270.keypad" resource controls where it is displayed.
+Options are:
+<PRE>
+    left      in a separate window, to the left of the screen
+    right     in a separate window, to the right of the screen
+    bottom    in a separate window, below the screen
+    integral  in the same window as the screen, below it
+</PRE>
+The default is <B>right</B>.
+<P>
+If the "x3270.keypadOn" resource is set to <B>true</B>,
+the keypad will be displayed at startup.
+<H2>HOSTS DATABASE</H2>
+<B>x3270</B> uses the <A HREF="ibm_hosts.html"><I>ibm_hosts</I></A> database
+to construct a pull-down menu
+of hosts to connect to.
+It supports the <B>loginstring</B> function, which allows you to specify a
+macro to be sent to the host when the connection is first made.
+See <A HREF="ibm_hosts.html"><I>ibm_hosts</I>(5)</A> for details.
+<P>
+You may specify a different <A HREF="ibm_hosts.html"><I>ibm_hosts</I></A>
+database with the "x3270.hostsFile" resource.
+<H2><A NAME="COLOR SCHEMES">COLOR SCHEMES</A></H2>
+When emulating a 3279 display,
+the X colors used to draw the display are selected by two resources:
+the "x3270.colorScheme" resource, which gives the name of the color scheme
+to use, and the individual "x3270.colorScheme.<I>xxx</I>" resources, which
+give the actual definitions.
+The color scheme resources are documented in the <B>Docs/Resources</B> file
+with the <B>x3270</B> source.
+<P>The color scheme may also be changed while <B>x3270</B> is running with a
+selection from the <B>Options</B> menu.
+<H2><A NAME="PSEUDO-COLOR">PSEUDO-COLOR</A></H2>
+When emulating a 3278 display on a color X display, <B>x3270</B> does not
+understand IBM 3270 color protocols.
+Instead, it draws text in one of three colors depending on the field attributes.
+Those colors may be customized using the following resources (shown with their
+default values):
+<PRE>
+    x3270.normalColor:       green
+    x3270.boldColor:         cyan
+    x3270.inputColor:        orange
+    x3270.colorBackground:   black
+    x3270.selectBackground:  dim gray
+</PRE>
+<H2>ANSI MODE</H2>
+Some hosts use an ASCII
+front-end to do initial login negotiation, then later switch to 3270 mode.
+<B>x3270</B> will emulate an ANSI X.64 terminal until the host places it in
+3270 mode (telnet BINARY and SEND EOR modes).
+The emulation is fairly complete; however, it is not intended to make
+<B>x3270</B> a replacement for <I>xterm</I>(1).
+<P>
+If the host later negotiates to stop functioning in 3270 mode, <B>x3270</B>
+will return to ANSI emulation.
+<P>
+When emulating an ANSI terminal, <B>x3270</B>
+supports both character-at-a-time mode and line mode operation.
+You may select the mode with a menu option.
+When in line mode, the special characters and operational characteristics are
+defined by resources:
+<PRE>
+    Mode/Character            Resource        Default
+    -------------------------------------------------
+    Translate CR to NL        x3270.icrnl     true
+    Translate NL to CR        x3270.inlcr     false
+    Erase previous character  x3270.erase     ^?
+    Erase entire line         x3270.kill      ^U
+    Erase previous word       x3270.werase    ^W
+    Redisplay line            x3270.rprnt     ^R
+    Ignore special meaning of
+     next character           x3270.lnext     ^V
+    Interrupt                 x3270.intr      ^C
+    Quit                      x3270.quit      ^\
+    End of file               x3270.eof       ^D
+</PRE>
+<H2><A NAME="MENUS">MENUS</A></H2>
+<B>x3270</B> has a menu bar with three pull-down menus (File, Options, and
+Connect) and a button to turn the keypad on and off.
+The pull-down menus are also available as pop-up menus by using the "Ctrl"
+key and the left, middle and right mouse buttons, respectively.
+<P>
+The menu bar can be turned off by setting the "x3270.menuBar" resource to
+<B>false.</B>
+<P>
+Many sections of the File and Options menus are toggles,
+options that may be either on or off.
+The entries under the File menu are as follows:
+<DL>
+<DT><B>File Transfer</B>
+<DD>Initiates transferring a file between the IBM host and the local
+workstation, using the <B>IND$FILE</B> protocol.
+A pop-up menu allows specifying the file names and other attributes of the
+transfer.
+<P>
+The IND$FILE program must be installed on the IBM host, and the 3270 cursor
+must be located in a field that will accept a TSO or VM/CMS command.
+<DT><B>Trace Data Stream</B>
+<DD>If set, network traffic (both a hexadecimal representation and its
+interpretation) are logged to the file
+<B>/tmp/x3trc.</B><i>process_id</I>,
+and a window is popped up to monitor the data.
+The file name is confirmed with a pop-up; the default directory name for the
+trace file can be changed with the "x3270.traceDir" resource.
+<DT><B>Trace X Events</B>
+<DD>If set, information about X events and the actions that <B>x3270</B>
+takes in response are logged to a file.
+This is the same file as used for tracing the data stream, above.
+X event tracing is useful for creating and debugging custom keymaps, macros
+and scripts.
+For example, it will tell you precisely what action was taken in response to
+pressing a particular key.
+If the key is not mapped, it will tell you the keysym name and keycode so you
+can add it to a custom keymap.
+<DT><B>Save Screen(s) in File</B>
+<DD>If set, saves an ASCII
+representation of the current screen image in the file
+<B>/tmp/x3scr.</B><I> process_id</I>.
+A pop-up allows the file name to be changed; the default directory name can be
+changed with the "x3270.traceDir" resource.
+The pop-up also has buttons to choose between saving just the current image,
+or continuously saving it as it is redrawn.
+<DT><B>Save Changed Options in File</B>
+<DD>Saves into a file the values of all options that have been changed since
+<B>x3270</B> was started.
+A pop-up allows the file name to be changed; the default file is
+<B>.x3270pro</B> in the user's home directory.
+If the file already exists, it is appended to.
+<B>x3270</B> will read the contents of this file the next time it starts up.
+The options settings in the file override any resources defined
+with <B>xrdb</B> or in the user's <B>.Xdefaults</B> file; command-line
+switches override the file.
+A different options file can be specified by the <B>X3270PRO</B>
+environment variable.
+If the environment variable <B>NOX3270PRO</B> is set, no options file will
+be read.
+<DT><B>Execute an Action</B>
+<DD>Allows an action name and parameters to be entered from the keyboard.
+This allows experimentation with actions without having to edit keymaps
+and repeatedly restart <B>x3270</B>.
+</DL>
+The toggles under the Options menu are as follows:
+<DL>
+<DT><B>Monocase</B>
+<DD>If set, <B>x3270</B> operates in uppercase-only mode.
+<DT><B>Blinking Cursor</B>
+<DD>If set, the cursor blinks once per second.
+<DT><B>Blank Fill</B>
+<DD>If set, <B>x3270</B> behaves in some un-3270-like ways.
+First, when a character is typed into a field, all nulls in the field to the
+left of that character are changed to blanks.
+This eliminates a common 3270 data-entry surprise.
+Second, in insert mode, trailing blanks in a field are treated like nulls,
+eliminating the annoying "lock-up" that often occurs when inserting into an
+field with (apparent) space at the end.
+<DT><B>Show Timing</B>
+<DD>If set, the time taken by the host to process an AID
+is displayed on the status line.
+<DT><B>Track Cursor</B>
+<DD>If set, the cursor position is displayed on the status line.
+<DT><B>Scrollbar</B>
+<DD>If set, the scrollbar appears.
+<DT><B>Wraparound</B>
+<DD>If set, the ANSI terminal emulator automatically assumes a NEWLINE
+character when it reaches the end of a line.
+<DT><B>Paste with Left Margin</B>
+<DD>If set, puts restrictions on how pasted text is placed on the screen.
+The position of the cursor at the time the paste operation is begun is
+used as a left margin.
+No pasted text will fill any area of the screen to the left of that
+position.
+This option is useful for pasting into certain IBM
+editors that use the left side of the screen for control information.
+<DT><B>Select by Rectangles</B>
+<DD>If set, <B>x3270</B> will always select rectangular areas of the screen.
+Otherwise, <B>x3270</B> selects by rectangles when in 3270 mode, but in
+ANSI mode it selects continuous regions of the screen like <I>xterm</I>(1).
+</DL>
+The <A NAME="toggle names">names of the toggles</A> for use with the <B>-set</B> and <B>-clear</B>
+options are as follows:
+<PRE>
+    Menu Option              Name
+    ------------------------------------
+    Monocase                 monoCase
+    Blinking Cursor          cursorBlink
+    Blank Fill               blankFill
+    Show Timing              showTiming
+    Track Cursor             cursorPos
+    Trace Data Stream        dsTrace
+    Trace X Events           eventTrace
+    Save Screen(s) in File   screenTrace
+    Scrollbar                scrollBar
+    Wraparound               lineWrap
+    Paste with Left Margin   marginedPaste
+    Select by Rectangles     rectangleSelect
+</PRE>
+In addition, the toggle <B>altCursor</B> can be used to select the cursor type.
+If set, an underline cursor will be used.
+If clear, the normal block cursor will be used.
+<P>
+These names also represent resources that can be set in your .Xdefaults
+file.
+For example, if you always want to have the scrollbar on, you can add
+the following to your .Xdefaults:
+<PRE>
+    x3270.scrollBar:	true
+</PRE>
+
+<H2>STATUS LINE</H2>
+The <B>x3270</B> status line contains a variety of information.
+From left to right, the fields are:
+<DL>
+<DT><B>comm status</B>
+<DD>Three symbols indicate the state of the connection to the host.
+If connected, the right-hand symbol is a solid box; if not, it is a question
+mark.
+<DT><B>keyboard lock</B>
+<DD>If the keyboard is locked, an <B>X</B> symbol and a message field indicate the
+reason for the keyboard lock.
+<DT><B>shift</B>
+<DD>
+Three characters indicate the keyboard modifier status.
+<B>M</B> indicates the Meta key, <B>A</B> the Alt key, and an up-arrow or
+caret (<B>^</B>) indicates the Shift key.
+<DT><B>compose</B>
+<DD>
+The letter <B>C</B> indicates that a
+<A HREF="#COMPOSITE CHARACTERS">composite character</A>
+is in progress.
+If another symbol follows the <B>C</B>, it is the first character of the
+composite.
+<DT><B>typeahead</B>
+<DD>
+The letter <B>T</B> indicates that one or more keystrokes are in the typeahead
+buffer.
+<DT><B>temporary keymap</B>
+<DD>
+The letter <B>K</B> indicates that a temporary keymap is in effect.
+<DT><B>reverse</B>
+<DD>
+The letter <B>R</B> indicates that the keyboard is in reverse field entry mode.
+<DT><B>insert mode</B>
+<DD>
+A thick caret (<B>^</B>) or the letter <B>I</B> indicates that the keyboard is in insert
+mode.
+<DT><B>timing</B>
+<DD>
+A clock symbol and a time in seconds indicate the time it took to process
+the last AID or the time to connect to a host.
+This display is optional.
+<DT><B>cursor position</B>
+<DD>
+The cursor row and column are optionally displayed, separated by a slash
+(<B>/</B>).
+</DL>
+
+<H2><A NAME="ICONS">ICONS</A></H2>
+If the <B>-activeicon</B>
+option is given (or the "x3270.activeIcon" resource is set to
+<B>true</B>), <B>x3270</B>
+will attempt to make its icon a miniature version of the current screen image.
+This function is highly dependent on your window manager:
+<DL>
+<DT><B>mwm</B>
+<DD>The size of the icon is limited by the "Mwm.iconImageMaximum" resource, which
+defaults to <B>50x50</B>.
+The image will be clipped at the bottom and right.
+The icon cannot accept keyboard input.
+<DT><B>olwm</B>
+<DD>The full screen image of all 3270 models can be displayed on the icon.
+However, the icon cannot be resized, so if the model is later changed with an
+<B>x3270</B> menu option, the icon image will be corrupted.
+The icon cannot accept keyboard input.
+<DT><B>twm</B> and <B>tvtwm</B>
+<DD>The full screen image of all 3270 models can be displayed on the icon, and the
+icon can be resized.
+The icon can accept keyboard input.
+<P>
+However, <B>twm</B> does not put labels on application-supplied icon windows.
+You can have <B>x3270</B>
+add its own label to the icon by setting the "x3270.labelIcon" resource to
+<B>true</B>.
+The default font for icon labels is <B>8x13</B>;
+you may change it with the "x3270.iconLabelFont" resource.
+</DL>
+<H2><A NAME="KEYMAPS">KEYMAPS</A></H2>
+The type of keyboard may be specified with the <B>-keymap</B>
+switch or using either the KEYMAP or KEYBD environment variables.
+The types of supported keyboards include <B>sun_k3</B>, <B>sun_k4</B>,
+<B>sun_k5</B>, <B>hp-k1</B>, <B>hp-pc</B> and <B>ncd</B>.
+<P>
+The keymap may also be specified as a comma-separated list of names.
+Later definitions override earlier ones.
+This is used to specify both a primary keyboard type and a set of modifiers.
+The modifiers defined include:
+<DL>
+<DT><B>ow</B>
+<DD>(OpenWindows) Swaps the middle and right mouse button definitions, so the
+middle button performs the "Extend" function and the right-hand button
+performs the "Paste" function.
+Also changes the cut and paste actions to use the OpenWindows
+ CLIPBOARD.
+<DT><B>alt</B>
+<DD>Replaces the default "Meta" key definitions with "Alt" definitions,
+for keyboards which do not have a "Meta" key.
+<DT><B>apl</B>
+<DD>Allows entry of APL characters (see <A HREF="#APL SUPPORT">APL SUPPORT</A>).
+<DT><B>finnish7</B>
+<DD>Replaces the bracket, brace and bar keys with common Finnish characters.
+<DT><B>norwegian7</B>
+<DD>Replaces the bracket, brace and bar keys with common Norwegian characters.
+</DL>
+A temporary keymap can also be specified while <B>x3270</B> is running with
+the Keymap() action.
+When the action Keymap(<I>n</I>) is executed, keymap <I>n</I> is added to
+or removed from the current keymap.
+Multiple temporary keymaps can be active simultaneously.
+The action Keymap(None) restores the original keymap.
+<B>Note:</B>
+When Keymap() is specified as part of a list of multiple actions in a keymap,
+it must be the last action in the list.
+
+<P>
+The temporary keymap <B>hebrew</B> is provided to allow entry of
+Hebrew characters.
+<P>
+The X Toolkit translation mechanism is used to provide keyboard emulation.
+It maps <B>events</B> into <B>actions</B>.
+The best documentation can be found with X toolkit documents, but the
+following should suffice for simple customization.
+<P>
+An Xt event consists of (at least) four fields.  The first is called a
+<B>modifier</B>.
+It may be any combination of meta, shift and ctrl.  If it is prefaced by !,
+it means those modifiers only.  The second field is the specific event,
+in <B>x3270</B>
+usually just &lt;Key&gt;.  The third field is the detail field, which gives the
+actual key.  The name of the key may be determined using the
+<I>xev</I>
+program or with the "Trace X Events" menu option.
+The last field is the action, which is the internal emulator function.
+A complete list of actions may be found later in the manual.
+<P>
+There are three levels of translation tables in
+<B> x3270.</B>
+The first is a default, compiled in table. It defines alphabetic, numeric,
+function keys, and such basic functions as Enter and Delete.  It allows a
+minimal useful functionality.
+<P>
+The second level is a keyboard specific table, which is found in the
+application default file, which defines actions for such things as keypad
+keys, and keys unique to certain keyboards.
+<P>
+The third level is a user customizable table which may be used to augment or
+override key definitions.  This will typically be found in the users 
+<B>.Xdefaults</B> file.
+The naming for a sun4 keyboard would be:
+<PRE>
+    x3270.keymap.default:
+    x3270.keymap.sun_k4:
+    x3270.keymap.sun_k4.user:
+</PRE>
+The basic default translation table is:
+<PRE>
+    &lt;Key&gt;Multi_key     Compose()
+    Shift&lt;Key&gt;Return   Newline()
+    &lt;Key&gt;Return        Enter()
+    &lt;Key&gt;Linefeed      Newline()
+    Shift&lt;Key&gt;Tab      BackTab()
+    &lt;Key&gt;Tab           Tab()
+    &lt;Key&gt;Home          Home()
+    Meta&lt;Key&gt;Left      PreviousWord()
+    &lt;Key&gt;Left          Left()
+    Meta&lt;Key&gt;Right     NextWord()
+    &lt;Key&gt;Right         Right()
+    &lt;Key&gt;Up            Up()
+    &lt;Key&gt;Down          Down()
+    &lt;Key&gt;Insert        Insert()
+    &lt;Key&gt;Delete        Delete()
+    &lt;Key&gt;BackSpace     BackSpace()
+    Ctrl&lt;Btn1Down&gt;     HandleMenu(quitMenu)
+    Ctrl&lt;Btn2Down&gt;     HandleMenu(optionsMenu)
+    Ctrl&lt;Btn3Down&gt;     HandleMenu(hostMenu)
+    Shift&lt;Btn1Down&gt;    MoveCursor()
+    &lt;Btn1Down&gt;         select-start()
+    &lt;Btn1Motion&gt;       select-extend()
+    &lt;Btn2Down&gt;         ignore()
+    &lt;Btn2Motion&gt;       ignore()
+    &lt;Btn2Up&gt;           insert-selection(PRIMARY)
+    &lt;Btn3Down&gt;         start-extend()
+    &lt;Btn3Motion&gt;       select-extend()
+    &lt;BtnUp&gt;            select-end(PRIMARY)
+    Meta&lt;Key&gt;F1        PF(13)
+    Meta&lt;Key&gt;F2        PF(14)
+    Meta&lt;Key&gt;F3        PF(15)
+    Meta&lt;Key&gt;F4        PF(16)
+    Meta&lt;Key&gt;F5        PF(17)
+    Meta&lt;Key&gt;F6        PF(18)
+    Meta&lt;Key&gt;F7        PF(19)
+    Meta&lt;Key&gt;F8        PF(20)
+    Meta&lt;Key&gt;F9        PF(21)
+    Meta&lt;Key&gt;F10       PF(22)
+    Meta&lt;Key&gt;F11       PF(23)
+    Meta&lt;Key&gt;F12       PF(24)
+    &lt;Key&gt;F1            PF(1)
+    &lt;Key&gt;F2            PF(2)
+    &lt;Key&gt;F3            PF(3)
+    &lt;Key&gt;F4            PF(4)
+    &lt;Key&gt;F5            PF(5)
+    &lt;Key&gt;F6            PF(6)
+    &lt;Key&gt;F7            PF(7)
+    &lt;Key&gt;F8            PF(8)
+    &lt;Key&gt;F9            PF(9)
+    &lt;Key&gt;F10           PF(10)
+    &lt;Key&gt;F11           PF(11)
+    &lt;Key&gt;F12           PF(12)
+    Meta&lt;Key&gt;1         PA(1)
+    Meta&lt;Key&gt;2         PA(2)
+    Meta&lt;Key&gt;3         PA(3)
+    Meta&lt;Key&gt;a         Attn()
+    Meta&lt;Key&gt;b         PrintWindow()
+    Meta&lt;Key&gt;c         Clear()
+    Meta&lt;Key&gt;d         Delete()
+    Meta&lt;Key&gt;h         Home()
+    Meta&lt;Key&gt;i         Insert()
+    Meta&lt;Key&gt;l         Redraw()
+    Meta&lt;Key&gt;p         PrintText()
+    Meta&lt;Key&gt;q         Quit()
+    Meta&lt;Key&gt;r         Reset()
+    Ctrl&lt;Key&gt;u         DeleteField()
+    Ctrl&lt;Key&gt;w         DeleteWord()
+    :&lt;Key&gt;asciicircum  CircumNot()
+    :&lt;Key&gt;             Default()
+</PRE>
+Meta is the diamond shaped key on a sun_k4, "Alt" on an NCD,
+"Extend Char" on an HP.
+The following <I>xmodmap</I> command must be used on the NCD
+to allow use the the "Alt" key:
+<PRE>
+    xmodmap -e "keysym Alt_L = Meta_L"
+</PRE>
+The left mouse button may be used to make a selection.
+Clicking once unselects the current selection.
+Clicking twice selects the word under the mouse cursor.
+Clicking three times selects the line under the mouse cursor.
+Clicking and dragging selects a rectangular area of the display.
+<P>
+The middle mouse button may be used to paste a selection.
+<P>
+The right mouse button may also be used for selections, selecting the
+rectangular area between the current position and where the left button was
+last pressed.
+<P>
+On color X displays, the "x3270.selectBackground" resource is used to
+distinguish the selected text from the rest of the screen.
+On monochrome X displays, selected text is in reverse video.
+(It can be distinguished from a block cursor because the block cursor covers
+slightly less than an entire character position on the screen.)
+<P>
+The left mouse button, when pressed with the "Shift" key held down, moves the
+3270 cursor to the where the mouse cursor is pointing.
+<P>
+This is the complete list of keymap-callable actions.
+Other actions are defined for use by scripts and are documented in
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>;
+still others actions are defined for internal use by <B>x3270</B>
+and are not documented here.
+<PRE>
+    Attn                   attention key
+    AltCursor              switch between block and underscore cursor
+    BackSpace              move cursor left (or send ASCII BS)
+    BackTab                tab to start of previous input field
+    CircumNot              input <B>^</B> in ANSI mode, or <B>&#172;</B> in 3270 mode
+    Clear                  clear screen
+    Compose                next two keys form a special symbol
+    CursorSelect           Cursor Select AID
+    Cut                    erase selected text
+    Default                enter key literally
+    Delete                 delete character under cursor (or send ASCII DEL)
+    DeleteField            delete the entire field
+    DeleteWord             delete the current or previous word
+    Down                   move cursor down
+    Dup                    duplicate field
+    Enter                  Enter AID (or send ASCII CR)
+    Erase                  erase previous character (or send ASCII BS)
+    EraseEOF               erase to end of current field
+    EraseInput             erase all input fields
+    Execute(<I>cmd</I>)           execute a command in a shell
+    FieldEnd               move cursor to end of field
+    FieldMark              mark field
+    HandleMenu(<I>name</I>)       pop up a menu
+    Home                   move cursor to first input field
+    Insert                 set insert mode
+    Key(<I>keysym</I>)            insert key <I>keysym</I>
+    Keymap(<I>keymap</I>)         toggle alternate <I>keymap</I> (or remove with <B>None</B>)
+    Left                   move cursor left
+    Left2                  move cursor left 2 positions
+    MoveCursor             move cursor to mouse position
+    MonoCase               toggle uppercase-only mode
+    Newline                move cursor to first field on next line (or send ASCII LF)
+    NextWord               move cursor to next word
+    PA(<I>n</I>)                  Program Attention AID (<I>n</I> from 1 to 3)
+    PF(<I>n</I>)                  Program Function AID (<I>n</I> from 1 to 24)
+    PreviousWord           move cursor to previous word
+    PrintText(<I>command</I>)     print screen text on printer
+    PrintWindow(<I>command</I>)   print screen image (bitmap) on printer
+    Quit                   exit <B>x3270</B>
+    Reconnect              reconnect to previous host
+    Redraw                 redraw window
+    Reset                  reset locked keyboard
+    Right                  move cursor right
+    Right2                 move cursor right 2 positions
+    Script(<I>command</I>[,<I>arg</I>...])  run a script
+
+    SetFont(<I>font</I>)          change emulator font
+    String(<I>string</I>)         insert string (simple macro facility)
+    SysReq                 System Request AID
+    Tab                    move cursor to next input field
+    ToggleInsert           toggle insert mode
+    Up                     move cursor up
+
+    <I>the following are similar to xterm</I>
+
+    ignore                 do nothing
+    insert-selection([<I>atom</I>[<I>,atom...</I>]])
+                           paste selection
+    move-select            a combination of <B>MoveCursor</B> and <B>select-start</B>
+    select-end([<I>atom</I>[<I>,atom...</I>]])
+			   complete selection and assign to atom(s)
+    select-extend          move the end of a selection
+    select-start           mark the beginning of a selection
+    set-select([<I>atom</I>[<I>,atom...</I>]])
+			   assign existing selection to atom(s)
+    start-extend           begin marking the end of a selection
+</PRE>
+<H2>MACROS AND SCRIPTS</H2>
+There are several types of macros and script functions available.
+<DL>
+<DT><B>The String()Action</B>
+<DD>The simplest method for macros is provided via the String action, which can
+be bound to any key in a keymap.
+The arguments to String() are one or more double-quoted strings which are
+inserted directly as if typed.
+Hex constants may be entered in the form 0xff, and the C backslash conventions
+are honored as follows.
+(Entries marked * mean that after sending the AID code to the host,
+<B>x3270</B> will wait for the host to unlock the keyboard before further
+processing the string.)
+<PRE>
+    \b     Left
+    \f     Clear
+    \n     Enter
+    \pa<I>n</I>   PA key <I>n</I>
+    \pf<I>nn</I>  PF key <I>nn</I>
+    \r     Newline
+    \t     Tab
+</PRE>
+An example action would be:
+<PRE>
+    Meta&lt;Key&gt;p: String("probs clearrdr\en")
+</PRE>
+<B>Note:</B> The strings are in ASCII and converted to EBCDIC,
+so beware of inserting control codes.
+Also, a backslash before a <B>p</B>
+must be doubled so it will not be removed when resource files are read.
+<DT><B>The Script() Action</B>
+<DD>This facility causes <B>x3270</B> to start a child process which can execute
+<B>x3270</B> actions.
+The child process' standard input and output are piped back to <B>x3270</B>.
+The <B>Script()</B> action is fully documented in
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>.
+<DT><B>The macros Resource</B>
+<DD>An alternate method of defining macros is the "x3270.macros" resource.
+This resource is similar to a keymap, but instead of defining keyboard
+mappings, it associates a list of X actions with a name.
+These names are displayed on a Macros menu that appears when
+<B>x3270</B> is connected to a host.
+Selecting one of the names on the menu executes the X actions associated with
+it.
+Typically the actions are String() calls, but any action may be specified.
+Here is a sample macros resource definition, which would result in a four-entry
+Macros menu:
+<PRE>
+    x3270.macros: \
+        log off: String("logout\\n")\\n\\
+        vtam: String("dial vtam\\n")\\n\\
+        pa1: PA(1)\\n\\
+        alt printer: PrintText("lpr -Plw2")
+</PRE>
+You can also define a different set of macros for each host.
+If there is a resource named
+"x3270.macros.<I>somehost</I>", it defines the macros menu for when
+<B>x3270</B> is connected to <I>somehost</I>.
+<DT><B>The -script Switch</B>
+<DD>This facility allows <B>x3270</B> to operate under the complete control of
+a script.
+<B>x3270</B>accepts actions from standard input, and prints results on
+standard output.
+The <B>-script</B> switch is fully documented in
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A>.
+</DL>
+<H2><A NAME="COMPOSITE CHARACTERS">COMPOSITE CHARACTERS</A></H2>
+If your keyboard has a "Compose" key, <B>x3270</B>
+allows the direct entry of accented letters and special symbols.
+Pressing and releasing the "Compose" key, followed by two other keys, causes
+entry of the symbol combining those two keys.
+For example, "Compose" followed by the "C" key and the "," (comma) key, enters
+the "C-cedilla" symbol.
+A `C' on the status line indicates a pending composite character.
+<P>
+The mappings between these pairs of ordinary keys and the symbols they
+represent is controlled by the "x3270.composeMap" resource; it gives the
+name of the map to use.
+The maps themselves are named "x3270.composeMap.<I>name</I>".
+The default is "latin1", which gives mappings for most of the symbols in the
+ISO 8859-1 Latin-1 character set that are not in the 7-bit ASCII character set.
+<P>
+<B>Note:</B>
+The default keymap defines the "Multi_key" keysym as the "Compose" key.
+If your keyboard lacks such a key, you may set up your own "Compose" key with
+a keymap that maps some other keysym onto the "Compose" action.
+<H2><A NAME="APL SUPPORT">APL SUPPORT</A></H2>
+<B>x3270</B> supports the full APL2 character set and the entry of APL
+characters from the keyboard.
+<P>
+APL characters are supported only in the <B>3270</B> font.
+<P>
+Keyboard entry of APL characters is supported through the <B>apl</B>
+keymap modifier.
+This modifier defines the "Alt" key as an APL shift key, with a typical
+APL keyboard layout, <I>e.g.</I>, "Alt" pressed with the <B>A</B>
+key results in the APL `alpha' symbol.
+Overstruck characters such as `quad-quote' are not defined as single
+keystrokes; instead they are entered as composites (see
+<A HREF="#COMPOSITE CHARACTERS">COMPOSITE CHARACTERS</A>).
+A special composite map, <B>apl</B>, is provided for this purpose.
+<P>
+<B>Note:</B>
+Some keyboards do not define the "Alt" key as a modifier, so keymaps that use
+the "Alt" key will not function.
+On a Sun for example, this can be remedied with the command:
+<PRE>
+    xmodmap -e "add mod2 = Alt_L"
+</PRE>
+For convenience, an <B>-apl</B>
+option is defined, which is an abbreviation for the following resource
+definitions:
+<PRE>
+    x3270.keymap: <I>your_keymap_name</I>,apl
+    x3270.charset: apl
+    x3270.composeMap: apl
+</PRE>
+There are a number of APL
+characters that are similar in appearance to non-APL characters.
+In particular, the APL `stile', `slope,' `tilde' and `quotedot'
+characters are similar to the EBCDIC `bar', `backslash,' `tilde'
+and `exclaim' characters.
+The APL characters are entered with the "Alt" key, and have slightly
+different appearances.
+<P>
+The complete list of special APL keysyms is as follows.
+Entries marked with an asterisk (*) represent
+simple aliases for standard EBCDIC characters.
+<PRE>
+ APL Symbol         Hex  x3270 Keysym         x3270 Key x3270 Composed Keys
+ ------------------ ---- -------------------- --------- -------------------
+ A underbar         41   apl_Aunderbar        Alt-A     A + underbar
+ alpha              B0   apl_alpha            Alt-a
+ B underbar         42   apl_Bunderbar        Alt-B     B + underbar
+ bar                60*  apl_bar              -
+ C underbar         43   apl_Cunderbar        Alt-C     C + underbar
+ circle             9D   apl_circle           Alt-o
+ circle bar         ED   apl_circlebar                  circle + bar
+ circle slope       CF   apl_circleslope                circle + slope
+ circle star        FD   apl_circlestar                 circle + star
+ circle stile       CD   apl_circlestile                circle + stile
+ colon              7A*  apl_colon            :
+ comma              6B*  apl_comma            ,
+ D underbar         44   apl_Dunderbar        Alt-D     D + underbar
+ del                BA   apl_del              Alt-g
+ del stile          DC   apl_delstile                   del + stile
+ del tilde          FB   apl_deltilde                   del + tilde
+ delta              BB   apl_delta            Alt-h
+ delta stile        DD   apl_deltastile                 delta + stile
+ delta underbar     FC   apl_deltaunderbar              delta + underbar
+ diamond            70   apl_diamond                    up caret + down caret
+ dieresis           72   apl_dieresis         Alt-1
+ dieresis dot       EC   apl_dieresisdot                dieresis + dot
+ divide             B8   apl_divide           Alt-+
+ dot                4B*  apl_dot              .
+ down arrow         8B   apl_downarrow        Alt-u
+ down caret         78   apl_downcaret        Alt-9
+ down caret tilde   CB   apl_downcarettilde             down caret + tilde
+ down shoe          AB   apl_downshoe         Alt-v
+ down stile         8E   apl_downstile        Alt-d
+ down tack          AC   apl_downtack         Alt-b
+ down tack jot      FE   apl_downtackjot                down tack + jot
+ down tack up tack  DA   apl_downtackuptack             down tack + up tack
+ E underbar         45   apl_Eunderbar        Alt-E     E + underbar
+ epsilon            B1   apl_epsilon          Alt-e
+ epsilon underbar   75   apl_epsilonunderbar            epsilon + underbar
+ equal              7E*  apl_equal            =
+ equal underbar     E1   apl_equalunderbar              equal + underbar
+ F underbar         46   apl_Funderbar        Alt-F     F + underbar
+ G underbar         47   apl_Gunderbar        Alt-G     G + underbar
+ greater            6E*  apl_greater          &gt;
+ H underbar         48   apl_Hunderbar        Alt-H     H + underbar
+ I underbar         49   apl_Iunderbar        Alt-I     I + underbar
+ iota               B2   apl_iota             Alt-i
+ iota underbar      74   apl_iotaunderbar               iota + underbar
+ J underbar         51   apl_Junderbar        Alt-J     J + underbar
+ jot                AF   apl_jot              alt-j
+ K underbar         52   apl_Kunderbar        Alt-K     K + underbar
+ L underbar         53   apl_Lunderbar        Alt-L     L + underbar
+ left arrow         9F   apl_leftarrow        Alt-[
+ left bracket       AD   apl_leftbracket      [
+ left paren         4D*  apl_leftparen        (
+ left shoe          9B   apl_leftshoe         Alt-z
+ less               4C*  apl_less             &lt;
+ M underbar         54   apl_Munderbar        Alt-M     M + underbar
+ N underbar         55   apl_Nunderbar        Alt-N     N + underbar
+ not equal          BE   apl_notequal         Alt-8     equal + slash
+ not greater        8C   apl_notgreater       Alt-4     less + equal
+ not less           AE   apl_notless          Alt-6     greater + equal
+ O underbar         56   apl_Ounderbar        Alt-O     O + underbar
+ omega              B4   apl_omega            Alt-w
+ overbar            A0   apl_overbar          Alt-2
+ P underbar         57   apl_Punderbar        Alt-P     P + underbar
+ plus               4E*  apl_plus             +
+ Q underbar         58   apl_Qunderbar        Alt-Q     Q + underbar
+ quad               90   apl_quad             Alt-l
+ quad divide        EE   apl_quaddivide                 quad + divide
+ quad jot           73   apl_quadjot                    quad + jot
+ quad quote         DE   apl_quadquote                  quad + quote
+ quad slope         CE   apl_quadslope                  quad + slope
+ query              6F*  apl_query            ?
+ quote              7D*  apl_quote            '
+ quote dot          DB   apl_quotedot                   quote + dot
+ R underbar         59   apl_Runderbar        Alt-R     R + underbar
+ rho                B3   apl_rho              Alt-r
+ right arrow        8F   apl_rightarrow       Alt-]
+ right bracket      BD   apl_rightbracket     ]
+ right paren        5D*  apl_rightparen       )
+ right shoe         9A   apl_rightshoe        Alt-x
+ S underbar         62   apl_Sunderbar        Alt-S     S + underbar
+ semicolon          5E*  apl_semicolon        ;
+ slash              61*  apl_slash            /
+ slash bar          EA   apl_slashbar                   slash + bar
+ slope              B7   apl_slope            Alt-\
+ slope bar          EB   apl_slopebar                   slope + bar
+ squad              CC   apl_squad                      quad + quad
+ star               5C*  apl_star             *
+ stile              BF   apl_stile            Alt-|
+ T underbar         63   apl_Tunderbar        Alt-T     T + underbar
+ tilde              80   apl_tilde            Alt-~
+ times              B6   apl_times            Alt-=
+ U underbar         64   apl_Uunderbar        Alt-U     U + underbar
+ underbar           6D*  apl_underbar         _
+ up arrow           8A   apl_uparrow          Alt-y
+ up caret           71   apl_upcaret          Alt-0
+ up caret tilde     CA   apl_upcarettilde               up caret + tilde
+ up shoe            AA   apl_upshoe           Alt-c
+ up shoe jot        DF   apl_upshoejot                  up shoe + jot
+ up stile           8D   apl_upstile          Alt-s
+ up tack            BC   apl_uptack           Alt-n
+ up tack jot        EF   apl_uptackjot                  up tack + jot
+ V underbar         65   apl_Vunderbar        Alt-V     V + underbar
+ W underbar         66   apl_Wunderbar        Alt-W     W + underbar
+ X underbar         67   apl_Xunderbar        Alt-X     X + underbar
+ Y underbar         68   apl_Yunderbar        Alt-Y     Y + underbar
+ Z underbar         69   apl_Zunderbar        Alt-Z     Z + underbar
+</PRE>
+<H2>SCREEN PRINTING</H2>
+Screen printing is handled through options on the File menu or by the
+PrintText and PrintWindow keyboard actions.
+Each results in a pop-up to confirm the print command.
+<P>
+The PrintText action (usually assigned to the key &lt;Meta&gt;p) sends the
+current screen image to the printer as ASCII characters.
+The default command used to print the data is controlled by
+the "x3270.printTextCommand" resource; the default is <B>lpr</B>.
+You may also use a keymap definition to pass a print command the PrintText
+action itself.
+The command receives the screen text as its standard input.
+For example, the following keymap will save the screen text in a file:
+<PRE>
+    Meta&lt;Key&gt;f: PrintText("cat >screen.image")
+</PRE>
+Note: HardPrint is an alias for PrintText.
+<P>
+The PrintWindow action (usually assigned to the key &lt;Meta&gt;b) sends the current
+screen image to the printer as a bitmap.
+The default command used to print the data is controlled by
+the "x3270.printWindowCommand" resource; the default is:
+<PRE>
+    xwd -id %d | xpr | lpr
+</PRE>
+You may also use a keymap definition to pass a print command to the
+PrintWindow action itself.
+If the command contains the text "%d", the window ID of
+<B> x3270</B>
+will be substituted before it is run.
+For example, the following keymap will pop up a duplicate of the current
+screen image:
+<PRE>
+    Meta&lt;Key&gt;g: PrintWindow("xwd -id %d | xwud &")
+</PRE>
+If the command for PrintWindow or PrintText begins with an "@" character,
+the initial pop-up menu to confirm the print command is not displayed and
+the command cannot be edited.
+<H2><A NAME="PASSTHRU">PASSTHRU</A></H2>
+<B>x3270</B> supports the Sun <I>telnet-passthru</I> service provided by the
+<I>in.telnet-gw</I> server.
+This allows outbound telnet connections through a firewall machine.
+When a <B>p:</B> is prepended to a hostname, <B>x3270</B> acts much like the
+<I>itelnet</I>(1) command.
+It contacts the machine named <B>internet-gateway</B> at the port defined in
+<B>/etc/services</B> as <B>telnet-passthru</B> (which defaults to 3514).
+It then passes the requested hostname and port to the <B>in.telnet-gw</B>
+server.
+<H2>BUGS</H2>
+Cursor highlighting will not work with if you use the
+<B> NoTitleFocus</B>
+option in your .twmrc file.
+<P>
+Pull-down menus may not work properly if the Caps Lock, Num Lock, Shift, Alt
+or Meta keys are pressed.
+This is a bug in the Athena menu widget and affects several other X
+applications as well.
+<H2>FILES</H2>
+/usr/lib/X11/x3270/ibm_hosts
+<H2>SEE ALSO</H2>
+<I>telnet</I>(1)<BR>
+<I>tn3270</I>(1)<BR>
+<A HREF="ibm_hosts.html"><I>ibm_hosts</I>(5)</A><BR>
+<A HREF="x3270-script.html"><I>x3270-script</I>(1)</A><BR>
+<CITE>X Toolkit Intrinsics</CITE>
+<BR>
+<CITE>Data Stream Programmer's Reference, IBM GA23-0059</CITE>
+<BR>
+<CITE>Character Set Reference, IBM GA27-3831</CITE>
+<H2> COPYRIGHTS</H2>
+Modifications Copyright &#169; 1993, 1994, 1995, 1996 by Paul Mattes.
+<BR>
+Original X11 Port Copyright &#169; 1990 by Jeff Sparkes.
+<BR>
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+<P>
+Copyright &#169; 1989 by Georgia Tech Research Corporation, Atlanta, GA 30332.
+<BR>
+All Rights Reserved.  GTRC hereby grants public use of this software.
+Derivative works based on this software must incorporate this copyright
+notice.
+<HR>
+<ADDRESS>
+x3270 version 3.1.1.3, last modified 23. August 1996
+</ADDRESS>

@@ -1,0 +1,327 @@
+.TH X3270-SCRIPT 1 "18 July 1996"
+.SH NAME
+Scripting Facilities for x3270
+.SH SYNOPSIS
+.B x3270
+.B \-script
+[
+.I x3270-options
+]
+.br
+.B Script(
+.I command
+.B [
+.I , arg ...
+.B ] )
+.SH DESCRIPTION
+The
+.B x3270
+scripting facilities allow
+.B x3270
+to be operated under the control of another program.
+.PP
+There are two basic methods.
+The first is the
+.B "peer script"
+facility, invoked by the
+.B \-script
+switch.
+This runs
+.B x3270
+as a child of another process.
+Typically this would be a script using
+.IR expect (1)
+or the co-process facility of the Korn Shell
+.IR ksh (1).
+When the
+.B \-script
+switch is given,
+.B x3270
+looks for commands on its standard input, and places the responses on
+standard output and standard error output.
+.PP
+The second method is the
+.B "child script"
+facility, invoked by the
+.B Script()
+action.
+This runs a script as a child process of
+.B x3270.
+The child's standard input and output are redirected to pipes connected
+to
+.B x3270;
+.B x3270
+looks for commands on one pipe, and places the responses on the other.
+.PP
+(It is possible to mix the two methods: A script can invoke another script
+with the
+.B Script()
+action.
+Scripts may also be implicitly nested when a script invokes the
+.B Connect()
+action, and the
+.B ibm_hosts
+file specifies a login script for that host name.)
+.PP
+Commands are X actions; the syntax is the same as for the right-hand
+side of an X translation table (an
+.B x3270
+keymap), with two exceptions: only one action may appear per line, and
+if no parameters are needed by the action, the parentheses may be omitted.
+.PP
+Any
+.B x3270
+action may be specified.
+Several new actions have been defined for use by scripts, and the behavior
+of certain other actions (and of
+.B x3270
+in general) is different when an action is initiated by a script.
+.PP
+Some actions generate output; some may delay completion until the certain
+external events occur, such as the host unlocking the keyboard.
+The completion of every command is marked by a two-line message.
+The first line is the current status of
+.BR x3270 ,
+documented below.
+If the command is successful, the second line is the string "ok"; otherwise it
+is the string "error".
+.SH "STATUS FORMAT"
+The status message consists of 12 blank-separated fields:
+.TP
+Keyboard State
+If the keyboard is unlocked, the letter
+.BR U .
+If the keyboard is locked waiting for a response from the host, or if not
+connected to a host, the letter
+.BR L .
+If the keyboard is locked because of an operator error (field overflow,
+protected field, etc.), the letter
+.BR E .
+.TP
+Screen Formatting
+If the screen is formatted, the letter
+.BR F .
+If unformatted or in
+.SM ANSI
+mode,
+the letter
+.BR U .
+.TP
+Field Protection
+If the field containing the cursor is protected, the letter
+.BR P .
+If unprotected or unformatted, the letter
+.BR U .
+.TP
+Connection State
+If connected to a host, the string
+.BI C( hostname ).
+Otherwise, the letter
+.B N .
+.TP
+Emulator Mode
+If connected in 3270 mode, the letter
+.BR I .
+If connected in ANSI line mode, the letter
+.BR L .
+If connected in ANSI character mode, the letter
+.BR C .
+If not connected, the letter
+.BR N .
+.TP
+Model Number (2-5)
+.TP
+Number of Rows
+The current number of rows defined on the screen.
+The host can request that
+.B x3270
+use a 24x80 screen, so this number may be smaller than the maximum number of
+rows possible with the current model.
+.TP
+Number of Columns
+The current number of columns defined on the screen, subject to the same
+difference for rows, above.
+.TP
+Cursor Row
+The current cursor row (zero-origin).
+.TP
+Cursor Column
+The current cursor column (zero-origin).
+.TP
+Window ID
+The X window identifier for the main
+.B x3270
+window, in hexadecimal preceded by
+.BR 0x .
+.SH DIFFERENCES
+When an action is initiated by a script,
+.B x3270
+behaves in several different ways:
+.PP
+If an error occurs, the usual pop-up window does not appear.
+Instead, the text is written to standard error output.
+.PP
+If end-of-file is detected on standard input,
+.B x3270
+exits.
+(A script can exit without killing
+.B x3270
+by using the CloseScript action, below.)
+Note that this applies to peer scripts only; end-of-file on the pipe
+connected to a child script simply causes the pipes to be closed and
+the
+.B Script()
+action to complete.
+.PP
+The Quit() action always causes
+.B x3270
+to exit.
+(When called from the keyboard, it will exit only if not connected to a host.)
+.PP
+The Clear(), Enter(), PF(), and PA() actions will not complete until the host
+unlocks the keyboard.
+If the parameter to a String() action includes a code for one these actions,
+it will also wait for the keyboard to unlock before completing.
+Similarly, the Script() action does not complete until end-of-file is
+detected on the pipe or the CloseScript() action is called by the child
+process.
+.SH "NEW ACTIONS"
+The following actions have been defined or modified for use with scripts.
+(Note that unlike the display on the status line,
+.I row
+and
+.I col
+coordinates used in these actions use [0,0] as their origin, not [1,1]).
+.TP
+.B AnsiText()
+Outputs whatever data that has been output by the host in
+.SM ANSI
+mode
+since the last time that AnsiText() was called.
+The data is preceded by the string "data:\ ", and has had all control characters
+expanded into C backslash sequences.
+.IP
+This is a convenient way to capture
+.SM ANSI
+mode output in a synchronous manner without trying to decode the screen
+contents.
+.TP
+.BI Ascii( row,col,rows,cols )
+.TP
+.BI Ascii( row,col,len )
+.TP
+.BI Ascii( len )
+.TP
+.B Ascii()
+Outputs an
+.SM ASCII
+text representation of the screen contents.
+Each line is preceded by the string "data:\ ", and there are no control
+characters.
+.IP
+If four parameters are given, a rectangular region of the screen is output.
+.IP
+If three parameters are given,
+.I len
+characters are output, starting at the specified row and column.
+.IP
+If only the
+.I len
+parameter is given, that many characters are output, starting at the cursor
+position.
+.IP
+If no parameters are given, the entire screen is output.
+.TP
+.B AsciiField()
+Outputs an 
+.SM ASCII
+text representation of the field containing the cursor.
+The text is preceded by the string "data:\ ".
+.TP
+.BI Connect( hostname )
+Connects to a host.
+The command does not return until
+.B x3270
+is successfully connected in the proper mode, or the connection fails.
+.TP
+.BI CloseScript( status )
+Causes
+.B x3270
+to stop reading commands from the script.
+This is useful to allow a peer script to exit, with
+.B x3270
+proceeding interactively.
+(Without this command,
+.B x3270
+would exit when it detected end-of-file on standard input.)
+If the script was invoked by the
+.B Script()
+action, the optional
+.I status
+is used as the return status of
+.B Script();
+if nonzero,
+.B Script()
+will complete with an error, and if this script was invoked as part of
+login through the
+.B ibm_hosts
+file, the connection will be broken.
+.TP
+.B Disconnect()
+Disconnects from the host.
+.TP
+.BI Ebcdic( row,col,rows,cols )
+.TP
+.BI Ebcdic( row,col,len )
+.TP
+.BI Ebcdic( len )
+.TP
+.B Ebcdic()
+The same function as Ascii() above, except that rather than generating
+.SM ASCII
+text, each character is output as a hexadecimal
+.SM EBCDIC
+code, preceded by
+.BR 0x .
+.TP
+.B EbcdicField()
+The same function as AsciiField() above, except that it generates hexadecimal
+.SM EBCDIC
+codes.
+.TP
+.BI Info( message )
+Pops up an informational message.
+.TP
+.BI Expect( text )
+.TP
+.BI Expect( text , timeout )
+Pauses the script until the specified
+.I text
+appears in the data stream from the host, or the specified
+.I timeout
+(in seconds) expires.
+If no
+.I timeout
+is specified, the default is 30 seconds.
+.I Text
+can contain standard C-language escape (backslash) sequences.
+No wild-card characters or pattern anchor characters are understood.
+.B Expect()
+is valid only in
+.SM ANSI
+mode.
+.TP
+.BI MoveCursor( row,col )
+Moves the cursor to the specified coordinates.
+.TP
+.B Wait()
+A useful utility for use at the beginning of scripts and after the Connect()
+action.
+Waits until the screen is formatted, and the host has positioned the cursor
+on a modifiable field.
+.SH "SEE ALSO"
+expect(1)
+.br
+ksh(1)
+.br
+x3270(1)

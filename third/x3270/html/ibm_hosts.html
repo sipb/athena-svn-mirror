@@ -1,0 +1,76 @@
+<HTML>
+<TITLE>ibm_hosts - host database for x3270</TITLE>
+<H1>ibm_hosts - host database for x3270</H1>
+<H2>NAME</H2>
+ibm_hosts - host database for <B>x3270</B>
+<H2>SYNOPSIS</H2>
+/usr/lib/X11/x3270/ibm_hosts
+<H2>DESCRIPTION</H2>
+The <B>ibm_hosts</B>
+file contains information regarding IBM hosts on the network.
+An <I>IBM host</I>
+is a host which can communicate with a 3270 terminal emulator such as
+<B>x3270</B> or <B>tn3270</B>.
+Each line defines a name in the following format
+(optional fields are shown in brackets):
+<PRE>
+    name type hostname[/port] [actions]
+</PRE>
+Items are separated by any number of blanks and/or TAB characters.
+A line beginning with `#' is taken as a comment (note that `#' anywhere
+else on a line does <I>not</I> indicate a comment).
+<P>
+The <I>name</I> field is a mnemonic used to identify the host.
+<P>
+The <I>type</I> field is a keyword that indicates the type of entry.
+The value <B>primary</B> means that the <I>name</I>
+will be included in host-selection menus that may be displayed by a
+3270 emulator.
+The value <B>alias</B> means that the <I>name</I>
+will not be included in menus, but will still be accepted as valid input
+when a host name is required.
+<P>
+The <I>hostname</I>
+field is the Internet hostname or dot-notation Internet address of the host.
+<P>
+The <I>hostname</I> can also optionally include a non-default
+<I>port</I> number, appended to the <I>hostname</I>
+with a slash ``/'' character,
+<I>e.g.</I>, <B>bluehost/9700</B>.
+<P>
+The optional <I>actions</I> field
+specifies actions to be taken once the connection is made and a data-entry
+field is defined.
+If the text looks like an action, <I>e</I>.<I>g</I>., <B>PF(1)</B>,
+it is unmodified; otherwise it is taken as the parameter to the
+<B>String()</B> action.
+The <I>actions</I>
+are not intended for entering usernames and passwords; rather they provide an
+automated way of specifying a front-end menu option.
+<H2>EXAMPLE</H2>
+Given the following <B>ibm_hosts</B> file:
+<PRE>
+    mvs  primary  mvs-host
+    tso  alias    mvs-host
+    mvs2 primary  mvs-host/4012
+    vm   primary  vtam          Tab() String(3) Enter()
+</PRE>
+An 3270 emulator will display four names (<B>mvs</B>, <B>mvs2</B>,
+<B>afhost</B> and <B>vm</B>) on its hosts menu.
+The names <B>mvs</B> and <B>tso</B> will cause connections to the host
+<B>mvs-host</B>.
+The name <B>mvs2</B> will also cause a connection to
+<B>mvs-host</B>,
+but to port 4012 rather than the emulator's default port (usually 23).
+The name <B>vm</B> will cause the 3270 emulator to connect to the host
+<B>vtam</B> (presumably some sort of host-selection front-end),
+enter the string ``3'' on the second data-entry field on the screen, and
+send the ENTER AID sequence.
+<H2>FILES</H2>
+/usr/lib/X11/x3270/ibm_hosts
+<H2>SEE ALSO</H2>
+<A HREF="x3270.man.html"><I>x3270</I>(1)</A>
+<HR>
+<ADDRESS>
+Last modified 10. July 1995
+</ADDRESS>
