@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.17 1991-11-06 15:41:16 lwvanels Exp $
+ *	$Id: init.c,v 1.18 1992-01-07 19:14:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.17 1991-11-06 15:41:16 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.18 1992-01-07 19:14:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -54,7 +54,7 @@ OInitialize()
   h = (char *) getenv ("OLCD_HOST");
   inst = (char *) getenv("OLCD_INST");
   if (!inst) {
-    inst = OLC_SERV_NAME;
+    inst = OLC_SERVICE;
   }
 
 #ifdef HESIOD
