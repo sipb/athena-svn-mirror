@@ -2517,7 +2517,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb5 -lcrypto -lcom_err $LIBS"
+LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2523 "configure"
 #include "confdefs.h"
@@ -2545,7 +2545,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"
+  LIBS="$LIBS -lkrb5 -lk5crypto -lcom_err"
 else
   echo "$ac_t""no" 1>&6
 fi
@@ -2605,7 +2605,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb5 -lcrypto -lcom_err $LIBS"
+LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2611 "configure"
 #include "confdefs.h"
@@ -2633,7 +2633,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"
+  LIBS="$LIBS -lkrb5 -lk5crypto -lcom_err"
 else
   echo "$ac_t""no" 1>&6
 fi
