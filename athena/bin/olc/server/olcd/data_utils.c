@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.27 1991-01-08 16:37:24 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.28 1991-01-15 18:01:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.27 1991-01-08 16:37:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.28 1991-01-15 18:01:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -1347,10 +1347,9 @@ new_message(target, sender, message)
   }
 
   time_now(timebuf);
-  fprintf(msg_file,"\n--- Message from %s %s (%s@%s [%d]).\n    [%s]\n",
-	  sender->title, sender->user->realname,
-	  sender->user->username, sender->user->machine,
-	  sender->instance, timebuf);
+  fprintf(msg_file, "\n*** Reply from %s %s@%s [%d].\n    [%s]\n",
+	  sender->title, sender->user->username, 
+	  sender->user->machine, sender->instance, timebuf);
   fprintf(msg_file,"%s",message);
   fclose(msg_file);
   target->new_messages = 1;
