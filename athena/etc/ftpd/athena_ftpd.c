@@ -496,6 +496,15 @@ char *athena_attachhomedir(pw, auth)
 IsRemoteDir(dir)
 char *dir;
 {
+#ifdef _AIX
+#define REMOTEDONE
+    struct stat stbuf;
+
+    if (statx(dir, &stbuf, 0, STX_NORMAL))
+	return(TRUE);
+    return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
+#endif
+
 #ifdef ultrix
 #define REMOTEDONE
     struct fs_data sbuf;
