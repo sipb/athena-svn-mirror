@@ -3,7 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Id: dispatch.c,v 1.59 1999-01-22 23:19:43 ghudson Exp $
+ *	$Id: dispatch.c,v 1.60 2000-02-11 20:59:36 ghudson Exp $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_dispatch_c[] =
-"$Id: dispatch.c,v 1.59 1999-01-22 23:19:43 ghudson Exp $";
+"$Id: dispatch.c,v 1.60 2000-02-11 20:59:36 ghudson Exp $";
 #endif
 #endif
 
@@ -243,20 +243,7 @@ dispatch(notice, auth, who, from_server)
     char dbg_buf[BUFSIZ];
 #endif
 
-    /* Set "authflag" to 1 or 0 for handler functions.  Treat
-     * ZAUTH_CKSUM_FAILED as authentic except for sendit(), which is
-     * handled below. */
-    switch (auth) {
-      case ZAUTH_YES:
-      case ZAUTH_CKSUM_FAILED:
-	authflag = 1;
-	break;
-      case ZAUTH_FAILED:
-      case ZAUTH_NO:
-      default:
-	authflag = 0;
-	break;
-    }
+    authflag = (auth == ZAUTH_YES);
 
     if ((int) notice->z_kind < (int) UNSAFE ||
 	(int) notice->z_kind > (int) CLIENTACK) {
@@ -311,8 +298,6 @@ dispatch(notice, auth, who, from_server)
 	admin_notices.val++;
 	status = server_adispatch(notice, authflag, who, me_server);
     } else {
-	if (auth == ZAUTH_CKSUM_FAILED)
-	    authflag = 0;
 	if (!bound_for_local_realm(notice)) {
 	    cp = strchr(notice->z_recipient, '@');
 	    if (!cp ||
