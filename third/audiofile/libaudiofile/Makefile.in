@@ -88,7 +88,7 @@ libaudiofile_la_SOURCES =  	audiofile.c error.c write.c bread.c bwrite.c byteord
 
 include_HEADERS = audiofile.h aupvlist.h af_vfs.h
 
-CFLAGS = -Wall -g
+CFLAGS = -g
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
