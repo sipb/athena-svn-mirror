@@ -1,6 +1,7 @@
-# $Id: Makefile,v 1.10 2000-04-28 13:23:39 ghudson Exp $
+# $Id: Makefile,v 1.11 2000-06-19 03:54:20 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
+ATHETCDIR=/usr/athena/etc
 ATHLOGINDIR=${ATHRETCDIR}/login
 INITD=/etc/init.d
 RC0=/etc/rc0.d
@@ -13,6 +14,8 @@ all:
 check:
 
 install:
+	mkdir -p ${DESTDIR}${ATHETCDIR}
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
@@ -29,8 +32,10 @@ install:
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
 	install -c -m 0755 inetsvc ${DESTDIR}${INITD}
+	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
+	install -c -m 0755 ../../os-checkfiles ${DESTDIR}${ATHETCDIR}
 	rm -f ${DESTDIR}${RC0}/K90athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K90athena
 	rm -f ${DESTDIR}${RC0}/K95athena.config
