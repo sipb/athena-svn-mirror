@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.7 1999-10-27 22:31:36 mwhitson Exp $";
+"$Id: krb5_auth.c,v 1.8 1999-12-16 23:23:24 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -179,8 +179,8 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 			retval = 1;
 			goto done;
 		}
-		free(inbuf.data); inbuf.data = 0;
-		free(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 		inbuf.length = 0;
 		outbuf.length = 0;
 	}
@@ -244,7 +244,7 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 			retval = 1;
 			goto done;
 		}
-		free(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	DEBUG1("server_krb5_status: done" );
 
@@ -585,7 +585,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			goto done;
 		}
 		DEBUG4( "client_krb5_auth: freeing data");
-		free(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	if( len < 0 ){
 		plp_snprintf( err, errlen,
@@ -620,8 +620,8 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			cleanup(0);
 		}
 		if(Write_fd_len(fd,outbuf.data,outbuf.length) < 0) cleanup(0);
-		free(inbuf.data); inbuf.data = 0;
-		free(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	close(fd); fd = -1;
 	fd = Checkread( file, &statb );
