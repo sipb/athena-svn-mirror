@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.21 1996-09-20 02:13:56 ghudson Exp $
+ *	$Id: init.c,v 1.22 1997-04-30 17:35:07 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.21 1996-09-20 02:13:56 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.22 1997-04-30 17:35:07 ghudson Exp $";
 #endif
 #endif
 
@@ -39,8 +39,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <netdb.h>
 #include <string.h>
 
-extern int OLC;
-
 ERRCODE
 OInitialize()
 {
@@ -51,30 +49,32 @@ OInitialize()
   char *inst;
   struct hostent *host;
 #ifdef HESIOD
-  int need_to_free;
+  int need_to_free = 0;
 #endif
 
   h = (char *) getenv ("OLCD_HOST");
   inst = (char *) getenv("OLCD_INST");
   if (!inst) {
-    inst = OLC_SERVICE;
+    inst = client_service_name();
   }
 
 #ifdef HESIOD
   if (!h) {
       char **hp;
 
-      if ((hp = hes_resolve(inst,OLC_SERV_NAME)) == NULL) {	
+      hp = hes_resolve(inst,OLC_SERV_NAME);
+      if (hp == NULL) {	
 
 	  fprintf(stderr,
 		  "Unable to get name of %s server host from the Hesiod nameserver.\n",inst);
 	  fprintf(stderr, 
-		  "Any problems you may be experiencing with your workstation may be\n");
+		  "This means that you may be unable to use %s at this time.  Any problems\n",inst);
 	  fprintf(stderr,
-		  "the result of this problem.\n");
+		  "you may be experiencing with your workstation may be the result of this\n");
+	  fprintf(stderr,
+		  "problem. \n");
       
-	  need_to_free = 0;
-	  h = OLC_SERVER;
+	  h = client_hardcoded_server();
       }
       else
 	  need_to_free = 1;
@@ -82,7 +82,7 @@ OInitialize()
     }
 #else
   if (!h) {
-    h = OLC_SERVER;
+    h = client_hardcoded_server();
   }
 #endif /* HESIOD */
 
@@ -109,8 +109,8 @@ OInitialize()
     }
       
   {
-    char *cp;
-    if ((cp = strchr(User.realname, ',')) != 0)
+    char *cp = strchr(User.realname, ',');
+    if (cp != NULL)
       *cp = '\0';
   }
       
@@ -119,7 +119,8 @@ OInitialize()
     fprintf(stderr,"of the problems you may currently be having.\n");
     strcpy(hostname,"unknown-host");
   } else {
-    if ((host = gethostbyname(hostname)) == (struct hostent *)NULL) {
+    host = gethostbyname(hostname);
+    if (host == (struct hostent *)NULL) {
       fprintf(stderr,"Unable to get host by name for this host, `%s'\n",
 	      hostname);
     }
