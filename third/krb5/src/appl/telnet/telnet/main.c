@@ -252,7 +252,6 @@ main(argc, argv)
 #endif
 			break;
 		case 'l':
-			autologin = 1;
 			user = optarg;
 			break;
 		case 'n':
@@ -337,7 +336,9 @@ main(argc, argv)
 			forward_flags |= OPTS_FORWARD_CREDS;
 #endif
 			fputs(STARTUP_MESSAGE_DEFAULT, stderr);
-		} else
+		} else if (user)
+			autologin = 1;
+		else
 			autologin = 0;
 	}
 
