@@ -1,4 +1,4 @@
-# $Id: athena,v 1.4 1999-02-27 00:01:01 danw Exp $
+# $Id: athena,v 1.5 1999-02-27 17:14:00 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -243,9 +243,14 @@ if [ "$MRUPDATE" = true ]; then
 	update_server &
 fi
 
-if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
+if [ "$SSHD" = true -o "$SSHD" = switched ]; then
+	case $SSHD,$ACCESSON in
+		true,*)		sshopt= ;;
+		switched,true)	sshdopt=-s ;;
+		switched,*)	sshdopt=-S ;;
+	esac
 	$ECHO "sshd... \c"
-	sshd &
+	sshd $sshdopt &
 fi
 
 $ECHO "done."
