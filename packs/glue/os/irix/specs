@@ -1,1 +1,5 @@
 netscape	infoagents
+bos		afsuser
+klog		afsuser
+pts		afsuser
+vos		afsuser

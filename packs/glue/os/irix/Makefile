@@ -1,12 +1,21 @@
-# $Id: Makefile,v 1.4 2000-06-08 18:49:50 ghudson Exp $
+# $Id: Makefile,v 1.5 2002-02-05 17:53:41 zacheiss Exp $
 
 SHELL=/bin/sh
+ATHRBINDIR=/bin/athena
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
 NSBINDIR=/usr/bin/X11
 IAFLIBDIR=/usr/lib/iaf
+ATTACHRUN=bos klog pts vos
+ATTRUNTEMPLATE=../../template.sh
 
-all:
+all: ${ATTACHRUN}
+
+${ATTACHRUN}: specs ${ATTRUNTEMPLATE}
+	set `grep '^$@[ 	]' specs`; locker=$$2; program=$${3-$$1}; \
+		bindir=`athdir -c -p /mit/$$2 -t bin`; \
+		sed -e "s|@LOCKER@|$$2|g" -e "s|@BINDIR@|$$bindir|g" \
+			-e "s|@PROGRAM@|$$program|g" ${ATTRUNTEMPLATE} > $@
 
 check:
 
@@ -26,7 +35,12 @@ install:
 	ln -s /usr/sbin/vacation ${DESTDIR}${ATHBINDIR}/vacation.real
 	rm -f ${DESTDIR}${IAFLIBDIR}/scheme
 	ln -s /bin/login ${DESTDIR}${IAFLIBDIR}/scheme
+	install -m -c 555 bos ${DESTDIR}${ATHRBINDIR}
+	install -m -c 555 klog ${DESTDIR}${ATHRBINDIR}
+	install -m -c 555 pts ${DESTDIR}${ATHRBINDIR}
+	install -m -c 555 vos ${DESTDIR}${ATHRBINDIR}
 
 clean:
+	rm -f ${ATTACHRUN}
 
 distclean: clean
