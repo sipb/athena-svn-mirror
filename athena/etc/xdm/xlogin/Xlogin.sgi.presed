@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sgi.presed,v 1.1 1995-11-27 02:43:29 cfields Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.sgi.presed,v 1.2 1996-05-28 17:56:34 cfields Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -186,7 +186,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -267,7 +267,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -469,7 +469,7 @@ xlogin.Geometry: 		580x325+288+180
 *omenuEntry10.label:		Display Console Window
 *omenuEntry10.callback:		signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
-*omenuEntry11.callback:		WcExitCB(3)
+*omenuEntry11.callback:		windowShutdownCB()
 
 *omenuEntry2.rightBitmap:	Shift-F1
 *omenuEntry3.rightBitmap:	Shift-F2
@@ -517,7 +517,7 @@ xlogin.Geometry: 		580x325+288+180
 	Ctrl<Key>f:	forward-character() \n\
 	Ctrl<Key>h:	delete-previous-character() \n\
 	Ctrl<Key>k:	kill-to-end-of-line() \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	Ctrl<Key>t:	transpose-characters() \n\
 	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
 	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
@@ -621,7 +621,7 @@ xlogin.Geometry: 		580x325+288+180
 *warning*value.resize:		False
 *warning*value.displayCaret:	False
 *warning*value.translations:	#replace \n\
-	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>p:	windowShutdownACT() \n\
 	<Key>Return:	WcPopdownACT(*warningShell) \
 			reset() \n\
 	<Key>KP_Enter:	WcPopdownACT(*warningShell) \
