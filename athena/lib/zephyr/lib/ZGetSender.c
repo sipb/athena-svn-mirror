@@ -4,19 +4,21 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.2 1987-07-01 04:36:57 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.3 1987-07-02 10:45:33 jtkohl Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
 #include <pwd.h>
+
+uid_t getuid();
 
 char *ZGetSender()
 {
@@ -31,8 +33,9 @@ char *ZGetSender()
 
 	tktfile = (char *)TKT_FILE;
 	if (!(fp = fopen(tktfile,"r"))) {
-		/*NOSTRICT*/
-		pw = getpwuid(getuid());
+		/* XXX a uid_t is a u_short (now), but getpwuid
+		   wants an int. AARGH! */
+		pw = getpwuid((int) getuid());
 		if (!pw)
 			return ("unauth");
 		(void) sprintf(sender,"%s@UNAUTH",pw->pw_name);

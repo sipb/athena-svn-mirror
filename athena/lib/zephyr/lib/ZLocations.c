@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.7 1987-07-01 04:38:16 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.8 1987-07-02 10:45:44 jtkohl Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -19,6 +19,8 @@
 #include <pwd.h>
 #include <sys/file.h>
 
+uid_t getuid();
+
 Code_t ZSetLocation()
 {
 	char bfr[BUFSIZ];
@@ -26,8 +28,8 @@ Code_t ZSetLocation()
 	struct passwd *pw;
 	
         quiet = 0;
-	/*NOSTRICT*/
-	if (pw = getpwuid(getuid())) {
+	/* XXX a uid_t is a u_short (now), but getpwuid wants an int. AARGH! */
+	if (pw = getpwuid((int) getuid())) {
 		(void) sprintf(bfr,"%s/.hideme",pw->pw_dir);
 		quiet = !access(bfr,F_OK);
 	} 
