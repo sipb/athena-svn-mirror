@@ -35,7 +35,7 @@
  *
  * The user can select a string from the list.
  */
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_STRING_PICKER            (eel_string_picker_get_type ())
 #define EEL_STRING_PICKER(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_STRING_PICKER, EelStringPicker))
@@ -58,7 +58,13 @@ struct EelStringPicker
 struct EelStringPickerClass
 {
 	EelCaptionClass parent_class;
+
+	/* Signals */
+	void (* changed) (EelStringPicker *string_picker);
 };
+
+/* This is the string used to insert a separator. */
+#define EEL_STRING_PICKER_SEPARATOR_STRING "----------"
 
 GtkType        eel_string_picker_get_type                  (void);
 GtkWidget*     eel_string_picker_new                       (void);
@@ -101,7 +107,7 @@ void           eel_string_picker_clear                     (EelStringPicker     
 void           eel_string_picker_set_insensitive_list      (EelStringPicker       *string_picker,
 							    const EelStringList   *insensitive_list);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_STRING_PICKER_H */
 

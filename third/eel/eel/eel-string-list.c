@@ -5,16 +5,16 @@
    Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -309,6 +309,26 @@ eel_string_list_insert_string_list (EelStringList *string_list,
 	for (node = other_string_list->strings; node; node = node->next) {
 		eel_string_list_insert (string_list, node->data);
 	}
+}
+
+G_CONST_RETURN char *
+eel_string_list_peek_nth (const EelStringList *string_list,
+			  guint n)
+{
+	const char *nth_string;
+	
+	g_return_val_if_fail (string_list != NULL, NULL);
+	
+	if (n  < g_slist_length (string_list->strings)) {
+		nth_string = g_slist_nth_data (string_list->strings, n);
+		g_return_val_if_fail (nth_string != NULL, NULL);
+		
+		return nth_string;
+	} else if (!suppress_out_of_bounds_warning) {
+		g_warning ("eel_string_list_nth (n = %d) is out of bounds.", n);
+	}
+	
+	return NULL;
 }
 
 char *

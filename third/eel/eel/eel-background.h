@@ -5,16 +5,16 @@
    Copyright (C) 2000 Eazel, Inc.
 
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -43,7 +43,6 @@
 #include <gdk/gdktypes.h>
 #include <gtk/gtkwidget.h>
 
-#include <libgnomeui/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct EelBackground EelBackground;
@@ -72,20 +71,53 @@ EelBackground *             eel_background_new                              (voi
 
 
 /* Calls to change a background. */
+void                        eel_background_set_use_base                     (EelBackground               *background,
+									     gboolean                     use_base);
 void                        eel_background_set_color                        (EelBackground               *background,
 									     const char                  *color_or_gradient);
 void                        eel_background_set_image_uri                    (EelBackground               *background,
 									     const char                  *image_uri);
+
+void                        eel_background_set_image_uri_sync               (EelBackground               *background, 
+									     const char                  *image_uri);
+
 void                        eel_background_reset                            (EelBackground               *background);
 void                        eel_background_set_image_placement              (EelBackground               *background,
 									     EelBackgroundImagePlacement  placement);
+
+/* Set this if you know that the widget/window will never change its
+ * size. This means that EelBackground can use background pixmaps
+ * even for backgrounds that otherwise would change when the size
+ * chages. The important user is the nautilus desktop window.
+ */
+void                        eel_background_set_is_constant_size             (EelBackground               *background,
+									     gboolean                     constant_size);
+
 /* Calls to interrogate the current state of a background. */
 char *                      eel_background_get_color                        (EelBackground               *background);
 char *                      eel_background_get_image_uri                    (EelBackground               *background);
 EelBackgroundImagePlacement eel_background_get_image_placement              (EelBackground               *background);
+gboolean                    eel_background_get_suggested_pixmap_size        (EelBackground               *background,
+                                                                             int                          entire_width,
+                                                                             int                          entire_height,
+                                                                             int                         *pixmap_width,
+                                                                             int                         *pixmap_height);
 gboolean                    eel_background_is_dark                          (EelBackground               *background);
 gboolean                    eel_background_is_set                           (EelBackground               *background);
 gboolean                    eel_background_is_loaded                        (EelBackground               *background);
+
+
+GdkPixmap *                 eel_background_get_pixmap_and_color             (EelBackground               *background,
+									     GdkWindow                   *window,
+									     int                          entire_width,
+									     int                          entire_height,
+									     GdkColor                    *color,
+									     gboolean                    *changes_with_size);
+									     
+
+/* Helper function for widgets using EelBackground */
+void                        eel_background_expose                           (GtkWidget                   *widget,
+									     GdkEventExpose              *event);
 
 /* For preping the background to be used in one of the two calls
  * below. Only intended to be called by eel_background_canvas_group_update.
@@ -106,12 +138,7 @@ void                        eel_background_draw                             (Eel
 									     int                          dest_y,
 									     int                          dest_width,
 									     int                          dest_height);
-/* For updating the canvas, aa case. Note: eel_background_pre_draw
- * must have been previously called. Only intended to be called by
- * eel_background_canvas_group_render.
- */
-void                        eel_background_draw_aa                          (EelBackground               *background,
-									     GnomeCanvasBuf              *buffer);
+
 /* Used to fill a drawable with a background.
  *  - entire_width/height describe the total area the background covers
  *  - drawable_x/y/width/height describe the portion of that area the drawable covers
@@ -126,14 +153,6 @@ void                        eel_background_draw_to_drawable                 (Eel
 									     int                          entire_width,
 									     int                          entire_height);
 
-/* Used to fill a drawable with a background.
- *  - entire_width/height describe the total area the background covers
- *  - buffer is a portion of that area
- */
-void                        eel_background_draw_to_canvas                   (EelBackground               *background,
-									     GnomeCanvasBuf              *buffer,
-									     int                          entire_width,
-									     int                          entire_height);
 /* Used to fill a pixbuf with a background.
  *  - entire_width/height describe the total area the background covers
  *  - drawable_x/y/width/height describe the portion of that area the pixbuf covers
@@ -150,12 +169,14 @@ void                        eel_background_draw_to_pixbuf                   (Eel
 /* Handles a dragged color being dropped on a widget to change the background color. */
 void                        eel_background_receive_dropped_color            (EelBackground               *background,
 									     GtkWidget                   *widget,
+									     GdkDragAction                action,
 									     int                          drop_location_x,
 									     int                          drop_location_y,
 									     const GtkSelectionData      *dropped_color);
 
 /* Handles a special-case image name that means "reset to default background" too. */
 void                        eel_background_receive_dropped_background_image (EelBackground               *background,
+									     GdkDragAction                action,
 									     const char                  *image_uri);
 
 /* Gets or creates a background so that it's attached to a widget. */
@@ -166,10 +187,6 @@ gboolean                    eel_widget_has_attached_background              (Gtk
 
 /* Find the background ancestor for the widget. */
 GtkWidget *                 eel_gtk_widget_find_background_ancestor         (GtkWidget                   *widget);
-
-/* Find out if a eel background is too complex for GtkStyle, so that we have to draw it ourselves */
-gboolean                    eel_background_is_too_complex_for_gtk_style     (EelBackground               *background);
-
 
 typedef struct EelBackgroundDetails EelBackgroundDetails;
 
@@ -194,6 +211,13 @@ struct EelBackgroundClass
 	 */
 	void (* appearance_changed) (EelBackground *);
 
+	/* This signal is emitted when image loading is over to
+	 * allow the placement of the background to be determined
+	 * from the geometry, ie. whether to tile or scale the image.
+	 */
+	EelBackgroundImagePlacement
+             (* determine_image_placement) (EelBackground *, int image_width, int image_height);
+ 
 	/* This signal is emitted when image loading is over - whether it
 	 * was successfully loaded or not.
 	 */

@@ -27,6 +27,7 @@
 #define EEL_GDK_EXTENSIONS_H
 
 #include <gdk/gdktypes.h>
+#include <gdk/gdkwindow.h>
 
 #define EEL_RGB_COLOR_RED	0xFF0000
 #define EEL_RGB_COLOR_GREEN	0x00FF00
@@ -97,7 +98,7 @@ char *              eel_gradient_set_bottom_color_spec     (const char          
 /* A version of parse_color that substitutes a default color instead of returning
    a boolean to indicate it cannot be parsed.
 */
-void                eel_gdk_coolor_parse_with_default      (const char          *color_spec,
+void                eel_gdk_color_parse_with_default       (const char          *color_spec,
 							    const GdkColor      *default_color,
 							    GdkColor            *parsed_color);
 void                eel_gdk_color_parse_with_white_default (const char          *color_spec,
@@ -117,22 +118,17 @@ guint32             eel_gdk_color_to_rgb                   (const GdkColor      
 GdkColor            eel_gdk_rgb_to_color                   (guint32              color);
 char *              eel_gdk_rgb_to_color_spec              (guint32              color);
 
+gboolean            eel_gdk_color_parse                    (const gchar         *spec,
+							    GdkColor            *color);
+
 /* Fill routines that take GdkRectangle parameters instead of four integers. */
 void                eel_fill_rectangle                     (GdkDrawable         *drawable,
 							    GdkGC               *gc,
 							    const GdkRectangle  *rectangle);
-void                eel_fill_rectangle_with_color          (GdkDrawable         *drawable,
-							    GdkGC               *gc,
-							    const GdkRectangle  *rectangle,
-							    guint32              rgb);
 gboolean            eel_gdk_color_is_dark                  (GdkColor            *color);
-void                eel_gdk_choose_foreground_color        (GdkColor            *preferred,
-							    GdkColor            *background);
-void                eel_gdk_gc_choose_foreground_color     (GdkGC               *gc,
-							    GdkColor            *preferred,
-							    GdkColor            *background);
 
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
+GdkBitmap *         eel_stipple_bitmap_for_screen          (GdkScreen *screen);
 GdkBitmap *         eel_stipple_bitmap                     (void);
 
 
@@ -140,6 +136,8 @@ GdkBitmap *         eel_stipple_bitmap                     (void);
 gboolean            eel_rectangle_contains                 (const GdkRectangle  *rectangle,
 							    int                  x,
 							    int                  y);
+gboolean            eel_gdk_rectangle_contains_rectangle   (GdkRectangle         outer,
+							    GdkRectangle         inner);
 void                eel_rectangle_inset                    (GdkRectangle        *rectangle,
 							    int                  x,
 							    int                  y);
@@ -160,10 +158,6 @@ void                eel_gdk_window_set_wm_protocols        (GdkWindow           
 							    int                  nprotocols);
 
 
-/* In GNOME 2.0 this function will be in the libraries */
-void                eel_set_mini_icon                      (GdkWindow           *window,
-							    GdkPixmap           *pixmap,
-							    GdkBitmap           *mask);
 void                eel_gdk_window_set_wm_hints_input      (GdkWindow           *w,
 							    gboolean             status);
 
@@ -173,5 +167,11 @@ EelGdkGeometryFlags eel_gdk_parse_geometry                 (const char          
 							    int                 *y_return,
 							    guint               *width_return,
 							    guint               *height_return);
-
+void                eel_gdk_draw_layout_with_drop_shadow   (GdkDrawable         *drawable,
+							    GdkGC               *gc,
+							    GdkColor            *text_color,
+							    GdkColor            *shadow_color,
+							    int                  x,
+							    int                  y,
+							    PangoLayout         *layout);
 #endif /* EEL_GDK_EXTENSIONS_H */

@@ -25,13 +25,14 @@
 #include <config.h>
 #include "eel-gconf-extensions.h"
 
+#include "eel-debug.h"
 #include "eel-glib-extensions.h"
 #include "eel-stock-dialogs.h"
 #include "eel-string.h"
+#include "eel-i18n.h"
 
 #include <gconf/gconf-client.h>
 #include <gconf/gconf.h>
-#include <libgnome/gnome-i18n.h>
 
 static GConfClient *global_gconf_client = NULL;
 
@@ -42,7 +43,7 @@ global_client_free (void)
 		return;
 	}
 	
-	gtk_object_unref (GTK_OBJECT (global_gconf_client));
+	g_object_unref (global_gconf_client);
 	global_gconf_client = NULL;
 }
 
@@ -64,7 +65,7 @@ eel_gconf_client_get_global (void)
 	
 	if (global_gconf_client == NULL) {
 		global_gconf_client = gconf_client_get_default ();
-		g_atexit (global_client_free);
+		eel_debug_call_at_shutdown (global_client_free);
 	}
 	
 	return global_gconf_client;
@@ -322,6 +323,28 @@ eel_gconf_monitor_remove (const char *directory)
 }
 
 void
+eel_gconf_preload_cache (const char             *directory,
+			 GConfClientPreloadType  preload_type)
+{
+	GError *error = NULL;
+	GConfClient *client;
+
+	if (directory == NULL) {
+		return;
+	}
+
+	client = gconf_client_get_default ();
+	g_return_if_fail (client != NULL);
+	
+	gconf_client_preload (client,
+			      directory,
+			      preload_type,
+			      &error);
+	
+	eel_gconf_handle_error (&error);
+}
+
+void
 eel_gconf_suggest_sync (void)
 {
 	GConfClient *client;
@@ -358,6 +381,30 @@ eel_gconf_get_value (const char *key)
 	return value;
 }
 
+GConfValue*
+eel_gconf_get_default_value (const char *key)
+{
+	GConfValue *value = NULL;
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, NULL);
+
+	client = eel_gconf_client_get_global ();
+	g_return_val_if_fail (client != NULL, NULL);
+
+	value = gconf_client_get_default_from_schema (client, key, &error);
+	
+	if (eel_gconf_handle_error (&error)) {
+		if (value != NULL) {
+			gconf_value_free (value);
+			value = NULL;
+		}
+	}
+
+	return value;
+}
+
 static gboolean
 simple_value_is_equal (const GConfValue *a,
 		       const GConfValue *b)
@@ -367,19 +414,23 @@ simple_value_is_equal (const GConfValue *a,
 
 	switch (a->type) {
 	case GCONF_VALUE_STRING:
-		return eel_str_is_equal (a->d.string_data, b->d.string_data);
+		return eel_str_is_equal (gconf_value_get_string (a),
+					 gconf_value_get_string (b));
 		break;
 
 	case GCONF_VALUE_INT:
-		return a->d.int_data == b->d.int_data;
+		return gconf_value_get_int (a) ==
+			gconf_value_get_int (b);
 		break;
 
 	case GCONF_VALUE_FLOAT:
-		return a->d.float_data == b->d.float_data;
+		return gconf_value_get_float (a) ==
+			gconf_value_get_float (b);
 		break;
 
 	case GCONF_VALUE_BOOL:
-		return a->d.bool_data == b->d.bool_data;
+		return gconf_value_get_bool (a) ==
+			gconf_value_get_bool (b);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -416,23 +467,24 @@ eel_gconf_value_is_equal (const GConfValue *a,
 		break;
 		
 	case GCONF_VALUE_LIST:
-		if (a->d.list_data.type != b->d.list_data.type) {
+		if (gconf_value_get_list_type (a) !=
+		    gconf_value_get_list_type (b)) {
 			return FALSE;
 		}
 
-		if (a->d.list_data.list == NULL && b->d.list_data.list == NULL) {
+		node_a = gconf_value_get_list (a);
+		node_b = gconf_value_get_list (b);
+		
+		if (node_a == NULL && node_b == NULL) {
 			return TRUE;
 		}
 
-		if (a->d.list_data.list != NULL || b->d.list_data.list != NULL) {
-			return FALSE;
-		}
-
-		if (g_slist_length (a->d.list_data.list) != g_slist_length (b->d.list_data.list)) {
+		if (g_slist_length (node_a) !=
+		    g_slist_length (node_b)) {
 			return FALSE;
 		}
 		
-		for (node_a = a->d.list_data.list,node_b = b->d.list_data.list;
+		for (;
 		     node_a != NULL && node_b != NULL;
 		     node_a = node_a->next, node_b = node_b->next) {
 			g_assert (node_a->data != NULL);
@@ -561,4 +613,22 @@ eel_gconf_value_set_string_list (GConfValue *value,
 		gconf_value_free (node->data);
 	}
 	g_slist_free (value_list);
+}
+
+EelStringList *
+eel_gconf_value_get_eel_string_list (const GConfValue *value)
+{
+	GSList *slist;
+	EelStringList *result;
+
+	if (value == NULL) {
+		return eel_string_list_new (TRUE);
+	}
+	g_return_val_if_fail (value->type == GCONF_VALUE_LIST, eel_string_list_new (TRUE));
+	g_return_val_if_fail (gconf_value_get_list_type (value) == GCONF_VALUE_STRING, eel_string_list_new (TRUE));
+
+	slist = eel_gconf_value_get_string_list (value);
+	result = eel_string_list_new_from_g_slist (slist, TRUE);
+	eel_g_slist_free_deep (slist);
+ 	return result;
 }

@@ -5,16 +5,16 @@
    Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -25,45 +25,22 @@
 #include <config.h>
 #include "eel-debug.h"
 
-#include "eel-glib-extensions.h"
+#include <glib/glist.h>
+#include <glib/gmessages.h>
 #include <signal.h>
 #include <stdio.h>
-#include <unistd.h>
 
-/* Try and read the command line used to run the current process.
- * On Linux, the file /proc/self/cmdline contains this information.
- * In that case the function returns a constant static string with
- * the command line.
- *
- * On platform where this feature is not available, the result is
- * NULL.
- */
-static const char *
-get_process_name (void)
-{
-	static char name[_POSIX_PATH_MAX];
-	static gboolean cmdline_read;
-	FILE *stream;
+typedef struct {
+	gpointer data;
+	GFreeFunc function;
+} ShutdownFunction;
 
-	if (!cmdline_read) {
-		cmdline_read = TRUE;
-
-		stream = fopen ("/proc/self/cmdline", "r");
-		if (stream != NULL) {
-			if (fgets (name, sizeof (name), stream) == NULL) {
-				name[0] = '\0';
-			}
-			fclose (stream);
-		}
-	}
-
-	return name[0] != '\0' ? name : NULL;
-}
+static GList *shutdown_functions;
 
 /* Raise a SIGINT signal to get the attention of the debugger.
-   When not running under the debugger, we don't want to stop,
-   so we ignore the signal for just the moment that we raise it.
-*/
+ * When not running under the debugger, we don't want to stop,
+ * so we ignore the signal for just the moment that we raise it.
+ */
 void
 eel_stop_in_debugger (void)
 {
@@ -74,50 +51,17 @@ eel_stop_in_debugger (void)
 	signal (SIGINT, saved_handler);
 }
 
-static void
-call_default_log_handler_with_better_message (const char *domain,
-					      GLogLevelFlags level,
-					      const char *message,
-					      gpointer data)
-{
-	const char *name;
-	char *better_message;
-
-	/* FIXME: Need to make a version that doesn't allocate memory. */
-
-	/* If the command line is known (non-zero length) then print
-	 * that out along with the process id to make the warning or
-	 * critical more useful.
-	 *
-	 * If the command line is not known, then just print the
-	 * process id.
-	 */
-	name = get_process_name ();
-	if (name != NULL) {
-		better_message = g_strdup_printf ("%s(%lu): %s",
-						  name,
-						  (unsigned long) getpid (),
-						  message);
-	} else {
-		better_message = g_strdup_printf ("%lu: %s",
-						  (unsigned long) getpid (),
-						  message);
-	}
-	g_log_default_handler (domain, level, better_message, data);
-	g_free (better_message);
-}
-
 /* Stop in the debugger after running the default log handler.
-   This makes certain kinds of messages stop in the debugger
-   without making them fatal.
-*/
+ * This makes certain kinds of messages stop in the debugger
+ * without making them fatal (you can continue).
+ */
 static void
 log_handler (const char *domain,
 	     GLogLevelFlags level,
 	     const char *message,
 	     gpointer data)
 {
-	call_default_log_handler_with_better_message (domain, level, message, data);
+	g_log_default_handler (domain, level, message, data);
 	if ((level & (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)) != 0) {
 		eel_stop_in_debugger ();
 	}
@@ -130,31 +74,46 @@ set_log_handler (const char *domain)
 }
 
 void
-eel_make_warnings_and_criticals_stop_in_debugger (const char *first_domain, ...)
+eel_make_warnings_and_criticals_stop_in_debugger (void)
 {
-	va_list domains;
-	const char *domain;
 	guint i;
 
 	/* This is a workaround for the fact that there is not way to 
 	 * make this useful debugging feature happen for ALL domains.
 	 *
 	 * What we did here is list all the ones we could think of that
-	 * were interesting to us. It's ok to add more to the list.
+	 * were interesting to us. It's OK to add more to the list.
 	 */
 	static const char * const standard_log_domains[] = {
 		"",
 		"Bonobo",
+		"BonoboUI",
+		"Echo",
 		"Eel",
+		"GConf",
+		"GConf-Backends",
+		"GConf-Tests",
+		"GConfEd",
+		"GLib",
+		"GLib-GObject",
+		"GModule",
+		"GThread",
 		"Gdk",
 		"Gdk-Pixbuf",
+		"GdkPixbuf",
+		"Glib",
 		"Gnome",
+		"GnomeCanvas",
+		"GnomePrint",
 		"GnomeUI",
 		"GnomeVFS",
+		"GnomeVFS-CORBA",
 		"GnomeVFS-pthread",
+		"GnomeVFSMonikers",
 		"Gtk",
 		"Nautilus",
 		"Nautilus-Adapter",
+		"Nautilus-Authenticate",
 		"Nautilus-Hardware"
 		"Nautilus-Mozilla",
 		"Nautilus-Music",
@@ -162,26 +121,21 @@ eel_make_warnings_and_criticals_stop_in_debugger (const char *first_domain, ...)
 		"Nautilus-Sample",
 		"Nautilus-Test",
 		"Nautilus-Text",
+		"Nautilus-Throbber",
 		"Nautilus-Throbber-Control",
 		"Nautilus-Tree",
-		"Nautilus-Tree",
 		"NautilusErrorDialog",
-		"ORBit"
+		"ORBit",
+		"ZVT",
+		"gnome-vfs-modules",
+		"libIDL",
+		"libgconf-scm",
+		"libglade",
+		"libgnomevfs",
+		"librsvg",
 	};
 
-	set_log_handler (first_domain);
-	va_start (domains, first_domain);
-	for (;;) {
-		domain = va_arg (domains, const char *);
-		if (domain == NULL) {
-			break;
-		}
-		set_log_handler (domain);
-	}
-	va_end (domains);
-
-	set_log_handler (g_log_domain_glib);
-	for (i = 0; i < EEL_N_ELEMENTS (standard_log_domains); i++) {
+	for (i = 0; i < G_N_ELEMENTS (standard_log_domains); i++) {
 		set_log_handler (standard_log_domains[i]);
 	}
 }
@@ -196,7 +150,7 @@ eel_get_available_file_descriptor_count (void)
 
 	list = NULL;
 	for (count = 0; ; count++) {
-		file = fopen("/dev/null", "r");
+		file = fopen ("/dev/null", "r");
 		if (file == NULL) {
 			break;
 		}
@@ -209,4 +163,35 @@ eel_get_available_file_descriptor_count (void)
 	g_list_free (list);
 
 	return count;
+}
+
+void
+eel_debug_shut_down (void)
+{
+	ShutdownFunction *f;
+
+	while (shutdown_functions != NULL) {
+		f = shutdown_functions->data;
+		shutdown_functions = g_list_remove (shutdown_functions, f);
+		
+		f->function (f->data);
+		g_free (f);
+	}
+}
+
+void
+eel_debug_call_at_shutdown (EelFunction function)
+{
+	eel_debug_call_at_shutdown_with_data ((GFreeFunc) function, NULL);
+}
+
+void
+eel_debug_call_at_shutdown_with_data (GFreeFunc function, gpointer data)
+{
+	ShutdownFunction *f;
+
+	f = g_new (ShutdownFunction, 1);
+	f->data = data;
+	f->function = function;
+	shutdown_functions = g_list_prepend (shutdown_functions, f);
 }

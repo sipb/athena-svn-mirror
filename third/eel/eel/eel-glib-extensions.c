@@ -27,15 +27,16 @@
 #include <config.h>
 #include "eel-glib-extensions.h"
 
+#include "eel-debug.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
-#include <ctype.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <stdlib.h>
+#include "eel-i18n.h"
+#include <glib-object.h>
 #include <math.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
+#include <time.h>
 
 /* Legal conversion specifiers, as specified in the C standard. */
 #define C_STANDARD_STRFTIME_CHARACTERS "aAbBcdHIjmMpSUwWxXyYZ"
@@ -167,12 +168,17 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 	GString *string;
 	const char *remainder, *percent;
 	char code[3], buffer[512];
-	char *piece, *result;
+	char *piece, *result, *converted;
 	size_t string_length;
 	gboolean strip_leading_zeros, turn_leading_zeros_to_spaces;
 
+	/* Format could be translated, and contain UTF-8 chars,
+	 * so convert to locale encoding which strftime uses */
+	converted = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+	g_return_val_if_fail (converted != NULL, NULL);
+	
 	string = g_string_new ("");
-	remainder = format;
+	remainder = converted;
 
 	/* Walk from % character to % character. */
 	for (;;) {
@@ -181,8 +187,8 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 			g_string_append (string, remainder);
 			break;
 		}
-		eel_g_string_append_len (string, remainder,
-					      percent - remainder);
+		g_string_append_len (string, remainder,
+				     percent - remainder);
 
 		/* Handle the "%" character. */
 		remainder = percent + 1;
@@ -248,7 +254,7 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 				do {
 					piece++;
 				} while (*piece == '0');
-				if (!isdigit (*piece)) {
+				if (!g_ascii_isdigit (*piece)) {
 				    piece--;
 				}
 			}
@@ -262,10 +268,13 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 		/* Add this piece. */
 		g_string_append (string, piece);
 	}
+	
+	/* Convert the string back into utf-8. */
+	result = g_locale_to_utf8 (string->str, -1, NULL, NULL, NULL);
 
-	/* Extract the string. */
-	result = string->str;
-	g_string_free (string, FALSE);
+	g_string_free (string, TRUE);
+	g_free (converted);
+
 	return result;
 }
 
@@ -317,29 +326,6 @@ eel_g_list_equal (GList *list_a, GList *list_b)
 		}
 	}
 	return p == NULL && q == NULL;
-}
-
-/**
- * eel_g_list_copy
- *
- * @list: List to copy.
- * Return value: Shallow copy of @list.
- **/
-GList *
-eel_g_list_copy (GList *list)
-{
-	GList *p, *result;
-
-	result = NULL;
-	
-	if (list == NULL) {
-		return NULL;
-	}
-
-	for (p = g_list_last (list); p != NULL; p = p->prev) {
-		result = g_list_prepend (result, p->data);
-	}
-	return result;
 }
 
 /**
@@ -482,120 +468,6 @@ eel_g_strv_find (char **strv, const char *find_me)
 	return -1;
 }
 
-/**
- * eel_g_list_safe_for_each
- * 
- * A version of g_list_foreach that works if the passed function
- * deletes the current element.
- * 
- * @list: List to iterate.
- * @function: Function to call on each element.
- * @user_data: Data to pass to function.
- */
-void
-eel_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
-{
-	GList *p, *next;
-
-	for (p = list; p != NULL; p = next) {
-		next = p->next;
-		(* function) (p->data, user_data);
-	}
-}
-
-static GList *
-eel_g_list_sort_merge (GList       *list_1, 
-			    GList       *list_2,
-			    EelCompareFunction compare_func,
-			    gpointer user_data)
-{
-  GList list_buffer, *list, *previous_node;
-
-  list = &list_buffer; 
-  previous_node = NULL;
-
-  while (list_1 != NULL && 
-	 list_2 != NULL) {
-	  if (compare_func (list_1->data, list_2->data, user_data) < 0) {
-		  list->next = list_1;
-		  list = list->next;
-		  list->prev = previous_node; 
-		  previous_node = list;
-		  list_1 = list_1->next;
-	  } 
-	  else {
-		  list->next = list_2;
-		  list = list->next;
-		  list->prev = previous_node; 
-		  previous_node = list;
-		  list_2 = list_2->next;
-	  }
-  }
-
-  list->next = list_1 ? list_1 : list_2;
-  list->next->prev = list;
-
-  return list_buffer.next;
-}
-
-
-static gboolean
-eel_g_list_is_already_sorted (GList *list,
-				   EelCompareFunction compare_func,
-				   gpointer user_data)
-{
-	if (list == NULL) {
-		return TRUE;
-	}
-
-	while (list->next != NULL) {
-		if (compare_func (list->data, list->next->data, user_data) > 0) {
-			return FALSE;
-		}
-		list = list->next;
-		
-	}
-
-	return TRUE;
-}
-
-GList *
-eel_g_list_sort_custom (GList *list,
-			     EelCompareFunction compare_func,
-			     gpointer user_data)
-{
-	GList *list_1, *list_2;
-  
-	if (eel_g_list_is_already_sorted (list, compare_func, user_data)) {
-		return list;
-	}
-
-	list_1 = list; 
-	list_2 = list->next;
-
-	/* Split the two lists half way down the middle */
-	while (TRUE) {
-		list_2 = list_2->next;
-		if (list_2 == NULL) {
-			break;
-		}
-		list_2 = list_2->next;
-		if (list_2 == NULL) {
-			break;
-		}
-		list_1 = list_1->next;
-	}
-	
-	list_2 = list_1->next; 
-	list_1->next = NULL; 
-
-	return eel_g_list_sort_merge (eel_g_list_sort_custom (list, compare_func, user_data),
-					   eel_g_list_sort_custom (list_2, compare_func, user_data),
-					   compare_func,
-					   user_data);
-
-}
-
 static int
 compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
 {
@@ -608,11 +480,9 @@ compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
 	return 0;
 }
 
-
-
 gboolean
 eel_g_lists_sort_and_check_for_intersection (GList **list_1,
-						  GList **list_2) 
+					     GList **list_2) 
 
 {
 	GList *node_1, *node_2;
@@ -701,175 +571,6 @@ eel_g_list_partition (GList *list,
 	return predicate_true;
 }
 
-
-
-/**
- * eel_g_ptr_array_new_from_list
- * 
- * Copies (shallow) a list of pointers into an array of pointers.
- * 
- * @list: List to copy.
- * 
- * Return value: GPtrArray containing a copy of all the pointers
- * from @list
- */
-GPtrArray *
-eel_g_ptr_array_new_from_list (GList *list)
-{
-	GPtrArray *array;
-	int size;
-	int index;
-	GList *p;
-
-	array = g_ptr_array_new ();
-	size = g_list_length ((GList *)list);
-
-	g_ptr_array_set_size (array, size);
-
-	for (p = list, index = 0; p != NULL; p = p->next, index++) {
-		g_ptr_array_index (array, index) = p->data;
-	}
-
-	return array;
-}
-
-/**
- * eel_g_ptr_array_sort
- * 
- * Sorts @array using a qsort algorithm. Allows passing in
- * a pass-thru context that can be used by the @sort_function
- * 
- * @array: pointer array to sort
- * @sort_function: sort function
- * @context: sort context passed to the sort_function
- */
-void
-eel_g_ptr_array_sort (GPtrArray *array,
-			   EelCompareFunction sort_function,
-			   void *context)
-{
-	size_t count, r, l, j;
-	void **base, **lp, **rp, **ip, **jp, **tmpp;
-	void *tmp;
-
-	count = array->len;
-
-	if (count < 2) {
-		return;
-	}
-
-	r = count;
-	l = (r / 2) + 1;
-
-	base = (void **) array->pdata;
-	lp = base + (l - 1);
-	rp = base + (r - 1);
-
-	for (;;) {
-		if (l > 1) {
-			l--;
-			lp--;
-		} else {
-			tmp = *lp;
-			*lp = *rp;
-			*rp = tmp;
-
-			if (--r == 1) {
-				return;
-			}
-
-			rp--;
-		}
-
-		j = l;
-
-		jp = base + (j - 1);
-		
-		while (j * 2 <= r) {
-			j *= 2;
-			
-			ip = jp;
-			jp = base + (j - 1);
-			
-			if (j < r) {
-				tmpp = jp + 1;
-				if (sort_function(*jp, *tmpp, context) < 0) {
-					j++;
-					jp = tmpp;
-				}
-			}
-			
-			if (sort_function (*ip, *jp, context) >= 0) {
-				break;
-			}
-
-			tmp = *ip;
-			*ip = *jp;
-			*jp = tmp;
-		}
-	}
-}
-
-/**
- * eel_g_ptr_array_search
- * 
- * Does a binary search through @array looking for an item
- * that matches a predicate consisting of a @search_function and
- * @context. May be used to find an insertion point 
- * 
- * @array: pointer array to search
- * @search_function: search function called on elements
- * @context: search context passed to the @search_function containing
- * the key or other data we are matching
- * @match_only: if TRUE, only returns a match if the match is exact,
- * if FALSE, returns either an index of a match or an index of the
- * slot a new item should be inserted in
- * 
- * Return value: index of the match or -1 if not found
- */
-int
-eel_g_ptr_array_search (GPtrArray *array, 
-			     EelSearchFunction search_function,
-			     void *context,
-			     gboolean match_only)
-{
-	int r, l;
-	int resulting_index;
-	int compare_result;
-	void *item;
-
-	r = array->len - 1;
-	item = NULL;
-	resulting_index = 0;
-	compare_result = 0;
-	
-	for (l = 0; l <= r; ) {
-		resulting_index = (l + r) / 2;
-
-		item = g_ptr_array_index (array, resulting_index);
-
-		compare_result = (search_function) (item, context);
-		
-		if (compare_result > 0) {
-			r = resulting_index - 1;
-		} else if (compare_result < 0) {
-			l = resulting_index + 1;
-		} else {
-			return resulting_index;
-		}
-	}
-
-	if (compare_result < 0) {
-		resulting_index++;
-	}
-
-	if (match_only && compare_result != 0) {
-		return -1;
-	}
-
-	return resulting_index;
-}
-
 /**
  * eel_get_system_time
  * 
@@ -927,8 +628,8 @@ free_hash_tables_at_exit (void)
 
 GHashTable *
 eel_g_hash_table_new_free_at_exit (GHashFunc hash_func,
-					GCompareFunc key_compare_func,
-					const char *display_name)
+				   GCompareFunc key_compare_func,
+				   const char *display_name)
 {
 	GHashTable *hash_table;
 	HashTableToFree *hash_table_to_free;
@@ -937,9 +638,8 @@ eel_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 	 * have fixed more of the leaks. For now, it's a bit too noisy
 	 * for the general public.
 	 */
-	if (hash_tables_to_free_at_exit == NULL
-	    && g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		g_atexit (free_hash_tables_at_exit);
+	if (hash_tables_to_free_at_exit == NULL) {
+		eel_debug_call_at_shutdown (free_hash_tables_at_exit);
 	}
 
 	hash_table = g_hash_table_new (hash_func, key_compare_func);
@@ -975,8 +675,8 @@ flatten_hash_table_element (gpointer key, gpointer value, gpointer callback_data
 
 void
 eel_g_hash_table_safe_for_each (GHashTable *hash_table,
-				     GHFunc callback,
-				     gpointer callback_data)
+				GHFunc callback,
+				gpointer callback_data)
 {
 	FlattenedHashTable flattened;
 	GList *p, *q;
@@ -996,159 +696,6 @@ eel_g_hash_table_safe_for_each (GHashTable *hash_table,
 
 	g_list_free (flattened.keys);
 	g_list_free (flattened.values);
-}
-
-gboolean
-eel_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer key,
-					  GFunc key_free_func, gpointer key_free_data,
-					  GFunc value_free_func, gpointer value_free_data)
-{
-	gpointer key_in_table;
-	gpointer value;
-
-	/* It would sure be nice if we could do this with a single lookup.
-	 */
-	if (g_hash_table_lookup_extended (hash_table, key,
-					  &key_in_table, &value)) {
-		g_hash_table_remove (hash_table, key);
-		if (key_free_func != NULL) {
-			(* key_free_func) (key_in_table, key_free_data);
-		}
-		/* handle key == value, don't double free */
-		if (value_free_func != NULL && value != key_in_table) {
-			(* value_free_func) (value, value_free_data);
-		}
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-gboolean
-eel_g_hash_table_remove_deep (GHashTable *hash_table, gconstpointer key)
-{
-	return eel_g_hash_table_remove_deep_custom
-		(hash_table, key, (GFunc) g_free, NULL, (GFunc) g_free, NULL);
-}
-
-typedef struct {
-	GFunc	  key_free_func;
-	gpointer  key_free_data;
-	GFunc	  value_free_func;
-	gpointer  value_free_data;
-} HashTableFreeFuncs;
-
-static gboolean
-destroy_deep_helper (gpointer key, gpointer value, gpointer data)
-{
-	HashTableFreeFuncs *free_funcs;
-
-	free_funcs = (HashTableFreeFuncs *) data;
-	
-	if (free_funcs->key_free_func != NULL) {
-		(* free_funcs->key_free_func) (key, free_funcs->key_free_data);
-	}
-	/* handle key == value, don't double free */
-	if (free_funcs->value_free_func != NULL && value != key) {
-		(* free_funcs->value_free_func) (value, free_funcs->value_free_data);
-	}
-	return TRUE;
-}
-
-void
-eel_g_hash_table_destroy_deep_custom (GHashTable *hash_table,
-					   GFunc key_free_func, gpointer key_free_data,
-					   GFunc value_free_func, gpointer value_free_data)
-{
-	HashTableFreeFuncs free_funcs;
-	
-	g_return_if_fail (hash_table != NULL);
-
-	free_funcs.key_free_func = key_free_func;
-	free_funcs.key_free_data = key_free_data;
-	free_funcs.value_free_func = value_free_func;
-	free_funcs.value_free_data = value_free_data;
-	
-	g_hash_table_foreach_remove (hash_table, destroy_deep_helper, &free_funcs);
-
-	g_hash_table_destroy (hash_table);
-}
-
-void
-eel_g_hash_table_destroy_deep (GHashTable *hash_table)
-{
-	eel_g_hash_table_destroy_deep_custom (hash_table, (GFunc) g_free, NULL, (GFunc) g_free, NULL);
-}
-
-/* This is something like the new g_string_append_len function from
- * GLib 2.0, without the ability to deal with NUL character that the
- * GLib 2.0 function has. It's limited in other ways too, so it's
- * best to delete this when we move to GLib 2.0.
- */
-void
-eel_g_string_append_len (GString *string,
-			      const char *new_text,
-			      int len)
-{
-	int old_string_len, new_text_len;
-
-	old_string_len = string->len;
-	g_string_append (string, new_text);
-
-	new_text_len = strlen (new_text);
-	if (len < new_text_len) {
-		g_string_erase (string,
-				old_string_len + len,
-				new_text_len - len);
-	}
-}
-
-/* By strange parallel evolution there is actually going to be a
- * function to do this in GNOME 2.0.
- */
-char *
-eel_shell_quote (const char *string)
-{
-	const char *p;
-	GString *quoted_string;
-	char *quoted_str;
-
-	/* All kinds of ways to do this fancier.
-	 * - Detect when quotes aren't needed at all.
-	 * - Use double quotes when they would look nicer.
-	 * - Avoid sequences of quote/unquote in a row (like when you quote "'''").
-	 * - Do it higher speed with strchr.
-	 * - Allocate the GString with g_string_sized_new.
-	 */
-
-	g_return_val_if_fail (string != NULL, NULL);
-
-	if (string[0] == '\0') {
-		return g_strdup ("''");
-	}
-
-	if (strspn (string, SAFE_SHELL_CHARACTERS) == strlen (string)) {
-		return g_strdup (string);
-	}
-
-	quoted_string = g_string_new ("'");
-
-	for (p = string; *p != '\0'; p++) {
-		if (*p == '\'') {
-			/* Get out of quotes, do a quote, then back in. */
-			g_string_append (quoted_string, "'\\''");
-		} else {
-			g_string_append_c (quoted_string, *p);
-		}
-	}
-
-	g_string_append_c (quoted_string, '\'');
-
-	/* Let go of the GString. */
-	quoted_str = quoted_string->str;
-	g_string_free (quoted_string, FALSE);
-
-	return quoted_str;
 }
 
 int
@@ -1242,13 +789,13 @@ eel_dumb_down_for_multi_byte_locale_hack (void)
 	is_multi_byte_locale_known = TRUE;
 
 	/* Find the first language variable that is set */
-	for (i = 0; i < EEL_N_ELEMENTS (locale_variables) && variable == NULL; i++) {
+	for (i = 0; i < G_N_ELEMENTS (locale_variables) && variable == NULL; i++) {
 		variable = g_getenv (locale_variables[i]);
 	}
 
 	/* If a language variable was found, check it agains the known multi byte locales */
 	if (variable != NULL) {
-		for (i = 0; i < EEL_N_ELEMENTS (multi_byte_locales); i++) {
+		for (i = 0; i < G_N_ELEMENTS (multi_byte_locales); i++) {
 			if (eel_istr_has_prefix (variable, multi_byte_locales[i])) {
 				is_multi_byte_locale = TRUE;
 			}
@@ -1295,6 +842,113 @@ eel_compare_integer (gconstpointer a,
 	return int_a < int_b ? -1 : 1;
 }
 
+/**
+ * eel_g_object_list_ref
+ *
+ * Ref all the objects in a list.
+ * @list: GList of objects.
+ **/
+GList *
+eel_g_object_list_ref (GList *list)
+{
+	g_list_foreach (list, (GFunc) g_object_ref, NULL);
+	return list;
+}
+
+/**
+ * eel_g_object_list_unref
+ *
+ * Unref all the objects in a list.
+ * @list: GList of objects.
+ **/
+void
+eel_g_object_list_unref (GList *list)
+{
+	g_list_foreach (list, (GFunc) g_object_unref, NULL);
+}
+
+/**
+ * eel_g_object_list_free
+ *
+ * Free a list of objects after unrefing them.
+ * @list: GList of objects.
+ **/
+void
+eel_g_object_list_free (GList *list)
+{
+	eel_g_object_list_unref (list);
+	g_list_free (list);
+}
+
+/**
+ * eel_g_object_list_copy
+ *
+ * Copy the list of objects, ref'ing each one.
+ * @list: GList of objects.
+ **/
+GList *
+eel_g_object_list_copy (GList *list)
+{
+	return g_list_copy (eel_g_object_list_ref (list));
+}
+
+/**
+ * eel_add_weak_pointer
+ *
+ * Nulls out a saved reference to an object when the object gets destroyed.
+ *
+ * @pointer_location: Address of the saved pointer.
+ **/
+void 
+eel_add_weak_pointer (gpointer pointer_location)
+{
+	gpointer *object_location;
+
+	g_return_if_fail (pointer_location != NULL);
+
+	object_location = (gpointer *) pointer_location;
+	if (*object_location == NULL) {
+		/* The reference is NULL, nothing to do. */
+		return;
+	}
+
+	g_return_if_fail (G_IS_OBJECT (*object_location));
+
+	g_object_add_weak_pointer (G_OBJECT (*object_location),
+				   object_location);
+}
+
+/**
+ * eel_remove_weak_pointer
+ *
+ * Removes the weak pointer that was added by eel_add_weak_pointer.
+ * Also nulls out the pointer.
+ *
+ * @pointer_location: Pointer that was passed to eel_add_weak_pointer.
+ **/
+void 
+eel_remove_weak_pointer (gpointer pointer_location)
+{
+	gpointer *object_location;
+
+	g_return_if_fail (pointer_location != NULL);
+
+	object_location = (gpointer *) pointer_location;	
+	if (*object_location == NULL) {
+		/* The object was already destroyed and the reference
+		 * nulled out, nothing to do.
+		 */
+		return;
+	}
+
+	g_return_if_fail (G_IS_OBJECT (*object_location));
+
+	g_object_remove_weak_pointer (G_OBJECT (*object_location),
+				      object_location);
+	
+	*object_location = NULL;
+}
+
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 static void 
@@ -1321,9 +975,9 @@ check_tm_to_g_date (time_t time)
 
 static gboolean
 eel_test_predicate (gpointer data,
-			 gpointer callback_data)
+		    gpointer callback_data)
 {
-	return g_strcasecmp (data, callback_data) <= 0;
+	return g_ascii_strcasecmp (data, callback_data) <= 0;
 }
 
 static char *
@@ -1469,23 +1123,24 @@ eel_self_check_glib_extensions (void)
 	EEL_CHECK_STRING_RESULT (test_strftime ("%%%%", 2000, 1, 1, 1, 0, 0), "%%");
 	/* localizers: These strings are part of the strftime
 	 * self-check code and must be changed to match what strtfime
-	 * yields -- usually just omitting the AM part is all that's
-	 * needed.
+	 * yields. The first one is "%m/%d/%y, %I:%M %p".
 	 */
 	EEL_CHECK_STRING_RESULT (test_strftime ("%m/%d/%y, %I:%M %p", 2000, 1, 1, 1, 0, 0), _("01/01/00, 01:00 AM"));
+	/* The second one is "%-m/%-d/%-y, %-I:%M %p". */
 	EEL_CHECK_STRING_RESULT (test_strftime ("%-m/%-d/%y, %-I:%M %p", 2000, 1, 1, 1, 0, 0), _("1/1/00, 1:00 AM"));
+	/* The third one is "%_m/%_d/%_y, %_I:%M %p". */
 	EEL_CHECK_STRING_RESULT (test_strftime ("%_m/%_d/%y, %_I:%M %p", 2000, 1, 1, 1, 0, 0), _(" 1/ 1/00,  1:00 AM"));
 
 	g_free (huge_string);
 
 	/* eel_shell_quote */
-	EEL_CHECK_STRING_RESULT (eel_shell_quote (""), "''");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("a"), "a");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("("), "'('");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("'"), "''\\'''");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("'a"), "''\\''a'");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("a'"), "'a'\\'''");
-	EEL_CHECK_STRING_RESULT (eel_shell_quote ("a'a"), "'a'\\''a'");
+	EEL_CHECK_STRING_RESULT (g_shell_quote (""), "''");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("a"), "'a'");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("("), "'('");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("'"), "''\\'''");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("'a"), "''\\''a'");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("a'"), "'a'\\'''");
+	EEL_CHECK_STRING_RESULT (g_shell_quote ("a'a"), "'a'\\''a'");
 
 	/* eel_compare_integer */
 	EEL_CHECK_INTEGER_RESULT (eel_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (0)), 0);

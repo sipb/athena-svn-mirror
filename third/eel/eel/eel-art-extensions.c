@@ -432,7 +432,11 @@ eel_art_irect_intersect (ArtIRect rectangle_a,
 
 	art_irect_intersect (&ab_intersection, &rectangle_a, &rectangle_b);
 
-	return art_irect_empty (&ab_intersection) ? eel_art_irect_empty : ab_intersection;
+	if (art_irect_empty (&ab_intersection)) {
+		return eel_art_irect_empty;
+	} else {
+		return ab_intersection;
+	}
 }
 
 /**
@@ -456,7 +460,11 @@ eel_art_irect_union (ArtIRect rectangle_a,
 
 	art_irect_union (&ab_union, &rectangle_a, &rectangle_b);
 
-	return art_irect_empty (&ab_union) ? eel_art_irect_empty : ab_union;
+	if (art_irect_empty (&ab_union)) {
+		return eel_art_irect_empty;
+	} else {
+		return ab_union;
+	}
 }
 
 EelDimensions

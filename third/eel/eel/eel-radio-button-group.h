@@ -25,9 +25,9 @@
 #ifndef EEL_RADIO_BUTTON_GROUP_H
 #define EEL_RADIO_BUTTON_GROUP_H
 
+#include <glib.h>
 #include <gtk/gtktable.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnome/gnome-defs.h>
 
 /*
  * EelRadioButtonGroup is a collection of radio buttons
@@ -40,7 +40,7 @@
  * Icon4 < > Item four          Item 4 description
  * 
  */
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_RADIO_BUTTON_GROUP            (eel_radio_button_group_get_type ())
 #define EEL_RADIO_BUTTON_GROUP(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_RADIO_BUTTON_GROUP, EelRadioButtonGroup))
@@ -63,6 +63,9 @@ struct EelRadioButtonGroup
 struct EelRadioButtonGroupClass
 {
 	GtkTableClass parent_class;
+
+	/* Signals */
+	void (* changed) (EelRadioButtonGroup *radio_button_group);
 };
 
 GtkType    eel_radio_button_group_get_type                   (void);
@@ -84,13 +87,20 @@ void       eel_radio_button_group_set_active_index           (EelRadioButtonGrou
 void       eel_radio_button_group_set_entry_pixbuf           (EelRadioButtonGroup *button_group,
 							      guint                entry_index,
 							      GdkPixbuf           *pixbuf);
+
 /* Set an item's description. */
 void       eel_radio_button_group_set_entry_description_text (EelRadioButtonGroup *button_group,
 							      guint                entry_index,
 							      const char          *description);
+
+/* Set an item's accessible description */
+void       eel_radio_button_group_set_entry_accessible_description (EelRadioButtonGroup *button_group,
+								    guint                index,
+								    const char          *description);
+
 void       eel_radio_button_group_clear                      (EelRadioButtonGroup *button_group);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_RADIO_BUTTON_GROUP_H */
 

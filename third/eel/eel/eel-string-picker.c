@@ -35,7 +35,6 @@
 #include <gtk/gtksignal.h>
 
 #define STRING_PICKER_SPACING 10
-#define STRING_PICKER_SEPARATOR "----------"
 
 /* Signals */
 typedef enum
@@ -53,19 +52,19 @@ struct EelStringPickerDetail
 };
 
 /* EelStringPickerClass methods */
-static void eel_string_picker_initialize_class (EelStringPickerClass *string_picker_class);
-static void eel_string_picker_initialize       (EelStringPicker      *string_picker);
+static void eel_string_picker_class_init (EelStringPickerClass *string_picker_class);
+static void eel_string_picker_init       (EelStringPicker      *string_picker);
 
 
-/* GtkObjectClass methods */
-static void eel_string_picker_destroy          (GtkObject            *object);
+/* GObjectClass methods */
+static void eel_string_picker_finalize         (GObject              *object);
 
 
 /* Option menu item callbacks */
 static void option_menu_activate_callback      (GtkWidget            *menu_item,
 						gpointer              callback_data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelStringPicker, eel_string_picker, EEL_TYPE_CAPTION)
+EEL_CLASS_BOILERPLATE (EelStringPicker, eel_string_picker, EEL_TYPE_CAPTION)
 
 static guint string_picker_signals[LAST_SIGNAL] = { 0 };
 
@@ -73,31 +72,28 @@ static guint string_picker_signals[LAST_SIGNAL] = { 0 };
  * EelStringPickerClass methods
  */
 static void
-eel_string_picker_initialize_class (EelStringPickerClass *string_picker_class)
+eel_string_picker_class_init (EelStringPickerClass *string_picker_class)
 {
-	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
+	GObjectClass *object_class;
 	
-	object_class = GTK_OBJECT_CLASS (string_picker_class);
-	widget_class = GTK_WIDGET_CLASS (string_picker_class);
+	object_class = G_OBJECT_CLASS (string_picker_class);
 
-	/* GtkObjectClass */
-	object_class->destroy = eel_string_picker_destroy;
+	/* GObjectClass */
+	object_class->finalize = eel_string_picker_finalize;
 	
 	/* Signals */
-	string_picker_signals[CHANGED] = gtk_signal_new ("changed",
-							 GTK_RUN_LAST,
-							 object_class->type,
-							 0,
-							 gtk_marshal_NONE__NONE,
-							 GTK_TYPE_NONE, 
-							 0);
-
-	gtk_object_class_add_signals (object_class, string_picker_signals, LAST_SIGNAL);
+	string_picker_signals[CHANGED] = g_signal_new ("changed",
+						       G_TYPE_FROM_CLASS (object_class),
+						       G_SIGNAL_RUN_LAST,
+						       G_STRUCT_OFFSET (EelStringPickerClass, changed),
+						       NULL, NULL,
+						       g_cclosure_marshal_VOID__VOID,
+						       G_TYPE_NONE, 
+						       0);
 }
 
 static void
-eel_string_picker_initialize (EelStringPicker *string_picker)
+eel_string_picker_init (EelStringPicker *string_picker)
 {
 	string_picker->detail = g_new0 (EelStringPickerDetail, 1);
 
@@ -117,14 +113,12 @@ eel_string_picker_initialize (EelStringPicker *string_picker)
 }
 
 /*
- * GtkObjectClass methods
+ * GObjectClass methods
  */
 static void
-eel_string_picker_destroy (GtkObject *object)
+eel_string_picker_finalize (GObject *object)
 {
-	EelStringPicker * string_picker;
-	
-	g_return_if_fail (EEL_IS_STRING_PICKER (object));
+	EelStringPicker *string_picker;
 	
 	string_picker = EEL_STRING_PICKER (object);
 
@@ -132,8 +126,7 @@ eel_string_picker_destroy (GtkObject *object)
 	eel_string_list_free (string_picker->detail->insensitive_list);
 	g_free (string_picker->detail);
 
-	/* Chain */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* Option menu item callbacks */
@@ -148,7 +141,7 @@ option_menu_activate_callback (GtkWidget *menu_item,
 
 	string_picker = EEL_STRING_PICKER (callback_data);
 
-	gtk_signal_emit (GTK_OBJECT (string_picker), string_picker_signals[CHANGED]);
+	g_signal_emit (string_picker, string_picker_signals[CHANGED], 0);
 }
 
 static void
@@ -233,7 +226,7 @@ eel_string_picker_set_string_list (EelStringPicker *string_picker,
 {
 	guint i;
 	GtkWidget *menu_item;
-	char *item_label;
+	const char *item_label;
 
 	g_return_if_fail (EEL_IS_STRING_PICKER (string_picker));
 
@@ -257,27 +250,24 @@ eel_string_picker_set_string_list (EelStringPicker *string_picker,
 	
 	if (eel_string_list_get_length (string_picker->detail->string_list) > 0) {
 		for (i = 0; i < eel_string_list_get_length (string_picker->detail->string_list); i++) {
-			item_label = eel_string_list_nth (string_picker->detail->string_list, i);
+			item_label = eel_string_list_peek_nth (string_picker->detail->string_list, i);
 			g_assert (item_label != NULL);
 			
-			if (eel_str_is_equal (item_label, STRING_PICKER_SEPARATOR)) {
+			if (eel_str_is_equal (item_label, EEL_STRING_PICKER_SEPARATOR_STRING)) {
 				menu_item = gtk_menu_item_new ();
 				gtk_widget_set_sensitive (menu_item, FALSE);
 			} else {
 				menu_item = gtk_menu_item_new_with_label (item_label);
 
-				gtk_signal_connect (GTK_OBJECT (menu_item),
+				g_signal_connect (menu_item,
 						    "activate",
-						    GTK_SIGNAL_FUNC (option_menu_activate_callback),
+						    G_CALLBACK (option_menu_activate_callback),
 						    string_picker);
-			}
-			
-			/* Save the index so we can later use it to retrieve the nth label from the list */
-			gtk_object_set_data (GTK_OBJECT (menu_item), "index", GINT_TO_POINTER (i));
+			}			
 			
 			gtk_widget_show (menu_item);
 			
-			gtk_menu_append (GTK_MENU (string_picker->detail->menu), menu_item);
+			gtk_menu_shell_append (GTK_MENU_SHELL (string_picker->detail->menu), menu_item);
 		}
 	}
 
@@ -317,13 +307,12 @@ eel_string_picker_get_selected_string (EelStringPicker *string_picker)
 {
 	int item_index;
 	GtkWidget *option_menu;
-	GtkWidget *menu_item;
 
 	g_return_val_if_fail (EEL_IS_STRING_PICKER (string_picker), NULL);
 
 	option_menu = string_picker->detail->option_menu;
-	menu_item = GTK_OPTION_MENU (option_menu)->menu_item;
-	item_index = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "index"));
+
+	item_index = gtk_option_menu_get_history (GTK_OPTION_MENU (option_menu));
 
 	return (item_index != -1) ? eel_string_list_nth (string_picker->detail->string_list, item_index) : NULL;
 }
@@ -400,7 +389,7 @@ eel_string_picker_insert_separator (EelStringPicker *string_picker)
 {
 	g_return_if_fail (EEL_IS_STRING_PICKER (string_picker));
 
-	eel_string_picker_insert_string (string_picker, STRING_PICKER_SEPARATOR);
+	eel_string_picker_insert_string (string_picker, EEL_STRING_PICKER_SEPARATOR_STRING);
 }
 
 /**

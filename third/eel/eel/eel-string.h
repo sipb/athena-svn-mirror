@@ -86,8 +86,7 @@ char *   eel_str_strip_trailing_str        (const char    *str,
 /* Conversions to and from strings. */
 gboolean eel_str_to_int                    (const char    *str,
 					    int           *integer);
-gboolean eel_eat_str_to_int                (char          *str_gets_freed,
-					    int           *integer);
+
 /* Escape function for '_' character. */
 char *   eel_str_double_underscores        (const char    *str);
 
@@ -96,7 +95,7 @@ char *   eel_str_capitalize                (const char    *str);
 
 /* Middle truncate a string to a maximum of truncate_length characters.
  * The resulting string will be truncated in the middle with a "..."
- * delimeter.
+ * delimiter.
  */
 char *   eel_str_middle_truncate           (const char    *str,
 					    guint          truncate_length);

@@ -1,231 +1,226 @@
 NULL=
 
-lib_LTLIBRARIES=libeel.la
+lib_LTLIBRARIES=libeel-2.la
 
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Eel\"				\
 	-I$(top_srcdir)					\
-	$(EEL_DEPENDENCY_CFLAGS)			\
-	${GCONF_CFLAGS}					\
-	$(LIBRSVG_CFLAGS)				\
+	$(EEL_CFLAGS)					\
 	-DDATADIR=\""$(datadir)"\"			\
-	-DEEL_DATADIR=\""$(datadir)/eel"\"		\
 	-DSOURCE_DATADIR=\""$(top_srcdir)/data"\"	\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
 	$(NULL)
 
-libeel_la_LDFLAGS =				\
+# FIXME: put this back once the registration_id stuff is cleared up
+#	-DBONOBO_DISABLE_DEPRECATED
+
+
+libeel_2_la_LDFLAGS =				\
 	-version-info @EEL_VERSION_INFO@	\
-	$(EEL_DEPENDENCY_LIBS)			\
+	$(EEL_LIBS)				\
+	$(RENDER_LIBS)				\
 	$(NULL)
 
-libeel_la_SOURCES =				\
+EGGFILES =                      \
+	egg-screen-exec.h       \
+	egg-screen-exec.c       \
+	$(NULL)
+
+libeel_2_la_SOURCES =				\
+	eel-accessibility.c			\
 	eel-art-extensions.c			\
 	eel-art-gtk-extensions.c		\
-	eel-background-canvas-group.c		\
-	eel-background-canvas-group.h		\
 	eel-background.c			\
-	eel-canvas-rect.c			\
+	eel-background-box.c                    \
+	eel-canvas.c				\
+	eel-canvas-util.c			\
+	eel-canvas-rect-ellipse.c		\
 	eel-caption-table.c			\
 	eel-caption.c				\
-	eel-clickable-image.c			\
-	eel-clist.c				\
-	eel-ctree.c				\
+	eel-cell-renderer-pixbuf-list.c		\
 	eel-dateedit-extensions.c		\
 	eel-debug-drawing.c			\
 	eel-debug.c				\
-	eel-dnd.c				\
+	eel-editable-label.c			\
 	eel-ellipsizing-label.c			\
 	eel-enumeration.c			\
 	eel-features.c				\
-	eel-font-manager.c			\
-	eel-font-picker.c			\
 	eel-gconf-extensions.c			\
 	eel-gdk-extensions.c			\
-	eel-gdk-font-extensions.c		\
 	eel-gdk-pixbuf-extensions.c		\
 	eel-generous-bin.c			\
 	eel-glib-extensions.c			\
-	eel-glyph.c				\
 	eel-gnome-extensions.c			\
 	eel-graphic-effects.c			\
 	eel-gtk-container.c			\
 	eel-gtk-extensions.c			\
+	eel-i18n.c				\
 	eel-image-chooser.c			\
 	eel-image-table.c			\
-	eel-image-with-background.c		\
-	eel-image.c				\
-	eel-label-with-background.c		\
-	eel-label.c				\
 	eel-labeled-image.c			\
 	eel-lib-self-check-functions.c		\
-	eel-list-column-title.c			\
-	eel-list.c				\
+	eel-pango-extensions.c			\
 	eel-password-dialog.c			\
-	eel-preferences-box.c			\
-	eel-preferences-group.c			\
-	eel-preferences-item.c			\
-	eel-preferences-pane.c			\
+	eel-preferences-glade.c			\
 	eel-preferences.c			\
 	eel-radio-button-group.c		\
-	eel-region.c				\
-	eel-scalable-font.c			\
 	eel-self-checks.c			\
-	eel-smooth-text-layout-cache.c		\
-	eel-smooth-text-layout.c		\
-	eel-smooth-widget.c			\
 	eel-stock-dialogs.c			\
 	eel-string-list.c			\
 	eel-string-picker.c			\
 	eel-string.c				\
-	eel-text-caption.c			\
 	eel-types.c				\
 	eel-vfs-extensions.c			\
-	eel-viewport.c				\
 	eel-wrap-table.c			\
 	eel-xml-extensions.c			\
+	eel-lib-self-check-functions.h		\
+	$(EGGFILES)				\
 	$(NULL)
 
-libeelincludedir = $(includedir)/eel-1/eel
+libeelincludedir = $(includedir)/eel-2/eel
 
 eel_headers =					\
+	eel-accessibility.h			\
 	eel-art-extensions.h			\
 	eel-art-gtk-extensions.h		\
 	eel-background.h			\
-	eel-canvas-rect.h			\
+	eel-background-box.h                    \
+	eel-canvas.h				\
+	eel-canvas-util.h			\
+	eel-canvas-rect-ellipse.h		\
 	eel-caption-table.h			\
 	eel-caption.h				\
-	eel-clickable-image.h			\
-	eel-clist.h				\
-	eel-ctree.h				\
+	eel-cell-renderer-pixbuf-list.h		\
 	eel-dateedit-extensions.h		\
 	eel-debug-drawing.h			\
 	eel-debug.h				\
+	eel-editable-label.h			\
 	eel-ellipsizing-label.h			\
 	eel-enumeration.h			\
 	eel-features.h				\
-	eel-font-manager.h			\
-	eel-font-picker.h			\
 	eel-gconf-extensions.h			\
 	eel-gdk-extensions.h			\
-	eel-gdk-font-extensions.h		\
 	eel-gdk-pixbuf-extensions.h		\
 	eel-generous-bin.h			\
 	eel-glib-extensions.h			\
-	eel-glyph.h				\
 	eel-gnome-extensions.h			\
 	eel-graphic-effects.h			\
 	eel-gtk-container.h			\
 	eel-gtk-extensions.h			\
 	eel-gtk-macros.h			\
+	eel-i18n.h				\
 	eel-image-chooser.h			\
 	eel-image-table.h			\
-	eel-image-with-background.h		\
-	eel-image.h				\
-	eel-label-with-background.h		\
-	eel-label.h				\
 	eel-labeled-image.h			\
-	eel-list-column-title.h			\
-	eel-list.h				\
+	eel-pango-extensions.h			\
 	eel-password-dialog.h			\
-	eel-preferences-box.h			\
-	eel-preferences-group.h			\
-	eel-preferences-item.h			\
-	eel-preferences-pane.h			\
+	eel-preferences-glade.h			\
 	eel-preferences.h			\
 	eel-radio-button-group.h		\
-	eel-region.h				\
-	eel-scalable-font-private.h		\
-	eel-scalable-font.h			\
 	eel-self-checks.h			\
-	eel-smooth-text-layout-cache.h		\
-	eel-smooth-text-layout.h		\
-	eel-smooth-widget.h			\
 	eel-stock-dialogs.h			\
 	eel-string-list.h			\
 	eel-string-picker.h			\
 	eel-string.h				\
-	eel-text-caption.h			\
 	eel-types.h				\
 	eel-vfs-extensions.h			\
-	eel-viewport.h				\
 	eel-wrap-table.h			\
 	eel-xml-extensions.h			\
 	eel.h					\
 	$(NULL)
 
-noinst_HEADERS = \
-	eel-lib-self-check-functions.h		\
-	$(NULL)
-
 libeelinclude_HEADERS =				\
 	$(eel_headers)				\
-	eel-dnd.h				\
 	eel-type-builtins.h			\
+	eel-marshal.h				\
 	$(NULL)
 
-BUILT_SOURCES =					\
+marshal_sources = 				\
+	eel-marshal.h				\
+	eel-marshal.c				\
+	$(NULL)
+
+eel-marshal.h: eelmarshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=eel_marshal > $@
+eel-marshal.c: eelmarshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --body --prefix=eel_marshal > $@
+
+stamp_sources =					\
 	eel-enums.defs				\
-	eel-type-builtins.h			\
 	eel-type-builtins-evals.c		\
+	$(NULL)
+
+stamps =					\
+	eel-makeenums-stamp			\
+	eel-stamp				\
+	$(NULL)
+
+eel-makeenums-stamp: makeenums.pl $(eel_headers)
+	$(PERL) $< defs $(filter-out $<,$^) > xgen-eed \
+	&& (cmp -s xgen-eed eel-enums.defs || mv -f xgen-eed eel-enums.defs) \
+	&& rm -f xgen-eed \
+	&& $(PERL) $< arrays $(filter-out $<,$^) > xgen-etbe \
+	&& (cmp -s xgen-etbe eel-type-builtins-evals.c || mv -f xgen-etbe eel-type-builtins-evals.c) \
+	&& rm -f xgen-etbe \
+	&& echo timestamp > $@
+
+maketypes_sources =				\
+	eel-type-builtins.h			\
 	eel-type-builtins-ids.c			\
 	eel-type-builtins-vars.c		\
 	$(NULL)
 
-CLEANFILES = \
-	$(BUILT_SOURCES) \
-	$(NULL)
+eel-stamp: eel-makeenums-stamp $(maketypes_sources)
+	echo timestamp > $@
 
-# generate eel-enums.defs file
-eel-enums.defs: @REBUILD@ makeenums.pl $(eel_headers)
-	cd $(srcdir)						\
-	&& $(PERL) makeenums.pl defs $(eel_headers) > ed.tmp	\
-	&& mv ed.tmp eel-enums.defs
-
-# generate type identifier header (GTK_TYPE_WIDGET_FLAGS)
-eel-type-builtins.h: @REBUILD@ eel-enums.defs maketypes.awk
-	cd $(srcdir)								\
-	&& LC_COLLATE=C $(AWK) -f maketypes.awk eel-enums.defs macros > etb.tmp	\
-	&& mv etb.tmp eel-type-builtins.h
-
-# generate type identifier variables (GTK_TYPE_WIDGET_FLAGS)
-eel-type-builtins-vars.c: @REBUILD@ eel-enums.defs maketypes.awk
-	cd $(srcdir)								\
-	&& LC_COLLATE=C $(AWK) -f maketypes.awk eel-enums.defs variables > etbv.tmp	\
-	&& mv etbv.tmp eel-type-builtins-vars.c
-
-# generate type entries for type-id registration
-eel-type-builtins-ids.c: @REBUILD@ eel-enums.defs maketypes.awk
-	cd $(srcdir)								\
-	&& LC_COLLATE=C $(AWK) -f maketypes.awk eel-enums.defs entries > etbi.tmp	\
-	&& mv etbi.tmp eel-type-builtins-ids.c
-
-# generate enum value arrays
-eel-type-builtins-evals.c: @REBUILD@ makeenums.pl eel-enums.defs
-	cd $(srcdir)							\
-	&& $(PERL) makeenums.pl arrays $(eel_headers) > etbe.tmp	\
-	&& mv etbe.tmp eel-type-builtins-evals.c
-
+eel-type-builtins.h: eel-enums.defs maketypes.awk eel-makeenums-stamp
+	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< macros > $@
+eel-type-builtins-vars.c: eel-enums.defs maketypes.awk eel-makeenums-stamp
+	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< variables > $@
+eel-type-builtins-ids.c: eel-enums.defs maketypes.awk eel-makeenums-stamp
+	LC_ALL=C $(AWK) -f $(srcdir)/maketypes.awk $< entries > $@
 
 noinst_PROGRAMS = check-program
 
-DEPS = $(top_builddir)/eel/libeel.la
-
-check_program_SOURCES=check-program.c
-check_program_DEPENDENCIES = $(DEPS)
+check_program_SOURCES = check-program.c
+check_program_DEPENDENCIES = libeel-2.la
 check_program_LDADD =
-check_program_LDFLAGS =				\
-	$(DEPS)					\
-	-lm
+check_program_LDFLAGS =	$(check_program_DEPENDENCIES) -lm
 
-TESTS=check-eel
+TESTS = check-eel
 
 EXTRA_DIST =					\
-	eel-enums.defs				\
-	maketypes.awk				\
-	makeenums.pl				\
 	check-eel				\
-	eel-type-builtins-evals.c		\
-	eel-type-builtins-ids.c			\
-	eel-type-builtins-vars.c		\
+	eelmarshal.list				\
+	makeenums.pl				\
+	maketypes.awk				\
+	update-from-egg.sh			\
 	$(NULL)
+
+$(libeel_2_la_OBJECTS): $(marshal_sources)
+
+# This trick causes the stamp file to be built first.
+Makefile: eel-stamp
+
+# This trick causes the generated files to be built the first time.
+$(stamp_sources): # never add any dependencies
+	test -f $@ || touch $@
+
+built_sources =	$(stamps) $(stamp_sources) $(maketypes_sources) $(marshal_sources)
+CLEANFILES = $(built_sources)
+DONT_DIST_FILES = $(built_sources)
+
+dist-hook:
+	for file in $(DONT_DIST_FILES) ; do \
+	    rm -f $(distdir)/$$file ; \
+	done
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh

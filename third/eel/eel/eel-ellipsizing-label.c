@@ -25,8 +25,8 @@
 #include <config.h>
 #include "eel-ellipsizing-label.h"
 
-#include "eel-gdk-font-extensions.h"
 #include "eel-gtk-macros.h"
+#include "eel-pango-extensions.h"
 #include "eel-string.h"
 
 struct EelEllipsizingLabelDetails
@@ -34,51 +34,28 @@ struct EelEllipsizingLabelDetails
 	char *full_text;
 };
 
-static void eel_ellipsizing_label_initialize_class (EelEllipsizingLabelClass *class);
-static void eel_ellipsizing_label_initialize       (EelEllipsizingLabel      *label);
-static void real_destroy                           (GtkObject                *object);
-static void real_size_request                      (GtkWidget                *widget,
-						    GtkRequisition           *requisition);
-static void real_size_allocate                     (GtkWidget                *widget,
-						    GtkAllocation            *allocation);
-static void real_style_set                         (GtkWidget                *widget,
-						    GtkStyle                 *previous_style);
+static void eel_ellipsizing_label_class_init (EelEllipsizingLabelClass *class);
+static void eel_ellipsizing_label_init       (EelEllipsizingLabel      *label);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelEllipsizingLabel, eel_ellipsizing_label, GTK_TYPE_LABEL)
+EEL_CLASS_BOILERPLATE (EelEllipsizingLabel, eel_ellipsizing_label, GTK_TYPE_LABEL)
 
 static void
-eel_ellipsizing_label_initialize_class (EelEllipsizingLabelClass *klass)
-{
-	GtkWidgetClass *widget_class;
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
-
-	object_class->destroy = real_destroy;
-
-	widget_class->size_request = real_size_request;
-	widget_class->size_allocate = real_size_allocate;
-  	widget_class->style_set = real_style_set;
-}
-
-static void
-eel_ellipsizing_label_initialize (EelEllipsizingLabel *label)
+eel_ellipsizing_label_init (EelEllipsizingLabel *label)
 {
 	label->details = g_new0 (EelEllipsizingLabelDetails, 1);
 }
 
 static void
-real_destroy (GtkObject *object)
+real_finalize (GObject *object)
 {
 	EelEllipsizingLabel *label;
-
-	g_return_if_fail (EEL_IS_ELLIPSIZING_LABEL (object));
 
 	label = EEL_ELLIPSIZING_LABEL (object);
 
 	g_free (label->details->full_text);
 	g_free (label->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 GtkWidget*
@@ -86,33 +63,15 @@ eel_ellipsizing_label_new (const char *string)
 {
 	EelEllipsizingLabel *label;
   
-	label = gtk_type_new (EEL_TYPE_ELLIPSIZING_LABEL);
+	label = g_object_new (EEL_TYPE_ELLIPSIZING_LABEL, NULL);
 	eel_ellipsizing_label_set_text (label, string);
   
 	return GTK_WIDGET (label);
 }
 
-static void
-recompute_ellipsized_text (EelEllipsizingLabel *label, int width)
-{
-	char *ellipsized_text;
-
-	if (label->details->full_text == NULL) {
-		ellipsized_text = NULL;
-	} else {
-		ellipsized_text = eel_string_ellipsize (label->details->full_text, 
-							GTK_WIDGET (label)->style->font, 
-							width,
-							EEL_ELLIPSIZE_MIDDLE);
-	}
-
-	gtk_label_set_text (GTK_LABEL (label), ellipsized_text);
-	g_free (ellipsized_text);
-}
-
 void
 eel_ellipsizing_label_set_text (EelEllipsizingLabel *label, 
-				     const char *string)
+				const char          *string)
 {
 	g_return_if_fail (EEL_IS_ELLIPSIZING_LABEL (label));
 
@@ -123,7 +82,8 @@ eel_ellipsizing_label_set_text (EelEllipsizingLabel *label,
 	g_free (label->details->full_text);
 	label->details->full_text = g_strdup (string);
 
-	recompute_ellipsized_text (label, GTK_WIDGET (label)->allocation.width);
+	/* Queues a resize as side effect */
+	gtk_label_set_text (GTK_LABEL (label), label->details->full_text);
 }
 
 static void
@@ -138,16 +98,70 @@ real_size_request (GtkWidget *widget, GtkRequisition *requisition)
 static void	
 real_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
-	recompute_ellipsized_text (EEL_ELLIPSIZING_LABEL (widget), allocation->width);
+	EelEllipsizingLabel *label;
+
+	label = EEL_ELLIPSIZING_LABEL (widget);
+	
+	/* This is the bad hack of the century, using private
+	 * GtkLabel layout object. If the layout is NULL
+	 * then it got blown away since size request,
+	 * we just punt in that case, I don't know what to do really.
+	 */
+
+	if (GTK_LABEL (label)->layout != NULL) {
+		if (label->details->full_text == NULL) {
+			pango_layout_set_text (GTK_LABEL (label)->layout, "", -1);
+		} else {
+			EelEllipsizeMode mode;
+
+			if (ABS (GTK_MISC (label)->xalign - 0.5) < 1e-12)
+				mode = EEL_ELLIPSIZE_MIDDLE;
+			else if (GTK_MISC (label)->xalign < 0.5)
+				mode = EEL_ELLIPSIZE_END;
+			else
+				mode = EEL_ELLIPSIZE_START;
+			
+			eel_pango_layout_set_text_ellipsized (GTK_LABEL (label)->layout,
+							      label->details->full_text,
+							      allocation->width,
+							      mode);
+		}
+	}
 	
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 }
 
-static void 
-real_style_set (GtkWidget *widget, GtkStyle  *previous_style)
+static gboolean
+real_expose_event (GtkWidget *widget, GdkEventExpose *event)
 {
-	recompute_ellipsized_text (EEL_ELLIPSIZING_LABEL (widget), widget->allocation.width);
+	EelEllipsizingLabel *label;
+	GtkRequisition req;
 	
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
+	label = EEL_ELLIPSIZING_LABEL (widget);
+
+	/* push/pop the actual size so expose draws in the right
+	 * place, yes this is bad hack central. Here we assume the
+	 * ellipsized text has been set on the layout in size_allocate
+	 */
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, &req));
+	widget->requisition.width = req.width;
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	widget->requisition.width = 0;
+
+	return FALSE;
 }
-       			      
+
+
+static void
+eel_ellipsizing_label_class_init (EelEllipsizingLabelClass *klass)
+{
+	GtkWidgetClass *widget_class;
+
+	widget_class = GTK_WIDGET_CLASS (klass);
+
+	G_OBJECT_CLASS (klass)->finalize = real_finalize;
+
+	widget_class->size_request = real_size_request;
+	widget_class->size_allocate = real_size_allocate;
+	widget_class->expose_event = real_expose_event;
+}

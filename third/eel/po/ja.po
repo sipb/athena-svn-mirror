@@ -7,188 +7,216 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20010221\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
 "PO-Revision-Date: 2001-02-22 23:33-0500\n"
 "Last-Translator: Takuo KITAME <kitame@debian.org>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=euc-jp\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
 msgstr ""
 
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
 msgstr ""
 
-#: eel/eel-dnd.c:496
-msgid "_Link here"
+#: eel/eel-editable-label.c:360
+msgid "Text"
 msgstr ""
 
-#: eel/eel-dnd.c:498
-msgid "Cancel"
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
 msgstr ""
 
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "…∏Ω‡"
-
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "…‘Ã¿"
-
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "¬¿ª˙"
-
-#: eel/eel-font-picker.c:88
-msgid "Book"
-msgstr "•÷•√•Ø"
-
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "•÷•È•√•Ø"
-
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
+#: eel/eel-editable-label.c:367
+msgid "Justification"
 msgstr ""
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "∑⁄§§"
-
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "º–¬Œ"
-
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "µﬁº–¬Œ"
-
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "µ’º–¬Œ"
-
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "µﬁµ’º–¬Œ"
-
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "§Ω§Œ¬æ"
-
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "∂≈ΩÃ"
-
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
 msgstr ""
 
-#: eel/eel-font-picker.c:428
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr ""
+
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+
+#: eel/eel-editable-label.c:384
 #, fuzzy
-msgid "More..."
-msgstr "Ω§¿µ..."
+msgid "Cursor Position"
+msgstr "Ë≥™Âïè"
 
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr ""
+
+#: eel/eel-editable-label.c:394
+#, fuzzy
+msgid "Selection Bound"
+msgstr "„Çª„ÇØ„Ç∑„Éß„É≥„ÅØ‰ΩúÊàê„Åï„Çå„Å¶„Åæ„Åõ„Çì"
+
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr ""
+
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr ""
+
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"GConf •®•È°º:\n"
+"GConf „Ç®„É©„Éº:\n"
 "  %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"GConf •®•È°º:\n"
+"GConf „Ç®„É©„Éº:\n"
 "  %s\n"
-"§π§Ÿ§∆§Œππ§ §Î•®•È°º§œ√ºÀˆæÂ§«§¿§±…Ωº®§µ§Ï§ﬁ§π"
+"„Åô„Åπ„Å¶„ÅÆÊõ¥„Å™„Çã„Ç®„É©„Éº„ÅØÁ´ØÊú´‰∏ä„Åß„Å†„ÅëË°®Á§∫„Åï„Çå„Åæ„Åô"
 
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "GConf •®•È°º"
+msgstr "GConf „Ç®„É©„Éº"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
-msgstr "01/01/00 ∏·¡∞ 01:00"
+msgstr "01/01/00 ÂçàÂâç 01:00"
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
-msgstr "1/1/00 ∏·¡∞ 1:00"
+msgstr "1/1/00 ÂçàÂâç 1:00"
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
-msgstr " 1/ 1/00 ∏·¡∞ 1:00"
+msgstr " 1/ 1/00 ÂçàÂâç 1:00"
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
-msgstr "•ª•Ø•∑•Á•Û§œ∫Ó¿Æ§µ§Ï§∆§ﬁ§ª§Û"
+msgstr "„Çª„ÇØ„Ç∑„Éß„É≥„ÅØ‰ΩúÊàê„Åï„Çå„Å¶„Åæ„Åõ„Çì"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
-msgstr ""
+#: eel/eel-password-dialog.c:203
+#, fuzzy
+msgid "_Username:"
+msgstr "„É¶„Éº„Ç∂„ÉºÂêç:"
 
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
-msgstr "•Ê°º•∂°ºÃæ:"
+#: eel/eel-password-dialog.c:210
+#, fuzzy
+msgid "_Password:"
+msgstr "„Éë„Çπ„ÉØ„Éº„Éâ:"
 
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "•—•π•Ô°º•…:"
-
-#: eel/eel-password-dialog.c:304
+#: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr ""
 
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "ΩÈø¥º‘"
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
+msgstr ""
 
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "√Ê¥÷"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "æÂµÈº‘"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "æ‹∫Ÿ"
+msgstr "Ë©≥Á¥∞"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "∑Ÿπ"
+msgstr "Ë≠¶Âëä"
 
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
-msgstr "•®•È°º"
+msgstr "„Ç®„É©„Éº"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "º¡Ã‰"
+msgstr "Ë≥™Âïè"
+
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr ""
+
+#~ msgid "Normal"
+#~ msgstr "Ê®ôÊ∫ñ"
+
+#~ msgid "Unknown"
+#~ msgstr "‰∏çÊòé"
+
+#~ msgid "Bold"
+#~ msgstr "Â§™Â≠ó"
+
+#~ msgid "Book"
+#~ msgstr "„Éñ„ÉÉ„ÇØ"
+
+#~ msgid "Black"
+#~ msgstr "„Éñ„É©„ÉÉ„ÇØ"
+
+#~ msgid "Light"
+#~ msgstr "ËªΩ„ÅÑ"
+
+#~ msgid "Italic"
+#~ msgstr "Êñú‰Ωì"
+
+#~ msgid "Oblique"
+#~ msgstr "ÊÄ•Êñú‰Ωì"
+
+#~ msgid "Reverse Italic"
+#~ msgstr "ÈÄÜÊñú‰Ωì"
+
+#~ msgid "Reverse Oblique"
+#~ msgstr "ÊÄ•ÈÄÜÊñú‰Ωì"
+
+#~ msgid "Other"
+#~ msgstr "„Åù„ÅÆ‰ªñ"
+
+#~ msgid "Condensed"
+#~ msgstr "ÂáùÁ∏Æ"
+
+#, fuzzy
+#~ msgid "More..."
+#~ msgstr "‰øÆÊ≠£..."
+
+#~ msgid "Beginner"
+#~ msgstr "ÂàùÂøÉËÄÖ"
+
+#~ msgid "Intermediate"
+#~ msgstr "‰∏≠Èñì"
+
+#~ msgid "Advanced"
+#~ msgstr "‰∏äÁ¥öËÄÖ"
 
 #~ msgid "fixed"
 #~ msgstr "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*"

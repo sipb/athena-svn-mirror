@@ -28,6 +28,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtklabel.h>
+#include "eel-accessibility.h"
 #include "eel-gtk-macros.h"
 
 struct EelCaptionTableDetail
@@ -45,11 +46,11 @@ enum
 };
 
 /* EelCaptionTableClass methods */
-static void       eel_caption_table_initialize_class      (EelCaptionTableClass *klass);
-static void       eel_caption_table_initialize            (EelCaptionTable      *caption_table);
+static void       eel_caption_table_class_init      (EelCaptionTableClass *klass);
+static void       eel_caption_table_init            (EelCaptionTable      *caption_table);
 
-/* GtkObjectClass methods */
-static void       caption_table_destroy                   (GtkObject            *object);
+/* GObjectClass methods */
+static void       caption_table_finalize                  (GObject              *object);
 
 /* Private methods */
 static GtkWidget* caption_table_find_next_sensitive_entry (EelCaptionTable      *caption_table,
@@ -62,39 +63,38 @@ static void       entry_activate                          (GtkWidget            
 							   gpointer              data);
 
 /* Boilerplate stuff */
-EEL_DEFINE_CLASS_BOILERPLATE (EelCaptionTable,
+EEL_CLASS_BOILERPLATE (EelCaptionTable,
 				   eel_caption_table,
 				   GTK_TYPE_TABLE)
 
 static int caption_table_signals[LAST_SIGNAL] = { 0 };
 
 static void
-eel_caption_table_initialize_class (EelCaptionTableClass *klass)
+eel_caption_table_class_init (EelCaptionTableClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 
 	caption_table_signals[ACTIVATE] =
-		gtk_signal_new ("activate",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EelCaptionTableClass, activate),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+		g_signal_new ("activate",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EelCaptionTableClass, activate),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 	
-	gtk_object_class_add_signals (object_class, caption_table_signals, LAST_SIGNAL);
-	
-	/* GtkObjectClass */
-	object_class->destroy = caption_table_destroy;
+	/* GObjectClass */
+	object_class->finalize = caption_table_finalize;
 }
 
 #define CAPTION_TABLE_DEFAULT_ROWS 1
 
 static void
-eel_caption_table_initialize (EelCaptionTable *caption_table)
+eel_caption_table_init (EelCaptionTable *caption_table)
 {
 	GtkTable *table = GTK_TABLE (caption_table);
 
@@ -112,25 +112,20 @@ eel_caption_table_initialize (EelCaptionTable *caption_table)
 
 /* GtkObjectClass methods */
 static void
-caption_table_destroy (GtkObject *object)
+caption_table_finalize (GObject *object)
 {
 	EelCaptionTable *caption_table;
 	
-	g_return_if_fail (object != NULL);
 	g_return_if_fail (EEL_IS_CAPTION_TABLE (object));
 	
 	caption_table = EEL_CAPTION_TABLE (object);
 
-	if (caption_table->detail->labels)
-		g_free(caption_table->detail->labels);
-
-	if (caption_table->detail->entries)
-		g_free(caption_table->detail->entries);
-
+	g_free (caption_table->detail->labels);
+	g_free (caption_table->detail->entries);
 	g_free (caption_table->detail);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		(*G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 void
@@ -172,10 +167,15 @@ eel_caption_table_resize (EelCaptionTable	*caption_table,
 			caption_table->detail->labels[i] = gtk_label_new("");
 			caption_table->detail->entries[i] = gtk_entry_new();
 			
-			gtk_signal_connect(GTK_OBJECT (caption_table->detail->entries[i]),
-					   "activate",
-					   GTK_SIGNAL_FUNC (entry_activate),
-					   (gpointer) caption_table);
+			gtk_label_set_mnemonic_widget (GTK_LABEL (caption_table->detail->labels[i]),
+						       caption_table->detail->entries[i]);
+			eel_accessibility_set_up_label_widget_relation (caption_table->detail->labels[i],
+									caption_table->detail->entries[i]);
+			
+			g_signal_connect (G_OBJECT (caption_table->detail->entries[i]),
+					  "activate",
+					  G_CALLBACK (entry_activate),
+					  (gpointer) caption_table);
 
 			gtk_misc_set_alignment (GTK_MISC (caption_table->detail->labels[i]), 1.0, 0.5);
 
@@ -298,9 +298,9 @@ entry_activate (GtkWidget *widget, gpointer data)
 	}
 	
 	/* Emit the activate signal */
-	gtk_signal_emit (GTK_OBJECT (caption_table), 
-			 caption_table_signals[ACTIVATE], 
-			 index);
+	g_signal_emit (G_OBJECT (caption_table), 
+		       caption_table_signals[ACTIVATE], 0,
+		       index);
 }
 
 /* Public methods */
@@ -323,21 +323,27 @@ eel_caption_table_new (guint num_rows)
 
 void
 eel_caption_table_set_row_info (EelCaptionTable *caption_table,
-				     guint row,
-				     const char* label_text,
-				     const char* entry_text,
-				     gboolean entry_visibility,
-				     gboolean entry_readonly)
+				guint row,
+				const char* label_text,
+				const char* entry_text,
+				gboolean entry_visibility,
+				gboolean entry_readonly)
 {
 	g_return_if_fail (caption_table != NULL);
 	g_return_if_fail (EEL_IS_CAPTION_TABLE (caption_table));
 	g_return_if_fail (row < caption_table->detail->num_rows);
 
-	gtk_label_set_text (GTK_LABEL (caption_table->detail->labels[row]), label_text);
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (caption_table->detail->labels[row]), label_text);
 
 	gtk_entry_set_text (GTK_ENTRY (caption_table->detail->entries[row]), entry_text);
 	gtk_entry_set_visibility (GTK_ENTRY (caption_table->detail->entries[row]), entry_visibility);
 	gtk_widget_set_sensitive (caption_table->detail->entries[row], !entry_readonly);
+	if (!entry_visibility) {
+		AtkObject *accessible;
+
+		accessible = gtk_widget_get_accessible (caption_table->detail->entries[row]);
+		atk_object_set_role (accessible, ATK_ROLE_PASSWORD_TEXT);
+	}
 }
 
 void
@@ -378,7 +384,7 @@ eel_caption_table_entry_grab_focus (EelCaptionTable *caption_table, guint row)
 char*
 eel_caption_table_get_entry_text (EelCaptionTable *caption_table, guint row)
 {
-	char *text;
+	const char *text;
 
 	g_return_val_if_fail (caption_table != NULL, NULL);
 	g_return_val_if_fail (EEL_IS_CAPTION_TABLE (caption_table), NULL);

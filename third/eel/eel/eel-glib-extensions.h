@@ -27,14 +27,10 @@
 #ifndef EEL_GLIB_EXTENSIONS_H
 #define EEL_GLIB_EXTENSIONS_H
 
-#include <time.h>
 #include <glib.h>
 
 /* A gboolean variant for bit fields. */
 typedef guint eel_boolean_bit;
-
-/* Use this until we can switch to G_N_ELEMENTS. */
-#define EEL_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 
 /* Callback functions that have user data. */
 typedef int      (* EelCompareFunction)   (gconstpointer a,
@@ -63,13 +59,6 @@ gboolean    eel_g_list_exactly_one_item                 (GList                 *
 gboolean    eel_g_list_more_than_one_item               (GList                 *list);
 gboolean    eel_g_list_equal                            (GList                 *list_a,
 							 GList                 *list_b);
-GList *     eel_g_list_copy                             (GList                 *list);
-void        eel_g_list_safe_for_each                    (GList                 *list,
-							 GFunc                  function,
-							 gpointer               user_data);
-GList *     eel_g_list_sort_custom                      (GList                 *list,
-							 EelCompareFunction     compare,
-							 gpointer               user_data);
 gboolean    eel_g_lists_sort_and_check_for_intersection (GList                **list_a,
 							 GList                **list_b);
 GList *     eel_g_list_partition                        (GList                 *list,
@@ -99,10 +88,11 @@ gboolean    eel_g_str_list_equal                        (GList                 *
 GList *     eel_g_str_list_copy                         (GList                 *str_list);
 GList *     eel_g_str_list_alphabetize                  (GList                 *str_list);
 
-/* GString functions */
-void        eel_g_string_append_len                     (GString               *string,
-							 const char            *characters,
-							 int                    length);
+/* List functions for lists of objects */
+GList *     eel_g_object_list_ref                       (GList                 *list);
+void        eel_g_object_list_unref                     (GList                 *list);
+void        eel_g_object_list_free                      (GList                 *list);
+GList *     eel_g_object_list_copy                      (GList                 *list);
 
 /* GHashTable functions */
 GHashTable *eel_g_hash_table_new_free_at_exit           (GHashFunc              hash_function,
@@ -111,30 +101,6 @@ GHashTable *eel_g_hash_table_new_free_at_exit           (GHashFunc              
 void        eel_g_hash_table_safe_for_each              (GHashTable            *hash_table,
 							 GHFunc                 callback,
 							 gpointer               callback_data);
-gboolean    eel_g_hash_table_remove_deep_custom         (GHashTable            *hash_table,
-							 gconstpointer          key,
-							 GFunc                  key_free_func,
-							 gpointer               key_free_data,
-							 GFunc                  value_free_func,
-							 gpointer               value_free_data);
-gboolean    eel_g_hash_table_remove_deep                (GHashTable            *hash_table,
-							 gconstpointer          key);
-void        eel_g_hash_table_destroy_deep_custom        (GHashTable            *hash_table,
-							 GFunc                  key_free_func,
-							 gpointer               key_free_data,
-							 GFunc                  value_free_func,
-							 gpointer               value_free_data);
-void        eel_g_hash_table_destroy_deep               (GHashTable            *hash_table);
-
-/* GPtrArray functions */
-GPtrArray * eel_g_ptr_array_new_from_list               (GList                 *list);
-void        eel_g_ptr_array_sort                        (GPtrArray             *array,
-							 EelCompareFunction     compare_callback,
-							 gpointer               callback_data);
-int         eel_g_ptr_array_search                      (GPtrArray             *array,
-							 EelSearchFunction      search_callback,
-							 gpointer               callback_data,
-							 gboolean               match_only);
 
 /* NULL terminated string arrays (strv). */
 int         eel_g_strv_find                             (char                 **strv,
@@ -142,9 +108,6 @@ int         eel_g_strv_find                             (char                 **
 
 /* return the time in microseconds since the machine was started */
 gint64      eel_get_system_time                         (void);
-
-/* shell */
-char *      eel_shell_quote                             (const char            *string);
 
 /* math */
 int         eel_round                                   (double                 d);
@@ -158,5 +121,9 @@ int         eel_compare_integer                         (gconstpointer          
 
 /* Return the operating system name: Linux, Solaris, etc. */
 char *      eel_get_operating_system_name               (void);
+
+/* Better weak pointer functions */
+void        eel_add_weak_pointer                        (gpointer               pointer_location);
+void        eel_remove_weak_pointer                     (gpointer               pointer_location);
 
 #endif /* EEL_GLIB_EXTENSIONS_H */

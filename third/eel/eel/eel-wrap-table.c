@@ -23,26 +23,26 @@
 */
 
 #include <config.h>
-
 #include "eel-wrap-table.h"
 
-#include "eel-gtk-macros.h"
-#include "eel-gtk-extensions.h"
 #include "eel-art-extensions.h"
 #include "eel-art-gtk-extensions.h"
-
+#include "eel-gtk-extensions.h"
+#include "eel-gtk-macros.h"
+#include "eel-types.h"
 #include <gtk/gtkmain.h>
 #include <gtk/gtkviewport.h>
+#include <gtk/gtkscrolledwindow.h>
 
 /* Arguments */
 enum
 {
-	ARG_0,
-	ARG_X_SPACING,
-	ARG_Y_SPACING,
-	ARG_X_JUSTIFICATION,
-	ARG_Y_JUSTIFICATION,
-	ARG_HOMOGENEOUS,
+	PROP_0,
+	PROP_X_SPACING,
+	PROP_Y_SPACING,
+	PROP_X_JUSTIFICATION,
+	PROP_Y_JUSTIFICATION,
+	PROP_HOMOGENEOUS,
 };
 
 /* Detail member struct */
@@ -54,18 +54,23 @@ struct EelWrapTableDetails
 	EelJustification y_justification;
 	gboolean homogeneous;
 	GList *children;
+
+	gboolean is_scrolled : 1;
+	guint cols;
 };
 
-/* GtkObjectClass methods */
-static void          eel_wrap_table_initialize_class     (EelWrapTableClass   *wrap_table_class);
-static void          eel_wrap_table_initialize           (EelWrapTable        *wrap);
-static void          eel_wrap_table_destroy              (GtkObject           *object);
-static void          eel_wrap_table_set_arg              (GtkObject           *object,
-							  GtkArg              *arg,
-							  guint                arg_id);
-static void          eel_wrap_table_get_arg              (GtkObject           *object,
-							  GtkArg              *arg,
-							  guint                arg_id);
+static void          eel_wrap_table_class_init           (EelWrapTableClass   *wrap_table_class);
+static void          eel_wrap_table_init                 (EelWrapTable        *wrap);
+/* GObjectClass methods */
+static void          eel_wrap_table_finalize             (GObject             *object);
+static void          eel_wrap_table_set_property         (GObject             *object,
+							  guint                property_id,
+							  const GValue        *value,
+							  GParamSpec          *pspec);
+static void          eel_wrap_table_get_property         (GObject             *object,
+							  guint                property_id,
+							  GValue              *value,
+							  GParamSpec          *pspec);
 /* GtkWidgetClass methods */
 static void          eel_wrap_table_size_request         (GtkWidget           *widget,
 							  GtkRequisition      *requisition);
@@ -75,6 +80,7 @@ static void          eel_wrap_table_size_allocate        (GtkWidget           *w
 							  GtkAllocation       *allocation);
 static void          eel_wrap_table_map                  (GtkWidget           *widget);
 static void          eel_wrap_table_unmap                (GtkWidget           *widget);
+static void          eel_wrap_table_realize              (GtkWidget           *widget);
 
 /* GtkContainerClass methods */
 static void          eel_wrap_table_add                  (GtkContainer        *container,
@@ -98,22 +104,26 @@ static EelArtIPoint  wrap_table_get_scroll_offset        (const EelWrapTable  *w
 static GtkWidget *   wrap_table_find_child_at_point      (const EelWrapTable  *wrap_table,
 							  int                  x,
 							  int                  y);
+static gboolean      wrap_table_child_focus_in           (GtkWidget           *widget,
+							  GdkEventFocus       *event,
+							  gpointer             data);
 static void          wrap_table_layout                   (EelWrapTable        *wrap_table);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelWrapTable, eel_wrap_table, GTK_TYPE_CONTAINER)
+
+EEL_CLASS_BOILERPLATE (EelWrapTable, eel_wrap_table, GTK_TYPE_CONTAINER)
 
 /* Class init methods */
 static void
-eel_wrap_table_initialize_class (EelWrapTableClass *wrap_table_class)
+eel_wrap_table_class_init (EelWrapTableClass *wrap_table_class)
 {
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (wrap_table_class);
+	GObjectClass *gobject_class = G_OBJECT_CLASS (wrap_table_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (wrap_table_class);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (wrap_table_class);
 
-	/* GtkObjectClass */
-	object_class->destroy = eel_wrap_table_destroy;
-	object_class->set_arg = eel_wrap_table_set_arg;
-	object_class->get_arg = eel_wrap_table_get_arg;
+	/* GObjectClass */
+	gobject_class->finalize = eel_wrap_table_finalize;
+	gobject_class->set_property = eel_wrap_table_set_property;
+	gobject_class->get_property = eel_wrap_table_get_property;
 	
  	/* GtkWidgetClass */
  	widget_class->size_request = eel_wrap_table_size_request;
@@ -121,72 +131,84 @@ eel_wrap_table_initialize_class (EelWrapTableClass *wrap_table_class)
  	widget_class->expose_event = eel_wrap_table_expose_event;
 	widget_class->map = eel_wrap_table_map;
 	widget_class->unmap = eel_wrap_table_unmap;
+	widget_class->realize = eel_wrap_table_realize;
 
  	/* GtkContainerClass */
 	container_class->add = eel_wrap_table_add;
 	container_class->remove = eel_wrap_table_remove;
 	container_class->forall = eel_wrap_table_forall;
 	container_class->child_type = eel_wrap_table_child_type;
-  
+
+	/* Register some the enum types we need */
+	eel_type_init ();
+
 	/* Arguments */
-	gtk_object_add_arg_type ("EelWrapTable::x_spacing",
-				 GTK_TYPE_UINT,
-				 GTK_ARG_READWRITE,
-				 ARG_X_SPACING);
-	gtk_object_add_arg_type ("EelWrapTable::y_spacing",
-				 GTK_TYPE_UINT,
-				 GTK_ARG_READWRITE,
-				 ARG_Y_SPACING);
-	gtk_object_add_arg_type ("EelWrapTable::x_justification",
-				 GTK_TYPE_ENUM,
-				 GTK_ARG_READWRITE,
-				 ARG_X_JUSTIFICATION);
-	gtk_object_add_arg_type ("EelWrapTable::y_justification",
-				 GTK_TYPE_ENUM,
-				 GTK_ARG_READWRITE,
-				 ARG_Y_JUSTIFICATION);
-	gtk_object_add_arg_type ("EelWrapTable::homogeneous",
-				 GTK_TYPE_BOOL,
-				 GTK_ARG_READWRITE,
-				 ARG_HOMOGENEOUS);
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_X_SPACING,
+		 g_param_spec_uint ("x_spacing", NULL, NULL,
+                                    0, G_MAXINT, 0, G_PARAM_READWRITE));
+
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_Y_SPACING,
+		 g_param_spec_uint ("y_spacing", NULL, NULL,
+				    0, G_MAXINT, 0, G_PARAM_READWRITE));
+	
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_X_JUSTIFICATION,
+		 g_param_spec_enum ("x_justification", NULL, NULL,
+				    EEL_TYPE_JUSTIFICATION,
+				    EEL_JUSTIFICATION_BEGINNING,
+				    G_PARAM_READWRITE));
+				    
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_Y_JUSTIFICATION,
+		 g_param_spec_enum ("y_justification", NULL, NULL,
+				    EEL_TYPE_JUSTIFICATION,
+				    EEL_JUSTIFICATION_BEGINNING,
+				    G_PARAM_READWRITE));
+				    
+	g_object_class_install_property
+		(gobject_class,
+		 PROP_HOMOGENEOUS,
+		 g_param_spec_boolean ("homogenous", NULL, NULL,
+				       FALSE, G_PARAM_READWRITE));
 }
 
 void
-eel_wrap_table_initialize (EelWrapTable *wrap_table)
+eel_wrap_table_init (EelWrapTable *wrap_table)
 {
 	GTK_WIDGET_SET_FLAGS (wrap_table, GTK_NO_WINDOW);
 
 	wrap_table->details = g_new0 (EelWrapTableDetails, 1);
 	wrap_table->details->x_justification = EEL_JUSTIFICATION_BEGINNING;
 	wrap_table->details->y_justification = EEL_JUSTIFICATION_END;
+	wrap_table->details->cols = 1;
 }
 
-/* GtkObjectClass methods */
 static void
-eel_wrap_table_destroy (GtkObject *object)
+eel_wrap_table_finalize (GObject *object)
 {
  	EelWrapTable *wrap_table;
 	
-	g_return_if_fail (EEL_IS_WRAP_TABLE (object));
-
 	wrap_table = EEL_WRAP_TABLE (object);
 
-	/*
-	 * Chain destroy before freeing our details.
-	 * The details will be used in the eel_wrap_box_remove () 
-	 * method as a result of the children being killed.
-	 */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-
 	g_list_free (wrap_table->details->children);
-
 	g_free (wrap_table->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
+/* GObjectClass methods */
+
 static void
-eel_wrap_table_set_arg (GtkObject *object,
-			     GtkArg *arg,
-			     guint arg_id)
+eel_wrap_table_set_property (GObject      *object,
+			     guint         property_id,
+			     const GValue *value,
+			     GParamSpec   *pspec)
 {
 	EelWrapTable *wrap_table;
 	
@@ -194,26 +216,26 @@ eel_wrap_table_set_arg (GtkObject *object,
 
  	wrap_table = EEL_WRAP_TABLE (object);
 
- 	switch (arg_id)
+ 	switch (property_id)
 	{
-	case ARG_X_SPACING:
-		eel_wrap_table_set_x_spacing (wrap_table, GTK_VALUE_UINT (*arg));
+	case PROP_X_SPACING:
+		eel_wrap_table_set_x_spacing (wrap_table, g_value_get_uint (value));
 		break;
 
-	case ARG_Y_SPACING:
-		eel_wrap_table_set_y_spacing (wrap_table, GTK_VALUE_UINT (*arg));
+	case PROP_Y_SPACING:
+		eel_wrap_table_set_y_spacing (wrap_table, g_value_get_uint (value));
 		break;
 
-	case ARG_X_JUSTIFICATION:
-		eel_wrap_table_set_x_justification (wrap_table, GTK_VALUE_ENUM (*arg));
+	case PROP_X_JUSTIFICATION:
+		eel_wrap_table_set_x_justification (wrap_table, g_value_get_enum (value));
 		break;
 
-	case ARG_Y_JUSTIFICATION:
-		eel_wrap_table_set_y_justification (wrap_table, GTK_VALUE_ENUM (*arg));
+	case PROP_Y_JUSTIFICATION:
+		eel_wrap_table_set_y_justification (wrap_table, g_value_get_enum (value));
 		break;
 
-	case ARG_HOMOGENEOUS:
-		eel_wrap_table_set_homogeneous (wrap_table, GTK_VALUE_BOOL (*arg));
+	case PROP_HOMOGENEOUS:
+		eel_wrap_table_set_homogeneous (wrap_table, g_value_get_boolean (value));
 		break;
 
  	default:
@@ -222,9 +244,10 @@ eel_wrap_table_set_arg (GtkObject *object,
 }
 
 static void
-eel_wrap_table_get_arg (GtkObject *object,
-			    GtkArg *arg,
-			    guint arg_id)
+eel_wrap_table_get_property (GObject    *object,
+			     guint       property_id,
+			     GValue     *value,
+			     GParamSpec *pspec)
 {
 	EelWrapTable *wrap_table;
 
@@ -232,26 +255,26 @@ eel_wrap_table_get_arg (GtkObject *object,
 	
 	wrap_table = EEL_WRAP_TABLE (object);
 
- 	switch (arg_id)
+ 	switch (property_id)
 	{
-	case ARG_X_SPACING:
-		GTK_VALUE_UINT (*arg) = eel_wrap_table_get_x_spacing (wrap_table);
+	case PROP_X_SPACING:
+		g_value_set_uint (value, eel_wrap_table_get_x_spacing (wrap_table));
 		break;
 
-	case ARG_Y_SPACING:
-		GTK_VALUE_UINT (*arg) = eel_wrap_table_get_y_spacing (wrap_table);
+	case PROP_Y_SPACING:
+		g_value_set_uint (value, eel_wrap_table_get_y_spacing (wrap_table));
 		break;
 
-	case ARG_X_JUSTIFICATION:
-		GTK_VALUE_ENUM (*arg) = eel_wrap_table_get_x_justification (wrap_table);
+	case PROP_X_JUSTIFICATION:
+		g_value_set_enum (value, eel_wrap_table_get_x_justification (wrap_table));
 		break;
 
-	case ARG_Y_JUSTIFICATION:
-		GTK_VALUE_ENUM (*arg) = eel_wrap_table_get_y_justification (wrap_table);
+	case PROP_Y_JUSTIFICATION:
+		g_value_set_enum (value, eel_wrap_table_get_y_justification (wrap_table));
 		break;
 
-	case ARG_HOMOGENEOUS:
-		GTK_VALUE_BOOL (*arg) = eel_wrap_table_get_homogeneous (wrap_table);
+	case PROP_HOMOGENEOUS:
+		g_value_set_boolean (value, eel_wrap_table_get_homogeneous (wrap_table));
 		break;
 
  	default:
@@ -297,7 +320,7 @@ eel_wrap_table_size_allocate (GtkWidget *widget,
 
 static int
 eel_wrap_table_expose_event (GtkWidget *widget,
-				 GdkEventExpose *event)
+			     GdkEventExpose *event)
 {
 	EelWrapTable *wrap_table;
 	GList *iterator;
@@ -309,17 +332,10 @@ eel_wrap_table_expose_event (GtkWidget *widget,
   	wrap_table = EEL_WRAP_TABLE (widget);
 
 	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
-		GtkWidget *item;
-		GdkEventExpose item_event;
-
-		item = iterator->data;
-		item_event = *event;
-
-		if (GTK_WIDGET_DRAWABLE (item) &&
-		    GTK_WIDGET_NO_WINDOW (item) &&
-		    gtk_widget_intersect (item, &event->area, &item_event.area)) {
-			gtk_widget_event (item, (GdkEvent *) &item_event);
-		}
+		g_assert (GTK_IS_WIDGET (iterator->data));
+		gtk_container_propagate_expose (GTK_CONTAINER (widget),
+						GTK_WIDGET (iterator->data),
+						event);
 	}
 
 	return FALSE;
@@ -371,6 +387,16 @@ eel_wrap_table_unmap (GtkWidget *widget)
 	}
 }
 
+static void
+eel_wrap_table_realize (GtkWidget *widget)
+{
+	g_return_if_fail (EEL_IS_WRAP_TABLE (widget));
+
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+
+	gtk_widget_queue_resize (widget);
+}
+
 /* GtkContainerClass methods */
 static void
 eel_wrap_table_add (GtkContainer *container,
@@ -399,6 +425,12 @@ eel_wrap_table_add (GtkContainer *container,
 		
 		gtk_widget_queue_resize (child);
 	}
+
+	if (wrap_table->details->is_scrolled) {
+		g_signal_connect (child, "focus_in_event", 
+				  G_CALLBACK (wrap_table_child_focus_in), 
+				  wrap_table);
+	}
 }
 
 static void
@@ -419,6 +451,13 @@ eel_wrap_table_remove (GtkContainer *container,
 
 	if (child_was_visible) {
 		gtk_widget_queue_resize (GTK_WIDGET (container));
+	}
+
+	if (wrap_table->details->is_scrolled) {
+		g_signal_handlers_disconnect_by_func (
+			child,
+			G_CALLBACK (wrap_table_child_focus_in), 
+			wrap_table);
 	}
 }
 
@@ -451,6 +490,23 @@ eel_wrap_table_child_type (GtkContainer   *container)
 }
 
 /* Private EelWrapTable methods */
+static int
+wrap_table_get_num_fitting (int available,
+			    int spacing,
+			    int max_child_size)
+{
+	int num;
+
+  	g_return_val_if_fail (available >= 0, 0);
+  	g_return_val_if_fail (max_child_size > 0, 0);
+  	g_return_val_if_fail (spacing >= 0, 0);
+	
+	num = (available + spacing) / (max_child_size + spacing);
+	num = MAX (num, 1);
+
+	return num;
+}
+
 static void
 wrap_table_layout (EelWrapTable *wrap_table)
 {
@@ -458,6 +514,7 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	EelArtIPoint pos;
 	EelDimensions max_child_dimensions;
 	ArtIRect content_bounds;
+	guint num_cols;
 
  	g_return_if_fail (EEL_IS_WRAP_TABLE (wrap_table));
 
@@ -465,6 +522,15 @@ wrap_table_layout (EelWrapTable *wrap_table)
 	content_bounds = wrap_table_get_content_bounds (wrap_table);
 	pos.x = content_bounds.x0;
 	pos.y = content_bounds.y0;
+
+	num_cols = wrap_table_get_num_fitting (GTK_WIDGET (wrap_table)->allocation.width,
+					       wrap_table->details->x_spacing,
+					       max_child_dimensions.width);
+	if (num_cols != wrap_table->details->cols) {
+		wrap_table->details->cols = num_cols;
+		gtk_widget_queue_resize (GTK_WIDGET (wrap_table));
+		return;
+	}
 
 	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
@@ -518,6 +584,7 @@ wrap_table_layout (EelWrapTable *wrap_table)
 					item_allocation.x += (max_child_dimensions.width - (int) item_allocation.width);
 					break;
 				default:
+					break;
 				}
 				
 				switch (wrap_table->details->y_justification) {
@@ -528,6 +595,7 @@ wrap_table_layout (EelWrapTable *wrap_table)
 					item_allocation.y += (max_child_dimensions.height - (int) item_allocation.height);
 					break;
 				default:
+					break;
 				}
 			}
 			
@@ -580,23 +648,6 @@ wrap_table_get_max_child_dimensions (const EelWrapTable *wrap_table)
 	}
 
 	return max_dimensions;
-}
-
-static int
-wrap_table_get_num_fitting (int available,
-			    int spacing,
-			    int max_child_size)
-{
-	int num;
-
-  	g_return_val_if_fail (available >= 0, 0);
-  	g_return_val_if_fail (max_child_size > 0, 0);
-  	g_return_val_if_fail (spacing >= 0, 0);
-	
-	num = (available + spacing) / (max_child_size + spacing);
-	num = MAX (num, 1);
-
-	return num;
 }
 
 static EelDimensions
@@ -672,8 +723,7 @@ wrap_table_get_scroll_offset (const EelWrapTable *wrap_table)
 
 	parent = GTK_WIDGET (wrap_table)->parent;
 
-	/*
-	 * FIXME: It lame we have to hardcode for a possible viewport 
+	/* FIXME: It lame we have to hardcode for a possible viewport 
 	 * parent here.  Theres probably a better way to do this
 	 */
 	if (GTK_IS_VIEWPORT (parent)) {
@@ -683,6 +733,20 @@ wrap_table_get_scroll_offset (const EelWrapTable *wrap_table)
 	}
 
 	return scroll_offset;
+}
+
+static gboolean
+wrap_table_child_focus_in (GtkWidget *widget, 
+			   GdkEventFocus *event, 
+			   gpointer data)
+{
+	g_return_val_if_fail (widget->parent && widget->parent->parent, FALSE);
+	g_return_val_if_fail (GTK_IS_VIEWPORT (widget->parent->parent), FALSE);
+
+	eel_gtk_viewport_scroll_to_rect (GTK_VIEWPORT (widget->parent->parent), 
+					 &widget->allocation);
+	
+	return FALSE;
 }
 
 static GtkWidget *
@@ -994,3 +1058,38 @@ eel_wrap_table_get_num_children (const EelWrapTable *wrap_table)
 	return g_list_length (wrap_table->details->children);
 }
 
+GtkWidget *
+eel_scrolled_wrap_table_new (gboolean homogenous,
+			     GtkWidget **wrap_table_out)
+{
+	GtkWidget *scrolled_window;
+	GtkWidget *wrap_table;
+	GtkWidget *viewport;
+	
+	g_return_val_if_fail (wrap_table_out != NULL, NULL);
+	
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+
+	viewport = gtk_viewport_new (gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (scrolled_window)),
+				     gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scrolled_window)));
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport),
+				      GTK_SHADOW_NONE);
+	
+	gtk_container_add (GTK_CONTAINER (scrolled_window),
+			   viewport);
+	
+	wrap_table = eel_wrap_table_new (homogenous);
+	gtk_container_add (GTK_CONTAINER (viewport),
+			   wrap_table);
+
+	gtk_widget_show (wrap_table);
+	gtk_widget_show (viewport);
+
+	EEL_WRAP_TABLE (wrap_table)->details->is_scrolled = 1;
+
+	*wrap_table_out = wrap_table;
+	return scrolled_window;
+}

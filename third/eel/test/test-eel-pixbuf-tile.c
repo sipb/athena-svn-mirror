@@ -1,7 +1,51 @@
 #include "test.h"
 
-static const char pixbuf_name[] = "/usr/share/pixmaps/gnome-globe.png";
-static const char tile_name[] = "/gnome/share/nautilus/patterns/camouflage.png";
+#include <eel/eel-debug-drawing.h>
+
+static const char pixbuf_name[] = DATADIR "/pixmaps/gnome-globe.png";
+static const char tile_name[] = DATADIR "/nautilus/patterns/camouflage.png";
+
+static GdkPixbuf *global_buffer = NULL;
+
+static void
+destroy_global_buffer (void)
+{
+	if (global_buffer != NULL) {
+		g_object_unref (global_buffer);
+		global_buffer = NULL;
+	}
+}
+
+static GdkPixbuf *
+get_global_buffer (int minimum_width, int minimum_height)
+{
+	static gboolean at_exit_deallocator_installed = FALSE;
+
+	g_return_val_if_fail (minimum_width > 0, NULL);
+	g_return_val_if_fail (minimum_height > 0, NULL);
+
+	if (global_buffer != NULL) {
+		if (gdk_pixbuf_get_width (global_buffer) >= minimum_width
+		    && gdk_pixbuf_get_height (global_buffer) >= minimum_height) {
+			return global_buffer;
+		}
+
+		destroy_global_buffer ();
+	}
+
+	g_assert (global_buffer == NULL);
+
+	global_buffer = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, 
+					minimum_width, minimum_height);
+
+
+	if (at_exit_deallocator_installed == FALSE) {
+		at_exit_deallocator_installed = TRUE;
+		eel_debug_call_at_shutdown (destroy_global_buffer);
+	}
+
+	return global_buffer;
+}
 
 static int
 pixbuf_drawing_area_expose_event (GtkWidget *widget,
@@ -13,10 +57,11 @@ pixbuf_drawing_area_expose_event (GtkWidget *widget,
 	ArtIRect dest;
 	ArtIRect tile_area;
 
-	buffer = eel_gdk_pixbuf_get_global_buffer (widget->allocation.width, widget->allocation.height);
+	buffer = get_global_buffer (widget->allocation.width,
+				    widget->allocation.height);
 
 	if (tile == NULL) {
-		tile = gdk_pixbuf_new_from_file (tile_name);
+		tile = gdk_pixbuf_new_from_file (tile_name, NULL);
 		g_assert (tile != NULL);
 	}
 
@@ -69,7 +114,7 @@ drawable_drawing_area_expose_event (GtkWidget *widget,
 	ArtIRect dest;
 
 	if (tile == NULL) {
-		tile = gdk_pixbuf_new_from_file (tile_name);
+		tile = gdk_pixbuf_new_from_file (tile_name, NULL);
 		g_assert (tile != NULL);
 	}
 
@@ -115,9 +160,9 @@ main (int argc, char* argv[])
 	pixbuf_window = test_window_new ("Pixbuf To Pixbuf Tile Test", 0);
 	pixbuf_vbox = gtk_vbox_new (FALSE, 0);
 	pixbuf_drawing_area = gtk_drawing_area_new ();
-	gtk_signal_connect (GTK_OBJECT (pixbuf_drawing_area),
+	g_signal_connect (pixbuf_drawing_area,
 			    "expose_event",
-			    GTK_SIGNAL_FUNC (pixbuf_drawing_area_expose_event),
+			    G_CALLBACK (pixbuf_drawing_area_expose_event),
 			    NULL);
 	gtk_box_pack_start (GTK_BOX (pixbuf_vbox), pixbuf_drawing_area, TRUE, TRUE, 0);
 	gtk_container_add (GTK_CONTAINER (pixbuf_window), pixbuf_vbox);
@@ -127,9 +172,9 @@ main (int argc, char* argv[])
 	drawable_window = test_window_new ("Pixbuf To Drawable Tile Test", 0);
 	drawable_vbox = gtk_vbox_new (FALSE, 0);
 	drawable_drawing_area = gtk_drawing_area_new ();
-	gtk_signal_connect (GTK_OBJECT (drawable_drawing_area),
+	g_signal_connect (drawable_drawing_area,
 			    "expose_event",
-			    GTK_SIGNAL_FUNC (drawable_drawing_area_expose_event),
+			    G_CALLBACK (drawable_drawing_area_expose_event),
 			    NULL);
 	gtk_box_pack_start (GTK_BOX (drawable_vbox), drawable_drawing_area, TRUE, TRUE, 0);
 	gtk_container_add (GTK_CONTAINER (drawable_window), drawable_vbox);

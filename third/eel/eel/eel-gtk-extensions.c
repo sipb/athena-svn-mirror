@@ -29,10 +29,10 @@
 #include <config.h>
 #include "eel-gtk-extensions.h"
 
-#include "eel-gdk-font-extensions.h"
 #include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
 #include "eel-gnome-extensions.h"
+#include "eel-pango-extensions.h"
 #include "eel-string.h"
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -40,19 +40,21 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkalignment.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtkdnd.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkrc.h>
 #include <gtk/gtkselection.h>
+#include <gtk/gtkseparatormenuitem.h>
 #include <gtk/gtksignal.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-geometry.h>
-#include <libgnomeui/gnome-winhints.h>
+#include <pango/pangoft2.h>
+#include <math.h>
 
-/* This number should be large enough to be visually noticeable,
- * but small enough to not allow the user to perform other actions.
- */
-#define BUTTON_AUTO_HIGHLIGHT_MILLISECONDS	100
+#include "eel-marshal.h"
+#include "eel-marshal.c"
 
 /* This number is fairly arbitrary. Long enough to show a pretty long
  * menu title, but not so long to make a menu grotesquely wide.
@@ -65,73 +67,41 @@
 #define MINIMUM_ON_SCREEN_WIDTH		100
 #define MINIMUM_ON_SCREEN_HEIGHT	100
 
-/* GTK buttons cram the text too close to the edge of the buttons by default.
- * This is the standard padding used to make them look non-crammed.
- */
-#define EEL_STANDARD_BUTTON_PADDING 1
-
 /* How far down the window tree will we search when looking for top-level
  * windows? Some window managers doubly-reparent the client, so account
  * for that, and add some slop.
  */
 #define MAXIMUM_WM_REPARENTING_DEPTH 4
 
-static gboolean
-finish_button_activation (gpointer data)
-{
-	GtkButton *button;
-	
-	button = GTK_BUTTON (data);
-
-	if (!GTK_OBJECT_DESTROYED (button) && !button->in_button) {
-		gtk_button_clicked (button);
-	}
-
-	/* Check again--button can be destroyed during call to gtk_button_clicked */
-	if (!GTK_OBJECT_DESTROYED (button)) {
-		gtk_button_released (button);
-	}
-
-	/* This was ref'd in eel_gtk_button_auto_click */
-	gtk_object_unref (GTK_OBJECT (button));
-
-	return FALSE;	
-}
-
 /**
- * eel_gtk_button_auto_click:
+ * eel_gtk_button_new_with_stock_icon:
  * 
- * Programatically activate a button as if the user had clicked on it,
- * including briefly drawing the button's pushed-in state.
- * @button: Any GtkButton.
+ * @label: the button label, which may include a mnemonic accelerator.
+ * @stock_id: the stock icon to use.
+ *
+ * Creates a GtkButton with a mnemonic label and a stock icon.
+ *
+ * Return value: a new GtkButton widget.
  **/
-void
-eel_gtk_button_auto_click (GtkButton *button)
+GtkWidget*
+eel_gtk_button_new_with_stock_icon (const gchar *label, const gchar *stock_id)
 {
-	g_return_if_fail (GTK_IS_BUTTON (button));
+	GtkWidget *button, *l, *image, *hbox, *align;
 
-	if (!GTK_WIDGET_IS_SENSITIVE (GTK_WIDGET (button))) {
-		return;
-	}
+	/* This is mainly copied from gtk_button_construct_child(). */
+	button = gtk_button_new ();
+	l = gtk_label_new_with_mnemonic (label);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (l), GTK_WIDGET (button));
+	image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_BUTTON);
+	hbox = gtk_hbox_new (FALSE, 2);
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), l, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+	gtk_widget_show_all (align);
 
-	button->in_button = TRUE;
-	gtk_button_pressed (button);
-	button->in_button = FALSE;
-
-	/* FIXME bugzilla.eazel.com 2562:
-	 * Nothing is preventing other events from occuring between
-	 * now and when this timeout function fires, which means in
-	 * theory the user could click on a different row or otherwise
-	 * get in between the double-click and the button activation.
-	 * In practice the timeout is short enough that this probably
-	 * isn't a problem.
-	 */
-
-	/* This is unref'ed in finish_button_activation */
-	gtk_object_ref (GTK_OBJECT (button));
-
-	g_timeout_add (BUTTON_AUTO_HIGHLIGHT_MILLISECONDS, 
-		       finish_button_activation, button);
+	return button;
 }
 
 /**
@@ -145,126 +115,17 @@ eel_gtk_button_auto_click (GtkButton *button)
 void
 eel_gtk_button_set_padding (GtkButton *button, int pad_amount)
 {
+	GtkWidget *child;
+
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	g_return_if_fail (pad_amount > 0);
 
-	gtk_misc_set_padding (GTK_MISC (GTK_BIN(button)->child), 
-			      pad_amount, 
-			      pad_amount);
-}
+	child = GTK_BIN (button)->child;
 
-/**
- * eel_gtk_button_set_standard_padding
- * 
- * Adds the standard amount of padding around the contained widget in the button 
- * (typically the label). Use this rather than eel_gtk_button_set_padding
- * unless you have a specific reason to use a non-standard amount.
- * @button: a GtkButton
- **/
-void
-eel_gtk_button_set_standard_padding (GtkButton *button)
-{
-	g_return_if_fail (GTK_IS_BUTTON (button));
-
-	eel_gtk_button_set_padding (button, EEL_STANDARD_BUTTON_PADDING);
-}
-
-
-/**
- * eel_gtk_clist_get_first_selected_row:
- * 
- * Get the index of the first selected row, or -1 if no rows are selected.
- * @list: Any GtkCList
- **/
-int 
-eel_gtk_clist_get_first_selected_row (GtkCList *list)
-{
-	GtkCListRow *row;
-	GList *p;
-	int row_number;
-
-	g_return_val_if_fail (GTK_IS_CLIST (list), -1);
-
-	row_number = 0;
-	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
-		row = p->data;
-		if (row->state == GTK_STATE_SELECTED) {
-			return row_number;	
-		}
-
-		++row_number;
+	if (GTK_IS_MISC (child)) {
+		gtk_misc_set_padding
+			(GTK_MISC (child), pad_amount, pad_amount);
 	}
-
-	return -1;
-}
-
-/**
- * eel_gtk_clist_get_last_selected_row:
- * 
- * Get the index of the last selected row, or -1 if no rows are selected.
- * @list: Any GtkCList
- **/
-int 
-eel_gtk_clist_get_last_selected_row (GtkCList *list)
-{
-	GtkCListRow *row;
-	GList *p;
-	int row_number;
-
-	g_return_val_if_fail (GTK_IS_CLIST (list), -1);
-
-	row_number = GTK_CLIST (list)->rows - 1;
-	for (p = GTK_CLIST (list)->row_list_end; p != NULL; p = p->prev) {
-		row = p->data;
-		if (row->state == GTK_STATE_SELECTED) {
-			return row_number;	
-		}
-
-		--row_number;
-	}
-
-	return -1;
-}
-
-static gint
-activate_button_on_double_click (GtkWidget *widget,
-		     		 GdkEventButton *event,
-		     		 gpointer user_data)
-{
-	g_assert (GTK_IS_CLIST (widget));
-	g_assert (GTK_IS_BUTTON (user_data));
-
-	/* Treat double-click like single click followed by
-	 * click on specified button.
-	 */
-	if (event->type == GDK_2BUTTON_PRESS 
-	    && GTK_WIDGET_SENSITIVE (GTK_WIDGET (user_data))) {
-		eel_gtk_button_auto_click (GTK_BUTTON (user_data));
-	}
-	
-	return FALSE;
-}	
-
-/**
- * eel_gtk_clist_set_double_click_button:
- * 
- * Set a button to be auto-clicked when a clist gets a double-click.
- * @clist: Any GtkCList
- * @button: A GtkButton that will be auto-clicked when the clist gets
- * a double-click event. If the button is not sensitive, this function
- * does nothing.
- **/
-void
-eel_gtk_clist_set_double_click_button (GtkCList *clist, GtkButton *button)
-{
-	g_return_if_fail (GTK_IS_CLIST (clist));
-	g_return_if_fail (GTK_IS_BUTTON (button));
-
-	gtk_signal_connect (GTK_OBJECT (clist), 
-			    "button_press_event",
-			    (GtkSignalFunc) activate_button_on_double_click,
-			    button);
-
 }
 
 /**
@@ -279,20 +140,17 @@ eel_gtk_clist_set_double_click_button (GtkCList *clist, GtkButton *button)
  * @destroy_func: the function to call on the user data when the signal
  * is disconnected.
  **/
-guint eel_gtk_signal_connect_free_data_custom (GtkObject *object,
-				  	     	    const gchar *name,
-				  	     	    GtkSignalFunc func,
-				  	     	    gpointer data,
-				  	     	    GtkDestroyNotify destroy_func)
+guint
+eel_gtk_signal_connect_free_data_custom (GtkObject       *object,
+					 const gchar     *name,
+					 GtkSignalFunc    func,
+					 gpointer         data,
+					 GtkDestroyNotify destroy_func)
 {
-	return gtk_signal_connect_full (object, 
-					name, 
-					func, 
-					NULL, /* marshal */
-					data, 
-					destroy_func, 
-					FALSE, /* is this an object signal? */
-					FALSE); /* invoke func after signal? */
+	return g_signal_connect_closure (
+		object, name,
+		g_cclosure_new (func, data, (GClosureNotify) destroy_func),
+		FALSE);
 }
 
 /**
@@ -317,45 +175,49 @@ eel_gtk_signal_connect_free_data (GtkObject *object,
 }
 
 /**
- * eel_gtk_window_present:
+ * eel_gtk_window_get_geometry_string:
+ * @window: a #GtkWindow
  * 
- * Presents to the user a window that may be hidden, iconified, or buried.
- * @window: The GtkWindow to be presented to the user.
+ * Obtains the geometry string for this window, suitable for
+ * set_geometry_string(); assumes the window has NorthWest gravity
+ * 
+ * Return value: geometry string, must be freed
  **/
-void
-eel_gtk_window_present (GtkWindow *window)
+char*
+eel_gtk_window_get_geometry_string (GtkWindow *window)
 {
-	GdkWindow *gdk_window;
-	int current_area_x, current_area_y;
+	char *str;
+	int w, h, x, y;
+	
+	g_return_val_if_fail (GTK_IS_WINDOW (window), NULL);
+	g_return_val_if_fail (gtk_window_get_gravity (window) ==
+			      GDK_GRAVITY_NORTH_WEST, NULL);
 
-	g_return_if_fail (GTK_IS_WINDOW (window));
+	gtk_window_get_position (window, &x, &y);
+	gtk_window_get_size (window, &w, &h);
+	
+	str = g_strdup_printf ("%dx%d+%d+%d", w, h, x, y);
 
-	/* Ensure that the window is on the current desktop and area */
-	if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
-		if (!eel_gtk_window_is_on_current_workspace_and_area (window)) {
-			eel_gnome_win_hints_get_current_area (&current_area_x,
-							      &current_area_y);
-			eel_gnome_win_hints_set_area (GTK_WIDGET (window),
-						      current_area_x,
-						      current_area_y);
-			/* Evilness: due to how sawfish updates window
-			 * properties, must set the workspace after
-			 * the area. I must fix this..
-			 */
-			gnome_win_hints_set_workspace (GTK_WIDGET (window),
-						       gnome_win_hints_get_current_workspace ());
-		}
-	}
-		
-	/* If we have no gdk window, then it's OK to just show, since
-	 * the window is new and presumably will show up in front.
-	 */
-	gdk_window = GTK_WIDGET (window)->window;
-	if (gdk_window != NULL) {
-		eel_gdk_window_bring_to_front (gdk_window);
-	}
+	return str;
+}
 
-	gtk_widget_show (GTK_WIDGET (window));
+static void
+send_delete_event (GtkWindow *window)
+{
+	/* Synthesize delete_event to close window. */
+	
+	GdkEvent event;
+	GtkWidget *widget;
+	
+	widget = GTK_WIDGET (window);
+	
+	event.any.type = GDK_DELETE;
+	event.any.window = widget->window;
+	event.any.send_event = TRUE;
+	
+	g_object_ref (event.any.window);
+	gtk_main_do_event (&event);
+	g_object_unref (event.any.window);
 }
 
 static int
@@ -368,13 +230,9 @@ handle_standard_close_accelerator (GtkWindow *window,
 	g_assert (user_data == NULL);
 
 	if (eel_gtk_window_event_is_close_accelerator (window, event)) {
-		if (GNOME_IS_DIALOG (window)) {
-			gnome_dialog_close (GNOME_DIALOG (window));
-		} else {
-			gtk_widget_hide (GTK_WIDGET (window));
-		}
-		gtk_signal_emit_stop_by_name 
-			(GTK_OBJECT (window), "key_press_event");
+		send_delete_event (window);
+		g_signal_stop_emission_by_name (
+			G_OBJECT (window), "key_press_event");
 		return TRUE;
 	}
 
@@ -416,6 +274,9 @@ eel_gtk_window_event_is_close_accelerator (GtkWindow *window, GdkEventKey *event
  * Sets up the standard keyboard equivalent to close the window.
  * Call this for windows that don't set up a keyboard equivalent to
  * close the window some other way, e.g. via a menu item accelerator.
+ *
+ * NOTE: do not use for GtkDialog, it already sets up the right
+ * stuff here.
  * 
  * @window: The GtkWindow that should be hidden when the standard
  * keyboard equivalent is typed.
@@ -425,9 +286,14 @@ eel_gtk_window_set_up_close_accelerator (GtkWindow *window)
 {
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
-	gtk_signal_connect (GTK_OBJECT (window),
+	if (GTK_IS_DIALOG (window)) {
+		g_warning ("eel_gtk_window_set_up_close_accelerator: Should not mess with close accelerator on GtkDialogs");
+		return;
+	}
+	
+	g_signal_connect (window,
 			    "key_press_event",
-			    GTK_SIGNAL_FUNC (handle_standard_close_accelerator),
+			    G_CALLBACK (handle_standard_close_accelerator),
 			    NULL);
 }
 
@@ -498,7 +364,9 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 					  guint width,
 					  guint height)
 {
+	GdkScreen *screen;
 	int real_left, real_top;
+	int screen_width, screen_height;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 	g_return_if_fail (!(geometry_flags & EEL_GDK_WIDTH_VALUE) || width > 0);
@@ -514,6 +382,10 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 		real_left = left;
 		real_top = top;
 
+		screen = gtk_window_get_screen (window);
+		screen_width  = gdk_screen_get_width  (screen);
+		screen_height = gdk_screen_get_height (screen);
+
 		/* This is sub-optimal. GDK doesn't allow us to set win_gravity
 		 * to South/East types, which should be done if using negative
 		 * positions (so that the right or bottom edge of the window
@@ -521,14 +393,14 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 		 * However it does seem to be consistent with other GNOME apps.
 		 */
 		if (geometry_flags & EEL_GDK_X_NEGATIVE) {
-			real_left = gdk_screen_width () - real_left;
+			real_left = screen_width - real_left;
 		}
 		if (geometry_flags & EEL_GDK_Y_NEGATIVE) {
-			real_top = gdk_screen_height () - real_top;
+			real_top = screen_height - real_top;
 		}
 
 		sanity_check_window_position (&real_left, &real_top);
-		gtk_widget_set_uposition (GTK_WIDGET (window), real_left, real_top);
+		gtk_window_move (window, real_left, real_top);
 	}
 
 	if ((geometry_flags & EEL_GDK_WIDTH_VALUE) && (geometry_flags & EEL_GDK_HEIGHT_VALUE)) {
@@ -547,17 +419,19 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
  * some sanity-checking on the passed-in values.
  * 
  * @window: A non-visible GtkWindow
- * @geometry_string: A string suitable for use with gnome_parse_geometry
+ * @geometry_string: A string suitable for use with eel_gdk_parse_geometry
  * @minimum_width: If the width from the string is smaller than this,
  * use this for the width.
  * @minimum_height: If the height from the string is smaller than this,
  * use this for the height.
+ * @ignore_position: If true position data from string will be ignored.
  */
 void
 eel_gtk_window_set_initial_geometry_from_string (GtkWindow *window, 
-					  	      const char *geometry_string,
-					  	      guint minimum_width,
-					  	      guint minimum_height)
+						 const char *geometry_string,
+						 guint minimum_width,
+						 guint minimum_height,
+						 gboolean ignore_position)
 {
 	int left, top;
 	guint width, height;
@@ -583,76 +457,13 @@ eel_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
 	if (geometry_flags & EEL_GDK_HEIGHT_VALUE) {
 		height = MAX (height, minimum_height);
 	}
+	
+	/* Ignore saved window position if requested. */
+	if (ignore_position) {
+		geometry_flags &= ~(EEL_GDK_X_VALUE | EEL_GDK_Y_VALUE);
+	}
 
 	eel_gtk_window_set_initial_geometry (window, geometry_flags, left, top, width, height);
-}
-
-/**
- * eel_gtk_selection_data_copy_deep:
- * 
- * Copies a GtkSelectionData, and copies the data too.
- * @data: The GtkSelectionData to be copied.
- **/
-GtkSelectionData *
-eel_gtk_selection_data_copy_deep (const GtkSelectionData *data)
-{
-	GtkSelectionData *copy;
-
-	copy = g_new0 (GtkSelectionData, 1);
-	gtk_selection_data_set (copy, data->type, data->format, data->data, data->length);
-
-	return copy;
-}
-
-/**
- * eel_gtk_selection_data_free_deep:
- * 
- * Frees a GtkSelectionData, and frees the data too.
- * @data: The GtkSelectionData to be freed.
- **/
-void
-eel_gtk_selection_data_free_deep (GtkSelectionData *data)
-{
-	g_free (data->data);
-	gtk_selection_data_free (data);
-}
-
-/**
- * eel_gtk_signal_connect_free_data:
- * 
- * Function to displace the popup menu some, otherwise the first item
- * gets selected right away.
- * This function gets called by gtk_menu_popup ().
- *
- * @menu: the popup menu.
- * @x: x coord where gtk want to place the menu
- * @y: y coord where gtk want to place the menu
- * @user_data: something
- **/
-static void
-eel_popup_menu_position_func (GtkMenu   *menu,
-				   int      *x,
-				   int      *y,
-				   gpointer  user_data)
-{
-	GdkPoint *offset;
-	GtkRequisition requisition;
-
-	g_assert (x != NULL);
-	g_assert (y != NULL);
-
-	offset = (GdkPoint*) user_data;
-
-	g_assert (offset != NULL);
-
-	/*
-	 * FIXME bugzilla.eazel.com 2561: The cast from gint16 might cause problems.  
-	 * Unfortunately, GdkPoint uses gint16.
-	 */
-	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
-	  
-	*x = CLAMP (*x + (int) offset->x, 0, MAX (0, gdk_screen_width () - requisition.width));
-	*y = CLAMP (*y + (int) offset->y, 0, MAX (0, gdk_screen_height () - requisition.height));
 }
 
 /**
@@ -702,19 +513,24 @@ eel_pop_up_context_menu (GtkMenu	     *menu,
 	 * other than the one that invoked the menu will be ignored (instead
 	 * of dismissing the menu). This is a subtle fragility of the GTK menu code.
 	 */
-	button = event->type == GDK_BUTTON_RELEASE
-		? 0
-		: event->button;
+
+	if (event) {
+		button = event->type == GDK_BUTTON_RELEASE
+			? 0
+			: event->button;
+	} else {
+		button = 0;
+	}
 	
 	gtk_menu_popup (menu,					/* menu */
 			NULL,					/* parent_menu_shell */
 			NULL,					/* parent_menu_item */
-			eel_popup_menu_position_func,	/* func */
+			NULL,
 			&offset,			        /* data */
 			button,					/* button */
-			event->time);				/* activate_time */
+			event ? event->time : GDK_CURRENT_TIME); /* activate_time */
 
-	gtk_object_sink (GTK_OBJECT(menu));
+	gtk_object_sink (GTK_OBJECT (menu));
 }
 
 GtkMenuItem *
@@ -728,10 +544,9 @@ eel_gtk_menu_insert_separator (GtkMenu *menu, int index)
 {
 	GtkWidget *menu_item;
 
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	menu_item = gtk_separator_menu_item_new ();
 	gtk_widget_show (menu_item);
-	gtk_menu_insert (menu, menu_item, index);
+	gtk_menu_shell_insert (GTK_MENU_SHELL (menu), menu_item, index);
 
 	return GTK_MENU_ITEM (menu_item);
 }
@@ -744,7 +559,7 @@ eel_gtk_menu_set_item_visibility (GtkMenu *menu, int index, gboolean visible)
 
 	g_return_if_fail (GTK_IS_MENU (menu));
 
-	children = gtk_container_children (GTK_CONTAINER (menu));
+	children = gtk_container_get_children (GTK_CONTAINER (menu));
 	g_return_if_fail (index >= 0 && index < (int) g_list_length (children));
 
 	menu_item = GTK_WIDGET (g_list_nth_data (children, index));
@@ -755,380 +570,6 @@ eel_gtk_menu_set_item_visibility (GtkMenu *menu, int index, gboolean visible)
 	}
 
 	g_list_free (children);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject *object,
-						   GtkSignalFunc func,
-						   gpointer func_data,
-						   GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, int, int, double, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_DOUBLE (args[3]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__INT_INT_INT (GtkObject *object,
-					GtkSignalFunc func,
-					gpointer func_data,
-					GtkArg *args)
-{
-	(* (void (*)(GtkObject *, int, int, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_INT (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_INT_INT_INT (GtkObject *object,
-						GtkSignalFunc func,
-						gpointer func_data,
-						GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, int, int, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_INT (args[3]),
-		 func_data);
-}
-
-void 
-eel_gtk_marshal_NONE__POINTER_INT_POINTER_POINTER (GtkObject *object,
-							GtkSignalFunc func,
-							gpointer func_data,
-							GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, int, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT (GtkObject *object,
-							GtkSignalFunc func,
-							gpointer func_data,
-							GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, gpointer, int, int, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_INT (args[3]),
-		 GTK_VALUE_INT (args[4]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_BOOL__INT_POINTER_INT_INT_UINT (GtkObject *object,
-						     GtkSignalFunc func,
-						     gpointer func_data,
-						     GtkArg *args)
-{
-	* GTK_RETLOC_BOOL (args[5]) = (* (gboolean (*)(GtkObject *, int, gpointer, int, int, guint, gpointer)) func)
-		(object,
-		 GTK_VALUE_INT (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_INT (args[3]),
-		 GTK_VALUE_UINT (args[4]),
-		 func_data);
-}
-
-
-void
-eel_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT (GtkObject *object,
-						     GtkSignalFunc func,
-						     gpointer func_data,
-						     GtkArg *args)
-{
-	(* (void (*)(GtkObject *, int, gpointer, int, int, guint, gpointer)) func)
-		(object,
-		 GTK_VALUE_INT (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_INT (args[3]),
-		 GTK_VALUE_UINT (args[4]),
-		 func_data);
-
-}
-
-
-void
-eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT (GtkObject *object,
-								GtkSignalFunc func,
-								gpointer func_data,
-								GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, int, int, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_INT (args[3]),
-		 GTK_VALUE_INT (args[4]),
-		 GTK_VALUE_INT (args[5]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_INT_INT_UINT (GtkObject *object,
-									 GtkSignalFunc func,
-									 gpointer func_data,
-									 GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer, int, int, guint, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 GTK_VALUE_INT (args[4]),
-		 GTK_VALUE_INT (args[5]),
-		 GTK_VALUE_INT (args[6]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject *object,
-							  GtkSignalFunc func,
-							  gpointer func_data,
-							  GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, int, int, double, double, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]), 
-		 GTK_VALUE_INT (args[2]), 
-		 GTK_VALUE_DOUBLE (args[3]), 
-		 GTK_VALUE_DOUBLE (args[4]), 
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__DOUBLE (GtkObject *object,
-				   GtkSignalFunc func,
-				   gpointer func_data,
-				   GtkArg *args)
-{
-	(* (void (*)(GtkObject *, double, gpointer)) func)
-		(object,
-		 GTK_VALUE_DOUBLE (args[0]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__DOUBLE_DOUBLE_DOUBLE (GtkObject *object,
-				   GtkSignalFunc func,
-				   gpointer func_data,
-				   GtkArg *args)
-{
-	(* (void (*)(GtkObject *, double, double, double, gpointer)) func)
-		(object,
-		 GTK_VALUE_DOUBLE (args[0]),
-		 GTK_VALUE_DOUBLE (args[1]),
-		 GTK_VALUE_DOUBLE (args[2]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__NONE (GtkObject *object,
-				    GtkSignalFunc func,
-				    gpointer func_data,
-				    GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[0]) =
-		(* (void * (*)(GtkObject *, gpointer)) func) 
-		 (object,
-		 func_data);
-}
-
-void 
-eel_gtk_marshal_INT__NONE (GtkObject *object,
-				GtkSignalFunc  func,
-				gpointer       func_data,
-				GtkArg        *args)
-{
-	* GTK_RETLOC_INT (args[0]) =
-		(* (int (*)(GtkObject *, gpointer)) func)
-		 (object,
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__INT (GtkObject *object,
-				   GtkSignalFunc func,
-				   gpointer func_data,
-				   GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[1]) =
-		(* (gpointer (*)(GtkObject *, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_INT (args[0]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__POINTER (GtkObject *object,
-				       GtkSignalFunc func,
-				       gpointer func_data,
-				       GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[1]) =
-		(* (gpointer (*)(GtkObject *, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_INT__POINTER_POINTER (GtkObject *object,
-					   GtkSignalFunc func,
-					   gpointer func_data,
-					   GtkArg *args)
-{
-	* GTK_RETLOC_INT (args[2]) =
-		(* (int (*)(GtkObject *, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_INT__POINTER_INT (GtkObject *object,
-					   GtkSignalFunc func,
-					   gpointer func_data,
-					   GtkArg *args)
-{
-	* GTK_RETLOC_INT (args[2]) =
-		(* (int (*)(GtkObject *, gpointer, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__POINTER_POINTER (GtkObject *object,
-					       GtkSignalFunc func,
-					       gpointer func_data,
-					       GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[2]) =
-		(* (gpointer (*)(GtkObject *, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__POINTER_INT (GtkObject *object,
-					       GtkSignalFunc func,
-					       gpointer func_data,
-					       GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[2]) =
-		(* (gpointer (*)(GtkObject *, gpointer, int, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
-						       GtkSignalFunc func,
-						       gpointer func_data,
-						       GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[3]) =
-		(* (gpointer (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER (GtkObject *object,
-							    GtkSignalFunc func,
-							    gpointer func_data,
-							    GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__INT_INT_POINTER_POINTER (GtkObject *object,
-						  GtkSignalFunc func,
-						  gpointer func_data,
-						  GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[4]) =
-		(* (gpointer (*)(GtkObject *, int, int, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_INT (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_POINTER__POINTER_INT_INT_POINTER_POINTER (GtkObject *object,
-							       GtkSignalFunc func,
-							       gpointer func_data,
-							       GtkArg *args)
-{
-	* GTK_RETLOC_POINTER (args[5]) =
-		(* (gpointer (*)(GtkObject *, gpointer, int, int, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_INT (args[1]),
-		 GTK_VALUE_INT (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 GTK_VALUE_POINTER (args[4]),
-		 func_data);
-}
-
-void
-eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER (GtkObject *object,
-									    GtkSignalFunc func,
-									    gpointer func_data,
-									    GtkArg *args)
-{
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer,
-		     gpointer, gpointer, gpointer, gpointer)) func)
-		(object,
-		 GTK_VALUE_POINTER (args[0]),
-		 GTK_VALUE_POINTER (args[1]),
-		 GTK_VALUE_POINTER (args[2]),
-		 GTK_VALUE_POINTER (args[3]),
-		 GTK_VALUE_POINTER (args[4]),
-		 GTK_VALUE_POINTER (args[5]),
-		 func_data);
 }
 
 gboolean
@@ -1142,6 +583,12 @@ eel_point_in_allocation (const GtkAllocation *allocation,
 		&& y < allocation->y + allocation->height;
 }
 
+/* FIXME this function is dangerous, because widget->window coords (or
+ * other window-belonging-to-widget coords) do not need to be in the
+ * same coordinate system as widget->allocation.
+ * If you use this function, be aware of that. Someone should probably
+ * audit all uses, too.
+ */
 gboolean
 eel_point_in_widget (GtkWidget *widget,
 			  int x, int y)
@@ -1151,97 +598,6 @@ eel_point_in_widget (GtkWidget *widget,
 	}
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	return eel_point_in_allocation (&widget->allocation, x, y);
-}
-
-/**
- * eel_gtk_object_list_ref
- *
- * Ref all the objects in a list.
- * @list: GList of objects.
- **/
-GList *
-eel_gtk_object_list_ref (GList *list)
-{
-	g_list_foreach (list, (GFunc) gtk_object_ref, NULL);
-	return list;
-}
-
-/**
- * eel_gtk_object_list_unref
- *
- * Unref all the objects in a list.
- * @list: GList of objects.
- **/
-void
-eel_gtk_object_list_unref (GList *list)
-{
-	eel_g_list_safe_for_each (list, (GFunc) gtk_object_unref, NULL);
-}
-
-/**
- * eel_gtk_object_list_free
- *
- * Free a list of objects after unrefing them.
- * @list: GList of objects.
- **/
-void
-eel_gtk_object_list_free (GList *list)
-{
-	eel_gtk_object_list_unref (list);
-	g_list_free (list);
-}
-
-/**
- * eel_gtk_object_list_copy
- *
- * Copy the list of objects, ref'ing each one.
- * @list: GList of objects.
- **/
-GList *
-eel_gtk_object_list_copy (GList *list)
-{
-	return g_list_copy (eel_gtk_object_list_ref (list));
-}
-
-/**
- * eel_gtk_style_set_font
- *
- * Sets the font in a style object, managing the ref. counts.
- * @style: The style to change.
- * @font: The new font.
- **/
-void
-eel_gtk_style_set_font (GtkStyle *style, GdkFont *font)
-{
-	g_return_if_fail (style != NULL);
-	g_return_if_fail (font != NULL);
-	
-	gdk_font_ref (font);
-	gdk_font_unref (style->font);
-	style->font = font;
-}
-
-/**
- * eel_gtk_widget_set_font
- *
- * Sets the font for a widget's style, managing the style objects.
- * @widget: The widget.
- * @font: The font.
- **/
-void
-eel_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
-{
-	GtkStyle *new_style;
-	
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (font != NULL);
-	
-	new_style = gtk_style_copy (gtk_widget_get_style (widget));
-
-	eel_gtk_style_set_font (new_style, font);
-	
-	gtk_widget_set_style (widget, new_style);
-	gtk_style_unref (new_style);
 }
 
 /**
@@ -1272,14 +628,21 @@ eel_gtk_widget_set_shown (GtkWidget *widget, gboolean shown)
 void
 eel_gtk_widget_set_font_by_name (GtkWidget *widget, const char *font_name)
 {
-	GdkFont *font;
-
+	PangoFontDescription *font_desc;
+	
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (font_name != NULL);
-	
-	font = gdk_fontset_load (font_name);
-	eel_gtk_widget_set_font (widget, font);
-	gdk_font_unref (font);
+
+	font_desc = pango_font_description_from_string (font_name);
+
+	if (font_desc == NULL) {
+		g_warning ("Bad font name '%s'", font_name);
+		return;
+	}
+
+	gtk_widget_modify_font (widget, font_desc);
+
+	pango_font_description_free (font_desc);
 }
 
 /* This stuff is stolen from Gtk. */
@@ -1303,9 +666,9 @@ alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 	g_assert (info->disconnect_handler2 != 0);
 	g_assert (object == info->object1 || object == info->object2);
 	
-	gtk_signal_disconnect (info->object1, info->disconnect_handler1);
-	gtk_signal_disconnect (info->object1, info->signal_handler);
-	gtk_signal_disconnect (info->object2, info->disconnect_handler2);
+	g_signal_handler_disconnect (info->object1, info->disconnect_handler1);
+	g_signal_handler_disconnect (info->object1, info->signal_handler);
+	g_signal_handler_disconnect (info->object2, info->disconnect_handler2);
 	
 	g_free (info);
 }
@@ -1339,22 +702,22 @@ eel_gtk_signal_connect_full_while_alive (GtkObject *object,
 	info->object1 = object;
 	info->object2 = alive_object;
 	
-	info->signal_handler = gtk_signal_connect_full (object,
-							name,
-							func,
-							marshal,
-							data,
-							destroy_func,
-							object_signal,
-							after);
-	info->disconnect_handler1 = gtk_signal_connect (object,
-							"destroy",
-							alive_disconnecter,
-							info);
-	info->disconnect_handler2 = gtk_signal_connect (alive_object,
-							"destroy",
-							alive_disconnecter,
-							info);
+
+	info->signal_handler = g_signal_connect_closure (
+		object, name,
+		(object_signal
+		 ? g_cclosure_new_swap
+		 : g_cclosure_new) (func, data, (GClosureNotify) destroy_func),
+		after);
+
+	info->disconnect_handler1 = g_signal_connect (G_OBJECT (object),
+						      "destroy",
+						      G_CALLBACK (alive_disconnecter),
+						      info);
+	info->disconnect_handler2 = g_signal_connect (G_OBJECT (alive_object),
+						      "destroy",
+						      G_CALLBACK (alive_disconnecter),
+						      info);
 }
 
 typedef struct
@@ -1381,10 +744,10 @@ while_realized_disconnecter (GtkObject *object,
 	g_return_if_fail (info->realized_widget_destroy_handler != 0);
 	g_return_if_fail (info->realized_widget_unrealized_handler != 0);
 
- 	gtk_signal_disconnect (info->object, info->object_destroy_handler);
- 	gtk_signal_disconnect (info->object, info->signal_handler);
- 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_destroy_handler);
- 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_unrealized_handler);
+ 	g_signal_handler_disconnect (info->object, info->object_destroy_handler);
+ 	g_signal_handler_disconnect (info->object, info->signal_handler);
+ 	g_signal_handler_disconnect (info->realized_widget, info->realized_widget_destroy_handler);
+ 	g_signal_handler_disconnect (info->realized_widget, info->realized_widget_unrealized_handler);
 	g_free (info);
 }
 
@@ -1424,88 +787,26 @@ eel_gtk_signal_connect_while_realized (GtkObject *object,
 	
 	info->object = object;
 	info->object_destroy_handler = 
-		gtk_signal_connect (info->object,
-				    "destroy",
-				    while_realized_disconnecter,
-				    info);
+		g_signal_connect (G_OBJECT (info->object),
+				  "destroy",
+				  G_CALLBACK (while_realized_disconnecter),
+				  info);
 	
 	info->realized_widget = realized_widget;
 	info->realized_widget_destroy_handler = 
-		gtk_signal_connect (GTK_OBJECT (info->realized_widget),
-				    "destroy",
-				    while_realized_disconnecter,
-				    info);
+		g_signal_connect (G_OBJECT (info->realized_widget),
+				  "destroy",
+				  G_CALLBACK (while_realized_disconnecter),
+				  info);
 	info->realized_widget_unrealized_handler = 
-		gtk_signal_connect_after (GTK_OBJECT (info->realized_widget),
-					  "unrealize",
-					  while_realized_disconnecter,
-					  info);
+		g_signal_connect_after (G_OBJECT (info->realized_widget),
+					"unrealize",
+					G_CALLBACK (while_realized_disconnecter),
+					info);
 
-	info->signal_handler = gtk_signal_connect (info->object, name, callback, callback_data);
+	info->signal_handler = g_signal_connect (G_OBJECT (info->object),
+						 name, callback, callback_data);
 }
-
-static void
-null_the_reference (GtkObject *object, gpointer callback_data)
-{
-	g_assert (* (GtkObject **) callback_data == object);
-
-	* (gpointer *) callback_data = NULL;
-}
-
-/**
- * eel_nullify_when_destroyed.
- *
- * Nulls out a saved reference to an object when the object gets destroyed.
- * @data: Address of the saved reference.
- **/
-
-void 
-eel_nullify_when_destroyed (gpointer data)
-{
-	GtkObject **object_reference;
-
-	object_reference = (GtkObject **)data;	
-	if (*object_reference == NULL) {
-		/* the reference is  NULL, nothing to do. */
-		return;
-	}
-
-	g_assert (GTK_IS_OBJECT (*object_reference));
-
-	gtk_signal_connect (*object_reference, "destroy",
-		null_the_reference, object_reference);
-}
-
-/**
- * eel_nullify_cancel.
- *
- * Disconnects the signal used to make eel_nullify_when_destroyed.
- * Used when the saved reference is no longer needed, the structure it is in is
- * being destroyed, etc. Nulls out the refernce when done.
- * @data: Address of the saved reference.
- **/
-
-void 
-eel_nullify_cancel (gpointer data)
-{
-	GtkObject **object_reference;
-
-	object_reference = (GtkObject **)data;	
-	if (*object_reference == NULL) {
-		/* the object was already destroyed and the reference nulled out,
-		 * nothing to do.
-		 */
-		return;
-	}
-
-	g_assert (GTK_IS_OBJECT (*object_reference));
-
-	gtk_signal_disconnect_by_func (*object_reference,
-		null_the_reference, object_reference);
-	
-	*object_reference = NULL;
-}
-
 
 /**
  * eel_gtk_container_get_first_child.
@@ -1575,24 +876,6 @@ eel_gtk_container_foreach_deep (GtkContainer *container,
 	gtk_container_foreach (container, container_foreach_deep_callback, &deep_data);
 }
 
-/* We have to supply a dummy pixmap to avoid the return_if_fail in gtk_pixmap_new. */
-GtkPixmap *
-eel_gtk_pixmap_new_empty (void)
-{
-	GtkPixmap *pixmap;
-
-	/* Make a GtkPixmap with a dummy GdkPixmap. The
-         * gdk_pixmap_new call will fail if passed 0 for height or
-	 * width, or if passed a bad depth.
-	 */
-	pixmap = GTK_PIXMAP (gtk_pixmap_new (gdk_pixmap_new (NULL, 1, 1, gdk_visual_get_best_depth ()), NULL));
-
-	/* Clear out the dummy pixmap. */
-	gtk_pixmap_set (pixmap, NULL, NULL);
-
-	return pixmap;
-}
-
 /* The standard gtk_adjustment_set_value ignores page size, which
  * disagrees with the logic used by scroll bars, for example.
  */
@@ -1630,120 +913,213 @@ eel_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
 void
 eel_gtk_label_make_bold (GtkLabel *label)
 {
-	GtkStyle *style;
-	GdkFont *bold_font;
+	PangoFontDescription *font_desc;
 
-	g_return_if_fail (GTK_IS_LABEL (label));
+	font_desc = pango_font_description_new ();
 
-	gtk_widget_ensure_style (GTK_WIDGET (label));
-	style = gtk_widget_get_style (GTK_WIDGET (label));
+	pango_font_description_set_weight (font_desc,
+					   PANGO_WEIGHT_BOLD);
 
-	bold_font = eel_gdk_font_get_bold (style->font);
-	if (bold_font == NULL) {
-		return;
-	}
-	eel_gtk_widget_set_font (GTK_WIDGET (label), bold_font);
-	gdk_font_unref (bold_font);
+	/* This will only affect the weight of the font, the rest is
+	 * from the current state of the widget, which comes from the
+	 * theme or user prefs, since the font desc only has the
+	 * weight flag turned on.
+	 */
+	gtk_widget_modify_font (GTK_WIDGET (label), font_desc);
+
+	pango_font_description_free (font_desc);
 }
 
 /**
- * eel_gtk_label_make_larger.
+ * eel_gtk_label_set_scale:
+ * @label: 
+ * @num_steps: 
  *
- * Switches the font of label to a larger version of the font.
- * @label: The label.
+ * Function is broken, see eel_gtk_label_make_larger() for explanation
+ * 
  **/
 void
-eel_gtk_label_make_larger (GtkLabel *label,
-				guint num_steps)
+eel_gtk_label_set_scale (GtkLabel *label,
+			 double scale_factor)
 {
-	GtkStyle *style;
-	GdkFont *larger_font;
-
+	PangoAttrList *old_attr_list;
+	PangoAttrList *attr_list;
+	
 	g_return_if_fail (GTK_IS_LABEL (label));
+	g_return_if_fail (scale_factor > 0);
 
-	gtk_widget_ensure_style (GTK_WIDGET (label));
-	style = gtk_widget_get_style (GTK_WIDGET (label));
-
-	larger_font = eel_gdk_font_get_larger (style->font, num_steps);
-	if (larger_font == NULL) {
-		return;
-	}
-	eel_gtk_widget_set_font (GTK_WIDGET (label), larger_font);
-	gdk_font_unref (larger_font);
+	old_attr_list = gtk_label_get_attributes (label);
+	attr_list = eel_pango_attr_list_apply_global_attribute (old_attr_list,
+								pango_attr_scale_new (scale_factor));
+	gtk_label_set_attributes (label, attr_list);
+	pango_attr_list_unref (attr_list);
 }
 
-/**
- * eel_gtk_label_make_smaller.
- *
- * Switches the font of label to a smaller version of the font.
- * @label: The label.
- **/
-void
-eel_gtk_label_make_smaller (GtkLabel *label,
-				 guint num_steps)
+static void
+get_layout_location (GtkLabel  *label,
+                     gint      *xp,
+                     gint      *yp)
 {
-	GtkStyle *style;
-	GdkFont *smaller_font;
+  GtkMisc *misc;
+  GtkWidget *widget;
+  float xalign;
+  int x, y;
+  int shadow_offset;
+  
+  shadow_offset = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label),
+						      "eel-label-shadow-offset"));
+  
+  misc = GTK_MISC (label);
+  widget = GTK_WIDGET (label);
+  
+  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
+    xalign = misc->xalign;
+  else
+    xalign = 1.0 - misc->xalign;
+  
+  x = floor (widget->allocation.x + (int)misc->xpad
+             + ((widget->allocation.width - widget->requisition.width - shadow_offset) * xalign)
+             + 0.5);
+  
+  y = floor (widget->allocation.y + (int)misc->ypad 
+             + ((widget->allocation.height - widget->requisition.height - shadow_offset) * misc->yalign)
+             + 0.5);
+  
 
-	g_return_if_fail (GTK_IS_LABEL (label));
+  if (xp)
+    *xp = x;
 
-	gtk_widget_ensure_style (GTK_WIDGET (label));
-	style = gtk_widget_get_style (GTK_WIDGET (label));
+  if (yp)
+    *yp = y;
+}
 
-	smaller_font = eel_gdk_font_get_smaller (style->font, num_steps);
-	if (smaller_font == NULL) {
+static gboolean
+eel_gtk_label_expose_event (GtkLabel *label, GdkEventExpose *event, gpointer user_data)
+{
+	int x, y;
+	GdkColor color;
+	GtkWidget *widget;
+	GdkGC *gc;
+	guint32 shadow_color;
+	int shadow_offset;
+	
+	shadow_color = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label),
+							   "eel-label-shadow-color"));
+	shadow_offset = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label),
+							    "eel-label-shadow-offset"));
+
+	color = eel_gdk_rgb_to_color (shadow_color);
+	
+	get_layout_location (label, &x, &y);
+
+	widget = GTK_WIDGET (label);
+	if (shadow_offset > 0) {
+		gc = gdk_gc_new (widget->window);
+		gdk_gc_set_rgb_fg_color (gc, &color);
+		gdk_gc_set_clip_rectangle (gc, &event->area);
+		
+		gdk_draw_layout (widget->window,
+				 gc,
+				 x + shadow_offset, y + shadow_offset,
+				 label->layout);
+		g_object_unref (gc);
+	}
+	
+	gtk_paint_layout (widget->style,
+			  widget->window,
+			  GTK_WIDGET_STATE (widget),
+			  FALSE,
+			  &event->area,
+			  widget,
+			  "label",
+			  x, y,
+			  label->layout);
+
+	return TRUE;
+}
+
+static void
+eel_gtk_label_size_request (GtkLabel *label, GtkRequisition *requisition, gpointer user_data)
+{
+	gint shadow_offset;
+
+	shadow_offset = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label),
+							    "eel-label-shadow-offset"));
+
+	requisition->width += shadow_offset;
+	requisition->height += shadow_offset;
+}
+
+static void
+set_up_label (GtkLabel *label)
+{
+
+	if (g_object_get_data (G_OBJECT (label), "eel-label-set-up") != NULL) {
 		return;
 	}
-	eel_gtk_widget_set_font (GTK_WIDGET (label), smaller_font);
-	gdk_font_unref (smaller_font);
+
+	g_signal_connect (label, "expose_event",
+			  G_CALLBACK (eel_gtk_label_expose_event), NULL);
+	g_signal_connect_after (label, "size_request",
+				G_CALLBACK (eel_gtk_label_size_request), NULL);
+
+	g_object_set_data (G_OBJECT (label), "eel-label-set-up", "eel-label-set-up");
 }
 
 void
-eel_gtk_widget_set_background_color (GtkWidget              *widget,
-					  const char		*color_spec)
+eel_gtk_label_set_drop_shadow_color (GtkLabel *label,
+				     guint32 color)
 {
-	GtkStyle	*style;
-	GdkColor	color;
+	set_up_label (label);
+
+	g_object_set_data (G_OBJECT (label), "eel-label-shadow-color",
+			   GINT_TO_POINTER (color));
+		
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+void
+eel_gtk_label_set_drop_shadow_offset (GtkLabel *label,
+				      gint offset)
+{
+	set_up_label (label);
+
+	g_object_set_data (G_OBJECT (label), "eel-label-shadow-offset",
+			   GINT_TO_POINTER (offset));
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+void
+eel_gtk_widget_set_background_color (GtkWidget *widget,
+				     const char *color_spec)
+{
+	GdkColor color;
 
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	style = gtk_widget_get_style (widget);
-
-	/* Make a copy of the style. */
-	style = gtk_style_copy (style);
-
 	eel_gdk_color_parse_with_white_default (color_spec, &color);
-	style->bg[GTK_STATE_NORMAL] = color;
-	style->base[GTK_STATE_NORMAL] = color;
-	style->bg[GTK_STATE_ACTIVE] = color;
-	style->base[GTK_STATE_ACTIVE] = color;
 
-	/* Put the style in the widget. */
-	gtk_widget_set_style (widget, style);
-	gtk_style_unref (style);
+	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL, &color);
+	gtk_widget_modify_base (widget, GTK_STATE_NORMAL, &color);
+	gtk_widget_modify_bg (widget, GTK_STATE_ACTIVE, &color);
+	gtk_widget_modify_base (widget, GTK_STATE_ACTIVE, &color);
 }
 
 void
-eel_gtk_widget_set_foreground_color (GtkWidget              *widget,
-					  const char		*color_spec)
+eel_gtk_widget_set_foreground_color (GtkWidget *widget,
+				     const char *color_spec)
 {
-	GtkStyle	*style;
-	GdkColor	color;
+	GdkColor color;
 
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	style = gtk_widget_get_style (widget);
-
-	/* Make a copy of the style. */
-	style = gtk_style_copy (style);
-
 	eel_gdk_color_parse_with_white_default (color_spec, &color);
-	style->fg[GTK_STATE_NORMAL] = color;
-	style->fg[GTK_STATE_ACTIVE] = color;
 
-	/* Put the style in the widget. */
-	gtk_widget_set_style (widget, style);
-	gtk_style_unref (style);
+	gtk_widget_modify_fg (widget, GTK_STATE_NORMAL, &color);
+	gtk_widget_modify_text (widget, GTK_STATE_NORMAL, &color);
+	gtk_widget_modify_fg (widget, GTK_STATE_ACTIVE, &color);
+	gtk_widget_modify_text (widget, GTK_STATE_ACTIVE, &color);
 }
 
 GtkWidget *
@@ -1758,660 +1134,237 @@ eel_gtk_widget_find_windowed_ancestor (GtkWidget *widget)
 	return widget;
 }
 
-
-
-/*following code shamelessly stolen from gtk*/
-static void
-rgb_to_hls (gdouble *r,
-            gdouble *g,
-            gdouble *b)
-{
-	gdouble min;
-	gdouble max;
-	gdouble red;
-	gdouble green;
-	gdouble blue;
-	gdouble h, l, s;
-	gdouble delta;
-
-	red = *r;
-	green = *g;
-	blue = *b;
-
-	if (red > green) {
-		if (red > blue)
-			max = red;
-		else
-			max = blue;
-		
-		if (green < blue)
-			min = green;
-		else
-			min = blue;
-	} else {
-		if (green > blue)
-			max = green;
-		else
-			max = blue;
-		
-		if (red < blue)
-			min = red;
-		else
-			min = blue;
-	}
-
-	l = (max + min) / 2;
-	s = 0;
-	h = 0;
-
-	if (max != min) {
-		if (l <= 0.5)
-			s = (max - min) / (max + min);
-		else
-			s = (max - min) / (2 - max - min);
-		
-		delta = max -min;
-		if (red == max)
-			h = (green - blue) / delta;
-		else if (green == max)
-			h = 2 + (blue - red) / delta;
-		else if (blue == max)
-			h = 4 + (red - green) / delta;
-		
-		h *= 60;
-		if (h < 0.0)
-			h += 360;
-	}
-	
-	*r = h;
-	*g = l;
-	*b = s;
-}
-
-static void
-hls_to_rgb (gdouble *h,
-            gdouble *l,
-            gdouble *s)
-{
-	gdouble hue;
-	gdouble lightness;
-	gdouble saturation;
-	gdouble m1, m2;
-	gdouble r, g, b;
-	
-	lightness = *l;
-	saturation = *s;
-
-	if (lightness <= 0.5)
-		m2 = lightness * (1 + saturation);
-	else
-		m2 = lightness + saturation - lightness * saturation;
-	m1 = 2 * lightness - m2;
-
-	if (saturation == 0) {
-		*h = lightness;
-		*l = lightness;
-		*s = lightness;
-	} else {
-		hue = *h + 120;
-		while (hue > 360)
-			hue -= 360;
-		while (hue < 0)
-			hue += 360;
-		
-		if (hue < 60)
-			r = m1 + (m2 - m1) * hue / 60;
-		else if (hue < 180)
-			r = m2;
-		else if (hue < 240)
-			r = m1 + (m2 - m1) * (240 - hue) / 60;
-		else
-			r = m1;
-
-		hue = *h;
-		while (hue > 360)
-			hue -= 360;
-		while (hue < 0)
-			hue += 360;
-		
-		if (hue < 60)
-			g = m1 + (m2 - m1) * hue / 60;
-		else if (hue < 180)
-			g = m2;
-		else if (hue < 240)
-			g = m1 + (m2 - m1) * (240 - hue) / 60;
-		else
-			g = m1;
-		
-		hue = *h - 120;
-		while (hue > 360)
-			hue -= 360;
-		while (hue < 0)
-			hue += 360;
-		
-		if (hue < 60)
-			b = m1 + (m2 - m1) * hue / 60;
-		else if (hue < 180)
-			b = m2;
-		else if (hue < 240)
-			b = m1 + (m2 - m1) * (240 - hue) / 60;
-		else
-			b = m1;
-		
-		*h = r;
-		*l = g;
-		*s = b;
-	}
-}
-
-void
-eel_gtk_style_shade (GdkColor *a,
-			  GdkColor *b,
-			  gdouble   k)
-{
-
-	gdouble red;
-	gdouble green;
-	gdouble blue;
-	
-	red = (gdouble) a->red / 65535.0;
-	green = (gdouble) a->green / 65535.0;
-	blue = (gdouble) a->blue / 65535.0;
-	
-	rgb_to_hls (&red, &green, &blue);
-
-	green *= k;
-	if (green > 1.0)
-		green = 1.0;
-	else if (green < 0.0)
-		green = 0.0;
-
-	blue *= k;
-	if (blue > 1.0)
-		blue = 1.0;
-	else if (blue < 0.0)
-		blue = 0.0;
-
-	hls_to_rgb (&red, &green, &blue);
-
-	b->red = red * 65535.0;
-	b->green = green * 65535.0;
-	b->blue = blue * 65535.0;
-}
-
-/**
- * eel_gtk_class_name_make_like_existing_type:
- * @class_name: The class name for the custom widget.
- * @existing_gtk_type: The GtkType of the existing GtkWidget.
- *
- * Make the given class name act like an existing GtkType for
- * gtk theme/style purposes.  This can be used by custom 
- * widget to emulate the styles of stock Gtk widgets.  For
- * example:
- *
- * eel_gtk_class_name_make_like_existing ("EelCustomButton",
- *                                             GTK_TYPE_BUTTON);
- *
- *
- * You should call this function only once from the class_initialize()
- * method of the custom widget.
- **/
-void
-eel_gtk_class_name_make_like_existing_type (const char *class_name,
-						 GtkType existing_gtk_type)
-{
-	GtkWidget *temporary;
-	GtkStyle *style;
-
-	g_return_if_fail (class_name != NULL);
-
-	temporary = gtk_widget_new (existing_gtk_type, NULL);
-	gtk_widget_ensure_style (temporary);
-		
-	style = gtk_widget_get_style (temporary);
-
-	if (style->rc_style != NULL) {
-		gtk_rc_add_widget_class_style (style->rc_style, class_name);
-	}
-		
-	gtk_object_sink (GTK_OBJECT (temporary));
-}
-
-/* helper function for eel_get_window_list_ordered_front_to_back () */
-static GtkWidget *
-window_at_or_below (int depth, Window xid, gboolean *keep_going)
-{
-	static Atom wm_state = 0;
-
-	GtkWidget *widget;
-
-	Atom actual_type;
-	int actual_format;
-	gulong nitems, bytes_after;
-	gulong *prop;
-
-	GdkWindow *window;
-	gpointer data;
-
-	Window root, parent, *children;
-	int nchildren, i;
-
-	if (wm_state == 0) {
-		wm_state = XInternAtom (GDK_DISPLAY (), "WM_STATE", False);
-	}
-
-	/* Check if the window is a top-level client window.
-	 * Windows will have a WM_STATE property iff they're top-level.
-	 */
-	if (XGetWindowProperty (GDK_DISPLAY (), xid, wm_state, 0, 1,
-				False, AnyPropertyType, &actual_type,
-				&actual_format, &nitems, &bytes_after,
-				(guchar **) &prop) == Success
-	    && prop != NULL && actual_format == 32 && prop[0] == NormalState)
-	{
-		/* Found a top-level window */
-
-		if (prop != NULL) {
-			XFree (prop);
-		}
-
-		/* Does GDK know anything about this window? */
-		window = gdk_window_lookup (xid);
-		if (window != NULL) {
-			gdk_window_get_user_data (window, &data);
-			if (data != NULL)
-			{
-				/* Found one of the widgets we're after */
-				*keep_going = FALSE;
-				return GTK_WIDGET (data);
-			}
-		}
-
-		/* No point in searching past here. It's a top-level
-		 * window, but not from this application.
-		 */
-		*keep_going = FALSE;
-		return NULL;
-	}
-
-	/* Not found a top-level window yet, so keep recursing. */
-	if (depth < MAXIMUM_WM_REPARENTING_DEPTH) {
-		if (XQueryTree (GDK_DISPLAY (), xid, &root,
-				&parent, &children, &nchildren) != 0)
-		{
-			widget = NULL;
-
-			for (i = 0; *keep_going && i < nchildren; i++) {
-				widget = window_at_or_below (depth + 1,
-							     children[i],
-							     keep_going);
-			}
-
-			if (children != NULL) {
-				XFree (children);
-			}
-
-			if (! *keep_going) {
-				return widget;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-/* eel_get_window_list_ordered_front_to_back:
- *
- * Return a list of GtkWindows's, representing the stacking order (top to
- * bottom) of all windows (known to the local GDK).
- *
- * (Involves a large number of X server round trips, so call sparingly)
- */
-GList *
-eel_get_window_list_ordered_front_to_back (void)
-{
-	Window root, parent, *children;
-	int nchildren, i;
-	GList *windows;
-	GtkWidget *widget;
-	gboolean keep_going;
-
-	/* There's a possibility that a window will be closed in
-	 * the period between us querying the child-of-root windows
-	 * and getting round to search _their_ children. So arrange
-	 * for errors to be caught and ignored.
-	 */
-
-	gdk_error_trap_push ();
-
-	windows = NULL;
-
-	if (XQueryTree (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-			&root, &parent, &children, &nchildren) != 0)
-	{
-		for (i = 0; i < nchildren; i++) {
-			keep_going = TRUE;
-			widget = window_at_or_below (0, children[i],
-						     &keep_going);
-			if (widget != NULL) {
-				/* XQueryTree returns window in bottom ->
-				 * top order, so consing up the list in
-				 * the normal manner will reverse this
-				 * giving the desired top -> bottom order
-				 */
-				windows = g_list_prepend (windows, widget);
-			}
-		}
-		if (children != NULL) {
-			XFree (children);
-		}
-	}
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-
-	return windows;
-}
-
-gboolean
-eel_gtk_window_is_on_current_workspace_and_area (GtkWindow *window)
-{
-	gboolean result;
-        int current_workspace, window_workspace;
-	int current_area_x, current_area_y;
-	int window_area_x, window_area_y;
-
-	g_return_val_if_fail (GTK_WIDGET_REALIZED (GTK_WIDGET (window)), FALSE);
-
-	result = FALSE;
-
-	window_workspace = gnome_win_hints_get_workspace (GTK_WIDGET (window));
-	current_workspace = gnome_win_hints_get_current_workspace ();
-
-	if (window_workspace == current_workspace) {
-		eel_gnome_win_hints_get_area (GTK_WIDGET (window),
-					      &window_area_x, &window_area_y);
-		eel_gnome_win_hints_get_current_area (&current_area_x,
-						      &current_area_y);
-		if (window_area_x == current_area_x
-		    && window_area_y == current_area_y) {
-			result = TRUE;
-		}
-	}
-
-	return result;
-}
-
 /* eel_gtk_get_system_font:
  *
- * Return the system font as selected in the control center.  Need to 
- * gdk_font_unref() the result when done with it.
+ * Return the system font as selected in the control center. Need to 
+ * g_object_unref() the result when done with it.
  *
  * Perhaps there is a better way to figure out what that font is, but
  * the following is simple enough and it works.
  */
-GdkFont *
+PangoFontDescription *
 eel_gtk_get_system_font (void)
 {
 	GtkWidget *label;
-	GdkFont *font;
+	PangoFontDescription *font;
 
 	label = gtk_label_new ("");
 	
 	gtk_widget_ensure_style (label);
 
-	font = label->style->font;
-	gdk_font_ref (font);
+	font = pango_font_description_copy (label->style->font_desc);
 
  	gtk_object_sink (GTK_OBJECT (label));
 
 	return font;
 }
 
-static guint
-event_get_time (GdkEvent *event)
+static PangoContext *
+create_pango_ft2_context (PangoContext *base_context)
 {
-	if (event != NULL) {
-		switch (event->type) {
-		case GDK_MOTION_NOTIFY:
-			return event->motion.time;
-		case GDK_BUTTON_PRESS:
-		case GDK_2BUTTON_PRESS:
-		case GDK_3BUTTON_PRESS:
-		case GDK_BUTTON_RELEASE:
-			return event->button.time;
-		case GDK_KEY_PRESS:
-		case GDK_KEY_RELEASE:
-			return event->key.time;
-		case GDK_ENTER_NOTIFY:
-		case GDK_LEAVE_NOTIFY:
-			return event->crossing.time;
-		case GDK_PROPERTY_NOTIFY:
-			return event->property.time;
-		case GDK_SELECTION_CLEAR:
-		case GDK_SELECTION_REQUEST:
-		case GDK_SELECTION_NOTIFY:
-			return event->selection.time;
-		case GDK_PROXIMITY_IN:
-		case GDK_PROXIMITY_OUT:
-			return event->proximity.time;
-		case GDK_DRAG_ENTER:
-		case GDK_DRAG_LEAVE:
-		case GDK_DRAG_MOTION:
-		case GDK_DRAG_STATUS:
-		case GDK_DROP_START:
-		case GDK_DROP_FINISHED:
-			return event->dnd.time;
-		case GDK_CLIENT_EVENT:
-		case GDK_VISIBILITY_NOTIFY:
-		case GDK_NO_EXPOSE:
-		case GDK_CONFIGURE:
-		case GDK_FOCUS_CHANGE:
-		case GDK_NOTHING:
-		case GDK_DELETE:
-		case GDK_DESTROY:
-		case GDK_EXPOSE:
-		case GDK_MAP:
-		case GDK_UNMAP:
-			/* return current time */
-			break;
+	PangoContext *context;
+			
+	context = eel_pango_ft2_get_context ();
+
+	pango_context_set_language (context, pango_context_get_language (base_context));
+	pango_context_set_base_dir (context, pango_context_get_base_dir (base_context));
+	pango_context_set_font_description (context, pango_context_get_font_description (base_context));
+
+	return context;
+}
+
+PangoContext *
+eel_gtk_widget_get_pango_ft2_context (GtkWidget *widget)
+{
+	static GQuark quark_widget_pango_ft2_context;
+	PangoContext *context;
+
+	if (quark_widget_pango_ft2_context == 0) {
+		quark_widget_pango_ft2_context = g_quark_from_static_string ("eel-ft2-context");
+	}
+  
+	context = g_object_get_qdata (G_OBJECT (widget), quark_widget_pango_ft2_context);
+	if (context == NULL) {
+		context = create_pango_ft2_context (gtk_widget_get_pango_context (widget));
+		g_object_set_qdata_full (G_OBJECT (widget), quark_widget_pango_ft2_context,
+					 context, g_object_unref);
+	}
+	
+	return context;
+}
+
+void
+eel_gtk_widget_get_button_event_location (GtkWidget *widget,
+					  const GdkEventButton *event,
+					  int *x,
+					  int *y)
+{
+	int window_x, window_y;
+
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (event != NULL);
+
+	gdk_window_get_position (event->window, &window_x, &window_y);
+	if (x != NULL) {
+		*x = event->x + window_x - widget->allocation.x;
+	}
+	if (y != NULL) {
+		*y = event->y + window_y - widget->allocation.y;
+	}
+}
+
+void
+eel_gtk_widget_get_motion_event_location (GtkWidget *widget,
+					  const GdkEventMotion *event,
+					  int *x,
+					  int *y)
+{
+	eel_gtk_widget_get_button_event_location (widget, (const GdkEventButton *) event, x, y);
+}
+
+gboolean
+eel_gtk_tree_view_cell_is_completely_visible (GtkTreeView          *tree_view,
+					      GtkTreePath          *path,
+					      GtkTreeViewColumn    *column)
+{
+	GdkRectangle cell_rect, visible_rect;
+
+	gtk_tree_view_get_background_area (tree_view, path, column, &cell_rect);
+	gtk_tree_view_widget_to_tree_coords (tree_view, cell_rect.x, cell_rect.y,
+					     &cell_rect.x, &cell_rect.y);
+	gtk_tree_view_get_visible_rect (tree_view, &visible_rect);
+	return eel_gdk_rectangle_contains_rectangle (visible_rect, cell_rect);
+}
+
+static gboolean 
+tree_view_button_press_callback (GtkWidget *tree_view,
+				 GdkEventButton *event,
+				 gpointer data)
+{
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+
+	if (event->button == 1 && event->type == GDK_BUTTON_PRESS) {
+		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (tree_view),
+						   event->x, event->y,
+						   &path,
+						   &column,
+						   NULL, 
+						   NULL)) {
+			gtk_tree_view_row_activated
+				(GTK_TREE_VIEW (tree_view), path, column);
 		}
 	}
-	
-	return GDK_CURRENT_TIME;
-}
 
-guint
-eel_get_current_event_time (void)
-{
-	GdkEvent *event;
-	guint time;
-
-	event = gtk_get_current_event ();
-	time = event_get_time (event);
-	if (event != NULL) {
-		gdk_event_free (event);
-	}
-	return time;
+	return FALSE;
 }
 
 void
-eel_drag_set_icon_pixbuf (GdkDragContext *context,
-			       GdkPixbuf *pixbuf,
-			       int hot_x,
-			       int hot_y)
+eel_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
+						gboolean should_activate)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	guint button_press_id;
 
-	gdk_pixbuf_render_pixmap_and_mask
-		(pixbuf, &pixmap, &mask,
-		 EEL_STANDARD_ALPHA_THRESHHOLD);
-	gtk_drag_set_icon_pixmap
-		(context, gdk_rgb_get_cmap (), pixmap, mask, hot_x, hot_y);
-	/* FIXME: Verify that this does not leak the pixmap and mask.
-	 * We've always done it this way, but maybe we've always
-	 * leaked. Just doing the unref here definitely causes a
-	 * problem, so it's not that simple.
-	 */
-}
+	button_press_id = GPOINTER_TO_UINT 
+		(g_object_get_data (G_OBJECT (tree_view), 
+				    "eel-tree-view-activate"));
 
-/**
- * eel_gtk_widget_standard_realize:
- *
- * @widget: A GtkWidget (must be unrealized).
- *
- * A standard implementation of GtkWidget::realize for widgets
- * that need a GdkWindow (GTK_WIDGET_NO_WINDOW (widget) == FALSE)
- * 
- * You should call gtk_widget_set_events() in your "GtkWidget::initialize"
- * method to set the event mask for your widget.
- */
-void
-eel_gtk_widget_standard_realize (GtkWidget *widget)
-{
-	GdkWindowAttr attributes;
-	gint attributes_mask;
-	gint border_width;
-	
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (!GTK_WIDGET_REALIZED (widget));
-
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-
-	/* Its a little weird to check for the specific container type
-	 * here, but it makes this function convenient to use for
-	 * for containers as well.
-	 */
-	border_width = 
-		GTK_IS_CONTAINER (widget) ?
-		GTK_CONTAINER (widget)->border_width :
-		0;
-	
-	attributes.x = widget->allocation.x + border_width;
-	attributes.y = widget->allocation.y + border_width;
-	attributes.width = widget->allocation.width - 2 * border_width;
-	attributes.height = widget->allocation.height - 2 * border_width;
-	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.wclass = GDK_INPUT_OUTPUT;
-	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
-	attributes.event_mask = gtk_widget_get_events (widget);
-	
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-	
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
-	gdk_window_set_user_data (widget->window, widget);
-	
-	widget->style = gtk_style_attach (widget->style, widget->window);
-	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-}
-
-/**
- * eel_gtk_widget_standard_draw:
- *
- * @widget: A GtkWidget
- * @area: Area from draw method.
- *
- * A standard implementation of GtkWidget::draw which simply
- * calls the expose_event method to do the work.
- *
- */
-void
-eel_gtk_widget_standard_draw (GtkWidget *widget,
-			      GdkRectangle *area)
-{
-	GdkEventExpose event;
-	
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (area != NULL);
-	
-	event.type = GDK_EXPOSE;
-	event.send_event = TRUE;
-	event.window = widget->window;
-	event.area = *area;
-	event.count = 0;
-
-	gdk_window_ref (event.window);
-	gtk_widget_event (widget, (GdkEvent*) &event);
-	gdk_window_unref (event.window);
-}
-
-/**
- * eel_gtk_bin_standard_size_allocate:
- *
- * @widget: A GtkBin widget.
- * @allocation: GtkAllocation pointer from size_allocate method.
- *
- * An implementation of GtkWidget::size_allocate for GtkBin widgets.
- */
-void
-eel_gtk_bin_standard_size_allocate (GtkWidget *widget,
-				    GtkAllocation *allocation)
-{
-	GtkWidget *child;
-	GtkAllocation child_allocation;
-	
-	g_return_if_fail (GTK_IS_BIN (widget));
-	g_return_if_fail (allocation != NULL);
-
-	child = GTK_BIN (widget)->child;
-	
-	if (child != NULL) {
-		g_return_if_fail (GTK_IS_WIDGET (child));
-	}
-	
-	widget->allocation = *allocation;
-	
-	child_allocation.x = 0;
-	child_allocation.y = 0;
-	child_allocation.width = MAX (allocation->width - GTK_CONTAINER (widget)->border_width * 2, 0);
-	child_allocation.height = MAX (allocation->height - GTK_CONTAINER (widget)->border_width * 2, 0);
-	
-	if (GTK_WIDGET_REALIZED (widget)) {
-		gdk_window_move_resize (widget->window,
-					allocation->x + GTK_CONTAINER (widget)->border_width,
-					allocation->y + GTK_CONTAINER (widget)->border_width,
-					child_allocation.width,
-					child_allocation.height);
-	}
-	
-	if (child != NULL) {
-		gtk_widget_size_allocate (child, &child_allocation);
+	if (button_press_id && !should_activate) {
+		g_signal_handler_disconnect (tree_view, button_press_id);
+		g_object_set_data (G_OBJECT (tree_view), 
+				   "eel-tree-view-activate", 
+				   0);
+	} else if (!button_press_id && should_activate) {
+		button_press_id = g_signal_connect 
+			(tree_view,
+			 "button_press_event",
+			 G_CALLBACK  (tree_view_button_press_callback),
+			 NULL);
+		g_object_set_data (G_OBJECT (tree_view), 
+				   "eel-tree-view-activate", 
+				   GUINT_TO_POINTER (button_press_id));
 	}
 }
 
-/**
- * eel_gtk_bin_standard_size_request:
- *
- * @container: A GtkContainer widget.
- * @requisition: GtkRequisition pointer from size_request method.
- *
- * An implementation of GtkWidget::size_request for GtkBin widgets.
- */
-void
-eel_gtk_bin_standard_size_request (GtkWidget *widget,
-				   GtkRequisition *requisition)
+gboolean
+eel_gtk_viewport_get_visible_rect (GtkViewport  *viewport, 
+				   GdkRectangle *rect)
 {
-	GtkRequisition child_requisition;
-	GtkWidget *child;
-	
-	g_return_if_fail (GTK_IS_BIN (widget));
-	g_return_if_fail (requisition != NULL);
+	GdkRectangle viewport_rect;
+	GdkRectangle child_rect;
+	gboolean return_val;
 
-	child = GTK_BIN (widget)->child;
-
-	if (child != NULL) {
-		g_return_if_fail (GTK_IS_WIDGET (child));
-	}
+	g_return_val_if_fail (GTK_IS_VIEWPORT (viewport), FALSE);
+	g_return_val_if_fail (rect != NULL, FALSE);
 	
-	requisition->width = GTK_CONTAINER (widget)->border_width * 2;
-	requisition->height = GTK_CONTAINER (widget)->border_width * 2;
-	
-	if (child != NULL && GTK_WIDGET_VISIBLE (child)) {
-		gtk_widget_size_request (child, &child_requisition);
+	if (GTK_WIDGET_REALIZED (viewport)) {
+		viewport_rect.x = 0;
+		viewport_rect.y = 0;
+		gdk_drawable_get_size (viewport->view_window, 
+				       &viewport_rect.width, 
+				       &viewport_rect.height);
 		
-		requisition->width += child_requisition.width;
-		requisition->height += child_requisition.height;
+		gdk_window_get_position (viewport->bin_window,
+					 &child_rect.x,
+					 &child_rect.y);
+		gdk_drawable_get_size (viewport->bin_window,
+				       &child_rect.width,
+				       &child_rect.height);
+
+		return_val = gdk_rectangle_intersect (&viewport_rect, 
+						      &child_rect,
+						      rect);
+		rect->x -= child_rect.x;
+		rect->y -= child_rect.y;
+		
+		return return_val;
+	}
+	
+	rect->x = rect->y = rect->width = rect->height = 0;
+	return FALSE;
+}
+
+void
+eel_gtk_viewport_scroll_to_rect (GtkViewport  *viewport, 
+				 GdkRectangle *rect)
+{
+	GdkRectangle visible_rect;
+	int scroll_x;
+	int scroll_y;
+	GtkAdjustment *adjustment;
+
+	g_return_if_fail (GTK_IS_VIEWPORT (viewport));
+	g_return_if_fail (rect != NULL);
+
+	if (eel_gtk_viewport_get_visible_rect (viewport, &visible_rect)) {
+		scroll_x = -1;
+		scroll_y = -1;
+
+		if (rect->x + rect->width > visible_rect.x + visible_rect.width) {
+			scroll_x = rect->x - (visible_rect.width - rect->width);
+		}
+		if (rect->y + rect->height > visible_rect.y + visible_rect.height) {
+			scroll_y = rect->y - (visible_rect.height - rect->height);
+		}
+
+		if (rect->x < visible_rect.x) {
+			scroll_x = rect->x;
+		}
+
+		if (rect->y < visible_rect.y) {
+			scroll_y = rect->y;
+		}
+
+		adjustment = gtk_viewport_get_hadjustment (viewport);
+		if (adjustment && scroll_x != -1) {
+			eel_gtk_adjustment_set_value (adjustment,
+						      (double)scroll_x);
+		}
+
+		adjustment = gtk_viewport_get_vadjustment (viewport);
+		if (adjustment && scroll_y != -1) {
+			eel_gtk_adjustment_set_value (adjustment,
+						      (double)scroll_y);
+		}
 	}
 }

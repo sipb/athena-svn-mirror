@@ -5,16 +5,16 @@
    Copyright (C) 1999 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -58,10 +58,10 @@ G_STMT_START { \
 	eel_before_check (#expression, __FILE__, __LINE__); \
 	eel_check_point_result (expression, expected_x, expected_y); \
 } G_STMT_END
-#define EEL_CHECK_STRING_LIST_RESULT(expression, expected_value, expected_value_delimeter) \
+#define EEL_CHECK_STRING_LIST_RESULT(expression, expected_value, expected_value_delimiter) \
 G_STMT_START { \
 	eel_before_check (#expression, __FILE__, __LINE__); \
-	eel_check_string_list_result (expression, expected_value, expected_value_delimeter); \
+	eel_check_string_list_result (expression, expected_value, expected_value_delimiter); \
 } G_STMT_END
 
 void eel_exit_if_self_checks_failed (void);
@@ -96,7 +96,7 @@ void eel_check_string_result        (char          *result,
 				     const char    *expected_value);
 void eel_check_string_list_result   (EelStringList *result,
 				     const char    *expected_value,
-				     const char    *expected_value_delimeter);
+				     const char    *expected_value_delimiter);
 
 #define EEL_SELF_CHECK_FUNCTION_PROTOTYPE(function) \
 	void function (void);

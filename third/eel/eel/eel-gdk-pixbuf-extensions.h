@@ -26,9 +26,11 @@
 #ifndef EEL_GDK_PIXBUF_EXTENSIONS_H
 #define EEL_GDK_PIXBUF_EXTENSIONS_H
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 #include <eel/eel-art-extensions.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdkdrawable.h>
+#include <gdk/gdkrgb.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 
 #define EEL_STANDARD_ALPHA_THRESHHOLD 128
 #define EEL_OPACITY_FULLY_TRANSPARENT 0
@@ -53,6 +55,7 @@ GdkPixbuf *          eel_gdk_pixbuf_load                      (const char       
 
 /* Same thing async. */
 EelPixbufLoadHandle *eel_gdk_pixbuf_load_async                (const char            *uri,
+							       int                    priority,
 							       EelPixbufLoadCallback  callback,
 							       gpointer               callback_data);
 void                 eel_cancel_gdk_pixbuf_load               (EelPixbufLoadHandle   *handle);
@@ -69,11 +72,8 @@ double               eel_gdk_scale_to_fit_factor              (int              
 							       int                   *scaled_width,
 							       int                   *scaled_height);
 
-
-/* return average color values for each component */
-void                 eel_gdk_pixbuf_average_value             (GdkPixbuf             *pixbuf,
-							       GdkColor              *result_color);
-guint32              eel_gdk_pixbuf_average_value_argb        (GdkPixbuf             *pixbuf);
+/* return average color values for each component (argb) */
+guint32              eel_gdk_pixbuf_average_value             (GdkPixbuf             *pixbuf);
 void                 eel_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf             *pixbuf,
 							       ArtIRect               area,
 							       guint32                color);
@@ -148,21 +148,6 @@ GdkPixbuf *          eel_gdk_pixbuf_new_from_existing_buffer  (guchar           
 							       gboolean               buffer_has_alpha,
 							       ArtIRect               area);
 
-/* Access a global buffer for temporary GdkPixbuf operations.  
- * The returned buffer will be at least as big as the passed in 
- * dimensions.  The contents are not guaranteed to be anything at
- * anytime.  Also, it is not thread safe at all.
- */
-GdkPixbuf *          eel_gdk_pixbuf_get_global_buffer         (int                    minimum_width,
-							       int                    minimum_height);
-
-/* Same as gdk_pixbuf_get_from_drawable() except it deals with 
- * race conditions and other evil things that can happen */
-GdkPixbuf *          eel_gdk_pixbuf_get_from_window_safe      (GdkWindow             *window,
-							       int                    x,
-							       int                    y,
-							       int                    width,
-							       int                    height);
 /* Determine whether a pixbuf is valid or not */
 gboolean             eel_gdk_pixbuf_is_valid                  (const GdkPixbuf       *pixbuf);
 
@@ -174,5 +159,22 @@ ArtIRect             eel_gdk_pixbuf_intersect                 (const GdkPixbuf  
 							       int                    pixbuf_x,
 							       int                    pixbuf_y,
 							       ArtIRect               rectangle);
+
+/* Text drawing. */
+void                 eel_gdk_pixbuf_draw_layout               (GdkPixbuf             *pixbuf,
+							       int                    x,
+							       int                    y,
+							       guint32                color,
+							       PangoLayout           *layout);
+
+void                 eel_gdk_pixbuf_draw_layout_clipped       (GdkPixbuf             *pixbuf,
+							       ArtIRect               region,
+							       guint32                color,
+							       PangoLayout           *layout);
+
+/* Scales large pixbufs down fast */
+GdkPixbuf *          eel_gdk_pixbuf_scale_down                (GdkPixbuf *pixbuf,
+							       int dest_width,
+							       int dest_height);
 
 #endif /* EEL_GDK_PIXBUF_EXTENSIONS_H */

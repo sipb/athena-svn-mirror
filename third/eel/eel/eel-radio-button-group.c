@@ -24,12 +24,13 @@
 
 #include <config.h>
 #include "eel-radio-button-group.h"
-#include "eel-image.h"
 
+#include <gtk/gtkimage.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 
+#include "eel-accessibility.h"
 #include "eel-gtk-macros.h"
 #include "eel-glib-extensions.h"
 
@@ -56,17 +57,17 @@ typedef struct
 } TableRow;
 
 /* EelRadioButtonGroupClass methods */
-static void eel_radio_button_group_initialize_class (EelRadioButtonGroupClass *klass);
-static void eel_radio_button_group_initialize       (EelRadioButtonGroup      *button_group);
+static void eel_radio_button_group_class_init (EelRadioButtonGroupClass *klass);
+static void eel_radio_button_group_init       (EelRadioButtonGroup      *button_group);
 
-/* GtkObjectClass methods */
-static void eel_radio_button_group_destroy          (GtkObject                *object);
+/* GObjectClass methods */
+static void eel_radio_button_group_finalize         (GObject                  *object);
 
 /* Radio button callbacks */
 static void button_toggled                          (GtkWidget                *button,
 						     gpointer                  user_data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelRadioButtonGroup,
+EEL_CLASS_BOILERPLATE (EelRadioButtonGroup,
 			      eel_radio_button_group,
 			      GTK_TYPE_TABLE)
 
@@ -76,55 +77,50 @@ static guint radio_group_signals[LAST_SIGNAL] = { 0 };
  * EelRadioButtonGroupClass methods
  */
 static void
-eel_radio_button_group_initialize_class (EelRadioButtonGroupClass *radio_button_group_class)
+eel_radio_button_group_class_init (EelRadioButtonGroupClass *radio_button_group_class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	object_class = GTK_OBJECT_CLASS (radio_button_group_class);
+	object_class = G_OBJECT_CLASS (radio_button_group_class);
 	widget_class = GTK_WIDGET_CLASS (radio_button_group_class);
 
  	parent_class = gtk_type_class (gtk_table_get_type ());
 
-	/* GtkObjectClass */
-	object_class->destroy = eel_radio_button_group_destroy;
+	/* GObjectClass */
+	object_class->finalize = eel_radio_button_group_finalize;
 
 	/* Signals */
-	radio_group_signals[CHANGED] = gtk_signal_new ("changed",
-						       GTK_RUN_LAST,
-						       object_class->type,
-						       0,
-						       gtk_marshal_NONE__NONE,
-						       GTK_TYPE_NONE, 
-						       0);
-
-	gtk_object_class_add_signals (object_class, radio_group_signals, LAST_SIGNAL);
+	radio_group_signals[CHANGED] = g_signal_new ("changed",
+						     G_TYPE_FROM_CLASS (object_class),
+						     G_SIGNAL_RUN_LAST,
+						     G_STRUCT_OFFSET (EelRadioButtonGroupClass, changed),
+						     NULL, NULL,
+						     g_cclosure_marshal_VOID__VOID,
+						     G_TYPE_NONE, 
+						     0);
 }
 
 static void
-eel_radio_button_group_initialize (EelRadioButtonGroup *button_group)
+eel_radio_button_group_init (EelRadioButtonGroup *button_group)
 {
 	button_group->details = g_new0 (EelRadioButtonGroupDetails, 1);
 }
 
 /*
- * GtkObjectClass methods
+ * GObjectClass methods
  */
 static void
-eel_radio_button_group_destroy (GtkObject *object)
+eel_radio_button_group_finalize (GObject *object)
 {
 	EelRadioButtonGroup * button_group;
 	
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EEL_IS_RADIO_BUTTON_GROUP (object));
-	
 	button_group = EEL_RADIO_BUTTON_GROUP (object);
 
-	eel_radio_button_group_clear (button_group);
+	eel_g_list_free_deep (button_group->details->rows);
 	g_free (button_group->details);
 	
-	/* Chain */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /*
@@ -139,7 +135,7 @@ button_toggled (GtkWidget *button, gpointer user_data)
 	g_assert (button_group->details != NULL);
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
-		gtk_signal_emit (GTK_OBJECT (button_group), radio_group_signals[CHANGED]);
+		g_signal_emit (button_group, radio_group_signals[CHANGED], 0);
 	}
 }
 
@@ -183,16 +179,17 @@ eel_radio_button_group_insert (EelRadioButtonGroup	*button_group,
 	row = g_new0 (TableRow, 1);
 
 	row->button = gtk_radio_button_new_with_label (button_group->details->group, label);
-
+	gtk_label_set_use_underline (GTK_LABEL (GTK_BIN (row->button)->child), TRUE);
+	
 	/*
 	 * For some crazy reason I dont grok, the group has to be fetched each
 	 * time from the previous button
 	 */
-	button_group->details->group = gtk_radio_button_group (GTK_RADIO_BUTTON (row->button));
+	button_group->details->group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (row->button));
 
-	gtk_signal_connect (GTK_OBJECT (row->button),
+	g_signal_connect (row->button,
 			    "toggled",
-			    GTK_SIGNAL_FUNC (button_toggled),
+			    G_CALLBACK (button_toggled),
 			    (gpointer) button_group);
 
 	button_group->details->num_items++;
@@ -321,7 +318,7 @@ eel_radio_button_group_set_entry_pixbuf (EelRadioButtonGroup *button_group,
 	g_assert (row != NULL);
 
 	if (row->image == NULL) {
-		row->image = eel_image_new (NULL);
+		row->image = gtk_image_new ();
 		
 		gtk_table_attach (table,
 				  row->image,			/* child */
@@ -339,7 +336,7 @@ eel_radio_button_group_set_entry_pixbuf (EelRadioButtonGroup *button_group,
 
 	g_assert (row->image != NULL);
 	
-	eel_image_set_pixbuf (EEL_IMAGE (row->image), pixbuf);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (row->image), pixbuf);
 }
 
 /* Set an item's description. */
@@ -384,6 +381,22 @@ eel_radio_button_group_set_entry_description_text (EelRadioButtonGroup *button_g
 	}
 }
 
+/* Set an item's accessible description. */
+void
+eel_radio_button_group_set_entry_accessible_description (EelRadioButtonGroup *button_group,
+							 guint entry_index,
+							 const char *description)
+{
+	TableRow	*row;
+
+ 	g_return_if_fail (button_group != NULL);
+	g_return_if_fail (EEL_IS_RADIO_BUTTON_GROUP (button_group));
+	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
+
+	row = g_list_nth_data (button_group->details->rows, entry_index);
+	eel_accessibility_set_description (row->button, description);
+}
+
 void
 eel_radio_button_group_clear (EelRadioButtonGroup *button_group)
 {
@@ -417,5 +430,4 @@ eel_radio_button_group_clear (EelRadioButtonGroup *button_group)
 	button_group->details->group = NULL;
 	button_group->details->num_items = 0;
 }
-
 

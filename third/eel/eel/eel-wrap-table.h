@@ -25,10 +25,10 @@
 #ifndef EEL_WRAP_TABLE_H
 #define EEL_WRAP_TABLE_H
 
+#include <glib.h>
 #include <gtk/gtkcontainer.h>
-#include <libgnome/gnome-defs.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_WRAP_TABLE            (eel_wrap_table_get_type ())
 #define EEL_WRAP_TABLE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_WRAP_TABLE, EelWrapTable))
@@ -87,7 +87,10 @@ void             eel_wrap_table_reorder_child             (EelWrapTable       *w
 							   int                 position);
 guint            eel_wrap_table_get_num_children          (const EelWrapTable *wrap_table);
 
-END_GNOME_DECLS
+GtkWidget *      eel_scrolled_wrap_table_new              (gboolean            homogenous, 
+							   GtkWidget         **wrap_table_out);
+
+G_END_DECLS
 
 #endif /* EEL_WRAP_TABLE_H */
 

@@ -29,22 +29,19 @@
 #include <gtk/gtkcontainer.h>
 #include <libart_lgpl/art_rect.h>
 
-void eel_gtk_container_child_expose_event  (GtkContainer   *container,
-					    GtkWidget      *child,
-					    GdkEventExpose *event);
-void eel_gtk_container_child_draw          (GtkContainer   *container,
-					    GtkWidget      *child,
-					    GdkRectangle   *area);
-void eel_gtk_container_child_map           (GtkContainer   *container,
-					    GtkWidget      *child);
-void eel_gtk_container_child_unmap         (GtkContainer   *container,
-					    GtkWidget      *child);
-void eel_gtk_container_child_add           (GtkContainer   *container,
-					    GtkWidget      *child);
-void eel_gtk_container_child_remove        (GtkContainer   *container,
-					    GtkWidget      *child);
-void eel_gtk_container_child_size_allocate (GtkContainer   *container,
-					    GtkWidget      *child,
-					    ArtIRect        child_geometry);
+void eel_gtk_container_child_expose_event (GtkContainer   *container,
+					   GtkWidget      *child,
+					   GdkEventExpose *event);
+void eel_gtk_container_child_map          (GtkContainer   *container,
+					   GtkWidget      *child);
+void eel_gtk_container_child_unmap        (GtkContainer   *container,
+					   GtkWidget      *child);
+void eel_gtk_container_child_add          (GtkContainer   *container,
+					   GtkWidget      *child);
+void eel_gtk_container_child_remove       (GtkContainer   *container,
+					   GtkWidget      *child);
+void eel_gtk_container_child_size_allocate (GtkContainer *container,
+					    GtkWidget *child,
+					    ArtIRect child_geometry);
 
 #endif /* EEL_GTK_CONTAINER_H */

@@ -1,7 +1,7 @@
 #include "test.h"
 
 #include <eel/eel-image-table.h>
-#include <eel/eel-viewport.h>
+#include <gtk/gtkviewport.h>
 
 static const char pixbuf_name[] = "/usr/share/pixmaps/gnome-globe.png";
 
@@ -66,15 +66,10 @@ labeled_image_new (const char *text,
 	if (icon_name) {
 		const float sizes[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
 					1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0 };
-		pixbuf = test_pixbuf_new_named (icon_name, sizes[random () % EEL_N_ELEMENTS (sizes)]);
+		pixbuf = test_pixbuf_new_named (icon_name, sizes[random () % G_N_ELEMENTS (sizes)]);
 	}
 
 	image = eel_labeled_image_new (text, pixbuf);
-
-	eel_labeled_image_set_background_mode (EEL_LABELED_IMAGE (image),
-						    EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
-	eel_labeled_image_set_solid_background_color (EEL_LABELED_IMAGE (image),
-							   BG_COLOR);
 
 	eel_gdk_pixbuf_unref_if_not_null (pixbuf);
 
@@ -94,7 +89,7 @@ image_table_child_enter_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-//	g_print ("%s(%s)\n", __FUNCTION__, text);
+//	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
 }
 
 static void
@@ -109,7 +104,7 @@ image_table_child_leave_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-//	g_print ("%s(%s)\n", __FUNCTION__, text);
+//	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
 }
 
 static void
@@ -124,7 +119,7 @@ image_table_child_pressed_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-	g_print ("%s(%s)\n", __FUNCTION__, text);
+	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
 }
 
 static void
@@ -139,7 +134,7 @@ image_table_child_released_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-	g_print ("%s(%s)\n", __FUNCTION__, text);
+	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
 }
 
 static void
@@ -154,7 +149,7 @@ image_table_child_clicked_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-	g_print ("%s(%s)\n", __FUNCTION__, text);
+	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
 }
 
 static int
@@ -165,7 +160,7 @@ foo_timeout (gpointer callback_data)
 
 	recursion_count++;
 
-	g_print ("%s(%d)\n", __FUNCTION__, recursion_count);
+	g_print ("%s(%d)\n", G_GNUC_FUNCTION, recursion_count);
 	gtk_widget_queue_resize (GTK_WIDGET (callback_data));
 
 	recursion_count--;
@@ -193,7 +188,7 @@ image_table_size_allocate (GtkWidget *image_table,
 	if (0) gtk_widget_size_allocate (GTK_WIDGET (image_table),
 					 &GTK_WIDGET (image_table)->allocation);
 	
-	g_print ("%s(%d)\n", __FUNCTION__, recursion_count);
+	g_print ("%s(%d)\n", G_GNUC_FUNCTION, recursion_count);
 
 	recursion_count--;
 }
@@ -219,15 +214,15 @@ image_table_new_scrolled (void)
 	gtk_container_add (GTK_CONTAINER (window), scrolled);
 
 	/* Viewport */
- 	viewport = eel_viewport_new (NULL, NULL);
+ 	viewport = gtk_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_OUT);
 	gtk_container_add (GTK_CONTAINER (scrolled), viewport);
 
 	image_table = eel_image_table_new (FALSE);
 
-	if (0) gtk_signal_connect (GTK_OBJECT (image_table),
+	if (0) g_signal_connect (image_table,
 			    "size_allocate",
-			    GTK_SIGNAL_FUNC (image_table_size_allocate),
+			    G_CALLBACK (image_table_size_allocate),
 			    window);
 
 	eel_wrap_table_set_x_justification (EEL_WRAP_TABLE (image_table),
@@ -237,29 +232,29 @@ image_table_new_scrolled (void)
 
 	gtk_container_add (GTK_CONTAINER (viewport), image_table);
 
-	gtk_signal_connect (GTK_OBJECT (image_table),
+	g_signal_connect (image_table,
 			    "child_enter",
-			    GTK_SIGNAL_FUNC (image_table_child_enter_callback),
+			    G_CALLBACK (image_table_child_enter_callback),
 			    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (image_table),
+	g_signal_connect (image_table,
 			    "child_leave",
-			    GTK_SIGNAL_FUNC (image_table_child_leave_callback),
+			    G_CALLBACK (image_table_child_leave_callback),
 			    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (image_table),
+	g_signal_connect (image_table,
 			    "child_pressed",
-			    GTK_SIGNAL_FUNC (image_table_child_pressed_callback),
+			    G_CALLBACK (image_table_child_pressed_callback),
 			    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (image_table),
+	g_signal_connect (image_table,
 			    "child_released",
-			    GTK_SIGNAL_FUNC (image_table_child_released_callback),
+			    G_CALLBACK (image_table_child_released_callback),
 			    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (image_table),
+	g_signal_connect (image_table,
 			    "child_clicked",
-			    GTK_SIGNAL_FUNC (image_table_child_clicked_callback),
+			    G_CALLBACK (image_table_child_clicked_callback),
 			    NULL);
 
 	eel_gtk_widget_set_background_color (viewport, BG_COLOR_SPEC);
@@ -269,7 +264,7 @@ image_table_new_scrolled (void)
 		GtkWidget *image;
 
 		text = g_strdup_printf ("%s %d",
-					names[random () % EEL_N_ELEMENTS (names)],
+					names[random () % G_N_ELEMENTS (names)],
 					i);
 		image = labeled_image_new (text, pixbuf_name);
 		g_free (text);

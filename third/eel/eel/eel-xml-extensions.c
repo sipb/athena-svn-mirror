@@ -26,11 +26,9 @@
 #include "eel-xml-extensions.h"
 
 #include "eel-string.h"
+#include "eel-i18n.h"
 #include <glib.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include <libxml/parser.h>
 #include <stdlib.h>
 
 xmlNodePtr
@@ -39,7 +37,7 @@ eel_xml_get_children (xmlNodePtr parent)
 	if (parent == NULL) {
 		return NULL;
 	}
-	return parent->xmlChildrenNode;
+	return parent->children;
 }
 
 xmlNodePtr
@@ -183,34 +181,4 @@ eel_xml_get_property_translated (xmlNodePtr parent,
 	 */
 	xmlFree (untranslated_property);
 	return xmlStrdup (translated_property);
-}
-
-void
-eel_xml_remove_node (xmlNodePtr node)
-{
-	g_return_if_fail (node != NULL);
-	g_return_if_fail (node->doc != NULL);
-	g_return_if_fail (node->parent != NULL);
-	g_return_if_fail (node->doc->xmlRootNode != node);
-
-	if (node->prev == NULL) {
-		g_assert (node->parent->xmlChildrenNode == node);
-		node->parent->xmlChildrenNode = node->next;
-	} else {
-		g_assert (node->parent->xmlChildrenNode != node);
-		node->prev->next = node->next;
-	}
-
-	if (node->next == NULL) {
-		g_assert (node->parent->last == node);
-		node->parent->last = node->prev;
-	} else {
-		g_assert (node->parent->last != node);
-		node->next->prev = node->prev;
-	}
-
-	node->doc = NULL;
-	node->parent = NULL;
-	node->next = NULL;
-	node->prev = NULL;
 }

@@ -27,13 +27,15 @@
 #include <config.h>
 #include "eel-gdk-extensions.h"
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkprivate.h>
 #include "eel-glib-extensions.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdkprivate.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <stdlib.h>
+#include <pango/pango.h>
 
 #define GRADIENT_BAND_SIZE 4
 
@@ -48,39 +50,12 @@
  */
 void
 eel_fill_rectangle (GdkDrawable *drawable,
-			 GdkGC *gc,
-			 const GdkRectangle *rectangle)
+		    GdkGC *gc,
+		    const GdkRectangle *rectangle)
 {
 	gdk_draw_rectangle (drawable, gc, TRUE,
 			    rectangle->x, rectangle->y,
 			    rectangle->width, rectangle->height);
-}
-
-/**
- * eel_fill_rectangle_with_color:
- * @drawable: Target to draw into.
- * @gc: Graphics context (mainly for clip).
- * @rectangle: Rectangle to fill.
- * @color: Color to fill with.
- *
- * Fill the rectangle with a color.
- * Convenient when you have a GdkRectangle structure.
- */
-void
-eel_fill_rectangle_with_color (GdkDrawable *drawable,
-				    GdkGC *gc,
-				    const GdkRectangle *rectangle,
-				    guint32 rgb)
-{
-	GdkGCValues saved_values;
-	
-	/* FIXME bugzilla.eazel.com 1287: Workaround for a bug in gdk_rgb. */
-	gdk_rgb_init ();
-	
-	gdk_gc_get_values (gc, &saved_values);
-	gdk_rgb_gc_set_foreground (gc, rgb);
-	eel_fill_rectangle (drawable, gc, rectangle);
-	gdk_gc_set_foreground (gc, &saved_values.foreground);
 }
 
 /**
@@ -102,6 +77,20 @@ eel_rectangle_contains (const GdkRectangle *rectangle,
 }
 
 /**
+ * eel_gdk_rectangle_contains_rectangle:
+ * @outer: Rectangle possibly containing another rectangle.
+ * @inner: Rectangle that might be inside.
+ *
+ * Retun TRUE if inner rectangle is contained inside outer rectangle
+ */
+gboolean
+eel_gdk_rectangle_contains_rectangle (GdkRectangle outer, GdkRectangle inner)
+{
+	return outer.x <= inner.x && outer.x + outer.width >= inner.x + inner.width
+		&& outer.y <= inner.y && outer.y + outer.height >= inner.y + inner.height;
+}
+
+/**
  * eel_rectangle_inset:
  * @rectangle: Rectangle we are insetting.
  * @x: Horizontal ammount to inset by.
@@ -113,8 +102,8 @@ eel_rectangle_contains (const GdkRectangle *rectangle,
  */
 void
 eel_rectangle_inset (GdkRectangle *rectangle, 
-			  int x, 
-			  int y)
+		     int x, 
+		     int y)
 {
 	g_return_if_fail (rectangle != NULL);
 
@@ -138,8 +127,8 @@ eel_rectangle_inset (GdkRectangle *rectangle,
  */
 guint32
 eel_interpolate_color (gdouble ratio,
-			    guint32 start_rgb,
-			    guint32 end_rgb)
+		       guint32 start_rgb,
+		       guint32 end_rgb)
 {
 	guchar red, green, blue;
 
@@ -411,9 +400,18 @@ eel_gradient_set_bottom_color_spec (const char *gradient_spec,
  */
 void
 eel_gdk_color_parse_with_white_default (const char *color_spec,
-					     GdkColor *color)
+					GdkColor *color)
 {
-	if (color_spec == NULL || !gdk_color_parse (color_spec, color)) {
+	gboolean got_color;
+
+	got_color = FALSE;
+	if (color_spec != NULL) {
+		if (eel_gdk_color_parse (color_spec, color)) {
+			got_color = TRUE;
+		}
+	}
+
+	if (!got_color) {
 		color->red = 0xFFFF;
 		color->green = 0xFFFF;
 		color->blue = 0xFFFF;
@@ -434,9 +432,7 @@ eel_parse_rgb_with_white_default (const char *color_spec)
 {
 	GdkColor color;
 
-	if (color_spec == NULL || !gdk_color_parse (color_spec, &color)) {
-		return EEL_RGB_COLOR_WHITE;
-	}
+	eel_gdk_color_parse_with_white_default (color_spec, &color);
 	return ((color.red << 8) & EEL_RGB_COLOR_RED)
 		| (color.green & EEL_RGB_COLOR_GREEN)
 		| ((color.blue >> 8) & EEL_RGB_COLOR_BLUE);
@@ -487,10 +483,10 @@ GdkColor
 eel_gdk_rgb_to_color (guint32 color)
 {
 	GdkColor result;
-	
-	result.red = (color & 0xff0000) >> 16 ;
-	result.green = (color & 0xff00);
-	result.blue = color << 8;
+
+	result.red = ((color >> 16) & 0xFF) * 0x101;
+	result.green = ((color >> 8) & 0xFF) * 0x101;
+	result.blue = (color & 0xff) * 0x101;
 	result.pixel = 0;
 
 	return result;
@@ -508,10 +504,7 @@ eel_gdk_rgb_to_color (guint32 color)
 char *
 eel_gdk_rgb_to_color_spec (const guint32 color)
 {
-	return g_strdup_printf("rgb:%04hX/%04hX/%04hX",
-			       EEL_RGBA_COLOR_GET_R (color) * 65535,
-			       EEL_RGBA_COLOR_GET_G (color) * 65535,
-			       EEL_RGBA_COLOR_GET_B (color) * 65535);
+	return g_strdup_printf ("#%06X", (guint) (color & 0xFFFFFF));
 }
 
 static guint32
@@ -574,82 +567,53 @@ eel_gdk_color_is_dark (GdkColor *color)
 }
 
 /**
- * eel_gdk_choose_foreground_color:
- *
- * Select a foreground color given that BACKGROUND is the background
- * color. If the PREFERRED color has a high enough contrast with
- * BACKGROUND, use it, else use one of black or white, depending on
- * the darkness of BACKGROUND.
- *
- * The selected color is stored in PREFERRED.
+ * eel_stipple_bitmap_for_screen:
+ * 
+ * Get pointer to 50% stippled bitmap suitable for use
+ * on @screen. This is a global object; do not free.
  */
-void
-eel_gdk_choose_foreground_color (GdkColor *preferred,
-				      GdkColor *background)
+GdkBitmap *
+eel_stipple_bitmap_for_screen (GdkScreen *screen)
 {
-	gboolean preferred_is_dark, background_is_dark;
+	static char       stipple_bits[] = { 0x02, 0x01 };
+	static GPtrArray *stipples = NULL;
+	int screen_num, n_screens, i;
 
-	preferred_is_dark = eel_gdk_color_is_dark (preferred);
-	background_is_dark = eel_gdk_color_is_dark (background);
+	if (stipples == NULL) {
+		n_screens = gdk_display_get_n_screens (
+					gdk_screen_get_display (screen));
+		stipples = g_ptr_array_sized_new (n_screens);
 
-	if (preferred_is_dark == background_is_dark) {
-		/* Colors are too similar, so choose a different fg.
-		 * Currently hardcoded to use either white or black.
-		 */
-		if (preferred_is_dark) {
-			preferred->red = 65535;
-			preferred->green = 65535;
-			preferred->blue = 65535;
-		} else {
-			preferred->red = 0;
-			preferred->green = 0;
-			preferred->blue = 0;
+		for (i = 0; i < n_screens; i++) {
+			g_ptr_array_index (stipples, i) = NULL;
 		}
 	}
-}
 
-/**
- * eel_gdk_gc_choose_foreground_color:
- *
- * Use eel_gdk_color_choose_foreground_color () to set the
- * foreground color of GC to something suitable, given that BACKGROUND
- * will be the background color and PREFERRED is the preferred color.
- *
- * Uses GdkRGB to install the color value.
- */
-void
-eel_gdk_gc_choose_foreground_color (GdkGC *gc,
-					 GdkColor *preferred,
-					 GdkColor *background)
-{
-	GdkColor temp;
-	guint32 rgb;
+	screen_num = gdk_screen_get_number (screen);
 
-	temp = *preferred;
-	eel_gdk_choose_foreground_color (&temp, background);
-	rgb = eel_gdk_color_to_rgb (&temp);
+	if (g_ptr_array_index (stipples, screen_num) == NULL) {
+		g_ptr_array_index (stipples, screen_num) =
+			gdk_bitmap_create_from_data (
+				gdk_screen_get_root_window (screen),
+				stipple_bits, 2, 2);
+	}
 
-	gdk_rgb_init ();
-	gdk_rgb_gc_set_foreground (gc, rgb);
+	return g_ptr_array_index (stipples, screen_num);
 }
 
 /**
  * eel_stipple_bitmap:
- * 
- * Get pointer to singleton 50% stippled bitmap.
- * This is a global object; do not free.
+ *
+ * Get pointer to 50% stippled bitmap suitable for use
+ * on the default screen. This is a global object; do
+ * not free.
+ *
+ * This method is not multiscreen safe. Do not use it.
  */
 GdkBitmap *
 eel_stipple_bitmap ()
 {
-	static GdkBitmap *stipple = NULL;
-
-	if (stipple == NULL) {
-		char stipple_bits[] = { 0x02, 0x01 };
-		stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);	
-	}
-
-	return stipple;
+	return eel_stipple_bitmap_for_screen (gdk_screen_get_default ());
 }
 
 /**
@@ -686,37 +650,22 @@ eel_gdk_window_focus (GdkWindow *window, guint32 timestamp)
 
 void
 eel_gdk_window_set_wm_protocols (GdkWindow *window,
-				      GdkAtom *protocols,
-				      int nprotocols)
+				 GdkAtom *protocols,
+				 int nprotocols)
 {
-	/* This relies on the identity mapping from GdkAtoms to X Atoms */
-	XSetWMProtocols (GDK_WINDOW_XDISPLAY (window),
-			 GDK_WINDOW_XWINDOW (window),
-			 protocols, nprotocols);
-}
+	Atom *atoms;
+	int i;
 
-void
-eel_set_mini_icon (GdkWindow *window,
-			GdkPixmap *pixmap,
-			GdkBitmap *mask)
-{
-        GdkAtom icon_atom;
-        long data[2];
- 
-        g_return_if_fail (window != NULL);
-        g_return_if_fail (pixmap != NULL);
-
-        data[0] = GDK_WINDOW_XWINDOW (pixmap);
-        if (mask) {
-                data[1] = GDK_WINDOW_XWINDOW (mask);
-        } else {
-                data[1] = 0;
+	atoms = g_new (Atom, nprotocols);
+	for (i = 0; i < nprotocols; i++) {
+		atoms[i] = gdk_x11_atom_to_xatom (protocols[i]);
 	}
 
-        icon_atom = gdk_atom_intern ("KWM_WIN_ICON", FALSE);
-        gdk_property_change (window, icon_atom, icon_atom, 
-                             32, GDK_PROP_MODE_REPLACE,
-                             (guchar *) data, 2);
+	XSetWMProtocols (GDK_WINDOW_XDISPLAY (window),
+			 GDK_WINDOW_XWINDOW (window),
+			 atoms, nprotocols);
+
+	g_free (atoms);
 }
 
 /**
@@ -751,39 +700,28 @@ eel_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
 void
 eel_gdk_window_set_invisible_cursor (GdkWindow *window)
 {
-	XColor foreColor, backColor;
-	GdkWindowPrivate *window_private;
-	Pixmap sourcePixmap, maskPixmap;
-	Cursor xcursor;
+	GdkBitmap *empty_bitmap;
+	GdkCursor *cursor;
+	GdkColor useless;
+	char invisible_cursor_bits[] = { 0x0 };	
+	
+	useless.red = useless.green = useless.blue = 0;
+	useless.pixel = 0;
+	
+	empty_bitmap = gdk_bitmap_create_from_data (window,
+						    invisible_cursor_bits,
+						    1, 1);
+	
+	cursor = gdk_cursor_new_from_pixmap (empty_bitmap,
+					     empty_bitmap,
+					     &useless,
+					     &useless, 0, 0);
 
-	char invisible_cursor_bits[]      = {0x0};
-	char invisible_cursor_mask_bits[] = {0x0};
+	gdk_window_set_cursor (window, cursor);
 
-	foreColor.pixel = 0L;
-	foreColor.red = foreColor.green = foreColor.blue = 0;
-	foreColor.flags = DoRed | DoGreen | DoBlue;
+	gdk_cursor_unref (cursor);
 
-	backColor.pixel = 255L;
-	backColor.red = backColor.green = backColor.blue = 65535;
-	backColor.flags = DoRed | DoGreen | DoBlue;
-
-	window_private = (GdkWindowPrivate *) window;
-  
-	sourcePixmap = XCreateBitmapFromData (window_private->xdisplay, window_private->xwindow,
-					            		  invisible_cursor_bits, 1, 1);
-	g_assert (sourcePixmap != 0);
-
-	maskPixmap = XCreateBitmapFromData (window_private->xdisplay, window_private->xwindow,
-					          			invisible_cursor_mask_bits, 1, 1);
-	g_assert (maskPixmap != 0);
-
-	xcursor = XCreatePixmapCursor (window_private->xdisplay, sourcePixmap, maskPixmap,
-					      		   &foreColor, &backColor, 0, 0);
-
-	XFreePixmap (window_private->xdisplay, sourcePixmap);
-	XFreePixmap (window_private->xdisplay, maskPixmap);
-
-	XDefineCursor (window_private->xdisplay, window_private->xwindow, xcursor);
+	g_object_unref (empty_bitmap);
 }
 
 EelGdkGeometryFlags
@@ -825,13 +763,68 @@ eel_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
 	return gdk_flags;
 }
 
+void
+eel_gdk_draw_layout_with_drop_shadow (GdkDrawable         *drawable,
+				      GdkGC               *gc,
+				      GdkColor            *text_color,
+				      GdkColor            *shadow_color,
+				      int                  x,
+				      int                  y,
+				      PangoLayout         *layout)
+{
+	gdk_draw_layout_with_colors (drawable, gc,
+				     x+1, y+1,
+				     layout,
+				     shadow_color, NULL);
+	
+	gdk_draw_layout_with_colors (drawable, gc,
+				     x, y,
+				     layout,
+				     text_color, NULL);
+}
+
+/* Color specifications have changed in gdk 2.0.  Unfortunately, nautilus has
+   the old rgb:RRRR/BBBB/GGGG format scattered about in various xml files and
+   the new gdk_color_parse () is not fully backward compatible. */
+
+/* 2002-13-02 FIXME: Someday we should remove this compatibility code. */
+
+gboolean
+eel_gdk_color_parse (const gchar *spec,
+		     GdkColor *color)
+{
+	Colormap xcolormap;
+	XColor xcolor;
+
+	g_return_val_if_fail (spec != NULL, FALSE);
+	g_return_val_if_fail (color != NULL, FALSE);
+
+	/* First try to use the new gdk code. */
+	if (gdk_color_parse (spec, color)) {
+		return TRUE;
+	}
+
+	/* If that failed, fallback to the old gdk code. */
+	xcolormap = DefaultColormap (GDK_DISPLAY (),
+				     gdk_x11_get_default_screen ());
+
+	if (XParseColor (GDK_DISPLAY (), xcolormap, spec, &xcolor)) {
+		color->red = xcolor.red;
+		color->green = xcolor.green;
+		color->blue = xcolor.blue;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 #if ! defined (EEL_OMIT_SELF_CHECK)
 
 static char *
 eel_gdk_color_as_hex_string (GdkColor color)
 {
-	return g_strdup_printf("rgb:%04hX/%04hX/%04hX",
-			       color.red, color.green, color.blue);
+	return g_strdup_printf ("%04X%04X%04X",
+				color.red, color.green, color.blue);
 }
 
 static char *
@@ -841,6 +834,16 @@ eel_self_check_parse (const char *color_spec)
 
 	eel_gdk_color_parse_with_white_default (color_spec, &color);
 	return eel_gdk_color_as_hex_string (color);
+}
+
+static char *
+eel_self_check_gdk_rgb_to_color (guint32 color)
+{
+	GdkColor result;
+
+	result = eel_gdk_rgb_to_color (color);
+
+	return eel_gdk_color_as_hex_string (result);
 }
 
 void
@@ -940,12 +943,20 @@ eel_self_check_gdk_extensions (void)
 	EEL_CHECK_STRING_RESULT (eel_gradient_set_bottom_color_spec ("a:-b:h", "d"), "a:-d");
 
 	/* eel_gdk_color_parse_with_white_default */
-	EEL_CHECK_STRING_RESULT (eel_self_check_parse (""), "rgb:FFFF/FFFF/FFFF");
-	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("a"), "rgb:FFFF/FFFF/FFFF");
-	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("white"), "rgb:FFFF/FFFF/FFFF");
-	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("black"), "rgb:0000/0000/0000");
-	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("rgb:0123/4567/89AB"), "rgb:0123/4567/89AB");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse (""), "FFFFFFFFFFFF");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("a"), "FFFFFFFFFFFF");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("white"), "FFFFFFFFFFFF");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("black"), "000000000000");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("red"), "FFFF00000000");
+	EEL_CHECK_STRING_RESULT (eel_self_check_parse ("#012345"), "010123234545");
+	/* EEL_CHECK_STRING_RESULT (eel_self_check_parse ("rgb:0123/4567/89AB"), "#014589"); */
 
+	/* eel_gdk_rgb_to_color */
+	EEL_CHECK_STRING_RESULT (eel_self_check_gdk_rgb_to_color (EEL_RGB_COLOR_RED), "FFFF00000000");
+	EEL_CHECK_STRING_RESULT (eel_self_check_gdk_rgb_to_color (EEL_RGB_COLOR_BLACK), "000000000000");
+	EEL_CHECK_STRING_RESULT (eel_self_check_gdk_rgb_to_color (EEL_RGB_COLOR_WHITE), "FFFFFFFFFFFF");
+	EEL_CHECK_STRING_RESULT (eel_self_check_gdk_rgb_to_color (EEL_RGB_COLOR_PACK (0x01, 0x23, 0x45)), "010123234545");
+	
 	/* EEL_RGBA_COLOR_PACK */
 	EEL_CHECK_INTEGER_RESULT (EEL_RGBA_COLOR_PACK (0xFF, 0x00, 0x00, 00), EEL_RGB_COLOR_RED);
 	EEL_CHECK_INTEGER_RESULT (EEL_RGBA_COLOR_PACK (0x00, 0xFF, 0x00, 00), EEL_RGB_COLOR_GREEN);
@@ -1013,6 +1024,7 @@ eel_self_check_gdk_extensions (void)
 	EEL_CHECK_INTEGER_RESULT (EEL_RGBA_COLOR_GET_A (EEL_RGB_COLOR_BLUE), 0x00);
 	EEL_CHECK_INTEGER_RESULT (EEL_RGBA_COLOR_GET_A (EEL_RGB_COLOR_WHITE), 0x00);
 	EEL_CHECK_INTEGER_RESULT (EEL_RGBA_COLOR_GET_A (EEL_RGB_COLOR_BLACK), 0x00);
+
 }
 
 #endif /* ! EEL_OMIT_SELF_CHECK */

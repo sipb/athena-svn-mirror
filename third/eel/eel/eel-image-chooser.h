@@ -25,12 +25,12 @@
 #ifndef EEL_IMAGE_CHOOSER_H
 #define EEL_IMAGE_CHOOSER_H
 
-#include <gtk/gtkbin.h>
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
+#include <gtk/gtktreeview.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <eel/eel-art-extensions.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_IMAGE_CHOOSER            (eel_image_chooser_get_type ())
 #define EEL_IMAGE_CHOOSER(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_IMAGE_CHOOSER, EelImageChooser))
@@ -43,8 +43,8 @@ typedef struct EelImageChooserDetails	 EelImageChooserDetails;
 
 struct EelImageChooser
 {
-	/* Super Class */
-	GtkBin bin;
+	/* Super Instance */
+	GtkTreeView parent_instance;
 	
 	/* Private stuff */
 	EelImageChooserDetails *details;
@@ -52,7 +52,10 @@ struct EelImageChooser
 
 struct EelImageChooserClass
 {
-	GtkBinClass parent_class;
+	GtkTreeViewClass parent_class;
+
+	/* Signals */
+	void (* selection_changed) (EelImageChooser *image_chooser);
 };
 
 GtkType        eel_image_chooser_get_type                      (void);
@@ -70,9 +73,7 @@ void           eel_image_chooser_set_selected_row              (EelImageChooser 
 gpointer       eel_image_chooser_get_row_data                  (const EelImageChooser  *image_chooser,
 								guint                   row_index);
 guint          eel_image_chooser_get_num_rows                  (const EelImageChooser  *image_chooser);
-void           eel_image_chooser_synthetic_motion              (EelImageChooser        *image_chooser,
-								int                     x,
-								int                     y);
+
 GtkWidget     *eel_scrolled_image_chooser_new                  (GtkWidget             **image_chooser_out);
 void           eel_scrolled_image_chooser_set_num_visible_rows (EelImageChooser        *image_chooser,
 								GtkWidget              *scrolled_window,
@@ -80,7 +81,7 @@ void           eel_scrolled_image_chooser_set_num_visible_rows (EelImageChooser 
 void           eel_scrolled_image_chooser_show_selected_row    (EelImageChooser        *image_chooser,
 								GtkWidget              *scrolled_window);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_IMAGE_CHOOSER_H */
 

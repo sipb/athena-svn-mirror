@@ -25,15 +25,15 @@
 #ifndef EEL_CAPTION_TABLE_H
 #define EEL_CAPTION_TABLE_H
 
+#include <glib.h>
 #include <gtk/gtktable.h>
-#include <libgnome/gnome-defs.h>
 
 /*
  * EelCaptionTable is a GtkTable sublass that allows you to painlessly
  * create tables of nicely aligned captions.
  */
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_CAPTION_TABLE			(eel_caption_table_get_type ())
 #define EEL_CAPTION_TABLE(obj)		(GTK_CHECK_CAST ((obj), EEL_TYPE_CAPTION_TABLE, EelCaptionTable))
@@ -81,7 +81,7 @@ guint      eel_caption_table_get_num_rows       (EelCaptionTable *caption_table)
 void       eel_caption_table_resize             (EelCaptionTable *caption_table,
 						 guint            num_rows);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_CAPTION_TABLE_H */
 
