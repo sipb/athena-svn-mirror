@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.23 1995-08-23 19:37:42 cfields Exp $
+# $Id: Imakefile,v 1.24 1997-04-30 17:23:07 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # For copying and distribution information,
@@ -10,23 +10,14 @@
 
 #define IHaveSubdirs
 
-#if HaveSysWCL
-WCLDIR=
-#else
-WCLDIR=wcl
-#endif
+CLIENT_SUBDIRS= common logger cfgfile clients browser man lib
+ALL_SUBDIRS= ${CLT_SUBDIRS} server
+TAG_SUBDIRS= ${ALL_SUBDIRS} include
 
-#if HaveSysLibMu
-LIBMUDIR=
-#else
-LIBMUDIR=libMu
-#endif
-
-#if defined(SOLARIS) || defined(SGI)
-SUBDIRS= common logger $(LIBMUDIR) clients browser man lib $(WCLDIR) 
-#else
-SUBDIRS= common logger clients server browser man lib $(WCLDIR) $(LIBMUDIR)
-#endif
+# Right now we don't build the server on any Athena platform; hopefully
+# we'll go to building it on all platforms when it's made more portable.
+SUBDIRS= ${CLIENT_SUBDIRS}
+# SUBDIRS= ${ALL_SUBDIRS}
 
 RM=rm -f
 MV=mv -f
@@ -34,33 +25,43 @@ MV=mv -f
 all::
 
 world::
-	make ${MFLAGS} Makefile
-	@make ${MFLAGS} -f Makefile world2
+	$(MAKE) ${MFLAGS} Makefile
+	@$(MAKE) ${MFLAGS} -f Makefile world2
 
 world2:
-	make ${MFLAGS} Makefiles
-	make ${MFLAGS} depend
-	make ${MFLAGS} all
+	$(MAKE) ${MFLAGS} Makefiles
+	$(MAKE) ${MFLAGS} depend
+	$(MAKE) ${MFLAGS} all
 
-mytags::
-	make ${MFLAGS} olc_tags olcd_tags rpd_tags polld_tags xolc_tags
+FORCE:
+mytags: TAGS.olc TAGS.olcd TAGS.rpd TAGS.polld TAGS.xolc TAGS
 
-olc_tags::
-	$(TAGS) clients/tty//**/*.[ch] clients/lib//**/*.[ch] clients/parser//**/*.[ch] clients/olc//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
-	$(MV) TAGS ../src/TAGS.olc
+TAGS.olc: FORCE
+	$(TAGS) --output=TAGS.olc					\
+		clients/tty//**/*.[ch]		clients/lib//**/*.[ch]	\
+		clients/parser//**/*.[ch]	clients/olc//**/*.[ch]	\
+		common//**/*.[ch] 		cfgfile//**/*.[ch]	\
+		include/olc//**/*.[ch]
 
-xolc_tags::
-	$(TAGS) clients/lib//**/*.[ch] clients/motif//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
-	$(MV) TAGS ../src/TAGS.xolc
+TAGS.xolc: FORCE
+	$(TAGS) --output=TAGS.xolc					\
+		clients/lib//**/*.[ch]		clients/motif//**/*.[ch] \
+		common//**/*.[ch]		cfgfile//**/*.[ch]	\
+		include/olc//**/*.[ch]
 
-olcd_tags::
-	$(TAGS) common//**/*.[ch] include/olc//**/*.[ch] include//**/*.[ch] server/olcd//**/*.[ch]
-	$(MV) TAGS ../src/TAGS.olcd
+TAGS.olcd: FORCE
+	$(TAGS) --output=TAGS.olcd					\
+		 server/olcd//**/*.[ch]		common//**/*.[ch]	\
+		include/olc//**/*.[ch]		include//**/*.[ch]
 
-rpd_tags::
-	$(TAGS) include//**/*.[ch] server/rpd//**/*.[ch]
-	$(MV) TAGS ../src/TAGS.rpd
+TAGS.rpd: FORCE
+	$(TAGS) --output=TAGS.rpd					\
+		include//**/*.[ch]		server/rpd//**/*.[ch]
 
-polld_tags::
-	$(TAGS) include//**/*.[ch] server/polld//**/*.[ch]
-	$(MV) TAGS ../src/TAGS.polld
+TAGS.polld: FORCE
+	$(TAGS) --output=TAGS.polld					\
+		include//**/*.[ch]		cfgfile//**/*.[ch]	\
+		server/polld//**/*.[ch]
+
+TAGS: FORCE
+	$(TAGS) `find ${TAG_SUBDIRS} -name '*.[ch]' -print`
