@@ -3,4 +3,3 @@
 cp $1/packs/config/aliases $2
 cp $1/packs/config/os/linux/sendmail.cf $2
 cp $1/packs/maint/os/linux/athena-sendmail.rc $2
-cp $1/packs/config/os/linux/athena-sendmail.conf $2
