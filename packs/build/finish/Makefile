@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2001-08-16 14:43:47 ghudson Exp $
+# $Id: Makefile,v 1.13 2001-08-22 16:41:56 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -44,7 +44,7 @@ install:
 	chmod go-w ${DESTDIR}
 	${DESTDIR}${ATHETCDIR}/track -w -F${DESTDIR} -W${DESTDIR}${ATHLIBDIR} \
 		-s stats/sys_rvd slists/sys_rvd
-	[ -r ${DESTDIR}${ATHLIBDIR}/slists/sys_rvd.big ] && \
+	[ ! -r ${DESTDIR}${ATHLIBDIR}/slists/sys_rvd.big ] || \
 		${DESTDIR}${ATHETCDIR}/track -w -F${DESTDIR} \
 		-W${DESTDIR}${ATHLIBDIR} \
 		-s stats/sys_rvd.big slists/sys_rvd.big
