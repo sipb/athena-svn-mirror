@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build,v 1.3 2003-02-12 08:39:05 ghudson Exp $
+# $Id: build,v 1.4 2005-01-26 18:26:26 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -21,7 +21,7 @@
 #   permission of the University of Washington.
 #
 #   Pine, Pico, and Pilot software and its included text are Copyright
-#   1989-2002 by the University of Washington.
+#   1989-2004 by the University of Washington.
 #
 #   The full text of our legal notices is contained in the file called
 #   CPYRIGHT, included with this distribution.
@@ -87,6 +87,8 @@ NOLDAP=
 GDIR=
 AAFLAGS=
 SAFLAGS=
+PINEEXTRAC=
+ALTDOCPATHS=
 
 maketarg="no-target"
 PHOME=`pwd`
@@ -172,6 +174,7 @@ then
      cyg)
  echo "Use the \"buildcyg\" script instead of the \"build\" script."
 	  exit;;
+     ga4) makeargs="CC=gcc $makeargs" ;;
      gh9) makeargs="CC=gcc $makeargs" ;;
      ghp) makeargs="CC=gcc $makeargs" ;;
      go5) makeargs="CC=gcc $makeargs" ;;
@@ -195,6 +198,7 @@ case $maketarg in
    aos) ccltarg=$maketarg; picotarg=bsd;       pinetarg=$picotarg ;;
    bs2) ccltarg=bsi;       picotarg=$maketarg; pinetarg=$maketarg ;;
    bs3) ccltarg=$maketarg; picotarg=bs2;       pinetarg=bs2 ;;
+   bso) ccltarg=$maketarg; picotarg=$maketarg; pinetarg=$picotarg ; DEFSSLD=/usr ; CERTSD=/etc/ssl/certs ;;
    d41) ccltarg=$maketarg; picotarg=d-g;       pinetarg=$picotarg ;;
    d54) ccltarg=$maketarg; picotarg=d-g;       pinetarg=$picotarg ;;
    ghp) ccltarg=$maketarg; picotarg=gh9;       pinetarg=$maketarg ;;
@@ -204,9 +208,11 @@ case $maketarg in
    gsc) ccltarg=$maketarg; picotarg=sco;       pinetarg=sco ;;
    hpx) ccltarg=$maketarg; picotarg=hpp;       pinetarg=$maketarg ;;
    hxd) ccltarg=$maketarg; picotarg=hpp;       pinetarg=hpx ;;
+   ldb) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr ; CERTSD=/etc/ssl/certs ; ALTDOCPATHS=1 ;;
    lnp) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ;;
-   lrh) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/share/ssl ;;
-   lsu) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/ssl ;;
+   lrh) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/share/ssl ; ALTDOCPATHS=1 ;;
+   lmd) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/lib/ssl ; ALTDOCPATHS=1 ;;
+   lsu) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/share/ssl ;;
    nx3) ccltarg=$maketarg; picotarg=nxt;       pinetarg=$picotarg ;;
    osx) ccltarg=$maketarg; picotarg=$maketarg; pinetarg=$picotarg ; DEFSSLD=/System/Library/OpenSSL ;;
    os4) ccltarg=$maketarg; picotarg=osf;       pinetarg=$picotarg ;;
@@ -250,6 +256,17 @@ case $maketarg in
 	       echo "Including LDAP functionality"
 	       ;;
 
+	    23) if [ "$LLIBS" != "1" ]
+	       then
+		 L1="'LDAPLIBS=../ldap/lib/libldap.a ../ldap/lib/liblber.a'"
+	       fi
+	       if [ "$LFLAGS" != "1" ]
+	       then
+		 L2="'LDAPCFLAGS=-DENABLE_LDAP -I../ldap/include'"
+	       fi
+	       echo "Including LDAP functionality"
+	       ;;
+
 	    11) if [ "$LLIBS" != "1" ]
 	       then
 		 L1="'LDAPLIBS=../ldap/libraries/libldap/.libs/libldap.a ../ldap/libraries/liblber/.libs/liblber.a'"
@@ -284,6 +301,17 @@ case $maketarg in
 	       ;;
 
 	    4) ;;
+
+	    5) if [ "$LLIBS" != "1" ]
+	       then
+		 L1="'LDAPLIBS=-lldap -llber'"
+	       fi
+	       if [ "$LFLAGS" != "1" ]
+	       then
+		 L2="'LDAPCFLAGS=-DENABLE_LDAP'"
+	       fi
+	       echo "Including LDAP functionality"
+	       ;;
 
 	    *) exit 30 ;;
 	  esac
@@ -325,7 +353,7 @@ case $maketarg in
 	  CERTSD="$SSLD/certs"
 	fi
 
-        if [ \( -d "$SSLD" -o -d "$CERTSD" \) -a "$SAFLAGS" != "1" -a "$NOSSL" != "1" ]
+        if [ \( -d "$SSLD" -o -d "$CERTSD" \) -a "$NOSSL" != "1" ]
 	then
 	  if [ ! -d "$CERTSD" -o ! -f "$CERTSD"/factory.pem ]
 	  then
@@ -353,10 +381,13 @@ case $maketarg in
 		echo ""
 	    fi
 	  fi
-	  case $maketarg in
-	    sco|gsc|sc5|go5)   SSL="sco.nopwd"  ;;
-	    *)                 SSL="nopwd" ;;
-	  esac
+	  if [ "$SAFLAGS" != "1" ]
+	  then
+	    case $maketarg in
+	      sco|gsc|sc5|go5)   SSL="sco.nopwd"  ;;
+	      *)                 SSL="nopwd" ;;
+	    esac
+	  fi
 
 	  S1="SSLDIR=$SSLD"
 	  echo "Including SSL functionality"
@@ -428,25 +459,45 @@ case $maketarg in
         echo ''
 
         echo "Making Pine and rpload/rpdump".
+	if [ "$ALTDOCPATHS" = "1" ]
+	then
+	    cd "$PHOME"
+	    rm .pine.sedargs
+	    echo -n " -e s/\/usr\/local\/lib\/pine.conf/\/etc\/pine.conf/" > .pine.sedargs
+	    echo -n " -e s/\/usr\/local\/lib\/pine.info/\/etc\/pine.info/" >> .pine.sedargs
+	    echo -n " -e s/\/usr\/lib\/sendmail/\/usr\/sbin\/sendmail/" >> .pine.sedargs
+	    echo -n " -e s/\/usr\/spool\/news/\/var\/spool\/news/" >> .pine.sedargs
+	    echo -n " -e s/\/usr\/spool\/mail/\/var\/spool\/mail/" >> .pine.sedargs
+	    echo -n " -e s/\/bin\/passwd/\/usr\/bin\/passwd/" >> .pine.sedargs
+	    PINEEXTRAC="'LOCALPINECFLAGS=-DSYSTEM_PINERC=\\\"/etc/pine.conf\\\" -DSYSTEM_PINERC_FIXED=\\\"/etc/pine.conf.fixed\\\" -DSYSTEM_PINE_INFO_PATH=\\\"/etc/pine.info\\\"'"
+	fi
         cd "$PHOME/pine"
-        eval echo make "$makeargs" "$L1" "$L2" -f makefile.$pinetarg
-        eval make "$makeargs" "$L1" "$L2" -f makefile.$pinetarg
+        eval echo make "$makeargs" "$L1" "$L2" "$PINEEXTRAC" -f makefile.$pinetarg
+        eval make "$makeargs" "$L1" "$L2" "$PINEEXTRAC" -f makefile.$pinetarg
 	rc=$?
 	if [ $rc != "0" ] ; then exit $rc ; fi
         cd "$PHOME"
         if [ ! -d bin ] ;  then    mkdir bin;        fi
         cd "$PHOME/bin"
         rm -f pine mtest imapd mailutil pico pilot rpload rpdump ipop2d ipop3d
-        if [ -s ../pine/pine ] ;      then ln -s ../pine/pine  pine      ; fi
-        if [ -s ../mtest/mtest ] ;    then ln -s ../mtest/mtest mtest    ; fi
-        if [ -s ../mailutil/mailutil ] ; then ln -s ../mailutil/mailutil mailutil ; fi
-        if [ -s ../imapd/imapd ] ;    then ln -s ../imapd/imapd imapd    ; fi
-        if [ -s ../ipopd/ipop2d ] ;   then ln -s ../ipopd/ipop2d ipop2d  ; fi
-        if [ -s ../ipopd/ipop3d ] ;   then ln -s ../ipopd/ipop3d ipop3d  ; fi
-        if [ -s ../pico/pico ] ;      then ln -s ../pico/pico pico       ; fi
-        if [ -s ../pico/pilot ] ;     then ln -s ../pico/pilot pilot     ; fi
-        if [ -s ../pine/rpload ] ;    then ln -s ../pine/rpload rpload   ; fi
-        if [ -s ../pine/rpdump ] ;    then ln -s ../pine/rpdump rpdump   ; fi
+        if [ -s ../pine/pine ] ;      then ln ../pine/pine  pine      ; fi
+        if [ -s ../mtest/mtest ] ;    then ln ../mtest/mtest mtest    ; fi
+        if [ -s ../mailutil/mailutil ] ; then ln ../mailutil/mailutil mailutil ; fi
+        if [ -s ../imapd/imapd ] ;    then ln ../imapd/imapd imapd    ; fi
+        if [ -s ../ipopd/ipop2d ] ;   then ln ../ipopd/ipop2d ipop2d  ; fi
+        if [ -s ../ipopd/ipop3d ] ;   then ln ../ipopd/ipop3d ipop3d  ; fi
+        if [ -s ../pico/pico ] ;      then ln ../pico/pico pico       ; fi
+        if [ -s ../pico/pilot ] ;     then ln ../pico/pilot pilot     ; fi
+        if [ -s ../pine/rpload ] ;    then ln ../pine/rpload rpload   ; fi
+        if [ -s ../pine/rpdump ] ;    then ln ../pine/rpdump rpdump   ; fi
+	if [ "$ALTDOCPATHS" = "1" ]
+	then
+	    echo "making local docs"
+	    echo "sed `cat ../.pine.sedargs` < ../doc/pine.1 > pine.1"
+	    sed `cat ../.pine.sedargs` < ../doc/pine.1 > pine.1
+	    echo "sed `cat ../.pine.sedargs` < ../doc/tech-notes.txt > tech-notes.txt"
+	    sed `cat ../.pine.sedargs` < ../doc/tech-notes.txt > tech-notes.txt
+	fi
         cd "$PHOME"
         echo ''
         echo "Links to executables are in bin directory:"
@@ -476,7 +527,7 @@ case $maketarg in
 
 
     clean) # This only sort of works 
-        rm -f c-client mtest mailutil imapd ipopd
+        rm -f c-client mtest mailutil imapd ipopd .pine.sedargs
         echo "Cleaning c-client and imapd"
 	cd "$PHOME/imap"
 	make clean

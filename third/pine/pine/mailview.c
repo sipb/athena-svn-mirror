@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.3 2004-03-01 21:39:08 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.4 2005-01-26 18:26:28 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailview.c,v 1.3 2004-03-01 21:39:08 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -95,8 +95,33 @@ struct view_write_s {
 
 #define MAX_FUDGE (1024*1024)
 
+/*
+ * Struct to help with editorial comment insertion
+ */
+#define	EDITORIAL_MAX	128
+typedef struct _editorial_s {
+    char prefix[EDITORIAL_MAX];
+    int	 prelen;
+    char postfix[EDITORIAL_MAX];
+    int	 postlen;
+} EDITORIAL_S;
 
-static char *g_editorial_prefix, *g_editorial_postfix;
+
+/*
+ * If the number of lines in the quote is equal to lines or less, then
+ * we show the quote. If the number of lines in the quote is more than lines,
+ * then we show lines-1 of the quote followed by one line of editorial
+ * comment.
+ */
+typedef struct del_q_s {
+    int        lines;		/* show this many lines (counting editorial) */
+    int        indent_length;	/* skip over this indent                     */
+    int        is_flowed;	/* message is labelled flowed                */
+    HANDLE_S **handlesp;
+    int        in_quote;	/* dynamic data */
+    char     **saved_line;	/*   "          */
+} DELQ_S;
+
 
 /*
  * Def's to help in sorting out multipart/alternative
@@ -207,8 +232,8 @@ static struct key view_keys[] =
 
 	HELP_MENU,
 	OTHER_MENU,
-	NULL_MENU,
-	NULL_MENU,
+	HOMEKEY_MENU,
+	ENDKEY_MENU,
 	RCOMPOSE_MENU,
 	NULL_MENU,
 	NULL_MENU,
@@ -268,6 +293,7 @@ void	    format_newsgroup_string PROTO((char *, char *, int, gf_io_t));
 int	    format_raw_hdr_string PROTO((char *, char *, gf_io_t, int));
 int	    format_env_puts PROTO((char *, gf_io_t));
 long	    format_size_guess PROTO((BODY *));
+int	   *format_view_margin PROTO((void));
 void        pine_rfc822_write_address_noquote PROTO((ADDRESS *,
 						     gf_io_t, int *));
 void        pine2_rfc822_write_address_noquote PROTO((char *,ADDRESS *,int *));
@@ -280,6 +306,9 @@ void	    view_writec_killbuf PROTO((void));
 int	    view_writec PROTO((int));
 int	    view_end_scroll PROTO((SCROLL_S *));
 int	    quote_editorial PROTO((long, char *, LT_INS_S **, void *));
+int	    delete_quotes PROTO((long, char *, LT_INS_S **, void *));
+void        delete_unused_handles PROTO((HANDLE_S **));
+void        mark_handles_in_line PROTO((char *, HANDLE_S **, int));
 void	    set_scroll_text PROTO((SCROLL_S *, long, SCRLCTRL_S *));
 long	    scroll_scroll_text PROTO((long, HANDLE_S *, int));
 static int  print_to_printer PROTO((SCROLL_S *));
@@ -322,6 +351,7 @@ int	    scroll_handle_prompt PROTO((HANDLE_S *, int));
 int	    scroll_handle_launch PROTO((HANDLE_S *, int));
 HANDLE_S   *scroll_handle_in_frame PROTO((long));
 long	    scroll_handle_reframe PROTO((int, int));
+int         visible_linelen PROTO((int));
 int	    handle_on_line PROTO((long, int));
 int	    handle_on_page PROTO((HANDLE_S *, long, long));
 int	    dot_on_handle PROTO((long, int));
@@ -342,6 +372,7 @@ int	    url_local_imap PROTO((char *));
 int	    url_bogus_imap PROTO((char **, char *, char *));
 int	    url_local_nntp PROTO((char *));
 int	    url_local_news PROTO((char *));
+int	    url_local_file PROTO((char *));
 int	    url_local_phone_home PROTO((char *));
 int	    url_bogus PROTO((char *, char *));
 long        doubleclick_handle PROTO((SCROLL_S *, HANDLE_S *, 
@@ -381,7 +412,7 @@ mail_view_screen(ps)
     char            last_was_full_header = 0;
     long            last_message_viewed = -1L, raw_msgno, offset = 0L;
     OtherMenu       save_what = FirstMenu;
-    int             we_cancel = 0, flags;
+    int             we_cancel = 0, flags, i;
     MESSAGECACHE   *mc;
     ENVELOPE       *env;
     BODY           *body;
@@ -393,6 +424,13 @@ mail_view_screen(ps)
     dprint(1, (debugfile, "\n\n  -----  MAIL VIEW  -----\n"));
 
     ps->prev_screen = mail_view_screen;
+
+    if(ps->ttyo->screen_rows - HEADER_ROWS(ps) - FOOTER_ROWS(ps) < 1){
+	q_status_message(SM_ORDER | SM_DING, 0, 3,
+			 "Screen too small to view message");
+	ps->next_screen = mail_index_screen;
+	return;
+    }
 
     /*----------------- Loop viewing messages ------------------*/
     do {
@@ -419,8 +457,10 @@ mail_view_screen(ps)
 	raw_msgno = mn_m2raw(ps->msgmap, mn_get_cur(ps->msgmap));
 	body      = NULL;
 	if(raw_msgno == 0L
-	   || !(env = mail_fetchstructure(ps->mail_stream, raw_msgno, &body))
-	   || !(mc = mail_elt(ps->mail_stream, raw_msgno))){
+	   || !(env = pine_mail_fetchstructure(ps->mail_stream,raw_msgno,&body))
+	   || !(raw_msgno > 0L && ps->mail_stream
+	        && raw_msgno <= ps->mail_stream->nmsgs
+		&& (mc = mail_elt(ps->mail_stream, raw_msgno)))){
 	    q_status_message1(SM_ORDER, 3, 3,
 			      "Error getting message %.200s data",
 			      comatose(mn_get_cur(ps->msgmap)));
@@ -461,9 +501,14 @@ mail_view_screen(ps)
 						  + SCROLL_LINES_BELOW(ps)));
 
 	flags = FM_DISPLAY;
-	if((last_message_viewed != mn_get_cur(ps->msgmap)
-	    || last_was_full_header == 1))
+	if(last_message_viewed != mn_get_cur(ps->msgmap)
+	   || last_was_full_header == 2)
 	  flags |= FM_NEW_MESS;
+
+	if(F_OFF(F_QUELL_FULL_HDR_RESET, ps_global)
+	   && last_message_viewed != -1L
+	   && last_message_viewed != mn_get_cur(ps->msgmap))
+	  ps->full_header = 0;
 
 	if(offset)		/* no pre-paint during resize */
 	  view_writec_killbuf();
@@ -510,6 +555,7 @@ mail_view_screen(ps)
 	if(offset){		/* resize?  preserve paging! */
 	    scrollargs.start.on		= Offset;
 	    scrollargs.start.loc.offset = offset;
+	    scrollargs.body_valid = 0;
 	    offset = 0L;
 	}
 	  
@@ -523,16 +569,14 @@ mail_view_screen(ps)
 	scrollargs.keys.menu	= &view_keymenu;
 	scrollargs.keys.what    = save_what;
 	setbitmap(scrollargs.keys.bitmap);
-#ifndef DOS
 	if(F_OFF(F_ENABLE_PIPE, ps_global))
-#endif
 	  clrbitn(VIEW_PIPE_KEY, scrollargs.keys.bitmap);
 
 	/* 
 	 * turn off attachment viewing for raw msg txt, atts 
 	 * haven't been set up at this point
 	 */
-	if(ps_global->full_header
+	if(ps_global->full_header == 2
 	   && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
 	  clrbitn(VIEW_ATT_KEY, scrollargs.keys.bitmap);
 
@@ -572,7 +616,9 @@ mail_view_screen(ps)
 	scrollargs.mouse.popup = format_message_popup;
 #endif
 
-	if(scrolltool(&scrollargs) == MC_RESIZE)
+	if(((i = scrolltool(&scrollargs)) == MC_RESIZE
+	    || (i == MC_FULLHDR && ps_global->full_header == 1))
+	   && scrollargs.start.on == Offset)
 	  offset = scrollargs.start.loc.offset;
 
 	save_what = scrollargs.keys.what;
@@ -587,6 +633,14 @@ mail_view_screen(ps)
 
     if(we_cancel)
       cancel_busy_alarm(-1);
+
+    /*
+     * Unless we're going into attachment screen,
+     * start over with  full_header.
+     */
+    if(F_OFF(F_QUELL_FULL_HDR_RESET, ps_global)
+       && ps->next_screen != attachment_screen)
+      ps->full_header = 0;
 }
 
 
@@ -1064,6 +1118,7 @@ body_type_names(t)
     static char body_type[TLEN + 1];
     char   *p;
 
+    body_type[0] = '\0';
     strncpy(body_type,				/* copy the given type */
 	    (t > -1 && t < TYPEMAX && body_types[t])
 	      ? body_types[t] : "Other", TLEN);
@@ -1442,20 +1497,19 @@ format_message(msgno, env, body, handlesp, flgs, pc)
     char     *decode_err = NULL, *tmp1, *description;
     HEADER_S  h;
     ATTACH_S *a;
-    int       show_parts, error_found = 0, seen = 1, width;
+    int       show_parts, error_found = 0, width;
     int       is_in_sig = OUT_SIG_BLOCK;
+    int       filt_only_c0 = 0, wrapflags;
     gf_io_t   gc;
-    MESSAGECACHE *mc;
 
     clear_cur_embedded_color();
-    mc = mail_elt(ps_global->mail_stream, msgno);
-    if(mc && !mc->seen)
-      seen = 0;
 
     width = (flgs & FM_DISPLAY) ? ps_global->ttyo->screen_cols : 80;
 
     /*---- format and copy envelope ----*/
-    if(ps_global->full_header)
+    if(ps_global->full_header == 1)
+      q_status_message(SM_INFO, 0, 3, "All quoted text being included");
+    else if(ps_global->full_header == 2)
       q_status_message(SM_INFO, 0, 3,
 		       "Full header mode ON.  All header text being included");
 
@@ -1475,11 +1529,8 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	break;
     }
 
-    if(!seen)
-      check_point_change();
-
     if(body == NULL 
-       || (ps_global->full_header
+       || (ps_global->full_header == 2
 	   && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))) {
         /*--- Server is not an IMAP2bis, It can't parse MIME
               so we just show the text here. Hopefully the 
@@ -1508,6 +1559,7 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 
         if(text2 = (void *)pine_mail_fetch_text(ps_global->mail_stream,
 						msgno, NULL, NULL, NIL)){
+
  	    if(!gf_puts(NEWLINE, pc))		/* write delimiter */
 	      goto write_error;
 #if	defined(DOS) && !defined(WIN32)
@@ -1519,7 +1571,9 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	    /* link in filters, similar to what is done in decode_text() */
 	    if(!ps_global->pass_ctrl_chars){
 		gf_link_filter(gf_escape_filter, NULL);
-		gf_link_filter(gf_control_filter, NULL);
+		filt_only_c0 = ps_global->pass_c1_ctrl_chars ? 1 : 0;
+		gf_link_filter(gf_control_filter,
+			       gf_control_filter_opt(&filt_only_c0));
 	    }
 	    gf_link_filter(gf_tag_filter, NULL);
 
@@ -1546,9 +1600,16 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 		gf_link_filter(gf_line_test, gf_line_test_opt(color_a_quote, NULL));
 	    }
 
+	    wrapflags = (flgs & FM_DISPLAY) ? GFW_HANDLES : 0;
+	    if(flgs & FM_DISPLAY
+	       && !(flgs & FM_NOCOLOR)
+	       && pico_usingcolor())
+	      wrapflags |= GFW_USECOLOR;
 	    gf_link_filter(gf_wrap, gf_wrap_filter_opt(ps_global->ttyo->screen_cols,
 						       ps_global->ttyo->screen_cols,
-						       0, flgs & FM_DISPLAY ? GFW_HANDLES: 0));
+						       format_view_margin(),
+						       0,
+						       wrapflags));
 	    gf_link_filter(gf_nvtnl_local, NULL);
 	    if(decode_err = gf_pipe(gc, pc)){
                 sprintf(tmp_20k_buf, "Formatting error: %s", decode_err);
@@ -1589,11 +1650,19 @@ format_message(msgno, env, body, handlesp, flgs, pc)
     /*=========== Format the header into the buffer =========*/
     /*----- First do the list of parts/attachments if needed ----*/
     if((flgs & FM_DISPLAY) && ps_global->atmts[1].description){
-	char tmp[MAX_SCREEN_COLS + 1];
-	int  n, max_num_l = 0, size_offset = 0;
+	char tmp[MAX_SCREEN_COLS + 1], margin_str[MAX_SCREEN_COLS + 1], *tmpp;
+	int  n, max_num_l = 0, size_offset = 0, *margin;
 
+	/*
+	 * can't pop margin_str since it's max_screen and view_margin()
+	 * can be only a fraction of screen_cols we've already checked
+	 * is less than #define MAX_SCREEN_COLS, right?
+	 */
+	margin = format_view_margin();
+	strncpy(margin_str, repeat_char(margin[0], ' '), sizeof(margin_str)-1);
+	margin_str[sizeof(margin_str)-1] = '\0';
 
-	if(!(gf_puts("Parts/Attachments:", pc) && gf_puts(NEWLINE, pc)))
+	if(!(gf_puts(margin_str, pc) && gf_puts("Parts/Attachments:", pc) && gf_puts(NEWLINE, pc)))
 	  goto write_error;
 
 	/*----- Figure max display lengths -----*/
@@ -1612,6 +1681,9 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	/*----- Format the list of attachments -----*/
 	for(a = ps_global->atmts; a->description != NULL; a++) {
 	    COLOR_PAIR *lastc = NULL;
+
+	    if(!gf_puts(margin_str, pc))
+	      goto write_error;
 
 	    memset(tmp, ' ', sizeof(tmp)-1);
 	    tmp[sizeof(tmp)-1] = '\0';
@@ -1639,12 +1711,16 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	    if((n = ps_global->ttyo->screen_cols - (size_offset + 4)) > 0)
 	      strncpy(tmp + size_offset + 2, a->description, n);
 
-	    tmp[ps_global->ttyo->screen_cols] = '\0';
+	    tmp[ps_global->ttyo->screen_cols - (margin[0] + margin[1])] = '\0';
 
 	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && handlesp){
 		char      buf[16], color[64];
 		int	  l;
 		HANDLE_S *h;
+
+		for(tmpp = tmp; *tmpp && *tmpp == ' '; tmpp++)
+		  if(!(*pc)(' '))
+		    goto write_error;
 
 		h	    = new_handle(handlesp);
 		h->type	    = Attach;
@@ -1665,8 +1741,10 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 		     && (*pc)(strlen(buf)) && gf_puts(buf, pc)))
 		  goto write_error;
 	    }
+	    else
+	      tmpp = tmp;
 
-	    if(!format_env_puts(tmp, pc))
+	    if(!format_env_puts(tmpp, pc))
 	      goto write_error;
 
 	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && handlesp){
@@ -1690,8 +1768,9 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	      goto write_error;
         }
 
-	if(!gf_puts("----------------------------------------", pc)
-	   || !gf_puts(NEWLINE, pc))
+	if(!(gf_puts(margin_str, pc)
+	     && gf_puts(repeat_char(min((ps_global->ttyo->screen_cols - (margin[0] + margin[1])), 40),'-'), pc)
+	     && gf_puts(NEWLINE, pc)))
 	  goto write_error;
     }
 
@@ -1739,8 +1818,8 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 		char *err = NULL;
 
 		sprintf(tmp_20k_buf, 
-			"Malformed message%s.",
-			ps_global->full_header 
+			"Empty or malformed message%s.",
+			ps_global->full_header == 2 
 			    ? ". Displaying raw text"
 			    : ". Use \"H\" to see raw text");
 
@@ -1749,7 +1828,7 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 		     && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc)))
 		  goto write_error;
 
-		if(ps_global->full_header
+		if(ps_global->full_header == 2
 		   && (err = detach_raw(ps_global->mail_stream, msgno,
 					a->number, pc, flgs))){
 		    sprintf(tmp_20k_buf, 
@@ -1822,10 +1901,15 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	    }
             else if(a->body->subtype 
 		    && strucmp(a->body->subtype, "external-body") == 0) {
-		if(!gf_puts("This part is not included and can be ", pc)
-		   || !gf_puts("fetched as follows:", pc)
+		char es[512];
+		int *m = format_view_margin();
+		int c = ps_global->ttyo->screen_cols;
+
+		c -= (m != NULL) ? m[0] : 0;
+		c -= (m != NULL) ? m[1] : 0;
+		if(format_editorial("This part is not included and can be fetched as follows:", c, pc)
 		   || !gf_puts(NEWLINE, pc)
-		   || !gf_puts(display_parameters(a->body->parameter), pc))
+		   || format_editorial(display_parameters(a->body->parameter), c, pc))
 		  goto write_error;
             }
 	    else
@@ -1872,7 +1956,9 @@ format_editorial(s, width, pc)
     gf_io_t   gc;
     char     *t;
     size_t    n, len;
+    int      *margin;
     unsigned char *p, *tmp = NULL;
+    EDITORIAL_S es;
  
     /*
      * Warning. Some callers of this routine use the first half
@@ -1896,27 +1982,37 @@ format_editorial(s, width, pc)
     if(tmp)
       fs_give((void **)&tmp);
 
+    margin = format_view_margin();
+    width -= (margin[0] + margin[1]);
+
     if(width > 40){
 	width -= 12;
-	g_editorial_prefix  = "    [ ";
-	g_editorial_postfix = " ]";
+
+	es.prelen = max(2, min(margin[0] + 6, EDITORIAL_MAX - 3));
+	sprintf(es.prefix, "%s[ ", repeat_char(es.prelen - 2, ' '));
+	es.postlen = 2;
+	strcpy(es.postfix, " ]");
     }
     else if(width > 20){
 	width -= 6;
-	g_editorial_prefix  = " [ ";
-	g_editorial_postfix = " ]";
+
+	es.prelen = max(2, min(margin[0] + 3, EDITORIAL_MAX - 3));
+	sprintf(es.prefix, "%s[ ", repeat_char(es.prelen - 2, ' '));
+	es.postlen = 2;
+	strcpy(es.postfix, " ]");
     }
     else{
 	width -= 2;
-	g_editorial_prefix  = "[";
-	g_editorial_postfix = "]";
+	strcpy(es.prefix, "[");
+	strcpy(es.postfix, "]");
+	es.prelen = 1;
+	es.postlen = 1;
     }
 
     gf_filter_init();
-
     gf_link_filter(gf_wrap, gf_wrap_filter_opt(width, width,
-					       0, GFW_HANDLES));
-    gf_link_filter(gf_line_test, gf_line_test_opt(quote_editorial, NULL));
+					       NULL, 0, GFW_HANDLES));
+    gf_link_filter(gf_line_test, gf_line_test_opt(quote_editorial, &es));
     return(gf_pipe(gc, pc));
 }
 
@@ -1928,11 +2024,12 @@ quote_editorial(linenum, line, ins, local)
     LT_INS_S **ins;
     void      *local;
 {
-    ins = gf_line_test_new_ins(ins, line, g_editorial_prefix,
-			       strlen(g_editorial_prefix));
+    ins = gf_line_test_new_ins(ins, line,
+			       ((EDITORIAL_S *)local)->prefix,
+			       ((EDITORIAL_S *)local)->prelen);
     ins = gf_line_test_new_ins(ins, line + strlen(line),
-			       g_editorial_postfix,
-			       strlen(g_editorial_postfix));
+			       ((EDITORIAL_S *)local)->postfix,
+			       ((EDITORIAL_S *)local)->postlen);
     return(0);
 }
 
@@ -1965,6 +2062,13 @@ charset_editorial(charset, msgno, handlesp, flags, quality, width, pc)
 	h		      = new_handle(handlesp);
 	h->type		      = URL;
 	h->h.url.path	      = cpystr("x-pine-help:h_config_char_set");
+
+	/*
+	 * Because this filter comes after the delete_quotes filter, we need
+	 * to tell delete_quotes that this handle is used, so it won't
+	 * delete it. This is a dangerous thing.
+	 */
+	h->is_used = 1; 
 
 	if(!(flags & FM_NOCOLOR)
 	   && scroll_handle_start_color(color, &n)){
@@ -2122,11 +2226,104 @@ int
 format_blip_seen(msgno)
     long msgno;
 {
-    if(!mail_elt(ps_global->mail_stream, msgno)->seen
-	&& !ps_global->mail_stream->rdonly)
+    MESSAGECACHE *mc;
+
+    if(msgno > 0L && ps_global->mail_stream
+       && msgno <= ps_global->mail_stream->nmsgs
+       && (mc = mail_elt(ps_global->mail_stream, msgno))
+       && !mc->seen
+       && !ps_global->mail_stream->rdonly)
       mail_flag(ps_global->mail_stream, long2string(msgno), "\\SEEN", ST_SET);
 
     return(1);
+}
+
+
+/*
+ * format_view_margin - return sane value for vertical margins
+ */
+int *
+format_view_margin()
+{
+    static int margin[2];
+    char tmp[100], e[200], *err, lastchar = 0;
+    int left = 0, right = 0, leftm = 0, rightm = 0;
+    size_t l;
+
+    memset(margin, 0, sizeof(margin));
+
+    /*
+     * We initially tried to make sure that the user didn't shoot themselves
+     * in the foot by setting this too small. People seem to want to do some
+     * strange stuff, so we're going to relax the wild shot detection and
+     * let people set what they want, until we get to the point of totally
+     * absurd. We've also added the possibility of appending the letter c
+     * onto the width. That means treat the value as an absolute column
+     * instead of a width. That is, a right margin of 76c means wrap at
+     * column 76, whereas right margin of 4 means to wrap at column
+     * screen width - 4.
+     */
+    if(ps_global->VAR_VIEW_MARGIN_LEFT){
+	strncpy(tmp, ps_global->VAR_VIEW_MARGIN_LEFT, sizeof(tmp)-1);
+	tmp[sizeof(tmp)-1] = '\0';
+	removing_leading_and_trailing_white_space(tmp);
+	if(tmp[0]){
+	    l = strlen(tmp);
+	    if(l > 0)
+	      lastchar = tmp[l-1];
+
+	    if(lastchar == 'c')
+	      tmp[l-1] = '\0';
+	    
+	    if(err = strtoval(tmp, &left, 0, 0, 0, e, "Viewer-margin-left")){
+		leftm = 0;
+		dprint(2, (debugfile, "%s\n", err));
+	    }
+	    else{
+		if(lastchar == 'c')
+		  leftm = left-1;
+		else
+		  leftm = left;
+		
+		leftm = min(max(0, leftm), ps_global->ttyo->screen_cols);
+	    }
+	}
+    }
+
+    if(ps_global->VAR_VIEW_MARGIN_RIGHT){
+	strncpy(tmp, ps_global->VAR_VIEW_MARGIN_RIGHT, sizeof(tmp)-1);
+	tmp[sizeof(tmp)-1] = '\0';
+	removing_leading_and_trailing_white_space(tmp);
+	if(tmp[0]){
+	    l = strlen(tmp);
+	    if(l > 0)
+	      lastchar = tmp[l-1];
+
+	    if(lastchar == 'c')
+	      tmp[l-1] = '\0';
+	    
+	    if(err = strtoval(tmp, &right, 0, 0, 0, e, "Viewer-margin-right")){
+		rightm = 0;
+		dprint(2, (debugfile, "%s\n", err));
+	    }
+	    else{
+		if(lastchar == 'c')
+		  rightm = ps_global->ttyo->screen_cols - right;
+		else
+		  rightm = right;
+		
+		rightm = min(max(0, rightm), ps_global->ttyo->screen_cols);
+	    }
+	}
+    }
+
+    if((rightm > 0 || leftm > 0) && rightm >= 0 && leftm >= 0
+       && ps_global->ttyo->screen_cols - rightm - leftm >= 8){
+	margin[0] = leftm;
+	margin[1] = rightm;
+    }
+
+    return(margin);
 }
 
 
@@ -2381,6 +2578,39 @@ new_handle(handlesp)
     }
 
     return(h);
+}
+
+
+/*
+ * Normally we ignore the is_used bit in HANDLE_S. However, if we are
+ * using the delete_quotes filter, we pay attention to it. All of the is_used
+ * bits are off by default, and the delete_quotes filter turns them on
+ * if it is including lines with those handles.
+ *
+ * This is a bit of a crock, since it depends heavily on the order of the
+ * filters. Notice that the charset_editorial filter, which comes after
+ * delete_quotes and adds a handle, has to explicitly set the is_used bit!
+ */
+void
+delete_unused_handles(handlesp)
+    HANDLE_S **handlesp;
+{
+    HANDLE_S *h, *nexth;
+
+    if(handlesp && *handlesp && (*handlesp)->using_is_used){
+	for(h = *handlesp; h && h->prev; h = h->prev)
+	  ;
+	
+	for(; h; h = nexth){
+	    nexth = h->next;
+	    if(h->is_used == 0){
+		if(h == *handlesp)
+		  *handlesp = nexth;
+
+		free_handle(&h);
+	    }
+	}
+    }
 }
 
 
@@ -3271,21 +3501,23 @@ struct quote_colors {
 };
 
 int
-color_a_quote(linenum, line, ins, local)
+color_a_quote(linenum, line, ins, is_flowed_msg)
     long       linenum;
     char      *line;
     LT_INS_S **ins;
-    void      *local;
+    void      *is_flowed_msg;
 {
     int countem = 0;
     struct variable *vars = ps_global->vars;
     char *p;
     struct quote_colors *colors = NULL, *cp, *next;
     COLOR_PAIR *col = NULL;
+    int is_flowed = is_flowed_msg ? *((int *)is_flowed_msg) : 0;
 
     p = line;
-    while(isspace((unsigned char)*p))
-      p++;
+    if(!is_flowed)
+      while(isspace((unsigned char)*p))
+	p++;
 
     if(p[0] == '>'){
 	struct quote_colors *c;
@@ -3346,8 +3578,10 @@ color_a_quote(linenum, line, ins, local)
 
 	countem = (countem == 1) ? 0 : countem;
 
-	for(p++; isspace((unsigned char)*p); p++)
-	  ;
+	p++;
+	if(!is_flowed)
+	  for(; isspace((unsigned char)*p); p++)
+	    ;
     }
 
     if(colors){
@@ -3516,6 +3750,272 @@ color_signature(linenum, line, ins, is_in_sig)
 
 
 /*
+ * This one is a little more complicated because it comes late in the
+ * filtering sequence after colors have been added and url's hilited and
+ * so on. So if it wants to look at the beginning of the line it has to
+ * wade through some stuff done by the other filters first. This one is
+ * skipping the leading indent added by the viewer-margin stuff and leading
+ * tags.
+ */
+int
+delete_quotes(linenum, line, ins, local)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *local;
+{
+    DELQ_S *dq;
+    char   *lp;
+    int     i, lines, not_a_quote = 0;
+    size_t  len;
+
+    dq = (DELQ_S *) local;
+    if(!dq)
+      return(0);
+
+    if(dq->lines > 0 || dq->lines == Q_DEL_ALL){
+
+	lines = (dq->lines == Q_DEL_ALL) ? 0 : dq->lines;
+
+	/*
+	 * First determine if this line is part of a quote.
+	 */
+
+	/* skip over indent added by viewer-margin-left */
+	lp = line;
+	for(i = dq->indent_length; i > 0 && !not_a_quote && *lp; i--)
+	  if(*lp++ != SPACE)
+	    not_a_quote++;
+	
+	/* skip over leading tags */
+	while(!not_a_quote
+	      && ((unsigned char) (*lp) == (unsigned char) TAG_EMBED)){
+	    switch(*++lp){
+	      case '\0':
+		not_a_quote++;
+	        break;
+
+	      default:
+		++lp;
+		break;
+
+	      case TAG_FGCOLOR:
+	      case TAG_BGCOLOR:
+	      case TAG_HANDLE:
+		switch(*lp){
+		  case TAG_FGCOLOR:
+		  case TAG_BGCOLOR:
+		    len = RGBLEN + 1;
+		    break;
+
+		  case TAG_HANDLE:
+		    len = *++lp + 1;
+		    break;
+		}
+
+		if(strlen(lp) < len)
+		  not_a_quote++;
+		else
+		  lp += len;
+
+		break;
+
+	      case TAG_EMBED:
+		break;
+	    }
+	}
+
+	/* skip over whitespace */
+	if(!dq->is_flowed)
+	  while(isspace((unsigned char) *lp))
+	    lp++;
+
+	/* check first character to see if it is a quote */
+	if(!not_a_quote && *lp != '>')
+	  not_a_quote++;
+
+	if(not_a_quote){
+	    if(dq->in_quote > lines+1){
+	      char tmp[500];
+
+	      /*
+	       * Display how many lines were hidden.
+	       */
+	      sprintf(tmp,
+		      "%.200s[ %d lines of quoted text hidden from view ]\r\n",
+		      repeat_char(dq->indent_length, SPACE),
+		      dq->in_quote - lines);
+	      if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+
+		sprintf(tmp, "%.200s[ %d lines of quoted text hidden ]\r\n",
+			repeat_char(dq->indent_length, SPACE),
+			dq->in_quote - lines);
+
+		if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+		  sprintf(tmp, "%.200s[ %d lines hidden ]\r\n",
+			  repeat_char(dq->indent_length, SPACE),
+			  dq->in_quote - lines);
+
+		  if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+		    sprintf(tmp, "%.200s[ %d hidden ]\r\n",
+			    repeat_char(dq->indent_length, SPACE),
+			    dq->in_quote - lines);
+		  
+		    if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+		      sprintf(tmp, "%.200s[...]\r\n",
+			      repeat_char(dq->indent_length, SPACE));
+
+		      if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+		        sprintf(tmp, "%.200s...\r\n",
+			        repeat_char(dq->indent_length, SPACE));
+
+			if(strlen(tmp)-2 > ps_global->ttyo->screen_cols){
+		          sprintf(tmp, "%.200s\r\n",
+			      repeat_char(min(ps_global->ttyo->screen_cols,3),
+					  '.'));
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+
+	      ins = gf_line_test_new_ins(ins, line, tmp, strlen(tmp));
+	      mark_handles_in_line(line, dq->handlesp, 1);
+	      ps_global->some_quoting_was_suppressed = 1;
+	    }
+	    else if(dq->in_quote == lines+1
+		    && dq->saved_line && *dq->saved_line){
+		/*
+		 * We would have only had to delete a single line. Instead
+		 * of deleting it, just show it.
+		 */
+		ins = gf_line_test_new_ins(ins, line,
+					   *dq->saved_line,
+					   strlen(*dq->saved_line));
+		mark_handles_in_line(*dq->saved_line, dq->handlesp, 1);
+	    }
+	    else
+	      mark_handles_in_line(line, dq->handlesp, 1);
+
+	    if(dq->saved_line && *dq->saved_line)
+	      fs_give((void **) dq->saved_line);
+
+	    dq->in_quote = 0;
+	}
+	else{
+	    dq->in_quote++;				/* count it */
+	    if(dq->in_quote > lines){
+		/*
+		 * If the hidden part is a single line we'll show it instead.
+		 */
+		if(dq->in_quote == lines+1){
+		    if(dq->saved_line && *dq->saved_line)
+		      fs_give((void **) dq->saved_line);
+		    
+		    *dq->saved_line = fs_get(strlen(line) + 3);
+		    sprintf(*dq->saved_line, "%s\r\n", line);
+		}
+
+		mark_handles_in_line(line, dq->handlesp, 0);
+		/* skip it, at least for now */
+		return(2);
+	    }
+
+	    mark_handles_in_line(line, dq->handlesp, 1);
+	}
+    }
+
+    return(0);
+}
+
+
+/*
+ * We need to delete handles that we are removing from the displayed
+ * text. But there is a complication. Some handles appear at more than
+ * one location in the text. So we keep track of which handles we're
+ * actually using as we go, then at the end we delete the ones we
+ * didn't use.
+ * 
+ * Args    line    -- the text line, which includes tags
+ *       handlesp  -- handles pointer
+ *         used    -- If 1, set handles in this line to used
+ *                    if 0, leave handles in this line set as they already are
+ */
+void
+mark_handles_in_line(line, handlesp, used)
+    char      *line;
+    HANDLE_S **handlesp;
+    int        used;
+{
+    unsigned char c;
+    size_t        length;
+    int           key, n;
+    HANDLE_S     *h;
+
+    if(!(line && handlesp && *handlesp))
+      return;
+
+    length = strlen(line);
+
+    /* mimic code in PutLine0n8b */
+    while(length--){
+
+	c = (unsigned char) *line++;
+
+	if(c == (unsigned char) TAG_EMBED && length){
+
+	    length--;
+
+	    switch(*line++){
+	      case TAG_HANDLE :
+		length -= *line + 1;	/* key length plus length tag */
+
+		for(key = 0, n = *line++; n; n--)
+		  key = (key * 10) + (*line++ - '0');
+
+		h = get_handle(*handlesp, key);
+		if(h){
+		    h->using_is_used = 1;
+		    /* 
+		     * If it's already marked is_used, leave it marked
+		     * that way. We only call this function with used = 0
+		     * in order to set using_is_used.
+		     */
+		    h->is_used = (h->is_used || used) ? 1 : 0;
+		}
+
+		break;
+
+	      case TAG_FGCOLOR :
+		if(length < RGBLEN){
+		    length = 0;
+		    break;
+		}
+
+		length -= RGBLEN;
+		line += RGBLEN;
+		break;
+
+	      case TAG_BGCOLOR :
+		if(length < RGBLEN){
+		    length = 0;
+		    break;
+		}
+
+		length -= RGBLEN;
+		line += RGBLEN;
+		break;
+
+	      default:
+		break;
+	    }
+	}	
+    }
+}
+
+
+/*
  * Line filter to add color to displayed headers.
  */
 int
@@ -3566,7 +4066,7 @@ color_headers(linenum, line, ins, local)
 	/*
 	 * First check for patternless patterns which color whole line.
 	 */
-	if((color = hdr_color(field, NULL)) != NULL){
+	if((color = hdr_color(field, NULL, ps_global->hdr_colors)) != NULL){
 	    if(pico_is_good_colorpair(color)){
 		ins = gf_line_test_new_ins(ins, value,
 					   color_embed(color->fg, color->bg),
@@ -3623,7 +4123,8 @@ color_headers(linenum, line, ins, local)
 		    if(color)
 		      free_color_pair(&color);
 
-		    if((color = hdr_color(field, beg)) != NULL){
+		    if((color = hdr_color(field, beg,
+					  ps_global->hdr_colors)) != NULL){
 			if(pico_is_good_colorpair(color)){
 			    did_color++;
 			    ins = gf_line_test_new_ins(ins, beg,
@@ -3705,7 +4206,7 @@ color_headers(linenum, line, ins, local)
 	    if(color)
 	      free_color_pair(&color);
 
-	    if((color = hdr_color(field, beg)) != NULL){
+	    if((color = hdr_color(field, beg, ps_global->hdr_colors)) != NULL){
 		if(pico_is_good_colorpair(color)){
 		    did_color++;
 		    ins = gf_line_test_new_ins(ins, beg,
@@ -3735,7 +4236,7 @@ color_headers(linenum, line, ins, local)
     }
     else{
 
-	color = hdr_color(field, value);
+	color = hdr_color(field, value, ps_global->hdr_colors);
 
 	if(color){
 	    if(pico_is_good_colorpair(color)){
@@ -4096,9 +4597,9 @@ url_launch(handle)
 	if(cmdp-cmd >= URL_MAX_LAUNCH)
 	  return(url_launch_too_long(rv));
 	
-	mode = PIPE_RESET | PIPE_USER ;
+	mode = PIPE_RESET | PIPE_USER | PIPE_RUNNOW ;
 	if(syspipe = open_system_pipe(cmd, NULL, NULL, mode, 0)){
-	    close_system_pipe(&syspipe);
+	    close_system_pipe(&syspipe, NULL, 0);
 	    q_status_message(SM_ORDER, 0, 4, "VIEWER command completed");
 	}
 	else
@@ -4195,7 +4696,8 @@ url_external_handler(handle, specific)
 		      p++;
 		  }
 		  else{
-		      dprint(1, (debugfile,"bogus handler test: \"%s\"",test));
+		      dprint(1, (debugfile,"bogus handler test: \"%s\"",
+			     test ? test : "?"));
 		      fs_give((void **) &cmd);
 		  }
 
@@ -4216,14 +4718,24 @@ url_external_handler(handle, specific)
     cmd = NULL;
 
     if(!specific){
-#if	_WINDOWS
-	cmd = mswin_reg_default_browser(handle->h.url.path);
-#endif
+	cmd = url_os_specified_browser(handle->h.url.path);
 	/*
 	 * Last chance, anything handling "text/html" in mailcap...
 	 */
-	if(!cmd && mailcap_can_display(TYPETEXT, "html", NULL, 0))
-	  cmd = mailcap_build_command(TYPETEXT, "html", NULL, "_URL_", NULL, 0);
+	if(!cmd && mailcap_can_display(TYPETEXT, "html", NULL, 0)){
+	    MCAP_CMD_S *mc_cmd;
+
+	    mc_cmd = mailcap_build_command(TYPETEXT, "html",
+					   NULL, "_URL_", NULL, 0);
+	    /* 
+	     * right now URL viewing won't return anything requiring
+	     * special handling
+	     */
+	    if(mc_cmd){
+		cmd = mc_cmd->command;
+		fs_give((void **)&mc_cmd);
+	    }
+	}
     }
 
     return(cmd);
@@ -4245,7 +4757,7 @@ url_external_specific_handler(url, len)
 	int   i;
 
 	for(i = 0; i < UES_MAX && *(p = &list[i * UES_LEN]); i++)
-	  if(!struncmp(p, url, len))
+	  if(strlen(p) == len && !struncmp(p, url, len))
 	    return(1);
     }
     else{					/* initialize! */
@@ -4265,7 +4777,8 @@ url_external_specific_handler(url, len)
 			strncpy(&list[i++ * UES_LEN], p, n);
 		      else
 			dprint(1, (debugfile,
-				   "* * * HANLDER TOO LONG: %.*s\n", n, p));
+				   "* * * HANLDER TOO LONG: %.*s\n", n,
+				   p ? p : "?"));
 
 		      n++;
 		  }
@@ -4303,6 +4816,7 @@ url_local_handler(s)
 	{"mailto:", 7, url_local_mailto},	/* see url_tool_t def's */
 	{"imap://", 7, url_local_imap},		/* for explanations */
 	{"nntp://", 7, url_local_nntp},
+	{"file://", 7, url_local_file},
 #ifdef	ENABLE_LDAP
 	{"ldap://", 7, url_local_ldap},
 #endif
@@ -4516,6 +5030,7 @@ url_local_imap(url)
     int	       rv;
     long       uid = 0L, uid_val = 0L, i;
     CONTEXT_S *fake_context;
+    MESSAGECACHE *mc;
 
     rv = url_imap_folder(url, &folder, &uid, &uid_val, &search, 0);
     switch(rv & URL_IMAP_MASK){
@@ -4546,7 +5061,7 @@ url_local_imap(url)
 
       case URL_IMAP_IMESSAGEPART :
       case URL_IMAP_IMESSAGELIST :
-	rv = do_broach_folder(folder, NULL, NULL);
+	rv = do_broach_folder(folder, NULL, NULL, 0L);
 	fs_give((void **) &folder);
 	switch(rv){
 	  case -1 :				/* utter failure */
@@ -4592,12 +5107,15 @@ url_local_imap(url)
  * so it doesn't know about IMAP4 search criteria, like SENTSINCE.
  * It also doesn't handle literals. */
 
-		mail_search_full(ps_global->mail_stream, NULL,
-				 mail_criteria(search),
-				 SE_NOPREFETCH | SE_FREE);
+		pine_mail_search_full(ps_global->mail_stream, NULL,
+				      mail_criteria(search),
+				      SE_NOPREFETCH | SE_FREE);
 
 		for(i = 1L; i <= mn_get_total(ps_global->msgmap); i++)
-		  if(mail_elt(ps_global->mail_stream, i)->searched)
+		  if(ps_global->mail_stream
+		     && i <= ps_global->mail_stream->nmsgs
+		     && (mc = mail_elt(ps_global->mail_stream, i))
+		     && mc->searched)
 		    set_lflag(ps_global->mail_stream,
 			      ps_global->msgmap, i, MN_SLCT, 1);
 
@@ -4648,7 +5166,8 @@ url_imap_folder(true_url, folder, uid_val, uid, search, silent)
 	*cmd++ = '\0';
     }
     else{
-	dprint(2, (debugfile, "-- URL IMAP FOLDER: missing: %s\n", url));
+	dprint(2, (debugfile, "-- URL IMAP FOLDER: missing: %s\n",
+	       url ? url : "?"));
 	cmd = &url[strlen(url)-1];	/* assume only iserver */
     }
 
@@ -4714,7 +5233,7 @@ url_imap_folder(true_url, folder, uid_val, uid, search, silent)
 /* BUG: verify valid section spec ala rfc 2060 */
 		dprint(2, (debugfile,
 			   "-- URL IMAP FOLDER: section not used: %s\n",
-			   section));
+			   section ? section : "?"));
 	    }
 
 	    if(!(*uid = rfc1738_num(&p)) || *p) /* decode UID */
@@ -4815,7 +5334,7 @@ url_local_nntp(url)
 	else
 	  return(url_bogus(url, "No server specified"));
 
-	switch(do_broach_folder(rfc1738_str(folder), NULL, NULL)){
+	switch(do_broach_folder(rfc1738_str(folder), NULL, NULL, 0L)){
 	  case -1 :				/* utter failure */
 	    ps_global->next_screen = main_menu_screen;
 	    break;
@@ -4921,7 +5440,7 @@ url_local_news(url)
 	}
     }
 
-    if(do_broach_folder(rfc1738_str(folder), cntxt, NULL) < 0)
+    if(do_broach_folder(rfc1738_str(folder), cntxt, NULL, 0L) < 0)
       ps_global->next_screen = main_menu_screen;
     else
       ps_global->next_screen = mail_index_screen;
@@ -4931,6 +5450,31 @@ url_local_news(url)
     return(1);
 }
 
+int
+url_local_file(file_url)
+    char *file_url;
+{
+    if(want_to(
+ "\"file\" URL may cause programs to be run on your system. Run anyway",
+               'n', 0, NO_HELP, WT_NORM) == 'y'){
+	HANDLE_S handle;
+
+	/* fake a handle */
+	handle.h.url.path = file_url;
+	if((handle.h.url.tool = url_external_handler(&handle, 1))
+	   || (handle.h.url.tool = url_external_handler(&handle, 0))){
+	    url_launch(&handle);
+	    return 1;
+	}
+	else{
+	    q_status_message(SM_ORDER, 0, 4,
+		  "No viewer for \"file\" URL.  VIEWER command cancelled");
+	    return 0;
+	}
+    }
+    q_status_message(SM_ORDER, 0, 4, "VIEWER command cancelled");
+    return 0;
+}
 
 
 int
@@ -4988,7 +5532,7 @@ url_bogus(url, reason)
     char *url, *reason;
 {
     dprint(2, (debugfile, "-- bogus url \"%s\": %s\n",
-	       url ? url : "<NULL URL>", reason));
+	       url ? url : "<NULL URL>", reason ? reason : "?"));
     if(url)
       q_status_message3(SM_ORDER|SM_DING, 2, 3,
 		        "Malformed \"%.*s\" URL: %.200s",
@@ -5025,22 +5569,52 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     char       *err, *charset;
     int		filtcnt = 0, error_found = 0, column, wrapit;
     int         is_in_sig = OUT_SIG_BLOCK;
+    int         is_flowed_msg = 0;
+    int         filt_only_c0 = 0;
+    char       *parmval;
     CONV_TABLE *ct = NULL;
+    char       *free_this = NULL;
+    DELQ_S      dq;
 
     column = (flags & FM_DISPLAY) ? ps_global->ttyo->screen_cols : 80;
     wrapit = column;
+    ps_global->some_quoting_was_suppressed = 0;
 
     memset(filters, 0, sizeof(filters));
-    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+
+    charset = rfc2231_get_param(att->body->parameter, "charset", NULL, NULL);
+
+    /* determined if it's flowed, affects wrapping and quote coloring */
+    if(att->body->type == TYPETEXT
+       && !strucmp(att->body->subtype, "plain")
+       && (parmval = rfc2231_get_param(att->body->parameter,
+				       "format", NULL, NULL))){
+	if(!strucmp(parmval, "flowed"))
+	  is_flowed_msg = 1;
+	fs_give((void **) &parmval);
+    }
+
+    /*
+     * This filter changes Japanese characters encoded in 2022-JP to the
+     * appropriate encoding for local display. We don't need to do the
+     * filtering if the charset isn't 2022-JP, however some mail is sent
+     * with improperly labeled 2022-JP so we also filter if it is labeled
+     * as ascii or nothing.
+     */
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global)
+       && (!charset
+	   || !strucmp(charset, "US-ASCII")
+	   || !strucmp(charset, "ISO-2022-JP")))
       filters[filtcnt++].filter = gf_2022_jp_to_euc;
 
-    if(charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL)){
+    if(charset){
 	if(F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)){
 
 	    ct = conversion_table(charset, ps_global->VAR_CHAR_SET);
-	    if(ct && ct->table){
-		filters[filtcnt].filter = gf_convert_charset;
-		filters[filtcnt++].data = gf_convert_charset_opt(ct->table);
+	    if(ct && ct->convert && ct->table){
+		filters[filtcnt].filter = ct->convert;
+		/* we could call an _opt routine here, but why bother? */
+		filters[filtcnt++].data = ct->table;
 	    }
 	}
 
@@ -5049,7 +5623,10 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 
     if(!ps_global->pass_ctrl_chars){
 	filters[filtcnt++].filter = gf_escape_filter;
-	filters[filtcnt++].filter = gf_control_filter;
+	filters[filtcnt].filter = gf_control_filter;
+
+	filt_only_c0 = ps_global->pass_c1_ctrl_chars ? 1 : 0;
+	filters[filtcnt++].data = gf_control_filter_opt(&filt_only_c0);
     }
 
     if(flags & FM_DISPLAY)
@@ -5088,7 +5665,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	 * to the beginning and end of the line. This will break some
 	 * line_test-style filters which come after it. For example, if they
 	 * are looking for something at the start of a line (like color_a_quote
-	 * itself).
+	 * itself). I guess we could fix that by ignoring tags at the
+	 * beginning of the line when doing the search.
 	 */
 	if((flags & FM_DISPLAY)
 	   && !(flags & FM_NOCOLOR)
@@ -5096,7 +5674,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	   && VAR_QUOTE1_FORE_COLOR
 	   && VAR_QUOTE1_BACK_COLOR){
 	    filters[filtcnt].filter = gf_line_test;
-	    filters[filtcnt++].data = gf_line_test_opt(color_a_quote, NULL);
+	    filters[filtcnt++].data = gf_line_test_opt(color_a_quote,
+						       &is_flowed_msg);
 	}
     }
     else if(!strucmp(att->body->subtype, "richtext")){
@@ -5114,7 +5693,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	if(wrapit - 5 > 0)
 	  wrapit -= 5;
     }
-    else if(!strucmp(att->body->subtype, "html") && !ps_global->full_header){
+    else if(!strucmp(att->body->subtype, "html")
+	    && ps_global->full_header < 2){
 /*BUG:	    sniff the params for "version=2.0" ala draft-ietf-html-spec-01 */
 	int opts = 0;
 
@@ -5127,15 +5707,61 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 
 	wrapit = 0;		/* wrap already handled! */
 	filters[filtcnt].filter = gf_html2plain;
-	filters[filtcnt++].data = gf_html2plain_opt(NULL, column, handlesp,
-						    opts);
+	filters[filtcnt++].data = gf_html2plain_opt(NULL, column,
+						    format_view_margin(),
+						    handlesp, opts);
     }
 
     if(wrapit && !(flags & FM_NOWRAP)){
+	int   margin = 0, wrapflags = (flags & FM_DISPLAY) ? GFW_HANDLES : 0;
+
+	if(flags & FM_DISPLAY
+	   && !(flags & FM_NOCOLOR)
+	   && pico_usingcolor())
+	  wrapflags |= GFW_USECOLOR;
+
+	/* text/flowed (RFC 2646 + draft)? */
+	if(ps_global->full_header != 2 && is_flowed_msg){
+	    wrapflags |= GFW_FLOWED;
+
+	    if(parmval = rfc2231_get_param(att->body->parameter,
+					   "delsp", NULL, NULL)){
+		if(!strucmp(parmval, "yes"))
+		  wrapflags |= GFW_DELSP;
+
+		fs_give((void **) &parmval);
+	    }
+	}
+
 	filters[filtcnt].filter = gf_wrap;
-	filters[filtcnt++].data = gf_wrap_filter_opt(wrapit, column, 0,
-						     (flags & FM_DISPLAY)
-						       ? GFW_HANDLES : 0);
+	filters[filtcnt++].data = gf_wrap_filter_opt(wrapit, column,
+						     (flags & FM_NOINDENT)
+						       ? 0
+						       : format_view_margin(),
+						     0, wrapflags);
+    }
+
+    /*
+     * This has to come after wrapping has happened because the user tells
+     * us how many quoted lines to display, and we want that number to be
+     * the wrapped lines, not the pre-wrapped lines.
+     */
+    if(ps_global->full_header == 0
+       && !(att->body->subtype && strucmp(att->body->subtype, "plain"))
+       && (flags & FM_DISPLAY)
+       && ps_global->quote_suppression_threshold != 0){
+	memset(&dq, 0, sizeof(dq));
+	dq.lines = ps_global->quote_suppression_threshold;
+	dq.is_flowed = is_flowed_msg;
+	dq.indent_length = (wrapit && !(flags & FM_NOWRAP)
+			    && !(flags & FM_NOINDENT))
+			       ? format_view_margin()[0]
+			       : 0;
+	dq.saved_line = &free_this;
+	dq.handlesp   = handlesp;
+
+	filters[filtcnt].filter = gf_line_test;
+	filters[filtcnt++].data = gf_line_test_opt(delete_quotes, &dq);
     }
 
     /*
@@ -5143,7 +5769,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
      * local charset's undefined or it's not the same as the specified
      * charset, put up a warning...
      */
-    if((!ct || ct->quality != CV_NO_TRANSLATE_NEEDED) &&
+    if(F_OFF(F_QUELL_CHARSET_WARNING, ps_global) &&
+       (!ct || ct->quality != CV_NO_TRANSLATE_NEEDED) &&
        (charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL))){
 	int rv = TRUE;
 
@@ -5168,7 +5795,13 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     }
 
     err = detach(ps_global->mail_stream, msgno, att->number,
-		 NULL, pc, filtcnt ? filters : NULL);
+		 NULL, pc, filtcnt ? filters : NULL, 0);
+    
+    delete_unused_handles(handlesp);
+    
+    if(free_this)
+      fs_give((void **) &free_this);
+    
     if(err) {
 	error_found++;
 	if(style == QStatus) {
@@ -5296,7 +5929,7 @@ format_header(stream, msgno, section, env, hdrs, prefix,handlesp,flags,final_pc)
     else
       return(FHT_WRTERR);
 
-    if(ps_global->full_header){
+    if(ps_global->full_header == 2){
 	rv = format_raw_header(stream, msgno, section, tmp_pc);
     }
     else{
@@ -5491,6 +6124,8 @@ format_header(stream, msgno, section, env, hdrs, prefix,handlesp,flags,final_pc)
 	}
 
 	if(!rv){
+	    int margin = 0;
+
 	    gf_filter_init();
 	    gf_link_filter(gf_local_nvtnl, NULL);
 	    if((F_ON(F_VIEW_SEL_URL, ps_global)
@@ -5510,9 +6145,12 @@ format_header(stream, msgno, section, env, hdrs, prefix,handlesp,flags,final_pc)
 	    if(prefix && *prefix)
 	      column = max(column-strlen(prefix), 50);
 
-	    gf_link_filter(gf_wrap,
-			   gf_wrap_filter_opt(column, column, 4,
-		     GFW_ONCOMMA | (handlesp ? GFW_HANDLES : 0)));
+	    if(!(flags & FM_NOWRAP))
+	      gf_link_filter(gf_wrap,
+			     gf_wrap_filter_opt(column, column,
+					        (flags & FM_NOINDENT)
+						  ? 0 : format_view_margin(), 4,
+				 GFW_ONCOMMA | (handlesp ? GFW_HANDLES : 0)));
 
 	    if(prefix && *prefix)
 	      gf_link_filter(gf_prefix, gf_prefix_opt(prefix));
@@ -5569,6 +6207,7 @@ format_raw_header(stream, msgno, section, pc)
     gf_io_t	pc;
 {
     char *h = mail_fetch_header(stream, msgno, section, NULL, NULL, FT_PEEK);
+    unsigned char c;
 
     if(h){
 	while(*h){
@@ -5580,9 +6219,11 @@ format_raw_header(stream, msgno, section, pc)
 		if(ISRFCEOL(h))		/* all done! */
 		  return(FHT_OK);
 	    }
-	    else if(!ps_global->pass_ctrl_chars && CAN_DISPLAY(*h) &&
+	    else if(FILTER_THIS(*h) &&
 		    !(*(h+1) && *h == ESCAPE && match_escapes(h+1))){
-		if(!((*pc)('^') && (*pc)((*h++ & 0x7f) + '@')))
+		c = (unsigned char) *h++;
+		if(!((*pc)(c >= 0x80 ? '~' : '^')
+		     && (*pc)((c == 0x7f) ? '?' : (c & 0x1f) + '@')))
 		  return(FHT_WRTERR);
 	    }
 	    else if(!(*pc)(*h++))
@@ -5666,12 +6307,34 @@ format_envelope(s, n, sect, e, pc, which, flags)
       format_newsgroup_string("Followup-To: ", e->followup_to, flags, pc);
 
     if((which & FE_SUBJECT) && e->subject && e->subject[0]){
+	char *freeme = NULL;
+
 	q = "Subject: ";
 	gf_puts(q, pc);
 
 	p2 = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, 10000, e->subject, NULL), SIZEOF_20KBUF-10000);
 
+	if(flags & FM_DISPLAY
+	   && (ps_global->display_keywords_in_subject
+	       || ps_global->display_keywordinits_in_subject)){
+	    int i, some_defined = 0;;
+
+	    /* don't bother if no keywords are defined */
+	    for(i = 0; !some_defined && i < NUSERFLAGS; i++)
+	      if(s->user_flags[i])
+		some_defined++;
+
+	    if(some_defined)
+	      p2 = freeme = prepend_keyword_subject(s, n, p2,
+			  ps_global->display_keywords_in_subject ? KW : KWInit,
+			  ps_global->VAR_KW_BRACES,
+			  NULL, NULL);
+	}
+
 	format_env_puts(p2, pc);
+
+	if(freeme)
+	  fs_give((void **) &freeme);
 
 	gf_puts(NEWLINE, pc);
     }
@@ -5708,20 +6371,22 @@ format_envelope(s, n, sect, e, pc, which, flags)
 
 /*
  * The argument fieldname is something like "Subject:..." or "Subject".
- * Look through the hdrs in hdr_colors for a match of the fieldname,
+ * Look through the specs in speccolor for a match of the fieldname,
  * and return the color that goes with any match, or NULL.
  * Caller should free the color.
  */
 COLOR_PAIR *
-hdr_color(fieldname, value)
-    char *fieldname, *value;
+hdr_color(fieldname, value, speccolor)
+    char         *fieldname,
+                 *value;
+    SPEC_COLOR_S *speccolor;
 {
-    HDR_COLOR_S *hc = NULL;
-    COLOR_PAIR  *color_pair = NULL;
-    char        *colon, *fname;
-    char         fbuf[FBUF_LEN+1];
-    int          gotit;
-    PATTERN_S   *pat;
+    SPEC_COLOR_S *hc = NULL;
+    COLOR_PAIR   *color_pair = NULL;
+    char         *colon, *fname;
+    char          fbuf[FBUF_LEN+1];
+    int           gotit;
+    PATTERN_S    *pat;
 
     colon = strindex(fieldname, ':');
     if(colon){
@@ -5733,8 +6398,8 @@ hdr_color(fieldname, value)
       fname = fieldname;
 
     if(fname && *fname)
-      for(hc = ps_global->hdr_colors; hc; hc = hc->next)
-	if(hc->hdr && !strucmp(fname, hc->hdr)){
+      for(hc = speccolor; hc; hc = hc->next)
+	if(hc->spec && !strucmp(fname, hc->spec)){
 	    if(!hc->val)
 	      break;
 	    
@@ -5756,16 +6421,16 @@ hdr_color(fieldname, value)
 
 /*
  * The argument fieldname is something like "Subject:..." or "Subject".
- * Look through the hdrs in hdr_colors for a match of the fieldname,
+ * Look through the specs in hdr_colors for a match of the fieldname,
  * and return 1 if that fieldname is in one of the patterns, 0 otherwise.
  */
 int
 any_hdr_color(fieldname)
     char *fieldname;
 {
-    HDR_COLOR_S *hc = NULL;
-    char        *colon, *fname;
-    char         fbuf[FBUF_LEN+1];
+    SPEC_COLOR_S *hc = NULL;
+    char         *colon, *fname;
+    char          fbuf[FBUF_LEN+1];
 
     colon = strindex(fieldname, ':');
     if(colon){
@@ -5778,7 +6443,7 @@ any_hdr_color(fieldname)
 
     if(fname && *fname)
       for(hc = ps_global->hdr_colors; hc; hc = hc->next)
-	if(hc->hdr && !strucmp(fname, hc->hdr))
+	if(hc->spec && !strucmp(fname, hc->spec))
 	  break;
 
     return(hc ? 1 : 0);
@@ -5786,13 +6451,13 @@ any_hdr_color(fieldname)
 
 
 void
-free_hdr_colors(colors)
-    HDR_COLOR_S **colors;
+free_spec_colors(colors)
+    SPEC_COLOR_S **colors;
 {
     if(colors && *colors){
-	free_hdr_colors(&(*colors)->next);
-	if((*colors)->hdr)
-	  fs_give((void **)&(*colors)->hdr);
+	free_spec_colors(&(*colors)->next);
+	if((*colors)->spec)
+	  fs_give((void **)&(*colors)->spec);
 	if((*colors)->fg)
 	  fs_give((void **)&(*colors)->fg);
 	if((*colors)->bg)
@@ -5869,7 +6534,8 @@ format_addr_string(stream, msgno, section, field_name, addr, flags, pc)
 
 	  fs_give((void **)&fields[0]);
 	  gf_puts(NEWLINE, pc);
-	  dprint(2, (debugfile, "Error in \"%s\" field address\n", field_name));
+	  dprint(2, (debugfile, "Error in \"%s\" field address\n",
+	         field_name ? field_name : "?"));
 	  return;
       }
 
@@ -6178,7 +6844,7 @@ format_raw_hdr_string(start, finish, pc, flags)
     int      flags;
 {
     register char *current;
-    unsigned char *p, *tmp = NULL;
+    unsigned char *p, *tmp = NULL, c;
     size_t	   n, len;
     char	   ch;
     int		   rv = FHT_OK;
@@ -6208,9 +6874,11 @@ format_raw_hdr_string(start, finish, pc, flags)
 
 	  current += 2;
       }
-      else if(!ps_global->pass_ctrl_chars && CAN_DISPLAY(*current) &&
+      else if(FILTER_THIS(*current) &&
 	     !(*(current+1) && *current == ESCAPE && match_escapes(current+1))){
-	  if(!((*pc)('^') && (*pc)((*current++ & 0x7f) + '@')))
+	  c = (unsigned char) *current++;
+	  if(!((*pc)(c >= 0x80 ? '~' : '^')
+	       && (*pc)((c == 0x7f) ? '?' : (c & 0x1f) + '@')))
 	    rv = FHT_WRTERR;
       }
       else if(!(*pc)(*current++))
@@ -6245,8 +6913,9 @@ format_env_puts(s, pc)
       return(gf_puts(s, pc));
 
     for(; *s; s++)
-      if(CAN_DISPLAY(*s) && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
-	  if(!((*pc)('^') && (*pc)((*s & 0x7f) + '@')))
+      if(FILTER_THIS(*s) && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
+	  if(!((*pc)((unsigned char) (*s) >= 0x80 ? '~' : '^')
+	       && (*pc)((*s == 0x7f) ? '?' : (*s & 0x1f) + '@')))
 	    return(0);
       }
       else if(!(*pc)(*s))
@@ -6413,7 +7082,7 @@ scrolltool(sparms)
       sparms->bar.title = "Text";
 
     if(sparms->bar.style == TitleBarNone){
-	if(THREADING() && ps_global->viewing_a_thread)
+	if(THREADING() && sp_viewing_a_thread(ps_global->mail_stream))
 	  sparms->bar.style = ThrdMsgPercent;
 	else
 	  sparms->bar.style = MsgTextPercent;
@@ -6575,7 +7244,7 @@ scrolltool(sparms)
 
 	/*============ Check for New Mail and CheckPoint ============*/
         if(!sparms->quell_newmail &&
-	   new_mail(force, first_view ? 0 : NM_TIMING(ch), NM_STATUS_MSG) >= 0){
+	   new_mail(force, NM_TIMING(ch), NM_STATUS_MSG) >= 0){
 	    update_scroll_titlebar(cur_top_line, 1);
 	    if(ps_global->mangled_footer)
               draw_keymenu(km, bitmap, ps_global->ttyo->screen_cols,
@@ -6823,6 +7492,40 @@ scrolltool(sparms)
 
             break;
 
+	    /* scroll to the top page */
+	  case MC_HOMEKEY:
+	    if(cur_top_line){
+		cur_top_line = 0;
+		q_status_message1(SM_INFO, 0, 1, "START of %.200s",
+				  STYLE_NAME(sparms));
+	    }
+	    else{
+		next_handle = NULL;
+		if(sparms->text.handles){
+		    HANDLE_S *h = sparms->text.handles;
+
+		    while(h = scroll_handle_prev_sel(h))
+		      next_handle = h;
+		}
+	    }
+	    break;
+
+	    /* scroll to the bottom page */
+	  case MC_ENDKEY:
+	    if(cur_top_line + num_display_lines < scroll_text_lines()){
+		cur_top_line = scroll_text_lines() - min(5, num_display_lines);
+		q_status_message1(SM_INFO, 0, 1, "END of %.200s",
+				  STYLE_NAME(sparms));
+	    }
+	    else {
+		if(sparms->text.handles){
+		    HANDLE_S *h = sparms->text.handles;
+
+		    while(h = scroll_handle_next_sel(h))
+		      next_handle = h;
+		}
+	    }
+	    break;
 
             /*------ Scroll down one line -----*/
 	  case MC_CHARDOWN :
@@ -7440,7 +8143,27 @@ scrolltool(sparms)
 
 	    if(ps_global->next_screen != SCREEN_FUN_NULL || result == 1){
 		done = 1;
-		if(cmd == MC_FULLHDR)
+		if(cmd == MC_FULLHDR){
+		  if(ps_global->full_header == 1){
+		      SCRLCTRL_S *st = scroll_state(SS_CUR);
+		      long	    line;
+		    
+		      /*
+		       * Figure out char offset of the char in the top left
+		       * corner of the display.  Pass it back to the
+		       * fetcher/formatter and have it pass the offset
+		       * back to us...
+		       */
+		      sparms->start.on = Offset;
+		      for(sparms->start.loc.offset = line = 0L;
+			  line < cur_top_line;
+			  line++)
+			sparms->start.loc.offset +=
+					scroll_handle_column(line, -1);
+		  }
+		  else
+		    sparms->start.on = 0;
+
 		  switch(km->which){
 		    case 0:
 		      sparms->keys.what = FirstMenu;
@@ -7455,6 +8178,7 @@ scrolltool(sparms)
 		      sparms->keys.what = FourthMenu;
 		      break;
 		  }
+		}
 	    }
 	    else if(!scroll_state(SS_CUR)){
 		num_display_lines	  = SCROLL_LINES(ps_global);
@@ -8268,9 +8992,12 @@ scroll_scroll_text(new_top_line, handle, redraw)
     int		num_display_lines, l, top;
     POSLIST_S  *lp, *lp2;
 
+    /* When this is true, we're still on the same page of the display. */
     if(st->top_text_line == new_top_line && !redraw){
+	/* handle changed, so hilite the new handle and unhilite the old */
 	if(handle && handle != st->parms->text.handles){
 	    top = st->screen.start_line - new_top_line;
+	    /* hilite the new one */
 	    if(!scroll_handle_obscured(handle))
 	      for(lp = handle->loc; lp; lp = lp->next)
 		if((l = lp->where.row) >= st->top_text_line
@@ -8282,6 +9009,7 @@ scroll_scroll_text(new_top_line, handle, redraw)
 				st->line_lengths[l], handle);
 		}
 
+	    /* unhilite the old one */
 	    if(!scroll_handle_obscured(st->parms->text.handles))
 	      for(lp = st->parms->text.handles->loc; lp; lp = lp->next)
 	       if((l = lp->where.row) >= st->top_text_line
@@ -8338,6 +9066,25 @@ scroll_scroll_text(new_top_line, handle, redraw)
         redraw_scroll_text();
     }
     else{
+	/*
+	 * We're going to scroll the screen, but first we have to make sure
+	 * the old hilited handles are unhilited if they are going to remain
+	 * on the screen.
+	 */
+	top = st->screen.start_line - st->top_text_line;
+	if(handle && handle != st->parms->text.handles
+	   && st->parms->text.handles
+	   && !scroll_handle_obscured(st->parms->text.handles))
+	  for(lp = st->parms->text.handles->loc; lp; lp = lp->next)
+	   if((l = lp->where.row) >= max(st->top_text_line,new_top_line)
+	      && l < min(st->top_text_line,new_top_line) + st->screen.length){
+	       if(st->parms->text.src == FileStar)
+		 l -= new_top_line;
+
+	       PutLine0n8b(top + lp->where.row, 0, st->text_lines[l],
+			   st->line_lengths[l], handle);
+	   }
+
 	if(new_top_line > st->top_text_line){
 	    /*------ scroll down ------*/
 	    while(new_top_line > st->top_text_line) {
@@ -8358,8 +9105,9 @@ scroll_scroll_text(new_top_line, handle, redraw)
 		   * the start of the next row. We don't need or want to clear
 		   * that next row.
 		   */
-		  if(pico_usingcolor() &&
-		     st->line_lengths[l] != ps_global->ttyo->screen_cols)
+		  if(pico_usingcolor()
+		     && (st->line_lengths[l] < ps_global->ttyo->screen_cols
+		         || visible_linelen(l) < ps_global->ttyo->screen_cols))
 		    CleartoEOLN();
 		}
 
@@ -8385,8 +9133,9 @@ scroll_scroll_text(new_top_line, handle, redraw)
 		 * the start of the next row. We don't need or want to clear
 		 * that next row.
 		 */
-		if(pico_usingcolor() &&
-		   st->line_lengths[l] != ps_global->ttyo->screen_cols)
+		if(pico_usingcolor()
+		   && (st->line_lengths[l] < ps_global->ttyo->screen_cols
+		       || visible_linelen(l) < ps_global->ttyo->screen_cols))
 		  CleartoEOLN();
 	    }
 	}
@@ -8415,6 +9164,7 @@ scroll_scroll_text(new_top_line, handle, redraw)
 
     return(new_top_line);
 }
+
 
 /*---------------------------------------------------------------------
   Edit individual char in text so that the entire text doesn't need
@@ -8635,7 +9385,7 @@ search_scroll_text(start_line, start_col, word, cursor_pos, offset_in_line)
     /* lower the case once rather than in each search_scroll_line */
     strncpy(loc_word, word, sizeof(loc_word)-1);
     loc_word[sizeof(loc_word)-1] = '\0';
-    lcase(loc_word);
+    lcase((unsigned char *) loc_word);
 
     if(start_line < st->num_lines){
 	/* search first line starting at position start_col in */
@@ -8776,6 +9526,92 @@ search_scroll_line(is, ss, n, handles)
 
 
 
+/*
+ * Returns the number of columns taken up by the visible part of the line.
+ * That is, account for handles and color changes and so forth.
+ */
+int
+visible_linelen(line)
+    int line;
+{
+    SCRLCTRL_S *st = scroll_state(SS_CUR);
+    int i, n, len = 0;
+
+    if(line < 0 || line >= st->num_lines)
+      return(len);
+
+    for(i = 0, len = 0; i < st->line_lengths[line];)
+      switch(st->text_lines[line][i]){
+
+        case TAG_EMBED:
+	  i++;
+	  switch((i < st->line_lengths[line]) ? st->text_lines[line][i] : 0){
+	    case TAG_HANDLE:
+	      i++;
+	      /* skip the length byte plus <length> more bytes */
+	      if(i < st->line_lengths[line]){
+		  n = st->text_lines[line][i];
+		  i++;
+	      }
+
+	      if(i < st->line_lengths[line] && n > 0)
+		i += n;
+
+		break;
+
+	    case TAG_FGCOLOR :
+	    case TAG_BGCOLOR :
+	      i += (RGBLEN + 1);	/* 1 for TAG, RGBLEN for color */
+	      break;
+
+	    case TAG_INVON:
+	    case TAG_INVOFF:
+	    case TAG_BOLDON:
+	    case TAG_BOLDOFF:
+	    case TAG_ULINEON:
+	    case TAG_ULINEOFF:
+	      i++;
+	      break;
+
+	    case TAG_EMBED:		/* escaped embed character */
+	      i++;
+	      len++;
+	      break;
+	    
+	    default:			/* the embed char was literal */
+	      i++;
+	      len += 2;
+	      break;
+	  }
+
+	  break;
+
+	case ESCAPE:
+	  i++;
+	  if(i < st->line_lengths[line]
+	     && (n = match_escapes(&st->text_lines[line][i])))
+	    i += (n-1);			/* Don't count escape in length */
+
+	  break;
+
+	case TAB:
+	  i++;
+	  while(((++len) &  0x07) != 0)		/* add tab's spaces */
+	    ;
+
+	  break;
+
+	default:
+	  i++;
+	  len++;
+	  break;
+      }
+
+    return(len);
+}
+
+
+
 char *    
 display_parameters(params)
      PARAMETER *params;
@@ -8791,8 +9627,14 @@ display_parameters(params)
 
     d = tmp_20k_buf;
     if(parmlist = rfc2231_newparmlist(params)){
+	n = 0;			/* n overloaded */
 	while(rfc2231_list_params(parmlist) && d < tmp_20k_buf + 10000){
-            sprintf(d, "%-*s: %s\n", longest, parmlist->attrib,
+	    if(n++){
+		sprintf(d,"\n");
+		d += strlen(d);
+	    }
+
+            sprintf(d, "%-*s: %s", longest, parmlist->attrib,
 		    parmlist->value ? strsquish(tmp_20k_buf + 11000,
 						parmlist->value, 100)
 				    : "");
@@ -8825,7 +9667,13 @@ display_output_file(filename, title, alt_msg, mode)
 {
     FILE *f;
 
-    if(f = fopen(filename, "r")){
+#if defined(DOS) || defined(OS2)
+#define OUTPUT_FILE_READ_MODE "rb"
+#else
+#define OUTPUT_FILE_READ_MODE "r"
+#endif
+
+    if(f = fopen(filename, OUTPUT_FILE_READ_MODE)){
 	if(mode == DOF_BRIEF){
 	    int  msg_q = 0, i = 0;
 	    char buf[512], *msg_p[4];
@@ -8892,7 +9740,7 @@ display_output_file(filename, title, alt_msg, mode)
     }
     else
       dprint(2, (debugfile, "Error reopening %s to get results: %s\n",
-		 filename, error_description(errno)));
+		 filename ? filename : "?", error_description(errno)));
 }
 
 
@@ -8907,7 +9755,7 @@ display_output_file(filename, title, alt_msg, mode)
 	    NULL on error.
  ----*/
 char *
-fetch_header(stream, msgno, section, fields, flags)
+pine_fetch_header(stream, msgno, section, fields, flags)
      MAILSTREAM  *stream;
      long         msgno;
      char	 *section;
@@ -8915,18 +9763,55 @@ fetch_header(stream, msgno, section, fields, flags)
      long	  flags;
 {
     STRINGLIST *sl;
-    char *p, **pp, *m, *h = NULL, *match = NULL, tmp[MAILTMPLEN];
+    char       *p, *m, *h = NULL, *match = NULL, *free_this, tmp[MAILTMPLEN];
+    char      **pflds = NULL, **pp = NULL, **qq;
+    int         cnt = 0;
 
-    sl = (fields && *fields) ? new_strlst(fields) : NULL;  /* package up fields */
+    /*
+     * If the user misconfigures it is possible to have one of the fields
+     * set to the empty string instead of a header name. We want to catch
+     * that here instead of asking the server the nonsensical question.
+     */
+    for(pp = fields ? &fields[0] : NULL; pp && *pp; pp++)
+      if(!**pp)
+	break;
+
+    if(pp && *pp){		/* found an empty header field, fix it */
+	pflds = copy_list_array(fields);
+	for(pp = pflds; pp && *pp; pp++){
+	    if(!**pp){			/* scoot rest of the lines up */
+		free_this = *pp;
+		for(qq = pp; *qq; qq++)
+		  *qq = *(qq+1);
+
+		if(free_this)
+		  fs_give((void **) &free_this);
+	    }
+	}
+
+	/* no headers to look for, return NULL */
+	if(pflds && !*pflds && !(flags & FT_NOT)){
+	    free_list_array(&pflds);
+	    return(NULL);
+	}
+    }
+    else
+      pflds = fields;
+
+    sl = (pflds && *pflds) ? new_strlst(pflds) : NULL;  /* package up fields */
     h  = mail_fetch_header(stream, msgno, section, sl, NULL, flags | FT_PEEK);
     if (sl) 
       free_strlst(&sl);
 
-    if(!h)
-      return(NULL);
+    if(!h){
+	if(pflds && pflds != fields)
+	  free_list_array(&pflds);
+	  
+	return(NULL);
+    }
 
     while(find_field(&h, tmp, sizeof(tmp))){
-	for(pp = &fields[0]; *pp && strucmp(tmp, *pp); pp++)
+	for(pp = &pflds[0]; *pp && strucmp(tmp, *pp); pp++)
 	  ;
 
 	/* interesting field? */
@@ -8953,6 +9838,9 @@ fetch_header(stream, msgno, section, fields, flags)
 	      ;
 	}
     }
+
+    if(pflds && pflds != fields)
+      free_list_array(&pflds);
 
     return(match ? match : cpystr(""));
 }
@@ -9115,6 +10003,7 @@ format_message_popup(sparms, in_handle)
     MPopup	  fmp_menu[32];
     HANDLE_S	 *h = NULL;
     int		  i = -1, n;
+    long          rawno;
     MESSAGECACHE *mc;
 
     /* Reason to offer per message ops? */
@@ -9175,9 +10064,12 @@ format_message_popup(sparms, in_handle)
 	/* Delete or Undelete?  That is the question. */
 	fmp_menu[++i].type	= tQueue;
 	fmp_menu[i].label.style = lNormal;
-	if((mc = mail_elt(ps_global->mail_stream,
-			  mn_m2raw(ps_global->msgmap,
-				   mn_get_cur(ps_global->msgmap))))->deleted){
+	mc = ((rawno = mn_m2raw(ps_global->msgmap,
+				mn_get_cur(ps_global->msgmap))) > 0L
+	      && ps_global->mail_stream
+	      && rawno <= ps_global->mail_stream->nmsgs)
+	      ? mail_elt(ps_global->mail_stream, rawno) : NULL;
+	if(mc && mc->deleted){
 	    fmp_menu[i].data.val     = 'U';
 	    fmp_menu[i].label.string = in_handle
 					 ? "&Undelete Message" : "&Undelete";

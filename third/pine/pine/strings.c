@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.3 2004-03-01 21:39:10 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.4 2005-01-26 18:26:29 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: strings.c,v 1.3 2004-03-01 21:39:10 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -89,7 +89,10 @@ typedef struct role_args {
     char   **cset;
 } ROLE_ARGS_T;
 
+char       *pattern_to_config PROTO((PATTERN_S *));
+PATTERN_S  *config_to_pattern PROTO((char *));
 char       *add_escapes PROTO((char *, char *, int, char *, char *));
+char       *dollar_escape_dollars PROTO((char *));
 char       *add_pat_escapes PROTO((char *));
 void        char_to_octal_triple PROTO((int, char *));
 int         read_octal PROTO((char **));
@@ -117,8 +120,6 @@ void        free_patgrp PROTO((PATGRP_S **));
 ARBHDR_S   *parse_arbhdr PROTO((char *));
 void        free_arbhdr PROTO((ARBHDR_S **));
 void        free_intvl PROTO((INTVL_S **));
-PAT_S      *copy_pat PROTO((PAT_S *));
-PATGRP_S   *copy_patgrp PROTO((PATGRP_S *));
 void        set_up_search_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
 				     ROLE_ARGS_T *));
 SEARCHPGM  *next_not PROTO((SEARCHPGM *));
@@ -129,11 +130,15 @@ void        add_type_to_pgm PROTO((char *, PATTERN_S *, SEARCHPGM *,
 void        set_srch PROTO((char *, char *, SEARCHPGM *, ROLE_ARGS_T *));
 void        set_srch_hdr PROTO((char *, char *, SEARCHPGM *, ROLE_ARGS_T *));
 void        set_search_by_age PROTO((INTVL_S *, SEARCHPGM *, int));
+void        set_search_by_size PROTO((INTVL_S *, SEARCHPGM *));
 int	    non_eh PROTO((char *));
 void        add_eh PROTO((char **, char **, char *, int *));
 void        set_extra_hdrs PROTO((char *));
 int         is_ascii_string PROTO((char *));
+KEYWORD_S  *new_keyword_s PROTO((char *, char *));
 int	    rfc2369_parse PROTO((char *, RFC2369_S *));
+int         test_message_with_cmd PROTO((MAILSTREAM *, long, char *, long,
+					 int *));
 
 
 
@@ -675,18 +680,22 @@ istrncpy(d, s, n)
     int n;
 {
     char *rv = d;
+    unsigned char c;
 
     if(!d || !s)
       return(NULL);
     
     do
-      if(!ps_global->pass_ctrl_chars && *s && CAN_DISPLAY(*s)
+      if(*s && FILTER_THIS(*s)
 	 && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
 	if(n-- > 0){
-	    *d++ = '^';
+	    c = (unsigned char) *s;
+	    *d++ = c >= 0x80 ? '~' : '^';
 
-	    if(n-- > 0)
-	      *d = (*s++ & 0x7f) + '@';
+	    if(n-- > 0){
+		s++;
+		*d = (c == 0x7f) ? '?' : (c & 0x1f) + '@';
+	    }
 	}
       }
       else{
@@ -853,16 +862,15 @@ trans_2022_jp_to_euc(src)
 	    break;
 
 	  case ESCPAR:			/* saw ESC ( */
-	    if(*p == 'B' || *p == 'J' || *p == 'H'){
-		state = DFL;
-		inside_esc_seq = 0;		/* done filtering */
-	    }
-	    else{
-		*q++ = '\033';		/* Don't set hibit for     */
-		*q++ = '(';		/* escape sequences, which */
-		*q++ = (*p);		/* this appears to be.     */
-	    }
-
+	    /*
+	     * Mark suggests that ESC ( anychar should be treated as an
+	     * end of the escape sequence (as opposed to just ESC ( B or
+	     * ESC ( @). So that's what we'll do. We know it's not quite
+	     * correct, but it shouldn't come up in real life.
+	     * Hubert 2004-12-07
+	     */
+	    state = DFL;
+	    inside_esc_seq = 0;			/* done filtering */
 	    break;
 
 	  case EUC:				/* filtering into euc */
@@ -973,21 +981,54 @@ int
 month_num(s)
      char *s;
 {
-    int month, year;
+    int month = -1, year;
     int i;
 
-    for(i = 0; i < 12; i++){
-        if(struncmp(month_abbrev(i+1), s, 3) == 0)
-          break;
+    if(F_ON(F_PRUNE_USES_ISO,ps_global)){
+	char save, *p;
+	char digmon[3];
+
+	if(s && strlen(s) > 4 && s[4] == '-'){
+	    save = s[4];
+	    s[4] = '\0';
+	    year = atoi(s);
+	    s[4] = save;
+	    if(year == 0)
+	      return(-1);
+	    
+	    p = s + 5;
+	    for(i = 0; i < 12; i++){
+		digmon[0] = ((i+1) < 10) ? '0' : '1';
+		digmon[1] = '0' + (i+1) % 10;
+		digmon[2] = '\0';
+		if(strcmp(digmon, p) == 0)
+		  break;
+	    }
+
+	    if(i == 12)
+	      return(-1);
+	    
+	    month = year * 12 + i;
+	}
     }
-    if(i == 12)
-      return(-1);
+    else{
+	if(s && strlen(s) > 3 && s[3] == '-'){
+	    for(i = 0; i < 12; i++){
+		if(struncmp(month_abbrev(i+1), s, 3) == 0)
+		  break;
+	    }
 
-    year = atoi(s + 4);
-    if(year == 0)
-      return(-1);
+	    if(i == 12)
+	      return(-1);
 
-    month = year * 12 + i;
+	    year = atoi(s + 4);
+	    if(year == 0)
+	      return(-1);
+
+	    month = year * 12 + i;
+	}
+    }
+    
     return(month);
 }
 
@@ -1219,7 +1260,7 @@ parse_date(given_date, d)
 	 * Not sure why we aren't just using this from the gitgo, but
 	 * since not sure will just use it to repair wkday.
 	 */
-	if(mail_parse_date(&elt, given_date)){
+	if(mail_parse_date(&elt, (unsigned char *) given_date)){
 	    t = mail_longdate(&elt);
 	    tm = localtime(&t);
 
@@ -1241,6 +1282,9 @@ pretty_command(c)
 {
     static char  buf[10];
     char	*s;
+
+    buf[0] = '\0';
+    s = buf;
 
     switch(c){
       case '\033'    : s = "ESC";		break;
@@ -1433,6 +1477,8 @@ enth_string(i)
      int i;
 {
     static char enth[10];
+
+    enth[0] = '\0';
 
     switch (i % 10) {
         
@@ -2422,13 +2468,10 @@ add_roletake_escapes(src)
 }
 
 /*
- * This function is similar to add_roletake_escapes, but it only escapes
- * commas.  This is for Specific Folders and Action folders in a role,
- * whereas, currently, all other fields for roles require that both 
- * commas and backslashes be escaped.
+ * This function only escapes commas.
  */
 char *
-add_folder_escapes(src)
+add_comma_escapes(src)
      char *src;
 {
     return(add_escapes(src, ",", '\\', "", ""));
@@ -2436,6 +2479,7 @@ add_folder_escapes(src)
 
 /*
  * Quote values for viewer-hdr-colors. We quote backslash, comma, and slash.
+ *  Also replaces $ with $$.
  *
  * Args: src -- The source string.
  *
@@ -2447,7 +2491,34 @@ char *
 add_viewerhdr_escapes(src)
     char *src;
 {
-    return(add_escapes(src, "/\\", '\\', ",", ""));
+    char *tmp, *ans = NULL;
+
+    tmp = add_escapes(src, "/\\", '\\', ",", "");
+
+    if(tmp){
+	ans = dollar_escape_dollars(tmp);
+	fs_give((void **) &tmp);
+    }
+
+    return(ans);
+}
+
+
+/*
+ * Quote dollar sign by preceding it with another dollar sign. We use $$
+ * instead of \$ so that it will work for both PC-Pine and unix.
+ *
+ * Args: src -- The source string.
+ *
+ * Returns: A string with $$ quoting added.
+ *
+ *   The caller is responsible for freeing the memory allocated for the answer.
+ */
+char *
+dollar_escape_dollars(src)
+    char *src;
+{
+    return(add_escapes(src, "$", '$', "", ""));
 }
 
 
@@ -2872,7 +2943,7 @@ void
 free_strlist(strp)
     STRLIST_S **strp;
 {
-    if(*strp){
+    if(strp && *strp){
 	if((*strp)->next)
 	  free_strlist(&(*strp)->next);
 
@@ -2881,6 +2952,123 @@ free_strlist(strp)
 
 	fs_give((void **) strp);
     }
+}
+
+
+KEYWORD_S *
+init_keyword_list(keywordarray)
+    char **keywordarray;
+{
+    char     **t, *nickname, *keyword;
+    KEYWORD_S *head = NULL, *new, *kl = NULL;
+
+    for(t = keywordarray; t && *t && **t; t++){
+	nickname = keyword = NULL;
+	get_pair(*t, &nickname, &keyword, 0, 0);
+	new = new_keyword_s(keyword, nickname);
+	if(keyword)
+	  fs_give((void **) &keyword);
+
+	if(nickname)
+	  fs_give((void **) &nickname);
+
+	if(kl)
+	  kl->next = new;
+
+	kl = new;
+
+	if(!head)
+	  head = kl;
+    }
+
+    return(head);
+}
+
+
+KEYWORD_S *
+new_keyword_s(keyword, nickname)
+    char *keyword;
+    char *nickname;
+{
+    KEYWORD_S *kw = NULL;
+
+    kw = (KEYWORD_S *) fs_get(sizeof(*kw));
+    memset(kw, 0, sizeof(*kw));
+
+    if(keyword && *keyword)
+      kw->kw = cpystr(keyword);
+
+    if(nickname && *nickname)
+      kw->nick = cpystr(nickname);
+    
+    return(kw);
+}
+
+
+void
+free_keyword_list(kl)
+    KEYWORD_S **kl;
+{
+    if(kl && *kl){
+	if((*kl)->next)
+	  free_keyword_list(&(*kl)->next);
+
+	if((*kl)->kw)
+	  fs_give((void **) &(*kl)->kw);
+
+	if((*kl)->nick)
+	  fs_give((void **) &(*kl)->nick);
+
+	fs_give((void **) kl);
+    }
+}
+
+
+/*
+ * Return a pointer to the keyword associated with a nickname, or the
+ * input itself if no match.
+ */
+char *
+nick_to_keyword(nick)
+    char *nick;
+{
+    KEYWORD_S *kw;
+    char      *ret;
+
+    ret = nick;
+    for(kw = ps_global->keywords; kw; kw = kw->next)
+      if(!strcmp(nick, kw->nick ? kw->nick : kw->kw ? kw->kw : "")){
+	  if(kw->nick)
+	    ret = kw->kw;
+
+	  break;
+      }
+    
+    return(ret);
+}
+
+
+/*
+ * Return a pointer to the nickname associated with a keyword, or the
+ * input itself if no match.
+ */
+char *
+keyword_to_nick(keyword)
+    char *keyword;
+{
+    KEYWORD_S *kw;
+    char      *ret;
+
+    ret = keyword;
+    for(kw = ps_global->keywords; kw; kw = kw->next)
+      if(!strcmp(keyword, kw->kw ? kw->kw : "")){
+	  if(kw->nick)
+	    ret = kw->nick;
+
+	  break;
+      }
+    
+    return(ret);
 }
 
 
@@ -2920,14 +3108,32 @@ unsigned char *rfc1522_encoded_word PROTO((unsigned char *, int, char *));
 
 
 /*
- * rfc1522_decode - decode the given source string ala RFC 2047 (nee 1522),
- *		    IF NECESSARY, into the given destination buffer.
- *		    Don't bother copying if it turns out decoding
- *		    isn't necessary.
+ * rfc1522_decode - try to decode the given source string ala RFC 2047
+ *                  (obsoleted RFC 1522) into the given destination buffer.
+ *
+ * The 'charset' parameter works this way:
+ *
+ * If charset is NULL and an 'encoded-word' which does not match pine's
+ * charset is found, a description of the charset of the encoded word
+ * is inserted in that place into the destination buffer, eg: [iso-2022-jp]
+ *
+ * If charset is non-NULL, instead of the above, a copy of the
+ * charset string is allocated and a pointer to this string is written
+ * at the address where charset points to, but of course this allocate
+ * and copy is only done for the first not matching charset. remaining
+ * 'encoded-word's are also decoded silently, even if they are encoded
+ * with different charsets.
+ *
+ * In all cases, charset translation is only attempted from the first
+ * not matching charset, so translation may be wrong for the remaining.
+ *
+ * If charset is set and no non-matching charset is found,
+ * NULL is written at the address pointed by 'charset'.
  *
  * Returns: pointer to either the destination buffer containing the
  *	    decoded text, or a pointer to the source buffer if there was
- *	    no reason to decode it.
+ *          no valid 'encoded-word' found during scanning.
+ *          In addition, '*charset' is set as described above.
  */
 unsigned char *
 rfc1522_decode(d, len, s, charset)
@@ -2940,7 +3146,7 @@ rfc1522_decode(d, len, s, charset)
     char	  *start = s, *sw, *enc, *txt, *ew, **q, *lang;
     char          *cset, *cs = NULL;
     unsigned long  l;
-    int		   i;
+    int		   i, described_charset_once = 0;
     int            translate_2022_jp = 0;
 
     *d = '\0';					/* init destination */
@@ -2959,6 +3165,7 @@ rfc1522_decode(d, len, s, charset)
 		  while(s < sw && d-rv<len-1)
 		    *d++ = (unsigned char) *s++;
 
+		  described_charset_once = 0;
 		  break;
 	      }
 
@@ -2972,14 +3179,42 @@ rfc1522_decode(d, len, s, charset)
 	       && !strucmp((char *) cset, "iso-2022-jp")){
 		translate_2022_jp++;
 		dprint(5, (debugfile, "RFC1522_decode: translating %s\n",
-			   cset));
+		       cset ? cset : "?"));
 		if(!ps_global->VAR_CHAR_SET
 		   || strucmp(ps_global->VAR_CHAR_SET, "iso-2022-jp")){
 		    if(charset){
 			if(!*charset)		/* only write first charset */
 			  *charset = cpystr(cset);
 		    }
-		    else{
+		    else if(!described_charset_once++){
+			if(F_OFF(F_QUELL_CHARSET_WARNING, ps_global)){
+			    if(d-rv<len-1)
+			      *d++ = '[';
+
+			    sstrncpy((char **) &d, cset, len-1-(d-rv));
+			    if(d-rv<len-1)
+			      *d++ = ']';
+			    if(d-rv<len-1)
+			      *d++ = SPACE;
+			}
+		    }
+		}
+		/* else, just translate it silently */
+	    }
+	    else if((!ps_global->VAR_CHAR_SET
+		     || strucmp((char *) cset, ps_global->VAR_CHAR_SET))
+	            && strucmp((char *) cset, "US-ASCII")){
+		dprint(5, (debugfile, "RFC1522_decode: charset mismatch: %s\n",
+		       cset ? cset : "?"));
+		if(!cs)
+		  cs = cpystr(cset);
+
+		if(charset){
+		    if(!*charset)		/* only write first charset */
+		      *charset = cpystr(cset);
+		}
+		else if(!described_charset_once++){
+		    if(F_OFF(F_QUELL_CHARSET_WARNING, ps_global)){
 			if(d-rv<len-1)
 			  *d++ = '[';
 
@@ -2989,30 +3224,6 @@ rfc1522_decode(d, len, s, charset)
 			if(d-rv<len-1)
 			  *d++ = SPACE;
 		    }
-		}
-		/* else, just translate it silently */
-	    }
-	    else if((!ps_global->VAR_CHAR_SET
-		     || strucmp((char *) cset, ps_global->VAR_CHAR_SET))
-	            && strucmp((char *) cset, "US-ASCII")){
-		dprint(5, (debugfile, "RFC1522_decode: charset mismatch: %s\n",
-			   cset));
-		if(!cs)
-		  cs = cpystr(cset);
-
-		if(charset){
-		    if(!*charset)		/* only write first charset */
-		      *charset = cpystr(cset);
-		}
-		else{
-		    if(d-rv<len-1)
-		      *d++ = '[';
-
-		    sstrncpy((char **) &d, cset, len-1-(d-rv));
-		    if(d-rv<len-1)
-		      *d++ = ']';
-		    if(d-rv<len-1)
-		      *d++ = SPACE;
 		}
 	    }
 
@@ -3039,8 +3250,8 @@ rfc1522_decode(d, len, s, charset)
 		  q = NULL;
 
 		if(p = rfc822_qprint((unsigned char *)txt, strlen(txt), &l)){
-		    strncpy((char *) d, (char *) p, len-1-(d-rv));
-		    d[len-1-(d-rv)] = '\0';
+		    strncpy((char *) d, (char *) p, min(l,len-1-(d-rv)));
+		    d[min(l,len-1-(d-rv))] = '\0';
 		    fs_give((void **)&p);	/* free encoded buf */
 		    d += l;			/* advance dest ptr to EOL */
 		    if(d-rv > len-1)
@@ -3065,8 +3276,17 @@ rfc1522_decode(d, len, s, charset)
 	      case 'B' :			/* 'B' encoding */
 	      case 'b' :
 		if(p = rfc822_base64((unsigned char *) txt, strlen(txt), &l)){
-		    strncpy((char *) d, (char *) p, len-1-(d-rv));
-		    d[len-1-(d-rv)] = '\0';
+		    /*
+		     * C-client's rfc822_base64 was changed so that it now
+		     * does do null termination of the returned value.
+		     * As long as there are no nulls in the rest of the
+		     * string, we could now get rid of worrying about the
+		     * l length arg in the next two lines. In fact, since
+		     * embedded nulls don't make sense in this context and
+		     * won't work correctly anyway, it is really a no-op.
+		     */
+		    strncpy((char *) d, (char *) p, min(l,len-1-(d-rv)));
+		    d[min(l,len-1-(d-rv))] = '\0';
 		    fs_give((void **)&p);	/* free encoded buf */
 		    d += l;			/* advance dest ptr to EOL */
 		    if(d-rv > len-1)
@@ -3080,7 +3300,7 @@ rfc1522_decode(d, len, s, charset)
 	      default:
 		sstrncpy((char **) &d, txt, len-1-(d-rv));
 		dprint(1, (debugfile, "RFC1522_decode: Unknown ENCODING: %s\n",
-			   enc));
+		       enc ? enc : "?"));
 		break;
 	    }
 
@@ -3139,6 +3359,17 @@ rfc1522_decode(d, len, s, charset)
 	   && ps_global->VAR_CHAR_SET
 	   && strucmp(ps_global->VAR_CHAR_SET, cs)){
 	    CONV_TABLE *ct;
+	    char *dcs = ps_global->VAR_CHAR_SET;
+	    
+	    /* Convert ISO-2022-JP to EUC (UNIX) or Shift-JIS (PC) */
+	    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global) &&
+	       !strucmp(dcs, "iso-2022-jp")) {
+#ifdef _WINDOWS
+		dcs = "shift-jis";
+#else
+		dcs = "euc-jp";
+#endif
+	    }
 
 	    /*
 	     * If we know how to do the translation from cs
@@ -3146,10 +3377,25 @@ rfc1522_decode(d, len, s, charset)
 	     */
 	    ct = conversion_table(cs, ps_global->VAR_CHAR_SET);
 	    if(ct && ct->table){
-		p = rv;
-		while(len-- > 0 && *p){
-		    *p = ct->table[*p];
-		    p++;
+		if(ct->convert == gf_convert_8bit_charset){
+		    unsigned char *table = (unsigned char *) ct->table;
+		    for (p = rv; len-- > 0 && *p; p++)
+			*p = table[*p];
+		}
+		else if(ct->convert == gf_convert_utf8_charset){
+		    SIZEDTEXT src,dst;
+				/* determine length of source */
+		    for(src.data = rv, src.size = 0;
+			(src.size < len) && src.data[src.size]; ++src.size);
+				/* convert charset */
+		    if(utf8_cstext (&src, dcs, &dst,'?')) {
+				/* should always fit, but be paranoid */
+			if(dst.size <= len) {
+			    memcpy(rv, dst.data, dst.size);
+			    rv[dst.size] = '\0';
+			}
+			fs_give((void **) &dst.data);
+		    }
 		}
 	    }
 	}
@@ -3161,7 +3407,8 @@ rfc1522_decode(d, len, s, charset)
     return(rv ? rv : (unsigned char *) start);
 
   bogus:
-    dprint(1, (debugfile, "RFC1522_decode: BOGUS INPUT: -->%s<--\n", start));
+    dprint(1, (debugfile, "RFC1522_decode: BOGUS INPUT: -->%s<--\n",
+	   start ? start : "?"));
     return((unsigned char *) start);
 }
 
@@ -3439,14 +3686,26 @@ rfc1522_binary (src, srcl)
 
 
 /*
- * Returns a 256 character table to do the translation if feasible, else NULL.
+ * Checks if charset conversion is possible and which quality could be achieved
+ *
+ * args: from_cs -- charset to convert from
+ *       to_cs   -- charset to convert to
+ *
+ * Results:
+ * CONV_TABLE->table   -- conversion table, NULL if conversion not needed
+ *                        or not supported
+ * CONV_TABLE->quality -- conversion quality (conversion not supported, not
+ *                        needed, loses special chars, or loses letters
+ *
+ * The other entries of CONV_TABLE are used inside this function only
+ * and may not be used outside unless this documentation is updated.
  */
 CONV_TABLE *
 conversion_table(from_cs, to_cs)
     char *from_cs,
          *to_cs;
 {
-    int               quality = CV_NO_TRANSLATE_POSSIBLE, i, j;
+    int               i, j;
     unsigned char    *p = NULL;
     unsigned short   *fromtab, *totab;
     CONV_TABLE       *ct = NULL;
@@ -3459,6 +3718,15 @@ conversion_table(from_cs, to_cs)
 	return(&null_tab);
     }
 
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global) &&
+       !strucmp(to_cs,"ISO-2022-JP") && utf8_charset("EUC-JP")) {
+#ifdef _WINDOWS
+	to_cs = "SHIFT-JIS";	/* Windows uses Shift-JIS internally */
+#else
+	to_cs = "EUC-JP";	/* assume EUC-JP internally */
+#endif
+    }
+
     /*
      * First check to see if we are already set up for this pair of charsets.
      */
@@ -3469,27 +3737,11 @@ conversion_table(from_cs, to_cs)
       return(ct);
 
     /*
-     * No such luck. Check to see if a translation is feasible.
-     */
-    from = utf8_charset(from_cs);
-    to   = utf8_charset(to_cs);
-
-    if(from && to){
-	if((from->type == to->type && from->tab == to->tab)
-	   || (from->type == CT_ASCII))
-	  quality = CV_NO_TRANSLATE_NEEDED;
-	else if(from->type == CT_1BYTE && to->type == CT_1BYTE)
-	  quality = (from->script & to->script) ? CV_LOSES_SOME_LETTERS
-						     : CV_LOSES_SPECIAL_CHARS;
-    }
-    
-
-    /*
-     * Get rid of the cache of the previous translation table
+     * No such luck. Get rid of the cache of the previous translation table
      * and build a new one.
      */
     if(ct){
-	if(ct->table)
+	if(ct->table && (ct->convert != gf_convert_utf8_charset))
 	  fs_give((void **) &ct->table);
 	
 	if(ct->from_charset)
@@ -3505,51 +3757,140 @@ conversion_table(from_cs, to_cs)
 
     ct->from_charset = cpystr(from_cs);
     ct->to_charset   = cpystr(to_cs);
-    ct->quality = quality;
-
-    if(quality == CV_NO_TRANSLATE_POSSIBLE
-       || quality == CV_NO_TRANSLATE_NEEDED)
-      return(ct);
-    
-    fromtab = (unsigned short *) from->tab;
-    totab   = (unsigned short *) to->tab;
+    ct->quality = CV_NO_TRANSLATE_POSSIBLE;
 
     /*
-     * The fromtab and totab tables are mappings from the 128 character
-     * positions 128-255 to their Unicode values (so unsigned shorts).
-     * The table we are creating is such that if
-     *
-     *    from_char_value -> unicode_value
-     *    to_char_value   -> same_unicode_value
-     *
-     *  then we want to map from_char_value -> to_char_value
-     *
-     * To simplify conversions we create the whole 256 element array, with
-     * the first 128 positions just the identity. If there is no conversion
-     * for a particular from_char_value (that is, no to_char_value maps to
-     * the same unicode character) then we put '?' in that character. We
-     * may want to output blob on the PC, but don't so far.
-     *
-     * If fromtab or totab are NULL, that means the mapping is simply the
-     * identity mapping. Since that is still useful to us, we create it
-     * on the fly.
+     * Check to see if a translation is feasible.
      */
+    from = utf8_charset(from_cs);
+    to =   utf8_charset(to_cs);
 
-    p = ct->table = (unsigned char *) fs_get(256 * sizeof(unsigned char));
-    for(i = 0; i < 256; i++){
-	p[i] = i;
-	if(i >= 128){
-	    p[i] = '?';
-	    for(j = 0; j < 128; j++){
-		if((fromtab ? fromtab[i-128] : i)
-		   == (totab ? totab[j] : j+128)){
-		    p[i] = 128 + j;
-		    break;
+    if(from && to){		/* if both charsets found */
+				/* no mapping if same or from is ASCII */
+	if((from->type == to->type && from->tab == to->tab)
+	   || (from->type == CT_ASCII))
+	    ct->quality = CV_NO_TRANSLATE_NEEDED;
+	else switch(from->type){
+	case CT_1BYTE0:		/* 1 byte no table */
+	case CT_1BYTE:		/* 1 byte ASCII + table 0x80-0xff */
+	case CT_1BYTE8:		/* 1 byte table 0x00 - 0xff */
+	    switch(to->type){
+	    case CT_1BYTE0:	/* 1 byte no table */
+	    case CT_1BYTE:	/* 1 byte ASCII + table 0x80-0xff */
+	    case CT_1BYTE8:	/* 1 byte table 0x00 - 0xff */
+	        ct->quality = (from->script & to->script) ?
+		  CV_LOSES_SOME_LETTERS : CV_LOSES_SPECIAL_CHARS;
+		break;
+	    }
+	    break;
+	case CT_UTF8:		/* variable UTF-8 encoded Unicode no table */
+	/* If source is UTF-8, see if destination charset has an 8 or 16 bit
+	 * coded character set that we can translate to.  By special
+	 * dispensation, kludge ISO-2022-JP to EUC or Shift-JIS, but don't
+	 * try to do any other ISO 2022 charsets or UTF-7.
+	 */
+	    switch (to->type){
+	    case CT_SJIS:	/* 2 byte Shift-JIS */
+				/* only win if can get EUC-JP chartab */
+		if(utf8_charset("EUC-JP"))
+		    ct->quality = CV_LOSES_SOME_LETTERS;
+		break;
+	    case CT_ASCII:	/* 7-bit ASCII no table */
+	    case CT_1BYTE0:	/* 1 byte no table */
+	    case CT_1BYTE:	/* 1 byte ASCII + table 0x80-0xff */
+	    case CT_1BYTE8:	/* 1 byte table 0x00 - 0xff */
+	    case CT_EUC:	/* 2 byte ASCII + utf8_eucparam base/CS2/CS3 */
+	    case CT_DBYTE:	/* 2 byte ASCII + utf8_eucparam */
+	    case CT_DBYTE2:	/* 2 byte ASCII + utf8_eucparam plane1/2 */
+		ct->quality = CV_LOSES_SOME_LETTERS;
+		break;
+	    }
+	    break;
+	}
+
+	switch (ct->quality) {	/* need to map? */
+	case CV_NO_TRANSLATE_POSSIBLE:
+	case CV_NO_TRANSLATE_NEEDED:
+	  break;		/* no mapping needed */
+	default:		/* do mapping */
+	    switch (from->type) {
+	    case CT_UTF8:	/* UTF-8 to legacy character set */
+	      if(ct->table = utf8_rmap (to_cs))
+		ct->convert = gf_convert_utf8_charset;
+	      break;
+
+	    case CT_1BYTE0:	/* ISO 8859-1 */
+	    case CT_1BYTE:	/* low part ASCII, high part other */
+	    case CT_1BYTE8:	/* low part has some non-ASCII */
+	    /*
+	     * The fromtab and totab tables are mappings from the 128 character
+	     * positions 128-255 to their Unicode values (so unsigned shorts).
+	     * The table we are creating is such that if
+	     *
+	     *    from_char_value -> unicode_value
+	     *    to_char_value   -> same_unicode_value
+	     *
+	     *  then we want to map from_char_value -> to_char_value
+	     *
+	     * To simplify conversions we create the whole 256 element array,
+	     * with the first 128 positions just the identity. If there is no
+	     * conversion for a particular from_char_value (that is, no
+	     * to_char_value maps to the same unicode character) then we put
+	     *  '?' in that character. We may want to output blob on the PC,
+	     * but don't so far.
+	     *
+	     * If fromtab or totab are NULL, that means the mapping is simply
+	     * the identity mapping. Since that is still useful to us, we
+	     * create it on the fly.
+	     */
+		fromtab = (unsigned short *) from->tab;
+		totab   = (unsigned short *) to->tab;
+
+		ct->convert = gf_convert_8bit_charset;
+		p = ct->table = (unsigned char *)
+		  fs_get(256 * sizeof(unsigned char));
+		for(i = 0; i < 256; i++){
+		    unsigned int fc;
+		    p[i] = '?';
+		    switch(from->type){	/* get "from" UCS-2 codepoint */
+		    case CT_1BYTE0:	/* ISO 8859-1 */
+			fc = i;
+			break;
+		    case CT_1BYTE:	/* low part ASCII, high part other */
+			fc = (i < 128) ? i : fromtab[i-128];
+			break;
+		    case CT_1BYTE8:	/* low part has some non-ASCII */
+			fc = fromtab[i];
+			break;
+		    }
+		    switch(to->type){ /* match against "to" UCS-2 codepoint */
+		    case CT_1BYTE0: /* identity match for ISO 8859-1*/
+			if(fc < 256)
+			  p[i] = fc;
+			break;
+		    case CT_1BYTE: /* ASCII is identity, search high part */
+			if(fc < 128) p[i] = fc;
+			else for(j = 0; j < 128; j++){
+			    if(fc == totab[j]){
+				p[i] = 128 + j;
+				break;
+			    }
+			}
+			break;
+		    case CT_1BYTE8: /* search all codepoints */
+			for(j = 0; j < 256; j++){
+			    if(fc == totab[j]){
+			      p[i] = j;
+			      break;
+			    }
+			}
+			break;
+		    }
 		}
+		break;
 	    }
 	}
     }
-
 
     return(ct);
 }
@@ -4123,10 +4464,10 @@ rfc2231_get_param(parms, name, charset, lang)
 			if(n > count)
 			  count = n;
 		    }
-		    else {
+		    else{
 			q_status_message1(SM_ORDER | SM_DING, 0, 3,
-			"Invalid attachment parameter segment number: %.25s",
-					 name);
+		   "Invalid attachment parameter segment number: %.25s",
+					  name);
 			return(NULL);		/* Too many segments! */
 		    }
 
@@ -4145,9 +4486,10 @@ rfc2231_get_param(parms, name, charset, lang)
 		    len += strlen(pieces[i]);
 		  else{
 		      q_status_message1(SM_ORDER | SM_DING, 0, 3,
-			     "Missing attachment parameter sequence: %.25s",
-					 name);
-		      return(NULL);		/* hole! */
+		        "Missing attachment parameter sequence: %.25s",
+					name);
+
+		    return(NULL);		/* hole! */
 		  }
 
 		buf = (char *) fs_get((len + 1) * sizeof(char));
@@ -4347,7 +4689,7 @@ rfc2231_list_params(plist)
 	}
       if(i >= 32)
 	q_status_message1(SM_ORDER | SM_DING, 0, 3,
-			  "Overly long attachment parameter ignored: %.25s...",
+		       "Overly long attachment parameter ignored: %.25s...",
 			  pp->attribute);
     }
 
@@ -5016,6 +5358,54 @@ parse_pat_inherit()
 }
 
 
+/*
+ * There are three forms that a PATTERN_S has at various times. There is
+ * the actual PATTERN_S struct which is used internally and is used whenever
+ * we are actually doing something with the pattern, like filtering or
+ * something. There is the version that goes in the config file. And there
+ * is the version the user edits.
+ *
+ * To go between these three forms we have the helper routines
+ * 
+ *   pattern_to_config
+ *   config_to_pattern
+ *   pattern_to_editlist
+ *   editlist_to_pattern
+ *
+ * Here's what is supposed to be happening. A PATTERN_S is a linked list
+ * of strings with nothing escaped. That is, a backslash or a comma is
+ * just in there as a backslash or comma.
+ *
+ * The version the user edits is very similar. Because we have historically
+ * used commas as separators the user has always had to enter a \, in order
+ * to put a real comma in one of the items. That is the only difference
+ * between a PATTERN_S string and the editlist strings. Note that backslashes
+ * themselves are not escaped. A backslash which is not followed by a comma
+ * is a backslash. It doesn't escape the following character. That's a bit
+ * odd, it is that way because most people will never know about this
+ * backslash stuff but PC-Pine users may have backslashes in folder names.
+ *
+ * The version that goes in the config file has a few transformations made.
+ *      PATTERN_S   intermediate_form   Config string
+ *         ,              \,               \x2C
+ *         \              \\               \x5C
+ *         /                               \/
+ *         "                               \"
+ *
+ * The commas are turned into hex commas so that we can tell the separators
+ * in the comma-separated lists from those commas.
+ * The backslashes are escaped because they escape commas.
+ * The /'s are escaped because they separate pattern pieces.
+ * The "'s are escaped because they are significant to parse_list when
+ *   parsing the config file.
+ *                            hubert - 2004-04-01
+ *                                     (date is only coincidental!)
+ *
+ * Addendum. The not's are handled separately from all the strings. Not sure
+ * why that is or if there is a good reason. Nevertheless, now is not the
+ * time to figure it out so leave it that way.
+ *                            hubert - 2004-07-14
+ */
 PAT_S *
 parse_pat(str)
     char *str;
@@ -5042,6 +5432,7 @@ parse_pat(str)
 	memset((void *)pat->patgrp, 0, sizeof(*pat->patgrp));
 	pat->patgrp->fldr_type = FLDR_DEFL;
 	pat->patgrp->abookfrom = AFRM_DEFL;
+	pat->patgrp->cat_lim   = -1L;
 
 	if((pstr = copy_quoted_string_asis(p+PTRNLEN)) != NULL){
 	    /* move to next slash */
@@ -5111,7 +5502,7 @@ parse_pat(str)
 	    fs_give((void **)&astr);
 
 	    if(!pat->action->is_a_score)
-	      pat->action->scoreval = 0;
+	      pat->action->scoreval = 0L;
 	    
 	    if(pat->action->is_a_filter)
 	      pat->action->kill = (pat->action->folder
@@ -5208,13 +5599,24 @@ parse_patgrp_slash(str, patgrp)
       patgrp->alltext = parse_pattern("ALL", str, 1);
     else if(!strncmp(str, "/BODY=", 6) || !strncmp(str, "/!BODY=", 7))
       patgrp->bodytext = parse_pattern("BODY", str, 1);
+    else if(!strncmp(str, "/KEY=", 5) || !strncmp(str, "/!KEY=", 6))
+      patgrp->keyword = parse_pattern("KEY", str, 1);
     else if(!strncmp(str, "/FOLDER=", 8) || !strncmp(str, "/!FOLDER=", 9))
       patgrp->folder = parse_pattern("FOLDER", str, 1);
     else if(!strncmp(str, "/ABOOKS=", 8) || !strncmp(str, "/!ABOOKS=", 9))
       patgrp->abooks = parse_pattern("ABOOKS", str, 1);
+    /*
+     * A problem with arbhdrs is that more than one of them can appear in
+     * the string. We come back here the second time, but we already took
+     * care of the whole thing on the first pass. Hence the check for
+     * arbhdr already set.
+     */
     else if(!strncmp(str, "/ARB", 4) || !strncmp(str, "/!ARB", 5)
-	    || !strncmp(str, "/EARB", 5) || !strncmp(str, "/!EARB", 6))
-      patgrp->arbhdr = parse_arbhdr(str);
+	    || !strncmp(str, "/EARB", 5) || !strncmp(str, "/!EARB", 6)){
+	if(!patgrp->arbhdr)
+	  patgrp->arbhdr = parse_arbhdr(str);
+	/* else do nothing */
+    }
     else if(!strncmp(str, "/SENTDATE=", 10))
       patgrp->age_uses_sentdate = 1;
     else if(!strncmp(str, "/SCOREI=", 8)){
@@ -5230,6 +5632,45 @@ parse_patgrp_slash(str, patgrp)
 	    if((patgrp->age = parse_intvl(p)) != NULL)
 	      patgrp->do_age  = 1;
 
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/SIZE=", 6)){
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    if((patgrp->size = parse_intvl(p)) != NULL)
+	      patgrp->do_size  = 1;
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/CATCMD=", 8)){
+	if((p = remove_pat_escapes(str+8)) != NULL){
+	    int   commas = 0;
+	    char *q;
+
+	    /* count elements in list */
+	    for(q = p; q && *q; q++)
+	      if(*q == ',')
+		commas++;
+
+	    patgrp->category_cmd = parse_list(p, commas+1, PL_REMSURRQUOT,NULL);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/CATVAL=", 8)){
+	if((p = remove_pat_escapes(str+8)) != NULL){
+	    if((patgrp->cat = parse_intvl(p)) != NULL)
+	      patgrp->do_cat = 1;
+
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/CATLIM=", 8)){
+	if((p = remove_pat_escapes(str+8)) != NULL){
+	    long i;
+
+	    i = atol(p);
+	    patgrp->cat_lim = i;
 	    fs_give((void **)&p);
 	}
     }
@@ -5279,6 +5720,12 @@ parse_patgrp_slash(str, patgrp)
     else if(!strncmp(str, "/8BITS=", 7)){
 	SET_STATUS(str,"/8BITS=",patgrp->stat_8bitsubj);
     }
+    else if(!strncmp(str, "/BOM=", 5)){
+	SET_STATUS(str,"/BOM=",patgrp->stat_bom);
+    }
+    else if(!strncmp(str, "/BOY=", 5)){
+	SET_STATUS(str,"/BOY=",patgrp->stat_boy);
+    }
     else{
 	char save;
 
@@ -5291,7 +5738,8 @@ parse_patgrp_slash(str, patgrp)
 
 	dprint(1, (debugfile,
 	       "parse_patgrp_slash(%.20s): unrecognized in \"%s\"\n",
-	       str, patgrp->nick ? patgrp->nick : ""));
+	       str ? str : "?",
+	       (patgrp && patgrp->nick) ? patgrp->nick : ""));
 	q_status_message4(SM_ORDER, 1, 3,
 	      "Warning: unrecognized pattern element \"%.20s\"%.20s%.20s%.20s",
 	      str, patgrp->nick ? " in rule \"" : "",
@@ -5341,9 +5789,9 @@ parse_action_slash(str, action)
       action->is_a_score = 1;
     else if(!strncmp(str, "/SCORE=", 7)){
 	if((p = remove_pat_escapes(str+7)) != NULL){
-	    int i;
+	    long i;
 
-	    i = atoi(p);
+	    i = atol(p);
 	    if(i >= SCORE_MIN && i <= SCORE_MAX)
 	      action->scoreval = i;
 
@@ -5352,6 +5800,10 @@ parse_action_slash(str, action)
     }
     else if(!strncmp(str, "/FOLDER=", 8))
       action->folder = parse_pattern("FOLDER", str, 1);
+    else if(!strncmp(str, "/KEYSET=", 8))
+      action->keyword_set = parse_pattern("KEYSET", str, 1);
+    else if(!strncmp(str, "/KEYCLR=", 8))
+      action->keyword_clr = parse_pattern("KEYCLR", str, 1);
     else if(!strncmp(str, "/NOKILL=", 8))
       action->kill = -1;
     else if(!strncmp(str, "/NOTDEL=", 8))
@@ -5502,7 +5954,7 @@ parse_action_slash(str, action)
 	      if(*q == ',')
 		commas++;
 
-	    action->smtp = parse_list(p, commas+1, 1, NULL);
+	    action->smtp = parse_list(p, commas+1, PL_REMSURRQUOT, NULL);
 	    fs_give((void **)&p);
 	}
     }
@@ -5516,7 +5968,7 @@ parse_action_slash(str, action)
 	      if(*q == ',')
 		commas++;
 
-	    action->nntp = parse_list(p, commas+1, 1, NULL);
+	    action->nntp = parse_list(p, commas+1, PL_REMSURRQUOT, NULL);
 	    fs_give((void **)&p);
 	}
     }
@@ -5587,7 +6039,8 @@ parse_action_slash(str, action)
 
 	dprint(1, (debugfile,
 	       "parse_action_slash(%.20s): unrecognized in \"%s\"\n",
-	       str, action->nick ? action->nick : ""));
+	       str ? str : "?",
+	       (action && action->nick) ? action->nick : ""));
 	q_status_message4(SM_ORDER, 1, 3,
 	      "Warning: unrecognized pattern action \"%.20s\"%.20s%.20s%.20s",
 	      str, action->nick ? " in rule \"" : "",
@@ -5613,7 +6066,7 @@ parse_intvl(str)
     char *str;
 {
     char *q;
-    int   left, right;
+    long  left, right;
     INTVL_S *ret = NULL, **next;
 
     if(!str)
@@ -5622,7 +6075,7 @@ parse_intvl(str)
     q = str;
 
     for(;;){
-	left = right = SCORE_UNDEF;
+	left = right = INTVL_UNDEF;
 
 	/* skip to first number */
 	while(isspace((unsigned char) *q) || *q == LPAREN)
@@ -5630,12 +6083,11 @@ parse_intvl(str)
 	
 	/* min number */
 	if(*q == COMMA || !struncmp(q, "-INF", 4))
-	  left = - SCORE_INF;
+	  left = - INTVL_INF;
 	else if(*q == '-' || isdigit((unsigned char) *q))
-	  left = atoi(q);
-	/* else still UNDEF */
+	  left = atol(q);
 
-	if(left != SCORE_UNDEF){
+	if(left != INTVL_UNDEF){
 	    /* skip to second number */
 	    while(*q && *q != COMMA && *q != RPAREN)
 	      q++;
@@ -5646,21 +6098,30 @@ parse_intvl(str)
 
 	    /* max number */
 	    if(*q == '\0' || *q == RPAREN || !struncmp(q, "INF", 3))
-	      right = SCORE_INF;
+	      right = INTVL_INF;
 	    else if(*q == '-' || isdigit((unsigned char) *q))
-	      right = atoi(q);
+	      right = atol(q);
 	}
 	
-	if(left == SCORE_UNDEF || right == SCORE_UNDEF){
-	    if(ret)
-	      break;
+	if(left == INTVL_UNDEF || right == INTVL_UNDEF
+	   || left > right){
+	    if(left != INTVL_UNDEF || right != INTVL_UNDEF || *q){
+		if(left != INTVL_UNDEF && right != INTVL_UNDEF
+		   && left > right)
+		  q_status_message1(SM_ORDER, 3, 5,
+				"Error: Interval \"%.200s\", min > max", str);
+		else
+		  q_status_message1(SM_ORDER, 3, 5,
+		      "Error: Interval \"%.200s\": syntax is (min,max)", str);
+	      
+		if(ret)
+		  free_intvl(&ret);
+		
+		ret = NULL;
+	    }
 
-	    q_status_message1(SM_ORDER, 3, 5,
-		    "Error: Interval \"%.200s\": syntax is (min,max)", str);
+	    break;
 	}
-	else if(left > right)
-	  q_status_message1(SM_ORDER, 3, 5,
-			    "Error: Interval \"%.200s\", min > max", str);
 	else{
 	    if(!ret){
 		ret = (INTVL_S *) fs_get(sizeof(*ret));
@@ -5703,7 +6164,7 @@ stringform_of_intvl(intvl)
 {
     char *res = NULL;
 
-    if(intvl && intvl->imin != SCORE_UNDEF && intvl->imax != SCORE_UNDEF
+    if(intvl && intvl->imin != INTVL_UNDEF && intvl->imax != INTVL_UNDEF
        && intvl->imin <= intvl->imax){
 	char     lbuf[20], rbuf[20], buf[45], *p;
 	INTVL_S *iv;
@@ -5712,7 +6173,7 @@ stringform_of_intvl(intvl)
 
 	/* find a max size and allocate it for the result */
 	for(iv = intvl;
-	    (iv && iv->imin != SCORE_UNDEF && iv->imax != SCORE_UNDEF
+	    (iv && iv->imin != INTVL_UNDEF && iv->imax != INTVL_UNDEF
 	     && iv->imin <= iv->imax);
 	    iv = iv->next)
 	  count++;
@@ -5723,19 +6184,19 @@ stringform_of_intvl(intvl)
 	p = res;
 
 	for(iv = intvl;
-	    (iv && iv->imin != SCORE_UNDEF && iv->imax != SCORE_UNDEF
+	    (iv && iv->imin != INTVL_UNDEF && iv->imax != INTVL_UNDEF
 	     && iv->imin <= iv->imax);
 	    iv = iv->next){
 
-	    if(iv->imin == - SCORE_INF)
+	    if(iv->imin == - INTVL_INF)
 	      strncpy(lbuf, "-INF", sizeof(lbuf));
 	    else
-	      sprintf(lbuf, "%d", iv->imin);
+	      sprintf(lbuf, "%ld", iv->imin);
 
-	    if(iv->imax == SCORE_INF)
+	    if(iv->imax == INTVL_INF)
 	      strncpy(rbuf, "INF", sizeof(rbuf));
 	    else
-	      sprintf(rbuf, "%d", iv->imax);
+	      sprintf(rbuf, "%ld", iv->imax);
 
 	    sprintf(buf, "%.1s(%.20s,%.20s)", (p == res) ? "" : ",",
 		    lbuf, rbuf);
@@ -5847,12 +6308,8 @@ int
 patgrp_depends_on_state(patgrp)
     PATGRP_S *patgrp;
 {
-    return(patgrp && !patgrp->bogus
-           && (patgrp->stat_new  != PAT_STAT_EITHER ||
-	       patgrp->stat_rec  != PAT_STAT_EITHER ||
-	       patgrp->stat_del  != PAT_STAT_EITHER ||
-	       patgrp->stat_imp  != PAT_STAT_EITHER ||
-	       patgrp->stat_ans  != PAT_STAT_EITHER));
+    return(patgrp && (patgrp_depends_on_active_state(patgrp)
+		      || patgrp->stat_rec != PAT_STAT_EITHER));
 }
 
 
@@ -5868,7 +6325,8 @@ patgrp_depends_on_active_state(patgrp)
            && (patgrp->stat_new  != PAT_STAT_EITHER ||
 	       patgrp->stat_del  != PAT_STAT_EITHER ||
 	       patgrp->stat_imp  != PAT_STAT_EITHER ||
-	       patgrp->stat_ans  != PAT_STAT_EITHER));
+	       patgrp->stat_ans  != PAT_STAT_EITHER ||
+	       patgrp->keyword));
 }
 
 
@@ -5907,21 +6365,30 @@ parse_pattern(label, str, hex_to_backslashed)
     sstrncpy(&q, "=", sizeof(copynot) - (q-copynot));
     copynot[sizeof(copynot)-1] = '\0';
 
-    if((q = srchstr(str, copy)) != NULL){
-	if((labeled_str = (hex_to_backslashed
-		? remove_pat_escapes(q+strlen(copy))
-		: remove_backslash_escapes(q+strlen(copy)))) != NULL){
-	    head = string_to_pattern(labeled_str);
-	    fs_give((void **)&labeled_str);
+    if(hex_to_backslashed){
+	if((q = srchstr(str, copy)) != NULL){
+	    head = config_to_pattern(q+strlen(copy));
+	}
+	else if((q = srchstr(str, copynot)) != NULL){
+	    head = config_to_pattern(q+strlen(copynot));
+	    head->not = 1;
 	}
     }
-    else if((q = srchstr(str, copynot)) != NULL){
-	if((labeled_str = (hex_to_backslashed
-		? remove_pat_escapes(q+strlen(copynot))
-		: remove_backslash_escapes(q+strlen(copynot)))) != NULL){
-	    head = string_to_pattern(labeled_str);
-	    head->not = 1;
-	    fs_give((void **)&labeled_str);
+    else{
+	if((q = srchstr(str, copy)) != NULL){
+	    if((labeled_str =
+			remove_backslash_escapes(q+strlen(copy))) != NULL){
+		head = string_to_pattern(labeled_str);
+		fs_give((void **)&labeled_str);
+	    }
+	}
+	else if((q = srchstr(str, copynot)) != NULL){
+	    if((labeled_str =
+			remove_backslash_escapes(q+strlen(copynot))) != NULL){
+		head = string_to_pattern(labeled_str);
+		head->not = 1;
+		fs_give((void **)&labeled_str);
+	    }
 	}
     }
 
@@ -6021,7 +6488,6 @@ next_arb(start)
  * Commas and backslashes may be backslash-escaped in the original string
  * in order to include actual commas and backslashes in the pattern.
  * So \, is an actual comma and , is the separator character.
- * The string is the form edited by the user.
  */
 PATTERN_S *
 string_to_pattern(str)
@@ -6067,7 +6533,7 @@ string_to_pattern(str)
 		break;
 		
 	      case BSLASH:
-		if(*(q+1) == COMMA)
+		if(*(q+1) == COMMA || *(q+1) == BSLASH)
 		  *s++ = *(++q);
 		else
 		  *s++ = *q;
@@ -6093,7 +6559,6 @@ string_to_pattern(str)
  *        string1,string2,...
  * Commas and backslashes in the original pattern
  * end up backslash-escaped in the string.
- * This string is what the user sees and edits.
  */
 char *
 pattern_to_string(pattern)
@@ -6111,7 +6576,7 @@ pattern_to_string(pattern)
     for(p = pattern; p; p = p->next){
 	n += (p == pattern) ? 0 : 1;
 	for(s = p->substring; s && *s; s++){
-	    if(*s == COMMA)
+	    if(*s == COMMA || *s == BSLASH)
 	      n++;
 
 	    n++;
@@ -6124,7 +6589,7 @@ pattern_to_string(pattern)
 	  *q++ = COMMA;
 
 	for(s = p->substring; s && *s; s++){
-	    if(*s == COMMA)
+	    if(*s == COMMA || *s == BSLASH)
 	      *q++ = '\\';
 
 	    *q++ = *s;
@@ -6134,6 +6599,172 @@ pattern_to_string(pattern)
     *q = '\0';
 
     return(result);
+}
+
+
+/*
+ * Do the escaping necessary to take a string for a pattern into a comma-
+ * separated string with escapes suitable for the config file.
+ * Returns an allocated copy of that string.
+ * In particular
+ *     ,  ->  \,  ->  \x2C
+ *     \  ->  \\  ->  \x5C
+ *     "       ->      \"
+ *     /       ->      \/
+ */
+char *
+pattern_to_config(pat)
+    PATTERN_S *pat;
+{
+    char *s, *res = NULL;
+    
+    s = pattern_to_string(pat);
+    if(s){
+	res = add_pat_escapes(s);
+	fs_give((void **) &s);
+    }
+
+    return(res);
+}
+
+/*
+ * Opposite of pattern_to_config.
+ */
+PATTERN_S *
+config_to_pattern(str)
+    char *str;
+{
+    char      *s;
+    PATTERN_S *pat = NULL;
+    
+    s = remove_pat_escapes(str);
+    if(s){
+	pat = string_to_pattern(s);
+	fs_give((void **) &s);
+    }
+
+    return(pat);
+}
+
+
+/*
+ * Converts an array of strings to a PATTERN_S list and returns an
+ * allocated copy.
+ * The list strings may not contain commas directly, because the UI turns
+ * those into separate list members. Instead, the user types \, and
+ * that backslash comma is converted to a comma here.
+ * It is a bit odd. Backslash itself is not escaped. A backslash which is
+ * not followed by a comma is a literal backslash, a backslash followed by
+ * a comma is a comma.
+ */
+PATTERN_S *
+editlist_to_pattern(list)
+    char **list;
+{
+    PATTERN_S *head = NULL;
+
+    if(!(list && *list))
+      return(head);
+    
+    /*
+     * We want an empty string to cause an empty substring in the pattern
+     * instead of returning a NULL pattern. That can be used as a way to
+     * match any header. For example, if all the patterns but the news
+     * pattern were null and the news pattern was a substring of "" then
+     * we use that to match any message with a newsgroups header.
+     */
+    if(!list[0][0]){
+	head = (PATTERN_S *) fs_get(sizeof(*head));
+	memset((void *) head, 0, sizeof(*head));
+	head->substring = cpystr("");
+    }
+    else{
+	char      *str, *s, *q, *workspace = NULL;
+	size_t     l = 0;
+	PATTERN_S *p, **nextp;
+	int        i;
+
+	nextp = &head;
+	for(i = 0; (str = list[i]); i++){
+	    if(str[0]){
+		if(!workspace){
+		    l = strlen(str) + 1;
+		    workspace = (char *) fs_get(l * sizeof(char));
+		}
+		else if(strlen(str) + 1 > l){
+		    l = strlen(str) + 1;
+		    fs_give((void **) &workspace);
+		    workspace = (char *) fs_get(l * sizeof(char));
+		}
+
+		s = workspace;
+		*s = '\0';
+		q = str;
+		do {
+		    switch(*q){
+		      case '\0':
+			*s = '\0';
+			removing_leading_and_trailing_white_space(workspace);
+			p = (PATTERN_S *) fs_get(sizeof(*p));
+			memset((void *) p, 0, sizeof(*p));
+			p->substring = cpystr(workspace);
+			*nextp = p;
+			nextp = &p->next;
+			s = workspace;
+			*s = '\0';
+			break;
+			
+		      case BSLASH:
+			if(*(q+1) == COMMA)
+			  *s++ = *(++q);
+			else
+			  *s++ = *q;
+
+			break;
+
+		      default:
+			*s++ = *q;
+			break;
+		    }
+		} while(*q++);
+	    }
+	}
+    }
+
+    return(head);
+}
+
+
+/*
+ * Converts a PATTERN_S to an array of strings and returns an allocated copy.
+ * Commas are converted to backslash-comma, because the text_tool UI uses
+ * commas to separate items.
+ * It is a bit odd. Backslash itself is not escaped. A backslash which is
+ * not followed by a comma is a literal backslash, a backslash followed by
+ * a comma is a comma.
+ */
+char **
+pattern_to_editlist(pat)
+    PATTERN_S *pat;
+{
+    int        cnt, i;
+    PATTERN_S *p;
+    char     **list = NULL;
+
+    if(!pat)
+      return(list);
+
+    /* how many in list? */
+    for(cnt = 0, p = pat; p; p = p->next)
+      cnt++;
+    
+    list = (char **) fs_get((cnt + 1) * sizeof(*list));
+    memset((void *) list, 0, (cnt + 1) * sizeof(*list));
+
+    for(i = 0, p = pat; p; p = p->next, i++)
+      list[i] = add_comma_escapes(p->substring);
+    
+    return(list);
 }
 
 
@@ -6174,15 +6805,15 @@ first_any_pattern(pstate)
 	    break;
 
 	  case 2:
-	    local_rflag = ROLE_DO_FILTER & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_ROLES & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 3:
-	    local_rflag = ROLE_DO_SCORES & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_FILTER & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 4:
-	    local_rflag = ROLE_DO_ROLES & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_SCORES & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 5:
@@ -6308,15 +6939,15 @@ last_any_pattern(pstate)
 	    break;
 
 	  case 2:
-	    local_rflag = ROLE_DO_FILTER & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_ROLES & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 3:
-	    local_rflag = ROLE_DO_SCORES & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_FILTER & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 4:
-	    local_rflag = ROLE_DO_ROLES & CANONICAL_RFLAGS(pstate->rflags);
+	    local_rflag = ROLE_DO_SCORES & CANONICAL_RFLAGS(pstate->rflags);
 	    break;
 
 	  case 5:
@@ -6614,7 +7245,7 @@ write_patterns(rflags)
       err += sub_write_patterns(ROLE_DO_ROLES  | (rflags & PAT_USE_MASK));
 
     if(!err)
-      write_pinerc(ps_global, (rflags & PAT_USE_MAIN) ? Main : Post);
+      write_pinerc(ps_global, (rflags & PAT_USE_MAIN) ? Main : Post, WRP_NONE);
 
     return(err);
 }
@@ -6714,7 +7345,8 @@ write_pattern_file(lvalue, patline)
     FILE  *fp_new;
     PAT_S *pat;
 
-    dprint(7, (debugfile, "write_pattern_file(%s)\n", patline->filepath));
+    dprint(7, (debugfile, "write_pattern_file(%s)\n",
+	   (patline && patline->filepath) ? patline->filepath : "?"));
 
     if(lvalue){
 	p = (char *)fs_get((strlen(patline->filename) + 6) * sizeof(char));
@@ -6743,7 +7375,8 @@ write_pattern_file(lvalue, patline)
 	return(-1);
     }
 
-    dprint(9, (debugfile, "write_pattern_file: writing into %s\n", tfile));
+    dprint(9, (debugfile, "write_pattern_file: writing into %s\n",
+	   tfile ? tfile : "?"));
     
     if(fprintf(fp_new, "%s %s\n", PATTERN_MAGIC, PATTERN_FILE_VERS) == EOF)
       err--;
@@ -6773,8 +7406,10 @@ write_pattern_file(lvalue, patline)
 			  "Error renaming \"%.200s\" to \"%.200s\": %.200s",
 			  tfile, patline->filepath, error_description(errno));
 	dprint(2, (debugfile,
-		   "write_pattern_file: Error renaming (%s,%s): %s\n",
-		   tfile, patline->filepath, error_description(errno)));
+	       "write_pattern_file: Error renaming (%s,%s): %s\n",
+	       tfile ? tfile : "?",
+	       (patline && patline->filepath) ? patline->filepath : "?",
+	       error_description(errno)));
     }
 
     if(tfile){
@@ -6853,11 +7488,16 @@ data_for_patline(pat)
 		  *arb_pat = NULL, *fldr_type_pat = NULL, *fldr_pat = NULL,
 		  *afrom_type_pat = NULL, *abooks_pat = NULL,
 		  *alltext_pat = NULL, *scorei_pat = NULL, *recip_pat = NULL,
+		  *keyword_pat = NULL,
 		  *bodytext_pat = NULL, *age_pat = NULL, *sentdate = NULL,
+		  *size_pat = NULL,
+		  *category_cmd = NULL, *category_pat = NULL,
+		  *category_lim = NULL,
 		  *partic_pat = NULL, *stat_new_val = NULL,
 		  *stat_rec_val = NULL,
 		  *stat_imp_val = NULL, *stat_del_val = NULL,
 		  *stat_ans_val = NULL, *stat_8bit_val = NULL,
+		  *stat_bom_val = NULL, *stat_boy_val = NULL,
 		  *from_act = NULL, *replyto_act = NULL, *fcc_act = NULL,
 		  *sig_act = NULL, *nick = NULL, *templ_act = NULL,
 		  *litsig_act = NULL, *cstm_act = NULL, *smtp_act = NULL,
@@ -6868,10 +7508,12 @@ data_for_patline(pat)
 		  *folder_act = NULL, *filt_ifnotdel = NULL,
 		  *filt_nokill = NULL, *filt_del_val = NULL,
 		  *filt_imp_val = NULL, *filt_ans_val = NULL,
-		  *filt_new_val = NULL, *filt_nonterm = NULL;
+		  *filt_new_val = NULL, *filt_nonterm = NULL,
+		  *keyword_set = NULL, *keyword_clr = NULL;
     int            to_not = 0, news_not = 0, from_not = 0,
 		   sender_not = 0, cc_not = 0, subj_not = 0,
-		   partic_not = 0, recip_not = 0, alltext_not, bodytext_not;
+		   partic_not = 0, recip_not = 0, alltext_not, bodytext_not,
+		   keyword_not = 0;
     ACTION_S      *action = NULL;
     NAMEVAL_S     *f;
 
@@ -6892,93 +7534,58 @@ data_for_patline(pat)
 	    fs_give((void **) &nick);
 
 	if(pat->patgrp->to){
-	    p = pattern_to_string(pat->patgrp->to);
+	    to_pat = pattern_to_config(pat->patgrp->to);
 	    to_not = pat->patgrp->to->not;
-	    if(p){
-		to_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->from){
-	    p = pattern_to_string(pat->patgrp->from);
+	    from_pat = pattern_to_config(pat->patgrp->from);
 	    from_not = pat->patgrp->from->not;
-	    if(p){
-		from_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->sender){
-	    p = pattern_to_string(pat->patgrp->sender);
+	    sender_pat = pattern_to_config(pat->patgrp->sender);
 	    sender_not = pat->patgrp->sender->not;
-	    if(p){
-		sender_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->cc){
-	    p = pattern_to_string(pat->patgrp->cc);
+	    cc_pat = pattern_to_config(pat->patgrp->cc);
 	    cc_not = pat->patgrp->cc->not;
-	    if(p){
-		cc_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->recip){
-	    p = pattern_to_string(pat->patgrp->recip);
+	    recip_pat = pattern_to_config(pat->patgrp->recip);
 	    recip_not = pat->patgrp->recip->not;
-	    if(p){
-		recip_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->partic){
-	    p = pattern_to_string(pat->patgrp->partic);
+	    partic_pat = pattern_to_config(pat->patgrp->partic);
 	    partic_not = pat->patgrp->partic->not;
-	    if(p){
-		partic_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->news){
-	    p = pattern_to_string(pat->patgrp->news);
+	    news_pat = pattern_to_config(pat->patgrp->news);
 	    news_not = pat->patgrp->news->not;
-	    if(p){
-		news_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->subj){
-	    p = pattern_to_string(pat->patgrp->subj);
+	    subj_pat = pattern_to_config(pat->patgrp->subj);
 	    subj_not = pat->patgrp->subj->not;
-	    if(p){
-		subj_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->alltext){
-	    p = pattern_to_string(pat->patgrp->alltext);
+	    alltext_pat = pattern_to_config(pat->patgrp->alltext);
 	    alltext_not = pat->patgrp->alltext->not;
-	    if(p){
-		alltext_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
 	}
 
 	if(pat->patgrp->bodytext){
-	    p = pattern_to_string(pat->patgrp->bodytext);
+	    bodytext_pat = pattern_to_config(pat->patgrp->bodytext);
 	    bodytext_not = pat->patgrp->bodytext->not;
-	    if(p){
-		bodytext_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
+	}
+
+	if(pat->patgrp->keyword){
+	    keyword_pat = pattern_to_config(pat->patgrp->keyword);
+	    keyword_not = pat->patgrp->keyword->not;
 	}
 
 	if(pat->patgrp->arbhdr){
@@ -7059,28 +7666,68 @@ data_for_patline(pat)
 	    }
 	}
 
-	if((f = pat_fldr_types(pat->patgrp->fldr_type)) != NULL)
-	  fldr_type_pat = f->shortname;
-
-	if(pat->patgrp->folder){
-	    p = pattern_to_string(pat->patgrp->folder);
+	if(pat->patgrp->do_size){
+	    p = stringform_of_intvl(pat->patgrp->size);
 	    if(p){
-		fldr_pat = add_pat_escapes(p);
+		size_pat = add_pat_escapes(p);
 		fs_give((void **)&p);
 	    }
 	}
+
+	if(pat->patgrp->category_cmd && pat->patgrp->category_cmd[0]){
+	    size_t sz;
+	    char **l, *q;
+
+	    /* concatenate into string with commas first */
+	    sz = 0;
+	    for(l = pat->patgrp->category_cmd; l[0] && l[0][0]; l++)
+	      sz += strlen(l[0]) + 1;
+
+	    if(sz){
+		char *p;
+		int   first_one = 1;
+
+		q = (char *)fs_get(sz);
+		memset(q, 0, sz);
+		p = q;
+		for(l = pat->patgrp->category_cmd; l[0] && l[0][0]; l++){
+		    if(!first_one)
+		      sstrcpy(&p, ",");
+
+		    first_one = 0;
+		    sstrcpy(&p, l[0]);
+		}
+
+		category_cmd = add_pat_escapes(q);
+		fs_give((void **)&q);
+	    }
+	}
+
+	if(pat->patgrp->do_cat){
+	    p = stringform_of_intvl(pat->patgrp->cat);
+	    if(p){
+		category_pat = add_pat_escapes(p);
+		fs_give((void **)&p);
+	    }
+	}
+
+	if(pat->patgrp->cat_lim != -1L){
+	    category_lim = (char *) fs_get(20 * sizeof(char));
+	    sprintf(category_lim, "%ld", pat->patgrp->cat_lim);
+	}
+
+	if((f = pat_fldr_types(pat->patgrp->fldr_type)) != NULL)
+	  fldr_type_pat = f->shortname;
+
+	if(pat->patgrp->folder)
+	  fldr_pat = pattern_to_config(pat->patgrp->folder);
 
 	if((f = abookfrom_fldr_types(pat->patgrp->abookfrom)) != NULL
 	   && f->value != AFRM_DEFL)
 	  afrom_type_pat = f->shortname;
 
-	if(pat->patgrp->abooks){
-	    p = pattern_to_string(pat->patgrp->abooks);
-	    if(p){
-		abooks_pat = add_pat_escapes(p);
-		fs_give((void **)&p);
-	    }
-	}
+	if(pat->patgrp->abooks)
+	  abooks_pat = pattern_to_config(pat->patgrp->abooks);
 
 	if(pat->patgrp->stat_new != PAT_STAT_EITHER &&
 	   (f = role_status_types(pat->patgrp->stat_new)) != NULL)
@@ -7105,15 +7752,23 @@ data_for_patline(pat)
 	if(pat->patgrp->stat_8bitsubj != PAT_STAT_EITHER &&
 	   (f = role_status_types(pat->patgrp->stat_8bitsubj)) != NULL)
 	  stat_8bit_val = f->shortname;
+
+	if(pat->patgrp->stat_bom != PAT_STAT_EITHER &&
+	   (f = role_status_types(pat->patgrp->stat_bom)) != NULL)
+	  stat_bom_val = f->shortname;
+
+	if(pat->patgrp->stat_boy != PAT_STAT_EITHER &&
+	   (f = role_status_types(pat->patgrp->stat_boy)) != NULL)
+	  stat_boy_val = f->shortname;
     }
 
     if(pat->action){
 	action = pat->action;
 
-	if(action->is_a_score && action->scoreval != 0 &&
+	if(action->is_a_score && action->scoreval != 0L &&
 	   action->scoreval >= SCORE_MIN && action->scoreval <= SCORE_MAX){
-	    score_act = (char *)fs_get(5 * sizeof(char));
-	    sprintf(score_act, "%d", pat->action->scoreval);
+	    score_act = (char *) fs_get(5 * sizeof(char));
+	    sprintf(score_act, "%ld", pat->action->scoreval);
 	}
 
 	if(action->is_a_role){
@@ -7290,14 +7945,17 @@ data_for_patline(pat)
 
 	if(action->is_a_filter){
 	    if(action->folder){
-		if(p = pattern_to_string(action->folder)){
-		    folder_act = add_pat_escapes(p);
-		    fs_give((void **) &p);
-
+		if(folder_act = pattern_to_config(action->folder)){
 		    if(action->move_only_if_not_deleted)
 		      filt_ifnotdel = cpystr("/NOTDEL=1");
 		}
 	    }
+
+	    if(action->keyword_set)
+	      keyword_set = pattern_to_config(action->keyword_set);
+
+	    if(action->keyword_clr)
+	      keyword_clr = pattern_to_config(action->keyword_clr);
 
 	    if(!action->kill)
 	      filt_nokill = cpystr("/NOKILL=1");
@@ -7346,7 +8004,12 @@ data_for_patline(pat)
 			strlen(bodytext_pat ? bodytext_pat : "") +
 			strlen(arb_pat ? arb_pat : "") +
 			strlen(scorei_pat ? scorei_pat : "") +
+			strlen(keyword_pat ? keyword_pat : "") +
 			strlen(age_pat ? age_pat : "") +
+			strlen(size_pat ? size_pat : "") +
+			strlen(category_cmd ? category_cmd : "") +
+			strlen(category_pat ? category_pat : "") +
+			strlen(category_lim ? category_lim : "") +
 			strlen(fldr_pat ? fldr_pat : "") +
 			strlen(abooks_pat ? abooks_pat : "") +
 			strlen(sentdate ? sentdate : "") +
@@ -7368,7 +8031,9 @@ data_for_patline(pat)
 			strlen(filt_nokill ? filt_nokill : "") +
 			strlen(filt_nonterm ? filt_nonterm : "") +
 			(folder_act ? (strlen(folder_act) + 8) : 0) +
-			strlen(templ_act ? templ_act : "") + 480)*sizeof(char));
+			strlen(keyword_set ? keyword_set : "") +
+			strlen(keyword_clr ? keyword_clr : "") +
+			strlen(templ_act ? templ_act : "") + 520)*sizeof(char));
 
     q = p;
     sstrcpy(&q, "pattern=\"/NICK=");
@@ -7480,6 +8145,16 @@ data_for_patline(pat)
 	fs_give((void **) &bodytext_pat);
     }
 
+    if(keyword_pat){
+	sstrcpy(&q, "/");
+	if(keyword_not)
+	  sstrcpy(&q, "!");
+
+	sstrcpy(&q, "KEY=");
+	sstrcpy(&q, keyword_pat);
+	fs_give((void **) &keyword_pat);
+    }
+
     if(arb_pat){
 	sstrcpy(&q, arb_pat);
 	fs_give((void **)&arb_pat);
@@ -7495,6 +8170,30 @@ data_for_patline(pat)
 	sstrcpy(&q, "/AGE=");
 	sstrcpy(&q, age_pat);
 	fs_give((void **) &age_pat);
+    }
+
+    if(size_pat){
+	sstrcpy(&q, "/SIZE=");
+	sstrcpy(&q, size_pat);
+	fs_give((void **) &size_pat);
+    }
+
+    if(category_cmd){
+	sstrcpy(&q, "/CATCMD=");
+	sstrcpy(&q, category_cmd);
+	fs_give((void **) &category_cmd);
+    }
+
+    if(category_pat){
+	sstrcpy(&q, "/CATVAL=");
+	sstrcpy(&q, category_pat);
+	fs_give((void **) &category_pat);
+    }
+
+    if(category_lim){
+	sstrcpy(&q, "/CATLIM=");
+	sstrcpy(&q, category_lim);
+	fs_give((void **) &category_lim);
     }
 
     if(sentdate){
@@ -7552,6 +8251,16 @@ data_for_patline(pat)
     if(stat_8bit_val){
 	sstrcpy(&q, "/8BITS=");
 	sstrcpy(&q, stat_8bit_val);
+    }
+
+    if(stat_bom_val){
+	sstrcpy(&q, "/BOM=");
+	sstrcpy(&q, stat_bom_val);
+    }
+
+    if(stat_boy_val){
+	sstrcpy(&q, "/BOY=");
+	sstrcpy(&q, stat_boy_val);
     }
 
     sstrcpy(&q, "\" action=\"");
@@ -7730,6 +8439,18 @@ data_for_patline(pat)
 	sstrcpy(&q, filt_ans_val);
     }
 
+    if(keyword_set){
+	sstrcpy(&q, "/KEYSET=");
+	sstrcpy(&q, keyword_set);
+	fs_give((void **) &keyword_set);
+    }
+
+    if(keyword_clr){
+	sstrcpy(&q, "/KEYCLR=");
+	sstrcpy(&q, keyword_clr);
+	fs_give((void **) &keyword_clr);
+    }
+
     *q++ = '\"';
     *q   = '\0';
 
@@ -7792,31 +8513,43 @@ convert_statebits_to_vals(bits, dval, aval, ival, nval)
  *      searchset -- Restrict search to this set
  *        section -- Searching a section of the message, not the whole thing
  *      get_score -- Function to return the score for a message
- * no_srvr_search -- If this is set we are in a callback from c-client because
- *                   some imap data arrived. We don't want to call c-client
- *                   again because it isn't re-entrant safe. This is only a
- *                   problem if we need to get the text of a message to
- *                   do the search, the envelope is cached already.
+ *          flags -- Most of these are flags to mail_search_full. However, we
+ *                   overload the flags namespace and pass some flags of our
+ *                   own in here that we pick off before calling mail_search.
+ *                   Danger, danger, don't overlap with flag values defined
+ *                   for c-client (that we want to use). Flags that we will
+ *                   use here are:
+ *                     MP_IN_CCLIENT_CB
+ *                       If this is set we are in a callback from c-client
+ *                       because some imap data arrived. We don't want to
+ *                       call c-client again because it isn't re-entrant safe.
+ *                       This is only a problem if we need to get the text of
+ *                       a message to do the search, the envelope is cached
+ *                       already.
+ *                     MP_NOT
+ *                       We want a ! of the patgrp in the search.
+ *                   We also throw in SE_FREE for free, since we create
+ *                   the search program here.
  *
  * Returns:   1 if any message in the searchset matches this pattern
  *            0 if no matches
  *           -1 if couldn't perform search because of no_fetch restriction
  */
 int
-match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
+match_pattern(patgrp, stream, searchset, section, get_score, flags)
     PATGRP_S   *patgrp;
     MAILSTREAM *stream;
     SEARCHSET  *searchset;
     char       *section;
-    int         (*get_score) PROTO((MAILSTREAM *, long));
-    int         no_srvr_search;
+    long        (*get_score) PROTO((MAILSTREAM *, long));
+    long        flags;
 {
     char         *charset = NULL;
     SEARCHPGM    *pgm;
     SEARCHSET    *s;
     MESSAGECACHE *mc;
     long          i, msgno = 0L;
-    long          flags = (SO_NOSERVER|SE_NOPREFETCH|SE_FREE);
+    int           in_client_callback = 0, not = 0;
 
     dprint(7, (debugfile, "match_pattern\n"));
 
@@ -7850,11 +8583,57 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
     if(!stream)
       return(0);
 
-    if(no_srvr_search && is_imap_stream(stream)
+    if(flags & MP_IN_CCLIENT_CB){
+	in_client_callback++;
+	flags &= ~MP_IN_CCLIENT_CB;
+    }
+
+    if(flags & MP_NOT){
+	not++;
+	flags &= ~MP_NOT;
+    }
+
+    flags |= SE_FREE;
+
+    if(patgrp->stat_bom != PAT_STAT_EITHER){
+	if(patgrp->stat_bom == PAT_STAT_YES){
+	    if(!ps_global->beginning_of_month){
+		return(0);
+	    }
+	}
+	else if(patgrp->stat_bom == PAT_STAT_NO){
+	    if(ps_global->beginning_of_month){
+		return(0);
+	    }
+	}
+    }
+
+    if(patgrp->stat_boy != PAT_STAT_EITHER){
+	if(patgrp->stat_boy == PAT_STAT_YES){
+	    if(!ps_global->beginning_of_year){
+		return(0);
+	    }
+	}
+	else if(patgrp->stat_boy == PAT_STAT_NO){
+	    if(ps_global->beginning_of_year){
+		return(0);
+	    }
+	}
+    }
+
+    if(in_client_callback && is_imap_stream(stream)
        && (patgrp->alltext || patgrp->bodytext))
       return(-1);
 
     pgm = match_pattern_srchpgm(patgrp, stream, &charset, searchset);
+    if(not && !(is_imap_stream(stream) && !modern_imap_stream(stream))){
+	SEARCHPGM *srchpgm;
+
+	srchpgm = pgm;
+	pgm = mail_newsearchpgm();
+	pgm->not = mail_newsearchpgmlist();
+	pgm->not->pgm = srchpgm;
+    }
 
     if((patgrp->alltext || patgrp->bodytext)
        && (!is_imap_stream(stream) || modern_imap_stream(stream)))
@@ -7887,7 +8666,8 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	  msgno = pgm->msgno->first;
 
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  mail_elt(stream, i)->searched = NIL;
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->searched = NIL;
 
 	if(charset && *charset &&  /* convert if charset not ASCII or UTF-8 */
 	  !(((charset[0] == 'U') || (charset[0] == 'u')) &&
@@ -7907,14 +8687,34 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	      charset_unknown++;
 	}
 
-	if(!charset_unknown && mail_search_msg(stream,msgno,section,pgm))
-	  mail_elt(stream,msgno)->searched = T;
+	if(!charset_unknown && mail_search_msg(stream,msgno,section,pgm)
+	   && msgno > 0L && msgno <= stream->nmsgs
+	   && (mc = mail_elt(stream, msgno)))
+	  mc->searched = T;
 
 	if(flags & SE_FREE)
 	  mail_free_searchpgm(&pgm);
     }
-    else
-      mail_search_full(stream, charset, pgm, flags);
+    else{
+	/* 
+	 * Here we could be checking on the return value to see if
+	 * the search was "successful" or not.  It may be the case
+	 * that we'd want to stop trying filtering if we got some
+	 * sort of error, but for now we would just continue on
+	 * to the next filter.
+	 */
+	pine_mail_search_full(stream, charset, pgm, flags);
+    }
+
+    /* we searched without the not, reverse it */
+    if(not && is_imap_stream(stream) && !modern_imap_stream(stream)){
+	for(msgno = 1L; msgno < mn_get_total(sp_msgmap(stream)); msgno++)
+	  if(stream && msgno && msgno <= stream->nmsgs
+	     && (mc=mail_elt(stream,msgno)) && mc->searched)
+	    mc->searched = NIL;
+	  else
+	    mc->searched = T;
+    }
 
     if(charset)
       fs_give((void **)&charset);
@@ -7932,8 +8732,10 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	savebits = (char *)fs_get((stream->nmsgs+1) * sizeof(char));
 
 	for(i = 1L; i <= stream->nmsgs; i++){
-	    savebits[i] = (mc=mail_elt(stream, i))->sequence;
-	    mc->sequence = 0;
+	    if((mc = mail_elt(stream, i)) != NULL){
+		savebits[i] = mc->sequence;
+		mc->sequence = 0;
+	    }
 	}
 
 	/*
@@ -7942,12 +8744,13 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	 */
 	for(s = searchset; s; s = s->next)
 	  for(msgno = s->first; msgno <= s->last; msgno++)
-	    if((mc=mail_elt(stream, msgno))->searched &&
-	       get_msg_score(stream, msgno) == SCORE_UNDEF)
+	    if(msgno > 0L && msgno <= stream->nmsgs
+	       && (mc = mail_elt(stream, msgno)) && mc->searched
+	       && get_msg_score(stream, msgno) == SCORE_UNDEF)
 	      mc->sequence = 1;
 	
 	if((ss = build_searchset(stream)) != NULL){
-	    (void)calculate_some_scores(stream, ss, no_srvr_search);
+	    (void)calculate_some_scores(stream, ss, in_client_callback);
 	    mail_free_searchset(&ss);
 	}
 
@@ -7958,9 +8761,9 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	 */
 	for(s = searchset; s; s = s->next)
 	  for(msgno = s->first; msgno <= s->last; msgno++)
-	    if(msgno <= stream->nmsgs
-	       && (mc = mail_elt(stream, msgno))->searched){
-		int score;
+	    if(msgno > 0L && msgno <= stream->nmsgs
+	       && (mc = mail_elt(stream, msgno)) && mc->searched){
+		long score;
 
 		score = (*get_score)(stream, msgno);
 
@@ -7984,7 +8787,8 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	    }
 
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  mail_elt(stream, i)->sequence = savebits[i];
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->sequence = savebits[i];
     
 	fs_give((void **)&savebits);
     }
@@ -8000,8 +8804,10 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 	savebits = (char *)fs_get((stream->nmsgs+1) * sizeof(char));
 
 	for(i = 1L; i <= stream->nmsgs; i++){
-	    savebits[i] = (mc=mail_elt(stream, i))->sequence;
-	    mc->sequence = 0;
+	    if((mc = mail_elt(stream, i)) != NULL){
+		savebits[i] = mc->sequence;
+		mc->sequence = 0;
+	    }
 	}
 
 	/*
@@ -8013,8 +8819,8 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 
 	for(s = searchset; s; s = s->next)
 	  for(msgno = s->first; msgno <= s->last; msgno++)
-	    if(msgno <= stream->nmsgs
-	       && (mc=mail_elt(stream, msgno))->searched)
+	    if(msgno > 0L && msgno <= stream->nmsgs
+	       && (mc = mail_elt(stream, msgno)) && mc->searched)
 	      mc->sequence = 1;
 
 	ss = build_searchset(stream);
@@ -8041,7 +8847,7 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 		if(sset)
 	          *sset = s;
 
-		e = mail_fetchenvelope(stream, msgno);
+		e = pine_mail_fetchenvelope(stream, msgno);
 		if(patgrp->stat_8bitsubj == PAT_STAT_YES){
 		    if(e && e->subject){
 			char *p;
@@ -8050,11 +8856,13 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 			  if(*p & 0x80)
 			    break;
 
-			if(!*p)
-			  mail_elt(stream,msgno)->searched = NIL;
+			if(!*p && msgno > 0L && msgno <= stream->nmsgs
+			   && (mc = mail_elt(stream, msgno)))
+			  mc->searched = NIL;
 		    }
-		    else
-		      mail_elt(stream,msgno)->searched = NIL;
+		    else if(msgno > 0L && msgno <= stream->nmsgs
+			    && (mc = mail_elt(stream, msgno)))
+		      mc->searched = NIL;
 		}
 		else if(patgrp->stat_8bitsubj == PAT_STAT_NO){
 		    if(e && e->subject){
@@ -8064,15 +8872,17 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
 			  if(*p & 0x80)
 			    break;
 
-			if(*p)
-			  mail_elt(stream,msgno)->searched = NIL;
+			if(*p && msgno > 0L && msgno <= stream->nmsgs
+			   && (mc = mail_elt(stream, msgno)))
+			  mc->searched = NIL;
 		    }
 		}
 	    }
 	}
 
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  mail_elt(stream, i)->sequence = savebits[i];
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->sequence = savebits[i];
     
 	fs_give((void **)&savebits);
 
@@ -8084,12 +8894,178 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
       from_or_replyto_in_abook(stream, searchset, patgrp->abookfrom,
 			       patgrp->abooks);
 
+    /* Still matches? Run the categorization command on each msg. */
+    if(patgrp->category_cmd && patgrp->category_cmd[0]){
+	char **l;
+	int exitval;
+	char *cmd = NULL;
+	char *just_arg0 = NULL;
+	char *cmd_start, *cmd_end;
+	int just_one = !(patgrp->category_cmd[1]);
+
+	/* find the first command that exists on this host */
+	for(l = patgrp->category_cmd; l && *l; l++){
+	    cmd = cpystr(*l);
+	    removing_quotes(cmd);
+	    if(cmd){
+		for(cmd_start = cmd;
+		    *cmd_start && isspace(*cmd_start); cmd_start++)
+		  ;
+		
+		for(cmd_end = cmd_start+1;
+		    *cmd_end && !isspace(*cmd_end); cmd_end++)
+		  ;
+		
+		just_arg0 = (char *) fs_get((cmd_end-cmd_start+1)
+						    * sizeof(char));
+		strncpy(just_arg0, cmd_start, cmd_end - cmd_start);
+		just_arg0[cmd_end - cmd_start] = '\0';
+	    }
+
+	    if(valid_filter_command(&just_arg0))
+	      break;
+	    else{
+		if(just_one){
+		    if(can_access(just_arg0, ACCESS_EXISTS) != 0)
+		      q_status_message1(SM_ORDER, 0, 3,
+					"\"%s\" does not exist",
+					just_arg0);
+		    else
+		      q_status_message1(SM_ORDER, 0, 3,
+					"\"%s\" is not executable",
+					just_arg0);
+		}
+
+		if(just_arg0)
+		  fs_give((void **) &just_arg0);
+		if(cmd)
+		  fs_give((void **) &cmd);
+	    }
+	}
+
+	if(!just_arg0 && !just_one)
+	  q_status_message(SM_ORDER, 0, 3,
+	    "None of the category cmds exists and is executable");
+
+	/*
+	 * If category_cmd isn't executable, it isn't a match.
+	 */
+	if(!just_arg0 || !cmd){
+	    /* If we couldn't run the pipe command, we declare no match */
+	    for(s = searchset; s; s = s->next)
+	      for(msgno = s->first; msgno <= s->last; msgno++)
+		if(msgno > 0L && msgno <= stream->nmsgs
+		   && (mc=mail_elt(stream, msgno)) && mc->searched)
+		  mc->searched = NIL;
+	}
+	else
+	  for(s = searchset; s; s = s->next)
+	    for(msgno = s->first; msgno <= s->last; msgno++)
+	      if(msgno > 0L && msgno <= stream->nmsgs
+	         && (mc=mail_elt(stream, msgno)) && mc->searched){
+
+		/*
+		 * If there was an error, or the exitval is out of
+		 * range, then it is not a match.
+		 * Default range is (0,0), which is right for matching
+		 * bogofilter spam.
+		 */
+		if(test_message_with_cmd(stream, msgno, cmd,
+					 patgrp->cat_lim, &exitval) != 0)
+		  mc->searched = NIL;
+
+		/* test exitval */
+		if(mc->searched){
+		  INTVL_S *iv;
+
+		  if(patgrp->cat){
+		    for(iv = patgrp->cat; iv; iv = iv->next)
+		      if((long) exitval >= iv->imin
+			 && (long) exitval <= iv->imax)
+			break;
+			
+		    if(!iv)
+		      mc->searched = NIL;  /* not in any of the intervals */
+		  }
+		  else{
+		    /* default to interval containing only zero */
+		    if(exitval != 0)
+		      mc->searched = NIL;
+		  }
+		}
+	      }
+
+	if(just_arg0)
+	  fs_give((void **) &just_arg0);
+	if(cmd)
+	  fs_give((void **) &cmd);
+    }
+
     for(s = searchset; s; s = s->next)
       for(msgno = s->first; msgno > 0L && msgno <= s->last; msgno++)
-        if(mail_elt(stream, msgno)->searched)
+        if(msgno > 0L && msgno <= stream->nmsgs
+	   && (mc = mail_elt(stream, msgno)) && mc->searched)
 	  return(1);
 
     return(0);
+}
+
+
+/*
+ * Returns 0 if ok, -1 if not ok.
+ * If ok then exitval contains the exit value of the cmd.
+ */
+int
+test_message_with_cmd(stream, msgno, cmd, char_limit, exitval)
+    MAILSTREAM *stream;
+    long        msgno;
+    char       *cmd;
+    long        char_limit;  /* limit testing to this many chars from body */
+    int        *exitval;
+{
+    PIPE_S  *tpipe;
+    gf_io_t  pc;
+    int      status = 0, flags, err = 0;
+    char    *resultfile = NULL, *pipe_err;
+
+    if(cmd && cmd[0]){
+	
+	flags = PIPE_WRITE | PIPE_NOSHELL | PIPE_STDERR;
+
+	dprint(7, (debugfile, "test_message_with_cmd(msgno=%ld cmd=%s)\n",
+		msgno, cmd));
+
+	if((tpipe = cmd_pipe_open(cmd, &resultfile, flags, &pc))){
+
+	    prime_raw_pipe_getc(stream, msgno, char_limit, FT_PEEK);
+	    gf_filter_init();
+	    gf_link_filter(gf_nvtnl_local, NULL);
+	    if(pipe_err = gf_pipe(raw_pipe_getc, pc)){
+		q_status_message1(SM_ORDER|SM_DING, 3, 3,
+				  "Internal Error: %.200s", pipe_err);
+		err++;
+	    }
+
+	    /*
+	     * Don't call new_mail in close_system_pipe because we're probably
+	     * already here from new_mail and we don't want to get loopy.
+	     */
+	    status = close_system_pipe(&tpipe, exitval, 1);
+
+	    /*
+	     * This is a place where the command can put its output, which we
+	     * are not interested in.
+	     */
+	    if(resultfile){
+		(void) unlink(resultfile);
+		fs_give((void **) &resultfile);
+	    }
+
+	    return((err || status) ? -1 : 0);
+	}
+    }
+
+    return(-1);
 }
 
 
@@ -8108,14 +9084,18 @@ match_pattern_folder(patgrp, stream)
 	           || (!is_news && patgrp->fldr_type == FLDR_EMAIL)
 	           || (patgrp->fldr_type == FLDR_SPECIFIC
 		       && match_pattern_folder_specific(patgrp->folder,
-						        stream, 1)))));
+						       stream, FOR_PATTERN)))));
 }
 
 
 /* 
+ * Returns positive if this stream is open on one of the folders in the
+ * folders argument, 0 otherwise.
+ *
  * If FOR_PATTERN is set, this interprets simple names as nicknames in
  * the incoming collection, otherwise it treats simple names as being in
  * the primary collection.
+ * If FOR_FILT is set, the folder names are detokenized before being used.
  */
 int
 match_pattern_folder_specific(folders, stream, flags)
@@ -8125,6 +9105,7 @@ match_pattern_folder_specific(folders, stream, flags)
 {
     PATTERN_S *p;
     int        match = 0;
+    char      *patfolder, *free_this = NULL;
 
     dprint(8, (debugfile, "match_pattern_folder_specific\n"));
 
@@ -8141,19 +9122,24 @@ match_pattern_folder_specific(folders, stream, flags)
      * substrings of names, they are the whole name.
      */
     for(p = folders; !match && p; p = p->next){
-	if(p->substring
-	   && (!strucmp(p->substring, ps_global->inbox_name)
-	       || !strcmp(p->substring, ps_global->VAR_INBOX_PATH))){
-	    if(stream == ps_global->inbox_stream)
+	free_this = NULL;
+	if(flags & FOR_FILT)
+	  patfolder = free_this = detoken_src(p->substring, FOR_FILT, NULL,
+					      NULL, NULL, NULL);
+	else
+	  patfolder = p->substring;
+
+	if(patfolder
+	   && (!strucmp(patfolder, ps_global->inbox_name)
+	       || !strcmp(patfolder, ps_global->VAR_INBOX_PATH))){
+	    if(sp_flagged(stream, SP_INBOX))
 	      match++;
 	}
 	else{
-	    char      *patfolder, *fname;
+	    char      *fname;
 	    char      *t, *streamfolder;
 	    char       tmp1[MAILTMPLEN], tmp2[max(MAILTMPLEN,NETMAXMBX)];
 	    CONTEXT_S *cntxt = NULL;
-
-	    patfolder = p->substring;
 
 	    if(flags & FOR_PATTERN){
 		/*
@@ -8163,10 +9149,13 @@ match_pattern_folder_specific(folders, stream, flags)
 		if(patfolder[0] &&
 		   (ps_global->context_list->use & CNTXT_INCMNG) &&
 		   (fname = (folder_is_nick(patfolder,
-					    FOLDERS(ps_global->context_list)))))
+					    FOLDERS(ps_global->context_list),
+					    0))))
 		  patfolder = fname;
 	    }
 	    else{
+		char *save_ref = NULL;
+
 		/*
 		 * If it's an absolute pathname, we treat is as a local file
 		 * instead of interpreting it in the primary context.
@@ -8175,7 +9164,20 @@ match_pattern_folder_specific(folders, stream, flags)
 		   && !(cntxt = default_save_context(ps_global->context_list)))
 		  cntxt = ps_global->context_list;
 		
+		/*
+		 * Because this check is independent of where the user is
+		 * in the folder hierarchy and has nothing to do with that,
+		 * we want to ignore the reference field built into the
+		 * context. Zero it out temporarily here.
+		 */
+		if(cntxt && cntxt->dir){
+		    save_ref = cntxt->dir->ref;
+		    cntxt->dir->ref = NULL;
+		}
+
 		patfolder = context_apply(tmp1, cntxt, patfolder, sizeof(tmp1));
+		if(save_ref)
+		  cntxt->dir->ref = save_ref;
 	    }
 
 	    switch(patfolder[0]){
@@ -8204,6 +9206,9 @@ match_pattern_folder_specific(folders, stream, flags)
 		break;
 	    }
 	}
+
+	if(free_this)
+	  fs_give((void **) &free_this);
     }
 
     return(match);
@@ -8365,6 +9370,60 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
 	set_up_search_pgm("bodytext", patgrp->bodytext, tmppgm, &rargs);
     }
 
+    if(patgrp->keyword){
+	PATTERN_S *p_old, *p_new, *new_pattern = NULL, **nextp;
+	char      *q;
+
+	if(patgrp->keyword->not)
+	  tmppgm = next_not(pgm);
+	else
+	  tmppgm = pgm;
+
+	/*
+	 * The keyword entries may be nicknames instead of the actual
+	 * keywords, so those need to be converted to actual keywords.
+	 *
+	 * If we search for keywords that are not defined for a folder
+	 * we may get error messages back that we don't want instead of
+	 * just no match. We will build a replacement pattern here which
+	 * contains only the defined subset of the keywords.
+	 */
+	
+	nextp = &new_pattern;
+
+	for(p_old = patgrp->keyword; p_old; p_old = p_old->next){
+	    q = nick_to_keyword(p_old->substring);
+	    if(user_flag_index(stream, q) >= 0){
+		p_new = (PATTERN_S *) fs_get(sizeof(*p_new));
+		memset(p_new, 0, sizeof(*p_new));
+		p_new->substring = cpystr(q);
+		*nextp = p_new;
+		nextp = &p_new->next;
+	    }
+	}
+
+	/*
+	 * If there are some matching keywords that are defined in
+	 * the folder, then we are ok because we will match only if
+	 * we match one of those. However, if the list is empty, then
+	 * we can't just leave this part of the search program empty.
+	 * That would result in a match instead of not a match.
+	 * We can fake our way around the problem with NOT. If the
+	 * list is empty we want the opposite, so we insert a NOT in
+	 * front of an empty program. We may end up with NOT NOT if
+	 * this was already NOT'd, but that's ok, too. Alternatively,
+	 * we could undo the first NOT instead.
+	 */
+
+	if(new_pattern){
+	    set_up_search_pgm("keyword", new_pattern, tmppgm, &rargs);
+	    free_pattern(&new_pattern);
+	}
+	else
+	  (void) next_not(tmppgm);	/* add NOT of something that matches,
+					   so the NOT thing doesn't match   */
+    }
+
     if(patgrp->do_age && patgrp->age){
 	INTVL_S  *iv;
 	SEARCHOR *or;
@@ -8379,6 +9438,23 @@ match_pattern_srchpgm(patgrp, stream, charsetp, searchset)
 	    }
 	    else
 	      set_search_by_age(iv, tmppgm, patgrp->age_uses_sentdate);
+	}
+    }
+    
+    if(patgrp->do_size && patgrp->size){
+	INTVL_S  *iv;
+	SEARCHOR *or;
+
+	tmppgm = pgm;
+
+	for(iv = patgrp->size; iv; iv = iv->next){
+	    if(iv->next){
+		or = next_or(&tmppgm->or);
+		set_search_by_size(iv, or->first);
+		tmppgm = or->second;
+	    }
+	    else
+	      set_search_by_size(iv, tmppgm);
 	}
     }
     
@@ -8534,7 +9610,7 @@ add_type_to_pgm(field, pattern, pgm, rargs)
 	 * several different From addresses or Subjects...
 	 * We use the tried and true equation
 	 *
-	 *        (A or B) == !(!A or !B)
+	 *        (A or B) == !(!A and !B)
 	 *
 	 * to change the deeply nested OR tree into ANDs which aren't nested.
 	 * Right now we're only doing that if the nesting is fairly deep.
@@ -8614,6 +9690,8 @@ set_srch(field, value, pgm, rargs)
       list = &pgm->text;
     else if(!strucmp(field, "bodytext"))
       list = &pgm->body;
+    else if(!strucmp(field, "keyword"))
+      list = &pgm->keyword;
     else{
 	set_srch_hdr(field, value, pgm, rargs);
 	return;
@@ -8725,9 +9803,9 @@ set_search_by_age(age, pgm, age_uses_sentdate)
 
     now = time(0);
 
-    if(age->imin >= 0 && age->imin == age->imax){
+    if(age->imin >= 0L && age->imin == age->imax){
 	comparetime = now;
-	comparetime -= (age->imin * 86400);
+	comparetime -= (age->imin * 86400L);
 	tm = localtime(&comparetime);
 	if(tm && tm->tm_year >= 70){
 	    i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
@@ -8743,9 +9821,9 @@ set_search_by_age(age, pgm, age_uses_sentdate)
 	 * The 20000's are just protecting against overflows.
 	 * That's back past the start of email time, anyway.
 	 */
-	if(age->imin > 0 && age->imin < 20000){
+	if(age->imin > 0L && age->imin < 20000L){
 	    comparetime = now;
-	    comparetime -= ((age->imin - 1) * 86400);
+	    comparetime -= ((age->imin - 1L) * 86400L);
 	    tm = localtime(&comparetime);
 	    if(tm && tm->tm_year >= 70){
 		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
@@ -8757,9 +9835,9 @@ set_search_by_age(age, pgm, age_uses_sentdate)
 	    }
 	}
 
-	if(age->imax >= 0 && age->imax < 20000){
+	if(age->imax >= 0L && age->imax < 20000L){
 	    comparetime = now;
-	    comparetime -= (age->imax * 86400);
+	    comparetime -= (age->imax * 86400L);
 	    tm = localtime(&comparetime);
 	    if(tm && tm->tm_year >= 70){
 		i = mail_shortdate(tm->tm_year - 70, tm->tm_mon + 1,
@@ -8771,6 +9849,30 @@ set_search_by_age(age, pgm, age_uses_sentdate)
 	    }
 	}
     }
+}
+
+
+void
+set_search_by_size(size, pgm)
+    INTVL_S   *size;
+    SEARCHPGM *pgm;
+{
+    time_t         now, comparetime;
+    struct tm     *tm;
+    unsigned short i;
+
+    if(!(size && pgm))
+      return;
+    
+    /*
+     * INTVL_S intervals include the endpoints, pgm larger and smaller
+     * do not include the endpoints.
+     */
+    if(size->imin != INTVL_UNDEF && size->imin > 0L)
+      pgm->larger  = size->imin - 1L;
+
+    if(size->imax != INTVL_UNDEF && size->imax >= 0L && size->imax != INTVL_INF)
+      pgm->smaller = size->imax + 1L;
 }
 
 
@@ -8985,7 +10087,11 @@ free_patgrp(patgrp)
 {
     if(patgrp && *patgrp){
 	if((*patgrp)->nick)
-	  fs_give((void **)&(*patgrp)->nick);
+	  fs_give((void **) &(*patgrp)->nick);
+
+	if((*patgrp)->category_cmd)
+	  free_list_array(&(*patgrp)->category_cmd);
+
 	free_pattern(&(*patgrp)->to);
 	free_pattern(&(*patgrp)->cc);
 	free_pattern(&(*patgrp)->recip);
@@ -8996,11 +10102,12 @@ free_patgrp(patgrp)
 	free_pattern(&(*patgrp)->subj);
 	free_pattern(&(*patgrp)->alltext);
 	free_pattern(&(*patgrp)->bodytext);
+	free_pattern(&(*patgrp)->keyword);
 	free_pattern(&(*patgrp)->folder);
 	free_arbhdr(&(*patgrp)->arbhdr);
 	free_intvl(&(*patgrp)->score);
 	free_intvl(&(*patgrp)->age);
-	fs_give((void **)patgrp);
+	fs_give((void **) patgrp);
     }
 }
 
@@ -9076,6 +10183,10 @@ free_action(action)
 	  free_pattern(&(*action)->folder);
 	if((*action)->index_format)
 	  fs_give((void **)&(*action)->index_format);
+	if((*action)->keyword_set)
+	  free_pattern(&(*action)->keyword_set);
+	if((*action)->keyword_clr)
+	  free_pattern(&(*action)->keyword_clr);
 
 	fs_give((void **)action);
     }
@@ -9132,60 +10243,77 @@ copy_patgrp(patgrp)
 	    p = pattern_to_string(patgrp->to);
 	    new_patgrp->to = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->to->not = patgrp->to->not;
 	}
 	
 	if(patgrp->from){
 	    p = pattern_to_string(patgrp->from);
 	    new_patgrp->from = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->from->not = patgrp->from->not;
 	}
 	
 	if(patgrp->sender){
 	    p = pattern_to_string(patgrp->sender);
 	    new_patgrp->sender = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->sender->not = patgrp->sender->not;
 	}
 	
 	if(patgrp->cc){
 	    p = pattern_to_string(patgrp->cc);
 	    new_patgrp->cc = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->cc->not = patgrp->cc->not;
 	}
 	
 	if(patgrp->recip){
 	    p = pattern_to_string(patgrp->recip);
 	    new_patgrp->recip = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->recip->not = patgrp->recip->not;
 	}
 	
 	if(patgrp->partic){
 	    p = pattern_to_string(patgrp->partic);
 	    new_patgrp->partic = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->partic->not = patgrp->partic->not;
 	}
 	
 	if(patgrp->news){
 	    p = pattern_to_string(patgrp->news);
 	    new_patgrp->news = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->news->not = patgrp->news->not;
 	}
 	
 	if(patgrp->subj){
 	    p = pattern_to_string(patgrp->subj);
 	    new_patgrp->subj = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->subj->not = patgrp->subj->not;
 	}
 	
 	if(patgrp->alltext){
 	    p = pattern_to_string(patgrp->alltext);
 	    new_patgrp->alltext = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->alltext->not = patgrp->alltext->not;
 	}
 	
 	if(patgrp->bodytext){
 	    p = pattern_to_string(patgrp->bodytext);
 	    new_patgrp->bodytext = string_to_pattern(p);
 	    fs_give((void **)&p);
+	    new_patgrp->bodytext->not = patgrp->bodytext->not;
+	}
+	
+	if(patgrp->keyword){
+	    p = pattern_to_string(patgrp->keyword);
+	    new_patgrp->keyword = string_to_pattern(p);
+	    fs_give((void **)&p);
+	    new_patgrp->keyword->not = patgrp->keyword->not;
 	}
 	
 	if(patgrp->arbhdr){
@@ -9203,6 +10331,7 @@ copy_patgrp(patgrp)
 		    p = pattern_to_string(a->p);
 		    new_a->p = string_to_pattern(p);
 		    fs_give((void **)&p);
+		    new_a->p->not = a->p->not;
 		}
 
 		new_a->isemptyval = a->isemptyval;
@@ -9275,12 +10404,35 @@ copy_patgrp(patgrp)
 		}
 		else{
 		    new_patgrp->age = new_iv;
-		    intvl = new_patgrp->score;
+		    intvl = new_patgrp->age;
 		}
 	    }
 	}
 
 	new_patgrp->age_uses_sentdate = patgrp->age_uses_sentdate;
+
+	new_patgrp->do_size    = patgrp->do_size;
+	if(patgrp->size){
+	    INTVL_S *intvl, *iv, *new_iv;
+
+	    intvl = NULL;
+	    for(iv = patgrp->size; iv; iv = iv->next){
+		new_iv = (INTVL_S *) fs_get(sizeof(*new_iv));
+		memset((void *) new_iv, 0, sizeof(*new_iv));
+
+		new_iv->imin = iv->imin;
+		new_iv->imax = iv->imax;
+
+		if(intvl){
+		    intvl->next = new_iv;
+		    intvl = intvl->next;
+		}
+		else{
+		    new_patgrp->size = new_iv;
+		    intvl = new_patgrp->size;
+		}
+	    }
+	}
 
 	new_patgrp->stat_new  = patgrp->stat_new;
 	new_patgrp->stat_rec  = patgrp->stat_rec;
@@ -9288,7 +10440,35 @@ copy_patgrp(patgrp)
 	new_patgrp->stat_imp  = patgrp->stat_imp;
 	new_patgrp->stat_ans  = patgrp->stat_ans;
 
-	new_patgrp->stat_8bitsubj  = patgrp->stat_8bitsubj;
+	new_patgrp->stat_8bitsubj = patgrp->stat_8bitsubj;
+	new_patgrp->stat_bom  = patgrp->stat_bom;
+	new_patgrp->stat_boy  = patgrp->stat_boy;
+
+	new_patgrp->do_cat    = patgrp->do_cat;
+	if(patgrp->cat){
+	    INTVL_S *intvl, *iv, *new_iv;
+
+	    intvl = NULL;
+	    for(iv = patgrp->cat; iv; iv = iv->next){
+		new_iv = (INTVL_S *) fs_get(sizeof(*new_iv));
+		memset((void *) new_iv, 0, sizeof(*new_iv));
+
+		new_iv->imin = iv->imin;
+		new_iv->imax = iv->imax;
+
+		if(intvl){
+		    intvl->next = new_iv;
+		    intvl = intvl->next;
+		}
+		else{
+		    new_patgrp->cat = new_iv;
+		    intvl = new_patgrp->cat;
+		}
+	    }
+	}
+
+	if(patgrp->category_cmd)
+	  new_patgrp->category_cmd = copy_list_array(patgrp->category_cmd);
     }
 
     return(new_patgrp);
@@ -9307,6 +10487,7 @@ copy_action(action)
     ACTION_S *action;
 {
     ACTION_S *newaction = NULL;
+    char     *p;
 
     if(action){
 	newaction = (ACTION_S *)fs_get(sizeof(*newaction));
@@ -9356,8 +10537,20 @@ copy_action(action)
 	  newaction->incol = new_color_pair(action->incol->fg,
 					    action->incol->bg);
 	if(action->folder){
-	    char *p = pattern_to_string(action->folder);
+	    p = pattern_to_string(action->folder);
 	    newaction->folder = string_to_pattern(p);
+	    fs_give((void **) &p);
+	}
+
+	if(action->keyword_set){
+	    p = pattern_to_string(action->keyword_set);
+	    newaction->keyword_set = string_to_pattern(p);
+	    fs_give((void **) &p);
+	}
+
+	if(action->keyword_clr){
+	    p = pattern_to_string(action->keyword_clr);
+	    newaction->keyword_clr = string_to_pattern(p);
 	    fs_give((void **) &p);
 	}
 
@@ -9464,6 +10657,76 @@ combine_inherited_role(role)
     }
 
     return(newrole);
+}
+
+
+/*
+ * Allow user to choose a single item from a list of strings.
+ *
+ * Args    list -- Array of strings to choose from, NULL terminated.
+ *        title -- For conf_scroll_screen
+ *        pdesc -- For conf_scroll_screen
+ *         help -- For conf_scroll_screen
+ *       htitle -- For conf_scroll_screen
+ *
+ * Returns an allocated copy of the chosen item or NULL.
+ */
+char *
+choose_item_from_list(list, title, pdesc, help, htitle)
+    char   **list;
+    char    *title;
+    char    *pdesc;
+    HelpType help;
+    char    *htitle;
+{
+    LIST_SEL_S *listhead, *ls, *p;
+    char      **t;
+    char       *ret = NULL, *choice = NULL;
+
+    /* build the LIST_SEL_S list */
+    p = listhead = NULL;
+    for(t = list; *t; t++){
+	ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+	memset(ls, 0, sizeof(*ls));
+	ls->item = cpystr(*t);
+	
+	if(p){
+	    p->next = ls;
+	    p = p->next;
+	}
+	else
+	  listhead = p = ls;
+    }
+
+    if(!listhead)
+      return(ret);
+
+    if(!select_from_list_screen(listhead, SFL_NONE, title, pdesc,
+				help, htitle))
+      for(p = listhead; !choice && p; p = p->next)
+	if(p->selected)
+	  choice = p->item;
+
+    if(choice)
+      ret = cpystr(choice);
+      
+    free_list_sel(&listhead);
+
+    return(ret);
+}
+
+
+void
+free_list_sel(lsel)
+    LIST_SEL_S **lsel;
+{
+    if(lsel && *lsel){
+	free_list_sel(&(*lsel)->next);
+	if((*lsel)->item)
+	  fs_give((void **) &(*lsel)->item);
+	
+	fs_give((void **) lsel);
+    }
 }
 
 

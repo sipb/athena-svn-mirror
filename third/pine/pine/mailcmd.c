@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcmd.c,v 1.5 2004-03-01 21:39:08 ghudson Exp $";
+static char rcsid[] = "$Id: mailcmd.c,v 1.6 2005-01-26 18:26:27 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailcmd.c,v 1.5 2004-03-01 21:39:08 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -67,12 +67,12 @@ void      cmd_save PROTO((struct pine *, MAILSTREAM *, MSGNO_S *, int,
 			  CmdWhere));
 void      cmd_export PROTO((struct pine *, MSGNO_S *, int, int));
 void      cmd_pipe PROTO((struct pine *, MSGNO_S *, int));
-PIPE_S	 *cmd_pipe_open PROTO((char *, char **, int, gf_io_t *));
-void	  prime_raw_text_getc PROTO((MAILSTREAM *, long));
 STORE_S	 *list_mgmt_text PROTO((RFC2369_S *, long));
 void	  list_mgmt_screen PROTO((STORE_S *));
 void      cmd_flag PROTO((struct pine *, MSGNO_S *, int));
-int	  cmd_flag_prompt PROTO((struct pine *, struct flag_screen *));
+int	  cmd_flag_prompt PROTO((struct pine *, struct flag_screen *, int));
+void      role_compose PROTO((struct pine *));
+void      free_flag_table PROTO((struct flag_table **));
 long	  save PROTO((struct pine *, MAILSTREAM *,
 		      CONTEXT_S *, char *, MSGNO_S *, int));
 long	  save_fetch_append_cb PROTO((MAILSTREAM *, void *, char **, char **,
@@ -89,24 +89,30 @@ int	  save_ex_explain_body PROTO((BODY *, unsigned long *, gf_io_t));
 int	  save_ex_explain_parts PROTO((BODY *, int, unsigned long *, gf_io_t));
 int	  save_ex_output_line PROTO((char *, unsigned long *, gf_io_t));
 int	  create_for_save PROTO((MAILSTREAM *, CONTEXT_S *, char *));
-void	  flag_string PROTO((MESSAGECACHE *, long, char *));
+void      set_keywords_in_msgid_msg PROTO((MAILSTREAM *, MESSAGECACHE *,
+					   MAILSTREAM *, char *, long));
+long      get_msgno_by_msg_id PROTO((MAILSTREAM *, char *, MSGNO_S *));
 int	  select_sort PROTO((struct pine *, int, SortOrder *, int *));
-void	  aggregate_select PROTO((struct pine *, MSGNO_S *, int, CmdWhere));
-void	  thread_index_select PROTO((struct pine *, MSGNO_S *, int, CmdWhere));
-int	  select_number PROTO((MAILSTREAM *, MSGNO_S *, long));
-int	  select_thrd_number PROTO((MAILSTREAM *, MSGNO_S *, long));
-int	  select_size PROTO((MAILSTREAM *, MSGNO_S *, long));
-int	  select_date PROTO((MAILSTREAM *, MSGNO_S *, long));
-int	  select_text PROTO((MAILSTREAM *, MSGNO_S *, long));
-int	  select_flagged PROTO((MAILSTREAM *, MSGNO_S *, long));
+void	  aggregate_select PROTO((struct pine *, MSGNO_S *, int, CmdWhere,int));
+int	  select_number PROTO((MAILSTREAM *, MSGNO_S *, SEARCHSET **));
+int	  select_thrd_number PROTO((MAILSTREAM *, MSGNO_S *, SEARCHSET **));
+void      set_search_bit_for_thread PROTO((MAILSTREAM *, PINETHRD_S *,
+					   SEARCHSET **));
+int	  select_size PROTO((MAILSTREAM *, SEARCHSET **));
+int	  select_date PROTO((MAILSTREAM *, MSGNO_S *, long, SEARCHSET **));
+int	  select_text PROTO((MAILSTREAM *, MSGNO_S *, long, SEARCHSET **));
+int	  select_flagged PROTO((MAILSTREAM *, SEARCHSET **));
+int	  select_by_keyword PROTO((MAILSTREAM *, SEARCHSET **));
+int	  select_by_rule PROTO((MAILSTREAM *, SEARCHSET **));
 void	  search_headers PROTO((struct pine *, MAILSTREAM *, int, MSGNO_S *));
-char	 *currentf_sequence PROTO((MAILSTREAM *, MSGNO_S *, long, long *,int));
+char	 *currentf_sequence PROTO((MAILSTREAM *, MSGNO_S *, long, long *,
+				   int, char **, char **));
 char	 *invalid_elt_sequence PROTO((MAILSTREAM *, MSGNO_S *));
-char	 *selected_sequence PROTO((MAILSTREAM *, MSGNO_S *, long *));
+char	 *selected_sequence PROTO((MAILSTREAM *, MSGNO_S *, long *, int));
 int	  any_messages PROTO((MSGNO_S *, char *, char *));
 int	  can_set_flag PROTO((struct pine *, char *, int));
-int	  bezerk_delimiter PROTO((ENVELOPE *, gf_io_t, int));
-int	  move_filtered_msgs PROTO((MAILSTREAM *, MSGNO_S *, char *, int));
+int	  move_filtered_msgs PROTO((MAILSTREAM *, MSGNO_S *, char *, int,
+				    char *));
 void	  delete_filtered_msgs PROTO((MAILSTREAM *));
 char	 *move_read_msgs PROTO((MAILSTREAM *, char *, char *, long));
 int	  read_msg_prompt PROTO((long, char *));
@@ -116,13 +122,18 @@ void	  cross_delete_crossposts PROTO((MAILSTREAM *));
 void      menu_clear_cmd_binding PROTO((struct key_menu *, int));
 int	  update_folder_spec PROTO((char *, char *));
 SEARCHSET *visible_searchset PROTO((MAILSTREAM *, MSGNO_S *));
-void      set_some_flags PROTO((MAILSTREAM *, MSGNO_S *, long, int));
-int       some_filter_depends_on_state PROTO((void));
-void      mail_expunge_prefilter PROTO((MAILSTREAM *));
+SEARCHSET *limiting_searchset PROTO((MAILSTREAM *, int));
+void      set_some_flags PROTO((MAILSTREAM *, MSGNO_S *, long, char **,
+				char **, int, char *));
+int       some_filter_depends_on_active_state PROTO((void));
+void      mail_expunge_prefilter PROTO((MAILSTREAM *, int));
 unsigned  reset_startup_rule PROTO((MAILSTREAM *));
 long      closest_jump_target PROTO((long, MAILSTREAM *, MSGNO_S *, int,
 				     CmdWhere, char *));
 long      get_level PROTO((int, int, SCROLL_S *));
+int       in_searchset PROTO((SEARCHSET *, unsigned long));
+char     *choose_a_rule PROTO((int));
+PATGRP_S *nick_to_patgrp PROTO((char *, int));
 
 
 #define SV_DELETE		0x1
@@ -162,6 +173,8 @@ static ESCKEY_S sel_opts2[] = {
     {'t', 't', "T", "Text"},
     {'s', 's', "S", "Status"},
     {'z', 'z', "Z", "siZe"},
+    {'k', 'k', "K", "Keyword"},
+    {'r', 'r', "R", "Rule"},
     {-1, 0, NULL, NULL}
 };
 
@@ -192,6 +205,8 @@ static ESCKEY_S sel_opts4[] = {
     {'t', 't', "T", "Text"},
     {'s', 's', "S", "Status"},
     {'z', 'z', "Z", "siZe"},
+    {'k', 'k', "K", "Keyword"},
+    {'r', 'r', "R", "Rule"},
     {-1, 0, NULL, NULL}
 };
 
@@ -209,13 +224,18 @@ static ESCKEY_S other_opts[] = {
 static char *sel_flag = 
     "Select New, Deleted, Answered, or Important messages ? ";
 static char *sel_flag_not = 
-    "Select NOT New, NOT Deleted, NOT Answered or NOT Tagged msgs ? ";
+    "Select NOT New, NOT Deleted, NOT Answered or NOT Important msgs ? ";
 static ESCKEY_S sel_flag_opt[] = {
     {'n', 'n', "N", "New"},
     {'*', '*', "*", "Important"},
     {'d', 'd', "D", "Deleted"},
     {'a', 'a', "A", "Answered"},
     {'!', '!', "!", "Not"},
+    {-2, 0, NULL, NULL},
+    {-2, 0, NULL, NULL},
+    {-2, 0, NULL, NULL},
+    {'r', 'r', "R", "Recent"},
+    {'u', 'u', "U", "Unseen"},
     {-1, 0, NULL, NULL}
 };
 
@@ -249,6 +269,14 @@ static ESCKEY_S sel_text_opt[] = {
     {-1, 0, NULL, NULL}
 };
 
+static ESCKEY_S choose_action[] = {
+    {'c', 'c', "C", "Compose"},
+    {'r', 'r', "R", "Reply"},
+    {'f', 'f', "F", "Forward"},
+    {'b', 'b', "B", "Bounce"},
+    {-1, 0, NULL, NULL}
+};
+
 static char *select_num =
   "Enter comma-delimited list of numbers (dash between ranges): ";
 
@@ -263,6 +291,24 @@ static char *sel_size_smaller = "Smaller";
 static ESCKEY_S sel_size_opt[] = {
     {0, 0, NULL, NULL},
     {ctrl('W'), 14, "^W", NULL},
+    {-1, 0, NULL, NULL}
+};
+
+static ESCKEY_S sel_key_opt[] = {
+    {0, 0, NULL, NULL},
+    {ctrl('T'), 14, "^T", "To List"},
+    {0, 0, NULL, NULL},
+    {'!', '!', "!", "Not"},
+    {-1, 0, NULL, NULL}
+};
+
+static ESCKEY_S flag_text_opt[] = {
+    {'n', 'n', "N", "New"},
+    {'*', '*', "*", "Important"},
+    {'d', 'd', "D", "Deleted"},
+    {'a', 'a', "A", "Answered"},
+    {'!', '!', "!", "Not"},
+    {ctrl('T'), 10, "^T", "To Flag Details"},
     {-1, 0, NULL, NULL}
 };
 
@@ -294,6 +340,7 @@ process_cmd(state, stream, msgmap, command, in_index, force_mailchk)
     char         *newfolder, prompt[MAX_SCREEN_COLS+1];
     CONTEXT_S    *tc;
     COLOR_PAIR   *lastc = NULL;
+    MESSAGECACHE *mc;
 #if	defined(DOS) && !defined(_WINDOWS)
     extern long coreleft();
 #endif
@@ -369,7 +416,7 @@ view_text:
 	    if((i = mn_get_cur(msgmap)) > 1L){
 		mn_dec_cur(stream, msgmap,
 			   (in_index == View && THREADING()
-			    && state->viewing_a_thread)
+			    && sp_viewing_a_thread(stream))
 			     ? MH_THISTHD
 			     : (in_index == View)
 			       ? MH_ANYTHD : MH_NONE);
@@ -440,7 +487,7 @@ view_text:
 	   && ((i = mn_get_cur(msgmap)) < mn_get_total(msgmap))){
 	    mn_inc_cur(stream, msgmap,
 		       (in_index == View && THREADING()
-		        && state->viewing_a_thread)
+		        && sp_viewing_a_thread(stream))
 			 ? MH_THISTHD
 			 : (in_index == View)
 			   ? MH_ANYTHD : MH_NONE);
@@ -507,6 +554,7 @@ view_text:
 	    }
 	}
 	else{
+	    time_t now;
 nfolder:
 	    prompt[0] = '\0';
 	    if(IS_NEWS(stream)
@@ -527,8 +575,12 @@ nfolder:
 	    any_messages(NULL, (mn_get_total(msgmap) > 0L) ? "more" : NULL,
 			 prompt[0] ? prompt : NULL);
 
-	    if(!IS_NEWS(stream))
-	      *force_mailchk = 1;
+	    if(!IS_NEWS(stream)
+	       && ((now = time(0)) > state->last_nextitem_forcechk)){
+		*force_mailchk = 1;
+		/* check at most once a second */
+		state->last_nextitem_forcechk = now;
+	    }
 	}
 
 	break;
@@ -583,13 +635,10 @@ nfolder:
       case MC_ROLE :
 	state->prev_screen = (in_index == View) ? mail_view_screen
 						: mail_index_screen;
-#if	defined(DOS) && !defined(WIN32)
-	flush_index_cache();		/* save room on PC */
-#endif
-	alt_compose_screen(state);
-	state->mangled_screen = 1;
-	if (state->next_screen)
+	role_compose(state);
+	if(state->next_screen)
 	  a_changed = TRUE;
+
 	break;
 
 
@@ -621,7 +670,7 @@ nfolder:
 	}
 #endif
 	if(newfolder){
-	    visit_folder(state, newfolder, tc, NULL);
+	    visit_folder(state, newfolder, tc, NULL, 0L);
 	    a_changed = TRUE;
 	}
 
@@ -682,7 +731,7 @@ nfolder:
 						 ? 0 : F_OR_FLAG)),
 					    stream, start, &flags);
 	}
-	else if(THREADING() && state->viewing_a_thread){
+	else if(THREADING() && sp_viewing_a_thread(stream)){
 	    PINETHRD_S *thrd, *topthrd = NULL;
 
 	    start = mn_get_cur(msgmap);
@@ -864,7 +913,7 @@ nfolder:
 	      adjust_cur_to_visible(stream, msgmap);
 	}
 	else{
-	    int  in_inbox = !strucmp(state->cur_folder,state->inbox_name);
+	    int in_inbox = sp_flagged(stream, SP_INBOX);
 
 	    if(state->context_current
 	       && ((NEWS_TEST(state->context_current)
@@ -917,7 +966,7 @@ nfolder:
 			    if(ret == 'y' || ret == 'z'){
 				visit_folder(state, state->inbox_name,
 					     state->context_current,
-					     NULL);
+					     NULL, 0L);
 				a_changed = TRUE;
 			    }
 			}
@@ -946,8 +995,10 @@ nfolder:
 				(state->context_current->use & CNTXT_INCMNG)
 				    ? "Incoming folder" : "news group",
 				sizeof(type));
-			sprintf(cnt, " (%.*s recent)", sizeof(cnt)-20,
-				recent_cnt ? long2string(recent_cnt) : "some");
+			sprintf(cnt, " (%.*s %.6s)", sizeof(cnt)-20,
+				recent_cnt ? long2string(recent_cnt) : "some",
+				F_ON(F_TAB_USES_UNSEEN, ps_global)
+				    ? "unseen" : "recent");
 
 			/*
 			 * Space reserved for radio_buttons call.
@@ -1012,7 +1063,8 @@ nfolder:
 
 		    if(ret == 'y'){
 			visit_folder(state, nextfolder,
-				     state->context_current, nextstream);
+				     state->context_current, nextstream,
+				     DB_FROMTAB);
 			/* visit_folder takes care of nextstream */
 			nextstream = NULL;
 			a_changed = TRUE;
@@ -1130,8 +1182,8 @@ get_out:
 		     * orders, if the whole set is sorted, then any subset
 		     * is also sorted. Not so for threaded sorts.
 		     */
-		    if(SORT_IS_THREADED())
-		      refresh_sort(msgmap, SRT_NON);
+		    if(SORT_IS_THREADED(msgmap))
+		      refresh_sort(stream, msgmap, SRT_NON);
 
 		    state->mangled_body = 1;
 		    state->mangled_header = 1;
@@ -1148,13 +1200,13 @@ get_out:
 
 	    break;
 	}
-	else if(READONLY_FOLDER){
+	else if(READONLY_FOLDER(stream)){
 	    q_status_message(SM_ORDER, 0, 4,
 			     "Can't expunge. Folder is read-only");
 	    break;
 	}
 
-	mail_expunge_prefilter(stream);
+	mail_expunge_prefilter(stream, MI_NONE);
 
 	if(del_count = count_flagged(stream, F_DEL)){
 	    int ret;
@@ -1202,7 +1254,7 @@ get_out:
 	mail_expunge(stream);
 	ps_global->expunge_in_progress = 0;
 	if(we_cancel)
-	  cancel_busy_alarm((state->expunge_count > 0) ? 0 : -1);
+	  cancel_busy_alarm((sp_expunge_count(stream) > 0) ? 0 : -1);
 
 	dprint(2,(debugfile,"expunge complete cur:%ld max:%ld\n",
 		  mn_get_cur(msgmap), mn_get_total(msgmap)));
@@ -1221,10 +1273,10 @@ get_out:
 	}
 
 	/*
-	 * mm_exists and mm_expunge take care of updating max_msgno
-	 * and selecting a new message should the selected get removed
+	 * mm_exists and mm_expunged take care of updating max_msgno,
+	 * selecting a new message should the selected get removed,
+	 * and resetting the checkpoint counter.
 	 */
-	reset_check_point();
 	lastc = pico_set_colors(ps_global->VAR_TITLE_FORE_COLOR,
 				ps_global->VAR_TITLE_BACK_COLOR,
 				PSC_REV|PSC_RET);
@@ -1237,14 +1289,14 @@ get_out:
 
 	fflush(stdout);
 
-	if(state->expunge_count > 0){
+	if(sp_expunge_count(stream) > 0){
 	    /*
 	     * This is kind of surprising at first. For most sort
 	     * orders, if the whole set is sorted, then any subset
 	     * is also sorted. Not so for threaded sorts.
 	     */
-	    if(SORT_IS_THREADED())
-	      refresh_sort(msgmap, SRT_NON);
+	    if(SORT_IS_THREADED(msgmap))
+	      refresh_sort(stream, msgmap, SRT_NON);
 	}
 	else{
 	    if(del_count)
@@ -1276,9 +1328,9 @@ get_out:
 	     */
 	    pgm = mail_newsearchpgm();
 	    pgm->deleted = 1;
-	    mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+	    pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
 	    for(i = 1L, del_count = 0L; i <= stream->nmsgs; i++)
-	      if(mail_elt(stream, i)->searched
+	      if((mc = mail_elt(stream, i)) && mc->searched
 		 && get_lflag(stream, NULL, i, MN_EXLD)
 		 && !(msgno_exceptions(stream, i, "0", &exbits, FALSE)
 		      && (exbits & MSG_EX_FILTERED)))
@@ -1300,15 +1352,15 @@ get_out:
 
 		    save_cur_rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
 		    were_viewing_a_thread = (THREADING()
-					     && state->viewing_a_thread);
+					     && sp_viewing_a_thread(stream));
 
-		    msgno_include(stream, msgmap, FALSE);
+		    msgno_include(stream, msgmap, MI_NONE);
 		    clear_index_cache();
 
 		    if(stream && stream->spare)
 		      erase_threading_info(stream, msgmap);
 
-		    refresh_sort(msgmap, SRT_NON);
+		    refresh_sort(stream, msgmap, SRT_NON);
 
 		    if(were_viewing_a_thread){
 			if(save_cur_rawno > 0L)
@@ -1344,11 +1396,8 @@ get_out:
           /*------- Make Selection -----------*/
       case MC_SELECT :
 	if(any_messages(msgmap, NULL, "to Select")){
-	    if(THRD_INDX())
-	      thread_index_select(state, msgmap, question_line, in_index);
-	    else
-	      aggregate_select(state, msgmap, question_line, in_index);
-
+	    aggregate_select(state, msgmap, question_line, in_index,
+			     THRD_INDX());
 	    if((in_index == MsgIndx || in_index == ThrdIndx)
 	       && any_lflagged(msgmap, MN_SLCT) > 0L
 	       && !any_lflagged(msgmap, MN_HIDE)
@@ -1362,14 +1411,14 @@ get_out:
           /*------- Toggle Current Message Selection State -----------*/
       case MC_SELCUR :
 	if(any_messages(msgmap, NULL, NULL)
-	   && (individual_select(state, msgmap, question_line, in_index)
+	   && (individual_select(state, msgmap, in_index)
 	       || (F_OFF(F_UNSELECT_WONT_ADVANCE, state)
 	           && !any_lflagged(msgmap, MN_HIDE)))
 	   && (i = mn_get_cur(msgmap)) < mn_get_total(msgmap)){
 	    /* advance current */
 	    mn_inc_cur(stream, msgmap,
 		       (in_index == View && THREADING()
-		        && state->viewing_a_thread)
+		        && sp_viewing_a_thread(stream))
 			 ? MH_THISTHD
 			 : (in_index == View)
 			   ? MH_ANYTHD : MH_NONE);
@@ -1404,10 +1453,10 @@ get_out:
 	    dprint(1, (debugfile,"MAIL_CMD: sort\n"));		    
 	    if(select_sort(state, question_line, &sort, &rev)){
 		/* $ command reinitializes threading collapsed/expanded info */
-		if(SORT_IS_THREADED() && !SEP_THRDINDX())
+		if(SORT_IS_THREADED(msgmap) && !SEP_THRDINDX())
 		  erase_threading_info(stream, msgmap);
 
-		sort_folder(ps_global->msgmap, sort, rev, SRT_VRB|SRT_MAN);
+		sort_folder(stream, msgmap, sort, rev, SRT_VRB|SRT_MAN);
 	    }
 
 	    state->mangled_footer = 1;
@@ -1431,12 +1480,34 @@ get_out:
 
           /*------- Toggle Full Headers -----------*/
       case MC_FULLHDR :
-	state->full_header = !state->full_header;
-	q_status_message3(SM_ORDER, 0, 3,
-    "Display of full headers is now o%.200s.  Use %.200s to turn back o%.200s",
-			    state->full_header ? "n" : "ff",
-			    F_ON(F_USE_FK, state) ? "F9" : "H",
-			    !state->full_header ? "n" : "ff");
+	state->full_header++;
+	if(state->full_header == 1){
+	    if(!(state->quote_suppression_threshold
+	         && (state->some_quoting_was_suppressed || in_index != View)))
+	      state->full_header++;
+	}
+	else if(state->full_header > 2)
+	  state->full_header = 0;
+
+	switch(state->full_header){
+	  case 0:
+	    q_status_message(SM_ORDER, 0, 3,
+			     "Display of full headers is now off.");
+	    break;
+
+	  case 1:
+	    q_status_message1(SM_ORDER, 0, 3,
+			  "Quotes displayed, use %.200s to see full headers",
+			  F_ON(F_USE_FK, state) ? "F9" : "H");
+	    break;
+
+	  case 2:
+	    q_status_message(SM_ORDER, 0, 3,
+			     "Display of full headers is now on.");
+	    break;
+
+	}
+
 	a_changed = TRUE;
 	break;
 
@@ -1800,10 +1871,13 @@ can_set_flag(state, cmd, permflag)
     struct pine *state;
     char	*cmd;
 {
-    if((!permflag && READONLY_FOLDER) || state->dead_stream){
-	q_status_message2(SM_ORDER | (state->dead_stream ? SM_DING : 0), 0, 3,
+    if((!permflag && READONLY_FOLDER(state->mail_stream))
+       || sp_dead_stream(state->mail_stream)){
+	q_status_message2(SM_ORDER | (sp_dead_stream(state->mail_stream)
+				        ? SM_DING : 0),
+			  0, 3,
 			  "Can't %.200s message.  Folder is %.200s.", cmd,
-			  (state->dead_stream) ? "closed" : "read-only");
+			  (sp_dead_stream(state->mail_stream)) ? "closed" : "read-only");
 	return(FALSE);
     }
 
@@ -1828,13 +1902,17 @@ cmd_cancelled(cmd)
 	
 
 void
-mail_expunge_prefilter(stream)
+mail_expunge_prefilter(stream, flags)
     MAILSTREAM *stream;
+    int         flags;
 {
     int sfdo_state = 0,		/* Some Filter Depends On or Sets State  */
 	sfdo_scores = 0,	/* Some Filter Depends On Scores */
 	ssdo_state = 0;		/* Some Score Depends On State   */
     
+    if(!stream || !sp_flagged(stream, SP_LOCKED))
+      return;
+
     /*
      * An Expunge causes a re-examination of the filters to
      * see if any state changes have caused new matches.
@@ -1845,17 +1923,16 @@ mail_expunge_prefilter(stream)
       ssdo_state = (scores_are_used(SCOREUSE_GET) & SCOREUSE_STATEDEP);
 
     if(!(sfdo_scores && ssdo_state))
-      sfdo_state = some_filter_depends_on_state();
+      sfdo_state = some_filter_depends_on_active_state();
 
 
     if(sfdo_state || (sfdo_scores && ssdo_state)){
 	if(sfdo_scores && ssdo_state)
 	  clear_folder_scores(stream);
 
-	if(stream == ps_global->mail_stream)
-	  reprocess_filter_patterns(stream, ps_global->msgmap);
-	else if(stream == ps_global->inbox_stream)
-	  reprocess_filter_patterns(stream, ps_global->inbox_msgmap);
+	reprocess_filter_patterns(stream, sp_msgmap(stream),
+				  (flags & MI_CLOSING) |
+				  MI_REFILTERING | MI_STATECHGONLY);
     }
 }
 
@@ -1885,19 +1962,18 @@ cmd_delete(state, msgmap, agg, in_index)
 	 && can_set_flag(state, "delete", state->mail_stream->perm_deleted)))
       return;
 
-    if(state->io_error_on_stream) {
-	state->io_error_on_stream = 0;
-	mail_check(state->mail_stream);		/* forces write */
+    if(sp_io_error_on_stream(state->mail_stream)){
+	sp_set_io_error_on_stream(state->mail_stream, 0);
+	pine_mail_check(state->mail_stream);		/* forces write */
     }
 
     if(agg){
-	sequence = selected_sequence(state->mail_stream, msgmap, &del_count);
+	sequence = selected_sequence(state->mail_stream, msgmap, &del_count, 0);
 	sprintf(prompt, "%ld%s message%s marked for deletion",
 		del_count, (agg == 2) ? "" : " selected", plural(del_count));
     }
     else{
 	long rawno;
-	int  exbits = 0;
 
 	msgno	  = mn_get_cur(msgmap);
 	rawno     = mn_m2raw(msgmap, msgno);
@@ -1907,26 +1983,15 @@ cmd_delete(state, msgmap, agg, in_index)
 	sprintf(prompt, "%s%s marked for deletion",
 		lastmsg ? "Last message" : "Message ",
 		lastmsg ? "" : long2string(msgno));
-
-	/*
-	 * Mark this message manually flagged so we don't re-filter it
-	 * with a filter which only sets flags.
-	 */
-	if(msgno_exceptions(state->mail_stream, rawno, "0", &exbits, FALSE))
-	  exbits |= MSG_EX_MANFLAGGED;
-	else
-	  exbits = MSG_EX_MANFLAGGED;
-
-	msgno_exceptions(state->mail_stream, rawno, "0", &exbits, TRUE);
     }
 
-    dprint(3,(debugfile, "DELETE: msg %s\n", sequence));
-    new = state->new_mail_count;
+    dprint(3,(debugfile, "DELETE: msg %s\n", sequence ? sequence : "?"));
+    new = sp_new_mail_count(state->mail_stream);
     mail_flag(state->mail_stream, sequence, "\\DELETED", ST_SET);
     fs_give((void **) &sequence);
-    if(new != state->new_mail_count)
+    if(new != sp_new_mail_count(state->mail_stream))
       process_filter_patterns(state->mail_stream, state->msgmap,
-			      state->new_mail_count);
+			      sp_new_mail_count(state->mail_stream));
 
     if(!agg){
 
@@ -1975,7 +2040,7 @@ advance_cur_after_delete(state, stream, msgmap, in_index)
 
     if(F_ON(F_DEL_SKIPS_DEL, state)){
 
-	if(THREADING() && state->viewing_a_thread)
+	if(THREADING() && sp_viewing_a_thread(stream))
 	  opts |= NSF_SKIP_CHID;
 
 	new_msgno = next_sorted_flagged(F_UNDEL, stream, msgno, &opts);
@@ -1983,7 +2048,7 @@ advance_cur_after_delete(state, stream, msgmap, in_index)
     else{
 	mn_inc_cur(stream, msgmap,
 		   (in_index == View && THREADING()
-		    && state->viewing_a_thread)
+		    && sp_viewing_a_thread(stream))
 		     ? MH_THISTHD
 		     : (in_index == View)
 		       ? MH_ANYTHD : MH_NONE);
@@ -1998,7 +2063,7 @@ advance_cur_after_delete(state, stream, msgmap, in_index)
      * By ignoring other threads we also ignore collapsed partial threads
      * in our own thread.
      */
-    if(THREADING() && state->viewing_a_thread && !(opts & NSF_FLAG_MATCH)){
+    if(THREADING() && sp_viewing_a_thread(stream) && !(opts & NSF_FLAG_MATCH)){
 	long rawno, orig_thrdno;
 	PINETHRD_S *thrd, *topthrd = NULL;
 
@@ -2103,7 +2168,7 @@ cmd_undelete(state, msgmap, agg)
 
     if(agg){
 	del_count = 0L;				/* return current */
-	sequence = selected_sequence(state->mail_stream, msgmap, &del_count);
+	sequence = selected_sequence(state->mail_stream, msgmap, &del_count, 1);
     }
     else{
 	long rawno;
@@ -2112,7 +2177,9 @@ cmd_undelete(state, msgmap, agg)
 	del_count = 1L;				/* return current */
 	rawno = mn_m2raw(msgmap, mn_get_cur(msgmap));
 	sequence  = cpystr(long2string(rawno));
-	wasdeleted = ((mc = mail_elt(state->mail_stream, rawno))
+	wasdeleted = (state->mail_stream
+	              && rawno > 0L && rawno <= state->mail_stream->nmsgs
+		      && (mc = mail_elt(state->mail_stream, rawno))
 		       && mc->valid
 		       && mc->deleted);
 	/*
@@ -2120,14 +2187,14 @@ cmd_undelete(state, msgmap, agg)
 	 * with a filter which only sets flags.
 	 */
 	if(msgno_exceptions(state->mail_stream, rawno, "0", &exbits, FALSE))
-	  exbits |= MSG_EX_MANFLAGGED;
+	  exbits |= MSG_EX_MANUNDEL;
 	else
-	  exbits = MSG_EX_MANFLAGGED;
+	  exbits = MSG_EX_MANUNDEL;
 
 	msgno_exceptions(state->mail_stream, rawno, "0", &exbits, TRUE);
     }
 
-    dprint(3,(debugfile, "UNDELETE: msg %s\n", sequence));
+    dprint(3,(debugfile, "UNDELETE: msg %s\n", sequence ? sequence : "?"));
 
     mail_flag(state->mail_stream, sequence, "\\DELETED", 0L);
     fs_give((void **) &sequence);
@@ -2144,9 +2211,9 @@ cmd_undelete(state, msgmap, agg)
 			"Deletion mark removed from %.200s message%.200s",
 			comatose(del_count), plural(del_count));
 
-    if(state->io_error_on_stream) {
-	state->io_error_on_stream = 0;
-	mail_check(state->mail_stream);		/* forces write */
+    if(sp_io_error_on_stream(state->mail_stream)){
+	sp_set_io_error_on_stream(state->mail_stream, 0);
+	pine_mail_check(state->mail_stream);		/* forces write */
     }
 }
 
@@ -2168,9 +2235,13 @@ cmd_flag(state, msgmap, agg)
     int		 agg;
 {
     char	  *flagit, *seq, *screen_text[20], **exp, **p, *answer = NULL;
-    long	   unflagged, flagged, flags;
+    char          *q, **t;
+    char          *keyword_array[2];
+    long	   unflagged, flagged, flags, rawno;
     MESSAGECACHE  *mc = NULL;
-    struct	   flag_table  *fp;
+    KEYWORD_S     *kw;
+    int            i, cnt, is_set, trouble = 0;
+    struct flag_table *fp, *ftbl = NULL;
     struct flag_screen flag_screen;
     static char   *flag_screen_text1[] = {
 	"    Set desired flags for current message below.  An 'X' means set",
@@ -2184,13 +2255,7 @@ cmd_flag(state, msgmap, agg)
 	"    \"Exit\" when finished.",
 	NULL
     };
-    static char   *flag_screen_boiler_plate[] = {
-	"",
-	"            Set        Flag Name",
-	"            ---   ----------------------",
-	NULL
-    };
-    static struct  flag_table ftbl[] = {
+    static struct  flag_table default_ftbl[] = {
 	/*
 	 * At some point when user defined flags are possible,
 	 * it should just be a simple matter of grabbing this
@@ -2198,11 +2263,11 @@ cmd_flag(state, msgmap, agg)
 	 * non-system flags in at run time...
 	 *  {NULL, h_flag_user, F_USER, 0, 0},
 	 */
-	{"Important", h_flag_important, F_FLAG, 0, 0},
-	{"New",	  h_flag_new, F_SEEN, 0, 0},
-	{"Answered",  h_flag_answered, F_ANS, 0, 0},
-	{"Deleted",   h_flag_deleted, F_DEL, 0, 0},
-	{NULL, NO_HELP, 0, 0, 0}
+	{"Important", h_flag_important, F_FLAG, 0, 0, NULL, NULL},
+	{"New",	  h_flag_new, F_SEEN, 0, 0, NULL, NULL},
+	{"Answered",  h_flag_answered, F_ANS, 0, 0, NULL, NULL},
+	{"Deleted",   h_flag_deleted, F_DEL, 0, 0, NULL, NULL},
+	{NULL, NO_HELP, 0, 0, 0, NULL, NULL}
     };
 
     /* Only check for dead stream for now.  Should check permanent flags
@@ -2212,17 +2277,54 @@ cmd_flag(state, msgmap, agg)
 	 && can_set_flag(state, "flag", 1)))
       return;
 
-    if(state->io_error_on_stream) {
-	state->io_error_on_stream = 0;
-	mail_check(state->mail_stream); /* forces write */
+    if(sp_io_error_on_stream(state->mail_stream)){
+	sp_set_io_error_on_stream(state->mail_stream, 0);
+	pine_mail_check(state->mail_stream);		/* forces write */
 	return;
     }
 
-    flag_screen.flag_table  = ftbl;
+    /* count how large ftbl will be */
+    for(cnt = 0; default_ftbl[cnt].name; cnt++)
+      ;
+    
+    /* add user flags */
+    for(kw = ps_global->keywords; kw; kw = kw->next)
+      cnt++;
+    
+    /* set up ftbl */
+    ftbl = (struct flag_table *) fs_get((cnt+1) * sizeof(*ftbl));
+    memset(ftbl, 0, (cnt+1) * sizeof(*ftbl));
+    for(i = 0, fp = ftbl; default_ftbl[i].name; i++, fp++){
+	fp->name = cpystr(default_ftbl[i].name);
+	fp->help = default_ftbl[i].help;
+	fp->flag = default_ftbl[i].flag;
+	fp->set  = default_ftbl[i].set;
+	fp->ukn  = default_ftbl[i].ukn;
+    }
+
+    for(kw = ps_global->keywords; kw; kw = kw->next){
+	fp->name = cpystr(kw->nick ? kw->nick : kw->kw ? kw->kw : "");
+	fp->keyword = cpystr(kw->kw ? kw->kw : "");
+	if(kw->nick && kw->kw){
+	    fp->comment = (char *) fs_get(strlen(kw->kw)+3);
+	    sprintf(fp->comment, "(%.*s)", strlen(kw->kw), kw->kw);
+	}
+
+	fp->help = h_flag_user_flag;
+	fp->flag = F_KEYWORD;
+	fp->set  = 0;
+	fp->ukn  = 0;
+	fp++;
+    }
+
+    flag_screen.flag_table  = &ftbl;
     flag_screen.explanation = screen_text;
+
     if(agg){
-	if(!pseudo_selected(msgmap))
-	  return;
+	if(!pseudo_selected(msgmap)){
+	    free_flag_table(&ftbl);
+	    return;
+	}
 
 	exp = flag_screen_text2;
 	for(fp = ftbl; fp->name; fp++){
@@ -2230,49 +2332,101 @@ cmd_flag(state, msgmap, agg)
 	    fp->ukn = TRUE;
 	}
     }
-    else if(mc = mail_elt(state->mail_stream,
-			  mn_m2raw(msgmap, mn_get_cur(msgmap)))){
+    else if(state->mail_stream
+	    && (rawno = mn_m2raw(msgmap, mn_get_cur(msgmap))) > 0L
+	    && rawno <= state->mail_stream->nmsgs
+	    && (mc = mail_elt(state->mail_stream, rawno))){
 	exp = flag_screen_text1;
 	for(fp = &ftbl[0]; fp->name; fp++){
 	    fp->ukn = 0;
-	    fp->set = ((fp->flag == F_SEEN && !mc->seen)
-		       || (fp->flag == F_DEL && mc->deleted)
-		       || (fp->flag == F_FLAG && mc->flagged)
-		       || (fp->flag == F_ANS && mc->answered))
-			? CMD_FLAG_SET : CMD_FLAG_CLEAR;
+	    if(fp->flag == F_KEYWORD){
+		/* see if this keyword is defined for this message */
+		fp->set = CMD_FLAG_CLEAR;
+		if(user_flag_is_set(state->mail_stream,
+				    rawno, fp->keyword))
+		  fp->set = CMD_FLAG_SET;
+	    }
+	    else
+	      fp->set = ((fp->flag == F_SEEN && !mc->seen)
+		         || (fp->flag == F_DEL && mc->deleted)
+		         || (fp->flag == F_FLAG && mc->flagged)
+		         || (fp->flag == F_ANS && mc->answered))
+			  ? CMD_FLAG_SET : CMD_FLAG_CLEAR;
 	}
     }
     else{
 	q_status_message(SM_ORDER | SM_DING, 3, 4,
 			 "Error accessing message data");
+	free_flag_table(&ftbl);
 	return;
     }
 
 #ifdef _WINDOWS
     if (mswin_usedialog ()) {
-	if (!os_flagmsgdialog (&ftbl[0]))
-	  return;
+	if (!os_flagmsgdialog (&ftbl[0])){
+	    free_flag_table(&ftbl);
+	    return;
+	}
     }
     else
 #endif	    
-    if(F_ON(F_FLAG_SCREEN_DFLT, ps_global)
-       || !cmd_flag_prompt(state, &flag_screen)){
-	screen_text[0] = "";
-	for(p = &screen_text[1]; *exp; p++, exp++)
-	  *p = *exp;
+    {
+	int use_maint_screen;
+	int keyword_shortcut = 0;
 
-	for(exp = flag_screen_boiler_plate; *exp; p++, exp++)
-	  *p = *exp;
+	use_maint_screen = F_ON(F_FLAG_SCREEN_DFLT, ps_global);
 
-	*p = NULL;
+	if(!use_maint_screen){
+	    /*
+	     * We're going to call cmd_flag_prompt(). We need
+	     * to decide whether or not to offer the keyword setting
+	     * shortcut. We'll offer it if the user has the feature
+	     * enabled AND there are some possible keywords that could
+	     * be set.
+	     */
+	    if(F_ON(F_FLAG_SCREEN_KW_SHORTCUT, ps_global)){
+		for(fp = &ftbl[0]; fp->name && !keyword_shortcut; fp++){
+		    if(fp->flag == F_KEYWORD){
+			int first_char;
+			ESCKEY_S *tp;
 
-	flag_maintenance_screen(state, &flag_screen);
+			first_char = (fp->name && fp->name[0])
+					? fp->name[0] : -2;
+			if(isascii(first_char) && isupper(first_char))
+			  first_char = tolower((unsigned char) first_char);
+
+			for(tp=flag_text_opt; tp->ch != -1; tp++)
+			  if(tp->ch == first_char)
+			    break;
+
+			if(tp->ch == -1)
+			  keyword_shortcut++;
+		    }
+		}
+	    }
+
+	    use_maint_screen = !cmd_flag_prompt(state, &flag_screen,
+						keyword_shortcut);
+	}
+
+	if(use_maint_screen){
+	    screen_text[0] = "";
+	    for(p = &screen_text[1]; *exp; p++, exp++)
+	      *p = *exp;
+
+	    *p = NULL;
+
+	    flag_maintenance_screen(state, &flag_screen);
+	}
     }
 
     /* reaquire the elt pointer */
-    mc = mail_elt(state->mail_stream,mn_m2raw(msgmap,mn_get_cur(msgmap)));
+    mc = (state->mail_stream
+	  && (rawno = mn_m2raw(msgmap, mn_get_cur(msgmap))) > 0L
+	  && rawno <= state->mail_stream->nmsgs)
+	  ? mail_elt(state->mail_stream, rawno) : NULL;
 
-    for(fp = ftbl; fp->name; fp++){
+    for(fp = ftbl; mc && fp->name; fp++){
 	flags = -1;
 	switch(fp->flag){
 	  case F_SEEN:
@@ -2339,6 +2493,33 @@ cmd_flag(state, msgmap, agg)
 
 	    break;
 
+	  case F_KEYWORD:
+	    if(!agg){
+		/* see if this keyword is defined for this message */
+		is_set = CMD_FLAG_CLEAR;
+		if(user_flag_is_set(state->mail_stream,
+				    mn_m2raw(msgmap, mn_get_cur(msgmap)),
+				    fp->keyword))
+		  is_set = CMD_FLAG_SET;
+	    }
+
+	    if((!agg && fp->set != is_set)
+	       || (agg && fp->set != CMD_FLAG_UNKN)){
+		flagit = fp->keyword;
+		keyword_array[0] = fp->keyword;
+		keyword_array[1] = NULL;
+		if(fp->set){
+		    flags     = ST_SET;
+		    unflagged = F_UNKEYWORD;
+		}
+		else{
+		    flags     = 0L;
+		    unflagged = F_KEYWORD;
+		}
+	    }
+
+	    break;
+
 	  default:
 	    break;
 	}
@@ -2346,10 +2527,48 @@ cmd_flag(state, msgmap, agg)
 	flagged = 0L;
 	if(flags >= 0L
 	   && (seq = currentf_sequence(state->mail_stream, msgmap,
-				       unflagged, &flagged, 1))){
-	    mail_flag(state->mail_stream, seq, flagit, flags);
-	    fs_give((void **)&seq);
-	    if(flagged){
+				       unflagged, &flagged, unflagged & F_DEL,
+				       (fp->flag == F_KEYWORD
+				        && unflagged == F_KEYWORD)
+					 ? keyword_array : NULL,
+				       (fp->flag == F_KEYWORD
+				        && unflagged == F_UNKEYWORD)
+					 ? keyword_array : NULL))){
+	    /*
+	     * For user keywords, we may have to create the flag in
+	     * the folder if it doesn't already exist and we are setting
+	     * it (as opposed to clearing it). Mail_flag will
+	     * do that for us, but it's failure isn't very friendly
+	     * error-wise. So we try to make it a little smoother.
+	     */
+	    if(fp->flag != F_KEYWORD || !fp->set
+	       || ((i=user_flag_index(state->mail_stream, flagit)) >= 0
+	           && i < NUSERFLAGS))
+	      mail_flag(state->mail_stream, seq, flagit, flags);
+	    else{
+		/* trouble, see if we can add the user flag */
+		if(state->mail_stream->kwd_create)
+		  mail_flag(state->mail_stream, seq, flagit, flags);
+		else{
+		    int some_defined = 0;
+
+		    trouble++;
+		    
+		    for(i = 0; !some_defined && i < NUSERFLAGS; i++)
+		      if(state->mail_stream->user_flags[i])
+			some_defined++;
+		    
+		    if(some_defined)
+		      q_status_message(SM_ORDER, 3, 4,
+			       "No more keywords allowed in this folder!");
+		    else
+		      q_status_message(SM_ORDER, 3, 4,
+				   "Cannot add keywords for this folder");
+		}
+	    }
+
+	    fs_give((void **) &seq);
+	    if(flagged && !trouble){
 		sprintf(tmp_20k_buf, "%slagged%s%s%s%s%s message%s%s \"%s\"",
 			(fp->set) ? "F" : "Unf",
 			agg ? " " : "",
@@ -2369,13 +2588,58 @@ cmd_flag(state, msgmap, agg)
     }
 
     if(!answer)
-      q_status_message(SM_ORDER, 0, 2, "No status flags changed.");
+      q_status_message(SM_ORDER, 0, 2, "No flags changed.");
 
   fini:
+    free_flag_table(&ftbl);
     if(agg)
       restore_selected(msgmap);
 }
 
+
+int
+user_flag_is_set(stream, rawno, keyword)
+    MAILSTREAM   *stream;
+    unsigned long rawno;
+    char         *keyword;
+{
+    int           j, is_set = 0;
+    MESSAGECACHE *mc;
+
+    if(stream){
+	if(rawno > 0L && stream
+	   && rawno <= stream->nmsgs
+	   && (mc = mail_elt(stream, rawno)) != NULL){
+	    j = user_flag_index(stream, keyword);
+	    if(j >= 0 && j < NUSERFLAGS && ((1 << j) & mc->user_flags))
+	      is_set++;
+	}
+    }
+	
+    return(is_set);
+}
+
+
+/*
+ * Returns the bit position of the keyword in stream, else -1.
+ */
+int
+user_flag_index(stream, keyword)
+    MAILSTREAM *stream;
+    char       *keyword;
+{
+    int i, retval = -1;
+
+    if(stream && keyword){
+	for(i = 0; i < NUSERFLAGS; i++)
+	  if(stream->user_flags[i] && !strucmp(keyword, stream->user_flags[i])){
+	      retval = i;
+	      break;
+	  }
+    }
+
+    return(retval);
+}
 
 
 /*----------------------------------------------------------------------
@@ -2388,30 +2652,88 @@ cmd_flag(state, msgmap, agg)
 
  ----*/
 int
-cmd_flag_prompt(state, flags)
+cmd_flag_prompt(state, flags, allow_keyword_shortcuts)
     struct pine	       *state;
     struct flag_screen *flags;
+    int                 allow_keyword_shortcuts;
 {
-    int			r, setflag = 1;
+    int			r, setflag = 1, first_char;
     struct flag_table  *fp;
-    static char *flag_text = "Flag New, Deleted, Answered, or Important ? ";
-    static char *flag_text2	=
-	"Flag NOT New, NOT Deleted, NOT Answered, or NOT Important ? ";
-    static ESCKEY_S flag_text_opt[] = {
-	{'n', 'n', "N", "New"},
-	{'*', '*', "*", "Important"},
-	{'d', 'd', "D", "Deleted"},
-	{'a', 'a', "A", "Answered"},
-	{'!', '!', "!", "Not"},
-	{ctrl('T'), 10, "^T", "To Flag Details"},
-	{-1, 0, NULL, NULL}
-    };
+    ESCKEY_S           *ek;
+    char               *ftext, *ftext_not;
+    static char *flag_text =
+  "Flag New, Deleted, Answered, or Important ? ";
+    static char *flag_text_ak =
+  "Flag New, Deleted, Answered, Important (or Keyword initial) ? ";
+    static char *flag_text_not =
+  "Flag NOT New, NOT Deleted, NOT Answered, or NOT Important ? ";
+    static char *flag_text_ak_not =
+  "Flag NOT New, NOT Deleted, NOT Answered, NOT Important, or NOT KI ? ";
+
+    if(allow_keyword_shortcuts){
+	int       cnt = 0;
+	ESCKEY_S *dp, *sp, *tp;
+
+	for(sp=flag_text_opt; sp->ch != -1; sp++)
+	  cnt++;
+
+	for(fp=(flags->flag_table ? *flags->flag_table : NULL); fp->name; fp++)
+	  if(fp->flag == F_KEYWORD)
+	    cnt++;
+
+	/* set up an ESCKEY_S list which includes invisible keys for keywords */
+	ek = (ESCKEY_S *) fs_get((cnt + 1) * sizeof(*ek));
+	memset(ek, 0, (cnt+1) * sizeof(*ek));
+	for(dp=ek, sp=flag_text_opt; sp->ch != -1; sp++, dp++)
+	  *dp = *sp;
+
+	for(fp=(flags->flag_table ? *flags->flag_table : NULL); fp->name; fp++){
+	    if(fp->flag == F_KEYWORD){
+		first_char = (fp->name && fp->name[0]) ? fp->name[0] : -2;
+		if(isascii(first_char) && isupper(first_char))
+		  first_char = tolower((unsigned char) first_char);
+
+		/*
+		 * Check to see if an earlier keyword in the list, or one of
+		 * the builtin system letters already uses this character.
+		 * If so, the first one wins.
+		 */
+		for(tp=ek; tp->ch != 0; tp++)
+		  if(tp->ch == first_char)
+		    break;
+
+		if(tp->ch != 0)
+		  continue;		/* skip it, already used that char */
+
+		dp->ch    = first_char;
+		dp->rval  = first_char;
+		dp->name  = "";
+		dp->label = "";
+		dp++;
+	    }
+	}
+
+	dp->ch = -1;
+	ftext = flag_text_ak;
+	ftext_not = flag_text_ak_not;
+    }
+    else{
+	ek = flag_text_opt;
+	ftext = flag_text;
+	ftext_not = flag_text_not;
+    }
 
     while(1){
-	r = radio_buttons(setflag ? flag_text : flag_text2,
-			  -FOOTER_ROWS(state), flag_text_opt, '*', 'x',
+	r = radio_buttons(setflag ? ftext : ftext_not,
+			  -FOOTER_ROWS(state), ek, '*', SEQ_EXCEPTION-1,
 			  NO_HELP, RB_NORM | RB_SEQ_SENSITIVE);
-	if(r == 'x')			/* ol'cancelrooney */
+	/*
+	 * It is SEQ_EXCEPTION-1 just so that it is some value that isn't
+	 * being used otherwise. The keywords use up all the possible
+	 * letters, so a negative number is good, but it has to be different
+	 * from other negative return values.
+	 */
+	if(r == SEQ_EXCEPTION-1)	/* ol'cancelrooney */
 	  return(TRUE);
 	else if(r == 10)		/* return and goto flag screen */
 	  return(FALSE);
@@ -2421,16 +2743,58 @@ cmd_flag_prompt(state, flags)
 	  break;
     }
 
-    for(fp = flags->flag_table; fp->name; fp++)
-      if((r == 'n' && fp->flag == F_SEEN)
-	 || (r == '*' && fp->flag == F_FLAG)
-	 || (r == 'd' && fp->flag == F_DEL)
-	 || (r == 'a' && fp->flag == F_ANS)){
-	  fp->set = setflag ? CMD_FLAG_SET : CMD_FLAG_CLEAR;
-	  break;
-      }
+    for(fp = (flags->flag_table ? *flags->flag_table : NULL); fp->name; fp++){
+	if(r == 'n' || r == '*' || r == 'd' || r == 'a'){
+	    if((r == 'n' && fp->flag == F_SEEN)
+	       || (r == '*' && fp->flag == F_FLAG)
+	       || (r == 'd' && fp->flag == F_DEL)
+	       || (r == 'a' && fp->flag == F_ANS)){
+		fp->set = setflag ? CMD_FLAG_SET : CMD_FLAG_CLEAR;
+		break;
+	    }
+	}
+	else if(allow_keyword_shortcuts && fp->flag == F_KEYWORD){
+	    first_char = (fp->name && fp->name[0]) ? fp->name[0] : -2;
+	    if(isascii(first_char) && isupper(first_char))
+	      first_char = tolower((unsigned char) first_char);
+
+	    if(r == first_char){
+		fp->set = setflag ? CMD_FLAG_SET : CMD_FLAG_CLEAR;
+		break;
+	    }
+	}
+    }
+
+    if(ek != flag_text_opt)
+      fs_give((void **) &ek);
 
     return(TRUE);
+}
+
+
+/*
+ * (*ft) is an array of flag_table entries.
+ */
+void
+free_flag_table(ft)
+    struct flag_table **ft;
+{
+    struct flag_table *fp;
+
+    if(ft && *ft){
+	for(fp = (*ft); fp->name; fp++){
+	    if(fp->name)
+	      fs_give((void **) &fp->name);
+	    
+	    if(fp->keyword)
+	      fs_give((void **) &fp->keyword);
+	    
+	    if(fp->comment)
+	      fs_give((void **) &fp->comment);
+	}
+	
+	fs_give((void **) ft);
+    }
 }
 
 
@@ -2457,7 +2821,7 @@ cmd_reply(state, msgmap, agg)
 	if(agg && !pseudo_selected(msgmap))
 	  return;
 
-	reply(state);
+	reply(state, NULL);
 
 	if(agg)
 	  restore_selected(msgmap);
@@ -2490,7 +2854,7 @@ cmd_forward(state, msgmap, agg)
 	if(agg && !pseudo_selected(msgmap))
 	  return;
 
-	forward(state);
+	forward(state, NULL);
 
 	if(agg)
 	  restore_selected(msgmap);
@@ -2523,7 +2887,7 @@ cmd_bounce(state, msgmap, agg)
 	if(agg && !pseudo_selected(msgmap))
 	  return;
 
-	bounce(state);
+	bounce(state, NULL);
 	if(agg)
 	  restore_selected(msgmap);
 
@@ -2553,15 +2917,17 @@ cmd_save(state, stream, msgmap, agg, in_index)
     CmdWhere     in_index;
 {
     char	      newfolder[MAILTMPLEN], nmsgs[32];
-    int		      del = 0, we_cancel = 0;
+    int		      we_cancel = 0;
     long	      i, raw;
     CONTEXT_S	     *cntxt = NULL;
     ENVELOPE	     *e = NULL;
+    SaveDel           del = DontAsk;
 
     dprint(4, (debugfile, "\n - saving message -\n"));
 
     state->ugly_consider_advancing_bit = 0;
-    if(msgno_any_deletedparts(stream, msgmap)
+    if(F_OFF(F_SAVE_PARTIAL_WO_CONFIRM, state)
+       && msgno_any_deletedparts(stream, msgmap)
        && want_to("Saved copy will NOT include entire message!  Continue",
 		  'y', 'n', NO_HELP, WT_FLUSH_IN | WT_SEQ_SENSITIVE) != 'y'){
 	cmd_cancelled("Save message");
@@ -2575,7 +2941,7 @@ cmd_save(state, stream, msgmap, agg, in_index)
 
     if(mn_total_cur(msgmap) <= 1L){
 	sprintf(nmsgs, "Msg #%ld ", mn_get_cur(msgmap));
-	e = mail_fetchstructure(stream, raw, NULL);
+	e = pine_mail_fetchstructure(stream, raw, NULL);
 	if(!e) {
 	    q_status_message(SM_ORDER | SM_DING, 3, 4,
 			     "Can't save message.  Error accessing folder");
@@ -2587,15 +2953,18 @@ cmd_save(state, stream, msgmap, agg, in_index)
 	sprintf(nmsgs, "%s msgs ", comatose(mn_total_cur(msgmap)));
 
 	/* e is just used to get a default save folder from the first msg */
-	e = mail_fetchstructure(stream, mn_m2raw(msgmap, mn_first_cur(msgmap)),
-				NULL);
+	e = pine_mail_fetchstructure(stream,
+				     mn_m2raw(msgmap, mn_first_cur(msgmap)),
+				     NULL);
     }
 
-    if(save_prompt(state,&cntxt,newfolder,sizeof(newfolder),nmsgs,e,raw,NULL)){
-	del = !READONLY_FOLDER && F_OFF(F_SAVE_WONT_DELETE, ps_global);
+    del = (!READONLY_FOLDER(stream) && F_OFF(F_SAVE_WONT_DELETE, ps_global))
+	     ? Del : NoDel;
+    if(save_prompt(state, &cntxt, newfolder, sizeof(newfolder), nmsgs, e,
+		   raw, NULL, &del)){
 	we_cancel = busy_alarm(1, NULL, NULL, 0);
 	i = save(state, stream, cntxt, newfolder, msgmap,
-		 (del ? SV_DELETE : 0) | SV_FIX_DELS);
+		 ((del == RetDel) ? SV_DELETE : 0) | SV_FIX_DELS);
 	if(we_cancel)
 	  cancel_busy_alarm(0);
 
@@ -2654,19 +3023,19 @@ cmd_save(state, stream, msgmap, agg, in_index)
 	      sprintf(tmp_20k_buf, "%s messages saved",
 		      comatose(mn_total_cur(msgmap)));
 
-	    if(del)
+	    if(del == RetDel)
 	      strcat(tmp_20k_buf, " and deleted");
 
 	    q_status_message(SM_ORDER, 0, 3, tmp_20k_buf);
 
 	    if(!agg && F_ON(F_SAVE_ADVANCES, state)){
-		if(state->new_mail_count)
+		if(sp_new_mail_count(stream))
 		  process_filter_patterns(stream, msgmap,
-					  state->new_mail_count);
+					  sp_new_mail_count(stream));
 
 		mn_inc_cur(stream, msgmap,
 			   (in_index == View && THREADING()
-			    && state->viewing_a_thread)
+			    && sp_viewing_a_thread(stream))
 			     ? MH_THISTHD
 			     : (in_index == View)
 			       ? MH_ANYTHD : MH_NONE);
@@ -2679,8 +3048,98 @@ cmd_save(state, stream, msgmap, agg, in_index)
     if(agg)					/* straighten out fakes */
       restore_selected(msgmap);
 
-    if(del)
+    if(del == RetDel)
       update_titlebar_status();			/* make sure they see change */
+}
+
+
+void
+role_compose(state)
+    struct pine *state;
+{
+    int action;
+
+    if(F_ON(F_ALT_ROLE_MENU, state) && mn_get_total(state->msgmap) > 0L){
+	PAT_STATE  pstate;
+
+	if(nonempty_patterns(ROLE_DO_ROLES, &pstate) && first_pattern(&pstate)){
+	    action = radio_buttons("Compose, Forward, Reply, or Bounce? ",
+				   -FOOTER_ROWS(state), choose_action,
+				   'c', 'x', h_role_compose, RB_NORM);
+	}
+	else{
+	    q_status_message(SM_ORDER, 0, 3,
+			 "No roles available. Use Setup/Rules to add roles.");
+	    return;
+	}
+    }
+    else
+      action = 'c';
+
+    if(action == 'c' || action == 'r' || action == 'f' || action == 'b'){
+	ACTION_S *role = NULL;
+	void    (*prev_screen)() = NULL, (*redraw)() = NULL;
+
+	redraw = state->redrawer;
+	state->redrawer = NULL;
+	prev_screen = state->prev_screen;
+	role = NULL;
+	state->next_screen = SCREEN_FUN_NULL;
+
+	/* Setup role */
+	if(role_select_screen(state, &role,
+			      action == 'f' ? MC_FORWARD :
+			       action == 'r' ? MC_REPLY :
+				action == 'c' ? MC_COMPOSE : 0) < 0){
+	    cmd_cancelled(action == 'f' ? "Forward" :
+			  action == 'r' ? "Reply" :
+			   action == 'c' ? "Composition" : "Bounce");
+	    state->next_screen = prev_screen;
+	    state->redrawer = redraw;
+	    state->mangled_screen = 1;
+	}
+	else{
+	    /*
+	     * If default role was selected (NULL) we need to make
+	     * up a role which won't do anything, but will cause
+	     * compose_mail to think there's already a role so that
+	     * it won't try to confirm the default.
+	     */
+	    if(role)
+	      role = combine_inherited_role(role);
+	    else{
+		role = (ACTION_S *) fs_get(sizeof(*role));
+		memset((void *) role, 0, sizeof(*role));
+		role->nick = cpystr("Default Role");
+	    }
+
+	    state->redrawer = NULL;
+	    switch(action){
+	      case 'c':
+		compose_mail(NULL, NULL, role, NULL, NULL);
+		break;
+
+	      case 'r':
+		reply(state, role);
+		break;
+
+	      case 'f':
+		forward(state, role);
+		break;
+
+	      case 'b':
+		bounce(state, role);
+		break;
+	    }
+
+	    if(role)
+	      free_action(&role);
+	    
+	    state->next_screen = prev_screen;
+	    state->redrawer = redraw;
+	    state->mangled_screen = 1;
+	}
+    }
 }
 
 
@@ -2689,13 +3148,18 @@ cmd_save(state, stream, msgmap, agg, in_index)
 
   Args: 
         nfldr should be a buffer at least MAILTMPLEN long
+	dela -- a pointer to a SaveDel. If it is
+	  DontAsk on input, don't offer Delete prompt
+	  Del     on input, offer Delete command with default of Delete
+	  NoDel                                                NoDelete
+	  RetDel and RetNoDel are return values
         
 
  Result: 
 
  ----*/
 int
-save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
+save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section, dela)
     struct pine  *state;
     CONTEXT_S   **cntxt;
     char	 *nfldr;
@@ -2704,24 +3168,36 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
     ENVELOPE	 *env;
     long	  rawmsgno;
     char	 *section;
+    SaveDel      *dela;
 {
     static char	      folder[MAILTMPLEN+1] = {'\0'};
     static CONTEXT_S *last_context = NULL;
     int		      rc, n, flags, last_rc = 0, saveable_count = 0, done = 0;
+    int               context_was_set, delindex;
     char	      prompt[MAX_SCREEN_COLS+1], *p, expanded[MAILTMPLEN];
     char              *buf = tmp_20k_buf;
     HelpType	      help;
+    SaveDel           del = DontAsk;
+    char             *deltext = NULL;
     CONTEXT_S	     *tc;
-    ESCKEY_S	      ekey[8];
+    ESCKEY_S	      ekey[9];
+
+    if(!cntxt)
+      panic("no context ptr in save_prompt");
+
+    context_was_set = ((*cntxt) != NULL);
 
     /* start with the default save context */
-    if(((*cntxt) = default_save_context(state->context_list)) == NULL)
+    if(!(*cntxt)
+       && ((*cntxt) = default_save_context(state->context_list)) == NULL)
        (*cntxt) = state->context_list;
 
     if(!env || ps_global->save_msg_rule == MSG_RULE_LAST
 	  || ps_global->save_msg_rule == MSG_RULE_DEFLT){
-	if(ps_global->save_msg_rule == MSG_RULE_LAST && last_context)
-	  (*cntxt) = last_context;
+	if(ps_global->save_msg_rule == MSG_RULE_LAST && last_context){
+	    if(!context_was_set)
+	      (*cntxt) = last_context;
+	}
 	else{
 	    strncpy(folder,ps_global->VAR_DEFAULT_SAVE_FOLDER,sizeof(folder)-1);
 	    folder[sizeof(folder)-1] = '\0';
@@ -2730,7 +3206,8 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
     else{
 	get_save_fldr_from_env(folder, sizeof(folder), env, state,
 			       rawmsgno, section);
-	if(ps_global->expunge_count)	/* somebody expunged current message */
+	/* somebody expunged current message */
+	if(sp_expunge_count(ps_global->mail_stream))
 	  return(0);
     }
 
@@ -2773,6 +3250,14 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
 	ekey[rc++].label = "ListMatches";
     }
 
+    if(dela && (*dela == NoDel || *dela == Del)){
+	ekey[rc].ch      = ctrl('R');
+	ekey[rc].rval    = 15;
+	ekey[rc].name    = "^R";
+	delindex = rc++;
+	del = *dela;
+    }
+
     if(saveable_count > 1){
 	ekey[rc].ch      = KEY_UP;
 	ekey[rc].rval    = 10;
@@ -2792,16 +3277,32 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
     while(!done){
 	/* only show collection number if more than one available */
 	if(ps_global->context_list->next)
-	  sprintf(prompt, "SAVE %sto folder in <%.16s%s> [%s] : ",
+	  sprintf(prompt, "SAVE%s %sto folder in <%.16s%s> [%s] : ",
+		  deltext ? deltext : "",
 		  nmsgs, (*cntxt)->nickname, 
 		  strlen((*cntxt)->nickname) > 16 ? "..." : "",
 		  strsquish(buf, folder, 25));
 	else
-	  sprintf(prompt, "SAVE %sto folder [%s] : ", nmsgs,
-		  strsquish(buf, folder, 40));
+	  sprintf(prompt, "SAVE%s %sto folder [%s] : ",
+		  deltext ? deltext : "",
+		  nmsgs, strsquish(buf, folder, 40));
 
 	/*
-	 * If the prompt won't fit, remove the extra info contained
+	 * If the prompt won't fit, try removing deltext.
+	 */
+	if(state->ttyo->screen_cols < strlen(prompt) + 6 && deltext){
+	    if(ps_global->context_list->next)
+	      sprintf(prompt, "SAVE %sto folder in <%.16s%s> [%s] : ",
+		      nmsgs, (*cntxt)->nickname, 
+		      strlen((*cntxt)->nickname) > 16 ? "..." : "",
+		      strsquish(buf, folder, 25));
+	    else
+	      sprintf(prompt, "SAVE %sto folder [%s] : ",
+		      nmsgs, strsquish(buf, folder, 40));
+	}
+
+	/*
+	 * If the prompt still won't fit, remove the extra info contained
 	 * in nmsgs.
 	 */
 	if(state->ttyo->screen_cols < strlen(prompt) + 6 && *nmsgs){
@@ -2815,6 +3316,9 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
 		      strsquish(buf, folder, 25));
 	}
 	
+	if(del != DontAsk)
+	  ekey[delindex].label = (del == NoDel) ? "Delete" : "No Delete";
+
 	flags = OE_APPEND_CURRENT | OE_SEQ_SENSITIVE;
 	rc = optionally_enter(nfldr, -FOOTER_ROWS(state), 0, len_nfldr,
 			      prompt, ekey, help, &flags);
@@ -2838,7 +3342,7 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
 		    strncpy(nfldr, folder, len_nfldr-1);
 		    nfldr[len_nfldr-1] = '\0';
 		}
-		if(!(name = folder_is_nick(nfldr, FOLDERS(*cntxt))))
+		if(!(name = folder_is_nick(nfldr, FOLDERS(*cntxt), 0)))
 		    name = nfldr;
 
 		if(update_folder_spec(expanded, name)){
@@ -2981,6 +3485,11 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
 
 	    break;
 
+	  case 15 :			/* Delete / No Delete */
+	    del = (del == NoDel) ? Del : NoDel;
+	    deltext = (del == NoDel) ? " (no delete)" : " (and delete)";
+	    break;
+
 	  default :
 	    panic("Unhandled case");
 	    break;
@@ -3009,10 +3518,13 @@ save_prompt(state, cntxt, nfldr, len_nfldr, nmsgs, env, rawmsgno, section)
     /* nickname?  Copy real name to nfldr */
     if(*cntxt
        && context_isambig(nfldr)
-       && (p = folder_is_nick(nfldr, FOLDERS(*cntxt)))){
+       && (p = folder_is_nick(nfldr, FOLDERS(*cntxt), 0))){
 	strncpy(nfldr, p, len_nfldr-1);
 	nfldr[len_nfldr-1] = '\0';
     }
+
+    if(dela && (*dela == NoDel || *dela == Del))
+      *dela = (del == NoDel) ? RetNoDel : RetDel;
 
     return(1);
 }
@@ -3316,6 +3828,7 @@ get_save_fldr_from_env(fbuf, nfbuf, e, state, rawmsgno, section)
         Do the work of actually saving messages to a folder
 
     Args: state -- pine state struct (for stream pointers)
+	  stream  -- source stream, which msgmap refers to
 	  context -- context to interpret name in if not fully qualified
 	  folder  -- The folder to save the message in
           msgmap -- message map of currently selected messages
@@ -3329,6 +3842,7 @@ get_save_fldr_from_env(fbuf, nfbuf, e, state, rawmsgno, section)
   Note: There's a bit going on here; temporary clearing of deleted flags
 	since they are *not* preserved, picking or creating the stream for
 	copy or append, and dealing with errors...
+	We try to preserve user keywords by setting them in the destination.
  ----*/
 long
 save(state, stream, context, folder, msgmap, flgs)
@@ -3340,12 +3854,12 @@ save(state, stream, context, folder, msgmap, flgs)
     int		  flgs;
 {
     int		  rv, rc, j, our_stream = 0, cancelled = 0;
-    int           delete, filter;
+    int           delete, filter, k, preserve_keywords;
     char	 *save_folder, *seq, flags[64], date[64], tmp[MAILTMPLEN];
-    long	  i, nmsgs;
+    long	  i, nmsgs, rawno;
     STORE_S	 *so = NULL;
-    MAILSTREAM	 *save_stream = NULL;
-    MESSAGECACHE *mc;
+    MAILSTREAM	 *save_stream = NULL, *dstn_stream = NULL;
+    MESSAGECACHE *mc, *mcdst;
 #if	defined(DOS) && !defined(WIN32)
 #define	SAVE_TMP_TYPE		TmpFileStar
 #else
@@ -3391,12 +3905,14 @@ save(state, stream, context, folder, msgmap, flgs)
 	char *dseq = NULL, *oseq;
 
 	if((flgs & SV_FIX_DELS) &&
-	   (dseq = currentf_sequence(stream, msgmap, F_DEL, NULL,0)))
+	   (dseq = currentf_sequence(stream, msgmap, F_DEL, NULL,
+				     0, NULL, NULL)))
 	  mail_flag(stream, dseq, "\\DELETED", 0L);
 
-	seq = currentf_sequence(stream, msgmap, 0L, &nmsgs, 0);
+	seq = currentf_sequence(stream, msgmap, 0L, &nmsgs, 0, NULL, NULL);
 	if(F_ON(F_AGG_SEQ_COPY, ps_global)
 	   || (mn_get_sort(msgmap) == SortArrival && !mn_get_revsort(msgmap))){
+	    
 	    /*
 	     * currentf_sequence() above lit all the elt "sequence"
 	     * bits of the interesting messages.  Now, build a sequence
@@ -3464,7 +3980,7 @@ save(state, stream, context, folder, msgmap, flgs)
     else{
 	/*
 	 * Special handling requires mail_append.  See if we can
-	 * reuse stream source messages are on...
+	 * re-use stream source messages are on...
 	 */
 	save_stream = context_same_stream(context, save_folder, stream);
 
@@ -3473,11 +3989,11 @@ save(state, stream, context, folder, msgmap, flgs)
 	 * doesn't have to open it for each aggregate save...
 	 */
 	if(!save_stream){
-	    char tmp[MAILTMPLEN];		/* must be within context */
-
 	    if(context_apply(tmp, context, save_folder, sizeof(tmp))[0] == '{'
 	       && (save_stream = context_open(context, NULL,
-					      save_folder, OP_HALFOPEN)))
+					      save_folder,
+				      OP_HALFOPEN | SP_USEPOOL | SP_TEMPUSE,
+					      NULL)))
 	      our_stream = 1;
 	}
 
@@ -3494,7 +4010,7 @@ save(state, stream, context, folder, msgmap, flgs)
 	}
 
 	/*
-	 * get a sequence of invalid elt's so we can get thier flags...
+	 * get a sequence of invalid elt's so we can get their flags...
 	 */
 	if(seq = invalid_elt_sequence(stream, msgmap)){
 	    mail_fetch_fast(stream, seq, 0L);
@@ -3507,9 +4023,22 @@ save(state, stream, context, folder, msgmap, flgs)
 	 */
 	if(delete)
 	  for(i = 1L; i <= stream->nmsgs; i++)
-	    mail_elt(stream, i)->sequence = 0;
+	    if((mc = mail_elt(stream, i)) != NULL)
+	      mc->sequence = 0;
 
 	nmsgs = 0L;
+
+        /*
+         * It may seem like we ought to just use the optional flags
+	 * argument to APPEND to set the user keywords, and indeed that
+	 * sometimes works. However there are some IMAP servers which
+	 * don't implement the optional keywords arguments to APPEND correctly.
+         * Imapd is one of these. They may fail to set the keywords in the
+	 * appended message. It may or may not result in an APPEND failure
+	 * so we can't even count on that. We have to just open up a
+	 * stream to the destination and set them if there are any to
+	 * be set.
+	 */
 
 	/* 
 	 * if there is more than one message, do multiappend.
@@ -3538,7 +4067,9 @@ save(state, stream, context, folder, msgmap, flgs)
 						     our_stream ? save_stream
 						     : NULL, save_folder,
 						     save_fetch_append_cb,
-						     (void *) &pkg))) {
+						     (void *) &pkg,
+						     stream))) {
+
 		  if(rc++ || !ps_global->try_to_create)
 		    break;
 		  if((context && context->use & CNTXT_INCMNG)
@@ -3556,6 +4087,9 @@ save(state, stream, context, folder, msgmap, flgs)
 		    break;
 		  }
 		}
+
+		ps_global->noshow_error = 0;
+
 		if(rv){
 		    /*
 		     * Success!  Count it, and if it's not already deleted and 
@@ -3565,12 +4099,11 @@ save(state, stream, context, folder, msgmap, flgs)
 		      i = mn_next_cur(msgmap)){
 		    nmsgs++;
 		    if(delete){
-		      mc = mail_elt(stream, mn_m2raw(msgmap, i));
-		      if(!mc->deleted){
+		      rawno = mn_m2raw(msgmap, i);
+		      mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+			    ? mail_elt(stream, rawno) : NULL;
+		      if(mc && !mc->deleted)
 			mc->sequence = 1;	/* mark for later deletion */
-			clear_index_cache_ent(i);
-			check_point_change();
-		      }
 		    }
 		  }
 		}
@@ -3578,26 +4111,29 @@ save(state, stream, context, folder, msgmap, flgs)
 	    else
 	      cancelled = 1;		/* No messages to append! */
 
-	    if(ps_global->expunge_count)
+	    if(sp_expunge_count(stream))
 	      cancelled = 1;		/* All bets are off! */
 	}
 	else 
 	  for(i = mn_first_cur(msgmap); so && i > 0L; i = mn_next_cur(msgmap)){
 	    so_truncate(so, 0L);
 
-	    /* store flags before the fetch so UNSEEN bit isn't flipped */
-	    mc = mail_elt(stream, mn_m2raw(msgmap, i));
+	    rawno = mn_m2raw(msgmap, i);
+	    mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+		    ? mail_elt(stream, rawno) : NULL;
+
 	    flag_string(mc, F_ANS|F_FLAG|F_SEEN, flags);
-	    if(mc->day)
+	      
+	    if(mc && mc->day)
 	      mail_date(date, mc);
 	    else
 	      *date = '\0';
 
 	    rv = save_fetch_append(stream, mn_m2raw(msgmap, i),
 				   NULL, save_stream, save_folder, context,
-				   mc->rfc822_size, flags, date, so);
+				   mc ? mc->rfc822_size : 0L, flags, date, so);
 
-	    if(ps_global->expunge_count)
+	    if(sp_expunge_count(stream))
 	      rv = -1;			/* All bets are off! */
 
 	    if(rv == 1){
@@ -3607,12 +4143,11 @@ save(state, stream, context, folder, msgmap, flgs)
 		 */
 		nmsgs++;
 		if(delete){
-		    mc = mail_elt(stream, mn_m2raw(msgmap, i));
-		    if(!mc->deleted){
-			mc->sequence = 1;	/* mark for later deletion */
-			clear_index_cache_ent(i);
-			check_point_change();
-		    }
+		    rawno = mn_m2raw(msgmap, i);
+		    mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+			    ? mail_elt(stream, rawno) : NULL;
+		    if(mc && !mc->deleted)
+		      mc->sequence = 1;		/* mark for later deletion */
 		}
 	    }
 	    else{
@@ -3634,6 +4169,84 @@ save(state, stream, context, folder, msgmap, flgs)
 	    fs_give((void **)&seq);
 	}
     }
+
+    /* are any keywords set in our messages? */
+    preserve_keywords = 0;
+    for(i = mn_first_cur(msgmap); !preserve_keywords && i > 0L;
+	i = mn_next_cur(msgmap)){
+	rawno = mn_m2raw(msgmap, i);
+	mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+		? mail_elt(stream, rawno) : NULL;
+	if(mc && mc->user_flags)
+	  preserve_keywords++;
+    }
+
+    if(preserve_keywords){
+	MAILSTREAM *dstn_stream = NULL;
+	int         already_open = 0;
+	int         we_locked_stream = 0;
+
+	if(sp_expunge_count(stream)){
+	    q_status_message(SM_ORDER, 3, 5,
+			   "Possible trouble setting keywords in destination");
+	    goto get_out;
+	}
+
+	/*
+	 * Possible problem created by our stream re-use
+	 * strategy. If we are going to open a new stream
+	 * here, we want to be sure not to re-use the
+	 * stream we are saving _from_, so make sure it
+	 * is SP_LOCKED before calling context_open.
+	 */
+	if(!sp_flagged(stream, SP_LOCKED)){
+	    we_locked_stream++;
+	    sp_set_flags(stream, sp_flags(stream) | SP_LOCKED);
+	}
+
+	/* see if there is a stream open already */
+	if(!dstn_stream){
+	    dstn_stream = context_already_open_stream(context,
+						      save_folder,
+						      AOS_RW_ONLY);
+	    already_open = dstn_stream ? 1 : 0;
+	}
+
+	if(!dstn_stream)
+	  dstn_stream = context_open(context, NULL,
+				     save_folder,
+				     SP_USEPOOL | SP_TEMPUSE,
+				     NULL);
+
+	if(dstn_stream){
+	    /* make sure dstn_stream knows about the new messages */
+	    (void) pine_mail_ping(dstn_stream);
+
+	    for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap)){
+		ENVELOPE *env;
+
+		rawno = mn_m2raw(msgmap, i);
+		mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+			? mail_elt(stream, rawno) : NULL;
+		env = NULL;
+		if(mc && mc->user_flags)
+		  env = pine_mail_fetchstructure(stream, rawno, NULL);
+
+		if(env && env->message_id && env->message_id[0])
+		  set_keywords_in_msgid_msg(stream, mc, dstn_stream,
+					    env->message_id,
+					    mn_total_cur(msgmap)+10L);
+	    }
+
+	    if(!already_open)
+	      pine_mail_close(dstn_stream);
+	}
+
+	if(we_locked_stream)
+	  sp_unflag(stream, SP_LOCKED);
+    }
+
+get_out:
 
     ps_global->try_to_create = 0;		/* reset for next time */
     if(!cancelled && nmsgs < mn_total_cur(msgmap)){
@@ -3693,10 +4306,14 @@ long save_fetch_append_cb (stream, data, flags, date, message)
 
     if(pkg->so && (pkg->msgno > 0L)) {
 	raw = mn_m2raw(pkg->msgmap, pkg->msgno);
-	mc = mail_elt(pkg->stream, raw);
-	size = mc->rfc822_size;
-	flag_string(mc, F_ANS|F_FLAG|F_SEEN, pkg->flags);
-	if(mc->day)
+	mc = (raw > 0L && pkg->stream && raw <= pkg->stream->nmsgs)
+		? mail_elt(pkg->stream, raw) : NULL;
+	if(mc){
+	    size = mc->rfc822_size;
+	    flag_string(mc, F_ANS|F_FLAG|F_SEEN, pkg->flags);
+	}
+
+	if(mc && mc->day)
 	  mail_date(pkg->date, mc);
 	else
 	  *pkg->date = '\0';
@@ -3719,7 +4336,7 @@ long save_fetch_append_cb (stream, data, flags, date, message)
 	    gf_set_so_writec(&pc, pkg->so);
 
 	    section[0] = '\0';
-	    if(!mail_fetch_structure(pkg->stream, raw, &body, 0))
+	    if(!pine_mail_fetch_structure(pkg->stream, raw, &body, 0))
 	      return(0);
 	    
 	    if(msgno_part_deleted(pkg->stream, raw, "")){
@@ -3868,12 +4485,12 @@ save_fetch_append(stream, raw, sect, save_stream, save_folder,
 
 	if(sect && *sect){
 	    sprintf(section, "%s.1", sect);
-	    if(!(body = mail_body(stream, raw, section)))
+	    if(!(body = mail_body(stream, raw, (unsigned char *) section)))
 	      return(0);
 	}
 	else{
 	    section[0] = '\0';
-	    if(!mail_fetch_structure(stream, raw, &body, 0))
+	    if(!pine_mail_fetch_structure(stream, raw, &body, 0))
 	      return(0);
 	}
 
@@ -3925,7 +4542,7 @@ save_fetch_append(stream, raw, sect, save_stream, save_folder,
 
 	/* Second, go fetch the corresponding text... */
 	fetch = pine_mail_fetch_text(stream, raw, sect, &tlen,
-				!old_imap_server ? FT_PEEK : 0);
+				     !old_imap_server ? FT_PEEK : 0);
 
 	/*
 	 * Special handling in case we're fetching a Message/rfc822
@@ -3933,7 +4550,7 @@ save_fetch_append(stream, raw, sect, save_stream, save_folder,
 	 */
 	if(fetch && *fetch == '\0' && sect && (hlen + tlen) != size){
 	    so_seek(so, 0L, 0);
-	    fetch = mail_fetch_body(stream, raw, sect, &tlen, 0L);
+	    fetch = pine_mail_fetch_body(stream, raw, sect, &tlen, 0L);
 	}
 
 	/*
@@ -4126,7 +4743,7 @@ save_ex_output_body(stream, raw, section, body, len, pc)
 	PART	  *part = body->nested.part;
 	PARAMETER *param;
 
-	/* Locate supplied supplied multipart boundary */
+	/* Locate supplied multipart boundary */
 	for (param = body->parameter; param; param = param->next)
 	  if (!strucmp(param->attribute, "boundary")){
 	      sprintf(boundary, "--%.*s\015\012", sizeof(boundary)-10,
@@ -4200,7 +4817,7 @@ save_ex_output_body(stream, raw, section, body, len, pc)
     }
 
     /* Write corresponding body part */
-    if((txtp = mail_fetch_body(stream, raw, section, &ilen, FT_PEEK))
+    if((txtp = pine_mail_fetch_body(stream, raw, section, &ilen, FT_PEEK))
        && gf_nputs(txtp, (long) ilen, pc) && gf_puts("\015\012", pc)){
 	*len += ilen + 2;
 	return(1);
@@ -4247,7 +4864,7 @@ save_ex_explain_body(body, len, pc)
     unsigned long   ilen;
     char	  **blurbp;
     static char    *blurb[] = {
-	"The following attachments were DELETED when this message was saved:",
+	"The following attachment was DELETED when this message was saved:",
 	NULL
     };
 
@@ -4275,15 +4892,19 @@ save_ex_explain_parts(body, depth, len, pc)
 {
     char	  tmp[MAILTMPLEN], buftmp[MAILTMPLEN];
     unsigned long ilen;
+    char *name = rfc2231_get_param(body->parameter, "name", NULL, NULL);
 
     if(body->type == TYPEMULTIPART) {   /* multipart gets special handling */
 	PART *part = body->nested.part;	/* first body part */
 
 	*len = 0;
 	if(body->description && *body->description){
-	    sprintf(tmp, "%*.*sA %s/%.*s segment described",
+	    sprintf(tmp, "%*.*sA %s/%.*s%.10s%.100s%.10s segment described",
 		    depth, depth, " ", body_type_names(body->type),
-		    sizeof(tmp)-100, body->subtype ? body->subtype : "Unknown");
+		    sizeof(tmp)-300, body->subtype ? body->subtype : "Unknown",
+		    name ? " (Name=\"" : "",
+		    name ? name : "",
+		    name ? "\")" : "");
 	    if(!save_ex_output_line(tmp, len, pc))
 	      return(0);
 
@@ -4293,10 +4914,13 @@ save_ex_explain_parts(body, depth, len, pc)
 					    SIZEOF_20KBUF, buftmp, NULL));
 	}
 	else{
-	    sprintf(tmp, "%*.*sA %s/%.*s segment containing:",
+	    sprintf(tmp, "%*.*sA %s/%.*s%.10s%.100s%.10s segment containing:",
 		    depth, depth, " ",
 		    body_type_names(body->type),
-		    sizeof(tmp)-100, body->subtype ? body->subtype : "Unknown");
+		    sizeof(tmp)-300, body->subtype ? body->subtype : "Unknown",
+		    name ? " (Name=\"" : "",
+		    name ? name : "",
+		    name ? "\")" : "");
 	}
 
 	if(save_ex_output_line(tmp, &ilen, pc))
@@ -4313,10 +4937,13 @@ save_ex_explain_parts(body, depth, len, pc)
 	while (part = part->next);	/* until done */
     }
     else{
-	sprintf(tmp, "%*.*sA %s/%.*s segment of about %s bytes%s",
+	sprintf(tmp, "%*.*sA %s/%.*s%.10s%.100s%.10s segment of about %s bytes%s",
 		depth, depth, " ",
 		body_type_names(body->type), 
-		sizeof(tmp)-100, body->subtype ? body->subtype : "Unknown",
+		sizeof(tmp)-300, body->subtype ? body->subtype : "Unknown",
+		name ? " (Name=\"" : "",
+		name ? name : "",
+		name ? "\")" : "",
 		comatose((body->encoding == ENCBASE64)
 			   ? ((body->size.bytes * 3)/4)
 			   : body->size.bytes),
@@ -4400,7 +5027,6 @@ create_for_save(stream, context, folder)
 }
 
 
-
 /*----------------------------------------------------------------------
   Build flags string based on requested flags and what's set in messagecache
 
@@ -4419,6 +5045,9 @@ flag_string(mc, flags, flagbuf)
     char *p;
 
     *(p = flagbuf) = '\0';
+
+    if(!mc)
+      return;
 
     if((flags & F_DEL) && mc->deleted)
       sstrcpy(&p, "\\DELETED ");
@@ -4468,12 +5097,200 @@ saved_date(date, header)
 	    *p = '\0';				/* tie off internal date */
 	}
 
-	if(mail_parse_date(&elt, d))		/* let c-client normalize it */
+	if(mail_parse_date(&elt, (unsigned char *) d))  /* normalize it */
 	  mail_date(date, &elt);
 
 	if(p)					/* restore header */
 	  *p = c;
     }
+}
+
+
+/*
+ * Find the last message in dstn_stream's folder that has message_id
+ * equal to the argument. Set its keywords equal to the keywords which
+ * are set in message mc from stream kw_stream.
+ *
+ * If you just saved the message you're looking for, it is a good idea
+ * to send a ping over before you call this routine.
+ *
+ * Args:  kw_stream -- stream containing message mc
+ *            mcsrc -- mail_elt for the source message
+ *      dstn_stream -- where the new message is
+ *       message_id -- the message id of the new message
+ *            guess -- this is a positive integer, for example, 10. If it
+ *                       is set we will first try to find the message_id
+ *                       within the last "guess" messages in the folder,
+ *                       unless the whole folder isn't much bigger than that
+ */
+void
+set_keywords_in_msgid_msg(kw_stream, mcsrc, dstn_stream, message_id, guess)
+    MAILSTREAM   *kw_stream;
+    MESSAGECACHE *mcsrc;
+    MAILSTREAM   *dstn_stream;
+    char         *message_id;
+    long          guess;
+{
+    SEARCHPGM *pgm = NULL;
+    long        newmsgno;
+    int         iter = 0, k;
+    MESSAGECACHE *mc;
+    extern MAILSTREAM *mm_search_stream;
+    extern long        mm_search_count;
+
+    if(!(kw_stream && dstn_stream))
+      return;
+
+    mm_search_count = 0L;
+    mm_search_stream = dstn_stream;
+    while(mm_search_count == 0L && iter++ < 2
+	  && (pgm = mail_newsearchpgm()) != NULL){
+	pgm->message_id = mail_newstringlist();
+	pgm->message_id->text.data = (unsigned char *) cpystr(message_id);
+	pgm->message_id->text.size = strlen(message_id);
+
+	if(iter == 1){
+	    /* lots of messages? restrict to last guess message on first try */
+	    if(dstn_stream->nmsgs > guess + 40L){
+		pgm->msgno = mail_newsearchset();
+		pgm->msgno->first = dstn_stream->nmsgs - guess;
+		pgm->msgno->first = min(max(pgm->msgno->first, 1),
+					dstn_stream->nmsgs);
+		pgm->msgno->last  = dstn_stream->nmsgs;
+	    }
+	    else
+	      iter++;
+	}
+
+	pine_mail_search_full(dstn_stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+	if(mm_search_count){
+	    for(newmsgno=dstn_stream->nmsgs; newmsgno > 0L; newmsgno--)
+	      if((mc = mail_elt(dstn_stream, newmsgno)) && mc->searched)
+		break;
+		  
+	    if(newmsgno > 0L)
+	      for(k = 0; k < NUSERFLAGS; k++)
+		if(mcsrc && mcsrc->user_flags & (1 << k)
+		   && kw_stream->user_flags[k]
+		   && kw_stream->user_flags[k][0]){
+		    int i;
+
+		    /*
+		     * Check to see if we know it is impossible to set
+		     * this keyword before we try.
+		     */
+		    if(dstn_stream->kwd_create ||
+		       (((i = user_flag_index(dstn_stream,
+					      kw_stream->user_flags[k])) >= 0)
+		        && i < NUSERFLAGS)){
+		      mail_flag(dstn_stream, long2string(newmsgno),
+			        kw_stream->user_flags[k], ST_SET);
+		    }
+		    else{
+		      int some_defined = 0, w;
+		      static time_t last_status_message = 0;
+		      time_t now;
+		      char b[200], c[200], *p;
+
+		      for(i = 0; !some_defined && i < NUSERFLAGS; i++)
+		        if(dstn_stream->user_flags[i])
+			  some_defined++;
+		    
+		      /*
+		       * Some unusual status message handling here. We'd
+		       * like to print out one status message for every
+		       * keyword missed, but if that happens every time
+		       * you save to a particular folder, that would get
+		       * annoying. So we only print out the first for each
+		       * save or aggregate save.
+		       */
+		      if((now=time((time_t *) 0)) - last_status_message > 3){
+		        last_status_message = now;
+		        if(some_defined){
+			  sprintf(b, "Losing keyword \"%.30s\". No more keywords allowed in ", keyword_to_nick(kw_stream->user_flags[k]));
+			  w = min((ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) - strlen(b) - 1 - 2, sizeof(c)-1);
+			  p = short_str(STREAMNAME(dstn_stream), c, w,
+					FrontDots);
+			  q_status_message2(SM_ORDER, 3, 3, "%s%s!", b, p);
+			}
+			else{
+			  sprintf(b, "Losing keyword \"%.30s\". Can't add keywords in ", keyword_to_nick(kw_stream->user_flags[k]));
+			  w = min((ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) - strlen(b) - 1 - 2, sizeof(b)-1);
+			  p = short_str(STREAMNAME(dstn_stream), c, w,
+					FrontDots);
+			  q_status_message2(SM_ORDER, 3, 3, "%s%s!", b, p);
+			}
+		      }
+
+		      if(some_defined){
+			dprint(1, (debugfile, "Losing keyword \"%s\". No more keywords allowed in %s\n", kw_stream->user_flags[k], dstn_stream->mailbox ? dstn_stream->mailbox : "target folder"));
+		      }
+		      else{
+			dprint(1, (debugfile, "Losing keyword \"%s\". Can't add keywords in %s\n", kw_stream->user_flags[k], dstn_stream->mailbox ? dstn_stream->mailbox : "target folder"));
+		      }
+		    }
+		}
+	}
+    }
+}
+
+
+long
+get_msgno_by_msg_id(stream, message_id, msgmap)
+    MAILSTREAM   *stream;
+    char         *message_id;
+    MSGNO_S      *msgmap;
+{
+    SEARCHPGM  *pgm = NULL;
+    long        hint = mn_m2raw(msgmap, mn_get_cur(msgmap));
+    long        newmsgno = -1L;
+    int         iter = 0, k;
+    MESSAGECACHE *mc;
+    extern MAILSTREAM *mm_search_stream;
+    extern long        mm_search_count;
+
+    if(!(message_id && message_id[0]))
+      return(newmsgno);
+
+    mm_search_count = 0L;
+    mm_search_stream = stream;
+    while(mm_search_count == 0L && iter++ < 3
+	  && (pgm = mail_newsearchpgm()) != NULL){
+	pgm->message_id = mail_newstringlist();
+	pgm->message_id->text.data = (unsigned char *) cpystr(message_id);
+	pgm->message_id->text.size = strlen(message_id);
+
+	if(iter > 1 || hint > stream->nmsgs)
+	  iter++;
+
+	if(iter == 1){
+	    /* restrict to hint message on first try */
+	    pgm->msgno = mail_newsearchset();
+	    pgm->msgno->first = pgm->msgno->last = hint;
+	}
+	else if(iter == 2){
+	    /* restrict to last 50 messages on 2nd try */
+	    pgm->msgno = mail_newsearchset();
+	    if(stream->nmsgs > 100L)
+	      pgm->msgno->first = stream->nmsgs-50L;
+	    else{
+		pgm->msgno->first = 1L;
+		iter++;
+	    }
+
+	    pgm->msgno->last = stream->nmsgs;
+	}
+
+	pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+
+	if(mm_search_count){
+	    for(newmsgno=stream->nmsgs; newmsgno > 0L; newmsgno--)
+	      if((mc = mail_elt(stream, newmsgno)) && mc->searched)
+		break;
+	}
+    }
+
+    return(mn_raw2m(msgmap, newmsgno));
 }
 
 
@@ -4497,10 +5314,12 @@ cmd_export(state, msgmap, qline, agg)
 {
     char      filename[MAXPATH+1], full_filename[MAXPATH+1], *err;
     char      nmsgs[80];
-    int       r, leading_nl, failure = 0, orig_errno, over = 0;
+    int       r, leading_nl, failure = 0, orig_errno, rflags = GER_NONE;
+    int       flags = GE_IS_EXPORT | GE_SEQ_SENSITIVE;
     ENVELOPE *env;
+    MESSAGECACHE *mc;
     BODY     *b;
-    long      i, count = 0L, start_of_append;
+    long      i, count = 0L, start_of_append, rawno;
     gf_io_t   pc;
     STORE_S  *store;
     struct variable *vars = ps_global->vars;
@@ -4546,6 +5365,31 @@ cmd_export(state, msgmap, qline, agg)
     }
 #endif
 
+    /*
+     * If message has attachments, add a toggle that will allow the user
+     * to save all of the attachments to a single directory, using the
+     * names provided with the attachments or part names. What we'll do is
+     * export the message as usual, and then export the attachments into
+     * a subdirectory that did not exist before. The subdir will be named
+     * something based on the name of the file being saved to, but a
+     * unique, new name.
+     */
+    if(!agg
+       && state->mail_stream
+       && (rawno = mn_m2raw(msgmap, mn_get_cur(msgmap))) > 0L
+       && rawno <= state->mail_stream->nmsgs
+       && (env = pine_mail_fetchstructure(state->mail_stream, rawno, &b))
+       && b
+       && b->type == TYPEMULTIPART
+       && b->subtype
+       && strucmp(b->subtype, "ALTERNATIVE") != 0){
+	PART *part;
+
+	part = b->nested.part;	/* 1st part */
+	if(part->next)
+	  flags |= GE_ALLPARTS;
+    }
+
     export_opts[i].ch = -1;
     filename[0] = '\0';
 
@@ -4554,9 +5398,9 @@ cmd_export(state, msgmap, qline, agg)
     else
       sprintf(nmsgs, "%.10s messages", comatose(mn_total_cur(msgmap)));
 
-    r = get_export_filename(state, filename, full_filename, sizeof(filename),
-			    nmsgs, "EXPORT", export_opts, &over, qline,
-			    GE_IS_EXPORT | GE_SEQ_SENSITIVE);
+    r = get_export_filename(state, filename, NULL, full_filename,
+			    sizeof(filename), nmsgs, "EXPORT",
+			    export_opts, &rflags, qline, flags);
 
     if(r < 0){
 	switch(r){
@@ -4595,16 +5439,24 @@ cmd_export(state, msgmap, qline, agg)
 	if(so = so_get(FileStar, tfp, WRITE_ACCESS|OWNER_ONLY)){
 	    gf_set_so_writec(&pc, so);
 
-	    for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap))
-	      if(!(env = mail_fetchstructure(state->mail_stream,
-					     mn_m2raw(msgmap, i), &b))
-		 || !bezerk_delimiter(env, pc, next++)
+	    for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap)){
+	      if(!(state->mail_stream
+		 && (rawno = mn_m2raw(msgmap, i)) > 0L
+		 && rawno <= state->mail_stream->nmsgs
+		 && (mc = mail_elt(state->mail_stream, rawno))
+		 && mc->valid))
+	        mc = NULL;
+
+	      if(!(env = pine_mail_fetchstructure(state->mail_stream,
+						  mn_m2raw(msgmap, i), &b))
+		 || !bezerk_delimiter(env, mc, pc, next++)
 		 || !format_message(mn_m2raw(msgmap, mn_get_cur(msgmap)),
 				    env, b, NULL, FM_NEW_MESS | FM_NOWRAP, pc)){
 		  q_status_message(SM_ORDER | SM_DING, 3, 3,
 			   err = "Error writing tempfile for download");
 		  break;
 	      }
+	    }
 
 	    gf_clear_so_writec(so);
 	    if(so_give(&so)){			/* close file */
@@ -4615,7 +5467,7 @@ cmd_export(state, msgmap, qline, agg)
 	    if(!err){
 		if(syspipe = open_system_pipe(cmd, NULL, NULL,
 					      PIPE_USER | PIPE_RESET, 0))
-		  (void) close_system_pipe(&syspipe);
+		  (void) close_system_pipe(&syspipe, NULL, 0);
 		else
 		  q_status_message(SM_ORDER | SM_DING, 3, 3,
 				err = "Error running download command");
@@ -4638,18 +5490,13 @@ cmd_export(state, msgmap, qline, agg)
 #endif	/* !(DOS || MAC) */
 
 
-    switch(over){
-      case 0:
-      case 1:
-	leading_nl = 0;
-	break;
+    if(rflags & GER_APPEND)
+      leading_nl = 1;
+    else
+      leading_nl = 0;
 
-      case -1:
-	leading_nl = 1;
-	break;
-    }
-
-    dprint(5, (debugfile, "Opening file \"%s\" for export\n", full_filename));
+    dprint(5, (debugfile, "Opening file \"%s\" for export\n",
+	   full_filename ? full_filename : "?"));
 
     if(!(store = so_get(FileStar, full_filename, WRITE_ACCESS))){
         q_status_message2(SM_ORDER | SM_DING, 3, 4,
@@ -4662,15 +5509,23 @@ cmd_export(state, msgmap, qline, agg)
 
     err = NULL;
     for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap), count++){
-	env = mail_fetchstructure(state->mail_stream, mn_m2raw(msgmap, i), &b);
+	env = pine_mail_fetchstructure(state->mail_stream, mn_m2raw(msgmap, i),
+				       &b);
 	if(!env) {
 	    err = "Can't export message. Error accessing mail folder";
 	    failure = 1;
 	    break;
 	}
 
-	start_of_append = ftell((FILE *)so_text(store));
-	if(!bezerk_delimiter(env, pc, leading_nl)
+        if(!(state->mail_stream
+	   && (rawno = mn_m2raw(msgmap, i)) > 0L
+	   && rawno <= state->mail_stream->nmsgs
+	   && (mc = mail_elt(state->mail_stream, rawno))
+	   && mc->valid))
+	  mc = NULL;
+
+	start_of_append = so_tell(store);
+	if(!bezerk_delimiter(env, mc, pc, leading_nl)
 	   || !format_message(mn_m2raw(msgmap, i), env, b, NULL,
 			      FM_NEW_MESS | FM_NOWRAP, pc)){
 	    orig_errno = errno;		/* save incase things are really bad */
@@ -4686,34 +5541,198 @@ cmd_export(state, msgmap, qline, agg)
       failure++;
 
     if(failure){
-	truncate(full_filename, start_of_append);
+	truncate(full_filename, (off_t)start_of_append);
 	if(err){
 	    dprint(1, (debugfile, "FAILED Export: fetch(%ld): %s\n",
-		       i, err));
+		       i, err ? err : "?"));
 	    q_status_message(SM_ORDER | SM_DING, 3, 4, err);
 	}
 	else{
 	    dprint(1, (debugfile, "FAILED Export: file \"%s\" : %s\n",
-		       full_filename,  error_description(orig_errno)));
+		       full_filename ? full_filename : "?",
+		       error_description(orig_errno)));
 	    q_status_message2(SM_ORDER | SM_DING, 3, 4,
 			      "Error exporting to \"%.200s\" : %.200s",
 			      filename, error_description(orig_errno));
 	}
     }
     else{
-	if(mn_total_cur(msgmap) > 1L)
+	if(rflags & GER_ALLPARTS && full_filename[0]){
+	    char dir[MAXPATH+1];
+	    char *p1, *p2, *p3;
+	    char *att_name = "filename";
+	    char  lfile[MAXPATH+1];
+	    int  ok = 0, tries = 0, saved = 0, errs = 0;
+	    ATTACH_S *a;
+
+	    /*
+	     * Now we want to save all of the attachments to a subdirectory.
+	     * To make it easier for us and probably easier for the user, and
+	     * to prevent the user from shooting himself in the foot, we
+	     * make a new subdirectory so that we can't possibly step on
+	     * any existing files, and we don't need any interaction with the
+	     * user while saving.
+	     *
+	     * We'll just use the directory name full_filename.d or if that
+	     * already exists and isn't empty, we'll try adding a suffix to
+	     * that until we get something to use.
+	     */
+
+	    if(strlen(full_filename) + strlen(".d") + 1 > sizeof(dir)){
+		q_status_message1(SM_ORDER | SM_DING, 3, 4,
+			  "Can't save attachments, filename too long: %.200s",
+			  full_filename);
+		goto fini;
+	    }
+
+	    ok = 0;
+	    sprintf(dir, "%s.d", full_filename, S_FILESEP);
+
+	    do {
+		tries++;
+		switch(r = is_writable_dir(dir)){
+		  case 0:		/* exists and is a writable dir */
+		    /*
+		     * We could figure out if it is empty and use it in
+		     * that case, but that sounds like a lot of work, so
+		     * just fall through to default.
+		     */
+
+		  default:
+		    if(strlen(full_filename) + strlen(".d") + 1 +
+		       1 + strlen(long2string((long) tries)) > sizeof(dir)){
+			q_status_message(SM_ORDER | SM_DING, 3, 4,
+					      "Problem saving attachments");
+			goto fini;
+		    }
+
+		    sprintf(dir, "%s.d_%s", full_filename,
+			    long2string((long) tries));
+		    break;
+
+		  case 3:		/* doesn't exist, that's good! */
+		    /* make new directory */
+		    ok++;
+		    break;
+		}
+	    } while(!ok && tries < 1000);
+	    
+	    if(tries >= 1000){
+		q_status_message(SM_ORDER | SM_DING, 3, 4,
+					      "Problem saving attachments");
+		goto fini;
+	    }
+
+	    /* create the new directory */
+	    if(mkdir(dir, 0700)){
+		q_status_message2(SM_ORDER | SM_DING, 3, 4,
+		      "Problem saving attachments: %s: %s", dir,
+		      error_description(errno));
+		goto fini;
+	    }
+
+	    if(!(state->mail_stream
+	         && (rawno = mn_m2raw(msgmap, mn_get_cur(msgmap))) > 0L
+	         && rawno <= state->mail_stream->nmsgs
+	         && (env=pine_mail_fetchstructure(state->mail_stream,rawno,&b))
+	         && b)){
+		q_status_message(SM_ORDER | SM_DING, 3, 4,
+					      "Problem reading message");
+		goto fini;
+	    }
+
+	    zero_atmts(state->atmts);
+	    describe_mime(b, "", 1, 1, 0);
+
+	    a = state->atmts;
+	    if(a && a->description)		/* skip main body part */
+	      a++;
+
+	    for(; a->description != NULL; a++){
+		/* skip over these parts of the message */
+		if(MIME_MSG_A(a) || MIME_DGST_A(a) || MIME_VCARD_A(a))
+		  continue;
+		
+		lfile[0] = '\0';
+		if((a->body && a->body->disposition.type &&
+		   (p1 = rfc2231_get_param(a->body->disposition.parameter,
+					  att_name, NULL, NULL))) ||
+		   (p1 = rfc2231_get_param(a->body->parameter,
+					  att_name + 4, NULL, NULL))){
+
+		    if(p1[0] == '=' && p1[1] == '?'){
+			if(!(p2 = (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, SIZEOF_20KBUF, p1, NULL)))
+			  p2 = p1;
+			  
+		    }
+		    else
+		      p2 = p1;
+
+		    p3 = last_cmpnt(p2);
+		    if(!p3)
+		      p3 = p2;
+
+		    strncpy(lfile, p3, sizeof(lfile)-1);
+		    lfile[sizeof(lfile)-1] = '\0';
+
+		    fs_give((void **) &p1);
+		}
+		
+		if(lfile[0] == '\0')
+		  sprintf(lfile, "part_%.*s", sizeof(lfile)-6,
+			  a->number ? a->number : "?");
+
+		if(strlen(dir) + strlen(S_FILESEP) + strlen(lfile) + 1
+							    > sizeof(filename)){
+		    dprint(2, (debugfile,
+			   "FAILED Att Export: name too long: %s\n",
+			   dir, S_FILESEP, lfile));
+		    errs++;
+		    continue;
+		}
+
+		sprintf(filename, "%s%s%s", dir, S_FILESEP, lfile);
+
+		if(write_attachment_to_file(state->mail_stream, rawno,
+					    a, GER_NONE, filename) == 1)
+		  saved++;
+		else
+		  errs++;
+	    }
+
+	    if(errs){
+		if(saved)
+		  q_status_message1(SM_ORDER, 3, 3,
+			"Errors saving some attachments, %s attachments saved",
+			long2string((long) saved));
+		else
+		  q_status_message(SM_ORDER, 3, 3,
+			"Problems saving attachments");
+	    }
+	    else{
+		if(saved)
+		  q_status_message2(SM_ORDER, 0, 3,
+			"Saved %s attachments to %.200s",
+			long2string((long) saved), dir);
+		else
+		  q_status_message(SM_ORDER, 3, 3, "No attachments to save");
+	    }
+	}
+	else if(mn_total_cur(msgmap) > 1L)
 	  q_status_message4(SM_ORDER,0,3,
 			    "%.200s message%.200s %.200s to file \"%.200s\"",
 			    long2string(count), plural(count),
-			    over==0 ? "exported"
-				    : over==1 ? "overwritten" : "appended",
+			    rflags & GER_OVER
+			      ? "overwrittten"
+			      : rflags & GER_APPEND ? "appended" : "exported",
 			    filename);
 	else
 	  q_status_message3(SM_ORDER,0,3,
 			    "Message %.200s %.200s to file \"%.200s\"",
 			    long2string(mn_get_cur(msgmap)),
-			    over==0 ? "exported"
-				    : over==1 ? "overwritten" : "appended",
+			    rflags & GER_OVER
+			      ? "overwrittten"
+			      : rflags & GER_APPEND ? "appended" : "exported",
 			    filename);
     }
 
@@ -4721,7 +5740,6 @@ cmd_export(state, msgmap, qline, agg)
     if(agg)
       restore_selected(msgmap);
 }
-
 
 
 /*
@@ -4744,7 +5762,7 @@ simple_export(ps, srctext, srctype, prompt_msg, lister_msg)
     char        *prompt_msg;
     char        *lister_msg;
 {
-    int r = 1, over;
+    int r = 1, rflags = GER_NONE;
     char     filename[MAXPATH+1], full_filename[MAXPATH+1];
     STORE_S *store = NULL;
     struct variable *vars = ps->vars;
@@ -4770,8 +5788,8 @@ simple_export(ps, srctext, srctype, prompt_msg, lister_msg)
     filename[0] = '\0';
     full_filename[0] = '\0';
 
-    r = get_export_filename(ps, filename, full_filename, sizeof(filename),
-			    prompt_msg, lister_msg, simple_export_opts, &over,
+    r = get_export_filename(ps, filename, NULL, full_filename, sizeof(filename),
+			    prompt_msg, lister_msg, simple_export_opts, &rflags,
 			    -FOOTER_ROWS(ps), GE_IS_EXPORT);
 
     if(r < 0)
@@ -4781,7 +5799,8 @@ simple_export(ps, srctext, srctype, prompt_msg, lister_msg)
 	goto fini;
     }
 
-    dprint(5, (debugfile, "Opening file \"%s\" for export\n", full_filename));
+    dprint(5, (debugfile, "Opening file \"%s\" for export\n",
+	   full_filename ? full_filename : "?"));
 
     if((store = so_get(FileStar, full_filename, WRITE_ACCESS)) != NULL){
 	char *pipe_err;
@@ -4829,8 +5848,9 @@ fini:
 	        (prompt_msg && prompt_msg[0]) ? prompt_msg+1 : "ext");
 	q_status_message3(SM_ORDER,0,2,"%.200s %.200s to \"%.200s\"",
 			  full_filename,
-			  over==0 ? "exported" :
-			    over==1 ? "overwritten" : "appended",
+			  rflags & GER_OVER
+			      ? "overwrittten"
+			      : rflags & GER_APPEND ? "appended" : "exported",
 			  filename);
 	break;
 
@@ -4853,17 +5873,28 @@ fini:
 /*
  * Ask user what file to export to.
  *
- *       filename -- On input, this it the filename to start with. On exit,
+ *       filename -- On input, this is the filename to start with. On exit,
  *                   this is the filename chosen. (but this isn't used)
+ *       deefault -- This is the default value if user hits return. The
+ *                   prompt will have [deefault] added to it automatically.
  *  full_filename -- This is the full filename on exit.
  *            len -- Minimum length of _both_ filename and full_filename.
  *     prompt_msg -- Message to insert in prompt.
  *     lister_msg -- Message to insert in file_lister.
  *           opts -- Key options.
- *           over -- This is a return value. over ==  1 => did overwrite
- *                                                         of existing file
- *                                                ==  0 => file didn't exist
- *                                                == -1 => did append
+ *                      There is a tangled relationship between the callers
+ *                      and this routine as far as opts are concerned. Some
+ *                      of the opts are handled here. In particular, r == 3,
+ *                      r == 10, r == 11, and r == 13 are all handled here.
+ *                      Don't use those values unless you want what happens
+ *                      here. r == 12 and others are handled by the caller.
+ *         rflags -- Return flags
+ *                     GER_OVER      - overwrite of existing file
+ *                     GER_APPEND    - append of existing file
+ *                      else file did not exist before
+ *
+ *                     GER_ALLPARTS  - AllParts toggle was turned on
+ *
  *          qline -- Command line to prompt on.
  *          flags -- Logically OR'd flags
  *                     GE_IS_EXPORT     - The command was an Export command
@@ -4872,6 +5903,14 @@ fini:
  *                     GE_SEQ_SENSITIVE - The command that got us here is
  *                                        sensitive to sequence number changes
  *                                        caused by unsolicited expunges.
+ *                     GE_NO_APPEND     - We will not allow append to an
+ *                                        existing file, only removal of the
+ *                                        file if it exists.
+ *                     GE_IS_IMPORT     - We are selecting for reading.
+ *                                        No overwriting or checking for
+ *                                        existence at all. Don't use this
+ *                                        together with GE_NO_APPEND.
+ *                     GE_ALLPARTS      - Turn on AllParts toggle.
  *
  *  Returns:  -1  cancelled
  *            -2  prohibited by VAR_OPER_DIR
@@ -4880,26 +5919,62 @@ fini:
  *            12  user chose 12 command from opts
  */
 int
-get_export_filename(ps, filename, full_filename, len, prompt_msg,
-		    lister_msg, opts, over, qline, flags)
+get_export_filename(ps, filename, deefault, full_filename, len, prompt_msg,
+		    lister_msg, optsarg, rflags, qline, flags)
     struct pine *ps;
     char        *filename;
+    char        *deefault;
     char        *full_filename;
     size_t       len;
     char        *prompt_msg;
     char        *lister_msg;
-    ESCKEY_S     opts[];
-    int         *over;
+    ESCKEY_S     optsarg[];
+    int         *rflags;
     int          qline;
     int          flags;
 {
-    HelpType  help = NO_HELP;
     char      dir[MAXPATH+1], dir2[MAXPATH+1];
     char      precolon[MAXPATH+1], postcolon[MAXPATH+1];
     char      filename2[MAXPATH+1], tmp[MAXPATH+1], *fn, *ill;
-    int       l, i, r, fatal, homedir = 0, was_abs_path=0;
-    char      prompt_buf[200];
+    int       l, i, r, fatal, homedir = 0, was_abs_path=0, avail, ret = 0;
+    int       allparts = 0;
+    char      prompt_buf[400];
+    char      def[500];
+    ESCKEY_S *opts = NULL;
     struct variable *vars = ps->vars;
+
+    if(flags & GE_ALLPARTS){
+	/*
+	 * Copy the opts and add one to the end of the list.
+	 */
+	for(i = 0; optsarg[i].ch != -1; i++)
+	  ;
+	
+	i++;
+
+	opts = (ESCKEY_S *) fs_get((i+1) * sizeof(*opts));
+	memset(opts, 0, (i+1) * sizeof(*opts));
+
+	for(i = 0; optsarg[i].ch != -1; i++){
+	    opts[i].ch = optsarg[i].ch;
+	    opts[i].rval = optsarg[i].rval;
+	    opts[i].name = optsarg[i].name;	/* no need to make a copy */
+	    opts[i].label = optsarg[i].label;	/* " */
+	}
+
+	allparts = i;
+	opts[i].ch      = ctrl('P');
+	opts[i].rval    = 13;
+	opts[i].name    = "^P";
+	opts[i++].label = "AllParts";
+	
+	opts[i].ch = -1;
+    }
+    else
+      opts = optsarg;
+
+    if(rflags)
+      *rflags = GER_NONE;
 
     if(F_ON(F_USE_CURRENT_DIR, ps))
       dir[0] = '\0';
@@ -4914,29 +5989,144 @@ get_export_filename(ps, filename, full_filename, len, prompt_msg,
 	dir[1] = '\0';
 	homedir=1;
     }
+
     strcpy(precolon, dir);
     postcolon[0] = '\0';
+    if(deefault){
+	strncpy(def, deefault, sizeof(def)-1);
+	def[sizeof(def)-1] = '\0';
+	removing_leading_and_trailing_white_space(def);
+    }
+    else
+      def[0] = '\0';
+    
+    /* 6 is needed by optionally_enter */
+    avail = max(20, ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) - 6;
 
     /*---------- Prompt the user for the file name -------------*/
     while(1){
-	int oeflags;
+	int  oeflags;
+	char dirb[50], fileb[50];
+	int  l1, l2, l3, l4, l5, needed;
+	char *p, p1[100], p2[100], *p3, p4[100], p5[100];
 
-	sprintf(prompt_buf, "%sCopy %.*s to file%s%s: ",
-		(flags & GE_IS_EXPORT) ? "EXPORT: " : "SAVE: ",
-		sizeof(prompt_buf)-50, prompt_msg,
+	sprintf(p1, "%.10sCopy ", 
+		(flags & GE_IS_EXPORT) ? "EXPORT: " :
+		  (flags & GE_IS_IMPORT) ? "IMPORT: " : "SAVE: ");
+	l1 = strlen(p1);
+
+	strncpy(p2, prompt_msg ? prompt_msg : "", sizeof(p2)-1);
+	p2[sizeof(p2)-1] = '\0';
+	l2 = strlen(p2);
+
+	if(rflags && *rflags & GER_ALLPARTS)
+	  p3 = " (and atts)";
+	else
+	  p3 = "";
+	
+	l3 = strlen(p3);
+
+	sprintf(p4, " %.10s file%.10s%.30s",
+		(flags & GE_IS_IMPORT) ? "from" : "to",
 		is_absolute_path(filename) ? "" : " in ",
 		is_absolute_path(filename) ? "" :
 		  (!dir[0] ? "current directory"
 			   : (dir[0] == '~' && !dir[1]) ? "home directory"
-						        : dir));
+				     : short_str(dir,dirb,30,FrontDots)));
+	l4 = strlen(p4);
+
+	sprintf(p5, "%.2s%.50s%.1s: ",
+		*def ? " [" : "",
+		*def ? short_str(def,fileb,40,EndDots) : "",
+		*def ? "]" : "");
+	l5 = strlen(p5);
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0){
+	    sprintf(p4, " %.10s file%.10s%.30s",
+		    (flags & GE_IS_IMPORT) ? "from" : "to",
+		    is_absolute_path(filename) ? "" : " in ",
+		    is_absolute_path(filename) ? "" :
+		      (!dir[0] ? "current dir"
+			       : (dir[0] == '~' && !dir[1]) ? "home dir"
+					 : short_str(dir,dirb,10, FrontDots)));
+	    l4 = strlen(p4);
+	}
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0 && l5 > 0){
+	    sprintf(p5, "%.2s%.50s%.1s: ",
+		    *def ? " [" : "",
+		    *def ? short_str(def,fileb,
+				     max(15,l5-5-needed),EndDots) : "",
+		    *def ? "]" : "");
+	    l5 = strlen(p5);
+	}
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0 && l2 > 0){
+
+	    /*
+	     * 14 is about the shortest we can make this, because there are
+	     * fixed length strings of length 14 coming in here.
+	     */
+	    p = short_str(prompt_msg, p2, max(14,l2-needed), FrontDots);
+	    if(p != p2){
+		strncpy(p2, p, sizeof(p2)-1);
+		p2[sizeof(p2)-1] = '\0';
+	    }
+
+	    l2 = strlen(p2);
+	}
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0){
+	    strncpy(p1, "Copy ", sizeof(p1)-1);
+	    p1[sizeof(p1)-1] = '\0';
+	    l1 = strlen(p1);
+	}
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0 && l5 > 0){
+	    sprintf(p5, "%.2s%.50s%.1s: ",
+		    *def ? " [" : "",
+		    *def ? short_str(def,fileb,
+				     max(10,l5-5-needed),EndDots) : "",
+		    *def ? "]" : "");
+	    l5 = strlen(p5);
+	}
+
+	if((needed = l1+l2+l3+l4+l5-avail) > 0 && l3 > 0){
+	    if(needed <= l3 - strlen(" (+ atts)"))
+	      p3 = " (+ atts)";
+	    else if(needed <= l3 - strlen(" (atts)"))
+	      p3 = " (atts)";
+	    else if(needed <= l3 - strlen(" (+)"))
+	      p3 = " (+)";
+	    else if(needed <= l3 - strlen("+"))
+	      p3 = "+";
+	    else
+	      p3 = "";
+
+	    l3 = strlen(p3);
+	}
+
+	sprintf(prompt_buf, "%.50s%.50s%.50s%.50s%.50s", p1, p2, p3, p4, p5);
 	oeflags = OE_APPEND_CURRENT |
 		  ((flags & GE_SEQ_SENSITIVE) ? OE_SEQ_SENSITIVE : 0);
 	r = optionally_enter(filename, qline, 0, len, prompt_buf,
-			     opts, help, &oeflags);
+			     opts, NO_HELP, &oeflags);
 
         /*--- Help ----*/
 	if(r == 3){
-	    help = (help == NO_HELP) ? h_oe_export : NO_HELP;
+	    /*
+	     * Helps may not be right if you add another caller or change
+	     * things. Check it out.
+	     */
+	    if(flags & GE_IS_IMPORT)
+	      helper(h_ge_import, "HELP FOR IMPORT FILE SELECT", HLPD_SIMPLE);
+	    else if(flags & GE_ALLPARTS)
+	      helper(h_ge_allparts, "HELP FOR EXPORT FILE SELECT", HLPD_SIMPLE);
+	    else
+	      helper(h_ge_export, "HELP FOR EXPORT FILE SELECT", HLPD_SIMPLE);
+
+	    ps->mangled_screen = 1;
+
 	    continue;
         }
 	else if(r == 10 || r == 11){	/* Browser or File Completion */
@@ -5078,7 +6268,8 @@ get_export_filename(ps, filename, full_filename, len, prompt_msg,
 	    if(r == 10){			/* File Browser */
 		r = file_lister(lister_msg ? lister_msg : "EXPORT",
 				dir2, MAXPATH+1, filename2, MAXPATH+1, 
-                                TRUE, FB_SAVE);
+                                TRUE,
+				(flags & GE_IS_IMPORT) ? FB_READ : FB_SAVE);
 #ifdef _WINDOWS
 /* Windows has a special "feature" in which entering the file browser will
    change the working directory if the directory is changed at all (even
@@ -5145,15 +6336,31 @@ get_export_filename(ps, filename, full_filename, len, prompt_msg,
 	    continue;
 	}
 	else if(r == 12){	/* Download, caller handles it */
-	    return(r);
+	    ret = r;
+	    goto done;
+	}
+	else if(r == 13){	/* toggle AllParts bit */
+	    if(rflags){
+		if(*rflags & GER_ALLPARTS){
+		    *rflags &= ~GER_ALLPARTS;
+		    opts[allparts].label = "AllParts";
+		}
+		else{
+		    *rflags |=  GER_ALLPARTS;
+		    opts[allparts].label = "NoAllParts";
+		}
+	    }
+
+	    continue;
 	}
 #if	0
 	else if(r == 14){	/* List file names matching partial? */
 	    continue;
 	}
 #endif
-        else if(r == 1 || (r == 0 && filename[0] == '\0')){
-	    return(-1);		/* Cancel */
+        else if(r == 1){	/* Cancel */
+	    ret = -1;
+	    goto done;
         }
         else if(r == 4){
 	    continue;
@@ -5163,8 +6370,17 @@ get_export_filename(ps, filename, full_filename, len, prompt_msg,
 	    continue;
 	}
 
-        removing_trailing_white_space(filename);
-        removing_leading_white_space(filename);
+        removing_leading_and_trailing_white_space(filename);
+
+	if(!*filename){
+	    if(!*def){		/* Cancel */
+		ret = -1;
+		goto done;
+	    }
+	    
+	    strncpy(filename, def, len-1);
+	    filename[len-1] = '\0';
+	}
 
 #if	defined(DOS) || defined(OS2)
 	if(is_absolute_path(filename)){
@@ -5217,47 +6433,81 @@ get_export_filename(ps, filename, full_filename, len, prompt_msg,
 	break;		/* Must have got an OK file name */
     }
 
-    if(VAR_OPER_DIR && !in_dir(VAR_OPER_DIR, full_filename))
-      return(-2);
+    if(VAR_OPER_DIR && !in_dir(VAR_OPER_DIR, full_filename)){
+	ret = -2;
+	goto done;
+    }
 
-    *over = 0;
     if(!can_access(full_filename, ACCESS_EXISTS)){
 	int rbflags;
-
 	static ESCKEY_S access_opts[] = {
 	    {'o', 'o', "O", "Overwrite"},
 	    {'a', 'a', "A", "Append"},
 	    {-1, 0, NULL, NULL}};
 
-	r = strlen(filename);
-        sprintf(prompt_buf,
-		"File \"%s%.*s\" already exists.  Overwrite or append it ? ",
-		(r > 20) ? "..." : "",
-		sizeof(prompt_buf)-100,
-                filename + ((r > 20) ? r - 20 : 0));
 	rbflags = RB_NORM | ((flags & GE_SEQ_SENSITIVE) ? RB_SEQ_SENSITIVE : 0);
-	switch(radio_buttons(prompt_buf, -FOOTER_ROWS(ps_global), access_opts,
-			     'a', 'x', NO_HELP, rbflags)){
-	  case 'o' :
-	    *over = 1;
-	    if(truncate(full_filename, 0) < 0)
-	      /* trouble truncating, but we'll give it a try anyway */
-	      q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Warning: Cannot truncate old %.200s: %.200s",
-				full_filename, error_description(errno));
-	    break;
 
-	  case 'a' :
- 	    *over = -1;
-	    break;
+	if(flags & GE_NO_APPEND){
+	    r = strlen(filename);
+	    sprintf(prompt_buf,
+		   "File \"%s%.*s\" already exists.  Overwrite it ",
+		   (r > 20) ? "..." : "",
+		   sizeof(prompt_buf)-100,
+		   filename + ((r > 20) ? r - 20 : 0));
+	    if(want_to(prompt_buf, 'n', 'x', NO_HELP, rbflags) == 'y'){
+		if(rflags)
+		  *rflags |= GER_OVER;
 
-	  case 'x' :
-	  default :
-	    return(-1);
+		if(unlink(full_filename) < 0){
+		    q_status_message2(SM_ORDER | SM_DING, 3, 5,
+				  "Cannot remove old %.200s: %.200s",
+				  full_filename, error_description(errno));
+		}
+	    }
+	    else{
+		ret = -1;
+		goto done;
+	    }
+	}
+	else if(!(flags & GE_IS_IMPORT)){
+	    r = strlen(filename);
+	    sprintf(prompt_buf,
+		   "File \"%s%.*s\" already exists.  Overwrite or append it ? ",
+		   (r > 20) ? "..." : "",
+		   sizeof(prompt_buf)-100,
+		   filename + ((r > 20) ? r - 20 : 0));
+	    switch(radio_buttons(prompt_buf, -FOOTER_ROWS(ps_global),
+				 access_opts, 'a', 'x', NO_HELP, rbflags)){
+	      case 'o' :
+		if(rflags)
+		  *rflags |= GER_OVER;
+
+		if(truncate(full_filename, (off_t)0) < 0)
+		  /* trouble truncating, but we'll give it a try anyway */
+		  q_status_message2(SM_ORDER | SM_DING, 3, 5,
+				  "Warning: Cannot truncate old %.200s: %.200s",
+				  full_filename, error_description(errno));
+		break;
+
+	      case 'a' :
+		if(rflags)
+		  *rflags |= GER_APPEND;
+
+		break;
+
+	      case 'x' :
+	      default :
+		ret = -1;
+		goto done;
+	    }
 	}
     }
 
-    return(0);
+done:
+    if(opts && opts != optsarg)
+      fs_give((void **) &opts);
+
+    return(ret);
 }
 
 
@@ -5303,7 +6553,8 @@ build_updown_cmd(cmd, prefix, cfg_str, fname)
     if(!fname_found)
       sprintf(cmd + strlen(cmd), " %s", fname);
 
-    dprint(4, (debugfile, "\n - build_updown_cmd = \"%s\" -\n", cmd));
+    dprint(4, (debugfile, "\n - build_updown_cmd = \"%s\" -\n",
+	   cmd ? cmd : "?"));
     return(cmd);
 }
 
@@ -5323,13 +6574,15 @@ build_updown_cmd(cmd, prefix, cfg_str, fname)
     NOTE: follows delimiter with OS-dependent newline
  ----*/
 int
-bezerk_delimiter(env, pc, leading_newline)
+bezerk_delimiter(env, mc, pc, leading_newline)
     ENVELOPE *env;
+    MESSAGECACHE *mc;
     gf_io_t   pc;
     int	      leading_newline;
 {
-    time_t  now = time(0);
-    char   *p = ctime(&now);
+    MESSAGECACHE telt;
+    time_t       when;
+    char        *p;
     
     /* write "[\n]From mailbox[@host] " */
     if(!((leading_newline ? gf_puts(NEWLINE, pc) : 1)
@@ -5341,6 +6594,16 @@ bezerk_delimiter(env, pc, leading_newline)
 							  : "", pc)
 	 && (*pc)(' ')))
       return(0);
+
+    if(mc && mc->valid)
+      when = mail_longdate(mc);
+    else if(env && env->date && env->date[0]
+	    && mail_parse_date(&telt,env->date))
+      when = mail_longdate(&telt);
+    else
+      when = time(0);
+
+    p = ctime(&when);
 
     while(p && *p && *p != '\n')	/* write date */
       if(!(*pc)(*p++))
@@ -5820,7 +7083,8 @@ broach_folder(qline, allow_list, context)
 		char *name, *fullname = NULL;
 		int   exists, breakout = 0;
 
-		if(!(name = folder_is_nick(newfolder, FOLDERS(tc))))
+		if(!(name = folder_is_nick(newfolder, FOLDERS(tc),
+					   FN_WHOLE_NAME)))
 		  name = newfolder;
 
 		if(update_folder_spec(expanded, name)){
@@ -5972,7 +7236,8 @@ broach_folder(qline, allow_list, context)
 	last_rc = rc;
     }
 
-    dprint(2, (debugfile, "broach folder, name entered \"%s\"\n", newfolder));
+    dprint(2, (debugfile, "broach folder, name entered \"%s\"\n",
+	   newfolder ? newfolder : "?"));
 
     /*-- Just check that we can expand this. It gets done for real later --*/
     strncpy(expanded, newfolder, sizeof(expanded));
@@ -5980,7 +7245,7 @@ broach_folder(qline, allow_list, context)
     if (! expand_foldername(expanded, sizeof(expanded))) {
         dprint(1, (debugfile,
                     "Error: Failed on expansion of filename %s (save)\n", 
-    	  expanded));
+    	  expanded ? expanded : "?"));
         return(NULL);
     }
 
@@ -6050,7 +7315,7 @@ update_folder_spec(new, old)
     Actually attempt to open given folder 
 
   Args: newfolder -- The folder name to open
-        stream    -- Candidate stream for recycling. This stream will either
+        streamp   -- Candidate stream for recycling. This stream will either
 	             be re-used, or it will be closed.
 
  Result:  1 if the folder was successfully opened
@@ -6069,40 +7334,46 @@ update_folder_spec(new, old)
   it will be actually opened.
   ----*/
 
-do_broach_folder(newfolder, new_context, streamp) 
-     char      *newfolder;
-     CONTEXT_S *new_context;
-     MAILSTREAM **streamp;
+do_broach_folder(newfolder, new_context, streamp, flags) 
+    char        *newfolder;
+    CONTEXT_S   *new_context;
+    MAILSTREAM **streamp;
+    unsigned long flags;
 {
-    MAILSTREAM *m, *stream = streamp ? *streamp : NULL;
+    MAILSTREAM *m, *strm, *stream = streamp ? *streamp : NULL;
     int         open_inbox, rv, old_tros, we_cancel = 0,
-                do_reopen = 0, n, was_dead = 0;
+                do_reopen = 0, n, was_dead = 0, cur_already_set = 0;
     char        expanded_file[max(MAXPATH,MAILTMPLEN)+1],
 	       *old_folder, *old_path, *p;
-    long        openmode;
+    long        openmode, rflags = 0L, pc = 0L, cur, raw;
+    ENVELOPE   *env = NULL;
     char        status_msg[81];
     SortOrder	old_sort;
+    SEARCHSET  *srchset = NULL;
     unsigned    perfolder_startup_rule;
+    char        tmp1[MAILTMPLEN], tmp2[MAILTMPLEN], *lname, *mname;
 
 #if	defined(DOS) && !defined(WIN32)
-    openmode = OP_SHORTCACHE;
+    openmode = OP_SHORTCACHE | SP_USERFLDR;
 #else
-    openmode = 0L;
+    openmode = SP_USERFLDR;
 #endif
 
-    dprint(1, (debugfile, "About to open folder \"%s\"    inbox: \"%s\"\n",
-	       newfolder, ps_global->inbox_name));
+    dprint(1, (debugfile, "About to open folder \"%s\"    inbox is: \"%s\"\n",
+	       newfolder ? newfolder : "?",
+	       ps_global->inbox_name ? ps_global->inbox_name : "?"));
 
-    was_dead = ps_global->dead_stream || ps_global->dead_inbox;
+    was_dead = sp_a_locked_stream_is_dead();
+
     /*----- Little to do to if reopening same folder -----*/
     if(new_context == ps_global->context_current && ps_global->mail_stream
        && strcmp(newfolder, ps_global->cur_folder) == 0){
-	if(stream)
-	  pine_mail_close(stream);
+	if(stream){
+	    pine_mail_close(stream);	/* don't need it */
+	    stream = NULL;
+	}
 
-	stream = NULL;
-
-	if(ps_global->dead_stream)
+	if(sp_dead_stream(ps_global->mail_stream))
 	  do_reopen++;
 	
 	/*
@@ -6189,26 +7460,20 @@ do_broach_folder(newfolder, new_context, streamp)
 	     * do a reopen, we reset things and fall thru
 	     * to actually reopen it.
 	     */
-	    if(ps_global->dead_stream){
+	    if(sp_dead_stream(ps_global->mail_stream)){
 		dprint(2, (debugfile, "Stream was dead, reopening \"%s\"\n",
-				      newfolder));
+				      newfolder ? newfolder : "?"));
 	    }
 
-	    pine_mail_close(ps_global->mail_stream);
-	    if(ps_global->mail_stream == ps_global->inbox_stream)
-	      ps_global->inbox_stream = NULL;
-
-	    ps_global->mail_stream         = NULL;
-	    ps_global->expunge_count       = 0;
-	    ps_global->new_mail_count      = 0;
-	    ps_global->noticed_dead_stream = 0;
-	    ps_global->dead_stream         = 0;
-	    ps_global->mangled_header	   = 1;
-	    mn_give(&ps_global->msgmap);
+	    /* clean up */
+	    pine_mail_actually_close(ps_global->mail_stream);
+	    ps_global->mangled_header = 1;
 	    clear_index_cache();
-	    reset_check_point();
 	}
 	else{
+	    if(!(flags & DB_NOVISIT))
+	      sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
 	    return(1);			/* successful open of same folder! */
 	}
     }
@@ -6221,37 +7486,75 @@ do_broach_folder(newfolder, new_context, streamp)
      * So, IF we're asked to open inbox AND it's already open AND
      * the only stream AND it's healthy, just return ELSE fall thru
      * and close mail_stream returning with inbox_stream as new stream...
-     *
-     * Athena hack: only special-case "inbox" in the first context (where
-     * it is shoved by init_folders()), so that the MH or pine folder
-     * collection can display an "inbox" folder.
      */
-    if(open_inbox = ((strucmp(newfolder, ps_global->inbox_name) == 0
-		      && new_context == ps_global->context_list)
-		     || strcmp(newfolder, ps_global->VAR_INBOX_PATH) == 0)){
-	if(ps_global->inbox_stream 
-	   && (ps_global->inbox_stream == ps_global->mail_stream)){
-
+    if(open_inbox = (strucmp(newfolder, ps_global->inbox_name) == 0
+		     || strcmp(newfolder, ps_global->VAR_INBOX_PATH) == 0
+		     || same_remote_mailboxes(newfolder,
+					      ps_global->VAR_INBOX_PATH)
+		     || (!IS_REMOTE(newfolder)
+			 && (lname=mailboxfile(tmp1,newfolder))
+			 && (mname=mailboxfile(tmp2,ps_global->VAR_INBOX_PATH))
+			 && !strcmp(lname,mname)))){
+	if(sp_flagged(ps_global->mail_stream, SP_INBOX)){   /* already open */
 	    if(stream)
 	      pine_mail_close(stream);
 
+	    if(!(flags & DB_NOVISIT))
+	      sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
 	    return(1);
 	}
+
+	new_context = ps_global->context_list; /* restore first context */
     }
 
     /*
      * If ambiguous foldername (not fully qualified), make sure it's
      * not a nickname for a folder in the given context...
      */
+
     /* might get reset below */
     strncpy(expanded_file, newfolder, sizeof(expanded_file));
     expanded_file[sizeof(expanded_file)-1] = '\0';
+
     if(!open_inbox && new_context && context_isambig(newfolder)){
-	if (p = folder_is_nick(newfolder, FOLDERS(new_context))){
+	if (p = folder_is_nick(newfolder, FOLDERS(new_context), FN_WHOLE_NAME)){
 	    strncpy(expanded_file, p, sizeof(expanded_file));
 	    expanded_file[sizeof(expanded_file)-1] = '\0';
 	    dprint(2, (debugfile, "broach_folder: nickname for %s is %s\n",
-		       expanded_file, newfolder));
+		       expanded_file ? expanded_file : "?",
+		       newfolder ? newfolder : "?"));
+	    /*
+	     * It would be a dumb config to have an incoming folder other
+	     * than INBOX also point to INBOX, but let's check for it
+	     * anyway.
+	     */
+	    if(open_inbox =
+		    (strucmp(expanded_file, ps_global->inbox_name) == 0
+		     || strcmp(expanded_file, ps_global->VAR_INBOX_PATH) == 0
+		     || same_remote_mailboxes(expanded_file,
+					      ps_global->VAR_INBOX_PATH)
+		     || (!IS_REMOTE(expanded_file)
+			 && (lname=mailboxfile(tmp1,expanded_file))
+			 && (mname=mailboxfile(tmp2,ps_global->VAR_INBOX_PATH))
+			 && !strcmp(lname,mname)))){
+		if(sp_flagged(ps_global->mail_stream, SP_INBOX)){
+		    if(stream)
+		      pine_mail_close(stream);
+
+		    if(!(flags & DB_NOVISIT))
+		      sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
+		    q_status_message(SM_ORDER, 0, 3,
+			    "Folder is same as INBOX. Remaining in INBOX");
+		    dprint(2, (debugfile,
+	"This was another name for INBOX, which is already open. return\n"));
+
+		    return(1);
+		}
+
+		new_context = ps_global->context_list; /* restore 1st  cntxt */
+	    }
 	}
 	else if ((new_context->use & CNTXT_INCMNG)
 		 && (folder_index(newfolder, new_context, FI_FOLDER) < 0)
@@ -6263,27 +7566,86 @@ do_broach_folder(newfolder, new_context, streamp)
 
 	    return(0);
 	}
+	else{
+	    char tmp3[MAILTMPLEN];
+
+	    /*
+	     * Check to see if we are opening INBOX using the folder name
+	     * and a context. We won't have recognized this is the
+	     * same as INBOX without applying the context first.
+	     */
+	    context_apply(tmp3, new_context, expanded_file, sizeof(tmp3));
+	    if(open_inbox =
+		    (strucmp(tmp3, ps_global->inbox_name) == 0
+		     || strcmp(tmp3, ps_global->VAR_INBOX_PATH) == 0
+		     || same_remote_mailboxes(tmp3,
+					      ps_global->VAR_INBOX_PATH)
+		     || (!IS_REMOTE(tmp3)
+			 && (lname=mailboxfile(tmp1,tmp3))
+			 && (mname=mailboxfile(tmp2,ps_global->VAR_INBOX_PATH))
+			 && !strcmp(lname,mname)))){
+		if(sp_flagged(ps_global->mail_stream, SP_INBOX)){
+		    if(stream)
+		      pine_mail_close(stream);
+
+		    if(!(flags & DB_NOVISIT))
+		      sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
+		    q_status_message(SM_ORDER, 0, 3,
+			    "Folder is same as INBOX. Remaining in INBOX");
+		    dprint(2, (debugfile,
+	"This was an alt name for INBOX, which is already open. returning\n"));
+
+		    return(1);
+		}
+
+		new_context = ps_global->context_list; /* restore 1st  cntxt */
+	    }
+	}
     }
 
     /*--- Opening inbox, inbox has been already opened, the easy case ---*/
-    if(open_inbox && ps_global->inbox_stream != NULL
-       && !ps_global->dead_inbox) {
-        expunge_and_close(ps_global->mail_stream, ps_global->context_current,
-			  ps_global->cur_folder, NULL);
+    /*
+     * [ It is probably true that we could eliminate most of this special ]
+     * [ inbox stuff and just get the inbox stream back when we do the    ]
+     * [ context_open below, but figuring that out hasn't been done.      ]
+     */
+    if(open_inbox && (strm=sp_inbox_stream()) && !sp_dead_stream(strm)){
+	if(ps_global->mail_stream
+	   && (!sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+	       || (sp_flagged(ps_global->mail_stream, SP_INBOX)
+	           && F_ON(F_EXPUNGE_INBOX, ps_global))
+	       || (!sp_flagged(ps_global->mail_stream, SP_INBOX)
+		   && sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+	           && F_ON(F_EXPUNGE_STAYOPENS, ps_global))))
+          expunge_and_close(ps_global->mail_stream, NULL,
+			    sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+			      ? EC_NO_CLOSE : EC_NONE);
+	else if(!sp_flagged(ps_global->mail_stream, SP_INBOX)
+	        && sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)){
+	    /*
+	     * We want to save our position in the folder so that when we
+	     * come back to this folder again, we can place the cursor on
+	     * a reasonable message number.
+	     */
+	    
+	    sp_set_saved_cur_msg_id(ps_global->mail_stream, NULL);
 
-	ps_global->viewing_a_thread = ps_global->inbox_viewing_a_thread;
+	    if(ps_global->mail_stream->nmsgs > 0L){
+		cur = mn_get_cur(sp_msgmap(ps_global->mail_stream));
+		raw = mn_m2raw(sp_msgmap(ps_global->mail_stream), cur);
+		if(raw > 0L && raw <= ps_global->mail_stream->nmsgs)
+		  env = pine_mail_fetchstructure(ps_global->mail_stream,
+						 raw, NULL);
+		
+		if(env && env->message_id && env->message_id[0])
+		  sp_set_saved_cur_msg_id(ps_global->mail_stream,
+					  env->message_id);
+	    }
+	}
 
-	ps_global->mail_stream              = ps_global->inbox_stream;
-        ps_global->new_mail_count           = 0L;
-        ps_global->expunge_count            = 0L;
-        ps_global->mail_box_changed         = 0;
-        ps_global->noticed_dead_stream      = 0;
-        ps_global->noticed_dead_inbox       = 0;
-        ps_global->dead_stream              = 0;
-        ps_global->dead_inbox               = 0;
-	mn_give(&ps_global->msgmap);
-	ps_global->msgmap		    = ps_global->inbox_msgmap;
-	ps_global->inbox_msgmap		    = NULL;
+	ps_global->mail_stream = strm;
+	ps_global->msgmap      = sp_msgmap(strm);
 
 	if(was_dead)
 	  icon_text(NULL, IT_MCLOSED);
@@ -6310,14 +7672,16 @@ do_broach_folder(newfolder, new_context, streamp)
 	    ps_global->last_unambig_folder[sizeof(ps_global->last_unambig_folder)-1] = '\0';
 	}
 
-	strncpy(ps_global->cur_folder, ps_global->inbox_name,
+	strncpy(ps_global->cur_folder, sp_fldr(ps_global->mail_stream)
+					 ? sp_fldr(ps_global->mail_stream)
+					 : ps_global->inbox_name,
 		sizeof(ps_global->cur_folder)-1);
 	ps_global->cur_folder[sizeof(ps_global->cur_folder)-1] = '\0';
 	ps_global->context_current = ps_global->context_list;
 	reset_index_format();
 	clear_index_cache();
         /* MUST sort before restoring msgno! */
-	refresh_sort(ps_global->msgmap, SRT_NON);
+	refresh_sort(ps_global->mail_stream, ps_global->msgmap, SRT_NON);
         q_status_message3(SM_ORDER, 0, 3,
 			  "Opened folder \"%.200s\" with %.200s message%.200s",
 			  ps_global->inbox_name, 
@@ -6329,26 +7693,20 @@ do_broach_folder(newfolder, new_context, streamp)
 	if(stream)
 	  pine_mail_close(stream);
 
+	if(!(flags & DB_NOVISIT))
+	  sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
 	return(1);
     }
-    else if(open_inbox && ps_global->inbox_stream != NULL
-	    && ps_global->dead_inbox){
+    else if(open_inbox && (strm=sp_inbox_stream()) && sp_dead_stream(strm)){
 	/* 
 	 * if dead INBOX, just close it and let it be reopened.
-	 * This is actually different from the do_reopen case above,
+	 * This is different from the do_reopen case above,
 	 * because we're going from another open mail folder to the
 	 * dead INBOX.
 	 */
 	dprint(2, (debugfile, "INBOX was dead, closing before reopening\n"));
-	pine_mail_close(ps_global->inbox_stream);
-	ps_global->inbox_stream = NULL;
-	if(ps_global->inbox_msgmap){
-	    mn_give(&ps_global->inbox_msgmap);
-	    ps_global->inbox_msgmap = NULL;
-	}
-	ps_global->inbox_expunge_count = 0L;
-	ps_global->inbox_new_mail_count = 0L;
-	
+	pine_mail_actually_close(strm);
     }
 
     if(!new_context && !expand_foldername(expanded_file,sizeof(expanded_file))){
@@ -6357,6 +7715,12 @@ do_broach_folder(newfolder, new_context, streamp)
 
 	return(0);
     }
+
+    /*
+     * This is a safe time to clean up dead streams because nothing should
+     * be referencing them right now.
+     */
+    sp_cleanup_dead_streams();
 
     old_folder = NULL;
     old_path   = NULL;
@@ -6370,24 +7734,39 @@ do_broach_folder(newfolder, new_context, streamp)
 				: ps_global->mail_stream->mailbox);
 	old_sort     = mn_get_sort(ps_global->msgmap);
 	old_tros     = mn_get_revsort(ps_global->msgmap);
-	if(strcmp(ps_global->cur_folder, ps_global->inbox_name) == 0){
-	    /*-- don't close the inbox stream, save a bit of state --*/
-	    if(ps_global->inbox_msgmap)
-	      mn_give(&ps_global->inbox_msgmap);
+	if(!sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+	    || (sp_flagged(ps_global->mail_stream, SP_INBOX)
+	        && F_ON(F_EXPUNGE_INBOX, ps_global))
+	    || (!sp_flagged(ps_global->mail_stream, SP_INBOX)
+	        && sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+	        && F_ON(F_EXPUNGE_STAYOPENS, ps_global)))
+          expunge_and_close(ps_global->mail_stream, NULL,
+			    sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)
+			      ? EC_NO_CLOSE : EC_NONE);
+	else if(!sp_flagged(ps_global->mail_stream, SP_INBOX)
+	        && sp_flagged(ps_global->mail_stream, SP_PERMLOCKED)){
+	    /*
+	     * We want to save our position in the folder so that when we
+	     * come back to this folder again, we can place the cursor on
+	     * a reasonable message number.
+	     */
+	    
+	    sp_set_saved_cur_msg_id(ps_global->mail_stream, NULL);
 
-	    ps_global->inbox_msgmap = ps_global->msgmap;
-	    ps_global->msgmap       = NULL;
+	    if(ps_global->mail_stream->nmsgs > 0L){
+		cur = mn_get_cur(sp_msgmap(ps_global->mail_stream));
+		raw = mn_m2raw(sp_msgmap(ps_global->mail_stream), cur);
+		if(raw > 0L && raw <= ps_global->mail_stream->nmsgs)
+		  env = pine_mail_fetchstructure(ps_global->mail_stream,
+						 raw, NULL);
+		
+		if(env && env->message_id && env->message_id[0])
+		  sp_set_saved_cur_msg_id(ps_global->mail_stream,
+					  env->message_id);
+	    }
+	}
 
-	    dprint(2, (debugfile,
-		       "Close - saved inbox state: max %ld\n",
-		       mn_get_total(ps_global->inbox_msgmap)));
-	}
-	else{
-	    expunge_and_close(ps_global->mail_stream,
-			      ps_global->context_current,
-			      ps_global->cur_folder, NULL);
-	    ps_global->mail_stream = NULL;
-	}
+	ps_global->mail_stream = NULL;
     }
 
     sprintf(status_msg, "%.3sOpening \"", do_reopen ? "Re-" : "");
@@ -6401,88 +7780,102 @@ do_broach_folder(newfolder, new_context, streamp)
     /* 
      * if requested, make access to folder readonly (only once)
      */
-    if (ps_global->open_readonly_on_startup) {
-	openmode |= OP_READONLY ;
-	ps_global->open_readonly_on_startup = 0 ;
+    if(ps_global->open_readonly_on_startup){
+	openmode |= OP_READONLY;
+	ps_global->open_readonly_on_startup = 0;
     }
 
-    ps_global->first_unseen = 0L;
+    openmode |= SP_USEPOOL;
 
-    m = context_open((new_context && !open_inbox) ? new_context : NULL, stream, 
+    if(stream)
+      sp_set_first_unseen(stream, 0L);
+
+    m = context_open((new_context && !open_inbox) ? new_context : NULL,
+		     stream, 
 		     open_inbox ? ps_global->VAR_INBOX_PATH : expanded_file,
-		     openmode);
+		     openmode | (open_inbox ? SP_INBOX : 0),
+		     &rflags);
+
     if(streamp)
       *streamp = m;
 
 
     dprint(8, (debugfile, "Opened folder %p \"%s\" (context: \"%s\")\n",
-               m, (m) ? m->mailbox : "nil",
-	       (new_context) ? new_context->context : "nil"));
+               m, (m && m->mailbox) ? m->mailbox : "nil",
+	       (new_context && new_context->context)
+	         ? new_context->context : "nil"));
 
 
     /* Can get m != NULL if correct passwd for remote, but wrong name */
-    if(m == NULL || ((p = strindex(m->mailbox, '<')) != NULL &&
-                      strcmp(p + 1, "no_mailbox>") == 0)) {
+    if(m == NULL || m->halfopen){
 	/*-- non-existent local mailbox, or wrong passwd for remote mailbox--*/
         /* fall back to currently open mailbox */
 	if(we_cancel)
 	  cancel_busy_alarm(-1);
 
+	ps_global->mail_stream = NULL;
+	if(m)
+	  pine_mail_actually_close(m);
+
         rv = 0;
         dprint(8, (debugfile, "Old folder: \"%s\"\n",
                old_folder == NULL ? "" : old_folder));
-        if(old_folder != NULL) {
+        if(old_folder != NULL){
             if(strcmp(old_folder, ps_global->inbox_name) == 0){
-                ps_global->mail_stream = ps_global->inbox_stream;
-		if(ps_global->msgmap)
-		  mn_give(&ps_global->msgmap);
-
-		ps_global->msgmap       = ps_global->inbox_msgmap;
-		ps_global->inbox_msgmap = NULL;
+                ps_global->mail_stream = sp_inbox_stream();
+		ps_global->msgmap      = sp_msgmap(ps_global->mail_stream);
 
                 dprint(8, (debugfile, "Reactivate inbox %ld %ld %p\n",
                            mn_get_cur(ps_global->msgmap),
                            mn_get_total(ps_global->msgmap),
                            ps_global->mail_stream));
-		strncpy(ps_global->cur_folder, ps_global->inbox_name,
+		strncpy(ps_global->cur_folder,
+			sp_fldr(ps_global->mail_stream)
+			  ? sp_fldr(ps_global->mail_stream)
+			  : ps_global->inbox_name,
 			sizeof(ps_global->cur_folder)-1);
 		ps_global->cur_folder[sizeof(ps_global->cur_folder)-1] = '\0';
-            } else {
+            }
+	    else{
                 ps_global->mail_stream = pine_mail_open(NULL, old_path,
-							openmode);
+							openmode, &rflags);
                 /* mm_log will take care of error message here */
-                if(ps_global->mail_stream == NULL) {
+                if(ps_global->mail_stream == NULL){
                     rv = -1;
-                } else {
-		    mn_init(&(ps_global->msgmap),
-			    ps_global->mail_stream->nmsgs);
+                }
+		else{
+		    ps_global->msgmap = sp_msgmap(ps_global->mail_stream);
 		    mn_set_sort(ps_global->msgmap, old_sort);
 		    mn_set_revsort(ps_global->msgmap, old_tros);
-                    ps_global->expunge_count       = 0;
-                    ps_global->new_mail_count      = 0;
-                    ps_global->noticed_dead_stream = 0;
-                    ps_global->dead_stream         = 0;
-		    ps_global->mangled_header	   = 1;
-
+		    ps_global->mangled_header = 1;
 		    reset_index_format();
 		    clear_index_cache();
-                    reset_check_point();
-		    if(IS_NEWS(ps_global->mail_stream)
-		       && ps_global->mail_stream->rdonly)
-		      msgno_exclude_deleted(ps_global->mail_stream,
-					    ps_global->msgmap);
 
-		    if(mn_get_total(ps_global->msgmap) > 0)
-		      mn_set_cur(ps_global->msgmap,
-				 first_sorted_flagged(F_NONE,
+		    if(!(rflags & SP_MATCH)){
+			sp_set_expunge_count(ps_global->mail_stream, 0L);
+			sp_set_new_mail_count(ps_global->mail_stream, 0L);
+			sp_set_dead_stream(ps_global->mail_stream, 0);
+			sp_set_noticed_dead_stream(ps_global->mail_stream, 0);
+
+			reset_check_point(ps_global->mail_stream);
+			if(IS_NEWS(ps_global->mail_stream)
+			   && ps_global->mail_stream->rdonly)
+			  msgno_exclude_deleted(ps_global->mail_stream,
+					    sp_msgmap(ps_global->mail_stream));
+
+			if(mn_get_total(ps_global->msgmap) > 0)
+			  mn_set_cur(ps_global->msgmap,
+				     first_sorted_flagged(F_NONE,
 						      ps_global->mail_stream,
 						      0L,
 						      THREADING()
 							  ? 0 : FSF_SKIP_CHID));
 
-		    if(!(mn_get_sort(ps_global->msgmap) == SortArrival
-			 && !mn_get_revsort(ps_global->msgmap)))
-		      refresh_sort(ps_global->msgmap, SRT_NON);
+			if(!(mn_get_sort(ps_global->msgmap) == SortArrival
+			     && !mn_get_revsort(ps_global->msgmap)))
+			  refresh_sort(ps_global->mail_stream,
+				       ps_global->msgmap, SRT_NON);
+		    }
 
                     q_status_message1(SM_ORDER, 0, 3,
 				      "Folder \"%.200s\" reopened", old_folder);
@@ -6496,22 +7889,31 @@ do_broach_folder(newfolder, new_context, streamp)
 
             fs_give((void **)&old_folder);
             fs_give((void **)&old_path);
-        } else {
-            rv = -1;
         }
-        if(rv == -1) {
+	else
+	  rv = -1;
+
+        if(rv == -1){
             q_status_message(SM_ORDER | SM_DING, 0, 4, "No folder opened");
 	    mn_set_total(ps_global->msgmap, 0L);
 	    mn_set_nmsgs(ps_global->msgmap, 0L);
 	    mn_set_cur(ps_global->msgmap, -1L);
-            strcpy(ps_global->cur_folder, "");
+	    ps_global->cur_folder[0] = '\0';
         }
-	if(was_dead && ps_global->dead_stream == 0
-	   && ps_global->dead_inbox == 0)
+
+	if(was_dead && !sp_a_locked_stream_is_dead())
 	  icon_text(NULL, IT_MCLOSED);
+
+	if(ps_global->mail_stream && !(flags & DB_NOVISIT))
+	  sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
+	if(ps_global->mail_stream)
+	  sp_set_first_unseen(ps_global->mail_stream, 0L);
+
         return(rv);
-    } else {
-        if(old_folder != NULL) {
+    }
+    else{
+        if(old_folder != NULL){
             fs_give((void **)&old_folder);
             fs_give((void **)&old_path);
         }
@@ -6519,22 +7921,26 @@ do_broach_folder(newfolder, new_context, streamp)
 
     /*----- success in opening the new folder ----*/
     dprint(2, (debugfile, "Opened folder \"%s\" with %ld messages\n",
-	       m->mailbox, m->nmsgs));
+	       m->mailbox ? m->mailbox : "?", m->nmsgs));
 
 
     /*--- A Little house keeping ---*/
-    ps_global->mail_stream	    = m;
-    ps_global->expunge_count	    = 0L;
-    ps_global->new_mail_count	    = 0L;
-    ps_global->noticed_dead_stream  = 0;
-    ps_global->dead_stream          = 0;
-    if(open_inbox){
-	ps_global->noticed_dead_inbox   = 0;
-	ps_global->dead_inbox           = 0;
+
+    ps_global->mail_stream = m;
+    if(!(flags & DB_NOVISIT))
+      sp_set_recent_since_visited(ps_global->mail_stream, 0L);
+
+    ps_global->msgmap = sp_msgmap(m);
+    if(!(rflags & SP_MATCH)){
+	sp_set_expunge_count(m, 0L);
+	sp_set_new_mail_count(m, 0L);
+	sp_set_dead_stream(m, 0);
+	sp_set_noticed_dead_stream(m, 0);
+	sp_set_mail_box_changed(m, 0);
+	reset_check_point(m);
     }
-    mn_init(&(ps_global->msgmap), m->nmsgs);
-    if(was_dead && ps_global->dead_stream == 0
-       && ps_global->dead_inbox == 0)
+
+    if(was_dead && !sp_a_locked_stream_is_dead())
       icon_text(NULL, IT_MCLOSED);
 
     ps_global->last_unambig_folder[0] = '\0';
@@ -6569,14 +7975,18 @@ do_broach_folder(newfolder, new_context, streamp)
 	ps_global->cur_folder[sizeof(ps_global->cur_folder)-1] = '\0';
     }
 
+    sp_set_fldr(ps_global->mail_stream, ps_global->cur_folder);
+
     if(new_context){
 	ps_global->context_last    = ps_global->context_current;
 	ps_global->context_current = new_context;
+
+	if(!open_inbox)
+	  sp_set_context(ps_global->mail_stream, ps_global->context_current);
     }
 
-    reset_check_point();
     clear_index_cache();
-    ps_global->mail_box_changed = 0;
+    reset_index_format();
 
     /*
      * Start news reading with messages the user's marked deleted
@@ -6585,42 +7995,115 @@ do_broach_folder(newfolder, new_context, streamp)
     if(IS_NEWS(ps_global->mail_stream) && ps_global->mail_stream->rdonly)
       msgno_exclude_deleted(ps_global->mail_stream, ps_global->msgmap);
 
-    /*--- If we just opened the inbox remember it's special stream ---*/
-    if(open_inbox && ps_global->inbox_stream == NULL)
-      ps_global->inbox_stream = ps_global->mail_stream;
-	
-    process_filter_patterns(ps_global->mail_stream, ps_global->msgmap, 0L);
-
     if(we_cancel)
       cancel_busy_alarm(0);
 
-    q_status_message5(SM_ORDER, 0, 4,
-		    "%.200s \"%.200s\" opened with %.200s message%.200s%.200s",
+    /*
+     * If the stream we got from the open above was already opened earlier
+     * for some temporary use, then it wouldn't have been filtered. That's
+     * why we need this flag, so that we will filter if needed.
+     */
+    if(!sp_flagged(ps_global->mail_stream, SP_FILTERED))
+      process_filter_patterns(ps_global->mail_stream, ps_global->msgmap, 0L);
+
+    q_status_message6(SM_ORDER, 0, 4,
+		    "%.20s \"%.200s\" opened with %.20s message%.20s%.20s%.20s",
 			IS_NEWS(ps_global->mail_stream)
 			  ? "News group" : "Folder",
 			pretty_fn(newfolder),
 			comatose(mn_get_total(ps_global->msgmap)),
 			plural(mn_get_total(ps_global->msgmap)),
-			READONLY_FOLDER ? " READONLY" : "");
+			(!open_inbox
+			 && sp_flagged(ps_global->mail_stream, SP_PERMLOCKED))
+			    ? " (StayOpen)" : "",
+			READONLY_FOLDER(ps_global->mail_stream)
+						? " READONLY" : "");
 
 #ifdef	_WINDOWS
     mswin_settitle(pretty_fn(newfolder));
 #endif
 
-    reset_sort_order(SRT_VRB);
-    ps_global->viewing_a_thread = 0;
-    reset_index_format();
-    perfolder_startup_rule = reset_startup_rule(ps_global->mail_stream);
+    if(!(rflags & SP_MATCH) || !(rflags & SP_LOCKED))
+      reset_sort_order(SRT_VRB);
+    else if(sp_new_mail_count(ps_global->mail_stream) > 0L
+	    || sp_unsorted_newmail(ps_global->mail_stream)
+	    || sp_need_to_rethread(ps_global->mail_stream))
+      refresh_sort(ps_global->mail_stream, ps_global->msgmap, SRT_NON);
 
-    if(mn_get_total(ps_global->msgmap) > 0L) {
-	if(ps_global->start_entry > 0) {
+
+    /*
+     * Set current message number when re-opening Stay-Open or
+     * cached folders.
+     */
+    if(rflags & SP_MATCH){
+	if(rflags & SP_LOCKED){
+	    if(F_OFF(F_STARTUP_STAYOPEN, ps_global)
+	       && (cur = get_msgno_by_msg_id(ps_global->mail_stream,
+			     sp_saved_cur_msg_id(ps_global->mail_stream),
+			     ps_global->msgmap)) >= 1L
+	       && cur <= mn_get_total(ps_global->msgmap)){
+	      cur_already_set++;
+	      mn_set_cur(ps_global->msgmap, (MsgNo) cur);
+	      if(flags & DB_FROMTAB){
+		/*
+		 * When we TAB to a folder that is a StayOpen folder we try
+		 * to increment the current message # by one instead of doing
+		 * some search again. Some people probably won't like this
+		 * behavior, especially if the new message that has arrived
+		 * comes before where we are in the index. That's why we have
+		 * the F_STARTUP_STAYOPEN feature above.
+		 */
+		mn_inc_cur(m, ps_global->msgmap, MH_NONE);
+	      }
+	      /* else leave it where it is */
+
+	      adjust_cur_to_visible(ps_global->mail_stream, ps_global->msgmap);
+	    }
+	}
+	else{
+	    /*
+	     * If we're reopening a cached open stream that wasn't explicitly
+	     * kept open by the user, then the user expects it to act pretty
+	     * much like we are re-opening the stream. A problem is that the
+	     * recent messages are still recent because we haven't closed the
+	     * stream, so we fake a quasi-recentness by remembering the last
+	     * uid assigned on the stream when we pine_mail_close. Then when
+	     * we come back messages with uids higher than that are recent.
+	     *
+	     * If uid_validity has changed, then we don't use any special
+	     * treatment, but just do the regular search.
+	     */
+	    if(m->uid_validity == sp_saved_uid_validity(m)){
+		long i;
+
+		/*
+		 * Because first_sorted_flagged uses sequence numbers, find the
+		 * sequence number of the first message after the old last
+		 * uid assigned. I.e., the first recent message.
+		 */
+		for(i = m->nmsgs; i > 0L; i--)
+		  if(mail_uid(m, i) <= sp_saved_uid_last(m))
+		    break;
+		
+		if(i > 0L && i < m->nmsgs)
+		  pc = i+1L;
+	    }
+	}
+    }
+
+
+    if(!cur_already_set && mn_get_total(ps_global->msgmap) > 0L){
+
+	perfolder_startup_rule = reset_startup_rule(ps_global->mail_stream);
+
+	if(ps_global->start_entry > 0){
 	    mn_set_cur(ps_global->msgmap, mn_get_revsort(ps_global->msgmap)
-			? first_sorted_flagged(F_NONE, m,
-					       ps_global->start_entry,
-					       THREADING() ? 0 : FSF_SKIP_CHID)
-			: first_sorted_flagged(F_SRCHBACK, m,
-					       ps_global->start_entry,
-					       THREADING() ? 0 : FSF_SKIP_CHID));
+		       ? first_sorted_flagged(F_NONE, m,
+					      ps_global->start_entry,
+					      THREADING() ? 0 : FSF_SKIP_CHID)
+		       : first_sorted_flagged(F_SRCHBACK, m,
+					      ps_global->start_entry,
+					      THREADING() ? 0 : FSF_SKIP_CHID));
 	    ps_global->start_entry = 0;
         }
 	else if(perfolder_startup_rule != IS_NOTSET ||
@@ -6645,15 +8128,15 @@ do_broach_folder(newfolder, new_context, streamp)
 	      case IS_FIRST_UNSEEN:
 first_unseen:
 		mn_set_cur(ps_global->msgmap,
-			(ps_global->first_unseen
+			(sp_first_unseen(m)
 			 && mn_get_sort(ps_global->msgmap) == SortArrival
 			 && !mn_get_revsort(ps_global->msgmap)
 			 && !get_lflag(ps_global->mail_stream, NULL,
-				       ps_global->first_unseen, MN_EXLD)
+				       sp_first_unseen(m), MN_EXLD)
 			 && (n = mn_raw2m(ps_global->msgmap, 
-					  ps_global->first_unseen)))
+					  sp_first_unseen(m))))
 			   ? n
-			   : first_sorted_flagged(F_UNSEEN | F_UNDEL, m, 0L,
+			   : first_sorted_flagged(F_UNSEEN | F_UNDEL, m, pc,
 					      THREADING() ? 0 : FSF_SKIP_CHID));
 		break;
 
@@ -6669,19 +8152,21 @@ first_recent:
 		 */
 		if(IS_NEWS(ps_global->mail_stream)){
 		    mn_set_cur(ps_global->msgmap,
-			       first_sorted_flagged(F_UNSEEN|F_UNDEL, m, 0L,
+			       first_sorted_flagged(F_UNSEEN|F_UNDEL, m, pc,
 					       THREADING() ? 0 : FSF_SKIP_CHID));
 		}
 		else{
 		    mn_set_cur(ps_global->msgmap,
-			       first_sorted_flagged(F_RECENT|F_UNDEL, m, 0L,
+			       first_sorted_flagged(F_RECENT | F_UNSEEN
+						    | F_UNDEL,
+						    m, pc,
 					      THREADING() ? 0 : FSF_SKIP_CHID));
 		}
 		break;
 
 	      case IS_FIRST_IMPORTANT:
 		mn_set_cur(ps_global->msgmap,
-			   first_sorted_flagged(F_FLAG|F_UNDEL, m, 0L,
+			   first_sorted_flagged(F_FLAG|F_UNDEL, m, pc,
 					      THREADING() ? 0 : FSF_SKIP_CHID));
 		break;
 
@@ -6693,20 +8178,20 @@ first_recent:
 		{
 		    MsgNo flagged, first_unseen;
 
-		    flagged = first_sorted_flagged(F_FLAG|F_UNDEL, m, 0L,
+		    flagged = first_sorted_flagged(F_FLAG|F_UNDEL, m, pc,
 					       THREADING() ? 0 : FSF_SKIP_CHID);
-		    first_unseen = (ps_global->first_unseen
+		    first_unseen = (sp_first_unseen(m)
 			     && mn_get_sort(ps_global->msgmap) == SortArrival
 			     && !mn_get_revsort(ps_global->msgmap)
 			     && !get_lflag(ps_global->mail_stream, NULL,
-					   ps_global->first_unseen, MN_EXLD)
+					   sp_first_unseen(m), MN_EXLD)
 			     && (n = mn_raw2m(ps_global->msgmap, 
-					      ps_global->first_unseen)))
+					      sp_first_unseen(m))))
 				? n
-				: first_sorted_flagged(F_UNSEEN|F_UNDEL, m, 0L,
+				: first_sorted_flagged(F_UNSEEN|F_UNDEL, m, pc,
 					       THREADING() ? 0 : FSF_SKIP_CHID);
 		    mn_set_cur(ps_global->msgmap,
-			      (MsgNo) min((int) flagged, (int) first_unseen));
+			  (MsgNo) min((int) flagged, (int) first_unseen));
 
 		}
 
@@ -6720,10 +8205,11 @@ first_recent:
 		{
 		    MsgNo flagged, first_recent;
 
-		    flagged = first_sorted_flagged(F_FLAG|F_UNDEL, m, 0L,
+		    flagged = first_sorted_flagged(F_FLAG|F_UNDEL, m, pc,
 					       THREADING() ? 0 : FSF_SKIP_CHID);
-		    first_recent = first_sorted_flagged(F_RECENT|F_UNDEL,
-							m, 0L,
+		    first_recent = first_sorted_flagged(F_RECENT | F_UNSEEN
+							| F_UNDEL,
+							m, pc,
 					       THREADING() ? 0 : FSF_SKIP_CHID);
 		    mn_set_cur(ps_global->msgmap,
 			      (MsgNo) min((int) flagged, (int) first_recent));
@@ -6733,13 +8219,13 @@ first_recent:
 
 	      case IS_FIRST:
 		mn_set_cur(ps_global->msgmap,
-			   first_sorted_flagged(F_UNDEL, m, 0L,
+			   first_sorted_flagged(F_UNDEL, m, pc,
 					      THREADING() ? 0 : FSF_SKIP_CHID));
 		break;
 
 	      case IS_LAST:
 		mn_set_cur(ps_global->msgmap,
-			   first_sorted_flagged(F_UNDEL, m, 0L,
+			   first_sorted_flagged(F_UNDEL, m, pc,
 			         FSF_LAST | (THREADING() ? 0 : FSF_SKIP_CHID)));
 		break;
 
@@ -6755,7 +8241,7 @@ first_recent:
 	     * feature (see pine_mail_open).
 	     */
 	    mn_set_cur(ps_global->msgmap,
-		       first_sorted_flagged(F_UNSEEN|F_UNDEL, m, 0L,
+		       first_sorted_flagged(F_UNSEEN|F_UNDEL, m, pc,
 					      THREADING() ? 0 : FSF_SKIP_CHID));
 	}
         else{
@@ -6767,9 +8253,12 @@ first_recent:
 
 	adjust_cur_to_visible(ps_global->mail_stream, ps_global->msgmap);
     }
-    else{
+    else if(!(rflags & SP_MATCH)){
 	mn_set_cur(ps_global->msgmap, -1L);
     }
+
+    if(ps_global->mail_stream)
+      sp_set_first_unseen(ps_global->mail_stream, 0L);
 
     return(1);
 }
@@ -6786,7 +8275,7 @@ reset_index_format()
     if(ps_global->mail_stream && nonempty_patterns(rflags, &pstate)){
 	for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate)){
 	    if(match_pattern(pat->patgrp, ps_global->mail_stream, NULL,
-			     NULL, NULL, 0))
+			     NULL, NULL, SO_NOSERVER|SE_NOPREFETCH))
 	      break;
 	}
 
@@ -6821,7 +8310,7 @@ reset_sort_order(flags)
     if(ps_global->mail_stream && nonempty_patterns(rflags, &pstate)){
 	for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate)){
 	    if(match_pattern(pat->patgrp, ps_global->mail_stream, NULL,
-			     NULL, NULL, 0))
+			     NULL, NULL, SO_NOSERVER|SE_NOPREFETCH))
 	      break;
 	}
 
@@ -6832,7 +8321,8 @@ reset_sort_order(flags)
 	}
     }
 
-    sort_folder(ps_global->msgmap, the_sort_order, sort_is_rev, flags);
+    sort_folder(ps_global->mail_stream, ps_global->msgmap,
+		the_sort_order, sort_is_rev, flags);
 }
 
 
@@ -6849,7 +8339,8 @@ reset_startup_rule(stream)
 
     if(stream && nonempty_patterns(rflags, &pstate)){
 	for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate)){
-	    if(match_pattern(pat->patgrp, stream, NULL, NULL, NULL, 0))
+	    if(match_pattern(pat->patgrp, stream, NULL, NULL, NULL,
+			     SO_NOSERVER|SE_NOPREFETCH))
 	      break;
 	}
 
@@ -6873,17 +8364,24 @@ reset_startup_rule(stream)
 	   enter the index screen.
  ----*/
 void
-visit_folder(state, newfolder, new_context, stream)
+visit_folder(state, newfolder, new_context, stream, flags)
     struct pine *state;
     char	*newfolder;
     CONTEXT_S	*new_context;
     MAILSTREAM  *stream;
+    unsigned long flags;
 {
-    dprint(9, (debugfile, "do_broach_folder (%s, %s)\n",
-	       newfolder, new_context ? new_context->context : "(NULL)"));
-    if(do_broach_folder(newfolder, new_context, stream ? &stream : NULL) > 0
-       || state->mail_stream != state->inbox_stream)
+    dprint(9, (debugfile, "visit_folder(%s, %s)\n",
+	       newfolder ? newfolder : "?",
+	       (new_context && new_context->context)
+	         ? new_context->context : "(NULL)"));
+
+    if(do_broach_folder(newfolder, new_context, stream ? &stream : NULL,
+			flags) >= 0
+       || !sp_flagged(state->mail_stream, SP_LOCKED))
       state->next_screen = mail_index_screen;
+    else
+      state->next_screen = folder_screen;
 }
 
 
@@ -6892,8 +8390,6 @@ visit_folder(state, newfolder, new_context, stream)
       Expunge (if confirmed) and close a mail stream
 
     Args: stream   -- The MAILSTREAM * to close
-	  context  -- The contest to interpret the following name in
-          folder   -- The name the folder is know by 
         final_msg  -- If non-null, this should be set to point to a
 		      message to print out in the caller, it is allocated
 		      here and freed by the caller.
@@ -6902,41 +8398,37 @@ visit_folder(state, newfolder, new_context, stream)
              say what happened
  ----*/
 void
-expunge_and_close(stream, context, folder, final_msg)
-    MAILSTREAM *stream;
-    CONTEXT_S  *context;
-    char       *folder;
-    char      **final_msg;
+expunge_and_close(stream, final_msg, flags)
+    MAILSTREAM   *stream;
+    char        **final_msg;
+    unsigned long flags;
 {
     long  i, delete_count, max_folder, seen_not_del;
     char  prompt_b[MAX_SCREEN_COLS+1], *short_folder_name,
           temp[MAILTMPLEN+1], buff1[MAX_SCREEN_COLS+1], *moved_msg = NULL,
-	  buff2[MAX_SCREEN_COLS+1];
+	  buff2[MAX_SCREEN_COLS+1], *folder;
+    CONTEXT_S *context;
     struct variable *vars = ps_global->vars;
-    int ret, expunge = FALSE;
+    int ret, expunge = FALSE, no_close = 0;
     char ing[4];
 
+    no_close = (flags & EC_NO_CLOSE);
+
+    if(!(stream && sp_flagged(stream, SP_LOCKED)))
+      stream = NULL;
+
     /* check for dead stream */
-    if(stream && stream == ps_global->mail_stream && ps_global->dead_stream){
-	pine_mail_close(stream);
-	if(ps_global->mail_stream == ps_global->inbox_stream){
-	    ps_global->inbox_stream = NULL;
-	    ps_global->noticed_dead_inbox = ps_global->dead_inbox = 0;
-	}
-
-	stream = ps_global->mail_stream = NULL;
-	ps_global->noticed_dead_stream = ps_global->dead_stream = 0;
-    }
-
-    if(stream && stream == ps_global->inbox_stream && ps_global->dead_inbox){
-	pine_mail_close(stream);
-	stream = ps_global->inbox_stream = NULL;
-	ps_global->noticed_dead_inbox = ps_global->dead_inbox = 0;
+    if(stream && sp_dead_stream(stream)){
+	pine_mail_actually_close(stream);
+	stream = NULL;
     }
 
     if(stream != NULL){
-        dprint(2, (debugfile, "expunge and close mail stream \"%s\"\n",
-                   stream->mailbox));
+	context = sp_context(stream);
+	folder  = STREAMNAME(stream);
+
+        dprint(2, (debugfile, "expunge_and_close: \"%s\"%s\n",
+                   folder, no_close ? " (NO_CLOSE bit set)" : ""));
 	if(final_msg)
 	  strcpy(ing, "ed");
 	else
@@ -6947,27 +8439,31 @@ expunge_and_close(stream, context, folder, final_msg)
 
         if(!stream->rdonly){
 
-            q_status_message1(SM_INFO, 0, 1, "Closing \"%.200s\"...", folder);
-	    flush_status_messages(1);
+	    if(!no_close){
+		q_status_message1(SM_INFO, 0, 1, "Closing \"%.200s\"...",
+				  folder);
 
-	    mail_expunge_prefilter(stream);
+		flush_status_messages(1);
+	    }
+
+	    mail_expunge_prefilter(stream, MI_CLOSING);
 
 	    /*
 	     * Be sure to expunge any excluded (filtered) msgs
-	     * Do it here so they're not copyied into read/archived
+	     * Do it here so they're not copied into read/archived
 	     * folders *AND* to be sure we don't refilter them
 	     * next time the folder's opened.
 	     */
 	    for(i = 1L; i <= stream->nmsgs; i++)
-	      if(get_lflag(stream, NULL, i, MN_EXLD)){
-		  delete_filtered_msgs(stream);
+	      if(get_lflag(stream, NULL, i, MN_EXLD)){	/* if there are any */
+		  delete_filtered_msgs(stream);		/* delete them all */
 		  expunge = TRUE;
 		  break;
 	      }
 
 	    /* Save read messages? */
 	    if(VAR_READ_MESSAGE_FOLDER && VAR_READ_MESSAGE_FOLDER[0]
-	       && stream == ps_global->inbox_stream
+	       && sp_flagged(stream, SP_INBOX)
 	       && (seen_not_del = count_flagged(stream, F_SEEN | F_UNDEL))){
 
 		if(F_ON(F_AUTO_READ_MSGS,ps_global)
@@ -7035,15 +8531,15 @@ expunge_and_close(stream, context, folder, final_msg)
 		if(ret == 'y'){
 		    long filtered;
 
-		    filtered = any_lflagged(stream == ps_global->mail_stream
-					     ? ps_global->msgmap :
-					     stream == ps_global->inbox_stream
-					      ? ps_global->inbox_msgmap : NULL,
-					    MN_EXLD);
+		    filtered = any_lflagged(sp_msgmap(stream), MN_EXLD);
+
 		    sprintf(buff2,
-		      "Clos%s \"%.30s\". %s %s message%s and remov%s %s.",
-			ing,
-	 		pretty_fn(folder),
+		      "%s%s%s%.30s%s%s %s message%s and remov%s %s.",
+			no_close ? "" : "Clos",
+			no_close ? "" : ing,
+			no_close ? "" : " \"",
+	 		no_close ? "" : pretty_fn(folder),
+			no_close ? "" : "\". ",
 			final_msg ? "Kept" : "Keeping",
 			comatose(stream->nmsgs - filtered - delete_count),
 			plural(stream->nmsgs - filtered - delete_count),
@@ -7053,9 +8549,10 @@ expunge_and_close(stream, context, folder, final_msg)
 		      *final_msg = cpystr(buff2);
 		    else
 		      q_status_message(SM_ORDER,
-				       (F_ON(F_AUTO_EXPUNGE,ps_global)
-					|| F_ON(F_FULL_AUTO_EXPUNGE,ps_global))
-					    ? 0 : 3,
+				       no_close ? 1 :
+				        (F_ON(F_AUTO_EXPUNGE,ps_global)
+					 || F_ON(F_FULL_AUTO_EXPUNGE,ps_global))
+					         ? 0 : 3,
 				       5, buff2);
 		      
 		    flush_status_messages(1);
@@ -7088,14 +8585,14 @@ expunge_and_close(stream, context, folder, final_msg)
 		     */
 		    for(i = 1L; i <= stream->nmsgs; i++)
 		      if(!get_lflag(stream, NULL, i, MN_EXLD)
-			 && (((mc = mail_elt(stream, i))->valid && mc->deleted)
-			     || (!mc->valid && mc->searched))){
+			 && (((mc = mail_elt(stream, i)) && mc->valid && mc->deleted)
+			     || (mc && !mc->valid && mc->searched))){
 			  mc->sequence = 1;
 			  expbits      = MSG_EX_DELETE;
 			  msgno_exceptions(stream, i, "0", &expbits, TRUE);
 		      }
-		      else
-			mail_elt(stream, i)->sequence = 0;
+		      else if((mc = mail_elt(stream, i)) != NULL)
+			mc->sequence = 0;
 
 		    if(seq = build_sequence(stream, NULL, NULL)){
 			mail_flag(stream, seq, "\\DELETED", ST_SILENT);
@@ -7108,7 +8605,8 @@ expunge_and_close(stream, context, folder, final_msg)
 		    ps_global->expunge_in_progress = 0;
 
 		    for(i = 1L; i <= stream->nmsgs; i++)
-		      mail_elt(stream, i)->sequence 
+		      if((mc = mail_elt(stream, i)) != NULL)
+		        mc->sequence 
 			   = (msgno_exceptions(stream, i, "0", &expbits, FALSE)
 			      && (expbits & MSG_EX_DELETE));
 
@@ -7118,26 +8616,28 @@ expunge_and_close(stream, context, folder, final_msg)
 		    }
 		}
 
-		if(stream->nmsgs){
-		    sprintf(buff2,
-		        "Clos%s folder \"%.*s\". %s%s%s message%s.",
-			ing,
-			sizeof(buff2)-50, pretty_fn(folder), 
-			final_msg ? "Kept" : "Keeping",
-			(stream->nmsgs == 1L) ? " single" : " all ",
-			(stream->nmsgs > 1L)
-			  ? comatose(stream->nmsgs) : "",
-			plural(stream->nmsgs));
-		}
-		else{
-		    sprintf(buff2, "Clos%s empty folder \"%.*s\"",
-			ing, sizeof(buff2)-50, pretty_fn(folder));
-		}
+		if(!no_close){
+		    if(stream->nmsgs){
+			sprintf(buff2,
+			    "Clos%s folder \"%.*s\". %s%s%s message%s.",
+			    ing,
+			    sizeof(buff2)-50, pretty_fn(folder), 
+			    final_msg ? "Kept" : "Keeping",
+			    (stream->nmsgs == 1L) ? " single" : " all ",
+			    (stream->nmsgs > 1L)
+			      ? comatose(stream->nmsgs) : "",
+			    plural(stream->nmsgs));
+		    }
+		    else{
+			sprintf(buff2, "Clos%s empty folder \"%.*s\"",
+			    ing, sizeof(buff2)-50, pretty_fn(folder));
+		    }
 
-		if(final_msg)
-		  *final_msg = cpystr(buff2);
-		else
-		  q_status_message(SM_ORDER, 0, 3, buff2);
+		    if(final_msg)
+		      *final_msg = cpystr(buff2);
+		    else
+		      q_status_message(SM_ORDER, 0, 3, buff2);
+		}
 	    }
         }
 	else{
@@ -7171,9 +8671,9 @@ expunge_and_close(stream, context, folder, final_msg)
 		    (void) count_flagged(stream, F_DEL);
 		    for(i = 1L, delete_count = 0L; i <= stream->nmsgs; i++)
 		      if(!(get_lflag(stream, NULL, i, MN_EXLD)
-			   || ((mc = mail_elt(stream, i))->valid
+			   || ((mc = mail_elt(stream, i)) && mc->valid
 				&& mc->deleted)
-			   || (!mc->valid && mc->searched)))
+			   || (mc && !mc->valid && mc->searched)))
 			delete_count++;
 
 		    if(delete_count){
@@ -7210,9 +8710,10 @@ expunge_and_close(stream, context, folder, final_msg)
 	/*
 	 * Make darn sure any mm_log fallout caused above get's seen...
 	 */
-	flush_status_messages(1);
-
-	pine_mail_close(stream);
+	if(!no_close){
+	    flush_status_messages(1);
+	    pine_mail_close(stream);
+	}
     }
 }
 
@@ -7224,7 +8725,8 @@ expunge_and_close(stream, context, folder, final_msg)
   Args:
 	stream -- mail stream serving messages
 	msgmap -- sequence to msgno mapping table
-	recent -- number of recent messages to check
+	recent -- number of recent messages to check (but really only its
+	               nonzeroness is used)
 
  When we're done, any filtered messages are filtered and the message
  mapping table has any filtered messages removed.
@@ -7237,9 +8739,11 @@ process_filter_patterns(stream, msgmap, recent)
 {
     long	  i, n, raw, orig_nmsgs;
     unsigned long uid;
+    int           we_cancel = 0, any_msgs = 0, any_to_filter = 0;
     int		  exbits, nt = 0, pending_actions = 0, for_debugging = 0;
     long          rflags = ROLE_DO_FILTER;
-    char	 *charset = NULL;
+    char	 *charset = NULL, *nick = NULL;
+    char          busymsg[80];
     MSGNO_S      *tmpmap = NULL;
     MESSAGECACHE *mc;
     PAT_S        *pat, *nextpat = NULL;
@@ -7249,12 +8753,18 @@ process_filter_patterns(stream, msgmap, recent)
     PAT_STATE     pstate;
 
     dprint(5, (debugfile, "process_filter_patterns(stream=%s, recent=%ld)\n",
-	    !stream                            ? "<null>"                   :
-	     stream == ps_global->inbox_stream  ? "inbox"                   :
-	      stream->original_mailbox           ? stream->original_mailbox :
-	       stream->mailbox                    ? stream->mailbox         :
-				                    "?",
+	    !stream                             ? "<null>"                   :
+	     sp_flagged(stream, SP_INBOX)        ? "inbox"                   :
+	      stream->original_mailbox            ? stream->original_mailbox :
+	       stream->mailbox                     ? stream->mailbox         :
+				                      "?",
 	    recent));
+
+    if(!msgmap || !stream)
+      return;
+
+    if(!recent)
+      sp_set_flags(stream, sp_flags(stream) | SP_FILTERED);
 
     while(stream && stream->nmsgs && nonempty_patterns(rflags, &pstate)){
 
@@ -7286,36 +8796,54 @@ process_filter_patterns(stream, msgmap, recent)
 	 */
 	for(i = 1; i <= stream->nmsgs; i++)
 	  if(msgno_exceptions(stream, i, "0", &exbits, FALSE)){
-	      if(exbits & MSG_EX_FILTERED)
-		mail_elt(stream, i)->spare6 = 0;
-	      else if(!recent || (exbits & MSG_EX_RECENT))
-		mail_elt(stream, i)->spare6 = 1;
-	      else
-		mail_elt(stream, i)->spare6 = 0;
+	      if(exbits & MSG_EX_FILTERED){
+		  if((mc = mail_elt(stream, i)) != NULL)
+		    mc->spare6 = 0;
+	      }
+	      else if(!recent || !(exbits & MSG_EX_TESTED)){
+		  if((mc = mail_elt(stream, i)) != NULL)
+		    mc->spare6 = 1;
+
+		  any_to_filter++;
+	      }
+	      else if((mc = mail_elt(stream, i)) != NULL)
+		mc->spare6 = 0;
 	  }
-	  else 
-	    mail_elt(stream, i)->spare6 = !recent;
+	  else{
+	      if((mc = mail_elt(stream, i)) != NULL)
+	        mc->spare6 = !recent;
+
+	      any_to_filter += !recent;
+	  }
+	
+	if(!any_to_filter){
+	  dprint(5, (debugfile, "No messages need filtering\n"));
+	}
 
 	/* Then start searching */
-	for(pat = first_pattern(&pstate); pat; pat = nextpat){
+	for(pat = first_pattern(&pstate); any_to_filter && pat; pat = nextpat){
 	    nextpat = next_pattern(&pstate);
+	    dprint(5, (debugfile,
+		"Trying filter \"%s\"\n",
+		(pat->patgrp && pat->patgrp->nick)
+		    ? pat->patgrp->nick : "?"));
 	    if(pat->patgrp && !pat->patgrp->bogus
 	       && pat->action && !pat->action->bogus
 	       && !trivial_patgrp(pat->patgrp)
 	       && match_pattern_folder(pat->patgrp, stream)
 	       && !match_pattern_folder_specific(pat->action->folder,
-						 stream, 0)){
+						 stream, FOR_FILT)){
 
 		/*
 		 * We could just keep track of spare6 accurately when
 		 * we change the msgno_exceptions flags, but...
 		 */
 		for(i = 1; i <= stream->nmsgs; i++){
-		    if((mc=mail_elt(stream, i))->spare6){
+		    if((mc=mail_elt(stream, i)) && mc->spare6){
 			if(msgno_exceptions(stream, i, "0", &exbits, FALSE)){
 			    if(exbits & MSG_EX_FILTERED)
 			      mc->sequence = 0;
-			    else if(!recent || (exbits & MSG_EX_RECENT))
+			    else if(!recent || !(exbits & MSG_EX_TESTED))
 			      mc->sequence = 1;
 			    else
 			      mc->sequence = 0;
@@ -7327,14 +8855,88 @@ process_filter_patterns(stream, msgmap, recent)
 		      mc->sequence = 0;
 		}
 
-		if(!(srchset = build_searchset(stream)))
-		  continue;		/* nothing to search, move on */
+		if(!(srchset = build_searchset(stream))){
+		    dprint(5, (debugfile, "Empty searchset\n"));
+		    continue;		/* nothing to search, move on */
+		}
 
+#ifdef DEBUG
+		{SEARCHSET *s;
+		  dprint(5, (debugfile, "searchset="));
+		  for(s = srchset; s; s = s->next){
+		    if(s->first == s->last || s->last == 0L){
+		      dprint(5, (debugfile, " %ld", s->first));
+		    }
+		    else{
+		      dprint(5, (debugfile, " %ld-%ld", s->first, s->last));
+		    }
+		  }
+		  dprint(5, (debugfile, "\n"));
+		}
+#endif
+		nick = (pat && pat->patgrp && pat->patgrp->nick
+			&& pat->patgrp->nick[0]) ? pat->patgrp->nick : NULL;
+		sprintf(busymsg, "Processing filter \"%.50s\"",
+			nick ? nick : "?");
+
+		/*
+		 * The strange last argument is so that the busy message
+		 * won't come out until after a second if the user sets
+		 * the feature to quell "filtering done". That's because
+		 * they are presumably interested in the filtering actions
+		 * themselves more than what is happening, so they'd
+		 * rather see the action messages instead of the processing
+		 * message. That's my theory anyway.
+		 */
+		if(F_OFF(F_QUELL_FILTER_MSGS, ps_global))
+		  any_msgs = we_cancel = busy_alarm(1, busymsg, NULL,
+				   F_ON(F_QUELL_FILTER_DONE_MSG, ps_global)
+					? 0 : 1);
+
+		if(pat->patgrp->stat_bom != PAT_STAT_EITHER){
+		    if(pat->patgrp->stat_bom == PAT_STAT_YES){
+			if(!ps_global->beginning_of_month){
+			    dprint(5, (debugfile,
+		    "Filter %s wants beginning of month and it isn't bom\n",
+				   nick ? nick : "?"));
+			    continue;
+			}
+		    }
+		    else if(pat->patgrp->stat_bom == PAT_STAT_NO){
+			if(ps_global->beginning_of_month){
+			    dprint(5, (debugfile,
+		   "Filter %s does not want beginning of month and it is bom\n",
+				   nick ? nick : "?"));
+			    continue;
+			}
+		    }
+		}
+
+		if(pat->patgrp->stat_boy != PAT_STAT_EITHER){
+		    if(pat->patgrp->stat_boy == PAT_STAT_YES){
+			if(!ps_global->beginning_of_year){
+			    dprint(5, (debugfile,
+		    "Filter %s wants beginning of year and it isn't boy\n",
+				   nick ? nick : "?"));
+			    continue;
+			}
+		    }
+		    else if(pat->patgrp->stat_boy == PAT_STAT_NO){
+			if(ps_global->beginning_of_year){
+			    dprint(5, (debugfile,
+		   "Filter %s does not want beginning of year and it is boy\n",
+				   nick ? nick : "?"));
+			    continue;
+			}
+		    }
+		}
+			
 		charset = NULL;
 		pgm = match_pattern_srchpgm(pat->patgrp, stream,
 					    &charset, srchset);
 
-		mail_search_full(stream, NULL, pgm, flags);
+		pine_mail_search_full(stream, charset, pgm, flags);
+
 
 		/* check scores */
 		if(scores_are_used(SCOREUSE_GET) & SCOREUSE_FILTERS &&
@@ -7347,11 +8949,13 @@ process_filter_patterns(stream, msgmap, recent)
 		     */
 
 		    for(i = 1; i <= stream->nmsgs; i++)
-		      mail_elt(stream, i)->sequence = 0;
+		      if((mc = mail_elt(stream, i)) != NULL)
+		        mc->sequence = 0;
 
 		    for(s = srchset; s; s = s->next)
 		      for(i = s->first; i <= s->last; i++)
-			if((mc=mail_elt(stream, i))->searched &&
+			if(i > 0L && stream && i <= stream->nmsgs
+			   && (mc=mail_elt(stream, i)) && mc->searched &&
 			   get_msg_score(stream, i) == SCORE_UNDEF)
 			  mc->sequence = 1;
 
@@ -7366,9 +8970,9 @@ process_filter_patterns(stream, msgmap, recent)
 		     */
 		    for(s = srchset; s; s = s->next)
 		      for(i = s->first; i <= s->last; i++)
-			if(i <= stream->nmsgs
-			   && (mc=mail_elt(stream, i))->searched){
-			    int score;
+			if(i > 0L && stream && i <= stream->nmsgs
+			   && (mc=mail_elt(stream, i)) && mc->searched){
+			    long score;
 
 			    score = get_msg_score(stream, i);
 
@@ -7404,12 +9008,13 @@ process_filter_patterns(stream, msgmap, recent)
 		     */
 
 		    for(i = 1; i <= stream->nmsgs; i++)
-		      mail_elt(stream, i)->sequence = 0;
+		      if((mc = mail_elt(stream, i)) != NULL)
+		        mc->sequence = 0;
 
 		    for(s = srchset; s; s = s->next)
 		      for(i = s->first; i <= s->last; i++)
 			if(i <= stream->nmsgs
-			   && (mc=mail_elt(stream, i))->searched)
+			   && (mc=mail_elt(stream, i)) && mc->searched)
 			  mc->sequence = 1;
 
 		    ss = build_searchset(stream);
@@ -7419,7 +9024,7 @@ process_filter_patterns(stream, msgmap, recent)
 			  ENVELOPE   *e;
 			  SEARCHSET **sset;
 
-			  if(i > stream->nmsgs)
+			  if(!stream || i <= 0L || i > stream->nmsgs)
 			    continue;
 
 			  /*
@@ -7436,7 +9041,7 @@ process_filter_patterns(stream, msgmap, recent)
 			  if(sset)
 			    *sset = s;
 
-			  e = mail_fetchenvelope(stream, i);
+			  e = pine_mail_fetchenvelope(stream, i);
 			  if(pat->patgrp->stat_8bitsubj == PAT_STAT_YES){
 			      if(e && e->subject){
 				  char *p;
@@ -7445,11 +9050,14 @@ process_filter_patterns(stream, msgmap, recent)
 				    if(*p & 0x80)
 				      break;
 
-				  if(!*p)
-				    mail_elt(stream,i)->searched = NIL;
+				  if(!*p && i > 0L && stream
+				     && i <= stream->nmsgs
+				     && (mc = mail_elt(stream, i)))
+				    mc->searched = NIL;
 			      }
-			      else
-				mail_elt(stream,i)->searched = NIL;
+			      else if(i > 0L && stream && i <= stream->nmsgs
+				      && (mc = mail_elt(stream, i)))
+				mc->searched = NIL;
 			  }
 			  else if(pat->patgrp->stat_8bitsubj == PAT_STAT_NO){
 			      if(e && e->subject){
@@ -7459,8 +9067,10 @@ process_filter_patterns(stream, msgmap, recent)
 				    if(*p & 0x80)
 				      break;
 
-				  if(*p)
-				    mail_elt(stream,i)->searched = NIL;
+				  if(*p && i > 0L && stream
+				     && i <= stream->nmsgs
+				     && (mc = mail_elt(stream, i)))
+				    mc->searched = NIL;
 			      }
 			  }
 		      }
@@ -7474,16 +9084,143 @@ process_filter_patterns(stream, msgmap, recent)
 					   pat->patgrp->abookfrom,
 					   pat->patgrp->abooks);
 
+		/* Still matches? Run the categorization command on each msg. */
+		if(pat->patgrp->category_cmd && pat->patgrp->category_cmd[0]){
+		    char **l;
+		    int exitval;
+		    SEARCHSET *s, *ss = NULL;
+		    char *cmd = NULL;
+		    char *just_arg0 = NULL;
+		    char *cmd_start, *cmd_end;
+		    int just_one = !(pat->patgrp->category_cmd[1]);
+
+		    /* find the first command that exists on this host */
+		    for(l = pat->patgrp->category_cmd; l && *l; l++){
+			cmd = cpystr(*l);
+			removing_quotes(cmd);
+			if(cmd){
+			    for(cmd_start = cmd;
+				*cmd_start && isspace(*cmd_start); cmd_start++)
+			      ;
+			    
+			    for(cmd_end = cmd_start+1;
+				*cmd_end && !isspace(*cmd_end); cmd_end++)
+			      ;
+			    
+			    just_arg0 = (char *) fs_get((cmd_end-cmd_start+1)
+								* sizeof(char));
+			    strncpy(just_arg0, cmd_start, cmd_end - cmd_start);
+			    just_arg0[cmd_end - cmd_start] = '\0';
+			}
+
+			if(valid_filter_command(&just_arg0))
+			  break;
+			else{
+			    if(just_one){
+				if(can_access(just_arg0, ACCESS_EXISTS) != 0)
+				  q_status_message1(SM_ORDER, 0, 3,
+						    "\"%s\" does not exist",
+						    just_arg0);
+				else
+				  q_status_message1(SM_ORDER, 0, 3,
+						    "\"%s\" is not executable",
+						    just_arg0);
+			    }
+
+			    if(just_arg0)
+			      fs_give((void **) &just_arg0);
+			    if(cmd)
+			      fs_give((void **) &cmd);
+			}
+		    }
+
+		    if(!just_arg0 && !just_one)
+		      q_status_message(SM_ORDER, 0, 3,
+			"None of the category cmds exists and is executable");
+
+		    /*
+		     * If category_cmd isn't executable, it isn't a match.
+		     */
+		    if(!just_arg0 || !cmd){
+			/*
+			 * If we couldn't run the pipe command,
+			 * we declare no match
+			 */
+			for(s = srchset; s; s = s->next)
+			  for(i = s->first; i <= s->last; i++)
+			    if(i > 0L && stream && i <= stream->nmsgs
+			       && (mc=mail_elt(stream, i)) && mc->searched)
+			      mc->searched = NIL;
+		    }
+		    else
+		      for(s = srchset; s; s = s->next)
+			for(i = s->first; i <= s->last; i++)
+			  if(i > 0L && stream && i <= stream->nmsgs
+			     && (mc=mail_elt(stream, i)) && mc->searched){
+
+			    /*
+			     * If there was an error, or the exitval is out of
+			     * range, then it is not a match.
+			     * Default range is (0,0),
+			     * which is right for matching
+			     * bogofilter spam.
+			     */
+			    if(test_message_with_cmd(stream, i, cmd,
+						     pat->patgrp->cat_lim,
+						     &exitval) != 0)
+			      mc->searched = NIL;
+
+			    /* test exitval */
+			    if(mc->searched){
+			      INTVL_S *iv;
+
+			      if(pat->patgrp->cat){
+				for(iv = pat->patgrp->cat; iv; iv = iv->next)
+				  if((long) exitval >= iv->imin
+				     && (long) exitval <= iv->imax)
+				    break;
+				    
+				if(!iv)
+				  mc->searched = NIL;  /* not in any interval */
+			      }
+			      else{
+				/* default to interval containing only zero */
+				if(exitval != 0)
+				  mc->searched = NIL;
+			      }
+			    }
+			  }
+		    
+		    if(just_arg0)
+		      fs_give((void **) &just_arg0);
+		    if(cmd)
+		      fs_give((void **) &cmd);
+		}
+
+		if(we_cancel){
+		    cancel_busy_alarm(-1);
+		    we_cancel = 0;
+		}
+
 		nt = pat->action->non_terminating;
 		pending_actions = max(nt, pending_actions);
 
-		/* change some state bits */
-		if(!pat->action->kill && pat->action->state_setting_bits){
+		/*
+		 * Change some state bits.
+		 * This used to only happen if kill was not set, but
+		 * it can be useful to Delete a message even if killing.
+		 * That way, it will show up in another pine that isn't
+		 * running the same filter as Deleted, so the user won't
+		 * bother looking at it.  Hubert 2004-11-16
+		 */
+		if(pat->action->state_setting_bits
+		   || pat->action->keyword_set
+		   || pat->action->keyword_clr){
 		    tmpmap = NULL;
 		    mn_init(&tmpmap, stream->nmsgs);
 
 		    for(i = 1L, n = 0L; i <= stream->nmsgs; i++)
-		      if(mail_elt(stream, i)->searched
+		      if((mc = mail_elt(stream, i)) && mc->searched
 			 && !(msgno_exceptions(stream, i, "0", &exbits, FALSE)
 			      && (exbits & MSG_EX_FILTERED)))
 			if(!n++){
@@ -7493,9 +9230,61 @@ process_filter_patterns(stream, msgmap, recent)
 			    mn_add_cur(tmpmap, i);
 			}
 
-		    if(n)
-		      set_some_flags(stream, tmpmap,
-				     pat->action->state_setting_bits, 1);
+		    if(n){
+			long flagbits;
+			char     **keywords_to_set = NULL,
+			         **keywords_to_clr = NULL;
+			PATTERN_S *pp;
+			int        cnt;
+
+			flagbits = pat->action->state_setting_bits;
+
+			if(pat->action->keyword_set){
+			    for(cnt = 0, pp = pat->action->keyword_set;
+				pp; pp = pp->next)
+			      cnt++;
+
+			    keywords_to_set = (char **) fs_get((cnt+1) *
+						    sizeof(*keywords_to_set));
+			    memset(keywords_to_set, 0,
+				   (cnt+1) * sizeof(*keywords_to_set));
+			    for(cnt = 0, pp = pat->action->keyword_set;
+				pp; pp = pp->next){
+				char *q;
+
+				q = nick_to_keyword(pp->substring);
+				if(q && q[0])
+				  keywords_to_set[cnt++] = cpystr(q);
+			    }
+				
+			    flagbits |= F_KEYWORD;
+			}
+
+			if(pat->action->keyword_clr){
+			    for(cnt = 0, pp = pat->action->keyword_clr;
+				pp; pp = pp->next)
+			      cnt++;
+
+			    keywords_to_clr = (char **) fs_get((cnt+1) *
+						    sizeof(*keywords_to_clr));
+			    memset(keywords_to_clr, 0,
+				   (cnt+1) * sizeof(*keywords_to_clr));
+			    for(cnt = 0, pp = pat->action->keyword_clr;
+				pp; pp = pp->next){
+				char *q;
+
+				q = nick_to_keyword(pp->substring);
+				if(q && q[0])
+				  keywords_to_clr[cnt++] = cpystr(q);
+			    }
+				
+			    flagbits |= F_UNKEYWORD;
+			}
+
+			set_some_flags(stream, tmpmap, flagbits,
+				       keywords_to_set, keywords_to_clr, 1,
+				       nick);
+		    }
 
 		    mn_give(&tmpmap);
 		}
@@ -7513,16 +9302,30 @@ process_filter_patterns(stream, msgmap, recent)
 		if(!(pat->action->kill || pat->action->folder)){
 		  n = 0L;
 		  for(i = 1L; i <= mn_get_total(msgmap); i++)
-		    if((raw = mn_m2raw(msgmap, i))
-		       && (mail_elt(stream, raw))->searched){
+		    if((raw = mn_m2raw(msgmap, i)) > 0L
+		       && stream && raw <= stream->nmsgs
+		       && (mc = mail_elt(stream, raw)) && mc->searched){
 		        dprint(5, (debugfile,
 			    "FILTER matching \"%s\": msg %ld\n",
-			    pat->patgrp->nick ? pat->patgrp->nick : "unnamed",
+			    nick ? nick : "unnamed",
 			    raw));
 		        if(msgno_exceptions(stream, raw, "0", &exbits, FALSE))
 			  exbits |= (nt ? MSG_EX_FILTONCE : MSG_EX_FILTERED);
 		        else
 			  exbits = (nt ? MSG_EX_FILTONCE : MSG_EX_FILTERED);
+			
+			/*
+			 * If this matched an earlier non-terminating rule
+			 * we've been keeping track of that so that we can
+			 * turn it into a permanent match at the end.
+			 * However, now we've matched another rule that is
+			 * terminating so we don't have to worry about it
+			 * anymore. Turn off the flag.
+			 */
+			if(!nt && exbits & MSG_EX_FILTONCE)
+			  exbits ^= MSG_EX_FILTONCE;
+			
+			exbits &= ~MSG_EX_STATECHG;
 
 		        msgno_exceptions(stream, raw, "0", &exbits, TRUE);
 		    }
@@ -7530,39 +9333,37 @@ process_filter_patterns(stream, msgmap, recent)
 		else{
 		  for(i = 1L, n = 0L; i <= mn_get_total(msgmap); )
 		    if((raw = mn_m2raw(msgmap, i))
-		       && (mail_elt(stream, raw))->searched){
+		       && raw > 0L && stream && raw <= stream->nmsgs
+		       && (mc = mail_elt(stream, raw)) && mc->searched){
 		        dprint(5, (debugfile,
 			      "FILTER matching \"%s\": msg %ld %s\n",
-			      pat->patgrp->nick ? pat->patgrp->nick : "unnamed",
+			      nick ? nick : "unnamed",
 			      raw, pat->action->folder ? "filed" : "killed"));
 			if(nt)
 			  i++;
 			else{
-			    msgno_exclude(stream, msgmap, i);
+			    msgno_exclude(stream, msgmap, i, 1);
 			    /* 
-			     * if this message is new, decrement new_mail_count.
-			     * previously, the caller would do this by counting
-			     * MN_EXCLUDE before and after, but the results weren't
-			     * accurate in the case where new messages arrived
-			     * while filtering, or the filtered message could have
-			     * gotten expunged.
+			     * If this message is new, decrement
+			     * new_mail_count. Previously, the caller would
+			     * do this by counting MN_EXCLUDE before and after,
+			     * but the results weren't accurate in the case
+			     * where new messages arrived while filtering,
+			     * or the filtered message could have gotten
+			     * expunged.
 			     */
-			    if(msgno_exceptions(stream, raw, "0", &exbits, FALSE)
+			    if(msgno_exceptions(stream, raw, "0", &exbits,
+						FALSE)
 			       && (exbits & MSG_EX_RECENT)){
-				if(stream == ps_global->mail_stream){
-				    dprint(5, (debugfile,
-		          "New message being filtered from mail_stream. new_mail_count: %d (old)\n",
-					       ps_global->new_mail_count));
-				   if(ps_global->new_mail_count > 0L)
-				    ps_global->new_mail_count--;
-				}
-				else if(stream == ps_global->inbox_stream){
-				    dprint(5, (debugfile,
-	       "New message being filtered from inbox_stream. New inbox_new_mail_count: %d (old)\n",
-					       ps_global->inbox_new_mail_count));
-				    if(ps_global->inbox_new_mail_count > 0L)
-				      ps_global->inbox_new_mail_count--;
-				}
+				long l, ll;
+
+			        l = sp_new_mail_count(stream);
+			        ll = sp_recent_since_visited(stream);
+				dprint(5, (debugfile, "New message being filtered, decrement new_mail_count: %ld -> %ld\n", l, l-1L));
+			        if(l > 0L)
+				  sp_set_new_mail_count(stream, l-1L);
+			        if(ll > 0L)
+				  sp_set_recent_since_visited(stream, ll-1L);
 			    }
 			}
 
@@ -7570,9 +9371,31 @@ process_filter_patterns(stream, msgmap, recent)
 			  exbits |= (nt ? MSG_EX_FILTONCE : MSG_EX_FILTERED);
 		        else
 			  exbits = (nt ? MSG_EX_FILTONCE : MSG_EX_FILTERED);
+			
+			/* set pending exclusion  for later */
+			if(nt)
+			  exbits |= MSG_EX_PEND_EXLD;
 
-		        msgno_exceptions(stream, raw, "0", &exbits, TRUE);
-		        n++;
+			/*
+			 * If this matched an earlier non-terminating rule
+			 * we've been keeping track of that so that we can
+			 * turn it into a permanent match at the end.
+			 * However, now we've matched another rule that is
+			 * terminating so we don't have to worry about it
+			 * anymore. Turn off the flags.
+			 */
+			if(!nt && exbits & MSG_EX_FILTONCE){
+			    exbits ^= MSG_EX_FILTONCE;
+
+			    /* we've already excluded it, too */
+			    if(exbits & MSG_EX_PEND_EXLD)
+			      exbits ^= MSG_EX_PEND_EXLD;
+			}
+
+			exbits &= ~MSG_EX_STATECHG;
+
+			msgno_exceptions(stream, raw, "0", &exbits, TRUE);
+			n++;
 		    }
 		    else
 		      i++;
@@ -7590,7 +9413,7 @@ process_filter_patterns(stream, msgmap, recent)
 		     * already been saved somewhere, do it...
 		     */
 		    for(i = 1L, n = 0L; i <= stream->nmsgs; i++)
-		      if(mail_elt(stream, i)->searched
+		      if((mc = mail_elt(stream, i)) && mc->searched
 			 && !(msgno_exceptions(stream, i, "0", &exbits, FALSE)
 			      && (exbits & MSG_EX_FILED)))
 			if(!n++){
@@ -7617,14 +9440,16 @@ process_filter_patterns(stream, msgmap, recent)
 			 * interesting messages.
 			 */
 			if(seq = invalid_elt_sequence(stream, tmpmap)){
-			    mail_fetchflags(stream, seq);
+			    pine_mail_fetch_flags(stream, seq, NIL);
 			    fs_give((void **) &seq);
 			}
 
 			for(i = mn_first_cur(tmpmap); i > 0L;
 			    i = mn_next_cur(tmpmap)){
-			    mc = mail_elt(stream, mn_m2raw(tmpmap, i));
-			    if(!mc->deleted){
+			    mc = ((raw = mn_m2raw(tmpmap, i)) > 0L
+			          && stream && raw <= stream->nmsgs)
+				    ? mail_elt(stream, raw) : NULL;
+			    if(mc && !mc->deleted){
 				if(!nn++){
 				    mn_set_cur(tmpmap2, i);
 				}
@@ -7643,6 +9468,7 @@ process_filter_patterns(stream, msgmap, recent)
 			for(p = pat->action->folder; p; p = p->next){
 			  int dval;
 			  int flags_for_save;
+			  char *processed_name;
 
 			  /* does this filter set delete bit? ... */
 			  convert_statebits_to_vals(pat->action->state_setting_bits, &dval, NULL, NULL, NULL);
@@ -7650,10 +9476,13 @@ process_filter_patterns(stream, msgmap, recent)
 			  flags_for_save = SV_FOR_FILT |
 				  (nt ? 0 : SV_DELETE) |
 				  ((dval != ACT_STAT_SET) ? SV_FIX_DELS : 0);
+			  processed_name = detoken_src(p->substring,
+						       FOR_FILT, NULL,
+						       NULL, NULL, NULL);
 			  if(move_filtered_msgs(stream, tmpmap,
-						p->substring,
-						flags_for_save)){
-
+					    (processed_name && *processed_name)
+					      ? processed_name : p->substring,
+					    flags_for_save, nick)){
 			      /*
 			       * If we filtered into the current
 			       * folder, chuck a ping down the
@@ -7662,19 +9491,20 @@ process_filter_patterns(stream, msgmap, recent)
 			       */
 			      if(ps_global->mail_stream
 				 && ps_global->mail_stream != stream
-				 && ps_global->inbox_stream
-				 && ps_global->mail_stream
-						   != ps_global->inbox_stream
 				 && match_pattern_folder_specific(
-				     pat->action->folder,
-				     ps_global->mail_stream, 0)){
-				  mail_ping(ps_global->mail_stream);
+						 pat->action->folder,
+						 ps_global->mail_stream,
+						 FOR_FILT)){
+				  (void) pine_mail_ping(ps_global->mail_stream);
 			      }				
 			  }
 			  else{
 			      err = 1;
 			      break;
 			  }
+
+			  if(processed_name)
+			    fs_give((void **) &processed_name);
 			}
 
 			if(!err)
@@ -7687,6 +9517,8 @@ process_filter_patterns(stream, msgmap, recent)
 				exbits |= (nt ? MSG_EX_FILEONCE : MSG_EX_FILED);
 			      else
 				exbits = (nt ? MSG_EX_FILEONCE : MSG_EX_FILED);
+
+			      exbits &= ~MSG_EX_STATECHG;
 
 			      msgno_exceptions(stream, mn_m2raw(tmpmap, n),
 					       "0", &exbits, TRUE);
@@ -7702,15 +9534,15 @@ process_filter_patterns(stream, msgmap, recent)
 	    }
 
 	    /*
-	     * If this is a terminating rule or the last rule,
+	     * If this is the last rule,
 	     * we make sure we delete messages that we delayed deleting
 	     * in the save. We delayed so that the deletion wouldn't have
 	     * an effect on later rules. We convert any temporary
 	     * FILED (FILEONCE) and FILTERED (FILTONCE) flags
 	     * (which were set by an earlier non-terminating rule)
-	     * to permanent. We also exclude those messages from the view.
+	     * to permanent. We also exclude some messages from the view.
 	     */
-	    if(pending_actions && (!nt || !nextpat)){
+	    if(pending_actions && !nextpat){
 
 		pending_actions = 0;
 		tmpmap = NULL;
@@ -7732,53 +9564,59 @@ process_filter_patterns(stream, msgmap, recent)
 		}
 
 		if(n)
-		  set_some_flags(stream, tmpmap, F_DEL, 0);
+		  set_some_flags(stream, tmpmap, F_DEL, NULL, NULL, 0, NULL);
 
 		mn_give(&tmpmap);
 
 		for(i = 1L; i <= mn_get_total(msgmap); i++){
 		    raw = mn_m2raw(msgmap, i);
 		    if(msgno_exceptions(stream, raw, "0", &exbits, FALSE)){
-			if(exbits & (MSG_EX_FILTONCE | MSG_EX_FILEONCE)){
-			    if(exbits & MSG_EX_FILTONCE){
-				/* exclude message from view */
-				if(pat->action->kill || pat->action->folder){
-				    msgno_exclude(stream, msgmap, i);
-				    if(msgno_exceptions(stream, raw, "0", &exbits, FALSE)
-				       && (exbits & MSG_EX_RECENT)){
-					/* 
-					 * if this message is new, decrement new_mail_count.
-					 * see the above call to msgno_exclude.
-					 */
-					if(stream == ps_global->mail_stream){
-					    dprint(5, (debugfile,
-	    "New message being filtered from mail_stream. New new_mail_count: %d (old)\n",
-						       ps_global->new_mail_count));
-					   if(ps_global->new_mail_count > 0L)
-					     ps_global->new_mail_count--;
-					}
-					else if(stream == ps_global->inbox_stream){
-					    dprint(5, (debugfile,
-     "New message being filtered from inbox_stream. New inbox_new_mail_count: %d (old)\n",
-						       ps_global->inbox_new_mail_count));
-					    if(ps_global->inbox_new_mail_count > 0L)
-					      ps_global->inbox_new_mail_count--;
-					}
-				    }
-				    i--;   /* to compensate for loop's i++ */
-				}
+			if(exbits & MSG_EX_PEND_EXLD){
+			    msgno_exclude(stream, msgmap, i, 1);
+			    if(msgno_exceptions(stream, raw, "0",
+						&exbits, FALSE)
+			       && (exbits & MSG_EX_RECENT)){
+				long l, ll;
 
+				/* 
+				 * If this message is new, decrement
+				 * new_mail_count.  See the above
+				 * call to msgno_exclude.
+				 */
+				l = sp_new_mail_count(stream);
+				ll = sp_recent_since_visited(stream);
+				dprint(5, (debugfile, "New message being filtered. Decrement new_mail_count: %ld -> %ld\n", l, l-1L));
+				if(l > 0L)
+				  sp_set_new_mail_count(stream, l - 1L);
+				if(ll > 0L)
+				  sp_set_recent_since_visited(stream, ll - 1L);
+			    }
+
+			    i--;   /* to compensate for loop's i++ */
+			}
+
+			/* get rid of temporary flags */
+			if(exbits & (MSG_EX_FILTONCE | MSG_EX_FILEONCE |
+			             MSG_EX_PEND_EXLD)){
+			    if(exbits & MSG_EX_FILTONCE){
+				/* convert to permament */
 				exbits ^= MSG_EX_FILTONCE;
 				exbits |= MSG_EX_FILTERED;
 			    }
-			}
 
-			if(exbits & MSG_EX_FILEONCE){
-			    exbits ^= MSG_EX_FILEONCE;
-			    exbits |= MSG_EX_FILED;
-			}
+			    /* convert to permament */
+			    if(exbits & MSG_EX_FILEONCE){
+				exbits ^= MSG_EX_FILEONCE;
+				exbits |= MSG_EX_FILED;
+			    }
 
-			msgno_exceptions(stream, raw, "0", &exbits,TRUE);
+			    if(exbits & MSG_EX_PEND_EXLD)
+			      exbits ^= MSG_EX_PEND_EXLD;
+
+			    exbits &= ~MSG_EX_STATECHG;
+
+			    msgno_exceptions(stream, raw, "0", &exbits,TRUE);
+			}
 		    }
 		}
 	    }
@@ -7792,17 +9630,49 @@ process_filter_patterns(stream, msgmap, recent)
 	recent = 1; /* only check recent ones now */
     }
 
-    /* clear any private "recent" flags */
-    for(i = 1; i <= stream->nmsgs; i++){
-	if(msgno_exceptions(stream, i, "0", &exbits, FALSE))
-	  if(exbits & MSG_EX_RECENT){
-	      exbits ^= MSG_EX_RECENT;
-	      msgno_exceptions(stream, i, "0", &exbits,TRUE);
-	  }
-	/* clear any stmp flags just in case */
-	mail_elt(stream, i)->spare6 = 0;
+    if(!recent){
+	/* clear status change flags */
+	for(i = 1; i <= stream->nmsgs; i++){
+	    if(msgno_exceptions(stream, i, "0", &exbits, FALSE)){
+		if(exbits & MSG_EX_STATECHG){
+		    exbits &= ~MSG_EX_STATECHG;
+		    msgno_exceptions(stream, i, "0", &exbits, TRUE);
+		}
+	    }
+	}
     }
+
+    /* clear any private "recent" flags and add TESTED flag */
+    for(i = 1; i <= stream->nmsgs; i++){
+	if(msgno_exceptions(stream, i, "0", &exbits, FALSE)){
+	    if(exbits & MSG_EX_RECENT
+	       || !(exbits & MSG_EX_TESTED)
+	       || (!recent && exbits & MSG_EX_STATECHG)){
+		exbits &= ~MSG_EX_RECENT;
+		exbits |= MSG_EX_TESTED;
+		if(!recent)
+		  exbits &= ~MSG_EX_STATECHG;
+
+		msgno_exceptions(stream, i, "0", &exbits, TRUE);
+	    }
+	}
+	else{
+	    exbits = MSG_EX_TESTED;
+	    msgno_exceptions(stream, i, "0", &exbits, TRUE);
+	}
+
+	/* clear any stmp flags just in case */
+	if((mc = mail_elt(stream, i)) != NULL)
+	  mc->spare6 = 0;
+    }
+
     msgmap->flagged_stmp = 0L;
+
+    if(any_msgs && F_OFF(F_QUELL_FILTER_MSGS, ps_global)
+       && F_OFF(F_QUELL_FILTER_DONE_MSG, ps_global)){
+	q_status_message(SM_ORDER, 0, 1, "filtering done");
+	display_message('x');
+    }
 }
 
 
@@ -7811,20 +9681,40 @@ process_filter_patterns(stream, msgmap, recent)
  * have changed the results.
  */
 void
-reprocess_filter_patterns(stream, msgmap)
+reprocess_filter_patterns(stream, msgmap, flags)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
+    int         flags;
 {
     if(stream){
-	msgno_include(stream, msgmap, TRUE);
+	long i;
+	int  exbits;
 
-	if(stream == ps_global->mail_stream){
+	msgno_include(stream, msgmap, flags);
+
+	if(stream == ps_global->mail_stream && !(flags & MI_CLOSING)){
 	    clear_index_cache();
-	    refresh_sort(msgmap, SRT_NON);
+	    refresh_sort(stream, msgmap, SRT_NON);
 	    ps_global->mangled_header = 1;
 	}
 
-	process_filter_patterns(stream, msgmap, 0L);
+	/*
+	 * Passing 1 in the last argument causes it to only look at the
+	 * messages we included above, which should be only the ones we
+	 * need to look at.
+	 */
+	process_filter_patterns(stream, msgmap,
+				(flags & MI_STATECHGONLY) ? 1L : 0);
+
+	/* clear status change flags */
+	for(i = 1; i <= stream->nmsgs; i++){
+	    if(msgno_exceptions(stream, i, "0", &exbits, FALSE)){
+		if(exbits & MSG_EX_STATECHG){
+		    exbits &= ~MSG_EX_STATECHG;
+		    msgno_exceptions(stream, i, "0", &exbits, TRUE);
+		}
+	    }
+	}
     }
 }
 
@@ -7851,13 +9741,25 @@ trivial_patgrp(patgrp)
 	if(ret && patgrp->do_age)
 	  ret = 0;
 
+	if(ret && patgrp->do_size)
+	  ret = 0;
+
 	if(ret && patgrp->do_score)
+	  ret = 0;
+
+	if(ret && patgrp->category_cmd && patgrp->category_cmd[0])
 	  ret = 0;
 
 	if(ret && patgrp_depends_on_state(patgrp))
 	  ret = 0;
 
 	if(ret && patgrp->stat_8bitsubj != PAT_STAT_EITHER)
+	  ret = 0;
+
+	if(ret && patgrp->stat_bom != PAT_STAT_EITHER)
+	  ret = 0;
+
+	if(ret && patgrp->stat_boy != PAT_STAT_EITHER)
 	  ret = 0;
 
 	if(ret && patgrp->abookfrom != AFRM_EITHER)
@@ -7877,7 +9779,7 @@ trivial_patgrp(patgrp)
 
 
 int
-some_filter_depends_on_state()
+some_filter_depends_on_active_state()
 {
     long          rflags = ROLE_DO_FILTER;
     PAT_S        *pat;
@@ -7905,43 +9807,86 @@ some_filter_depends_on_state()
 	dstfldr -- folder to receive moved messages
 	flags_for_save
 
-  Returns: nonzeron on success
+  Returns: nonzero on success or on readonly stream
   ----*/
 int
-move_filtered_msgs(stream, msgmap, dstfldr, flags_for_save)
+move_filtered_msgs(stream, msgmap, dstfldr, flags_for_save, nick)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
     char       *dstfldr;
     int         flags_for_save;
+    char       *nick;
 {
     long	  n;
-    int           we_cancel = 0, i;
+    int           we_cancel = 0, width;
     CONTEXT_S	 *save_context = NULL;
-    char	  buf[MAX_SCREEN_COLS+1], *ellipsis, *dstfldrp;
+    char	  buf[MAX_SCREEN_COLS+1], sbuf[MAX_SCREEN_COLS+1];
+    char         *save_ref = NULL;
 #define	FILTMSG_MAX	30
+
+    if(!stream)
+      return 0;
+    
+    if(READONLY_FOLDER(stream)){
+	dprint(1, (debugfile,
+		"Can't delete messages in readonly folder \"%s\"\n",
+		STREAMNAME(stream)));
+	q_status_message1(SM_ORDER, 1, 3,
+			 "Can't delete messages in readonly folder \"%s\"",
+			 STREAMNAME(stream));
+	return 1;
+    }
+
+    buf[0] = '\0';
+
+    width = max(10, ps_global->ttyo ? ps_global->ttyo->screen_cols : 80);
+    sprintf(buf, "%.30s%.2sMoving %.10s filtered message%.2s to \"\"",
+	    nick ? nick : "", nick ? ": " : "",
+	    comatose(mn_total_cur(msgmap)), plural(mn_total_cur(msgmap)));
+    /* 2 is for brackets, 5 is for " DONE" in busy alarm */
+    width -= (strlen(buf) + 2 + 5);
+    sprintf(buf, "%.30s%.2sMoving %.10s filtered message%.2s to \"%s\"",
+	    nick ? nick : "", nick ? ": " : "",
+	    comatose(mn_total_cur(msgmap)), plural(mn_total_cur(msgmap)),
+	    short_str(dstfldr, sbuf, width, FrontDots));
+
+    dprint(5, (debugfile, "%s\n", buf));
+
+    if(F_OFF(F_QUELL_FILTER_MSGS, ps_global))
+      we_cancel = busy_alarm(1, buf, NULL, 1);
 
     if(!is_absolute_path(dstfldr)
        && !(save_context = default_save_context(ps_global->context_list)))
       save_context = ps_global->context_list;
 
-    if((i = strlen(dstfldr)) > FILTMSG_MAX){
-	dstfldrp = dstfldr + (i - FILTMSG_MAX);
-	ellipsis = "...";
+    /*
+     * Because this save is happening independent of where the user is
+     * in the folder hierarchy and has nothing to do with that, we want
+     * to ignore the reference field built into the context. Zero it out
+     * temporarily here so it won't affect the results of context_apply
+     * in save.
+     *
+     * This might be a problem elsewhere, as well. The same thing as this
+     * is also done in match_pattern_folder_specific, which is also only
+     * called from within process_filter_patterns. But there could be
+     * others. We could have a separate function, something like
+     * copy_default_save_context(), that automatically zeroes out the
+     * reference field in the copy. However, some of the uses of
+     * default_save_context() require that a pointer into the actual
+     * context list is returned, so this would have to be done carefully.
+     * Besides, we don't know of any other problems so we'll just change
+     * these known cases for now.
+     */
+    if(save_context && save_context->dir){
+	save_ref = save_context->dir->ref;
+	save_context->dir->ref = NULL;
     }
-    else{
-	dstfldrp = dstfldr;
-	ellipsis = "";
-    }
-
-    sprintf(buf, "Moving %s filtered message%s to \"%s%s\"",
-	    comatose(mn_total_cur(msgmap)), plural(mn_total_cur(msgmap)),
-	    ellipsis, dstfldrp);
-
-    dprint(5, (debugfile, "%s\n", buf));
-
-    we_cancel = busy_alarm(1, buf, NULL, 1);
 
     n = save(ps_global, stream, save_context, dstfldr, msgmap, flags_for_save);
+
+    if(save_ref)
+      save_context->dir->ref = save_ref;
+
     if(n != mn_total_cur(msgmap)){
 	int   exbits;
 	long  x;
@@ -7959,14 +9904,9 @@ move_filtered_msgs(stream, msgmap, dstfldr, flags_for_save)
 	  }
 
 	/* then re-incorporate them into folder they belong */
-	msgno_include(stream,
-		      (stream == ps_global->mail_stream)
-			? ps_global->msgmap
-			: (stream == ps_global->inbox_stream)
-			    ? ps_global->inbox_msgmap : msgmap,
-		      FALSE);
+	msgno_include(stream, sp_msgmap(stream), MI_NONE);
 	clear_index_cache();
-	refresh_sort(msgmap, SRT_NON);
+	refresh_sort(stream, sp_msgmap(stream), SRT_NON);
 	ps_global->mangled_header = 1;
     }
     else{
@@ -7988,19 +9928,36 @@ move_filtered_msgs(stream, msgmap, dstfldr, flags_for_save)
   Args: stream -- stream to use
 	msgmap -- which messages to set
 	flagbits -- which flags to set or clear
-
-  Returns: nonzero on on success
+	kw_on  -- keywords to set
+	kw_off -- keywords to clear
+	verbose -- 1 => busy alarm after 1 second
+	           2 => forced busy alarm
   ----*/
 void
-set_some_flags(stream, msgmap, flagbits, verbose)
+set_some_flags(stream, msgmap, flagbits, kw_on, kw_off, verbose, nick)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
     long        flagbits;
+    char      **kw_on;
+    char      **kw_off;
     int         verbose;
+    char       *nick;
 {
     long	  count = 0L, flipped_flags;
     int           we_cancel = 0;
-    char          buf[100], *seq;
+    char          buf[150], *seq;
+
+    if(!stream)
+      return;
+    
+    if(READONLY_FOLDER(stream)){
+	dprint(1, (debugfile, "Can't set flags in readonly folder \"%s\"\n",
+		STREAMNAME(stream)));
+	q_status_message1(SM_ORDER, 1, 3,
+			 "Can't set flags in readonly folder \"%s\"",
+			 STREAMNAME(stream));
+	return;
+    }
 
     /* use this to determine if anything needs to be done */
     flipped_flags = ((flagbits & F_ANS)    ? F_UNANS : 0)       |
@@ -8010,20 +9967,36 @@ set_some_flags(stream, msgmap, flagbits, verbose)
 		    ((flagbits & F_DEL)    ? F_UNDEL : 0)       |
 		    ((flagbits & F_UNDEL)  ? F_DEL : 0)         |
 		    ((flagbits & F_SEEN)   ? F_UNSEEN : 0)      |
-		    ((flagbits & F_UNSEEN) ? F_SEEN : 0);
-    if(seq = currentf_sequence(stream, msgmap, flipped_flags, &count, 0)){
-	char sets[200], clears[200];
-	char *ps, *pc;
+		    ((flagbits & F_UNSEEN) ? F_SEEN : 0)        |
+		    ((flagbits & F_KEYWORD) ? F_UNKEYWORD : 0)  |
+		    ((flagbits & F_UNKEYWORD) ? F_KEYWORD : 0);
+    if(seq = currentf_sequence(stream, msgmap, flipped_flags, &count, 0,
+			       kw_off, kw_on)){
+	char *sets = NULL, *clears = NULL;
+	char *ps, *pc, **t;
+	size_t len;
 
-	/* don't use those fixed-size buffers if we add user-defined flags */
+	/* allocate enough space for mail_flags arguments */
+	for(len=100, t = kw_on; t && *t; t++)
+	  len += (strlen(*t) + 1);
+	
+	sets = (char *) fs_get(len * sizeof(*sets));
+
+	for(len=100, t = kw_off; t && *t; t++)
+	  len += (strlen(*t) + 1);
+	
+	clears = (char *) fs_get(len * sizeof(*clears));
+
 	sets[0] = clears[0] = '\0';
 	ps = sets;
 	pc = clears;
 
-	sprintf(buf, "Setting flags in %.10s message%.10s",
+	sprintf(buf, "%.30s%.2sSetting flags in %.10s message%.10s",
+		nick ? nick : "", nick ? ": " : "",
 		comatose(count), plural(count));
 
-	we_cancel = busy_alarm(1, buf, NULL, verbose ? 1 : 0);
+	if(F_OFF(F_QUELL_FILTER_MSGS, ps_global))
+	  we_cancel = busy_alarm(1, buf, NULL, verbose ? 1 : 0);
 
 	/*
 	 * What's going on here? If we want to set more than one flag
@@ -8050,27 +10023,85 @@ set_some_flags(stream, msgmap, flagbits, verbose)
 
 	    sstrcpy(&ps, "\\SEEN");
 	}
+	if(flagbits & F_KEYWORD){
+	    for(t = kw_on; t && *t; t++){
+		int i;
+
+		/*
+		 * We may be able to tell that this will fail before
+		 * we actually try it.
+		 */
+		if(stream->kwd_create ||
+		   (((i=user_flag_index(stream, *t)) >= 0) && i < NUSERFLAGS)){
+		    if(ps > sets)
+		      sstrcpy(&ps, " ");
+		    
+		    sstrcpy(&ps, *t);
+		}
+		else{
+		  int some_defined = 0;
+		  static int msg_delivered = 0;
+
+		  for(i = 0; !some_defined && i < NUSERFLAGS; i++)
+		    if(stream->user_flags[i])
+		      some_defined++;
+		
+		  if(msg_delivered++ < 2){
+		    char b[200], c[200], *p;
+		    int w;
+
+		    if(some_defined){
+		      sprintf(b, "Can't set \"%.30s\". No more keywords in ", keyword_to_nick(*t));
+		      w = min((ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) - strlen(b) - 1 - 2, sizeof(c)-1);
+		      p = short_str(STREAMNAME(stream), c, w, FrontDots);
+		      q_status_message2(SM_ORDER, 3, 3, "%s%s!", b, p);
+		    }
+		    else{
+		      sprintf(b, "Can't set \"%.30s\". Can't add keywords in ", keyword_to_nick(*t));
+		      w = min((ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) - strlen(b) - 1 - 2, sizeof(c)-1);
+		      p = short_str(STREAMNAME(stream), c, w, FrontDots);
+		      q_status_message2(SM_ORDER, 3, 3, "%s%s!", b, p);
+		    }
+		  }
+
+		  if(some_defined){
+		    dprint(1, (debugfile, "Can't set keyword \"%s\". No more keywords allowed in %s\n", *t, stream->mailbox ? stream->mailbox : "target folder"));
+		  }
+		  else{
+		    dprint(1, (debugfile, "Can't set keyword \"%s\". Can't add keywords in %s\n", *t, stream->mailbox ? stream->mailbox : "target folder"));
+		  }
+		}
+	    }
+	}
 
 	/* need a separate call for the clears */
 	if(flagbits & F_UNANS)
 	  sstrcpy(&pc, "\\ANSWERED");
 	if(flagbits & F_UNFLAG){
-	    if(pc > sets)
+	    if(pc > clears)
 	      sstrcpy(&pc, " ");
 
 	    sstrcpy(&pc, "\\FLAGGED");
 	}
 	if(flagbits & F_UNDEL){
-	    if(pc > sets)
+	    if(pc > clears)
 	      sstrcpy(&pc, " ");
 
 	    sstrcpy(&pc, "\\DELETED");
 	}
 	if(flagbits & F_UNSEEN){
-	    if(pc > sets)
+	    if(pc > clears)
 	      sstrcpy(&pc, " ");
 
 	    sstrcpy(&pc, "\\SEEN");
+	}
+	if(flagbits & F_UNKEYWORD){
+	    for(t = kw_off; t && *t; t++){
+		if(pc > clears)
+		  sstrcpy(&pc, " ");
+		
+		sstrcpy(&pc, *t);
+	    }
 	}
 
 
@@ -8080,7 +10111,9 @@ set_some_flags(stream, msgmap, flagbits, verbose)
 	if(clears[0])
 	  mail_flag(stream, seq, clears, 0L);
 
-	fs_give((void **)&seq);
+	fs_give((void **) &sets);
+	fs_give((void **) &clears);
+	fs_give((void **) &seq);
 
 	if(we_cancel)
 	  cancel_busy_alarm(buf[0] ? 0 : -1);
@@ -8102,14 +10135,17 @@ delete_filtered_msgs(stream)
     int	  exbits;
     long  i;
     char *seq;
+    MESSAGECACHE *mc;
 
     for(i = 1L; i <= stream->nmsgs; i++)
       if(msgno_exceptions(stream, i, "0", &exbits, FALSE)
 	 && (exbits & MSG_EX_FILTERED)
-	 && get_lflag(stream, NULL, i, MN_EXLD))
-	mail_elt(stream, i)->sequence = 1;
-      else
-	mail_elt(stream, i)->sequence = 0;
+	 && get_lflag(stream, NULL, i, MN_EXLD)){
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->sequence = 1;
+      }
+      else if((mc = mail_elt(stream, i)) != NULL)
+	mc->sequence = 0;
 
     if(seq = build_sequence(stream, NULL, NULL)){
 	mail_flag(stream, seq, "\\DELETED", ST_SET | ST_SILENT);
@@ -8134,7 +10170,7 @@ move_read_msgs(stream, dstfldr, buf, searched)
     char       *dstfldr, *buf;
     long	searched;
 {
-    long	  i;
+    long	  i, raw;
     int           we_cancel = 0;
     MSGNO_S	 *msgmap = NULL;
     CONTEXT_S	 *save_context = NULL;
@@ -8171,9 +10207,11 @@ move_read_msgs(stream, dstfldr, buf, searched)
 
 	/* select search results */
 	for(i = 1L; i <= mn_get_total(msgmap); i++)
-	  if(((mc = mail_elt(stream,mn_m2raw(msgmap, i)))->valid
-	      && mc->seen && !mc->deleted)
-	     || (!mc->valid && mc->searched))
+	  if((raw = mn_m2raw(msgmap, i)) > 0L && stream
+	     && raw <= stream->nmsgs
+	     && (mc = mail_elt(stream,raw))
+	     && ((mc->valid && mc->seen && !mc->deleted)
+	         || (!mc->valid && mc->searched)))
 	    set_lflag(stream, msgmap, i, MN_SLCT, 1);
 
 	pseudo_selected(msgmap);
@@ -8233,10 +10271,10 @@ move_read_incoming(stream, context, folder, archive, buf)
 
     buf[0] = '\0';
 
-    if(archive && stream != ps_global->inbox_stream
+    if(archive && !sp_flagged(stream, SP_INBOX)
        && context && (context->use & CNTXT_INCMNG)
        && ((context_isambig(folder)
-	    && folder_is_nick(folder, FOLDERS(context)))
+	    && folder_is_nick(folder, FOLDERS(context), 0))
 	   || folder_index(folder, context, FI_FOLDER) > 0)
        && (seen_undel = count_flagged(stream, F_SEEN | F_UNDEL))){
 
@@ -8247,7 +10285,7 @@ move_read_incoming(stream, context, folder, archive, buf)
 	    if(s && d
 	       && (!strcmp(s, folder)
 		   || (context_isambig(folder)
-		       && (p = folder_is_nick(folder, FOLDERS(context)))
+		       && (p = folder_is_nick(folder, FOLDERS(context), 0))
 		       && !strcmp(s, p)))){
 		if(F_ON(F_AUTO_READ_MSGS,ps_global)
 		   || read_msg_prompt(seen_undel, d))
@@ -8282,6 +10320,7 @@ cross_delete_crossposts(stream)
 		    *newgrp, newfolder[MAILTMPLEN];
 	long	     i, uid, hostlatch = 0L;
 	int	     we_cancel = 0;
+	MESSAGECACHE *mc;
 
 	strncpy(newfolder, stream->mailbox, sizeof(newfolder));
 	newfolder[sizeof(newfolder)-1] = '\0';
@@ -8299,7 +10338,7 @@ cross_delete_crossposts(stream)
 
 	for(i = 1L; i <= stream->nmsgs; i++)
 	  if(!get_lflag(stream, NULL, i, MN_EXLD)
-	     && mail_elt(stream, i)->deleted){
+	     && (mc = mail_elt(stream, i)) && mc->deleted){
 
 	      if(xref = pine_fetchheader_lines(stream, i, NULL, fields)){
 		  if(p = strstr(xref, ": ")){
@@ -8333,7 +10372,9 @@ cross_delete_crossposts(stream)
 				  if(uid = atol(uidp)){
 				      strcpy(newgrp, group);
 				      if(tstream = pine_mail_open(NULL,
-							     newfolder, 0L)){
+								  newfolder,
+								  SP_USEPOOL,
+								  NULL)){
 					  mail_flag(tstream, long2string(uid),
 						    "\\DELETED",
 						    ST_SET | ST_UID);
@@ -8391,10 +10432,11 @@ cmd_print(state, msgmap, agg, in_index)
      CmdWhere	  in_index;
 {
     char      prompt[250];
-    long      i, msgs;
+    long      i, msgs, rawno;
     int	      next = 0, do_index = 0;
     ENVELOPE *e;
     BODY     *b;
+    MESSAGECACHE *mc;
 
     if(agg && !pseudo_selected(msgmap))
       return;
@@ -8477,12 +10519,21 @@ cmd_print(state, msgmap, agg, in_index)
 	      if(!print_char(FORMFEED))
 	        break;
 
-	    if(!(e=mail_fetchstructure(state->mail_stream, mn_m2raw(msgmap,i),
-				       &b))
+	    if(!(state->mail_stream
+	       && (rawno = mn_m2raw(msgmap, i)) > 0L
+	       && rawno <= state->mail_stream->nmsgs
+	       && (mc = mail_elt(state->mail_stream, rawno))
+	       && mc->valid))
+	      mc = NULL;
+
+	    if(!(e=pine_mail_fetchstructure(state->mail_stream,
+					    mn_m2raw(msgmap,i),
+					    &b))
 	       || (F_ON(F_FROM_DELIM_IN_PRINT, ps_global)
-		   && !bezerk_delimiter(e, print_char, next))
+		   && !bezerk_delimiter(e, mc, print_char, next))
 	       || !format_message(mn_m2raw(msgmap, mn_get_cur(msgmap)),
-				  e, b, NULL, FM_NEW_MESS, print_char)){
+				  e, b, NULL, FM_NEW_MESS | FM_NOINDENT,
+				  print_char)){
 	        q_status_message(SM_ORDER | SM_DING, 3, 3,
 			       "Error printing message");
 	        break;
@@ -8502,37 +10553,103 @@ cmd_print(state, msgmap, agg, in_index)
  * Support structure and functions to support piping raw message texts...
  */
 static struct raw_pipe_data {
-    MAILSTREAM *stream;
-    long	msgno;
-    char       *cur, *body;
+    MAILSTREAM   *stream;
+    unsigned long msgno, len;
+    long	  char_limit, flags;
+    char         *cur, *body;
 } raw_pipe;
 
 
 int
 raw_pipe_getc(c)
-     unsigned char *c;
+    unsigned char *c;
 {
+    static char *free_this = NULL;
+
+    /*
+     * What is this if doing?
+     *
+     * If((just_starting && unsuccessful_fetch_header)
+     *    || (no_chars_available && haven't_fetched_body
+     *        && (not_supposed_to_fetch
+     *            || (supposed_to_fetch_all && unsuccessful_fetch_text)
+     *            || (supposed_to_partial_fetch && unsuccessful_partial_fetch))
+     *    || (no_chars_available))
+     *   return(0);
+     *
+     * otherwise, fall through and return next character
+     */
     if((!raw_pipe.cur
-	&& !(raw_pipe.cur = mail_fetchheader(raw_pipe.stream, raw_pipe.msgno)))
-       || (!*raw_pipe.cur && !raw_pipe.body
-	   && !(raw_pipe.cur = raw_pipe.body = pine_mail_fetch_text(raw_pipe.stream,
-						   raw_pipe.msgno, NULL, NULL, NIL)))
-       || (!*raw_pipe.cur && raw_pipe.body))
+        && !(raw_pipe.cur = mail_fetch_header(raw_pipe.stream, raw_pipe.msgno,
+					      NULL, NULL,
+					      &raw_pipe.len,
+					      raw_pipe.flags)))
+       || ((raw_pipe.len <= 0L) && !raw_pipe.body
+           && (raw_pipe.char_limit == 0L
+	       || (raw_pipe.char_limit < 0L
+	           && !(raw_pipe.cur = raw_pipe.body =
+				   pine_mail_fetch_text(raw_pipe.stream,
+							raw_pipe.msgno,
+							NULL,
+							&raw_pipe.len,
+							raw_pipe.flags)))
+	       || (raw_pipe.char_limit > 0L
+	           && !(raw_pipe.cur = raw_pipe.body =
+		        pine_mail_partial_fetch_wrapper(raw_pipe.stream,
+					   raw_pipe.msgno,
+					   NULL,
+					   &raw_pipe.len,
+					   raw_pipe.flags,
+					   (unsigned long) raw_pipe.char_limit,
+					   &free_this, 1)))))
+       || (raw_pipe.len <= 0L)){
+
+	if(free_this)
+	  fs_give((void **) &free_this);
+
+	return(0);
+    }
+
+    if(raw_pipe.char_limit > 0L
+       && raw_pipe.body
+       && raw_pipe.len > raw_pipe.char_limit)
+      raw_pipe.len = raw_pipe.char_limit;
+
+    if(raw_pipe.len > 0L){
+	*c = (unsigned char) *raw_pipe.cur++;
+	raw_pipe.len--;
+	return(1);
+    }
+    else
       return(0);
 
-    *c = (unsigned char) *raw_pipe.cur++;
-    return(1);
 }
 
 
+/*
+ * Set up for using raw_pipe_getc
+ *
+ * Args: stream
+ *       msgno
+ *       char_limit  Set to -1 means whole thing
+ *                           0 means headers only
+ *                         > 0 means headers plus char_limit body chars
+ *       flags -- passed to fetch functions
+ */
 void
-prime_raw_text_getc(stream, msgno)
+prime_raw_pipe_getc(stream, msgno, char_limit, flags)
     MAILSTREAM *stream;
     long	msgno;
+    long        char_limit;
+    long        flags;
 {
-    raw_pipe.stream = stream;
-    raw_pipe.msgno  = msgno;
-    raw_pipe.cur    = raw_pipe.body = NULL;
+    raw_pipe.stream     = stream;
+    raw_pipe.msgno      = (unsigned long) msgno;
+    raw_pipe.char_limit = char_limit;
+    raw_pipe.len        = 0L;
+    raw_pipe.flags      = flags;
+    raw_pipe.cur        = NULL;
+    raw_pipe.body       = NULL;
 }
 
 
@@ -8553,14 +10670,15 @@ cmd_pipe(state, msgmap, agg)
      int	  agg;
 {
     ENVELOPE      *e;
+    MESSAGECACHE  *mc;
     BODY	  *b;
     PIPE_S	  *syspipe;
     char          *resultfilename = NULL, prompt[80];
     int            done = 0;
     gf_io_t	   pc;
     int		   next = 0;
-    long           i;
-    HelpType       help;
+    int            pipe_rv; /* rv of proc to separate from close_system_pipe rv */
+    long           i, rawno;
     static int	   capture = 1, raw = 0, delimit = 0, newpipe = 0;
     static char    pipe_command[MAXPATH];
     static ESCKEY_S pipe_opt[] = {
@@ -8589,7 +10707,6 @@ cmd_pipe(state, msgmap, agg)
     else
       pipe_opt[4].ch = -1;
 
-    help = NO_HELP;
     while (!done) {
 	int flags;
 
@@ -8611,7 +10728,7 @@ cmd_pipe(state, msgmap, agg)
 	flags = OE_APPEND_CURRENT | OE_SEQ_SENSITIVE;
 	switch(optionally_enter(pipe_command, -FOOTER_ROWS(state), 0,
 				sizeof(pipe_command), prompt,
-				pipe_opt, help, &flags)){
+				pipe_opt, NO_HELP, &flags)){
 	  case -1 :
 	    q_status_message(SM_ORDER | SM_DING, 3, 4,
 			     "Internal problem encountered");
@@ -8658,8 +10775,14 @@ cmd_pipe(state, msgmap, agg)
 		for(i = mn_first_cur(msgmap);
 		    i > 0L && !done;
 		    i = mn_next_cur(msgmap)){
-		    e = mail_fetchstructure(ps_global->mail_stream,
-					    mn_m2raw(msgmap, i), &b);
+		    e = pine_mail_fetchstructure(ps_global->mail_stream,
+						 mn_m2raw(msgmap, i), &b);
+		    if(!(state->mail_stream
+		       && (rawno = mn_m2raw(msgmap, i)) > 0L
+		       && rawno <= state->mail_stream->nmsgs
+		       && (mc = mail_elt(state->mail_stream, rawno))
+		       && mc->valid))
+		      mc = NULL;
 
 		    if((newpipe
 			&& !(syspipe = cmd_pipe_open(pipe_command,
@@ -8667,15 +10790,15 @@ cmd_pipe(state, msgmap, agg)
 						       ? NULL
 						       : &resultfilename,
 						     flags, &pc)))
-		       || (delimit && !bezerk_delimiter(e, pc, next++)))
+		       || (delimit && !bezerk_delimiter(e, mc, pc, next++)))
 		      done++;
 
 		    if(!done){
 			if(raw){
 			    char    *pipe_err;
 
-			    prime_raw_text_getc(ps_global->mail_stream,
-						mn_m2raw(msgmap, i));
+			    prime_raw_pipe_getc(ps_global->mail_stream,
+						mn_m2raw(msgmap, i), -1L, 0L);
 			    gf_filter_init();
 			    gf_link_filter(gf_nvtnl_local, NULL);
 			    if(pipe_err = gf_pipe(raw_pipe_getc, pc)){
@@ -8693,15 +10816,16 @@ cmd_pipe(state, msgmap, agg)
 		    }
 
 		    if(newpipe)
-		      (void) close_system_pipe(&syspipe);
+		      if(close_system_pipe(&syspipe, &pipe_rv, 0) == -1)
+			done++;
 		}
 
 		if(!capture)
 		  ps_global->in_init_seq = 0;
 
 		if(!newpipe)
-		  (void) close_system_pipe(&syspipe);
-
+		  if(close_system_pipe(&syspipe, &pipe_rv, 0) == -1)
+		    done++;
 		if(done)		/* say we had a problem */
 		  q_status_message(SM_ORDER | SM_DING, 3, 3,
 				   "Error piping message");
@@ -8725,7 +10849,8 @@ cmd_pipe(state, msgmap, agg)
 	    break;
 
 	  case 3 :
-            help = (help == NO_HELP) ? h_pipe_msg : NO_HELP;
+	    helper(h_common_pipe, "HELP FOR PIPE COMMAND", HLPD_SIMPLE);
+	    ps_global->mangled_screen = 1;
 	    break;
 
 	  case 2 :                              /* no place to escape to */
@@ -8756,12 +10881,15 @@ cmd_pipe_open(cmd, result, flags, pc)
     int       flags;
     gf_io_t  *pc;
 {
+    char    err[200];
     PIPE_S *pipe;
 
     if(pipe = open_system_pipe(cmd, result, NULL, flags, 0))
-      gf_set_writec(pc, pipe->out.f, 0L, FileStar);
-    else
-      q_status_message(SM_ORDER | SM_DING, 3, 3, "Error opening pipe") ;
+      gf_set_writec(pc, pipe, 0L, PipeStar);
+    else{
+	sprintf(err, "Error opening pipe: %.100s", cmd ? cmd : "?");
+	q_status_message(SM_ORDER | SM_DING, 3, 3, err) ;
+    }
 
     return(pipe);
 }
@@ -8970,10 +11098,8 @@ list_mgmt_screen(html)
 	    gf_filter_init();
 
 	    gf_link_filter(gf_html2plain,
-			   gf_html2plain_opt(NULL,
-					     ps_global->ttyo->screen_cols,
-					     &handles,
-					     0));
+			   gf_html2plain_opt(NULL, ps_global->ttyo->screen_cols,
+					     NULL, &handles, 0));
 
 	    error = gf_pipe(gc, pc);
 
@@ -9031,16 +11157,20 @@ list_mgmt_screen(html)
 	 by hand.
   ----*/
 void
-aggregate_select(state, msgmap, q_line, in_index)
+aggregate_select(state, msgmap, q_line, in_index, thrdindx)
     struct pine *state;
     MSGNO_S     *msgmap;
     int	         q_line;
     CmdWhere	 in_index;
+    int          thrdindx;
 {
-    long       i, diff, old_tot, msgno;
-    int        q = 0, rv = 0, narrow = 0, hidden;
-    HelpType   help = NO_HELP;
-    ESCKEY_S  *sel_opts;
+    long          i, diff, old_tot, msgno, raw;
+    int           q = 0, rv = 0, narrow = 0, hidden;
+    HelpType      help = NO_HELP;
+    ESCKEY_S     *sel_opts;
+    MESSAGECACHE *mc;
+    SEARCHSET    *limitsrch = NULL;
+    PINETHRD_S   *thrd;
     extern     MAILSTREAM *mm_search_stream;
     extern     long	   mm_search_count;
 
@@ -9048,12 +11178,29 @@ aggregate_select(state, msgmap, q_line, in_index)
     mm_search_stream = state->mail_stream;
     mm_search_count  = 0L;
 
-    sel_opts = sel_opts2;
+    sel_opts = thrdindx ? sel_opts4 : sel_opts2;
     if(old_tot = any_lflagged(msgmap, MN_SLCT)){
-	i = get_lflag(state->mail_stream, msgmap, mn_get_cur(msgmap), MN_SLCT);
-	sel_opts1[1].label = "unselect Cur" + (i ? 0 : 2);
+	if(thrdindx){
+	    i = 0;
+	    thrd = fetch_thread(state->mail_stream,
+				mn_m2raw(msgmap, mn_get_cur(msgmap)));
+	    /* check if whole thread is selected or not */
+	    if(thrd &&
+	       count_lflags_in_thread(state->mail_stream,thrd,msgmap,MN_SLCT)
+		   ==
+	       count_lflags_in_thread(state->mail_stream,thrd,msgmap,MN_NONE))
+	      i = 1;
+
+	    sel_opts1[1].label = "unselect Curthrd" + (i ? 0 : 2);
+	}
+	else{
+	    i = get_lflag(state->mail_stream, msgmap, mn_get_cur(msgmap),
+			  MN_SLCT);
+	    sel_opts1[1].label = "unselect Cur" + (i ? 0 : 2);
+	}
+
 	sel_opts += 2;			/* disable extra options */
-	switch(q = radio_buttons(sel_pmt1, q_line, sel_opts1, 'c', 'x', help,
+	switch(q = radio_buttons(sel_pmt1, q_line, sel_opts1, 'c', 'x', NO_HELP,
 				 RB_NORM)){
 	  case 'f' :			/* flip selection */
 	    msgno = 0L;
@@ -9087,8 +11234,36 @@ aggregate_select(state, msgmap, q_line, in_index)
 	}
     }
 
-    if(!q)
-      q = radio_buttons(sel_pmt2, q_line, sel_opts, 'c', 'x', help, RB_NORM);
+    if(!q){
+	while(1){
+	    q = radio_buttons(sel_pmt2, q_line, sel_opts, 'c', 'x',
+			      NO_HELP, RB_NORM|RB_RET_HELP);
+
+	    if(q == 3){
+		helper(h_index_cmd_select, "HELP FOR SELECT", HLPD_SIMPLE);
+		ps_global->mangled_screen = 1;
+	    }
+	    else
+	      break;
+	}
+    }
+
+    /*
+     * The purpose of this is to add the appropriate searchset to the
+     * search so that the search can be limited to only looking at what
+     * it needs to look at. That is, if we are narrowing then we only need
+     * to look at messages which are already selected, and if we are
+     * broadening, then we only need to look at messages which are not
+     * yet selected. This routine will work whether or not
+     * limiting_searchset properly limits the search set. In particular,
+     * the searchset returned by limiting_searchset may include messages
+     * which really shouldn't be included. We do that because a too-large
+     * searchset will break some IMAP servers. It is even possible that it
+     * becomes inefficient to send the whole set. If the select function
+     * frees limitsrch, it should be sure to set it to NULL so we won't
+     * try freeing it again here.
+     */
+    limitsrch = limiting_searchset(state->mail_stream, narrow);
 
     /*
      * NOTE: See note about MESSAGECACHE "searched" bits above!
@@ -9099,7 +11274,7 @@ aggregate_select(state, msgmap, q_line, in_index)
 	return;
 
       case 'c' :			/* select/unselect current */
-	(void) individual_select(state, msgmap, q_line, in_index);
+	(void) individual_select(state, msgmap, in_index);
 	return;
 
       case 'a' :			/* select/unselect all */
@@ -9126,237 +11301,37 @@ aggregate_select(state, msgmap, q_line, in_index)
 	return;
 
       case 'n' :			/* Select by Number */
-	rv = select_number(state->mail_stream, msgmap, mn_get_cur(msgmap));
-	break;
-
-      case 'd' :			/* Select by Date */
-	rv = select_date(state->mail_stream, msgmap, mn_get_cur(msgmap));
-	break;
-
-      case 't' :			/* Text */
-	rv = select_text(state->mail_stream, msgmap, mn_get_cur(msgmap));
-	break;
-
-      case 'z' :			/* Size */
-	rv = select_size(state->mail_stream, msgmap, mn_get_cur(msgmap));
-	break;
-
-      case 's' :			/* Status */
-	rv = select_flagged(state->mail_stream, msgmap, mn_get_cur(msgmap));
-	break;
-
-      default :
-	q_status_message(SM_ORDER | SM_DING, 3, 3,
-			 "Unsupported Select option");
-	return;
-    }
-
-    if(rv)				/* bad return value.. */
-      return;				/* error already displayed */
-
-    if(narrow)				/* make sure something was selected */
-      for(i = 1L; i <= mn_get_total(msgmap); i++)
-	if(mail_elt(state->mail_stream, mn_m2raw(msgmap, i))->searched){
-	    if(get_lflag(state->mail_stream, msgmap, i, MN_SLCT))
-	      break;
-	    else
-	      mm_search_count--;
-	}
-
-    diff = 0L;
-    if(mm_search_count){
-	/*
-	 * loop thru all the messages, adjusting local flag bits
-	 * based on their "searched" bit...
-	 */
-	for(i = 1L, msgno = 0L; i <= mn_get_total(msgmap); i++)
-	  if(narrow){
-	      /* turning OFF selectedness if the "searched" bit isn't lit. */
-	      if(get_lflag(state->mail_stream, msgmap, i, MN_SLCT)){
-		  if(!mail_elt(state->mail_stream,
-			       mn_m2raw(msgmap, i))->searched){
-		      diff--;
-		      set_lflag(state->mail_stream, msgmap, i, MN_SLCT, 0);
-		      if(hidden)
-			set_lflag(state->mail_stream, msgmap, i, MN_HIDE, 1);
-		  }
-		  else if(msgno < mn_get_cur(msgmap))
-		    msgno = i;
-	      }
-	  }
-	  else if(mail_elt(state->mail_stream,mn_m2raw(msgmap,i))->searched){
-	      /* turn ON selectedness if "searched" bit is lit. */
-	      if(!get_lflag(state->mail_stream, msgmap, i, MN_SLCT)){
-		  diff++;
-		  set_lflag(state->mail_stream, msgmap, i, MN_SLCT, 1);
-		  if(hidden)
-		    set_lflag(state->mail_stream, msgmap, i, MN_HIDE, 0);
-	      }
-	  }
-
-	/* if we're zoomed and the current message was unselected */
-	if(narrow && msgno
-	   && get_lflag(state->mail_stream,msgmap,mn_get_cur(msgmap),MN_HIDE))
-	  mn_reset_cur(msgmap, msgno);
-    }
-
-    if(!diff){
-	if(narrow)
-	  q_status_message4(SM_ORDER, 0, 2,
-			"%.200s.  %.200s message%.200s remain%.200s selected.",
-			mm_search_count ? "No change resulted"
-					: "No messages in intersection",
-			comatose(old_tot), plural(old_tot),
-			(old_tot == 1L) ? "s" : "");
-	else if(old_tot && mm_search_count)
-	  q_status_message(SM_ORDER, 0, 2,
-		   "No change resulted.  Matching messages already selected.");
+	if(thrdindx)
+	  rv = select_thrd_number(state->mail_stream, msgmap, &limitsrch);
 	else
-	  q_status_message1(SM_ORDER | SM_DING, 0, 2,
-			    "Select failed.  No %.200smessages selected.",
-			    old_tot ? "additional " : "");
-    }
-    else if(old_tot){
-	sprintf(tmp_20k_buf,
-		"Select matched %ld message%s.  %s %smessage%s %sselected.",
-		(diff > 0) ? diff : old_tot + diff,
-		plural((diff > 0) ? diff : old_tot + diff),
-		comatose((diff > 0) ? any_lflagged(msgmap, MN_SLCT) : -diff),
-		(diff > 0) ? "total " : "",
-		plural((diff > 0) ? any_lflagged(msgmap, MN_SLCT) : -diff),
-		(diff > 0) ? "" : "UN");
-	q_status_message(SM_ORDER, 0, 2, tmp_20k_buf);
-    }
-    else
-      q_status_message2(SM_ORDER, 0, 2, "Select matched %.200s message%.200s!",
-			comatose(diff), plural(diff));
-}
+	  rv = select_number(state->mail_stream, msgmap, &limitsrch);
 
-
-/*
- * This is like aggregate_select but user is in the Thread Index.
- */
-void
-thread_index_select(state, msgmap, q_line, in_index)
-    struct pine *state;
-    MSGNO_S     *msgmap;
-    int	         q_line;
-    CmdWhere	 in_index;
-{
-    long        i, diff, old_tot, msgno;
-    int         q = 0, rv = 0, narrow = 0, hidden;
-    HelpType    help = NO_HELP;
-    ESCKEY_S   *sel_opts;
-    PINETHRD_S *thrd;
-    extern      MAILSTREAM *mm_search_stream;
-    extern      long	    mm_search_count;
-
-    hidden           = any_lflagged(msgmap, MN_HIDE) > 0L;
-    mm_search_stream = state->mail_stream;
-    mm_search_count  = 0L;
-
-    sel_opts = sel_opts4;
-    if(old_tot = any_lflagged(msgmap, MN_SLCT)){
-	i = 0;
-	thrd = fetch_thread(state->mail_stream,
-			    mn_m2raw(msgmap, mn_get_cur(msgmap)));
-	if(thrd &&
-	   count_lflags_in_thread(state->mail_stream, thrd, msgmap, MN_SLCT) ==
-	   count_lflags_in_thread(state->mail_stream, thrd, msgmap, MN_NONE))
-	  i = 1;
-
-	sel_opts1[1].label = "unselect Curthrd" + (i ? 0 : 2);
-	sel_opts += 2;			/* disable extra options */
-	switch(q = radio_buttons(sel_pmt1, q_line, sel_opts1, 'c', 'x', help,
-				 RB_NORM)){
-	  case 'f' :			/* flip selection */
-	    msgno = 0L;
-	    for(i = 1L; i <= mn_get_total(msgmap); i++){
-		q = !get_lflag(state->mail_stream, msgmap, i, MN_SLCT);
-		set_lflag(state->mail_stream, msgmap, i, MN_SLCT, q);
-		if(hidden){
-		    set_lflag(state->mail_stream, msgmap, i, MN_HIDE, !q);
-		    if(!msgno && q)
-		      mn_reset_cur(msgmap, msgno = i);
-		}
-	    }
-
-	    return;
-
-	  case 'n' :			/* narrow selection */
-	    narrow++;
-	  case 'b' :			/* broaden selection */
-	    q = 0;			/* offer criteria prompt */
-	    break;
-
-	  case 'c' :			/* Un/Select Current */
-	  case 'a' :			/* Unselect All */
-	  case 'x' :			/* cancel */
-	    break;
-
-	  default :
-	    q_status_message(SM_ORDER | SM_DING, 3, 3,
-			     "Unsupported Select option");
-	    return;
-	}
-    }
-
-    if(!q)
-      q = radio_buttons(sel_pmt2, q_line, sel_opts, 'c', 'x', help, RB_NORM);
-
-    /*
-     * NOTE: See note about MESSAGECACHE "searched" bits above!
-     */
-    switch(q){
-      case 'x':				/* cancel */
-	cmd_cancelled("Select command");
-	return;
-
-      case 'c' :			/* select/unselect current */
-	(void) individual_select(state, msgmap, q_line, in_index);
-	return;
-
-      case 'a' :			/* select/unselect all */
-	msgno = any_lflagged(msgmap, MN_SLCT);
-	diff    = (!msgno) ? mn_get_total(msgmap) : 0L;
-
-	for(i = 1L; i <= mn_get_total(msgmap); i++){
-	    if(msgno){		/* unmark 'em all */
-		if(get_lflag(state->mail_stream, msgmap, i, MN_SLCT)){
-		    diff++;
-		    set_lflag(state->mail_stream, msgmap, i, MN_SLCT, 0);
-		}
-		else if(hidden)
-		  set_lflag(state->mail_stream, msgmap, i, MN_HIDE, 0);
-	    }
-	    else			/* mark 'em all */
-	      set_lflag(state->mail_stream, msgmap, i, MN_SLCT, 1);
-	}
-
-	q_status_message4(SM_ORDER,0,2,
-			  "%.200s%.200s message%.200s %.200sselected",
-			  msgno ? "" : "All ", comatose(diff), 
-			  plural(diff), msgno ? "UN" : "");
-	return;
-
-      case 'n' :			/* Select by Number */
-	rv = select_thrd_number(state->mail_stream, msgmap, mn_get_cur(msgmap));
 	break;
 
       case 'd' :			/* Select by Date */
-	rv = select_date(state->mail_stream, msgmap, mn_get_cur(msgmap));
+	rv = select_date(state->mail_stream, msgmap, mn_get_cur(msgmap),
+			 &limitsrch);
 	break;
 
       case 't' :			/* Text */
-	rv = select_text(state->mail_stream, msgmap, mn_get_cur(msgmap));
+	rv = select_text(state->mail_stream, msgmap, mn_get_cur(msgmap),
+			 &limitsrch);
 	break;
 
       case 'z' :			/* Size */
-	rv = select_size(state->mail_stream, msgmap, mn_get_cur(msgmap));
+	rv = select_size(state->mail_stream, &limitsrch);
 	break;
 
       case 's' :			/* Status */
-	rv = select_flagged(state->mail_stream, msgmap, mn_get_cur(msgmap));
+	rv = select_flagged(state->mail_stream, &limitsrch);
+	break;
+
+      case 'k' :			/* Keyword */
+	rv = select_by_keyword(state->mail_stream, &limitsrch);
+	break;
+
+      case 'r' :			/* Rule */
+	rv = select_by_rule(state->mail_stream, &limitsrch);
 	break;
 
       default :
@@ -9365,12 +11340,17 @@ thread_index_select(state, msgmap, q_line, in_index)
 	return;
     }
 
+    if(limitsrch)
+      mail_free_searchset(&limitsrch);
+
     if(rv)				/* bad return value.. */
       return;				/* error already displayed */
 
     if(narrow)				/* make sure something was selected */
       for(i = 1L; i <= mn_get_total(msgmap); i++)
-	if(mail_elt(state->mail_stream, mn_m2raw(msgmap, i))->searched){
+	if((raw = mn_m2raw(msgmap, i)) > 0L && state->mail_stream
+	   && raw <= state->mail_stream->nmsgs
+	   && (mc = mail_elt(state->mail_stream, raw)) && mc->searched){
 	    if(get_lflag(state->mail_stream, msgmap, i, MN_SLCT))
 	      break;
 	    else
@@ -9387,19 +11367,26 @@ thread_index_select(state, msgmap, q_line, in_index)
 	  if(narrow){
 	      /* turning OFF selectedness if the "searched" bit isn't lit. */
 	      if(get_lflag(state->mail_stream, msgmap, i, MN_SLCT)){
-		  if(!mail_elt(state->mail_stream,
-			       mn_m2raw(msgmap, i))->searched){
+		  if((raw = mn_m2raw(msgmap, i)) > 0L && state->mail_stream
+		     && raw <= state->mail_stream->nmsgs
+		     && (mc = mail_elt(state->mail_stream, raw))
+		     && !mc->searched){
 		      diff--;
 		      set_lflag(state->mail_stream, msgmap, i, MN_SLCT, 0);
 		      if(hidden)
 			set_lflag(state->mail_stream, msgmap, i, MN_HIDE, 1);
 		  }
+		  /* adjust current message in case we unselect and hide it */
 		  else if(msgno < mn_get_cur(msgmap)
-			  && !get_lflag(state->mail_stream, msgmap, i, MN_CHID))
+			  && (!thrdindx
+			      || !get_lflag(state->mail_stream, msgmap,
+					    i, MN_CHID)))
 		    msgno = i;
 	      }
 	  }
-	  else if(mail_elt(state->mail_stream,mn_m2raw(msgmap,i))->searched){
+	  else if((raw = mn_m2raw(msgmap, i)) > 0L && state->mail_stream
+	          && raw <= state->mail_stream->nmsgs
+	          && (mc = mail_elt(state->mail_stream, raw)) && mc->searched){
 	      /* turn ON selectedness if "searched" bit is lit. */
 	      if(!get_lflag(state->mail_stream, msgmap, i, MN_SLCT)){
 		  diff++;
@@ -9419,11 +11406,12 @@ thread_index_select(state, msgmap, q_line, in_index)
 	if(narrow)
 	  q_status_message4(SM_ORDER, 0, 2,
 			"%.200s.  %.200s message%.200s remain%.200s selected.",
-			mm_search_count ? "No change resulted"
+			mm_search_count
+					? "No change resulted"
 					: "No messages in intersection",
 			comatose(old_tot), plural(old_tot),
 			(old_tot == 1L) ? "s" : "");
-	else if(old_tot && mm_search_count)
+	else if(old_tot)
 	  q_status_message(SM_ORDER, 0, 2,
 		   "No change resulted.  Matching messages already selected.");
 	else
@@ -9446,7 +11434,6 @@ thread_index_select(state, msgmap, q_line, in_index)
       q_status_message2(SM_ORDER, 0, 2, "Select matched %.200s message%.200s!",
 			comatose(diff), plural(diff));
 }
-
 
 
 /*----------------------------------------------------------------------
@@ -9454,15 +11441,13 @@ thread_index_select(state, msgmap, q_line, in_index)
 
    Args: state -- pointer pine's state variables
 	 msgmap -- message collection to operate on
-	 q_line -- line on display to write prompts
 	 in_index -- in the message index view
    Returns: TRUE if current marked selected, FALSE otw
   ----*/
 int
-individual_select(state, msgmap, q_line, in_index)
+individual_select(state, msgmap, in_index)
      struct pine *state;
      MSGNO_S     *msgmap;
-     int	  q_line;
      CmdWhere	  in_index;
 {
     long cur;
@@ -9495,14 +11480,14 @@ individual_select(state, msgmap, q_line, in_index)
 		if(any_lflagged(msgmap, MN_SLCT)){
 		    mn_inc_cur(state->mail_stream, msgmap,
 			       (in_index == View && THREADING()
-				&& state->viewing_a_thread)
+				&& sp_viewing_a_thread(state->mail_stream))
 				 ? MH_THISTHD
 				 : (in_index == View)
 				   ? MH_ANYTHD : MH_NONE);
 		    if(mn_get_cur(msgmap) == cur)
 		      mn_dec_cur(state->mail_stream, msgmap,
 			         (in_index == View && THREADING()
-				  && state->viewing_a_thread)
+				  && sp_viewing_a_thread(state->mail_stream))
 				   ? MH_THISTHD
 				   : (in_index == View)
 				     ? MH_ANYTHD : MH_NONE);
@@ -9533,14 +11518,14 @@ individual_select(state, msgmap, q_line, in_index)
 		if(any_lflagged(msgmap, MN_SLCT)){
 		    mn_inc_cur(state->mail_stream, msgmap,
 			       (in_index == View && THREADING()
-				&& state->viewing_a_thread)
+				&& sp_viewing_a_thread(state->mail_stream))
 				 ? MH_THISTHD
 				 : (in_index == View)
 				   ? MH_ANYTHD : MH_NONE);
 		    if(mn_get_cur(msgmap) == cur)
 		      mn_dec_cur(state->mail_stream, msgmap,
 			         (in_index == View && THREADING()
-				  && state->viewing_a_thread)
+				  && sp_viewing_a_thread(state->mail_stream))
 				   ? MH_THISTHD
 				   : (in_index == View)
 				     ? MH_ANYTHD : MH_NONE);
@@ -9746,7 +11731,7 @@ zoom_index(state, stream, msgmap)
 
     if(any_lflagged(msgmap, MN_SLCT)){
 
-	if(THREADING() && state->viewing_a_thread){
+	if(THREADING() && sp_viewing_a_thread(stream)){
 	    /* get top of current thread */
 	    thrd = fetch_thread(stream, mn_m2raw(msgmap, mn_get_cur(msgmap)));
 	    if(thrd && thrd->top)
@@ -9758,6 +11743,15 @@ zoom_index(state, stream, msgmap)
 		set_lflag(stream, msgmap, i, MN_HIDE, 1);
 	    }
 	    else{
+
+		/*
+		 * Because subject lines depend on whether or not
+		 * other parts of the thread above us are visible or not.
+		 */
+		if(THREADING() && !THRD_INDX()
+		   && ps_global->thread_disp_style == THREAD_MUTTLIKE)
+		  clear_index_cache_ent(i);
+
 		/*
 		 * If a selected message is hidden beneath a collapsed
 		 * thread (not beneath a thread index line, but a collapsed
@@ -9824,7 +11818,7 @@ zoom_index(state, stream, msgmap)
 			    && thrd->top)
 			  first = mn_raw2m(msgmap, thrd->top);
 		    }
-		    else if(THREADING() && state->viewing_a_thread){
+		    else if(THREADING() && sp_viewing_a_thread(stream)){
 			/* want first selected message in this thread */
 			if(topthrd
 			   && (thrd=fetch_thread(stream, mn_m2raw(msgmap, i)))
@@ -9843,7 +11837,7 @@ zoom_index(state, stream, msgmap)
 	    if(count_lflags_in_thread(stream, thrd, msgmap, MN_SLCT) == 0)
 	      mn_set_cur(msgmap, first);
 	}
-	else if((THREADING() && state->viewing_a_thread)
+	else if((THREADING() && sp_viewing_a_thread(stream))
 	        || !get_lflag(stream, msgmap, mn_get_cur(msgmap), MN_SLCT)){
 	    if(!first){
 		int flags = 0;
@@ -9905,25 +11899,25 @@ unzoom_index(state, stream, msgmap)
 }
 
 
-
-/*----------------------------------------------------------------------
- Prompt the user for the type of sort he desires
-
-   Args: none
-   Returns: 0 if search OK (matching numbers selected by side effect)
-            1 if there's a problem
-
-  ----*/
+/*
+ * Select by message number ranges.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
 int
-select_number(stream, msgmap, msgno)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgmap;
-     long	 msgno;
+select_number(stream, msgmap, limitsrch)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    SEARCHSET **limitsrch;
 {
     int r;
-    long n1, n2;
+    long n1, n2, raw;
     char number1[16], number2[16], numbers[80], *p, *t;
     HelpType help;
+    MESSAGECACHE *mc;
 
     numbers[0] = '\0';
     ps_global->mangled_footer = 1;
@@ -9956,7 +11950,8 @@ select_number(stream, msgmap, msgno)
     }
 
     for(n1 = 1; n1 <= stream->nmsgs; n1++)
-      mail_elt(stream, n1)->searched = 0;	/* clear searched bits */
+      if((mc = mail_elt(stream, n1)) != NULL)
+        mc->searched = 0;			/* clear searched bits */
 
     for(p = numbers; *p ; p++){
 	t = number1;
@@ -10015,31 +12010,69 @@ select_number(stream, msgmap, msgno)
 		return(1);
 	    }
 
-	    for(;n1 <= n2; n1++)
-	      mm_searched(stream, mn_m2raw(msgmap, n1));
+	    for(;n1 <= n2; n1++){
+		raw = mn_m2raw(msgmap, n1);
+		if(raw > 0L
+		   && (!(limitsrch && *limitsrch)
+		       || in_searchset(*limitsrch, (unsigned long) raw)))
+		  mm_searched(stream, raw);
+	    }
 	}
-	else
-	  mm_searched(stream, mn_m2raw(msgmap, n1));
+	else{
+	    raw = mn_m2raw(msgmap, n1);
+	    if(raw > 0L
+	       && (!(limitsrch && *limitsrch)
+		   || in_searchset(*limitsrch, (unsigned long) raw)))
+	      mm_searched(stream, raw);
+	}
 
 	if(*p == '\0')
 	  break;
     }
-    
+
     return(0);
 }
 
 
 int
-select_thrd_number(stream, msgmap, msgno)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgmap;
-     long	 msgno;
+in_searchset(srch, num)
+    SEARCHSET *srch;
+    unsigned long num;
+{
+    SEARCHSET *s;
+    unsigned long i;
+
+    if(srch)
+      for(s = srch; s; s = s->next)
+	for(i = s->first; i <= s->last; i++){
+	    if(i == num)
+	      return 1;
+	}
+
+    return 0;
+}
+    
+
+/*
+ * Select by thread number ranges.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
+int
+select_thrd_number(stream, msgmap, msgset)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    SEARCHSET **msgset;
 {
     int r;
     long n1, n2;
     char number1[16], number2[16], numbers[80], *p, *t;
     HelpType help;
     PINETHRD_S   *thrd = NULL;
+    MESSAGECACHE *mc;
 
     numbers[0] = '\0';
     ps_global->mangled_footer = 1;
@@ -10072,7 +12105,8 @@ select_thrd_number(stream, msgmap, msgno)
     }
 
     for(n1 = 1; n1 <= stream->nmsgs; n1++)
-      mail_elt(stream, n1)->searched = 0;	/* clear searched bits */
+      if((mc = mail_elt(stream, n1)) != NULL)
+        mc->searched = 0;			/* clear searched bits */
 
     for(p = numbers; *p ; p++){
 	t = number1;
@@ -10135,14 +12169,14 @@ select_thrd_number(stream, msgmap, msgno)
 		thrd = find_thread_by_number(stream, msgmap, n1, thrd);
 
 		if(thrd)
-		  set_search_bit_for_thread(stream, thrd);
+		  set_search_bit_for_thread(stream, thrd, msgset);
 	    }
 	}
 	else{
 	    thrd = find_thread_by_number(stream, msgmap, n1, NULL);
 
 	    if(thrd)
-	      set_search_bit_for_thread(stream, thrd);
+	      set_search_bit_for_thread(stream, thrd, msgset);
 	}
 
 	if(*p == '\0')
@@ -10153,20 +12187,60 @@ select_thrd_number(stream, msgmap, msgno)
 }
 
 
+/*
+ * Set search bit for every message in a thread.
+ *
+ * Watch out when calling this. The thrd->branch is not part of thrd.
+ * Branch is a sibling to thrd, not a child. Zero out branch before calling
+ * or call on thrd->next and worry about thrd separately. Top-level threads
+ * already have a branch equal to zero.
+ *
+ *  If msgset is non-NULL, then only set the search bit for a message if that
+ *  message is included in the msgset.
+ */
+void
+set_search_bit_for_thread(stream, thrd, msgset)
+    MAILSTREAM  *stream;
+    PINETHRD_S  *thrd;
+    SEARCHSET  **msgset;
+{
+    PINETHRD_S *nthrd, *bthrd;
 
-/*----------------------------------------------------------------------
- Prompt the user for the type of sort he desires
+    if(!(stream && thrd))
+      return;
 
-   Args: none
-   Returns: 0 if search OK (matching numbers selected by side effect)
-            1 if there's a problem
+    if(thrd->rawno > 0L && thrd->rawno <= stream->nmsgs
+       && (!(msgset && *msgset) || in_searchset(*msgset, thrd->rawno)))
+      mm_searched(stream, thrd->rawno);
 
-  ----*/
+    if(thrd->next){
+	nthrd = fetch_thread(stream, thrd->next);
+	if(nthrd)
+	  set_search_bit_for_thread(stream, nthrd, msgset);
+    }
+
+    if(thrd->branch){
+	bthrd = fetch_thread(stream, thrd->branch);
+	if(bthrd)
+	  set_search_bit_for_thread(stream, bthrd, msgset);
+    }
+}
+
+
+/*
+ * Select by message dates.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
 int
-select_date(stream, msgmap, msgno)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgmap;
-     long	 msgno;
+select_date(stream, msgmap, msgno, limitsrch)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    long	 msgno;
+    SEARCHSET **limitsrch;
 {
     int	       r, we_cancel = 0, when = 0;
     char       date[100], defdate[100], prompt[128];
@@ -10225,8 +12299,11 @@ select_date(stream, msgmap, msgno)
 	  case 11 :
 	    {
 		MESSAGECACHE *mc;
+		long rawno;
 
-		if(stream && (mc = mail_elt(stream, mn_m2raw(msgmap, msgno)))){
+		if(stream && (rawno = mn_m2raw(msgmap, msgno)) > 0L
+		   && rawno <= stream->nmsgs
+		   && (mc = mail_elt(stream, rawno))){
 
 		    /* cache not filled in yet? */
 		    if(mc->day == 0){
@@ -10234,15 +12311,13 @@ select_date(stream, msgmap, msgno)
 
 			if(stream->dtb->flags & DR_NEWS){
 			    strncpy(seq,
-				    long2string(mail_uid(stream,
-							 mn_m2raw(msgmap,
-								  msgno))),
+				    long2string(mail_uid(stream, rawno)),
 				    sizeof(seq));
 			    seq[sizeof(seq)-1] = '\0';
 			    mail_fetch_overview(stream, seq, NULL);
 			}
 			else{
-			    strncpy(seq, long2string(mn_m2raw(msgmap, msgno)),
+			    strncpy(seq, long2string(rawno),
 				    sizeof(seq));
 			    seq[sizeof(seq)-1] = '\0';
 			    mail_fetch_fast(stream, seq, 0L);
@@ -10289,7 +12364,7 @@ select_date(stream, msgmap, msgno)
 	MESSAGECACHE elt;
 	int          converted_date;
 
-	if(mail_parse_date(&elt, date))
+	if(mail_parse_date(&elt, (unsigned char *) date))
 	  converted_date = mail_shortdate(elt.year, elt.month, elt.day);
 
 	switch(when){
@@ -10313,7 +12388,11 @@ select_date(stream, msgmap, msgno)
 	    break;
 	}
 
-	mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+	pgm->msgno = (limitsrch ? *limitsrch : NULL);
+	pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+	/* we know this was freed in mail_search, let caller know */
+	if(limitsrch)
+	  *limitsrch = NULL;
     }
 
     if(we_cancel)
@@ -10323,20 +12402,20 @@ select_date(stream, msgmap, msgno)
 }
 
 
-
-/*----------------------------------------------------------------------
- Prompt the user for the type of sort he desires
-
-   Args: none
-   Returns: 0 if search OK (matching numbers selected by side effect)
-            1 if there's a problem
-
-  ----*/
+/*
+ * Select by searching in message headers or body.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
 int
-select_text(stream, msgmap, msgno)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgmap;
-     long	 msgno;
+select_text(stream, msgmap, msgno, limitsrch)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    long	 msgno;
+    SEARCHSET **limitsrch;
 {
     int          r, type, we_cancel = 0, not = 0, flags, old_imap;
     char         sstring[80], savedsstring[80], origcharset[16], tmp[128];
@@ -10358,10 +12437,15 @@ select_text(stream, msgmap, msgno)
     while(1){
 	type = radio_buttons(not ? sel_not_text : sel_text,
 			     -FOOTER_ROWS(ps_global), sel_text_opt,
-			     's', 'x', NO_HELP, RB_NORM);
+			     's', 'x', NO_HELP, RB_NORM|RB_RET_HELP);
 	
 	if(type == '!')
 	  not = !not;
+	else if(type == 3){
+	    helper(h_select_text, "HELP FOR SELECT BASED ON CONTENTS",
+		   HLPD_SIMPLE);
+	    ps_global->mangled_screen = 1;
+	}
 	else
 	  break;
     }
@@ -10419,7 +12503,8 @@ select_text(stream, msgmap, msgno)
 
     if(type != 'x'){
 	if(ekey[0].ch > -1 && msgno > 0L
-	   && !(env=mail_fetchstructure(stream,mn_m2raw(msgmap,msgno),NULL)))
+	   && !(env=pine_mail_fetchstructure(stream,mn_m2raw(msgmap,msgno),
+					     NULL)))
 	  ekey[0].ch = -1;
 
 	sstring[0] = '\0';
@@ -10668,22 +12753,42 @@ select_text(stream, msgmap, msgno)
      * If we happen to have any messages excluded, make sure we
      * don't waste time searching their text...
      */
-    srchpgm->msgno = visible_searchset(stream, msgmap);
+    srchpgm->msgno = (limitsrch ? *limitsrch : NULL);
 
     we_cancel = busy_alarm(1, "Busy Selecting", NULL, 0);
 
-    searchflags = (SE_NOPREFETCH | SE_FREE);
+    searchflags = SE_NOPREFETCH | (secondpgm ? 0 : SE_FREE);
 
-    mail_search_full(stream, !old_imap ? charset : NULL, srchpgm, searchflags);
+    pine_mail_search_full(stream, !old_imap ? charset : NULL, srchpgm,
+			  searchflags);
     
     /* search for To or Cc; or To or Cc or From on old imap server */
     if(secondpgm){
-	searchflags |= SE_RETAIN;
-	mail_search_full(stream, NULL, secondpgm, searchflags);
+	if(srchpgm){
+	    srchpgm->msgno = NULL;
+	    mail_free_searchpgm(&srchpgm);
+	}
 
-	if(thirdpgm)
-	  mail_search_full(stream, NULL, thirdpgm, searchflags);
+	secondpgm->msgno = (limitsrch ? *limitsrch : NULL);
+	searchflags |= (SE_RETAIN | (thirdpgm ? 0 : SE_FREE));
+
+	pine_mail_search_full(stream, NULL, secondpgm, searchflags);
+
+	if(thirdpgm){
+	    if(secondpgm){
+		secondpgm->msgno = NULL;
+		mail_free_searchpgm(&secondpgm);
+	    }
+
+	    thirdpgm->msgno = (limitsrch ? *limitsrch : NULL);
+	    searchflags |= SE_FREE;
+	    pine_mail_search_full(stream, NULL, thirdpgm, searchflags);
+	}
     }
+
+    /* we know this was freed in mail_search, let caller know */
+    if(limitsrch)
+      *limitsrch = NULL;
 
     if(old_imap && not){
 	MESSAGECACHE *mc;
@@ -10694,7 +12799,8 @@ select_text(stream, msgmap, msgno)
 	 * bits.
 	 */
 	for(msgno = 1L; msgno <= mn_get_total(msgmap); msgno++)
-	    if((mc=mail_elt(stream, msgno))->searched)
+	    if(stream && msgno <= stream->nmsgs
+	       && (mc=mail_elt(stream, msgno)) && mc->searched)
 	      mc->searched = NIL;
 	    else
 	      mc->searched = T;
@@ -10710,11 +12816,18 @@ select_text(stream, msgmap, msgno)
 }
 
 
+/*
+ * Select by message size.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
 int
-select_size(stream, msgmap, msgno)
+select_size(stream, limitsrch)
     MAILSTREAM *stream;
-    MSGNO_S    *msgmap;
-    long	 msgno;
+    SEARCHSET **limitsrch;
 {
     int        r, large = 1;
     unsigned long n, mult = 1L, numerator = 0L, divisor = 1L;
@@ -10840,7 +12953,11 @@ select_size(stream, msgmap, msgno)
     if(is_imap_stream(stream) && !modern_imap_stream(stream))
       flags |= SO_NOSERVER;
 
-    mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+    pgm->msgno = (limitsrch ? *limitsrch : NULL);
+    pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+    /* we know this was freed in mail_search, let caller know */
+    if(limitsrch)
+      *limitsrch = NULL;
 
     return(0);
 }
@@ -10893,19 +13010,81 @@ visible_searchset(stream, msgmap)
 }
 
 
-/*----------------------------------------------------------------------
- Prompt the user for the type of sort he desires
+/*
+ * Return a search set which can be used to limit the search to a smaller set,
+ * for performance reasons. The caller must still work correctly if we return
+ * the whole set (or NULL) here, because we may not be able to send the full
+ * search set over IMAP. In cases where the search set description is getting
+ * too large we send a search set which contains all of the relevant messages.
+ * It may contain more.
+ *
+ * Args    stream
+ *         narrow  -- If set, we are narrowing our selection (restrict to
+ *                      messages with MN_SLCT already set) or if not set,
+ *                      we are broadening (so we may look only at messages
+ *                      with MN_SLCT not set)
+ *
+ * Returns - allocated search set or NULL. Caller is responsible for freeing it.
+ */
+SEARCHSET *
+limiting_searchset(stream, narrow)
+    MAILSTREAM *stream;
+    int         narrow;
+{
+    long       n, run;
+    int        cnt = 0;
+    SEARCHSET *full_set = NULL, **set, *s;
 
-   Args: none
-   Returns: 0 if search OK (matching numbers selected by side effect)
-            1 if there's a problem
+    /*
+     * If we're talking to anything other than a server older than
+     * imap 4rev1, build a searchset otherwise it'll choke.
+     */
+    if(!(is_imap_stream(stream) && !modern_imap_stream(stream))){
+	for(n = 1L, set = &full_set, run = 0L; n <= stream->nmsgs; n++)
+	  /* test for end of run */
+	  if(get_lflag(stream, NULL, n, MN_EXLD)
+	     || (narrow && !get_lflag(stream, NULL, n, MN_SLCT))
+	     || (!narrow && get_lflag(stream, NULL, n, MN_SLCT))){
+	      if(run){		/* previous selected? */
+		  set = &(*set)->next;
+		  run = 0L;
+	      }
+	  }
+	  else if(run++){		/* next in run */
+	      (*set)->last = n;
+	  }
+	  else{				/* start of run */
+	      *set = mail_newsearchset();
+	      (*set)->first = (*set)->last = n;
 
-  ----*/
+	      /*
+	       * Make this last set cover the rest of the messages.
+	       * We could be fancier about this but it probably isn't
+	       * worth the trouble.
+	       */
+	      if(++cnt > 100){
+		  (*set)->last = stream->nmsgs;
+		  break;
+	      }
+	  }
+    }
+
+    return(full_set);
+}
+
+
+/*
+ * Select by message status bits.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
 int
-select_flagged(stream, msgmap, msgno)
-     MAILSTREAM *stream;
-     MSGNO_S    *msgmap;
-     long	 msgno;
+select_flagged(stream, limitsrch)
+    MAILSTREAM *stream;
+    SEARCHSET **limitsrch;
 {
     int	       s, not = 0, we_cancel = 0;
     SEARCHPGM *pgm;
@@ -10913,11 +13092,16 @@ select_flagged(stream, msgmap, msgno)
     while(1){
 	s = radio_buttons((not) ? sel_flag_not : sel_flag,
 			  -FOOTER_ROWS(ps_global), sel_flag_opt, '*', 'x',
-			  NO_HELP, RB_NORM);
+			  NO_HELP, RB_NORM|RB_RET_HELP);
 			  
 	if(s == 'x'){
 	    cmd_cancelled("Selection by status");
 	    return(1);
+	}
+	else if(s == 3){
+	    helper(h_select_status, "HELP FOR SELECT BASED ON STATUS",
+		   HLPD_SIMPLE);
+	    ps_global->mangled_screen = 1;
 	}
 	else if(s == '!')
 	  not = !not;
@@ -10949,6 +13133,22 @@ select_flagged(stream, msgmap, msgno)
 
 	break;
 
+      case 'r' :
+	if(not)
+	  pgm->old = 1;
+	else
+	  pgm->recent = 1;
+
+	break;
+
+      case 'u' :
+	if(not)
+	  pgm->seen = 1;
+	else
+	  pgm->unseen = 1;
+
+	break;
+
       case 'a':
 	/*
 	 * Not a true "not", we are implicitly only interested in undeleted.
@@ -10969,13 +13169,432 @@ select_flagged(stream, msgmap, msgno)
     }
 
     we_cancel = busy_alarm(1, "Busy Selecting", NULL, 0);
-    mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+    pgm->msgno = (limitsrch ? *limitsrch : NULL);
+    pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+    /* we know this was freed in mail_search, let caller know */
+    if(limitsrch)
+      *limitsrch = NULL;
+
     if(we_cancel)
       cancel_busy_alarm(0);
 
     return(0);
 }
 
+
+/*
+ * Select by message keywords.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
+int
+select_by_keyword(stream, limitsrch)
+    MAILSTREAM *stream;
+    SEARCHSET **limitsrch;
+{
+    int        r, not = 0;
+    char       keyword[MAXUSERFLAG+1], *kword;
+    char      *error = NULL, *p;
+    KEYWORD_S *kw;
+    HelpType   help;
+    SEARCHPGM *pgm;
+
+    keyword[0] = '\0';
+    ps_global->mangled_footer = 1;
+
+    help = NO_HELP;
+    do{
+	int oe_flags;
+
+	if(error){
+	    q_status_message(SM_ORDER, 3, 4, error);
+	    fs_give((void **) &error);
+	}
+
+	oe_flags = OE_APPEND_CURRENT;
+        r = optionally_enter(keyword, -FOOTER_ROWS(ps_global), 0,
+			     sizeof(keyword),
+			     not ? "Keyword to NOT match: "
+			         : "Keyword to match: ",
+			     sel_key_opt, help, &oe_flags);
+
+	if(r == 14){
+	    /* select keyword from a list */
+	    if((kword=choose_a_keyword()) != NULL){
+		strncpy(keyword, kword, sizeof(keyword)-1);
+		keyword[sizeof(keyword)-1] = '\0';
+		fs_give((void **) &kword);
+	    }
+	    else
+	      r = 4;
+	}
+	else if(r == '!')
+	  not = !not;
+
+	if(r == 3)
+	  help = help == NO_HELP ? h_select_keyword : NO_HELP;
+	else if(r == 1){
+	    cmd_cancelled("Selection by keyword");
+	    return(1);
+	}
+
+	removing_leading_and_trailing_white_space(keyword);
+
+    }while(r == 3 || r == 4 || r == '!' || keyword_check(keyword, &error));
+
+
+    /*
+     * We want to check the keyword, not the nickname of the keyword,
+     * so convert it to the keyword if necessary.
+     */
+    p = nick_to_keyword(keyword);
+    if(p != keyword){
+	strncpy(keyword, p, sizeof(keyword)-1);
+	keyword[sizeof(keyword)-1] = '\0';
+    }
+
+    pgm = mail_newsearchpgm();
+    if(not){
+	pgm->unkeyword = mail_newstringlist();
+	pgm->unkeyword->text.data = (unsigned char *) cpystr(keyword);
+	pgm->unkeyword->text.size = strlen(keyword);
+    }
+    else{
+	pgm->keyword = mail_newstringlist();
+	pgm->keyword->text.data = (unsigned char *) cpystr(keyword);
+	pgm->keyword->text.size = strlen(keyword);
+    }
+
+    pgm->msgno = (limitsrch ? *limitsrch : NULL);
+    pine_mail_search_full(stream, NULL, pgm, SE_NOPREFETCH | SE_FREE);
+    /* we know this was freed in mail_search, let caller know */
+    if(limitsrch)
+      *limitsrch = NULL;
+
+    return(0);
+}
+
+
+/*
+ * Select by rule. Usually indexcolor and roles would be most useful.
+ * Sets searched bits in mail_elts
+ * 
+ * Args    limitsrch -- limit search to this searchset
+ *
+ * Returns 0 on success.
+ */
+int
+select_by_rule(stream, limitsrch)
+    MAILSTREAM *stream;
+    SEARCHSET **limitsrch;
+{
+    char       rulenick[1000], *nick;
+    PATGRP_S  *patgrp;
+    int        r, not = 0, rflags = ROLE_DO_INCOLS
+				    | ROLE_DO_ROLES
+				    | ROLE_DO_SCORES
+				    | ROLE_DO_OTHER
+				    | ROLE_DO_FILTER;
+
+    rulenick[0] = '\0';
+    ps_global->mangled_footer = 1;
+
+    do{
+	int oe_flags;
+
+	oe_flags = OE_APPEND_CURRENT;
+        r = optionally_enter(rulenick, -FOOTER_ROWS(ps_global), 0,
+			     sizeof(rulenick),
+			     not ? "Rule to NOT match: "
+			         : "Rule to match: ",
+			     sel_key_opt, NO_HELP, &oe_flags);
+
+	if(r == 14){
+	    /* select rulenick from a list */
+	    if((nick=choose_a_rule(rflags)) != NULL){
+		strncpy(rulenick, nick, sizeof(rulenick)-1);
+		rulenick[sizeof(rulenick)-1] = '\0';
+		fs_give((void **) &nick);
+	    }
+	    else
+	      r = 4;
+	}
+	else if(r == '!')
+	  not = !not;
+
+	if(r == 3){
+	    helper(h_select_rule, "HELP FOR SELECT BY RULE", HLPD_SIMPLE);
+	    ps_global->mangled_screen = 1;
+	}
+	else if(r == 1){
+	    cmd_cancelled("Selection by Rule");
+	    return(1);
+	}
+
+	removing_leading_and_trailing_white_space(rulenick);
+
+    }while(r == 3 || r == 4 || r == '!');
+
+
+    /*
+     * The approach of requiring a nickname instead of just allowing the
+     * user to select from the list of rules has the drawback that a rule
+     * may not have a nickname, or there may be more than one rule with
+     * the same nickname. However, it has the benefit of allowing the user
+     * to type in the nickname and, most importantly, allows us to set
+     * up the ! (not). We could incorporate the ! into the selection
+     * screen, but this is easier and also allows the typing of nicks.
+     * User can just set up nicknames if they want to use this feature.
+     */
+    patgrp = nick_to_patgrp(rulenick, rflags);
+
+    if(patgrp){
+	match_pattern(patgrp, stream, limitsrch ? *limitsrch : 0, NULL,
+		      get_msg_score,
+		      (not ? MP_NOT : 0) | SE_NOPREFETCH);
+	free_patgrp(&patgrp);
+    }
+
+    if(limitsrch && *limitsrch){
+	mail_free_searchset(limitsrch);
+	*limitsrch = NULL;
+    }
+
+    return(0);
+}
+
+
+/*
+ * These chars are not allowed in keywords.
+ *
+ * Returns 0 if ok, 1 if not.
+ * Returns an allocated error message on error.
+ */
+int
+keyword_check(kw, error)
+    char  *kw;
+    char **error;
+{
+    register char *t;
+    char buf[100];
+
+    if(!kw || !kw[0])
+      return 1;
+
+    kw = nick_to_keyword(kw);
+
+    if((t = strindex(kw, SPACE)) ||
+       (t = strindex(kw, '{'))   ||
+       (t = strindex(kw, '('))   ||
+       (t = strindex(kw, ')'))   ||
+       (t = strindex(kw, ']'))   ||
+       (t = strindex(kw, '%'))   ||
+       (t = strindex(kw, '"'))   ||
+       (t = strindex(kw, '\\'))  ||
+       (t = strindex(kw, '*'))){
+	char s[4];
+	s[0] = '"';
+	s[1] = *t;
+	s[2] = '"';
+	s[3] = '\0';
+	if(error){
+	    sprintf(buf, "%.20s not allowed in keywords",
+		*t == SPACE ?
+		    "Spaces" :
+		    *t == '"' ?
+			"Quotes" :
+			*t == '%' ?
+			    "Percents" :
+			    s);
+	    *error = cpystr(buf);
+	}
+
+	return 1;
+    }
+
+    return 0;
+}
+
+
+/*
+ * Allow user to choose a keyword from their list of keywords.
+ *
+ * Returns an allocated keyword on success, NULL otherwise.
+ */
+char *
+choose_a_keyword()
+{
+    char      *choice = NULL, *q;
+    char     **keyword_list, **lp, **t;
+    int        cnt;
+    KEYWORD_S *kw;
+
+    /*
+     * Build a list of keywords to choose from.
+     */
+
+    for(cnt = 0, kw = ps_global->keywords; kw; kw = kw->next)
+      cnt++;
+
+    if(cnt <= 0){
+	q_status_message(SM_ORDER, 3, 4,
+	    "No keywords defined, use \"keywords\" option in Setup/Config");
+	return(choice);
+    }
+
+    lp = keyword_list = (char **) fs_get((cnt + 1) * sizeof(*keyword_list));
+    memset(keyword_list, 0, (cnt+1) * sizeof(*keyword_list));
+
+    for(kw = ps_global->keywords; kw; kw = kw->next)
+      *lp++ = cpystr(kw->nick ? kw->nick : kw->kw ? kw->kw : "");
+
+    choice = choose_item_from_list(keyword_list, "SELECT A KEYWORD",
+				   "keywords ", h_select_keyword_screen,
+				   "HELP FOR SELECTING A KEYWORD");
+
+    if(!choice)
+      q_status_message(SM_ORDER, 1, 4, "No choice");
+
+    free_list_array(&keyword_list);
+
+    return(choice);
+}
+
+
+/*
+ * Allow user to choose a list of keywords from their list of keywords.
+ *
+ * Returns allocated list.
+ */
+char **
+choose_list_of_keywords()
+{
+    LIST_SEL_S *listhead, *ls, *p;
+    char      **ret = NULL, **t;
+    int         cnt, i;
+    size_t      len;
+    KEYWORD_S  *kw;
+
+    /*
+     * Build a list of keywords to choose from.
+     */
+
+    p = listhead = NULL;
+    for(kw = ps_global->keywords; kw; kw = kw->next){
+
+	ls = (LIST_SEL_S *) fs_get(sizeof(*ls));
+	memset(ls, 0, sizeof(*ls));
+	ls->item = cpystr(kw->nick ? kw->nick : kw->kw ? kw->kw : "");
+
+	if(p){
+	    p->next = ls;
+	    p = p->next;
+	}
+	else
+	  listhead = p = ls;
+    }
+    
+    if(!listhead)
+      return(ret);
+    
+    if(!select_from_list_screen(listhead, SFL_ALLOW_LISTMODE,
+				"SELECT KEYWORDS", "keywords ",
+				h_select_multkeyword_screen,
+			        "HELP FOR SELECTING KEYWORDS")){
+	for(cnt = 0, p = listhead; p; p = p->next)
+	  if(p->selected)
+	    cnt++;
+
+	ret = (char **) fs_get((cnt+1) * sizeof(*ret));
+	memset(ret, 0, (cnt+1) * sizeof(*ret));
+	for(i = 0, p = listhead; p; p = p->next)
+	  if(p->selected)
+	    ret[i++] = cpystr(p->item ? p->item : "");
+    }
+
+    free_list_sel(&listhead);
+
+    return(ret);
+}
+
+
+/*
+ * Allow user to choose a rule from their list of rules.
+ *
+ * Returns an allocated rule nickname on success, NULL otherwise.
+ */
+char *
+choose_a_rule(rflags)
+    int rflags;
+{
+    char      *choice = NULL;
+    char     **rule_list, **lp;
+    int        cnt = 0;
+    PAT_S     *pat;
+    PAT_STATE  pstate;
+
+    if(!(nonempty_patterns(rflags, &pstate) && first_pattern(&pstate))){
+	q_status_message(SM_ORDER, 3, 3,
+			 "No rules available. Use Setup/Rules to add some.");
+	return(choice);
+    }
+
+    /*
+     * Build a list of rules to choose from.
+     */
+
+    for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate))
+      cnt++;
+
+    if(cnt <= 0){
+	q_status_message(SM_ORDER, 3, 4, "No rules defined, use Setup/Rules");
+	return(choice);
+    }
+
+    lp = rule_list = (char **) fs_get((cnt + 1) * sizeof(*rule_list));
+    memset(rule_list, 0, (cnt+1) * sizeof(*rule_list));
+
+    for(pat = first_pattern(&pstate); pat; pat = next_pattern(&pstate))
+      *lp++ = cpystr((pat->patgrp && pat->patgrp->nick)
+			  ? pat->patgrp->nick : "?");
+
+    choice = choose_item_from_list(rule_list, "SELECT A RULE",
+				   "rules ", h_select_rule_screen,
+				   "HELP FOR SELECTING A RULE NICKNAME");
+
+    if(!choice)
+      q_status_message(SM_ORDER, 1, 4, "No choice");
+
+    free_list_array(&rule_list);
+
+    return(choice);
+}
+
+
+PATGRP_S *
+nick_to_patgrp(nick, rflags)
+    char *nick;
+    int   rflags;
+{
+    PAT_S     *pat;
+    PAT_STATE  pstate;
+    PATGRP_S  *patgrp = NULL;
+
+    if(!(nick && *nick
+	 && nonempty_patterns(rflags, &pstate) && first_pattern(&pstate)))
+      return(patgrp);
+
+    for(pat = first_pattern(&pstate);
+	!patgrp && pat;
+	pat = next_pattern(&pstate))
+      if(pat->patgrp && pat->patgrp->nick && !strcmp(pat->patgrp->nick, nick))
+	patgrp = copy_patgrp(pat->patgrp);
+
+    return(patgrp);
+}
 
 
 /*----------------------------------------------------------------------
@@ -10988,10 +13607,10 @@ Args: state -- pine state pointer
   ----*/
 int
 select_sort(state, ql, sort, rev)
-     struct pine *state;
-     int	  ql;
-     SortOrder	 *sort;
-     int	 *rev;
+    struct pine *state;
+    int	  ql;
+    SortOrder	 *sort;
+    int	 *rev;
 {
     char      prompt[200], tmp[3], *p;
     int       s, i;
@@ -11049,6 +13668,9 @@ select_sort(state, ql, sort, rev)
 	  *rev = !mn_get_revsort(state->msgmap);
 	else
 	  *sort = state->sort_types[s];
+
+	if(F_ON(F_SHOW_SORT, ps_global))
+	  ps_global->mangled_header = 1;
     }
     else{
 	retval = 0;
@@ -11110,17 +13732,23 @@ display_folder_list(c, f, sublist, lister)
   Args: stream -- mail stream to use for flag testing
 	msgmap -- message number struct of to build selected messages in
 	count -- pointer to place to write number of comma delimited
+	mark -- mark manually undeleted so we don't refilter right away
 
   Returns: malloc'd string containing sequence, else NULL if
 	   no messages in msgmap with local "selected" flag.
   ----*/
 char *
-selected_sequence(stream, msgmap, count)
+selected_sequence(stream, msgmap, count, mark)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
     long       *count;
+    int         mark;
 {
     long  i;
+    MESSAGECACHE *mc;
+
+    if(!stream)
+      return(NULL);
 
     /*
      * The plan here is to use the c-client elt's "sequence" bit
@@ -11131,7 +13759,8 @@ selected_sequence(stream, msgmap, count)
      * we run down the elt list once...
      */
     for(i = 1L; i <= stream->nmsgs; i++)
-      mail_elt(stream, i)->sequence = 0;
+      if((mc = mail_elt(stream, i)) != NULL)
+        mc->sequence = 0;
 
     for(i = 1L; i <= mn_get_total(msgmap); i++)
       if(get_lflag(stream, msgmap, i, MN_SLCT)){
@@ -11143,18 +13772,23 @@ selected_sequence(stream, msgmap, count)
 	   * bit...
 	   */
 	  clear_index_cache_ent(i);
-	  mail_elt(stream, (rawno=mn_m2raw(msgmap, i)))->sequence = 1;
+	  rawno = mn_m2raw(msgmap, i);
+	  if(rawno > 0L && rawno <= stream->nmsgs
+	     && (mc = mail_elt(stream, rawno)))
+	    mc->sequence = 1;
 
 	  /*
 	   * Mark this message manually flagged so we don't re-filter it
 	   * with a filter which only sets flags.
 	   */
-	  if(msgno_exceptions(stream, rawno, "0", &exbits, FALSE))
-	    exbits |= MSG_EX_MANFLAGGED;
-	  else
-	    exbits = MSG_EX_MANFLAGGED;
+	  if(mark){
+	      if(msgno_exceptions(stream, rawno, "0", &exbits, FALSE))
+		exbits |= MSG_EX_MANUNDEL;
+	      else
+		exbits = MSG_EX_MANUNDEL;
 
-	  msgno_exceptions(stream, rawno, "0", &exbits, TRUE);
+	      msgno_exceptions(stream, rawno, "0", &exbits, TRUE);
+	  }
       }
 
     return(build_sequence(stream, NULL, count));
@@ -11162,43 +13796,59 @@ selected_sequence(stream, msgmap, count)
 
 
 /*----------------------------------------------------------------------
-  Build comma delimited list of current, flagged messages
+  Build comma delimited list of messages current in msgmap which have all
+  flags matching the arguments
 
   Args: stream -- mail stream to use for flag testing
-	msgmap -- message number struct of to build selected messages in
-	flag -- system flags to match against
-	count -- pointer to place to return number of comma delimited
-	mark -- mark index cache entry changed, and count state change
+	msgmap -- only consider messages selected in this msgmap
+	  flag -- flags to match against
+	 count -- pointer to place to return number of comma delimited
+	  mark -- mark index cache entry changed, and count state change
+	 kw_on -- if flag contains F_KEYWORD, this is
+	            the array of keywords to be checked
+	kw_off -- if flag contains F_UNKEYWORD, this is
+	            the array of keywords to be checked
 
   Returns: malloc'd string containing sequence, else NULL if
 	   no messages in msgmap with local "selected" flag (a flag
 	   of zero means all current msgs).
   ----*/
 char *
-currentf_sequence(stream, msgmap, flag, count, mark)
+currentf_sequence(stream, msgmap, flag, count, mark, kw_on, kw_off)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
     long	flag;
     long       *count;
     int		mark;
+    char      **kw_on;
+    char      **kw_off;
 {
-    char	 *seq;
+    char	 *seq, *q, **t;
     long	  i, rawno;
-    int           exbits;
+    int           exbits, j, is_set;
     MESSAGECACHE *mc;
+
+    if(!stream)
+      return(NULL);
 
     /* First, make sure elts are valid for all the interesting messages */
     if(seq = invalid_elt_sequence(stream, msgmap)){
-	mail_fetchflags(stream, seq);
+	pine_mail_fetch_flags(stream, seq, NIL);
 	fs_give((void **) &seq);
     }
 
     for(i = 1L; i <= stream->nmsgs; i++)
-      mail_elt(stream, i)->sequence = 0;	/* clear "sequence" bits */
+      if((mc = mail_elt(stream, i)) != NULL)
+        mc->sequence = 0;			/* clear "sequence" bits */
 
     for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap)){
 	/* if not already set, go on... */
-	mc = mail_elt(stream, (rawno=mn_m2raw(msgmap, i)));
+	rawno = mn_m2raw(msgmap, i);
+	mc = (rawno > 0L && rawno <= stream->nmsgs)
+		? mail_elt(stream, rawno) : NULL;
+	if(!mc)
+	  continue;
+
 	if((flag == 0)
 	   || ((flag & F_DEL) && mc->deleted)
 	   || ((flag & F_UNDEL) && !mc->deleted)
@@ -11208,8 +13858,22 @@ currentf_sequence(stream, msgmap, flag, count, mark)
 	   || ((flag & F_UNANS) && !mc->answered)
 	   || ((flag & F_FLAG) && mc->flagged)
 	   || ((flag & F_UNFLAG) && !mc->flagged)){
-
 	    mc->sequence = 1;			/* set "sequence" flag */
+	}
+
+	/* check for user keywords or not */
+	if(!mc->sequence && flag & F_KEYWORD && kw_on){
+	    for(t = kw_on; !mc->sequence && *t; t++)
+	      if(user_flag_is_set(stream, rawno, *t))
+		mc->sequence = 1;
+	}
+	else if(!mc->sequence && flag & F_UNKEYWORD && kw_off){
+	    for(t = kw_off; !mc->sequence && *t; t++)
+	      if(!user_flag_is_set(stream, rawno, *t))
+		mc->sequence = 1;
+	}
+	
+	if(mc->sequence){
 	    if(mark){
 		if(THRD_INDX()){
 		    PINETHRD_S *thrd;
@@ -11225,17 +13889,15 @@ currentf_sequence(stream, msgmap, flag, count, mark)
 		else
 		  clear_index_cache_ent(i);	/* force new index line */
 
-		check_point_change();		/* count state change */
-
 		/*
 		 * Mark this message manually flagged so we don't re-filter it
 		 * with a filter which only sets flags.
 		 */
 		exbits = 0;
 		if(msgno_exceptions(stream, rawno, "0", &exbits, FALSE))
-		  exbits |= MSG_EX_MANFLAGGED;
+		  exbits |= MSG_EX_MANUNDEL;
 		else
-		  exbits = MSG_EX_MANFLAGGED;
+		  exbits = MSG_EX_MANUNDEL;
 
 		msgno_exceptions(stream, rawno, "0", &exbits, TRUE);
 	    }
@@ -11261,14 +13923,19 @@ invalid_elt_sequence(stream, msgmap)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
 {
-    long	  i;
+    long	  i, rawno;
     MESSAGECACHE *mc;
 
+    if(!stream)
+      return(NULL);
+
     for(i = 1L; i <= stream->nmsgs; i++)
-      mail_elt(stream, i)->sequence = 0;	/* clear "sequence" bits */
+      if((mc = mail_elt(stream, i)) != NULL)
+        mc->sequence = 0;			/* clear "sequence" bits */
 
     for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap))
-      if(!(mc = mail_elt(stream, mn_m2raw(msgmap, i)))->valid)
+      if((rawno = mn_m2raw(msgmap, i)) > 0L && rawno <= stream->nmsgs
+	 && (mc = mail_elt(stream, rawno)) && !mc->valid)
 	mc->sequence = 1;
 
     return(build_sequence(stream, NULL, NULL));
@@ -11297,6 +13964,10 @@ build_sequence(stream, msgmap, count)
     long    n = 0L, i, x, lastn = 0L, runstart = 0L;
     size_t  size = SEQ_INCREMENT;
     char   *seq = NULL, *p;
+    MESSAGECACHE *mc;
+
+    if(!stream)
+      return(NULL);
 
     if(count){
 	if(*count > 0L)
@@ -11313,7 +13984,8 @@ build_sequence(stream, msgmap, count)
 	else
 	  i = x;
 
-	if(mail_elt(stream, i)->sequence){
+	if(i > 0L && i <= stream->nmsgs
+	   && (mc = mail_elt(stream, i)) && mc->sequence){
 	    n++;
 	    if(!seq)				/* initialize if needed */
 	      seq = p = fs_get(size);
@@ -11577,14 +14249,16 @@ flag_callback(set, flags)
 	 && can_set_flag(ps_global, "flag", permflag)))
       return(0);
 
-    if(ps_global->io_error_on_stream) {
-	ps_global->io_error_on_stream = 0;
-	mail_check(ps_global->mail_stream); /* forces write */
+    if(sp_io_error_on_stream(ps_global->mail_stream)){
+	sp_set_io_error_on_stream(ps_global->mail_stream, 0);
+	pine_mail_check(ps_global->mail_stream);	/* forces write */
 	return(0);
     }
 
     msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
-    if(ps_global->mail_stream && (mc = mail_elt(ps_global->mail_stream, msgno))
+    if(msgno > 0L && ps_global->mail_stream
+       && msgno <= ps_global->mail_stream->nmsgs
+       && (mc = mail_elt(ps_global->mail_stream, msgno))
        && mc->valid){
 	/*
 	 * NOTE: code below is *VERY* sensitive to the order of
@@ -11663,16 +14337,16 @@ flag_submenu(mc)
     };
 
     /* Important */
-    flag_submenu[0].label.style = (mc->flagged) ? lChecked : lNormal;
+    flag_submenu[0].label.style = (mc && mc->flagged) ? lChecked : lNormal;
 
     /* New */
-    flag_submenu[1].label.style = (mc->seen) ? lNormal : lChecked;
+    flag_submenu[1].label.style = (mc && mc->seen) ? lNormal : lChecked;
 
     /* Answered */
-    flag_submenu[2].label.style = (mc->answered) ? lChecked : lNormal;
+    flag_submenu[2].label.style = (mc && mc->answered) ? lChecked : lNormal;
 
     /* Deleted */
-    flag_submenu[3].label.style = (mc->deleted) ? lChecked : lNormal;
+    flag_submenu[3].label.style = (mc && mc->deleted) ? lChecked : lNormal;
 
     return(flag_submenu);
 }
