@@ -15,14 +15,15 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.3 1987-07-01 04:22:00 jtkohl Exp $";
+static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.4 1987-07-02 09:24:39 jtkohl Exp $";
 #endif SABER
 #endif lint
 
 #include <stdio.h>
 #include <syslog.h>
+#include <strings.h>
 
-extern char *malloc(), *strcpy();
+extern char *malloc();
 
 /* common routines for the server */
 
