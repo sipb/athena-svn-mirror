@@ -1,0 +1,67 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/Imakefile,v $
+ * $Id: Imakefile,v 1.1 1991-03-11 15:02:59 lwvanels Exp $
+ */
+
+/* #define Profiling */
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+SRCS=	oreplay.c strcasecmp.c
+
+OBJS= oreplay.o strcasecmp.o
+
+#ifdef Profiling
+DEFINES= -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
+DEFINES=
+#endif /* Profiling */
+
+
+LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
+SYS_LIBRARIES= $(HesiodLib) $(KerberosLib)
+
+INCLUDES= -I.
+
+NormalProgramTarget(oreplay,$(OBJS),,$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+SaberProgramTarget(oreplay,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+depend: Makefile
+	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[c] *.[h]
+
+LintTarget()
+
+#ifdef TestInstall
+InstallProgram(oreplay,/mit/olcdev/@sys)
+install::
+	(cd /mit/olcdev/@sys; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+#else
+InstallProgram(oreplay,$(DESTDIR)/usr/etc)
+install::
+	(cd $(DESTDIR)/usr/etc; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+#endif
+
+olist:
+	$(RM) olist
+	$(LN) oreplay olist
+
+clean::
+	$(RM) olist
+
+oshow:
+	$(RM) oshow
+	$(LN) oreplay oshow
+
+clean::
+	$(RM) oshow
+
+DependTarget()
+LintTarget()
+
+AllTarget(oreplay olist oshow)
