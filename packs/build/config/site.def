@@ -97,10 +97,10 @@ clean::									@@\
 #define CcFlags LintFlags -I/usr/openwin/include
 #define LdPath -L/usr/openwin/lib -L$(ATHLIBDIR)
 #define LdLibs /usr/athena/lib/libresolv.a -lsocket -lnsl -lelf -ldl
-#define CcCmd gcc -traditional -B/usr/gcc/lib/ -DSOLARIS -I/usr/gcc/include
-#define LdCmd gcc
-#define AnsiCcCmd gcc
-#define AnsiLdCmd gcc
+#define CcCmd /usr/gcc/bin/gcc -traditional
+#define LdCmd /usr/gcc/bin/gcc
+#define AnsiCcCmd /usr/gcc/bin/gcc
+#define AnsiLdCmd /usr/gcc/bin/gcc
 #define RanLibCmd \:
 #define AfsDir /build/transarc
 #endif
