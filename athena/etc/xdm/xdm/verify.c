@@ -2,7 +2,7 @@
  * xdm - display manager daemon
  *
  * $XConsortium: verify.c,v 1.24 91/07/18 22:22:45 rws Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.1 1992-04-28 16:58:07 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.2 1993-06-30 17:14:36 cfields Exp $
  *
  * Copyright 1988 Massachusetts Institute of Technology
  *
@@ -71,7 +71,7 @@ static char *envvars[] = {
 int attach_pid, attach_state, attachhelp_pid, attachhelp_state, quota_pid;
 static int	console = 0;
 static char	consoletty[10];
-
+extern char	*defaultpath;
 
 Verify (d, greet, verify)
 struct display		*d;
@@ -131,6 +131,7 @@ struct verify_info	*verify;
 	if (!greet->string || (i = atoi(greet->string)) == 0)
 	  i = 1;
 
+	setenv("PATH", defaultpath, 1);
 	msg = dologin(greet->name, greet->password, i,
 		      "/etc/athena/login/Xsession", &consoletty[5],
 		      "/etc/athena/login/Xsession", d->name, verify);
