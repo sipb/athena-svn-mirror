@@ -4,7 +4,7 @@
  *     For copying and distribution information, see the file
  *     "mit-copying.h".
  *
- *     $Id: Imakefile,v 1.15 1995-11-28 13:51:37 miki Exp $
+ *     $Id: Imakefile,v 1.16 1996-03-26 20:28:01 ghudson Exp $
  */
 
 /*
@@ -53,10 +53,10 @@ AFSDEFINES=	-I$(AFSDIR)/include -DAFS_MOUNTPOINTS
 
 /* You probably won't have to edit anything below this line. */
 
-LIBS= 		$(AFSLIBS) -lcom_err
 #ifdef SOLARIS
-LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
+OSLIBS=		-lbsd
 #endif
+LIBS= 		$(AFSLIBS) -lcom_err $(OSLIBS)
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
 		expunge.c lsdel.c col.c shell_regexp.c\
 		errors.c stack.c
