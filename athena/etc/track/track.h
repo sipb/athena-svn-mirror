@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.0 1988-03-09 13:10:22 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.1 1988-05-17 15:02:44 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.0 1988-03-09 13:10:22 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.1 1988-05-17 15:02:44 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -19,20 +19,23 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <signal.h>
 #include <stdio.h>
 
-/* Default root for source of transfer */
-#define DEF_FROMROOT	"/srvd"
-
-/* Default root for destination of transfer */
-#define DEF_TOROOT	"/"
-
 /* Default working directory - under to- or from- root */
 #define DEF_WORKDIR	"/etc/athena/lib"
+
+/* Default administrator */
+#define DEF_ADM		"don"
 
 /* Default binary directory - under real root */
 #define DEF_BINDIR	"/etc/athena"
 
-/* Default administrator */
-#define DEF_ADM		"treese"
+/* Default root for source of transfer */
+#define DEF_FROMROOT	"/srvd"
+
+/* Default subscription list */
+#define DEF_LOG 	"/usr/adm/TRACKLOG"
+
+/* Default root for destination of transfer */
+#define DEF_TOROOT	"/"
 
 /* Default subscription list */
 #define DEF_SUB 	"sys_rvd"
@@ -48,9 +51,6 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 
 /* Default global exceptions */
 #define DEF_EXCEPT	{ "#*", "*~" }
-
-/* Default log file */
-#define DEF_LOG		"logfiles/lib.log"
 
 /* Default shell */
 #define DEF_SHELL	"/bin/sh"
@@ -73,8 +73,8 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 
 typedef struct currentness {
 	char name[ LINELEN];
-	unsigned short cksum;
-	char *link;
+	unsigned int cksum;
+	char link[ LINELEN];
 	struct stat sbuf;
 } Currentness;
 
@@ -87,6 +87,34 @@ extern Statline *statfilebufs;
 extern int cur_line;
 extern FILE *statfile;
 
+/* NEXT is defined weirdly,
+ * so that it can appear as an lvalue.
+ */
+#define  FLAG(   list_elt)		     (((char *)( list_elt))[-1])
+#define PNEXT(   list_elt) ((List_element **)&((char *)( list_elt))[-5])
+#define  NEXT(   list_elt) *PNEXT( list_elt)
+#define  TEXT(   list_elt) ((char*)(list_elt))
+#define NORMALCASE	((char) 0)
+#define FORCE_LINK	((char)-1)
+#define DONT_TRACK	((char) 1)
+
+typedef struct list_element {
+	struct list_element *next;
+	char flag;
+	char first_char[1];
+} List_element;
+
+/* XXX: if shift field is negative, the table field contains a linked-list.
+ * if shift is positive, the table is a hash-table.
+ * this enables justshow() to dump an incompletely-parsed subscription-list.
+ * LIST() macro should only be used when adding list-elts during parsing.
+ */
+#define LIST( tbl) ( (tbl).shift--, (List_element**)&(tbl).table)
+typedef struct Tbl {
+	List_element **table;
+	short shift;
+} Table;
+
 typedef struct entry {
 	char sortkey[ LINELEN];
 	int keylen;
@@ -94,18 +122,19 @@ typedef struct entry {
 	char *fromfile;
 	char *tofile;
 	char *cmpfile;
-	struct currentness currency;
-	char *exceptions[WORDMAX];
+	Currentness currency;
+	Table names;
+	List_element *patterns;
 	char *cmdbuf;
 } Entry ;
 extern Entry entries[];
 
 extern int errno;
 extern int cksumflag;
-extern int dirflag;
 extern int forceflag;
 extern int incl_devs;
 extern int nopullflag;
+extern int parseflag;
 extern int quietflag;
 extern int uflag;
 extern int verboseflag;
@@ -127,8 +156,10 @@ extern char toroot[];
 extern char twdir[];
 extern char cwd[];
 extern char subfilename[];
+extern char logfilepath[];
 extern char subfilepath[];
 extern char prgname[];
+extern FILE *logfile;
 extern int debug;
 
 #define	DO_CLOBBER	1
@@ -136,8 +167,8 @@ extern int debug;
 extern int clobber;
 
 /* parser stuff */
+extern char wordbuf[];
 extern char linebuf[];
-extern int wordcnt;
 extern FILE *yyin,*yyout;
 
 #define TYPE( statbuf) ((statbuf).st_mode & S_IFMT)
@@ -150,7 +181,7 @@ extern FILE *yyin,*yyout;
 extern int access();
 
 extern char errmsg[];
-char *gets(),*malloc(),*realloc(),*re_comp();
+char *gets(),*calloc(),*malloc(),*realloc(),*re_comp();
 char *index(),*rindex(),*strcat(),*strncat(),*strcpy(),*strncpy();
 int strcmp(),strncmp(),strlen();
 long time();
@@ -161,18 +192,26 @@ extern char *statn;
 
 /* track's internal functions which need decl's */
 
-extern unsigned short in_cksum();
-extern struct currentness *dec_entry();
+extern Entry *clear_ent();
+
+extern FILE *opensubfile();
+
+extern List_element *add_list_elt();
+extern List_element **lookup();
+
 extern char *dec_statfile();
-extern int entrycmp(), statlinecmp();
-extern char *follow_link();
-extern struct currentness *get_cmp_currency();
 extern char *goodname();
 extern char **initpath();
 extern char *next_def_except();
-extern FILE *opensubfile();
 extern char *re_conv();
 extern char *resolve();
+
+extern int entrycmp(), statlinecmp();
+extern unsigned long hash();
+extern unsigned in_cksum();
+
+extern struct currentness *dec_entry();
+extern struct currentness *get_cmp_currency();
 
 #define SIGN( i) (((i) > 0)? 1 : ((i)? -1 : 0))
 
