@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.40 1988-11-28 14:11:39 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.41 1989-03-23 09:25:18 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -60,7 +60,7 @@ char *argv[];
      Code_t ret;
      int opt, pak_len;
      extern int optind;
-     register int i, j;
+     register int i, j = 0;
 
      if (gethostname(hostname, MAXHOSTNAMELEN) < 0) {
 	  printf("Can't find my hostname?!\n");
@@ -99,7 +99,7 @@ char *argv[];
      /* Override server argument? */
      if (optind < argc) {
 	 if ((hp = gethostbyname(argv[optind++])) == NULL) {
-	     printf("Unknown server name: %s\n", prim_serv);
+	     printf("Unknown server name: %s\n", argv[optind-1]);
 	 } else
 	     (void) strcpy(prim_serv, hp->h_name);
 	 /* argc-optind is the # of other servers on the command line */
@@ -179,7 +179,7 @@ char *argv[];
 	 clust_info[j] = NULL;
 	 serv_list = clust_info;
      }
-     if (!prim_serv[0]) {
+     if (!prim_serv[0] && j) {
 	 srandom(time((long *) 0));
 	 (void) strcpy(prim_serv, serv_list[random() % j]);
      }
