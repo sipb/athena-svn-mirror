@@ -926,7 +926,7 @@ main_loop (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
   Bool ok_to_unblank;
-  pid_t lock_command_pid;
+  pid_t lock_command_pid = 0;
 
   while (1)
     {
@@ -1093,7 +1093,7 @@ main_loop (saver_info *si)
 
       if (si->locked_p)
 	{
-	  if (p->lock_command && lock_command_pid > 0)
+	  if (lock_command_pid > 0)
 	    {
 	      kill (-lock_command_pid, SIGTERM);
 	      lock_command_pid = 0;
