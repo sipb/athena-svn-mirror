@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.26 1990-05-17 03:09:00 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.27 1990-10-19 06:08:54 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.26 1990-05-17 03:09:00 raeburn Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.27 1990-10-19 06:08:54 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -93,7 +93,6 @@ Code_t ZSendPacket(packet, len, waitforack)
 	  tv.tv_sec = HM_TIMEOUT + tv.tv_sec - t0.tv_sec;
 	}
     }
-    return (ZERR_HMDEAD);
 }
 
 static int wait_for_hmack(notice, uid)
