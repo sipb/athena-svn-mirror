@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.22 1997-09-14 21:52:41 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.23 1997-09-23 19:24:56 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZInitialize_c[] =
@@ -94,6 +94,8 @@ Code_t ZInitialize()
 	       ((krbval = krb_get_lrealm(__Zephyr_realm, 1)) != KSUCCESS)) {
 	return (krbval);
     }
+#else
+    strcpy(__Zephyr_realm, "local-realm");
 #endif
 
     /* Get the sender so we can cache it */
