@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.1.2.1 1999-06-18 21:54:16 ghudson Exp $
+# $Id: bashrc,v 1.1.2.2 1999-06-28 19:32:00 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -69,11 +69,21 @@ if [ "${ENV_SET+set}" != set ]; then
 	esac
 	export MORE
 
-	# Special variables for suns
-	if [ sun4 = "$MACHTYPE" ]; then
+	# Set miscellaneous system-dependent variables.
+	case $HOSTTYPE in
+	sgi)
+		# The following set the default error message format
+		# to omit the label and severity components, per the
+		# standard IRIX /etc/profile.
+		export MSGVERB=text:action
+		export NOMSGLABEL=1
+		export NOMSGSEVERITY=1
+		;;
+	sun4)
 		export LD_LIBRARY_PATH=/usr/openwin/lib
 		export OPENWINHOME=/usr/openwin
-	fi
+		;;
+	esac
 	
 	export ATHENA_SYS=`/bin/athena/machtype -S`
 	export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
@@ -106,7 +116,7 @@ if [ "${ENV_SET+set}" != set ]; then
 	# Special version of ADD for the .bash_environment file.
 
 	add () {
-		eval "$(/bin/athena/attach -b -Padd -P" '$athena_path' "$@" ")"
+		eval "$( /bin/athena/attach -b -Padd -P"$athena_path" "$@" )"
 	}
 
 	# Run user environment customizations identified in your
@@ -172,14 +182,14 @@ fi
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
 
 #   alias for a convenient way to change terminal type
-term () { set -f; unset TERMCAP; eval "$(tset -s -I -Q " "$@" ")"; unset -f; }
+term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
 
 #   aliases dealing with mail
 alias mail=Mail
 Mail () { more /usr/prototype_user/README.mail ; }
 
 #   aliases dealing with x window system
-xresize () { set -f; eval $(resize -c) || unset -f ; }
+xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
 if [ "${XSESSION+set}" == set ]; then
 	if [ -z "$XSESSION" ]; then
@@ -192,7 +202,7 @@ fi
 #   aliases dealing with adding locker programs
 
 add_flags=
-add () { eval "$(/bin/athena/attach -Padd -b "$add_flags "$@"")" ; }
+add () { eval "$( /bin/athena/attach -Padd -b $add_flags "$@" )" ; }
 
 alias setup='echo "setup is not supported in bash yet"'
 
