@@ -4553,14 +4553,14 @@ fi
 
     fi
   else
-    echo $ac_n "checking for des_cbc_encrypt in -ldes""... $ac_c" 1>&6
-echo "configure:4558: checking for des_cbc_encrypt in -ldes" >&5
-ac_lib_var=`echo des'_'des_cbc_encrypt | sed 'y%./+-%__p_%'`
+    echo $ac_n "checking for des_cbc_encrypt in -ldes425""... $ac_c" 1>&6
+echo "configure:4558: checking for des_cbc_encrypt in -ldes425" >&5
+ac_lib_var=`echo des425'_'des_cbc_encrypt | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldes  $LIBS"
+LIBS="-ldes425  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4566 "configure"
 #include "confdefs.h"
@@ -4588,24 +4588,24 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo des | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+    ac_tr_lib=HAVE_LIB`echo des425 | sed -e 's/[^a-zA-Z0-9_]/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_lib 1
 EOF
 
-  LIBS="-ldes $LIBS"
+  LIBS="-ldes425 $LIBS"
 
 else
   echo "$ac_t""no" 1>&6
-echo $ac_n "checking for des_cbc_encrypt in -ldes425""... $ac_c" 1>&6
-echo "configure:4603: checking for des_cbc_encrypt in -ldes425" >&5
-ac_lib_var=`echo des425'_'des_cbc_encrypt | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for des_cbc_encrypt in -ldes""... $ac_c" 1>&6
+echo "configure:4603: checking for des_cbc_encrypt in -ldes" >&5
+ac_lib_var=`echo des'_'des_cbc_encrypt | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldes425  $LIBS"
+LIBS="-ldes  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4611 "configure"
 #include "confdefs.h"
@@ -4633,13 +4633,13 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo des425 | sed -e 's/^a-zA-Z0-9_/_/g' \
+    ac_tr_lib=HAVE_LIB`echo des | sed -e 's/^a-zA-Z0-9_/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_lib 1
 EOF
 
-  LIBS="-ldes425 $LIBS"
+  LIBS="-ldes $LIBS"
 
 else
   echo "$ac_t""no" 1>&6
@@ -4647,14 +4647,14 @@ fi
 
 fi
 
-    echo $ac_n "checking for krb_get_cred in -lkrb""... $ac_c" 1>&6
-echo "configure:4652: checking for krb_get_cred in -lkrb" >&5
-ac_lib_var=`echo krb'_'krb_get_cred | sed 'y%./+-%__p_%'`
+    echo $ac_n "checking for krb_get_cred in -lkrb4""... $ac_c" 1>&6
+echo "configure:4652: checking for krb_get_cred in -lkrb4" >&5
+ac_lib_var=`echo krb4'_'krb_get_cred | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb  $LIBS"
+LIBS="-lkrb4  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4660 "configure"
 #include "confdefs.h"
@@ -4682,24 +4682,24 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo krb | sed -e 's/[^a-zA-Z0-9_]/_/g' \
+    ac_tr_lib=HAVE_LIB`echo krb4 | sed -e 's/[^a-zA-Z0-9_]/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_lib 1
 EOF
 
-  LIBS="-lkrb $LIBS"
+  LIBS="-lkrb4 $LIBS"
 
 else
   echo "$ac_t""no" 1>&6
-echo $ac_n "checking for krb_get_cred in -lkrb4""... $ac_c" 1>&6
-echo "configure:4697: checking for krb_get_cred in -lkrb4" >&5
-ac_lib_var=`echo krb4'_'krb_get_cred | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for krb_get_cred in -lkrb""... $ac_c" 1>&6
+echo "configure:4697: checking for krb_get_cred in -lkrb" >&5
+ac_lib_var=`echo krb'_'krb_get_cred | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb4  $LIBS"
+LIBS="-lkrb  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4705 "configure"
 #include "confdefs.h"
@@ -4727,13 +4727,13 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo krb4 | sed -e 's/^a-zA-Z0-9_/_/g' \
+    ac_tr_lib=HAVE_LIB`echo krb | sed -e 's/^a-zA-Z0-9_/_/g' \
     -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_lib 1
 EOF
 
-  LIBS="-lkrb4 $LIBS"
+  LIBS="-lkrb $LIBS"
 
 else
   echo "$ac_t""no" 1>&6
