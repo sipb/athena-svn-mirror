@@ -88,14 +88,14 @@ echo "done."							>/dev/console
 echo ""								>/dev/console
 
 if [ "${PUBLIC}" = "true" ]; then
-	/bin/cp /dev/null /usr/tmp/attachtab
+	/bin/cp /dev/null /var/athena/attachtab
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
 	echo "Getting cluster information: \c"			>/dev/console
 	/etc/athena/save_cluster_info
-	if [ -f /etc/athena/clusterinfo.bsh ]; then
-		. /etc/athena/clusterinfo.bsh
+	if [ -f /var/athena/clusterinfo.bsh ]; then
+		. /var/athena/clusterinfo.bsh
 		echo "Attaching system libraries:"		>/dev/console
 		/bin/athena/attach -h -n -o hard $SYSLIB	>/dev/console
 		echo "done."					>/dev/console
@@ -206,7 +206,7 @@ fi
 
 if [ "${ZCLIENT}" = "true" ]; then
 	echo  "zhm... \c"					>/dev/console
-	rm -f /etc/athena/zhm.pid
+	rm -f /var/athena/zhm.pid
 	/etc/athena/zhm &
 fi
 
