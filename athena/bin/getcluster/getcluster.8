@@ -2,17 +2,15 @@
 .SH NAME
 getcluster \- retrieve service cluster info from Hesiod as environment vars
 .SH SYNOPSIS
-getcluster [-b]
+getcluster [-b] hostname version
 
-# C shell examples
+# C shell example
 .br
-eval `getcluster`
-.br
-getcluster > file; source file
+getcluster `hostname` 5.3 > file; source file
 
 # Bourne shell example
 .br
-getcluster -b > file; . file
+getcluster -b `hostname` 5.3 > file; . file
 
 .PP
 .SH DESCRIPTION
@@ -38,6 +36,8 @@ and
 to be accessed by the C shell in a user's .login file
 and the Bourne shell in a user's .profile, respectively.
 It may also be invoked directly by any user.
+.PP
+Getcluster uses the Hesiodnametypes "clustername" and "cluster".
 .SH FILES
 /etc/clusterinfo
 /etc/clusterinfo.bsh
