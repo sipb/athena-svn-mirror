@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v $
- * $Author: eichin $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,11 +9,10 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.4 1988-10-03 16:52:52 eichin Exp $";
+static char rcsid_check_viewable_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/check_viewable.c,v 1.5 1996-09-19 22:39:16 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
-#include <strings.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <pwd.h>
@@ -32,7 +31,7 @@ Code_t check_viewable(message, checktime, updateuser)
     return(GMS_SERVER_VERSION);
   }
 
-  ptr = index(message, '\n');
+  ptr = strchr(message, '\n');
   if(!ptr) {
     return(GMS_SERVER_GARBLED);
   }
@@ -67,7 +66,7 @@ Code_t check_viewable(message, checktime, updateuser)
     if(!status) {
       if(!strncmp(usertfile, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN)) {
 	/* now check for end of first line */
-	ptr = index(usertfile, '\n');
+	ptr = strchr(usertfile, '\n');
 	if(ptr) {
 	  /* now we check the time stamp */
 	  utime = atol(&usertfile[GMS_VERSION_STRING_LEN+1]);
@@ -100,7 +99,7 @@ Code_t check_viewable(message, checktime, updateuser)
       write(ufd, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN);
     
       /* write out the timestring from the message file */
-      ptr = index(message, '\n')+1;
+      ptr = strchr(message, '\n')+1;
       write(ufd, msg, ptr - msg);
       close(ufd);
     }

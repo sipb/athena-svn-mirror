@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.4 1992-11-08 23:04:28 probe Exp $
+ * $Id: popmail.c,v 1.5 1996-09-19 22:37:02 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
- * $Author: probe $
+ * $Author: ghudson $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.4 1992-11-08 23:04:28 probe Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.5 1996-09-19 22:37:02 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -14,7 +14,7 @@ static char *rcsid = "$Id: popmail.c,v 1.4 1992-11-08 23:04:28 probe Exp $";
 #include <sys/file.h>
 #include <sys/socket.h>
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
@@ -72,7 +72,7 @@ char *host;
 #endif
 
     sin.sin_family = hp->h_addrtype;
-    bcopy(hp->h_addr, (char *)&sin.sin_addr, hp->h_length);
+    memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
     sin.sin_port = sp->s_port;
 #ifdef KPOP
     s = socket(AF_INET, SOCK_STREAM, 0);

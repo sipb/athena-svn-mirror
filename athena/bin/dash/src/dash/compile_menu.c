@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.6 1996-08-29 07:00:35 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.7 1996-09-19 22:20:38 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -75,7 +75,7 @@ char *ConvertStringToCallback(address)
   static char ret[BUFSIZ];
   char *ret_ptr;
 
-  bzero(ret, BUFSIZ);
+  memset(ret, 0, BUFSIZ);
   ret_ptr=ret;
   
   if (*address == NULL)
@@ -86,7 +86,7 @@ char *ConvertStringToCallback(address)
  begin:
   while (isspace(*ptr)) ptr++;
 
-  end = index(ptr, '(');
+  end = strchr(ptr, '(');
   if (end == NULL)
     {
       /* we don't advance the pointer in this case. */
@@ -110,7 +110,7 @@ char *ConvertStringToCallback(address)
     {
       char delim = *ptr;
       *ret_ptr++ = *ptr++;
-      end = index(ptr, delim);
+      end = strchr(ptr, delim);
       if (end == NULL)
 	{
 	  fprintf(stderr, "missing close quote in callback string: %s\n",
@@ -126,7 +126,7 @@ char *ConvertStringToCallback(address)
 	}
     }
 
-  end = index(ptr, ')');
+  end = strchr(ptr, ')');
   if (end == NULL || barfed)
     {
       if (!barfed)
@@ -279,7 +279,7 @@ static Boolean parseMenuEntry(me, string, info)
   /*
    * Zeroes flags for us, too.
    */
-  bzero(info, sizeof(Item));
+  memset(info, 0, sizeof(Item));
 
   /*
    * Parse menu/item field
@@ -327,7 +327,7 @@ static Boolean parseMenuEntry(me, string, info)
   /*
    * Parse label field
    */
-  if (0 == (end = index(ptr, ':')))
+  if (0 == (end = strchr(ptr, ':')))
     {
       fprintf(stderr,
 	      "menu line -\n %.70s\n- %s%s",
@@ -451,7 +451,7 @@ static Boolean parseMenuEntry(me, string, info)
 				/* release... */
 
 	  inquotes = 1;
-	  if (0 == (end = index(ptr, '"')))
+	  if (0 == (end = strchr(ptr, '"')))
 	    {
 	      if (info->type == HelpITEM)
 		{
@@ -532,7 +532,7 @@ static Boolean parseMenuEntry(me, string, info)
 		      XrmQuarkToString(info->name));
 	    }
 
-	  if (0 == (end = index(ptr, '}')))
+	  if (0 == (end = strchr(ptr, '}')))
 	    {
 	      fprintf(stderr,
 		  "%s: child specifier does not have '}'; trying to be smart\n",
@@ -597,7 +597,7 @@ static Boolean parseMenuEntry(me, string, info)
 			  fprintf(stderr,
 				  "'%s' more than %d parent types; truncated\n",
 				  XrmQuarkToString(info->name), MAXCHILDREN);
-			  if (0 == (end = index(ptr, ']')))
+			  if (0 == (end = strchr(ptr, ']')))
 			    {
 			      fprintf(stderr,
 			      "and mismatched brackets, too! ignoring\n");
@@ -605,7 +605,7 @@ static Boolean parseMenuEntry(me, string, info)
 			    }
 			  done = 1;
 
-			  if (0 != (end = index(ptr, ';')))
+			  if (0 != (end = strchr(ptr, ';')))
 			    ptr = end + 1;
 			  else
 			    {
@@ -747,7 +747,7 @@ static Boolean addMenuEntry(me, info, i)
   if (j == NULL)
     {
       (void)hash_store(me->menu.Names, info->name, i);
-      bzero(i, sizeof(Item)); /* if new, init to zeroes */
+      memset(i, 0, sizeof(Item)); /* if new, init to zeroes */
       i->u.i.machtype =
 	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM;
       i->u.i.verify = True;
@@ -793,8 +793,8 @@ static Boolean addMenuEntry(me, info, i)
 
   if (info->flags & parentsFLAG)
     {
-      bcopy(info->parents, i->parents, MAXPARENTS * sizeof(XrmQuark));
-      bcopy(info->weight, i->weight, MAXPARENTS * sizeof(int));
+      memcpy(i->parents, info->parents, MAXPARENTS * sizeof(XrmQuark));
+      memcpy(i->weight, info->weight, MAXPARENTS * sizeof(int));
     }
 
   if (info->flags & childrenFLAG)
@@ -823,8 +823,8 @@ static Boolean addMenuEntry(me, info, i)
 	    }
 	}
 
-      bcopy(info->u.m.children,
-	    i->u.m.children,
+      memcpy(i->u.m.children,
+	    info->u.m.children,
 	    MAXCHILDREN * sizeof(XrmQuark));
 
       /*
@@ -836,7 +836,7 @@ static Boolean addMenuEntry(me, info, i)
 	  if (t == NULL)
 	    {
 	      t = (TypeDef *)XjMalloc(sizeof(TypeDef));
-	      bzero(t, sizeof(TypeDef));
+	      memset(t, 0, sizeof(TypeDef));
 	      (void)hash_store(me->menu.Types, i->u.m.children[n], t);
 	      t->type = i->u.m.children[n];
 	      t->menus[0] = i;

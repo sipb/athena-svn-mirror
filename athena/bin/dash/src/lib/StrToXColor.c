@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.3 1994-05-08 23:29:57 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.4 1996-09-19 22:23:30 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -88,7 +88,7 @@ int StrToXPixel(display, string, pixel)
    * parse the resource -- if there are 2 or 3 "words", then
    * assign them to the other addresses.
    */
-  if ((ptr = address2 = (char *) index(copy, sep))  !=  NULL)
+  if ((ptr = address2 = strchr(copy, sep))  !=  NULL)
     {
       ptr--;			/* strip trailing spaces off word */
       while (isspace(*ptr))	/*   before comma */
@@ -99,7 +99,7 @@ int StrToXPixel(display, string, pixel)
       while (isspace(*address2)) /*   after comma */
 	address2++;
 
-      if ((ptr = address3 = (char *) index(address2, sep))  !=  NULL)
+      if ((ptr = address3 = strchr(address2, sep))  !=  NULL)
 	{
 	  ptr--;		/* strip trailing spaces off word */
 	  while (isspace(*ptr))	/*   before comma */

@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/read_to_memory.c,v $
- * $Author: eichin $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_read_to_memory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/read_to_memory.c,v 1.1 1988-09-26 15:26:46 eichin Exp $";
+static char rcsid_read_to_memory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/read_to_memory.c,v 1.2 1996-09-19 22:39:20 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -45,7 +45,7 @@ Code_t read_to_memory(ret_block, ret_size, filedesc)
     }
       
     /* copy it into the right place */
-    bcopy(buf, &message_data[message_size], stat);
+    memcpy(&message_data[message_size], buf, stat);
 
     message_size += stat;
   } while(stat);

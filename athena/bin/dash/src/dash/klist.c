@@ -11,13 +11,13 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.8 1996-08-29 07:00:37 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.9 1996-09-19 22:20:40 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>

@@ -10,7 +10,7 @@
  */
 
 #include <stdio.h>		/* standard io routines */
-#include <strings.h>		/* strcpy, strcat, etc... */
+#include <string.h>		/* strcpy, strcat, etc... */
 #include <X11/Xlib.h>		/* basic X includes */
 #include <X11/Xutil.h>		/* basic X includes */
 #include <Button.h>

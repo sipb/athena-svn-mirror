@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/List.c,v $
- * $Author: probe $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/List.c,v 1.1 1993-10-12 05:49:22 probe Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/List.c,v 1.2 1996-09-19 22:23:26 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -1668,8 +1668,8 @@ static Boolean event_handler(me, event)
 	  if (me->textDisplay.selection != NULL)
 	    XjFree(me->textDisplay.selection);
 	  me->textDisplay.selection = (char *)XjMalloc(length + 1);
-	  bcopy(me->textDisplay.realStart,
-		me->textDisplay.selection, length);
+	  memcpy(me->textDisplay.selection,
+		me->textDisplay.realStart, length);
 	  me->textDisplay.selection[length] = '\0';
 	}
       break;

@@ -50,11 +50,7 @@ int net(progname, num, names)
 	}
 
       memset(&sin, 0, sizeof (sin));
-#ifdef POSIX
-      memmove((char *)&sin.sin_addr, hp->h_addr, hp->h_length);
-#else
-      bcopy(hp->h_addr, (char *)&sin.sin_addr, hp->h_length);
-#endif
+      memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
       sin.sin_family = hp->h_addrtype;
       sin.sin_port = sp->s_port;
 

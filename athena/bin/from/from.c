@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.16 1996-04-26 17:11:08 ghudson Exp $
+ * $Id: from.c,v 1.17 1996-09-19 22:37:01 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,19 +10,15 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.16 1996-04-26 17:11:08 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.17 1996-09-19 22:37:01 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <pwd.h>
-#include <strings.h>
-#if defined(POSIX) || defined(_POSIX_SOURCE)
+#include <string.h>
 #include <stdlib.h>
-#else
-extern char *malloc();
-#endif
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
@@ -615,7 +611,7 @@ pop_ok()
        return(NOTOK);
   }
 
-  bzero(buf, sizeof(buf));
+  memset(buf, 0, sizeof(buf));
   while(fgets(buf, sizeof(buf), fp))
       printf("%s", buf);
   fclose(fp);

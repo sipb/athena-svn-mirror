@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.9 1995-05-26 04:12:52 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.10 1996-09-19 22:23:28 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -581,7 +581,7 @@ static Boolean parseMenuEntry(me, string, info)
   /*
    * Zeroes flags for us, too.
    */
-  bzero(info, sizeof(Item));
+  memset(info, 0, sizeof(Item));
 
   /*
    * Parse menu/item field
@@ -630,7 +630,7 @@ static Boolean parseMenuEntry(me, string, info)
   /*
    * Parse label field
    */
-  if (0 == (end = index(ptr, ':')))
+  if (0 == (end = strchr(ptr, ':')))
     {
       sprintf(errtext,
 	      "menu line -\n %.70s\n- %s%s",
@@ -765,7 +765,7 @@ static Boolean parseMenuEntry(me, string, info)
 				/* release... */
 
 	  inquotes = 1;
-	  if (0 == (end = index(ptr, '"')))
+	  if (0 == (end = strchr(ptr, '"')))
 	    {
 	      if (info->type == HelpITEM)
 		{
@@ -852,7 +852,7 @@ static Boolean parseMenuEntry(me, string, info)
 	      XjWarning(errtext);
 	    }
 
-	  if (0 == (end = index(ptr, '}')))
+	  if (0 == (end = strchr(ptr, '}')))
 	    {
 	      sprintf(errtext,
 		  "%s: child specifier does not have '}'; trying to be smart",
@@ -919,7 +919,7 @@ static Boolean parseMenuEntry(me, string, info)
 				  "'%s' more than %d parent types; truncated",
 				  XrmQuarkToString(info->name), MAXCHILDREN);
 			  XjWarning(errtext);
-			  if (0 == (end = index(ptr, ']')))
+			  if (0 == (end = strchr(ptr, ']')))
 			    {
 			      XjWarning(
 			      "and mismatched brackets, too! ignoring");
@@ -927,7 +927,7 @@ static Boolean parseMenuEntry(me, string, info)
 			    }
 			  done = 1;
 
-			  if (0 != (end = index(ptr, ';')))
+			  if (0 != (end = strchr(ptr, ';')))
 			    ptr = end + 1;
 			  else
 			    {
@@ -1072,7 +1072,7 @@ static Boolean addMenuEntry(me, info, i)
   if (j == NULL)
     {
       (void)hash_store(me->menu.Names, info->name, i);
-      bzero(i, sizeof(Item)); /* if new, init to zeroes */
+      memset(i, 0, sizeof(Item)); /* if new, init to zeroes */
       i->u.i.machtype =
 	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM | SGINUM;
       i->u.i.verify = True;
@@ -1118,8 +1118,8 @@ static Boolean addMenuEntry(me, info, i)
 
   if (info->flags & parentsFLAG)
     {
-      bcopy(info->parents, i->parents, MAXPARENTS * sizeof(XrmQuark));
-      bcopy(info->weight, i->weight, MAXPARENTS * sizeof(int));
+      memcpy(i->parents, info->parents, MAXPARENTS * sizeof(XrmQuark));
+      memcpy(i->weight, info->weight, MAXPARENTS * sizeof(int));
     }
 
   if (info->flags & childrenFLAG)
@@ -1148,8 +1148,8 @@ static Boolean addMenuEntry(me, info, i)
 	    }
 	}
 
-      bcopy(info->u.m.children,
-	    i->u.m.children,
+      memcpy(i->u.m.children,
+	    info->u.m.children,
 	    MAXCHILDREN * sizeof(XrmQuark));
 
       /*
@@ -1161,7 +1161,7 @@ static Boolean addMenuEntry(me, info, i)
 	  if (t == NULL)
 	    {
 	      t = (TypeDef *)XjMalloc(sizeof(TypeDef));
-	      bzero(t, sizeof(TypeDef));
+	      memset(t, 0, sizeof(TypeDef));
 	      (void)hash_store(me->menu.Types, i->u.m.children[n], t);
 	      t->type = i->u.m.children[n];
 	      t->menus[0] = i;
@@ -1392,7 +1392,7 @@ static Boolean createItem(me, what)
 	      item = (Menu *)XjMalloc(sizeof(Menu));
 	      if (what->type == MenuITEM)
 		what->u.m.m = item;
-	      bzero(item, sizeof(Menu));
+	      memset(item, 0, sizeof(Menu));
 
 	      item->parent = menuParent;
 	      if (menuParent == NULL)
@@ -1436,7 +1436,7 @@ static Boolean createItem(me, what)
 		    {
 		      item->paneType = HELP;
 		      item->child = (Menu *)XjMalloc(sizeof(Menu));
-		      bzero(item->child, sizeof(Menu));
+		      memset(item->child, 0, sizeof(Menu));
 		      item->child->title = what->u.i.help;
 		      item->child->title_width = what->u.i.help_width;
 		      item->child->title_height = what->u.i.help_height;
@@ -1753,7 +1753,7 @@ createTablesFromCompiledFile(me, file, fontname)
   str = ++end;
 
   loc = (Item *)XjMalloc(num * sizeof(Item));
-  bzero(loc, num * sizeof(Item));
+  memset(loc, 0, num * sizeof(Item));
 
   for (i=0; i < num; i++)
     {
@@ -1762,7 +1762,7 @@ createTablesFromCompiledFile(me, file, fontname)
       tmp = atoi(str);
       str += 5;
       *(end = str+tmp) = '\0';
-      /*      end = index(str, ' ');       *end = '\0';       */
+      /*      end = strchr(str, ' ');       *end = '\0';       */
       loc->name = XrmStringToQuark(str);
       str = ++end;
       loc->flags = atoi(str);
@@ -1775,7 +1775,7 @@ createTablesFromCompiledFile(me, file, fontname)
       tmp = atoi(str);
       str += 5;
       *(end = str+tmp) = '\0';
-      /* end = index(str, '\n');      *end = '\0';       */
+      /* end = strchr(str, '\n');      *end = '\0';       */
       loc->title = str;
       str = ++end;
 
@@ -1809,7 +1809,7 @@ createTablesFromCompiledFile(me, file, fontname)
 	      tmp = atoi(str);
 	      str += 5;
 	      *(end = str+tmp) = '\0';
-	      /* end = index(str, ' ');      *end = '\0';       */
+	      /* end = strchr(str, ' ');      *end = '\0';       */
 	      loc->u.m.children[j++] = XrmStringToQuark(str);
 	      str = end+1;
 	    }
@@ -1835,7 +1835,7 @@ createTablesFromCompiledFile(me, file, fontname)
 	{
 	  do
 	    {
-	      end = index(str, ' ');
+	      end = strchr(str, ' ');
 	      *end = '\0';
 	      loc->parents[qnum] = XrmStringToQuark(str);
 	      str = ++end;
@@ -1863,7 +1863,7 @@ createTablesFromCompiledFile(me, file, fontname)
 	    }
 
 	  str = ++end;
-	  end = index(str, '\n');
+	  end = strchr(str, '\n');
 	  *end = '\0';
 */
 
@@ -1886,7 +1886,7 @@ createTablesFromCompiledFile(me, file, fontname)
 	  tmp = atoi(str);
 	  str += 5;
 	  *(end = str+tmp) = '\0';
-	  /*  end = index(str, '\n');	  *end = '\0'; */
+	  /*  end = strchr(str, '\n');	  *end = '\0'; */
 	  ptr = str;
 
 	  if (strncmp("(null)", ptr, 6))
@@ -1907,8 +1907,8 @@ createTablesFromCompiledFile(me, file, fontname)
 	  tmp = atoi(str);
 	  str += 5;
 	  *(end = str+tmp) = '\0';
-	  /* end = index(str, '!');	  while ( *(end-1) != '\n' ) */
-	  /* end = index(end+1, '!');	  *end = '\0';  */
+	  /* end = strchr(str, '!');	  while ( *(end-1) != '\n' ) */
+	  /* end = strchr(end+1, '!');	  *end = '\0';  */
 	  if (strncmp("(null)", str, 6))
 	    {
 	      loc->u.i.help = str;
@@ -1941,7 +1941,7 @@ createTablesFromCompiledFile(me, file, fontname)
 	      if (t == NULL)
 		{
 		  t = (TypeDef *)XjMalloc(sizeof(TypeDef));
-		  bzero(t, sizeof(TypeDef));
+		  memset(t, 0, sizeof(TypeDef));
 		  (void)hash_store(me->menu.Types, loc->u.m.children[j], t);
 		  t->type = loc->u.m.children[j];
 		  t->menus[0] = loc;
@@ -3280,7 +3280,7 @@ static void printmenu(first, tabbing)
 
 	  while (*start != '\0')
 	    {
-	      end = index(start, '\n');
+	      end = strchr(start, '\n');
 	      if (end == NULL)
 		end = start + strlen(start);
 	      tab(tabbing + 1);

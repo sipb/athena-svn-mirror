@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.1 1993-07-01 23:31:23 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.2 1996-09-19 22:23:33 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -35,15 +35,15 @@ void XjCopyValue(where, resource, value)
      XjResource *resource;
      XjArgVal value;
 {
-  bcopy((char *)&value,
-	((char *)where + resource->resource_offset),
+  memcpy(where + resource->resource_offset,
+	 &value,
 	(resource->resource_size > 4) ? 4 : resource->resource_size);
 }
 #endif
 
 #define XjCopyValue(where, resource, value) \
-  bcopy((char *) &(value), \
-	((char *)(where) + (resource)->resource_offset), \
+  memcpy((where) + (resource)->resource_offset, \
+	&(value), \
 	((resource)->resource_size > 4) ? 4 : (resource)->resource_size)
 
 Jet XjVaCreateJet(name, class, parent, va_alist)
@@ -64,7 +64,7 @@ va_dcl
 
   jet = (Jet)XjMalloc((unsigned) class->core_class.jetSize);
 
-  bzero((char *) jet, class->core_class.jetSize);
+  memset(jet, 0, class->core_class.jetSize);
 
   jet->core.classRec = class;
   jet->core.name = XjNewString(name);
@@ -116,7 +116,7 @@ va_dcl
       if (len < (instPtr - instanceName)) /* includes '.' */
 	{
 	  instPtr -= len + 1;
-	  bcopy(thisJet->core.name, instPtr, len);
+	  memcpy(instPtr, thisJet->core.name, len);
 	  instPtr[-1] = '.';
 	}
       else
@@ -138,7 +138,7 @@ va_dcl
       if (len < (classPtr - className)) /* includes . */
 	{
 	  classPtr -= len + 1;
-	  bcopy(thisJet->core.classRec->core_class.className, classPtr, len);
+	  memcpy(classPtr, thisJet->core.classRec->core_class.className, len);
 	  classPtr[-1] = '.';
 	}
       else

@@ -2,7 +2,7 @@
  * Various stuff stolen from the X Toolkit...
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.h,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -14,7 +14,7 @@
 #ifndef _Xj_Jets_h
 #define _Xj_Jets_h
 
-#include <strings.h>
+#include <string.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

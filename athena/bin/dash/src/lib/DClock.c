@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.8 1995-05-26 04:16:13 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.9 1996-09-19 22:23:23 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -291,7 +291,7 @@ static int draw(me)
       char *ptr, *ptr2;
 
       strcpy(tmp, label);
-      for (ptr = ptr2 = tmp; (ptr2 = index(ptr, ':')) != 0; /*empty*/)
+      for (ptr = ptr2 = tmp; (ptr2 = strchr(ptr, ':')) != 0; /*empty*/)
 	{
 	  len2 = (int) (ptr2 - ptr);
 	  *ptr2++ = '\0';

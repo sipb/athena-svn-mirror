@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,12 +11,12 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.3 1994-05-09 11:26:47 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.4 1996-09-19 22:23:31 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include "Jets.h"
 #include "TextDisplay.h"
@@ -1414,8 +1414,8 @@ static Boolean event_handler(me, event)
 	  if (me->textDisplay.selection != NULL)
 	    XjFree(me->textDisplay.selection);
 	  me->textDisplay.selection = (char *)XjMalloc(length + 1);
-	  bcopy(me->textDisplay.realStart,
-		me->textDisplay.selection, length);
+	  memcpy(me->textDisplay.selection,
+		me->textDisplay.realStart, length);
 	  me->textDisplay.selection[length] = '\0';
 	}
       break;

@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v $
- * $Author: epeisach $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.3 1991-02-28 11:03:30 epeisach Exp $";
+static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.4 1996-09-19 22:39:17 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -70,7 +70,7 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
       return(gethost_error());
     }
     /* Copy in the first (preferred?) address of the server */
-    bcopy(gms_host->h_addr_list[0], &server_insocket.sin_addr,
+    memcpy(&server_insocket.sin_addr, gms_host->h_addr_list[0],
 	  gms_host->h_length); 
   }
 

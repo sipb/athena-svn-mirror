@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v $
- * $Author: vrt $
+ * $Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.8 1994-04-30 13:17:42 vrt Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.9 1996-09-19 22:39:19 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -23,7 +23,7 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
-#include <strings.h>
+#include <string.h>
 
 /*
  * This version of the daemon is run out of inetd, with a conf line of:

@@ -34,7 +34,7 @@ static char sccsid[] = "@(#)res_query.c	5.5 (Berkeley) 9/21/88";
 #include <netdb.h>
 #include <stdio.h>
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
@@ -238,7 +238,7 @@ res_querydomain(name, domain, class, type, answer, anslen)
 		 */
 		n = strlen(name) - 1;
 		if (name[n] == '.' && n < sizeof(nbuf) - 1) {
-			bcopy(name, nbuf, n);
+			memcpy(nbuf, name, n);
 			nbuf[n] = '\0';
 		} else
 			longname = name;

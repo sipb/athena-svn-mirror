@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToPixmap.c,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToPixmap.c,v 1.1 1993-07-02 00:03:19 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToPixmap.c,v 1.2 1996-09-19 22:23:30 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -77,7 +77,7 @@ int StrToPixmap(display, window, where, resource, type, address)
 
     case BitmapSuccess:
       newPixmap = (XjPixmap *)XjMalloc((unsigned) sizeof(XjPixmap));
-      bcopy((char *)&p, (char *)newPixmap, sizeof(XjPixmap));
+      memcpy(newPixmap, &p, sizeof(XjPixmap));
       status = 0;
       break;
     }

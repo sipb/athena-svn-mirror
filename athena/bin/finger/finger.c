@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.28 1996-06-24 05:28:24 ghudson Exp $
+ * $Id: finger.c,v 1.29 1996-09-19 22:36:22 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.28 1996-06-24 05:28:24 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.29 1996-09-19 22:36:22 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -77,7 +77,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #ifdef SYSV
 #include <utmpx.h>
 #endif
-#include <strings.h>
+#include <string.h>
 #include <utmp.h>
 #include <sys/signal.h>
 #include <pwd.h>
@@ -315,11 +315,11 @@ doall()
 			p->link = (struct person *) malloc(sizeof *p);
 			p = p->link;
 		}
-		bcopy(user.ut_name, name, NMAX);
+		memcpy(name, user.ut_name, NMAX);
 		name[NMAX] = 0;
-		bcopy(user.ut_line, p->tty, LMAX);
+		memcpy(p->tty, user.ut_line, LMAX);
 		p->tty[LMAX] = 0;
-		bcopy(user.ut_host, p->host, HMAX);
+		memcpy(p->host, user.ut_host, HMAX);
 		p->host[HMAX] = 0;
 		p->loginout = 0;
 #ifndef SYSV
@@ -476,9 +476,9 @@ donames(argv)
 				    user.ut_name, NMAX) != 0)
 				continue;
 			if (p->loggedin == 0) {
-				bcopy(user.ut_line, p->tty, LMAX);
+				memcpy(p->tty, user.ut_line, LMAX);
 				p->tty[LMAX] = 0;
-				bcopy(user.ut_host, p->host, HMAX);
+				memcpy(p->host, user.ut_host, HMAX);
 				p->host[HMAX] = 0;
 #ifndef SYSV
 				p->loginat = user.ut_time;
@@ -492,9 +492,9 @@ donames(argv)
 
 				new = (struct person *) malloc(sizeof *new);
 				new->name = p->name;
-				bcopy(user.ut_line, new->tty, LMAX);
+				memcpy(new->tty, user.ut_line, LMAX);
 				new->tty[LMAX] = 0;
-				bcopy(user.ut_host, new->host, HMAX);
+				memcpy(new->host, user.ut_host, HMAX);
 				new->host[HMAX] = 0;
 #ifndef SYSV
 				new->loginat = user.ut_time;
@@ -1216,9 +1216,9 @@ fudged:
 	if (lf >= 0) {
 		(void) lseek(lf, (long) pers->pwd->pw_uid * sizeof ll, 0);
 		if ((i = read(lf, (char *) &ll, sizeof ll)) == sizeof ll) {
-			bcopy(ll.ll_line, pers->tty, LMAX);
+			memcpy(pers->tty, ll.ll_line, LMAX);
 			pers->tty[LMAX] = 0;
-			bcopy(ll.ll_host, pers->host, HMAX);
+			memcpy(pers->host, ll.ll_host, HMAX);
 			pers->host[HMAX] = 0;
 			pers->loginat = ll.ll_time;
 			pers->loginout = 0;
@@ -1500,7 +1500,7 @@ netfinger(name)
 		return (1);
 	}
 	sin.sin_family = hp->h_addrtype;
-	bcopy(hp->h_addr, (char *) &sin.sin_addr, hp->h_length);
+	memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
 	sin.sin_port = sp->s_port;
 	s = socket(hp->h_addrtype, SOCK_STREAM, 0);
 	if (s < 0) {

@@ -22,14 +22,14 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.9 1994-04-12 15:08:43 miki Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.10 1996-09-19 22:39:53 ghudson Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
 #include <sys/types.h>			/* System type defs. */
 #include <netdb.h>			/* Networking defs. */
 #include <sys/socket.h>			/* More network defs. */
-#include <strings.h>			/* String fct. declarations. */
+#include <string.h>			/* String fct. declarations. */
 #include <ctype.h>			/* Character type macros. */
 #include <netinet/in.h>			/* Internet defs. */
 #include <arpa/inet.h>			/* For inet_addr */
@@ -85,7 +85,7 @@ main(argc, argv)
   int status = 0;
   int set_server = 0;
 
-  myname = (myname = rindex(argv[0], '/')) ? myname + 1 : argv[0];
+  myname = (myname = strrchr(argv[0], '/')) ? myname + 1 : argv[0];
   if(argc == 1)
     usage_error();
   if(strcmp(argv[1], "-help") == 0)
@@ -146,7 +146,8 @@ main(argc, argv)
 	      host_entry = gethostbyaddr((char *) &host_address, 4, AF_INET);
 	      if(host_entry)
 		if(set_server)		  
-		  bcopy(host_entry->h_addr, &server_addr, sizeof(server_addr));
+		  memcpy(&server_addr, host_entry->h_addr,
+			 sizeof(server_addr));
 		else		  
 		  print_host(host_entry);
 	    }
@@ -162,7 +163,7 @@ main(argc, argv)
 	  if(host_entry)
 	    {
 	      if(set_server)
-		bcopy(host_entry->h_addr, &server_addr, sizeof(server_addr));
+		memcpy(&server_addr, host_entry->h_addr, sizeof(server_addr));
 	      else
 		{
 		  print_host(host_entry);
@@ -197,7 +198,7 @@ main(argc, argv)
 	  struct in_addr internet_address;
 
 	  server_specified = 1;
-	  bcopy(host_entry->h_addr_list[0], &internet_address, 
+	  memcpy(&internet_address, host_entry->h_addr_list[0],
 		host_entry->h_length);
 	  printf("Using domain server:\nHost name:\t%s\nHost Address\t%s\n",
 		 host_entry->h_name, inet_ntoa(internet_address));
@@ -266,7 +267,7 @@ print_host(h)
 	  
       for (addr = h->h_addr_list; *addr; addr++) 
 	{
-	  bcopy(*addr, &internet_address, h->h_length);
+	  memcpy(&internet_address, *addr, h->h_length);
 	  if(a_flag)
 	    printf("%s\n", inet_ntoa(internet_address));
 	  else

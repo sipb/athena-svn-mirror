@@ -2,7 +2,7 @@
  * Generic hash table routines.  Uses integer keys to store objects.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/hash.c,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  *  (c) Copyright 1988,1991 by the Massachusetts Institute of Technology.
  *  For copying and distribution information, please see the file
@@ -21,7 +21,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/hash.c,v 1.2 1991-12-17 11:38:41 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/hash.c,v 1.3 1996-09-19 22:23:33 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -44,7 +44,7 @@ struct hash *create_hash(size)
     h->size = size;
     h->data = (struct bucket **) XjMalloc((unsigned) size
 					  * sizeof(struct bucket *));
-    bzero(h->data, size * sizeof(struct bucket *));
+    memset(h->data, 0, size * sizeof(struct bucket *));
     return(h);
 }
 

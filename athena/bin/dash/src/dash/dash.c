@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.15 1996-08-29 07:00:36 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.16 1996-09-19 22:20:39 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -1654,7 +1654,7 @@ Status sendEvent(display, window, opcode, data)
   e.xclient.window = window;
   e.xclient.message_type = dashAtom;
   e.xclient.format = 8;
-  bzero(e.xclient.data.b, sizeof(e.xclient.data.b));
+  memset(e.xclient.data.b, 0, sizeof(e.xclient.data.b));
   e.xclient.data.b[0] = opcode;
   if (data)
     strcpy(&e.xclient.data.b[1], data);

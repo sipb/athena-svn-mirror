@@ -1,4 +1,4 @@
-#include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include "net.h"
@@ -16,7 +16,7 @@ void main(argc, argv)
   char buf[1024];		/* Temporary buffer. */
   char *progname;		/* Name of program from command-line. */
 
-  progname = rindex(argv[0], '/');
+  progname = strrchr(argv[0], '/');
   if(progname == (char *) NULL)
      progname = argv[0];	/* Find out what our name is today. */
   if(*progname == '/')		/* Useful for being able to print error */
