@@ -15,9 +15,10 @@
 
 /* main() for the attach suite */
 
-static const char rcsid[] = "$Id: suite.c,v 1.3 1999-05-19 14:19:06 danw Exp $";
+static const char rcsid[] = "$Id: suite.c,v 1.4 1999-10-19 20:27:23 danw Exp $";
 
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,12 +32,20 @@ char *whoami;
 int main(int argc, char **argv)
 {
   int fd;
+  sigset_t mask;
 
   /* First, a suid safety check. */
   fd = open("/dev/null", O_RDONLY);
   if (fd == STDIN_FILENO || fd == STDOUT_FILENO || fd == STDERR_FILENO)
     exit(1);
   close(fd);
+
+  /* Block ^Z to prevent holding locks on the attachtab. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGTSTP);
+  sigaddset(&mask, SIGTTOU);
+  sigaddset(&mask, SIGTTIN);
+  sigprocmask(SIG_BLOCK, &mask, NULL);
 
   if (argc > 1 && !strncmp(argv[1], "-P", 2))
     {
