@@ -15,8 +15,12 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.11 1998-05-14 19:23:39 danw Exp $
+ * $Id: auth-passwd.c,v 1.12 1998-08-03 21:49:57 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  1998/05/14 19:23:39  danw
+ * Deal with potential krb5/krb4 password skew (by ignoring errors when
+ * getting krb5 tickets)
+ *
  * Revision 1.10  1998/05/13 20:18:46  danw
  * merge in changes from 1.2.23
  *
@@ -645,10 +649,6 @@ int auth_password(const char *server_user, const char *password)
 	      ticket = xmalloc(strlen(ccname) + 1);
 	      (void) sprintf(ticket, "%s", ccname);
 	      
-	      /* We do not need this so free them up */
-	      xfree(saved_pw_name);
-	      xfree(saved_pw_passwd);
-	      
 	      /* Now get v4 tickets */
 	      sprintf(krbtkfile, "/tmp/tkt_p%d", getpid());
 	      krb_set_tkt_string(krbtkfile);
@@ -669,6 +669,10 @@ int auth_password(const char *server_user, const char *password)
 	      sprintf(krbtkenv, "KRBTKFILE=%s", krbtkfile);
 	      putenv(xstrdup(krbtkenv));
 
+	      /* We do not need this so free them up */
+	      xfree(saved_pw_name);
+	      xfree(saved_pw_passwd);
+	      
 	      havecred = 1;
 	      atexit(krb_cleanup);
 	      return 1;
