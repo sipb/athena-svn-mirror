@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.26 1999-02-19 17:19:06 danw Exp $
+# $Id: do.sh,v 1.27 1999-02-19 17:29:07 danw Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -116,7 +116,7 @@ esac
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
 if [ -x $athtoolroot/usr/athena/bin/gmake ]; then
-	make=$athtoolroot/usr/athena/bin/gmake
+	make=gmake
 else
 	make=make
 fi
