@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.76 1998-10-01 17:25:49 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.77 1998-10-02 17:41:57 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -945,8 +945,10 @@ void loginACT(w, event, p, n)
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, 300, 300);
       XFlush(dpy);
+      larv_set_busy(1);
       tb.ptr = dologin(login, passwd, mode, script, resources.tty,
 		       resources.session, DisplayString(dpy));
+      larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,
 		   HeightOfScreen(DefaultScreenOfDisplay(dpy))/2);

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.95 1998-09-12 00:16:36 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.96 1998-10-02 17:41:56 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -604,14 +604,8 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (nanny_setupUser(pwd->pw_name, environment, newargv))
     return lose("failed to setup for login");
 
-#ifndef XDM
-  larv_set_busy(1);
-#endif
   exit(0);
 #else
-#ifndef XDM
-  larv_set_busy(1);
-#endif
   execle(session, "sh", errbuf, script, NULL, environment);
 #endif /* sgi */
 
