@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.4 2003-09-02 15:52:15 rbasch Exp $
+# $Id: Xsession,v 1.5 2004-05-20 22:12:10 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -75,6 +75,10 @@ fi
 
 # Make gconfd flush settings to disk before destroying credentials.
 gconftool-2 --shutdown
+
+# Kill xscreensaver, to keep it from trying to restart when we send
+# it SIGHUP below.
+xscreensaver-command -exit > /dev/null 2>&1
 
 # Cannot detach homedir here, since this script is executed in the users
 # homedir.
