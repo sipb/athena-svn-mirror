@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DARWIN/rx_knet.c,v 1.1.1.1 2002-01-31 21:50:45 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/DARWIN/rx_knet.c,v 1.1.1.2 2004-02-13 17:52:20 zacheiss Exp $");
 
 #include "../rx/rx_kcommon.h"
 
@@ -24,7 +24,7 @@ int osi_NetReceive(asocket, addr, dvec, nvecs, alength)
     struct uio u;
     int i;
     struct iovec iov[RX_MAXIOVECS];
-    struct sockaddr *sa;
+    struct sockaddr *sa = NULL;
     int code;
 
     int haveGlock = ISAFS_GLOCK();
@@ -60,13 +60,16 @@ int osi_NetReceive(asocket, addr, dvec, nvecs, alength)
     if (haveGlock) {
         AFS_GLOCK();
     }
-    *alength=*alength-u.uio_resid;
+    if (code)
+	return code;
+    *alength -= u.uio_resid;
     if (sa) {
        if (sa->sa_family == AF_INET) {
           if (addr) *addr=*(struct sockaddr_in *)sa;
        } else {
           printf("Unknown socket family %d in NetReceive\n");
        }
+       FREE(sa, M_SONAME);
     }
     return code;
 }

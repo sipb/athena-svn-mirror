@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.2 2002-12-13 20:41:37 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_kcommon.c,v 1.1.1.3 2004-02-13 17:53:48 zacheiss Exp $");
 
 #include "../rx/rx_kcommon.h"
 
@@ -750,7 +750,9 @@ struct osi_socket *rxk_NewSocket(short aport)
 {
     register afs_int32 code;
     struct socket *newSocket;
+#if !defined(AFS_HPUX110_ENV)
     register struct mbuf *nam;
+#endif
     struct sockaddr_in myaddr;
     int wow;
 #ifdef AFS_HPUX110_ENV
@@ -804,7 +806,9 @@ struct osi_socket *rxk_NewSocket(short aport)
     code = sobind(newSocket, bindnam, addrsize);
     if (code) {
        soclose(newSocket);
+#if !defined(AFS_HPUX110_ENV)
        m_freem(nam);
+#endif
        goto bad;
     }
 
@@ -1024,14 +1028,15 @@ int rxk_ListenerPid; /* Used to signal process to wakeup at shutdown */
 
 #ifdef AFS_SUN5_ENV
 /*
- * Run the listener as a kernel process.
+ * Run the listener as a kernel thread.
  */
 void rxk_Listener(void)
 {
     extern id_t syscid;
     void rxk_ListenerProc(void);
-    if (newproc(rxk_ListenerProc, syscid, 59))
-	osi_Panic("rxk_Listener: failed to fork listener process!\n");
+    if (thread_create(NULL, DEFAULTSTKSZ, rxk_ListenerProc,
+	0, 0, &p0, TS_RUN, minclsyspri) == NULL)
+	osi_Panic("rxk_Listener: failed to start listener thread!\n");
 }
 
 void rxk_ListenerProc(void)
@@ -1047,7 +1052,7 @@ void rxk_Listener(void)
     rxk_ListenerPid = current->pid;
 #endif
 #ifdef AFS_SUN5_ENV
-    rxk_ListenerPid = ttoproc(curthread)->p_pidp->pid_id;
+    rxk_ListenerPid = 1;      /* No PID, just a flag that we're alive */
 #endif /* AFS_SUN5_ENV */
 #ifdef AFS_FBSD_ENV
     rxk_ListenerPid = curproc->p_pid;
@@ -1091,11 +1096,6 @@ void rxk_Listener(void)
 #endif
 #ifdef AFS_SUN5_ENV
     AFS_GUNLOCK();
-#ifdef HAVE_P_COREFILE
-    if (!curproc->p_corefile)  /* newproc doesn't set it, but exit frees it */
-	curproc->p_corefile = refstr_alloc("core");
-#endif
-    exit(CLD_EXITED, 0);
 #endif /* AFS_SUN5_ENV */
 }
 

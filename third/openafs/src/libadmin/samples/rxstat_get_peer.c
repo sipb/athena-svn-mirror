@@ -5,6 +5,8 @@
  * This software has been released under the terms of the IBM Public
  * License.  For details, see the LICENSE file in the top-level source
  * directory or online at http://www.openafs.org/dl/license10.html
+ *
+ * Portions Copyright (c) 2003 Apple Computer, Inc.
  */
 
 /*
@@ -14,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/samples/rxstat_get_peer.c,v 1.1.1.1 2002-01-31 21:49:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/samples/rxstat_get_peer.c,v 1.1.1.2 2004-02-13 17:57:23 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -24,6 +26,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/sa
 #include <afs/afs_AdminErrors.h>
 #include <afs/afs_clientAdmin.h>
 #include <afs/afs_utilAdmin.h>
+
+#ifdef AFS_DARWIN_ENV
+pthread_mutex_t des_init_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t des_random_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t rxkad_random_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif /* AFS_DARWIN_ENV */
+
 #include <rx/rxstat.h>
 #include <afs/afsint.h>
 #define FSINT_COMMON_XG

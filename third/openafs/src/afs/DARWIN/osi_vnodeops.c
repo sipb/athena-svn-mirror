@@ -1,7 +1,10 @@
+/*
+ * Portions Copyright (c) 2003 Apple Computer, Inc.  All rights reserved.
+ */
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vnodeops.c,v 1.1.1.2 2002-12-13 20:40:22 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vnodeops.c,v 1.1.1.3 2004-02-13 17:57:16 zacheiss Exp $");
 
 #include <afs/sysincludes.h>            /* Standard vendor system headers */
 #include <afs/afsincludes.h>            /* Afs-based standard headers */
@@ -9,6 +12,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/
 #include <sys/malloc.h>
 #include <sys/namei.h>
 #include <sys/ubc.h>
+#if defined(AFS_DARWIN70_ENV)
+#include <vfs/vfs_support.h>
+#endif /* defined(AFS_DARWIN70_ENV) */
 
 int afs_vop_lookup(struct vop_lookup_args *);
 int afs_vop_create(struct vop_create_args *);
@@ -35,7 +41,9 @@ int afs_vop_rmdir(struct vop_rmdir_args *);
 int afs_vop_symlink(struct vop_symlink_args *);
 int afs_vop_readdir(struct vop_readdir_args *);
 int afs_vop_readlink(struct vop_readlink_args *);
+#if !defined(AFS_DARWIN70_ENV)
 extern int ufs_abortop(struct vop_abortop_args *);
+#endif /* !defined(AFS_DARWIN70_ENV) */
 int afs_vop_inactive(struct vop_inactive_args *);
 int afs_vop_reclaim(struct vop_reclaim_args *);
 int afs_vop_lock(struct vop_lock_args *);
@@ -89,9 +97,13 @@ struct vnodeopv_entry_desc afs_vnodeop_entries[] = {
 	{ &vop_symlink_desc, afs_vop_symlink },        /* symlink */
 	{ &vop_readdir_desc, afs_vop_readdir },        /* readdir */
 	{ &vop_readlink_desc, afs_vop_readlink },      /* readlink */
+#if defined(AFS_DARWIN70_ENV)
+	{ &vop_abortop_desc, nop_abortop },             /* abortop */
+#else /* ! defined(AFS_DARWIN70_ENV) */
 	/* Yes, we use the ufs_abortop call.  It just releases the namei
 	   buffer stuff */
 	{ &vop_abortop_desc, ufs_abortop },             /* abortop */
+#endif /* defined(AFS_DARWIN70_ENV) */
 	{ &vop_inactive_desc, afs_vop_inactive },      /* inactive */
 	{ &vop_reclaim_desc, afs_vop_reclaim },        /* reclaim */
 	{ &vop_lock_desc, afs_vop_lock },              /* lock */
@@ -173,6 +185,7 @@ struct vop_lookup_args /* {
 	return (error);
     }
     vp = AFSTOV(vcp);  /* always get a node if no error */
+    vp->v_vfsp = dvp->v_vfsp;
 
     /* The parent directory comes in locked.  We unlock it on return
        unless the caller wants it left locked.
@@ -237,6 +250,7 @@ afs_vop_create(ap)
 
     if (vcp) {
 	*ap->a_vpp = AFSTOV(vcp);
+	(*ap->a_vpp)->v_vfsp = dvp->v_vfsp;
 	vn_lock(*ap->a_vpp, LK_EXCLUSIVE| LK_RETRY, p);
         if (UBCINFOMISSING(*ap->a_vpp) ||
             UBCINFORECLAIMED(*ap->a_vpp))
@@ -275,17 +289,37 @@ afs_vop_open(ap)
 	} */ *ap;
 {
     int error;
-    struct vcache *vc = VTOAFS(ap->a_vp);
+    struct vnode *vp = ap->a_vp;
+    struct vcache *vc = VTOAFS(vp);
+#ifdef AFS_DARWIN14_ENV
+    int didhold = 0;
+    /*----------------------------------------------------------------
+     * osi_VM_TryReclaim() removes the ubcinfo of a vnode, but that vnode
+     * can later be passed to vn_open(), which will skip the call to
+     * ubc_hold(), and when the ubcinfo is later added, the ui_refcount
+     * will be off.  So we compensate by calling ubc_hold() ourselves
+     * when ui_refcount is less than 2.  If an error occurs in afs_open()
+     * we must call ubc_rele(), which is what vn_open() would do if it
+     * was able to call ubc_hold() in the first place.
+     *----------------------------------------------------------------*/
+    if (vp->v_type == VREG && !(vp->v_flag & VSYSTEM)
+      && vp->v_ubcinfo->ui_refcount < 2)
+	didhold = ubc_hold(vp);
+#endif /* AFS_DARWIN14_ENV */
     AFS_GLOCK();
     error = afs_open(&vc, ap->a_mode, ap->a_cred);
 #ifdef DIAGNOSTIC
-    if (AFSTOV(vc) != ap->a_vp)
+    if (AFSTOV(vc) != vp)
 	panic("AFS open changed vnode!");
 #endif
     afs_BozonLock(&vc->pvnLock, vc);
-    osi_FlushPages(vc);
+    osi_FlushPages(vc, ap->a_cred);
     afs_BozonUnlock(&vc->pvnLock, vc);
     AFS_GUNLOCK();
+#ifdef AFS_DARWIN14_ENV
+    if (error && didhold)
+	ubc_rele(vp);
+#endif /* AFS_DARWIN14_ENV */
     return error;
 }
 
@@ -306,7 +340,7 @@ afs_vop_close(ap)
     else
         code=afs_close(avc, ap->a_fflag, &afs_osi_cred, ap->a_p);
     afs_BozonLock(&avc->pvnLock, avc);
-    osi_FlushPages(avc);        /* hold bozon lock, but not basic vnode lock */
+    osi_FlushPages(avc, ap->a_cred);        /* hold bozon lock, but not basic vnode lock */
     afs_BozonUnlock(&avc->pvnLock, avc);
     AFS_GUNLOCK();
 #ifdef AFS_DARWIN14_ENV
@@ -381,7 +415,7 @@ afs_vop_read(ap)
     struct vcache *avc=VTOAFS(ap->a_vp);
     AFS_GLOCK();
     afs_BozonLock(&avc->pvnLock, avc);
-    osi_FlushPages(avc);        /* hold bozon lock, but not basic vnode lock */
+    osi_FlushPages(avc, ap->a_cred);        /* hold bozon lock, but not basic vnode lock */
     code=afs_read(avc, ap->a_uio, ap->a_cred, 0, 0, 0);
     afs_BozonUnlock(&avc->pvnLock, avc);
     AFS_GUNLOCK();
@@ -458,7 +492,7 @@ afs_vop_pagein(ap)
     aiov.iov_base = (caddr_t)ioaddr;
     AFS_GLOCK();
     afs_BozonLock(&tvc->pvnLock, tvc);
-    osi_FlushPages(tvc);        /* hold bozon lock, but not basic vnode lock */
+    osi_FlushPages(tvc, ap->a_cred);        /* hold bozon lock, but not basic vnode lock */
     code=afs_read(tvc, uio, cred, 0, 0, 0);
     if (code == 0) {
       ObtainWriteLock(&tvc->lock, 2);
@@ -467,6 +501,11 @@ afs_vop_pagein(ap)
     }
     afs_BozonUnlock(&tvc->pvnLock, tvc);
     AFS_GUNLOCK();
+
+    /* Zero out rest of last page if there wasn't enough data in the file */
+    if (code == 0 && auio.uio_resid > 0)
+	memset(aiov.iov_base, 0, auio.uio_resid);
+
     kernel_upl_unmap(kernel_map, pl);
     if (!nocommit) {
       if (code)
@@ -494,7 +533,7 @@ afs_vop_write(ap)
     void *object;
     AFS_GLOCK();
     afs_BozonLock(&avc->pvnLock, avc);
-    osi_FlushPages(avc);        /* hold bozon lock, but not basic vnode lock */
+    osi_FlushPages(avc, ap->a_cred);        /* hold bozon lock, but not basic vnode lock */
     if (UBCINFOEXISTS(ap->a_vp))
        ubc_clean(ap->a_vp, 1);
     if (UBCINFOEXISTS(ap->a_vp))
@@ -622,7 +661,7 @@ afs_vop_pageout(ap)
 
     AFS_GLOCK();
     afs_BozonLock(&tvc->pvnLock, tvc);
-    osi_FlushPages(tvc);        /* hold bozon lock, but not basic vnode lock */
+    osi_FlushPages(tvc, ap->a_cred);        /* hold bozon lock, but not basic vnode lock */
     ObtainWriteLock(&tvc->lock, 1);
     afs_FakeOpen(tvc);
     ReleaseWriteLock(&tvc->lock);
@@ -805,11 +844,6 @@ afs_vop_link(ap)
 
     GETNAME();
     p=cnp->cn_proc;
-    if (dvp->v_mount != vp->v_mount) {
-	VOP_ABORTOP(vp, cnp);
-	error = EXDEV;
-	goto out;
-    }
     if (vp->v_type == VDIR) {
 	VOP_ABORTOP(vp, cnp);
 	error = EISDIR;
@@ -854,25 +888,6 @@ afs_vop_rename(ap)
     struct proc *p=fcnp->cn_proc;
 
     /*
-     * Check for cross-device rename.
-     */
-    if ((fvp->v_mount != tdvp->v_mount) ||
-	(tvp && (fvp->v_mount != tvp->v_mount))) {
-	error = EXDEV;
-abortit:
-	VOP_ABORTOP(tdvp, tcnp); /* XXX, why not in NFS? */
-	if (tdvp == tvp)
-	    vrele(tdvp);
-	else
-	    vput(tdvp);
-	if (tvp)
-	    vput(tvp);
-	VOP_ABORTOP(fdvp, fcnp); /* XXX, why not in NFS? */
-	vrele(fdvp);
-	vrele(fvp);
-	return (error);
-    }
-    /*
      * if fvp == tvp, we're just removing one name of a pair of
      * directory entries for the same element.  convert call into rename.
      ( (pinched from NetBSD 1.0's ufs_rename())
@@ -880,7 +895,18 @@ abortit:
     if (fvp == tvp) {
 	if (fvp->v_type == VDIR) {
 	    error = EINVAL;
-	    goto abortit;
+	abortit:
+	    VOP_ABORTOP(tdvp, tcnp); /* XXX, why not in NFS? */
+	    if (tdvp == tvp)
+		vrele(tdvp);
+	    else
+		vput(tdvp);
+	    if (tvp)
+		vput(tvp);
+	    VOP_ABORTOP(fdvp, fcnp); /* XXX, why not in NFS? */
+	    vrele(fdvp);
+	    vrele(fvp);
+	    return (error);
 	}
 
 	/* Release destination completely. */
@@ -963,6 +989,7 @@ afs_vop_mkdir(ap)
     }
     if (vcp) {
 	*ap->a_vpp = AFSTOV(vcp);
+	(*ap->a_vpp)->v_vfsp = dvp->v_vfsp;
 	vn_lock(*ap->a_vpp, LK_EXCLUSIVE|LK_RETRY, p);
     } else
 	*ap->a_vpp = 0;
@@ -1286,6 +1313,17 @@ afs_vop_pathconf(ap)
       case _PC_PIPE_BUF:
 	return EINVAL;
 	break;
+#if defined(AFS_DARWIN70_ENV)
+      case _PC_NAME_CHARS_MAX:
+	*ap->a_retval = NAME_MAX;
+	break;
+      case _PC_CASE_SENSITIVE:
+	*ap->a_retval = 1;
+	break;
+      case _PC_CASE_PRESERVING:
+	*ap->a_retval = 1;
+	break;
+#endif /* defined(AFS_DARWIN70_ENV) */
       default:
 	return EINVAL;
     }

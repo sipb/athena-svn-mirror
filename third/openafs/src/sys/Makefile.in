@@ -4,6 +4,8 @@
 # This software has been released under the terms of the IBM Public
 # License.  For details, see the LICENSE file in the top-level source
 # directory or online at http://www.openafs.org/dl/license10.html
+#
+# Portions Copyright (c) 2003 Apple Computer, Inc.
 
 # System calls.
 
@@ -30,7 +32,7 @@ SHELL = /bin/sh
 
 include ../config/Makefile.${SYS_NAME}
 
-UKERNELDIR=../libuafs/
+UKERNELDIR=../libuafs
 CFLAGS=${DBUG} -I${TOP_SRCDIR}/config -I${TOP_INCDIR}  ${XCFLAGS}
 SFLAGS=-P -I${TOP_INCDIR}
 LIBS=libsys.a ${TOP_LIBDIR}/librx.a libsys.a ${TOP_LIBDIR}/liblwp.a ${TOP_LIBDIR}/util.a ${XLIBS}
@@ -98,11 +100,11 @@ tests:	pagsh pagsh.krb fixit iinc idec icreate iopen istat rmtsysd
 
 syscall.o: syscall.s
 	case "$(SYS_NAME)" in \
-	 sun4c_51 | sun4c_52 | sun4m_51 | sun4m_52 | sun4c_53 | sun4m_53  | sun4_53 | sun4_52 | sun4_54 | sun4c_54 | sun4m_54 | sun4x_5? | sunx86_54) \
+	 sun*_5? ) \
 		/usr/ccs/lib/cpp  ${SFLAGS} syscall.s syscall.ss; \
 		as -o syscall.o syscall.ss;		\
 		$(RM) syscall.ss;;				\
-	 sgi_* |ppc_darwin* ) \
+	 sgi_* |*_darwin_* ) \
                 ${CC} ${CFLAGS} -c syscall.s;;          \
 	 alpha_osf1 | alpha_osf20 |  alpha_osf30 | alpha_osf32 | alpha_osf32c | alpha_dux?? ) \
 		${AS} -P ${CFLAGS} -D_NO_PROTO -DMACH -DOSF -nostdinc -traditional -DASSEMBLER syscall.s; \

@@ -16,7 +16,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/ktc.c,v 1.1.1.1 2002-01-31 21:32:59 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/auth/ktc.c,v 1.1.1.2 2004-02-13 17:54:30 zacheiss Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"
@@ -131,7 +131,10 @@ static struct flock fileUlock = { F_UNLCK, 0, 0, 0, 0 };
  */
 int afs_tf_init(), afs_tf_get_pname(), afs_tf_get_pinst(), afs_tf_get_cred(); 
 int afs_tf_save_cred(), afs_tf_close(), afs_tf_create(); 
-int afs_tf_dest_tkt(), ktc_LocalCell();
+int afs_tf_dest_tkt();
+/* except ktc_LocalCell which is still static
+ */
+static int ktc_LocalCell();
 char *ktc_tkt_string();
 #endif  /* AFS_KERBEROS_ENV */
 

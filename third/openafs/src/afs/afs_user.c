@@ -13,13 +13,15 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_user.c,v 1.1.1.2 2002-12-13 20:40:22 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_user.c,v 1.1.1.3 2004-02-13 17:53:31 zacheiss Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 
 #if !defined(UKERNEL)
+#if !defined(AFS_LINUX20_ENV)
 #include <net/if.h>
+#endif
 #include <netinet/in.h>
 
 #ifdef AFS_SGI62_ENV
@@ -610,7 +612,7 @@ void afs_GCPAGs_perproc_func(AFS_PROC *pproc)
     afs_GCPAGs_cred_count++;
 
     pag = PagInCred(pcred);
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD40_ENV)
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD40_ENV) || defined(AFS_LINUX22_ENV)
     uid = (pag != NOPAG ? pag : pcred->cr_uid);
 #else
     uid = (pag != NOPAG ? pag : pcred->cr_ruid);

@@ -1,7 +1,10 @@
+/*
+ * Portions Copyright (c) 2003 Apple Computer, Inc.  All rights reserved.
+ */
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.2 2002-12-13 20:39:18 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.3 2004-02-13 17:57:16 zacheiss Exp $");
 
 #include <afs/sysincludes.h>            /* Standard vendor system headers */
 #include <afs/afsincludes.h>            /* Afs-based standard headers */
@@ -10,6 +13,8 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/
 #include <sys/namei.h>
 #include <sys/conf.h>
 #include <sys/syscall.h>
+#include <sys/sysctl.h>
+#include "../afs/sysctl.h"
 
 struct vcache *afs_globalVp = 0;
 struct mount *afs_globalVFS = 0;
@@ -67,7 +72,7 @@ struct proc *p;
     AFS_GLOCK();
     AFS_STATCNT(afs_mount);
 
-    if (afs_globalVFS) { /* Don't allow remounts. */
+    if (data == NULL && afs_globalVFS) { /* Don't allow remounts. */
 	AFS_GUNLOCK();
 	return (EBUSY);
     }
@@ -80,8 +85,51 @@ struct proc *p;
     (void) copyinstr(path, mp->mnt_stat.f_mntonname, MNAMELEN-1, &size);
     memset(mp->mnt_stat.f_mntonname + size, 0, MNAMELEN - size);
     memset(mp->mnt_stat.f_mntfromname, 0, MNAMELEN);
-    strcpy(mp->mnt_stat.f_mntfromname, "AFS");
-    /* null terminated string "AFS" will fit, just leave it be. */
+
+    if (data == NULL) {
+	strcpy(mp->mnt_stat.f_mntfromname, "AFS");
+	/* null terminated string "AFS" will fit, just leave it be. */
+	mp->mnt_data = (qaddr_t)NULL;
+    } else {
+	struct VenusFid *rootFid = NULL;
+	struct volume *tvp;
+	char volName[MNAMELEN];
+
+	(void) copyinstr((char *)data, volName, MNAMELEN-1, &size);
+	memset(volName + size, 0, MNAMELEN - size);
+
+	if (volName[0] == 0) {
+	    strcpy(mp->mnt_stat.f_mntfromname, "AFS");
+	    mp->mnt_data = (qaddr_t)&afs_rootFid;	    
+	} else {
+	    struct cell *localcell = afs_GetPrimaryCell(READ_LOCK);
+	    if (localcell == NULL) {
+		AFS_GUNLOCK();
+		return ENODEV;
+	    }
+
+	    /* Set the volume identifier to "AFS:volume.name" */
+	    snprintf(mp->mnt_stat.f_mntfromname, MNAMELEN-1, "AFS:%s",
+		     volName);
+	    tvp = afs_GetVolumeByName(volName, localcell->cellNum, 1,
+				      (struct vrequest *)0, READ_LOCK);
+	    
+	    if (tvp) {
+		int volid = (tvp->roVol ? tvp->roVol : tvp->volume);
+		MALLOC(rootFid, struct VenusFid *, sizeof(*rootFid), 
+		       M_UFSMNT, M_WAITOK);
+		rootFid->Cell = localcell->cellNum;
+		rootFid->Fid.Volume = volid;
+		rootFid->Fid.Vnode = 1;
+		rootFid->Fid.Unique = 1;
+	    } else {
+		AFS_GUNLOCK();
+		return ENODEV;
+	    }
+	
+	    mp->mnt_data = (qaddr_t)rootFid;
+	}
+    }
     strcpy(mp->mnt_stat.f_fstypename, "afs");
     AFS_GUNLOCK();
     (void) afs_statfs(mp, &mp->mnt_stat, p);
@@ -97,8 +145,23 @@ struct proc *p;
     
     AFS_GLOCK();
     AFS_STATCNT(afs_unmount);
-    afs_globalVFS = 0;
-    afs_shutdown();
+
+    if (mp->mnt_data != (qaddr_t)-1) {
+	if (mp->mnt_data != NULL) {
+	    FREE(mp->mnt_data, M_UFSMNT);
+	    mp->mnt_data = (qaddr_t)-1;
+	} else {
+	    if (flags & MNT_FORCE) {
+		afs_globalVFS = 0;
+		afs_shutdown();
+	    } else {
+		AFS_GUNLOCK();
+		return EBUSY;
+	    }
+	}
+	mp->mnt_flag &= ~MNT_LOCAL;
+    }
+
     AFS_GUNLOCK();
 
     return 0;
@@ -119,18 +182,24 @@ afs_root(struct mount *mp,
     pcred_unlock(p);
     AFS_GLOCK();
     AFS_STATCNT(afs_root);
-    if (afs_globalVp && (afs_globalVp->states & CStatd)) {
+    if (mp->mnt_data == NULL
+	&& afs_globalVp && (afs_globalVp->states & CStatd)) {
 	tvp = afs_globalVp;
         error=0;
+    } else if (mp->mnt_data == (qaddr_t)-1) {
+	error = ENOENT;
     } else {
+	struct VenusFid *rootFid = (mp->mnt_data == NULL)
+	    ? &afs_rootFid : (struct VenusFid *)mp->mnt_data;
 	
 	if (!(error = afs_InitReq(&treq, &cr)) &&
 	    !(error = afs_CheckInit())) {
-	    tvp = afs_GetVCache(&afs_rootFid, &treq, (afs_int32 *)0,
+	    tvp = afs_GetVCache(rootFid, &treq, (afs_int32 *)0,
 	                        (struct vcache*)0, WRITE_LOCK);
 	    /* we really want this to stay around */
 	    if (tvp) {
-	        afs_globalVp = tvp;
+		if (mp->mnt_data == NULL)
+		    afs_globalVp = tvp;
 	    } else
 	        error = ENOENT;
 	}
@@ -140,9 +209,12 @@ afs_root(struct mount *mp,
     AFS_GUNLOCK();
         vn_lock(AFSTOV(tvp), LK_EXCLUSIVE | LK_RETRY, p);
     AFS_GLOCK();
-	afs_globalVFS = mp;
+        if (mp->mnt_data == NULL) {
+	    afs_globalVFS = mp;
+	}	
 	*vpp = AFSTOV(tvp);
         AFSTOV(tvp)->v_flag |= VROOT;
+	AFSTOV(tvp)->v_vfsp = mp;
     }
 
     afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, *vpp,
@@ -165,7 +237,7 @@ int lfl;
     }
     error = vget(vp, lfl, current_proc());
     if (!error)
-	insmntque(vp, afs_globalVFS);   /* take off free list */
+	insmntque(vp, mp);   /* take off free list */
     return error;
 }
 
@@ -208,8 +280,39 @@ struct prioc *p;
 return 0;
 }
 
-int afs_sysctl() {
-   return EOPNOTSUPP;
+u_int32_t afs_darwin_realmodes = 0;
+
+int afs_sysctl(name, namelen, oldp, oldlenp, newp, newlen, p)
+int *name;
+u_int namelen;
+void *oldp;
+size_t *oldlenp;
+void *newp;
+size_t newlen;
+struct proc *p;
+{
+    int error;
+
+    switch (name[0]) {
+    case AFS_SC_ALL:
+	/* nothing defined */
+	break;
+    case AFS_SC_DARWIN:
+	if (namelen < 3)
+	    return ENOENT;
+	switch (name[1]) {
+	case AFS_SC_DARWIN_ALL:
+	    switch (name[2]) {
+	    case AFS_SC_DARWIN_ALL_REALMODES:
+		return sysctl_int(oldp, oldlenp, newp, newlen,
+		  &afs_darwin_realmodes);
+	    }
+	    break;
+	/* darwin version specific sysctl's goes here */
+	}
+	break;
+    }
+    return EOPNOTSUPP;
 }
 
 

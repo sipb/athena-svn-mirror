@@ -29,7 +29,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_mem.c,v 1.1.1.1 2002-01-31 21:50:18 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_mem.c,v 1.1.1.2 2004-02-13 17:53:16 zacheiss Exp $");
 
 #ifndef	NeXT
 
@@ -45,7 +45,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_mem.
  */
 
 #include "xdr.h"
-#ifndef AFS_NT40_ENV
+#ifdef AFS_NT40_ENV
+#include <limits.h>
+#else
 #include <netinet/in.h>
 #endif
 
@@ -84,7 +86,7 @@ xdrmem_create(xdrs, addr, size, op)
 	xdrs->x_op = op;
 	xdrs->x_ops = &xdrmem_ops;
 	xdrs->x_private = xdrs->x_base = addr;
-	xdrs->x_handy = size;
+	xdrs->x_handy = (size > INT_MAX) ? INT_MAX : size; /* XXX */
 }
 
 static void
@@ -98,12 +100,14 @@ xdrmem_getint32(xdrs, lp)
 	register XDR *xdrs;
 	afs_int32 *lp;
 {
+    if (xdrs->x_handy -= sizeof(afs_int32))
+	return (FALSE);
+    else
+	xdrs->x_handy -= sizeof(afs_int32);
 
-	if ((xdrs->x_handy -= sizeof(afs_int32)) < 0)
-		return (FALSE);
-	*lp = ntohl(*((afs_int32 *)(xdrs->x_private)));
-	xdrs->x_private += sizeof(afs_int32);
-	return (TRUE);
+    *lp = ntohl(*((afs_int32 *)(xdrs->x_private)));
+    xdrs->x_private += sizeof(afs_int32);
+    return (TRUE);
 }
 
 static bool_t
@@ -111,12 +115,14 @@ xdrmem_putint32(xdrs, lp)
 	register XDR *xdrs;
 	afs_int32 *lp;
 {
-
-	if ((xdrs->x_handy -= sizeof(afs_int32)) < 0)
-		return (FALSE);
-	*(afs_int32 *)xdrs->x_private = htonl(*lp);
-	xdrs->x_private += sizeof(afs_int32);
-	return (TRUE);
+    if (xdrs->x_handy -= sizeof(afs_int32))
+	return (FALSE);
+    else
+	xdrs->x_handy -= sizeof(afs_int32);
+    
+    *(afs_int32 *)xdrs->x_private = htonl(*lp);
+    xdrs->x_private += sizeof(afs_int32);
+    return (TRUE);
 }
 
 static bool_t
@@ -125,12 +131,14 @@ xdrmem_getbytes(xdrs, addr, len)
 	caddr_t addr;
 	register u_int len;
 {
+    if (xdrs->x_handy < len)
+	return (FALSE);
+    else
+	xdrs->x_handy -= len;
 
-	if ((xdrs->x_handy -= len) < 0)
-		return (FALSE);
-	memcpy(addr, xdrs->x_private, len);
-	xdrs->x_private += len;
-	return (TRUE);
+    memcpy(addr, xdrs->x_private, len);
+    xdrs->x_private += len;
+    return (TRUE);
 }
 
 static bool_t
@@ -139,12 +147,14 @@ xdrmem_putbytes(xdrs, addr, len)
 	caddr_t addr;
 	register u_int len;
 {
+    if (xdrs->x_handy < len)
+	return (FALSE);
+    else
+	xdrs->x_handy -= len;
 
-	if ((xdrs->x_handy -= len) < 0)
-		return (FALSE);
-	memcpy(xdrs->x_private, addr, len);
-	xdrs->x_private += len;
-	return (TRUE);
+    memcpy(xdrs->x_private, addr, len);
+    xdrs->x_private += len;
+    return (TRUE);
 }
 
 static u_int
@@ -177,7 +187,7 @@ xdrmem_inline(xdrs, len)
 {
 	afs_int32 *buf = 0;
 
-	if (xdrs->x_handy >= len) {
+	if (len >= 0 && xdrs->x_handy >= len) {
 		xdrs->x_handy -= len;
 		buf = (afs_int32 *) xdrs->x_private;
 		xdrs->x_private += len;

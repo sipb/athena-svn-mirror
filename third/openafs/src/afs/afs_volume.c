@@ -18,13 +18,15 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_volume.c,v 1.1.1.2 2002-12-13 20:40:22 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_volume.c,v 1.1.1.3 2004-02-13 17:53:31 zacheiss Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 
 #if !defined(UKERNEL)
+#if !defined(AFS_LINUX20_ENV)
 #include <net/if.h>
+#endif
 #include <netinet/in.h>
 
 #ifdef AFS_SGI62_ENV
@@ -112,7 +114,7 @@ struct volume *afs_UFSGetVolSlot()
 
 {
     register struct volume *tv, **lv;
-    register char *tfile;
+    struct osi_file *tfile;
     register afs_int32 i, code;
     afs_int32 bestTime;
     struct volume *bestVp, **bestLp;
@@ -461,7 +463,7 @@ static struct volume *afs_SetupVolume(volid, aname, ve, tcell, agood, type, areq
     ObtainWriteLock(&afs_xvolume,108);
     i = VHash(volid);
     for (tv = afs_volumes[i]; tv; tv=tv->next) {
-	if (tv->volume == volid && tv->cell == tcell->cell) {
+	if (tv->volume == volid && tv->cell == tcell->cellNum) {
 	    break;
 	}
     }
@@ -470,14 +472,14 @@ static struct volume *afs_SetupVolume(volid, aname, ve, tcell, agood, type, areq
 
 	tv = afs_GetVolSlot();
 	memset((char *)tv, 0, sizeof(struct volume));
-	tv->cell = tcell->cell;
+	tv->cell = tcell->cellNum;
 	RWLOCK_INIT(&tv->lock, "volume lock");
 	tv->next = afs_volumes[i];	/* thread into list */
 	afs_volumes[i] = tv;
 	tv->volume = volid;
 	for (j=fvTable[FVHash(tv->cell,volid)]; j!=0; j=tf->next) {
 	    if (afs_FVIndex != j) {
-		char *tfile;
+		struct osi_file *tfile;
 		tfile = osi_UFSOpen(volumeInode);
 		err = afs_osi_Read(tfile, sizeof(struct fvolume) * j, &staticFVolume, sizeof(struct fvolume));
 		if (err != sizeof(struct fvolume))
@@ -506,12 +508,12 @@ static struct volume *afs_SetupVolume(volid, aname, ve, tcell, agood, type, areq
     ReleaseWriteLock(&afs_xvolume);
     ObtainWriteLock(&tv->lock,111);
     if (type == 2) {
-	InstallUVolumeEntry(tv, uve, tcell->cell, tcell, areq);
+	InstallUVolumeEntry(tv, uve, tcell->cellNum, tcell, areq);
     }
     else if (type == 1)
-	InstallNVolumeEntry(tv, nve, tcell->cell);
+	InstallNVolumeEntry(tv, nve, tcell->cellNum);
     else
-	InstallVolumeEntry(tv, ove, tcell->cell);
+	InstallVolumeEntry(tv, ove, tcell->cellNum);
     if (agood) {
 	if (!tv->name) {
 	    tv->name = afs_osi_Alloc(strlen(aname) + 1);
@@ -573,7 +575,7 @@ static struct volume *afs_NewDynrootVolume(struct VenusFid *fid) {
     tve.volumeId[ROVOL] = fid->Fid.Volume;
     tve.flags = VLF_ROEXISTS;
 
-    tv = afs_SetupVolume(0, bp, &tve, tcell, 0, 0, 0);
+    tv = afs_SetupVolume(0, bp, (char *) &tve, tcell, 0, 0, 0);
     afs_PutCell(tcell, READ_LOCK);
     return tv;
 }
@@ -614,7 +616,7 @@ static struct volume *afs_NewVolumeByName(char *aname, afs_int32 acell, int agoo
     afs_InitReq(&treq, &afs_osi_cred);	/* *must* be unauth for vldb */
     do {
 	tconn = afs_ConnByMHosts(tcell->cellHosts, tcell->vlport,
-				 tcell->cell, &treq, SHARED_LOCK);
+				 tcell->cellNum, &treq, SHARED_LOCK);
 	if (tconn) {
 	    if (tconn->srvr->server->flags & SNO_LHOSTS) {
 		type = 0;
@@ -947,7 +949,7 @@ void InstallUVolumeEntry(struct volume *av, struct uvldbentry *ve,
 		memset((char *)&addrs, 0, sizeof(addrs));
 		do {
 		    tconn = afs_ConnByMHosts(tcell->cellHosts, tcell->vlport,
-					     tcell->cell, areq, SHARED_LOCK);
+					     tcell->cellNum, areq, SHARED_LOCK);
 		    if (tconn) {
 #ifdef RX_ENABLE_LOCKS
 			AFS_GUNLOCK();

@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/clone.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/clone.c,v 1.1.1.2 2004-02-13 17:52:17 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -230,8 +230,13 @@ afs_int32 DoCloneIndex(rwvp, clvp, class, reclone)
 	 if (clinode && (clinode == rwinode)) {
 	    clinode = 0; /* already cloned - don't delete later */
 	 } else if (rwinode) {
-	    assert(IH_INC(V_linkHandle(rwvp), rwinode, V_parentId(rwvp)) != -1);
-	    inodeinced = 1;
+	     if (IH_INC(V_linkHandle(rwvp), rwinode, V_parentId(rwvp)) == -1) {
+		 Log("IH_INC failed: %x, %s, %d errno %d\n", 
+		     V_linkHandle(rwvp), PrintInode(NULL, rwinode), 
+		     V_parentId(rwvp), errno);
+		 assert(0);
+	     }
+	     inodeinced = 1;
 	 }
 
 	 /* If a directory, mark vnode in old volume as cloned */
@@ -273,7 +278,12 @@ afs_int32 DoCloneIndex(rwvp, clvp, class, reclone)
        clonefailed:
 	 /* Couldn't clone, go back and decrement the inode's link count */
 	 if (inodeinced) {
-	    assert(IH_DEC(V_linkHandle(rwvp), rwinode, V_parentId(rwvp)) != -1);
+	     if (IH_DEC(V_linkHandle(rwvp), rwinode, V_parentId(rwvp)) == -1) {
+		 Log("IH_DEC failed: %x, %s, %d errno %d\n", 
+		     V_linkHandle(rwvp), PrintInode(NULL, rwinode), 
+		     V_parentId(rwvp), errno);
+		 assert(0);
+	     }
 	 }
 	 /* And if the directory was marked clone, unmark it */
 	 if (dircloned) {

@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/volume.c,v 1.1.1.2 2002-12-13 20:41:47 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/volume.c,v 1.1.1.3 2004-02-13 17:52:09 zacheiss Exp $");
 
 #include <rx/xdr.h>
 #include <afs/afsint.h>
@@ -699,6 +699,9 @@ private Volume *attach2(ec, path, header, partp, isbusy)
     IH_INIT(vp->linkHandle, partp->device, header->parent,
 		   header->linkTable);
     vp->cacheCheck = ++VolumeCacheCheck;
+    /* just in case this ever rolls over */
+    if (!vp->cacheCheck) 
+	vp->cacheCheck = ++VolumeCacheCheck;
     vp->shuttingDown = 0;
     vp->goingOffline = 0;
     vp->nUsers = 1;

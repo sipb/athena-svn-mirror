@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/up.c,v 1.1.1.1 2002-01-31 21:50:34 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/up.c,v 1.1.1.2 2004-02-13 17:54:27 zacheiss Exp $");
 
 /* missing type from C language */
 #define Boolean short
@@ -18,6 +18,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/up.c,
 #define false 0
 
 #include <errno.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
 #ifdef	AFS_AIX32_ENV
 #include <signal.h>
 #undef	_NONSTD_TYPES

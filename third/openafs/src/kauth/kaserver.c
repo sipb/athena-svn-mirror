@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.2 2002-12-13 20:39:05 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.3 2004-02-13 17:52:52 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -56,6 +56,8 @@ struct kadstats dynamic_statistics;
 struct ubik_dbase *KA_dbase;
 afs_int32 myHost = 0;
 afs_int32 verbose_track = 1;
+afs_int32 krb4_cross = 0;
+
 struct afsconf_dir *KA_conf;		/* for getting cell info */
 
 extern afs_int32 ubik_lastYesTime;
@@ -194,6 +196,7 @@ main (argc, argv)
       usage:
         printf("Usage: kaserver [-noAuth] [-fastKeys] [-database <dbpath>] "
 	       "[-localfiles <lclpath>] [-minhours <n>] [-servers <serverlist>] "
+	       "[-crossrealm]"
 	       /*" [-enable_peer_stats] [-enable_process_stats] " */
 	       "[-help]\n");
 	exit(1);
@@ -251,6 +254,7 @@ main (argc, argv)
 	else if (IsArg("-clear")) level = rxkad_clear;
 	else if (IsArg("-sorry")) level = rxkad_clear;
 	else if (IsArg("-debug")) verbose_track = 0;
+	else if (IsArg("-crossrealm")) krb4_cross = 1;
 	else if (IsArg("-minhours")) {
              MinHours = atoi(argv[++a]);
         }

@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bos_util.c,v 1.1.1.1 2002-01-31 21:33:27 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bos_util.c,v 1.1.1.2 2004-02-13 17:54:24 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -187,7 +187,7 @@ main(int argc, char **argv)
 		printf("kvno %4d: key is '%s' '", tkeys.key[i].kvno, tbuffer);
 		strcpy(x,(char *)tbuffer);
 		for(count=0;count<8;count++)
-		    printf("\\%03o",(unsigned char *)x[count]);
+		    printf("\\%03o", x[count]);
 		printf("'\n");
 	    }
 	}

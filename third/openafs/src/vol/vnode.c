@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/vnode.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/vnode.c,v 1.1.1.2 2004-02-13 17:52:35 zacheiss Exp $");
 
 #include <errno.h>
 #include <stdio.h>
@@ -55,7 +55,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/vnode.c
 #include <unistd.h>
 #endif /* AFS_NT40_ENV */
 #include <sys/stat.h>
-
+#include <stdarg.h>
 
 struct VnodeClassInfo VnodeClassInfo[nVNODECLASSES];
 
@@ -634,7 +634,7 @@ Vnode *VGetVnode_r(ec,vp,vnodeNumber,locktype)
     /* Check that the vnode hasn't been removed while we were obtaining
        the lock */
     VNLog(102, 2, vnodeNumber, (afs_int32) vnp);
-    if (vnp->disk.type == vNull) {
+    if ((vnp->disk.type == vNull) || (vnp->cacheCheck == 0)){
 	if (vnp->nUsers-- == 1)
 	    StickOnLruChain_r(vnp,vcp);
 	if (locktype == READ_LOCK)

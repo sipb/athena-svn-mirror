@@ -13,7 +13,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_analyze.c,v 1.1.1.2 2002-12-13 20:40:21 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_analyze.c,v 1.1.1.3 2004-02-13 17:54:39 zacheiss Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
@@ -129,6 +129,17 @@ afs_CheckCode(acode, areq, where)
 	return EWOULDBLOCK;
     if (acode == VNOVNODE)
 	return ENOENT;
+    if (acode == VDISKFULL)
+	return ENOSPC;
+    if (acode == VOVERQUOTA)
+	return
+#ifdef EDQUOT
+	    EDQUOT
+#else
+	    ENOSPC
+#endif
+	    ;
+
     return acode;
 
 } /*afs_CheckCode*/
@@ -179,7 +190,7 @@ static int VLDB_Same (afid, areq)
     do {
         VSleep(2);	/* Better safe than sorry. */
 	tconn = afs_ConnByMHosts(tcell->cellHosts, tcell->vlport,
-				 tcell->cell, &treq, SHARED_LOCK);
+				 tcell->cellNum, &treq, SHARED_LOCK);
 	if (tconn) {
 	    if (tconn->srvr->server->flags & SNO_LHOSTS) {
 		type = 0;
@@ -384,6 +395,9 @@ int afs_Analyze(aconn, acode, afid, areq, op, locktype, cellp)
       } else {
 	VSleep(afs_BusyWaitPeriod);	    /* poll periodically */
       }
+      if (shouldRetry != 0)
+	areq->busyCount++;
+
       return shouldRetry; /* should retry */
     }
 	  
@@ -392,8 +406,8 @@ int afs_Analyze(aconn, acode, afid, areq, op, locktype, cellp)
 	    if (aerrP)
 		(aerrP->err_Network)++;
 	    if (hm_retry_int && !(areq->flags & O_NONBLOCK) &&  /* "hard" mount */
-		((afid && afid->Cell == LOCALCELL) || 
-		 (cellp && cellp->cell == LOCALCELL))) { 
+		((afid && afs_IsPrimaryCellNum(afid->Cell)) || 
+		 (cellp && afs_IsPrimaryCell(cellp)))) { 
 		if (!afid) {
 		    afs_warnuser("afs: hard-mount waiting for a vlserver to return to service\n");
 		    VSleep(hm_retry_int);
@@ -492,7 +506,7 @@ int afs_Analyze(aconn, acode, afid, areq, op, locktype, cellp)
 	if (aerrP)
 	    (aerrP->err_Protection)++;
 
-	tu = afs_FindUser(areq->uid, tsp->cell->cell, READ_LOCK);
+	tu = afs_FindUser(areq->uid, tsp->cell->cellNum, READ_LOCK);
 	if (tu) {
 	    if ((acode == VICETOKENDEAD) || (acode == RXKADEXPIRED))
 		afs_warnuser("afs: Tokens for user of AFS id %d for cell %s have expired\n", 
