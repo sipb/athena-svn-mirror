@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.7 1990-12-06 12:53:33 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.8 1991-01-23 15:08:12 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.7 1990-12-06 12:53:33 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.8 1991-01-23 15:08:12 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -77,11 +77,11 @@ quota_currency currency;
     /* Init for error returns */
     *numtrans = 0;
 
-    strcpy(currency, qcurrency);
+    (void) strcpy((char *)currency, qcurrency);
 
     CHECK_PROTECT();
 
-    service=set_service(qid->service);
+    service=set_service((char *)qid->service);
     if (qid->account != 0) is_group++;
 
     /* First verify that the user is authenticated - you must be 
@@ -230,7 +230,8 @@ quota_currency currency;
     /* Memory for all - start shipping the stuff... */
 
     for(i=1, lent = LogEnts; i <= maxnum; i++, lent++) {
-	if((ent = logger_journal_get_line(start)) == (log_entity *) NULL){
+	if((ent = logger_journal_get_line((Pointer) start)) 
+	   == (log_entity *) NULL){
 	    /* We have an error - don't know why */
 	    syslog(LOG_INFO, "LoggerJournal - could not read entry #%d", start);
 	    /* Not quite the right error */
@@ -256,14 +257,14 @@ quota_currency currency;
 	make_kname(logger_num_to_string(ent->user.name), 
 		   logger_num_to_string(ent->user.instance), 
 		   logger_num_to_string(ent->user.realm),
-		   lent->name);
+		   (char *) lent->name);
 
 	if (is_group)
 	    lent->account = qid->account;
 	else
 	    lent->account = 0;
 
-	strcpy(lent->service, logger_num_to_string(ent->service));
+	(void) strcpy((char *) lent->service, logger_num_to_string(ent->service));
 	lent->next = ent->next;
 	lent->prev = ent->prev;
 
@@ -287,18 +288,18 @@ quota_currency currency;
 		make_kname(logger_num_to_string(ent->trans.offset.name),
 			   logger_num_to_string(ent->trans.offset.inst),
 			   logger_num_to_string(ent->trans.offset.realm),
-			   lent->offset.wname);
+			   (char *) lent->offset.wname);
 		break;
         case LO_CHARGE:
 		lent->charge.ptime = ent->trans.charge.subtime;
 		lent->charge.npages =  ent->trans.charge.npages;
 		lent->charge.pcost = ent->trans.charge.med_cost;
-		strcpy(lent->charge.where,
+		(void) strcpy((char *) lent->charge.where,
 		       logger_num_to_string(ent->trans.charge.where));
 		make_kname(logger_num_to_string(ent->trans.charge.name),
 			   logger_num_to_string(ent->trans.charge.inst),
 			   logger_num_to_string(ent->trans.charge.realm),
-			   lent->charge.wname);
+			   (char *) lent->charge.wname);
 		break;
 	case LO_ADD_ADMIN:
 	case LO_DELETE_ADMIN:
@@ -307,11 +308,11 @@ quota_currency currency;
 		make_kname(logger_num_to_string(ent->trans.group.uname),
 			   logger_num_to_string(ent->trans.group.uinst),
 			   logger_num_to_string(ent->trans.group.urealm),
-			   lent->group.uname);
+			   (char *) lent->group.uname);
 		make_kname(logger_num_to_string(ent->trans.group.aname),
 			   logger_num_to_string(ent->trans.group.ainst),
 			   logger_num_to_string(ent->trans.group.arealm),
-			   lent->group.aname);
+			   (char *) lent->group.aname);
 		break;
 	}
 
