@@ -1,10 +1,10 @@
 /*
- * $Id: main.c,v 1.32 1994-03-25 15:54:51 miki Exp $
+ * $Id: main.c,v 1.33 1998-03-17 03:55:11 cfields Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.32 1994-03-25 15:54:51 miki Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.33 1998-03-17 03:55:11 cfields Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -149,14 +149,14 @@ main(argc, argv)
 			    argc -= 2;
 		    } else {
 			    fprintf(stderr,
-				    "Must specify attach, detach nfsid, fsid, or zinit!\n");
+				    "Must specify attach, detach nfsid, fsid, zinit, or add!\n");
 			    exit(ERR_BADARGS);
 		    } 
 	    } 
     }
 
     if (!strcmp(progname, ATTACH_CMD))
-	exit(attachcmd(argc, argv));
+	exit(attachcmd(argc, argv, NULL));
     if (!strcmp(progname, DETACH_CMD))
 	exit(detachcmd(argc, argv));
 #ifdef KERBEROS
@@ -174,8 +174,10 @@ main(argc, argv)
     if (!strcmp(progname, ZINIT_CMD))
 	exit(zinitcmd(argc, argv));
 #endif
+    if (!strcmp(progname, ADD_CMD))
+	exit(addcmd(argc, argv));
 
-    fprintf(stderr, "Not invoked with attach, detach, nfsid, fsid, or zinit!\n");
+    fprintf(stderr, "Not invoked with attach, detach, nfsid, fsid, zinit, or add!\n");
     exit(ERR_BADARGS);
 }
 
@@ -469,9 +471,10 @@ int uid;
 	}
 }
 
-attachcmd(argc, argv)
+attachcmd(argc, argv, mountpoint_list)
     int argc;
     char *argv[];
+    string_list **mountpoint_list;
 {
     int gotname, i;
     int print_host = 0;
@@ -681,7 +684,7 @@ attachcmd(argc, argv)
 
 	if (print_host)
 		attach_print(argv[i]);
-	else if (attach(argv[i]) == SUCCESS)
+	else if (attach(argv[i], mountpoint_list) == SUCCESS)
 		error_status = 0;
 
 	override_mode = '\0';

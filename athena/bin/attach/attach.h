@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.23 1997-12-17 18:17:33 ghudson Exp $
+ * $Id: attach.h,v 1.24 1998-03-17 03:54:12 cfields Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -25,6 +25,8 @@
 #include <sys/time.h>
 
 #include <netinet/in.h>
+
+#include "stringlist.h"
 
 #ifdef NFS
 #include <rpc/rpc.h>
@@ -265,6 +267,7 @@ struct cache_ent {
 #ifdef ZEPHYR
 #define ZINIT_CMD	"zinit"
 #endif /* ZEPHYR */
+#define ADD_CMD		"add"
     
 /*
  * Generic defines
@@ -387,7 +390,7 @@ extern char *memcpy();
 extern int	nfsid(const char *, struct in_addr, int, int, const char *, int, int);
 extern AUTH	*spoofunix_create_default(char *, int);
 #endif
-extern int	attach(const char *), detach(const char *);
+extern int	attach(const char *, string_list **mpl), detach(const char *);
 extern	void	detach_all(void), detach_host(const char *);
 extern int	read_config_file(const char *);
 extern int	parse_username(const char *);
@@ -398,6 +401,7 @@ extern void	lint_attachtab(void), get_attachtab(void), free_attachtab(void);
 extern	int	zephyr_sub(int), zephyr_unsub(int);
 extern	void	zephyr_addsub(const char *);
 #endif
+extern	int	addcmd(int, char **);
 #else
 #ifdef NFS
 extern int	nfsid();
@@ -412,6 +416,7 @@ extern	void	get_attachtab(), free_attachtab();
 extern	int	zephyr_sub(), zephyr_unsub();
 extern	void	zephyr_addsub();
 #endif
+extern	int	addcmd();
 #endif
 
 extern	char	*progname;
