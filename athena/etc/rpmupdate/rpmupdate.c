@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.14 2002-04-06 23:47:21 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.15 2002-05-10 23:30:38 amb Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -202,7 +202,7 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
 
   fp = fopen(newlistname, "r");
   if (!fp)
-    die("Can't read old list %s", newlistname);
+    die("Can't read new list %s", newlistname);
 
   while (read_line(fp, &buf, &bufsize) == 0)
     {
