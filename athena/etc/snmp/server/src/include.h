@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/include.h,v 1.1 1994-03-09 08:27:20 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/include.h,v 1.2 1997-02-27 18:14:14 ghudson Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/03/09 08:27:20  vrt
+ * Initial revision
+ *
  * Revision 2.1  93/06/18  14:36:04  root
  * first cut at solaris port
  * 
@@ -32,7 +35,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/include.h,v 1.1 1994-03-09 08:27:20 vrt Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/include.h,v 1.2 1997-02-27 18:14:14 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -86,7 +89,7 @@
 
 #include <nlist.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <signal.h>
 #include <setjmp.h>
 
