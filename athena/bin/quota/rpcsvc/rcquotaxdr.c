@@ -1,9 +1,15 @@
 #include <stdio.h>
+#include <sys/types.h>
 #include <sys/param.h>
 #include <rpc/rpc.h>
-#if !defined(ultrix) && !defined(_I386)
+
+#if !defined(ultrix) && !defined(_AIX)
 #include <ufs/quota.h>
 #endif
+#if defined(_AIX)
+#include <sys/select.h>
+#endif
+
 #include <rpcsvc/rcquota.h>
 
 bool_t
