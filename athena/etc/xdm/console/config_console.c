@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.1 1990-10-22 19:40:40 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.2 1990-11-21 10:54:27 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -13,7 +13,7 @@
 #include <sys/file.h>
 #include <strings.h>
 
-char *pidfile = "/etc/console.pid";
+char *pidfile = "/etc/athena/console.pid";
 
 
 main(argc, argv)
