@@ -1,4 +1,4 @@
-# $Id: packages,v 1.169 2002-04-18 13:38:05 ghudson Exp $
+# $Id: packages,v 1.170 2002-04-27 04:18:38 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -74,6 +74,7 @@ athena/bin/hostinfo		requires bind,perl
 athena/bin/just
 athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
+athena/bin/mail-dialog		requires gnome-libs
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires afsbin,openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
@@ -189,13 +190,13 @@ third/lprng/ifhp
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
 third/mingetty			on linux
-third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nautilus			requires bonobo,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper,libghttp
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
 third/openafs			except irix
+third/openmotif			on linux
 third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
