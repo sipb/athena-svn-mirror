@@ -1,4 +1,4 @@
-# $Id: sshd_config,v 1.1 1998-01-14 17:27:06 ghudson Exp $
+# $Id: sshd_config,v 1.2 1998-04-25 23:37:04 danw Exp $
 
 # Athena sshd configuration file
 
@@ -8,3 +8,4 @@ RhostsRSAAuthentication no
 RSAAuthentication no
 StrictModes no
 KerberosOrLocalPasswd yes
+CheckMail no
