@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.25 1988-11-14 11:58:28 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.26 1988-11-22 11:32:49 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -135,6 +135,12 @@ main(argc, argv)
 	    inst = fix_filsrv_inst(argv[arg]);
 	    filsys = 1;
 	    break;
+	case 's':
+	    if (arg == argc-1)
+		usage(whoami);
+	    arg++;
+	    signature = argv[arg];
+	    break;
 	case 'm':
 	    if (arg == argc-1)
 		usage(whoami);
@@ -181,23 +187,22 @@ main(argc, argv)
     message = NULL;
     msgsize = 0;
     if (signature) {
-	message = malloc((unsigned)(strlen(signature)+sizeof("From: ")+2));
-	(void) strcpy(message, "From: ");
-	(void) strcat(message, signature);
+	message = malloc((unsigned)(strlen(signature)+2));
+	(void) strcpy(message, signature);
 	msgsize = strlen(message);
 	message[msgsize++] = '\n';
 	message[msgsize++] = '\0';
+    } else {
+	message = malloc(1);
+	message[msgsize++] = '\0';
     }
-	
+
     if (msgarg) {
 	int size = msgsize;
 	for (arg=msgarg;arg<argc;arg++)
 		size += (strlen(argv[arg]) + 1);
 	size++;				/* for the newline */
-	if (message)
-		message = realloc(message, (unsigned) size);
-	else
-		message = malloc((unsigned) size);
+	message = realloc(message, (unsigned) size);
 	for (arg=msgarg;arg<argc;arg++) {
 	    (void) strcpy(message+msgsize, argv[arg]);
 	    msgsize += strlen(argv[arg]);
@@ -217,11 +222,7 @@ main(argc, argv)
 		if (bfr[0] == '.' &&
 		    (bfr[1] == '\n' || bfr[1] == '\0'))
 		    break;
-		if (message)
-			message = realloc(message,
-					  (unsigned)(msgsize+strlen(bfr)));
-		else
-			message = malloc((unsigned)strlen(bfr));
+		message = realloc(message, (unsigned)(msgsize+strlen(bfr)));
 		(void) strcpy(message+msgsize, bfr);
 		msgsize += strlen(bfr);
 	    }
@@ -234,18 +235,12 @@ main(argc, argv)
 		    fprintf(stderr, "Read error from stdin!  Can't continue!\n");
 		    exit(1);
 		}
-		if (message)
-		    message = realloc(message, (unsigned)(msgsize+nchars));
-		else
-		    message = malloc((unsigned)nchars);
+		message = realloc(message, (unsigned)(msgsize+nchars));
 		bcopy(bfr, message+msgsize, nchars);
 		msgsize += nchars;
 	    }
 	    /* end of msg */
-	    if (message)
-		message = realloc(message, (unsigned)(msgsize+1));
-	    else
-		message = malloc((unsigned) 1);
+	    message = realloc(message, (unsigned)(msgsize+1));
 	    message[msgsize++] = '\0';	/* null-terminate */
 	} 
     }
