@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.3 1990-07-11 10:45:32 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.4 1990-11-14 17:30:41 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.3 1990-07-11 10:45:32 epeisach Exp $";
+static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.4 1990-11-14 17:30:41 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -100,7 +100,7 @@ quota_value		qamount;
 	
 #undef ADDSTR
     }
-    fputc('\n', fout);
+    (void) fputc('\n', fout);
     close_acct();
     UNPROTECT();
 }
@@ -173,7 +173,7 @@ quota_value		qamount;
 	
 #undef ADDSTR
     }
-    fputc('\n', fout);
+    (void) fputc('\n', fout);
     close_acct();
     UNPROTECT();
 }
@@ -210,15 +210,14 @@ PROTECT();
     ADDSTR('I', qinstance);
     ADDSTR('R', qrealm);
     
-    fputc('\n', fout);
+    (void) fputc('\n', fout);
     close_acct();
     UNPROTECT();
 }
 
-void Quota_report_group_log(qid, qreport, ad)
+void Quota_report_group_log(qid, qreport)
 quota_identifier	*qid;
 quota_report	  	*qreport;
-AUTH_DAT		*ad;
 {
 
     char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ]; /* Whose data was changed?*/	
@@ -249,7 +248,7 @@ PROTECT();
     ADDSTR('I', qinstance);
     ADDSTR('R', qrealm);
 
-    fputc('\n', fout);
+    (void) fputc('\n', fout);
     close_acct();
     UNPROTECT();
 }
