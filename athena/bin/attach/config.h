@@ -1,6 +1,6 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
- *	$Id: config.h,v 1.15 1993-05-05 17:04:52 vrt Exp $
+ *	$Id: config.h,v 1.16 1995-07-21 00:38:12 cfields Exp $
  *
  * Configuration defines
  *
@@ -27,7 +27,7 @@
 #if defined(sun)
 #define NFSCLIENT
 #endif
-#if !defined(_AIX)
+#if !defined(_AIX) && !defined(sgi)
 #define	UFS
 #endif
 
@@ -127,7 +127,7 @@ struct mntent {
 
 /* These are not defined or recognized by the system, but they are useful
    to allow common data structures with systems that do have these defines */
-#if defined(_AIX) || defined(sun)
+#if defined(_AIX) || defined(sun) || defined(sgi)
 #define	MOUNT_UFS	1
 #define	MOUNT_NFS	2
 #endif
