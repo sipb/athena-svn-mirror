@@ -235,17 +235,17 @@ The standard Xt command-line options are accepted; other options include:\n\
 \n\
 See the manual for other options and X resources.\n\
 \n\
-The `xscreensaver' program should be left running in the background.\n\
-Use the `xscreensaver-demo' and `xscreensaver-command' programs to\n\
-manipulate a running xscreensaver.\n\
+The `xss' program should be left running in the background.\n\
+Use the `xss-demo' and `xss-command' programs to manipulate a running\n\
+xss. Use the `xss-button' command to create a button you can use to\n\
+lock your screen.\n\
 \n\
 The `*programs' resource controls which graphics demos will be launched by\n\
-the screensaver.  See `man xscreensaver' or the web page for more details.\n\
+the screensaver.  See `man xss' or the web page for more details.\n\
 \n\
 Just getting started?  Try this:\n\
 \n\
-        xscreensaver &\n\
-        xscreensaver-demo\n\
+        xss-button &\n\
 \n\
 For updates, check http://www.jwz.org/xscreensaver/\n\
 \n",
@@ -540,16 +540,16 @@ process_command_line (saver_info *si, int *argc, char **argv)
 
 	      if (!strcmp (s, "-demo") || !strcmp (s, "-prefs"))
 		fprintf (stderr, "\n\
-    Perhaps you meant to run the `xscreensaver-demo' program instead?\n");
+    Perhaps you meant to run the `xss-demo' program instead?\n");
 	      else
 		fprintf (stderr, "\n\
-    However, `%s' is an option to the `xscreensaver-command' program.\n", s);
+    However, `%s' is an option to the `xss-command' program.\n", s);
 
 	      fprintf (stderr, "\
-    The `xscreensaver' program is a daemon that runs in the background.\n\
-    You control a running xscreensaver process by sending it messages\n\
-    with `xscreensaver-demo' or `xscreensaver-command'.\n\
-.   See the man pages for details, or check the web page:\n\
+    The `xss' program is a daemon that runs in the background.\n\
+    You control a running xss process by sending it messages\n\
+    with `xss-button', `xss-demo', or `xss-command'.\n\
+    See the man pages for details, or check the web page:\n\
     http://www.jwz.org/xscreensaver/\n\n");
 
 	      /* Since version 1.21 renamed the "-lock" option to "-lock-mode",
@@ -557,7 +557,7 @@ process_command_line (saver_info *si, int *argc, char **argv)
 	      if (!strcmp (s, "-lock"))
 		fprintf (stderr, "\
     Or perhaps you meant either the \"-lock-mode\" or the\n\
-    \"-lock-timeout <minutes>\" options to xscreensaver?\n\n");
+    \"-lock-timeout <minutes>\" options to xss?\n\n");
 	    }
 
 	  exit (1);
