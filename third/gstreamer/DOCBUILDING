@@ -1,0 +1,56 @@
+Building GStreamer documentation
+
+
+DOCUMENTATION
+-------------
+
+To build the GStreamer documentation you need the following installed (based on Red Hat packages). 
+These packages comes from rawhide and are the ones that will be in Red Hat 7.3/8.0
+
+Docbook stuff:
+sgml-common 
+xml-common 
+openjade (needs to be rebuilt from SRPM for Red Hat 7.2)
+tetex-dvips
+jadetex
+docbook-dtds      
+docbook-style-dsssl 
+docbook-style-xsl
+docbook-utils
+
+XML stuff:
+libxml2
+libxml2-python
+libxml2-devel
+libxslt
+libxslt-devel
+libxslt-python
+
+
+
+Gtkdoc:
+gtk-doc
+
+Other stuff:
+transfig
+pdftops
+
+
+
+
+
+DEVHELP INTEGRATION
+-------------------
+Check http://devhelp.sourceforge.net/
+It's a really nice development app allowing you to look up API stuff
+from various gtk-doc'd libraries.  GStreamer is one of these ;)
+
+Currently we keep our devhelp files in CVS until devhelp has settled down.
+
+We'll keep them in a devhelp/ directory
+
+For now, I put tools to generate the devhelp files in this dir, as well as
+the generated devhelp files.  It's easier to have one person generate the
+devhelp files once in a while than to do it in every build.  Until devhelp
+settles down or we get a clue, that is ;)
+

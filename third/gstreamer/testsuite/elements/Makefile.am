@@ -1,0 +1,19 @@
+if BUILD_FAILING_TESTS
+tests_failing = fake
+else
+tests_failing =
+endif
+tests_working = name tee property
+
+GST_PLUGIN_PATH=$(shell cd $(top_builddir) && pwd)
+
+TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=`pwd`test-registry.xml
+
+TESTS = $(tests_working)
+
+check_PROGRAMS = $(tests_failing) $(tests_working)
+
+EXTRA_DIST = property.h
+LDADD = $(GST_LIBS) 
+AM_CFLAGS = $(GST_CFLAGS)
+

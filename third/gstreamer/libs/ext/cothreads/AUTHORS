@@ -1,0 +1,3 @@
+This package was developed in early 2002 by Andy Wingo <wingo@pobox.com> for use
+in the GStreamer project. It uses code from the GNU Pth project, written by Ralf
+S. Engleschall. All bugs to gstreamer-devel@lists.sourceforge.net.

@@ -1,0 +1,279 @@
+<!-- ##### SECTION Title ##### -->
+GstRegistry
+
+<!-- ##### SECTION Short_Description ##### -->
+Abstract class for managing plugins.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+The registry holds the available plugins in the system.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+#GstPlugin, #GstPluginFeature
+</para>
+
+<!-- ##### ENUM GstRegistryReturn ##### -->
+<para>
+The return value of registry operations
+</para>
+
+@GST_REGISTRY_OK: The registry reported no error.
+@GST_REGISTRY_LOAD_ERROR: There was a load error
+@GST_REGISTRY_SAVE_ERROR: There was an error saving the registry
+@GST_REGISTRY_PLUGIN_LOAD_ERROR: There was an error loading a plugin
+@GST_REGISTRY_PLUGIN_SIGNATURE_ERROR: There was an error saving a plugin
+
+<!-- ##### ENUM GstRegistryFlags ##### -->
+<para>
+Flags for the registry
+</para>
+
+@GST_REGISTRY_READABLE: The registry can be read
+@GST_REGISTRY_WRITABLE: The registry can be written to
+@GST_REGISTRY_EXISTS: The registry exists
+@GST_REGISTRY_REMOTE: The registry is remote and might be slower
+@GST_REGISTRY_DELAYED_LOADING: The registry will be loaded on demand.
+
+<!-- ##### STRUCT GstRegistry ##### -->
+<para>
+The registry object
+</para>
+
+@object: 
+@priority: 
+@flags: 
+@name: 
+@details: 
+@loaded: 
+@plugins: 
+@paths: 
+@dummy: 
+
+<!-- ##### FUNCTION gst_registry_load ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_is_loaded ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_save ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_rebuild ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_unload ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_add_path ##### -->
+<para>
+
+</para>
+
+@registry: 
+@path: 
+
+
+<!-- ##### FUNCTION gst_registry_get_path_list ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_clear_paths ##### -->
+<para>
+
+</para>
+
+@registry: 
+
+
+<!-- ##### FUNCTION gst_registry_add_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_remove_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+
+
+<!-- ##### FUNCTION gst_registry_find_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_find_feature ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_load_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_unload_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_update_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_list ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_add ##### -->
+<para>
+
+</para>
+
+@registry: 
+@priority: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_remove ##### -->
+<para>
+
+</para>
+
+@registry: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_add_plugin ##### -->
+<para>
+
+</para>
+
+@plugin: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_load_all ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_registry_pool_plugin_list ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_feature_list ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_find_plugin ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_find_feature ##### -->
+<para>
+
+</para>
+
+@name: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_pool_get_prefered ##### -->
+<para>
+
+</para>
+
+@flags: 
+@Returns: 
+
+
