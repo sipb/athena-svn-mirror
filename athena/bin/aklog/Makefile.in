@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 1999-09-22 21:18:15 danw Exp $
+# $Id: Makefile.in,v 1.6 1999-09-24 20:11:37 danw Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -48,4 +48,3 @@ distclean: clean
 	rm -f config.cache config.log config.status Makefile
 
 aklog.o linked_list.o: linked_list.h
-aklog.o: aklog.h
