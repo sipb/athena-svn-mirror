@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.10 1987-07-22 17:57:13 jtkohl Exp $";
+static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.11 1987-07-24 15:16:59 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -501,8 +501,8 @@ ZClient_t *client;
 	if ((retval = bdump_send_list_tcp(SERVACK, bdump_sin.sin_port,
 					  ZEPHYR_ADMIN_CLASS,
 					  num > 1 ? "CBLOCK" : "",
-					  ADMIN_NEWCLT, myname, "",
-					  lyst, num)) != ZERR_NONE ) {
+					  ADMIN_NEWCLT, client->zct_principal,
+					  "", lyst, num)) != ZERR_NONE ) {
 		syslog(LOG_ERR, "subscr_send_subs newclt: %s",
 		       error_message(retval));
 		return(retval);
