@@ -1,9 +1,15 @@
-# $Id: phase3.sh,v 1.2 1996-05-29 05:21:05 ghudson Exp $
+# $Id: phase3.sh,v 1.3 1996-05-29 05:26:10 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
 # from the miniroot.
+
+if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
+	echo "Setting monitor resolution..."
+	eeprom output-device=screen:r1152x900x94
+	eeprom fcode-debug?=true
+fi
 
 ROOT=/root; export ROOT
 echo "Mounting hard disk's root partition..."
@@ -185,5 +191,6 @@ fsck -F ufs $rusrdrive
 /sbin/umount /root > /dev/null 2>&1
 /usr/sbin/fsck -F ufs $rrootdrive
 sleep 5
+
 echo "rebooting now"
 reboot
