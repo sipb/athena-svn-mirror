@@ -96,9 +96,9 @@ fi
 
 # Copy in the version script and point do.sh at it.  This is a gross
 # hack; do.sh should take care of this.
-sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
+sed -e 's%$source/packs/build/version%athena-version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
 chmod a+x $source_name/do.sh
-cp $sourcedir/packs/build/version $source_name
+cp $sourcedir/packs/build/version $source_name/athena-version
 
 # Do the `do.sh dist' step
 (cd $source_name; \
