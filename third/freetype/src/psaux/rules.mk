@@ -21,7 +21,7 @@ PSAUX_DIR_ := $(PSAUX_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-PSAUX_COMPILE := $(FT_COMPILE)
+PSAUX_COMPILE := $(FT_COMPILE) $I$(PSAUX_DIR)
 
 
 # PSAUX driver sources (i.e., C files)
@@ -32,7 +32,8 @@ PSAUX_DRV_SRC := $(PSAUX_DIR_)psobjs.c   \
 
 # PSAUX driver headers
 #
-PSAUX_DRV_H := $(PSAUX_DRV_SRC:%c=%h)
+PSAUX_DRV_H := $(PSAUX_DRV_SRC:%c=%h)  \
+               $(PSAUX_DIR_)psauxerr.h
 
 
 # PSAUX driver object(s)

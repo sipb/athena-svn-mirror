@@ -5,7 +5,7 @@
 /*    General types and definitions for the auto-hint module               */
 /*    (specification only).                                                */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -20,21 +20,17 @@
 /***************************************************************************/
 
 
-#ifndef AHTYPES_H
-#define AHTYPES_H
+#ifndef __AHTYPES_H__
+#define __AHTYPES_H__
 
 
-#include <freetype/internal/ftobjs.h>  /* for freetype.h + FT_LOCAL etc. */
+#include <ft2build.h>
+#include FT_INTERNAL_OBJECTS_H
 
-
-#ifdef FT_FLAT_COMPILE
-
-#include "ahloader.h"
-
+#ifdef DEBUG_HINTER
+#include <../src/autohint/ahloader.h>
 #else
-
-#include <autohint/ahloader.h>
-
+#include "ahloader.h"
 #endif
 
 
@@ -44,19 +40,16 @@
 #ifdef AH_DEBUG
 
 #include <stdio.h>
-
-#define AH_LOG( x )  printf##x
+#define AH_LOG( x )  printf ## x
 
 #else
 
 #define AH_LOG( x )  do ; while ( 0 ) /* nothing */
 
-#endif
+#endif /* AH_DEBUG */
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+FT_BEGIN_HEADER
 
 
   /*************************************************************************/
@@ -133,27 +126,27 @@
 
 
   /* hint flags */
-#define ah_flah_none       0
+#define ah_flag_none       0
 
   /* bezier control points flags */
-#define ah_flah_conic                 1
-#define ah_flah_cubic                 2
-#define ah_flah_control               ( ah_flah_conic | ah_flah_cubic )
+#define ah_flag_conic                 1
+#define ah_flag_cubic                 2
+#define ah_flag_control               ( ah_flag_conic | ah_flag_cubic )
 
   /* extrema flags */
-#define ah_flah_extrema_x             4
-#define ah_flah_extrema_y             8
+#define ah_flag_extrema_x             4
+#define ah_flag_extrema_y             8
 
   /* roundness */
-#define ah_flah_round_x              16
-#define ah_flah_round_y              32
+#define ah_flag_round_x              16
+#define ah_flag_round_y              32
 
   /* touched */
-#define ah_flah_touch_x              64
-#define ah_flah_touch_y             128
+#define ah_flag_touch_x              64
+#define ah_flag_touch_y             128
 
   /* weak interpolation */
-#define ah_flah_weak_interpolation  256
+#define ah_flag_weak_interpolation  256
 
   typedef FT_Int AH_Flags;
 
@@ -198,7 +191,7 @@
   /*                                                                       */
   /*    fx, fy    :: The current coordinates in font units.                */
   /*                                                                       */
-  /*    x,  y     :: The current hinter coordinates.                       */
+  /*    x,  y     :: The current hinted coordinates.                       */
   /*                                                                       */
   /*    u, v      :: Point coordinates -- meaning varies with context.     */
   /*                                                                       */
@@ -425,7 +418,7 @@
   /*                                                                       */
   /*    blue_shoots :: The overshoot positions of blue zones.              */
   /*                                                                       */
-  typedef struct AH_Globals_
+  typedef struct  AH_Globals_
   {
     FT_Int    num_widths;
     FT_Int    num_heights;
@@ -495,12 +488,18 @@
   } AH_Hinter;
 
 
-#ifdef __cplusplus
-  }
-#endif
+#ifdef    DEBUG_HINTER
+  extern AH_Hinter*   ah_debug_hinter;
+  extern FT_Bool      ah_debug_disable_horz;
+  extern FT_Bool      ah_debug_disable_vert;
+#else
+# define ah_debug_disable_horz   0
+# define ah_debug_disable_vert   0
+#endif  /* DEBUG_HINTER */
 
+FT_END_HEADER
 
-#endif /* AHTYPES_H */
+#endif /* __AHTYPES_H__ */
 
 
 /* END */

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Multiple Master font support (body).                                 */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,8 +16,9 @@
 /***************************************************************************/
 
 
-#include <freetype/ftmm.h>
-#include <freetype/internal/ftobjs.h>
+#include <ft2build.h>
+#include FT_MULTIPLE_MASTERS_H
+#include FT_INTERNAL_OBJECTS_H
 
 
   /*************************************************************************/
@@ -32,8 +33,9 @@
 
   /* documentation is in ftmm.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_Get_Multi_Master( FT_Face           face,
-                                                  FT_Multi_Master  *amaster )
+  FT_EXPORT_DEF( FT_Error )
+  FT_Get_Multi_Master( FT_Face           face,
+                       FT_Multi_Master  *amaster )
   {
     FT_Error  error;
 
@@ -61,10 +63,10 @@
 
   /* documentation is in ftmm.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_Set_MM_Design_Coordinates(
-                               FT_Face   face,
-                               FT_UInt   num_coords,
-                               FT_Long*  coords )
+  FT_EXPORT_DEF( FT_Error )
+  FT_Set_MM_Design_Coordinates( FT_Face   face,
+                                FT_UInt   num_coords,
+                                FT_Long*  coords )
   {
     FT_Error  error;
 
@@ -92,8 +94,8 @@
 
   /* documentation is in ftmm.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_Set_MM_Blend_Coordinates(
-                               FT_Face    face,
+  FT_EXPORT_DEF( FT_Error )
+  FT_Set_MM_Blend_Coordinates( FT_Face    face,
                                FT_UInt    num_coords,
                                FT_Fixed*  coords )
   {

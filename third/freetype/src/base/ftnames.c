@@ -7,7 +7,7 @@
 /*                                                                         */
 /*    This is _not_ used to retrieve glyph names!                          */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -19,8 +19,9 @@
 /***************************************************************************/
 
 
-#include <freetype/ftnames.h>
-#include <freetype/internal/tttypes.h>
+#include <ft2build.h>
+#include FT_SFNT_NAMES_H
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 
 
 #ifdef TT_CONFIG_OPTION_SFNT_NAMES
@@ -28,7 +29,8 @@
 
   /* documentation is in ftnames.h */
 
-  FT_EXPORT_DEF( FT_UInt )  FT_Get_Sfnt_Name_Count( FT_Face  face )
+  FT_EXPORT_DEF( FT_UInt )
+  FT_Get_Sfnt_Name_Count( FT_Face  face )
   {
     return (face && FT_IS_SFNT( face )) ? ((TT_Face)face)->num_names : 0;
   }
@@ -36,9 +38,10 @@
 
   /* documentation is in ftnames.h */
 
-  FT_EXPORT_DEF( FT_Error ) FT_Get_Sfnt_Name( FT_Face       face,
-                                              FT_UInt       index,
-                                              FT_SfntName  *aname )
+  FT_EXPORT_DEF( FT_Error )
+  FT_Get_Sfnt_Name( FT_Face       face,
+                    FT_UInt       index,
+                    FT_SfntName  *aname )
   {
     FT_Error  error = FT_Err_Invalid_Argument;
 
@@ -48,7 +51,7 @@
       TT_Face  ttface = (TT_Face)face;
 
 
-      if ( index < ttface->num_names )
+      if ( index < (FT_UInt)ttface->num_names )
       {
         TT_NameRec*  name = ttface->name_table.names + index;
 

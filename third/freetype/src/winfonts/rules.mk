@@ -19,7 +19,7 @@ FNT_DIR  := $(SRC_)winfonts
 FNT_DIR_ := $(FNT_DIR)$(SEP)
 
 
-FNT_COMPILE := $(FT_COMPILE)
+FNT_COMPILE := $(FT_COMPILE) $I$(FNT_DIR)
 
 
 # Windows driver sources (i.e., C files)
@@ -28,7 +28,8 @@ FNT_DRV_SRC := $(FNT_DIR_)winfnt.c
 
 # Windows driver headers
 #
-FNT_DRV_H := $(FNT_DRV_SRC:%.c=%.h)
+FNT_DRV_H := $(FNT_DRV_SRC:%.c=%.h) \
+             $(FNT_DIR_)fnterrs.h
 
 
 # Windows driver object(s)

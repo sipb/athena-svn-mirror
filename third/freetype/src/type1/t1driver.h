@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    High-level Type 1 driver interface (specification).                  */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,24 +16,23 @@
 /***************************************************************************/
 
 
-#ifndef T1DRIVER_H
-#define T1DRIVER_H
+#ifndef __T1DRIVER_H__
+#define __T1DRIVER_H__
 
-#include <freetype/internal/ftdriver.h>
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_DRIVER_H
+
+
+FT_BEGIN_HEADER
 
 
   FT_EXPORT_VAR( const FT_Driver_Class )  t1_driver_class;
 
-#ifdef __cplusplus
-  }
-#endif
 
+FT_END_HEADER
 
-#endif /* T1DRIVER_H */
+#endif /* __T1DRIVER_H__ */
 
 
 /* END */

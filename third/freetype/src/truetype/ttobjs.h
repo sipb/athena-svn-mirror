@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Objects manager (specification).                                     */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,18 +16,16 @@
 /***************************************************************************/
 
 
-#ifndef TTOBJS_H
-#define TTOBJS_H
+#ifndef __TTOBJS_H__
+#define __TTOBJS_H__
 
 
-#include <freetype/internal/ftobjs.h>
-#include <freetype/internal/tttypes.h>
-#include <freetype/internal/tterrors.h>
+#include <ft2build.h>
+#include FT_INTERNAL_OBJECTS_H
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+FT_BEGIN_HEADER
 
 
   /*************************************************************************/
@@ -109,14 +107,14 @@
 
 #ifdef TT_CONFIG_OPTION_BYTECODE_INTERPRETER
 
-  FT_LOCAL
-  void  TT_Done_GlyphZone( TT_GlyphZone*  zone );
+  FT_LOCAL void
+  TT_Done_GlyphZone( TT_GlyphZone*  zone );
 
-  FT_LOCAL
-  FT_Error  TT_New_GlyphZone( FT_Memory      memory,
-                              FT_UShort      maxPoints,
-                              FT_Short       maxContours,
-                              TT_GlyphZone*  zone );
+  FT_LOCAL FT_Error
+  TT_New_GlyphZone( FT_Memory      memory,
+                    FT_UShort      maxPoints,
+                    FT_Short       maxContours,
+                    TT_GlyphZone*  zone );
 
 #endif /* TT_CONFIG_OPTION_BYTECODE_INTERPRETER */
 
@@ -380,47 +378,45 @@
   /*                                                                       */
   /* Face functions                                                        */
   /*                                                                       */
-  FT_LOCAL
-  FT_Error  TT_Init_Face( FT_Stream      stream,
-                          TT_Face        face,
-                          FT_Int         face_index,
-                          FT_Int         num_params,
-                          FT_Parameter*  params );
+  FT_LOCAL FT_Error
+  TT_Init_Face( FT_Stream      stream,
+                TT_Face        face,
+                FT_Int         face_index,
+                FT_Int         num_params,
+                FT_Parameter*  params );
 
-  FT_LOCAL
-  void  TT_Done_Face( TT_Face  face );
+  FT_LOCAL void
+  TT_Done_Face( TT_Face  face );
 
 
   /*************************************************************************/
   /*                                                                       */
   /* Size functions                                                        */
   /*                                                                       */
-  FT_LOCAL
-  FT_Error  TT_Init_Size( TT_Size  size );
+  FT_LOCAL FT_Error
+  TT_Init_Size( TT_Size  size );
 
-  FT_LOCAL
-  void  TT_Done_Size( TT_Size  size );
+  FT_LOCAL void
+  TT_Done_Size( TT_Size  size );
 
-  FT_LOCAL
-  FT_Error  TT_Reset_Size( TT_Size  size );
+  FT_LOCAL FT_Error
+  TT_Reset_Size( TT_Size  size );
 
 
   /*************************************************************************/
   /*                                                                       */
   /* Driver functions                                                      */
   /*                                                                       */
-  FT_LOCAL
-  FT_Error  TT_Init_Driver( TT_Driver  driver );
+  FT_LOCAL FT_Error
+  TT_Init_Driver( TT_Driver  driver );
 
-  FT_LOCAL
-  void  TT_Done_Driver( TT_Driver  driver );
+  FT_LOCAL void
+  TT_Done_Driver( TT_Driver  driver );
 
 
-#ifdef __cplusplus
-  }
-#endif
+FT_END_HEADER
 
-#endif /* TTOBJS_H */
+#endif /* __TTOBJS_H__ */
 
 
 /* END */

@@ -21,7 +21,7 @@ TT_DIR_ := $(TT_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-TT_COMPILE := $(FT_COMPILE)
+TT_COMPILE := $(FT_COMPILE) $I$(TT_DIR)
 
 
 # TrueType driver sources (i.e., C files)
@@ -34,7 +34,8 @@ TT_DRV_SRC := $(TT_DIR_)ttobjs.c   \
 
 # TrueType driver headers
 #
-TT_DRV_H := $(TT_DRV_SRC:%.c=%.h)
+TT_DRV_H := $(TT_DRV_SRC:%.c=%.h) \
+            $(TT_DIR_)tterrors.h
 
 
 # TrueType driver object(s)

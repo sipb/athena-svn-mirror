@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Glyph loader for the auto-hinting module (declaration only).         */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -32,13 +32,14 @@
   /*************************************************************************/
 
 
-#ifndef AHLOADER_H
-#define AHLOADER_H
+#ifndef __AHLOADER_H__
+#define __AHLOADER_H__
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+
+
+FT_BEGIN_HEADER
 
 
 #ifdef _STANDALONE_
@@ -68,44 +69,44 @@
   };
 
 
-  FT_LOCAL
-  FT_Error  AH_GlyphLoader_New( FT_Memory         memory,
-                                AH_GlyphLoader**  aloader );
+  FT_LOCAL FT_Error
+  AH_GlyphLoader_New( FT_Memory         memory,
+                      AH_GlyphLoader**  aloader );
 
-  FT_LOCAL
-  FT_Error  AH_GlyphLoader_Create_Extra( AH_GlyphLoader*  loader );
+  FT_LOCAL FT_Error
+  AH_GlyphLoader_Create_Extra( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  void  AH_GlyphLoader_Done( AH_GlyphLoader*  loader );
+  FT_LOCAL void
+  AH_GlyphLoader_Done( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  void  AH_GlyphLoader_Reset( AH_GlyphLoader*  loader );
+  FT_LOCAL void
+  AH_GlyphLoader_Reset( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  void  AH_GlyphLoader_Rewind( AH_GlyphLoader*  loader );
+  FT_LOCAL void
+  AH_GlyphLoader_Rewind( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  FT_Error  AH_GlyphLoader_Check_Points( AH_GlyphLoader*  loader,
-                                         FT_UInt          n_points,
-                                         FT_UInt          n_contours );
+  FT_LOCAL FT_Error
+  AH_GlyphLoader_Check_Points( AH_GlyphLoader*  loader,
+                               FT_UInt          n_points,
+                               FT_UInt          n_contours );
 
-  FT_LOCAL
-  FT_Error  AH_GlyphLoader_Check_Subglyphs( AH_GlyphLoader*  loader,
-                                            FT_UInt          n_subs );
+  FT_LOCAL FT_Error
+  AH_GlyphLoader_Check_Subglyphs( AH_GlyphLoader*  loader,
+                                  FT_UInt          n_subs );
 
-  FT_LOCAL
-  void  AH_GlyphLoader_Prepare( AH_GlyphLoader*  loader );
+  FT_LOCAL void
+  AH_GlyphLoader_Prepare( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  void  AH_GlyphLoader_Add( AH_GlyphLoader*  loader );
+  FT_LOCAL void
+  AH_GlyphLoader_Add( AH_GlyphLoader*  loader );
 
-  FT_LOCAL
-  FT_Error  AH_GlyphLoader_Copy_Points( AH_GlyphLoader*  target,
-                                        FT_GlyphLoader*  source );
+  FT_LOCAL FT_Error
+  AH_GlyphLoader_Copy_Points( AH_GlyphLoader*  target,
+                              FT_GlyphLoader*  source );
 
 #else /* _STANDALONE */
 
-#include <freetype/internal/ftobjs.h>
+#include FT_INTERNAL_OBJECTS_H
 
   #define AH_Load    FT_GlyphLoad
   #define AH_Loader  FT_GlyphLoader
@@ -124,12 +125,9 @@
 #endif /* _STANDALONE_ */
 
 
-#ifdef __cplusplus
-  }
-#endif
+FT_END_HEADER
 
-
-#endif /* AHLOADER_H */
+#endif /* __AHLOADER_H__ */
 
 
 /* END */

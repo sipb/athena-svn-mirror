@@ -5,7 +5,7 @@
 /*    Routines used to load and analyze a given glyph before hinting       */
 /*    (specification).                                                     */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -20,23 +20,15 @@
 /***************************************************************************/
 
 
-#ifndef AHGLYPH_H
-#define AHGLYPH_H
+#ifndef __AHGLYPH_H__
+#define __AHGLYPH_H__
 
-#ifdef FT_FLAT_COMPILE
 
+#include <ft2build.h>
 #include "ahtypes.h"
 
-#else
 
-#include <autohint/ahtypes.h>
-
-#endif
-
-
-#ifdef __cplusplus
-  extern "C" {
-#endif
+FT_BEGIN_HEADER
 
 
   typedef enum  AH_UV_
@@ -53,51 +45,49 @@
   } AH_UV;
 
 
-  FT_LOCAL
-  void  ah_setup_uv( AH_Outline*  outline,
-                     AH_UV        source );
+  FT_LOCAL void
+  ah_setup_uv( AH_Outline*  outline,
+               AH_UV        source );
 
 
   /* AH_Outline functions - they should be typically called in this order */
 
-  FT_LOCAL
-  FT_Error  ah_outline_new( FT_Memory     memory,
-                            AH_Outline**  aoutline );
+  FT_LOCAL FT_Error
+  ah_outline_new( FT_Memory     memory,
+                  AH_Outline**  aoutline );
 
-  FT_LOCAL
-  FT_Error  ah_outline_load( AH_Outline*  outline,
-                             FT_Face      face );
+  FT_LOCAL FT_Error
+  ah_outline_load( AH_Outline*  outline,
+                   FT_Face      face );
 
-  FT_LOCAL
-  void  ah_outline_compute_segments( AH_Outline*  outline );
+  FT_LOCAL void
+  ah_outline_compute_segments( AH_Outline*  outline );
 
-  FT_LOCAL
-  void  ah_outline_link_segments( AH_Outline*  outline );
+  FT_LOCAL void
+  ah_outline_link_segments( AH_Outline*  outline );
 
-  FT_LOCAL
-  void  ah_outline_detect_features( AH_Outline*  outline );
+  FT_LOCAL void
+  ah_outline_detect_features( AH_Outline*  outline );
 
-  FT_LOCAL
-  void  ah_outline_compute_blue_edges( AH_Outline*       outline,
-                                       AH_Face_Globals*  globals );
+  FT_LOCAL void
+  ah_outline_compute_blue_edges( AH_Outline*       outline,
+                                 AH_Face_Globals*  globals );
 
-  FT_LOCAL
-  void  ah_outline_scale_blue_edges( AH_Outline*       outline,
-                                     AH_Face_Globals*  globals );
+  FT_LOCAL void
+  ah_outline_scale_blue_edges( AH_Outline*       outline,
+                               AH_Face_Globals*  globals );
 
-  FT_LOCAL
-  void  ah_outline_save( AH_Outline*  outline, AH_Loader*  loader );
+  FT_LOCAL void
+  ah_outline_save( AH_Outline*  outline,
+                   AH_Loader*   loader );
 
-  FT_LOCAL
-  void  ah_outline_done( AH_Outline*  outline );
-
-
-#ifdef __cplusplus
-  }
-#endif
+  FT_LOCAL void
+  ah_outline_done( AH_Outline*  outline );
 
 
-#endif /* AHGLYPH_H */
+FT_END_HEADER
+
+#endif /* __AHGLYPH_H__ */
 
 
 /* END */

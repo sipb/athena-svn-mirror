@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    CID-keyed Type1 parser (specification).                              */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,16 +16,17 @@
 /***************************************************************************/
 
 
-#ifndef CIDPARSE_H
-#define CIDPARSE_H
+#ifndef __CIDPARSE_H__
+#define __CIDPARSE_H__
 
-#include <freetype/internal/t1types.h>
-#include <freetype/internal/ftstream.h>
-#include <freetype/internal/psaux.h>
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_TYPE1_TYPES_H
+#include FT_INTERNAL_STREAM_H
+#include FT_INTERNAL_POSTSCRIPT_AUX_H
+
+
+FT_BEGIN_HEADER
 
 
   /*************************************************************************/
@@ -54,7 +55,7 @@
   /*                                                                       */
   /*    num_dict       :: The number of font dictionaries.                 */
   /*                                                                       */
-  typedef struct CID_Parser_
+  typedef struct  CID_Parser_
   {
     T1_Parser  root;
     FT_Stream  stream;
@@ -70,14 +71,14 @@
   } CID_Parser;
 
 
-  FT_LOCAL
-  FT_Error  CID_New_Parser( CID_Parser*       parser,
-                            FT_Stream         stream,
-                            FT_Memory         memory,
-                            PSAux_Interface*  psaux );
+  FT_LOCAL FT_Error
+  CID_New_Parser( CID_Parser*       parser,
+                  FT_Stream         stream,
+                  FT_Memory         memory,
+                  PSAux_Interface*  psaux );
 
-  FT_LOCAL
-  void  CID_Done_Parser( CID_Parser*  parser );
+  FT_LOCAL void
+  CID_Done_Parser( CID_Parser*  parser );
 
 
   /*************************************************************************/
@@ -107,12 +108,9 @@
           (p)->root.funcs.load_field_table( &(p)->root, f, o, 0, 0 )
 
 
-#ifdef __cplusplus
-  }
-#endif
+FT_END_HEADER
 
-
-#endif /* CIDPARSE_H */
+#endif /* __CIDPARSE_H__ */
 
 
 /* END */

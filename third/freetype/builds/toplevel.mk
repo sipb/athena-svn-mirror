@@ -34,7 +34,7 @@
 # details on host platform detection and library builds.
 
 
-.PHONY: setup distclean
+.PHONY: all setup distclean modules
 
 # The `space' variable is used to avoid trailing spaces in defining the
 # `T' variable later.
@@ -71,6 +71,8 @@ endif
 #
 ifdef check_platform
 
+  # This is the first rule `make' sees.
+  #
   all: setup
 
   ifdef USE_MODULES
@@ -92,14 +94,23 @@ ifdef check_platform
   # This rule makes sense for Unix only to remove files created by a run
   # of the configure script which hasn't been successful (so that no
   # `config.mk' has been created).  It uses the built-in $(RM) command of
-  # GNU make.
+  # GNU make.  Similarly, `nul' is created if e.g. `make setup win32' has
+  # been erroneously used.
   #
-  distclean:
+  # note: This test is duplicated in "builds/toplevel.mk".
+  #
+  is_unix := $(strip $(wildcard /sbin/init) $(wildcard /usr/sbin/init) $(wildcard /hurd/auth))
+  ifneq ($(is_unix),)
+
+    distclean:
 	  $(RM) builds/unix/config.cache
 	  $(RM) builds/unix/config.log
 	  $(RM) builds/unix/config.status
 	  $(RM) builds/unix/unix-def.mk
 	  $(RM) builds/unix/unix-cc.mk
+	  $(RM) nul
+
+  endif # test is_unix
 
   # IMPORTANT:
   #

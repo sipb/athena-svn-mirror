@@ -5,7 +5,7 @@
 /*    Support for the FT_Outline type used to store glyph shapes of        */
 /*    most scalable font formats (specification).                          */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -20,13 +20,55 @@
 #ifndef __FTOUTLN_H__
 #define __FTOUTLN_H__
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H    <freetype/config/ftbuild.h>
-#endif
-#include   FT_BUILD_H
-#include   FT_FREETYPE_H
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 FT_BEGIN_HEADER
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    outline_processing                                                 */
+  /*                                                                       */
+  /* <Title>                                                               */
+  /*    Outline Processing                                                 */
+  /*                                                                       */
+  /* <Abstract>                                                            */
+  /*    Functions to create, transform, and render vectorial glyph images. */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This section contains routines used to create and destroy scalable */
+  /*    glyph images known as `outlines'.  These can also be measured,     */
+  /*    transformed, and converted into bitmaps and pixmaps.               */
+  /*                                                                       */
+  /* <Order>                                                               */
+  /*    FT_Outline                                                         */
+  /*    FT_Outline_Flags                                                   */
+  /*    FT_Outline_New                                                     */
+  /*    FT_Outline_Done                                                    */
+  /*    FT_Outline_Copy                                                    */
+  /*    FT_Outline_Translate                                               */
+  /*    FT_Outline_Transform                                               */
+  /*    FT_Outline_Reverse                                                 */
+  /*    FT_Outline_Check                                                   */
+  /*                                                                       */
+  /*    FT_Outline_Get_CBox                                                */
+  /*    FT_Outline_Get_BBox                                                */
+  /*                                                                       */
+  /*    FT_Outline_Get_Bitmap                                              */
+  /*    FT_Outline_Render                                                  */
+  /*                                                                       */
+  /*    FT_Outline_Decompose                                               */
+  /*    FT_Outline_Funcs                                                   */
+  /*    FT_Outline_MoveTo_Func                                             */
+  /*    FT_Outline_LineTo_Func                                             */
+  /*    FT_Outline_ConicTo_Func                                            */
+  /*    FT_Outline_CubicTo_Func                                            */
+  /*                                                                       */
+  /*************************************************************************/
 
 
   /*************************************************************************/
@@ -54,10 +96,10 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    FreeType error code.  0 means sucess.                              */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Decompose(
-                           FT_Outline*              outline,
-                           const FT_Outline_Funcs*  interface,
-                           void*                    user );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Decompose( FT_Outline*              outline,
+                        const FT_Outline_Funcs*  interface,
+                        void*                    user );
 
 
   /*************************************************************************/
@@ -89,14 +131,15 @@ FT_BEGIN_HEADER
   /*    The reason why this function takes a `library' parameter is simply */
   /*    to use the library's memory allocator.                             */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_New( FT_Library   library,
-                                         FT_UInt      numPoints,
-                                         FT_Int       numContours,
-                                         FT_Outline  *anoutline );
+  FT_EXPORT( FT_Error )
+  FT_Outline_New( FT_Library   library,
+                  FT_UInt      numPoints,
+                  FT_Int       numContours,
+                  FT_Outline  *anoutline );
 
 
-  FT_EXPORT( FT_Error )  FT_Outline_New_Internal(
-                           FT_Memory    memory,
+  FT_EXPORT( FT_Error )
+  FT_Outline_New_Internal( FT_Memory    memory,
                            FT_UInt      numPoints,
                            FT_Int       numContours,
                            FT_Outline  *anoutline );
@@ -126,12 +169,32 @@ FT_BEGIN_HEADER
   /*    The reason why this function takes an `library' parameter is       */
   /*    simply to use FT_Free().                                           */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Done( FT_Library   library,
-                                          FT_Outline*  outline );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Done( FT_Library   library,
+                   FT_Outline*  outline );
 
 
-  FT_EXPORT( FT_Error )  FT_Outline_Done_Internal( FT_Memory    memory,
-                                                   FT_Outline*  outline );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Done_Internal( FT_Memory    memory,
+                            FT_Outline*  outline );
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Function>                                                            */
+  /*    FT_Outline_Check                                                   */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    Check the contents of an outline descriptor.                       */
+  /*                                                                       */
+  /* <Input>                                                               */
+  /*    outline :: A handle to a source outline.                           */
+  /*                                                                       */
+  /* <Return>                                                              */
+  /*    FreeType error code.  0 means success.                             */
+  /*                                                                       */
+  FT_EXPORT( FT_Error )
+  FT_Outline_Check( FT_Outline*  outline );
 
 
   /*************************************************************************/
@@ -157,8 +220,9 @@ FT_BEGIN_HEADER
   /* <Output>                                                              */
   /*    acbox   :: The outline's control box.                              */
   /*                                                                       */
-  FT_EXPORT( void )  FT_Outline_Get_CBox( FT_Outline*  outline,
-                                          FT_BBox     *acbox );
+  FT_EXPORT( void )
+  FT_Outline_Get_CBox( FT_Outline*  outline,
+                       FT_BBox     *acbox );
 
 
   /*************************************************************************/
@@ -177,9 +241,10 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*    yOffset :: The vertical offset.                                    */
   /*                                                                       */
-  FT_EXPORT( void )  FT_Outline_Translate( FT_Outline*  outline,
-                                           FT_Pos       xOffset,
-                                           FT_Pos       yOffset );
+  FT_EXPORT( void )
+  FT_Outline_Translate( FT_Outline*  outline,
+                        FT_Pos       xOffset,
+                        FT_Pos       yOffset );
 
 
   /*************************************************************************/
@@ -201,8 +266,9 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Copy( FT_Outline*  source,
-                                          FT_Outline  *target );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Copy( FT_Outline*  source,
+                   FT_Outline  *target );
 
 
   /*************************************************************************/
@@ -224,8 +290,9 @@ FT_BEGIN_HEADER
   /*    You can use FT_Outline_Translate() if you need to translate the    */
   /*    outline's points.                                                  */
   /*                                                                       */
-  FT_EXPORT( void )  FT_Outline_Transform( FT_Outline*  outline,
-                                           FT_Matrix*   matrix );
+  FT_EXPORT( void )
+  FT_Outline_Transform( FT_Outline*  outline,
+                        FT_Matrix*   matrix );
 
 
   /*************************************************************************/
@@ -247,7 +314,8 @@ FT_BEGIN_HEADER
   /*    It shouldn't be used by a normal client application, unless it     */
   /*    knows what it is doing.                                            */
   /*                                                                       */
-  FT_EXPORT( void )  FT_Outline_Reverse( FT_Outline*  outline );
+  FT_EXPORT( void )
+  FT_Outline_Reverse( FT_Outline*  outline );
 
 
   /*************************************************************************/
@@ -276,9 +344,10 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*    It will use the raster correponding to the default glyph format.   */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Get_Bitmap( FT_Library   library,
-                                                FT_Outline*  outline,
-                                                FT_Bitmap   *abitmap );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Get_Bitmap( FT_Library   library,
+                         FT_Outline*  outline,
+                         FT_Bitmap   *abitmap );
 
 
   /*************************************************************************/
@@ -312,9 +381,14 @@ FT_BEGIN_HEADER
   /*    converter is called, which means that the value you give to it is  */
   /*    actually ignored.                                                  */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Render( FT_Library         library,
-                                            FT_Outline*        outline,
-                                            FT_Raster_Params*  params );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Render( FT_Library         library,
+                     FT_Outline*        outline,
+                     FT_Raster_Params*  params );
+
+
+  /* */
+
 
 FT_END_HEADER
 

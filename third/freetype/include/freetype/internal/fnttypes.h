@@ -5,7 +5,7 @@
 /*    Basic Windows FNT/FON type definitions and interface (specification  */
 /*    only).                                                               */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -20,11 +20,10 @@
 #ifndef __FNTTYPES_H__
 #define __FNTTYPES_H__
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H  <freetype/config/ftbuild.h>
-#endif
-#include   FT_BUILD_H
-#include   FT_FREETYPE_H
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 FT_BEGIN_HEADER
 
@@ -68,8 +67,8 @@ FT_BEGIN_HEADER
   } WinResourceInfo;
 
 
-#define  WINFNT_MZ_MAGIC  0x5A4D
-#define  WINFNT_NE_MAGIC  0x454E
+#define WINFNT_MZ_MAGIC  0x5A4D
+#define WINFNT_NE_MAGIC  0x454E
 
 
   typedef struct  WinFNT_Header_

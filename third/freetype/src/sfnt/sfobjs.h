@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    SFNT object management (specification).                              */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,42 +16,39 @@
 /***************************************************************************/
 
 
-#ifndef SFOBJS_H
-#define SFOBJS_H
-
-#include <freetype/internal/sfnt.h>
-#include <freetype/internal/ftobjs.h>
+#ifndef __SFOBJS_H__
+#define __SFOBJS_H__
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_SFNT_H
+#include FT_INTERNAL_OBJECTS_H
 
 
-  FT_LOCAL
-  FT_Error  SFNT_Init_Face( FT_Stream      stream,
-                            TT_Face        face,
-                            FT_Int         face_index,
-                            FT_Int         num_params,
-                            FT_Parameter*  params );
-
-  FT_LOCAL
-  FT_Error  SFNT_Load_Face( FT_Stream      stream,
-                            TT_Face        face,
-                            FT_Int         face_index,
-                            FT_Int         num_params,
-                            FT_Parameter*  params );
-
-  FT_LOCAL
-  void  SFNT_Done_Face( TT_Face  face );
+FT_BEGIN_HEADER
 
 
-#ifdef __cplusplus
-  }
-#endif
+  FT_LOCAL FT_Error
+  SFNT_Init_Face( FT_Stream      stream,
+                  TT_Face        face,
+                  FT_Int         face_index,
+                  FT_Int         num_params,
+                  FT_Parameter*  params );
+
+  FT_LOCAL FT_Error
+  SFNT_Load_Face( FT_Stream      stream,
+                  TT_Face        face,
+                  FT_Int         face_index,
+                  FT_Int         num_params,
+                  FT_Parameter*  params );
+
+  FT_LOCAL void
+  SFNT_Done_Face( TT_Face  face );
 
 
-#endif /* SFDRIVER_H */
+FT_END_HEADER
+
+#endif /* __SFDRIVER_H__ */
 
 
 /* END */

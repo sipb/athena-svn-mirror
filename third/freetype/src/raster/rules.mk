@@ -20,7 +20,7 @@ RAS1_DIR_ := $(RAS1_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-RAS1_COMPILE := $(FT_COMPILE)
+RAS1_COMPILE := $(FT_COMPILE) $I$(RAS1_DIR)
 
 
 # raster1 driver sources (i.e., C files)
@@ -31,7 +31,8 @@ RAS1_DRV_SRC := $(RAS1_DIR_)ftraster.c \
 
 # raster1 driver headers
 #
-RAS1_DRV_H := $(RAS1_DRV_SRC:%.c=%.h)
+RAS1_DRV_H := $(RAS1_DRV_SRC:%.c=%.h) \
+              $(RAS1_DIR_)rasterrs.h
 
 
 # raster1 driver object(s)

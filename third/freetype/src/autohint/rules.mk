@@ -24,7 +24,7 @@ AUTO_DIR_ := $(AUTO_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-AUTO_COMPILE := $(FT_COMPILE)
+AUTO_COMPILE := $(FT_COMPILE) $I$(AUTO_DIR)
 
 
 # AUTO driver sources (i.e., C files)
@@ -39,7 +39,8 @@ AUTO_DRV_SRC := $(AUTO_DIR_)ahangles.c  \
 #
 AUTO_DRV_H := $(AUTO_DRV_SRC:%c=%h)  \
               $(AUTO_DIR_)ahloader.h \
-              $(AUTO_DIR_)ahtypes.h
+              $(AUTO_DIR_)ahtypes.h \
+              $(AUTO_DIR_)aherrors.h
 
 
 # AUTO driver object(s)

@@ -20,7 +20,7 @@ SMOOTH_DIR_ := $(SMOOTH_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-SMOOTH_COMPILE := $(FT_COMPILE)
+SMOOTH_COMPILE := $(FT_COMPILE) $I$(SMOOTH_DIR)
 
 
 # smooth driver sources (i.e., C files)
@@ -31,7 +31,8 @@ SMOOTH_DRV_SRC := $(SMOOTH_DIR_)ftgrays.c  \
 
 # smooth driver headers
 #
-SMOOTH_DRV_H := $(SMOOTH_DRV_SRC:%c=%h)
+SMOOTH_DRV_H := $(SMOOTH_DRV_SRC:%c=%h)  \
+                $(SMOOTH_DIR_)ftsmerrs.h
 
 
 # smooth driver object(s)

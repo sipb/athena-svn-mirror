@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Type 1 font loader (body).                                           */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -61,24 +61,15 @@
   /*************************************************************************/
 
 
-#include <freetype/internal/ftdebug.h>
-#include <freetype/config/ftconfig.h>
-#include <freetype/ftmm.h>
-
-#include <freetype/internal/t1types.h>
-#include <freetype/internal/t1errors.h>
-
-
-#ifdef FT_FLAT_COMPILE
+#include <ft2build.h>
+#include FT_INTERNAL_DEBUG_H
+#include FT_CONFIG_CONFIG_H
+#include FT_MULTIPLE_MASTERS_H
+#include FT_INTERNAL_TYPE1_TYPES_H
 
 #include "t1load.h"
 
-#else
-
-#include <type1/t1load.h>
-
-#endif
-
+#include "t1errors.h"
 
 #include <string.h>     /* for strncmp(), strcmp() */
 #include <ctype.h>      /* for isalnum()           */
@@ -105,10 +96,10 @@
   /*************************************************************************/
   /*************************************************************************/
 
-  static
-  FT_Error  t1_allocate_blend( T1_Face  face,
-                               FT_UInt  num_designs,
-                               FT_UInt  num_axis )
+  static FT_Error
+  t1_allocate_blend( T1_Face  face,
+                     FT_UInt  num_designs,
+                     FT_UInt  num_axis )
   {
     T1_Blend*  blend;
     FT_Memory  memory = face->root.memory;
@@ -189,9 +180,9 @@
   }
 
 
-  FT_LOCAL_DEF
-  FT_Error  T1_Get_Multi_Master( T1_Face           face,
-                                 FT_Multi_Master*  master )
+  FT_LOCAL_DEF FT_Error
+  T1_Get_Multi_Master( T1_Face           face,
+                       FT_Multi_Master*  master )
   {
     T1_Blend*  blend = face->blend;
     FT_UInt    n;
@@ -221,10 +212,10 @@
   }
 
 
-  FT_LOCAL_DEF
-  FT_Error  T1_Set_MM_Blend( T1_Face    face,
-                             FT_UInt    num_coords,
-                             FT_Fixed*  coords )
+  FT_LOCAL_DEF FT_Error
+  T1_Set_MM_Blend( T1_Face    face,
+                   FT_UInt    num_coords,
+                   FT_Fixed*  coords )
   {
     T1_Blend*  blend = face->blend;
     FT_Error   error;
@@ -236,7 +227,7 @@
     if ( blend && blend->num_axis == num_coords )
     {
       /* recompute the weight vector from the blend coordinates */
-      error = FT_Err_Ok;
+      error = T1_Err_Ok;
 
       for ( n = 0; n < blend->num_designs; n++ )
       {
@@ -261,16 +252,16 @@
         blend->weight_vector[n] = result;
       }
 
-      error = FT_Err_Ok;
+      error = T1_Err_Ok;
     }
     return error;
   }
 
 
-  FT_LOCAL_DEF
-  FT_Error  T1_Set_MM_Design( T1_Face   face,
-                              FT_UInt   num_coords,
-                              FT_Long*  coords )
+  FT_LOCAL_DEF FT_Error
+  T1_Set_MM_Design( T1_Face   face,
+                    FT_UInt   num_coords,
+                    FT_Long*  coords )
   {
     T1_Blend*  blend = face->blend;
     FT_Error   error;
@@ -337,8 +328,8 @@
   }
 
 
-  FT_LOCAL_DEF
-  void  T1_Done_Blend( T1_Face  face )
+  FT_LOCAL_DEF void
+  T1_Done_Blend( T1_Face  face )
   {
     FT_Memory  memory = face->root.memory;
     T1_Blend*  blend  = face->blend;
@@ -389,9 +380,9 @@
   }
 
 
-  static
-  void  parse_blend_axis_types( T1_Face     face,
-                                T1_Loader*  loader )
+  static void
+  parse_blend_axis_types( T1_Face     face,
+                          T1_Loader*  loader )
   {
     T1_Token   axis_tokens[ T1_MAX_MM_AXIS ];
     FT_Int     n, num_axis;
@@ -430,7 +421,7 @@
       if (token->start[0] == '/')
         token->start++;
 
-      len = token->limit - token->start;
+      len = (FT_Int)( token->limit - token->start );
       if ( len <= 0 )
       {
         error = T1_Err_Invalid_File_Format;
@@ -450,9 +441,9 @@
   }
 
 
-  static
-  void  parse_blend_design_positions( T1_Face     face,
-                                      T1_Loader*  loader )
+  static void
+  parse_blend_design_positions( T1_Face     face,
+                                T1_Loader*  loader )
   {
     T1_Token       design_tokens[ T1_MAX_MM_DESIGNS ];
     FT_Int         num_designs;
@@ -532,9 +523,9 @@
   }
 
 
-  static
-  void  parse_blend_design_map( T1_Face     face,
-                                T1_Loader*  loader )
+  static void
+  parse_blend_design_map( T1_Face     face,
+                          T1_Loader*  loader )
   {
     FT_Error       error  = 0;
     T1_ParserRec*  parser = &loader->parser;
@@ -613,9 +604,9 @@
   }
 
 
-  static
-  void  parse_weight_vector( T1_Face     face,
-                             T1_Loader*  loader )
+  static void
+  parse_weight_vector( T1_Face     face,
+                       T1_Loader*  loader )
   {
     FT_Error       error  = 0;
     T1_ParserRec*  parser = &loader->parser;
@@ -665,9 +656,9 @@
   /* with a lot of Postscript garbage behind it (that's completely out */
   /* of spec!); we detect it and terminate the parsing                 */
   /*                                                                   */
-  static
-  void  parse_shared_dict( T1_Face     face,
-                           T1_Loader*  loader )
+  static void
+  parse_shared_dict( T1_Face     face,
+                     T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
 
@@ -698,10 +689,10 @@
   /*************************************************************************/
 
 
-  static
-  FT_Error  t1_load_keyword( T1_Face     face,
-                             T1_Loader*  loader,
-                             T1_Field*   field )
+  static FT_Error
+  t1_load_keyword( T1_Face     face,
+                   T1_Loader*  loader,
+                   T1_Field*   field )
   {
     FT_Error   error;
     void*      dummy_object;
@@ -765,25 +756,27 @@
   }
 
 
-  static
-  int  is_space( FT_Byte  c )
+  static int
+  is_space( FT_Byte  c )
   {
     return ( c == ' ' || c == '\t' || c == '\r' || c == '\n' );
   }
 
 
-  static
-  int  is_alpha( FT_Byte  c )
+  static int
+  is_alpha( FT_Byte  c )
   {
-    return ( isalnum( c ) || c == '.' || c == '_' );
+    /* Note: we must accept "+" as a valid character, as it is used in */
+    /*       embedded type1 fonts in PDF documents.                    */
+    /*                                                                 */
+    return ( isalnum( c ) || c == '.' || c == '_' || c == '-' || c == '+' );
   }
 
 
-
-  static
-  int  read_binary_data( T1_ParserRec*  parser,
-                         FT_Int*        size,
-                         FT_Byte**      base )
+  static int
+  read_binary_data( T1_ParserRec*  parser,
+                    FT_Int*        size,
+                    FT_Byte**      base )
   {
     FT_Byte*  cur;
     FT_Byte*  limit = parser->root.limit;
@@ -822,9 +815,9 @@
   /* the `/Encoding', `/Subrs', and `/CharStrings'  */
   /* dictionaries                                   */
 
-  static
-  void  parse_font_name( T1_Face     face,
-                         T1_Loader*  loader )
+  static void
+  parse_font_name( T1_Face     face,
+                   T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
     FT_Error       error;
@@ -834,6 +827,10 @@
     FT_Byte*       cur2;
     FT_Byte*       limit;
 
+
+    if ( face->type1.font_name )
+      /*  with synthetic fonts, it's possible we get here twice  */
+      return;
 
     T1_Skip_Spaces( parser );
 
@@ -848,7 +845,7 @@
     while ( cur2 < limit && is_alpha( *cur2 ) )
       cur2++;
 
-    len = cur2 - cur;
+    len = (FT_Int)( cur2 - cur );
     if ( len > 0 )
     {
       if ( ALLOC( face->type1.font_name, len + 1 ) )
@@ -864,31 +861,33 @@
   }
 
 
-  static
-  void  parse_font_bbox( T1_Face     face,
-                         T1_Loader*  loader )
+  static void
+  parse_font_bbox( T1_Face     face,
+                   T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
-    FT_Short       temp[4];
+    FT_Fixed       temp[4];
     FT_BBox*       bbox   = &face->type1.font_bbox;
 
 
-    (void)T1_ToCoordArray( parser, 4, temp );
-    bbox->xMin = temp[0];
-    bbox->yMin = temp[1];
-    bbox->xMax = temp[2];
-    bbox->yMax = temp[3];
+    (void)T1_ToFixedArray( parser, 4, temp, 0 );
+    bbox->xMin = FT_RoundFix( temp[0] );
+    bbox->yMin = FT_RoundFix( temp[1] );
+    bbox->xMax = FT_RoundFix( temp[2] );
+    bbox->yMax = FT_RoundFix( temp[3] );
   }
 
 
-  static
-  void  parse_font_matrix( T1_Face     face,
-                           T1_Loader*  loader )
+  static void
+  parse_font_matrix( T1_Face     face,
+                     T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
     FT_Matrix*     matrix = &face->type1.font_matrix;
     FT_Vector*     offset = &face->type1.font_offset;
+    FT_Face        root   = (FT_Face)&face->root;
     FT_Fixed       temp[6];
+    FT_Fixed       temp_scale;
 
 
     if ( matrix->xx || matrix->yx )
@@ -897,14 +896,23 @@
 
     (void)T1_ToFixedArray( parser, 6, temp, 3 );
 
-    /* we need to scale the values by 1.0/temp[3] */
-    if ( temp[3] != 0x10000L )
+    temp_scale = ABS( temp[3] );
+
+    /* Set Units per EM based on FontMatrix values.  We set the value to */
+    /* 1000 / temp_scale, because temp_scale was already multiplied by   */
+    /* 1000 (in t1_tofixed, from psobjs.c).                              */
+
+    root->units_per_EM = (FT_UShort)( FT_DivFix( 1000 * 0x10000L,
+                                                 temp_scale ) >> 16 );
+
+    /* we need to scale the values by 1.0/temp_scale */
+    if ( temp_scale != 0x10000L )
     {
-      temp[0] = FT_DivFix( temp[0], temp[3] );
-      temp[1] = FT_DivFix( temp[1], temp[3] );
-      temp[2] = FT_DivFix( temp[2], temp[3] );
-      temp[4] = FT_DivFix( temp[4], temp[3] );
-      temp[5] = FT_DivFix( temp[5], temp[3] );
+      temp[0] = FT_DivFix( temp[0], temp_scale );
+      temp[1] = FT_DivFix( temp[1], temp_scale );
+      temp[2] = FT_DivFix( temp[2], temp_scale );
+      temp[4] = FT_DivFix( temp[4], temp_scale );
+      temp[5] = FT_DivFix( temp[5], temp_scale );
       temp[3] = 0x10000L;
     }
 
@@ -919,9 +927,9 @@
   }
 
 
-  static
-  void  parse_encoding( T1_Face     face,
-                        T1_Loader*  loader )
+  static void
+  parse_encoding( T1_Face     face,
+                  T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
     FT_Byte*       cur    = parser->root.cursor;
@@ -953,13 +961,17 @@
       FT_Error      error;
 
 
+      if ( encode->char_index )
+        /*  with synthetic fonts, it's possible we get here twice  */
+        return;
+
       /* read the number of entries in the encoding, should be 256 */
       count = T1_ToInt( parser );
       if ( parser->root.error )
         return;
 
       /* we use a T1_Table to store our charnames */
-      encode->num_chars = count;
+      loader->num_chars = encode->num_chars = count;
       if ( ALLOC_ARRAY( encode->char_index, count, FT_Short   ) ||
            ALLOC_ARRAY( encode->char_name,  count, FT_String* ) ||
            ( error = psaux->ps_table_funcs->init(
@@ -1040,10 +1052,10 @@
             while ( cur2 < limit && is_alpha( *cur2 ) )
               cur2++;
 
-            len = cur2 - cur - 1;
+            len = (FT_Int)( cur2 - cur - 1 );
 
             parser->root.error = T1_Add_Table( char_table, charcode,
-                                          cur + 1, len + 1 );
+                                               cur + 1, len + 1 );
             char_table->elements[charcode][len] = '\0';
             if ( parser->root.error )
               return;
@@ -1079,9 +1091,9 @@
   }
 
 
-  static
-  void  parse_subrs( T1_Face     face,
-                     T1_Loader*  loader )
+  static void
+  parse_subrs( T1_Face     face,
+               T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
     PS_Table*      table  = &loader->subrs;
@@ -1091,6 +1103,10 @@
 
     PSAux_Interface*  psaux = (PSAux_Interface*)face->psaux;
 
+
+    if ( loader->num_subrs )
+      /*  with synthetic fonts, it's possible we get here twice  */
+      return;
 
     loader->num_subrs = T1_ToInt( parser );
     if ( parser->root.error )
@@ -1148,12 +1164,21 @@
       /*                                                         */
       if ( face->type1.private_dict.lenIV >= 0 )
       {
-        psaux->t1_decrypt( base, size, 4330 );
-        size -= face->type1.private_dict.lenIV;
-        base += face->type1.private_dict.lenIV;
-      }
+        FT_Byte*  temp;
 
-      error = T1_Add_Table( table, index, base, size );
+
+        /* t1_decrypt() shouldn't write to base -- make temporary copy */
+        if ( ALLOC( temp, size ) )
+          goto Fail;
+        MEM_Copy( temp, base, size );
+        psaux->t1_decrypt( temp, size, 4330 );
+        size -= face->type1.private_dict.lenIV;
+        error = T1_Add_Table( table, index,
+                              temp + face->type1.private_dict.lenIV, size );
+        FREE( temp );
+      }
+      else
+        error = T1_Add_Table( table, index, base, size );
       if ( error )
         goto Fail;
     }
@@ -1164,13 +1189,14 @@
   }
 
 
-  static
-  void  parse_charstrings( T1_Face     face,
-                           T1_Loader*  loader )
+  static void
+  parse_charstrings( T1_Face     face,
+                     T1_Loader*  loader )
   {
     T1_ParserRec*  parser     = &loader->parser;
     PS_Table*      code_table = &loader->charstrings;
     PS_Table*      name_table = &loader->glyph_names;
+    PS_Table*      swap_table = &loader->swap_table;
     FT_Memory      memory     = parser->root.memory;
     FT_Error       error;
 
@@ -1191,7 +1217,9 @@
     if ( parser->root.error )
       return;
 
-    /* initialize tables, adding space for `swap' at table end   */
+    /* initialize tables (leaving room for addition of .notdef, */
+    /* if necessary).                                           */
+
     error = psaux->ps_table_funcs->init( code_table,
                                          loader->num_glyphs + 1,
                                          memory );
@@ -1203,6 +1231,15 @@
                                          memory );
     if ( error )
       goto Fail;
+
+    /* Initialize table for swapping index notdef_index and */
+    /* index 0 names and codes (if necessary).              */
+
+    error = psaux->ps_table_funcs->init( swap_table, 4, memory );
+
+    if ( error )
+      goto Fail;
+
 
     n = 0;
     for (;;)
@@ -1245,7 +1282,7 @@
 
         while ( cur2 < limit && is_alpha( *cur2 ) )
           cur2++;
-        len = cur2 - cur - 1;
+        len = (FT_Int)( cur2 - cur - 1 );
 
         error = T1_Add_Table( name_table, n, cur + 1, len + 1 );
         if ( error )
@@ -1268,12 +1305,21 @@
 
         if ( face->type1.private_dict.lenIV >= 0 )
         {
-          psaux->t1_decrypt( base, size, 4330 );
-          size -= face->type1.private_dict.lenIV;
-          base += face->type1.private_dict.lenIV;
-        }
+          FT_Byte*  temp;
 
-        error = T1_Add_Table( code_table, n, base, size );
+
+          /* t1_decrypt() shouldn't write to base -- make temporary copy */
+          if ( ALLOC( temp, size ) )
+            goto Fail;
+          MEM_Copy( temp, base, size );
+          psaux->t1_decrypt( temp, size, 4330 );
+          size -= face->type1.private_dict.lenIV;
+          error = T1_Add_Table( code_table, n,
+                                temp + face->type1.private_dict.lenIV, size );
+          FREE( temp );
+        }
+        else
+          error = T1_Add_Table( code_table, n, base, size );
         if ( error )
           goto Fail;
 
@@ -1290,44 +1336,61 @@
                  (const char*)name_table->elements[0] ) &&
          notdef_found                                      )
     {
+      /* Swap glyph in index 0 with /.notdef glyph.  First, add index 0    */
+      /* name and code entries to swap_table. Then place notdef_index name */
+      /* and code entries into swap_table.  Then swap name and code        */
+      /* entries at indices notdef_index and 0 using values stored in      */
+      /* swap_table.                                                       */
 
-      /* Swap glyph in index 0 with /.notdef glyph.  First, add index 0     */
-      /* name/code to end of table. Then place notdef_index name/code into  */
-      /* index 0.  Then take end of table name/code and place it into index */
-      /* notdef_index.                                                      */
-
-      error = T1_Add_Table( name_table, n,
+      /* Index 0 name */
+      error = T1_Add_Table( swap_table, 0,
                             name_table->elements[0],
                             name_table->lengths [0] );
       if ( error )
         goto Fail;
-      error = T1_Add_Table( code_table, n,
+
+      /* Index 0 code */
+      error = T1_Add_Table( swap_table, 1,
                             code_table->elements[0],
                             code_table->lengths [0] );
       if ( error )
         goto Fail;
 
-      error = T1_Add_Table( name_table, 0,
+      /* Index notdef_index name */
+      error = T1_Add_Table( swap_table, 2,
                             name_table->elements[notdef_index],
                             name_table->lengths [notdef_index] );
       if ( error )
         goto Fail;
 
-      error = T1_Add_Table( code_table, 0,
+      /* Index notdef_index code */
+      error = T1_Add_Table( swap_table, 3,
                             code_table->elements[notdef_index],
                             code_table->lengths [notdef_index] );
       if ( error )
         goto Fail;
 
       error = T1_Add_Table( name_table, notdef_index,
-                            name_table->elements[n],
-                            name_table->lengths [n] );
+                            swap_table->elements[0],
+                            swap_table->lengths [0] );
       if ( error )
         goto Fail;
 
       error = T1_Add_Table( code_table, notdef_index,
-                            code_table->elements[n],
-                            code_table->lengths [n] );
+                            swap_table->elements[1],
+                            swap_table->lengths [1] );
+      if ( error )
+        goto Fail;
+
+      error = T1_Add_Table( name_table, 0,
+                            swap_table->elements[2],
+                            swap_table->lengths [2] );
+      if ( error )
+        goto Fail;
+
+      error = T1_Add_Table( code_table, 0,
+                            swap_table->elements[3],
+                            swap_table->lengths [3] );
       if ( error )
         goto Fail;
 
@@ -1337,7 +1400,7 @@
 
       /* notdef_index is already 0, or /.notdef is undefined in  */
       /* charstrings dictionary. Worry about /.notdef undefined. */
-      /* we take index 0 and add it to the end of the table(s)   */
+      /* We take index 0 and add it to the end of the table(s)   */
       /* and add our own /.notdef glyph to index 0.              */
 
       /* 0 333 hsbw endchar                                      */
@@ -1345,13 +1408,13 @@
       char*    notdef_name    = (char *)".notdef";
 
 
-      error = T1_Add_Table( name_table, n,
+      error = T1_Add_Table( swap_table, 0,
                             name_table->elements[0],
                             name_table->lengths [0] );
       if ( error )
         goto Fail;
 
-      error = T1_Add_Table( code_table, n,
+      error = T1_Add_Table( swap_table, 1,
                             code_table->elements[0],
                             code_table->lengths [0] );
       if ( error )
@@ -1366,9 +1429,20 @@
       if ( error )
         goto Fail;
 
+      error = T1_Add_Table( name_table, n,
+                            swap_table->elements[0],
+                            swap_table->lengths [0] );
+      if ( error )
+        goto Fail;
+
+      error = T1_Add_Table( code_table, n,
+                            swap_table->elements[1],
+                            swap_table->lengths [1] );
+      if ( error )
+        goto Fail;
+
       /* we added a glyph. */
       loader->num_glyphs = n + 1;
-
     }
 
     return;
@@ -1382,15 +1456,7 @@
   const T1_Field  t1_keywords[] =
   {
 
-#ifdef FT_FLAT_COMPILE
-
 #include "t1tokens.h"
-
-#else
-
-#include <type1/t1tokens.h>
-
-#endif
 
     /* now add the special functions... */
     T1_FIELD_CALLBACK( "FontName", parse_font_name )
@@ -1412,11 +1478,11 @@
   };
 
 
-  static
-  FT_Error  parse_dict( T1_Face     face,
-                        T1_Loader*  loader,
-                        FT_Byte*    base,
-                        FT_Long     size )
+  static FT_Error
+  parse_dict( T1_Face     face,
+              T1_Loader*  loader,
+              FT_Byte*    base,
+              FT_Long     size )
   {
     T1_ParserRec*  parser = &loader->parser;
 
@@ -1476,15 +1542,9 @@
           while ( cur2 < limit && is_alpha( *cur2 ) )
             cur2++;
 
-          len  = cur2 - cur;
+          len  = (FT_Int)( cur2 - cur );
           if ( len > 0 && len < 22 )
           {
-            if ( !loader->fontdata )
-            {
-              if ( strncmp( (char*)cur, "FontInfo", 8 ) == 0 )
-                loader->fontdata = 1;
-            }
-            else
             {
               /* now, compare the immediate name to the keyword table */
               T1_Field*  keyword = (T1_Field*)t1_keywords;
@@ -1535,9 +1595,9 @@
   }
 
 
-  static
-  void  t1_init_loader( T1_Loader*  loader,
-                        T1_Face     face )
+  static void
+  t1_init_loader( T1_Loader*  loader,
+                  T1_Face     face )
   {
     FT_UNUSED( face );
 
@@ -1550,12 +1610,13 @@
     loader->charstrings.init    = 0;
     loader->glyph_names.init    = 0;
     loader->subrs.init          = 0;
+    loader->swap_table.init     = 0;
     loader->fontdata            = 0;
   }
 
 
-  static
-  void  t1_done_loader( T1_Loader*  loader )
+  static void
+  t1_done_loader( T1_Loader*  loader )
   {
     T1_ParserRec*  parser = &loader->parser;
 
@@ -1564,6 +1625,7 @@
     T1_Release_Table( &loader->encoding_table );
     T1_Release_Table( &loader->charstrings );
     T1_Release_Table( &loader->glyph_names );
+    T1_Release_Table( &loader->swap_table );
     T1_Release_Table( &loader->subrs );
 
     /* finalize parser */
@@ -1571,8 +1633,8 @@
   }
 
 
-  FT_LOCAL_DEF
-  FT_Error  T1_Open_Face( T1_Face  face )
+  FT_LOCAL_DEF FT_Error
+  T1_Open_Face( T1_Face  face )
   {
     T1_Loader      loader;
     T1_ParserRec*  parser;
@@ -1612,10 +1674,13 @@
     /* to the Type1 data                                            */
     type1->num_glyphs = loader.num_glyphs;
 
-    if ( !loader.subrs.init )
+    if ( loader.subrs.init )
     {
-      FT_ERROR(( "T1_Open_Face: no subrs array in face!\n" ));
-      error = T1_Err_Invalid_File_Format;
+      loader.subrs.init  = 0;
+      type1->num_subrs   = loader.num_subrs;
+      type1->subrs_block = loader.subrs.block;
+      type1->subrs       = loader.subrs.elements;
+      type1->subrs_len   = loader.subrs.lengths;
     }
 
     if ( !loader.charstrings.init )
@@ -1623,12 +1688,6 @@
       FT_ERROR(( "T1_Open_Face: no charstrings array in face!\n" ));
       error = T1_Err_Invalid_File_Format;
     }
-
-    loader.subrs.init  = 0;
-    type1->num_subrs   = loader.num_subrs;
-    type1->subrs_block = loader.subrs.block;
-    type1->subrs       = loader.subrs.elements;
-    type1->subrs_len   = loader.subrs.lengths;
 
     loader.charstrings.init  = 0;
     type1->charstrings_block = loader.charstrings.block;
@@ -1673,7 +1732,7 @@
             if ( strcmp( (const char*)char_name,
                          (const char*)glyph_name ) == 0 )
             {
-              type1->encoding.char_index[charcode] = index;
+              type1->encoding.char_index[charcode] = (FT_UShort)index;
               type1->encoding.char_name [charcode] = (char*)glyph_name;
 
               /* Change min/max encoded char only if glyph name is */
@@ -1691,7 +1750,7 @@
       type1->encoding.code_first = min_char;
       type1->encoding.code_last  = max_char;
       type1->encoding.num_chars  = loader.num_chars;
-   }
+    }
 
   Exit:
     t1_done_loader( &loader );
