@@ -22,9 +22,11 @@ bonobo_audio_ulaw_LDADD = 			\
 	$(BONOBOX_TEST_LIBS)			\
 	$(INTLLIBS)
 
-
 oafdir = $(datadir)/oaf
-oaf_DATA = Bonobo_Sample_Audio.oafinfo
+oaf_in_files = Bonobo_Sample_Audio.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-EXTRA_DIST = $(oaf_DATA)
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 

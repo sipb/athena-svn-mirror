@@ -7,19 +7,19 @@ INCLUDES =                                              \
 	$(BONOBO_TEST_CFLAGS)
 
 OAF_FILES =					\
-	Bonobo_Moniker_std.oafinfo		\
-	Bonobo_Moniker_gzip.oafinfo		\
-	Bonobo_Moniker_http.oafinfo		
+	Bonobo_Moniker_gzip.oaf.in		\
+	Bonobo_Moniker_http.oaf.in
 
-Bonobo_Moniker_std.oafinfo : $(srcdir)/Bonobo_Moniker_std.oafinfo.in 
+Bonobo_Moniker_std.oaf.in : $(srcdir)/Bonobo_Moniker_std.oaf.in.in
 	sed -e "s|\@MONIKER_LIBDIR\@|$(monikerdir)|" \
-	 $(srcdir)/Bonobo_Moniker_std.oafinfo.in > Bonobo_Moniker_std.oafinfo 
+	 $(srcdir)/Bonobo_Moniker_std.oaf.in.in > Bonobo_Moniker_std.oaf.in
 
-clean-local:
-	-rm -f Bonobo_Moniker_std.oafinfo
+CLEANFILES+=Bonobo_Moniker_std.oaf Bonobo_Moniker_std.oaf.in
 
 oafdir = $(datadir)/oaf
-oaf_DATA = $(OAF_FILES)
+oaf_DATA = $(OAF_FILES:.oaf.in=.oaf) Bonobo_Moniker_std.oaf
+
+@XML_I18N_MERGE_OAF_RULE@
 
 monikerdir = $(libdir)/bonobo/monikers
 moniker_LTLIBRARIES = libmoniker_std.la
@@ -29,7 +29,7 @@ bin_PROGRAMS = 				\
 	bonobo-moniker-http		\
 	moniker-test
 
-# bonobo-moniker-untar.oafinfo
+# bonobo-moniker-untar.oaf.in
 
 # bonobo-moniker-untar
 
@@ -48,6 +48,8 @@ libmoniker_std_la_SOURCES =			\
 	bonobo-moniker-new.c			\
 	bonobo-moniker-oaf.c			\
 	bonobo-moniker-cache.c			\
+	bonobo-stream-cache.h			\
+	bonobo-stream-cache.c			\
 	bonobo-moniker-query.c			\
 	bonobo-moniker-query.h			\
 	bonobo-moniker-std.h            	\
@@ -86,5 +88,5 @@ moniker_test_SOURCES =			\
 moniker_test_LDADD =			\
 	$(moniker_ldadd)
 
-EXTRA_DIST = $(OAF_FILES)                             	\
-	     Bonobo_Moniker_std.oafinfo.in     		
+EXTRA_DIST = $(OAF_FILES)		\
+	Bonobo_Moniker_std.oaf.in.in

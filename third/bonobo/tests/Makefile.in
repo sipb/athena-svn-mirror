@@ -66,6 +66,8 @@ BONOBOX_TEST_CFLAGS = @BONOBOX_TEST_CFLAGS@
 BONOBOX_TEST_LIBS = @BONOBOX_TEST_LIBS@
 BONOBO_AGE = @BONOBO_AGE@
 BONOBO_CURRENT = @BONOBO_CURRENT@
+BONOBO_IDL_CFLAGS = @BONOBO_IDL_CFLAGS@
+BONOBO_IDL_LIBS = @BONOBO_IDL_LIBS@
 BONOBO_INCLUDEDIR = @BONOBO_INCLUDEDIR@
 BONOBO_LIBDIR = @BONOBO_LIBDIR@
 BONOBO_LIBS = @BONOBO_LIBS@
@@ -126,6 +128,8 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PROF_CFLAGS = @PROF_CFLAGS@
+PROF_LDFLAGS = @PROF_LDFLAGS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -133,6 +137,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CFLAGS = @VFS_CFLAGS@
 VFS_LIBS = @VFS_LIBS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -141,7 +149,7 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-noinst_PROGRAMS =  	test-any			test-container 			test-moniker			test-properties-server		test-properties-client		test-storage			selector_test
+noinst_PROGRAMS =  	test-any			test-ui				test-container 			test-moniker			test-properties-server		test-properties-client		test-storage			test-toolbar			selector_test
 
 
 bonobo_libs =  	$(top_builddir)/bonobo/libbonobo.la			$(BONOBOX_TEST_LIBS)					$(INTLLIBS)
@@ -169,6 +177,14 @@ test_storage_LDADD = $(bonobo_libs)
 test_any_SOURCES = test-any.c
 
 test_any_LDADD =  	$(bonobo_libs)						$(top_builddir)/bonobo/libbonobox.la
+
+
+test_ui_SOURCES = test-ui.c
+test_ui_LDADD =  	$(bonobo_libs)						$(top_builddir)/bonobo/libbonobox.la			$(top_builddir)/bonobo/libbonobo-print.la
+
+
+test_toolbar_SOURCES = test-toolbar.c
+test_toolbar_LDADD =  	$(bonobo_libs)						$(top_builddir)/bonobo/libbonobox.la			$(top_builddir)/bonobo/libbonobo-print.la
 
 
 test_moniker_SOURCES = test-moniker.c
@@ -204,6 +220,11 @@ test_any_OBJECTS =  test-any.o
 test_any_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la
 test_any_LDFLAGS = 
+test_ui_OBJECTS =  test-ui.o
+test_ui_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
+$(top_builddir)/bonobo/libbonobox.la \
+$(top_builddir)/bonobo/libbonobo-print.la
+test_ui_LDFLAGS = 
 test_container_OBJECTS =  test-container.o
 test_container_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la
@@ -223,6 +244,11 @@ test_properties_client_LDFLAGS =
 test_storage_OBJECTS =  test-storage.o
 test_storage_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la
 test_storage_LDFLAGS = 
+test_toolbar_OBJECTS =  test-toolbar.o
+test_toolbar_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
+$(top_builddir)/bonobo/libbonobox.la \
+$(top_builddir)/bonobo/libbonobo-print.la
+test_toolbar_LDFLAGS = 
 selector_test_OBJECTS =  selector_test.o
 selector_test_DEPENDENCIES =  $(top_builddir)/bonobo/libbonobo.la \
 $(top_builddir)/bonobo/libbonobox.la
@@ -238,8 +264,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(test_any_SOURCES) $(test_container_SOURCES) $(test_moniker_SOURCES) $(test_properties_server_SOURCES) $(test_properties_client_SOURCES) $(test_storage_SOURCES) $(selector_test_SOURCES)
-OBJECTS = $(test_any_OBJECTS) $(test_container_OBJECTS) $(test_moniker_OBJECTS) $(test_properties_server_OBJECTS) $(test_properties_client_OBJECTS) $(test_storage_OBJECTS) $(selector_test_OBJECTS)
+SOURCES = $(test_any_SOURCES) $(test_ui_SOURCES) $(test_container_SOURCES) $(test_moniker_SOURCES) $(test_properties_server_SOURCES) $(test_properties_client_SOURCES) $(test_storage_SOURCES) $(test_toolbar_SOURCES) $(selector_test_SOURCES)
+OBJECTS = $(test_any_OBJECTS) $(test_ui_OBJECTS) $(test_container_OBJECTS) $(test_moniker_OBJECTS) $(test_properties_server_OBJECTS) $(test_properties_client_OBJECTS) $(test_storage_OBJECTS) $(test_toolbar_OBJECTS) $(selector_test_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -303,6 +329,10 @@ test-any: $(test_any_OBJECTS) $(test_any_DEPENDENCIES)
 	@rm -f test-any
 	$(LINK) $(test_any_LDFLAGS) $(test_any_OBJECTS) $(test_any_LDADD) $(LIBS)
 
+test-ui: $(test_ui_OBJECTS) $(test_ui_DEPENDENCIES)
+	@rm -f test-ui
+	$(LINK) $(test_ui_LDFLAGS) $(test_ui_OBJECTS) $(test_ui_LDADD) $(LIBS)
+
 test-container: $(test_container_OBJECTS) $(test_container_DEPENDENCIES)
 	@rm -f test-container
 	$(LINK) $(test_container_LDFLAGS) $(test_container_OBJECTS) $(test_container_LDADD) $(LIBS)
@@ -322,6 +352,10 @@ test-properties-client: $(test_properties_client_OBJECTS) $(test_properties_clie
 test-storage: $(test_storage_OBJECTS) $(test_storage_DEPENDENCIES)
 	@rm -f test-storage
 	$(LINK) $(test_storage_LDFLAGS) $(test_storage_OBJECTS) $(test_storage_LDADD) $(LIBS)
+
+test-toolbar: $(test_toolbar_OBJECTS) $(test_toolbar_DEPENDENCIES)
+	@rm -f test-toolbar
+	$(LINK) $(test_toolbar_LDFLAGS) $(test_toolbar_OBJECTS) $(test_toolbar_LDADD) $(LIBS)
 
 selector_test: $(selector_test_OBJECTS) $(selector_test_DEPENDENCIES)
 	@rm -f selector_test
@@ -376,9 +410,9 @@ selector_test.o: selector_test.c ../config.h ../bonobo/bonobo-object.h \
 	../bonobo/bonobo-selector-widget.h
 test-any.o: test-any.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -387,8 +421,9 @@ test-any.o: test-any.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -403,42 +438,11 @@ test-any.o: test-any.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-storage.h ../bonobo/bonobo-selector.h \
 	../bonobo/bonobo-selector-widget.h ../bonobo/bonobo-widget.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
-test-container-autoload.o: test-container-autoload.c ../config.h \
-	../bonobo/bonobo.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
-	../bonobo/bonobo-object-client.h \
-	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
-	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
-	../bonobo/bonobo-control-frame.h ../bonobo/bonobo-wrapper.h \
-	../bonobo/bonobo-property-bag-client.h \
-	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
-	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
-	../bonobo/bonobo-transient.h ../bonobo/bonobo-ui-container.h \
-	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-xml.h \
-	../bonobo/bonobo-ui-node.h ../bonobo/bonobo-property-bag-xml.h \
-	../bonobo/bonobo-property-listener.h \
-	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
-	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-zoomable.h ../bonobo/bonobo-zoomable-frame.h \
-	../bonobo/bonobo-view.h ../bonobo/bonobo-embeddable.h \
-	../bonobo/bonobo-canvas-component.h \
-	../bonobo/bonobo-generic-factory.h ../bonobo/bonobo-main.h \
-	../bonobo/bonobo-stream-client.h ../bonobo/bonobo-persist.h \
-	../bonobo/bonobo-persist-file.h \
-	../bonobo/bonobo-persist-stream.h ../bonobo/bonobo-ui-util.h \
-	../bonobo/bonobo-object-io.h ../bonobo/bonobo-progressive.h \
-	../bonobo/bonobo-storage.h ../bonobo/bonobo-selector.h \
-	../bonobo/bonobo-selector-widget.h ../bonobo/bonobo-widget.h \
-	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h \
-	../bonobo/bonobo-object-directory.h \
-	../storage-modules/bonobo-stream-fs.h
 test-container.o: test-container.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -447,8 +451,9 @@ test-container.o: test-container.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -465,9 +470,9 @@ test-container.o: test-container.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
 test-moniker.o: test-moniker.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -476,8 +481,9 @@ test-moniker.o: test-moniker.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -494,9 +500,9 @@ test-moniker.o: test-moniker.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
 test-properties-client.o: test-properties-client.c ../config.h \
 	../bonobo/bonobo.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -505,8 +511,9 @@ test-properties-client.o: test-properties-client.c ../config.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -523,9 +530,9 @@ test-properties-client.o: test-properties-client.c ../config.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
 test-properties-server.o: test-properties-server.c ../config.h \
 	../bonobo/bonobo.h ../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -534,8 +541,9 @@ test-properties-server.o: test-properties-server.c ../config.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -552,9 +560,9 @@ test-properties-server.o: test-properties-server.c ../config.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
 test-storage.o: test-storage.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
-	../bonobo/bonobo-moniker.h ../bonobo/bonobo-moniker-simple.h \
-	../bonobo/bonobo-context.h ../bonobo/bonobo-exception.h \
-	../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
 	../bonobo/bonobo-object-client.h \
 	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
 	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
@@ -563,8 +571,9 @@ test-storage.o: test-storage.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
 	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
 	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
-	../bonobo/bonobo-ui-container.h ../bonobo/bonobo-win.h \
-	../bonobo/bonobo-ui-xml.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
 	../bonobo/bonobo-property-bag-xml.h \
 	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
 	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
@@ -579,6 +588,41 @@ test-storage.o: test-storage.c ../config.h ../bonobo/bonobo.h \
 	../bonobo/bonobo-storage.h ../bonobo/bonobo-selector.h \
 	../bonobo/bonobo-selector-widget.h ../bonobo/bonobo-widget.h \
 	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h
+test-toolbar.o: test-toolbar.c ../bonobo/bonobo-ui-toolbar.h \
+	../bonobo/bonobo-ui-toolbar-item.h \
+	../bonobo/bonobo-ui-toolbar-button-item.h \
+	../bonobo/bonobo-ui-toolbar-separator-item.h
+test-ui.o: test-ui.c ../config.h ../bonobo/bonobo.h \
+	../bonobo/bonobo-object.h ../bonobo/Bonobo.h \
+	../bonobo/bonobo-moniker.h ../bonobo/bonobo-xobject.h \
+	../bonobo/bonobo-moniker-simple.h ../bonobo/bonobo-context.h \
+	../bonobo/bonobo-exception.h ../bonobo/bonobo-item-container.h \
+	../bonobo/bonobo-object-client.h \
+	../bonobo/bonobo-moniker-util.h ../bonobo/bonobo-async.h \
+	../bonobo/bonobo-client-site.h ../bonobo/bonobo-view-frame.h \
+	../bonobo/bonobo-control-frame.h ../bonobo/bonobo-wrapper.h \
+	../bonobo/bonobo-property-bag-client.h \
+	../bonobo/bonobo-stream.h ../bonobo/bonobo-property-bag.h \
+	../bonobo/bonobo-arg.h ../bonobo/bonobo-property.h \
+	../bonobo/bonobo-transient.h ../bonobo/bonobo-event-source.h \
+	../bonobo/bonobo-listener.h ../bonobo/bonobo-ui-container.h \
+	../bonobo/bonobo-win.h ../bonobo/bonobo-ui-engine.h \
+	../bonobo/bonobo-ui-sync.h ../bonobo/bonobo-ui-node.h \
+	../bonobo/bonobo-property-bag-xml.h \
+	../bonobo/bonobo-property-control.h ../bonobo/bonobo-control.h \
+	../bonobo/bonobo-ui-component.h ../bonobo/bonobo-zoomable.h \
+	../bonobo/bonobo-zoomable-frame.h ../bonobo/bonobo-view.h \
+	../bonobo/bonobo-embeddable.h \
+	../bonobo/bonobo-canvas-component.h \
+	../bonobo/bonobo-generic-factory.h ../bonobo/bonobo-main.h \
+	../bonobo/bonobo-stream-client.h ../bonobo/bonobo-persist.h \
+	../bonobo/bonobo-persist-file.h \
+	../bonobo/bonobo-persist-stream.h ../bonobo/bonobo-ui-util.h \
+	../bonobo/bonobo-object-io.h ../bonobo/bonobo-progressive.h \
+	../bonobo/bonobo-storage.h ../bonobo/bonobo-selector.h \
+	../bonobo/bonobo-selector-widget.h ../bonobo/bonobo-widget.h \
+	../bonobo/bonobo-print.h ../bonobo/bonobo-print-client.h \
+	../bonobo/bonobo-ui-xml.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

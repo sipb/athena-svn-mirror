@@ -2,7 +2,7 @@ PLUGIN_DIR=$(libdir)/bonobo/plugin
 
 INCLUDES =                                              \
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
-	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui"\"	\
+	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"	\
 	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
 	-DG_LOG_DOMAIN=\"Bonobo\"			\
 	-I. 						\
@@ -10,7 +10,10 @@ INCLUDES =                                              \
 	-I$(top_builddir)				\
 	$(GNOME_INCLUDEDIR)				\
 	$(OAF_CFLAGS)					\
-	$(GDK_PIXBUF_CFLAGS)
+	$(GDK_PIXBUF_CFLAGS)				\
+	$(PROF_CFLAGS)
+
+LDFLAGS += $(PROF_LDFLAGS)
 
 lib_LTLIBRARIES = libbonobo.la libbonobox.la libbonobo-print.la
 
@@ -22,35 +25,36 @@ CORBA_SOURCE =			\
 
 idls =							\
 	$(top_srcdir)/idl/Bonobo.idl			\
-	$(top_srcdir)/idl/bonobo-advise.idl		\
-	$(top_srcdir)/idl/bonobo-desktop.idl		\
-	$(top_srcdir)/idl/bonobo-canvas.idl 		\
-	$(top_srcdir)/idl/bonobo-client-site.idl	\
-	$(top_srcdir)/idl/bonobo-context.idl		\
-	$(top_srcdir)/idl/bonobo-control.idl		\
-	$(top_srcdir)/idl/bonobo-embeddable.idl		\
-	$(top_srcdir)/idl/bonobo-item-container.idl	\
-	$(top_srcdir)/idl/bonobo-listener.idl		\
-	$(top_srcdir)/idl/bonobo-moniker.idl		\
-	$(top_srcdir)/idl/bonobo-persist.idl		\
-	$(top_srcdir)/idl/bonobo-print.idl		\
-	$(top_srcdir)/idl/bonobo-progressive.idl	\
-	$(top_srcdir)/idl/bonobo-property.idl		\
-	$(top_srcdir)/idl/bonobo-storage.idl		\
-	$(top_srcdir)/idl/bonobo-ui.idl			\
-	$(top_srcdir)/idl/bonobo-unknown.idl		\
-	$(top_srcdir)/idl/bonobo-zoomable.idl
+	$(top_srcdir)/idl/Bonobo_Advise.idl		\
+	$(top_srcdir)/idl/Bonobo_Desktop.idl		\
+	$(top_srcdir)/idl/Bonobo_Canvas.idl		\
+	$(top_srcdir)/idl/Bonobo_ClientSite.idl		\
+	$(top_srcdir)/idl/Bonobo_Context.idl		\
+	$(top_srcdir)/idl/Bonobo_Control.idl		\
+	$(top_srcdir)/idl/Bonobo_Embeddable.idl		\
+	$(top_srcdir)/idl/Bonobo_ItemContainer.idl	\
+	$(top_srcdir)/idl/Bonobo_Listener.idl		\
+	$(top_srcdir)/idl/Bonobo_Moniker.idl		\
+	$(top_srcdir)/idl/Bonobo_Persist.idl		\
+	$(top_srcdir)/idl/Bonobo_Print.idl		\
+	$(top_srcdir)/idl/Bonobo_Progressive.idl	\
+	$(top_srcdir)/idl/Bonobo_Property.idl		\
+	$(top_srcdir)/idl/Bonobo_Storage.idl		\
+	$(top_srcdir)/idl/Bonobo_UI.idl			\
+	$(top_srcdir)/idl/Bonobo_Unknown.idl		\
+	$(top_srcdir)/idl/Bonobo_Zoomable.idl		\
+	$(top_srcdir)/idl/Bonobo_Exception.idl
 
 idl_flags = `$(GNOME_CONFIG) --cflags idl` -D__BONOBO_COMPILATION
 
 $(CORBA_SOURCE): $(idls)
 	$(ORBIT_IDL) $(top_srcdir)/idl/Bonobo.idl -I$(top_srcdir)/idl $(idl_flags)
 
-Bonobo.h: $(idls)
-
 libbonobo_la_LDFLAGS = \
 	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION):$(BONOBO_AGE) \
+	$(PROF_LDFLAGS) \
 	$(gnome_libs)
+	
 
 libbonobo_la_SOURCES =			\
 	$(CORBA_SOURCE)			\
@@ -65,6 +69,7 @@ libbonobo_la_SOURCES =			\
 	bonobo-item-handler.c		\
 	bonobo-listener.c		\
 	bonobo-main.c			\
+	bonobo-xobject.c		\
 	bonobo-moniker.c		\
 	bonobo-moniker-extender.c	\
 	bonobo-moniker-simple.c		\
@@ -114,6 +119,7 @@ libbonoboinclude_HEADERS =			\
 	bonobo-item-handler.h			\
 	bonobo-listener.h			\
 	bonobo-main.h				\
+	bonobo-xobject.h			\
 	bonobo-moniker.h			\
 	bonobo-moniker-extender.h		\
 	bonobo-moniker-simple.h			\
@@ -144,28 +150,37 @@ libbonoboinclude_HEADERS =			\
 	bonobo-transient.h			\
 	bonobo-ui-component.h            	\
 	bonobo-ui-container.h            	\
+	bonobo-ui-config-widget.h		\
+	bonobo-ui-engine.h	            	\
 	bonobo-ui-node.h                 	\
+	bonobo-ui-sync.h			\
 	bonobo-ui-toolbar-button-item.h  	\
 	bonobo-ui-toolbar-icon.h         	\
 	bonobo-ui-toolbar-item.h		\
 	bonobo-ui-toolbar-toggle-button-item.h	\
 	bonobo-ui-util.h			\
-	bonobo-ui-xml.h				\
 	bonobo-view-frame.h			\
 	bonobo-view.h				\
 	bonobo-widget.h 			\
 	bonobo-win.h				\
 	bonobo-wrapper.h			\
 	bonobo-zoomable.h			\
-	bonobo-zoomable-frame.h
+	bonobo-zoomable-frame.h			
 
 noinst_HEADERS =				\
 	bonobo-activation-context.h		\
+	bonobo-ui-engine-config.h		\
+	bonobo-ui-engine-private.h		\
+	bonobo-ui-sync-menu.h			\
+	bonobo-ui-sync-keys.h			\
+	bonobo-ui-sync-status.h			\
+	bonobo-ui-sync-toolbar.h		\
 	bonobo-ui-toolbar.h			\
 	bonobo-ui-toolbar-control-item.h  	\
 	bonobo-ui-toolbar-popup-item.h		\
 	bonobo-ui-toolbar-separator-item.h	\
-	bonobo-running-context.h
+	bonobo-ui-xml.h				\
+	bonobo-running-context.h		
 
 libbonobox_la_LDFLAGS = \
 	-version-info $(BONOBO_CURRENT):$(BONOBO_REVISION):$(BONOBO_AGE)
@@ -185,8 +200,16 @@ libbonobox_la_SOURCES =				\
 	bonobo-selector-widget.c		\
 	bonobo-socket.c				\
 	bonobo-ui-component.c            	\
+	bonobo-ui-config-widget.c		\
 	bonobo-ui-container.c            	\
+	bonobo-ui-engine.c			\
+	bonobo-ui-engine-config.c		\
 	bonobo-ui-node.c                 	\
+	bonobo-ui-sync.c			\
+	bonobo-ui-sync-menu.c			\
+	bonobo-ui-sync-keys.c			\
+	bonobo-ui-sync-status.c			\
+	bonobo-ui-sync-toolbar.c		\
 	bonobo-ui-toolbar-button-item.c  	\
 	bonobo-ui-toolbar-control-item.c  	\
 	bonobo-ui-toolbar-icon.c         	\
@@ -197,7 +220,6 @@ libbonobox_la_SOURCES =				\
 	bonobo-ui-toolbar.c			\
 	bonobo-ui-util.c			\
 	bonobo-ui-xml.c				\
-	bonobo-ui-xml.h				\
 	bonobo-view-frame.c			\
 	bonobo-view.c				\
 	bonobo-widget.c				\
@@ -219,22 +241,6 @@ libbonobo_printinclude_HEADERS =		\
 	Bonobo.h			\
 	bonobo-print.h		\
 	bonobo-print-client.h
-
-noinst_PROGRAMS = test-app test-toolbar
-
-test_app_SOURCES = app.c
-test_app_LDADD =					\
-	libbonobo.la					\
-	libbonobox.la					\
-	libbonobo-print.la				\
-	$(BONOBOX_TEST_LIBS)
-
-test_toolbar_SOURCES = test-toolbar.c
-test_toolbar_LDADD =					\
-	libbonobo.la					\
-	libbonobox.la					\
-	libbonobo-print.la				\
-	$(BONOBOX_TEST_LIBS)
 
 BUILT_SOURCES=$(CORBA_SOURCE)
 
