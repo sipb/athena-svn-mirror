@@ -1,6 +1,6 @@
 # $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v $
 # $Author: jtkohl $
-# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.2 1989-03-23 12:14:52 jtkohl Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.3 1989-03-23 12:29:24 jtkohl Exp $
 #
 # Makefile for creating a Zephyr configuration
 #
@@ -20,7 +20,7 @@ DESTDIR	= .
 SRCDIR 	= /mit/zephyr/src
 
 LN	= ln -s
-
+CP	= cp
 SUBDIR	= et et/lib et/compile_et ss ss/lib ss/make_commands clients \
 	clients/syslogd clients/zaway \
 	clients/zbitmap clients/zctl clients/zinit clients/zleave \
@@ -39,7 +39,7 @@ MTDIR	= et/profiled lib/profiled libs
 LINKDIR = server/acldir
 
 all:
-	${LN} ${SRCDIR}/Makefile ${DESTDIR}
+	${CP} ${SRCDIR}/Makefile ${DESTDIR}
 	${LN} ${SRCDIR}/Imakefile ${DESTDIR}
 	chmod +w ${DESTDIR}/Makefile
 	-for i in ${SUBDIR}; do \
