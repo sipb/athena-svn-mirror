@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.6 1996-05-30 17:54:21 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.7 1996-09-20 03:53:43 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.6 1996-05-30 17:54:21 ghudson Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.7 1996-09-20 03:53:43 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -67,9 +67,7 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#ifndef ultrix
 #include <sys/fcntl.h>
-#endif
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -79,11 +77,7 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #include <unistd.h>
 #include <signal.h>
 #include <netdb.h>
-#ifdef ultrix
-#include <nsyslog.h>
-#else
 #include <syslog.h>
-#endif
 
 #include <pwd.h>
 
@@ -100,12 +94,7 @@ static sigset_t sig_switch;
 
 extern	int errno;
 
-#ifdef ultrix
-#define sigtype void
-#else
-typedef int sigtype;
-#endif
-sigtype	reapchild(), retry(), switchon(), switchoff(), removepidfile();
+void	reapchild(), retry(), switchon(), switchoff(), removepidfile();
 char *strdup();
 
 char	*malloc();
@@ -118,11 +107,7 @@ int	options;
 int	timingout;
 struct	servent *sp;
 
-#ifdef ultrix
-char pidfilename[] = "/etc/inetd.pid";
-#else
 char pidfilename[] = "/etc/athena/inetd.pid";
-#endif
 
 struct	servtab {
 	char	*se_service;		/* name of service */
@@ -146,7 +131,7 @@ struct	servtab {
 int echo_stream(), discard_stream(), machtime_stream();
 int daytime_stream(), chargen_stream();
 int echo_dg(), discard_dg(), machtime_dg(), daytime_dg(), chargen_dg();
-sigtype config(), restartme();
+void config(), restartme();
 
 struct biltin {
 	char	*bi_service;		/* internally provided service name */
@@ -178,11 +163,7 @@ struct biltin {
 };
 
 #define NUMINT	(sizeof(intab) / sizeof(struct inent))
-#ifdef ultrix
-char	*CONFIG = "/etc/inetd.conf";
-#else
 char	*CONFIG = "/etc/athena/inetd.conf";
-#endif
 char	**Argv;
 char 	*LastArg;
 
@@ -406,7 +387,7 @@ nextopt:
 	}
 }
 
-sigtype
+void
 reapchild()
 {
         int status;
@@ -435,7 +416,7 @@ reapchild()
 	}
 }
 
-sigtype
+void
 config()
 {
 	register struct servtab *sep, *cp, **sepp;
@@ -529,7 +510,7 @@ config()
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
 }
 
-sigtype
+void
 retry()
 {
 	register struct servtab *sep;
@@ -1030,7 +1011,7 @@ print_service(action, sep)
 	    sep->se_wait, sep->se_user, sep->se_bi, sep->se_server);
 }
 
-sigtype
+void
 switchoff()
 {
 	register struct servtab *sep, **sepp;
@@ -1060,7 +1041,7 @@ switchoff()
 
 }
 
-sigtype
+void
 restartme()
 {
 	sigset_t omask;
@@ -1072,7 +1053,7 @@ restartme()
 	(void) sigprocmask(SIG_BLOCK, &omask, NULL);
 }
 
-sigtype
+void
 removepidfile()
 {
     if (unlink(pidfilename))
