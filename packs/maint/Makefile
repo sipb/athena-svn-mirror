@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1999-11-11 20:29:35 danw Exp $
+# $Id: Makefile,v 1.10 2000-06-08 18:48:18 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -16,6 +16,8 @@ install:
 	install -c -m 0555 clean_tmp_areas.sh \
 		${DESTDIR}${ATHRETCDIR}/clean_tmp_areas
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs
+	install -c -m 0555 local-netscape.sh \
+		${DESTDIR}${ATHRETCDIR}/local-netscape
 	install -c -m 0555 netparams.sh ${DESTDIR}${ATHRETCDIR}/netparams
 	install -c -m 0555 reactivate.sh ${DESTDIR}${ATHRETCDIR}/reactivate
 	install -c -m 0444 reactivate.8 ${DESTDIR}${ATHMANDIR}/man8
