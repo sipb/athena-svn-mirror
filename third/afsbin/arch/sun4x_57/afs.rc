@@ -134,7 +134,7 @@ fi
 # Check that all of the client configuration files exist
 #
 
-for file in /usr/vice/etc/afsd /usr/vice/etc/cacheinfo \
+for file in /etc/afsd /usr/vice/etc/cacheinfo \
 	    /usr/vice/etc/ThisCell /usr/vice/etc/CellServDB
 do
 	if [ ! -f ${file} ]; then
