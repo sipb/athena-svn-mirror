@@ -4,5 +4,5 @@
 X		/etc/athena/xwrapper vt07
 console		/etc/athena/console -display :0.0 -nosession
 login		/etc/athena/xlogin -config /etc/athena/login -display :0.0
-ttylogin 	/etc/athena/mingetty tty7
+ttylogin 	/sbin/mingetty --loginprog=/usr/athena/etc/login.krb5 tty7
 ttyloginvt 	7
