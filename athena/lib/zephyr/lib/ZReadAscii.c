@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: ZReadAscii.c,v 1.18 1999-01-22 23:19:21 ghudson Exp $
+ *	$Id: ZReadAscii.c,v 1.19 2002-09-10 16:04:30 ghudson Exp $
  *
  *	Copyright (c) 1987, 1990 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char rcsid_ZReadAscii_c[] = "$Id: ZReadAscii.c,v 1.18 1999-01-22 23:19:21 ghudson Exp $";
+static char rcsid_ZReadAscii_c[] = "$Id: ZReadAscii.c,v 1.19 2002-09-10 16:04:30 ghudson Exp $";
 #endif /* lint */
 
 #include <internal.h>
@@ -46,17 +46,16 @@ Code_t ZReadAscii(ptr, len, field, num)
     register unsigned int temp;
 
     for (i=0;i<num;i++) {
-	if (*ptr == ' ') {
+	if (len >= 1 && *ptr == ' ') {
 	    ptr++;
-	    if (--len < 0)
-		return ZERR_BADFIELD;
-	} 
-	if (ptr[0] == '0' && ptr[1] == 'x') {
+	    len--;
+	}
+	if (len >= 2 && ptr[0] == '0' && ptr[1] == 'x') {
 	    ptr += 2;
 	    len -= 2;
-	    if (len < 0)
-		return ZERR_BADFIELD;
-	} 
+	}
+	if (len < 2)
+	    return ZERR_BADFIELD;
 	c1 = Z_cnvt_xtoi(ptr[0]);
 	if (c1 < 0)
 		return ZERR_BADFIELD;
@@ -67,8 +66,6 @@ Code_t ZReadAscii(ptr, len, field, num)
 	field[i] = hexbyte;
 	ptr += 2;
 	len -= 2;
-	if (len < 0)
-	    return ZERR_BADFIELD;
     }
 
     return *ptr ? ZERR_BADFIELD : ZERR_NONE;

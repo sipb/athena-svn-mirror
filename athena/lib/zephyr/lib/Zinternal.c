@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: Zinternal.c,v 1.41 2000-01-27 03:48:53 ghudson Exp $
+ *	$Id: Zinternal.c,v 1.42 2002-09-10 16:04:31 ghudson Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology.
@@ -18,7 +18,7 @@
 
 #ifndef lint
 static const char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.41 2000-01-27 03:48:53 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.42 2002-09-10 16:04:31 ghudson Exp $";
 static const char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -470,6 +470,11 @@ Code_t Z_AddNoticeToEntry(qptr, notice, part)
     int last, oldfirst, oldlast;
     struct _Z_Hole *hole, *lasthole;
     struct timeval tv;
+
+    /* Bounds check. */
+    if (part < 0 || notice->z_message_len < 0 || part > qptr->msg_len
+	|| notice->z_message_len > qptr->msg_len - part)
+      return (ZERR_NONE);
 
     /* Incorporate this notice's checked authentication. */
     if (notice->z_checked_auth == ZAUTH_FAILED)
