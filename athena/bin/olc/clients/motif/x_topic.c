@@ -23,7 +23,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v 1.4 1991-04-18 21:52:08 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v 1.4.1.1 1992-03-16 15:32:41 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -41,22 +41,29 @@ x_list_topics(Request, file)
   int status;
   FILE *infile;
   char inbuf[BUF_SIZE];
+  XmString lst_itms[256];
+  Arg args[3];
+  int lst_sz;
   int i = 0;
+  char *p;
 
   status = OListTopics(Request,file);
   switch(status)
     {
     case SUCCESS:
       infile = fopen(file, "r");
-      i = 0;
+      i = 0; lst_sz = 0;
       while (fgets(inbuf, BUF_SIZE, infile) != NULL)
 	{
 	  inbuf[strlen(inbuf) - 1] = (char) '\0';
 	  sscanf(inbuf, "%s", TopicTable[i].topic);
 	  i++;
-	  AddItemToList(w_list, inbuf);
+	  lst_itms[lst_sz++] = XmStringCreateSimple(inbuf);
 	}
       fclose(infile);
+      XtSetArg(args[0], XmNitemCount, lst_sz);
+      XtSetArg(args[1], XmNitems, lst_itms);
+      XtSetValues(w_list, args, 2);
       break;
       
     case ERROR:
@@ -70,3 +77,4 @@ x_list_topics(Request, file)
     }
   return(status);
 }
+
