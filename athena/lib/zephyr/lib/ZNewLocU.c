@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v $
- *	$Author: jfc $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.3 1990-12-12 02:10:27 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.4 1990-12-20 03:10:34 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZNewLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.3 1990-12-12 02:10:27 jfc Exp $";
+static char rcsid_ZNewLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.4 1990-12-20 03:10:34 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -70,16 +70,14 @@ Code_t ZNewLocateUser(user, nlocs, auth)
     while (!nrecv || !ack) {
 	    tv.tv_sec = 0;
 	    tv.tv_usec = 500000;
-	    for (i=0;i<HM_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
-					      intervals */
+	    for (i=0;i<SRV_TIMEOUT*2;i++) {
 		    gotone = 0;
 		    read = setup;
 		    if (select(nfds, &read, (fd_set *) 0,
 			       (fd_set *) 0, &tv) < 0)
 			return (errno);
 		    if (FD_ISSET(ZGetFD(), &read))
-			i--;		/* make sure we time out the
-					   full 30 secs */
+			i--;
 		    retval = ZCheckIfNotice(&retnotice,
 					    (struct sockaddr_in *)0,
 					    ZCompareMultiUIDPred,
