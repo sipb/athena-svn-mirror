@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.17 2002-05-14 23:24:18 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.18 2002-05-14 23:55:13 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -516,7 +516,7 @@ static void *notify(const void *arg, rpmCallbackType what,
 	{
 	  ndata->packages++;
 	  printf(" [%3d%%]\n",
-		 (ndata->packages == 0) ? 100
+		 (ndata->npackages == 0) ? 100
 		 : ndata->packages * 100 / ndata->npackages);
 	}
       break;
