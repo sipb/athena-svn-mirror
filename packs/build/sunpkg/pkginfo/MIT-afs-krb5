@@ -1,0 +1,3 @@
+PKG=MIT-afs-krb5
+NAME=Tools for obtaining AFS authenticated from Kerberos 5 credentials.
+DESC=The aklog utility obtains AFS tokens from the user's existing Kerberos 5 tickets to enable access to AFS servers. The asetkey utility creates an AFS KeyFile from a Kerberos 5 keytab.  It is used only by AFS server administrators.

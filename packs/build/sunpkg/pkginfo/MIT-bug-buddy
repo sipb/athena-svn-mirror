@@ -1,0 +1,3 @@
+PKG=MIT-bug-buddy
+NAME=A bug reporting utility for GNOME, for Athena
+DESC=Bug-buddy is a bug reporting utility for the GNOME desktop GUI environment.  Bug-buddy can obtain a stack trace from a core file or crashed application; it can determine the versions of packages installed on your system; it can be started from gmc (by double-clicking on a core file) and from the crash dialog; and it supports the GNOME, KDE, Debian, and Ximian bug tracking systems.

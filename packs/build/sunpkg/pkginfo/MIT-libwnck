@@ -1,0 +1,3 @@
+PKG=MIT-libwnck
+NAME=Window Navigator Construction Kit, for Athena
+DESC=libwnck (pronounced "libwink") is used to implement pagers, tasklists, and other such things. It allows applications to monitor information about open windows, workspaces, their names/icons, and so forth.

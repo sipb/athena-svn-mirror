@@ -1,0 +1,3 @@
+PKG=MIT-gedit
+NAME=A small but powerful text editor for GNOME, for Athena
+DESC=gEdit is a small but powerful text editor designed specifically for the GNOME GUI desktop.  gEdit includes a plug-in API (which supports extensibility while keeping the core binary small), support for editing multiple documents using notebook tabs, and standard text editor functions.

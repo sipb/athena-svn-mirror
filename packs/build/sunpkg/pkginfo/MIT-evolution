@@ -1,0 +1,3 @@
+PKG=MIT-evolution
+NAME=Evolution application suite for Athena
+DESC=Evolution is a GNOME application suite including a mail reader, calendaring tool, task list, address book, and other tools.

@@ -1,0 +1,3 @@
+PKG=MIT-tetex
+NAME=The TeX typesetting system and support utilities, for Athena
+DESC=The teTeX package of TeX typesetting system and support utilities, for Athena.

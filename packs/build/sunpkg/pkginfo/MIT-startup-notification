@@ -1,0 +1,3 @@
+PKG=MIT-startup-notification
+NAME=Startup notification library, for athena
+DESC=The startup notification library allows a desktop environment to track application startup, to provide user feedback and other features.

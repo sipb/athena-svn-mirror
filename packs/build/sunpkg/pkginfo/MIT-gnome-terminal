@@ -1,0 +1,3 @@
+PKG=MIT-gnome-terminal
+NAME=GNOME terminal, for Athena
+DESC=This package contains the GNOME terminal emulator application, which is the GNOME analog of xterm.

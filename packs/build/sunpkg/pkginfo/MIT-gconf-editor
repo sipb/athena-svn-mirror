@@ -1,0 +1,3 @@
+PKG=MIT-gconf-editor
+NAME=Editor/admin tool for GConf, for Athena
+DESC=gconf-editor allows you to browse and modify GConf configuration sources.

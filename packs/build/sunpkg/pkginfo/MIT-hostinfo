@@ -1,0 +1,3 @@
+PKG=MIT-hostinfo
+NAME=An Athena utility to ask an Internet nameserver for host information
+DESC=The hostinfo utility fetches the Domain Name System records for the specified host name and prints them.

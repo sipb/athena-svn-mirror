@@ -1,0 +1,3 @@
+PKG=MIT-imlib
+NAME=The imlib library, for Athena
+DESC=The imlib library can load and manipulate a variety of different types of images.  It is currently used by the GNOME (GNU Network Object Model Environment) system, although it will be replaced by gdk-pixbuf in GNOME 2.x.

@@ -1,0 +1,3 @@
+PKG=MIT-gdk-pixbuf
+NAME=The gdk-pixbuf image handling library, for Athena
+DESC=The gdk-pixbuf library provides image loading, display, and manipulation capabilities.  It is used by the GNOME (GNU Network Object Model Environment) system.

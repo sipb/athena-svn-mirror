@@ -1,0 +1,3 @@
+PKG=MIT-attach
+NAME=An Athena utility to attach a remote file system to the workstation
+DESC=The attach utility is a filesystem-independent utility which allows you to attach a filesystem to a directory hierarchy on a workstation. Currently supported filesystem types are AFS, NFS, and UFS.

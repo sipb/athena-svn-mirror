@@ -1,0 +1,3 @@
+PKG=MIT-discuss
+NAME=A conferencing and mail archiving system
+DESC=Discuss is a user-interface front end to a networked conferencing system.  

@@ -1,0 +1,3 @@
+PKG=MIT-cleanup
+NAME=An Athena program to restore a workstation to a clean state
+DESC=The cleanup utility restores a workstation to its normal state by killing any processes for users not logged in, restoring the password file, and other such maintenance steps. 

@@ -1,0 +1,3 @@
+PKG=MIT-libart-lgpl
+NAME=Library of graphics routines used by libgnomecanvas, for Athena
+DESC=Graphics routines used by the GnomeCanvas widget and some other applications.  libart renders vector paths and the like.

@@ -1,0 +1,3 @@
+PKG=MIT-gurlview
+NAME=Display a URL in an appropriate viewer
+DESC=This program loads a URL into an appropriate viewer, as determined by the user's GNOME preferences and the protocol specified in the URL.

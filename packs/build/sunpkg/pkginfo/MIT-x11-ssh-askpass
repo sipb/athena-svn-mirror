@@ -1,0 +1,3 @@
+PKG=MIT-x11-ssh-askpass
+NAME=A passphrase dialog for OpenSSH and X.
+DESC=This package contains an X11 passphrase dialog for OpenSSH.

@@ -1,0 +1,3 @@
+PKG=MIT-librep
+NAME=The rep Lisp interpreter, for Athena
+DESC=The librep shared library implements a Lisp dialect that is lightweight, reasonably fast, and extensible.  It contains an interpreter, byte-code compiler, and virtual machine.  Applications may use the interpreter as an extension language, or it may be used for standalone scripts.  The Lisp dialect was originally inspired by Emacs Lisp.  Unlike Emacs Lisp, the reliance on dynamic scope has been removed and librep only has a single namespace for symbols.

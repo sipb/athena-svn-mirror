@@ -1,0 +1,3 @@
+PKG=MIT-talk
+NAME=Talk client and server for one-on-one Internet chatting, for Athena
+DESC=The talk package provides client and daemon programs for the Internet talk protocol, which allows you to chat with other users on different systems.  Talk is a communication program which copies characters from one terminal to the terminal of another user.

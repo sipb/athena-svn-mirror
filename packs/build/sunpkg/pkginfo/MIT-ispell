@@ -1,0 +1,3 @@
+PKG=MIT-ispell
+NAME=A spelling checker, for Athena
+DESC=Ispell is an interactive spelling checker.  Ispell can check text files or standard input for spelling and typographical errors.  When it finds a word that is not in the dictionary, it will suggest correctly spelled words for the misspelled word.

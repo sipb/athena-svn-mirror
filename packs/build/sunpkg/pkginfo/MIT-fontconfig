@@ -1,0 +1,3 @@
+PKG=MIT-fontconfig
+NAME=Font configuration and customization library, for Athena
+DESC=Fontconfig is designed to locate fonts within the system and select them according to requirements specified by applications.

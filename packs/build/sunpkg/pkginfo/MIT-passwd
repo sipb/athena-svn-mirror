@@ -1,0 +1,3 @@
+PKG=MIT-passwd
+NAME=Change Kerberos or local password on Athena
+DESC=Enable the user to set or change their password, either locally or in Kerberos.

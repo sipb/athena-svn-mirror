@@ -1,0 +1,3 @@
+PKG=MIT-zephyr
+NAME=The Athena Zephyr instant messaging system
+DESC=Zephyr provides an instant messaging system for users in the Athena networked environment.

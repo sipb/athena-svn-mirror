@@ -1,0 +1,3 @@
+PKG=MIT-dm
+NAME=The Athena display manager
+DESC=The Athena dm takes care of running the X server, xlogin, and the Athena console program.  This package causes dm to be run as the X login program (when prefdm is invoked through inittab).

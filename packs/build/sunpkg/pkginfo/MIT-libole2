@@ -1,0 +1,3 @@
+PKG=MIT-libole2
+NAME=Structured Storage OLE2 library, for Athena
+DESC=A library containing functionality to manipulate OLE2 Structured Storage files.  It is used by Gnumeric from Gnome, AbiWord from AbiSuite and by other programs.

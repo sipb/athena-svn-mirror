@@ -1,0 +1,3 @@
+PKG=MIT-tcp-wrappers
+NAME=A security tool which acts as a wrapper for TCP daemons, for Athena
+DESC=The tcp_wrappers package provides small daemon programs which can monitor and filter incoming requests for systat, finger, FTP, telnet, rlogin, rsh, exec, tftp, talk and other network services.

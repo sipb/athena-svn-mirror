@@ -1,0 +1,3 @@
+PKG=MIT-intltool
+NAME=Scripts for internationalizing data files, for Athena
+DESC=intltool can automatically extract translatable strings from oaf, glade, bonobo ui, nautilus theme, and other files into po files, and can also automatically merge translations from po files back into oaf and other kinds of files.

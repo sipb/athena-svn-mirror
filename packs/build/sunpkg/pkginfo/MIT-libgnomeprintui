@@ -1,0 +1,3 @@
+PKG=MIT-libgnomeprintui
+NAME=GUI support for libgnomeprint, for Athena
+DESC=The libgnomeprintui package contains GTK+ widgets related to printing.

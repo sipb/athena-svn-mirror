@@ -1,0 +1,3 @@
+PKG=MIT-libfxcl
+NAME=The secure file exchange library
+DESC=The File Exchange Client Library helps C programmers write applications which imitate the paper handling done in a classroom.  A variety of paper types is supported.

@@ -1,0 +1,3 @@
+PKG=MIT-gail
+NAME=Accessibility implementation for GTK+ and GNOME libraries
+DESC=GAIL implements the abstract interfaces found in ATK for GTK+ and GNOME libraries, enabling accessibility technologies such as at-spi to access those GUIs.

@@ -1,0 +1,3 @@
+PKG=MIT-config-console
+NAME=An Athena utility to communicate with the console program
+DESC=The config_console utility allows a user to instruct the console program to show its window, hide its window, or reconfigure itself according to new X resources.

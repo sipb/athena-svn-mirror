@@ -1,0 +1,3 @@
+PKG=MIT-gnome-panel
+NAME=GNOME panel, for Athena
+DESC=The GNOME panel provides the window list, workspace switcher, menus, and other features for the GNOME desktop.

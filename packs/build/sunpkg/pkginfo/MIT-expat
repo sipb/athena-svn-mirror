@@ -1,0 +1,3 @@
+PKG=MIT-expat
+NAME=A library for parsing XML, for Athena
+DESC=This is expat, the C library for parsing XML, written by James Clark. Expat is a stream oriented XML parser.

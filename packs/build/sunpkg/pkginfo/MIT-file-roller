@@ -1,0 +1,3 @@
+PKG=MIT-file-roller
+NAME=Tool for viewing and creating archives, for Athena
+DESC=File Roller is an application for creating and viewing archives files, such as tar files.

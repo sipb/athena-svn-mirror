@@ -1,0 +1,3 @@
+PKG=MIT-console
+NAME=An Athena program to provide an X interface to the system console
+DESC=The console program reads standard input and displays it in an X window on the screen.  It is intended to be started by dm with its input connected to the logical console for the workstation.

@@ -1,0 +1,3 @@
+PKG=MIT-libungif
+NAME=A library for manipulating GIF format image files, for Athena
+DESC=The libungif package contains a shared library of functions for loading and saving GIF format image files.  The libungif library can load any GIF file, but it will save GIFs only in uncompressed format (i.e., it won't use the patented LZW compression used to save "normal" compressed GIF files).

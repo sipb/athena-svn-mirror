@@ -1,0 +1,3 @@
+PKG=MIT-libXj
+NAME=The Jets widget library on Athena
+DESC=An X11 widget library used by many Athena programs.

@@ -1,0 +1,3 @@
+PKG=MIT-libbonobo
+NAME=Bonobo component system, for Athena
+DESC=Bonobo is a component system based on CORBA, used by the GNOME desktop.

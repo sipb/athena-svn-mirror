@@ -1,0 +1,3 @@
+PKG=MIT-aspell
+NAME=A spelling checker, for Athena
+DESC=Aspell is a spelling checker designed to eventually replace Ispell. Aspell's primary advantage (over Ispell) is a greater skill at suggesting correct spellings.  Aspell includes both compile-time and run-time support for non-English languages and can spellcheck (La)TeX and HTML files.

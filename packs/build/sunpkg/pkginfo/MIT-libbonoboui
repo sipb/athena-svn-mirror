@@ -1,0 +1,3 @@
+PKG=MIT-libbonoboui
+NAME=Bonobo user interface components
+DESC=Bonobo is a component system based on CORBA, used by the GNOME desktop.  libbonoboui contains the user interface related components that come with Bonobo.

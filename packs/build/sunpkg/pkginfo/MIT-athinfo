@@ -1,0 +1,3 @@
+PKG=MIT-athinfo
+NAME=An Athena utility to retrieve information about a workstation.
+DESC=The athinfo tool queries a remote workstation using the athinfo daemon for information about the workstation, such as its hardware type and configuration, its current software installation state, the number of users logged on, and various other informational state queries.

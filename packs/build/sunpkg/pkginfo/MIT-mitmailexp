@@ -1,0 +1,3 @@
+PKG=MIT-mitmailexp
+NAME=Expunge an IMAP folder
+DESC=The mitmailexp program expunges deleted messages from a folder on an IMAP server.

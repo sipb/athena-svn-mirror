@@ -1,0 +1,3 @@
+PKG=MIT-ws
+NAME=Athena workstation management infrastructure
+DESC=Various maintenance and configuration files required for any Athena workstation.

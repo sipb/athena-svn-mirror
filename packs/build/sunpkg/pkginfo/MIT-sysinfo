@@ -1,0 +1,3 @@
+PKG=MIT-sysinfo
+NAME=Print system hardware and software info in various formats
+DESC=Print system hardware and software info in various formats

@@ -1,0 +1,3 @@
+PKG=MIT-libss
+NAME=The Athena ss library
+DESC=The Athena ss library; handles command dispatching and paging.

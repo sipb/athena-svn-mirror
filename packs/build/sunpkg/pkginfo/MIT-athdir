@@ -1,0 +1,3 @@
+PKG=MIT-athdir
+NAME=A utility to find machine-specific directories using Athena conventions
+DESC=The athdir utility is used to locate specific types of files to a locker.  It knows about all the conventions for compatibility with older operating system versions and processor types, and is the preferred way to determine the correct directory in a locker in which to find binaries or other architecture-dependent files.

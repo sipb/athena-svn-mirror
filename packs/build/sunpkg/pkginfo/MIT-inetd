@@ -1,0 +1,3 @@
+PKG=MIT-inetd
+NAME=The Athena version of Internet master daemon server.
+DESC=Athena needs this modified version of inetd to support special Athena functions, it runs along side the normal system inetd.

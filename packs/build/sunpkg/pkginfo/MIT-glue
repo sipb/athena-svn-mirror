@@ -1,0 +1,3 @@
+PKG=MIT-glue
+NAME=Various small attach-and-run scripts and other such things
+DESC=The attach-and-run scripts for the moira clients, mkserv, tellme,  and the help system.

@@ -1,0 +1,3 @@
+PKG=MIT-enscript
+NAME=The GNU enscript text to postscript utility, for Athena
+DESC=Enscript converts ASCII files to PostScript and stores generated output to a file or sends it directly to the printer.

@@ -1,0 +1,3 @@
+PKG=MIT-athrun
+NAME=An Athena utility for users to run a program from a locker
+DESC=The athrun utility allows a user to robustly run a program from a specified locker.

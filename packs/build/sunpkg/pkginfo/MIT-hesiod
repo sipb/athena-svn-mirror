@@ -1,0 +1,3 @@
+PKG=MIT-hesiod
+NAME=The Athena Hesiod name service library
+DESC=This is release 3.0.2 of the Hesiod name service library.  Hesiod can provide general name service for a variety of applications and is based on the Berkeley Internet Name Daemon (BIND).

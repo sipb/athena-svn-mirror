@@ -1,0 +1,3 @@
+PKG=MIT-cyrus-imap-client
+NAME=The Cyrus IMAP client utilities and libraries, for Athena.
+DESC=The Cyrus IMAP (Internet Message Access Protocol) client utilities and libraries are part of the Cyrus IMAP server distribution, from Carnegie Mellon University.  Cyrus IMAP software provides access to personal mail and system-wide bulletin boards through the IMAP protocol.

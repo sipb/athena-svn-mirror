@@ -1,0 +1,3 @@
+PKG=MIT-libxslt
+NAME=Library providing the Gnome XSLT engine, for Athena
+DESC=This C library allows to transform XML files into other XML files (or HTML, text, ...) using the standard XSLT stylesheet transformation mechanism.  The xsltproc command is a command line interface to the XSLT engine.

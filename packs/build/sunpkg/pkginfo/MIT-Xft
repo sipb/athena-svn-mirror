@@ -1,0 +1,3 @@
+PKG=MIT-Xft
+NAME=X Font Rendering library, for Athena
+DESC=Xft is a font rendering library for X.

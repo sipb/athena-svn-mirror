@@ -1,0 +1,3 @@
+PKG=MIT-libxml
+NAME=An XML library used by GNOME, for Athena
+DESC=The athena-libxml package contains an XML library, which allows you to manipulate XML files.  XML (eXtensible Markup Language) is a data format for structured document interchange.

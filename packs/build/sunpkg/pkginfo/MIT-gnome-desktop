@@ -1,0 +1,3 @@
+PKG=MIT-gnome-desktop
+NAME=Shared code for GNOME desktop components
+DESC=The gnome-desktop package contains an internal library (libgnomedesktop) used to implement some portions of the GNOME desktop, and also some data files and other shared components of the GNOME user environment.

@@ -1,0 +1,3 @@
+PKG=MIT-ksrvutil
+NAME=ksrvutil is a simple utility to list and update srvtab files
+DESC=ksrvutil is a simple utility to list and update srvtab files

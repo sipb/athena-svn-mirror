@@ -1,0 +1,3 @@
+PKG=MIT-gal2
+NAME=The G App library, for Athena
+DESC=gal contains some library functions used by some larger GNOME applications such as Evolution and Gnumeric.

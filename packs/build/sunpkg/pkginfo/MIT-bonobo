@@ -1,0 +1,3 @@
+PKG=MIT-bonobo
+NAME=The bonobo library for compound documents in GNOME, for Athena
+DESC=Bonobo is a library that provides the necessary framework for GNOME applications to deal with compound documents, e.g. those with a spreadsheet and graphic embedded in a word-processing document.

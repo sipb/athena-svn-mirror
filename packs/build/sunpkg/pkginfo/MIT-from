@@ -1,0 +1,3 @@
+PKG=MIT-from
+NAME=Print a list of the user's unread mail
+DESC=The from program prints out mail header lines in incoming mail to show who the mail is from.  

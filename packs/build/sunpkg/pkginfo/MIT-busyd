@@ -1,0 +1,3 @@
+PKG=MIT-busyd
+NAME=An Athena server to tell if a workstation is in use
+DESC=A server to respond to queries to determine if the workstation is currently in use.

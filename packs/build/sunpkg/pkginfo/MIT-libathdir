@@ -1,0 +1,3 @@
+PKG=MIT-libathdir
+NAME=A library to implement machine-specific directory location
+DESC=A library to implement machine-specific directory location

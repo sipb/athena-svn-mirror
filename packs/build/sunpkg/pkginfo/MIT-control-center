@@ -1,0 +1,3 @@
+PKG=MIT-control-center
+NAME=GNOME Control Center, for Athena
+DESC=GNOME (the GNU Network Object Model Environment) is an attractive and easy-to-use GUI desktop environment. The control-center package provides the GNOME Control Center utilities that allow you to setup and configure your system's GNOME environment (things like the desktop background and theme, the screensaver, the window manager, system sounds, and mouse behavior).

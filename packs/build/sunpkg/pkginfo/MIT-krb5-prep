@@ -1,0 +1,3 @@
+PKG=MIT-krb5-prep
+NAME=don't install this rpm
+DESC=Do not install this RPM

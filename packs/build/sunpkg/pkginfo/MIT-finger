@@ -1,0 +1,3 @@
+PKG=MIT-finger
+NAME=The Athena version of the normal finger utility
+DESC=The finger command displays information about local and remote users in a convenient format.  The Athena version contains improvements to locate Athena users and knows about the Athena-specific user database features.  
