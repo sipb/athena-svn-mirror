@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: ring.c,v 1.1.1.1 2003-01-29 21:57:47 ghudson Exp $"
+#ident "$Id: ring.c,v 1.1.1.2 2004-09-27 21:00:56 ghudson Exp $"
 #include "../config.h"
 #include <stdio.h>
 #include <string.h>
@@ -276,7 +276,7 @@ _vte_ring_remove(VteRing * ring, long position, gboolean free)
 	for (i = position; i < ring->delta + ring->length - 1; i++) {
 		ring->array[i % ring->max] = ring->array[(i + 1) % ring->max];
 	}
-	
+
 	/* Store a NULL in the position at the end of the buffer and decrement
 	 * its length (got room for one more now). */
 	ring->array[(ring->delta + ring->length - 1) % ring->max] = NULL;

@@ -1,125 +1,117 @@
-# Albanian translation for vte 
+# Albanian translation for vte
 # This file is distributed under the same license as the vte package.
-# Copyright (C) 2003 Free Software Foundation, Inc.
-# Damnus <damnus@libero.it>, 2003
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Damnus <damnus@libero.it>, 2003.
+# Laurent Dhima <laurenti@alblinux.net>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vte.gnome-2-2\n"
-"POT-Creation-Date: 2003-04-28 15:13-0400\n"
-"PO-Revision-Date: 2003-03-27 01:16+0100\n"
-"Last-Translator: Damnus <damnus@libero.it>\n"
-"Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"Project-Id-Version: vte.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-05-02 02:44-0400\n"
+"PO-Revision-Date: 2004-02-23 10:30+0100\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0\n"
 
-#: src/pty.c:253
+#: src/iso2022.c:787 src/iso2022.c:798 src/iso2022.c:847 src/vte.c:2091
+#, c-format
+msgid "Unable to convert characters from %s to %s."
+msgstr "I pamundur konvertimi i simboleve nga %s në %s."
+
+#: src/iso2022.c:1578
+#, c-format
+msgid "Attempt to set invalid NRC map '%c'."
+msgstr "Përpjekje për të vendosur një hartë '%c' NRC të pavlefshme."
+
+#. Application signalled an "identified coding system" we haven't heard of.  See ECMA-35 for gory details.
+#: src/iso2022.c:1619
+msgid "Unrecognized identified coding system."
+msgstr "U identifikua një sistem kodifikimi i pavlefshëm."
+
+#: src/iso2022.c:1668 src/iso2022.c:1694
+#, c-format
+msgid "Attempt to set invalid wide NRC map '%c'."
+msgstr ""
+"Përpjekje për të vendosur një hartë NRC të zgjeruar të pavlefshme '%c'."
+
+#: src/pty.c:329
 #, c-format
 msgid "Error adding `%s' to environment, continuing."
-msgstr "Gabim duke shtuar `%s' tek ambienti, duke vazhduar."
+msgstr "Gabim duke i shtuar `%s' ambientit, po vazhdoj."
 
 #. Give the user some clue as to why session logging is not
 #. * going to work (assuming we can open a pty using some other
 #. * method).
-#: src/pty.c:800
+#: src/pty.c:914
 #, c-format
 msgid "can not run %s"
-msgstr "Nuk mund të egzekutojë %s"
+msgstr "I pamundur ekzekutimi i %s"
 
-#: src/reaper.c:107
+#: src/reaper.c:156
 msgid "Error creating signal pipe."
-msgstr "Gabim duke krijuar drejtimin e sinjalit."
+msgstr "Gabim gjatë krijimit të pipe të sinjalit."
 
-#: src/trie.c:411
+#: src/trie.c:412
 #, c-format
 msgid "Duplicate (%s/%s)!"
 msgstr "Duplikim (%s/%s)!"
 
-#: src/vte.c:1450
+#: src/vte.c:1499
 #, c-format
 msgid "Error compiling regular expression \"%s\"."
-msgstr "Gabim duke kompiluar shprehjen e rregullt \"%s\"."
+msgstr "Gabim gjatë kompilimit të shprehjes së rregullt \"%s\"."
 
-#: src/vte.c:1972 src/vte.c:1981 src/vte.c:1993 src/vte.c:2011 src/vte.c:2017
-#: src/vte.c:2022
-#, c-format
-msgid "Unable to convert characters from %s to %s."
-msgstr "E pamundur të konvertohen karakteret nga %s në %s."
-
-#: src/vte.c:5556
+#: src/vte.c:5851
 #, c-format
 msgid "Got unexpected (key?) sequence `%s'."
-msgstr "U morr sekuencë ( çelës?) `%s'."
+msgstr "U mor një sekuencë ( kyç?) i papritur `%s'."
 
-#: src/vte.c:6655
+#: src/vte.c:6947
 #, c-format
 msgid "No handler for control sequence `%s' defined."
-msgstr "Asnjë suportues për sekuencën e kontrollit `%s' të përcaktuar."
+msgstr "Asnjë trajtues i prezgjedhur për sekuencën e kontrollit `%s'."
 
-#: src/vte.c:7441
+#: src/vte.c:7789
 #, c-format
 msgid "Error reading from child: %s."
-msgstr "Gabim në leximin nga procesi fëmijë: %s"
+msgstr "Gabim gjatë leximit nga proçesi bir: %s"
 
-#: src/vte.c:7625
+#: src/vte.c:7945
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr ""
-"Gabim (%s) duke konvertuar të dhënat nga procesi fëmijë, duke u ndërprerë."
+"Gabim (%s) duke konvertuar të dhënat për proçesin bir, do të lihen si ishin."
 
-#: src/vte.c:10022
-#, c-format
-msgid "Using fontset \"%s\", which is missing these character sets: %s."
-msgstr "Grupi i karakteeve në përdorim \"%s\", nuk ka këto karaktere: %s."
-
-#: src/vte.c:10663
-#, c-format
-msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
-msgstr ""
-"Dështoi karikimi i karaktereve Xft \"%s\", po karikoj karakteret default."
-
-#: src/vte.c:10675
-msgid "Failed to load default Xft font."
-msgstr "Dështoi në karikimin e karaktereve Xft."
-
-#: src/vte.c:10803
-#, c-format
-msgid "Failed to load font set \"%s\", falling back to default font."
-msgstr ""
-"Dështoi në karikimin e karaktereve\"%s\", duke u kthyer në karakteret "
-"default."
-
-#: src/vte.c:10815
-msgid "Failed to load default font, crashing or behaving abnormally."
-msgstr ""
-"Dështoi në karikimin e karaktereve default, duke shkuar në krash ose në "
-"funksionim të keq."
-
-#: src/vte.c:11103
+#: src/vte.c:10754
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
-msgstr "Gabim duke lexuar përmasën PTY, duke përdorur atë default: %s"
+msgstr ""
+"Gabim gjatë leximit të madhësisë PTY, do të përdoret vlera e prezgjedhur: %s."
 
-#: src/vte.c:11139
+#: src/vte.c:10790
 #, c-format
 msgid "Error setting PTY size: %s."
-msgstr "Gabim duke lexuar përmasën PTY: %s."
-
-#: src/vte.c:14044
-msgid "Error allocating draw, disabling Xft."
-msgstr "Gabim në vendosjen e vizatimit, duke disaktivizuar Xft."
-
-#: src/vte.c:14052
-msgid "Error allocating context, disabling Pango."
-msgstr "Gabim në vendosjen e kontekstit, duke disaktivizuar Pango."
-
-#: src/vte.c:14058
-msgid "Error allocating layout, disabling Pango."
-msgstr "Gabim në vendosjen e pamjes së jashtme, dukke disaktivizuar Pango."
+msgstr "Gabim gjatë vendosjes së madhësisë PTY: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15708
-msgid "g_iconv_open() failed setting word characters"
-msgstr "g_iconv_open() dështoi në rregullimin e karaktereve te fjalës"
+#: src/vte.c:15274
+msgid "_vte_conv_open() failed setting word characters"
+msgstr "_vte_conv_open() dështoi në vendosjen e gërmave të fjalës"
+
+#. Bail back to normal mode.
+#: src/vteapp.c:728
+msgid "Could not open console.\n"
+msgstr "E pamundur hapja e konsolës.\n"
+
+#: src/vteglyph.c:579
+#, c-format
+msgid "Unknown pixel mode %d.\n"
+msgstr "Metodë pixel %d e panjohur.\n"
+
+#: src/vtexft.c:712
+#, c-format
+msgid "Can not draw character U+%04x.\n"
+msgstr "I pamundur vizatimi i simbolit U+%04x.\n"

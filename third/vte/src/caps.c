@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: caps.c,v 1.1.1.1 2003-01-29 21:57:55 ghudson Exp $"
+#ident "$Id: caps.c,v 1.1.1.2 2004-09-27 21:01:15 ghudson Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <glib.h>
@@ -29,16 +29,16 @@
 #define PM  _VTE_CAP_PM
 #define APC _VTE_CAP_APC
 
-#define ENQ ""
-#define BEL ""
-#define BS  ""
-#define TAB "	"
-#define LF  "\n"
-#define VT  ""
-#define FF  ""
-#define CR  "\r"
-#define SO  ""
-#define SI  ""
+#define ENQ "\005"
+#define BEL "\007"
+#define BS  "\010"
+#define TAB "\011"
+#define LF  "\012"
+#define VT  "\013"
+#define FF  "\014"
+#define CR  "\015"
+#define SO  "\016"
+#define SI  "\017"
 
 /* This list combined from the Linux termcap(5) man page, and
  * termcap_&_terminfo by Strang, Mui, and O'Reilly. */
@@ -364,6 +364,8 @@ struct _vte_capability_quark _vte_terminal_capability_strings[] = {
  * version at Moy, Gildea, and Dickey. */
 struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{ENQ, "return-terminal-status", 0},
+	{VT,  "vertical-tab", 0},
+	{FF,  "form-feed", 0},
 
 	{ESC " F", "7-bit-controls", 0},
 	{ESC " G", "8-bit-controls", 0},
@@ -467,6 +469,8 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{CSI ">%dc", "send-secondary-device-attributes", 0},
 	{CSI "=c", "send-tertiary-device-attributes", 0},
 	{CSI "=%dc", "send-tertiary-device-attributes", 0},
+	{CSI "?c", "linux-console-cursor-attributes", 0},
+	{CSI "?%mc", "linux-console-cursor-attributes", 0},
 	{CSI "d", "line-position-absolute", 0},
 	{CSI "%dd", "line-position-absolute", 0},
 	{CSI ";f", "horizontal-and-vertical-position", 0},

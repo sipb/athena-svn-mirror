@@ -16,15 +16,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: mev.c,v 1.1.1.1 2003-01-29 21:57:51 ghudson Exp $"
+#ident "$Id: mev.c,v 1.1.1.2 2004-09-27 21:01:32 ghudson Exp $"
 #include "../config.h"
 #include <sys/types.h>
+#ifdef HAVE_SYS_TERMIOS_H
+#include <sys/termios.h>
+#endif
 #include <sys/time.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <string.h>
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#endif
 #include <unistd.h>
 #include <glib.h>
 #include "caps.h"
@@ -38,7 +43,7 @@ static enum {
 	tracking_mouse = 1000,
 	tracking_hilite = 1001,
 	tracking_cell_motion = 1002,
-	tracking_all_motion = 1003,
+	tracking_all_motion = 1003
 } tracking_mode = 0;
 
 static void
@@ -61,7 +66,7 @@ reset(void)
 static void
 clear(void)
 {
-	fprintf(stdout, "%s", 
+	fprintf(stdout, "%s",
 		_VTE_CAP_ESC "7"
 		_VTE_CAP_CSI "8;1H"
 		_VTE_CAP_CSI "1J"
@@ -198,8 +203,8 @@ parse(void)
 							  "[control]" :
 							  "";
 						motion = (b & 32) != 0;
-						x = bytes->data[i + 4] - 32; 
-						y = bytes->data[i + 5] - 32; 
+						x = bytes->data[i + 4] - 32;
+						y = bytes->data[i + 5] - 32;
 						fprintf(stdout, "%d %s%s%s(%s%s%s) at %d,%d\r\n",
 							button,
 							motion ? "motion " : "",
@@ -277,7 +282,7 @@ main(int argc, char **argv)
 
 	flags = fcntl(STDIN_FILENO, F_GETFL);
 	fcntl(STDIN_FILENO, F_SETFL, flags & ~(O_NONBLOCK));
-	fprintf(stdout, "%s", 
+	fprintf(stdout, "%s",
 		_VTE_CAP_CSI "9;1H"
 		_VTE_CAP_CSI "2K"
 		_VTE_CAP_CSI "2J");
@@ -295,6 +300,7 @@ main(int argc, char **argv)
 			break;
 		}
 	} while (!stop);
+	reset();
 	fcntl(STDIN_FILENO, F_SETFL, flags);
 
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &original) != 0) {

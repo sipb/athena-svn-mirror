@@ -16,10 +16,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: dumpkeys.c,v 1.1.1.1 2003-01-29 21:57:34 ghudson Exp $"
+#ident "$Id: dumpkeys.c,v 1.1.1.2 2004-09-27 21:01:32 ghudson Exp $"
 #include "../config.h"
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_TERMIOS_H
+#include <sys/termios.h>
 #endif
 #include <sys/time.h>
 #include <sys/types.h>
@@ -29,11 +32,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#endif
 #include <unistd.h>
 #include <glib.h>
 
-#define ESC ""
+#define ESC "\033"
 #define MODE_APPLICATION_KEYPAD		ESC "="
 #define MODE_NORMAL_KEYPAD		ESC ">"
 #define MODE_APPLICATION_CURSOR_KEYS	1
@@ -61,7 +66,7 @@ decset(int mode, gboolean value)
 static void
 home(void)
 {
-       	g_print(ESC "[1;1H");
+	g_print(ESC "[1;1H");
 }
 
 /* Clear the screen. */

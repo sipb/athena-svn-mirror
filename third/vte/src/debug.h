@@ -21,7 +21,9 @@
 #ifndef vte_debug_h_included
 #define vte_debug_h_included
 
-#ident "$Id: debug.h,v 1.1.1.1 2003-01-29 21:57:38 ghudson Exp $"
+#ident "$Id: debug.h,v 1.1.1.2 2004-09-27 21:01:00 ghudson Exp $"
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 

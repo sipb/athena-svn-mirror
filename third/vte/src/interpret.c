@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001,2002 Red Hat, Inc.
+ * Copyright (C) 2001,2002,2003 Red Hat, Inc.
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: interpret.c,v 1.1.1.1 2003-01-29 21:57:36 ghudson Exp $"
+#ident "$Id: interpret.c,v 1.1.1.2 2004-09-27 21:01:18 ghudson Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>
@@ -33,7 +33,7 @@
 #include "debug.h"
 #include "iso2022.h"
 #include "matcher.h"
-#include "termcap.h"
+#include "vtetc.h"
 
 int
 main(int argc, char **argv)
@@ -41,24 +41,21 @@ main(int argc, char **argv)
 	char *terminal = NULL;
 	struct _vte_matcher *matcher = NULL;
 	struct _vte_termcap *termcap = NULL;
-	GByteArray *array = NULL;
-	int i, j;
+	struct _vte_buffer *buffer = NULL;
+	GArray *array;
+	int i, j, l;
 	char c;
 	GValue *value;
 	FILE *infile = NULL;
-	struct _vte_iso2022 *substitutions, *tmpsubst;
+	struct _vte_iso2022_state *subst;
 	const char *tmp;
 	GQuark quark;
 	GValueArray *values;
-	GError *error = NULL;
-	gunichar *ubuf;
-	gssize substlen;
-	gsize ubuflen;
 
 	_vte_debug_parse_string(getenv("VTE_DEBUG_FLAGS"));
 
 	if (argc < 2) {
-		printf("usage: %s terminal [file]\n", argv[0]);
+		g_print("usage: %s terminal [file]\n", argv[0]);
 		return 1;
 	}
 
@@ -81,7 +78,8 @@ main(int argc, char **argv)
 	if (termcap == NULL) {
 		termcap = _vte_termcap_new("/etc/termcap");
 	}
-	array = g_byte_array_new();
+	buffer = _vte_buffer_new();
+	array = g_array_new(TRUE, TRUE, sizeof(gunichar));
 
 	for (i = 0;
 	     _vte_terminal_capability_strings[i].capability != NULL;
@@ -107,127 +105,85 @@ main(int argc, char **argv)
 				 g_quark_from_static_string(code));
 	}
 
-	substitutions = _vte_iso2022_new();
+	subst = _vte_iso2022_state_new(NULL, NULL, NULL);
 
 	while (fread(&c, 1, 1, infile) == 1) {
-		g_byte_array_append(array, (guint8*) &c, 1);
-		for (i = 1; i <= array->len; i++) {
-			ubuf = (gunichar*) g_convert((const gchar*)array->data,
-						     i,
-						     _vte_matcher_wide_encoding(),
-						     "UTF-8",
-						     NULL, &ubuflen, &error);
-			if (error != NULL) {
-				if (error->code ==
-				    G_CONVERT_ERROR_ILLEGAL_SEQUENCE) {
-					g_print("Munging input byte %02x->?.\n",
-						array->data[0]);
-					array->data[0] = '?';
-				} else
-				if (error->code !=
-				    G_CONVERT_ERROR_PARTIAL_INPUT) {
-					g_print("%s\n",
-						error->message ?
-						error->message :
-						"?");
-					g_print("Data: ");
-					for (j = 0; j < array->len; j++) {
-						if (j > 0) {
-							g_print(", ");
-						}
-						g_print("0x%x", array->data[j]);
-					}
-					g_print("\n");
-				}
-				g_clear_error(&error);
-				continue;
-			}
-			tmpsubst = _vte_iso2022_copy(substitutions);
-			substlen = _vte_iso2022_substitute(tmpsubst,
-							   ubuf,
-							   ubuflen / sizeof(gunichar),
-							   ubuf,
-							   matcher);
-			if (substlen < 0) {
-				/* Incomplete state-change. */
-				_vte_iso2022_free(tmpsubst);
-				g_free(ubuf);
-				continue;
-			}
-			if (substlen == 0) {
-				/* State change. (We gave it more than one
-				 * character, so that one's and all of the
-				 * others have been consumed.) */
-				_vte_iso2022_free(substitutions);
-				substitutions = tmpsubst;
-				while (array->len > 0) {
-					g_byte_array_remove_index(array, 0);
-				}
-				g_free(ubuf);
+		_vte_buffer_append(buffer, &c, 1);
+	}
+	_vte_iso2022_process(subst, buffer, array);
+
+	i = 0;
+	while (i <= array->len) {
+		tmp = NULL;
+		values = NULL;
+		for (j = 1; j < (array->len - i); j++) {
+			_vte_matcher_match(matcher,
+					   &g_array_index(array, gunichar, i),
+					   j,
+					   &tmp,
+					   NULL,
+					   &quark,
+					   &values);
+			if ((tmp == NULL) || (strlen(tmp) > 0)) {
 				break;
 			}
-
-			_vte_matcher_match(matcher, ubuf, substlen,
-					   &tmp, NULL, &quark, &values);
-			if (tmp != NULL) {
-				if (strlen(tmp) > 0) {
-					printf("%s(", g_quark_to_string(quark));
-					for (j = 0; (values != NULL) && (j < values->n_values); j++) {
-						if (j > 0) {
-							printf(", ");
-						}
-						value = g_value_array_get_nth(values, j);
-						if (G_VALUE_HOLDS_LONG(value)) {
-							printf("%ld",
-								g_value_get_long(value));
-						}
-						if (G_VALUE_HOLDS_STRING(value)) {
-							printf("`%s'",
-								g_value_get_string(value));
-						}
-						if (G_VALUE_HOLDS_POINTER(value)) {
-							printf("`%ls'",
-							       (wchar_t*) g_value_get_pointer(value));
-						}
-					}
-					if (values != NULL) {
-						g_value_array_free(values);
-					}
-					for (j = 0; j < i; j++) {
-						g_byte_array_remove_index(array, 0);
-					}
-					printf(")\n");
-					g_free(ubuf);
-					break;
-				} else {
-					g_free(ubuf);
-					continue;
-				}
-			} else {
-				while (array->len > 0) {
-					g_byte_array_remove_index(array, 0);
-				}
-				for (j = 0; j < substlen; j++) {
-					if (ubuf[j] < 32) {
-						printf("`^%c'\n", ubuf[j] + 64);
-					} else
-					if (ubuf[j] < 127) {
-						printf("`%c'\n", ubuf[j]);
-					} else {
-						printf("`0x%x'\n", ubuf[j]);
-					}
-				}
-			}
-			g_free(ubuf);
 		}
+		if (i + j == array->len) {
+			g_print("End of data.\n");
+			break;
+		}
+		if (tmp == NULL) {
+			gunichar c;
+			c = g_array_index(array, gunichar, i);
+			if (VTE_ISO2022_HAS_ENCODED_WIDTH(c)) {
+				c &= ~VTE_ISO2022_ENCODED_WIDTH_MASK;
+			}
+			if (c < 32) {
+				g_print("`^%c'\n", c + 64);
+			} else
+			if (c < 127) {
+				g_print("`%c'\n", c);
+			} else {
+				g_print("`0x%x'\n", c);
+			}
+			i++;
+			continue;
+		}
+
+		l = j;
+		g_print("%s(", g_quark_to_string(quark));
+		for (j = 0; (values != NULL) && (j < values->n_values); j++) {
+			if (j > 0) {
+				g_print(", ");
+			}
+			value = g_value_array_get_nth(values, j);
+			if (G_VALUE_HOLDS_LONG(value)) {
+				g_print("%ld", g_value_get_long(value));
+			}
+			if (G_VALUE_HOLDS_STRING(value)) {
+				g_print("`%s'",
+				        g_value_get_string(value));
+			}
+			if (G_VALUE_HOLDS_POINTER(value)) {
+				g_print("`%ls'",
+				        (wchar_t*)
+				        g_value_get_pointer(value));
+			}
+		}
+		if (values != NULL) {
+			_vte_matcher_free_params_array(values);
+		}
+		g_print(")\n");
+		i += l;
 	}
 
 	if (infile != stdin) {
 		fclose(infile);
 	}
 
-	_vte_iso2022_free(substitutions);
-	g_byte_array_free(array, TRUE);
+	_vte_iso2022_state_free(subst);
+	_vte_buffer_free(buffer);
+	g_array_free(array, TRUE);
 	_vte_termcap_free(termcap);
 	_vte_matcher_free(matcher);
 	return 0;

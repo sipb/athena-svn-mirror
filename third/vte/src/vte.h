@@ -19,7 +19,7 @@
 #ifndef vte_vte_h_included
 #define vte_vte_h_included
 
-#ident "$Id: vte.h,v 1.1.1.1 2003-01-29 21:57:45 ghudson Exp $"
+#ident "$Id: vte.h,v 1.1.1.2 2004-09-27 21:01:37 ghudson Exp $"
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -62,6 +62,47 @@ struct _VteTerminalClass {
 	/*< public > */
 	/* Inherited parent class. */
 	GtkWidgetClass parent_class;
+
+	/*< protected > */
+	/* Default signal handlers. */
+	void (*eof)(VteTerminal* terminal);
+	void (*child_exited)(VteTerminal* terminal);
+	void (*emulation_changed)(VteTerminal* terminal);
+	void (*encoding_changed)(VteTerminal* terminal);
+	void (*char_size_changed)(VteTerminal* terminal, guint char_width, guint char_height);
+	void (*window_title_changed)(VteTerminal* terminal);
+	void (*icon_title_changed)(VteTerminal* terminal);
+	void (*selection_changed)(VteTerminal* terminal);
+	void (*contents_changed)(VteTerminal* terminal);
+	void (*cursor_moved)(VteTerminal* terminal);
+	void (*status_line_changed)(VteTerminal* terminal);
+	void (*commit)(VteTerminal* terminal, gchar *text, guint size);
+
+	void (*deiconify_window)(VteTerminal* terminal);
+	void (*iconify_window)(VteTerminal* terminal);
+	void (*raise_window)(VteTerminal* terminal);
+	void (*lower_window)(VteTerminal* terminal);
+	void (*refresh_window)(VteTerminal* terminal);
+	void (*restore_window)(VteTerminal* terminal);
+	void (*maximize_window)(VteTerminal* terminal);
+	void (*resize_window)(VteTerminal* terminal, guint width, guint height);
+	void (*move_window)(VteTerminal* terminal, guint x, guint y);
+
+	void (*increase_font_size)(VteTerminal* terminal);
+	void (*decrease_font_size)(VteTerminal* terminal);
+
+	void (*text_modified)(VteTerminal* terminal);
+	void (*text_inserted)(VteTerminal* terminal);
+	void (*text_deleted)(VteTerminal* terminal);
+	void (*text_scrolled)(VteTerminal* terminal, gint delta);
+
+	/* Padding for future expansion. */
+	void (*vte_reserved1)(void);
+	void (*vte_reserved2)(void);
+	void (*vte_reserved3)(void);
+	void (*vte_reserved4)(void);
+	void (*vte_reserved5)(void);
+	void (*vte_reserved6)(void);
 
 	/*< private > */
 	/* Signals we might emit. */
@@ -113,7 +154,22 @@ typedef enum {
 	VTE_ERASE_DELETE_SEQUENCE
 } VteTerminalEraseBinding;
 
+/* Values for the anti alias setting */
+typedef enum {
+	VTE_ANTI_ALIAS_USE_DEFAULT,
+	VTE_ANTI_ALIAS_FORCE_ENABLE,
+	VTE_ANTI_ALIAS_FORCE_DISABLE
+} VteTerminalAntiAlias;
+
 /* The structure we return as the supplemental attributes for strings. */
+struct _VteCharAttributes {
+	long row, column;
+	GdkColor fore, back;
+	gboolean underline:1, strikethrough:1;
+};
+typedef struct _VteCharAttributes VteCharAttributes;
+
+/* The name of the same structure in the 0.10 series, for API compatibility. */
 struct vte_char_attributes {
 	long row, column;
 	GdkColor fore, back;
@@ -123,6 +179,7 @@ struct vte_char_attributes {
 /* The widget's type. */
 GtkType vte_terminal_get_type(void);
 GtkType vte_terminal_erase_binding_get_type(void);
+GtkType vte_terminal_anti_alias_get_type(void);
 
 #define VTE_TYPE_TERMINAL		(vte_terminal_get_type())
 #define VTE_TERMINAL(obj)		(GTK_CHECK_CAST((obj),\
@@ -140,6 +197,9 @@ GtkType vte_terminal_erase_binding_get_type(void);
 #define VTE_TYPE_TERMINAL_ERASE_BINDING	(vte_terminal_erase_binding_get_type())
 #define VTE_IS_TERMINAL_ERASE_BINDING(obj)	GTK_CHECK_TYPE((obj),\
 						VTE_TYPE_TERMINAL_ERASE_BINDING)
+#define VTE_TYPE_TERMINAL_ANTI_ALIAS	(vte_terminal_anti_alias_get_type())
+#define VTE_IS_TERMINAL_ANTI_ALIAS(obj)		GTK_CHECK_TYPE((obj),\
+						VTE_TYPE_TERMINAL_ANTI_ALIAS)
 
 /* You can get by with just these two functions. */
 GtkWidget *vte_terminal_new(void);
@@ -149,6 +209,13 @@ pid_t vte_terminal_fork_command(VteTerminal *terminal,
 				gboolean lastlog,
 				gboolean utmp,
 				gboolean wtmp);
+
+/* Users of libzvt may find this useful. */
+pid_t vte_terminal_forkpty(VteTerminal *terminal,
+			   char **envv, const char *directory,
+			   gboolean lastlog,
+			   gboolean utmp,
+			   gboolean wtmp);
 
 /* Send data to the terminal to display, or to the terminal's forked command
  * to handle in some way.  If it's 'cat', they should be the same. */
@@ -172,6 +239,7 @@ void vte_terminal_set_audible_bell(VteTerminal *terminal, gboolean is_audible);
 gboolean vte_terminal_get_audible_bell(VteTerminal *terminal);
 void vte_terminal_set_visible_bell(VteTerminal *terminal, gboolean is_visible);
 gboolean vte_terminal_get_visible_bell(VteTerminal *terminal);
+void vte_terminal_set_scroll_background(VteTerminal *terminal, gboolean scroll);
 void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll);
 void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal,
 					  gboolean scroll);
@@ -185,6 +253,10 @@ void vte_terminal_set_color_foreground(VteTerminal *terminal,
 				       const GdkColor *foreground);
 void vte_terminal_set_color_background(VteTerminal *terminal,
 				       const GdkColor *background);
+void vte_terminal_set_color_cursor(VteTerminal *terminal,
+				   const GdkColor *cursor_background);
+void vte_terminal_set_color_highlight(VteTerminal *terminal,
+				      const GdkColor *highlight_background);
 void vte_terminal_set_colors(VteTerminal *terminal,
 			     const GdkColor *foreground,
 			     const GdkColor *background,
@@ -196,6 +268,8 @@ void vte_terminal_set_default_colors(VteTerminal *terminal);
 void vte_terminal_set_background_image(VteTerminal *terminal, GdkPixbuf *image);
 void vte_terminal_set_background_image_file(VteTerminal *terminal,
 					    const char *path);
+void vte_terminal_set_background_tint_color(VteTerminal *terminal,
+					    const GdkColor *color);
 void vte_terminal_set_background_saturation(VteTerminal *terminal,
 					    double saturation);
 void vte_terminal_set_background_transparent(VteTerminal *terminal,
@@ -213,8 +287,14 @@ void vte_terminal_im_append_menuitems(VteTerminal *terminal,
 
 /* Set or retrieve the current font. */
 void vte_terminal_set_font(VteTerminal *terminal,
-                           const PangoFontDescription *font_desc);
+			   const PangoFontDescription *font_desc);
+void vte_terminal_set_font_full(VteTerminal *terminal,
+				const PangoFontDescription *font_desc,
+				VteTerminalAntiAlias antialias);
 void vte_terminal_set_font_from_string(VteTerminal *terminal, const char *name);
+void vte_terminal_set_font_from_string_full(VteTerminal *terminal,
+					    const char *name,
+					    VteTerminalAntiAlias antialias);
 const PangoFontDescription *vte_terminal_get_font(VteTerminal *terminal);
 gboolean vte_terminal_get_using_xft(VteTerminal *terminal);
 void vte_terminal_set_allow_bold(VteTerminal *terminal, gboolean allow_bold);
@@ -246,7 +326,7 @@ void vte_terminal_reset(VteTerminal *terminal, gboolean full,
 /* Read the contents of the terminal, using a callback function to determine
  * if a particular location on the screen (0-based) is interesting enough to
  * include.  Each byte in the returned string will have a corresponding
- * struct vte_char_attributes in the passed GArray, if the array was not NULL.
+ * VteCharAttributes structure in the passed GArray, if the array was not NULL.
  * Note that it will have one entry per byte, not per character, so indexes
  * should match up exactly. */
 char *vte_terminal_get_text(VteTerminal *terminal,
@@ -256,6 +336,13 @@ char *vte_terminal_get_text(VteTerminal *terminal,
 						   gpointer data),
 			    gpointer data,
 			    GArray *attributes);
+char *vte_terminal_get_text_include_trailing_spaces(VteTerminal *terminal,
+						    gboolean(*is_selected)(VteTerminal *terminal,
+									   glong column,
+									   glong row,
+									   gpointer data),
+						    gpointer data,
+						    GArray *attributes);
 char *vte_terminal_get_text_range(VteTerminal *terminal,
 				  glong start_row, glong start_col,
 				  glong end_row, glong end_col,
@@ -274,6 +361,11 @@ void vte_terminal_match_clear_all(VteTerminal *terminal);
 /* Add a matching expression, returning the tag the widget assigns to that
  * expression. */
 int vte_terminal_match_add(VteTerminal *terminal, const char *match);
+/* Set the cursor to be used when the pointer is over a given match. */
+void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag,
+				   GdkCursor *cursor);
+void vte_terminal_match_set_cursor_type(VteTerminal *terminal,
+					int tag, GdkCursorType cursor_type);
 /* Remove a matching expression by tag. */
 void vte_terminal_match_remove(VteTerminal *terminal, int tag);
 
@@ -287,6 +379,7 @@ char *vte_terminal_match_check(VteTerminal *terminal,
 /* Set the emulation type.  Most of the time you won't need this. */
 void vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation);
 const char *vte_terminal_get_emulation(VteTerminal *terminal);
+const char *vte_terminal_get_default_emulation(VteTerminal *terminal);
 
 /* Set the character encoding.  Most of the time you won't need this. */
 void vte_terminal_set_encoding(VteTerminal *terminal, const char *codeset);

@@ -19,7 +19,7 @@
 #ifndef vte_reaper_h_included
 #define vte_reaper_h_included
 
-#ident "$Id: reaper.h,v 1.1.1.1 2003-01-29 21:57:38 ghudson Exp $"
+#ident "$Id: reaper.h,v 1.1.1.2 2004-09-27 21:01:39 ghudson Exp $"
 
 #include <sys/wait.h>
 #include <signal.h>
@@ -58,6 +58,7 @@ GType vte_reaper_get_type(void);
 								   VteReaperClass))
 
 VteReaper *vte_reaper_get(void);
+int vte_reaper_add_child(GPid pid);
 
 G_END_DECLS
 

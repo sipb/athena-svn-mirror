@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*- */
+/* -- THIS FILE IS GENERATE - DO NOT EDIT *//* -*- Mode: C; c-basic-offset: 4 -*- */
 
 #include <Python.h>
 
@@ -45,7 +45,7 @@ _wrap_vte_terminal_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 
-#line 15 "vte.override"
+#line 75 "vte.override"
 
 static PyObject *
 _wrap_vte_terminal_fork_command(PyGObject * self, PyObject * args,
@@ -112,42 +112,80 @@ _wrap_vte_terminal_fork_command(PyGObject * self, PyObject * args,
 					(logwtmp != NULL) &&
 					PyObject_IsTrue(logwtmp));
 
+	if (envv) {
+		g_free(envv);
+	}
+
 	if (argv) {
 		g_free(argv);
 	}
 
 	return PyInt_FromLong(pid);
 }
-#line 122 "vte.c"
+#line 126 "vte.c"
 
 
+#line 17 "vte.override"
 static PyObject *
 _wrap_vte_terminal_feed(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "data", "length", NULL };
-    char *data;
-    int length;
+	static char *kwlist[] = { "data", "length", NULL };
+	char *data;
+	int length;
+	PyObject *length_obj = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "si:VteTerminal.feed", kwlist, &data, &length))
-        return NULL;
-    vte_terminal_feed(VTE_TERMINAL(self->obj), data, length);
-    Py_INCREF(Py_None);
-    return Py_None;
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+					 "s#|O:VteTerminal.feed",
+					 kwlist, &data, &length, &length_obj)) {
+		return NULL;
+	}
+	if ((length_obj != NULL) && PyNumber_Check(length_obj)) {
+		PyObject *intobj;
+		intobj = PyNumber_Int(length_obj);
+		if (intobj) {
+			if (PyInt_AsLong(intobj) != -1) {
+				length = PyInt_AsLong(intobj);
+			}
+			Py_DECREF(intobj);
+		}
+	}
+	vte_terminal_feed(VTE_TERMINAL(self->obj), data, length);
+	Py_INCREF(Py_None);
+	return Py_None;
 }
+#line 157 "vte.c"
 
+
+#line 46 "vte.override"
 static PyObject *
 _wrap_vte_terminal_feed_child(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "data", "length", NULL };
-    char *data;
-    int length;
+	static char *kwlist[] = { "data", "length", NULL };
+	char *data;
+	int length;
+	PyObject *length_obj = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "si:VteTerminal.feed_child", kwlist, &data, &length))
-        return NULL;
-    vte_terminal_feed_child(VTE_TERMINAL(self->obj), data, length);
-    Py_INCREF(Py_None);
-    return Py_None;
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+					 "s#|O:VteTerminal.feed_child",
+					 kwlist, &data, &length, &length_obj)) {
+		return NULL;
+	}
+	if ((length_obj != NULL) && PyNumber_Check(length_obj)) {
+		PyObject *intobj;
+		intobj = PyNumber_Int(length_obj);
+		if (intobj) {
+			if (PyInt_AsLong(intobj) != -1) {
+				length = PyInt_AsLong(intobj);
+			}
+			Py_DECREF(intobj);
+		}
+	}
+	vte_terminal_feed_child(VTE_TERMINAL(self->obj), data, length);
+	Py_INCREF(Py_None);
+	return Py_None;
 }
+#line 188 "vte.c"
+
 
 static PyObject *
 _wrap_vte_terminal_copy_clipboard(PyGObject *self)
@@ -245,6 +283,19 @@ _wrap_vte_terminal_get_visible_bell(PyGObject *self)
 }
 
 static PyObject *
+_wrap_vte_terminal_set_scroll_background(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "scroll", NULL };
+    int scroll;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:VteTerminal.set_scroll_background", kwlist, &scroll))
+        return NULL;
+    vte_terminal_set_scroll_background(VTE_TERMINAL(self->obj), scroll);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
 _wrap_vte_terminal_set_scroll_on_output(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "scroll", NULL };
@@ -266,6 +317,26 @@ _wrap_vte_terminal_set_scroll_on_keystroke(PyGObject *self, PyObject *args, PyOb
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:VteTerminal.set_scroll_on_keystroke", kwlist, &scroll))
         return NULL;
     vte_terminal_set_scroll_on_keystroke(VTE_TERMINAL(self->obj), scroll);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_set_color_dim(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "dim", NULL };
+    PyObject *py_dim;
+    GdkColor *dim = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:VteTerminal.set_color_dim", kwlist, &py_dim))
+        return NULL;
+    if (pyg_boxed_check(py_dim, GDK_TYPE_COLOR))
+        dim = pyg_boxed_get(py_dim, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "dim should be a GdkColor");
+        return NULL;
+    }
+    vte_terminal_set_color_dim(VTE_TERMINAL(self->obj), dim);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -330,7 +401,47 @@ _wrap_vte_terminal_set_color_background(PyGObject *self, PyObject *args, PyObjec
     return Py_None;
 }
 
-#line 308 "vte.override"
+static PyObject *
+_wrap_vte_terminal_set_color_cursor(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "cursor_background", NULL };
+    PyObject *py_cursor_background;
+    GdkColor *cursor_background = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:VteTerminal.set_color_cursor", kwlist, &py_cursor_background))
+        return NULL;
+    if (pyg_boxed_check(py_cursor_background, GDK_TYPE_COLOR))
+        cursor_background = pyg_boxed_get(py_cursor_background, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "cursor_background should be a GdkColor");
+        return NULL;
+    }
+    vte_terminal_set_color_cursor(VTE_TERMINAL(self->obj), cursor_background);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_set_color_highlight(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "highlight_background", NULL };
+    PyObject *py_highlight_background;
+    GdkColor *highlight_background = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:VteTerminal.set_color_highlight", kwlist, &py_highlight_background))
+        return NULL;
+    if (pyg_boxed_check(py_highlight_background, GDK_TYPE_COLOR))
+        highlight_background = pyg_boxed_get(py_highlight_background, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "highlight_background should be a GdkColor");
+        return NULL;
+    }
+    vte_terminal_set_color_highlight(VTE_TERMINAL(self->obj), highlight_background);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+#line 461 "vte.override"
 static PyObject *
 _wrap_vte_terminal_set_colors(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -357,7 +468,7 @@ _wrap_vte_terminal_set_colors(PyGObject *self, PyObject *args, PyObject *kwargs)
 	palette_size = PySequence_Length(py_palette);
         palette = g_malloc(sizeof(GdkColor) * palette_size);
 	for (i = 0; i < palette_size; i++) {
-	    item = PySequence_GetItem(py_palette, i);
+	    item = PySequence_GetItem(py_palette, i); /* INCREFs */
             if (!pyg_boxed_check(item, GDK_TYPE_COLOR)) {
 		g_free(palette);
         	PyErr_SetString(PyExc_TypeError, "palette should be a list of GdkColors");
@@ -375,7 +486,7 @@ _wrap_vte_terminal_set_colors(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
-#line 379 "vte.c"
+#line 490 "vte.c"
 
 
 static PyObject *
@@ -408,6 +519,26 @@ _wrap_vte_terminal_set_background_image_file(PyGObject *self, PyObject *args, Py
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:VteTerminal.set_background_image_file", kwlist, &path))
         return NULL;
     vte_terminal_set_background_image_file(VTE_TERMINAL(self->obj), path);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_set_background_tint_color(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "color", NULL };
+    PyObject *py_color;
+    GdkColor *color = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:VteTerminal.set_background_tint_color", kwlist, &py_color))
+        return NULL;
+    if (pyg_boxed_check(py_color, GDK_TYPE_COLOR))
+        color = pyg_boxed_get(py_color, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "color should be a GdkColor");
+        return NULL;
+    }
+    vte_terminal_set_background_tint_color(VTE_TERMINAL(self->obj), color);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -498,6 +629,29 @@ _wrap_vte_terminal_set_font(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 
 static PyObject *
+_wrap_vte_terminal_set_font_full(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "font_desc", "antialias", NULL };
+    PyObject *py_font_desc, *py_antialias = NULL;
+    PangoFontDescription *font_desc = NULL;
+    VteTerminalAntiAlias antialias;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO:VteTerminal.set_font_full", kwlist, &py_font_desc, &py_antialias))
+        return NULL;
+    if (pyg_boxed_check(py_font_desc, PANGO_TYPE_FONT_DESCRIPTION))
+        font_desc = pyg_boxed_get(py_font_desc, PangoFontDescription);
+    else {
+        PyErr_SetString(PyExc_TypeError, "font_desc should be a PangoFontDescription");
+        return NULL;
+    }
+    if (pyg_enum_get_value(VTE_TYPE_TERMINAL_ANTI_ALIAS, py_antialias, (gint *)&antialias))
+        return NULL;
+    vte_terminal_set_font_full(VTE_TERMINAL(self->obj), font_desc, antialias);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
 _wrap_vte_terminal_set_font_from_string(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "name", NULL };
@@ -506,6 +660,23 @@ _wrap_vte_terminal_set_font_from_string(PyGObject *self, PyObject *args, PyObjec
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:VteTerminal.set_font_from_string", kwlist, &name))
         return NULL;
     vte_terminal_set_font_from_string(VTE_TERMINAL(self->obj), name);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_set_font_from_string_full(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "name", "antialias", NULL };
+    char *name;
+    PyObject *py_antialias = NULL;
+    VteTerminalAntiAlias antialias;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sO:VteTerminal.set_font_from_string_full", kwlist, &name, &py_antialias))
+        return NULL;
+    if (pyg_enum_get_value(VTE_TYPE_TERMINAL_ANTI_ALIAS, py_antialias, (gint *)&antialias))
+        return NULL;
+    vte_terminal_set_font_from_string_full(VTE_TERMINAL(self->obj), name, antialias);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -674,34 +845,39 @@ _wrap_vte_terminal_reset(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 
-#line 89 "vte.override"
+#line 235 "vte.override"
 
 static gboolean
 call_callback(VteTerminal *terminal, glong column, glong row, gpointer data)
 {
-    PyObject *cb, *self, *args, *result;
+    PyObject *cb, *args, *result;
     gboolean ret;
-    int i;
-    if (!PyArg_ParseTuple(data, "|O:call_callback", &args)) {
+
+    if (!PySequence_Check(data)) {
+        PyErr_SetString(PyExc_TypeError, "expected argument list in a tuple");
         return FALSE;
     }
-    args = PyList_New(0);
-    cb = PySequence_GetItem(args, 0); /* INCREFs */
-    Py_DECREF(cb);
-    self = PySequence_GetItem(args, 1); /* INCREFs */
-    Py_DECREF(self);
-    PyList_Append(args, self);
-    PyList_Append(args, PyInt_FromLong(column));
-    PyList_Append(args, PyInt_FromLong(row));
-    for (i = 2; i < PySequence_Length(args); i++) {
-        PyObject *item = PySequence_GetItem(args, i);
-	Py_DECREF(item);
-        PyList_Append(args, item);
+
+    cb = PySequence_GetItem(data, 0); /* INCREFs */
+    Py_XDECREF(cb);
+
+    if (!PyCallable_Check(cb)) {
+        PyErr_SetString(PyExc_TypeError, "callback is not a callable object");
+        return FALSE;
     }
+
+    args = PyTuple_New(4);
+    PyTuple_SetItem(args, 0, PySequence_GetItem(data, 1));
+    PyTuple_SetItem(args, 1, PyInt_FromLong(column));
+    PyTuple_SetItem(args, 2, PyInt_FromLong(row));
+    PyTuple_SetItem(args, 3, PySequence_GetItem(data, 2));
+
     result = PyObject_CallObject(cb, args);
-    ret = (result && PyObject_IsTrue(result));
     Py_DECREF(args);
-    Py_DECREF(result);
+    
+    ret = (result && PyObject_IsTrue(result));
+    Py_XDECREF(result);
+
     return ret;
 }
 
@@ -710,29 +886,31 @@ always_true(VteTerminal *terminal, glong row, glong column, gpointer data)
 {
     return TRUE;
 }
+
 static PyObject *
 _wrap_vte_terminal_get_text(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "callback", "attributes", "data", NULL };
+    static char *kwlist[] = { "callback", "get_attributes", "data", NULL };
     PyObject *callback = NULL, *do_attr = NULL, *data = NULL;
     PyObject *callback_and_args = NULL;
     GArray *attrs = NULL;
-    PyObject *text;
+    char *text;
     PyObject *py_attrs;
     int count;
+    long length;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOO:terminal_get_text",
-				     kwlist, &callback, &do_attr, &args)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|OO:terminal_get_text",
+				     kwlist, &callback, &do_attr, &data)) {
         return NULL;
     }
 
-    if (do_attr != NULL && do_attr != Py_None) {
-	attrs = g_array_new(FALSE, TRUE, sizeof(struct vte_char_attributes));
+    if ((do_attr != NULL) && (PyObject_IsTrue(do_attr))) {
+	attrs = g_array_new(FALSE, TRUE, sizeof(VteCharAttributes));
     } else {
     	attrs = NULL;
     }
 
-    if ((callback != NULL) && (callback != Py_None)) {
+    if (callback != NULL) {
 	if (!PyCallable_Check(callback)) {
 	    PyErr_SetString(PyExc_TypeError, "1st argument not callable.");
             if (attrs) {
@@ -740,41 +918,38 @@ _wrap_vte_terminal_get_text(PyGObject *self, PyObject *args, PyObject *kwargs)
             }
 	    return NULL;
 	}
+
+        callback_and_args = PyTuple_New(3);
+        Py_INCREF(callback); /* PyTuple_SetItem will assume ownership. */
+        PyTuple_SetItem(callback_and_args, 0, callback);
+        Py_INCREF(self); /* PyTuple_SetItem will assume ownership. */
+        PyTuple_SetItem(callback_and_args, 1, (PyObject*) self);
+	if (data != NULL) {
+	    Py_INCREF(data); /* PyTuple_SetItem will assume ownership. */
+            PyTuple_SetItem(callback_and_args, 2, data);
+	} else {
+            PyTuple_SetItem(callback_and_args, 2, PyTuple_New(0));
+	}
+        text = vte_terminal_get_text(VTE_TERMINAL(self->obj),
+				     call_callback,
+				     callback_and_args,
+				     attrs);
+        Py_DECREF(callback_and_args);
     } else {
-    	callback = NULL;
+        text = vte_terminal_get_text(VTE_TERMINAL(self->obj),
+				     always_true,
+				     NULL,
+				     attrs);
     }
-
-    if (callback != NULL) {
-        callback_and_args = PyList_New(0);
-        PyList_Append(callback_and_args, callback);
-        PyList_Append(callback_and_args, (PyObject*) self);
-        if (PyList_Check(data)) {
-            for (count = 0; count < PyList_Size(data); count++) {
-                PyList_Append(callback_and_args, PyList_GetItem(data, count));
-            }
-        } else {
-            PyList_Append(callback_and_args, data);
-        }
-    }
-
-    text = PyString_FromString(vte_terminal_get_text(VTE_TERMINAL(self->obj),
-						     callback ?
-						     call_callback :
-						     always_true,
-						     callback ?
-						     callback_and_args :
-						     NULL,
-						     attrs));
-    Py_XDECREF(callback_and_args);
 
     if (attrs) {
 	py_attrs = PyTuple_New(attrs->len);
 	for (count = 0; count < attrs->len; count++) {
-	    struct vte_char_attributes *cht;
+	    VteCharAttributes *cht;
 	    PyObject *py_char_attr;
 	    PyObject *py_gdkcolor;
 
-	    cht = &g_array_index(attrs, struct vte_char_attributes, count);
+	    cht = &g_array_index(attrs, VteCharAttributes, count);
 	    py_char_attr = PyDict_New();
 	    PyDict_SetItemString(py_char_attr, "row", PyInt_FromLong(cht->row));
 	    PyDict_SetItemString(py_char_attr, "column", PyInt_FromLong(cht->column));
@@ -791,43 +966,46 @@ _wrap_vte_terminal_get_text(PyGObject *self, PyObject *args, PyObject *kwargs)
 
 	    PyTuple_SetItem(py_attrs, count, py_char_attr);
 	}
+	length = attrs->len;
 	g_array_free(attrs, TRUE);
-	return Py_BuildValue("(OO)", text, py_attrs);
+	return Py_BuildValue("(s#O)", text, length, py_attrs);
     } else {
-    	return Py_BuildValue("O", text);
+    	return Py_BuildValue("s", text);
     }
 }
-#line 801 "vte.c"
+#line 977 "vte.c"
 
 
-#line 213 "vte.override"
+#line 364 "vte.override"
 static PyObject *
 _wrap_vte_terminal_get_text_range(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "callback", "start_row", "start_col", "end_row",
-			      "end_col", "attributes", "data", NULL };
+    static char *kwlist[] = { "start_row", "start_col", "end_row", "end_col",
+   			      "callback", "get_attributes", "data", NULL };
     PyObject *callback = NULL, *do_attr = NULL, *data = NULL;
     glong start_row, start_col, end_row, end_col;
     PyObject *callback_and_args = NULL;
     GArray *attrs = NULL;
-    PyObject *text;
+    char *text;
     PyObject *py_attrs;
     int count;
+    long length;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|llllOOO:terminal_get_text",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+   				     "llllO|OO:terminal_get_text_range",
 				     kwlist,
 				     &start_row, &start_col, &end_row, &end_col,
-				     &callback, &do_attr, &args)) {
+				     &callback, &do_attr, &data)) {
         return NULL;
     }
 
-    if (do_attr != NULL && do_attr != Py_None) {
-	attrs = g_array_new(FALSE, TRUE, sizeof(struct vte_char_attributes));
+    if ((do_attr != NULL) && (PyObject_IsTrue(do_attr))) {
+	attrs = g_array_new(FALSE, TRUE, sizeof(VteCharAttributes));
     } else {
     	attrs = NULL;
     }
 
-    if ((callback != NULL) && (callback != Py_None)) {
+    if (callback != NULL) {
 	if (!PyCallable_Check(callback)) {
 	    PyErr_SetString(PyExc_TypeError, "1st argument not callable.");
             if (attrs) {
@@ -835,43 +1013,42 @@ _wrap_vte_terminal_get_text_range(PyGObject *self, PyObject *args, PyObject *kwa
             }
 	    return NULL;
 	}
+
+        callback_and_args = PyTuple_New(3);
+	Py_INCREF(callback); /* PyTuple_SetItem will assume ownership. */
+        PyTuple_SetItem(callback_and_args, 0, callback);
+	Py_INCREF(self); /* PyTuple_SetItem will assume ownership. */
+        PyTuple_SetItem(callback_and_args, 1, (PyObject*) self);
+	if (data != NULL) {
+	    Py_INCREF(data); /* PyTuple_SetItem will assume ownership. */
+            PyTuple_SetItem(callback_and_args, 2, data);
+	} else {
+            PyTuple_SetItem(callback_and_args, 2, PyTuple_New(0));
+	}
+        text = vte_terminal_get_text_range(VTE_TERMINAL(self->obj),
+					   start_row, start_col,
+					   end_row, end_col,
+					   call_callback,
+					   callback_and_args,
+					   attrs);
+        Py_DECREF(callback_and_args);
     } else {
-    	callback = NULL;
+        text = vte_terminal_get_text_range(VTE_TERMINAL(self->obj),
+					   start_row, start_col,
+					   end_row, end_col,
+					   always_true,
+					   NULL,
+					   attrs);
     }
-
-    if (callback != NULL) {
-        callback_and_args = PyList_New(0);
-        PyList_Append(callback_and_args, callback);
-        PyList_Append(callback_and_args, (PyObject*) self);
-        if (PyList_Check(data)) {
-            for (count = 0; count < PyList_Size(data); count++) {
-                PyList_Append(callback_and_args, PyList_GetItem(data, count));
-            }
-        } else {
-            PyList_Append(callback_and_args, data);
-        }
-    }
-
-    text = PyString_FromString(vte_terminal_get_text_range(VTE_TERMINAL(self->obj),
-							   start_row, start_col,
-							   end_row, end_col,
-							   callback ?
-							   call_callback :
-							   always_true,
-							   callback ?
-							   callback_and_args :
-							   NULL,
-							   attrs));
-    Py_XDECREF(callback_and_args);
 
     if (attrs) {
 	py_attrs = PyTuple_New(attrs->len);
 	for (count = 0; count < attrs->len; count++) {
-	    struct vte_char_attributes *cht;
+	    VteCharAttributes *cht;
 	    PyObject *py_char_attr;
 	    PyObject *py_gdkcolor;
 
-	    cht = &g_array_index(attrs, struct vte_char_attributes, count);
+	    cht = &g_array_index(attrs, VteCharAttributes, count);
 	    py_char_attr = PyDict_New();
 	    PyDict_SetItemString(py_char_attr, "row", PyInt_FromLong(cht->row));
 	    PyDict_SetItemString(py_char_attr, "column", PyInt_FromLong(cht->column));
@@ -888,13 +1065,32 @@ _wrap_vte_terminal_get_text_range(PyGObject *self, PyObject *args, PyObject *kwa
 
 	    PyTuple_SetItem(py_attrs, count, py_char_attr);
 	}
+	length = attrs->len;
 	g_array_free(attrs, TRUE);
-	return Py_BuildValue("(OO)", text, py_attrs);
+	return Py_BuildValue("(s#O)", text, length, py_attrs);
     } else {
-    	return Py_BuildValue("O", text);
+    	return Py_BuildValue("s", text);
     }
 }
-#line 898 "vte.c"
+#line 1076 "vte.c"
+
+
+#line 204 "vte.override"
+
+static PyObject *
+_wrap_vte_terminal_get_cursor_position(PyGObject *self)
+{
+	PyObject *ret;
+	glong column, row;
+
+	vte_terminal_get_cursor_position(VTE_TERMINAL(self->obj),
+					 &column, &row);
+	ret = PyTuple_New(2);
+	PyTuple_SetItem(ret, 0, PyInt_FromLong(column));
+	PyTuple_SetItem(ret, 1, PyInt_FromLong(row));
+	return ret;
+}
+#line 1094 "vte.c"
 
 
 static PyObject *
@@ -919,6 +1115,57 @@ _wrap_vte_terminal_match_add(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 
 static PyObject *
+_wrap_vte_terminal_match_set_cursor(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "tag", "cursor", NULL };
+    int tag;
+    PyObject *py_cursor;
+    GdkCursor *cursor = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO:VteTerminal.match_set_cursor", kwlist, &tag, &py_cursor))
+        return NULL;
+    if (pyg_boxed_check(py_cursor, GDK_TYPE_CURSOR))
+        cursor = pyg_boxed_get(py_cursor, GdkCursor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "cursor should be a GdkCursor");
+        return NULL;
+    }
+    vte_terminal_match_set_cursor(VTE_TERMINAL(self->obj), tag, cursor);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_match_set_cursor_type(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "tag", "cursor_type", NULL };
+    int tag;
+    PyObject *py_cursor_type = NULL;
+    GdkCursorType cursor_type;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO:VteTerminal.match_set_cursor_type", kwlist, &tag, &py_cursor_type))
+        return NULL;
+    if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type, (gint *)&cursor_type))
+        return NULL;
+    vte_terminal_match_set_cursor_type(VTE_TERMINAL(self->obj), tag, cursor_type);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_match_remove(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "tag", NULL };
+    int tag;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:VteTerminal.match_remove", kwlist, &tag))
+        return NULL;
+    vte_terminal_match_remove(VTE_TERMINAL(self->obj), tag);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
 _wrap_vte_terminal_set_emulation(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "emulation", NULL };
@@ -937,6 +1184,18 @@ _wrap_vte_terminal_get_emulation(PyGObject *self)
     const gchar *ret;
 
     ret = vte_terminal_get_emulation(VTE_TERMINAL(self->obj));
+    if (ret)
+        return PyString_FromString(ret);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+_wrap_vte_terminal_get_default_emulation(PyGObject *self)
+{
+    const gchar *ret;
+
+    ret = vte_terminal_get_default_emulation(VTE_TERMINAL(self->obj));
     if (ret)
         return PyString_FromString(ret);
     Py_INCREF(Py_None);
@@ -979,6 +1238,23 @@ _wrap_vte_terminal_get_status_line(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+#line 220 "vte.override"
+
+static PyObject *
+_wrap_vte_terminal_get_padding(PyGObject *self)
+{
+	PyObject *ret;
+	int xpad, ypad;
+
+	vte_terminal_get_padding(VTE_TERMINAL(self->obj), &xpad, &ypad);
+	ret = PyTuple_New(2);
+	PyTuple_SetItem(ret, 0, PyInt_FromLong(xpad));
+	PyTuple_SetItem(ret, 1, PyInt_FromLong(ypad));
+	return ret;
+}
+#line 1257 "vte.c"
+
 
 static PyObject *
 _wrap_vte_terminal_get_adjustment(PyGObject *self)
@@ -1081,22 +1357,29 @@ static PyMethodDef _PyVteTerminal_methods[] = {
     { "get_audible_bell", (PyCFunction)_wrap_vte_terminal_get_audible_bell, METH_NOARGS },
     { "set_visible_bell", (PyCFunction)_wrap_vte_terminal_set_visible_bell, METH_VARARGS|METH_KEYWORDS },
     { "get_visible_bell", (PyCFunction)_wrap_vte_terminal_get_visible_bell, METH_NOARGS },
+    { "set_scroll_background", (PyCFunction)_wrap_vte_terminal_set_scroll_background, METH_VARARGS|METH_KEYWORDS },
     { "set_scroll_on_output", (PyCFunction)_wrap_vte_terminal_set_scroll_on_output, METH_VARARGS|METH_KEYWORDS },
     { "set_scroll_on_keystroke", (PyCFunction)_wrap_vte_terminal_set_scroll_on_keystroke, METH_VARARGS|METH_KEYWORDS },
+    { "set_color_dim", (PyCFunction)_wrap_vte_terminal_set_color_dim, METH_VARARGS|METH_KEYWORDS },
     { "set_color_bold", (PyCFunction)_wrap_vte_terminal_set_color_bold, METH_VARARGS|METH_KEYWORDS },
     { "set_color_foreground", (PyCFunction)_wrap_vte_terminal_set_color_foreground, METH_VARARGS|METH_KEYWORDS },
     { "set_color_background", (PyCFunction)_wrap_vte_terminal_set_color_background, METH_VARARGS|METH_KEYWORDS },
+    { "set_color_cursor", (PyCFunction)_wrap_vte_terminal_set_color_cursor, METH_VARARGS|METH_KEYWORDS },
+    { "set_color_highlight", (PyCFunction)_wrap_vte_terminal_set_color_highlight, METH_VARARGS|METH_KEYWORDS },
     { "set_colors", (PyCFunction)_wrap_vte_terminal_set_colors, METH_VARARGS|METH_KEYWORDS },
     { "set_default_colors", (PyCFunction)_wrap_vte_terminal_set_default_colors, METH_NOARGS },
     { "set_background_image", (PyCFunction)_wrap_vte_terminal_set_background_image, METH_VARARGS|METH_KEYWORDS },
     { "set_background_image_file", (PyCFunction)_wrap_vte_terminal_set_background_image_file, METH_VARARGS|METH_KEYWORDS },
+    { "set_background_tint_color", (PyCFunction)_wrap_vte_terminal_set_background_tint_color, METH_VARARGS|METH_KEYWORDS },
     { "set_background_saturation", (PyCFunction)_wrap_vte_terminal_set_background_saturation, METH_VARARGS|METH_KEYWORDS },
     { "set_background_transparent", (PyCFunction)_wrap_vte_terminal_set_background_transparent, METH_VARARGS|METH_KEYWORDS },
     { "set_cursor_blinks", (PyCFunction)_wrap_vte_terminal_set_cursor_blinks, METH_VARARGS|METH_KEYWORDS },
     { "set_scrollback_lines", (PyCFunction)_wrap_vte_terminal_set_scrollback_lines, METH_VARARGS|METH_KEYWORDS },
     { "im_append_menuitems", (PyCFunction)_wrap_vte_terminal_im_append_menuitems, METH_VARARGS|METH_KEYWORDS },
     { "set_font", (PyCFunction)_wrap_vte_terminal_set_font, METH_VARARGS|METH_KEYWORDS },
+    { "set_font_full", (PyCFunction)_wrap_vte_terminal_set_font_full, METH_VARARGS|METH_KEYWORDS },
     { "set_font_from_string", (PyCFunction)_wrap_vte_terminal_set_font_from_string, METH_VARARGS|METH_KEYWORDS },
+    { "set_font_from_string_full", (PyCFunction)_wrap_vte_terminal_set_font_from_string_full, METH_VARARGS|METH_KEYWORDS },
     { "get_font", (PyCFunction)_wrap_vte_terminal_get_font, METH_NOARGS },
     { "get_using_xft", (PyCFunction)_wrap_vte_terminal_get_using_xft, METH_NOARGS },
     { "set_allow_bold", (PyCFunction)_wrap_vte_terminal_set_allow_bold, METH_VARARGS|METH_KEYWORDS },
@@ -1111,13 +1394,19 @@ static PyMethodDef _PyVteTerminal_methods[] = {
     { "reset", (PyCFunction)_wrap_vte_terminal_reset, METH_VARARGS|METH_KEYWORDS },
     { "get_text", (PyCFunction)_wrap_vte_terminal_get_text, METH_VARARGS|METH_KEYWORDS },
     { "get_text_range", (PyCFunction)_wrap_vte_terminal_get_text_range, METH_VARARGS|METH_KEYWORDS },
+    { "get_cursor_position", (PyCFunction)_wrap_vte_terminal_get_cursor_position, METH_NOARGS },
     { "match_clear_all", (PyCFunction)_wrap_vte_terminal_match_clear_all, METH_NOARGS },
     { "match_add", (PyCFunction)_wrap_vte_terminal_match_add, METH_VARARGS|METH_KEYWORDS },
+    { "match_set_cursor", (PyCFunction)_wrap_vte_terminal_match_set_cursor, METH_VARARGS|METH_KEYWORDS },
+    { "match_set_cursor_type", (PyCFunction)_wrap_vte_terminal_match_set_cursor_type, METH_VARARGS|METH_KEYWORDS },
+    { "match_remove", (PyCFunction)_wrap_vte_terminal_match_remove, METH_VARARGS|METH_KEYWORDS },
     { "set_emulation", (PyCFunction)_wrap_vte_terminal_set_emulation, METH_VARARGS|METH_KEYWORDS },
     { "get_emulation", (PyCFunction)_wrap_vte_terminal_get_emulation, METH_NOARGS },
+    { "get_default_emulation", (PyCFunction)_wrap_vte_terminal_get_default_emulation, METH_NOARGS },
     { "set_encoding", (PyCFunction)_wrap_vte_terminal_set_encoding, METH_VARARGS|METH_KEYWORDS },
     { "get_encoding", (PyCFunction)_wrap_vte_terminal_get_encoding, METH_NOARGS },
     { "get_status_line", (PyCFunction)_wrap_vte_terminal_get_status_line, METH_NOARGS },
+    { "get_padding", (PyCFunction)_wrap_vte_terminal_get_padding, METH_NOARGS },
     { "get_adjustment", (PyCFunction)_wrap_vte_terminal_get_adjustment, METH_NOARGS },
     { "get_char_width", (PyCFunction)_wrap_vte_terminal_get_char_width, METH_NOARGS },
     { "get_char_height", (PyCFunction)_wrap_vte_terminal_get_char_height, METH_NOARGS },
@@ -1133,7 +1422,7 @@ static PyMethodDef _PyVteTerminal_methods[] = {
 PyTypeObject PyVteTerminal_Type = {
     PyObject_HEAD_INIT(NULL)
     0,					/* ob_size */
-    "Terminal",			/* tp_name */
+    "vte.Terminal",			/* tp_name */
     sizeof(PyGObject),	        /* tp_basicsize */
     0,					/* tp_itemsize */
     /* methods */
@@ -1143,9 +1432,9 @@ PyTypeObject PyVteTerminal_Type = {
     (setattrfunc)0,	/* tp_setattr */
     (cmpfunc)0,		/* tp_compare */
     (reprfunc)0,		/* tp_repr */
-    0,			/* tp_as_number */
-    0,		/* tp_as_sequence */
-    0,			/* tp_as_mapping */
+    (PyNumberMethods*)0,     /* tp_as_number */
+    (PySequenceMethods*)0, /* tp_as_sequence */
+    (PyMappingMethods*)0,   /* tp_as_mapping */
     (hashfunc)0,		/* tp_hash */
     (ternaryfunc)0,		/* tp_call */
     (reprfunc)0,		/* tp_str */
@@ -1193,9 +1482,19 @@ _wrap_vte_terminal_erase_binding_get_type(PyObject *self)
     return pyg_type_wrapper_new(ret);
 }
 
+static PyObject *
+_wrap_vte_terminal_anti_alias_get_type(PyObject *self)
+{
+    GType ret;
+
+    ret = vte_terminal_anti_alias_get_type();
+    return pyg_type_wrapper_new(ret);
+}
+
 PyMethodDef pyvte_functions[] = {
     { "vte_terminal_get_type", (PyCFunction)_wrap_vte_terminal_get_type, METH_NOARGS },
     { "vte_terminal_erase_binding_get_type", (PyCFunction)_wrap_vte_terminal_erase_binding_get_type, METH_NOARGS },
+    { "vte_terminal_anti_alias_get_type", (PyCFunction)_wrap_vte_terminal_anti_alias_get_type, METH_NOARGS },
     { NULL, NULL, 0 }
 };
 
@@ -1206,6 +1505,7 @@ void
 pyvte_add_constants(PyObject *module, const gchar *strip_prefix)
 {
     pyg_enum_add_constants(module, VTE_TYPE_TERMINAL_ERASE_BINDING, strip_prefix);
+    pyg_enum_add_constants(module, VTE_TYPE_TERMINAL_ANTI_ALIAS, strip_prefix);
 }
 
 /* intialise stuff extension classes */
@@ -1218,21 +1518,38 @@ pyvte_register_classes(PyObject *d)
         PyObject *moddict = PyModule_GetDict(module);
 
         _PyGtkMenuShell_Type = (PyTypeObject *)PyDict_GetItemString(moddict, "MenuShell");
+        if (_PyGtkMenuShell_Type == NULL) {
+            PyErr_SetString(PyExc_ImportError,
+                "cannot import name MenuShell from gtk");
+            return;
+        }
         _PyGtkWidget_Type = (PyTypeObject *)PyDict_GetItemString(moddict, "Widget");
+        if (_PyGtkWidget_Type == NULL) {
+            PyErr_SetString(PyExc_ImportError,
+                "cannot import name Widget from gtk");
+            return;
+        }
     } else {
-        Py_FatalError("could not import gtk");
+        PyErr_SetString(PyExc_ImportError,
+            "could not import gtk");
         return;
     }
     if ((module = PyImport_ImportModule("gtk.gdk")) != NULL) {
         PyObject *moddict = PyModule_GetDict(module);
 
         _PyGdkPixbuf_Type = (PyTypeObject *)PyDict_GetItemString(moddict, "Pixbuf");
+        if (_PyGdkPixbuf_Type == NULL) {
+            PyErr_SetString(PyExc_ImportError,
+                "cannot import name Pixbuf from gtk.gdk");
+            return;
+        }
     } else {
-        Py_FatalError("could not import gtk.gdk");
+        PyErr_SetString(PyExc_ImportError,
+            "could not import gtk.gdk");
         return;
     }
 
 
-#line 1237 "vte.c"
+#line 1554 "vte.c"
     pygobject_register_class(d, "VteTerminal", VTE_TYPE_TERMINAL, &PyVteTerminal_Type, Py_BuildValue("(O)", &PyGtkWidget_Type));
 }

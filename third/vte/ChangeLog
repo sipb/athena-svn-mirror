@@ -1,69 +1,1352 @@
+2004-05-02 nalin
+	* src/reaper.c(vte_reaper_add_child): pass the global reaper in as
+	data when adding the child source, not the terminal which called us.
+	Stop accepting a data argument, because we'd discard it anyway.  Return
+	the ID of the source which is added, if that happens.
+	* configure.in: define VTE_INVALID_SOURCE for internal use.
+
+2004-05-01 nalin
+	* README: add pointers to info on bidirectional text and shaping.
+
+2004-05-01 nalin
+	* src/vte.c(vte_terminal_get_text_maybe_wrapped): add a parameter to
+	control whether or not trailing whitespace is trimmed (padraig.obriain,
+	#141148).
+	* src/vte.c,src/vte.h(vte_terminal_get_text_include_trailing_spaces):
+	add as a wrapper for the new vte_terminal_get_text_maybe_wrapped()
+	(padraig.obriain, #141148).
+	* src/vteaccess.c(vte_terminal_accessible_update_private_d): use
+	vte_terminal_get_text_include_trailing_spaces to ensure that we get
+	trailing spaces (padraig.obriain, #141148).
+	* src/vte.c(vte_terminal_insert_char): clean up some autowrap stuff.
+
+2004-04-30 nalin
+	* vte.pc.in, vte-uninstalled.pc.in: declare the defaultemulation
+	variable as one kind of variable, not that other kind (#141515).
+
+2004-04-30 nalin
+	* src/vte.c(vte_terminal_button_release): complete selection if we were
+	selecting, not just if Shift is held down (allows Press Shift, Press
+	Button, Release Shift, Release Button in addition to already-recognized
+	Press Shift, Press Button, Release Button, Release Shift) (#121905).
+	* vte.spec: buildrequire gtk-doc, manually copy png images at
+	install-time.
+
+2004-04-29 nalin
+	* src/vte.c, NEWS, doc/reference/vte-sections.txt,
+	doc/reference/tmpl/vte-unused.sgml: documentation updates.
+	* doc/reference/tmpl/reaper.sgml: note that we just proxy for glib 2.4
+	child_watch functionality, if present.
+
+2004-04-29 nalin
+	* python/vte.defs: include get_default_emulation binding.
+
+2004-04-29 nalin
+	* vte.spec: update version to 0.11.11
+
+2004-04-29 nalin
+	* src/vte.c(vte_terminal_unrealize): don't unref our accessible peer;
+	it may be accessed while we're unrealized, causing it to be destroyed
+	and re-created needlessly (#128049).
+	* src/vte.c(vte_terminal_finalize): unref our accessible peer.
+
+2004-04-29 nalin
+	* src/vte.c(vte_terminal_finalize): don't clear the child's PID early,
+	so that we'll SIGHUP it properly (the kernel should do that anyway,
+	but...) (#128291).
+
+2004-04-29 nalin
+	* src/vte.c(vte_terminal_insert_char): only deselect the current
+	selection if just-inserted text affected the selected region of the
+	screen (#135259).
+
+2004-04-29 nalin
+	* README: assorted updates.
+	* configure.in: check for <sys/termios.h>
+	* src/pty.c: include <sys/termios.h> if found (#141392).
+	* src/dumpkeys.c, src/mev.c, src/pty.c, src/ssfe.c, src/vte.c: do the
+	same.
+	* doc/reference/vte-sections.txt: add several functions which are new
+	but which weren't in the generated docs.
+	* doc/reference/vte-unused.txt: sort.
+
+2004-04-29 nalin
+	* src/vte.c(vte_terminal_scroll_region): remove stray debug printfs.
+
+2004-04-29 nalin
+	* configure.in: add a --with-default-emulation argument (part of
+	#115750).  Use AS_HELP_STRING wherever we need help strings.
+	* vte.pc.in, vte-uninstalled.pc.in: add DefaultEmulation variable
+	* vte.spec: specify "xterm" as the default-emulation, even though it's
+	the default default
+	* termcaps/Makefile.am: build and install the default emulation's
+	termcap, assuming it's some kind of xterm variant.
+	* src/keymap.c(_vte_keymap_map): check for xterm-xfree86 definitions
+	if the terminal type includes xterm, not if it exactly matches xterm
+	* src/reaper.c(vte_reaper_add_child): add.  The glib 2.4 SIGCHLD
+	watcher requires us to register particular PIDs for monitoring, so now
+	we require applications to do so.
+	* src/reaper.c(vte_reaper_child_watch_cb): add.
+	* src/reaper.c(vte_reaper_init): Don't hook the SIGCHLD handler if
+	we're running under glib 2.4, expect to use the g_child_watch
+	mechanism.
+	* src/vte.c: remove hard-coded definition of VTE_DEFAULT_EMULATION,
+	to be picked up from config.h instead.
+	* src/vte.c(vte_sequence_handler_cs): remove stray debug printfs.
+	* src/vte.c(vte_terminal_insert_char): only do what we were doing for
+	xn if LP was also set (#141445).
+	* src/vte.c(vte_terminal_get_default_emulation): add.
+	* src/vte.c(_vte_terminal_fork_basic): call vte_reaper_add_child for
+	new children.
+
+2004-04-27 nalin
+	* src/vte.c(vte_terminal_fork_command): more clearly document what
+	the argv and envv arguments are expected to contain (#127979).
+	* src/vte.c(vte_terminal_insert_char): attempt to more closely match
+	the behavior of am and xn on terminals -- if am is set {if xn is set,
+	autowrap should only happen before a character is output, and then only
+	if it's a graphic character, otherwise we autowrap after a character is
+	output}
+
+2004-04-21 nalin
+	* src/vte.c(vte_terminal_get_text_range_maybe_wrapped): also trim back
+	lines which are nothing but whitespace (#140765).
+	* src/vte.c(vte_terminal_configure_toplevel): invalidate the whole
+	window if we're "transparent", because we don't get expose events
+	unless some portion of our area came out from behind something else,
+	but we still need to repaint it (#122243).
+
+2004-04-20 nalin
+	* doc/reference/tmpl/reaper.sgml: document the child-exited signal.
+	* doc/reference/tmpl/vte.sgml: document the emulation-changed and
+	encoding-changed signals.
+
+2004-04-20 nalin
+	* Makefile.am: add rule for generating vte-uninstall.pc (Gman, #136129)
+	* vte-uninstalled.pc.in: add (Gman, #136129)
+
+2004-04-19 nalin
+	* src/vte.c(vte_terminal_key_press): don't steal keys from the input
+	method.
+
+2004-04-19 nalin
+	* src/pty.c(_vte_pty_set_utf8): toggle the IUTF8 flag, if
+	it was defined at compile-time (maybe for #129317).
+	* src/vte.c(vte_terminal_set_encoding): call _vte_pty_set_utf8.
+	* src/vte.h (vte_terminal_anti_alias_get_type): declare.
+	* src/vtebg.c(vte_bg_get_pixmap): Optimisation to fix the ridiculous
+	amount of time required to render solid colour or extremely small
+	image tiled backgrounds.  This fixes bug #123903.  (desrt)
+	* src/vtebg.c(vte_bg_root_pixmap): move resize code into a separate
+	function.
+	* src/vtebg.c(vte_bg_get_pixmap): Resize all image sources, in case
+	we're using a very small image file for the background.
+
+2004-04-19 nalin
+	* python/Makefile.am: move python module to site-packages/gtk-2.0,
+	which is added to the search path only by pygtk 2 (#92252).
+
+2004-04-19 nalin
+	* python/vte.override: define a modulename override so that the
+	Terminal class is registered in the proper namespace so that python's
+	help() builtin sees the Terminal class (#130267).
+
+2004-04-19 nalin
+	* src/vte.c(vte_terminal_anti_alias_get_type): add, for the sake of
+	bindings.
+
+2004-04-19 nalin
+	* src/vte.c(vte_terminal_key_press): call GtkWidget's key_press_event
+	callback for keys, in case GtkWidget has pre-programmed behavior for
+	that key (#133878).
+	* configure.in, gnome-pty-helper/configure.in: quote names of defined
+	functions (#133222).
+	* configure.in: make compilation of gnome-pty-helper actually
+	conditional (#133077).
+	* src/vte.c(vte_terminal_process_incoming): Doh #132610, actually
+	call vte_terminal_emit_contents_changed() when the contents change.
+
+2004-04-19 nalin
+	* src/vte.h, src/vte.c (vte_terminal_set_font_full): Add (#134429).
+	* src/vteglyph.c(_vte_glyph_cache_set_font_description): take a
+	VteTerminalAntiAlias argument.
+	* src/vteft2.c, src/vtegl.c, src/pango.c, src/pango.x, src/vtexft.c
+	(*_set_text_font): take a VteTerminalAntiAlias argument.
+
+2004-04-19  Victor Zverovich  <vitaut@users.sourceforge.net>
+	* src/vte.h src/vte.c: Added default signal handlers to
+	VteTerminalClass (#137961).  [NOTE: ABI change.]
+
+2004-04-19 nalin
+	* src/vte.c(vte_terminal_configure_toplevel): don't re-invalidate
+	everything, apparently unnecessary (#122243).  Might need to back this
+	out if I ever remember what specific combination of software and
+	versions prompted its addition in the first place.
+	* src/vte.c(vte_terminal_class_init): tell gettext that messages
+	retrieved from this domain should be returned in UTF-8 (#139542).
+
+2004-04-19 nalin
+	* configure.in: don't disable use of deprecated APIs unless asked
+	to do so.
+	* src/keymap.c(_vte_keymap_GDK_space): add Meta case (gafton).
+	* src/vtefc.c(_vte_fc_width_from_pango_stretch): add.
+	* src/vtefc.c(_vte_fc_transcribe_from_pango_font_description): handle
+	PangoStretch characteristics using _vte_fc_width_from_pango_stretch.
+	* src/vteregex.c: add random comments.
+	* src/vte.c(VteTerminal): track the "xn" terminal attribute.
+
+2004-04-10  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-20  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-10  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" for Punjabi to ALL_LINGUAS.
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-02  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* docs/reference/Makefile.am: use gtk-doc in xml-mode.
+
+	* docs/reference/vte-docs.sgml: sgml->xml, update to DocBook XML
+	4.1.2 DTD (fixes Bug #132945)
+
+2004-02-02 Alastair McKinstry <mckinstry@computer.org>
+
+	* configure.in: Added 'ga' to ALL_LINGUAS
+	* po/ga.po: Added Gaeilge (Irish) translation.
+
+2004-01-27  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added 'nn' to ALL_LINGUAS
+	* po/nn.po: Added Norwegian Nynorsk translation.
+
+2003-12-20  Arafat Medini <lumina@silverpen.de>
+
+	* configure.in: Added Arabic Locale "ar" to ALL_LINGUAS
+
+2003-12-10  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2003-12-06  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2003-10-14  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+2003-10-07  Žygimantas Beručka  <uid0@tuxfamily.org>
+
+	* configure.in: Added "lt" to ALL_LINGUAS.
+
+2003-09-15 nalin
+	* src/vteapp.c: add options for exercising the cursor and highlight
+	colors.
+	* src/debug.c: flush output streams when we check if debugging is
+	enabled, because we'll probably output a string next.
+	* src/iso2022.c: don't print a zero-length string.  Yay compiler
+	warnings.
+	* src/interpret.c: use g_print() instead of fprintf() to print.
+	* src/keymap.c,src/ssfe.c: include <stdarg.h>, hopefully fixing
+	bug #121880 (or not).
+
+2003-09-15 nalin
+	* python/vte.defs: add specs for set_color_cursor and
+	set_color_highlight.
+
+2003-09-15 nalin
+	* src/vte.h,src/vte.c: add vte_terminal_set_color_cursor.
+	* src/vte.h,src/vte.c: add vte_terminal_set_color_highlight (#69776).
+	* src/vte.c(vte_terminal_determine_colors): add parameters for
+	specifying if the cell being rendered is the cursor or is highlighted,
+	probably for being selected.  If either flag is set, and we've been
+	given a color to use for the purpose by a caller, use the supplied
+	color, else use inverse colors.
+
+2003-09-15 nalin
+	* src/iso2022.c(process_control): don't reset the conversion state
+	when we hit an end-of-line.  I wasn't reading RFC1468 closely enough,
+	as it states that each line begins in the same encoding as the end of
+	the previous line, and read "application should reset before end-of-
+	line" as "terminal resets at end-of-line" (bug #122156).
+
+2003-09-11 nalin
+	* src/vteapp.c: silence a compiler warning.
+
+2003-09-11 nalin
+	* README: ask for LC_* in addition to LANG if weird spacing errors
+	crop up.
+	* src/vteconv.c,src/vteconv.h: add wrappers for _vte_conv which weed
+	out some warnings.
+	* src/iso2022.c: use _vte_conv_cu instead of _vte_conv.
+	* src/trie.c: use _vte_conv_cu instead of _vte_conv.
+	* src/vte.c: give _vte_terminal_fudge_pango_colors a return type again.
+	* src/vtebg.c: ifdef out vte_bg_source_name, which is unused.
+	* src/vtebg.c,src/vterdb.c: wrap calls to gdk_property_get to weed out
+	some compiler warnings.
+
+2003-09-11 nalin
+	* src/vte.c(vte_terminal_draw_cells_with_attributes): properly resolve
+	colors and cell properties to drawing colors.
+	* src/vte.c(_vte_terminal_fudge_pango_colors): add a function for
+	mapping GTK+ white-on-black preedit text to default reverse-colored
+	text for the terminal.
+	* src/vte.c(_vte_terminal_translate_pango_cells): don't bother
+	doing anything with the attribute for a range if the list is NULL.
+	Fudge white-on-black text to default colors in reverse so that it
+	works when the terminal is in a black-on-white color scheme.
+
+2003-09-11 nalin
+	* src/vte.c(_vte_terminal_apply_pango_attr): map weight attributes to
+	the terminal's bold attribute.
+
+2003-09-11 nalin
+	* src/vte.c(_vte_terminal_map_pango_color): add.
+	* src/vte.c(vte_terminal_im_preedit_changed): don't discard the
+	attributes list for the preedit string -- save them.
+	* src/vte.c(vte_terminal_draw_cells_with_attributes): add.
+	* src/vte.c(vte_terminal_paint): use draw_cells_with_attributes to
+	use the preedit attributes list when drawing the preedit string.  This
+	changes the way the preedit string is presented to the user, but it
+	now looks [more] like GTK+ suggests it should look, so it should be a
+	good change.
+
+2003-08-13 nalin
+	* src/caps.c: add sequences for linux-console-cursor-attributes, which
+	we'll ignore (bug #108232).
+
+2003-08-13 nalin
+	* configure.in: if we don't find the python headers (even if we found
+	python), disable compilation of python bindings (bug #116756).  Make the
+	checks for python support sequential for easier maintenance.
+	* python/vte.defs: add def for vte_terminal_match_set_cursor_type.  Make
+	the color argument to vte_terminal_set_background_tint_color const.
+	* python/vte.override(_wrap_vte_terminal_forkpty): add.
+	* python/vte.override(_wrap_vte_terminal_fork_command): don't leak envv.
+
+2003-08-13 nalin
+	* src/vte.c(vte_terminal_fork_command,vte_terminal_forkpty): doc update
+	to note that directory and envv can be NULL for both.
+
+2003-08-13 nalin
+	* src/vteapp.c(main): if -S is passed, use forkpty to start a child that
+	just counts until killed with Ctrl-C.
+
+2003-08-13 nalin
+	* doc/reference/vte-sections.txt: add vte_terminal_forkpty.
+	* src/pty.c(_vte_pty_run_on_pty): exit on any error, to avoid leaving
+	random unreaped children running.  Accept NULL command indicating that
+	no exec() should occur, but still error out if command isn't NULL and
+	exec() fails.
+	* src/pty.c(_vte_pty_fork_on_pty_name,_vte_pty_fork_on_pty_fd): store
+	0 as the new child's PID if we're the child.
+	* src/pty.c(main): don't run "tty" by default, test the forkpty() case
+	instead.
+	* src/vte.c(vte_terminal_fork_command): rename to
+	_vte_terminal_fork_basic.  Remove code to replace NULL command with
+	the user's shell.
+	* src/vte.c(vte_terminal_fork_command): new! wrap
+	_vte_terminal_fork_basic, replacing a NULL command with the user's
+	shell.
+	* src/vte.c(vte_terminal_forkpty),src/vte.h: new! wrap
+	_vte_terminal_fork_basic, passing NULL for the command and argv
+	arguments (bug #116450).
+	* src/Makefile.am: update shared library version.
+
+2003-08-12 nalin
+	* configure.in: if <ft2build.h> isn't found, then we can't use any
+	freetype-specific bits, and that's not useful.  Error out, and say
+	that we need freetype 2.0.2 or newer, which introduced this header
+	into the procedure (bug #116341).
+
+2003-08-12 nalin
+	* src/vte.c: don't create an accessible peer at init() time in
+	debug mode.
+	* gnome-pty-helper/gnome-pty-helper.c(struct pty_info): add a field to
+	keep track of whether or not we created a lastlog record.
+	* gnome-pty-helper/gnome-pty-helper.c(shutdown_pty): also try to
+	write a logout record if pi->lastlog is true, because in doing so we
+	free pi->data, closing a leak (bug #116091).
+
+2003-08-12 nalin
+	* src/vteapp.c(resize_window): don't add the padding in when calculating
+	the new window size.
+
+2003-08-12 nalin
+	* doc/reference/tmpl/vte.sgml: note that dimensions passed in with
+	the resize-window signal include padding (more of bug #119141).
+
+2003-08-12 nalin
+	* src/vte.c(vte_sequence_handler_character_attributes,
+	vte_sequence_handler_decset_internal): remove redundant type checks.
+	* src/vte.c(all signal handlers): return a boolean indicating whether
+	or not to exit the processing loop instance early to allow the
+	application to deal with some input (usually along the lines of a
+	signal requesting that the terminal be resized) (bug #118938).
+
+2003-08-12 nalin
+	* python/vte.override(get_text,get_text_range): reorder arguments to
+	match the order for the C versions (#118882).
+	* python/vte.override(get_text,get_text_range,call_callback): fix
+	refcounting and callback argument marshalling (bug #118882).
+	* python/vte-demo.py: exercise get_text() on "window-raise" signals.
+
+2003-08-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* src/vteaccess.c:
+	(vte_terminal_initialize): New function containing initialization code
+	previously in vte_terminal_accessible_new. Also set role in
+	this function.
+	(vte_terminal_accessible_class_init): Specify function pointer for
+	vte_terminal_initialize.
+	(vte_terminal_accessible_get_type): Do not set instance data size or
+	GInstanceInitFunc. Remove vte_terminal_accessible_init.
+
+	This fixes bug #119694.
+
+2003-08-11 nalin
+	* python/vte.override: add binding for get_padding() (bug #118834).
+
+2003-08-11 nalin
+	* python/vte.override: add binding for get_cursor_position()
+	(bug #118800).
+
+2003-08-11 nalin
+	* python/vte.defs: give length parameters for feed() and feed_child()
+	default values of -1 (bug #118711).
+	* python/vte.override: use the length parameter if it's supplied to the
+	feed() and feed_child() methods.
+
+2003-08-11 nalin
+	* python/vte.override: add overrides for feed() and feed_child()
+	methods which use the length of the string as given in C, to hopefully
+	allow passing NUL bytes around as part of strings (bug #118711).  Make
+	the length parameter optional, and ignored, to try to avoid breaking
+	existing Python code in an obvious way.
+
+2003-08-11 nalin
+	* src/vte.c(vte_terminal_start_selection,vte_terminal_extend_selection):
+	drop an unnecessary cast-and-check, which we don't need because we have
+	no use for the GtkWidget pointer to the terminal.  Fix initial shift-
+	click (bug #118106).
+
+2003-08-11 nalin
+	* configure.in: error out if we don't find ncurses, curses, or
+	libtermcap development headers (bug #117754).
+
+2003-08-11 nalin
+	* autogen.sh: export WANT_AUTOCONF_2_5 for the sake of Mandrake autoconf
+	wrapper (bug #119066).
+
+2003-08-05 nalin
+	* src/vte.c(vte_sequence_handler_decset_internal,
+	vte_sequence_handler_window_manipulation): include the widget's padding
+	widths in resize requests (bug #119141).
+
+2003-07-30 nalin
+	* autogen.sh: check for autoconf-2.51, autoconf-2.50, autoconf-2.5 when
+	looking for autoconf 2.5x (bug #118627).
+
+2003-07-21 nalin
+	* gnome-pty-helper/configure.in: define _XOPEN_SOURCE_EXTENDED,
+	_XOPEN_SOURCE, and __EXTENSIONS__ for Solaris, as we do in the top-level
+	configure (#117636).
+
+2003-07-16 nalin
+	* gnome-pty-helper/configure.in: check for grantpt in libc and then
+	in libpt.  Check for openpty in libc before checking libutil.  Check for
+	sendmsg in libc before checking libsocket (with libnsl) (#117636).
+
+2003-07-11  Pablo Saratxaga <pablo@mandrakesoft.com>
+	* configure.in: Added Walloon (wa) to ALL_LINGUAS
+
+2003-07-10 nalin
+	* src/vteregex.h, src/vteregex.c: add.
+	* src/vte.c: use interfaces from vteregex for doing dingus matching.
+
+2003-07-03 nalin
+	* src/vte.c(vte_sequence_handler_return_terminal_status): return an
+	empty string in response to the ENQ control sequence instead of "xterm".
+	Report and patch from Mariano Suárez-Alvarez (#116495).
+
+2003-06-27 nalin
+	* src/iso2022.c: treat the "big5hkscs" encoding as an East Asian
+	encoding, which uses ambiguous widths (#116078).  Report and patch
+	from Roger So.
+	* src/dumpkeys.c, src/iso2022.c, src/iso8859mode.c, src/nativeecho.c,
+	src/utf8echo.c, src/utf8mode.c, src/vte.c: don't use the literal escape
+	character, express it as an octal sequence.
+
+2003-06-16 nalin
+	* src/caps.c: add vertical-tab and form-feed to the list of control
+	sequences.
+	* src/vte.c(vte_controL_sequence_handler_form_feed): add.
+	* src/vte.c(vte_controL_sequence_handler_vertical_tab): add.
+
+2003-06-16 nalin
+	* src/vteaccess.c(xy_from_offset): fix a compiler warning.
+
+2003-06-16 nalin
+	* src/vteint.h: add.  Move private VteTerminal stuff which needs to be
+	shared with other modules in the library here.
+	* src/vtedraw.c, src/vtedraw.h: add get_char_width(), for use in drawing
+	the cursor.
+	* src/vte.c(vte_invalidate_cursor_once): if the character under the
+	cursor doesn't fit into its cell, expose the column to the right of
+	it so that we can paint into the adjacent cell.
+	* src/vte.c(vte_terminal_paint): when clearing the area behind the
+	cursor or drawing the hollow rectangle to indicate its position when
+	we don't have focus, use the visible width of the character instead
+	of just assuming it will fit.  This complies better with assertion 2.
+
+2003-06-09 nalin
+	* src/vte.c(vte_terminal_set_encoding): set the encoding for the iso2022
+	converter (spotted by havill).
+
+2003-06-04 nalin
+	* src/vtebg.c, src/vterdb.c: sync the display before trapping errors
+	to ensure that any errors we'll get will be handled before we remove
+	the error handlers.
+
+2003-06-03 nalin
+	* src/vtebg.c(_vte_bg_get_pixmap, _vte_bg_get_pixbuf): trap X errors
+	while retrieving the contents of the root pixmap.
+	* doc/ambiguous.txt: add.
+	* README: update.
+	* vte.spec: rebuild.
+
+Tue Jun  3 15:50:38 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/pty.c (n_read): add a missing break in the switch statement.
+
+2003-06-03  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+	* configure.in: Added Limburgish (li) to ALL_LINGUAS.
+
+2003-06-02 nalin
+	* src/Makefile.am: start using libtool versioning in earnest.
+
+2003-06-01 nalin
+	* src/vtegl.c(_vte_gl_set_text_font): compile fix.
+
+2003-05-30 nalin
+	* src/vte.c(vte_sequence_handler_decset_internal): fix logic for
+	skipping over particular settings so that setting 1048 actually works.
+	* src/vte.c(vte_terminal_process_incoming): in debug mode, print out
+	characters with codepoints higher than 255 in hex rather than decimal.
+	* src/iso2022.c(_vte_iso2022_ambiguous_width): rename to
+	_vte_iso2022_ambiguous_width_guess because that's all we can do without
+	more context.
+	* src/iso2022.c(_vte_iso2022_ambiguous_width): add for using the
+	current encoding to determine what the width of an ambiguously-wide
+	character should be.  This seems to work better.
+
+2003-05-30  Padraig O'Briain  <padraig.obriain@sun.com>
+	* src/vteaccess.c: Add implementation for get_character_extents,
+	get_offset_at_point and get_run_attributes. This fixes bug #110770.
+	Add casts to fix complier warnings on Solaris.
+	
+	* src/vtexft.c (_vte_xft_text_extents): Do not call return as function
+	returns void. Fixes compiler error on Solaris.
+
+2003-05-29 nalin
+	* src/vteapp.c: require -i for icon-title-changed messages, which got
+	really annoying really fast.
+	* src/trie.c(main): use g_quark_from_static_string for static strings.
+
+2003-05-29 nalin
+	* src/vte.c(vte_terminal_send): fix newline stuffing (used in linefeed
+	mode).
+	* src/vte.c(vte_unicode_strlen): rename to vte_unichar_strlen.
+	* src/vte.c(vte_terminal_set_title_internal): don't leak the new title
+	in the unlikely cases.
+	* src/vte.c(vte_terminal_process_incoming): be more careful with control
+	characters to avoid cases where we could be tricked into a loop.
+	* src/vteapp.c: emit a message when the icon title is changed.
+
+2003-05-29 nalin
+	* src/vte.c(vte_terminal_process_incoming): handle control characters
+	in the middle of control sequences.
+	* src/vte.c(vte_sequence_handler_cm): fix origin mode.
+	* src/vte.c(vte_sequence_handler_cv): fix origin mode.
+	* src/vte.c(vte_sequence_handler_cs): snap the cursor to the scrolling
+	region which is set.
+	* src/table.c(_vte_table_extract_number): extract a number digit by
+	digit as we do in the trie parser.
+	* src/vte.h: declare 'struct vte_char_attributes' again to restore API
+	back compat with 0.10.x.
+	* src/iso2022.c(_vte_iso2022_sequence_length): don't recognize PM
+	messages -- Xterm doesn't do anything with them and we don't want to
+	appear to hang when we're really just waiting for the end of the
+	message.
+
+2003-05-28 nalin
+	* src/vtefc.c(_vte_fc_defaults_from_rdb): only apply DPI if we were
+	able to get a value.
+	* src/vterdb.c, src/vterdb.h: use the display and screen of a passed-in
+	widget if asked to do so, else use screen 0 of the default display.
+
+2003-05-28 nalin
+	* configure.in: check for GTK+ 2.2, and if found, force use of
+	multihead-safe APIs to try to flush out some bugs.
+	* src/vte.c, src/vteapp.c, src/vtedraw.c, src/vtefc.c, src/vteglyph.c:
+	clean up some sloppy multihead changes.
+	* src/vte.c, src/vte.h (vte_terminal_match_set_cursor_type): add.
+	* src/vtedraw.c, src/vtedraw.h: add a draw_char() method which is
+	allowed to fail.
+	* src/vte.c(vte_terminal_draw_graphic): separate the width of a column
+	and the number of columns to be drawn.  Use _vte_draw_char() to avoid
+	crude approximations of characters when we have a font for them.
+
+2003-05-21 nalin
+	* src/vte.c(vte_terminal_scroll_region): force an entire window repaint
+	if we're supposed to scroll the background but we're not scrolling the
+	entire window.  This means we need to repaint the scrolled region, and
+	to keep things looking right, we need to repaint everything.
+	* src/vteapp.c(main): enable visible bell if we're disabling the
+	audible bell, and vice-versa.
+	* src/vte.c: flesh out some doc comments.
+	* doc/reference/tmpl/vte.sgml: flesh out some notes on signals.
+
+2003-05-21 nalin
+	* src/vteconv.c(_vte_conv): pass zero bytes which trigger EILSEQ
+	through and keep going.
+	* src/vteconv.c: replace use of g_utf8_strlen with an internal function
+	which doesn't stop counting at NUL characters.
+
+2003-05-21 nalin
+	* src/interpret.c: use _vte_matcher_free_params_array.
+	* src/vte.c(vte_invalidate_cursor_once): add a parameter for indicating
+	if this is a "cursor blink" (periodic) refresh, and if it is set and
+	the cursor isn't supposed to blink, suppress the invalidate.
+
+2003-05-21 nalin
+	* src/iso2022.c(_vte_iso2022_process): free the temporary array.
+	* src/matcher.c(_vte_matcher_free_params_array): add.
+	* src/vte.c: use _vte_matcher_free_params_array instead of the local
+	copy, which is removed.
+	* src/interpret.c, src/table.c, src/trie.c: use
+	_vte_matcher_free_params_array to free parameter arrays instead of
+	g_value_array_free, which doesn't take care of the pointer values.
+	* src/vte.c(vte_sequence_handler_set_title_internal): only attempt to
+	close the conversion descriptor if it was opened successfully.
+	* src/vteapp.c: add the -k option to spin after gtk_main() returns.
+	* src/vtefc.c: make copies of patterns with FcPatternDuplicate so that
+	we know where all of the returned patterns came from.
+	* src/vtexft.c(_vte_xft_font_for_char): set the item in the pattern
+	array to NULL if we successfully opened a font using the pattern.
+
+2003-05-20 nalin
+	* src/iso2022.c: clarify comments near one of the warning messages.
+	* src/vtefc.c(_vte_fc_transcribe_from_pango_font_description): unref
+	the Pango context, which was created for us.
+	* src/vtepango.c: keep track of the Pango context, and unref it when
+	it is no longer needed.
+
+2003-05-20 nalin
+	* src/Makefile.am: try juggling the CFLAGS and LIBS order to let the
+	xft CFLAGS/LIBS take precedence over everything else (#113335).
+
+2003-05-20 nalin
+	* src/ssfe.c: compile fix for Solaris, patch from #113344.
+
+2003-05-20 nalin
+	* src/vte.c: remove no-longer-used tree structure.
+	* src/vtefc.c: free strings returned by g_object_get().
+
+2003-05-20 nalin
+	* src/vte.c(vte_terminal_realize): create the terminal's draw structure.
+	* src/vte.c(vte_terminal_unrealize): free the terminal's draw structure.
+	* src/vteapp.c(main): enforce a clean shutdown by requiring that the
+	terminal and top-level window are both finalized before gtk_main()
+	returns.
+
+2003-05-20 nalin
+	* src/vte.c(vte_terminal_finalize): properly send a SIGHUP to the child
+	process if it hasn't already exited (#112505).
+	* src/vteapp.c: don't exit on EOF, only on child-exited.
+	* src/vte.c(vte_sequence_handler_sf): increment the scrolling offset
+	to avoid flickering when the application has defined a scrolling region
+	with top row == 1.
+
+2003-05-19 nalin
+	* src/iso2022.c, src/keymap.c, src/mev.c, src/vtebg.h, src/vteglyph.h:
+	remove comma from end of enum declaration (#111925).
+	* src/vtetc.c: don't use parameter-as-array-size compiler
+	extension (#111925).
+	* src/ssfe.c: don't assume that the compiler interprets \e correctly,
+	use %c with value of 27 instead (#111925).
+	* doc/reference/Makefile.am: obey CPPFLAGS and LDFLAGS (#111925).
+	* gnome-pty-helper/gnome-utmp.c: only include <utmp.h> if HAVE_UTMP_H
+	was defined (#111925).
+	* src/keymap.c, src/ssfe.c: unconditionally include <term.h> if we
+	defined HAVE_CURSES or HAVE_NCURSES, as having the header is a
+	precondition for defining either (#111925).
+	* src/iso2022.c: make each array have at least one element (#111925).
+	* src/pty.c, src/gnome-login-support.c: try to open /dev/ptc if opening
+	/dev/ptmx fails due to ENOENT (#111925).
+
+2003-05-19 nalin
+	* src/vteapp.c: don't exit on eof, just child-exited.
+	* src/vte.c(vte_terminal_eof): don't disconnect from SIGCHLD on eof,
+	the child might still be running.
+
+2003-05-19 nalin
+	* src/Makefile.am: change all instances of "termcap" to "vtetc".
+	* src/termcap.c, src/termcap.h: rename to vtetc.c, vtetc.h, to avoid
+	conflicts with system headers.
+
+2003-05-19 nalin
+	* src/keymap.c: fix KP_PageDown in application keypad mode (#113187).
+	* src/reaper.c: add a finalize method which properly cleans things up
+	so that the singleton can at least theoretically be destroyed (part of
+	a fix for #112172).
+	* src/vte.c: obtain a ref to a reaper object whenever we are waiting
+	for a child to exit.
+	* po/POTFILES.in: add more source files for scanning.
+	* src/iso2022.c: rework pieces to handle incomplete sequences at the
+	end of input.  Check for 8-bit SS2 and SS3 in case of EILSEQ.  Build
+	a fake ISO-8859-1 map for conversions using invalid maps.
+	* src/iso2022.c(_vte_iso2022_state_free): free the state's buffer.
+	* src/vteconv.c: internalize UTF-8 to UTF-8 conversions, fix handling
+	of incomplete sequences at the end of the available data.
+	* src/vte.c: implement send/receive and automatic linefeed modes.
+	* src/vte.c(vte_sequence_handler_sr): invalidate the row which contains
+	the cursor to ensure that it doesn't leave a trail.
+	* src/vte.c(vte_sequence_handler_return_terminal_id): add.
+	* src/vte.c(vte_terminal_feed_child_using_modes): add.
+
+2003-05-19 Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Add cy (Welsh) to ALL_LINGUAS
+
+2003-05-13 nalin
+	* src/iso2022.c(_vte_iso2022_find_nextctl): don't recognize 8-bit
+	SS2 and SS3 by default, it breaks UTF-8 and other encodings (#112879).
+
+2003-05-13 nalin
+	* src/vtedraw.c, src/vtedraw.h: add _vte_draw_needs_repaint() to
+	indicate if the drawing back-end can only handle entire-window paints.
+	* src/vteconv.c: return a value from _vte_conv_close(), even though
+	it isn't used.
+	* src/vte.c(vte_terminal_paint): don't look at drawing starting at
+	negative row or coumn offsets.
+	* src/vtegl.c: prefer glX double-buffering to GDK's, and use double-
+	buffered possibly-direct windows instead of indirect pixmaps.
+
+2003-05-12 nalin
+	* src/vtebg.c(_vte_bg_get_pixmap, _vte_bg_get_pixbuf): account for the
+	foreign root pixmap not having a colormap by default, using the root
+	window's colormap if it doesn't already have one set.
+
+2003-05-12 nalin
+	* src/iso2022.c(_vte_iso2022_state_new): if we can't convert from the
+	locale encoding to UTF-8, use UTF-8 as the locale encoding (#112614).
+	* src/vtegl.c(_vte_gl_start): enable point smoothing.
+
+2003-05-08 nalin
+	* src/vtedraw.c, src/vtedraw.h (_vte_draw_get_colormap): let the caller
+	control whether or not we return the default colormap.
+	* src/vtegl.c: enable blending.  Don't specify any buffer depths.  Set
+	the current drawable before we do any drawing.  Call gluOrtho2D with
+	the right args to set up the right projection.
+	* src/vteskel.c: quiet compiler warning by removing a "const".
+	* src/vtedraw.c: juggle the preferred render order again.
+
+2003-05-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "mk" to ALL_LINGUAS.
+
+2003-05-07 nalin
+	* src/iso2022.c: let OSC command sequences be subject to code
+	conversion again (#112485).
+
+2003-05-07 nalin
+	* src/vteconv.c, src/vteconv.h: add VteConv as a thin wrapper around
+	GIConv.
+	* src/iso2022.c: use VteConv.
+	* src/matcher.c(_vte_matcher_find_valid_encoding): remove.
+	* src/matcher.c(_vte_matcher_wide_encoding): remove.
+	* src/trie.c: use VteConv.
+	* src/utf8echo.c: use VteConv.
+	* src/vte.c: use VteConv (#112446).
+
+2003-05-06 nalin
+	* src/vte.c: add "Since: 0.11" to documentation for functions which
+	aren't available in the 0.10 series.
+	* src/iso2022.c: default G2 to JIS0201, G3 to JIS0212 for Japanese,
+	because they appear to not be used by anyone else.
+	* vte.spec: merge with .spec file from RHL.
+
+2003-05-06 nalin
+	* src/vtegl.c: get text rendering semi-working.
+
+2003-05-06 nalin
+	* src/vteft2.c, src/vtegl.c, src/vtepango.c, src/vtepangox.c,
+	src/vtexft.c: when setting up backgrounds, don't deref an existing
+	background before fetching a new one, in case they're the same.
+	* src/vteglyph.c(_vte_glyph_draw): fix computation of the input offset.
+	* src/vtegl.c: implement drawing of backgrounds.
+
+2003-05-06 nalin
+	* src/iso2022.c(_vte_iso2022_map_J): include the whole JIS0201 map
+	instead of just the lower half.
+	* src/iso2022.c(_vte_iso2022_map_get): set the and_mask to clear the
+	high bits of pairs before looking them up in the maps.
+	* src/iso2022.c(_vte_iso2022_fragment_input): recognize the 8-bit
+	versions of SS2 and SS3.
+	* src/iso2022.c(_vte_iso2022_process_control): recognize the 8-bit
+	versions of SS2 and SS3.
+
+2003-05-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-05 nalin
+	* src/debug.h: include <glib.h> for gboolean type definition.
+	* src/matcher.c: include "config.h" and "debug.h".
+	* src/matcher.h: use G_BEGIN_DECLS/G_END_DECLS
+	* src/table.h: use G_BEGIN_DECLS/G_END_DECLS
+	* src/termcap.h: include <glib.h>, again for gboolean.
+	* src/vtebg.h,src/vterdb.h,src/vtergb.h: adjust macro used to prevent
+	multiple inclusions to match the rest of the tree.
+	* src/vtefc.c(_vte_fc_patterns_from_pango_font_desc): provide a callback
+	which can be used to override all defaults.
+	* src/vtegl.h,src/vtexft.h: don't include "config.h"
+	* src/vteglyph.c, src/vteglyph.h: add _vte_glyph_get_uncached().
+
+2003-05-04 nalin
+	* gnome-pty-helper/gnome-login-support.c(n_read,n_write): if ERESTART
+	is defined, treat it like EINTR and EAGAIN.
+	* src/pty.c(n_read,n_write): if ERESTART is defined, treat it like
+	EINTR and EAGAIN.
+
+2003-05-02 nalin
+	* configure.in: define _XOPEN_SOURCE_EXTENDED, _XOPEN_SOURCE, and
+	__EXTENSIONS__ to get definitions for msg_control and msg_controllen
+	on Solaris (#112036).
+	* src/vtedraw.c(_vte_draw_set_scroll): don't try to return a value from
+	this void function (#112036).  Patch from Hidetoshi Tajima.
+	* src/xticker.c: don't include getopt.h, which isn't even needed for
+	regular getopt() (#112036).  Patch from Hidetoshi Tajima.
+
+2003-05-01 nalin
+	* src/vtebg.c(vte_bg_set_root_pixmap,vte_bg_root_pixmap): remove some
+	debugging g_print() calls.
+	* src/iso2022.c(process_cdata): skip over NUL bytes (#112022).
+	* src/vte.c(vte_terminal_background_update): map the bgcolor values to
+	a pixel value before setting the window background color.
+	* src/nativeecho.c(main): echo NUL bytes if asked to do so.
+
+2003-05-01 nalin
+	* src/vtebg.c, src/vtebg.h: add a singleton object for managing
+	copies of background images, either the desktop background, an
+	in-memory pixbuf, or an on-disk file, with tinting.  Using a single
+	store for this stuff lets multiple widgets share images and should
+	reduce both CPU and memory consumption in applications which create
+	more than one VteTerminal instance with similar settings.
+	* src/vtedraw.c, src/vtedraw.h: adapt the set_background_pixbuf()
+	interface to the vtebg method and rename to set_background_image().
+	* src/vteft2.c, src/vtegl.c, src/vtepango.c, src/vtepangox.c,
+	src/vteskel.c, src/vtexft.c: update to work with newer vtebg/vtedraw
+	interfaces.
+	* src/vte.c(vte_terminal_filter_property_changes): remove in favor
+	of vtebg method.  Manage background state for vtebg.
+
+2003-05-01 Kang Jeong-Hee <Keizi@mail.co.kr>
+	* doc/reference/Makefile.am: s/index.sgml/index.html/.
+	There's no index.sgml in html directory, but a index.html.
+
+2003-04-29 nalin
+	* src/vte.c(vte_sequence_handler_local_charset): remove the unused
+	DEFAULT_ISO_8859_1 case.
+	* src/vte.c(vte_terminal_class_init): don't call
+	_vte_matcher_narrow_encoding(), because we don't need it any more.
+	Change the error message emitted when _vte_matcher_wide_encoding()
+	fails (#111925), and mark it for translation.
+	* src/trie.c(main): don't call _vte_matcher_narrow_encoding() just
+	to print its result.
+	* src/vte.c(vte_terminal_set_encoding): include the right codeset name
+	in the error message.
+	* src/vteglyph.c(_vte_glyph_get): mark error message for translation.
+	* src/matcher.c, src/matcher.h: remove _vte_matcher_narrow_encoding().
+	Make tables of strings "const".
+
+2003-04-29 nalin
+	* src/vte.c(vte_terminal_unrealize): set the IM context's client window
+	to NULL before unreferencing it to avoid crashes when preedit is active.
+
+2003-04-29 nalin
+	* src/keymap.c: add keymaps for GDK_slash and GDK_question (#108299).
+
+2003-04-29 nalin
+	* src/vterdb.c(_vte_rdb_get): use INT_MAX instead of LONG_MAX when
+	passing in the maximum length, because it's returned in an int.
+
+2003-04-29 nalin
+	* src/iso2022.txt: fix the UTF-8 sample text which corresponds to the
+	ISO-2022-KR sample text so that it actually matches the text.
+
+2003-04-29 nalin
+	* src/iso2022.c(_vte_iso2022_map_U): add map for CP437.
+	* src/unitable.CP437: add.
+	* src/mkunitables.sh: add CP437.
+	* src/Makefile.am: add unitable.CP437 to the file list.
+
+2003-04-29 nalin
+	* src/iso2022.c(_vte_iso2022_process_control): accept and warn about
+	bogus map names (#110300).
+
 2003-04-28 nalin
-	* src/vte.c(vte_terminal_open_font_xft): use ascent + descent to get
-	the height of the line instead of the font height (#111752).
+	* src/vte.c(vte_invalidate_cursor_once): rework to simplify the logic
+	of how many cells to invalidate when we have a preedit string.
+	* src/vte.c(vte_terminal_paint): draw the preedit string correctly for
+	cases more complicated than the default IM (seems to fix #111767).
+	* src/vterdb.c(_vte_rdb_get): use g_strncpy() and the property length
+	to avoid going past the end of the possibly-not-nul-terminated string.
+	* src/Makefile.am: build a standalone vterdb binary.
+
+2003-04-28 nalin
+	* src/vte.c(vte_terminal_insert_char): add another flag to skip over
+	sanity-checking the buffer when adding characters.
+	* src/vte.c(vte_terminal_process_incoming): sanity-check the buffer
+	only when necessary to save time.
+	* src/vte.c(vte_terminal_scroll_region): invalidate the region which
+	is exposed when we scroll so that the entire cell gets redrawn, avoiding
+	clipping problems (#111683).
+	* src/vte.c(vte_terminal_paint): fix math for determining where to
+	stop drawing.
+	* src/vte.c(vte_terminal_fill_rectangle): rename to ..._int to reduce
+	confusion over which internal drawing commands are offset and which are
+	not.
+	* src/vte.c(vte_terminal_insert_char): if performing a single
+	substitution, check the encoded width of the output char, not the
+	input char, which doesn't have one.
+
+2003-04-28 nalin
+	* src/vterdb.c, src/vterdb.h: add routines for pulling Xft antialiasing
+	and hinting options from the resource database.
+	* src/vtefc.c(_vte_fc_patterns_from_pango_font_desc): apply settings
+	from the resource database after applying settings from GTK+.
+	* src/vtefc.c(_vte_fc_defaults_from_rdb): added, for adding default
+	settings based on the resource database.
+
+2003-04-27 nalin
+	* src/vtefc.c(_vte_fc_defaults_from_gtk): complain when the installed
+	version of GTK+ doesn't support reporting Xft antialiasing and hinting
+	settings.
+
+2003-04-25 nalin
+	* src/vte.c(vte_sequence_handler_sf): freeze the window when scrolling
+	down in a restricted scrolling area again.
+
+2003-04-23 nalin
+	* src/iso2022.c(_vte_iso2022_state_set_codeset): save the new codeset.
+	* src/iso2022.c(process_cdata): compare the new codeset to the name of
+	the UTF-8 codeset instead of the local codeset to see if we need to
+	notify callers of a change.
+
+2003-04-23 nalin
+	* src/vte.c(vte_sequence_handler_sf): don't use the window freeze count
+	to check if it's safe to scroll using gdk_window_scroll(), require other
+	parts of this widget to declare it unsafe for those cases.
+
+2003-04-23 nalin
+	* src/vtexft.c(_vte_xft_char_width): take an explicit XftFont instead
+	of figuring out which one to use ourselves.
+	* src/vtexft.c(_vte_xft_draw_text): pass the XftFont which we're already
+	using to _vte_xft_char_width to save a call to _vte_xft_font_for_char.
+
+2003-04-23 nalin
+	* autogen.sh: accept libtool 1.5 in addition to 1.4 (#15968).
+
+2003-04-23 nalin
+	* src/vte.c,src/vte.h: (_vte_terminal_accessible_ref): add.
+	* src/vteaccess.c(vte_terminal_accessible_new): call
+	_vte_terminal_accessible_ref to ensure that accessible signals are
+	going to be emitted.
+
+2003-04-23 nalin
+	* src/dumpkeys.c: formatting fixup.
+	* src/iso2022.c: formatting fixups.  Try using U+FFFF as the "invalid"
+	marker character instead of '?', because it's actually invalid.
+	* src/pty.c: formatting fixup.
+	* src/reflect.c: formatting fixup.
+	* src/ring.c: formatting fixup.
+	* src/ssfe.c: formatting fixups.
+	* src/trie.c: formatting fixup.
+	* src/vte.c: formatting fixups.
+	* src/vte.c(vte_terminal_get_accessible): don't add a weak pointer to
+	the AtkObject if it isn't a valid AtkObject.  Only emit text-changed
+	signals if we managed to create a valid accessible peer.
+	* src/vteaccess.c: formatting fixups.
+	* src/vteaccess.c(vte_terminal_accessible_init): unset the EXPANDABLE
+	Atk state.  Set the RESIZABLE state.
+	* src/vteaccess.c(vte_terminal_accessible_class_init): Remove
+	spurious(?) call to bind_textdomain.
+	* src/vteaccess.c(vte_terminal_accessible_get_type): check if the
+	accessible peer of our peer's ancestor is derived from GtkAccessible,
+	and if it isn't derive from GtkAccessible instead of that.
+	* src/vteaccess.c(vte_terminal_accessible_get_type): register our
+	factory type.
+	* src/vteaccess.c, src/vteaccess.c: add VteTerminalAccessibleFactory.
+	* src/vtedraw.c: formatting fixup.
+
+2003-04-23 nalin
+	* src/vte.c(vte_terminal_background_update): always refetch the
+	root pixmap if we don't currently have a background image (#111386).
+
+2003-04-23 nalin
+	* src/vteaccess.c: implement an AtkComponent interface (part of
+	#110770).
+	* src/vteaccess.c(vte_terminal_accessible_focus_in): set the focus
+	state on the accessible peer (part of #110770).
+	* src/vteaccess.c(vte_terminal_accessible_focus_out): unset the focus
+	state on the accessible peer (part of #110770).
+	* src/vteaccess.c(vte_terminal_accessible_init): connect to the widget's
+	visibility-notify signals.
+	* src/vteaccess.c(vte_terminal_accessible_finalize): disconnect from
+	the widget's visibility-notify signals.
+
+2003-04-23 nalin
+	* src/vte.c(vte_terminal_background_update): don't bother generating
+	a new pixmap or panning the pixbuf -- we can use the desaturated
+	pixbuf directly now (#111386).
+	* src/vte.c(vte_terminal_paint): use the drawing offsets because we
+	don't regenerate new background pixmaps when the window is moved.
+	* src/vte.c(vte_terminal_draw_cells): add jittered bold text back in,
+	fell out in the drawing overhaul (#111430).
 
 2003-04-22 nalin
-	* src/vte.c: close out PTY completely on EOF or child exit, from HEAD.
-	* gnome-pty-helper: pull up from HEAD.
+	* src/iso2022.c(_vte_iso2022_fragment_input): account for valid CSI
+	sequences which were missed earlier.
 
 2003-04-22 nalin
-	* src/vte.c(vte_terminal_read_io): don't queue up a call to
-	process_incoming() if we didn't read any fresh data, from HEAD.  Fix
-	signed/unsigned comparison, from HEAD.
+	* src/vte.c(vte_terminal_eof): dispose of the PTY completely.
+	* src/vte.c(vte_terminal_child_exited): dispose of the PTY completely.
+
+2003-04-22 nalin
+	* configure.in: add missing check for recvmsg.
+	* gnome-pty-helper/gnome-login-support.c: formatting and spelling fixes.
+	* gnome-pty-helper/gnome-login-support.c(n_read): reorganize.
+	* gnome-pty-helper/gnome-login-support.c(n_write): add.
+	* gnome-pty-helper/gnome-login-support.h: add prototype for n_write.
+	* gnome-pty-helper/gnome-pty-helper.c: only define the I_SENDFD version
+	of pass_fd() if I_SENDFD is defined, to clarify compile errors when it
+	isn't defined.
+	* src/pty.c(main): exercise session logging.
+	* src/pty.c(_vte_pty_open_with_helper): add more debug messages.
+
+2003-04-22 nalin
+	* src/iso2022.c(_vte_iso2022_map_get): force visible widths to 2 columns
+	for CJK maps which use 2 bytes per character.
+	* src/iso2022.c(_vte_iso2022_fragment_input): recognize CSI/OSC/PM
+	sequences as control sequences and not raw text, allowing us to treat
+	them specially later.
+	* src/iso2022.c(process_control): pass CSI/OSC/PM sequences through
+	unmodified (without going through maps).
+
+2003-04-22 nalin
+	* src/vte.c(vte_invalidate_cursor_once): don't bother doing anything if
+	we're fully obscured (related to #102703).
+
+2003-04-22 nalin
+	* src/vteapp.c(main): stop messing with fontconfig's list of font
+	directories.
+
+2003-04-22 nalin
+	* configure.in: rework link order so that xft2 is linked before anything
+	else.  You're still screwed if you link with both xft1 and xft2 libs,
+	but maybe this'll help (#107285).
+
+2003-04-22 nalin
+	* src/vteglyph.c: fix a couple of #errors.
+	* src/vte.c(vte_invalidate_cells): if the area we're invading is on the
+	edge, invalidate the edge as well.
+	* src/pty.c: implement and use wrappers for read and write which handle
+	EINTR and EAGAIN.
+	* src/vte.c(vte_terminal_scroll_region): don't use gdk_window_scroll if
+	the window is frozen for updates.
+	* src/vte.c(vte_terminal_sequence_handler_sf): when scrolling down while
+	we have a defined scrolling region, freeze the window to avoid flicker
+	when we update the scrolling offsets (#108058).
 
 2003-04-21 nalin
-	* src/vte.c: don't snap the beginning of selection to the next line in
-	select-by-line mode, from HEAD.
+	* gnome-pty-helper/gnome-login-support.c(n_read): don't bail out if
+	read() returns -1 and errno is either EINTR or EAGAIN, candidate fix for
+	#107534.
 
 2003-04-21 nalin
+	* src/vte.c(vte_terminal_io_read): add a couple of assertions here
+	just to be sure (#108066).
+
+2003-04-21 nalin
+	* src/pty.c(_vte_pty_ptsname): don't depend on PATH_MAX being
+	available and correct (#109805).
+	* src/vte.c(vte_terminal_set_termcap): don't depend on PATH_MAX being
+	available and correct (#109805).
+	* src/vte.c(vte_terminal_io_read): fix signed/unsigned comparison
+	(#108066).
+
+2003-04-21 nalin
+	* Makefile.am: add MESSAGE-OF-DOOM to EXTRA_DIST
 	* src/keymap.c: make Alt+Return generate ESC newline (#108863).
 
 2003-04-21 nalin
-	* src/mkunitables.sh: pull up from HEAD.
-	* src/unitable.KSX1001: pull up from HEAD.
-	* src/unitable.KSC5601: remove.
-	* src/Makefile.am: include unitable.KSX1001 in tarballs.
-	* src/vte.c: merge in selection changes from HEAD to fix triple-click.
-	* src/reflect.c: merge in changes from HEAD to set up the initial
-	contents right.
-	* src/iso2022.c: use the KS X 1001 table instead of KS C 5601.
+	* src/Makefile.am: drop unitable.KSC5601
+	* src/iso2022.c: fixup comment re: KS X 1001 (#107119).
+	* src/mkunitables.sh: add two characters from KS X 1001:1998 (#107119).
 
-2003-04-20  Taneem Ahmed  <taneem@eyetap.org>
+2003-04-21 nalin
+	* src/vte.c(vte_terminal_eof): don't try to process incoming data if
+	there isn't any (#110946).
+	* src/vtexft.c: mark a warning message for translation.
+	* src/vtegl.c: make the warning when glX isn't available debug-only.
 
-	* configure.in:  Added "bn" to ALL_LINGUAS.
+2003-04-21 nalin
+	* src/vteglyph.c: use #if HAVE_DECL_XXX instead of #ifdef HAVE_DECL_XXX,
+	noted by Bob Doan.
 
-2003-03-31: Laurent Dhima  <laurenti@alblinux.net>
+2003-04-20 nalin
+	* src/vtexft.c: work around for garbled glyphs when drawing runs of
+	text using multiple fonts while mixing bitmap and antialiased fonts
+
+2003-04-17 nalin
+	* src/vte.c: add missing prototype for vte_terminal_process_incoming().
+
+2003-04-17 nalin
+	* src/vteglyph.c(_vte_glyph_get): quiet a compiler warning.
+	* src/iso2022.c: use KSX-1001 instead of KSC-5601 for Korean (#107119),
+	add maps for CNS 11643 planes 3,4,5,6,7 (can't test them, but hey).
+	Rework so that we get the data before it's passed to g_iconv(), and
+	return gunichars.
+	* src/interpret.c: adapt to changes in the iso2022 interfaces.
+	* src/vte.c: adapt to changes in the iso2022 interfaces.
+	* src/mkunitables.sh: add snippets for KSX 1001.
+	* src/iso2022.txt: add iso-2022-cn example text.
+
+2003-04-17 nalin
+	* src/vte.c(vte_terminal_process_incoming): invalidate a larger
+	rectangle to fix behavior wrt openi18n assertion 2.
+
+2003-04-16 nalin
+	* src/vte.c(vte_terminal_paint): fix logic error drawing the cursor
+	which caused ALTGR characters to always be used.  Draw the preedit
+	string in the right location.
+	* src/vte.c(vte_invalidate_cursor_once): expose the visible width of
+	the preedit string, not its length.
+
+2003-04-15 nalin
+	* src/vteaccess.c: fix broken debug message.
+
+2003-04-15 nalin
+	* src/vte.c: make row_data a structure containing an array instead of a
+	simple array.  Add a field to row data structures which tracks whether
+	or not we soft-wrapped from this line to the next one.  Make use of the
+	field when copying text and selecting by "line" (#105189).
+	* src/reflect.c: put the label in a scrolled window to avoid mad loops
+	when we resize it to accomodate more text, which shrinks the terminal,
+	which removes text from the label, which resizes it to be smaller, which
+	gives the terminal more space, which adds text to the viewable area,
+	which requires a bigger label, and so on.
+	* src/vte.c: move vte_terminal_get_text_range logic into
+	vte_terminal_get_text_range_maybe_wrapped for internal use,
+	vte_terminal_get_text likewise.
+
+2003-04-14 nalin
+	* src/vte.c: don't snap the beginning of selection to the next line in
+	select-by-line mode.
+
+2003-04-14 nalin
+	* configure.in, src/vteglyph.c: fix macro invocations so that when
+	LCD and GRAY2/GRAY4 pixel modes are supported by freetype, we don't
+	get confused by them.
+	* src/vtepango.c, src/vtepangox.c: fix background scrolling.
+
+2003-04-14 nalin
+	* autogen.sh: require automake 1.6, 1.5 chokes on AM_LDFLAGS, which 1.7
+	wants instead of LDFLAGS(!).  Require autoconf 2.52 or newer, because
+	older versions bail on configure.in.
+	* configure.in: Check if ft_render_mode_mono, FT_RENDER_MODE_NORMAL,
+	FT_PIXEL_MODE_MONO, ft_pixel_mode_mono, FT_PIXEL_MODE_GRAY2,
+	FT_PIXEL_MODE_GRAY4, FT_PIXEL_MODE_GRAY, ft_pixel_mode_grays,
+	FT_PIXEL_MODE_LCD are declared.
+	* src/vte.c, src/vteapp.c, src/vtefc.c, src/vtepango.c: handle being
+	built with GTK+ 2.0 or 2.2.
+	* src/vtegl.c: disable for GTK+ < 2.2.0.
+	* src/vtepangox.c: use a PangoX context instead of a Pango context
+	when determining font metrics.
+	* src/vteglyph.c: handle the twisty maze of load and render options and
+	pixel modes various versions of freetype support.
+
+2003-04-14 nalin
+	* configure.in: disable pangox, xft, glx drawing if run invoked with
+	the --without-x flag.
+	* vte.pc.in: include CFLAGS found by AC_PATH_XTRA when built with X.
+	* src/iso2022.c(_vte_iso2022_substitute_single): clean up and ensure
+	that ambiguous widths are respected.
+	* src/iso2022.c, src/iso2022.h: add _vte_iso2022_unichar_width().
+	* src/vte.c: remove old xft2/xft1/pango/pangox/core drawing code,
+	making draw the only supported method.  Remove most dependencies on
+	gdkx and Xlib, except for root pixmap ID watching.
+	* src/vtedraw.c: only use pangox, xft if X_DISPLAY_MISSING is not
+	defined.
+	* src/vtedraw.c, src/vtedraw.h: add get_using_fontconfig() method.
+	* src/vte.c(vte_terminal_get_using_xft): use
+	_vte_draw_get_using_fontconfig(), which is what apps really want to
+	know when they call this function.
+	* src/vtegl.c: wrap in #ifndef X_DISPLAY_MISSING.
+	* src/vtepangox.c: wrap in #ifndef X_DISPLAY_MISSING.
+	* src/vtexft.c: wrap in #ifndef X_DISPLAY_MISSING.
+	* src/vteglyph.c(_vte_glyph_cache_set_description): use horizontal
+	advance instead of bitmap width when calculating display widths.
+	Rename to _vte_glyph_cache_set_font_description.
+
+2003-04-09 nalin
+	* src/vte.c: add back some variables which are used after all.
+
+2003-04-09 nalin
+	* configure.in: add specific checks for PangoX and glX.
+	* src/vteft2.c, src/vteft2.h: add drawing method using freetype and
+	GdkRGB.
+	* src/vteglyph.c, src/vteglyph.h: add.
+	* src/vtepangox.c, src/vtepangox.h: add drawing method using PangoX.
+	* src/vtergb.c, src/vtergb.h: add.
+	* src/vtegl.c, src/vtegl.h: add placeholder drawing method using
+	freetype and glX.
+	* src/Makefile.am: add newly-added source files to libvte.la target.
+	* src/vtedraw.c, src/vtedraw.h: add get_visual and get_colormap
+	methods so that drawing methods can override the default visual and
+	colormap.  Rename get_text_base() to get_text_ascent(), which is more
+	correct.  Remove scroll(), which would just wrap gdk_window_scroll().
+	* src/vte.c: fix logic for choosing alternate render methods when
+	VTE_USE_XFT is "0".
+	* src/vteapp.c: add -- option to stop parsing options with getopt.
+	* src/vtefc.c: fix incorrect DPI read due to type mismatch (#109513).
+
+2003-03-31  Laurent Dhima  <laurenti@alblinux.net>
 
 	* configure.in: Added "sq" to ALL_LINGUAS.
-	
-2003-03-16  Samúel Jón Gunnarsson  <sammi@techattack.nu>
-
-	* configure.in: added "is" to ALL_LINUGAS.
-
-2003-03-16  Roozbeh Pourander  <roozbeh@sharif.edu>
-
-	* configure.in: added "fa" to ALL_LINGUAS.
-
-2003-03-14  Metin Amiroff  <metin@karegen.com>
-
-	* configure.in: Added "az" to ALL_LINGUAS.
+	 
+2003-03-26 nalin
+	* src/Makefile.am: specify AM_CFLAGS and AM_LDFLAGS instead of CFLAGS
+	and LDFLAGS so that automake 1.7 doesn't kick us to the curb
 
 2003-03-13  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "ml" to ALL_LINGUAS.
 
-2003-03-04 nalin
+2003-03-07 nalin	
+	* src/vte.c(vte_terminal_paint): adjust coordinates for the border when
+	clearing rectangles.
+	* src/vteskel.c, src/vteskel.h: add.
+	* src/vtedraw.c: use the skeleton drawing code.
+2003-03-07 nalin	
+	* src/vte.c(vte_terminal_visibility_notify): watch for Visibility
+	events.
+	* src/vte.c(vte_invalidate_cells,vte_invalidate_all): don't synthesize
+	an expose event if we're fully obscured, that's just silly.
+
+2003-03-06 nalin	
+	* src/vte.c, src/vte.h(vte_terminal_set_background_tint_color): take a
+	const GdkColor* instead of a non-const color.
+
+2003-03-06 nalin	
+	* python/vte.defs: regenerate.
+	* python/vte.override: update for vte_char_attributes rename.
+
+2003-03-06 nalin	
+	* src/vte.c, src/vte.h, src/vteaccess.c: rename struct
+	vte_char_attributes to VteCharAttributes, fixup some docs.
+	* doc/reference: finish up docs.
+
+2003-03-05 nalin	
+	* vte.pc.in: add FT2_LIBS and FT2_CFLAGS to our libs and cflags.  Add
+	xft >= 2.0 and fontconfig as hard requirements.
+
+2003-03-05 nalin	
+	* src/vtedraw.c: don't spit out which rendering method we're using
+	except in debug mode.
+
+2003-03-05 nalin	
+	* src/vtepango.c, src/vtexft.c: don't print "Bogus font." when we think
+	the font metrics are screwy.
+
+2003-03-05 nalin	
+	* configure.in: require Xft2 and fontconfig, drop Xft1.  Require
+	freetype2.
+	* src/Makefile.am, src/xticker.c: add xticker, useless but interesting.
+	* src/vte.c, src/vte.h: add vte_terminal_set_scroll_background() to
+	enable background scrolling (where supported by the drawing code).
+	* src/vteapp.c: set the tinting color to the default background color
+	to see what that's like.  Add -s option to toggle scrolling backgrounds.
+	* src/vtefc.c, src/vtefc.h: add.  For converting PangoFontDescriptions
+	to sorted lists of FcPatterns suitable for passing to XftFontOpenPattern
+	or FT_New_Face.
+	* src/vtedraw.c, src/vtedraw.h: add.  New drawing layer.
+	* src/vtepango.c, src/vtepango.h: add.  Drawing layer using Pango.
+	* src/vtexft.c, src/vtexft.h: add.  Drawing layer using Xft2.
+	* src/vte.c: add render type VteRenderDraw for transitional period in
+	preparation for nuking other drawing code.  Merge HAVE_XFT bits into
+	HAVE_XFT2 areas.  Nuke Xft1-specific stuff.  Move drawing of lines
+	and rectangles to dedicated functions.  Always call vte_unichar_width()
+	instead of g_unichar_iswide().
+
+2003-03-04 nalin	
+	* src/vte.c(vte_sequence_handler_set_title_internal): fix swap of
+	one variable for another which prevented stripping of control chars,
+	spotted by Nam SungHyun.
+
+2003-03-04 nalin	
 	* src/vte.c(vte_terminal_insert_char): wrap properly when a scrolling
-	region is set (#107559).  From HEAD.
+	region is set (#107559).
+
+2003-02-28  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* po/ja.po: Added Japanese translations from gnome-2-2.
+
+2003-02-26 nalin
+	* src/iso2022.c(_vte_iso2022_substitute,_vte_iso2022_substitute_single):
+	force characters substituted through the ACS map to have width of 1.
 
 2003-02-26 nalin
 	* src/vte.c(vte_terminal_font_open_xft,vte_terminal_font_open_pango):
-	tweak width calculations to handle incomplete font coverage.  From HEAD.
+	use an array of codepoints instead of a UTF-8 string so that we can
+	check for lack of font coverage in Xft fonts.
+
+2003-02-26 nalin
+	* src/vte.c: formatting fixups.
 
 2003-02-26 nalin
 	* src/vte.c(vte_terminal_font_open_xft,vte_terminal_font_open_pango):
 	patch from Jungshik Shin for detecting and handling fonts where ASCII
-	characters are double-width (#106618).  From HEAD.
+	characters are double-width (#106618)
+
+2003-02-26  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in:  Added "bn" to ALL_LINGUAS.
+
+2003-02-25 nalin
+	* src/vteapp.c(main): take a shot at implementing xconsole-like
+	functionality when started with the -C flag: we open /dev/console and
+	TIOCCONS it, and just feed data to the widget until we lose ownership
+	of the MIT_CONSOLE_$(hostname) clipboard.
+
+2003-02-25 Samúel Jón Gunnarsson <sammi@techattack.nu>
+
+	* configure.in: added "is" to ALL_LINGUAS.
 
 2003-02-24 nalin
 	* src/vte.c(vte_sequence_handler_window_manipulation): don't report the
@@ -73,68 +1356,106 @@
 	characters just to be on the safe side.
 
 2003-02-24 nalin
-	* src/vte.c(vte_terminal_decset_internal): home the cursor when we
-	switch to the alternate screen, from HEAD (#105075).
+	* src/vte.c(vte_sequence_handler_decset_internal): home the cursor when
+	we switch to the alternate screen (#105075).
 
-2003-02-21 nalin
-	* src/iso2022.c: special case the rest of the graphic characters in
-	the way we already do for the 0x2500-0x257f range.  It's still wrong,
-	but at least now it's consistent (Red Hat #84783).
-	
-2003-02-20 nalin
-	* src/keymap.c: pull up from HEAD to get proper fix for Ctrl+digit
-	keys, which shouldn't break Meta+digit keys (#106667).
+2003-02-23  Duarte Loreto <happyguy_pt@hotmail.com>
 
-2003-02-20 nalin
-	* src/vte.c: fix gratuitous IM resetting, don't mess with the IM when
-	we're not realized and it's a NULL pointer.  From HEAD.
+        * configure.in: Added "pt" to ALL_LINGUAS.
+
+2003-02-21  Metin Amiroff  <metin@karegen.com>
+
+	* configure.in:  Added az to ALL_LINGUAS.
 
 2003-02-20 nalin
-	* src/vte.c(vte_terminal_draw_row): fix "jittering" when the left edge
-	of the row we're drawing is the right half of a multicolumn character.
-	From HEAD.
+	* src/keymap.c(_vte_keymap_map): in debug mode, skip coverage assertions
+	for specific keys (GDK_2 - GDK_8).
+	* src/keymap.c: remove unshifted entries for GDK_2 - GDK_8 (#106667)
+
+2003-02-20 nalin
+	* src/vte.c(vte_terminal_im_commit,vte_terminal_paste_cb): stop
+	gratuitously resetting the IM context.
+	* src/vte.c(vte_terminal_process_incoming): correctly determine when
+	we have an IM context -- it should be iff we're realized.
+	* src/vte.c(vte_terminal_key_press/release): only filter keypresses
+	through the IM context if we're realized, otherwise it doesn't exist.
+
+2003-02-20 nalin
+	* src/vte.c(vte_terminal_paint): reverse that last change -- don't
+	always assume proportional text.
+	* src/vte.c(vte_sequence_handler_ta): eliminate dead code.
+
+2003-02-20 nalin
+	* src/vte.c(vte_terminal_draw_row): move the initial drawing x left
+	whenever we back up to a previous cell to avoid drawing fragments.
+	* src/vte.c(vte_terminal_paint): always assume non-monospaced text,
+	because the "missing glyph" glyph consistently looks screwy otherwise.
 
 2003-02-20 nalin
 	* src/vte.c(vte_terminal_feed_child): don't reset the input method
-	here -- it may be in the middle of something (Red Hat #81542).  From
-	HEAD.
+	here -- it may be in the middle of something (Red Hat #81542).
 	* src/vte.c(vte_terminal_im_commit): reset the input method when we
-	get text committed (Red Hat #81542).  From HEAD.
+	get text committed (Red Hat #81542).
 
 2003-02-19 nalin
-	* src/vte.c(vte_terminal_focus_in/focus_out): don't pass focus status
-	changes on to our IM context when we're not realized, because we don't
-	have an IM context then.
-	* src/vte.c(vte_terminal_background_update): don't leak a queued update
-	if one is queued and we get called directly (Red Hat #84368).
+	* src/vte.c(vte_terminal_focus_in,vte_terminal_focus_out): if we're not
+	currently realized, don't try to tell our IM context that our focus
+	state changed, because we don't have one.  While we're at it, it's
+	silly to try to force the cursor to be drawn when we're not realized,
+	either.
+	* src/vte.c(vte_terminal_background_update): disconnect self, just in
+	case we were called directly while still queued, which would otherwise
+	leak the source, leading to potential problems later (Red Hat #84368).
 
 2003-02-19 nalin
-	* src/vte.c(vte_terminal_scroll_window): correctly determine whether or
-	not it's safe to scroll with gdk_window_scroll (Red Hat #83472).  From
-	HEAD.
+	* src/vte.c(vte_terminal_scroll_window): use gdk_window_scroll if the
+	first row to be scrolled is the first visible row, not just if it's the
+	first row we ever saw (Red Hat #83472).
 
 2003-02-19 nalin
 	* src/vte.c(vte_terminal_button_press): grab input focus on button 1
-	press (#106573, Red Hat #84384).  From HEAD.
+	press (#106573, Red Hat #84384).
 
 2003-02-19 nalin
-	* src/vte.c(vte_terminal_sequence_handler_bt): pull rest of fix
-	for backtab from HEAD.
+	* src/vte.c(vte_terminal_sequence_handler_bt): add missing chunk of
+	fix for backtab.
 
 2003-02-19 nalin
+	* src/vte.c: turn on update debugging if VTE_DEBUG_FLAGS includes
+	"updates"
+
+2003-02-19 nalin
+	* src/keymap.c: add map entries for unmodified digit keypresses.
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_match_add): use the default cursor by default,
+	so that we don't look weird to people who aren't used to the cursor
+	changing this way.
+	* configure.in: forcibly define VTE_DEBUG to "1" when we define it.
+
+2003-02-19 nalin
+	* src/vteaccess.c: emit focus-event signals from the accessible peer
+	when the widget receives focus-in and focus-out events, noted by
+	Marc Mulcahy.
+
+2003-02-18  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-18 nalin
+	* src/vte.c, src/vte.h: add vte_terminal_match_set_cursor() (#105986).
+
+2003-02-18 nalin
+	* src/Makefile.am: add @LDFLAGS@ to all of the LDADD clauses, hopefully
+	fixing #105415.
+
+2003-02-17 nalin
 	* src/vte.c(vte_terminal_sequence_handler_cs): recognize and discard
-	bogus arguments.
+	invalid arguments (#57453).
 
-2003-02-19 nalin
-	* src/vteaccess.c: emit focus-event events when the widget receives
-	focus-in/focus-out events.  From HEAD.
-
-2003-02-19 nalin
-	* src/keymap.c: pull up from HEAD to get key map entries for Ctrl-digit.
-
-2003-02-19  Takeshi AIHANA <aihana@gnome.gr.jp>
-
-	* configure.in: Added "ja" (Japanese) to ALL_LINGUAS.
+2003-02-17 nalin
+	* src/keymap.c: add map entries for Ctrl+digit keys (#106193, Red Hat
+	#83563).
 
 2003-02-17  Alessio Frusciante  <algol@firenze.linux.it>
 
@@ -145,80 +1466,131 @@
 	* configure.in: Added Belarusian to ALL_LINGUAS.
 
 2003-02-14 nalin
-	* configure.in: don't equate maintainer mode with debugging.  From HEAD.
+	* src/vte.c(vte_terminal_sequence_handler_bt): fix to move back to the
+	leftmost column if there are no previous tabstops, exercised by
+	make menuconfig.
 
 2003-02-14 nalin
-	* src/vte.c(vte_terminal_io_read): coalesce data to work better on
-	systems where the scheduler wakes us up as soon as data is available,
-	to better handle cases where the data we have has a pile coming in
-	right behind it.  From HEAD.
+	* src/vte.c(vte_terminal_background_update): handle pixbufs with
+	n_channels != 3.
 
 2003-02-14 nalin
-	* src/vte.c(vte_terminal_sequence_handler_bt): fix to stop at the
-	leftmost column if there are no previous tabstops.  From HEAD.
+	* src/interpret.c: handle width masks now that we're encoding widths for
+	all characters.
+
+2003-02-14 nalin
+	* src/vte.c: more comments to keep myself from getting confused later.
 
 2003-02-13 nalin
-	* src/vte.c(vte_terminal_io_read): don't free the buffer on the stack,
-	though it should never have happened, spotted by msw.
+	* src/vte.c: change the coalescing timeout to 2ms.
+
+2003-02-13 nalin
+	* src/vte.c(vte_terminal_io_read): attempt to coalesce data received
+	within about 10ms to reduce load on the X server on systems where the
+	scheduler wakes us up as soon as we have a few bytes available.  Based
+	on a suggested fix by msw.
+	* src/vte.c(vte_terminal_io_read): never free buf, it's not a heap
+	variable any more.  Spotted by msw.
 
 2003-02-12 nalin
-	* src/vte.c(vte_terminal_finalize): close fd leak.
-	* src/vte.c(vte_terminal_fork_command): close potential fd leak.
+        * src/vte.c(vte_terminal_finalize): close fd leak.
+        * src/vte.c(vte_terminal_fork_command): close potential fd leak.
 
 2003-02-12 nalin
-	* src/reflect.c(main): connect to accessible signals before they can
-	be emitted so that we always have a clear picture of what's going on.
+	* src/reflect.c(main): handle cases where the widget has no data and
+	returns NULL when we ask for it.
+
+2003-02-12 nalin
+	* src/reflect.c(main): do a complete read of the widget before we
+	start off in main to ensure we have accurate data.
+	* src/vteaccess.c(vte_terminal_accessible_update_private_data_if_needed):
+	only attempt to free the previous snapshot if it existed.
+
+2003-02-12 nalin
+	* src/reflect.c(main): connect to signals before any get emitted.
+	* src/vteaccess.c: use a GString to store snapshot text so that we
+	always have proper length information.
+
+2003-02-12 nalin
+	* src/reflect.c(text_changed_delete): spit out a warning if we receive
+	an out-of-range text_changed::delete signal.
 
 2003-02-11 nalin
-        * src/vte.c(vte_terminal_get_text_range): skip over fragments properly.
-        * src/vte.c(vte_terminal_draw_row): skip over fragments properly.
-
-2003-02-10 nalin
-        * src/vte.c(vte_terminal_get_accessible): keep a weak pointer to the
-        accessible peer instead of a static pointer (part of #104909).
-        * src/vte.c(vte_terminal_finalize): if the accessible peer still exists,        remove its weak pointer before attempting to unref it.
-        * src/vteaccess.c(vte_terminal_accessible_new): make the terminal peer
-        a weak pointer (part of #104909).
-        * src/vteaccess.c(vte_terminal_accessible_finalize): if the terminal
-        peer is not NULL, disconnect it as a weak pointer and don't bother
-        disconnecting from its signals (part of #104909).  Add a debug message.
-        * src/vteaccess.c(vte_terminal_accessible_text_finalize):  Add a debug
-        message.
-
-2003-02-10 nalin
-	* src/vteaccess.c(vte_terminal_accessible_update_private_data_if_needed):
-	always update the cursor position, in case text was added or removed
-	without the cursor itself moving.  Backport from HEAD.
-	* src/vteaccess.c(vte_terminal_accessible_get_text_somewhere): don't
-	emit a warning when the caller attempts to read the Nth character when
-	we have 0 to N-1, just return an empty string.  Backport from HEAD.
+	* src/genwidths, src/uniwidths: add data for tracking ambiguous-width
+	Unicode characters.
+	* src/iso2022.c, src/iso2022.h: add _vte_iso2022_is_ambiguous() for
+	checking if a character is ambiguous, and _vte_iso2022_ambiguous_width()
+	for guessing how wide it should be based on the current locale.  Rename
+	_vte_iso2022_get/set_width to ...encoded_width to clarify the intent,
+	ditto for the related macros.
+	* src/table.c,src/trie.c: use renamed macros for reading encoded widths.
+	* src/iso2022.c(_vte_iso2022_substitute_single,_vte_iso2022_substitute):
+	handle ambiguous widths properly, and always encode a width.
+	* src/Makefile.am: use the default LDFLAGS, I think.
+	* src/vte.c,src/vte.h: add vte_terminal_set_background_tint_color().
+	* src/vte.c(vte_terminal_unrealize): unhook from background update
+	sources, because we may not have a display after that.
+	* src/vte.c(vte_terminal_size_allocate): only queue a background update
+	if we're in transparent mode and either we've been moved or we have no
+	background yet.  If our size changed, force a repaint.
+	* src/vte.c(vte_sequence_handler_window_manipulation): snip off the
+	padding along the edges when responding to requests for the window size
+	and location -- apps have no way to query it.
+	* src/vte.c(vte_terminal_get_text_range): skip over fragments properly.
+	* src/vte.c(vte_terminal_draw_row): skip over fragments properly.
+	* src/vte.c(vte_unichar_width): rework in terms of the width checking
+	in the iso2022 module for consistency.
 
 2003-02-06  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "id" to ALL_LINGUAS.
 
 2003-02-03 nalin
-	* src/vte.c: cause the native drawing code for code points
-	0xa3, 0x3c0 0x2592, 0x25ae, 0x25c6 to be used again, so that they can
-	be seen in cases where the current font doesn't include them, ok
-	release-team.
-	* vte.spec: 0.10.17
-
-2003-02-02  Duarte Loreto <happyguy_pt@hotmail.com>
-
-        * configure.in: Added "pt" to ALL_LINGUAS.
+	* src/vte.c(vte_terminal_size_allocate): suppress background updates if
+	we haven't moved and the background image already exists (#104868).
 
 2003-01-31 nalin
-	* src/Makefile.am: include iso2022.txt in tarballs.
+	* src/vte.c(vte_terminal_get_accessible): keep a weak pointer to the
+	accessible peer instead of a static pointer (part of #104909).
+	* src/vte.c(vte_terminal_finalize): if the accessible peer still exists,
+	remove its weak pointer before attempting to unref it.
+	* src/vte.c: rename accessible_exists member to accessible_emit, which
+	more accurately reflects its purpose.
+	* src/vteaccess.c(vte_terminal_accessible_update_private_data_if_needed):
+	always update the cursor position, in case text was added or removed
+	without the cursor itself moving.
+	* src/vteaccess.c(vte_terminal_accessible_get_text_somewhere): don't
+	emit a warning when the caller attempts to read the Nth character when
+	we have 0 to N-1, just return an empty string.
+	* src/vteaccess.c(vte_terminal_accessible_new): make the terminal peer
+	a weak pointer (part of #104909).
+	* src/vteaccess.c(vte_terminal_accessible_finalize): if the terminal
+	peer is not NULL, disconnect it as a weak pointer and don't bother
+	disconnecting from its signals (part of #104909).  Add a debug message.
+	* src/vteaccess.c(vte_terminal_accessible_text_finalize):  Add a debug
+	message.
 
 2003-01-31 nalin
-	* src/vte.c: pull up selection-always-extending-by-default fix from
-	HEAD, ok release-team.
-	* vte.spec: 0.10.16
+	* src/vte.c(vte_unichar_isgraphic): rename to vte_unichar_is_graphic,
+	to match conventions used elsewhere.
+	* src/vte.c(vte_unichar_is_graphic): count 0xa3, 0x3c0, 0x2592,
+	0x25ae, 0x25c6 as graphic characters.
+	* src/iso2022.txt: add sample text using character set 0.
 
 2003-01-30  Fatih Demir <kabalak@gtranslator.org>
 
 	* configure.in: Added "tr" (Turkish) to the languages' list.
+
+2003-01-30 nalin	
+	* MESSAGE-OF-DOOM: added, for scaring people away.
+	* vte.spec: bump to 0.11.x for development.
+	* src/mev.c(main): reset modes before quitting.
+	* src/vte.c(vte_terminal_button_press): don't always extend selection
+	when not in event mode.
+
+2003-01-28 nalin	
+	* configure.in: make debugging support an explicit option to configure.
+	don't automatically enable debugging in maintainer mode.
 
 2003-01-27 nalin	
 	* src/vte.c(vte_terminal_realize): create the "invisible" cursor using
