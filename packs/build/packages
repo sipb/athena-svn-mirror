@@ -1,4 +1,4 @@
-# $Id: packages,v 1.296 2004-12-17 17:45:12 ghudson Exp $
+# $Id: packages,v 1.297 2004-12-23 18:10:36 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -135,7 +135,6 @@ athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
-third/acme			except solaris requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
 third/afs-krb5			requires krb5,openafs,et
 third/aspell
 third/aspell-dict		requires aspell
