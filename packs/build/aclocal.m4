@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.9 1998-12-01 16:34:13 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.10 1999-07-27 13:26:08 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -57,6 +57,11 @@ dnl		Sets ARES_LIBS and defines HAVE_ARES if libares
 dnl		used.
 dnl	ATHENA_ARES_REQUIRED
 dnl		Generates error if libares not found.
+dnl	ATHENA_ZEPHYR
+dnl		Sets ZEPHYR_LIBS and defines HAVE_ZEPHYR if zephyr
+dnl		used.
+dnl	ATHENA_ZEPHYR_REQUIRED
+dnl		Generates error if zephyr not found.
 dnl
 dnl All of the macros may extend CPPFLAGS and LDFLAGS to let the
 dnl compiler find the requested libraries.  Put ATHENA_UTIL_COM_ERR
@@ -224,7 +229,7 @@ AC_DEFUN(ATHENA_KRB4_REQUIRED,
 [AC_ARG_WITH(krb4,
 	[  --with-krb4=PREFIX      Specify location of Kerberos 4],
 	[krb4="$withval"], [krb4=yes])
-if test "$afs" != no; then
+if test "$krb4" != no; then
 	ATHENA_KRB4_CHECK
 	AC_SUBST(KRB4_LIBS)
 else
@@ -327,4 +332,33 @@ if test "$ares" != no; then
 	ATHENA_ARES_CHECK
 else
 	AC_MSG_ERROR(This package requires libares.)
+fi])
+dnl ----- zephyr -----
+
+AC_DEFUN(ATHENA_ZEPHYR_CHECK,
+[if test "$zephyr" != yes; then
+	CPPFLAGS="$CPPFLAGS -I$zephyr/include"
+	LDFLAGS="$LDFLAGS -L$zephyr/lib"
+fi
+AC_CHECK_LIB(zephyr, ZFreeNotice, :, [AC_MSG_ERROR(zephyr not found)])])
+
+AC_DEFUN(ATHENA_ZEPHYR,
+[AC_ARG_WITH(zephyr,
+	[  --with-zephyr=PREFIX      Use zephyr],
+	[zephyr="$withval"], [zephyr=no])
+if test "$zephyr" != no; then
+	ATHENA_ZEPHYR_CHECK
+	ZEPHYR_LIBS="-lzephyr"
+	AC_DEFINE(HAVE_ZEPHYR)
+fi
+AC_SUBST(ZEPHYR_LIBS)])
+
+AC_DEFUN(ATHENA_ZEPHYR_REQUIRED,
+[AC_ARG_WITH(zephyr,
+	[  --with-zephyr=PREFIX      Specify location of zephyr],
+	[zephyr="$withval"], [zephyr=yes])
+if test "$zephyr" != no; then
+	ATHENA_ZEPHYR_CHECK
+else
+	AC_MSG_ERROR(This package requires zephyr.)
 fi])
