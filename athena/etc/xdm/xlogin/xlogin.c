@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.73 1998-06-23 20:54:05 danw Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.74 1998-06-25 20:10:28 cfields Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1692,6 +1692,8 @@ static short conditions[] =
   23321, 23352, 23383, 23414, 23446
 };
 
+static int conditions_len = sizeof(conditions) / sizeof(short);
+
 static Boolean conditionsMet()
 {
   time_t t;
@@ -1704,10 +1706,10 @@ static Boolean conditionsMet()
   test = (now->tm_year - 92) * 512 + (now->tm_mon + 1) * 32 + now->tm_mday;
 
   i = 0;
-  while ((i < sizeof(conditions)) && (test > conditions[i]))
+  while ((i < conditions_len) && (test > conditions[i]))
     i++;
 
-  if (i == sizeof(conditions))
+  if (i == conditions_len)
     return False;
 
   if ((test == conditions[i]) && (now->tm_hour >= 18))
@@ -1719,8 +1721,11 @@ static Boolean conditionsMet()
 static short auxconditions[] =
 {
   1424, 1427, 1428, 1429, 1430, 1718, 1719, 1720, 1721, 1722,
-  2448, 2449, 2450, 2451, 2452, 2739, 2740, 2741, 2742, 2743
+  2448, 2449, 2450, 2451, 2452, 2739, 2740, 2741, 2742, 2743,
+  3470, 3471, 3472, 3473, 3474, 3761, 3762, 3763, 3764, 3765
 };
+
+static int auxconditions_len = sizeof(auxconditions) / sizeof(short);
 
 static Boolean auxConditions()
 {
@@ -1734,10 +1739,10 @@ static Boolean auxConditions()
   test = (now->tm_year - 92) * 512 + (now->tm_mon + 1) * 32 + now->tm_mday;
 
   i = 0;
-  while ((i < sizeof(auxconditions)) && (test > auxconditions[i]))
+  while ((i < auxconditions_len) && (test > auxconditions[i]))
     i++;
 
-  if (i == sizeof(auxconditions))
+  if (i == auxconditions_len)
     return False;
 
   if ((test == auxconditions[i]) &&
