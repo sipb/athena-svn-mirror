@@ -1,3 +1,35 @@
+2003-01-19  Chris Lyttle  <chris@wilddev.net>
+
+	* configure.in: updated to release 2.0.4, added hu translation,
+	  system-admin guide and accessibility guide.
+	* Makefile.am: added gnome2-system-admin-guide and 
+	  gnome2-accessibility-guide to subdirs
+	* gnome2-accessibility-guide/Makefile.am: added
+	* gnome2-accessibility-guide/C/Makefile.am: added
+	* gnome2-system-admin-guide/Makefile.am: added
+	* gnome2-system-admin-guide/C/Makefile.am: added
+	* gnome2-user-guide/Makefile.am: added
+	* gnome2-user-guide/hu/Makefile.am: added
+
+2003-01-15  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added gnome2-user-guide/ro/Makefile
+	* gnome2-user-guide/Makefile.am: added ro subdir
+
+2003-01-07  Chris Lyttle  <chris@wilddev.net>
+
+	* configure.in: updated to release 2.0.3
+
+2002-12-12  Eugene O'Connor  <eugene.oconnor@sun.com>
+
+	* Added directory gnome2-system-admin-guide for GNOME 2.0 
+     Desktop System Administration Guide.
+
+2002-09-30  Alexander Kirillov  <kirillov@math.sunysb.edu>
+
+	* introduction-to-gnome/C/introduction-to-gnome.xml: fixed markup
+	error (bug 94202)
+
 2002-08-06  Alexander Kirillov  <kirillov@math.sunysb.edu>
 
 	* introduction-to-gnome/C/introduction-to-gnome.xml: committed

@@ -698,7 +698,7 @@ fi
 
 PACKAGE=gnome2-user-docs
 
-VERSION=2.0.1
+VERSION=2.0.4
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -1016,6 +1016,12 @@ Makefile
 gnome-user-docs.spec
 gnome2-user-guide/Makefile
 gnome2-user-guide/C/Makefile
+gnome2-user-guide/ro/Makefile
+gnome2-user-guide/hu/Makefile
+gnome2-accessibility-guide/Makefile
+gnome2-accessibility-guide/C/Makefile
+gnome2-system-admin-guide/Makefile
+gnome2-system-admin-guide/C/Makefile
 introduction-to-gnome/Makefile
 introduction-to-gnome/C/Makefile
 " | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
@@ -1115,6 +1121,12 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile
 gnome-user-docs.spec
 gnome2-user-guide/Makefile
 gnome2-user-guide/C/Makefile
+gnome2-user-guide/ro/Makefile
+gnome2-user-guide/hu/Makefile
+gnome2-accessibility-guide/Makefile
+gnome2-accessibility-guide/C/Makefile
+gnome2-system-admin-guide/Makefile
+gnome2-system-admin-guide/C/Makefile
 introduction-to-gnome/Makefile
 introduction-to-gnome/C/Makefile
 "}
