@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v $
- * $Author: jfc $
+ * $Author: probe $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #ifdef OLD_KERBEROS
 
 static char *rcsid_getrealm_c =
-  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.2 1990-07-04 18:00:58 jfc Exp $";
+  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.3 1992-07-31 19:20:11 probe Exp $";
 
 #include <mit-copyright.h>
 #include <strings.h>
@@ -28,7 +28,7 @@ static char *rcsid_getrealm_c =
 #endif
 
 /*
- * krb_getrealm.
+ * krb_realmofhost.
  * Given a fully-qualified domain-style primary host name,
  * return the name of the Kerberos realm for the host.
  * If the hostname contains no discernable domain, or an error occurs,
@@ -46,7 +46,7 @@ static char *rcsid_getrealm_c =
 static char ret_realm[REALM_SZ+1];
 
 char *
-krb_getrealm(host)
+krb_realmofhost(host)
 char *host;
 {
 	char *domain, *trans_idx;
