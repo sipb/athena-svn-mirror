@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: xcut.c,v 1.11 1999-01-22 23:20:43 ghudson Exp $
+ *      $Id: xcut.c,v 1.11.12.1 2003-07-17 21:07:39 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_xcut_c[] = "$Id: xcut.c,v 1.11 1999-01-22 23:20:43 ghudson Exp $";
+static const char rcsid_xcut_c[] = "$Id: xcut.c,v 1.11.12.1 2003-07-17 21:07:39 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -242,6 +242,10 @@ void xcut(dpy,event,desc_context)
       case ButtonPress:
 	if (current_pressop != PRESSOP_NONE) {
 	   current_pressop = PRESSOP_STOP;
+	} else if (event->xbutton.button==Button4 ||
+		   event->xbutton.button==Button5) {
+	  /* Ignore scroll wheel movement. */
+	  break;
 	} else if ( (event->xbutton.state)&ShiftMask ) {
 	   if (event->xbutton.button==Button1) {
 	      if (selecting_in)
