@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Memory/new_memory.h,v $
- *      $Author: jtkohl $
- *	$Id: new_memory.h,v 1.1 1989-11-08 14:22:47 jtkohl Exp $
+ *      $Author: jfc $
+ *	$Id: new_memory.h,v 1.2 1991-03-08 13:56:53 jfc Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
  */
 
 /* This entire module goes out the window in saber */
-#ifndef SABER
+#if !defined(SABER) && (defined(DEBUG) || defined(DEBUG_MEMORY))
 
 #ifndef memory_MODULE
 #define memory_MODULE

@@ -5,19 +5,19 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Memory/new_memory.c,v $
- *      $Author: jtkohl $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#if !defined(SABER) && (defined(DEBUG) || defined(MEMORY_DEBUG))
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_new_memory_c[] = "$Id: new_memory.c,v 1.1 1989-11-08 14:22:51 jtkohl Exp $";
+static char rcsid_new_memory_c[] = "$Id: new_memory.c,v 1.2 1991-03-08 13:55:47 jfc Exp $";
 #endif
 
-/* This entire module goes out the window in saber */
-#ifndef SABER
 /*
  * memory - module wrapping debugging code around normal malloc/free/etc.
  *          routines.
