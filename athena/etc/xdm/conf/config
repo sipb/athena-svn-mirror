@@ -7,6 +7,7 @@
 #X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xws -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0
