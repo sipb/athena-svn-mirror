@@ -13,14 +13,16 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athneteventd.c,v 1.1 2002-11-06 19:34:26 ghudson Exp $";
+static const char rcsid[] = "$Id: athneteventd.c,v 1.2 2002-11-06 20:01:28 ghudson Exp $";
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>		/* for system() */
 
@@ -151,8 +153,8 @@ int main(int argc, char *argv[])
   /* Connect to the status daemon. */
   sock = daemon_connect(SOCK_PATH);
 
-  /* Now turn ourselves into a daemon, but do not chdir to / or
-   * redirect stdout/stderr to /dev/null.
+  /* Turn ourselves into a daemon, but do not chdir to / or redirect
+   * stdout/stderr to /dev/null.
    */
   if (daemon(1, 1) != 0)
     {
