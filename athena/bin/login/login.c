@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $
+ * $Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.72 1995-01-06 10:50:51 cfields Exp $";
 #endif
 
 /*
@@ -67,9 +67,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <signal.h>
 #include <pwd.h>
 #include <stdio.h>
-#ifndef _IBMR2
 #include <lastlog.h>
-#endif
 #include <errno.h>
 #ifndef SOLARIS
 #include <ttyent.h>
@@ -96,9 +94,6 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #ifdef SOLARIS
 #define INITTAB
 #define NGROUPS NGROUPS_MAX
-#endif
-#ifdef _IBMR2
-#defined NGROUPS 16
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -165,6 +160,7 @@ char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
 char	noremote[] =	"/etc/noremote";
+char	nocrack[] =	"/etc/nocrack";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
 char	rmrf[] =	"/bin/rm -rf";
@@ -235,7 +231,7 @@ char	term[64];
 
 struct	passwd *pwd;
 struct	passwd *hes_getpwnam();
-#if !defined(sun) && !defined(_IBMR2)
+#if !defined(sun)
 char	*strcat(), *rindex(), *index(), *malloc(), *realloc();
 #endif
 int	timedout();
@@ -269,7 +265,8 @@ int	inhibitflag = FALSE;	/* inhibit account creation on the fly */
 int	attachable = FALSE;	/* True if /etc/noattach doesn't exist */
 int	attachedflag = FALSE;	/* True if homedir attached */
 int	errorprtflag = FALSE;	/* True if login error already printed */
-int	no_remote = FALSE;	/*True if /etc/noremote exists */
+int	no_remote = FALSE;	/* True if /etc/noremote exists */
+int	no_crack = FALSE;	/* True if /etc/nocrack exists */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -277,7 +274,7 @@ char	*rhost;
 
 AUTH_DAT *kdata = (AUTH_DAT *)NULL;
 
-#if !defined(SOLARIS) && !defined(_IBMR2)
+#if !defined(SOLARIS)
 union wait waitstat;
 #endif
 
@@ -349,7 +346,7 @@ main(argc, argv)
     signal(SIGINT, SIG_IGN);
 #endif
     setpriority(PRIO_PROCESS, 0, 0);
-    umask(0);
+    umask(022);
 #if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
 #endif /* !VFS || ultrix */
@@ -417,11 +414,9 @@ main(argc, argv)
 		}
 	if (strcmp(argv[1], "-h") == 0 && getuid() == 0) {
 #ifdef SOLARIS
-          tmp = (char *)malloc(strlen(argv[3])*sizeof(char));
-          *tmp=NULL;
-          term1[0]=NULL;
+          term1[0] = '\0';
           tmp = index(argv[3], '=');
-          if (tmp != NULL ) {
+          if (tmp != NULL) {
             strcpy(term1, tmp+1);
           }  
 #endif
@@ -533,6 +528,7 @@ main(argc, argv)
     inhibitflag = !access(inhibit,F_OK);
     attachable = access(noattach, F_OK);
     no_remote = !access(noremote, F_OK);
+    no_crack = !access(nocrack, F_OK);
     do {
 	    errorprtflag = 0;
 	    ldisc = 0;
@@ -2016,7 +2012,7 @@ struct passwd *pwd;
     if((pfile=fopen("/etc/passwd", "a")) != NULL) {
 	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
 		pwd->pw_name,
-		pwd->pw_passwd,
+		no_crack ? "*" : pwd->pw_passwd,
 		pwd->pw_uid,
 		pwd->pw_gid,
 		pwd->pw_gecos,
