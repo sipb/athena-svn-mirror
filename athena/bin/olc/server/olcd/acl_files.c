@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.7 1990-08-24 03:38:10 lwvanels Exp $
+ *	$Id: acl_files.c,v 1.8 1990-08-26 17:57:16 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.7 1990-08-24 03:38:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.8 1990-08-26 17:57:16 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -30,6 +30,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
+#include <olc/olc.h>  /* for perror */
 #ifdef KERBEROS
 #include <krb.h>
 #endif
@@ -67,7 +68,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 extern int errno;
 
-extern char *malloc(), *calloc();
+extern char *calloc();
 extern time_t time();
 
 /* Canonicalize a principal name */
