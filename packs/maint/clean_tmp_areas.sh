@@ -4,8 +4,8 @@
 #	intended to clean up /tmp, /usr/tmp and some other areas.
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
-#	$Author: cfields $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.7 1996-08-10 21:47:03 cfields Exp $
+#	$Author: danw $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.8 1997-06-03 22:45:08 danw Exp $
 #
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
@@ -52,7 +52,7 @@ foreach i ($dirs)
 	if ( -d $i ) then
 		cd $i
 		find . $xdev $timeout[$j] $exceptions -exec rm -f {} \; -print
-		find . $xdev ! -name . -type d -mtime +1 -exec rmdir {} \; -print
+		find . $xdev -depth ! -name . -type d -mtime +1 -exec rmdir {} \; -print
 	endif
 @ j++
 end	
