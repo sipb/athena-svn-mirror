@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.10 1989-09-03 17:49:10 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.11 1989-10-23 13:33:06 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,113 +20,21 @@
 #include <sys/param.h>
 #include <strings.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <com_err.h>
 #include "directories.h"
 #include "pattern.h"
 #include "util.h"
 #include "undelete.h"
+#include "shell_regexp.h"
 #include "mit-copyright.h"
-
-static char *add_char();
+#include "delete_errs.h"
+#include "errors.h"
 
 extern char *malloc(), *realloc();
+extern int errno;
 
-extern char *whoami, *error_buf;
-
-/*
- * parse_pattern returns an area of memory allocated by malloc when it
- * is successful.  Therefore, other procedures calling parse_pattern
- * should use free() to free the region of memory when they are done
- * with it.
- */
-char *parse_pattern(file_pattern)
-char *file_pattern;
-{
-     char *re_pattern, *cur_ptr, *re_ptr;
-     int guess_length;
-     
-     guess_length = strlen(file_pattern) + 5;
-     re_ptr = re_pattern = malloc(guess_length);
-     if (! re_ptr) {
-	  perror(sprintf(error_buf, "%s: parse_pattern", whoami));
-	  exit(1);
-     }
-     
-     for (cur_ptr = file_pattern, re_ptr = re_pattern; *cur_ptr != NULL;
-	  cur_ptr++) {
-	  if (*cur_ptr == '\\') {
-	       if (! cur_ptr[1]) {
-		    fprintf(stderr,
-			    "%s: parse_pattern: incomplete expression\n",
-			    whoami);
-		    return((char *) NULL);
-	       }
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '\\'))
-		    return ((char *) NULL);
-	       cur_ptr++;
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, *cur_ptr))
-		    return ((char *) NULL);
-	       continue;
-	  }
-	  else if (*cur_ptr == '*') {
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
-		    return ((char *) NULL);
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '*'))
-		    return ((char *) NULL);
-	       continue;
-	  }
-	  else if (*cur_ptr == '?') {
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
-		    return ((char *) NULL);
-	       continue;
-	  }
-	  else if (*cur_ptr == '.') {
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '\\'))
-		    return ((char *) NULL);
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
-		    return ((char *) NULL);
-	  }
-	  else {
-	       if (! add_char(&re_pattern, &re_ptr, &guess_length, *cur_ptr))
-		    return ((char *) NULL);
-	  }
-     }
-     if (! add_char(&re_pattern, &re_ptr, &guess_length, '\0'))
-	  return ((char *) NULL);
-     return (re_pattern);
-}
-
-
-
-
-
-
-/*
- * add_char() takes two char **, a length which is the current amount
- * of space implemented for the string pointed to by the first *(char **),
- * and a character to add to the string.  It reallocs extra space if
- * necessary, adds the character, and messes with the pointers if necessary.
- */
-static char *add_char(start, finish, length, chr)
-char **start, **finish;
-int *length;
-char chr;
-{
-     if (*finish - *start == *length) {
-	  *start = realloc(*start, *length + 5);
-	  if (! *start) {
-	       perror(sprintf(error_buf, "%s: add_char", whoami));
-	       exit(1);
-	  }
-	  *finish = *start + *length - 1;
-	  *length += 5;
-     }
-     **finish = chr;
-     (*finish)++;
-     return(*start);
-}
-
-	  
-
+extern char *whoami;
 
 
 
@@ -135,22 +43,24 @@ char chr;
  * lengths, merges the two into the first by realloc'ing the first and
  * then free's the second's memory usage.
  */  
-add_arrays(array1, num1, array2, num2)
+int add_arrays(array1, num1, array2, num2)
 char ***array1, ***array2;
 int *num1, *num2;
 {
      int counter;
      
-     *array1 = (char **) realloc(*array1, sizeof(char *) * (*num1 + *num2));
+     *array1 = (char **) realloc((char *) *array1, (unsigned)
+				 (sizeof(char *) * (*num1 + *num2)));
      if (! *array1) {
-	  perror(sprintf(error_buf, "%s: add_arrays", whoami));
-	  exit(1);
+	  set_error(errno);
+	  error("realloc");
+	  return error_code;
      }
      for (counter = *num1; counter < *num1 + *num2; counter++)
 	  *(*array1 + counter) = *(*array2 + counter - *num1);
-     free (*array2);
+     free ((char *) *array2);
      *num1 += *num2;
-     return(0);
+     return 0;
 }
 
 
@@ -158,24 +68,31 @@ int *num1, *num2;
 
 
 
-
-char **add_str(strs, num, str)
-char **strs;
+/*
+ * Add a string to a list of strings.
+ */
+int add_str(strs, num, str)
+char ***strs;
 int num;
 char *str;
 {
-     strs = (char **) realloc(strs, sizeof(char *) * (num + 1));
+     char **ary;
+
+     ary = *strs = (char **) realloc((char *) *strs, (unsigned)
+				     (sizeof(char *) * (num + 1)));
      if (! strs) {
-	  perror(sprintf(error_buf, "%s: add_str", whoami));
-	  exit(1);
+	  set_error(errno);
+	  error("realloc");
+	  return error_code;
      }
-     strs[num] = malloc(strlen(str) + 1);
-     if (! strs[num]) {
-	  perror(sprintf(error_buf, "%s: add_str", whoami));
-	  exit(1);
+     ary[num] = malloc((unsigned) (strlen(str) + 1));
+     if (! ary[num]) {
+	  set_error(errno);
+	  error("malloc");
+	  return error_code;
      }
-     strcpy(strs[num], str);
-     return(strs);
+     (void) strcpy(ary[num], str);
+     return 0;
 }
 
 
@@ -183,113 +100,230 @@ char *str;
 
 
 
-
-char **find_deleted_matches(base, expression, num_found)
+int find_deleted_matches(base, expression, num_found, found)
 char *base, *expression;
 int *num_found;
+char ***found;
 {
      struct direct *dp;
      DIR *dirp;
-     char **found;
      int num;
      char **next;
      int num_next;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      char new[MAXPATHLEN];
-
-#ifdef DEBUG
-     printf("Looking for %s in %s\n", expression, base);
-#endif
-     found = (char **) malloc(0);
-     *num_found = num = 0;
-
-     dirp = opendir(base);
-     if (! dirp)
-	  return(found);
-
-     strcpy(first, reg_firstpart(expression, rest));
-     re_comp(first);
-
-     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	  if (re_exec(dp->d_name) && *rest) {
-	       strcpy(new, append(base, dp->d_name));
-	       next = find_deleted_matches(new, rest, &num_next);
-	       add_arrays(&found, &num, &next, &num_next);
-	  }
-	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
-	       if (*rest) {
-		    strcpy(new, append(base, dp->d_name));
-		    next = find_deleted_matches(new, rest, &num_next);
-		    add_arrays(&found, &num, &next, &num_next);
-	       }
-	       else {
-		    found = add_str(found, num, append(base, dp->d_name));
-		    num++;
-	       }
-	  }
-     }
-     closedir(dirp);
-     *num_found = num;
-     return(found);
-}
-
-
-
-
-
-char **find_matches(base, expression, num_found)
-char *base, *expression;
-int *num_found;
-{
-     struct direct *dp;
-     DIR *dirp;
-     char **found;
-     int num;
-     char **next;
-     int num_next;
-     char first[MAXNAMLEN], rest[MAXPATHLEN];
-     char new[MAXPATHLEN];
+     int retval;
      
 #ifdef DEBUG
      printf("Looking for %s in %s\n", expression, base);
 #endif
-     found = (char **) malloc(0);
-     *num_found = num = 0;
+     *found = (char **) malloc(0);
+     if (! *found) {
+	  set_error(errno);
+	  error("malloc");
+	  return error_code;
+     }
+     num = 0;
 
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
 
-     strcpy(first, reg_firstpart(expression, rest));
-
+     (void) strcpy(first, firstpart(expression, rest));
+     
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-	  re_comp(first);
-	  if (re_exec(dp->d_name)) {
-	       if (*rest) {
-		    strcpy(new, append(base, dp->d_name));
-		    next = find_matches(new, rest, &num_next);
-		    add_arrays(&found, &num, &next, &num_next);
+	  if ((retval = reg_cmp(first, dp->d_name)) < 0) {
+	       error("reg_cmp");
+	       return error_code;
+	  }
+          if ((retval == REGEXP_MATCH) && *rest) {
+	       (void) strcpy(new, append(base, dp->d_name));
+	       if (retval = find_deleted_matches(new, rest, &num_next,
+						 &next)) {
+		    error("find_deleted_matches");
+		    closedir(dirp);
+		    return retval;
 	       }
-	       else {
-		    found = add_str(found, num, append(base, dp->d_name));
-		    num++;
+	       if (retval = add_arrays(found, &num, &next, &num_next)) {
+		    error("add_arrays");
+		    closedir(dirp);
+		    return retval;
 	       }
 	  }
-	  else if (is_deleted(dp->d_name)) if (re_exec(&dp->d_name[2])) {
-	       if (*rest) {
-		    strcpy(new, append(base, dp->d_name));
-		    next = find_matches(new, rest, &num_next);
-		    add_arrays(&found, &num, &next, &num_next);
+	  else if (is_deleted(dp->d_name)) {
+	       if ((retval = reg_cmp(first, &dp->d_name[2])) < 0) {
+		    error("reg_cmp");
+		    closedir(dirp);
+		    return retval;
 	       }
-	       else {
-		    found = add_str(found, num, append(base, dp->d_name));
-		    num++;
+	       if (retval == REGEXP_MATCH) {
+		    if (*rest) {
+			 (void) strcpy(new, append(base, dp->d_name));
+			 if (retval = find_deleted_matches(new, rest,
+							   &num_next, &next)) {
+			      error("find_deleted_matches");
+			      closedir(dirp);
+			      return retval;
+			 }
+			 if (retval = add_arrays(found, &num, &next,
+						 &num_next)) {
+			      error("add_arrays");
+			      closedir(dirp);
+			      return retval;
+			 }
+		    }
+		    else {
+			 char *tmp;
+
+			 tmp = append(base, dp->d_name);
+			 if (! *tmp) {
+			      error("append");
+			      return error_code;
+			 }
+			 if (retval = add_str(found, num, tmp)) {
+			      error("add_str");
+			      closedir(dirp);
+			      return retval;
+			 }
+			 num++;
+		    }
 	       }
 	  }
      }
      closedir(dirp);
      *num_found = num;
-     return(found);
+     return 0;
+}
+
+
+
+
+
+int find_matches(base, expression, num_found, found)
+char *base, *expression;
+int *num_found;
+char ***found;
+{
+     struct direct *dp;
+     DIR *dirp;
+     int num;
+     char **next;
+     int num_next;
+     char first[MAXNAMLEN], rest[MAXPATHLEN];
+     char new[MAXPATHLEN];
+     int retval;
+     
+#ifdef DEBUG
+     printf("Looking for %s in %s\n", expression, base);
+#endif
+     *found = (char **) malloc(0);
+     num = 0;
+
+     dirp = opendir(base);
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
+
+     (void) strcpy(first, firstpart(expression, rest));
+     
+     for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+	  retval = reg_cmp(first, dp->d_name);
+	  if (retval < 0) {
+	       error("reg_cmp");
+	       closedir(dirp);
+	       return retval;
+	  }
+          if (retval == REGEXP_MATCH) {
+	       if (*rest) {
+		    char *tmp;
+
+		    tmp = append(base, dp->d_name);
+		    if (! *tmp) {
+			 error("append");
+			 return error_code;
+		    }
+		    (void) strcpy(new, tmp);
+		    if (retval = find_matches(new, rest, &num_next, &next)) {
+			 error("find_matches");
+			 closedir(dirp);
+			 return retval;
+		    }
+		    if (retval = add_arrays(found, &num, &next, &num_next)) {
+			 error("add_arrays");
+			 closedir(dirp);
+			 return retval;
+		    }
+	       }
+	       else {
+		    char *tmp;
+
+		    tmp = append(base, dp->d_name);
+		    if (! *tmp) {
+			 error("append");
+			 return error_code;
+		    }
+		    
+		    if (retval = add_str(found, num, tmp)) {
+			 error("add_str");
+			 closedir(dirp);
+			 return retval;
+		    }
+		    num++;
+	       }
+	  }
+	  else if (is_deleted(dp->d_name)) {
+	       if ((retval = reg_cmp(first, &dp->d_name[2])) < 0) {
+		    error("reg_cmp");
+		    closedir(dirp);
+		    return retval;
+	       }
+	       if (retval == REGEXP_MATCH) {
+		    if (*rest) {
+			 (void) strcpy(new, append(base, dp->d_name));
+			 if (! *new) {
+			      error("append");
+			      return error_code;
+			 }
+			 if (retval = find_matches(new, rest, &num_next,
+						   &next)) {
+			      error("find_matches");
+			      closedir(dirp);
+			      return retval;
+			 }
+			 if (retval = add_arrays(found, &num, &next,
+						 &num_next)) {
+			      error("add_arrays");
+			      closedir(dirp);
+			      return retval;
+			 }
+		    }
+		    else {
+			 char *tmp;
+
+			 tmp = append(base, dp->d_name);
+			 if (! *tmp) {
+			      error("append");
+			      return error_code;
+			 }
+			 if (retval = add_str(found, num, tmp)) {
+			      error("add_str");
+			      closedir(dirp);
+			      return 0;
+			 }
+			 num++;
+		    }
+	       }
+	  }
+     }
+     closedir(dirp);
+     *num_found = num;
+
+     return 0;
 }
 
 
@@ -298,43 +332,69 @@ int *num_found;
 
 
 
-char **find_recurses(base, num_found)
+int find_recurses(base, num_found, found)
 char *base;
 int *num_found;
+char ***found;
 {
      DIR *dirp;
      struct direct *dp;
      char newname[MAXPATHLEN];
-     char **found, **new_found;
+     char **new_found;
      int found_num, new_found_num;
      struct stat stat_buf;
+     int retval;
      
 #ifdef DEBUG
      printf("Looking for subs of %s\n", base);
 #endif
-     found = (char **) malloc(0);
+     *found = (char **) malloc(0);
      *num_found = found_num = 0;
      
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
-	  strcpy(newname, append(base, dp->d_name));
-	  found = add_str(found, found_num, newname);
+	  (void) strcpy(newname, append(base, dp->d_name));
+	  if (! *newname) {
+	       error("append");
+	       return error_code;
+	  }
+	  if (retval = add_str(found, found_num, newname)) {
+	       error("add_str");
+	       closedir(dirp);
+	       return retval;
+	  }
 	  found_num++;
-	  if (lstat(newname, &stat_buf))
+	  if (lstat(newname, &stat_buf)) {
+	       set_error(errno);
+	       error(newname);
 	       continue;
+	  }
 	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-	       new_found = find_recurses(newname, &new_found_num);
-	       add_arrays(&found, &found_num, &new_found, &new_found_num);
+	       if (retval = find_recurses(newname, &new_found_num,
+					  &new_found)) {
+		    error(newname);
+		    closedir(dirp);
+		    return retval;
+	       }
+	       if (retval = add_arrays(found, &found_num, &new_found,
+				       &new_found_num)) {
+		    error("add_arrays");
+		    closedir(dirp);
+		    return retval;
+	       }
 	  }
      }
      closedir(dirp);
      *num_found = found_num;
-     return(found);
+     return 0;
 }
 
 
@@ -342,45 +402,74 @@ int *num_found;
 
 
 
-char **find_deleted_recurses(base, num_found)
+int find_deleted_recurses(base, num_found, found)
 char *base;
 int *num_found;
+char ***found;
 {
      DIR *dirp;
      struct direct *dp;
      char newname[MAXPATHLEN];
-     char **found, **new_found;
+     char **new_found;
      int found_num, new_found_num;
      struct stat stat_buf;
+     int retval;
      
-     found = (char **) malloc(0);
+#ifdef DEBUG
+     printf("Looking for deleted recurses of %s\n", base);
+#endif
+     *found = (char **) malloc(0);
      *num_found = found_num = 0;
      
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
 
-	  strcpy(newname, append(base, dp->d_name));
+	  (void) strcpy(newname, append(base, dp->d_name));
+
+	  if (! *newname) {
+	       error("append");
+	       return error_code;
+	  }
 	  
 	  if (is_deleted(dp->d_name)) {
-	       found = add_str(found, found_num, newname);
+	       if (retval = add_str(found, found_num, newname)) {
+		    error("add_str");
+		    closedir(dirp);
+		    return retval;
+	       }
 	       found_num++;
 	  }
 	  if (lstat(newname, &stat_buf)) {
+	       set_error(errno);
+	       error(newname);
 	       continue;
 	  }
 	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-	       new_found = find_deleted_recurses(newname, &new_found_num);
-	       add_arrays(&found, &found_num, &new_found, &new_found_num);
+	       if (retval = find_deleted_recurses(newname, &new_found_num,
+						  &new_found)) {
+		    error(newname);
+		    closedir(dirp);
+		    return retval;
+	       }
+	       if (retval = add_arrays(found, &found_num, &new_found,
+				       &new_found_num)) {
+		    error("add_arrays");
+		    closedir(dirp);
+		    return retval;
+	       }
 	  }
      }
      closedir(dirp);
      *num_found = found_num;
-     return(found);
+     return 0;
 }
 
 
@@ -388,122 +477,177 @@ int *num_found;
 
 
 
-char **find_contents(base, num_found)
+int find_contents(base, num_found, found)
 char *base;
 int *num_found;
+char ***found;
 {
      DIR *dirp;
      struct direct *dp;
-     char **found;
      int num;
-
+     int retval;
+     char *tmp;
+     
 #ifdef DEBUG
      printf("Looking for contents of %s\n", base);
 #endif
-     found = (char **) malloc(0);
+     *found = (char **) malloc(0);
      *num_found = num = 0;
    
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
-
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
-	  found = add_str(found, num, append(base, dp->d_name));
+
+	  tmp = append(base, dp->d_name);
+	  if (! *tmp) {
+	       error("append");
+	       return error_code;
+	  }
+	  if (retval = add_str(found, num, tmp)) {
+	       error("add_str");
+	       closedir(dirp);
+	       return retval;
+	  }
 	  num += 1;
      }
      closedir(dirp);
      *num_found = num;
-     return(found);
+     return 0;
 }
 
 
      
-char **find_deleted_contents(base, num_found)
+int find_deleted_contents(base, num_found, found)
 char *base;
 int *num_found;
+char ***found;
 {
      DIR *dirp;
      struct direct *dp;
-     char **found;
      int num;
-
+     int retval;
+     
 #ifdef DEBUG
      printf("Looking for deleted contents of %s\n", base);
 #endif
-     found = (char **) malloc(0);
+     *found = (char **) malloc(0);
      *num_found = num = 0;
    
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
 	  if (is_deleted(dp->d_name)) {
-	       found = add_str(found, num, append(base, dp->d_name));
+	       char *tmp;
+
+	       tmp = append(base, dp->d_name);
+	       if (! *tmp) {
+		    error("append");
+		    return error_code;
+	       }
+	       if (retval = add_str(found, num, tmp)) {
+		    error("add_str");
+		    closedir(dirp);
+		    return retval;
+	       }
 	       num += 1;
 	  }
      }
      closedir(dirp);
      *num_found = num;
-     return(found);
+     return 0;
 }
 
 
 
 
-char **find_deleted_contents_recurs(base, num_found)
+int find_deleted_contents_recurs(base, num_found, found)
 char *base;
 int *num_found;
+char ***found;
 {
      DIR *dirp;
      struct direct *dp;
-     char **found;
      int num;
      struct stat stat_buf;
      char newname[MAXPATHLEN];
      char **new_found;
      int new_found_num;
+     int retval;
      
 #ifdef DEBUG
      printf("Looking for recursive deleted contents of %s\n", base);
 #endif
-     found = (char **) malloc(0);
+     *found = (char **) malloc(0);
      *num_found = num = 0;
    
      dirp = opendir(base);
-     if (! dirp)
-	  return(found);
-
+     if (! dirp) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
+     
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
 	       continue;
 	  if (is_deleted(dp->d_name)) {
-	       strcpy(newname, append(base, dp->d_name));
-	       found = add_str(found, num, newname);
+	       (void) strcpy(newname, append(base, dp->d_name));
+	       if (! *newname) {
+		    error("append");
+		    return error_code;
+	       }
+	       if (retval = add_str(found, num, newname)) {
+		    error("add_str");
+		    closedir(dirp);
+		    return retval;
+	       }
 	       num += 1;
-	       if (lstat(newname, &stat_buf))
+	       if (lstat(newname, &stat_buf)) {
+		    set_error(errno);
+		    error(newname);
 		    continue;
+	       }
 	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-		    new_found = find_recurses(newname, &new_found_num);
-		    add_arrays(&found, &num, &new_found, &new_found_num);
+		    if (retval = find_recurses(newname, &new_found_num,
+					       &new_found)) {
+			 error(newname);
+			 closedir(dirp);
+			 return retval;
+		    }
+		    if (retval = add_arrays(found, &num, &new_found,
+					    &new_found_num)) {
+			 error("add_arrays");
+			 closedir(dirp);
+			 return retval;
+		    }
 	       }
 	  }
      }
      closedir(dirp);
      *num_found = num;
-     return(found);
+     return 0;
 }
      
 
 
 /*
- * returns true if the filename has no regular expression wildcards in
- * it.  That means no non-quoted dots or asterisks.  Assumes a
- * null-terminated string, and a valid regular expression.
+ * returns true if the filename has no globbing wildcards in it.  That
+ * means no non-quoted question marks, asterisks, or open square
+ * braces.  Assumes a null-terminated string, and a valid globbing
+ * expression.
  */
 int no_wildcards(name)
 char *name;
@@ -513,9 +657,11 @@ char *name;
 	  case '\\':
 	       name++;
 	       break;
-	  case '.':
+	  case '?':
 	       return(0);
 	  case '*':
+	       return(0);
+	  case '[':
 	       return(0);
 	  }
      } while (*++name);
