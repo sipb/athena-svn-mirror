@@ -2,7 +2,7 @@ Name: athena-evolution
 Summary: Evolution application suite for Athena
 License: GPL
 Group: Applications/Communications
-Provides: evolution = 1.2.2
+Provides: evolution = 1.2.4
 
 Requires: athena-bonobo athena-libglade athena-gtkhtml athena-gnome-vfs
 Requires: athena-bonobo-conf

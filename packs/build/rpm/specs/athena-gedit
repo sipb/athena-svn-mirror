@@ -10,14 +10,3 @@ the GNOME GUI desktop.  gEdit includes a plug-in API (which supports
 extensibility while keeping the core binary small), support for
 editing multiple documents using notebook tabs, and standard text
 editor functions.
-
-%post
-PATH=/usr/athena/bin:$PATH
-GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-export PATH GCONF_CONFIG_SOURCE
-SCHEMAS="gedit.schemas"
-for S in $SCHEMAS; do
-  gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
-done
-
-exit 0
