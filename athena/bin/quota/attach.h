@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.3 1992-04-10 20:23:23 probe Exp $
+ * $Id: attach.h,v 1.4 1996-09-20 03:12:29 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/file.h>
