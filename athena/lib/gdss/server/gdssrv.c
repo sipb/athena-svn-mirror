@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/server/gdssrv.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/server/gdssrv.c,v 1.1 1991-11-13 16:40:23 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/server/gdssrv.c,v 1.2 1992-05-13 13:07:28 jis Exp $
  *
  * GDSS The Generic Digital Signature Service
  *
@@ -47,7 +47,7 @@ char *argv[];
   s = socket(AF_INET, SOCK_DGRAM, 0);
   bzero(&sin, sizeof(sin));	/* Zeroize socket structure */
   sin.sin_family = AF_INET;
-  sin.sin_port = htons(7200);
+  sin.sin_port = htons(7201);
 
   if(bind(s, &sin, sizeof(sin)) < 0) {
     fprintf(stderr, "gdssrv: Unable to bind socket: %s\n",
@@ -90,12 +90,12 @@ char *argv[];
 #endif
 
     oplen = 2048;
-    if(gdss_rsign(opacket, &oplen, &packet[1], ad.pname, ad.pinst,
+    if(gdss_rsign(opacket, &packet[1], ad.pname, ad.pinst,
 		  ad.prealm, &gdss_private_key) != 0) {
       fprintf(stderr, "gdssrv: gdss_rsign failed.\n");
       continue;
     }
-    if(sendto(s, opacket, oplen, 0, &from, sizeof(from)) < 0) {
+    if(sendto(s, opacket, strlen(opacket) + 1, 0, &from, sizeof(from)) < 0) {
       fprintf(stderr, "gdssrv: sento failed: %s\n",
 	      sys_errlist[errno]);
     }
