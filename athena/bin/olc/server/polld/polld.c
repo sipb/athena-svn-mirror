@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.1 1991-01-08 16:50:05 lwvanels Exp $
+ *	$Id: polld.c,v 1.2 1991-01-15 18:08:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.1 1991-01-08 16:50:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.2 1991-01-15 18:08:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -95,8 +95,11 @@ main(argc, argv)
     if (!strcmp (argv[i], "-nofork") || !strcmp (argv[i], "-no_fork")) {
       nofork = 1;
     }
-    else if (!strcmp(argv[i],"-server")) {
-      dhost = argv[i];
+    else if (!strcmp(argv[i],"-server") || !strcmp (argv[i],"-host")) {
+      if (!argv[++i])
+	fprintf (stderr, "-host requires a host name \n");
+      else
+        dhost = argv[i];
     }
     else if (!strcmp (argv[i], "-inst")) {
       if (!argv[++i])
