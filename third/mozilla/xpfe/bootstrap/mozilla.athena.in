@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.11 2004-07-14 23:01:57 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.12 2004-07-16 21:35:40 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -67,11 +67,15 @@ export MOZ_PLUGIN_PATH
 # Prompt the user on how to deal with an existing lock file when no
 # running Mozilla window can be found, and take action accordingly.
 # Parameter 1 is the existing profile lock file path.
+# Parameter 2 is any unexpected error output by mozilla-xremote-client,
+# i.e. when it returned an error status other than 2.  It should be null
+# for the normal case.
 # If the function returns, the lock file may have been removed per the
 # user's choice, and the caller should continue.  Or, this process may
 # exit, if the user so chooses.
 dispose_lock () {
   lock=$1
+  remote_error="$2"
   # Extract the IP address and PID from the contents of the symlink.
   eval `ls -l $lock | awk '{
     if (split($NF, a, ":") == 2)
@@ -110,7 +114,18 @@ dispose_lock () {
   Your Mozilla profile directory contains a lock file, but no existing  
   Mozilla window can be detected.  The lock is owned by process $lock_pid  
   on $lock_host.  
+"
 
+  if [ -n "$remote_error" ]; then
+    dialog_text="$dialog_text
+  Warning: The attempt to find an existing Mozilla window resulted in the  
+  following unexpected error:  
+
+  $remote_error  
+"
+  fi
+
+  dialog_text="$dialog_text
   Note that running multiple instances of Mozilla will likely corrupt  
   your profile.  But, if you know for certain that this lock file is  
   stale, i.e. that you are not running Mozilla on $lock_host,  
@@ -174,21 +189,32 @@ fi
 # Mozilla, and invoke the program now.
 skip_lock_check=false
 case "$1" in
--P|-*Profile*|-help)
+-P|-*Profile*|-help|-remote)
   exec $MOZILLA_FIVE_HOME/mozilla-bin "$@"
   ;;
 esac
 
 # See if there is a running instance of Mozilla.
-if $moz_remote "ping()" >/dev/null 2>&1 ; then
+remote_error=`$moz_remote "ping()" 2>&1 >/dev/null`
+case $? in
+0)
   found_running=true
-else
+  ;;
+2)
+  # This is the expected status when there is no running mozilla window.
+  # Clear the error condition.
+  remote_error=
   found_running=false
-fi
+  ;;
+*)
+  # An unexpected error occurred.
+  found_running=error
+  ;;
+esac
 
 # If Mozilla is not running, check for a (possibly stale) lock file in
 # the default profile directory.
-if [ $found_running = false ]; then
+if [ $found_running != true ]; then
   if [ -d $HOME/.mozilla/$USER ]; then
     profdir=$HOME/.mozilla/$USER
   else
@@ -198,7 +224,7 @@ if [ $found_running = false ]; then
     for lock in $profdir/????????.slt/lock ; do
       if [ -h $lock ]; then
         # The profile is locked.  Ask the user how to deal with it.
-        dispose_lock $lock
+        dispose_lock $lock "$remote_error"
         break
       fi
     done
