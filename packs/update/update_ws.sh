@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.53 2001-05-16 15:37:44 ghudson Exp $
+# $Id: update_ws.sh,v 1.54 2001-06-09 03:12:16 zacheiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -36,7 +36,7 @@ trap "" 1 15
 export CONFDIR LIBDIR PATH HOSTTYPE
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
-PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/sbin:/os/usr/ucb:/os/usr/bsd:$LIBDIR
+PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/sbin:/os/usr/ucb:/os/usr/bsd:/usr/sbin:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 
 case $0 in
@@ -288,6 +288,24 @@ sun4)
     fi
     ;;
   esac
+  
+  # Ultras with old enough OBP versions aren't able to boot the 64 bit
+  # Solaris kernel without a firmware upgrade.  They will fail the 
+  # update ungracefully, since the miniroot can only boot the 64 bit
+  # kernel on Ultras.  Check the version of OBP here so we can bomb out
+  # gracefully.
+  #
+  # We must be running version 3.11.1 or greater in order to be able to
+  # boot the 64 bit kernel.
+  if [ sun4u = `uname -m` ]; then
+    eval `prtconf -V | awk '{print $2}' \
+      | awk -F. '{print "obpmajor=" $1, "obpminor=" $2}'`
+    if [ ! "$obpmajor" -gt 3 -a ! "$obpminor" -ge 11 ]; then
+      echo "This machine requires a firmware upgrade for this update."
+      logger -t "$HOST" -p user.notice firmware too old to take update
+      failupdate
+    fi
+  fi
   ;;
 esac
 
