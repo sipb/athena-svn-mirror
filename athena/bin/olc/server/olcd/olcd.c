@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #include <olc/lang.h>
@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.20 1990-02-20 13:48:26 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.21 1990-02-27 14:40:51 raeburn Exp $";
 
 /* Global variables. */
 
@@ -370,8 +370,10 @@ restart:
 	log_error("warning: hesiod information doesn't point here");
 	strcpy (DaemonHost, hostname);
 #else
+	/* format message first, because h_name is static buffer */
+	char *msg = fmt("%s != %s", hostname, daemon_host_entry->h_name);
 	log_error("error: hesiod information doesn't point here; exiting");
-	log_error(fmt("%s != %s", hostname, daemon_host_entry->h_name));
+	log_error(msg);
 	return 1;
 #endif
     }
