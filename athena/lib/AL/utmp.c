@@ -6,6 +6,7 @@ ALinitUtmp(ALsession session)
 {
   ALutFlagClear(session, ALflagAll);
   memset(session->ut, 0, sizeof(session->ut));
+  return 0L;
 }
 
 /* Type is ALutLOGIN or ALutUSER. telnetd, dm, and nanny
