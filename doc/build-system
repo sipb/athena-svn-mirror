@@ -84,6 +84,7 @@ and do something like the following:
 	-s SRCDIR	Specifies the source hierarchy, if not default
 	-b BUILDDIR	Specifies the build hierarchy, if not /build
 	-d DESTDIR	Specifies the install hierarchy, if not /.srvd
+	-t TARGET	Build a single target and its dependencies
 	-k		Keep going if a package fails to build
 	-n		Only display a list of packages to be built
 	-l		Log build output to a file.
@@ -91,7 +92,7 @@ and do something like the following:
 As with "do", the default location for SRCDIR is the source locker you
 attached.
 
-Building the tree has the following requirements right now:
+Building the whole tree has the following requirements right now:
 
 	* The system passwd file must have "pop" and "discuss" users.
 	  Athena machines should typically have these lines in them
