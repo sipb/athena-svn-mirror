@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.17 1988-07-08 10:47:09 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.18 1988-07-19 13:31:02 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.17 1988-07-08 10:47:09 jtkohl Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.18 1988-07-19 13:31:02 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -29,6 +29,9 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 	ZNotice_t notice;
 	char asciiport[50];
 	
+	if (!port)			/* use default port */
+	    port = __Zephyr_port;
+
 	if ((retval = ZMakeAscii(asciiport,sizeof(asciiport),
 				 (unsigned char *)&port,
 				 sizeof(u_short))) != ZERR_NONE)
