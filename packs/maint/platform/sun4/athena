@@ -91,6 +91,7 @@ if [ "${AFSCLIENT}" != "false" ]; then
 	if [ "${AFSCLIENT-true}" = "true" ]; then
 		AFSCLIENT=4
 	fi
+	AFSOPTS="${AFSOPTS} -stat 2000 -dcache 800 -volumes 70"
 	AFSOPTS="${AFSOPTS} -daemons ${AFSCLIENT}"
 	/etc/afsd ${AFSOPTS}
 	sh /etc/athena/config_afs
