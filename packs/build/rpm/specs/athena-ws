@@ -99,6 +99,11 @@ if uname -r|grep -q smp ; then
   exit 0
 fi
 
+# punt if already converted
+if test -e /var/athena/ext3.converted ; then
+  exit 0
+fi
+
 # switch root and boot filesystems to ext3 (if not done already)
 umask 022
 if grep -q '[ 	]/[ 	].*ext2' /etc/fstab ; then
@@ -114,6 +119,7 @@ fi
 
 # add ext3 system support
 if [ "${buildext3}" == true ] ; then
+  touch /var/athena/ext3.converted
   rootfs=`sed -n -e '/[ 	]\/[ 	]/s/[ 	].*//p' /etc/fstab`
   bootfs=`sed -n -e '/[ 	]\/boot[ 	]/s/[ 	].*//p' /etc/fstab`
   oldkernelversion=`uname -r`
