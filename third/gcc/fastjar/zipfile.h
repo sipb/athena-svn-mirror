@@ -1,11 +1,6 @@
-/* $Id: zipfile.h,v 1.1.1.1 2002-01-31 16:01:11 ghudson Exp $
+/* $Id: zipfile.h,v 1.1.1.2 2004-12-23 17:22:19 ghudson Exp $
 
    $Log: not supported by cvs2svn $
-   Revision 1.1  2000/12/09 03:08:23  apbianco
-   2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
-
-           * fastjar: Imported.
-
    Revision 1.1.1.1  1999/12/06 03:09:11  toast
    initial checkin..
 
