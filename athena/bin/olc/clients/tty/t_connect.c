@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.7 1990-01-17 02:39:46 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.8 1990-02-14 15:50:36 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -33,7 +33,6 @@ t_grab(Request,flag,hold)
      int hold;
 {
   int status;
-  char buf[BUF_SIZE];
   int instance;
   
   instance = Request->requester.instance;
@@ -59,10 +58,8 @@ t_grab(Request,flag,hold)
       fprintf(stderr, "You are connected to another user.\n");
 
     case HAS_QUESTION:
-      get_prompted_input("Would you like to create another instance to grab this question? " ,buf);
-      if(string_equiv(buf,"yes",1))
-	return(t_grab(Request,TRUE,hold));
-      status = NO_ACTION;
+      printf("Your current instance is busy, creating another one for you.\n");
+      return(t_grab(Request,TRUE,hold));
       break;
 
     case SUCCESS:
