@@ -1,0 +1,33 @@
+#!/sbin/sh
+# $Id: athena-update_server.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+#
+# athena-update_server: Stop/Start the Athena update_server
+#
+. /etc/athena/rc.conf
+
+HOME=/; export HOME
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
+
+umask 022
+
+if [ "$MRUPDATE" != true ]; then
+  exit 0
+fi
+
+case "$1" in
+start)
+  echo "Starting Athena update_server."
+  update_server &
+  ;;
+stop)
+  pkill update_server
+  ;;
+restart)
+  $0 stop
+  $0 start
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  ;;
+esac

@@ -1,0 +1,18 @@
+# $Id: athena-bind.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+# /etc/init.d/athena-bind - Start/stop the BIND daemon
+
+case "$1" in
+start)
+  if [ -f /etc/athena/named -a -f /etc/named.conf ]; then
+    /etc/athena/named; echo "starting internet domain name server."
+  fi
+  ;;
+stop)
+  if [ -s /var/athena/named.pid ]; then
+    kill `cat /var/athena/named.pid`
+  fi
+  ;;
+*)
+  echo "usage: /etc/init.d/bind {start|stop}" >&2
+  ;;
+esac
