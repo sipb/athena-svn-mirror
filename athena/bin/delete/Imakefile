@@ -5,7 +5,7 @@
 /**/#
 /**/#     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
 /**/#     $Author: jik $
-/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.1 1990-11-12 02:33:37 jik Exp $
+/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.2 1990-12-18 12:48:01 jik Exp $
 /**/#
 
 DESTDIR=
@@ -114,11 +114,8 @@ man_install:
 
 bin_install: $(TARGETS)
 	-for i in $(TARGETS) ; do\
-          if [ -f $(DESTDIR)$(INSTALLDIR)/$$i ]; then\
-            mv $(DESTDIR)$(INSTALLDIR)/$$i $(DESTDIR)$(INSTALLDIR)/.#$$i ; \
-          fi; \
 	  install -c -s $$i $(DESTDIR)$(INSTALLDIR) ; \
-        done
+	done
 
 delete: $(DELETEOBJS)
 	$(CC) $(LDFLAGS) $(CFLAGS) -o delete $(DELETEOBJS) $(LIBS)
