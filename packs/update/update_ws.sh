@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.43 2000-03-13 18:09:26 rbasch Exp $
+# $Id: update_ws.sh,v 1.44 2000-04-16 22:42:25 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,6 +42,7 @@ HOSTTYPE=`/bin/athena/machtype`
 case "$0" in
 *auto_update)
 	method=Auto
+	why=$1
 	;;
 *)
 	method=Manual
@@ -52,22 +53,22 @@ esac
 # boot script or reactivate).  The -r option specifies that the update
 # is remote and that we shouldn't give the user a shell after the
 # reboot.
-while getopts ar opt; do
+while getopts a:r opt; do
 	case "$opt" in
 	a)
 		method=Auto
+		why=$OPTARG
 		;;
 	r)
 		method=Remote
 		;;
 	\?)
-		echo "$0 [-ar] [reactivate|rc]" 1>&2
+		echo "$0 [-r] [-a reactivate|rc]" 1>&2
 		exit 1
 		;;
 	esac
 done
 shift `expr $OPTIND - 1`
-why="$1"
 
 case `id` in
 "uid=0("*)
