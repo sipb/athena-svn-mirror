@@ -27,7 +27,7 @@ static char sccsid[] = "@(#)logwtmp.c	5.2 (Berkeley) 9/22/88";
 #include <sys/stat.h>
 #ifdef POSIX
 #include <unistd.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
 #include <string.h>
 #else
 #include <ttyent.h>
@@ -52,7 +52,9 @@ static off_t ptr;
 
 #ifdef ATHENA
 
+#ifndef MAX
 #define MAX(x,y) ((x > y) ? x : y)
+#endif
 
 loguwtmp(linepid, name, host)
 	char *linepid, *name, *host;
@@ -64,7 +66,9 @@ loguwtmp(linepid, name, host)
 #endif
   struct stat buf;
   time_t time();
+#ifndef _AIX
   char *strncpy();
+#endif
   int cc, ttynum;
   char line[10];
   static int ftpline = 0, firsttime = 1;
@@ -337,7 +341,9 @@ logwtmp(line, name, host)
 #endif
 	struct stat buf;
 	time_t time();
+#ifndef _AIX
 	char *strncpy();
+#endif
 
 #ifndef SOLARIS
 	if (!fd && (fd = open(WTMPFILE, O_WRONLY|O_APPEND, 0)) < 0)
