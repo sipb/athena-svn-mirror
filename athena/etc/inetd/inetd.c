@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.2 1994-06-30 11:45:48 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.3 1995-09-03 04:56:08 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.2 1994-06-30 11:45:48 miki Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.3 1995-09-03 04:56:08 cfields Exp $";
 #endif lint
 
 /*
@@ -68,6 +68,7 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/fcntl.h>
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
@@ -75,12 +76,17 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #include <stdio.h>
 #include <signal.h>
 #include <netdb.h>
+#ifdef ultrix
+#include <nsyslog.h>
+#else
 #include <syslog.h>
+#endif
+
 #include <pwd.h>
 
 #define	TOOMANY		40		/* don't start more than TOOMANY */
 #define	CNT_INTVL	60		/* servers in CNT_INTVL sec. */
-#define	RETRYTIME	(60*10)		/* retry after bind or server fail */
+#define	RETRYTIME	(60*3)		/* retry after bind or server fail */
 #define       MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 #ifdef POSIX
@@ -99,7 +105,7 @@ extern	int errno;
 typedef int sigtype;
 #endif
 sigtype	reapchild(), retry(), switchon(), switchoff(), removepidfile();
-
+char *strdup();
 
 char	*malloc();
 
@@ -111,7 +117,11 @@ int	options;
 int	timingout;
 struct	servent *sp;
 
+#ifdef ultrix
+char pidfilename[] = "/etc/inetd.pid";
+#else
 char pidfilename[] = "/etc/athena/inetd.pid";
+#endif
 
 struct	servtab {
 	char	*se_service;		/* name of service */
@@ -167,7 +177,11 @@ struct biltin {
 };
 
 #define NUMINT	(sizeof(intab) / sizeof(struct inent))
+#ifdef ultrix
+char	*CONFIG = "/etc/inetd.conf";
+#else
 char	*CONFIG = "/etc/athena/inetd.conf";
+#endif
 char	**Argv;
 char 	*LastArg;
 
@@ -490,7 +504,11 @@ config()
 {
 	register struct servtab *sep, *cp, **sepp;
 	struct servtab *getconfigent(), *enter();
+#ifdef POSIX
+	sigset_t omask;
+#else
 	int omask;
+#endif
 
 	if (!setconfig()) {
 		syslog(LOG_ERR, "%s: %m", CONFIG);
@@ -624,7 +642,7 @@ setsockopt(fd, SOL_SOCKET, opt, (char *)&on, sizeof (on))
 	if (turnon(sep->se_fd, SO_REUSEADDR) < 0)
 		syslog(LOG_ERR, "setsockopt (SO_REUSEADDR): %m");
 #undef turnon
-	if (bind(sep->se_fd, &sep->se_ctrladdr,
+	if (bind(sep->se_fd, (struct sockaddr *)&sep->se_ctrladdr,
 	    sizeof (sep->se_ctrladdr)) < 0) {
 		syslog(LOG_ERR, "%s/%s: bind: %m",
 		    sep->se_service, sep->se_proto);
@@ -649,8 +667,11 @@ enter(cp)
 	struct servtab *cp;
 {
 	register struct servtab *sep;
+#ifdef POSIX
+	sigset_t omask;
+#else
 	int omask;
-	char *strdup();
+#endif
 
 	sep = (struct servtab *)malloc(sizeof (*sep));
 	if (sep == (struct servtab *)0) {
@@ -847,7 +868,7 @@ setproctitle(a, s)
 
 	cp = Argv[0];
 	size = sizeof(sin);
-	if (getpeername(s, &sin, &size) == 0)
+	if (getpeername(s, (struct sockaddr *)&sin, &size) == 0)
 		sprintf(buf, "-%s [%s]", a, inet_ntoa(sin.sin_addr)); 
 	else
 		sprintf(buf, "-%s", a); 
@@ -1026,7 +1047,7 @@ machtime()
 		fprintf(stderr, "Unable to get time of day\n");
 		return (0L);
 	}
-	return (htonl((long)tv.tv_sec + 2208988800));
+	return (htonl((long)tv.tv_sec + 2208988800UL));
 }
 
 /* ARGSUSED */
@@ -1110,7 +1131,11 @@ switchoff()
 {
 	register struct servtab *sep, **sepp;
 	struct servtab *enter();
+#ifdef POSIX
+	sigset_t omask;
+#else
 	int omask;
+#endif
 
 	/* garbage collect the "switched off" services */
 #ifdef POSIX
@@ -1146,7 +1171,11 @@ switchoff()
 sigtype
 restartme()
 {
+#ifdef POSIX
+	sigset_t omask;
+#else
 	int 	omask;
+#endif
 
 #ifdef POSIX
 	(void) sigprocmask(SIG_BLOCK, &sig_block, &omask);
