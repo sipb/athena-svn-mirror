@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.27 2004-02-27 23:37:38 zacheiss Exp $
+# $Id: Makefile.athena,v 1.28 2004-03-11 15:21:26 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -9,7 +9,8 @@ prepare:
 	rm -f src/config.cache
 	cd src && CONFIG_SITE=`pwd`/../config.site.athena  \
 		SS_LIB="-lss -lcurses" ./configure --without-hesiod \
-		--with-system-et --with-system-ss --enable-shared
+		--with-system-et --with-system-ss --enable-shared \
+		--without-tcl
 
 clean:
 	cd src && ${MAKE} clean
