@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12.2.3 2003-10-26 20:12:58 ghudson Exp $
+# $Id: Makefile,v 1.12.2.4 2003-11-04 19:32:32 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
