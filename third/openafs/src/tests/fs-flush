@@ -1,6 +1,0 @@
-#!/bin/sh
-# $Id: fs-flush,v 1.1.1.2 2005-03-10 20:32:56 zacheiss Exp $
-FS=${FS:-${objdir}/../appl/fs/fs}
-> foobar
-${FS} flush
-test -f foobar || exit 1
