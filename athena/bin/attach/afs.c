@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.14 1997-11-18 00:48:32 ghudson Exp $
+ * $Id: afs.c,v 1.15 1997-11-18 01:28:53 ghudson Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.14 1997-11-18 00:48:32 ghudson Exp $";
+static char *rcsid = "$Id: afs.c,v 1.15 1997-11-18 01:28:53 ghudson Exp $";
 
 #include "attach.h"
 
@@ -221,7 +221,7 @@ static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 		close(fds[0]);
 		dup2(fds[1], 1);
 		close(fds[1]);
-		setuid(owner_uid);
+		setuid(real_uid);
 		execl(aklog_fn, AKLOG_SHORTNAME,
 		      flags & AFSAUTH_CELL ? "-cell" : "-path", 
 		      afs_pathname, "-hosts", "-zsubs",
