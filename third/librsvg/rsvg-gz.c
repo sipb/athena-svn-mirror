@@ -24,6 +24,8 @@
 #include "rsvg-gz.h"
 #include "rsvg-private.h"
 
+#ifdef HAVE_SVGZ
+
 #include <gsf/gsf-input-gzip.h>
 #include <gsf/gsf-input-memory.h>
 #include <gsf/gsf-output-memory.h>
@@ -56,16 +58,36 @@ rsvg_handle_gz_close_impl (RsvgHandle  *handle,
 	GsfInput * gzip;
 	const guchar * bytes;
 	gsize size;
+	gsize remaining;
 
 	bytes = gsf_output_memory_get_bytes (GSF_OUTPUT_MEMORY (me->mem));
 	size = gsf_output_size (me->mem);
 
 	gzip = GSF_INPUT (gsf_input_gzip_new (GSF_INPUT (gsf_input_memory_new (bytes, size, FALSE)), error));
-	while ((size = MIN (gsf_input_remaining (gzip), 1024)) > 0) {
+	remaining = gsf_input_remaining (gzip);
+	while ((size = MIN (remaining, 1024)) > 0) {
+		guint8 const *buf;
+
 		/* write to parent */
+		buf = gsf_input_read (gzip, size, NULL);
+                if (!buf)
+		{
+			/* an error occured, so bail */
+			g_warning ("rsvg_gz_handle_close_impl: gsf_input_read returned NULL");
+			break;
+		}
+
 		rsvg_handle_write_impl (&(me->super),
-								gsf_input_read (gzip, size, NULL),
+								buf,
 								size, error);
+		/* if we didn't manage to lower remaining number of bytes,
+                 * something is wrong, and we should avoid an endless loop */
+		if (remaining == gsf_input_remaining (gzip))
+		{
+			g_warning ("rsvg_gz_handle_close_impl: write_impl didn't lower the input_remaining count");
+			break;
+		}
+		remaining = gsf_input_remaining (gzip);
 	}
 	g_object_unref (G_OBJECT (gzip));
 
@@ -84,17 +106,8 @@ rsvg_handle_gz_free_impl (RsvgHandle *handle)
 	rsvg_handle_free_impl (handle);
 }
 
-/**
- * rsvg_handle_new_gz
- *
- * See rsvg_handle_new, except that this will handle GZipped SVGs (svgz)
- * Use the returned handle identically to how you use a handle returned
- * from rsvg_handle_new()
- *
- * Returns: a new SVGZ handle
- */
-RsvgHandle *
-rsvg_handle_new_gz (void)
+static RsvgHandle *
+rsvg_handle_new_gz_impl (void)
 {
 	RsvgHandleGz * me = g_new0 (RsvgHandleGz, 1);
 
@@ -107,4 +120,30 @@ rsvg_handle_new_gz (void)
 	me->super.free  = rsvg_handle_gz_free_impl;
 
 	return (RsvgHandle*)me;
+}
+
+#else
+
+static RsvgHandle *
+rsvg_handle_new_gz_impl (void)
+{
+	g_warning ("Doesn't support GZipped SVG files");
+	return NULL;
+}
+
+#endif
+
+/**
+ * rsvg_handle_new_gz
+ *
+ * See rsvg_handle_new, except that this will handle GZipped SVGs (svgz)
+ * Use the returned handle identically to how you use a handle returned
+ * from rsvg_handle_new()
+ *
+ * Returns: a new SVGZ handle or null if it isn't supported
+ */
+RsvgHandle *
+rsvg_handle_new_gz (void)
+{
+	return rsvg_handle_new_gz_impl ();
 }

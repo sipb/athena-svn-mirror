@@ -25,32 +25,15 @@
 
 #include "config.h"
 #include "rsvg.h"
-
-#if HAVE_SVGZ
+#include "rsvg-private.h"
 #include "rsvg-gz.h"
-#endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 #define SVG_BUFFER_SIZE (1024 * 8)
-
-typedef enum {
-	RSVG_SIZE_ZOOM,
-	RSVG_SIZE_WH,
-	RSVG_SIZE_WH_MAX,
-	RSVG_SIZE_ZOOM_MAX
-} RsvgSizeType;
-
-struct RsvgSizeCallbackData
-{
-	RsvgSizeType type;
-	double x_zoom;
-	double y_zoom;
-	gint width;
-	gint height;
-};
 
 static void
 rsvg_size_callback (int *width,
@@ -58,8 +41,13 @@ rsvg_size_callback (int *width,
 					gpointer  data)
 {
 	struct RsvgSizeCallbackData *real_data = (struct RsvgSizeCallbackData *) data;
-	double zoomx, zoomy, zoom;
-	
+	double zoomx, zoomy, zoom;   
+
+	int in_width, in_height;
+
+	in_width = *width;
+	in_height = *height;
+
 	switch (real_data->type) {
 	case RSVG_SIZE_ZOOM:
 		if (*width < 0 || *height < 0)
@@ -67,7 +55,7 @@ rsvg_size_callback (int *width,
 		
 		*width = floor (real_data->x_zoom * *width + 0.5);
 		*height = floor (real_data->y_zoom * *height + 0.5);
-		return;
+		break;
 		
 	case RSVG_SIZE_ZOOM_MAX:
 		if (*width < 0 || *height < 0)
@@ -85,7 +73,7 @@ rsvg_size_callback (int *width,
 				*width = floor (zoom * *width + 0.5);
 				*height = floor (zoom * *height + 0.5);
 			}
-		return;
+		break;
 		
 	case RSVG_SIZE_WH_MAX:
 		if (*width < 0 || *height < 0)
@@ -97,7 +85,7 @@ rsvg_size_callback (int *width,
 		
 		*width = floor (zoom * *width + 0.5);
 		*height = floor (zoom * *height + 0.5);
-		return;
+		break;
 		
 	case RSVG_SIZE_WH:
 		
@@ -105,10 +93,25 @@ rsvg_size_callback (int *width,
 			*width = real_data->width;
 		if (real_data->height != -1)
 			*height = real_data->height;
-		return;
+		break;
+
+	default:
+		g_assert_not_reached ();
 	}
-	
-	g_assert_not_reached ();
+
+	if (real_data->keep_aspect_ratio)
+		{
+			int out_min = MIN(*width, *height);
+
+			if (out_min == *width) 
+				{
+					*height = in_height * ((double)*width / (double)in_width);
+				}
+			else
+				{
+					*width = in_width * ((double)*height / (double)in_height);
+				}
+		}
 }
 
 static GdkPixbuf *
@@ -124,13 +127,16 @@ rsvg_pixbuf_from_file_with_size_data_ex (RsvgHandle * handle,
 
 	if (!f)
 		{
-			/* FIXME: Set up error. */
+			g_set_error (error, G_FILE_ERROR,
+						 g_file_error_from_errno (errno),
+						 g_strerror (errno));
 			return NULL;
 		}
-	
+
+	rsvg_handle_set_base_uri (handle, file_name);
 	rsvg_handle_set_size_callback (handle, rsvg_size_callback, data, NULL);
 
-	while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
+	while (!feof(f) && !ferror(f) && ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0))
 		rsvg_handle_write (handle, chars, result, error);
 	
 	rsvg_handle_close (handle, error);
@@ -140,28 +146,57 @@ rsvg_pixbuf_from_file_with_size_data_ex (RsvgHandle * handle,
 	return retval;
 }
 
-static GdkPixbuf *
-rsvg_pixbuf_from_file_with_size_data (const gchar * file_name,
+/* private */
+GdkPixbuf *
+rsvg_pixbuf_from_data_with_size_data (const guchar * buff,
+									  size_t len,
 									  struct RsvgSizeCallbackData * data,
+									  const char * base_uri,
 									  GError ** error)
 {
-#if HAVE_SVGZ
 	RsvgHandle * handle;
-	guchar chars[SVG_BUFFER_SIZE];
-	GdkPixbuf *retval;
-	gint result;
-	FILE *f = fopen (file_name, "rb");
+	GdkPixbuf * retval;
 
-	if (!f)
-		{
-			/* FIXME: Set up error. */
-			return NULL;
-		}
-	
+	/* test for GZ marker */
+	if ((len >= 2) && (buff[0] == (guchar)0x1f) && (buff[1] == (guchar)0x8b))
+		handle = rsvg_handle_new_gz ();
+	else
+		handle = rsvg_handle_new ();	
+
+	if (!handle) {
+		g_set_error (error, rsvg_error_quark (), 0,
+					 _("Error creating SVG reader (probably a gzipped SVG)"));
+		return NULL;
+	}
+
+	rsvg_handle_set_size_callback (handle, rsvg_size_callback, data, NULL);
+	rsvg_handle_set_base_uri (handle, base_uri);
+
+	rsvg_handle_write (handle, buff, len, error);
+
+	rsvg_handle_close (handle, error);
+	retval = rsvg_handle_get_pixbuf (handle);
+	rsvg_handle_free (handle);
+
+	return retval;	
+}
+
+static GdkPixbuf *
+rsvg_pixbuf_from_stdio_file_with_size_data(FILE * f,
+										   struct RsvgSizeCallbackData * data,
+										   GError ** error)
+{
+	RsvgHandle * handle;
+	GdkPixbuf * retval;
+	guchar chars[SVG_BUFFER_SIZE];
+	int result;
+
 	result = fread (chars, 1, SVG_BUFFER_SIZE, f);
 
 	if (result == 0) {
-		fclose (f);
+		g_set_error (error, G_FILE_ERROR,
+					 g_file_error_from_errno (errno),
+					 g_strerror (errno));
 		return NULL;
 	}
 
@@ -171,26 +206,48 @@ rsvg_pixbuf_from_file_with_size_data (const gchar * file_name,
 	else
 		handle = rsvg_handle_new ();
 
+	if (!handle) {
+		g_set_error (error, rsvg_error_quark (), 0,
+					 _("Error creating SVG reader (probably a gzipped SVG)"));
+		return NULL;
+	}
+
 	rsvg_handle_set_size_callback (handle, rsvg_size_callback, data, NULL);
+
 	rsvg_handle_write (handle, chars, result, error);
 
-	while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
+	while (!feof(f) && !ferror(f) && ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0))
 		rsvg_handle_write (handle, chars, result, error);
 	
 	rsvg_handle_close (handle, error);
 	retval = rsvg_handle_get_pixbuf (handle);
-	
-	fclose (f);	
 	rsvg_handle_free (handle);
+
 	return retval;
-#else
-	RsvgHandle * handle = rsvg_handle_new ();
-	GdkPixbuf * retval = rsvg_pixbuf_from_file_with_size_data_ex (handle, file_name, data, error);
-	rsvg_handle_free (handle);
-	return retval;
-#endif
 }
 
+static GdkPixbuf *
+rsvg_pixbuf_from_file_with_size_data (const gchar * file_name,
+									  struct RsvgSizeCallbackData * data,
+									  GError ** error)
+{
+	GdkPixbuf * pixbuf;
+	FILE *f = fopen (file_name, "rb");
+
+	if (!f)
+		{
+			g_set_error (error, G_FILE_ERROR,
+						 g_file_error_from_errno (errno),
+						 g_strerror (errno));
+			return NULL;
+		}
+	
+	pixbuf = rsvg_pixbuf_from_stdio_file_with_size_data(f, data, error);
+
+	fclose(f);
+
+	return pixbuf;
+}
 
 /**
  * rsvg_pixbuf_from_file_at_size_ex:
@@ -208,7 +265,9 @@ rsvg_pixbuf_from_file_with_size_data (const gchar * file_name,
  * by this call and must be freed by the caller.
  * 
  * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
+ *
+ * Since: 2.4
+ */
 GdkPixbuf  *
 rsvg_pixbuf_from_file_at_size_ex (RsvgHandle * handle,
 								  const gchar  *file_name,
@@ -221,6 +280,7 @@ rsvg_pixbuf_from_file_at_size_ex (RsvgHandle * handle,
 	data.type = RSVG_SIZE_WH;
 	data.width = width;
 	data.height = height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data_ex (handle, file_name, &data, error);
 }
@@ -237,7 +297,9 @@ rsvg_pixbuf_from_file_at_size_ex (RsvgHandle * handle,
  * freed by the caller.
  * 
  * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
+ *
+ * Since: 2.4
+ */
 GdkPixbuf  *
 rsvg_pixbuf_from_file_ex (RsvgHandle * handle,
 						  const gchar  *file_name,
@@ -261,7 +323,9 @@ rsvg_pixbuf_from_file_ex (RsvgHandle * handle,
  * call and must be freed by the caller.
  * 
  * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
+ *
+ * Since: 2.4
+ */
 GdkPixbuf  *
 rsvg_pixbuf_from_file_at_zoom_ex (RsvgHandle * handle,
 								  const gchar  *file_name,
@@ -277,6 +341,7 @@ rsvg_pixbuf_from_file_at_zoom_ex (RsvgHandle * handle,
 	data.type = RSVG_SIZE_ZOOM;
 	data.x_zoom = x_zoom;
 	data.y_zoom = y_zoom;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data_ex (handle, file_name, &data, error);
 }
@@ -296,7 +361,9 @@ rsvg_pixbuf_from_file_at_zoom_ex (RsvgHandle * handle,
  * must be freed by the caller.
  * 
  * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
+ *
+ * Since: 2.4
+ */
 GdkPixbuf  *
 rsvg_pixbuf_from_file_at_max_size_ex (RsvgHandle * handle,
 									  const gchar  *file_name,
@@ -309,6 +376,7 @@ rsvg_pixbuf_from_file_at_max_size_ex (RsvgHandle * handle,
 	data.type = RSVG_SIZE_WH_MAX;
 	data.width = max_width;
 	data.height = max_height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data_ex (handle, file_name, &data, error);
 }
@@ -331,7 +399,9 @@ rsvg_pixbuf_from_file_at_max_size_ex (RsvgHandle * handle,
  * Returned handle is closed by this call and must be freed by the caller.
  * 
  * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
+ *
+ * Since: 2.4
+ */
 GdkPixbuf  *
 rsvg_pixbuf_from_file_at_zoom_with_max_ex (RsvgHandle * handle,
 										   const gchar  *file_name,
@@ -351,6 +421,7 @@ rsvg_pixbuf_from_file_at_zoom_with_max_ex (RsvgHandle * handle,
 	data.y_zoom = y_zoom;
 	data.width = max_width;
 	data.height = max_height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data_ex (handle, file_name, &data, error);
 }
@@ -401,6 +472,7 @@ rsvg_pixbuf_from_file_at_zoom (const gchar *file_name,
 	data.type = RSVG_SIZE_ZOOM;
 	data.x_zoom = x_zoom;
 	data.y_zoom = y_zoom;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data (file_name, &data, error);
 }
@@ -440,6 +512,7 @@ rsvg_pixbuf_from_file_at_zoom_with_max (const gchar  *file_name,
 	data.y_zoom = y_zoom;
 	data.width = max_width;
 	data.height = max_height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data (file_name, &data, error);
 }
@@ -470,6 +543,7 @@ rsvg_pixbuf_from_file_at_size (const gchar *file_name,
 	data.type = RSVG_SIZE_WH;
 	data.width = width;
 	data.height = height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data (file_name, &data, error);
 }
@@ -499,6 +573,7 @@ rsvg_pixbuf_from_file_at_max_size (const gchar     *file_name,
 	data.type = RSVG_SIZE_WH_MAX;
 	data.width = max_width;
 	data.height = max_height;
+	data.keep_aspect_ratio = FALSE;
 	
 	return rsvg_pixbuf_from_file_with_size_data (file_name, &data, error);
 }

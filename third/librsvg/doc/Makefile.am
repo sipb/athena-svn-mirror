@@ -18,7 +18,7 @@ SCANGOBJ_OPTIONS=--type-init-func="g_type_init ()"
 SCAN_OPTIONS=
 
 # Extra options to supply to gtkdoc-mkdb
-MKDB_OPTIONS=--sgml-mode
+MKDB_OPTIONS = --sgml-mode --output-format=xml --ignore-files=trio
 
 # Extra options to supply to gtkdoc-fixref
 FIXXREF_OPTIONS=
@@ -28,7 +28,21 @@ HFILE_GLOB=$(top_srcdir)/*.h
 CFILE_GLOB=$(top_srcdir)/*.c
 
 # Header files to ignore when scanning
-IGNORE_HFILES=
+IGNORE_HFILES= \
+	config.h		\
+	librsvg-features.h	\
+	rsvg-bpath-util.h	\
+	rsvg-css.h		\
+	rsvg-defs.h		\
+	rsvg-paint-server.h	\
+	rsvg-path.h		\
+	rsvg-private.h		\
+	rsvg-shapes.h		\
+	rsvg-styles.h		\
+	rsvg-text.h		\
+	svg-rc-style.h		\
+	svg-style.h		\
+	svg.h
 
 # Images to copy into HTML directory
 HTML_IMAGES =
@@ -107,12 +121,12 @@ tmpl-build.stamp: $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections
 tmpl.stamp: tmpl-build.stamp
 	@true
 
-#### sgml ####
+#### xml ####
 
 sgml-build.stamp: tmpl.stamp $(CFILE_GLOB) $(srcdir)/tmpl/*.sgml
-	@echo '*** Building SGML ***'
+	@echo '*** Building XML ***'
 	cd $(srcdir) && \
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) $(MKDB_OPTIONS)
+	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --output-format=xml $(MKDB_OPTIONS)
 	touch sgml-build.stamp
 
 sgml.stamp: sgml-build.stamp
@@ -129,6 +143,8 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@echo '-- Fixing Crossreferences' 
 	cd $(srcdir) && gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
+else
+all-local:
 endif
 
 ##############

@@ -36,29 +36,26 @@ typedef struct _RsvgGradientStop RsvgGradientStop;
 typedef struct _RsvgGradientStops RsvgGradientStops;
 typedef struct _RsvgLinearGradient RsvgLinearGradient;
 typedef struct _RsvgRadialGradient RsvgRadialGradient;
+typedef struct _RsvgPattern RsvgPattern;
 
 typedef struct _RsvgPaintServer RsvgPaintServer;
 
 typedef struct _RsvgPSCtx RsvgPSCtx;
 
 struct _RsvgPSCtx {
-	int dummy;
-	/* todo: we need to take in some context information, including:
-	   
-	1. The global affine transformation.
-	
-	2. User coordinates at time of reference (to implement
-	gradientUnits = "userSpaceOnUse").
-	
-	3. Object bounding box (to implement gradientUnits =
-	"objectBoundingBox").
-	
-	Maybe signal for lazy evaluation of object bbox.
-	*/
+	int x0;
+	int y0;
+	int x1;
+	int y1;
+
+	guint32 color;
+	double affine[6];
+	RsvgHandle *ctx;
 };
 
 struct _RsvgGradientStop {
 	double offset;
+	gboolean is_current_color;
 	guint32 rgba;
 };
 
@@ -75,6 +72,8 @@ struct _RsvgLinearGradient {
 	ArtGradientSpread spread;
 	double x1, y1;
 	double x2, y2;
+	guint32 current_color;
+	gboolean has_current_color;
 };
 
 struct _RsvgRadialGradient {
@@ -86,11 +85,26 @@ struct _RsvgRadialGradient {
 	double cx, cy;
 	double r;
 	double fx, fy;
+	guint32 current_color;
+	gboolean has_current_color;
+};
+
+struct _RsvgPattern {
+	RsvgDefVal super;
+	gboolean obj_cbbox;
+	gboolean obj_bbox;
+	gboolean vbox;
+	double affine[6]; /* user space to actual at time of gradient def */
+	double x, y, width, height;
+	double vbx, vby, vbh, vbw;
+	RsvgDefVal * g;
+	RsvgDefVal * gfallback;
 };
 
 /* Create a new paint server based on a specification string. */
 RsvgPaintServer *
-rsvg_paint_server_parse (const RsvgDefs *defs, const char *str);
+rsvg_paint_server_parse (RsvgPaintServer * current, const RsvgDefs *defs, const char *str,
+						 guint32 current_color);
 
 void
 rsvg_render_paint_server (ArtRender *ar, RsvgPaintServer *ps,
@@ -107,6 +121,9 @@ rsvg_clone_radial_gradient (const RsvgRadialGradient *grad, gboolean * shallow_c
 
 RsvgLinearGradient *
 rsvg_clone_linear_gradient (const RsvgLinearGradient *grad, gboolean * shallow_cloned);
+
+RsvgPattern *
+rsvg_clone_pattern (const RsvgPattern *pattern);
 
 G_END_DECLS
 

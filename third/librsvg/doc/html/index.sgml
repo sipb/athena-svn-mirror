@@ -1,24 +1,26 @@
-<ANCHOR id ="RSVG-CORE-API" href="rsvg/rsvg-core-api.html">
-<ANCHOR id ="RSVG-ERROR-QUARK" href="rsvg/rsvg-core-api.html#RSVG-ERROR-QUARK">
-<ANCHOR id ="RSVGSIZEFUNC" href="rsvg/rsvg-core-api.html#RSVGSIZEFUNC">
-<ANCHOR id ="RSVG-SET-DEFAULT-DPI" href="rsvg/rsvg-core-api.html#RSVG-SET-DEFAULT-DPI">
-<ANCHOR id ="RSVG-HANDLE-NEW" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-NEW">
-<ANCHOR id ="RSVG-HANDLE-SET-DPI" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-SET-DPI">
-<ANCHOR id ="RSVG-HANDLE-SET-SIZE-CALLBACK" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-SET-SIZE-CALLBACK">
-<ANCHOR id ="RSVG-HANDLE-WRITE" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-WRITE">
-<ANCHOR id ="RSVG-HANDLE-CLOSE" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-CLOSE">
-<ANCHOR id ="RSVG-HANDLE-GET-PIXBUF" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-GET-PIXBUF">
-<ANCHOR id ="RSVG-HANDLE-FREE" href="rsvg/rsvg-core-api.html#RSVG-HANDLE-FREE">
-<ANCHOR id ="RSVG-CREATING-A-SVGZ-READER" href="rsvg/rsvg-creating-a-svgz-reader.html">
-<ANCHOR id ="RSVG-HANDLE-NEW-GZ" href="rsvg/rsvg-creating-a-svgz-reader.html#RSVG-HANDLE-NEW-GZ">
-<ANCHOR id ="RSVG-CONVENIENCE-FUNCTIONS" href="rsvg/rsvg-convenience-functions.html">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-ZOOM" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-ZOOM">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-SIZE" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-SIZE">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-MAX-SIZE" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-MAX-SIZE">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-ZOOM-WITH-MAX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-ZOOM-WITH-MAX">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-EX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-EX">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-ZOOM-EX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-ZOOM-EX">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-SIZE-EX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-SIZE-EX">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-MAX-SIZE-EX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-MAX-SIZE-EX">
-<ANCHOR id ="RSVG-PIXBUF-FROM-FILE-AT-ZOOM-WITH-MAX-EX" href="rsvg/rsvg-convenience-functions.html#RSVG-PIXBUF-FROM-FILE-AT-ZOOM-WITH-MAX-EX">
+<ANCHOR id="rsvg-Core-API" href="rsvg/rsvg-Core-API.html">
+<ANCHOR id="rsvg-error-quark" href="rsvg/rsvg-Core-API.html#rsvg-error-quark">
+<ANCHOR id="RsvgSizeFunc" href="rsvg/rsvg-Core-API.html#RsvgSizeFunc">
+<ANCHOR id="rsvg-set-default-dpi" href="rsvg/rsvg-Core-API.html#rsvg-set-default-dpi">
+<ANCHOR id="rsvg-handle-new" href="rsvg/rsvg-Core-API.html#rsvg-handle-new">
+<ANCHOR id="rsvg-handle-set-dpi" href="rsvg/rsvg-Core-API.html#rsvg-handle-set-dpi">
+<ANCHOR id="rsvg-handle-set-size-callback" href="rsvg/rsvg-Core-API.html#rsvg-handle-set-size-callback">
+<ANCHOR id="rsvg-handle-write" href="rsvg/rsvg-Core-API.html#rsvg-handle-write">
+<ANCHOR id="rsvg-handle-close" href="rsvg/rsvg-Core-API.html#rsvg-handle-close">
+<ANCHOR id="rsvg-handle-get-pixbuf" href="rsvg/rsvg-Core-API.html#rsvg-handle-get-pixbuf">
+<ANCHOR id="rsvg-handle-get-title" href="rsvg/rsvg-Core-API.html#rsvg-handle-get-title">
+<ANCHOR id="rsvg-handle-get-desc" href="rsvg/rsvg-Core-API.html#rsvg-handle-get-desc">
+<ANCHOR id="rsvg-handle-free" href="rsvg/rsvg-Core-API.html#rsvg-handle-free">
+<ANCHOR id="rsvg-Creating-a-SVGZ-reader" href="rsvg/rsvg-Creating-a-SVGZ-reader.html">
+<ANCHOR id="rsvg-handle-new-gz" href="rsvg/rsvg-Creating-a-SVGZ-reader.html#rsvg-handle-new-gz">
+<ANCHOR id="rsvg-Convenience-Functions" href="rsvg/rsvg-Convenience-Functions.html">
+<ANCHOR id="rsvg-pixbuf-from-file" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file">
+<ANCHOR id="rsvg-pixbuf-from-file-at-zoom" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom">
+<ANCHOR id="rsvg-pixbuf-from-file-at-size" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-size">
+<ANCHOR id="rsvg-pixbuf-from-file-at-max-size" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-max-size">
+<ANCHOR id="rsvg-pixbuf-from-file-at-zoom-with-max" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-with-max">
+<ANCHOR id="rsvg-pixbuf-from-file-ex" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-ex">
+<ANCHOR id="rsvg-pixbuf-from-file-at-zoom-ex" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-ex">
+<ANCHOR id="rsvg-pixbuf-from-file-at-size-ex" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-size-ex">
+<ANCHOR id="rsvg-pixbuf-from-file-at-max-size-ex" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-max-size-ex">
+<ANCHOR id="rsvg-pixbuf-from-file-at-zoom-with-max-ex" href="rsvg/rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-with-max-ex">

@@ -1,3 +1,833 @@
+2004-08-13  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c: Fix memory leak in the new "state stack thingie".
+	* rsvg.c: Use a GMemChunk to (marginally) speed up state allocation
+	
+2004-08-13  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* prettymuch-everywhere: Huge number of small bugfixes
+	* rsvg-styles.c: rewrote the whole state stack thingie
+
+2004-07-23  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c, rsvg-mask.c: ClipPaths now partially working
+	* rsvg-shapes.c: now keep a copy of everything in defs.
+	* rsvg-styles.c: don't push discrete layers while in defs.
+	
+2004-07-21  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: Bilinear interpolation for images
+
+2004-07-19  Dom Lachowicz <cinamod@hotmail.com>
+
+	* test-display.c: better scroll policy, especially when used as a plugin
+	
+2004-07-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Bump version number (2.7.4)
+	* rsvg.1: Add stuff to the man page
+	* NEWS: Document newer developments
+	
+2004-07-19  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: made lighting work much better
+	* rsvg-shapes.c: quit passing the gerror pointer to the image loader. It works better now with VFS now, I have no idea why though
+
+2004-07-18  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: made feImage work better, now it transforms it better.
+	* rsvg-shapes.c: fixed filters on images and bounding boxes on images
+
+2004-07-17  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.[ch]: Bug #147662
+	
+2004-07-17  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: rewrote some of the image code so it transforms the image correctly, pitty about loosing bilinear filtering, but we can get that back I suppose
+	
+2004-07-17  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c, rsvg-styles.c, rsvg-private.h: Made it remember how bit the vboxes of discrete layers are for alpha optimisations and better filter positioning
+
+2004-07-12  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.1: Update documentation
+	* configure.in: Fix build
+	* test-rsvg.c: Refactor a bit - allow for saving to ICO or anything
+	else that GdkPixbuf supports
+	
+2004-07-10  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *.c: Allow for different X & Y resolutions (DPI). This needs more work;
+	probably need to change rsvg_parse_length().
+	
+2004-07-10  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c: Fix bug #145477 - RSVG can now handle relative
+	paths to image resources
+	* rsvg-file-util.c: Ditto
+	
+2004-07-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c: Fix bug #145392, by 
+	timmacfarlane@blueyonder.co.uk (Tim Macfarlane)
+
+2004-07-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-paint-server.c: Fix bug #145426
+	
+2004-06-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-css.h: Fix bug #145173
+	* rsvg-filter.c: Ditto
+	* rsvg-mask.c: Ditto
+	* rsvg-private.h: Ditto
+	* rsvg-styles.h: Ditto
+	* test-display.c: Ditto
+
+2004-06-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-filter.c: "Fix" bug #145149
+	
+2004-06-21  Dom Lachiwicz <cinamod@hotmail.com>
+
+	* configure.in: Fix bug #137934
+	
+2004-06-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Beginnings of <switch> support
+	* rsvg-cond.c, rsvg-private.h, rsvg-shapes.c, rsvg-styles.c,
+	rsvg-styles.h: Ditto
+	
+2004-06-17  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-css.c (rsvg_css_parse_list): Fix memory leak
+	(rsvg_css_parse_aspect_ratio): Better detection code
+	* rsvg-cond.c: New file; meant to evaluate <switch> statement conditions
+	* rsvg-styles.c, rsvg-text.c: Work on text's unicode-bidi and direction attributes
+	
+2004-06-14  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-text.c: Removed old text harness, replaced entirely with vector
+	text.
+	
+2004-06-15  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-text.c, rsvg-text-vectors.c: well, um, I've been doing a fair bit of tweaking. Mainly very late at night so my memory of it is far from complete.
+
+2004-06-13  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: Implemented markers for straight lines
+	
+2004-06-10  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-css.c: Parse preserveAspectRatio
+	* rsvg-shapes.c: Honor preserveAspectRatio to some extent, 
+	honor base URIs
+	* rsvg-filter.c: Honor base URIs
+	* moz-plugin/moz-plugin.c: Grab the SVG's URI
+	* rsvg.[ch]: Place to hang the SVG's base URI
+	* test-display.c: Accept the SVG's base URI as a param
+	
+2004-06-10  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: fixed overlay filter
+	* rsvg-styles.c: reenabled a:adobe-blending-mode
+
+2004-06-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c (rsvg_viewport_percentage): Fix
+	http://www.w3.org/Graphics/SVG/Test/20030813/htmlframe/full-coords-units-02-b.html
+	* rsvg-styles.c: Disabled a:adobe-blending-mode, as it caused bug 144049. Bug 144049 still open.
+	
+2004-06-10  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-paint-server.c: fixed all known pattern geometry problems
+
+2004-06-09  Dodji Seketeli  <dodji@gnome.org>
+
+	* configure.in: several versions of libcroco can now be
+	installed in parallel. We compile and link against the 0.6.xx serie.
+
+2004-06-08  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg.c, rsvg-styles.c: made stop colours inheritable
+	* rsvg-filter.c: made gaussian blurring better looking by weighting by alpha
+	* rsvg-pattern.c: made patterns able to link to others
+
+2004-06-08  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg.c, rsvg-paint-server.c: added pattern support
+	* rsvg-shapes.c: return the value of the new group created when pushing defs groups
+	* rsvg-css.c: fixed problem caused when there are multiple seperating charactors between two elements in a list
+	* rsvg-filter.c: fixed the constant term in colour matricies.
+	
+2004-06-06  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Back out elementNs functions. They're not needed after all.
+	* test-display.c: Save the input SVG to a file. Better printing code - scales nicely, preserves aspect-ratio
+	
+2004-06-07  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-css.c: fixed css to break strings on the LAST colon rather than the fist one. This allows namespaces to work once more!!!
+	
+2004-06-06  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter, rsvg-styles.c: added adobe blending modes, still does not work because of namespace issues
+	* rsvg.c: got rid of the whole defs handler thing, it was unnecisarry. Now just use ctx->in_defs for everything.
+
+2004-06-05  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter: optimised bounding box calculation, optimised colour chanel skipping, made feTile work in some cases (when it is used after another properly modified primitive)
+	
+2004-06-01  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-paint-server.c: fixed bug 139268
+
+2004-05-28  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-css.c: fixed typos in css colour definitions
+
+2004-05-15  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg.c: fixed a bug causing defaults to be messed up when a radial gradient is based on a linear gradient and vice versa
+	
+2004-05-14  Dom Lachowicz <cinamod@hotmail.com>
+
+	* autogen.sh: Support automake 1.8
+	* */Makefile.am: Add VFS libs
+	
+2004-05-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-text.c: Don't pollute the global namespace
+	* rsvg-text.h: Ditto
+	* rsvg.c: Ditto
+	
+2004-04-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* librsvg-2.0.pc.in: Remove bogus dependencies
+	
+2004-04-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in
+	* rsvg-shapes.c: Enable loading remote images
+	
+2004-04-18  Dodji Seketeli  <dodji@gnome.org>
+
+	* configure.in: use libcroco 0.6.0
+	* rsvg-styles.c: 
+	(ccss_property): libcroco use CRString now, no GString.
+
+2004-04-12  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c, rsvg-filter.c: Support data: images in filters
+	
+2004-04-12  Ross Burton  <ross@burtonini.com>
+
+	* rsvg-shapes.c: Use the correct rowstride when scaling images.
+
+2004-03-30  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-paint-server.c: made currentColor work for gradients
+	
+2004-03-27  Dom Lachowicz <cinamod@hotmail.com>
+
+	* moz-plugin.c: Support a few additional "mime types" for SVG.
+	Apparently, Adobe returns image/svg-xml...
+	
+2004-03-25  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c: bug 138084
+	
+2004-03-23  Dom Lachowicz <cinamod@hotmail.com>
+
+	* test-display.c: Use the current SVG as our application icon
+	instead of that W3C logo
+	
+2004-03-23  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-paint-server.c: fixed linear gradient transformations
+	
+2004-03-22  Christian Schaller <Uraeus@gnome.org>
+
+	* Use original SVG by Chris Lilley as rsvg-viwer logo
+
+2004-03-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Check for GnomePrint
+	* test-display.c: Save SVG to PNG, print SVG
+
+2004-03-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* TODO: update
+	* NEWS: ditto
+	
+2004-03-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-view.c: Support aspect-ratio preservation, use app icon
+	* moz-plugin.c: Better handling of sizes
+	* rsvg-file-util.c: Aspect-ratio preservation
+	
+2004-03-21  Christian Schaller <Uraeus@gnome.org>
+
+	* Add appicon for rsvg-viewer
+
+2004-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *.c: Better external image scaling policy (mainly for SVG images)
+	* *.c: Modifications to the GZip SVG handle
+	* *.c: Preparation for gettext and better error handling
+	
+2004-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* test-display.c, moz-plugin.c: Allow rsvg-view to set a bgcolor other
+	than transparent. Make moz plugin set that color to be "white"
+	
+2004-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *: "currentColor" and "inherit" colors mostly work. Caveat: they
+	don't work for filters and gradients. TODO
+
+2004-03-21  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-bpath-util.c: made a little hack to allow courners to look right
+	* rsvg-path.c: allowed relitive coordinates to be used directly after z's
+	
+2004-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-css.c: Fix rgb percent handling for 
+	http://www.w3.org/Graphics/SVG/Test/20030813/htmlframe/full-color-prop-02-f.html
+	
+2004-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* autogen.sh: Downgrade libtool requirement to 1.4.2
+	* rsvg.c: 137765
+	
+2004-03-18  Christian Schaller <Uraeus@gnome.org>
+
+	* autogen.sh: Remove need for gnome-common
+	  mozilla-plugin: Remove + symbol in Makefile that made autogen barf
+	  Fix up spec file for latest changes and fix some old sins
+
+2004-03-20  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-styles.c: fixes to masks.
+	* rsvg-filter.c: fixes to feComposite
+	* rsvg.c: percentage based SVG dimentions work
+	
+2004-03-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *: Memory leak fixes
+	
+2004-03-17  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *: re-merge rsvg-filters branch back into HEAD
+	
+2004-03-16  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-styles.c: Implemented masks.
+	
+2004-03-16  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-bpath-util.c: Applied double move fix contributed by ross 
+	alexander.
+
+2004-03-14  Dom Lachowicz <cinamod@.hotmail.com>
+
+	* test-performance.c: Make this a useful performance tester
+	
+2004-03-12  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c: Allow for base64 embedded image data
+	
+2004-03-11  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Ability to scale SVGs that don't provide a width or height
+	
+2004-03-11  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c: Improve image scaling, translation. Rotation is still
+	horked, though. Agree with Caleb's comments below.
+	
+2004-03-11  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c, rsvg-styles.c: added state domination, ability for a
+	use's values to overwrite even explicitly set state variables in the
+	symbol.
+	* rsvg-shapes.c: Fixed image bitmap sizing, may need to give the whole 
+	system a good rewrite sometime to avoid having to use crappy libart 
+	rotation etc. and eventually make it easier to port to cairo, added
+	ability to use filters with images.
+	* rsvg-filter.c: Fixed arithmetic compositition.
+	* rsvg-text.c: fixed little filter bug I opened up a few days ago
+	* rsvg-defs.c: fixed memory leak that means unnamed defs are never 
+	freed.
+
+2004-03-10  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: exported drawable structures and functions 
+	* rsvg-filter.c: made feImage work for internal references (like use)
+	* rsvg-css.c: fixed spelling of dodgerblue (was dogerblue)
+
+2004-03-09  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: HUUUUGE fixes to use
+
+2004-03-09  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-shapes.c: made groups "use"able
+	* rsvg-styles.c: changed inheritance mechanism
+
+2004-03-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Do something for clahey (bug 105316)
+	
+2004-03-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gtk-engine/*.[ch]: Theme engine now renders SVGs at their display
+	size, thus cutting down on a lot of nasty raster scaling
+	
+2004-03-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Forward-port things from Gman
+	* rsvg-styles.c: Forward-port patch from Dodji
+	* *.c: Use new RsvgPropertyBag interface
+	
+2004-03-04  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Added final filter: feTile
+
+2004-03-04  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Fixed feDiffuseLighting and feSpecular lighting to scale
+	more consistantly
+
+2004-03-03  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Fixed feDiffuseLighting and feSpecular lighting for small
+	kernel length at the expense of speed, hopefully this can be optimised later.
+	Fixed a "what the hell was I thinking?!" bug in filter dimentioning.
+	
+2004-03-02  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Added new filters: feDiffuseLighting and feSpecular lighting
+	
+2004-02-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* moz-plugin/moz-plugin.c: Make Netscape/Mozilla plugin kind-of work
+	
+2004-02-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in:
+	* Makefile.am:
+	* test-display.c: Build + install 'rsvg-view'
+	* rsvg-file-util.c:
+	* rsvg-private.h: Export some things that I need in order to build rsvg-view
+	
+2004-02-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-filter.c: Added new filter: feImage
+	
+2004-02-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-filter.c: Added new filter: feTurbulence
+	
+2004-03-01  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Implemented bi-linear filtering for displacement
+	map. The algorithm is still pretty crap but it makes it look a lot
+	better than it did before.
+	
+2004-02-29  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: Added new filter: feDisplacementMap
+	
+2004-02-28  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-text.c: Made standard text the default. Vector text was 
+	annoying me.
+	* rsvg-filter.c: Fixed a segfault in feComponentTransfer
+
+2004-02-28  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-styles.c: made filters render before opacity is taken care of, 
+	this seems like the official way it is done
+	* rsvg-filter.c: fixed a few problem with coordinate units and 
+	dimentions
+	
+2004-02-27  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-styles.c: implemented the "enable-background" style value.
+	This allows backgrounds to be used by filters even when they are
+	are based on multiple opacity levels. It also allows one to specify
+	exactly how many levels of groups one wants to be included in the 
+	background.
+
+2004-02-19  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-styles.c, rsvg-styles.h: Changed "opacity groups" into 
+	"discrete layers" which are like opacity groups but handle filters
+	as well as opacity groups and will eventually handle masks. This fixes 
+	bugs relating to transperency and filters being used at the same time.
+
+	* rsvg-filter.c: fixed a couple of little bugs relating to gaussian 
+	blurs with a standard deviation less than 1 in an axis, it will now 
+	just ommit blurring in this axis, saving us time. Also disabled perfect
+	blurs because they are really quite silly most of the time, Dom was 
+	right.
+
+2004-02-18  Brian Koebbe  <brian@koebbe.org>
+
+	* rsvg-css.c (rsvg_css_parse_list): fix a loop run amuck (#134801)
+
+2004-02-17  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* rsvg-gz.c: (rsvg_handle_gz_close_impl):
+          catch read error from gsf_input_read
+          break from infinite loops that do not manage to write (#134653)
+
+2004-02-16  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Fix bug #134492
+	
+2004-02-15  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in, rsvg-styles.c: Fix bug #134292
+	
+2004-02-14  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Fix bug #133947
+
+2004-02-11  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: added feComposite filter
+
+2004-02-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.[ch]: Implement get_font_size() function
+	* rsvg-shapes.c: Use the above fn
+	* rsvg-filter.c: Ditto
+	
+2004-02-06  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-filter.c: made gassian blur use 3 box blurs (technically 6 motion blurs) when the geometric mean of the standard deviations of the filter is over two. Misc enhancements in feConvolveMatrix
+	
+2004-02-05  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Made colormatrix a lot safer, added checking to make sure colvolvematrix doesn't segfault, fixed embarrasing little buglet in feOffset.
+	* rsvg-filter.c: fixed table in feComponantTransfer, I won't pretend to know how I did it. It truely is an aweful hack, but its the best we have and it seems to work as per the examples
+	
+2004-02-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-filter.c: Fix bug in pixbuf_get_alpha(), speed up pixbuf_new_cleared(),
+	be more paranoid in ComponentTransfer
+	
+2004-02-04  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Implemented the feMorphology filter
+
+2004-02-04  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Implemented the ComponentTransfer filter, it works properly now
+	
+2004-02-03  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-filter.[ch]: Start implementing ComponentTransfer filter
+	Indent, make code ansi-compliant.
+	* rsvg-css.[ch]: Tweak VBOX parsing, free unused string array properly
+
+
+2004-02-03  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Implemented ColorMatrix filter, Made GaussianBlur scaled according to the current coordinate system
+	* rsvg-css.c: Added \n to the types of whitespace that splits arguments in list
+	
+2004-02-02  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Implemented Merge filter, implemented Offset filter
+
+2004-02-01  Caleb Moore <c.moore@student.unsw.edu.au>
+	
+	* rsvg-filter.c: Implemented ConvolveMatrix filter
+	
+2004-02-01  Caleb Moore <c.moore@student.unsw.edu.au>
+
+	* rsvg-syles.c: implemented filter groups using the same code as the opacity grops
+	* rsvg-private.h: added a current filter pointer for loading primitives in context
+	* rsvg-defs.c: added new def type: filter
+	* rsvg.c: allowed filters and filter primitives to be specified in file, also added the ability for a group to use a filter if neccisary
+	* rsvg-shapes.c: added the ability for a shape to use a filter if it needs to
+	* rsvg-text.c: added the ability for text to use a filter if it needs to
+	* rsvg-filter.c: added new file
+	* rsvg-filter.h: added new file
+	
+2004-01-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: bug #132569
+
+2004-01-15  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-css.c:
+	* test-rsvg.c: Fix bug #131644
+	
+2004-01-12  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c: Fix bug #124075
+	
+2004-01-06  Dom Lachowicz <cinamod@hotmail.com>
+
+	* Makefile.am: Fix bug #130687
+	
+2004-01-05  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-text.c:
+	* rsvg-text-vectors.c: Factor out bitmap vs. vector text routines
+	
+2004-01-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-text-vectors.c: Start of work toward representing text as 
+	vector paths. Mad props go to the boys @ the Gimp for pointing me in
+	the right direction here (bug #107668).
+	
+2003-12-13  Caleb Moore <calebmm@tpg.com.au>
+
+	* rsvg-bpath-util.c: Fixed double move bug in path
+
+2003-12-10  Federico Mena Quintero  <federico@ximian.com>
+
+	* rsvg-defs.c: #include <glib/gmessages.h>
+
+2003-12-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-defs.c (rsvg_defs_set): Bug 128690
+	
+2003-12-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Bump version number
+	
+2003-12-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c:
+	* rsvg-paint-server.c: Fix userspace gradients (Caleb Moore)
+	
+2003-11-27  Caleb Moore <calebmm@tpg.com.au>
+
+	* *: Implement bounding box based gradients
+	
+2003-11-25  Caleb Moore <calebmm@tpg.com.au>
+
+	* rsvg-styles.c: Fix opacity inheritance. Fixes a few bugs
+	
+2003-11-25  Dom Lachowicz <cinamod@hotmail.com>
+
+	* moz-plugin/*: Start of work on a RSVG Mozilla/Netscape plugin. 
+	Doesn't work quite yet - needs some help along.
+	
+2003-11-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c
+	* rsvg-styles.h
+	* rsvg-shape.c: Fix Sodipodi flags, implement fill rules. From
+	"Caleb Moore" <calebmm@tpg.com.au>
+	
+2003-10-16  Sven Neumann  <sven@gimp.org>
+
+	* rsvg.c: fixed inline docs.
+
+	* doc/Makefile.am: ignore internal header files.
+
+	* doc/rsvg-sections.txt
+	* doc/tmpl/rsvg.sgml: added new functions.
+
+2003-09-23  Sven Neumann  <sven@gimp.org>
+
+	* rsvg.c (rsvg_start_svg): respect viewBox offsets by applying an
+	appropriate translation.
+
+2003-09-21  Tor Lillqvist  <tml@iki.fi>
+
+	* librsvg-zip.in: New file.
+
+	* configure.in: Check for Win32, set OS_WIN32 automake
+	variable. Check for strtok_r. Expand librsvg-zip.
+
+	* Makefile.am: Use -lm only on Unix. Add LIBGSF_LIBS and
+	LIBCROCO_LIBS to librsvg_2_la_LIBADD. Distribute librsvg-zip.in.
+
+	* rsvg-css.c: Use G_PI instead of M_PI.
+	(strtok_r): Implement strtok_r here if not available. (Very
+	suboptimal implementation.)
+
+2003-09-19  Sven Neumann  <sven@gimp.org>
+
+	* rsvg-file-util.c: implemented missing GError handling for file
+	operations.
+
+2003-09-18  Sven Neumann  <sven@gimp.org>
+
+	* Makefile.am
+	* configure.in
+	* gimp-plugin/Makefile.am
+	* gimp-plugin/svg.c: removed GIMP plug-in; it now lives in the
+	GIMP source tree. Thanks a lot for the nice work you've done!
+
+2003-09-12  Sven Neumann  <sven@gimp.org>
+
+	* configure.in
+	* rsvg-styles.c (rsvg_real_parse_cssbuffer): removed the #warning
+	here and instead output it when configure is run (bug #122119).
+
+2003-09-12  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: depend on Pango version 1.2.0 or newer.
+
+	* rsvg-text.c (rsvg_text_handler_characters): don't use
+	pango_ft2_get_context() which is deprecated in Pango HEAD, but
+	create the Pango context from the fontmap instead (bug #122121).
+
+	* rsvg-path.c (rsvg_parse_path_do_cmd): fixed storage of
+	reflection point in Q command which caused the next T command to
+	create a wrong stroke (bug #122118).
+
+2003-09-11  Sven Neumann  <sven@gimp.org>
+
+	* gimp-plugin/svg.c: Sprinkled the code with const qualifiers.
+	Fixed transfer of pixel data from pixbuf to pixel region. The
+	old code was wrong for pixbufs with rowstride != width * bpp.
+
+== librsvg 2.4.0 ==
+
+2003-09-08  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: 
+	* NEWS:
+	version 2.4.0
+
+2003-08-27  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gdk-pixbuf-loader/io-svg.c: bug 120825
+	
+2003-06-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Add support for <title> and <desc> elements
+	
+2003-04-08  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: enable librsvg to be built w/o gtk+
+	* Makefile.am: ditto
+	
+2003-04-08  Alex Duggan  <aldug@astrolinux.com>
+
+	* configure.in: print out a summary displaying what
+	parts of librsvg are to be built.
+
+2003-04-08  Alex Duggan  <aldug@astrolinux.com>
+
+	* doc/.cvsignore:
+	* gimp-plugin/.cvsignore: create .cvsignore files for these
+	two directories.
+	
+== librsvg 2.3.0 ==
+
+2003-04-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gtk-engine/Makefile.am: let load when building with croco
+	* gdk-pixbuf-loader/Makefile.am: ditto
+	
+2003-04-03  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Fixes so that we link and build a DLL on Cygwin. 
+	Adapted from work by Masahiro Sakai <s01397ms at sfc.keio.ac.jp>
+	(http://web.sfc.keio.ac.jp/~s01397ms/cygwin/librsvg-2.2.3-1.patch)
+	* Makefile.am: Ditto
+	* gtk-engine/Makefile.am: Ditto
+	* gimp-plugin/Makefile.am: Ditto
+	
+2003-04-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: use correct name for libcroco in .pc file
+
+2003-03-25  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c: Support text directions (bidi)
+	* rsvg-text.c: Ditto
+	
+2003-03-25  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c: Support style information inside of defs paths
+	
+2003-03-25  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c: Support for <style> outside of a <defs> block
+	
+2003-03-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gimp-plugin/svg.c: Image size/resolution dialog, allow for 
+	non-interactive use, ...
+	
+2003-03-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.h: Document rsvg_size_func
+	* rsvg-styles.c: Whine/complain on invalid CSS documents, but chug
+	along anyway
+	
+2003-03-19  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Re-enable libcroco support, make it the default
+	* rsvg-styles.c (ccss_end_selector): Make libcroco support work
+	
+2003-03-19  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Disable libcroco support until libcroco implements
+	the 1 remaining fn that I need from it
+	* rsvg-styles.c (rsvg_parse_style_attrs): Handle tag#id, tag.klazz#id, 
+	and tag.klazz much more properly
+	
+2003-03-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Updates for optional libcroco support
+	* Makefile.am: ditto
+	* librsvg-2.0.pc.in: ditto
+	* rsvg-styles.c: ditto
+
+2003-03-18  Dom Lachowicz <cinamod@hotmail.com> / Ross Alexander <ross.alexander@uk.neceur.com>
+
+	* configure.in: Bump version # to 2.3.0
+	* rsvg-shapes.h: Add RsvgDefsPath type, start_use()
+	* rsvg-shapes.c: Work needed to handle def paths, start_use()
+	* rsvg-defs.h: Add new defs type for paths
+	* rsvg.c: Handle use, defs paths
+	
+== gnome-2-2 branch, 2.2.5 released ==
+	
+2003-03-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Bump version # to 2.2.5
+
+2003-03-17  Dom Lachowicz <cinamod@hotmail.com>
+
+	* Makefile.am: additions for GIMP support
+	* configure.in: ditto
+	* gimp-plugin/Makefile.am: ditto
+	* gimp-plugin/svg.c: ditto
+	* NEWS: update to mention GIMP plugin
+	
+2003-03-14  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-path.c (rsvg_path_arc): Fix NaN issue, bug 108380
+	* rsvg-shapes.c (start_rect): SVG conformance issues fixed
+	
+=== librsvg 2.2.4 ===
+	
+2003-03-10  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Bump version number
+	
+2003-02-26  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c (close_impl): Fix bug 106399
+	
 2003-02-03  Dom Lachowicz <cinamod@hotmail.com>
 
 	* gdk-pixbuf-loader/io-svg.c (*): Updates for GTK 2.2.1

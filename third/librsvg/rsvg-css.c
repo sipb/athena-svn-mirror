@@ -19,22 +19,20 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Raph Levien <raph@artofcode.com>
+   Authors: Dom Lachowicz <cinamod@hotmail.com> 
+   Raph Levien <raph@artofcode.com>
 */
 
 #include "config.h"
 #include "rsvg-css.h"
 
 #include <glib.h>
-#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
-#include <stdio.h>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif  /*  M_PI  */
+#include <math.h>
 
 #define POINTS_PER_INCH (72.0)
 #define CM_PER_INCH     (2.54)
@@ -55,32 +53,28 @@ gboolean
 rsvg_css_parse_vbox (const char * vbox, double * x, double * y,
 					 double * w, double * h)
 {
-	/* TODO: make me cleaner and more efficient */
-	char *ptr, *tok;
-	char *str = g_strdup (vbox);
-	gboolean has_vbox = FALSE;
-	
-	tok = strtok_r (str, ", \t", &ptr);
-	if (tok != NULL) {
-		*x = g_ascii_strtod (tok, NULL);
-		tok = strtok_r (NULL, ", \t", &ptr);
-		if (tok != NULL) {
-			*y = g_ascii_strtod (tok, NULL);
-			tok = strtok_r (NULL, ", \t", &ptr);
-			if (tok != NULL) {
-				*w = g_ascii_strtod (tok, NULL);
-				tok = strtok_r (NULL, ", \t", &ptr);
-				if (tok != NULL) {
-					*h = g_ascii_strtod (tok, NULL);
-					has_vbox = TRUE;
-				}
-			}
-		}
+	gdouble * list;
+	guint list_len;
+
+	list = rsvg_css_parse_number_list(vbox, &list_len);
+
+	if(!(list && list_len))
+		return FALSE;
+	else if(list_len != 4) {
+		g_free(list);
+		return FALSE;
+	} 
+	else {
+		*x = list[0];
+		*y = list[1];
+		*w = list[2];
+		*h = list[3];
+
+		g_free(list);
+		return TRUE;
 	}
-	g_free (str);
-	
-	return has_vbox;
 }
+
 
 /**
  * rsvg_css_parse_length: Parse CSS2 length to a pixel value.
@@ -174,7 +168,7 @@ rsvg_css_param_match (const char *str, const char *param_name)
 {
 	int i;
 	
-	for (i = 0; str[i] != '\0' && str[i] != ':'; i++)
+	for (i = 0; str[i] != '\0' && param_name[i] != '\0'; i++)
 		if (param_name[i] != str[i])
 			return FALSE;
 	return str[i] == ':' && param_name[i] == '\0';
@@ -184,23 +178,31 @@ int
 rsvg_css_param_arg_offset (const char *str)
 {
 	int i;
-	
-	for (i = 0; str[i] != '\0' && str[i] != ':'; i++);
-	if (str[i] != '\0') i++;
-	for (; str[i] == ' '; i++);
-	return i;
+	int found;
+	found = -1;	
+	i = 0;
+	while (str[i] != '\0')
+		{
+			for (; str[i] != '\0' && str[i] != ':'; i++);
+			if (str[i] != '\0') i++;
+			for (; str[i] == ' '; i++);
+			if (str[i] != '\0')
+				found = i;
+		}
+	if (found == -1)
+		found = i;
+	return found;
 }
 
 static gint
-rsvg_css_clip_rgb_percent (gint in_percent)
+rsvg_css_clip_rgb_percent (gdouble in_percent)
 {
 	/* spec says to clip these values */
-	if (in_percent > 100)
-		in_percent = 100;
-	else if (in_percent <= 0)
-		return 0;
-	
-	return (gint)floor(255. * (double)in_percent / 100. + 0.5);
+	if (in_percent > 100.)
+		return 255;
+	else if (in_percent <= 0.)
+		return 0;	
+	return (gint)floor(255. * in_percent / 100. + 0.5);
 }
 
 static gint
@@ -208,10 +210,9 @@ rsvg_css_clip_rgb (gint rgb)
 {
 	/* spec says to clip these values */
 	if (rgb > 255)
-		rgb = 255;
+		return 255;
 	else if (rgb < 0)
-		rgb = 0;
-	
+		return 0;	
 	return rgb;
 }
 
@@ -238,7 +239,7 @@ rsvg_css_color_compare (const void * a, const void * b)
  * Parse a CSS2 color specifier, return RGB value
  */
 guint32
-rsvg_css_parse_color (const char *str)
+rsvg_css_parse_color (const char *str, guint32 inherit)
 {
 	gint val = 0;
 	
@@ -275,15 +276,28 @@ rsvg_css_parse_color (const char *str)
 			
 			if (strstr (str, "%") != 0)
 				{
-					/* assume "rgb (r%, g%, b%)" */
-					if (3 == sscanf (str, " rgb ( %d %% , %d %% , %d %% ) ", &r, &g, &b))
+					gint i, nb_toks;
+					char ** toks;
+
+					/* assume rgb (9%, 100%, 23%) */
+					for(i = 0; str[i] != '('; i++)
+						;
+
+					i++;
+
+					toks = rsvg_css_parse_list(str + i, &nb_toks);
+
+					if (toks)
 						{
-							r = rsvg_css_clip_rgb_percent (r);
-							g = rsvg_css_clip_rgb_percent (g);
-							b = rsvg_css_clip_rgb_percent (b);
+							if (nb_toks == 3)
+								{
+									r = rsvg_css_clip_rgb_percent (g_ascii_strtod (toks[0], NULL));
+									g = rsvg_css_clip_rgb_percent (g_ascii_strtod (toks[1], NULL));
+									b = rsvg_css_clip_rgb_percent (g_ascii_strtod (toks[2], NULL));
+								}
+
+							g_strfreev (toks);
 						}
-					else
-						r = g = b = 0;
 				}
 			else
 				{
@@ -300,7 +314,9 @@ rsvg_css_parse_color (const char *str)
 			
 			val = PACK_RGB (r,g,b);
 		}
-	else
+	else if (!strcmp (str, "inherit"))
+		val = inherit;
+	else 
 		{
 			const static ColorPair color_list [] =
 				{
@@ -328,7 +344,7 @@ rsvg_css_parse_color (const char *str)
 					{ "darkblue",             PACK_RGB (0,0,139) },
 					{ "darkcyan",             PACK_RGB (0,139,139) },
 					{ "darkgoldenrod",        PACK_RGB (184,132,11) },
-					{ "darkgray",             PACK_RGB (169,169,168) },
+					{ "darkgray",             PACK_RGB (169,169,169) },
 					{ "darkgreen",            PACK_RGB (0,100,0) },
 					{ "darkgrey",             PACK_RGB (169,169,169) },
 					{ "darkkhaki",            PACK_RGB (189,183,107) },
@@ -348,19 +364,19 @@ rsvg_css_parse_color (const char *str)
 					{ "deepskyblue",          PACK_RGB (0,191,255) },
 					{ "dimgray",              PACK_RGB (105,105,105) },
 					{ "dimgrey",              PACK_RGB (105,105,105) },
-					{ "dogerblue",            PACK_RGB (30,144,255) },
+					{ "dodgerblue",           PACK_RGB (30,144,255) },
 					{ "firebrick",            PACK_RGB (178,34,34) },
 					{ "floralwhite" ,         PACK_RGB (255,255,240)},
 					{ "forestgreen",          PACK_RGB (34,139,34) },
 					{ "fuchsia",              PACK_RGB (255,0,255) },
 					{ "gainsboro",            PACK_RGB (220,220,220) },
 					{ "ghostwhite",           PACK_RGB (248,248,255) },
-					{ "gold",                 PACK_RGB (215,215,0) },
+					{ "gold",                 PACK_RGB (255,215,0) },
 					{ "goldenrod",            PACK_RGB (218,165,32) },
 					{ "gray",                 PACK_RGB (128,128,128) },
-					{ "grey",                 PACK_RGB (128,128,128) },
-					{ "green",                PACK_RGB (0,128,0)},
+					{ "green",                PACK_RGB (0,128,0) },
 					{ "greenyellow",          PACK_RGB (173,255,47) },
+					{ "grey",                 PACK_RGB (128,128,128) },
 					{ "honeydew",             PACK_RGB (240,255,240) },
 					{ "hotpink",              PACK_RGB (255,105,180) },
 					{ "indianred",            PACK_RGB (205,92,92) },
@@ -400,15 +416,15 @@ rsvg_css_parse_color (const char *str)
 					{ "mediumspringgreen",    PACK_RGB (0,250,154) },
 					{ "mediumturquoise",      PACK_RGB (72,209,204) },
 					{ "mediumvioletred",      PACK_RGB (199,21,133) },
-					{ "mediumnightblue",      PACK_RGB (25,25,112) },
+					{ "midnightblue",         PACK_RGB (25,25,112) },
 					{ "mintcream",            PACK_RGB (245,255,250) },
-					{ "mintyrose",            PACK_RGB (255,228,225) },
+					{ "mistyrose",            PACK_RGB (255,228,225) },
 					{ "moccasin",             PACK_RGB (255,228,181) },
 					{ "navajowhite",          PACK_RGB (255,222,173) },
 					{ "navy",                 PACK_RGB (0,0,128) },
 					{ "oldlace",              PACK_RGB (253,245,230) },
 					{ "olive",                PACK_RGB (128,128,0) },
-					{ "oliverab",             PACK_RGB (107,142,35) },
+					{ "olivedrab",            PACK_RGB (107,142,35) },
 					{ "orange",               PACK_RGB (255,165,0) },
 					{ "orangered",            PACK_RGB (255,69,0) },
 					{ "orchid",               PACK_RGB (218,112,214) },
@@ -435,8 +451,8 @@ rsvg_css_parse_color (const char *str)
 					{ "silver",               PACK_RGB (192,192,192) },
 					{ "skyblue",              PACK_RGB (135,206,235) },
 					{ "slateblue",            PACK_RGB (106,90,205) },
-					{ "slategray",            PACK_RGB (112,128,144) },
-					{ "slategrey",            PACK_RGB (112,128,114) },
+					{ "slategray",            PACK_RGB (119,128,144) },
+					{ "slategrey",            PACK_RGB (119,128,144) },
 					{ "snow",                 PACK_RGB (255,255,250) },
 					{ "springgreen",          PACK_RGB (0,255,127) },
 					{ "steelblue",            PACK_RGB (70,130,180) },
@@ -511,7 +527,7 @@ rsvg_css_parse_angle (const char * str)
 	if (end_ptr)
 		{
 			if (!strcmp(end_ptr, "rad"))
-				return degrees * 180. / M_PI;
+				return degrees * 180. / G_PI;
 			else if (!strcmp(end_ptr, "grad"))
 				return degrees * 360. / 400.;
 		}
@@ -533,19 +549,19 @@ rsvg_css_parse_angle (const char * str)
 double
 rsvg_css_parse_frequency (const char * str)
 {
-	double hz;
+	double f_hz;
 	char *end_ptr;
 	
-	hz = g_ascii_strtod (str, &end_ptr);
+	f_hz = g_ascii_strtod (str, &end_ptr);
 	
 	/* todo: error condition - figure out how to best represent it */
-	if ((hz == -HUGE_VAL || hz == HUGE_VAL) && (ERANGE == errno))
+	if ((f_hz == -HUGE_VAL || f_hz == HUGE_VAL) && (ERANGE == errno))
 		return 0.0;
 	
 	if (end_ptr && !strcmp(end_ptr, "kHz"))
-		return hz * 1000.;
+		return f_hz * 1000.;
 	
-	return hz;
+	return f_hz;
 }
 
 /*
@@ -608,32 +624,32 @@ rsvg_css_parse_font_weight (const char * str, PangoWeight inherit)
 {
 	if (str)
 		{
-      if (!strcmp (str, "lighter"))
-		  return PANGO_WEIGHT_LIGHT;
-      else if (!strcmp (str, "bold"))
-		  return PANGO_WEIGHT_BOLD;
-      else if (!strcmp (str, "bolder"))
-		  return PANGO_WEIGHT_ULTRABOLD;
-      else if (!strcmp (str, "100"))
-		  return (PangoWeight)100;
-      else if (!strcmp (str, "200"))
-		  return (PangoWeight)200;
-      else if (!strcmp (str, "300"))
-		  return (PangoWeight)300;
-      else if (!strcmp (str, "400"))
-		  return (PangoWeight)400;
-      else if (!strcmp (str, "500"))
-		  return (PangoWeight)500;
-      else if (!strcmp (str, "600"))
-		  return (PangoWeight)600;
-      else if (!strcmp (str, "700"))
-		  return (PangoWeight)700;
-      else if (!strcmp (str, "800"))
-		  return (PangoWeight)800;
-      else if (!strcmp (str, "900"))
-		  return (PangoWeight)900;
-      else if (!strcmp(str, "inherit"))
-		  return inherit;
+			if (!strcmp (str, "lighter"))
+				return PANGO_WEIGHT_LIGHT;
+			else if (!strcmp (str, "bold"))
+				return PANGO_WEIGHT_BOLD;
+			else if (!strcmp (str, "bolder"))
+				return PANGO_WEIGHT_ULTRABOLD;
+			else if (!strcmp (str, "100"))
+				return (PangoWeight)100;
+			else if (!strcmp (str, "200"))
+				return (PangoWeight)200;
+			else if (!strcmp (str, "300"))
+				return (PangoWeight)300;
+			else if (!strcmp (str, "400"))
+				return (PangoWeight)400;
+			else if (!strcmp (str, "500"))
+				return (PangoWeight)500;
+			else if (!strcmp (str, "600"))
+				return (PangoWeight)600;
+			else if (!strcmp (str, "700"))
+				return (PangoWeight)700;
+			else if (!strcmp (str, "800"))
+				return (PangoWeight)800;
+			else if (!strcmp (str, "900"))
+				return (PangoWeight)900;
+			else if (!strcmp(str, "inherit"))
+				return inherit;
 		}
 	
 	return PANGO_WEIGHT_NORMAL; 
@@ -670,10 +686,204 @@ const char *
 rsvg_css_parse_font_family (const char * str, const char * inherit)
 {
 	if (!str)
-		return NULL;
-	
-	if (!strcmp (str, "inherit"))
+		return NULL;	
+	else if (!strcmp (str, "inherit"))
 		return inherit;
 	else
 		return str;
+}
+
+#if !defined(HAVE_STRTOK_R) /* && !GLIB_CHECK_VERSION(2, 3, 2) */
+
+static char *
+strtok_r(char *s, const char *delim, char **last)
+{
+	char *p;
+
+	if (s == NULL)
+		s = *last;
+
+	if (s == NULL)
+		return NULL;
+
+	while (*s && strchr (delim, *s))
+		s++;
+
+	if (*s == '\0') {
+		*last = NULL;
+		return NULL;
+	}
+
+	p = s;
+	while (*p && !strchr (delim, *p))
+		p++;
+
+	if (*p == '\0')
+		*last = NULL;
+	else {
+		*p = '\0';
+		p++;
+		*last = p;
+	}
+	
+	return s;
+}
+
+#endif /* !HAVE_STRTOK_R */
+
+gchar **
+rsvg_css_parse_list(const char * in_str, guint * out_list_len)
+{
+	/* the following code is defective because it creates blank entries when two splitting chars are next to each other*/
+#if 0 /* GLIB_CHECK_VERSION(2, 3, 2) */
+
+	gchar ** string_array;
+	guint n;
+
+	/* this may fix bug #113538 */
+
+	string_array = g_strsplit_set(in_str, ", \t\n", -1);
+
+	for(n = 0; string_array[n] != NULL; n++)
+		;
+
+	*out_list_len = n;
+	return string_array;
+
+#else
+
+	char *ptr, *tok;
+	char *str;
+
+	guint n = 0;
+	GSList * string_list = NULL;
+	gchar ** string_array = NULL;
+
+	str = g_strdup (in_str);
+    tok = strtok_r (str, ", \t", &ptr);
+	if (tok != NULL) {
+		if (strcmp(tok, " ") != 0)
+			{
+				string_list = g_slist_prepend(string_list, g_strdup(tok));
+				n++;
+			}
+
+		while((tok = strtok_r (NULL, ", \t", &ptr)) != NULL) {
+			if (strcmp(tok, " ") != 0)
+				{
+					string_list = g_slist_prepend(string_list, g_strdup(tok));
+					n++;
+				}
+		}
+	}
+	g_free (str);
+
+	if(out_list_len)
+		*out_list_len = n;
+
+	if (string_list) {
+		GSList *slist;
+
+		string_array = g_new(gchar *, n + 1);
+
+		string_array[n--] = NULL;
+		for (slist = string_list; slist; slist = slist->next)
+			string_array[n--] = (gchar *)slist->data;
+
+		g_slist_free (string_list);		
+	}
+
+	return string_array;
+
+#endif
+}
+
+gdouble *
+rsvg_css_parse_number_list(const char * in_str, guint * out_list_len){
+	gchar ** string_array;
+	gdouble * output;
+	guint len, i;
+
+	if(out_list_len)
+		*out_list_len = 0;
+
+	string_array = rsvg_css_parse_list(in_str, &len);
+
+	if(!(string_array && len))
+		return NULL;
+
+	output = g_new(gdouble, len);
+
+	/* TODO: some error checking */
+	for (i = 0; i < len; i++)
+		output[i] = g_ascii_strtod(string_array[i], NULL);
+	
+	g_strfreev(string_array);
+
+	if (out_list_len != NULL)
+		*out_list_len = len;
+
+	return output;
+}
+
+void 
+rsvg_css_parse_number_optional_number(const char * str, 
+									  double *x, double *y)
+{
+  char *endptr;
+
+  /* TODO: some error checking */
+
+  *x = g_ascii_strtod(str, &endptr);
+
+  if(endptr && *endptr != '\0')
+    while(g_ascii_isspace(*endptr) && *endptr)
+      endptr++;
+
+  if(endptr && *endptr)
+    *y = g_ascii_strtod(endptr, NULL);
+  else
+    *y = *x;
+}
+
+int rsvg_css_parse_aspect_ratio(const char * str)
+{
+	char ** elems;
+	guint nb_elems;
+
+	int ratio = RSVG_ASPECT_RATIO_NONE;
+
+	elems = rsvg_css_parse_list (str, &nb_elems);
+
+	if (elems && nb_elems)
+		{
+			guint i;
+
+			for (i = 0; i < nb_elems; i++) {
+				if (!strcmp (elems[i], "xMinYMin"))
+					ratio = RSVG_ASPECT_RATIO_XMIN_YMIN;
+				else if (!strcmp (elems[i], "xMidYMin"))
+					ratio = RSVG_ASPECT_RATIO_XMID_YMIN;
+				else if (!strcmp (elems[i], "xMaxYMin"))
+					ratio = RSVG_ASPECT_RATIO_XMAX_YMIN;
+				else if (!strcmp (elems[i], "xMinYMid"))
+					ratio = RSVG_ASPECT_RATIO_XMIN_YMID;
+				else if (!strcmp (elems[i], "xMidYMid"))
+					ratio = RSVG_ASPECT_RATIO_XMIN_YMID;
+				else if (!strcmp (elems[i], "xMaxYMid"))
+					ratio = RSVG_ASPECT_RATIO_XMAX_YMID;
+				else if (!strcmp (elems[i], "xMinYMax"))
+					ratio = RSVG_ASPECT_RATIO_XMIN_YMAX;
+				else if (!strcmp (elems[i], "xMidYMax"))
+					ratio = RSVG_ASPECT_RATIO_XMID_YMAX;
+				else if (!strcmp (elems[i], "xMaxYMax"))
+					ratio = RSVG_ASPECT_RATIO_XMAX_YMAX;
+				else if (!strcmp (elems[i], "slice"))
+					ratio |= RSVG_ASPECT_RATIO_SLICE;			
+			}
+
+			g_strfreev (elems);
+		}
+
+	return ratio;
 }

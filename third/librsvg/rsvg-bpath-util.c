@@ -25,10 +25,12 @@
 #include "config.h"
 #include "rsvg-bpath-util.h"
 
-#include <glib/gmem.h>
-#include <glib/gmessages.h>
+#include <stdio.h>
 #include <math.h>
 #include <string.h>
+
+#include <glib/gmem.h>
+#include <glib/gmessages.h>
 
 /* This is adapted from gnome-canvas-bpath-util in libgnomeprint
    (originally developed as part of Gill). */
@@ -71,7 +73,6 @@ rsvg_bpath_def_new_from (ArtBpath *path)
 	return bpd;
 }
 
-
 void
 rsvg_bpath_def_free (RsvgBpathDef *bpd)
 {
@@ -89,6 +90,20 @@ rsvg_bpath_def_moveto (RsvgBpathDef *bpd, double x, double y)
 	
 	g_return_if_fail (bpd != NULL);
 	
+	/* if the last command was a moveto then change that last moveto instead of
+	   creating a new one */
+	bpath = bpd->bpath;
+	n_bpath = bpd->n_bpath;
+
+	if (n_bpath > 0)
+		if (bpath[n_bpath - 1].code == ART_MOVETO_OPEN)
+			{
+				bpath[n_bpath - 1].x3 = x;
+				bpath[n_bpath - 1].y3 = y;
+				bpd->moveto_idx = n_bpath - 1;
+				return;
+			}
+
 	n_bpath = bpd->n_bpath++;
 	
 	if (n_bpath == bpd->n_bpath_max)
@@ -98,7 +113,7 @@ rsvg_bpath_def_moveto (RsvgBpathDef *bpd, double x, double y)
 	bpath[n_bpath].code = ART_MOVETO_OPEN;
 	bpath[n_bpath].x3 = x;
 	bpath[n_bpath].y3 = y;
-	bpd->moveto_idx = n_bpath;
+	bpd->moveto_idx = n_bpath;	
 }
 
 void
@@ -145,6 +160,21 @@ rsvg_bpath_def_curveto (RsvgBpathDef *bpd, double x1, double y1, double x2, doub
 	bpath[n_bpath].y3 = y3;
 }
 
+static void
+rsvg_bpath_def_replicate (RsvgBpathDef *bpd, int index)
+{
+	ArtBpath *bpath;
+	int n_bpath;
+  
+	n_bpath = bpd->n_bpath++;
+	
+	if (n_bpath == bpd->n_bpath_max)
+		bpd->bpath = g_realloc (bpd->bpath,
+								(bpd->n_bpath_max <<= 1) * sizeof (ArtBpath));
+	bpath = bpd->bpath;
+	bpath[n_bpath] = bpath[index];
+}
+
 void
 rsvg_bpath_def_closepath (RsvgBpathDef *bpd)
 {
@@ -164,8 +194,11 @@ rsvg_bpath_def_closepath (RsvgBpathDef *bpd)
 		{
 			rsvg_bpath_def_lineto (bpd, bpath[bpd->moveto_idx].x3,
 								   bpath[bpd->moveto_idx].y3);
-			bpath = bpd->bpath;
 		}
+
+	rsvg_bpath_def_replicate (bpd, bpd->moveto_idx);
+	bpath = bpd->bpath;
+
 	bpath[bpd->moveto_idx].code = ART_MOVETO;
 	bpd->moveto_idx = -1;
 }

@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "rsvg.h"
+#include "rsvg-private.h"
 
 #include <popt.h>
 #include <stdio.h>
@@ -37,16 +38,18 @@ main (int argc, const char **argv)
 	poptContext popt_context;
 	double x_zoom = 1.0;
 	double y_zoom = 1.0;
-	double dpi = -1.0;
+	double dpi_x = -1.0;
+	double dpi_y = -1.0;
 	int width  = -1;
 	int height = -1;
 	int bVersion = 0;
 	int quality = 100;
 	char * quality_str = NULL;
-	char * format = "png";
+	char * format = NULL;
 
 	struct poptOption options_table[] = {
-		{ "dpi"   ,  'd',  POPT_ARG_DOUBLE, &dpi,      0, "pixels per inch", "<float>"},
+		{ "dpi-x",   'd',  POPT_ARG_DOUBLE, &dpi_x,    0, "pixels per inch", "<float>"},
+		{ "dpi-y",   'p',  POPT_ARG_DOUBLE, &dpi_y,    0, "pixels per inch", "<float>"},
 		{ "x-zoom",  'x',  POPT_ARG_DOUBLE, &x_zoom,   0, "x zoom factor", "<float>" },
 		{ "y-zoom",  'y',  POPT_ARG_DOUBLE, &y_zoom,   0, "y zoom factor", "<float>" },
 		{ "width",   'w',  POPT_ARG_INT,    &width,    0, "width", "<int>" },
@@ -85,15 +88,14 @@ main (int argc, const char **argv)
 			return 1;
 		}
 
-	if (strstr (format, "jpeg") != NULL || strstr (format, "jpg") != NULL)
-		format = "jpeg";
-	else
+	if(format == NULL)
 		format = "png";
+	else if (strstr (format, "jpg") != NULL) /* backward compatibility */
+		format = "jpeg";
 
 	g_type_init ();
 
-	if (dpi > 0.)
-		rsvg_set_default_dpi (dpi);
+	rsvg_set_default_dpi_x_y (dpi_x, dpi_y);
 
 	/* if both are unspecified, assume user wants to zoom the pixbuf in at least 1 dimension */
 	if (width == -1 && height == -1)
@@ -107,16 +109,21 @@ main (int argc, const char **argv)
 														 width, height, NULL);
 
 	if (pixbuf)
-		if (strcmp (format, "jpeg") != 0 || (quality < 1 || quality > 100)) /* is a png or is an invalid quality */
-			gdk_pixbuf_save (pixbuf, args[1], format, NULL, NULL);
+		if (strcmp (format, "jpeg") == 0) {
+			if (quality < 1 || quality > 100) /* is an invalid quality */
+				gdk_pixbuf_save (pixbuf, args[1], format, NULL, NULL);
+			else {
+				quality_str = g_strdup_printf ("%d", quality);
+				gdk_pixbuf_save (pixbuf, args[1], format, NULL, "quality", quality_str, NULL);
+				g_free (quality_str);
+			}
+		}
 		else {
-			quality_str = g_strdup_printf ("%d", quality);
-			gdk_pixbuf_save (pixbuf, args[1], format, NULL, "quality", quality_str, NULL);
-			g_free (quality_str);
+			gdk_pixbuf_save (pixbuf, args[1], format, NULL, NULL);
 		}
 	else {
 		poptFreeContext (popt_context);
-		g_warning ("Error loading SVG file.\n");
+		g_warning (_("Error loading SVG file.\n"));
 		return 1;
 	}
 

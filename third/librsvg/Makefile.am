@@ -1,91 +1,109 @@
-SUBDIRS = . gtk-engine gdk-pixbuf-loader doc
+SUBDIRS = . gtk-engine gdk-pixbuf-loader moz-plugin doc data
 
-bin_PROGRAMS = rsvg
+if HAVE_GTK
+target_rsvg_view = rsvg-view
+else
+target_rsvg_view =
+endif
 
-noinst_PROGRAMS = test-performance test-display
+bin_PROGRAMS = rsvg $(target_rsvg_view)
+
+noinst_PROGRAMS = test-performance
 
 man_MANS = rsvg.1
 
-if WITH_LIBGSF
-GSFHEADERS = rsvg-gz.h
-GSFSOURCES = rsvg-gz.c
+if OS_WIN32
 else
-GSFHEADERS = 
-GSFSOURCES = 
+libm = -lm
 endif
-
-EXTRA_DIST =\
-	COPYING.LIB \
-	librsvg.spec.in \
-	librsvg-2.0.pc.in \
-	rsvg-gz.c \
-	rsvg-gz.h \
-	$(man_MANS)
 
 lib_LTLIBRARIES = librsvg-2.la
 
-librsvg_2_la_SOURCES = $(GSFSOURCES) \
-	librsvg-features.c \
-	rsvg-bpath-util.c \
-	rsvg-bpath-util.h \
-	rsvg-css.c \
-	rsvg-css.h \
-	rsvg-defs.c \
-	rsvg-defs.h \
-	rsvg-paint-server.c \
-	rsvg-paint-server.h \
-	rsvg-path.c \
-	rsvg-path.h \
-	rsvg-private.h \
-	rsvg-file-util.c \
-	rsvg-shapes.c	\
-	rsvg-shapes.h	\
-	rsvg-styles.c	\
-	rsvg-styles.h	\
-	rsvg-text.c	\
-	rsvg-text.h	\
-	rsvg.c
+librsvg_2_la_SOURCES = 		\
+	rsvg-gz.c		\
+	librsvg-features.c 	\
+	rsvg-bpath-util.c 	\
+	rsvg-bpath-util.h 	\
+	rsvg-css.c 		\
+	rsvg-css.h 		\
+	rsvg-defs.c 		\
+	rsvg-defs.h 		\
+	rsvg-paint-server.c 	\
+	rsvg-paint-server.h 	\
+	rsvg-path.c 		\
+	rsvg-path.h 		\
+	rsvg-private.h 		\
+	rsvg-file-util.c 	\
+	rsvg-filter.c		\
+	rsvg-filter.h		\
+	rsvg-mask.c		\
+	rsvg-mask.h		\
+	rsvg-shapes.c		\
+	rsvg-shapes.h		\
+	rsvg-styles.c		\
+	rsvg-styles.h		\
+	rsvg-text.c		\
+	rsvg-text.h		\
+	rsvg.c			\
+	rsvg-cond.c
 
-librsvg_2_la_LDFLAGS = -version-info @VERSION_INFO@
+librsvg_2_la_LDFLAGS = -version-info @VERSION_INFO@ -no-undefined -export-dynamic
+librsvg_2_la_LIBADD = $(LIBRSVG_LIBS) $(LIBGSF_LIBS) $(LIBCROCO_LIBS) $(LIBGNOME_VFS_LIBS)
 
 librsvgincdir = $(includedir)/librsvg-2/librsvg
-librsvginc_HEADERS = $(GSFHEADERS) \
-	rsvg.h \
+librsvginc_HEADERS = 	\
+	rsvg-gz.h	\
+	rsvg.h 		\
 	librsvg-features.h
 
-INCLUDES =$(LIBGSF_CFLAGS)\
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(LIBRSVG_CFLAGS) \
-	$(GTK_CFLAGS)	\
-	-DG_LOG_DOMAIN=\"librsvg\" \
-	-DG_DISABLE_DEPRECATED \
-	-DPANGO_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
+INCLUDES =				\
+	$(LIBGNOME_VFS_CFLAGS)		\
+	$(LIBGSF_CFLAGS)		\
+	$(LIBCROCO_CFLAGS)		\
+	-I$(top_srcdir) 		\
+	-I$(top_builddir) 		\
+	$(LIBRSVG_CFLAGS) 		\
+	$(GTK_CFLAGS)			\
+	$(GDK_X11_CFLAGS)		\
+	-DG_LOG_DOMAIN=\"librsvg\" 	\
 	-DDATADIR="\"$(datadir)\""
 
 DEPS = $(top_builddir)/librsvg-2.la
-LDADDS =$(LIBGSF_LIBS)\
-	$(top_builddir)/librsvg-2.la \
-	$(LIBRSVG_LIBS) \
+LDADDS =				\
+	$(LIBGNOME_VFS_LIBS)		\
+	$(LIBGSF_LIBS)			\
+	$(LIBCROCO_LIBS)		\
+	$(top_builddir)/librsvg-2.la 	\
+	$(LIBRSVG_LIBS) 		\
 	$(POPT_LIBS)
 
 rsvg_SOURCES=test-rsvg.c
 rsvg_LDFLAGS =
 rsvg_DEPENDENCIES = $(DEPS)
-rsvg_LDADD = $(LDADDS) -lm
+rsvg_LDADD = $(LDADDS) $(libm)
 
 test_performance_SOURCES=test-performance.c
 test_performance_LDFLAGS =
 test_performance_DEPENDENCIES = $(DEPS)
-test_performance_LDADD = $(LDADDS) -lm
+test_performance_LDADD = $(LDADDS) $(libm)
 
-test_display_SOURCES=test-display.c
-test_display_LDFLAGS =
-test_display_DEPENDENCIES = $(DEPS)
-test_display_LDADD = $(LDADDS) $(GTK_LIBS) -lm
+rsvg_view_SOURCES = 		\
+	test-display.c
+rsvg_view_LDFLAGS =
+rsvg_view_DEPENDENCIES = $(DEPS)
+rsvg_view_CFLAGS= $(GNOME_PRINT_CFLAGS)
+rsvg_view_LDADD = $(LDADDS) $(GNOME_PRINT_LIBS) $(GTK_LIBS) $(GDK_X11_LIBS) $(libm)
+
+EXTRA_DIST =				\
+	COPYING.LIB 			\
+	librsvg.spec.in 		\
+	librsvg-2.0.pc.in 		\
+	librsvg-2.0-uninstalled.pc.in 	\
+	librsvg-zip.in 			\
+	rsvg-gz.c 			\
+	rsvg-gz.h 			\
+	$(man_MANS)			\
+	$(rsvg_view_SOURCES)
 
 tests: rsvg
 
