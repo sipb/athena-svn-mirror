@@ -1,17 +1,19 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# translation of libgnomeprintui.po to zh_CN
+# Copyright (C) 2003 Free Software Foundation, Inc.
 # Wang Jian <lark@linux.net.cn>, 2001
+# Xiong Jiang <jxiong@offtopic.org>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui\n"
-"POT-Creation-Date: 2003-01-21 00:48-0500\n"
-"PO-Revision-Date: 2002-03-02 23:48+0800\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2003-01-24 22:30+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #. Family frame
 #: libgnomeprintui/gnome-font-dialog.c:164
@@ -21,39 +23,36 @@ msgstr "字体族"
 
 #: libgnomeprintui/gnome-font-dialog.c:200
 msgid "The list of font families available"
-msgstr ""
+msgstr "可用的字体族列表"
 
 #. Style frame
 #: libgnomeprintui/gnome-font-dialog.c:209
 msgid "Style"
-msgstr "风格"
+msgstr "样式"
 
 #: libgnomeprintui/gnome-font-dialog.c:250
-#, fuzzy
 msgid "Font style"
-msgstr "字体大小："
+msgstr "字体样式"
 
 #: libgnomeprintui/gnome-font-dialog.c:251
 msgid "The list of styles available for the selected font family"
-msgstr ""
+msgstr "所选择的字体族中可用的样式列表"
 
 #: libgnomeprintui/gnome-font-dialog.c:284
-#, fuzzy
 msgid "Font _size:"
-msgstr "字体大小："
+msgstr "字体大小(_Z)："
 
 #: libgnomeprintui/gnome-font-dialog.c:775
 msgid "This font does not have sample"
 msgstr "该字体没有样例"
 
 #: libgnomeprintui/gnome-font-dialog.c:882
-#, fuzzy
 msgid "Font Preview"
-msgstr "预览"
+msgstr "字体预览"
 
 #: libgnomeprintui/gnome-font-dialog.c:883
 msgid "Displays some example text in the selected font"
-msgstr ""
+msgstr "用所选择的字体显示一些样例文字"
 
 #: libgnomeprintui/gnome-font-dialog.c:898
 msgid "Font Selection"
@@ -61,45 +60,41 @@ msgstr "字体选择"
 
 #: libgnomeprintui/gnome-print-copies.c:245
 msgid "Copies"
-msgstr "复件"
+msgstr "份数"
 
 #: libgnomeprintui/gnome-print-copies.c:254
 msgid "N_umber of copies:"
-msgstr "份数(_U)："
+msgstr "打印份数(_U)："
 
 #: libgnomeprintui/gnome-print-copies.c:281
 msgid ""
 "Image showing the collation sequence when multiple copies of the document "
 "are printed"
-msgstr ""
+msgstr "显示打印多份文档时页面排列顺序的图像"
 
 #: libgnomeprintui/gnome-print-copies.c:283
 msgid "_Collate"
-msgstr "比较(_C)"
+msgstr "排序(_C)"
 
 #: libgnomeprintui/gnome-print-copies.c:288
 msgid ""
 "If copies of the document are printed separately, one after another, rather "
 "than being interleaved"
-msgstr ""
+msgstr "是否每份文档单独打印，而不是相同的页排列在一起"
 
 #: libgnomeprintui/gnome-print-dialog.c:163
-#, fuzzy
 msgid "Print range"
 msgstr "打印范围"
 
 #: libgnomeprintui/gnome-print-dialog.c:201
-#, fuzzy
 msgid "_All"
-msgstr "全部"
+msgstr "全部(_A)"
 
 #: libgnomeprintui/gnome-print-dialog.c:223
-#, fuzzy
 msgid "_Selection"
-msgstr "选择"
+msgstr "选择区(_S)"
 
 #: libgnomeprintui/gnome-print-dialog.c:300
-#, fuzzy
 msgid "Job"
 msgstr "任务"
 
@@ -109,64 +104,57 @@ msgid "Printer"
 msgstr "打印机"
 
 #: libgnomeprintui/gnome-print-dialog.c:324
-#, fuzzy
 msgid "Paper"
 msgstr "纸张"
 
 #: libgnomeprintui/gnome-print-dialog.c:331
-#, fuzzy
 msgid "Error while loading printer configuration"
 msgstr "载入打印机配置时发生错误"
 
 #: libgnomeprintui/gnome-print-dialog.c:336
 msgid "Gnome Print Dialog"
-msgstr "GNOME 打印对话"
+msgstr "GNOME 打印对话框"
 
 #: libgnomeprintui/gnome-print-dialog.c:482
-#, fuzzy
 msgid "_From:"
-msgstr "从："
+msgstr "从(_F)："
 
 #: libgnomeprintui/gnome-print-dialog.c:496
 msgid "Sets the start of the range of pages to be printed"
-msgstr ""
+msgstr "设置打印范围的开始页"
 
 #: libgnomeprintui/gnome-print-dialog.c:506
-#, fuzzy
 msgid "_To:"
-msgstr "到："
+msgstr "到(_T)："
 
 #: libgnomeprintui/gnome-print-dialog.c:520
 msgid "Sets the end of the range of pages to be printed"
-msgstr ""
+msgstr "设置打印范围的结束页"
 
 #: libgnomeprintui/gnome-print-job-preview.c:614
-#, fuzzy
 msgid "Page Preview"
-msgstr "预览"
+msgstr "页面预览"
 
 #: libgnomeprintui/gnome-print-job-preview.c:615
 msgid "The preview of a page in the document to be printed"
-msgstr ""
+msgstr "要打印的文档的页面预览"
 
 #: libgnomeprintui/gnome-print-job-preview.c:666
-#, fuzzy
 msgid "P_age: "
-msgstr "页："
+msgstr "页(_A)："
 
 #. We are displaying 'Page: XXX of XXX'.
 #: libgnomeprintui/gnome-print-job-preview.c:682
 msgid "of"
-msgstr ""
+msgstr "／"
 
 #: libgnomeprintui/gnome-print-job-preview.c:688
-#, fuzzy
 msgid "Page total"
-msgstr "页："
+msgstr "总页数"
 
 #: libgnomeprintui/gnome-print-job-preview.c:689
 msgid "The total number of pages in the document"
-msgstr ""
+msgstr "文档的总页数"
 
 #: libgnomeprintui/gnome-print-job-preview.c:741
 msgid "Prints the current file"
@@ -217,26 +205,28 @@ msgid ""
 "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
 "\">No visible output was created.</span></markup>"
 msgstr ""
+"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
+"\">未产生任何可见的输出。</span></markup>"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:381
 msgid "Pt"
-msgstr ""
+msgstr "Pt"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:382
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:383
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:384
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:385
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #. Create frame for selection menus
 #: libgnomeprintui/gnome-print-paper-selector.c:550
@@ -245,48 +235,42 @@ msgstr "纸张和布局"
 
 #. Paper size selector
 #: libgnomeprintui/gnome-print-paper-selector.c:563
-#, fuzzy
 msgid "Paper _size:"
-msgstr "纸张大小："
+msgstr "纸张大小(_S)："
 
 #. Custom paper Width
 #: libgnomeprintui/gnome-print-paper-selector.c:575
-#, fuzzy
 msgid "_Width:"
-msgstr "宽："
+msgstr "宽度(_W)："
 
 #. Custom paper Height
 #: libgnomeprintui/gnome-print-paper-selector.c:592
-#, fuzzy
 msgid "_Height:"
-msgstr "高："
+msgstr "高度(_H)："
 
 #: libgnomeprintui/gnome-print-paper-selector.c:616
 msgid "Metric selector"
-msgstr ""
+msgstr "度量单位"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:617
 msgid ""
 "Specifies the metric to use when setting the width and height of the paper"
-msgstr ""
+msgstr "指定设置纸张宽度和高度时使用的度量单位"
 
 #. Feed orientation
 #: libgnomeprintui/gnome-print-paper-selector.c:620
-#, fuzzy
 msgid "_Feed orientation:"
-msgstr "进纸方向："
+msgstr "进纸方向(_F)："
 
 #. Page orientation
 #: libgnomeprintui/gnome-print-paper-selector.c:635
-#, fuzzy
 msgid "Page _orientation:"
-msgstr "纸张方向："
+msgstr "纸张方向(_O)："
 
 #. Layout
 #: libgnomeprintui/gnome-print-paper-selector.c:647
-#, fuzzy
 msgid "_Layout:"
-msgstr "布局："
+msgstr "布局(_L)："
 
 #. Preview frame
 #: libgnomeprintui/gnome-print-paper-selector.c:659
@@ -296,31 +280,27 @@ msgstr "预览"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:670
 msgid "Preview of the page size, orientation and layout"
-msgstr ""
+msgstr "页面大小、方向和布局的预览"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:688
 msgid "Margins"
 msgstr "边距"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:722
-#, fuzzy
 msgid "Top"
-msgstr "顶部："
+msgstr "顶部"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:725
-#, fuzzy
 msgid "Bottom"
-msgstr "底部："
+msgstr "底部"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:728
-#, fuzzy
 msgid "Left"
-msgstr "左："
+msgstr "左边"
 
 #: libgnomeprintui/gnome-print-paper-selector.c:731
-#, fuzzy
 msgid "Right"
-msgstr "右："
+msgstr "右边"
 
 #: libgnomeprintui/gnome-printer-selector.c:123
 msgid "State:"
@@ -335,75 +315,68 @@ msgid "Comment:"
 msgstr "备注："
 
 #: libgnomeprintui/gnome-printer-selector.c:131
-#, fuzzy
 msgid "Co_nfigure"
-msgstr "配置"
+msgstr "配置(_N)"
 
 #: libgnomeprintui/gnome-printer-selector.c:139
 msgid "Adjust the settings of the selected printer"
-msgstr ""
+msgstr "调整所选打印机的设置"
 
 #: libgnomeprintui/gnome-printer-selector.c:150
-#, fuzzy
 msgid "Pr_inter:"
-msgstr "打印机："
+msgstr "打印机(_I)："
 
 #: libgnomeprintui/gnome-printer-selector.c:159
-#, fuzzy
 msgid "_Settings:"
-msgstr "设置："
+msgstr "设置(_S)："
 
 #: libgnomeprintui/gnome-printer-selector.c:168
-#, fuzzy
 msgid "_Location:"
-msgstr "位置："
+msgstr "位置(_L)："
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:128
-#, fuzzy
 msgid "Text"
-msgstr "下一页"
+msgstr "文字"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:129
 msgid "Text to render"
-msgstr ""
+msgstr "要绘制的文字"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:148
 #: libgnomeprintui/gnome-canvas-hacktext.c:149
 msgid "Glyphlist"
-msgstr ""
+msgstr "字形符号"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:155
 #: libgnomeprintui/gnome-canvas-hacktext.c:163
 msgid "Color"
-msgstr ""
+msgstr "颜色"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:156
 msgid "Text color, as string"
-msgstr ""
+msgstr "以字符串表示的文字颜色"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:164
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
+msgstr "以 R/G/B/A 组合的整数表示的文字颜色"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:171
 msgid "Font"
-msgstr ""
+msgstr "字体"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:172
 msgid "Font as a GnomeFont struct"
-msgstr ""
+msgstr "以 GnomeFont 结构表示的字体"
 
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
 #: libgnomeprintui/gpaui/gpa-transport-selector.c:247
-#, fuzzy
 msgid "No options are defined"
-msgstr "没有定义方向"
+msgstr "没有定义选项"
 
 #: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-#, fuzzy
 msgid "No printers could be loaded"
-msgstr "没有选中打印机"
+msgstr "无法装载任何打印机"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"

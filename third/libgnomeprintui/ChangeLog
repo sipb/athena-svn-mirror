@@ -1,6 +1,49 @@
+2003-02-02  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: Version 2.2.1.1
+
+2003-02-02  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am (mydistcheck): use $(AMTAR) rather than $(TAR) which I
+	guess it has been changed in automake
+
+2003-02-01  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gnome-print-preview.c (gpp_stroke): Fix the second
+	part of #104932. Spotted by jean.brefort@ac-dijon.fr
+
+2003-01-31  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (gtk_doc_min_version): don't need to check
+	for "gtk-doc > 0.10". 0.9 is good enough
+
+	* libgnomeprintui/gnome-printui-marshal.list (VOID): generate the
+	right marshaler
+
+	* libgnomeprintui/gnome-print-copies.c (gnome_print_copies_selector_class_init):
+	use the marshaler that matches the function prototype
+
+2003-01-29  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added am ar el fi fr ga gl hr hu it lt nl nn no pt_BR
+	  sk tr uk to ALL_LINGUAS
+
+2003-01-27  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c (gpa_transport_selector_construct):
+	fix #104319
+
+2003-01-27  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in: post release version bump to 2.2.2
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2003-01-21  Chema Celorio  <chema@celorio.com>
 
-	* configure.in: release to match libgnomeprint
+	* configure.in: release 2.2.1 to match libgnomeprint
 
 2003-01-19  Chema Celorio  <chema@celorio.com>
 

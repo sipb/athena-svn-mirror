@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-<anchor id="GnomePrintDialog">
 <synopsis>
 
 
@@ -58,37 +57,7 @@ void        <link linkend="gnome-print-dialog-set-copies">gnome_print_dialog_set
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
 
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----<link linkend="GtkContainer">GtkContainer</link>
-                     +----<link linkend="GtkBin">GtkBin</link>
-                           +----<link linkend="GtkWindow">GtkWindow</link>
-                                 +----<link linkend="GtkDialog">GtkDialog</link>
-                                       +----GnomePrintDialog
-</synopsis>
-
-</refsect1>
-
-<refsect1>
-<title>Implemented Interfaces</title>
-<para>
-GnomePrintDialog implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
-</refsect1>
-
-
-<refsect1>
-<title>Properties</title>
-<synopsis>
-
-  &quot;<link linkend="GnomePrintDialog--print-config">print-config</link>&quot;         <link linkend="gpointer">gpointer</link>             : Write / Construct Only
-</synopsis>
-</refsect1>
 
 
 
@@ -140,19 +109,23 @@ gnome_print_dialog_construct_* functions.
 GNOME_PRINT_DIALOG_COPIES: A copies widget will be created.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpj</parameter>&nbsp;:</term>
-<listitem><simpara> GnomePrintJob
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
-<listitem><simpara> Title of window.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> Options for created widget.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly created and initialised widget.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpj</parameter>&nbsp;:</entry>
+<entry> GnomePrintJob
+</entry></row>
+<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
+<entry> Title of window.
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry> Options for created widget.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly created and initialised widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-construct">gnome_print_dialog_construct ()</title>
 <programlisting>void        gnome_print_dialog_construct    (<link linkend="GnomePrintDialog">GnomePrintDialog</link> *gpd,
@@ -162,17 +135,21 @@ GNOME_PRINT_DIALOG_COPIES: A copies widget will be created.</para>
 Used for language bindings to post-initialise an object instantiation.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A created GnomePrintDialog.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
-<listitem><simpara> Title of the window.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> Initialisation options, see <link linkend="gnome-print-dialog-new">gnome_print_dialog_new</link>().
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A created GnomePrintDialog.
+</entry></row>
+<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
+<entry> Title of the window.
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry> Initialisation options, see <link linkend="gnome-print-dialog-new">gnome_print_dialog_new</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-construct-range-custom">gnome_print_dialog_construct_range_custom ()</title>
 <programlisting>void        gnome_print_dialog_construct_range_custom
@@ -182,15 +159,19 @@ Used for language bindings to post-initialise an object instantiation.</para>
 Install a custom range specification widget.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintDialog for which a range was requested.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>custom</parameter>&nbsp;:</term>
-<listitem><simpara> A widget which will be placed in a "Range" frame in the
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A GnomePrintDialog for which a range was requested.
+</entry></row>
+<row><entry align="right"><parameter>custom</parameter>&nbsp;:</entry>
+<entry> A widget which will be placed in a "Range" frame in the
 main display.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-construct-range-any">gnome_print_dialog_construct_range_any ()</title>
 <programlisting>void        gnome_print_dialog_construct_range_any
@@ -211,23 +192,27 @@ to the range specification widget <parameter>range_widget</parameter>.
 GNOME_PRINT_RANGE_SELECTION: A label "Selection" will be displayed.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> An initialise GnomePrintDialog, which can contain a range.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> Options flags, which ranges are displayed.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>range_widget</parameter>&nbsp;:</term>
-<listitem><simpara> Widget to display for the range option.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>currentlabel</parameter>&nbsp;:</term>
-<listitem><simpara> Label to display next to the 'current page' button.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rangelabel</parameter>&nbsp;:</term>
-<listitem><simpara> Label to display next to the 'range' button.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> An initialise GnomePrintDialog, which can contain a range.
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry> Options flags, which ranges are displayed.
+</entry></row>
+<row><entry align="right"><parameter>range_widget</parameter>&nbsp;:</entry>
+<entry> Widget to display for the range option.
+</entry></row>
+<row><entry align="right"><parameter>currentlabel</parameter>&nbsp;:</entry>
+<entry> Label to display next to the 'current page' button.
+</entry></row>
+<row><entry align="right"><parameter>rangelabel</parameter>&nbsp;:</entry>
+<entry> Label to display next to the 'range' button.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-construct-range-page">gnome_print_dialog_construct_range_page ()</title>
 <programlisting>void        gnome_print_dialog_construct_range_page
@@ -241,26 +226,30 @@ GNOME_PRINT_RANGE_SELECTION: A label "Selection" will be displayed.</para>
 Construct a generic page/sheet range area.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> An initialise GnomePrintDialog, which can contain a range.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> Option flags.  See <link linkend="gnome-print-dialog-construct-any">gnome_print_dialog_construct_any</link>().
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>start</parameter>&nbsp;:</term>
-<listitem><simpara> First page which may be printed.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
-<listitem><simpara> Last page which may be printed.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>currentlabel</parameter>&nbsp;:</term>
-<listitem><simpara> Label text for current option.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rangelabel</parameter>&nbsp;:</term>
-<listitem><simpara> Label text for range option.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> An initialise GnomePrintDialog, which can contain a range.
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry> Option flags.  See <link linkend="gnome-print-dialog-construct-any">gnome_print_dialog_construct_any</link>().
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> First page which may be printed.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> Last page which may be printed.
+</entry></row>
+<row><entry align="right"><parameter>currentlabel</parameter>&nbsp;:</entry>
+<entry> Label text for current option.
+</entry></row>
+<row><entry align="right"><parameter>rangelabel</parameter>&nbsp;:</entry>
+<entry> Label text for range option.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-get-range">gnome_print_dialog_get_range ()</title>
 <programlisting><link linkend="GnomePrintRangeType">GnomePrintRangeType</link> gnome_print_dialog_get_range
@@ -276,13 +265,17 @@ GNOME_PRINT_RANGE_RANGE The range option selected.
 GNOME_PRINT_RANGE_SELECTION: The selection option selected.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintDialog with a range display.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A bitmask with one option set.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A GnomePrintDialog with a range display.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A bitmask with one option set.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-get-range-page">gnome_print_dialog_get_range_page ()</title>
 <programlisting>int         gnome_print_dialog_get_range_page
@@ -294,20 +287,24 @@ Retrieves the user choice for range type and range, if the user
 has requested a range of pages to print.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintDialog with a page range display.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>start</parameter>&nbsp;:</term>
-<listitem><simpara> Return for the user-specified start page.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
-<listitem><simpara> Return for the user-specified end page.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A bitmask with the user-selection set.  See
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A GnomePrintDialog with a page range display.
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> Return for the user-specified start page.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> Return for the user-specified end page.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A bitmask with the user-selection set.  See
 <link linkend="gnome-print-dialog-get-range">gnome_print_dialog_get_range</link>().
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-get-copies">gnome_print_dialog_get_copies ()</title>
 <programlisting>void        gnome_print_dialog_get_copies   (<link linkend="GnomePrintDialog">GnomePrintDialog</link> *gpd,
@@ -319,17 +316,21 @@ the print dialogue.  If the print dialogue does not have a
 copies indicator, then a default of 1 copy is returned.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintDialog with a copies display.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>copies</parameter>&nbsp;:</term>
-<listitem><simpara> Return for the number of copies.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>collate</parameter>&nbsp;:</term>
-<listitem><simpara> Return for collation flag.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A GnomePrintDialog with a copies display.
+</entry></row>
+<row><entry align="right"><parameter>copies</parameter>&nbsp;:</entry>
+<entry> Return for the number of copies.
+</entry></row>
+<row><entry align="right"><parameter>collate</parameter>&nbsp;:</entry>
+<entry> Return for collation flag.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-set-copies">gnome_print_dialog_set_copies ()</title>
 <programlisting>void        gnome_print_dialog_set_copies   (<link linkend="GnomePrintDialog">GnomePrintDialog</link> *gpd,
@@ -339,43 +340,41 @@ copies indicator, then a default of 1 copy is returned.</para>
 Sets the print copies and collation status in the print dialogue.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintDialog with a copies display.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>copies</parameter>&nbsp;:</term>
-<listitem><simpara> New number of copies.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>collate</parameter>&nbsp;:</term>
-<listitem><simpara> New collation status.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry> A GnomePrintDialog with a copies display.
+</entry></row>
+<row><entry align="right"><parameter>copies</parameter>&nbsp;:</entry>
+<entry> New number of copies.
+</entry></row>
+<row><entry align="right"><parameter>collate</parameter>&nbsp;:</entry>
+<entry> New collation status.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-dialog-get-config">gnome_print_dialog_get_config ()</title>
 <programlisting><link linkend="GnomePrintConfig">GnomePrintConfig</link>* gnome_print_dialog_get_config
                                             (<link linkend="GnomePrintDialog">GnomePrintDialog</link> *gpd);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpd</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpd</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomePrintDialog--print-config">&quot;<literal>print-config</literal>&quot; (<link linkend="gpointer">gpointer</link> : Write / Construct Only)</term>
-<listitem>
-<para>Printing Configuration to be used.</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

@@ -17,40 +17,7 @@ TITLE="gnome-font-dialog"
 HREF="libgnomeprintui-gnome-font-dialog.html"><LINK
 REL="NEXT"
 TITLE="gnome-print-dialog"
-HREF="libgnomeprintui-gnome-print-dialog.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
+HREF="libgnomeprintui-gnome-print-dialog.html"></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -58,64 +25,96 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="libgnomeprintui-gnome-font-dialog.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="c7.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
 ><TH
-WIDTH="100%"
-align="center"
->GNOME Print UI Reference Manual</TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME Print UI Reference Manual</FONT
+></TH
+></TR
+><TR
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
 ><A
-ACCESSKEY="n"
+HREF="libgnomeprintui-gnome-font-dialog.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c7.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
 HREF="libgnomeprintui-gnome-print-dialog.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
 ></TD
 ></TR
 ></TABLE
+></DIV
 ><H1
 ><A
 NAME="LIBGNOMEPRINTUI-GNOME-PRINT-COPIES"
@@ -124,7 +123,7 @@ NAME="LIBGNOMEPRINTUI-GNOME-PRINT-COPIES"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN518"
+NAME="AEN526"
 ></A
 ><H2
 >Name</H2
@@ -132,13 +131,17 @@ NAME="AEN518"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN521"
+NAME="AEN529"
 ></A
 ><H2
 >Synopsis</H2
-><A
-NAME="GNOMEPRINTCOPIESSELECTOR"
-></A
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;
@@ -159,81 +162,27 @@ void        <A
 HREF="libgnomeprintui-gnome-print-copies.html#GNOME-PRINT-COPIES-SELECTOR-SET-COPIES"
 >gnome_print_copies_selector_set_copies</A
 >
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc,
+                                            (GnomePrintCopiesSelector *gpc,
                                              gint copies,
                                              gboolean collate);
 gint        <A
 HREF="libgnomeprintui-gnome-print-copies.html#GNOME-PRINT-COPIES-SELECTOR-GET-COPIES"
 >gnome_print_copies_selector_get_copies</A
 >
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc);
+                                            (GnomePrintCopiesSelector *gpc);
 gboolean    <A
 HREF="libgnomeprintui-gnome-print-copies.html#GNOME-PRINT-COPIES-SELECTOR-GET-COLLATE"
 >gnome_print_copies_selector_get_collate</A
 >
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc);&#13;</PRE
+                                            (GnomePrintCopiesSelector *gpc);&#13;</PRE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN539"
-></A
-><H2
->Object Hierarchy</H2
-><PRE
-CLASS="SYNOPSIS"
->&#13;  GObject
-   +----GtkObject
-         +----GtkWidget
-               +----GtkContainer
-                     +----GtkBox
-                           +----GtkVBox
-                                 +----GnomePrintCopiesSelector</PRE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN548"
-></A
-><H2
->Implemented Interfaces</H2
-><P
->GnomePrintCopiesSelector implements AtkImplementorIface.</P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN552"
-></A
-><H2
->Signal Prototypes</H2
-><PRE
-CLASS="SYNOPSIS"
->&#13;&quot;<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR-COPIES-SET"
->copies-set</A
->&quot;
-            void        user_function      (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *printcopiesselector,
-                                            gint arg1,
-                                            gboolean arg2,
-                                            gpointer user_data);</PRE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN560"
+NAME="AEN546"
 ></A
 ><H2
 >Description</H2
@@ -243,390 +192,496 @@ NAME="AEN560"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN563"
+NAME="AEN549"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN565"
+NAME="AEN551"
 ></A
 ><H3
 ><A
 NAME="GNOMEPRINTCOPIESSELECTOR-STRUCT"
 ></A
 >struct GnomePrintCopiesSelector</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomePrintCopiesSelector;</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN570"
+NAME="AEN556"
 ></A
 ><H3
 ><A
 NAME="GNOMEPRINTCOPIESSELECTORCLASS"
 ></A
 >struct GnomePrintCopiesSelectorClass</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomePrintCopiesSelectorClass;</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN575"
+NAME="AEN561"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-COPIES-SELECTOR-NEW"
 ></A
 >gnome_print_copies_selector_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >GtkWidget*  gnome_print_copies_selector_new (void);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Create a new GnomePrintCopies widget.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN568"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN583"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> A new GnomePrintCopies widget.</P
-></TD
+> A new GnomePrintCopies widget.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN588"
+NAME="AEN577"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-COPIES-SELECTOR-SET-COPIES"
 ></A
 >gnome_print_copies_selector_set_copies ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_print_copies_selector_set_copies
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc,
+                                            (GnomePrintCopiesSelector *gpc,
                                              gint copies,
                                              gboolean collate);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN585"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN597"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >gpc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN602"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >copies</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN607"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >collate</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN612"
+NAME="AEN602"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-COPIES-SELECTOR-GET-COPIES"
 ></A
 >gnome_print_copies_selector_get_copies ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_copies_selector_get_copies
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc);</PRE
+                                            (GnomePrintCopiesSelector *gpc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN609"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN620"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >gpc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN625"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN630"
+NAME="AEN622"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-COPIES-SELECTOR-GET-COLLATE"
 ></A
 >gnome_print_copies_selector_get_collate ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gboolean    gnome_print_copies_selector_get_collate
-                                            (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *gpc);</PRE
+                                            (GnomePrintCopiesSelector *gpc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN629"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN638"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >gpc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN643"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ></DIV
 ><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN648"
-></A
-><H2
->Signals</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN650"
-></A
-><H3
-><A
-NAME="GNOMEPRINTCOPIESSELECTOR-COPIES-SET"
-></A
->The &quot;copies-set&quot; signal</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        user_function                  (<A
-HREF="libgnomeprintui-gnome-print-copies.html#GNOMEPRINTCOPIESSELECTOR"
->GnomePrintCopiesSelector</A
-> *printcopiesselector,
-                                            gint arg1,
-                                            gboolean arg2,
-                                            gpointer user_data);</PRE
-></DIV
-></DIV
-><TABLE
-CLASS="navigation"
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
 WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-ACCESSKEY="p"
 HREF="libgnomeprintui-gnome-font-dialog.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->&lt;&lt;&lt;&nbsp;gnome-font-dialog</B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
 ></A
 ></TD
 ><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c7.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-ACCESSKEY="n"
 HREF="libgnomeprintui-gnome-print-dialog.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->gnome-print-dialog&nbsp;&gt;&gt;&gt;</B
+>Next Page &#62;&#62;&#62;</B
+></FONT
 ></A
 ></TD
 ></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gnome-font-dialog</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gnome-print-dialog</B
+></FONT
+></TD
+></TR
 ></TABLE
+></DIV
 ></BODY
 ></HTML
 >

@@ -6,13 +6,13 @@
 
 G_BEGIN_DECLS
 
-/* INT:INT,BOOLEAN (gnome-printui-marshal.list:1) */
-extern void libgnomeprintui_marshal_INT__INT_BOOLEAN (GClosure     *closure,
-                                                      GValue       *return_value,
-                                                      guint         n_param_values,
-                                                      const GValue *param_values,
-                                                      gpointer      invocation_hint,
-                                                      gpointer      marshal_data);
+/* VOID:INT,BOOLEAN (gnome-printui-marshal.list:1) */
+extern void libgnomeprintui_marshal_VOID__INT_BOOLEAN (GClosure     *closure,
+                                                       GValue       *return_value,
+                                                       guint         n_param_values,
+                                                       const GValue *param_values,
+                                                       gpointer      invocation_hint,
+                                                       gpointer      marshal_data);
 
 /* VOID:VOID (gnome-printui-marshal.list:2) */
 #define libgnomeprintui_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID

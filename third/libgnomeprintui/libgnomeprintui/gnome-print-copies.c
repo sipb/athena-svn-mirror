@@ -188,7 +188,7 @@ gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *klass)
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (GnomePrintCopiesSelectorClass, copies_set),
 						NULL, NULL,
-						libgnomeprintui_marshal_INT__INT_BOOLEAN,
+						libgnomeprintui_marshal_VOID__INT_BOOLEAN,
 						G_TYPE_NONE,
 						2,
 						G_TYPE_INT, G_TYPE_BOOLEAN);

@@ -1,0 +1,554 @@
+# Greek translation of libgnomeprint.
+# Copyright (C) 2002,2003 GNOME Foundation.
+# Simos Xenitellis <simos@hellug.gr>, 2002,2003.
+#
+# simos: 119 messages, 16Aug2002, initial translation.
+# kostas: 26Dec2002, updated translation for Gnome 2.1x
+# kostas: 28Jan2003, 87 messages, updated translation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprintui 1.116.0\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2003-01-28 13:31+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Οικογένεια γραμματοσειράς"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr "Η λίστα των διαθέσιμων οικογενειών γραμματοσειρών"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Στυλ"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+msgid "Font style"
+msgstr "Στυλ γραμματοσειράς"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr ""
+"Η λίστα των διαθέσιμων στυλ για την επιλεγμένη οικογένεια γραμματοσειρών"
+
+#: libgnomeprintui/gnome-font-dialog.c:284
+msgid "Font _size:"
+msgstr "_Μέγεθος γραμματοσειράς:"
+
+#: libgnomeprintui/gnome-font-dialog.c:775
+msgid "This font does not have sample"
+msgstr "Αυτή η γραμματοσειρά δεν έχει δείγμα"
+
+#: libgnomeprintui/gnome-font-dialog.c:882
+msgid "Font Preview"
+msgstr "Προεπισκόπηση Γραμματοσειράς"
+
+#: libgnomeprintui/gnome-font-dialog.c:883
+msgid "Displays some example text in the selected font"
+msgstr "Εμφανίζει δείγμα κειμένου με την επιλεγμένη γραμματοσειρά"
+
+#
+#: libgnomeprintui/gnome-font-dialog.c:898
+msgid "Font Selection"
+msgstr "Επιλογή Γραμματοσειράς"
+
+#: libgnomeprintui/gnome-print-copies.c:245
+msgid "Copies"
+msgstr "Αντίγραφα"
+
+#: libgnomeprintui/gnome-print-copies.c:254
+msgid "N_umber of copies:"
+msgstr "Α_ριθμός αντιγράφων:"
+
+#: libgnomeprintui/gnome-print-copies.c:281
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+"Εικόνα που δείχνει την ακολουθία ταξινόμησης όταν εκτυπώνονται πολλαπλά "
+"αντίγραφα του εγγράφου"
+
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid "_Collate"
+msgstr "_Ταξινόμηση"
+
+#: libgnomeprintui/gnome-print-copies.c:288
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+"Αν αντίγραφα του εγγράφου είναι να εκτυπωθούν ξεχωριστά, να εκτυπωθούν το "
+"ένα μετά το άλλο αντί οι ίδιες σελίδες μαζί"
+
+#
+#: libgnomeprintui/gnome-print-dialog.c:163
+msgid "Print range"
+msgstr "Όριο εκτύπωσης"
+
+#: libgnomeprintui/gnome-print-dialog.c:201
+msgid "_All"
+msgstr "Ό_λα"
+
+#
+#: libgnomeprintui/gnome-print-dialog.c:223
+msgid "_Selection"
+msgstr "_Επιλογή"
+
+#: libgnomeprintui/gnome-print-dialog.c:300
+msgid "Job"
+msgstr "Εργασία"
+
+#: libgnomeprintui/gnome-print-dialog.c:314
+#: libgnomeprintui/gnome-printer-selector.c:108
+msgid "Printer"
+msgstr "Εκτυπωτής"
+
+#: libgnomeprintui/gnome-print-dialog.c:324
+msgid "Paper"
+msgstr "Χαρτί"
+
+#: libgnomeprintui/gnome-print-dialog.c:331
+msgid "Error while loading printer configuration"
+msgstr "Σφάλμα κατά την φόρτωση των ρυθμίσεων εκτυπωτή"
+
+#
+#: libgnomeprintui/gnome-print-dialog.c:336
+msgid "Gnome Print Dialog"
+msgstr "Διάλογος Εκτύπωσης Gnome"
+
+#: libgnomeprintui/gnome-print-dialog.c:482
+msgid "_From:"
+msgstr "_Από:"
+
+#: libgnomeprintui/gnome-print-dialog.c:496
+msgid "Sets the start of the range of pages to be printed"
+msgstr "Καθορίζει την αρχή του ορίου των σελίδων για εκτύπωση"
+
+#: libgnomeprintui/gnome-print-dialog.c:506
+msgid "_To:"
+msgstr "Πρ_ος:"
+
+#: libgnomeprintui/gnome-print-dialog.c:520
+msgid "Sets the end of the range of pages to be printed"
+msgstr "Καθορίζει το τέλος του ορίου των σελίδων για εκτύπωση"
+
+#: libgnomeprintui/gnome-print-job-preview.c:614
+msgid "Page Preview"
+msgstr "Προεπισκόπηση Σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:615
+msgid "The preview of a page in the document to be printed"
+msgstr "Η προεπισκόπηση της σελίδας του εγγράφου για εκτύπωση"
+
+#: libgnomeprintui/gnome-print-job-preview.c:666
+msgid "P_age: "
+msgstr "_Σελίδα: "
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:682
+msgid "of"
+msgstr "από"
+
+#: libgnomeprintui/gnome-print-job-preview.c:688
+msgid "Page total"
+msgstr "Σύνολο σελίδων"
+
+#: libgnomeprintui/gnome-print-job-preview.c:689
+msgid "The total number of pages in the document"
+msgstr "Ο συνολικός αριθμός σελίδων του εγγράφου"
+
+#: libgnomeprintui/gnome-print-job-preview.c:741
+msgid "Prints the current file"
+msgstr "Εκτύπωση του τρέχοντος αρχείου"
+
+#: libgnomeprintui/gnome-print-job-preview.c:745
+msgid "Closes print preview window"
+msgstr "Κλείνει το παράθυρο προεπισκόπηση εκτύπωσης"
+
+#: libgnomeprintui/gnome-print-job-preview.c:750
+msgid "Shows the first page"
+msgstr "Εμφάνιση της πρώτης σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Shows the previous page"
+msgstr "Εμφάνιση της προηγούμενης σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:754
+msgid "Shows the next page"
+msgstr "Εμφάνιση της επόμενης σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:756
+msgid "Shows the last page"
+msgstr "Εμφάνιση της τελευταίας σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:761
+msgid "Zooms 1:1"
+msgstr "Εστίαση 1:1"
+
+#: libgnomeprintui/gnome-print-job-preview.c:763
+msgid "Zooms to fit the whole page"
+msgstr "Προσαρμογή για εμφάνιση ολόκληρης της σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:765
+msgid "Zooms the page in"
+msgstr "Μεγέθυνση της σελίδας"
+
+#: libgnomeprintui/gnome-print-job-preview.c:767
+msgid "Zooms the page out"
+msgstr "Σμίκρυνση της σελίδας"
+
+#
+#: libgnomeprintui/gnome-print-job-preview.c:882
+msgid "Gnome Print Preview"
+msgstr "Προεπισκόπηση Εκτύπωσης Gnome"
+
+#: libgnomeprintui/gnome-print-job-preview.c:907
+msgid ""
+"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
+"\">No visible output was created.</span></markup>"
+msgstr ""
+"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
+"\">Δεν δημιουργήθηκε ορατό αποτέλεσμα.</span></markup>"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:381
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:382
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:383
+msgid "cm"
+msgstr "cm"
+
+#
+#: libgnomeprintui/gnome-print-paper-selector.c:384
+msgid "m"
+msgstr "m"
+
+#
+#: libgnomeprintui/gnome-print-paper-selector.c:385
+msgid "in"
+msgstr "in"
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:550
+msgid "Paper and layout"
+msgstr "Χαρτί και διάταξη"
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:563
+msgid "Paper _size:"
+msgstr "Μέγεθος _χαρτιού:"
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "_Width:"
+msgstr "_Πλάτος:"
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:592
+msgid "_Height:"
+msgstr "_Ύψος:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:616
+msgid "Metric selector"
+msgstr "Επιλογέας μετρικών"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:617
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+"Καθορίζει το μετρικό προς χρήση κατά τη ρύθμιση του πλάτους και ύψους του "
+"χαρτιού"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:620
+msgid "_Feed orientation:"
+msgstr "_Προσανατολισμός τροφοδοσίας:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:635
+msgid "Page _orientation:"
+msgstr "Προσανατολισμός σε_λίδας:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:647
+msgid "_Layout:"
+msgstr "_Διάταξη:"
+
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:659
+#: libgnomeprintui/gnome-print-paper-selector.c:669
+msgid "Preview"
+msgstr "Προεπισκόπηση"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:670
+msgid "Preview of the page size, orientation and layout"
+msgstr "Προεπισκόπηση μεγέθους σελίδας, προσανατολισμού και διάταξης"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:688
+msgid "Margins"
+msgstr "Περιθώρια"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:722
+msgid "Top"
+msgstr "Επάνω μέρος"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:725
+msgid "Bottom"
+msgstr "Κάτω μέρος"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:728
+msgid "Left"
+msgstr "Αριστερά"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:731
+msgid "Right"
+msgstr "Δεξιά"
+
+#
+#: libgnomeprintui/gnome-printer-selector.c:123
+msgid "State:"
+msgstr "Κατάσταση:"
+
+#: libgnomeprintui/gnome-printer-selector.c:126
+msgid "Type:"
+msgstr "Τύπος:"
+
+#
+#: libgnomeprintui/gnome-printer-selector.c:129
+msgid "Comment:"
+msgstr "Σχόλιο:"
+
+#: libgnomeprintui/gnome-printer-selector.c:131
+msgid "Co_nfigure"
+msgstr "_Ρύθμιση"
+
+#: libgnomeprintui/gnome-printer-selector.c:139
+msgid "Adjust the settings of the selected printer"
+msgstr "Ρύθμιση των προτιμήσεων του προεπιλεγμένου εκτυπωτή"
+
+#
+#: libgnomeprintui/gnome-printer-selector.c:150
+msgid "Pr_inter:"
+msgstr "_Εκτυπωτής:"
+
+#: libgnomeprintui/gnome-printer-selector.c:159
+msgid "_Settings:"
+msgstr "_Ρυθμίσεις:"
+
+#
+#: libgnomeprintui/gnome-printer-selector.c:168
+msgid "_Location:"
+msgstr "_Τοποθεσία:"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "Κείμενο"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "Κείμενο προς εμφάνιση"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "Glyphlist"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "Χρώμα"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "Χρώμα κειμένου, ως αλφαριθμητικό"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "Χρώμα κειμένου, ως ένας συνδυασμένος ακέραιος R/G/B/A "
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "Γραμματοσειρά"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr "Γραμματοσειρά ως GnomeFont struct"
+
+#: libgnomeprintui/gpaui/gpa-option-menu.c:179
+#: libgnomeprintui/gpaui/gpa-option-menu.c:229
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "No options are defined"
+msgstr "Δεν έχουν οριστεί επιλογές"
+
+#
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
+msgid "No printers could be loaded"
+msgstr "Δεν είναι δυνατή η φόρτωση εκτυπωτών"
+
+#
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:180
+msgid "No printer selected"
+msgstr "Δεν έχει επιλεγεί εκτυπωτής"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:191
+msgid "No settings available"
+msgstr "Δεν υπάρχουν διαθέσιμες ρυθμίσεις"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:234
+msgid "Add new settings"
+msgstr "Προσθήκη νέων ρυθμίσεων"
+
+# Not sure how the terms "portrait" and "landscape" are usually
+# translated; if anyone knows what the term in the Greek version
+# of MSWindoze is and if it is better (or equally good), maybe we
+# would want to use that for consistency and for the sake of newbies?
+#~ msgid "Portrait"
+#~ msgstr "Πορτραίτο"
+
+#~ msgid "Landscape"
+#~ msgstr "Τοπίο"
+
+#~ msgid "Rotate 180"
+#~ msgstr "Περιστροφή 180"
+
+#
+#~ msgid "Manage printers"
+#~ msgstr "Διαχείριση εκτυπωτών"
+
+#
+#~ msgid "Add new printer"
+#~ msgstr "Προσθήκη νέου εκτυπωτή"
+
+#
+#~ msgid "P_rinter"
+#~ msgstr "_Εκτυπωτής"
+
+#~ msgid "/_Preview"
+#~ msgstr "/_Προεπισκόπηση"
+
+#~ msgid "/Preview/_Print"
+#~ msgstr "/Προεπισκόπηση/_Εκτύπωση"
+
+#~ msgid "/Preview/_Close"
+#~ msgstr "/Προεπισκόπηση/_Κλείσιμο"
+
+#~ msgid "/_View"
+#~ msgstr "/_Προβολή"
+
+#~ msgid "/View/Zoom _1:1"
+#~ msgstr "/Προβολή/Εστίαση _1:1"
+
+#~ msgid "/View/Zoom to _Fit"
+#~ msgstr "/Προβολή/Προσαρμογή για Εφαρμο_γή"
+
+#~ msgid "/View/Zoom _In"
+#~ msgstr "/Προβολή/Με_γέθυνση"
+
+#~ msgid "/View/Zoom _Out"
+#~ msgstr "/Προβολή/Σ_μίκρυνση"
+
+#~ msgid "/_Go"
+#~ msgstr "/_Πήγαινε"
+
+#~ msgid "/Go/_First Page"
+#~ msgstr "/Πήγαινε/_Πρώτη Σελίδα"
+
+#~ msgid "/Go/_Previous Page"
+#~ msgstr "/Πήγαινε/_Προηγούμενη Σελίδα"
+
+#~ msgid "/Go/_Next Page"
+#~ msgstr "/Πήγαινε/_Επόμενη Σελίδα"
+
+#~ msgid "/Go/_Last Page"
+#~ msgstr "/Πήγαινε/_Τελευταία Σελίδα"
+
+#~ msgid "No papers defined"
+#~ msgstr "Δεν έχουν οριστεί μεγέθη χαρτιών"
+
+#~ msgid "No layouts defined"
+#~ msgstr "Δεν έχουν οριστεί διατάξεις"
+
+#
+#~ msgid "Select Printer"
+#~ msgstr "Επιλογή Εκτυπωτή"
+
+#
+#~ msgid "Select printer model"
+#~ msgstr "Επιλογή μοντέλου εκτυπωτή"
+
+#~ msgid "Manufacturer"
+#~ msgstr "Κατασκευαστής"
+
+#~ msgid "Model"
+#~ msgstr "Μοντέλο"
+
+#
+#~ msgid "Name"
+#~ msgstr "Όνομα"
+
+#
+#~ msgid "Add printer"
+#~ msgstr "Προσθήκη εκτυπωτή"
+
+#~ msgid "From PPD..."
+#~ msgstr "Από το PPD..."
+
+#~ msgid "Default printer"
+#~ msgstr "Εξ ορισμού εκτυπωτής"
+
+#~ msgid "My App Print Preview"
+#~ msgstr "Προεπισκόπηση Εκτύπωσης Της Εφαρμογής Μου"
+
+#~ msgid "extracts the first font from output.pdf and places it in font.dump."
+#~ msgstr ""
+#~ "εξάγει την πρώτη γραμματοσειρά από το output.pdf και την τοποθετεί στο "
+#~ "font.dump."
+
+#~ msgid "extracts the font header from font.dump"
+#~ msgstr "εξάγει την κεφαλίδα της γραμματοσειράς από το font.dump"
+
+#~ msgid "extracts the font body "
+#~ msgstr "εξάγει το σώμα της γραμματοσειράς "
+
+#~ msgid "decrypts the font body "
+#~ msgstr "αποκρυπτογραφεί το σώμα της γραμματοσειράς "
+
+#~ msgid "Render from metafile"
+#~ msgstr "Απόδοση από metafile"
+
+#
+#~ msgid "PATH"
+#~ msgstr "ΜΟΝΟΠΆΤΙ"
+
+#~ msgid "Bring up font dialog"
+#~ msgstr "Εμφάνιση διαλόγου γραμματοσειρών"
+
+#~ msgid "Bring up printer dialog"
+#~ msgstr "Εμφάνιση διαλόγου εκτυπωτών"
+
+#~ msgid "Bring up print dialog"
+#~ msgstr "Εμφάνιση διαλόγου εκτύπωσης"
+
+#~ msgid "Use GnomePrintMasterPreview"
+#~ msgstr "Χρήση GnomePrintMasterPreview"
+
+#~ msgid "Show paper dialog"
+#~ msgstr "Εμφάνιση διαλόγου χαρτιού"
+
+#~ msgid "Print text file"
+#~ msgstr "Εκτύπωση αρχείου κειμένου"

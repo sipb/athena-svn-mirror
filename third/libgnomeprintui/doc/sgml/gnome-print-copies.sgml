@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-<anchor id="GnomePrintCopiesSelector">
 <synopsis>
 
 
@@ -30,41 +29,8 @@ void        <link linkend="gnome-print-copies-selector-set-copies">gnome_print_c
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----<link linkend="GtkContainer">GtkContainer</link>
-                     +----<link linkend="GtkBox">GtkBox</link>
-                           +----<link linkend="GtkVBox">GtkVBox</link>
-                                 +----GnomePrintCopiesSelector
-</synopsis>
-
-</refsect1>
-
-<refsect1>
-<title>Implemented Interfaces</title>
-<para>
-GnomePrintCopiesSelector implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
-</refsect1>
 
 
-
-<refsect1>
-<title>Signal Prototypes</title>
-<synopsis>
-
-&quot;<link linkend="GnomePrintCopiesSelector-copies-set">copies-set</link>&quot;
-            void        user_function      (<link linkend="GnomePrintCopiesSelector">GnomePrintCopiesSelector</link> *printcopiesselector,
-                                            <link linkend="gint">gint</link> arg1,
-                                            <link linkend="gboolean">gboolean</link> arg2,
-                                            <link linkend="gpointer">gpointer</link> user_data);
-</synopsis>
-</refsect1>
 
 
 <refsect1>
@@ -95,10 +61,14 @@ GnomePrintCopiesSelector implements <link linkend="AtkImplementorIface">AtkImple
 Create a new GnomePrintCopies widget.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new GnomePrintCopies widget.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new GnomePrintCopies widget.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-copies-selector-set-copies">gnome_print_copies_selector_set_copies ()</title>
 <programlisting>void        gnome_print_copies_selector_set_copies
@@ -107,61 +77,64 @@ Create a new GnomePrintCopies widget.</para>
                                              <link linkend="gboolean">gboolean</link> collate);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>copies</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>collate</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>copies</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>collate</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-copies-selector-get-copies">gnome_print_copies_selector_get_copies ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_copies_selector_get_copies
                                             (<link linkend="GnomePrintCopiesSelector">GnomePrintCopiesSelector</link> *gpc);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-copies-selector-get-collate">gnome_print_copies_selector_get_collate ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_print_copies_selector_get_collate
                                             (<link linkend="GnomePrintCopiesSelector">GnomePrintCopiesSelector</link> *gpc);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gpc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gpc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 
-<refsect1>
-<title>Signals</title>
-<refsect2><title><anchor id="GnomePrintCopiesSelector-copies-set">The &quot;copies-set&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GnomePrintCopiesSelector">GnomePrintCopiesSelector</link> *printcopiesselector,
-                                            <link linkend="gint">gint</link> arg1,
-                                            <link linkend="gboolean">gboolean</link> arg2,
-                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-</refsect2>
-</refsect1>
 
 
 

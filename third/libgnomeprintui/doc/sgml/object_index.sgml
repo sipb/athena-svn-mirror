@@ -5,23 +5,18 @@
 <colspec colwidth="1*">
 <tbody>
 <row>
-<entry><link linkend="AtkImplementorIface">AtkImplementorIface</link></entry>
-<entry><link linkend="GInterface">GInterface</link></entry>
 <entry><link linkend="GObject">GObject</link></entry>
-</row>
-<row>
 <entry><link linkend="GPAWidget">GPAWidget</link></entry>
 <entry><link linkend="GdkDragContext">GdkDragContext</link></entry>
-<entry><link linkend="GdkDrawable">GdkDrawable</link></entry>
 </row>
 <row>
+<entry><link linkend="GdkDrawable">GdkDrawable</link></entry>
 <entry><link linkend="GdkImage">GdkImage</link></entry>
 <entry><link linkend="GdkPixbuf">GdkPixbuf</link></entry>
-<entry><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link></entry>
 </row>
 <row>
+<entry><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link></entry>
 <entry><link linkend="GdkPixmap">GdkPixmap</link></entry>
-<entry><link linkend="GdkScreen">GdkScreen</link></entry>
 <entry><link linkend="GnomeFontDialog">GnomeFontDialog</link></entry>
 </row>
 <row>

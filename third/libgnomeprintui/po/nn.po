@@ -1,0 +1,571 @@
+# Norwegian (nynorsk) translation of libgnomeprintui
+# Copyright (C) 2000-2002 The Free Software Foundation
+# Kjartan Maraas <kmaraas@gnome.org>, 2001.
+# Roy-Magne Mo <rmo@sunnmore.net>,2001-2002.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprintui 1.0\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2002-01-31 17:47+0100\n"
+"Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
+"Language-Team: Norwegian/Nynorsk <nn@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Skriftfamilie"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr ""
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Stil"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+#, fuzzy
+msgid "Font style"
+msgstr "Skriftstorleik:"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr ""
+
+#: libgnomeprintui/gnome-font-dialog.c:284
+#, fuzzy
+msgid "Font _size:"
+msgstr "Skriftstorleik:"
+
+#: libgnomeprintui/gnome-font-dialog.c:775
+msgid "This font does not have sample"
+msgstr ""
+
+#: libgnomeprintui/gnome-font-dialog.c:882
+#, fuzzy
+msgid "Font Preview"
+msgstr "Førehandsvis"
+
+#: libgnomeprintui/gnome-font-dialog.c:883
+msgid "Displays some example text in the selected font"
+msgstr ""
+
+#: libgnomeprintui/gnome-font-dialog.c:898
+msgid "Font Selection"
+msgstr "Skriftutval"
+
+#: libgnomeprintui/gnome-print-copies.c:245
+msgid "Copies"
+msgstr "Kopiar"
+
+#: libgnomeprintui/gnome-print-copies.c:254
+msgid "N_umber of copies:"
+msgstr "_Tal på kopiar:"
+
+#: libgnomeprintui/gnome-print-copies.c:281
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid "_Collate"
+msgstr "Sa_mle"
+
+#: libgnomeprintui/gnome-print-copies.c:288
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:163
+#, fuzzy
+msgid "Print range"
+msgstr "Utskriftsområde"
+
+#: libgnomeprintui/gnome-print-dialog.c:201
+msgid "_All"
+msgstr "_Alle"
+
+#: libgnomeprintui/gnome-print-dialog.c:223
+msgid "_Selection"
+msgstr "_Val"
+
+#: libgnomeprintui/gnome-print-dialog.c:300
+msgid "Job"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:314
+#: libgnomeprintui/gnome-printer-selector.c:108
+msgid "Printer"
+msgstr "Skrivar"
+
+#: libgnomeprintui/gnome-print-dialog.c:324
+msgid "Paper"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:331
+msgid "Error while loading printer configuration"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:336
+msgid "Gnome Print Dialog"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:482
+#, fuzzy
+msgid "_From:"
+msgstr "f_rå:"
+
+#: libgnomeprintui/gnome-print-dialog.c:496
+msgid "Sets the start of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:506
+#, fuzzy
+msgid "_To:"
+msgstr "_til:"
+
+#: libgnomeprintui/gnome-print-dialog.c:520
+msgid "Sets the end of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:614
+#, fuzzy
+msgid "Page Preview"
+msgstr "Førehandsvis"
+
+#: libgnomeprintui/gnome-print-job-preview.c:615
+msgid "The preview of a page in the document to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:666
+#, fuzzy
+msgid "P_age: "
+msgstr "Side:"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:682
+msgid "of"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:688
+#, fuzzy
+msgid "Page total"
+msgstr "Side:"
+
+#: libgnomeprintui/gnome-print-job-preview.c:689
+msgid "The total number of pages in the document"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:741
+msgid "Prints the current file"
+msgstr "Skriv ut den aktive fila"
+
+#: libgnomeprintui/gnome-print-job-preview.c:745
+msgid "Closes print preview window"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:750
+msgid "Shows the first page"
+msgstr "Viser den første sida"
+
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Shows the previous page"
+msgstr "Viser forrige side"
+
+#: libgnomeprintui/gnome-print-job-preview.c:754
+msgid "Shows the next page"
+msgstr "Viser neste side"
+
+#: libgnomeprintui/gnome-print-job-preview.c:756
+msgid "Shows the last page"
+msgstr "Viser siste side"
+
+#: libgnomeprintui/gnome-print-job-preview.c:761
+#, fuzzy
+msgid "Zooms 1:1"
+msgstr "Forminskar"
+
+#: libgnomeprintui/gnome-print-job-preview.c:763
+msgid "Zooms to fit the whole page"
+msgstr "Tilpass til heile sida"
+
+#: libgnomeprintui/gnome-print-job-preview.c:765
+msgid "Zooms the page in"
+msgstr "Forstørrar sida"
+
+#: libgnomeprintui/gnome-print-job-preview.c:767
+msgid "Zooms the page out"
+msgstr "Forminskar sida"
+
+#: libgnomeprintui/gnome-print-job-preview.c:882
+msgid "Gnome Print Preview"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:907
+msgid ""
+"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
+"\">No visible output was created.</span></markup>"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:381
+msgid "Pt"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:382
+msgid "mm"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:383
+msgid "cm"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:384
+msgid "m"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:385
+msgid "in"
+msgstr ""
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:550
+msgid "Paper and layout"
+msgstr ""
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:563
+msgid "Paper _size:"
+msgstr ""
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "_Width:"
+msgstr ""
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:592
+msgid "_Height:"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:616
+msgid "Metric selector"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:617
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:620
+msgid "_Feed orientation:"
+msgstr ""
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:635
+msgid "Page _orientation:"
+msgstr ""
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:647
+msgid "_Layout:"
+msgstr ""
+
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:659
+#: libgnomeprintui/gnome-print-paper-selector.c:669
+msgid "Preview"
+msgstr "Førehandsvis"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:670
+msgid "Preview of the page size, orientation and layout"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:688
+msgid "Margins"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:722
+msgid "Top"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:725
+msgid "Bottom"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:728
+msgid "Left"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:731
+msgid "Right"
+msgstr ""
+
+#: libgnomeprintui/gnome-printer-selector.c:123
+msgid "State:"
+msgstr "Stat:"
+
+#: libgnomeprintui/gnome-printer-selector.c:126
+msgid "Type:"
+msgstr "Type:"
+
+#: libgnomeprintui/gnome-printer-selector.c:129
+msgid "Comment:"
+msgstr "Merknad:"
+
+#: libgnomeprintui/gnome-printer-selector.c:131
+#, fuzzy
+msgid "Co_nfigure"
+msgstr "Set opp"
+
+#: libgnomeprintui/gnome-printer-selector.c:139
+msgid "Adjust the settings of the selected printer"
+msgstr ""
+
+#: libgnomeprintui/gnome-printer-selector.c:150
+#, fuzzy
+msgid "Pr_inter:"
+msgstr "Skrivar:"
+
+#: libgnomeprintui/gnome-printer-selector.c:159
+#, fuzzy
+msgid "_Settings:"
+msgstr "Innstillingar:"
+
+#: libgnomeprintui/gnome-printer-selector.c:168
+#, fuzzy
+msgid "_Location:"
+msgstr "Stad:"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+#, fuzzy
+msgid "Text"
+msgstr "Neste"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-option-menu.c:179
+#: libgnomeprintui/gpaui/gpa-option-menu.c:229
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "No options are defined"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
+msgid "No printers could be loaded"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:180
+#, fuzzy
+msgid "No printer selected"
+msgstr "Skrivar er aktiv"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:191
+msgid "No settings available"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:234
+msgid "Add new settings"
+msgstr ""
+
+#~ msgid "Print out debugging information"
+#~ msgstr "Skriv ut avlusingsinformasjon"
+
+#~ msgid "Do not try to read existing fontmaps"
+#~ msgstr "Ikkje prøv å lese eksisterande fontkart"
+
+#~ msgid "Search directories recursively"
+#~ msgstr "Søk katalogar rekursivt"
+
+#~ msgid "Output file name"
+#~ msgstr "Namn på utfil"
+
+#~ msgid "Search this path for .alias files."
+#~ msgstr "Søkestig for .alias-filer."
+
+#~ msgid "PATH"
+#~ msgstr "PATH"
+
+#~ msgid "The quick brown fox jumps over the lazy dog."
+#~ msgstr "The Quick Brown Fox Jumps Over The Lazy Dog æÆøØåÅ."
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "status for lasting %s = %d\n"
+
+#~ msgid "Print"
+#~ msgstr "Skriv ut"
+
+#~ msgid "from:"
+#~ msgstr "frå:"
+
+#~ msgid "to:"
+#~ msgstr "til:"
+
+#~ msgid ""
+#~ "'%s' is about to be overwritten.\n"
+#~ "\n"
+#~ "Do you want to continue?"
+#~ msgstr ""
+#~ "«%s» er i ferd med å verte overskriven.\n"
+#~ "\n"
+#~ "Vil du fortsetje?"
+
+#~ msgid "Select output file"
+#~ msgstr "Vel utfil"
+
+#~ msgid "_First page"
+#~ msgstr "_Første side"
+
+#~ msgid "_Previous page"
+#~ msgstr "_Forrige side"
+
+#~ msgid "_Next page"
+#~ msgstr "_Neste side"
+
+#~ msgid "_Last page"
+#~ msgstr "_Siste side"
+
+#~ msgid "Zoom _in"
+#~ msgstr "Form_insk"
+
+#~ msgid "Zoom _out"
+#~ msgstr "F_orminsk"
+
+#~ msgid "Zooms out"
+#~ msgstr "Forminsk"
+
+#~ msgid "_View"
+#~ msgstr "_Vis"
+
+#~ msgid "First"
+#~ msgstr "Førenamn"
+
+#~ msgid "Back"
+#~ msgstr "Tilbake"
+
+#~ msgid "Last"
+#~ msgstr "Etternamn"
+
+#~ msgid "Zoom in"
+#~ msgstr "Forstørr"
+
+#~ msgid "Zoom out"
+#~ msgstr "Forminsk"
+
+#~ msgid "Fit"
+#~ msgstr "Tilpass"
+
+#~ msgid "Fit Wide"
+#~ msgstr "Tilpass breidde"
+
+#~ msgid "Zooms to fit the width of the page"
+#~ msgstr "Tilpass til å passe med breidde på sida"
+
+#~ msgid "Fit Tall"
+#~ msgstr "Tilpass høgde"
+
+#~ msgid "Zooms to fit the height of the page"
+#~ msgstr "Tilpass til høgda av sida"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "gnome-print-admin vart ikkje funne.\n"
+#~ "\n"
+#~ "Installér gnome-print-admin for å setje opp denne skrivaren"
+
+#~ msgid "Print to file"
+#~ msgstr "Utskrift til fil"
+
+#~ msgid "Properties"
+#~ msgstr "Eigenskapar"
+
+#~ msgid "Select printer"
+#~ msgstr "Vel skrivar"
+
+#~ msgid "_Name:"
+#~ msgstr "_Namn:"
+
+#~ msgid "_Printer"
+#~ msgstr "_Skrivar"
+
+#~ msgid "_File"
+#~ msgstr "_Fil"
+
+#~ msgid "Select Printer"
+#~ msgstr "Vel skrivar"
+
+#~ msgid "Generic Postscript"
+#~ msgstr "Vanleg Postscript"
+
+#~ msgid "Printer is ready to print"
+#~ msgstr "Skrivar er klar til å skrive"
+
+#~ msgid "Printer is off-line"
+#~ msgstr "Skrivar er fråkopla"
+
+#~ msgid "Can not communicate with printer"
+#~ msgstr "Klarar ikkje å kommunisere med skrivar"
+
+#~ msgid "Unknown status"
+#~ msgstr "Ukjend status"
+
+#~ msgid "extracts the first font from output.pdf and places it in font.dump."
+#~ msgstr ""
+#~ "trekkjer ut den første skrifttypa frå output.pdf og plasserar den i font."
+#~ "dump"
+
+#~ msgid "extracts the font header from font.dump"
+#~ msgstr "trekkjer ut skrifttypetoppteksta frå font.dump"
+
+#~ msgid "extracts the font body "
+#~ msgstr "trekkjer ut skrifftype-kroppen"
+
+#~ msgid "decrypts the font body "
+#~ msgstr "dekrypterar skrifttypekroppen"
+
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "Gnome-print testsida, rotert"
+
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "Gnome-print testside, med helling"
+
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "Gnome-print testside, med helling. Liten"

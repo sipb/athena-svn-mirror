@@ -1,15 +1,15 @@
 # traditional Chinese Translation of libgnomeprintui.
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # Joe Man <trmetal@yahoo.com.hk>, 2001
-# Abel Cheung <maddog@linux.org.hk>, 2002.
+# Abel Cheung <maddog@linux.org.hk>, 2002-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprintui 1.116.0\n"
-"POT-Creation-Date: 2003-01-21 00:48-0500\n"
-"PO-Revision-Date: 2002-06-13 16:45+0800\n"
+"Project-Id-Version: libgnomeprintui 2.2.1\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2003-01-21 20:22+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
-"Language-Team: traditional Chinese <zh-l10n@linux.org.hk>\n"
+"Language-Team: Chinese (traditional) <zh-l10n@linux.org.hk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -94,9 +94,8 @@ msgid "_Selection"
 msgstr "選擇範圍(_S)"
 
 #: libgnomeprintui/gnome-print-dialog.c:300
-#, fuzzy
 msgid "Job"
-msgstr "工作(_J)"
+msgstr "工作"
 
 #: libgnomeprintui/gnome-print-dialog.c:314
 #: libgnomeprintui/gnome-printer-selector.c:108
@@ -104,12 +103,10 @@ msgid "Printer"
 msgstr "印表機"
 
 #: libgnomeprintui/gnome-print-dialog.c:324
-#, fuzzy
 msgid "Paper"
-msgstr "紙張(_E)"
+msgstr "紙張"
 
 #: libgnomeprintui/gnome-print-dialog.c:331
-#, fuzzy
 msgid "Error while loading printer configuration"
 msgstr "載入印表機組態時發生錯誤"
 
@@ -315,7 +312,7 @@ msgstr "種類："
 
 #: libgnomeprintui/gnome-printer-selector.c:129
 msgid "Comment:"
-msgstr "說明："
+msgstr "備註："
 
 #: libgnomeprintui/gnome-printer-selector.c:131
 msgid "Co_nfigure"
@@ -338,51 +335,48 @@ msgid "_Location:"
 msgstr "位置(_L)："
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:128
-#, fuzzy
 msgid "Text"
-msgstr "下一頁"
+msgstr "文字"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:129
 msgid "Text to render"
-msgstr ""
+msgstr "準備描繪的文字"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:148
 #: libgnomeprintui/gnome-canvas-hacktext.c:149
 msgid "Glyphlist"
-msgstr ""
+msgstr "Glyphlist"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:155
 #: libgnomeprintui/gnome-canvas-hacktext.c:163
 msgid "Color"
-msgstr ""
+msgstr "顏色"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:156
 msgid "Text color, as string"
-msgstr ""
+msgstr "以字串方式表示的文字顏色"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:164
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
+msgstr "文字顏色，以 R/G/B/A 數值合併後的整數表示"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:171
 msgid "Font"
-msgstr ""
+msgstr "字型"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:172
 msgid "Font as a GnomeFont struct"
-msgstr ""
+msgstr "以 GnomeFont 結構表示的字型"
 
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
 #: libgnomeprintui/gpaui/gpa-transport-selector.c:247
-#, fuzzy
 msgid "No options are defined"
-msgstr "未定義列印方向"
+msgstr "未定義任何選項"
 
 #: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-#, fuzzy
 msgid "No printers could be loaded"
-msgstr "尚未選定印表機"
+msgstr "無法載入任何印表機設定"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"
@@ -398,15 +392,6 @@ msgstr "新增設定"
 
 #~ msgid "Select Printer"
 #~ msgstr "選擇印表機"
-
-#~ msgid "Portrait"
-#~ msgstr "直向"
-
-#~ msgid "Landscape"
-#~ msgstr "橫向"
-
-#~ msgid "Rotate 180"
-#~ msgstr "180 度旋轉"
 
 #~ msgid "Manage printers"
 #~ msgstr "管理印表機"
@@ -473,9 +458,6 @@ msgstr "新增設定"
 
 #~ msgid "Bring up print dialog"
 #~ msgstr "顯示列印對話窗"
-
-#~ msgid "Use GnomePrintMasterPreview"
-#~ msgstr "使用 GnomePrintMasterPreview"
 
 #~ msgid "Show paper dialog"
 #~ msgstr "顯示紙張設定對話窗"

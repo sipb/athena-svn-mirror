@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui\n"
-"POT-Creation-Date: 2003-01-21 00:48-0500\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
 "PO-Revision-Date: 2002-11-05 13:07+0200\n"
 "Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"

@@ -93,7 +93,7 @@ gpp_stroke (GnomePrintContext *pc, const ArtBpath *bpath)
 		gnome_canvas_bpath_get_type (),
 		"bpath",	path,
 		"width_units",	gp_gc_get_linewidth (pc->gc),
-		"cap_style",	gp_gc_get_linecap (pc->gc),
+		"cap_style",	gp_gc_get_linecap (pc->gc) + 1 /* See #104932 */,
 		"join_style",	gp_gc_get_linejoin (pc->gc),
 		"outline_color_rgba", gp_gc_get_rgba (pc->gc),
 		"miterlimit",	gp_gc_get_miterlimit (pc->gc),
