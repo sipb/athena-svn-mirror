@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.10 1987-07-10 16:21:08 opus Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.11 1987-07-15 15:52:29 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -49,7 +49,10 @@ char *argv[];
     Code_t ret;
 
     /* Override server argument? */
-    (void)gethostname(hostname, MAXHOSTNAMELEN);
+    if (gethostname(hostname, MAXHOSTNAMELEN) < 0) {
+	  printf("Can't find my hostname?!\n");
+	  exit(-1);
+    }
     (void)strcpy(prim_serv, "");
     if (argc > 1) 
       (void)strcpy(prim_serv, argv[1]);
@@ -121,7 +124,12 @@ void init_hm()
       detach();
 #endif DEBUG
 
-      (void)ZInitialize();
+      if ((ret = ZInitialize()) != ZERR_NONE) {
+	    Zperr(ret);
+	    com_err("hm", ret, "initializing");
+	    closelog();
+	    exit(-1);
+      }
       (void)ZSetServerState(1);  /* Aargh!!! */
       init_queue();
       if ((serv_list = hes_resolve("zephyr", "sloc")) == (char **)NULL) {
