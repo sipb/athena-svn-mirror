@@ -1,3 +1,84 @@
+2004-03-05  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/Makefile.am, libaudiofile/audiofile.exports:
+	Export only public entry points.
+
+	* Released version 0.2.6 of the Audio File Library.
+
+2004-02-19  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/audiofile.h: Update comments to reflect the fact
+	that AVR and IFF/8SVX file formats are now implemented.
+
+2004-02-18  Michael Pruett <michael@68k.org>
+
+	* test/Makefile.am, test/writeavr.c. test/writeiff.c,
+	test/writenist.c: Add regression tests for AVR, IFF/8SVX, and
+	NIST SPHERE file formats.
+
+2004-02-14  Michael Pruett <michael@68k.org>
+
+	* configure.in, examples/Makefile.am, examples/osxplay.c: Add
+	example program for Mac OS X demonstrating audio file playback
+	using the Audio File Library and Core Audio.
+
+2004-02-09  Michael Pruett <michael@68k.org>
+
+	Fabrizio Gennari has contributed several Windows-related fixes:
+
+	* libaudiofile/openclose.c, win32/config.h: Open files with
+	binary translation mode under MinGW and Cygwin.
+	* win32/sfinfo.dsp: Link against non-debug version of libaudiofile
+	when building non-debug version of sfinfo.
+	* win32/*: Sychronize MSVC project files with latest source code.
+
+2004-01-27  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/afinternal.h, libaudiofile/openclose.c: Store
+	file name in AFfilehandle structure.
+
+	* libaudiofile/Makefile.am, libaudiofile/avr.c,
+	libaudiofile/avr.h, libaudiofile/avrwrite.c,
+	libaudiofile/units.c: Add support for reading and writing AVR
+	files.
+
+2004-01-22  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/util.[ch]: Add functions for reading and writing
+	16-bit and 32-bit integers with specified byte order.
+
+	* libaudiofile/Makefile.am, libaudiofile/iff.c,
+	libaudiofile/iff.h, libaudiofile/iffwrite.c,
+	libaudiofile/units.c: Add support for reading and writing
+	IFF/8SVX files.
+
+2004-01-15  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/Makefile.am, libaudiofile/nist.c,
+	libaudiofile/nist.h, libaudiofile/nistwrite.c: Add support for
+	reading and writing NIST SPHERE files.
+
+	* libaudiofile/audiofile.h: Add constants for new file
+	formats.
+
+	* libaudiofile/units.c, libaudiofile/units.h: Define units for
+	new file formats.
+
+2004-01-12  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/Makefile.am, libaudiofile/util.[ch],
+	libaudiofile/debug.[ch]: Move debugging routines into a
+	separate file.
+
+	* libaudiofile/modules.c: Include "debug.h" for debugging
+	routines.
+
+2004-01-06  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/afinternal.h, libaudiofile/aiff.h,
+	libaudiofile/aiffwrite.c: Eliminate duplicate definition of
+	AIFC_VERSION_1 constant.
+
 2003-12-21  Michael Pruett <michael@68k.org>
 
 	* Released version 0.2.5 of the Audio File Library.

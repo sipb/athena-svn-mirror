@@ -100,6 +100,9 @@ noinst_PROGRAMS = \
 	writenext \
 	writewave \
 	writeraw \
+	writeavr \
+	writeiff \
+	writenist \
 	writeulaw \
 	writealaw \
 	loop \
@@ -119,6 +122,7 @@ noinst_PROGRAMS = \
 EXTRA_DIST = transparency.sh misc.sh pipe.sh
 
 TESTS = error writeaiff writeircam writenext writewave writeraw \
+	writeavr writeiff writenist \
 	writeulaw writealaw \
 	misc.sh transparency.sh pipe.sh \
 	query2 sixteen-to-eight twentyfour twentyfour2 floatto24 \
@@ -136,7 +140,8 @@ noinst_PROGRAMS = error$(EXEEXT) floatto24$(EXEEXT) \
 	transparency$(EXEEXT) miscread$(EXEEXT) miscwrite$(EXEEXT) \
 	query2$(EXEEXT) testaupv$(EXEEXT) writeaiff$(EXEEXT) \
 	writeircam$(EXEEXT) writenext$(EXEEXT) writewave$(EXEEXT) \
-	writeraw$(EXEEXT) writeulaw$(EXEEXT) writealaw$(EXEEXT) \
+	writeraw$(EXEEXT) writeavr$(EXEEXT) writeiff$(EXEEXT) \
+	writenist$(EXEEXT) writeulaw$(EXEEXT) writealaw$(EXEEXT) \
 	loop$(EXEEXT) instparamwrite$(EXEEXT) instparamtest$(EXEEXT) \
 	sixteen-to-eight$(EXEEXT) testfloat$(EXEEXT) \
 	twentyfour$(EXEEXT) twentyfour2$(EXEEXT) pipe$(EXEEXT) \
@@ -253,6 +258,16 @@ writealaw_OBJECTS = writealaw.$(OBJEXT)
 writealaw_LDADD = $(LDADD)
 writealaw_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 writealaw_LDFLAGS =
+writeavr_SOURCES = writeavr.c
+writeavr_OBJECTS = writeavr.$(OBJEXT)
+writeavr_LDADD = $(LDADD)
+writeavr_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+writeavr_LDFLAGS =
+writeiff_SOURCES = writeiff.c
+writeiff_OBJECTS = writeiff.$(OBJEXT)
+writeiff_LDADD = $(LDADD)
+writeiff_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+writeiff_LDFLAGS =
 writeircam_SOURCES = writeircam.c
 writeircam_OBJECTS = writeircam.$(OBJEXT)
 writeircam_LDADD = $(LDADD)
@@ -263,6 +278,11 @@ writenext_OBJECTS = writenext.$(OBJEXT)
 writenext_LDADD = $(LDADD)
 writenext_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 writenext_LDFLAGS =
+writenist_SOURCES = writenist.c
+writenist_OBJECTS = writenist.$(OBJEXT)
+writenist_LDADD = $(LDADD)
+writenist_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+writenist_LDFLAGS =
 writeraw_SOURCES = writeraw.c
 writeraw_OBJECTS = writeraw.$(OBJEXT)
 writeraw_LDADD = $(LDADD)
@@ -296,9 +316,11 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/testfloat.Po $(DEPDIR)/testmarkers.Po \
 @AMDEP_TRUE@	$(DEPDIR)/transparency.Po $(DEPDIR)/twentyfour.Po \
 @AMDEP_TRUE@	$(DEPDIR)/twentyfour2.Po $(DEPDIR)/writeaiff.Po \
-@AMDEP_TRUE@	$(DEPDIR)/writealaw.Po $(DEPDIR)/writeircam.Po \
-@AMDEP_TRUE@	$(DEPDIR)/writenext.Po $(DEPDIR)/writeraw.Po \
-@AMDEP_TRUE@	$(DEPDIR)/writeulaw.Po $(DEPDIR)/writewave.Po
+@AMDEP_TRUE@	$(DEPDIR)/writealaw.Po $(DEPDIR)/writeavr.Po \
+@AMDEP_TRUE@	$(DEPDIR)/writeiff.Po $(DEPDIR)/writeircam.Po \
+@AMDEP_TRUE@	$(DEPDIR)/writenext.Po $(DEPDIR)/writenist.Po \
+@AMDEP_TRUE@	$(DEPDIR)/writeraw.Po $(DEPDIR)/writeulaw.Po \
+@AMDEP_TRUE@	$(DEPDIR)/writewave.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -311,10 +333,11 @@ DIST_SOURCES = error.c floatto24.c instparamtest.c instparamwrite.c \
 	loop.c miscread.c miscwrite.c pipe.c printmarkers.c query2.c \
 	seek.c sixteen-to-eight.c testaupv.c testchannelmatrix.c \
 	testfloat.c testmarkers.c transparency.c twentyfour.c \
-	twentyfour2.c writeaiff.c writealaw.c writeircam.c writenext.c \
-	writeraw.c writeulaw.c writewave.c
+	twentyfour2.c writeaiff.c writealaw.c writeavr.c writeiff.c \
+	writeircam.c writenext.c writenist.c writeraw.c writeulaw.c \
+	writewave.c
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = error.c floatto24.c instparamtest.c instparamwrite.c loop.c miscread.c miscwrite.c pipe.c printmarkers.c query2.c seek.c sixteen-to-eight.c testaupv.c testchannelmatrix.c testfloat.c testmarkers.c transparency.c twentyfour.c twentyfour2.c writeaiff.c writealaw.c writeircam.c writenext.c writeraw.c writeulaw.c writewave.c
+SOURCES = error.c floatto24.c instparamtest.c instparamwrite.c loop.c miscread.c miscwrite.c pipe.c printmarkers.c query2.c seek.c sixteen-to-eight.c testaupv.c testchannelmatrix.c testfloat.c testmarkers.c transparency.c twentyfour.c twentyfour2.c writeaiff.c writealaw.c writeavr.c writeiff.c writeircam.c writenext.c writenist.c writeraw.c writeulaw.c writewave.c
 
 all: all-am
 
@@ -402,12 +425,21 @@ writeaiff$(EXEEXT): $(writeaiff_OBJECTS) $(writeaiff_DEPENDENCIES)
 writealaw$(EXEEXT): $(writealaw_OBJECTS) $(writealaw_DEPENDENCIES) 
 	@rm -f writealaw$(EXEEXT)
 	$(LINK) $(writealaw_LDFLAGS) $(writealaw_OBJECTS) $(writealaw_LDADD) $(LIBS)
+writeavr$(EXEEXT): $(writeavr_OBJECTS) $(writeavr_DEPENDENCIES) 
+	@rm -f writeavr$(EXEEXT)
+	$(LINK) $(writeavr_LDFLAGS) $(writeavr_OBJECTS) $(writeavr_LDADD) $(LIBS)
+writeiff$(EXEEXT): $(writeiff_OBJECTS) $(writeiff_DEPENDENCIES) 
+	@rm -f writeiff$(EXEEXT)
+	$(LINK) $(writeiff_LDFLAGS) $(writeiff_OBJECTS) $(writeiff_LDADD) $(LIBS)
 writeircam$(EXEEXT): $(writeircam_OBJECTS) $(writeircam_DEPENDENCIES) 
 	@rm -f writeircam$(EXEEXT)
 	$(LINK) $(writeircam_LDFLAGS) $(writeircam_OBJECTS) $(writeircam_LDADD) $(LIBS)
 writenext$(EXEEXT): $(writenext_OBJECTS) $(writenext_DEPENDENCIES) 
 	@rm -f writenext$(EXEEXT)
 	$(LINK) $(writenext_LDFLAGS) $(writenext_OBJECTS) $(writenext_LDADD) $(LIBS)
+writenist$(EXEEXT): $(writenist_OBJECTS) $(writenist_DEPENDENCIES) 
+	@rm -f writenist$(EXEEXT)
+	$(LINK) $(writenist_LDFLAGS) $(writenist_OBJECTS) $(writenist_LDADD) $(LIBS)
 writeraw$(EXEEXT): $(writeraw_OBJECTS) $(writeraw_DEPENDENCIES) 
 	@rm -f writeraw$(EXEEXT)
 	$(LINK) $(writeraw_LDFLAGS) $(writeraw_OBJECTS) $(writeraw_LDADD) $(LIBS)
@@ -445,8 +477,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/twentyfour2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeaiff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writealaw.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeavr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeiff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeircam.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writenext.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writenist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeraw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeulaw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writewave.Po@am__quote@
