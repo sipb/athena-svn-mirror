@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.2 2003-04-08 18:18:07 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.3 2003-04-08 21:13:54 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -13,8 +13,6 @@ bldPUSH_SMLIB(`smutil')
 APPENDDEF(`confLIBS', `-lwrap')
 
 dnl hack: /etc/mail is not defined as "location of .cf" in the build system
-define(`bldTARGET_INST_DEP', ifdef(`confINST_DEP', `confINST_DEP',
-`${DESTDIR}/etc/mail/submit.cf ${DESTDIR}${MSPQ}'))dnl
 define(`bldTARGET_LINKS', ifdef(`confLINKS', `confLINKS',
 `${DESTDIR}${UBINDIR}/newaliases ${DESTDIR}${UBINDIR}/mailq ${DESTDIR}${UBINDIR}/hoststat ${DESTDIR}${UBINDIR}/purgestat')
 )dnl
