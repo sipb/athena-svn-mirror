@@ -45,7 +45,6 @@ EOF
 
 %files
 /etc/rc.d
-/etc/athena/syslogd
 /etc/athena/zephyr
 /etc/athena/zhm
 /etc/athena/zshutdown_notify
