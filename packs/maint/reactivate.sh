@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.47 2000-04-11 22:42:53 ghudson Exp $
+# $Id: reactivate.sh,v 1.48 2000-06-19 03:48:29 ghudson Exp $
 
 trap "" 1 15
 
@@ -166,6 +166,8 @@ if [ "$full" = true ]; then
 			done
 			ps -e | awk '$4=="inetd" {print $1}' | xargs kill -HUP
 		fi
+	fi
+	if [ "$PUBLIC" = true ]; then
 		rm -f /etc/athena/reactivate.local /etc/ssh_*
 	fi
 fi
