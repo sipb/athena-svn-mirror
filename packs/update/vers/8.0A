@@ -28,7 +28,7 @@ SUN*)
 	rm -rf /usr/share/lib/terminfo/c/c.term
 	rm -rf /usr/share/lib/terminfo/d/d.term
 	rm -rf /usr/share/lib/zoneinfo/US/Yukon /var/cron/log
-	rm -rf /usr/spool/cron/crontabs/sysadm /var/uucp/.Workspace
+	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
 	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
 
 	# Create new directories and files, make /var/sadm local (otherwise
@@ -61,7 +61,7 @@ SUN*)
 	;;
 
 INDY)
-	echo "/usr/spool/cron/crontabs/root"	>> ${CONFCHG}
+	echo "/var/spool/cron/crontabs/root"	>> ${CONFCHG}
 
 	hostname=`cat /etc/sys_id`
 	netaddress=`awk /$hostname'/{ print $1 }' /etc/hosts`
