@@ -1,14 +1,16 @@
-# $Id: Makefile.athena,v 1.1 2001-02-21 00:13:05 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2001-02-23 04:24:41 ghudson Exp $
 
 dist:
 
 prepare:
+	rm -f krb5
+	ln -s "$$ATHTOOLROOT/usr/athena" krb5
 
 clean:
 	./build clean
 
 all:
-	. ./platform && ./build CC="$$COMPILER" EXTRAAUTHENTICATORS=krb EXTRACFLAGS="-DHESIOD -DKERBEROS -I$$ATHTOOLROOT/usr/athena/include" EXTRALDFLAGS="-L$$ATHTOOLROOT/usr/athena/lib -lhesiod $$platformlibs" "$$platform"
+	. ./platform && ./build CC="$$COMPILER" EXTRAAUTHENTICATORS="gss krb" EXTRACFLAGS="-DHESIOD -DKERBEROS -I$$ATHTOOLROOT/usr/athena/include" EXTRALDFLAGS="-L$$ATHTOOLROOT/usr/athena/lib -lhesiod $$platformlibs" "$$platform"
 
 check:
 
