@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.7 2000-06-22 13:37:07 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.8 2000-07-17 21:15:31 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -442,7 +442,7 @@ xlogin.Geometry: 		580x325+205+105
 				omenuEntry4, omenuEntry5, omenuEntry6, \
 				omenuEntry6a, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
-				omenuEntry10, omenuEntry11
+				omenuEntry10, omenuEntry11, omenuEntry12
 
 *menuLine.wcClassName:		SmeLine
 *omenuEntry1.wcClassName:	SmeBSB
