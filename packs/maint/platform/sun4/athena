@@ -127,6 +127,8 @@ EOF
 		cp -p /srvd/etc/inetd.conf /etc/inetd.conf
 		cp -p /srvd/etc/passwd.std /etc/passwd.local
 		cp -p /etc/passwd.local /etc/passwd
+		cp -p /srvd/etc/shadow.std /etc/shadow.local
+		cp -p /etc/shadow.local /etc/shadow
 		cp -p /srvd/etc/group.std /etc/group.local
 		cp -p /etc/group.local /etc/group
 		cp -p /srvd/etc/syslog.conf /etc/syslog.conf
