@@ -161,18 +161,12 @@ CLASS="SYNOPSIS"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-init.html#GDK-PIXBUF-XLIB-INIT"
 >gdk_pixbuf_xlib_init</A
->            (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
+>            (Display *display,
                                              int screen_num);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-init.html#GDK-PIXBUF-XLIB-INIT-WITH-DEPTH"
 >gdk_pixbuf_xlib_init_with_depth</A
-> (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
+> (Display *display,
                                              int screen_num,
                                              int prefDepth);</PRE
 ></TD
@@ -192,10 +186,7 @@ CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
 >
     package provides a small library that lets Xlib-only applications
-    use <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structures and render them to X drawables.  The
+    use GdkPixbuf structures and render them to X drawables.  The
     functions in this section are used to initialize the <SPAN
 CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
@@ -206,10 +197,7 @@ CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
 >
     Xlib functions; it cannot be initialized automatically since
-    Xlib-only applications do not call <GTKDOCLINK
-HREF="GDK-RGB-INIT"
->gdk_rgb_init</GTKDOCLINK
->() like GNOME
+    Xlib-only applications do not call gdk_rgb_init() like GNOME
     applications do.
   </P
 ></DIV
@@ -239,10 +227,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_xlib_init            (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
+>void        gdk_pixbuf_xlib_init            (Display *display,
                                              int screen_num);</PRE
 ></TD
 ></TR
@@ -327,10 +312,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_xlib_init_with_depth (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
+>void        gdk_pixbuf_xlib_init_with_depth (Display *display,
                                              int screen_num,
                                              int prefDepth);</PRE
 ></TD

@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-rendering" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-rendering">
 <refmeta>
 <refentrytitle>Xlib Rendering</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -28,7 +28,7 @@ void        <link linkend="gdk-pixbuf-xlib-render-threshold-alpha">gdk_pixbuf_xl
 void        <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -98,7 +98,7 @@ them to produce a bi-level alpha mask that can be used as a clipping mask for
 a drawable.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -137,7 +137,7 @@ other values will be painted as one.
 <programlisting>void        gdk_pixbuf_xlib_render_to_drawable
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
-                                             <link linkend="GC">GC</link> gc,
+                                             <link linkend="GC-CAPS">GC</link> gc,
                                              int src_x,
                                              int src_y,
                                              int dest_x,
@@ -163,7 +163,7 @@ for consistent visual results.  If you do not have any of these cases, the
 dither offsets can be both zero.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -226,7 +226,7 @@ Renders a rectangular portion of a pixbuf to a drawable.  This is done using
 XlibRGB, so the specified drawable must have the XlibRGB visual and colormap.
 </para>
 <para>
-When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL">GDK_PIXBUF_ALPHA_BILEVEL</link>, this function has to create a bitmap
+When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL-CAPS">GDK_PIXBUF_ALPHA_BILEVEL</link>, this function has to create a bitmap
 out of the thresholded alpha channel of the image and, it has to set this
 bitmap as the clipping mask for the GC used for drawing.  This can be a
 significant performance penalty depending on the size and the complexity of
@@ -235,7 +235,7 @@ the alpha channel yourself (possibly by caching it in your application) and
 using <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>() or GdkRGB directly instead.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -304,7 +304,7 @@ If the pixbuf does not have an alpha channel, then *<parameter>mask_return</para
 to None.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

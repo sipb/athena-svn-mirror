@@ -339,7 +339,7 @@ gdk_pixbuf_render_to_drawable_alpha (GdkPixbuf *pixbuf, GdkDrawable *drawable,
  * gdk_pixbuf_render_to_drawable(), and gdk_pixbuf_render_threshold_alpha().
  *
  * If the pixbuf does not have an alpha channel, then *@mask_return will be set
- * to NULL.
+ * to %NULL.
  **/
 void
 gdk_pixbuf_render_pixmap_and_mask (GdkPixbuf *pixbuf,

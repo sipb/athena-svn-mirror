@@ -153,74 +153,41 @@ enum        <A
 HREF="gdk-pixbuf-animation.html#GDKPIXBUFFRAMEACTION"
 >GdkPixbufFrameAction</A
 >;
-<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* <A
+GdkPixbufAnimation* <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-NEW-FROM-FILE"
 >gdk_pixbuf_animation_new_from_file</A
 >
                                             (const char *filename);
-<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* <A
+GdkPixbufAnimation* <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-REF"
 >gdk_pixbuf_animation_ref</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
+                                            (GdkPixbufAnimation *animation);
 void        <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-UNREF"
 >gdk_pixbuf_animation_unref</A
->      (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
-<GTKDOCLINK
-HREF="GLIST"
->GList</GTKDOCLINK
->*      <A
+>      (GdkPixbufAnimation *animation);
+GList*      <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-GET-FRAMES"
 >gdk_pixbuf_animation_get_frames</A
-> (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
+> (GdkPixbufAnimation *animation);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-GET-WIDTH"
 >gdk_pixbuf_animation_get_width</A
->  (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
+>  (GdkPixbufAnimation *animation);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-GET-NUM-FRAMES"
 >gdk_pixbuf_animation_get_num_frames</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
+                                            (GdkPixbufAnimation *animation);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-ANIMATION-GET-HEIGHT"
 >gdk_pixbuf_animation_get_height</A
-> (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+> (GdkPixbufAnimation *animation);
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-FRAME-GET-PIXBUF"
 >gdk_pixbuf_frame_get_pixbuf</A
->     (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);
+>     (GdkPixbufFrame *frame);
 <A
 HREF="gdk-pixbuf-animation.html#GDKPIXBUFFRAMEACTION"
 >GdkPixbufFrameAction</A
@@ -228,31 +195,19 @@ HREF="gdk-pixbuf-animation.html#GDKPIXBUFFRAMEACTION"
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-FRAME-GET-ACTION"
 >gdk_pixbuf_frame_get_action</A
 >
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);
+                                            (GdkPixbufFrame *frame);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-FRAME-GET-Y-OFFSET"
 >gdk_pixbuf_frame_get_y_offset</A
->   (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);
+>   (GdkPixbufFrame *frame);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-FRAME-GET-DELAY-TIME"
 >gdk_pixbuf_frame_get_delay_time</A
-> (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);
+> (GdkPixbufFrame *frame);
 int         <A
 HREF="gdk-pixbuf-animation.html#GDK-PIXBUF-FRAME-GET-X-OFFSET"
 >gdk_pixbuf_frame_get_x_offset</A
->   (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);&#13;</PRE
+>   (GdkPixbufFrame *frame);&#13;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -270,14 +225,8 @@ CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
 > library provides a simple mechanism to load and
     represent animations, primarily animated GIF files.  Animations
-    are represented as lists of <GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> structures.  Each
-    frame structure contains a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure and information
+    are represented as lists of GdkPixbufFrame structures.  Each
+    frame structure contains a GdkPixbuf structure and information
     about the frame's overlay mode and duration.
   </P
 ></DIV
@@ -409,10 +358,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* gdk_pixbuf_animation_new_from_file
+>GdkPixbufAnimation* gdk_pixbuf_animation_new_from_file
                                             (const char *filename);</PRE
 ></TD
 ></TR
@@ -495,14 +441,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
->* gdk_pixbuf_animation_ref
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+>GdkPixbufAnimation* gdk_pixbuf_animation_ref
+                                            (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -588,10 +528,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_animation_unref      (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+>void        gdk_pixbuf_animation_unref      (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -655,13 +592,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GLIST"
->GList</GTKDOCLINK
->*      gdk_pixbuf_animation_get_frames (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+>GList*      gdk_pixbuf_animation_get_frames (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -711,14 +642,8 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> List of frames in the animation; this is a <GTKDOCLINK
-HREF="GLIST"
->GList</GTKDOCLINK
-> of
-<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> structures.</TD
+> List of frames in the animation; this is a GList of
+GdkPixbufFrame structures.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -745,10 +670,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_animation_get_width  (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+>int         gdk_pixbuf_animation_get_width  (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -826,10 +748,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         gdk_pixbuf_animation_get_num_frames
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+                                            (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -906,10 +825,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_animation_get_height (<GTKDOCLINK
-HREF="GDKPIXBUFANIMATION"
->GdkPixbufAnimation</GTKDOCLINK
-> *animation);</PRE
+>int         gdk_pixbuf_animation_get_height (GdkPixbufAnimation *animation);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -986,13 +902,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_frame_get_pixbuf     (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);</PRE
+>GdkPixbuf*  gdk_pixbuf_frame_get_pixbuf     (GdkPixbufFrame *frame);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1073,10 +983,7 @@ CLASS="PROGRAMLISTING"
 HREF="gdk-pixbuf-animation.html#GDKPIXBUFFRAMEACTION"
 >GdkPixbufFrameAction</A
 > gdk_pixbuf_frame_get_action
-                                            (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);</PRE
+                                            (GdkPixbufFrame *frame);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1153,10 +1060,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_frame_get_y_offset   (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);</PRE
+>int         gdk_pixbuf_frame_get_y_offset   (GdkPixbufFrame *frame);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1233,10 +1137,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_frame_get_delay_time (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);</PRE
+>int         gdk_pixbuf_frame_get_delay_time (GdkPixbufFrame *frame);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1313,10 +1214,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_frame_get_x_offset   (<GTKDOCLINK
-HREF="GDKPIXBUFFRAME"
->GdkPixbufFrame</GTKDOCLINK
-> *frame);</PRE
+>int         gdk_pixbuf_frame_get_x_offset   (GdkPixbufFrame *frame);</PRE
 ></TD
 ></TR
 ></TABLE

@@ -156,34 +156,16 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 void        <A
 HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-SCALE"
 >gdk_pixbuf_scale</A
->                (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>                (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -191,34 +173,16 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 void        <A
 HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-COMPOSITE"
 >gdk_pixbuf_composite</A
->            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>            (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -227,34 +191,16 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 void        <A
 HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-COMPOSITE-COLOR"
 >gdk_pixbuf_composite_color</A
->      (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>      (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -263,41 +209,23 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
                                              int check_x,
                                              int check_y,
                                              int check_size,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color1,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color2);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+                                             guint32 color1,
+                                             guint32 color2);
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-SCALE-SIMPLE"
 >gdk_pixbuf_scale_simple</A
->         (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
+>         (const GdkPixbuf *src,
                                              int dest_width,
                                              int dest_height,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
 > interp_type);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-COMPOSITE-COLOR-SIMPLE"
 >gdk_pixbuf_composite_color_simple</A
 >
-                                            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
+                                            (const GdkPixbuf *src,
                                              int dest_width,
                                              int dest_height,
                                              <A
@@ -306,14 +234,8 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 > interp_type,
                                              int overall_alpha,
                                              int check_size,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color1,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color2);</PRE
+                                             guint32 color1,
+                                             guint32 color2);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -577,34 +499,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_scale                (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>void        gdk_pixbuf_scale                (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -686,10 +590,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-></TD
+> a GdkPixbuf</TD
 ></TR
 ><TR
 ><TD
@@ -706,10 +607,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> into which to render the results</TD
+> the GdkPixbuf into which to render the results</TD
 ></TR
 ><TR
 ><TD
@@ -889,34 +787,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_composite            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>void        gdk_pixbuf_composite            (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -999,10 +879,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-></TD
+> a GdkPixbuf</TD
 ></TR
 ><TR
 ><TD
@@ -1019,10 +896,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> into which to render the results</TD
+> the GdkPixbuf into which to render the results</TD
 ></TR
 ><TR
 ><TD
@@ -1219,34 +1093,16 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        gdk_pixbuf_composite_color      (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
-                                             <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *dest,
+>void        gdk_pixbuf_composite_color      (const GdkPixbuf *src,
+                                             GdkPixbuf *dest,
                                              int dest_x,
                                              int dest_y,
                                              int dest_width,
                                              int dest_height,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> offset_y,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_x,
-                                             <GTKDOCLINK
-HREF="DOUBLE"
->double</GTKDOCLINK
-> scale_y,
+                                             double offset_x,
+                                             double offset_y,
+                                             double scale_x,
+                                             double scale_y,
                                              <A
 HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 >GdkInterpType</A
@@ -1255,14 +1111,8 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
                                              int check_x,
                                              int check_y,
                                              int check_size,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color1,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color2);</PRE
+                                             guint32 color1,
+                                             guint32 color2);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1351,10 +1201,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-></TD
+> a GdkPixbuf</TD
 ></TR
 ><TR
 ><TD
@@ -1371,10 +1218,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> into which to render the results</TD
+> the GdkPixbuf into which to render the results</TD
 ></TR
 ><TR
 ><TD
@@ -1666,13 +1510,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_scale_simple         (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
+>GdkPixbuf*  gdk_pixbuf_scale_simple         (const GdkPixbuf *src,
                                              int dest_width,
                                              int dest_height,
                                              <A
@@ -1683,10 +1521,7 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Scale the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> <TT
+>Scale the GdkPixbuf <TT
 CLASS="PARAMETER"
 ><I
 >src</I
@@ -1702,10 +1537,7 @@ CLASS="PARAMETER"
 >dest_height</I
 ></TT
 > and render the result into
-a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->.</P
+a new GdkPixbuf.</P
 ><P
 ></P
 ><DIV
@@ -1735,10 +1567,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-></TD
+> a GdkPixbuf</TD
 ></TR
 ><TR
 ><TD
@@ -1804,10 +1633,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->, or NULL if not enough memory could be
+> the new GdkPixbuf, or NULL if not enough memory could be
 allocated for it.</TD
 ></TR
 ></TBODY
@@ -1835,14 +1661,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_composite_color_simple
-                                            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *src,
+>GdkPixbuf*  gdk_pixbuf_composite_color_simple
+                                            (const GdkPixbuf *src,
                                              int dest_width,
                                              int dest_height,
                                              <A
@@ -1851,22 +1671,13 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 > interp_type,
                                              int overall_alpha,
                                              int check_size,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color1,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> color2);</PRE
+                                             guint32 color1,
+                                             guint32 color2);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Scale the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> <TT
+>Scale the GdkPixbuf <TT
 CLASS="PARAMETER"
 ><I
 >src</I
@@ -1893,10 +1704,7 @@ CLASS="PARAMETER"
 >color2</I
 ></TT
 > and render the result into
-a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->.</P
+a new GdkPixbuf.</P
 ><P
 ></P
 ><DIV
@@ -1926,10 +1734,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-></TD
+> a GdkPixbuf</TD
 ></TR
 ><TR
 ><TD
@@ -2063,10 +1868,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->, or NULL if not enough memory could be
+> the new GdkPixbuf, or NULL if not enough memory could be
 allocated for it.</TD
 ></TR
 ></TBODY

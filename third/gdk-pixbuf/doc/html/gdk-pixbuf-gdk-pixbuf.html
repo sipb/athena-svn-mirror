@@ -159,65 +159,35 @@ HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 > <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-COLORSPACE"
 >gdk_pixbuf_get_colorspace</A
->     (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
+>     (const GdkPixbuf *pixbuf);
 int         <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-N-CHANNELS"
 >gdk_pixbuf_get_n_channels</A
->       (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
-<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->    <A
+>       (const GdkPixbuf *pixbuf);
+gboolean    <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-HAS-ALPHA"
 >gdk_pixbuf_get_has_alpha</A
->        (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
+>        (const GdkPixbuf *pixbuf);
 int         <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-BITS-PER-SAMPLE"
 >gdk_pixbuf_get_bits_per_sample</A
->  (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
-<GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
->*     <A
+>  (const GdkPixbuf *pixbuf);
+guchar*     <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-PIXELS"
 >gdk_pixbuf_get_pixels</A
->           (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
+>           (const GdkPixbuf *pixbuf);
 int         <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-WIDTH"
 >gdk_pixbuf_get_width</A
->            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
+>            (const GdkPixbuf *pixbuf);
 int         <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-HEIGHT"
 >gdk_pixbuf_get_height</A
->           (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);
+>           (const GdkPixbuf *pixbuf);
 int         <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDK-PIXBUF-GET-ROWSTRIDE"
 >gdk_pixbuf_get_rowstride</A
->        (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);&#13;</PRE
+>        (const GdkPixbuf *pixbuf);&#13;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -331,10 +301,7 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 >GdkColorspace</A
-> gdk_pixbuf_get_colorspace     (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+> gdk_pixbuf_get_colorspace     (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -411,10 +378,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_get_n_channels       (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>int         gdk_pixbuf_get_n_channels       (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -491,13 +455,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->    gdk_pixbuf_get_has_alpha        (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>gboolean    gdk_pixbuf_get_has_alpha        (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -574,10 +532,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_get_bits_per_sample  (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>int         gdk_pixbuf_get_bits_per_sample  (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -654,13 +609,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
->*     gdk_pixbuf_get_pixels           (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>guchar*     gdk_pixbuf_get_pixels           (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -737,10 +686,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_get_width            (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>int         gdk_pixbuf_get_width            (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -817,10 +763,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_get_height           (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>int         gdk_pixbuf_get_height           (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -897,10 +840,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->int         gdk_pixbuf_get_rowstride        (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>int         gdk_pixbuf_get_rowstride        (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE

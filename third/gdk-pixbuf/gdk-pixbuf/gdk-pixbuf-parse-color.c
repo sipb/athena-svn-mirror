@@ -898,6 +898,22 @@ load_rgb_txt (void)
 
 /* Color parser */
 
+/**
+ * gdk_pixbuf_parse_color:
+ * @spec: Color specification string.
+ * @red: Return value for the red component.
+ * @green: Return value for the green component.
+ * @blue: Return value for the blue component.
+ *
+ * Parses a color specification string and returns the RGB components.  The returned
+ * values are 16 bits in length, so the range is [0, 0xffff].
+ *
+ * The color specification must be either of the form "#rrrrggggbbbb", where
+ * "rgb" are hexadecimal digits, or it must be one of the standard color names
+ * from X11's rgb.txt.
+ *
+ * Return value: %TRUE if the color could be parsed successfully, %FALSE otherwise.
+ **/
 gboolean
 gdk_pixbuf_parse_color (const char *spec, gushort *red, gushort *green, gushort *blue)
 {
@@ -905,6 +921,8 @@ gdk_pixbuf_parse_color (const char *spec, gushort *red, gushort *green, gushort 
 	char *downcase_spec;
 	const char *ptr;
 	int chars;
+
+	g_return_val_if_fail (spec != NULL, FALSE);
 
 	if (spec[0] == '#') {
 
@@ -915,27 +933,51 @@ gdk_pixbuf_parse_color (const char *spec, gushort *red, gushort *green, gushort 
 
 		switch (chars) {
 		case 3:
-			*red = read_hex_digits (spec + 1, 1) << 12;
-			*green = read_hex_digits (spec + 2, 1) << 12;
-			*blue = read_hex_digits (spec + 3, 1) << 12;
+			if (red)
+				*red = read_hex_digits (spec + 1, 1) << 12;
+
+			if (green)
+				*green = read_hex_digits (spec + 2, 1) << 12;
+
+			if (blue)
+				*blue = read_hex_digits (spec + 3, 1) << 12;
+
 			return TRUE;
 
 		case 6:
-			*red = read_hex_digits (spec + 1, 2) << 8;
-			*green = read_hex_digits (spec + 3, 2) << 8;
-			*blue = read_hex_digits (spec + 5, 2) << 8;
+			if (red)
+				*red = read_hex_digits (spec + 1, 2) << 8;
+
+			if (green)
+				*green = read_hex_digits (spec + 3, 2) << 8;
+
+			if (blue)
+				*blue = read_hex_digits (spec + 5, 2) << 8;
+
 			return TRUE;
 
 		case 9:
-			*red = read_hex_digits (spec + 1, 3) << 4;
-			*green = read_hex_digits (spec + 4, 3) << 4;
-			*blue = read_hex_digits (spec + 7, 3) << 4;
+			if (red)
+				*red = read_hex_digits (spec + 1, 3) << 4;
+
+			if (green)
+				*green = read_hex_digits (spec + 4, 3) << 4;
+
+			if (blue)
+				*blue = read_hex_digits (spec + 7, 3) << 4;
+
 			return TRUE;
 
 		case 12:
-			*red = read_hex_digits (spec + 1, 4);
-			*green = read_hex_digits (spec + 5, 4);
-			*blue = read_hex_digits (spec + 9, 4);
+			if (red)
+				*red = read_hex_digits (spec + 1, 4);
+
+			if (green)
+				*green = read_hex_digits (spec + 5, 4);
+
+			if (blue)
+				*blue = read_hex_digits (spec + 9, 4);
+
 			return TRUE;
 
 		default:
@@ -963,9 +1005,15 @@ gdk_pixbuf_parse_color (const char *spec, gushort *red, gushort *green, gushort 
 		g_free (downcase_spec);
 
 		if (rgb != NULL) {
-			*red = rgb->red;
-			*green = rgb->green;
-			*blue = rgb->blue;
+			if (red)
+				*red = rgb->red;
+
+			if (green)
+				*green = rgb->green;
+
+			if (blue)
+				*blue = rgb->blue;
+
 			return TRUE;
 		} else {
 			return FALSE;

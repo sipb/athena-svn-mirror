@@ -149,41 +149,26 @@ CLASS="SYNOPSIS"
 >&#13;#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW"
 >gdk_pixbuf_new</A
 >                  (<A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 >GdkColorspace</A
 > colorspace,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> has_alpha,
+                                             gboolean has_alpha,
                                              int bits_per_sample,
                                              int width,
                                              int height);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW-FROM-DATA"
 >gdk_pixbuf_new_from_data</A
->        (const <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> *data,
+>        (const guchar *data,
                                              <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 >GdkColorspace</A
 > colorspace,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> has_alpha,
+                                             gboolean has_alpha,
                                              int bits_per_sample,
                                              int width,
                                              int height,
@@ -192,27 +177,15 @@ HREF="GBOOLEAN"
 HREF="gdk-pixbuf-refcounting.html#GDKPIXBUFDESTROYNOTIFY"
 >GdkPixbufDestroyNotify</A
 > destroy_fn,
-                                             <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> destroy_fn_data);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+                                             gpointer destroy_fn_data);
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW-FROM-XPM-DATA"
 >gdk_pixbuf_new_from_xpm_data</A
 >    (const char **data);
-<GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  <A
+GdkPixbuf*  <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-COPY"
 >gdk_pixbuf_copy</A
->                 (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>                 (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -226,25 +199,16 @@ NAME="AEN510"
 >Description</H2
 ><P
 >    The most basic way to create a pixbuf is to wrap an existing pixel
-    buffer with a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure.  You can use the
+    buffer with a GdkPixbuf structure.  You can use the
     <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW-FROM-DATA"
 >gdk_pixbuf_new_from_data</A
 >() function to do this You need to specify
     the destroy notification function that will be called when the
-    data buffer needs to be freed; this will happen when a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->
+    data buffer needs to be freed; this will happen when a GdkPixbuf
     is finalized by the reference counting functions If you have a
     chunk of static data compiled into your application, you can pass
-    in <GTKDOCLINK
-HREF="NULL"
->NULL</GTKDOCLINK
-> as the destroy notification function so that the data
+    in NULL as the destroy notification function so that the data
     will not be freed.
   </P
 ><P
@@ -253,10 +217,7 @@ HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW"
 >gdk_pixbuf_new</A
 >() function can be used as a convenience to
     create a pixbuf with an empty buffer.  This is equivalent to
-    allocating a data buffer using <GTKDOCLINK
-HREF="MALLOC"
->malloc</GTKDOCLINK
->() and then wrapping it with
+    allocating a data buffer using malloc() and then wrapping it with
     <A
 HREF="gdk-pixbuf-creating.html#GDK-PIXBUF-NEW-FROM-DATA"
 >gdk_pixbuf_new_from_data</A
@@ -284,10 +245,7 @@ HREF="gdk-pixbuf-refcounting.html#GDK-PIXBUF-REF"
 >gdk_pixbuf_ref</A
 >()
     on the old pixbuf; the copy function will actually duplicate the
-    pixel data in memory and create a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure for it.
+    pixel data in memory and create a new GdkPixbuf structure for it.
   </P
 ></DIV
 ><DIV
@@ -316,17 +274,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_new                  (<A
+>GdkPixbuf*  gdk_pixbuf_new                  (<A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 >GdkColorspace</A
 > colorspace,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> has_alpha,
+                                             gboolean has_alpha,
                                              int bits_per_sample,
                                              int width,
                                              int height);</PRE
@@ -334,10 +286,7 @@ HREF="GBOOLEAN"
 ></TR
 ></TABLE
 ><P
->Creates a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure and allocates a buffer for it.  The buffer
+>Creates a new GdkPixbuf structure and allocates a buffer for it.  The buffer
 has an optimal rowstride.  Note that the buffer is not cleared; you will have
 to fill it completely yourself.</P
 ><P
@@ -452,10 +401,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A newly-created <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> with a reference count of 1, or NULL
+> A newly-created GdkPixbuf with a reference count of 1, or NULL
 if not enough memory could be allocated for the image buffer.</TD
 ></TR
 ></TBODY
@@ -483,21 +429,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_new_from_data        (const <GTKDOCLINK
-HREF="GUCHAR"
->guchar</GTKDOCLINK
-> *data,
+>GdkPixbuf*  gdk_pixbuf_new_from_data        (const guchar *data,
                                              <A
 HREF="gdk-pixbuf-gdk-pixbuf.html#GDKCOLORSPACE"
 >GdkColorspace</A
 > colorspace,
-                                             <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> has_alpha,
+                                             gboolean has_alpha,
                                              int bits_per_sample,
                                              int width,
                                              int height,
@@ -506,18 +443,12 @@ HREF="GBOOLEAN"
 HREF="gdk-pixbuf-refcounting.html#GDKPIXBUFDESTROYNOTIFY"
 >GdkPixbufDestroyNotify</A
 > destroy_fn,
-                                             <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> destroy_fn_data);</PRE
+                                             gpointer destroy_fn_data);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Creates a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> out of in-memory image data.  Currently only RGB
+>Creates a new GdkPixbuf out of in-memory image data.  Currently only RGB
 images with 8 bits per sample are supported.</P
 ><P
 ></P
@@ -700,10 +631,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A newly-created <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure with a reference count of
+> A newly-created GdkPixbuf structure with a reference count of
 1.</TD
 ></TR
 ></TBODY
@@ -731,10 +659,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_new_from_xpm_data    (const char **data);</PRE
+>GdkPixbuf*  gdk_pixbuf_new_from_xpm_data    (const char **data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -812,21 +737,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->*  gdk_pixbuf_copy                 (const <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> *pixbuf);</PRE
+>GdkPixbuf*  gdk_pixbuf_copy                 (const GdkPixbuf *pixbuf);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Creates a new <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> with a copy of the information in the specified
+>Creates a new GdkPixbuf with a copy of the information in the specified
 <TT
 CLASS="PARAMETER"
 ><I

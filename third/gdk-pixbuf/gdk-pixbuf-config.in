@@ -39,9 +39,7 @@ while test $# -gt 0; do
       echo @GDK_PIXBUF_VERSION@
       ;;
     --cflags)
-      if test @includedir@ != /usr/include ; then
-        includes=-I@includedir@
-      fi
+      includes=-I@includedir@/gdk-pixbuf-1.0
       echo $includes `gtk-config --cflags`
       ;;
     --libs)

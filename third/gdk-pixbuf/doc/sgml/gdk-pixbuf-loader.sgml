@@ -1,4 +1,4 @@
-<refentry id="GdkPixbufLoader" revision="27 Aug 2000">
+<refentry id="GdkPixbufLoader">
 <refmeta>
 <refentrytitle>GdkPixbufLoader</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,7 +15,7 @@
 #include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-#define     <link linkend="GDK-PIXBUF-LOADER">GDK_PIXBUF_LOADER</link>               (obj)
+#define     <link linkend="GDK-PIXBUF-LOADER-CAPS">GDK_PIXBUF_LOADER</link>               (obj)
 <link linkend="GdkPixbufLoader">GdkPixbufLoader</link>* <link linkend="gdk-pixbuf-loader-new">gdk_pixbuf_loader_new</link>      (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gdk-pixbuf-loader-write">gdk_pixbuf_loader_write</link>         (<link linkend="GdkPixbufLoader">GdkPixbufLoader</link> *loader,
                                              const <link linkend="guchar">guchar</link> *buf,
@@ -137,12 +137,12 @@ void        <link linkend="gdk-pixbuf-loader-close">gdk_pixbuf_loader_close</lin
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GDK-PIXBUF-LOADER">GDK_PIXBUF_LOADER()</title>
+<title><anchor id="GDK-PIXBUF-LOADER-CAPS">GDK_PIXBUF_LOADER()</title>
 <programlisting>#define GDK_PIXBUF_LOADER(obj)		   (GTK_CHECK_CAST ((obj), GDK_TYPE_PIXBUF_LOADER, GdkPixbufLoader))
 </programlisting>
   <para>
     Casts a <link linkend="GtkObject">GtkObject</link> to a <link linkend="GdkPixbufLoader">GdkPixbufLoader</link>.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -160,7 +160,7 @@ void        <link linkend="gdk-pixbuf-loader-close">gdk_pixbuf_loader_close</lin
 Creates a new pixbuf loader object.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -180,7 +180,7 @@ error occurred.  In the latter case, the loader will be closed, and will not
 accept further writes.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -194,7 +194,7 @@ accept further writes.</para>
 <row><entry align="right"><parameter>count</parameter>&nbsp;:</entry>
 <entry> Length of the <parameter>buf</parameter> buffer in bytes.
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE">TRUE</link> if the write was successful, or <link linkend="FALSE">FALSE</link> if the loader
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the write was successful, or <link linkend="FALSE-CAPS">FALSE</link> if the loader
 cannot parse the buffer.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -212,7 +212,7 @@ simply calling <link linkend="gdk-pixbuf-ref">gdk_pixbuf_ref</link>() should be 
 if the loader is an animation, it will return the first frame of the animation.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -235,7 +235,7 @@ signal has been emitted by the loader.  If the image is not an animation,
 then it will return NULL.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -255,7 +255,7 @@ Informs a pixbuf loader that no further writes with <link linkend="gdk-pixbuf-lo
 will occur, so that it can free its internal loading structures.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -282,26 +282,25 @@ will occur, so that it can free its internal loading structures.</para>
     scanline has been read in, but it could be a different area as
     well.  Applications can use this signal to know when to repaint
     areas of an image that is being loaded.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
-<row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
-<entry>Loader which emitted the signal.
+<row><entry align="right"><parameter>gdkpixbufloader</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
 </entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry>X offset of upper-left corner of the updated area.
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
 </entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry>Y offset of upper-left corner of the updated area.
+<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
+<entry>
 </entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>Width of updated area.
+<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
+<entry>
 </entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry>Height of updated area.
-
+<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
+<entry>
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -314,14 +313,13 @@ will occur, so that it can free its internal loading structures.</para>
     format of the image that it will create.  After this signal is
     emitted, applications can call <link linkend="gdk-pixbuf-loader-get-pixbuf">gdk_pixbuf_loader_get_pixbuf</link>() to
     fetch the partially-loaded pixbuf.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
-<row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
-<entry>Loader which emitted the signal.
-
+<row><entry align="right"><parameter>gdkpixbufloader</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -332,17 +330,16 @@ will occur, so that it can free its internal loading structures.</para>
   <para>
     This signal is emitted when a frame is done loading.  It will be
     emitted for each frame in an animation data stream.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
-<row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
-<entry>Loader which emitted the signal.
+<row><entry align="right"><parameter>gdkpixbufloader</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
 </entry></row>
-<row><entry align="right"><parameter>frame</parameter>&nbsp;:</entry>
-<entry>Frame which just completed loading.
-
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -351,14 +348,13 @@ will occur, so that it can free its internal loading structures.</para>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
   <para>
     This signal is emitted when an animation is done loading.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
-<row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
-<entry>Loader which emitted the signal.
-
+<row><entry align="right"><parameter>gdkpixbufloader</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>
@@ -370,21 +366,13 @@ will occur, so that it can free its internal loading structures.</para>
     It can be used by different parts of an application to receive
     notification when an image loader is closed by the code that
     drives it.
-  </para><informaltable pgwide=1 frame="none" role="params">
+  </para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
-<row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
-<entry>Loader which emitted the signal.
-
-<!--
-Local variables:
-mode: sgml
-sgml-parent-document: ("../gdk-pixbuf.sgml" "book" "refsect2" "")
-End:
--->
-
+<row><entry align="right"><parameter>gdkpixbufloader</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -62,8 +62,10 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
-GDK_PIXBUF_DIR = @GDK_PIXBUF_DIR@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_INCLUDEDIR = @GDK_PIXBUF_INCLUDEDIR@
 GDK_PIXBUF_LIBDIR = @GDK_PIXBUF_LIBDIR@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -90,6 +92,7 @@ GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
 LIBTIFF = @LIBTIFF@
@@ -98,9 +101,14 @@ LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 STATIC_LIB_DEPS = @STATIC_LIB_DEPS@
+STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
 VERSION = @VERSION@
 
 noinst_PROGRAMS = pixbuf-demo
@@ -116,6 +124,7 @@ EXTRA_DIST =  	apple-red.png			background.jpg			gnome-applets.png		gnome-calenda
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+noinst_PROGRAMS =  pixbuf-demo$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -127,7 +136,7 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-pixbuf_demo_OBJECTS =  pixbuf-demo.o
+pixbuf_demo_OBJECTS =  pixbuf-demo.$(OBJEXT)
 pixbuf_demo_LDADD = $(LDADD)
 pixbuf_demo_DEPENDENCIES =  $(top_builddir)/gdk-pixbuf/libgdk_pixbuf.la
 pixbuf_demo_LDFLAGS = 
@@ -148,7 +157,7 @@ OBJECTS = $(pixbuf_demo_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps demo/Makefile
 
@@ -169,6 +178,11 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -177,6 +191,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -204,8 +219,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-pixbuf-demo: $(pixbuf_demo_OBJECTS) $(pixbuf_demo_DEPENDENCIES)
-	@rm -f pixbuf-demo
+pixbuf-demo$(EXEEXT): $(pixbuf_demo_OBJECTS) $(pixbuf_demo_DEPENDENCIES)
+	@rm -f pixbuf-demo$(EXEEXT)
 	$(LINK) $(pixbuf_demo_LDFLAGS) $(pixbuf_demo_OBJECTS) $(pixbuf_demo_LDADD) $(LIBS)
 
 tags: TAGS

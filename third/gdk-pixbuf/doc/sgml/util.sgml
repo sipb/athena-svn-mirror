@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-util" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-util">
 <refmeta>
 <refentrytitle>Utilities</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -58,12 +58,12 @@ void        <link linkend="gdk-pixbuf-copy-area">gdk_pixbuf_copy_area</link>    
 Takes an existing pixbuf and adds an alpha channel to it.  If the original
 pixbuf already had alpha information, then the contents of the new pixbuf are
 exactly the same as the original's.  Otherwise, the new pixbuf will have all
-pixels with full opacity if <parameter>substitute_color</parameter> is <link linkend="FALSE">FALSE</link>.  If
-<parameter>substitute_color</parameter> is <link linkend="TRUE">TRUE</link>, then the color specified by (<parameter>r</parameter>, <parameter>g</parameter>, <parameter>b</parameter>) will be
+pixels with full opacity if <parameter>substitute_color</parameter> is <link linkend="FALSE-CAPS">FALSE</link>.  If
+<parameter>substitute_color</parameter> is <link linkend="TRUE-CAPS">TRUE</link>, then the color specified by (<parameter>r</parameter>, <parameter>g</parameter>, <parameter>b</parameter>) will be
 substituted for zero opacity.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -73,7 +73,7 @@ substituted for zero opacity.</para>
 </entry></row>
 <row><entry align="right"><parameter>substitute_color</parameter>&nbsp;:</entry>
 <entry> Whether to substitute a color for zero opacity.  If this
-is <link linkend="FALSE">FALSE</link>, then the (<parameter>r</parameter>, <parameter>g</parameter>, <parameter>b</parameter>) arguments will be ignored.
+is <link linkend="FALSE-CAPS">FALSE</link>, then the (<parameter>r</parameter>, <parameter>g</parameter>, <parameter>b</parameter>) arguments will be ignored.
 </entry></row>
 <row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
 <entry> Red value to substitute.
@@ -102,7 +102,7 @@ Copies a rectangular area from <parameter>src_pixbuf</parameter> to <parameter>d
 pixbuf formats is done automatically.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

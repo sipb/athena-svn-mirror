@@ -1,4 +1,4 @@
-<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-init" revision="27 Aug 2000">
+<refentry id="gdk-pixbuf-gdk-pixbuf-xlib-init">
 <refmeta>
 <refentrytitle>&gdk-pixbuf; Xlib initialization</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -54,7 +54,7 @@ function should be called near the beginning of your program, or before using
 any of the gdk-pixbuf-xlib functions.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -76,7 +76,7 @@ Similar to <link linkend="gdk-pixbuf-xlib-init">gdk_pixbuf_xlib_init</link>(), b
 depth for XlibRGB if you do not want it to use the default depth it picks.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

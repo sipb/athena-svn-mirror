@@ -16,7 +16,7 @@ TITLE="X Drawables to Pixbufs"
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html"><LINK
 REL="NEXT"
 TITLE="Porting applications from Imlib to gdk-pixbuf"
-HREF="a3652.html"></HEAD
+HREF="a3657.html"></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -105,7 +105,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="a3652.html"
+HREF="a3657.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -160,59 +160,29 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-INIT"
 >xlib_rgb_init</A
->                   (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
-                                             <GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
-> *screen);
+>                   (Display *display,
+                                             Screen *screen);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-INIT-WITH-DEPTH"
 >xlib_rgb_init_with_depth</A
->        (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
-                                             <GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
-> *screen,
+>        (Display *display,
+                                             Screen *screen,
                                              int prefDepth);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GC-SET-FOREGROUND"
 >xlib_rgb_gc_set_foreground</A
->      (<GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> rgb);
+>      (GC gc,
+                                             guint32 rgb);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GC-SET-BACKGROUND"
 >xlib_rgb_gc_set_background</A
->      (<GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> rgb);
+>      (GC gc,
+                                             guint32 rgb);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-DRAW-RGB-IMAGE"
 >xlib_draw_rgb_image</A
->             (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>             (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -226,14 +196,8 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-DRAW-RGB-IMAGE-DITHALIGN"
 >xlib_draw_rgb_image_dithalign</A
->   (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>   (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -249,14 +213,8 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-DRAW-RGB-32-IMAGE"
 >xlib_draw_rgb_32_image</A
->          (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>          (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -270,14 +228,8 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-DRAW-GRAY-IMAGE"
 >xlib_draw_gray_image</A
->            (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>            (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -294,10 +246,7 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBCMAP"
 >* <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-CMAP-NEW"
 >xlib_rgb_cmap_new</A
->              (<GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> *colors,
+>              (guint32 *colors,
                                              int n_colors);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-CMAP-FREE"
@@ -309,14 +258,8 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBCMAP"
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-DRAW-INDEXED-IMAGE"
 >xlib_draw_indexed_image</A
->         (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>         (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -331,49 +274,31 @@ HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBDITHER"
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBCMAP"
 >XlibRgbCmap</A
 > *cmap);
-<GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
->        <A
+Bool        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-DITHERABLE"
 >xlib_rgb_ditherable</A
 >             (void);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-SET-VERBOSE"
 >xlib_rgb_set_verbose</A
->            (<GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
-> verbose);
+>            (Bool verbose);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-SET-INSTALL"
 >xlib_rgb_set_install</A
->            (<GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
-> install);
+>            (Bool install);
 void        <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-SET-MIN-COLORS"
 >xlib_rgb_set_min_colors</A
 >         (int min_colors);
-<GTKDOCLINK
-HREF="COLORMAP"
->Colormap</GTKDOCLINK
->    <A
+Colormap    <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-CMAP"
 >xlib_rgb_get_cmap</A
 >               (void);
-<GTKDOCLINK
-HREF="VISUAL"
->Visual</GTKDOCLINK
->*     <A
+Visual*     <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-VISUAL"
 >xlib_rgb_get_visual</A
 >             (void);
-<GTKDOCLINK
-HREF="XVISUALINFO"
->XVisualInfo</GTKDOCLINK
->* <A
+XVisualInfo* <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-VISUAL-INFO"
 >xlib_rgb_get_visual_info</A
 >       (void);
@@ -381,17 +306,11 @@ int         <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-DEPTH"
 >xlib_rgb_get_depth</A
 >              (void);
-<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
->*    <A
+Display*    <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-DISPLAY"
 >xlib_rgb_get_display</A
 >            (void);
-<GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
->*     <A
+Screen*     <A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIB-RGB-GET-SCREEN"
 >xlib_rgb_get_screen</A
 >             (void);</PRE
@@ -632,14 +551,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_init                   (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
-                                             <GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
-> *screen);</PRE
+>void        xlib_rgb_init                   (Display *display,
+                                             Screen *screen);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -724,14 +637,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_init_with_depth        (<GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
-> *display,
-                                             <GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
-> *screen,
+>void        xlib_rgb_init_with_depth        (Display *display,
+                                             Screen *screen,
                                              int prefDepth);</PRE
 ></TD
 ></TR
@@ -840,24 +747,15 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_gc_set_foreground      (<GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> rgb);</PRE
+>void        xlib_rgb_gc_set_foreground      (GC gc,
+                                             guint32 rgb);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->This is a convenience function to set the background of a GC from an RGB
-triplet.  It calls <GTKDOCLINK
-HREF="XLIB-RGB-XPIXEL-FROM-RGB"
->xlib_rgb_xpixel_from_rgb</GTKDOCLINK
->() internally and uses the
-returned pixel value to set the GC's background.</P
+>This is a convenience function to set the foreground of a GC from an RGB
+triplet.  It calls xlib_rgb_xpixel_from_rgb() internally and uses the
+returned pixel value to set the GC's foreground.</P
 ><P
 ></P
 ><DIV
@@ -931,17 +829,15 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_gc_set_background      (<GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
-                                             <GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> rgb);</PRE
+>void        xlib_rgb_gc_set_background      (GC gc,
+                                             guint32 rgb);</PRE
 ></TD
 ></TR
 ></TABLE
+><P
+>This is a convenience function to set the background of a GC from an RGB
+triplet.  It calls xlib_rgb_xpixel_from_rgb() internally and uses the
+returned pixel value to set the GC's background.</P
 ><P
 ></P
 ><DIV
@@ -971,7 +867,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> A graphic context.</TD
 ></TR
 ><TR
 ><TD
@@ -988,7 +884,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> 32-bit representation of an RGB value, specified as 0x00RRGGBB.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -999,7 +895,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3187"
+NAME="AEN3189"
 ></A
 ><H3
 ><A
@@ -1015,14 +911,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_draw_rgb_image             (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>void        xlib_draw_rgb_image             (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -1222,7 +1112,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3238"
+NAME="AEN3240"
 ></A
 ><H3
 ><A
@@ -1238,14 +1128,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_draw_rgb_image_dithalign   (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>void        xlib_draw_rgb_image_dithalign   (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -1479,7 +1363,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3296"
+NAME="AEN3298"
 ></A
 ><H3
 ><A
@@ -1495,14 +1379,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_draw_rgb_32_image          (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>void        xlib_draw_rgb_32_image          (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -1705,7 +1583,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3348"
+NAME="AEN3350"
 ></A
 ><H3
 ><A
@@ -1721,14 +1599,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_draw_gray_image            (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>void        xlib_draw_gray_image            (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -1923,7 +1795,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3398"
+NAME="AEN3400"
 ></A
 ><H3
 ><A
@@ -1942,10 +1814,7 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#XLIBRGBCMAP"
 >XlibRgbCmap</A
->* xlib_rgb_cmap_new              (<GTKDOCLINK
-HREF="GUINT32"
->guint32</GTKDOCLINK
-> *colors,
+>* xlib_rgb_cmap_new              (guint32 *colors,
                                              int n_colors);</PRE
 ></TD
 ></TR
@@ -2024,7 +1893,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3423"
+NAME="AEN3425"
 ></A
 ><H3
 ><A
@@ -2089,7 +1958,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3439"
+NAME="AEN3441"
 ></A
 ><H3
 ><A
@@ -2105,14 +1974,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_draw_indexed_image         (<GTKDOCLINK
-HREF="DRAWABLE"
->Drawable</GTKDOCLINK
-> drawable,
-                                             <GTKDOCLINK
-HREF="GC"
->GC</GTKDOCLINK
-> gc,
+>void        xlib_draw_indexed_image         (Drawable drawable,
+                                             GC gc,
                                              int x,
                                              int y,
                                              int width,
@@ -2325,7 +2188,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3494"
+NAME="AEN3496"
 ></A
 ><H3
 ><A
@@ -2341,10 +2204,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
->        xlib_rgb_ditherable             (void);</PRE
+>Bool        xlib_rgb_ditherable             (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2389,7 +2249,7 @@ is using, FALSE otherwise.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3510"
+NAME="AEN3512"
 ></A
 ><H3
 ><A
@@ -2405,13 +2265,14 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_set_verbose            (<GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
-> verbose);</PRE
+>void        xlib_rgb_set_verbose            (Bool verbose);</PRE
 ></TD
 ></TR
 ></TABLE
+><P
+>This is primarily a debugging function.  Sets whether you want XlibRGB to
+print information about the visual and colormap it chooses.  You normally do
+not need to use this function.</P
 ><P
 ></P
 ><DIV
@@ -2441,7 +2302,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> Whether to print visual/colormap debugging information.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2452,7 +2313,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3525"
+NAME="AEN3528"
 ></A
 ><H3
 ><A
@@ -2468,13 +2329,14 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xlib_rgb_set_install            (<GTKDOCLINK
-HREF="BOOL"
->Bool</GTKDOCLINK
-> install);</PRE
+>void        xlib_rgb_set_install            (Bool install);</PRE
 ></TD
 ></TR
 ></TABLE
+><P
+>Sets whether XlibRGB should install its own private colormap instead of
+trying to allocate color cells from the system colormap.  This should be
+called before initializing XlibRGB.</P
 ><P
 ></P
 ><DIV
@@ -2504,7 +2366,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> Whether to install a private colormap.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2515,7 +2377,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3540"
+NAME="AEN3544"
 ></A
 ><H3
 ><A
@@ -2535,6 +2397,10 @@ CLASS="PROGRAMLISTING"
 ></TD
 ></TR
 ></TABLE
+><P
+>Sets the minimum number of free color cells that must be available in the
+system color map for XlibRGB to use it.  If the specified number of colors is
+not available, XlibRGB will install its own private colormap.</P
 ><P
 ></P
 ><DIV
@@ -2564,7 +2430,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> Minimum number of colors to look for in the system colormap.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -2575,7 +2441,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3554"
+NAME="AEN3559"
 ></A
 ><H3
 ><A
@@ -2591,10 +2457,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="COLORMAP"
->Colormap</GTKDOCLINK
->    xlib_rgb_get_cmap               (void);</PRE
+>Colormap    xlib_rgb_get_cmap               (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2638,7 +2501,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3570"
+NAME="AEN3575"
 ></A
 ><H3
 ><A
@@ -2654,10 +2517,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="VISUAL"
->Visual</GTKDOCLINK
->*     xlib_rgb_get_visual             (void);</PRE
+>Visual*     xlib_rgb_get_visual             (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2701,7 +2561,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3586"
+NAME="AEN3591"
 ></A
 ><H3
 ><A
@@ -2717,10 +2577,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="XVISUALINFO"
->XVisualInfo</GTKDOCLINK
->* xlib_rgb_get_visual_info       (void);</PRE
+>XVisualInfo* xlib_rgb_get_visual_info       (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2764,7 +2621,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3602"
+NAME="AEN3607"
 ></A
 ><H3
 ><A
@@ -2824,7 +2681,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3617"
+NAME="AEN3622"
 ></A
 ><H3
 ><A
@@ -2840,10 +2697,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="DISPLAY"
->Display</GTKDOCLINK
->*    xlib_rgb_get_display            (void);</PRE
+>Display*    xlib_rgb_get_display            (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2887,7 +2741,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3633"
+NAME="AEN3638"
 ></A
 ><H3
 ><A
@@ -2903,10 +2757,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="SCREEN"
->Screen</GTKDOCLINK
->*     xlib_rgb_get_screen             (void);</PRE
+>Screen*     xlib_rgb_get_screen             (void);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2951,7 +2802,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3649"
+NAME="AEN3654"
 ></A
 ><H2
 >See Also</H2
@@ -3028,7 +2879,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="a3652.html"
+HREF="a3657.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"

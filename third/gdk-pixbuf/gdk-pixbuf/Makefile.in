@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -61,8 +61,10 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
-GDK_PIXBUF_DIR = @GDK_PIXBUF_DIR@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_INCLUDEDIR = @GDK_PIXBUF_INCLUDEDIR@
 GDK_PIXBUF_LIBDIR = @GDK_PIXBUF_LIBDIR@
 GDK_PIXBUF_MAJOR = @GDK_PIXBUF_MAJOR@
@@ -88,6 +90,7 @@ GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
 LIBJPEG = @LIBJPEG@
 LIBPNG = @LIBPNG@
 LIBTIFF = @LIBTIFF@
@@ -96,9 +99,14 @@ LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 STATIC_LIB_DEPS = @STATIC_LIB_DEPS@
+STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
 VERSION = @VERSION@
 
 SUBDIRS = pixops
@@ -122,70 +130,70 @@ libexecdir = $(libdir)/gdk-pixbuf/loaders
 #
 libpixbufloader_png_la_SOURCES = io-png.c
 libpixbufloader_png_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_png_la_LIBADD = $(LIBPNG)
+libpixbufloader_png_la_LIBADD = $(LIBPNG) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The JPEG loader
 #
 libpixbufloader_jpeg_la_SOURCES = io-jpeg.c
 libpixbufloader_jpeg_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_jpeg_la_LIBADD = $(LIBJPEG)
+libpixbufloader_jpeg_la_LIBADD = $(LIBJPEG) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The XPM loader
 #
 libpixbufloader_xpm_la_SOURCES = io-xpm.c
 libpixbufloader_xpm_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_xpm_la_LIBADD = 
+libpixbufloader_xpm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The GIF loader
 #
 libpixbufloader_gif_la_SOURCES = io-gif.c
 libpixbufloader_gif_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_gif_la_LIBADD = 
+libpixbufloader_gif_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The ICO loader
 #
 libpixbufloader_ico_la_SOURCES = io-ico.c
 libpixbufloader_ico_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_ico_la_LIBADD = 
+libpixbufloader_ico_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The RAS loader
 #
 libpixbufloader_ras_la_SOURCES = io-ras.c
 libpixbufloader_ras_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_ras_la_LIBADD = 
+libpixbufloader_ras_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The TIFF loader
 #
 libpixbufloader_tiff_la_SOURCES = io-tiff.c
 libpixbufloader_tiff_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_tiff_la_LIBADD = $(LIBTIFF)
+libpixbufloader_tiff_la_LIBADD = $(LIBTIFF) libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The PNM loader
 #
 libpixbufloader_pnm_la_SOURCES = io-pnm.c
 libpixbufloader_pnm_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_pnm_la_LIBADD = 
+libpixbufloader_pnm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The BMP loader
 #
 libpixbufloader_bmp_la_SOURCES = io-bmp.c
 libpixbufloader_bmp_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_bmp_la_LIBADD = 
+libpixbufloader_bmp_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 #
 # The XBM loader
 #
 libpixbufloader_xbm_la_SOURCES = io-xbm.c
 libpixbufloader_xbm_la_LDFLAGS = -version-info 1:0:0 -module
-libpixbufloader_xbm_la_LIBADD = 
+libpixbufloader_xbm_la_LIBADD = libgdk_pixbuf.la $(GTK_LIBS)
 
 @HAVE_PNG_TRUE@PNG_LIB = libpixbufloader-png.la
 
@@ -225,16 +233,12 @@ INCLUDES = -I$(top_srcdir) -I$(top_builddir) 	-I$(top_srcdir)/gdk-pixbuf 	-I$(to
 AM_CPPFLAGS = "-DPIXBUF_LIBDIR=\"$(libexecdir)\""
 
 LDADDS = libgdk_pixbuf.la $(GLIB_LIBS) $(GTK_LIBS) $(STATIC_LIB_DEPS)
-@INSIDE_GNOME_LIBS_TRUE@test_gdk_pixbuf_LDADD = $(LDADDS) -lgmodule
-@INSIDE_GNOME_LIBS_FALSE@test_gdk_pixbuf_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_LDADD = $(LDADDS) -lgmodule
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_drawable_LDADD = $(LDADDS)
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_drawable_LDADD = $(LDADDS) $(GNOME_LIBS)
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_scale_LDADD = $(LDADDS)
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_scale_LDADD = $(LDADDS) $(GNOME_LIBS)
-@INSIDE_GNOME_LIBS_TRUE@testanimation_LDADD = $(LDADDS) -lgmodule
-@INSIDE_GNOME_LIBS_FALSE@testanimation_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
+
+test_gdk_pixbuf_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
+testpixbuf_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
+testpixbuf_drawable_LDADD = $(LDADDS) $(GNOME_LIBS)
+testpixbuf_scale_LDADD = $(LDADDS) $(GNOME_LIBS)
+testanimation_LDADD = $(LDADDS) $(GNOME_LIBS) -lgmodule
 
 GDK_PIXBUF_LIBS = $(GLIB_LIBS) $(GTK_LIBS)
 
@@ -242,7 +246,7 @@ GDK_PIXBUF_LIBS = $(GLIB_LIBS) $(GTK_LIBS)
 # The GdkPixBuf library
 #
 
-libgdk_pixbufincludedir = $(includedir)/gdk-pixbuf
+libgdk_pixbufincludedir = $(includedir)/gdk-pixbuf-1.0/gdk-pixbuf
 
 libgdk_pixbuf_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-drawable.c			gdk-pixbuf-io.c				gdk-pixbuf-loader.c			gdk-pixbuf-render.c			gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-parse-color.c		$(extra_sources)
 
@@ -258,7 +262,7 @@ libgdk_pixbuf_xlib_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-xlib.c			gdk-pixbuf
 
 
 libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(X11_LIBS)
-libgdk_pixbuf_xlib_la_LIBADD = pixops/libpixops.la
+libgdk_pixbuf_xlib_la_LIBADD = pixops/libpixops.la libgdk_pixbuf.la $(GTK_LIBS)
 
 libgdk_pixbufinclude_HEADERS =  	gdk-pixbuf.h				gdk-pixbuf-loader.h			gdk-pixbuf-features.h			gdk-pixbuf-xlib.h			gdk-pixbuf-xlibrgb.h			$(CANVAS_PIXBUF_HEADERFILES)
 
@@ -295,7 +299,8 @@ libgdk_pixbuf_la_DEPENDENCIES =  pixops/libpixops.la
 @BUILD_DYNAMIC_MODULES_FALSE@io-jpeg.lo io-xpm.lo io-gif.lo io-ico.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-ras.lo io-tiff.lo io-pnm.lo io-bmp.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-xbm.lo
-libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la
+libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la \
+libgdk_pixbuf.la
 @BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_xlib_la_OBJECTS =  \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
@@ -318,57 +323,50 @@ libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la
 libgnomecanvaspixbuf_la_LIBADD = 
 @BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf_la_OBJECTS =  \
 @BUILD_CANVAS_ITEM_TRUE@gnome-canvas-pixbuf.lo
-libpixbufloader_png_la_DEPENDENCIES = 
+libpixbufloader_png_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_png_la_OBJECTS =  io-png.lo
-libpixbufloader_jpeg_la_DEPENDENCIES = 
+libpixbufloader_jpeg_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_jpeg_la_OBJECTS =  io-jpeg.lo
-libpixbufloader_gif_la_DEPENDENCIES = 
+libpixbufloader_gif_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_gif_la_OBJECTS =  io-gif.lo
-libpixbufloader_ico_la_DEPENDENCIES = 
+libpixbufloader_ico_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_ico_la_OBJECTS =  io-ico.lo
-libpixbufloader_ras_la_DEPENDENCIES = 
+libpixbufloader_ras_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_ras_la_OBJECTS =  io-ras.lo
-libpixbufloader_xpm_la_DEPENDENCIES = 
+libpixbufloader_xpm_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_xpm_la_OBJECTS =  io-xpm.lo
-libpixbufloader_tiff_la_DEPENDENCIES = 
+libpixbufloader_tiff_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_tiff_la_OBJECTS =  io-tiff.lo
-libpixbufloader_pnm_la_DEPENDENCIES = 
+libpixbufloader_pnm_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_pnm_la_OBJECTS =  io-pnm.lo
-libpixbufloader_bmp_la_DEPENDENCIES = 
+libpixbufloader_bmp_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_bmp_la_OBJECTS =  io-bmp.lo
-libpixbufloader_xbm_la_DEPENDENCIES = 
+libpixbufloader_xbm_la_DEPENDENCIES =  libgdk_pixbuf.la
 libpixbufloader_xbm_la_OBJECTS =  io-xbm.lo
+noinst_PROGRAMS =  test-gdk-pixbuf$(EXEEXT) testpixbuf$(EXEEXT) \
+testpixbuf-drawable$(EXEEXT) testanimation$(EXEEXT) \
+testpixbuf-scale$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_gdk_pixbuf_SOURCES = test-gdk-pixbuf.c
-test_gdk_pixbuf_OBJECTS =  test-gdk-pixbuf.o
-@INSIDE_GNOME_LIBS_TRUE@test_gdk_pixbuf_DEPENDENCIES =  libgdk_pixbuf.la
-@INSIDE_GNOME_LIBS_FALSE@test_gdk_pixbuf_DEPENDENCIES =  \
-@INSIDE_GNOME_LIBS_FALSE@libgdk_pixbuf.la
+test_gdk_pixbuf_OBJECTS =  test-gdk-pixbuf.$(OBJEXT)
+test_gdk_pixbuf_DEPENDENCIES =  libgdk_pixbuf.la
 test_gdk_pixbuf_LDFLAGS = 
 testpixbuf_SOURCES = testpixbuf.c
-testpixbuf_OBJECTS =  testpixbuf.o
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_DEPENDENCIES =  libgdk_pixbuf.la
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_DEPENDENCIES =  libgdk_pixbuf.la
+testpixbuf_OBJECTS =  testpixbuf.$(OBJEXT)
+testpixbuf_DEPENDENCIES =  libgdk_pixbuf.la
 testpixbuf_LDFLAGS = 
 testpixbuf_drawable_SOURCES = testpixbuf-drawable.c
-testpixbuf_drawable_OBJECTS =  testpixbuf-drawable.o
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_drawable_DEPENDENCIES =  \
-@INSIDE_GNOME_LIBS_TRUE@libgdk_pixbuf.la
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_drawable_DEPENDENCIES =  \
-@INSIDE_GNOME_LIBS_FALSE@libgdk_pixbuf.la
+testpixbuf_drawable_OBJECTS =  testpixbuf-drawable.$(OBJEXT)
+testpixbuf_drawable_DEPENDENCIES =  libgdk_pixbuf.la
 testpixbuf_drawable_LDFLAGS = 
 testanimation_SOURCES = testanimation.c
-testanimation_OBJECTS =  testanimation.o
-@INSIDE_GNOME_LIBS_TRUE@testanimation_DEPENDENCIES =  libgdk_pixbuf.la
-@INSIDE_GNOME_LIBS_FALSE@testanimation_DEPENDENCIES =  libgdk_pixbuf.la
+testanimation_OBJECTS =  testanimation.$(OBJEXT)
+testanimation_DEPENDENCIES =  libgdk_pixbuf.la
 testanimation_LDFLAGS = 
 testpixbuf_scale_SOURCES = testpixbuf-scale.c
-testpixbuf_scale_OBJECTS =  testpixbuf-scale.o
-@INSIDE_GNOME_LIBS_TRUE@testpixbuf_scale_DEPENDENCIES =  \
-@INSIDE_GNOME_LIBS_TRUE@libgdk_pixbuf.la
-@INSIDE_GNOME_LIBS_FALSE@testpixbuf_scale_DEPENDENCIES =  \
-@INSIDE_GNOME_LIBS_FALSE@libgdk_pixbuf.la
+testpixbuf_scale_OBJECTS =  testpixbuf-scale.$(OBJEXT)
+testpixbuf_scale_DEPENDENCIES =  libgdk_pixbuf.la
 testpixbuf_scale_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -385,11 +383,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgdk_pixbuf_la_SOURCES) $(libgdk_pixbuf_xlib_la_SOURCES) $(libgnomecanvaspixbuf_la_SOURCES) $(libpixbufloader_png_la_SOURCES) $(libpixbufloader_jpeg_la_SOURCES) $(libpixbufloader_gif_la_SOURCES) $(libpixbufloader_ico_la_SOURCES) $(libpixbufloader_ras_la_SOURCES) $(libpixbufloader_xpm_la_SOURCES) $(libpixbufloader_tiff_la_SOURCES) $(libpixbufloader_pnm_la_SOURCES) $(libpixbufloader_bmp_la_SOURCES) $(libpixbufloader_xbm_la_SOURCES) test-gdk-pixbuf.c testpixbuf.c testpixbuf-drawable.c testanimation.c testpixbuf-scale.c
-OBJECTS = $(libgdk_pixbuf_la_OBJECTS) $(libgdk_pixbuf_xlib_la_OBJECTS) $(libgnomecanvaspixbuf_la_OBJECTS) $(libpixbufloader_png_la_OBJECTS) $(libpixbufloader_jpeg_la_OBJECTS) $(libpixbufloader_gif_la_OBJECTS) $(libpixbufloader_ico_la_OBJECTS) $(libpixbufloader_ras_la_OBJECTS) $(libpixbufloader_xpm_la_OBJECTS) $(libpixbufloader_tiff_la_OBJECTS) $(libpixbufloader_pnm_la_OBJECTS) $(libpixbufloader_bmp_la_OBJECTS) $(libpixbufloader_xbm_la_OBJECTS) test-gdk-pixbuf.o testpixbuf.o testpixbuf-drawable.o testanimation.o testpixbuf-scale.o
+OBJECTS = $(libgdk_pixbuf_la_OBJECTS) $(libgdk_pixbuf_xlib_la_OBJECTS) $(libgnomecanvaspixbuf_la_OBJECTS) $(libpixbufloader_png_la_OBJECTS) $(libpixbufloader_jpeg_la_OBJECTS) $(libpixbufloader_gif_la_OBJECTS) $(libpixbufloader_ico_la_OBJECTS) $(libpixbufloader_ras_la_OBJECTS) $(libpixbufloader_xpm_la_OBJECTS) $(libpixbufloader_tiff_la_OBJECTS) $(libpixbufloader_pnm_la_OBJECTS) $(libpixbufloader_bmp_la_OBJECTS) $(libpixbufloader_xbm_la_OBJECTS) test-gdk-pixbuf.$(OBJEXT) testpixbuf.$(OBJEXT) testpixbuf-drawable.$(OBJEXT) testanimation.$(OBJEXT) testpixbuf-scale.$(OBJEXT)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps gdk-pixbuf/Makefile
 
@@ -453,6 +451,11 @@ uninstall-libexecLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -461,6 +464,7 @@ uninstall-libexecLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -536,24 +540,24 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-test-gdk-pixbuf: $(test_gdk_pixbuf_OBJECTS) $(test_gdk_pixbuf_DEPENDENCIES)
-	@rm -f test-gdk-pixbuf
+test-gdk-pixbuf$(EXEEXT): $(test_gdk_pixbuf_OBJECTS) $(test_gdk_pixbuf_DEPENDENCIES)
+	@rm -f test-gdk-pixbuf$(EXEEXT)
 	$(LINK) $(test_gdk_pixbuf_LDFLAGS) $(test_gdk_pixbuf_OBJECTS) $(test_gdk_pixbuf_LDADD) $(LIBS)
 
-testpixbuf: $(testpixbuf_OBJECTS) $(testpixbuf_DEPENDENCIES)
-	@rm -f testpixbuf
+testpixbuf$(EXEEXT): $(testpixbuf_OBJECTS) $(testpixbuf_DEPENDENCIES)
+	@rm -f testpixbuf$(EXEEXT)
 	$(LINK) $(testpixbuf_LDFLAGS) $(testpixbuf_OBJECTS) $(testpixbuf_LDADD) $(LIBS)
 
-testpixbuf-drawable: $(testpixbuf_drawable_OBJECTS) $(testpixbuf_drawable_DEPENDENCIES)
-	@rm -f testpixbuf-drawable
+testpixbuf-drawable$(EXEEXT): $(testpixbuf_drawable_OBJECTS) $(testpixbuf_drawable_DEPENDENCIES)
+	@rm -f testpixbuf-drawable$(EXEEXT)
 	$(LINK) $(testpixbuf_drawable_LDFLAGS) $(testpixbuf_drawable_OBJECTS) $(testpixbuf_drawable_LDADD) $(LIBS)
 
-testanimation: $(testanimation_OBJECTS) $(testanimation_DEPENDENCIES)
-	@rm -f testanimation
+testanimation$(EXEEXT): $(testanimation_OBJECTS) $(testanimation_DEPENDENCIES)
+	@rm -f testanimation$(EXEEXT)
 	$(LINK) $(testanimation_LDFLAGS) $(testanimation_OBJECTS) $(testanimation_LDADD) $(LIBS)
 
-testpixbuf-scale: $(testpixbuf_scale_OBJECTS) $(testpixbuf_scale_DEPENDENCIES)
-	@rm -f testpixbuf-scale
+testpixbuf-scale$(EXEEXT): $(testpixbuf_scale_OBJECTS) $(testpixbuf_scale_DEPENDENCIES)
+	@rm -f testpixbuf-scale$(EXEEXT)
 	$(LINK) $(testpixbuf_scale_LDFLAGS) $(testpixbuf_scale_OBJECTS) $(testpixbuf_scale_LDADD) $(LIBS)
 
 install-libgdk_pixbufincludeHEADERS: $(libgdk_pixbufinclude_HEADERS)

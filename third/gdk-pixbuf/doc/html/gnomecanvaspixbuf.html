@@ -129,10 +129,7 @@ NAME="AEN2306"
 ></A
 ><H2
 >Name</H2
->GnomeCanvasPixbuf&nbsp;--&nbsp;Canvas item to display <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> images.</DIV
+>GnomeCanvasPixbuf&nbsp;--&nbsp;Canvas item to display GdkPixbuf images.</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
@@ -153,7 +150,7 @@ CLASS="SYNOPSIS"
 
 
 #define     <A
-HREF="gnomecanvaspixbuf.html#GNOME-CANVAS-PIXBUF"
+HREF="gnomecanvaspixbuf.html#GNOME-CANVAS-PIXBUF-CAPS"
 >GNOME_CANVAS_PIXBUF</A
 >             (obj)
 &#13;</PRE
@@ -177,14 +174,10 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="SYNOPSIS"
->&#13;  <GTKDOCLINK
-HREF="GTKOBJECT"
->GtkObject</GTKDOCLINK
->
-   +----<GTKDOCLINK
-HREF="GNOMECANVASITEM"
->GnomeCanvasItem</GTKDOCLINK
->
+>&#13;  GtkObject
+   +----<A
+HREF=../gnomeui/gnomecanvasitem.html
+>GnomeCanvasItem</A>
          +----GnomeCanvasPixbuf</PRE
 ></TD
 ></TR
@@ -209,80 +202,47 @@ CLASS="SYNOPSIS"
 >&#13;  &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--PIXBUF"
 >pixbuf</A
->&quot;               <GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
->             : Read / Write
+>&quot;               gpointer             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH"
 >width</A
->&quot;                <GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
->              : Read / Write
+>&quot;                gdouble              : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-SET"
->width_set</A
->&quot;            <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write
+>width-set</A
+>&quot;            gboolean             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-IN-PIXELS"
->width_in_pixels</A
->&quot;      <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write
+>width-in-pixels</A
+>&quot;      gboolean             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT"
 >height</A
->&quot;               <GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
->              : Read / Write
+>&quot;               gdouble              : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-SET"
->height_set</A
->&quot;           <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write
+>height-set</A
+>&quot;           gboolean             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS"
->height_in_pixels</A
->&quot;     <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write
+>height-in-pixels</A
+>&quot;     gboolean             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X"
 >x</A
->&quot;                    <GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
->              : Read / Write
+>&quot;                    gdouble              : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X-IN-PIXELS"
->x_in_pixels</A
->&quot;          <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write
+>x-in-pixels</A
+>&quot;          gboolean             : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y"
 >y</A
->&quot;                    <GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
->              : Read / Write
+>&quot;                    gdouble              : Read / Write
   &quot;<A
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y-IN-PIXELS"
->y_in_pixels</A
->&quot;          <GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
->             : Read / Write</PRE
+>y-in-pixels</A
+>&quot;          gboolean             : Read / Write</PRE
 ></TD
 ></TR
 ></TABLE
@@ -295,10 +255,7 @@ NAME="AEN2344"
 ><H2
 >Description</H2
 ><P
->    This canvas item displays <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> images.  It handles full
+>    This canvas item displays GdkPixbuf images.  It handles full
     affine transformations in both GDK and antialiased modes, and also
     supports the <A
 HREF="http://www.w3.org"
@@ -312,14 +269,8 @@ TARGET="_top"
     translation semantics for absolute pixel values.
   </P
 ><P
->    <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structures may be shared among different pixbuf canvas
-    items; the pixbuf item uses <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->'s reference counting
+>    GdkPixbuf structures may be shared among different pixbuf canvas
+    items; the pixbuf item uses GdkPixbuf's reference counting
     functions for this.
   </P
 ><DIV
@@ -342,17 +293,11 @@ HREF="gnomecanvaspixbuf.html"
     </P
 ><P
 >      By default, the pixbuf canvas item will attain the size in units
-      of the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> it contains.  If a <A
+      of the GdkPixbuf it contains.  If a <A
 HREF="gnomecanvaspixbuf.html"
 >GnomeCanvasPixbuf</A
 > is
-      configured to use a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> that has a size of 300 by 200
+      configured to use a GdkPixbuf that has a size of 300 by 200
       pixels, then the pixbuf item will automatically obtain a size of
       300 by 200 units in the item's local coordinate system.  If the
       item is transformed with a scaling transformation of (0.5, 2.0),
@@ -383,10 +328,7 @@ CLASS="LITERAL"
 >FALSE</TT
 > by default so that the pixbuf item will
       attain a size in units equal to the size in pixels of the
-      <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> that the item contains.
+      GdkPixbuf that the item contains.
     </P
 ><P
 >      The custom translation offsets are controlled by the <A
@@ -500,10 +442,7 @@ NAME="AEN2392"
 ><H3
 >Resource Management</H3
 ><P
->      When you set the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure that a <A
+>      When you set the GdkPixbuf structure that a <A
 HREF="gnomecanvaspixbuf.html"
 >GnomeCanvasPixbuf</A
 >
@@ -511,19 +450,10 @@ HREF="gnomecanvaspixbuf.html"
 HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--PIXBUF"
 >pixbuf</A
 > argument, a
-      reference count will be added to that <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure.
-      When the pixbuf item no longer needs the <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure,
+      reference count will be added to that GdkPixbuf structure.
+      When the pixbuf item no longer needs the GdkPixbuf structure,
       such as when the item is destroyed or when a new pixbuf
-      structure is passed to it, then the old <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure
+      structure is passed to it, then the old GdkPixbuf structure
       will be automatically unreferenced.
     </P
 ><P
@@ -547,10 +477,7 @@ CLASS="PROGRAMLISTING"
 	g_assert (pixbuf != NULL);
 
 	item = gnome_canvas_item_new (gnome_canvas_root (my_canvas),
-				      <GTKDOCLINK
-HREF="GNOME-CANVAS-PIXBUF-GET-TYPE"
->gnome_canvas_pixbuf_get_type</GTKDOCLINK
->(),
+				      gnome_canvas_pixbuf_get_type(),
 				      "pixbuf", pixbuf,
 				      NULL);
 	gdk_pixbuf_unref (pixbuf);
@@ -598,7 +525,7 @@ NAME="AEN2411"
 ></A
 ><H3
 ><A
-NAME="GNOME-CANVAS-PIXBUF"
+NAME="GNOME-CANVAS-PIXBUF-CAPS"
 ></A
 >GNOME_CANVAS_PIXBUF()</H3
 ><TABLE
@@ -615,10 +542,7 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
->    Casts a <GTKDOCLINK
-HREF="GTKOJBECT"
->GtkOjbect</GTKDOCLINK
-> to a <A
+>    Casts a GtkOjbect to a <A
 HREF="gnomecanvaspixbuf.html"
 >GnomeCanvasPixbuf</A
 >.
@@ -679,22 +603,13 @@ NAME="GNOMECANVASPIXBUF--PIXBUF"
 >&quot;<TT
 CLASS="LITERAL"
 >pixbuf</TT
->&quot; (<GTKDOCLINK
-HREF="GPOINTER"
->gpointer</GTKDOCLINK
-> : Read / Write)</DT
+>&quot; (gpointer : Read / Write)</DT
 ><DD
 ><P
->    Contains a pointer to a <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure that will be used by
+>    Contains a pointer to a GdkPixbuf structure that will be used by
     the pixbuf canvas item as an image source.  When a pixbuf is set
     its reference count is incremented; if the pixbuf item kept a
-    pointer to another <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
-> structure, the reference count of
+    pointer to another GdkPixbuf structure, the reference count of
     this structure will be decremented.  Also, the GdkPixbuf's
     reference count will automatically be decremented when the
     <A
@@ -712,10 +627,7 @@ NAME="GNOMECANVASPIXBUF--WIDTH"
 >&quot;<TT
 CLASS="LITERAL"
 >width</TT
->&quot; (<GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
-> : Read / Write)</DT
+>&quot; (gdouble : Read / Write)</DT
 ><DD
 ><P
 >    Indicates the width the pixbuf will be scaled to.  This argument
@@ -749,11 +661,8 @@ NAME="GNOMECANVASPIXBUF--WIDTH-SET"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->width_set</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>width-set</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    Determines whether the <A
@@ -777,11 +686,8 @@ NAME="GNOMECANVASPIXBUF--WIDTH-IN-PIXELS"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->width_in_pixels</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>width-in-pixels</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    If this argument is <TT
@@ -808,10 +714,7 @@ NAME="GNOMECANVASPIXBUF--HEIGHT"
 >&quot;<TT
 CLASS="LITERAL"
 >height</TT
->&quot; (<GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
-> : Read / Write)</DT
+>&quot; (gdouble : Read / Write)</DT
 ><DD
 ><P
 >    Indicates the height the pixbuf will be scaled to.  This argument
@@ -834,11 +737,8 @@ NAME="GNOMECANVASPIXBUF--HEIGHT-SET"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->height_set</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>height-set</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    Determines whether the <A
@@ -862,11 +762,8 @@ NAME="GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->height_in_pixels</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>height-in-pixels</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    Works in the same way as the <A
@@ -886,10 +783,7 @@ NAME="GNOMECANVASPIXBUF--X"
 >&quot;<TT
 CLASS="LITERAL"
 >x</TT
->&quot; (<GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
-> : Read / Write)</DT
+>&quot; (gdouble : Read / Write)</DT
 ><DD
 ><P
 >    Indicates the horizontal translation offset of the pixbuf item's
@@ -904,11 +798,8 @@ NAME="GNOMECANVASPIXBUF--X-IN-PIXELS"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->x_in_pixels</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>x-in-pixels</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    If this argument is <TT
@@ -936,10 +827,7 @@ NAME="GNOMECANVASPIXBUF--Y"
 >&quot;<TT
 CLASS="LITERAL"
 >y</TT
->&quot; (<GTKDOCLINK
-HREF="GDOUBLE"
->gdouble</GTKDOCLINK
-> : Read / Write)</DT
+>&quot; (gdouble : Read / Write)</DT
 ><DD
 ><P
 >    Indicates the vertical translation offset of the pixbuf item's
@@ -956,11 +844,8 @@ NAME="GNOMECANVASPIXBUF--Y-IN-PIXELS"
 ></A
 >&quot;<TT
 CLASS="LITERAL"
->y_in_pixels</TT
->&quot; (<GTKDOCLINK
-HREF="GBOOLEAN"
->gboolean</GTKDOCLINK
-> : Read / Write)</DT
+>y-in-pixels</TT
+>&quot; (gboolean : Read / Write)</DT
 ><DD
 ><P
 >    Works in the same way as the <A
@@ -988,13 +873,9 @@ NAME="AEN2536"
 ><H2
 >See Also</H2
 ><P
->    <GTKDOCLINK
-HREF="GNOMECANVAS"
->GnomeCanvas</GTKDOCLINK
->, <GTKDOCLINK
-HREF="GDKPIXBUF"
->GdkPixbuf</GTKDOCLINK
->
+>    <A
+HREF=../gnomeui/gnomecanvas.html
+>GnomeCanvas</A>, GdkPixbuf
   </P
 ></DIV
 ><DIV

@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gdk-pixbuf
-%define ver      0.10.1
+%define ver      0.16.0
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
