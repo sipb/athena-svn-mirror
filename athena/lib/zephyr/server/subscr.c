@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.44 1992-01-17 07:53:22 lwvanels Exp $";
+static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.45 1992-02-13 07:40:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -1305,8 +1305,6 @@ compare_subs(s1,s2,do_wildcard)
      ZSubscr_t *s1, *s2;
      int do_wildcard;
 {
-  int neq;
-  int sub_is_wildcard;
 
 #if 0
   zdbug((LOG_DEBUG,"compare_subs: %s/%s/%s to %s/%s/%s",
@@ -1315,25 +1313,21 @@ compare_subs(s1,s2,do_wildcard)
 #endif
   /* wildcard must be in s2 in order for it to match */
 
-  if (do_wildcard)
-    sub_is_wildcard = (s2->zst_dest.inst == wildcard_instance);
-  else
-    sub_is_wildcard = 0;
+  if (do_wildcard && (s1->zst_dest.classname == s2->zst_dest.classname) &&
+      (s2->zst_dest.inst == wildcard_instance) &&
+      (s1->zst_dest.recip == s2->zst_dest.recip))
+    return(0);
 
-  if (!sub_is_wildcard) {
-    if (s1->zst_dest.hash_value > s2->zst_dest.hash_value)
-      return 1;
-    if (s1->zst_dest.hash_value < s2->zst_dest.hash_value)
-      return -1;
-  }
+  if (s1->zst_dest.hash_value > s2->zst_dest.hash_value)
+    return 1;
+  if (s1->zst_dest.hash_value < s2->zst_dest.hash_value)
+    return -1;
 
   if (s1->zst_dest.classname != s2->zst_dest.classname)
     return(strcasecmp(s1->zst_dest.classname->string,
 		      s2->zst_dest.classname->string));
 
-  neq = (s1->zst_dest.inst != s2->zst_dest.inst);
-  if ((!do_wildcard && neq) ||
-      (!sub_is_wildcard && neq))
+  if (s1->zst_dest.inst != s2->zst_dest.inst)
     return(strcasecmp(s1->zst_dest.inst->string,
 		      s2->zst_dest.inst->string));
 
