@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v $
- *	$Id: send.c,v 1.11 1990-11-19 09:41:59 lwvanels Exp $
+ *	$Id: send.c,v 1.12 1991-05-17 12:40:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.11 1990-11-19 09:41:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.12 1991-05-17 12:40:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -87,14 +87,15 @@ OSend(Request,type,file)
 
   read_response(fd, &response);
   
-  if(is_option(Request->options,VERIFY))
+  if(is_option(Request->options,VERIFY)) {
+    close(fd);
     return(response);
-  
-  if(response == SUCCESS)
-    {
-      write_file_to_fd(fd,file);
-      read_response(fd, &response);
-    }
+  }
+
+  if(response == SUCCESS) {
+    write_file_to_fd(fd,file);
+    read_response(fd, &response);
+  }
   
   (void) close(fd);
   return(response);
