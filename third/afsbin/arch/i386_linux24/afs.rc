@@ -71,7 +71,11 @@ choose_client() {
 	# For now, just use uname -r to get the module version. 
 	VERSION=`uname -r`
 
-	LIBAFS=libafs-$VERSION$MP.o
+	# Kernels compiled for different machine types may have
+	# different symbol versions.  Yay Linux.
+	MACHINE=`uname -m`
+
+	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
 
 #
